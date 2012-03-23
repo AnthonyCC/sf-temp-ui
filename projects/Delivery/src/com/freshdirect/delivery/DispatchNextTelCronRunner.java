@@ -24,7 +24,6 @@ import com.freshdirect.delivery.ejb.AirclicManagerSB;
 import com.freshdirect.delivery.model.AirclicNextelVO;
 import com.freshdirect.delivery.model.DispatchNextTelVO;
 import com.freshdirect.fdstore.FDResourceException;
-import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.mail.ErpMailSender;
@@ -70,24 +69,27 @@ public class DispatchNextTelCronRunner {
 		LOGGER.info("DispatchNextTelCronRunner-started");		
 		try {
 			Date processDate = null;
+			boolean isSendEmail = false;		
 			if (args.length >= 1) {
 				for (String arg : args) {
 					try { 
 						if (arg.startsWith("processDate=")) {
 							processDate = DateUtil.truncate(DateUtil.toCalendar(DateUtil.parse(arg.substring("processDate=".length())))).getTime();
-						}						 
+						} else if (arg.startsWith("isSendEmail=")) {								
+							isSendEmail = Boolean.valueOf(arg.substring("isSendEmail=".length())).booleanValue(); 
+						} 				 
 					} catch (Exception e) {
 						System.err.println("Usage: java com.freshdirect.dataloader.airclic.DispatchNextTelCronRunner [processDate={date value}]");
 						System.exit(-1);
 					}
 				}
 			}
+			LOGGER.info("##### DispatchNextTelCronRunner Start: isSendEmail="+isSendEmail+" ########");			
 			if(processDate == null){
 				processDate = DateUtil.truncate(Calendar.getInstance()).getTime();
 			}			
-			if(!ErpServicesProperties.isAirclicBlackhole())	{				
-				 //processNextelDataSyncOld(processDate);
-				 processNextelDataSync(processDate);
+			if(!ErpServicesProperties.isAirclicBlackhole())	{
+				 processNextelDataSync(processDate, isSendEmail);
 			}
 		} catch (Exception e) {
 			StringWriter sw = new StringWriter();
@@ -103,71 +105,7 @@ public class DispatchNextTelCronRunner {
 	 * @param processDate
 	 * @throws Exception
 	 */
-	private static void processNextelDataSyncOld(Date processDate) throws Exception {
-		try {
-			lookupAirclickrHome();
-			AirclicManagerSB sb = airclicHome.get().create();
-			
-			LOGGER.info( "Starting to sync dispatch resource nexttel data" );
-			
-			Map<String, AirclicNextelVO> nextTelMapping = sb.getNXOutScan(processDate);
-			Map<String, String> nextTelAssetMapping = sb.getNextTelAssets();
-			Map<String, DispatchNextTelVO> dispatchNexTelMapping = sb.getDispatchResourceNextTel(processDate);
-			
-			List<String> noCNLst = new ArrayList<String>();
-			for(Map.Entry<String, AirclicNextelVO> nextTelEntry : nextTelMapping.entrySet()){
-				AirclicNextelVO _vo = nextTelEntry.getValue();
-				_vo.setCnNo(nextTelAssetMapping.get(_vo.getNextTelNo()) != null ? nextTelAssetMapping.get(_vo.getNextTelNo()) : null);
-				if(nextTelAssetMapping.get(_vo.getNextTelNo()) == null){
-					noCNLst.add(_vo.getNextTelNo());
-				}
-			}
-			
-			List<DispatchNextTelVO> updateResourceNexTelLst = new ArrayList<DispatchNextTelVO>();
-			List<DispatchNextTelVO> noNextelDataLst = new ArrayList<DispatchNextTelVO>();
-
-			for (Map.Entry<String, DispatchNextTelVO> resourceEntry : dispatchNexTelMapping.entrySet()) {
-				if (nextTelMapping.containsKey(resourceEntry.getKey())) {
-					DispatchNextTelVO _resourceNexTel = resourceEntry.getValue();
-					AirclicNextelVO _airclicNexTelInfo = nextTelMapping.get(resourceEntry.getKey());
-					if (_airclicNexTelInfo.getCnNo() != null){
-						_airclicNexTelInfo.setCnNo(_airclicNexTelInfo.getCnNo().replaceAll("[a-zA-Z+]", ""));
-						if(!_airclicNexTelInfo.getCnNo().equalsIgnoreCase(_resourceNexTel.getNextTelNo())) {
-							_resourceNexTel.setNextTelNo(_airclicNexTelInfo.getCnNo());
-							updateResourceNexTelLst.add(_resourceNexTel);
-						}
-					}
-				} else if (resourceEntry.getValue().getNextTelNo() == null){
-					noNextelDataLst.add(resourceEntry.getValue());
-				}
-			}
-			LOGGER.info( "Updating dispatch resource nexttel data >> "+ updateResourceNexTelLst.size() + " count.");
-			if(updateResourceNexTelLst.size() > 0) {				
-				sb.updateEmployeeNexTelData(updateResourceNexTelLst);
-			}
-			sendReportMail(processDate, updateResourceNexTelLst, noCNLst, noNextelDataLst);
-			LOGGER.info( "Finished syncing dispatch resource nexttel data." );			
-			
-		} catch ( CreateException e ) {
-			invalidateAirclicHome();
-			throw new Exception(e);			
-		} catch ( RemoteException e ) {
-			invalidateAirclicHome();
-			throw new Exception(e);
-		} catch (DlvResourceException e) {				
-			e.printStackTrace();
-		} catch ( FDResourceException e ) {
-			invalidateAirclicHome();
-			e.printStackTrace();
-			throw new Exception(e);
-		}
-	}
-	
-	/**
-	 * @param processDate
-	 * @throws Exception
-	 */
-	private static void processNextelDataSync(Date processDate) throws Exception {
+	private static void processNextelDataSync(Date processDate, boolean isSendEmail) throws Exception {
 		try {
 			lookupAirclickrHome();
 			AirclicManagerSB sb = airclicHome.get().create();
@@ -179,7 +117,7 @@ public class DispatchNextTelCronRunner {
 			Map<String, DispatchNextTelVO> dispatchNexTelMapping = sb.getDispatchResourceNextTel(processDate);			
 			
 			List<DispatchNextTelVO> updateResourceNexTelLst = new ArrayList<DispatchNextTelVO>();
-			List<DispatchNextTelVO> noNextelDataLst = new ArrayList<DispatchNextTelVO>();
+			List<AirclicNextelVO> airclicResLst = new ArrayList<AirclicNextelVO>();
 
 			for (Map.Entry<String, DispatchNextTelVO> resourceEntry : dispatchNexTelMapping.entrySet()) {
 				if (nextTelMapping.containsKey(resourceEntry.getKey())) {
@@ -191,15 +129,20 @@ public class DispatchNextTelCronRunner {
 							updateResourceNexTelLst.add(_resourceNexTel);
 						}
 					}
-				} else if (resourceEntry.getValue().getNextTelNo() == null){
-					noNextelDataLst.add(resourceEntry.getValue());
+				} 
+			}
+			for (Map.Entry<String, AirclicNextelVO> airclicEntry : nextTelMapping.entrySet()) {
+				if(!dispatchNexTelMapping.containsKey(airclicEntry.getKey())){
+					airclicResLst.add(airclicEntry.getValue());
 				}
 			}
 			LOGGER.info( "Updating dispatch resource nexttel data >> "+ updateResourceNexTelLst.size() + " count.");
 			if(updateResourceNexTelLst.size() > 0) {				
 				sb.updateEmployeeNexTelData(updateResourceNexTelLst);
 			}
-			sendReportMail(processDate, updateResourceNexTelLst, null, noNextelDataLst);
+			if(isSendEmail){
+				sendReportMail(processDate, airclicResLst);
+			}
 			LOGGER.info( "Finished syncing dispatch resource nexttel data." );			
 			
 		} catch ( CreateException e ) {
@@ -218,7 +161,7 @@ public class DispatchNextTelCronRunner {
 	}
 	
 	
-	private static void sendReportMail(Date processDate,List<DispatchNextTelVO> updateResourceNexTelLst, List<String> noCNLst, List<DispatchNextTelVO> noNextelDataLst ) {
+	private static void sendReportMail(Date processDate, List<AirclicNextelVO> airclicResLst ) {
 	
 		try {
 			SimpleDateFormat dateFormatter = new SimpleDateFormat("EEE, MMM d, yyyy");
@@ -227,41 +170,19 @@ public class DispatchNextTelCronRunner {
 			StringBuffer buff = new StringBuffer();
 
 			buff.append("<html>").append("<body>");
-			buff.append("<h2>").append("DispatchHandheldCronRunner synchronized "+(updateResourceNexTelLst != null ? updateResourceNexTelLst.size() : "0")
-					+" resource handhelds for date "+(processDate != null ? dateFormatter.format(processDate) : " date error")).append("</h2>");
-			
-			/*if(noNextelDataLst != null && noNextelDataLst.size() > 0){
+			if( airclicResLst != null && airclicResLst.size() > 0){
+					
 				buff.append("<table border=\"1\" valign=\"top\" align=\"left\" cellpadding=\"0\" cellspacing=\"0\">");
-				buff.append("<tr>").append("<th>").append("Employee").append("</th>").append("</tr>");
-				Iterator<DispatchNextTelVO> itr = noNextelDataLst.iterator();
+				buff.append("<tr>").append("<td colspan=\"3\" style=\"font-weight:bold;background-color:#4CC417;\">").append("Resource as handheld(s), but not on Dispatch sheet").append("</td>").append("</tr>");				
+				buff.append("<tr>").append("<td style=\"font-size:11px;font-weight:bold;\">").append("Employee ID").append("</td>").append("<td style=\"font-size:11px;font-weight:bold;\">").append("Employee Name").append("</td>").append("<td style=\"font-size:11px;font-weight:bold;\">").append("CN Number").append("</td>").append("</tr>");
+				Iterator<AirclicNextelVO> itr = airclicResLst.iterator();
 				while(itr.hasNext()){
-					DispatchNextTelVO _nextelVO = itr.next();
-					buff.append("<tr>").append("<td>").append(_nextelVO.getEmployeeId()).append("</td>").append("</tr>");				
+					AirclicNextelVO _nextelVO = itr.next();
+					buff.append("<tr>").append("<td>").append(_nextelVO.getEmployee()).append("</td>").append("<td>").append(_nextelVO.getEmployeeName()).append("</td>").append("<td>").append(_nextelVO.getNextTelNo()).append("</td>").append("</tr>");				
 				}
-				buff.append("</table>");
-			}*/
-			if(updateResourceNexTelLst != null && updateResourceNexTelLst.size() > 0){
-				buff.append("<table border=\"1\" valign=\"top\" align=\"left\" cellpadding=\"0\" cellspacing=\"0\">");
-				buff.append("<tr>").append("<th>").append("Employee").append("</th>").append("<th>").append("PhoneNumber").append("</th>").append("</tr>");
-				Iterator<DispatchNextTelVO> itr = updateResourceNexTelLst.iterator();
-				while(itr.hasNext()){
-					DispatchNextTelVO _nextelVO = itr.next();
-					buff.append("<tr>").append("<td>").append(_nextelVO.getEmployeeId()).append("</td>").append("<td>").append(_nextelVO.getNextTelNo()).append("</td>").append("</tr>");				
-				}
-				buff.append("</table>");
-			}
-			
-			if(noCNLst != null && noCNLst.size() > 0){
-				buff.append("&nbsp;&nbsp;&nbsp;<table border=\"1\" valign=\"top\" align=\"left\" cellpadding=\"0\" cellspacing=\"0\">");
-				buff.append("<tr>").append("<th>").append("Handheld(s) with no matching CN(s)").append("</br>").append(" in Transp Asset list").append("</th>").append("</tr>");			
-				Iterator<String> itr = noCNLst.iterator();
-				while(itr.hasNext()){
-					String _nextel = itr.next();
-					buff.append("<tr>").append("<td>").append(_nextel).append("</td>").append("</tr>");				
-				}
-				buff.append("</table>");
-			}
-			
+				buff.append("</table><br/><br/>");
+			}		
+				
 			ErpMailSender mailer = new ErpMailSender();
 			mailer.sendMail(RoutingServicesProperties.getRoutingSubscriptionMailFrom(),
 					RoutingServicesProperties.getRoutingSubscriptionMailTo(),

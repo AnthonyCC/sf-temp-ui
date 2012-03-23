@@ -454,14 +454,15 @@ public class AirclicDAO {
 		ResultSet rs = null;
 		try{
 			ps = conn
-					.prepareStatement(" select resource_id, nextel_no, d.dispatch_id " +
-									  " from transp.dispatch d, transp.dispatch_resource dr where d.dispatch_id = dr.dispatch_id and d.dispatch_date = ? ");
+					.prepareStatement(" select resource_id, e.personfullname, nextel_no, d.dispatch_id " +
+									  " from transp.dispatch d, transp.dispatch_resource dr, transp.kronos_employee e where d.dispatch_id = dr.dispatch_id and e.personnum = dr.resource_id and d.dispatch_date = ? ");
 	
 			ps.setDate(1, new java.sql.Date(dispatchDate.getTime()));
 			rs = ps.executeQuery();
 			while (rs.next()) {
 				DispatchNextTelVO empNextTel = new DispatchNextTelVO();
 				empNextTel.setEmployeeId(rs.getString("resource_id"));
+				empNextTel.setEmployeeName(rs.getString("personfullname"));
 				empNextTel.setNextTelNo(rs.getString("nextel_no"));
 				empNextTel.setDispatchId(rs.getString("dispatch_id"));			
 				
@@ -494,11 +495,11 @@ public class AirclicDAO {
 			final String scanEndTime = DateUtil.getDate(scanDate)+":11:59:59PM";
 		
 			ps = conn
-					.prepareStatement(" select employee, asset, route, scandate "+
-									  " from transp.assetstatus a1 where a1.scandate = ( " +
+					.prepareStatement(" select employee, e.personfullname, asset, route, scandate "+
+									  " from transp.assetstatus a1, transp.kronos_employee e where a1.scandate = ( " +
 									  " select max(scandate) "+
 									  " from transp.assetstatus a where a.scandate BETWEEN TO_DATE(?, 'mm/dd/yyyy:hh:mi:ssam') AND TO_DATE(?, 'mm/dd/yyyy:hh:mi:ssam') "+ 
-									  " AND a.ASSET LIKE 'NX%' AND a.assetstatus='OUT' and a.employee=a1.employee)");
+									  " AND a.ASSET LIKE 'NX%' AND a.assetstatus='OUT' and a.employee=a1.employee) and a1.employee=e.PERSONNUM ");
 	
 			ps.setString(1, scanStartTime);
             ps.setString(2, scanEndTime);
@@ -507,6 +508,7 @@ public class AirclicDAO {
 			while (rs.next()) {
 				AirclicNextelVO nextTelVO = new AirclicNextelVO();
 				nextTelVO.setEmployee(rs.getString("employee"));
+				nextTelVO.setEmployeeName(rs.getString("personfullname"));
 				nextTelVO.setNextTelNo(rs.getString("asset") != null ? rs.getString("asset").replaceAll("[a-zA-Z]+","") : null);
 				nextTelVO.setRouteNo(rs.getString("route"));
 				nextTelVO.setScanDate(rs.getTimestamp("scandate"));

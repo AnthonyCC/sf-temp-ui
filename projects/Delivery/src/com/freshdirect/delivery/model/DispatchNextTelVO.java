@@ -5,6 +5,7 @@ import java.io.Serializable;
 public class DispatchNextTelVO implements Serializable {
 	
 	private String employeeId;
+	private String employeeName;
 	private String nextTelNo;
 	private String dispatchId;
 		
@@ -25,5 +26,11 @@ public class DispatchNextTelVO implements Serializable {
 	}
 	public void setDispatchId(String dispatchId) {
 		this.dispatchId = dispatchId;
-	}	
+	}
+	public String getEmployeeName() {
+		return employeeName;
+	}
+	public void setEmployeeName(String employeeName) {
+		this.employeeName = employeeName;
+	}
 }

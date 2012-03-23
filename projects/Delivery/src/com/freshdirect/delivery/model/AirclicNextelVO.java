@@ -6,6 +6,7 @@ import java.util.Date;
 public class AirclicNextelVO implements Serializable {
 	
 	private String employee;
+	private String employeeName;
 	private String nextTelNo;
 	private String cnNo;
 	private Date scanDate;
@@ -52,5 +53,10 @@ public class AirclicNextelVO implements Serializable {
 	public void setCnNo(String cnNo) {
 		this.cnNo = cnNo;
 	}
-	
+	public String getEmployeeName() {
+		return employeeName;
+	}
+	public void setEmployeeName(String employeeName) {
+		this.employeeName = employeeName;
+	}	
 }

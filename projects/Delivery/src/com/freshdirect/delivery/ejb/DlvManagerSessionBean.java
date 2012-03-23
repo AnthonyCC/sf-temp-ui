@@ -2884,7 +2884,7 @@ public class DlvManagerSessionBean extends GatewaySessionBeanSupport {
 		}
 	}
 	
-	public SectorVO getSectorInfo(AddressModel address) throws RemoteException {
+	public SectorVO getSectorInfo(AddressModel address) {
 		Connection conn = null;
 		try {
 			conn = getConnection();
@@ -2894,7 +2894,7 @@ public class DlvManagerSessionBean extends GatewaySessionBeanSupport {
 
 		} catch (SQLException sqle) {
 			LOGGER.warn("Difficulty locating an address within a zone : " + sqle.getMessage());
-			throw new EJBException("Difficulty locating an address within a zone : " + sqle.getMessage());
+			//throw new EJBException("Difficulty locating an address within a zone : " + sqle.getMessage());
 		} finally {
 			try {
 				if (conn != null) {
@@ -2905,5 +2905,6 @@ public class DlvManagerSessionBean extends GatewaySessionBeanSupport {
 				LOGGER.warn("DlvManagerSB getZoneInfo: Exception while cleaning: ", se);
 			}
 		}
+		return null;
 	}
 }
