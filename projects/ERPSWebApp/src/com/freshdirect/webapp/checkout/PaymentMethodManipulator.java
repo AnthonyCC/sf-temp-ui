@@ -61,6 +61,7 @@ public class PaymentMethodManipulator extends CheckoutManipulator {
 		boolean makeGoodOrder = false;
 		String referencedOrder = "";
 		String app = (String) session.getAttribute( SessionName.APPLICATION );
+		FDCartModel cart = getCart();
 		if ( "CALLCENTER".equalsIgnoreCase( app ) ) {
 			makeGoodOrder = request.getParameter( "makeGoodOrder" ) != null;
 			referencedOrder = NVL.apply( request.getParameter( "referencedOrder" ), "" ).trim();
@@ -68,11 +69,14 @@ public class PaymentMethodManipulator extends CheckoutManipulator {
 				result.addError( true, "referencedOrder", "Reference Order number is required for a make good order" );
 				return;
 			}
+		}else if (cart.getSelectedGiftCards() == null || cart.getSelectedGiftCards().size() == 0){
+			result.addError( new ActionError( "paymentMethodList", "You must select a payment method." ) );
+			return;
 		}
 
 		ErpPaymentMethodI paymentMethod = PaymentMethodUtil.createGiftCardPaymentMethod( this.getUser() );
 
-		FDCartModel cart = getCart();
+		
 		paymentMethod.setBillingRef( billingRef );
 		paymentMethod.setPaymentType( makeGoodOrder ? EnumPaymentType.MAKE_GOOD : EnumPaymentType.REGULAR );
 		paymentMethod.setReferencedOrder( referencedOrder );
@@ -98,6 +102,7 @@ public class PaymentMethodManipulator extends CheckoutManipulator {
 		// search for the payment method with the matching ID
 		//
 		Collection<ErpPaymentMethodI> paymentMethods = FDCustomerManager.getPaymentMethods( identity );
+		
 		ErpPaymentMethodI paymentMethod = null;
 
 		for ( ErpPaymentMethodI item : paymentMethods ) {
