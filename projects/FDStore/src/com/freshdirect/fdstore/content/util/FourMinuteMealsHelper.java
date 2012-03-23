@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 
 import javax.servlet.jsp.PageContext;
 
@@ -19,6 +20,7 @@ import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentType;
 import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.content.nutrition.EnumClaimValue;
+import com.freshdirect.fdstore.FDNutrition;
 import com.freshdirect.fdstore.FDProduct;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
@@ -80,12 +82,15 @@ public class FourMinuteMealsHelper {
 	public static final String filterParamNutrition = "n";
 	public static final String filterParamIngredients = "i";
 	public static final String filterParamPrice = "p";
-
+	public static final String filterParamCalories = "c";
 	
 	// === Constant price and nutrition infos ===
 	
 	private static final List<String> defaultPriceFilterIds = Arrays.asList( "LT6", "LT8", "LT10", "LT13", "LT15", "LT20", "LT100" );
 	private static final double[] priceLimits = { 6.0, 8.0, 10.0, 13.0, 15.0, 20.0, 100.0 };
+
+	private static final List<String> defaultCaloriesFilterIds = Arrays.asList( "LT200C", "LT300C", "LT400C", "LT500C" );
+	private static final double[] caloriesLimits = {200.0, 300.0, 400.0, 500.0 };
 
 	private static final List<EnumClaimValue> nutritionClaims = Arrays.asList( 
 			EnumClaimValue.NUTRITION_4MM_LOWCALORIE, 
@@ -161,11 +166,13 @@ public class FourMinuteMealsHelper {
 		private MediaI siasStarchMedia;
 
 		private List<String> priceFilterIds;
+		private List<String> caloriesFilterIds;
+		
+		private Map<ProductModel, Double> calories;
 	}
 	
 	// private cache instance
 	private static FilterCache cache;
-
 	
 	/**
 	 *	Simple and fast price comparator. Compares the default prices. 
@@ -241,6 +248,10 @@ public class FourMinuteMealsHelper {
 	public static List<String> getPriceFilterIds() {
 		initLazy();
 		return Collections.unmodifiableList( cache.priceFilterIds );
+	}
+	public static List<String> getCaloriesFilterIds() {
+		initLazy();
+		return Collections.unmodifiableList( cache.caloriesFilterIds );
 	}
 	
 	public static Map<String, FilterInfo> getFilterInfos() {
@@ -654,7 +665,8 @@ public class FourMinuteMealsHelper {
 		// domain for side type vegetable/starch
 		newCache.extraVeggieSideDV = (DomainValue)ContentFactory.getInstance().getContentNodeByKey( extraVeggieSideDVKey );
 		newCache.extraStarchSideDV = (DomainValue)ContentFactory.getInstance().getContentNodeByKey( extraStarchSideDVKey );
-
+		
+		newCache.calories = new TreeMap<ProductModel, Double>(ProductModel.DEPTFULL_COMPARATOR);
 		
 		// assort products		
 		for ( ProductModel prod : newCache.allProducts ) {
@@ -665,6 +677,9 @@ public class FourMinuteMealsHelper {
 				FDProduct fdprod;
 				try {
 					fdprod = sku.getProduct();
+					
+					putCaloriesValue(prod, fdprod, newCache);
+					
 					List<EnumClaimValue> claims = fdprod.getClaims();
 					if ( claims != null ) {
 						for ( EnumClaimValue claim : claims ) {
@@ -726,6 +741,14 @@ public class FourMinuteMealsHelper {
 			newCache.priceFilterIds.add( prId );
 			newCache.filterInfos.put( prId, new FilterInfo( "Under $" + (int)priceLimits[i], 1 ) );
 		}
+		
+		// init calories filter infos
+		newCache.caloriesFilterIds = new ArrayList<String>( defaultCaloriesFilterIds.size() );		
+		i = 0;
+		for ( String prId : defaultCaloriesFilterIds ) {
+			newCache.caloriesFilterIds.add( prId );
+			newCache.filterInfos.put( prId, new FilterInfo( (int)caloriesLimits[i++] + " cal or less", 1 ) );
+		}
 
 		// count items for nutrition
 		for ( EnumClaimValue claim : nutritionClaims ) {
@@ -779,7 +802,8 @@ public class FourMinuteMealsHelper {
 		List<String> nutritionFilters = filters.get( filterParamNutrition );
 		List<String> ingredientsFilters = filters.get( filterParamIngredients );
 		List<String> priceFilters = filters.get( filterParamPrice );
-
+		List<String> caloriesFilters = filters.get( filterParamCalories );
+		
 		// do the filtering
 		List<ProductModel> workSet = new ArrayList<ProductModel>();
 		if ( restaurantFilters != null && restaurantFilters.size() > 0 ) {
@@ -817,6 +841,22 @@ public class FourMinuteMealsHelper {
 
 //		LOGGER.debug( "Phase1[base filters] took " + (System.currentTimeMillis()-time)/1000.0f + " seconds." );
 //		time = System.currentTimeMillis();
+		
+		if( caloriesFilters != null && caloriesFilters.size() > 0) {
+			// take the first one
+			int ndx = cache.caloriesFilterIds.indexOf( caloriesFilters.get( 0 ) );
+			double calLimit = 9999.0;
+			if ( ndx != -1 )
+				calLimit = caloriesLimits[ndx];
+			
+			for ( int i = workSet.size() - 1; i >= 0; i-- ) {
+				ProductModel prod = workSet.get( i );
+				Double cal = cache.calories.get(prod);
+				if ( cal > calLimit ) {
+					workSet.remove( i );
+				}
+			}
+		}
 		
 		// create product pricing adapters from actual pricing context
 		List<ProductModelPricingAdapter> pricedWorkSet = new ArrayList<ProductModelPricingAdapter>( workSet.size() );
@@ -911,6 +951,36 @@ public class FourMinuteMealsHelper {
 				}				
 				infos.put( pId, info );
 			}			
+		}
+		
+		
+		if ( caloriesFilters != null && caloriesFilters.size() > 0 ) {
+			//If one of the calories selectors is selected, other ones should be disabled.
+			String filter = caloriesFilters.get( 0 );
+			for ( String pId : cache.caloriesFilterIds ) {
+				FilterInfo info = new FilterInfo( cache.filterInfos.get( pId ) );
+				if ( pId.equals( filter ) ) {
+					info.setCount( 1 );
+				} else {
+					info.setCount( 0 );
+				}
+				infos.put( pId, info );
+			}
+		} else {
+			double min = 999.9d;
+			for(ProductModel prod : workSet) {
+				min = Math.min(min, cache.calories.get(prod));
+			}
+			for ( String pId : cache.caloriesFilterIds ) {
+				FilterInfo info = new FilterInfo( cache.filterInfos.get( pId ) );
+				double limit = caloriesLimits[ cache.caloriesFilterIds.indexOf( pId ) ];
+				if ( limit < min ) {
+					info.setCount( 0 );
+				} else {
+					info.setCount( 1 );
+				}				
+				infos.put( pId, info );
+			}
 		}
 
 		result.setFilterInfos( infos );
@@ -1098,6 +1168,7 @@ public class FourMinuteMealsHelper {
 		paramMap.put( filterParamNutrition, getSelectedIds( filterParamNutrition, pageContext ) );
 		paramMap.put( filterParamIngredients, getSelectedIds( filterParamIngredients, pageContext ) );
 		paramMap.put( filterParamPrice, getSelectedIds( filterParamPrice, pageContext ) );
+		paramMap.put( filterParamCalories, getSelectedIds( filterParamCalories, pageContext ) );
 		return paramMap;
 	}
 	
@@ -1110,6 +1181,24 @@ public class FourMinuteMealsHelper {
 			selectedIds = Arrays.asList(params);			
 		}		
 		return selectedIds;
+	}
+	
+	/**
+	 * Puts calories value into Map for further use.
+	 */
+	private static void putCaloriesValue(ProductModel prod, FDProduct fdprod, FilterCache newCache) {
+		for(FDNutrition nutr : fdprod.getNutrition()) {
+			if("Calories".equals(nutr.getName())) {
+				double cal = nutr.getValue();
+				newCache.calories.put(prod, cal);
+				System.out.println(prod.getFullName() + " " + cal + " " +  nutr.getUnitOfMeasure());
+				break;
+			}
+		}
+	}
+	
+	public static Double getCaloriesForProductModel(ProductModel pm) {
+		return cache.calories.get(pm);
 	}
 	
 }

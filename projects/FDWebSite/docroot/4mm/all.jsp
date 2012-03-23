@@ -59,11 +59,11 @@
 		<%@ include file="/includes/layouts/4mm/filter_widget.jspf"%>
 		
 		<%-- BREADCRUMB --%>		
-		<% if ( selectedRestaurants.size() > 0 || selectedNutritions.size() > 0 || selectedIngredients.size() > 0 || selectedPrices.size() > 0 ) { %>
+		<% if ( selectedRestaurants.size() > 0 || selectedNutritions.size() > 0 || selectedIngredients.size() > 0 || selectedPrices.size() > 0 || selectedCalories.size() > 0) { %>
 		<div class="fourmm-breadcrumb">
 		
 			<logic:iterate id="breadCrumbItem" indexId="breadCrumbItemIndex" collection="<%= selectedRestaurants %>" type="java.lang.String">
-			<% if (breadCrumbItemIndex != 0) { %><span class="fourmm-breadcrumb-with"> with </span><% } %><span class="fourmm-breadcrumb-item"><%= FourMinuteMealsHelper.getFilterInfos().get(breadCrumbItem).getLabel() %></span>
+				<span class="fourmm-breadcrumb-item"><%= FourMinuteMealsHelper.getFilterInfos().get(breadCrumbItem).getLabel() %></span>
 			</logic:iterate>
 			
 			<% if ((selectedRestaurants.size() > 0 ) && selectedIngredients.size() > 0) { %><span class="fourmm-breadcrumb-bullet">&bull;</span><% } %>
@@ -73,10 +73,15 @@
 			
 			<% if ((selectedRestaurants.size() > 0 || selectedIngredients.size() > 0) && selectedPrices.size() > 0) { %><span class="fourmm-breadcrumb-bullet">&bull;</span><% } %>
 			<logic:iterate id="breadCrumbItem" indexId="breadCrumbItemIndex" collection="<%= selectedPrices %>" type="java.lang.String">
-			<% if (breadCrumbItemIndex != 0) { %><span class="fourmm-breadcrumb-with"> with </span><% } %><span class="fourmm-breadcrumb-item"><%= FourMinuteMealsHelper.getFilterInfos().get(breadCrumbItem).getLabel() %></span>
+				<span class="fourmm-breadcrumb-item"><%= FourMinuteMealsHelper.getFilterInfos().get(breadCrumbItem).getLabel() %></span>
 			</logic:iterate>
 			
-			<% if ((selectedRestaurants.size() > 0 || selectedIngredients.size() > 0 || selectedPrices.size() > 0) && selectedNutritions.size() > 0) { %><span class="fourmm-breadcrumb-bullet">&bull;</span><% } %>
+			<% if ((selectedRestaurants.size() > 0 || selectedIngredients.size() > 0 || selectedPrices.size() > 0) && selectedCalories.size() > 0) { %><span class="fourmm-breadcrumb-bullet">&bull;</span><% } %>
+			<logic:iterate id="breadCrumbItem" indexId="breadCrumbItemIndex" collection="<%= selectedCalories %>" type="java.lang.String">
+				<span class="fourmm-breadcrumb-item"><%= FourMinuteMealsHelper.getFilterInfos().get(breadCrumbItem).getLabel() %></span>
+			</logic:iterate>
+			
+			<% if ((selectedRestaurants.size() > 0 || selectedIngredients.size() > 0 || selectedPrices.size() > 0 || selectedCalories.size() > 0) && selectedNutritions.size() > 0) { %><span class="fourmm-breadcrumb-bullet">&bull;</span><% } %>
 			<logic:iterate id="breadCrumbItem" indexId="breadCrumbItemIndex" collection="<%= selectedNutritions %>" type="java.lang.String">
 			<% if (breadCrumbItemIndex != 0) { %><span class="fourmm-breadcrumb-with"> and </span><% } %><span class="fourmm-breadcrumb-item"><%= FourMinuteMealsHelper.getFilterInfos().get(breadCrumbItem).getLabel() %></span>
 			</logic:iterate>

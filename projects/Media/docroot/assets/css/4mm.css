@@ -258,6 +258,18 @@
 		no-repeat left top;
 }
 
+.fourmm .filter.calories {
+	background:
+		url('/media/4mm/filterheader_calorie.gif')
+		no-repeat left top;
+}
+
+.fourmm.aboutpage .filter.calories {
+	background:
+		url('/media/4mm/filterheader_calorie_about.gif')
+		no-repeat left top;
+}
+
 .fourmm .filter.nutrition {
 	background:
 		url('/media/4mm/filterheader_nutrition.gif')
@@ -305,6 +317,11 @@
 		no-repeat left top;
 }
 
+.fourmm.landingpage .filter.calories {
+	background: url('/media/4mm/filterheader_dptpage_calorie.gif')
+		no-repeat left top;
+}
+
 .fourmm.landingpage .filter.prices {
 	background: url('/media/4mm/filterheader_dptpage_price.gif')
 		no-repeat left top;
@@ -334,16 +351,16 @@
 }
 
 .fourmm .filterwidget.col3 ul {
-	width: 232px;
+	width: 171px;
 	margin: 0px 6px;
 }
 
 .fourmm .filterwidget.col4 ul {
-	width: 172px;
+	width: 136px;
 }
 
 .fourmm.aboutpage .filterwidget.col4 ul {
-	width: 224px;
+	width: 178px;
 }
 
 .fourmm-breadcrumb {
