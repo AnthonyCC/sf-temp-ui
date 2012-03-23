@@ -198,9 +198,12 @@ public class SaleCronRunner {
 							.append("<th>").append("Unassigned Action").append("</th>")
 							.append("<th>").append("Update status").append("</th>")
 							.append("</tr>");
-			
+			String cutoff=null;
 			for(Iterator<UnassignedDlvReservationModel> i = reservations.iterator(); i.hasNext();){
 				UnassignedDlvReservationModel info =  i.next();
+				 
+				 if(cutoff==null || cutoff.equals(info.getCutoff()))
+				 {
 					buf.append("<tr><td>").append(info.getOrderId()).append("</td><td>")
 					.append(info.getDeliveryDate()).append("</td><td>")
 					.append(info.getCutoff()).append("</td><td>")
@@ -212,6 +215,9 @@ public class SaleCronRunner {
 					.append(info.getReservedServiceTime()).append("</td><td>")
 					.append(info.getUnassignedActivityType()).append("</td><td>")
 					.append(info.getUpdateStatus()).append("</td></tr>");
+					cutoff = info.getCutoff();
+				 }
+				 else break;
 
 			}
 
