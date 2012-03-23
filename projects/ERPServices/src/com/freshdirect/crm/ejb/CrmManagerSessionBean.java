@@ -1251,19 +1251,19 @@ public class CrmManagerSessionBean extends SessionBeanSupport {
 	
 	private static final String AUTH_SEARCH_QUERY=
 	"select CC.TRANS_DATE_TIME ,CC.CUSTOMER_NAME ,CC.MERCHANT_ID,CC.AMOUNT,CC.APPROVAL_CODE,CVV_RESPONSE_CODE, AUTH_RESPONSE_MSG,"+
-    " CC.ZIP_MATCH, "+
+    " CC.ZIP_MATCH, CC.USER_DEFINED_1 as CustomerID, "+
     "( CASE cc.CARD_TYPE WHEN '001' THEN 'VISA' WHEN '002' THEN 'MASTERCARD' WHEN '003' THEN 'AMEX' WHEN '004' THEN 'DISCOVER' WHEN '005' THEN 'ECheck' END) AS CardType "+
-    ",CC.ORDER_NUMBER,"+
+    ",CC.ORDER_NUMBER,NVL(s.id,'N/A') as ORDERNUMBER, "+
     " CC.CUSTOMER_STREET||' '|| CC.CUSTOMER_CITY||' '|| CC.CUSTOMER_STATE||' '|| CC.CUSTOMER_ZIP as Address "+
-    " from PAYLINX.CC_TRANSACTION_NEW cc where CC.TRANS_DATE_TIME between to_date(?,'MM-DD-YYYY HH24:MI') and   to_date(?,'MM-DD-YYYY HH24:MI') and "+
-    " CC.TRANSACTION_CODE='100' ";
+    " from PAYLINX.CC_TRANSACTION_NEW cc, cust.sale s where CC.TRANS_DATE_TIME between to_date(?,'MM-DD-YYYY HH24:MI') and   to_date(?,'MM-DD-YYYY HH24:MI') and "+
+    " CC.TRANSACTION_CODE='100' AND SUBSTR(CC.ORDER_NUMBER,1,INSTRB(CC.ORDER_NUMBER, 'X', 1, 1)-1)=s.id(+) ";
 	//order by cc.TRANS_DATE_TIME asc
 	public List<CrmAuthInfo> getAuthorizations(CrmAgentRole role,CrmAuthSearchCriteria filter)throws FDResourceException {
 		Connection conn = null;
 		try {
 			StringBuilder query=new StringBuilder(AUTH_SEARCH_QUERY);
 			if(!StringUtil.isEmpty(filter.getCustomerName())) {
-				query.append(" AND UPPER(cc.customer_name) LIKE UPPER('%").append(filter.getCustomerName()).append("%') ");
+				query.append(" AND UPPER(trim(cc.customer_name)) LIKE UPPER('%").append(filter.getCustomerName()).append("%') ");
 			}
 			if(filter.getAmount()!="0") {
 				query.append(" AND cc.amount ='").append(filter.getAmount()).append("' ");
@@ -1290,6 +1290,8 @@ public class CrmManagerSessionBean extends SessionBeanSupport {
 				crmAuthInfo.setCardType(EnumCardType.getCardType(rs.getString("CardType")));
 				crmAuthInfo.setAddress(rs.getString("Address"));
 				crmAuthInfo.setOrder(rs.getString("ORDER_NUMBER"));
+				crmAuthInfo.setValidOrder(!"N/A".equals(rs.getString("ORDERNUMBER")));
+				crmAuthInfo.setCustomerId(rs.getString("CustomerID"));
 				crmAuthInfoList.add(crmAuthInfo);
 				
 			}

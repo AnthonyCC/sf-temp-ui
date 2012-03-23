@@ -955,6 +955,10 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
               DlvZoneInfoModel zInfo = FDDeliveryManager.getInstance().getZoneInfo(dlvInfo.getDeliveryAddress(),dlvInfo.getDeliveryStartTime());
               customerManagerSB.resubmitOrder(saleId, cra,saleType,zInfo.getRegionId());
               
+              if(!EnumSaleType.REGULAR.equals(saleType) && EnumSaleStatus.NEW.equals(_order.getStatus())) {
+            	  FDCustomerManager.authorizeSale(saleId);
+              }
+              
         } catch (CreateException ce) {
               throw new FDResourceException(ce);
         } catch (RemoteException re) {
@@ -963,7 +967,8 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
               throw new FDResourceException(e);
         }
   }
-
+  
+	
 
 	public void resubmitCustomer(String customerID) throws FDResourceException {
 		try {

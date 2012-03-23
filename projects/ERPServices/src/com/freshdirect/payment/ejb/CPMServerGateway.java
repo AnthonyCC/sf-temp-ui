@@ -100,7 +100,7 @@ public class CPMServerGateway {
 		trans.SetValue(LCC.ID_MERCHANT_ID, MERCHANT_ID);
 		trans.SetValue(LCC.ID_CVV,cvv ); //set it from paymentMethod
 		trans.SetValue(LCC.ID_CVV_INDICATOR, "1");
-		
+		trans.SetValue(LCC.ID_USER_DEFINED_1, paymentMethod.getCustomerId()!=null?paymentMethod.getCustomerId():"");
 		
 		
 		ErpAuthorizationModel model = runCCVerificationTransaction(trans);
@@ -138,6 +138,9 @@ public class CPMServerGateway {
 		LCCTransaction trans = createCCTransaction(paymentMethod, amount, tax);
 		trans.SetValue(LCC.ID_ORDER_NUMBER, saleId);
 		trans.SetConnectionInformation(CPM_SERVER, SERVER_PORT, USE_SSL);
+		if(paymentMethod!=null)
+			trans.SetValue(LCC.ID_USER_DEFINED_1, paymentMethod.getCustomerId()!=null?paymentMethod.getCustomerId():"");
+		
 		
 		if(merchantId == null || "".equals(merchantId)){
 			merchantId = MERCHANT_ID;

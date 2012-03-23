@@ -96,7 +96,7 @@ function isNumber(n) {
 				<tr>
 					<td >&nbsp; </td>					
 					<td >&nbsp; </td>
-					<td>Customer Name</td>					
+					<td>Card holder Name</td>					
 					<td><input type="text" id="customerName" value="<%= customerName %>" name="customerName" class="w300px" />&nbsp;</td>
 					
 					
@@ -179,7 +179,7 @@ function isNumber(n) {
 					
 					<td align="left" width="10%">Timestamp</td>					
 					<td align="left" width="10%">Order</a></td>						
-					<td align="left" width="15%">Customer</td>
+					<td align="left" width="15%">Card holder Name</td>
 					<td align="left" width="5%">Card </td>
 					<td align="right" width="5%">Amount</td>					
 					<td align="left" width="10%">Merchant</td>	
@@ -199,10 +199,17 @@ function isNumber(n) {
 				
 				
 				<% } else if(authList!=null) {%>
-				<logic:iterate id="authInfo" collection="<%= authList %>" type="com.freshdirect.crm.CrmAuthInfo">
-					<tr>
+				<logic:iterate id="authInfo" collection="<%= authList %>" type="com.freshdirect.crm.CrmAuthInfo" indexId="counter">
+				        <% boolean isValidOrder=authInfo.isValidOrder();
+					if(isValidOrder){%>
+					<tr  <%= counter.intValue() % 2 == 0 ? "class='list_odd_row'" : "" %> style="cursor: pointer; padding: 2px;" onClick="document.location='/main/order_details.jsp?orderId=<%=authInfo.getWebOrder()%>'">
+					<%} else if(!"".equals(authInfo.getCustomerId())) {%>
+					<tr <%= counter.intValue() % 2 == 0 ? "class='list_odd_row'" : "" %>style="cursor: pointer; padding: 2px;" onClick="document.location='/main/account_details.jsp?erpCustId=<%=authInfo.getCustomerId()%>'">
+					<%} else {%>
+					<tr <%= counter.intValue() % 2 == 0 ? "class='list_odd_row'" : "" %>>
+					<%}%>
 						<td class="border_bottom" width="10%" align="left"><%=authInfo.getTransactionTime()%></td>						
-						<td class="border_bottom" width="10%" align="left"><%=authInfo.getOrder()%></td>
+						<td class="border_bottom" width="10%" align="left"><% if(isValidOrder) {%><%=authInfo.getOrder()%> <%} else {%><%=authInfo.getOrder()%><%}%></td>
 						<td class="border_bottom" width="15%"><%=authInfo.getCustomerName()%></td>
 						<td class="border_bottom" width="5%"><%=authInfo.getCardType()%></td>
 						<td class="border_bottom" width="5%" align="right"><%=authInfo.getAmount()%></td>

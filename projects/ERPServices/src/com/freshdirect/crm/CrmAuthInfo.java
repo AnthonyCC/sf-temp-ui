@@ -22,6 +22,21 @@ public class CrmAuthInfo implements Serializable {
 	private EnumCardType cardType;
 	private String order;
 	private String zipCheckReponse;
+	private boolean isValidOrder;
+	private String customerId;
+	
+	public String getWebOrder() {
+		if(order==null) return "";
+		if(order.indexOf("X")!=-1)
+			return order.substring(0,order.indexOf("X"));
+		return order;
+	}
+	public boolean isValidOrder() {
+		return isValidOrder;
+	}
+	public void setValidOrder(boolean isValidOrder) {
+		this.isValidOrder = isValidOrder;
+	}
 	public Date getTransactionTime() {
 		return transactionTime;
 	}
@@ -106,6 +121,8 @@ public class CrmAuthInfo implements Serializable {
 				+ ((cvvResponseCode == null) ? 0 : cvvResponseCode.hashCode());
 		result = prime * result
 				+ ((merchantId == null) ? 0 : merchantId.hashCode());
+		result = prime * result
+		+ ((customerId == null) ? 0 : customerId.hashCode());
 		result = prime * result + ((order == null) ? 0 : order.hashCode());
 		result = prime * result
 				+ ((transactionTime == null) ? 0 : transactionTime.hashCode());
@@ -158,6 +175,11 @@ public class CrmAuthInfo implements Serializable {
 				return false;
 		} else if (!merchantId.equals(other.merchantId))
 			return false;
+		if (customerId == null) {
+			if (other.customerId != null)
+				return false;
+		} else if (!customerId.equals(other.customerId))
+			return false;
 		if (order == null) {
 			if (other.order != null)
 				return false;
@@ -173,20 +195,32 @@ public class CrmAuthInfo implements Serializable {
 				return false;
 		} else if (!zipCheckReponse.equals(other.zipCheckReponse))
 			return false;
+		if(isValidOrder!=other.isValidOrder)return false;
 		return true;
 	}
 	@Override
 	public String toString() {
 		return "CrmAuthInfo [address=" + address + ", amount=" + amount
 				+ ", approvalCode=" + approvalCode + ", authResponse="
-				+ authResponse + ", cardType=" + cardType + ", customerName="
-				+ customerName + ", cvvResponseCode=" + cvvResponseCode
-				+ ", merchantId=" + merchantId + ", order=" + order
-				+ ", transactionTime=" + transactionTime + ", zipCheckReponse="
-				+ zipCheckReponse + "]";
+				+ authResponse + ", cardType=" + cardType + ", customerId="
+				+ customerId + ", customerName=" + customerName
+				+ ", cvvResponseCode=" + cvvResponseCode + ", isValidOrder="
+				+ isValidOrder + ", merchantId=" + merchantId + ", order="
+				+ order + ", transactionTime=" + transactionTime
+				+ ", zipCheckReponse=" + zipCheckReponse + "]";
 	}
 	
 	
+	public void setCustomerId(String customerId) {
+		if(customerId!=null )
+			this.customerId = customerId.trim();
+		this.customerId ="";
+	}
+	public String getCustomerId() {
+		return customerId;
+	}
+
+
 	public final static Comparator<CrmAuthInfo> COMP_AMOUNT = new Comparator<CrmAuthInfo>() {
 		public int compare(CrmAuthInfo c1, CrmAuthInfo c2) {
 			if(null !=c1.getAmount() && null != c2.getAmount()){
