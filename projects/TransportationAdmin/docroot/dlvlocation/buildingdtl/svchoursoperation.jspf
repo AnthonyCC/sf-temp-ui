@@ -20,6 +20,12 @@ function togglesvc(checked, svcHoursOpen, svcHoursClose,svcComment,hoursField, h
 	}
 	
 }
+
+function limitText(svcComment, len)
+{
+	if(svcComment.value.length>len)
+		svcComment.value = svcComment.value.substring(0, len);
+}
 </script>
 <b>Service Entrance Hours of Operation</b>
 			<table class="forms1 t_Hours" border="0">
@@ -38,7 +44,7 @@ function togglesvc(checked, svcHoursOpen, svcHoursClose,svcComment,hoursField, h
 						 	</td>
 						    <td align="left">Comment</td>
 						    <td>				    
-								<form:input maxlength="255" size="40" disabled="true" path="svcCommentMon" />
+								<form:textarea  rows="5" cols="30" disabled="true" path="svcCommentMon"  onkeydown="limitText(this, 255)"/>
 						 	</td>
 						 </tr>							 
 						 <tr>
@@ -55,7 +61,7 @@ function togglesvc(checked, svcHoursOpen, svcHoursClose,svcComment,hoursField, h
 						 	</td>
 						    <td align="left">Comment</td>
 						    <td>				    
-								<form:input maxlength="255" size="40" disabled="true" path="svcCommentTue" />
+								<form:textarea  rows="5" cols="30" disabled="true" path="svcCommentTue" onkeydown="limitText(this, 255)"/>
 						 	</td>
 						 </tr>			
 						 
@@ -74,7 +80,7 @@ function togglesvc(checked, svcHoursOpen, svcHoursClose,svcComment,hoursField, h
 						 	</td>
 						    <td align="left">Comment</td>
 						    <td>				    
-								<form:input maxlength="255" size="40" disabled="true" path="svcCommentWed" />
+								<form:textarea  rows="5" cols="30" disabled="true" path="svcCommentWed"  onkeydown="limitText(this, 255)"/>
 						 	</td>
 						 </tr>			
 						 				 
@@ -92,7 +98,7 @@ function togglesvc(checked, svcHoursOpen, svcHoursClose,svcComment,hoursField, h
 						 	</td>
 						    <td align="left">Comment</td>
 						    <td>				    
-								<form:input maxlength="255" size="40" disabled="true" path="svcCommentThu" />
+								<form:textarea  rows="5" cols="30" disabled="true" path="svcCommentThu"  onkeydown="limitText(this, 255)"/>
 						 	</td>
 						 </tr>							 
 						 <tr>
@@ -109,7 +115,7 @@ function togglesvc(checked, svcHoursOpen, svcHoursClose,svcComment,hoursField, h
 						 	</td>
 						    <td align="left">Comment</td>
 						    <td>				    
-								<form:input maxlength="255" size="40" disabled="true" path="svcCommentFri" />
+								<form:textarea  rows="5" cols="30" disabled="true" path="svcCommentFri"  onkeydown="limitText(this, 255)"/>
 						 	</td>
 						 </tr>							 
 						 <tr>
@@ -126,7 +132,7 @@ function togglesvc(checked, svcHoursOpen, svcHoursClose,svcComment,hoursField, h
 						 	</td>
 						    <td align="left">Comment</td>
 						    <td>				    
-								<form:input maxlength="255" size="40" disabled="true" path="svcCommentSat" />
+								<form:textarea  rows="5" cols="30" disabled="true" path="svcCommentSat"  onkeydown="limitText(this, 255)"/>
 						 	</td>
 						 </tr>							 
 						 						 
@@ -144,7 +150,7 @@ function togglesvc(checked, svcHoursOpen, svcHoursClose,svcComment,hoursField, h
 						 	</td>
 						    <td align="left">Comment</td>
 						    <td>				    
-								<form:input maxlength="255" size="40" disabled="true" path="svcCommentSun" />
+								<form:textarea  rows="5" cols="30" disabled="true" path="svcCommentSun"  onkeydown="limitText(this, 255)"/>
 						 	</td>
 						 </tr>							 
 						 

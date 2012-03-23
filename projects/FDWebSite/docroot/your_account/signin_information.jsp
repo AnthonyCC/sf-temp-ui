@@ -24,12 +24,19 @@ final int W_YA_SIGNIN_INFO = 970;
 		
 		jQuery(document).ready(function() {
 			jQuery.webpurify.init("<%=FDStoreProperties.getProfanityCheckURL()%>","<%=FDStoreProperties.getProfanityCheckPass()%>");
+			
 		});
 		
 		function checkForProfanity(){
+			
 			jQuery.webpurify.check( jQuery("#displayName").val(), function(isProfane){
 				if(!isProfane)
-					document.name_contact_info.submit();
+					document.updateDisplayName.submit();
+				else
+					{
+					jQuery("#profaneText").html("We found profane text in display name. Please use different word");
+					return false;
+					}
 			});
 		}	
 		</script>
@@ -326,10 +333,11 @@ String[] checkInfoForm = 	{EnumUserInfoName.EMAIL.getCode(), EnumUserInfoName.EM
 <tr><td colspan="6"><img src="/media_stat/images/layout/clear.gif" width="1" height="3" border="0"></td></tr>
 <tr>
 	<td colspan="2" align="right" style="padding-right:5px;" class="text12">Display Name</td>
-	<td><input class="text9" size="28" maxlength="20" type="text" name="displayName" value="<%=displayName%>" style="width:150px; padding:1px;"></td>
+	<td><input class="text9" size="28" maxlength="20" type="text" id="displayName" name="displayName" value="<%=displayName%>" style="width:150px; padding:1px;"></td>
 	<td colspan="2"><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DISPLAY_NAME.getCode()%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>
-		</td>
-	<td align="right"><a href="<%=response.encodeURL("/your_account/manage_account.jsp")%>"><img src="/media_stat/images/buttons/cancel.gif" width="54" height="16" vspace="3" hspace="3" border="0" alt="CANCEL"></a><input type="image" name="update_password" src="/media_stat/images/buttons/save_changes.gif" onclick="javascript:checkForProfanity();" width="84" height="16"  alt="Save Changes" vspace="3" hspace="3" border="0"></td>
+		<span id="profaneText" class="text11rbold"></span></td>
+	<td align="right"><a href="<%=response.encodeURL("/your_account/manage_account.jsp")%>"><img src="/media_stat/images/buttons/cancel.gif" width="54" height="16" vspace="3" hspace="3" border="0" alt="CANCEL"></a><a onclick="checkForProfanity();">
+	<img src="/media_stat/images/buttons/save_changes.gif"  width="84" height="16"  alt="Save Changes" vspace="3" hspace="3" border="0"></a></td>
 	
 </tr>
 <tr><td colspan="6"><img src="/media_stat/images/layout/clear.gif" width="1" height="3" border="0"></td></tr>
