@@ -8,7 +8,7 @@
 
 		
 		<script type="text/javascript">
-		
+		jQuery.noConflict();
 		jQuery(document).ready(function() {
 				jQuery.webpurify.init("<%=FDStoreProperties.getProfanityCheckURL()%>","<%=FDStoreProperties.getProfanityCheckPass()%>");
 			});

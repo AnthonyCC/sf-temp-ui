@@ -21,7 +21,7 @@ final int W_YA_SIGNIN_INFO = 970;
 <script type="text/javascript" src="../shared/javascript/webpurify.jQuery.js"></script>
 		
 		<script type="text/javascript">
-		
+		jQuery.noConflict();
 		jQuery(document).ready(function() {
 			jQuery.webpurify.init("<%=FDStoreProperties.getProfanityCheckURL()%>","<%=FDStoreProperties.getProfanityCheckPass()%>");
 			
