@@ -401,7 +401,7 @@ public class TransportationAdminProperties {
 		defaults.put(PROP_ENABLE_AIRCLIC, "false");
 		defaults.put(PROP_TELARGO_BLACKHOLE, "true");
 		
-		defaults.put(PROP_TRANSPORTATION_EMPLOYEE_PUNCHINFO_CACHE_EXPIRY_TIME, "300000");
+		defaults.put(PROP_TRANSPORTATION_EMPLOYEE_PUNCHINFO_CACHE_EXPIRY_TIME, "5");
 
 		refresh();
 	}
