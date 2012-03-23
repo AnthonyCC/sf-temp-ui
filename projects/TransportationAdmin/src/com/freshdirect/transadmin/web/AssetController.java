@@ -1,8 +1,5 @@
 package com.freshdirect.transadmin.web;
 
-import java.util.Collection;
-import java.util.Date;
-
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -38,15 +35,15 @@ public class AssetController extends AbstractMultiActionController {
 	public ModelAndView assetHandler(HttpServletRequest request, HttpServletResponse response) throws ServletException {
 		
 		String assetType = request.getParameter("pAssetType");
-		
+		String atrType = request.getParameter("atrName");
+		String atrValue = request.getParameter("atrValue");
 		if(TransStringUtil.isEmpty(assetType)) {			
-        	assetType = "GPS";
-		}
-		
+        	assetType = "TRUCK";
+		}		
 		ModelAndView mav = new ModelAndView("assetView");
 		mav.getModel().put("assetTypes",getAssetManagerService().getAssetTypes());
         mav.getModel().put("pAssetType",assetType);
-        mav.getModel().put("assets", getAssetManagerService().getAssets(assetType));
+        mav.getModel().put("assets", getAssetManagerService().getAssets(assetType, atrType, atrValue));
         
 		return mav;
 	}

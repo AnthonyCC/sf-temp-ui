@@ -40,6 +40,7 @@ import com.freshdirect.transadmin.service.EmployeeManagerI;
 import com.freshdirect.transadmin.service.LogManagerI;
 import com.freshdirect.transadmin.util.DispatchPlanUtil;
 import com.freshdirect.transadmin.util.ModelUtil;
+import com.freshdirect.transadmin.util.TransAdminCacheManager;
 import com.freshdirect.transadmin.util.TransStringUtil;
 import com.freshdirect.transadmin.util.TransportationAdminProperties;
 import com.freshdirect.transadmin.util.WaveUtil;
@@ -439,9 +440,9 @@ public class DispatchManagerImpl extends BaseManagerImpl implements DispatchMana
 			Set unassignedPunchedInEmployees=new HashSet();
 			String date=TransStringUtil.getCurrentServerDate();
 			String day=TransStringUtil.getServerDay(TransStringUtil.getServerDateString(date)).toUpperCase();
-			//String date="12-Apr-2009";
-			Collection punchInfo=employeeManagerService.getPunchInfo(date);
-			if(punchInfo==null || punchInfo.isEmpty())
+
+			Collection punchInfo = TransAdminCacheManager.getInstance().getPunchInfo(date, employeeManagerService);
+			if(punchInfo == null || punchInfo.isEmpty())
 				return unassignedPunchedInEmployees;
 			
 			Collection dispList=getDispatchList(date,null,null,null);

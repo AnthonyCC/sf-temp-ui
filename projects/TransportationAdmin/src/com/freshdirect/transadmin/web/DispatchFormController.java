@@ -32,6 +32,7 @@ import com.freshdirect.transadmin.service.ZoneManagerI;
 import com.freshdirect.transadmin.util.DispatchPlanUtil;
 import com.freshdirect.transadmin.util.EnumResourceSubType;
 import com.freshdirect.transadmin.util.EnumResourceType;
+import com.freshdirect.transadmin.util.TransAdminCacheManager;
 import com.freshdirect.transadmin.util.TransStringUtil;
 import com.freshdirect.transadmin.web.editor.TrnFacilityPropertyEditor;
 import com.freshdirect.transadmin.web.model.DispatchCommand;
@@ -175,7 +176,8 @@ public class DispatchFormController extends AbstractFormController {
 		boolean isToday=TransStringUtil.isToday(dispatch.getDispatchDate());
 		Collection punchInfo=null;
 		if(isToday&&TransWebUtil.isPunch(getDispatchManagerService()))
-			punchInfo=employeeManagerService.getPunchInfo(TransStringUtil.getServerDate(dispatch.getDispatchDate()));
+			punchInfo = TransAdminCacheManager.getInstance().getPunchInfo(
+					TransStringUtil.getServerDate(dispatch.getDispatchDate()), employeeManagerService);
 		
 		DispatchCommand dispatchCommand=DispatchPlanUtil.getDispatchCommand(dispatch, zone, employeeManagerService,punchInfo,null,null,null,null,null,null,null);
 		if(isToday&&TransWebUtil.isPunch(getDispatchManagerService())) DispatchPlanUtil.setDispatchStatus(dispatchCommand);
@@ -285,17 +287,17 @@ public class DispatchFormController extends AbstractFormController {
 			model.setDestinationFacility(null);
 		}
 
-		Zone zone=null;
+		Zone zone = null;
 		if(!TransStringUtil.isEmpty(model.getZoneCode())) {
-			zone=domainManagerService.getZone(model.getZoneCode());
+			zone = domainManagerService.getZone(model.getZoneCode());
 		}
-		String overrideReasonCode=request.getParameter("overrideReasonCode");
-		if(overrideReasonCode==null)model.setOverrideReasonCode(null);
+		String overrideReasonCode = request.getParameter("overrideReasonCode");
+		if (overrideReasonCode == null)
+			model.setOverrideReasonCode(null);
 		
-		model=(DispatchCommand)DispatchPlanUtil.reconstructWebPlanInfo(model,zone,model.getFirstDeliveryTimeModified(),
-				model.getDispatchDate(),employeeManagerService,zoneManagerService);
-
-		try{
+		model = (DispatchCommand) DispatchPlanUtil.reconstructWebPlanInfo(
+				model, zone, model.getFirstDeliveryTimeModified(), model.getDispatchDate(), employeeManagerService,	zoneManagerService);
+		try {
 			boolean routeChanged = false;
 			Collection assignedRoutes = getDispatchManagerService().getAssignedRoutes(TransStringUtil.getServerDate(model.getDispatchDate()));
 			if(!TransStringUtil.isEmpty(model.getDispatchId())){

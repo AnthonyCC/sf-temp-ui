@@ -1,8 +1,7 @@
 <%@ include file='/common/i_calendar.jspf'%> 
 <script>
             
-      var editAssetAttributePanel;
-      var jsonrpcClient = new JSONRpcClient("asset.ax");
+      var editAssetAttributePanel;     
 	  var errColor = "#FF0000";
 	  var msgColor = "#00FF00";
                                  
@@ -32,10 +31,10 @@
 	  var _attributeDataType = YAHOO.util.Dom.get("attributeDataType").value;
 	
 
-	  if(_assetType.trim().length == 0 || _attributeCode.trim().length == 0 || _attributeDescription.trim().length == 0 || _attributeDataType.trim().length() == 0) {
+	  if(_assetType.trim().length == 0 || _attributeCode.trim().length == 0 || _attributeDescription.trim().length == 0 || _attributeDataType.trim().length == 0) {
       	  	addSysMessage("Please enter/choose the required values", true);
       	  } else {
-	    	var result = jsonrpcClient.AsyncAssetProvider.addAssetAttribute(assetAttributeFormCallback, _assetType ,_attributeCode,_attributeDescription, _attributeDataType);
+	    	var result = jsonrpcClient.AsyncAssetProvider.addAssetAttributeType(assetAttributeFormCallback, _assetType ,_attributeCode,_attributeDescription, _attributeDataType);
 	  }
       }
       
@@ -57,11 +56,11 @@
               return;
           }
           if(result) {
-          	addSysMessage("Asset Attribute added successfully", false);
+          	addSysMessage("Asset attribute type added successfully", false);
           	editAssetAttributePanel.hide();
           	location.href = location.href;
           }else {
-          	addSysMessage("Asset Attribute failed to add", true);
+          	addSysMessage("Asset attribute type failed to add", true);
           }                           
       }
       
@@ -92,20 +91,20 @@
 					</select>
 	                    	 </td>
 		        </tr>
-			<tr>
+				<tr>
 		              <td>Attribute Name</td>
 		              <td>
 		                 <input type="text" size="30" id="attributeCode" value="" />
 			      </td>
 		         </tr>
-			 <tr>
+			 	 <tr>
 		                  <td>Description</td>
 		                  <td><input type="text" size="30" id="attributeDescription" value="" /></td> 
 		         </tr>
-				<tr>
-		                  <td>Attribute DateType</td>
+				 <tr>
+		                  <td>Attribute DataType</td>
 		                  <td><input type="text" size="30" id="attributeDataType" value="" /></td> 
-		      	 </tr>
+		      	 </tr> 
 		      	 <tr>
 		                  <td colspan="2" align="center"><input type="button" value="Add/Update" onclick="javascript:sendAssetAttributeForm()" /> </td>
 		         </tr>

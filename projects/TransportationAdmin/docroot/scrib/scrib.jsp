@@ -4,7 +4,7 @@
 <%@ page import='com.freshdirect.transadmin.web.ui.*' %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core" %>
 <%@ page import= 'com.freshdirect.transadmin.util.TransStringUtil' %>
-<script type="text/javascript" language="javascript" src="js/SelectionHandlers.js"></script>
+
 <%
   pageContext.setAttribute("HAS_COPYBUTTON", "true");	 
   String dateRangeVal = request.getParameter("daterange") != null ? request.getParameter("daterange") : "";
@@ -19,10 +19,11 @@
 <tmpl:put name='yui-lib'>
 	<%@ include file='/common/i_yui.jspf'%>	
 </tmpl:put>
+
 	<tmpl:put name='title' direct='true'> Routing : <%=pageTitle%></tmpl:put>
 
   <tmpl:put name='content' direct='true'> 
-
+	<script type="text/javascript" language="javascript" src="js/SelectionHandlers.js"></script>
 	<c:if test="${not empty messages}">
 		<div class="err_messages">
 			<jsp:include page='/common/messages.jsp'/>

@@ -26,9 +26,20 @@ public class AssetManagerDaoHibernateImpl
 		return getDataList("AssetAttributeType Order By CODE");
 	}
 	
-	public Collection getAssets(String assetType) throws DataAccessException {
-
-		return getDataList("Asset where ASSET_TYPE = '"+assetType+"' Order By ASSET_NO");
+	public Collection getAssets(String assetType, String atrName, String atrValue) throws DataAccessException {
+			
+		StringBuffer strBuf = new StringBuffer();
+		strBuf.append(" select asset from Asset as asset ");
+		if(atrName != null || (atrValue != null && !"".equals(atrValue)))
+			strBuf.append(" left join asset.assetAttributes as attributes ");
+		if(assetType != null)
+			strBuf.append(" where asset.assetType = '").append(assetType).append("'");
+		if(atrName != null && !"".equals(atrName))
+			strBuf.append(" and attributes.id.attributeType = '").append(atrName).append("'");
+		if(atrValue != null && !"".equals(atrValue))		
+			strBuf.append(" and attributes.attributeValue = '").append(atrValue).append("'");
+		
+		return (Collection) getHibernateTemplate().find(strBuf.toString());
 	}
 	
 	public Collection getActiveAssets(String assetType) throws DataAccessException {

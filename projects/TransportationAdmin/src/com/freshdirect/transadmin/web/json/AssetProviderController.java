@@ -1,9 +1,13 @@
 package com.freshdirect.transadmin.web.json;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
+
+import org.springframework.dao.DataIntegrityViolationException;
 
 import com.freshdirect.transadmin.constants.EnumAssetStatus;
 import com.freshdirect.transadmin.model.Asset;
@@ -120,6 +124,20 @@ public class AssetProviderController extends BaseJsonRpcController  implements I
 					attributes.add(assetAttribute);
 				}
 				asset.setAssetAttributes(attributes);
+			} else {
+				Collection attributeTypes = getAssetManagerService().getAssetAttributeTypes(null, asset.getAssetType().getCode());
+				if(attributeTypes != null){
+					Iterator itr = attributeTypes.iterator();
+					while(itr.hasNext()){
+						AssetAttributeType _atrType = (AssetAttributeType)itr.next();
+						AssetAttribute assetAttribute = new AssetAttribute(new AssetAttributeId(
+								assetId, _atrType.getId().getCode()),null);
+						assetAttribute.setAttributeValue("UNKNOWN");
+						assetAttribute.setAttributeMatch("U");
+						attributes.add(assetAttribute);
+					}
+				}
+				asset.setAssetAttributes(attributes);
 			}
 		}
 				
@@ -127,6 +145,7 @@ public class AssetProviderController extends BaseJsonRpcController  implements I
 		return asset.getAssetId();
 	}
 	
+	@SuppressWarnings("unchecked")
 	public String saveAssetTemplate(String assetTemplateId, String assetType
 			, String assetTemplateName, String[][] assetTemplateAttributes) {
 		
@@ -147,25 +166,57 @@ public class AssetProviderController extends BaseJsonRpcController  implements I
 		return assetTemplate.getAssetTemplateId();
 	}
 	
-	public boolean addAssetAttribute(String assetTypeCode, String attributeCode, String attributeDesc, String attribueDataType){
+	@SuppressWarnings("unchecked")
+	public boolean addAssetAttributeType(String assetType, String attributeCode, String attributeDesc, String attribueDataType){
 		
-		try{
-			//AssetType assetType  = getAssetManagerService().getAssetType(assetTypeCode);
+		try{			
 			AssetAttributeType attributeType = new AssetAttributeType();
 			AssetAttributeTypeId id = new AssetAttributeTypeId();		
 			id.setCode(attributeCode);
-			id.setAssetType(assetTypeCode);
+			id.setAssetType(assetType);
 			attributeType.setDescription(attributeDesc);
 			attributeType.setDataType(attribueDataType);
 			attributeType.setId(id);
 			
-			Collection assetAttributesTypes = getAssetManagerService().getAssetAttributeTypes(attributeCode, assetTypeCode);
+			Collection assetAttributeTypes = getAssetManagerService().getAssetAttributeTypes(attributeCode, assetType);
 			
-			if(assetAttributesTypes !=null && assetAttributesTypes.size()>0)
-				getAssetManagerService().removeEntity(assetAttributesTypes);
+			if (assetAttributeTypes != null && assetAttributeTypes.size() > 0)
+				getAssetManagerService().removeEntity(assetAttributeTypes);		
 			else
 				getAssetManagerService().saveEntity(attributeType);
 			
+			// add new attribute to assets with UNKNOWN value
+			Collection assets = getAssetManagerService().getAssets(assetType, null, null);
+			if (assets != null) {
+				Iterator<Asset> itr = assets.iterator();
+				while (itr.hasNext()) {
+					Asset _asset = itr.next();
+					boolean foundAtr = false;
+					if(_asset.getAssetAttributes() != null ){
+						Iterator<AssetAttribute> _atrItr = _asset.getAssetAttributes().iterator();
+						while (_atrItr.hasNext()) {
+							AssetAttribute _attribute = _atrItr.next();
+							if (_attribute
+									.getId()
+									.getAttributeType()
+									.equalsIgnoreCase(
+											attributeType.getId().getCode())) {
+								foundAtr = true;
+								break;
+							}
+						}
+					}
+					if (!foundAtr) {
+						AssetAttribute assetAttribute = new AssetAttribute(
+								new AssetAttributeId(_asset.getAssetId(),
+										attributeType.getId().getCode()), null);
+						assetAttribute.setAttributeValue("UNKNOWN");
+						assetAttribute.setAttributeMatch("U");
+						_asset.getAssetAttributes().add(assetAttribute);
+					}
+				}
+				this.getAssetManagerService().saveEntityList(assets);
+			}
 			return true;			
 		}catch(Exception e){
 			e.printStackTrace();
@@ -182,5 +233,25 @@ public class AssetProviderController extends BaseJsonRpcController  implements I
 			e.printStackTrace();
 		}
 		return asset;
+	}
+
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public List getAttributeType(String assetType){
+		Collection attributeTypes = getAssetManagerService().getAssetAttributeTypes(null, assetType);
+		List result = new ArrayList(attributeTypes);
+		return result;
+	}
+	
+	public int addAssetType(String name, String desc){
+		try{
+			getAssetManagerService().saveEntity(new AssetType(name, desc));
+		} catch (DataIntegrityViolationException ex){
+			ex.printStackTrace();
+			return 1;
+		} catch (Exception e){
+			e.printStackTrace();
+			return 2;
+		}
+		return 0;
 	}
 }

@@ -1,5 +1,7 @@
 package com.freshdirect.transadmin.web.json;
 
+import java.util.List;
+
 import com.freshdirect.transadmin.model.Asset;
 
 public interface IAssetProvider {
@@ -14,10 +16,14 @@ public interface IAssetProvider {
 			, String assetTemplateName
 			, String[][] assetTemplateAttributes);
 	
-	boolean addAssetAttribute(String attributeCode
+	boolean addAssetAttributeType(String attributeCode
 			, String attributeDesc
 			, String attribueDataType
 			, String assetTypeCode);
 	
 	Asset getAsset(String assetId);
+		
+	List getAttributeType(String assetType);
+	
+	int addAssetType(String name, String desc);
 }

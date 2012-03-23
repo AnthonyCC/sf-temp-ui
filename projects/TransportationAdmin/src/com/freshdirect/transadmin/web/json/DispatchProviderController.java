@@ -19,11 +19,13 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
+import org.apache.log4j.Category;
 import org.springframework.dao.DataIntegrityViolationException;
 
 import com.freshdirect.customer.ErpRouteMasterInfo;
 import com.freshdirect.framework.util.MD5Hasher;
 import com.freshdirect.framework.util.StringUtil;
+import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.routing.constants.EnumArithmeticOperator;
 import com.freshdirect.routing.constants.EnumWaveInstancePublishSrc;
 import com.freshdirect.routing.model.IRouteModel;
@@ -83,10 +85,10 @@ import com.freshdirect.transadmin.web.model.WebPlanInfo;
 import com.freshdirect.transadmin.web.model.ZoneSupervisorCommand;
 import com.freshdirect.transadmin.web.util.TransWebUtil;
 
-public class DispatchProviderController extends JsonRpcController implements
-		IDispatchProvider 
-{	
+public class DispatchProviderController extends JsonRpcController implements IDispatchProvider {	
 
+	private static final Category LOGGER = LoggerFactory.getInstance( DispatchProviderController.class );
+	
 	private DispatchManagerI dispatchManagerService;
 
 	private DomainManagerI domainManagerService;
@@ -1056,11 +1058,13 @@ public class DispatchProviderController extends JsonRpcController implements
 	public boolean updateDispatchStatus(DispatchStatusList dispatches, String userId){
 		
 		if(dispatches != null){
+			LOGGER.info("Updating Dispatch Status -> Started ");
 			Set dispatchSet = new HashSet();
 			try{
 				Dispatch tmpDispatch = null;
 				for(DispatchStatus _dispatch : dispatches.getDispatchStatus() ) {
 					tmpDispatch = dispatchManagerService.getDispatch(_dispatch.getDispatchId());
+					LOGGER.info("Setting status to Dispatch object -> "+ tmpDispatch);
 					if(tmpDispatch != null){
 						tmpDispatch.setUserId(userId);						
 						if(_dispatch.isPhoneAssigned()) {
@@ -1076,16 +1080,24 @@ public class DispatchProviderController extends JsonRpcController implements
 						if(_dispatch.isCheckedIn()){
 							tmpDispatch.setCheckedInTime(TransStringUtil.getServerTime(TransStringUtil.getServerTime(new Date())));
 						}
+						LOGGER.info("Adding dispatch object to save list -> "+ tmpDispatch);
+						dispatchSet.add(tmpDispatch);
 					}
-					dispatchSet.add(tmpDispatch);
 				}
-				if(dispatchSet.size() > 0) 
+				if(dispatchSet.size() > 0) {
+					LOGGER.info("Dispatch list size -> "+ dispatchSet.size());
 					dispatchManagerService.saveEntityList(dispatchSet);
-			}catch(ParseException e){
+				}
+			} catch(ParseException e){
+				e.printStackTrace();
+				return false;
+			} catch(Exception e){
 				e.printStackTrace();
 				return false;
 			}
+			LOGGER.info("Updating Dispatch Status -> Completed ");
 		}
+		
 		return true;
 	}
 

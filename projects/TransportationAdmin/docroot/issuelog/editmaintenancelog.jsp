@@ -78,7 +78,7 @@
 			 </tr>
 			 <tr>
 				 <td class="screencontent">
-					  <table class="forms1" style="height:80%;width:70%;align:center;border:1px solid;background-color:#F7F7F7;">
+					  <table class="forms1" style="height:660px;width:98%;align:center;border:1px dotted;background-color:#F7F7F7;">
 						<tr>
 							<td align="center" colspan="2" valign="top">
 						   <table>

@@ -69,7 +69,7 @@ public class MaintenanceLogFormController extends AbstractFormController {
 		if("true".equalsIgnoreCase(isRefreshReqd)){
 			domainManagerService.refreshCachedData(EnumCachedDataType.TRUCK_DATA);
 		}
-		refData.put("truckAssets",  getAssetManagerService().getAssets("TRUCK"));
+		refData.put("truckAssets",  getAssetManagerService().getAssets("TRUCK", null, null));
 		
 		List drivers = DispatchPlanUtil.getSortedResources(employeeManagerService.getEmployeesByRole(EnumResourceType.DRIVER.getName()));
 		drivers.addAll(DispatchPlanUtil.getSortedResources(employeeManagerService.getEmployeesByRole(EnumResourceType.MANAGER.getName())));

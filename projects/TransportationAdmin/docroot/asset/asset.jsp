@@ -1,6 +1,5 @@
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri="/tld/extremecomponents" prefix="ec" %>
-<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ page import='com.freshdirect.transadmin.web.ui.*' %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core" %>
 <%@ page import= 'com.freshdirect.transadmin.util.TransStringUtil' %>
@@ -8,15 +7,14 @@
 <tmpl:insert template='/common/sitelayout.jsp'>
 
 <% 
-	String pageTitle = "Asset";
-	pageContext.setAttribute("HAS_DELETEBUTTON", "false");
+	String pageTitle = "Asset";	
+	String atrValue = request.getParameter("atrValue");
+	String atrName = request.getParameter("attributeType");
 %>
-    <tmpl:put name='title' direct='true'> Admin : <%=pageTitle%></tmpl:put>
+  <tmpl:put name='title' direct='true'> Admin : <%=pageTitle%></tmpl:put>
 	<tmpl:put name='yui-lib'>
 		<%@ include file='/common/i_yui.jspf'%>
-	</tmpl:put>	
-	<tmpl:put name='yui-skin'>yui-skin-sam</tmpl:put>
-	
+	</tmpl:put>
   <tmpl:put name='content' direct='true'>
 		<div class="MNM001 subsub or_999">
 			<div class="subs_left">	
@@ -47,23 +45,39 @@
 		<div class="cont_topleft">
 			<div class="cont_row">
 				<div class="cont_Litem">
-					<span class="scrTitle">
-						<%=pageTitle%>
-					</span>
-					<select id="assetType" name="assetType" >                       	
-                    	<c:forEach var="assetType" items="${assetTypes}">                             
-                          <c:choose>
-                            <c:when test="${param.pAssetType == assetType.code}" > 
-                              <option selected value="<c:out value="${assetType.code}"/>"><c:out value="${assetType.code}"/></option>
-                            </c:when>
-                            <c:otherwise> 
-                              <option value="<c:out value="${assetType.code}"/>"><c:out value="${assetType.code}"/></option>
-                            </c:otherwise> 
-                          </c:choose>      
-                        </c:forEach>  
-                    </select>				
-					<span><input id="view_button" type="image" alt="View" src="./images/icons/view.gif"  onclick="javascript:doCompositeLink()" onmousedown="this.src='./images/icons/view_ON.gif'" /></span>
-				</div>
+					<div class="scrTitle" style="float:left;padding-top:3px"><%=pageTitle%></div>
+						<div style="float:left;text-align:center;font-weight:bold;font-size:11px;">Asset Type<br>
+							<select id="assetType" name="assetType" onChange="javascript:getAttributeInfo();">
+								<option value="null">--Please Select</option>                       	
+		                    	<c:forEach var="assetType" items="${assetTypes}">                             
+		                          <c:choose>
+		                            <c:when test="${param.pAssetType == assetType.code}" > 
+		                              <option selected value="<c:out value="${assetType.code}"/>"><c:out value="${assetType.code}"/></option>
+		                            </c:when>
+		                            <c:otherwise> 
+		                              <option value="<c:out value="${assetType.code}"/>"><c:out value="${assetType.code}"/></option>
+		                            </c:otherwise> 
+		                          </c:choose>      
+		                        </c:forEach>  
+                   			 </select>
+						</div>
+						<div style="float:left;text-align:center;font-weight:bold;font-size:11px;">Attribute Type<br>&nbsp;
+							 <select id="atrName" name="atrName" >                       	
+			                    	<option value="null">--Please select Attribute</option>			                    	
+                    		</select>
+                    		<input id=attributeTypeId name="attributeTypeId" type="hidden" value="<%= atrName %>"/> 
+						</div>&nbsp;
+						<div style="float:left;text-align:center;font-weight:bold;font-size:11px;">Attribute Value<br>&nbsp;
+							<input maxlength="80" size="20" name="atrValue" id="atrValue" value="<%= atrValue %>" style="width:150px" />
+						</div>&nbsp;					
+						<div style="float:left;"><br>
+	                   	  <span>&nbsp;<input id="view_button" type="image" alt="View" src="./images/icons/view.gif"  onclick="javascript:doCompositeLink('assetType','atrName','atrValue','asset.do');" onmousedown="this.src='./images/icons/view_ON.gif'" /></span>						
+	                   </div>
+	                   <div style="float:left;font-size:11px;"><br/>
+						&nbsp;&nbsp;<input id="attribute_button" type="button" value="Manage Attribute" onclick="javascript:showAssetAttributeForm();" />
+						&nbsp;<input id="assettype_button" type="button" value="Manage Asset Type" onclick="javascript:showAssetTypeForm();" />						
+						</div>
+	               </div>
 			</div>
 		</div>
 
@@ -88,7 +102,7 @@
 							  <ec:column property="assetNo" title="Asset No"/>
 							  <ec:column property="assetDescription" title="Description"/>	
 							  <ec:column property="assetType.code" title="Asset Type"/>
-							  <ec:column property="assetStatus" title="Status" />
+							  <ec:column property="assetStatus.description" title="Status" />
 							  <ec:column property="assetTemplate.assetTemplateName" title="Asset Template" />
 							</ec:row>
 						  </ec:table>
@@ -97,12 +111,54 @@
 			</div>
 		</div>
 	</div>
-     <script>
-	  addMultiRowHandlersColumn('ec_table', 'rowMouseOver', 'editasset.do','id',0,0,'assetType');
+		<script>		
+		 	var jsonrpcClient = new JSONRpcClient("asset.ax");
+		 	
+			addMultiRowHandlersColumn('ec_table', 'rowMouseOver',
+					'editasset.do', 'id', 0, 0, 'assetType');
 
-      function doCompositeLink() {
-    	  location.href = "asset.do?pAssetType="+document.getElementById('assetType').value;
-      }
-    </script>   
-  </tmpl:put>
+			function doCompositeLink() {
+				location.href = "asset.do?pAssetType=" + $('#assetType').val()
+						+ "&atrName=" + $('#atrName').val() + "&atrValue="
+						+ $('#atrValue').val();
+			}
+
+			var atrList;
+			function getAttributeInfo() {
+				// get selected assetType from dropdown list  
+				var assetTypeId = $('#assetType option:selected').val();
+				if (assetTypeId.length != 0) {
+					atrList = jsonrpcClient.AsyncAssetProvider
+							.getAttributeType(attributeCallback, assetTypeId);
+				}
+			}
+
+			function attributeCallback(atrList, exception) {
+				if (exception) {
+					alert('Unable to connect to host system. Please contact system administrator!');
+					return;
+				}
+				if (atrList != null) {
+					var attributeTypes = $('#atrName');
+					$('#atrName')[0].options.length = 0;
+					attributeTypes
+							.prepend('<option value="">--Please select attribute</option>');
+					for ( var i = 0; i < atrList.list.length; i++) {
+						attributeTypes
+								.prepend("<option value="+ atrList.list[i].id.code +">"
+										+ atrList.list[i].id.code
+										+ "</option>");
+					}
+				} else {
+					alert("Populating atttribute types failed");
+				}
+			}
+
+			$(document).ready(function() {
+				getAttributeInfo();
+			});
+		</script>
+		<%@ include file="i_addassetattribute.jspf"%>
+		<%@ include file="i_addassettype.jspf"%>
+	</tmpl:put>
 </tmpl:insert>

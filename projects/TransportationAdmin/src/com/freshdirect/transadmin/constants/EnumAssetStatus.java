@@ -14,7 +14,7 @@ public class EnumAssetStatus  extends Enum {
     
     public static final EnumAssetStatus OUTSERVICE = new EnumAssetStatus("O/S","Out-Service");
     
-    public static final EnumAssetStatus DECOMMISSIONED = new EnumAssetStatus("DCM","DECOMMISSIONED");
+    public static final EnumAssetStatus DECOMMISSIONED = new EnumAssetStatus("DCM","Decommisioned");
     
     private final String description;
 

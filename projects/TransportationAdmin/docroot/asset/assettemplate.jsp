@@ -65,9 +65,6 @@
 					<span>
 						<input id="view_button" type="image" alt="View" src="./images/icons/view.gif"  onclick="javascript:doCompositeLink()" onmousedown="this.src='./images/icons/view_ON.gif'" />
 					</span>
-					<span>
-						<input id="attribute_button" type="button" value="Add Attribute" onclick="javascript:showAssetAttributeForm()" />
-					</span>
 				</div>
 			</div>
 		</div>
@@ -104,6 +101,6 @@
     	  location.href = "assettemplate.do?tAssetType="+document.getElementById('assetType').value;
       }
     </script>   
-	<%@ include file="i_addassetattribute.jspf"%>
+
   </tmpl:put>
 </tmpl:insert>

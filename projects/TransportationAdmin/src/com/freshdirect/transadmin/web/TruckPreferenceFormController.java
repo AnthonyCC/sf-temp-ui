@@ -10,18 +10,9 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.web.bind.ServletRequestDataBinder;
-
-import com.freshdirect.transadmin.model.EmployeeInfo;
-import com.freshdirect.transadmin.model.EmployeeRole;
-import com.freshdirect.transadmin.model.EmployeeRoleType;
-import com.freshdirect.transadmin.model.EmployeeSubRoleType;
-import com.freshdirect.transadmin.model.EmployeeroleId;
 import com.freshdirect.transadmin.service.AssetManagerI;
 import com.freshdirect.transadmin.service.EmployeeManagerI;
-import com.freshdirect.transadmin.util.DispatchPlanUtil;
 import com.freshdirect.transadmin.util.EnumResourceSubType;
-import com.freshdirect.transadmin.util.ModelUtil;
 import com.freshdirect.transadmin.web.model.WebEmployeeInfo;
 
 public class TruckPreferenceFormController extends AbstractFormController {
@@ -48,14 +39,14 @@ public class TruckPreferenceFormController extends AbstractFormController {
 	protected Map referenceData(HttpServletRequest request) throws ServletException {
 
 		Map refData = new HashMap();
-		Collection trucks = getAssetManagerService().getAssets("TRUCK");
+		Collection trucks = getAssetManagerService().getAssets("TRUCK", null, null);
 		
 		String empId = request.getParameter("id");
 		if(empId != null && !"".equalsIgnoreCase(empId)){
 			WebEmployeeInfo info = getEmployeeManagerService().getEmployee(empId);
 			if(info != null && info.getEmployeeRoleType()!=null 
 					&& EnumResourceSubType.TRAILER_DRIVER.getDesc().equalsIgnoreCase(info.getEmployeeRoleType())){
-				trucks = getAssetManagerService().getAssets("TRAILER");
+				trucks = getAssetManagerService().getAssets("TRAILER", null, null);
 			}
 		}
 

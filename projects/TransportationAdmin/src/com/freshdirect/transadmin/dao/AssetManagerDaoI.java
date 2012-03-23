@@ -1,6 +1,7 @@
 package com.freshdirect.transadmin.dao;
 
 import java.util.Collection;
+import java.util.List;
 
 import org.springframework.dao.DataAccessException;
 
@@ -15,7 +16,7 @@ public interface AssetManagerDaoI extends BaseManagerDaoI {
 	
 	Collection getAssetAttributeTypes() throws DataAccessException;
 	
-	Collection getAssets(String assetType) throws DataAccessException;
+	Collection getAssets(String assetType, String atrName, String atrValue) throws DataAccessException;
 	
 	Collection getActiveAssets(String assetType) throws DataAccessException;
 	

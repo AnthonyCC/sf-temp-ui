@@ -38,89 +38,117 @@
     <br/><br/><br/><br/>
     <div align="center">
       <form:form commandName="assetForm" method="post">
-           
-      <table width="100%" cellpadding="0" cellspacing="0" border="0">
-          <tr>
-            <td class="screentitle">Add/Edit Asset</td>
-          </tr>
-          <tr>
-            <td class="screenmessages"><jsp:include page='/common/messages.jsp'/> <div id="errContainer" style='margin:0 auto;'></div></td>
-          </tr>
-          <tr>
-            <td class="screencontent">
-              <form:hidden path="assetId"/>
-              	
-              <table class="forms1">  
-               
-                <tr>
-                  <td>Asset Type</td>
-                  <td>                  
-                    <form:input readOnly="true" maxlength="15" size="15" path="assetType.code" />
-                </td>
-                <td>
-                  &nbsp;<form:errors path="assetNo" />
-                </td>
-               </tr>
-                     
-               <tr>
-                  <td>Asset No</td>
-                  <td>                  
-                    <form:input maxlength="15" size="15" path="assetNo" />
-                </td>
-                <td>
-                  &nbsp;<form:errors path="assetNo" />
-                </td>
-               </tr>
-                           
-               <tr>
-                  <td>Description</td>
-                  <td>                  
-                    <form:input maxlength="40" size="40" path="assetDescription" />
-                </td>
-                <td>
-                  &nbsp;<form:errors path="assetDescription" />
-                </td>
-               </tr>
-               
-               <tr>
-                  <td>Status</td>
-                  <td> 
-                  <form:select path="assetStatus">
-                        <form:option value="null" label="--Please Select Asset Status"/>
-                    	<form:options items="${assetstatuses}" itemLabel="description" itemValue="name" />
-                   </form:select>
-                </td>
-                <td>
-                  &nbsp;<form:errors path="assetStatus" />
-                </td>
-               </tr>
+        
+        <table width="100%" cellpadding="0" cellspacing="0" border="0">
+			<tr>
+				<td class="screentitle">Add/Edit Asset</td>
+			</tr>
+			<tr><td class="screenmessages"><jsp:include page='/common/messages.jsp'/></td><div id="errContainer" style='margin:0 auto;'></div></tr>
+			<tr>
+				<td class="screencontent">
+				  	<form:hidden path="assetId"/>
+					<table style="height:680px;width:99%;border:1px dotted;background-color:#F7F7F7;">
+						<tr>
+							<td valign="top">
+										<table class="forms1">
+											<tr>
+												<td colspan="3" align="center"><b>Asset Details</b></td>
+											</tr>
+											<tr>
+												<td colspan="3" align="center">&nbsp;</td>
+											</tr>
+											<tr>
+												<td>Asset Type</td>
+												<td><form:input readOnly="true" maxlength="15"
+														size="15" path="assetType.code" /></td>
+												<td>&nbsp;<form:errors path="assetNo" />
+												</td>
+											</tr>
 
-			    <tr>
-                  <td>Asset Template</td>
-                  <td> 
-					   <form:select path="assetTemplate">
-							<form:option value="null" label="--Please Select Template"/>
-							<form:options items="${assetTemplates}" itemLabel="assetTemplateName" itemValue="assetTemplateId" />
-					   </form:select>
-                </td>
-                <td>
-                  &nbsp;<form:errors path="assetTemplate" />
-                </td>
-               </tr>
-              
-              </table>        
-              
-            </td>
-          </tr>               
-        </table>
+											<tr>
+												<td>Asset No</td>
+												<td><form:input maxlength="15" size="15" path="assetNo" />
+												</td>
+												<td>&nbsp;<form:errors path="assetNo" />
+												</td>
+											</tr>
+
+											<tr>
+												<td>Description</td>
+												<td><form:input maxlength="40" size="40"
+														path="assetDescription" /></td>
+												<td>&nbsp;<form:errors path="assetDescription" />
+												</td>
+											</tr>
+
+											<tr>
+												<td>Status</td>
+												<td><form:select path="assetStatus">
+														<form:option value="null"
+															label="--Please Select Asset Status" />
+														<form:options items="${assetstatuses}"
+															itemLabel="description" itemValue="name" />
+													</form:select></td>
+												<td>&nbsp;<form:errors path="assetStatus" />
+												</td>
+											</tr>
+
+											<tr>
+												<td>Asset Template</td>
+												<td><form:select path="assetTemplate">
+														<form:option value="null" label="--Please Select Template" />
+														<form:options items="${assetTemplates}"
+															itemLabel="assetTemplateName" itemValue="assetTemplateId" />
+													</form:select></td>
+												<td>&nbsp;<form:errors path="assetTemplate" />
+												</td>
+											</tr>
+											<tr>
+												<td colspan="3" align="center">&nbsp;</td>
+											</tr>											
+											<tr>
+												<td colspan="3" align="center"  rowspan="2">
+														<input type = "button" value="&nbsp;Save&nbsp;" onclick="javascript:submitAttributeTable();" />
+														&nbsp;&nbsp;&nbsp;<input type = "button" value="&nbsp;Back&nbsp;" onclick="javascript:back();" />
+												</td>
+											</tr>
+										</table>
+								</td>
+								<td align="center" valign="top" >
+										<table width="100%">
+											<tr>
+												<td align="center" valign="top"><b>Asset Attributes</b></td>
+											</tr>
+											<tr>
+												<td align="right">
+													<input type="image" src="./images/icons/tick.gif" />&nbsp;Overriden from Template
+													<input type="image" src="./images/icons/unique.gif" />&nbsp;Unique to Asset
+												</td>
+											</tr>
+											<tr>
+												<td>&nbsp;</td>
+											</tr>
+											<tr>
+												<td align="center" valign="top">
+															  <div class="bd">
+															<div id="parentcontattributetable"
+																style="height: 650px; overflow-y: auto; background-color: #F2F2F2;">
+																<div id="contattributetable" align="center"></div>
+															</div>
+															</div>
+												</td>
+											</tr>
+										</table>
+									</td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+		</table>	
       
       </form:form>
      </div>     
-     &nbsp;&nbsp;&nbsp;
-	<div style="float:right;font-weight:bold;"><br/>
-			<span><input type="image" src="./images/icons/tick.gif" />&nbsp;Overriden from Template</span>
-			<span><input type="image" src="./images/icons/unique.gif" />&nbsp;Unique to Asset</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-	</div>
+    
     <style>
 		.yui-skin-sam .yui-dt-body { cursor:pointer; } 
 		#single { margin-top:2em; }
@@ -188,54 +216,71 @@
             	%> 
             	<%= templateDataBuffer.toString() %>
             ]}; 
-           
+	  
+	  var myDynamicEditor;
+	  
       YAHOO.util.Event.addListener(window, "load", function() {
                
         attributeDataSource = new YAHOO.util.DataSource(assetData.attributeData);        
         attributeDataSource.responseType = YAHOO.util.DataSource.TYPE_JSARRAY; 
-        attributeDataSource.responseSchema = {fields: ["attributeType","attributeValue","attributeMatch","deleteBtn"] }; 
-		
+        attributeDataSource.responseSchema = {fields: ["attributeType","attributeValue","attributeMatch","deleteBtn"] };
+        
+        myDynamicEditor = new YAHOO.widget.TextboxCellEditor({multiple:true});
+        			
+        			// Custom sort handler to sort by attribute name and then by attribute value 
+        	        // where a and b are Record instances to compare 
+        	        var sortAttributes = function(a, b, desc) { 
+        	            // Deal with empty values 
+        	            if(!YAHOO.lang.isValue(a)) { 
+        	                return (!YAHOO.lang.isValue(b)) ? 1 : 0; 
+        	            } 
+        	            else if(!YAHOO.lang.isValue(b)) { 
+        	                return -1; 
+        	            } 
+        	 
+        	            // First compare by state 
+        	            var comp = YAHOO.util.Sort.compare; 
+        	            return comp(a.getData("attributeType"), b.getData("attributeType"), desc); 
+        	 
+        	            // If states are equal, then compare by areacode 
+        	           // return (compState !== 0) ? compState : comp(a.getData("attributeType"), b.getData("attributeType"), desc); 
+        	        }; 
+        	        
+        	       
 		var attributeColumns =  [ 
-			    {key:"attributeType", label:"Attribute Type", sortable:true, sortOptions: { defaultDir: YAHOO.widget.DataTable.CLASS_ASC }, className:"forms1"}, 
-			    {key:"attributeValue", label:"Attribute Value", sortable:false, className:"forms1"},
+			    {key:"attributeType", label:"Attribute Type", sortable:true, className:"forms1"}, 
+			    {key:"attributeValue", label:"Attribute Value", sortable:true, className:"forms1", editor: myDynamicEditor},
 				{key:'attributeMatch',label:'Is Overriden?',formatter:function(elCell, oRecord, oColumn, oData) {
 												if(oData === 'O'){
         											elCell.innerHTML = '<img src="images/icons/tick.gif" title="Overriden" />';
         										}else if(oData === 'U'){
 													elCell.innerHTML = '<img src="images/icons/unique.gif" title="Unique" />';
 												}
-    			}},
-				{key:'deleteBtn',label:'Delete',formatter:function(elCell) {
-        										elCell.innerHTML = '<img src="images/icons/delete.gif" title="delete row" />';
-        										elCell.style.cursor = 'pointer';
     			}}
 		 ];
-				 	 
-		 var sMyConfigs = { 
-			    paginator : new YAHOO.widget.Paginator({ 
-			        rowsPerPage    : 15
-			    }) 
-		  }; 
-		 	 
+			 
 		attributeDataTable = new YAHOO.widget.DataTable("contattributetable"
 															, attributeColumns
 																	, attributeDataSource
-																		, sMyConfigs
-																			, { selectionMode:"single" });
-  		
-  		attributeDataTable.subscribe('cellClickEvent', function(ev) {
-	    	var target = YAHOO.util.Event.getTarget(ev);
-	    	var column = attributeDataTable.getColumn(target);
-	    		if (column.key == 'deleteBtn') {
-	        		attributeDataTable.deleteRow(target);
-	    		} 
-			});
-  		 return { 
+																			);
+		
+		// Set up editing flow 
+		var highlightEditableCell = function(oArgs) { 
+		      var elCell = oArgs.target; 
+		         if(YAHOO.util.Dom.hasClass(elCell, "yui-dt-editable")) { 
+		             this.highlightCell(elCell); 
+		         } 
+		      }; 
+		attributeDataTable.subscribe("cellMouseoverEvent", highlightEditableCell); 
+		attributeDataTable.subscribe("cellMouseoutEvent", attributeDataTable.onEventUnhighlightCell); 
+		attributeDataTable.subscribe('cellClickEvent', attributeDataTable.onEventShowCellEditor);
+		
+		return { 
   			            oDS: attributeDataSource, 
   			            oDT: attributeDataTable 
   			};
      });
-     
+
 	  YAHOO.util.Event.addListener(window, "load", function() {
                  
         attributeTemplateDataSource = new YAHOO.util.DataSource(assetTemplateData.attributeTemplateData);
@@ -336,83 +381,7 @@
       		YAHOO.util.Dom.get("errContainer").innerHTML = msg;
       }
  </script>
-    <br/>
-	
-	<table width="80%" align="center">
-		<tr>
-			<td align="center" valign="top"><b>Asset Attributes</b></td>
-		</tr>
-		<tr><td>&nbsp;</tr>
-		<tr>
-			<td align="center" valign="top">
-				 <div style='background-color:#F2F2F2;border:1px solid #000; margin-left:10px;'>  
-				   <div class="bd">
-						<table cellpadding="1" cellspacing="0">
-							<tr>
-							   <td><b>&nbsp;&nbsp;&nbsp;Attribute Type: </b> &nbsp;&nbsp;&nbsp;                 
-								  <select id="dAttributeType" style="width: 40;" name="dAttributeType"> 
-									<option value="">--Select a Type</option> 
-									<c:forEach var="aType" items="${assetAttributeTypes}">       
-										<option value="<c:out value="${aType.id.code}"/>"><c:out value="${aType.id.code}"/></option>
-									</c:forEach>
-								  </select><br>
-								   <b>&nbsp;&nbsp;&nbsp;Attribute Value:</b>&nbsp;&nbsp;&nbsp;
-									<input size="30" id="dAttributeValue" value="" /> 
-							   </td>
-							   <td>                 
-								   &nbsp;&nbsp;&nbsp;<input type="button" id="add" value="&nbsp;ADD&nbsp;" onclick="javascript:doAdd();" /> 
-							   </td>
-						   </tr>
-						</table>
-						<hr/>
-						<div id="parentcontattributetable" style="height:100%;overflow-y:auto;background-color:#F2F2F2;">
-							<div id="contattributetable" align="center"></div> 
-						 </div>	
-							  
-					</div>
-				 </div>
-			</td>
-			<td style="display:none;"align="center" valign="top">
-				 <div style='background-color:#F2F2F2;border:1px solid #000; margin-left:10px;'>  
-				 <div class="bd">
-					<table cellpadding="1" cellspacing="0">
-						<tr>
-						   <td><b>&nbsp;&nbsp;&nbsp;Attribute Type: </b> &nbsp;&nbsp;&nbsp;                 
-							  <select id="dAttributeType" style="width: 40;" name="dAttributeType" disabled="true"> 
-								<option value="">--Select a Type</option> 
-								<c:forEach var="aType" items="${assetAttributeTypes}">       
-									<option value="<c:out value="${aType.id.code}"/>"><c:out value="${aType.id.code}"/></option>
-								</c:forEach>                                      
-							  </select><br>
-							   <b>&nbsp;&nbsp;&nbsp;Attribute Value:</b>&nbsp;&nbsp;&nbsp;
-								<input size="30" id="dAttributeValue" value="" disabled="true"/> 
-						   </td>
-						   <td>                 
-							   &nbsp;&nbsp;&nbsp;<input type="button" id="add" disabled="true" value="&nbsp;ADD&nbsp;" onclick="javascript:doAdd();" /> 
-						   </td>	               
-					   </tr>
-					</table>
-					<hr/>
-					<div id="parentconttemplateattributetable" style="height:100%;overflow-y:auto;background-color:#F2F2F2;">
-						<div id="conttemplateattributetable" align="center">
-					</div> 
-				 </div>
-				</div>
-			 </div>
-			</td>
-		</tr>
-	</table>
-  
-   	<br/>
-   	 <table width="100%" cellpadding="0" cellspacing="0" border="0">
-   	 <tr>
-   	 		<td colspan="3" align="center">
-				<input type = "button" value="&nbsp;Save&nbsp;" onclick="javascript:submitAttributeTable();" />
-				&nbsp;&nbsp;&nbsp;<input type = "button" value="&nbsp;Back&nbsp;" onclick="javascript:back();" />
-			</td>
-	</tr>		
-   	 </table>
-	<style>
+   	<style>
 		 .yui-skin-sam .yui-dt table {
 			width:98%;	 
 		 }

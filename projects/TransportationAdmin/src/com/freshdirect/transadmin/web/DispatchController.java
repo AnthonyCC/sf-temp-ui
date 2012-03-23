@@ -1129,6 +1129,7 @@ public class DispatchController extends AbstractMultiActionController {
 		
 	}	
 	
+	@SuppressWarnings("unchecked")
 	private ModelAndView processDashboardRequest(HttpServletRequest request, HttpServletResponse response, String view) {
 		
 		try {
@@ -1169,6 +1170,7 @@ public class DispatchController extends AbstractMultiActionController {
 		return new ModelAndView("dispatchDashboardView");
 	}
 
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private Collection getDispatchInfos(String dispDate
 											, String facilityLocation
 												, String zoneStr
@@ -1178,114 +1180,128 @@ public class DispatchController extends AbstractMultiActionController {
 		Collection dispatchInfos = new ArrayList();
 		List termintedEmployees = getTermintedEmployeeIds();
 		try {
-			Collection dispatchList = dispatchManagerService.getDispatchList(dispDate, facilityLocation, zoneStr, region);
-			if (dispatchList != null) 
-				Collections.sort((List)dispatchList, new DispatchPlanUtil.DispatchPunchTimeComparator());
-		Collection punchInfo=null;
-		Map htInData=null;
-		Map htOutData=null;
-				domainManagerService
-						.refreshCachedData(EnumCachedDataType.TRUCK_DATA);
-		//needsPunchInfo=false;
-		if(needsPunchInfo && dispatchList!=null && !dispatchList.isEmpty())
-			punchInfo=employeeManagerService.getPunchInfo(dispDate);
-			Date dispDateTemp=TransStringUtil.serverDateFormat.parse(dispDate);
-				if (needsAirClick) {
-				htInData=dispatchManagerService.getHTInScan(dispDateTemp);
-				htOutData=dispatchManagerService.getHTOutScan(dispDateTemp);
+			Collection dispatchList = dispatchManagerService.getDispatchList(
+					dispDate, facilityLocation, zoneStr, region);
+			if (dispatchList != null)
+				Collections.sort((List) dispatchList,
+						new DispatchPlanUtil.DispatchPunchTimeComparator());
+			Collection punchInfo = null;
+			Map htInData = null;
+			Map htOutData = null;
+			domainManagerService.refreshCachedData(EnumCachedDataType.TRUCK_DATA);
+
+			if (needsPunchInfo && dispatchList != null && !dispatchList.isEmpty())
+				punchInfo = TransAdminCacheManager.getInstance().getPunchInfo(dispDate, employeeManagerService);
+			Date dispDateTemp = TransStringUtil.serverDateFormat.parse(dispDate);
+			if (needsAirClick) {
+				htInData = dispatchManagerService.getHTInScan(dispDateTemp);
+				htOutData = dispatchManagerService.getHTOutScan(dispDateTemp);
 			}
-			
-		//collect all the distinct zones in the dispatch and get the zone models
-		Iterator iter = dispatchList.iterator();
-		Dispatch dispatch = null;
-		Set zones = new HashSet();
-		Set resourceIds = new HashSet();
-		Iterator resourceIterator = null;
-		ResourceI resource = null;
-		while(iter.hasNext())
-		{
-			dispatch = (Dispatch) iter.next();
-			if(dispatch.getZone() != null) {
-				zones.add(dispatch.getZone().getZoneCode());
-			}
-			if(dispatch.getSupervisorId()!=null)
-				resourceIds.add(dispatch.getSupervisorId());
-			if(dispatch.getDispatchResources()!=null){
-				resourceIterator = dispatch.getDispatchResources().iterator();
-				while(resourceIterator.hasNext())
-				{
-					resource = (ResourceI)resourceIterator.next();
-					if(resource.getId()!=null && resource.getId().getResourceId()!=null)
-					resourceIds.add( resource.getId().getResourceId());
+
+			// collect all the distinct zones in the dispatch and get the zone models
+			Iterator dispatchItr = dispatchList.iterator();
+			Dispatch dispatch = null;
+			Set zones = new HashSet();
+			Set resourceIds = new HashSet();
+			Iterator resourceIterator = null;
+			ResourceI resource = null;
+			while (dispatchItr.hasNext()) {
+				dispatch = (Dispatch) dispatchItr.next();
+				if (dispatch.getZone() != null) {
+					zones.add(dispatch.getZone().getZoneCode());
+				}
+				if (dispatch.getSupervisorId() != null)
+					resourceIds.add(dispatch.getSupervisorId());
+				if (dispatch.getDispatchResources() != null) {
+					resourceIterator = dispatch.getDispatchResources().iterator();
+					while (resourceIterator.hasNext()) {
+						resource = (ResourceI) resourceIterator.next();
+						if (resource.getId() != null
+								&& resource.getId().getResourceId() != null)
+							resourceIds.add(resource.getId().getResourceId());
+					}
 				}
 			}
-		}
-		Map<String, Zone> zonesMap =new HashMap<String,Zone>();
-		if(zones!=null && zones.size()>0)
-		{
-			 zonesMap = domainManagerService.getZoneByIDs(zones);
-		}
-		
-		Map<String, EmployeeInfo> empInfo = TransAdminCacheManager.getInstance().getActiveInactiveEmployees(employeeManagerService);
-		Map empRoleMap = null,empStatusMap = null,empTruckPrefMap=null,empTeams=null;
-		if(resourceIds!=null  && resourceIds.size()>0)
-		{
-			empRoleMap = employeeManagerService.getEmployeeRoles(resourceIds);
-			empStatusMap =  employeeManagerService.getEmployeeStatus(resourceIds);
-			empTruckPrefMap =  employeeManagerService.getEmployeeTruckPref(resourceIds);
-			empTeams =  employeeManagerService.getTeamByEmployees(resourceIds);
-		}
-		
-		iter = dispatchList.iterator();
-			while(iter.hasNext()){
-				dispatch = (Dispatch) iter.next();
-				Zone zone=null;
-				if(dispatch.getZone() != null) {
-					zone=zonesMap.get(dispatch.getZone().getZoneCode());
+			Map<String, Zone> zonesMap = new HashMap<String, Zone>();
+			if (zones != null && zones.size() > 0) {
+				zonesMap = domainManagerService.getZoneByIDs(zones);
+			}
+
+			Map<String, EmployeeInfo> empInfo = TransAdminCacheManager.getInstance().getActiveInactiveEmployees(employeeManagerService);
+			Map empRoleMap = null, empStatusMap = null, empTruckPrefMap = null, empTeams = null;
+			if (resourceIds != null && resourceIds.size() > 0) {
+				empRoleMap = employeeManagerService
+						.getEmployeeRoles(resourceIds);
+				empStatusMap = employeeManagerService
+						.getEmployeeStatus(resourceIds);
+				empTruckPrefMap = employeeManagerService
+						.getEmployeeTruckPref(resourceIds);
+				empTeams = employeeManagerService
+						.getTeamByEmployees(resourceIds);
+			}
+
+			dispatchItr = dispatchList.iterator();
+			while (dispatchItr.hasNext()) {
+				dispatch = (Dispatch) dispatchItr.next();
+				Zone zone = null;
+				if (dispatch.getZone() != null) {
+					zone = zonesMap.get(dispatch.getZone().getZoneCode());
 				}
-				DispatchCommand command = DispatchPlanUtil.getDispatchCommand(dispatch, zone, employeeManagerService,punchInfo,htInData,htOutData, empInfo, empRoleMap,empStatusMap,empTruckPrefMap,empTeams );
+				DispatchCommand command = DispatchPlanUtil.getDispatchCommand(
+						dispatch, zone, employeeManagerService, punchInfo,
+						htInData, htOutData, empInfo, empRoleMap, empStatusMap,
+						empTruckPrefMap, empTeams);
 				command.setTermintedEmployees(termintedEmployees);
-				if(isSummary){
-						//Retrive Route/Stop Information
-					FDRouteMasterInfo routeInfo = domainManagerService.getRouteMasterInfo(command.getRoute(), TransStringUtil.serverDateFormat.parse(dispDate));
-					if(routeInfo != null){
+				if (isSummary) {
+					// Load Route/Stop Info
+					FDRouteMasterInfo routeInfo = domainManagerService.getRouteMasterInfo(command.getRoute(),TransStringUtil.serverDateFormat.parse(dispDate));
+					if (routeInfo != null) {
 						command.setNoOfStops(routeInfo.getNumberOfStops());
 					}
-
 				}
-					//Retrive Truck Information
-					ErpTruckMasterInfo truckInfo= null;
-					if(command.getTruck()!=null)
-						truckInfo = domainManagerService.getERPTruck(command.getTruck());
-				if(truckInfo!=null)
+				// Load Truck Info
+				ErpTruckMasterInfo truckInfo = null;
+				if (command.getTruck() != null)
+					truckInfo = domainManagerService.getERPTruck(command.getTruck());
+				if (truckInfo != null)
 					command.setLocation(truckInfo.getLocation());
-				
-					
+
 				StringBuffer strBuf = new StringBuffer();
-				if(command.getGpsNumber() != null) {
-					strBuf.append(getAssetIdentifier(modelMap,DispatchPlanUtil.ASSETTYPE_GPS, command.getGpsNumber())).append(" ");
+				if (command.getGpsNumber() != null) {
+					strBuf.append(
+							getAssetIdentifier(modelMap,
+									DispatchPlanUtil.ASSETTYPE_GPS,
+									command.getGpsNumber())).append(" ");
 				}
-				if(command.getEzpassNumber() != null) {					
-					strBuf.append(getAssetIdentifier(modelMap,DispatchPlanUtil.ASSETTYPE_EZPASS, command.getEzpassNumber())).append(" ");
+				if (command.getEzpassNumber() != null) {
+					strBuf.append(
+							getAssetIdentifier(modelMap,
+									DispatchPlanUtil.ASSETTYPE_EZPASS,
+									command.getEzpassNumber())).append(" ");
 				}
-				
-				if(command.getMotKitNumber() != null) {					
-					strBuf.append(getAssetIdentifier(modelMap,DispatchPlanUtil.ASSETTYPE_MOTKIT,command.getMotKitNumber())).append(" ");
+
+				if (command.getMotKitNumber() != null) {
+					strBuf.append(
+							getAssetIdentifier(modelMap,
+									DispatchPlanUtil.ASSETTYPE_MOTKIT,
+									command.getMotKitNumber())).append(" ");
 				}
-				
-				if(command.getAdditionalNextels() != null) {					
+
+				if (command.getAdditionalNextels() != null) {
 					strBuf.append(command.getAdditionalNextels());
 				}
 				command.setExtras(strBuf.toString());
-				
+
 				dispatchInfos.add(command);
 			}
-		}catch(Exception ex){
+		} catch (Exception ex) {
 			ex.printStackTrace();
-			throw new RuntimeException("Exception ocuurred while processing the dispatch list for requested date "+dispDate);
+			throw new RuntimeException(
+					"Exception ocuurred while processing the dispatch list for requested date "
+							+ dispDate);
 		}
 
-		Collections.sort((List)dispatchInfos, DISPATCH_COMPARATOR);
+		Collections.sort((List) dispatchInfos, DISPATCH_COMPARATOR);
 		return dispatchInfos;
 	}
 	

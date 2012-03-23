@@ -47,16 +47,16 @@
 	  <td style="vertical-align: top;" width="35%">
 	      <ec:table items="zoneboundaries"   action="${pageContext.request.contextPath}/gmap.do"
 	            imagePath="${pageContext.request.contextPath}/images/table/*.gif"   title="Zones"
-	            tableId="zone_boundaries"  width="100%" filterable="false" showPagination="false" showExports="false" 
+	            tableId="zone_boundaries"  showPagination="false" showExports="false" 
 	            showStatusBar="false" sortable="false" rowsDisplayed="1000" view="fd" >
              	                
-	            <ec:row> 
+	            <ec:row interceptor="obsoletemarker"> 
 	            <ec:column title=" " width="5px" 
-									filterable="false" sortable="false" cell="selectcol"
+									sortable="false" filtercell="selectcol" cell="selectcol"
 									property="zoneCode" alias="bzoneCode" />   
-	              <ec:column filterable="false" sortable="false" alias="trnZoneCode" property="zoneCode" title="Code"/>
-				  <ec:column filterable="false" sortable="false" property="name" title="Name"/>              	              									  	                           
-	            </ec:row>
+	              <ec:column sortable="true" property="zoneCode" title="Code"/>
+				  <ec:column sortable="true" property="name" title="Name"/>              	              									  	                           
+	            </ec:row>	          
 	          </ec:table>
 	    </td>
 	   <td>&nbsp;&nbsp;&nbsp;</td>
@@ -64,16 +64,16 @@
 	    
 	      <ec:table items="georestrictionboundaries"   action="${pageContext.request.contextPath}/gmap.do"
 	            imagePath="${pageContext.request.contextPath}/images/table/*.gif"   title="Geo Restrictions"
-	            width="100%"  filterable="false"  showPagination="false" showExports="false" showStatusBar="false" sortable="false" 
+	             filterable="true"  showPagination="false" showExports="false" showStatusBar="false" sortable="false" 
 	             tableId="georestriction_boundaries" rowsDisplayed="1000" view="fd" >
 	            
 	            
-	            <ec:row>
+	            <ec:row interceptor="obsoletemarker">
 	             <ec:column title=" " width="5px" 
-									filterable="false" sortable="false" cell="selectcol"
+									sortable="false" filtercell="selectcol" cell="selectcol"
 									property="code" alias="bcode" />                  
-	             <ec:column filterable="false" sortable="false" alias="trnBCode" property="code" title="Code"/>
-				 <ec:column filterable="false" sortable="false" property="name" title="Name"/>									  	                           
+	             <ec:column sortable="true" property="code" title="Code"/>
+				 <ec:column sortable="true" property="name" title="Name"/>									  	                           
 	            </ec:row>
 	          </ec:table>
 	    
@@ -82,14 +82,14 @@
 	    
 	      <ec:table items="geoSectors"   action="${pageContext.request.contextPath}/gmap.do"
 	            imagePath="${pageContext.request.contextPath}/images/table/*.gif"   title="Sectors"
-	            width="100%"  filterable="false"  showPagination="false" showExports="false" showStatusBar="false" sortable="false" 
+	            filterable="true"  showPagination="false" showExports="false" showStatusBar="false" sortable="false" 
 	             tableId="neighbourhood_boundaries" rowsDisplayed="1000" view="fd" >
-	            <ec:row>
+	            <ec:row interceptor="obsoletemarker">
 	             <ec:column title=" " width="5px" 
-									filterable="false" sortable="false" cell="selectcol"
+									sortable="false" filtercell="selectcol" cell="selectcol"
 									property="name" alias="bnhname" />                  
-	             <ec:column filterable="false" sortable="false" alias="trnSectorName" property="name" title="Name"/>
-				 <ec:column filterable="false" sortable="false" property="description" title="Description"/>
+	             <ec:column sortable="true" property="name" title="Name"/>
+				 <ec:column sortable="true" property="description" title="Description"/>
 				 </ec:row>
 	          </ec:table>
 	    
@@ -167,6 +167,10 @@
 		}
 		
 	</script>	
-	
+	<style>
+		.eXtremeTable .filter input {
+	 		width: 98%;
+		}
+	</style>
   </tmpl:put>
 </tmpl:insert>

@@ -111,7 +111,12 @@
 						</span>
 					</div>
 					&nbsp;&nbsp;&nbsp;
-					<div style="float:right;font-weight:bold;"><br/>
+					<div style="float:left;"><br/>&nbsp;
+						<span class="orphanScenario">In-Service: <%= trucksInService %></span>
+						<span class="defaultScenario">Out-of-Service: <%= trucksOutOfService %></span>
+					</div>
+					&nbsp;&nbsp;&nbsp;
+					<div style="float:right;"><br/>
 						<span><input type="image" src="./images/icons/o-icon.gif" />&nbsp;Open</span>
 						<span><input type="image" src="./images/icons/v-icon.gif" />&nbsp;Verified</span>
 						<span><input type="image" src="./images/icons/rv-icon.gif" />&nbsp;Re-Verified</span>
@@ -125,13 +130,7 @@
 	<div class="cont_topright">
 			<div class="cont_row">
 				
-				<div class="cont_Litem">
-					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-					<div style="align:right;font-weight:bold;padding-left:20px;" >
-						<span class="orphanScenario">Trucks In-Service: <%= trucksInService %></span><br/><br/>
-						<span class="defaultScenario">Trucks Out-Of-Service: <%= trucksOutOfService %></span>
-					</div>
-				</div>
+				
 				<div class="cont_Ritem">
 			
 	 			<form id="maintenanceRecordListForm" action="" method="post">  

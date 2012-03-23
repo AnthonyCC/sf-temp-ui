@@ -23,17 +23,19 @@ import com.freshdirect.transadmin.service.EmployeeManagerI;
 
 public class TransAdminCacheManager {
 
-	private List internalProgIdList=new ArrayList();
+	private List internalProgIdList = new ArrayList();
 	private static TransAdminCacheManager instance = null;
 
-	private EmployeeManagerI manager=null;
+	private EmployeeManagerI manager = null;
 
 	private static Category LOGGER = LoggerFactory.getInstance(TransAdminCacheManager.class);
-	// make the time constant in property
-	private ExpiringReference truckDataHolder  = new ExpiringReference(TransportationAdminProperties.getTruckCacheExpiryTime()*  60 * 1000) {
+
+	@SuppressWarnings("rawtypes")
+	private ExpiringReference truckDataHolder = new ExpiringReference(
+			TransportationAdminProperties.getTruckCacheExpiryTime() * 60 * 1000) {
 		protected Object load() {
 			try {
-				if(!SapProperties.isBlackhole()) {
+				if (!SapProperties.isBlackhole()) {
 					return loadAllTruckData();
 				}
 			} catch (SapException e) {
@@ -43,13 +45,12 @@ public class TransAdminCacheManager {
 		}
 	};
 
-
-	// make the time constant in property
-	private TrnAdmExpiringReference routeDataHolder = new TrnAdmExpiringReference(TransportationAdminProperties.getRouteCacheExpiryTime() * 60 * 1000) {
+	private TrnAdmExpiringReference routeDataHolder = new TrnAdmExpiringReference(
+			TransportationAdminProperties.getRouteCacheExpiryTime() * 60 * 1000) {
 
 		protected Object load(Object requestParam) {
 			try {
-				if(!SapProperties.isBlackhole()) {
+				if (!SapProperties.isBlackhole()) {
 					return loadAllRouteData(requestParam);
 				}
 			} catch (SapException e) {
@@ -59,9 +60,23 @@ public class TransAdminCacheManager {
 		}
 
 	};
+	
+	private TrnAdmExpiringReference punchInfoDataHolder = new TrnAdmExpiringReference(
+			TransportationAdminProperties.getPunchInfoCacheExpiryTime() * 60 * 1000) {
 
+		protected Object load(Object requestParam) {
+			try {
+				if (!TransportationAdminProperties.isKronosBlackhole()) {
+					return loadPunchInfoData(requestParam);
+				}
+			} catch (Exception e) {
+				LOGGER.error("Could not load punch info due to: ", e);
+			}
+			return Collections.EMPTY_LIST;
+		}
 
-//	 make the time constant in property
+	};
+
 	private CustomExpiringReference employeeDataHolder = new CustomExpiringReference
 													(TransportationAdminProperties.getEmployeeCacheExpiryTime() * 60 * 1000
 															, CustomExpiringReference.STORE_EMPLOYEEDATA) {
@@ -83,8 +98,6 @@ public class TransAdminCacheManager {
 		}
 	};
 
-
-//	 make the time constant in property
 	private CustomExpiringReference terminatedEmployeeDataHolder = new CustomExpiringReference
 												(TransportationAdminProperties.getEmployeeCacheExpiryTime() * 60 * 1000
 														, CustomExpiringReference.STORE_TERMINATEDEMPLOYEEDATA) {
@@ -106,13 +119,12 @@ public class TransAdminCacheManager {
 		}
 	};
 
-//	 make the time constant in property
+
 	
 	class EmployeeActiveInactiveReference extends CustomExpiringReference {
 				
 		public EmployeeActiveInactiveReference(long refreshPeriod) {
-			super(refreshPeriod, STORE_ACTINACTEMPLOYEEDATA);			
-			// TODO Auto-generated constructor stub
+			super(refreshPeriod, STORE_ACTINACTEMPLOYEEDATA);
 		}
 				
 		protected Object load() {
@@ -157,189 +169,154 @@ public class TransAdminCacheManager {
 		return instance;
 	}
 
+	public void refreshCacheData(EnumCachedDataType dataType) {
 
-	public void refreshCacheData(EnumCachedDataType dataType){
-
-//		System.out.println("refreshing crap truck data");
-
-		if(EnumCachedDataType.TRUCK_DATA.equals(dataType)){
-			if(!(truckDataHolder.getLastRefresh() < TransportationAdminProperties.getEmployeeCacheMinExpiryTime()))
+		if (EnumCachedDataType.TRUCK_DATA.equals(dataType)) {
+			if (!(truckDataHolder.getLastRefresh() < TransportationAdminProperties
+					.getEmployeeCacheMinExpiryTime()))
 				truckDataHolder.forceRefresh();
 		}
-		if(EnumCachedDataType.EMPLOYEE_DATA.equals(dataType)){
-			if(!(employeeDataHolder.getLastRefresh() < TransportationAdminProperties.getEmployeeCacheMinExpiryTime()))
+		if (EnumCachedDataType.EMPLOYEE_DATA.equals(dataType)) {
+			if (!(employeeDataHolder.getLastRefresh() < TransportationAdminProperties
+					.getEmployeeCacheMinExpiryTime()))
 				employeeDataHolder.forceRefresh();
-			if(!(activeInactivedEmployeeDataHolder.getLastRefresh() < TransportationAdminProperties.getEmployeeCacheMinExpiryTime()))
+			if (!(activeInactivedEmployeeDataHolder.getLastRefresh() < TransportationAdminProperties
+					.getEmployeeCacheMinExpiryTime()))
 				activeInactivedEmployeeDataHolder.forceRefresh();
-			if(!(terminatedEmployeeDataHolder.getLastRefresh() < TransportationAdminProperties.getEmployeeCacheMinExpiryTime()))
+			if (!(terminatedEmployeeDataHolder.getLastRefresh() < TransportationAdminProperties
+					.getEmployeeCacheMinExpiryTime()))
 				terminatedEmployeeDataHolder.forceRefresh();
 		}
-
 	}
 
-	public List loadAllTerminatedEmployeeData() throws SapException{
-
-		return (List)manager.getKronosTerminatedEmployees();
+	public List loadAllTerminatedEmployeeData() throws SapException {
+		return (List) manager.getKronosTerminatedEmployees();
 	}
 
-	public List loadAllEmployeeData() throws SapException{
-
-		return (List)manager.getKronosEmployees();
+	public List loadAllEmployeeData() throws SapException {
+		return (List) manager.getKronosEmployees();
 	}
 
-	public List loadActiveInactiveEmployeeData() throws SapException{
-
-		return (List)manager.getKronosActiveInactiveEmployees();
+	public List loadActiveInactiveEmployeeData() throws SapException {
+		return (List) manager.getKronosActiveInactiveEmployees();
 	}
 
 	public Map<String, ErpTruckMasterInfo> loadAllTruckData() throws SapException{
 		SapTruckMasterInfo truckInfos = new SapTruckMasterInfo();
-
 		truckInfos.execute();
-
 		return truckInfos.getTruckMasterInfos();
 	}
 
 	public List loadAllRouteData(Object requestParam) throws SapException{
-
-		//System.out.println(" Cache : loadAllRouteData"+requestParam);
 		SapRouteMasterInfo routeInfos = new SapRouteMasterInfo((String)requestParam);
-
 		routeInfos.execute();
-
-		//System.out.println(" Cache : loadAllRouteData values:"+routeInfos.getRouteMasterInfos());
-
 		return routeInfos.getRouteMasterInfos();
-
 	}
 
-
-	public Map getAllTruckMasterInfo()
-	{
+	public Map getAllTruckMasterInfo() {
 		return (Map) this.truckDataHolder.get();
 	}
 
-
-	public ErpTruckMasterInfo getTruckMasterInfo(String truckNumber)
-	{
+	public ErpTruckMasterInfo getTruckMasterInfo(String truckNumber) {
 		Map trkList = (Map) this.truckDataHolder.get();
-		if(trkList!=null && trkList.containsKey(truckNumber))
+		if (trkList != null && trkList.containsKey(truckNumber))
 			return (ErpTruckMasterInfo) trkList.get(truckNumber);
 		return null;
 	}
 
-
 	public Collection getAllRouteMasterInfo(String requestedDate) {
-		// TODO Auto-generated method stub
 		return (List) this.routeDataHolder.get(requestedDate);
 	}
 
-
 	public Collection getAllEmployeeInfo(EmployeeManagerI mgr) {
-		// TODO Auto-generated method stub
-		this.manager=mgr;
-		//added new code
-		if(null!=(this.employeeDataHolder.get()))
-		{
-			return  new ArrayList((List)this.employeeDataHolder.get());
-			
-		}
-		else{
+		this.manager = mgr;
+		if (null != (this.employeeDataHolder.get())) {
+			return new ArrayList((List) this.employeeDataHolder.get());
+		} else {
 			return new ArrayList();
 		}
-		//return  new ArrayList((List)this.employeeDataHolder.get());
 	}
 
 	public Collection getActiveInactiveEmployeeInfo(EmployeeManagerI mgr) {
-		// TODO Auto-generated method stub
-		this.manager=mgr;
-		//added new code
-		if(null!=(this.activeInactivedEmployeeDataHolder.get()))
-		{
-			return  new ArrayList((((Map)this.activeInactivedEmployeeDataHolder.get()).values()));
+		this.manager = mgr;
+		if (null != (this.activeInactivedEmployeeDataHolder.get())) {
+			return new ArrayList((((Map) this.activeInactivedEmployeeDataHolder.get()).values()));
+		} else {
+			return new ArrayList();
 		}
-			else{
-				return new ArrayList();
-			}
-		
-		
-		//return  new ArrayList(((Map)this.activeInactivedEmployeeDataHolder.get()).values());
 	}
 
 	public Collection getAllTerminatedEmployeeInfo(EmployeeManagerI mgr) {
-		// TODO Auto-generated method stub
-		this.manager=mgr;
-		//added new code
-		
-		if(null!=(this.terminatedEmployeeDataHolder.get()))
-		{
-			return  new ArrayList((List)this.terminatedEmployeeDataHolder.get());	
-		}
-		else{
+		this.manager = mgr;
+		if (null != (this.terminatedEmployeeDataHolder.get())) {
+			return new ArrayList((List) this.terminatedEmployeeDataHolder.get());
+		} else {
 			return new ArrayList();
 		}
-		//return  new ArrayList((List)this.terminatedEmployeeDataHolder.get());
 	}
 
-
-	public EmployeeInfo getEmployeeInfo(String empId,EmployeeManagerI mgr)
-	{
-		this.manager=mgr;
+	public EmployeeInfo getEmployeeInfo(String empId, EmployeeManagerI mgr) {
+		this.manager = mgr;
 		List empList = (List) this.employeeDataHolder.get();
-		if(empList==null) return null;
-		for(int i=0;i<empList.size();i++){
-			EmployeeInfo info=(EmployeeInfo)empList.get(i);
-			if(info != null && info.getEmployeeId().equalsIgnoreCase(empId))
+		if (empList == null)
+			return null;
+		for (int i = 0; i < empList.size(); i++) {
+			EmployeeInfo info = (EmployeeInfo) empList.get(i);
+			if (info != null && info.getEmployeeId().equalsIgnoreCase(empId))
 				return info;
 		}
 		return null;
 	}
 
-	public EmployeeInfo getActiveInactiveEmployeeInfo(String empId,EmployeeManagerI mgr) {
-		this.manager=mgr;
-		//added new code
-	/*List empList = (List) this.activeInactivedEmployeeDataHolder.get();
-		if(empList!=null) 
-		{
-		for(int i=0;i<empList.size();i++){
-			EmployeeInfo info=(EmployeeInfo)empList.get(i);
-			if(info != null && info.getEmployeeId().equalsIgnoreCase(empId))
-				return info;
-		}
-		
-		}
-		return null;*/
-		
-		
+	public EmployeeInfo getActiveInactiveEmployeeInfo(String empId,	EmployeeManagerI mgr) {
+		this.manager = mgr;
+		// added new code
+		/*
+		 * List empList = (List) this.activeInactivedEmployeeDataHolder.get();
+		 * if(empList!=null) { for(int i=0;i<empList.size();i++){ EmployeeInfo
+		 * info=(EmployeeInfo)empList.get(i); if(info != null &&
+		 * info.getEmployeeId().equalsIgnoreCase(empId)) return info; }
+		 * 
+		 * } return null;
+		 */
+
 		return this.activeInactivedEmployeeDataHolder.getEmployeeMapping().get(empId);
-	}	
-	
-	public ErpRouteMasterInfo getRouteMasterInfo(String routeNumber,Date requestedDate)
-	{
-		if(requestedDate==null)
-		{
-			requestedDate=new Date();
+	}
+
+	public ErpRouteMasterInfo getRouteMasterInfo(String routeNumber, Date requestedDate) {
+		if (requestedDate == null) {
+			requestedDate = new Date();
 		}
 		try {
-			List trkList = (List) this.routeDataHolder.get(TransStringUtil.getServerDate(requestedDate));
-			if(trkList==null) return null;
-			for(int i=0;i<trkList.size();i++){
-				ErpRouteMasterInfo info=(ErpRouteMasterInfo)trkList.get(i);
-				if(info.getRouteNumber().equalsIgnoreCase(routeNumber))
+			List trkList = (List) this.routeDataHolder.get(TransStringUtil
+					.getServerDate(requestedDate));
+			if (trkList == null)
+				return null;
+			for (int i = 0; i < trkList.size(); i++) {
+				ErpRouteMasterInfo info = (ErpRouteMasterInfo) trkList.get(i);
+				if (info.getRouteNumber().equalsIgnoreCase(routeNumber))
 					return info;
 			}
-		}catch(Exception ex){
-			throw new RuntimeException("Exception Occurred while getting Route details for route number "+routeNumber);
+		} catch (Exception ex) {
+			throw new RuntimeException(
+					"Exception Occurred while getting Route details for route number "
+							+ routeNumber);
 		}
 		return null;
-	}	
+	}
 	
 	public Map getActiveInactiveEmployees(EmployeeManagerI mgr) {
-		// TODO Auto-generated method stub
 		this.manager=mgr;
 		return  ((Map)this.activeInactivedEmployeeDataHolder.get());
 	}
 	
+	public Collection loadPunchInfoData(Object  requestedDate) throws SapException {		
+		return this.manager.getPunchInfo((String)requestedDate);
+	}
 	
+	public Collection getPunchInfo(String requestedDate, EmployeeManagerI mgr) {		
+		this.manager = mgr;
+		return (Collection) this.punchInfoDataHolder.get(requestedDate);
+	}
 	
 }

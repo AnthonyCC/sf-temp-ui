@@ -1,9 +1,9 @@
 package com.freshdirect.transadmin.service.impl;
 
+
 import java.util.Collection;
 
 import org.apache.log4j.Category;
-import org.springframework.dao.DataAccessException;
 
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.transadmin.dao.AssetManagerDaoI;
@@ -14,7 +14,7 @@ import com.freshdirect.transadmin.model.AssetType;
 import com.freshdirect.transadmin.service.AssetManagerI;
 
 public class AssetManagerImpl  
-		extends BaseManagerImpl  implements AssetManagerI {
+		extends BaseManagerImpl implements AssetManagerI {
 	
 	private final static Category LOGGER = LoggerFactory.getInstance(AssetManagerImpl.class);
 	
@@ -42,9 +42,9 @@ public class AssetManagerImpl
 		return getAssetManagerDao().getAssetAttributeTypes();
 	}
 	
-	public Collection getAssets(String assetType) {
+	public Collection getAssets(String assetType, String atrName, String atrValue) {
 
-		return getAssetManagerDao().getAssets(assetType);
+		return getAssetManagerDao().getAssets(assetType, atrName, atrValue);
 	}
 	
 	public Collection getActiveAssets(String assetType) {
@@ -88,5 +88,4 @@ public class AssetManagerImpl
 	public Collection getAsset(String assetNo, String assetType) {
 		return getAssetManagerDao().getAsset(assetNo, assetType);
 	}
-
 }
