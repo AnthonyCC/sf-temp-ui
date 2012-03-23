@@ -34,7 +34,6 @@ import com.freshdirect.smartstore.sampling.RankedContent;
  */
 public abstract class AbstractRecommendationService implements RecommendationService {
 	
-	@SuppressWarnings("unused")
 	private static Category LOGGER = LoggerFactory.getInstance(AbstractRecommendationService.class);
 
 	protected Variant variant;
@@ -115,16 +114,12 @@ public abstract class AbstractRecommendationService implements RecommendationSer
 	protected List<ContentNodeModel> sample(SessionInput input, List<RankedContent.Single> nodes, boolean aggregatable, Collection<ContentNodeModel> excludeNodes) {
 		Set<ContentKey> exclusions = new HashSet<ContentKey>();
 
+		exclusions.addAll( input.getExclusions() );
 		// prefer explicit exclusion list
-		if (excludeNodes.isEmpty())
-			exclusions.addAll( input.getExclusions() );
-		else {
-			// otherwise get keys from list stored in session input
-			/* exclusions = new HashSet<ContentKey>(input.getExclusions()); */
+		if (!excludeNodes.isEmpty())
 			for (ContentNodeModel excludeNode : excludeNodes) {
 				exclusions.add(excludeNode.getContentKey());
 			}
-		}
 
 
 		// [APPDEV-2241] sort out wines
