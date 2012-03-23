@@ -221,7 +221,9 @@ public class TransportationAdminProperties {
 
 	private final static String PROP_ENABLE_AIRCLIC = "transportation.enable.airclic";
 	private final static String PROP_TELARGO_BLACKHOLE = "transportation.telargo.blackhole";
-
+	
+	private static final String PROP_TRANSPORTATION_EMPLOYEE_PUNCHINFO_CACHE_EXPIRY_TIME = "transportation.employee.punchinfo.cache.expiry.time";
+	
 	static {
 
 
@@ -398,6 +400,8 @@ public class TransportationAdminProperties {
 		defaults.put(PROP_TRANSPORTATION_YARDMONITOR_PAGEREFRESHTIME, "600000");
 		defaults.put(PROP_ENABLE_AIRCLIC, "false");
 		defaults.put(PROP_TELARGO_BLACKHOLE, "true");
+		
+		defaults.put(PROP_TRANSPORTATION_EMPLOYEE_PUNCHINFO_CACHE_EXPIRY_TIME, "300000");
 
 		refresh();
 	}
@@ -851,5 +855,10 @@ public class TransportationAdminProperties {
 
 	public static boolean isTelargoServiceBlackhole() {
 		return (new Boolean(get(PROP_TELARGO_BLACKHOLE))).booleanValue();
+	}
+	
+	public static int getPunchInfoCacheExpiryTime() {
+		return getIntVal(get(PROP_TRANSPORTATION_EMPLOYEE_PUNCHINFO_CACHE_EXPIRY_TIME));
+
 	}
 }
