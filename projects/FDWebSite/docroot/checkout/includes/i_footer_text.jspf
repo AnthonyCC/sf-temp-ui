@@ -2,7 +2,7 @@
 <%@ page import='java.util.Iterator' %>
 <% //expanded page dimensions
 final int W_CHECKOUT_FOOTER_TEXT_TOTAL = 970;
-%>
+%><%--
 
 <% boolean isSmall = request.getRequestURI().indexOf("step_4_receipt") > -1; 
 int width=W_CHECKOUT_FOOTER_TEXT_TOTAL;
@@ -25,4 +25,4 @@ for (Iterator iterator = fdcsHours.iterator(); iterator.hasNext();) {
 	</td>
 </tr>
 </table>
-<%@ include file="/includes/net_insight/i_tag_checkout.jspf" %>
+--%><%@ include file="/includes/net_insight/i_tag_checkout.jspf" %>

@@ -5,9 +5,11 @@ final int W_FOOTER_TEXT_2_TOTAL = 970;
 <table border="0" cellspacing="0" cellpadding="0" width="<%= W_FOOTER_TEXT_2_TOTAL %>">
 <tr valign="middle">
 	<td width="30%">
-		<font class="space4pix"><br></font><font class="text12">
-		<b>Having problems checking out?</b><br>
-		 <a href="/help/index.jsp">Click here for help</a>.</font><br>
+		<%--
+			<font class="space4pix"><br></font><font class="text12">
+			<b>Having problems checking out?</b><br>
+		 	<a href="/help/index.jsp">Click here for help</a>.</font><br>
+		 --%>&nbsp;
 	</td>
 	<td width="70%" align="right">
 		<% if (cart.isEstimatedPrice()) {
