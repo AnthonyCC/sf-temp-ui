@@ -1037,7 +1037,7 @@ public class FDDeliveryManager {
 		try {
 
 			DlvManagerSB sb = getDlvManagerHome().create();
-			return sb.getUnassignedReservations(_date);
+			return sb.getUnassignedReservations(_date, false);
 
 
 
