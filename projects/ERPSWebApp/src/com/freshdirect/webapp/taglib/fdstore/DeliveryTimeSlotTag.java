@@ -297,7 +297,7 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag {
 				if(timeslots != null) 
 				{
 					String id = FDDeliveryManager.getInstance().logTimeslots(null, null, timeslots.getTimeslotsFlat(), event, 
-									address, timeslots.getResponseTime());
+							address, (timeslots.getTimeslotsFlat() != null && timeslots.getTimeslotsFlat().size() == 0) ? -1 : timeslots.getResponseTime());
 					int availCount = 0 , soldCount = 0, hiddenCount = 0; String zone ="";
 					if(DateUtil.diffInDays(timeslots.getStartDate(), DateUtil.getCurrentTime()) < 7)
 					{
