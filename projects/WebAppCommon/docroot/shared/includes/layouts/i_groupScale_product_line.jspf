@@ -126,18 +126,24 @@
 			<table cellspacing="0">
 				<tr>
 					<% if (!skuAvailable) { %>
-						<td colspan="3" width="85" align="center"><font color="#999999"><%=(productInfo.isOutOfSeason()?"Out&nbsp;of&nbsp;Season": "Not&nbsp;Available")%></font></td>
+						<td colspan="3" width="85" align="center"><font color="#999999"><%=(productInfo.isOutOfSeason()?"Out&nbsp;of&nbsp;Season": "Not&nbsp;Available")%></font>
 					<% } else if (productInfo.getZonePriceInfo(user.getPricingContext().getZoneId()).isItemOnSale()) { %>
-						<td width="55" align="left" colspan="3">&nbsp;<font class="groceryProductLinePrice" style="COLOR: #c00"><%= currencyFormatter.format(productInfo.getZonePriceInfo(user.getPricingContext().getZoneId()).getDefaultPrice()) %>&nbsp;<%= "/&nbsp;"+ productInfo.getDisplayableDefaultPriceUnit().toLowerCase() %></font></td>
+						<td width="55" align="left" colspan="3">&nbsp;<font class="groceryProductLinePrice" style="COLOR: #c00"><%= currencyFormatter.format(productInfo.getZonePriceInfo(user.getPricingContext().getZoneId()).getDefaultPrice()) %>&nbsp;<%= "/&nbsp;"+ productInfo.getDisplayableDefaultPriceUnit().toLowerCase() %></font>
 					<% } else { 
 					    ProductSkuImpression psi = new ProductSkuImpression(displayProduct, sku);
 					%>
 						<td width="55" align="left" colspan="2" class="groceryProductLinePrice">Reg.&nbsp;<font class="groceryProductLinePrice"><%= currencyFormatter.format(productInfo.getZonePriceInfo(user.getPricingContext().getZoneId()).getDefaultPrice()) %>&nbsp;<%= "/&nbsp;"+ productInfo.getDisplayableDefaultPriceUnit().toLowerCase() %></font></td>
-						<td><display:ProductPrice impression="<%= psi %>"  showScalePricing="false" showRegularPrice="false" showWasPrice="true" showDescription="false" /> </td>
+						<td><display:ProductPrice impression="<%= psi %>"  showScalePricing="false" showRegularPrice="false" showWasPrice="true" showDescription="false" /> 
 					</tr>
 					<tr>
-						<td colspan="3"><display:ProductPrice impression="<%= psi %>"  showScalePricing="true" showRegularPrice="false" showWasPrice="false" showDescription="false" grpDisplayType="SMALL_RED"/></td>
+						<td colspan="3"><display:ProductPrice impression="<%= psi %>"  showScalePricing="true" showRegularPrice="false" showWasPrice="false" showDescription="false" grpDisplayType="SMALL_RED"/>
 					<% } %>
+					<%-- APPDEV-2198 Product rating --%>
+											<% final boolean alignRight = false;
+												ProductModel __prd = productNode;
+											%>
+											<display:ProductRating product="<%= productNode %>" />
+					</td>		
 				</tr>
 			</table>
 		</td>

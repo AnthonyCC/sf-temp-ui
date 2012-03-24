@@ -670,6 +670,11 @@ final int W_GROUPSCALE_TOTAL = 601;
 											</tr>
 										</table>
 										<display:ProductPrice impression="<%= imp %>" grcyProd="true" showRegularPrice="false" showScalePricing="true" showWasPrice="false" showDescription="false" grpDisplayType="LARGE_RED"/>
+										<%-- APPDEV-2198 Product rating --%>
+											<% final boolean alignRight = false;
+												ProductModel __prd = productNode;
+											%>
+											<%@include file="/shared/includes/product/i_product_skus_rating.jspf" %>
 									</div>
 								<% } %>
 								<%@include file="/includes/product/i_price_taxdeposit.jspf"%>
