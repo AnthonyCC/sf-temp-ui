@@ -138,30 +138,73 @@ if ("POST".equals(request.getMethod()) && "yes".equalsIgnoreCase(request.getPara
         document.routestop_report.submit();
     }
 	
+	var monthtext=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+
+    function populatedropdown(dayfield1, monthfield1, yearfield1){
+		var today=new Date();
+        var dayfield=document.getElementById(dayfield1);
+		var monthfield=document.getElementById(monthfield1);
+		var yearfield=document.getElementById(yearfield1);
+		for (var i=0; i<31; i++) {
+			var aday = <%= day %>
+			if(aday != (i+1)) {
+				dayfield.options[i]=new Option(i+1, i+1);                                      
+			}
+		}
+
+		var activeday1 = <%= day %>;
+		dayfield.options[activeday1 - 1]=new Option(activeday1, activeday1, true, true); //select today's day
+
+		for (var m=0; m<12; m++)
+			monthfield.options[m]=new Option(monthtext[m], m+1);
+		var activemonth1 = <%= month %>;
+		monthfield.options[activemonth1]=new Option(monthtext[activemonth1], activemonth1, true, true); //select today's month
+
+		var thisyear=2005;
+
+        for (var y=0; y<11; y++){			
+			var cyear = <%= year %>;
+			if(cyear == thisyear)
+				yearfield.options[y]=new Option(thisyear, thisyear, true, true);			
+			else
+				yearfield.options[y]=new Option(thisyear, thisyear);			
+			thisyear+=1;
+		}
+
+	}
+
+	function daysInMonth(month, year) {
+		return new Date(year, month, 0).getDate();
+	}
+
+	function changedays(sopt, dayfield) {
+		var date = new Date();
+		var value = sopt.options[sopt.selectedIndex].value;
+		var totaldays = daysInMonth(value, date.getFullYear());
+		var dayfield=document.getElementById(dayfield);
+		dayfield.options.length = 0;
+		for (var i=0; i<totaldays; i++)
+			dayfield.options[i]=new Option(i+1, i+1);
+	}
+	
+	window.onload = function() {  
+      populatedropdown('daydropdown','monthdropdown','yeardropdown');
+    };  
+
+</script>
+	
 	
 </script>
     <tr>
         <td width="15%"><span class="sub_nav_title">Orders by Route & Stop <% if (routeStopLines!= null && routeStopLines.size()>0) {%>( <span class="result"><%= routeStopLines.size() %></span> ) <span class="note" style="font-weight:normal;"><input type="checkbox" name="forPrint" onClick="javascript:toggleScroll('result','list_content','content_fixed');"> Print View</span><% } %></span></td>
         <td width="55%" align="center" colspan="2">
-            Date<font color="red">*</font>
-            <select name="month" required="true" class="pulldown">
-                <option value="">Month</option>
-                            <%  for (int i=0; i<12; i++) {  %>
-                            <option value="<%= i %>" <%= (i==month)?"selected":"" %>><%= symbols.getShortMonths()[i] %></option>
-                            <%  }   %>
-            </select>
-            <select name="day" required="true" class="pulldown">
-                <option value="">Day</option>
-                            <%  for (int i=1; i<=31; i++) { %>
-                <option value="<%= i %>" <%= (i==day)?"selected":"" %>><%= i %></option>
-                            <%  } %>
-            </select>
-            <select name="year" required="true" class="pulldown">
-                <option value="">Year</option>
-                            <%  for (int i=2005; i<2016; i++) { %>
-                <option value="<%= i %>" <%= (i==year)?"selected":"" %>><%= i %></option>
-                            <%  } %>
-            </select>
+            Date<font color="red">*</font>			
+			<select id="monthdropdown" name="month" onchange="changedays(this,'daydropdown')">
+			</select> 
+			<select id="daydropdown" name="day">
+			</select> 
+			<select id="yeardropdown" name="year">
+			</select> 
             &nbsp;
             Wave <input type="text" name="wave" size="6" maxlength="6" class="text" value="<%=request.getParameter("wave")%>">
             &nbsp;
@@ -243,9 +286,44 @@ if ("POST".equals(request.getMethod()) && "yes".equalsIgnoreCase(request.getPara
 				errors = true;
 			}
 			
-			if(!errors) {
+			String start_time = shour + ":" + sminutes + " " + sampm;	
+			DateFormat formatter2 = new SimpleDateFormat("MM/dd/yyyy");
+			String formatter_start_date = formatter2.format(new Date());
+			formatter_start_date = formatter_start_date + " " + start_time;
 			
-				String start_time = shour + ":" + sminutes + " " + sampm;				
+			List<String> phonenumbers = new ArrayList<String>();			
+			StringBuffer phonesb = new StringBuffer("<phonenumbers>");
+			Hashtable<String, List> vroutes = new Hashtable<String, List>();
+			for(int i=0;i<routeStopLines.size();i++) {
+				String selValue = request.getParameter("selectphone"+i);
+				if(selValue != null && selValue.length() > 0)  {
+					phonenumbers.add(selValue);
+					//System.out.println(selValue);
+					phonesb.append("<phonenumber number=\"");
+					String phno = selValue.substring(0, selValue.indexOf("|"));
+					if(phno == null  ||phno.length() == 0) {
+						errors = true;
+						errMsg = ", One of the users selected in the list has no phone number. Please select users with phone numbers to voiceshot and submit again.";
+						break;
+					}
+					phonesb.append(phno);
+					phonesb.append("\" dateandtime=\"");
+					phonesb.append(formatter_start_date);
+					phonesb.append("\" />");
+						
+					String route_1 = selValue.substring(selValue.lastIndexOf("|") + 1);
+					if(vroutes.containsKey(route_1)) {
+						List phones = (List) vroutes.get(route_1);
+						phones.add(selValue);
+					} else {
+						List<String> phones = new ArrayList<String>();
+						phones.add(selValue);
+						vroutes.put(route_1, phones);
+					}
+				}
+			}
+			
+			if(!errors) {	
 				
 				//Save the campaign info
 				CrmVSCampaignModel cModel = new CrmVSCampaignModel();
@@ -258,35 +336,7 @@ if ("POST".equals(request.getMethod()) && "yes".equalsIgnoreCase(request.getPara
 				cModel.setCampaignName(request.getParameter(campaignID));
 				cModel.setDelayMinutes(request.getParameter("delay_"+campaignID));
 				
-				DateFormat formatter2 = new SimpleDateFormat("MM/dd/yyyy");
-				String formatter_start_date = formatter2.format(new Date());
-				formatter_start_date = formatter_start_date + " " + start_time;
-				
-				List<String> phonenumbers = new ArrayList<String>();			
-				StringBuffer phonesb = new StringBuffer("<phonenumbers>");
-				Hashtable<String, List> vroutes = new Hashtable<String, List>();
-				for(int i=0;i<routeStopLines.size();i++) {
-					String selValue = request.getParameter("selectphone"+i);
-					if(selValue != null && selValue.length() > 0)  {
-						phonenumbers.add(selValue);
-						phonesb.append("<phonenumber number=\"");
-						phonesb.append(selValue.substring(0, selValue.indexOf("|")));
-						phonesb.append("\" dateandtime=\"");
-						phonesb.append(formatter_start_date);
-						phonesb.append("\" />");
-						
-						String route_1 = selValue.substring(selValue.lastIndexOf("|") + 1);
-						if(vroutes.containsKey(route_1)) {
-							List phones = (List) vroutes.get(route_1);
-							phones.add(selValue);
-						} else {
-							List<String> phones = new ArrayList<String>();
-							phones.add(selValue);
-							vroutes.put(route_1, phones);
-						}
-					}
-				}
-				phonesb.append("</phonenumbers>");
+				phonesb.append("</phonenumbers>");								
 				cModel.setPhonenumbers(phonenumbers);
 				cModel.setRouteList(vroutes);
 				cModel.setManual("true".equals(request.getParameter("manual"))?true:false);
@@ -376,7 +426,7 @@ if ("POST".equals(request.getMethod()) && "yes".equalsIgnoreCase(request.getPara
 			<tr>
 				<td width="15%"><span class="sub_nav_title">&nbsp;</span></td>
 				<td width="85%" align="left" style="background-color:#E0E0E0;">
-					<font style="color:red;"><%= errMsg %></font>
+					<font style="color:red;font-weight:bold;"><%= errMsg %></font>
 				</td>
 			</tr>
 		</table>	   
