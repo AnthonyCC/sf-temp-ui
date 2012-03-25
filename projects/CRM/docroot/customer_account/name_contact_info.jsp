@@ -38,7 +38,7 @@
 				<table width="100%" cellpadding="0" cellspacing="0">
 					<tr>
 						<td class="cust_module_header_text">Edit Name & Contact Information</td>
-						<td width="50%"><a href="/main/account_details.jsp" class="cancel">CANCEL</a>&nbsp;&nbsp;<a onclick="checkForProfanity();" 
+						<td width="50%"><a href="/main/account_details.jsp" class="cancel">CANCEL</a>&nbsp;&nbsp;<a href="javascript:void(0);" onclick="checkForProfanity();" 
 						 class="save">SAVE</a></td>
 						<td><fd:ErrorHandler result="<%=result%>" name="case_not_attached" id='errorMsg'><span class="error"><%=errorMsg%></span></fd:ErrorHandler></td>
 						<td align="center" class="note">* Required</td>
