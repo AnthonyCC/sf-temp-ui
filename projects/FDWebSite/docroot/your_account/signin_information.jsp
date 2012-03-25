@@ -17,8 +17,8 @@ final int W_YA_SIGNIN_INFO = 970;
     <tmpl:put name='title' direct='true'>FreshDirect - Your Account - User Name, Password, & Contact Info</tmpl:put>
     <tmpl:put name='content' direct='true'>
 <fd:javascript src="/assets/javascript/phone_number.js"/>
-<script src="../shared/javascript/jquery-1.6.4.js" type="text/javascript" charset="utf-8"></script>
-<script type="text/javascript" src="../shared/javascript/webpurify.jQuery.js"></script>
+<script src="/assets/javascript/jquery-1.6.4.js" type="text/javascript" charset="utf-8"></script>
+<script type="text/javascript" src="/assets/javascript/webpurify.jQuery.js"></script>
 		
 		<script type="text/javascript">
 		jQuery.noConflict();

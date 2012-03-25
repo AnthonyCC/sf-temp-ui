@@ -3,8 +3,8 @@
 <%@ taglib uri="template" prefix="tmpl" %>
 <%@ taglib uri="crm" prefix="crm" %>
 <%@ taglib uri="freshdirect" prefix="fd" %>
-<script src="../shared/javascript/jquery-1.6.4.js" type="text/javascript" charset="utf-8"></script>
-<script src="../shared/javascript/webpurify.jQuery.js" type="text/javascript" charset="utf-8"></script>
+<script src="/assets/javascript/jquery-1.6.4.js" type="text/javascript" charset="utf-8"></script>
+<script src="/assets/javascript/webpurify.jQuery.js" type="text/javascript" charset="utf-8"></script>
 
 		
 		<script type="text/javascript">
