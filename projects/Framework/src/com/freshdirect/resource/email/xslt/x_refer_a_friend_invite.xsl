@@ -19,10 +19,10 @@
 <body>
 <table width="800"> <tr><td>
 <div id="parentdiv" style="float:left;position:relative !important;top:0;left:0;">
-<table width="800" height="760" style="background-image:url('http://dev3.freshdirect.com/media_stat/images/profile/email_background1.jpg');background-repeat: no-repeat;background-position: top;border:0;">
+<table width="800" height="760" style="background-image:url('http://www.freshdirect.com/media_stat/images/profile/email_background1.jpg');background-repeat: no-repeat;background-position: top;border:0;">
 		<xsl:comment>[if gte vml 1]<![CDATA[>]]>
         &lt;v:shape stroked="f" style= "float:left;position:absolute;z-index:-2;visibility:visible;width:800px; height:760px;top:0;left:0px;border:0;align:center;"&gt;
-					&lt;v:imagedata src="http://dev3.freshdirect.com/media_stat/images/profile/email_background1.jpg"/&gt;
+					&lt;v:imagedata src="http://www.freshdirect.com/media_stat/images/profile/email_background1.jpg"/&gt;
         <![CDATA[<![endif]]]></xsl:comment>
 		
 		<tr valign="top"><td>
