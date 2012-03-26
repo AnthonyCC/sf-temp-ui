@@ -62,8 +62,10 @@ final int W_DNAV_TOTAL = 970;
 					var currentTagTokens = data.split( "," );
 					for(i=0;i<currentTagTokens.length;i++) {
 						var email = currentTagTokens[i].substring(currentTagTokens[i].indexOf("<") + 1, currentTagTokens[i].indexOf(">"));
-						//window.alert("email:"+email);
-						t2.add(email);
+						if(email.length > 0) {
+							//window.alert("email:"+email);
+							t2.add(email);
+						}
 					}
 				  }
 				  element.value = "";

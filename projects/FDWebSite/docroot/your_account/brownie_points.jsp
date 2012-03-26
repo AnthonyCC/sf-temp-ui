@@ -69,6 +69,7 @@ String browserType=(String)request.getHeader("User-Agent");
 				msg_valid = false;
 			}
 		}
+		
 	%>
 	<fd:ReferAFriend>
 	<%
@@ -218,7 +219,7 @@ String browserType=(String)request.getHeader("User-Agent");
 										<% if("email".equals(current)) { 
 											System.out.println("^^^^^^^^^^^^^^^^^^^^^^^"+request.getParameter("action") + "-" + valid);
 										%>
-											<% if("sendmails".equals(request.getParameter("action")) && valid) {
+											<% if("sendmails".equals(request.getParameter("action")) && valid && msg_valid) {
 											//request submitted
 											%>
 												<div style="float:left;width:100%;padding:20px;">
@@ -261,7 +262,7 @@ String browserType=(String)request.getHeader("User-Agent");
 															<div id="greytext" style="float:left; width:90%; padding-top: 15px; padding-left: 15px;">
 																Enter personal message <span>(optional)</span>
 																<br />
-																<textarea id="mail_message" name="mail_message" rows="6" cols="40"><%= email_txt %></textarea>
+																<textarea id="mail_message" name="mail_message" rows="6" cols="40" maxlength="160"><%= email_txt %></textarea>
 															</div>
 														</td>
 													</tr>
