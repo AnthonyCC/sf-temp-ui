@@ -1026,7 +1026,7 @@ public class FDStoreProperties {
 		defaults.put(PROP_WEBPURIFY_URL, "http://api1.webpurify.com/services/rest/?api_key=%API_KEY%&method=%METHOD%&format=json&lang=%LANG%&callback=%CALLBACK%&text=%TEXT%");
 		defaults.put(PROP_WEBPURIFY_KEY, "3abce4fd5f2505565dd98f9700167eba");
 
-		defaults.put(FACEBOOK_APP_KEY, "176418392468226");
+		defaults.put(FACEBOOK_APP_KEY, "331367173579737");
 		
 		defaults.put(CLOUD_SPONGE_DOMAIN_KEY, "K3D6375BGJRXBSJR8456");
 		defaults.put(CLOUD_SPONGE_ADDRESS_IMPORTS, "true");
