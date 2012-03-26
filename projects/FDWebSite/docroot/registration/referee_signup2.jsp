@@ -104,11 +104,11 @@
 			
 			<br /><br />
 			<span class="bodyCopy">First Name <span class="star">*</span> </span> <br />
-			<input type="text" class="text11ref inputUser" maxlength="25" size="21" name="<%=EnumUserInfoName.DLV_FIRST_NAME.getCode()%>" value="<%=firstname%>" onfocus="fillVals(this.id, '','Enter your firstname');" onblur="fillVals(this.id, 'Def','Enter your firstname');" id="first_name"><fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.DLV_FIRST_NAME.getCode()%>" id='errorMsg'><br /><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></td>
+			<input type="text" class="text11ref inputUser" maxlength="25" size="21" name="<%=EnumUserInfoName.DLV_FIRST_NAME.getCode()%>" value="<%=firstname%>" onfocus="fillVals(this.id, '','Enter your first name');" onblur="fillVals(this.id, 'Def','Enter your first name');" id="first_name"><fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.DLV_FIRST_NAME.getCode()%>" id='errorMsg'><br /><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></td>
 			
 			<br /><br />
 			<span class="bodyCopy">Last Name <span class="star">*</span> </span> <br />
-			<input type="text"  maxlength="25" class="text11ref inputUser" size="21" name="<%=EnumUserInfoName.DLV_LAST_NAME.getCode()%>" value="<%=lastname%>" onfocus="fillVals(this.id, '','Enter your lastname');" onblur="fillVals(this.id, 'Def','Enter your lastname');" id="last_name"><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_LAST_NAME.getCode()%>' id='errorMsg'> <span class="text11rbold"><br /><%=errorMsg%></span></fd:ErrorHandler>
+			<input type="text"  maxlength="25" class="text11ref inputUser" size="21" name="<%=EnumUserInfoName.DLV_LAST_NAME.getCode()%>" value="<%=lastname%>" onfocus="fillVals(this.id, '','Enter your last name');" onblur="fillVals(this.id, 'Def','Enter your last name');" id="last_name"><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_LAST_NAME.getCode()%>' id='errorMsg'> <span class="text11rbold"><br /><%=errorMsg%></span></fd:ErrorHandler>
 			
 			<br /><br />
 			<span class="bodyCopy">Security Question <span class="star">*</span> </span> <br />

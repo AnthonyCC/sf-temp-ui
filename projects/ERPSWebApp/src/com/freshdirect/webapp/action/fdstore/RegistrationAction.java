@@ -284,6 +284,21 @@ public class RegistrationAction extends WebActionSupport {
 		//EnumServiceType serviceType = addInfo.getAddressType();
 		aInfo.validateEx(actionResult);
 		cInfo.validateEx(actionResult);
+		
+		if(session.getAttribute("REFERRALNAME") != null ) {
+			
+			if("Enter your first name".equals(cInfo.firstName)) {
+				actionResult.addError(new ActionError(EnumUserInfoName.DLV_FIRST_NAME.getCode(),SystemMessageList.MSG_REQUIRED));
+			}
+			
+			if("Enter your last name".equals(cInfo.lastName)) {
+				actionResult.addError(new ActionError(EnumUserInfoName.DLV_LAST_NAME.getCode(),SystemMessageList.MSG_REQUIRED));
+			}
+			
+			if("Answer".equals(aInfo.passwordHint)) {
+				actionResult.addError(new ActionError(EnumUserInfoName.PASSWORD_HINT.getCode(),SystemMessageList.MSG_REQUIRED));
+			}
+		}
 
 		if (!actionResult.isSuccess() /*&& !ALLOW_ALL*/) {
 			return ERROR;
@@ -295,6 +310,7 @@ public class RegistrationAction extends WebActionSupport {
 		cInfo.decorateCustomerInfo(customerInfo);
 		
 		if(session.getAttribute("REFERRALNAME") != null ) {
+			
 			//Check for new rule. Reject user registration if a same FirstName + LastName + Zipcode 
 			//combo already exists in the database.
 			if(!FDReferralManager.isUniqueFNLNZipCombo(cInfo.firstName, cInfo.lastName, user.getAddress().getZipCode(), null)) {
