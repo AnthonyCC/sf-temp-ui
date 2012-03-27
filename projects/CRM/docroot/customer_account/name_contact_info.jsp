@@ -14,12 +14,22 @@
 			});
 			
 			function checkForProfanity(){
-				jQuery.webpurify.check( jQuery("#displayName").val(), function(isProfane){
-					if(!isProfane)
-						document.name_contact_info.submit();
-					else
-						jQuery("#profaneText").html("We found profane text in display name. Please use different word");
-				});
+				if(jQuery("#displayName").val().length>0)
+				{
+					jQuery.webpurify.check( jQuery("#displayName").val(), function(isProfane){
+						if(!isProfane)
+							document.name_contact_info.submit();
+						else
+							{
+							jQuery("#profaneText").html("That Display Name is invalid. Please enter a different Display Name.");
+							return false;
+							}
+					});
+				}
+				else
+				{
+					document.name_contact_info.submit();
+				}
 			}	
 		</script>
 <tmpl:insert template='/template/top_nav_changed_dtd.jsp'>

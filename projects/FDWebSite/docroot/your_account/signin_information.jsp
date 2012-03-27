@@ -28,16 +28,22 @@ final int W_YA_SIGNIN_INFO = 970;
 		});
 		
 		function checkForProfanity(){
-			
+		if(jQuery("#displayName").val().length>0)
+			{
 			jQuery.webpurify.check( jQuery("#displayName").val(), function(isProfane){
 				if(!isProfane)
 					document.updateDisplayName.submit();
 				else
 					{
-					jQuery("#profaneText").html("We found profane text in display name. Please use different word");
+					jQuery("#profaneText").html("That Display Name is invalid. Please enter a different Display Name.");
 					return false;
 					}
 			});
+			}
+		else
+			{
+				document.updateDisplayName.submit();
+			}
 		}	
 		</script>
 		
@@ -322,7 +328,7 @@ String[] checkInfoForm = 	{EnumUserInfoName.EMAIL.getCode(), EnumUserInfoName.EM
 
 <tr>
 	<td colspan="6">
-		<img src="/media_stat/images/navigation/change_your_contact_info.gif" width="234" height="13" border="0" alt="CHANGE YOUR DISPLAY NAME" align="absbottom"> &nbsp;&nbsp;&nbsp;&nbsp; <br>
+		<img src="/media_stat/images/navigation/change_your_display_name.gif" width="234" height="13" border="0" alt="CHANGE YOUR DISPLAY NAME" align="absbottom"> &nbsp;&nbsp;&nbsp;&nbsp; <br>
     <img src="/media_stat/images/layout/cccccc.gif" width="<%= W_YA_SIGNIN_INFO %>" height="1" border="0" vspace="5">
 	</td>
 </tr>

@@ -1169,7 +1169,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			rs = ps.executeQuery();
 
 			if(rs.next()){
-				throw new ErpDuplicateDisplayNameException("Display name is already used. Please choose a different display name");
+				throw new ErpDuplicateDisplayNameException("That Display Name is already in use. Please try entering a different Display Name.");
 			}
 			
 		}catch(SQLException se){
