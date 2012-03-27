@@ -61,13 +61,6 @@ ALTER TABLE cust.fdcustomer
    ( referer_customer_id )
     REFERENCES cust.customer ( ID );
 	
-ALTER TABLE cust.fdcustomer
-  ADD
-    CONSTRAINT customer_ref_prgm_idx
-    FOREIGN KEY
-   ( referer_customer_id )
-    REFERENCES cust.referral_prgm ( ID );
-	
 --alter prmotion table
 ALTER TABLE CUST.PROMOTION_NEW ADD REFERRAL_PROMO VARCHAR2(1) DEFAULT 'N';
 
