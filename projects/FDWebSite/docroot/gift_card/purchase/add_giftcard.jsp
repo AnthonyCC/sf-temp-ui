@@ -182,6 +182,7 @@ final int W_ADD_GIFTCARD_TOTAL = 970;
 				</table>
 			--%>
 
+        </form>
 		<img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0" /><br />
 		<img src="/media_stat/images/layout/ff9900.gif" width="<%=W_ADD_GIFTCARD_TOTAL%>" height="1" border="0" /><br />
 		<img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0" /><br />
@@ -202,7 +203,6 @@ final int W_ADD_GIFTCARD_TOTAL = 970;
 				</td>
 			</tr>
 		</table>
-        </form>
         <script>
             function setCheckOut() {
                 document.giftcard_form.checkout.value = 'true';
