@@ -342,7 +342,7 @@ String[] checkInfoForm = 	{EnumUserInfoName.EMAIL.getCode(), EnumUserInfoName.EM
 	<td><input class="text9" size="28" maxlength="20" type="text" id="displayName" name="displayName" value="<%=displayName%>" style="width:150px; padding:1px;"></td>
 	<td colspan="2"><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DISPLAY_NAME.getCode()%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>
 		<span id="profaneText" class="text11rbold" style="display:block;width:250px"></span></td>
-	<td align="right"><a href="<%=response.encodeURL("/your_account/manage_account.jsp")%>"><img src="/media_stat/images/buttons/cancel.gif" width="54" height="16" vspace="3" hspace="3" border="0" alt="CANCEL"></a><a href="javascript:void(0);" onclick="checkForProfanity();">
+	<td align="right"><a href="<%=response.encodeURL("/your_account/manage_account.jsp")%>"><img src="/media_stat/images/buttons/cancel.gif" width="54" height="16" vspace="3" hspace="3" border="0" alt="CANCEL"></a><a style="text-decoration:none" href="javascript:void(0);" onclick="checkForProfanity();">
 	<img src="/media_stat/images/buttons/save_changes.gif"  width="84" height="16"  alt="Save Changes" vspace="3" hspace="3" border="0"></a></td>
 	
 </tr>

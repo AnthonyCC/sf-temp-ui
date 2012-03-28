@@ -181,7 +181,7 @@ public class SaleCronRunner {
 		// TODO Auto-generated method stub
 		try {
 			SimpleDateFormat dateFormatter = new SimpleDateFormat("EEE, MMM d, yyyy");
-			String subject="Unassigned Reservations for the delivery date"+dateFormatter.format(deliveryDate);
+			String subject="Unassigned Reservations for the delivery date "+dateFormatter.format(deliveryDate);
 
 			StringBuffer buf = new StringBuffer();
 
