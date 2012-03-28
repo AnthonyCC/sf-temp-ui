@@ -328,7 +328,7 @@ String[] checkInfoForm = 	{EnumUserInfoName.EMAIL.getCode(), EnumUserInfoName.EM
 
 <tr>
 	<td colspan="6">
-		<img src="/media_stat/images/navigation/change_your_display_name.gif" width="234" height="13" border="0" alt="CHANGE YOUR DISPLAY NAME" align="absbottom"> &nbsp;&nbsp;&nbsp;&nbsp; <br>
+		<img src="/media_stat/images/navigation/change_your_display_name.gif" border="0" alt="CHANGE YOUR DISPLAY NAME" align="absbottom"> &nbsp;&nbsp;&nbsp;&nbsp; <br>
     <img src="/media_stat/images/layout/cccccc.gif" width="<%= W_YA_SIGNIN_INFO %>" height="1" border="0" vspace="5">
 	</td>
 </tr>
@@ -341,12 +341,12 @@ String[] checkInfoForm = 	{EnumUserInfoName.EMAIL.getCode(), EnumUserInfoName.EM
 	<td colspan="2" align="right" style="padding-right:5px;" class="text12">Display Name</td>
 	<td><input class="text9" size="28" maxlength="20" type="text" id="displayName" name="displayName" value="<%=displayName%>" style="width:150px; padding:1px;"></td>
 	<td colspan="2"><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DISPLAY_NAME.getCode()%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>
-		<span id="profaneText" class="text11rbold"></span></td>
+		<span id="profaneText" class="text11rbold" style="display:block;width:250px"></span></td>
 	<td align="right"><a href="<%=response.encodeURL("/your_account/manage_account.jsp")%>"><img src="/media_stat/images/buttons/cancel.gif" width="54" height="16" vspace="3" hspace="3" border="0" alt="CANCEL"></a><a href="javascript:void(0);" onclick="checkForProfanity();">
 	<img src="/media_stat/images/buttons/save_changes.gif"  width="84" height="16"  alt="Save Changes" vspace="3" hspace="3" border="0"></a></td>
 	
 </tr>
-<tr><td colspan="6"><img src="/media_stat/images/layout/clear.gif" width="1" height="3" border="0"></td></tr>
+<tr><td colspan="6"><img src="/media_stat/images/layout/clear.gif" width="1" height="3" border="0"></td><td><br><br></td></tr>
 </form>
 
 <form method="post" name="updateContactInformation">
