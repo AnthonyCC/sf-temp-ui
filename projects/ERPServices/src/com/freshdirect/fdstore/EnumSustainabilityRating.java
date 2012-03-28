@@ -18,14 +18,14 @@ import java.util.Map;
  * @author $Author$
  */
 public enum EnumSustainabilityRating {
-	NEVER_RATED		( 0, "00", "Never Rated/Rating Expired"),
-	NO_RATING		( 1,   "X", "No rating"),
-	COULD_USE_SIGNIFICANT_IMPROVMENT		( 2, "01", "Could Use Significant Improvement"),
-	COULD_USE_IMPROVMENT	(3, "02", "Could Use Improvement"),
-	OK_ALTERNATIVE			(4, "03", "Ok Alternative"),
-	OCEAN_FRIENDLY	(5, "04", "Ocean-Friendly"),
-	VERY_OCEAN_FRIENDLY	(6, "05", "Very Ocean-Friendly"),
-	BEST_PRACTICE	(7, "06", "Best Practice");
+	NEVER_RATED		( 0, "00", "Not Yet Rated"),
+	NO_RATING		( 1,   "X", "No rating"), //shouldn't show up on web front
+	COULD_USE_SIGNIFICANT_IMPROVMENT		( 2, "01", "Avoid"),
+	COULD_USE_IMPROVMENT	(3, "02", "Good Alternative"),
+	OK_ALTERNATIVE			(4, "03", "Best Choice"),
+	OCEAN_FRIENDLY	(5, "04", "On The Path To Sustainability");
+	/*VERY_OCEAN_FRIENDLY	(6, "05", "Very Ocean-Friendly"),*/
+	/*BEST_PRACTICE	(7, "06", "Best Practice");*/
 
 	private final static Map<String, EnumSustainabilityRating> STATUSCODE_MAP = new HashMap<String, EnumSustainabilityRating>();
 
