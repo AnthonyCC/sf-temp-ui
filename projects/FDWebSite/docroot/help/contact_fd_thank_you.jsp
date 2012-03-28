@@ -1,5 +1,8 @@
+<%@ page import="com.freshdirect.fdstore.customer.FDCSContactHoursUtil" %>
+<%@ page import="com.freshdirect.fdstore.customer.FDCSContactHours" %>
 <%@ taglib uri='template' prefix='tmpl' %>
 
+<% List<FDCSContactHours> csHours = FDCSContactHoursUtil.getFDCSHours(); %>
 
 <tmpl:insert template='/common/template/dnav.jsp'>
 
@@ -17,23 +20,14 @@
 			 		 As a reminder, we are here:<br><br>
 			 
 			  <div align="center">
-                            <table>
-                            <tr>
-                                <td>Monday-Thursday</td>
-                                <td>6:30 AM to 12 AM</td>
-                            </tr>
-                            <tr>
-                                <td>Friday</td>
-                                <td>6:30 AM to 11 PM</td>
-                            </tr>
-                            <tr>
-                                <td>Saturday</td>
-                                <td>7:30 AM to 8 PM</td>
-                            </tr>
-                            <tr>
-                                <td>Sunday</td>
-                                <td>7:30 AM to 12 AM</td>
-                            </tr>
+                            <table>							
+							<% for (int i=0; i<csHours.size(); i++ ) {
+									FDCSContactHours csHour = (FDCSContactHours) csHours.get(i);
+							%>
+								<tr><td>
+								<%=csHour.getDaysDisplay()%> : <%=csHour.getHoursDisplay()%>
+								</td></tr>
+							<% } %>							
                             </table>
                         </div>
 			</td>
