@@ -28,29 +28,21 @@ request.setAttribute("listPos", "HPLeftTop");
     FDIdentity customerIdentity = null;
     if (user!=null && user.getLevel() == 2){
         customerIdentity = user.getIdentity();
-    }	
-    
+    }
 
 	response.setHeader("Pragma", "no-cache");
 	response.setHeader("Cache-Control", "no-cache");
 	
-	List<ErpCustomerCreditModel> mimList = FDReferralManager.getUserCredits(customerIdentity.getErpCustomerPK());
-	Iterator iter = mimList.iterator();
-	double totalAmount = 0;	
-	if(mimList.size() > 0) {
-		ErpCustomerCreditModel cm = (ErpCustomerCreditModel) mimList.get(mimList.size() - 1);
-		totalAmount = cm.getRemainingAmount();
-	}
+	List<ErpCustomerCreditModel> mimList = FDReferralManager.getUserCredits(customerIdentity.getErpCustomerPK());	
 	
 	String startIdx = request.getParameter("startIndex");	
 	if(startIdx == null)
 		startIdx = "0";
 
-	int list_size = mimList.size() - 1;
-	int index = list_size - Integer.parseInt(startIdx);
-	int endIdx = index - 15;
-	if(endIdx < 0) {
-		endIdx = 0;
+	int index = Integer.parseInt(startIdx);
+	int endIdx = index + 15;
+	if(endIdx > mimList.size()) {
+		endIdx = mimList.size();
 	}
 	
 	org.json.JSONObject jobj = new org.json.JSONObject();
@@ -60,17 +52,25 @@ request.setAttribute("listPos", "HPLeftTop");
 	jobj.put("dir", "asc");
 	jobj.put("recordsReturned", 15);
 	jobj.put("pageSize", 15);
-	jobj.put("totalAmount", JspMethods.formatPrice(totalAmount));
+	if (user!=null && user.getIdentity() !=null) {
+	%>
+		<fd:CustomerCreditHistoryGetterTag id='customerCreditHistory'>
+			<%
+			if (customerCreditHistory.getRemainingAmount()>0.00) {
+				jobj.put("totalAmount", JspMethods.formatPrice(customerCreditHistory.getRemainingAmount()));
+			}
+			%>
+		</fd:CustomerCreditHistoryGetterTag>
+	<%
+	}
 	org.json.JSONArray jsonItems = new org.json.JSONArray();
 	
-	for(int i=index;i >= endIdx; i--) {
+	for(int i=index;i < endIdx; i++) {
 		org.json.JSONObject obj = new org.json.JSONObject();
 		ErpCustomerCreditModel cm = (ErpCustomerCreditModel) mimList.get(i);
-		obj.put("date", cm.getcDate());
 		obj.put("type", cm.getDepartment());
 		obj.put("order", cm.getSaleId());
-		obj.put("amount", (cm.getSaleId() == null && cm.getAmount() != 0)?JspMethods.formatPrice(cm.getAmount()):"");
-		obj.put("balance", (cm.getSaleId() == null?"":"-") + JspMethods.formatPrice(cm.getRemainingAmount()));
+		obj.put("amount", "Redemption".equals(cm.getDepartment())?"(" + JspMethods.formatPrice(cm.getAmount()) + ")" :JspMethods.formatPrice(cm.getAmount()));
 		jsonItems.put(obj);
 	}
 	jobj.put("records", jsonItems);

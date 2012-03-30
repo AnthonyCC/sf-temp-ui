@@ -10,6 +10,14 @@
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='crm' prefix='crm' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
+
+
+<tmpl:insert template='/template/top_nav.jsp'>
+
+    <tmpl:put name='title' direct='true'>Credit History</tmpl:put>
+		
+    	<tmpl:put name='content' direct='true'>
+		
 <style>
 	.yui-skin-sam .yui-pg-container {
 		text-align: right;
@@ -95,13 +103,7 @@
 <fd:javascript  src="/assets/yui-2.9.0/paginator/paginator-min.js"/>
 <fd:javascript  src="/assets/yui-2.9.0/datasource/datasource-min.js" />
 <fd:javascript  src="/assets/yui-2.9.0/datatable/datatable-min.js" />
-<fd:javascript  src="/assets/yui-2.9.0/json/json-min.js" />
-
-<tmpl:insert template='/template/top_nav.jsp'>
-
-    <tmpl:put name='title' direct='true'>Credit History</tmpl:put>
-		
-    	<tmpl:put name='content' direct='true'>
+<fd:javascript  src="/assets/yui-2.9.0/json/json-min.js" />		
 		
         <fd:CustomerCreditHistoryGetterTag id="customerCreditHistory">
 		<% List creditHistory = customerCreditHistory.getCreditHistory();%>

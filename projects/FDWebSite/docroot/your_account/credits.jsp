@@ -40,6 +40,12 @@ request.setAttribute("listPos", "HPLeftTop");
 %>
 
 
+
+
+<tmpl:insert template='/common/template/dnav.jsp'>
+<tmpl:put name='title' direct='true'>FreshDirect - Your Profile</tmpl:put>
+<tmpl:put name='content' direct='true'>
+
 <style>
 
 	body { font-family: Verdana, Arial, sans-serif; font-size: 10px; height: 100%; }
@@ -141,10 +147,6 @@ request.setAttribute("listPos", "HPLeftTop");
 <fd:javascript  src="/assets/yui-2.9.0/datatable/datatable-min.js" />
 <fd:javascript  src="/assets/yui-2.9.0/json/json-min.js" />
 
-<tmpl:insert template='/common/template/dnav.jsp'>
-<tmpl:put name='title' direct='true'>FreshDirect - Your Profile</tmpl:put>
-<tmpl:put name='content' direct='true'>
-
 <!-- * start the actual summary info * -->
 
 <%
@@ -204,11 +206,9 @@ YAHOO.example.DynamicData = function() {
 
     // Column definitions
     var myColumnDefs = [ // sortable:true enables sorting
-        {key:"date", label:"Date", sortable:false},
         {key:"type", label:"Type", sortable:false},
-        {key:"order", label:"Order#", sortable:false, formatter:YAHOO.widget.DataTable.formatLink},
-        {key:"amount", label:"Credit Amount", sortable:false},
-        {key:"balance", label:"Balance", sortable:false}
+        {key:"order", label:"Against Order", sortable:false, formatter:YAHOO.widget.DataTable.formatLink},
+        {key:"amount", label:"Credit Amount", sortable:false}
     ];
     
     // DataSource instance
@@ -217,11 +217,9 @@ YAHOO.example.DynamicData = function() {
     myDataSource.responseSchema = {
         resultsList: "records",
         fields: [
-            {key:"date"},
             {key:"type"},
             {key:"order"},
-            {key:"amount"},
-            {key:"balance"}
+            {key:"amount"}
         ],
         metaFields: {
             totalRecords: "totalRecords", // Access to value in the server response
@@ -231,9 +229,9 @@ YAHOO.example.DynamicData = function() {
     
     // DataTable configuration
     var myConfigs = {
-        initialRequest: "sort=id&dir=asc&startIndex=0&results=25", // Initial request for first page of data
+        initialRequest: "sort=type&dir=asc&startIndex=0&results=25", // Initial request for first page of data
         dynamicData: true, // Enables dynamic server-driven data
-        sortedBy : {key:"date", dir:YAHOO.widget.DataTable.CLASS_ASC}, // Sets UI initial sort arrow
+        sortedBy : {key:"type", dir:YAHOO.widget.DataTable.CLASS_ASC}, // Sets UI initial sort arrow
         paginator: new YAHOO.widget.Paginator({ rowsPerPage:15,
 			template : "Page: {PageLinks}",
 			containers  : 'pagenums'

@@ -357,28 +357,28 @@ public class FDReferAFriendDAO {
 	}
 	
 	private static final String GET_CREDIT_LIST = 
-							"select cc.create_date, to_char(CC.CREATE_DATE, 'MM/DD/YYYY') formatted_create_date, " +  
-						        "decode(CC.DEPARTMENT, 'RAF', 'Referral', 'Refund') type , " +
-						        "'' as SALE_ID, CC.ORIGINAL_AMOUNT , CC.AMOUNT, CC.ID, cc.AFFILIATE " +  
-						        "from CUST.CUSTOMERCREDIT cc, " +
-						        "CUST.COMPLAINT c " +
-						        "where CC.COMPLAINT_ID = C.ID " +  
-						        "and     cc.CUSTOMER_ID =  ? " +
-						        "and    C.APPROVED_DATE is not null " +
-						    "union " +
-						    "select SA.ACTION_DATE as create_date, to_char(CC.CREATE_DATE, 'MM/DD/YYYY') formatted_create_date, " +  
-						        "decode(CC.DEPARTMENT, 'RAF', 'Referral', 'Refund') type, " +
-						        "sa.sale_id, 0 as ORIGINAL_AMOUNT , ac.AMOUNT, '' as ID, cc.AFFILIATE " + 
-						        "from CUST.CUSTOMERCREDIT cc, " +
-						        "CUST.COMPLAINT c, " +
-						        "CUST.APPLIEDCREDIT ac, " + 
-						        "CUST.SALESACTION sa, " +
-						        "cust.sale s " +
-						        "where       cc.CUSTOMER_ID =  ? " +
-						        "and  CC.ID = AC.CUSTOMERCREDIT_ID " +
-						        "and  AC.SALESACTION_ID = sa.id and S.CROMOD_DATE=sa.action_date and sa.action_type in ('CRO','MOD') " +
-						        "and  sa.sale_id = s.id   and s.status!='CAN' " +
-						    "order by 1";
+							"select cc.create_date, decode(CC.DEPARTMENT, 'RAF', 'Referral Credit', 'Store Credit') type, " + 
+                                "C.SALE_ID as SALE_ID, CC.ORIGINAL_AMOUNT as Amount " +
+                                "from CUST.CUSTOMERCREDIT cc, " +
+                                "CUST.COMPLAINT c " +
+                                "where CC.COMPLAINT_ID = C.ID " +   
+                                "and     cc.CUSTOMER_ID = ? " +
+                            "UNION ALL " +
+                            "select SA.ACTION_DATE as create_date, " +
+                                "'Redemption' as type, " +
+                                "s.id as SALE_ID, AC.AMOUNT as Amount from " + 
+                                "cust.customercredit cc, " +
+                                "CUST.APPLIEDCREDIT ac, " +
+                                "CUST.SALESACTION sa, " +
+                                "cust.sale s " +
+                                "where       cc.CUSTOMER_ID =  ? " +
+                                "and  CC.ID = AC.CUSTOMERCREDIT_ID " + 
+                                "and  AC.SALESACTION_ID = sa.id " +
+                                "and S.CROMOD_DATE=sa.action_date " +
+                                "and sa.action_type in ('CRO','MOD') " +
+                                "and  sa.sale_id = s.id and S.CUSTOMER_ID=sa.customer_id  and s.status!='CAN' " + 
+                            "order by 1 desc";
+
 
 	public static List<ErpCustomerCreditModel> getUserCredits(Connection conn,
 			String customerId) throws SQLException {
@@ -392,35 +392,11 @@ public class FDReferAFriendDAO {
 			rs = ps.executeQuery();
 			double remaining_amt = 0;
 			while (rs.next()) {
-				ErpAffiliate a = ErpAffiliate.getEnum(rs.getString("AFFILIATE"));
-				if(a == null)
-					a = ErpAffiliate.getEnum(ErpAffiliate.CODE_FD);
 				ErpCustomerCreditModel cm = new ErpCustomerCreditModel();
 				cm.setDepartment(rs.getString("TYPE"));
-				cm.setAffiliate(a);
-				cm.setcDate(rs.getString("formatted_create_date"));				
-				if(rs.getString("SALE_ID") != null) {
-					//Applied Credit
-					remaining_amt = remaining_amt - rs.getDouble("AMOUNT");
-					cm.setRemainingAmount(rs.getDouble("AMOUNT"));
-					cm.setAmount(rs.getDouble("ORIGINAL_AMOUNT"));
-					cm.setSaleId(rs.getString("SALE_ID"));
-					cmList.add(cm);
-					//Add new line to display the remaining amount
-					ErpCustomerCreditModel blankCm = new ErpCustomerCreditModel();
-					blankCm.setDepartment(rs.getString("TYPE"));
-					blankCm.setAffiliate(a);
-					blankCm.setcDate(rs.getString("formatted_create_date"));
-					blankCm.setRemainingAmount(remaining_amt);
-					//blankCm.setAmount(rs.getDouble("ORIGINAL_AMOUNT"));
-					cmList.add(blankCm);
-				} else {
-					remaining_amt = remaining_amt + rs.getDouble("ORIGINAL_AMOUNT");
-					cm.setRemainingAmount(remaining_amt);
-					cm.setAmount(rs.getDouble("ORIGINAL_AMOUNT"));
-					cm.setSaleId(rs.getString("SALE_ID"));
-					cmList.add(cm);
-				}
+				cm.setAmount(rs.getDouble("AMOUNT"));
+				cm.setSaleId(rs.getString("SALE_ID"));
+				cmList.add(cm);
 			}
 		} finally {
 			if (ps != null)
