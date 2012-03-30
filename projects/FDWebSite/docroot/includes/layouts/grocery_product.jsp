@@ -820,6 +820,51 @@ if(shelfLife != null && shelfLife.trim().length() > 0) { %>
 // ******** END -- Freshness Guarantee graphic ******************	
 %>
 
+	<% { %>
+	<fd:ProductGroupRecommender itemCount="6" siteFeature="YMAL_PDTL" facility="ymal_pdtl" currentNode="<%= prodModel %>" id="recommendedProducts" excludeAlcoholicContent="<%= true %>" ymalSource="<%= prodModel %>">
+	<div id="ymal_pdtl_container" class="carousel-box" style="padding-top: 20px;">
+		<div style="text-align: center; padding-bottom: 10px; margin-bottom: 10px; border-bottom: 1px dotted gray;">
+			<img src="/media_stat/images/template/ymal_title.gif" alt="YMAL" width="140" height="12" style="border: 0">
+		</div>
+			<display:Carousel id="cat2_carousel" carouselId="cat2_carousel" width="150" numItems="1" showCategories="false" itemsToShow="<%= recommendedProducts.getProducts() %>" trackingCode="ymal_pdtl" maxItems="6" style="margin-left: auto; margin-right: auto;">
+				<%
+					final ProductModel __c_prd = (ProductModel) currentItem;
+				%>
+				<display:GetContentNodeWebId id="webId" product="<%= currentItem %>" clientSafe="<%= true %>">
+				<div id="hotspot-<%= webId %>">
+					<display:ProductImage product="<%= __c_prd %>" showRolloverImage="true" useAlternateImage="true"
+							className="productImage" height="90" enableQuickBuy="false" webId="<%= webId %>"/>
+					<display:ProductRating product="<%= __c_prd %>" />
+					<div class="productname">
+						<display:ProductName product="<%= __c_prd %>" showBrandName="true"/>
+					</div>
+					<display:ProductPrice impression="<%= new ProductImpression(__c_prd) %>" showDescription="true"/>
+					<%-- QUICK BUY SECTION START --%>
+					<img id="qbButton-<%= webId %>" class="qbButton" style="display: inline-block; position: absolute; left: 15px; top: 65px;" src="/media_stat/images/quickbuy/quickbuy_button_hover.gif">
+					<script>
+						YAHOO.util.Event.onDOMReady(function() {
+							FD_QuickBuy.decorate('hotspot-<%= webId %>', ['qbButton-<%= webId %>', 'hotspot-<%= webId %>'], {
+									departmentId: '<%= __c_prd.getDepartment().getContentName() %>',
+									categoryId: '<%= __c_prd.getCategory().getContentName() %>',
+									productId: '<%= __c_prd.getContentName() %>'
+							},{
+								variant: '<%= recommendedProducts.getVariant().getId() %>',
+								impId: '<%= recommendedProducts.getImpressionId(__c_prd) %>',
+								trk: 'ymal_pdtl',
+								source: 'SS'
+							});
+						});
+					</script>
+					<%-- QUICK BUY SECTION END --%>
+				</div>
+				</display:GetContentNodeWebId>
+			</display:Carousel>
+			
+		<div style="text-align: center; padding-bottom: 10px; border-bottom: 1px dotted gray;">
+		</div>
+	</div>
+	</fd:ProductGroupRecommender>
+	<% } %>
 
 </td>
 </tr>
