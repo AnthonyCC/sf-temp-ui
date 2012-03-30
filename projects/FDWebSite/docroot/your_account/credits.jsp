@@ -147,6 +147,7 @@ request.setAttribute("listPos", "HPLeftTop");
 <fd:javascript  src="/assets/yui-2.9.0/datatable/datatable-min.js" />
 <fd:javascript  src="/assets/yui-2.9.0/json/json-min.js" />
 
+
 <!-- * start the actual summary info * -->
 
 <%
@@ -206,6 +207,7 @@ YAHOO.example.DynamicData = function() {
 
     // Column definitions
     var myColumnDefs = [ // sortable:true enables sorting
+		{key:"date", label:"Date", sortable:false},
         {key:"type", label:"Type", sortable:false},
         {key:"order", label:"Against Order", sortable:false, formatter:YAHOO.widget.DataTable.formatLink},
         {key:"amount", label:"Credit Amount", sortable:false}
@@ -217,6 +219,7 @@ YAHOO.example.DynamicData = function() {
     myDataSource.responseSchema = {
         resultsList: "records",
         fields: [
+			{key:"date"},
             {key:"type"},
             {key:"order"},
             {key:"amount"}

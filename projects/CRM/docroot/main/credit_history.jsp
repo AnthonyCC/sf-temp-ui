@@ -104,6 +104,7 @@
 <fd:javascript  src="/assets/yui-2.9.0/datasource/datasource-min.js" />
 <fd:javascript  src="/assets/yui-2.9.0/datatable/datatable-min.js" />
 <fd:javascript  src="/assets/yui-2.9.0/json/json-min.js" />		
+<fd:javascript  src="/assets/yui-2.9.0/selector/selector-min.js" />
 		
         <fd:CustomerCreditHistoryGetterTag id="customerCreditHistory">
 		<% List creditHistory = customerCreditHistory.getCreditHistory();%>
@@ -111,7 +112,7 @@
 		<div class="sub_nav">
             <table width="100%">
                 <tr>
-					<td width="25%" align="center">TOTAL: <b><%=customerCreditHistory.getSumCredit()  + customerCreditHistory.getSumRefund()%></b> <span class="note">(Store Credit<%=customerCreditHistory.getSumCredit()  > 1 ? "s" : ""%>: <b><%=customerCreditHistory.getSumCredit() %></b>, Refund<%=customerCreditHistory.getSumRefund() > 1 ? "s" : ""%>: <b><%=customerCreditHistory.getSumRefund()%></b>)</span--%></td>
+					<td width="25%" align="center">TOTAL: <b><%=customerCreditHistory.getSumCredit()  + customerCreditHistory.getSumRefund()%></b> <span class="note">(Store Credit<%=customerCreditHistory.getSumCredit()  > 1 ? "s" : ""%>: <b><%=customerCreditHistory.getSumCredit() %></b>, Refund<%=customerCreditHistory.getSumRefund() > 1 ? "s" : ""%>: <b><%=customerCreditHistory.getSumRefund()%></b>)</span></td>
                     <td width="25%" align="center">Available store credit: <b><%=JspMethods.formatPrice(customerCreditHistory.getRemainingAmount())%></b></td>
                     <td width="25%" align="center">Total store credit issued: <b><%=JspMethods.formatPrice(customerCreditHistory.getTotalCreditsIssued())%></b></td>
                     <td width="25%" align="center">Total cash back issued: <b><%=JspMethods.formatPrice(customerCreditHistory.getTotalCashBack())%></b></td>
@@ -176,7 +177,7 @@
 				YAHOO.util.Event.addListener(window, "load", function() {
 					YAHOO.example.ClientPagination = function() {
 						var myColumnDefs = [
-							{key:"date", label:"Date/Time", sortable:true},
+							{key:"date", label:"Date|Time", sortable:true},
 							{key:"order", label:"Order#", sortable:true},
 							{key:"type", label:"Type", sortable:true},
 							{key:"department", label:"Department", sortable:true},
@@ -191,7 +192,7 @@
 						myDataSource.responseType = YAHOO.util.DataSource.TYPE_JSON;
 						myDataSource.responseSchema = {
 							resultsList: "records",
-							fields: ["date","order","type","department","status","scredit","cashback","issuedby","approvedby"]
+							fields: ["date", "order","type","department","status","scredit","cashback","issuedby","approvedby"]
 						};
 
 						var oConfigs = {								

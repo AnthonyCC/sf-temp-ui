@@ -203,6 +203,7 @@ String jsonString = jobj.toString();
 <fd:javascript  src="/assets/yui-2.9.0/datasource/datasource-min.js" />
 <fd:javascript  src="/assets/yui-2.9.0/datatable/datatable-min.js" />
 <fd:javascript  src="/assets/yui-2.9.0/json/json-min.js" />
+<fd:javascript  src="/assets/yui-2.9.0/selector/selector-min.js" />
 
 <tmpl:insert template='/template/top_nav.jsp'>
 

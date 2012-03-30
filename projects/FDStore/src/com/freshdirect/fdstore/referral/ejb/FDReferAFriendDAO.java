@@ -357,14 +357,15 @@ public class FDReferAFriendDAO {
 	}
 	
 	private static final String GET_CREDIT_LIST = 
-							"select cc.create_date, decode(CC.DEPARTMENT, 'RAF', 'Referral Credit', 'Store Credit') type, " + 
+							"select cc.create_date, to_char(CC.CREATE_DATE, 'MM/DD/YYYY') formatted_create_date, " + 
+							    "decode(CC.DEPARTMENT, 'RAF', 'Referral Credit', 'Store Credit') type, " + 
                                 "C.SALE_ID as SALE_ID, CC.ORIGINAL_AMOUNT as Amount " +
                                 "from CUST.CUSTOMERCREDIT cc, " +
                                 "CUST.COMPLAINT c " +
                                 "where CC.COMPLAINT_ID = C.ID " +   
                                 "and     cc.CUSTOMER_ID = ? " +
                             "UNION ALL " +
-                            "select SA.ACTION_DATE as create_date, " +
+                            "select SA.ACTION_DATE, to_char(SA.ACTION_DATE, 'MM/DD/YYYY') as formatted_create_date, " +
                                 "'Redemption' as type, " +
                                 "s.id as SALE_ID, AC.AMOUNT as Amount from " + 
                                 "cust.customercredit cc, " +
@@ -379,7 +380,7 @@ public class FDReferAFriendDAO {
                                 "and  sa.sale_id = s.id and S.CUSTOMER_ID=sa.customer_id  and s.status!='CAN' " + 
                             "order by 1 desc";
 
-
+	
 	public static List<ErpCustomerCreditModel> getUserCredits(Connection conn,
 			String customerId) throws SQLException {
 		PreparedStatement ps = null;
@@ -393,6 +394,7 @@ public class FDReferAFriendDAO {
 			double remaining_amt = 0;
 			while (rs.next()) {
 				ErpCustomerCreditModel cm = new ErpCustomerCreditModel();
+				cm.setcDate(rs.getString("formatted_create_date"));
 				cm.setDepartment(rs.getString("TYPE"));
 				cm.setAmount(rs.getDouble("AMOUNT"));
 				cm.setSaleId(rs.getString("SALE_ID"));

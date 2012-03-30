@@ -56,9 +56,7 @@ request.setAttribute("listPos", "HPLeftTop");
 	%>
 		<fd:CustomerCreditHistoryGetterTag id='customerCreditHistory'>
 			<%
-			if (customerCreditHistory.getRemainingAmount()>0.00) {
 				jobj.put("totalAmount", JspMethods.formatPrice(customerCreditHistory.getRemainingAmount()));
-			}
 			%>
 		</fd:CustomerCreditHistoryGetterTag>
 	<%
@@ -68,8 +66,9 @@ request.setAttribute("listPos", "HPLeftTop");
 	for(int i=index;i < endIdx; i++) {
 		org.json.JSONObject obj = new org.json.JSONObject();
 		ErpCustomerCreditModel cm = (ErpCustomerCreditModel) mimList.get(i);
+		obj.put("date", cm.getcDate());
 		obj.put("type", cm.getDepartment());
-		obj.put("order", cm.getSaleId());
+		obj.put("order", "Referral Credit".equals(cm.getDepartment())?"":cm.getSaleId());
 		obj.put("amount", "Redemption".equals(cm.getDepartment())?"(" + JspMethods.formatPrice(cm.getAmount()) + ")" :JspMethods.formatPrice(cm.getAmount()));
 		jsonItems.put(obj);
 	}
