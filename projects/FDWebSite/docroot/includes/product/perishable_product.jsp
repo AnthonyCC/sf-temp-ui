@@ -230,7 +230,12 @@ final int W_PERISHABLE_PRODUCT_RIGHT = 369;
 											departmentId: '<%= __c_prd.getDepartment().getContentName() %>',
 											categoryId: '<%= __c_prd.getCategory().getContentName() %>',
 											productId: '<%= __c_prd.getContentName() %>'
-									}, '<%= webId %>');
+									},{
+										variant: '<%= recommendedProducts.getVariant().getId() %>',
+										impId: '<%= recommendedProducts.getImpressionId(__c_prd) %>',
+										trk: 'ymal_pdtl',
+										source: 'SS'
+									});
 								});
 							</script>
 							<%-- QUICK BUY SECTION END --%>

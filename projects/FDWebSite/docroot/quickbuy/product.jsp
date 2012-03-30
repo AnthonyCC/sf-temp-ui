@@ -84,7 +84,11 @@
 	</div>
 	<div class="right">
 		<div style="padding-bottom: 2em; text-align: right;">
-			<a class="title12" href="<%= FDURLUtil.getProductURI(productNode, request.getParameter("trk")) %>&amp;backPage=<%= URLEncoder.encode(srcPage, "UTF-8") %>&amp;refTitle=<%= URLEncoder.encode(srcTitle, "UTF-8") %>" target="_top">More about this product</a>
+		<% if (__isWineLayout) { %>
+			<a class="title12" href="<%= FDURLUtil.getProductURI(productNode, request.getParameter("variant"), request.getParameter("trk"), "qb", -1) %>&amp;backPage=<%= URLEncoder.encode(srcPage, "UTF-8") %>&amp;refTitle=<%= URLEncoder.encode(srcTitle, "UTF-8") %>" target="_top">More about this product</a>
+		<% } else { %>
+			<a class="title12" href="<%= FDURLUtil.getProductURI(productNode, request.getParameter("variant"), request.getParameter("trk"), "qb", -1) %>" target="_top">More about this product</a>
+		<% } %>
 		</div>
 	<%
 	if (__isWineLayout) {

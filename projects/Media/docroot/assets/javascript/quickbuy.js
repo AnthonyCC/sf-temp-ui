@@ -51,7 +51,40 @@ FD_QuickBuy._randomId = function(length) {
         str += chars[Math.floor(Math.random() * this._chars.length)];
     }
     return str;
-}
+};
+
+
+
+/**
+ * Method used to decorate url with tracking parameters
+ * 
+ * @param uri
+ * @param tracking Object holding tracking codes
+ * @returns
+ */
+FD_QuickBuy._includeTrackingCodes = function(uri, tracking) {
+	var f = function(obj, u, params) {
+		var i, key;
+		for (i=0; i<params.length; i++) {
+			key = params[i];
+			if (obj[key])
+				u += '&amp;'+key+'='+encodeURIComponent( obj[key] );
+		}
+		return u;
+	};
+
+	if (typeof tracking !== 'undefined') {
+		uri = f(tracking, uri,
+			['variant', 'ymalSetId', 'originatingProductId', 'impId']);
+
+		if (tracking.trk) {
+			uri = f(tracking, uri,
+				['trk', 'rank']);
+		}
+	}
+
+	return uri;
+};
 
 
 
@@ -59,11 +92,12 @@ FD_QuickBuy._randomId = function(length) {
  * Display Quick Buy panel
  * 
  * 
- * @param {Object} deptId Department ID of product
- * @param {Object} catId Parent category ID of product
- * @param {Object} prdId Product ID
+ * @param {String} deptId Department ID of product
+ * @param {String} catId Parent category ID of product
+ * @param {String} prdId Product ID
+ * @param {Object} tracking Object holding various tracking parameters [optional]
  */
-FD_QuickBuy.showPanel = function(deptId, catId, prdId) {
+FD_QuickBuy.showPanel = function(deptId, catId, prdId, tracking) {
 	return function() {
 		var elementId= prdId+'_'+FD_QuickBuy._randomId(16);
 		var ctPanel = new YAHOO.widget.Panel(elementId, {
@@ -81,13 +115,30 @@ FD_QuickBuy.showPanel = function(deptId, catId, prdId) {
 
 		var winTitle = document.title.substring(14);
 
+		
+
+		var uri = "/quickbuy/product.jsp?catId="+encodeURIComponent(catId)+"&amp;productId="+encodeURIComponent(prdId);
+
+		if (tracking && tracking.source)
+			uri += "&amp;fdsc.source="+encodeURIComponent(tracking.source);
+
+		// store DOM ID
+		uri += '&amp;uid='+encodeURIComponent(elementId);
+
+		// include various codes for tracking purposes
+		uri = FD_QuickBuy._includeTrackingCodes(uri, tracking);
+		uri += '&amp;trkd=qb';
+		
+		// store master page URL and title for back-reference
+		uri += '&amp;refTitle='+encodeURIComponent(winTitle)+'&amp;referer='+encodeURIComponent(window.location.href);
+
 		var content = "";
 		content += '<div id="'+elementId+'_ctnt">\n';
 		content += '  <div id="'+elementId+'_overbox" class="overbox">\n';
 		content += '    <div id="'+elementId+'_nfeat" class="nfeat roundedbox"></div>\n';
 		content += '    <div id="'+elementId+'_errors" class="alerts roundedbox"></div>\n';
 		content += '  </div>\n';
-		content += '  <iframe id="'+elementId+'_frame" frameborder="0" src="/quickbuy/product.jsp?catId='+catId+'&amp;productId='+prdId+'&amp;fdsc.source=quickbuy&amp;refTitle='+escape(winTitle)+'&amp;referer='+escape(window.location.href)+'&amp;uid='+elementId+'" class="prodframe"></iframe>';
+		content += '  <iframe id="'+elementId+'_frame" frameborder="0" src="'+uri+'" class="prodframe"></iframe>';
 		content += '</div>\n';
 		
 		ctPanel.setBody( content );
@@ -126,7 +177,7 @@ FD_QuickBuy.showPanel = function(deptId, catId, prdId) {
 
 FD_QuickBuy.loadNewFeatureInner = function(panelId) {
 	var attrs = "element="+panelId;
-	var cObj = YAHOO.util.Connect.asyncRequest('POST', '/ajax/nfeat_inner.jsp', {
+	YAHOO.util.Connect.asyncRequest('POST', '/ajax/nfeat_inner.jsp', {
 		success: function(resp) {
 			if (resp.status == 200) {
 				var obj = YAHOO.util.Dom.get(panelId+"_nfeat");
@@ -141,7 +192,7 @@ FD_QuickBuy.loadNewFeatureInner = function(panelId) {
 
 // 'close' button handler
 FD_QuickBuy.closeNewFeatBox = function(nfeatId) {
-	var cObj = YAHOO.util.Connect.asyncRequest('POST', '/ajax/nfeat.jsp', {
+	YAHOO.util.Connect.asyncRequest('POST', '/ajax/nfeat.jsp', {
 		success: function(resp) {
 			YAHOO.util.Dom.get(nfeatId).style.display = "none";
 			document.quickbuyPanel.center();
@@ -191,7 +242,7 @@ FD_QuickBuy._attachHotspot = function(hotspot, btn, multiple) {
 			btn.animFadeOut.animate();
 		});
 	}
-}
+};
 
 
 /**
@@ -200,9 +251,10 @@ FD_QuickBuy._attachHotspot = function(hotspot, btn, multiple) {
  * @param {Object} hotspot Hotspot area where mouse is detected
  * @param {Object} btn Quick Buy button
  * @param {Object} prd Product object with three attributes: departmentId, categoryId and productId
+ * @param {Object} tracking Optional parameter. It contains various codes such as variantId, impressionId, etc.
  * 
  */
-FD_QuickBuy.decorate = function(hotspot, btn, prd) {
+FD_QuickBuy.decorate = function(hotspot, btn, prd, tracking) {
 	var __btns = YAHOO.lang.isArray(btn) ? btn : [btn];
 	var __btn = YAHOO.util.Dom.get(__btns[0]); // default button
 
@@ -222,7 +274,7 @@ FD_QuickBuy.decorate = function(hotspot, btn, prd) {
 
 	// BUTTONS / click receivers
 	//
-	var __panel = FD_QuickBuy.showPanel(prd.departmentId, prd.categoryId, prd.productId);
+	var __panel = FD_QuickBuy.showPanel(prd.departmentId, prd.categoryId, prd.productId, tracking);
 
 	var k;
 	for (k in __btns) {
