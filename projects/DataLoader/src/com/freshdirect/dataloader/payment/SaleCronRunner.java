@@ -202,28 +202,27 @@ public class SaleCronRunner {
 			for(Iterator<UnassignedDlvReservationModel> i = reservations.iterator(); i.hasNext();){
 				UnassignedDlvReservationModel info =  i.next();
 				 
-				 if(cutoff==null || cutoff.equals(info.getCutoff()))
-				 {
-					buf.append("<tr><td>").append(info.getOrderId()).append("</td><td>")
+				 
+					buf.append("<tr><td>")
 					.append(info.getDeliveryDate()).append("</td><td>")
 					.append(info.getCutoff()).append("</td><td>")
 					.append(info.getZoneCode()).append("</td><td>")
 					.append(info.getOrderId()).append("</td><td>")
 					.append(info.getStatusCode()).append("</td><td>")
-					.append(info.getReservationType()).append("</td><td>")
+					.append(info.getReservationType().getName()).append("</td><td>")
 					.append(info.getReservedOrderSize()).append("</td><td>")
 					.append(info.getReservedServiceTime()).append("</td><td>")
-					.append(info.getUnassignedActivityType()).append("</td><td>")
+					.append((info.getUnassignedActivityType()==null)?"":info.getUnassignedActivityType()).append("</td><td>")
 					.append(info.getUpdateStatus()).append("</td></tr>");
 					cutoff = info.getCutoff();
-				 }
-				 else break;
+					
+				 
 
 			}
 
 			
 			buf.append("</table>").append("</body>").append("</html>");
-
+			System.out.println(buf.toString());
 			ErpMailSender mailer = new ErpMailSender();
 			mailer.sendMail(ErpServicesProperties.getCronFailureMailFrom(),
 					ErpServicesProperties.getCronFailureMailTo(),"",

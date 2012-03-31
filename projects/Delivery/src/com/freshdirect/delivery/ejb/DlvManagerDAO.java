@@ -1253,13 +1253,13 @@ public class DlvManagerDAO {
 	
 	public static List<UnassignedDlvReservationModel> getUnassignedReservations(Connection conn, Date _date,boolean includeCutoff)  throws SQLException {
 		
-	String INCLUDE_CUTOFF = " AND to_char(t.cutoff_time, 'HH:MI AM') <= to_char(SYSDATE, 'HH:MI AM')";
+	String INCLUDE_CUTOFF_REPORT = " AND to_char(t.cutoff_time, 'HH:MI AM') <= to_char(SYSDATE, 'HH:MI AM') AND to_char(t.cutoff_time, 'HH:MI AM') >= to_char(SYSDATE-1/96, 'HH:MI AM')";
 	String ORDERBY_DATECUTOFF = " ORDER BY T.BASE_DATE,T.CUTOFF_TIME DESC";
 	String ORDERBY = " ORDER BY R.unassigned_action, R.UPDATE_STATUS NULLS LAST ";
 	
 	if(includeCutoff)
 	{
-		FETCH_UNASSIGNED_RESERVATIONS_QUERY += INCLUDE_CUTOFF;
+		FETCH_UNASSIGNED_RESERVATIONS_QUERY += INCLUDE_CUTOFF_REPORT;
 		FETCH_UNASSIGNED_RESERVATIONS_QUERY += ORDERBY_DATECUTOFF;
 	}
 	else

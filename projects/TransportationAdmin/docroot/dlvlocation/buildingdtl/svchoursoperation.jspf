@@ -27,6 +27,12 @@ function limitText(svcComment, len)
 		svcComment.value = svcComment.value.substring(0, len);
 }
 </script>
+<style type="text/css">
+.clstextarea
+{
+	font-size:9pt;
+}
+</style>
 <b>Service Entrance Hours of Operation</b>
 			<table class="forms1 t_Hours" border="0">
 						 						  
@@ -44,7 +50,7 @@ function limitText(svcComment, len)
 						 	</td>
 						    <td align="left">Comment</td>
 						    <td>				    
-								<form:textarea  rows="5" cols="30" disabled="true" path="svcCommentMon"  onkeydown="limitText(this, 255)"/>
+								<form:textarea cssStyle="font-size:9pt;resize: none" rows="5" cols="35" disabled="true" path="svcCommentMon"  onkeydown="limitText(this, 255)"/>
 						 	</td>
 						 </tr>							 
 						 <tr>
@@ -61,7 +67,7 @@ function limitText(svcComment, len)
 						 	</td>
 						    <td align="left">Comment</td>
 						    <td>				    
-								<form:textarea  rows="5" cols="30" disabled="true" path="svcCommentTue" onkeydown="limitText(this, 255)"/>
+								<form:textarea cssStyle="font-size:9pt;resize: none" rows="5" cols="35" disabled="true" path="svcCommentTue" onkeydown="limitText(this, 255)"/>
 						 	</td>
 						 </tr>			
 						 
@@ -80,7 +86,7 @@ function limitText(svcComment, len)
 						 	</td>
 						    <td align="left">Comment</td>
 						    <td>				    
-								<form:textarea  rows="5" cols="30" disabled="true" path="svcCommentWed"  onkeydown="limitText(this, 255)"/>
+								<form:textarea cssStyle="font-size:9pt;resize: none" rows="5" cols="35" disabled="true" path="svcCommentWed"  onkeydown="limitText(this, 255)"/>
 						 	</td>
 						 </tr>			
 						 				 
@@ -98,7 +104,7 @@ function limitText(svcComment, len)
 						 	</td>
 						    <td align="left">Comment</td>
 						    <td>				    
-								<form:textarea  rows="5" cols="30" disabled="true" path="svcCommentThu"  onkeydown="limitText(this, 255)"/>
+								<form:textarea  cssStyle="font-size:9pt;resize: none" rows="5" cols="35" disabled="true" path="svcCommentThu"  onkeydown="limitText(this, 255)"/>
 						 	</td>
 						 </tr>							 
 						 <tr>
@@ -115,7 +121,7 @@ function limitText(svcComment, len)
 						 	</td>
 						    <td align="left">Comment</td>
 						    <td>				    
-								<form:textarea  rows="5" cols="30" disabled="true" path="svcCommentFri"  onkeydown="limitText(this, 255)"/>
+								<form:textarea  cssStyle="font-size:9pt;resize: none" rows="5" cols="35" disabled="true" path="svcCommentFri"  onkeydown="limitText(this, 255)"/>
 						 	</td>
 						 </tr>							 
 						 <tr>
@@ -132,7 +138,7 @@ function limitText(svcComment, len)
 						 	</td>
 						    <td align="left">Comment</td>
 						    <td>				    
-								<form:textarea  rows="5" cols="30" disabled="true" path="svcCommentSat"  onkeydown="limitText(this, 255)"/>
+								<form:textarea  cssStyle="font-size:9pt;resize: none" rows="5" cols="35" disabled="true" path="svcCommentSat"  onkeydown="limitText(this, 255)"/>
 						 	</td>
 						 </tr>							 
 						 						 
@@ -150,7 +156,7 @@ function limitText(svcComment, len)
 						 	</td>
 						    <td align="left">Comment</td>
 						    <td>				    
-								<form:textarea  rows="5" cols="30" disabled="true" path="svcCommentSun"  onkeydown="limitText(this, 255)"/>
+								<form:textarea  cssStyle="font-size:9pt;resize: none" rows="5" cols="35" disabled="true" path="svcCommentSun"  onkeydown="limitText(this, 255)"/>
 						 	</td>
 						 </tr>							 
 						 
