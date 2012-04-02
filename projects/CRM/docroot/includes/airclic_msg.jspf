@@ -205,8 +205,8 @@ cellspacing:10px;
 		<td><textarea rows="4" cols="25" id="messageDesc"></textarea></td>
 		
 		</table>
-		<jsp:useBean id="JSONRPCBridge" scope="session" class="com.metaparadigm.jsonrpc.JSONRPCBridge" />
-		<% JSONRPCBridge.registerObject("manager", AirclicManager.getInstance()); %> 
+		<jsp:useBean id="JsonBridge" scope="session" class="com.metaparadigm.jsonrpc.JSONRPCBridge" />
+		<% JsonBridge.registerObject("manager", AirclicManager.getInstance()); %> 
 		
 		<input onclick="addEntry($F('ddate'), $F('route'), $F('stop'), $F('messageDesc'), $F('source'), $F('userId'), $F('orderId'));" value="Send" type="button"><br>
 	
