@@ -16,7 +16,7 @@ import com.freshdirect.framework.core.PrimaryKey;
 public class FDProfilePersistentBean extends DependentPersistentBeanSupport {
 	
 	private Map attributes = new HashMap();
-	private Map<String, String> initiatorMap = new HashMap<String, String>();
+	
 	public FDProfilePersistentBean() {
 	}
 	
@@ -68,17 +68,14 @@ public class FDProfilePersistentBean extends DependentPersistentBeanSupport {
 			return;
 		}
 		
-		PreparedStatement ps = conn.prepareStatement("INSERT INTO CUST.PROFILE (CUSTOMER_ID, PROFILE_TYPE, PROFILE_NAME, PROFILE_VALUE, PRIORITY, MODIFIED_BY) VALUES(?,'S',?,?,-1,?)");
+		PreparedStatement ps = conn.prepareStatement("INSERT INTO CUST.PROFILE (CUSTOMER_ID, PROFILE_TYPE, PROFILE_NAME, PROFILE_VALUE, PRIORITY) VALUES(?,'S',?,?,-1)");
 		for (Iterator i = this.attributes.entrySet().iterator(); i.hasNext(); ) {
 			Map.Entry e = (Map.Entry)i.next();
 			
 			ps.setString(1, this.getParentPK().getId());
 			ps.setString(2, (String)e.getKey());
 			ps.setString(3, (String)e.getValue());
-			if(getInitiator((String)e.getKey())!=null)
-				ps.setString(4, getInitiator((String)e.getKey()));
-			else
-				ps.setNull(4,java.sql.Types.VARCHAR);
+
 			ps.addBatch();
 		}
 		ps.executeBatch();
@@ -113,13 +110,5 @@ public class FDProfilePersistentBean extends DependentPersistentBeanSupport {
 	public void removeAttribute(String name) {
 		this.attributes.remove(name);
 		this.setModified();
-	}
-
-	public String getInitiator(String attribute) {
-		return initiatorMap.get(attribute);
-	}
-
-	public void setInitiator(String attribute,String initiator) {
-		this.initiatorMap.put(attribute, initiator);
 	}
 }

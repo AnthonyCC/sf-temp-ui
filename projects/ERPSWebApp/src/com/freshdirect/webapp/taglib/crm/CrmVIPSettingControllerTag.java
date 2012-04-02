@@ -23,7 +23,8 @@ import com.freshdirect.webapp.taglib.fdstore.AccountActivityUtil;
 				try{
 					String vipSetting= "true".equalsIgnoreCase(request.getParameter("vipSetting")) ? "true" : "false";
 					if(CrmSession.verifyCaseAttachment(pageContext.getSession(), actionResult)){
-						FDActionInfo info = AccountActivityUtil.getActionInfo(pageContext.getSession());
+						String note = "Set Profile Attribute: " + "VIPCustomer" + " = " + vipSetting;
+						FDActionInfo info = AccountActivityUtil.getActionInfo(pageContext.getSession(),note);
 						FDCustomerManager.setProfileAttribute(this.user.getIdentity(),"VIPCustomer",vipSetting,info);
 						user.invalidateCache();
 					}

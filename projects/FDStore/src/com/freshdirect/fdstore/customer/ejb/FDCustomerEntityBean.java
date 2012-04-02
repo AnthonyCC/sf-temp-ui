@@ -592,9 +592,4 @@ public class FDCustomerEntityBean extends EntityBeanSupport implements FDCustome
 		this.pymtVerifyAttempts=0;
 		this.setModified();
 	}
-
-
-	public void setInitiator(String attribute, String initiator) {
-		this.profile.setInitiator(attribute, initiator);
-	}
 }

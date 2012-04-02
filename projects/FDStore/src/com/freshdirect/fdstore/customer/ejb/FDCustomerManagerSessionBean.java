@@ -1762,7 +1762,6 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		try {
 			FDCustomerEB eb = getFdCustomerHome().findByPrimaryKey(
 					new PrimaryKey(identity.getFDCustomerPK()));
-			eb.setInitiator(key, info.getInitiator());
 			eb.setProfileAttribute(key, value);
 			if (info != null) {
 				this
