@@ -67,7 +67,7 @@
 
 											<tr>
 												<td>Asset No</td>
-												<td><form:input maxlength="15" size="15" path="assetNo" />
+												<td><form:input maxlength="6" size="15" path="assetNo" />
 												</td>
 												<td>&nbsp;<form:errors path="assetNo" />
 												</td>

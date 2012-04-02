@@ -17,7 +17,10 @@ public class AssetValidator extends AbstractValidator {
 		//  need to decide about the validation part
 		ValidationUtils.rejectIfEmpty(errors, "assetNo", "app.error.112", new Object[]{"Asset No"},"required field");
 		ValidationUtils.rejectIfEmpty(errors, "assetDescription", "app.error.112", new Object[]{"Asset Description"},"required field");			
-				
+		
+		if(model != null && model.getAssetNo() != null && model.getAssetNo().length() > 6) {
+			errors.rejectValue("assetNo", "app.error.150", new Object[]{"Asset No"},"");
+		}
 		
 	}
 	
