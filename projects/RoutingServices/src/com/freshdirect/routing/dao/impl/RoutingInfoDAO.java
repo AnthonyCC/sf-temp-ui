@@ -669,8 +669,8 @@ public class RoutingInfoDAO extends BaseDAO implements IRoutingInfoDAO   {
 					    		RoutingTimeOfDay _cutOffTime = new RoutingTimeOfDay(rs.getTimestamp("CUT_OFF"));
 					    		
 					    		String _destCode = rs.getString("FACILITY_CODE");
-					    		int toLeadTime = rs.getInt("TO_LEADTIME");
-					    		int fromLeadTime = rs.getInt("FROM_LEADTIME");
+					    		int toFacilityTime = rs.getInt("TO_LEADTIME");
+					    		int fromFacilityTime = rs.getInt("FROM_LEADTIME");
 					    		String routingCode = rs.getString("ROUTING_CODE");
 					    		
 					    		if(_firstDeliveryTime != null && _lastDeliveryTime != null 
@@ -679,11 +679,9 @@ public class RoutingInfoDAO extends BaseDAO implements IRoutingInfoDAO   {
 					    			RoutingTimeOfDay _dispatchTime = new RoutingTimeOfDay(_startTime);
 					    			
 					    			Date startTime = RoutingDateUtil.addMinutes(_firstDeliveryTime
-					    															, (toLeadTime != 0 ? -toLeadTime : -fromLeadTime));
-					    			Date endTime = RoutingDateUtil.addMinutes(_lastDeliveryTime
-																					, (fromLeadTime != 0 ? fromLeadTime : toLeadTime));
-
-					    			int runTime = RoutingDateUtil.getDiffInSeconds(endTime, startTime);
+					    															, (toFacilityTime != 0 ? -toFacilityTime : -fromFacilityTime));
+					    			
+					    			int runTime = RoutingDateUtil.getDiffInSeconds(_lastDeliveryTime, startTime);
 					    			
 					    			RoutingTimeOfDay _waveStartTime = new RoutingTimeOfDay(startTime);
 					    								    			

@@ -107,8 +107,7 @@ public class HandOffRoutingOutAction extends AbstractHandOffAction {
 									= routingInfoProxy.getPlannedTrailerDispatchTree(this.getBatch().getDeliveryDate(), this.getBatch().getCutOffDateTime());
 
 		if(this.getBatch() != null && this.getBatch().getBatchId() != null) {
-			
-			if(this.getBatch() != null) {
+						
 				lastCommittedBatchId = proxy.getLastCommittedHandOffBatch(this.getBatch().getDeliveryDate());
 				if(lastCommittedBatchId != null) {
 					currDispStatus = proxy.getHandOffBatchDispatchStatus(lastCommittedBatchId);
@@ -189,23 +188,41 @@ public class HandOffRoutingOutAction extends AbstractHandOffAction {
 						}
 					}			
 				}
+				
+				//processResult(this.getBatch().getBatchId(), sessionMapping);
+				DispatchCorrelationResult correlationResult = null;
+				if(RoutingServicesProperties.getHandOffDispatchCorrelationEnabled()) {			
+					correlationResult = checkRouteMismatch(s_routes, areaLookup, currDispStatus);	
+					assignDispatchSequence(s_routes, zoneLookup, proxy.getHandOffBatchDispatchCnt(this.getBatch().getDeliveryDate()));		
+				} else {
+					// This is the rollback strategy for Dispatch Time Correlation.
+					correlationResult = new DispatchCorrelationResult();
+					Map<RoutingTimeOfDay, EnumHandOffDispatchStatus> dispatchStatus = new TreeMap<RoutingTimeOfDay, EnumHandOffDispatchStatus>();
+					if(s_routes != null) {
+						for(IHandOffBatchRoute _routeModel : s_routes) {
+							_routeModel.setDispatchTime(_routeModel.getStartTime() != null 
+									? new RoutingTimeOfDay(RoutingDateUtil.addMinutes(_routeModel.getStartTime(), -25)) : null);
+							_routeModel.setDispatchSequence(0);
+							dispatchStatus.put(_routeModel.getDispatchTime(), EnumHandOffDispatchStatus.COMPLETE);
+						}
+					}
+				}
 
 				/*OriginLocation->RouteModel*/
-				Map<String, List<IHandOffBatchRoute>> routeLocationMapping = new HashMap<String, List<IHandOffBatchRoute>>();	
-							String originLocationId = null;
-				for(IHandOffBatchRoute _routeModel : s_routes) {
+				Map<String, List<IHandOffBatchRoute>> routeLocationMapping = new HashMap<String, List<IHandOffBatchRoute>>();
+				String originLocationId = null;
+				for (IHandOffBatchRoute _routeModel : s_routes) {
 					originLocationId = _routeModel.getOriginId();
-					_routeModel.setDispatchTime(_routeModel.getStartTime() != null 
-							? new RoutingTimeOfDay(RoutingDateUtil.addMinutes(_routeModel.getStartTime(), -25)) : null);
-
-								IFacilityModel model = facilityLookup.get(originLocationId);
-								if(model != null && IFacilityModel.CROSS_DOCK.equalsIgnoreCase(model.getFacilityTypeModel())){
-									if(!routeLocationMapping.containsKey(originLocationId)){
+					
+					IFacilityModel model = facilityLookup.get(originLocationId);
+					if (model != null
+							&& IFacilityModel.CROSS_DOCK.equalsIgnoreCase(model.getFacilityTypeModel())) {
+						if (!routeLocationMapping.containsKey(originLocationId)) {
 							routeLocationMapping.put(originLocationId, new ArrayList<IHandOffBatchRoute>());
-			}
+						}
 						routeLocationMapping.get(originLocationId).add(_routeModel);
-		}
-								}
+					}
+				}
 
 				/*OriginLocation->DispatchTrailerCorrelationResult*/
 				Map<String, DispatchTrailerCorrelationResult> trailerRouteMapping = new HashMap<String, DispatchTrailerCorrelationResult>();
@@ -252,30 +269,9 @@ public class HandOffRoutingOutAction extends AbstractHandOffAction {
 								}
 							}
 					}
-				}
-			}
+				}			
+			proxy.updateHandOffBatchDetails(this.getBatch().getBatchId(), s_trailers, s_routes, s_stops, correlationResult.getDispatchStatus());
 		}
-		
-		
-		//processResult(this.getBatch().getBatchId(), sessionMapping);
-		DispatchCorrelationResult correlationResult = null;
-		if(RoutingServicesProperties.getHandOffDispatchCorrelationEnabled()) {			
-			correlationResult = checkRouteMismatch(s_routes, areaLookup, currDispStatus);	
-			assignDispatchSequence(s_routes, zoneLookup, proxy.getHandOffBatchDispatchCnt(this.getBatch().getDeliveryDate()));		
-		} else {
-			// This is the rollback strategy for Dispatch Time Correlation.
-			correlationResult = new DispatchCorrelationResult();
-			Map<RoutingTimeOfDay, EnumHandOffDispatchStatus> dispatchStatus = new TreeMap<RoutingTimeOfDay, EnumHandOffDispatchStatus>();
-			if(s_routes != null) {
-				for(IHandOffBatchRoute _routeModel : s_routes) {
-					_routeModel.setDispatchTime(_routeModel.getStartTime() != null 
-							? new RoutingTimeOfDay(RoutingDateUtil.addMinutes(_routeModel.getStartTime(), -25)) : null);
-					_routeModel.setDispatchSequence(0);
-					dispatchStatus.put(_routeModel.getDispatchTime(), EnumHandOffDispatchStatus.COMPLETE);
-				}
-			}
-		}
-		proxy.updateHandOffBatchDetails(this.getBatch().getBatchId(), s_trailers, s_routes, s_stops, correlationResult.getDispatchStatus());
 		
 		checkStopExceptions();
 		checkTrailerRouteExceptions(trailerResult);
@@ -660,6 +656,7 @@ public class HandOffRoutingOutAction extends AbstractHandOffAction {
 			Iterator<IHandOffBatchRoute> routeItr = crossDockRoutes.iterator();
 			while(routeItr.hasNext()){
 				IHandOffBatchRoute route = routeItr.next();
+				
 				if(route.getDispatchTime() != null && route.getDispatchTime().after(new RoutingTimeOfDay(trailer.getCompletionTime()))){
 									double routeCartonCnt = 0;
 									double routeContCnt = 0;
