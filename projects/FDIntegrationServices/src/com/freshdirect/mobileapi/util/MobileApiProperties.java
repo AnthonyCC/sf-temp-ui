@@ -48,6 +48,8 @@ public class MobileApiProperties {
     private final static String PROP_BROWSE_ENABLED = "mobileapi.browse.enabled";
     
     private final static String PROP_EXTERNAL_INTERFACE_ENABLED = "mobileapi.extint.enabled";
+    
+    private final static String PROP_SUSTAINABILITY_RATING_ENABLED = "mobileapi.sustainabilityrating.enabled";
 
     public final static String UPGRADE = "UPGRADE";
 
@@ -69,6 +71,7 @@ public class MobileApiProperties {
         defaults.put(PROP_OAS_CACHE_TIMEOUT, "60");
         defaults.put(PROP_BROWSE_ENABLED, "true");
         defaults.put(PROP_EXTERNAL_INTERFACE_ENABLED, "true");
+        defaults.put(PROP_SUSTAINABILITY_RATING_ENABLED, "true");
         refresh();
     }
 
@@ -160,5 +163,8 @@ public class MobileApiProperties {
         return (Boolean.valueOf(get(PROP_EXTERNAL_INTERFACE_ENABLED)).booleanValue());
     }
     
+    public static boolean isSustainabilityRatingEnabled() {
+        return (Boolean.valueOf(get(PROP_SUSTAINABILITY_RATING_ENABLED)).booleanValue());
+    }
     
 }

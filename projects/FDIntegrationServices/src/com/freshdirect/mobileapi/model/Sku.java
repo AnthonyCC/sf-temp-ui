@@ -27,6 +27,7 @@ import com.freshdirect.fdstore.content.PriceCalculator;
 import com.freshdirect.fdstore.content.SkuModel;
 import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.QuickDateFormat;
+import com.freshdirect.mobileapi.util.MobileApiProperties;
 
 public class Sku {
     private static final Logger LOG = Logger.getLogger(Sku.class);
@@ -119,7 +120,8 @@ public class Sku {
             }
             if (this.productInfo.getSustainabilityRating() != null) {
                 EnumSustainabilityRating enumRating = this.productInfo.getSustainabilityRating();
-                if (enumRating != null && enumRating.isEligibleToDisplay()) {
+                if (enumRating != null && enumRating.isEligibleToDisplay()
+                		&& MobileApiProperties.isSustainabilityRatingEnabled()) {
                     this.sustainabilityRating = enumRating.getStatusCodeInDisplayFormat();
                     this.sustainabilityRatingDescription = enumRating.getShortDescription();
                 }
