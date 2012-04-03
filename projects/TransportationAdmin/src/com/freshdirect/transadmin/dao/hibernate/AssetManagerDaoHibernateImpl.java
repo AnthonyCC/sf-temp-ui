@@ -30,7 +30,7 @@ public class AssetManagerDaoHibernateImpl
 			
 		StringBuffer strBuf = new StringBuffer();
 		strBuf.append(" select asset from Asset as asset ");
-		if(atrName != null || (atrValue != null && !"".equals(atrValue)))
+		if((atrName != null && !"".equals(atrName)) || (atrValue != null && !"".equals(atrValue)))
 			strBuf.append(" left join asset.assetAttributes as attributes ");
 		if(assetType != null)
 			strBuf.append(" where asset.assetType = '").append(assetType).append("'");

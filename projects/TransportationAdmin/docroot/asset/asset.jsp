@@ -9,7 +9,7 @@
 <% 
 	String pageTitle = "Asset";	
 	String atrValue = request.getParameter("atrValue");
-	String atrName = request.getParameter("attributeType");
+	String atrName = request.getParameter("atrName");
 %>
   <tmpl:put name='title' direct='true'> Admin : <%=pageTitle%></tmpl:put>
 	<tmpl:put name='yui-lib'>
@@ -138,16 +138,24 @@
 					alert('Unable to connect to host system. Please contact system administrator!');
 					return;
 				}
+				var aName = '<%= atrName %>';
 				if (atrList != null) {
 					var attributeTypes = $('#atrName');
 					$('#atrName')[0].options.length = 0;
 					attributeTypes
 							.prepend('<option value="">--Please select attribute</option>');
 					for ( var i = 0; i < atrList.list.length; i++) {
-						attributeTypes
+						if(atrList.list[i].id.code === aName){
+							attributeTypes
+							.prepend("<option selected value="+ atrList.list[i].id.code +">"
+									+ atrList.list[i].id.code
+									+ "</option>");
+						} else {
+							attributeTypes
 								.prepend("<option value="+ atrList.list[i].id.code +">"
 										+ atrList.list[i].id.code
 										+ "</option>");
+						}
 					}
 				} else {
 					alert("Populating atttribute types failed");
