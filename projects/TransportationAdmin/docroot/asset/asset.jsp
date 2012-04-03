@@ -34,17 +34,16 @@
 			</div>
 		</div>
 
-	<c:if test="${not empty messages}">
-		<div class="err_messages">
-			<jsp:include page='/common/messages.jsp'/>
-		</div>
-	</c:if> 
-  
   <div class="contentroot">
-
+			
 		<div class="cont_topleft">
-			<div class="cont_row">
+			<div class="cont_row">				
 				<div class="cont_Litem">
+					<c:if test="${not empty messages}">
+						<div class="err_messages">
+							<jsp:include page='/common/messages.jsp'/>
+						</div>
+					</c:if> 				
 					<div class="scrTitle" style="float:left;padding-top:3px"><%=pageTitle%></div>
 						<div style="float:left;text-align:center;font-weight:bold;font-size:11px;">Asset Type<br>
 							<select id="assetType" name="assetType" onChange="javascript:getAttributeInfo();">
@@ -74,8 +73,8 @@
 	                   	  <span>&nbsp;<input id="view_button" type="image" alt="View" src="./images/icons/view.gif"  onclick="javascript:doCompositeLink('assetType','atrName','atrValue','asset.do');" onmousedown="this.src='./images/icons/view_ON.gif'" /></span>						
 	                   </div>
 	                   <div style="float:left;font-size:11px;"><br/>
-						&nbsp;&nbsp;<input id="attribute_button" type="button" value="Manage Attribute" onclick="javascript:showAssetAttributeForm();" />
-						&nbsp;<input id="assettype_button" type="button" value="Manage Asset Type" onclick="javascript:showAssetTypeForm();" />						
+						&nbsp;&nbsp;<input id="attribute_button" type="button" value="Attribute Type" onclick="javascript:showAssetAttributeForm();" />
+						&nbsp;<input id="assettype_button" type="button" value="Asset Type" onclick="javascript:showAssetTypeForm();" />						
 						</div>
 	               </div>
 			</div>
@@ -85,9 +84,9 @@
 			<div class="cont_row">
 				<div class="cont_Ritem">
 					  <form id="assetForm" action="" method="post">  
-						<ec:table items="assets"   action="${pageContext.request.contextPath}/asset.do?pAssetType=${param.pAssetType}"
+						<ec:table items="assets"   action="${pageContext.request.contextPath}/asset.do"
 							imagePath="${pageContext.request.contextPath}/images/table/*.gif"   title=""
-							width="98%"  view="fd" form="assetForm" autoIncludeParameters="false" rowsDisplayed="25"  >
+							width="99%"  view="fd" form="assetForm" autoIncludeParameters="false" rowsDisplayed="25"  >
 							
 							<ec:exportPdf fileName="assets.pdf" tooltip="Export PDF" 
 									  headerTitle="Transportation Assets" />
@@ -143,7 +142,7 @@
 					var attributeTypes = $('#atrName');
 					$('#atrName')[0].options.length = 0;
 					attributeTypes
-							.prepend('<option value="">--Please select attribute</option>');
+							.prepend('<option value="">--Please select Attribute</option>');
 					for ( var i = 0; i < atrList.list.length; i++) {
 						if(atrList.list[i].id.code === aName){
 							attributeTypes
@@ -165,6 +164,24 @@
 			$(document).ready(function() {
 				getAttributeInfo();
 			});
+			
+			function doDelete(tableId, url) 
+		    {    
+				    var paramValues = getParamList(tableId, url);
+				    if (paramValues != null) {
+				    	var hasConfirmed = confirm ("Do you want to delete the selected records?")
+				    	if (hasConfirmed) 
+						{
+				    		var param1 = document.getElementById("assetType").value;
+				     		var param2 = document.getElementById("atrName").value;
+				     		var param3 = document.getElementById("atrValue").value;
+				            var filters="&pAssetType="+param1+"&atrName="+param2+"&atrValue="+param3;
+						  	location.href = url+"?id="+ paramValues+filters;
+						} 
+				    } else {
+				    	alert('Please Select a Row!');
+				    }
+		    }
 		</script>
 		<%@ include file="i_addassetattribute.jspf"%>
 		<%@ include file="i_addassettype.jspf"%>

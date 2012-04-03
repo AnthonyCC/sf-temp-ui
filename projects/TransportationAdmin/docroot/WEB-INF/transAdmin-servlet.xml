@@ -134,7 +134,8 @@
                	<prop key="/sapupload.do">handOffController</prop> 
                	<prop key="/communityreport.do">handOffController</prop> 
                	
-               	<prop key="/asset.do">assetController</prop> 
+               	<prop key="/asset.do">assetController</prop>
+               	<prop key="/deleteasset.do">assetController</prop>         
                	<prop key="/editasset.do">assetFormController</prop>
                	<prop key="/assettemplate.do">assetController</prop> 
                	<prop key="/editassettemplate.do">assetTemplateFormController</prop>  
@@ -327,6 +328,7 @@
             <prop key="/communityreport.do">communityReportHandler</prop>
             
             <prop key="/asset.do">assetHandler</prop>
+            <prop key="/deleteasset.do">deleteAssetHandler</prop>            
             <prop key="/assettemplate.do">assetTemplateHandler</prop>
             <prop key="/gpsadminex.do">gpsDrivingDirectionsHandlerEx</prop>
             <prop key="/virrecordlog.do">virRecordLogHandler</prop>

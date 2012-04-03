@@ -1,13 +1,23 @@
 package com.freshdirect.transadmin.web;
 
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.web.servlet.ModelAndView;
 
+import com.freshdirect.routing.constants.EnumWaveInstancePublishSrc;
+import com.freshdirect.routing.util.RoutingServicesProperties;
+import com.freshdirect.transadmin.model.Asset;
 import com.freshdirect.transadmin.service.AssetManagerI;
 import com.freshdirect.transadmin.util.TransStringUtil;
+import com.freshdirect.transadmin.util.WaveUtil;
 
 /**
  * <code>MultiActionController</code> that handles all non-form URL's.
@@ -60,7 +70,7 @@ public class AssetController extends AbstractMultiActionController {
 		String assetType = request.getParameter("tAssetType");
 		
 		if(TransStringUtil.isEmpty(assetType)) {			
-			assetType = "GPS";
+			assetType = "TRUCK";
 		}
 		
 		ModelAndView mav = new ModelAndView("assetTemplateView");
@@ -68,6 +78,29 @@ public class AssetController extends AbstractMultiActionController {
         mav.getModel().put("assetTemplates", getAssetManagerService().getAssetTemplates(assetType));
         
 		return mav;
+	}
+	
+	public ModelAndView deleteAssetHandler(HttpServletRequest request, HttpServletResponse response) throws ServletException 
+	{
+		try {
+			Set assetSet = new HashSet();
+			String arrEntityList[] = getParamList(request);
+			
+			if (arrEntityList != null) {
+				int arrLength = arrEntityList.length;
+				for (int intCount = 0; intCount < arrLength; intCount++) {
+					Asset a = assetManagerService.getAsset(arrEntityList[intCount]);					
+					assetSet.add(a);					
+				}
+			}
+			assetManagerService.removeEntity(assetSet);
+			
+			saveMessage(request, getMessage("app.actionmessage.103", null));
+			return assetHandler(request,response);
+		} catch (Exception e) {			
+			e.printStackTrace();
+			throw new RuntimeException("Error in getting Asset List");
+		}
 	}
 
 }

@@ -2,6 +2,8 @@ package com.freshdirect.transadmin.web.json;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -239,7 +241,15 @@ public class AssetProviderController extends BaseJsonRpcController  implements I
 	public List getAttributeType(String assetType){
 		Collection attributeTypes = getAssetManagerService().getAssetAttributeTypes(null, assetType);
 		List result = new ArrayList(attributeTypes);
+		Collections.sort(result, new AtttributeTypeComparator());
 		return result;
+	}
+	
+	public class AtttributeTypeComparator implements Comparator<AssetAttributeType> {
+		@Override
+		public int compare(AssetAttributeType a1, AssetAttributeType a2) {			
+			return a2.getId().getCode().compareTo(a1.getId().getCode());
+		}
 	}
 	
 	public int addAssetType(String name, String desc){
