@@ -146,12 +146,12 @@
 					for ( var i = 0; i < atrList.list.length; i++) {
 						if(atrList.list[i].id.code === aName){
 							attributeTypes
-							.prepend("<option selected value="+ atrList.list[i].id.code +">"
+							.prepend("<option selected value='"+ atrList.list[i].id.code +"'>"
 									+ atrList.list[i].id.code
 									+ "</option>");
 						} else {
 							attributeTypes
-								.prepend("<option value="+ atrList.list[i].id.code +">"
+								.prepend("<option value='"+ atrList.list[i].id.code +"'>"
 										+ atrList.list[i].id.code
 										+ "</option>");
 						}
