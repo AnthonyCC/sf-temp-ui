@@ -269,31 +269,40 @@
 				<%
 				}
 				%>
-				
 				<fd:SeafoodSustainCheck>
 					<fd:FDProductInfo id="productInfo" skuCode="<%= defaultSku.getSkuCode() %>">
 					<%
-						if ( productInfo.getSustainabilityRating() != null) { 
-								
+						if ( productInfo.getSustainabilityRating() != null ) { 
+							
 							String rating="";
+							boolean skipDisplay = true;
 							EnumSustainabilityRating enumRating = productInfo.getSustainabilityRating();
-								if ( enumRating.isEligibleToDisplay() && productNode != null 
-														&& productNode.showDefaultSustainabilityRating()) {
+							
+							if ( enumRating != null && enumRating.isEligibleToDisplay() ) {
+								if (enumRating.getId() == 0) {
+									if (productNode.showDefaultSustainabilityRating()) {
+										rating = enumRating.getStatusCodeInDisplayFormat();
+										skipDisplay = false;
+									}
+								} else {
 									rating = enumRating.getStatusCodeInDisplayFormat();
-									%>
+									skipDisplay = false;
+								}
+								if (!skipDisplay) { %>
 									<table cellpadding="0" cellspacing="0" border="0">
 										<tr valign="middle">
 											<td class="ssRatingLearnMore ssRating<%=rating%>LearnMore">
-												Sustainability -&nbsp;<a href="javascript:pop('/common/template/generic_popup.jsp?contentPath=/media/editorial/seafood/sustainability/sustainability_rating.html&amp;windowSize=custom&amp;name=Learn more about seafood sustainability&amp;w=390', 535, 450)"><img src="/media_stat/images/ratings/fish_<%=rating%>.gif" name="ss_rating_<%=rating%>" height="15" width="35" alt="<%=enumRating.getShortDescription()%>" border="0" /></a>
+												Sustainability -&nbsp;<a href="javascript:pop('/shared/brandpop.jsp?brandId=bd_sustainable_ratings',400,585)"><img src="/media_stat/images/ratings/fish_<%=rating%>.gif" name="ss_rating_<%=rating%>" height="15" width="35" alt="<%=enumRating.getShortDescription()%>" border="0" /></a>
 											</td>
 										</tr>
 										<tr>
 											<td class="ssRatingLearnMore">
-												<a href="javascript:pop('/common/template/generic_popup.jsp?contentPath=/media/editorial/seafood/sustainability/sustainability_rating.html&amp;windowSize=custom&amp;name=Learn more about seafood sustainability&amp;w=390', 535, 450)">Click here to learn more</a>
+												<a href="javascript:pop('javascript:pop('/shared/brandpop.jsp?brandId=bd_sustainable_ratings',400,585)">Click here to learn more</a>
 											</td>
 										</tr>
 									</table>
-								<% }
+								<% } %>
+							<% }
 						}
 					%>
 					</fd:FDProductInfo>
