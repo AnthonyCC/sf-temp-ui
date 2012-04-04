@@ -1237,7 +1237,7 @@ public class DlvManagerDAO {
 	}
 	//List<DlvReservationModel> getUnassignedReservations()
 	
-	private static String FETCH_UNASSIGNED_RESERVATIONS_QUERY="SELECT  R.ID, R.ORDER_ID, R.CUSTOMER_ID, R.STATUS_CODE, R.TIMESLOT_ID, R.ZONE_ID, R.EXPIRATION_DATETIME, R.TYPE, R.ADDRESS_ID, "+
+	private static final String FETCH_UNASSIGNED_RESERVATIONS_QUERY="SELECT  R.ID, R.ORDER_ID, R.CUSTOMER_ID, R.STATUS_CODE, R.TIMESLOT_ID, R.ZONE_ID, R.EXPIRATION_DATETIME, R.TYPE, R.ADDRESS_ID, "+
 	" T.BASE_DATE,to_char(T.CUTOFF_TIME, 'HH:MI AM') CUTOFF_TIME, Z.ZONE_CODE,R.UNASSIGNED_DATETIME, R.UNASSIGNED_ACTION, R.IN_UPS, R.ORDER_SIZE, R.SERVICE_TIME, R.RESERVED_ORDER_SIZE" +
 	", R.RESERVED_SERVICE_TIME, R.UPDATE_STATUS, R.METRICS_SOURCE " +
 	", R.NUM_CARTONS , R.NUM_FREEZERS , R.NUM_CASES, " +
@@ -1253,21 +1253,18 @@ public class DlvManagerDAO {
 	
 	public static List<UnassignedDlvReservationModel> getUnassignedReservations(Connection conn, Date _date,boolean includeCutoff)  throws SQLException {
 		
-	String INCLUDE_CUTOFF_REPORT = " AND to_char(t.cutoff_time, 'HH:MI AM') <= to_char(SYSDATE, 'HH:MI AM') AND to_char(t.cutoff_time, 'HH:MI AM') >= to_char(SYSDATE-1/96, 'HH:MI AM')";
-	String ORDERBY_DATECUTOFF = " ORDER BY T.BASE_DATE,T.CUTOFF_TIME DESC";
-	String ORDERBY = " ORDER BY R.unassigned_action, R.UPDATE_STATUS NULLS LAST ";
-	
+	final StringBuffer updateQ = new StringBuffer();
+	updateQ.append(FETCH_UNASSIGNED_RESERVATIONS_QUERY);
 	if(includeCutoff)
 	{
-		FETCH_UNASSIGNED_RESERVATIONS_QUERY += INCLUDE_CUTOFF_REPORT;
-		FETCH_UNASSIGNED_RESERVATIONS_QUERY += ORDERBY_DATECUTOFF;
+		updateQ.append(" AND to_char(t.cutoff_time, 'HH:MI AM') <= to_char(SYSDATE, 'HH:MI AM') AND to_char(t.cutoff_time, 'HH:MI AM') >= to_char(SYSDATE-1/96, 'HH:MI AM')");
 	}
 	else
 	{
-		FETCH_UNASSIGNED_RESERVATIONS_QUERY += ORDERBY;
+		updateQ.append(" ORDER BY R.unassigned_action, R.UPDATE_STATUS NULLS LAST");
 	}
 	PreparedStatement ps =
-			conn.prepareStatement(FETCH_UNASSIGNED_RESERVATIONS_QUERY);
+			conn.prepareStatement(updateQ.toString());
 		
 		ps.setDate(1, new java.sql.Date(_date.getTime()));
 		ResultSet rs = ps.executeQuery();
