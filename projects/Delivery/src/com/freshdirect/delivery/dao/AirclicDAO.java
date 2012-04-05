@@ -1,8 +1,6 @@
 package com.freshdirect.delivery.dao;
 
-import java.io.IOException;
 import java.io.OutputStream;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -13,15 +11,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
-import javax.sql.DataSource;
 
 import com.freshdirect.crm.ejb.CriteriaBuilder;
 import com.freshdirect.delivery.DlvResourceException;
@@ -87,12 +79,12 @@ public class AirclicDAO {
 		String sql = null;
 		Map<String,Set<String>> userIds = new HashMap<String,Set<String>>();
 		String[] routes;
-		DateFormat df = new SimpleDateFormat("mm/dd/yyyy");
+		DateFormat df = new SimpleDateFormat("MM/dd/yyyy");
 		
 		try
 		{
 			CriteriaBuilder builder = new CriteriaBuilder();
-			builder.addSql("to_char(scandate,'mm/dd/yyyy') = ?", new Object[]{df.format(textMessage.getDeliveryDate())} );
+			builder.addSql("to_char(scandate,'MM/dd/yyyy') = ?", new Object[]{df.format(textMessage.getDeliveryDate())} );
 			
 			if(textMessage.getOrderId()!=null)
 				builder.addSql("order_number = ?", new Object[]{textMessage.getOrderId()} );

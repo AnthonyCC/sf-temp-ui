@@ -99,7 +99,7 @@ public class AirclicManager {
 		{
 			String result="";
 			try {
-				DateFormat df = new SimpleDateFormat("mm/dd/yyyy");
+				DateFormat df = new SimpleDateFormat("MM/dd/yyyy");
 				Date deliveryDate = df.parse(data[0]);
 				
 				int stop = 0;
