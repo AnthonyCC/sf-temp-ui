@@ -136,6 +136,8 @@ public class RoutingServicesProperties {
 	private final static String PROP_DEFAULT_UPS_LOCATIONTYPE		= "routingservices.default.ups.locationtype";
 	private final static String PROP_TRAILERNUMFORMAT_ENABLED		= "routingservices.trailerformat.enabled";
 	
+	private final static String PROP_TXTMESSAGE_ACCESSKEY	= "routingservices.txtmessage.accesskey";
+	
 	private final static String PROP_HANDOFF_SORTSTOPBYWINDOW		= "routingservices.handoff.sortstopbywindow";
 	
 	private static final Category LOGGER = LoggerFactory.getInstance( RoutingServicesProperties.class );
@@ -218,6 +220,7 @@ public class RoutingServicesProperties {
 	    defaults.put(PROP_TRAILER_ESTIMATIONCARTONSRANGE, 	"15");
 		defaults.put(PROP_DEFAULT_UPS_LOCATIONTYPE, "DPT");
 		defaults.put(PROP_TRAILERNUMFORMAT_ENABLED, "true");
+		defaults.put(PROP_TXTMESSAGE_ACCESSKEY, "2746766f6bfb620d471e9a477fd63804");
 
 		refresh();		
 	}
@@ -525,4 +528,7 @@ public class RoutingServicesProperties {
         return (new Boolean(get(PROP_TRAILERNUMFORMAT_ENABLED))).booleanValue();
     }
 
+	public static String getAccessKey() {
+		return get(PROP_TXTMESSAGE_ACCESSKEY);
+	}
 }
