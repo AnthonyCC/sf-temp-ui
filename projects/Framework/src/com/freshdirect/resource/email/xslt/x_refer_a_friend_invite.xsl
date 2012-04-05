@@ -19,14 +19,14 @@
 <body>
 <table width="800"> <tr><td>
 <div id="parentdiv" style="float:left;position:relative !important;top:0;left:0;">
-<table width="800" height="760" style="background-image:url('http://www.freshdirect.com/media_stat/images/profile/email_background1.jpg');background-repeat: no-repeat;background-position: top;border:0;">
+<table width="800" height="760" background="http://www.freshdirect.com/media_stat/images/profile/email_background1.jpg" style="background-image:url('http://www.freshdirect.com/media_stat/images/profile/email_background1.jpg');background-repeat: no-repeat;background-position: top;border:0;">
 		<xsl:comment>[if gte vml 1]<![CDATA[>]]>
         &lt;v:shape stroked="f" style= "float:left;position:absolute;z-index:-2;visibility:visible;width:800px; height:760px;top:0;left:0px;border:0;align:center;"&gt;
 					&lt;v:imagedata src="http://www.freshdirect.com/media_stat/images/profile/email_background1.jpg"/&gt;
         <![CDATA[<![endif]]]></xsl:comment>
 		
 		<tr valign="top"><td>
-		<table width="550" border='0' style="float:left;position:absolute !important;width:550px;align:center;top:70px;left:70px;padding-left:50px;margin-top:107px;margin-left:70px;">
+		<table width="550" border='0' style="float:left;position:absolute !important;width:550px;align:center;top:70px;left:70px;padding-left:50px;padding-top:107px;margin-left:70px;">
 			<xsl:comment>[if gte vml 1]<![CDATA[>]]>
 			&lt;tr&gt;&lt;td colspan="2"&gt;&lt;br/&gt;&lt;br/&gt;&lt;/td&gt;&lt;/tr&gt;
 			<![CDATA[<![endif]]]></xsl:comment>
@@ -37,7 +37,7 @@
 				</tr>
 				<tr>
 					<td colspan="2" align="center">
-						<p><img src="http://www.freshdirect.com/media_stat/images/profile/left_curly_bracket.jpg" border="0" /><b><xsl:value-of select="name"/></b>, has invited you to try Freshdirect.com<img src="http://www.freshdirect.com/media_stat/images/profile/right_curly_bracket.jpg" border="0" /></p><br />
+						<p><img src="http://www.freshdirect.com/media_stat/images/profile/left_curly_bracket.jpg" border="0" /><b><xsl:value-of select="name"/></b> has invited you to try Freshdirect.com<img src="http://www.freshdirect.com/media_stat/images/profile/right_curly_bracket.jpg" border="0" /></p><br />
 					</td>
 				</tr>
 				<tr>

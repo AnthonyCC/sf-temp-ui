@@ -170,9 +170,9 @@ response.setHeader("Cache-Control", "no-cache");
 			<ul>
 				<li>No response – no reply to the email you sent</li>
 				<li>Signed up – responded and eligibility was pre-approved</li>
-				<li>Offer redeemed --approved as as first time residential customer and received their first order.</li>
+				<li>Offer redeemed - approved as first time residential customer and received their first order</li>
 				<li>Offer not redeemed – entered another discount code </li>
-				<li>Inelgible – recipient was already a customer or was previously referred by another customer</li>
+				<li>Ineligible – recipient was already a customer or was previously referred by another customer</li>
 			</ul>
 			</div>
 		</td>
