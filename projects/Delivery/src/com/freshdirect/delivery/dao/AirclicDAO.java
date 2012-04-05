@@ -36,7 +36,7 @@ import com.freshdirect.framework.util.DateUtil;
 public class AirclicDAO {
 
 	
-	public static List<AirclicMessageVO> getMessages(Connection conn)
+	public static List<AirclicMessageVO> getMessages(Connection conn) throws DlvResourceException
 	{
 		List<AirclicMessageVO> messages = new ArrayList<AirclicMessageVO>();
 		PreparedStatement ps = null;
@@ -56,11 +56,10 @@ public class AirclicDAO {
 					
 			}
 		}
-		catch(Exception e)
+		catch(SQLException e)
 		{
-			e.printStackTrace();
-		}
-			
+			throw new DlvResourceException(e);
+		}	
 		finally
 		{
 			try {
@@ -79,39 +78,54 @@ public class AirclicDAO {
 			return messages;
 	}
 	
-	private static final String ROUTE_DWLD_QUERY = "select * FROM DLV.routedownload rd where to_char(scandate,'mm/dd/yyyy') = ? and route = ?";
+	private static final String ROUTE_DWLD_QUERY = "select * FROM DLV.routedownload rd where ";
 	
-	public static Set<String> getUserId(Connection conn, AirclicTextMessageVO textMessage)
+	public static Map<String,Set<String>> getUserId(Connection conn, AirclicTextMessageVO textMessage) throws DlvResourceException
 	{
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		String sql = null;
-		Set<String> userIds = new HashSet<String>();
+		Map<String,Set<String>> userIds = new HashMap<String,Set<String>>();
+		String[] routes;
+		DateFormat df = new SimpleDateFormat("mm/dd/yyyy");
+		
 		try
 		{
-			DateFormat df = new SimpleDateFormat("mm/dd/yyyy");
-			
 			CriteriaBuilder builder = new CriteriaBuilder();
+			builder.addSql("to_char(scandate,'mm/dd/yyyy') = ?", new Object[]{df.format(textMessage.getDeliveryDate())} );
+			
 			if(textMessage.getOrderId()!=null)
-				builder.addSql(" and order_number = ?", new Object[]{textMessage.getOrderId()} );
+				builder.addSql("order_number = ?", new Object[]{textMessage.getOrderId()} );
+			if(textMessage.getRoute()!=null)
+			{
+				routes = textMessage.getRoute().split(",");
+				builder.addInString("route", routes);
+			}
+			
 			ps = conn.prepareStatement(ROUTE_DWLD_QUERY+builder.getCriteria());
 		
-			ps.setString(1, df.format(textMessage.getDeliveryDate()));
-			ps.setString(2, textMessage.getRoute());
 			Object[] params = builder.getParams();
-			if(params!=null && params.length>0)
-			ps.setObject(3, params[0]);
-			
+			for (int i = 0; i < params.length; i++) {
+				ps.setObject(i + 1, params[i]);
+			}
 			rs = ps.executeQuery();
 			while (rs.next()) {
-				userIds.add(rs.getString("userId"));
+				if(!userIds.containsKey(rs.getString("userId")))
+				{
+					Set routeSet = new HashSet();
+					routeSet.add(rs.getString("route"));
+					userIds.put(rs.getString("userId"),routeSet);
+				}
+				else
+				{
+					userIds.get(rs.getString("userId")).add(rs.getString("route"));
+				}
 			}
 		}
-		catch(Exception e)
+		catch(SQLException e)
 		{
-			e.printStackTrace();
-		}
-			
+			throw new DlvResourceException(e);
+		}	
 		finally
 		{
 			try {
@@ -130,7 +144,7 @@ public class AirclicDAO {
 			return userIds;
 	}
 	
-	public static void sendMessage(Connection conn, Set<String> userIds, AirclicTextMessageVO message) throws DlvResourceException
+	public static void sendMessage(Connection conn, Map<String,Set<String>> userIds, AirclicTextMessageVO message) throws DlvResourceException
 	{
 		//airclic table
 
@@ -145,8 +159,8 @@ public class AirclicDAO {
 				if(message.getOrderId()!=null)
 				{
 					ps = conn.prepareStatement("INSERT INTO DLV.ORDERUPDATE(USERID, ORDER_NUMBER, NOTE) VALUES(?,?,?)");
-					
-					for(String userId: userIds)
+					Set<String> userIdSet = userIds.keySet();
+					for(String userId: userIdSet)
 					{
 						ps.setString(1, userId);
 						ps.setString(2, message.getOrderId());
@@ -159,13 +173,19 @@ public class AirclicDAO {
 				{
 
 					ps = conn.prepareStatement("INSERT INTO DLV.ROUTEUPDATE(USERID, ROUTE_NUMBER, NOTE) VALUES(?,?,?)");
+					Set<String> userIdSet = userIds.keySet();
 					
-					for(String userId: userIds)
+					for(String userId: userIdSet)
 					{
-						ps.setString(1, userId);
-						ps.setString(2, message.getRoute());
-						ps.setString(3, message.getMessage());
-						ps.addBatch();
+						Set<String> routeSet = userIds.get(userId);
+						
+						for(String routeId: routeSet)
+						{
+							ps.setString(1, userId);
+							ps.setString(2, routeId);
+							ps.setString(3, message.getMessage());
+							ps.addBatch();
+						}
 					}
 						ps.executeBatch();
 				
@@ -238,15 +258,13 @@ public class AirclicDAO {
 		}
 	}
 	
-	public static SignatureVO getSignatureDetails(Connection conn, String order)
-			throws IOException {
+	public static SignatureVO getSignatureDetails(Connection conn, String order) throws DlvResourceException {
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		OutputStream out = null;
 		SignatureVO vo = null;
 		try {
-			ps = conn
-					.prepareStatement("select sale_id, signature_timestamp, deliveredto , recipient , contains_alcohol  from cust.sale_signature where sale_id = ?");
+			ps = conn.prepareStatement("select sale_id, signature_timestamp, deliveredto , recipient , contains_alcohol  from cust.sale_signature where sale_id = ?");
 
 			ps.setString(1, order);
 			rs = ps.executeQuery();
@@ -260,9 +278,12 @@ public class AirclicDAO {
 						.getString("contains_alcohol")) ? false : true);
 				// vo.setSignature(rs.getBytes("signature"));
 			}
-		} catch (SQLException e) {
-			System.out.println(e);
-		} finally {
+		} 
+		catch(SQLException e)
+		{
+			throw new DlvResourceException(e);
+		}
+		finally {
 			try {
 				if (rs != null)
 					rs.close();
@@ -279,24 +300,25 @@ public class AirclicDAO {
 		return vo;
 	}
 
-	public static byte[] getSignature(Connection conn, String order)
-			throws IOException {
+	public static byte[] getSignature(Connection conn, String order) throws DlvResourceException {
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		OutputStream out = null;
 		byte[] _image = null;
 		try {
-			ps = conn
-					.prepareStatement("select signature from cust.sale_signature where sale_id = ?");
+			ps = conn.prepareStatement("select signature from cust.sale_signature where sale_id = ?");
 
 			ps.setString(1, order);
 			rs = ps.executeQuery();
 			if (rs.next()) {
 				_image = rs.getBytes("signature");
 			}
-		} catch (SQLException e) {
-			System.out.println(e);
-		} finally {
+		} 
+		catch(SQLException e)
+		{
+			throw new DlvResourceException(e);
+		}
+		finally {
 			try {
 				if (rs != null)
 					rs.close();
@@ -376,7 +398,7 @@ public class AirclicDAO {
 		}
 		return voList;
 	}
-	public static void getSignatureData(Connection conn, Date deliveryDate) throws IOException
+	public static void getSignatureData(Connection conn, Date deliveryDate) throws DlvResourceException 
 	{
 		PreparedStatement ps = null,ps1 = null;
 		ResultSet rs = null;
@@ -428,10 +450,12 @@ public class AirclicDAO {
 			long end = System.currentTimeMillis();
 			
 			System.out.println("Time spent syncing the signatures "+(end-start)/(1000)+" sec");
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} finally {
+		} 
+		catch(SQLException e)
+		{
+			throw new DlvResourceException(e);
+		}
+		finally {
 			try {
 				if (rs != null)
 					rs.close();
@@ -469,10 +493,12 @@ public class AirclicDAO {
 				result.put(empNextTel.getEmployeeId(), empNextTel);
 			}
 			
-		} catch (Exception e) {			
-			e.printStackTrace();
+		}
+		catch (Exception e) 
+		{	
 			throw new DlvResourceException(e);
-		} finally {
+		} 
+		finally {
 			try {
 				if (rs != null)
 					rs.close();
@@ -588,7 +614,7 @@ public class AirclicDAO {
 		}
 	}
 	
-	public static void main(String s[]) throws SQLException, NamingException, IOException	{
+/*	public static void main(String s[]) throws SQLException, NamingException, IOException, DlvResourceException	{
 		
 		Connection conn = getDataSource().getConnection();
 		getSignatureData(conn, null);
@@ -615,7 +641,7 @@ public class AirclicDAO {
 		h.put(Context.PROVIDER_URL, "t3://localhost:7001");
 		return new InitialContext(h);
 	}
-	
+	*/
 	   
 	   
 }

@@ -2,7 +2,7 @@
 <%@ page import="com.freshdirect.delivery.ejb.AirclicManager"%>
 <%@ page import="com.metaparadigm.jsonrpc.JSONRPCBridge"%>
 
-<script type="text/javascript" src="/assets/javascript/jsonrpc.js"></script>
+<script type="text/javascript" src="/assets/javascript/jsonrpc_airclic.js"></script>
 <script type="text/javascript" language="javascript">
 
 // loadPopup shows the overlay and dialogue box
@@ -81,7 +81,7 @@ function addEntry(date, route, stop, message, msgSrc, userId, orderId)
 }
 function populateText(message)
 {
-	$('messageDesc').update(message);
+	$('messageDesc').value = message;
 }
 //-->
 </script>
@@ -205,9 +205,11 @@ cellspacing:10px;
 		<td><textarea rows="4" cols="25" id="messageDesc"></textarea></td>
 		
 		</table>
-		<jsp:useBean id="JsonBridge" scope="session" class="com.metaparadigm.jsonrpc.JSONRPCBridge" />
-		<% JsonBridge.registerObject("manager", AirclicManager.getInstance()); %> 
-		
+		<% 
+		JSONRPCBridge j = JSONRPCBridge.getGlobalBridge();
+		if(j != null) {
+			j.registerObject("manager", AirclicManager.getInstance());
+		} %>
 		<input onclick="addEntry($F('ddate'), $F('route'), $F('stop'), $F('messageDesc'), $F('source'), $F('userId'), $F('orderId'));" value="Send" type="button"><br>
 	
 	<%} %>

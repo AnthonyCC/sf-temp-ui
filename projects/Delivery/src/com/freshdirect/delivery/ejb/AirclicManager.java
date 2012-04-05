@@ -23,6 +23,8 @@ import com.freshdirect.delivery.model.SignatureVO;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.core.ServiceLocator;
+import com.freshdirect.framework.util.MD5Hasher;
+import com.freshdirect.routing.util.RoutingServicesProperties;
 
 public class AirclicManager {
 	private final ServiceLocator serviceLocator;
@@ -44,7 +46,7 @@ public class AirclicManager {
 			this.serviceLocator = new ServiceLocator(FDStoreProperties.getInitialContext());
 		}
 		
-		public SignatureVO getSignatureDetails(String order)
+		public SignatureVO getSignatureDetails(String order) throws FDResourceException
 		{
 			SignatureVO signatureVO = null;
 			try
@@ -52,16 +54,16 @@ public class AirclicManager {
 			AirclicManagerSB sb = getAirclicManagerHome().create();
 			signatureVO = sb.getSignatureDetails(order);
 			}
-		
 			catch (CreateException e) {
-				e.printStackTrace();
-				} catch (RemoteException e) {
-				e.printStackTrace();
+				throw new FDResourceException(e, "Cannot create SessionBean");
+			} 
+			catch (RemoteException e) {
+				throw new FDResourceException(e, "Cannot talk to the SessionBean");
 			} 
 			return signatureVO;
 		}
 
-		public byte[] getSignature(String order)
+		public byte[] getSignature(String order) throws FDResourceException
 		{
 			byte[] _image = null;
 			try
@@ -69,11 +71,11 @@ public class AirclicManager {
 			AirclicManagerSB sb = getAirclicManagerHome().create();
 			_image = sb.getSignature(order);
 			}
-		
 			catch (CreateException e) {
-				e.printStackTrace();
-				} catch (RemoteException e) {
-				e.printStackTrace();
+				throw new FDResourceException(e, "Cannot create SessionBean");
+			} 
+			catch (RemoteException e) {
+				throw new FDResourceException(e, "Cannot talk to the SessionBean");
 			} 
 			return _image;
 
@@ -93,34 +95,35 @@ public class AirclicManager {
 			return instance;
 		}
 		
-		public String sendMessage(String[] data)
+		public String sendMessage(String[] data) throws FDResourceException
 		{
+			String result="";
 			try {
 				DateFormat df = new SimpleDateFormat("mm/dd/yyyy");
 				Date deliveryDate = df.parse(data[0]);
-				String result = "";
+				
 				int stop = 0;
 				if(data[2]!=null) stop = Integer.parseInt(data[2]);
+				
 			AirclicTextMessageVO textMessage = new AirclicTextMessageVO(deliveryDate, data[1], stop ,
 					data[3], data[4], data[5], data[6]);
 			
 			AirclicManagerSB sb = getAirclicManagerHome().create();
-
-			return sb.saveMessage(textMessage);
+			
+			result = sb.saveMessage(textMessage); 
+			 
 			}
 			catch (CreateException e) {
-				e.printStackTrace();
-				} catch (RemoteException e) {
-				e.printStackTrace();
+				throw new FDResourceException(e, "Cannot create SessionBean");
+			} 
+			catch (RemoteException e) {
+				throw new FDResourceException(e, "Cannot talk to the SessionBean");
 			} catch (DlvResourceException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				throw new FDResourceException(e, "Cannot talk to the database");
 			} catch (ParseException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				throw new FDResourceException(e, "Invalid date input");
 			}
-			
-			return "Sorry, we're experiencing technical difficulties. Please try again later.";
+			return result;
 		}
 		public synchronized List<AirclicMessageVO> getMessages() throws FDResourceException {
 			if (System.currentTimeMillis() - lastRefresh > REFRESH_PERIOD) {
@@ -132,16 +135,21 @@ public class AirclicManager {
 
 					lastRefresh = System.currentTimeMillis();
 
-				} catch (CreateException e) {
-					throw new FDResourceException(e, "Cannot create SessionBean");
-				} catch (RemoteException e) {
-					throw new FDResourceException(e, "Cannot talk to the SessionBean");
-				} catch (DlvResourceException e) {
-					// TODO Auto-generated catch block
+				} catch (Exception e) {
 					e.printStackTrace();
-				}
+				} 
 			}
 			return messages;
+		}
+		
+		public boolean validateAccessCode(String accessCode)
+		{
+			String hashedAccessCode = MD5Hasher.hash(accessCode);
+			if(hashedAccessCode != null && hashedAccessCode.equals(RoutingServicesProperties.getAccessKey())) {
+				return true;
+			}
+			return false;
+			
 		}
 		
 		public Map<String, DispatchNextTelVO> getDispatchResourceNextTel(Date dispatchDate) throws FDResourceException {

@@ -19,7 +19,7 @@
 		<tr>
 		<td><label for="ddate">Delivery Date:</label> </td><td> <input  disabled="disabled" name="ddate" id="ddate" type="text"></td>
 		<tr>
-		<td><label for="route">Route: </label> </td><td> <input  disabled="disabled" name="route" id="route" type="text"></td>
+		<td><label for="route">Route: </label> </td><td> <textarea rows="3" cols="20" style="resize:none" disabled="disabled" name="route" id="route"></textarea></td>
 		<input type="hidden" name="source" id="source" value="TransApp" />
 		<input type="hidden" name="userId" id="userId" value="<%=request.getRemoteUser()%>" />
 		<input type="hidden" name="orderId" id="orderId" value="" />
@@ -28,7 +28,7 @@
 		<td>
 		<tr>
 		<td></td>
-		<td><textarea rows="4" cols="25" id="messageDesc"></textarea></td>
+		<td><textarea rows="4"  cols="15" style="resize:none" id="messageDesc"></textarea></td>
 		
 		<tr><td><input onclick="addEntry($F('ddate'), $F('route'), null, $F('messageDesc'), $F('source'), $F('userId'), null);" value="Send" type="button"><br>
 	

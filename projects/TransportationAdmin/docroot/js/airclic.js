@@ -6,17 +6,22 @@ function loadPopup()
     var checkboxList = table.getElementsByTagName("input");
     var paramValues = 0, dispatched = false;
      var dateField = document.getElementById("dispDate").value;    
-    
+    var routes = null;
      for (var i=0; i < checkboxList.length; i++) {
        if (checkboxList[i].type=="checkbox" && checkboxList[i].checked&& !checkboxList[i].disabled&&checkboxList[i].name.indexOf("_")==-1) {
     	  var parent =  checkboxList[i].parentNode.parentNode.getElementsByTagName("td")[3];
-    	  var childelements = parent.getElementsByTagName("input")
+    	  var childelements = parent.getElementsByTagName("input");
     	  for (var j=0; j < childelements.length; j++) {
     		  if(childelements[j].type=="checkbox" && childelements[j].checked)
-    			  dispatched = true;
+    		  { 
+    			  if(routes!=null) 
+    				  routes=routes+","+checkboxList[i].parentNode.parentNode.getElementsByTagName("td")[11].innerHTML;
+    			  else
+    				  routes = checkboxList[i].parentNode.parentNode.getElementsByTagName("td")[11].innerHTML;
+    		  dispatched = true;
+    		  }
     	  }
-    	  var routeId = checkboxList[i].parentNode.parentNode.getElementsByTagName("td")[11].innerHTML;
-         paramValues++;
+    	  paramValues++;
        }
      }
     if(paramValues==0)
@@ -24,17 +29,23 @@ function loadPopup()
  		alert('Please select a route!');
  		return false;
     }
- 	else if(paramValues>1)
- 	{
- 		alert('Please select only one route');
- 		return false;
- 	}
- 	else if(paramValues ==1 && !dispatched)
+ 	else if(paramValues>0 && !dispatched)
  	{
  		alert('You cannot send the message before route is dispatched.');
- 		return false;
- 	}	
-     
+ 		return false;	
+ 	}
+ 	else if(paramValues>1 && dispatched)
+ 	{
+ 		var accesscode = prompt("You are about to send mass message to all the selected routes. Do you want to continue?","<Please enter access code>");
+ 		 if (accesscode != null && accesscode != "")  {
+ 			var jsonrpcClient = new JSONRpcClient("api/message.jsp");
+ 			var result=jsonrpcClient.manager.validateAccessCode(accesscode);
+ 			
+ 			if(!result)
+ 				return false;
+ 		 }
+ 	    
+ 	}
     	// Show the overlay (disables rest of page)
 	showOverlay();
 	$('messageDesc').value="";
@@ -42,7 +53,7 @@ function loadPopup()
 	$('ac_error').update("");
 	document.getElementById('ddate').value = dateField;
 	
-     document.getElementById('route').value = routeId;  
+     document.getElementById('route').value = routes;  
 	//$('route').update(route);
 	// Show dialogue and focus on newvalue
 	$('dialogue').show();
