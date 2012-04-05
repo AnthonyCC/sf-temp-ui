@@ -718,17 +718,19 @@ public class HandOffAutoDispatchAction extends AbstractHandOffAction {
 					}
 				}
 			}
-			if(dispatch.isTrailer() && truck.isTrailer()){
-				dispatch.setTruck(truck);
-				LOGGER.info("Free Dispatch >>> Leaves>> "+dispatch.getLeaves()+" nextAvailable>> "+dispatch.getNextAvailable()+" Trailer Route>>> "+dispatch.getRoute()+" Trailer Truck>>> "+dispatch.getTruck().getId());
-				engaged.add(dispatch);
-				free.remove(dispatch);
-			}
-			if(!dispatch.isTrailer() && !truck.isTrailer()){
-				dispatch.setTruck(truck);
-				LOGGER.info("Free Dispatch >>> Leaves>> "+dispatch.getLeaves()+" nextAvailable>> "+dispatch.getNextAvailable()+" Route>>> "+dispatch.getRoute()+" Truck>>> "+dispatch.getTruck().getId());
-				engaged.add(dispatch);
-				free.remove(dispatch);
+			if(dispatch != null && truck != null) {
+				if(dispatch.isTrailer() && truck.isTrailer()){
+					dispatch.setTruck(truck);
+					LOGGER.info("Free Dispatch >>> Leaves>> "+dispatch.getLeaves()+" nextAvailable>> "+dispatch.getNextAvailable()+" Trailer Route>>> "+dispatch.getRoute()+" Trailer Truck>>> "+dispatch.getTruck().getId());
+					engaged.add(dispatch);
+					free.remove(dispatch);
+				}
+				if(!dispatch.isTrailer() && !truck.isTrailer()){
+					dispatch.setTruck(truck);
+					LOGGER.info("Free Dispatch >>> Leaves>> "+dispatch.getLeaves()+" nextAvailable>> "+dispatch.getNextAvailable()+" Route>>> "+dispatch.getRoute()+" Truck>>> "+dispatch.getTruck().getId());
+					engaged.add(dispatch);
+					free.remove(dispatch);
+				}	
 			}
 		}
 
