@@ -297,7 +297,7 @@
 										</tr>
 										<tr>
 											<td class="ssRatingLearnMore">
-												<a href="javascript:pop('javascript:pop('/shared/brandpop.jsp?brandId=bd_sustainable_ratings',400,585)">Click here to learn more</a>
+												<a href="javascript:pop('/shared/brandpop.jsp?brandId=bd_sustainable_ratings',400,585)">Click here to learn more</a>
 											</td>
 										</tr>
 									</table>
