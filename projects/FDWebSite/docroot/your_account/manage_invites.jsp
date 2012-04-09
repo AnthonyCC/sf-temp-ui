@@ -168,11 +168,11 @@ response.setHeader("Cache-Control", "no-cache");
 			<div id="legend" style="float:left;">
 			<span class="t11px bolded">Legend</span>
 			<ul>
-				<li>No response – no reply to the email you sent</li>
-				<li>Signed up – responded and eligibility was pre-approved</li>
-				<li>Offer redeemed - approved as first time residential customer and received their first order</li>
-				<li>Offer not redeemed – entered another discount code </li>
-				<li>Ineligible – recipient was already a customer or was previously referred by another customer</li>
+				<li>No response &ndash; no reply to the email you sent</li>
+				<li>Signed up &ndash; responded and eligibility was pre-approved</li>
+				<li>Offer redeemed &ndash; approved as first time residential customer and received their first order</li>
+				<li>Offer not redeemed &ndash; entered another discount code </li>
+				<li>Ineligible &ndash; recipient was already a customer or was previously referred by another customer</li>
 			</ul>
 			</div>
 		</td>
