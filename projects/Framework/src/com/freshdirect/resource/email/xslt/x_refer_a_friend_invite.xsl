@@ -26,7 +26,7 @@
         <![CDATA[<![endif]]]></xsl:comment>
 		
 		<tr valign="top"><td>
-		<table width="550" border='0' style="float:left;position:absolute !important;width:550px;align:center;top:70px;left:70px;padding-left:50px;padding-top:107px;margin-left:70px;">
+		<table width="550" border='0' style="float:left;position:absolute !important;width:550px;align:center;top:70px;left:70px;padding-left:50px;margin-top:107px;margin-left:70px;">
 			<xsl:comment>[if gte vml 1]<![CDATA[>]]>
 			&lt;tr&gt;&lt;td colspan="2"&gt;&lt;br/&gt;&lt;br/&gt;&lt;/td&gt;&lt;/tr&gt;
 			<![CDATA[<![endif]]]></xsl:comment>
