@@ -14,6 +14,7 @@ import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.fdstore.FDContentTypes;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ContentNodeModel;
+import com.freshdirect.fdstore.content.ContentNodeModelUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.smartstore.RecommendationService;
 import com.freshdirect.smartstore.SessionInput;
@@ -127,20 +128,15 @@ public abstract class AbstractRecommendationService implements RecommendationSer
 			LOGGER.debug("sampler: exclude alcoholic item enabled");
 			for (RankedContent.Single rc : nodes) {
 				ContentNodeModel m = rc.getModel();
-				try {
-					while (!FDContentTypes.DEPARTMENT.equals(m.getContentKey().getType())) {
-						m = m.getParentNode();
-					}
-					
+				
+				final ContentNodeModel dept = ContentNodeModelUtil.findDepartment(m);
+				if (dept != null) {
+					final ContentKey aKey = dept.getContentKey();
 
-					// is dept == 'usq' -> exclude item
-					final ContentKey aKey = m.getContentKey();
-					if (m != null && "usq".equalsIgnoreCase(aKey.getId())) {
+					if (aKey != null && "usq".equalsIgnoreCase(aKey.getId())) {
 						LOGGER.debug("sampler: exclude alcoholic item: " + aKey );
 						exclusions.add(rc.getContentKey());
 					}
-				} catch (Exception exc) {
-					LOGGER.debug("Problem occurred with item " + rc, exc);
 				}
 			}
 		}

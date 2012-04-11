@@ -8,6 +8,7 @@ import java.util.List;
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.fdstore.content.ContentNodeModel;
+import com.freshdirect.fdstore.content.ContentNodeModelUtil;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.smartstore.SessionInput;
 import com.freshdirect.smartstore.fdstore.ScoreProvider;
@@ -26,11 +27,14 @@ public class PrioritizedDataAccess implements DataAccess {
 	private List<ContentNodeModel> posteriorNodes;
 
 	ContentFilter filter;
+	
+	private boolean excludeAlcoholic;
 
-	public PrioritizedDataAccess(Collection<ContentKey> cartItems, boolean useAlternatives, boolean showTempUnavailable) {
+	public PrioritizedDataAccess(Collection<ContentKey> cartItems, boolean useAlternatives, boolean showTempUnavailable, boolean excludeAlcoholic) {
 		nodes = new ArrayList<ContentNodeModel>();
 		posteriorNodes = new ArrayList<ContentNodeModel>();
 		filter = FilterFactory.getInstance().createFilter(cartItems, useAlternatives, showTempUnavailable);
+		this.excludeAlcoholic = excludeAlcoholic;
 	}
 
 	@Override
@@ -55,10 +59,32 @@ public class PrioritizedDataAccess implements DataAccess {
 		if (model instanceof ProductModel) {
 		    ContentNodeModel filteredModel = filter.filter(model);
 		    if (filteredModel != null) {
+		    	if (excludeAlcoholic && isAlcoholic(model))
+		    		return false;
 		        nodes.add(filteredModel);
 		        return true;
 		    }
 		} 
+		return false;
+	}
+
+
+	/**
+	 * Check whether product m is an alcoholic content
+	 * 
+	 * @param m
+	 * @return
+	 */
+	private boolean isAlcoholic(ContentNodeModel m) {
+		final ContentNodeModel dept = ContentNodeModelUtil.findDepartment(m);
+		if (dept != null) {
+			final ContentKey aKey = dept.getContentKey();
+
+			if (aKey != null && "usq".equalsIgnoreCase(aKey.getId())) {
+				return true;
+			}
+		}
+		
 		return false;
 	}
 
@@ -73,6 +99,8 @@ public class PrioritizedDataAccess implements DataAccess {
 		if (model instanceof ProductModel) {
 		    ContentNodeModel filteredModel = filter.filter(model);
 		    if (filteredModel != null) {
+		    	if (excludeAlcoholic && isAlcoholic(model))
+		    		return false;
 		    	posteriorNodes.add(filteredModel);
 		        return true;
 		    }

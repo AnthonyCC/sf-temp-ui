@@ -330,6 +330,7 @@ public class ContentNodeModelUtil {
         return foundCategory;
     }
 
+
 	private static ProductModel setNearestParentForProduct(ContentNodeModel context, ProductModel product) {
 		CategoryModel foundCategory = null;
 		DepartmentModel dept = null;
@@ -525,5 +526,23 @@ public class ContentNodeModelUtil {
         	}
     	}
     	return false;
+    }
+    
+
+    /**
+     * Find department node by climbing up the parent chain
+     * 
+     * @param model
+     * @return
+     */
+    public static ContentNodeModel findDepartment(ContentNodeModel model) {
+		while (model != null) {
+			if (FDContentTypes.DEPARTMENT.equals( model.getContentKey().getType() )) {
+				return model;
+			}
+
+			model = model.getParentNode();
+		}
+		return null;
     }
 }
