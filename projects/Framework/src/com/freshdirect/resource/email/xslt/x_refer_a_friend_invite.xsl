@@ -16,7 +16,7 @@
 		v\:* { behavior: url(#default#VML); display:inline-block}
 	</style>
 </head>
-<body>
+<body style="padding-top:0px;margin-top:0px;">
 <table width="800"> <tr><td>
 <div id="parentdiv" style="float:left;position:relative !important;top:0;left:0;">
 <table width="800" height="760" background="http://www.freshdirect.com/media_stat/images/profile/email_background1.jpg" style="background-image:url('http://www.freshdirect.com/media_stat/images/profile/email_background1.jpg');background-repeat: no-repeat;background-position: top;border:0;">
@@ -25,13 +25,13 @@
 					&lt;v:imagedata src="http://www.freshdirect.com/media_stat/images/profile/email_background1.jpg"/&gt;
         <![CDATA[<![endif]]]></xsl:comment>
 		
-		<tr valign="top"><td>
-		<table width="550" border='0' style="float:left;position:absolute !important;width:550px;align:center;top:70px;left:70px;padding-left:50px;margin-top:107px;margin-left:70px;">
+		<tr valign="top" style="vertical-align:top;"><td>
+		<table width="550" border='0' style="float:left;position:absolute !important;width:550px;align:center;top:70px;left:70px;padding-left:50px;margin-top:0px;margin-left:70px;border-collapse:separate;border-spacing:2px;">
 			<xsl:comment>[if gte vml 1]<![CDATA[>]]>
 			&lt;tr&gt;&lt;td colspan="2"&gt;&lt;br/&gt;&lt;br/&gt;&lt;/td&gt;&lt;/tr&gt;
 			<![CDATA[<![endif]]]></xsl:comment>
-				<tr>
-					<td colspan="2" align="center">
+				<tr valign="bottom" style="vertical-align:bottom;">
+					<td colspan="2" align="center" height="167" valign="bottom">
 						<img src="http://www.freshdirect.com/media_stat/images/profile/unlock_greate_taste.jpg" border="0" />
 					</td>
 				</tr>
@@ -55,7 +55,7 @@
 					<td valign="top" colspan="2" align="center">
 						<p><br/><a href="{refLink}"><img src="http://www.freshdirect.com/media_stat/images/profile/sign_up_and_start_shopping.jpg" border="0" /></a></p>
 					</td>					
-				</tr>											
+				</tr>	
 			</table>			
 </td></tr>
 <xsl:comment>[if gte vml 1]<![CDATA[>]]>
