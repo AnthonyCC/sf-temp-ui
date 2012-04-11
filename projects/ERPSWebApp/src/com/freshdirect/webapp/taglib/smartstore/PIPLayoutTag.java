@@ -1,8 +1,6 @@
 package com.freshdirect.webapp.taglib.smartstore;
 
-import com.freshdirect.fdstore.content.Image;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import javax.servlet.jsp.JspException;
@@ -12,7 +10,9 @@ import javax.servlet.jsp.tagext.VariableInfo;
 
 import org.apache.log4j.Category;
 
+import com.freshdirect.fdstore.content.Image;
 import com.freshdirect.fdstore.content.ProductModel;
+import com.freshdirect.fdstore.util.ProductDisplayUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.webapp.taglib.AbstractGetterTag;
 import com.freshdirect.webapp.util.ProductImpression;
@@ -40,11 +40,13 @@ import com.freshdirect.webapp.util.ProductImpression;
  * maxRowHeight  (OUT, Integer, optional)           - the height of the largest product image in pixels
  *
  */
-public class PIPLayoutTag extends AbstractGetterTag {
+public class PIPLayoutTag extends AbstractGetterTag<List<ProductImpression>> {
+	private static final long serialVersionUID = 2416505512415702904L;
+
 	private static Category LOGGER = LoggerFactory.getInstance( PIPLayoutTag.class );
 
 	// List of ProductImpression objects
-	private List impressions;
+	private List<ProductImpression> impressions;
 
 	// number of items per row
 	private int rowSize = 5;
@@ -56,7 +58,7 @@ public class PIPLayoutTag extends AbstractGetterTag {
 	private int _row = 0;
 	
 	// IN
-	public void setImpressions(List impressions) {
+	public void setImpressions(List<ProductImpression> impressions) {
 		this.impressions = impressions;
 	}
 
@@ -92,29 +94,24 @@ public class PIPLayoutTag extends AbstractGetterTag {
 
 	// common iterable result producer method
 	protected boolean doIt() throws JspException {
-		Object result;
+		List<ProductImpression> result;
 		try {
 			result = this.getResult();
 		} catch (Exception ex) {
 			LOGGER.warn("Exception occured in getResult", ex);
 			throw new JspException(ex);
 		}
-		
+
 		if (result != null) {
 			// put product impression row to JSP context
 			pageContext.setAttribute(this.id, result);
 
 			// calculate max height
-			int maxHeight = 0;
-			for (Iterator it=((List)result).iterator(); it.hasNext(); ) {
-				ProductModel productNode = ((ProductImpression) it.next()).getProductModel();
-				
-				// retrieve product image
-				Image prodImage = productNode.getSourceProduct().getCategoryImage();
-
-				if (prodImage != null)
-					maxHeight = Math.max(maxHeight, prodImage.getHeight());
+			List<ProductModel> pm = new ArrayList<ProductModel>();
+			for (ProductImpression pi : result) {
+				pm.add( pi.getProductModel() );
 			}
+			final int maxHeight = ProductDisplayUtil.getMaxHeight(pm);
 
 			pageContext.setAttribute(this.maxRowHeightVarName, new Integer(maxHeight));
 		}
@@ -126,11 +123,11 @@ public class PIPLayoutTag extends AbstractGetterTag {
 	/**
 	 * returns the actual impression row
 	 */
-	protected Object getResult() throws Exception {
+	protected List<ProductImpression> getResult() throws Exception {
 		int offset = _row*rowSize;
 		int rs = rowSize;
 		
-		List imp_row = new ArrayList();
+		List<ProductImpression> imp_row = new ArrayList<ProductImpression>();
 		while (rs > 0 && offset < impressions.size()) {
 			imp_row.add(impressions.get(offset));
 			rs--; offset++;
@@ -179,7 +176,7 @@ public class PIPLayoutTag extends AbstractGetterTag {
 			return new VariableInfo[] {
 				new VariableInfo(
 					data.getAttributeString("id"),
-					"java.util.List",
+					"java.util.List<com.freshdirect.webapp.util.ProductImpression>",
 					true,
 					VariableInfo.NESTED ),
 				new VariableInfo(

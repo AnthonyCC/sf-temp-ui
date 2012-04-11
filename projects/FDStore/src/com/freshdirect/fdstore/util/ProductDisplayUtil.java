@@ -1,20 +1,19 @@
 package com.freshdirect.fdstore.util;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import com.freshdirect.common.pricing.MaterialPrice;
 import com.freshdirect.common.pricing.util.GroupScaleUtil;
-import com.freshdirect.fdstore.FDCachedFactory;
 import com.freshdirect.fdstore.FDGroup;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
-import com.freshdirect.fdstore.GroupScalePricing;
-import com.freshdirect.fdstore.GrpZonePriceModel;
 import com.freshdirect.fdstore.content.ConfiguredProduct;
 import com.freshdirect.fdstore.content.ConfiguredProductGroup;
 import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.EnumBurstType;
+import com.freshdirect.fdstore.content.Image;
 import com.freshdirect.fdstore.content.PriceCalculator;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.ProxyProduct;
@@ -148,5 +147,21 @@ public class ProductDisplayUtil {
         }
         // At this point there is no gs price defined for default sku.
         return calculator.getHighestDealPercentage();
+    }
+
+
+    
+    
+    public static int getMaxHeight(List<ProductModel> products) {
+    	int maxHeight = 0;
+		for (ProductModel productNode : products) {
+			// retrieve product image
+			Image prodImage = productNode.getSourceProduct().getCategoryImage();
+
+			if (prodImage != null)
+				maxHeight = Math.max(maxHeight, prodImage.getHeight());
+		}
+		
+		return maxHeight;
     }
 }

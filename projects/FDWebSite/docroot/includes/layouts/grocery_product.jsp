@@ -829,11 +829,12 @@ if(shelfLife != null && shelfLife.trim().length() > 0) { %>
 			<display:Carousel id="cat2_carousel" carouselId="cat2_carousel" width="150" numItems="1" showCategories="false" itemsToShow="<%= recommendedProducts.getProducts() %>" trackingCode="ymal_pdtl" maxItems="6" style="margin-left: auto; margin-right: auto;">
 				<%
 					final ProductModel __c_prd = (ProductModel) currentItem;
+					final int __c_maxHeight = ProductDisplayUtil.getMaxHeight(recommendedProducts.getProducts()); 
 				%>
 				<display:GetContentNodeWebId id="webId" product="<%= currentItem %>" clientSafe="<%= true %>">
 				<div id="hotspot-<%= webId %>">
 					<display:ProductImage product="<%= __c_prd %>" showRolloverImage="true" useAlternateImage="true"
-							className="productImage" height="90" enableQuickBuy="false" webId="<%= webId %>"/>
+							className="productImage" height="<%= __c_maxHeight %>" enableQuickBuy="false" webId="<%= webId %>"/>
 					<display:ProductRating product="<%= __c_prd %>" />
 					<div class="productname">
 						<display:ProductName product="<%= __c_prd %>" showBrandName="true"/>
