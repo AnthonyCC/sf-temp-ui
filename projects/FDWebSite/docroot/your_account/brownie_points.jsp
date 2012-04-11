@@ -264,6 +264,12 @@ String browserType=(String)request.getHeader("User-Agent");
 																<br />
 																<textarea id="mail_message" name="mail_message" rows="6" cols="40" maxlength="160"><%= email_txt %></textarea>
 															</div>
+															<br/>
+														</td>
+													</tr>
+													<tr>
+														<td colspan="3">
+															<div style="width:93%;padding-left:15px;float:left;color:#777777;font-size:11px;font-style:italic;text-align:right;">160 characters maximum</div>
 														</td>
 													</tr>
 													<% if (!msg_valid) { %>
