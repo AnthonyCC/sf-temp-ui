@@ -10,6 +10,7 @@ import com.freshdirect.routing.model.IDeliveryWindowMetrics;
 import com.freshdirect.routing.model.IOrderModel;
 import com.freshdirect.routing.model.IRoutingNotificationModel;
 import com.freshdirect.routing.model.IRoutingSchedulerIdentity;
+import com.freshdirect.routing.proxy.stub.transportation.DeliveryAreaOrder;
 import com.freshdirect.routing.service.IRoutingEngineService;
 import com.freshdirect.routing.service.RoutingServiceLocator;
 import com.freshdirect.routing.service.exception.RoutingServiceException;
@@ -34,8 +35,8 @@ public class RoutingEngineServiceProxy extends BaseServiceProxy {
 		return getService().schedulerBulkReserveOrder(schedulerId, orderList, region, locationType, orderType);
 	}
 	
-	public void sendRoutesToRoadNet(IRoutingSchedulerIdentity schedulerId, String sessionDescription) throws RoutingServiceException {
-		getService().sendRoutesToRoadNet(schedulerId, sessionDescription);
+	public void sendRoutesToRoadNet(IRoutingSchedulerIdentity schedulerId, String sessionDescription,String waveCode) throws RoutingServiceException {
+		getService().sendRoutesToRoadNet(schedulerId, sessionDescription, waveCode);
 	}
 	
 	public List saveUnassignedToRoadNet(IRoutingSchedulerIdentity schedulerId, String sessionId, Collection orderList) throws RoutingServiceException {
@@ -50,8 +51,8 @@ public class RoutingEngineServiceProxy extends BaseServiceProxy {
 		getService().schedulerBalanceRoutes(schedulerId, balanceBy, balanceFactor);
 	}
 	
-	public void schedulerRemoveFromServer(IRoutingSchedulerIdentity schedulerId)  throws RoutingServiceException {
-		getService().schedulerRemoveFromServer(schedulerId);
+	public void schedulerUnload(IRoutingSchedulerIdentity schedulerId)  throws RoutingServiceException {
+		getService().schedulerUnload(schedulerId);
 	}
 	
 	public IDeliveryReservation schedulerReserveOrder(IOrderModel orderModel,IDeliverySlot deliverySlot,
@@ -95,6 +96,12 @@ public class RoutingEngineServiceProxy extends BaseServiceProxy {
 	
 	public void deleteNotifications(List<IRoutingNotificationModel> notifications)  throws RoutingServiceException {
 		getService().deleteNotifications(notifications);
+	}
+	
+	public DeliveryAreaOrder getDeliveryAreaModel(IRoutingSchedulerIdentity schedulerId, IOrderModel orderModel
+			, String region, String locationType
+			, String orderType) throws RoutingServiceException {
+		return getService().getDeliveryAreaModel(schedulerId, orderModel,region, locationType, orderType);
 	}
 	
 	public IRoutingEngineService getService() {
