@@ -10,7 +10,6 @@ import com.freshdirect.routing.model.IDeliveryWindowMetrics;
 import com.freshdirect.routing.model.IOrderModel;
 import com.freshdirect.routing.model.IRoutingNotificationModel;
 import com.freshdirect.routing.model.IRoutingSchedulerIdentity;
-import com.freshdirect.routing.proxy.stub.transportation.DeliveryAreaOrder;
 import com.freshdirect.routing.service.exception.RoutingServiceException;
 
 public interface IRoutingEngineService {
@@ -24,7 +23,7 @@ public interface IRoutingEngineService {
 	List schedulerBulkReserveOrder(IRoutingSchedulerIdentity schedulerId, Collection orderList, String region, String locationType
 										, String orderType) throws RoutingServiceException;
 	
-	void sendRoutesToRoadNet(IRoutingSchedulerIdentity schedulerId, String sessionDescription, String waveCode) throws RoutingServiceException;
+	void sendRoutesToRoadNet(IRoutingSchedulerIdentity schedulerId, String sessionDescription) throws RoutingServiceException;
 	
 	List saveUnassignedToRoadNet(IRoutingSchedulerIdentity schedulerId, String sessionId, Collection orderList) throws RoutingServiceException;
 	
@@ -32,7 +31,7 @@ public interface IRoutingEngineService {
 	
 	void schedulerBalanceRoutes(IRoutingSchedulerIdentity schedulerId, String balanceBy, double balanceFactor)  throws RoutingServiceException;
 	
-	void schedulerUnload(IRoutingSchedulerIdentity schedulerId)  throws RoutingServiceException;
+	void schedulerRemoveFromServer(IRoutingSchedulerIdentity schedulerId)  throws RoutingServiceException;
 	
 	List<IDeliverySlot> schedulerAnalyzeOrder(IOrderModel orderModel, String locationType
 			, String orderType, Date startDate, int noOfDays, List<IDeliverySlot> slots) throws RoutingServiceException;
@@ -56,9 +55,5 @@ public interface IRoutingEngineService {
 	List<IRoutingNotificationModel> retrieveNotifications() throws RoutingServiceException;
 	
 	void deleteNotifications(List<IRoutingNotificationModel> notifications)  throws RoutingServiceException;
-
-	DeliveryAreaOrder getDeliveryAreaModel(IRoutingSchedulerIdentity schedulerId, IOrderModel orderModel
-			, String region, String locationType
-			, String orderType);
 	
 }
