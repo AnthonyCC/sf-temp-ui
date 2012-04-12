@@ -151,6 +151,7 @@ THE SOFTWARE.
 			type: 'GET',
 			url: theURL,
 			dataType: 'jsonp',
+			timeout: 5000,
 			success: onSuccess,
 			data: {},
 			async: false,
