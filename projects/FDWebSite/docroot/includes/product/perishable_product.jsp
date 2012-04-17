@@ -216,7 +216,7 @@ final int W_PERISHABLE_PRODUCT_RIGHT = 369;
 						%>
 						<display:GetContentNodeWebId id="webId" product="<%= currentItem %>" clientSafe="<%= true %>">
 						<div id="hotspot-<%= webId %>">
-							<display:ProductImage product="<%= __c_prd %>" showRolloverImage="true" useAlternateImage="true"
+							<display:ProductImage product="<%= __c_prd %>" showRolloverImage="true" useAlternateImage="false"
 									className="productImage" height="<%= __c_maxHeight %>" enableQuickBuy="false" webId="<%= webId %>"/>
 							<display:ProductRating product="<%= __c_prd %>" />
 							<div class="productname">
