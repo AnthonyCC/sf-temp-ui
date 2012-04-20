@@ -17,13 +17,13 @@
         implements org.apache.axis2.databinding.ADBBean{
         /* This type was generated from the piece of schema that had
                 name = GeocodeData
-                Namespace URI = http://www.upslogisticstech.com/UPSLT/RouteNetWebService
+                Namespace URI = http://www.roadnet.com/RTS/RouteNetWebService
                 Namespace Prefix = ns1
                 */
             
 
         private static java.lang.String generatePrefix(java.lang.String namespace) {
-            if(namespace.equals("http://www.upslogisticstech.com/UPSLT/RouteNetWebService")){
+            if(namespace.equals("http://www.roadnet.com/RTS/RouteNetWebService")){
                 return "ns1";
             }
             return org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
@@ -361,7 +361,7 @@
                   if (serializeType){
                
 
-                   java.lang.String namespacePrefix = registerPrefix(xmlWriter,"http://www.upslogisticstech.com/UPSLT/RouteNetWebService");
+                   java.lang.String namespacePrefix = registerPrefix(xmlWriter,"http://www.roadnet.com/RTS/RouteNetWebService");
                    if ((namespacePrefix != null) && (namespacePrefix.trim().length() > 0)){
                        writeAttribute("xsi","http://www.w3.org/2001/XMLSchema-instance","type",
                            namespacePrefix+":GeocodeData",
@@ -375,7 +375,7 @@
                
                    }
                
-                                    namespace = "http://www.upslogisticstech.com/UPSLT/RouteNetWebService";
+                                    namespace = "http://www.roadnet.com/RTS/RouteNetWebService";
                                     if (! namespace.equals("")) {
                                         prefix = xmlWriter.getPrefix(namespace);
 
@@ -407,22 +407,22 @@
                                             if (localCoordinate==null){
                                                  throw new org.apache.axis2.databinding.ADBException("coordinate cannot be null!!");
                                             }
-                                           localCoordinate.serialize(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService","coordinate"),
+                                           localCoordinate.serialize(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/RouteNetWebService","coordinate"),
                                                factory,xmlWriter);
                                         
                                             if (localQuality==null){
                                                  throw new org.apache.axis2.databinding.ADBException("quality cannot be null!!");
                                             }
-                                           localQuality.serialize(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService","quality"),
+                                           localQuality.serialize(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/RouteNetWebService","quality"),
                                                factory,xmlWriter);
                                         
                                             if (localConfidence==null){
                                                  throw new org.apache.axis2.databinding.ADBException("confidence cannot be null!!");
                                             }
-                                           localConfidence.serialize(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService","confidence"),
+                                           localConfidence.serialize(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/RouteNetWebService","confidence"),
                                                factory,xmlWriter);
                                          if (localQualityDescriptionTracker){
-                                    namespace = "http://www.upslogisticstech.com/UPSLT/RouteNetWebService";
+                                    namespace = "http://www.roadnet.com/RTS/RouteNetWebService";
                                     if (! namespace.equals("")) {
                                         prefix = xmlWriter.getPrefix(namespace);
 
@@ -459,7 +459,7 @@
                                        if (localCandidates!=null){
                                             for (int i = 0;i < localCandidates.length;i++){
                                                 if (localCandidates[i] != null){
-                                                 localCandidates[i].serialize(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService","candidates"),
+                                                 localCandidates[i].serialize(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/RouteNetWebService","candidates"),
                                                            factory,xmlWriter);
                                                 } else {
                                                    
@@ -636,13 +636,13 @@
                  java.util.ArrayList attribList = new java.util.ArrayList();
 
                 
-                                      elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService",
+                                      elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/RouteNetWebService",
                                                                       "matched"));
                                  
                                 elementList.add(
                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localMatched));
                             
-                            elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService",
+                            elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/RouteNetWebService",
                                                                       "coordinate"));
                             
                             
@@ -651,7 +651,7 @@
                                     }
                                     elementList.add(localCoordinate);
                                 
-                            elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService",
+                            elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/RouteNetWebService",
                                                                       "quality"));
                             
                             
@@ -660,7 +660,7 @@
                                     }
                                     elementList.add(localQuality);
                                 
-                            elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService",
+                            elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/RouteNetWebService",
                                                                       "confidence"));
                             
                             
@@ -669,7 +669,7 @@
                                     }
                                     elementList.add(localConfidence);
                                  if (localQualityDescriptionTracker){
-                                      elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService",
+                                      elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/RouteNetWebService",
                                                                       "qualityDescription"));
                                  
                                         if (localQualityDescription != null){
@@ -682,7 +682,7 @@
                                  for (int i = 0;i < localCandidates.length;i++){
 
                                     if (localCandidates[i] != null){
-                                         elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService",
+                                         elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/RouteNetWebService",
                                                                           "candidates"));
                                          elementList.add(localCandidates[i]);
                                     } else {
@@ -779,7 +779,7 @@
                                     
                                     while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
                                 
-                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService","matched").equals(reader.getName())){
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/RouteNetWebService","matched").equals(reader.getName())){
                                 
                                     java.lang.String content = reader.getElementText();
                                     
@@ -798,7 +798,7 @@
                                     
                                     while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
                                 
-                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService","coordinate").equals(reader.getName())){
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/RouteNetWebService","coordinate").equals(reader.getName())){
                                 
                                                 object.setCoordinate(com.freshdirect.routing.proxy.stub.roadnet.MapPoint.Factory.parse(reader));
                                               
@@ -814,7 +814,7 @@
                                     
                                     while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
                                 
-                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService","quality").equals(reader.getName())){
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/RouteNetWebService","quality").equals(reader.getName())){
                                 
                                                 object.setQuality(com.freshdirect.routing.proxy.stub.roadnet.GeocodeResult.Factory.parse(reader));
                                               
@@ -830,7 +830,7 @@
                                     
                                     while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
                                 
-                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService","confidence").equals(reader.getName())){
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/RouteNetWebService","confidence").equals(reader.getName())){
                                 
                                                 object.setConfidence(com.freshdirect.routing.proxy.stub.roadnet.GeocodeConfidence.Factory.parse(reader));
                                               
@@ -846,7 +846,7 @@
                                     
                                     while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
                                 
-                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService","qualityDescription").equals(reader.getName())){
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/RouteNetWebService","qualityDescription").equals(reader.getName())){
                                 
                                     java.lang.String content = reader.getElementText();
                                     
@@ -864,7 +864,7 @@
                                     
                                     while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
                                 
-                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService","candidates").equals(reader.getName())){
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/RouteNetWebService","candidates").equals(reader.getName())){
                                 
                                     
                                     
@@ -886,7 +886,7 @@
                                                                 //two continuous end elements means we are exiting the xml structure
                                                                 loopDone6 = true;
                                                             } else {
-                                                                if (new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService","candidates").equals(reader.getName())){
+                                                                if (new javax.xml.namespace.QName("http://www.roadnet.com/RTS/RouteNetWebService","candidates").equals(reader.getName())){
                                                                     list6.add(com.freshdirect.routing.proxy.stub.roadnet.MapArc.Factory.parse(reader));
                                                                         
                                                                 }else{

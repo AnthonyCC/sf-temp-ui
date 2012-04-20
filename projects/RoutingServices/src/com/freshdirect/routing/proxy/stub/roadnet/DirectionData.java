@@ -17,13 +17,13 @@
         implements org.apache.axis2.databinding.ADBBean{
         /* This type was generated from the piece of schema that had
                 name = DirectionData
-                Namespace URI = http://www.upslogisticstech.com/UPSLT/RouteNetWebService
+                Namespace URI = http://www.roadnet.com/RTS/RouteNetWebService
                 Namespace Prefix = ns1
                 */
             
 
         private static java.lang.String generatePrefix(java.lang.String namespace) {
-            if(namespace.equals("http://www.upslogisticstech.com/UPSLT/RouteNetWebService")){
+            if(namespace.equals("http://www.roadnet.com/RTS/RouteNetWebService")){
                 return "ns1";
             }
             return org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
@@ -300,7 +300,7 @@
                   if (serializeType){
                
 
-                   java.lang.String namespacePrefix = registerPrefix(xmlWriter,"http://www.upslogisticstech.com/UPSLT/RouteNetWebService");
+                   java.lang.String namespacePrefix = registerPrefix(xmlWriter,"http://www.roadnet.com/RTS/RouteNetWebService");
                    if ((namespacePrefix != null) && (namespacePrefix.trim().length() > 0)){
                        writeAttribute("xsi","http://www.w3.org/2001/XMLSchema-instance","type",
                            namespacePrefix+":DirectionData",
@@ -314,7 +314,7 @@
                
                    }
                
-                                    namespace = "http://www.upslogisticstech.com/UPSLT/RouteNetWebService";
+                                    namespace = "http://www.roadnet.com/RTS/RouteNetWebService";
                                     if (! namespace.equals("")) {
                                         prefix = xmlWriter.getPrefix(namespace);
 
@@ -343,7 +343,7 @@
                                     
                                    xmlWriter.writeEndElement();
                              
-                                    namespace = "http://www.upslogisticstech.com/UPSLT/RouteNetWebService";
+                                    namespace = "http://www.roadnet.com/RTS/RouteNetWebService";
                                     if (! namespace.equals("")) {
                                         prefix = xmlWriter.getPrefix(namespace);
 
@@ -375,7 +375,7 @@
                                        if (localPathDirections!=null){
                                             for (int i = 0;i < localPathDirections.length;i++){
                                                 if (localPathDirections[i] != null){
-                                                 localPathDirections[i].serialize(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService","pathDirections"),
+                                                 localPathDirections[i].serialize(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/RouteNetWebService","pathDirections"),
                                                            factory,xmlWriter);
                                                 } else {
                                                    
@@ -392,7 +392,7 @@
                                  } if (localExtentsTracker){
                                     if (localExtents==null){
 
-                                            java.lang.String namespace2 = "http://www.upslogisticstech.com/UPSLT/RouteNetWebService";
+                                            java.lang.String namespace2 = "http://www.roadnet.com/RTS/RouteNetWebService";
 
                                         if (! namespace2.equals("")) {
                                             java.lang.String prefix2 = xmlWriter.getPrefix(namespace2);
@@ -417,7 +417,7 @@
                                       writeAttribute("xsi","http://www.w3.org/2001/XMLSchema-instance","nil","1",xmlWriter);
                                       xmlWriter.writeEndElement();
                                     }else{
-                                     localExtents.serialize(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService","extents"),
+                                     localExtents.serialize(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/RouteNetWebService","extents"),
                                         factory,xmlWriter);
                                     }
                                 }
@@ -583,13 +583,13 @@
                  java.util.ArrayList attribList = new java.util.ArrayList();
 
                 
-                                      elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService",
+                                      elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/RouteNetWebService",
                                                                       "time"));
                                  
                                 elementList.add(
                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localTime));
                             
-                                      elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService",
+                                      elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/RouteNetWebService",
                                                                       "distance"));
                                  
                                 elementList.add(
@@ -599,7 +599,7 @@
                                  for (int i = 0;i < localPathDirections.length;i++){
 
                                     if (localPathDirections[i] != null){
-                                         elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService",
+                                         elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/RouteNetWebService",
                                                                           "pathDirections"));
                                          elementList.add(localPathDirections[i]);
                                     } else {
@@ -616,7 +616,7 @@
                              }
 
                         } if (localExtentsTracker){
-                            elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService",
+                            elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/RouteNetWebService",
                                                                       "extents"));
                             
                             
@@ -703,7 +703,7 @@
                                     
                                     while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
                                 
-                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService","time").equals(reader.getName())){
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/RouteNetWebService","time").equals(reader.getName())){
                                 
                                     java.lang.String content = reader.getElementText();
                                     
@@ -722,7 +722,7 @@
                                     
                                     while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
                                 
-                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService","distance").equals(reader.getName())){
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/RouteNetWebService","distance").equals(reader.getName())){
                                 
                                     java.lang.String content = reader.getElementText();
                                     
@@ -741,7 +741,7 @@
                                     
                                     while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
                                 
-                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService","pathDirections").equals(reader.getName())){
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/RouteNetWebService","pathDirections").equals(reader.getName())){
                                 
                                     
                                     
@@ -763,7 +763,7 @@
                                                                 //two continuous end elements means we are exiting the xml structure
                                                                 loopDone3 = true;
                                                             } else {
-                                                                if (new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService","pathDirections").equals(reader.getName())){
+                                                                if (new javax.xml.namespace.QName("http://www.roadnet.com/RTS/RouteNetWebService","pathDirections").equals(reader.getName())){
                                                                     list3.add(com.freshdirect.routing.proxy.stub.roadnet.PathDirections.Factory.parse(reader));
                                                                         
                                                                 }else{
@@ -787,7 +787,7 @@
                                     
                                     while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
                                 
-                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService","extents").equals(reader.getName())){
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/RouteNetWebService","extents").equals(reader.getName())){
                                 
                                       nillableValue = reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance","nil");
                                       if ("true".equals(nillableValue) || "1".equals(nillableValue)){

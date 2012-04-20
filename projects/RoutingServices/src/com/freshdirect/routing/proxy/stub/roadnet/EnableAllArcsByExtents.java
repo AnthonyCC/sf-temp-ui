@@ -17,14 +17,14 @@
         implements org.apache.axis2.databinding.ADBBean{
         
                 public static final javax.xml.namespace.QName MY_QNAME = new javax.xml.namespace.QName(
-                "http://www.upslogisticstech.com/UPSLT/RouteNetWebService",
+                "http://www.roadnet.com/RTS/RouteNetWebService",
                 "EnableAllArcsByExtents",
                 "ns1");
 
             
 
         private static java.lang.String generatePrefix(java.lang.String namespace) {
-            if(namespace.equals("http://www.upslogisticstech.com/UPSLT/RouteNetWebService")){
+            if(namespace.equals("http://www.roadnet.com/RTS/RouteNetWebService")){
                 return "ns1";
             }
             return org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
@@ -175,7 +175,7 @@
                   if (serializeType){
                
 
-                   java.lang.String namespacePrefix = registerPrefix(xmlWriter,"http://www.upslogisticstech.com/UPSLT/RouteNetWebService");
+                   java.lang.String namespacePrefix = registerPrefix(xmlWriter,"http://www.roadnet.com/RTS/RouteNetWebService");
                    if ((namespacePrefix != null) && (namespacePrefix.trim().length() > 0)){
                        writeAttribute("xsi","http://www.w3.org/2001/XMLSchema-instance","type",
                            namespacePrefix+":EnableAllArcsByExtents",
@@ -189,7 +189,7 @@
                
                    }
                
-                                    namespace = "http://www.upslogisticstech.com/UPSLT/RouteNetWebService";
+                                    namespace = "http://www.roadnet.com/RTS/RouteNetWebService";
                                     if (! namespace.equals("")) {
                                         prefix = xmlWriter.getPrefix(namespace);
 
@@ -226,7 +226,7 @@
                                             if (localExtents==null){
                                                  throw new org.apache.axis2.databinding.ADBException("extents cannot be null!!");
                                             }
-                                           localExtents.serialize(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService","extents"),
+                                           localExtents.serialize(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/RouteNetWebService","extents"),
                                                factory,xmlWriter);
                                         
                     xmlWriter.writeEndElement();
@@ -391,7 +391,7 @@
                  java.util.ArrayList attribList = new java.util.ArrayList();
 
                 
-                                      elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService",
+                                      elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/RouteNetWebService",
                                                                       "key"));
                                  
                                         if (localKey != null){
@@ -400,7 +400,7 @@
                                            throw new org.apache.axis2.databinding.ADBException("key cannot be null!!");
                                         }
                                     
-                            elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService",
+                            elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/RouteNetWebService",
                                                                       "extents"));
                             
                             
@@ -487,7 +487,7 @@
                                     
                                     while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
                                 
-                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService","key").equals(reader.getName())){
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/RouteNetWebService","key").equals(reader.getName())){
                                 
                                     java.lang.String content = reader.getElementText();
                                     
@@ -506,7 +506,7 @@
                                     
                                     while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
                                 
-                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService","extents").equals(reader.getName())){
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/RouteNetWebService","extents").equals(reader.getName())){
                                 
                                                 object.setExtents(com.freshdirect.routing.proxy.stub.roadnet.MapExtents.Factory.parse(reader));
                                               

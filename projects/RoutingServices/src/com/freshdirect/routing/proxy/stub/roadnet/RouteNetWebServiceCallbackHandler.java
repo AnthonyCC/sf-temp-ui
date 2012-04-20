@@ -45,51 +45,19 @@
 
         
            /**
-            * auto generated Axis2 call back method for distanceToClosestCity method
-            * override this method for handling normal response from distanceToClosestCity operation
+            * auto generated Axis2 call back method for pOIShowEnabled method
+            * override this method for handling normal response from pOIShowEnabled operation
             */
-           public void receiveResultdistanceToClosestCity(
-                    com.freshdirect.routing.proxy.stub.roadnet.DistanceToClosestCityResult result
+           public void receiveResultpOIShowEnabled(
+                    boolean result
                         ) {
            }
 
           /**
            * auto generated Axis2 Error handler
-           * override this method for handling error response from distanceToClosestCity operation
+           * override this method for handling error response from pOIShowEnabled operation
            */
-            public void receiveErrordistanceToClosestCity(java.lang.Exception e) {
-            }
-                
-           /**
-            * auto generated Axis2 call back method for formatPositionText method
-            * override this method for handling normal response from formatPositionText operation
-            */
-           public void receiveResultformatPositionText(
-                    java.lang.String result
-                        ) {
-           }
-
-          /**
-           * auto generated Axis2 Error handler
-           * override this method for handling error response from formatPositionText operation
-           */
-            public void receiveErrorformatPositionText(java.lang.Exception e) {
-            }
-                
-           /**
-            * auto generated Axis2 call back method for versionInformation method
-            * override this method for handling normal response from versionInformation operation
-            */
-           public void receiveResultversionInformation(
-                    java.lang.String result
-                        ) {
-           }
-
-          /**
-           * auto generated Axis2 Error handler
-           * override this method for handling error response from versionInformation operation
-           */
-            public void receiveErrorversionInformation(java.lang.Exception e) {
+            public void receiveErrorpOIShowEnabled(java.lang.Exception e) {
             }
                 
            /**
@@ -109,118 +77,6 @@
             }
                 
            /**
-            * auto generated Axis2 call back method for mapCenter method
-            * override this method for handling normal response from mapCenter operation
-            */
-           public void receiveResultmapCenter(
-                    com.freshdirect.routing.proxy.stub.roadnet.MapData result
-                        ) {
-           }
-
-          /**
-           * auto generated Axis2 Error handler
-           * override this method for handling error response from mapCenter operation
-           */
-            public void receiveErrormapCenter(java.lang.Exception e) {
-            }
-                
-           /**
-            * auto generated Axis2 call back method for batchGeocode method
-            * override this method for handling normal response from batchGeocode operation
-            */
-           public void receiveResultbatchGeocode(
-                    com.freshdirect.routing.proxy.stub.roadnet.GeocodeData[] result
-                        ) {
-           }
-
-          /**
-           * auto generated Axis2 Error handler
-           * override this method for handling error response from batchGeocode operation
-           */
-            public void receiveErrorbatchGeocode(java.lang.Exception e) {
-            }
-                
-           /**
-            * auto generated Axis2 call back method for buildMatrix method
-            * override this method for handling normal response from buildMatrix operation
-            */
-           public void receiveResultbuildMatrix(
-                    com.freshdirect.routing.proxy.stub.roadnet.TimeDistanceResult[] result
-                        ) {
-           }
-
-          /**
-           * auto generated Axis2 Error handler
-           * override this method for handling error response from buildMatrix operation
-           */
-            public void receiveErrorbuildMatrix(java.lang.Exception e) {
-            }
-                
-           /**
-            * auto generated Axis2 call back method for map method
-            * override this method for handling normal response from map operation
-            */
-           public void receiveResultmap(
-                    com.freshdirect.routing.proxy.stub.roadnet.MapData result
-                        ) {
-           }
-
-          /**
-           * auto generated Axis2 Error handler
-           * override this method for handling error response from map operation
-           */
-            public void receiveErrormap(java.lang.Exception e) {
-            }
-                
-           /**
-            * auto generated Axis2 call back method for saveArcOverridesEx method
-            * override this method for handling normal response from saveArcOverridesEx operation
-            */
-           public void receiveResultsaveArcOverridesEx(
-                    int result
-                        ) {
-           }
-
-          /**
-           * auto generated Axis2 Error handler
-           * override this method for handling error response from saveArcOverridesEx operation
-           */
-            public void receiveErrorsaveArcOverridesEx(java.lang.Exception e) {
-            }
-                
-           /**
-            * auto generated Axis2 call back method for buildDriverDirections method
-            * override this method for handling normal response from buildDriverDirections operation
-            */
-           public void receiveResultbuildDriverDirections(
-                    com.freshdirect.routing.proxy.stub.roadnet.DirectionData result
-                        ) {
-           }
-
-          /**
-           * auto generated Axis2 Error handler
-           * override this method for handling error response from buildDriverDirections operation
-           */
-            public void receiveErrorbuildDriverDirections(java.lang.Exception e) {
-            }
-                
-           /**
-            * auto generated Axis2 call back method for mapZoomIn method
-            * override this method for handling normal response from mapZoomIn operation
-            */
-           public void receiveResultmapZoomIn(
-                    com.freshdirect.routing.proxy.stub.roadnet.MapData result
-                        ) {
-           }
-
-          /**
-           * auto generated Axis2 Error handler
-           * override this method for handling error response from mapZoomIn operation
-           */
-            public void receiveErrormapZoomIn(java.lang.Exception e) {
-            }
-                
-           /**
             * auto generated Axis2 call back method for buildPathEx method
             * override this method for handling normal response from buildPathEx operation
             */
@@ -237,51 +93,51 @@
             }
                 
            /**
-            * auto generated Axis2 call back method for mapZoomRange method
-            * override this method for handling normal response from mapZoomRange operation
+            * auto generated Axis2 call back method for buildMatrixEx method
+            * override this method for handling normal response from buildMatrixEx operation
             */
-           public void receiveResultmapZoomRange(
-                    com.freshdirect.routing.proxy.stub.roadnet.MapData result
+           public void receiveResultbuildMatrixEx(
+                    com.freshdirect.routing.proxy.stub.roadnet.TimeDistanceResult[] result
                         ) {
            }
 
           /**
            * auto generated Axis2 Error handler
-           * override this method for handling error response from mapZoomRange operation
+           * override this method for handling error response from buildMatrixEx operation
            */
-            public void receiveErrormapZoomRange(java.lang.Exception e) {
+            public void receiveErrorbuildMatrixEx(java.lang.Exception e) {
             }
                 
            /**
-            * auto generated Axis2 call back method for findMapArcsEx method
-            * override this method for handling normal response from findMapArcsEx operation
+            * auto generated Axis2 call back method for mapConvertToLatLong method
+            * override this method for handling normal response from mapConvertToLatLong operation
             */
-           public void receiveResultfindMapArcsEx(
-                    com.freshdirect.routing.proxy.stub.roadnet.MapArc[] result
+           public void receiveResultmapConvertToLatLong(
+                    com.freshdirect.routing.proxy.stub.roadnet.MapPoint result
                         ) {
            }
 
           /**
            * auto generated Axis2 Error handler
-           * override this method for handling error response from findMapArcsEx operation
+           * override this method for handling error response from mapConvertToLatLong operation
            */
-            public void receiveErrorfindMapArcsEx(java.lang.Exception e) {
+            public void receiveErrormapConvertToLatLong(java.lang.Exception e) {
             }
                 
            /**
-            * auto generated Axis2 call back method for geocode method
-            * override this method for handling normal response from geocode operation
+            * auto generated Axis2 call back method for nop method
+            * override this method for handling normal response from nop operation
             */
-           public void receiveResultgeocode(
-                    com.freshdirect.routing.proxy.stub.roadnet.GeocodeData result
+           public void receiveResultnop(
+                    int result
                         ) {
            }
 
           /**
            * auto generated Axis2 Error handler
-           * override this method for handling error response from geocode operation
+           * override this method for handling error response from nop operation
            */
-            public void receiveErrorgeocode(java.lang.Exception e) {
+            public void receiveErrornop(java.lang.Exception e) {
             }
                 
            /**
@@ -301,35 +157,179 @@
             }
                 
            /**
-            * auto generated Axis2 call back method for enableAllArcsByExtents method
-            * override this method for handling normal response from enableAllArcsByExtents operation
+            * auto generated Axis2 call back method for saveArcOverrides method
+            * override this method for handling normal response from saveArcOverrides operation
             */
-           public void receiveResultenableAllArcsByExtents(
+           public void receiveResultsaveArcOverrides(
                     int result
                         ) {
            }
 
           /**
            * auto generated Axis2 Error handler
-           * override this method for handling error response from enableAllArcsByExtents operation
+           * override this method for handling error response from saveArcOverrides operation
            */
-            public void receiveErrorenableAllArcsByExtents(java.lang.Exception e) {
+            public void receiveErrorsaveArcOverrides(java.lang.Exception e) {
             }
                 
            /**
-            * auto generated Axis2 call back method for pOIShowEnabled method
-            * override this method for handling normal response from pOIShowEnabled operation
+            * auto generated Axis2 call back method for mapCenter method
+            * override this method for handling normal response from mapCenter operation
             */
-           public void receiveResultpOIShowEnabled(
-                    boolean result
+           public void receiveResultmapCenter(
+                    com.freshdirect.routing.proxy.stub.roadnet.MapData result
                         ) {
            }
 
           /**
            * auto generated Axis2 Error handler
-           * override this method for handling error response from pOIShowEnabled operation
+           * override this method for handling error response from mapCenter operation
            */
-            public void receiveErrorpOIShowEnabled(java.lang.Exception e) {
+            public void receiveErrormapCenter(java.lang.Exception e) {
+            }
+                
+           /**
+            * auto generated Axis2 call back method for mapZoomIn method
+            * override this method for handling normal response from mapZoomIn operation
+            */
+           public void receiveResultmapZoomIn(
+                    com.freshdirect.routing.proxy.stub.roadnet.MapData result
+                        ) {
+           }
+
+          /**
+           * auto generated Axis2 Error handler
+           * override this method for handling error response from mapZoomIn operation
+           */
+            public void receiveErrormapZoomIn(java.lang.Exception e) {
+            }
+                
+           /**
+            * auto generated Axis2 call back method for distanceToClosestCity method
+            * override this method for handling normal response from distanceToClosestCity operation
+            */
+           public void receiveResultdistanceToClosestCity(
+                    com.freshdirect.routing.proxy.stub.roadnet.DistanceToClosestCityResult result
+                        ) {
+           }
+
+          /**
+           * auto generated Axis2 Error handler
+           * override this method for handling error response from distanceToClosestCity operation
+           */
+            public void receiveErrordistanceToClosestCity(java.lang.Exception e) {
+            }
+                
+           /**
+            * auto generated Axis2 call back method for buildDriverDirectionsEx method
+            * override this method for handling normal response from buildDriverDirectionsEx operation
+            */
+           public void receiveResultbuildDriverDirectionsEx(
+                    com.freshdirect.routing.proxy.stub.roadnet.DirectionData result
+                        ) {
+           }
+
+          /**
+           * auto generated Axis2 Error handler
+           * override this method for handling error response from buildDriverDirectionsEx operation
+           */
+            public void receiveErrorbuildDriverDirectionsEx(java.lang.Exception e) {
+            }
+                
+           /**
+            * auto generated Axis2 call back method for buildCompressedPath method
+            * override this method for handling normal response from buildCompressedPath operation
+            */
+           public void receiveResultbuildCompressedPath(
+                    com.freshdirect.routing.proxy.stub.roadnet.CompressedPathData result
+                        ) {
+           }
+
+          /**
+           * auto generated Axis2 Error handler
+           * override this method for handling error response from buildCompressedPath operation
+           */
+            public void receiveErrorbuildCompressedPath(java.lang.Exception e) {
+            }
+                
+           /**
+            * auto generated Axis2 call back method for geocode method
+            * override this method for handling normal response from geocode operation
+            */
+           public void receiveResultgeocode(
+                    com.freshdirect.routing.proxy.stub.roadnet.GeocodeData result
+                        ) {
+           }
+
+          /**
+           * auto generated Axis2 Error handler
+           * override this method for handling error response from geocode operation
+           */
+            public void receiveErrorgeocode(java.lang.Exception e) {
+            }
+                
+           /**
+            * auto generated Axis2 call back method for buildPath method
+            * override this method for handling normal response from buildPath operation
+            */
+           public void receiveResultbuildPath(
+                    com.freshdirect.routing.proxy.stub.roadnet.PathData result
+                        ) {
+           }
+
+          /**
+           * auto generated Axis2 Error handler
+           * override this method for handling error response from buildPath operation
+           */
+            public void receiveErrorbuildPath(java.lang.Exception e) {
+            }
+                
+           /**
+            * auto generated Axis2 call back method for findMapRegionDetails method
+            * override this method for handling normal response from findMapRegionDetails operation
+            */
+           public void receiveResultfindMapRegionDetails(
+                    com.freshdirect.routing.proxy.stub.roadnet.RegionDetail[] result
+                        ) {
+           }
+
+          /**
+           * auto generated Axis2 Error handler
+           * override this method for handling error response from findMapRegionDetails operation
+           */
+            public void receiveErrorfindMapRegionDetails(java.lang.Exception e) {
+            }
+                
+           /**
+            * auto generated Axis2 call back method for mapRetrieveMapDataVersion method
+            * override this method for handling normal response from mapRetrieveMapDataVersion operation
+            */
+           public void receiveResultmapRetrieveMapDataVersion(
+                    com.freshdirect.routing.proxy.stub.roadnet.MapDataVersion result
+                        ) {
+           }
+
+          /**
+           * auto generated Axis2 Error handler
+           * override this method for handling error response from mapRetrieveMapDataVersion operation
+           */
+            public void receiveErrormapRetrieveMapDataVersion(java.lang.Exception e) {
+            }
+                
+           /**
+            * auto generated Axis2 call back method for saveArcOverridesEx method
+            * override this method for handling normal response from saveArcOverridesEx operation
+            */
+           public void receiveResultsaveArcOverridesEx(
+                    int result
+                        ) {
+           }
+
+          /**
+           * auto generated Axis2 Error handler
+           * override this method for handling error response from saveArcOverridesEx operation
+           */
+            public void receiveErrorsaveArcOverridesEx(java.lang.Exception e) {
             }
                 
            /**
@@ -365,147 +365,147 @@
             }
                 
            /**
-            * auto generated Axis2 call back method for nop method
-            * override this method for handling normal response from nop operation
+            * auto generated Axis2 call back method for findMapArcsEx method
+            * override this method for handling normal response from findMapArcsEx operation
             */
-           public void receiveResultnop(
-                    int result
+           public void receiveResultfindMapArcsEx(
+                    com.freshdirect.routing.proxy.stub.roadnet.MapArc[] result
                         ) {
            }
 
           /**
            * auto generated Axis2 Error handler
-           * override this method for handling error response from nop operation
+           * override this method for handling error response from findMapArcsEx operation
            */
-            public void receiveErrornop(java.lang.Exception e) {
+            public void receiveErrorfindMapArcsEx(java.lang.Exception e) {
             }
                 
            /**
-            * auto generated Axis2 call back method for mapRetrieveMapDataVersion method
-            * override this method for handling normal response from mapRetrieveMapDataVersion operation
+            * auto generated Axis2 call back method for formatPositionText method
+            * override this method for handling normal response from formatPositionText operation
             */
-           public void receiveResultmapRetrieveMapDataVersion(
-                    com.freshdirect.routing.proxy.stub.roadnet.MapDataVersion result
+           public void receiveResultformatPositionText(
+                    java.lang.String result
                         ) {
            }
 
           /**
            * auto generated Axis2 Error handler
-           * override this method for handling error response from mapRetrieveMapDataVersion operation
+           * override this method for handling error response from formatPositionText operation
            */
-            public void receiveErrormapRetrieveMapDataVersion(java.lang.Exception e) {
+            public void receiveErrorformatPositionText(java.lang.Exception e) {
             }
                 
            /**
-            * auto generated Axis2 call back method for findMapRegionDetails method
-            * override this method for handling normal response from findMapRegionDetails operation
+            * auto generated Axis2 call back method for buildDriverDirections method
+            * override this method for handling normal response from buildDriverDirections operation
             */
-           public void receiveResultfindMapRegionDetails(
-                    com.freshdirect.routing.proxy.stub.roadnet.RegionDetail[] result
-                        ) {
-           }
-
-          /**
-           * auto generated Axis2 Error handler
-           * override this method for handling error response from findMapRegionDetails operation
-           */
-            public void receiveErrorfindMapRegionDetails(java.lang.Exception e) {
-            }
-                
-           /**
-            * auto generated Axis2 call back method for saveArcOverrides method
-            * override this method for handling normal response from saveArcOverrides operation
-            */
-           public void receiveResultsaveArcOverrides(
-                    int result
-                        ) {
-           }
-
-          /**
-           * auto generated Axis2 Error handler
-           * override this method for handling error response from saveArcOverrides operation
-           */
-            public void receiveErrorsaveArcOverrides(java.lang.Exception e) {
-            }
-                
-           /**
-            * auto generated Axis2 call back method for buildPath method
-            * override this method for handling normal response from buildPath operation
-            */
-           public void receiveResultbuildPath(
-                    com.freshdirect.routing.proxy.stub.roadnet.PathData result
-                        ) {
-           }
-
-          /**
-           * auto generated Axis2 Error handler
-           * override this method for handling error response from buildPath operation
-           */
-            public void receiveErrorbuildPath(java.lang.Exception e) {
-            }
-                
-           /**
-            * auto generated Axis2 call back method for buildCompressedPath method
-            * override this method for handling normal response from buildCompressedPath operation
-            */
-           public void receiveResultbuildCompressedPath(
-                    com.freshdirect.routing.proxy.stub.roadnet.CompressedPathData result
-                        ) {
-           }
-
-          /**
-           * auto generated Axis2 Error handler
-           * override this method for handling error response from buildCompressedPath operation
-           */
-            public void receiveErrorbuildCompressedPath(java.lang.Exception e) {
-            }
-                
-           /**
-            * auto generated Axis2 call back method for buildDriverDirectionsEx method
-            * override this method for handling normal response from buildDriverDirectionsEx operation
-            */
-           public void receiveResultbuildDriverDirectionsEx(
+           public void receiveResultbuildDriverDirections(
                     com.freshdirect.routing.proxy.stub.roadnet.DirectionData result
                         ) {
            }
 
           /**
            * auto generated Axis2 Error handler
-           * override this method for handling error response from buildDriverDirectionsEx operation
+           * override this method for handling error response from buildDriverDirections operation
            */
-            public void receiveErrorbuildDriverDirectionsEx(java.lang.Exception e) {
+            public void receiveErrorbuildDriverDirections(java.lang.Exception e) {
             }
                 
            /**
-            * auto generated Axis2 call back method for buildMatrixEx method
-            * override this method for handling normal response from buildMatrixEx operation
+            * auto generated Axis2 call back method for versionInformation method
+            * override this method for handling normal response from versionInformation operation
             */
-           public void receiveResultbuildMatrixEx(
+           public void receiveResultversionInformation(
+                    java.lang.String result
+                        ) {
+           }
+
+          /**
+           * auto generated Axis2 Error handler
+           * override this method for handling error response from versionInformation operation
+           */
+            public void receiveErrorversionInformation(java.lang.Exception e) {
+            }
+                
+           /**
+            * auto generated Axis2 call back method for batchGeocode method
+            * override this method for handling normal response from batchGeocode operation
+            */
+           public void receiveResultbatchGeocode(
+                    com.freshdirect.routing.proxy.stub.roadnet.GeocodeData[] result
+                        ) {
+           }
+
+          /**
+           * auto generated Axis2 Error handler
+           * override this method for handling error response from batchGeocode operation
+           */
+            public void receiveErrorbatchGeocode(java.lang.Exception e) {
+            }
+                
+           /**
+            * auto generated Axis2 call back method for enableAllArcsByExtents method
+            * override this method for handling normal response from enableAllArcsByExtents operation
+            */
+           public void receiveResultenableAllArcsByExtents(
+                    int result
+                        ) {
+           }
+
+          /**
+           * auto generated Axis2 Error handler
+           * override this method for handling error response from enableAllArcsByExtents operation
+           */
+            public void receiveErrorenableAllArcsByExtents(java.lang.Exception e) {
+            }
+                
+           /**
+            * auto generated Axis2 call back method for map method
+            * override this method for handling normal response from map operation
+            */
+           public void receiveResultmap(
+                    com.freshdirect.routing.proxy.stub.roadnet.MapData result
+                        ) {
+           }
+
+          /**
+           * auto generated Axis2 Error handler
+           * override this method for handling error response from map operation
+           */
+            public void receiveErrormap(java.lang.Exception e) {
+            }
+                
+           /**
+            * auto generated Axis2 call back method for mapZoomRange method
+            * override this method for handling normal response from mapZoomRange operation
+            */
+           public void receiveResultmapZoomRange(
+                    com.freshdirect.routing.proxy.stub.roadnet.MapData result
+                        ) {
+           }
+
+          /**
+           * auto generated Axis2 Error handler
+           * override this method for handling error response from mapZoomRange operation
+           */
+            public void receiveErrormapZoomRange(java.lang.Exception e) {
+            }
+                
+           /**
+            * auto generated Axis2 call back method for buildMatrix method
+            * override this method for handling normal response from buildMatrix operation
+            */
+           public void receiveResultbuildMatrix(
                     com.freshdirect.routing.proxy.stub.roadnet.TimeDistanceResult[] result
                         ) {
            }
 
           /**
            * auto generated Axis2 Error handler
-           * override this method for handling error response from buildMatrixEx operation
+           * override this method for handling error response from buildMatrix operation
            */
-            public void receiveErrorbuildMatrixEx(java.lang.Exception e) {
-            }
-                
-           /**
-            * auto generated Axis2 call back method for mapConvertToLatLong method
-            * override this method for handling normal response from mapConvertToLatLong operation
-            */
-           public void receiveResultmapConvertToLatLong(
-                    com.freshdirect.routing.proxy.stub.roadnet.MapPoint result
-                        ) {
-           }
-
-          /**
-           * auto generated Axis2 Error handler
-           * override this method for handling error response from mapConvertToLatLong operation
-           */
-            public void receiveErrormapConvertToLatLong(java.lang.Exception e) {
+            public void receiveErrorbuildMatrix(java.lang.Exception e) {
             }
                 
 

@@ -17,13 +17,13 @@
         implements org.apache.axis2.databinding.ADBBean{
         /* This type was generated from the piece of schema that had
                 name = PathDirections
-                Namespace URI = http://www.upslogisticstech.com/UPSLT/RouteNetWebService
+                Namespace URI = http://www.roadnet.com/RTS/RouteNetWebService
                 Namespace Prefix = ns1
                 */
             
 
         private static java.lang.String generatePrefix(java.lang.String namespace) {
-            if(namespace.equals("http://www.upslogisticstech.com/UPSLT/RouteNetWebService")){
+            if(namespace.equals("http://www.roadnet.com/RTS/RouteNetWebService")){
                 return "ns1";
             }
             return org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
@@ -173,6 +173,94 @@
                              }
                              
 
+                        /**
+                        * field for PathDescription1
+                        */
+
+                        
+                                    protected java.lang.String localPathDescription1 ;
+                                
+                           /*  This tracker boolean wil be used to detect whether the user called the set method
+                          *   for this attribute. It will be used to determine whether to include this field
+                           *   in the serialized XML
+                           */
+                           protected boolean localPathDescription1Tracker = false ;
+                           
+
+                           /**
+                           * Auto generated getter method
+                           * @return java.lang.String
+                           */
+                           public  java.lang.String getPathDescription1(){
+                               return localPathDescription1;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param PathDescription1
+                               */
+                               public void setPathDescription1(java.lang.String param){
+                            
+                                       if (param != null){
+                                          //update the setting tracker
+                                          localPathDescription1Tracker = true;
+                                       } else {
+                                          localPathDescription1Tracker = false;
+                                              
+                                       }
+                                   
+                                            this.localPathDescription1=param;
+                                    
+
+                               }
+                            
+
+                        /**
+                        * field for PathDescription2
+                        */
+
+                        
+                                    protected java.lang.String localPathDescription2 ;
+                                
+                           /*  This tracker boolean wil be used to detect whether the user called the set method
+                          *   for this attribute. It will be used to determine whether to include this field
+                           *   in the serialized XML
+                           */
+                           protected boolean localPathDescription2Tracker = false ;
+                           
+
+                           /**
+                           * Auto generated getter method
+                           * @return java.lang.String
+                           */
+                           public  java.lang.String getPathDescription2(){
+                               return localPathDescription2;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param PathDescription2
+                               */
+                               public void setPathDescription2(java.lang.String param){
+                            
+                                       if (param != null){
+                                          //update the setting tracker
+                                          localPathDescription2Tracker = true;
+                                       } else {
+                                          localPathDescription2Tracker = false;
+                                              
+                                       }
+                                   
+                                            this.localPathDescription2=param;
+                                    
+
+                               }
+                            
+
      /**
      * isReaderMTOMAware
      * @return true if the reader supports MTOM
@@ -256,7 +344,7 @@
                   if (serializeType){
                
 
-                   java.lang.String namespacePrefix = registerPrefix(xmlWriter,"http://www.upslogisticstech.com/UPSLT/RouteNetWebService");
+                   java.lang.String namespacePrefix = registerPrefix(xmlWriter,"http://www.roadnet.com/RTS/RouteNetWebService");
                    if ((namespacePrefix != null) && (namespacePrefix.trim().length() > 0)){
                        writeAttribute("xsi","http://www.w3.org/2001/XMLSchema-instance","type",
                            namespacePrefix+":PathDirections",
@@ -270,7 +358,7 @@
                
                    }
                
-                                    namespace = "http://www.upslogisticstech.com/UPSLT/RouteNetWebService";
+                                    namespace = "http://www.roadnet.com/RTS/RouteNetWebService";
                                     if (! namespace.equals("")) {
                                         prefix = xmlWriter.getPrefix(namespace);
 
@@ -299,7 +387,7 @@
                                     
                                    xmlWriter.writeEndElement();
                              
-                                    namespace = "http://www.upslogisticstech.com/UPSLT/RouteNetWebService";
+                                    namespace = "http://www.roadnet.com/RTS/RouteNetWebService";
                                     if (! namespace.equals("")) {
                                         prefix = xmlWriter.getPrefix(namespace);
 
@@ -331,7 +419,7 @@
                                        if (localDirectionArcs!=null){
                                             for (int i = 0;i < localDirectionArcs.length;i++){
                                                 if (localDirectionArcs[i] != null){
-                                                 localDirectionArcs[i].serialize(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService","directionArcs"),
+                                                 localDirectionArcs[i].serialize(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/RouteNetWebService","directionArcs"),
                                                            factory,xmlWriter);
                                                 } else {
                                                    
@@ -345,7 +433,75 @@
                                                throw new org.apache.axis2.databinding.ADBException("directionArcs cannot be null!!");
                                         
                                     }
-                                 }
+                                 } if (localPathDescription1Tracker){
+                                    namespace = "http://www.roadnet.com/RTS/RouteNetWebService";
+                                    if (! namespace.equals("")) {
+                                        prefix = xmlWriter.getPrefix(namespace);
+
+                                        if (prefix == null) {
+                                            prefix = generatePrefix(namespace);
+
+                                            xmlWriter.writeStartElement(prefix,"pathDescription1", namespace);
+                                            xmlWriter.writeNamespace(prefix, namespace);
+                                            xmlWriter.setPrefix(prefix, namespace);
+
+                                        } else {
+                                            xmlWriter.writeStartElement(namespace,"pathDescription1");
+                                        }
+
+                                    } else {
+                                        xmlWriter.writeStartElement("pathDescription1");
+                                    }
+                                
+
+                                          if (localPathDescription1==null){
+                                              // write the nil attribute
+                                              
+                                                     throw new org.apache.axis2.databinding.ADBException("pathDescription1 cannot be null!!");
+                                                  
+                                          }else{
+
+                                        
+                                                   xmlWriter.writeCharacters(localPathDescription1);
+                                            
+                                          }
+                                    
+                                   xmlWriter.writeEndElement();
+                             } if (localPathDescription2Tracker){
+                                    namespace = "http://www.roadnet.com/RTS/RouteNetWebService";
+                                    if (! namespace.equals("")) {
+                                        prefix = xmlWriter.getPrefix(namespace);
+
+                                        if (prefix == null) {
+                                            prefix = generatePrefix(namespace);
+
+                                            xmlWriter.writeStartElement(prefix,"pathDescription2", namespace);
+                                            xmlWriter.writeNamespace(prefix, namespace);
+                                            xmlWriter.setPrefix(prefix, namespace);
+
+                                        } else {
+                                            xmlWriter.writeStartElement(namespace,"pathDescription2");
+                                        }
+
+                                    } else {
+                                        xmlWriter.writeStartElement("pathDescription2");
+                                    }
+                                
+
+                                          if (localPathDescription2==null){
+                                              // write the nil attribute
+                                              
+                                                     throw new org.apache.axis2.databinding.ADBException("pathDescription2 cannot be null!!");
+                                                  
+                                          }else{
+
+                                        
+                                                   xmlWriter.writeCharacters(localPathDescription2);
+                                            
+                                          }
+                                    
+                                   xmlWriter.writeEndElement();
+                             }
                     xmlWriter.writeEndElement();
                
 
@@ -508,13 +664,13 @@
                  java.util.ArrayList attribList = new java.util.ArrayList();
 
                 
-                                      elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService",
+                                      elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/RouteNetWebService",
                                                                       "time"));
                                  
                                 elementList.add(
                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localTime));
                             
-                                      elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService",
+                                      elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/RouteNetWebService",
                                                                       "distance"));
                                  
                                 elementList.add(
@@ -524,7 +680,7 @@
                                  for (int i = 0;i < localDirectionArcs.length;i++){
 
                                     if (localDirectionArcs[i] != null){
-                                         elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService",
+                                         elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/RouteNetWebService",
                                                                           "directionArcs"));
                                          elementList.add(localDirectionArcs[i]);
                                     } else {
@@ -540,7 +696,25 @@
                                     
                              }
 
-                        }
+                        } if (localPathDescription1Tracker){
+                                      elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/RouteNetWebService",
+                                                                      "pathDescription1"));
+                                 
+                                        if (localPathDescription1 != null){
+                                            elementList.add(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localPathDescription1));
+                                        } else {
+                                           throw new org.apache.axis2.databinding.ADBException("pathDescription1 cannot be null!!");
+                                        }
+                                    } if (localPathDescription2Tracker){
+                                      elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/RouteNetWebService",
+                                                                      "pathDescription2"));
+                                 
+                                        if (localPathDescription2 != null){
+                                            elementList.add(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localPathDescription2));
+                                        } else {
+                                           throw new org.apache.axis2.databinding.ADBException("pathDescription2 cannot be null!!");
+                                        }
+                                    }
 
                 return new org.apache.axis2.databinding.utils.reader.ADBXMLStreamReaderImpl(qName, elementList.toArray(), attribList.toArray());
             
@@ -621,7 +795,7 @@
                                     
                                     while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
                                 
-                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService","time").equals(reader.getName())){
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/RouteNetWebService","time").equals(reader.getName())){
                                 
                                     java.lang.String content = reader.getElementText();
                                     
@@ -640,7 +814,7 @@
                                     
                                     while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
                                 
-                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService","distance").equals(reader.getName())){
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/RouteNetWebService","distance").equals(reader.getName())){
                                 
                                     java.lang.String content = reader.getElementText();
                                     
@@ -659,7 +833,7 @@
                                     
                                     while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
                                 
-                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService","directionArcs").equals(reader.getName())){
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/RouteNetWebService","directionArcs").equals(reader.getName())){
                                 
                                     
                                     
@@ -681,7 +855,7 @@
                                                                 //two continuous end elements means we are exiting the xml structure
                                                                 loopDone3 = true;
                                                             } else {
-                                                                if (new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService","directionArcs").equals(reader.getName())){
+                                                                if (new javax.xml.namespace.QName("http://www.roadnet.com/RTS/RouteNetWebService","directionArcs").equals(reader.getName())){
                                                                     list3.add(com.freshdirect.routing.proxy.stub.roadnet.DirectionArc.Factory.parse(reader));
                                                                         
                                                                 }else{
@@ -696,6 +870,42 @@
                                                                 com.freshdirect.routing.proxy.stub.roadnet.DirectionArc.class,
                                                                 list3));
                                                             
+                              }  // End of if for expected property start element
+                                
+                                    else {
+                                        
+                                    }
+                                
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/RouteNetWebService","pathDescription1").equals(reader.getName())){
+                                
+                                    java.lang.String content = reader.getElementText();
+                                    
+                                              object.setPathDescription1(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToString(content));
+                                              
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                    else {
+                                        
+                                    }
+                                
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/RouteNetWebService","pathDescription2").equals(reader.getName())){
+                                
+                                    java.lang.String content = reader.getElementText();
+                                    
+                                              object.setPathDescription2(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToString(content));
+                                              
+                                        reader.next();
+                                    
                               }  // End of if for expected property start element
                                 
                                     else {

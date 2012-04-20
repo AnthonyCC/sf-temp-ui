@@ -485,11 +485,11 @@ public class DlvManagerSessionBean extends GatewaySessionBeanSupport {
 									if(cost!=null)
 									{
 										routingModel = new RoutingModel(cost.getAdditionalDistance(),cost.getAdditionalRunTime(), cost.getAdditionalStopCost(),
-																				cost.getCapacity(), cost.getCostPerMile(), cost.getFixedRouteSetupCost(),
+																				/*cost.getCapacity(),*/ cost.getCostPerMile(), cost.getFixedRouteSetupCost(),
 																				cost.getMaxRunTime(), cost.getOvertimeHourlyWage(), cost.getPrefRunTime(),
 																				cost.getRegularHourlyWage(), cost.getRegularWageDurationSeconds(),cost.getRouteId(),
-																				cost.getStopSequence(), cost.getTotalDistance(), cost.getTotalPUQuantity(),
-																				cost.getTotalQuantity(), cost.getTotalRouteCost(), cost.getTotalRunTime(), cost.getTotalServiceTime(),
+																				cost.getStopSequence(), cost.getTotalDistance(), /*cost.getTotalPUQuantity(),
+																				cost.getTotalQuantity(),*/ cost.getTotalRouteCost(), cost.getTotalRunTime(), cost.getTotalServiceTime(),
 																				cost.getTotalTravelTime(), cost.getTotalWaitTime(), cost.isAvailable(), cost.isFiltered(), cost.isMissedTW(),
 																				cost.getWaveVehicles(), cost.getWaveVehiclesInUse(), cost.getWaveStartTime(), cost.getUnavailabilityReason(),
 																				cost.getWaveOrdersTaken(), cost.getTotalQuantities(), cost.isNewRoute(), cost.getCapacities());

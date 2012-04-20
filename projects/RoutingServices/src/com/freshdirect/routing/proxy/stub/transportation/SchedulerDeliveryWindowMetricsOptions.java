@@ -17,13 +17,13 @@
         implements org.apache.axis2.databinding.ADBBean{
         /* This type was generated from the piece of schema that had
                 name = SchedulerDeliveryWindowMetricsOptions
-                Namespace URI = http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService
+                Namespace URI = http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService
                 Namespace Prefix = ns1
                 */
             
 
         private static java.lang.String generatePrefix(java.lang.String namespace) {
-            if(namespace.equals("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService")){
+            if(namespace.equals("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService")){
                 return "ns1";
             }
             return org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
@@ -174,6 +174,50 @@
                             
 
                         /**
+                        * field for WaveCriteria
+                        */
+
+                        
+                                    protected com.freshdirect.routing.proxy.stub.transportation.WaveCriteria localWaveCriteria ;
+                                
+                           /*  This tracker boolean wil be used to detect whether the user called the set method
+                          *   for this attribute. It will be used to determine whether to include this field
+                           *   in the serialized XML
+                           */
+                           protected boolean localWaveCriteriaTracker = false ;
+                           
+
+                           /**
+                           * Auto generated getter method
+                           * @return com.freshdirect.routing.proxy.stub.transportation.WaveCriteria
+                           */
+                           public  com.freshdirect.routing.proxy.stub.transportation.WaveCriteria getWaveCriteria(){
+                               return localWaveCriteria;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param WaveCriteria
+                               */
+                               public void setWaveCriteria(com.freshdirect.routing.proxy.stub.transportation.WaveCriteria param){
+                            
+                                       if (param != null){
+                                          //update the setting tracker
+                                          localWaveCriteriaTracker = true;
+                                       } else {
+                                          localWaveCriteriaTracker = true;
+                                              
+                                       }
+                                   
+                                            this.localWaveCriteria=param;
+                                    
+
+                               }
+                            
+
+                        /**
                         * field for PreRouteStemTimeAdjustmentSeconds
                         */
 
@@ -318,7 +362,7 @@
                   if (serializeType){
                
 
-                   java.lang.String namespacePrefix = registerPrefix(xmlWriter,"http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService");
+                   java.lang.String namespacePrefix = registerPrefix(xmlWriter,"http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService");
                    if ((namespacePrefix != null) && (namespacePrefix.trim().length() > 0)){
                        writeAttribute("xsi","http://www.w3.org/2001/XMLSchema-instance","type",
                            namespacePrefix+":SchedulerDeliveryWindowMetricsOptions",
@@ -335,18 +379,18 @@
                                             if (localType==null){
                                                  throw new org.apache.axis2.databinding.ADBException("type cannot be null!!");
                                             }
-                                           localType.serialize(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","type"),
+                                           localType.serialize(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","type"),
                                                factory,xmlWriter);
                                          if (localDeliveryWindowsTracker){
                                        if (localDeliveryWindows!=null){
                                             for (int i = 0;i < localDeliveryWindows.length;i++){
                                                 if (localDeliveryWindows[i] != null){
-                                                 localDeliveryWindows[i].serialize(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","deliveryWindows"),
+                                                 localDeliveryWindows[i].serialize(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","deliveryWindows"),
                                                            factory,xmlWriter);
                                                 } else {
                                                    
                                                             // write null attribute
-                                                            java.lang.String namespace2 = "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService";
+                                                            java.lang.String namespace2 = "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService";
                                                             if (! namespace2.equals("")) {
                                                                 java.lang.String prefix2 = xmlWriter.getPrefix(namespace2);
 
@@ -375,7 +419,7 @@
                                      } else {
                                         
                                                 // write null attribute
-                                                java.lang.String namespace2 = "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService";
+                                                java.lang.String namespace2 = "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService";
                                                 if (! namespace2.equals("")) {
                                                     java.lang.String prefix2 = xmlWriter.getPrefix(namespace2);
 
@@ -403,10 +447,41 @@
                                             if (localTimeZone==null){
                                                  throw new org.apache.axis2.databinding.ADBException("timeZone cannot be null!!");
                                             }
-                                           localTimeZone.serialize(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","timeZone"),
+                                           localTimeZone.serialize(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","timeZone"),
                                                factory,xmlWriter);
-                                        
-                                    namespace = "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService";
+                                         if (localWaveCriteriaTracker){
+                                    if (localWaveCriteria==null){
+
+                                            java.lang.String namespace2 = "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService";
+
+                                        if (! namespace2.equals("")) {
+                                            java.lang.String prefix2 = xmlWriter.getPrefix(namespace2);
+
+                                            if (prefix2 == null) {
+                                                prefix2 = generatePrefix(namespace2);
+
+                                                xmlWriter.writeStartElement(prefix2,"waveCriteria", namespace2);
+                                                xmlWriter.writeNamespace(prefix2, namespace2);
+                                                xmlWriter.setPrefix(prefix2, namespace2);
+
+                                            } else {
+                                                xmlWriter.writeStartElement(namespace2,"waveCriteria");
+                                            }
+
+                                        } else {
+                                            xmlWriter.writeStartElement("waveCriteria");
+                                        }
+
+
+                                       // write the nil attribute
+                                      writeAttribute("xsi","http://www.w3.org/2001/XMLSchema-instance","nil","1",xmlWriter);
+                                      xmlWriter.writeEndElement();
+                                    }else{
+                                     localWaveCriteria.serialize(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","waveCriteria"),
+                                        factory,xmlWriter);
+                                    }
+                                }
+                                    namespace = "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService";
                                     if (! namespace.equals("")) {
                                         prefix = xmlWriter.getPrefix(namespace);
 
@@ -435,7 +510,7 @@
                                     
                                    xmlWriter.writeEndElement();
                              
-                                    namespace = "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService";
+                                    namespace = "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService";
                                     if (! namespace.equals("")) {
                                         prefix = xmlWriter.getPrefix(namespace);
 
@@ -626,7 +701,7 @@
                  java.util.ArrayList attribList = new java.util.ArrayList();
 
                 
-                            elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
+                            elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
                                                                       "type"));
                             
                             
@@ -639,12 +714,12 @@
                                  for (int i = 0;i < localDeliveryWindows.length;i++){
 
                                     if (localDeliveryWindows[i] != null){
-                                         elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
+                                         elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
                                                                           "deliveryWindows"));
                                          elementList.add(localDeliveryWindows[i]);
                                     } else {
                                         
-                                                elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
+                                                elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
                                                                           "deliveryWindows"));
                                                 elementList.add(null);
                                             
@@ -653,14 +728,14 @@
                                  }
                              } else {
                                  
-                                        elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
+                                        elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
                                                                           "deliveryWindows"));
                                         elementList.add(localDeliveryWindows);
                                     
                              }
 
                         }
-                            elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
+                            elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
                                                                       "timeZone"));
                             
                             
@@ -668,14 +743,21 @@
                                          throw new org.apache.axis2.databinding.ADBException("timeZone cannot be null!!");
                                     }
                                     elementList.add(localTimeZone);
-                                
-                                      elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
+                                 if (localWaveCriteriaTracker){
+                            elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
+                                                                      "waveCriteria"));
+                            
+                            
+                                    elementList.add(localWaveCriteria==null?null:
+                                    localWaveCriteria);
+                                }
+                                      elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
                                                                       "preRouteStemTimeAdjustmentSeconds"));
                                  
                                 elementList.add(
                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localPreRouteStemTimeAdjustmentSeconds));
                             
-                                      elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
+                                      elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
                                                                       "postRouteStemTimeAdjustmentSeconds"));
                                  
                                 elementList.add(
@@ -761,7 +843,7 @@
                                     
                                     while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
                                 
-                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","type").equals(reader.getName())){
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","type").equals(reader.getName())){
                                 
                                                 object.setType(com.freshdirect.routing.proxy.stub.transportation.SchedulerDeliveryWindowMetricsType.Factory.parse(reader));
                                               
@@ -777,7 +859,7 @@
                                     
                                     while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
                                 
-                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","deliveryWindows").equals(reader.getName())){
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","deliveryWindows").equals(reader.getName())){
                                 
                                     
                                     
@@ -805,7 +887,7 @@
                                                                 //two continuous end elements means we are exiting the xml structure
                                                                 loopDone2 = true;
                                                             } else {
-                                                                if (new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","deliveryWindows").equals(reader.getName())){
+                                                                if (new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","deliveryWindows").equals(reader.getName())){
                                                                     
                                                                       nillableValue = reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance","nil");
                                                                       if ("true".equals(nillableValue) || "1".equals(nillableValue)){
@@ -835,7 +917,7 @@
                                     
                                     while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
                                 
-                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","timeZone").equals(reader.getName())){
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","timeZone").equals(reader.getName())){
                                 
                                                 object.setTimeZone(com.freshdirect.routing.proxy.stub.transportation.TimeZoneValue.Factory.parse(reader));
                                               
@@ -851,7 +933,31 @@
                                     
                                     while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
                                 
-                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","preRouteStemTimeAdjustmentSeconds").equals(reader.getName())){
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","waveCriteria").equals(reader.getName())){
+                                
+                                      nillableValue = reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance","nil");
+                                      if ("true".equals(nillableValue) || "1".equals(nillableValue)){
+                                          object.setWaveCriteria(null);
+                                          reader.next();
+                                            
+                                            reader.next();
+                                          
+                                      }else{
+                                    
+                                                object.setWaveCriteria(com.freshdirect.routing.proxy.stub.transportation.WaveCriteria.Factory.parse(reader));
+                                              
+                                        reader.next();
+                                    }
+                              }  // End of if for expected property start element
+                                
+                                    else {
+                                        
+                                    }
+                                
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","preRouteStemTimeAdjustmentSeconds").equals(reader.getName())){
                                 
                                     java.lang.String content = reader.getElementText();
                                     
@@ -870,7 +976,7 @@
                                     
                                     while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
                                 
-                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","postRouteStemTimeAdjustmentSeconds").equals(reader.getName())){
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","postRouteStemTimeAdjustmentSeconds").equals(reader.getName())){
                                 
                                     java.lang.String content = reader.getElementText();
                                     

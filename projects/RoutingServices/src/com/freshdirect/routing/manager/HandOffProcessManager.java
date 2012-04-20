@@ -406,7 +406,7 @@ public class HandOffProcessManager {
         	    	
         	try {
         		if(RoutingServicesProperties.isRemoveSchedulerEnabled()) {
-        			proxy.schedulerRemoveFromServer(schedulerId);
+        			proxy.schedulerUnload(schedulerId);
         		}
         	} catch (RoutingServiceException e) {
         		e.printStackTrace();
@@ -447,7 +447,7 @@ public class HandOffProcessManager {
         											IHandOffBatchSession session) throws  RoutingProcessException {
         	String sessionDescription = null;    	
         	try {    		
-    			proxy.sendRoutesToRoadNet(schedulerId, session.getSessionName());
+    			proxy.sendRoutesToRoadNet(schedulerId, session.getSessionName(),null);
         	} catch (RoutingServiceException e) {
         		e.printStackTrace();
         		StringBuffer strBuf = new StringBuffer();

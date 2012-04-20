@@ -17,14 +17,14 @@
         implements org.apache.axis2.databinding.ADBBean{
         
                 public static final javax.xml.namespace.QName MY_QNAME = new javax.xml.namespace.QName(
-                "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
+                "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
                 "StopType",
                 "ns1");
 
             
 
         private static java.lang.String generatePrefix(java.lang.String namespace) {
-            if(namespace.equals("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService")){
+            if(namespace.equals("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService")){
                 return "ns1";
             }
             return org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
@@ -98,6 +98,9 @@
                                     public static final java.lang.String _stpPostRoute =
                                         org.apache.axis2.databinding.utils.ConverterUtil.convertToString("stpPostRoute");
                                 
+                                    public static final java.lang.String _stpMidRouteSource =
+                                        org.apache.axis2.databinding.utils.ConverterUtil.convertToString("stpMidRouteSource");
+                                
                                 public static final StopType stpNone =
                                     new StopType(_stpNone,true);
                             
@@ -142,6 +145,9 @@
                             
                                 public static final StopType stpPostRoute =
                                     new StopType(_stpPostRoute,true);
+                            
+                                public static final StopType stpMidRouteSource =
+                                    new StopType(_stpMidRouteSource,true);
                             
 
                                 public java.lang.String getValue() { return localStopType;}
@@ -236,7 +242,7 @@
 
                             // add the type details if this is used in a simple type
                                if (serializeType){
-                                   java.lang.String namespacePrefix = registerPrefix(xmlWriter,"http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService");
+                                   java.lang.String namespacePrefix = registerPrefix(xmlWriter,"http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService");
                                    if ((namespacePrefix != null) && (namespacePrefix.trim().length() > 0)){
                                        writeAttribute("xsi","http://www.w3.org/2001/XMLSchema-instance","type",
                                            namespacePrefix+":StopType",

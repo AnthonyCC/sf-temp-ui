@@ -17,13 +17,13 @@
         implements org.apache.axis2.databinding.ADBBean{
         /* This type was generated from the piece of schema that had
                 name = MapPointDepArrTimes
-                Namespace URI = http://www.upslogisticstech.com/UPSLT/RouteNetWebService
+                Namespace URI = http://www.roadnet.com/RTS/RouteNetWebService
                 Namespace Prefix = ns1
                 */
             
 
         private static java.lang.String generatePrefix(java.lang.String namespace) {
-            if(namespace.equals("http://www.upslogisticstech.com/UPSLT/RouteNetWebService")){
+            if(namespace.equals("http://www.roadnet.com/RTS/RouteNetWebService")){
                 return "ns1";
             }
             return org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
@@ -234,7 +234,7 @@
                   if (serializeType){
                
 
-                   java.lang.String namespacePrefix = registerPrefix(xmlWriter,"http://www.upslogisticstech.com/UPSLT/RouteNetWebService");
+                   java.lang.String namespacePrefix = registerPrefix(xmlWriter,"http://www.roadnet.com/RTS/RouteNetWebService");
                    if ((namespacePrefix != null) && (namespacePrefix.trim().length() > 0)){
                        writeAttribute("xsi","http://www.w3.org/2001/XMLSchema-instance","type",
                            namespacePrefix+":MapPointDepArrTimes",
@@ -248,7 +248,7 @@
                
                    }
                
-                                    namespace = "http://www.upslogisticstech.com/UPSLT/RouteNetWebService";
+                                    namespace = "http://www.roadnet.com/RTS/RouteNetWebService";
                                     if (! namespace.equals("")) {
                                         prefix = xmlWriter.getPrefix(namespace);
 
@@ -282,7 +282,7 @@
                                     
                                    xmlWriter.writeEndElement();
                              
-                                    namespace = "http://www.upslogisticstech.com/UPSLT/RouteNetWebService";
+                                    namespace = "http://www.roadnet.com/RTS/RouteNetWebService";
                                     if (! namespace.equals("")) {
                                         prefix = xmlWriter.getPrefix(namespace);
 
@@ -319,13 +319,13 @@
                                             if (localTimeZoneOptions==null){
                                                  throw new org.apache.axis2.databinding.ADBException("timeZoneOptions cannot be null!!");
                                             }
-                                           localTimeZoneOptions.serialize(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService","timeZoneOptions"),
+                                           localTimeZoneOptions.serialize(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/RouteNetWebService","timeZoneOptions"),
                                                factory,xmlWriter);
                                         
                                             if (localLocalTimeZone==null){
                                                  throw new org.apache.axis2.databinding.ADBException("localTimeZone cannot be null!!");
                                             }
-                                           localLocalTimeZone.serialize(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService","localTimeZone"),
+                                           localLocalTimeZone.serialize(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/RouteNetWebService","localTimeZone"),
                                                factory,xmlWriter);
                                         
                     xmlWriter.writeEndElement();
@@ -490,7 +490,7 @@
                  java.util.ArrayList attribList = new java.util.ArrayList();
 
                 
-                                      elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService",
+                                      elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/RouteNetWebService",
                                                                       "departure"));
                                  
                                         if (localDeparture != null){
@@ -499,7 +499,7 @@
                                            throw new org.apache.axis2.databinding.ADBException("departure cannot be null!!");
                                         }
                                     
-                                      elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService",
+                                      elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/RouteNetWebService",
                                                                       "arrival"));
                                  
                                         if (localArrival != null){
@@ -508,7 +508,7 @@
                                            throw new org.apache.axis2.databinding.ADBException("arrival cannot be null!!");
                                         }
                                     
-                            elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService",
+                            elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/RouteNetWebService",
                                                                       "timeZoneOptions"));
                             
                             
@@ -517,7 +517,7 @@
                                     }
                                     elementList.add(localTimeZoneOptions);
                                 
-                            elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService",
+                            elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/RouteNetWebService",
                                                                       "localTimeZone"));
                             
                             
@@ -604,7 +604,7 @@
                                     
                                     while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
                                 
-                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService","departure").equals(reader.getName())){
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/RouteNetWebService","departure").equals(reader.getName())){
                                 
                                     java.lang.String content = reader.getElementText();
                                     
@@ -623,7 +623,7 @@
                                     
                                     while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
                                 
-                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService","arrival").equals(reader.getName())){
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/RouteNetWebService","arrival").equals(reader.getName())){
                                 
                                     java.lang.String content = reader.getElementText();
                                     
@@ -642,7 +642,7 @@
                                     
                                     while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
                                 
-                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService","timeZoneOptions").equals(reader.getName())){
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/RouteNetWebService","timeZoneOptions").equals(reader.getName())){
                                 
                                                 object.setTimeZoneOptions(com.freshdirect.routing.proxy.stub.roadnet.TimeZoneOptions.Factory.parse(reader));
                                               
@@ -658,7 +658,7 @@
                                     
                                     while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
                                 
-                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService","localTimeZone").equals(reader.getName())){
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/RouteNetWebService","localTimeZone").equals(reader.getName())){
                                 
                                                 object.setLocalTimeZone(com.freshdirect.routing.proxy.stub.roadnet.TimeZoneValue.Factory.parse(reader));
                                               

@@ -14,9 +14,9 @@ public class DeliveryWindowMetrics  extends BaseModel  implements IDeliveryWindo
 	
 	private int confirmedItems;
 
-	private int confirmedDeliveryQuantity;
+//	private int confirmedDeliveryQuantity;
 
-	private int confirmedPickupQuantity;
+	//private int confirmedPickupQuantity;
 
 	private double confirmedServiceTime;
 
@@ -99,7 +99,7 @@ public class DeliveryWindowMetrics  extends BaseModel  implements IDeliveryWindo
 		this.confirmedItems = confirmedItems;
 	}
 
-	public int getConfirmedDeliveryQuantity() {
+/*	public int getConfirmedDeliveryQuantity() {
 		return confirmedDeliveryQuantity;
 	}
 
@@ -114,7 +114,7 @@ public class DeliveryWindowMetrics  extends BaseModel  implements IDeliveryWindo
 	public void setConfirmedPickupQuantity(int confirmedPickupQuantity) {
 		this.confirmedPickupQuantity = confirmedPickupQuantity;
 	}
-
+*/
 	public double getConfirmedServiceTime() {
 		return confirmedServiceTime;
 	}

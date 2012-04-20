@@ -17,13 +17,13 @@
         implements org.apache.axis2.databinding.ADBBean{
         /* This type was generated from the piece of schema that had
                 name = PathOptions
-                Namespace URI = http://www.upslogisticstech.com/UPSLT/RouteNetWebService
+                Namespace URI = http://www.roadnet.com/RTS/RouteNetWebService
                 Namespace Prefix = ns1
                 */
             
 
         private static java.lang.String generatePrefix(java.lang.String namespace) {
-            if(namespace.equals("http://www.upslogisticstech.com/UPSLT/RouteNetWebService")){
+            if(namespace.equals("http://www.roadnet.com/RTS/RouteNetWebService")){
                 return "ns1";
             }
             return org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
@@ -187,37 +187,6 @@
                                }
                             
 
-                        /**
-                        * field for DoNotExceedUserRoadClassSpeeds
-                        */
-
-                        
-                                    protected int localDoNotExceedUserRoadClassSpeeds =
-                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToInt("-1");
-                                
-
-                           /**
-                           * Auto generated getter method
-                           * @return int
-                           */
-                           public  int getDoNotExceedUserRoadClassSpeeds(){
-                               return localDoNotExceedUserRoadClassSpeeds;
-                           }
-
-                           
-                        
-                            /**
-                               * Auto generated setter method
-                               * @param param DoNotExceedUserRoadClassSpeeds
-                               */
-                               public void setDoNotExceedUserRoadClassSpeeds(int param){
-                            
-                                            this.localDoNotExceedUserRoadClassSpeeds=param;
-                                    
-
-                               }
-                            
-
      /**
      * isReaderMTOMAware
      * @return true if the reader supports MTOM
@@ -301,7 +270,7 @@
                   if (serializeType){
                
 
-                   java.lang.String namespacePrefix = registerPrefix(xmlWriter,"http://www.upslogisticstech.com/UPSLT/RouteNetWebService");
+                   java.lang.String namespacePrefix = registerPrefix(xmlWriter,"http://www.roadnet.com/RTS/RouteNetWebService");
                    if ((namespacePrefix != null) && (namespacePrefix.trim().length() > 0)){
                        writeAttribute("xsi","http://www.w3.org/2001/XMLSchema-instance","type",
                            namespacePrefix+":PathOptions",
@@ -315,7 +284,7 @@
                
                    }
                 if (localVendorRushHourModelNameTracker){
-                                    namespace = "http://www.upslogisticstech.com/UPSLT/RouteNetWebService";
+                                    namespace = "http://www.roadnet.com/RTS/RouteNetWebService";
                                     if (! namespace.equals("")) {
                                         prefix = xmlWriter.getPrefix(namespace);
 
@@ -352,7 +321,7 @@
                                        if (localDepartureArrivalTimes!=null){
                                             for (int i = 0;i < localDepartureArrivalTimes.length;i++){
                                                 if (localDepartureArrivalTimes[i] != null){
-                                                 localDepartureArrivalTimes[i].serialize(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService","departureArrivalTimes"),
+                                                 localDepartureArrivalTimes[i].serialize(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/RouteNetWebService","departureArrivalTimes"),
                                                            factory,xmlWriter);
                                                 } else {
                                                    
@@ -367,7 +336,7 @@
                                         
                                     }
                                  }
-                                    namespace = "http://www.upslogisticstech.com/UPSLT/RouteNetWebService";
+                                    namespace = "http://www.roadnet.com/RTS/RouteNetWebService";
                                     if (! namespace.equals("")) {
                                         prefix = xmlWriter.getPrefix(namespace);
 
@@ -398,35 +367,6 @@
                                                    xmlWriter.writeCharacters(localArcOverrideKey);
                                             
                                           }
-                                    
-                                   xmlWriter.writeEndElement();
-                             
-                                    namespace = "http://www.upslogisticstech.com/UPSLT/RouteNetWebService";
-                                    if (! namespace.equals("")) {
-                                        prefix = xmlWriter.getPrefix(namespace);
-
-                                        if (prefix == null) {
-                                            prefix = generatePrefix(namespace);
-
-                                            xmlWriter.writeStartElement(prefix,"doNotExceedUserRoadClassSpeeds", namespace);
-                                            xmlWriter.writeNamespace(prefix, namespace);
-                                            xmlWriter.setPrefix(prefix, namespace);
-
-                                        } else {
-                                            xmlWriter.writeStartElement(namespace,"doNotExceedUserRoadClassSpeeds");
-                                        }
-
-                                    } else {
-                                        xmlWriter.writeStartElement("doNotExceedUserRoadClassSpeeds");
-                                    }
-                                
-                                               if (localDoNotExceedUserRoadClassSpeeds==java.lang.Integer.MIN_VALUE) {
-                                           
-                                                         throw new org.apache.axis2.databinding.ADBException("doNotExceedUserRoadClassSpeeds cannot be null!!");
-                                                      
-                                               } else {
-                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localDoNotExceedUserRoadClassSpeeds));
-                                               }
                                     
                                    xmlWriter.writeEndElement();
                              
@@ -592,7 +532,7 @@
                  java.util.ArrayList attribList = new java.util.ArrayList();
 
                  if (localVendorRushHourModelNameTracker){
-                                      elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService",
+                                      elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/RouteNetWebService",
                                                                       "vendorRushHourModelName"));
                                  
                                         if (localVendorRushHourModelName != null){
@@ -605,7 +545,7 @@
                                  for (int i = 0;i < localDepartureArrivalTimes.length;i++){
 
                                     if (localDepartureArrivalTimes[i] != null){
-                                         elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService",
+                                         elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/RouteNetWebService",
                                                                           "departureArrivalTimes"));
                                          elementList.add(localDepartureArrivalTimes[i]);
                                     } else {
@@ -622,7 +562,7 @@
                              }
 
                         }
-                                      elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService",
+                                      elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/RouteNetWebService",
                                                                       "arcOverrideKey"));
                                  
                                         if (localArcOverrideKey != null){
@@ -631,12 +571,6 @@
                                            throw new org.apache.axis2.databinding.ADBException("arcOverrideKey cannot be null!!");
                                         }
                                     
-                                      elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService",
-                                                                      "doNotExceedUserRoadClassSpeeds"));
-                                 
-                                elementList.add(
-                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localDoNotExceedUserRoadClassSpeeds));
-                            
 
                 return new org.apache.axis2.databinding.utils.reader.ADBXMLStreamReaderImpl(qName, elementList.toArray(), attribList.toArray());
             
@@ -717,7 +651,7 @@
                                     
                                     while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
                                 
-                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService","vendorRushHourModelName").equals(reader.getName())){
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/RouteNetWebService","vendorRushHourModelName").equals(reader.getName())){
                                 
                                     java.lang.String content = reader.getElementText();
                                     
@@ -735,7 +669,7 @@
                                     
                                     while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
                                 
-                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService","departureArrivalTimes").equals(reader.getName())){
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/RouteNetWebService","departureArrivalTimes").equals(reader.getName())){
                                 
                                     
                                     
@@ -757,7 +691,7 @@
                                                                 //two continuous end elements means we are exiting the xml structure
                                                                 loopDone2 = true;
                                                             } else {
-                                                                if (new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService","departureArrivalTimes").equals(reader.getName())){
+                                                                if (new javax.xml.namespace.QName("http://www.roadnet.com/RTS/RouteNetWebService","departureArrivalTimes").equals(reader.getName())){
                                                                     list2.add(com.freshdirect.routing.proxy.stub.roadnet.MapPointDepArrTimes.Factory.parse(reader));
                                                                         
                                                                 }else{
@@ -781,31 +715,12 @@
                                     
                                     while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
                                 
-                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService","arcOverrideKey").equals(reader.getName())){
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/RouteNetWebService","arcOverrideKey").equals(reader.getName())){
                                 
                                     java.lang.String content = reader.getElementText();
                                     
                                               object.setArcOverrideKey(
                                                     org.apache.axis2.databinding.utils.ConverterUtil.convertToString(content));
-                                              
-                                        reader.next();
-                                    
-                              }  // End of if for expected property start element
-                                
-                                else{
-                                    // A start element we are not expecting indicates an invalid parameter was passed
-                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
-                                }
-                            
-                                    
-                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
-                                
-                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService","doNotExceedUserRoadClassSpeeds").equals(reader.getName())){
-                                
-                                    java.lang.String content = reader.getElementText();
-                                    
-                                              object.setDoNotExceedUserRoadClassSpeeds(
-                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToInt(content));
                                               
                                         reader.next();
                                     

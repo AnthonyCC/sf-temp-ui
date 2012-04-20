@@ -17,49 +17,19 @@
         implements org.apache.axis2.databinding.ADBBean{
         /* This type was generated from the piece of schema that had
                 name = OutOfSequenceExceptionNotification
-                Namespace URI = http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService
+                Namespace URI = http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService
                 Namespace Prefix = ns1
                 */
             
 
         private static java.lang.String generatePrefix(java.lang.String namespace) {
-            if(namespace.equals("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService")){
+            if(namespace.equals("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService")){
                 return "ns1";
             }
             return org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
         }
 
         
-
-                        /**
-                        * field for StopIdentity
-                        */
-
-                        
-                                    protected com.freshdirect.routing.proxy.stub.transportation.StopIdentity localStopIdentity ;
-                                
-
-                           /**
-                           * Auto generated getter method
-                           * @return com.freshdirect.routing.proxy.stub.transportation.StopIdentity
-                           */
-                           public  com.freshdirect.routing.proxy.stub.transportation.StopIdentity getStopIdentity(){
-                               return localStopIdentity;
-                           }
-
-                           
-                        
-                            /**
-                               * Auto generated setter method
-                               * @param param StopIdentity
-                               */
-                               public void setStopIdentity(com.freshdirect.routing.proxy.stub.transportation.StopIdentity param){
-                            
-                                            this.localStopIdentity=param;
-                                    
-
-                               }
-                            
 
                         /**
                         * field for TimeStamp
@@ -100,50 +70,6 @@
                                        }
                                    
                                             this.localTimeStamp=param;
-                                    
-
-                               }
-                            
-
-                        /**
-                        * field for MovedAfterStop
-                        */
-
-                        
-                                    protected com.freshdirect.routing.proxy.stub.transportation.StopIdentity localMovedAfterStop ;
-                                
-                           /*  This tracker boolean wil be used to detect whether the user called the set method
-                          *   for this attribute. It will be used to determine whether to include this field
-                           *   in the serialized XML
-                           */
-                           protected boolean localMovedAfterStopTracker = false ;
-                           
-
-                           /**
-                           * Auto generated getter method
-                           * @return com.freshdirect.routing.proxy.stub.transportation.StopIdentity
-                           */
-                           public  com.freshdirect.routing.proxy.stub.transportation.StopIdentity getMovedAfterStop(){
-                               return localMovedAfterStop;
-                           }
-
-                           
-                        
-                            /**
-                               * Auto generated setter method
-                               * @param param MovedAfterStop
-                               */
-                               public void setMovedAfterStop(com.freshdirect.routing.proxy.stub.transportation.StopIdentity param){
-                            
-                                       if (param != null){
-                                          //update the setting tracker
-                                          localMovedAfterStopTracker = true;
-                                       } else {
-                                          localMovedAfterStopTracker = true;
-                                              
-                                       }
-                                   
-                                            this.localMovedAfterStop=param;
                                     
 
                                }
@@ -230,7 +156,7 @@
                     }
                 
 
-                   java.lang.String namespacePrefix = registerPrefix(xmlWriter,"http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService");
+                   java.lang.String namespacePrefix = registerPrefix(xmlWriter,"http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService");
                    if ((namespacePrefix != null) && (namespacePrefix.trim().length() > 0)){
                        writeAttribute("xsi","http://www.w3.org/2001/XMLSchema-instance","type",
                            namespacePrefix+":OutOfSequenceExceptionNotification",
@@ -245,28 +171,28 @@
                                             if (localNotificationType==null){
                                                  throw new org.apache.axis2.databinding.ADBException("notificationType cannot be null!!");
                                             }
-                                           localNotificationType.serialize(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","notificationType"),
+                                           localNotificationType.serialize(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","notificationType"),
                                                factory,xmlWriter);
                                         
                                             if (localNotificationIdentity==null){
                                                  throw new org.apache.axis2.databinding.ADBException("notificationIdentity cannot be null!!");
                                             }
-                                           localNotificationIdentity.serialize(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","notificationIdentity"),
+                                           localNotificationIdentity.serialize(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","notificationIdentity"),
                                                factory,xmlWriter);
                                         
                                             if (localRecipientIdentity==null){
                                                  throw new org.apache.axis2.databinding.ADBException("recipientIdentity cannot be null!!");
                                             }
-                                           localRecipientIdentity.serialize(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","recipientIdentity"),
+                                           localRecipientIdentity.serialize(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","recipientIdentity"),
                                                factory,xmlWriter);
                                         
                                             if (localLockIdentity==null){
                                                  throw new org.apache.axis2.databinding.ADBException("lockIdentity cannot be null!!");
                                             }
-                                           localLockIdentity.serialize(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","lockIdentity"),
+                                           localLockIdentity.serialize(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","lockIdentity"),
                                                factory,xmlWriter);
                                          if (localLockDateTracker){
-                                    namespace = "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService";
+                                    namespace = "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService";
                                     if (! namespace.equals("")) {
                                         prefix = xmlWriter.getPrefix(namespace);
 
@@ -299,14 +225,8 @@
                                           }
                                     
                                    xmlWriter.writeEndElement();
-                             }
-                                            if (localStopIdentity==null){
-                                                 throw new org.apache.axis2.databinding.ADBException("stopIdentity cannot be null!!");
-                                            }
-                                           localStopIdentity.serialize(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","stopIdentity"),
-                                               factory,xmlWriter);
-                                         if (localTimeStampTracker){
-                                    namespace = "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService";
+                             } if (localTimeStampTracker){
+                                    namespace = "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService";
                                     if (! namespace.equals("")) {
                                         prefix = xmlWriter.getPrefix(namespace);
 
@@ -339,38 +259,7 @@
                                           }
                                     
                                    xmlWriter.writeEndElement();
-                             } if (localMovedAfterStopTracker){
-                                    if (localMovedAfterStop==null){
-
-                                            java.lang.String namespace2 = "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService";
-
-                                        if (! namespace2.equals("")) {
-                                            java.lang.String prefix2 = xmlWriter.getPrefix(namespace2);
-
-                                            if (prefix2 == null) {
-                                                prefix2 = generatePrefix(namespace2);
-
-                                                xmlWriter.writeStartElement(prefix2,"movedAfterStop", namespace2);
-                                                xmlWriter.writeNamespace(prefix2, namespace2);
-                                                xmlWriter.setPrefix(prefix2, namespace2);
-
-                                            } else {
-                                                xmlWriter.writeStartElement(namespace2,"movedAfterStop");
-                                            }
-
-                                        } else {
-                                            xmlWriter.writeStartElement("movedAfterStop");
-                                        }
-
-
-                                       // write the nil attribute
-                                      writeAttribute("xsi","http://www.w3.org/2001/XMLSchema-instance","nil","1",xmlWriter);
-                                      xmlWriter.writeEndElement();
-                                    }else{
-                                     localMovedAfterStop.serialize(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","movedAfterStop"),
-                                        factory,xmlWriter);
-                                    }
-                                }
+                             }
                     xmlWriter.writeEndElement();
                
 
@@ -534,9 +423,9 @@
 
                 
                     attribList.add(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema-instance","type"));
-                    attribList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","OutOfSequenceExceptionNotification"));
+                    attribList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","OutOfSequenceExceptionNotification"));
                 
-                            elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
+                            elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
                                                                       "notificationType"));
                             
                             
@@ -545,7 +434,7 @@
                                     }
                                     elementList.add(localNotificationType);
                                 
-                            elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
+                            elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
                                                                       "notificationIdentity"));
                             
                             
@@ -554,7 +443,7 @@
                                     }
                                     elementList.add(localNotificationIdentity);
                                 
-                            elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
+                            elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
                                                                       "recipientIdentity"));
                             
                             
@@ -563,7 +452,7 @@
                                     }
                                     elementList.add(localRecipientIdentity);
                                 
-                            elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
+                            elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
                                                                       "lockIdentity"));
                             
                             
@@ -572,7 +461,7 @@
                                     }
                                     elementList.add(localLockIdentity);
                                  if (localLockDateTracker){
-                                      elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
+                                      elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
                                                                       "lockDate"));
                                  
                                         if (localLockDate != null){
@@ -580,17 +469,8 @@
                                         } else {
                                            throw new org.apache.axis2.databinding.ADBException("lockDate cannot be null!!");
                                         }
-                                    }
-                            elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
-                                                                      "stopIdentity"));
-                            
-                            
-                                    if (localStopIdentity==null){
-                                         throw new org.apache.axis2.databinding.ADBException("stopIdentity cannot be null!!");
-                                    }
-                                    elementList.add(localStopIdentity);
-                                 if (localTimeStampTracker){
-                                      elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
+                                    } if (localTimeStampTracker){
+                                      elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
                                                                       "timeStamp"));
                                  
                                         if (localTimeStamp != null){
@@ -598,14 +478,7 @@
                                         } else {
                                            throw new org.apache.axis2.databinding.ADBException("timeStamp cannot be null!!");
                                         }
-                                    } if (localMovedAfterStopTracker){
-                            elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
-                                                                      "movedAfterStop"));
-                            
-                            
-                                    elementList.add(localMovedAfterStop==null?null:
-                                    localMovedAfterStop);
-                                }
+                                    }
 
                 return new org.apache.axis2.databinding.utils.reader.ADBXMLStreamReaderImpl(qName, elementList.toArray(), attribList.toArray());
             
@@ -684,7 +557,7 @@
                                     
                                     while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
                                 
-                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","notificationType").equals(reader.getName())){
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","notificationType").equals(reader.getName())){
                                 
                                                 object.setNotificationType(com.freshdirect.routing.proxy.stub.transportation.NotificationType.Factory.parse(reader));
                                               
@@ -700,7 +573,7 @@
                                     
                                     while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
                                 
-                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","notificationIdentity").equals(reader.getName())){
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","notificationIdentity").equals(reader.getName())){
                                 
                                                 object.setNotificationIdentity(com.freshdirect.routing.proxy.stub.transportation.NotificationIdentity.Factory.parse(reader));
                                               
@@ -716,7 +589,7 @@
                                     
                                     while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
                                 
-                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","recipientIdentity").equals(reader.getName())){
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","recipientIdentity").equals(reader.getName())){
                                 
                                                 object.setRecipientIdentity(com.freshdirect.routing.proxy.stub.transportation.RecipientIdentity.Factory.parse(reader));
                                               
@@ -732,7 +605,7 @@
                                     
                                     while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
                                 
-                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","lockIdentity").equals(reader.getName())){
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","lockIdentity").equals(reader.getName())){
                                 
                                                 object.setLockIdentity(com.freshdirect.routing.proxy.stub.transportation.NotificationLockIdentity.Factory.parse(reader));
                                               
@@ -748,7 +621,7 @@
                                     
                                     while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
                                 
-                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","lockDate").equals(reader.getName())){
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","lockDate").equals(reader.getName())){
                                 
                                     java.lang.String content = reader.getElementText();
                                     
@@ -766,23 +639,7 @@
                                     
                                     while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
                                 
-                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","stopIdentity").equals(reader.getName())){
-                                
-                                                object.setStopIdentity(com.freshdirect.routing.proxy.stub.transportation.StopIdentity.Factory.parse(reader));
-                                              
-                                        reader.next();
-                                    
-                              }  // End of if for expected property start element
-                                
-                                else{
-                                    // A start element we are not expecting indicates an invalid parameter was passed
-                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
-                                }
-                            
-                                    
-                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
-                                
-                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","timeStamp").equals(reader.getName())){
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","timeStamp").equals(reader.getName())){
                                 
                                     java.lang.String content = reader.getElementText();
                                     
@@ -791,30 +648,6 @@
                                               
                                         reader.next();
                                     
-                              }  // End of if for expected property start element
-                                
-                                    else {
-                                        
-                                    }
-                                
-                                    
-                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
-                                
-                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","movedAfterStop").equals(reader.getName())){
-                                
-                                      nillableValue = reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance","nil");
-                                      if ("true".equals(nillableValue) || "1".equals(nillableValue)){
-                                          object.setMovedAfterStop(null);
-                                          reader.next();
-                                            
-                                            reader.next();
-                                          
-                                      }else{
-                                    
-                                                object.setMovedAfterStop(com.freshdirect.routing.proxy.stub.transportation.StopIdentity.Factory.parse(reader));
-                                              
-                                        reader.next();
-                                    }
                               }  // End of if for expected property start element
                                 
                                     else {

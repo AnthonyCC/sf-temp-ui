@@ -17,14 +17,14 @@
         implements org.apache.axis2.databinding.ADBBean{
         
                 public static final javax.xml.namespace.QName MY_QNAME = new javax.xml.namespace.QName(
-                "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
+                "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
                 "DataQualityType",
                 "ns1");
 
             
 
         private static java.lang.String generatePrefix(java.lang.String namespace) {
-            if(namespace.equals("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService")){
+            if(namespace.equals("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService")){
                 return "ns1";
             }
             return org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
@@ -80,6 +80,12 @@
                                     public static final java.lang.String _dqtGeoComputedCluster =
                                         org.apache.axis2.databinding.utils.ConverterUtil.convertToString("dqtGeoComputedCluster");
                                 
+                                    public static final java.lang.String _dqtTimeCaptured =
+                                        org.apache.axis2.databinding.utils.ConverterUtil.convertToString("dqtTimeCaptured");
+                                
+                                    public static final java.lang.String _dqtMixed =
+                                        org.apache.axis2.databinding.utils.ConverterUtil.convertToString("dqtMixed");
+                                
                                 public static final DataQualityType dqtUnknown =
                                     new DataQualityType(_dqtUnknown,true);
                             
@@ -106,6 +112,12 @@
                             
                                 public static final DataQualityType dqtGeoComputedCluster =
                                     new DataQualityType(_dqtGeoComputedCluster,true);
+                            
+                                public static final DataQualityType dqtTimeCaptured =
+                                    new DataQualityType(_dqtTimeCaptured,true);
+                            
+                                public static final DataQualityType dqtMixed =
+                                    new DataQualityType(_dqtMixed,true);
                             
 
                                 public java.lang.String getValue() { return localDataQualityType;}
@@ -200,7 +212,7 @@
 
                             // add the type details if this is used in a simple type
                                if (serializeType){
-                                   java.lang.String namespacePrefix = registerPrefix(xmlWriter,"http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService");
+                                   java.lang.String namespacePrefix = registerPrefix(xmlWriter,"http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService");
                                    if ((namespacePrefix != null) && (namespacePrefix.trim().length() > 0)){
                                        writeAttribute("xsi","http://www.w3.org/2001/XMLSchema-instance","type",
                                            namespacePrefix+":DataQualityType",

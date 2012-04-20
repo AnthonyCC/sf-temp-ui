@@ -68,6 +68,7 @@ import com.freshdirect.routing.proxy.stub.transportation.RoutingStop;
 import com.freshdirect.routing.proxy.stub.transportation.SchedulerDeliveryWindowMetrics;
 import com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity;
 import com.freshdirect.routing.proxy.stub.transportation.SchedulerOrdersCanceledNotification;
+import com.freshdirect.routing.proxy.stub.transportation.TimePeriodBasedTravelSpeedsType;
 
 public class RoutingDataDecoder {
 	
@@ -257,15 +258,15 @@ public class RoutingDataDecoder {
 		metrics.setAllocatedVehicles(window.getAllocatedVehicles());
 		metrics.setVehiclesInUse(window.getVehiclesInUse());
 		
-		metrics.setConfirmedDeliveryQuantity(window.getConfirmed().getDeliveryQuantity());
+	//	metrics.setConfirmedDeliveryQuantity(window.getConfirmed().getDeliveryQuantity());
 		metrics.setConfirmedItems(window.getConfirmed().getItems());
-		metrics.setConfirmedPickupQuantity(window.getConfirmed().getPickupQuantity());
+	//	metrics.setConfirmedPickupQuantity(window.getConfirmed().getPickupQuantity());
 		metrics.setConfirmedServiceTime(window.getConfirmed().getServiceTime()/60.0);
 		metrics.setConfirmedTravelTime(window.getConfirmed().getTravelTime()/60.0);
 		
-		metrics.setReservedDeliveryQuantity(window.getReserved().getDeliveryQuantity());
+	//	metrics.setReservedDeliveryQuantity(window.getReserved().getDeliveryQuantity());
 		metrics.setReservedItems(window.getReserved().getItems());
-		metrics.setReservedPickupQuantity(window.getReserved().getPickupQuantity());
+	//	metrics.setReservedPickupQuantity(window.getReserved().getPickupQuantity());
 		metrics.setReservedServiceTime(window.getReserved().getServiceTime()/60.0);
 		metrics.setReservedTravelTime(window.getReserved().getTravelTime()/60.0);
 				
@@ -304,7 +305,7 @@ public class RoutingDataDecoder {
 		deliverySlot.setAdditionalRunTime(deliveryCost.getAdditionalRunTime());
 		deliverySlot.setAdditionalStopCost(deliveryCost.getAdditionalStopCost());
 		deliverySlot.setAvailable(deliveryCost.getAvailable());
-		deliverySlot.setCapacity(deliveryCost.getCapacity());
+		//deliverySlot.setCapacity(deliveryCost.getCapacity());
 		deliverySlot.setCostPerMile(deliveryCost.getCostPerMile());
 		deliverySlot.setFiltered(deliveryCost.getFiltered());
 		deliverySlot.setFixedRouteSetupCost(deliveryCost.getFixedRouteSetupCost());
@@ -317,8 +318,8 @@ public class RoutingDataDecoder {
 		deliverySlot.setRouteId(deliveryCost.getRouteId());
 		deliverySlot.setStopSequence(deliveryCost.getStopSequence());
 		deliverySlot.setTotalDistance(deliveryCost.getTotalDistance());
-		deliverySlot.setTotalPUQuantity(deliveryCost.getTotalPUQuantity());
-		deliverySlot.setTotalQuantity(deliveryCost.getTotalQuantity());
+	//	deliverySlot.setTotalPUQuantity(deliveryCost.getTotalPUQuantity());
+	//	deliverySlot.setTotalQuantity(deliveryCost.getTotalQuantity());
 		deliverySlot.setTotalRouteCost(deliveryCost.getTotalRouteCost());
 		deliverySlot.setTotalRunTime(deliveryCost.getTotalRunTime());
 		deliverySlot.setTotalServiceTime(deliveryCost.getTotalServiceTime());
@@ -420,7 +421,7 @@ public class RoutingDataDecoder {
     		dModel.setDeliveryStartTime(model.getDeliveryWindowStart().getAsCalendar().getTime());
     		dModel.setDeliveryEndTime(model.getDeliveryWindowEnd().getAsCalendar().getTime());
     		dModel.setReservationId(model.getIdentity().getOrderNumber());
-    		dModel.setCalculatedOrderSize(model.getQuantity());
+    		dModel.setCalculatedOrderSize(model.getQuantities().getSize1());
 			dModel.setCalculatedServiceTime(model.getServiceTime());
     		
     		IZoneModel zModel = new ZoneModel();
@@ -489,7 +490,7 @@ public class RoutingDataDecoder {
 			result.setOutboundStemTimeAdjustmentSeconds(waveInstance.getOutboundStemTimeAdjustmentSeconds());
 			result.setOvertimeWage(waveInstance.getOvertimeWage());
 			result.setRushHourModel(waveInstance.getRushHourModel());			
-			
+			result.setTimePeriodTravelSpeedsType(decodeTimePeriodTravelSpeedsType(waveInstance.getTimePeriodTravelSpeedsType()));
 		}
 		return result;
 	}
@@ -502,6 +503,11 @@ public class RoutingDataDecoder {
 		return equipmentType;
 	}
 	
+	public static String decodeTimePeriodTravelSpeedsType(TimePeriodBasedTravelSpeedsType timePeriodBasedTravelSpeedsType) {
+		
+		return timePeriodBasedTravelSpeedsType.getValue();
+	}
+
 	public static IRoutingDepotId decodeIRoutingDepotId(LocationIdentity id) {
 		
 		IRoutingDepotId depot = new RoutingDepotId();

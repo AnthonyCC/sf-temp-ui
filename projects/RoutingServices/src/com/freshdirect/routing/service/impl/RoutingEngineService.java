@@ -9,7 +9,6 @@ import java.util.List;
 
 import org.apache.axis2.AxisFault;
 
-import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.routing.constants.IRoutingConstants;
 import com.freshdirect.routing.model.IDeliveryReservation;
 import com.freshdirect.routing.model.IDeliverySlot;
@@ -18,11 +17,10 @@ import com.freshdirect.routing.model.IOrderModel;
 import com.freshdirect.routing.model.IRoutingNotificationModel;
 import com.freshdirect.routing.model.IRoutingSchedulerIdentity;
 import com.freshdirect.routing.proxy.stub.transportation.DeliveryAreaOrder;
+import com.freshdirect.routing.proxy.stub.transportation.DeliveryAreaRoute;
 import com.freshdirect.routing.proxy.stub.transportation.Location;
 import com.freshdirect.routing.proxy.stub.transportation.RoutingImportOrder;
-import com.freshdirect.routing.proxy.stub.transportation.RoutingRoute;
 import com.freshdirect.routing.proxy.stub.transportation.RoutingSession;
-import com.freshdirect.routing.proxy.stub.transportation.RoutingStop;
 import com.freshdirect.routing.proxy.stub.transportation.SchedulerCalculateDeliveryWindowMetrics;
 import com.freshdirect.routing.proxy.stub.transportation.SchedulerDeliveryWindowMetricsOptions;
 import com.freshdirect.routing.proxy.stub.transportation.TransportationWebService;
@@ -70,11 +68,11 @@ public class RoutingEngineService extends BaseService implements IRoutingEngineS
 		}
 	}
 	
-	public void schedulerRemoveFromServer(IRoutingSchedulerIdentity schedulerId) throws RoutingServiceException {
+	public void schedulerUnload(IRoutingSchedulerIdentity schedulerId) throws RoutingServiceException {
 		
 		try {
 			TransportationWebService port = getTransportationSuiteBatchService(schedulerId);//RoutingServiceLocator.getInstance().getTransportationSuiteService();
-			port.schedulerRemoveFromServer(RoutingDataEncoder.encodeSchedulerIdentity(schedulerId));
+			port.schedulerUnload(RoutingDataEncoder.encodeSchedulerIdentity(schedulerId));
 		} catch (RemoteException exp) {
 			throw new RoutingServiceException(exp, IIssue.PROCESS_LOCATION_NOTFOUND);
 		}
@@ -120,10 +118,12 @@ public class RoutingEngineService extends BaseService implements IRoutingEngineS
 		}
 	}
 	
-	public void sendRoutesToRoadNet(IRoutingSchedulerIdentity schedulerId, String sessionDescription) throws RoutingServiceException {
+	public void sendRoutesToRoadNet(IRoutingSchedulerIdentity schedulerId, String sessionDescription, String waveCode) throws RoutingServiceException {
 		try {
 			TransportationWebService port = getTransportationSuiteBatchService(schedulerId);//RoutingServiceLocator.getInstance().getTransportationSuiteService();
-			port.schedulerSendRoutesToRoadnetEx(RoutingDataEncoder.encodeSchedulerIdentity(schedulerId), sessionDescription);
+			 
+			port.schedulerSendRoutesToRoadnetEx(RoutingDataEncoder.encodeSchedulerIdentity(schedulerId)
+												, RoutingDataEncoder.encodeSchedulerSendRoutesToRoadnetExOptions(sessionDescription, waveCode));
 			
 		} catch (RemoteException exp) {
 			throw new RoutingServiceException(exp, IIssue.PROCESS_SENDROUTES_UNSUCCESSFUL);
@@ -340,7 +340,7 @@ public class RoutingEngineService extends BaseService implements IRoutingEngineS
 			
 			criteria.setSchedulerIdentity(RoutingDataEncoder.encodeSchedulerIdentity(schedulerId));
 			
-			SchedulerDeliveryWindowMetricsOptions options = RoutingDataEncoder.encodeSchedulerDeliveryWindowMetricsOptions();
+			SchedulerDeliveryWindowMetricsOptions options = RoutingDataEncoder.encodeSchedulerDeliveryWindowMetricsOptions();			
 			options.setDeliveryWindows(RoutingDataEncoder.encodeDeliveryWindowBaseList(slots));
 			/*int preRouteStemTime = schedulerId.getArea().getStemFromTime() == 0 
 										? schedulerId.getArea().getStemToTime() : schedulerId.getArea().getStemFromTime(); 
@@ -400,6 +400,13 @@ public class RoutingEngineService extends BaseService implements IRoutingEngineS
 		
 	private String encodeString(String strRoot) {
 		return strRoot != null ? strRoot.toUpperCase() : strRoot;
+	}
+
+	@Override
+	public DeliveryAreaOrder getDeliveryAreaModel(IRoutingSchedulerIdentity schedulerId, IOrderModel orderModel
+			, String region, String locationType
+			, String orderType) {
+		return RoutingDataEncoder.encodeBulkOrder(schedulerId, orderModel, locationType, orderType, true);
 	}
 	
 }

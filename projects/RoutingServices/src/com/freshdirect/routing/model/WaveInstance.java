@@ -4,6 +4,7 @@ import java.util.Date;
 
 import com.freshdirect.routing.constants.EnumWaveInstancePublishSrc;
 import com.freshdirect.routing.constants.EnumWaveInstanceStatus;
+import com.freshdirect.routing.proxy.stub.transportation.TimePeriodBasedTravelSpeedsType;
 import com.freshdirect.routing.util.RoutingTimeOfDay;
 
 public class WaveInstance  extends BaseModel implements IWaveInstance {
@@ -40,7 +41,7 @@ public class WaveInstance  extends BaseModel implements IWaveInstance {
 	private int outboundStemTimeAdjustmentSeconds;
 	private int overtimeWage;
 	private String rushHourModel;
-	
+	private String timePeriodTravelSpeedsType;
 	private IAreaModel area;
 	
 	private EnumWaveInstancePublishSrc source;
@@ -383,6 +384,7 @@ public class WaveInstance  extends BaseModel implements IWaveInstance {
 		this.setOutboundStemTimeAdjustmentSeconds(baseInstance.getOutboundStemTimeAdjustmentSeconds());
 		this.setOvertimeWage(baseInstance.getOvertimeWage());
 		this.setRushHourModel(baseInstance.getRushHourModel());
+		this.setTimePeriodTravelSpeedsType(baseInstance.getTimePeriodTravelSpeedsType());
 	}
 	
 	public static void consolidateWaveInstance(IWaveInstance _rootWaveInstance, IWaveInstance _srcWaveInst) {
@@ -401,5 +403,14 @@ public class WaveInstance  extends BaseModel implements IWaveInstance {
 		if(_srcWaveInst.getRoutingWaveInstanceId() != null) {
 			_rootWaveInstance.setRoutingWaveInstanceId(_srcWaveInst.getRoutingWaveInstanceId());
 		}
+	}
+
+	public String getTimePeriodTravelSpeedsType() {
+		return timePeriodTravelSpeedsType;
+	}
+
+	public void setTimePeriodTravelSpeedsType(
+			String timePeriodTravelSpeedsType) {
+		this.timePeriodTravelSpeedsType = timePeriodTravelSpeedsType;
 	}
 }

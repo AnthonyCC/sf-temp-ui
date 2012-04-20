@@ -38,6 +38,7 @@ import com.freshdirect.routing.proxy.stub.transportation.LocationIdentity;
 import com.freshdirect.routing.proxy.stub.transportation.NotificationCriteria;
 import com.freshdirect.routing.proxy.stub.transportation.NotificationIdentity;
 import com.freshdirect.routing.proxy.stub.transportation.NotificationRetrieveOptions;
+import com.freshdirect.routing.proxy.stub.transportation.Quantities;
 import com.freshdirect.routing.proxy.stub.transportation.RecipientIdentity;
 import com.freshdirect.routing.proxy.stub.transportation.RouteIdentity;
 import com.freshdirect.routing.proxy.stub.transportation.RoutingDetailLevel;
@@ -61,10 +62,13 @@ import com.freshdirect.routing.proxy.stub.transportation.SchedulerReserveOrderOp
 import com.freshdirect.routing.proxy.stub.transportation.SchedulerRetrieveDeliveryWaveInstanceOptions;
 import com.freshdirect.routing.proxy.stub.transportation.SchedulerRouteBalancingOptions;
 import com.freshdirect.routing.proxy.stub.transportation.SchedulerSaveDeliveryWaveInstanceOptions;
+import com.freshdirect.routing.proxy.stub.transportation.SchedulerSendRoutesToRoadnetExOptions;
 import com.freshdirect.routing.proxy.stub.transportation.SchedulerUpdateOrderOptions;
+import com.freshdirect.routing.proxy.stub.transportation.TimePeriodBasedTravelSpeedsType;
 import com.freshdirect.routing.proxy.stub.transportation.TimeZoneOptions;
 import com.freshdirect.routing.proxy.stub.transportation.TimeZoneOptionsType;
 import com.freshdirect.routing.proxy.stub.transportation.TimeZoneValue;
+import com.freshdirect.routing.proxy.stub.transportation.WaveCriteria;
 
 public class RoutingDataEncoder {
 	
@@ -158,7 +162,10 @@ public class RoutingDataEncoder {
 		
 		
 		CategoryQuantities quantities = new CategoryQuantities();
-		quantities.setSize1(orderModel.getQuantity());
+		if(orderModel.getQuantities()!=null)
+			quantities.setSize1(orderModel.getQuantities().getSize1());
+		else
+			quantities.setSize1(0);
 		quantities.setSize2(0);
 		quantities.setSize3(0);
 		
@@ -189,7 +196,11 @@ public class RoutingDataEncoder {
 		if(finalOrderSize <= 0) {
 			finalOrderSize = RoutingServicesProperties.getDefaultOrderSize();
 		}
-		order.setQuantity(finalOrderSize);
+		Quantities quantities = new Quantities();
+		quantities.setSize1(finalOrderSize);
+		quantities.setSize2(0);
+		quantities.setSize3(0);
+		order.setQuantities(quantities);
 
 		if(needTimeSlot) {
 			order.setDeliveryWindowStart(getTime(orderModel.getDeliveryInfo().getDeliveryStartTime()));
@@ -228,8 +239,12 @@ public class RoutingDataEncoder {
 		int finalOrderSize = (int)orderModel.getDeliveryInfo().getCalculatedOrderSize();
 		if(finalOrderSize <= 0) {
 			finalOrderSize = RoutingServicesProperties.getDefaultOrderSize();
-		}		
-		order.setQuantity(finalOrderSize);
+		}	
+		Quantities quantities = new Quantities();
+		quantities.setSize1(finalOrderSize);
+		quantities.setSize2(0);
+		quantities.setSize3(0);
+		order.setQuantities(quantities);
 		
 		if(needTimeSlot) {
 			order.setDeliveryWindowStart(getTime(orderModel.getDeliveryInfo().getDeliveryStartTime()));
@@ -267,8 +282,12 @@ public class RoutingDataEncoder {
 		int finalOrderSize = (int)orderModel.getDeliveryInfo().getCalculatedOrderSize();
 		if(finalOrderSize <= 0) {
 			finalOrderSize = RoutingServicesProperties.getDefaultOrderSize();
-		}		
-		order.setQuantity(finalOrderSize);
+		}	
+		Quantities quantities = new Quantities();
+		quantities.setSize1(finalOrderSize);
+		quantities.setSize2(0);
+		quantities.setSize3(0);
+		order.setQuantities(quantities);
 		
 		double finalServiceTime = orderModel.getDeliveryInfo().getCalculatedServiceTime();
 		if(finalServiceTime <= 0) {
@@ -381,12 +400,34 @@ public class RoutingDataEncoder {
 		return schId;
 	}
 	
+	public static SchedulerSendRoutesToRoadnetExOptions encodeSchedulerSendRoutesToRoadnetExOptions(String sessionDescription, String waveCode) {
+		
+		SchedulerSendRoutesToRoadnetExOptions options = new SchedulerSendRoutesToRoadnetExOptions();
+		options.setSessionDescription(sessionDescription);
+		options.setWaveCriteria(null);
+		if(waveCode!=null)
+			options.setWaveCriteria(encodeWaveCriteria(waveCode));
+		
+		return options;
+	}
+	
+	public static WaveCriteria encodeWaveCriteria(String waveCode) {
+		
+		WaveCriteria criteria = new WaveCriteria();	
+		criteria.setWaveCode(waveCode);
+		return criteria;
+	}
+	
 	public static SchedulerUpdateOrderOptions encodeSchedulerUpdateOrderOptions(IOrderModel orderModel) {
 		//param1 regionId;
 		//param2 area;
 		//param3 deliveryDate;
 		SchedulerUpdateOrderOptions options = new SchedulerUpdateOrderOptions();
-		options.setNewQuantity((int)orderModel.getDeliveryInfo().getCalculatedOrderSize());
+		Quantities quantities = new Quantities();
+		quantities.setSize1(orderModel.getDeliveryInfo().getCalculatedOrderSize());
+		quantities.setSize2(0);
+		quantities.setSize3(0);
+		options.setNewQuantities(quantities);
 		options.setNewServiceTime((int)(orderModel.getDeliveryInfo().getCalculatedServiceTime()*60));
 				
 		return options;
@@ -749,6 +790,7 @@ public class RoutingDataEncoder {
 		attributes.setOutboundStemTimeAdjustmentSeconds(waveInstance.getOutboundStemTimeAdjustmentSeconds());
 		attributes.setOvertimeWage(waveInstance.getOvertimeWage());
 		attributes.setRushHourModel(waveInstance.getRushHourModel());
+		attributes.setTimePeriodTravelSpeedsType(encodeTimePeriodTravelSpeedsType(waveInstance.getTimePeriodTravelSpeedsType()));
 		
 		return attributes;
 	}
@@ -761,6 +803,11 @@ public class RoutingDataEncoder {
 		return equipmentType;
 	}
 	
+	public static TimePeriodBasedTravelSpeedsType encodeTimePeriodTravelSpeedsType(String type) {
+		
+		return TimePeriodBasedTravelSpeedsType.tpbUseRushHourModel; //defaulting to use rush hour model based on discussion with Roderic.
+	}
+
 	public static LocationIdentity encodeRoutingDepotId(IRoutingDepotId id) {
 		
 		LocationIdentity depot = new LocationIdentity();

@@ -10,11 +10,11 @@ import java.util.Date;
 public class RoutingModel implements Serializable {
 
 	public RoutingModel(int additionalDistance, int additionalRunTime,
-			int additionalStopCost, int capacity, int costPerMile,
+			int additionalStopCost,/* int capacity,*/ int costPerMile,
 			int fixedRouteSetupCost, int maxRunTime, int overtimeHourlyWage,
 			int prefRunTime, int regularHourlyWage,
 			int regularWageDurationSeconds, int routeId, int stopSequence,
-			int totalDistance, int totalPUQuantity, int totalQuantity,
+			int totalDistance, /*int totalPUQuantity, int totalQuantity, */
 			int totalRouteCost, int totalRunTime, int totalServiceTime,
 			int totalTravelTime, int totalWaitTime, boolean available,
 			boolean filtered, boolean missedTW, int waveVehicles, 
@@ -25,7 +25,7 @@ public class RoutingModel implements Serializable {
 		this.additionalDistance = additionalDistance;
 		this.additionalRunTime = additionalRunTime;
 		this.additionalStopCost = additionalStopCost;
-		this.capacity = capacity;
+		//this.capacity = capacity;
 		this.costPerMile = costPerMile;
 		this.fixedRouteSetupCost = fixedRouteSetupCost;
 		this.maxRunTime = maxRunTime;
@@ -36,8 +36,8 @@ public class RoutingModel implements Serializable {
 		this.routeId = routeId;
 		this.stopSequence = stopSequence;
 		this.totalDistance = totalDistance;
-		this.totalPUQuantity = totalPUQuantity;
-		this.totalQuantity = totalQuantity;
+	//	this.totalPUQuantity = totalPUQuantity;
+	//	this.totalQuantity = totalQuantity;
 		this.totalRouteCost = totalRouteCost;
 		this.totalRunTime = totalRunTime;
 		this.totalServiceTime = totalServiceTime;
@@ -55,50 +55,11 @@ public class RoutingModel implements Serializable {
 		this.newRoute = newRoute;
 		this.capacities = capacities;
 	}
-	/**
-	This object encapsulates cost related metrics received from UPS call.
-	 */
-	
-	public RoutingModel(int additionalDistance, int additionalRunTime,
-			int additionalStopCost, int capacity, int costPerMile,
-			int fixedRouteSetupCost, int maxRunTime, int overtimeHourlyWage,
-			int prefRunTime, int regularHourlyWage,
-			int regularWageDurationSeconds, int routeId, int stopSequence,
-			int totalDistance, int totalPUQuantity, int totalQuantity,
-			int totalRouteCost, int totalRunTime, int totalServiceTime,
-			int totalTravelTime, int totalWaitTime, boolean available,
-			boolean filtered, boolean missedTW) {
-		super();
-		this.additionalDistance = additionalDistance;
-		this.additionalRunTime = additionalRunTime;
-		this.additionalStopCost = additionalStopCost;
-		this.capacity = capacity;
-		this.costPerMile = costPerMile;
-		this.fixedRouteSetupCost = fixedRouteSetupCost;
-		this.maxRunTime = maxRunTime;
-		this.overtimeHourlyWage = overtimeHourlyWage;
-		this.prefRunTime = prefRunTime;
-		this.regularHourlyWage = regularHourlyWage;
-		this.regularWageDurationSeconds = regularWageDurationSeconds;
-		this.routeId = routeId;
-		this.stopSequence = stopSequence;
-		this.totalDistance = totalDistance;
-		this.totalPUQuantity = totalPUQuantity;
-		this.totalQuantity = totalQuantity;
-		this.totalRouteCost = totalRouteCost;
-		this.totalRunTime = totalRunTime;
-		this.totalServiceTime = totalServiceTime;
-		this.totalTravelTime = totalTravelTime;
-		this.totalWaitTime = totalWaitTime;
-		this.available = available;
-		this.filtered = filtered;
-		this.missedTW = missedTW;
-	}
 
 	private int additionalDistance;
 	private int additionalRunTime;
 	private int additionalStopCost;
-	private int capacity;
+//	private int capacity;
 	private int costPerMile;
 	private int fixedRouteSetupCost;
 	private int maxRunTime;
@@ -109,8 +70,8 @@ public class RoutingModel implements Serializable {
 	private int routeId;
 	private int stopSequence;
 	private int totalDistance;
-	private int totalPUQuantity;
-	private int totalQuantity;
+//	private int totalPUQuantity;
+//	private int totalQuantity;
 	private int totalRouteCost;
 	private int totalRunTime;
 	private int totalServiceTime;
@@ -152,12 +113,12 @@ public class RoutingModel implements Serializable {
 	public void setAvailable(boolean available) {
 		this.available = available;
 	}
-	public int getCapacity() {
+	/*public int getCapacity() {
 		return capacity;
 	}
 	public void setCapacity(int capacity) {
 		this.capacity = capacity;
-	}
+	}*/
 	public int getCostPerMile() {
 		return costPerMile;
 	}
@@ -230,7 +191,7 @@ public class RoutingModel implements Serializable {
 	public void setTotalDistance(int totalDistance) {
 		this.totalDistance = totalDistance;
 	}
-	public int getTotalPUQuantity() {
+/*	public int getTotalPUQuantity() {
 		return totalPUQuantity;
 	}
 	public void setTotalPUQuantity(int totalPUQuantity) {
@@ -241,7 +202,7 @@ public class RoutingModel implements Serializable {
 	}
 	public void setTotalQuantity(int totalQuantity) {
 		this.totalQuantity = totalQuantity;
-	}
+	}*/
 	public int getTotalRouteCost() {
 		return totalRouteCost;
 	}

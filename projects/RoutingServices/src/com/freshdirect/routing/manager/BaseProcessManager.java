@@ -277,7 +277,7 @@ public abstract class BaseProcessManager implements  IProcessManager {
 					sessionDescriptionMap.put(schedulerId, sendRouteToRoadNet(proxy, schedulerId, userId, currentTime));
 				}
 				
-				schedulerRemoveFromServer(proxy, schedulerId);
+				schedulerUnload(proxy, schedulerId);
 			}
     	} catch (RoutingServiceException e) {
     		e.printStackTrace();
@@ -289,11 +289,11 @@ public abstract class BaseProcessManager implements  IProcessManager {
     	return result;
     }
     
-    private void schedulerRemoveFromServer(RoutingEngineServiceProxy proxy, IRoutingSchedulerIdentity schedulerId) throws  RoutingProcessException {
+    private void schedulerUnload(RoutingEngineServiceProxy proxy, IRoutingSchedulerIdentity schedulerId) throws  RoutingProcessException {
     	    	
     	try {
     		if(RoutingServicesProperties.isRemoveSchedulerEnabled()) {
-    			proxy.schedulerRemoveFromServer(schedulerId);
+    			proxy.schedulerUnload(schedulerId);
     		}
     	} catch (RoutingServiceException e) {
     		e.printStackTrace();
@@ -337,7 +337,7 @@ public abstract class BaseProcessManager implements  IProcessManager {
     		sessionDescription = userId+"_"+getSessionType(schedulerId)
     								+"_"+RoutingDateUtil.formatPlain(schedulerId.getDeliveryDate())
     									+"_"+currentTime;
-			proxy.sendRoutesToRoadNet(schedulerId, sessionDescription);
+			proxy.sendRoutesToRoadNet(schedulerId, sessionDescription,null);
     	} catch (RoutingServiceException e) {
     		e.printStackTrace();
     		StringBuffer strBuf = new StringBuffer();

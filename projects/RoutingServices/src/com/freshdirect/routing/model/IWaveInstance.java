@@ -99,4 +99,9 @@ public interface IWaveInstance {
 
 	String getRoutingCode();
 	void setRoutingCode(String routingCode);
+	
+	String getTimePeriodTravelSpeedsType();
+
+	void setTimePeriodTravelSpeedsType(String timePeriodTravelSpeedsType);
+			
 }

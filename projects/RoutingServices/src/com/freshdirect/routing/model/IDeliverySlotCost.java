@@ -12,8 +12,8 @@ public interface IDeliverySlotCost {
 	void setAdditionalStopCost(int additionalStopCost);
 	boolean isAvailable();
 	void setAvailable(boolean available);
-	int getCapacity();
-	void setCapacity(int capacity);
+	//int getCapacity();
+	//void setCapacity(int capacity);
 	int getCostPerMile();
 	void setCostPerMile(int costPerMile);
 	boolean isFiltered();
@@ -38,10 +38,10 @@ public interface IDeliverySlotCost {
 	void setStopSequence(int stopSequence);
 	int getTotalDistance();
 	void setTotalDistance(int totalDistance);
-	int getTotalPUQuantity();
-	void setTotalPUQuantity(int totalPUQuantity);
-	int getTotalQuantity();
-	void setTotalQuantity(int totalQuantity);
+	//int getTotalPUQuantity();
+	//void setTotalPUQuantity(int totalPUQuantity);
+	//int getTotalQuantity();
+	//void setTotalQuantity(int totalQuantity);
 	int getTotalRouteCost();
 	void setTotalRouteCost(int totalRouteCost);
 	int getTotalRunTime();
