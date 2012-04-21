@@ -677,12 +677,14 @@ if ( skuSize == 0 ) {
 											<td colspan="3"><%@ include file="/shared/includes/product/i_minmax_note.jspf" %></td>
 										</tr>
 									</table>
+									<div style="clear: both; font-size: 0px;"></div>
 									<table cellpadding="0" cellspacing="2" border="0" style="<%= alignRight ? "float: right; margin-right: 0px; margin-left: auto;" : "" %>"> 									
 										<tr>
 											<td style="padding-left:6px;" class="text11bold">Price</td>
 											<td style="padding-left:4px;"><input class="text11bold" type="text" name="PRICE" size="6" onChange="" onFocus="blur()" value=""></td>
 										</tr>
 									</table>
+									<div style="clear: both; font-size: 0px;"></div>
 			   						<%
 			   						} else {
 			   						%>
@@ -699,6 +701,7 @@ if ( skuSize == 0 ) {
 											<td colspan="5"><%@ include file="/shared/includes/product/i_minmax_note.jspf" %></td>
 										</tr>
 									</table>
+									<div style="clear: both; font-size: 0px;"></div>
 									<%
 									}
 									%>
@@ -720,6 +723,7 @@ if ( skuSize == 0 ) {
 											<td colspan="3"><%@ include file="/shared/includes/product/i_minmax_note.jspf" %></td>
 										</tr>
 									</table>
+									<div style="clear: both; font-size: 0px;"></div>
 								</td>
 							</tr>	
 						<% }
@@ -913,6 +917,7 @@ if ( skuSize == 0 ) {
     
 					</td></tr>
 				</table>
+				<div style="clear: both; font-size: 0px;"></div>
 			</td></tr>
 			<tr><td><br/>
 				<%@ include file="/shared/includes/product/i_deli_buy_guide.jspf" %>
@@ -921,8 +926,6 @@ if ( skuSize == 0 ) {
 			    <%@ include file="/includes/product/i_cancellation_note.jspf" %>			    
 			</td></tr>
 		</table>
-		<% if (alignRight) { /* Fix IE6 collapsing container having floating blocks issue */ %>
-		<!--[if IE 6]><div style="clear: both; height: 0; line-height: 1px; padding: 0; visibility: hidden;"></div><![endif]-->
-		<% } %>
+		<div style="clear: both; font-size: 0px;"></div>
 	</form>
 <% } // END OF "THE BIG IF" :) %>
