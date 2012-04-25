@@ -1023,8 +1023,8 @@ public class FDStoreProperties {
 		defaults.put(PROP_FD_GIVEX_WEB_USER_PASSWD, "fd8848admin");
 		defaults.put(PROP_GIVEX_WEB_SERVER_URL, "https://dev-wwws.givex.com/portal/login.py?_LANGUAGE_:en");
 
-		defaults.put(PROP_WEBPURIFY_URL, "http://api1.webpurify.com/services/rest/?api_key=%API_KEY%&method=%METHOD%&format=json&lang=%LANG%&callback=%CALLBACK%&text=%TEXT%");
-		defaults.put(PROP_WEBPURIFY_KEY, "3abce4fd5f2505565dd98f9700167eba");
+		defaults.put(PROP_WEBPURIFY_URL, "https://api1.webpurify.com/services/rest/?api_key=%API_KEY%&method=%METHOD%&format=json&lang=%LANG%&callback=%CALLBACK%&text=%TEXT%");
+		defaults.put(PROP_WEBPURIFY_KEY, "1c7d26c10e564e6629234974ff556aa0");
 
 		defaults.put(FACEBOOK_APP_KEY, "331367173579737");
 		
