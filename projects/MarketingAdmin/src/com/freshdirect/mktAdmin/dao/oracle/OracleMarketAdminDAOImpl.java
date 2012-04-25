@@ -961,26 +961,29 @@ public class OracleMarketAdminDAOImpl implements MarketAdminDAOIntf {
 
 	public List<String> addReferralCustomers(Collection<String> collection,
 			String referralId) {
-		Connection conn = null;
-		PreparedStatement pstmt = null;
-		ResultSet rset = null;
+		System.out.println("\n\n\nStart uploading customers to campaign:" + referralId);
+		long t1 = System.currentTimeMillis();
 		Iterator<String> iter = collection.iterator();
 		List<String> invalidUsers = new ArrayList<String>();
-		try {
+		try {			
 			deleteRefPromoCustomers(referralId);
-			conn = this.jdbcTemplate.getDataSource().getConnection();
+			BatchSqlUpdate update = new BatchSqlUpdate(this.jdbcTemplate.getDataSource(), INSERT_USERS);
+			update.declareParameter(new SqlParameter("referralId", Types.VARCHAR));
+			update.declareParameter(new SqlParameter("cid", Types.VARCHAR));
+
 			while (iter.hasNext()) {
 				String email = (String) iter.next();
-				// check if user is valid CUSTOMER
+				// check if user is valid CUSTOMER				
 				String cid = isValidUserId(email);
 				if (cid != null) {
 					// check if this email is already linked to another referral promo
 					if (isValidCustomer(cid, referralId)) {
 						// We have a valid user email. Insert into the table
-						pstmt = conn.prepareStatement(INSERT_USERS);
-						pstmt.setString(1, referralId);
-						pstmt.setString(2, cid);
-						pstmt.execute();
+						//System.out.println("Adding: " + email);
+					    Object[] values = new Object[2];
+					    values[0] = referralId;
+					    values[1] = cid;
+					    update.update(values);
 
 					} else {
 						invalidUsers.add(email);
@@ -989,19 +992,15 @@ public class OracleMarketAdminDAOImpl implements MarketAdminDAOIntf {
 					invalidUsers.add(email);
 				}
 			}
+			update.flush();
 		} catch (Exception e) {
 			LOGGER.error("Failed with insert into CUST.REFERRAL_PRGM", e);
 		} finally {
-			try {
-				if (pstmt != null)
-					pstmt.close();
-				if (conn != null)
-					conn.close();
-				if (rset != null)
-					rset.close();
-			} catch (Exception e) {
-			}
+			long t2 = System.currentTimeMillis();
+			System.out.println("Time took to upload the customers: " + (t2 - t1) + " (milliseconds)");
+			System.out.println("End uploading customers to campaign:" + referralId);
 		}
+		
 		return invalidUsers;
 	}
 
