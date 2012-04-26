@@ -23,10 +23,8 @@ import javax.sql.DataSource;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-import org.apache.openjpa.lib.log.Log;
 
 import com.freshdirect.cms.AttributeDefI;
-import com.freshdirect.cms.AttributeI;
 import com.freshdirect.cms.BidirectionalRelationshipDefI;
 import com.freshdirect.cms.CmsRuntimeException;
 import com.freshdirect.cms.ContentKey;
@@ -34,7 +32,6 @@ import com.freshdirect.cms.ContentNodeI;
 import com.freshdirect.cms.ContentType;
 import com.freshdirect.cms.EnumCardinality;
 import com.freshdirect.cms.RelationshipDefI;
-import com.freshdirect.cms.RelationshipI;
 import com.freshdirect.cms.application.CmsRequestI;
 import com.freshdirect.cms.application.CmsResponse;
 import com.freshdirect.cms.application.CmsResponseI;
@@ -42,9 +39,7 @@ import com.freshdirect.cms.application.ContentServiceI;
 import com.freshdirect.cms.application.ContentTypeServiceI;
 import com.freshdirect.cms.application.service.AbstractContentService;
 import com.freshdirect.cms.classgenerator.ContentNodeGenerator;
-import com.freshdirect.cms.fdstore.FDContentTypes;
 import com.freshdirect.cms.meta.ContentTypeUtil;
-import com.freshdirect.cms.node.ContentNode;
 import com.freshdirect.cms.reverse.BidirectionalReferenceHandler;
 import com.freshdirect.cms.util.DaoUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
