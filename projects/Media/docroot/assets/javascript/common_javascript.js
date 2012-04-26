@@ -817,3 +817,55 @@ function getFrameHeight(frameId) {
 
 	return innerDoc.body.parentNode.scrollHeight;
 }
+
+/**
+ * Extract query string from the form
+ * 
+ * @param theForm the content node of the form (HTMLFormElement)
+ * @return the query string in param1=val1&param2=val2... format
+ */
+function extract_query_string(theForm) {
+	var params = {};
+
+	for (i = 0; i < theForm.elements.length; i++) {
+		var elem = theForm.elements[i];
+		switch (elem.tagName) {
+		case "INPUT":
+			switch (elem.type) {
+			case "text":
+			case "hidden":
+				params[elem.name] = elem.value;
+				break;
+			case "checkbox":
+				if (elem.checked) {
+					params[elem.name] = elem.value;
+				}
+				break;
+			case "radio":
+				if (elem.checked) {
+					params[elem.name] = elem.value;
+				}
+			}
+			break;
+		case "TEXTAREA":
+			params[elem.name] = elem.value;
+			break;
+		case "SELECT":
+			params[elem.name] = elem.options[elem.selectedIndex].value;
+			break;
+		}
+	}
+
+	var qs = "";
+	var first = true;
+	for (var key in params) {
+		var value = params[key];
+		if (first)
+			first = false;
+		else
+			qs += '&';
+		qs += encodeURIComponent(key) + '=' + encodeURIComponent(value);
+	}
+
+	return qs;
+}

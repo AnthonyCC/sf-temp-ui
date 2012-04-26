@@ -1141,6 +1141,11 @@
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
+		<attribute>
+			<name>ddppPreview</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
 	</tag>
 	<tag>
 		<name>UnattendedDelivery</name>
@@ -1369,6 +1374,18 @@
 			<name>id</name>
 			<required>true</required>
 			<rtexprvalue>false</rtexprvalue>
+		</attribute>
+	</tag>
+
+	<tag>
+		<name>ProductCartStatus</name>
+		<tagclass>com.freshdirect.webapp.taglib.fdstore.ProductCartStatusTag</tagclass>
+		<bodycontent>empty</bodycontent>
+		<info></info>
+		<attribute>
+			<name>product</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 	</tag>
 
@@ -1695,6 +1712,82 @@
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
+	</tag>
+	<tag>
+		<name>SimpleSearch</name>
+		<tagclass>com.freshdirect.webapp.taglib.fdstore.SimpleSearchTag</tagclass>
+		<teiclass>com.freshdirect.webapp.taglib.fdstore.SimpleSearchTag$TagEI</teiclass>
+		<attribute>
+			<name>id</name>
+			<required>true</required>
+			<rtexprvalue>false</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>nav</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+	</tag>
+	<tag>
+		<name>SearchProductsFilter</name>
+		<tagclass>com.freshdirect.webapp.taglib.content.SearchProductsFilterTag</tagclass>
+		<teiclass>com.freshdirect.webapp.taglib.content.FilteringFlow$TagEI</teiclass>
+		<bodycontent>JSP</bodycontent>
+		<attribute>
+			<name>results</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>nav</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>domainsId</name>
+			<required>true</required>
+			<rtexprvalue>false</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>itemsId</name>
+			<required>true</required>
+			<rtexprvalue>false</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>filteredItemCountId</name>
+			<required>true</required>
+			<rtexprvalue>false</rtexprvalue>
+		</attribute>
+	</tag>
+	<tag>
+		<name>SearchRecipeFilter</name>
+		<tagclass>com.freshdirect.webapp.taglib.content.SearchRecipeTag</tagclass>
+		<teiclass>com.freshdirect.webapp.taglib.content.FilteringFlow$TagEI</teiclass>
+		<bodycontent>JSP</bodycontent>
+		<attribute>
+			<name>results</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>nav</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>domainsId</name>
+			<required>true</required>
+			<rtexprvalue>false</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>itemsId</name>
+			<required>true</required>
+			<rtexprvalue>false</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>filteredItemCountId</name>
+		</attribute>
+		
 	</tag>
 	<tag>
 		<name>ContentTreeTag</name>
@@ -3641,7 +3734,50 @@
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
+		<attribute>
+			<name>setMinQuantity</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
 	</tag>
+
+	<tag>
+		<name>TxSingleProductPricingSupport</name>
+		<tagclass>com.freshdirect.webapp.taglib.fdstore.TxSingleProductPricingSupportTag</tagclass>
+		<bodycontent>JSP</bodycontent>
+		<info></info>
+		<attribute>
+			<name>impression</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>customer</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>namespace</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>formName</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>statusPlaceholder</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>subTotalPlaceholderId</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+	</tag>
+
 	<tag>
 		<name>TxProductControl</name>
 		<tagclass>com.freshdirect.webapp.taglib.fdstore.TxProductControlTag</tagclass>
@@ -3670,6 +3806,11 @@
 		</attribute>
 		<attribute>
 			<name>disabled</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>setMinimumQt</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
@@ -4551,4 +4692,44 @@
 		<bodycontent>JSP</bodycontent>
 		<info></info>
 	</tag>
+	  <tag>
+		<name>PPExportEmail</name>
+		<tagclass>com.freshdirect.webapp.taglib.productpromotion.PPExportEmailProductsTag</tagclass>
+		<teiclass>com.freshdirect.webapp.taglib.productpromotion.PPExportEmailProductsTag$TagEI</teiclass>
+		<bodycontent>JSP</bodycontent>
+		<info></info>
+		<attribute>
+			<name>id</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		 
+	</tag>
+	<tag>
+		<name>FilterList</name>
+		<tagclass>com.freshdirect.webapp.taglib.content.FilterListTag</tagclass>
+		<teiclass>com.freshdirect.webapp.taglib.content.FilterListTag$TagEI</teiclass>
+		<attribute>
+			<name>filters</name>
+			<required>true</required>
+	  		<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>domainName</name>
+			<required>true</required>
+	  		<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>hideAfter</name>
+	  		<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>sortBy</name>
+		</attribute>
+		<attribute>
+			<name>id</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+	</tag>	
 </taglib>

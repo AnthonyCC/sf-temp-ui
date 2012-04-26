@@ -1,7 +1,6 @@
 package com.freshdirect.webapp.taglib.fdstore.display;
 
 import java.io.IOException;
-import java.text.NumberFormat;
 
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
@@ -16,16 +15,19 @@ public class ProductDefaultPriceTag extends BodyTagSupportEx {
 	private ProductModel product;
 	
 	private PriceCalculator price;
+	private boolean showDescription = false;
 
 	public int doStartTag() throws javax.servlet.jsp.JspException {
-	        if (price == null) {
+		ProductAvailabilityTag availability = (ProductAvailabilityTag) findAncestorWithClass(this, ProductAvailabilityTag.class);
+		if (availability != null && !availability.isFullyAvailable())
+			return SKIP_BODY;
+
+		if (price == null) {
 	            if (product == null) {
 	                throw new RuntimeException("'priceCalculator' or 'product' is mandatory!");
 	            }
 	            price = product.getPriceCalculator();
 	        }
-
-		NumberFormat format = NumberFormat.getCurrencyInstance();
 
 		StringBuilder buf = new StringBuilder();
 		buf.append("<span class=\"");
@@ -34,7 +36,7 @@ public class ProductDefaultPriceTag extends BodyTagSupportEx {
 		else
 			buf.append("normal-price");
 		buf.append("\">");
-		buf.append(format.format(price.getDefaultPriceValue()));
+		buf.append(price.getPriceFormatted(0));
 		buf.append("</span>");
 
 		JspWriter out = pageContext.getOut();
@@ -56,6 +58,14 @@ public class ProductDefaultPriceTag extends BodyTagSupportEx {
 	}
 	
 	public void setPriceCalculator(PriceCalculator price) {
-            this.price = price;
-        }
+		this.price = price;
+    }
+	
+	public void setShowDescription(boolean showDescription) {
+		this.showDescription = showDescription;
+	}
+
+	public boolean isShowDescription() {
+		return showDescription;
+	}
 }

@@ -31,6 +31,7 @@ import com.freshdirect.customer.ErpGrpPriceZoneModel;
 import com.freshdirect.customer.ErpZoneMasterInfo;
 import com.freshdirect.erp.EnumATPRule;
 import com.freshdirect.erp.SkuAvailabilityHistory;
+import com.freshdirect.erp.model.ErpProductInfoModel;
 import com.freshdirect.fdstore.ejb.FDFactoryHome;
 import com.freshdirect.fdstore.ejb.FDFactorySB;
 
@@ -40,7 +41,7 @@ import com.freshdirect.fdstore.ejb.FDFactorySB;
  * @version $Revision$
  * @author $Author$
  */
-class FDFactory {
+public class FDFactory {
 
 	private static FDFactoryHome factoryHome = null;
 
@@ -78,6 +79,23 @@ class FDFactory {
             		return getPreviewProductInfo(sku);	
             	}
             }
+           
+		} catch (CreateException ce) {
+			factoryHome=null;
+			throw new FDResourceException(ce, "Error creating session bean");
+		} catch (RemoteException re) {
+			factoryHome=null;
+			throw new FDResourceException(re, "Error talking to session bean");
+		}
+	}
+	
+	public static FDProductInfo getProductInfo(ErpProductInfoModel erpProdInfo) throws FDResourceException {
+		if (factoryHome==null) {
+			lookupFactoryHome();
+		}
+		try {
+			FDFactorySB sb = factoryHome.create();  
+			return sb.getProductInfo(erpProdInfo);
            
 		} catch (CreateException ce) {
 			factoryHome=null;

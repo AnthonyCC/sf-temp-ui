@@ -487,7 +487,10 @@ public class LayoutManager extends BodyTagSupport {
 			s.addSortStrategyElement(new SortStrategyElement(SortStrategyElement.PRODUCTS_BY_PRIORITY, sortDescending));
 			s.addSortStrategyElement(new SortStrategyElement(SortStrategyElement.PRODUCTS_BY_NAME, sortNameAttrib, false));
 			// TODO: what more I need to do here?
-		} // top 10
+//		} // top 10
+		} else if (layoutType == EnumLayoutType.PRESIDENTS_PICKS.getId()) {
+			s.setLayoutFileName("/includes/layouts/presidents_picks_layout.jsp");
+		}
 		
 		if (layoutType == EnumLayoutType.TEMPLATE_LAYOUT.getId()) {				
 			s.setLayoutFileName("/includes/layouts/template_layouts.jsp");

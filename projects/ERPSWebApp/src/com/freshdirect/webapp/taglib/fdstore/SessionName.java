@@ -23,7 +23,8 @@ public interface SessionName {
     public final static String MAKEGOOD_COMPLAINT	= "fd.cc.makegoodComplaint";
     public final static String CC_SEARCH_RESULTS		= "fd.cc.search.custOrders";
     public final static String LIST_SEARCH_RAW		= "fd.cc.search.listRaw";
-    public final static String REMOVED_RESERVATION  = "fd.removedReservation";    
+    public final static String REMOVED_RESERVATION  = "fd.removedReservation";
+    public final static String GA_CUSTOM_VARIABLES	= "fd.gaCustomVariables";
 
     public final static String CUSTOMER_CREATED_LISTS = "fd.cclists";
 

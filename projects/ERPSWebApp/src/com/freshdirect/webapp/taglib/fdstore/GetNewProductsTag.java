@@ -26,7 +26,7 @@ import com.freshdirect.fdstore.content.EnumSortingValue;
 import com.freshdirect.fdstore.content.ProductContainer;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.Recipe;
-import com.freshdirect.fdstore.content.SearchResultItem;
+import com.freshdirect.fdstore.content.FilteringSortingItem;
 import com.freshdirect.fdstore.content.SearchResults;
 import com.freshdirect.fdstore.content.SearchSortType;
 import com.freshdirect.fdstore.content.SortValueComparator;
@@ -55,25 +55,25 @@ public class GetNewProductsTag extends AbstractProductPagerTag {
 	@Override
 	protected SearchResults getResults() {
 		Date now = new Date();
-		List<SearchResultItem<ProductModel>> items = new ArrayList<SearchResultItem<ProductModel>>(1000);
+		List<FilteringSortingItem<ProductModel>> items = new ArrayList<FilteringSortingItem<ProductModel>>(1000);
 		Map<ProductModel, Date> newProducts = ContentFactory.getInstance().getNewProducts();
 		for (Entry<ProductModel, Date> entry : newProducts.entrySet())
-			items.add(new SearchResultItem<ProductModel>(entry.getKey()).putSortingValue(EnumSortingValue.NEWNESS, DateUtil.diffInDays(now, entry.getValue())));
+			items.add(new FilteringSortingItem<ProductModel>(entry.getKey()).putSortingValue(EnumSortingValue.NEWNESS, DateUtil.diffInDays(now, entry.getValue())));
 		newProducts = ContentFactory.getInstance().getBackInStockProducts();
 		for (Entry<ProductModel, Date> entry : newProducts.entrySet())
-			items.add(new SearchResultItem<ProductModel>(entry.getKey()).putSortingValue(EnumSortingValue.NEWNESS, DateUtil.diffInDays(now, entry.getValue())));
-		SearchResults results = new SearchResults(items, SearchResultItem.<Recipe> emptyList(),
-				SearchResultItem.<CategoryModel> emptyList(), null, false);
+			items.add(new FilteringSortingItem<ProductModel>(entry.getKey()).putSortingValue(EnumSortingValue.NEWNESS, DateUtil.diffInDays(now, entry.getValue())));
+		SearchResults results = new SearchResults(items, FilteringSortingItem.<Recipe> emptyList(),
+				FilteringSortingItem.<CategoryModel> emptyList(), null, false);
 		return results;
 	}
 
 	@Override
-	protected Comparator<SearchResultItem<ProductModel>> getProductSorter(List<SearchResultItem<ProductModel>> products,
+	protected Comparator<FilteringSortingItem<ProductModel>> getProductSorter(List<FilteringSortingItem<ProductModel>> products,
 			SearchSortType sortBy, boolean ascending) {
-		Comparator<SearchResultItem<ProductModel>> comparator;
+		Comparator<FilteringSortingItem<ProductModel>> comparator;
 		switch (sortBy) {
 			case BY_NAME:
-				comparator = SearchResultItem.wrap(ProductModel.FULL_NAME_PRODUCT_COMPARATOR);
+				comparator = FilteringSortingItem.wrap(ProductModel.FULL_NAME_PRODUCT_COMPARATOR);
 				if (!ascending)
 					comparator = Collections.reverseOrder(comparator);
 				break;
@@ -81,13 +81,13 @@ public class GetNewProductsTag extends AbstractProductPagerTag {
 				Comparator<ProductModel> priceComparator = ProductModel.GENERIC_PRICE_COMPARATOR;
 				if (!ascending)
 					priceComparator = Collections.reverseOrder(priceComparator);
-				comparator = SearchResultItem.wrap(ComparatorChain.create(priceComparator).chain(ProductModel.FULL_NAME_PRODUCT_COMPARATOR));
+				comparator = FilteringSortingItem.wrap(ComparatorChain.create(priceComparator).chain(ProductModel.FULL_NAME_PRODUCT_COMPARATOR));
 				break;
 			case BY_RECENCY:
 			default:
 				if (isShowGrouped())
-					comparator = ComparatorChain.create(getGroupingTool().getTimeRangeComparator()).chain(SearchResultItem.wrap(ProductModel.DEPTFULL_COMPARATOR))
-							.chain(SearchResultItem.wrap(ProductModel.FULL_NAME_PRODUCT_COMPARATOR));
+					comparator = ComparatorChain.create(getGroupingTool().getTimeRangeComparator()).chain(FilteringSortingItem.wrap(ProductModel.DEPTFULL_COMPARATOR))
+							.chain(FilteringSortingItem.wrap(ProductModel.FULL_NAME_PRODUCT_COMPARATOR));
 				else
 					comparator = new SortValueComparator<ProductModel>(EnumSortingValue.NEWNESS);
 				if (!ascending)
@@ -127,9 +127,9 @@ public class GetNewProductsTag extends AbstractProductPagerTag {
 		
 		if (parentElement != null) {
 			Set<ContentKey> filtered = parentElement.getAllChildren();
-			Iterator<SearchResultItem<ProductModel>> it = results.getProducts().iterator();
+			Iterator<FilteringSortingItem<ProductModel>> it = results.getProducts().iterator();
 			while (it.hasNext()) {
-				SearchResultItem<ProductModel> item = it.next();
+				FilteringSortingItem<ProductModel> item = it.next();
 				if (!filtered.contains(item.getModel().getContentKey()))
 					it.remove();
 			}

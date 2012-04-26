@@ -66,6 +66,8 @@ public class TxProductPricingSupportTag extends BodyTagSupport {
 	
 	private List<TransactionalProductImpression> _txImpressions;
 
+	private boolean setMinQuantity = false;
+
 
 	public void setCustomer(FDUserI customer) {
 		this.customer = customer;
@@ -113,6 +115,15 @@ public class TxProductPricingSupportTag extends BodyTagSupport {
 		this.skus = skus;
 	}
 
+	/**
+	 * Set to true if you want to use the product default, otherwise 0 is used
+	 * By default it set to false
+	 * 
+	 * @param onlyCore
+	 */
+	public void setSetMinQuantity(boolean setMinQuantity) {
+		this.setMinQuantity = setMinQuantity;
+	}
 
 	/**
 	 * Main entry point
@@ -150,7 +161,7 @@ public class TxProductPricingSupportTag extends BodyTagSupport {
 
 			appendCoreScript(buf, _txImpressions, customer);
 			if (!onlyCore)
-				appendConfiguratorScript(buf, customer, _txImpressions, namespace, formName, inputNamePostfix, false);
+				appendConfiguratorScript(buf, customer, _txImpressions, namespace, formName, inputNamePostfix, setMinQuantity);
 		}
 
 		return buf.toString();
@@ -470,6 +481,8 @@ public class TxProductPricingSupportTag extends BodyTagSupport {
 				buf.append( nsObj + ".pricings["+j+"].setQuantity("+(setMinQuantity ? Double.toString(tpi.getConfiguration().getQuantity()) : "0")+");\n");
 				buf.append( nsObj + ".pricings["+j+"].setSalesUnit(\""+ tpi.getConfiguration().getSalesUnit() +"\");\n");
 			}
+			//set minQty as a property we can check
+			buf.append( nsObj + ".pricings["+j+"].minQty = "+(setMinQuantity ? Double.toString(tpi.getConfiguration().getQuantity()) : 0)+";");
 			
 			// options
 			for ( Map.Entry<String,String> entry : tpi.getConfiguration().getOptions().entrySet() ) {

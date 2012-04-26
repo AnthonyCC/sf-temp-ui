@@ -1210,6 +1210,31 @@
 		<jndi-name>freshdirect.analytics.OrderRate</jndi-name>
 	</weblogic-enterprise-bean>
 	   
+	<weblogic-enterprise-bean>
+		<ejb-name>ProductPromotionInfoManager</ejb-name>
+		<stateless-session-descriptor>
+	        <pool>
+				<max-beans-in-free-pool>50</max-beans-in-free-pool>
+				<initial-beans-in-free-pool>10</initial-beans-in-free-pool>
+	        </pool>
+
+			<stateless-clustering>
+			</stateless-clustering>
+
+		</stateless-session-descriptor>
+
+		<transaction-descriptor>
+		</transaction-descriptor>
+
+		<reference-descriptor>
+			<resource-description>
+				<res-ref-name>jdbc/dbpool</res-ref-name>
+				<jndi-name>fddatasource</jndi-name>
+			</resource-description>
+		</reference-descriptor>
+
+		<jndi-name>freshdirect.fdstore.ProductPromotionInfoManager</jndi-name>
+	</weblogic-enterprise-bean>
            
     <transaction-isolation>
         <isolation-level>TRANSACTION_READ_COMMITTED</isolation-level>
@@ -1488,5 +1513,12 @@
             <method-name>*</method-name>
         </method>
     </transaction-isolation>
-         
+    <transaction-isolation>
+        <isolation-level>TRANSACTION_READ_COMMITTED</isolation-level>
+        <method>
+            <ejb-name>ProductPromotionInfoManager</ejb-name>
+            <method-intf>Remote</method-intf>
+            <method-name>*</method-name>
+        </method>
+    </transaction-isolation>
 </weblogic-ejb-jar>

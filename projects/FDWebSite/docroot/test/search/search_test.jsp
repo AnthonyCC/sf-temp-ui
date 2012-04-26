@@ -33,7 +33,7 @@
 <%@page import="java.net.URLEncoder"%>
 <%@page import="com.freshdirect.smartstore.scoring.Score"%>
 <%@page import="com.freshdirect.fdstore.util.SearchNavigator"%>
-<%@page import="com.freshdirect.fdstore.content.SearchResultItem"%>
+<%@page import="com.freshdirect.fdstore.content.FilteringSortingItem"%>
 <%@page import="com.freshdirect.fdstore.content.EnumSortingValue"%>
 <%@page import="com.freshdirect.smartstore.sorting.ScriptedContentNodeComparator"%>
 <%@page import="java.util.Iterator"%>
@@ -226,7 +226,7 @@ if (searchTerm != null && !searchTerm.trim().isEmpty()) {
 					ScriptedContentNodeComparator global = ScriptedContentNodeComparator.createGlobalComparator(userId, pricingContext);
 					SearchResults results = searchTag.getProcessedResults();
 					SmartSearchUtils.collectSaleInfo(results.getProducts(), pricingContext);
-					for (SearchResultItem<ProductModel> item : results.getProducts()) {
+					for (FilteringSortingItem<ProductModel> item : results.getProducts()) {
 						ProductModel product = item.getModel();
 						CategoryModel category = (CategoryModel) product.getParentNode();
 						Score globalSc = global.getScore(product);

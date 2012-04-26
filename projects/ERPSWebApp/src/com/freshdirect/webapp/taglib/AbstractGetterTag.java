@@ -73,11 +73,15 @@ public abstract class AbstractGetterTag<X> extends com.freshdirect.framework.web
 					data.getAttributeString("id"),
 					this.getResultType(),
 					true,
-					VariableInfo.NESTED )
+					getScope() )
 			};
 
 		}
 		
+		protected int getScope() {
+			return VariableInfo.NESTED;
+		}
+
 		protected abstract String getResultType();
 			
 	}

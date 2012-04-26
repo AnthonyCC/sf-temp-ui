@@ -1,42 +1,53 @@
-<%@ taglib uri='freshdirect' prefix='fd' %>
-<%-- this file will be included in the <head> tag --%>
-<%@ taglib uri='oscache' prefix='oscache'%>
-<%@page import="com.freshdirect.fdstore.FDStoreProperties"%>
-  <% if (FDStoreProperties.isFlushOscache()) { %><oscache:flush/><% } %>
+<%--
+	this file will be included in the <head> tag
+--%><%@ taglib uri='freshdirect' prefix='fd'
+%><%@ taglib uri='oscache' prefix='oscache'
+%><%@page import="com.freshdirect.fdstore.FDStoreProperties"
+%><%@ page import='com.freshdirect.fdstore.content.EnumLayoutType'
+%><%
+	int layoutTypeCSS = (request.getAttribute("layoutType") == null) ? -1 : Integer.parseInt(request.getAttribute("layoutType").toString());
+%><% if (FDStoreProperties.isFlushOscache()) { %><oscache:flush /><% } %>
   <%-- globalnav header, footer --%>
 
-  <fd:css href="/assets/css/common/globalnav.css"/>
-  <fd:css href="/assets/css/common/footer.css"/>
-  <fd:css href="/assets/css/common/freshdirect.css"/>
+  <fd:css href="/assets/css/common/globalnav.css" />
+  <fd:css href="/assets/css/common/footer.css" />
+  <fd:css href="/assets/css/common/freshdirect.css" />
 
   <%-- IE + IE6 fixes --%>
   <!--[if IE]>
-  <fd:css href="/assets/css/common/footer.ie.css"/>
+  <fd:css href="/assets/css/common/footer.ie.css" />
   <![endif]-->
   <!--[if lte IE 6]>
-  <fd:css href="/assets/css/common/globalnav.ie6.css"/>
+  <fd:css href="/assets/css/common/globalnav.ie6.css" />
   <![endif]-->
 
   <%-- old css files --%>
-  	<fd:css href="/assets/css/modalbox.css"/>
+  	<fd:css href="/assets/css/modalbox.css" />
 	<fd:css href="/assets/css/global.css" />
 	<%
 	if (request.getHeader("User-Agent").indexOf("Mac") > -1) {
-	%><fd:css href="/assets/css/mac_ie.css"/><%
+		%><fd:css href="/assets/css/mac_ie.css" /><%
 	} else {
-	%><fd:css href="/assets/css/pc_ie.css"/><%
+		%><fd:css href="/assets/css/pc_ie.css" /><%
 	}
 	%>
-	<fd:css href="/assets/css/autocomplete.css"/>	
-	<fd:css href="/assets/css/carousel.css"/>	
+	<fd:css href="/assets/css/autocomplete.css" />	
+	<fd:css href="/assets/css/carousel.css" />	
 	<!--[if lte IE 6]>
-	<fd:css href="/assets/css/pngfix_ie6.css"/>
+	<fd:css href="/assets/css/pngfix_ie6.css" />
 	<![endif]--> 
-	<fd:css href="/assets/css/wine.css"/>
+	<fd:css href="/assets/css/wine.css" />
 	<!--[if lte IE 7]>
-	<fd:css href="/assets/css/wine-ie.css"/>
+	<fd:css href="/assets/css/wine-ie.css" />
 	<![endif]-->
-	<fd:css href="/assets/css/4mm.css"/>
-	<fd:css href="/assets/css/quickbuy.css"/>
+	<fd:css href="/assets/css/4mm.css" />
+	<fd:css href="/assets/css/quickbuy.css" />
+	
+	<% if (layoutTypeCSS == EnumLayoutType.PRESIDENTS_PICKS.getId()) { %>
+		<fd:css href="/assets/css/common/grid_supplement.css" />
+ 		<fd:css href="/assets/css/common/product_grid.css" />
+		<fd:css href="/assets/css/search.css" />
+ 	<% } %>
+	
 	<%-- Keep the media include last, so it can always override any css auto-loaded --%>
 	<fd:IncludeMedia name="/media/editorial/site_pages/stylesheet.html" />

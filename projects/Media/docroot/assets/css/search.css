@@ -1,0 +1,569 @@
+.searchpage a,.searchpage a:visited {
+	text-decoration:none;
+}
+
+.content-header {
+	padding-bottom: 14px;
+	background:url('/media_stat/images/layout/dot_grey_h.gif') repeat-x bottom left;
+}
+
+.content-header-height {
+	height:46px;
+	line-height:46px;
+}
+
+.button {
+	padding:0px;
+	margin:0px;
+	border:none;
+	font-size:14px;
+	margin-left:7px;
+	cursor:pointer;
+}
+
+#searchinput-wrapper {
+	display:inline-block;
+	background:#f7f7f7;
+	border:4px solid #f7f7f7;
+	border-radius:3px;
+	height:36px;
+	line-height:36px;
+}
+
+#searchinput {
+	width:350px;
+	border:1px solid #cdcdcd;
+	font-size:14px;
+	line-height:14px;
+	height:14px;
+	padding:10px 14px;
+	border-radius:3px;
+	margin:0px;
+}
+
+#searchbutton {
+	background:url('/media_stat/images/search/searchbutton_bg.png') no-repeat top left white;
+	display: inline-block;
+	width: 72px;
+	height: 36px;
+}
+
+.search-header {
+	font-size:18px;
+	position:relative;
+	padding:20px 0 14px 0;
+}
+
+.startpage .search-header {
+	display:none;
+} 
+
+#result-header .itemcount {
+	font-weight:bold;
+}
+
+.search-string {
+	font-weight:bold;
+}
+
+#didyoumean {
+	color:#999999;
+	font-size:13px;
+}
+
+#didyoumean a {
+	font-weight:bold;
+	color: #336600;
+	text-decoration:underline;
+}
+
+.tab-header {
+	position:relative;
+	font-size:14px;
+}
+
+.noresult .tab-header {
+	display:none
+}
+
+#tabs {
+	padding:0px;
+}
+
+#tabs li {
+	height:43px;
+	float:left;
+	list-style-type:none;
+	margin:0;
+	line-height:43px;
+}
+
+#tabs li a {
+	text-decoration:none;
+	color:white;
+	display:inline-block;
+	height:43px;
+}
+
+#products-tab {
+	background:url('/media_stat/images/search/tabs.png') no-repeat left 0;
+	padding:0 0 0 40px;
+}
+
+#products-tab a {
+	background:url('/media_stat/images/search/tabs.png') no-repeat right 0;
+	padding-right:20px;
+}
+
+.products-active #products-tab {
+	background:url('/media_stat/images/search/tabs.png') no-repeat left -43px;
+	padding:0 0 0 40px;
+}
+
+.products-active #products-tab a {
+	background:url('/media_stat/images/search/tabs.png') no-repeat right -43px;
+	padding-right:20px;
+	color:#333;
+}
+
+#recipes-tab {
+	background:url('/media_stat/images/search/tabs.png') no-repeat left -129px;
+	padding:0 0 0 23px;
+}
+
+#recipes-tab a {
+	background:url('/media_stat/images/search/tabs.png') no-repeat right -129px;
+	padding-right:20px;
+}
+
+.recipes-active #recipes-tab {
+	background:url('/media_stat/images/search/tabs.png') no-repeat left -86px;
+	padding:0 0 0 23px;
+}
+
+.recipes-active #recipes-tab a {
+	background:url('/media_stat/images/search/tabs.png') no-repeat right -86px;
+	padding-right:20px;
+	color:#333;
+}
+
+.products-active .products-only #products-tab {
+	background:url('/media_stat/images/search/tabs.png') no-repeat left -172px;
+	padding:0 0 0 40px;
+}
+
+.products-active .products-only  #products-tab a {
+	background:url('/media_stat/images/search/tabs.png') no-repeat right -172px;
+	padding-right:20px;
+	color:#333;
+}
+
+.products-active .products-only #recipes-tab {
+	display:none;
+}
+
+.toolbar {
+	background-color:#ededed;
+	margin-top:-1px;
+	height:42px;
+	border:1px solid #dddddd;
+	width:968px;
+}
+
+.noresult .toolbar {
+	display:none;
+}
+
+.toolbar-content .prepend-10 {
+	padding-left:408px;
+} 
+
+#sorter {
+	font-size:11px;
+	line-height:42px;
+	color:#828282;
+	text-align:left;
+}
+
+#sorter .label {
+	padding-left:15px;
+}
+
+.sortitem,.sortitem:visited,a.sortitem,a.sortitem:visited  {
+	text-decoration:none;
+	color:#336600;
+	padding-left:10px;
+	background:url('/media_stat/images/search/dot.png') no-repeat left center;
+	margin-left:0.5em;
+}
+
+.sortitem.nodot {
+	background:none;
+	padding-left:0px;
+}
+
+.sortitem-selected {
+	font-weight:bold;
+}
+
+#viewswitcher {
+	font-size:14px;
+	line-height:42px;
+	text-align:right;
+}
+
+.ie6 #viewswitcher {
+	padding-top:8px;
+}
+
+.viewswitcher-sprite {
+	background:url('/media_stat/images/search/viewswitch.png') no-repeat;
+	width:25px;
+	height:26px;
+	display:inline-block;
+	vertical-align:middle;
+	margin: 0px 5px;
+}
+
+#viewswitcher-grid {
+	background-position: 0 -26px;
+	margin-left:10px;
+}
+
+.grid-view #viewswitcher-grid {
+	background-position: 0 0px;
+}
+
+#viewswitcher-list {
+	background-position: -25px -26px;
+	margin-right:15px;
+}
+
+.list-view #viewswitcher-list {
+	background-position: -25px 0px;
+}
+
+#main {
+	background:url('/media_stat/images/search/searchbg.png') repeat-y top left;
+	border-bottom:1px solid #e9e9e9;
+}
+
+.noresult #main {
+	display:none;
+}
+
+#sidebar {
+	width:165px;
+	float:left;
+	padding:0 1px;
+}
+
+.sidebar-content {
+	background-color:#f8f8f8;
+}
+
+
+#selection {
+	padding-top:15px;
+	padding-bottom:15px;
+	font-size:11px;
+	height:37px;
+	background:url('/media_stat/images/layout/dot_grey_h.gif') repeat-x bottom left white;
+}
+
+#selection h3 {
+	font-size:12px;
+	font-weight:bold;
+	margin-bottom:6px;
+}
+
+#selection h3 span {
+	font-size:11px;
+	font-weight:normal;
+}
+
+#selection ul {
+	padding:0px;
+	margin:0px;
+}
+
+#selection li {
+	list-style-type:none;
+}
+
+#selection li a {
+	line-height:20px;
+	padding-right:20px;
+	background:url('/media_stat/images/search/xbutton.png') no-repeat right center;
+	display:inline-block;
+}
+
+.filterbox {
+	padding-top:15px;
+	padding-bottom:15px;
+	background:url('/media_stat/images/layout/dot_grey_h.gif') repeat-x bottom left transparent;
+}
+
+.sidebar-content h3,
+.sidebar-content li,
+.sidebar-content .see {
+		padding-left:15px;
+}
+
+.filterbox h3 {
+	font-size:13px;
+	margin-bottom:15px;
+	font-weight:bold;
+	color:#333;
+}
+
+.filterbox ul {
+	font-size:12px;
+	padding:0;
+	margin:0;
+}
+
+.filterbox li {
+	list-style-type:none;
+	line-height:1.5em;
+	margin-bottom:0.5em;
+}
+
+
+.filterbox li.selected {
+	background:url('/media_stat/images/search/green_bg.png') repeat-x left top #679a34;
+	border:1px solid #7e9337;
+	color:white;
+	position:relative;
+	padding-right:22px;
+	padding-bottom:3px;
+}
+
+.filterbox li.selected a {
+	color:white;
+}
+
+.filterbox li.selected .remove-selection {
+	display:inline-block;
+	width:17px;
+	height:17px;
+	top:3px;
+	right:3px;
+	background:url('/media_stat/images/search/xbutton.png') no-repeat;
+	vertical-align:top;
+	position:absolute;
+}
+
+.filterbox li.selected .count {
+	display:none;
+}
+
+.filterbox li.hidden {
+	display:none;
+}
+
+.filterbox .count {
+	font-family:verdana;
+	margin-left:0.5em;
+	font-size:12px;
+}
+
+.filterbox .see {
+	cursor:pointer;
+	font-weight:bold;
+	color:#686868;
+}
+
+.filterbox .more {
+	display:block;
+}
+
+.filterbox .less {
+	display:none;
+}
+
+.filterbox-showall li.hidden {
+	display:block;
+}
+
+.filterbox-showall .more {
+	display:none;
+}
+
+.filterbox-showall .less {
+	display:block;
+}
+
+#content {
+	margin-left:167px;
+}
+
+.ie6 #content {
+	margin:0px;
+	float:left;
+	position:relative;
+}
+
+
+#pager-top {
+	border-bottom:1px solid #e9e9e9;
+}
+
+
+
+/* recipes-viewre special rules */
+
+.recipes-active .grid-item-container {
+	width:268px;
+}
+
+.recipes-active .grid-item-name {
+	font-size:14px;
+	height:2.6em;
+}
+
+.recipes-active .grid-item-name a, 
+.recipes-active .grid-item-name a:visited {
+	color:#669934;
+}
+
+.recipes-active .grid-item-description {
+	color:#aaaaaa;
+	font-style:italic;
+	height:4.5em
+}
+
+.recipes-active .pager,
+.recipes-active #selection {
+	display:none;
+}
+
+#pager-bottom {
+	border-top:1px solid #e9e9e9;
+	margin:-2px 0 0 0;
+}
+
+.pager {
+	font-size:11px;
+	line-height:66px;
+	text-align:center;
+	position:relative;
+	height:66px;
+	overflow:hidden;
+	background:white;
+}
+
+.pager-content {
+	margin:0 170px;
+	vertical-align:middle;
+}
+
+.ie6 .pager-content {
+	padding-top:16px;
+}
+
+.pager .view-all {
+	display:inline-block;
+	width:68px;
+	height:28px;
+	color:white;
+	line-height:25px;
+	font-size:11px;
+	background:url('/media_stat/images/search/viewall_bg.png') no-repeat top left white;
+}
+
+.pager .pager-item {
+	display:inline-block;
+	min-width:33px;
+	line-height:33px;
+	height:33px;
+}
+
+.pager .pager-item a,
+.pager .pager-prev a,
+.pager .pager-next a {
+	display:inline-block;
+	min-width:33px;
+	line-height:33px;
+	height:33px;
+	border:1px solid white;
+}
+
+.ie6 .pager .pager-item a,
+.ie6 .pager .pager-prev a,
+.ie6 .pager .pager-next a {
+	padding:0px 10px;
+}
+
+.ie6 .pager .pager-item {
+	border:0px;
+}
+
+.pager .pager-item a:hover,
+.pager .pager-prev a:hover,
+.pager .pager-next a:hover {
+	border:1px solid #c9c9c9;
+	border-radius:2px;
+	margin:0px;
+}
+
+.pager .pager-current {
+	background:#606060;
+	font-weight:bold;
+	color:white;
+	border-radius:2px;
+}
+
+.ie6 .pager .pager-current {
+	padding:0px 10px;
+}
+
+.pager .results {
+	position:absolute;
+	top:0px;
+	left:0px;
+	height:100%;
+	width:180px;
+	text-align:left;
+	padding-left:10px;
+	font-size:12px;
+}
+
+.pager .results .results-current,
+.pager .results .results-all {
+	font-weight:bold;
+}
+
+.pager .back-to-top {
+	position:absolute;
+	top:0px;
+	right:0px;
+	height:100%;
+	width:160px;
+	text-align:right;
+	padding-right:10px;
+	font-size:12px;
+}
+
+.expertrating-stars, .expertrating-stars-content {
+	background:url('/media_stat/images/search/star_8.png') repeat-x;
+	height:16px;
+	display:inline-block;
+}
+
+.expertrating-stars {
+	background-position:0 -16px;
+	width:90px;
+	vertical-align:bottom;
+}
+
+.expertrating-stars-content {
+	background-position:0 0;
+}
+
+.expertrating-stars-content-1 { width:18px; }
+.expertrating-stars-content-2 { width:36px; }
+.expertrating-stars-content-3 { width:54px; }
+.expertrating-stars-content-4 { width:72px; }
+.expertrating-stars-content-5 { width:90px; }
+

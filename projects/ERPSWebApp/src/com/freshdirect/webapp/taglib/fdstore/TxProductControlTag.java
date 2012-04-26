@@ -37,6 +37,8 @@ public class TxProductControlTag extends BodyTagSupport {
 	private int txNumber;
 
 	boolean disabled = false;
+	
+	boolean setMinimumQt = false;
 
 	public void setImpression(TransactionalProductImpression impression) {
 		this.impression = impression;
@@ -58,13 +60,20 @@ public class TxProductControlTag extends BodyTagSupport {
 	public void setDisabled(boolean disabled) {
 		this.disabled = disabled;
 	}
+	
+	public void setSetMinimumQt(boolean setMinimumQt) {
+		this.setMinimumQt = setMinimumQt;
+	}
+	public void setSetMinimumQt(String setMinimumQt) {
+		this.setMinimumQt = Boolean.parseBoolean(setMinimumQt);
+	}
 
 
 	@Override
 	public int doStartTag() {
 		try {
 			// write out
-			pageContext.getOut().write( TxProductControlTag.getHTMLFragment(impression, inputNamePostfix, txNumber, namespace, disabled, false) );
+			pageContext.getOut().write( TxProductControlTag.getHTMLFragment(impression, inputNamePostfix, txNumber, namespace, disabled, setMinimumQt) );
 		} catch (IOException e) {
 		}
 

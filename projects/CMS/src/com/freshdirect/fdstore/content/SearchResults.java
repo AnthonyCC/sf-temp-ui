@@ -31,9 +31,9 @@ public class SearchResults implements Serializable, Cloneable {
 		oldResults.products.clear();
 		oldResults.recipes.clear();
 		oldResults.categories.clear();
-		Set<SearchResultItem<ProductModel>> products = new HashSet<SearchResultItem<ProductModel>>();
-		Set<SearchResultItem<Recipe>> recipes = new HashSet<SearchResultItem<Recipe>>();
-		Set<SearchResultItem<CategoryModel>> categories = new HashSet<SearchResultItem<CategoryModel>>();
+		Set<FilteringSortingItem<ProductModel>> products = new HashSet<FilteringSortingItem<ProductModel>>();
+		Set<FilteringSortingItem<Recipe>> recipes = new HashSet<FilteringSortingItem<Recipe>>();
+		Set<FilteringSortingItem<CategoryModel>> categories = new HashSet<FilteringSortingItem<CategoryModel>>();
 		Set<String> suggestedTerms = new LinkedHashSet<String>();
 		for (SearchResults newResults : newResultsList) {
 			products.addAll(newResults.products);
@@ -48,9 +48,9 @@ public class SearchResults implements Serializable, Cloneable {
 		oldResults.suggestedTerm = Term.join(new ArrayList<String>(suggestedTerms), Term.DEFAULT_SEPARATOR);
 	}
 	
-	private final List<SearchResultItem<ProductModel>> products;
-	private final List<SearchResultItem<Recipe>> recipes;
-	private final List<SearchResultItem<CategoryModel>> categories;
+	private final List<FilteringSortingItem<ProductModel>> products;
+	private final List<FilteringSortingItem<Recipe>> recipes;
+	private final List<FilteringSortingItem<CategoryModel>> categories;
 	private boolean phrase; // tells whether the original search was quoted or not
 
 	private String searchTerm;
@@ -58,12 +58,12 @@ public class SearchResults implements Serializable, Cloneable {
 	private Collection<String> spellingSuggestions = Collections.emptyList();
 
 	public SearchResults() {
-		this(Collections.<SearchResultItem<ProductModel>> emptyList(), Collections.<SearchResultItem<Recipe>> emptyList(),
-				Collections.<SearchResultItem<CategoryModel>> emptyList(), "", true);
+		this(Collections.<FilteringSortingItem<ProductModel>> emptyList(), Collections.<FilteringSortingItem<Recipe>> emptyList(),
+				Collections.<FilteringSortingItem<CategoryModel>> emptyList(), "", true);
 	}
 
-	public SearchResults(List<SearchResultItem<ProductModel>> products, List<SearchResultItem<Recipe>> recipes,
-			List<SearchResultItem<CategoryModel>> categories, String searchTerm, boolean phrase) {
+	public SearchResults(List<FilteringSortingItem<ProductModel>> products, List<FilteringSortingItem<Recipe>> recipes,
+			List<FilteringSortingItem<CategoryModel>> categories, String searchTerm, boolean phrase) {
 		this.products = products;
 		this.recipes = recipes;
 		this.categories = categories;
@@ -71,7 +71,7 @@ public class SearchResults implements Serializable, Cloneable {
 		this.phrase = phrase;
 	}
 
-	public List<SearchResultItem<ProductModel>> getProducts() {
+	public List<FilteringSortingItem<ProductModel>> getProducts() {
 		return this.products;
 	}
 	
@@ -81,7 +81,7 @@ public class SearchResults implements Serializable, Cloneable {
 		}
 	}
 
-	public List<SearchResultItem<Recipe>> getRecipes() {
+	public List<FilteringSortingItem<Recipe>> getRecipes() {
 		return recipes;
 	}
 
@@ -91,7 +91,7 @@ public class SearchResults implements Serializable, Cloneable {
 		}
 	}
 
-	public List<SearchResultItem<CategoryModel>> getCategories() {
+	public List<FilteringSortingItem<CategoryModel>> getCategories() {
 		return categories;
 	}
 
@@ -137,9 +137,9 @@ public class SearchResults implements Serializable, Cloneable {
 
 	@Override
 	public SearchResults clone()  {
-		List<SearchResultItem<ProductModel>> products = new ArrayList<SearchResultItem<ProductModel>>(this.products);
-		List<SearchResultItem<Recipe>> recipes = new ArrayList<SearchResultItem<Recipe>>(this.recipes);
-		List<SearchResultItem<CategoryModel>> categories = new ArrayList<SearchResultItem<CategoryModel>>(this.categories);
+		List<FilteringSortingItem<ProductModel>> products = new ArrayList<FilteringSortingItem<ProductModel>>(this.products);
+		List<FilteringSortingItem<Recipe>> recipes = new ArrayList<FilteringSortingItem<Recipe>>(this.recipes);
+		List<FilteringSortingItem<CategoryModel>> categories = new ArrayList<FilteringSortingItem<CategoryModel>>(this.categories);
 		SearchResults _new = new SearchResults(products, recipes, categories, searchTerm, phrase);
 		_new.spellingSuggestions = spellingSuggestions;
 		_new.suggestedTerm = suggestedTerm;
@@ -155,20 +155,20 @@ public class SearchResults implements Serializable, Cloneable {
 			return false;
 
 		Set<ContentKey> otherKeys = new HashSet<ContentKey>(products.size() + recipes.size() + categories.size() + 100);
-		for (SearchResultItem<ProductModel> product : o.products)
+		for (FilteringSortingItem<ProductModel> product : o.products)
 			otherKeys.add(product.getModel().getContentKey());
-		for (SearchResultItem<Recipe> recipe : o.recipes)
+		for (FilteringSortingItem<Recipe> recipe : o.recipes)
 			otherKeys.add(recipe.getModel().getContentKey());
-		for (SearchResultItem<CategoryModel> category : o.categories)
+		for (FilteringSortingItem<CategoryModel> category : o.categories)
 			otherKeys.add(category.getModel().getContentKey());
 
-		for (SearchResultItem<ProductModel> item : products)
+		for (FilteringSortingItem<ProductModel> item : products)
 			if (!otherKeys.contains(item.getModel().getContentKey()))
 				return false;
-		for (SearchResultItem<Recipe> item : recipes)
+		for (FilteringSortingItem<Recipe> item : recipes)
 			if (!otherKeys.contains(item.getModel().getContentKey()))
 				return false;
-		for (SearchResultItem<CategoryModel> item : categories)
+		for (FilteringSortingItem<CategoryModel> item : categories)
 			if (!otherKeys.contains(item.getModel().getContentKey()))
 				return false;
 

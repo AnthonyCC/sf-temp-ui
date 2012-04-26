@@ -6,6 +6,7 @@
 <%@ page import="com.freshdirect.fdstore.content.ProductModel"%>
 <%@ page import="com.freshdirect.webapp.util.JspMethods"%>
 <%@ page import="com.freshdirect.fdstore.content.EnumProductLayout"%>
+<%@ page import="com.freshdirect.fdstore.customer.EnumQuickbuyStatus"%>
 <%@ taglib uri='/WEB-INF/shared/tld/freshdirect.tld' prefix='fd' %>
 <%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %>
 <fd:CheckLoginStatus id="user"/>
@@ -59,10 +60,15 @@
 ERROR!
 <%
 	}
+
+	String iatcNamespace = request.getParameter("iatcNamespace");
 %>
 <script>
 YAHOO.util.Event.onDOMReady(function(e) {
 	window.parent.updateYourCartPanel();
+	<% if (iatcNamespace != null) { %>
+	window.parent.<%= iatcNamespace %>.updateStatus('<%= EnumQuickbuyStatus.ADDED_TO_CART.getMessage() %>');
+	<% } %>
 });
 </script>
 </body>

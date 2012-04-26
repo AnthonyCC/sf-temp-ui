@@ -105,12 +105,16 @@ public class QueryParameterCollection implements Serializable, Cloneable {
 	}
 
 	public String getParameterValue(String name) {
+		return this.getParameterValue(name, null);
+	}
+
+	public String getParameterValue(String name, String defaultValue) {
 		if (!parameters.containsKey(name))
-			return null;
+			return defaultValue;
 
 		return parameters.get(name).get(0).getValue();
 	}
-
+	
 	public String[] getParameterValues(String name) {
 		if (!parameters.containsKey(name))
 			return null;
@@ -134,6 +138,11 @@ public class QueryParameterCollection implements Serializable, Cloneable {
 		for (Map.Entry<String, List<QueryParameter>> e : parameters.parameters.entrySet())
 			qpc.addParameters(e.getValue());
 		return qpc;
+	}
+	
+	public void setParameterValue(String name, String value) {
+		this.removeParameters(name);
+		this.addParameterValue(name, value);
 	}
 	
 	@Override

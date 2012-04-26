@@ -75,8 +75,10 @@ public enum EnumLayoutType implements Serializable {
 
     // Wine dept specific layouts
     WINE_DEALS							("Wine Deals", 103),
-    WINE_EXPERTS_FAVS					("Wine Expert's Favs", 104);
+    WINE_EXPERTS_FAVS					("Wine Expert's Favs", 104),
     
+    //promo page layouts
+    PRESIDENTS_PICKS					("President's Picks", 200);
 
     public static List<EnumLayoutType> getLayoutTypes() {
         return Arrays.asList(values());

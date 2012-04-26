@@ -206,7 +206,9 @@ public class FDProductInfo extends FDSku  {
 			if(zpInfo == null) {
 				//do a item cascading to its parent until we find a price info.
 				ErpZoneMasterInfo zoneInfo = FDCachedFactory.getZoneInfo(pZoneId);
-				zpInfo = getZonePriceInfo(zoneInfo.getParentZone().getSapId());
+				if(null !=zoneInfo.getParentZone()){
+					zpInfo = getZonePriceInfo(zoneInfo.getParentZone().getSapId());
+				}
 			} 
 			return zpInfo;
 		}

@@ -40,6 +40,8 @@ public interface ErpZoneInfoSB extends EJBObject {
     
     public String findZoneId(String servType) throws RemoteException;
     
+    public List<ErpZoneMasterInfo> getAllZoneInfoDetails() throws RemoteException;
+    
           
 }
 

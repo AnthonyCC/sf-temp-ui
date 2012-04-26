@@ -56,6 +56,9 @@ List linksList = MenuManager.getInstance().getLinksForRole(request);
 			<% } %> 
 			<% if(linksList.contains("crm_standing_orders.jsp")){%>
 			<a href="/main/crm_standing_orders.jsp" class="<%=pageURI.indexOf("/main/crm_standing_orders.jsp") > -1?"main_nav_on":"main_nav_link"%>">Standing Orders</a>
+			<% } %>
+			<% if(linksList.contains("ppicks_email_products.jsp")){%>
+			<a href="/main/ppicks_email_products.jsp" class="<%=pageURI.indexOf("/main/ppicks_email_products.jsp") > -1?"main_nav_on":"main_nav_link"%>">Product Promotions</a>
 			<% } %> 
 			<a href="javascript:popResizeHelp('<%= FDStoreProperties.getCrmMainHelpLink() %>','715','940','kbit')" class="<%=pageURI.indexOf("/main/help.jsp")	> -1?"main_nav_on":"main_nav_link"%>">Help</a>
 		</td>

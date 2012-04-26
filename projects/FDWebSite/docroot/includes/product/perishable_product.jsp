@@ -215,7 +215,7 @@ final int W_PERISHABLE_PRODUCT_RIGHT = 369;
 							final int __c_maxHeight = ProductDisplayUtil.getMaxHeight(recommendedProducts.getProducts()); 
 						%>
 						<display:GetContentNodeWebId id="webId" product="<%= currentItem %>" clientSafe="<%= true %>">
-						<div id="hotspot-<%= webId %>">
+						<div id="hotspot-<%= webId %>" style="height: 181px">
 							<display:ProductImage product="<%= __c_prd %>" showRolloverImage="true" useAlternateImage="false"
 									className="productImage" height="<%= __c_maxHeight %>" enableQuickBuy="false" webId="<%= webId %>"/>
 							<display:ProductRating product="<%= __c_prd %>" />
@@ -224,23 +224,33 @@ final int W_PERISHABLE_PRODUCT_RIGHT = 369;
 							</div>
 							<display:ProductPrice impression="<%= new ProductImpression(__c_prd) %>" showDescription="true"/>
 							<%-- QUICK BUY SECTION START --%>
-							<img id="qbButton-<%= webId %>" class="qbButton" style="display: inline-block; position: absolute; left: 15px; top: 65px;" src="/media_stat/images/quickbuy/quickbuy_button_hover.gif">
-							<script>
-								YAHOO.util.Event.onDOMReady(function() {
-									FD_QuickBuy.decorate('hotspot-<%= webId %>', ['qbButton-<%= webId %>', 'hotspot-<%= webId %>'], {
-											departmentId: '<%= __c_prd.getDepartment().getContentName() %>',
-											categoryId: '<%= __c_prd.getCategory().getContentName() %>',
-											productId: '<%= __c_prd.getContentName() %>'
-									},{
-										variant: '<%= recommendedProducts.getVariant().getId() %>',
-										impId: '<%= recommendedProducts.getImpressionId(__c_prd) %>',
-										trk: 'ymal_pdtl',
-										source: 'SS'
-									});
-								});
-							</script>
+							<img id="qbButton-<%= webId %>" class="qbButton" style="display: inline-block; position: absolute; left: 15px; top: 65px;" src="/media_stat/images/quickbuy/quickbuy_button_hover.gif" alt="Quick Buy">
 							<%-- QUICK BUY SECTION END --%>
 						</div>
+						<div class="qb-bottom-button">
+							<img id="qbButton-<%= webId %>-bottom" width="88" height="19" src="/media_stat/images/quickbuy/quickbuy_button_new.png" alt="Quick Buy">
+						</div>
+						<script>
+							YAHOO.util.Event.onDOMReady(function() {
+								var params =  {
+									departmentId: '<%= __c_prd.getDepartment().getContentName() %>',
+									categoryId: '<%= __c_prd.getCategory().getContentName() %>',
+									productId: '<%= __c_prd.getContentName() %>'
+								};
+								var tracking = {
+									variant: '<%= recommendedProducts.getVariant().getId() %>',
+									impId: '<%= recommendedProducts.getImpressionId(__c_prd) %>',
+									trk: 'ymal_pdtl',
+									source: 'SS'
+								};
+								
+								FD_QuickBuy.decorate('hotspot-<%= webId %>', ['qbButton-<%= webId %>', 'hotspot-<%= webId %>'], params, tracking);
+								var action = YAHOO.util.Dom.get('qbButton-<%= webId %>').showPanel;
+								YAHOO.util.Event.addListener('qbButton-<%= webId %>-bottom', 'click', function(event) {
+									action();
+								});
+							});
+						</script>
 						</display:GetContentNodeWebId>
 					</display:Carousel>
 					

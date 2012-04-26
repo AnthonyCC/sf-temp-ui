@@ -24,7 +24,7 @@ import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.ProductContainer;
 import com.freshdirect.fdstore.content.ProductFilterI;
 import com.freshdirect.fdstore.content.ProductModel;
-import com.freshdirect.fdstore.content.SearchResultItem;
+import com.freshdirect.fdstore.content.FilteringSortingItem;
 import com.freshdirect.fdstore.content.SearchResults;
 import com.freshdirect.fdstore.content.SearchSortType;
 import com.freshdirect.fdstore.content.ContentNodeTree.TreeElement;
@@ -56,7 +56,7 @@ public abstract class AbstractProductPagerTag extends BodyTagSupportEx implement
 	private int pageNo = 1;
 	private int pageCount = 1;
 	private List<ProductModel> productsUnwrap = null;
-	private List<SearchResultItem<ProductModel>> pageProducts = Collections.emptyList();
+	private List<FilteringSortingItem<ProductModel>> pageProducts = Collections.emptyList();
 	private List<ProductModel> pageProductsUnwrap = null;
 	private SortedSet<CategoryModel> pageCategories;
 	private SortedSet<BrandModel> brands;
@@ -101,10 +101,10 @@ public abstract class AbstractProductPagerTag extends BodyTagSupportEx implement
 
 		// this workaround is for iPhone
 		if (productFilters != null && !productFilters.isEmpty() && !results.getProducts().isEmpty()) {
-			Iterator<SearchResultItem<ProductModel>> it = results.getProducts().iterator();
+			Iterator<FilteringSortingItem<ProductModel>> it = results.getProducts().iterator();
 			List<ProductModel> miniList = new ArrayList<ProductModel>();
 			while (it.hasNext()) {
-				SearchResultItem<ProductModel> item = it.next();
+				FilteringSortingItem<ProductModel> item = it.next();
 				for (ProductFilterI filter : productFilters) {
 					try {
 						// HACK sorry for this hack but the original ProductFilterI is queer
@@ -143,7 +143,7 @@ public abstract class AbstractProductPagerTag extends BodyTagSupportEx implement
 		filteredCategoryTree = buildProductCategoryTree();
 
 		// sort products
-		Comparator<SearchResultItem<ProductModel>> comparator = getProductSorter(results.getProducts(), nav.getSortBy(), nav.isSortOrderingAscending());
+		Comparator<FilteringSortingItem<ProductModel>> comparator = getProductSorter(results.getProducts(), nav.getSortBy(), nav.isSortOrderingAscending());
 		if (comparator != null)
 			Collections.sort(results.getProducts(), comparator);
 
@@ -157,7 +157,7 @@ public abstract class AbstractProductPagerTag extends BodyTagSupportEx implement
 
 	protected abstract SearchResults getResults();
 
-	protected abstract Comparator<SearchResultItem<ProductModel>> getProductSorter(List<SearchResultItem<ProductModel>> products,
+	protected abstract Comparator<FilteringSortingItem<ProductModel>> getProductSorter(List<FilteringSortingItem<ProductModel>> products,
 			SearchSortType sortBy, boolean ascending);
 	
 	protected abstract void postProcess(SearchResults results);
@@ -191,7 +191,7 @@ public abstract class AbstractProductPagerTag extends BodyTagSupportEx implement
 		pageSize = nav.getPageSize();
 		pageOffset = nav.getPageOffset();
 		pageNo = nav.getPageNumber();
-		pageProducts = new ArrayList<SearchResultItem<ProductModel>>(pageSize <= 0 ? results.getProducts().size() : pageSize);
+		pageProducts = new ArrayList<FilteringSortingItem<ProductModel>>(pageSize <= 0 ? results.getProducts().size() : pageSize);
 		int noOfPagedProducts = results.getProducts().size();
 		pageCount = pageSize == 0 ? 1 : noOfPagedProducts / pageSize;
 		if (pageSize != 0 && noOfPagedProducts % pageSize > 0)
@@ -203,7 +203,7 @@ public abstract class AbstractProductPagerTag extends BodyTagSupportEx implement
 			pageProducts.add(results.getProducts().get(i));
 		}
 		pageCategories = new TreeSet<CategoryModel>(ContentNodeModel.FULL_NAME_COMPARATOR);
-		for (SearchResultItem<ProductModel> product : pageProducts)
+		for (FilteringSortingItem<ProductModel> product : pageProducts)
 			pageCategories.add(product.getModel().getPrimaryHome());
 	}
 
@@ -239,9 +239,9 @@ public abstract class AbstractProductPagerTag extends BodyTagSupportEx implement
 		
 		if (parentElement != null) {
 			Set<ContentKey> filtered = parentElement.getAllChildren();
-			Iterator<SearchResultItem<ProductModel>> it = results.getProducts().iterator();
+			Iterator<FilteringSortingItem<ProductModel>> it = results.getProducts().iterator();
 			while (it.hasNext()) {
-				SearchResultItem<ProductModel> item = it.next();
+				FilteringSortingItem<ProductModel> item = it.next();
 				if (!filtered.contains(item.getModel().getContentKey()))
 					it.remove();
 			}
@@ -257,9 +257,9 @@ public abstract class AbstractProductPagerTag extends BodyTagSupportEx implement
 		if (brandId == null)
 			return;
 	
-		Iterator<SearchResultItem<ProductModel>> it = results.getProducts().iterator();
+		Iterator<FilteringSortingItem<ProductModel>> it = results.getProducts().iterator();
 		OUTER: while (it.hasNext()) {
-			SearchResultItem<ProductModel> item = it.next();
+			FilteringSortingItem<ProductModel> item = it.next();
 			for (BrandModel brand : item.getModel().getBrands())
 				if (brandId.equals(brand.getContentKey().getId()))
 					continue OUTER;
@@ -269,7 +269,7 @@ public abstract class AbstractProductPagerTag extends BodyTagSupportEx implement
 
 	protected void collectBrands() {
 		brands = new TreeSet<BrandModel>(ContentNodeModel.FULL_NAME_COMPARATOR);
-		for (SearchResultItem<ProductModel> item : results.getProducts())
+		for (FilteringSortingItem<ProductModel> item : results.getProducts())
 			brands.addAll(item.getModel().getBrands());
 	}
 
@@ -296,7 +296,7 @@ public abstract class AbstractProductPagerTag extends BodyTagSupportEx implement
 	public List<ProductModel> getProducts() {
 		if (productsUnwrap == null)
 			productsUnwrap = ProductPricingFactory.getInstance().getPricingAdapter(
-					SearchResultItem.unwrap(results.getProducts()), getPricingContext());
+					FilteringSortingItem.unwrap(results.getProducts()), getPricingContext());
 		return productsUnwrap;
 	}
 
@@ -335,11 +335,11 @@ public abstract class AbstractProductPagerTag extends BodyTagSupportEx implement
 	public List<ProductModel> getPageProducts() {
 		if (pageProductsUnwrap == null)
 			pageProductsUnwrap = ProductPricingFactory.getInstance().getPricingAdapter(
-					SearchResultItem.unwrap(pageProducts), getPricingContext());
+					FilteringSortingItem.unwrap(pageProducts), getPricingContext());
 		return pageProductsUnwrap;
 	}
 	
-	protected List<SearchResultItem<ProductModel>> getPageProductsInternal() {
+	protected List<FilteringSortingItem<ProductModel>> getPageProductsInternal() {
 		pageProductsUnwrap = null; // invalidate
 		return pageProducts;
 	}

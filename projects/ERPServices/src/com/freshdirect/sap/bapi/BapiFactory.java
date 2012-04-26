@@ -57,5 +57,7 @@ public abstract class BapiFactory {
 	public abstract BapiSendPhysicalTruckInfo getHandOffPhysicalTruckInfoSender();
 	
 	public abstract BapiRouteStatusInfo getBapiRouteStatusInfoBuilder();
+	
+	public abstract BapiProductPromotionPreviewI getBapiProductPromotionPreviewBuilder();
 
 }

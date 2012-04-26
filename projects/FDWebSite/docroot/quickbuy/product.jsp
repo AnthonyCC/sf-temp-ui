@@ -2,6 +2,11 @@
     "http://www.w3.org/TR/html4/loose.dtd">
 <%@ page contentType="text/html; charset=UTF-8" %>
 <%@ page import="java.net.URL"%>
+<%@page import="java.net.MalformedURLException"%>
+<%@page import="java.net.URLEncoder"%>
+<%@page import="com.freshdirect.fdstore.content.EnumProductLayout"%>
+<%@page import="com.freshdirect.fdstore.customer.FDCartLineI"%>
+<%@page import="com.freshdirect.webapp.util.FDURLUtil"%>
 <%@ page import="com.freshdirect.fdstore.content.ContentFactory"%>
 <%@ page import="com.freshdirect.framework.webapp.ActionResult"%>
 <%@ page import="com.freshdirect.webapp.taglib.fdstore.CartName" %>
@@ -14,15 +19,18 @@
 	final String srcPage = request.getParameter("referer"); // mandatory parameter 
 	final String srcTitle = request.getParameter("refTitle"); // mandatory parameter
 	final String uid = request.getParameter("uid");
+	final String iatcNamespace = request.getParameter("iatcNamespace");
 	
 	String protocol;
 	String host;
+	int port = 80;
 	
 	// extract HTTP protocol and host info
 	try {
 		URL url = new URL( srcPage );
 		protocol = url.getProtocol();
 		host = url.getHost();
+		port = url.getPort();
 	} catch (MalformedURLException exc) {
 		throw new JspException(exc);
 	}
@@ -32,11 +40,16 @@
 	buf.append(protocol);
 	buf.append("://");
 	buf.append(host);
+	if (port != 80 && port>-1) {
+		buf.append(":").append(port);		
+	}
 	buf.append("/quickbuy/confirm.jsp");
 	buf.append("?referer=").append(URLEncoder.encode(srcPage, "UTF-8"));
 	if (srcTitle != null && !"".equals(srcTitle)) {
 		buf.append("&refTitle=").append(srcTitle);
 	}
+	if (iatcNamespace != null)
+		buf.append("&iatcNamespace=").append(iatcNamespace);
 	final String sPage = buf.toString();
 	
 	final boolean __isWineLayout = EnumProductLayout.NEW_WINE_PRODUCT.equals(productNode.getProductLayout());

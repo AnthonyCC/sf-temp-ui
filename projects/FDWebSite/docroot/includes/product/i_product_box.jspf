@@ -1,0 +1,119 @@
+<%@ taglib uri='freshdirect' prefix='fd'%>
+<%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %>
+<%@page import="java.util.Collections"%>
+<%@page import="com.freshdirect.webapp.util.TransactionalProductImpression"%>
+<%@page import="com.freshdirect.fdstore.content.EnumBurstType"%>
+<%@page import="com.freshdirect.webapp.taglib.fdstore.SessionName"%>
+<%@page import="com.freshdirect.fdstore.customer.FDUserI"%>
+<%@page import="com.freshdirect.fdstore.FDSkuNotFoundException"%>
+<%@page import="com.freshdirect.fdstore.*"%>
+<%@page import="com.freshdirect.fdstore.content.ProductModel"%>
+
+<% /* 
+	
+	input parameters:
+		@pi - ProductImpression - product impression constructed from product model using DefaultProductConfigurationStrategy
+		@trk - String - tracking code
+ */ 
+ 
+ 
+{ // local variables box
+	Integer seq = (Integer) request.getAttribute("i_product_box_counter");
+	if (seq == null) {
+		seq = 0;
+	}
+
+	String imageSize = "detail";
+	ProductModel pm = pi.getProductModel();	
+%>
+
+<%@page import="com.freshdirect.fdstore.FDProduct"%><display:ProductAvailability id="productAvailability" product="<%= pm %>">
+<%
+	String unavailableClass = "";
+	if (!productAvailability.isFullyAvailable())
+		unavailableClass = "grid-item-unavailable";
+%>
+<div class="grid-item <%= unavailableClass %>">
+<div class="grid-item-saving"><display:ProductSaving product="<%= pm %>"/></div>
+<display:ProductBurstClass id="burstClass" product="<%= pm %>" hideDeal="true">
+<div class="grid-item-image">
+<display:ProductLink product="<%= pm %>" trackingCode="<%= trk %>">
+<%
+  		FDProduct fdproduct = null;
+        try {
+        	fdproduct = FDCachedFactory.getProduct(pi.getProductInfo());
+           
+		if ( "USQ".equalsIgnoreCase(pm.getDepartment().toString()) && (fdproduct != null && !"".equals(fdproduct.getMaterial().getAlcoholicContent().getCode())) ) {
+			imageSize = "zoom";
+		}
+       } catch (Exception fdsnf){
+       }
+%>
+<display:SimpleProductImage product="<%= pm %>" size="<%= imageSize %>"/><span class="<%= burstClass %>"></span></display:ProductLink>
+</div>
+</display:ProductBurstClass>
+<div class="grid-item-rating">
+<display:ProductLink product="<%= pm %>" trackingCode="<%= trk %>">
+<display:ProductRating product="<%= pm %>" noBr="true"/>
+</display:ProductLink>
+</div>
+<div class="grid-item-name">
+<display:ProductLink product="<%= pm %>" trackingCode="<%= trk %>">
+<display:ProductName product="<%= pm %>"/>
+</display:ProductLink>
+</div>
+<div class="grid-item-price-description"><display:ProductPriceDescription impression="<%= pi %>"/></div>
+<div class="grid-item-price">
+<% if (productAvailability.isFullyAvailable()) { %>
+<display:ProductDefaultPrice product="<%= pm %>" showDescription="true"/>
+<% if (pm.getPriceCalculator().isOnSale()) { %><span class="was-price">(was <display:ProductWasPrice product="<%= pm %>"/>)</span><% } %>
+<display:ProductAboutPrice product="<%= pm %>" />
+<% } %>
+<display:ProductGroupLink impression="<%= pi %>" trackingCode="<%= trk %>"><display:ProductGroupPricing product="<%= pm %>"/></display:ProductGroupLink>
+</div>
+<div class="grid-item-controls">
+<span class="grid-item-controls-content">
+<%
+	String statusPlaceholderId = "instant_atc_status_" + seq;
+	if (productAvailability.isFullyAvailable()) {
+		String namespaceName = "instant_atc_ns_" + seq;
+		String formName = "instant_atc_form_" + seq;
+		String subTotalId = "instant_atc_subtotal_" + seq;
+%>
+<fd:TxSingleProductPricingSupport formName="<%= formName %>" namespace="<%= namespaceName %>"
+		customer="<%= (FDUserI) session.getAttribute(SessionName.USER) %>" impression="<%= pi %>" statusPlaceholder="<%= statusPlaceholderId %>"
+		subTotalPlaceholderId="<%= subTotalId %>" />
+<%
+		if (pi.isTransactional()) {
+%>
+<form method="get" action="#" name="<%= formName %>" onsubmit="return false;">
+<input type="hidden" name="itemCount" value="1">
+<fd:TxProductControl txNumber="0" namespace="<%= namespaceName %>" impression="<%= (TransactionalProductImpression) pi %>" setMinimumQt="true" />
+<div id="<%= subTotalId %>" class="subtotal">subtotal: <span id="<%= subTotalId %>_value" class="value"></span> est.</div>
+<div><button class="addtocart" onclick="<%= namespaceName %>.instantATC();"></button></div>
+</form>
+<%
+		} else {
+			String deptId = pm.getDepartment().getContentKey().getId();
+%>
+<button class="customize" onclick="FD_QuickBuy.showPanel('<%= deptId %>', '<%= pm.getCategory().getContentKey().getId() %>', '<%= pm.getContentKey().getId() %>', '<%= namespaceName %>')();"></button>
+<%
+		}
+	} else {
+%>
+Sorry! Unavailable!
+<%
+	}
+%>
+</span>
+</div>
+<div class="grid-item-status" id="<%= statusPlaceholderId %>">
+<fd:ProductCartStatus product="<%= pm %>"/>
+</div>
+<div class="grid-item-separator"></div>
+</div><!--  grid-item -->
+</display:ProductAvailability>
+<%
+	++seq;
+	request.setAttribute("i_product_box_counter", seq);
+} // local variables box %>

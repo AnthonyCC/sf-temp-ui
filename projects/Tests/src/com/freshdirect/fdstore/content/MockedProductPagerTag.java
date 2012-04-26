@@ -16,15 +16,15 @@ public class MockedProductPagerTag extends AbstractProductPagerTag {
 	}
 
 	@Override
-	protected Comparator<SearchResultItem<ProductModel>> getProductSorter(List<SearchResultItem<ProductModel>> products,
+	protected Comparator<FilteringSortingItem<ProductModel>> getProductSorter(List<FilteringSortingItem<ProductModel>> products,
 			SearchSortType sortBy, boolean ascending) {
-		return SearchResultItem.wrap(ProductModel.FULL_NAME_PRODUCT_COMPARATOR);
+		return FilteringSortingItem.wrap(ProductModel.FULL_NAME_PRODUCT_COMPARATOR);
 	}
 
 	@Override
 	protected SearchResults getResults() {
-		return new SearchResults(SearchResultItem.wrap(products), SearchResultItem.<Recipe> emptyList(),
-				SearchResultItem.<CategoryModel> emptyList(), nav.getSearchTerm(), false);
+		return new SearchResults(FilteringSortingItem.wrap(products), FilteringSortingItem.<Recipe> emptyList(),
+				FilteringSortingItem.<CategoryModel> emptyList(), nav.getSearchTerm(), false);
 	}
 
 	@Override

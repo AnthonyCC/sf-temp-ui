@@ -81,7 +81,7 @@ if (catId != null){
 
 
 <table width="<%=W_GLOBAL_NAV_TOTAL %>" border="0" cellpadding="0" cellspacing="0">
-<tr><td><img src="/media_stat/images/layout/clear.gif" width="1" height="6" alt="" /></td></tr>
+<tr><td class="sixPxTall"><img src="/media_stat/images/layout/clear.gif" width="1" height="6" alt="" /></td></tr>
 <%
 	boolean isAtHome = true;
 	if(	globalUri.indexOf("login")> -1 ||
@@ -111,7 +111,7 @@ if(!thisDept.equals("") && !thisDept.equalsIgnoreCase("about") && !thisDept.equa
 	navigation = thisDept;
 }
 %><%@ include file="/common/template/includes/globalnav_table.jspf" %>
-</td></tr><tr><td><img src="/media_stat/images/layout/clear.gif" width="1" height="3" alt="" /></td></tr></table>
+</td></tr><tr><td class="threePxTall"><img src="/media_stat/images/layout/clear.gif" width="1" height="3" alt="" /></td></tr></table>
 <% } catch (Exception ex) {
 		ex.printStackTrace();
 %><oscache:usecached />

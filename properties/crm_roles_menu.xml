@@ -3,7 +3,7 @@
 	
 	<role name="CRM_Administrator">
 		<links name="main">
-			main_index.jsp,supervisor_index.jsp,case_mgmt_index.jsp,admintools_index.jsp,reports_index.jsp,worklist.jsp,giftcard_landing.jsp,crm_standing_orders.jsp,crm_standing_orders_alt_dates.jsp,crm_standing_orders_export.jsp
+			main_index.jsp,supervisor_index.jsp,case_mgmt_index.jsp,admintools_index.jsp,reports_index.jsp,worklist.jsp,giftcard_landing.jsp,crm_standing_orders.jsp,crm_standing_orders_alt_dates.jsp,crm_standing_orders_export.jsp,ppicks_email_products.jsp,ppicks_export_email_products.jsp
 		</links>
 		<links name="customer">
 			order_search_results.jsp,customer_search_results.jsp,company_search_results.jsp,summary_report.jsp,summary.jsp,account_details.jsp,depot_info.jsp,vip_info.jsp,smartstore_info.jsp,case_history.jsp,order_history.jsp,order_cases.jsp,credit_history.jsp,promotion_history.jsp,
@@ -59,7 +59,7 @@
 	</role>
 	
 	<role name="CRM_Developer">
-		<links name="main">main_index.jsp,supervisor_index.jsp,case_mgmt_index.jsp,connect.jsp,connect.html,admintools_index.jsp,reports_index.jsp,worklist.jsp,giftcard_landing.jsp,crm_standing_orders.jsp,crm_standing_orders_alt_dates.jsp,crm_standing_orders_export.jsp</links>
+		<links name="main">main_index.jsp,supervisor_index.jsp,case_mgmt_index.jsp,connect.jsp,connect.html,admintools_index.jsp,reports_index.jsp,worklist.jsp,giftcard_landing.jsp,crm_standing_orders.jsp,crm_standing_orders_alt_dates.jsp,crm_standing_orders_export.jsp,ppicks_email_products.jsp,ppicks_export_email_products.jsp</links>
 		<links name="customer">
 			order_search_results.jsp,customer_search_results.jsp,company_search_results.jsp,summary_report.jsp,summary.jsp,account_details.jsp,depot_info.jsp,vip_info.jsp,smartstore_info.jsp,case_history.jsp,order_history.jsp,order_cases.jsp,credit_history.jsp,promotion_history.jsp,
 			promotion_popup.jsp,place_order_build.jsp,delivery_available_slots.jsp,delivery_check_slots.jsp,activity_log.jsp,referral_history.jsp,profile_list.jsp,delivery_pass.jsp,
@@ -148,7 +148,7 @@
 		
 	</role>
 	<role name="CRM_MarketingOperations">
-		<links name="main">main_index.jsp,worklist.jsp,giftcard_landing.jsp,profile_list.jsp</links>
+		<links name="main">main_index.jsp,worklist.jsp,giftcard_landing.jsp,profile_list.jsp,ppicks_email_products.jsp,ppicks_export_email_products.jsp</links>
 		<links name="promotions">promotion_popup.jsp,promo_view.jsp,promo_home.jsp,promo_create.jsp,promo_details.jsp,promo_edit_basic.jsp,promo_edit_cart.jsp,promo_edit_customer.jsp,promo_edit_delivery.jsp,promo_edit_offer.jsp,promo_edit_payment.jsp,promo_publish.jsp,promo_edit.jsp,export_promo_list.jsp,promo_import_clone.jsp,promo_activity.jsp,promo.jsp,promo_ws_view.jsp,promo_ws_create.jsp,promo_export.jsp</links>
 		<links name="giftcards">giftcard_summary.jsp,gc_balance.jsp</links>	
 		<links name="customer">order_details.jsp,order_not_submitted.jsp,carton_contents_view.jsp,resubmit_success.jsp,order_search_results.jsp,customer_search_results.jsp,company_search_results.jsp,summary_report.jsp,summary.jsp,masquerade.jsp,account_details.jsp,smartstore_info.jsp,case_history.jsp,order_history.jsp,order_cases.jsp,promotion_history.jsp,promotion_popup.jsp,delivery_available_slots.jsp,delivery_check_slots.jsp,delivery_pass.jsp,activity_log.jsp,referral_history.jsp,profile_list.jsp,set_profile_attr.jsp,customer_profile_summary.jsp</links>

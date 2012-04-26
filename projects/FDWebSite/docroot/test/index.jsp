@@ -277,6 +277,12 @@
 		<div class="pageDesc">Generates random Dept/Cat sets, javascript, and example dropdowns. Includes execution time. This is the functionality in-use on the Product Request page.</div>
 	</div>
 
+	<div class="tag productGrid">
+		<div class="pageName"><span>Product Grid Test</span></div>
+		<div class="link"><a href="/test/content/grid_test.jsp">/test/content/grid_test.jsp</a></div>
+		<div class="pageDesc">Generates Product Grid / List Layout. Use catId query parameter to specify category id.</div>
+	</div>
+
 	<div class="tag semPixel">
 		<div class="pageName"><span>SEM Pixel Information</span></div>
 		<div class="link">

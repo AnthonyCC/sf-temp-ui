@@ -189,9 +189,9 @@ public class ContentSearch {
 			}
 		}
 
-		List<SearchResultItem<ProductModel>> productResults = new ArrayList<SearchResultItem<ProductModel>>();
-		List<SearchResultItem<Recipe>> recipeResults = new ArrayList<SearchResultItem<Recipe>>();
-		List<SearchResultItem<CategoryModel>> categoryResults = new ArrayList<SearchResultItem<CategoryModel>>();
+		List<FilteringSortingItem<ProductModel>> productResults = new ArrayList<FilteringSortingItem<ProductModel>>();
+		List<FilteringSortingItem<Recipe>> recipeResults = new ArrayList<FilteringSortingItem<Recipe>>();
+		List<FilteringSortingItem<CategoryModel>> categoryResults = new ArrayList<FilteringSortingItem<CategoryModel>>();
 
 		Set<ProductModel> alreadyAddedProducts = new HashSet<ProductModel>();
 
@@ -207,9 +207,9 @@ public class ContentSearch {
 
 			extractCategoryProducts(categories, products, alreadyAddedProducts);
 	
-			productResults.addAll(SearchResultItem.fill(products, EnumSortingValue.PHRASE, 1));
-			recipeResults.addAll(SearchResultItem.fill(recipes, EnumSortingValue.PHRASE, 1));
-			categoryResults.addAll(SearchResultItem.fill(categories, EnumSortingValue.PHRASE, 1));
+			productResults.addAll(FilteringSortingItem.fill(products, EnumSortingValue.PHRASE, 1));
+			recipeResults.addAll(FilteringSortingItem.fill(recipes, EnumSortingValue.PHRASE, 1));
+			categoryResults.addAll(FilteringSortingItem.fill(categories, EnumSortingValue.PHRASE, 1));
 		}
 
 		// handle non-phrase items
@@ -222,9 +222,9 @@ public class ContentSearch {
 				extractCategoryProducts(categories, products, alreadyAddedProducts);
 			}
 	
-			productResults.addAll(SearchResultItem.wrap(products));
-			recipeResults.addAll(SearchResultItem.wrap(recipes));
-			categoryResults.addAll(SearchResultItem.wrap(categories));
+			productResults.addAll(FilteringSortingItem.wrap(products));
+			recipeResults.addAll(FilteringSortingItem.wrap(recipes));
+			categoryResults.addAll(FilteringSortingItem.wrap(categories));
 		}
 		
 		return new SearchResults(productResults, recipeResults, categoryResults, searchTerm, quoted);
@@ -411,14 +411,14 @@ public class ContentSearch {
 			LOGGER.error("failed to retrieve product info for upc: " + upc, e);
 		}
 		
-		List<SearchResultItem<ProductModel>> productResults = new ArrayList<SearchResultItem<ProductModel>>(products.size());
+		List<FilteringSortingItem<ProductModel>> productResults = new ArrayList<FilteringSortingItem<ProductModel>>(products.size());
 		for (ProductModel product : products) {
-			SearchResultItem<ProductModel> item = new SearchResultItem<ProductModel>(product);
+			FilteringSortingItem<ProductModel> item = new FilteringSortingItem<ProductModel>(product);
 			item.putSortingValue(EnumSortingValue.PHRASE, 1);
 			productResults.add(item);
 		}
-		return new SearchResults(productResults, Collections.<SearchResultItem<Recipe>> emptyList(), Collections
-				.<SearchResultItem<CategoryModel>> emptyList(), upc, true);
+		return new SearchResults(productResults, Collections.<FilteringSortingItem<Recipe>> emptyList(), Collections
+				.<FilteringSortingItem<CategoryModel>> emptyList(), upc, true);
 	}
 
 	public List<ContentKey> searchFaqs(String searchTerm) {

@@ -60,6 +60,10 @@ public class ProductRatingTag extends BodyTagSupport {
 
 	@Override
 	public int doStartTag() throws JspException {
+		ProductAvailabilityTag availability = (ProductAvailabilityTag) findAncestorWithClass(this, ProductAvailabilityTag.class);
+		if (availability != null && !availability.isFullyAvailable())
+			return SKIP_BODY;
+
 		HttpSession session = pageContext.getSession();
 		FDSessionUser user = (FDSessionUser) session.getAttribute(SessionName.USER);
 

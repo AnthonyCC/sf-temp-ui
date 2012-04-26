@@ -1,14 +1,5 @@
 package com.freshdirect.webapp.taglib.fdstore.display;
 
-import java.io.IOException;
-import java.util.Set;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.jsp.JspWriter;
-import javax.servlet.jsp.tagext.TagData;
-import javax.servlet.jsp.tagext.TagExtraInfo;
-import javax.servlet.jsp.tagext.VariableInfo;
-
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.content.EnumBurstType;
 import com.freshdirect.fdstore.content.Image;
@@ -16,436 +7,852 @@ import com.freshdirect.fdstore.content.PriceCalculator;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.util.ProductLabeling;
+
 import com.freshdirect.framework.webapp.BodyTagSupport;
+
 import com.freshdirect.webapp.taglib.fdstore.BrowserInfo;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
 
+import java.io.IOException;
+
+import java.util.HashMap;
+import java.util.Set;
+import java.util.StringTokenizer;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.jsp.JspWriter;
+import javax.servlet.jsp.tagext.TagData;
+import javax.servlet.jsp.tagext.TagExtraInfo;
+import javax.servlet.jsp.tagext.VariableInfo;
+
+
 /**
  * Product Image Tag
- * 
+ *
  * @author segabor
  *
  */
 public class ProductImageTag extends BodyTagSupport {
-	
-	private static final long serialVersionUID = 8159061278833068855L;
+    private static final long serialVersionUID = 8159061278833068855L;
+    public static final String imageWidthVariableName = "productImageWidth";
+    public static final String imageHeightVariableName = "productImageHeight";
+    ProductModel product; // product (mandatory if calculator is null)
+    PriceCalculator calculator; // calculator (mandatory if product is null)
+    String style; // CSS style modification (optional)
+    String className; // CSS class name (optional)
+    String action; // URL (optional)
+    boolean disabled = false; // Image is not clickable
+    String prefix; // For internal use only! (optional)
+    BrowserInfo browserInfo = null;
+    double savingsPercentage = 0; // savings % off
+    boolean isInCart = false; // display savings - in cart
+    boolean showRolloverImage = true; // rollover image
+    boolean useAlternateImage = false; // alternate image
+    boolean enableQuickBuy = false; // [APPDEV-672] Quick Buy button (optional)
+    String quickBuyImage = "/media_stat/images/quickbuy/quickbuy_button_hover.gif"; // quick buy button url 
+    String webId = null; // DOM id of generated tags (optional)
+    double opacity = 1; // 1-transparency
+    boolean isNewProductPage = false;
 
-	ProductModel	product; 					// product (mandatory if calculator is null)
-	PriceCalculator calculator;                 // calculator (mandatory if product is null)
-	String			style; 						// CSS style modification (optional)
-	String			className;					// CSS class name (optional)
-	String			action; 					// URL (optional)
-	boolean			disabled = false; 			// Image is not clickable
-	String			prefix; 					// For internal use only! (optional)
+    /**
+    * [APPDEV-1283] Exclude 6 and 12 bottle deals
+    */
+    private boolean excludeCaseDeals = false;
+    int height = -1; // negative height means height is calculated based on img height
+    Set<EnumBurstType> hideBursts;
 
-	BrowserInfo		browserInfo = null;
-	double			savingsPercentage = 0; 		// savings % off
-	boolean			isInCart = false; 			// display savings - in cart
-	
-	boolean 		showRolloverImage = true;	// rollover image
-	boolean 		useAlternateImage = false;	// alternate image
-	boolean			enableQuickBuy = false;		// [APPDEV-672] Quick Buy button (optional)
-	
-	String			webId = null;				// DOM id of generated tags (optional)
-	
-	double			opacity = 1; // 1-transparency
-	boolean			isNewProductPage = false;
-        /**
-         * [APPDEV-1283] Exclude 6 and 12 bootles deals
-         */
-        private boolean excludeCaseDeals = false;
-	int				height = -1; // negative height means height is calculated based on img height
-	
-	Set<EnumBurstType> hideBursts;
+    /*
+     * specifically over-ride the prod image type to show. use the CMS attribute name as the value
+     */
+    String prodImageType = null;
 
-	public static final String 					imageWidthVariableName 		= "productImageWidth";
-	public static final String 					imageHeightVariableName 	= "productImageHeight";
+    /* dynamically size image to a container element's size by specifying container's size.
+     *        if this is not passed in, uses the image's actual sizes
+     *
+     * pass in a String in the form of h=#,w=#
+     * either value is optional
+     */
+    String bindToContainerSize = null;
+    private HashMap<String, Integer> bindToContainerSizes = new HashMap<String, Integer>();
 
-	public void setProduct(ProductModel prd) {
-		this.product = prd;
-	}
-	
-	public void setPriceCalculator(PriceCalculator calculator) {
-            this.calculator = calculator;
+    /* allow resizable bursts */
+    String burstOptions = null;
+    private HashMap<String, String> burstOptionVals = new HashMap<String, String>();
+
+    public void setBurstOptions(String burstOptions) {
+        this.burstOptions = burstOptions;
+    }
+
+    public void setProduct(ProductModel prd) {
+        this.product = prd;
+    }
+
+    public void setPriceCalculator(PriceCalculator calculator) {
+        this.calculator = calculator;
+    }
+
+    public void setNewProductPage(boolean isNewProductPage) {
+        this.isNewProductPage = isNewProductPage;
+    }
+
+    public void setStyle(String text) {
+        this.style = text;
+    }
+
+    public void setClassName(String name) {
+        this.className = name;
+    }
+
+    public void setAction(String action) {
+        this.action = action;
+    }
+
+    public void setDisabled(boolean flag) {
+        this.disabled = flag;
+    }
+
+    public void setPrefix(String uriPrefix) {
+        this.prefix = uriPrefix;
+    }
+
+    public void setExcludeCaseDeals(boolean excludeCaseDeals) {
+        this.excludeCaseDeals = excludeCaseDeals;
+    }
+
+    public void setBrowserInfo(BrowserInfo browserInfo) {
+        this.browserInfo = browserInfo;
+    }
+
+    public void setInCart(boolean isInCart) {
+        this.isInCart = isInCart;
+    }
+
+    public void setSavingsPercentage(double savingsPercentage) {
+        this.savingsPercentage = savingsPercentage;
+    }
+
+    public void setShowRolloverImage(boolean showRolloverImage) {
+        this.showRolloverImage = showRolloverImage;
+    }
+
+    public void setUseAlternateImage(boolean useAlternateImage) {
+        this.useAlternateImage = useAlternateImage;
+    }
+
+    public void setEnableQuickBuy(boolean enableQuickBuy) {
+        this.enableQuickBuy = enableQuickBuy;
+    }
+
+    public void setQuickBuyImage(String text) {
+        this.quickBuyImage = text;
+    }
+
+    public void setOpacity(double opacity) {
+        if (opacity < 0) {
+            this.opacity = 0;
+        } else if (opacity > 1) {
+            this.opacity = 1;
+        } else {
+            this.opacity = opacity;
+        }
+    }
+
+    public int getHeight() {
+        return height;
+    }
+
+    public void setHeight(int height) {
+        this.height = height;
+    }
+
+    public void setHideBursts(Set<EnumBurstType> hideBursts) {
+        this.hideBursts = hideBursts;
+    }
+
+    /**
+     * Sets explicitly web ID (or DOM ID) of generated tags.
+     * Useful if tags are referred from JavaScript code.
+     *
+     * @param webId JavaScript safe String
+     */
+    public void setWebId(String webId) {
+        this.webId = webId;
+    }
+
+    public void setProdImageType(String text) {
+        this.prodImageType = text;
+    }
+
+    public void setBindToContainerSize(String text) {
+        this.bindToContainerSize = text;
+    }
+
+    @Override
+    public int doStartTag() {
+        if (product == null) {
+            if (calculator == null) {
+                throw new RuntimeException(
+                    "'product' and 'priceCalculator' is null!");
+            }
+
+            product = calculator.getProductModel();
+        } else if (calculator == null) {
+            calculator = product.getPriceCalculator();
         }
 
-	public void setNewProductPage(boolean isNewProductPage) {
-		this.isNewProductPage = isNewProductPage;
-	}
-	
-	public void setStyle(String text) {
-		this.style = text;
-	}
-	
-	public void setClassName(String name) {
-		this.className = name;
-	}
-	
-	public void setAction(String action) {
-		this.action = action;
-	}
+        Image prodImg = null;
 
-	public void setDisabled(boolean flag) {
-		this.disabled = flag;
-	}
-	
-	public void setPrefix(String uriPrefix) {
-		this.prefix = uriPrefix;
-	}
-
-        public void setExcludeCaseDeals(boolean excludeCaseDeals) {
-                this.excludeCaseDeals = excludeCaseDeals;
+        // check prodImageType
+        if (prodImageType != null) {
+            //we've passed in a specific image type we want (switch would be nice here)
+            if ("PROD_IMAGE".equalsIgnoreCase(prodImageType)) {
+                prodImg = product.getProdImage();
+            } else if ("PROD_IMAGE_FEATURE".equalsIgnoreCase(prodImageType)) {
+                prodImg = product.getFeatureImage();
+            } else if ("RATING_RELATED_IMAGE".equalsIgnoreCase(prodImageType)) {
+                prodImg = product.getRatingRelatedImage();
+            } else if ("ALTERNATE_IMAGE".equalsIgnoreCase(prodImageType)) {
+                prodImg = product.getAlternateImage();
+            } else if ("DESCRIPTIVE_IMAGE".equalsIgnoreCase(prodImageType)) {
+                prodImg = product.getDescriptiveImage();
+            } else if ("PROD_IMAGE_ROLLOVER".equalsIgnoreCase(prodImageType)) {
+                prodImg = product.getRolloverImage();
+            } else if ("PROD_IMAGE_CONFIRM".equalsIgnoreCase(prodImageType)) {
+                prodImg = product.getConfirmImage();
+            } else if ("PROD_IMAGE_DETAIL".equalsIgnoreCase(prodImageType)) {
+                prodImg = product.getDetailImage();
+            } else if ("PROD_IMAGE_ZOOM".equalsIgnoreCase(prodImageType)) {
+                prodImg = product.getZoomImage();
+            }
         }
-	
 
-	public void setBrowserInfo(BrowserInfo browserInfo) {
-		this.browserInfo = browserInfo;
-	}
+        //these will still override...
+        if (useAlternateImage) {
+            prodImg = product.getAlternateImage();
+        }
 
+        if (prodImg == null) {
+            prodImg = product.getProdImage();
+        }
 
-	public void setInCart(boolean isInCart) {
-		this.isInCart = isInCart;
-	}
+        if (prodImg == null) {
+            return SKIP_BODY;
+        }
 
-	public void setSavingsPercentage(double savingsPercentage) {
-		this.savingsPercentage = savingsPercentage;
-	}
+        //set boundContainer sizes
+        if (bindToContainerSize != null) {
+            setBoundContainerSizes(bindToContainerSize, prodImg);
+        }
 
-	public void setShowRolloverImage( boolean showRolloverImage ) {
-		this.showRolloverImage = showRolloverImage;
-	}
-	
-	public void setUseAlternateImage( boolean useAlternateImage ) {
-		this.useAlternateImage = useAlternateImage;
-	}
+        pageContext.setAttribute(imageWidthVariableName,
+            new Integer(getBoundWidth(prodImg)));
+        pageContext.setAttribute(imageHeightVariableName,
+            new Integer(getBoundHeight(prodImg)));
 
-	public void setEnableQuickBuy(boolean enableQuickBuy) {
-		this.enableQuickBuy = enableQuickBuy;
-	}
+        StringBuilder buf = new StringBuilder();
 
-	public void setOpacity(double opacity) {
-		if (opacity < 0)
-			this.opacity = 0;
-		else if (opacity > 1)
-			this.opacity = 1;
-		else
-			this.opacity = opacity;
-	}
+        ProductLabeling pl = new ProductLabeling((FDUserI) pageContext.getSession()
+                                                                      .getAttribute(SessionName.USER),
+                calculator, hideBursts);
 
-	public int getHeight() {
-		return height;
-	}
+        if (browserInfo == null) {
+            browserInfo = new BrowserInfo((HttpServletRequest) pageContext.getRequest());
+        }
 
-	public void setHeight(int height) {
-		this.height = height;
-	}
+        final boolean needsOpacityWorkaround = browserInfo.isInternetExplorer() &&
+            (browserInfo.getVersionNumber() < 7.0);
 
-	public void setHideBursts(Set<EnumBurstType> hideBursts) {
-		this.hideBursts = hideBursts;
-	}
+        // IE workaround
+        if ((this.opacity == 1) && needsOpacityWorkaround) {
+            this.opacity = 0.999;
+        }
 
-	
-	/**
-	 * Sets explicitly web ID (or DOM ID) of generated tags.
-	 * Useful if tags are referred from JavaScript code.
-	 * 
-	 * @param webId JavaScript safe String
-	 */
-	public void setWebId(String webId) {
-		this.webId = webId;
-	}
-	
-	@Override
-	public int doStartTag() {
-	
-	    if (product == null) {
-	        if (calculator == null) {
-	            throw new RuntimeException("'product' and 'priceCalculator' is null!");
-	        }
-	        product = calculator.getProductModel();
-	    } else if (calculator == null) {
-	        calculator = product.getPriceCalculator();
-	    } 
-	    
-	    
-		Image prodImg = null;
-		
-		if ( useAlternateImage ) {
-			prodImg = product.getAlternateImage();
-		}			
-		if ( prodImg == null ) {
-			prodImg = product.getProdImage();
-		}			
-		if ( prodImg == null ) {
-			return SKIP_BODY;
-		}
+        final boolean supportsPNG = !((opacity < 1) &&
+            browserInfo.isInternetExplorer() &&
+            (browserInfo.getVersionNumber() < 7.0));
 
-		pageContext.setAttribute( imageWidthVariableName, new Integer( prodImg.getWidth() ) );
-		pageContext.setAttribute( imageHeightVariableName, new Integer( getHeightInternal( prodImg ) ) );
+        // not disabled, has action and not in cart (savings) -> add link
+        final boolean shouldGenerateAction = !this.disabled &&
+            (this.action != null) && !this.isInCart;
+        final boolean displayBurst = (savingsPercentage > 0) ||
+            pl.isDisplayAny();
 
-		
-		StringBuilder buf = new StringBuilder();
+        String imageStyle = "border: 0; vertical-align: bottom; -moz-force-broken-image-icon: 1; ";
 
-		ProductLabeling pl = new ProductLabeling((FDUserI) pageContext.getSession().getAttribute(SessionName.USER), calculator, hideBursts);
-		
-		if (browserInfo == null)
-			browserInfo = new BrowserInfo((HttpServletRequest) pageContext.getRequest());
+        if (opacity < 1) {
+            imageStyle += TransparentBoxTag.getOpacityStyle(browserInfo, opacity);
+        }
 
+        if (this.webId == null) {
+            webId = GetContentNodeWebIdTag.getWebId(null, product, true);
+        }
 
-		final boolean needsOpacityWorkaround = browserInfo.isInternetExplorer() && browserInfo.getVersionNumber() < 7.0;
-		
-		// IE workaround
+        buf.append("<div id=\"" + webId + "\" " +
+            "style=\"padding: 0px; border: 0px; margin: 0px auto; " +
+            "width: " + getBoundWidth(prodImg) + "px; " + "height: " +
+            getBoundHeight(prodImg) + "px; " + "line-height: " +
+            getBoundHeight(prodImg) + "px; " + "position: relative;\"");
 
-		if (this.opacity == 1 && needsOpacityWorkaround)
-			this.opacity = 0.999;
+        if ((className != null) && (className.length() > 0)) {
+            buf.append(" class=\"");
+            buf.append(className);
+            buf.append("\"");
+        }
 
-		final boolean supportsPNG = !(opacity < 1 && browserInfo.isInternetExplorer() && browserInfo.getVersionNumber() < 7.0);
-		// not disabled, has action and not in cart (savings) -> add link
-		final boolean shouldGenerateAction = !this.disabled && this.action != null && !this.isInCart;
-		final boolean displayBurst = savingsPercentage > 0 || pl.isDisplayAny();
+        buf.append(">\n");
 
-		String imageStyle = "border: 0; vertical-align: bottom; -moz-force-broken-image-icon: 1; ";
+        String imageName = "ro_img_" + product.getContentName();
 
-		if (opacity < 1) {
-			imageStyle += TransparentBoxTag.getOpacityStyle(browserInfo, opacity);
-		}
+        // ============= prepare rollover image script =============  
+        String rolloverStr = "";
 
-		if (this.webId == null)
-			webId = GetContentNodeWebIdTag.getWebId(null, product, true);
+        if (showRolloverImage) {
+            Image rolloverImage = product.getRolloverImage();
 
-		buf.append("<div id=\"" + webId + "\" "
-				+ "style=\"padding: 0px; border: 0px; margin: 0px auto; "
-				+ "width: " + prodImg.getWidth() + "px; "
-				+ "height: " + getHeightInternal( prodImg ) + "px; "
-				+ "line-height: " + getHeightInternal( prodImg ) + "px; "
-				+ "position: relative;\"");
+            if (rolloverImage != null) {
+                String rolloverImagePath = rolloverImage.getPathWithPublishId();
+                String baseImagePath = prodImg.getPathWithPublishId();
 
-		if (className != null && className.length() > 0) {
-			buf.append(" class=\"");
-			buf.append(className);
-			buf.append("\"");
-		}
-		
-		buf.append(">\n");
-		
-		
-		String imageName = "ro_img_" + product.getContentName();
-		
-		// ============= prepare rollover image script =============  
-		
-		String rolloverStr = "";	
-		if ( showRolloverImage ) {
-			Image rolloverImage = product.getRolloverImage();
-			
-			if ( rolloverImage != null ) {					
-				String rolloverImagePath = rolloverImage.getPathWithPublishId();
-				String baseImagePath = prodImg.getPathWithPublishId();
-				
-				if ( ! "".equals( rolloverImagePath ) && ! "".equals( baseImagePath ) ) {
-					rolloverStr = 
-						" onMouseover='swapImage(\"" 	+ imageName + "\",\"" + rolloverImagePath 	+ "\");return true;'" + 
-						" onMouseout='swapImage(\"" 	+ imageName + "\",\"" + baseImagePath 		+ "\");return true;'";
-				}
-			}
-		}
-		
+                if (!"".equals(rolloverImagePath) && !"".equals(baseImagePath)) {
+                    rolloverStr = " onMouseover='swapImage(\"" + imageName +
+                        "\",\"" + rolloverImagePath + "\");return true;'" +
+                        " onMouseout='swapImage(\"" + imageName + "\",\"" +
+                        baseImagePath + "\");return true;'";
+                }
+            }
+        }
 
-		// product image
-		if (shouldGenerateAction) {
-			buf.append("<a id=\"prdImgAncr_");
-			buf.append(webId);
-			buf.append("\" href=\"");
-			buf.append(action);
-			buf.append("\" style=\"vertical-align: bottom;\">");
-		}
+        // product image
+        if (shouldGenerateAction) {
+            buf.append("<a id=\"prdImgAncr_");
+            buf.append(webId);
+            buf.append("\" href=\"");
+            buf.append(action);
+            buf.append("\" style=\"vertical-align: bottom;\">");
+        }
 
-		buf.append("<img src=\"");
-		if (this.prefix != null)
-			buf.append(this.prefix);
-		buf.append(prodImg.getPathWithPublishId());
-		buf.append("\"");
-		
-//		buf.append(" id=\"prdImg_");
-//		buf.append(webId);
-//		buf.append("\"");
+        buf.append("<img src=\"");
 
-		buf.append(" width=\"");
-		buf.append(prodImg.getWidth());
-		buf.append("\"");
-		
-		buf.append(" height=\"");
-		buf.append(prodImg.getHeight());
-		buf.append("\"");
+        if (this.prefix != null) {
+            buf.append(this.prefix);
+        }
 
-		buf.append(" alt=\"");
-		buf.append(product.getFullName());
-		buf.append("\"");
-		
-		if (style != null && style.length() > 0) {
-			buf.append(" style=\"");
-			buf.append(imageStyle + " " + style);
-			buf.append("\"");
-		} else {
-			buf.append(" style=\"");
-			buf.append(imageStyle);
-			buf.append("\"");
-		}
-		
-		buf.append( " name=\"" );
-		buf.append( imageName );
-		buf.append( "\"" );
-		
-		buf.append( rolloverStr );			
+        buf.append(prodImg.getPathWithPublishId());
+        buf.append("\"");
 
-		buf.append(">");
+        //		buf.append(" id=\"prdImg_");
+        //		buf.append(webId);
+        //		buf.append("\"");
+        if (getBoundImgWidth(prodImg) > 0) {
+            buf.append(" width=\"");
+            //buf.append(prodImg.getWidth());
+            buf.append(getBoundImgWidth(prodImg));
 
-		if (shouldGenerateAction) {
-			buf.append("</a>");
-		}
+            if (bindToContainerSizes.containsKey("IS_PERCENT") &&
+                    (bindToContainerSizes.get("IS_PERCENT") == 1)) {
+                buf.append("%");
+            }
 
+            buf.append("\"");
+        }
 
+        if (getBoundImgHeight(prodImg) > 0) {
+            buf.append(" height=\"");
+            //buf.append(prodImg.getHeight());
+            buf.append(getBoundImgHeight(prodImg));
 
-		if (displayBurst) {
-			appendBurst(buf, pl, supportsPNG, shouldGenerateAction);
-		}
+            if (bindToContainerSizes.containsKey("IS_PERCENT") &&
+                    (bindToContainerSizes.get("IS_PERCENT") == 1)) {
+                buf.append("%");
+            }
 
-		// [APPDEV-672] QUICK BUY button
-		if (enableQuickBuy) {
-			final String prdId = product.getContentKey().getId();
-			final String catId = product.getParentId();
-			final String deptId = product.getDepartment().getContentKey().getId();
-			
+            buf.append("\"");
+        }
 
-			buf.append("<img id=\"qb_"+webId+"\" class=\"qbLaunchButton\" src=\"/media_stat/images/quickbuy/quickbuy_button_hover.gif\">\n");
-			/* buf.append("<script type=\"text/javascript\">\n" +
-					"FD_QuickBuy.attach('"+webId+"', '" + deptId + "', '" + catId + "', '" + prdId + "');\n" +
-					"</script>"); */
-			buf.append("<script type=\"text/javascript\">\n" +
-					"  FD_QuickBuy.decorate('"+webId+"', ['qb_"+webId+"', 'prdImgAncr_"+webId+"'], {departmentId: '" + deptId + "', categoryId: '" + catId + "', productId: '" + prdId + "'});\n" +
-					"</script>");
-		}
+        buf.append(" alt=\"");
+        buf.append(product.getFullName());
+        buf.append("\"");
 
-		// close outer frame
-		buf.append("</div>\n");
+        if ((style != null) && (style.length() > 0)) {
+            buf.append(" style=\"");
+            buf.append(imageStyle + " " + style);
+            buf.append("\"");
+        } else {
+            buf.append(" style=\"");
+            buf.append(imageStyle);
+            buf.append("\"");
+        }
 
+        buf.append(" name=\"");
+        buf.append(imageName);
+        buf.append("\"");
 
-		try {
-			JspWriter out = pageContext.getOut();
-			out.println(buf.toString());
-		} catch (IOException e) {
-		}
-		
-		return EVAL_BODY_INCLUDE;
-	}
+        buf.append(rolloverStr);
 
-	
-	private int getHeightInternal( Image prodImg ) {	
-		
-		// explicit height was set
-		if ( height > 0 )
-			return height;
-		
-		// if inside a carousel
-		CarouselTag carousel = (CarouselTag) findAncestorWithClass( this, CarouselTag.class );
-		if (carousel != null)
-			return carousel.getMaxImageHeight();
-		
-		// else use the image height
-		return prodImg.getHeight();
-	}
+        buf.append(">");
 
+        if (shouldGenerateAction) {
+            buf.append("</a>");
+        }
 
+        if (displayBurst) {
+            appendBurst(buf, pl, supportsPNG, shouldGenerateAction);
+        }
 
-	/**
-	 * Appends burst image
-	 * 
-	 * @param buf output
-	 * @param pl Product Labelling
-	 * @param supportsPNG Is PNG supported?
-	 * @param shouldGenerateAction Should add link to image
-	 */
-	private void appendBurst(StringBuilder buf, ProductLabeling pl, final boolean supportsPNG, final boolean shouldGenerateAction) {
-		
-		// burst image
-		String burstImageStyle = "border: 0;";
-		
-		if (this.opacity < 1) {
-			burstImageStyle += TransparentBoxTag.getOpacityStyle(browserInfo, this.opacity);
-		}
-		// get deal
-		int deal = 0;
-		if (savingsPercentage > 0) {
-			deal = (int)(savingsPercentage*100);
-		} else if (pl.isDisplayDeal()) {
-			//deal = product.getHighestDealPercentage();
-			deal = (int)calculator.getBurstDealsPercentage(excludeCaseDeals ? ProductBurstTag.EXCLUDED_WINE_TIERS : null);
-		}
+        // [APPDEV-672] QUICK BUY button
+        if (enableQuickBuy) {
+            final String prdId = product.getContentKey().getId();
+            final String catId = product.getParentId();
+            final String deptId = product.getDepartment().getContentKey().getId();
 
-		if (deal < FDStoreProperties.getBurstsLowerLimit() || deal > FDStoreProperties.getBurstUpperLimit())
-			deal = 0;
-		
+            buf.append("<img id=\"qb_" + webId +
+                "\" class=\"qbLaunchButton\" src=\"" + quickBuyImage + "\">\n");
+            /* buf.append("<script type=\"text/javascript\">\n" +
+                            "FD_QuickBuy.attach('"+webId+"', '" + deptId + "', '" + catId + "', '" + prdId + "');\n" +
+                            "</script>"); */
+            buf.append("<script type=\"text/javascript\">\n" +
+                "  FD_QuickBuy.decorate('" + webId + "', ['qb_" + webId +
+                "', 'prdImgAncr_" + webId + "'], {departmentId: '" + deptId +
+                "', categoryId: '" + catId + "', productId: '" + prdId +
+                "'});\n" + "</script>");
+        }
 
-		buf.append("<div class=\"productImageBurst\" style=\"position: absolute; top: 0px; left: 0px; width: 35px; height: 35px; \">\n");
-		if (shouldGenerateAction) {
-			buf.append("<a href=\"");
-			buf.append(action);
-			buf.append("\"");
-			buf.append("style=\"display: inline-block; width:35px; height:35px; line-height:35px;\"");
-			buf.append(">");
-		}
+        // close outer frame
+        buf.append("</div>\n");
 
-		if (this.isInCart) {
-			// Smart Savings - display "In Cart" burst
-			// No opacity needed since burst image is already faded
-			buf.append("<img alt=\"IN CART\" src=\"");
-				if (this.prefix != null)
-					buf.append(this.prefix);
-			buf.append("/media_stat/images/bursts/in_cart" + (supportsPNG ? ".png" : ".gif") + "\" width=\"35px\" height=\"35px\" style=\"border:0;\">\n");
-		} else if (deal > 0) {
-			String burstImage = "/media_stat/images/deals/brst_sm_" + deal + (supportsPNG ? ".png" : ".gif");
-			buf.append("<img alt=\"SAVE " + deal + "\" src=\"");
-				if (this.prefix != null)
-					buf.append(this.prefix);
-			buf.append(burstImage+"\" width=\"35px\" height=\"35px\" style=\""+ burstImageStyle +"\">\n");
-		} else if (pl.isDisplayFave()) {
-			buf.append("<img alt=\"FAVE\" src=\"");
-				if (this.prefix != null)
-					buf.append(this.prefix);
-			buf.append("/media_stat/images/bursts/brst_sm_fave"+(supportsPNG ? ".png" : ".gif")+"\" width=\"35px\" height=\"35px\" style=\""+ burstImageStyle +"\">\n");
-		} else if (pl.isDisplayNew() && !this.isNewProductPage) {
-			buf.append("<img alt=\"NEW\" src=\"");
-				if (this.prefix != null)
-					buf.append(this.prefix);
-			buf.append("/media_stat/images/bursts/brst_sm_new"+(supportsPNG ? ".png" : ".gif")+"\" width=\"35px\" height=\"35px\" style=\""+ burstImageStyle +"\">\n");
-		}else if (pl.isDisplayBackinStock()) {
-			buf.append("<img alt=\"BACK\" src=\"");
-				if (this.prefix != null)
-					buf.append(this.prefix);
-			buf.append("/media_stat/images/bursts/brst_sm_bis"+(supportsPNG ? ".png" : ".gif")+"\" width=\"35px\" height=\"35px\" style=\""+ burstImageStyle +"\">\n");
-		}
-		if (shouldGenerateAction) {
-			buf.append("</a>\n");
-		}
+        try {
+            JspWriter out = pageContext.getOut();
+            out.println(buf.toString());
+        } catch (IOException e) {
+        }
 
-		buf.append("</div>\n");
-	}
+        return EVAL_BODY_INCLUDE;
+    }
 
-	
-	public static class TagEI extends TagExtraInfo {
-		public VariableInfo[] getVariableInfo(TagData data) {
-	        return new VariableInfo[] {
-		            new VariableInfo(
-		            		imageWidthVariableName,
-		            		"java.lang.Integer",
-		            		true, 
-		            		VariableInfo.AT_END ),
-		            new VariableInfo(
-		            		imageHeightVariableName,
-		            		"java.lang.Integer",
-		            		true, 
-		            		VariableInfo.AT_END )
-		        };
-			
-		}
-	}
+    private int getHeightInternal(Image prodImg) {
+        // explicit height was set
+        if (height > 0) {
+            return height;
+        }
+
+        // if inside a carousel
+        CarouselTag carousel = (CarouselTag) findAncestorWithClass(this,
+                CarouselTag.class);
+
+        if (carousel != null) {
+            return carousel.getMaxImageHeight();
+        }
+
+        // else use the image height
+        return prodImg.getHeight();
+    }
+
+    private void setBoundContainerSizes(String bindToSizeStr, Image prodImgVar) {
+        String[] sizeParse = new String[0];
+
+        if (bindToSizeStr != null) {
+            sizeParse = bindToSizeStr.split(",");
+
+            for (int m = 0; m < sizeParse.length; m++) {
+                StringTokenizer keyValues = new StringTokenizer(sizeParse[m],
+                        "=");
+
+                while (keyValues.hasMoreTokens()) {
+                    String key = keyValues.nextToken();
+                    String val = "";
+
+                    if (keyValues.hasMoreTokens()) {
+                        val = keyValues.nextToken().trim();
+                    }
+
+                    try {
+                        if ("h".equalsIgnoreCase(key)) {
+                            bindToContainerSizes.put("CONT_HEIGHT",
+                                Integer.parseInt(val));
+                        }
+                    } catch (NumberFormatException nfe) {
+                        bindToContainerSizes.put("CONT_HEIGHT", -1);
+                    }
+
+                    try {
+                        if ("w".equalsIgnoreCase(key)) {
+                            bindToContainerSizes.put("CONT_WIDTH",
+                                Integer.parseInt(val));
+                        }
+                    } catch (NumberFormatException nfe) {
+                        bindToContainerSizes.put("CONT_WIDTH", -1);
+                    }
+                }
+            }
+
+            //turn on use of percentages
+            bindToContainerSizes.put("IS_PERCENT", 1);
+        } else {
+            //set image sizes themselves since we didn't get them from boundContainer
+            bindToContainerSizes.put("IMAGE_HEIGHT",
+                getBoundImgHeight(prodImgVar));
+            bindToContainerSizes.put("IMAGE_WIDTH", getBoundImgWidth(prodImgVar));
+            bindToContainerSizes.put("CONT_HEIGHT",
+                getBoundImgHeight(prodImgVar));
+            bindToContainerSizes.put("CONT_WIDTH", getBoundImgWidth(prodImgVar));
+
+            //and make sure percent usage is off
+            bindToContainerSizes.put("IS_PERCENT", 0);
+        }
+
+        /* estimate image size to percentages */
+        if (bindToContainerSizes.get("IS_PERCENT") == 1) {
+            //use the biggest edge of the container
+            if ((getBoundHeight(prodImgVar) > getBoundWidth(prodImgVar)) ||
+                    (prodImgVar.getHeight() > prodImgVar.getHeight())) {
+                bindToContainerSizes.put("IMAGE_HEIGHT", 100);
+                bindToContainerSizes.put("IMAGE_WIDTH", -1);
+            } else {
+                bindToContainerSizes.put("IMAGE_HEIGHT", -1);
+                bindToContainerSizes.put("IMAGE_WIDTH", 100);
+            }
+        }
+    }
+
+    private int getBoundImgHeight(Image prodImgVar) {
+        if (bindToContainerSizes.containsKey("IMAGE_HEIGHT")) {
+            return bindToContainerSizes.get("IMAGE_HEIGHT");
+        }
+
+        //if no bound height set, fall back to the default
+        if (prodImgVar != null) {
+            return getBoundHeight(prodImgVar);
+        }
+
+        return -1;
+    }
+
+    private int getBoundImgWidth(Image prodImgVar) {
+        if (bindToContainerSizes.containsKey("IMAGE_WIDTH")) {
+            return bindToContainerSizes.get("IMAGE_WIDTH");
+        }
+
+        //if no bound height set, fall back to the default
+        if (prodImgVar != null) {
+            return getBoundWidth(prodImgVar);
+        }
+
+        return -1;
+    }
+
+    private int getBoundHeight(Image prodImgVar) {
+        if ((prodImgVar != null) &&
+                bindToContainerSizes.containsKey("CONT_HEIGHT")) {
+            return bindToContainerSizes.get("CONT_HEIGHT");
+        }
+
+        //if no bound height set, fall back to the default
+        if (prodImgVar != null) {
+            return prodImgVar.getHeight();
+        }
+
+        return -1;
+    }
+
+    private int getBoundWidth(Image prodImgVar) {
+        if ((prodImgVar != null) &&
+                bindToContainerSizes.containsKey("CONT_WIDTH")) {
+            return bindToContainerSizes.get("CONT_WIDTH");
+        }
+
+        if (prodImgVar != null) {
+            //if no bound width set, fall back to the default
+            return prodImgVar.getWidth();
+        }
+
+        return -1;
+    }
+
+    /**
+     * Appends burst image
+     *
+     * @param buf output
+     * @param pl Product Labeling
+     * @param supportsPNG Is PNG supported?
+     * @param shouldGenerateAction Should add link to image
+     */
+    private void appendBurst(StringBuilder buf, ProductLabeling pl,
+        final boolean supportsPNG, final boolean shouldGenerateAction) {
+        // burst image
+        String burstImageStyle = "border: 0;";
+
+        //temp vars without defaults (defaults set after overrides, if needed)
+        String cHeight = null;
+        String cWidth = null;
+        String cStyle = null;
+        String cCssClass = null;
+
+        String iHeight = null;
+        String iWidth = null;
+        String iSize = null;
+        String iSrc = null;
+        String iSizeToken = "%%iSize%%"; //replacement token
+        String iAlt = null;
+        String iStyle = null;
+        String iCssClass = null;
+
+        String aStyle = null;
+
+        //create a burst image
+        Image bImage = new Image();
+
+        if (this.opacity < 1) {
+            burstImageStyle += TransparentBoxTag.getOpacityStyle(browserInfo,
+                this.opacity);
+        }
+
+        // get deal
+        int deal = 0;
+
+        if (savingsPercentage > 0) {
+            deal = (int) (savingsPercentage * 100);
+        } else if (pl.isDisplayDeal()) {
+            //deal = product.getHighestDealPercentage();
+            deal = (int) calculator.getBurstDealsPercentage(excludeCaseDeals
+                    ? ProductBurstTag.EXCLUDED_WINE_TIERS : null);
+        }
+
+        if ((deal < FDStoreProperties.getBurstsLowerLimit()) ||
+                (deal > FDStoreProperties.getBurstUpperLimit())) {
+            deal = 0;
+        }
+
+        if (this.isInCart) {
+            // Smart Savings - display "In Cart" burst
+            // No opacity needed since burst image is already faded
+            iSrc = ((this.prefix != null) ? this.prefix : "") +
+                "/media_stat/images/bursts/in_cart" +
+                (supportsPNG ? ".png" : ".gif");
+            iAlt = "IN CART";
+            iStyle = "border: 0;";
+
+            //buf.append("<img alt=\"IN CART\" src=\"");
+            //if (this.prefix != null)
+            //		buf.append(this.prefix);
+            //buf.append("/media_stat/images/bursts/in_cart" + (supportsPNG ? ".png" : ".gif") + "\" width=\"35px\" height=\"35px\" style=\"border:0;\">\n");
+        } else if (deal > 0) {
+            iSrc = ((this.prefix != null) ? this.prefix : "") +
+                "/media_stat/images/deals/brst_" + iSizeToken + "_" + deal +
+                (supportsPNG ? ".png" : ".gif");
+            iAlt = "SAVE";
+            iStyle = burstImageStyle;
+
+            //String burstImage = "/media_stat/images/deals/brst_sm_" + deal + (supportsPNG ? ".png" : ".gif");
+            //buf.append("<img alt=\"SAVE " + deal + "\" src=\"");
+            //	if (this.prefix != null)
+            //		buf.append(this.prefix);
+            //buf.append(burstImage+"\" width=\"35px\" height=\"35px\" style=\""+ burstImageStyle +"\">\n");
+        } else if (pl.isDisplayFave()) {
+            iSrc = ((this.prefix != null) ? this.prefix : "") +
+                "/media_stat/images/bursts/brst_" + iSizeToken + "_fave" +
+                (supportsPNG ? ".png" : ".gif");
+            iAlt = "FAVE";
+            iStyle = burstImageStyle;
+
+            //buf.append("<img alt=\"FAVE\" src=\"");
+            //	if (this.prefix != null)
+            //		buf.append(this.prefix);
+            //buf.append("/media_stat/images/bursts/brst_sm_fave"+(supportsPNG ? ".png" : ".gif")+"\" width=\"35px\" height=\"35px\" style=\""+ burstImageStyle +"\">\n");
+        } else if (pl.isDisplayNew() && !this.isNewProductPage) {
+            iSrc = ((this.prefix != null) ? this.prefix : "") +
+                "/media_stat/images/bursts/brst_" + iSizeToken + "_new" +
+                (supportsPNG ? ".png" : ".gif");
+            iAlt = "NEW";
+            iStyle = burstImageStyle;
+
+            //buf.append("<img alt=\"NEW\" src=\"");
+            //	if (this.prefix != null)
+            //		buf.append(this.prefix);
+            //buf.append("/media_stat/images/bursts/brst_sm_new"+(supportsPNG ? ".png" : ".gif")+"\" width=\"35px\" height=\"35px\" style=\""+ burstImageStyle +"\">\n");
+        } else if (pl.isDisplayBackinStock()) {
+            iSrc = ((this.prefix != null) ? this.prefix : "") +
+                "/media_stat/images/bursts/brst_" + iSizeToken + "_bis" +
+                (supportsPNG ? ".png" : ".gif");
+            iAlt = "BACK";
+            iStyle = burstImageStyle;
+
+            //buf.append("<img alt=\"BACK\" src=\"");
+            //	if (this.prefix != null)
+            //		buf.append(this.prefix);
+            //buf.append("/media_stat/images/bursts/brst_sm_bis"+(supportsPNG ? ".png" : ".gif")+"\" width=\"35px\" height=\"35px\" style=\""+ burstImageStyle +"\">\n");
+        }
+
+        //override values (may or may not be used, depending on the burst that ends up being generated)
+        if (burstOptions != null) {
+            String[] burstOptionsParse = new String[0];
+            burstOptionsParse = burstOptions.split(",");
+
+            for (int m = 0; m < burstOptionsParse.length; m++) {
+                StringTokenizer keyValues = new StringTokenizer(burstOptionsParse[m],
+                        "=");
+
+                while (keyValues.hasMoreTokens()) {
+                    String key = keyValues.nextToken();
+                    String val = "";
+
+                    if (keyValues.hasMoreTokens()) {
+                        val = keyValues.nextToken().trim();
+                    }
+
+                    //image-level options
+                    if ("h".equalsIgnoreCase(key)) {
+                        iHeight = val;
+                    }
+
+                    if ("w".equalsIgnoreCase(key)) {
+                        iWidth = val;
+                    }
+
+                    if ("alt".equalsIgnoreCase(key)) {
+                        iAlt = val;
+                    }
+
+                    if ("style".equalsIgnoreCase(key)) {
+                        iStyle = burstImageStyle + val;
+                    }
+
+                    if ("cssClass".equalsIgnoreCase(key)) {
+                        iCssClass = val;
+                    }
+
+                    if ("src".equalsIgnoreCase(key)) {
+                        iSrc = val;
+                    }
+
+                    if ("size".equalsIgnoreCase(key)) {
+                        //this is "sm" or "lg", invalid items will invalidate the burst (if it has sizes)
+                        iSize = val;
+                    }
+
+                    //anchor level options
+                    if ("a_style".equalsIgnoreCase(key)) {
+                        aStyle = val;
+                    }
+
+                    //container-level options
+                    if ("c_h".equalsIgnoreCase(key)) {
+                        cHeight = val;
+                    }
+
+                    if ("c_w".equalsIgnoreCase(key)) {
+                        cWidth = val;
+                    }
+
+                    if ("c_style".equalsIgnoreCase(key)) {
+                        cStyle = val;
+                    }
+
+                    if ("c_cssClass".equalsIgnoreCase(key)) {
+                        cCssClass = val;
+                    }
+                }
+            }
+        }
+
+        // we need to set the default size BEFORE trying to get the burst (because it uses it in the src)
+        if (iSize == null) {
+            iSize = "sm";
+        }
+
+        //check for invalids and default them
+        if (cHeight == null) {
+            if ("lg".equalsIgnoreCase(iSize)) {
+                cHeight = "55";
+            } else {
+                cHeight = "35";
+            }
+        }
+
+        if (cWidth == null) {
+            if ("lg".equalsIgnoreCase(iSize)) {
+                cWidth = "55";
+            } else {
+                cWidth = "35";
+            }
+        }
+
+        if (cStyle == null) {
+            cStyle = "position: absolute; top: 0px; left: 0px; width: " +
+                cWidth + "px; height: " + cHeight + "px;";
+        }
+
+        if (cCssClass == null) {
+            cCssClass = "productImageBurst";
+        }
+
+        if (aStyle == null) {
+            aStyle = "display: inline-block; width: " + cWidth +
+                "px; height: " + cHeight + "px; line-height: " + cHeight +
+                "px;";
+        }
+
+        if (iHeight == null) {
+            if ("lg".equalsIgnoreCase(iSize)) {
+                iHeight = "55";
+            } else {
+                iHeight = "35";
+            }
+        }
+
+        if (iWidth == null) {
+            if ("lg".equalsIgnoreCase(iSize)) {
+                iWidth = "55";
+            } else {
+                iWidth = "35";
+            }
+        }
+
+        //iSrc has no default, if it's not set, we don't have a burst
+        //iAlt has no default (alt is already defaulted to an empty string)
+        if ((iStyle == null) && (bImage.getStyle() == null)) {
+            iStyle = burstImageStyle;
+            bImage.setStyle(burstImageStyle);
+        }
+
+        if ((iCssClass == null) && (bImage.getCssClass() == null)) {
+            iCssClass = "";
+            bImage.setCssClass("");
+        }
+
+        if (iSrc != null) { //if iSrc is null, we didn't have a burst set
+            bImage.setPath(iSrc.replace(iSizeToken, iSize));
+            bImage.setHeight(Integer.parseInt(iHeight));
+            bImage.setWidth(Integer.parseInt(iWidth));
+            bImage.setAltText(iAlt);
+            bImage.setStyle(iStyle);
+            bImage.setCssClass(iCssClass);
+
+            buf.append("<div class=\"" + cCssClass + "\" style=\"" + cStyle +
+                "\">\n");
+
+            if (shouldGenerateAction) {
+                buf.append("<a href=\"" + action + "\" style=\"" + aStyle +
+                    "\">");
+            }
+
+            buf.append(bImage.toHtml());
+
+            if (shouldGenerateAction) {
+                buf.append("</a>\n");
+            }
+
+            buf.append("</div>\n");
+        }
+    }
+
+    public static class TagEI extends TagExtraInfo {
+        public VariableInfo[] getVariableInfo(TagData data) {
+            return new VariableInfo[] {
+                new VariableInfo(imageWidthVariableName, "java.lang.Integer",
+                    true, VariableInfo.AT_END),
+                new VariableInfo(imageHeightVariableName, "java.lang.Integer",
+                    true, VariableInfo.AT_END)
+            };
+        }
+    }
 }

@@ -11,8 +11,12 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.log4j.Logger;
+
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.fdstore.FDConfigurableI;
+import com.freshdirect.fdstore.FDGroup;
+import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.content.CategoryModel;
 import com.freshdirect.fdstore.content.ConfiguredProduct;
 import com.freshdirect.fdstore.content.ContentFactory;
@@ -29,6 +33,7 @@ import com.freshdirect.fdstore.customer.QuickCart;
 import com.freshdirect.fdstore.lists.CclUtils;
 import com.freshdirect.fdstore.standingorders.FDStandingOrder;
 import com.freshdirect.fdstore.util.ProductDisplayUtil;
+import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.smartstore.Variant;
 import com.freshdirect.webapp.taglib.smartstore.Impression;
 
@@ -40,6 +45,7 @@ import com.freshdirect.webapp.taglib.smartstore.Impression;
  *
  */
 public class FDURLUtil {
+	private static final Logger LOGGER = LoggerFactory.getInstance(FDURLUtil.class);
 	
 	public static final String RECIPE_PAGE_BASE			= "/recipe.jsp";
 	public static final String RECIPE_PAGE_BASE_CRM		= "/order/recipe.jsp";
@@ -801,5 +807,45 @@ public class FDURLUtil {
 			return urlContainingEscapedAmpersands.replace("&amp;", "&");
 		}
 		return urlContainingEscapedAmpersands;
+	}
+
+
+	public static String getProductGroupURI(ProductImpression impression, String trackingCode) {	
+		// just to make really really sure
+		if (impression.getProductInfo().getSkuCode() == null)
+			return null;
+		
+		ProductModel product = impression.getProductModel();
+		FDGroup group;
+		try {
+			group = product.getFDGroup();
+		} catch (FDResourceException e) {
+			LOGGER.error("failed to retrieve group for " + product.getContentKey(), e);
+			return null;
+		}
+		
+		if (group == null)
+			return null;
+
+		StringBuffer buf = new StringBuffer();
+		buf.append("/group.jsp?");
+		buf.append("grpId=").append(group.getGroupId());
+		buf.append(ProductDisplayUtil.URL_PARAM_SEP);
+		buf.append("version=").append(group.getVersion());
+		buf.append(ProductDisplayUtil.URL_PARAM_SEP);
+		buf.append("catId=").append(product.getParentNode().getContentKey().getId());
+		buf.append(ProductDisplayUtil.URL_PARAM_SEP);
+		buf.append("prodCatId=").append(product.getParentNode().getContentKey().getId());
+		buf.append(ProductDisplayUtil.URL_PARAM_SEP);
+		buf.append("productId=").append(product.getContentKey().getId());
+		buf.append(ProductDisplayUtil.URL_PARAM_SEP);
+		buf.append("skuCode=").append(impression.getProductInfo().getSkuCode());
+
+		if (trackingCode != null) {
+			buf.append(ProductDisplayUtil.URL_PARAM_SEP);
+			buf.append("trk=").append(trackingCode);
+		}
+		
+		return buf.toString();
 	}
 }

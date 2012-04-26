@@ -94,19 +94,21 @@ abstract class JcoBapiFunction implements BapiFunctionI {
 	protected void processResponse() throws BapiException {
 		List retList = new ArrayList();
 
-		if (function.getExportParameterList() != null && function.getExportParameterList().hasField("RETURN")) {
+		if (function.getExportParameterList() != null && function.getExportParameterList().hasField("RETURN")
+				&& function.getExportParameterList().isStructure("RETURN") ) {
 			// get "return" as a struct
 			JCO.Structure ret = function.getExportParameterList().getStructure("RETURN");
 			retList.add(this.convertReturn(ret));
 
-		} else if (function.getTableParameterList() != null && function.getTableParameterList().hasField("RETURN")) {
+		} else if (function.getTableParameterList() != null && function.getTableParameterList().hasField("RETURN")
+				&& function.getExportParameterList().isTable("RETURN")) {
 			// get "return" as a table
 			JCO.Table ret = function.getTableParameterList().getTable("RETURN");
 			ret.firstRow();
 			do {
 				retList.add(this.convertReturn(ret));
 			} while (ret.nextRow());
-		}
+		} 
 
 		this.bapiInfos = (BapiInfo[]) retList.toArray(new BapiInfo[0]);
 	}

@@ -94,10 +94,10 @@ public class CategoryNodeTree extends ContentNodeTree {
 		CategoryNodeTree tree = new CategoryNodeTree(ContentNodeModel.PRIORITY_COMPARATOR,
 				ContentNodeModel.FULL_NAME_WITH_ID_COMPARATOR);
 		if (multipleHome)
-			for (SearchResultItem<ProductModel> item : results.getProducts())
+			for (FilteringSortingItem<ProductModel> item : results.getProducts())
 				tree.addProductModel(item.getModel());
 		else
-			for (SearchResultItem<ProductModel> item : results.getProducts())
+			for (FilteringSortingItem<ProductModel> item : results.getProducts())
 				tree.addNode(item.getModel());
 		return tree;
 	}

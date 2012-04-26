@@ -29,6 +29,8 @@ public class DateUtil {
 	private static final DateFormat DAY_INWEEK_FORMATTER = new SimpleDateFormat("E");
 	private static final DateFormat MIN_AMPM_FORMATTER = new SimpleDateFormat("hh_mm_a");
 	
+	private static final DateFormat MON_DATE_YEAR_FORMATTER = new SimpleDateFormat("MMddyyyy");
+	
 	private DateUtil() {
 	}
 
@@ -159,6 +161,10 @@ public class DateUtil {
 	
 	public static Date parseMDY(String dateValue) throws ParseException{
 		return MONTH_DATE_YEAR_FORMATTER.parse(dateValue);
+	}
+	
+	public static Date parseMDY2(String dateValue) throws ParseException{
+		return MON_DATE_YEAR_FORMATTER.parse(dateValue);
 	}
 	
 	public static String format(Date dateValue) {

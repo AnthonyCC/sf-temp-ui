@@ -14,6 +14,7 @@ import com.freshdirect.sap.bapi.BapiCreateCustomer;
 import com.freshdirect.sap.bapi.BapiFactory;
 import com.freshdirect.sap.bapi.BapiMaterialAvailability;
 import com.freshdirect.sap.bapi.BapiPostReturnI;
+import com.freshdirect.sap.bapi.BapiProductPromotionPreviewI;
 import com.freshdirect.sap.bapi.BapiRouteMasterInfo;
 import com.freshdirect.sap.bapi.BapiRouteStatusInfo;
 import com.freshdirect.sap.bapi.BapiSalesOrderCancel;
@@ -119,6 +120,11 @@ public class JcoBapiFunctionFactory extends BapiFactory {
 
 	public BapiRouteStatusInfo getBapiRouteStatusInfoBuilder() {
 		return new JcoBapiRouteStatusInfo();
+	}
+
+	@Override
+	public BapiProductPromotionPreviewI getBapiProductPromotionPreviewBuilder() {
+		return new JcoBapiProductPromotionPreview("ZDDPP_PREVIEW");
 	}
 
 }

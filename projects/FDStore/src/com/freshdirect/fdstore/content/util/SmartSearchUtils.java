@@ -27,15 +27,15 @@ import com.freshdirect.fdstore.content.ContentSearch;
 import com.freshdirect.fdstore.content.ContentSearchUtil;
 import com.freshdirect.fdstore.content.EnumSortingValue;
 import com.freshdirect.fdstore.content.ProductModel;
-import com.freshdirect.fdstore.content.SearchResultItem;
+import com.freshdirect.fdstore.content.FilteringSortingItem;
 import com.freshdirect.fdstore.content.SortValueComparator;
 import com.freshdirect.fdstore.content.StoreModel;
 import com.freshdirect.fdstore.pricing.ProductPricingFactory;
 import com.freshdirect.framework.conf.FDRegistry;
 
 public class SmartSearchUtils {
-	public static void collectSaleInfo(List<SearchResultItem<ProductModel>> products, PricingContext context) {
-		for (SearchResultItem<ProductModel> product : products) {
+	public static void collectSaleInfo(List<FilteringSortingItem<ProductModel>> products, PricingContext context) {
+		for (FilteringSortingItem<ProductModel> product : products) {
 			ProductModel p;
 			if (context != null)
 				p = ProductPricingFactory.getInstance().getPricingAdapter(product.getModel(), context);
@@ -45,8 +45,8 @@ public class SmartSearchUtils {
 		}
 	}
 
-	public static void collectAvailabilityInfo(List<SearchResultItem<ProductModel>> products, PricingContext context) {
-		for (SearchResultItem<ProductModel> product : products) {
+	public static void collectAvailabilityInfo(List<FilteringSortingItem<ProductModel>> products, PricingContext context) {
+		for (FilteringSortingItem<ProductModel> product : products) {
 			ProductModel p;
 			if (context != null)
 				p = ProductPricingFactory.getInstance().getPricingAdapter(product.getModel(), context);
@@ -57,7 +57,7 @@ public class SmartSearchUtils {
 		}
 	}
 
-	public static void collectOriginalTermInfo(List<SearchResultItem<ProductModel>> products, String searchTerm) {
+	public static void collectOriginalTermInfo(List<FilteringSortingItem<ProductModel>> products, String searchTerm) {
 		if (searchTerm == null)
 			return;
 		boolean exact = ContentSearchUtil.isQuoted(searchTerm);
@@ -68,7 +68,7 @@ public class SmartSearchUtils {
 		if (terms.isEmpty())
 			return;
 		Term term = terms.get(0);
-		for (SearchResultItem<ProductModel> product : products) {
+		for (FilteringSortingItem<ProductModel> product : products) {
 			if (product.getModel().getFullName() == null)
 				continue;
 			normalizer = new SearchTermNormalizer(new Term(product.getModel().getFullName()));
@@ -80,7 +80,7 @@ public class SmartSearchUtils {
 		}
 	}
 	
-	public static void collectRelevancyCategoryScores(List<SearchResultItem<ProductModel>> products, String searchTerm) {
+	public static void collectRelevancyCategoryScores(List<FilteringSortingItem<ProductModel>> products, String searchTerm) {
 		if (searchTerm == null)
 			return;
 		boolean exact = ContentSearchUtil.isQuoted(searchTerm);
@@ -91,14 +91,14 @@ public class SmartSearchUtils {
 			return;
 		String term = terms.get(0).toString();
 		Map<ContentKey, Integer> relevancyScores = ContentSearch.getInstance().getSearchRelevancyScores(term);
-		for (SearchResultItem<ProductModel> product : products) {
+		for (FilteringSortingItem<ProductModel> product : products) {
 			Integer score = ContentSearch.getRelevancyScore(relevancyScores, product.getModel());
 			if (score != null)
 				product.putSortingValue(EnumSortingValue.CATEGORY_RELEVANCY, score);
 		}
 	}
 
-	public static void collectTermScores(List<SearchResultItem<ProductModel>> products, String searchTerm) {
+	public static void collectTermScores(List<FilteringSortingItem<ProductModel>> products, String searchTerm) {
 		if (searchTerm == null)
 			return;
 		boolean exact = ContentSearchUtil.isQuoted(searchTerm);
@@ -122,7 +122,7 @@ public class SmartSearchUtils {
 		List<Term> terms = normalizer.getTerms();
 		if (terms.isEmpty())
 			return;
-		for (SearchResultItem<ProductModel> product : products) {
+		for (FilteringSortingItem<ProductModel> product : products) {
 			long score = 0l;
 			for (Term term : terms) {
 				long s = calculateTermScore(product.getModel(), term, sd);
@@ -222,13 +222,13 @@ public class SmartSearchUtils {
 	}
 	
 	public static List<ProductModel> sortBySale(List<ProductModel> products, PricingContext pricingContext, boolean ascending) {
-		List<SearchResultItem<ProductModel>> items = SearchResultItem.wrap(products);
-		ComparatorChain<SearchResultItem<ProductModel>> comparator = ComparatorChain.create(new SortValueComparator<ProductModel>(EnumSortingValue.DEAL));
-		comparator.chain(SearchResultItem.wrap(ProductModel.FULL_NAME_PRODUCT_COMPARATOR));
+		List<FilteringSortingItem<ProductModel>> items = FilteringSortingItem.wrap(products);
+		ComparatorChain<FilteringSortingItem<ProductModel>> comparator = ComparatorChain.create(new SortValueComparator<ProductModel>(EnumSortingValue.DEAL));
+		comparator.chain(FilteringSortingItem.wrap(ProductModel.FULL_NAME_PRODUCT_COMPARATOR));
 		collectSaleInfo(items, pricingContext);
 		if (!ascending)
 			comparator = ComparatorChain.reverseOrder(comparator);
 		Collections.sort(items, comparator);
-		return SearchResultItem.unwrap(items);
+		return FilteringSortingItem.unwrap(items);
 	}
 }

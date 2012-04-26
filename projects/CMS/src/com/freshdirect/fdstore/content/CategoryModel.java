@@ -8,7 +8,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
@@ -21,12 +20,22 @@ import java.util.concurrent.TimeUnit;
 import org.apache.log4j.Logger;
 
 import com.freshdirect.cms.ContentKey;
+import com.freshdirect.cms.fdstore.FDContentTypes;
 import com.freshdirect.cms.smartstore.CmsRecommenderService;
+import com.freshdirect.cms.util.ProductPromotionUtil;
+import com.freshdirect.erp.ErpProductPromotionPreviewInfo;
+import com.freshdirect.erp.ejb.FDProductPromotionManager;
+import com.freshdirect.erp.ejb.ProductPromotionInfoManager;
+import com.freshdirect.fdstore.FDCachedFactory;
+import com.freshdirect.fdstore.FDProductPromotionInfo;
+import com.freshdirect.fdstore.FDProductPromotionPreviewInfo;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.ProductModelPromotionAdapter;
 import com.freshdirect.fdstore.attributes.FDAttributeFactory;
 import com.freshdirect.framework.conf.FDRegistry;
 import com.freshdirect.framework.util.BalkingExpiringReference;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.sap.SapProperties;
 
 public class CategoryModel extends ProductContainer {
 	
@@ -104,7 +113,114 @@ public class CategoryModel extends ProductContainer {
 	/**
 	 * map of zoneId --> recommended products reference
 	 */
+	private final class ProductPromotionDataRef extends BalkingExpiringReference<ProductPromotionData> {
+
+		private String productPromotitonType; 
+		private String zoneId;
+		
+		public ProductPromotionDataRef(Executor executor, String zoneId, String productPromotitonType) {
+			super(FIVE_MINUTES, executor);
+			this.zoneId = zoneId;
+			this.productPromotitonType = productPromotitonType;
+			
+			// synchronous load
+            try {
+                set(load());
+            } catch (RuntimeException e) {
+                LOGGER.error("failed to initialize promo products for category " + CategoryModel.this.getContentName() + " synchronously");
+            }
+		}	
+		
+
+		@Override
+		protected ProductPromotionData load() {
+			ProductPromotionData productPromotionData = new ProductPromotionData();
+			
+			loadProductPromotionData(productPromotionData);
+			
+			return productPromotionData;
+		}
+
+		public void loadProductPromotionData(
+				ProductPromotionData productPromotionData) {
+			try {
+				Map<String,List<FDProductPromotionInfo>> fDProductPromotionSkusMap;
+				Map<String,List<FDProductPromotionInfo>> productPromoInfoMap ;
+				String ppType =productPromotitonType;
+				if(null !=ppType){
+					if("PRESIDENTS_PICKS_PREVIEW".equals(ppType)||"PRESIDENTS_PICKS".equals(ppType)){
+						ppType = "PRESIDENTS_PICKS";
+					}
+				}
+				synchronized (FDProductPromotionManager.getInstance()) {					
+					productPromoInfoMap = FDProductPromotionManager.getProductPromotion(ppType);				
+				}
+				populateProductPromotionData(productPromotionData,productPromoInfoMap,zoneId,false);
+
+			} catch (FDResourceException e) {
+				LOGGER.error("failed to load promo products for category " + CategoryModel.this.getContentName(), e);
+				throw new RuntimeException(e);
+			}
+		}
+
+
+		
+	}
+	public ProductPromotionData populateProductPromotionData(
+			ProductPromotionData productPromotionData,
+			Map<String, List<FDProductPromotionInfo>> productPromoInfoMap,String zoneId,boolean isPreview)
+			throws FDResourceException {
+		Map<String, ProductModel> skuProductMap = new HashMap<String, ProductModel>();
+		List<ProductModel> productModels = new ArrayList<ProductModel>();
+		if(null !=productPromoInfoMap){
+			List<FDProductPromotionInfo> fDProductPromotionSkus = productPromoInfoMap.get(zoneId);				
+			if(null ==fDProductPromotionSkus){
+				fDProductPromotionSkus = productPromoInfoMap.get(ProductPromotionData.DEFAULT_ZONE);
+				productPromoInfoMap.put(zoneId,fDProductPromotionSkus);
+			}
+			if(null != fDProductPromotionSkus)
+			for (FDProductPromotionInfo fDProductPromotionSku : fDProductPromotionSkus){
+				String sku = fDProductPromotionSku.getSkuCode();
+				if(!isPreview){
+					FDCachedFactory.refreshProductPromotionSku(sku);
+				}
+				ProductModel productModel = null;
+				ProductModel prodModel = null;
+				try {
+					prodModel = ((SkuModel) ContentFactory.getInstance().getContentNodeByKey(new ContentKey(FDContentTypes.SKU, sku))).getProductModel();
+					if(isPreview){
+						ProductModel prdModelClone = (ProductModel)prodModel.clone();
+						productModel = new ProductModelPromotionAdapter(prdModelClone,fDProductPromotionSku.isFeatured(),fDProductPromotionSku.getFeaturedHeader(),sku);
+						((ProductModelPromotionAdapter)productModel).setPreview(isPreview);
+						((ProductModelPromotionAdapter)productModel).setFdProdInfo(((FDProductPromotionPreviewInfo)fDProductPromotionSku).getFdProductInfo());
+						((ProductModelPromotionAdapter)productModel).setFdProduct(((FDProductPromotionPreviewInfo)fDProductPromotionSku).getFdProduct());
+					}else{
+						productModel = new ProductModelPromotionAdapter(prodModel,fDProductPromotionSku.isFeatured(),fDProductPromotionSku.getFeaturedHeader(),sku);
+					}
+				} catch (Exception e){
+					LOGGER.warn("Failed to get product for sku: " + sku +", promo products for category " + CategoryModel.this.getContentName(), e);				}
+				
+				if (productModel != null && !productModel.isOrphan() && !productModel.isHidden() && !productModel.isInvisible()){					
+					skuProductMap.put(sku, productModel);
+					if (!productModels.contains(productModel)) {
+						productModels.add(productModel);
+					}
+				}
+			}
+//			}
+		}
+		productPromotionData.setSkuProductMap(skuProductMap);
+		productPromotionData.setProductModels(productModels);
+//		productPromotionData.setZoneProductModelsMap(ProductPromotionUtil.populatePromotionPageProducts(productPromoInfoMap,skuProductMap));
+		
+		return productPromotionData;
+	}
+	
 	private Map<String, RecommendedProductsRef> recommendedProductsRefMap = new HashMap<String, RecommendedProductsRef>();
+	
+	private Map<String, ProductPromotionDataRef> productPromotionDataRefMap = new HashMap<String, ProductPromotionDataRef>();
+	
+	private String promotionPageType;
 	
 	private Object recommendedProductsSync = new Object();
 	
@@ -337,7 +453,7 @@ public class CategoryModel extends ProductContainer {
         if ( recommender == null ) {
         	recommenderKey = null;
         } 
-        
+        String zoneId = ContentFactory.getInstance().getCurrentPricingContext().getZoneId();
         if (recommender != null) {
         	
             boolean recommenderChanged = !recommender.getContentKey().equals( recommenderKey ); 
@@ -347,7 +463,6 @@ public class CategoryModel extends ProductContainer {
         		LOGGER.warn( this.getContentKey().getEncoded() + ": recommender changed!" );
         	}
         	
-            String zoneId = ContentFactory.getInstance().getCurrentPricingContext().getZoneId();
             LOGGER.info("Category[id=\"" + this.getContentKey().getId() + "\"].getSmartProducts(\"" + zoneId + "\")");
             synchronized (CategoryModel.class) {
                 if (globalSmartCategoryVersion > smartCategoryVersion) {
@@ -364,25 +479,54 @@ public class CategoryModel extends ProductContainer {
             }
 
             try {
-                List<ProductModel> recProds = recommendedProductsRefMap.get(zoneId).get();
-                if (recProds != null) {
-                    for ( ProductModel prod : recProds ) {
-                    	ProductModel newProd = (ProductModel)prod.clone();
-                        ( (ContentNodeModelImpl)newProd ).setParentNode(this);
-                        if (!prodList.contains(newProd)) {
-                            ( (ContentNodeModelImpl)newProd ).setPriority(prodList.size());
-                            prodList.add(newProd);
-                        }
-                    }
-                }
+//                List<ProductModel> recProds = recommendedProductsRefMap.get(zoneId).get();
+                addDynamicProducts(recommendedProductsRefMap.get(zoneId).get(), prodList);
             } catch (Exception e) {
                 LOGGER.warn("exception during smart category recommendation", e);
+            }
+        }
+        String currentProductPromotionType = getProductPromotionType();
+        if (currentProductPromotionType != null) {
+        	loadProductPromotion(zoneId, currentProductPromotionType);
+        	try {
+        		if(null !=productPromotionDataRefMap.get(zoneId).get()) {
+        			prodList = new ArrayList<ProductModel>();
+        			addDynamicProductsForPromotion(productPromotionDataRefMap.get(zoneId).get().getProductModels(), prodList);
+        		}
+            } catch (Exception e) {
+                LOGGER.warn("exception during promo category product assignment", e);
             }
         }
 
         return prodList;
     }
 
+    private void addDynamicProducts(Collection<ProductModel> srcProducts, Collection<ProductModel> destProducts){
+    	if (srcProducts != null) {
+            for ( ProductModel prod : srcProducts ) {
+            	ProductModel newProd = (ProductModel)prod.clone();
+                ( (ContentNodeModelImpl)newProd ).setParentNode(this);
+                if (!destProducts.contains(newProd)) {
+                    ( (ContentNodeModelImpl)newProd ).setPriority(destProducts.size());
+                    destProducts.add(newProd);
+                }
+            }
+        }
+    }
+    
+    private void addDynamicProductsForPromotion(Collection<ProductModel> srcProducts, Collection<ProductModel> destProducts){
+    	if (srcProducts != null) {
+            for ( ProductModel prod : srcProducts ) {
+            	ProductModel newProdModel = (ProductModel)prod.clone();
+            	ProductModel newProd = ((ProductModelPromotionAdapter)newProdModel).getProductModel();
+//                ( (ContentNodeModelImpl)newProd ).setParentNode(this);
+                if (!destProducts.contains(newProdModel)) {
+                    ( (ContentNodeModelImpl)newProd ).setPriority(destProducts.size());
+                    destProducts.add(newProdModel);
+                }
+            }
+        }
+    }
     /**
      * @return all, non smart products.
      */
@@ -717,6 +861,55 @@ public class CategoryModel extends ProductContainer {
 	@Override
 	public Image getPhoto() {
 		return getCategoryPhoto();
+	}
+
+	public String getProductPromotionType() {
+		String attr = getAttribute("PRODUCT_PROMOTION_TYPE", null);
+		if (attr == null || "NONE".equals(attr) ){
+			return null;
+		} else {
+			return attr;
+		}
+	}
+	
+	private synchronized boolean loadProductPromotion(String zoneId, String promotionPageType){
+		String currentProductPromotionType = getProductPromotionType();
+		
+		if (currentProductPromotionType == null ){
+			promotionPageType = currentProductPromotionType;
+			return false;
+			
+		} else {			
+			if (productPromotionDataRefMap.get(zoneId) == null || !currentProductPromotionType.equals(promotionPageType)){
+				promotionPageType = currentProductPromotionType;
+				productPromotionDataRefMap.put(zoneId, new ProductPromotionDataRef(threadPool,  zoneId,promotionPageType));
+			}
+			return true;
+        }
+	}
+		
+	public List<ProductModel> getPromotionPageProductsForPreview(String ppPreviewId) {	
+		if(getProductPromotionType()!=null){
+			String zoneId = ContentFactory.getInstance().getCurrentPricingContext().getZoneId();
+			List<ProductModel> productModelList = null;
+			try {				
+				if(!SapProperties.isBlackhole()){
+					ErpProductPromotionPreviewInfo erpProductPromotionPreviewInfo = ProductPromotionInfoManager.getProductPromotionPreviewInfo(ppPreviewId);
+					Map<String, List<FDProductPromotionInfo>> productPromotionPreviewInfoMap = ProductPromotionUtil.formatProductPromotionPreviewInfo(erpProductPromotionPreviewInfo);
+					ProductPromotionData ppData = new ProductPromotionData();
+					ppData = populateProductPromotionData(ppData, productPromotionPreviewInfoMap, zoneId,true);
+					productModelList = ppData.getProductModels();
+				}
+				if(null == productModelList || productModelList.isEmpty()){
+					productModelList =  this.getProducts();//get products from cache.
+				}
+				return productModelList;
+//				return ppData.getProductModels();
+			} catch(FDResourceException e){
+				LOGGER.error(e);
+			}
+		}
+		return null;
 	}
 
 }

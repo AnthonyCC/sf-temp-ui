@@ -5,6 +5,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import javax.ejb.EJBException;
 
@@ -143,6 +144,29 @@ public class ErpZoneInfoSessionBean extends SessionBeanSupport{
 
 	public String getResourceCacheKey() {
 		return "com.freshdirect.erp.ejb.ErpZoneInfoHome" ;
+	}
+	
+	public List<ErpZoneMasterInfo> getAllZoneInfoDetails() throws RemoteException {
+	     
+		Connection conn = null;
+		List<ErpZoneMasterInfo> zoneInfo=null;
+		try{
+			conn = getConnection();			
+   		    zoneInfo=ErpZoneInfoDAO.getAllZoneInfoDetails(conn);			
+		}catch(SQLException sqle){
+			LOGGER.error("Unable to load all loadAllZoneInfoMaster " , sqle);
+			throw new EJBException(sqle);
+		}finally {
+			try {
+				if (conn != null)
+					conn.close();
+			} catch (SQLException sqle) {
+				LOGGER.error("Unable to close db resources", sqle);
+				throw new EJBException(sqle);
+			}
+		}
+		return zoneInfo;
+				
 	}
 	
 }

@@ -95,21 +95,32 @@ FD_QuickBuy._includeTrackingCodes = function(uri, tracking) {
  * @param {String} deptId Department ID of product
  * @param {String} catId Parent category ID of product
  * @param {String} prdId Product ID
+ * @param {String} iatcNamespace 'instant add to cart' namespace (optional)
  * @param {Object} tracking Object holding various tracking parameters [optional]
  */
-FD_QuickBuy.showPanel = function(deptId, catId, prdId, tracking) {
+
+FD_QuickBuy.showPanel = function(deptId, catId, prdId, iatcNamespace, tracking) {
 	return function() {
-		var elementId= prdId+'_'+FD_QuickBuy._randomId(16);
+		var elementId= prdId+'_'+FD_QuickBuy._randomId(16), oStyle;
 		var ctPanel = new YAHOO.widget.Panel(elementId, {
 			fixedcenter: true, 
 			constraintoviewport: true, 
 			underlay: "matte", 
 			close: true, 
-			visible: true,
+			visible: false,
 			modal: true,
 			draggable: false}
 		);
 		var isWineDept = ("usq" == deptId);
+		
+		if(isWineDept) {
+			oStyle={
+				closeButton:'container-close_wine',
+				header:'hd_bg_wine'
+			};
+		} else {
+			oStyle=FD_QuickBuy.style;			
+		}
 		
 		ctPanel.setHeader( "&nbsp;" );
 
@@ -117,7 +128,7 @@ FD_QuickBuy.showPanel = function(deptId, catId, prdId, tracking) {
 
 		
 
-		var uri = "/quickbuy/product.jsp?catId="+encodeURIComponent(catId)+"&amp;productId="+encodeURIComponent(prdId);
+		var uri = '/quickbuy/product.jsp?catId='+encodeURIComponent(catId)+'&amp;productId='+encodeURIComponent(prdId)+'&amp;fdsc.source=quickbuy&amp;refTitle='+escape(winTitle)+'&amp;referer='+escape(window.location.href)+'&amp;uid='+elementId;
 
 		if (tracking && tracking.source)
 			uri += "&amp;fdsc.source="+encodeURIComponent(tracking.source);
@@ -133,12 +144,16 @@ FD_QuickBuy.showPanel = function(deptId, catId, prdId, tracking) {
 		uri += '&amp;refTitle='+encodeURIComponent(winTitle)+'&amp;referer='+encodeURIComponent(window.location.href);
 
 		var content = "";
+//		var uri = '/quickbuy/product.jsp?catId='+encodeURIComponent(catId)+'&amp;productId='+encodeURIComponent(prdId)+'&amp;fdsc.source=quickbuy&amp;refTitle='+escape(winTitle)+'&amp;referer='+escape(window.location.href)+'&amp;uid='+elementId;
+		if (iatcNamespace)
+			uri += '&amp;iatcNamespace='+escape(iatcNamespace);
 		content += '<div id="'+elementId+'_ctnt">\n';
 		content += '  <div id="'+elementId+'_overbox" class="overbox">\n';
 		content += '    <div id="'+elementId+'_nfeat" class="nfeat roundedbox"></div>\n';
 		content += '    <div id="'+elementId+'_errors" class="alerts roundedbox"></div>\n';
 		content += '  </div>\n';
-		content += '  <iframe id="'+elementId+'_frame" frameborder="0" src="'+uri+'" class="prodframe"></iframe>';
+		content += '<div class="quickbuy-loading">Loading product...</div>\n';		
+		content += '<iframe id="'+elementId+'_frame" frameborder="0" src="'+uri+'" class="prodframe" style="height:1px"></iframe>';
 		content += '</div>\n';
 		
 		ctPanel.setBody( content );
@@ -148,16 +163,10 @@ FD_QuickBuy.showPanel = function(deptId, catId, prdId, tracking) {
 		// override .yui-panel hidden setting
 		YAHOO.util.Dom.get(elementId).style.overflow = "visible";
 
-
 		YAHOO.util.Dom.addClass(elementId+'_c','quickbuy-dialog');
 		
-		if (isWineDept) {
-			YAHOO.util.Dom.addClass(ctPanel.header, 'hd_bg_wine');
-			YAHOO.util.Dom.addClass( FD_QuickBuy._getCloseButton(ctPanel.body), 'container-close_wine' );
-		} else {
-			YAHOO.util.Dom.addClass(ctPanel.header, 'hd_bg_normal');
-			YAHOO.util.Dom.addClass( FD_QuickBuy._getCloseButton(ctPanel.body), 'container-close_normal' );
-		}
+		YAHOO.util.Dom.addClass( ctPanel.header, oStyle.header );
+		YAHOO.util.Dom.addClass( FD_QuickBuy._getCloseButton(ctPanel.body), oStyle.closeButton );
 		
 		ctPanel.hideEvent.subscribe(function(e){
 			YAHOO.util.Dom.get(elementId+'_overbox').style.visibility = "hidden";
@@ -166,7 +175,6 @@ FD_QuickBuy.showPanel = function(deptId, catId, prdId, tracking) {
 		document.quickbuyPanel = ctPanel;
 
 		// show panel
-		ctPanel.center();
 		ctPanel.show();
 
 		// Load New Feature popup content
@@ -274,7 +282,7 @@ FD_QuickBuy.decorate = function(hotspot, btn, prd, tracking) {
 
 	// BUTTONS / click receivers
 	//
-	var __panel = FD_QuickBuy.showPanel(prd.departmentId, prd.categoryId, prd.productId, tracking);
+	var __panel = FD_QuickBuy.showPanel(prd.departmentId, prd.categoryId, prd.productId, null ,tracking);
 
 	var k;
 	for (k in __btns) {
@@ -288,3 +296,24 @@ FD_QuickBuy.decorate = function(hotspot, btn, prd, tracking) {
 		}
 	}
 };
+
+FD_QuickBuy.style = {
+		closeButton:'container-close_normal',
+		header:'hd_bg_normal'
+};
+
+
+(new YAHOO.util.YUILoader({
+    require: ["event-delegate", "selector"],
+    loadOptional: true,
+    onSuccess: function() {
+		YAHOO.util.Event.delegate(document.body, "click", function(e, matchedEl, container) {
+			if (document.quickbuyPanel) {
+				document.quickbuyPanel.hide();
+			}
+		}, ".mask");
+    },
+    timeout: 10000
+})).insert();
+ 
+

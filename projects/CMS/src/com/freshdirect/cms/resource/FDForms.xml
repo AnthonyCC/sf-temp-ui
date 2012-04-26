@@ -251,6 +251,12 @@
 						</fields>
 					</CmsSection>
 					<CmsSection ref="scarabRecommender"/>
+					<CmsSection>
+						<title>PRODUCT PROMOTION</title>
+						<fields>
+							<CmsField><attribute>PRODUCT_PROMOTION_TYPE</attribute></CmsField>
+						</fields>
+					</CmsSection>
 				</sections>
 			</CmsPage>
 			<CmsPage>

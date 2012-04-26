@@ -77,9 +77,9 @@ if (request.getRequestURI().toLowerCase().indexOf("your_account/") != -1) {
 						<tr>
 							<%
 							for ( int colIndex = 0; colIndex < maxCols && ((maxRows * colIndex) + rowIndex) < folderMap.size(); colIndex++ ) {%>
-									<td><img src="/media_stat/images/layout/clear.gif" width="5" height="1" alt="" border="0"></td>
+									<td class="onePxTall"><img src="/media_stat/images/layout/clear.gif" width="5" height="1" alt="" border="0"></td>
 									<td width="1" bgcolor="#999966"><img src="/media_stat/images/layout/clear.gif" width="1" height="12" border="0"></td>
-									<td><img src="/media_stat/images/layout/clear.gif" width="5" height="1" alt="" border="0"></td>
+									<td class="onePxTall"><img src="/media_stat/images/layout/clear.gif" width="5" height="1" alt="" border="0"></td>
 								        <%
 										if(itr.hasNext()){
 										String str=itr.next();
@@ -166,10 +166,10 @@ if (request.getRequestURI().toLowerCase().indexOf("your_account/") != -1) {
 										%>
                       <td width="1" bgcolor="#999966"><img src="/media_stat/images/layout/clear.gif" width="1" height="12" border="0"></td>
                     <% } %>
-                    <td><img src="/media_stat/images/layout/clear.gif" width="5" height="1" alt="" border="0"></td>
+                    <td class="onePxTall"><img src="/media_stat/images/layout/clear.gif" width="5" height="1" alt="" border="0"></td>
 										<td class="deptNav"><a href="<%= folderLink %>"><%= folder.getFullName() %></a></td>
 				
-                    <td><img src="/media_stat/images/layout/clear.gif" width="5" height="1" alt="" border="0"></td>
+                    <td class="onePxTall"><img src="/media_stat/images/layout/clear.gif" width="5" height="1" alt="" border="0"></td>
                     <% if (colIndex < maxCols-1) { %>
                       <td width="1" bgcolor="#999966"><img src="/media_stat/images/layout/clear.gif" width="1" height="12" border="0"></td>
                     <% } %>

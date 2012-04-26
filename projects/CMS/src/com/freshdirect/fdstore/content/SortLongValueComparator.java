@@ -2,7 +2,7 @@ package com.freshdirect.fdstore.content;
 
 import java.util.Comparator;
 
-public class SortLongValueComparator<T extends ContentNodeModel> implements Comparator<SearchResultItem<T>> {
+public class SortLongValueComparator<T extends ContentNodeModel> implements Comparator<FilteringSortingItem<T>> {
 	private EnumSortingValue sortValue;
 
 	public SortLongValueComparator(EnumSortingValue sortValue) {
@@ -11,7 +11,7 @@ public class SortLongValueComparator<T extends ContentNodeModel> implements Comp
 	}
 
 	@Override
-	public int compare(SearchResultItem<T> o1, SearchResultItem<T> o2) {
+	public int compare(FilteringSortingItem<T> o1, FilteringSortingItem<T> o2) {
 		long lv1 = o1.getSortingValue(sortValue).longValue();
 		long lv2 = o2.getSortingValue(sortValue).longValue();
 		if (sortValue.isAscending())

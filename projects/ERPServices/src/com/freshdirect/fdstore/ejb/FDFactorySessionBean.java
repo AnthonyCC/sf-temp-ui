@@ -557,4 +557,9 @@ public class FDFactorySessionBean extends SessionBeanSupport {
 			throw new FDResourceException(re);
 		}
     }
+	
+	public FDProductInfo getProductInfo(ErpProductInfoModel erpProdInfo) throws FDSkuNotFoundException, FDResourceException {
+		// create FDProductInfo
+		return this.productHelper.getFDProductInfo(erpProdInfo);
+	}
 }

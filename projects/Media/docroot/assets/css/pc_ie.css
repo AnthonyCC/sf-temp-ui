@@ -1,103 +1,15 @@
-td				{ font-size: 10px;  font-family: Verdana, Arial, sans-serif; }
-table           { text-align: left; }
-html            { height: 100%; }
-body			{ font-color: #333333; font-family : Verdana, Arial, sans-serif; font-size : 10px; height: 100%; }
-a:link			{ color : #336600; }
-a:visited		{ color : #336600; }
-a:active		{ color : #FF9900; }
 
-.space2pix		{ font-size: 2px; }
-.space4pix		{ font-size: 4px; }
-.space8pix		{ font-size: 8px; }
-.space10pix		{ font-size: 10px; }
 
-.bodyCopy		{ font-size: 12px;  font-family: Verdana, Arial, sans-serif; }
 .bodyCopySmall	{ font-size: 11px;  font-family: Verdana, Arial, sans-serif; }
 .lineItems		{ font-size: 11px;  font-family: Verdana, Arial, sans-serif; }
-.bodyCopy ul    { margin: 0; padding: 0; }
-.bodyCopy ul li { list-style-position: inside; list-style-type: dot; padding-left: 15px; text-indent: -15px; padding-bottom: 4px; margin-left: 0; }
-
-.error 		    { font-size: 10px; font-family: Verdana; color : #990000; }
-.search         { width:100px; font-size: 10px; font-family: Verdana, Arial, sans-serif; }
-.gbold          { color: #336600; font-weight: bold; }
-.rbold          { color: #FF0000; font-weight: bold; }
-.FFFFFF	        { color: #FFFFFF; }
-.EEEEEE	        { color: #EEEEEE; }
-input.radio     { background : #FFFFFE; color: #000000; }
-A.list		    { line-height: 12px; }
-
-.greybox		{ color: #333333; background: #EEEEEE; font-size: 9px; font-family: Verdana, Arial, sans-serif; }
-
-.price 						{ font-size: 11px; font-weight: bold; color:#555555; line-height: 16px;  font-family: Tahoma, Arial, sans-serif;}
-.groceryProductLinePrice 	{ font-size: 12px; font-weight: bold; color:#555555; font-family: Arial, sans-serif;}
-.favoritePrice  			{ font-size: 11px; font-weight: bold; color:#333333; line-height: 16px; font-family: Tahoma, Arial, sans-serif;}
-.productPageSinglePrice  	{ font-size: 17px; font-weight: bold; font-family: Verdana, Arial, sans-serif;}
-.productPagePrimaryVarPrice { font-size: 13px; font-weight: bold; font-family: Verdana, Arial, sans-serif;}
-.productPageSecondaryVarPrice 	  { font-size: 12px; font-weight: bold; font-family: Verdana, Arial, sans-serif;}
-.productPageSinglePriceUnit  	  { font-size: 13px; font-weight: bold; font-family: Verdana, Arial, sans-serif;}
-.productPagePrimaryVarPriceUnit   { font-size: 11px; font-weight: bold; font-family: Verdana, Arial, sans-serif;}
-.productPageSecondaryVarPriceUnit { font-size: 10px; font-weight: bold; font-family: Verdana, Arial, sans-serif;}
-.specialPrice 	   { font-size: 13px; font-weight: bold; color: #C94747; font-family: Verdana, Arial, sans-serif;}
-.largePrice 	   { font-size: 14px; font-weight: bold; font-family: Verdana, Arial, sans-serif;}
-.largePriceSalesUnit 	   { font-size: 11px; font-weight: bold; font-family: Verdana, Arial, sans-serif;}
-.catPageProdNameUnderImg { font-size: 11px; font-family: Verdana, Arial, sans-serif; }
 
 .qualityRating { padding-top:4px; font-size: 10px; color: #FF9900;  font-family: Verdana, Arial, sans-serif; }
 
-.deptNav 		 { font-size: 9px; line-height: 12px; font-family: Verdana, Arial, sans-serif; }
-
-.kosher 		{ color: #3399CC; }
-.thxgiving		{ color: #996600; }
-.valentine		{ color: #ff6699; }
-
-.textg10         { color: #669933;  font-size: 10px; }
-.textprbold	     { font-size: 9px;  font-weight: bold; color: #996699; font-family: Verdana, Arial, sans-serif; }
-
-.text8 	         { font-size: 8px; font-family: Verdana, Arial, sans-serif; }
-.text8w	         { font-size: 8px; color: #FFFFFF; font-family: Verdana, Arial, sans-serif; }
-.text9 	         { font-size: 9px; font-family: Verdana, Arial, sans-serif; }
-.text9w	         { font-size: 9px; color: #FFFFFF; font-family: Verdana, Arial, sans-serif; }
-.text9nb 	     { font-size: 9px; color: #777777; font-family: Verdana, Arial, sans-serif; }
-.text9bold       { font-size: 9px; font-weight: bold; font-family: Verdana, Arial, sans-serif; }
-.text9_lh12	     { font-size: 9px; line-height: 12px; font-family: Verdana, Arial, sans-serif; }
-
-.text10 		 { font-size: 9px; font-family: Verdana, Arial, sans-serif; }
-.text10bold      { font-size: 9px; font-weight: bold; font-family: Verdana, Arial, sans-serif; }
-.text10g2 	     { color: #338800;  font-size: 9px; font-family: Verdana, Arial, sans-serif; }
-.text10gbold     { font-size: 9px; color: #336600; font-weight: bold; font-family: Verdana, Arial, sans-serif; }
-.text10italics 	 { font-size: 9px; font-style: italic; font-family: Verdana, Arial, sans-serif; }
 .text10trebuchet { font-size: 10px; font-family: Trebuchet MS, sans-serif; }
-.text10_lh16	 { font-size: 9px; line-height: 16px; font-family: Verdana, Arial, sans-serif; }
-.text10grbold    { font-size: 9px; color: #666666; font-weight: bold; font-family: Verdana, Arial, sans-serif; }
-.text10grbold td { font-size: 9px; color: #666666; font-weight: bold; font-family: Verdana, Arial, sans-serif; }
-.text10w	     { font-size: 9px; color: #FFFFFF; font-family: Verdana, Arial, sans-serif; }
-.text10wbold     { font-size: 9px; color: #FFFFFF; font-weight: bold; font-family: Verdana, Arial, sans-serif; }
-.text10rbold     { font-size: 9px; color: #CC0000; font-weight: bold; font-family: Verdana, Arial, sans-serif; }
-.text10blbold    { font-size: 9px; color: #6699CC; font-weight: bold; font-family: Verdana, Arial, sans-serif; }
-
-.title10 	     { font-size: 9px; font-weight: bold; font-family: Verdana, Arial, sans-serif; }
-
-.text11		     { font-size: 10px; font-family: Verdana, Arial, sans-serif; }
-.text11g	     { font-size: 10px; color: #336600; font-family: Verdana, Arial, sans-serif; }
-.text11gbold	 { font-size: 10px; color: #336600; font-weight: bold; font-family: Verdana, Arial, sans-serif; }
 .text11bold      { font-size: 10px; font-weight: bold; font-family: Verdana, Arial, sans-serif; }
-.text11nb        { font-size: 10px; font-weight: normal; color: #777777; font-family: Verdana, Arial, sans-serif; }
-.text11wbold     { font-size: 10px; color: #FFFFFF;  font-weight: bold;font-family: Verdana, Arial, sans-serif; }
-.text11rbold     { font-size: 10px; font-weight: bold; color: #CC0000; font-family: Verdana, Arial, sans-serif; }
-.text11orbold	 { font-size: 10px; font-weight: bold; color: #FF9933; font-family: Verdana, Arial, sans-serif; }
-.text11pkbold	 { font-size: 10px; font-weight: bold; color: #CC6666; font-family: Verdana, Arial, sans-serif; }
-.text11prpbold	 { font-size: 10px; font-weight: bold; color: #996699; font-family: Verdana, Arial, sans-serif; }
-
-.title11 		 { font-size: 10px; font-weight: bold; font-family: Verdana, Arial, sans-serif; }
-
-.text12 		 { font-size: 11px; font-family: Verdana, Arial, sans-serif; }
-.text12bold 	 { font-size: 11px; font-weight: bold; font-family: Verdana, Arial, sans-serif; }
-.text12rbold	 { font-size: 11px; font-weight: bold; color: #CC0000; font-family: Verdana, Arial, sans-serif; }
-.text12wbold     { font-size: 11px; color: #FFFFFF; font-weight: bold; font-family: Verdana, Arial, sans-serif; }
 .text12orbold	 { font-size: 12px; font-weight: bold; color: #FF9933; font-family: Verdana, Arial, sans-serif; }
 .text12gr 		 { font-size: 11px; color: #666666; font-family: Verdana, Arial, sans-serif; }
 
-.title12 		 { font-size: 11px; font-weight: bold; font-family: Verdana, Arial, sans-serif; }
 
 .text13		     { font-size: 12px; font-family: Verdana, Arial, sans-serif; }
 .text13bold		 { font-size: 12px; font-weight: bold; font-family: Verdana, Arial, sans-serif; }
@@ -105,87 +17,25 @@ A.list		    { line-height: 12px; }
 .text13gr 		 { font-size: 12px; color: #666666; font-family: Verdana, Arial, sans-serif; }
 
 .title13 		 { font-size: 12px; font-weight: bold; font-family: Verdana, Arial, sans-serif; }
-.title13g2		 { font-size: 13px;  line-height: 18px; font-weight: bold; font-family: Verdana, Arial, sans-serif; }
 
 .text14			 { font-size: 13px; font-weight: normal; font-family: Verdana, Arial, sans-serif; }
-.title14		 { font-size: 13px; font-weight: bold; font-family: Verdana, Arial, sans-serif; line-height: 16px;}
+.title14		 { font-size: 13px; font-weight: bold; font-family: Verdana, Arial, sans-serif; }
 .titleor14		 { font-size: 13px; color: #FF9933; font-weight: bold; font-family: Verdana, Arial, sans-serif; }
 .text14rbold 	 { font-size: 13px; color: #CC0000; font-weight: bold; font-family: Verdana, Arial, sans-serif; }
 
-.text15	         { font-size: 14px; font-family: Verdana, Arial, sans-serif; line-height: 18px;}
+.text15	         { font-size: 14px; font-family: Verdana, Arial, sans-serif; }
 
 .text16 	     { font-size: 15px; font-weight: normal; font-family: Verdana, Arial, sans-serif; }
 .title16 	     { font-size: 15px; font-weight: bold; font-family: Verdana, Arial, sans-serif; }
 .title16or	     { font-size: 15px; color: #FF9933; font-weight: bold; font-family: Verdana, Arial, sans-serif;}
 
-.title17 	     { font-size: 16px; font-weight: bold; font-family: Verdana, Arial, sans-serif; }
 
-.title18 	     { font-size: 17px; font-weight: bold; font-family: Verdana, Arial, sans-serif; line-height: 20px; }
-.title18or	     { font-size: 18px; color: #FF9933; font-weight: bold; font-family: Verdana, Arial, sans-serif; line-height: 20px; }
-.text18gr 		 { font-size: 17px; color: #666666; font-family: Verdana, Arial, sans-serif; line-height: 20px;}
+.title18 	     { font-size: 17px; font-weight: bold; font-family: Verdana, Arial, sans-serif; }
+.text18gr 		 { font-size: 17px; color: #666666; font-family: Verdana, Arial, sans-serif; }
 
 .title19 	     { font-size: 18px; font-weight: bold; font-family: Verdana, Arial, sans-serif; }
 .title20 	     { font-size: 19px; font-weight: bold; font-family: Verdana, Arial, sans-serif; }
 
-.title24 	     { font-size: 24px; font-weight: bold; font-family: Verdana, Arial, sans-serif; }
-
-
-/* BEST CELLARS */
-.bc	 			{ color: #791473; }
-.bc_title		{ font-size: 16px; color: #791473; font-weight: bold; font-family: Times New Roman, Verdana, Arial, sans-serif; }
-.bc_header		{ font-size: 11px; color: #791473; font-weight: bold; font-family: Verdana, Arial, sans-serif; }
-
-.orderViewHeader {
-	background-color: #e0e3d0;
-	padding: 4px;
-	font-weight: bold;
-	text-align: left;
-}
-.orderViewSeparator {
-	height: 8px;
-	border-bottom: 2px dashed #e0e3d0;
-	margin-bottom: 8px;
-}
-.orderViewSummary {
-	line-height: 13pt;
-}
-.orderSeparator {
-	height: 8px;
-	border-bottom: 1px solid #996;
-	margin-bottom: 8px;
-}
-.orderSummary {
-	background-color: #e0e3d0;
-	line-height: 20px;
-}
-.orderTotal {
-	background-color: #969;
-	color: white;
-	line-height: 20px;
-}
-.orderTotal td {
-	font-size: 13px;
-}
-
-/* RECIPE */
-
-.recipe_name { 
-	font-size: 11px;  
-	color: #000000; 
-	font-family: Verdana, Arial, sans-serif;
-}
-
-.recipe_category { 
-	font-size: 15px;  
-	color: #FF9933; 
-	font-family: Arial, Verdana, sans-serif; 
-	font-variant: small-caps;
-}
-
-a.recipe_category:link {color: #FF9933; text-decoration: none; }
-a.recipe_category:visited {color: #FF9933; text-decoration: none; }
-a.recipe_category:active {color: #FF9933; text-decoration: none; }
-a.recipe_category:hover {color: #FF9933; text-decoration: underline; }
 
 .recipe_header { 
 	font-size: 13px; 
@@ -195,241 +45,25 @@ a.recipe_category:hover {color: #FF9933; text-decoration: underline; }
 	font-variant: small-caps;
 }
 
-a.recipe_header:link {color: #FF9933; text-decoration: none; }
-a.recipe_header:visited {color: #FF9933; text-decoration: none; }
-a.recipe_header:active {color: #FF9933; text-decoration: none; }
-a.recipe_header:hover {color: #FF9933; text-decoration: underline; }
-
-.recipe_author { 
-	font-size: 9px; 
-	color: #666666; 
-	font-family: Verdana, Arial, sans-serif; 
-}
-
-.recipe_copyright { 
-	font-size: 9px; 
-	color: #666666; 
-	font-family: Verdana, Arial, sans-serif; 
-}
-
-.recipe_fd { 
-	font-size: 11px;  
-	color: #000000; 
-	font-family: Verdana, Arial, sans-serif;
-}
-
-
-.dot_separator {
-	font-size: 9px; 
-	font-weight: bold; 
-	color: #CCCCCC; 
-}
-
-.recipe_tab {
-font-size: 14px;
-font-family: Trebuchet MS, Arial, Helvetica, sans-serif;
-font-weight: bold;
-color: #FF9900;
-text-transform:uppercase;
-}
-
-a.recipe_tab:link {color: #FF9900; text-decoration: none; }
-a.recipe_tab:visited {color: #FF9900; text-decoration: none; }
-a.recipe_tab:active {color: #FF9900; text-decoration: none; }
-a.recipe_tab:hover {color: #FF9900; text-decoration: none; }
 
 .recipe_title 	    { font-size: 14px; font-weight: bold;  font-family: Verdana, Arial, sans-serif; color: #000000;}
 
 .recipe_related {
-font-size: 11px;
-font-family:  Verdana, Arial, sans-serif;
-padding-bottom: 4px;
-margin-left: 10px; 
-text-indent: -10px;
-}
-
-/* RECIPE THEME */
-
-.recipe_leftBorder {
-	border-left:solid 2px #FF9933;
-}
-
-.recipe_leftBorder_6699CC {
-	border-left:solid 2px #6699CC;
-}
-
-.recipe_rightBorder {
-	border-right:solid 2px #FF9933;
-}
-
-.recipe_rightBorder_6699CC {
-	border-right:solid 2px #6699CC;
-}
-
-.recipe_bottomBorder {
-	border-bottom:solid 2px #FF9933;
-}
-
-.recipe_bottomBorder_6699CC {
-	border-bottom:solid 2px #6699CC;
-}
-
-.recipe_topLine {
-	border-top:solid 1px #FF9933;
-}
-
-.recipe_topLine_6699CC {
-	border-top:solid 1px #6699CC;
-}
-
-.recipe_section {
-	color: #FF9933;
-}
-
-.recipe_section_6699CC {
-	color: #6699CC;
+	font-size: 11px;
+	font-family:  Verdana, Arial, sans-serif;
+	padding-bottom: 4px;
+	margin-left: 10px; 
+	text-indent: -10px;
 }
 
 
-/*********************************************************
-					< YMAL styles >
-**********************************************************/
-
-/* internal table in ymal pages */
-table.ymal {
-	width			: 100%;
-	text-align 		: center;
-	padding-top		: 5px;
-	padding-bottom	: 0px;	
-	padding-left	: 0px;
-	padding-right	: 0px;
-	border-collapse : collapse;
-}
-
-form.ymal {
-	padding: 0;
-	margin: 0;
-}
-
-/* product cell, containing pic, link, price */
-td.ymal_product {
-	padding-top		: 10px;
-	padding-bottom	: 10px;	
-}
-
-td.ymal_separator {
-	padding			: 0px;	
-}
-
-td.ymal_addtocart {
-	padding			: 5px 0 5px;
-}
-
-table.ymal caption {
-    color       : white;
-    background  : #996699;
-    font-size   : 12px;
-    font-weight : bold;
-    padding     : 4px;
-    margin-top  : 10px;
-}
-
-
-table.ymal_prod {
-    width			: 100%;
-    text-align		: center;
-    padding			: 10px;	
-}
-
-
-/* separator line in ymal pages */
-.ymalSeparator_product {
-	height        : 1px;
-	color         : #C0C0C0;
-	margin-top    : 12px;
-	margin-bottom : 0px;
-}
-.ymalSeparator_recipe {
-	height        : 1px;
-	color         : #C0C0C0;
-	margin-top    : 0px;
-	margin-bottom : 12px;
-}
-.ymalSeparator_category {
-	height        : 1px;
-	color         : #C0C0C0;
-	margin-top    : 0px;
-	margin-bottom : 0px;
-}
-
-/*********************************************************
-					</ YMAL styles >
-**********************************************************/
 
 
 
-
-
-/** SMART STORE **/
-table.smartstore {
-    padding: 0px;
-    margin: 0px;
-}
-
-table.smartstore tbody {
-	margin: 0px;
-	padding: 0px;
-}
-
-table.smartstore .caption1 {
-    color: white;
-    background: #996699;
-	font-size: 14px;
-	font-family: Trebuchet MS, Arial, Helvetica, sans-serif;
-	font-weight: bold;
-    height: 24px;
-    vertical-align: middle;
-}
-
-table.smartstore .body1 {
-    padding: 10px 6px 4px;
-}
-
-.SSorderTotal {
-	background-color: #669933;
-	line-height: 20px;
-}
-.SSorderTotal td {
-	color: white;
-	font-size: 13px;
-}
 
 
 /** TIMESLOTS **/
 
-.timeslot thead {
-	background: #666;
-	color: #fff;
-}
-.timeslot thead td {
-	font-family: Verdana, Arial, sans-serif;
-	font-size: 10px;
-	font-weight: bold;
-	line-height: 13px;
-}
-.timeslot thead.selected {
-	background: #cc9;
-	color: #333;
-}
-.timeslot tbody {
-	background: #e8e8e8;
-}
-.timeslot thead .day_name {
-	text-transform: uppercase;
-}
-.timeslot thead .day_date {
-	padding-bottom: 2px;
-}
 
 .slotRow, .cutoffTime {
 clear:both;
@@ -441,9 +75,6 @@ clear:both;
 	height: 20px;
 }
 
-div.control, div.slotRow, div.time {
-	margin: 0px; 
-}
 .control {
 	padding: 1px 2px 0px 2px;
 	float:left;
@@ -451,192 +82,13 @@ div.control, div.slotRow, div.time {
 	text-align: center;
 	height: 20px;
 }
-.control img {
-	margin-top: 4px;
-	margin-left: 2px;
+.cutoffTime {
 }
-
-.control input { 
-	margin: 0px;
-	height: 20px;
-	padding: 0px;
-}
-
-.time {
-	padding-top: 3px;
-	float:left;
-	height: 20px;
-	top: 0px;
-	line-height: 16px;
-
-}
-
-/** WINE PAGES **/
-/** Side navigation **/
-.usq_left_nav_menu
-	{
-		background-color: #FBF1D3;
-		font-weight: bold;
-		color: #665544;
-		height: 100%;
-		font-family: Tahoma, Verdana, Arial, Helvetica, sans-serif;
-		font-size: 11px;
-		text-decoration: none;
-		padding: 6px;
-		padding-left: 5px;
-		display: block;
-		border-bottom: 1px solid #D5C6A7;
-	}
-	
-a.usq_left_nav_menu:link {color: #665544; text-decoration: none; }
-a.usq_left_nav_menu:visited {color: #665544; text-decoration: none; }
-a.usq_left_nav_menu:active {color: #98012E; text-decoration: none; }
-a.usq_left_nav_menu:hover {background-color: #665544; color: #FBF1D3; cursor: pointer; text-decoration: none; }	
-
-/* for IE hack */
-.usq_left_nav_menu_td
-	{
-		background-color: #FBF1D3;
-		font-weight: bold;
-		color: #665544;
-		height: 100%;
-		font-family: Tahoma, Verdana, Arial, Helvetica, sans-serif;
-		font-size: 11px;
-		text-decoration: none;
-		padding: 6px;
-		display: block;
-	}
-	
-a.usq_left_nav_menu_td:link {color: #665544; text-decoration: none; }
-a.usq_left_nav_menu_td:visited {color: #665544; text-decoration: none; }
-a.usq_left_nav_menu_td:active {color: #98012E; text-decoration: none; }
-a.usq_left_nav_menu_td:hover {background-color: #665544; color: #FBF1D3; cursor: pointer; text-decoration: none; }	
-	
-.usq_left_nav_menu_divider
-	{
-		height: 8px;
-		border-bottom: 1px solid #D5C6A7;
-	}
-
-.usq_left_nav_menu_on
-	{
-		background-color: #665544;
-		font-weight: bold;
-		color: #FBF1D3;
-		height: 100%;
-		font-family: Tahoma, Verdana, Arial, Helvetica, sans-serif;
-		font-size: 11px;
-		text-decoration: none;
-		padding: 6px;
-		display: block;
-		border-bottom: 1px solid #D5C6A7;
-	}	
-
-a.usq_left_nav_menu_on:link {color: #FBF1D3; text-decoration: none; }
-a.usq_left_nav_menu_on:visited {color: #FBF1D3; text-decoration: none; }
-a.usq_left_nav_menu_on:active {color: #98012E; text-decoration: none; }
-a.usq_left_nav_menu_on:hover {color: #FBF1D3; cursor: pointer; text-decoration: none; }	
-
-.usq_left_nav_submenu
-	{
-		white-space: nowrap;
-		font-weight: bold;
-		font-size: 10px;
-	}
-
-.usq_left_nav_submenu_container
-	{
-		background-color: #fff;
-		border: 1px solid #000;
-		padding: 8px;
-		min-width: 150px;
-		width: 95%;
-	}	
-
-.usq_cat_divider
-	{
-		padding-top: 8px;
-		border-bottom: 1px solid #cccccc;
-	}
-
-.usq_region { color:#333; font-size:10px; font-family:Verdana, Arial, Helvetica, sans-serif; font-weight:bold;}
-.usq_rating_label { color:#990000; font-size:10px; font-family:Verdana, Arial, Helvetica, sans-serif; font-weight:bold;}
-.usq_rating { color:#333; font-size:10px; font-family:Verdana, Arial, Helvetica, sans-serif; font-weight:bold;}
-
-.save-label{color:#FF9933;font-weight:bold;}
-.save-price{color:rgb(204,0,0);font-weight:bold;}
-.save-price-tiered{color:rgb(204,0,0);font-weight:normal;}
-.normal-price{color:#333333;font-weight:bold;}
-.normal-price-tiered{color:#333333;font-weight:normal;}
-.save-base-price{color:rgb(136,136,136);font-weight:normal;}
-.fav-label{color:#996699;font-weight:bold;}
-
 
 
 /*********************************************************
 					< Cart&tabs tab display >
 **********************************************************/
-
-table.tab {
-	border-collapse:collapse;
-	border-spacing:0px;
-	padding:0px;
-}
-
-td.tab {
-	padding: 0px;	
-	background-repeat: repeat-x;
-	white-space: nowrap;
-	text-align: center;
-	vertical-align: bottom;
-}
-
-td.tab_title_active {
-	padding: 0px;	
-	background-repeat: repeat-x;
-	white-space: nowrap;
-	text-align: center;
-	vertical-align: middle;
-	height: 25px;
-	background: url("/media_stat/images/carttab_corners/carttab_bg_on.gif");
-}
-
-td.tab_title_inactive {
-	padding: 0px;	
-	background-repeat: repeat-x;
-	white-space: nowrap;
-	text-align: center;
-	vertical-align: middle;
-	height: 25px;
-	background: url("/media_stat/images/carttab_corners/carttab_bg_off.gif");
-	cursor: pointer;
-}
-
-img.tab {
-	display: block;
-	margin: 0px;
-}
-
-div.tab {
-	border-left: 2px solid #996699; 
-	border-right: 2px solid #996699;
-	text-align: center;
-	vertical-align: middle;
-}
-
-span.tab_active {
-	color: #845286; 
-	font: bold small sans-serif;
-	text-transform: uppercase; 
-	text-decoration: none;
-}
-
-span.tab_inactive {
-	color: #845286; 
-	font: bold small sans-serif; 
-	text-transform: uppercase; 
-	text-decoration: none;
-}
 
 a.tab {
 	color: #845286; 
@@ -646,76 +98,7 @@ a.tab {
 	font-size: expression('9pt');
 }
 
-p.tab_text {
-	color: black; 
-	font: bold small sans-serif; 
-	text-transform: uppercase; 
-	text-decoration: none;
-	text-align: center;		
-	white-space: normal;	
-}
 
-p.tab_text_simple {
-	color: #666666; 
-	font: bold small sans-serif; 
-	text-align: center;			
-	white-space: normal;	
-}
-
-.tab_text_descr {
-	color: #515151; 
-	font: bold small sans-serif; 
-	text-align: center;			
-	white-space: normal;
-	padding-bottom: 0.25em;	
-}
-
-.tab_text_descr p {
-	padding: 0px 0px 0.25em;
-	margin: 0px;
-}
-
-a.tab:link		{ color : #845286; }
-a.tab:visited	{ color : #845286; }
-a.tab:active	{ color : #845286; }
-
-/*********************************************************
-					Apple Pricing - APPDEV-209
-**********************************************************/
- 
-.aboutDisplaySalesUnit        { padding-top:2px; font-size: 11px; font-weight: bold; font-family: Tahoma, Arial, sans-serif; color: #6B6B6B;}
-.aboutDisplaySalesUnitCat     { padding-top:2px; line-height:12px; font-size: 11px; font-weight: bold; font-family: Tahoma, Arial, sans-serif; color: #6B6B6B;}
-.aboutDisplaySalesUnitProd    { padding-top:5px; font-size: 11px; font-weight: bold; font-family: Verdana, Arial, sans-serif; color: #6B6B6B;}
-
-/* GC-RH */
-.siteAccessInc table { text-align: center; }
-.siteAccessInc_GiftCard { width: 260px; vertical-align: top; }
-.siteAccessInc_GiftCard a { font-weight: bold; }
-.siteAccessInc_GiftCard td { padding: 4px 0px; }
-.siteAccessInc_spacer_GCRH, .siteAccessInc_spacer_GCRH img { width: 30px; }
-.siteAccessInc_RobinHood { width: 260px; }
-.siteAccessInc_RobinHood a { font-weight: bold; }
-.siteAccessInc_RobinHood td { padding: 4px 0px; }
-
-/* COS Survey */
-table.COSSurvey { width: 806px; }
-table.COSSurvey, table.COSSurvey td { padding: 0; margin: 0; border-collapse: collapse; }
-table.COSSurvey td.padLeft10 { padding-left: 10px; }
-table.COSSurvey td.padRight10 { padding-right: 10px; }
-img.COSSurvey_spacer01 { width: 150px; height: 8px; }
-img.COSSurvey_spacer02 { width: 190px; height: 8px; }
-img.COSSurvey_spacer03 { width: 91px; height: 8px; }
-img.COSSurvey_spacer04 { width: 140px; height: 8px; }
-
-/** Product Page / QuickBuy panel **/
-.prdsep {
-	background-color: #333333;
-	line-height: 1px;
-	height: 1px;
-	margin: 10px 0 10px 0;
-}
-
-#prod_container { word-wrap: break-word; }
 
 @font-face {
 	font-family: 'Eagle';
@@ -733,23 +116,3 @@ img.COSSurvey_spacer04 { width: 140px; height: 8px; }
 	font-style: normal;
 }
 
-.ssRating { padding-top:4px; font-size: 10px;  font-family: Verdana, Arial, sans-serif; }
-.ssRating a:link, .ssRating a:active, .ssRating a:hover, .ssRating a:hover { color: #333; }
-.ssRating01 { color: #C94A35; }
-.ssRating02 { color: #EC9612; }
-.ssRating03 { color: #DBC635; }
-.ssRating04 { color: #96B73E; }
-.ssRating05 { color: #51994A; }
-.ssRating06 { color: #4A5D99; }
-.ssRatingLearnMore { font-size: 11px; font-weight: bold; font-family: Verdana, Arial, sans-serif; text-align: left; }
-.ssRatingPop, .ssRatingPop td { font-size: 13px; font-family: Verdana, Arial, sans-serif; }
-.ssRatingPop th, .ssRatingPop a { font-size: 14px; }
-
-
-ul.orangeDot {
-	padding-left: 16px;
-}
-ul.orangeDot li {
-	list-style-image: url('/media_stat/images/layout/orangedot.gif');
-	margin-bottom: 4px;
-}

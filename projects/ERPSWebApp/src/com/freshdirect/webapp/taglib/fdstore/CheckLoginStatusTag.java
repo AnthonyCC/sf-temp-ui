@@ -12,9 +12,9 @@ import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.WineFilter;
 import com.freshdirect.fdstore.customer.FDActionInfo;
-import com.freshdirect.fdstore.customer.FDDeliveryTimeslotModel;
 import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
+import com.freshdirect.fdstore.customer.FDDeliveryTimeslotModel;
 import com.freshdirect.fdstore.customer.FDUser;
 import com.freshdirect.fdstore.sempixel.FDSemPixelCache;
 import com.freshdirect.fdstore.sempixel.SemPixelModel;
@@ -59,10 +59,12 @@ public class CheckLoginStatusTag extends com.freshdirect.framework.webapp.TagSup
     private boolean recognizedAllowed = true;
     private boolean noRedirect = false;
     private boolean redirected = false;
+    private boolean ddppPreview = false;
     private String semZipCode = "";
     private String pixelNames = "";
     private AddressModel address = null;
     private EnumServiceType serviceType = null;
+    
 
     public void setId(String id) {
         this.id = id;
@@ -163,8 +165,8 @@ public class CheckLoginStatusTag extends com.freshdirect.framework.webapp.TagSup
         // Fix for APPDEV-755
         //
         if (guestAllowed &&
-                (request.getRequestURI()
-                            .indexOf("forget_password_main_confirmation.jsp") != -1) &&
+                ((request.getRequestURI()
+                             .indexOf("forget_password_main_confirmation.jsp") != -1) ) &&
                 (request.getParameter("siteAccessPage") == null)) {
             //
             // make sure the robot has a user in it's session so that pages
@@ -178,13 +180,23 @@ public class CheckLoginStatusTag extends com.freshdirect.framework.webapp.TagSup
                 robotUser.setAvailableServices(availableServices);
                 robotUser.isLoggedIn(false);
                 user = new FDSessionUser(robotUser, session);
+
                 session.setAttribute(USER, user);
             }
+
+           /* if ((user != null) && ddppPreview &&
+                    !"".equals(NVL.apply(request.getParameter("ddppZoneId"), ""))) {
+                PricingContext pricingContext = new PricingContext(request.getParameter(
+                            "ddppZoneId"));
+
+                ContentFactory.getInstance().setCurrentPricingContext(pricingContext);
+                //user.setPricingContext(pricingContext);
+            }*/
         }
 
         //If user is coming from pretty URL redirect it to site_access_lite page
         //APPDEV-1196 removes site access lite
-        if (user == null) {
+        if (user == null ) {
             //SEM Project (APPDEV-1598)
             //check if we can bypass now
             try {
@@ -642,5 +654,13 @@ public class CheckLoginStatusTag extends com.freshdirect.framework.webapp.TagSup
         session.removeAttribute(SessionName.SMART_STORE_PREV_RECOMMENDATIONS);
         session.removeAttribute(SessionName.SAVINGS_FEATURE_LOOK_UP_TABLE);
         session.removeAttribute(SessionName.PREV_SAVINGS_VARIANT);
+    }
+
+    public boolean isDdppPreview() {
+        return ddppPreview;
+    }
+
+    public void setDdppPreview(boolean ddppPreview) {
+        this.ddppPreview = ddppPreview;
     }
 }

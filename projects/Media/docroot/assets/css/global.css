@@ -26,6 +26,12 @@ a:active { color : #FF9900; }
 
 img { border:none }
 
+/* "common" spacer row sizes */
+.onePxTall { font-size: 1px; line-height: 1px; }
+.threePxTall { font-size: 1px; line-height: 3x; }
+.fivePxTall { font-size: 1px; line-height: 5px; }
+.sixPxTall { font-size: 1px; line-height: 6px; }
+
 .space2pix { font-size: 2px; }
 .space4pix { font-size: 4px; }
 .space8pix { font-size: 8px; }
@@ -1187,3 +1193,365 @@ div.control, div.slotRow, div.time {
 	#topSearchTerms {
 		z-index: 50 ! important;
 	}
+	.modOrdInfo .ordNumb {
+		font-family: Verdana;
+	}
+	
+.dotted_separator_h {
+	background: url("../../media_stat/images/layout/dot_grey_h.gif") repeat-x scroll left top transparent;
+	height: 1px;
+	padding: 0;
+	overflow: hidden;
+}
+
+.dotted_separator_v {
+	background: url("../../media_stat/images/layout/dot_grey_v.gif") repeat-y scroll left center transparent;
+	width: 1px;
+	padding: 0;
+}
+
+/*
+ *	ddpp
+ *		light orange: #f7ad5f
+ *		orange: #f59637
+ */
+	.ddpp .topText .price {
+		display: inline;
+		font-family: Verdana, Arial, sans-serif;
+	}
+	.ddpp, .ddpp .topText .price {
+		font-family: BebasNeueRegular, Helvetica;
+		display: block;
+	}
+	.ddpp .lor {
+		color: #f7ad5f;
+	}
+	.ddpp .ddpp_normal_prod,
+	.ddpp .ddpp_feat_prod 
+	{
+		float: left;
+		text-align: center;
+	}
+	.ddpp .ddpp_feat_prod_cont {
+		width: 768px;
+		height: 338px;
+		background-color: #eee;
+		margin: 14px 202px 0 0;
+		padding: 0;
+		position: relative;
+		left: 0;
+		text-align: left !important;
+	}
+	
+	.ddpp .ddpp_feat_ribbon {
+		position: absolute;
+		margin: -8px 0px 0px -8px;
+		z-index: 3;
+		top: 0px;
+		left: 0px;
+	}
+	.ddpp .ddpp_feat_prod {
+		background-color: #fff;
+		margin: 4px 7px;
+		border: 2px solid #ddd !important;
+		width: 241px;
+		height: 320px;
+		position: absolute;
+		top: 0px;
+		z-index: 2;
+	}
+	
+	.ddpp .ddpp_normal_prod {
+		margin: 10px 0;
+		width: 232px;
+	}
+	
+	.ddpp .vline_right {
+		background: transparent url('/media_stat/images/layout/dots_v.gif') repeat-y right top;
+	}
+	
+	.ddpp .vline {
+		background: transparent url('/media_stat/images/layout/dots_v.gif') repeat-y;
+	}
+	
+	.ddpp .hline {
+		background: transparent url('/media_stat/images/layout/dots_h.gif') repeat-x;
+		height: 1px;
+		line-height: 1px;
+		font-size: 1px;
+		width: 100%;
+	}
+	.ddpp .gutter {
+		padding-left: 6px;
+		padding-right: 7px;
+		width: 1px;
+		float: left;
+		margin-top: 20px;
+		margin-bottom: 20px;
+	}
+	.ddpp .gutter div {
+		width: 1px;
+		height: 100%;
+	}
+	
+	.ddpp .ddpp_feat_prod .topText .styleScale, 
+	.ddpp .ddpp_feat_prod .topText .styleWas 
+	{
+		color: #f59637;
+		font-size: 24px;
+		text-align: center;
+		line-height: 20px;
+	}
+	
+	.ddpp .ddpp_normal_prod .topText .styleScale, 
+	.ddpp .ddpp_normal_prod .topText .styleWas
+	{
+		color: #f59637;
+		font-size: 24px;
+		line-height: 25px;
+	}
+	.ddpp .ddpp_feat_prod .topText .styleScale .featScalePrice, 
+	.ddpp .ddpp_feat_prod .topText .styleScale .featSavingsPerc 
+	{
+		font-size: 26px;
+		line-height: 26px;
+	}
+	
+	.ddpp .ddpp_feat_prod .topText,
+	.ddpp .ddpp_normal_prod .topText
+	{
+		height: 50px;
+	}
+	.ddpp .ddpp_normal_prod_list_prdInfo .prodName {
+		font-size: 14px;
+	}
+	.ddpp .prodName {
+		font-size: 11px;
+		font-family: Verdana, Arial, sans-serif;
+		height: 46px;
+		overflow-y: hidden;
+	}
+	.ddpp .prodName {
+		margin-bottom: 12px;
+	}
+	.ddpp .prodName a, .ddpp .prodName a:visited {
+		color: #333;
+		text-decoration: none;
+	}
+	.ddpp .prodName a:hover {
+		color: #360;
+		text-decoration: underline;
+	}
+	.ddpp .prodName a:active {
+		color: #f90;
+		text-decoration: underline;
+	}
+
+	.ddpp .price .styleAboutOnly {
+		font-weight: normal;
+	}
+	.ddpp .ddpp_feat_prod .price .styleRegularWithScaled,
+	.ddpp .ddpp_feat_prod .price .styleRegularOnly
+	{
+		font-size: 15px;
+		font-weight: bold;
+	}
+	.ddpp .ddpp_normal_prod .price .styleRegularWithScaled,
+	.ddpp .ddpp_normal_prod .price .styleRegularOnly
+	{
+		font-size: 15px;
+		font-weight: bold;
+	}
+	.ddpp .ddpp_feat_prod, .ddpp .ddpp_normal_prod {
+		text-align: center;
+	}
+	.ddpp .price .styleRegularWithScaled,
+	.ddpp .price .styleRegularOnly
+	{
+		color: #f59637;
+	}
+	.ddpp .price {
+	}
+	.ddpp .subtotalInfo {
+		font-family : Verdana, Arial, sans-serif;
+		font-size : 10px;
+		margin: 4px 0 8px 0;
+		clear: both;
+	}
+	.ddpp .subtotalInfo .subtotalInfoPrice {
+		font-weight: bold;
+	}
+	
+	.ddpp .prodImageCont {
+		height: 150px;
+	}
+	.ddpp .ddpp_normal_prod_list_imgCont {
+	}
+
+	.ddpp .confDescription {
+		font-weight: normal;
+	}
+	.ddpp .ddpp_normal_prod_list_imgCont .prodRating {
+		height: auto;
+	}
+	.ddpp .prodRating {
+		height: 12px;
+	}
+	
+	.ddpp .socialMedia {
+		text-align: right;
+	}
+	
+	.ddpp .sortSep {
+		background-color: #eee;
+		height: 24px;
+		line-height: 24px;
+		margin: 32px 0px 12px 0px;
+		font-family: Verdana;
+		font-size: 12px;
+		text-align: left;
+		clear: both;
+		padding: 5px 3px;
+	}
+	.ddpp .sortSep a {
+		text-decoration: none;
+	}
+	.ddpp .sortSep a:active, .ddpp .sortSep a:hover {
+		text-decoration: underline;
+	}
+	.ddpp .ddpp_normal_prod_list {
+		width: 100%;
+		clear: left;
+	}
+	.ddpp .ddpp_normal_prod_list .ddpp_normal_prod_list_imgCont,
+	.ddpp .ddpp_normal_prod_list .ddpp_normal_prod_list_prdInfo,
+	.ddpp .ddpp_normal_prod_list .ddpp_normal_prod_list_prcCont,
+	.ddpp .ddpp_normal_prod_list .ddpp_normal_prod_list_qtyCont
+	{
+		float: left;
+	}
+	.ddpp .ddpp_normal_prod_list .ddpp_normal_prod_list_imgCont {
+		width: 191px;
+	}
+	.ddpp .ddpp_normal_prod_list .ddpp_normal_prod_list_prdInfo {
+		text-align: left;
+		width: 273px;
+	}
+	.ddpp .ddpp_normal_prod_list .ddpp_normal_prod_list_prcCont {
+		text-align: left;
+		width: 232px;
+		margin-top: 50px;
+	}
+	
+	.ddpp .ddpp_normal_prod_list .ddpp_normal_prod_list_prcCont .price .confDescription {
+		margin-top: -16px;
+	}
+	.ddpp .ddpp_normal_prod_list .ddpp_normal_prod_list_qtyCont {
+		vertical-align: bottom;
+		width: 273px;
+	}
+	.ddpp .ddpp_normal_prod_list_qtyCont .qtyControl {
+		text-align: left;
+		float: left;
+		width: 168px;
+		margin-top: 35px;
+	}
+	.ddpp .ddpp_normal_prod_list_qtyCont .qtyControl table {
+		margin: 0 !important;
+		float: left;
+	}
+	.ddpp .prodAdd .ctaCUSTOMIZE {
+		margin-top: 8px;
+	}
+	.ddpp .prodAddFP .ctaCUSTOMIZE {
+		margin-top: 40px;
+	}
+	.ddpp .ddpp_normal_prod_list_qtyCont .ctaATC,
+	.ddpp .ddpp_normal_prod_list_qtyCont .ctaCUSTOMIZE {
+		float: left;
+		width: 105px;
+		margin-top: 40px;
+	}
+	.ddpp .prodATCStatus {
+		font-family: Verdana;
+		font-size: 9px;
+		font-weight: bold;
+		line-height: 12px;
+		padding-top: 3px;
+	}
+	.ddpp .prodATCStatusSuccess {
+		color: #6baa4e;
+	}
+	.ddpp .prodATCStatusError {
+		color: #900;
+	}
+	.ddpp .ddpp_normal_prod_list_qtyCont .prodATCStatus {
+		clear: both;
+	}
+	.ddpp .prodAddFP {
+		position: absolute;
+		top: 193px;
+		left: 0px;
+		width: 100%;
+		overflow: hidden;
+		height: 0px;
+		background-image: url('/media_stat/images/layout/1x1_80p_trans.png');
+		background-repeat: repeat;
+	}
+	.ddpp .prodAddFP .prodAdd {
+		margin: 10px 0;
+	}
+	.ddpp .ddpp_normal_prod_list .ddpp_normal_prod_list_qtyCont .prodAdd {
+		height: 100%;
+	}
+	.ddpp_viewAllCont {
+		text-align: center;
+		margin-top: 12px;
+	}
+	.ddpp_viewAllDiv {
+		background-color: #87A54F;
+	}
+	.ddpp_viewAllDiv a, .ddpp_viewAllDiv a:link, .ddpp_viewAllDiv a:hover, .ddpp_viewAllDiv a:active, .ddpp_viewAllDiv a:visited {
+		color: #fff;
+	}
+	.ddpp_viewAllDiv a {
+		font-size: 13px;
+		line-height: 20px;
+		text-decoration: none;
+		font-weight: bold;
+		padding: 0 5px;
+	}
+	.ddpp .prodInCart {
+		height: 17px;
+		line-height: 17px;
+		font-size: 9px;
+		font-family: Verdana, Arial, sans-serif;
+		color: #900;
+		font-weight: bold;
+		vertical-align: middle;
+	}
+
+	/* temp styles to make ad spots visible */
+	
+	.ddpp .PP_header, .ddpp .PP_header2 {
+		clear: both;
+	}
+	.ddpp .PPSuperBuy {
+		overflow: hidden;
+		position: absolute;
+		top: 0px;
+		width: 191px;
+		margin-left: 15px;
+	}
+	.ddppBotAds {
+		width: 33%;
+		border: 0;
+		margin-top: 12px;
+	}
+	.ddppBotAdsSep {
+		background: transparent url('/media_stat/images/layout/cccccc.gif') repeat-y;
+		width: 1px;
+		margin: 0;
+		padding: 0;
+	}
+	

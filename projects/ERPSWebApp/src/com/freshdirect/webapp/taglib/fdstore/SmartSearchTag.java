@@ -23,7 +23,7 @@ import com.freshdirect.fdstore.content.EnumSortingValue;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.Recipe;
 import com.freshdirect.fdstore.content.RecipeSearchPage;
-import com.freshdirect.fdstore.content.SearchResultItem;
+import com.freshdirect.fdstore.content.FilteringSortingItem;
 import com.freshdirect.fdstore.content.SearchResults;
 import com.freshdirect.fdstore.content.SearchSortType;
 import com.freshdirect.fdstore.content.SortIntValueComparator;
@@ -83,32 +83,32 @@ public class SmartSearchTag extends AbstractProductPagerTag {
 	}
 
 	@Override
-	protected Comparator<SearchResultItem<ProductModel>> getProductSorter(List<SearchResultItem<ProductModel>> products, SearchSortType sortBy, boolean ascending) {
-		ComparatorChain<SearchResultItem<ProductModel>> comparator;
+	protected Comparator<FilteringSortingItem<ProductModel>> getProductSorter(List<FilteringSortingItem<ProductModel>> products, SearchSortType sortBy, boolean ascending) {
+		ComparatorChain<FilteringSortingItem<ProductModel>> comparator;
 		switch (sortBy) {
 			case DEFAULT:
 				return null;
 			case BY_NAME:
-				comparator = ComparatorChain.create(SearchResultItem.wrap(ProductModel.FULL_NAME_PRODUCT_COMPARATOR));
+				comparator = ComparatorChain.create(FilteringSortingItem.wrap(ProductModel.FULL_NAME_PRODUCT_COMPARATOR));
 				if (!ascending)
 					comparator = ComparatorChain.reverseOrder(comparator);
 				break;
 			case BY_PRICE:
-				comparator = ComparatorChain.create(SearchResultItem.wrap(ProductModel.GENERIC_PRICE_COMPARATOR));
-				comparator.chain(SearchResultItem.wrap(ProductModel.FULL_NAME_PRODUCT_COMPARATOR));
+				comparator = ComparatorChain.create(FilteringSortingItem.wrap(ProductModel.GENERIC_PRICE_COMPARATOR));
+				comparator.chain(FilteringSortingItem.wrap(ProductModel.FULL_NAME_PRODUCT_COMPARATOR));
 				if (!ascending)
 					comparator = ComparatorChain.reverseOrder(comparator);
 				break;
 			case BY_POPULARITY:
-				comparator = ComparatorChain.create(SearchResultItem.wrap(ScriptedContentNodeComparator.createGlobalComparator(getUserId(), getPricingContext())));
-				comparator.chain(SearchResultItem.wrap(ProductModel.FULL_NAME_PRODUCT_COMPARATOR));
+				comparator = ComparatorChain.create(FilteringSortingItem.wrap(ScriptedContentNodeComparator.createGlobalComparator(getUserId(), getPricingContext())));
+				comparator.chain(FilteringSortingItem.wrap(ProductModel.FULL_NAME_PRODUCT_COMPARATOR));
 				if (!ascending)
 					comparator = ComparatorChain.reverseOrder(comparator);
 				break;
 			case BY_SALE:
 				SmartSearchUtils.collectSaleInfo(products, getPricingContext());
 				comparator = ComparatorChain.create(new SortValueComparator<ProductModel>(EnumSortingValue.DEAL))
-						.chain(SearchResultItem.wrap(ProductModel.FULL_NAME_PRODUCT_COMPARATOR));
+						.chain(FilteringSortingItem.wrap(ProductModel.FULL_NAME_PRODUCT_COMPARATOR));
 				if (!ascending)
 					comparator = ComparatorChain.reverseOrder(comparator);
 				break;
@@ -122,12 +122,12 @@ public class SmartSearchTag extends AbstractProductPagerTag {
 				SmartSearchUtils.collectRelevancyCategoryScores(products, suggestedTerm);
 				SmartSearchUtils.collectTermScores(products, suggestedTerm);
 				comparator = ComparatorChain.create(new SortValueComparator<ProductModel>(EnumSortingValue.PHRASE));
-				comparator.chain(SearchResultItem.wrap(ScriptedContentNodeComparator.createUserComparator(getUserId(), getPricingContext())));
+				comparator.chain(FilteringSortingItem.wrap(ScriptedContentNodeComparator.createUserComparator(getUserId(), getPricingContext())));
 				comparator.chain(new SortIntValueComparator<ProductModel>(EnumSortingValue.ORIGINAL_TERM));
 				comparator.chain(new SortValueComparator<ProductModel>(EnumSortingValue.CATEGORY_RELEVANCY));
 				comparator.chain(new SortLongValueComparator<ProductModel>(EnumSortingValue.TERM_SCORE));
-				comparator.chain(SearchResultItem.wrap(ScriptedContentNodeComparator.createGlobalComparator(getUserId(), getPricingContext())));
-				comparator.chain(SearchResultItem.wrap(ProductModel.FULL_NAME_PRODUCT_COMPARATOR));
+				comparator.chain(FilteringSortingItem.wrap(ScriptedContentNodeComparator.createGlobalComparator(getUserId(), getPricingContext())));
+				comparator.chain(FilteringSortingItem.wrap(ProductModel.FULL_NAME_PRODUCT_COMPARATOR));
 				if (!ascending)
 					comparator = ComparatorChain.reverseOrder(comparator);
 				break;
@@ -165,7 +165,7 @@ public class SmartSearchTag extends AbstractProductPagerTag {
 		classificationsMap = new TreeMap<DomainValue, Set<Recipe>>(DomainValue.SORT_BY_LABEL);
 		RecipeSearchPage recipeSearchPage = RecipeSearchPage.getDefault();
 		List<Domain> classificationDomains = recipeSearchPage.getFilterByDomains();
-		for (SearchResultItem<Recipe> item : results.getRecipes()) {
+		for (FilteringSortingItem<Recipe> item : results.getRecipes()) {
 			List<DomainValue> classifications = item.getModel().getClassifications();
 			for (DomainValue classification : classifications)
 				if (classificationDomains.contains(classification.getDomain())) {
@@ -188,9 +188,9 @@ public class SmartSearchTag extends AbstractProductPagerTag {
 
 		String classificationId = nav.getRecipeFilter();
 		if (classificationId != null) {
-			Iterator<SearchResultItem<Recipe>> it = results.getRecipes().iterator();
+			Iterator<FilteringSortingItem<Recipe>> it = results.getRecipes().iterator();
 			OUTER: while (it.hasNext()) {
-				SearchResultItem<Recipe> item = it.next();
+				FilteringSortingItem<Recipe> item = it.next();
 				List<DomainValue> classifications = item.getModel().getClassifications();
 				for (DomainValue classification : classifications)
 					if (classification.getContentKey().getId().equals(classificationId))
@@ -201,9 +201,9 @@ public class SmartSearchTag extends AbstractProductPagerTag {
 	}
 
 	public void createRecipeList(SearchResults results) {
-		List<SearchResultItem<Recipe>> items = results.getRecipes();
+		List<FilteringSortingItem<Recipe>> items = results.getRecipes();
 		recipes = new ArrayList<Recipe>(items.size());
-		for (SearchResultItem<Recipe> item : items)
+		for (FilteringSortingItem<Recipe> item : items)
 			recipes.add(item.getModel());
 	}
 

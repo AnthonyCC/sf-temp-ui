@@ -288,6 +288,9 @@
 			<AttributeDef type="B" name="HIDE_WINE_RATING" label="Hide Wine Rating &amp; Pricing (Use Regular Display Instead)" inheritable="true"/>
             <AttributeDef type="S" name="GLOBAL_MENU_TITLE_LABEL" label="Global Menu Title Label"/>
             <AttributeDef type="S" name="GLOBAL_MENU_LINK_LABEL" label="Global Menu Link Label"/>
+            <EnumDef type="S" name="PRODUCT_PROMOTION_TYPE" label="Product Promotion Type">
+				<EnumValue value="PRESIDENTS_PICKS" label="President's Picks"/>
+			</EnumDef>
 		</AttributeDefs>
 		<RelationshipDefs>
 			<RelationshipDef name="ALTERNATE_CONTENT" label="Alternate Content">
@@ -508,6 +511,7 @@
                 <EnumValue value="100" label="Wine_Category"/><!-- [USQ] new layout -->
                 <EnumValue value="101" label="Transactional_multi_Paired_Items"/><!-- [USQ] new layout -->
                 <EnumValue value="102" label="Template_Layout"/><!-- [USQ] new layout -->
+                <EnumValue value="200" label="President's Picks"/><!-- promo page -->
 			</EnumDef>
 			<EnumDef type="I" name="TEMPLATE_TYPE"  label="Template Type" inheritable="true">
 				<EnumValue value="1" label="Fresh Direct Default Template"/>

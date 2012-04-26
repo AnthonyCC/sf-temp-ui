@@ -197,6 +197,24 @@
 		<jndi-name>freshdirect.dataloader.BounceCancelCron</jndi-name>
 	</weblogic-enterprise-bean>	
    
+    <weblogic-enterprise-bean>
+    	<ejb-name>ProductPromotionLoader</ejb-name>
+    	<stateless-session-descriptor>
+			<pool>
+				<max-beans-in-free-pool>5</max-beans-in-free-pool>
+			</pool>
+			<stateless-clustering></stateless-clustering>
+		</stateless-session-descriptor>
+    	<reference-descriptor>
+    		<resource-description>
+    			<res-ref-name>jdbc/dbpool</res-ref-name>
+    			<jndi-name>fddatasource</jndi-name>
+    		</resource-description>
+    	</reference-descriptor>
+    	<enable-call-by-reference>True</enable-call-by-reference>
+    	<jndi-name>freshdirect.dataloader.SAPProductPromotionLoader</jndi-name>
+    </weblogic-enterprise-bean> 
+    
 	<transaction-isolation>
 	    <isolation-level>TRANSACTION_READ_COMMITTED</isolation-level>
 	    <method>
@@ -228,6 +246,13 @@
 			<method-name>*</method-name>
 		</method>
 	</transaction-isolation>
+	<transaction-isolation>
+    	<isolation-level>TRANSACTION_READ_COMMITTED</isolation-level>
+    	<method>
+    		<ejb-name>ProductPromotionLoader</ejb-name>
+    		<method-name>*</method-name>
+    	</method>
+    </transaction-isolation>
 	
  <!--   
     <transaction-isolation>

@@ -102,3 +102,6 @@ input.ph_active { color: #aaa; }
 .top        { margin-top:0; padding-top:0; }
 .bottom     { margin-bottom:0; padding-bottom:0; }
 .center     { text-align: center; }
+
+.bold { font-weight:bold }
+

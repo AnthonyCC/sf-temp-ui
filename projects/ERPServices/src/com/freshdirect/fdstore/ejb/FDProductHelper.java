@@ -71,7 +71,7 @@ import com.freshdirect.framework.util.log.LoggerFactory;
  *
  *
  */
-class FDProductHelper {
+public class FDProductHelper {
 
 	private final static Category LOGGER = LoggerFactory.getInstance( FDProductHelper.class );
 	private final static boolean DEBUG = false;

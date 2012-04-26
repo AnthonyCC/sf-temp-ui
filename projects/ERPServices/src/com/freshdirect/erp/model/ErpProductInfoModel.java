@@ -26,7 +26,7 @@ public class ErpProductInfoModel extends ModelSupport {
 		
 		private final String unit;
 		
-		private final double promoPrice;
+		private double promoPrice;
 		
 		private final String scaleUnit;
 		
@@ -55,6 +55,10 @@ public class ErpProductInfoModel extends ModelSupport {
 			return promoPrice;
 		}
 		
+		public void setPromoPrice(double promoPrice) {
+			this.promoPrice = promoPrice;
+		}
+		
 		public String getScaleUnit() {
 			return scaleUnit;
 		}
@@ -69,7 +73,7 @@ public class ErpProductInfoModel extends ModelSupport {
 	}
 	
 	/** version number */
-	private final int version;
+	private int version;
 
 	/** SKU code */
 	private final String skuCode;
@@ -79,7 +83,7 @@ public class ErpProductInfoModel extends ModelSupport {
 	private final String[] materialNumbers;
 	
 	/** unit prices of materials for this product */
-	private final ErpMaterialPrice[] materialPrices;
+	private ErpMaterialPrice[] materialPrices;
 	
 	/** Availability checking rule */
 	private final EnumATPRule atpRule;
@@ -154,6 +158,25 @@ public class ErpProductInfoModel extends ModelSupport {
 		this.upc = upc;
 	}
 
+	public ErpProductInfoModel(String skuCode,
+			String[] materialNumbers, EnumATPRule atpRule,
+			String unavailabilityStatus, Date unavailabilityDate,
+			String unavailabilityReason, String description, String rating,
+			String freshness, String sustainabilityRating, String upc) {
+		super();
+		this.skuCode = skuCode;
+		this.materialNumbers = materialNumbers;
+		this.atpRule = atpRule;
+		this.unavailabilityStatus = unavailabilityStatus;
+		this.unavailabilityDate = unavailabilityDate;
+		this.unavailabilityReason = unavailabilityReason;
+		this.description = description;
+		this.rating = rating;
+		this.freshness = freshness;
+		this.sustainabilityRating = sustainabilityRating;
+		this.upc = upc;
+	}
+
 	/**
 	 * Get version number
 	 *
@@ -191,6 +214,10 @@ public class ErpProductInfoModel extends ModelSupport {
 		return materialPrices;
 	}
 	
+	public void setMaterialPrices(ErpMaterialPrice[] materialPrices) {
+		this.materialPrices = materialPrices;
+	}
+
 	public EnumATPRule getATPRule() {
 		return this.atpRule;
 	}

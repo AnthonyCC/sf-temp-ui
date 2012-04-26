@@ -8,7 +8,7 @@
 <%@page import="com.freshdirect.smartstore.scoring.ScoringAlgorithm"%>
 
 <%@page import="com.freshdirect.fdstore.util.SearchNavigator"%>
-<%@page import="com.freshdirect.fdstore.content.SearchResultItem"%>
+<%@page import="com.freshdirect.fdstore.content.FilteringSortingItem"%>
 <%@page import="com.freshdirect.fdstore.content.ProductModel"%>
 <%@page import="com.freshdirect.fdstore.content.EnumSortingValue"%>
 <%@page import="com.freshdirect.smartstore.sorting.ScriptedContentNodeComparator"%><html>
@@ -61,7 +61,7 @@
 		ScriptedContentNodeComparator global2 = ScriptedContentNodeComparator.createGlobalComparator(search.getUserId(), search.getPricingContext());
 	  	%>
 	  </tr>
-		<% for (SearchResultItem<ProductModel> item : search.getProcessedResults().getProducts()) { %>
+		<% for (FilteringSortingItem<ProductModel> item : search.getProcessedResults().getProducts()) { %>
 			<tr>
 				<td class="productImage">
 					<display:ProductImage product="<%= item.getModel() %>" prefix="http://www.freshdirect.com"/>

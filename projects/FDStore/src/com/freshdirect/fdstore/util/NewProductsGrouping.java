@@ -16,7 +16,7 @@ import org.apache.log4j.Logger;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.content.EnumSortingValue;
 import com.freshdirect.fdstore.content.ProductModel;
-import com.freshdirect.fdstore.content.SearchResultItem;
+import com.freshdirect.fdstore.content.FilteringSortingItem;
 
 /**
  * @author skrishnasamy
@@ -221,14 +221,14 @@ public class NewProductsGrouping {
 		return this.timeRanges;
 	}
 
-	public TimeRange getTimeRangeForProduct(SearchResultItem<ProductModel> product) {
+	public TimeRange getTimeRangeForProduct(FilteringSortingItem<ProductModel> product) {
 		for (TimeRange timeRange : timeRanges)
 			if (timeRange.fallsIn(product.getSortingValue(EnumSortingValue.NEWNESS).floatValue()))
 				return timeRange;
 		throw new IllegalStateException("time ranges are badly constructed");
 	}
 
-	public SortedMap<TimeRange, List<ProductModel>> groupBy(List<SearchResultItem<ProductModel>> products) {
+	public SortedMap<TimeRange, List<ProductModel>> groupBy(List<FilteringSortingItem<ProductModel>> products) {
 		if (this.timeRanges.isEmpty())
 			throw new IllegalStateException("time ranges are badly constructed");
 		SortedMap<TimeRange, List<ProductModel>> groupedMap;
@@ -238,18 +238,18 @@ public class NewProductsGrouping {
 			groupedMap = new TreeMap<TimeRange, List<ProductModel>>();
 		for (TimeRange timeRange : timeRanges)
 			groupedMap.put(timeRange, new ArrayList<ProductModel>(products.size()));
-		for (SearchResultItem<ProductModel> product : products) {
+		for (FilteringSortingItem<ProductModel> product : products) {
 			TimeRange timeRange = getTimeRangeForProduct(product);
 			groupedMap.get(timeRange).add(product.getModel());
 		}
 		return groupedMap;
 	}
 	
-	public Comparator<SearchResultItem<ProductModel>> getTimeRangeComparator() {
+	public Comparator<FilteringSortingItem<ProductModel>> getTimeRangeComparator() {
 		// NOTE that this will not use reverse ordering as the sorting algorithm will reverse the ordering of the whole sorting !!!
-		return new Comparator<SearchResultItem<ProductModel>>() {
+		return new Comparator<FilteringSortingItem<ProductModel>>() {
 			@Override
-			public int compare(SearchResultItem<ProductModel> o1, SearchResultItem<ProductModel> o2) {
+			public int compare(FilteringSortingItem<ProductModel> o1, FilteringSortingItem<ProductModel> o2) {
 				TimeRange tr1 = getTimeRangeForProduct(o1);
 				TimeRange tr2 = getTimeRangeForProduct(o2);
 				return tr1.getSequence() - tr2.getSequence();

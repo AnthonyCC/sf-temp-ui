@@ -559,4 +559,31 @@ public class FDCachedFactory {
 	public static FDGroup getLatestActiveGroup(String groupId) throws FDResourceException, FDGroupNotFoundException {
 		return FDFactory.getLatestActiveGroup(groupId);
 	}
+	
+	/**
+	 * Method to refresh the caches for product promtoion skus.
+	 * @param skus
+	 * @throws FDResourceException
+	 */
+	public static void refreshProductPromotionSkus(Set<String> skus)throws FDResourceException{
+		for (Iterator iterator = skus.iterator(); iterator.hasNext();) {
+			String sku = (String) iterator.next();
+			refreshProductPromotionSku(sku);
+		}		
+	}
+	
+	public static void refreshProductPromotionSku(String sku)throws FDResourceException{
+		FDProductInfo pi = null;
+		try { 
+			pi = FDFactory.getProductInfo(sku);
+			productInfoCache.put(sku, pi);
+			if(null !=pi){
+				FDSku fdSku = new FDSku(sku, pi.getVersion());
+				FDProduct p = FDFactory.getProduct(fdSku);
+				productCache.put(sku, p);
+			}
+		} catch (FDSkuNotFoundException ex) {
+			productInfoCache.put(sku, SKU_NOT_FOUND);					
+		}
+	}
 }

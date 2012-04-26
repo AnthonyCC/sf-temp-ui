@@ -231,6 +231,40 @@ public class ErpZoneInfoDAO {
 		   return zoneInfo; 			
 	}
 	
+	private static final String ZONE_PRICING_SELECT_ALL_SQL="select ID, SAP_ID, REGION_ID, SERVICE_TYPE, PARENT_ZONE_ID, DEFAULT_ZONE, VERSION, DESCRIPTION, WEB_DESCRIPTION "+   
+    "from  erps.pricing_zone p where version=(select max(version) version from erps.pricing_zone p1 where p1.sap_id=p.sap_id) order by sap_id ";
+	
+	public static List<ErpZoneMasterInfo> getAllZoneInfoDetails(Connection con) throws SQLException{
+		   Connection conn = con;
+		   List<ErpZoneMasterInfo> zoneInfoList=new ArrayList<ErpZoneMasterInfo>();
+	       try {	    	   	    	   	    	   
+	    	   PreparedStatement ps = conn.prepareStatement(ZONE_PRICING_SELECT_ALL_SQL);	    	  
+	    	   ResultSet rs = ps.executeQuery();	    	   
+	             while(rs.next()) {
+	            	 String regionId=rs.getString("REGION_ID");
+	            	 ErpZoneRegionInfo regionInfo=getZoneRegionInfoDetails(conn,regionId);
+	            	 List zoneZipList=getZoneInfoZipDetails(conn,regionInfo);
+	            	 String sapId=rs.getString("SAP_ID");
+	            	 int version=rs.getInt("VERSION");
+	            	 String desc=rs.getString("DESCRIPTION");
+	            	 String webDesc=rs.getString("WEB_DESCRIPTION");
+	            	 EnumZoneServiceType servType=EnumZoneServiceType.getEnum(rs.getString("SERVICE_TYPE"));
+	            	 ErpZoneMasterInfo zoneInfo=new ErpZoneMasterInfo(sapId,regionInfo,servType,desc);
+	            	 zoneInfo.setId(rs.getString("ID"));
+	            	 zoneInfo.setWebDescription(webDesc);
+	            	 zoneInfo.setVersion(version);
+	            	 String parentZoneId=rs.getString("PARENT_ZONE_ID");
+	            	 if(parentZoneId!=null){
+	            		 zoneInfo.setParentZone(getZoneInfoDetails(conn,parentZoneId));
+	            	 }
+	            	 zoneInfoList.add(zoneInfo);	            	 
+	             }
+	       }catch(SQLException e){
+	      	 throw e;
+	       }
+	       Logger.info("getAllZoneInfoDetails List<ErpZoneMasterInfo> :"+zoneInfoList.size());
+		   return zoneInfoList; 			
+	}
 	
 	public static final String ZONE_PRICING_REGION_SELECT_SQL="select ID, VERSION, DESCRIPTION, SAP_ID  from erps.pricing_region where id=?";
 	

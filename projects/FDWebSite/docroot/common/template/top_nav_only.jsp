@@ -1,20 +1,23 @@
-<%@ taglib uri='template' prefix='tmpl' %>
-<%@ taglib uri='logic' prefix='logic' %>
-<%@ taglib uri='freshdirect' prefix='fd' %>
-
-<% //expanded page dimensions
-final int W_TOP_NAV_ONLY_TOTAL = 970;
-%>
-
-<% request.setAttribute("__yui_load_dispatcher__", Boolean.TRUE); %>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<%@ taglib uri='template' prefix='tmpl'
+%><%@ taglib uri='logic' prefix='logic'
+%><%@ taglib uri='freshdirect' prefix='fd' %><%
+	//expanded page dimensions
+	final int W_TOP_NAV_ONLY_TOTAL = 970;
+	int layoutType = (request.getAttribute("layoutType") == null) ? -1 : Integer.parseInt(request.getAttribute("layoutType").toString());
+	
+	request.setAttribute("__yui_load_dispatcher__", Boolean.TRUE); %><%
+	
+	if (layoutType == EnumLayoutType.PRESIDENTS_PICKS.getId()) {
+		%><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd"><%
+	} else {
+		%><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><%
+	} %>
 <html>
 <head>
     <title><tmpl:get name='title'/></title>
 	<%@ include file="/common/template/includes/metatags.jspf" %>
 	<%@ include file="/common/template/includes/i_javascripts.jspf" %>
-  <%@ include file="/shared/template/includes/style_sheet_grid_compat.jspf" %>
+ 	<%@ include file="/shared/template/includes/style_sheet_grid_compat.jspf" %>
 	<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
 	<%@ include file="/shared/template/includes/ccl.jspf" %>
 <%		
@@ -64,13 +67,13 @@ final int W_TOP_NAV_ONLY_TOTAL = 970;
 	<center class="text10">
 		<table width="<%=W_TOP_NAV_ONLY_TOTAL%>" border="0" cellpadding="0" cellspacing="0">
 			<tr>
-				<td width="<%=W_TOP_NAV_ONLY_TOTAL%>" valign="top" colspan="5"><img src="/media_stat/images/layout/clear.gif" width="1" height="5" border="0"></td>
+				<td class="fivePxTall" width="<%=W_TOP_NAV_ONLY_TOTAL%>" valign="top" colspan="5"><img src="/media_stat/images/layout/clear.gif" width="1" height="5" border="0"></td>
 			</tr>
 			<tr>
 				<td><%@ include file="/common/template/includes/deptnav.jspf" %></td>
 			</tr>
 			<tr>
-				<td width="<%=W_TOP_NAV_ONLY_TOTAL%>" bgcolor="#999966" colspan="5"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
+				<td class="onePxTall" width="<%=W_TOP_NAV_ONLY_TOTAL%>" bgcolor="#999966" colspan="5"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
 			</tr>
 			<tr valign="top">
 				<td align="center">

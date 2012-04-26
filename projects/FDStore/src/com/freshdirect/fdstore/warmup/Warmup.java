@@ -146,9 +146,8 @@ public class Warmup {
 				ContentNodeModel node = contentFactory.getContentNodeByKey(catKey);
 				if (node instanceof CategoryModel) {
 					CategoryModel category = (CategoryModel) node;
-					if (category.getRecommender() != null) {
-						LOGGER.info("category " + category.getContentName() + " is smart, pre-loading child products for "
-								+ zones.size() + " zones");
+					if (category.getRecommender() != null || category.getProductPromotionType() != null) {
+						LOGGER.info("category " + category.getContentName() + " is smart or promo, pre-loading child products for " + zones.size() + " zones");
 						for (String zone : zones) {
 							contentFactory.setCurrentPricingContext(new PricingContext(zone));
 							category.getProducts();

@@ -18,6 +18,7 @@ import javax.ejb.EJBObject;
 
 import com.freshdirect.customer.ErpZoneMasterInfo;
 import com.freshdirect.erp.SkuAvailabilityHistory;
+import com.freshdirect.erp.model.ErpProductInfoModel;
 import com.freshdirect.fdstore.FDGroup;
 import com.freshdirect.fdstore.FDGroupNotFoundException;
 import com.freshdirect.fdstore.FDProduct;
@@ -124,5 +125,7 @@ public interface FDFactorySB extends EJBObject {
 
 	public void refreshNewAndBackViews() throws RemoteException, FDResourceException; 
 	public FDGroup getLatestActiveGroup(String groupId) throws RemoteException, FDGroupNotFoundException, FDResourceException;
+
+	public FDProductInfo getProductInfo(ErpProductInfoModel erpProdInfo) throws RemoteException, FDResourceException;;
 }
 
