@@ -317,8 +317,8 @@ public class TimeslotEventDAO {
 	    	ps.setString(12, (event.isDeliveryChargeWaived())?"Y":"N");
 	    	ps.setString(13, (event.isZoneCtActive())?"Y":"N");
 	    	ps.setString(14, event.getSector());
-	    	ps.setBigDecimal(15, new java.math.BigDecimal(event.getLongitude()));
-			ps.setBigDecimal(16, new java.math.BigDecimal(event.getLatitude()));			
+	    	ps.setBigDecimal(15, new java.math.BigDecimal(event.getLatitude()));
+			ps.setBigDecimal(16, new java.math.BigDecimal(event.getLongitude()));			
 	    	ps.execute();
 	 	    ps.close();
 	 	    
