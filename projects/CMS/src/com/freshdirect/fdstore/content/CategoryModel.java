@@ -378,9 +378,25 @@ public class CategoryModel extends ProductContainer {
     }
 
 	/* This does not traverse the alias list */
+    /* It also fetches the dynamic products for promotional categories such as President's picks. */
 	public List<ProductModel> getPrivateProducts() {
 		ContentNodeModelUtil.refreshModels(this, "products", productModels, true);
-		return new ArrayList<ProductModel>(productModels);
+		List<ProductModel> prodList = productModels;
+		String zoneId = ContentFactory.getInstance().getCurrentPricingContext().getZoneId();
+		String currentProductPromotionType = getProductPromotionType();
+        if (currentProductPromotionType != null) {
+        	loadProductPromotion(zoneId, currentProductPromotionType);
+        	try {
+        		if(null !=productPromotionDataRefMap.get(zoneId).get()) {
+        			prodList = new ArrayList<ProductModel>();
+        			addDynamicProductsForPromotion(productPromotionDataRefMap.get(zoneId).get().getProductModels(), prodList);
+        		}
+            } catch (Exception e) {
+                LOGGER.warn("exception during promo category product assignment", e);
+            }
+        }
+	    return new ArrayList<ProductModel>(prodList);
+	        
 	}
 	
 	public List<ProductModel> getHowToCookItProducts() {
@@ -485,7 +501,7 @@ public class CategoryModel extends ProductContainer {
                 LOGGER.warn("exception during smart category recommendation", e);
             }
         }
-        String currentProductPromotionType = getProductPromotionType();
+       /* String currentProductPromotionType = getProductPromotionType();
         if (currentProductPromotionType != null) {
         	loadProductPromotion(zoneId, currentProductPromotionType);
         	try {
@@ -496,7 +512,7 @@ public class CategoryModel extends ProductContainer {
             } catch (Exception e) {
                 LOGGER.warn("exception during promo category product assignment", e);
             }
-        }
+        }*/
 
         return prodList;
     }
@@ -519,7 +535,7 @@ public class CategoryModel extends ProductContainer {
             for ( ProductModel prod : srcProducts ) {
             	ProductModel newProdModel = (ProductModel)prod.clone();
             	ProductModel newProd = ((ProductModelPromotionAdapter)newProdModel).getProductModel();
-//                ( (ContentNodeModelImpl)newProd ).setParentNode(this);
+                ( (ContentNodeModelImpl)newProd ).setParentNode(this);
                 if (!destProducts.contains(newProdModel)) {
                     ( (ContentNodeModelImpl)newProd ).setPriority(destProducts.size());
                     destProducts.add(newProdModel);

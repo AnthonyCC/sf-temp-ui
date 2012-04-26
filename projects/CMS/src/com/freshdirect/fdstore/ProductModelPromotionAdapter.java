@@ -1322,4 +1322,9 @@ public class ProductModelPromotionAdapter implements ProductModel, Serializable,
 		}
 		
 	}
+
+	@Override
+	public String toString() {		
+		return productModel.toString();
+	}
 }

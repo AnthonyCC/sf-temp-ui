@@ -18,7 +18,7 @@ public class WLSSapProductPromotionServer extends ApplicationLifecycleListener {
 
 		LOGGER.info("Inside WLSSapProductPromotionServer");
 		
-//		if (ErpServicesProperties.getJcoClientListenersEnabled()) {
+		if (ErpServicesProperties.getJcoClientListenersEnabled()) {
 
 			final String gwHost = ErpServicesProperties.getJcoClientListenHost();
 			if (gwHost == null)
@@ -43,6 +43,6 @@ public class WLSSapProductPromotionServer extends ApplicationLifecycleListener {
 
 			LOGGER.info("Started  WLSSapProductPromotionServer and connected to " + gwHost + ":" + gwServ + " as " + progId);
 
-//		}
+		}
 	}
 }

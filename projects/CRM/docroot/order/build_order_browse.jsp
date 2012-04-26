@@ -66,7 +66,9 @@
 			folderNodes = deptModel.getCategories();
 		} else if (requestNode instanceof CategoryModel) {
 			CategoryModel catModel = (CategoryModel) requestNode;
-			folderNodes = catModel.getSubcategories();
+			if(null ==catModel.getProductPromotionType()){//If the category is a promotional category, no need to show subcategories.
+				folderNodes = catModel.getSubcategories();
+			}
 			productNodes = contentFactory.getProducts(catModel);
 		}
 	}
