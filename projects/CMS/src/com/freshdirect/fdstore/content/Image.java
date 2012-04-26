@@ -3,105 +3,77 @@ package com.freshdirect.fdstore.content;
 
 import com.freshdirect.cms.util.PublishId;
 
-
 public class Image extends MediaModel {
-    private int width;
-    private int height;
-    private String style = null;
-    private String cssClass = null;
-    private String altText = "";
+	private static final long serialVersionUID = 4997898696622901527L;
 
-    public Image() {
-        super();
-        mediaType = TYPE_IMAGE;
-    }
+	private int width;
+	private int height;
 
-    public Image(String path, int width, int height) {
-        this();
-        this.setPath(path);
-        this.setWidth(width);
-        this.setHeight(height);
-    }
+	public Image() {
+		super();
+		mediaType = TYPE_IMAGE;
+	}
 
-    public int getWidth() {
-        return width;
-    }
+	public Image(String path, int width, int height) {
+		this();
+		this.setPath(path);
+		this.setWidth(width);
+		this.setHeight(height);
+	}
 
-    public void setWidth(int width) {
-        this.width = width;
-    }
+	public int getWidth() {
+		return width;
+	}
 
-    public int getHeight() {
-        return height;
-    }
+	public void setWidth(int width) {
+		this.width = width;
+	}
 
-    public void setHeight(int height) {
-        this.height = height;
-    }
+	public int getHeight() {
+		return height;
+	}
 
-    public String getStyle() {
-        return style;
-    }
+	public void setHeight(int height) {
+		this.height = height;
+	}
 
-    public void setStyle(String styleText) {
-        this.style = styleText;
-    }
+	public String toString() {
+		return "Image[" + getPK() + ", " + getPath() + ", " + getWidth() + "x" + getHeight() + "]";
+	}
 
-    public String getCssClass() {
-        return cssClass;
-    }
+	public String toHtml(String alternateName, String className, boolean withPublishId) {
+		return toHtml((withPublishId ? getPathWithPublishId() : getPath()), getWidth(), getHeight(), alternateName, className);
+	}
 
-    public void setCssClass(String cssClass) {
-        this.cssClass = cssClass;
-    }
+	public static String toHtml(String path, int width, int height, String alternateName, String className) {
+		return "<img src=\"" + path + "\" width=\"" + width + "\" height=\"" + height + '"'
+				+ (((alternateName != null) && (alternateName.trim().length() > 0)) ? (" alt=\"" + alternateName + '"') : "")
+				+ (((className != null) && (className.trim().length() > 0)) ? (" class=\"" + className + '"') : "") + '>';
+	}
 
-    public String toString() {
-        return "Image[" + getPK() + ", " + getPath() + ", " + getWidth() + "x" +
-        getHeight() + "]";
-    }
+	public String toHtml(String alternateName, String className) {
+		return toHtml(alternateName, className, false);
+	}
 
-    public void setAltText(String altText) {
-        this.altText = altText;
-    }
+	public String toHtml(String alternateName) {
+		return toHtml(alternateName, null, false);
+	}
 
-    public String getAltText() {
-        return altText;
-    }
-	
-    public String toHtml(String alternateName, String className,
-        boolean withPublishId) {
-        return "<img src=\"" +
-        (withPublishId ? getPathWithPublishId() : getPath()) + "\" width=\"" +
-        getWidth() + "\" height=\"" + getHeight() + '"' +
-        (((alternateName != null) && (alternateName.trim().length() > 0))
-        ? (" alt=\"" + alternateName + '"') : "") +
-        (((className != null) && (className.trim().length() > 0))
-        ? (" class=\"" + className + '"') : "") + '>';
-    }
+	public String toHtml(String alternateName, boolean withPublishId) {
+		return toHtml(alternateName, null, withPublishId);
+	}
 
-    public String toHtml(String alternateName, String className) {
-        return toHtml(alternateName, className, false);
-    }
+	public String toHtml() {
+		return toHtml(null);
+	}
 
-    public String toHtml(String alternateName) {
-        return toHtml(alternateName, null, false);
-    }
+	public String getPathWithPublishId() {
+		String publishId = PublishId.getInstance().getPublishId();
 
-    public String toHtml(String alternateName, boolean withPublishId) {
-        return toHtml(alternateName, null, withPublishId);
-    }
-
-    public String toHtml() {
-        return toHtml(null);
-    }
-
-    public String getPathWithPublishId() {
-        String publishId = PublishId.getInstance().getPublishId();
-
-        if (publishId != null) {
-            return getPath() + "?publishId=" + publishId;
-        } else {
-            return getPath();
-        }
-    }
+		if (publishId != null) {
+			return getPath() + "?publishId=" + publishId;
+		} else {
+			return getPath();
+		}
+	}
 }

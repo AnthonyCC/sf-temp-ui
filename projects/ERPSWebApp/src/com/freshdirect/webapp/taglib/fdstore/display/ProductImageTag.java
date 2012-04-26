@@ -598,9 +598,6 @@ public class ProductImageTag extends BodyTagSupport {
 
         String aStyle = null;
 
-        //create a burst image
-        Image bImage = new Image();
-
         if (this.opacity < 1) {
             burstImageStyle += TransparentBoxTag.getOpacityStyle(browserInfo,
                 this.opacity);
@@ -807,25 +804,11 @@ public class ProductImageTag extends BodyTagSupport {
             }
         }
 
-        //iSrc has no default, if it's not set, we don't have a burst
-        //iAlt has no default (alt is already defaulted to an empty string)
-        if ((iStyle == null) && (bImage.getStyle() == null)) {
-            iStyle = burstImageStyle;
-            bImage.setStyle(burstImageStyle);
-        }
-
-        if ((iCssClass == null) && (bImage.getCssClass() == null)) {
-            iCssClass = "";
-            bImage.setCssClass("");
-        }
 
         if (iSrc != null) { //if iSrc is null, we didn't have a burst set
-            bImage.setPath(iSrc.replace(iSizeToken, iSize));
-            bImage.setHeight(Integer.parseInt(iHeight));
-            bImage.setWidth(Integer.parseInt(iWidth));
-            bImage.setAltText(iAlt);
-            bImage.setStyle(iStyle);
-            bImage.setCssClass(iCssClass);
+            String path = iSrc.replace(iSizeToken, iSize);
+            int h = Integer.parseInt(iHeight);
+            int w = Integer.parseInt(iWidth);
 
             buf.append("<div class=\"" + cCssClass + "\" style=\"" + cStyle +
                 "\">\n");
@@ -835,7 +818,7 @@ public class ProductImageTag extends BodyTagSupport {
                     "\">");
             }
 
-            buf.append(bImage.toHtml());
+            buf.append(Image.toHtml(path, w, h, iAlt, iCssClass));
 
             if (shouldGenerateAction) {
                 buf.append("</a>\n");
