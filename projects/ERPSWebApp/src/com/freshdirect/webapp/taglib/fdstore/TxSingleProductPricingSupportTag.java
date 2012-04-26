@@ -368,7 +368,9 @@ public class TxSingleProductPricingSupportTag extends BodyTagSupport {
 			buf.append("	var totalField = document.getElementById('"+subTotalPlaceholderId+"_value');\n");
 			buf.append("\n");
 			buf.append("    if(totalField) {\n");
-			buf.append("      totalField.innerHTML=\"$\"+currencyFormat(total);\n");
+			buf.append("      var formattedTotal =\"$\"+currencyFormat(total);\n");
+			buf.append("      if(this.getEstimatedQuantity()!='') { formattedTotal+=\" est.\"} \n");
+			buf.append("      totalField.innerHTML=formattedTotal;\n");
 			buf.append("    }\n");		
 			buf.append("    if(totalWrapper && totalWrapper.className.indexOf('subtotal-updated')==-1 ) {\n");
 			buf.append("      totalWrapper.className+=\" subtotal-updated\";\n");
