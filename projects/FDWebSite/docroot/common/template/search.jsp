@@ -11,10 +11,10 @@
 		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
 		<title><tmpl:get name='title'/></title>
 		<%@ include file="/common/template/includes/metatags.jspf" %>
-		<%@ include file="/common/template/includes/i_javascripts.jspf" %>
-		<%@ include file="/common/template/includes/ga_custom_vars.jspf" %>
 	    <%@ include file="/shared/template/includes/style_sheet_grid_compat.jspf" %>
 	    <%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
+		<%@ include file="/common/template/includes/i_javascripts.jspf" %>
+		<%@ include file="/common/template/includes/ga_custom_vars.jspf" %>
 	    <%@ include file="/shared/template/includes/ccl.jspf" %>
 	    <tmpl:get name='customCss'/>
 	    <tmpl:get name='customJs'/>
@@ -38,10 +38,6 @@
     <div class="toolbar container"><div class="toolbar-content"><tmpl:get name="toolbar" /></div></div>
     <div id="main" class="container">
     	<div id="sidebar">
-			<div id="selection" class="sidebar-content">
-    		<tmpl:get name='selection-header'/>
-    		<tmpl:get name='selection-list'/>
-    		</div>
     		<div id="filters">
     		<tmpl:get name='deparmentFilter'/>
     		<tmpl:get name='categoryFilter'/>
