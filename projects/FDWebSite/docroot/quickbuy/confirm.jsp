@@ -67,7 +67,7 @@ ERROR!
 YAHOO.util.Event.onDOMReady(function(e) {
 	window.parent.updateYourCartPanel();
 	<% if (iatcNamespace != null) { %>
-	window.parent.<%= iatcNamespace %>.updateStatus('<%= EnumQuickbuyStatus.ADDED_TO_CART.getMessage() %>');
+	window.parent.<%= iatcNamespace %>.updateStatus('<span class="ok"><%= EnumQuickbuyStatus.ADDED_TO_CART.getMessage() %></span>');
 	<% } %>
 });
 </script>
