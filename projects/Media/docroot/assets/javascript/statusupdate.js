@@ -13,23 +13,15 @@
 					disabledStatusElement;
 				
 				if(!statusNode) return;
-	
-				activeElements = YD.getElementsByClassName('grid-item-disabled');
-				l = activeElements.length;
-				
-				for(i=0;i<l;i++) {
-					currentItem = activeElements[i];
-					disabledStatusElements = YD.getElementsByClassName('grid-item-status','div',currentItem);
-					if(disabledStatusElements.length) {
-						disabledStatusElement = disabledStatusElements[0];
-						disabledStatusElement.innerHTML="";
-					}
-				}
-				
-				
-				gridItem=YD.getAncestorByClassName(statusNode,'grid-item');
+
 				statusNode.innerHTML=msg;
-	
+
+				YD.addClass(statusNode,'grid-item-status-visible');
+				setTimeout(function(){
+					YD.removeClass(statusNode,'grid-item-status-visible');
+				},3000);
+				
+				gridItem=YD.getAncestorByClassName(statusNode,'grid-item');	
 				if(gridItem) {
 					YD.addClass(gridItem,'grid-item-disabled');
 				}

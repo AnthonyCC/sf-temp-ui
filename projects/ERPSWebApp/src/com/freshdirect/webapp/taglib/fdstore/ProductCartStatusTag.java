@@ -76,10 +76,8 @@ public class ProductCartStatusTag extends BodyTagSupport implements SessionName 
 				}
 			}
 			try {
-				if (quantity > 0)
-					pageContext.getOut().print(quantity + " in cart");
-				else if (quantity < 0)
-					pageContext.getOut().print("in cart");
+				if (quantity != 0)
+					pageContext.getOut().print("in-cart");
 			} catch (IOException e) {
 				throw new JspException(e);
 			}

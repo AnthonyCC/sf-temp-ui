@@ -8,7 +8,7 @@
 <%@page import="com.freshdirect.fdstore.FDSkuNotFoundException"%>
 <%@page import="com.freshdirect.fdstore.*"%>
 <%@page import="com.freshdirect.fdstore.content.ProductModel"%>
-
+<%@page import="com.freshdirect.fdstore.FDProduct"%>
 <% /* 
 	
 	input parameters:
@@ -25,15 +25,12 @@
 
 	String imageSize = "detail";
 	ProductModel pm = pi.getProductModel();	
-%>
-
-<%@page import="com.freshdirect.fdstore.FDProduct"%><display:ProductAvailability id="productAvailability" product="<%= pm %>">
-<%
+%><display:ProductAvailability id="productAvailability" product="<%= pm %>"><%
 	String unavailableClass = "";
 	if (!productAvailability.isFullyAvailable())
 		unavailableClass = "grid-item-unavailable";
 %>
-<div class="grid-item <%= unavailableClass %>">
+<div class="grid-item <%= unavailableClass %> <fd:ProductCartStatus product="<%= pm %>"/>">
 <div class="grid-item-saving"><display:ProductSaving product="<%= pm %>"/></div>
 <display:ProductBurstClass id="burstClass" product="<%= pm %>" hideDeal="true">
 <div class="grid-item-image">
@@ -107,9 +104,7 @@ Sorry! Unavailable!
 %>
 </span>
 </div>
-<div class="grid-item-status" id="<%= statusPlaceholderId %>">
-<fd:ProductCartStatus product="<%= pm %>"/>
-</div>
+<div class="grid-item-status" id="<%= statusPlaceholderId %>"></div>
 <div class="grid-item-separator"></div>
 </div><!--  grid-item -->
 </display:ProductAvailability>

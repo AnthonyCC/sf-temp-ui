@@ -15,11 +15,11 @@ String getStatusMessage(EnumQuickbuyStatus status) {
 		buf.append("<span class=\"error\">");
 	else if (status.isWarning())
 		buf.append("<span class=\"warning\">");
+	else buf.append("<span class=\"ok\">");
 
 	buf.append(status.getMessage());
 	
-	if (!status.isSuccess())
-		buf.append("</span>");
+	buf.append("</span>");
 
 	return buf.toString();
 }
