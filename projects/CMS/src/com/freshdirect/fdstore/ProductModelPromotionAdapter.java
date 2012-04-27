@@ -1143,27 +1143,27 @@ public class ProductModelPromotionAdapter implements ProductModel, Serializable,
 
 	@Override
 	public boolean isAvailableWithin(int days) {		 
-		return productModel.isAvailableWithin(days);
+		return getDefaultSku().isAvailableWithin(days);
 	}
 
 	@Override
 	public boolean isDiscontinued() {		 
-		return productModel.isDiscontinued();
+		return getDefaultSku().isDiscontinued();
 	}
 
 	@Override
 	public boolean isOutOfSeason() {		 
-		return productModel.isOutOfSeason();
+		return getDefaultSku().isOutOfSeason();
 	}
 
 	@Override
 	public boolean isTempUnavailable() {		 
-		return productModel.isTempUnavailable();
+		return getDefaultSku().isTempUnavailable();
 	}
 
 	@Override
 	public boolean isUnavailable() {		 
-		return productModel.isUnavailable();
+		return getDefaultSku().isUnavailable();
 	}
 
 	@Override
