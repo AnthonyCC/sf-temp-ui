@@ -456,7 +456,7 @@ public class ProductPriceTag extends BodyTagSupport {
                             if (dataDriven) {
                                 if ("FEAT".equalsIgnoreCase(grpDisplayType)) {
                                 	//TODO: ADD THIS DISPLAY
-                                	buf1.append("Mix <span class=\"lor\">'n</span> Match");
+                                	buf1.append("Mix <span class=\"lor\">'n</span><br />Match");
                                 }
 
                                 if ("NONFEAT".equalsIgnoreCase(grpDisplayType)) {
