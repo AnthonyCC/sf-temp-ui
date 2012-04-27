@@ -1,3 +1,7 @@
+.mask {
+	z-index:99 !important;
+}
+
 .qbBody {
 	margin: 0;
 	width: 450px;
@@ -84,6 +88,7 @@
 	border:transparent;
 	-webkit-box-shadow:4px 4px 10px #999999;
 	-moz-box-shadow:4px 4px 10px #999999;
+	z-index:100 !important;
 }
 
 .yui-panel-container.quickbuy-dialog .yui-panel {

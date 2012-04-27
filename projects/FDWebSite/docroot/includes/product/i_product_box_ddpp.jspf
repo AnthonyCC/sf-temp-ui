@@ -169,7 +169,7 @@
 			%>
 				
 				<div class="ctaCUSTOMIZE">
-					<input type="image" class="CTAButtonFP" id="CTAButtonFP_<%= seqDDPP %>" src="/media/images/buttons/customize_blue<%= (cart.getTotalQuantity(pm) > 0) ? "_s": "" %>.png" height="27" width="95" onclick="FD_QuickBuy.showPanelDDPP('<%= deptId %>', '<%= pm.getCategory().getContentKey().getId() %>', '<%= pm.getContentKey().getId() %>', '<%= prodATCStatusId %>')();" />
+					<input type="image" class="CTAButtonFP" id="CTAButtonFP_<%= seqDDPP %>" src="/media/images/buttons/customize_blue<%= (cart.getTotalQuantity(pm) > 0) ? "_s": "" %>.png" height="27" width="95" onclick="FD_QuickBuy.showPanel('<%= deptId %>', '<%= pm.getCategory().getContentKey().getId() %>', '<%= pm.getContentKey().getId() %>', '<%= prodATCStatusId %>')();" />
 				</div>
 				<div class="prodATCStatus" id="<%= prodATCStatusId %>"></div>
 				<%-- in /quickbuy/confirm.jsp you can change onDOMReady handler to perform other changes, e.g. disable configure control --%>
@@ -285,7 +285,7 @@
 							String deptId = pm.getDepartment().getContentKey().getId();
 					%>
 						<div class="ctaCUSTOMIZE">
-							<input type="image" class="CTAButtonNFP" id="CTAButtonNFP_<%= seqDDPP %>" src="/media/images/buttons/customize_blue<%= (cart.getTotalQuantity(pm) > 0) ? "_s": "" %>.png" height="27" width="95" onclick="FD_QuickBuy.showPanelDDPP('<%= deptId %>', '<%= pm.getCategory().getContentKey().getId() %>', '<%= pm.getContentKey().getId() %>', '<%= prodATCStatusId %>')();" />
+							<input type="image" class="CTAButtonNFP" id="CTAButtonNFP_<%= seqDDPP %>" src="/media/images/buttons/customize_blue<%= (cart.getTotalQuantity(pm) > 0) ? "_s": "" %>.png" height="27" width="95" onclick="FD_QuickBuy.showPanel('<%= deptId %>', '<%= pm.getCategory().getContentKey().getId() %>', '<%= pm.getContentKey().getId() %>', '<%= prodATCStatusId %>')();" />
 						</div>
 						<div class="prodATCStatus" id="<%= prodATCStatusId %>"></div>
 						<%-- in /quickbuy/confirm.jsp you can change onDOMReady handler to perform other changes, e.g. disable configure control --%>
@@ -402,7 +402,7 @@
 					%>
 						<div class="qtyControl">&nbsp;</div>
 						<div class="ctaCUSTOMIZE">
-							<input type="image" class="CTAButtonNFP" id="CTAButtonNFP_<%= seqDDPP %>" src="/media/images/buttons/customize_blue<%= (cart.getTotalQuantity(pm) > 0) ? "_s": "" %>.png" height="27" width="95" onclick="FD_QuickBuy.showPanelDDPP('<%= deptId %>', '<%= pm.getCategory().getContentKey().getId() %>', '<%= pm.getContentKey().getId() %>', '<%= prodATCStatusId %>')();" />
+							<input type="image" class="CTAButtonNFP" id="CTAButtonNFP_<%= seqDDPP %>" src="/media/images/buttons/customize_blue<%= (cart.getTotalQuantity(pm) > 0) ? "_s": "" %>.png" height="27" width="95" onclick="FD_QuickBuy.showPanel('<%= deptId %>', '<%= pm.getCategory().getContentKey().getId() %>', '<%= pm.getContentKey().getId() %>', '<%= prodATCStatusId %>')();" />
 							<div class="prodATCStatus" id="<%= prodATCStatusId %>"></div>
 						</div>
 						<%-- in /quickbuy/confirm.jsp you can change onDOMReady handler to perform other changes, e.g. disable configure control --%>
