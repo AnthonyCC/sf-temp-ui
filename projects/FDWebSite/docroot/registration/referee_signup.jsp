@@ -54,8 +54,9 @@
         String failurePage =  "/registration/referee_signup.jsp?successPage="+ URLEncoder.encode(successPage)+"&ol=na&serviceType="+serviceType;
     
     //--------OAS Page Variables-----------------------
-	request.setAttribute("sitePage", "www.freshdirect.com/site_access/site_access.jsp");
-	request.setAttribute("listPos", "CategoryNote,SiteAccess");
+	 request.setAttribute("sitePage", "www.freshdirect.com/invite");
+     request.setAttribute("listPos", "RAFSiteAccess");
+
     
 	String actionURI = request.getRequestURI()+"?siteAccessPage="+siteAccessPage+"&successPage="+successPage;
 	String url = request.getRequestURI();
