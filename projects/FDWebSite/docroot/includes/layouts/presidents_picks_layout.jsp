@@ -297,7 +297,7 @@
 								curLeftPos = curLeftPos + 255; /* take from css, cont width + 14 (gutter) */
 							%>
 						</logic:iterate>
-						<div class="PPSuperBuy" style="left: <%= curLeftPos+"px;" %>">
+						<div class="PPSuperBuy">
 							<script type="text/javascript">
 									OAS_AD('PPSuperBuy');
 							</script>
