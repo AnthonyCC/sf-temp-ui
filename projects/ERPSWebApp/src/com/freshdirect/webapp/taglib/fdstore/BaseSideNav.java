@@ -9,6 +9,7 @@ import java.util.List;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.content.ArticleMedia;
 import com.freshdirect.fdstore.content.CategoryModel;
+import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.DepartmentModel;
 import com.freshdirect.fdstore.content.EnumShowChildrenType;
@@ -206,9 +207,11 @@ public abstract class BaseSideNav extends BodyTagSupport {
         if (showFolders) {
             // LOGGER.debug("..in logic for showFolders");
             long lastNavListSize = this.navList.size();
-            for (CategoryModel cat : currentFolder.getSubcategories()) {
-                // recursion here
-                this.fillFolderInfo(false, depth + indent, cat, displayedFolder);
+            if(null == currentCategory.getProductPromotionType() || !ContentFactory.getInstance().isEligibleForDDPP()){
+	            for (CategoryModel cat : currentFolder.getSubcategories()) {
+	                // recursion here
+	                this.fillFolderInfo(false, depth + indent, cat, displayedFolder);
+	            }
             }
             childrenRendered = lastNavListSize != this.navList.size();
         }

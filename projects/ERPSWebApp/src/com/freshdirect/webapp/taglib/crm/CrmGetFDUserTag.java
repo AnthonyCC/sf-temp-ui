@@ -6,6 +6,8 @@ import javax.servlet.jsp.JspException;
 
 import com.freshdirect.crm.CrmStatus;
 import com.freshdirect.customer.EnumTransactionSource;
+import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.framework.util.NVL;
@@ -71,7 +73,7 @@ public class CrmGetFDUserTag extends AbstractGetterTag {
 			sessionStatus.setFDUser(user);
 			CrmSession.setSessionStatus(session, sessionStatus);
 		}
-		
+		ContentFactory.getInstance().setEligibleForDDPP(FDStoreProperties.isDDPPEnabled() || user.isEligibleForDDPP());
 		return user;
 	}
 	

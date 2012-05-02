@@ -378,25 +378,9 @@ public class CategoryModel extends ProductContainer {
     }
 
 	/* This does not traverse the alias list */
-    /* It also fetches the dynamic products for promotional categories such as President's picks. */
 	public List<ProductModel> getPrivateProducts() {
 		ContentNodeModelUtil.refreshModels(this, "products", productModels, true);
-		List<ProductModel> prodList = productModels;
-		String zoneId = ContentFactory.getInstance().getCurrentPricingContext().getZoneId();
-		String currentProductPromotionType = getProductPromotionType();
-        if (currentProductPromotionType != null) {
-        	loadProductPromotion(zoneId, currentProductPromotionType);
-        	try {
-        		if(null !=productPromotionDataRefMap.get(zoneId).get()) {
-        			prodList = new ArrayList<ProductModel>();
-        			addDynamicProductsForPromotion(productPromotionDataRefMap.get(zoneId).get().getProductModels(), prodList);
-        		}
-            } catch (Exception e) {
-                LOGGER.warn("exception during promo category product assignment", e);
-            }
-        }
-	    return new ArrayList<ProductModel>(prodList);
-	        
+		return new ArrayList<ProductModel>(productModels);
 	}
 	
 	public List<ProductModel> getHowToCookItProducts() {
@@ -463,57 +447,62 @@ public class CategoryModel extends ProductContainer {
 	private ContentKey recommenderKey;
 
     public List<ProductModel> getProducts() {
-        List<ProductModel> prodList = getStaticProducts();
-
-        Recommender recommender = getRecommender();
-        if ( recommender == null ) {
-        	recommenderKey = null;
-        } 
-        String zoneId = ContentFactory.getInstance().getCurrentPricingContext().getZoneId();
-        if (recommender != null) {
-        	
-            boolean recommenderChanged = !recommender.getContentKey().equals( recommenderKey ); 
-        	recommenderKey = recommender.getContentKey();  	
-        	
-        	if ( recommenderChanged ) {
-        		LOGGER.warn( this.getContentKey().getEncoded() + ": recommender changed!" );
-        	}
-        	
-            LOGGER.info("Category[id=\"" + this.getContentKey().getId() + "\"].getSmartProducts(\"" + zoneId + "\")");
-            synchronized (CategoryModel.class) {
-                if (globalSmartCategoryVersion > smartCategoryVersion) {
-                    LOGGER.info("forced smart category recalculation : " + smartCategoryVersion + " -> " + globalSmartCategoryVersion + " for category : "
-                            + this.getContentKey().getId());
-                    smartCategoryVersion = globalSmartCategoryVersion;
-                    recommendedProductsRefMap.clear();
-                }
-            }
-            
-            synchronized (recommendedProductsSync) {
-                if ( recommenderChanged || recommendedProductsRefMap.get(zoneId) == null )
-                    recommendedProductsRefMap.put(zoneId, new RecommendedProductsRef(threadPool, zoneId));
-            }
-
-            try {
-//                List<ProductModel> recProds = recommendedProductsRefMap.get(zoneId).get();
-                addDynamicProducts(recommendedProductsRefMap.get(zoneId).get(), prodList);
-            } catch (Exception e) {
-                LOGGER.warn("exception during smart category recommendation", e);
-            }
-        }
-       /* String currentProductPromotionType = getProductPromotionType();
-        if (currentProductPromotionType != null) {
-        	loadProductPromotion(zoneId, currentProductPromotionType);
-        	try {
-        		if(null !=productPromotionDataRefMap.get(zoneId).get()) {
-        			prodList = new ArrayList<ProductModel>();
-        			addDynamicProductsForPromotion(productPromotionDataRefMap.get(zoneId).get().getProductModels(), prodList);
-        		}
-            } catch (Exception e) {
-                LOGGER.warn("exception during promo category product assignment", e);
-            }
-        }*/
-
+    	
+    	List<ProductModel> prodList = null;
+    	String zoneId = ContentFactory.getInstance().getCurrentPricingContext().getZoneId();
+    	String currentProductPromotionType = getProductPromotionType();
+    	if(currentProductPromotionType == null || !ContentFactory.getInstance().isEligibleForDDPP()){
+    		prodList =getStaticProducts();
+	
+	        Recommender recommender = getRecommender();
+	        if ( recommender == null ) {
+	        	recommenderKey = null;
+	        } 
+	        
+	        if (recommender != null) {	        	
+	            boolean recommenderChanged = !recommender.getContentKey().equals( recommenderKey ); 
+	        	recommenderKey = recommender.getContentKey();  	
+	        	
+	        	if ( recommenderChanged ) {
+	        		LOGGER.warn( this.getContentKey().getEncoded() + ": recommender changed!" );
+	        	}
+	        	
+	            LOGGER.info("Category[id=\"" + this.getContentKey().getId() + "\"].getSmartProducts(\"" + zoneId + "\")");
+	            synchronized (CategoryModel.class) {
+	                if (globalSmartCategoryVersion > smartCategoryVersion) {
+	                    LOGGER.info("forced smart category recalculation : " + smartCategoryVersion + " -> " + globalSmartCategoryVersion + " for category : "
+	                            + this.getContentKey().getId());
+	                    smartCategoryVersion = globalSmartCategoryVersion;
+	                    recommendedProductsRefMap.clear();
+	                }
+	            }
+	            
+	            synchronized (recommendedProductsSync) {
+	                if ( recommenderChanged || recommendedProductsRefMap.get(zoneId) == null )
+	                    recommendedProductsRefMap.put(zoneId, new RecommendedProductsRef(threadPool, zoneId));
+	            }
+	
+	            try {
+	//                List<ProductModel> recProds = recommendedProductsRefMap.get(zoneId).get();
+	                addDynamicProducts(recommendedProductsRefMap.get(zoneId).get(), prodList);
+	            } catch (Exception e) {
+	                LOGGER.warn("exception during smart category recommendation", e);
+	            }
+	        }
+    	}else{
+//	        String currentProductPromotionType = getProductPromotionType();
+	        if (currentProductPromotionType != null) {
+	        	loadProductPromotion(zoneId, currentProductPromotionType);
+	        	try {
+	        		if(null !=productPromotionDataRefMap.get(zoneId).get()) {
+	        			prodList = new ArrayList<ProductModel>();
+	        			addDynamicProductsForPromotion(productPromotionDataRefMap.get(zoneId).get().getProductModels(), prodList);
+	        		}
+	            } catch (Exception e) {
+	                LOGGER.warn("exception during promo category product assignment", e);
+	            }
+	        }
+    	}
         return prodList;
     }
 
@@ -535,7 +524,7 @@ public class CategoryModel extends ProductContainer {
             for ( ProductModel prod : srcProducts ) {
             	ProductModel newProdModel = (ProductModel)prod.clone();
             	ProductModel newProd = ((ProductModelPromotionAdapter)newProdModel).getProductModel();
-//                ( (ContentNodeModelImpl)newProd ).setParentNode(this);
+                ( (ContentNodeModelImpl)newProd ).setParentNode(this);
                 if (!destProducts.contains(newProdModel)) {
                     ( (ContentNodeModelImpl)newProd ).setPriority(destProducts.size());
                     destProducts.add(newProdModel);

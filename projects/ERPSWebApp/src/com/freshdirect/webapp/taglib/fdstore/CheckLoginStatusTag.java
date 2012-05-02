@@ -9,6 +9,7 @@ import com.freshdirect.delivery.EnumDeliveryStatus;
 
 import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.WineFilter;
 import com.freshdirect.fdstore.customer.FDActionInfo;
@@ -279,6 +280,7 @@ public class CheckLoginStatusTag extends com.freshdirect.framework.webapp.TagSup
                           .setCurrentPricingContext(user.getPricingContext());
             WineFilter.clearAvailabilityCache((user.getPricingContext() != null)
                 ? user.getPricingContext() : PricingContext.DEFAULT);
+            ContentFactory.getInstance().setEligibleForDDPP(FDStoreProperties.isDDPPEnabled() || user.isEligibleForDDPP());
         } else {
             LOGGER.warn("cannot set pricing context");
             WineFilter.clearAvailabilityCache(PricingContext.DEFAULT);

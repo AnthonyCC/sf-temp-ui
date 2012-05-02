@@ -30,6 +30,7 @@ import com.freshdirect.deliverypass.EnumDlvPassStatus;
 import com.freshdirect.fdstore.EnumCheckoutMode;
 import com.freshdirect.fdstore.FDReservation;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.FDRuntimeException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.content.EnumWinePrice;
 import com.freshdirect.fdstore.content.ProductModel;
@@ -1329,6 +1330,14 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 	
 	public boolean isReferralPromotionFraud() {
 		return this.user.isReferralPromotionFraud();
+	}
+	
+	public boolean isEligibleForDDPP()  {
+		try {
+			return this.user.isEligibleForDDPP();
+		} catch (FDResourceException e) {
+			throw new FDRuntimeException(e);
+		}
 	}
 
 

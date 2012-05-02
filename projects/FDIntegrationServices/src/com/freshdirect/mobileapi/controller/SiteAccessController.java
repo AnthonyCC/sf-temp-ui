@@ -105,6 +105,7 @@ public class SiteAccessController extends BaseController {
        		request.getSession().setAttribute(SessionName.APPLICATION, EnumTransactionSource.IPHONE_WEBSITE.getCode());
             user = getUserFromSession(request, response);
             user.setUserPricingContext();
+            user.setEligibleForDDPP();
         	//Create a new Visitor object.
             responseMessage = formatVisitorMessage(user, requestMessage, resultBundle);
             resetMobileSessionData(request);
@@ -131,6 +132,7 @@ public class SiteAccessController extends BaseController {
 			request.getSession().setAttribute(SessionName.APPLICATION, EnumTransactionSource.IPHONE_WEBSITE.getCode());
 		user = getUserFromSession(request, response);
 		user.setUserPricingContext();
+		user.setEligibleForDDPP();
 		//Create a new Visitor object.
 		responseMessage = formatVisitorMessage(user, requestMessage, resultBundle);
 		resetMobileSessionData(request);

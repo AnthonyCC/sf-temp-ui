@@ -200,6 +200,7 @@ public abstract class BaseController extends AbstractController implements Messa
                 try {
                     user = getUserFromSession(request, response);
                     user.setUserPricingContext();
+                    user.setEligibleForDDPP();
                 } catch (NoSessionException e) {
                     if (validateUser()) {
                         throw e;

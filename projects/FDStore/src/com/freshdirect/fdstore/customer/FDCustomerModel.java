@@ -170,5 +170,12 @@ public class FDCustomerModel extends ModelSupport implements FDCustomerI {
 		
 	}
 
+	public boolean isEligibleForDDPP() {
+		String eligibleAttr = this.profile.getAttribute("DDPP_ELIGIBLE");
+		if ("true".equalsIgnoreCase(eligibleAttr)) {
+			return true;
+		}
+		return false;
+	}
     
 }

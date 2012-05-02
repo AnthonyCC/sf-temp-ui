@@ -163,6 +163,7 @@ public class LoginController extends BaseController {
             createUserSession(User.login(username, password), source, request, response);
             user = getUserFromSession(request, response);
             user.setUserPricingContext();
+            user.setEligibleForDDPP();
             responseMessage = formatLoginMessage(user);
             resetMobileSessionData(request);
 

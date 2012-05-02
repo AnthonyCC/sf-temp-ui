@@ -17,6 +17,7 @@ import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.FDReservation;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.FDTimeslot;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.customer.FDCartLineI;
@@ -508,6 +509,11 @@ public class SessionUser {
     public void setUserPricingContext() {
         ContentFactory.getInstance().setCurrentPricingContext(sessionUser.getPricingContext());
     }
+    
+    public void setEligibleForDDPP() {
+        ContentFactory.getInstance().setEligibleForDDPP(FDStoreProperties.isDDPPEnabled() || sessionUser.isEligibleForDDPP());
+    }
+    
     
     public double getMaxSignupPromotion() {
         return sessionUser.getMaxSignupPromotion();

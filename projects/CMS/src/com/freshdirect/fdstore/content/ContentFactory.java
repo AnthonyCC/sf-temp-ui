@@ -75,6 +75,7 @@ public class ContentFactory {
 	private LruCache<String,ContentKey> skuProduct;
 	
 	private ThreadLocal<PricingContext> currentPricingContext;
+	private ThreadLocal<Boolean> eligibleForDDPP;
 	
 	private class WineIndex {
 		// all wine products
@@ -154,6 +155,19 @@ public class ContentFactory {
 				return PricingContext.DEFAULT;
 			}
 		};
+		
+		eligibleForDDPP = new ThreadLocal<Boolean>() {
+			@SuppressWarnings( "synthetic-access" )
+			@Override
+			protected Boolean initialValue() {
+				try {
+					throw new FDException("initializing the eligibleForDDPP with default value");
+				} catch (FDException e) {
+					LOGGER.warn(e.getMessage(), e);
+				}
+				return false;
+			}
+		};
 	}
 
 	private StoreModel loadStore() {
@@ -198,7 +212,9 @@ public class ContentFactory {
 
 	public Collection<ProductModel> getProducts(CategoryModel category) {
 		this.getStore(); //ensure Store is loaded
-
+		if(category.getProductPromotionType() != null && ContentFactory.getInstance().isEligibleForDDPP()){
+			Collections.unmodifiableList(category.getProducts());
+		}
 		return Collections.unmodifiableList(category.getPrivateProducts());
 	}
 
@@ -582,6 +598,15 @@ public class ContentFactory {
 	public void setCurrentPricingContext(PricingContext pricingContext) {
 		LOGGER.debug("setting pricing context to " + pricingContext + " in thread " + Thread.currentThread().getId());
 		currentPricingContext.set(pricingContext);
+	}
+	
+	public Boolean  isEligibleForDDPP() {
+		return eligibleForDDPP.get();
+	}
+	
+	public void setEligibleForDDPP(Boolean isEligible) {
+		LOGGER.debug("setting DDPP flag to " + isEligible + " in thread " + Thread.currentThread().getId());
+		eligibleForDDPP.set(isEligible);
 	}
 	
 	/**

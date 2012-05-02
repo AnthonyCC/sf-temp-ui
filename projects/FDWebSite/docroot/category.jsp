@@ -85,10 +85,10 @@ final int W_CATEGORY_NO_LEFT_NAV = 765;
 		   }       
 	    }
 	}
-	{
+	if(categoryModel.getProductPromotionType()==null ||!ContentFactory.getInstance().isEligibleForDDPP()){
 	    String redirectURL = (currentFolder instanceof HasRedirectUrl ? ((HasRedirectUrl)currentFolder).getRedirectUrl() : null); 
 		if (redirectURL!=null && !"nm".equalsIgnoreCase(redirectURL)  && !"".equals(redirectURL)
-				&& categoryModel.getProductPromotionType()==null) {
+				) {
 			redirectURL = response.encodeRedirectURL(redirectURL);
 			if (redirectURL.toUpperCase().indexOf("/CATEGORY.JSP?")==-1) {
 				response.sendRedirect(redirectURL);
@@ -146,7 +146,7 @@ final int W_CATEGORY_NO_LEFT_NAV = 765;
 	        jspTemplate = "/common/template/usq_sidenav.jsp";
 	    } else { //assuming the default (Generic) Template
 			//unless it's data-driven
-			if (layoutType == EnumLayoutType.PRESIDENTS_PICKS.getId()) {
+			if (layoutType == EnumLayoutType.PRESIDENTS_PICKS.getId() && ContentFactory.getInstance().isEligibleForDDPP()) {
 				jspTemplate = "/common/template/top_nav_only.jsp";
 			} else {
 				jspTemplate = "/common/template/both_dnav.jsp";

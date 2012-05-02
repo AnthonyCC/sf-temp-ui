@@ -90,6 +90,12 @@
 				//check for attributes
 				if (curRow.indexOf(":") > 0) { //zero since it can't START with a colon (correctly)
 
+					currentFolder = ContentFactory.getInstance().getContentNode(curRow);
+					if(currentFolder instanceof CategoryModel) {
+						if("picks_love".equalsIgnoreCase(curRow) && (null!=((CategoryModel)currentFolder).getProductPromotionType() &&ContentFactory.getInstance().isEligibleForDDPP())){
+							curRow="picks_pres";
+						}
+					}
 					//log(myDebug, "found colon: ");
 					String[] resultSub = curRow.split(":"); //found sub attrs
 

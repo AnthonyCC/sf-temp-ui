@@ -125,6 +125,7 @@ public class RegistrationController extends BaseController {
 					EnumTransactionSource.IPHONE_WEBSITE.getCode());
 			user = getUserFromSession(request, response);
 			user.setUserPricingContext();
+			user.setEligibleForDDPP();
 			// Create a new Visitor object.
 			responseMessage = formatLoginMessage(user);
 			resetMobileSessionData(request);

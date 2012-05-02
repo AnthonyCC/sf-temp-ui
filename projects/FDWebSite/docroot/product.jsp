@@ -56,14 +56,24 @@ if (!ContentFactory.getInstance().getPreviewMode() && productNode.isHidden()) {
 
 // [redirection] if there is a redirect_url setting.. then go to that regardless of the preview mode
 String redir = productNode.getRedirectUrl();
-if (redir !=null && !"".equals(redir) && !"nm".equalsIgnoreCase(redir)) {
-    String redirectURL = response.encodeRedirectURL(redir);
-	if (redirectURL.toUpperCase().indexOf("/PRODUCT.JSP?")==-1) {
-        StringBuffer buf = new StringBuffer(redirectURL);
-		FDURLUtil.appendCommonParameters(buf, request.getParameterMap()); // append tracking codes, etc.
-    	response.sendRedirect(buf.toString());
-        return;
-    }
+ContentNodeModel parentNode =productNode.getParentNode();
+boolean isDDPP = false;
+if(null !=parentNode && parentNode instanceof CategoryModel){
+	CategoryModel catModel = ((CategoryModel)parentNode);
+	if(null !=catModel.getProductPromotionType() && ContentFactory.getInstance().isEligibleForDDPP()){
+		isDDPP = true;
+	}
+}
+if(!isDDPP){
+	if (redir !=null && !"".equals(redir) && !"nm".equalsIgnoreCase(redir)) {
+	    String redirectURL = response.encodeRedirectURL(redir);
+		if (redirectURL.toUpperCase().indexOf("/PRODUCT.JSP?")==-1) {
+	        StringBuffer buf = new StringBuffer(redirectURL);
+			FDURLUtil.appendCommonParameters(buf, request.getParameterMap()); // append tracking codes, etc.
+	    	response.sendRedirect(buf.toString());
+	        return;
+	    }
+	}
 }
 
 // [redirection] if it is a grocery product, then jump to the grocery_product layout within the category page

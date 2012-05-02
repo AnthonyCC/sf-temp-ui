@@ -520,6 +520,8 @@ public class FDStoreProperties {
 	private final static String CLOUD_SPONGE_DOMAIN_KEY = "cloudsponge.domain.key";
 	private final static String CLOUD_SPONGE_ADDRESS_IMPORTS = "cloudsponge.usage";
 	
+	private final static String PROP_DDPP_ENABLED="fdstore.ddpp.enabled";
+	
 	
     static {
         defaults.put(PROP_ROUTING_PROVIDER_URL, "t3://localhost:7001");
@@ -1033,6 +1035,7 @@ public class FDStoreProperties {
 		
 		defaults.put(CLOUD_SPONGE_DOMAIN_KEY, "K3D6375BGJRXBSJR8456");
 		defaults.put(CLOUD_SPONGE_ADDRESS_IMPORTS, "true");
+		defaults.put(PROP_DDPP_ENABLED, "false");
 		
         refresh();
     }
@@ -2641,6 +2644,10 @@ public class FDStoreProperties {
     
     public static String getCouldSpongeAddressImports() {
         return  config.getProperty(CLOUD_SPONGE_ADDRESS_IMPORTS);
+    }
+    
+    public static boolean isDDPPEnabled() {
+        return (new Boolean(get(PROP_DDPP_ENABLED))).booleanValue();
     }
     
 }

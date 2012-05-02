@@ -2219,5 +2219,10 @@ public class FDUser extends ModelSupport implements FDUserI {
 		return referralFraud;
 	}
 	
-
+	public boolean isEligibleForDDPP() throws FDResourceException {
+		if(null == identity){
+			return false;
+		}
+		return this.getFDCustomer().isEligibleForDDPP();
+	}
 }
