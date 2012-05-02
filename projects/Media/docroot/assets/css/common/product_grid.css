@@ -234,6 +234,7 @@
 }
 
 .grid-item-controls button.customize {
+	margin-top:43px;
 	background:url('/media_stat/images/search/customize_blue.png') no-repeat right top white;
 }
 
