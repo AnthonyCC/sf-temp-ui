@@ -87,8 +87,8 @@
 			curRow=resultDynRows[rowId];
 			currentFolder = ContentFactory.getInstance().getContentNode(curRow);
 			if(currentFolder instanceof CategoryModel) {
-				if(curRow.indexOf("picks_love")>-1 && (null!=((CategoryModel)currentFolder).getProductPromotionType() &&ContentFactory.getInstance().isEligibleForDDPP())){
-					curRow.replace("picks_love","picks_pres");
+				if(curRow.indexOf("picks_love")>-1 && (null==((CategoryModel)currentFolder).getProductPromotionType() || !ContentFactory.getInstance().isEligibleForDDPP())){
+					curRow = curRow.replace("picks_love","picks_pres");
 				}
 			}
 			try {
