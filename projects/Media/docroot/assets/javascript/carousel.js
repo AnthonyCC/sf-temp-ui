@@ -2,9 +2,8 @@ var fd_carousel=function(id,numItems,hideContainer,text,cName,parentId,offset) {
 	fd_carousel.start(id,numItems,hideContainer,text,cName,parentId,offset);
 };
 
-fd_carousel.start=function(container,numItems,hideContainer,text,cName,parentId,offset) {
-	YAHOO.util.Event.onContentReady(container,function() {
-		var carousel, lineItems, i,j,l,maxHeight=0, region, reg2;
+fd_carousel._start=function(container, numItems,hideContainer,text,cName,parentId,offset) {
+		var carousel, lineItems, i,l,maxHeight=0, region, reg2;
 		var pContainer, mh;
 		lineItems = YAHOO.util.Dom.getElementsBy(function(){return true;},'li',container);
 		l=lineItems.length;
@@ -14,6 +13,15 @@ fd_carousel.start=function(container,numItems,hideContainer,text,cName,parentId,
 				maxHeight=region.height;
 			}
 		}
+
+		// Fix IE7 issue
+		if (maxHeight < 30) {
+			// retry
+			window.setTimeout(function() {fd_carousel._start(container,numItems,hideContainer,text,cName,parentId,offset);}, 1000);
+
+			return;
+		}
+		
 		
 		fd_carousel.fixItemHeights(container, maxHeight);
 		if (parentId) {
@@ -45,9 +53,11 @@ fd_carousel.start=function(container,numItems,hideContainer,text,cName,parentId,
 				parent.style.display = 'none';
 			}
 		}
-	});
 };
 
+fd_carousel.start=function(container, numItems, hideContainer, text, cName, parentId, offset) {
+	YAHOO.util.Event.onContentReady(container, function() {fd_carousel._start(container, numItems, hideContainer, text, cName, parentId, offset);});
+};
 
 fd_carousel.fixItemHeights = function(container, maxHeight) {
 	var lineItems, i, l;
@@ -57,4 +67,4 @@ fd_carousel.fixItemHeights = function(container, maxHeight) {
 	for(i=0;i<l;i++) {
 		YAHOO.util.Dom.setStyle(lineItems[i],'height',(maxHeight+5)+'px');
 	}
-}
+};
