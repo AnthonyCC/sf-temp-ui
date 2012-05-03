@@ -491,20 +491,27 @@ public class CategoryModel extends ProductContainer {
 	        }
     	}else{
 //	        String currentProductPromotionType = getProductPromotionType();
-	        if (currentProductPromotionType != null) {
-	        	loadProductPromotion(zoneId, currentProductPromotionType);
-	        	try {
-	        		if(null !=productPromotionDataRefMap.get(zoneId).get()) {
-	        			prodList = new ArrayList<ProductModel>();
-	        			addDynamicProductsForPromotion(productPromotionDataRefMap.get(zoneId).get().getProductModels(), prodList);
-	        		}
-	            } catch (Exception e) {
-	                LOGGER.warn("exception during promo category product assignment", e);
-	            }
-	        }
+	        prodList = getPromotionPageProducts(prodList, zoneId,currentProductPromotionType);
     	}
         return prodList;
     }
+
+	private List<ProductModel> getPromotionPageProducts(
+			List<ProductModel> prodList, String zoneId,
+			String currentProductPromotionType) {
+		if (currentProductPromotionType != null) {
+			loadProductPromotion(zoneId, currentProductPromotionType);
+			try {
+				if(null !=productPromotionDataRefMap.get(zoneId).get()) {
+					prodList = new ArrayList<ProductModel>();
+					addDynamicProductsForPromotion(productPromotionDataRefMap.get(zoneId).get().getProductModels(), prodList);
+				}
+		    } catch (Exception e) {
+		        LOGGER.warn("exception during promo category product assignment", e);
+		    }
+		}
+		return prodList;
+	}
 
     private void addDynamicProducts(Collection<ProductModel> srcProducts, Collection<ProductModel> destProducts){
     	if (srcProducts != null) {
@@ -898,15 +905,15 @@ public class CategoryModel extends ProductContainer {
 			String zoneId = ContentFactory.getInstance().getCurrentPricingContext().getZoneId();
 			List<ProductModel> productModelList = null;
 			try {				
-				if(!SapProperties.isBlackhole()){
+//				if(!SapProperties.isBlackhole()){
 					ErpProductPromotionPreviewInfo erpProductPromotionPreviewInfo = ProductPromotionInfoManager.getProductPromotionPreviewInfo(ppPreviewId);
 					Map<String, List<FDProductPromotionInfo>> productPromotionPreviewInfoMap = ProductPromotionUtil.formatProductPromotionPreviewInfo(erpProductPromotionPreviewInfo);
 					ProductPromotionData ppData = new ProductPromotionData();
 					ppData = populateProductPromotionData(ppData, productPromotionPreviewInfoMap, zoneId,true);
 					productModelList = ppData.getProductModels();
-				}
+//				}
 				if(null == productModelList || productModelList.isEmpty()){
-					productModelList =  this.getProducts();//get products from cache.
+					productModelList =  this.getPromotionPageProducts(productModelList,zoneId,getProductPromotionType());//get products from cache.
 				}
 				return productModelList;
 //				return ppData.getProductModels();
