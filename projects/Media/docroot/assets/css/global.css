@@ -1495,11 +1495,24 @@ div.control, div.slotRow, div.time {
 		width: 100%;
 		overflow: hidden;
 		height: 0px;
-		background-image: url('/media_stat/images/layout/1x1_80p_trans.png');
 		background-repeat: repeat;
 	}
+	
+	.ddpp .prodAddFP .prodAddTr {
+		position:absolute;
+		top:0;
+		left:0;
+		width:100%;
+		height:100%;
+		opacity: 0.8;
+		-ms-filter:"progid:DXImageTransform.Microsoft.Alpha(Opacity=80)";
+		filter: alpha(opacity=80);		
+		background:white;
+	}
+	
 	.ddpp .prodAddFP .prodAdd {
 		margin: 10px 0;
+		position:relative;
 	}
 	.ddpp .ddpp_normal_prod_list .ddpp_normal_prod_list_qtyCont .prodAdd {
 		height: 100%;

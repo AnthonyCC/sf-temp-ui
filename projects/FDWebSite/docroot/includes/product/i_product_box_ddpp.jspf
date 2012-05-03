@@ -92,6 +92,7 @@
 		<display:ProductPrice impression="<%= pi %>" showDescription="true" dataDriven="true" /><%-- don't pass grpDisplayType in here (for apple pricing override) --%>
 		
 		<div class="prodAddFP">
+			<div class="prodAddTr"></div>
 			<div class="prodAdd"<%= (isPpPreview)?"style=\"display: none;\"":""%>>
 			<%
 				if (pi.isTransactional()) {
