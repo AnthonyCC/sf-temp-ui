@@ -88,6 +88,9 @@
 	border:transparent;
 	-webkit-box-shadow:4px 4px 10px #999999;
 	-moz-box-shadow:4px 4px 10px #999999;
+}
+
+.yui-panel-container {
 	z-index:100 !important;
 }
 
