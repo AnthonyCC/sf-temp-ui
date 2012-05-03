@@ -119,9 +119,9 @@ public class PPExportEmailProductsTag extends AbstractGetterTag{
 					
 					appendData(isExport,buffer,D_P+i+ATTR_FEAT);appendData(isExport,buffer,zoneId);appendData(isExport,buffer,null !=fhType?fhType.getDescription():"");appendNewLine(isExport,buffer);
 					if(i<10 && isExport){
-						appendData(isExport,buffer,D_P+i+ATTR_IMG);appendTab(isExport,buffer);appendData(isExport,buffer,zoneId);appendData(isExport,buffer,productModel.getProdImage().getPath()/*getHtml()*/);appendNewLine(isExport,buffer);
+						appendData(isExport,buffer,D_P+i+ATTR_IMG);appendTab(isExport,buffer);appendData(isExport,buffer,zoneId);appendData(isExport,buffer,productModel.getDetailImage().getPath()/*getHtml()*/);appendNewLine(isExport,buffer);
 					}else{
-						appendData(isExport,buffer,D_P+i+ATTR_IMG);appendData(isExport,buffer,zoneId);appendData(isExport,buffer,productModel.getProdImage().getPath()/*getHtml()*/);appendNewLine(isExport,buffer);
+						appendData(isExport,buffer,D_P+i+ATTR_IMG);appendData(isExport,buffer,zoneId);appendData(isExport,buffer,productModel.getDetailImage().getPath()/*getHtml()*/);appendNewLine(isExport,buffer);
 					}
 					
 					appendData(isExport,buffer,D_P+i+ATTR_NAME);appendData(isExport,buffer,zoneId);appendData(isExport,buffer,productModel.getFullName());appendNewLine(isExport,buffer);

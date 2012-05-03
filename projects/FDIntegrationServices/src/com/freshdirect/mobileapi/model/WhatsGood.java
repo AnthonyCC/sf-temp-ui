@@ -198,6 +198,9 @@ public class WhatsGood {
                 //We have layout manager
                 if (layoutManagerSetting != null) {
                     ItemGrabberTagWrapper itemGrabberTagWrapper = new ItemGrabberTagWrapper(user);
+                    if(currentFolder instanceof CategoryModel && null != ((CategoryModel)currentFolder).getProductPromotionType() &&ContentFactory.getInstance().isEligibleForDDPP()){
+                    	layoutManagerSetting.setFilterUnavailable(true);
+                    }
                     contents = itemGrabberTagWrapper.getProducts(layoutManagerSetting, currentFolder);
 
                     ItemSorterTagWrapper sortTagWrapper = new ItemSorterTagWrapper(user);

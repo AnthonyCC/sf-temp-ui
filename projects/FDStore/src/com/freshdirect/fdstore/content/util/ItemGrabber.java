@@ -13,6 +13,7 @@ import com.freshdirect.fdstore.FDCachedFactory;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.content.CategoryModel;
+import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.DepartmentModel;
 import com.freshdirect.fdstore.content.EnumShowChildrenType;
@@ -129,6 +130,7 @@ public class ItemGrabber {
 		if (currentNode instanceof CategoryModel) {
 			CategoryModel currentCat = (CategoryModel)currentNode;
 			Collection<ProductModel> products = currentCat.getProducts();
+			boolean isDDPPCat = (null != currentCat.getProductPromotionType() && ContentFactory.getInstance().isEligibleForDDPP());
 	        
 			for ( ProductModel product : products) {  // get prods from current folder
 
@@ -145,19 +147,29 @@ public class ItemGrabber {
 				}
 				if (this.returnSkus) {
 					for ( SkuModel sku : product.getSkus() ) {
-						if (!sku.isDiscontinued()){
-							//Convert to SkuModelPricingAdapter for Zone Pricing
-							this.workSet.add(new SkuModelPricingAdapter(sku, pricingCtx));
+						if(isDDPPCat){
+							if(!sku.isUnavailable())
+								this.workSet.add(new SkuModelPricingAdapter(sku, pricingCtx));
+						}else{
+							if (!sku.isDiscontinued()){
+								//Convert to SkuModelPricingAdapter for Zone Pricing
+								this.workSet.add(new SkuModelPricingAdapter(sku, pricingCtx));
+							}
 						}
 					}
 				} else {
 					//Convert to ProductModelPricingAdapter for Zone Pricing
-					this.workSet.add(ProductPricingFactory.getInstance().getPricingAdapter(product ,pricingCtx) );
+					if(!isDDPPCat || !product.getDefaultSku().isUnavailable()){
+						this.workSet.add(ProductPricingFactory.getInstance().getPricingAdapter(product ,pricingCtx) );
+					}
 				}
 				rtnValue=true;
 			}
-
-			subFolders = currentCat.getSubcategories();
+			if(!isDDPPCat){
+				subFolders = currentCat.getSubcategories();
+			}else{
+				return rtnValue;
+			}
 
 		} else if ( currentNode instanceof DepartmentModel ) {
 			// it must be a department
