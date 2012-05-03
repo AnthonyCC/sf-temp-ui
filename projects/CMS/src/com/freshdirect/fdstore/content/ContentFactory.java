@@ -213,7 +213,7 @@ public class ContentFactory {
 	public Collection<ProductModel> getProducts(CategoryModel category) {
 		this.getStore(); //ensure Store is loaded
 		if(category.getProductPromotionType() != null && ContentFactory.getInstance().isEligibleForDDPP()){
-			Collections.unmodifiableList(category.getProducts());
+			return Collections.unmodifiableList(category.getProducts());
 		}
 		return Collections.unmodifiableList(category.getPrivateProducts());
 	}

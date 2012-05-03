@@ -440,7 +440,7 @@ public class ProductModelPromotionAdapter implements ProductModel, Serializable,
 	@Override
 	public PriceCalculator getPriceCalculator() {
 		if(!isPreview){
-			return productModel.getPriceCalculator();
+			return productModel.getPriceCalculator(getPricingContext());
 		}else{
 			return new ProductPromoPreviewPriceCalculator(getPricingContext(),productModel,productModel.getSku(ppSkuCode),fdProdInfo,fdProduct);
 		}
@@ -449,7 +449,7 @@ public class ProductModelPromotionAdapter implements ProductModel, Serializable,
 	@Override
 	public PriceCalculator getPriceCalculator(String skuCode) {
 		if(!isPreview){
-			return productModel.getPriceCalculator(skuCode);
+			return productModel.getPriceCalculator(skuCode,getPricingContext());
 		}else{
 			return new ProductPromoPreviewPriceCalculator(getPricingContext(),productModel,productModel.getSku(ppSkuCode),fdProdInfo,fdProduct);
 		}
@@ -458,7 +458,7 @@ public class ProductModelPromotionAdapter implements ProductModel, Serializable,
 	@Override
 	public PriceCalculator getPriceCalculator(SkuModel sku) {	
 		if(!isPreview){
-			return productModel.getPriceCalculator(sku);
+			return productModel.getPriceCalculator(sku,getPricingContext());
 		}else{
 			return new ProductPromoPreviewPriceCalculator(getPricingContext(),productModel,productModel.getSku(ppSkuCode),fdProdInfo,fdProduct);
 		}
@@ -505,11 +505,11 @@ public class ProductModelPromotionAdapter implements ProductModel, Serializable,
 
 	@Override
 	public PricingContext getPricingContext() {	
-		if(!isPreview){
+		/*if(!isPreview){
 			return  productModel.getPricingContext();
-		}else{
+		}else{*/
 			return ContentFactory.getInstance().getCurrentPricingContext();
-		}
+//		}
 //		return productModel.getPricingContext();
 	}
 

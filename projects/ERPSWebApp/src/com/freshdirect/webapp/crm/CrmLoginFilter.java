@@ -21,11 +21,14 @@ import com.freshdirect.crm.CrmManager;
 import com.freshdirect.crm.CrmStatus;
 import com.freshdirect.customer.ErpDuplicateUserIdException;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.webapp.crm.security.CrmSecurityManager;
 import com.freshdirect.webapp.taglib.crm.CrmSession;
 import com.freshdirect.webapp.taglib.crm.CrmSessionStatus;
+import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
 
 public class CrmLoginFilter implements Filter {
@@ -42,6 +45,10 @@ public class CrmLoginFilter implements Filter {
 		String ldapRole = CrmSecurityManager.getUserRole(request);
 		CrmAgentRole agentRole = CrmAgentRole.getEnumByLDAPRole(ldapRole);
 		CrmAgentModel agent = CrmSession.getCurrentAgent(request.getSession());
+		FDSessionUser user = (FDSessionUser) request.getSession().getAttribute(SessionName.USER);
+		if(user !=null){
+			ContentFactory.getInstance().setEligibleForDDPP(FDStoreProperties.isDDPPEnabled() || user.isEligibleForDDPP());
+		}
 		CrmStatus status = null;
 		if(null != request.getRemoteUser() && null == agent && null !=ldapRole){
 			try {
@@ -67,7 +74,7 @@ public class CrmLoginFilter implements Filter {
 				status = new CrmStatus(agent.getPK());
 			}
 			CrmSessionStatus sessStatus = new CrmSessionStatus(status, request.getSession());
-			CrmSession.setSessionStatus(request.getSession(), sessStatus);
+			CrmSession.setSessionStatus(request.getSession(), sessStatus);			
 			String redirectUrl = sessStatus.getRedirectUrl();
 			request.getSession().setAttribute(SessionName.APPLICATION, "CALLCENTER");
 			if(null ==redirectUrl){
