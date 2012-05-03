@@ -19,12 +19,6 @@ final int W_CATEGORY_NO_LEFT_NAV = 765;
 	if (null !=request.getParameter("ppPreviewId")) {
 		/* manipulate layout for preview mode */
 		
-		//add style sheet
-		%><%@ include file="/shared/template/includes/style_sheet_detect.jspf" %><%
-		
-		//manipulate user's context
-		%><%
-		
 		//disable linking
 		disableLinks = true;
 		if(request.getParameter("redirected")==null){			

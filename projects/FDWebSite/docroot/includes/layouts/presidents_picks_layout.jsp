@@ -29,12 +29,6 @@
 	if (!"false".equalsIgnoreCase(isPreviewMode)) {
 		/* manipulate layout for preview mode */
 		
-		//add style sheet
-		%><%@ include file="/shared/template/includes/style_sheet_detect.jspf" %><%
-		
-		//manipulate user's context
-		%><%
-		
 		//disable linking
 		disableLinks = true;
 		
@@ -307,7 +301,10 @@
 			</fd:FDShoppingCart>
 		</div>
 		<br style="clear:both" />
-			
+<!--[if lt IE 7]><div class="ie ie6"><![endif]-->
+<!--[if IE 7]><div class="ie ie7"> <![endif]-->
+<!--[if IE 8]><div class="ie ie8"> <![endif]-->
+<!--[if gt IE 8]><!--><div><!--<![endif]-->		
 		
 <%		QueryParameterCollection qc = QueryParameterCollection.decode(request.getQueryString());
 		String uri = request.getRequestURI();
@@ -337,6 +334,7 @@
 				%><div class="clear"></div>
 				</div>
 			</div>
+		</div>
 		<%
 	}
 %>

@@ -67,12 +67,14 @@
 <% } %>
 <a class="product-group-price-link"><display:ProductGroupPricing product="<%= pm %>"/></a>
 </div>
-<div class="grid-item-unavailable-text">
+<div class="grid-item-controls">
+<span class="grid-item-controls-content">
 <%
 	if (!productAvailability.isFullyAvailable()) {
 		%>Sorry! Unavailable!<%		
 	}
 %>
+</span>
 </div>
 </div><!--  grid-item -->
 </display:ProductAvailability>
