@@ -311,7 +311,7 @@
 
 .grid-item-unavailable .grid-item-price,
 .grid-item-unavailable .grid-item-price-description {
-		display:none;
+		visibility:hidden;
 }
 
 .grid-item-unavailable .grid-item-controls {

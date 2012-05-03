@@ -489,6 +489,7 @@ public class LayoutManager extends BodyTagSupport {
 			// TODO: what more I need to do here?
 //		} // top 10
 		} else if (layoutType == EnumLayoutType.PRESIDENTS_PICKS.getId()) {
+			s.setIncludeUnavailable(false);			
 			s.setLayoutFileName("/includes/layouts/presidents_picks_layout.jsp");
 		}
 		
