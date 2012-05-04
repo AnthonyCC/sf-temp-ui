@@ -14,6 +14,7 @@ public enum EnumQuickbuyStatus {
 
 	private EnumQuickbuyStatus(String message, int severity) {
 		this.message = message;
+		this.severity = severity;
 	}
 
 	public String getMessage() {
