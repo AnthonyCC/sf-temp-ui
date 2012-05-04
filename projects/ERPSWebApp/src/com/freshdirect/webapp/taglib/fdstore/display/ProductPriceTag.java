@@ -592,7 +592,7 @@ public class ProductPriceTag extends BodyTagSupport {
             }
 
             String wasString = priceCalculator.getWasPriceFormatted(savingsPercentage);
-
+            
             if (wasString != null) {
                 if (dataDriven) { //return savingsPercentage text
 
@@ -608,8 +608,8 @@ public class ProductPriceTag extends BodyTagSupport {
                                 "%</span>";
                         }
                     } else {
-                        wasString = "<span class=\"lor\">SAVE</span> " +
-                            priceCalculator.getHighestDealPercentage() + "%";
+                    	//return (was $#.##) text
+                    	wasString = " (was " + wasString + ")";
                     }
                 } else {
                     //return (was $#.##) text
@@ -677,8 +677,11 @@ public class ProductPriceTag extends BodyTagSupport {
                     buf.append("<div" + groceryStyleScale + ">" + scaleString +
                         "</div>");
                 } else {
-                    buf.append("<div" + styleScale + ">" + scaleString +
-                        "</div>");
+                	//if we have scale pricing AND promo price, in ddpp we don't want BOTH to display
+                	if (!dataDriven || (dataDriven && (wasString == null || "".equals(wasString)))) {
+                		buf.append("<div" + styleScale + ">" + scaleString +
+                			"</div>");
+                	}
                 }
             }
 
