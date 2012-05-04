@@ -14,6 +14,7 @@ import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.DomainValue;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.SkuModel;
+import com.freshdirect.fdstore.content.util.SortStrategyElement;
 import com.freshdirect.framework.webapp.ActionError;
 import com.freshdirect.framework.webapp.ActionResult;
 import com.freshdirect.mobileapi.exception.ModelException;
@@ -200,6 +201,9 @@ public class WhatsGood {
                     ItemGrabberTagWrapper itemGrabberTagWrapper = new ItemGrabberTagWrapper(user);
                     if(currentFolder instanceof CategoryModel && null != ((CategoryModel)currentFolder).getProductPromotionType() &&ContentFactory.getInstance().isEligibleForDDPP()){
                     	layoutManagerSetting.setFilterUnavailable(true);
+                    	List list = new ArrayList<SortStrategyElement>();
+                    	list.add(new SortStrategyElement(SortStrategyElement.NO_SORT));
+                    	layoutManagerSetting.setSortStrategy(list);
                     }
                     contents = itemGrabberTagWrapper.getProducts(layoutManagerSetting, currentFolder);
 

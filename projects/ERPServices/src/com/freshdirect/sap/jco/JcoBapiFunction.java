@@ -101,7 +101,7 @@ abstract class JcoBapiFunction implements BapiFunctionI {
 			retList.add(this.convertReturn(ret));
 
 		} else if (function.getTableParameterList() != null && function.getTableParameterList().hasField("RETURN")
-				&& function.getExportParameterList().isTable("RETURN")) {
+				&& function.getTableParameterList().isTable("RETURN")) {
 			// get "return" as a table
 			JCO.Table ret = function.getTableParameterList().getTable("RETURN");
 			ret.firstRow();
