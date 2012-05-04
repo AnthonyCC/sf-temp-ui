@@ -54,7 +54,7 @@ if (cutoffInfo.displayWarning()) {
 				<img src="/media_stat/images/layout/clear.gif" width="1" height="6">
 			</td>
 		</tr>
-	<tr bgcolor="#999966"><td><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td></tr></table>
+	<tr bgcolor="#999966"><td class="onePxTall"><img src="/media_stat/images/layout/clear.gif" width="1" height="1" alt="" /></td></tr></table>
 	<%
 } else if (cutoffInfo.isHourPastCutoff()) {
 	String uri = request.getRequestURI().toLowerCase();
@@ -67,8 +67,8 @@ if (cutoffInfo.displayWarning()) {
 					<b><font color="#CC0000">Please note:</font> The cut off time for <%= isPickupAddr || isUnknown?"pickup":"delivery"%> <%=dayDateFormat.format(cutoffInfo.getDeliveryDate())%> was <%=cutoffInfo.getCutoffTime().toString()%></b><br>
 					<img src="/media_stat/images/layout/clear.gif" width="1" height="6">
 				</td>
-			</tr><br>
-			<tr bgcolor="#999966"><td><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td></tr></table>
+			</tr>
+			<tr bgcolor="#999966"><td class="onePxTall test"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td></tr></table>
 		<%
 	}
 }

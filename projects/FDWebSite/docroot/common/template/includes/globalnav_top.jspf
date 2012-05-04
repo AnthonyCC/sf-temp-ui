@@ -49,7 +49,7 @@ if(user != null) {
 						<br><img src="/media_stat/images/layout/clear.gif" width="1" height="6">
 					</td>
 				</tr>
-				<tr bgcolor="#999966"><td><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td></tr>
+				<tr bgcolor="#999966"><td class="onePxTall"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td></tr>
 			</table><br>
 		</logic:iterate>
 	</fd:GetSiteAnnouncements><%
