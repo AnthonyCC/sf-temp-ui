@@ -4,7 +4,7 @@ String productId = request.getParameter("productId");
 if (categoryId!=null && productId!=null) {
 	ProductModel product = ContentFactory.getInstance().getProductByName(categoryId, productId);
 	String wSize = "400,585";
-	List<Html> donenessGuides = product.getDonenessGuide(); 
+	List<Html> donenessGuides = null !=product?product.getDonenessGuide():null; 
 	if (donenessGuides!=null && donenessGuides.size()>0) {%>
 	  <br><b>Fresh Tip</b><br>
 <%

@@ -56,13 +56,16 @@ ProductModel productNode = null;
 	
 	ProductModel product =  ContentFactory.getInstance().getProductByName(catId,prodId);
 	//accomodate claims include
-	productNode = product;
-	skuCode = product.getDefaultSku().getSkuCode();
+	if(null !=product){
+		productNode = product;
+		skuCode = product.getDefaultSku().getSkuCode();
+		dept = product.getDepartment();
+		deptName = dept.getFullName();
+	}
 	FDProductInfo productInfo = FDCachedFactory.getProductInfo(skuCode);
 	FDProduct defaultProduct = FDCachedFactory.getProduct( productInfo );
 	
-	dept = product.getDepartment();
-	deptName = dept.getFullName();
+	
 	
 	variations = Arrays.asList(defaultProduct.getVariations());
 	

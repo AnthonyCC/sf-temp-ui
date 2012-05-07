@@ -30,7 +30,7 @@ ContentFactory cf = ContentFactory.getInstance();
 List skus = new ArrayList();
 ProductModel product =  ContentFactory.getInstance().getProductByName(mcatId,mproductId);
 
-if (!product.getComponentGroups().isEmpty()) {
+if (null !=product && !product.getComponentGroups().isEmpty()) {
     String redirectURL = "/cg_meal_item_detail.jsp?" + request.getQueryString();
     response.sendRedirect(response.encodeRedirectURL(redirectURL));
     return;

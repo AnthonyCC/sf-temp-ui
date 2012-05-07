@@ -302,8 +302,8 @@
 								</tr>
 						<% 	    
 							} else {
-
-								String deptName = ContentFactory.getInstance().getProductByName( cartLine.getCategoryName(), cartLine.getProductName() ).getDepartment().getContentName();
+								ProductModel prodMdl=ContentFactory.getInstance().getProductByName( cartLine.getCategoryName(), cartLine.getProductName() );
+								String deptName = null !=prodMdl?prodMdl.getDepartment().getContentName():"";
 
 								//if (view.isDisplayDepartment()) {
 								//fix for APPDEV-685

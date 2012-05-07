@@ -35,7 +35,7 @@ if ("POST".equals(request.getMethod()) && result == null) {
 }
 %>
 <tmpl:insert template='/common/template/both_dnav.jsp'>
-    <tmpl:put name='title' direct='true'>FreshDirect - <%= productNode.getFullName() %></tmpl:put>
+    <tmpl:put name='title' direct='true'>FreshDirect - <%= null !=productNode?productNode.getFullName():"" %></tmpl:put>
     <tmpl:put name='leftnav' direct='true'>
     </tmpl:put>
 <tmpl:put name='content' direct='true'>

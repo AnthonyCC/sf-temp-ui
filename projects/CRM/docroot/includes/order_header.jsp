@@ -116,7 +116,9 @@ String referencedOrder = request.getParameter("orig_sale_id") != null ? request.
 		String categoryId = request.getParameter("catId");
 		leftColumnTitle = "Related Items for ";
 		ProductModel originalProduct = ContentFactory.getInstance().getProductByName(categoryId, productId);
-		leftColumnTitle += originalProduct.getFullName();
+		if(null !=originalProduct){
+			leftColumnTitle += originalProduct.getFullName();
+		}
 	}
 %>
 

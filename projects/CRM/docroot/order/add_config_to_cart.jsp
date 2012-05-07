@@ -25,7 +25,7 @@
 	//
 	ProductModel productModel = ContentFactory.getInstance().getProductByName(request.getParameter("catId"), request.getParameter("productId"));
 	
-	DepartmentModel dept = productModel.getDepartment();
+	DepartmentModel dept = null !=productModel ? productModel.getDepartment():null;
 	
 	try {
     	FDProduct product = FDCachedFactory.getProduct(FDCachedFactory.getProductInfo( request.getParameter("skuCode") ));

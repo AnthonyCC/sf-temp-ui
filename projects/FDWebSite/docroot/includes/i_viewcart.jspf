@@ -195,7 +195,8 @@ FDIdentity identity = user.getIdentity();
 					<%
 					firstRecipe = false;
 				} else {
-					String deptId = ContentFactory.getInstance().getProductByName( cartLine.getCategoryName(), cartLine.getProductName() ).getDepartment().getContentName();
+					ProductModel prodMdl=ContentFactory.getInstance().getProductByName( cartLine.getCategoryName(), cartLine.getProductName() );
+					String deptId = null !=prodMdl?prodMdl.getDepartment().getContentName():"";
 					%>
 					<tr>
 						<td width="40">&nbsp;</td><td width="16">&nbsp;</td><td width="22">&nbsp;</td>
