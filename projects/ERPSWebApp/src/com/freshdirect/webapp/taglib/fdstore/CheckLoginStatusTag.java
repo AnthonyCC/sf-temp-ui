@@ -283,7 +283,9 @@ public class CheckLoginStatusTag extends com.freshdirect.framework.webapp.TagSup
             ContentFactory.getInstance().setEligibleForDDPP(FDStoreProperties.isDDPPEnabled() || user.isEligibleForDDPP());
         } else {
             LOGGER.warn("cannot set pricing context");
+            ContentFactory.getInstance().setCurrentPricingContext(PricingContext.DEFAULT);
             WineFilter.clearAvailabilityCache(PricingContext.DEFAULT);
+            ContentFactory.getInstance().setEligibleForDDPP(FDStoreProperties.isDDPPEnabled());
         }
 
         // Set/clear masquerade agent for activity logging

@@ -23,7 +23,7 @@ String getStatusMessage(EnumQuickbuyStatus status) {
 
 	return buf.toString();
 }
---%><%
+%><%
 if (session.getAttribute("fd.user") != null) {
 	try {
 %><fd:FDShoppingCart result="result" id="cart" action='addMultipleToCart'><%
