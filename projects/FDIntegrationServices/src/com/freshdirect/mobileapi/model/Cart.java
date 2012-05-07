@@ -598,8 +598,9 @@ public class Cart {
                             //                            affiliateCartDetail.addLineItems(currentBucketGroup);
 
                         } else {
-                            String deptId = ContentFactory.getInstance().getProductByName(cartLine.getCategoryName(),
-                                    cartLine.getProductName()).getDepartment().getContentName();
+                        	ProductModel prodMdl =ContentFactory.getInstance().getProductByName(cartLine.getCategoryName(),
+                                    cartLine.getProductName());
+                            String deptId = (null !=prodMdl ? prodMdl.getDepartment().getContentName():"");
                             currentBucketGroup = new Group(CartLineItemType.DEPT);
                             currentBucketGroup.setId(deptId);
                             currentBucketGroup.setName(lastDept);

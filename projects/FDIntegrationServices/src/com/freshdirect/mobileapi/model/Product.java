@@ -1457,12 +1457,14 @@ public class Product {
 
     public static Product wrap(ProductModel productModel, FDUserI user, Variant variant) throws ModelException {
         Product result = null;
-        if (EnumProductLayout.WINE.equals(productModel.getProductLayout())) {
-            result = new Wine(productModel, user, variant);
-        } else if (EnumProductLayout.NEW_WINE_PRODUCT.equals(productModel.getProductLayout())) {
-            result = new Wine(productModel, user, variant);
-        } else {
-            result = new Product(productModel, user, variant);
+        if(null != productModel){
+	        if (EnumProductLayout.WINE.equals(productModel.getProductLayout())) {
+	            result = new Wine(productModel, user, variant);
+	        } else if (EnumProductLayout.NEW_WINE_PRODUCT.equals(productModel.getProductLayout())) {
+	            result = new Wine(productModel, user, variant);
+	        } else {
+	            result = new Product(productModel, user, variant);
+	        }
         }
         return result;
     }

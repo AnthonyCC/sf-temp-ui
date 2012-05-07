@@ -243,10 +243,13 @@ public class Order {
 	            ProductConfiguration productConfiguration = new ProductConfiguration();
 	            try {
 	                Product productData = Product.wrap(product.getProductRef().lookupProductModel(), user.getFDSessionUser().getUser());
-	                Sku sku = productData.getSkyByCode(product.getSkuCode());
-	
-	                if (productData.hasTerms()) {
-	                    productConfiguration.addPassbackParam(RequestParamName.REQ_PARAM_AGREE_TO_TERMS, "yes");
+	                Sku sku = null;
+	                if(null != productData){
+		                sku = productData.getSkyByCode(product.getSkuCode());
+		
+		                if (productData.hasTerms()) {
+		                    productConfiguration.addPassbackParam(RequestParamName.REQ_PARAM_AGREE_TO_TERMS, "yes");
+		                }
 	                }
 	                
 	                if (sku == null) {

@@ -69,7 +69,7 @@ public class DCPDLineItemStrategy implements LineItemStrategyI {
 		}
 		if(!eligible){
 			ProductModel model = lineItem.getProductRef().lookupProductModel();
-			String productId = model.getContentKey().getId();
+			String productId = null !=model ?model.getContentKey().getId():"";
 			DCPDPromoProductCache dcpdCache = context.getUser().getDCPDPromoProductCache();
 			//Check if the line item product is already evaluated.
 			if(dcpdCache.isEvaluated(productId, promotionCode)){
