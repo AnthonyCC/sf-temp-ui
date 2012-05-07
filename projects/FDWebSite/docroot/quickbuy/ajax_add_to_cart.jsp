@@ -6,7 +6,7 @@
 %><%@page import="com.freshdirect.fdstore.customer.FDCartLineI"
 %><%@page import="org.apache.log4j.Logger"
 %><%@page import="com.freshdirect.fdstore.customer.EnumQuickbuyStatus"
-%><%!
+%><fd:CheckLoginStatus noRedirect="true"/><%!
 final Logger LOGGER = LoggerFactory.getInstance("/quickbuy/ajax_add_to_cart.jsp");
 
 String getStatusMessage(EnumQuickbuyStatus status) {
@@ -23,7 +23,7 @@ String getStatusMessage(EnumQuickbuyStatus status) {
 
 	return buf.toString();
 }
-%><%
+--%><%
 if (session.getAttribute("fd.user") != null) {
 	try {
 %><fd:FDShoppingCart result="result" id="cart" action='addMultipleToCart'><%
