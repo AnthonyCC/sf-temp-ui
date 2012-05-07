@@ -952,8 +952,10 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 		for (Iterator<FDCartLineI> i = this.orderLines.iterator(); i.hasNext();) {
 			FDCartLineI line = i.next();
 			ProductModel pm = ContentFactory.getInstance().getProductByName(line.getCategoryName(), line.getProductName());
-			if (pm.hasParentWithName(contentNames)) {
-				return true;
+			if(null !=pm){
+				if (pm.hasParentWithName(contentNames)) {
+					return true;
+				}
 			}
 		}
 		return false;
@@ -969,9 +971,11 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 		for (Iterator<FDCartLineI> i = this.orderLines.iterator(); i.hasNext();) {
 			FDCartLineI line = i.next();
 			ProductModel pm = ContentFactory.getInstance().getProductByName(line.getCategoryName(), line.getProductName());
-			for ( BrandModel brand : pm.getBrands() ) {
-				if (brandNames.contains(brand.getContentName())) {
-					return true;
+			if(null !=pm){
+				for ( BrandModel brand : pm.getBrands() ) {
+					if (brandNames.contains(brand.getContentName())) {
+						return true;
+					}
 				}
 			}
 		}
