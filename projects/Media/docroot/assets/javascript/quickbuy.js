@@ -305,6 +305,7 @@ FD_QuickBuy.style = {
 
 (new YAHOO.util.YUILoader({
     require: ["event-delegate", "selector"],
+    base:'/assets/yui-2.9.0/',
     loadOptional: true,
     onSuccess: function() {
 		YAHOO.util.Event.delegate(document.body, "click", function(e, matchedEl, container) {
