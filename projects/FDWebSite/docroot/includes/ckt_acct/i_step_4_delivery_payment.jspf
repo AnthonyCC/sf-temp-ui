@@ -1,26 +1,60 @@
 <%@ page import='com.freshdirect.delivery.depot.*'%>
+<%@ page import="java.text.SimpleDateFormat" %>
 <%@ page import='com.freshdirect.payment.EnumPaymentMethodType'%>
 <%@ page import='com.freshdirect.customer.EnumUnattendedDeliveryFlag'%>
 <%@ page import='com.freshdirect.framework.util.NVL'%>
+<%@ page import="com.freshdirect.fdstore.customer.FDCartModel"%>
+<%@ page import="com.freshdirect.webapp.util.JspMethods"%>
+<%--
+	Included by step_4_submit.jsp, i_checkout_receipt.jspf
+	
+	@param FDUserI user
+	@param FDCartI cart
+	@param ErpAddressModel dlvAddress
 
-<% //expanded page dimensions
-final int W_CHECKOUT_STEP_4_DELIVERY_PAYMENT_TOTAL = 970;
-%>
+	Variables defined in upstream JSP file:
 
+	String receipt
+ --%>
 <%!
-java.text.SimpleDateFormat cutoffDateFormat = new java.text.SimpleDateFormat("h:mm a 'on' EEEE, MM/d/yy");
-%>
-<%
+	final SimpleDateFormat cutoffDateFormat = new java.text.SimpleDateFormat("h:mm a 'on' EEEE, MM/d/yy");
+	final SimpleDateFormat dateFormatter = new SimpleDateFormat("EEE MM/dd/yy");
+
+	//expanded page dimensions
+	final int W_CHECKOUT_STEP_4_DELIVERY_PAYMENT_TOTAL = 970;
+%><%
+	// [APPDEV-2149] SO template only checkout => no order, no dlv timeslot, no giftcard magic
+	//
+	final boolean isSOTMPL = EnumCheckoutMode.MODIFY_SO_TMPL.equals( user.getCheckoutMode() );
+	
+	
     boolean isDepotAddress = false;
     ErpDepotAddressModel depotAddress = null;
 	String hamptonsDepotCode ="HAM";
 	String depotCode=null;
     String depotName = "";
     double perishableBufferAmount = 0;
-    double gcSelectedBalance = user.getGiftcardBalance()- cart.getTotalAppliedGCAmount();
+    double gcSelectedBalance = isSOTMPL ? 0 : user.getGiftcardBalance()- cart.getTotalAppliedGCAmount();
     double gcBufferAmount=0;
     double ccBufferAmount=0;
     
+    String __fmtDlvDateTime = "";
+	String __deliveryTime ="";
+	
+	if (isSOTMPL) {
+		StandingOrderHelper.DeliveryTime dt = new StandingOrderHelper.DeliveryTime(user.getCurrentStandingOrder());
+		__fmtDlvDateTime	= dt.getDayName();
+		__deliveryTime		= dt.formatTime();
+	} else {
+		FDReservation __reservation = cart.getDeliveryReservation();
+		if ( __reservation != null && null != __reservation.getStartTime() ) {
+			__fmtDlvDateTime=dateFormatter.format(__reservation.getStartTime()).toUpperCase();
+			if ( null != __reservation.getEndTime() && !"".equals(__reservation.getStartTime()) && !"".equals(__reservation.getEndTime()) ) 
+				__deliveryTime=FDTimeslot.format(__reservation.getStartTime(), __reservation.getEndTime());
+		}
+	}
+
+
     if (cart instanceof FDOrderI) {
     	isDepotAddress = ((FDOrderI)cart).getDeliveryAddress() instanceof ErpDepotAddressModel ? true : false;
     	if (isDepotAddress) {
@@ -32,11 +66,11 @@ java.text.SimpleDateFormat cutoffDateFormat = new java.text.SimpleDateFormat("h:
     		depotAddress = (ErpDepotAddressModel) user.getShoppingCart().getDeliveryAddress(); 
     	}    	
     }
-    if(cart instanceof FDCartModel){
+    if(!isSOTMPL && cart instanceof FDCartModel){
     	perishableBufferAmount = FDCustomerManager.getPerishableBufferAmount((FDCartModel)cart);
     }
     
-    if(perishableBufferAmount > 0){
+    if(!isSOTMPL && perishableBufferAmount > 0){
     	if(cart.getTotalAppliedGCAmount()> 0){
     		if(!EnumPaymentMethodType.GIFTCARD.equals(paymentMethod.getPaymentMethodType())){
         		/*if(gcSelectedBalance - perishableBufferAmount >=0){
@@ -66,14 +100,14 @@ java.text.SimpleDateFormat cutoffDateFormat = new java.text.SimpleDateFormat("h:
 		}
     }
 
-    boolean showModify=true;
-    if (request.getRequestURI().toLowerCase().indexOf("step_4_receipt")>-1 || request.getRequestURI().toLowerCase().indexOf("order_detail")>-1 ){
-        showModify = false;
-    }
+    boolean showModify =
+    !(	isSOTMPL
+   		||  request.getRequestURI().toLowerCase().indexOf("step_4_receipt")>-1
+   		||  request.getRequestURI().toLowerCase().indexOf("order_detail")>-1
+    );
 %>
 
-<%@page import="com.freshdirect.fdstore.customer.FDCartModel"%>
-<%@page import="com.freshdirect.webapp.util.JspMethods"%><TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="<%=W_CHECKOUT_STEP_4_DELIVERY_PAYMENT_TOTAL%>">
+<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="<%=W_CHECKOUT_STEP_4_DELIVERY_PAYMENT_TOTAL%>">
 <TR VALIGN="TOP">
     <TD WIDTH="290">
         <TABLE CELLPADDING="0" CELLSPACING="0" BORDER="0" WIDTH="<%=(W_CHECKOUT_STEP_4_DELIVERY_PAYMENT_TOTAL-40)/2%>">
@@ -87,8 +121,8 @@ java.text.SimpleDateFormat cutoffDateFormat = new java.text.SimpleDateFormat("h:
             <FONT CLASS="text12">
 <b>Time:</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<% if (showModify) {%><A HREF="/checkout/step_2_select.jsp">Modify</A><%}%><BR>
             <font class="space4pix"><br></font>
-            <%=fmtDlvDateTime%><br>
-            <%=deliveryTime%><br>
+            <%=__fmtDlvDateTime%><br>
+            <%=__deliveryTime%><br>
             <br>
 <b>Address:</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<% if (showModify) {%><A HREF="/checkout/step_1_choose.jsp">Modify</A><%}%><font class="space4pix"><br><br></font>
             <%= dlvAddress.getFirstName() %> <%= dlvAddress.getLastName() %><br>
@@ -145,7 +179,7 @@ java.text.SimpleDateFormat cutoffDateFormat = new java.text.SimpleDateFormat("h:
             <%}%>
         <%}%></FONT>
 		
-		<span class="text12"><b>Please note:</b> any modifications to this order must be completed by <%=cutoffDateFormat.format(cart.getDeliveryReservation().getCutoffTime()) %>.</span>
+		<% if (!isSOTMPL) { %><span class="text12"><b>Please note:</b> any modifications to this order must be completed by <%=cutoffDateFormat.format(cart.getDeliveryReservation().getCutoffTime()) %>.</span><% } %>
 		<br><br></TD>
         </TR>
         </TABLE>
@@ -160,10 +194,10 @@ java.text.SimpleDateFormat cutoffDateFormat = new java.text.SimpleDateFormat("h:
             <TD WIDTH="<%=(W_CHECKOUT_STEP_4_DELIVERY_PAYMENT_TOTAL-40)/2-10%>">
             <font class="space4pix"><br></font>
             <FONT CLASS="text12">
-            <b>Order Total:</b><BR>
+            <b>Order <%= isSOTMPL ? "Subtotal" : "Total" %>:</b><BR>
             <font class="space4pix"><br></font>
-            <%= JspMethods.formatPrice(cart.getTotal()) %>*<BR>
-            <% if(cart.getTotalAppliedGCAmount()> 0){ %> 
+            <% if (isSOTMPL) { %><%= JspMethods.formatPrice(cart.getSubTotal()) %><% } else { %><%= JspMethods.formatPrice(cart.getTotal()) %>*<% } %><BR>
+            <% if(!isSOTMPL && cart.getTotalAppliedGCAmount()> 0){ %> 
 	            <BR>
 	            <font class="space4pix"><br></font>
 	            <FONT CLASS="text12">
@@ -186,7 +220,7 @@ java.text.SimpleDateFormat cutoffDateFormat = new java.text.SimpleDateFormat("h:
 	            <BR>      
             <% } %>
             <% if(!EnumPaymentMethodType.GIFTCARD.equals(paymentMethod.getPaymentMethodType())) { %> 
-            <% if(cart.getTotalAppliedGCAmount()> 0){ %>     
+            <% if(!isSOTMPL && cart.getTotalAppliedGCAmount()> 0){ %>     
 	            <BR>
 	            <font class="space4pix"><br></font>
 	            <FONT CLASS="text12">
@@ -244,7 +278,7 @@ java.text.SimpleDateFormat cutoffDateFormat = new java.text.SimpleDateFormat("h:
 					}
 				}
 			%>
-			<% if(usq_message) { 
+			<% if(!isSOTMPL && usq_message) { 
 				 if("true".equals(receipt)) {
 			%>
 				<span class="text12">I acknowledge that I have purchased alcohol from Union Square Wines & Spirits and that my credit card or checking account will be charged separately by UNION SQUARE WINE.</span>

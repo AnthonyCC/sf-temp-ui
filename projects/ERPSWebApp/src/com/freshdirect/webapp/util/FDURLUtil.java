@@ -644,6 +644,10 @@ public class FDURLUtil {
 		return uri.toString();
 	}
 
+	public static String getStandingOrderLandingPage(FDStandingOrder so, String action, String orderId) {
+		return getStandingOrderLandingPage(so, action) + ProductDisplayUtil.URL_PARAM_SEP + "orderId=" + orderId; 
+	}
+	
 	public static String getStandingOrderMainPage() {
 		StringBuilder uri = new StringBuilder();
 		uri.append(STANDING_ORDER_MAIN_PAGE);

@@ -32,6 +32,7 @@
 <%@ page import="com.freshdirect.deliverypass.*" %>
 <%@ page import="com.freshdirect.common.pricing.Discount" %>
 <%@ page import='com.freshdirect.fdstore.FDStoreProperties' %>
+<%@ page import="com.freshdirect.webapp.util.JspMethods"%>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
@@ -44,6 +45,7 @@ final int W_CHECKOUT_STEP_2_SELECT_TOTAL = 970;
 <%
 
 request.setAttribute("CHECK_UNATTENDED_DELIVERY","true");
+request.setAttribute("__yui_load_selector__", Boolean.TRUE);
 
 boolean showAdvanceOrderBand = false;
 
@@ -57,11 +59,12 @@ boolean advOrdRangeOK = advOrdRange.overlaps(validRange);
 boolean isAdvOrderGap = FDStoreProperties.IsAdvanceOrderGap();
 int page_type = TimeslotLogic.PAGE_NORMAL;
 %>
-
-<%@page import="com.freshdirect.webapp.util.JspMethods"%>
 <fd:CheckLoginStatus id="user" guestAllowed="false" recognizedAllowed="false" redirectPage='/checkout/view_cart.jsp' />
 <%
-    String successPage = "/checkout/step_3_choose.jsp";
+	// [APPDEV-2149] Display generic timeslot table (Just days of week, no restrictions, etc.)
+	final boolean abstractTimeslots = EnumCheckoutMode.MODIFY_SO_TMPL == user.getCheckoutMode();
+
+	String successPage = "/checkout/step_3_choose.jsp";
 
 	boolean isStaticSlot = false;
 	boolean isDepotAddress = false;
@@ -79,7 +82,7 @@ int page_type = TimeslotLogic.PAGE_NORMAL;
 
 		address = AddressFinder.getShipToAddress(user, addressId, timeSlotCtx, request);
 
-	} else { //if ( EnumCheckoutMode.MODIFY_SO == user.getCheckoutMode() ) {
+	} else { // MODIFY_SO_CSOI or MODIFY_SO_MSOI 
 		address = currentStandingOrder.getDeliveryAddress();
 		/* STANDING ORDER - UNFINISHED CODE */
 	} 
@@ -94,12 +97,16 @@ int page_type = TimeslotLogic.PAGE_NORMAL;
     if (payMethods==null || payMethods.size()==0) {
         successPage = "/checkout/step_3_card_add.jsp?proceed=true";
     }
-    successPage = "/checkout/step_2_check.jsp?successPage="+URLEncoder.encode(successPage);
+
+    // skip availability check when timeslots are generic
+    if (!abstractTimeslots)
+	    successPage = "/checkout/step_2_check.jsp?successPage="+URLEncoder.encode(successPage);
 
 %>
-<fd:DeliveryTimeSlot id="DeliveryTimeSlotResult" address="<%=address%>" timeSlotId="<%=timeSlotId%>">
+<fd:DeliveryTimeSlot id="DeliveryTimeSlotResult" address="<%=address%>" timeSlotId="<%=timeSlotId%>" generic="<%= abstractTimeslots %>" >
 
 <%	
+
 	FDDeliveryTimeslotModel deliveryModel = DeliveryTimeSlotResult.getDeliveryTimeslotModel();
 	FDCartModel cart = deliveryModel.getShoppingCart();
 	
@@ -107,7 +114,7 @@ int page_type = TimeslotLogic.PAGE_NORMAL;
 	Map zones = deliveryModel.getZones();
 	boolean zoneCtActive = deliveryModel.isZoneCtActive();
 	List messages = deliveryModel.getGeoRestrictionmessages();
-	
+
 	String selectedSlotId = deliveryModel.getTimeSlotId();
 	String preReserveSlotId = deliveryModel.getPreReserveSlotId();
 	boolean hasPreReserved = deliveryModel.isPreReserved();
@@ -133,8 +140,11 @@ int page_type = TimeslotLogic.PAGE_NORMAL;
 
 <tmpl:insert template='/common/template/checkout_nav.jsp'>
 <tmpl:put name='title' direct='true'>FreshDirect - Checkout - Choose Delivery Time </tmpl:put>
-<tmpl:put name='content' direct='true'>
-<fd:CheckoutController actionName="reserveDeliveryTimeSlot" result="result" successPage="<%=successPage%>">
+<tmpl:put name='content' direct='true'><%
+
+final String actionName = abstractTimeslots ? "changeSONextDeliveryDate" : "reserveDeliveryTimeSlot";
+%>
+<fd:CheckoutController actionName="<%= actionName %>" result="result" successPage="<%=successPage%>">
 <script type="text/javascript">
 var zonePromoString=""; 
 var zonePromoEnabled=false;
@@ -146,7 +156,7 @@ zonePromoEnabled=true;
 
 <%@ include file="/includes/i_modifyorder.jspf" %>
 
-<FORM method="post" name="step2Form" onSubmit="return checkPromoEligibilityByTimeSlot('<%= null==user.getRedeemedPromotion()?"null":"not null" %>');" action="/checkout/step_2_select.jsp">
+<FORM id="step2Form" method="post" name="step2Form" onSubmit="return checkPromoEligibilityByTimeSlot('<%= null==user.getRedeemedPromotion()?"null":"not null" %>');" x-action="/checkout/step_2_select.jsp">
 <div class="gcResendBox" style="display:none"><!--  -->
 		<table cellpadding="0" cellspacing="0" border="0" style="border-collapse: collapse;" class="gcResendBoxContent" id="gcResendBox">
 			<tr>
@@ -318,7 +328,10 @@ if (errorMsg!=null) {%>
 		
 		<% } %>
 
-<%if(user.getSelectedServiceType() == EnumServiceType.CORPORATE) { %>
+<%
+
+  // [APPDEV-2149] Generic timeslots have nothing to do with delivery pass
+  if(!abstractTimeslots && user.getSelectedServiceType() == EnumServiceType.CORPORATE) { %>
 	
 	<%@ include file="/includes/delivery/i_delivery_pass_not_applied.jspf"%>	
 	
@@ -480,6 +493,45 @@ if (errorMsg!=null) {%>
 	}
 %>
 	<BR><%@ include file="/shared/includes/delivery/i_delivery_slots.jspf"%>
+	
+	<%
+	
+	if (abstractTimeslots) {
+		request.setAttribute("standingOrder", currentStandingOrder);
+		
+		%>
+		
+		<div><img width="18" border="0" height="18" src="/media_stat/images/timeslots/star_large.gif" style="margin-right:10px">
+		<span class="title18"><%if (currentStandingOrder.getFrequency() != 1) {%>CHOOSE <%}%>START DATE</span></FONT>
+		<hr style="margin-bottom:10px">
+		<div style="margin-bottom: 2em; width: 970px">
+		<div style="" class="text12bold">
+			<span style="font-size: 14px; font-weight: bold; color: #855386;">Deliver this Standing Order beginning on:</span>
+			<div id="candidatesContainer" style="display: inline-block">
+				<%@ include file="/checkout/includes/i_next_dlv_candidates.jspf" %>
+			</div>
+		</div>
+		</div>
+		<%
+
+		// extend timeslot logic
+		%><script type="text/javascript">
+YAHOO.util.Event.onDOMReady(function() {
+	var radios = YAHOO.util.Selector.query('input[type=radio]', 'step2Form');
+	var i;
+	for (i=0; i<radios.length; i++) {
+		YAHOO.util.Event.on(radios[i], 'click', function(e) {
+			var _id = e.target.id; // <- ts_d1_ts2
+			var _dow = Number(_id[4])+1;
+			
+			SO_DlvCandidates.selectDay(_dow);
+		});
+	}
+});
+</script>
+<%
+	}
+	%>
 
 <!-- ~~~~~~~~~~~~~~~~~~~~~~ END TIMESLOT GRID ~~~~~~~~~~~~~~~~~~~~~~ -->
 		</td>

@@ -1,3 +1,4 @@
+<%@page import="com.freshdirect.fdstore.standingorders.FDStandingOrder.ErrorCode"%>
 <%@ page import="com.freshdirect.fdstore.standingorders.FDStandingOrder"%>
 <%@ page import="com.freshdirect.fdstore.standingorders.FDStandingOrdersManager"%>
 <%@ page import="com.freshdirect.fdstore.customer.FDCustomerManager"%>
@@ -5,24 +6,37 @@
 <%@ page import="com.freshdirect.webapp.taglib.fdstore.SessionName"%>
 <%@ page import="com.freshdirect.common.address.ContactAddressModel"%>
 <%@ page import="com.freshdirect.customer.ErpAddressModel"%>
+<%@ page import="com.freshdirect.customer.ErpPaymentMethodI"%>
 <%@ page import="com.freshdirect.fdstore.customer.FDOrderInfoI"%>
 <%@ page import="com.freshdirect.webapp.crm.util.DeliveryTimeWindowFormatter"%>
 <%@ page import="com.freshdirect.webapp.util.StandingOrderHelper"%>
+<%@ page import="com.freshdirect.webapp.util.OrderPermissionsImpl"%>
+<%@ page import="com.freshdirect.fdstore.customer.FDOrderHistory" %>
+<%@ page import="com.freshdirect.fdstore.customer.FDOrderInfoI"%>
+<%@ page import="com.freshdirect.customer.ErpCustomerInfoModel"%>
+<%@ page import="com.freshdirect.fdstore.customer.FDCustomerFactory"%>
+<%@ page import="com.freshdirect.fdstore.FDStoreProperties" %>
+<%@ page import="com.freshdirect.common.customer.EnumServiceType" %>
+<%@ page import="org.apache.commons.lang.StringEscapeUtils"%>
 <%@ page import="java.text.DateFormatSymbols"%>
 <%@ page import="java.util.Calendar"%>
 <%@ page import="java.text.DateFormat"%>
+<%@ page import="java.util.Date"%>
 <%@ page import="java.text.SimpleDateFormat"%>
 <%@ taglib uri='template' prefix='tmpl'%>
 <%@ taglib uri='freshdirect' prefix='fd'%>
+<%@ taglib uri='logic' prefix='logic' %>
 
 <fd:CheckLoginStatus guestAllowed='false' recognizedAllowed='false'  />
+
 <fd:ManageStandingOrders id="lists">
-<%
+<%	
+	request.setAttribute("__yui_load_calendar__", Boolean.TRUE);
+
 	String ccListId = request.getParameter("ccListId");
 	String actionName = request.getParameter("fdAction");
 
 	final FDUserI user = (FDUserI) session.getAttribute(SessionName.USER);
-
 
 	FDStandingOrder so = null;
 
@@ -35,14 +49,36 @@
 		}
 	}
 	
+	request.setAttribute("isQuickShopCartVisible", Boolean.FALSE);
 	if (so != null) {
+		
+		//find so instances
+		List<FDOrderInfoI> instances = new ArrayList<FDOrderInfoI>();
+		if(user!=null){
+			FDOrderHistory history = (FDOrderHistory) FDCustomerManager.getOrderHistoryInfo(user.getIdentity());
+			instances = (List<FDOrderInfoI>) history.getStandingOrderInstances(so.getId());
+		}
+		
+    	boolean holidayMovement = false; 
+    	for(FDOrderInfoI soi: instances) { 
+    		if (!holidayMovement && soi.isSoHolidayMovement()) {
+    			holidayMovement=true;
+    		}
+    	}
+		
 		ErpAddressModel addr = so.getDeliveryAddress();		
 		final String nextDlvDateText = FDStandingOrder.DATE_FORMATTER.format( so.getNextDeliveryDate() );
 		final String nextDlvDateTextShort = FDStandingOrder.DATE_FORMATTER_SHORT.format( so.getNextDeliveryDate() );
+		final String nextDlvDateTextLong = FDStandingOrder.DATE_FORMATTER_LONG.format( so.getNextDeliveryDate() );
+		
+		final ErpPaymentMethodI paymentMethod = so.getPaymentMethod();
 %>
+	
 	<tmpl:insert template='/common/template/quick_shop_nav.jsp'>
 		<tmpl:put name='title' direct='true'>FreshDirect - Quickshop - Standing Order</tmpl:put>
 	    <tmpl:put name='extrahead' direct='true'>
+			<fd:css href="/assets/css/standingorder.css"/>
+			<fd:javascript src="/assets/javascript/standingorder.js"/>
 			<fd:css href="/assets/css/fix.css"/>
 	    </tmpl:put>
 		<tmpl:put name='side_nav' direct='true'><font class="space4pix"><br/></font>
@@ -54,89 +90,209 @@
 		<tmpl:put name='content' direct='true'>
 		<div id="inner-container" style="width: 100%">
 			<div style="padding-top: 1em; overflow: hidden;">
-				<div class="title17" style="float: left; width: 100%">
-					<span style="float: left;"><%= so.getCustomerListName() %></span>
+				<div class="title17" style="float: left; width: 100%; margin-bottom:15px; margin-top:30px;">
+					<%String soName = StringUtil.escapeHTML(so.getCustomerListName()); %>
+					<script type="text/javascript">var soNameJs = '<%=StringUtil.escapeJavaScript(so.getCustomerListName())%>';</script>
+					<span style="float: left;"><%=soName%></span>
 					<div class="title11" style="float: right;">
-						<a href="/unsupported.jsp" onclick="FormChangeUtil.checkSignature('qs_cart',false); return CCL.rename_so_list('<%= StringUtil.escapeHTML(StringUtil.escapeJavaScript(so.getCustomerListName()))%>', this);">RENAME</a>
+						<a href="/unsupported.jsp" onclick="CCL.delete_so({soId:'<%= so.getId() %>', soName: soNameJs}, this); return false;">Delete</a> |
+						<a href="/unsupported.jsp" onclick="FormChangeUtil.checkSignature('qs_cart',false); return CCL.rename_so_list(soNameJs, this);">Rename</a>
 					</div>
 				</div>
 			</div>
-			<hr style="margin-bottom: 10px; width: 100%; height: 1px; background-color: #996699; color: #996699; line-height: 1px; border: none;"/>	
-			<% if ( so.isError() ) { %>
-				<!-- error display -->
+			
+			<script type="text/javascript">setSoId(<%= so.getId() %>);</script>
+			
+			<% if(instances.size()>1) { %>
+			   	<% String errorTitle = "The number of deliveries this week exceeds the frequency you have chosen for this Standing Order.";
+            	String errorText = "If you are only expecting one of these deliveries, please view the order details and cancel the appropriate delivery."; %>
+            	<%@ include file="/includes/i_error_with_title.jspf" %>
+			<%	}%>
+			
+			<% String soCsEmail = FDStoreProperties.getStandingOrderCsEmail();
+			if(holidayMovement) { %>
+            	<% String errorTitle = "Your delivery this week has been moved.";
+            	String errorText = "FreshDirect is closed on your Standing Order delivery day this week. We have moved your delivery to the next available day and kept your chosen timeslot. Click \"View/Modify\" below to make any necessary changes. <span style=\"font-weight: bold\">Questions or concerns about this change?</span> Please contact your FreshDirect At The Office hospitality team at <a href=\"mailto:"+soCsEmail+"\">"+soCsEmail+"</a>."; %>
+            	<%@ include file="/includes/i_error_with_title.jspf" %>
+			<%} %>
+			<% if ( so.isError() && (
+					so.getLastError() != ErrorCode.NO_ADDRESS || 
+					so.getLastError() == ErrorCode.NO_ADDRESS && addr != null )) { %>
+				<!-- old error display -->
 				<div class="text12" style="text-align: center; font-weight: bold; color: #CC3300;">
 					IMPORTANT NOTE: <br/>We were not able to schedule a delivery for <%= nextDlvDateText %><br/><br/><%=so.getErrorHeader()%><br/>
 				</div>			
 				<div style="text-align: center;">
 					<%=so.getErrorDetail()%><br/><br/>
 					<a href="<%= FDURLUtil.getStandingOrderLandingPage(so, "modify") %>">Click here to change the schedule or options for all future deliveries.</a><br/><br/>
-				</div>			
-			<% } else if ( addr == null ) { %>
-				<div style="text-align: left; font-weight: bold;">
-					<% String errorText = "You no longer have a delivery address for this standing order."; %>
-					<%@ include file="/quickshop/includes/error.jspf" %>
-				</div>			
-			<% } else { %>
-				<!-- last order -->
-				<div style="text-align: left; font-weight: bold">
-					<%@ include file="/quickshop/includes/so_next_delivery_alt.jspf" %>
 				</div>
 			<% } %>
+			<% if ( addr == null ) { %>
+				<% String errorText = "Your Standing Order can not be processed or delivered without a Delivery Address. Please open your Standing Order in the \"Change Standing Order Global Settings\" " +
+					"section below to add a Delivery Address. (Note: changing your Delivery Address may affect timeslot availability.)<br />" +
+					"Need help? Contact your FreshDirect At The Office hospitality team at <a href=\"mailto:"+soCsEmail+"\">"+soCsEmail+"</a>.";
+				String errorTitle = "This Standing Order no longer has a Delivery Address associated with it."; %>
+				<%@ include file="/includes/i_error_with_title.jspf" %>
+			<% } %>
+			<% if( paymentMethod == null ) {%>
+				<% String errorText = "Your Standing Order can not be processed or delivered without a Payment Option. Please open your Standing Order in the \"Change Standing Order Global Settings\" " +
+					"section below to add a Payment Option. Need help? Contact your FreshDirect At The Office hospitality team at <a href=\"mailto:"+soCsEmail+"\">"+soCsEmail+"</a>.";
+				String errorTitle = "This Standing Order no longer has a Payment Option associated with it."; %>
+				<%@ include file="/includes/i_error_with_title.jspf" %>
+			<% } %>	
+			<% if( request.getParameter("tmpl_saved") != null ) { /* [APPDEV-2149] SO template has been successfully saved */ %>
+				<div style="border: 1px solid #969; padding: 5px 5px 5px 5px; border-radius: 5px 5px; margin-bottom: 18px; color: #969" class="text12">
+					<div style="font-weight: bold;">Standing Order Successfully Saved</div>
+					<div class="text10">Your Standing Order has been modified successfully. Please note that next delivery date is adjusted according to the changed delivery date and frequency.</div>
+				</div>
+			<% } %>	
+					
+			<fd:GetStandingOrderHelpInfo id="helpSoInfo" so="<%=so%>">
+				<script type="text/javascript">var helpSoInfo=<%=helpSoInfo%>;</script>
+				<!-- orders list -->
+				<table width="100%" bgcolor="#333333" style="margin-bottom: 18px;">
+					<tr><td><img src="/media_stat/images/template/quickshop/modify_next_delivery.png" width="192" height="22"></td>
+					<td>
+					<a class="text13" style="float: right; text-align: right; color: white; vertical-align: middle; padding-right:7px;" href="/unsupported.jsp" onclick="return CCL.help_so(helpSoInfo, this);">Need Help?</a>
+					</td></tr>
+				</table>		
+				<div style="margin: 0.5em 0.5em 1.5em">
+					The next delivery of this Standing Order is displayed below. If your delivery is due within the next 7 days, you may make changes by clicking "View/Modify". <b>Changes in this section will affect only this delivery</b>.
+				</div>
+				
+				<div id="so_orders" style="text-align: left; font-weight: bold; padding: 3px 5px; overflow: hidden; margin-bottom: 15px; margin-top: 15px;">
+					<%@ include file="/quickshop/includes/so_orders.jspf" %>
+				</div>
+				
+				<table width="100%" bgcolor="#333333" style="margin-bottom: 18px;">
+					<tr><td><img src="/media_stat/images/template/quickshop/change_so_global_settings.png" width="229" height="22"></td>
+					<td>
+					<a class="text13" style="float: right; text-align: right; color: white; vertical-align: middle; padding-right:7px;" href="/unsupported.jsp" onclick="return CCL.help_so(helpSoInfo, this);">Need Help?</a>
+					</td></tr>
+				</table>
+			</fd:GetStandingOrderHelpInfo>
 			
-			<div style="background-color: #996699; color: white; padding: 3px 5px; overflow: hidden; margin-bottom: 15px; margin-top: 15px;">
-				<span class="title17" style="float: left;">EDIT THIS STANDING ORDER</span>
-				<a class="text13" style="float: right; text-align: right; color: white; vertical-align: middle;" href="/media/editorial/site_pages/standing_orders/so_help_checkout.html" target="_blank" onClick="popup('/media/editorial/site_pages/standing_orders/so_help_checkout.html','large'); return false;">Help/FAQs</a>
-			</div>	
-						
-			<!-- details -->
 			
-			<div class="title17" style="color: #996699; margin-bottom: 5px;">1. DELIVERY FREQUENCY &amp; OPTIONS</div>
-			
-			<div class="title13" style="margin-bottom: 25px;">
-				Make one-time or permanent changes to the delivery of your order.
-				Changes will affect deliveries of this order starting <span style="color: #CC3300;"><%=nextDlvDateTextShort%></span>.
-			</div>
-			
-			<div class="text13" style="margin-bottom: 25px; padding-left: 15px;">
-				<ul style="margin: 0; list-style: disc; padding-left: 0px;">
-					<li><a href="<%= FDURLUtil.getStandingOrderLandingPage(so, "modify") %>"><b>Resubmit this standing order to make permanent changes</b></a></li>
-					<% if ( !so.isError() ) { %><li><a href="/unsupported.jsp" onclick="CCL.shift_so_delivery('<%= so.getId() %>', '<%= nextDlvDateText %>', this); return false;">Skip upcoming delivery</a></li><% } %>
-					<% if ( !so.isError() ) { %><li><a href="/unsupported.jsp" onclick="CCL.change_so_frequency('<%= so.getId() %>', <%= so.getFrequency() %>, '<%= nextDlvDateText %>', this); return false;">Adjust delivery frequency</a></li><% } %>
-					<li><a href="/unsupported.jsp" onclick="CCL.delete_so('<%= so.getId() %>', this); return false;">Delete this standing order</a></li>
-				</ul>
-			</div>
-			
-			<div class="text13" style="margin-bottom: 25px;">
-				<div class="title13">Your Current Settings:</div>
-				<table>
-					<tr><td class="text13" style="padding-right: 10px;">Frequency:</td><td class="text13">Delivered <%= so.getFrequencyDescription() %></td></tr>
-					<tr><td class="text13" style="padding-right: 10px;">Delivery Address:</td><td class="text13"><%if(addr!=null){%><%= addr.getScrubbedStreet() %>, <%= addr.getApartment() %><%}%></td></tr>
-					<tr><td class="text13" style="padding-right: 10px;">Delivery Timeslot:</td><td class="text13"><%= StandingOrderHelper.getDeliveryDate(so,false) %></td></tr>
-				</table>	
-			</div>
-			
-			<hr style="margin-bottom: 10px; width: 100%; height: 1px; background-color: #996699; color: #996699; line-height: 1px; border: none;"/>	
-			
-			<div class="title17" style="color: #996699; margin-bottom: 5px;">2. STANDING ORDER CONTENTS</div>
-			
-			<div class="text13" style="margin-bottom: 15px;">
-				<b>To change quantities:</b> Changes to Quantity boxes only take effect if you immediately resubmit your order. Use the &quot;Modify&quot; link instead to make changes for future orders.
-			</div>
-			
-			<div class="text13" style="margin-bottom: 25px;">
-				<b>To add products:</b> Shop as usual and click &quot;Save to Shopping List&quot; on any product page. Then choose the list for this standing order. <br/><a href="/index.jsp">Click here to shop now.</a>
-			</div>
-						
-			<%--LIST OF STANDING ORDER ITEMS --%>
 			<fd:QuickShopController id="quickCart" soListId="<%= so.getCustomerListId() %>" action="<%= actionName %>">
-				<%
-					final String qsPage = "so_details.jsp";
-					final String qsDeptId = null;
-					final boolean hasDeptId = false;
-					final String orderId = null;			
-					final boolean isStandingOrderPage = true;
-				%>
-				<%@ include file="/shared/quickshop/includes/i_vieworder.jspf"%>
+			<table style="padding: 0.5em;">
+				<tr>
+					<td valign="top">
+						Here are the current settings of your Standing Order. <b>To make permanent, recurring 
+						changes</b>, you must open your Standing Order, make your changes and resubmit it via 
+						checkout.<br /><br />
+						Once your Standing Order is reopened, you may add or remove items from your cart, adjust 
+						your delivery frequency or timeslot, and change your delivery address and payment options. 
+						<b>When finished, complete checkout to confirm your changes.</b>
+						
+						<div class="text13" style="margin-bottom: 20px; padding-top:20px;">
+							<%
+							boolean modInstanceToo = false; // modify only the template or the belonging order too
+							if (instances.size()>0) {
+								FDOrderInfoI latestSoi = instances.get(0);%>
+								<fd:OrderPermissionsTag id='orderPermissions' orderId='<%= latestSoi.getErpSalesId()%>'>
+									<%if(orderPermissions.allowModifyOrder()) {
+										modInstanceToo = true;
+										Date requestedDate = latestSoi.getRequestedDate();%>
+										<script type="text/javascript">
+										var modifySoInfo = {
+											msotNoMsoiUrl : '<%= StringEscapeUtils.unescapeHtml(FDURLUtil.getStandingOrderLandingPage(so, "modify")) %>',
+											msotMsoiUrl: '<%= StringEscapeUtils.unescapeHtml(FDURLUtil.getStandingOrderLandingPage(so, "modify", latestSoi.getErpSalesId())) %>',
+											soiDate:'<%= new SimpleDateFormat("M/d/y").format(requestedDate)%>',
+											soiDay:'<%= new SimpleDateFormat("EEEE").format(requestedDate)%>',
+											soName: soNameJs
+										}
+										</script>
+										<a href="/unsupported.jsp" onclick="CCL.modify_so(modifySoInfo, this); return false;">
+											<img style="margin-bottom: 1em" src="/media_stat/images/template/quickshop/update_standing_order.png" width="189" height="22" />
+										</a>
+									<%}%>
+								</fd:OrderPermissionsTag>
+							<%} %>
+			
+							<% if (!modInstanceToo) { %>
+							<a href="<%= FDURLUtil.getStandingOrderLandingPage(so, "modify") %>">
+							   <img style="margin-bottom: 1em" src="/media_stat/images/template/quickshop/update_standing_order.png" width="189" height="22" />
+							</a>
+							<% } %>
+						</div>
+						
+					</td>
+					<td width="20px"></td>
+					<td valign="top">
+							<table width="300" bgcolor="#ececec">
+								<tr bgcolor="#8d6a95">
+									<th colspan="2">
+										<img src="/media_stat/images/template/quickshop/so_current_settings.png" width="354" height="20" />
+									</th>
+								</tr>
+								<tr>
+									<td height="8px" colspan="2"></td>
+								</tr>
+								<tr>
+									<td style="padding-left:1em;font-weight:bold;">Delivery Frequency:</td>
+									<% String freqDesc = so.getFrequencyDescription(); %>
+									<td><%= Character.toUpperCase(freqDesc.charAt(0)) %><%= freqDesc.substring(1) %></td>
+								</tr>
+								<tr>
+									<td style="padding-left:1em;font-weight:bold;">Timeslot:</td>
+									<td><%= StandingOrderHelper.getDeliveryDate(so,false) %></td>
+								</tr>
+								<tr>
+									<% if(addr!=null) { %>
+										<td style="padding-left:1em;font-weight:bold;">Delivery Address:</td>
+										<td><%= addr.toShortString1(EnumServiceType.CORPORATE.equals(user.getSelectedServiceType())) %></td>
+									<% } else { %>
+										<td style="padding-left:1em;font-weight:bold;color:red;">
+											<img src="/media_stat/images/template/quickshop/so_exclamation.png" width="8" height="8"/>
+											Delivery Address:
+										</td>
+										<td style="color:red;font-style:italic;">No address selected!</td>
+									<% } %>
+								</tr>
+								<tr>
+									<% if(paymentMethod!=null) { %>
+											<td style="padding-left:1em;font-weight:bold;">Payment Option:</td>
+											<td><%= paymentMethod.getCardType() %> <%= paymentMethod.getMaskedAccountNumber() %></td>
+										<% } else { %>
+											<td style="padding-left:1em;font-weight:bold;color:red;">
+												<img src="/media_stat/images/template/quickshop/so_exclamation.png" width="8" height="8"/>
+												Payment Option:
+											</td>
+											<td style="color:red;font-style:italic;">No payment option selected!</td>
+										<% } %>
+								</tr>
+								<tr>
+									<% FDStandingOrderList l = (FDStandingOrderList)FDListManager.getCustomerList(user.getIdentity(), EnumCustomerListType.SO, so.getCustomerListName()); %>
+									<td style="padding-left:1em;font-weight:bold;">Cart Contents:</td>
+									
+									<%int lineNum=0; %>
+									<logic:iterate id="orderLine" collection="<%= quickCart.getProducts() %>" type="com.freshdirect.fdstore.customer.FDProductSelectionI" indexId="idx">
+										<%ProductModel productNode = orderLine.lookupProduct();
+										if(!((productNode==null || productNode.getSku(orderLine.getSkuCode()).isUnavailable() || orderLine.isInvalidConfig()))) {
+												lineNum++;
+										}%>
+									</logic:iterate>
+									<td><%= lineNum %> item<%=lineNum > 1 ? "s" : "" %></td>
+								</tr> 
+								<tr>
+									<td height="8px" colspan="2"></td>
+								</tr>
+							</table>
+					</td>
+				</tr>
+			</table>
+						
+			
+			<hr style="margin-bottom: 20px; width: 100%; height: 1px; background-color: #ff8520; color: #ff8520; line-height: 1px; border: none;"/>	
+		
+			<%
+				final String qsPage = "so_details.jsp";
+				final String qsDeptId = null;
+				final boolean hasDeptId = false;
+				final String orderId = null;			
+				final boolean isStandingOrderPage = true;
+			%>
+			<%@ include file="/shared/quickshop/includes/i_vieworder.jspf"%>
 			</fd:QuickShopController>
 			
 		</div>
@@ -168,3 +324,9 @@
 	}
 %>
 </fd:ManageStandingOrders>
+
+<script type="text/javascript">
+window.onload = function() {
+    checkLock();
+};
+</script>

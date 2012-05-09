@@ -268,11 +268,6 @@ public class DateUtil {
 		else if (T < 2*YEAR) return "1 year " + suffix;
 		else return "" + (T/YEAR) + " years " + suffix;
 	}
-
-	public static String getDate(Date dateVal) throws ParseException {		
-        return MONTH_DATE_YEAR_FORMATTER.format(dateVal);
-	}
-
 	
 	/**
 	 * Returns the number of days since 1970-01-05, Monday for the date argument. 
@@ -292,4 +287,18 @@ public class DateUtil {
 		
 		return (int) ( (actual.getTimeInMillis() - base.getTimeInMillis()) / DAY );
 	}
+	
+	/**
+	 * Returns the number of weeks since 1970-01-05, Monday for the date argument. 
+	 * Calculates using UTC, causes no issues with daylight saving. Week number is zero-based.
+	 */
+	public static int getWeekNumFromEpochFirstMonday(Date date){
+		int dayNum = getDayNumFromEpochFirstMonday(date);
+		return (dayNum+1)/7;
+	}	
+
+	public static String getDate(Date dateVal) throws ParseException {		
+        return MONTH_DATE_YEAR_FORMATTER.format(dateVal);
+	}
+
 } 

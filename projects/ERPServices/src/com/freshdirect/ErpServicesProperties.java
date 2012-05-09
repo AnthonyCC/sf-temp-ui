@@ -331,7 +331,7 @@ public class ErpServicesProperties {
 		defaults.put(PROP_SIGNUP_PROMO_DUPLICATE_ADDR_DELV_DAYS, "180");
 		defaults.put(PROP_AVS_ADDRESS_CHECK, "false");
 		
-		defaults.put( SO_TECH_RECIPIENT, "sa@freshdirect.com" );
+		defaults.put( SO_TECH_RECIPIENT, "SOIssues@freshdirect.com" );
 		defaults.put( SO_TECH_FROM, "no-reply@freshdirect.com" );
 		
 		defaults.put( MASQUERADE_STOREFRONT_BASEURL, "http://www.freshdirect.com/" );

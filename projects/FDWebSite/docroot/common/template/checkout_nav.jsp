@@ -33,19 +33,20 @@ final int W_CHECKOUT_NAV_TOTAL = 970;
 			String color = "999966";
 			String suffix = "";
 			
-				FDUserI tmplUser = (FDUserI) session.getAttribute( SessionName.USER );
-				FDCartModel tmplCart = tmplUser.getShoppingCart();
-				
-				if (tmplCart instanceof FDModifyCartModel) {
-					modOrder = true;
-			        color = "6699CC";
-			        suffix = "_blue";
-				} else if (tmplUser.getCheckoutMode() != EnumCheckoutMode.NORMAL) {
-					// STANDING ORDER
-					standingOrder = true;		
-			       	color = "996699";
-			       	suffix = "_purple";
-				}
+			FDUserI tmplUser = (FDUserI) session.getAttribute( SessionName.USER );
+			FDCartModel tmplCart = tmplUser.getShoppingCart();
+			
+			if (tmplCart instanceof FDModifyCartModel) {
+				modOrder = true;
+		        color = "6699CC";
+		        suffix = "_blue";
+			} 
+			if (tmplUser.getCheckoutMode() != EnumCheckoutMode.NORMAL) {
+				// STANDING ORDER
+				standingOrder = true;		
+		       	color = "996699";
+		       	suffix = "_purple";
+			}
 			
 			%>
 

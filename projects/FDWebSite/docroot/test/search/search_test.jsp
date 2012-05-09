@@ -207,6 +207,7 @@ if (searchTerm != null && !searchTerm.trim().isEmpty()) {
 			<thead>
 				<tr>
 					<th>Product</th>
+					<th>sku</th>
 					<th>Category</th>
 					<th>Unav</th>
 					<th>Exact</th>
@@ -235,6 +236,7 @@ if (searchTerm != null && !searchTerm.trim().isEmpty()) {
 				<tr>
 					<td title="<%= product.getContentKey().getEncoded() %>"><a href="/product.jsp?productId=<%= product.getContentKey().getId() %>&catId=<%= category.getContentKey().getId() %>"
 							target="_product_details"><%= product.getFullName() %></a></td>
+					<td><%= product.getSkuCodes()%></td>
 					<td title="<%= category.getContentKey().getEncoded() %>"><a href="/category.jsp?catId=<%= category.getContentKey().getId() %>"
 							target="_product_details"><%= category.getFullName() %></a></td>
 					<td align="center"><%= item.getSortingValue(EnumSortingValue.AVAILABILITY).intValue() == 0 ? "X" : "" %></td>

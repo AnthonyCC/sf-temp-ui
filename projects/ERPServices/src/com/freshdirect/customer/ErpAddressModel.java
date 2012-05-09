@@ -1,7 +1,13 @@
 package com.freshdirect.customer;
 
-import com.freshdirect.common.address.*;
+import com.freshdirect.common.address.AddressInfo;
+import com.freshdirect.common.address.BasicAddressI;
+import com.freshdirect.common.address.BasicContactAddressI;
+import com.freshdirect.common.address.ContactAddressAdapter;
+import com.freshdirect.common.address.ContactAddressModel;
+import com.freshdirect.common.address.PhoneNumber;
 import com.freshdirect.common.customer.EnumWebServiceType;
+import com.freshdirect.framework.util.StringUtil;
 
 /**
  * ErpAddress model class.
@@ -275,6 +281,20 @@ public class ErpAddressModel extends ContactAddressModel {
 
 	public void setWebServiceType(EnumWebServiceType webServiceType) {
 		this.webServiceType = webServiceType;
+	}
+	
+	/**
+	 * Returns a short String representation of this address.
+	 * @param isCorporate If it's a corporate user.
+	 * @return Short string representation of this address.
+	 */
+	public String toShortString1(boolean isCorporate) {
+		StringBuilder sb = new StringBuilder(getAddress1());
+		if(!StringUtil.isEmpty(getApartment())) {
+			sb.append(isCorporate ? ", Floor/Suite " : ", Apt. ");
+			sb.append(getApartment());
+		}
+		return sb.toString();
 	}
 
 }

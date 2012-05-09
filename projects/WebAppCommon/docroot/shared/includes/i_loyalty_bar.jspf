@@ -24,7 +24,7 @@ final int W_LOYALTY_BAR_LP = 400;
 					|| request.getRequestURI().indexOf("/your_account/delivery_info_avail_slots.jsp")>-1
 					|| request.getRequestURI().indexOf("/your_account/reserve_timeslot.jsp")>-1)){%>
 					 <%= user.getTotalCTSlots() %> <%= (user.getTotalCTSlots() > 1 ? "timeslots" : "timeslot")%> just for you <a href="/your_account/manage_account.jsp" class="tsCTBenefits">More Benefits</a>
-				<%}else{%>
+				<%}else if(!user.getCheckoutMode().isStandingOrderMode()){%>
 					Your Order&nbsp; <a href="/help/index.jsp" class="tsCTBenefits">Need Help?</a>
 				<%}%>
 			</font>
@@ -39,7 +39,9 @@ final int W_LOYALTY_BAR_LP = 400;
 			</font>
 		</td>
     <td width="<%= W_LOYALTY_BAR_LP %>" align="right" style="background:#999966; color: #fff">
+			<%if(!user.getCheckoutMode().isStandingOrderMode()){ %>
 			<font style="font-weight:bold;">Your <%=(user !=null && user.getOrderHistory() != null && user.getOrderHistory().getTotalOrderCount()>0) ? "":"First "%>Order&nbsp; <a href="/help/index.jsp" class="tsNCBenefits">Need Help?</a></font>
+			<%} %>
 		</td>
 		<td width="10"><img src="/media/editorial/site_pages/non_chefstable/NC_header_right.gif" width="10" height="25" border="0"></td>
 	<%}%>

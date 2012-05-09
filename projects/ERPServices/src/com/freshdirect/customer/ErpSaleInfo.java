@@ -25,6 +25,7 @@ public class ErpSaleInfo extends BasicSaleInfo {
 	private final double amount;
 	private final double subTotal;
 	private final Date requestedDate;
+	private final Date createRequestedDate;
 	private final EnumTransactionSource source;
 	private final Date deliveryStart;
 	private final Date deliveryEnd;
@@ -62,6 +63,7 @@ public class ErpSaleInfo extends BasicSaleInfo {
 		double amount,
 		double subTotal,
 		Date requestedDate,
+		Date createRequestedDate,
 		EnumTransactionSource createSource,
 		Date createDate,
 		String createBy,
@@ -88,6 +90,7 @@ public class ErpSaleInfo extends BasicSaleInfo {
 		this.amount = amount;
 		this.subTotal=subTotal;
 		this.requestedDate = requestedDate;
+		this.createRequestedDate = createRequestedDate;
 		this.source = createSource;
 		this.deliveryStart = deliveryStart;
 		this.deliveryEnd = deliveryEnd;
@@ -125,6 +128,9 @@ public class ErpSaleInfo extends BasicSaleInfo {
 	}
 	public Date getRequestedDate() {
 		return this.requestedDate;
+	}
+	public Date getCreateRequestedDate() {
+		return this.createRequestedDate;
 	}
 
 	public EnumTransactionSource getSource() {

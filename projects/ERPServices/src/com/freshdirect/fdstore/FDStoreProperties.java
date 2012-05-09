@@ -448,7 +448,10 @@ public class FDStoreProperties {
 	
 	private final static String PROP_STANDING_ORDER_REPORT_TO_EMAIL = "fdstore.standingorder.report.email.to";
 	private final static String PROP_STANDING_ORDER_REPORT_EMAIL_SUBJECT = "fdstore.standingorder.report.email.subject";
-    
+	
+	private final static String PROP_STANDING_ORDER_SOFT_LIMIT = "fdstore.standingorder.softlimit";
+	private final static String PROP_STANDING_ORDER_HARD_LIMIT = "fdstore.standingorder.hardlimit";
+	
 	private final static String PROP_MKTADMIN_AUTOUPLOAD_REPORT_EMAIL_ENABLED = "fdstore.mktadmin.auto.upload.report.email.enabled";
 	private final static String PROP_MKTADMIN_AUTOUPLOAD_REPORT_EMAIL_TO = "fdstore.mktadmin.auto.upload.report.email.to";
 	private final static String PROP_MKTADMIN_AUTOUPLOAD_REPORT_EMAIL_SUBJECT = "fdstore.mktadmin.auto.upload.report.email.subject";
@@ -513,6 +516,10 @@ public class FDStoreProperties {
 	
 	private final static String FACEBOOK_APP_KEY = "facebook.app.key";
 
+    //APPDEV-2155 Standing Order UI
+    private static final String PROP_EMAIL_STANDING_ORDER_CS = "fdstore.email.standingordercs";
+    private static final String PROP_PHONE_STANDING_ORDER_CS = "fdstore.phone.standingordercs";
+    
 	private final static String PROP_WEBPURIFY_URL="fdstore.webpurify.url";
 	
 	private final static String PROP_WEBPURIFY_KEY="fdstore.webpurify.key";
@@ -1026,7 +1033,13 @@ public class FDStoreProperties {
         defaults.put(PROP_DAY_OF_WEEK_FOR_COS_MON_AUTHS, "6");
 		defaults.put(PROP_FD_GIVEX_WEB_USER_PASSWD, "fd8848admin");
 		defaults.put(PROP_GIVEX_WEB_SERVER_URL, "https://dev-wwws.givex.com/portal/login.py?_LANGUAGE_:en");
-		defaults.put(PROP_PRODUCTPROMO_INFO_HOME,"freshdirect.fdstore.ProductPromotionInfoManager");
+        //APPDEV-2155 Standing Order UI
+        defaults.put(PROP_EMAIL_STANDING_ORDER_CS, "StandingOrders@FreshDirect.com");
+        defaults.put(PROP_PHONE_STANDING_ORDER_CS, "");
+        
+        //APPDEV-2252 Standing Order - Order Minimum Failure Threshold
+        defaults.put(PROP_STANDING_ORDER_SOFT_LIMIT, "50.0");
+        defaults.put(PROP_STANDING_ORDER_HARD_LIMIT, "50.0");
 
 		defaults.put(PROP_WEBPURIFY_URL, "https://api1.webpurify.com/services/rest/?api_key=%API_KEY%&method=%METHOD%&format=json&lang=%LANG%&callback=%CALLBACK%&text=%TEXT%");
 		defaults.put(PROP_WEBPURIFY_KEY, "1c7d26c10e564e6629234974ff556aa0");
@@ -2614,6 +2627,14 @@ public class FDStoreProperties {
     	return get(PROP_VS_URL);
     }
 
+    public static String getStandingOrderCsEmail() {
+        return get(PROP_EMAIL_STANDING_ORDER_CS);
+    }
+
+    public static String getStandingOrderCsPhone() {
+        return get(PROP_PHONE_STANDING_ORDER_CS);
+    }
+
     public static String getFDGivexWebUser() {
 		return config.getProperty(PROP_FD_GIVEX_WEB_USER);
 	}
@@ -2628,6 +2649,24 @@ public class FDStoreProperties {
 	}
     public static int getDayOfWeekForCOSMondayAuths() {
         return  Integer.parseInt(get(PROP_DAY_OF_WEEK_FOR_COS_MON_AUTHS));
+    }
+    
+    /**
+     * Used at store-front GUI.
+     * Sum of prices in the cart must be higher than this value in order to be able to submit order.
+     * @return Soft limit. Default is $50.
+     */
+    public static double getStandingOrderSoftLimit() {
+    	return Double.parseDouble(get(PROP_STANDING_ORDER_SOFT_LIMIT));
+    }
+    
+    /**
+     * Used at processing Standing Orders.
+     * After removing discontinued products from the cart, sum must be higher than this value.
+     * @return Hard limit. Default is $50.
+     */
+    public static double getStandingOrderHardLimit() {
+    	return Double.parseDouble(get(PROP_STANDING_ORDER_HARD_LIMIT));
     }
     
     public static String getProductPromotionInfoHome() {

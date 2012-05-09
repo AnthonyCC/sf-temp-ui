@@ -335,6 +335,25 @@ public class DlvTimeslotModel extends DlvShiftTimeslotModel {
 		return false;
 	}
 	
+	
+	/**
+	 * Checks whether t falls within boundaries of timeslot 
+	 * 
+	 * @param baseDate The date of timeslot (yyyy:mm:dd part)
+	 * @param t Date containing the HH:MM portion
+	 * @return
+	 */
+	public boolean isWithinRange(Date baseDate, Date t) {
+		final TimeOfDay __t = new TimeOfDay(t);
+		if (this.baseDate.equals(DateUtil.truncate(baseDate))
+				&& this.getStartTime().compareTo(__t) <= 0
+				&& this.getEndTime().compareTo(__t) > 0) {
+			return true;
+		}
+		return false;
+	}
+	
+	
 	public IDeliverySlot getRoutingSlot() {
 		return routingSlot;
 	}

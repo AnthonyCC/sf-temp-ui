@@ -1,8 +1,6 @@
 package com.freshdirect.fdstore.standingorders;
 
 import java.rmi.RemoteException;
-import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -67,8 +65,7 @@ public class FDStandingOrdersManager {
 	private static void invalidateManagerHome() {
 		soHome = null;
 	}
-
-
+	
 	private static FDStandingOrdersManager sharedInstance;
 
 	protected FDStandingOrdersManager() {}
@@ -315,7 +312,7 @@ public class FDStandingOrdersManager {
 				LOGGER.debug( "populating customer list : " + cl.size() + "items => "+ cl );
 				for (FDCartLineI s : cl) {
 					LOGGER.debug( "merging cartline : " + s );
-					l.mergeSelection(s, false);
+					l.mergeSelection(s, false, true);
 				}
 
 				LOGGER.debug( "storing customer list :" + l );
@@ -343,7 +340,7 @@ public class FDStandingOrdersManager {
 				// copy items from cart to list
 				Collection<FDCartLineI> cl = cart.getOrderLines();
 				for (FDCartLineI s : cl) {
-					l.mergeSelection(s, false);
+					l.mergeSelection(s, false, true);
 				}
 
 				FDListManager.storeCustomerList(l);
@@ -511,4 +508,98 @@ public class FDStandingOrdersManager {
 			throw new FDResourceException(re, "Error talking to session bean");
 		}
 	}
+	
+
+	public boolean lock(FDStandingOrder so, String lockId) throws FDResourceException {
+		lookupManagerHome();
+		try {
+			FDStandingOrdersSB sb = soHome.create();			
+			return sb.lock(so, lockId);
+		} catch (CreateException ce) {
+			invalidateManagerHome();
+			throw new FDResourceException(ce, "Error creating session bean");
+		} catch (RemoteException re) {
+			invalidateManagerHome();
+			throw new FDResourceException(re, "Error talking to session bean");
+		}
+	}
+
+	public void lockSync(FDStandingOrder so, String lockId) throws FDResourceException {
+		lookupManagerHome();
+		try {
+			FDStandingOrdersSB sb = soHome.create();			
+			while(!sb.lock(so, lockId)){
+				LOGGER.debug("Trying to lock Standing Order ("+so+") with lockId ("+lockId+")");
+				Thread.sleep(1000);
+			}
+		} catch (CreateException ce) {
+			invalidateManagerHome();
+			throw new FDResourceException(ce, "Error creating session bean");
+		} catch (RemoteException re) {
+			invalidateManagerHome();
+			throw new FDResourceException(re, "Error talking to session bean");
+		} catch (InterruptedException e) {
+			invalidateManagerHome();
+			throw new FDResourceException(e, "Sleep interrupted");
+		}
+	}
+	
+	public boolean unlock(FDStandingOrder so, String lockId) throws FDResourceException {
+		lookupManagerHome();
+		try {
+			FDStandingOrdersSB sb = soHome.create();			
+			return sb.unlock(so, lockId);
+		} catch (CreateException ce) {
+			invalidateManagerHome();
+			throw new FDResourceException(ce, "Error creating session bean");
+		} catch (RemoteException re) {
+			invalidateManagerHome();
+			throw new FDResourceException(re, "Error talking to session bean");
+		}
+	}
+
+	public String getLockId(String soId) throws FDResourceException {
+		lookupManagerHome();
+		try {
+			FDStandingOrdersSB sb = soHome.create();			
+			return sb.getLockId(soId);
+		} catch (CreateException ce) {
+			invalidateManagerHome();
+			throw new FDResourceException(ce, "Error creating session bean");
+		} catch (RemoteException re) {
+			invalidateManagerHome();
+			throw new FDResourceException(re, "Error talking to session bean");
+		}
+	}
+
+	
+	public void checkForDuplicateSOInstances(FDIdentity identity) throws FDResourceException {
+		lookupManagerHome();
+		try {
+			FDStandingOrdersSB sb = soHome.create();			
+			sb.checkForDuplicateSOInstances(identity);
+		} catch (CreateException ce) {
+			invalidateManagerHome();
+			throw new FDResourceException(ce, "Error creating session bean");
+		} catch (RemoteException re) {
+			invalidateManagerHome();
+			throw new FDResourceException(re, "Error talking to session bean");
+		}
+	}
+	
+	public List<FDOrderInfoI> getAllUpcomingOrders(FDUserI user, FDStandingOrder so) throws FDResourceException {
+        
+        FDOrderHistory h = (FDOrderHistory)user.getOrderHistory();
+        List<FDOrderInfoI> result = new ArrayList<FDOrderInfoI>();
+                  
+        for ( ErpSaleInfo i : h.getErpSaleInfos() ) {
+                if ( so.getId().equalsIgnoreCase( i.getStandingOrderId() ) && i.getStatus().isPending() && i.getRequestedDate().after(new Date()) ) {
+                        FDOrderInfoAdapter x = new FDOrderInfoAdapter( i );
+                        result.add( x );
+                }
+        }
+                  
+	return result;
+	}
+
 }

@@ -53,6 +53,9 @@ String actionName = request.getParameter("actionName");
 	<%	
 		FDReservation rsv = user.getReservation();
 		boolean hasReservation = rsv != null && addressId.equals(rsv.getAddressId());
+
+		// [APPDEV-2149] Display abstract timeslot table (Just days of week, no restrictions, etc.)
+		final boolean abstractTimeslots = false;
 	%>
 
 		<%//Finds the address & render the timeslots %>

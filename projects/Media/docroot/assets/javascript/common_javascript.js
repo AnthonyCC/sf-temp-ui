@@ -173,6 +173,64 @@ function setDeletePaymentId(frmObj,payid) {
     return true;
 }
 
+function arrayContainsObject(a, obj){
+    for (var i = 0; i < a.length; i++) {
+        if (a[i] === obj) {
+            return true;
+        }
+    }
+    return false;
+}
+
+function deletePaymentMethod(context, paymentPKId, idsUsedBySo, helpSoInfo){
+	
+	var deletePaymentMethodFunction = function(){
+		setDeletePaymentId(context.form,paymentPKId);
+		setActionName(context.form,'deletePaymentMethod');
+		context.form.submit();
+	};
+	
+	if (arrayContainsObject(idsUsedBySo,paymentPKId)){
+		helpSoInfo.entityLabel = "Payment Method ID";
+		helpSoInfo.entityId = paymentPKId;
+		var deletePaymentMethodSoInfo = {
+			deleteFunction: deletePaymentMethodFunction,
+			helpSoInfo: helpSoInfo
+		};
+		CCL.delete_payment_method_so(deletePaymentMethodSoInfo, context);
+	
+	} else {
+		deletePaymentMethodFunction();
+	}
+	
+	return false;
+}
+
+function deleteDeliveryAddress(context, addrPKId, idsUsedBySo, helpSoInfo){
+	
+	var deleteDeliveryAddressFunction = function(){
+		setDlvAction(context.form,'deleteDeliveryAddress');
+		setIdToDelete(context.form, addrPKId);
+		context.form.submit();
+	};
+	
+	
+	if (arrayContainsObject(idsUsedBySo,addrPKId)){
+		helpSoInfo.entityLabel = "Delivery Address ID";
+		helpSoInfo.entityId = addrPKId;
+		var deleteDeliveryAddressSoInfo = {
+			deleteFunction: deleteDeliveryAddressFunction,
+			helpSoInfo: helpSoInfo
+		};
+		CCL.delete_delivery_address_so(deleteDeliveryAddressSoInfo, context);
+	
+	} else {
+		deleteDeliveryAddressFunction();
+	}
+	
+	return false;
+}
+
 function popup(URL, type, name) {
 	var w = "375";
 	var h = "335";

@@ -210,7 +210,12 @@ boolean isCheckEligible = false;
 				<%-- <form id="form2" name="creditcard_form" method="post">  --%>
 				<input type="hidden" name="actionName" value="">
 				<input type="hidden" name="deletePaymentId" value="">
-				<%@ include file="/includes/ckt_acct/i_creditcard_select.jspf" %>
+				<fd:GetStandingOrderDependencyIds id="standingOrderDependencyIds" type="paymentMethod">
+					<fd:GetStandingOrderHelpInfo id="helpSoInfo">
+						<script type="text/javascript">var helpSoInfo=<%=helpSoInfo%>;</script>
+						<%@ include file="/includes/ckt_acct/i_creditcard_select.jspf" %>
+					</fd:GetStandingOrderHelpInfo>
+				</fd:GetStandingOrderDependencyIds>
 				<%-- </form> --%>
 			</td>
 		</tr>

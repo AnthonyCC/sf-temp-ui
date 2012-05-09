@@ -526,16 +526,28 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 		return this.user.getEligibleSignupPromotion();
 	}
 
+	/**
+	 * overrides minimum order limit in case Standing Order checkout
+	 * @return
+	 */
+	private Double getOverrideMinimumAmount(){
+		if (getCheckoutMode().isStandingOrderMode()){
+			return FDStoreProperties.getStandingOrderSoftLimit();
+		}
+		return null;
+	}
+	
     public boolean isOrderMinimumMet() throws FDResourceException {
-    	return this.user.isOrderMinimumMet();
+    	return this.user.isOrderMinimumMet(getOverrideMinimumAmount());
     }
 
     public boolean isOrderMinimumMet(boolean alcohol) throws FDResourceException {
-    	return this.user.isOrderMinimumMet(alcohol);
+    	return this.user.isOrderMinimumMet(alcohol, getOverrideMinimumAmount());
     }
-
+    
     public double getMinimumOrderAmount(){
-    	return this.user.getMinimumOrderAmount();
+    	Double overrideMinimumAmount = getOverrideMinimumAmount();
+    	return (overrideMinimumAmount == null ? this.user.getMinimumOrderAmount() : overrideMinimumAmount);
     }
 
 	public float getQuantityMaximum(ProductModel product) {

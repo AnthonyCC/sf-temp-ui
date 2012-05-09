@@ -77,6 +77,7 @@ function setAllCheckBoxes(FormName, FieldName, CheckValue)
 	<tmpl:put name='content' direct='true'>
 	<crm:GetCurrentAgent id="currentAgent">
 	<%	FDStandingOrderFilterCriteria  soFilter =  (FDStandingOrderFilterCriteria)request.getSession().getAttribute("sofilter"); 
+		String soId = null;
 		Integer frequency = null;
 		Integer dayOfWeek =null;
 		Date date = null;
@@ -91,6 +92,10 @@ function setAllCheckBoxes(FormName, FieldName, CheckValue)
 			soFilter.setErrorType(errorType);*/
 		}
 		if(null !=request.getParameter("so_filter_submit")){
+			soId = request.getParameter("soId");
+			if ("".equals(soId)){
+				soId = null;
+			}
 			String strFrequency =request.getParameter("frequency");
 			if("ALL".equals(strFrequency)){
 				frequency = null;
@@ -114,12 +119,14 @@ function setAllCheckBoxes(FormName, FieldName, CheckValue)
 			}else{
 				soFilter.setActiveOnly(false);
 			}
+			soFilter.setId(soId);
 			soFilter.setFrequency(frequency);
 			soFilter.setDayOfWeek(dayOfWeek);
 			soFilter.setErrorType(errorType);
 			soFilter.setFromDateStr(fromDateStr);
 			soFilter.setToDateStr(toDateStr);
 		}else if(null != soFilter && !soFilter.isEmpty()){
+			soId = soFilter.getId();
 			frequency = soFilter.getFrequency();
 			dayOfWeek = soFilter.getDayOfWeek();
 			errorType = soFilter.getErrorType();
@@ -143,8 +150,8 @@ function setAllCheckBoxes(FormName, FieldName, CheckValue)
 				
 				<tr>
 					<td >&nbsp; </td>					
-					<td >&nbsp; </td>
-					<td>Frequency:
+					<td>SO ID: <input type="text" value="<%=soId%>" name="soId" size="11" maxlength="11"/></td>
+					<td>Freq:
 						<select id="frequency" name="frequency" class="promo_filter">
 						<option value="ALL" selected="selected">ALL</option>
 						<% for (EnumStandingOrderFrequency frqItem : EnumStandingOrderFrequency.values()) { %>
@@ -179,14 +186,11 @@ function setAllCheckBoxes(FormName, FieldName, CheckValue)
 						</select>
 					</td>
 					<td>&nbsp;</td>
-					<td>Dates From:<input type="text" id="soFromDate" value="<%= fromDateStr %>" name="soFromDate" class="w100px" /> <a href="#" onclick="return false;" class="promo_ico_cont" id="soFromDate_trigger" name="soFromDate_trigger"><img src="/media_stat/crm/images/calendar.gif" width="16" height="16" alt="" /></a></td>
-					<td>To:<input type="text" id="soToDate" value="<%= toDateStr %>" name="soToDate" class="w100px" /> <a href="#" onclick="return false;" class="promo_ico_cont" id="soToDate_trigger" name="soToDate_trigger"><img src="/media_stat/crm/images/calendar.gif" width="16" height="16" alt="" /></a></td>
+					<td>Dates From:<input type="text" id="soFromDate" value="<%= fromDateStr %>" name="soFromDate" size="10" maxlength="10" /> <a href="#" onclick="return false;" class="promo_ico_cont" id="soFromDate_trigger" name="soFromDate_trigger"><img src="/media_stat/crm/images/calendar.gif" width="16" height="16" alt="" /></a></td>
+					<td>To:<input type="text" id="soToDate" value="<%= toDateStr %>" name="soToDate" size="10" maxlength="10" /> <a href="#" onclick="return false;" class="promo_ico_cont" id="soToDate_trigger" name="soToDate_trigger"><img src="/media_stat/crm/images/calendar.gif" width="16" height="16" alt="" /></a></td>
 					<td><input type="checkbox" id="activeOnly" name="activeOnly" value="activeOnly" <%= soFilter.isActiveOnly()?"checked":"" %>/>Active Only</td>
 					<td>&nbsp;</td>
 					<td><input type="submit" value="FILTER" onclick="" id="so_filter_submit" name="so_filter_submit" class="promo_btn_grn" /></td>
-					<td>&nbsp;</td>
-					<td>&nbsp;</td>
-					<td>&nbsp;</td>						
 				</tr>				
 				<% if(null !=pageContext.getAttribute("endDateBeforeErr")) {%>
 				<tr >

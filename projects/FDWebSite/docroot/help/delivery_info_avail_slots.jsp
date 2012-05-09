@@ -35,6 +35,9 @@ TimeslotContext timeSlotCtx = TimeslotContext.CHECK_AVAIL_SLOTS_NO_USER;
 String addressId="";
 
 SimpleDateFormat deliveryDayFormat = new SimpleDateFormat("EEE MM/d");
+
+// [APPDEV-2149] Display abstract timeslot table (Just days of week, no restrictions, etc.)
+final boolean abstractTimeslots = false;
 %>
 <tmpl:insert template='/common/template/delivery_info_nav.jsp'>
 	<tmpl:put name='title' direct='true'>Available Delivery Slots</tmpl:put>

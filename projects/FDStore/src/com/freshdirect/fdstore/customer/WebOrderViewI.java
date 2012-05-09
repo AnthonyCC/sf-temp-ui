@@ -3,7 +3,6 @@
  */
 package com.freshdirect.fdstore.customer;
 
-import java.util.Iterator;
 import java.util.List;
 
 import com.freshdirect.affiliate.ErpAffiliate;
@@ -15,8 +14,8 @@ public interface WebOrderViewI {
 	
 	public ErpAffiliate getAffiliate();
 	
-	public List getOrderLines();
-	public List getSampleLines();
+	public List<FDCartLineI> getOrderLines();
+	public List<FDCartLineI> getSampleLines();
 
 	public boolean isEstimatedPrice();
 	

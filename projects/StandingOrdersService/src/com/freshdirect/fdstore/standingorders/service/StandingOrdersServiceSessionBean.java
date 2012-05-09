@@ -2,6 +2,7 @@ package com.freshdirect.fdstore.standingorders.service;
 
 import java.net.UnknownHostException;
 import java.rmi.RemoteException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Map;
@@ -14,7 +15,6 @@ import javax.naming.NamingException;
 import org.apache.log4j.Category;
 
 import com.freshdirect.ErpServicesProperties;
-import com.freshdirect.analytics.TimeslotEventModel;
 import com.freshdirect.customer.EnumAccountActivityType;
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.customer.ErpActivityRecord;
@@ -23,12 +23,10 @@ import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDActionInfo;
 import com.freshdirect.fdstore.customer.FDCustomerInfo;
-import com.freshdirect.fdstore.customer.ejb.FDCustomerHome;
 import com.freshdirect.fdstore.mail.FDEmailFactory;
 import com.freshdirect.fdstore.standingorders.FDStandingOrder;
 import com.freshdirect.fdstore.standingorders.FDStandingOrdersManager;
 import com.freshdirect.fdstore.standingorders.StandingOrdersServiceResult;
-import com.freshdirect.fdstore.standingorders.FDStandingOrder.ErrorCode;
 import com.freshdirect.fdstore.standingorders.StandingOrdersServiceResult.Result;
 import com.freshdirect.fdstore.standingorders.StandingOrdersServiceResult.Status;
 import com.freshdirect.framework.core.PrimaryKey;
@@ -48,35 +46,10 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 	private final static Category LOGGER = LoggerFactory.getInstance(StandingOrdersServiceSessionBean.class);
 	
 	private static FDStandingOrdersManager	soManager			= FDStandingOrdersManager.getInstance();
-	private static FDCustomerHome			fcHome				= null;
 	private static MailerGatewayHome		mailerHome			= null;
 	
 	public static final String INITIATOR_NAME = "Standing Order Service";
 	
-	private static void invalidateFCHome() {
-		fcHome = null;
-	}
-	
-	private static void lookupFCHome() {
-		if (fcHome != null) {
-			return;
-		}		
-		Context ctx = null;
-		try {
-			ctx = FDStoreProperties.getInitialContext();
-			fcHome = (FDCustomerHome) ctx.lookup( FDStoreProperties.getFDCustomerHome() );
-		} catch ( NamingException ne ) {
-			ne.printStackTrace();
-		} finally {
-			try {
-				if ( ctx != null ) {
-					ctx.close();
-				}
-			} catch ( NamingException ne ) {
-				LOGGER.warn("Cannot close Context while trying to cleanup", ne);
-			}
-		}
-	}
 
 	private static void invalidateMailerHome() {
 		mailerHome = null;
@@ -91,7 +64,7 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 			ctx = FDStoreProperties.getInitialContext();
 			mailerHome = (MailerGatewayHome) ctx.lookup( "freshdirect.mail.MailerGateway" );
 		} catch ( NamingException ne ) {
-			ne.printStackTrace();
+			LOGGER.error("NamingException",ne);
 		} finally {
 			try {
 				if ( ctx != null ) {
@@ -103,78 +76,112 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 		}
 	}
 	
-	public StandingOrdersServiceResult.Counter placeStandingOrders() {
-				
-		lookupFCHome();
-		lookupMailerHome();
-		
+
+	public StandingOrdersServiceResult.Counter placeStandingOrders(Collection<String> soIdList, boolean createIfSoiExistsForWeek) {
 		Collection<FDStandingOrder> soList;
-		try {
-			LOGGER.info( "Loading active standing orders." );
-			soList = soManager.loadActiveStandingOrders();			
-		} catch (FDResourceException re) {
-			invalidateFCHome();
-			invalidateMailerHome();
-			LOGGER.error( "Could not retrieve standing orders list! - FDResourceException", re );
-			sendTechnicalMail( "Could not retrieve standing orders list! - FDResourceException" );
-			return null;
-		}
 		
-		if ( soList == null ) {
-			LOGGER.error( "Could not retrieve standing orders list! - loadActiveStandingOrders() returned null" );
-			sendTechnicalMail( "Could not retrieve standing orders list! - loadActiveStandingOrders() returned null" );
+		if ( soIdList == null ) {
+			// We got no list at all, which means we need to process everything
+			LOGGER.info( "Null list passed, processing all standing orders." );
+			try {
+				LOGGER.info( "Loading active standing orders." );
+				soList = soManager.loadActiveStandingOrders();			
+				if ( soList == null ) {
+					LOGGER.error( "Could not retrieve standing orders list! - loadActiveStandingOrders() returned null" );
+					sendTechnicalMail( "Could not retrieve standing orders list! - loadActiveStandingOrders() returned null" );
+					return null;
+				}
+			} catch (FDResourceException re) {
+				invalidateMailerHome();
+				LOGGER.error( "Could not retrieve standing orders list! - FDResourceException", re );
+				sendTechnicalMail( "Could not retrieve standing orders list! - FDResourceException" );
+				return null;
+			}
+		} else if ( soIdList.size() == 0 ) {
+			// We got an empty list, which is strange, send a technical mail about this.
+			LOGGER.error( "Empty List passed." );
+			sendTechnicalMail( "Empty List passed." );
 			return null;
-		}
+		} else {
+			// We got some list of SO id-s, lets fetch the SO objects
+			try {
+				soList = new ArrayList<FDStandingOrder>( soIdList.size() );
+				for ( String soId : soIdList ) {
+					FDStandingOrder so = soManager.load( new PrimaryKey( soId ) );
+					if ( so != null ) {
+						soList.add( so );
+					}
+				}
+			} catch (FDResourceException re) {
+				invalidateMailerHome();
+				LOGGER.error( "Could not retrieve standing order! - FDResourceException", re );
+				sendTechnicalMail( "Could not retrieve standing order! - FDResourceException" );
+				return null;
+			}
+		}				
+		// We now have a list of FDStandingOrder objects to be processed in soList
 		
-		StandingOrdersServiceResult.Counter resultCounter = new StandingOrdersServiceResult.Counter();
+		
+		// Load alternate dates - will be null if there are none. (?)
 		Map<Date, Date> altDates = null;
 		try {
 			altDates = FDStandingOrdersManager.getInstance().getStandingOrdersAlternateDeliveryDates();
 		} catch (FDResourceException e) {
 			LOGGER.error( "Getting standing order alternate delivery dates failed with FDResourceException!", e );
 		}
+
+		
+		// Begin processing SO-s, and count the results
+		StandingOrdersServiceResult.Counter resultCounter = new StandingOrdersServiceResult.Counter();
 		LOGGER.info( "Processing " + soList.size() + " standing orders." );
 		for ( FDStandingOrder so : soList ) {
 			Result result;
-			try {
-				
-				TimeslotEventModel event = new TimeslotEventModel(EnumTransactionSource.STANDING_ORDER.getCode(), 
-						false, 0.00, false, false);
-
-				if(null !=altDates){
-					result = StandingOrderUtil.process( so,altDates.get(so.getNextDeliveryDate()), event, null, mailerHome, false );
-				}else{
-					result = StandingOrderUtil.process( so,null, event, null, mailerHome, false);
-				}
-//				result = process( so );
-				
+			try {			
+				// The main processing occurs here.
+				lookupMailerHome();		
+				result = StandingOrderUtil.process( so, null != altDates ? altDates.get(so.getNextDeliveryDate()) : null, null, null, mailerHome, false, createIfSoiExistsForWeek );
 			} catch (FDResourceException re) {
-				invalidateFCHome();
-				invalidateMailerHome();
 				LOGGER.error( "Processing standing order failed with FDResourceException!", re );
-				result = new Result( ErrorCode.TECHNICAL, ErrorCode.TECHNICAL.getErrorHeader(), "Processing standing order failed with FDResourceException!", null );
+				result = new Result(so).withTechError("Processing standing order failed with FDResourceException!");
+			//APPDEV-2286 catch unchecked exceptions
+			} catch (Exception e) {
+				LOGGER.error( "Processing standing order failed with Exception!", e );
+				result = new Result(so).withTechError("Processing standing order failed with Exception!");
+			} finally {
+				invalidateMailerHome();
 			}
 			
+			// Check result, and send an error report if something went wrong
 			if ( result.isError() ) {
 				if ( result.isTechnicalError() ) {
-					// technical error
-					sendTechnicalMail( result.getErrorDetail() );
+					// technical error - send email to sysadmins
+					if ( sendTechnicalMail(
+							result.getErrorDetail(),
+							result.getErrorCode()==null ? "" : result.getErrorCode().toString(),
+							result.getCustId(),
+							result.getCustomerInfo()==null ? "" : result.getCustomerInfo().getEmailAddress(),
+							result.getSoId(),
+							result.getSoName() ) ) {
+						result.setErrorEmailSentToAdmins();
+					}
 				} else {
-					// other error -> set so to error state
+					// other error -> set so to error state, and send email to customer
 					so.setLastError( result.getErrorCode(), result.getErrorHeader(), result.getErrorDetail() );
-					sendErrorMail( so, result.getCustomerInfo() );
+					if ( sendErrorMail( so, result.getCustomerInfo() ) ) {
+						result.setErrorEmailSentToCustomer();						
+					}
 				}
 			}
 			
-			resultCounter.count( result.getStatus() );
+			// count the result
+			resultCounter.count( result );
 			
+			// if there was any change (not skipped), then save the SO and log the activity
 			if ( result.getStatus() != Status.SKIPPED ) {
 				try {
-					FDActionInfo info = new FDActionInfo(EnumTransactionSource.STANDING_ORDER, so.getCustomerIdentity(),
-							INITIATOR_NAME, "Updating Standing Order Status", null);
+					FDActionInfo info = new FDActionInfo(EnumTransactionSource.STANDING_ORDER, so.getCustomerIdentity(), INITIATOR_NAME, "Updating Standing Order Status", null);
 					soManager.save( info, so );
 				} catch (FDResourceException re) {
-					invalidateFCHome();
 					invalidateMailerHome();
 					LOGGER.error( "Saving standing order failed! (FDResourceException)", re );
 				}
@@ -183,9 +190,9 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 			}			
 		}
 		
-		return resultCounter;		
-			
+		return resultCounter;			
 	}
+	
 	
 	private void logActivity ( FDStandingOrder so, Result result ) {
 		
@@ -225,30 +232,81 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 		new ErpLogActivityCommand( activityRecord ).execute();		
 	}
 	
-	private void sendErrorMail ( FDStandingOrder so, FDCustomerInfo customerInfo ) {
+	
+	/**
+	 * Sends an error report email to the customer about a broken SO.
+	 * @param msg
+	 */
+	private boolean sendErrorMail ( FDStandingOrder so, FDCustomerInfo customerInfo ) {
+		lookupMailerHome();
 		try {
 			XMLEmailI mail = FDEmailFactory.getInstance().createStandingOrderErrorEmail( customerInfo, so );		
 			MailerGatewaySB mailer;
 			mailer = mailerHome.create();
 			mailer.enqueueEmail( mail );
+			return true;
 		} catch ( RemoteException e ) {
-			e.printStackTrace();
+			invalidateMailerHome();
+			LOGGER.error("RemoteException", e);
 		} catch ( CreateException e ) {
-			e.printStackTrace();
+			invalidateMailerHome();
+			LOGGER.error("CreateException", e);
 		}
+		return false;
 	}
 
-	private void sendTechnicalMail ( String msg ) {
+	/**
+	 * Sends an error report email about a technical error to the 'so admins' (?)  (address is configurable via erpservices.properties)
+	 * 
+	 * Please note that all of the following errors are regarded as 'technical', so email is not sent to the customer but to an internal address. [APPDEV-2217]
+	 * a.	TECHNICAL
+	 * b.	GENERIC
+	 * c.	TIMESLOT
+	 * d.	CLOSED_DAY
+	 * 
+	 * @param msg
+	 */
+	private static boolean sendTechnicalMail ( String msg, String errorCode, String customerId, String customerName, String soId, String soName ) {
 		try {
 						
 			ErpMailSender mailer = new ErpMailSender();
 			
 			String from = ErpServicesProperties.getStandingOrdersTechnicalErrorFromAddress();
 			String recipient = ErpServicesProperties.getStandingOrdersTechnicalErrorRecipientAddress();
-			String subject = "TECHNICAL ERROR occurred in the Standing Orders background service!";
+			String subject = "Error occurred in the Standing Orders background service!";
 			
 			StringBuilder message = new StringBuilder(); 
 			message.append( "Standing Orders background process failed!\n" );
+			
+			if ( customerId != null ) {
+				message.append( "customerId: " );
+				message.append( customerId );
+				message.append( '\n' );
+			}
+
+			if ( customerName != null ) {
+				message.append( "customer: " );
+				message.append( customerName );
+				message.append( '\n' );
+			}
+
+			if ( soId != null ) {
+				message.append( "soId: " );
+				message.append( soId );
+				message.append( '\n' );
+			}
+			
+			if ( soName != null ) {
+				message.append( "SO: " );
+				message.append( soName );
+				message.append( '\n' );
+			}
+
+			if ( errorCode != null ) {
+				message.append( "errorCode: " );
+				message.append( errorCode );
+				message.append( '\n' );				
+			}
 			
 			message.append( "message: " );
 			message.append( msg );
@@ -273,84 +331,15 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 			
 			mailer.sendMail(from, recipient, "", subject, message.toString() );
 			
+			return true;
+			
 		} catch ( MessagingException e ) {
-			LOGGER.error( "Failed to send out technical error report email!" );
-			e.printStackTrace();
+			LOGGER.error( "Failed to send out technical error report email!", e );
 		}
+		return false;
 	}
-	
-	public StandingOrdersServiceResult.Counter placeStandingOrders(Collection<String> soList) {
-		
-		lookupFCHome();
-		lookupMailerHome();
-		
-		
-		if ( soList == null || soList.size()==0) {
-			LOGGER.error( "Empty List passed." );
-			sendTechnicalMail( "Empty List passed." );
-			return null;
-		}
-		
-		StandingOrdersServiceResult.Counter resultCounter = new StandingOrdersServiceResult.Counter();
-		Map<Date, Date> altDates = null;
-		try {
-			altDates = FDStandingOrdersManager.getInstance().getStandingOrdersAlternateDeliveryDates();
-		} catch (FDResourceException e) {
-			LOGGER.error( "Getting standing order alternate delivery dates failed with FDResourceException!", e );
-		}
-		
-		TimeslotEventModel event = new TimeslotEventModel(EnumTransactionSource.STANDING_ORDER.getCode(), 
-				false, 0.00, false, false);
-		
-		LOGGER.info( "Processing " + soList.size() + " standing orders." );
-		for ( String _so : soList ) {
-			Result result;
-			FDStandingOrder so=null;
-			try {
-				so=soManager.load(new PrimaryKey(_so));
-				if(null !=altDates){
-					result = StandingOrderUtil.process( so,altDates.get(so.getNextDeliveryDate()), event, null, mailerHome, false );
-				}else{
-					result = StandingOrderUtil.process( so, null, event, null, mailerHome, false);
-				}
-//				result = process( so );
-				
-			} catch (FDResourceException re) {
-				invalidateFCHome();
-				invalidateMailerHome();
-				LOGGER.error( "Processing standing order failed with FDResourceException!", re );
-				result = new Result( ErrorCode.TECHNICAL, ErrorCode.TECHNICAL.getErrorHeader(), "Processing standing order failed with FDResourceException!", null );
-			}
-			
-			if ( result.isError() ) {
-				if ( result.isTechnicalError() ) {
-					// technical error
-					sendTechnicalMail( result.getErrorDetail() );
-				} else {
-					// other error -> set so to error state
-					so.setLastError( result.getErrorCode(), result.getErrorHeader(), result.getErrorDetail() );
-					sendErrorMail( so, result.getCustomerInfo() );
-				}
-			}
-			
-			resultCounter.count( result.getStatus() );
-			
-			if ( result.getStatus() != Status.SKIPPED ) {
-				try {
-					FDActionInfo info = new FDActionInfo(EnumTransactionSource.STANDING_ORDER, so.getCustomerIdentity(),
-							INITIATOR_NAME, "Updating Standing Order Status", null);
-					soManager.save( info, so );
-				} catch (FDResourceException re) {
-					invalidateFCHome();
-					invalidateMailerHome();
-					LOGGER.error( "Saving standing order failed! (FDResourceException)", re );
-				}
-				
-				logActivity( so, result );
-			}			
-		}
-		
-		return resultCounter;		
-			
+
+	private static boolean sendTechnicalMail ( String msg ) {
+		return sendTechnicalMail( msg, null, null, null, null, null );
 	}
 }

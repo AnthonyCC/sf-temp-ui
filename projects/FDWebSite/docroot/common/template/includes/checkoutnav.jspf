@@ -68,19 +68,19 @@ final int W_CHECKOUTNAV_TOTAL = 970;
 
 <%
 	String prefix;
-    if (modOrder) {
+	if ( standingOrder ) {
+		prefix = "qs"; 
+	} else if (modOrder) {
         prefix = "cg";
-    } else if ( standingOrder ) {
-    	prefix = "qs";
     } else {
     	prefix = "ck";
     }
     
     String bgColor;
-    if (modOrder) {
-    	bgColor = "#6699CC";    	
-    } else if ( standingOrder ) {
+    if ( standingOrder ) {
     	bgColor = "#996699";    	
+    } else if (modOrder) {
+    	bgColor = "#6699CC";    	
     } else {
     	bgColor = "#669933";
     }

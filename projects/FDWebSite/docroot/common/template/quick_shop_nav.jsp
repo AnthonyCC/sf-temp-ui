@@ -7,11 +7,20 @@
 <% //expanded page dimensions
 
 final int W_QUICK_SHOP_TOTAL = 970;
-final int W_QUICK_SHOP_CONTENT = 765;
+int W_QUICK_SHOP_CONTENT = 765;
 final int W_QUICK_SHOP_CART = 191;
 final int W_QUICK_SHOP_DELIMITER = 14;
 final int W_QUICK_SHOP_LEFTNAV = 150;
-final int W_QUICK_SHOP_CENTER = 601;
+int W_QUICK_SHOP_CENTER = 601;
+
+/* If this request attribute is set to false, right-side chart won't be displayed and content spawns
+whole horizontal area. Default value is true (cart is displayed, original behavior). */
+Boolean isQuickShopCartVisible = (Boolean)request.getAttribute("isQuickShopCartVisible");
+if(isQuickShopCartVisible==null) { isQuickShopCartVisible = true; }
+if(!isQuickShopCartVisible) {
+	W_QUICK_SHOP_CONTENT = W_QUICK_SHOP_TOTAL;
+	W_QUICK_SHOP_CENTER = 765;
+}
 
 request.setAttribute("__yui_load_dispatcher__", Boolean.TRUE);
 %>
@@ -49,30 +58,30 @@ request.setAttribute("__yui_load_dispatcher__", Boolean.TRUE);
 <TABLE WIDTH="<%= W_QUICK_SHOP_TOTAL %>" CELLPADDING="0" CELLSPACING="0" BORDER="0">
 <TR VALIGN="TOP">
 	<TD WIDTH="<%= W_QUICK_SHOP_CONTENT %>"><img src="/media_stat/images/layout/clear.gif" width="<%= W_QUICK_SHOP_CONTENT %>" height="1" border="0"></TD>
-  <TD WIDTH="<%= W_QUICK_SHOP_DELIMITER %>"><img src="/media_stat/images/layout/clear.gif" width="<%= W_QUICK_SHOP_DELIMITER %>" height="1" border="0"></TD>
-	<TD WIDTH="<%= W_QUICK_SHOP_CART %>"><img src="/media_stat/images/layout/clear.gif" width="<%= W_QUICK_SHOP_CART %>" height="1" border="0"></TD>
+	<% if(isQuickShopCartVisible) { %>
+		<TD WIDTH="<%= W_QUICK_SHOP_DELIMITER %>"><img src="/media_stat/images/layout/clear.gif" width="<%= W_QUICK_SHOP_DELIMITER %>" height="1" border="0"></TD>
+		<TD WIDTH="<%= W_QUICK_SHOP_CART %>"><img src="/media_stat/images/layout/clear.gif" width="<%= W_QUICK_SHOP_CART %>" height="1" border="0"></TD>
+	<% } %>
 </TR>
 <TR VALIGN="TOP">
 	<TD WIDTH="<%= W_QUICK_SHOP_CONTENT %>">
 	<!-- nested quick shell here, content inside -->	
 		<TABLE WIDTH="<%= W_QUICK_SHOP_CONTENT %>" CELLPADDING="0" CELLSPACING="0" BORDER="0">
-		<TR VALIGN="TOP">
-      <TD WIDTH="<%= W_QUICK_SHOP_LEFTNAV %>"><img src="/media_stat/images/layout/clear.gif" width="<%= W_QUICK_SHOP_LEFTNAV %>" height="1" border="0"></TD>
-      <TD WIDTH="<%= W_QUICK_SHOP_DELIMITER %>"><img src="/media_stat/images/layout/clear.gif" width="<%= W_QUICK_SHOP_DELIMITER %>" height="1" border="0"></TD>
-      <TD WIDTH="<%= W_QUICK_SHOP_CENTER %>"><img src="/media_stat/images/layout/clear.gif" width="<%= W_QUICK_SHOP_CENTER %>" height="1" border="0"></TD>
-		</TR>
-		<TR>
-			<TD colspan="3"><img src="/media_stat/images/layout/dot_clear.gif" width="1" height="4" border="0"></TD>
-		</TR>
-		<TR VALIGN="TOP">
-			<TD colspan="3">
-				
+			<TR VALIGN="TOP">
+				<TD WIDTH="<%= W_QUICK_SHOP_LEFTNAV %>"><img src="/media_stat/images/layout/clear.gif" width="<%= W_QUICK_SHOP_LEFTNAV %>" height="1" border="0"></TD>
+				<TD WIDTH="<%= W_QUICK_SHOP_DELIMITER %>"><img src="/media_stat/images/layout/clear.gif" width="<%= W_QUICK_SHOP_DELIMITER %>" height="1" border="0"></TD>
+				<TD WIDTH="<%= W_QUICK_SHOP_CENTER %>"><img src="/media_stat/images/layout/clear.gif" width="<%= W_QUICK_SHOP_CENTER %>" height="1" border="0"></TD>
+			</TR>
+			<TR>
+				<TD colspan="3"><img src="/media_stat/images/layout/dot_clear.gif" width="1" height="4" border="0"></TD>
+			</TR>
+			<TR VALIGN="TOP">
+				<TD colspan="3">
 <% 
 String level = (String) request.getAttribute("quickshop.level");// This is defined in index.jsp or index_guest.jsp of quickshop
 if ("index".equals(level)){}
 else{
 %>
-	
 				<TABLE CELLPADDING="0" CELLSPACING="0" BORDER="0">
 				<TR VALIGN="MIDDLE">
 					<TD><A HREF="/quickshop/index.jsp"><img src="/media_stat/images/navigation/department/quickshop/qs_depnav.gif" width="158" height="28" border="0" alt="QUICKSHOP"></A></TD>
@@ -140,18 +149,20 @@ else{
 		</TABLE>
 
 	</TD>
-	<TD WIDTH="5"><img src="/media_stat/images/layout/dot_clear.gif" width="5" height="1" border="0"></TD>
-	<TD WIDTH="<%= W_QUICK_SHOP_CART %>">
-	<%@ include file="/includes/i_promotion_counter.jspf" %>
-	<% if (FDStoreProperties.isAdServerEnabled()) { %>
-		<SCRIPT LANGUAGE=JavaScript>
-                <!--
-                OAS_AD('QSTopRight');
-                //-->
-      	</SCRIPT><br><br>
-	 <% } %>
-	<%@ include file="/common/template/includes/your_cart_quick_shop.jspf" %>
-	</TD>
+	<% if(isQuickShopCartVisible) { %>
+		<TD WIDTH="5"><img src="/media_stat/images/layout/dot_clear.gif" width="5" height="1" border="0"></TD>
+		<TD WIDTH="<%= W_QUICK_SHOP_CART %>">
+		<%@ include file="/includes/i_promotion_counter.jspf" %>
+		<% if (FDStoreProperties.isAdServerEnabled()) { %>
+			<SCRIPT LANGUAGE=JavaScript>
+	                <!--
+	                OAS_AD('QSTopRight');
+	                //-->
+	      	</SCRIPT><br><br>
+		 <% } %>
+		<%@ include file="/common/template/includes/your_cart_quick_shop.jspf" %>
+		</TD>
+	<% } /* if(isQuickShopCartVisible) */ %>
 </TR>
 </TABLE>
 </CENTER>

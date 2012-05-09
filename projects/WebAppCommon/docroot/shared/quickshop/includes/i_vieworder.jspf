@@ -39,6 +39,13 @@
  --%>
 <%!
 	java.text.DecimalFormat QT_FORMATTER = new java.text.DecimalFormat("0.##");
+
+	String getTrimmedDesc(FDSalesUnit salesUnit) { 
+		String salesUnitDescr = salesUnit.getDescription();
+		// clean parenthesis
+		int ppos = salesUnitDescr.indexOf("(");
+		return (ppos>-1) ? salesUnitDescr.substring(0, ppos).trim() : salesUnitDescr;
+	}
 %>
 <%
 String itemModifyWarning = "If you view an item, you will lose any changes you have made to quantities on this page.";
@@ -214,8 +221,13 @@ String source = ccListIdStr != null && ccListIdStr.length() > 0
 	</tr>
 <% } %>
 <tr bgcolor="#996699" class="text10wbold" height="18">
+<% if (isStandingOrderPage) { %>
+    <td colspan="4" style="padding-left:10px">Qty.</td>
+    <td>Product Name</td>
+<% } else { %>
     <td colspan="4">&nbsp;Quantity</td>
     <td>Item & Current Price</td>
+<% } %>
     <td colspan="3 align="center"><img src="/media_stat/images/layout/clear.gif" width="30" height="4">Est.Price</td>
 </tr>
 <tr>
@@ -231,13 +243,17 @@ String source = ccListIdStr != null && ccListIdStr.length() > 0
     <td colspan="7">
         <table width="100%">
         <tr>
-        <% if( isCCLorSO) {  // CCL %>
-            <td width="50%"><a href="?fdAction=clearValues<%= hasDeptId ? "&qsDeptId=" + qsDeptId : ""%>&<%=CclUtils.CC_LIST_ID%>=<%=ccListIdStr%>"><img src="/media_stat/images/template/quickshop/qs_clear_all_quantities.gif" width="125" height="17" border="0"></a></td>
-         <% } else if (QuickCart.PRODUCT_TYPE_STARTER_LIST == cartType) { %>
-            <td width="50%"><a href="?fdAction=clearValues<%= hasDeptId ? "&qsDeptId=" + qsDeptId : ""%>&<%=CclUtils.STARTER_LIST_ID%>=<%=starterListIdStr%>"><img src="/media_stat/images/template/quickshop/qs_clear_all_quantities.gif" width="125" height="17" border="0"></a></td>
-	 <% } else { %>   
-            <td width="50%"><a href="?fdAction=clearValues<%= hasDeptId ? "&qsDeptId=" + qsDeptId : ""%>&orderId=<%=orderId%>"><img src="/media_stat/images/template/quickshop/qs_clear_all_quantities.gif" width="125" height="17" border="0"></a></td>
-          <% } %>   
+        <% if(isStandingOrderPage) { %>
+            <td width="50%"></td>
+        <% } else { %>
+            <% if( isCCLorSO ) {  // CCL %>
+                <td width="50%"><a href="?fdAction=clearValues<%= hasDeptId ? "&qsDeptId=" + qsDeptId : ""%>&<%=CclUtils.CC_LIST_ID%>=<%=ccListIdStr%>"><img src="/media_stat/images/template/quickshop/qs_clear_all_quantities.gif" width="125" height="17" border="0"></a></td>
+            <% } else if (QuickCart.PRODUCT_TYPE_STARTER_LIST == cartType) { %>
+                <td width="50%"><a href="?fdAction=clearValues<%= hasDeptId ? "&qsDeptId=" + qsDeptId : ""%>&<%=CclUtils.STARTER_LIST_ID%>=<%=starterListIdStr%>"><img src="/media_stat/images/template/quickshop/qs_clear_all_quantities.gif" width="125" height="17" border="0"></a></td>
+            <% } else { %>
+                <td width="50%"><a href="?fdAction=clearValues<%= hasDeptId ? "&qsDeptId=" + qsDeptId : ""%>&orderId=<%=orderId%>"><img src="/media_stat/images/template/quickshop/qs_clear_all_quantities.gif" width="125" height="17" border="0"></a></td>
+            <% } %>
+        <% } %>
             <td width="50%" align="right">
             <%if(!flagList.isEmpty()){%>
                 Item already in cart = <img src="/media_stat/images/template/quickshop/qs_check_gray.gif" name="checkImg" width="9" height="9" border="0" alt="Item is currently in your cart">
@@ -292,6 +308,10 @@ String source = ccListIdStr != null && ccListIdStr.length() > 0
 
     ProductModel productNode = orderLine.lookupProduct();
     
+	//so page should not display unavailable product or departments containing only these
+	if(!(isStandingOrderPage && (productNode==null || productNode.getSku(orderLine.getSkuCode()).isUnavailable() || orderLine.isInvalidConfig()))) {
+
+
     ProductLabeling pl = new ProductLabeling((FDUserI) session.getAttribute(SessionName.USER), productNode);
     String actionUrl = FDURLUtil.getProductURI( productNode, pl.getTrackingCode() );
 
@@ -518,41 +538,48 @@ if (showRecent && showThis &&  skusAdded!=null && skusAdded.contains("skuCode_"+
             </script>
 
     <% if (productNode.hasTerms()) { %> <input type="hidden" name="consented_<%=idx%>" value="true"> <% } %>
-    <%    if (orderLine.isSoldBySalesUnits()) { %>
-                <input type="hidden" name="quantity_<%=idx%>" value="1">
-            <td colspan="4">
-                <select name="salesUnit_<%=idx%>" STYLE="width: 60px" class="text10" onChange="pricing<%=idx%>.setSalesUnit(this.value);">
-                <option value="">0</option>
-<%
-                
-                for (FDSalesUnit salesUnit : orderLine.lookupFDProduct().getSalesUnits()) {
-                    String salesUnitDescr = salesUnit.getDescription();
-                    // clean parenthesis
-                    int ppos = salesUnitDescr.indexOf("(");
-                    if (ppos>-1)
-                    	salesUnitDescr = salesUnitDescr.substring(0, ppos).trim();
-%>				<option value="<%= salesUnit.getName() %>"<%= salesUnit.getName().equals(orderLine.getSalesUnit()) ? " SELECTED" : ""%>><%= salesUnitDescr %></option>
-<%				}
-%>
-                </select>
-            </td>
-    <% } else { %>
-                <input type="hidden" name="salesUnit_<%=idx%>" value="<%= orderLine.getSalesUnit() %>">
-            <td colspan="2" width="40">
-            <% String quant = QT_FORMATTER.format(orderLine.getQuantity()); %>    
-            <input type="text" name="quantity_<%=idx%>" value="<%= !"0".equals(quant)?quant:"" %>" style="width: 36px" size="3" maxlength="4" class="text10" onChange="chgQty<%=idx%>(0);" onBlur="pricing<%=idx%>.setQuantity(this.value);">
-            </td>
-            <td  width="10"><a href="javascript:chgQty<%=idx%>(<%= productNode.getQuantityIncrement() %>);"><img src="/media_stat/images/template/quickshop/grn_arrow_up.gif" width="10" height="9" border="0" vspace="1" alt="Increase quantity"></a><br><a href="javascript:chgQty<%=idx%>(<%= -productNode.getQuantityIncrement() %>);"><img src="/media_stat/images/template/quickshop/grn_arrow.gif" width="10" height="9" border="0" vspace="1" alt="Decrease quantity"></a></td>
-            <td  width="20"><%if (!"".equals(orderLine.getLabel())){%><img src="/media_stat/images/layout/clear.gif" width="1" height="4"><br><img src="/media_stat/images/layout/clear.gif" width="2" height="1"><%=orderLine.getLabel()%><% } else { %>&nbsp;<% } %></td>
-    <% }
-                String earliestAvailability = productNode.getSku(orderLine.getSkuCode()).getEarliestAvailabilityMessage();
+
+	<%--QUANTITY SELECTOR COLUMN --%>
+	<%	if (orderLine.isSoldBySalesUnits()) { /* quantity selector with sales units */ %>
+		<% if(isStandingOrderPage) { %>
+			<td colspan="3" align="right"><%= getTrimmedDesc(orderLine.lookupFDProduct().getSalesUnit(orderLine.getSalesUnit())) %></td>
+			<td width="10"></td>
+		<% } else { %>
+			<td colspan="4">
+				<input type="hidden" name="quantity_<%=idx%>" value="1">
+				<select name="salesUnit_<%=idx%>" STYLE="width: 60px" class="text10" onChange="pricing<%=idx%>.setSalesUnit(this.value);">
+					<option value="">0</option>
+					<% for (FDSalesUnit salesUnit : orderLine.lookupFDProduct().getSalesUnits()) { %>
+						<option value="<%= salesUnit.getName() %>"<%= salesUnit.getName().equals(orderLine.getSalesUnit()) ? " SELECTED" : ""%>><%= getTrimmedDesc(salesUnit) %></option>
+					<% } %>
+				</select>
+			</td>
+		<% } %>
+
+	<% } else { /* quantity selector without sales units */ %>
+		<% String quant = QT_FORMATTER.format(orderLine.getQuantity()); %>
+		<% if(isStandingOrderPage) { %>
+			<td colspan="2" width="40" align="right"><%= quant %></td>
+			<td width="10"></td>
+		<% } else { %>
+			<td colspan="2" width="40">
+				<input type="hidden" name="salesUnit_<%=idx%>" value="<%= orderLine.getSalesUnit() %>">
+				<input type="text" name="quantity_<%=idx%>" value="<%= !"0".equals(quant)?quant:"" %>" style="width: 36px" size="3" maxlength="4" class="text10" onChange="chgQty<%=idx%>(0);" onBlur="pricing<%=idx%>.setQuantity(this.value);">
+			</td>
+			<td  width="10"><a href="javascript:chgQty<%=idx%>(<%= productNode.getQuantityIncrement() %>);"><img src="/media_stat/images/template/quickshop/grn_arrow_up.gif" width="10" height="9" border="0" vspace="1" alt="Increase quantity"></a><br><a href="javascript:chgQty<%=idx%>(<%= -productNode.getQuantityIncrement() %>);"><img src="/media_stat/images/template/quickshop/grn_arrow.gif" width="10" height="9" border="0" vspace="1" alt="Decrease quantity"></a></td>
+		<% } %>
+		<td  width="20"><%if (!"".equals(orderLine.getLabel())){%><img src="/media_stat/images/layout/clear.gif" width="1" height="4"><br><img src="/media_stat/images/layout/clear.gif" width="2" height="1"><%=orderLine.getLabel()%><% } else { %>&nbsp;<% } %></td>
+	<% } %>
+	<%--end of quantity selector column --%>
+	
+<%              String earliestAvailability = productNode.getSku(orderLine.getSkuCode()).getEarliestAvailabilityMessage();
 
                 FDProductInfo productInfo = orderLine.lookupFDProductInfo();
                 FDProduct product = orderLine.lookupFDProduct();
                 
     %>
     <%-- product description display --%> 
-    <td  width="432"><font class="text11bold"><%= orderLine.getDescription() %></font>    
+    <td  width="100%"><font class="text11bold"><%= orderLine.getDescription() %></font>    
    
     
     <%if(request.getRequestURI().indexOf("makegood")>-1){%>
@@ -569,22 +596,24 @@ if (showRecent && showThis &&  skusAdded!=null && skusAdded.contains("skuCode_"+
             <br><font class="text10rbold">Earliest Delivery <%= earliestAvailability %></font>
     <%        }    %>
 
-<% if (isCCLorSO) { 
-	successPage = landingPageRoot +"?" + CclUtils.CC_LIST_ID + "=" + ccListIdStr;
-    %>
-    	<NOBR><a href="<%=qsLink%><%=qsExtra%>" onclick="FormChangeUtil.setWarningMessage('qs_cart','<%=itemModifyWarning%>'); addQuantToLink(this,'<%=qsLink%>',<%=idx%>);" class="text10" onMouseOver="window.status='Customize this product'">Modify</A>
-		&nbsp;-&nbsp;<a name="remove_link" href="<%= landingPageRoot %>?<%=CclUtils.CC_LIST_ID%>=<%=ccListIdStr%>&qcType=<%= __qc.getProductType() %>" onclick="<%= JSRemoveAction %>(<%=ccListIdStr%>,<%=orderLine.getStatistics().getPK().getId()%>);">Delete</a></NOBR>
-       
-    <% } else if (QuickCart.PRODUCT_TYPE_STARTER_LIST == cartType) { %>
-    <% } else { %><NOBR>
-        <%if(!(request.getRequestURI().indexOf("makegood")>-1)){%>
-            <a href="<%=qsLink%><%=qsExtra%>" onclick="FormChangeUtil.setWarningMessage('qs_cart','<%=itemModifyWarning%>'); addQuantToLink(this,'<%=qsLink%>',<%=idx%>);" class="text10" onMouseOver="window.status='Customize this product'">Modify</A>
-        <%}%>      
-    <%        if(orderLine.getStatistics() != null ){ %>
-				&nbsp;-&nbsp;<a href="javascript:doDelete('<%=orderLine.getStatistics().getPK().getId()%>')" onClick="return confirm('Are you sure you want to permanently DELETE this item from your Quickshop list?');">Delete</a></NOBR>
-    <%        }
-        } 
-    %> 
+<% if(!isStandingOrderPage) { %>
+    <% if (isCCLorSO) { 
+        successPage = landingPageRoot +"?" + CclUtils.CC_LIST_ID + "=" + ccListIdStr;
+        %>
+            <NOBR><a href="<%=qsLink%><%=qsExtra%>" onclick="FormChangeUtil.setWarningMessage('qs_cart','<%=itemModifyWarning%>'); addQuantToLink(this,'<%=qsLink%>',<%=idx%>);" class="text10" onMouseOver="window.status='Customize this product'">Modify</A>
+            &nbsp;-&nbsp;<a name="remove_link" href="<%= landingPageRoot %>?<%=CclUtils.CC_LIST_ID%>=<%=ccListIdStr%>&qcType=<%= __qc.getProductType() %>" onclick="<%= JSRemoveAction %>(<%=ccListIdStr%>,<%=orderLine.getStatistics().getPK().getId()%>);">Delete</a></NOBR>
+           
+        <% } else if (QuickCart.PRODUCT_TYPE_STARTER_LIST == cartType) { %>
+        <% } else { %><NOBR>
+            <%if(!(request.getRequestURI().indexOf("makegood")>-1)){%>
+                <a href="<%=qsLink%><%=qsExtra%>" onclick="FormChangeUtil.setWarningMessage('qs_cart','<%=itemModifyWarning%>'); addQuantToLink(this,'<%=qsLink%>',<%=idx%>);" class="text10" onMouseOver="window.status='Customize this product'">Modify</A>
+            <%}%>      
+        <%        if(orderLine.getStatistics() != null ){ %>
+                  &nbsp;-&nbsp;<a href="javascript:doDelete('<%=orderLine.getStatistics().getPK().getId()%>')" onClick="return confirm('Are you sure you want to permanently DELETE this item from your Quickshop list?');">Delete</a></NOBR>
+        <%        }
+                }
+} /* if(!isStandingOrderPage) */
+%> 
    
     <br><br>
     <%
@@ -668,6 +697,7 @@ if (showRecent && showThis &&  skusAdded!=null && skusAdded.contains("skuCode_"+
 </tr>
     <%
         }
+	} 	//so page should not display unavailable product or departments containing only these
     %>
     
 </logic:iterate>

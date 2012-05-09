@@ -176,3 +176,73 @@
 	font-color: #333333;
 	color: #333333;
 }
+
+.ccl-calendar {
+	float:none;
+	width:140px;
+ 	margin-left:auto;
+	margin-right:auto;
+	margin-bottom:5px;
+}
+
+.ccl-leftcontainer {
+	text-align: left !important;
+	padding: 1ex 3ex;
+}
+
+.ccl-leftcontainer div {
+	padding-left: 0 !important;
+}
+
+.ccl-leftcontainer span {
+	padding-left: 0 !important;
+}
+
+.ccl-placeholder {
+	color: #aaa;
+}
+
+.ccl-placeholder-error {
+	color: #CC3300;
+	font-weight: bold !important;
+}
+
+#ccl-needhelpimg {
+	padding-top: 4ex;
+	padding-bottom: 0;
+}
+
+.ccl-needhelplink {
+	vertical-align: top;
+	padding: 0px 0px 0px 10px !important;
+}
+.ccl-needhelplink a { 
+	color: #ffffff;
+}
+
+.ccl-notoppadding {
+	padding-top: 0px !important;
+}
+
+.ccl-nopadding {
+	padding: 0px !important;
+}
+
+.ccl-help-input {
+	width: 200px;	
+	margin: 0 0 2ex 0;
+	padding: 2px;
+	border: 1px solid #878787;
+}
+
+.ccl-panel .ft-need-help {
+    padding: 18px 3ex 13px 3ex; 
+    margin: 2ex 0px 0px 0px;
+    text-align: left; 
+    overflow:visible;	
+    background-color: #996699;
+    border: solid 1px #996699;
+	color:#FFF;
+	font-family: Verdana,Arial,sans-serif;
+    font-size: 10px;
+}

@@ -1,13 +1,20 @@
 function updateTotal() {
-    var total=0;
-    var p;
-    for(i=0; i<numberOfOrderLines; i++ ){
-        p = eval("pricing"+i+".getPrice()");
-        if (p!="") {
-            total+=new Number(p.substring(1));
-        }
-    }
-    document.forms['qs_cart']["total"].value="$"+currencyFormat(total);
+	var i, p, total=0, totalSpan = document.getElementById('notYetAvailableOrderTotalPrice');
+	for(i=0; i<numberOfOrderLines; i++ ){
+		try{
+			p = eval("pricing"+i).getPrice();
+			if (p!="") {
+				total+=new Number(p.substring(1));
+			}
+		} catch (e){
+			//"pricing"+i does not exist due to unavailability
+		}
+	}
+	total = "$"+currencyFormat(total);
+	document.forms['qs_cart']["total"].value=total;
+	if(totalSpan) {
+		totalSpan.innerHTML = total;
+	}
 }
 
 function chgQuickShopQty(idx, delta, min, max, increment) {

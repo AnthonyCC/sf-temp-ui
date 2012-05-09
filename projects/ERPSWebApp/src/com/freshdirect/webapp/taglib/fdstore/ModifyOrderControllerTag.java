@@ -77,6 +77,7 @@ import com.freshdirect.fdstore.promotion.Promotion;
 import com.freshdirect.fdstore.promotion.PromotionFactory;
 import com.freshdirect.fdstore.promotion.PromotionI;
 import com.freshdirect.fdstore.promotion.RedemptionCodeStrategy;
+import com.freshdirect.fdstore.standingorders.FDStandingOrder;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.util.NVL;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -251,9 +252,14 @@ public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.B
             
         }
 
-       
-		String reason = NVL.apply( request.getParameter("cancel_reason"), "").trim();
+        String reason = NVL.apply( request.getParameter("cancel_reason"), "").trim();
 		String notes = NVL.apply( request.getParameter("cancel_notes"), "").trim();
+		
+		cancelOrder(session, user, this.orderId, transactionSource, sendEmail, reason, notes, results);		
+
+	}
+	
+	public static void cancelOrder(HttpSession session, FDSessionUser user, String orderId, EnumTransactionSource transactionSource, boolean sendEmail, String reason, String notes, ActionResult results) throws JspException{
         
 		StringBuffer sb = new StringBuffer("Order Cancelled (");
 		if (!"".equals(reason)) {
@@ -296,7 +302,7 @@ public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.B
 				}
 			}
 
-			FDReservation restoredRsv = FDCustomerManager.cancelOrder(info, this.orderId, sendEmail, currentDPExtendDays);
+			FDReservation restoredRsv = FDCustomerManager.cancelOrder(info, orderId, sendEmail, currentDPExtendDays);
 			if(restoredRsv != null){
 				user.setReservation(restoredRsv);
 			}
@@ -325,7 +331,7 @@ public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.B
 			throw new JspException(ex.getMessage());
 		} catch (ErpTransactionException ex) {
 			results.addError(new ActionError("order_status", "This order is not in the proper state to be cancelled."));
-			LOGGER.error("Order " + this.orderId + " was not in the proper state to be cancelled.", ex);
+			LOGGER.error("Order " + orderId + " was not in the proper state to be cancelled.", ex);
 		}
 
 		user.invalidateCache();
@@ -334,7 +340,7 @@ public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.B
 		//invalidate gift cards.
 		user.invalidateGiftCards();
 		session.setAttribute( SessionName.USER, user );
-
+		
 	}
 
 	protected void modifyOrder(HttpServletRequest request, ActionResult results) throws JspException {
@@ -348,55 +354,64 @@ public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.B
 		// Modify order: load the shopping cart with the old items
 		//
 		try {
-			FDOrderAdapter order = (FDOrderAdapter) FDCustomerManager.getOrder( currentUser.getIdentity(), this.orderId );
-
-			FDCustomerManager.storeUser(currentUser.getUser());
-
-			FDCartModel cart = new FDModifyCartModel(order);
-			// Check if this order has a extend delivery pass promotion. If so get the no. of extended days.
-			Set<String> usedPromoCodes = order.getSale().getUsedPromotionCodes();
-			for(Iterator<String> it = usedPromoCodes.iterator(); it.hasNext();){
-				PromotionI promo  = PromotionFactory.getInstance().getPromotion(it.next());
-				if(promo != null && promo.getOfferType() != null && promo.getOfferType().equals(EnumOfferType.DP_EXTN)){
-					ExtendDeliveryPassApplicator app = (ExtendDeliveryPassApplicator)((Promotion)promo).getApplicator();
-					cart.setCurrentDlvPassExtendDays(app.getExtendDays());
-					break;
-				}
-			}
-			cart.refreshAll(true);
-			currentUser.setCurrentStandingOrder(null);
-			currentUser.setCheckoutMode(EnumCheckoutMode.NORMAL);
-			currentUser.setShoppingCart( cart );
-			//Reload gift card balance.
-			loadGiftCardsIntoCart(currentUser, order);
-			// resolve timeslot id based on delivery reservation id
-			FDReservation reservation = FDDeliveryManager.getInstance().getReservation( order.getDeliveryReservationId() );
-			cart.setDeliveryReservation(reservation);
-			
-			// resolve the redemption promotions
-			for (Iterator i = order.getUsedPromotionCodes().iterator(); i.hasNext();) {
-				String promoCode = (String) i.next();
-				Promotion promo = (Promotion) PromotionFactory.getInstance().getPromotion(promoCode);
-				RedemptionCodeStrategy redemption = (RedemptionCodeStrategy) promo.getStrategy(RedemptionCodeStrategy.class);
-				if (redemption != null) {
-					currentUser.setRedeemedPromotion(PromotionFactory.getInstance().getPromotion(promoCode));
-				}
-			}
-			
-			// recalculate promotion
-			currentUser.invalidateCache();
-			currentUser.updateUserState( );
-			session.setAttribute( SessionName.USER, currentUser );
-            //The previous recommendations of the current user need to be removed.
-            session.removeAttribute(SessionName.SMART_STORE_PREV_RECOMMENDATIONS);
-
+			modifyOrder(currentUser, orderId, session, null, EnumCheckoutMode.NORMAL);
 		} catch (FDException ex) {
 			LOGGER.warn("Unable to create modify cart", ex);
 			throw new JspException(ex.getMessage());
 		}
 	}
 
-	private void loadGiftCardsIntoCart(FDUserI user, FDOrderI originalOrder) {
+	public FDModifyCartModel modifyOrder(FDSessionUser currentUser, String orderId, HttpSession session, FDStandingOrder currentStandingOrder, EnumCheckoutMode checkOutMode) throws FDResourceException, FDInvalidConfigurationException{
+
+		FDOrderAdapter order = (FDOrderAdapter) FDCustomerManager.getOrder( currentUser.getIdentity(), orderId );
+		FDCustomerManager.storeUser(currentUser.getUser());
+		FDModifyCartModel cart = new FDModifyCartModel(order);
+		
+		// Check if this order has a extend delivery pass promotion. If so get the no. of extended days.
+		Set<String> usedPromoCodes = order.getSale().getUsedPromotionCodes();
+		for(Iterator<String> it = usedPromoCodes.iterator(); it.hasNext();){
+			PromotionI promo  = PromotionFactory.getInstance().getPromotion(it.next());
+			if(promo != null && promo.getOfferType() != null && promo.getOfferType().equals(EnumOfferType.DP_EXTN)){
+				ExtendDeliveryPassApplicator app = (ExtendDeliveryPassApplicator)((Promotion)promo).getApplicator();
+				cart.setCurrentDlvPassExtendDays(app.getExtendDays());
+				break;
+			}
+		}
+		
+		cart.refreshAll(true);
+		currentUser.setCurrentStandingOrder(currentStandingOrder);
+		currentUser.setCheckoutMode(checkOutMode);
+		currentUser.setShoppingCart( cart );
+		
+		//Reload gift card balance.
+		loadGiftCardsIntoCart(currentUser, order);
+		
+		// resolve timeslot id based on delivery reservation id
+		FDReservation reservation = FDDeliveryManager.getInstance().getReservation( order.getDeliveryReservationId() );
+		cart.setDeliveryReservation(reservation);
+		
+		
+		// resolve the redemption promotions
+		for (Iterator i = order.getUsedPromotionCodes().iterator(); i.hasNext();) {
+			String promoCode = (String) i.next();
+			Promotion promo = (Promotion) PromotionFactory.getInstance().getPromotion(promoCode);
+			RedemptionCodeStrategy redemption = (RedemptionCodeStrategy) promo.getStrategy(RedemptionCodeStrategy.class);
+			if (redemption != null) {
+				currentUser.setRedeemedPromotion(PromotionFactory.getInstance().getPromotion(promoCode));
+			}
+		}
+		
+		// recalculate promotion
+		currentUser.invalidateCache();
+		currentUser.updateUserState( );
+		session.setAttribute( SessionName.USER, currentUser );
+        //The previous recommendations of the current user need to be removed.
+        session.removeAttribute(SessionName.SMART_STORE_PREV_RECOMMENDATIONS);
+        
+        return cart;
+	}
+	
+	private static void loadGiftCardsIntoCart(FDUserI user, FDOrderI originalOrder) {
 		FDGiftCardInfoList gcList = user.getGiftCardList();
 		//Clear any hold amounts.
 		gcList.clearAllHoldAmount();

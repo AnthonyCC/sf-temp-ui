@@ -11,6 +11,7 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.logging.LogManager;
 
+import javax.mail.MessagingException;
 import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Category;
@@ -33,7 +34,9 @@ import com.freshdirect.fdstore.lists.FDCustomerProductListLineItem;
 import com.freshdirect.fdstore.lists.FDListManager;
 import com.freshdirect.fdstore.standingorders.FDStandingOrder;
 import com.freshdirect.framework.core.PrimaryKey;
+import com.freshdirect.framework.util.StringUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.mail.ErpMailSender;
 import com.freshdirect.webapp.taglib.fdstore.AccountActivityUtil;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
 import com.metaparadigm.jsonrpc.JSONRPCBridge;
@@ -126,8 +129,6 @@ public class CustomerCreatedListAjaxFacade implements Serializable {
 	    }
 	    lists = new ArrayList<FDCustomerListInfo>( lists );
 	    
-	    appendStandingOrderInfos(user, lists);
-	    
 	    TreeSet<FDCustomerListInfo> sorted = new TreeSet<FDCustomerListInfo>(new Comparator<FDCustomerListInfo>() {
 			public int compare(FDCustomerListInfo l1, FDCustomerListInfo l2) {
 				return l1.getName().compareToIgnoreCase(l2.getName()) < 0 ? -1 : 1;
@@ -138,28 +139,6 @@ public class CustomerCreatedListAjaxFacade implements Serializable {
 	    return getCustomerCreatedListNamesFromSet(sorted);
 	}
 
-
-	/**
-	 * @param user Current customer
-	 * @param lists An already populated list of FDCustomerListInfo instances
-	 */
-	private void appendStandingOrderInfos(FDUserI user, List<FDCustomerListInfo> lists) {
-		// append standing order lists
-	    final List<FDCustomerListInfo> standingOrderListInfos = user.getStandingOrderListInfos();
-
-	    final FDStandingOrder so = user.getCurrentStandingOrder();
-	    if (so != null) {
-    		// exclude currently edited SO from list names
-	    	for (FDCustomerListInfo i : standingOrderListInfos) {
-	    		if ( !so.getCustomerListName().equals(i.getName()) ) {
-	    			lists.add(i);
-	    		}
-	    	}
-	    } else {
-	    	lists.addAll(standingOrderListInfos);
-	    }
-	}
-		
 	/**
 	 *  Return the names of the current user's customer created lists, except one,
 	 *  with the number of items in each list as well.
@@ -195,7 +174,6 @@ public class CustomerCreatedListAjaxFacade implements Serializable {
 		    	}
 		    }
 	    }
-	    appendStandingOrderInfos(user, filteredLists);
 
 	    TreeSet<FDCustomerListInfo> sorted = new TreeSet<FDCustomerListInfo>(new Comparator<FDCustomerListInfo>() {
 			public int compare(FDCustomerListInfo l1, FDCustomerListInfo l2) {
@@ -269,7 +247,53 @@ public class CustomerCreatedListAjaxFacade implements Serializable {
 		user.invalidateCache(); // Update CCL experience metrics
 		return newList;
 	}
-	
+
+	/**
+	 * Processes fields from Standing Order Help Popup
+	 * 
+	 * @param session
+	 * @param oldList
+	 * @param newList
+	 */
+	public void processHelpSo(HttpSession session, String entityLabel, String entityId, String sourcePage, String custName, String companyName, String custEmail, String custPhone, String custIssue) throws NameEmpty, NameExists, FDResourceException, AjaxFacadeException { 
+		LOGGER.debug(String.format("processHelpSo called: %s; %s; %s; %s; %s; %s; %s; %s", entityLabel, entityId, sourcePage, custName, companyName, custEmail, custPhone, custIssue));
+		FDUserI user = getUser(session, FDUserI.SIGNED_IN);
+		try {
+			String userId = user.getUserId();
+			String message = String.format(
+				"<table cellspacing=\"0\" border=\"0\" cellpadding=\"5\" width=\"100%%\">\r\n" + 
+				"<tr style=\"background-color: #996699;color: #ffffff;font-weight: bold\"><td style=\"text-align: right\">Request Context</td><td></td></tr>\r\n" + 
+				"<tr style=\"background-color: #f6f6f6\"><td width=\"200\" style=\"color: #996699;text-align: right;font-weight: bold\">Source Page</td><td>%s</td></tr>\r\n" + 
+				"<tr style=\"background-color: #ffffff\"><td style=\"color: #996699;text-align: right;font-weight: bold\">Customer</td><td>%s</td></tr>\r\n", 
+				StringUtil.escapeHTML(sourcePage), userId); 
+
+			if (entityLabel != null){
+				message += String.format(
+						"<tr style=\"background-color: #f6f6f6\"><td style=\"color: #996699;text-align: right;font-weight: bold\">%s</td><td>%s</td></tr>\r\n", 
+						StringUtil.escapeHTML(entityLabel), StringUtil.escapeHTML(entityId));
+			}
+
+			message += String.format(
+				"<tr style=\"background-color: #ffffff\"><td colspan=\"2\">&nbsp;</td></tr>\r\n" + 
+				"<tr style=\"background-color: #996699;color: #ffffff;font-weight: bold\"><td style=\"text-align: right\">User Edited Fields</td><td></td></tr>\r\n" + 
+				"<tr style=\"background-color: #f6f6f6\"><td style=\"color: #996699;text-align: right;font-weight: bold\">Name</td><td>%s</td></tr>\r\n" + 
+				"<tr style=\"background-color: #ffffff\"><td style=\"color: #996699;text-align: right;font-weight: bold\">Company</td><td>%s</td></tr>\r\n" + 
+				"<tr style=\"background-color: #f6f6f6\"><td style=\"color: #996699;text-align: right;font-weight: bold\">Email</td><td>%s</td></tr>\r\n" + 
+				"<tr style=\"background-color: #ffffff\"><td style=\"color: #996699;text-align: right;font-weight: bold\">Phone</td><td>%s</td></tr>\r\n" + 
+				"<tr style=\"background-color: #f6f6f6\"><td style=\"color: #996699;text-align: right;font-weight: bold; vertical-align:text-top\">Issue</td><td><pre>%s</pre></td></tr>\r\n" + 
+				"</table>",		
+				StringUtil.escapeHTML(custName), 
+				StringUtil.escapeHTML(companyName),
+				StringUtil.escapeHTML(custEmail), 
+				StringUtil.escapeHTML(custPhone), 
+				StringUtil.escapeHTML(custIssue));
+			
+			new ErpMailSender().sendMail(FDStoreProperties.getStandingOrderCsEmail(), FDStoreProperties.getStandingOrderCsEmail(), "", "Need Help Form - "+ userId, message, true, "");
+
+		}catch (MessagingException e) {
+			LOGGER.warn("Error Sending Need Help Standing Order Email: ", e);
+		}
+	}
 	
 	/** Remove an item from a list.
 	 * 

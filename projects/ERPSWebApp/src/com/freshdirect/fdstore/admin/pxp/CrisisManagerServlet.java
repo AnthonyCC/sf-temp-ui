@@ -192,8 +192,7 @@ public class CrisisManagerServlet extends HttpServlet {
 			sendTechnicalMail("Empty standingOrderId passed.");
 			return null;
 		}
-		TimeslotEventModel event = new TimeslotEventModel(EnumTransactionSource.SYSTEM.getCode(), 
-					false, 0.00, false, false);			
+		TimeslotEventModel event = new TimeslotEventModel(EnumTransactionSource.SYSTEM.getCode(), false, 0.00, false, false);		
 		
 			
 		LOGGER.info( "Processing " + standingOrderId + " standing orders." );
@@ -206,11 +205,10 @@ public class CrisisManagerServlet extends HttpServlet {
 				FDActionInfo info = getActionInfo(initiator);
 				if(info.getIdentity() == null)info.setIdentity(so.getCustomerIdentity());
 				if(null != altDate){
-					so.setAltDeliveryDate(altDate);
 					so.setStartTime(startTime);
 					so.setEndTime(endTime);
 					so.clearLastError();
-					result = StandingOrderUtil.process( so, altDate, event, info, mailerHome, true);
+					result = StandingOrderUtil.process( so, altDate, event, info, mailerHome, true, true );
 				}else{
 					LOGGER.info( "Alternate date for standing order # " + standingOrderId + " missing." );
 					return null;
@@ -218,7 +216,7 @@ public class CrisisManagerServlet extends HttpServlet {
 			} catch (FDResourceException re) {
 				invalidateMailerHome();
 				LOGGER.error( "Processing standing order failed with FDResourceException!", re );
-				result = new StandingOrdersServiceResult.Result( ErrorCode.TECHNICAL, ErrorCode.TECHNICAL.getErrorHeader(), "Processing standing order failed with FDResourceException!", null );
+				result = new StandingOrdersServiceResult.Result( ErrorCode.TECHNICAL, ErrorCode.TECHNICAL.getErrorHeader(), "Processing standing order failed with FDResourceException!", null, null, so.getId(), so.getCustomerListName() );
 			}
 			
 			if ( result.isError() ) {

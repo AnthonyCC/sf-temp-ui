@@ -18,17 +18,16 @@ import com.freshdirect.crm.CrmAgentRole;
 import com.freshdirect.customer.ErpComplaintException;
 import com.freshdirect.customer.ErpComplaintLineModel;
 import com.freshdirect.customer.ErpComplaintModel;
+import com.freshdirect.fdstore.EnumCheckoutMode;
+import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.FDTimeslot;
 import com.freshdirect.fdstore.Util;
-import com.freshdirect.fdstore.customer.FDActionInfo;
-import com.freshdirect.fdstore.customer.FDAuthenticationException;
 import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.FDUserI;
-import com.freshdirect.fdstore.customer.QuickCart;
 import com.freshdirect.fdstore.standingorders.FDStandingOrder;
-import com.freshdirect.fdstore.standingorders.FDStandingOrdersManager;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionError;
 import com.freshdirect.framework.webapp.ActionResult;
@@ -44,9 +43,8 @@ import com.freshdirect.webapp.checkout.TimeslotManipulator;
 import com.freshdirect.webapp.crm.security.CrmSecurityManager;
 import com.freshdirect.webapp.taglib.AbstractControllerTag;
 import com.freshdirect.webapp.taglib.crm.CrmSession;
-import com.freshdirect.webapp.util.FDURLUtil;
-import com.freshdirect.webapp.util.QuickCartCache;
-import com.freshdirect.webapp.util.ShoppingCartUtil;
+import com.freshdirect.webapp.util.StandingOrderHelper;
+import com.freshdirect.webapp.util.StandingOrderUtil;
 
 
 
@@ -186,6 +184,41 @@ public class CheckoutControllerTag extends AbstractControllerTag {
 				if ( outcome.equals( Action.NONE ) ) {
 					return false; // SKIP_BODY
 				}
+			} else if ( "modifyStandingOrderTemplate".equalsIgnoreCase( action )) {
+				// Modify standing order template according to changes made during checkout
+				// and return to standing order detail page
+				FDStandingOrder so = currentUser.getCurrentStandingOrder();
+				EnumCheckoutMode mode = currentUser.getCheckoutMode();
+				
+				StandingOrderUtil.updateStandingOrder(session, mode, cart, so, null);
+				StandingOrderUtil.endStandingOrderCheckoutPhase(session);
+			} else if ("changeSONextDeliveryDate".equalsIgnoreCase( action )) {
+				final FDStandingOrder so = currentUser.getCurrentStandingOrder();
+				final EnumCheckoutMode mode = currentUser.getCheckoutMode();
+
+				if (so != null && EnumCheckoutMode.MODIFY_SO_TMPL.equals(mode)) {
+					final String tsId = request.getParameter("deliveryTimeslotId");
+					final FDTimeslot ts = FDDeliveryManager.getInstance().getTimeslotsById(tsId);
+					if (ts != null) {
+						// let's extract date and time interval
+						StandingOrderHelper.DeliveryTime dt = new StandingOrderHelper.DeliveryTime(ts);
+						
+						if ( request.getParameter("soDeliveryWeekOffset") != null) {
+							int offset = Integer.parseInt(request.getParameter("soDeliveryWeekOffset"));
+							dt.setWeekOffset( offset );
+						}
+
+						dt.update(so);
+						
+					} else {
+						LOGGER.error("No such timeslot with ID " + tsId);
+					}
+				} else {
+					if (so == null)
+						LOGGER.error("Missing standing order object!");
+					else
+						LOGGER.error("Invalid checkout mode " + mode);
+				}
 			} else if ( "gc_submitGiftCardOrder".equalsIgnoreCase( action ) || 
 						"gc_submitGiftCardBulkOrder".equalsIgnoreCase( action ) || 
 						"gc_onestep_submitGiftCardOrder".equalsIgnoreCase( action ) || 
@@ -287,8 +320,15 @@ public class CheckoutControllerTag extends AbstractControllerTag {
 
 			}
 
+			// list of the ultimate checkout actions
+			final boolean terminalAction = action != null && (
+				action.toLowerCase().indexOf( "submit" ) > -1		// submit actions
+				||
+				"modifyStandingOrderTemplate".equalsIgnoreCase(action) // SO-MSOT (change SO without creating an order)
+			);
+
 			// if there is alcohol in the cart and the age verification has not been set then send to age verification page
-			if ( action != null && action.toLowerCase().indexOf( "submit" ) == -1 && isAgeVerificationNeeded( app, request ) ) {
+			if ( action != null && !terminalAction && isAgeVerificationNeeded( app, request ) ) {
 				this.setSuccessPage( this.ageVerificationPage );
 			}
 		} catch ( Exception ex ) {
@@ -309,10 +349,6 @@ public class CheckoutControllerTag extends AbstractControllerTag {
 
 
 
-
-	private boolean performUpdateStandingOrder(HttpSession session, ActionResult result) {	
-		return result.isSuccess();
-	}
 
 	@Override
 	protected boolean performGetAction( HttpServletRequest request, ActionResult actionResult ) throws JspException {

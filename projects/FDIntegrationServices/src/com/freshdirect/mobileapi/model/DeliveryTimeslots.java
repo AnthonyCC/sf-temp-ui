@@ -11,6 +11,7 @@ import com.freshdirect.delivery.restriction.DlvRestrictionsList;
 import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.customer.FDDeliveryTimeslotModel;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.util.FDTimeslotUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -93,12 +94,11 @@ public class DeliveryTimeslots {
          * @param isUserChefTable
          * @throws FDResourceException
          */
-        public TimeSlotCalculationResult(Result result, boolean isUserChefTable, boolean preReservationMode) throws FDResourceException {
-            //(isUserChefTable && !preReservationMode) condition essentially makes the user non-chef user for during pre-reservation
-        	//Reservation against CT capacity
-            this(result.getTimeslots(), result.getZones(), result.isZoneCtActive(), result.getMessages(), isUserChefTable);
+        public TimeSlotCalculationResult(FDDeliveryTimeslotModel model, boolean isUserChefTable, boolean preReservationMode) throws FDResourceException {
+            this(model.getTimeslotList(), model.getZones(), model.isZoneCtActive(), model.getMessages(), isUserChefTable);
         }
-
+        
+        
         /**
          * @param timeslotLists
          * @param zones

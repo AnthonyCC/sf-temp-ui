@@ -86,9 +86,13 @@ final int W_CHECKOUT_STEP_3_CHOOSE_TOTAL = 970;
 	} else if ("deletePaymentMethod".equalsIgnoreCase(actionName)) {
     	successPage = "/checkout/step_3_choose.jsp";
 	}
+
+	// [APPDEV-2149] SO template only checkout => no order, no dlv timeslot, no giftcard magic
+	//
+	final boolean isSOTMPL = EnumCheckoutMode.MODIFY_SO_TMPL.equals( user.getCheckoutMode() );
 %>
 <fd:FDShoppingCart id='cart' result="sc_result">
-<% if (!"skip".equalsIgnoreCase(request.getParameter("duplicateCheck"))) { %>
+<% if (!"skip".equalsIgnoreCase(request.getParameter("duplicateCheck")) && !isSOTMPL) { %>
 <fd:OrderHistoryInfo id='orderHistoryInfo'>
 <%
 {
@@ -123,15 +127,16 @@ final int W_CHECKOUT_STEP_3_CHOOSE_TOTAL = 970;
         * If Gift card is used on the order Also calculate the 25% perishable buffer amount to decide if         * 
         * another mode of payment is needed.
     */    
-    FDCustomerCreditUtil.applyCustomerCredit(cart, user.getIdentity());
+    if (!isSOTMPL)
+	    FDCustomerCreditUtil.applyCustomerCredit(cart, user.getIdentity());
     
-    double gcSelectedBalance = user.getGiftcardBalance()- cart.getTotalAppliedGCAmount();
-    double gcBufferAmount=0;
-    double ccBufferAmount=0;
-    double perishableBufferAmount = 0.0;
-    double outStandingBalance = FDCustomerManager.getOutStandingBalance(cart);     
-    perishableBufferAmount = FDCustomerManager.getPerishableBufferAmount((FDCartModel)cart);
-    if(perishableBufferAmount > 0){
+	double gcSelectedBalance = isSOTMPL ? 0 : user.getGiftcardBalance()- cart.getTotalAppliedGCAmount();
+	double gcBufferAmount=0;
+	double ccBufferAmount=0;
+	double perishableBufferAmount = isSOTMPL ? 0 : FDCustomerManager.getPerishableBufferAmount((FDCartModel)cart);
+	double outStandingBalance = isSOTMPL ? 0 : FDCustomerManager.getOutStandingBalance(cart);
+
+	if(!isSOTMPL && perishableBufferAmount > 0){
     	if(cart.getTotalAppliedGCAmount()> 0){
     		if(outStandingBalance >0){
         		/*if(gcSelectedBalance - perishableBufferAmount >=0){
@@ -150,7 +155,7 @@ final int W_CHECKOUT_STEP_3_CHOOSE_TOTAL = 970;
     }
     
     boolean isPaymentRequired = true;
-    if(cart.getSelectedGiftCards() != null && cart.getSelectedGiftCards().size() > 0) {
+    if(!isSOTMPL && cart.getSelectedGiftCards() != null && cart.getSelectedGiftCards().size() > 0) {
           
         if(outStandingBalance <= 0.0) {
             isPaymentRequired = false;
@@ -318,7 +323,7 @@ if(isPaymentRequired) {
 	<% } %>
 	-->
 	<%
-		if(cart.getSelectedGiftCards() != null && cart.getSelectedGiftCards().size() > 0 && gcBufferAmount >0 && ccBufferAmount > 0) {
+		if(!isSOTMPL && cart.getSelectedGiftCards() != null && cart.getSelectedGiftCards().size() > 0 && gcBufferAmount >0 && ccBufferAmount > 0) {
 	%>
 		<div style="width: <%=W_CHECKOUT_STEP_3_CHOOSE_TOTAL%>px; text-align: left;"><strong>PLEASE NOTE: A BACKUP PAYMENT METHOD IS REQUIRED FOR THIS ORDER.</strong> Because your Estimated Total is close to the balance of the Gift Card you entered, we require a second form of payment. This is to cover changes in price that may occur when we weigh your perishable items and fulfill your order. We guarantee that you'll always pay the true price for the actual weight of your products. <a href="javascript:popup('/help/estimated_price.jsp','small')">Learn about Estimated Totals</a>.</div>
 		<br />
@@ -326,7 +331,11 @@ if(isPaymentRequired) {
 
 	<% } %>
 
+	<% if (isSOTMPL) {%>
+<FORM method="post" name="step_3_choose" id="step_3_choose">
+	<% } else { %>
 <FORM method="post" name="step_3_choose" id="step_3_choose" onSubmit="return checkPromoEligibilityByPayment('<%= null==user.getRedeemedPromotion()?"null":"not null" %>');" action="/checkout/step_3_choose.jsp?duplicateCheck=skip">
+	<% } %>
     <div class="gcResendBox" style="display:none"><!--  -->
 		<table cellpadding="0" cellspacing="0" border="0" style="border-collapse: collapse;" class="gcResendBoxContent" id="gcResendBox">
 			<tr>
@@ -487,7 +496,10 @@ if(isPaymentRequired) {
 			OAS_AD('CategoryNote');
 			//-->
 		</SCRIPT>
-		
+
+<fd:GetStandingOrderDependencyIds id="standingOrderDependencyIds" type="paymentMethod">
+<fd:GetStandingOrderHelpInfo id="helpSoInfo">
+		<script type="text/javascript">var helpSoInfo=<%=helpSoInfo%>;</script>
 		<% if (isCheckEligible && !isECheckRestricted) { // show checking acct selections %>
 		<% if (hasCheck) { %>
 		<table width="<%=W_CHECKOUT_STEP_3_CHOOSE_TOTAL%>" border="0" cellspacing="0" cellpadding="0">
@@ -576,6 +588,10 @@ user.setAddressVerificationError(false);
 				<BR><BR>
 			<%
 			}%>
+			
+</fd:GetStandingOrderHelpInfo>
+</fd:GetStandingOrderDependencyIds>
+			
 				<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
 	<IMG src="/media_stat/images/layout/dotted_line_w.gif" WIDTH="<%=W_CHECKOUT_STEP_3_CHOOSE_TOTAL%>" HEIGHT="1" BORDER="0"><BR>
 				<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><BR>

@@ -1,0 +1,86 @@
+<%@page import="com.freshdirect.webapp.util.JSHelper"%>
+<%@page import="com.freshdirect.webapp.util.StandingOrderHelper"%>
+<%@page import="com.freshdirect.fdstore.standingorders.FDStandingOrder"%>
+<%@page import="java.text.SimpleDateFormat"%>
+<%@page import="java.text.DateFormat"%>
+<%@page import="java.util.Date"%>
+<%@page import="java.util.List"%>
+<%--
+	HTML snippet that renders a chooser control with options of next delivery date candidates 
+
+	Ticket: APPDEV-2149
+	
+	@attribute (FDStandingOrder) standingOrder
+
+--%><%
+	final FDStandingOrder __so = (FDStandingOrder) request.getAttribute("standingOrder");
+
+	StandingOrderHelper.DeliveryTime __c_dt = new StandingOrderHelper.DeliveryTime(__so);
+
+
+	final int __c_dow = __c_dt.getDay();
+	int __c_week = __c_dt.getWeekOffset(); /* week offset starting from current week */
+	
+	// fix invalid offset (ie. falls off [1..freq] interval )
+	if (__c_week < 1)
+		__c_week = 1; // the week of next delivery should fall in the next week
+	else if (__c_week > __so.getFrequency() ) {
+		__c_week = __so.getFrequency();
+	}
+
+
+	final DateFormat __c_df = new SimpleDateFormat("EEEE, M/d/y");
+	final List<List<Date>> __allCandidates = StandingOrderHelper.getAllDeliveryDateCandidates(__so);
+	
+	if (__so.getFrequency() == 1) {
+		// DoW -- day of week
+		// __c_dow-1    -- the index for the DoW of the current delivery date
+		// __c_week-1   -- the week offset
+%><input name="soDeliveryWeekOffset" type="hidden" value="1"><span id="soDeliveryWeekOffset"><%= __c_df.format(__allCandidates.get(__c_dow-1).get(__c_week-1)) %></span>
+<%
+	} else {
+%><select id="soDeliveryWeekOffset" name="soDeliveryWeekOffset">
+<%
+		// week offset, zero means current week
+		int offset = 1;
+		for (Date d : __allCandidates.get(__c_dow-1)) {
+%>	<option value="<%= offset %>" <%= offset == __c_week ? "selected=\"\"" : "" %> ><%= __c_df.format(d) %></option>
+<%
+			offset++;
+		}
+%></select>
+<%
+	}
+%><script type="text/javascript">
+var SO_DlvCandidates = {selectable: <%= __so.getFrequency() > 1 ? "true" : "false" %>};
+SO_DlvCandidates.candidates = [null];
+
+<%
+	for (List<Date> aList : __allCandidates) {
+		List<String> dStrings = new ArrayList(aList.size());
+		for (Date d : aList) { dStrings.add(__c_df.format(d));}
+%>
+SO_DlvCandidates.candidates.push(<%= JSHelper.listToJSArray(dStrings) %>);<%
+	}
+%>
+SO_DlvCandidates.selectDay = function(dayOfWeek) {
+	var l = this.candidates[dayOfWeek];
+	var i;
+	var obj = YAHOO.util.Dom.get('soDeliveryWeekOffset');
+	var opt;
+	
+	if (this.selectable) {
+		obj.innerHTML = '';
+		
+		for (i=0; i<l.length; i++) {
+			opt = document.createElement('option');
+			opt.setAttribute("value", i+1);
+			obj.appendChild(opt);
+			opt.innerHTML = l[i];
+		}
+	} else {
+		obj.innerHTML = l[0];
+	}
+};
+
+</script>

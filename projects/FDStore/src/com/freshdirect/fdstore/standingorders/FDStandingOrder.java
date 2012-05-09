@@ -7,6 +7,7 @@ import java.util.Date;
 import java.util.List;
 
 import com.freshdirect.customer.ErpAddressModel;
+import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.fdstore.FDReservation;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.customer.FDAuthenticationException;
@@ -48,8 +49,6 @@ public class FDStandingOrder extends ModelSupport {
 
 	String customerListName;	// Only used when standing order is not yet persisted!
 
-	Date altDeliveryDate;		// alternate delivery date
-	
 	public FDStandingOrder() {
 		super();
 	}
@@ -179,14 +178,6 @@ public class FDStandingOrder extends ModelSupport {
 		this.customerListName = customerListName;
 	}
 
-	public Date getAltDeliveryDate() {
-		return altDeliveryDate;
-	}
-
-	public void setAltDeliveryDate(Date altDeliveryDate) {
-		this.altDeliveryDate = altDeliveryDate;
-	}
-
 	public void setupDelivery(FDReservation r) {
 		setStartTime(r.getStartTime());
 		setEndTime(r.getEndTime());
@@ -257,6 +248,7 @@ public class FDStandingOrder extends ModelSupport {
 	
 	public static final DateFormat DATE_FORMATTER =  new SimpleDateFormat("EEEE, MMMM d.");
 	public static final DateFormat DATE_FORMATTER_SHORT =  new SimpleDateFormat("MM/dd/yy");
+	public static final DateFormat DATE_FORMATTER_LONG =  new SimpleDateFormat("EEEE, MMMM d., yyyy");
 	
 	public String getNextDeliveryString() {
 		return DATE_FORMATTER.format( getNextDeliveryDate() );
@@ -283,7 +275,7 @@ public class FDStandingOrder extends ModelSupport {
 		TIMESLOT( "Your selected timeslot was unavailable or sold out.", "Use the link below to modify this standing order and choose a different timeslot." ),
 		PAYMENT_ADDRESS( "The address you entered does not match the information on file with your card provider.", "Please contact a FreshDirect representative at 9999 for assistance." ),
 		NO_ADDRESS( "The address you set up for this standing order, no longer exists in the system.", "Use the link below to modify this standing order and choose a different address." ), 
-		CLOSED_DAY( "We donot delivery on closed day.", "We donot delivery on closed day." );
+		CLOSED_DAY( "We do not deliver on closed days.", "We do not deliver on closed days." );
 		
 		private String errorHeader;
 		private String errorDetail;
@@ -294,7 +286,7 @@ public class FDStandingOrder extends ModelSupport {
 		}
 		
 		public boolean isTechnical() {
-			return this == TECHNICAL;
+			return this == TECHNICAL || this == GENERIC || this == TIMESLOT || this == CLOSED_DAY;
 		}
 		
 		public String getErrorHeader() {
@@ -341,6 +333,13 @@ public class FDStandingOrder extends ModelSupport {
 	public ErpAddressModel getDeliveryAddress() throws FDResourceException {
 		return FDCustomerManager.getAddress( getCustomerIdentity(), addressId );		
 	}
+	/**
+	 * @return payment method
+	 * @throws FDResourceException
+	 */
+	public ErpPaymentMethodI getPaymentMethod() throws FDResourceException {
+		return FDCustomerManager.getPaymentMethod( getCustomerIdentity(), paymentMethodId );		
+	}
 	
 	/**
 	 * @return customer shopping list associated with this standing order
@@ -380,4 +379,8 @@ public class FDStandingOrder extends ModelSupport {
 	public List<FDOrderInfoI> getAllOrders( FDUserI user ) throws FDResourceException {
 		return FDStandingOrdersManager.getInstance().getAllOrders( user, this );		
 	}
+	@ExcludeFromXmlSerializer
+    public List<FDOrderInfoI> getAllUpcomingOrders() throws FDResourceException, FDAuthenticationException {
+            return FDStandingOrdersManager.getInstance().getAllUpcomingOrders( getUser(), this );
+    }
 }

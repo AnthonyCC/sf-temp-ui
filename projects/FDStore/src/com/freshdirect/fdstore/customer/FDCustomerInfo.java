@@ -8,7 +8,7 @@ import com.freshdirect.common.address.PhoneNumber;
  * @author knadeem
  */
 
-public class FDCustomerInfo implements java.io.Serializable{
+public class FDCustomerInfo implements java.io.Serializable {
 	
 	private static final long	serialVersionUID	= 6170229483507780937L;
 	

@@ -212,7 +212,7 @@ StringBuffer buffer = new StringBuffer(
 			</table>
 	    </TD>
 	    <TD WIDTH="35" ALIGN="RIGHT" VALIGN="MIDDLE"><FONT CLASS="space2pix"><BR></FONT>
-	        <input type="image" name="checkout" src="/media_stat/images/buttons/checkout_arrow.gif"
+	       <input type="image" name="checkout" src="/media_stat/images/buttons/checkout_arrow.gif" id="checkoutImage"
 	         BORDER="0" alt="CONTINUE CHECKOUT" VSPACE="2">
 		</TD>
     </TR>

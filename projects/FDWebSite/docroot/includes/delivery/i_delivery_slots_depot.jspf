@@ -1,3 +1,5 @@
+<%@ page import="com.freshdirect.fdstore.util.FDTimeslotUtil"%>
+<%@ page import="com.freshdirect.delivery.model.DlvZoneModel"%>
 <%@ page import='com.freshdirect.delivery.depot.*' %>
 <%@ page import='com.freshdirect.fdstore.*' %>
 <%@ page import='com.freshdirect.customer.ErpAddressModel'%>
@@ -36,10 +38,11 @@
 %>
 <fd:DeliveryTimeSlot id="DeliveryTimeSlotResult" address="<%=depotAddress%>" deliveryInfo="<%=true%>">
 	<%
-	List timeslotList = DeliveryTimeSlotResult.getTimeslots();
-	Map zones = DeliveryTimeSlotResult.getZones();
-	boolean zoneCtActive = DeliveryTimeSlotResult.isZoneCtActive();
-	List messages = DeliveryTimeSlotResult.getMessages();
+	final FDDeliveryTimeslotModel __model = DeliveryTimeSlotResult.getDeliveryTimeslotModel();
+	List<FDTimeslotUtil> timeslotList = __model.getTimeslotList();
+	Map<String, DlvZoneModel> zones = __model.getZones();
+	boolean zoneCtActive = __model.isZoneCtActive();
+	List<String> messages = __model.getMessages();
 	%>
 
 <%  if (timeslotList.size() > 0) {%>

@@ -1,3 +1,4 @@
+<%-- Host page must provide standingOrderDependencyIds variable --%>
 <%@ page import="com.freshdirect.delivery.DlvZoneInfoModel" %>
 <%@ page import="com.freshdirect.customer.EnumUnattendedDeliveryFlag" %>
 <%@ page import="com.freshdirect.framework.util.NVL" %>
@@ -60,7 +61,7 @@ for(Iterator saItr=shipToAddresses.iterator();saItr.hasNext();) {
 	
 		<A HREF="<%=linkURL + "?addressId=" + addrPKId %>"><IMG src="/media_stat/images/buttons/edit.gif" WIDTH="51" HEIGHT="16" ALT="EDIT" BORDER="0"></A>&nbsp;
 		<%if (showDeleteButtons) {  %>
-			<input type="image" src="/media_stat/images/buttons/delete.gif" WIDTH="51" HEIGHT="16" onClick="setDlvAction(this.form,'deleteDeliveryAddress');setIdToDelete(this.form,'<%=addrPKId%>');" ALT="DELETE" BORDER="0">
+			<input type="image" src="/media_stat/images/buttons/delete.gif" WIDTH="51" HEIGHT="16" onClick="return deleteDeliveryAddress(this,'<%=addrPKId%>', <%=standingOrderDependencyIds%>, helpSoInfo);" ALT="DELETE" BORDER="0">
 		<% } %>
 		<IMG src="/media_stat/images/layout/clear.gif" WIDTH="185" HEIGHT="1">
 	</TD>

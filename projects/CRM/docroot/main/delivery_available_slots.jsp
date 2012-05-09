@@ -50,6 +50,9 @@ if(isCheckAddress){
 }else{
 	 timeSlotCtx = TimeslotContext.CHECK_AVAL_SLOTS_CRM;
 }
+
+// [APPDEV-2149] Display abstract timeslot table (Just days of week, no restrictions, etc.)
+final boolean abstractTimeslots = false;
 %>
 
 

@@ -121,6 +121,14 @@ your account information, this is the place to do it.<br></td>
 	<td valign="top" class="text13"> <% if(user.isChefsTable()) { %> <br><br> <% } %>
 		<font class="text13bold"><a href="<%=response.encodeURL("/your_account/order_history.jsp")%>">Your Orders</a></font><br>Check your order status and update open orders.
 		<br><br>
+		
+		<% if ( user.isEligibleForStandingOrders() ) { %>					
+			<font class="text13bold">
+			<a href="<%=response.encodeURL("/quickshop/standing_orders.jsp")%>">Standing Orders</a>
+			</font><br>Review your recurring orders and make changes.
+			<br><br>
+		<%}%>
+		
 		<%if(user.isEligibleForPreReservation()){%>
 			<font class="text13bold">
 						<a href="<%=response.encodeURL("/your_account/reserve_timeslot.jsp")%>">Reserve a Delivery Time </a>

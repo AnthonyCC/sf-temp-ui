@@ -38,4 +38,8 @@ public interface FDStandingOrdersSB extends EJBObject {
 	public void addStandingOrderAltDeliveryDate(FDStandingOrderAltDeliveryDate altDeliveryDate) throws FDResourceException, RemoteException;	
 	public void updateStandingOrderAltDeliveryDate(FDStandingOrderAltDeliveryDate altDeliveryDate) throws FDResourceException, RemoteException;
 	public void deleteStandingOrderAltDeliveryDate(FDStandingOrderAltDeliveryDate altDeliveryDate) throws FDResourceException, RemoteException;
+	public boolean lock(FDStandingOrder so, String lockId) throws RemoteException;
+	public boolean unlock(FDStandingOrder so, String lockId) throws RemoteException;
+	public String getLockId(String soId) throws RemoteException;
+	public void checkForDuplicateSOInstances(FDIdentity identity) throws RemoteException;
 }

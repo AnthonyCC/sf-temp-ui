@@ -7,8 +7,6 @@
 <%@ page import='com.freshdirect.fdstore.customer.*'%>
 <%@ page import='com.freshdirect.framework.webapp.*'%>
 <%@ page import='java.text.*' %>
-<%@ page import="com.freshdirect.fdstore.standingorders.FDStandingOrder"%>
-<%@ page import="com.freshdirect.webapp.util.StandingOrderHelper"%>
 <%@ page import="com.freshdirect.webapp.util.FDURLUtil"%>
 
 <%@ taglib uri='template' prefix='tmpl' %>
@@ -132,22 +130,6 @@ if (user.isEligibleForClientCodes()) {
 		<td class="text10bold" bgcolor="#DDDDDD" WIDTH="250">Details</td>
 	</tr>
 	
-	<fd:ListStandingOrders id="solist">
-		<% for (FDStandingOrder so : solist) { %>
-			<tr bgcolor="<%= (rowCounter++ % 2 == 0) ? "#FFFFFF" : "#EEEEEE" %>">
-				<td><div style="overflow: hidden; white-space: nowrap; text-overflow: ellipsis; width: 125px;">
-					<a title="<%= so.getCustomerListName() %>" href="<%= FDURLUtil.getStandingOrderLandingPage(so, null) %>"><%= so.getCustomerListName() %></a>
-				</div></td>
-				<td class="text10"><%= StandingOrderHelper.getDeliveryDate(so,true) %></td>
-				<td class="text10">Corporate Delivery</td>
-				<td>&nbsp;</td>
-				<td>&nbsp;</td>
-				<td><%= so.isError() ? "Failure" : "Active" %></td>
-				<td><a href="<%= FDURLUtil.getStandingOrderLandingPage(so, null) %>">Edit Schedule or Contents</a></td>
-			</tr>
-		<% } %>
-	</fd:ListStandingOrders>
-
 <%
 for (FDOrderInfoI orderInfo : orderHistoryInfo) {
 	orderNumber++;

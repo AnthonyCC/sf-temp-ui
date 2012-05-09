@@ -37,49 +37,73 @@
 	</tmpl:put>
 	<tmpl:put name='content' direct='true'>
 		<div id="inner-container" style="width: 100%">
-			<div class="title17" style="padding-top: 1em">Standing Orders</div>			
-			<hr style="margin: 1em 0 1em 0; width: 100%; height: 1px; background-color: #996699; color: #996699; line-height: 1px; border: none;"/>			
-			<div class="title13">Hassle-free shopping just got even more, well... hassle-free.</div>
-			<div style="margin-bottom: 1em">FreshDirect's standing orders make it even easier to get everything you love without lifting a finger. Simply fill your shopping cart with the items you'd like us to deliver. When you place your first order, you'll let us know the day and time you want to receive future deliveries. A Standing Order is simple to set up and, of course, you can update it, pause it or cancel it at any time. You can even ask us to just skip a week.</div>
-			<div style="margin-bottom: 1em">Each Standing Order uses a Shopping List and a schedule that you can update at any time. We'll automatically place your order 7 days before the next recurring delivery (and send you an email notification when we do). You'll have plenty of time to add or remove items, change that specific order, or cancel it if you don't need it at all. 
-			<a href="/media/editorial/site_pages/standing_orders/so_help.html" target="_blank" onClick="popup('/media/editorial/site_pages/standing_orders/so_help.html','large'); return false;">Click here to learn more.</a></div>
+			
+			<img style="margin: 35px 0px 20px 0px" src="/media_stat/images/template/quickshop/about_so.png" width="328" height="32">			
+			<div style="margin: 0px 6px 30px 6px">
+				<div style="margin-bottom: 1em">FreshDirect's Standing Orders let you get the foods you love without lifting a finger. They're simple to set up and update anytime. We automatically submit your order seven days before the Modify Next Delivery Only, and send you an email notification. That way you have plenty of time to make changes.</div>
+				<div style="margin-bottom: 1em">Once your first Standing Order has been delivered, you can come back to Quickshop and make changes for future deliveries. And if you ever need help, you can always <a href="/help/index.jsp">contact us</a>.</div>
+				<div><b>Create a new Standing Order below!</b></div>
+			</div>
 			
 <% if (user.isEligibleForStandingOrders()) { %>			
+
 	<fd:ManageStandingOrders id="sorders">
 		<% 
+		boolean firstSO = true;
+		int ctr = 0; //for zebra coloring
 		for (FDStandingOrder so : sorders) {
+			
+			if (firstSO){
+				firstSO = false;
+				%>
+				<table width="601" bgcolor="#333333" style="margin-bottom: 18px;">
+				<tr><td><img src="/media_stat/images/template/quickshop/your_standing_orders2.png" width="152" height="22" /></td>
+				<td>
+					<fd:GetStandingOrderHelpInfo id="helpSoInfo">
+						<script type="text/javascript">var helpSoInfo=<%=helpSoInfo%>;</script>
+						<a class="text13" style="float: right; text-align: right; color: white; vertical-align: middle; padding-right:7px;" href="/unsupported.jsp" onClick="return CCL.help_so(helpSoInfo, this);">Need Help?</a>
+					</fd:GetStandingOrderHelpInfo>
+				</td></tr>
+				</table>
+				<%
+			}
+			
 			String listName = FDListManager.getListName( user.getIdentity(), so.getCustomerListId() );
 			FDStandingOrderList list = (FDStandingOrderList) FDListManager.getCustomerList(user.getIdentity(), EnumCustomerListType.SO, listName);
 		    int n = list.getLineItems().size();
 
 		    ErpAddressModel addr = so.getDeliveryAddress();		
 			final String nextDlvDateText = new SimpleDateFormat("EEEE, MMMM d.").format( so.getNextDeliveryDate() );
-			%>			
-			<h2><a class="title15" href="<%= FDURLUtil.getStandingOrderLandingPage(so, null) %>"><%= so.getCustomerListName() %></a></h2>
-			<div class="title11" style="margin: 1em 1em 2em 1em">
-				
-				<% if (so.isError()) { %>				
-					<div style="padding: 1em 0 1em 0">
-						<div style="color: #CC3300">IMPORTANT NOTE: We were not able to schedule a delivery for <%= nextDlvDateText %></div>
-						<div style="margin-top: 1em; color: #CC3300"><%=so.getErrorHeader()%></div>
-					</div>
-				<% } else { %>				
-					<div style="text-align: left; font-weight: bold;">
-						<%@ include file="/quickshop/includes/so_next_delivery.jspf" %>
+			String bgColor = (ctr++%2==0) ? "background-color:#ececec;" : ""; //zebra coloring
+			%>
+			<div style="margin:0em;padding:0em 1em 1em 0.5em;<%= bgColor %>">
+				<h2 style="margin: 5em 5m 5em 5em;"><a class="title15" href="<%= FDURLUtil.getStandingOrderLandingPage(so, null) %>"><%= so.getCustomerListName() %></a></h2>
+				<div class="title11" style="margin: 1em 1em 0em;">
+					
+					<% if (so.isError()) { %>				
 						<div style="padding: 1em 0 1em 0">
-						<div style="font-weight: normal;">Delivered <%= so.getFrequencyDescription() %>, <%= StandingOrderHelper.getDeliveryDate(so,false) %></div>
-							<% if (addr != null) { %>
-								<div style="font-weight: normal;"><%= addr.getScrubbedStreet() %>, <%= addr.getApartment() %></div>
-							<% } %>				
-						</div>					
-					</div>
-				<% } %>
-								
-				<a class="title12" href="<%= FDURLUtil.getStandingOrderLandingPage(so, null) %>">View or Edit Details &raquo;</a>
+							<div style="color: #CC3300">IMPORTANT NOTE: We were not able to schedule a delivery for <%= nextDlvDateText %></div>
+							<div style="margin-top: 1em; color: #CC3300"><%=so.getErrorHeader()%></div>
+						</div>
+					<% } else { %>				
+						<div style="text-align: left; font-weight: bold;">
+							<%@ include file="/quickshop/includes/so_next_delivery.jspf" %>
+							<div style="padding: 1em 0 1em 0">
+							<div style="font-weight: normal;">Delivered <%= so.getFrequencyDescription() %>, <%= StandingOrderHelper.getDeliveryDate(so,false) %></div>
+								<% if (addr != null) { %>
+									<div style="font-weight: normal;"><%= addr.getScrubbedStreet() %>, <%= addr.getApartment() %></div>
+								<% } %>				
+							</div>					
+						</div>
+					<% } %>
+									
+					<a class="title12" href="<%= FDURLUtil.getStandingOrderLandingPage(so, null) %>">View or Edit Details &raquo;</a>
+				</div>
 			</div>
+			<div style="margin:1em;"></div>
 		<% } %>
 	</fd:ManageStandingOrders>
-
+	
 	<hr style="margin: 2em 0 1em 0; width: 100%; height: 1px; background-color: #996699; color: #996699; line-height: 1px; border: none;"/>	
 	
 	<fd:CreateStandingOrder result="result">
@@ -117,20 +141,6 @@
 			</form>
 		</div>
 	</fd:CreateStandingOrder>
-			
-<% } else { %>			
-
-	<div id="create-so-box" style="padding: 1em 1em">
-		<div class="title13" style="margin-bottom: 1em;">Creating a Standing Order is easy!</div>
-		<div class="text12" style="margin-bottom: 1em;">1. Tell us how you often want us to deliver. (You can change at any time.)</div>
-		<div class="text12" style="margin-bottom: 1em;">2. Fill your cart with everything you love, just as you normally do.</div>
-		<div class="text12" style="margin-bottom: 1em;">3. Go to Checkout to choose a day and time by placing the first order.</div>
-		<div class="text12" style="margin-bottom: 1em;">4. We'll create a shopping list you can edit at any time and place orders automatically... according to your schedule.</div>
-	</div>
-	<div style="margin: 1em 0 1em 0; width: 100%; height: 1px; background-color: #996699"></div>
-	<div class="title13" style="margin-left: 1em; margin-right: 1em; color: #996699">Please Note: Come back here to set up a standing order once you've received your first corporate delivery.</div>
-	<div style="margin: 1em 0 1em 0; width: 100%; height: 1px; background-color: #996699"></div>
-	
 <% } %>
 
 </div>

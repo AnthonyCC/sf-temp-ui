@@ -59,7 +59,10 @@
 
 			FDReservation rsv = user.getReservation();
 			boolean hasReservation = rsv != null && addressId.equals(rsv.getAddressId());
-			TimeslotContext timeSlotCtx=TimeslotContext.RESERVE_TIMESLOTS_CRM; 
+			TimeslotContext timeSlotCtx=TimeslotContext.RESERVE_TIMESLOTS_CRM;
+
+			// [APPDEV-2149] Display abstract timeslot table (Just days of week, no restrictions, etc.)
+			final boolean abstractTimeslots = false;
 		%>
 
 		<div class="cust_module" style="width: 90%;">

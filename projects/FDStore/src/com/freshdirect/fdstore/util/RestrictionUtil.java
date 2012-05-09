@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -25,15 +24,21 @@ public class RestrictionUtil {
 		}
 	};
 
+	
+	/**
+	 * @param state Matching state
+	 * @param county Matching county
+	 * @param restrictions Source list
+	 *
+	 * @return Filtered list
+	 */
 	public static List<RestrictionI> filterAlcoholRestrictionsForStateCounty(String state, String county, List<RestrictionI> restrictions){
 		List<RestrictionI> filteredList = new ArrayList<RestrictionI>();
 		List<AlcoholRestriction> stateRestrictions = new ArrayList<AlcoholRestriction>();
 		List<AlcoholRestriction> countyRestrictions = new ArrayList<AlcoholRestriction>();
 		
-		Iterator<RestrictionI> it = restrictions.iterator();
-		while(it.hasNext()){
-			RestrictionI restriction = it.next();
-			if(restriction instanceof AlcoholRestriction){
+		for (RestrictionI restriction : restrictions) {
+			if (restriction instanceof AlcoholRestriction){
 				AlcoholRestriction res = (AlcoholRestriction) restriction;
 				if(res.getState() != null && res.getCounty() != null){
 					//Restriction defined at county level. 
@@ -47,7 +52,8 @@ public class RestrictionUtil {
 						stateRestrictions.add(res);
 					}
 				}
-			}else {
+			} else {
+				// reserve other restriction
 				filteredList.add(restriction);
 			}
 		}
@@ -66,44 +72,38 @@ public class RestrictionUtil {
 	}
 	
 	public static boolean isAlcoholRestrictionAvailableForCounty(String county) throws FDResourceException{
-		boolean isAvailable = false;
 		DlvRestrictionsList allRestrictions = FDDeliveryManager.getInstance().getDlvRestrictions();
 		Set<EnumDlvRestrictionReason> alcoholReasons = 
 			new HashSet<EnumDlvRestrictionReason>(EnumDlvRestrictionReason.getAlcoholEnumList());
 		List<RestrictionI> restrictions = allRestrictions.getRestrictions(EnumDlvRestrictionCriterion.DELIVERY, alcoholReasons);
 		
-		Iterator<RestrictionI> it = restrictions.iterator();
-		while(it.hasNext()){
-			RestrictionI restriction = it.next();
+		for (RestrictionI restriction : restrictions) {
 			if(restriction instanceof AlcoholRestriction){
 				AlcoholRestriction res = (AlcoholRestriction) restriction;
 				if(res.getCounty() != null && res.getCounty().equalsIgnoreCase(county)){
 					//Restriction defined at county level. 
-						isAvailable = true;
+					return true;
 				}
 			}
 		}
-		return isAvailable;
+		return false;
 	}
 	
 	public static boolean isAlcoholRestrictionAvailableForState(String state) throws FDResourceException{
-		boolean isAvailable = false;
 		DlvRestrictionsList allRestrictions = FDDeliveryManager.getInstance().getDlvRestrictions();
 		Set<EnumDlvRestrictionReason> alcoholReasons = 
 			new HashSet<EnumDlvRestrictionReason>(EnumDlvRestrictionReason.getAlcoholEnumList());
 		List<RestrictionI> restrictions = allRestrictions.getRestrictions(EnumDlvRestrictionCriterion.DELIVERY, alcoholReasons);
 		
-		Iterator<RestrictionI> it = restrictions.iterator();
-		while(it.hasNext()){
-			RestrictionI restriction = it.next();
+		for (RestrictionI restriction : restrictions) {
 			if(restriction instanceof AlcoholRestriction){
 				AlcoholRestriction res = (AlcoholRestriction) restriction;
 				if(res.getState() != null && res.getState().equalsIgnoreCase(state)){
 					//Restriction defined at state level. 
-						isAvailable = true;
+					return true;
 				}
 			}
 		}
-		return isAvailable;
+		return false;
 	}
 }

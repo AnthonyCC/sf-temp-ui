@@ -48,18 +48,7 @@ public class FDModifyCartModel extends FDCartModel {
 
 		// populate orderlines from orig.order
 		for (FDCartLineI origLine : originalOrder.getOrderLines()) {
-			FDCartLineI cartLine = new FDModifyCartLineModel(origLine);
-			Discount d = origLine.getDiscount();
-			if( d != null && !(d.getDiscountType().isSample())) {
-				cartLine.setDiscount(d);
-				cartLine.setDiscountFlag(true);
-			}
-			if(origLine.getSavingsId() != null)
-				cartLine.setSavingsId(origLine.getSavingsId());
-			if(origLine.getFDGroup() != null)
-				cartLine.setFDGroup(origLine.getFDGroup());			
-			
-			this.addOrderLine(cartLine);
+			addOriginalOrderLine(origLine);
 		}
 
 		// initialize from original order
@@ -77,6 +66,21 @@ public class FDModifyCartModel extends FDCartModel {
 
 	}
 
+	public void addOriginalOrderLine(FDCartLineI origLine){
+		FDCartLineI cartLine = new FDModifyCartLineModel(origLine);
+		Discount d = origLine.getDiscount();
+		if( d != null && !(d.getDiscountType().isSample())) {
+			cartLine.setDiscount(d);
+			cartLine.setDiscountFlag(true);
+		}
+		if(origLine.getSavingsId() != null)
+			cartLine.setSavingsId(origLine.getSavingsId());
+		if(origLine.getFDGroup() != null)
+			cartLine.setFDGroup(origLine.getFDGroup());			
+		
+		this.addOrderLine(cartLine);
+	}
+	
 	public FDOrderAdapter getOriginalOrder() {
 		return this.originalOrder;
 	}

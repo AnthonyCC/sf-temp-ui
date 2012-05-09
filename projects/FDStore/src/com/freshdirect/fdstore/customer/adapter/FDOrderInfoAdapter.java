@@ -39,6 +39,11 @@ public class FDOrderInfoAdapter implements FDOrderInfoI {
 	}
 
 	@Override
+	public Date getCreateRequestedDate() {
+		return this.saleInfo.getCreateRequestedDate();
+	}
+
+	@Override
 	public double getTotal() {
 		return this.saleInfo.getAmount();
 	}

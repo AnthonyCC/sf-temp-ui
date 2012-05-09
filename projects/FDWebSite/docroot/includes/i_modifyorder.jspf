@@ -23,7 +23,10 @@
 	FDUserI mUser = (FDUserI) session.getAttribute( SessionName.USER );
 	FDCartModel mCart = mUser.getShoppingCart();
 	
-	if (mCart instanceof FDModifyCartModel) {
+	if (mUser.getCurrentStandingOrder() != null) {
+		%><%@include file="i_so_header.jspf" %><%
+	
+	} else if (mCart instanceof FDModifyCartModel) {
 		modifyOrderMode = true;
 		FDModifyCartModel modCart = (FDModifyCartModel) mCart;
 		String oId = modCart.getOriginalOrder().getErpSalesId();
@@ -53,7 +56,5 @@
 		</table>
 		<br/>
 <%
-	} else if (mUser.getCurrentStandingOrder() != null) {
-		%><%@include file="i_so_header.jspf" %><%
-	}
+	} 
 %>

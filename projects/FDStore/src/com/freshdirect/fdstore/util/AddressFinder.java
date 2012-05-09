@@ -3,32 +3,25 @@ package com.freshdirect.fdstore.util;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
 import com.freshdirect.customer.ErpAddressModel;
-import com.freshdirect.customer.ErpCustomerInfoModel;
 import com.freshdirect.delivery.DlvZoneInfoModel;
 import com.freshdirect.delivery.restriction.EnumDlvRestrictionReason;
 import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDInvalidAddressException;
-import com.freshdirect.fdstore.FDReservation;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.customer.FDCartModel;
-import com.freshdirect.fdstore.customer.FDCustomerFactory;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDUserI;
-import com.freshdirect.fdstore.promotion.FDPromotionZoneRulesEngine;
 import com.freshdirect.fdstore.promotion.PromotionHelper;
-import com.freshdirect.framework.core.PrimaryKey;
-import com.freshdirect.framework.util.NVL;
 
 public class AddressFinder {
 
 	public static ErpAddressModel getShipToAddress(FDUserI user,String addressId, TimeslotContext timeslotCtx, HttpServletRequest request) throws FDResourceException{
 		
-		Collection shipToAddresses = new ArrayList();
+		Collection<ErpAddressModel> shipToAddresses = new ArrayList<ErpAddressModel>();
 		ErpAddressModel address = null;
 			addressId = request.getParameter("addressId");
 			if(addressId != null && !"".equals(addressId)){
@@ -42,8 +35,7 @@ public class AddressFinder {
 							if(addressId==null){
 								addressId = FDCustomerManager.getDefaultShipToAddressPK(user.getIdentity()); // default address
 							}
-							for (Iterator i=shipToAddresses.iterator(); i.hasNext(); ) {
-								ErpAddressModel a = (ErpAddressModel)i.next();
+							for (ErpAddressModel a : shipToAddresses) {
 								if ( a.getPK().getId().equals(addressId) ) {
 									address = a;
 									break;
@@ -105,8 +97,7 @@ public class AddressFinder {
 		boolean alcoholRestriction = false;
 	    boolean thxgiving_meal_Restriction=false;
 	   
-		for(Iterator i = cart.getApplicableRestrictions().iterator(); i.hasNext(); ){
-			EnumDlvRestrictionReason reason = (EnumDlvRestrictionReason) i.next();
+	    for (EnumDlvRestrictionReason reason : cart.getApplicableRestrictions()) {
 			if(EnumDlvRestrictionReason.THANKSGIVING.equals(reason)){
 				thxgivingRestriction = true;
 				continue;

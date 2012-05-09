@@ -11,7 +11,7 @@ final int W_QUICKSHOP_INDEX_NONE_LHALF = 350;
 <td width="<%= W_QUICKSHOP_INDEX_NONE_FHALF %>" class="text13">
 			<% if ( user.isEligibleForStandingOrders() ) { %>					
 				<!-- STANDING ORDERS SECTION -->
-				<div id="standingorders-section" style="width:262px; background-color: #e0e3d0; padding:20px 10px;">
+				<div id="standingorders-section" style="background-color: #e0e3d0; padding:20px 10px;">
 					<div class="text14" style="font-weight: bold; letter-spacing: 1px;">Your Standing Orders</div>
 					<div class="title11" style="padding-top: 2px; padding-bottom: 2em; color: #FF9933;">AUTOMATIC RECURRING DELIVERIES</div>
 					<%@ include file="/quickshop/includes/so_lists.jspf" %>

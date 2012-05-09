@@ -14,6 +14,7 @@ import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.FDInvalidAddressException;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.customer.FDDeliveryTimeslotModel;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionError;
 import com.freshdirect.framework.webapp.ActionResult;
@@ -145,8 +146,9 @@ public class DeliveryAddress {
     public TimeSlotCalculationResult getDeliveryTimeslot(SessionUser user, boolean preReservationMode) throws FDException {
         DeliveryTimeSlotTagWrapper wrapper = new DeliveryTimeSlotTagWrapper(user);
         Result result = wrapper.getDeliveryTimeSlotResult(this.address);
-        TimeSlotCalculationResult timeSlotCalculationResult = new TimeSlotCalculationResult(result, user.isChefsTable(), preReservationMode);
-        user.setReservationAndPreselectedTimeslotIds(result.getTimeslots(), timeSlotCalculationResult, this.address);
+        final FDDeliveryTimeslotModel model = result.getDeliveryTimeslotModel();
+        TimeSlotCalculationResult timeSlotCalculationResult = new TimeSlotCalculationResult(model, user.isChefsTable(), preReservationMode);
+        user.setReservationAndPreselectedTimeslotIds(model.getTimeslotList(), timeSlotCalculationResult, this.address);
         
         return timeSlotCalculationResult;
     }
@@ -154,8 +156,9 @@ public class DeliveryAddress {
     public TimeSlotCalculationResult getDeliveryTimeslot(SessionUser user, boolean preReservationMode, boolean isAuthenticated) throws FDException {
         DeliveryTimeSlotTagWrapper wrapper = new DeliveryTimeSlotTagWrapper(user);
         Result result = wrapper.getDeliveryTimeSlotResult(this.address,isAuthenticated);
-        TimeSlotCalculationResult timeSlotCalculationResult = new TimeSlotCalculationResult(result, user.isChefsTable(), preReservationMode);
-        user.setReservationAndPreselectedTimeslotIds(result.getTimeslots(), timeSlotCalculationResult, this.address);
+        final FDDeliveryTimeslotModel model = result.getDeliveryTimeslotModel();
+        TimeSlotCalculationResult timeSlotCalculationResult = new TimeSlotCalculationResult(model, user.isChefsTable(), preReservationMode);
+        user.setReservationAndPreselectedTimeslotIds(model.getTimeslotList(), timeSlotCalculationResult, this.address);
         
         return timeSlotCalculationResult;
     }

@@ -1,6 +1,7 @@
 package com.freshdirect.fdstore.customer;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
@@ -88,6 +89,30 @@ public class FDOrderHistory extends ErpOrderHistory {
 			}
 		}
 		return l;
+	}
+	
+	/**
+	 * Returns a list of orders created from a specified Standing Order (or all Standing Order if orderId is null) and will be delivered in delivery window
+	 * @return Collection of FDOrderInfoI.
+	 */
+	public List<FDOrderInfoI> getStandingOrderInstances(String soId) {
+		
+		Calendar now=Calendar.getInstance();
+		
+		List<FDOrderInfoI> result = new ArrayList<FDOrderInfoI>();
+		
+		for(FDOrderInfoAdapter order : this.fdOrderInfos) {
+			
+			Calendar rDate = Calendar.getInstance();
+			rDate.setTime(order.getRequestedDate());
+			
+			if(soId!=null && soId.equals(order.getStandingOrderId()) && rDate.after(now) && !order.getOrderStatus().isCanceled()) {
+				result.add(order);
+			}else if(soId==null && order.getStandingOrderId() != null  && rDate.after(now) && !order.getOrderStatus().isCanceled()) {
+				result.add(order);
+			}
+		}	
+		return result;
 	}
 		
 }

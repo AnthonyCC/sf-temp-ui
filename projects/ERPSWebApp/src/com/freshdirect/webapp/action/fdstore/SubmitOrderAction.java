@@ -8,6 +8,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -75,6 +76,7 @@ import com.freshdirect.webapp.taglib.fdstore.UserUtil;
 import com.freshdirect.webapp.taglib.fdstore.UserValidationUtil;
 import com.freshdirect.webapp.util.QuickCartCache;
 import com.freshdirect.webapp.util.ShoppingCartUtil;
+import com.freshdirect.webapp.util.StandingOrderUtil;
 
 public class SubmitOrderAction extends WebActionSupport {
 
@@ -136,13 +138,25 @@ public class SubmitOrderAction extends WebActionSupport {
 			}
 			return SUCCESS;
 		}
-				
+		
+		String soLockId =  UUID.randomUUID().toString();
 		try {
 			session.setAttribute("ProcessingOrder", Boolean.TRUE); //attempt to prevent double submission
+			
+			if (standingOrder!=null && standingOrder.getId()!=null){
+				FDStandingOrdersManager.getInstance().lockSync(standingOrder, soLockId);
+			}
 			return doExecute();
 
 		} finally {
 			session.removeAttribute("ProcessingOrder");
+			if (standingOrder!=null && standingOrder.getId()!=null){
+				try{
+					FDStandingOrdersManager.getInstance().unlock(standingOrder, soLockId);
+				} catch (Exception e) {
+					LOGGER.error("Unlocking standing order with lockid " + soLockId + " failed", e);
+				}
+			}
 		}
 
 	}
@@ -604,42 +618,12 @@ public class SubmitOrderAction extends WebActionSupport {
 			 * Standing Order related post actions
 			 */
 			if (orderNumber != null && EnumCheckoutMode.NORMAL != mode) {
-				FDActionInfo info = AccountActivityUtil.getActionInfo(session);
-				switch(mode) {
-				case CREATE_SO:
-					{
-						try {
-							info.setNote("Standing Order Created w/First Order Placed");
-							String soPk = FDStandingOrdersManager.getInstance().manageStandingOrder(info, cart, standingOrder, orderNumber);
-							standingOrder.setId( soPk );
-						} catch (FDResourceException e) {
-							LOGGER.error("Failed to create shopping list for standing order, corresponding order ID="+orderNumber, e);
-						}
-					}
-					break;
-				case MODIFY_SO:
-					{
-						// update standing order + customer list
-						try {
-							info.setNote("Standing Order Modified w/New Order Checkout");
-							standingOrder.setPaymentMethodId( FDCustomerManager.getDefaultPaymentMethodPK(user.getIdentity()) );
-							FDStandingOrdersManager.getInstance().manageStandingOrder(info, cart, standingOrder, orderNumber);
-							
-							// perform cache cleanup
-							QuickCartCache.invalidateOnChange(session, QuickCart.PRODUCT_TYPE_SO, standingOrder.getCustomerListId(), null);
-						} catch (FDResourceException e) {
-							LOGGER.error("Failed to create shopping list for standing order, corresponding order ID="+orderNumber, e);
-						}
-					}
-					break;
-				}
-				
-				// new order created, assign to the particular standing order
-				try {
-					FDStandingOrdersManager.getInstance().assignStandingOrderToSale(orderNumber, standingOrder);
-				} catch (FDResourceException e) {
-					LOGGER.error("Failed to assign standing order to sale, corresponding order ID="+orderNumber, e);
-					LOGGER.warn( e.getFDStackTrace() );
+				if (mode.isModifyStandingOrder()) {
+					// modify SO
+					StandingOrderUtil.updateStandingOrder(session, mode, cart, standingOrder, orderNumber);
+				} else {
+					// create SO
+					StandingOrderUtil.createStandingOrder(session, cart, standingOrder, orderNumber);
 				}
 			}
 
@@ -669,7 +653,7 @@ public class SubmitOrderAction extends WebActionSupport {
 			    user.setReservation(null);
 			}
 			
-			if ( cart instanceof FDModifyCartModel || EnumCheckoutMode.MODIFY_SO == mode ) {
+			if ( cart instanceof FDModifyCartModel || mode.isCartSaved() ) {
 				// load cart user had before modifying order.
 				ShoppingCartUtil.restoreCart(session);
 				
@@ -868,7 +852,7 @@ public class SubmitOrderAction extends WebActionSupport {
 		} else {
 		
 			for( FDProductSelectionI selection : cart.getOrderLines() ) { 
-				everyItemList.mergeSelection(selection, modifying);
+				everyItemList.mergeSelection(selection, modifying, false);
 			}
 		}
 		

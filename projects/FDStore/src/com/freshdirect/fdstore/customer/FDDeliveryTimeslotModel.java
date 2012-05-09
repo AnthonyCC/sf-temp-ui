@@ -1,55 +1,51 @@
 package com.freshdirect.fdstore.customer;
 
 import java.io.Serializable;
-import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 
-import com.freshdirect.customer.ErpAddressModel;
-import com.freshdirect.delivery.restriction.DlvRestrictionsList;
+import com.freshdirect.delivery.model.DlvZoneModel;
 import com.freshdirect.delivery.restriction.RestrictionI;
 import com.freshdirect.fdstore.FDReservation;
 import com.freshdirect.fdstore.standingorders.FDStandingOrder;
 import com.freshdirect.fdstore.util.FDTimeslotUtil;
-import com.freshdirect.framework.util.DateRange;
-import com.freshdirect.framework.util.DateUtil;
 
 public class FDDeliveryTimeslotModel implements Serializable{
 	
 	private static final long	serialVersionUID	= 4180048313457481300L;
 	
-	private ErpAddressModel address;
+
 	private List<FDTimeslotUtil> timeslotList;
-	private Map zones;	
+	private Map<String, DlvZoneModel> zones;	
 	
-	private DlvRestrictionsList dlvRestrictions;
-	private List dateRanges;
-	private List geographicRestrictions;
-	private List messages;
+
+
+
+	private List<String> messages;
 		
-	public List getMessages() {
+	public List<String> getMessages() {
 		return messages;
 	}
-	public void setMessages(List messages) {
+	public void setMessages(List<String> messages) {
 		this.messages = messages;
 	}
 	private FDCartModel shoppingCart;
 	
 	boolean zoneCtActive = false;	
-	private List geoRestrictionmessages;
+	private List<String> geoRestrictionmessages;
 	
-	public List getGeoRestrictionmessages() {
+	public List<String> getGeoRestrictionmessages() {
 		return geoRestrictionmessages;
 	}
-	public void setGeoRestrictionmessages(List geoRestrictionmessages) {
+	public void setGeoRestrictionmessages(List<String> geoRestrictionmessages) {
 		this.geoRestrictionmessages = geoRestrictionmessages;
 	}
-	private List comments;
+	private List<String> comments;
 	
-	public List getComments() {
+	public List<String> getComments() {
 		return comments;
 	}
-	public void setComments(List comments) {
+	public void setComments(List<String> comments) {
 		this.comments = comments;
 	}
 	private boolean hasPreReserved;
@@ -155,10 +151,10 @@ public class FDDeliveryTimeslotModel implements Serializable{
 	public void setTimeslotList(List<FDTimeslotUtil> timeslotList) {
 		this.timeslotList = timeslotList;
 	}
-	public Map getZones() {
+	public Map<String, DlvZoneModel> getZones() {
 		return zones;
 	}
-	public void setZones(Map zones) {
+	public void setZones(Map<String, DlvZoneModel> zones) {
 		this.zones = zones;
 	}
 	public boolean isZoneCtActive() {

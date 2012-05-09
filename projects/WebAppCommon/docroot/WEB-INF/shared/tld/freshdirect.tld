@@ -1070,6 +1070,16 @@
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
+		<attribute>
+			<name>forceOrder</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>generic</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
 	</tag>
 	<tag>
 		<name>OrderPermissionsTag</name>
@@ -4442,6 +4452,40 @@
 			<name>id</name>
 			<required>true</required>
 			<rtexprvalue>false</rtexprvalue>
+		</attribute>
+	</tag>
+	<tag>
+		<name>GetStandingOrderDependencyIds</name>
+		<tagclass>com.freshdirect.webapp.taglib.standingorder.GetStandingOrderDependencyIdsTag</tagclass>
+		<teiclass>com.freshdirect.webapp.taglib.standingorder.GetStandingOrderDependencyIdsTag$TagEI</teiclass>
+		<bodycontent>JSP</bodycontent>
+		<info>Lists Standing Orders' Dependencies</info>	
+		<attribute>
+			<name>id</name>
+			<required>true</required>
+			<rtexprvalue>false</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>type</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+	</tag>
+	<tag>
+		<name>GetStandingOrderHelpInfo</name>
+		<tagclass>com.freshdirect.webapp.taglib.standingorder.GetStandingOrderHelpInfoTag</tagclass>
+		<teiclass>com.freshdirect.webapp.taglib.standingorder.GetStandingOrderHelpInfoTag$TagEI</teiclass>
+		<bodycontent>JSP</bodycontent>
+		<info>Gathers info for Standing Order Help Popup</info>	
+		<attribute>
+			<name>id</name>
+			<required>true</required>
+			<rtexprvalue>false</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>so</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 	</tag>
  	<tag>

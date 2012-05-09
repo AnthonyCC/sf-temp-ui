@@ -16,7 +16,7 @@ public class WebOrderViewFactory {
 	private WebOrderViewFactory() {
 	}
 
-	public static WebOrderViewI getOrderView(List cartLines, ErpAffiliate affiliate) {
+	public static WebOrderViewI getOrderView(List<FDCartLineI> cartLines, ErpAffiliate affiliate) {
 		if (!affiliate.isPrimary() && !hasItemsForAffiliate(cartLines, affiliate)) {
 			return null;
 		}
@@ -25,7 +25,7 @@ public class WebOrderViewFactory {
 			&& !hasItemsForSecondaryAffiliates(cartLines));
 	}
 
-	public static WebOrderViewI getInvoicedOrderView(List cartLines, List sampleLines, ErpAffiliate affiliate) {
+	public static WebOrderViewI getInvoicedOrderView(List<FDCartLineI> cartLines, List<FDCartLineI> sampleLines, ErpAffiliate affiliate) {
 		if (!affiliate.isPrimary() && !hasItemsForAffiliate(cartLines, affiliate)) {
 			return null;
 		}
@@ -36,7 +36,7 @@ public class WebOrderViewFactory {
 
 		if (affiliate.isPrimary()) {
 			List<FDCartLineI> deliveredSamples = new ArrayList<FDCartLineI>();
-			for (Iterator i = sampleLines.iterator(); i.hasNext();) {
+			for (Iterator<FDCartLineI> i = sampleLines.iterator(); i.hasNext();) {
 				FDCartLineI line = (FDCartLineI) i.next();
 				if (line.getInvoiceLine().getQuantity() > 0) {
 					deliveredSamples.add(line);
@@ -49,7 +49,7 @@ public class WebOrderViewFactory {
 		return ov;
 	}
 
-	public static List<WebOrderViewI> getOrderViews(List cartLines) {
+	public static List<WebOrderViewI> getOrderViews(List<FDCartLineI> cartLines) {
 		ArrayList<WebOrderViewI> views = new ArrayList<WebOrderViewI>();
 		for (Iterator<ErpAffiliate> i = getShownAffiliates(cartLines).iterator(); i.hasNext();) {
 			WebOrderViewI view = getOrderView(cartLines, i.next());
@@ -60,7 +60,7 @@ public class WebOrderViewFactory {
 		return views;
 	}
 
-	public static List<WebOrderViewI> getInvoicedOrderViews(List cartLines, List sampleLines) {
+	public static List<WebOrderViewI> getInvoicedOrderViews(List<FDCartLineI> cartLines, List<FDCartLineI> sampleLines) {
 		ArrayList<WebOrderViewI> views = new ArrayList<WebOrderViewI>();
 		for (Iterator<ErpAffiliate> i = getShownAffiliates(cartLines).iterator(); i.hasNext();) {
 			WebOrderViewI view = getInvoicedOrderView(cartLines, sampleLines, i.next());
@@ -71,7 +71,7 @@ public class WebOrderViewFactory {
 		return views;
 	}
 
-	private static List<ErpAffiliate> getShownAffiliates(List cartLines) {
+	private static List<ErpAffiliate> getShownAffiliates(List<FDCartLineI> cartLines) {
 		ErpAffiliate[] affils = new ErpAffiliate[] {
 			ErpAffiliate.getEnum(ErpAffiliate.CODE_FD),
 			ErpAffiliate.getEnum(ErpAffiliate.CODE_WBL),
@@ -87,9 +87,9 @@ public class WebOrderViewFactory {
 		return l;
 	}
 
-	private static List<FDCartLineI> getOrderLinesForAffiliate(List cartLines, ErpAffiliate affiliate) {
+	private static List<FDCartLineI> getOrderLinesForAffiliate(List<FDCartLineI> cartLines, ErpAffiliate affiliate) {
 		List<FDCartLineI> lines = new ArrayList<FDCartLineI>();
-		for (Iterator i = cartLines.iterator(); i.hasNext();) {
+		for (Iterator<FDCartLineI> i = cartLines.iterator(); i.hasNext();) {
 			FDCartLineI line = (FDCartLineI) i.next();
 			if (affiliate.equals(line.getAffiliate())) {
 				lines.add(line);
@@ -98,12 +98,12 @@ public class WebOrderViewFactory {
 		return lines;
 	}
 
-	private static boolean hasItemsForAffiliate(List cartLines, ErpAffiliate affiliate) {
+	private static boolean hasItemsForAffiliate(List<FDCartLineI> cartLines, ErpAffiliate affiliate) {
 		return getOrderLinesForAffiliate(cartLines, affiliate).size() > 0;
 	}
 
-	private static boolean hasItemsForSecondaryAffiliates(List cartLines) {
-		for (Iterator i = cartLines.iterator(); i.hasNext();) {
+	private static boolean hasItemsForSecondaryAffiliates(List<FDCartLineI> cartLines) {
+		for (Iterator<FDCartLineI> i = cartLines.iterator(); i.hasNext();) {
 			FDCartLineI line = (FDCartLineI) i.next();
 			if (!line.getAffiliate().isPrimary()) {
 				return true;
@@ -115,28 +115,31 @@ public class WebOrderViewFactory {
 	public static abstract class AbstractOrderView implements WebOrderViewI {
 
 		private final ErpAffiliate affiliate;
-		private final List lines;
+		private final List<FDCartLineI> lines;
 		private final boolean hideDescription;
-		private List<FDCartLineI> sampleLines = Collections.EMPTY_LIST;
+		private List<FDCartLineI> sampleLines = Collections.emptyList();
 
 		protected double tax;
 		protected double subtotal;
 		protected double depositValue;
 
-		public AbstractOrderView(ErpAffiliate affiliate, List lines, boolean hideDescription) {
+		public AbstractOrderView(ErpAffiliate affiliate, List<FDCartLineI> lines, boolean hideDescription) {
 			this.affiliate = affiliate;
 			this.lines = lines;
 			this.hideDescription = hideDescription;
 		}
 
+		@Override
 		public ErpAffiliate getAffiliate() {
 			return this.affiliate;
 		}
 
-		public List getOrderLines() {
+		@Override
+		public List<FDCartLineI> getOrderLines() {
 			return this.lines;
 		}
 
+		@Override
 		public List<FDCartLineI> getSampleLines() {
 			return this.sampleLines;
 		}
@@ -145,28 +148,34 @@ public class WebOrderViewFactory {
 			this.sampleLines = sampleLines;
 		}
 
+		@Override
 		public boolean isDisplayDepartment() {
 			return affiliate.isPrimary();
 		}
 
+		@Override
 		public String getDescription() {
 			return this.hideDescription ? "" : affiliate.getName();
 		}
 
+		@Override
 		public double getTax() {
 			return tax;
 		}
 
+		@Override
 		public double getDepositValue() {
 			return depositValue;
 		}
 
+		@Override
 		public double getSubtotal() {
 			return subtotal;
 		}
 
+		@Override
 		public boolean isEstimatedPrice() {
-			for (Iterator i = getOrderLines().iterator(); i.hasNext();) {
+			for (Iterator<FDCartLineI> i = getOrderLines().iterator(); i.hasNext();) {
 				FDCartLineI line = (FDCartLineI) i.next();
 				if (line.isEstimatedPrice()) {
 					return true;

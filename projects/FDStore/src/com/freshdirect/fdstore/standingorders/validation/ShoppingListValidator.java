@@ -135,7 +135,6 @@ public class ShoppingListValidator {
 			return 100.0;
 		}
 
-		return EnumServiceType.CORPORATE.equals(deliveryAddress.getServiceType()) ? FDUserI.MIN_CORP_ORDER_AMOUNT
-				: FDUserI.MINIMUM_ORDER_AMOUNT;
+		return EnumServiceType.CORPORATE.equals(deliveryAddress.getServiceType()) ? FDUserI.MIN_CORP_ORDER_AMOUNT : FDUserI.MINIMUM_ORDER_AMOUNT;
 	}
 }

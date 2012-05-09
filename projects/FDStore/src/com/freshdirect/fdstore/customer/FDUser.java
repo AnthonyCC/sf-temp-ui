@@ -681,16 +681,24 @@ public class FDUser extends ModelSupport implements FDUserI {
      * @return true if the order minimum has been met (FDUserI.MINIMUM_ORDER_AMOUNT)
      */
 	public boolean isOrderMinimumMet() throws FDResourceException {
-		return this.isOrderMinimumMet(false);
+		return this.isOrderMinimumMet(false, null);
 	}
 
+	public boolean isOrderMinimumMet(Double overrideMinimumAmount) throws FDResourceException {
+		return this.isOrderMinimumMet(false, overrideMinimumAmount);
+	}
+	
     public boolean isOrderMinimumMet(boolean alcohol) throws FDResourceException {
+    	return isOrderMinimumMet(alcohol, null);
+    }
+
+    public boolean isOrderMinimumMet(boolean alcohol, Double overrideMinimumAmount) throws FDResourceException {
 		double subTotal = alcohol ? this.shoppingCart.getSubTotalWithoutAlcohol() : this.shoppingCart.getSubTotal();
-		return subTotal >= this.getMinimumOrderAmount();
+		return subTotal >= (overrideMinimumAmount == null ? getMinimumOrderAmount() : overrideMinimumAmount);
     }
 
     public double getMinimumOrderAmount() {
-		if (getShoppingCart() != null && getShoppingCart().getDeliveryAddress() != null){
+    	if (getShoppingCart() != null && getShoppingCart().getDeliveryAddress() != null){
 			try {
 				String county = FDDeliveryManager.getInstance().getCounty(getShoppingCart().getDeliveryAddress());
 				if("SUFFOLK".equalsIgnoreCase(county)){
@@ -699,12 +707,10 @@ public class FDUser extends ModelSupport implements FDUserI {
 			} catch (FDResourceException e) {
 				throw new FDRuntimeException(e);
 			}
-
 		}
-
 		return EnumServiceType.CORPORATE.equals(this.getSelectedServiceType()) ? MIN_CORP_ORDER_AMOUNT : MINIMUM_ORDER_AMOUNT;
 	}
-
+    
 	public float getQuantityMaximum(ProductModel product) {
 		return product.enforceQuantityMax() || (!this.isCorporateUser())
 		      ? product.getQuantityMaximum()  : 200;
@@ -1283,7 +1289,7 @@ public class FDUser extends ModelSupport implements FDUserI {
 	}
 
 	public double getMinCorpOrderAmount() {
-		return MIN_CORP_ORDER_AMOUNT;
+		return MIN_CORP_ORDER_AMOUNT; 
 	}
 
 	public double getCorpDeliveryFee() {

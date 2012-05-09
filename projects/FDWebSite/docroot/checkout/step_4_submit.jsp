@@ -4,7 +4,6 @@
 <%@ page import='com.freshdirect.customer.*'%>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
 <%@ page import='com.freshdirect.framework.webapp.*' %>
-<%@ page import="java.text.SimpleDateFormat" %>
 <%@ page import='java.text.MessageFormat' %>
 <%@ page import='com.freshdirect.fdstore.promotion.*'%>
 <%@ page import='com.freshdirect.fdstore.util.ClickToCallUtil'%>
@@ -18,14 +17,17 @@
 final int W_CHECKOUT_STEP_4_SUBMIT_TOTAL = 970;
 %>
 
-
 <%!
-java.text.DecimalFormat quantityFormatter = new java.text.DecimalFormat("0.##");
+// final java.text.DecimalFormat quantityFormatter = new java.text.DecimalFormat("0.##");
 %>
 
 <fd:CheckLoginStatus id="user" guestAllowed="false" recognizedAllowed="false" redirectPage='/checkout/view_cart.jsp' />
 <%
-	String actionName = "submitOrder";
+	// [APPDEV-2149] Display generic timeslot table (Just days of week, no restrictions, etc.)
+	final boolean abstractTimeslots = EnumCheckoutMode.MODIFY_SO_TMPL == user.getCheckoutMode();
+
+	final String actionName = abstractTimeslots ? "modifyStandingOrderTemplate" : "submitOrder";
+	
 %>
 <tmpl:insert template='/common/template/checkout_nav.jsp'>
 <tmpl:put name='title' direct='true'>FreshDirect - Checkout - Review & Submit Order</tmpl:put>
@@ -33,7 +35,19 @@ java.text.DecimalFormat quantityFormatter = new java.text.DecimalFormat("0.##");
 
 <fd:FDShoppingCart id='cart' result="result">
 
-<fd:CheckoutController actionName="<%= actionName %>" result="result" successPage="step_4_receipt.jsp">
+<%
+	String succPage = "step_4_receipt.jsp";
+
+	if (abstractTimeslots) {
+		final FDStandingOrder so = user.getCurrentStandingOrder();
+	
+		StringBuilder buf = new StringBuilder(FDURLUtil.getStandingOrderLandingPage(so, null));
+		buf.append("&tmpl_saved=1");
+	
+		succPage = buf.toString();
+	}
+%>
+<fd:CheckoutController actionName="<%= actionName %>" result="result" successPage="<%= succPage %>">
 <%
         FDIdentity identity  = user.getIdentity();
         ErpAddressModel dlvAddress = cart.getDeliveryAddress();
@@ -41,18 +55,9 @@ java.text.DecimalFormat quantityFormatter = new java.text.DecimalFormat("0.##");
         ErpCustomerInfoModel customerModel = FDCustomerFactory.getErpCustomerInfo(identity);
 		FDCustomerModel fdCustomer = FDCustomerFactory.getFDCustomer(identity);
 
-        SimpleDateFormat dateFormatter = new SimpleDateFormat("EEE MM/dd/yy");
-        FDReservation reservation = cart.getDeliveryReservation();
-        String fmtDlvDateTime = "";
-	String deliveryTime ="";
-	if(reservation!=null && null!=reservation.getStartTime()) {
-		fmtDlvDateTime=dateFormatter.format(reservation.getStartTime()).toUpperCase();
-		if(null!=reservation.getEndTime() && !"".equals(reservation.getStartTime()) && !"".equals(reservation.getEndTime())) 
-			deliveryTime=FDTimeslot.format(reservation.getStartTime(), reservation.getEndTime());
-	}
-
-		boolean orderAmountFraud = result.hasError("order_amount_fraud");
-		boolean doubleSubmit = result.hasError("processing_order");
+		final boolean orderAmountFraud = abstractTimeslots ? true : result.hasError("order_amount_fraud");
+		final boolean doubleSubmit = abstractTimeslots ? true : result.hasError("processing_order");
+		final boolean __noErr = abstractTimeslots ? true : !orderAmountFraud && !doubleSubmit;
 		
 		// Save checkout mode for receipt page.
 		session.setAttribute("checkout_mode", user.getCheckoutMode().toString());
@@ -60,7 +65,7 @@ java.text.DecimalFormat quantityFormatter = new java.text.DecimalFormat("0.##");
 		//for Google Analytics (used in shared include i_step_4_cart_details.jspf)
 		String sem_orderNumber = "0";
 %>
-<fd:SmartSavingsUpdate promoConflictMode="true"/>
+<% if (!abstractTimeslots) { %><fd:SmartSavingsUpdate promoConflictMode="true"/><% } %>
 
 
 <%@ include file="/includes/i_modifyorder.jspf" %>
@@ -102,7 +107,9 @@ java.text.DecimalFormat quantityFormatter = new java.text.DecimalFormat("0.##");
 	</div>
 
 
-<form method="post" name="order_submit" id="order_submit" onSubmit="return checkPromoEligibilityByMaxRedemptions('<%= null==user.getRedeemedPromotion()?"null":"not null" %>');">
+<% if (!abstractTimeslots) { %><form method="post" name="order_submit" id="order_submit">
+<% } else { %><form method="post" name="order_submit" id="order_submit" onSubmit="return checkPromoEligibilityByMaxRedemptions('<%= null==user.getRedeemedPromotion()?"null":"not null" %>');">
+<% } %>
 	<div class="gcResendBox" style="display:none"><!--  -->
 		<table cellpadding="0" cellspacing="0" border="0" style="border-collapse: collapse;" class="gcResendBoxContent" id="gcResendBox">
 			<tr>
@@ -143,15 +150,15 @@ java.text.DecimalFormat quantityFormatter = new java.text.DecimalFormat("0.##");
 			<td CLASS="text11" WIDTH="395" VALIGN="bottom">
 				<FONT CLASS="title18">REVIEW & SUBMIT</FONT><BR>
 			    <IMG src="/media_stat/images/layout/clear.gif" WIDTH="395" HEIGHT="1" BORDER="0">
-</td>
+			</td>
 			<td width="<%=W_CHECKOUT_STEP_4_SUBMIT_TOTAL-430%>" align="right" valign="middle">
-				<font class="space2pix"><br/></font><% if (!orderAmountFraud && !doubleSubmit) { %>
+				<font class="space2pix"><br/></font><% if (__noErr) { %>
 				<input type="image" name="checkout_submit_order" src="/media_stat/images/buttons/submit_order.gif" width="84" height="12" border="0" alt="CONTINUE CHECKOUT" vspace="0" onclick="return checkPromoEligibilityByMaxRedemptions('<%= null==user.getRedeemedPromotion()?"null":"not null" %>');return ntptSubmitTag(document.order_submit, 'ev=button_event&ni_btn=submit_order&ni_btnpos=Bottom');" id="checkout_submit_order_bottomText"><br/>
 				<input type="image" name="checkout_submit_order" src="/media_stat/images/buttons/click_to_place_order.gif" width="85" height="10" border="0" alt="CONTINUE CHECKOUT" vspace="0" onclick="return checkPromoEligibilityByMaxRedemptions('<%= null==user.getRedeemedPromotion()?"null":"not null" %>');return ntptSubmitTag(document.order_submit, 'ev=button_event&ni_btn=submit_order&ni_btnpos=Bottom');" id="checkout_submit_order_bottomText"><% } %><br/>
 			</td>
 			<td width="35" align="right" valign="middle">
 				<font class="space2pix"><br/></font>
-				<% if (!orderAmountFraud && !doubleSubmit ) {%>
+				<% if (__noErr ) {%>
 					<input type="image" name="form_action_name" src="/media_stat/images/buttons/checkout_right.gif" width="26" height="26" border="0" alt="CONTINUE CHECKOUT" VSPACE="2" onclick="return checkPromoEligibilityByMaxRedemptions('<%= null==user.getRedeemedPromotion()?"null":"not null" %>');return ntptSubmitTag(document.order_submit, 'ev=button_event&ni_btn=submit_order&ni_btnpos=Bottom');" id="checkout_submit_order_bottomArrow">
 				<% } %>
 			</td>
@@ -165,11 +172,14 @@ java.text.DecimalFormat quantityFormatter = new java.text.DecimalFormat("0.##");
 	<%@ include file="/shared/includes/i_loyalty_bar.jspf" %>
 	<div style="clear: both;"></div>
 	</div>
-	<div style="font-size: 0px; padding-top: 16px;"></div>
 
-	<% if (!orderAmountFraud && !doubleSubmit) { %>
-		<div>
-		<input type="image" name="checkout_submit_order" src="/media_stat/images/template/checkout/order_not_placed.gif" width="439" height="35" border="0" alt="Continue Checkout" onclick="return checkPromoEligibilityByMaxRedemptions('<%= null==user.getRedeemedPromotion()?"null":"not null" %>');return ntptSubmitTag(document.order_submit, 'ev=button_event&ni_btn=submit_order&ni_btnpos=Banner');" id="checkout_submit_order_banner"><br><IMG src="/media_stat/images/layout/clear.gif" width="1" height="14" BORDER="0"><br>
+	<% if (__noErr) { %>
+		<div style="padding: 16px 0 16px 0">
+		<% if (abstractTimeslots) { %>
+			<button style="width: 439px; height: 35px; border-radius: 5px; -moz-border-radius: 5px; border: 0; background-color: #ff9933; font-size: 17px; font-weight: bold; color: white; font-family: Verdana, Arial, sans-serif">Click here to save your standing order.</button>
+		<% } else { %>
+			<input type="image" name="checkout_submit_order" src="/media_stat/images/template/checkout/order_not_placed.gif" width="439" height="35" border="0" alt="Continue Checkout" onclick="return checkPromoEligibilityByMaxRedemptions('<%= null==user.getRedeemedPromotion()?"null":"not null" %>');return ntptSubmitTag(document.order_submit, 'ev=button_event&ni_btn=submit_order&ni_btnpos=Banner');" id="checkout_submit_order_banner"><br><IMG src="/media_stat/images/layout/clear.gif" width="1" height="14" BORDER="0"><br>
+		<% } %>
 		</div>
 	<% } %>
 	</div>
@@ -219,7 +229,7 @@ java.text.DecimalFormat quantityFormatter = new java.text.DecimalFormat("0.##");
     
     
 <%
-if (user.isPromoConflictResolutionApplied()) {
+if (!abstractTimeslots && user.isPromoConflictResolutionApplied()) {
     user.setPromoConflictResolutionApplied(false);                                    
 
     result.addWarning(new ActionWarning("promo_war2", SystemMessageList.MSG_PROMOTION_APPLIED_VARY2));
@@ -229,12 +239,12 @@ if (user.isPromoConflictResolutionApplied()) {
 <%
 }
 
-        if (doubleSubmit) {
+        if (!abstractTimeslots && doubleSubmit) {
 			sbErrorMsg.append(result.getError("processing_order").getDescription());
         }
 
 		String warningMsg = (String) session.getAttribute(SessionName.SIGNUP_WARNING);
-		if (warningMsg==null && user.isPromotionAddressMismatch()) {
+		if (!abstractTimeslots && warningMsg==null && user.isPromotionAddressMismatch()) {
 			Promotion promo = (Promotion)user.getEligibleSignupPromotion();
 			Double totalPromo = new Double(promo.getHeaderDiscountTotal());
 		    warningMsg = MessageFormat.format(SystemMessageList.MSG_CHECKOUT_NOT_ELIGIBLE, new Object[]{totalPromo, user.getCustomerServiceContact()});
@@ -247,7 +257,7 @@ if (user.isPromoConflictResolutionApplied()) {
          String errorMsg = sbErrorMsg.toString();
 	%>
 	<%@ include file="/includes/i_error_messages.jspf"%> 	
-<%	}
+<%		}
 %>
 <% String receipt = ""; %>
 <%@ include file="/includes/ckt_acct/i_step_4_delivery_payment.jspf" %>
@@ -264,12 +274,63 @@ if (user.isPromoConflictResolutionApplied()) {
 <% } %>
 			<IMG src="/media_stat/images/layout/999966.gif" width="<%=W_CHECKOUT_STEP_4_SUBMIT_TOTAL%>" height="1" BORDER="0" VSPACE="3"><br>
 			<IMG src="/media_stat/images/layout/clear.gif" width="1" height="3"><br>
-			<font class="title11"><b>Note:</b></font> <font class="text11orbold">Our goal is to fill your order with food of the highest quality. Occasionally, we'll get a shipment that doesn't meet our standards and we cannot accept it. Of course, if this happens, FreshDirect will not charge you for the missing item.</font>
+			<% if (!abstractTimeslots) { %><font class="title11"><b>Note:</b></font> <font class="text11orbold">Our goal is to fill your order with food of the highest quality. Occasionally, we'll get a shipment that doesn't meet our standards and we cannot accept it. Of course, if this happens, FreshDirect will not charge you for the missing item.</font><% } %>
 		</td>
 	</tr>
 	<tr>
 		<td align="left">
+<% if (abstractTimeslots) { %>
+<%-- CART DETAILS START --%>
+			<table width="<%= W_CHECKOUT_STEP_4_SUBMIT_TOTAL %>" style="">
+<%
+	// final DecimalFormat quantityFormatter = new DecimalFormat("0.##");
+	for (WebOrderViewI ov : cart.getOrderViews()) {
+		String __lastDeptDesc = null;
+%>
+				<tbody>
+<%
+		for (FDCartLineI l : ov.getOrderLines()) {
+			final String deptDesc = l.getDepartmentDesc();
+			
+			if ( __lastDeptDesc == null || __lastDeptDesc.compareTo(deptDesc) != 0) {
+%>
+					<tr>
+						<td class="text10" style="width: 8em; text-align: right; padding-left: 2em; padding-right: 2em;"></td>
+						<td class="text10" style="width: 22px"></td>
+						<td class="text11orbold" colspan="3" style="padding-top: 1em;"><%= deptDesc %></td>
+					</tr>
+<%
+				__lastDeptDesc = deptDesc;
+			}
+			
+			
+%>
+					<tr>
+						<td class="text10" style="width: 8em; text-align: right; padding-left: 2em; padding-right: 2em;"><%= l.getDisplayQuantity() %></td>
+						<td class="text10" style="width: 22px"><%= l.getLabel()%></td>
+						<td class="text10" style="width: 100%"><span class="text10bold" style="margin-left: 6px;"><%= l.getDescription() %></span><% if (l.getConfigurationDesc() != null) { %> (<%= l.getConfigurationDesc() %>)<% } %></td>
+						<td class="text10" style="width: 70px; text-align: right; padding-right: 60px;">(<%= l.getUnitPrice() %>)</td>
+						<td class="text10bold" style="text-align: right"><%= JspMethods.formatPrice(l.getPrice()) %></td>
+					</tr>
+<%			
+		}
+%>
+					<tr>
+						<td colspan="5" class="orderViewSeparator"></td>
+					</tr>
+					<tr class="orderViewSummary">
+						<td colspan="4" style="text-align: right; padding-right: 60px;"><%= ov.getDescription() %><% if (ov.isEstimatedPrice()) { %> Estimated<% } %> Subtotal:</td>
+						<td style="align: right; font-weight: bold"><%= JspMethods.formatPrice(ov.getSubtotal()) %></td>
+					</tr>
+				</tbody>
+<%
+	}
+%>
+			</table>
+<%-- CART DETAILS END --%>
+<% } else { %>
 			<%@ include file="/includes/ckt_acct/i_step_4_cart_details.jspf" %>
+<% } %>
 		</td>
 	</tr>
 </table>
@@ -283,26 +344,26 @@ if (user.isPromoConflictResolutionApplied()) {
 	<tr VALIGN="TOP">
 		
 			<td width="35">
-					<a href="<%=response.encodeURL("/checkout/step_3_choose.jsp")%>" id="previousX">
-					<img src="/media_stat/images/buttons/checkout_left.gif" width="26" height="26" border="0" alt="PREVIOUS STEP"></a>
-		</td>
+				<a href="<%=response.encodeURL("/checkout/step_3_choose.jsp")%>" id="previousX">
+				<img src="/media_stat/images/buttons/checkout_left.gif" width="26" height="26" border="0" alt="PREVIOUS STEP"></a>
+			</td>
 		    <td width="340">
 				<a href="<%=response.encodeURL("/checkout/step_3_choose.jsp")%>" id="previousX">
 				<img src="/media_stat/images/buttons/previous_step.gif" WIDTH="66" HEIGHT="11" border="0" alt="PREVIOUS STEP"></a><br/>
 				Payment Method<br/>
 				<img src="/media_stat/images/layout/clear.gif" width="340" height="1" border="0">
-		</td>
+			</td>
 			<td width="<%=W_CHECKOUT_STEP_4_SUBMIT_TOTAL-410%>" align="right" valign="middle">
-				<font class="space2pix"><br/></font><% if (!orderAmountFraud && !doubleSubmit) { %>
+				<font class="space2pix"><br/></font><% if (__noErr) { %>
 				<input type="image" name="checkout_submit_order" src="/media_stat/images/buttons/submit_order.gif" width="84" height="12" border="0" alt="CONTINUE CHECKOUT" vspace="0" onclick="return checkPromoEligibilityByMaxRedemptions('<%= null==user.getRedeemedPromotion()?"null":"not null" %>');return ntptSubmitTag(document.order_submit, 'ev=button_event&ni_btn=submit_order&ni_btnpos=Bottom');" id="checkout_submit_order_bottomText"><br/>
 				<input type="image" name="checkout_submit_order" src="/media_stat/images/buttons/click_to_place_order.gif" width="85" height="10" border="0" alt="CONTINUE CHECKOUT" vspace="0" onclick="return checkPromoEligibilityByMaxRedemptions('<%= null==user.getRedeemedPromotion()?"null":"not null" %>');return ntptSubmitTag(document.order_submit, 'ev=button_event&ni_btn=submit_order&ni_btnpos=Bottom');" id="checkout_submit_order_bottomText"><% } %><br/>
 			</td>
 			<td width="35" align="right" valign="middle">
 				<font class="space2pix"><br/></font>
-				<% if (!orderAmountFraud && !doubleSubmit ) {%>
+				<% if (__noErr ) {%>
 					<input type="image" name="form_action_name" src="/media_stat/images/buttons/checkout_right.gif" width="26" height="26" border="0" alt="CONTINUE CHECKOUT" VSPACE="2" onclick="return checkPromoEligibilityByMaxRedemptions('<%= null==user.getRedeemedPromotion()?"null":"not null" %>');return ntptSubmitTag(document.order_submit, 'ev=button_event&ni_btn=submit_order&ni_btnpos=Bottom');" id="checkout_submit_order_bottomArrow">
-<% } %>
-		</td>
+				<% } %>
+			</td>
 	</tr>
 </table>
 <%@ include file="/checkout/includes/i_footer_text.jspf" %>

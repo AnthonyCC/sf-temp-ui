@@ -158,7 +158,7 @@ public interface FDUserI extends java.io.Serializable {
     public boolean isOrderMinimumMet() throws FDResourceException;
 
     public double getMinimumOrderAmount();
-
+    
 	public boolean isOrderMinimumMet(boolean excludeBeer) throws FDResourceException;
 
 	public float getQuantityMaximum(ProductModel product);

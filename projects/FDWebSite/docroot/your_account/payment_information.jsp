@@ -17,14 +17,12 @@ final int W_YA_PAYMENT_INFO_TOTAL = 970;
 
 <fd:CheckLoginStatus guestAllowed="false" recognizedAllowed="false" />
 
-<%-- bring in the common javascript functions  --%>
-<fd:javascript src="/assets/javascript/common_javascript.js"/>
-
 <% String actionName =  request.getParameter("actionName"); %>
 <tmpl:insert template='/common/template/dnav.jsp'>
    <tmpl:put name='title' direct='true'>FreshDirect - Your Account - Payment Options</tmpl:put>
     <tmpl:put name='content' direct='true'>
 <fd:PaymentMethodController actionName='<%=actionName%>' result='result'>
+
 <%
 boolean hasCheck = false;
 FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
@@ -71,61 +69,66 @@ To learn more about our <b>Security Policies</b>, <a href="javascript:popup('/he
 	//-->
 </SCRIPT> 
 
-<% if (isCheckEligible && !isECheckRestricted) { %>
-
-	<% if (hasCheck) { %>
-<table width="<%= W_YA_PAYMENT_INFO_TOTAL %>" border="0" cellspacing="0" cellpadding="0">
-<tr valign="top">
-    <td><img src="/media_stat/images/headers/check_acct_details.gif" width="181" height="9" alt="CHECKING ACCOUNT DETAILS">&nbsp;&nbsp;&nbsp;<a href="javascript:popup('/registration/checkacct_terms.jsp','large')">Terms of Use</a><br>
-    <IMG src="/media_stat/images/layout/999966.gif" width="<%= W_YA_PAYMENT_INFO_TOTAL %>" height="1" border="0" VSPACE="3"><br>
-    </td>
-</tr>
-<tr valign="middle">
-	<td class="text11" style="padding-top: 5px; padding-bottom: 10px;">If you need to enter another checking account: <a href="/your_account/add_checkacct.jsp"><IMG src="/media_stat/images/buttons/add_new_acct.gif" width="108" height="16" ALT="Add New Checking Account" border="0" ALIGN="absmiddle"></a></td>
-	</tr>
-	<tr><td>
-		<form name=checkacct_form method="post">
-		<input type="hidden" name="actionName" value="">
-		<input type="hidden" name="deletePaymentId" value="">
-		<%@ include file="/includes/ckt_acct/checkacct_select.jspf" %>
-		</form>
-	</td>
-</tr>
-</table>
-	<% } else {%>
-		<%@ include file="/includes/your_account/add_checkacct.jspf"%> 
-	<% } %>
-	<br><br>
-<% } %>
-<table width="<%= W_YA_PAYMENT_INFO_TOTAL %>" border="0" cellspacing="0" cellpadding="0">
-<tr valign="top">
-    <td><img src="/media_stat/images/navigation/credit_card_details.gif"
-WIDTH="152" HEIGHT="15" border="0" alt="CREDIT CARD DETAILS">&nbsp;&nbsp;&nbsp;<BR>
-    <IMG src="/media_stat/images/layout/999966.gif" WIDTH="<%= W_YA_PAYMENT_INFO_TOTAL %>" HEIGHT="1" BORDER="0" VSPACE="3"><BR>
-    </td>
-</tr>
-<tr valign="middle">
-	<td class="text11" style="padding-top: 5px; padding-bottom: 10px;">If you need to enter another credit card: <a href="/your_account/add_creditcard.jsp"><IMG src="/media_stat/images/buttons/add_new_card.gif" WIDTH="96" HEIGHT="16" ALT="Add New Credit Card" BORDER="0" ALIGN="absmiddle"></a>
-	</td>
-	</tr>
-	<tr><td>
-		<form name=creditcard_form method="post">
-		<input type="hidden" name="actionName" value="">
-		<input type="hidden" name="deletePaymentId" value="">
-		<%@ include file="/includes/ckt_acct/i_creditcard_select.jspf" %>
-		</form>
-	</td></tr>
-</table>
-<br>
-<IMG src="/media_stat/images/layout/ff9933.gif" WIDTH="<%= W_YA_PAYMENT_INFO_TOTAL %>" HEIGHT="1" BORDER="0"><BR>
-<FONT CLASS="space4pix"><BR><BR></FONT>
-<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="<%= W_YA_PAYMENT_INFO_TOTAL %>">
-<TR VALIGN="TOP">
-<TD WIDTH="35"><a href="/index.jsp"><img src="/media_stat/images/buttons/arrow_green_left.gif" border="0" alt="CONTINUE SHOPPING" ALIGN="LEFT"></a></TD>
-<TD WIDTH="<%= W_YA_PAYMENT_INFO_TOTAL - 35 %>"><a href="/index.jsp"><img src="/media_stat/images/buttons/continue_shopping_text.gif"  border="0" alt="CONTINUE SHOPPING"></a>
-<BR>from <FONT CLASS="text11bold"><A HREF="/index.jsp">Home Page</A></FONT><BR><IMG src="/media_stat/images/layout/clear.gif" WIDTH="340" HEIGHT="1" BORDER="0"></TD>
-</TR>
-</TABLE>
+<fd:GetStandingOrderDependencyIds id="standingOrderDependencyIds" type="paymentMethod">
+	<fd:GetStandingOrderHelpInfo id="helpSoInfo">
+		<script type="text/javascript">var helpSoInfo=<%=helpSoInfo%>;</script>
+		<% if (isCheckEligible && !isECheckRestricted) { %>
+		
+			<% if (hasCheck) { %>
+		<table width="<%= W_YA_PAYMENT_INFO_TOTAL %>" border="0" cellspacing="0" cellpadding="0">
+		<tr valign="top">
+		    <td><img src="/media_stat/images/headers/check_acct_details.gif" width="181" height="9" alt="CHECKING ACCOUNT DETAILS">&nbsp;&nbsp;&nbsp;<a href="javascript:popup('/registration/checkacct_terms.jsp','large')">Terms of Use</a><br>
+		    <IMG src="/media_stat/images/layout/999966.gif" width="<%= W_YA_PAYMENT_INFO_TOTAL %>" height="1" border="0" VSPACE="3"><br>
+		    </td>
+		</tr>
+		<tr valign="middle">
+			<td class="text11" style="padding-top: 5px; padding-bottom: 10px;">If you need to enter another checking account: <a href="/your_account/add_checkacct.jsp"><IMG src="/media_stat/images/buttons/add_new_acct.gif" width="108" height="16" ALT="Add New Checking Account" border="0" ALIGN="absmiddle"></a></td>
+			</tr>
+			<tr><td>
+				<form name=checkacct_form method="post">
+				<input type="hidden" name="actionName" value="">
+				<input type="hidden" name="deletePaymentId" value="">
+				<%@ include file="/includes/ckt_acct/checkacct_select.jspf" %>
+				</form>
+			</td>
+		</tr>
+		</table>
+			<% } else {%>
+				<%@ include file="/includes/your_account/add_checkacct.jspf"%> 
+			<% } %>
+			<br><br>
+		<% } %>
+		<table width="<%= W_YA_PAYMENT_INFO_TOTAL %>" border="0" cellspacing="0" cellpadding="0">
+		<tr valign="top">
+		    <td><img src="/media_stat/images/navigation/credit_card_details.gif"
+		WIDTH="152" HEIGHT="15" border="0" alt="CREDIT CARD DETAILS">&nbsp;&nbsp;&nbsp;<BR>
+		    <IMG src="/media_stat/images/layout/999966.gif" WIDTH="<%= W_YA_PAYMENT_INFO_TOTAL %>" HEIGHT="1" BORDER="0" VSPACE="3"><BR>
+		    </td>
+		</tr>
+		<tr valign="middle">
+			<td class="text11" style="padding-top: 5px; padding-bottom: 10px;">If you need to enter another credit card: <a href="/your_account/add_creditcard.jsp"><IMG src="/media_stat/images/buttons/add_new_card.gif" WIDTH="96" HEIGHT="16" ALT="Add New Credit Card" BORDER="0" ALIGN="absmiddle"></a>
+			</td>
+			</tr>
+			<tr><td>
+				<form name=creditcard_form method="post">
+				<input type="hidden" name="actionName" value="">
+				<input type="hidden" name="deletePaymentId" value="">
+				<%@ include file="/includes/ckt_acct/i_creditcard_select.jspf" %>
+				</form>
+			</td></tr>
+		</table>
+		<br>
+		<IMG src="/media_stat/images/layout/ff9933.gif" WIDTH="<%= W_YA_PAYMENT_INFO_TOTAL %>" HEIGHT="1" BORDER="0"><BR>
+		<FONT CLASS="space4pix"><BR><BR></FONT>
+		<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="<%= W_YA_PAYMENT_INFO_TOTAL %>">
+		<TR VALIGN="TOP">
+		<TD WIDTH="35"><a href="/index.jsp"><img src="/media_stat/images/buttons/arrow_green_left.gif" border="0" alt="CONTINUE SHOPPING" ALIGN="LEFT"></a></TD>
+		<TD WIDTH="<%= W_YA_PAYMENT_INFO_TOTAL - 35 %>"><a href="/index.jsp"><img src="/media_stat/images/buttons/continue_shopping_text.gif"  border="0" alt="CONTINUE SHOPPING"></a>
+		<BR>from <FONT CLASS="text11bold"><A HREF="/index.jsp">Home Page</A></FONT><BR><IMG src="/media_stat/images/layout/clear.gif" WIDTH="340" HEIGHT="1" BORDER="0"></TD>
+		</TR>
+		</TABLE>
+	</fd:GetStandingOrderHelpInfo>
+</fd:GetStandingOrderDependencyIds>
 <BR>
 </fd:PaymentMethodController>
 </tmpl:put>

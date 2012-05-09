@@ -13,7 +13,7 @@ public class DlvRestrictionsList implements Serializable {
 
 	private static final long	serialVersionUID	= -2213868641684699998L;
 	
-	private final List<RestrictionI> restrictions;
+	private List<RestrictionI> restrictions;
 
 	public DlvRestrictionsList(List<RestrictionI> restrictions) {
 		this.restrictions = restrictions;
@@ -147,4 +147,24 @@ public class DlvRestrictionsList implements Serializable {
 		return this.restrictions.toString();
 	}
 
+	
+	/**
+	 * [APPDEV-2149] helper method for generic time slots
+	 */
+	public void keepRestrictionsForGenericTimeslots() {
+		List<RestrictionI> fl = new ArrayList<RestrictionI>();
+		
+		for (RestrictionI r : this.restrictions) {
+			if (EnumDlvRestrictionType.RECURRING_RESTRICTION == r.getType() && EnumDlvRestrictionCriterion.DELIVERY == r.getCriterion()) {
+				fl.add(r);
+			}
+		}
+
+		if (fl.size() < this.restrictions.size())
+			this.restrictions = fl;
+	}
+
+	public int size() {
+		return this.restrictions.size();
+	}
 }

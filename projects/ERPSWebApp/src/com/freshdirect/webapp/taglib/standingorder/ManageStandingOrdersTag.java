@@ -1,8 +1,11 @@
 package com.freshdirect.webapp.taglib.standingorder;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -10,6 +13,9 @@ import javax.servlet.http.HttpSession;
 import javax.servlet.jsp.JspException;
 
 import com.freshdirect.fdstore.EnumCheckoutMode;
+import com.freshdirect.fdstore.FDDeliveryManager;
+import com.freshdirect.fdstore.FDException;
+import com.freshdirect.fdstore.FDReservation;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.customer.FDActionInfo;
@@ -18,13 +24,21 @@ import com.freshdirect.fdstore.customer.FDCartLineModel;
 import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDInvalidConfigurationException;
+import com.freshdirect.fdstore.customer.FDModifyCartModel;
 import com.freshdirect.fdstore.customer.FDProductSelectionI;
 import com.freshdirect.fdstore.customer.FDTransientCartModel;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.customer.OrderLineUtil;
+import com.freshdirect.fdstore.customer.adapter.FDOrderAdapter;
 import com.freshdirect.fdstore.customer.ejb.EnumCustomerListType;
 import com.freshdirect.fdstore.lists.FDListManager;
 import com.freshdirect.fdstore.lists.FDStandingOrderList;
+import com.freshdirect.fdstore.promotion.EnumOfferType;
+import com.freshdirect.fdstore.promotion.ExtendDeliveryPassApplicator;
+import com.freshdirect.fdstore.promotion.Promotion;
+import com.freshdirect.fdstore.promotion.PromotionFactory;
+import com.freshdirect.fdstore.promotion.PromotionI;
+import com.freshdirect.fdstore.promotion.RedemptionCodeStrategy;
 import com.freshdirect.fdstore.standingorders.FDStandingOrder;
 import com.freshdirect.fdstore.standingorders.FDStandingOrdersManager;
 import com.freshdirect.framework.webapp.ActionResult;
@@ -32,6 +46,7 @@ import com.freshdirect.webapp.checkout.RedirectToPage;
 import com.freshdirect.webapp.taglib.AbstractGetterTag;
 import com.freshdirect.webapp.taglib.fdstore.AccountActivityUtil;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
+import com.freshdirect.webapp.taglib.fdstore.ModifyOrderControllerTag;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
 
 /**
@@ -59,6 +74,7 @@ public class ManageStandingOrdersTag extends AbstractGetterTag {
 		HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
 		final String ccListId = request.getParameter("ccListId"); // customer list ID
 		final String action = request.getParameter("action");
+		final String orderId = request.getParameter("orderId");
 		
 		ActionResult r = new ActionResult();
 		
@@ -71,7 +87,7 @@ public class ManageStandingOrdersTag extends AbstractGetterTag {
 				// find standing order bound to customer list
 				if (so.getCustomerListId().equals(ccListId)) {
 					try {
-						processAction(so, action, r);
+						processAction(so, action, r, orderId);
 					} catch (RedirectToPage e) {
 						try {
 							((HttpServletResponse)pageContext.getResponse()).sendRedirect( e.getPage() );
@@ -110,7 +126,7 @@ public class ManageStandingOrdersTag extends AbstractGetterTag {
 	 * @throws FDResourceException 
 	 * @throws FDInvalidConfigurationException 
 	 */
-	private void processAction(FDStandingOrder so, String action, ActionResult result) throws RedirectToPage, FDResourceException, FDInvalidConfigurationException {
+	private void processAction(FDStandingOrder so, String action, ActionResult result, String orderId) throws RedirectToPage, FDResourceException, FDInvalidConfigurationException {
 		FDStandingOrdersManager mgr = FDStandingOrdersManager.getInstance();
 		FDSessionUser user = (FDSessionUser) pageContext.getSession().getAttribute(SessionName.USER);
 
@@ -137,38 +153,55 @@ public class ManageStandingOrdersTag extends AbstractGetterTag {
 				}
 			}
 		} else if ("modify".equalsIgnoreCase(action)) {
-			user.setCurrentStandingOrder(so);
-			user.setCheckoutMode(EnumCheckoutMode.MODIFY_SO);
 			
-			/* First store original cart */
-			FDCustomerManager.storeUser(user.getUser());
 			
-			/* Create a new transient cart */
-			FDCartModel cart = new FDTransientCartModel();
+			FDCartModel cart;
+			if (orderId == null){
+				user.setCurrentStandingOrder(so);
+				// [A] Modify SO template then checkout a new order instance
+				// user.setCheckoutMode(EnumCheckoutMode.MODIFY_SO_CSOI);
 
-			if (so.isAlcoholAgreement())
-				cart.setAgeVerified(true);
+				// [B] Modify SO template WITHOUT checking out a new order instance 
+				user.setCheckoutMode(EnumCheckoutMode.MODIFY_SO_TMPL);
+
+				/* First store original cart */
+				FDCustomerManager.storeUser(user.getUser());
+				
+				/* Create a new transient cart */
+				cart = new FDTransientCartModel();
+	
+				user.setShoppingCart(cart);
 			
-			user.setShoppingCart(cart);
+			} else {
+				cart = new ModifyOrderControllerTag().modifyOrder(user, orderId, request.getSession(), so, EnumCheckoutMode.MODIFY_SO_MSOI);
+				cart.clearOrderLines();
+			}	
+
+			if (so.isAlcoholAgreement()) {
+				cart.setAgeVerified(true);
+			}			
 			
 			/* Load list items to cart */
-			addListItemsToCart(so, user, cart);
+			for (FDCartLineI cartLine : getCartLinesFromSo(so, user)){
+				if (orderId == null){
+					cart.addOrderLine(cartLine);
+				} else {
+					((FDModifyCartModel)cart).addOriginalOrderLine(cartLine);
+				}
+			}
+			
 			cart.refreshAll(true);
 			throw new RedirectToPage( "/checkout/view_cart.jsp" );
 		}
 	}
 
-	/**
-	 * @param so
-	 * @param user
-	 * @param cart
-	 * @throws FDResourceException
-	 */
-	private void addListItemsToCart(FDStandingOrder so, FDSessionUser user,
-			FDCartModel cart) throws FDResourceException {
+	private Collection<FDCartLineI> getCartLinesFromSo(FDStandingOrder so, FDSessionUser user) throws FDResourceException {
 		FDStandingOrderList l = (FDStandingOrderList) FDListManager.getCustomerList(user.getIdentity(), EnumCustomerListType.SO, so.getCustomerListName());
 		List<FDProductSelectionI> pi = OrderLineUtil.getValidProductSelectionsFromCCLItems(l.getLineItems());
 		// OrderLineUtil.update(pi, true);
+		
+		Collection<FDCartLineI> cartLines = new ArrayList<FDCartLineI>();
+		
 		for (FDProductSelectionI p : pi) {
 				// p.refreshConfiguration();
 
@@ -176,13 +209,14 @@ public class ManageStandingOrdersTag extends AbstractGetterTag {
 			
 			FDCartLineI cartLine = new FDCartLineModel(p.getSku(), prd, p.getConfiguration(), null, p.getPricingContext().getZoneId());
 			//cartLine.refreshConfiguration();
-
+			
 			if (cartLine.lookupFDProductInfo().isAvailable()) {
-				cart.addOrderLine(cartLine);
+				cartLines.add(cartLine);
 			}
 		}
+		return cartLines;
 	}
-	
+
 	
 	/**
 	 * Returns list of not deleted standing orders 

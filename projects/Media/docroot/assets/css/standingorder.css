@@ -1,0 +1,31 @@
+#so_lock_msg_c {
+	padding: 0px important;
+	border-radius: 5px;
+	border: 1px solid #000000;
+	-moz-border-radius: 5px;
+	background-color: #ffffff;
+}
+
+#so_lock_msg {
+	border-color: transparent;
+	background: transparent none;
+	border: 0;
+}
+
+#so_lock_msg .bd {
+	width: 250px;
+	margin-left: auto;
+	margin-right: auto;
+	padding: 0px;
+	margin: 0px;
+	text-align: left;
+}
+
+#so_lock_msg .bde {
+	width: 220px;
+	text-align: left;
+	padding: 2ex;
+}
+#so_lock_msg_text {
+	padding-top: 3ex;
+}

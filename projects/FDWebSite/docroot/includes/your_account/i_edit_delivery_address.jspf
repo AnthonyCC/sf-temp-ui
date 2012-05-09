@@ -1,3 +1,4 @@
+<%@taglib uri='freshdirect' prefix='fd' %>
 <%@page import="com.freshdirect.common.customer.EnumServiceType"%>
 <% //expanded page dimensions
 final int W_YA_EDIT_DELIVERY_ADDR = 970;
@@ -59,46 +60,51 @@ if(user.isDepotUser()){
 }%> 
 
 
+<fd:GetStandingOrderDependencyIds id="standingOrderDependencyIds" type="deliveryAddress">
+	<fd:GetStandingOrderHelpInfo id="helpSoInfo">
+	<script type="text/javascript">var helpSoInfo=<%=helpSoInfo%>;</script>
+		<%// BEGINING C O R P ADDRESSES
+			boolean showingCorporateAddress = false;
+			List shipToAddresses = (List) addresses.get(EnumServiceType.CORPORATE);
+			if (shipToAddresses != null && !shipToAddresses.isEmpty()) {
+				showingCorporateAddress = true;
+				%>
+				<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="2" WIDTH="<%= W_YA_EDIT_DELIVERY_ADDR %>" >
+					<TR VALIGN="TOP">
+						<TD WIDTH="<%= W_YA_EDIT_DELIVERY_ADDR %>">
+							<img src="/media_stat/images/template/youraccount/hdr_corp_delivery.gif" width="154" height="15" alt="CORPORATE DELIVERY">&nbsp;
+							<IMG src="/media_stat/images/layout/999966.gif" WIDTH="<%= W_YA_EDIT_DELIVERY_ADDR %>" HEIGHT="1" BORDER="0" VSPACE="3"><BR>
+							<img src="/media_stat/images/layout/clear.gif" width="1" height="2" alt="" border="0"><br>
+						</td>
+					</tr>
+				</TABLE>
+				<br>
+				<%@ include file="/includes/your_account/i_delivery_address.jspf" %>
+				<%
+			}%>
+		<%// END C O R P ADDRESSES%>
+		
+		<%// BEGINING H O M E ADDRESSES
+			shipToAddresses = (List) addresses.get(EnumServiceType.HOME);
+			if (shipToAddresses != null && !shipToAddresses.isEmpty()) {
+				showingCorporateAddress = false;
+				%>
+				<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="2" WIDTH="<%= W_YA_EDIT_DELIVERY_ADDR %>" >
+					<TR VALIGN="TOP">
+						<TD WIDTH="<%= W_YA_EDIT_DELIVERY_ADDR %>">
+							<img src="/media_stat/images/template/youraccount/hdr_home_delivery.gif" width="110" height="15" alt="CORPORATE DELIVERY">&nbsp;
+							<IMG src="/media_stat/images/layout/999966.gif" WIDTH="<%= W_YA_EDIT_DELIVERY_ADDR %>" HEIGHT="1" BORDER="0" VSPACE="3"><BR>
+							<img src="/media_stat/images/layout/clear.gif" width="1" height="2" alt="" border="0"><br>
+						</td>
+					</tr>
+				</TABLE>
+				<br>
+				<%@ include file="/includes/your_account/i_delivery_address.jspf" %>
+				<%
+			}%>
+		<%// END H O M E ADDRESSES%>
+	</fd:GetStandingOrderHelpInfo>
+</fd:GetStandingOrderDependencyIds>
 
-<%// BEGINING C O R P ADDRESSES
-	boolean showingCorporateAddress = false;
-	List shipToAddresses = (List) addresses.get(EnumServiceType.CORPORATE);
-	if (shipToAddresses != null && !shipToAddresses.isEmpty()) {
-		showingCorporateAddress = true;
-		%>
-		<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="2" WIDTH="<%= W_YA_EDIT_DELIVERY_ADDR %>" >
-			<TR VALIGN="TOP">
-				<TD WIDTH="<%= W_YA_EDIT_DELIVERY_ADDR %>">
-					<img src="/media_stat/images/template/youraccount/hdr_corp_delivery.gif" width="154" height="15" alt="CORPORATE DELIVERY">&nbsp;
-					<IMG src="/media_stat/images/layout/999966.gif" WIDTH="<%= W_YA_EDIT_DELIVERY_ADDR %>" HEIGHT="1" BORDER="0" VSPACE="3"><BR>
-					<img src="/media_stat/images/layout/clear.gif" width="1" height="2" alt="" border="0"><br>
-				</td>
-			</tr>
-		</TABLE>
-		<br>
-		<%@ include file="/includes/your_account/i_delivery_address.jspf" %>
-		<%
-	}%>
-<%// END C O R P ADDRESSES%>
-
-<%// BEGINING H O M E ADDRESSES
-	shipToAddresses = (List) addresses.get(EnumServiceType.HOME);
-	if (shipToAddresses != null && !shipToAddresses.isEmpty()) {
-		showingCorporateAddress = false;
-		%>
-		<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="2" WIDTH="<%= W_YA_EDIT_DELIVERY_ADDR %>" >
-			<TR VALIGN="TOP">
-				<TD WIDTH="<%= W_YA_EDIT_DELIVERY_ADDR %>">
-					<img src="/media_stat/images/template/youraccount/hdr_home_delivery.gif" width="110" height="15" alt="CORPORATE DELIVERY">&nbsp;
-					<IMG src="/media_stat/images/layout/999966.gif" WIDTH="<%= W_YA_EDIT_DELIVERY_ADDR %>" HEIGHT="1" BORDER="0" VSPACE="3"><BR>
-					<img src="/media_stat/images/layout/clear.gif" width="1" height="2" alt="" border="0"><br>
-				</td>
-			</tr>
-		</TABLE>
-		<br>
-		<%@ include file="/includes/your_account/i_delivery_address.jspf" %>
-		<%
-	}%>
-<%// END H O M E ADDRESSES%>
     <input type="hidden" name="deleteShipToAddressId" value="">
     <input type="hidden"  name="dlvActionName" value="">

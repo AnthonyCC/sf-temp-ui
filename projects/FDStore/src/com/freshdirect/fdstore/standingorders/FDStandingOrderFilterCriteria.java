@@ -9,6 +9,7 @@ import com.freshdirect.framework.util.DateUtil;
 
 public class FDStandingOrderFilterCriteria {
 
+	private String id;
 	private Integer frequency;
 	private String errorType;
 	private Integer dayOfWeek;
@@ -29,6 +30,14 @@ public class FDStandingOrderFilterCriteria {
 		this.frequency = frequency;
 		this.errorType = errorType;
 		this.dayOfWeek = dayOfWeek;
+	}
+
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
 	}
 
 	public Integer getFrequency() {
@@ -124,4 +133,6 @@ public class FDStandingOrderFilterCriteria {
 	public void setToDateStr(String toDateStr) {
 		this.toDateStr = toDateStr;
 	}
+	
+	
 }

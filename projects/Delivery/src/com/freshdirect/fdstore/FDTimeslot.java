@@ -16,7 +16,7 @@ import com.freshdirect.framework.util.log.LoggerFactory;
  * @author $Author:Kashif Nadeem$
  */
 
-public class FDTimeslot implements Serializable, Comparable {
+public class FDTimeslot implements Serializable, Comparable<FDTimeslot> {
 
 	private static final long	serialVersionUID	= 4180048326412481300L;
 
@@ -110,11 +110,6 @@ public class FDTimeslot implements Serializable, Comparable {
 	private static String format(boolean forceAmPm, Calendar startCal, Calendar endCal) {
 		StringBuffer sb = new StringBuffer();
 
-		boolean showMarker =
-			forceAmPm
-				|| ((startCal.get(Calendar.HOUR_OF_DAY) < DateUtil.MORNING_END
-					&& endCal.get(Calendar.HOUR_OF_DAY) > DateUtil.MORNING_END));
-
 		formatCal(startCal, false, sb);
 		sb.append("-");
 		formatCal(endCal, true, sb);
@@ -127,10 +122,6 @@ public class FDTimeslot implements Serializable, Comparable {
 		int minute = cal.get(Calendar.MINUTE);
 		int marker = cal.get(Calendar.AM_PM);
 
-		/*if (hour == 0) {
-			sb.append("midnight");
-		} else if (hour == 12) {
-			sb.append("noon");*/
 		if (hour > 12) {
 			sb.append(hour - 12);
 		} else {
@@ -152,6 +143,12 @@ public class FDTimeslot implements Serializable, Comparable {
 	public boolean isMatching(Date baseDate, Date startTime, Date endTime){
 	    return this.dlvTimeslot.isMatching(baseDate, startTime, endTime);
 	}
+
+	
+	public boolean isWithinRange(Date baseDate, Date t) {
+		return this.dlvTimeslot.isWithinRange(baseDate, t);
+	}
+
 
 	public DlvTimeslotModel getDlvTimeslot() {
 		return dlvTimeslot;
@@ -209,8 +206,7 @@ public class FDTimeslot implements Serializable, Comparable {
 	}
 	
 	@Override
-	public int compareTo(Object o) {
-		FDTimeslot t1 =(FDTimeslot)o;
+	public int compareTo(FDTimeslot t1) {
 		return this.getBegTime().compareTo(t1.getBegTime());
 	}
 	

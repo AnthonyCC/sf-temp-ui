@@ -2,11 +2,9 @@ package com.freshdirect.fdstore.util;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -16,6 +14,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
+
+import org.apache.log4j.Logger;
 
 import com.freshdirect.delivery.DlvZoneCutoffInfo;
 import com.freshdirect.delivery.restriction.DlvRestrictionsList;
@@ -30,15 +30,16 @@ import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.TimeOfDay;
 
 public class FDTimeslotUtil implements Serializable {
-	
 	private static final long	serialVersionUID	= -6937768211070595636L;
 
+	private final static Logger LOGGER = Logger.getLogger(FDTimeslotUtil.class);
+	
 	private final SortedMap<Date, Map<String, List<FDTimeslot>>> timeslotMap = new TreeMap<Date, Map<String, List<FDTimeslot>>>();
 	private final Set<Date> holidaySet = new HashSet<Date>();
 	
 	private int responseTime; 
 	public FDTimeslotUtil( List<FDTimeslot> timeslots, Calendar startCal, Calendar endCal, DlvRestrictionsList restrictions, int responseTime ) {
-		Collections.sort( timeslots, TIMESLOT_COMPARATOR );
+		Collections.sort( timeslots );
 		
 		for ( FDTimeslot timeslot : timeslots ) {
 			
@@ -151,14 +152,19 @@ public class FDTimeslotUtil implements Serializable {
 	public List<FDTimeslot> getTimeslotsForDate( Date day ) {
 		List<FDTimeslot> slots = new ArrayList<FDTimeslot>();
 		Map<String, List<FDTimeslot>> mapShift  = timeslotMap.get( day );
+		if (mapShift == null) {
+			LOGGER.error("Failed to request timeslots for day " + day);
+			return Collections.<FDTimeslot> emptyList();
+		}
+
 		for ( List<FDTimeslot> list : mapShift.values()) {
 				for ( FDTimeslot slot : list ) {
 					slots.add( slot );
 				}
 		}
 		
-		if ( slots != null ) {
-			Collections.sort(slots,TIMESLOT_COMPARATOR);
+		if ( slots.size() > 0 ) {
+			Collections.sort(slots);
 			return slots;
 		} else {
 			return Collections.<FDTimeslot> emptyList();
@@ -274,8 +280,7 @@ public class FDTimeslotUtil implements Serializable {
 	public int getMaxNumShiftTimeslots(String shift) {
 		Collection<Date> days = this.getDays();
 		int maxTimeslots = 0; 
-		for (Iterator<Date> iterator = days.iterator(); iterator.hasNext();) {
-			Date day = iterator.next();
+		for (Date day : days) {
 			List<FDTimeslot> timeslots = this.getTimeslotsForDayAndShift(day, shift);
 			if(timeslots.size()>=maxTimeslots)
 				maxTimeslots = timeslots.size();					
@@ -299,11 +304,6 @@ public class FDTimeslotUtil implements Serializable {
 		return false;
 	}
 	
-	private final static Comparator<FDTimeslot> TIMESLOT_COMPARATOR = new Comparator<FDTimeslot>() {
-		public int compare( FDTimeslot t1, FDTimeslot t2 ) {
-			return t1.getBegDateTime().compareTo(t2.getBegDateTime());
-		}
-	};
 	public int getResponseTime() {
 		return responseTime;
 	}
@@ -311,7 +311,4 @@ public class FDTimeslotUtil implements Serializable {
 	public void setResponseTime(int responseTime) {
 		this.responseTime = responseTime;
 	}
-	
-
-	
 }

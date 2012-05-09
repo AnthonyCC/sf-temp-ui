@@ -8,6 +8,5 @@ import javax.ejb.EJBObject;
 import com.freshdirect.fdstore.standingorders.StandingOrdersServiceResult;
 
 public interface StandingOrdersServiceSB extends EJBObject {
-	public StandingOrdersServiceResult.Counter placeStandingOrders() throws RemoteException;
-	public StandingOrdersServiceResult.Counter placeStandingOrders(Collection<String> soList)throws RemoteException;
+	public StandingOrdersServiceResult.Counter placeStandingOrders(Collection<String> soList, boolean createIfSoiExistsForWeek)throws RemoteException;
 }

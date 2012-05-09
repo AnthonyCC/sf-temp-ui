@@ -20,6 +20,8 @@ public interface FDOrderInfoI extends Serializable {
 
 	public Date getRequestedDate();
 
+	public Date getCreateRequestedDate();
+
 	public double getTotal() throws PricingException;
 
 	public EnumTransactionSource getOrderSource();

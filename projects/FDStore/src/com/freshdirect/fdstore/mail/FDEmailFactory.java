@@ -35,6 +35,7 @@ import com.freshdirect.fdstore.customer.FDCSContactHours;
 import com.freshdirect.fdstore.customer.FDCSContactHoursUtil;
 import com.freshdirect.fdstore.customer.FDCustomerInfo;
 import com.freshdirect.fdstore.customer.FDOrderI;
+import com.freshdirect.fdstore.customer.FDOrderInfoI;
 import com.freshdirect.fdstore.standingorders.FDStandingOrder;
 import com.freshdirect.framework.mail.EmailAddress;
 import com.freshdirect.framework.mail.EmailSupport;
@@ -1076,6 +1077,20 @@ public class FDEmailFactory {
 
 		return email; 
 	}
+	
+	public XMLEmailI createDuplicateSOInstanceEmail(FDCustomerInfo customer, FDStandingOrder sOrder, List<FDOrderInfoI> orders) {
+		
+		FDStandingOrderInstancesEmail email=new FDStandingOrderInstancesEmail(customer, sOrder, orders);
+		
+		email.setXslPath("h_standing_order_instances.xsl", "x_standing_order_instances.xsl");
+		
+		email.setFromAddress(new EmailAddress(GENERAL_LABEL, getFromAddress(customer.getDepotCode())));
+		
+		email.setSubject("Multiple deliveries for your standing order");
+		
+		return email;
+	}
+	
 	static class FDSettlementFailedEmail extends FDInfoEmail {
 
 		private String orderNumber;

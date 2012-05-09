@@ -1,7 +1,8 @@
 <%-- Dependencies
     Host page must :
         - bring in the common_javascript.js file 
-        - Have a form field named actionName 
+        - Have a form field named actionName
+        - standingOrderDependencyIds variable
 --%>
 <% 
 final int W_CHECKACCT_SELECT_TOTAL = 970;
@@ -135,7 +136,7 @@ final int W_CHECKACCT_SELECT_CARD = 280;
 		<br>
 		</font> 
 		<A HREF="<%=editPage%>?paymentId=<%=paymentPKId%>"><IMG src="/media_stat/images/buttons/edit.gif" WIDTH="51" HEIGHT="16" ALT="Edit" BORDER="0"></A>&nbsp;
-		<input name="delete_cc" type="IMAGE" src="/media_stat/images/buttons/delete.gif" WIDTH="51" HEIGHT="16" ALT="Delete" BORDER="0" onClick="javascript:setDeletePaymentId(this.form,'<%=paymentPKId%>');setActionName(this.form,'deletePaymentMethod')">
+		<input name="delete_cc" type="IMAGE" src="/media_stat/images/buttons/delete.gif" WIDTH="51" HEIGHT="16" ALT="Delete" BORDER="0" onClick="javascript:return deletePaymentMethod(this,'<%=paymentPKId%>', <%=standingOrderDependencyIds%>, helpSoInfo)">
 		
 	<!-- error message about card being expired goes here -->
 	<IMG src="/media_stat/images/layout/clear.gif" WIDTH=<%= W_CHECKACCT_SELECT_CARD %> HEIGHT="1">

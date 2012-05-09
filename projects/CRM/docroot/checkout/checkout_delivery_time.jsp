@@ -49,9 +49,11 @@
 	boolean isAdvOrderGap = FDStoreProperties.IsAdvanceOrderGap();
     String timeSlotId = request.getParameter("deliveryTimeslotId");
 	int page_type = TimeslotLogic.PAGE_NORMAL;
+	
+	final boolean forceOrder = "true".equalsIgnoreCase(request.getParameter("forceorder"));
 %>
 
-<fd:DeliveryTimeSlot id="DeliveryTimeSlotResult" address="<%=address%>" timeSlotId="<%=timeSlotId%>">
+<fd:DeliveryTimeSlot id="DeliveryTimeSlotResult" address="<%=address%>" timeSlotId="<%=timeSlotId%>" forceOrder="<%= forceOrder %>">
 
 <%
 	FDDeliveryTimeslotModel deliveryModel = DeliveryTimeSlotResult.getDeliveryTimeslotModel();
@@ -78,6 +80,9 @@
         zonePromoString = CCFormatter.formatQuantity(zonePromoAmount);
 		request.setAttribute("SHOW_WINDOWS_STEERING","true");
 	}
+
+	// [APPDEV-2149] Display abstract timeslot table (Just days of week, no restrictions, etc.)
+	final boolean abstractTimeslots = false;
 %>
 
 <crm:GetCurrentAgent id="currentAgent">

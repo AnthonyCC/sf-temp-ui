@@ -24,35 +24,36 @@ public abstract class FDCustomerProductList extends FDCustomerList {
 	
 	private final static Category LOGGER = LoggerFactory.getInstance(FDCustomerProductList.class);
 
-	public void mergeSelection(FDProductSelectionI selection, boolean modifying) {
+	public void mergeSelection(FDProductSelectionI selection, boolean modifying, boolean allowMultipleLinesForSameSkuConfig) {
 		try {
 
 			boolean found = false;
-
-			for (Iterator<FDCustomerListItem> i = this.getLineItems().iterator(); i.hasNext();) {
-				FDCustomerProductListLineItem item = (FDCustomerProductListLineItem) i.next();
-
-				if (item.getSkuCode().equals(selection.getSkuCode())
-					&& OrderLineUtil.isSameConfiguration(selection, item.convertToSelection())) {
-
-					if (!modifying) {
-						FDCustomerProductListLineItem stat = (FDCustomerProductListLineItem) selection.getStatistics();
-						if (stat == null) {
-							stat = createListItem(selection);
+			
+			if (!allowMultipleLinesForSameSkuConfig) { 
+				for (Iterator<FDCustomerListItem> i = this.getLineItems().iterator(); i.hasNext();) {
+					FDCustomerProductListLineItem item = (FDCustomerProductListLineItem) i.next();
+	
+					if (item.getSkuCode().equals(selection.getSkuCode())
+						&& OrderLineUtil.isSameConfiguration(selection, item.convertToSelection())) {
+	
+						if (!modifying) {
+							FDCustomerProductListLineItem stat = (FDCustomerProductListLineItem) selection.getStatistics();
+							if (stat == null) {
+								stat = createListItem(selection);
+							}
+							item.setFrequency(stat.getFrequency() + item.getFrequency());
+							
+							Date statLastDate = stat.getLastPurchase() == null ? new Date() : stat.getLastPurchase();
+							Date statFirstDate = stat.getFirstPurchase() == null ? new Date() : stat.getFirstPurchase();
+							item.setLastPurchase(DateUtil.max(item.getLastPurchase(), statLastDate));
+							item.setFirstPurchase(DateUtil.min(item.getFirstPurchase(), statFirstDate));
+							item.setDeleted(null);
 						}
-						item.setFrequency(stat.getFrequency() + item.getFrequency());
-						
-						Date statLastDate = stat.getLastPurchase() == null ? new Date() : stat.getLastPurchase();
-						Date statFirstDate = stat.getFirstPurchase() == null ? new Date() : stat.getFirstPurchase();
-						item.setLastPurchase(DateUtil.max(item.getLastPurchase(), statLastDate));
-						item.setFirstPurchase(DateUtil.min(item.getFirstPurchase(), statFirstDate));
-						item.setDeleted(null);
+	
+						found = true;
+						break;
 					}
-
-					found = true;
-					break;
 				}
-
 			}
 
 			if (!found) {
@@ -85,7 +86,7 @@ public abstract class FDCustomerProductList extends FDCustomerList {
 	public void mergeLineItem(FDCustomerProductListLineItem newItem) {
 		try {
 			FDProductSelectionI sel = newItem.convertToSelection();
-			this.mergeSelection(sel, false);
+			this.mergeSelection(sel, false, false);
 			markAsModified();
 		} catch (FDSkuNotFoundException e) {
 			LOGGER.warn("Found invalid SKU - skipping: " + e.getMessage());
