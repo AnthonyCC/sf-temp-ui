@@ -90,8 +90,15 @@
 							<%@ include file="/quickshop/includes/so_next_delivery.jspf" %>
 							<div style="padding: 1em 0 1em 0">
 							<div style="font-weight: normal;">Delivered <%= so.getFrequencyDescription() %>, <%= StandingOrderHelper.getDeliveryDate(so,false) %></div>
-								<% if (addr != null) { %>
-									<div style="font-weight: normal;"><%= addr.getScrubbedStreet() %>, <%= addr.getApartment() %></div>
+								<% if (addr != null) { 
+									String apartment = addr.getApartment();
+									if (null == apartment || apartment.length()==0){
+										apartment = "";
+									} else {
+										apartment = ", " + apartment;
+									}
+								%>
+									<div style="font-weight: normal;"><%= addr.getScrubbedStreet() %><%=apartment%></div>
 								<% } %>				
 							</div>					
 						</div>
