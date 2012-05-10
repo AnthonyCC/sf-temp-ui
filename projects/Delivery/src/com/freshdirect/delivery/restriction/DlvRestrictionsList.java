@@ -155,7 +155,7 @@ public class DlvRestrictionsList implements Serializable {
 		List<RestrictionI> fl = new ArrayList<RestrictionI>();
 		
 		for (RestrictionI r : this.restrictions) {
-			if (EnumDlvRestrictionType.RECURRING_RESTRICTION == r.getType() && EnumDlvRestrictionCriterion.DELIVERY == r.getCriterion()) {
+			if (EnumDlvRestrictionType.RECURRING_RESTRICTION.equals(r.getType()) && EnumDlvRestrictionCriterion.DELIVERY.equals(r.getCriterion()) ) {
 				fl.add(r);
 			}
 		}
