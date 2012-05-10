@@ -42,6 +42,8 @@ public class QueryParameterCollection implements Serializable, Cloneable {
 				
 				// search for first &
 				j = i;
+				if( j >= encoded.length() ) break;
+				
 				while (encoded.charAt(j) != '&') {
 					j++;
 					if (j >= encoded.length())

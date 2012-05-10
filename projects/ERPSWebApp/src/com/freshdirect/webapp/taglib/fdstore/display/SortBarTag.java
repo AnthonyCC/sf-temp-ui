@@ -37,6 +37,7 @@ public class SortBarTag extends BodyTagSupport {
 	private String uri;
 	
 	public int doStartTag() throws JspException {
+		String qs;
 		itemIdIndex = 0;
 				
 		if ( sortItems == null || sortItems.length == 0 ) {
@@ -45,7 +46,14 @@ public class SortBarTag extends BodyTagSupport {
 		
 		request = (HttpServletRequest) pageContext.getRequest();
 		uri = request.getRequestURI();
-		qc = QueryParameterCollection.decode(request.getQueryString());
+		
+		qs = request.getQueryString();
+		
+		if(qs == null) {
+			qs = "";
+		}
+		
+		qc = QueryParameterCollection.decode(qs);
 		
 		currentSort = SearchSortType.findByLabel(qc.getParameterValue("sort", defaultSort));
 		currentOrder = qc.getParameterValue("order", defaultOrder);
