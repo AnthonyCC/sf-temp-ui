@@ -1,3 +1,4 @@
+<%@page import="com.freshdirect.framework.util.StringUtil"%>
 <%@ page import="com.freshdirect.fdstore.standingorders.FDStandingOrder"%>
 <%@ page import="com.freshdirect.fdstore.lists.FDStandingOrderList"%>
 <%@ page import="com.freshdirect.webapp.util.FDURLUtil"%>
@@ -14,7 +15,7 @@
 					FDStandingOrderList l = (FDStandingOrderList)FDListManager.getCustomerList(user.getIdentity(), EnumCustomerListType.SO, so.getCustomerListName()); %>
 				<tr>
 					<td class="text14" style="padding-left: 1em; font-weight: bold; padding-bottom: 7px;">
-						<%= so.isError() ? errorMarker : ""%><a href="<%= FDURLUtil.getStandingOrderLandingPage(so, null) %>"><%= l.getName() %></a>
+						<%= so.isError() ? errorMarker : ""%><a href="<%= FDURLUtil.getStandingOrderLandingPage(so, null) %>"><%=StringUtil.escapeHTML(l.getName()) %></a>
 					</td>
 					<td class="text11" style="padding-left: 1em; padding-bottom: 7px; white-space: nowrap">(<%= l.getLineItems().size() %> Item<%=  l.getLineItems().size() > 1 ? "s" : "" %>)</td>
 				</tr>
