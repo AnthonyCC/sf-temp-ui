@@ -128,14 +128,14 @@
 				</div>
 			<% } %>
 			<% if ( addr == null ) { %>
-				<% String errorText = "Your Standing Order can not be processed or delivered without a Delivery Address. Please open your Standing Order in the \"Change Standing Order Global Settings\" " +
+				<% String errorText = "Your Standing Order can not be processed or delivered without a Delivery Address. Please open your Standing Order in the \"Change Standing Order Settings\" " +
 					"section below to add a Delivery Address. (Note: changing your Delivery Address may affect timeslot availability.)<br />" +
 					"Need help? Contact your FreshDirect At The Office hospitality team at <a href=\"mailto:"+soCsEmail+"\">"+soCsEmail+"</a>.";
 				String errorTitle = "This Standing Order no longer has a Delivery Address associated with it."; %>
 				<%@ include file="/includes/i_error_with_title.jspf" %>
 			<% } %>
 			<% if( paymentMethod == null ) {%>
-				<% String errorText = "Your Standing Order can not be processed or delivered without a Payment Option. Please open your Standing Order in the \"Change Standing Order Global Settings\" " +
+				<% String errorText = "Your Standing Order can not be processed or delivered without a Payment Option. Please open your Standing Order in the \"Change Standing Order Settings\" " +
 					"section below to add a Payment Option. Need help? Contact your FreshDirect At The Office hospitality team at <a href=\"mailto:"+soCsEmail+"\">"+soCsEmail+"</a>.";
 				String errorTitle = "This Standing Order no longer has a Payment Option associated with it."; %>
 				<%@ include file="/includes/i_error_with_title.jspf" %>
