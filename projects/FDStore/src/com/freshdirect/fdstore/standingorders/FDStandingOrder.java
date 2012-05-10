@@ -245,17 +245,20 @@ public class FDStandingOrder extends ModelSupport {
 		return "every " + i2s[frequency] + " weeks";
 	}
 	
-	
-	public static final DateFormat DATE_FORMATTER =  new SimpleDateFormat("EEEE, MMMM d.");
-	public static final DateFormat DATE_FORMATTER_SHORT =  new SimpleDateFormat("MM/dd/yy");
-	public static final DateFormat DATE_FORMATTER_LONG =  new SimpleDateFormat("EEEE, MMMM d., yyyy");
+
+	public static final String DATE_FORMAT = "EEEE, MMMM d.";
+	public static final String DATE_FORMAT_SHORT = "MM/dd/yy";
+	public static final String DATE_FORMAT_LONG =  "EEEE, MMMM d., yyyy";
+
+	private final DateFormat dateFormatter =  new SimpleDateFormat("EEEE, MMMM d.");
+	private final DateFormat dateFormatterShort =  new SimpleDateFormat("MM/dd/yy");
 	
 	public String getNextDeliveryString() {
-		return DATE_FORMATTER.format( getNextDeliveryDate() );
+		return dateFormatter.format( getNextDeliveryDate() );
 	}
 	
 	public String getNextDeliveryStringShort() {
-		return DATE_FORMATTER_SHORT.format( getNextDeliveryDate() );
+		return dateFormatterShort.format( getNextDeliveryDate() );
 	}
 
 	

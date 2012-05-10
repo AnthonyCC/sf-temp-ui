@@ -2,6 +2,7 @@ package com.freshdirect.webapp.util;
 
 
 import java.rmi.RemoteException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -347,7 +348,7 @@ public class StandingOrderUtil {
 		List<FDTimeslot> timeslots = FDDeliveryManager.getInstance().getAllTimeslotsForDateRange( deliveryTimes.getDayStart(), deliveryTimes.getDayEnd(), clonedDeliveryAddressModel );
 				
 		if ( timeslots == null || timeslots.size() == 0 ) {
-			LOGGER.info( "No timeslots for this day: " + FDStandingOrder.DATE_FORMATTER.format( deliveryTimes.getDayStart() ) );
+			LOGGER.info( "No timeslots for this day: " + new SimpleDateFormat(FDStandingOrder.DATE_FORMAT).format( deliveryTimes.getDayStart() ) );
 			return result.withUserRelatedError(ErrorCode.TIMESLOT, customerUser);
 		}
 		

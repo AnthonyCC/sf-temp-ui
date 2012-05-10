@@ -67,9 +67,9 @@
     	}
 		
 		ErpAddressModel addr = so.getDeliveryAddress();		
-		final String nextDlvDateText = FDStandingOrder.DATE_FORMATTER.format( so.getNextDeliveryDate() );
-		final String nextDlvDateTextShort = FDStandingOrder.DATE_FORMATTER_SHORT.format( so.getNextDeliveryDate() );
-		final String nextDlvDateTextLong = FDStandingOrder.DATE_FORMATTER_LONG.format( so.getNextDeliveryDate() );
+		final String nextDlvDateText = new SimpleDateFormat(FDStandingOrder.DATE_FORMAT).format( so.getNextDeliveryDate() );
+		final String nextDlvDateTextShort = new SimpleDateFormat(DATE_FORMAT_SHORT).format( so.getNextDeliveryDate() );
+		final String nextDlvDateTextLong = new SimpleDateFormat(FDStandingOrder.DATE_FORMAT_LONG).format( so.getNextDeliveryDate() );
 		
 		final ErpPaymentMethodI paymentMethod = so.getPaymentMethod();
 %>
