@@ -77,7 +77,7 @@
 			String bgColor = (ctr++%2==0) ? "background-color:#ececec;" : ""; //zebra coloring
 			%>
 			<div style="margin:0em;padding:0em 1em 1em 0.5em;<%= bgColor %>">
-				<h2 style="margin: 5em 5m 5em 5em;"><a class="title15" href="<%= FDURLUtil.getStandingOrderLandingPage(so, null) %>"><%= so.getCustomerListName() %></a></h2>
+				<h2 style="margin: 5em 5m 5em 5em;"><a class="title15" href="<%= FDURLUtil.getStandingOrderLandingPage(so, null) %>"><%=StringUtil.escapeHTML(so.getCustomerListName())%></a></h2>
 				<div class="title11" style="margin: 1em 1em 0em;">
 					
 					<% if (so.isError()) { %>				
