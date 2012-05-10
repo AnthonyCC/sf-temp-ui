@@ -1036,7 +1036,7 @@ public class FDStoreProperties {
         //APPDEV-2155 Standing Order UI
         defaults.put(PROP_EMAIL_STANDING_ORDER_CS, "StandingOrders@FreshDirect.com");
         defaults.put(PROP_PHONE_STANDING_ORDER_CS, "");
-        
+        defaults.put(PROP_PRODUCTPROMO_INFO_HOME,"freshdirect.fdstore.ProductPromotionInfoManager");
         //APPDEV-2252 Standing Order - Order Minimum Failure Threshold
         defaults.put(PROP_STANDING_ORDER_SOFT_LIMIT, "50.0");
         defaults.put(PROP_STANDING_ORDER_HARD_LIMIT, "50.0");
