@@ -21,6 +21,7 @@ final int W_PRODUCT_MODIFY_TOTAL = 600;
 	FDCartLineI templateLine = null;
 	String catId = request.getParameter("catId");
 	String productId = request.getParameter("productId");
+	String skuCode = request.getParameter("skuCode");;
     boolean isCallCenterApp = "callCenter".equalsIgnoreCase((String)session.getAttribute(SessionName.APPLICATION));
 
 	if (catId==null) {
@@ -36,12 +37,13 @@ final int W_PRODUCT_MODIFY_TOTAL = 600;
        	}
 
 		templateLine = (FDCartLineI) cart.getOrderLine(orderLineIndex);
+		skuCode=templateLine.getSkuCode();
 		catId = templateLine.getCategoryName();
 		productId = templateLine.getProductName();
 	}
 
 %>
-<fd:ProductGroup id='productNode' categoryId='<%= catId %>' productId='<%= productId %>'>
+<fd:ProductGroup id='productNode' categoryId='<%= catId %>' productId='<%= productId %>' skuCode='<%= skuCode%>'>
 <%
 	if (productNode==null) {
 		throw new JspException("Product not found in Content Management System");

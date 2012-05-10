@@ -9,6 +9,7 @@
 package com.freshdirect.webapp.taglib.fdstore;
 
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.EnumLayoutType;
 import com.freshdirect.fdstore.content.ProductModel;
@@ -27,6 +28,7 @@ public class ProductGroupTag extends AbstractGetterTag<ProductModel> {
 
 	private String categoryId;
 	private String productId;
+	private String skuCode;
 	
 	public void setCategoryId(String catId) {
 		this.categoryId = catId;	
@@ -36,10 +38,20 @@ public class ProductGroupTag extends AbstractGetterTag<ProductModel> {
 		this.productId = pid;
 	}
 	
+	public void setSkuCode(String skuCode) {
+		this.skuCode = skuCode;
+	}
+	
 	protected ProductModel getResult() throws FDResourceException {
 		ProductModel pm = ContentFactory.getInstance().getProductByName( this.categoryId, this.productId );
 		//Convert to Product Pricing Adapter for Zone Pricing.
 		FDUserI user = (FDUserI) pageContext.getSession().getAttribute(SessionName.USER);
+		if(pm == null && skuCode!=null && !"".equalsIgnoreCase(skuCode)){
+			try {
+				pm= ContentFactory.getInstance().getProduct(skuCode);
+			} catch (FDSkuNotFoundException e) {				
+			}
+		}
 		if(pm != null)
 			return ProductPricingFactory.getInstance().getPricingAdapter(pm, user.getPricingContext());
 		else

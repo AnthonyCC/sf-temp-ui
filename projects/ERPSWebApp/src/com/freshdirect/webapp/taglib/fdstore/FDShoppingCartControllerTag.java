@@ -1071,6 +1071,9 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements Sessi
 		try {
 			if (contentSpecified) {
 				prodNode = ContentFactory.getInstance().getProductByName( catName, prodName);
+				if (prodNode == null && skuCode!=null && !"".equalsIgnoreCase(skuCode)) {
+					prodNode = ContentFactory.getInstance().getProduct(skuCode);
+				}
 				if (prodNode == null) {
 					throw new JspException( "Selected product not found in specified category: category: " + catName + " Product: " + prodName);
 				}
