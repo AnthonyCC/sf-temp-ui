@@ -66,10 +66,20 @@ public class ProductFilterValueDecorator extends GenericFilterDecorator<Filterin
 					Set<String> parentIds = new HashSet<String>();
 					for (ProductModel parent : parents) {
 						ContentNodeModel parentModel = parent.getParentNode();
-						while (FDContentTypes.CATEGORY.equals(parentModel.getParentNode().getContentKey().getType())) {
-							parentIds.add(parentModel.getContentKey().getId());
+						ContentNodeModel found = null;
+						while (parentModel != null && !FDContentTypes.STORE.equals(parentModel.getContentKey().getType())) {
+							if (parentModel.getParentNode() != null &&
+									FDContentTypes.CATEGORY.equals(parentModel.getParentNode().getContentKey().getType())) {
+								if (parentModel.getParentNode().getParentNode() != null &&
+										FDContentTypes.DEPARTMENT.equals(parentModel.getParentNode().getParentNode().getContentKey().getType())) {
+									found = parentModel;
+									break;
+								}
+							}
 							parentModel = parentModel.getParentNode();
 						}
+						if (found != null)
+							parentIds.add(found.getContentKey().getId());
 					}
 					item.putFilteringValue(EnumFilteringValue.SUBCAT, parentIds);
 					break;

@@ -1,8 +1,11 @@
 package com.freshdirect.fdstore.content;
 
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import com.freshdirect.cms.fdstore.FDContentTypes;
@@ -63,31 +66,13 @@ public class FilteringSortingMenuBuilder extends GenericFilteringMenuBuilder<Fil
 		String recipe = filterValues.get(EnumFilteringValue.RECIPE_CLASSIFICATION) != null ? (String) filterValues.get(EnumFilteringValue.RECIPE_CLASSIFICATION).get(0) : null;
 
 		if (subCat != null && cat == null) {
-			ContentNodeModel subCatModel = ContentFactory.getInstance().getContentNode(subCat);
-			ContentNodeModel found = null;
-			while (subCatModel != null && !FDContentTypes.STORE.equals(subCatModel.getContentKey().getType())) {
-				if (subCatModel.getParentNode() != null && subCatModel.getParentNode().getParentNode() != null && FDContentTypes.DEPARTMENT.equals(subCatModel.getParentNode().getParentNode().getContentKey().getType())) {
-					found = subCatModel;
-					break;
-				}
-				subCatModel = subCatModel.getParentNode();
-			}
-
-			cat = found.getParentId();
+			ContentNodeModel subCatModel = ContentFactory.getInstance().getContentNode(FDContentTypes.CATEGORY, subCat);
+			cat = subCatModel.getParentNode().getContentKey().getId();
 		}
 
 		if (cat != null && dept == null) {
-			ContentNodeModel catModel = ContentFactory.getInstance().getContentNode(cat);
-			ContentNodeModel found = null;
-			while (catModel != null && !FDContentTypes.STORE.equals(catModel.getContentKey().getType())) {
-				if (catModel.getParentNode() != null && FDContentTypes.DEPARTMENT.equals(catModel.getParentNode().getContentKey().getType())) {
-					found = catModel;
-					break;
-				}
-				catModel = catModel.getParentNode();
-			}
-			dept = found.getParentId();
-
+			ContentNodeModel catModel = ContentFactory.getInstance().getContentNode(FDContentTypes.CATEGORY, cat);
+			dept = catModel.getParentNode().getContentKey().getId();
 		}
 
 		if (subCat != null) {
@@ -95,11 +80,31 @@ public class FilteringSortingMenuBuilder extends GenericFilteringMenuBuilder<Fil
 		}
 		if (cat != null) {
 			narrowDomain(EnumFilteringValue.CAT, cat, false, null);
-			narrowDomain(EnumFilteringValue.SUBCAT, subCat, true, cat);
+			narrowDomain(EnumFilteringValue.SUBCAT, subCat, true, cat);				
 		}
 		if (dept != null) {
 			narrowDomain(EnumFilteringValue.DEPT, dept, false, null);
 			narrowDomain(EnumFilteringValue.CAT, cat, true, dept);
+			Map<String, FilteringMenuItem> subCats = domains.get(EnumFilteringValue.SUBCAT);
+			// narrow subcat's of department's cats
+			if (subCats != null && !subCats.isEmpty() && cat == null) {
+				DepartmentModel deptNode = (DepartmentModel) ContentFactory.getInstance().getContentNode(FDContentTypes.DEPARTMENT, dept);
+				if (deptNode != null) {
+					List<CategoryModel> categories = deptNode.getCategories();
+					Set<String> parentCatIds = new HashSet<String>(categories.size());
+					for (CategoryModel catNode : categories)
+						parentCatIds.add(catNode.getContentKey().getId());
+					
+					Iterator<Entry<String, FilteringMenuItem>> it = subCats.entrySet().iterator();
+					while (it.hasNext()) {
+						Entry<String, FilteringMenuItem> item = it.next();
+						ContentNodeModel itemNode = ContentFactory.getInstance().getContentNode(FDContentTypes.CATEGORY, item.getKey());
+						if (itemNode == null || itemNode.getParentNode() == null
+								|| !parentCatIds.contains(itemNode.getParentNode().getContentKey().getId()))
+							it.remove();
+					}
+				}
+			}
 		}
 		if(recipe != null ){
 			narrowDomain(EnumFilteringValue.RECIPE_CLASSIFICATION, recipe, false, null);
@@ -120,8 +125,8 @@ public class FilteringSortingMenuBuilder extends GenericFilteringMenuBuilder<Fil
 			}
 		} else {		
 			for (String menuId : domain.keySet()) {
-				ContentNodeModel subCatModel = ContentFactory.getInstance().getContentNode(menuId);
-				if(parent.equals(subCatModel.getParentNode().getContentKey().getId())){
+				ContentNodeModel subCatModel = ContentFactory.getInstance().getContentNode(FDContentTypes.CATEGORY, menuId);
+				if(subCatModel != null && parent.equals(subCatModel.getParentNode().getContentKey().getId())){
 					narrowedDomain.put(menuId, domain.get(menuId));
 				}
 			}

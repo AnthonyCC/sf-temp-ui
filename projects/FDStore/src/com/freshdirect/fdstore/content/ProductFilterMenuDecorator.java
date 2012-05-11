@@ -77,13 +77,24 @@ public class ProductFilterMenuDecorator extends GenericFilterDecorator<Filtering
 
 					for (ProductModel parent : parents) {
 						ContentNodeModel parentModel = parent.getParentNode();
-						while (FDContentTypes.CATEGORY.equals(parentModel.getParentNode().getContentKey().getType())) {
-							menu.setName(parentModel.getFullName());
-							menu.setFilteringUrlValue(parentModel.getContentKey().getId());
+						ContentNodeModel found = null;
+						while (parentModel != null && !FDContentTypes.STORE.equals(parentModel.getContentKey().getType())) {
+							if (parentModel.getParentNode() != null &&
+									FDContentTypes.CATEGORY.equals(parentModel.getParentNode().getContentKey().getType())) {
+								if (parentModel.getParentNode().getParentNode() != null &&
+										FDContentTypes.DEPARTMENT.equals(parentModel.getParentNode().getParentNode().getContentKey().getType())) {
+									found = parentModel;
+									break;
+								}
+							}
+							parentModel = parentModel.getParentNode();
+						}
+						if (found != null) {
+							menu.setName(found.getFullName());
+							menu.setFilteringUrlValue(found.getContentKey().getId());
 							menu.setFilter(filter);
 							menus.add(menu);
 							menu = new FilteringMenuItem();
-							parentModel = parentModel.getParentNode();
 						}
 					}
 
