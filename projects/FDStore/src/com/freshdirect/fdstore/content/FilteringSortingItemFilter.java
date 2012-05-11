@@ -36,10 +36,8 @@ public class FilteringSortingItemFilter extends GenericFilter<FilteringSortingIt
 				if(itemFilteringValue instanceof Set){
 					Set<Object> fvSet=(Set<Object>)itemFilteringValue;
 					for (Object filteringValue : filterValues.get(filter)) {
-						for(Object fv: fvSet){
-							if(fv.equals(filteringValue)){
-								passed = true;
-							}
+						if (fvSet.contains(filteringValue)) {
+							passed = true;
 						}
 					}
 				} else{

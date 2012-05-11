@@ -1,7 +1,9 @@
 package com.freshdirect.fdstore.content;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import com.freshdirect.cms.ContentKey;
@@ -25,7 +27,7 @@ public class ProductFilterValueDecorator extends GenericFilterDecorator<Filterin
 
 		ProductModelPricingAdapter node = (ProductModelPricingAdapter) item.getNode();
 
-		Set<ProductModel> parents = collectParents(node);
+		List<ProductModel> parents = collectParents(node);
 
 		boolean available = node.isFullyAvailable();
 		try {
@@ -44,10 +46,17 @@ public class ProductFilterValueDecorator extends GenericFilterDecorator<Filterin
 					Set<String> parentIds = new HashSet<String>();
 					for (ProductModel parent : parents) {
 						ContentNodeModel parentModel = parent.getParentNode();
-						while (!FDContentTypes.DEPARTMENT.equals(parentModel.getParentNode().getContentKey().getType())) {
+						ContentNodeModel found = null;
+						while (parentModel != null && !FDContentTypes.STORE.equals(parentModel.getContentKey().getType())) {
+							if (parentModel.getParentNode() != null &&
+									FDContentTypes.DEPARTMENT.equals(parentModel.getParentNode().getContentKey().getType())) {
+								found = parentModel;
+								break;
+							}
 							parentModel = parentModel.getParentNode();
 						}
-						parentIds.add(parentModel.getContentKey().getId());
+						if (found != null)
+							parentIds.add(found.getContentKey().getId());
 					}
 
 					item.putFilteringValue(EnumFilteringValue.CAT, parentIds);
@@ -135,9 +144,9 @@ public class ProductFilterValueDecorator extends GenericFilterDecorator<Filterin
 
 	}
 
-	private Set<ProductModel> collectParents(ProductModelPricingAdapter node) {
+	private List<ProductModel> collectParents(ProductModelPricingAdapter node) {
 
-		Set<ProductModel> parentNodes = new HashSet<ProductModel>();
+		List<ProductModel> parentNodes = new ArrayList<ProductModel>();
 
 		Collection<ContentKey> parents = node.getParentKeys();
 		if (parents != null) {

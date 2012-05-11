@@ -1,7 +1,9 @@
 package com.freshdirect.fdstore.content;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import com.freshdirect.cms.ContentKey;
@@ -21,7 +23,7 @@ public class ProductFilterMenuDecorator extends GenericFilterDecorator<Filtering
 
 		ProductModelPricingAdapter node = (ProductModelPricingAdapter) item.getNode();
 
-		Set<ProductModel> parents = collectParents(node);
+		List<ProductModel> parents = collectParents(node);
 
 		boolean available = node.isFullyAvailable();
 
@@ -50,14 +52,22 @@ public class ProductFilterMenuDecorator extends GenericFilterDecorator<Filtering
 
 					for (ProductModel parent : parents) {
 						ContentNodeModel parentModel = parent.getParentNode();
-						while (!FDContentTypes.DEPARTMENT.equals(parentModel.getParentNode().getContentKey().getType())) {
+						ContentNodeModel found = null;
+						while (parentModel != null && !FDContentTypes.STORE.equals(parentModel.getContentKey().getType())) {
+							if (parentModel.getParentNode() != null &&
+									FDContentTypes.DEPARTMENT.equals(parentModel.getParentNode().getContentKey().getType())) {
+								found = parentModel;
+								break;
+							}
 							parentModel = parentModel.getParentNode();
 						}
-						menu.setName(parentModel.getFullName());
-						menu.setFilteringUrlValue(parentModel.getContentKey().getId());
-						menu.setFilter(filter);
-						menus.add(menu);
-						menu = new FilteringMenuItem();
+						if (found != null) {
+							menu.setName(found.getFullName());
+							menu.setFilteringUrlValue(found.getContentKey().getId());
+							menu.setFilter(filter);
+							menus.add(menu);
+							menu = new FilteringMenuItem();
+						}
 					}
 
 					item.putMenuValue(EnumFilteringValue.CAT, menus);
@@ -172,9 +182,9 @@ public class ProductFilterMenuDecorator extends GenericFilterDecorator<Filtering
 
 	}
 
-	private Set<ProductModel> collectParents(ProductModelPricingAdapter node) {
+	private List<ProductModel> collectParents(ProductModelPricingAdapter node) {
 
-		Set<ProductModel> parentNodes = new HashSet<ProductModel>();
+		List<ProductModel> parentNodes = new ArrayList<ProductModel>();
 
 		Collection<ContentKey> parents = node.getParentKeys();
 		if (parents != null) {

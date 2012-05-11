@@ -1,9 +1,14 @@
 package com.freshdirect.fdstore.content;
 
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import com.freshdirect.cms.ContentKey;
+import com.freshdirect.cms.fdstore.FDContentTypes;
 
 public class FilteringSortingMenuBuilder extends GenericFilteringMenuBuilder<FilteringSortingItem> {
 
@@ -12,7 +17,25 @@ public class FilteringSortingMenuBuilder extends GenericFilteringMenuBuilder<Fil
 	}
 
 	@Override
-	public void buildMenu(List<FilteringSortingItem> items) {
+	public void buildMenu(List<FilteringSortingItem> items) { // ha van
+																// kivalsztva
+																// cat vagy
+																// subcat, akkor
+																// az eredeti
+																// listan le
+																// kell futtatni
+																// szurest a
+																// primary
+																// homjara a
+																// kivalasztott
+																// cat nak vag
+																// subcat nak,
+																// es ez a
+																// szures kell,
+																// h visszaadja
+																// az adott
+																// parent
+																// counterjet
 		for (EnumFilteringValue value : filters) {
 
 			Map<String, FilteringMenuItem> domain = new HashMap<String, FilteringMenuItem>();
@@ -24,7 +47,7 @@ public class FilteringSortingMenuBuilder extends GenericFilteringMenuBuilder<Fil
 				if (menuItems != null) {
 					for (FilteringMenuItem menuItem : menuItems) {
 
-						String menuName = menuItem.getName();
+						String menuName = menuItem.getFilteringUrlValue();
 						FilteringMenuItem mI = domain.get(menuName);
 
 						if (mI == null) {
@@ -42,14 +65,94 @@ public class FilteringSortingMenuBuilder extends GenericFilteringMenuBuilder<Fil
 			domains.put(value, domain);
 		}
 
+		narrowTree(filterValues);
+
 	}
-	
-	private void checkSelected(Set<FilteringMenuItem> menuItems, List<Object> itemFilteringValues){
-		if(itemFilteringValues==null){
+
+	/**
+	 * @param filterValues
+	 * 
+	 *            if subcategory or category selected first then domains above
+	 *            them (department, category) needs to be narrowed this method
+	 *            only needed when multiselection is not supported!
+	 */
+	private void narrowTree(Map<EnumFilteringValue, List<Object>> filterValues) {
+
+		String dept = filterValues.get(EnumFilteringValue.DEPT) != null ? (String) filterValues.get(EnumFilteringValue.DEPT).get(0) : null;
+		String cat = filterValues.get(EnumFilteringValue.CAT) != null ? (String) filterValues.get(EnumFilteringValue.CAT).get(0) : null;
+		String subCat = filterValues.get(EnumFilteringValue.SUBCAT) != null ? (String) filterValues.get(EnumFilteringValue.SUBCAT).get(
+				0) : null;
+
+		if (subCat != null && cat == null) {
+			ContentNodeModel subCatModel = ContentFactory.getInstance().getContentNode(subCat);
+			ContentNodeModel found = null;
+			while (subCatModel != null && !FDContentTypes.STORE.equals(subCatModel.getContentKey().getType())) {
+				if (subCatModel.getParentNode() != null && subCatModel.getParentNode().getParentNode() != null && FDContentTypes.DEPARTMENT.equals(subCatModel.getParentNode().getParentNode().getContentKey().getType())) {
+					found = subCatModel;
+					break;
+				}
+				subCatModel = subCatModel.getParentNode();
+			}
+
+			cat = found.getParentId();
+		}
+
+		if (cat != null && dept == null) {
+			ContentNodeModel catModel = ContentFactory.getInstance().getContentNode(cat);
+			ContentNodeModel found = null;
+			while (catModel != null && !FDContentTypes.STORE.equals(catModel.getContentKey().getType())) {
+				if (catModel.getParentNode() != null && FDContentTypes.DEPARTMENT.equals(catModel.getParentNode().getContentKey().getType())) {
+					found = catModel;
+					break;
+				}
+				catModel = catModel.getParentNode();
+			}
+			dept = found.getParentId();
+
+		}
+
+		if (subCat != null) {
+			narrowDomain(EnumFilteringValue.SUBCAT, subCat, false, null);
+		}
+		if (cat != null) {
+			narrowDomain(EnumFilteringValue.CAT, cat, false, null);
+			narrowDomain(EnumFilteringValue.SUBCAT, subCat, true, cat);
+		}
+		if (dept != null) {
+			narrowDomain(EnumFilteringValue.DEPT, dept, false, null);
+		}
+	}
+
+	private void narrowDomain(EnumFilteringValue domainId, String selected, boolean multiValue, String parent) {
+
+		Map<String, FilteringMenuItem> domain = domains.get(domainId);
+		Map<String, FilteringMenuItem> narrowedDomain = new HashMap<String, FilteringMenuItem>();
+		
+		if (!multiValue) {
+			for (String menuId : domain.keySet()) {
+				if (menuId.equals(selected)) {
+					narrowedDomain.put(menuId, domain.get(menuId));
+					break;
+				}
+			}
+		} else {		
+			for (String menuId : domain.keySet()) {
+				ContentNodeModel subCatModel = ContentFactory.getInstance().getContentNode(menuId);
+				if(parent.equals(subCatModel.getParentNode().getContentKey().getId())){
+					narrowedDomain.put(menuId, domain.get(menuId));
+				}
+			}
+		}
+
+		domains.put(domainId, narrowedDomain);
+	}
+
+	private void checkSelected(Set<FilteringMenuItem> menuItems, List<Object> itemFilteringValues) {
+		if (itemFilteringValues == null) {
 			return;
 		}
-		for(FilteringMenuItem menuItem: menuItems){
-			if(itemFilteringValues.contains(menuItem.getFilteringUrlValue())){
+		for (FilteringMenuItem menuItem : menuItems) {
+			if (itemFilteringValues.contains(menuItem.getFilteringUrlValue())) {
 				menuItem.setSelected(true);
 			}
 		}
