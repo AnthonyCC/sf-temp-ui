@@ -81,8 +81,6 @@ public class StandingOrdersServiceCmd {
 	
 	
 	public static void main( String[] args ) {	
-		LOGGER.info( "Args: " + args );
-		
 		boolean isSendEmail = false;
 		
 		//'create SO instance even another one has been created for that week'
