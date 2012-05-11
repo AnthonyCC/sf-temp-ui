@@ -1,13 +1,10 @@
 package com.freshdirect.fdstore.content;
 
-import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.fdstore.FDContentTypes;
 
 public class FilteringSortingMenuBuilder extends GenericFilteringMenuBuilder<FilteringSortingItem> {
