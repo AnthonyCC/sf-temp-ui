@@ -81,6 +81,7 @@ public class StandingOrdersServiceCmd {
 	
 	
 	public static void main( String[] args ) {	
+		LOGGER.info( "Args: " + args );
 		
 		boolean isSendEmail = false;
 		
@@ -112,6 +113,8 @@ public class StandingOrdersServiceCmd {
 					}
 				}
 			}
+			LOGGER.info( "isSendEmail: "+ isSendEmail );
+			LOGGER.info( "createIfSoiExistsForWeek: "+ createIfSoiExistsForWeek );
 			
 			StandingOrdersServiceResult.Counter result = placeStandingOrders(soIdList, createIfSoiExistsForWeek);
 				
@@ -160,7 +163,7 @@ public class StandingOrdersServiceCmd {
 	
 	private static void sendReportMail(Counter result) {
 		try {
-			
+			LOGGER.info( "Cron report enabled" );
 			final List<Result> resultList = result.getResultsList();
 			final String techMailTo = ErpServicesProperties.getStandingOrdersTechnicalErrorRecipientAddress();
 			
@@ -328,6 +331,7 @@ public class StandingOrdersServiceCmd {
 					FDStoreProperties.getStandingOrderReportToEmail(),
 					FDStoreProperties.getStandingOrderReportToEmail(),
 					subject, buffer.toString(), true, "");
+			LOGGER.info( "Cron report sent to "+ FDStoreProperties.getStandingOrderReportToEmail() );
 		} catch (FDResourceException e) {
 			LOGGER.warn("Error getting failed standing orders: ", e);
 		} catch (MessagingException e) {
