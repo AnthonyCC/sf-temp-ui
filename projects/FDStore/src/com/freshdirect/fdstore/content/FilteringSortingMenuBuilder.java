@@ -17,25 +17,7 @@ public class FilteringSortingMenuBuilder extends GenericFilteringMenuBuilder<Fil
 	}
 
 	@Override
-	public void buildMenu(List<FilteringSortingItem> items) { // ha van
-																// kivalsztva
-																// cat vagy
-																// subcat, akkor
-																// az eredeti
-																// listan le
-																// kell futtatni
-																// szurest a
-																// primary
-																// homjara a
-																// kivalasztott
-																// cat nak vag
-																// subcat nak,
-																// es ez a
-																// szures kell,
-																// h visszaadja
-																// az adott
-																// parent
-																// counterjet
+	public void buildMenu(List<FilteringSortingItem> items) { 
 		for (EnumFilteringValue value : filters) {
 
 			Map<String, FilteringMenuItem> domain = new HashMap<String, FilteringMenuItem>();
@@ -120,6 +102,7 @@ public class FilteringSortingMenuBuilder extends GenericFilteringMenuBuilder<Fil
 		}
 		if (dept != null) {
 			narrowDomain(EnumFilteringValue.DEPT, dept, false, null);
+			narrowDomain(EnumFilteringValue.CAT, cat, true, dept);
 		}
 	}
 
