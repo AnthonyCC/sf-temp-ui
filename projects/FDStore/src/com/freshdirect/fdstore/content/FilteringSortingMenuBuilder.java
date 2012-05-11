@@ -62,8 +62,8 @@ public class FilteringSortingMenuBuilder extends GenericFilteringMenuBuilder<Fil
 
 		String dept = filterValues.get(EnumFilteringValue.DEPT) != null ? (String) filterValues.get(EnumFilteringValue.DEPT).get(0) : null;
 		String cat = filterValues.get(EnumFilteringValue.CAT) != null ? (String) filterValues.get(EnumFilteringValue.CAT).get(0) : null;
-		String subCat = filterValues.get(EnumFilteringValue.SUBCAT) != null ? (String) filterValues.get(EnumFilteringValue.SUBCAT).get(
-				0) : null;
+		String subCat = filterValues.get(EnumFilteringValue.SUBCAT) != null ? (String) filterValues.get(EnumFilteringValue.SUBCAT).get(0) : null;
+		String recipe = filterValues.get(EnumFilteringValue.RECIPE_CLASSIFICATION) != null ? (String) filterValues.get(EnumFilteringValue.RECIPE_CLASSIFICATION).get(0) : null;
 
 		if (subCat != null && cat == null) {
 			ContentNodeModel subCatModel = ContentFactory.getInstance().getContentNode(subCat);
@@ -103,6 +103,9 @@ public class FilteringSortingMenuBuilder extends GenericFilteringMenuBuilder<Fil
 		if (dept != null) {
 			narrowDomain(EnumFilteringValue.DEPT, dept, false, null);
 			narrowDomain(EnumFilteringValue.CAT, cat, true, dept);
+		}
+		if(recipe != null ){
+			narrowDomain(EnumFilteringValue.RECIPE_CLASSIFICATION, recipe, false, null);
 		}
 	}
 
