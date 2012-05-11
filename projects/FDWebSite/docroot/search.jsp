@@ -394,8 +394,13 @@ final int W_INDEX_RIGHT_CENTER = W_INDEX_TOTAL - 228 - W_INDEX_CENTER_PADDING;
 <fd:FilterList domainName="<%= EnumFilteringValue.RECIPE_CLASSIFICATION %>" filters='<%= menus %>' id="filterItems">
 	<% nav.resetState(); %>
 	<logic:iterate id="menu" collection="<%= filterItems %>" type='FilteringMenuItem'>
-		<% nav.setRecipeFilter(menu.getFilteringUrlValue()); nav.setRecipes(true); nav.setPageOffset(0); %>
-				<li><a href="<%= nav.getLink() %>&recipes"><%= menu.getName() %><span class="count">(<%= menu.getCounter() %>)</span></a></li>
+			<% if(menu.isSelected()) { %>
+				<% nav.removeFilter(menu.getFilter(), menu.getFilteringUrlValue()); %>
+				<li class="selected"><a href="<%= nav.getLink() %>" class="remove-selection"></a><a href="<%= nav.getLink() %>"><%= menu.getName() %></a></li>
+			<% } else { %>
+				<% nav.setRecipeFilter(menu.getFilteringUrlValue()); nav.setRecipes(true); nav.setPageOffset(0); %>
+				<li><a href="<%= nav.getLink() %>"><%= menu.getName() %><span class="count">(<%= menu.getCounter() %>)</span></a></li>
+			<% } %>
 	</logic:iterate>
 </fd:FilterList>
 			</ul>
