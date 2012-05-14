@@ -46,12 +46,12 @@ final int W_USQ_HOME_TOTAL = 765;
 	DepartmentModel dept = (DepartmentModel) ContentFactory.getInstance().getContentNode(FDContentTypes.DEPARTMENT, request.getParameter("deptId"));
 	if (dept.getEditorial() != null) {
 %>
-<script type="text/javascript">
-YAHOO.util.Event.onDOMReady(FreshDirect.WineNav.onLoad);
-</script>
 <div align="center">
 <fd:IncludeHtml html="<%= dept.getEditorial() %>"/>
 </div>
+<script type="text/javascript">
+YAHOO.util.Event.onDOMReady(FreshDirect.WineNav.onLoad);
+</script>
 <%
 	}
 	{ // TOP rated multitab carousel
