@@ -102,6 +102,7 @@ public class FDPromotionNewModel extends ModelSupport {
 	private List<FDPromoDollarDiscount> dollarOffList = new ArrayList<FDPromoDollarDiscount>();
 	private boolean isReferralPromo = false;
 	private Integer skuLimit;
+	private String tsaPromoCode;
 	/*
 	 * Number of successful publishes
 	 */
@@ -1136,6 +1137,14 @@ public class FDPromotionNewModel extends ModelSupport {
 
 	public Integer getSkuLimit() {
 		return skuLimit;
+	}
+
+	public void setTsaPromoCode(String tsaPromoCode) {
+		this.tsaPromoCode = tsaPromoCode;
+	}
+
+	public String getTsaPromoCode() {
+		return tsaPromoCode;
 	}
 
 	

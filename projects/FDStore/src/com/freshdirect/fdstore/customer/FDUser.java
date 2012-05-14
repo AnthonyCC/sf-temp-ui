@@ -232,6 +232,15 @@ public class FDUser extends ModelSupport implements FDUserI {
 	Double totalCredit = null;
 	Boolean referralFlag = null;
 	boolean referralFraud = false;
+	public String tsaPromoCode = null;
+
+	public String getTsaPromoCode() {
+		return tsaPromoCode;
+	}
+
+	public void setTsaPromoCode(String tsaPromoCode) {
+		this.tsaPromoCode = tsaPromoCode;
+	}
 
 	public FDUserDlvPassInfo getDlvPassInfo() {
 		return dlvPassInfo;

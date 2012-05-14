@@ -604,6 +604,51 @@ public class FDPromotionNewManager {
 		}
 	}
 	
+	public static boolean isTSAPromoCodeExists(String tsaPromoCode)throws FDResourceException{
+		lookupManagerHome();
+
+		try {
+			FDPromotionManagerNewSB sb = managerHome.create();
+			return sb.isTSAPromoCodeExists(tsaPromoCode);
+		} catch (CreateException ce) {
+			invalidateManagerHome();
+			throw new FDResourceException(ce, "Error creating session bean");
+		} catch (RemoteException re) {
+			invalidateManagerHome();
+			throw new FDResourceException(re, "Error talking to session bean");
+		}
+	}
+	
+	public static boolean isTSAPromoCodeExists(String tsaPromoCode, String promotionId)throws FDResourceException{
+		lookupManagerHome();
+
+		try {
+			FDPromotionManagerNewSB sb = managerHome.create();
+			return sb.isTSAPromoCodeExists(tsaPromoCode, promotionId);
+		} catch (CreateException ce) {
+			invalidateManagerHome();
+			throw new FDResourceException(ce, "Error creating session bean");
+		} catch (RemoteException re) {
+			invalidateManagerHome();
+			throw new FDResourceException(re, "Error talking to session bean");
+		}
+	}
+	
+	public static String getRedemptionCode(String  tsaPromoCode) throws FDResourceException{
+		lookupManagerHome();
+
+		try {
+			FDPromotionManagerNewSB sb = managerHome.create();
+			return sb.getRedemptionCode(tsaPromoCode);
+		} catch (CreateException ce) {
+			invalidateManagerHome();
+			throw new FDResourceException(ce, "Error creating session bean");
+		} catch (RemoteException re) {
+			invalidateManagerHome();
+			throw new FDResourceException(re, "Error talking to session bean");
+		}
+	}
+	
 	public static void storePromotionStatus(FDPromotionNewModel promotion,EnumPromotionStatus status)throws FDResourceException{
 		lookupManagerHome();
 

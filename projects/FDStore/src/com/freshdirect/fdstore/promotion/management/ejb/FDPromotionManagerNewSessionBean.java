@@ -828,6 +828,45 @@ public class FDPromotionManagerNewSessionBean extends FDSessionBeanSupport {
 		}
 	}
 	
+	public boolean isTSAPromoCodeExists(String tsaPromoCode)throws FDResourceException{
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			return FDPromotionManagerNewDAO.isTSAPromoCodeExists(conn, tsaPromoCode);
+
+		} catch (SQLException sqle) {
+			throw new FDResourceException(sqle);
+		} finally {
+                    close(conn);
+		}
+	}
+	
+	public boolean isTSAPromoCodeExists(String tsaPromoCode, String promotionId)throws FDResourceException{
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			return FDPromotionManagerNewDAO.isTSAPromoCodeExists(conn, tsaPromoCode, promotionId);
+
+		} catch (SQLException sqle) {
+			throw new FDResourceException(sqle);
+		} finally {
+                    close(conn);
+		}
+	}
+	
+	public String getRedemptionCode(String tsaPromoCode)throws FDResourceException{
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			return FDPromotionNewDAO.getRedemptionCode(conn, tsaPromoCode);
+
+		} catch (SQLException sqle) {
+			throw new FDResourceException(sqle);
+		} finally {
+                    close(conn);
+		}
+	}
+	
 	public void storePromotionStatus(FDPromotionNewModel promotion,EnumPromotionStatus status) throws FDResourceException{
 		Connection conn = null;
 		try {

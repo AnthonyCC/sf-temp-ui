@@ -48,4 +48,6 @@ public interface SessionName {
 	public static final String PREV_SAVINGS_VARIANT = "prevSavingsVariant";
 	
 	public static final String PREV_VARIANT_FOUND = "prevVariantFound";
+	
+	public static final String TSA_PROMO = "fd.tsapromo";
 }

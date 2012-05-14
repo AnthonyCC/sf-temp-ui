@@ -388,6 +388,7 @@ public class FDPromotionManagerNewDAO {
 		} else {
 			promotion.setRedemptionCode("");
 		}
+		promotion.setTsaPromoCode(rs.getString("TSA_PROMO_CODE"));
 
 		double minSubtotal = rs.getDouble("MIN_SUBTOTAL");
 		if (!rs.wasNull()) {
@@ -657,8 +658,8 @@ public class FDPromotionManagerNewDAO {
 								"AUDIENCE_DESC, TERMS, REDEEM_CNT, HASSKUQUANTITY, " +
 								"PERISHABLEONLY, NEEDDRYGOODS, NEEDCUSTOMERLIST, " +
 								"RULE_BASED, FAVORITES_ONLY, COMBINE_OFFER, " +
-								"CREATED_BY, CREATE_DATE, MODIFIED_BY, MODIFY_DATE, DONOT_APPLY_FRAUD, PUBLISHES,OFFER_TYPE, INCL_FUEL_SURCHARGE , SKU_LIMIT, referral_promo)"
-						+ " VALUES(?,?,?,?,?,?,?,?,?,?, ?,?,?,?,?,?,?,?,?,?, ?,?,?,?,?,?,?,?,?,?, ?,?,?,?,?,?)");
+								"CREATED_BY, CREATE_DATE, MODIFIED_BY, MODIFY_DATE, DONOT_APPLY_FRAUD, PUBLISHES,OFFER_TYPE, INCL_FUEL_SURCHARGE , SKU_LIMIT, referral_promo, tsa_promo_code)"
+						+ " VALUES(?,?,?,?,?,?,?,?,?,?, ?,?,?,?,?,?,?,?,?,?, ?,?,?,?,?,?,?,?,?,?, ?,?,?,?,?,?,?)");
 
 		int i = 1;
 		ps.setString(i++, id); // 1
@@ -698,6 +699,11 @@ public class FDPromotionManagerNewDAO {
 			ps.setNull(i++, Types.INTEGER);										
 		}
 		ps.setString(i++, promotion.isReferralPromo()?"Y":"N");
+		if (!"".equals(promotion.getTsaPromoCode())) {
+			ps.setString(i++, promotion.getTsaPromoCode());
+		} else {
+			ps.setNull(i++, Types.VARCHAR);
+		}
 		// Execute update
 		if (ps.executeUpdate() != 1) {
 			ps.close();
@@ -1306,7 +1312,7 @@ public class FDPromotionManagerNewDAO {
 				+ " SET"
 				+ " CODE = ?, NAME = ?, DESCRIPTION = ?, MAX_USAGE = ?, START_DATE = ?, EXPIRATION_DATE = ?, REDEMPTION_CODE = ?,"
 				+ " CAMPAIGN_CODE = ?, MIN_SUBTOTAL = ?, MAX_AMOUNT = ?, PERCENT_OFF = ?, WAIVE_CHARGE_TYPE = ?, ROLLING_EXPIRATION_DAYS = ?, STATUS = ?, OFFER_DESC = ?, AUDIENCE_DESC = ?, TERMS = ?,REDEEM_CNT = ?,HASSKUQUANTITY = ?, PERISHABLEONLY = ? ,NEEDDRYGOODS =?,NEEDCUSTOMERLIST =?, "
-				+ " RULE_BASED = ?,FAVORITES_ONLY = ?, COMBINE_OFFER = ?, MODIFIED_BY =?, MODIFY_DATE =?, DONOT_APPLY_FRAUD=?, INCL_FUEL_SURCHARGE=?, referral_promo =?"
+				+ " RULE_BASED = ?,FAVORITES_ONLY = ?, COMBINE_OFFER = ?, MODIFIED_BY =?, MODIFY_DATE =?, DONOT_APPLY_FRAUD=?, INCL_FUEL_SURCHARGE=?, referral_promo =?, tsa_promo_code=?"
 				+ " WHERE ID = ?");
 		int i = 1;
 		i = setupPreparedStatement(ps, promotion, i);
@@ -1327,6 +1333,12 @@ public class FDPromotionManagerNewDAO {
 		
 		ps.setString(i++, promotion.isFuelSurchargeIncluded()?"Y":"N");
 		ps.setString(i++, promotion.isReferralPromo()?"Y":"N");
+		
+		if (!"".equals(promotion.getTsaPromoCode())) {
+			ps.setString(i++, promotion.getTsaPromoCode());
+		} else {
+			ps.setNull(i++, Types.VARCHAR);
+		}
 		
 		ps.setString(i++, promotion.getPK().getId());
 		if (ps.executeUpdate() != 1) {
@@ -2746,6 +2758,39 @@ public class FDPromotionManagerNewDAO {
 		return isDuplicate;
 	}
 	
+	public static boolean isTSAPromoCodeExists(Connection conn, String tsaPromoCode) throws SQLException{
+		boolean isDuplicate = false;
+		PreparedStatement ps =	conn.prepareStatement("select count(*) from CUST.Promotion_new where (STATUS not in('CANCELLED') AND (STATUS not in('LIVE','PUBLISHED') OR EXPIRATION_DATE >= sysdate)) and upper(tsa_promo_code) = upper(?)");
+		ps.setString(1, tsaPromoCode);
+		ResultSet rs = ps.executeQuery();
+		int count =0;
+		if(rs.next()){
+			count = rs.getInt(1);
+			if(count>0){
+				isDuplicate = true;
+			}
+		}
+		return isDuplicate;
+	}
+	
+	public static boolean isTSAPromoCodeExists(Connection conn, String tsaPromoCode, String promotionId) throws SQLException{
+		boolean isDuplicate = false;
+		PreparedStatement ps =	conn.prepareStatement("select count(*) from CUST.Promotion_new where (STATUS not in('CANCELLED') AND (STATUS not in('LIVE','PUBLISHED') OR EXPIRATION_DATE >= sysdate)) and id <> ? and upper(tsa_promo_code) = upper(?)");
+		ps.setString(1, promotionId);
+		ps.setString(2, tsaPromoCode);
+		ResultSet rs = ps.executeQuery();
+		int count =0;
+		if(rs.next()){
+			count = rs.getInt(1);
+			if(count>0){
+				isDuplicate = true;
+			}
+		}
+		rs.close();
+		ps.close();
+		return isDuplicate;
+	}
+	
 	public static void storePromotionStatus(Connection conn, EnumPromotionStatus status, FDPromotionNewModel promotion) throws SQLException{
 		PreparedStatement ps = null;
 		try {			
@@ -2816,7 +2861,7 @@ public class FDPromotionManagerNewDAO {
 						+ " ROLLING_EXPIRATION_DAYS=?, STATUS=?, OFFER_DESC=?, AUDIENCE_DESC=?, TERMS=?, REDEEM_CNT=?,"
 						+ " HASSKUQUANTITY=?, PERISHABLEONLY=?, NEEDDRYGOODS=?, NEEDCUSTOMERLIST=?, RULE_BASED=?,"
 						+ " FAVORITES_ONLY=?, COMBINE_OFFER=?, MODIFIED_BY=?, MODIFY_DATE=?,"
-						+ " DONOT_APPLY_FRAUD=?, PUBLISHES=?, INCL_FUEL_SURCHARGE=?, SKU_LIMIT=?, referral_promo=?"
+						+ " DONOT_APPLY_FRAUD=?, PUBLISHES=?, INCL_FUEL_SURCHARGE=?, SKU_LIMIT=?, referral_promo=?, tsa_promo_code=?"
 						+ " WHERE ID = ?");
 
 		int i = 1;
@@ -2844,6 +2889,12 @@ public class FDPromotionManagerNewDAO {
 			ps.setNull(i++, Types.INTEGER);										
 		}
 		ps.setString(i++, promotion.isReferralPromo()?"Y":"N");
+		
+		if (!"".equals(promotion.getTsaPromoCode())) {
+			ps.setString(i++, promotion.getTsaPromoCode());
+		} else {
+			ps.setNull(i++, Types.VARCHAR);
+		}
 		
 		ps.setString(i++, promotion.getPK().getId());
 

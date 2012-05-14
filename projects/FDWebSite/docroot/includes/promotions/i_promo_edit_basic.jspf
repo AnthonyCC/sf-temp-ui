@@ -43,6 +43,10 @@
 					<td class="promo_detail_label">Redemption code:</td>
 					<td class="alignL"><input type="text" id="redemption_code" name="redemption_code" class="w150px" value="<%= promotion.getRedemptionCode() %>" maxlength="16" /> <span class="grayIta8pt">Blank/None = automatic application</span></td>
 				</tr>
+				<tr>
+					<td class="promo_detail_label">TSAPromo code:</td>
+					<td class="alignL"><input type="text" id="tsapromo_code" name="tsapromo_code" class="w150px" value="<%= promotion.getTsaPromoCode() %>" maxlength="16" /> <span class="grayIta8pt">This code is to share on third party banners</span></td>
+				</tr>
 				<tr class="flatRow">
 					<td colspan="2"><img width="1" height="1" src="/media_stat/crm/images/clear.gif" alt="" class="promo_edit_offer-spacer" /></td>
 				</tr>

@@ -356,6 +356,22 @@ public class FDPromotionNewDAO {
 		return promoId;
 	}
 	
+	public static String getRedemptionCode(Connection conn, String tsaPromoCode) throws SQLException{
+		String redemptionCode = null;
+		PreparedStatement ps = conn.prepareStatement("SELECT REDEMPTION_CODE FROM CUST.PROMOTION_NEW where UPPER(tsa_promo_code) = UPPER(?) and status "+getStatusReplacementString()+" order by expiration_date desc");
+		ps.setString(1, tsaPromoCode);
+		ResultSet rs = ps.executeQuery();
+
+		if (rs.next()) {
+			redemptionCode = rs.getString("REDEMPTION_CODE");
+		}
+
+		rs.close();
+		ps.close();
+
+		return redemptionCode;
+	}
+	
 	/**
 	 * Load a redemption promotion
 	 * @param conn

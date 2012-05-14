@@ -494,5 +494,9 @@ public interface FDUserI extends java.io.Serializable {
 	
 	public void setReferralPromotionFraud(boolean fraud);
 	
-	public boolean isReferralPromotionFraud(); 
+	public boolean isReferralPromotionFraud();
+	
+	public String getTsaPromoCode();
+
+	public void setTsaPromoCode(String tsaPromoCode);
 }

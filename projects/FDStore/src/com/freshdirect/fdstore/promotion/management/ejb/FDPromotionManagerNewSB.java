@@ -125,5 +125,11 @@ public interface FDPromotionManagerNewSB extends EJBObject {
 	public List<WSPromotionInfo> getAllActiveWSPromotions(java.util.Date effectiveDate) throws FDResourceException, RemoteException;
 	
 	public List<PromotionI> getReferralPromotions(String customerId) throws FDResourceException, RemoteException;
+	
+	public boolean isTSAPromoCodeExists(String tsaPromoCode)throws FDResourceException,RemoteException;
+	
+	public boolean isTSAPromoCodeExists(String tsaPromoCode, String promotionId)throws FDResourceException,RemoteException;
+	
+	public String getRedemptionCode(String tsaPromoCode)throws FDResourceException,RemoteException;
 }
 

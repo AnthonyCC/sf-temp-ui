@@ -1343,13 +1343,21 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 	public boolean isReferralPromotionFraud() {
 		return this.user.isReferralPromotionFraud();
 	}
-	
+
 	public boolean isEligibleForDDPP()  {
 		try {
 			return this.user.isEligibleForDDPP();
 		} catch (FDResourceException e) {
 			throw new FDRuntimeException(e);
 		}
+	}
+	
+	public String getTsaPromoCode() {
+		return this.user.getTsaPromoCode();
+	}
+
+	public void setTsaPromoCode(String tsaPromoCode) {
+		this.user.setTsaPromoCode(tsaPromoCode);
 	}
 
 

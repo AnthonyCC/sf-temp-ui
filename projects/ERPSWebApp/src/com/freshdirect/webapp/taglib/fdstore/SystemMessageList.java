@@ -47,7 +47,7 @@ public interface SystemMessageList {
 	
 
 	// checkout
-	public final static String MSG_CHECKOUT_AMOUNT_TOO_LARGE	= "For your protection, FreshDirect will not accept orders over $750 online. Please call FreshDirect at {0} and a customer service representative will assist you in placing this order.";
+	public final static String MSG_CHECKOUT_AMOUNT_TOO_LARGE	= "For your protection, FreshDirect will not accept orders over {0,number,$0} online. Please call FreshDirect at {1} and a customer service representative will assist you in placing this order.";
 	public final static String MSG_CHECKOUT_BELOW_MINIMUM		= "We''re sorry; you cannot check out because your pretax order total of {0,number,$0.00} is under the FreshDirect {1,number,$0} minimum order requirement. <a href=\"/index.jsp\">Continue Shopping.</a>";
 	public final static String MSG_CHECKOUT_BELOW_MINIMUM_PICKUP	= "We''re sorry, you cannot check out because there is a {1,number,$0} pre-tax cart minimum for all FreshDirect pickup orders. To check out with a pickup location, please add more items to your cart first. <a href=\"/index.jsp\">Continue Shopping.</a>";
 	public final static String MSG_CHECKOUT_NOT_ELIGIBLE		= "Billing and Delivery addresses must be identical, so we are unable to extend the {0,number,$0} free food promotion to you (one per household). If you believe you are eligible for the promotion, please contact us at {1} before completing Checkout.";
