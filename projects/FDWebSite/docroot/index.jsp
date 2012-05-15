@@ -109,17 +109,13 @@ if (FDStoreProperties.IsHomePageMediaEnabled() && (!user.isHomePageLetterVisited
 								</div>
 								<div class="ordModifyButCont">
 									<% if ( new Date().before(orderInfo.getDeliveryCutoffTime())) { %>
-										<form name="modify_order" id="modify_order" method="GET" action="/your_account/modify_order.jsp?orderId=<%= orderInfo.getErpSalesId() %>&action=modify">
-											<input type="hidden" name="orderId" value="<%= orderInfo.getErpSalesId() %>" />
-											<input type="hidden" name="action" value="modify" />
-											<table class="butCont fright" style="margin-left: 10px;">
-												<tr>
-													<td class="butOrangeLeft"><!-- --></td>
-													<td class="butOrangeMiddle"><a class="butText" href="/your_account/modify_order.jsp?orderId=<%= orderInfo.getErpSalesId() %>" onclick="$('modify_order').submit(); return false;">modify order</a></td>
-													<td class="butOrangeRight"><!-- --></td>
-												</tr>
-											</table>
-										</form>
+										<table class="butCont fright" style="margin-left: 10px;">
+											<tr>
+												<td class="butOrangeLeft"><!-- --></td>
+												<td class="butOrangeMiddle"><a class="butText" href="/your_account/modify_order.jsp?orderId=<%= orderInfo.getErpSalesId() %>&action=modify">modify order</a></td>
+												<td class="butOrangeRight"><!-- --></td>
+											</tr>
+										</table>
 										<a href="/your_account/order_details.jsp?orderId=<%= orderInfo.getErpSalesId() %>" class="ordModifyViewDetails">view details&nbsp;</a>
 									<% } else { %>
 										&nbsp;
@@ -167,17 +163,13 @@ if (FDStoreProperties.IsHomePageMediaEnabled() && (!user.isHomePageLetterVisited
 								</div>
 								<div class="ordModifyButCont">
 									<% if ( new Date().before(orderInfo.getDeliveryCutoffTime())) { %>
-										<form name="modify_order" id="modify_order" method="GET" action="/your_account/modify_order.jsp?orderId=<%= orderInfo.getErpSalesId() %>&action=modify">
-											<input type="hidden" name="orderId" value="<%= orderInfo.getErpSalesId() %>" />
-											<input type="hidden" name="action" value="modify" />
-											<table class="butCont fright" style="margin-left: 10px;">
-												<tr>
-													<td class="butOrangeLeft"><!-- --></td>
-													<td class="butOrangeMiddle"><a class="butText" href="/your_account/modify_order.jsp?orderId=<%= orderInfo.getErpSalesId() %>" onclick="$('modify_order').submit(); return false;">modify order</a></td>
-													<td class="butOrangeRight"><!-- --></td>
-												</tr>
-											</table>
-										</form>
+										<table class="butCont fright" style="margin-left: 10px;">
+											<tr>
+												<td class="butOrangeLeft"><!-- --></td>
+												<td class="butOrangeMiddle"><a class="butText" href="/your_account/modify_order.jsp?orderId=<%= orderInfo.getErpSalesId() %>&action=modify">modify order</a></td>
+												<td class="butOrangeRight"><!-- --></td>
+											</tr>
+										</table>
 										<a href="/your_account/order_details.jsp?orderId=<%= orderInfo.getErpSalesId() %>" class="ordModifyViewDetails">view details&nbsp;</a>
 									<% } else { %>
 										&nbsp;
