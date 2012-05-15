@@ -70,6 +70,9 @@ public class RedemptionCodeControllerTag extends AbstractControllerTag {
 					user.updateUserState();
 					session.setAttribute(SessionName.USER, user);
 				}
+				if(session.getAttribute(SessionName.TSA_PROMO) != null) {
+					session.removeAttribute(SessionName.TSA_PROMO);
+				}
 			}
 			else if ("removeGiftCard".equalsIgnoreCase(action)) {
 				HttpSession session = (HttpSession) pageContext.getSession();
