@@ -60,7 +60,15 @@
 		<%@ include file="/includes/i_about_preamble.jspf"%>
 	<% }else{
 	if(siteAccessPage==null || !siteAccessPage.equalsIgnoreCase("aboutus")){ %>
-		<fd:IncludeMedia name="/media/editorial/site_access/aboutus.ftl" parameters="<%=params%>" withErrorReport="true"/>
+		<% if ( request.getParameter("lang") != null) { %>
+			<% if ("espanol".equalsIgnoreCase(request.getParameter("lang"))) { %> 
+				<fd:IncludeMedia name="/media/editorial/site_access/aboutus_espanol.ftl" parameters="<%=params%>" withErrorReport="true"/>
+			<% } else { %>
+				<fd:IncludeMedia name="/media/editorial/site_access/aboutus.ftl" parameters="<%=params%>" withErrorReport="true"/>
+			<% } %>
+		<% } else { %>
+			<fd:IncludeMedia name="/media/editorial/site_access/aboutus.ftl" parameters="<%=params%>" withErrorReport="true"/>
+		<% } %>
 	<% } %>
 <% } %>
 

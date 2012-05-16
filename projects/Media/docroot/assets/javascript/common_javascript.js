@@ -927,3 +927,22 @@ function extract_query_string(theForm) {
 
 	return qs;
 }
+
+
+
+	/* change language of page */
+	function changeLang(langVar) {
+		var lang = langVar || 'english';
+		var loc = document.location.toString();
+		if (loc.indexOf('lang=') != -1) {
+			loc = loc.replace(/lang=[^&]*/, 'lang='+lang);
+		} else {
+			if (loc.indexOf('&') != -1) {
+				loc = loc + '&lang='+lang;
+			} else {
+				loc = loc + '?lang='+lang;
+			}
+		}
+		document.location = loc;
+		return false;
+	}

@@ -120,7 +120,15 @@ request.setAttribute("listPos", "CategoryNote,SiteAccess");
 		<jsp:include page="/common/template/includes/ad_server.jsp" flush="false"/>
 		
 		<fd:SiteAccessController action='checkByZipCode' successPage='<%= successPage %>' moreInfoPage='<%= moreInfoPage %>' failureHomePage='<%= failurePage %>' result='result'>
-			<fd:IncludeMedia name="/media/editorial/site_access/site_access.html" />
+			<% if ( request.getParameter("lang") != null) { %>
+				<% if ("espanol".equalsIgnoreCase(request.getParameter("lang"))) { %> 
+					<fd:IncludeMedia name="/media/editorial/site_access/site_access_espanol.html" />
+				<% } else { %>
+					<fd:IncludeMedia name="/media/editorial/site_access/site_access.html" />
+				<% } %>
+			<% } else { %>
+				<fd:IncludeMedia name="/media/editorial/site_access/site_access.html" />
+			<% } %>
 
 			<%--
 				Put any java-related variables needed by the page into the _page_options object. 
