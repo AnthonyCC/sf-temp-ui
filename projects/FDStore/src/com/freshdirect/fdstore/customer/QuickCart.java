@@ -140,6 +140,17 @@ public class QuickCart implements FDProductCollectionI {
 		return Collections.unmodifiableList(this.orderLines);
 	}
 
+	public int getAvailableProductCnt(){
+		int productCnt = 0;
+		for (FDProductSelectionI orderLine: orderLines) {
+			ProductModel productNode = orderLine.lookupProduct();
+			if(!((productNode==null || productNode.getSku(orderLine.getSkuCode()).isUnavailable() || orderLine.isInvalidConfig()))) {
+					productCnt++;
+			}
+		}
+		return productCnt;
+	}
+	
 	// List<FDProductSelectionI>
 	public List<FDProductSelectionI> getProducts(String deptId) {
 		List<FDProductSelectionI> deptProducts = new ArrayList<FDProductSelectionI>();

@@ -181,6 +181,8 @@ public interface FDOrderI extends FDCartI {
 	public ErpGCDlvInformationHolder getGCDlvInformationHolder(String givexNumber);
 	
 	public String getStandingOrderId();
+	
 	public boolean hasSignature();
 	
+	public int getLineCnt();
 }

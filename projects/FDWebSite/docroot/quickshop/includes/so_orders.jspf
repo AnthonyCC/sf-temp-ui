@@ -4,6 +4,9 @@
 <%@page import="java.util.List"%>
 <%@page import="java.util.Collections"%>
 <%@page import="java.util.Date"%>
+<%@taglib uri='freshdirect' prefix='fd' %>
+
+<%-- required vairables: so, soAvailableProductCnt --%>
 
 <style type="text/css">
 #so_orders {
@@ -38,30 +41,32 @@
 
 	final DateFormat DATE_FORMATTER =  new SimpleDateFormat("M/d/y EEE");
 	FDStandingOrderList shoppingList = so.getCustomerList();
-	String itemCountStr = shoppingList.getCount() + " Item" + (shoppingList.getCount()>1 ? "s" : "");
-	
+
 	if ( allOrders != null && allOrders.size() > 0 ) { 
 		Collections.sort( allOrders, FDOrderInfoI.COMPARE_BY_REQUESTED_DATE ); %>
 		<!--List of all upcoming orders related to this standing order :-->
 			<% for ( FDOrderInfoI order : allOrders ) { %>
-				<tr>
-					<td><%= DATE_FORMATTER.format( order.getRequestedDate() ) %></td>
-					<td><%= itemCountStr + ", <b>$"+order.getTotal()  + "</b>" %></td>
-					<td><b><a href="/your_account/order_details.jsp?orderId=<%= order.getErpSalesId() %>"><%= order.getErpSalesId() %></a></b></td>
-					<td><span class="text11" style="font-weight: normal;">
-						<% if(order.isModifiable()) { %>
-							<a href="/your_account/order_details.jsp?orderId=<%= order.getErpSalesId() %>">View/Modify</a> |
-							<a href="/your_account/cancel_order.jsp?orderId=<%=order.getErpSalesId()%>">Cancel</a>
-						<% } else {%>
-							<a href="/your_account/order_details.jsp?orderId=<%= order.getErpSalesId() %>">View</a>
-						<% } %>
-					</span></td>
-				</tr>
+				<fd:GetOrder id='fdOrder' saleId='<%= order.getErpSalesId() %>'>
+					<tr>
+						<td><%= DATE_FORMATTER.format( order.getRequestedDate() ) %></td>
+						<%int lineCnt = fdOrder.getLineCnt();%>
+						<td><%=lineCnt%> Item<%=lineCnt>1? "s":""%>, <b>$<%=order.getTotal()%></b></td>
+						<td><b><a href="/your_account/order_details.jsp?orderId=<%= order.getErpSalesId() %>"><%= order.getErpSalesId() %></a></b></td>
+						<td><span class="text11" style="font-weight: normal;">
+							<% if(order.isModifiable()) { %>
+								<a href="/your_account/order_details.jsp?orderId=<%= order.getErpSalesId() %>">View/Modify</a> |
+								<a href="/your_account/cancel_order.jsp?orderId=<%=order.getErpSalesId()%>">Cancel</a>
+							<% } else {%>
+								<a href="/your_account/order_details.jsp?orderId=<%= order.getErpSalesId() %>">View</a>
+							<% } %>
+						</span></td>
+					</tr>
+				</fd:GetOrder>
 			<% } %>
 	<% } else {	%>
 		<tr>
 			<td><%= DATE_FORMATTER.format(so.getNextDeliveryDate()) %></td>
-			<td><%= itemCountStr%>, <span id="notYetAvailableOrderTotalPrice" style="font-weight:bold;"></span></td>
+			<td><%=soAvailableProductCnt%> Item<%=soAvailableProductCnt>1? "s":""%>, <span id="notYetAvailableOrderTotalPrice" style="font-weight:bold;"></span></td>
 			<td><i>Not yet available</i></td>
 			<td><i>Use next section to make changes</i></td>
 		</tr>

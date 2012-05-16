@@ -146,7 +146,10 @@
 					<div class="text10">Your Standing Order has been modified successfully. Please note that next delivery date is adjusted according to the changed delivery date and frequency.</div>
 				</div>
 			<% } %>	
-					
+
+			<fd:QuickShopController id="quickCart" soListId="<%= so.getCustomerListId() %>" action="<%= actionName %>">
+			<%int soAvailableProductCnt = quickCart.getAvailableProductCnt(); %>
+			
 			<fd:GetStandingOrderHelpInfo id="helpSoInfo" so="<%=so%>">
 				<script type="text/javascript">var helpSoInfo=<%=helpSoInfo%>;</script>
 				<!-- orders list -->
@@ -173,7 +176,6 @@
 			</fd:GetStandingOrderHelpInfo>
 			
 			
-			<fd:QuickShopController id="quickCart" soListId="<%= so.getCustomerListId() %>" action="<%= actionName %>">
 			<table style="padding: 0.5em;">
 				<tr>
 					<td valign="top">
@@ -264,15 +266,7 @@
 								<tr>
 									<% FDStandingOrderList l = (FDStandingOrderList)FDListManager.getCustomerList(user.getIdentity(), EnumCustomerListType.SO, so.getCustomerListName()); %>
 									<td style="padding-left:1em;font-weight:bold;">Cart Contents:</td>
-									
-									<%int lineNum=0; %>
-									<logic:iterate id="orderLine" collection="<%= quickCart.getProducts() %>" type="com.freshdirect.fdstore.customer.FDProductSelectionI" indexId="idx">
-										<%ProductModel productNode = orderLine.lookupProduct();
-										if(!((productNode==null || productNode.getSku(orderLine.getSkuCode()).isUnavailable() || orderLine.isInvalidConfig()))) {
-												lineNum++;
-										}%>
-									</logic:iterate>
-									<td><%= lineNum %> item<%=lineNum > 1 ? "s" : "" %></td>
+									<td><%= soAvailableProductCnt %> item<%=soAvailableProductCnt > 1 ? "s" : "" %></td>
 								</tr> 
 								<tr>
 									<td height="8px" colspan="2"></td>

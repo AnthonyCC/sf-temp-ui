@@ -1332,5 +1332,9 @@ public class FDOrderAdapter implements FDOrderI {
 	public boolean hasSignature() {
 		return sale.hasSignature();
 	}
+
+	public int getLineCnt() {
+		return orderLines == null ? 0 : orderLines.size();
+	}
 	
 }
