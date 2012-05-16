@@ -27,7 +27,7 @@
 				</tr>
 				<tr>
 					<td class="promo_detail_label">TSA Promo code:</td>
-					<td class="alignL"><%= (null == promotion.getTsaPromoCode() ||"".equals(promotion.getTsaPromoCode()))?"None - Automatic": promotion.getTsaPromoCode() %></td>
+					<td class="alignL"><%= (null == promotion.getTsaPromoCode() ||"".equals(promotion.getTsaPromoCode()))?" ": promotion.getTsaPromoCode() %></td>
 				</tr>
 				<% if ( promotion.getTerms() != null && !"".equals(promotion.getTerms()) ) { %>
 					<tr>

@@ -170,11 +170,19 @@ public class GetAllPromotionsNewTag extends AbstractPromotionGetterTag {
 		} else {
 			redempCode = "";
 		}
+		
+		String tsaPromoCode = promotion.getTsaPromoCode();
+		if(tsaPromoCode != null) {
+			tsaPromoCode = tsaPromoCode.toUpperCase();
+		} else {
+			tsaPromoCode = "";
+		}
 
 		if( (desc.indexOf(keyword) >= 0) ||
 			(code.indexOf(keyword) >= 0) ||
 			(redempCode.indexOf(keyword) >= 0) ||
-			(name.indexOf(keyword) >= 0)) {
+			(name.indexOf(keyword) >= 0) ||
+			(tsaPromoCode.indexOf(keyword) >= 0)) {
 			isMatched = true;
 		}
 		return isMatched;
