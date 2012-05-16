@@ -67,8 +67,12 @@ public class StandingOrderHelper {
 		int day;
 		
 		/* time window start in hour */
-		int startTime;
-		int endTime;
+		int startHour;
+		int startMinute;
+		
+		int endHour;
+		int endMinute;
+
 		int weekOffset;
 		
 		public int getDay() {
@@ -79,20 +83,37 @@ public class StandingOrderHelper {
 			this.day = day;
 		}
 		
-		public int getStartTime() {
-			return startTime;
+		public int getStartHour() {
+			return startHour;
 		}
 		
-		public void setStartTime(int startTime) {
-			this.startTime = startTime;
+		public void setStartHour(int startHour) {
+			this.startHour = startHour;
 		}
 		
-		public int getEndTime() {
-			return endTime;
+		public int getStartMinute() {
+			return startMinute;
 		}
 		
-		public void setEndTime(int endTime) {
-			this.endTime = endTime;
+		public void setStartMinute(int startMinute) {
+			this.startMinute = startMinute;
+		}
+		
+		
+		public int getEndHour() {
+			return endHour;
+		}
+		
+		public void setEndHour(int endHour) {
+			this.endHour = endHour;
+		}
+
+		public int getEndMinute() {
+			return endMinute;
+		}
+		
+		public void setEndMinute(int endMinute) {
+			this.endMinute = endMinute;
 		}
 
 		public int getWeekOffset() {
@@ -118,11 +139,13 @@ public class StandingOrderHelper {
 			this.day = c.get(Calendar.DAY_OF_WEEK);
 
 			c.setTime(so.getStartTime());
-			this.startTime = c.get(Calendar.HOUR_OF_DAY);
+			this.startHour = c.get(Calendar.HOUR_OF_DAY);
+			this.startMinute = c.get(Calendar.MINUTE);
 
 			c.setTime(so.getEndTime());
-			this.endTime = c.get(Calendar.HOUR_OF_DAY);
-			
+			this.endHour = c.get(Calendar.HOUR_OF_DAY);
+			this.endMinute = c.get(Calendar.MINUTE);
+
 			final int woy =  c.get(Calendar.WEEK_OF_YEAR);
 			this.weekOffset = woy -_curWeek;
 			/* if (this.weekOffset > 0)
@@ -139,10 +162,12 @@ public class StandingOrderHelper {
 			this.day = c.get(Calendar.DAY_OF_WEEK);
 			
 			c.setTime( ts.getBegDateTime());
-			this.startTime = c.get(Calendar.HOUR_OF_DAY);
+			this.startHour = c.get(Calendar.HOUR_OF_DAY);
+			this.startMinute = c.get(Calendar.MINUTE);
 			
 			c.setTime( ts.getEndDateTime());
-			this.endTime = c.get(Calendar.HOUR_OF_DAY);
+			this.endHour = c.get(Calendar.HOUR_OF_DAY);
+			this.endMinute = c.get(Calendar.MINUTE);
 
 			final int woy =  c.get(Calendar.WEEK_OF_YEAR);
 			this.weekOffset = woy -_curWeek;
@@ -157,7 +182,7 @@ public class StandingOrderHelper {
 		 * @return
 		 */
 		public boolean update(FDStandingOrder so) {
-			if (startTime >= endTime)
+			if (startHour >= endHour)
 				return false;
 			
 			if (day < 1 || day > 8)
@@ -175,13 +200,14 @@ public class StandingOrderHelper {
 			c.set(Calendar.DAY_OF_WEEK, day);
 			so.setNextDeliveryDate(c.getTime());
 			
-			c.set(Calendar.HOUR_OF_DAY, startTime);
-			c.set(Calendar.MINUTE, 0); // reset the rest
-			c.set(Calendar.SECOND, 0);
+			c.set(Calendar.HOUR_OF_DAY, startHour);
+			c.set(Calendar.MINUTE, startMinute);
+			c.set(Calendar.SECOND, 0); // reset the rest
 			c.set(Calendar.MILLISECOND, 0);
 			so.setStartTime(c.getTime());
 			
-			c.set(Calendar.HOUR_OF_DAY, endTime);
+			c.set(Calendar.HOUR_OF_DAY, endHour);
+			c.set(Calendar.MINUTE, endMinute);
 			so.setEndTime(c.getTime());
 
 			return true;
@@ -192,7 +218,7 @@ public class StandingOrderHelper {
 		public String toString() {
 			StringBuilder buf = new StringBuilder();
 			
-			buf.append(StandingOrderHelper.formatTime(startTime, endTime));
+			buf.append(StandingOrderHelper.formatTime(startHour, endHour));
 			buf.append(", ");
 			buf.append( DAY_NAMES[ day ] );
 			
@@ -204,7 +230,7 @@ public class StandingOrderHelper {
 		}
 		
 		public String formatTime() {
-			return StandingOrderHelper.formatTime(startTime, endTime);
+			return StandingOrderHelper.formatTime(startHour, endHour);
 		}
 	}
 
