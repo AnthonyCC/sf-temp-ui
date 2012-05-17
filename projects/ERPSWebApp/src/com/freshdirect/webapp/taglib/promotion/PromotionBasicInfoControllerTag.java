@@ -342,6 +342,8 @@ public class PromotionBasicInfoControllerTag extends AbstractControllerTag {
 			}else  if(promotion.isReferralPromo()) {
 				//promotion should be an automatic promotion for referral program
 				result.addError(true, "automaticpromo", " Referral Promotion should be automatic. Please clear the TSA promo code.");
+			} else if(null == promotion.getRedemptionCode() || "".equals(promotion.getRedemptionCode())) {
+				result.addError(true, "tsaCodeDuplicate", " Redemption Code is required to set TSA promo code. Please enter valid redemption code.");
 			}
 		}
 		

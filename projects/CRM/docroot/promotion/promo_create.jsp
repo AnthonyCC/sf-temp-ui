@@ -56,7 +56,10 @@
 				</fd:ErrorHandler>
 				<fd:ErrorHandler result="<%=result%>" name="automaticpromo" id="errorMsg">
 						 <%@ include file="/includes/i_error_messages.jspf" %>   
-					</fd:ErrorHandler>
+				</fd:ErrorHandler>
+				<fd:ErrorHandler result="<%=result%>" name="tsaCodeDuplicate" id="errorMsg">
+						 <%@ include file="/includes/i_error_messages.jspf" %>   
+				</fd:ErrorHandler>
 				<form method='POST' name="frmPromoEditBasic">
 				<%-- Top-Row, page specific nav --%>
 				<div class="promo_page_header">
