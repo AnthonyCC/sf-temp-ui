@@ -5,6 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Formatter;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -13,6 +14,7 @@ import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.FDTimeslot;
 import com.freshdirect.fdstore.standingorders.FDStandingOrder;
 import com.freshdirect.fdstore.util.FDTimeslotUtil;
+import com.freshdirect.framework.util.DateUtil;
 
 /**
  * Helper class for standing orders, any static method which has no place anywhere else should be here.
@@ -99,7 +101,7 @@ public class StandingOrderHelper {
 			this.startMinute = startMinute;
 		}
 		
-		
+
 		public int getEndHour() {
 			return endHour;
 		}
@@ -218,7 +220,7 @@ public class StandingOrderHelper {
 		public String toString() {
 			StringBuilder buf = new StringBuilder();
 			
-			buf.append(StandingOrderHelper.formatTime(startHour, endHour));
+			buf.append(StandingOrderHelper.formatTime(startHour, startMinute, endHour, endMinute));
 			buf.append(", ");
 			buf.append( DAY_NAMES[ day ] );
 			
@@ -230,45 +232,36 @@ public class StandingOrderHelper {
 		}
 		
 		public String formatTime() {
-			return StandingOrderHelper.formatTime(startHour, endHour);
+			return StandingOrderHelper.formatTime(startHour, startMinute, endHour, endMinute);
 		}
 	}
 
 
 	
 	public static String formatTime(Date s, Date e) {
-		int sh = dateToCalendar(s).get(Calendar.HOUR_OF_DAY);
-		int eh = dateToCalendar(e).get(Calendar.HOUR_OF_DAY);
-		
-		return formatTime(sh, eh);
+		return FDTimeslot.format(s, e);
 	}
 	
-	public static String formatTime(int sh, int eh) {
-		StringBuilder sb = new StringBuilder();
+	public static String formatTime(int sh, int sm, int eh, int em) {
+		Calendar c = Calendar.getInstance();
 		
-		if ( sh < 12 ) {
-			sb.append( sh );
-			sb.append( AM );
-		} else if ( sh == 12 ) {
-			sb.append( NOON );			
-		} else {
-			sb.append( sh-12 );
-			sb.append( PM );
-		}
+		Date s, e;
 		
-		sb.append( SEPARATOR );
-		
-		if ( eh < 12 ) {
-			sb.append( eh );
-			sb.append( AM );
-		} else if ( eh == 12 ) {
-			sb.append( NOON );			
-		} else {
-			sb.append( eh-12 );
-			sb.append( PM );
-		}
+		c.set(Calendar.HOUR_OF_DAY, sh);
+		c.set(Calendar.MINUTE, sm);
+		c.set(Calendar.SECOND, 0); // reset the rest
+		c.set(Calendar.MILLISECOND, 0);
 
-		return sb.toString();
+		s = c.getTime();
+		
+		c.set(Calendar.HOUR_OF_DAY, eh);
+		c.set(Calendar.MINUTE, em);
+		c.set(Calendar.SECOND, 0); // reset the rest
+		c.set(Calendar.MILLISECOND, 0);
+		
+		e = c.getTime();
+		
+		return FDTimeslot.format(s, e);
 	}
 
 	public static Calendar dateToCalendar(final Date d) {
