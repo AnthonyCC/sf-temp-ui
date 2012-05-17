@@ -115,9 +115,7 @@
             	String errorText = "FreshDirect is closed on your Standing Order delivery day this week. We have moved your delivery to the next available day and kept your chosen timeslot. Click \"View/Modify\" below to make any necessary changes. <span style=\"font-weight: bold\">Questions or concerns about this change?</span> Please contact your FreshDirect At The Office hospitality team at <a href=\"mailto:"+soCsEmail+"\">"+soCsEmail+"</a>."; %>
             	<%@ include file="/includes/i_error_with_title.jspf" %>
 			<%} %>
-			<% if ( so.isError() && (
-					so.getLastError() != ErrorCode.NO_ADDRESS || 
-					so.getLastError() == ErrorCode.NO_ADDRESS && addr != null )) { %>
+			<% if ( so.isError() ) { %>
 				<!-- old error display -->
 				<div class="text12" style="text-align: center; font-weight: bold; color: #CC3300;">
 					IMPORTANT NOTE: <br/>We were not able to schedule a delivery for <%= nextDlvDateText %><br/><br/><%=so.getErrorHeader()%><br/>
@@ -127,14 +125,14 @@
 					<a href="<%= FDURLUtil.getStandingOrderLandingPage(so, "modify") %>">Click here to change the schedule or options for all future deliveries.</a><br/><br/>
 				</div>
 			<% } %>
-			<% if ( addr == null ) { %>
+			<% if ( addr == null && so.getLastError() != ErrorCode.NO_ADDRESS ) { %>
 				<% String errorText = "Your Standing Order can not be processed or delivered without a Delivery Address. Please open your Standing Order in the \"Change Standing Order Settings\" " +
 					"section below to add a Delivery Address. (Note: changing your Delivery Address may affect timeslot availability.)<br />" +
 					"Need help? Contact your FreshDirect At The Office hospitality team at <a href=\"mailto:"+soCsEmail+"\">"+soCsEmail+"</a>.";
 				String errorTitle = "This Standing Order no longer has a Delivery Address associated with it."; %>
 				<%@ include file="/includes/i_error_with_title.jspf" %>
 			<% } %>
-			<% if( paymentMethod == null ) {%>
+			<% if( paymentMethod == null && so.getLastError() != ErrorCode.PAYMENT) {%>
 				<% String errorText = "Your Standing Order can not be processed or delivered without a Payment Option. Please open your Standing Order in the \"Change Standing Order Settings\" " +
 					"section below to add a Payment Option. Need help? Contact your FreshDirect At The Office hospitality team at <a href=\"mailto:"+soCsEmail+"\">"+soCsEmail+"</a>.";
 				String errorTitle = "This Standing Order no longer has a Payment Option associated with it."; %>
