@@ -110,48 +110,46 @@
 			<fd:GetStandingOrderHelpInfo id="helpSoInfo" so="<%=so%>">
 				<script type="text/javascript">var helpSoInfo=<%=helpSoInfo%>;</script>
 			
-			<% if(instances.size()>1) { %>
-			   	<% String errorTitle = "The number of deliveries this week exceeds the frequency you have chosen for this Standing Order.";
-            	String errorText = "If you are only expecting one of these deliveries, please view the order details and cancel the appropriate delivery."; %>
-            	<%@ include file="/includes/i_error_with_title.jspf" %>
-			<%	}%>
-			
-			<%if(holidayMovement) { %>
-            	<% String errorTitle = "Your delivery this week has been moved.";
-            	String errorText = "FreshDirect is closed on your Standing Order delivery day this week. We have moved your delivery to the next available day and kept your chosen timeslot. Click \"View/Modify\" below to make any necessary changes. <span style=\"font-weight: bold\">Questions or concerns about this change?</span> " + 
-            	"Please <a href=\"/unsupported.jsp\" onclick=\"return CCL.help_so(helpSoInfo, this);\">click here.</a>."; %>
-            	<%@ include file="/includes/i_error_with_title.jspf" %>
-			<%} %>
-			<% if ( so.isError() ) { %>
-				<!-- old error display -->
-				<div class="text12" style="text-align: center; font-weight: bold; color: #CC3300;">
-					IMPORTANT NOTE: <br/>We were not able to schedule a delivery for <%= nextDlvDateText %><br/><br/><%=so.getErrorHeader()%><br/>
-				</div>			
-				<div style="text-align: center;">
-					<%=so.getErrorDetail()%><br/><br/>
-					<a href="<%= FDURLUtil.getStandingOrderLandingPage(so, "modify") %>">Click here to change the schedule or options for all future deliveries.</a><br/><br/>
-				</div>
-			<% } %>
-			<% if ( addr == null && so.getLastError() != ErrorCode.NO_ADDRESS ) { %>
-				<% String errorText = "Your Standing Order can not be processed or delivered without a Delivery Address. Please open your Standing Order in the \"Change Standing Order Settings\" " +
-					"section below to add a Delivery Address. (Note: changing your Delivery Address may affect timeslot availability.) " +
-					"Need help? Please <a href=\"/unsupported.jsp\" onclick=\"return CCL.help_so(helpSoInfo, this);\">click here.</a>.";
-				String errorTitle = "This Standing Order no longer has a Delivery Address associated with it."; %>
-				<%@ include file="/includes/i_error_with_title.jspf" %>
-			<% } %>
-			<% if( paymentMethod == null && so.getLastError() != ErrorCode.PAYMENT) {%>
-				<% String errorText = "Your Standing Order can not be processed or delivered without a Payment Option. Please open your Standing Order in the \"Change Standing Order Settings\" " +
-					"section below to add a Payment Option. " +
-					"Need help? Please <a href=\"/unsupported.jsp\" onclick=\"return CCL.help_so(helpSoInfo, this);\">click here.</a>.";
-				String errorTitle = "This Standing Order no longer has a Payment Option associated with it."; %>
-				<%@ include file="/includes/i_error_with_title.jspf" %>
-			<% } %>	
-			<% if( request.getParameter("tmpl_saved") != null ) { /* [APPDEV-2149] SO template has been successfully saved */ %>
-				<div style="border: 1px solid #969; padding: 5px 5px 5px 5px; border-radius: 5px 5px; margin-bottom: 18px; color: #969" class="text12">
-					<div style="font-weight: bold;">Standing Order Successfully Saved</div>
-					<div class="text10">Your Standing Order has been modified successfully. Please note that next delivery date is adjusted according to the changed delivery date and frequency.</div>
-				</div>
-			<% } %>	
+				<%if(instances.size()>1) {
+				   	String errorTitle = "The number of deliveries this week exceeds the frequency you have chosen for this Standing Order.";
+	            	String errorText = "If you are only expecting one of these deliveries, please view the order details and cancel the appropriate delivery.";
+	            	%><%@ include file="/includes/i_error_with_title.jspf" %><%
+	            }
+				if(holidayMovement) {
+	            	String errorTitle = "Your delivery this week has been moved.";
+	            	String errorText = "FreshDirect is closed on your Standing Order delivery day this week. We have moved your delivery to the next available day and kept your chosen timeslot. Click \"View/Modify\" below to make any necessary changes. <span style=\"font-weight: bold\">Questions or concerns about this change?</span> " + 
+	            	"Please <a href=\"/unsupported.jsp\" onclick=\"return CCL.help_so(helpSoInfo, this);\">click here.</a>.";
+	            	%><%@ include file="/includes/i_error_with_title.jspf" %><%
+	            } 
+				if ( so.isError() ) { %>
+					<div class="text12" style="text-align: center; font-weight: bold; color: #CC3300;">
+						IMPORTANT NOTE: <br/>We were not able to schedule a delivery for <%= nextDlvDateText %><br/><br/><%=so.getErrorHeader()%><br/>
+					</div>			
+					<div style="text-align: center;">
+						<%=so.getErrorDetail()%><br/><br/>
+						<a href="<%= FDURLUtil.getStandingOrderLandingPage(so, "modify") %>">Click here to change the schedule or options for all future deliveries.</a><br/><br/>
+					</div>
+				<% }
+				if ( addr == null && so.getLastError() != ErrorCode.NO_ADDRESS ) {
+					String errorText = "Your Standing Order can not be processed or delivered without a Delivery Address. Please open your Standing Order in the \"Change Standing Order Settings\" " +
+						"section below to add a Delivery Address. (Note: changing your Delivery Address may affect timeslot availability.) " +
+						"Need help? Please <a href=\"/unsupported.jsp\" onclick=\"return CCL.help_so(helpSoInfo, this);\">click here.</a>.";
+					String errorTitle = "This Standing Order no longer has a Delivery Address associated with it.";
+					%><%@ include file="/includes/i_error_with_title.jspf" %><%
+				}
+				if( paymentMethod == null && so.getLastError() != ErrorCode.PAYMENT) {
+					String errorText = "Your Standing Order can not be processed or delivered without a Payment Option. Please open your Standing Order in the \"Change Standing Order Settings\" " +
+						"section below to add a Payment Option. " +
+						"Need help? Please <a href=\"/unsupported.jsp\" onclick=\"return CCL.help_so(helpSoInfo, this);\">click here.</a>.";
+					String errorTitle = "This Standing Order no longer has a Payment Option associated with it.";
+					%><%@ include file="/includes/i_error_with_title.jspf" %><%
+				}	
+				if( request.getParameter("tmpl_saved") != null ) { /* [APPDEV-2149] SO template has been successfully saved */ %>
+					<div style="border: 1px solid #969; padding: 5px 5px 5px 5px; border-radius: 5px 5px; margin-bottom: 18px; color: #969" class="text12">
+						<div style="font-weight: bold;">Standing Order Successfully Saved</div>
+						<div class="text10">Your Standing Order has been modified successfully. Please note that next delivery date is adjusted according to the changed delivery date and frequency.</div>
+					</div>
+				<% } %>	
 
 				<!-- orders list -->
 				<table width="100%" bgcolor="#333333" style="margin-bottom: 18px;">
