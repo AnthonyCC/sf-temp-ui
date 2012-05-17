@@ -318,8 +318,8 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag<Result> {
 		final FDDeliveryTimeslotModel deliveryModel = new FDDeliveryTimeslotModel();
 
 
-		// TODO: figure out the appropriate context
-		final ErpAddressModel myAddress = AddressFinder.getShipToAddress(user, "", TimeslotContext.CHECKOUT_TIMESLOTS, request);
+		//Allowing COS customers to use HOME capacity for the configured set of HOME zones
+		ErpAddressModel tsAddress = performCosResidentialMerge();
 
 		
 		DateRange range = createDateRange(8);
@@ -347,7 +347,7 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag<Result> {
 		
 			// Fetch time slots
 			FDDynamicTimeslotList tsList = FDDeliveryManager.getInstance().getTimeslotsForDateRangeAndZone(
-					range.getStartDate(), range.getEndDate(), null, myAddress);
+					range.getStartDate(), range.getEndDate(), null, tsAddress);
 
 			tsu = new FDTimeslotUtil(tsList.getTimeslots(), c0, c1, restrictions, tsList.getResponseTime());
 			singleTSset.add( tsu );
@@ -367,7 +367,7 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag<Result> {
 		
 		DlvTimeslotStats stats = TimeslotLogic.filterDeliveryTimeSlots(user, range, restrictions, singleTSset,
 				Collections.<String>emptySet(), Collections.<GeographyRestriction>emptyList(), deliveryModel, alcoholRestrictions,
-				false, myAddress,
+				false, address,
 				true);
 		// Post-op: remove unnecessary timeslots
 		TimeslotLogic.purge(singleTSset);
@@ -598,22 +598,23 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag<Result> {
 
 	private ErpAddressModel performCosResidentialMerge()
 			throws FDResourceException {
-		ErpAddressModel timeslotAddress=address;
-		if(address!=null){
-			if(EnumServiceType.CORPORATE.equals(address.getServiceType())){
+		ErpAddressModel timeslotAddress = address;
+		if ( address != null ) {
+			final EnumServiceType serviceType = address.getServiceType();
+			if ( EnumServiceType.CORPORATE.equals( serviceType )) {
 				try{
 					DlvServiceSelectionResult serviceResult = FDDeliveryManager.getInstance().checkAddress(address);
-			 		EnumDeliveryStatus status = serviceResult.getServiceStatus(address.getServiceType());
+			 		EnumDeliveryStatus status = serviceResult.getServiceStatus(serviceType);
 			 		if(EnumDeliveryStatus.COS_ENABLED.equals(status)){	
 			 			//Clone the address model object
-			 			timeslotAddress= new ErpAddressModel(address);
+			 			timeslotAddress = new ErpAddressModel(address);
 			 			timeslotAddress.setServiceType(EnumServiceType.HOME);
 			 		}
 			 		
-				}catch (FDInvalidAddressException iae) {
+				} catch (FDInvalidAddressException iae) {
 					LOGGER
 					.warn("GEOCODE FAILED FOR ADDRESS setRegularDeliveryAddress  FDInvalidAddressException :"
-							+ address + "EXCEPTION :" + iae);
+							+ address, iae);
 				}
 			}
 		}
