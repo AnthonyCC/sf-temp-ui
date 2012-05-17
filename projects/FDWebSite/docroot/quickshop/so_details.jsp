@@ -103,16 +103,23 @@
 			
 			<script type="text/javascript">setSoId(<%= so.getId() %>);</script>
 			
+
+			<fd:QuickShopController id="quickCart" soListId="<%= so.getCustomerListId() %>" action="<%= actionName %>">
+			<%int soAvailableProductCnt = quickCart.getAvailableProductCnt(); %>
+			
+			<fd:GetStandingOrderHelpInfo id="helpSoInfo" so="<%=so%>">
+				<script type="text/javascript">var helpSoInfo=<%=helpSoInfo%>;</script>
+			
 			<% if(instances.size()>1) { %>
 			   	<% String errorTitle = "The number of deliveries this week exceeds the frequency you have chosen for this Standing Order.";
             	String errorText = "If you are only expecting one of these deliveries, please view the order details and cancel the appropriate delivery."; %>
             	<%@ include file="/includes/i_error_with_title.jspf" %>
 			<%	}%>
 			
-			<% String soCsEmail = FDStoreProperties.getStandingOrderCsEmail();
-			if(holidayMovement) { %>
+			<%if(holidayMovement) { %>
             	<% String errorTitle = "Your delivery this week has been moved.";
-            	String errorText = "FreshDirect is closed on your Standing Order delivery day this week. We have moved your delivery to the next available day and kept your chosen timeslot. Click \"View/Modify\" below to make any necessary changes. <span style=\"font-weight: bold\">Questions or concerns about this change?</span> Please contact your FreshDirect At The Office hospitality team at <a href=\"mailto:"+soCsEmail+"\">"+soCsEmail+"</a>."; %>
+            	String errorText = "FreshDirect is closed on your Standing Order delivery day this week. We have moved your delivery to the next available day and kept your chosen timeslot. Click \"View/Modify\" below to make any necessary changes. <span style=\"font-weight: bold\">Questions or concerns about this change?</span> " + 
+            	"Please <a href=\"/unsupported.jsp\" onclick=\"return CCL.help_so(helpSoInfo, this);\">click here.</a>."; %>
             	<%@ include file="/includes/i_error_with_title.jspf" %>
 			<%} %>
 			<% if ( so.isError() ) { %>
@@ -127,14 +134,15 @@
 			<% } %>
 			<% if ( addr == null && so.getLastError() != ErrorCode.NO_ADDRESS ) { %>
 				<% String errorText = "Your Standing Order can not be processed or delivered without a Delivery Address. Please open your Standing Order in the \"Change Standing Order Settings\" " +
-					"section below to add a Delivery Address. (Note: changing your Delivery Address may affect timeslot availability.)<br />" +
-					"Need help? Contact your FreshDirect At The Office hospitality team at <a href=\"mailto:"+soCsEmail+"\">"+soCsEmail+"</a>.";
+					"section below to add a Delivery Address. (Note: changing your Delivery Address may affect timeslot availability.) " +
+					"Need help? Please <a href=\"/unsupported.jsp\" onclick=\"return CCL.help_so(helpSoInfo, this);\">click here.</a>.";
 				String errorTitle = "This Standing Order no longer has a Delivery Address associated with it."; %>
 				<%@ include file="/includes/i_error_with_title.jspf" %>
 			<% } %>
 			<% if( paymentMethod == null && so.getLastError() != ErrorCode.PAYMENT) {%>
 				<% String errorText = "Your Standing Order can not be processed or delivered without a Payment Option. Please open your Standing Order in the \"Change Standing Order Settings\" " +
-					"section below to add a Payment Option. Need help? Contact your FreshDirect At The Office hospitality team at <a href=\"mailto:"+soCsEmail+"\">"+soCsEmail+"</a>.";
+					"section below to add a Payment Option. " +
+					"Need help? Please <a href=\"/unsupported.jsp\" onclick=\"return CCL.help_so(helpSoInfo, this);\">click here.</a>.";
 				String errorTitle = "This Standing Order no longer has a Payment Option associated with it."; %>
 				<%@ include file="/includes/i_error_with_title.jspf" %>
 			<% } %>	
@@ -145,11 +153,6 @@
 				</div>
 			<% } %>	
 
-			<fd:QuickShopController id="quickCart" soListId="<%= so.getCustomerListId() %>" action="<%= actionName %>">
-			<%int soAvailableProductCnt = quickCart.getAvailableProductCnt(); %>
-			
-			<fd:GetStandingOrderHelpInfo id="helpSoInfo" so="<%=so%>">
-				<script type="text/javascript">var helpSoInfo=<%=helpSoInfo%>;</script>
 				<!-- orders list -->
 				<table width="100%" bgcolor="#333333" style="margin-bottom: 18px;">
 					<tr><td><img src="/media_stat/images/template/quickshop/modify_next_delivery.png" width="192" height="22"></td>
