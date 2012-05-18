@@ -271,9 +271,18 @@
 		             this.highlightCell(elCell); 
 		         } 
 		      }; 
+		      
+		var onCellEdit = function() {
+			  if(this._oCellEditor == null){
+				  alert('Attribute value cannot be empty. Should contain a value or unknown');
+				  return;
+			  }    
+		};
 		attributeDataTable.subscribe("cellMouseoverEvent", highlightEditableCell); 
 		attributeDataTable.subscribe("cellMouseoutEvent", attributeDataTable.onEventUnhighlightCell); 
 		attributeDataTable.subscribe('cellClickEvent', attributeDataTable.onEventShowCellEditor);
+		
+		attributeDataTable.subscribe("editorSaveEvent", onCellEdit); 
 		
 		return { 
   			            oDS: attributeDataSource, 

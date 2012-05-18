@@ -184,8 +184,8 @@ public class AssetProviderController extends BaseJsonRpcController  implements I
 			
 			if (assetAttributeTypes != null && assetAttributeTypes.size() > 0)
 				getAssetManagerService().removeEntity(assetAttributeTypes);		
-			else
-				getAssetManagerService().saveEntity(attributeType);
+			
+			getAssetManagerService().saveEntity(attributeType);
 			
 			// add new attribute to assets with UNKNOWN value
 			Collection assets = getAssetManagerService().getAssets(assetType, null, null);
