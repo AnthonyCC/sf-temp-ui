@@ -133,14 +133,14 @@ your account information, this is the place to do it.<br></td>
 			<font class="text13bold">
 						<a href="<%=response.encodeURL("/your_account/reserve_timeslot.jsp")%>">Reserve a Delivery Time </a>
 			</font><br>
-			Reserve a delivery slot before you place your order.
+			Reserve your delivery timeslot before you place your order.
 			<br><br>
 		<%}%>
 		<%if(user.isEligibleForDeliveryPass()){%>
 			<font class="text13bold">
 						<a href="<%=response.encodeURL("/your_account/delivery_pass.jsp")%>">FreshDirect DeliveryPass</a>
 			</font><br>
-						See  your membership details.
+						See your membership and renewal details.
 			<br><br>
 		<%}%>
 		
@@ -152,7 +152,7 @@ your account information, this is the place to do it.<br></td>
 		<font class="text13bold">
 		<a href="<%=response.encodeURL("/your_account/payment_information.jsp")%>">Payment Options</a>
 		</font><br>
-		Update your payment information.
+		Update your payment information or add a new payment option.
 		<br><br>
 		<font class="text13bold">
 		<a href="<%=response.encodeURL("/your_account/signin_information.jsp")%>">Your Account Preferences</a>
@@ -161,7 +161,7 @@ your account information, this is the place to do it.<br></td>
 		<br><br>
 		<% if (!FDStoreProperties.isEmailOptdownEnabled()) { %>
 			<a href="<%=response.encodeURL("/your_account/newsletter.jsp")%>"><font class="text13bold">President's Picks Newsletter</a></font><br />
-				Subscribe to the President's Picks alert to get each week's deals delivered right to your inbox.<br /><br />
+				Subscribe to the President's Picks alert to get each week's deals delivered to your inbox.<br /><br />
 		<%}%>
 		<font class="text13bold">
 		<a href="<%=response.encodeURL("/your_account/reminder_service.jsp")%>">Reminder Service</a>
@@ -171,12 +171,12 @@ your account information, this is the place to do it.<br></td>
         <font class="text13bold">
 		<a href="<%=response.encodeURL("/quickshop/all_lists.jsp")%>">Your Shopping Lists</a> </font>
 		<br>
-		Visit Quickshop for your shopping lists
+		Visit Quickshop to view, edit and shop with your shopping lists.
 		<br><br>
         <font class="text13bold">
 		<a href="<%=response.encodeURL("/your_account/customer_profile_summary.jsp")%>">Your Profile</a> </font>  <font class="text13bold" color="#990000"></font>
 		<br>
-		Tell us your food preferences
+		Tell us your food preferences.
 		<br><br>
 		<% 
 			/*
@@ -187,7 +187,7 @@ your account information, this is the place to do it.<br></td>
 		%>
 				<a href="<%=response.encodeURL("/your_account/giftcards.jsp")%>" class="text13bold">Gift Cards</a>
 				<br>
-				Check your received and purchased Gift Cards
+				View your history of received and purchased FreshDirect Gift Cards.
 				<br><br>
 		<% } %>
 		<% if(user.isReferralProgramAvailable()) { 
@@ -208,7 +208,7 @@ your account information, this is the place to do it.<br></td>
 		<font class="text13bold">
 		<a href="<%=response.encodeURL("/your_account/credits.jsp")%>">Account Credits</a> </font>  <font class="text13bold" color="#990000"></font>
 		<br>
-		View your credit balance and history
+		View your credit balance and credit history.
 		<br><br>
 	</td>
 	<td width="30"><img src="/media_stat/images/layout/clear.gif" ALT="" width="30" height="1"></td>
