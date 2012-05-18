@@ -548,13 +548,13 @@ public class HandOffAutoDispatchAction extends AbstractHandOffAction {
 								coll.put(truck, 0);
 							if(EnumTruckPreference.TRUCK_PREF_01.getName().equals(stat.getPrefKey()))
 								coll.put(truck, coll.get(truck) + 5);
-							else if(EnumTruckPreference.TRUCK_PREF_01.getName().equals(stat.getPrefKey()))
+							else if(EnumTruckPreference.TRUCK_PREF_02.getName().equals(stat.getPrefKey()))
 								coll.put(truck, coll.get(truck) + 4);
-							else if(EnumTruckPreference.TRUCK_PREF_01.getName().equals(stat.getPrefKey()))
+							else if(EnumTruckPreference.TRUCK_PREF_03.getName().equals(stat.getPrefKey()))
 								coll.put(truck, coll.get(truck) + 3);
-							else if(EnumTruckPreference.TRUCK_PREF_01.getName().equals(stat.getPrefKey()))
+							else if(EnumTruckPreference.TRUCK_PREF_04.getName().equals(stat.getPrefKey()))
 								coll.put(truck, coll.get(truck) + 2);
-							else if(EnumTruckPreference.TRUCK_PREF_01.getName().equals(stat.getPrefKey()))
+							else if(EnumTruckPreference.TRUCK_PREF_05.getName().equals(stat.getPrefKey()))
 								coll.put(truck, coll.get(truck) + 1);						
 						}
 					}
@@ -627,7 +627,8 @@ public class HandOffAutoDispatchAction extends AbstractHandOffAction {
 				free.add(dispatch);
 
 		List<DispatchTruckFrequency> tuples = new ArrayList<DispatchTruckFrequency>();
-		while (!free.isEmpty()) {
+		long autoAssignStart = System.currentTimeMillis();
+		while (!free.isEmpty()) {			
 			tuples.clear();
 			for (Dispatch dispatch : free) {
 				LinkedHashMap<Truck, Integer> preferences = dispatch.getEmployee() != null ? dispatch.getEmployee().getPreferences(): new LinkedHashMap<Truck, Integer>();
@@ -688,31 +689,26 @@ public class HandOffAutoDispatchAction extends AbstractHandOffAction {
 
 					dispatch = freeDispatches.get(0);
 					if (!unused.isEmpty()) {
-						if(dispatch.isTrailer()) {
-							Iterator itr = unused.iterator();
-							while(itr.hasNext()){
-								Truck tempTruck = (Truck)itr.next();
-								if(tempTruck.isTrailer()) {
-									truck = tempTruck;  // practically random
-									unused.remove(truck);
-									break;
-								}
-							}
-						} else {
-							Iterator itr = unused.iterator();
-							while(itr.hasNext()){
-								Truck tempTruck = (Truck)itr.next();
-								if(!tempTruck.isTrailer()) {
-									truck = tempTruck;  // practically random
-									unused.remove(truck);
-									break;
-								}
+						Iterator itr = unused.iterator();
+						while(itr.hasNext()){
+							Truck tempTruck = (Truck)itr.next();
+							if(dispatch.isTrailer() && tempTruck.isTrailer()) {
+								truck = tempTruck;  // random
+								unused.remove(truck);
+								break;
+							} else if(!dispatch.isTrailer() && !tempTruck.isTrailer()) {
+								truck = tempTruck;  // random
+								unused.remove(truck);
+								break;
 							}
 						}
-					} else {
+					}						
+					if(truck == null) {
 						truck = Truck.newVirtualTruck();
 						if(dispatch.isTrailer()) 
 							truck.setTrailer(true);
+						else
+							truck.setTrailer(false);
 						trucks.add(truck);
 						truckMap.put(truck.getId(), truck);
 					}
@@ -721,7 +717,7 @@ public class HandOffAutoDispatchAction extends AbstractHandOffAction {
 			if(dispatch != null && truck != null) {
 				if(dispatch.isTrailer() && truck.isTrailer()){
 					dispatch.setTruck(truck);
-					LOGGER.info("Free Dispatch >>> Leaves>> "+dispatch.getLeaves()+" nextAvailable>> "+dispatch.getNextAvailable()+" Trailer Route>>> "+dispatch.getRoute()+" Trailer Truck>>> "+dispatch.getTruck().getId());
+					LOGGER.info("Free Trailer Dispatch >>> Leaves>> "+dispatch.getLeaves()+" nextAvailable>> "+dispatch.getNextAvailable()+" Trailer Route>>> "+dispatch.getRoute()+" Trailer Truck>>> "+dispatch.getTruck().getId());
 					engaged.add(dispatch);
 					free.remove(dispatch);
 				}
@@ -731,6 +727,135 @@ public class HandOffAutoDispatchAction extends AbstractHandOffAction {
 					engaged.add(dispatch);
 					free.remove(dispatch);
 				}	
+			}
+			long autoAssignEnd = System.currentTimeMillis();
+			if((autoAssignEnd - autoAssignStart)/1000 > 60) {
+				throw new RoutingServiceException("Auto-assignment taking longer than usual. Please check enough truck/trialer assets available In-service", null, IIssue.PROCESS_AUTODISPATCH_ERROR);
+			}
+		}
+
+		LOGGER.info("Auto-assignment took " + (System.currentTimeMillis() - start) + "ms");
+	}
+	
+	private void assignAutomatically1() {
+		LOGGER.info("Auto-assignment started...");
+		long start = System.currentTimeMillis();
+
+		Set<Dispatch> engaged = new HashSet<Dispatch>();
+		Set<Dispatch> free = new HashSet<Dispatch>();
+		Set<Truck> unused = new HashSet<Truck>(trucks);
+		for (Dispatch dispatch : dispatches)
+			if (dispatch.getTruck() != null) {
+				engaged.add(dispatch);
+				unused.remove(dispatch.getTruck());
+			} else
+				free.add(dispatch);
+
+		List<DispatchTruckFrequency> tuples = new ArrayList<DispatchTruckFrequency>();
+		long autoAssignStart = System.currentTimeMillis();
+		while (!free.isEmpty()) {			
+			tuples.clear();
+			for (Dispatch dispatch : free) {
+				LinkedHashMap<Truck, Integer> preferences = dispatch.getEmployee() != null ? dispatch.getEmployee().getPreferences(): new LinkedHashMap<Truck, Integer>();
+				TRUCK: for (Truck truck : preferences.keySet()) {
+					for (Dispatch engDispatch : engaged)
+						if (engDispatch.getTruck().equals(truck) && engDispatch.collide(dispatch))
+							continue TRUCK;
+
+					tuples.add(new DispatchTruckFrequency(dispatch, truck, preferences.get(truck)));
+					break TRUCK;
+				}
+			}
+			// reverse sort
+			Collections.sort(tuples, new Comparator<DispatchTruckFrequency>() {
+				@Override
+				public int compare(DispatchTruckFrequency o1, DispatchTruckFrequency o2) {
+					// !!! reverse sort !!!
+					int i = o2.frequency - o1.frequency;
+					if (i != 0)
+						return i;
+					i = o2.truck.compareTo(o1.truck);
+					if (i != 0)
+						return i;
+					if(o2.dispatch.getEmployee()!=null && o1.dispatch.getEmployee()!=null)
+						return i;
+					return o2.dispatch.getEmployee().getId().compareTo(o1.dispatch.getEmployee().getId());
+				}
+			});
+			Dispatch dispatch;
+			Truck truck = null;
+			SELECT: {
+				if (!tuples.isEmpty()) {
+					DispatchTruckFrequency dtf = tuples.get(0);
+					dispatch = dtf.dispatch;
+					truck = dtf.truck;
+				} else {
+					List<Dispatch> freeDispatches = new ArrayList<Dispatch>(free);
+					Collections.sort(freeDispatches, new Comparator<Dispatch>() {
+						@Override
+						public int compare(Dispatch o1, Dispatch o2) {
+							if(o1.getEmployee() != null && o2.getEmployee() != null)
+								return o1.getEmployee().getId().compareTo(o2.getEmployee().getId());
+							return 0;
+						}
+					});
+					// find the first not colliding
+					for (Dispatch d : freeDispatches)
+						COLLISION: for (Dispatch e : engaged)
+							if (!d.collide(e) && !d.isTrailer() && !e.getTruck().isTrailer()) {
+								for (Dispatch f : engaged)
+									if (!f.getId().equals(e.getId()) && e.getTruck().equals(f.getTruck()) &&
+											d.collide(f))
+										continue COLLISION;
+								dispatch = d;
+								truck = e.getTruck();
+								break SELECT;
+							}
+
+					dispatch = freeDispatches.get(0);
+					if (!unused.isEmpty()) {
+						Iterator itr = unused.iterator();
+						while(itr.hasNext()){
+							Truck tempTruck = (Truck)itr.next();
+							if(dispatch.isTrailer() && tempTruck.isTrailer()) {
+								truck = tempTruck;  // practically random
+								unused.remove(truck);
+								break;
+							} else if(!dispatch.isTrailer() && !tempTruck.isTrailer()) {
+								truck = tempTruck;  // practically random
+								unused.remove(truck);
+								break;
+							}
+						}
+					}						
+					if(truck == null) {
+						truck = Truck.newVirtualTruck();
+						if(dispatch.isTrailer()) 
+							truck.setTrailer(true);
+						else
+							truck.setTrailer(false);
+						trucks.add(truck);
+						truckMap.put(truck.getId(), truck);
+					}
+				}
+			}
+			if(dispatch != null && truck != null) {
+				if(dispatch.isTrailer() && truck.isTrailer()){
+					dispatch.setTruck(truck);
+					LOGGER.info("Free Trailer Dispatch >>> Leaves>> "+dispatch.getLeaves()+" nextAvailable>> "+dispatch.getNextAvailable()+" Trailer Route>>> "+dispatch.getRoute()+" Trailer Truck>>> "+dispatch.getTruck().getId());
+					engaged.add(dispatch);
+					free.remove(dispatch);
+				}
+				if(!dispatch.isTrailer() && !truck.isTrailer()){
+					dispatch.setTruck(truck);
+					LOGGER.info("Free Dispatch >>> Leaves>> "+dispatch.getLeaves()+" nextAvailable>> "+dispatch.getNextAvailable()+" Route>>> "+dispatch.getRoute()+" Truck>>> "+dispatch.getTruck().getId());
+					engaged.add(dispatch);
+					free.remove(dispatch);
+				}	
+			}
+			long autoAssignEnd = System.currentTimeMillis();
+			if((autoAssignEnd - autoAssignStart)/1000 > 60) {
+				throw new RoutingServiceException("Auto-assignment taking longer than usual. Please check enough truck/trialer assets available In-service", null, IIssue.PROCESS_AUTODISPATCH_ERROR);
 			}
 		}
 
