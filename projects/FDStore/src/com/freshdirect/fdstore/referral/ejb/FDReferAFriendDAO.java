@@ -227,8 +227,7 @@ public class FDReferAFriendDAO {
                                                         "where s.CUSTOMER_ID = ? " +
                                                           "and     PP.SALE_ID = S.ID " +
                                                           "and     S.STATUS = 'STL' " +
-                                                          "and     RP.PROMOTION_ID = PP.PROMOTION_ID " +
-                                                          "and     trunc(RP.EXPIRATION_DATE) > trunc(sysdate)"; 
+                                                          "and     RP.PROMOTION_ID = PP.PROMOTION_ID"; 
 	
 	public static String checkIfUserUsedReferralPromotion(Connection conn, String customerId) throws SQLException {
 		PreparedStatement ps = null;
