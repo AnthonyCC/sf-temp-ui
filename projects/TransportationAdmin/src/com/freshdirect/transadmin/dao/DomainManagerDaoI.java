@@ -2,11 +2,13 @@ package com.freshdirect.transadmin.dao;
 
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import org.springframework.dao.DataAccessException;
 
+import com.freshdirect.transadmin.model.CapacitySnapshot;
 import com.freshdirect.transadmin.model.DispositionType;
 import com.freshdirect.transadmin.model.EmployeeRoleType;
 import com.freshdirect.transadmin.model.EmployeeSubRoleType;
@@ -18,6 +20,7 @@ import com.freshdirect.transadmin.model.Region;
 import com.freshdirect.transadmin.model.TrnAdHocRoute;
 import com.freshdirect.transadmin.model.TrnArea;
 import com.freshdirect.transadmin.model.TrnCutOff;
+//import com.freshdirect.transadmin.model.TrnPlantCapacity;
 import com.freshdirect.transadmin.model.TrnZoneType;
 import com.freshdirect.transadmin.model.VIRRecord;
 import com.freshdirect.transadmin.model.Zone;
@@ -52,7 +55,10 @@ public interface DomainManagerDaoI extends BaseManagerDaoI {
 	
 	Collection getCutOffs() throws DataAccessException;
 	
+	//Collection getPlantCapacities(Date dispatchDate) throws DataAccessException;
 	//Map getRouteNumberGroup(String date, String cutOff, String groupCode) throws DataAccessException;
+	
+	//TrnPlantCapacity getPlantCapacity(String id) throws DataAccessException;
 	
 	void saveRouteNumberGroup(Map routeMapping) throws DataAccessException;
 	
@@ -163,4 +169,11 @@ public interface DomainManagerDaoI extends BaseManagerDaoI {
 	SectorZipcode getSectorZipCode(String zipCode);
 	
 	Collection getDispatchResource(Date dispatchDate, String dispatchType)throws DataAccessException;
+
+	boolean saveToSnapshot(List<CapacitySnapshot> snapshots);
+
+	Collection getSnapshotLocations();
+
+	Object getSnapshotLocation(String buildingId, String serviceType);
+
 }
