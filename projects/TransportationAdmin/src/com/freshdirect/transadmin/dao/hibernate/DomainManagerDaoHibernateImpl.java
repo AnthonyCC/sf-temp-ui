@@ -19,6 +19,7 @@ import org.springframework.orm.hibernate3.HibernateCallback;
 import com.freshdirect.transadmin.model.EmployeeTruckPreference;
 import com.freshdirect.transadmin.constants.EnumIssueStatus;
 import com.freshdirect.transadmin.dao.DomainManagerDaoI;
+import com.freshdirect.transadmin.model.CapacitySnapshot;
 import com.freshdirect.transadmin.model.DispositionType;
 import com.freshdirect.transadmin.model.EmployeeRole;
 import com.freshdirect.transadmin.model.EmployeeRoleType;
@@ -35,6 +36,7 @@ import com.freshdirect.transadmin.model.RouteMappingId;
 import com.freshdirect.transadmin.model.TrnAdHocRoute;
 import com.freshdirect.transadmin.model.TrnArea;
 import com.freshdirect.transadmin.model.TrnCutOff;
+//import com.freshdirect.transadmin.model.TrnPlantCapacity;
 import com.freshdirect.transadmin.model.TrnZoneType;
 import com.freshdirect.transadmin.model.VIRRecord;
 import com.freshdirect.transadmin.model.Zone;
@@ -78,7 +80,6 @@ public class DomainManagerDaoHibernateImpl
 	public String[] getDays() throws DataAccessException {
 		return TransStringUtil.getDays();
 	}
-
 	public String[] getTimings() throws DataAccessException {
 		return new String[]{"AM","PM"};
 	}	
@@ -108,7 +109,15 @@ public class DomainManagerDaoHibernateImpl
 		return getDataList("TrnCutOff Order By  sequenceNo");
 	}
 
-		
+/*	public Collection getPlantCapacities(Date dispatchDate) throws DataAccessException {
+		StringBuffer strBuf = new StringBuffer();
+		strBuf.append("from TrnPlantCapacity pc where trunc(dispatchDate) = ?");
+		return (Collection) getHibernateTemplate().find(strBuf.toString(),new Object[] { dispatchDate });
+	}
+	
+	public TrnPlantCapacity getPlantCapacity(String id) throws DataAccessException {
+		return (TrnPlantCapacity)getEntityById("TrnPlantCapacity","id",id);
+	}	*/
 	public void saveRouteNumberGroup(final Map routeMapping) throws DataAccessException {
 		
 		List _routeMapping = new ArrayList();
@@ -620,6 +629,7 @@ public class DomainManagerDaoHibernateImpl
 	public SectorZipcode getSectorZipCode(String zipCode) throws DataAccessException {
 		return (SectorZipcode)getEntityById("SectorZipcode", "zipcode", zipCode);
 	}
+
 	
 	public Collection getDispatchResource(Date dispatchDate, String dispatchType)throws DataAccessException {
 
@@ -627,5 +637,23 @@ public class DomainManagerDaoHibernateImpl
 		strBuf.append("from DispatchResource dr where dr.id.contextId in (select d.dispatchId from Dispatch d where d.dispatchDate = ? and d.dispatchType = ? ) ");		
 				
 		return (Collection) getHibernateTemplate().find(strBuf.toString(),	new Object[] { dispatchDate, dispatchType });
+	}
+
+	@Override
+	public boolean saveToSnapshot(List<CapacitySnapshot> snapshots){
+		saveEntityList(snapshots);
+		return true;
+	}
+	
+	public Collection getSnapshotLocations(){
+		return getDataList("CapacitySnapshot cs , DlvBuilding db where db.buildingId = cs.buildingId");
+	}
+	
+	public Object getSnapshotLocation(String buildingId,
+			String serviceType){
+		Collection collection = this.getHibernateTemplate().find("from CapacitySnapshot cs where cs.buildingId='"+buildingId+"' and cs.servicetype='"+serviceType+"'");
+		if(collection==null || collection.size()==0) return null;
+		Iterator iterator = collection.iterator();
+		return iterator.next();
 	}
 }

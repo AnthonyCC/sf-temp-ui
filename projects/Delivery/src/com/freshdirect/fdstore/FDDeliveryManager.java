@@ -14,7 +14,7 @@ import javax.ejb.EJBException;
 import javax.ejb.FinderException;
 import javax.ejb.ObjectNotFoundException;
 import javax.naming.NamingException;
-
+import com.freshdirect.delivery.routing.ejb.RoutingActivityType;
 import org.apache.log4j.Category;
 
 import com.freshdirect.analytics.EventType;
@@ -51,7 +51,7 @@ import com.freshdirect.delivery.model.UnassignedDlvReservationModel;
 import com.freshdirect.delivery.restriction.DlvRestrictionsList;
 import com.freshdirect.delivery.restriction.GeographyRestriction;
 import com.freshdirect.delivery.restriction.RestrictionI;
-import com.freshdirect.delivery.routing.ejb.RoutingActivityType;
+
 import com.freshdirect.erp.EnumStateCodes;
 import com.freshdirect.framework.core.ServiceLocator;
 import com.freshdirect.framework.util.TimedLruCache;
@@ -403,7 +403,7 @@ public class FDDeliveryManager {
 	}
 
 
-	public Map<String, Map<Date,Date>> getCutoffTimes(AddressModel address, Date deliveryDate) throws FDResourceException {
+/*	public Map<String, Map<Date,Date>> getCutoffTimes(AddressModel address, Date deliveryDate) throws FDResourceException {
 		try {
 			DlvManagerSB sb = getDlvManagerHome().create();
 			return sb.getCutoffTimes(address, deliveryDate);
@@ -412,7 +412,7 @@ public class FDDeliveryManager {
 		} catch (CreateException ce) {
 			throw new FDResourceException(ce);
 		} 
-	}
+	}*/
 
 	public FDDynamicTimeslotList getTimeslotsForDateRangeAndZone(Date begDate, Date endDate,  TimeslotEventModel event,ContactAddressModel address) throws FDResourceException {
 		try {			
@@ -861,7 +861,7 @@ public class FDDeliveryManager {
 		}
 	}
 
-	private DlvManagerHome getDlvManagerHome() {
+	public DlvManagerHome getDlvManagerHome() {
 		try {
 			return (DlvManagerHome) serviceLocator.getRemoteHome(FDStoreProperties.getDeliveryManagerHome());
 		} catch (NamingException ne) {
