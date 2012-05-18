@@ -57,7 +57,8 @@ public class Issue implements IIssue {
 		
 		messages.put(PROCESS_RETRIEVEWAVEINSTANCE_UNSUCCESSFUL,"Retrieve Wave Instance Failed");
 		messages.put(PROCESS_SAVEWAVEINSTANCE_UNSUCCESSFUL,"Save Wave Instance Failed");
-		messages.put(PROCESS_WAVEINSTANCE_NOTPUBLISHED,"Plan not published");		
+		messages.put(PROCESS_WAVEINSTANCE_NOTPUBLISHED,"Plan not published");
+		messages.put(PROCESS_AUTODISPATCH_ERROR,"Auto-Dispatch running longer than usual");
 	}
 	
 	public static String getMessage(String id) {

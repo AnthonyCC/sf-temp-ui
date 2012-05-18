@@ -57,4 +57,6 @@ public interface IIssue {
 	
 	public final static String PROCESS_WAVEINSTANCE_NOTPUBLISHED = "ISSUE039";
 	
+	public final static String PROCESS_AUTODISPATCH_ERROR = "ISSUE040";
+	
 }
