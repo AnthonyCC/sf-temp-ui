@@ -10,9 +10,9 @@ public enum EnumCrisisMngBatchActionType {
 	     case ORDERDATAIN: return "ODC";
 	     case ORDERCANCEL: return "OCL";
 	     case CREATERESERVATION: return "CRV";
-	     case PLACEORDER: return "PWO";
+	     case PLACEORDER: return "POR";
 	     case COMPLETE: return "CPD";
-	     case CANCEL: return "CCL";
+	     case CANCEL: return "CAN";
 	     default: return "";
 	   }
 	}

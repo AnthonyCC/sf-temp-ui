@@ -38,7 +38,7 @@ public interface EmployeeManagerI extends BaseManagerI {
 	
 	Collection getKronosTerminatedEmployees();
 	
-	Collection getEmployeesByRole(String roleTypeId);
+	Collection getEmployeesByRole(String roleTypeId, String dispatchType, Date dispatchDate);
 	
 	Collection getSupervisors();
 	

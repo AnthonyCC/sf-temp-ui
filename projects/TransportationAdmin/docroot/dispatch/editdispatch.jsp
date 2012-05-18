@@ -39,6 +39,7 @@
 	  <form:hidden path="overrideUser" />
 	  <form:hidden path="firstDeliveryTimeModified"/>
       <form:hidden path="destFacilityModified"/>
+      <form:hidden path="dispatchTypeModified"/>
       
       <input type=hidden id="curr_gpsNumber" value="" />
       <input type=hidden id="curr_ezpassNumber" value="" />
@@ -86,6 +87,16 @@
 						</td>   
 							<td width="200"><form:errors path="dispatchDate" />&nbsp;</td>
 						</tr>
+						<tr>
+								<td>Dispatch Type</td>
+								<td> 
+									<form:select path="dispatchType" onChange="populateRegion(this);">
+										<%-- <form:option value="" label="--Please choose Dispatch Type"/> --%>
+										<form:options items="${dispatchTypes}" itemLabel="desc" itemValue="name" />
+									</form:select> 
+								</td>
+								<td><form:errors path="dispatchType" />&nbsp;</td>
+						</tr>   
 						<tr>
 								<td>Origin Facility</td>
 						<td>
@@ -167,7 +178,7 @@
 								<form:select path="regionCode" disabled="${hasZone}">
 									<form:option value="null" label="--Please Select Region"/>
 									<form:options items="${regions}" itemLabel="code" itemValue="code" />
-									</form:select>
+								</form:select>
 						</td>
                         <td>
                           &nbsp;<form:errors path="regionCode" />
@@ -658,7 +669,7 @@
 				  alert('Destination facility cannot be main plant.');
 				  destRefVar.selectedIndex = 0; return;
 			  } else if((result[1] === result[0]) && (originRef != '' && destRef != '')){
-				  alert('Both origin & desination facility cannot be same.');
+				  alert('Both origin & destination facility cannot be same.');
 				  originRefVar.selectedIndex = 0;
 				  destRefVar.selectedIndex = 0; return;
 			  } 
@@ -690,118 +701,118 @@
             }
             return elements;
         }
-        function getResourcesInfo() {
-            dispatchForm.submit();
-        }
-        function bullpen(chxbox) {
-                var hasConfirmed = confirm ("Are you sure you want to flag/unflag it as a BullPen? You may loose your exisitng dispatch information.");
-                if(hasConfirmed){
-					document.getElementById('destinationFacility').selectedIndex=0;
-					document.getElementById('originFacility').selectedIndex=0;
-					dispatchForm.submit();
-                }else{
-                    chxbox.checked = !(chxbox.checked);
-                }
-        }
-       function checkRouteInfo()
-       {
-       if(!dispatchForm.confirmed.checked)getRouteInfo();
-       }
-       function getRouteInfo()
-        {
-         if(!dispatchForm.confirmed.checked)
-         {
-        	var jsonrpcClient = new JSONRpcClient("dispatchprovider.ax");
-        	var dispatchDate = dispatchForm.dispatchDate.value;
-        	var zoneCode = dispatchForm.zoneCode.value;
-			var isTrailerRoute = false;
-			if(dispatchForm.zoneCode.value == ''){
-				zoneCode = '<c:out value="${dispatchForm.destinationFacility.routingCode}"/>';
-				isTrailerRoute = true;
+        
+			function getResourcesInfo() {
+				dispatchForm.submit();
 			}
-        	jsonrpcClient.AsyncDispatchProvider.getActiveRoute(getRouteInfoCallback,dispatchDate,zoneCode, isTrailerRoute);
-         }
-        }
-        function getRouteInfoCallback(result, exception) 
-        {
-          if(exception) {               
-              alert('Unable to connect to host system. Please contact system administrator!');               
-              return;
-          }
-		  for(var i=dispatchForm.route.options.length-1;i>=1;i--)
-		  {
-				dispatchForm.route.remove(i);
-		  }		 
-		  var selected=false;
-		  var results=result.list;
-		  for(var i=0;i<results.length;i++)
-		  {
-			  if( results[i].length>0)
-			  {
-			  	var optn = document.createElement("OPTION");
-			  	optn.text = results[i];
-	          	optn.value = results[i];
-	          	if(optn.text==dispatchForm.selectedroute.value)
-	          	{
-	          		optn.selected=true;
-	          		selected=true;
-	          	}
-	          	dispatchForm.route.options.add(optn);
-	          	
-	          }
-          }
-  /*        //testing
-          var optn = document.createElement("OPTION");
-		  optn.text = dispatchForm.selectedroute.value;
-	      optn.value = dispatchForm.selectedroute.value;
-	      dispatchForm.route.options.add(optn);
-	      */
-	      
-          if(!selected)     
-				dispatchForm.route.options[0].selected=true;
-      }
-      
-      function back()
-      {
-      	var filters=unescape(getParameter("filter"));
-      	var params=filters.split("&");
-      	var dispatchForm=document.forms["dispatch"];
-      	for(var i=0;i<params.length;i++)
-      	{
-      		var param=params[i].split("=");
-      		add_input(dispatchForm,"hidden",param[0],param[1]);
-      	}     	      	
-      	dispatchForm.submit();
-      }
+			function bullpen(chxbox) {
+				var hasConfirmed = confirm("Are you sure you want to flag/unflag it as a BullPen? You may loose your exisitng dispatch information.");
+				if (hasConfirmed) {
+					document.getElementById('destinationFacility').selectedIndex = 0;
+					document.getElementById('originFacility').selectedIndex = 0;
+					dispatchForm.submit();
+				} else {
+					chxbox.checked = !(chxbox.checked);
+				}
+			}
+			function checkRouteInfo() {
+				if (!dispatchForm.confirmed.checked)
+					getRouteInfo();
+			}
+			function getRouteInfo() {
+				if (!dispatchForm.confirmed.checked) {
+					var dispatchDate = dispatchForm.dispatchDate.value;
+					var zoneCode = dispatchForm.zoneCode.value;
+					var isTrailerRoute = false;
+					if (dispatchForm.zoneCode.value == '') {
+						zoneCode = '<c:out value="${dispatchForm.destinationFacility.routingCode}"/>';
+						isTrailerRoute = true;
+					}
+					jsonrpcClient.AsyncDispatchProvider.getActiveRoute(
+							getRouteInfoCallback, dispatchDate, zoneCode,
+							isTrailerRoute);
+				}
+			}
+			function getRouteInfoCallback(result, exception) {
+				if (exception) {
+					alert('Unable to connect to host system. Please contact system administrator!');
+					return;
+				}
+				for ( var i = dispatchForm.route.options.length - 1; i >= 1; i--) {
+					dispatchForm.route.remove(i);
+				}
+				var selected = false;
+				var results = result.list;
+				for ( var i = 0; i < results.length; i++) {
+					if (results[i].length > 0) {
+						var optn = document.createElement("OPTION");
+						optn.text = results[i];
+						optn.value = results[i];
+						if (optn.text == dispatchForm.selectedroute.value) {
+							optn.selected = true;
+							selected = true;
+						}
+						dispatchForm.route.options.add(optn);
+					}
+				}				
+				if (!selected)
+					dispatchForm.route.options[0].selected = true;
+			}
 
-      function checkOverride(chxbox)
-      {    	 
-          if(chxbox.checked)
-          {
-        	  dispatchForm.overrideReasonCode.disabled=false;
-          }
-          else
-          {
-        	  dispatchForm.overrideReasonCode.disabled=true;
-          }
-      }
-      
-      function handleResoureChangeEvent(target, src) {			
-			resoureChangeEvent(src, 'D', document.getElementById('dispatchDate'), document.getElementById('dispatchId'));	
-	  }
-      
-      function  firstDeliveryTimeChanged() {
-			document.getElementById("firstDeliveryTimeModified").value = "true";			
-			dispatchForm.submit();
-	  }
+			function back() {
+				var filters = unescape(getParameter("filter"));
+				var params = filters.split("&");
+				var dispatchForm = document.forms["dispatch"];
+				for ( var i = 0; i < params.length; i++) {
+					var param = params[i].split("=");
+					add_input(dispatchForm, "hidden", param[0], param[1]);
+				}
+				dispatchForm.submit();
+			}
 
-      function  initAssets() {
-    	  document.getElementById("curr_gpsNumber").value = document.getElementById("gpsNumber").value;
-    	  document.getElementById("curr_ezpassNumber").value = document.getElementById("ezpassNumber").value;
-    	  document.getElementById("curr_motKitNumber").value = document.getElementById("motKitNumber").value;
-	  }
-      
-	 </script>
+			function checkOverride(chxbox) {
+				if (chxbox.checked) {
+					dispatchForm.overrideReasonCode.disabled = false;
+				} else {
+					dispatchForm.overrideReasonCode.disabled = true;
+				}
+			}
+
+			function handleResoureChangeEvent(target, src) {
+				resoureChangeEvent(src, 'D', document
+						.getElementById('dispatchDate'), document
+						.getElementById('dispatchId'));
+			}
+
+			function firstDeliveryTimeChanged() {
+				document.getElementById("firstDeliveryTimeModified").value = "true";
+				dispatchForm.submit();
+			}
+
+			function initAssets() {
+				document.getElementById("curr_gpsNumber").value = document
+						.getElementById("gpsNumber").value;
+				document.getElementById("curr_ezpassNumber").value = document
+						.getElementById("ezpassNumber").value;
+				document.getElementById("curr_motKitNumber").value = document
+						.getElementById("motKitNumber").value;
+			}
+			function populateRegion(dispatchTypeVar) {
+				document.getElementById('dispatchTypeModified').value = 'true';
+				var dispatchType = dispatchTypeVar.value || '';
+				if(dispatchType === 'LDD'){
+					var hasConfirmed = confirm('You are about to flag/unflag the dispatch to Light duty dispatch.');
+					if (hasConfirmed) {
+						document.getElementById('destinationFacility').selectedIndex = 0;
+						document.getElementById('originFacility').selectedIndex = 0;
+						document.getElementById('isBullpen1').disabled = 'true';
+						document.getElementById('isOverride1').disabled = 'true';
+						dispatchForm.submit();
+					}
+				}			
+								
+			}
+		</script>
   </tmpl:put>
 </tmpl:insert>
 <script>

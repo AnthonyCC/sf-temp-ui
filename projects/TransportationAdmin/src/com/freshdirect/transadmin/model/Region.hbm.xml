@@ -16,6 +16,9 @@
         </property>
         <property name="obsolete" type="string">
             <column name="OBSOLETE" length="1" />
+        </property>
+         <property name="needsDispValidation" type="string">
+            <column name="DISPVALIDATION_ENABLED" length="1" />
         </property>                
          <set name="zones" inverse="true" lazy="false">
             <key>

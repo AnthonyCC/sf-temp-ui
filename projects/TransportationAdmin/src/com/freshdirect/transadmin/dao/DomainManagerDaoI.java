@@ -63,6 +63,8 @@ public interface DomainManagerDaoI extends BaseManagerDaoI {
 	Collection getZonetypeResources(String zoneTypeId) throws DataAccessException;
 
 	Collection getRegions()  throws DataAccessException;
+	
+	Collection getLightDutyRegions() throws DataAccessException;
 
 	Region getRegion(String code) throws DataAccessException;
 	
@@ -159,4 +161,6 @@ public interface DomainManagerDaoI extends BaseManagerDaoI {
 	Collection getActiveSector() throws DataAccessException;
 
 	SectorZipcode getSectorZipCode(String zipCode);
+	
+	Collection getDispatchResource(Date dispatchDate, String dispatchType)throws DataAccessException;
 }

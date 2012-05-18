@@ -10,10 +10,9 @@ import org.springframework.validation.ValidationUtils;
 
 import com.freshdirect.framework.util.DateComparator;
 import com.freshdirect.routing.constants.EnumTransportationFacilitySrc;
-import com.freshdirect.transadmin.model.EmployeeInfo;
+import com.freshdirect.transadmin.constants.EnumDispatchType;
 import com.freshdirect.transadmin.util.DispatchPlanUtil;
 import com.freshdirect.transadmin.util.TransStringUtil;
-import com.freshdirect.transadmin.util.TransportationAdminProperties;
 import com.freshdirect.transadmin.web.model.DispatchCommand;
 import com.freshdirect.transadmin.web.model.DispatchResourceInfo;
 import com.freshdirect.transadmin.web.model.WebPlanInfo;
@@ -25,46 +24,52 @@ public class DispatchValidator extends AbstractValidator {
 	}
 	
 	public void validate(Object obj, Errors errors) {
+
 		DispatchCommand model = (DispatchCommand)obj;
-		//  need to decide about the validation part
+
 		ValidationUtils.rejectIfEmpty(errors, "startTime", "app.error.112", new Object[]{"Start Time"},"required field");
-		ValidationUtils.rejectIfEmpty(errors, "firstDeliveryTime", "app.error.112", new Object[]{"First Delivery Time"},"required field");
-		checkDate("startTime",model.getStartTime(),model.getFirstDeliveryTime(),errors);
+		ValidationUtils.rejectIfEmpty(errors, "dispatchType", "app.error.112", new Object[]{"Dispatch Type"},"required field");	
+		
+		if(model != null && TransStringUtil.isEmpty(model.getRegionCode())) {
+			errors.rejectValue("regionCode", "app.error.112", new Object[]{"Region"},"required field");
+		}
+		
+		if(model != null && !(EnumDispatchType.LIGHTDUTYDISPATCH.getName().equals(model.getDispatchType())) ) {
+
+			ValidationUtils.rejectIfEmpty(errors, "firstDeliveryTime", "app.error.112", new Object[]{"First Delivery Time"},"required field");
+			checkDate("startTime",model.getStartTime(),model.getFirstDeliveryTime(),errors);
+
+			
+			if(model != null && TransStringUtil.isEmpty(model.getZoneCode()) && model.getDestinationFacility() != null && model.getDestinationFacility().getTrnFacilityType() != null
+					&& !DispatchPlanUtil.isBullpen(model.getIsBullpen()) && EnumTransportationFacilitySrc.DELIVERYZONE.getName().equalsIgnoreCase(model.getDestinationFacility().getTrnFacilityType().getName())) {
+				errors.rejectValue("zoneCode", "app.error.112", new Object[]{"Zone"},"required field");
+			}
+			
 	
-		if(model != null && TransStringUtil.isEmpty(model.getZoneCode()) && model.getDestinationFacility() != null && model.getDestinationFacility().getTrnFacilityType() != null
-				&& !DispatchPlanUtil.isBullpen(model.getIsBullpen()) && EnumTransportationFacilitySrc.DELIVERYZONE.getName().equalsIgnoreCase(model.getDestinationFacility().getTrnFacilityType().getName())) {
-			errors.rejectValue("zoneCode", "app.error.112", new Object[]{"Zone"},"required field");
-		}
-		if(model != null && TransStringUtil.isEmpty(model.getRegionCode())&& DispatchPlanUtil.isBullpen(model.getIsBullpen())) {
-			errors.rejectValue("regionCode", "app.error.112", new Object[]{"Region"},"required field");
-		}
-
-		if(model != null && model.getOriginFacility() == null && !"true".equalsIgnoreCase(model.getIsBullpen())) {
-			errors.rejectValue("originFacility", "app.error.112", new Object[]{"Origin Facility"},"required field");
-		}
-
-		if(model != null && model.getDestinationFacility() == null && !"true".equalsIgnoreCase(model.getIsBullpen())) {
-			errors.rejectValue("destinationFacility", "app.error.112", new Object[]{"Destination Facility"},"required field");
-		}
-		/*
-		if(DispatchPlanUtil.isBullpen(model.getIsBullpen()) && TransStringUtil.isEmpty(model.getRegionCode())) {
-			errors.rejectValue("regionCode", "app.error.112", new Object[]{"Region"},"required field");
-		}*/
-		ValidationUtils.rejectIfEmpty(errors, "route", "app.error.112", new Object[]{"Route Number"},"required field");
-		//validateIntegerMinMax("sequence",new Integer(model.getSequence()),1,99,errors);
-		//ValidationUtils.rejectIfEmpty(errors, "truck", "app.error.112", new Object[]{"Truck Number"},"required field");
-		ValidationUtils.rejectIfEmpty(errors, "supervisorCode", "app.error.112", new Object[]{"Supervisor"},"required field");
-		if(!model.getIsOverride())
-		{
-			validateResources(model.getDriverReq(),model.getDriverMax(),"drivers",model.getDrivers(),errors);
-			validateResources(model.getHelperReq(),model.getHelperMax(),"helpers",model.getHelpers(),errors);
-			validateResources(model.getRunnerReq(),model.getRunnerMax(),"runners",model.getRunners(),errors);
+			if(model != null && model.getOriginFacility() == null && !"true".equalsIgnoreCase(model.getIsBullpen())) {
+				errors.rejectValue("originFacility", "app.error.112", new Object[]{"Origin Facility"},"required field");
+			}
+	
+			if(model != null && model.getDestinationFacility() == null && !"true".equalsIgnoreCase(model.getIsBullpen())) {
+				errors.rejectValue("destinationFacility", "app.error.112", new Object[]{"Destination Facility"},"required field");
+			}
+			
+			ValidationUtils.rejectIfEmpty(errors, "route", "app.error.112", new Object[]{"Route Number"},"required field");
+			ValidationUtils.rejectIfEmpty(errors, "supervisorCode", "app.error.112", new Object[]{"Supervisor"},"required field");
+			
+			if(!model.getIsOverride())
+			{
+				validateResources(model.getDriverReq(),model.getDriverMax(),"drivers",model.getDrivers(),errors);
+				validateResources(model.getHelperReq(),model.getHelperMax(),"helpers",model.getHelpers(),errors);
+				validateResources(model.getRunnerReq(),model.getRunnerMax(),"runners",model.getRunners(),errors);
+			}
+					
+			validateLength("additionalNextels", model.getAdditionalNextels(), 40, errors);
 		}
 		checkForDuplicateResourceAllocation(model,errors);
 		if(errors.getErrorCount() > 0 && model.isConfirmed()){
 			model.setConfirmed(false);
 		}
-		validateLength("additionalNextels", model.getAdditionalNextels(), 40, errors);
 	}	
 
 private void checkForDuplicateResourceAllocation(WebPlanInfo model, Errors errors) {

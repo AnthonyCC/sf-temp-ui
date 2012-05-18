@@ -15,6 +15,7 @@ import java.util.Set;
 
 import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.routing.constants.EnumTransportationFacilitySrc;
+import com.freshdirect.transadmin.constants.EnumDispatchType;
 import com.freshdirect.transadmin.model.Asset;
 import com.freshdirect.transadmin.model.Dispatch;
 import com.freshdirect.transadmin.model.DispatchReason;
@@ -225,6 +226,7 @@ public class DispatchPlanUtil {
 		
 		command.setAdditionalNextels(dispatch.getAdditionalNextels());
 		command.setMotKitNumber(dispatch.getMotKitNumber());	
+		command.setDispatchType(dispatch.getDispatchType());
 		
 		return command;
 	}
@@ -288,7 +290,7 @@ public class DispatchPlanUtil {
 			zone.setZoneCode(command.getZoneCode());
 			dispatch.setZone(zone);
 		}
-//		System.out.println("Region code $$$$$$$$$$$ "+command.getRegionCode());
+
 		Region region=new Region();
 		region.setCode(command.getRegionCode());
 		dispatch.setRegion(region);
@@ -342,8 +344,8 @@ public class DispatchPlanUtil {
 		dispatch.setIsTeamOverride(command.getIsTeamOverride());
 		
 		dispatch.setAdditionalNextels(command.getAdditionalNextels());
-		dispatch.setMotKitNumber(command.getMotKitNumber());	
-		
+		dispatch.setMotKitNumber(command.getMotKitNumber());
+		dispatch.setDispatchType(command.getDispatchType());
 		return dispatch;
 
 	}
@@ -474,7 +476,7 @@ public class DispatchPlanUtil {
 
 	private static void setResourceReq(WebPlanInfo model, Zone zone) {
 
-		if(isBullpen(model.getIsBullpen())) {
+		if(isBullpen(model.getIsBullpen()) || (EnumDispatchType.LIGHTDUTYDISPATCH.getName().equals(model.getDispatchType()))) {
 			setDriverRequirements(model,TransportationAdminProperties.getDriverReqForBullpen(),TransportationAdminProperties.getDriverMaxForBullpen());
 			setHelperRequirements(model,TransportationAdminProperties.getHelperReqForBullpen(),TransportationAdminProperties.getHelperMaxForBullpen());
 			setRunnerRequirements(model,TransportationAdminProperties.getRunnerReqForBullpen(),TransportationAdminProperties.getRunnerMaxForBullpen());

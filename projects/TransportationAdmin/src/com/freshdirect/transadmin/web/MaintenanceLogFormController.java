@@ -71,8 +71,8 @@ public class MaintenanceLogFormController extends AbstractFormController {
 		}
 		refData.put("truckAssets",  getAssetManagerService().getAssets("TRUCK", null, null));
 		
-		List drivers = DispatchPlanUtil.getSortedResources(employeeManagerService.getEmployeesByRole(EnumResourceType.DRIVER.getName()));
-		drivers.addAll(DispatchPlanUtil.getSortedResources(employeeManagerService.getEmployeesByRole(EnumResourceType.MANAGER.getName())));
+		List drivers = DispatchPlanUtil.getSortedResources(employeeManagerService.getEmployeesByRole(EnumResourceType.DRIVER.getName(), null, null));
+		drivers.addAll(DispatchPlanUtil.getSortedResources(employeeManagerService.getEmployeesByRole(EnumResourceType.MANAGER.getName(), null, null)));
 		
 		refData.put("drivers",drivers);
 		

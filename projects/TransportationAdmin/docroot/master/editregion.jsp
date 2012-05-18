@@ -57,8 +57,25 @@
                 <td>
                   &nbsp;<form:errors path="description" />
                 </td>
+               </tr>               
+               <tr>
+                  <td>Obsolete</td>
+                  <td>
+                  <form:checkbox path="obsolete" value="X"/>
+                  </td>
+                <td>
+                  &nbsp;<form:errors path="obsolete" />
+                </td>
                </tr>
-
+               <tr>
+                  <td>Dispatch validation</td>
+                  <td>
+                  <form:checkbox path="needsDispValidation" value="X"/>
+                  </td>
+                <td>
+                  &nbsp;<form:errors path="needsDispValidation" />
+                </td>
+               </tr>
                                            
               <tr><td colspan="3">&nbsp;</td></tr>
               <tr>

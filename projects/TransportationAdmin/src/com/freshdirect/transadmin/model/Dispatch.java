@@ -44,6 +44,7 @@ public class Dispatch implements java.io.Serializable{
 	private String additionalNextels;
 	private TrnFacility originFacility;
 	private TrnFacility destinationFacility;	
+	private String dispatchType;
 	
 	public TrnFacility getOriginFacility() {
 		return originFacility;
@@ -332,6 +333,12 @@ public class Dispatch implements java.io.Serializable{
 
 	public void setPhysicalTruck(String physicalTruck) {
 		this.physicalTruck = physicalTruck;
-	}	
-	
+	}
+	public String getDispatchType() {
+		return dispatchType;
+	}
+
+	public void setDispatchType(String dispatchType) {
+		this.dispatchType = dispatchType;
+	}
 }

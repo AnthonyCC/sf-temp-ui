@@ -19,6 +19,7 @@ import org.springframework.validation.Errors;
 import org.springframework.web.bind.ServletRequestDataBinder;
 
 import com.freshdirect.routing.constants.EnumTransportationFacilitySrc;
+import com.freshdirect.transadmin.constants.EnumDispatchType;
 import com.freshdirect.transadmin.exception.TransAdminApplicationException;
 import com.freshdirect.transadmin.model.Dispatch;
 import com.freshdirect.transadmin.model.TrnFacility;
@@ -130,11 +131,17 @@ public class DispatchFormController extends AbstractFormController {
 		List drivers = null;
 		List helpers = null;
 		List runners = null;
-
+		
 		TrnFacility facility = null;
+		Date dispatchDate = null;
 		DispatchCommand model = (DispatchCommand)request.getAttribute("commandObj");
 		if(null != model){
 			facility = model.getDestinationFacility();
+			try {
+				dispatchDate = TransStringUtil.getServerDateString1( model.getDispatchDate());
+			} catch (ParseException e) {				
+				e.printStackTrace();
+			}
 		}
 		if(facility != null && 
 				!EnumTransportationFacilitySrc.DELIVERYZONE.getName().equalsIgnoreCase(facility.getTrnFacilityType().getName())){
@@ -146,41 +153,51 @@ public class DispatchFormController extends AbstractFormController {
 			runners = DispatchPlanUtil.getSortedResources(employeeManagerService.getEmployeesByRoleAndSubRole(EnumResourceType.RUNNER.getName()
 																										, EnumResourceSubType.TRAILER_RUNNER.getName()));
 		} else {
-			drivers = DispatchPlanUtil.getSortedResources(employeeManagerService.getEmployeesByRole(EnumResourceType.DRIVER.getName()));
-			helpers = DispatchPlanUtil.getSortedResources(employeeManagerService.getEmployeesByRole(EnumResourceType.HELPER.getName()));
-			runners = DispatchPlanUtil.getSortedResources(employeeManagerService.getEmployeesByRole(EnumResourceType.RUNNER.getName()));
+			drivers = DispatchPlanUtil.getSortedResources(employeeManagerService.getEmployeesByRole(EnumResourceType.DRIVER.getName(), model != null ? model.getDispatchType() : null, dispatchDate));
+			helpers = DispatchPlanUtil.getSortedResources(employeeManagerService.getEmployeesByRole(EnumResourceType.HELPER.getName(), model != null ? model.getDispatchType() : null, dispatchDate));
+			runners = DispatchPlanUtil.getSortedResources(employeeManagerService.getEmployeesByRole(EnumResourceType.RUNNER.getName(), model != null ? model.getDispatchType() : null, dispatchDate));
 		}
-		drivers.addAll(DispatchPlanUtil.getSortedResources(employeeManagerService.getEmployeesByRole(EnumResourceType.MANAGER.getName())));
+		drivers.addAll(DispatchPlanUtil.getSortedResources(employeeManagerService.getEmployeesByRole(EnumResourceType.MANAGER.getName(), model != null ? model.getDispatchType() : null, dispatchDate)));
 		refData.put("drivers", drivers);
 		refData.put("helpers", helpers);
 		refData.put("runners", runners);
 
 		refData.put("supervisors", DispatchPlanUtil.getSortedResources(employeeManagerService.getSupervisors()));
 		refData.put("zones", zones);
-		refData.put("regions", domainManagerService.getRegions());
+		
+		if(null != model && EnumDispatchType.LIGHTDUTYDISPATCH.getName().equals(model.getDispatchType()))		
+			refData.put("regions", domainManagerService.getLightDutyRegions());
+		else
+			refData.put("regions", domainManagerService.getRegions());
+		
 		refData.put("reasons", dispatchManagerService.getDispatchReasons(true));
 		refData.put("trnFacilitys", locationManagerService.getTrnFacilitys());
 		refData.put("statuses", domainManagerService.getDispositionTypes());
 		refData.put(DispatchPlanUtil.ASSETTYPE_GPS, assetManagerService.getActiveAssets(DispatchPlanUtil.ASSETTYPE_GPS));
 		refData.put(DispatchPlanUtil.ASSETTYPE_EZPASS, assetManagerService.getActiveAssets(DispatchPlanUtil.ASSETTYPE_EZPASS));
 		refData.put(DispatchPlanUtil.ASSETTYPE_MOTKIT, assetManagerService.getActiveAssets(DispatchPlanUtil.ASSETTYPE_MOTKIT));
-
+		
+		refData.put("dispatchTypes", EnumDispatchType.getEnumList());
+		
 		return refData;
 	}
 
 	private DispatchCommand getCommand(Dispatch dispatch) throws Exception{
-		Zone zone=null;
+		Zone zone = null;
 		if(dispatch.getZone() != null) {
-			zone=domainManagerService.getZone(dispatch.getZone().getZoneCode());
+			zone = domainManagerService.getZone(dispatch.getZone().getZoneCode());
 		}
-		boolean isToday=TransStringUtil.isToday(dispatch.getDispatchDate());
+		boolean isToday = TransStringUtil.isToday(dispatch.getDispatchDate());
 		Collection punchInfo=null;
 		if(isToday&&TransWebUtil.isPunch(getDispatchManagerService()))
 			punchInfo = TransAdminCacheManager.getInstance().getPunchInfo(
 					TransStringUtil.getServerDate(dispatch.getDispatchDate()), employeeManagerService);
 		
-		DispatchCommand dispatchCommand=DispatchPlanUtil.getDispatchCommand(dispatch, zone, employeeManagerService,punchInfo,null,null,null,null,null,null,null);
-		if(isToday&&TransWebUtil.isPunch(getDispatchManagerService())) DispatchPlanUtil.setDispatchStatus(dispatchCommand);
+		DispatchCommand dispatchCommand = DispatchPlanUtil.getDispatchCommand(
+				dispatch, zone, employeeManagerService, punchInfo, null, null,
+				null, null, null, null, null);
+		if (isToday && TransWebUtil.isPunch(getDispatchManagerService()))
+			DispatchPlanUtil.setDispatchStatus(dispatchCommand);
 		return dispatchCommand;
 	}
 
@@ -286,7 +303,9 @@ public class DispatchFormController extends AbstractFormController {
 			model.setOriginFacility(null);
 			model.setDestinationFacility(null);
 		}
-
+		if(EnumDispatchType.LIGHTDUTYDISPATCH.getName().equals(model.getDispatchType())) {
+			model.setZoneCode("");
+		}
 		Zone zone = null;
 		if(!TransStringUtil.isEmpty(model.getZoneCode())) {
 			zone = domainManagerService.getZone(model.getZoneCode());
@@ -321,7 +340,8 @@ public class DispatchFormController extends AbstractFormController {
 
 		DispatchCommand _command=(DispatchCommand)command;
 		if("true".equalsIgnoreCase(_command.getFirstDeliveryTimeModified())
-				|| "true".equalsIgnoreCase(_command.getDestFacilityModified())) {
+				|| "true".equalsIgnoreCase(_command.getDestFacilityModified())
+					|| "true".equalsIgnoreCase(_command.getDispatchTypeModified())) {
 			return true;
 		}
 		else
@@ -334,6 +354,7 @@ public class DispatchFormController extends AbstractFormController {
 		DispatchCommand _command=(DispatchCommand)command;		
 		_command.setFirstDeliveryTimeModified("false");
 		_command.setDestFacilityModified("false");
+		_command.setDispatchTypeModified("false");
 	}
 
 

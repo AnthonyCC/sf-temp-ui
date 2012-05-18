@@ -82,8 +82,11 @@
         <property name="additionalNextels" type="string">
             <column name="ADDITIONAL_NEXTELS" length="50" />
         </property>
-         <property name="physicalTruck" type="string">
+        <property name="physicalTruck" type="string">
             <column name="PHYSICAL_TRUCK" length="6" />
+        </property>
+        <property name="dispatchType" type="string">
+            <column name="DISPATCH_TYPE" length="3" />
         </property>
         <many-to-one name="originFacility" class="com.freshdirect.transadmin.model.TrnFacility" fetch="select" lazy="false">
             <column name="ORIGIN_FACILITY" length="16" />

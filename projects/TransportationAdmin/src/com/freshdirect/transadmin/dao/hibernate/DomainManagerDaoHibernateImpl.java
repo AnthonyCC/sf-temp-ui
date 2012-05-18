@@ -181,6 +181,11 @@ public class DomainManagerDaoHibernateImpl
 		// TODO Auto-generated method stub
 		return getDataList("Region where OBSOLETE IS NULL Order By CODE");
 	}
+	
+	public Collection getLightDutyRegions() throws DataAccessException {
+		// TODO Auto-generated method stub
+		return getDataList("Region where needsDispValidation IS NULL Order By CODE");
+	}
 
 	public Collection getDispositionTypes() throws DataAccessException {
 		return getDataList("DispositionType Order By code");
@@ -518,77 +523,56 @@ public class DomainManagerDaoHibernateImpl
 		return map;			
 	}
 	
-	public Map getEmpRolesByIds(Set ids)
-	{
+	public Map getEmpRolesByIds(Set ids) {
 
 		String hql = "from EmployeeRole re where re.id.kronosId in (:listParam)";
 		String[] params = { "listParam" };
-		Object[] values = { ids};
+		Object[] values = { ids };
 		List<EmployeeRole> empList = getHibernateTemplate().findByNamedParam(hql, params, values);
-		for(Iterator it=empList.iterator();it.hasNext();)
-		{
-			EmployeeRole e=(EmployeeRole)it.next();
+		for (Iterator it = empList.iterator(); it.hasNext();) {
+			EmployeeRole e = (EmployeeRole) it.next();
 			e.migrate();
 		}
 		return convertEmpListToMap(empList);
 	}
-	private Map convertEmpListToMap(List empList)
-	{
+
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	private Map convertEmpListToMap(List empList) {
 		Map<String, List> map = new HashMap<String, List>();
-		
-		for (Object obj : empList)
-		{
-			if(obj instanceof EmployeeRole)
-			{
-				EmployeeRole role = (EmployeeRole)obj;
-				if(map.containsKey(role.getId().getKronosId()))
-				{
+
+		for (Object obj : empList) {
+			if (obj instanceof EmployeeRole) {
+				EmployeeRole role = (EmployeeRole) obj;
+				if (map.containsKey(role.getId().getKronosId())) {
 					map.get(role.getId().getKronosId()).add(role);
-				}
-				else
-				{
+				} else {
 					List roles = new ArrayList();
 					roles.add(role);
 					map.put(role.getId().getKronosId(), roles);
 				}
-			}
-			else if(obj instanceof EmployeeStatus)
-			{
-				EmployeeStatus status = (EmployeeStatus)obj;
-				if(map.containsKey(status.getPersonnum()))
-				{
+			} else if (obj instanceof EmployeeStatus) {
+				EmployeeStatus status = (EmployeeStatus) obj;
+				if (map.containsKey(status.getPersonnum())) {
 					map.get(status.getPersonnum()).add(status);
-				}
-				else
-				{
+				} else {
 					List statuses = new ArrayList();
 					statuses.add(status);
 					map.put(status.getPersonnum(), statuses);
 				}
-			}
-			else if(obj instanceof EmployeeTruckPreference)
-			{
-				EmployeeTruckPreference truckPref = (EmployeeTruckPreference)obj;
-				if(map.containsKey(truckPref.getId().getKronosId()))
-				{
+			} else if (obj instanceof EmployeeTruckPreference) {
+				EmployeeTruckPreference truckPref = (EmployeeTruckPreference) obj;
+				if (map.containsKey(truckPref.getId().getKronosId())) {
 					map.get(truckPref.getId().getKronosId()).add(truckPref);
-				}
-				else
-				{
+				} else {
 					List truckPrefs = new ArrayList();
 					truckPrefs.add(truckPref);
 					map.put(truckPref.getId().getKronosId(), truckPrefs);
 				}
-			}
-			else if(obj instanceof EmployeeTeam)
-			{
-				EmployeeTeam team = (EmployeeTeam)obj;
-				if(map.containsKey(team.getKronosId()))
-				{
+			} else if (obj instanceof EmployeeTeam) {
+				EmployeeTeam team = (EmployeeTeam) obj;
+				if (map.containsKey(team.getKronosId())) {
 					map.get(team.getKronosId()).add(team);
-				}
-				else
-				{
+				} else {
 					List teams = new ArrayList();
 					teams.add(team);
 					map.put(team.getKronosId(), teams);
@@ -596,7 +580,7 @@ public class DomainManagerDaoHibernateImpl
 			}
 		}
 		return map;
-			
+
 	}
 
 	public Map getEmployeeStatusByIds(Set empIds)
@@ -635,5 +619,13 @@ public class DomainManagerDaoHibernateImpl
 	
 	public SectorZipcode getSectorZipCode(String zipCode) throws DataAccessException {
 		return (SectorZipcode)getEntityById("SectorZipcode", "zipcode", zipCode);
+	}
+	
+	public Collection getDispatchResource(Date dispatchDate, String dispatchType)throws DataAccessException {
+
+		StringBuffer strBuf = new StringBuffer();
+		strBuf.append("from DispatchResource dr where dr.id.contextId in (select d.dispatchId from Dispatch d where d.dispatchDate = ? and d.dispatchType = ? ) ");		
+				
+		return (Collection) getHibernateTemplate().find(strBuf.toString(),	new Object[] { dispatchDate, dispatchType });
 	}
 }

@@ -75,6 +75,7 @@ public class WebPlanInfo extends BaseCommand implements TrnBaseEntityI  {
 	private boolean isZoneReg;
 	private TrnFacility originFacility;
 	private TrnFacility destinationFacility;
+	private String dispatchType;
 	
 	public TrnFacility getOriginFacility() {
 		return originFacility;
@@ -810,5 +811,13 @@ public class WebPlanInfo extends BaseCommand implements TrnBaseEntityI  {
 		buf.append(originFacility.getName()+" - "+destinationFacility.getName());
 
 		return buf.toString();
-}
+	}
+	public String getDispatchType() {
+		return dispatchType;
+	}
+
+	public void setDispatchType(String dispatchType) {
+		this.dispatchType = dispatchType;
+	}
+	
 }

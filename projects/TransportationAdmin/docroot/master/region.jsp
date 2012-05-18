@@ -48,6 +48,8 @@
 								property="code" />
 						  <ec:column property="name" title="Name"/>
 						  <ec:column property="description" title="Description"/>
+						  <ec:column property="obsolete" title="Obsolete"/>
+						  <ec:column property="needsDispValidation" title="Dispatch Validation"/>
 						</ec:row>
 					  </ec:table>
 					</form> 

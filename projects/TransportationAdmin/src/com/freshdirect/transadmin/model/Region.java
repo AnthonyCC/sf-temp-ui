@@ -13,6 +13,7 @@ public class Region implements java.io.Serializable,Comparable, TrnBaseEntityI {
 	private String name;
 	private String description;
 	private String obsolete;
+	private String needsDispValidation;
 	private Set zones;
 		
 	@Override
@@ -87,7 +88,13 @@ public class Region implements java.io.Serializable,Comparable, TrnBaseEntityI {
 		this.description = description;
 	}
 
-	
+	public String getNeedsDispValidation() {
+		return needsDispValidation;
+	}
+
+	public void setNeedsDispValidation(String needsDispValidation) {
+		this.needsDispValidation = needsDispValidation;
+	}
 
 	public String toString()
 	{

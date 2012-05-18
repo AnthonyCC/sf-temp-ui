@@ -173,7 +173,11 @@ public class DomainManagerImpl
 		// TODO Auto-generated method stub
 		return getDomainManagerDao().getRegions();
 	}
-
+	
+	public Collection getLightDutyRegions() {		
+		return getDomainManagerDao().getLightDutyRegions();
+	}
+	
 	public Collection getDispositionTypes() {
 		// TODO Auto-generated method stub
 		return getDomainManagerDao().getDispositionTypes();
@@ -264,6 +268,9 @@ public class DomainManagerImpl
 	
 	public Collection checkPolygons(){
 		return getZoneExpansionDao().checkPolygons();
+	}
+	public Collection checkGeoRestrictionPolygons(){
+		return getZoneExpansionDao().checkGeoRestrictionPolygons();
 	}
 	
 	public String getDeliveryCharge(String regionId){

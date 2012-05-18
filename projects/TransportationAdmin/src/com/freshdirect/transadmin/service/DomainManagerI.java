@@ -29,6 +29,8 @@ public interface DomainManagerI extends BaseManagerI {
 	
 	Collection getRegions();	
 	
+	Collection getLightDutyRegions();
+	
 	Collection getZones();
 	
 	Collection getAreas();
@@ -102,6 +104,8 @@ public interface DomainManagerI extends BaseManagerI {
 	Collection getZoneWorkTableInfo(String worktable, String regionId);
 	
 	Collection checkPolygons();
+	
+	Collection checkGeoRestrictionPolygons();
 	
 	void refreshDev(String worktable);
 	

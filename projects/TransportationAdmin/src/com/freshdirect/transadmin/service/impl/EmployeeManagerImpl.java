@@ -15,10 +15,12 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.freshdirect.framework.util.StringUtil;
+import com.freshdirect.transadmin.constants.EnumDispatchType;
 import com.freshdirect.transadmin.dao.BaseManagerDaoI;
 import com.freshdirect.transadmin.dao.DomainManagerDaoI;
 import com.freshdirect.transadmin.dao.EmployeeManagerDaoI;
 import com.freshdirect.transadmin.dao.PunchInfoDaoI;
+import com.freshdirect.transadmin.model.DispatchResource;
 import com.freshdirect.transadmin.model.EmployeeInfo;
 import com.freshdirect.transadmin.model.EmployeeRole;
 import com.freshdirect.transadmin.model.EmployeeRoleType;
@@ -385,14 +387,27 @@ public class EmployeeManagerImpl extends BaseManagerImpl implements
 	public Collection getKronosTerminatedEmployees() {
 		return employeeManagerDAO.getTerminatedEmployees();
 	}
-
-	/*Get Employees By RoleType*/
-	@SuppressWarnings("unchecked")
-	public Collection getEmployeesByRole(String roleTypeId) {
+	
+	/* Get Employees By Role type & dispatch type, 
+	 * if dispatch type is regular route fetch all 
+	 * active employees from Kronos eliminating Light duty 
+	 */
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public Collection getEmployeesByRole(String roleTypeId, String dispatchType, Date dispatchDate) {
 
 		Collection employeeIDsByRole = domainManagerDao.getEmployeesByRoleType(roleTypeId);
 		Collection employees = new ArrayList(employeeIDsByRole.size());
 		Collection activeEmpl = getTransAppActiveEmployees();
+		if(dispatchDate != null && dispatchType != null) {
+			List dispatchResources = (List) domainManagerDao.getDispatchResource(dispatchDate, EnumDispatchType.LIGHTDUTYDISPATCH.getName().equals(dispatchType) 
+															? EnumDispatchType.ROUTEDISPATCH.getName(): EnumDispatchType.LIGHTDUTYDISPATCH.getName());			
+			for (int i = 0; i < dispatchResources.size(); i++) {
+				DispatchResource d = (DispatchResource) dispatchResources.get(i);
+				EmployeeInfo info = new EmployeeInfo();
+				info.setEmployeeId(d.getId().getResourceId());
+				activeEmpl.remove(info);
+			}
+		}			
 		Iterator it = employeeIDsByRole.iterator();
 		while (it.hasNext()) {
 			EmployeeRole empRole = (EmployeeRole) it.next();
@@ -405,7 +420,7 @@ public class EmployeeManagerImpl extends BaseManagerImpl implements
 		return employees;
 	}
 	/*Get Employees By RoleType & SubRoleType*/
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public Collection getEmployeesByRoleAndSubRole(String roleTypeId, String subRoleTypeId) {
 
 		Collection employeeIDsByRole = domainManagerDao.getEmployeesByRoleTypeAndSubRoleType(roleTypeId
