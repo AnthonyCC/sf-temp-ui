@@ -534,7 +534,8 @@ public class FDUser extends ModelSupport implements FDUserI {
     }
 
    public int getOrderCountForChefsTableEligibility() throws FDResourceException {
-	   return FDCustomerManager.getOrderCountForChefsTableEligibility(this.identity);
+	   OrderHistoryI orderHistory=getOrderHistory();
+	   return (int)orderHistory.getOrderCountForChefsTableEligibility();
    }
 
    public String getOrderTotalForChefsTableEligibility() throws FDResourceException {

@@ -150,4 +150,10 @@ public class ErpWebOrderHistory implements OrderHistoryI {
 		buf.append("SettledOrderCount "+getSettledOrderCount()+"\n");
 		return buf.toString();
 	}
+
+	@Override
+	public int getOrderCountForChefsTableEligibility() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
 }

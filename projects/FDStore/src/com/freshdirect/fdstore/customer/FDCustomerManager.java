@@ -1414,7 +1414,7 @@ public class FDCustomerManager {
 	
 	public static int getOrderCountForChefsTableEligibility(FDIdentity identity) throws FDResourceException {
 		ErpOrderHistory history = getErpOrderHistoryInfo(identity);
-		return history.getOrderCountForChefsTableEligibility();
+		return (int)history.getOrderCountForChefsTableEligibility();
 	}
 	
 	public static double getOrderTotalForChefsTableEligibility(FDIdentity identity) throws FDResourceException {
