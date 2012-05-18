@@ -111,12 +111,7 @@
 		</table>
 	<!--
 		 Content display		
-	-->
-		
-	 		
-				<div class="cont_row">
-					<span class="scrTitle"></span>
-				</div>
+	-->	
 				<table width="52%" cellpadding="0" cellspacing="0" border="0">
 								<tr>
 									<td align="right" width="90%">

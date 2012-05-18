@@ -530,7 +530,32 @@ public class ZoneExpansionDaoOracleImpl implements ZoneExpansionDaoI{
 	
 	
 	//Geo Restrictions
-	
+	private static final String CHECK_GEORESTRICTION_POLYGON =
+			"select code, name, SDO_GEOM.VALIDATE_GEOMETRY(geoloc, 0.5) as ERRORCODE from DLV.GEO_RESTRICTION_WORKTAB"
+				+" where SDO_GEOM.VALIDATE_GEOMETRY(geoloc, 0.5) <> 'TRUE' ";
+		
+		public Collection checkGeoRestrictionPolygons(){
+			final List result=new ArrayList();
+			PreparedStatementCreator creator=new PreparedStatementCreator() {
+		            public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {		            	 
+		                PreparedStatement ps =
+		                    connection.prepareStatement(CHECK_GEORESTRICTION_POLYGON);
+		                return ps;
+		            }  
+		    };
+				
+			jdbcTemplate.query(creator,
+					new RowCallbackHandler(){
+						public void processRow(ResultSet rs) throws SQLException{
+							WorkTableModel workTableInfo;
+							do {
+								workTableInfo = new WorkTableModel(rs.getString("CODE"),rs.getString("NAME"), "TRUE".equals(rs.getString("ERRORCODE")));
+								result.add(workTableInfo);
+							}while(rs.next());
+						}
+					});
+			return result;
+		}
 	private static String GRO_RESTRICTION_WORK_TABLE = "select CODE, NAME from DLV.GEO_RESTRICTION_WORKTAB";
 	
 	public Collection getGeoRestrictionWorkTableInfo(){

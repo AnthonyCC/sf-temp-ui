@@ -5,6 +5,7 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 
 import javax.servlet.ServletException;
@@ -15,6 +16,8 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.freshdirect.routing.service.exception.RoutingServiceException;
 import com.freshdirect.routing.service.proxy.RoutingEngineServiceProxy;
+import com.freshdirect.transadmin.datamanager.model.WorkTableModel;
+import com.freshdirect.transadmin.datamanager.model.ZoneWorktableModel;
 import com.freshdirect.transadmin.service.DomainManagerI;
 import com.freshdirect.transadmin.service.LocationManagerI;
 import com.freshdirect.transadmin.service.LogManagerI;
@@ -158,6 +161,29 @@ public class AdminController extends AbstractMultiActionController {
 		    
 		    if(request.getAttribute("environment")!=null && ("DEV".equals((String)request.getAttribute("environment"))||"PROD".equals((String)request.getAttribute("environment")))){
 				domainManagerService.refreshGeoRestrictionWorktable();
+			}
+		    // validate for Geo-restriction polygons.
+			//if errors create a view and return
+			List<WorkTableModel> dataList = new ArrayList();
+			dataList = (List) domainManagerService.checkGeoRestrictionPolygons();
+			if (dataList == null || dataList.isEmpty()) {
+				saveMessage(request, "Drawn Geo-restriction Polygons are OK");
+			}
+
+			if (!dataList.isEmpty()) {
+				StringBuffer str = new StringBuffer();
+				int intCount = 0;
+				for (WorkTableModel model : dataList) {
+					if (model != null)
+						str = str.append(model.getCode());
+					intCount++;
+					if(intCount != dataList.size()) {
+						str.append(",");
+					}
+				}
+				saveMessage(request,
+						"Drawn Geo-restriction Polygons as validation errors. Please check geo-restriction(s) {"
+								+ str + "} before proceeding.");
 			}
 		    
 		    Collection zoneList= domainManagerService.getGeoRestrictions();

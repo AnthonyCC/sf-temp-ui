@@ -9,6 +9,8 @@ public interface ZoneExpansionDaoI {
 	
 	Collection checkPolygons() throws DataAccessException;
 	
+	Collection checkGeoRestrictionPolygons() throws DataAccessException;
+	
 	Collection getZoneWorkTableInfo(String worktable) throws DataAccessException;
 	
 	Collection getZoneRegionInfo(String regionId) throws DataAccessException;

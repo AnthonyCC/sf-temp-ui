@@ -20,6 +20,7 @@ public class WorkTableModel {
 	
 	private String boundaryTblOnly;
 	private String newRestriction;
+	private boolean containsError;
 	
 	public String getNewRestriction() {
 		return newRestriction;
@@ -109,7 +110,15 @@ public class WorkTableModel {
 	public String getName() {
 		return name;
 	}
-	
+
+	public boolean isContainsError() {
+		return containsError;
+	}
+
+	public void setContainsError(boolean containsError) {
+		this.containsError = containsError;
+	}
+
 	public WorkTableModel(){
 		super();
 	}
@@ -125,6 +134,11 @@ public class WorkTableModel {
 		
 		this.code = code;
 		this.name = name;
+	}
+	public WorkTableModel(String code, String name, boolean containsError) {		
+		this.code = code;
+		this.name = name;
+		this.containsError = containsError;
 	}
 	
 	
