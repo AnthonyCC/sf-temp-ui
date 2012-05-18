@@ -328,6 +328,7 @@ public class RedemptionCodeControllerTag extends AbstractControllerTag {
 							actionResult.addError(true, "redemption_error", SystemMessageList.MSG_REDEMPTION_ALREADY_USED);
 						}
 					} 
+					session.removeAttribute(SessionName.TSA_PROMO);
 				} else if (!isApplied) {
 					request.setAttribute("isEligible", eligible);
 					if(user.isFraudulent()&& promotion.isFraudCheckRequired()){
