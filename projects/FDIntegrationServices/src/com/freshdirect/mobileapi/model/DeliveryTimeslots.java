@@ -95,7 +95,7 @@ public class DeliveryTimeslots {
          * @throws FDResourceException
          */
         public TimeSlotCalculationResult(FDDeliveryTimeslotModel model, boolean isUserChefTable, boolean preReservationMode) throws FDResourceException {
-            this(model.getTimeslotList(), model.getZones(), model.isZoneCtActive(), model.getMessages(), isUserChefTable);
+            this(model.getTimeslotList(), model.getZones(), model.isZoneCtActive(), model.getGeoRestrictionmessages(), isUserChefTable);
         }
         
         

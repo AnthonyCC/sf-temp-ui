@@ -168,11 +168,27 @@
 			<% } else {
 					String deptId = pm.getDepartment().getContentKey().getId();
 			%>
-				
 				<div class="ctaCUSTOMIZE">
 					<input type="image" class="CTAButtonFP" id="CTAButtonFP_<%= seqDDPP %>" src="/media/images/buttons/customize_blue<%= (cart.getTotalQuantity(pm) > 0) ? "_s": "" %>.png" height="27" width="95" onclick="FD_QuickBuy.showPanel('<%= deptId %>', '<%= pm.getCategory().getContentKey().getId() %>', '<%= pm.getContentKey().getId() %>', '<%= prodATCStatusId %>')();" />
 				</div>
 				<div class="prodATCStatus" id="<%= prodATCStatusId %>"></div>
+				<script>
+					window.<%= prodATCStatusId %>={
+							updateStatus:function(e){
+								$jq('#<%= prodATCStatusId %>').removeClass('prodATCStatusError').addClass('prodATCStatusSuccess').html(e);
+								setTimeout(function () {
+									$jq('#<%= prodATCStatusId %>').fadeOut('400', function() {
+										setTimeout(function () {
+											$jq('#<%= prodATCStatusId %>').closest('.prodAddFP').animate({ height: '0', top: '200'}, 'fast');
+											//remove add to cart text, and show div again
+											$jq('#<%= prodATCStatusId %>').empty().show();
+										}, 500);
+										$jq('#<%= prodATCStatusId %>').closest('.prodAddFP').find('.CTAButtonFP').data('usedCTA', false);
+									});
+								}, 2000);
+							}
+					};
+				</script>
 				<%-- in /quickbuy/confirm.jsp you can change onDOMReady handler to perform other changes, e.g. disable configure control --%>
 			<% } %>
 			</div>
