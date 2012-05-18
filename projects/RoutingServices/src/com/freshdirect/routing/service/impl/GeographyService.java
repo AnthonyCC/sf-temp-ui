@@ -549,5 +549,16 @@ public class GeographyService extends BaseService implements IGeographyService {
 			throw new RoutingServiceException(e, IIssue.PROCESS_LOCATION_SAVEERROR);
 		}
 	}
+
+	@Override
+	public List<ILocationModel> getLocationsForSnapshot()
+			throws RoutingServiceException {
+		try {
+			return geographyDAOImpl.getLocationsForSnapshot();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			throw new RoutingServiceException(e, IIssue.EMPTY);
+		}
+	}
 	
 }

@@ -88,6 +88,23 @@
     </weblogic-enterprise-bean>
     
     <weblogic-enterprise-bean>
+        <ejb-name>CapacitySnapshot</ejb-name>
+        <stateless-session-descriptor>
+	        <pool><max-beans-in-free-pool>1</max-beans-in-free-pool>
+	        
+        </pool></stateless-session-descriptor>
+       
+		<reference-descriptor>
+            <resource-description>
+                <res-ref-name>jdbc/dbpool</res-ref-name>
+                <jndi-name>fddatasource</jndi-name>
+            </resource-description>
+        </reference-descriptor>
+        <jndi-name>freshdirect.delivery.CapacitySnapshot</jndi-name>
+    </weblogic-enterprise-bean>
+    
+    
+    <weblogic-enterprise-bean>
         <ejb-name>DlvMapper</ejb-name>
         <stateless-session-descriptor>
 	        <pool><max-beans-in-free-pool>50</max-beans-in-free-pool>

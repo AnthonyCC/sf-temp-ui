@@ -29,6 +29,10 @@ public class GeographyServiceProxy  extends BaseServiceProxy {
 		return getService().getGeocode(model);
 	}
 	
+	
+	public List<ILocationModel> getLocationsForSnapshot() throws RoutingServiceException {
+		return getService().getLocationsForSnapshot();
+	}
 	public String getLocationId() throws RoutingServiceException {
 		return getService().getLocationId();
 	}

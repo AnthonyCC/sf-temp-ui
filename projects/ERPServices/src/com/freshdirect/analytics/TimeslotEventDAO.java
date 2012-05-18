@@ -26,8 +26,8 @@ public class TimeslotEventDAO {
 
 	private static final Category LOGGER = LoggerFactory.getInstance(TimeslotEventDAO.class);
 	private static final String TIMESLOT_LOG_INSERT="INSERT INTO MIS.TIMESLOT_EVENT_HDR (ID, EVENT_DTM,RESERVATION_ID, " +
-			"ORDER_ID, CUSTOMER_ID, EVENTTYPE,RESPONSE_TIME,COMMENTS,TransactionSource,DlvPassApplied,DeliveryCharge,isDeliveryChargeWaived,zonectactive,sector, latitude, longitude) " +
-			"VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+			"ORDER_ID, CUSTOMER_ID, EVENTTYPE,RESPONSE_TIME,COMMENTS,TransactionSource,DlvPassApplied,DeliveryCharge,isDeliveryChargeWaived,zonectactive,sector, latitude, longitude, servicetype) " +
+			"VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 	
 	private static final String TIMESLOT_LOG_DTL_INSERT="INSERT INTO MIS.TIMESLOT_EVENT_DTL (TIMESLOT_LOG_ID, BASE_DATE, START_TIME" +
 			", END_TIME, ZONE_CODE) VALUES (?,?,?,?,?)";
@@ -319,6 +319,7 @@ public class TimeslotEventDAO {
 	    	ps.setString(14, event.getSector());
 	    	ps.setBigDecimal(15, new java.math.BigDecimal(event.getLatitude()));
 			ps.setBigDecimal(16, new java.math.BigDecimal(event.getLongitude()));			
+			ps.setString(17, event.getServiceType());
 	    	ps.execute();
 	 	    ps.close();
 	 	    

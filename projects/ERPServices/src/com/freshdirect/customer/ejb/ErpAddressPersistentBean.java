@@ -323,8 +323,8 @@ public class ErpAddressPersistentBean extends DependentPersistentBeanSupport {
 			this.altLastName = rs.getString("ALT_LAST_NAME");
 			this.altApartment = rs.getString("ALT_APARTMENT");
 			this.altPhone = this.convertPhoneNumber( rs.getString("ALT_PHONE"), rs.getString("ALT_PHONE_EXT") );
-			this.addressInfo.setLongitude(rs.getDouble("LONGITUDE"));
-			this.addressInfo.setLatitude(rs.getDouble("LATITUDE"));
+			this.addressInfo.setLongitude(Double.parseDouble((rs.getBigDecimal("LONGITUDE")!=null)?rs.getBigDecimal("LONGITUDE").toString():"0"));
+			this.addressInfo.setLatitude(Double.parseDouble((rs.getBigDecimal("LATITUDE")!=null)?rs.getBigDecimal("LATITUDE").toString():"0"));
 			this.serviceType = EnumServiceType.getEnum(rs.getString("SERVICE_TYPE"));
 			this.companyName = rs.getString("COMPANY_NAME");
 			this.altContactPhone = this.convertPhoneNumber(rs.getString("ALT_CONTACT_PHONE"), rs.getString("ALT_CONTACT_EXT"));

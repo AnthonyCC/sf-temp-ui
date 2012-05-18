@@ -18,6 +18,9 @@ import com.freshdirect.routing.service.util.LocationLocatorResult;
 
 public interface IGeographyService {
 	
+	
+	List<ILocationModel> getLocationsForSnapshot() throws RoutingServiceException;
+	
 	ILocationModel getLocation(ILocationModel model) throws RoutingServiceException;
 	
 	IGeocodeResult getGeocode(ILocationModel model) throws RoutingServiceException;

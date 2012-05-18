@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -50,14 +51,15 @@ import com.freshdirect.delivery.model.DlvZoneDescriptor;
 import com.freshdirect.delivery.model.DlvZoneModel;
 import com.freshdirect.delivery.model.SectorVO;
 import com.freshdirect.delivery.model.UnassignedDlvReservationModel;
-import com.freshdirect.delivery.routing.ejb.RoutingActivityType;
 import com.freshdirect.framework.core.PrimaryKey;
+import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.GenericSearchCriteria;
 import com.freshdirect.framework.util.NVL;
 import com.freshdirect.framework.util.TimeOfDay;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.routing.constants.EnumOrderMetricsSource;
 import com.freshdirect.routing.constants.EnumRoutingUpdateStatus;
+import com.freshdirect.routing.constants.RoutingActivityType;
 import com.freshdirect.routing.model.AreaModel;
 import com.freshdirect.routing.model.DeliverySlot;
 import com.freshdirect.routing.model.IAreaModel;
@@ -458,7 +460,7 @@ public class DlvManagerDAO {
 			EnumReservationType.getEnum(rs.getString("TYPE")),
 			rs.getString("ADDRESS")!=null?getAddress(rs):null,
 			rs.getDate("BASE_DATE"),
-			rs.getString("CUTOFF_TIME"),
+			rs.getString("CUTOFF_TIME"),rs.getTimestamp("STIME"), rs.getTimestamp("ETIME"),
 			rs.getString("ZONE_CODE"),
 			RoutingActivityType.getEnum( rs.getString("UNASSIGNED_ACTION")) ,
 			"X".equalsIgnoreCase(rs.getString("IN_UPS"))?true:false
@@ -503,8 +505,8 @@ public class DlvManagerDAO {
 		model.setUnattendedDeliveryInstructions(rs.getString("UNATTENDED_INSTR"));
 		model.setCustomerId(rs.getString("CUSTOMER_ID"));
 		AddressInfo addressInfo = new AddressInfo();
-		addressInfo.setLongitude(rs.getDouble("LONGITUDE"));
-		addressInfo.setLatitude(rs.getDouble("LATITUDE"));
+		addressInfo.setLongitude(Double.parseDouble((rs.getBigDecimal("LONGITUDE")!=null)?rs.getBigDecimal("LONGITUDE").toString():"0"));
+		addressInfo.setLatitude(Double.parseDouble((rs.getBigDecimal("LATITUDE")!=null)?rs.getBigDecimal("LATITUDE").toString():"0"));
 		model.setAddressInfo(addressInfo);
 		return model;
 		
@@ -1238,7 +1240,7 @@ public class DlvManagerDAO {
 	//List<DlvReservationModel> getUnassignedReservations()
 	
 	private static final String FETCH_UNASSIGNED_RESERVATIONS_QUERY="SELECT  R.ID, R.ORDER_ID, R.CUSTOMER_ID, R.STATUS_CODE, R.TIMESLOT_ID, R.ZONE_ID, R.EXPIRATION_DATETIME, R.TYPE, R.ADDRESS_ID, "+
-	" T.BASE_DATE,to_char(T.CUTOFF_TIME, 'HH:MI AM') CUTOFF_TIME, Z.ZONE_CODE,R.UNASSIGNED_DATETIME, R.UNASSIGNED_ACTION, R.IN_UPS, R.ORDER_SIZE, R.SERVICE_TIME, R.RESERVED_ORDER_SIZE" +
+	" T.BASE_DATE,to_char(T.CUTOFF_TIME, 'HH:MI AM') CUTOFF_TIME, T.START_TIME STIME, T.END_TIME ETIME, Z.ZONE_CODE,R.UNASSIGNED_DATETIME, R.UNASSIGNED_ACTION, R.IN_UPS, R.ORDER_SIZE, R.SERVICE_TIME, R.RESERVED_ORDER_SIZE" +
 	", R.RESERVED_SERVICE_TIME, R.UPDATE_STATUS, R.METRICS_SOURCE " +
 	", R.NUM_CARTONS , R.NUM_FREEZERS , R.NUM_CASES, " +
 	" A.ID as ADDRESS, A.FIRST_NAME,A.LAST_NAME,A.ADDRESS1,A.ADDRESS2,A.APARTMENT,A.CITY,A.STATE,A.ZIP,A.COUNTRY, "+
@@ -1253,6 +1255,9 @@ public class DlvManagerDAO {
 	
 	public static List<UnassignedDlvReservationModel> getUnassignedReservations(Connection conn, Date _date,boolean includeCutoff)  throws SQLException {
 		
+	Calendar startDate=DateUtil.truncate(Calendar.getInstance());
+	startDate.add(Calendar.DATE, 1);
+	
 	final StringBuffer updateQ = new StringBuffer();
 	updateQ.append(FETCH_UNASSIGNED_RESERVATIONS_QUERY);
 	if(includeCutoff)
@@ -1261,11 +1266,15 @@ public class DlvManagerDAO {
 	}
 	else
 	{
+		if(_date.equals(startDate.getTime()))
+		{
+			updateQ.append(" AND to_char(t.base_date-1, 'MM/DD/YYYY')||' '||to_char(t.cutoff_time, 'HH:MI AM') > to_char(SYSDATE+1/96, 'MM/DD/YYYY HH:MI AM')");
+		}
+		
 		updateQ.append(" ORDER BY R.unassigned_action, R.UPDATE_STATUS NULLS LAST");
 	}
 	PreparedStatement ps =
 			conn.prepareStatement(updateQ.toString());
-		
 		ps.setDate(1, new java.sql.Date(_date.getTime()));
 		ResultSet rs = ps.executeQuery();
 		List<UnassignedDlvReservationModel>  reservations = new ArrayList<UnassignedDlvReservationModel>();
@@ -1281,7 +1290,7 @@ public class DlvManagerDAO {
 	}
 	
 	private static final String FETCH_REROUTE_RESERVATIONS_QUERY="SELECT R.ID, R.ORDER_ID, R.CUSTOMER_ID, R.STATUS_CODE, R.TIMESLOT_ID, R.ZONE_ID, R.EXPIRATION_DATETIME, R.TYPE, R.ADDRESS_ID, "+
-	" T.BASE_DATE, to_char(T.CUTOFF_TIME, 'HH:MI AM') CUTOFF_TIME, Z.ZONE_CODE,R.UNASSIGNED_DATETIME, R.UNASSIGNED_ACTION, R.IN_UPS, R.ORDER_SIZE, R.SERVICE_TIME, R.RESERVED_ORDER_SIZE" +
+	" T.BASE_DATE,to_char(T.CUTOFF_TIME, 'HH:MI AM') CUTOFF_TIME, T.START_TIME STIME, T.END_TIME ETIME, Z.ZONE_CODE,R.UNASSIGNED_DATETIME, R.UNASSIGNED_ACTION, R.IN_UPS, R.ORDER_SIZE, R.SERVICE_TIME, R.RESERVED_ORDER_SIZE" +
 	", R.RESERVED_SERVICE_TIME, R.UPDATE_STATUS, R.METRICS_SOURCE " +
 	", R.NUM_CARTONS , R.NUM_FREEZERS , R.NUM_CASES, " +
 	" A.ID as ADDRESS,A.FIRST_NAME,A.LAST_NAME,A.ADDRESS1,A.ADDRESS2,A.APARTMENT,A.CITY,A.STATE,A.ZIP,A.COUNTRY, "+

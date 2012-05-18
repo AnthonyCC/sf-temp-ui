@@ -73,7 +73,9 @@
  		 	    <prop key="/rsmergefile.do">rsFileMergeFormController</prop>
  		 	    <prop key="/download.do">downloadController</prop>	
  		 	    <prop key="/zonetype.do">domainController</prop>
- 		 	    <prop key="/deletezonetype.do">domainController</prop>					                
+ 		 	    <prop key="/deletezonetype.do">domainController</prop>	
+ 		 	    <prop key="/capacitySnapshot.do">domainController</prop>
+ 		 	    <prop key="/deletecapacitySnapshot.do">domainController</prop>					                
 				<prop key="/editzonetype.do">zoneTypeFormController</prop>	
 				<prop key="/area.do">domainController</prop>
 				<prop key="/deletearea.do">domainController</prop>					                
@@ -93,6 +95,11 @@
 				<prop key="/cutoff.do">domainController</prop>
 				<prop key="/deletecutoff.do">domainController</prop>					                
 				<prop key="/editcutoff.do">cutOffFormController</prop>
+			<!--	
+				<prop key="/plantcapacity.do">domainController</prop>
+				<prop key="/deleteplantcapacity.do">domainController</prop>					                
+				<prop key="/editplantcapacity.do">plantCapacityFormController</prop>
+				-->
 				<prop key="/viewfile.do">genericBeanFormController</prop> 
 				<prop key="/accessdenied.do">domainController</prop>
 
@@ -287,6 +294,8 @@
 	 	    <prop key="/download.do">downloadHandler</prop>
 	 	    <prop key="/zonetype.do">zoneTypeHandler</prop>					                
  		 	<prop key="/deletezonetype.do">zoneTypeDeleteHandler</prop>
+ 		 	<prop key="/capacitySnapshot.do">snapshotHandler</prop>					                
+ 		 	<prop key="/deletecapacitySnapshot.do">snapshotDeleteHandler</prop>
  		 	<prop key="/area.do">areaHandler</prop>					                
  		 	<prop key="/deletearea.do">areaDeleteHandler</prop>
  		 	<prop key="/dlvbuilding.do">dlvBuildingHandler</prop>	 	   
@@ -300,6 +309,10 @@
  		 	<prop key="/deletedlvservicetimescenario.do">dlvServiceTimeScenarioDeleteHandler</prop>	
  		 	<prop key="/cutoff.do">cutOffHandler</prop>					                
  		 	<prop key="/deletecutoff.do">cutOffDeleteHandler</prop>
+ 		 	<!--
+ 		 	<prop key="/plantcapacity.do">plantCapacityHandler</prop>					                
+ 		 	<prop key="/deleteplantcapacity.do">plantCapacityDeleteHandler</prop>
+ 		 	-->
  		 	<prop key="/accessdenied.do">accessDeniedHandler</prop>
 
 		 	<prop key="/georestriction.do">geoRestrictionHandler</prop>					                
@@ -424,6 +437,16 @@
         <property name="successView" value="cutOffEdit" />
         <property name="formView" value="cutOffEdit" />
 	</bean>
+	
+	<!--<bean id="plantCapacityFormController" class="com.freshdirect.transadmin.web.PlantCapacityFormController">
+		<property name="domainManagerService" ref="domainManager"/>
+		<property name="sessionForm" value="true"/>
+        <property name="commandName" value="plantCapacityForm"/>
+        <property name="commandClass" value="com.freshdirect.transadmin.model.TrnPlantCapacity"/>
+        <property name="validator" ref="plantCapacityValidator"/>
+        <property name="successView" value="plantCapacityEdit" />
+        <property name="formView" value="plantCapacityEdit" />
+	</bean>-->
 	
 	<bean id="routeFormController" class="com.freshdirect.transadmin.web.RouteFormController">
 		<property name="domainManagerService" ref="domainManager"/>
@@ -837,6 +860,8 @@
 	<bean id="routingOutValidator" class="com.freshdirect.transadmin.web.validation.RoutingOutValidator"/>
 	<bean id="routingMergeValidator" class="com.freshdirect.transadmin.web.validation.RoutingMergeValidator"/>
 	<bean id="cutOffValidator" class="com.freshdirect.transadmin.web.validation.CutOffValidator"/>
+	<!--<bean id="plantCapacityValidator" class="com.freshdirect.transadmin.web.validation.PlantCapacityValidator"/>-->
+	
 	
 	<bean id="geoRestrictionValidator" class="com.freshdirect.transadmin.web.validation.GeoRestrictionValidator"/>
 	<bean id="scribValidator" class="com.freshdirect.transadmin.web.validation.ScribValidator"/>

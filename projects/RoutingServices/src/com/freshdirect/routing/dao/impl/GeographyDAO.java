@@ -838,8 +838,8 @@ public class GeographyDAO extends BaseDAO implements IGeographyDAO  {
 		ResultSet rs = ps.executeQuery();
 		if (rs.next()) {
 			AddressInfo info = address.getAddressInfo() == null ? new AddressInfo() : address.getAddressInfo();
-			info.setLatitude(rs.getDouble("LATITUDE"));
-			info.setLongitude(rs.getDouble("LONGITUDE"));
+			info.setLatitude(Double.parseDouble((rs.getBigDecimal("LATITUDE")!=null)?rs.getBigDecimal("LATITUDE").toString():"0"));
+			info.setLongitude(Double.parseDouble((rs.getBigDecimal("LONGITUDE")!=null)?rs.getBigDecimal("LONGITUDE").toString():"0"));
 			info.setGeocodeException(true);
 			address.setAddressInfo(info);
 			result = GEOCODE_OK;
@@ -1030,4 +1030,71 @@ public class GeographyDAO extends BaseDAO implements IGeographyDAO  {
         public double farY;
         
     }
+
+	private final static String locationsforsnapshot = "select cs.*,db.*,  (select apartment || ' '|| ID  from dlv.delivery_location dl where db.id = " +
+			"DL.BUILDINGID(+) and rownum<=1) dl from mis.ups_capacity_snapshot cs, dlv.delivery_building db where cs.building_id = DB.ID";
+	@Override
+	public List<ILocationModel> getLocationsForSnapshot() throws SQLException {
+		
+		final List<ILocationModel> locations = new ArrayList<ILocationModel>();
+		PreparedStatementCreator creator=new PreparedStatementCreator() {
+			public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
+
+				PreparedStatement ps =
+					connection.prepareStatement(locationsforsnapshot);
+				return ps;
+			}
+		};
+
+		jdbcTemplate.query(creator,
+				new RowCallbackHandler() {
+			public void processRow(ResultSet rs) throws SQLException {
+
+				do {
+					if(rs.getString("dl")!=null)
+					{
+						ILocationModel locModel = getLocationModel(rs);
+						locations.add(locModel);		
+					}
+
+				} while(rs.next());
+			}
+		}
+		);
+
+		return locations;
+
+
+	}
+	
+	public static ILocationModel getLocationModel(ResultSet rs) throws SQLException {
+		
+		
+		IBuildingModel building = new BuildingModel();
+		
+		building.setBuildingId(rs.getString("BUILDING_ID"));
+		building.setStreetAddress1(rs.getString("SCRUBBED_STREET"));
+		
+		building.setStreetAddress2(null);
+		
+		building.setCity(rs.getString("CITY"));
+		building.setCountry(rs.getString("COUNTRY"));
+		building.setState(rs.getString("STATE"));
+		building.setZipCode(rs.getString("ZIP"));
+		
+		ILocationModel _locModel= new LocationModel(building);
+		String location = rs.getString("dl");
+		String[] locationValues = location.split(" ");
+		_locModel.setApartmentNumber(locationValues[0]);
+		_locModel.setLocationId(locationValues[1]);
+		_locModel.setServiceType(rs.getString("SERVICETYPE"));
+		GeographicLocation _geoLocModel = new GeographicLocation();
+		_geoLocModel.setLatitude(""+rs.getBigDecimal("LATITUDE"));
+		_geoLocModel.setLongitude(""+rs.getBigDecimal("LONGITUDE"));
+						
+		
+		building.setGeographicLocation(_geoLocModel);
+		
+		return _locModel;
+	}
 }

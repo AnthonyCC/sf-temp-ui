@@ -1204,8 +1204,8 @@ public class GeographyDAO {
 		ResultSet rs = ps.executeQuery();
 		if (rs.next()) {
 			AddressInfo info = address.getAddressInfo() == null ? new AddressInfo() : address.getAddressInfo();
-			info.setLatitude(rs.getDouble("LATITUDE"));
-			info.setLongitude(rs.getDouble("LONGITUDE"));
+			info.setLatitude(Double.parseDouble((rs.getBigDecimal("LATITUDE")!=null)?rs.getBigDecimal("LATITUDE").toString():"0"));
+			info.setLongitude(Double.parseDouble((rs.getBigDecimal("LONGITUDE")!=null)?rs.getBigDecimal("LONGITUDE").toString():"0"));
 			info.setGeocodeException(true);
 			address.setAddressInfo(info);
 			result = GEOCODE_OK;
@@ -1237,8 +1237,8 @@ public class GeographyDAO {
 			String quality = rs.getString("GEO_CONFIDENCE");
 			if(quality != null /*&& "gcHigh".equalsIgnoreCase(quality) Commented for APPDEV-2132 */) {
 				AddressInfo info = address.getAddressInfo() == null ? new AddressInfo() : address.getAddressInfo();
-				info.setLatitude(rs.getDouble("LATITUDE"));
-				info.setLongitude(rs.getDouble("LONGITUDE"));				
+				info.setLatitude(Double.parseDouble((rs.getBigDecimal("LATITUDE")!=null)?rs.getBigDecimal("LATITUDE").toString():"0"));
+				info.setLongitude(Double.parseDouble((rs.getBigDecimal("LONGITUDE")!=null)?rs.getBigDecimal("LONGITUDE").toString():"0"));				
 				address.setAddressInfo(info);
 				result = GEOCODE_OK;
 			}
@@ -1265,8 +1265,8 @@ public class GeographyDAO {
 				ExceptionAddress ea = new ExceptionAddress();
 				ea.setScrubbedAddress(rs.getString("SCRUBBED_ADDRESS"));
 				ea.setZip(rs.getString("ZIPCODE"));
-				ea.setLatitude(rs.getDouble("LATITUDE"));
-				ea.setLongitude(rs.getDouble("LONGITUDE"));
+				ea.setLatitude(Double.parseDouble((rs.getBigDecimal("LATITUDE")!=null)?rs.getBigDecimal("LATITUDE").toString():"0"));
+				ea.setLongitude(Double.parseDouble((rs.getBigDecimal("LONGITUDE")!=null)?rs.getBigDecimal("LONGITUDE").toString():"0"));
 				exceptions.add(ea);
 			}
 			rs.close();

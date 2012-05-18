@@ -5,7 +5,9 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core" %>
 
 <%  
-	pageContext.setAttribute("HAS_GEOCODEBUTTON", "true");  
+	pageContext.setAttribute("HAS_GEOCODEBUTTON", "true"); 
+	pageContext.setAttribute("HAS_ADDTOSNAPSHOTBUTTON", "true");
+	
   String streetVal = request.getParameter("srubbedAddress") != null ? request.getParameter("srubbedAddress") : "";
   String zipVal = request.getParameter("zipCode") != null ? request.getParameter("zipCode") : "";
 %>
@@ -99,6 +101,7 @@
 						<input id="view_button" type="image" alt="View" src="./images/icons/view.gif"      onclick="javascript:doCompositeLink('srubbedAddress','zipCode','confidence','quality','group','dlvbuilding.do')"
 						onmousedown="this.src='./images/icons/view_ON.gif'" />
                 </td> 
+                <td><input height="18" type="button" onclick="javascript:addtosnapshot('ec_table');" value="Add To Snapshot" style="font-size:11px"></td>
 				
 				 <td colspan="7" align="center">
 					 <input id="group_button" type="image" alt="Group" src="./images/icons/groups.gif" onclick="javascript:showDeliveryGroupsTable();" />
@@ -111,6 +114,34 @@
           </tr>               
         </table>    
        <script>
+       
+       function addtosnapshot(tableId){
+
+    	    var paramValues = getParamList(tableId);
+    	    if (paramValues != null) {
+    	    	showLabelForm(paramValues);
+    	    } else {
+    	    	alert('Please Select a Row!');
+    	    }
+       }
+       function getParamList(tableId) {
+    		
+    		var table = document.getElementById(tableId);
+    	    var checkboxList = table.getElementsByTagName("input");    
+    	    var paramValues = null;
+    	    for (var i = 0; i < checkboxList.length; i++) {
+    	    	if (checkboxList[i].type=="checkbox" && checkboxList[i].checked) {
+    	    		
+    	    		if (paramValues != null) {
+    	    			paramValues = paramValues+","+checkboxList[i].name;
+    	    		} else {
+    	    			paramValues = checkboxList[i].name;
+    	    		}
+    	    	}
+    	    }
+    	    return paramValues;
+    	}
+       
        function doCompositeLink(compId1,compId2, compId3, compId4,compId5, url) {
         var param1 = document.getElementById(compId1).value;
         var param2 = document.getElementById(compId2).value;
@@ -127,10 +158,10 @@
         
         if(table != null) {
           var rows = table.tBodies[0].getElementsByTagName("tr");          
-          for (i = 0; i < rows.length; i++) {       
+          for (var i = 0; i < rows.length; i++) {       
               var cells = rows[i].getElementsByTagName("td");
               
-              for (j = 1; j < cells.length; j++) {
+              for (var j = 1; j < cells.length; j++) {
                 
                   cells[j].onmouseover = function () {
                     previousClass = this.parentNode.className;
@@ -158,7 +189,7 @@
       }
     }
       </script>  
-     </div> 
+ 
     <div align="center">
       <form id="deliveryBuildingForm" action="" method="post">  
         <ec:table items="dlvbuildings"   action="${pageContext.request.contextPath}/dlvbuilding.do"
@@ -197,5 +228,6 @@
       addCustomRowHandlers('ec_table', 'rowMouseOver', 'editdlvbuilding.do','id',0, 0, true);
     </script>
 	  <%@ include file='i_dlvgroupinfo.jspf'%>
+	  <%@ include file='i_addtosnapshot.jspf'%>  
   </tmpl:put>
 </tmpl:insert>

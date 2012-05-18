@@ -6,6 +6,8 @@ public interface ILocationModel {
 	
 	String getApartmentNumber();
 	void setApartmentNumber(String apartmentNumber);
+	String getServiceType();
+	void setServiceType(String serviceType);
 	
 	String getLocationId();
 	void setLocationId(String locationId);

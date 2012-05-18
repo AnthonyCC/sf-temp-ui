@@ -23,6 +23,7 @@
 				<value>com/freshdirect/transadmin/model/DlvServiceTimeScenario.hbm.xml</value> 
 				<value>com/freshdirect/transadmin/model/TrnArea.hbm.xml</value>
 				<value>com/freshdirect/transadmin/model/TrnCutOff.hbm.xml</value>  
+			<!--<value>com/freshdirect/transadmin/model/TrnPlantCapacity.hbm.xml</value> --> 
 				<value>com/freshdirect/transadmin/model/TrnDeliveryModel.hbm.xml</value>
 				<value>com/freshdirect/transadmin/model/Dispatch.hbm.xml</value>
 				<value>com/freshdirect/transadmin/model/DispatchReason.hbm.xml</value>  	  				
@@ -57,6 +58,7 @@
 				<value>com/freshdirect/transadmin/model/DlvBuildingDetail.hbm.xml</value>
 				<value>com/freshdirect/transadmin/model/EmployeeStatus.hbm.xml</value>
 				<value>com/freshdirect/transadmin/model/BuildingOperationHours.hbm.xml</value>
+				<value>com/freshdirect/transadmin/model/CapacitySnapshot.hbm.xml</value>
 								
 				<value>com/freshdirect/transadmin/model/EmployeeTeam.hbm.xml</value>
 				<value>com/freshdirect/transadmin/model/DlvScenarioZones.hbm.xml</value>

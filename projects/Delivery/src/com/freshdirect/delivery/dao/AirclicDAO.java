@@ -184,7 +184,7 @@ public class AirclicDAO {
 				}
 				
 			}
-			else if(message.getOrderId()!=null)
+			if(message.getOrderId()!=null)
 			{
 				// @TODO update the airclic ORDERS table NOTE column if userId does not exist
 

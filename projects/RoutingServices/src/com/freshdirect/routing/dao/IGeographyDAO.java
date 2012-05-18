@@ -44,5 +44,9 @@ public interface IGeographyDAO {
 	Map<String, IZoneModel> getZoneLookup() throws SQLException;
 	
 	Map<String, IFacilityModel> getFacilityLookup() throws SQLException;
+	
+	List<ILocationModel> getLocationsForSnapshot() throws SQLException;
+
+	
 
 }

@@ -7,6 +7,7 @@ public class LocationModel extends BaseModel implements ILocationModel {
 	private String locationId;
 	
 	private String apartmentNumber;	
+	private String serviceType;	
 		
 	private IServiceTimeTypeModel serviceTimeType;
 	private IBuildingModel building;
@@ -63,6 +64,14 @@ public class LocationModel extends BaseModel implements ILocationModel {
 	}
 	public void setLocationId(String locationId) {
 		this.locationId = locationId;
+	}
+	@Override
+	public String getServiceType() {
+		return serviceType;
+	}
+	@Override
+	public void setServiceType(String serviceType) {
+		this.serviceType = serviceType;
 	}
 		
 }

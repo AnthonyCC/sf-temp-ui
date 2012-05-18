@@ -27,7 +27,10 @@ import com.freshdirect.transadmin.dao.BaseManagerDaoI;
 import com.freshdirect.transadmin.dao.DomainManagerDaoI;
 import com.freshdirect.transadmin.dao.ZoneExpansionDaoI;
 import com.freshdirect.transadmin.datamanager.model.WorkTableModel;
+import com.freshdirect.transadmin.model.CapacitySnapshot;
+import com.freshdirect.transadmin.model.CapacitySnapshotModel;
 import com.freshdirect.transadmin.model.DispositionType;
+import com.freshdirect.transadmin.model.DlvBuilding;
 import com.freshdirect.transadmin.model.FDRouteMasterInfo;
 import com.freshdirect.transadmin.model.IssueLog;
 import com.freshdirect.transadmin.model.IssueSubType;
@@ -39,6 +42,7 @@ import com.freshdirect.transadmin.model.ScheduleEmployee;
 import com.freshdirect.transadmin.model.TrnAdHocRoute;
 import com.freshdirect.transadmin.model.TrnArea;
 import com.freshdirect.transadmin.model.TrnCutOff;
+//import com.freshdirect.transadmin.model.TrnPlantCapacity;
 import com.freshdirect.transadmin.model.TrnZoneType;
 import com.freshdirect.transadmin.model.VIRRecord;
 import com.freshdirect.transadmin.model.Zone;
@@ -99,6 +103,38 @@ public class DomainManagerImpl
 		return adHocRoutes; 
 	}
 	
+	public Collection getSnapshotLocations() {
+		Collection<Object[]> locations = getDomainManagerDao().getSnapshotLocations();
+		List<CapacitySnapshotModel> snapshotLocations = new ArrayList<CapacitySnapshotModel>();
+		for(Object[] obj: locations)
+		{
+			if(obj!=null)
+			{
+				if(obj[0]!=null && obj[0] instanceof CapacitySnapshot && obj[1]!=null && obj[1] instanceof DlvBuilding)
+				{
+					CapacitySnapshotModel model = new CapacitySnapshotModel();
+					
+					CapacitySnapshot snapshot = (CapacitySnapshot)obj[0];
+					DlvBuilding building = (DlvBuilding)obj[1];
+					model.setId(snapshot.getBuildingId()+"$"+snapshot.getServicetype());
+					model.setBuildingId(snapshot.getBuildingId());
+					model.setServicetype(snapshot.getServicetype());
+					model.setSrubbedStreet(building.getSrubbedStreet());
+					model.setCity(building.getCity());
+					model.setState(building.getState());
+					model.setZip(building.getZip());
+					model.setCountry(building.getCountry());
+					snapshotLocations.add(model);
+				}
+				
+				
+			}
+		}
+		
+		return snapshotLocations; 
+	}
+	
+	
 	public Map getTrucks() {
 		// get the data from CacheManager
 		// if data does not exist then get the data from sap and add it in cache
@@ -156,6 +192,13 @@ public class DomainManagerImpl
 		return getDomainManagerDao().getCutOffs();
 	}
 	
+/*	public TrnPlantCapacity getPlantCapacity(String id){
+		return getDomainManagerDao().getPlantCapacity(id);
+	}
+	
+	public Collection getPlantCapacities(Date dispatchDate) {
+		return getDomainManagerDao().getPlantCapacities(dispatchDate);
+	}*/
 	
 	public Collection getDeliveryModels() {
 		return getDomainManagerDao().getDeliveryModels();
@@ -977,6 +1020,35 @@ public class DomainManagerImpl
 	}
 	public SectorZipcode getSectorZipCode(String zipCode){
 		return getDomainManagerDao().getSectorZipCode(zipCode);
+	}
+
+	@Override
+	public boolean addToSnapshot(String servicetypes,
+			String buildings) {
+	
+		String[] buildingList = buildings.split(",");
+		String[] serviceList = servicetypes.split(",");
+		
+		List<CapacitySnapshot> snapshots = new ArrayList<CapacitySnapshot>();
+		for(int i=0;i<buildingList.length;i++)
+		{
+			for(int j=0;j<serviceList.length;j++)
+			{
+				CapacitySnapshot snapshot = new CapacitySnapshot();
+				snapshot.setBuildingId(buildingList[i]);
+				snapshot.setServicetype(serviceList[j].toUpperCase());
+				snapshots.add(snapshot);
+			}
+		}
+		return domainManagerDao.saveToSnapshot(snapshots);
+		
+	}
+
+	@Override
+	public Object getSnapshotLocation(String buildingId,
+			String serviceType) {
+		return getDomainManagerDao().getSnapshotLocation( buildingId,
+				 serviceType);
 	}
 }
 

@@ -31,6 +31,7 @@ public class TimeslotEventModel extends EventModel {
 	private String sector;
 	private double latitude;
 	private double longitude;
+	private String serviceType;
 	private List<TimeslotEventDetailModel> detail;
 	public TimeslotEventModel(String transactionSource, boolean dlvPassApplied, double deliveryCharge, boolean deliveryChargeWaived, boolean zoneCtActive)
 	{
@@ -183,5 +184,13 @@ public class TimeslotEventModel extends EventModel {
 
 	public void setLongitude(double longitude) {
 		this.longitude = longitude;
+	}
+
+	public String getServiceType() {
+		return serviceType;
+	}
+
+	public void setServiceType(String serviceType) {
+		this.serviceType = serviceType;
 	}
 }

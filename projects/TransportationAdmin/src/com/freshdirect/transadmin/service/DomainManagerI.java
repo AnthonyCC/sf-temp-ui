@@ -14,9 +14,9 @@ import com.freshdirect.transadmin.model.FDRouteMasterInfo;
 import com.freshdirect.transadmin.model.IssueSubType;
 import com.freshdirect.transadmin.model.IssueType;
 import com.freshdirect.transadmin.model.MaintenanceIssue;
-import com.freshdirect.transadmin.model.SectorZipcode;
 import com.freshdirect.transadmin.model.Region;
 import com.freshdirect.transadmin.model.ScheduleEmployee;
+import com.freshdirect.transadmin.model.SectorZipcode;
 import com.freshdirect.transadmin.model.TrnAdHocRoute;
 import com.freshdirect.transadmin.model.TrnArea;
 import com.freshdirect.transadmin.model.TrnCutOff;
@@ -66,6 +66,10 @@ public interface DomainManagerI extends BaseManagerI {
 	Region getRegion(String id);
 	
 	TrnCutOff getCutOff(String id);
+	
+	//TrnPlantCapacity getPlantCapacity(String id);
+	
+	//Collection getPlantCapacities(Date dispatchDate);
 	
 	Collection getCutOffs();
 			
@@ -188,4 +192,10 @@ public interface DomainManagerI extends BaseManagerI {
 	Collection getActiveSector();
 
 	SectorZipcode getSectorZipCode(String zipCode);
+	
+	boolean addToSnapshot(String servicetypes, String buildings);
+
+	Collection getSnapshotLocations();
+
+	Object getSnapshotLocation(String buildingId, String serviceType);
 }
