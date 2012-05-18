@@ -184,6 +184,9 @@
 	
 	List<SkuModel> skus = productNode.getSkus();
 	Map<String,Date> shortTermUnavailable = new HashMap<String,Date>();
+	//This list holds the list of skuCode which have earliest availability indicator
+	List<String> shortTermUnavailableSkus = new ArrayList<String>();
+		
 	// VSZ - is this "sku filtering" neccessary?
 	// MR - Yes, this is necessary.  For products with multiple skus, the default sku is the lowest priced sku.
 	// If the lowest priced sku is discontinued, this causes errors.  Please leave this turned on.
@@ -212,6 +215,7 @@
 	            }
 	            key.append(" avail");
 	            shortTermUnavailable.put(key.toString(), earliestDate);
+	            shortTermUnavailableSkus.add(sku.getSkuCode());
 	        }
 	    }
 	}

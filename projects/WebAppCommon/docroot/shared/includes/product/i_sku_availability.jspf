@@ -35,13 +35,16 @@
         }
     }
     
-    if (!displayLimitedAvailability && displayShortTermUnavailability && shortTermUnavailable.size() > 0 ) {
+    if (!displayLimitedAvailability && displayShortTermUnavailability 
+    					&& shortTermUnavailable.size() > 0 
+    					&& shortTermUnavailableSkus.contains(a_sku.getSkuCode())) {
+    	
         Date earliestDate = a_sku.getEarliestAvailability();
         // cheat: if no availability indication, show the horizon as the
         //        earliest availability
         if ( earliestDate == null ) {
             earliestDate = DateUtil.addDays( DateUtil.truncate( new Date() ), ErpServicesProperties.getHorizonDays() );
         }
-        %><font class="text11rbold">Earliest Available <%=CCFormatter.formatAvailabilityDate(earliestDate)%></font><br/><%
+        %><font class="text11rbold">Earliest Available <%=CCFormatter.formatAvailabilityDate(earliestDate)%></font><br/><% 
     }
 %>
