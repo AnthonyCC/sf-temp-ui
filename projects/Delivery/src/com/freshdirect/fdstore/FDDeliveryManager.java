@@ -14,7 +14,7 @@ import javax.ejb.EJBException;
 import javax.ejb.FinderException;
 import javax.ejb.ObjectNotFoundException;
 import javax.naming.NamingException;
-import com.freshdirect.delivery.routing.ejb.RoutingActivityType;
+import com.freshdirect.routing.constants.*;
 import org.apache.log4j.Category;
 
 import com.freshdirect.analytics.EventType;
