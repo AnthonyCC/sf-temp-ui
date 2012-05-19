@@ -19,6 +19,7 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Properties;
 import java.util.Set;
+import java.util.StringTokenizer;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -528,6 +529,11 @@ public class FDStoreProperties {
 	private final static String CLOUD_SPONGE_ADDRESS_IMPORTS = "cloudsponge.usage";
 	
 	private final static String PROP_DDPP_ENABLED="fdstore.ddpp.enabled";
+	
+	private static final String PROP_TRANS_EMAIL_ENABLED="fdstore.trans.email.enabled";
+	private final static String PROP_TRANS_EMAIL_TYPES = "fdstore.trans.email.types";
+	
+	private final static String PROP_MODIFY_ORDER_TOTOAL_MAX = "fdstore.modify.order.maxtotal";
 	
 	
     static {
@@ -1049,6 +1055,13 @@ public class FDStoreProperties {
 		defaults.put(CLOUD_SPONGE_DOMAIN_KEY, "K3D6375BGJRXBSJR8456");
 		defaults.put(CLOUD_SPONGE_ADDRESS_IMPORTS, "true");
 		defaults.put(PROP_DDPP_ENABLED, "false");
+		defaults.put(PROP_TRANS_EMAIL_ENABLED, "true");
+		defaults.put(PROP_TRANS_EMAIL_TYPES, "ORDER_SUBMIT,ORDER_MODIFY,FINAL_INCOICE,CUST_SIGNUP,ORDER_CANCEL,CHARGE_ORDER,CREDIT_CONFIRM,FORGOT_PASSWD,"+
+				"AUTH_FAILURE,CUST_REMINDER,RECIPE_MAIL,TELL_A_FRIEND,TELLAFRIEND_RECIPE,TELLAFRIEND_PRODUCT,GC_ORDER_SUBMIT, "+
+				" GC_BULK_ORDER_SUBMIT,GC_AUTH_FAILURE,GC_CANCEL_PURCHASER,GC_CANCEL_RECIPENT,GC_BALANCE_TRANSFER,"+
+				"GC_CREDIT_CONFIRM,RH_ORDER_CONFIRM,GC_RECIPENT_ORDER,SMART_STORE_DYF");			
+		
+		defaults.put(PROP_MODIFY_ORDER_TOTOAL_MAX, "1500");
 		
         refresh();
     }
@@ -2688,5 +2701,38 @@ public class FDStoreProperties {
     public static boolean isDDPPEnabled() {
         return (new Boolean(get(PROP_DDPP_ENABLED))).booleanValue();
     }
+    
+    public static String getModifyOrderMaxTotal() {
+    	return config.getProperty("PROP_MODIFY_ORDER_TOTOAL_MAX");
+    }
+    
+    public static boolean isTransactionEmailEnabled() {
+		return Boolean.valueOf(get(PROP_TRANS_EMAIL_ENABLED)).booleanValue();
+	}		
+	
+	private static  String[]  tranTypes=null; 
+	
+	public static boolean isTransactionEmailEnabled(String tranType) {
+		if(!isTransactionEmailEnabled()) return false;
+		if(tranTypes==null){
+		    String tranTypesStr=get(PROP_TRANS_EMAIL_TYPES);
+			if(tranTypesStr!=null)
+			{
+				StringTokenizer tokens=new StringTokenizer(tranTypesStr,",");
+				tranTypes=new String[tokens.countTokens()]; int i=0;
+				 while(tokens.hasMoreTokens()){
+					tranTypes[i++]=tokens.nextToken();					    												
+				 }
+			}
+			 else return false;		 		
+		}
+			
+		for(int i=0;i<tranTypes.length;i++){
+				if(tranType.equalsIgnoreCase(tranTypes[i])) return true;
+		}
+		
+				
+		return false;
+	}
     
 }

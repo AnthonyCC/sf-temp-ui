@@ -761,8 +761,18 @@ public class SubmitOrderAction extends WebActionSupport {
 				
 			LOGGER.warn("FRAUD CHECK FAILED", ex);
 			if (EnumFraudReason.MAX_ORDER_TOTAL.equals(ex.getFraudReason())) {
+				
+				int order_amount = 750;
+				
+				if(cart instanceof FDModifyCartModel) {
+					order_amount = Integer.parseInt(FDStoreProperties.getModifyOrderMaxTotal()); //1500;
+				}
+				
+				String msg = MessageFormat.format(
+						SystemMessageList.MSG_CHECKOUT_AMOUNT_TOO_LARGE,
+						new Object[] {order_amount, UserUtil.getCustomerServiceContact(this.getWebActionContext().getRequest())});
 
-				this.addError("order_amount_fraud", formatPhoneMsg(SystemMessageList.MSG_CHECKOUT_AMOUNT_TOO_LARGE));
+				this.addError("order_amount_fraud", msg);
 				
 			} else if (EnumFraudReason.MAX_MAKEGOOD.equals(ex.getFraudReason())) {
 

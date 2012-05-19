@@ -28,10 +28,12 @@ import com.freshdirect.customer.EnumFraudReason;
 import com.freshdirect.customer.EnumPaymentType;
 import com.freshdirect.customer.EnumSaleType;
 import com.freshdirect.customer.EnumTransactionSource;
+import com.freshdirect.customer.EnumTransactionType;
 import com.freshdirect.customer.ErpAbstractOrderModel;
 import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpCustomerModel;
 import com.freshdirect.customer.ErpPaymentMethodI;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.core.ServiceLocator;
 import com.freshdirect.framework.core.SessionBeanSupport;
@@ -452,19 +454,26 @@ public class ErpFraudPreventionSessionBean extends SessionBeanSupport {
 
 		final boolean corporate = EnumDeliveryType.CORPORATE.equals(order.getDeliveryInfo().getDeliveryType());
 		final boolean csr = EnumTransactionSource.CUSTOMER_REP.equals(order.getTransactionSource());
-
-		if (order.getAmount() > 750 && !csr) {
+		
+		int max_order_total = 750;
+		
+		if(order.getTransactionType().equals(EnumTransactionType.MODIFY_ORDER)) {
+			//This is modification of order
+			max_order_total = Integer.parseInt(FDStoreProperties.getModifyOrderMaxTotal()); //1500;
+		} 
+		
+		if (order.getAmount() > max_order_total && !csr) {
 			retval = !corporate;
 			createCase = true && isOkToCreateCase;
-
+	
 		} else if (order.getAmount() > 450 && !corporate) {
 			createCase = true & isOkToCreateCase;
 		}
-
+	
 		if (createCase) {
-
+	
 			NumberFormat currencyFormatter = NumberFormat.getCurrencyInstance(Locale.US);
-
+	
 			CrmCaseSubject subject = CrmCaseSubject.getEnum(CrmCaseSubject.CODE_ORDER_OVER_MAX);
 			String summary = subject.getDescription() + " because order total = " + currencyFormatter.format(order.getAmount())+ " and delivery type:"+order.getDeliveryInfo().getDeliveryType().getName();
 			LOGGER.debug("Creating case " + summary);
@@ -472,7 +481,7 @@ public class ErpFraudPreventionSessionBean extends SessionBeanSupport {
 				"Order total of "
 					+ currencyFormatter.format(order.getAmount())
 					+ " indicates possible fraud condition. Please investigate.";
-
+	
 			CrmSystemCaseInfo info = new CrmSystemCaseInfo(erpCustomerPk,salePk, subject, summary);
 			info.setNote(note);
 			new ErpCreateCaseCommand(LOCATOR, info).execute();
