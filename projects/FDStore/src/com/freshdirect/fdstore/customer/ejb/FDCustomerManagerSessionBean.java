@@ -3785,8 +3785,8 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 
 		AddressInfo info = new AddressInfo();
 		info.setScrubbedStreet(rs.getString("SCRUBBED_ADDRESS"));
-		info.setLatitude(rs.getDouble("LATITUDE"));
-		info.setLongitude(rs.getDouble("LONGITUDE"));
+		info.setLatitude(Double.parseDouble((rs.getBigDecimal("LATITUDE")!=null)?rs.getBigDecimal("LATITUDE").toString():"0"));
+		info.setLongitude(Double.parseDouble((rs.getBigDecimal("LONGITUDE")!=null)?rs.getBigDecimal("LONGITUDE").toString():"0"));
 		address.setAddressInfo(info);
 		address.setFirstName(rs.getString("FIRST_NAME"));
 		address.setLastName(rs.getString("LAST_NAME"));

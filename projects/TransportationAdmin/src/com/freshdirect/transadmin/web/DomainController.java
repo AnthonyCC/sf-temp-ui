@@ -42,6 +42,7 @@ import com.freshdirect.transadmin.model.ScheduleEmployeeInfo;
 import com.freshdirect.transadmin.model.TrnAdHocRoute;
 import com.freshdirect.transadmin.model.TrnArea;
 import com.freshdirect.transadmin.model.TrnCutOff;
+//import com.freshdirect.transadmin.model.TrnPlantCapacity;
 import com.freshdirect.transadmin.model.TrnZoneType;
 import com.freshdirect.transadmin.model.VIRRecord;
 import com.freshdirect.transadmin.model.Zone;
@@ -372,7 +373,40 @@ public class DomainController extends AbstractMultiActionController {
 		Collection dataList = domainManagerService.getAdHocRoutes();
 		return new ModelAndView("routeView","routes",dataList);
 	}
+	
+	/**
+	 * Custom handler for snapshot
+	 * @param request current HTTP request
+	 * @param response current HTTP response
+	 * @return a ModelAndView to render the response
+	 */
+	public ModelAndView snapshotHandler(HttpServletRequest request, HttpServletResponse response) throws ServletException {
 
+		Collection dataList = domainManagerService.getSnapshotLocations();
+		return new ModelAndView("snapshotView","snapshotLocations",dataList);
+	}
+
+	
+		public ModelAndView snapshotDeleteHandler(HttpServletRequest request, HttpServletResponse response) throws ServletException {
+
+		Set snapshotSet=new HashSet();
+		String arrEntityList[] = getParamList(request);
+		String params[];
+		Object tmpEntity = null;
+		if (arrEntityList != null) {
+			int arrLength = arrEntityList.length;
+			for (int intCount = 0; intCount < arrLength; intCount++) {
+				params = arrEntityList[intCount].split("\\$");
+				tmpEntity = domainManagerService.getSnapshotLocation(params[0] ,params[1]);
+				snapshotSet.add(tmpEntity);
+			}
+		}
+		domainManagerService.removeEntity(snapshotSet);
+		saveMessage(request, getMessage("app.actionmessage.103", null));
+		return snapshotHandler(request, response);
+	}
+	
+	
 	/**
 	 * Custom handler for welcome
 	 * @param request current HTTP request
@@ -487,11 +521,22 @@ public class DomainController extends AbstractMultiActionController {
 	 * @return a ModelAndView to render the response
 	 */
 	public ModelAndView cutOffHandler(HttpServletRequest request, HttpServletResponse response) throws ServletException {
-
+	
 		Collection dataList = domainManagerService.getCutOffs();
 		return new ModelAndView("cutOffView","cutoffs",dataList);
 	}
-
+	/*public ModelAndView plantCapacityHandler(HttpServletRequest request, HttpServletResponse response) throws ServletException {
+		String deliveryDate = request.getParameter("deliveryDate");
+		Collection dataList = null;
+		try{
+		 dataList = domainManagerService.getPlantCapacities(TransStringUtil.getDate(deliveryDate));
+		}
+		catch(ParseException pe)
+		{
+			
+		}
+		return new ModelAndView("plantCapacityView","plantcapacities",dataList);
+	}*/
 
 	/**
 	 * Custom handler for welcome
@@ -656,7 +701,27 @@ public class DomainController extends AbstractMultiActionController {
 		}
 		return cutOffHandler(request, response);
 	}
+	
+/*public ModelAndView plantCapacityDeleteHandler(HttpServletRequest request, HttpServletResponse response) throws ServletException {
 
+		Set plantCapacitySet=new HashSet();
+		String arrEntityList[] = getParamList(request);
+		TrnPlantCapacity tmpEntity = null;
+		if (arrEntityList != null) {
+			int arrLength = arrEntityList.length;
+			for (int intCount = 0; intCount < arrLength; intCount++) {
+				tmpEntity = domainManagerService.getPlantCapacity(arrEntityList[intCount]);
+				plantCapacitySet.add(tmpEntity);
+			}
+		}
+		try {
+			domainManagerService.removeEntity(plantCapacitySet);
+			saveMessage(request, getMessage("app.actionmessage.103", null));
+		} catch (DataIntegrityViolationException e) {
+			saveMessage(request, getMessage("app.actionmessage.127", null));
+		}
+		return plantCapacityHandler(request, response);
+	}*/
 	/**
 	 * Custom handler for welcome
 	 * @param request current HTTP request

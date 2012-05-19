@@ -141,6 +141,23 @@ public class GeographyProviderController extends JsonRpcController  implements I
 		return true;
 	}
 	
+	
+	
+	
+	@SuppressWarnings("unchecked")
+	public boolean addToSnapshot(String servicetypes, String buildings){
+		
+		boolean success = false;
+		
+		try{
+			success =  domainManagerService.addToSnapshot( servicetypes, buildings);
+		}catch(Exception ex){
+			ex.printStackTrace();			
+		}
+		return success;	
+	}
+	
+	
 	@SuppressWarnings("unchecked")
 	public List<DeliveryGroup> getDeliveryGroups(){
 		

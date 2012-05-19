@@ -22,6 +22,9 @@ public interface IGeographyProvider {
 	boolean doGeoRestriction(String zone[][]);
 
 	List<DeliveryGroup> getDeliveryGroups();
+	
+	boolean addToSnapshot(String servicetypes, String buildings);
+		
 
 	boolean doDeliveryGroup(String[][] zone);
 
