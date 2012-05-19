@@ -104,6 +104,7 @@
 		<pathelement location="${thirdparty.home}/stringtemplate.jar"/>
 		<pathelement location="${thirdparty.home}/jstl-api-1.2.jar"/>
 		<pathelement location="${thirdparty.home}/jstl-impl-1.2.jar"/>
+		<pathelement location="${thirdparty.home}/ctah-api-client.jar"/>
 	</path>
 
 	<path id="testing.classpath">
@@ -1269,6 +1270,7 @@
 					<include name="commons-net-1.0.jar"/>
 					<include name="commons-pool-1.2.jar"/>
 					<include name="commons-transaction-1.0.jar"/>
+					<include name="ctah-api-client.jar"/>
 
 					<!--  End Explict commons jar -->
 
@@ -1389,6 +1391,7 @@
 					<include name="commons-net-1.0.jar"/>
 					<include name="commons-pool-1.2.jar"/>
 					<include name="commons-transaction-1.0.jar"/>
+					<include name="ctah-api-client.jar"/>
 
 					<!--  End Explict commons jar -->
 
@@ -1576,6 +1579,7 @@
 				<pathelement location="${thirdparty.home}/lucene-core-${lucene.version}.jar"/>
 				<pathelement location="${thirdparty.home}/commons-discovery-0.2.jar"/>
 				<pathelement location="${thirdparty.home}/commons-logging-1.1.1.jar"/>
+				<pathelement location="${thirdparty.home}/ctah-api-client.jar"/>				
 				<pathelement location="${thirdparty.home}/jaxrpc.jar"/>
 				<pathelement location="${thirdparty.home}/${log4j.jar}"/>				
 				<pathelement location="${thirdparty.home}/spring.jar"/>
@@ -2465,6 +2469,7 @@
 				<include name="JFEP-0.1.0.jar"/>
 				<include name="antlr-2.7.5H3.jar"/>
 				<include name="lpsolve55j.jar"/>
+				<include name="ctah-api-client.jar"/>
 			</lib>
 		</makeFDAdminEar>
 	</target>
@@ -2695,6 +2700,7 @@
 			<zipfileset src="${thirdparty.home}/commons-collections-3.1.jar" excludes="META-INF/*"/>
 			<zipfileset src="${thirdparty.home}/commons-httpclient-2.0.2.jar" excludes="META-INF/*"/>
 			<zipfileset src="${thirdparty.home}/commons-net-1.0.jar" excludes="META-INF/*"/>
+			<zipfileset src="${thirdparty.home}/ctah-api-client.jar" excludes="META-INF/*"/>			
 			<!-- zipfileset src="${thirdparty.home}/commons-fileupload-1.0.jar" excludes="META-INF/*"/ -->
 			<zipfileset src="${thirdparty.home}/commons-fileupload-1.1.1.jar" excludes="META-INF/*"/>
 			<zipfileset src="${thirdparty.home}/dom4j-1.6.1.jar" excludes="META-INF/*"/>
@@ -2736,6 +2742,7 @@
 			<zipfileset src="${thirdparty.home}/commons-logging-1.1.1.jar" excludes="META-INF/*"/>
 			<zipfileset src="${thirdparty.home}/commons-collections-3.1.jar" excludes="META-INF/*"/>
 			<zipfileset src="${thirdparty.home}/commons-httpclient-2.0.2.jar" excludes="META-INF/*"/>
+			<zipfileset src="${thirdparty.home}/ctah-api-client.jar" excludes="META-INF/*"/>			
 			<zipfileset src="${thirdparty.home}/commons-net-1.0.jar" excludes="META-INF/*"/>
 			<!-- zipfileset src="${thirdparty.home}/commons-fileupload-1.0.jar" excludes="META-INF/*"/ -->
 			<zipfileset src="${thirdparty.home}/commons-fileupload-1.1.1.jar" excludes="META-INF/*"/>
@@ -3014,6 +3021,7 @@
 				
 				<include name="commons-discovery-0.2.jar"/>
 				<include name="commons-logging-1.1.1.jar"/>
+				<include name="ctah-api-client.jar"/>
 								
 				<include name="JFEP-0.1.0.jar"/>
 				<include name="antlr-2.7.5H3.jar"/>
