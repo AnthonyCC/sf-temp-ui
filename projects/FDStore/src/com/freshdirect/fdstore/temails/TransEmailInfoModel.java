@@ -252,6 +252,19 @@ public class TransEmailInfoModel extends EmailSupport implements TEmailI {
 	public void setCroModDate(Date croModDate) {
 		this.croModDate = croModDate;
 	}
+
+
+	@Override
+	public String toString() {
+		return "TransEmailInfoModel [croModDate=" + croModDate
+				+ ", customerId=" + customerId + ", emailContent="
+				+ emailContent + ", emailStatus=" + emailStatus
+				+ ", emailTransactionType=" + emailTransactionType
+				+ ", emailType=" + emailType + ", id=" + id + ", orderId="
+				+ orderId + ", productionReady=" + productionReady
+				+ ", provider=" + provider + ", targetProgId=" + targetProgId
+				+ ", templateId=" + templateId + "]";
+	}
 	
 
 }

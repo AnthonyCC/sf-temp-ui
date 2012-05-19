@@ -103,6 +103,17 @@ public class TEmailTemplateInfo extends ModelSupport{
 	public void setEmailType(EnumEmailType emailType) {
 		this.emailType = emailType;
 	}
+
+
+	@Override
+	public String toString() {
+		return "TEmailTemplateInfo [description=" + description
+				+ ", emailType=" + emailType + ", fromAddress=" + fromAddress
+				+ ", isActive=" + isActive + ", productionReady="
+				+ productionReady + ", provider=" + provider + ", subject="
+				+ subject + ", targetProgId=" + targetProgId + ", templateId="
+				+ templateId + ", transactionType=" + transactionType + "]";
+	}
 	
 	
 	

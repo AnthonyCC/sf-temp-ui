@@ -2,7 +2,6 @@ package com.freshdirect.fdstore.temails.ejb;
 
 import java.io.IOException;
 import java.io.Reader;
-import java.io.Writer;
 import java.sql.Clob;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -11,21 +10,18 @@ import java.sql.SQLException;
 import java.sql.Types;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
+import org.apache.log4j.Category;
 
 import oracle.jdbc.OraclePreparedStatement;
-import oracle.jdbc.OracleResultSet;
-
-import weblogic.auddi.util.Logger;
 
 import com.freshdirect.fdstore.temails.TEmailTemplateInfo;
 import com.freshdirect.fdstore.temails.TransEmailInfoModel;
 import com.freshdirect.framework.core.SequenceGenerator;
 import com.freshdirect.framework.mail.EmailAddress;
+import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.mail.EnumEmailType;
 import com.freshdirect.mail.EnumTEmailProviderType;
 import com.freshdirect.mail.EnumTEmailStatus;
@@ -33,6 +29,7 @@ import com.freshdirect.mail.EnumTranEmailType;
 
 public class TEmailInfoDAO {
 
+	private static Category LOGGER = LoggerFactory.getInstance( TEmailInfoDAO.class );
 	
 	private static final String TEMPLATE_COUNT_SQL="SELECT COUNT(*) COUNT FROM CUST.TRANS_EMAIL_TYPES WHERE TRANS_TYPE=? AND (EMAIL_TYPE=? OR EMAIL_TYPE='ALL') and ACTIVE = 'X'";
 
@@ -55,7 +52,7 @@ public class TEmailInfoDAO {
 	       }catch(SQLException e){
 	      	 throw e;
 	       }
-	       Logger.info("TEmailTemplateInfo tranType "+tranType+" count is :"+count);
+	       LOGGER.info("TEmailTemplateInfo tranType "+tranType+" count is :"+count);
 		   return count; 				
 	}
 
@@ -95,7 +92,7 @@ public class TEmailInfoDAO {
 	       }catch(SQLException e){
 	      	 throw e;
 	       }
-	       Logger.info("TEmailTemplateInfo is :"+info);
+	       LOGGER.info("TEmailTemplateInfo is :"+info);
 		   return info; 				
 	}
 	
@@ -106,6 +103,8 @@ public class TEmailInfoDAO {
 	public static void storeTransactionEmailInfo(Connection conn,TransEmailInfoModel model) throws SQLException {
 		try
 		{
+			
+			LOGGER.debug("--------------------------------Saving transaction email log");
 			
 		   String id = getNextId(conn, "CUST");
 		   model.setId(id);		  
@@ -136,7 +135,7 @@ public class TEmailInfoDAO {
 		}catch(SQLException e){
 	      	 throw e;
 	    }
-	       //Logger.info("TEmailTemplateInfo is :"+info);
+	    
 		    
 	}
 	
@@ -295,7 +294,7 @@ public class TEmailInfoDAO {
 	       }catch(SQLException e){
 	      	 throw e;
 	       }
-	       Logger.info("failedTransList size is :"+failedTransList.size());
+	       LOGGER.info("failedTransList size is :"+failedTransList.size());
 		   return failedTransList; 				
 		 
 	 }
@@ -330,7 +329,7 @@ public class TEmailInfoDAO {
 				}catch(SQLException e){
 					throw e;
 				}
-				Logger.info("failedTransList size is :"+transMap.size());
+				LOGGER.info("failedTransList size is :"+transMap.size());
 			return transMap; 				
 				
 		}

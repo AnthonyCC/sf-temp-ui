@@ -45,6 +45,8 @@ public class TMailerGatewaySessionBean extends GatewaySessionBeanSupport impleme
 
 		// store the db entry in database
 		// send the email
+		
+		LOGGER.debug("-----------------------------------------Enquing the transactional email");
 		ObjectMessage objMsg=null;	
 		try {
 			

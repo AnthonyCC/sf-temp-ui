@@ -9,16 +9,12 @@ import java.util.Map;
 import org.apache.log4j.Category;
 
 import com.freshdirect.fdstore.FDResourceException;
-import com.freshdirect.fdstore.customer.FDCustomerInfo;
-import com.freshdirect.fdstore.customer.FDOrderI;
 import com.freshdirect.fdstore.customer.ejb.FDSessionBeanSupport;
-import com.freshdirect.fdstore.mail.FDEmailFactory;
 import com.freshdirect.fdstore.temails.TEmailConstants;
 import com.freshdirect.fdstore.temails.TEmailContentFactory;
 import com.freshdirect.fdstore.temails.TEmailTemplateInfo;
 import com.freshdirect.fdstore.temails.TransEmailInfoModel;
 import com.freshdirect.framework.mail.TEmailI;
-import com.freshdirect.framework.mail.XMLEmailI;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.mail.EnumEmailType;
 import com.freshdirect.mail.EnumTranEmailType;
@@ -27,8 +23,9 @@ import com.freshdirect.mail.ejb.TMailerGatewaySB;
 import com.freshdirect.temails.TEmailRuntimeException;
 
 public class TEmailInfoSessionBean extends FDSessionBeanSupport{
-
-    private static Category LOGGER = LoggerFactory.getInstance( TEmailInfoSessionBean.class );
+    
+	private static final long serialVersionUID = 1L;
+	private static Category LOGGER = LoggerFactory.getInstance( TEmailInfoSessionBean.class );
 
 	public void sendEmail(EnumTranEmailType tranType,Map input) throws FDResourceException, RemoteException{
 	    // check template is active 	
@@ -51,6 +48,8 @@ public class TEmailInfoSessionBean extends FDSessionBeanSupport{
 			if(info==null){
 				isTemplateExist=false;	
 				throw new TEmailRuntimeException("No active templateId exist for tranType :"+tranType.getName());
+			} else {
+				LOGGER.debug("------------------------------------info:" + info.toString());
 			}
 								
 			TEmailI mail=TEmailContentFactory.getInstance().createTransactionEmailModel(info, input);

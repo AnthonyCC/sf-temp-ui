@@ -6,6 +6,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.log4j.Category;
+
 import com.freshdirect.customer.EnumDeliveryType;
 import com.freshdirect.customer.EnumSaleType;
 import com.freshdirect.customer.ErpComplaintModel;
@@ -18,7 +20,9 @@ import com.freshdirect.fdstore.mail.TellAFriend;
 import com.freshdirect.fdstore.mail.TellAFriendProduct;
 import com.freshdirect.fdstore.mail.TellAFriendRecipe;
 import com.freshdirect.fdstore.temails.cheetah.CheetahTEmailContextImpl;
+import com.freshdirect.fdstore.temails.ejb.TEmailInfoSessionBean;
 import com.freshdirect.framework.mail.EmailAddress;
+import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.giftcard.ErpGCDlvInformationHolder;
 import com.freshdirect.mail.EnumTEmailProviderType;
 import com.freshdirect.mail.EnumTEmailStatus;
@@ -27,6 +31,8 @@ import com.freshdirect.mail.EnumTranEmailType;
 public final class TEmailsUtil {
 	
 	public static final SimpleDateFormat df = new SimpleDateFormat("EEEE, MMM d yyyy");
+	
+	private static Category LOGGER = LoggerFactory.getInstance( TEmailsUtil.class );
 	
 	public static boolean isTransEmailEnabled(EnumTranEmailType tranType){        
 		 return FDStoreProperties.isTransactionEmailEnabled(tranType.getName());		 		 
@@ -72,7 +78,7 @@ public final class TEmailsUtil {
     	  TransEmailInfoModel model=new TransEmailInfoModel();	
     	  
     	  FDCustomerInfo custInfo=(FDCustomerInfo)input.get(TEmailConstants.CUSTOMER_ID_INP_KEY);;
-  		//if(custInfo!=null)   model.setOrderId(custInfo.getLastOrderId());
+    	  //if(custInfo!=null)   model.setOrderId(custInfo.getLastOrderId());
   		FDOrderI order=(FDOrderI)input.get(TEmailConstants.ORDER_INP_KEY);
   		if(order!=null){
   			model.setCustomerId(order.getCustomerId());
@@ -118,6 +124,8 @@ public final class TEmailsUtil {
   			model.setSubject(subject);
   		}
   		model.setEmailStatus(EnumTEmailStatus.NEW);
+  		
+  		LOGGER.debug("---------------------------model:"+ model.toString());
     	  
     	  return model;
     	  
