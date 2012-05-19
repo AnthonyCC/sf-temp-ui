@@ -14,6 +14,7 @@ boolean top_faqs = snav_pageURI.indexOf("top_faqs") > -1;
 boolean click_to_call = snav_pageURI.indexOf("click_to_call") > -1;
 boolean search_orders = snav_pageURI.indexOf("search_orders_by_sku") > -1;
 boolean modify_orders = snav_pageURI.indexOf("modify_orders_by_sku") > -1;
+boolean trans_email = snav_pageURI.indexOf("top_faqs") > -1;
 
 %>
 <crm:GetCurrentAgent id='currentAgent'>

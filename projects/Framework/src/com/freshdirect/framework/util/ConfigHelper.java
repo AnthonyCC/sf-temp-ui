@@ -35,7 +35,7 @@ public class ConfigHelper {
         try {
             stream = ClassLoader.getSystemResourceAsStream(resourcePath);
             if (stream == null) {
-                throw new IOException("Resource not found");
+                throw new IOException("Resource not found: " + resourcePath);
             }
             props.load(stream);
         } finally {

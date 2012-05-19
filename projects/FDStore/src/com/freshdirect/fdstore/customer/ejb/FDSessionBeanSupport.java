@@ -20,6 +20,8 @@ import com.freshdirect.mail.ejb.MailerGatewayHome;
 import com.freshdirect.monitor.ejb.ErpMonitorHome;
 import com.freshdirect.monitor.ejb.ErpMonitorSB;
 import com.freshdirect.payment.ejb.PaymentManagerHome;
+import com.freshdirect.fdstore.temails.ejb.TEmailInfoHome;
+import com.freshdirect.fdstore.temails.ejb.TEmailInfoSB;
 
 /**
  * @author zsombor
@@ -134,5 +136,13 @@ public class FDSessionBeanSupport extends SessionBeanSupport {
     
     protected ErpMonitorSB getErpMonitor() throws RemoteException, CreateException {
         return getErpMonitorHome().create();
+    }
+    
+    /**
+     * @return
+     * @see com.freshdirect.fdstore.customer.ejb.FDServiceLocator#getMailerHome()
+     */
+    protected TEmailInfoHome getTMailerHome() {
+        return LOCATOR.getTMailerHome();
     }
 }

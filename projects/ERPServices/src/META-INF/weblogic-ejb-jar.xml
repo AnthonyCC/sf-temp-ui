@@ -71,6 +71,30 @@
         <jndi-name>freshdirect.mail.MailerGateway</jndi-name>
     </weblogic-enterprise-bean>
 
+
+    <weblogic-enterprise-bean>
+        <ejb-name>TMailerGateway</ejb-name>
+        <stateless-session-descriptor>
+            <pool>
+                <max-beans-in-free-pool>50</max-beans-in-free-pool>
+                <initial-beans-in-free-pool>10</initial-beans-in-free-pool>
+            </pool>
+            <stateless-clustering></stateless-clustering>
+        </stateless-session-descriptor>
+        <transaction-descriptor></transaction-descriptor>
+        <reference-descriptor>            
+            <resource-description>
+                <res-ref-name>jms/QueueFactory</res-ref-name>
+                <jndi-name>queueFactory</jndi-name>
+            </resource-description>
+            <resource-env-description>
+                <res-env-ref-name>jms/Queue</res-env-ref-name>
+                <jndi-name>./tranMailQueue</jndi-name>
+            </resource-env-description>
+        </reference-descriptor>
+        <jndi-name>freshdirect.mail.TMailerGateway</jndi-name>
+    </weblogic-enterprise-bean>
+
     <weblogic-enterprise-bean>
         <ejb-name>ErpCustomerManager</ejb-name>
         <stateless-session-descriptor>
@@ -895,6 +919,27 @@
         </message-driven-descriptor>
 
         <jndi-name>freshdirect.customer.MailMessageListener</jndi-name>
+    </weblogic-enterprise-bean>
+
+
+
+    <weblogic-enterprise-bean>
+        <ejb-name>TMailMessageListener</ejb-name>
+
+        <message-driven-descriptor>
+            <pool>
+                <max-beans-in-free-pool>5</max-beans-in-free-pool>
+                <initial-beans-in-free-pool>2</initial-beans-in-free-pool>
+            </pool>
+            <destination-jndi-name>tranMailQueue</destination-jndi-name>
+        </message-driven-descriptor>
+		<reference-descriptor>
+            <resource-description>
+                <res-ref-name>jdbc/dbpool</res-ref-name>
+                <jndi-name>fddatasource</jndi-name>
+            </resource-description>
+        </reference-descriptor>       
+         <jndi-name>freshdirect.customer.TMailMessageListener</jndi-name>
     </weblogic-enterprise-bean>
 
     <weblogic-enterprise-bean>

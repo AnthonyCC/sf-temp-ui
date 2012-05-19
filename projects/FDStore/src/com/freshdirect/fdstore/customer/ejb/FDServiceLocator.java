@@ -34,6 +34,8 @@ import com.freshdirect.smartstore.ejb.SmartStoreServiceConfigurationHome;
 import com.freshdirect.smartstore.ejb.SmartStoreServiceConfigurationSB;
 import com.freshdirect.smartstore.ejb.VariantSelectionHome;
 import com.freshdirect.smartstore.ejb.VariantSelectionSB;
+import com.freshdirect.fdstore.temails.ejb.TEmailInfoHome;
+import com.freshdirect.mail.ejb.TEmailerGatewayHome;
 
 public class FDServiceLocator extends ERPServiceLocator {
 
@@ -300,6 +302,22 @@ public class FDServiceLocator extends ERPServiceLocator {
     
     public ScoreFactorHome getScoreFactorHome() throws NamingException {
         return (ScoreFactorHome) getRemoteHome("freshdirect.smartstore.ScoreFactorHome");
+    }
+    
+    public TEmailInfoHome getTMailerHome() {
+        try {
+            return (TEmailInfoHome) getRemoteHome("java:comp/env/ejb/TEmailInfoManager");//freshdirect.fdstore.TEmailInfoManager");
+        } catch (NamingException e) {
+            throw new EJBException(e);
+        }
+    }
+    
+    public TEmailerGatewayHome getTMailerGatewayHome() {
+        try {
+            return (TEmailerGatewayHome) getRemoteHome("freshdirect.mail.TMailerGateway");
+        } catch (NamingException e) {
+            throw new EJBException(e);
+        }
     }
     
 

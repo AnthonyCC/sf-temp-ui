@@ -10,6 +10,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.StringTokenizer;
 
+import javax.naming.NamingException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.servlet.jsp.JspException;
@@ -28,13 +29,21 @@ import com.freshdirect.fdstore.customer.BulkModifyOrderInfo;
 import com.freshdirect.fdstore.customer.FDCustomerOrderInfo;
 import com.freshdirect.fdstore.customer.ejb.AdminToolsDAO;
 
+import com.freshdirect.framework.core.ServiceLocator;
 import com.freshdirect.framework.util.EnumSearchType;
 import com.freshdirect.framework.util.GenericSearchCriteria;
 import com.freshdirect.framework.util.NVL;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionResult;
+import com.freshdirect.temails.TEmailRuntimeException;
 import com.freshdirect.webapp.taglib.AbstractControllerTag;
 import com.freshdirect.webapp.taglib.fdstore.SystemMessageList;
+import com.freshdirect.fdstore.temails.ejb.TEmailInfoHome;
+import com.freshdirect.fdstore.temails.ejb.TEmailInfoSB;
+import javax.ejb.CreateException;
+import javax.ejb.EJBException;
+
+import java.rmi.RemoteException;
 
 public class GenericLocatorTag extends AbstractControllerTag {
 	
@@ -44,6 +53,7 @@ public class GenericLocatorTag extends AbstractControllerTag {
 	private String id;
 	private static  final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 	private static  final DateFormat timeFormat = new SimpleDateFormat("HH:mm a");
+	private final static ServiceLocator LOCATOR = new ServiceLocator();
 	
 	public void setId(String id){
 		this.id = id;
@@ -130,6 +140,27 @@ public class GenericLocatorTag extends AbstractControllerTag {
 			    	}
 			    }
 			    request.setAttribute("RESULT","success");
+			} else if(EnumSearchType.TEMAILS_BATCH_SEARCH.equals(searchType)){
+				
+				try {
+					TEmailInfoHome home= getTMailerHome();
+					TEmailInfoSB remote= home.create();			
+					searchResults=remote.getFailedTransactionList(100,false);
+					if(searchResults!=null && searchResults.size()>0){
+						request.setAttribute("trans_error", remote.getFailedTransactionStats());
+					}
+				} catch (CreateException ce) {
+					//throw new FDResourceException(ce, "Cannot create MailerGatewayBean");
+					actionResult.addError(true, "searchfailure", ce.getMessage());
+				} catch (RemoteException re) {
+					//throw new FDResourceException(re, re.getMessage());
+					actionResult.addError(true, "searchfailure", re.getMessage());
+				}
+				catch(TEmailRuntimeException e){									
+					actionResult.addError(true, "searchfailure", e.getMessage());
+				}
+				
+
 			}
 			pageContext.setAttribute(this.id, searchResults != null ? searchResults : Collections.EMPTY_LIST);
 		} catch(FDResourceException e){
@@ -554,6 +585,14 @@ public class GenericLocatorTag extends AbstractControllerTag {
 		}
 		return filteredList;
 		
+	}
+	
+	private static TEmailInfoHome getTMailerHome() {
+		try {
+			return (TEmailInfoHome) LOCATOR.getRemoteHome("freshdirect.fdstore.TEmailInfoManager");
+		} catch (NamingException e) {
+			throw new EJBException(e);
+		}
 	}
 	
 	private static void cleanUp(HttpSession session, EnumSearchType searchType) {

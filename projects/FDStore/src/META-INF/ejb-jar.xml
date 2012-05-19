@@ -100,7 +100,13 @@
 				<ejb-ref-type>Session</ejb-ref-type>
 				<home>com.freshdirect.giftcard.ejb.GiftCardManagerHome</home>
 				<remote> com.freshdirect.giftcard.ejb.GiftCardManagerSB</remote>
-			</ejb-ref>							
+			</ejb-ref>
+			<ejb-ref>
+				<ejb-ref-name>ejb/TEmailInfoManager</ejb-ref-name>
+				<ejb-ref-type>Session</ejb-ref-type>
+				<home>com.freshdirect.fdstore.temails.ejb.TEmailInfoHome</home>
+				<remote>com.freshdirect.fdstore.temails.ejb.TEmailInfoSB</remote>
+			</ejb-ref>
 			<resource-ref>
 				<res-ref-name>jdbc/dbpool</res-ref-name>
 				<res-type>javax.sql.DataSource</res-type>
@@ -115,6 +121,26 @@
 			<ejb-class>com.freshdirect.fdstore.lists.ejb.FDListManagerSessionBean</ejb-class>
 			<session-type>Stateless</session-type>
 			<transaction-type>Container</transaction-type>
+			<resource-ref>
+				<res-ref-name>jdbc/dbpool</res-ref-name>
+				<res-type>javax.sql.DataSource</res-type>
+				<res-auth>Container</res-auth>
+			</resource-ref>
+		</session>
+		
+		<session>
+			<ejb-name>TEmailInfoManager</ejb-name>
+			<home>com.freshdirect.fdstore.temails.ejb.TEmailInfoHome</home>
+			<remote>com.freshdirect.fdstore.temails.ejb.TEmailInfoSB</remote>
+			<ejb-class>com.freshdirect.fdstore.temails.ejb.TEmailInfoSessionBean</ejb-class>
+			<session-type>Stateless</session-type>
+			<transaction-type>Container</transaction-type>
+			<ejb-ref>
+				<ejb-ref-name>ejb/TMailerGateway</ejb-ref-name>
+				<ejb-ref-type>Session</ejb-ref-type>
+				<home>com.freshdirect.mail.ejb.TEmailerGatewayHome</home>
+				<remote>com.freshdirect.mail.ejb.TMailerGatewaySB</remote>
+			</ejb-ref>
 			<resource-ref>
 				<res-ref-name>jdbc/dbpool</res-ref-name>
 				<res-type>javax.sql.DataSource</res-type>
@@ -508,6 +534,15 @@
 			</method>                        
 			<trans-attribute>Required</trans-attribute>
 		</container-transaction>
+		
+		<container-transaction>
+            <method>
+                <ejb-name>TEmailInfoManager</ejb-name>
+                <method-intf>Remote</method-intf>
+                <method-name>sendEmail</method-name>
+            </method>
+            <trans-attribute>RequiresNew</trans-attribute>
+        </container-transaction>
 
                 		<!--
 		****************************

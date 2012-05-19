@@ -17,6 +17,7 @@ public class EnumSearchType extends Enum{
 	public static EnumSearchType ADDR_RESTRICTION_SEARCH = new EnumSearchType("ADDR_RESTRICTION_SEARCH");
 	public static EnumSearchType SETTLEMENT_BATCH_SEARCH = new EnumSearchType("SETTLEMENT_BATCH_SEARCH");
 	public static EnumSearchType GIFTCARD_SEARCH = new EnumSearchType("GIFTCARD_SEARCH");
+	public static EnumSearchType TEMAILS_BATCH_SEARCH = new EnumSearchType("TEMAILS_BATCH_SEARCH");
 	public static EnumSearchType ORDER_SEARCH_BY_SKUS = new EnumSearchType("ORDER_SEARCH_BY_SKUS");
 	public static EnumSearchType GET_ORDERS_TO_MODIFY = new EnumSearchType("GET_ORDERS_TO_MODIFY");
 	public static EnumSearchType ALCOHOL_RESTRICTION_SEARCH = new EnumSearchType("ALCOHOL_RESTRICTION_SEARCH");

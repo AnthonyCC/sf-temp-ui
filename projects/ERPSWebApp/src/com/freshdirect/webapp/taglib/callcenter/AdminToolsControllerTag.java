@@ -1,5 +1,7 @@
 package com.freshdirect.webapp.taglib.callcenter;
 
+import java.io.StringWriter;
+import java.rmi.RemoteException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -14,6 +16,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
 
+import javax.ejb.CreateException;
+import javax.ejb.EJBException;
+import javax.naming.NamingException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.servlet.jsp.JspException;
@@ -98,6 +103,12 @@ import com.freshdirect.webapp.taglib.crm.CrmSession;
 import com.freshdirect.webapp.taglib.fdstore.AccountActivityUtil;
 import com.freshdirect.webapp.taglib.fdstore.EnumUserInfoName;
 import com.freshdirect.webapp.taglib.fdstore.SystemMessageList;
+import com.freshdirect.fdstore.temails.ejb.TEmailInfoHome;
+import com.freshdirect.fdstore.temails.ejb.TEmailInfoSB;
+import com.freshdirect.framework.core.ServiceLocator;
+import com.freshdirect.framework.mail.TEmailI;
+import com.freshdirect.temails.TEmailRuntimeException;
+
 
 public class AdminToolsControllerTag extends AbstractControllerTag {
 	
@@ -291,6 +302,79 @@ public class AdminToolsControllerTag extends AbstractControllerTag {
 				// if update is successful then show the success message
 				//String restrictionId=request.getParameter("restrictionId");
 				
+			} else if(actionName != null && actionName.equals("fixTEmailBatch")){
+				//String batch_id = request.getParameter("batch_id");
+				
+
+				try {
+					TEmailInfoHome home= getTMailerHome();
+					TEmailInfoSB remote= home.create();			
+					remote.sendFailedTransactions(5*60*1000);
+					
+					LOGGER.info(" tran emais batch(s) were successfully sent.");
+					actionResult.addWarning(true, "fixsuccess", "  tran emais batch(s) were successfully sent.");
+					setSuccessPage("/admintools/trans_email.jsp?method=GET");
+					return true;					
+					
+				} catch (CreateException ce) {
+					//throw new FDResourceException(ce, "Cannot create MailerGatewayBean");
+					actionResult.addError(true, "fixsuccess", "No  batch were fixed by the System due to error."+ce.getMessage());
+					return true;
+				} catch (RemoteException re) {
+					actionResult.addError(true, "fixsuccess", "No  batch were fixed by the System due to error."+re.getMessage());
+					return true;
+				} catch(TEmailRuntimeException e){
+					actionResult.addError(true, "fixsuccess", "No  batch were fixed by the System due to error."+e.getMessage());
+					return true;
+				}
+				
+				
+				
+			}else if(actionName != null && actionName.equals("genarateTEmailFile")){
+				//String batch_id = request.getParameter("batch_id");
+				/*
+
+				try {
+					TEmailInfoHome home= getTMailerHome();
+					TEmailInfoSB remote= home.create();			
+					List emailList=remote.getFailedTransactionList(50000, false);
+					String contents=generateFile(emailList);					
+					LOGGER.info(" tran emais batch(s) were successfully sent.");
+					actionResult.addWarning(true, "fixsuccess", "  tran emais batch(s) were successfully sent.");
+					setSuccessPage("/admintools/trans_email.jsp?method=GET");
+					response = (HttpServletResponse) pageContext.getResponse();
+					response.reset();
+					response.setBufferSize(contents.getBytes().length);
+					response.setHeader("Content-Disposition", "attachment; filename=\"failed_email_details.csv\"");
+					response.setContentType("text/csv");
+					response.setHeader("Pragma", "public");
+					response.setHeader("Cache-Control", "max-age=0");
+					response.setContentLength(contents.getBytes().length);
+					try {
+						FileCopyUtils.copy(contents.getBytes(), response.getOutputStream());
+					} catch (IOException e) {
+						// TODO Auto-generated catch block				
+						actionResult.addError(true, "fixsuccess", "No  file were created by the System due to error."+e.getMessage());
+						return true;
+					}
+					
+					//forward("/admintools/trans_email.jsp?method=GET"");
+					
+					return false;					
+					
+				} catch (CreateException ce) {
+					//throw new FDResourceException(ce, "Cannot create MailerGatewayBean");
+					actionResult.addError(true, "fixsuccess", "No  batch were fixed by the System due to error."+ce.getMessage());
+					return true;
+				} catch (RemoteException re) {
+					actionResult.addError(true, "fixsuccess", "No  batch were fixed by the System due to error."+re.getMessage());
+					return true;
+				} catch(TEmailRuntimeException e){
+					actionResult.addError(true, "fixsuccess", "No  batch were fixed by the System due to error."+e.getMessage());
+					return true;
+				}
+				*/
+																					
 			}
  
 			
@@ -303,6 +387,55 @@ public class AdminToolsControllerTag extends AbstractControllerTag {
 		}								
 		
 		return true;
+	}
+	
+	/*
+	private static final String FILE_COLUMN_HEADER[]=new String[]{"TRANSACTION_ID","CUSTOMER_ID","ORDER_ID","TEMPLATE_ID","EMAIL_TYPE","STATUS","DATE_FAILED"};
+	
+	public String generateFile(List contentList)  {
+		// TODO Auto-generated method stub
+		//create String[] of each elements id, email, first name and last name
+		LOGGER.debug("IN CSVPARSER collection size"+contentList.size());
+		List fileContentList=new ArrayList();
+		Iterator iterator=contentList.iterator();
+		fileContentList.add(FILE_COLUMN_HEADER);
+		while(iterator.hasNext()){
+			TEmailI model=(TEmailI)iterator.next();
+			String line[]=new String[7];
+			line[0]=model.getId();
+			line[1]=model.getCustomerId();
+			line[2]=model.getOrderId();
+			line[3]=model.getTargetProgId();
+			line[4]=model.getEmailTransactionType();
+			line[5]=model.getEmailStatus();			
+			line[6]=model.getCroModDate().toString();
+			fileContentList.add(line);
+		}
+		StringWriter sw = new StringWriter();
+		CSVWriter writer=null;
+		try{
+		writer = new CSVWriter(sw);
+		writer.writeAll(fileContentList);
+		}finally{
+			try {
+				writer.close();
+			} catch (IOException ignore) {
+				// TODO Auto-generated catch block				
+			}
+		}
+		//
+		return sw.toString();
+	}
+	*/
+	
+	private final static ServiceLocator LOCATOR = new ServiceLocator();
+	
+	private static TEmailInfoHome getTMailerHome() {
+		try {
+			return (TEmailInfoHome) LOCATOR.getRemoteHome("freshdirect.fdstore.TEmailInfoManager");
+		} catch (NamingException e) {
+			throw new EJBException(e);
+		}
 	}
 
 	private void doUpdateAddressRestriction(HttpServletRequest request,ActionResult result) throws FDResourceException {

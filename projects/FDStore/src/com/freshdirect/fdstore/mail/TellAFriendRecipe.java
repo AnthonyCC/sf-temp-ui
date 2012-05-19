@@ -68,7 +68,7 @@ public class TellAFriendRecipe extends TellAFriend {
 	}
 
 
-	protected Recipe getRecipe() {
+	public Recipe getRecipe() {
 		return (Recipe) ContentFactory.getInstance().getContentNode(recipeId);
 	}
 	

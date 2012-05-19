@@ -103,6 +103,31 @@
             </resource-env-ref>
         </session>
         
+        
+        <session>
+            <ejb-name>TMailerGateway</ejb-name>
+            <home>com.freshdirect.mail.ejb.TEmailerGatewayHome</home>
+            <remote>com.freshdirect.mail.ejb.TMailerGatewaySB</remote>
+            <ejb-class>com.freshdirect.mail.ejb.TMailerGatewaySessionBean</ejb-class>
+            <session-type>Stateless</session-type>
+            <transaction-type>Container</transaction-type>
+            <resource-ref>
+                <res-ref-name>jms/QueueFactory</res-ref-name>
+                <res-type>javax.jms.QueueConnectionFactory</res-type>
+                <res-auth>Container</res-auth>
+            </resource-ref>
+            <resource-ref>
+                <res-ref-name>jdbc/dbpool</res-ref-name>
+                <res-type>javax.sql.DataSource</res-type>
+                <res-auth>Container</res-auth>
+            </resource-ref>             
+            <resource-env-ref>
+                <resource-env-ref-name>jms/Queue</resource-env-ref-name>
+                <resource-env-ref-type>javax.jms.Queue</resource-env-ref-type>
+            </resource-env-ref>
+        </session>
+        
+        
         <session>
             <ejb-name>ErpCustomerManager</ejb-name>
             <home>com.freshdirect.customer.ejb.ErpCustomerManagerHome</home>
@@ -599,6 +624,21 @@
             </message-driven-destination>
         </message-driven>
 
+   
+        <message-driven>
+            <ejb-name>TMailMessageListener</ejb-name>
+            <ejb-class>com.freshdirect.mail.service.TMailMessageListener</ejb-class>
+            <transaction-type>Container</transaction-type>
+            <message-driven-destination>
+                <destination-type>javax.jms.Queue</destination-type>
+            </message-driven-destination>
+          <resource-ref>
+                <res-ref-name>jdbc/dbpool</res-ref-name>
+                <res-type>javax.sql.DataSource</res-type>
+                <res-auth>Container</res-auth>
+          </resource-ref>
+        </message-driven>
+
         <message-driven>
             <ejb-name>PaymentMessageListener</ejb-name>
             <ejb-class>com.freshdirect.payment.service.PaymentMessageListener</ejb-class>
@@ -931,6 +971,10 @@
             <ejb-name>MailMessageListener</ejb-name>
             <method-name>*</method-name>
           </method>
+          <method>          
+            <ejb-name>TMailMessageListener</ejb-name>
+            <method-name>*</method-name>
+          </method>  
           <method>
             <ejb-name>PaymentMessageListener</ejb-name>
             <method-name>*</method-name>
@@ -1214,7 +1258,12 @@
                 <ejb-name>MailerGateway</ejb-name>
                 <method-intf>Remote</method-intf>
                 <method-name>*</method-name>
-            </method>
+            </method>               
+            <method>
+                <ejb-name>TMailerGateway</ejb-name>
+                <method-intf>Remote</method-intf>
+                <method-name>*</method-name>
+            </method>            
             <method>
                 <ejb-name>GCGateway</ejb-name>
                 <method-intf>Remote</method-intf>
