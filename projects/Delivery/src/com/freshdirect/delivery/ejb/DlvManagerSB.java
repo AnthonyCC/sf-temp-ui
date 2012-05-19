@@ -46,7 +46,7 @@ import com.freshdirect.delivery.model.SectorVO;
 import com.freshdirect.delivery.model.UnassignedDlvReservationModel;
 import com.freshdirect.delivery.restriction.GeographyRestriction;
 import com.freshdirect.delivery.restriction.RestrictionI;
-import com.freshdirect.delivery.routing.ejb.RoutingActivityType;
+import com.freshdirect.routing.constants.RoutingActivityType;
 import com.freshdirect.fdstore.FDDynamicTimeslotList;
 import com.freshdirect.fdstore.FDTimeslot;
 import com.freshdirect.fdstore.StateCounty;

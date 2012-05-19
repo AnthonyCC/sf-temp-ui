@@ -25,7 +25,7 @@ import com.freshdirect.routing.model.LocationModel;
 import com.freshdirect.routing.service.exception.RoutingServiceException;
 import com.freshdirect.routing.service.proxy.GeographyServiceProxy;
 import com.freshdirect.routing.service.util.LocationLocatorResult;
-
+import com.freshdirect.routing.constants.RoutingActivityType;
 /**
  *
  *

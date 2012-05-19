@@ -6,7 +6,7 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 
 import com.freshdirect.delivery.EnumReservationType;
-import com.freshdirect.delivery.routing.ejb.RoutingActivityType;
+import com.freshdirect.routing.constants.*;
 import com.freshdirect.framework.core.ModelSupport;
 import com.freshdirect.framework.core.PrimaryKey;
 

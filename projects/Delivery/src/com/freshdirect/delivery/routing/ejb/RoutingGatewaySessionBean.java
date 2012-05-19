@@ -20,6 +20,7 @@ import com.freshdirect.fdstore.FDTimeslot;
 import com.freshdirect.framework.core.GatewaySessionBeanSupport;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.sap.SapProperties;
+import com.freshdirect.routing.constants.RoutingActivityType;
 
 /**
  *

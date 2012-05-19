@@ -27,18 +27,16 @@ import com.freshdirect.delivery.ejb.DlvManagerHome;
 import com.freshdirect.delivery.ejb.DlvManagerSB;
 import com.freshdirect.delivery.model.DlvReservationModel;
 import com.freshdirect.delivery.model.UnassignedDlvReservationModel;
-import com.freshdirect.delivery.routing.ejb.RoutingActivityType;
 import com.freshdirect.fdstore.FDDepotManager;
-import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.FDTimeslot;
-import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.ejb.FDCustomerManagerHome;
 import com.freshdirect.fdstore.customer.ejb.FDCustomerManagerSB;
 import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.mail.ErpMailSender;
 import com.freshdirect.routing.constants.EnumRoutingNotification;
+import com.freshdirect.routing.constants.RoutingActivityType;
 import com.freshdirect.routing.model.IRoutingNotificationModel;
 
 public class UnassignedReservationCronRunner extends BaseReservationCronRunner {

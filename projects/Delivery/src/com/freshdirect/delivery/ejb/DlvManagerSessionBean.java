@@ -80,7 +80,7 @@ import com.freshdirect.delivery.model.UnassignedDlvReservationModel;
 import com.freshdirect.delivery.restriction.GeographyRestriction;
 import com.freshdirect.delivery.restriction.RestrictionI;
 import com.freshdirect.delivery.restriction.ejb.DlvRestrictionDAO;
-import com.freshdirect.delivery.routing.ejb.RoutingActivityType;
+import com.freshdirect.routing.constants.RoutingActivityType;
 import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDDynamicTimeslotList;
 import com.freshdirect.fdstore.FDRuntimeException;
