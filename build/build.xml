@@ -741,7 +741,7 @@
 						<path refid="common.classpath"/>
 						<path refid="testing.classpath"/>
 						<pathelement path="${thirdparty.home}/lcc.jar;${thirdparty.home}/ognl-2.3.0-opt.jar"/>
-						<pathelement path="${work.dir}/Framework.jar;${work.dir}/ERPServicesEJB-WL.jar;${work.dir}/DeliveryEJB-WL.jar;${work.dir}/CMS.jar;${work.dir}/FDStoreEJB-WL.jar;${work.dir}/DataLoaderEJB-WL.jar;${work.dir}/ERPSWebApp.jar;${work.dir}/listadmin.jar"/>
+						<pathelement path="${work.dir}/Framework.jar;${work.dir}/ERPServicesEJB-WL.jar;${work.dir}/DeliveryEJB-WL.jar;${work.dir}/RoutingServices.jar;${work.dir}/CMS.jar;${work.dir}/FDStoreEJB-WL.jar;${work.dir}/DataLoaderEJB-WL.jar;${work.dir}/ERPSWebApp.jar;${work.dir}/listadmin.jar"/>
 					</classpath>
 				</javac>
 				<record name="${work.dir}/func-logs/log.txt" action="stop"/>
@@ -777,6 +777,7 @@
 				<pathelement location="${thirdparty.home}/lcc.jar"/>
 				<pathelement location="${work.dir}/Framework.jar"/>
 				<pathelement location="${work.dir}/ERPServices.jar"/>
+				<pathelement location="${work.dir}/RoutingServices.jar"/>
 				<pathelement location="${work.dir}/Delivery.jar"/>
 				<pathelement location="${work.dir}/CMS.jar"/>
 				<pathelement location="${work.dir}/FDStore.jar"/>
@@ -816,7 +817,7 @@
 						<path refid="common.classpath"/>
 						<path refid="testing.classpath"/>
 						<pathelement path="${thirdparty.home}/lcc.jar;${thirdparty.home}/ognl-2.3.0-opt.jar"/>
-						<pathelement path="${work.dir}/FunctionalTests;${work.dir}/Framework.jar;${work.dir}/ERPServicesEJB-WL.jar;${work.dir}/DeliveryEJB-WL.jar;${work.dir}/CMS.jar;${work.dir}/FDStoreEJB-WL.jar;${work.dir}/DataLoaderEJB-WL.jar;${work.dir}/ERPSWebApp.jar;${work.dir}/listadmin.jar"/>
+						<pathelement path="${work.dir}/FunctionalTests;${work.dir}/Framework.jar;${work.dir}/RoutingServices.jar;${work.dir}/ERPServicesEJB-WL.jar;${work.dir}/DeliveryEJB-WL.jar;${work.dir}/CMS.jar;${work.dir}/FDStoreEJB-WL.jar;${work.dir}/DataLoaderEJB-WL.jar;${work.dir}/ERPSWebApp.jar;${work.dir}/listadmin.jar"/>
 					</classpath>
 				</javac>
 				<record name="${work.dir}/perf-logs/log.txt" action="stop"/>
@@ -857,7 +858,7 @@
 			<path refid="common.classpath"/>
 			<path refid="testing.classpath"/>
 			<pathelement path="${thirdparty.home}/lcc.jar;${thirdparty.home}/ognl-2.3.0-opt.jar"/>
-			<pathelement path="${work.dir}/Tools.jar;${work.dir}/Framework.jar;${work.dir}/ERPServicesEJB-WL.jar;${work.dir}/DeliveryEJB-WL.jar;${work.dir}/CMS.jar;${work.dir}/FDStoreEJB-WL.jar;${work.dir}/DataLoaderEJB-WL.jar;${work.dir}/ERPSWebApp.jar;${work.dir}/listadmin.jar"/>
+			<pathelement path="${work.dir}/Tools.jar;${work.dir}/Framework.jar;${work.dir}/RoutingServices.jar;${work.dir}/ERPServicesEJB-WL.jar;${work.dir}/DeliveryEJB-WL.jar;${work.dir}/CMS.jar;${work.dir}/FDStoreEJB-WL.jar;${work.dir}/DataLoaderEJB-WL.jar;${work.dir}/ERPSWebApp.jar;${work.dir}/listadmin.jar"/>
 			</classpath>
 		</java>
 		<java classname="com.freshdirect.tools.monitor.WebStatsReport" output="${work.dir}/perf-logs/webstats-reset.log">
@@ -868,7 +869,7 @@
 			<path refid="common.classpath"/>
 			<path refid="testing.classpath"/>
 			<pathelement path="${thirdparty.home}/lcc.jar;${thirdparty.home}/ognl-2.3.0-opt.jar"/>
-			<pathelement path="${work.dir}/Tools.jar;${work.dir}/Framework.jar;${work.dir}/ERPServicesEJB-WL.jar;${work.dir}/DeliveryEJB-WL.jar;${work.dir}/CMS.jar;${work.dir}/FDStoreEJB-WL.jar;${work.dir}/DataLoaderEJB-WL.jar;${work.dir}/ERPSWebApp.jar;${work.dir}/listadmin.jar"/>
+			<pathelement path="${work.dir}/Tools.jar;${work.dir}/Framework.jar;${work.dir}/RoutingServices.jar;${work.dir}/ERPServicesEJB-WL.jar;${work.dir}/DeliveryEJB-WL.jar;${work.dir}/CMS.jar;${work.dir}/FDStoreEJB-WL.jar;${work.dir}/DataLoaderEJB-WL.jar;${work.dir}/ERPSWebApp.jar;${work.dir}/listadmin.jar"/>
 			</classpath>
 		</java>
 		<junit fork="yes" jvm="${jdk15.executable}">
@@ -893,6 +894,7 @@
 				<path refid="testing.classpath"/>
 				<pathelement location="${thirdparty.home}/lcc.jar"/>
 				<pathelement location="${work.dir}/Framework.jar"/>
+				<pathelement location="${work.dir}/RoutingServices.jar"/>
 				<pathelement location="${work.dir}/ERPServices.jar"/>
 				<pathelement location="${work.dir}/Delivery.jar"/>
 				<pathelement location="${work.dir}/CMS.jar"/>
@@ -911,7 +913,7 @@
 			<path refid="common.classpath"/>
 			<path refid="testing.classpath"/>
 			<pathelement path="${thirdparty.home}/lcc.jar;${thirdparty.home}/ognl-2.3.0-opt.jar"/>
-			<pathelement path="${work.dir}/Tools.jar;${work.dir}/Framework.jar;${work.dir}/ERPServicesEJB-WL.jar;${work.dir}/DeliveryEJB-WL.jar;${work.dir}/CMS.jar;${work.dir}/FDStoreEJB-WL.jar;${work.dir}/DataLoaderEJB-WL.jar;${work.dir}/ERPSWebApp.jar;${work.dir}/listadmin.jar"/>
+			<pathelement path="${work.dir}/Tools.jar;${work.dir}/Framework.jar;${work.dir}/RoutingServices.jar;${work.dir}/ERPServicesEJB-WL.jar;${work.dir}/DeliveryEJB-WL.jar;${work.dir}/CMS.jar;${work.dir}/FDStoreEJB-WL.jar;${work.dir}/DataLoaderEJB-WL.jar;${work.dir}/ERPSWebApp.jar;${work.dir}/listadmin.jar"/>
 			</classpath>
 		</java>
 
@@ -1838,6 +1840,7 @@
 			<path refid="tapestry.classpath"/>
 			<pathelement location="${work.dir}/DeliveryEJB-WL.jar"/>
 			<pathelement location="${work.dir}/Framework.jar" />
+			<pathelement location="${work.dir}/RoutingServices.jar" />
 		</path>
 		<trycatch>
 			<try>
@@ -2259,6 +2262,7 @@
 						<pathelement path="${thirdparty.home}/lucene-queries-${lucene.version}.jar"/>
 						<pathelement path="${thirdparty.home}/lucene-snowball-${lucene.version}.jar"/>
 						<pathelement path="${work.dir}/Framework.jar"/>
+						<pathelement path="${work.dir}/RoutingServices.jar"/>
 						<pathelement path="${work.dir}/ERPServicesEJB-WL.jar"/>
 						<pathelement path="${work.dir}/DeliveryEJB-WL.jar"/>
 						<pathelement path="${work.dir}/CMS.jar"/>
