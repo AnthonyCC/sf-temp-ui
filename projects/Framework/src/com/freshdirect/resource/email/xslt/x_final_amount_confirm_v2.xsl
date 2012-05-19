@@ -56,7 +56,7 @@
 <xsl:choose>
 	<xsl:when test="order/paymentMethod/paymentType = 'M'">Please note that you are not being charged for this order. The amount displayed below, as well as your account with FreshDirect, will reflect a zero balance within the next 48 hours.</xsl:when>
 	<xsl:otherwise><xsl:text>Your final total is $</xsl:text><xsl:value-of select='format-number(order/invoicedTotal, "###,###.00", "USD")'/><xsl:text></xsl:text>.</xsl:otherwise>
-</xsl:choose> We'll include a printed, itemized receipt with your goods.
+</xsl:choose> <xsl:if test="customer/goGreen = 'false'">We'll include a printed, itemized receipt with your goods.</xsl:if>
 
 <xsl:text>View order details online: </xsl:text>
 
