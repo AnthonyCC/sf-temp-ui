@@ -3948,6 +3948,20 @@ public class FDCustomerManager {
 		}
 	}
 	
+	public static void storeSMSWindowDisplayedFlag(String customerId) throws FDResourceException {
+		lookupManagerHome();
+		try {
+			FDCustomerManagerSB sb = managerHome.create();
+			sb.storeSMSWindowDisplayedFlag(customerId);
+		} catch (RemoteException e) {
+			invalidateManagerHome();
+			throw new FDResourceException(e, "Error creating session bean");
+		} catch (CreateException e) {
+			invalidateManagerHome();
+			throw new FDResourceException(e, "Error creating session bean");
+		}
+	}
+	
 	public static void logGoGreenActivity(String customerId, String flag, EnumAccountActivityType activity) {
 		ErpActivityRecord rec = new ErpActivityRecord();
 		rec.setActivityType(activity);

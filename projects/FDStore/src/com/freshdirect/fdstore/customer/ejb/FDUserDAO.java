@@ -463,8 +463,9 @@ public class FDUserDAO {
 	public static void storeMobilePreferencesNoThanks(Connection conn, String customerId) {
 		PreparedStatement ps = null;
 		try {
-			ps = conn.prepareStatement("update CUST.CUSTOMERINFO set mobile_preference_flag='Y' where customer_id=?");				
-			ps.setString(1, customerId);
+			ps = conn.prepareStatement("update CUST.CUSTOMERINFO set mobile_preference_flag=?,NO_THANKS_FLAG='Y' where customer_id=?");	
+			ps.setString(1, EnumMobilePreferenceType.UPDATED_FROM_RECEIPT_PAGE.getName());
+			ps.setString(2, customerId);
 			ps.execute();
 		} catch (Exception e) {
 			LOGGER.error("Error updating mobile preferences", e);
@@ -483,16 +484,34 @@ public class FDUserDAO {
 		
 		try {
 			if(isCorpUser)
-				ps = conn.prepareStatement("update CUST.CUSTOMERINFO set mobile_number=?, offers_notification=?,delivery_notification=?, go_green=?,business_phone=replace(replace(replace(replace(replace(?,'('),')'),' '),'-'),'.'),business_ext=?,mobile_preference_flag='U'  where customer_id=?");
+				ps = conn.prepareStatement("update CUST.CUSTOMERINFO set mobile_number=?, offers_notification=?,delivery_notification=?, go_green=?,business_phone=replace(replace(replace(replace(replace(?,'('),')'),' '),'-'),'.'),business_ext=?,mobile_preference_flag=?  where customer_id=?");
 			else
-				ps = conn.prepareStatement("update CUST.CUSTOMERINFO set mobile_number=?, offers_notification=?,delivery_notification=?, go_green=?, home_phone = replace(replace(replace(replace(replace(?,'('),')'),' '),'-'),'.'), home_ext = ?,mobile_preference_flag='U' where customer_id=?");
+				ps = conn.prepareStatement("update CUST.CUSTOMERINFO set mobile_number=?, offers_notification=?,delivery_notification=?, go_green=?, home_phone = replace(replace(replace(replace(replace(?,'('),')'),' '),'-'),'.'), home_ext = ?,mobile_preference_flag=? where customer_id=?");
 			ps.setString(1, mphone.getPhone());
 			ps.setString(2, "Y".equals(textOffers)?"Y":"N");
 			ps.setString(3, "Y".equals(textDelivery)?"Y":"N");
 			ps.setString(4, "Y".equals(goGreen)?"Y":"N");
 			ps.setString(5, bphone.getPhone());
 			ps.setString(6, bphone.getExtension());
-			ps.setString(7, customerId);
+			ps.setString(7, EnumMobilePreferenceType.UPDATED_FROM_RECEIPT_PAGE.getName());
+			ps.setString(8, customerId);
+			ps.execute();
+		} catch (Exception e) {
+			LOGGER.error("Error updating mobile preferences", e);
+		} finally {
+			try {
+				if(ps != null)
+					ps.close();
+			} catch (Exception e1) {}
+		}
+	}
+	
+	public static void storeSMSWindowDisplayedFlag(Connection conn, String customerId) {
+		PreparedStatement ps = null;
+		try {
+			ps = conn.prepareStatement("update CUST.CUSTOMERINFO set mobile_preference_flag=? where customer_id=?");	
+			ps.setString(1, EnumMobilePreferenceType.SAW_MOBILE_PREF.getName());
+			ps.setString(2, customerId);
 			ps.execute();
 		} catch (Exception e) {
 			LOGGER.error("Error updating mobile preferences", e);

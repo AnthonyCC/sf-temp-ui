@@ -58,9 +58,11 @@
 
 	FDIdentity curridentity  = user.getIdentity();
 	ErpCustomerInfoModel cm = FDCustomerFactory.getErpCustomerInfo(curridentity);
-	if(cm.getMobilePreference() == null) {
+	if(cm.getMobilePreference() == null || (com.freshdirect.fdstore.customer.ejb.EnumMobilePreferenceType.SAW_MOBILE_PREF.getName()).equals(cm.getMobilePreference())) {		
 		//session.removeAttribute("SMSSubmission"+ orderId);
 		if(session.getAttribute("SMSSubmission" + orderId) == null) { 
+			//Store the flag to capture the user has seen the window atleast once event
+			FDCustomerManager.storeSMSWindowDisplayedFlag(curridentity.getErpCustomerPK());
 		%>
 		<script type="text/javascript" src="/assets/javascript/rounded_corners.inc.js"></script>
 <script language="javascript">

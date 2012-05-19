@@ -786,5 +786,7 @@ public interface FDCustomerManagerSB extends EJBObject {
 	public void authorizeSale(String salesId, boolean force) throws FDResourceException, RemoteException;
 	
 	public boolean isDisplayNameUsed(String displayName,String custId) throws ErpDuplicateDisplayNameException, RemoteException;
+	
+	public void storeSMSWindowDisplayedFlag(String customerId) throws FDResourceException, RemoteException;
 }
 

@@ -195,7 +195,13 @@ import com.freshdirect.payment.EnumPaymentMethodType;
 import com.freshdirect.payment.ejb.PaymentManagerSB;
 import com.freshdirect.payment.fraud.PaymentFraudManager;
 import com.freshdirect.payment.fraud.RestrictedPaymentMethodModel;
-
+import com.freshdirect.fdstore.temails.TEmailConstants;
+import com.freshdirect.fdstore.temails.TEmailsUtil;
+import com.freshdirect.fdstore.temails.ejb.TEmailInfoHome;
+import com.freshdirect.fdstore.temails.ejb.TEmailInfoSB;
+import com.freshdirect.mail.EnumEmailType;
+import com.freshdirect.mail.EnumTranEmailType;
+import com.freshdirect.temails.TEmailRuntimeException;
 
 /**
  * @version $Revision:78$
@@ -287,8 +293,26 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			emailInfo.setPickupOnly(pickupOnly);
 			emailInfo.setEligibleForPromotion(eligibleForPromotion);
 
-			this.doEmail(FDEmailFactory.getInstance().createConfirmSignupEmail(
+			/*this.doEmail(FDEmailFactory.getInstance().createConfirmSignupEmail(
 					emailInfo));
+			*/
+			boolean isUseOtherEmailMode=true;
+			if(TEmailsUtil.isTransEmailEnabled(EnumTranEmailType.CUST_SIGNUP)){
+			 try
+			 {	
+				Map input=new HashMap();
+				//input.put(TEmailConstants.ORDER_INP_KEY, order);
+				input.put(TEmailConstants.CUSTOMER_ID_INP_KEY, emailInfo);
+				input.put(TEmailConstants.EMAIL_TYPE, emailInfo.isHtmlEmail()?EnumEmailType.HTML.getName():EnumEmailType.TEXT.getName());
+				
+				this.doEmail(EnumTranEmailType.CUST_SIGNUP,  input);
+				isUseOtherEmailMode=false;
+			 }catch(TEmailRuntimeException e){
+				 LOGGER.error("Error in using Transaction Email :",e);					 
+			 }					
+			}
+			if(isUseOtherEmailMode) this.doEmail(FDEmailFactory.getInstance().createConfirmSignupEmail(emailInfo));
+		
 
 			FDIdentity identity = new FDIdentity(fdCustomer.getErpCustomerPK(),
 					fdCustomerEB.getPK().getId());
@@ -6403,6 +6427,33 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		try {
 			conn = getConnection();
 			FDUserDAO.storeAllMobilePreferences(conn, customerId, mobileNumber, textOffers, textDelivery, goGreen, phone, ext, isCorpUser);
+		} catch (SQLException sqle) {
+			throw new FDResourceException(sqle);
+		} finally {
+			close(conn);
+		}
+	}
+	
+	public void doEmail(EnumTranEmailType type, Map input ) throws FDResourceException {
+		try {
+			TEmailInfoHome home= getTMailerHome();
+			TEmailInfoSB remote= home.create();			
+			remote.sendEmail(type, input);
+		} catch (CreateException ce) {
+			throw new FDResourceException(ce, "Cannot create MailerGatewayBean");
+		} catch (RemoteException re) {
+			if(re.getCause() instanceof TEmailRuntimeException){
+				TEmailRuntimeException rex=(TEmailRuntimeException)re.getCause();
+				throw rex;
+			}
+		}
+	}
+	
+	public void storeSMSWindowDisplayedFlag(String customerId) throws FDResourceException {
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			FDUserDAO.storeSMSWindowDisplayedFlag(conn, customerId);
 		} catch (SQLException sqle) {
 			throw new FDResourceException(sqle);
 		} finally {

@@ -32,9 +32,12 @@ final int W_CHECKOUT_STEP_4_RECEIPT_TOTAL = 970;
 	FDUserI curruser = (FDUserI)session.getAttribute(SessionName.USER);
 	FDIdentity curridentity  = curruser.getIdentity();
 	ErpCustomerInfoModel cm = FDCustomerFactory.getErpCustomerInfo(curridentity);
-	if(cm.getMobilePreference() == null) {		
+	if(cm.getMobilePreference() == null || (com.freshdirect.fdstore.customer.ejb.EnumMobilePreferenceType.SAW_MOBILE_PREF.getName()).equals(cm.getMobilePreference())) {		
 		//session.removeAttribute("SMSSubmission"+ _ordNum);
-		if(session.getAttribute("SMSSubmission" + _ordNum) == null) { %>
+		if(session.getAttribute("SMSSubmission" + _ordNum) == null) { 
+			//Store the flag to capture the user has seen the window atleast once event
+			FDCustomerManager.storeSMSWindowDisplayedFlag(curridentity.getErpCustomerPK());
+%>
 		<script type="text/javascript" src="/assets/javascript/rounded_corners.inc.js"></script>
 <script language="javascript">
 	function curvyCornersHelper(elemId, settingsObj) {
