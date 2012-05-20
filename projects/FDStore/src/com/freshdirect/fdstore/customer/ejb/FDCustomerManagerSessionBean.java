@@ -244,6 +244,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			boolean isGiftCardBuyer) throws FDResourceException,
 			ErpDuplicateUserIdException {
 
+		System.out.println("FDCustomerManagerSessionBean: In register");
 		Connection conn = null;
 		try {
 			//
@@ -254,16 +255,20 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			if (!isGiftCardBuyer) {
 				fraudResults = fraudSB.checkRegistrationFraud(erpCustomer);
 			}
+			System.out.println("FDCustomerManagerSessionBean: Fraud check done");
 			erpCustomer.setActive(true);
 			ErpCustomerManagerSB erpCustomerManagerSB = this
 					.getErpCustomerManagerHome().create();
 			LOGGER.debug("Creating customer in ERPS");
+			System.out.println("FDCustomerManagerSessionBean: Creating customer in ERPS");
 			PrimaryKey pk = erpCustomerManagerSB.createCustomer(erpCustomer,
 					isGiftCardBuyer);
 			LOGGER.debug("Created customer in ERPS");
+			System.out.println("FDCustomerManagerSessionBean: Created customer in ERPS");
 
 			String erpCustomerId = pk.getId();
 			LOGGER.debug("ERPS customer ID: " + erpCustomerId);
+			System.out.println("FDCustomerManagerSessionBean: ERPS customer ID: " + erpCustomerId);
 
 			fdCustomer.setErpCustomerPK(erpCustomerId);
 			fdCustomer.setProfile(new ProfileModel());
@@ -280,6 +285,8 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			}
 			ps.close();
 			ps = null;
+			
+			System.out.println("FDCustomerManagerSessionBean: All set and ready to send email.");
 
 			// now send email
 			ErpCustomerInfoModel erpInfo = erpCustomer.getCustomerInfo();

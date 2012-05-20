@@ -279,7 +279,18 @@ public class RegistrationAction extends WebActionSupport {
 
 		ContactInfo cInfo = new ContactInfo(request);
 		AccountInfo aInfo = new AccountInfo(request);
-		//AddressInfo addInfo = new AddressInfo(request);
+		AddressInfo addInfo = new AddressInfo(request);
+		
+		if("true".equals(request.getParameter("LITESIGNUP"))) {
+			if(session.getAttribute("LITECONTACTINFO") != null && session.getAttribute("LITEACCOUNTINFO") != null) {		
+				cInfo = (ContactInfo) session.getAttribute("LITECONTACTINFO");
+				aInfo = (AccountInfo) session.getAttribute("LITEACCOUNTINFO");
+			} 
+			String sType = user.getSelectedServiceType().getName();
+			if(user.getSelectedServiceType().getName().equals(EnumServiceType.CORPORATE.getName())) {				
+				addInfo.validate(actionResult);
+			}
+		}
 
 		//EnumServiceType serviceType = addInfo.getAddressType();
 		aInfo.validateEx(actionResult);
@@ -371,6 +382,9 @@ public class RegistrationAction extends WebActionSupport {
 					erpAddress.setAddressInfo(address.getAddressInfo());
 					erpAddress.setServiceType(serviceType);
 					erpCustomer.addShipToAddress(erpAddress);
+					if(serviceType.getName().equals(EnumServiceType.CORPORATE.getName())) {
+						erpAddress.setCompanyName(addInfo.getCompanyName());
+					}
 				} else {
 					erpAddress=new ErpAddressModel();
 					erpAddress.setFirstName(customerInfo.getFirstName());
@@ -477,6 +491,8 @@ public class RegistrationAction extends WebActionSupport {
 		FDSurveyResponse survey,
 		EnumServiceType serviceType) throws ErpDuplicateUserIdException,ErpDuplicatePaymentMethodException,
 		ErpPaymentMethodException,FDResourceException {
+		
+		System.out.println("RegistrationAction: In doRegistration");
 
 		HttpSession session = this.getWebActionContext().getSession();
 		FDSessionUser user = (FDSessionUser) session.getAttribute(SessionName.USER);
@@ -492,6 +508,35 @@ public class RegistrationAction extends WebActionSupport {
 		System.out.println("RegistrationAction: doRegistration() " + identity);
 		return identity;
 
+	}
+	
+	public String validateLiteSignup() {
+		HttpServletRequest request = this.getWebActionContext().getRequest();
+		ActionResult actionResult = this.getResult();
+
+		ContactInfo cInfo = new ContactInfo(request);
+		AccountInfo aInfo = new AccountInfo(request);
+
+		aInfo.validateEx(actionResult);
+		cInfo.validateEx(actionResult);
+		
+		try {
+			if(FDCustomerManager.dupeEmailAddress(aInfo.emailAddress) != null) {
+				actionResult.addError(new ActionError(EnumUserInfoName.EMAIL.getCode(),SystemMessageList.MSG_UNIQUE_USERNAME));				
+			}
+		} catch (FDResourceException e) {			
+		}		
+
+		if (!actionResult.isSuccess()) {
+			return ERROR;
+		}
+		
+		//store contactInfo and AccountInfo in session
+		HttpSession session = this.getWebActionContext().getSession();
+		session.setAttribute("LITECONTACTINFO", cInfo);
+		session.setAttribute("LITEACCOUNTINFO", aInfo);
+		
+		return SUCCESS;
 	}
 	
 	class ContactInfo {
