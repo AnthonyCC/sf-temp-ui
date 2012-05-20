@@ -33,5 +33,9 @@ public interface MailName {
 
     public final static String GC_RECIPIENT_EMAIL = "gcRecipientEmail";
 
+    public final static String TEMPLATE_ID 		= "templateId";
+    
+    
+    
     
 } // class MailName

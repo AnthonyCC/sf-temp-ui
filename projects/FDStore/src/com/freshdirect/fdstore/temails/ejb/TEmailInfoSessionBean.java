@@ -50,6 +50,7 @@ public class TEmailInfoSessionBean extends FDSessionBeanSupport{
 				throw new TEmailRuntimeException("No active templateId exist for tranType :"+tranType.getName());
 			} else {
 				LOGGER.debug("------------------------------------info:" + info.toString());
+				System.out.println("---------------------------info" + info.toString());
 			}
 								
 			TEmailI mail=TEmailContentFactory.getInstance().createTransactionEmailModel(info, input);

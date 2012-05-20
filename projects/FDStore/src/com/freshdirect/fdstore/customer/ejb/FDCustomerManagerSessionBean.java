@@ -296,20 +296,21 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			/*this.doEmail(FDEmailFactory.getInstance().createConfirmSignupEmail(
 					emailInfo));
 			*/
+			System.out.println("-------------------------------------"+TEmailsUtil.isTransEmailEnabled(EnumTranEmailType.CUST_SIGNUP));
 			boolean isUseOtherEmailMode=true;
 			if(TEmailsUtil.isTransEmailEnabled(EnumTranEmailType.CUST_SIGNUP)){
-			 try
-			 {	
-				Map input=new HashMap();
-				//input.put(TEmailConstants.ORDER_INP_KEY, order);
-				input.put(TEmailConstants.CUSTOMER_ID_INP_KEY, emailInfo);
-				input.put(TEmailConstants.EMAIL_TYPE, emailInfo.isHtmlEmail()?EnumEmailType.HTML.getName():EnumEmailType.TEXT.getName());
-				
-				this.doEmail(EnumTranEmailType.CUST_SIGNUP,  input);
-				isUseOtherEmailMode=false;
-			 }catch(TEmailRuntimeException e){
-				 LOGGER.error("Error in using Transaction Email :",e);					 
-			 }					
+				LOGGER.debug("-------------------------------------------Doing Transaction email");
+				try {	
+					Map input=new HashMap();
+					//input.put(TEmailConstants.ORDER_INP_KEY, order);
+					input.put(TEmailConstants.CUSTOMER_ID_INP_KEY, emailInfo);
+					input.put(TEmailConstants.EMAIL_TYPE, emailInfo.isHtmlEmail()?EnumEmailType.HTML.getName():EnumEmailType.TEXT.getName());
+					
+					this.doEmail(EnumTranEmailType.CUST_SIGNUP,  input);
+					isUseOtherEmailMode=false;
+				}catch(TEmailRuntimeException e){
+					LOGGER.error("Error in using Transaction Email :",e);					 
+				}					
 			}
 			if(isUseOtherEmailMode) this.doEmail(FDEmailFactory.getInstance().createConfirmSignupEmail(emailInfo));
 		
@@ -6435,6 +6436,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 	}
 	
 	public void doEmail(EnumTranEmailType type, Map input ) throws FDResourceException {
+		System.out.println("---------------------------calling doEmail");
 		try {
 			TEmailInfoHome home= getTMailerHome();
 			TEmailInfoSB remote= home.create();			
