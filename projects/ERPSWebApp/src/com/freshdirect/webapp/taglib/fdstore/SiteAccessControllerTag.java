@@ -33,6 +33,10 @@ import com.freshdirect.framework.util.NVL;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionResult;
 import com.freshdirect.framework.webapp.ActionError;
+import com.freshdirect.webapp.action.Action;
+import com.freshdirect.webapp.action.HttpContext;
+import com.freshdirect.webapp.action.fdstore.RegistrationAction;
+import com.freshdirect.webapp.util.AccountUtil;
 
 public class SiteAccessControllerTag extends com.freshdirect.framework.webapp.BodyTagSupport {
 
@@ -127,6 +131,7 @@ public class SiteAccessControllerTag extends com.freshdirect.framework.webapp.Bo
 	public int doStartTag() throws JspException {
 		ActionResult result = new ActionResult();
 		HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
+		this.pageContext.getSession().removeAttribute("morepage");
 
 		if ("POST".equalsIgnoreCase(request.getMethod()) || "modalboxpost".equals(request.getParameter("actionName"))) {
 			LOGGER.debug("[*****Moreinfopage is coming as*****]"+this.moreInfoPage);
@@ -257,6 +262,64 @@ public class SiteAccessControllerTag extends com.freshdirect.framework.webapp.Bo
 					checkByAddress(request, result);
 				} else if ("doPrereg".equalsIgnoreCase(action)) {
 					doPrereg(request, result);
+				} else if ("signupLite".equalsIgnoreCase(action)) {
+					HttpSession session = this.pageContext.getSession();
+					DlvServiceSelectionResult serviceResult = checkSLiteZipCode(request, result);
+					if(serviceResult!=null)
+						setRequestedServiceTypeDlvStatus(serviceResult.getServiceStatus(this.serviceType));
+					
+					if (result.isSuccess()) {
+						newSession();
+						
+						EnumDeliveryStatus dlvStatus = serviceResult.getServiceStatus(this.serviceType);
+							
+						if (EnumDeliveryStatus.DELIVER.equals(dlvStatus)) {
+							this.createUser(this.serviceType, serviceResult.getAvailableServices());
+						} else { 
+							this.createUser(EnumServiceType.PICKUP, serviceResult.getAvailableServices());
+						}
+						
+						String altDeliveryPage = "/site_access/alt_dlv_home.jsp";
+						String failedCorpPage = "/survey/cos_site_access_survey.jsp?successPage=index.jsp";
+						String failedHomePage = "/site_access/delivery.jsp?successPage=index.jsp&serviceType=" + this.serviceType;
+						String moreIngoPage = "/site_access/site_access_address_lite.jsp?successPage=index.jsp&serviceType=" + this.serviceType;
+						
+						
+						if(EnumServiceType.CORPORATE.equals(this.serviceType)) {
+							//Corporate delivery
+							if(EnumDeliveryStatus.DONOT_DELIVER.equals(dlvStatus)) {
+								//Do not deliver to corporate, check if alternate home delivery is available
+								if(EnumDeliveryStatus.DELIVER.equals(serviceResult.getServiceStatus(EnumServiceType.HOME))) {
+									// show E No Corporate HOME delivarable Survey presented /site_access/alt_dlv_home.jsp
+									doRedirect(altDeliveryPage);
+								}
+								else if(EnumDeliveryStatus.DONOT_DELIVER.equals(serviceResult.getServiceStatus(EnumServiceType.HOME))) {
+									// forward to site_access/cos_site_access_survey.jsp
+									doRedirect(failedCorpPage);
+								}
+								else if(EnumDeliveryStatus.PARTIALLY_DELIVER.equals(serviceResult.getServiceStatus(EnumServiceType.HOME))) {
+									// forward to more address page									
+									doRedirect(moreIngoPage);
+								}							
+							} else {
+								//Delivery to corporate
+								doRedirect(moreIngoPage);
+							}
+						} else {
+							//Home delivery
+							if(EnumDeliveryStatus.RARELY_DELIVER.equals(dlvStatus) || EnumDeliveryStatus.DONOT_DELIVER.equals(dlvStatus)) {
+								// forward to /site_access/delivery.jsp with rarely deliver message( not required now)
+								return doRedirect(failedHomePage);
+							} else if(EnumDeliveryStatus.PARTIALLY_DELIVER.equals(dlvStatus)) {
+								//Partial delivery is available. Prompt for full address
+								session.setAttribute("morepage", moreIngoPage);								
+								doRedirect(moreIngoPage);
+							} else if (EnumDeliveryStatus.DELIVER.equals(dlvStatus)) {
+								//All set. The zipcode is good. Proceed to direct registration. No more info needed.
+								doRegistration(result);
+							}
+						}
+					}
 				}
 			} catch (FDResourceException re) {
 				LOGGER.warn("FDResourceException occured", re);
@@ -265,6 +328,36 @@ public class SiteAccessControllerTag extends com.freshdirect.framework.webapp.Bo
 		}
 		pageContext.setAttribute(resultName, result);
 		return EVAL_BODY_BUFFERED;
+	}
+	
+	private void doRegistration(ActionResult result) {
+		int regType = AccountUtil.HOME_USER;
+		if(EnumServiceType.CORPORATE.getName().equals(this.serviceType)) {
+			//This is a corp user
+			regType = AccountUtil.CORP_USER;
+		}
+		RegistrationAction ra = new RegistrationAction(regType);
+
+		HttpContext ctx =
+			new HttpContext(
+				this.pageContext.getSession(),
+				(HttpServletRequest) this.pageContext.getRequest(),
+				(HttpServletResponse) this.pageContext.getResponse());
+
+		ra.setHttpContext(ctx);
+		ra.setResult(result);
+		try {
+			String res = ra.executeEx();
+			if((Action.SUCCESS).equals(res)) {
+				this.setSuccessPage("/registration/signup_lite.jsp");										
+				this.pageContext.getSession().setAttribute("LITESIGNUP_COMPLETE", "true");
+				this.pageContext.getSession().removeAttribute("LITEACCOUNTINFO");
+				this.pageContext.getSession().removeAttribute("LITECONTACTINFO");
+			}
+		} catch (Exception ex) {
+			LOGGER.error("Error performing action signupLite", ex);
+			result.addError(new ActionError("technical_difficulty", SystemMessageList.MSG_TECHNICAL_ERROR));
+		}
 	}
 
 	private boolean validEmail(String email, ActionResult result) {		
@@ -344,6 +437,45 @@ public class SiteAccessControllerTag extends com.freshdirect.framework.webapp.Bo
 
 		return FDDeliveryManager.getInstance().checkZipCode(this.address.getZipCode());
 	}
+	
+	private DlvServiceSelectionResult checkSLiteZipCode(HttpServletRequest request, ActionResult result) throws FDResourceException {
+		//populate address
+		this.address = new AddressModel();
+		String sType = request.getParameter("serviceType");
+		this.address.setZipCode(NVL.apply(request.getParameter(EnumUserInfoName.DLV_ZIPCODE.getCode()),"").trim());
+		this.serviceType = EnumServiceType.getEnum(NVL.apply(sType, "").trim());
+		this.address.setAddress1(NVL.apply(request.getParameter(EnumUserInfoName.DLV_ADDRESS_1.getCode()), "").trim());		
+		this.address.setApartment(NVL.apply(request.getParameter(EnumUserInfoName.DLV_APARTMENT.getCode()), "").trim());
+		this.address.setCity(NVL.apply(request.getParameter(EnumUserInfoName.DLV_CITY.getCode()), "").trim());
+		this.address.setState(NVL.apply(request.getParameter(EnumUserInfoName.DLV_STATE.getCode()), "").trim());	
+		
+		this.validate(result, false);
+		
+		int regType = AccountUtil.HOME_USER;
+		if(EnumServiceType.CORPORATE.getName().equals(NVL.apply(request.getParameter("serviceType"), ""))) {
+			//This is a corp user
+			regType = AccountUtil.CORP_USER;
+		}
+		RegistrationAction ra = new RegistrationAction(regType);
+
+		HttpContext ctx =
+			new HttpContext(
+				this.pageContext.getSession(),
+				(HttpServletRequest) this.pageContext.getRequest(),
+				(HttpServletResponse) this.pageContext.getResponse());
+
+		ra.setHttpContext(ctx);
+		ra.setResult(result);
+		ra.validateLiteSignup();
+
+		if (result.isFailure()) {
+			//Reset success page to null
+			setSuccessPage(null);
+			return null;
+		}
+		
+		return FDDeliveryManager.getInstance().checkZipCode(this.address.getZipCode());
+	}
 
 	private void populate(HttpServletRequest request) {
 		this.address = new AddressModel();
@@ -413,11 +545,18 @@ public class SiteAccessControllerTag extends com.freshdirect.framework.webapp.Bo
 				this.address = AddressUtil.scrubAddress(this.address, true, result);
 			}
 		}
+		
 	}
 
 	private int checkByAddress(HttpServletRequest request, ActionResult result) throws FDResourceException, JspException {
 		this.populate(request);
 		this.validate(result, true);
+		
+		if("true".equals(request.getParameter("LITESIGNUP")) && this.serviceType.getName().equals(EnumServiceType.CORPORATE.getName())) {
+			String company = NVL.apply(request.getParameter(EnumUserInfoName.DLV_COMPANY_NAME.getCode()), "").trim();
+			result.addError("".equals(company), EnumUserInfoName.DLV_COMPANY_NAME.getCode(), SystemMessageList.MSG_REQUIRED);			
+		}
+		
 		if (result.isFailure()) {
 			return EVAL_BODY_BUFFERED;
 		}
@@ -459,6 +598,22 @@ public class SiteAccessControllerTag extends com.freshdirect.framework.webapp.Bo
 					//return this.doRedirect(moreInfoPage);
 					pageContext.getSession().setAttribute("DISPLAY", "STEP2");
 					return EVAL_BODY_BUFFERED;
+				}
+			}
+			
+			if("true".equals(request.getParameter("LITESIGNUP"))) {
+				if(page.equals(successPage)) {
+					//everything is good, proceed with registration.
+					doRegistration(result);
+				} else {
+					String altDeliveryPage = "/site_access/alt_dlv_home.jsp";
+					if(page.equals(altDeliveryCorporatePage)) {
+						this.pageContext.getSession().setAttribute("morepage", "/site_access/alt_dlv_corporate.jsp");
+					} else if (page.equals(altDeliveryHomePage)) {
+						this.pageContext.getSession().setAttribute("morepage", altDeliveryPage);
+					} else {
+						this.pageContext.getSession().setAttribute("morepage", page);
+					} 
 				}
 			}
 			return this.doRedirect(page);

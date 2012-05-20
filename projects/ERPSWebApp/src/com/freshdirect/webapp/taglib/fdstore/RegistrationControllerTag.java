@@ -121,6 +121,7 @@ public class RegistrationControllerTag extends AbstractControllerTag implements 
 				this.setSuccessPage(ra.getSuccessPage()); //reset if changed.
 
 			} else if ("registerEx".equalsIgnoreCase(actionName)) {
+				this.pageContext.getSession().removeAttribute("LITESIGNUP_COMPLETE");
 				if(session.getAttribute("REFERRALNAME") != null ) {
 					if(!"done".equals(request.getParameter("submission"))) {
 						actionResult.addError(new ActionError("Dummy","Dummy"));
@@ -166,6 +167,12 @@ public class RegistrationControllerTag extends AbstractControllerTag implements 
 							this.setAjax(true);
 						} catch (Exception e) {
 							LOGGER.error("Exception when trying to update FDCustomer with referral ID",e);
+						}
+					} else {
+						if("true".equals(this.pageContext.getRequest().getParameter("LITESIGNUP"))) {
+							this.setSuccessPage("/registration/signup_lite.jsp");
+							this.setAjax(true);
+							this.pageContext.getSession().setAttribute("LITESIGNUP_COMPLETE", "true");
 						}
 					}
 				}

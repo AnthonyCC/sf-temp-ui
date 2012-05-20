@@ -946,3 +946,115 @@ function extract_query_string(theForm) {
 		document.location = loc;
 		return false;
 	}
+
+
+function curvyCornersHelper(elemId, settingsObj) {
+                if (document.getElementById(elemId)) {
+                        var temp = new curvyCorners(settingsObj, document.getElementById(elemId)).applyCornersToAll();
+                }
+        }
+
+var ccSettings = {
+                tl: { radius: 6 },
+                tr: { radius: 6 },
+                bl: { radius: 6 },
+                br: { radius: 6 },
+                topColour: "#ffffff",
+                bottomColour: "#ffffff",
+                antiAlias: true,
+                autoPad: true
+        };		
+		
+function doOverlayWindow(olURL) {
+	
+		
+		var olURL = olURL || '';
+                if (olURL == '') { return false; }
+				var ieVer = detectIEVersion();
+                
+                Modalbox.show(olURL, {
+                        loadingString: 'Loading Preview...',
+                        closeString: 'Close Preview',
+                        title: '',
+                        width: 420,
+                        overlayOpacity: .80,
+                        transitions: false,
+                        autoFocusing: false,
+                        centered: true,
+                        overlayClose: true,
+                        closeValue: '<img src="/media/editorial/site_access/images/round_x.gif" />',
+                        beforeLoad: function() {
+							if (ieVer == 7) {
+								$$('html')[0].setStyle({ overflow: 'hidden' });
+							} else {
+								$$('body')[0].setStyle({ overflowY: 'hidden' });
+							}
+						},
+                        afterLoad: function() {
+                                        $('MB_frame').style.border = '1px solid #CCCCCC';
+                                        $('MB_header').style.border = '0px solid #CCCCCC';
+                                        $('MB_header').style.display = 'block';
+                                        window.scrollTo(0,0);
+                                        $('MB_window').style.width = 'auto';
+                                        $('MB_window').style.height = 'auto';
+                                        $('MB_window').style.left = parseInt(($('MB_overlay').clientWidth-$('MB_window').clientWidth)/2)+'px';
+                                        $('MB_content').style.padding = '20px';
+
+                                        ccSettings.topColour = "#ffffff";
+                                        ccSettings.bottomColour = "#ffffff";
+                                        curvyCornersHelper('MB_frame', ccSettings);
+					
+							setFormDefaults();
+							fillVals('confirm_email', '','Verify your email');
+                        },
+                        afterHide: function() { 
+							window.scrollTo(Modalbox.initScrollX,Modalbox.initScrollY);
+								$$('html')[0].setStyle({ overflow: '' });
+								$$('body')[0].setStyle({ overflowY: '' });
+						}
+                });		
+	}
+	
+	function doOverlayWindowFormSubmit(olURL, formname) {		
+		var olURL = olURL || '';
+		if (olURL == '') { return false; }
+
+		paramsvar = Form.serialize(formname);
+		Modalbox.hide();
+		Modalbox.show(olURL, {
+			loadingString: 'Loading Preview...',
+			title: ' ',
+			width: 400,
+			overlayOpacity: .80,
+			centered: true,
+            method: 'post',
+            params: paramsvar,
+			closeValue: '<img src="/media/editorial/site_access/images/round_x.gif" />',
+			afterLoad: function() {
+					$('MB_frame').style.border = '1px solid #CCCCCC';
+					$('MB_header').style.border = '0px solid #CCCCCC';
+					$('MB_header').style.display = 'block';
+					window.scrollTo(0,0);
+					$('MB_window').style.width = 'auto';
+					$('MB_window').style.height = 'auto';
+					$('MB_window').style.left = parseInt(($('MB_overlay').clientWidth-$('MB_window').clientWidth)/2)+'px';
+					$('MB_content').style.padding = '20px';
+
+					ccSettings.topColour = "#ffffff";
+					ccSettings.bottomColour = "#ffffff";
+					curvyCornersHelper('MB_frame', ccSettings);
+			},
+			afterHide: function() { window.scrollTo(Modalbox.initScrollX,Modalbox.initScrollY); }
+		});
+	}
+	
+	function detectIEVersion() {
+			var rv = -1; // Return value assumes failure.
+			if (navigator.appName == 'Microsoft Internet Explorer') {
+				var ua = navigator.userAgent;
+				var re  = new RegExp("MSIE ([0-9]{1,}[\.0-9]{0,})");
+				if (re.exec(ua) != null)
+					rv = parseFloat( RegExp.$1 );
+			}
+			return rv;
+		}

@@ -334,45 +334,6 @@ if(user.isDepotUser()){
 
 <br />
 <br />
-<!--  survey header -->
-<table border="0" cellspacing="0" cellpadding="2" width="<%=W_REGISTRATION_SIGNUP_TOTAL%>">
-	<td width="<%=W_REGISTRATION_SIGNUP_TOTAL%>">
-		<img src="/media_stat/images/navigation/help_us_serve_you.gif" width="169" height="9" border="0" alt="HELP US SERVE YOU" /><br />
-		<img src="/media_stat/images/layout/999966.gif" width="<%=W_REGISTRATION_SIGNUP_TOTAL%>" height="1" border="0" vspace="3" /><br />
-	</td>
-</tr>
-</table>
-<font class="space4pix"><br /></font>
-<script type="text/javascript">
-function setVisible(id, value) {
-			if (value) {
-				document.getElementById(id).style.display = "block"
-			} else {
-				document.getElementById(id).style.display = "none"
-			}
-		}
-function showSurveys(element) {
-	var home = element.value == "<%=EnumServiceType.HOME.getName()%>" ? element.checked : !element.checked; 
-	
-	setVisible("survey_registration_survey_home", home);
-	setVisible("survey_registration_survey_corporate", !home);
-}
-</script>
-
-<!-- survey header end -->
-<% request.setAttribute("Survey","Registration_survey"); 
-   request.setAttribute("userType", com.freshdirect.common.customer.EnumServiceType.CORPORATE);
-   request.setAttribute("HideSurvey", serviceType == com.freshdirect.common.customer.EnumServiceType.CORPORATE ? "false" : "true");
-%>
-<%@ include file="/includes/i_survey.jspf" %>
-
-<% request.setAttribute("Survey","Registration_survey"); 
-   request.setAttribute("userType", com.freshdirect.common.customer.EnumServiceType.HOME);
-   request.setAttribute("HideSurvey", serviceType == com.freshdirect.common.customer.EnumServiceType.HOME ? "false" : "true");
-%>
-<%@ include file="/includes/i_survey.jspf" %>
-
-<br />
 <table border="0" cellspacing="0" cellpadding="2" width="<%=W_REGISTRATION_SIGNUP_TOTAL%>">
 	<tr valign="top">
 		<td width="<%=W_REGISTRATION_SIGNUP_TOTAL%>"><img src="/media_stat/images/navigation/customer_agreement.gif" border="0" alt="TERMS OF SERVICE" />&nbsp;&nbsp;&nbsp;<font class="text9">* Required information</font><br />
