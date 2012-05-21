@@ -28,9 +28,9 @@ import com.freshdirect.fdstore.FDTimeslot;
 import com.freshdirect.fdstore.standingorders.FDStandingOrderInfo;
 import com.freshdirect.fdstore.standingorders.FDStandingOrderInfoList;
 import com.freshdirect.fdstore.standingorders.FDStandingOrdersManager;
-import com.freshdirect.fdstore.standingorders.StandingOrdersServiceResult;
-import com.freshdirect.fdstore.standingorders.StandingOrdersServiceResult.Counter;
-import com.freshdirect.fdstore.standingorders.StandingOrdersServiceResult.Result;
+import com.freshdirect.fdstore.standingorders.SOResult;
+import com.freshdirect.fdstore.standingorders.SOResult.ResultList;
+import com.freshdirect.fdstore.standingorders.SOResult.Result;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.mail.ErpMailSender;
 
@@ -114,7 +114,7 @@ public class StandingOrdersServiceCmd {
 			LOGGER.info( "isSendEmail: "+ isSendEmail );
 			LOGGER.info( "createIfSoiExistsForWeek: "+ createIfSoiExistsForWeek );
 			
-			StandingOrdersServiceResult.Counter result = placeStandingOrders(soIdList, createIfSoiExistsForWeek);
+			SOResult.ResultList result = placeStandingOrders(soIdList, createIfSoiExistsForWeek);
 				
 			if (isSendEmail) {
 				sendReportMail(result);
@@ -126,14 +126,14 @@ public class StandingOrdersServiceCmd {
 		}
 	}
 
-	private static StandingOrdersServiceResult.Counter placeStandingOrders(Collection<String> soList, boolean createIfSoiExistsForWeek) {
+	private static SOResult.ResultList placeStandingOrders(Collection<String> soList, boolean createIfSoiExistsForWeek) {
 		try {
 			lookupSOSHome();
 			StandingOrdersServiceSB sb = sosHome.get().create();
 			
 			LOGGER.info( "Starting to place orders..." );
 			
-			StandingOrdersServiceResult.Counter result = sb.placeStandingOrders(soList, createIfSoiExistsForWeek);
+			SOResult.ResultList result = sb.placeStandingOrders(soList, createIfSoiExistsForWeek);
 			
 			LOGGER.info( "Finished placing orders." );
 			LOGGER.info( "  success : " + result.getSuccessCount() );
@@ -159,7 +159,7 @@ public class StandingOrdersServiceCmd {
 	
 	
 	
-	private static void sendReportMail(Counter result) {
+	private static void sendReportMail(ResultList result) {
 		try {
 			LOGGER.info( "Cron report enabled" );
 			final List<Result> resultList = result.getResultsList();
@@ -338,18 +338,25 @@ public class StandingOrdersServiceCmd {
 		
 	}
 	
-	private static String getDetails(Result result) {
+	private static String getDetails( Result result ) {
 		StringBuilder sb = new StringBuilder();
-		if(result.getInternalMessage()!=null) {
-			sb.append(result.getInternalMessage());
-		} else {
-			sb.append(result.getErrorHeader()==null ? "" : result.getErrorHeader());
+		if ( result.getInternalMessage() != null ) {
+			sb.append( result.getInternalMessage() );
+			sb.append( "<br/>" );
+		} else if ( result.getErrorHeader() != null ) {
+			sb.append( result.getErrorHeader() );
+			sb.append( "<br/>" );
 		}
+		
+		if ( result.hasInvalidItems() ) {
+			sb.append( "<br/>Has invalid items<br/>" );
+		}
+		
 		List<String> unavailableItems = result.getUnavailableItems();
-		if(unavailableItems!=null && !unavailableItems.isEmpty()) {
-			sb.append("<br />Unavailable items:<br />");
-			for(String unavailableItem : unavailableItems) {
-				sb.append(unavailableItem + "<br />");
+		if ( unavailableItems != null && !unavailableItems.isEmpty() ) {
+			sb.append( "<br />Unavailable items:<br />" );
+			for ( String unavailableItem : unavailableItems ) {
+				sb.append( unavailableItem + "<br />" );
 			}
 		}
 		return sb.toString();

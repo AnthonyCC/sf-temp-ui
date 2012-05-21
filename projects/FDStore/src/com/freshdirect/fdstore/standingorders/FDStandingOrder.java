@@ -296,7 +296,7 @@ public class FDStandingOrder extends ModelSupport {
 			return errorHeader;
 		}
 		
-		public String getErrorDetail(FDUserI user) {
+		public String getErrorDetail(FDCustomerInfo user) {
 			if (this == PAYMENT_ADDRESS)
 				return errorDetail.replace("9999", user.getCustomerServiceContact());
 			return errorDetail;

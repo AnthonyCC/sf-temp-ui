@@ -53,8 +53,7 @@ import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.mail.FDEmailFactory;
 import com.freshdirect.fdstore.standingorders.FDStandingOrder;
 import com.freshdirect.fdstore.standingorders.FDStandingOrdersManager;
-import com.freshdirect.fdstore.standingorders.StandingOrdersServiceResult;
-import com.freshdirect.fdstore.standingorders.FDStandingOrder.ErrorCode;
+import com.freshdirect.fdstore.standingorders.SOResult;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.mail.XMLEmailI;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -179,11 +178,11 @@ public class CrisisManagerServlet extends HttpServlet {
 			sendError(response, ":[");
 			return null;
 		}		
-		StandingOrdersServiceResult.Result result = placeStandingOrder(soModel.getId(), soModel.getAltDate(), soModel.getStartTime(), soModel.getEndTime(), agent,request);
+		SOResult.Result result = placeStandingOrder(soModel.getId(), soModel.getAltDate(), soModel.getStartTime(), soModel.getEndTime(), agent,request);
 		return result != null ? result.getErrorHeader() : null;
 	}
 	
-	private StandingOrdersServiceResult.Result placeStandingOrder(String standingOrderId, Date altDate, Date startTime, Date endTime, String initiator, HttpServletRequest request) {
+	private SOResult.Result placeStandingOrder(String standingOrderId, Date altDate, Date startTime, Date endTime, String initiator, HttpServletRequest request) {
 		
 		lookupMailerHome();
 		
@@ -197,7 +196,7 @@ public class CrisisManagerServlet extends HttpServlet {
 			
 		LOGGER.info( "Processing " + standingOrderId + " standing orders." );
 		
-		StandingOrdersServiceResult.Result result;
+		SOResult.Result result;
 		FDStandingOrder so = null;
 		
 			try {
@@ -216,7 +215,7 @@ public class CrisisManagerServlet extends HttpServlet {
 			} catch (FDResourceException re) {
 				invalidateMailerHome();
 				LOGGER.error( "Processing standing order failed with FDResourceException!", re );
-				result = new StandingOrdersServiceResult.Result( ErrorCode.TECHNICAL, ErrorCode.TECHNICAL.getErrorHeader(), "Processing standing order failed with FDResourceException!", null, null, so.getId(), so.getCustomerListName() );
+				result = SOResult.createTechnicalError( so, "Processing standing order failed with FDResourceException in the CrisisManagerServlet!" );
 			}
 			
 			if ( result.isError() ) {
@@ -257,7 +256,7 @@ public class CrisisManagerServlet extends HttpServlet {
 		}
 	}
 	
-	private void logActivity ( FDStandingOrder so, StandingOrdersServiceResult.Result result, String initiator ) {
+	private void logActivity ( FDStandingOrder so, SOResult.Result result, String initiator ) {
 		
 		ErpActivityRecord activityRecord = new ErpActivityRecord();
 		activityRecord.setStandingOrderId( so.getId() );
@@ -282,13 +281,13 @@ public class CrisisManagerServlet extends HttpServlet {
 		}
 		activityRecord.setChangeOrderId( result.getSaleId() );
 		
-		StandingOrdersServiceResult.Status status = result.getStatus();
+		SOResult.Status status = result.getStatus();
 		
-		if ( status == StandingOrdersServiceResult.Status.SUCCESS ) {
+		if ( status == SOResult.Status.SUCCESS ) {
 			activityRecord.setActivityType( EnumAccountActivityType.STANDINGORDER_PLACED );
-		} else if ( status == StandingOrdersServiceResult.Status.FAILURE ) {
+		} else if ( status == SOResult.Status.FAILURE ) {
 			activityRecord.setActivityType( EnumAccountActivityType.STANDINGORDER_FAILED );
-		} else if ( status == StandingOrdersServiceResult.Status.SKIPPED ) {
+		} else if ( status == SOResult.Status.SKIPPED ) {
 			activityRecord.setActivityType( EnumAccountActivityType.STANDINGORDER_SKIPPED );					
 		}
 		

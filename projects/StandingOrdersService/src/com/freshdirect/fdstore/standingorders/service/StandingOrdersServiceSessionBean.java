@@ -26,9 +26,9 @@ import com.freshdirect.fdstore.customer.FDCustomerInfo;
 import com.freshdirect.fdstore.mail.FDEmailFactory;
 import com.freshdirect.fdstore.standingorders.FDStandingOrder;
 import com.freshdirect.fdstore.standingorders.FDStandingOrdersManager;
-import com.freshdirect.fdstore.standingorders.StandingOrdersServiceResult;
-import com.freshdirect.fdstore.standingorders.StandingOrdersServiceResult.Result;
-import com.freshdirect.fdstore.standingorders.StandingOrdersServiceResult.Status;
+import com.freshdirect.fdstore.standingorders.SOResult;
+import com.freshdirect.fdstore.standingorders.SOResult.Result;
+import com.freshdirect.fdstore.standingorders.SOResult.Status;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.core.SessionBeanSupport;
 import com.freshdirect.framework.mail.XMLEmailI;
@@ -77,7 +77,7 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 	}
 	
 
-	public StandingOrdersServiceResult.Counter placeStandingOrders(Collection<String> soIdList, boolean createIfSoiExistsForWeek) {
+	public SOResult.ResultList placeStandingOrders(Collection<String> soIdList, boolean createIfSoiExistsForWeek) {
 		Collection<FDStandingOrder> soList;
 		
 		if ( soIdList == null ) {
@@ -132,7 +132,7 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 
 		
 		// Begin processing SO-s, and count the results
-		StandingOrdersServiceResult.Counter resultCounter = new StandingOrdersServiceResult.Counter();
+		SOResult.ResultList resultCounter = new SOResult.ResultList();
 		LOGGER.info( "Processing " + soList.size() + " standing orders." );
 		for ( FDStandingOrder so : soList ) {
 			Result result;
@@ -142,11 +142,11 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 				result = StandingOrderUtil.process( so, null != altDates ? altDates.get(so.getNextDeliveryDate()) : null, null, null, mailerHome, false, createIfSoiExistsForWeek );
 			} catch (FDResourceException re) {
 				LOGGER.error( "Processing standing order failed with FDResourceException!", re );
-				result = new Result(so).withTechError("Processing standing order failed with FDResourceException!");
+				result = SOResult.createTechnicalError( so, "Processing standing order failed with FDResourceException!" );
 			//APPDEV-2286 catch unchecked exceptions
 			} catch (Exception e) {
 				LOGGER.error( "Processing standing order failed with Exception!", e );
-				result = new Result(so).withTechError("Processing standing order failed with Exception!");
+				result = SOResult.createTechnicalError( so, "Processing standing order failed with unchecked exception!!!" );				
 			} finally {
 				invalidateMailerHome();
 			}
@@ -173,13 +173,14 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 				}
 			}
 			
-			// count the result
-			resultCounter.count( result );
+			// add (and count) the result
+			resultCounter.add( result );
 			
 			// if there was any change (not skipped), then save the SO and log the activity
 			if ( result.getStatus() != Status.SKIPPED ) {
 				try {
 					FDActionInfo info = new FDActionInfo(EnumTransactionSource.STANDING_ORDER, so.getCustomerIdentity(), INITIATOR_NAME, "Updating Standing Order Status", null);
+					LOGGER.info( "Saving SO " + so.getId() );
 					soManager.save( info, so );
 				} catch (FDResourceException re) {
 					invalidateMailerHome();

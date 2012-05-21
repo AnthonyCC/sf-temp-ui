@@ -79,9 +79,7 @@ import com.freshdirect.fdstore.standingorders.DeliveryInterval;
 import com.freshdirect.fdstore.standingorders.FDStandingOrder;
 import com.freshdirect.fdstore.standingorders.FDStandingOrder.ErrorCode;
 import com.freshdirect.fdstore.standingorders.FDStandingOrdersManager;
-import com.freshdirect.fdstore.standingorders.StandingOrdersServiceResult;
-import com.freshdirect.fdstore.standingorders.StandingOrdersServiceResult.Result;
-import com.freshdirect.fdstore.standingorders.StandingOrdersServiceResult.Status;
+import com.freshdirect.fdstore.standingorders.SOResult;
 import com.freshdirect.framework.mail.XMLEmailI;
 import com.freshdirect.framework.util.DateRange;
 import com.freshdirect.framework.util.DateUtil;
@@ -127,16 +125,21 @@ public class StandingOrderUtil {
 	 * @throws FDResourceException
 	 * 
 	 */
-	public static StandingOrdersServiceResult.Result process( FDStandingOrder so, Date altDate, TimeslotEventModel event, FDActionInfo info, MailerGatewayHome mailerHome, boolean forceCapacity, boolean createIfSoiExistsForWeek) throws FDResourceException {
+	public static SOResult.Result process( FDStandingOrder so, Date altDate, TimeslotEventModel event, FDActionInfo info, MailerGatewayHome mailerHome, boolean forceCapacity, boolean createIfSoiExistsForWeek) throws FDResourceException {
 		
-		LOGGER.info( "Processing Standing Order : " + so );		
+		LOGGER.info( "Processing Standing Order : " + so );
 		
-		Result result = new Result(so);
+		// Check for null object here, so we are safe later
+		if ( so == null ) {
+			LOGGER.warn( "StandingOrderUtil.process() received a null SO object, ignoring it." );
+			return SOResult.createNull();
+		}
 		
 		// skip if : deleted or has some error - redundant check...
-		if ( so == null || so.isDeleted() ) {
-			LOGGER.info( "Skipping." );
-			return result.withStatus(Status.SKIPPED);
+		if ( so.isDeleted() ) {
+			LOGGER.warn( "StandingOrderUtil.process() received a deleted SO, ignoring it." );
+			LOGGER.info( "Skipping deleted order." );
+			return SOResult.createSkipped( so, "Skipping because SO is deleted" );
 		}
 		
 		// checking if SO is in erroneous state
@@ -145,23 +148,29 @@ public class StandingOrderUtil {
 			if ( now.after( so.getNextDeliveryDate() ) ) {
 				// clearing the error since the delivery date has been passed
 				// and the customer did not touch the erroneous SO so far
+				
+				LOGGER.info( "Clearing SO error state." );
 				so.clearLastError();
+				
 				try {
-					if(info == null){
-						info = new FDActionInfo(EnumTransactionSource.STANDING_ORDER, so.getCustomerIdentity(),
-							INITIATOR_NAME, "Resetting Standing Order Error Status", null);
-					}else{
-						info.setNote( "Resetting Standing Order Error Status");
+					if ( info == null ) {
+						info = new FDActionInfo( EnumTransactionSource.STANDING_ORDER, so.getCustomerIdentity(), 
+								INITIATOR_NAME, "Resetting Standing Order Error Status", null );
+					} else {
+						info.setNote( "Resetting Standing Order Error Status" );
 					}
+					
+					LOGGER.info( "Saving SO to DB." );
 					FDStandingOrdersManager.getInstance().save( info, so );
+					
 				} catch (FDResourceException re) {
 					LOGGER.error( "Saving standing order failed! (FDResourceException)", re );
-					return result.withTechError("Cannot reset error state of SO.");
+					return SOResult.createTechnicalError( so, "Cannot reset error state of SO" );
 				}
 			} else {
 				// skipping because it is erroneous
-				LOGGER.info( "Skipping." );
-				return result.withStatus(Status.SKIPPED);
+				LOGGER.info( "Skipping SO because it has a permanent error." );
+				return SOResult.createSkipped( so, "Skipping because SO is in error state" );
 			}
 		}
 		
@@ -178,6 +187,7 @@ public class StandingOrderUtil {
 		
 		sendNotification( so, mailerHome );
 		
+		
 		// ==========================
 		//  Customer related infos
 		// ==========================
@@ -192,13 +202,13 @@ public class StandingOrderUtil {
 		} catch ( FDAuthenticationException e ) {
 			LOGGER.warn( "Failed to retreive customer information.", e );
 		}
-		result.setCustomerData(customer.getErpCustomerPK(), customerInfo);
 		
 		if ( customer == null || customerInfo == null || customerUser == null ) {
 			LOGGER.warn( "No valid customer." );
-			return result.withTechError("No valid customer.");
+			return SOResult.createTechnicalError( so, "No valid customer found" );
 		}
-		
+		// Note: customer data will be added to the result if the order creation succeeds 
+
 		LOGGER.info( "Customer information is valid." );
 
 
@@ -214,7 +224,7 @@ public class StandingOrderUtil {
 					int weekNumExistingSoi = DateUtil.getWeekNumFromEpochFirstMonday(fDOrderInfo.getCreateRequestedDate());
 					if (weekNumNewSoi == weekNumExistingSoi){
 						LOGGER.info( "Skipping, because SOI exists for given week." );
-						return result.withStatus(Status.SKIPPED);
+						return SOResult.createSkipped( so, customer, customerInfo, "Skipping because SOI exists for given week" ); 
 					}
 				}
 			}
@@ -231,7 +241,7 @@ public class StandingOrderUtil {
 		
 		if ( deliveryAddressModel == null ) {
 			LOGGER.warn( "No delivery address found for this ID. ["+deliveryAddressId+"]" );
-			return result.withUserRelatedError(ErrorCode.NO_ADDRESS, customerUser);
+			return SOResult.createUserError( so, customer, customerInfo, ErrorCode.NO_ADDRESS );
 		}
 		
 		DeliveryAddressValidator addressValidator = new DeliveryAddressValidator( deliveryAddressModel );
@@ -241,12 +251,12 @@ public class StandingOrderUtil {
 			addressValidator.validateAddress( addressValidatorResult );
 		} catch (FDResourceException e) {
 			LOGGER.warn( "Address validation failed with FDResourceException ", e );
-			return result.withTechError("Address validation failed.");
+			return SOResult.createTechnicalError( so, "Address validation failed with FDResourceException." );
 		}
 		
 		if ( addressValidatorResult.isFailure() ) {
 			LOGGER.warn( "Address validation failed : " + addressValidatorResult.getFirstError().getDescription() );
-			return result.withUserRelatedError(ErrorCode.ADDRESS, customerUser);
+			return SOResult.createUserError( so, customer, customerInfo, ErrorCode.ADDRESS );
 		}
 		
 		// continue with the scrubbed address
@@ -254,7 +264,7 @@ public class StandingOrderUtil {
 		
 		if ( deliveryAddressModel == null ) {
 			LOGGER.warn( "No valid delivery address." );
-			return result.withUserRelatedError(ErrorCode.ADDRESS, customerUser);
+			return SOResult.createUserError( so, customer, customerInfo, ErrorCode.ADDRESS );
 		}
 		
 		LOGGER.info( "Delivery address is valid: " + deliveryAddressModel );
@@ -269,7 +279,7 @@ public class StandingOrderUtil {
 		
 		if ( paymentMethodID == null || paymentMethodID.trim().equals( "" ) ) {
 			LOGGER.warn( "No payment method id." );
-			return result.withUserRelatedError(ErrorCode.PAYMENT, customerUser);
+			return SOResult.createUserError( so, customer, customerInfo, ErrorCode.PAYMENT );
 		}
 
 		ErpPaymentMethodI paymentMethod = null;
@@ -277,12 +287,12 @@ public class StandingOrderUtil {
 			paymentMethod = FDCustomerManager.getPaymentMethod( customer, paymentMethodID );
 		} catch (FDResourceException e) {
 			LOGGER.warn( "FDResourceException while getting payment method", e );
-			return result.withTechError("FDResourceException while getting payment method.");
+			return SOResult.createTechnicalError( so, "FDResourceException while getting payment method." );
 		}
 		
 		if ( paymentMethod == null ) {
 			LOGGER.warn( "No valid payment method id." );
-			return result.withUserRelatedError(ErrorCode.PAYMENT, customerUser);
+			return SOResult.createUserError( so, customer, customerInfo, ErrorCode.PAYMENT );
 		}
 
 		ActionResult paymentValidatorResult = new ActionResult();
@@ -290,12 +300,12 @@ public class StandingOrderUtil {
 			PaymentMethodUtil.validatePaymentMethod(null,paymentMethod, paymentValidatorResult, customerUser, false, false, false,false,null );
 		} catch (FDResourceException e) {
 			LOGGER.warn( "FDResourceException while validating payment method", e );
-			return result.withTechError("FDResourceException while validating payment method.");
+			return SOResult.createTechnicalError( so, "FDResourceException while validating payment method." );
 		}
 
 		if ( paymentValidatorResult.isFailure() ) {
 			LOGGER.warn( "Payment method not valid: " + paymentValidatorResult.getFirstError().getDescription() );
-			return result.withUserRelatedError(ErrorCode.PAYMENT, customerUser);
+			return SOResult.createUserError( so, customer, customerInfo, ErrorCode.PAYMENT );
 		}
 		
 		LOGGER.info( "Payment method is valid: " + paymentMethod );
@@ -317,14 +327,13 @@ public class StandingOrderUtil {
 			}			
 		} catch ( IllegalArgumentException ex ) {
 			LOGGER.warn( "No valid dates." );
-			result.withUserRelatedError(ErrorCode.TIMESLOT, customerUser);
-			return result;
+			return SOResult.createUserError( so, customer, customerInfo, ErrorCode.TIMESLOT );
 		}
 
 		// check if we are within the delivery window
 		if ( !deliveryTimes.isWithinDeliveryWindow() ) {
 			LOGGER.info( "Skipping order because delivery date falls outside of the current delivery window." );
-			return result.withStatus(Status.SKIPPED);
+			return SOResult.createSkipped( so, customer, customerInfo, "Skipping because delivery date falls outside of the current delivery window." ); 
 		}		
 
 
@@ -335,7 +344,7 @@ public class StandingOrderUtil {
 		DlvRestrictionsList restrictions = FDDeliveryManager.getInstance().getDlvRestrictions();
 		if(isNextDeliveryDateHolidayRestricted(restrictions, deliveryTimes)){
 			LOGGER.info( "Skipping order because next delivery date is closed holiday." );
-			return result.withUserRelatedError(ErrorCode.CLOSED_DAY, customerUser);
+			return SOResult.createUserError( so, customer, customerInfo, ErrorCode.CLOSED_DAY );
 		}
 		
 		// ==================================
@@ -349,7 +358,7 @@ public class StandingOrderUtil {
 				
 		if ( timeslots == null || timeslots.size() == 0 ) {
 			LOGGER.info( "No timeslots for this day: " + new SimpleDateFormat(FDStandingOrder.DATE_FORMAT).format( deliveryTimes.getDayStart() ) );
-			return result.withUserRelatedError(ErrorCode.TIMESLOT, customerUser);
+			return SOResult.createUserError( so, customer, customerInfo, ErrorCode.TIMESLOT );
 		}
 		
 		
@@ -421,7 +430,7 @@ public class StandingOrderUtil {
 		
 		if ( reservation == null || selectedTimeslot == null ) {
 			LOGGER.warn( "Failed to make timeslot reservation." );
-			return result.withUserRelatedError(ErrorCode.TIMESLOT, customerUser);
+			return SOResult.createUserError( so, customer, customerInfo, ErrorCode.TIMESLOT );
 		}
 		
 		LOGGER.info( "Selected timeslot = " + selectedTimeslot.toString() );
@@ -436,11 +445,11 @@ public class StandingOrderUtil {
 			zoneInfo = FDDeliveryManager.getInstance().getZoneInfo(deliveryAddressModel, selectedTimeslot.getBegDateTime() );
 		} catch (FDInvalidAddressException e) {
 			LOGGER.info( "Invalid zone info. - FDInvalidAddressException", e );
-			return result.withUserRelatedError(ErrorCode.ADDRESS, customerUser);
+			return SOResult.createUserError( so, customer, customerInfo, ErrorCode.ADDRESS );
 		}
 		if ( zoneInfo == null ) {
 			LOGGER.info( "Missing zone info." );
-			return result.withUserRelatedError(ErrorCode.ADDRESS, customerUser);
+			return SOResult.createUserError( so, customer, customerInfo, ErrorCode.ADDRESS );
 		}
 
 
@@ -465,7 +474,7 @@ public class StandingOrderUtil {
 				cart.setAgeVerified( true );				
 			} else {
 				LOGGER.info( "Shopping list contains alcohol, and age was not verified." );
-				return result.withUserRelatedError(ErrorCode.ALCOHOL, customerUser);
+				return SOResult.createUserError( so, customer, customerInfo, ErrorCode.ALCOHOL );
 			}
 		}
 
@@ -479,7 +488,7 @@ public class StandingOrderUtil {
 		if (vr.hasInvalidItems()) {
 			hasInvalidItems = true;
 		}
-		result.setUnavailableItems(unavailableItems);
+		// Note: unavailableItems will be added to the result if the order creation succeeds 
 		LOGGER.info( "SKU availability check passed." );
 
 		// ==================================
@@ -491,12 +500,14 @@ public class StandingOrderUtil {
 		if (vr.hasInvalidItems()) {
 			hasInvalidItems = true;
 		}
+		// Note: hasInvalidItems will be added to the result if the order creation succeeds 
 		LOGGER.info( "ATP check passed." );
 
 
 		// ==========================
 		//    Verify order minimum
 		// ==========================
+		String internalMessage = null;
 		double cartPrice = cart.getSubTotal();
 		double hardLimit = FDStoreProperties.getStandingOrderHardLimit();
 		double softLimit = FDStoreProperties.getStandingOrderSoftLimit();
@@ -504,9 +515,10 @@ public class StandingOrderUtil {
 			//Display soft limit info for user. He doesn't know about hard limit. 
 			String msg = "The order subtotal ($"+cartPrice+") was below our $"+softLimit+" minimum.";
 			LOGGER.info( msg );
-			return result.setError(ErrorCode.MINORDER, msg, ErrorCode.MINORDER.getErrorDetail(customerUser));
+			return SOResult.createUserError( so, customer, customerInfo, ErrorCode.MINORDER, msg );
 		} else if(cartPrice >= hardLimit && cartPrice < softLimit) {
-			result.setInternalMessage("The order subtotal ($"+cartPrice+") was between hard ($"+hardLimit+") and soft limit ($"+softLimit+").");
+			internalMessage = "The order subtotal ($"+cartPrice+") was between hard ($"+hardLimit+") and soft limit ($"+softLimit+").";
+			// Note: internalMessage will be added to the result if the order creation succeeds 
 		}
 		
 		LOGGER.info( "Cart contents are valid." );
@@ -538,7 +550,6 @@ public class StandingOrderUtil {
 				FDStandingOrdersManager.getInstance().assignStandingOrderToSale(orderId, so);
 			} catch (FDResourceException e) {
 				LOGGER.error("Failed to assign standing order to sale, corresponding order ID="+orderId, e);
-				LOGGER.warn( e.getFDStackTrace() );
 			}
 
 			if (altDate != null){
@@ -546,7 +557,6 @@ public class StandingOrderUtil {
 					FDStandingOrdersManager.getInstance().markSaleAltDeliveryDateMovement(orderId);
 				} catch (FDResourceException e) {
 					LOGGER.error("Failed to mark sale as moved because of holiday, corresponding order ID="+orderId, e);
-					LOGGER.warn( e.getFDStackTrace() );
 				}
 			}
 
@@ -560,32 +570,30 @@ public class StandingOrderUtil {
 			//check possible duplicate order instances in delivery window
 			FDStandingOrdersManager.getInstance().checkForDuplicateSOInstances(customer);
 			
-			result.setInvalidItems(hasInvalidItems);
-			result.withStatus(Status.SUCCESS);
+			return SOResult.createSuccess( so, customer, customerInfo, hasInvalidItems, unavailableItems, orderId, internalMessage );
 			
 		} catch ( DeliveryPassException e ) {
 			LOGGER.info( "DeliveryPassException while placing order.", e );
-			result.withUserRelatedError(ErrorCode.PAYMENT, customerUser);
+			return SOResult.createUserError( so, customer, customerInfo, ErrorCode.PAYMENT );
 		} catch ( ErpFraudException e ) {
 			LOGGER.info( "ErpFraudException while placing order.", e );
-			result.withUserRelatedError(ErrorCode.PAYMENT, customerUser);
+			return SOResult.createUserError( so, customer, customerInfo, ErrorCode.PAYMENT );
 		} catch ( ErpAuthorizationException e ) {
 			LOGGER.info( "ErpAuthorizationException while placing order.", e );
-			result.withUserRelatedError(ErrorCode.PAYMENT, customerUser);
+			return SOResult.createUserError( so, customer, customerInfo, ErrorCode.PAYMENT );
 		} catch ( FDPaymentInadequateException e ) {
 			LOGGER.info( "FDPaymentInadequateException while placing order.", e );
-			result.withUserRelatedError(ErrorCode.PAYMENT, customerUser);
+			return SOResult.createUserError( so, customer, customerInfo, ErrorCode.PAYMENT );
 		} catch ( ErpTransactionException e ) {
 			LOGGER.info( "ErpTransactionException while placing order.", e );
-			result.withUserRelatedError(ErrorCode.PAYMENT, customerUser);
+			return SOResult.createUserError( so, customer, customerInfo, ErrorCode.PAYMENT );
 		} catch ( ReservationException e ) {
 			LOGGER.info( "ReservationException while placing order.", e );
-			result.withUserRelatedError(ErrorCode.TIMESLOT, customerUser);
+			return SOResult.createUserError( so, customer, customerInfo, ErrorCode.TIMESLOT );
 		} catch ( ErpAddressVerificationException e ) {
 			LOGGER.info( "ErpAddressVerificationException (Payment Address) while placing order.", e );
-			result.withUserRelatedError(ErrorCode.PAYMENT_ADDRESS, customerUser);
+			return SOResult.createUserError( so, customer, customerInfo, ErrorCode.PAYMENT_ADDRESS );
 		}
-		return result;
 	}
 	
 	private static void sendSuccessMail ( FDStandingOrder so, FDCustomerInfo customerInfo, String orderId, boolean hasInvalidItems, MailerGatewayHome mailerHome ) {
