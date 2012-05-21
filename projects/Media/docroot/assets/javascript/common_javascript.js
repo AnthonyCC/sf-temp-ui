@@ -1026,7 +1026,6 @@ function doOverlayWindow(olURL) {
                                         ccSettings.bottomColour = "#ffffff";
                                         curvyCornersHelper('MB_frame', ccSettings);					
 							
-							fillVals('confirm_email', '','Verify your email');
                         },
                         afterHide: function() { 
 							window.scrollTo(Modalbox.initScrollX,Modalbox.initScrollY);

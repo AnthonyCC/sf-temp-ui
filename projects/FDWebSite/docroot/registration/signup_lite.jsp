@@ -83,17 +83,17 @@
 			
 			<table border="0" cellpadding="0" cellspacing="0">
 			<tr><td><span class="bodyCopy">First Name <span class="star">*</span> </span> </td></tr>
-			<tr><td><input type="text" class="text11ref inputUser" maxlength="25" size="31" name="<%=EnumUserInfoName.DLV_FIRST_NAME.getCode()%>" value="<%=firstname%>" onfocus="fillVals(this.id, '','Enter your first name');" onblur="fillVals(this.id, 'Def','Enter your first name');" id="first_name"></td></tr>
+			<tr><td><input type="text" class="text11ref inputUser" maxlength="25" size="31" name="<%=EnumUserInfoName.DLV_FIRST_NAME.getCode()%>" value="<%=firstname%>" id="first_name"></td></tr>
 			<tr><td><fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.DLV_FIRST_NAME.getCode()%>" id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>&nbsp;</td></tr>
 			
 			<tr><td><span class="bodyCopy">Last Name <span class="star">*</span> </span> </td></tr>
-			<tr><td><input type="text"  maxlength="25" class="text11ref inputUser" size="31" name="<%=EnumUserInfoName.DLV_LAST_NAME.getCode()%>" value="<%=lastname%>" onfocus="fillVals(this.id, '','Enter your last name');" onblur="fillVals(this.id, 'Def','Enter your last name');" id="last_name"></td></tr>
+			<tr><td><input type="text"  maxlength="25" class="text11ref inputUser" size="31" name="<%=EnumUserInfoName.DLV_LAST_NAME.getCode()%>" value="<%=lastname%>" id="last_name"></td></tr>
 			<tr><td><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_LAST_NAME.getCode()%>' id='errorMsg'> <span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>&nbsp;</td></tr>
 			
 			<tr><td><span class="bodyCopy">Delivery Zip Code <span class="star">*</span> </span> </td></tr>
 			<tr><td>
 				<table><tr><td>
-					<input type="text"  maxlength="25" class="text11ref inputUser" size="31" name="zipcode" value="<%=zipcode%>" onfocus="fillVals(this.id, '','Enter your zip code');" onblur="fillVals(this.id, 'Def','Enter your zip code');" id="zipcode">
+					<input type="text"  maxlength="25" class="text11ref inputUser" size="31" name="zipcode" value="<%=zipcode%>" id="zipcode">
 					</td><td>			
 					&nbsp;<span class="bodyCopy"><input type="radio" name="serviceType" value="HOME" <%= (serviceType.equals("HOME"))?"checked":"" %>/>HOME&nbsp;<input type="radio" name="serviceType" value="CORPORATE" <%= (serviceType.equals("CORPORATE"))?"checked":"" %>/>OFFICE</span>
 				</td></tr></table>
@@ -107,13 +107,13 @@
 			</td></tr>
 			
 			<tr><td><span class="bodyCopy">Email Address <span class="star">*</span> </span></td></tr>			
-			<tr><td><input type="text" class="text11ref inputDef" maxlength="128" size="31" name="<%=EnumUserInfoName.EMAIL.getCode()%>" value="<%=email%>" onfocus="fillVals(this.id, '','Enter your email');" onblur="fillVals(this.id, 'Def','Enter your email');" id="email">
+			<tr><td><input type="text" class="text11ref inputDef" maxlength="128" size="31" name="<%=EnumUserInfoName.EMAIL.getCode()%>" value="<%=email%>" id="email">
 			<br/><span class="text9" style="color:gray;">This will be your User Name. You will use this to access the site. </span></td></tr>
 			<tr><td><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.EMAIL.getCode()%>' id='errorMsg'>
 			<span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>&nbsp;</td></tr>
 			
 			<tr><td><span class="bodyCopy">Confirm Email Address <span class="star">*</span> </span></td></tr>
-			<tr><td><input type="text" class="text11ref inputDef" maxlength="128" size="31" name="<%=EnumUserInfoName.REPEAT_EMAIL.getCode()%>" value="<%=repeat_email%>" onfocus="fillVals(this.id, '','Verify your email');" onblur="fillVals(this.id, 'Def','Verify your email');" id="confirm_email"></td></tr>
+			<tr><td><input type="text" class="text11ref inputDef" maxlength="128" size="31" name="<%=EnumUserInfoName.REPEAT_EMAIL.getCode()%>" value="<%=repeat_email%>" id="confirm_email"></td></tr>
 			<tr><td><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.REPEAT_EMAIL.getCode()%>' id='errorMsg'>
 			<span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>&nbsp;</td></tr>
 			
@@ -128,7 +128,7 @@
 			
 			<tr><td><span class="bodyCopy">Security Question <span class="star">*</span> </span> <br/>
 			<span class="text9" style="color:gray;">What is your town of birth or mother's  maiden name? </span></td></tr>
-			<tr><td><input type="text"  maxlength="25" class="text11ref inputUser" size="31" name="<%=EnumUserInfoName.PASSWORD_HINT.getCode()%>" onfocus="fillVals(this.id, '','Answer');" onblur="fillVals(this.id, 'Def','Answer');" id="secret_answer"><br /></td></tr>
+			<tr><td><input type="text"  maxlength="25" class="text11ref inputUser" size="31" name="<%=EnumUserInfoName.PASSWORD_HINT.getCode()%>"  id="secret_answer"><br /></td></tr>
 			<tr><td><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.PASSWORD_HINT.getCode()%>' id='errorMsg'> <span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>&nbsp;</td></tr>
 			
 			<tr><td><div class="fright hline" id="" style="width:100%;"><!-- --> </div></td></tr>
