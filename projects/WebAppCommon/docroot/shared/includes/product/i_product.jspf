@@ -426,7 +426,7 @@ if ( skuSize == 0 ) {
 				%>
 
     			<%-- === Variations === --%>
-    			
+    			<% int errorMsgs = 0; %>
     			<logic:iterate id="variation" collection="<%= variations %>" type="com.freshdirect.fdstore.FDVariation" indexId="idx">
         			<font class="space4pix"><br/></font>
         			<%
@@ -480,7 +480,25 @@ if ( skuSize == 0 ) {
             
 				            <fd:ErrorHandler result='<%=result%>' name='<%= variation.getName() %>' id='errorMsg'>
 				                <span class="text11rbold"><%=errorMsg%></span><br/>
-				                <% if ( errorMsg != "" ) { %><img src="/media_stat/images/layout/error.gif" border="0"><% } %>
+				                <% if ( errorMsg != "" ) { %><img src="/media_stat/images/layout/error.gif" border="0" alt="error" />
+				                	<% errorMsgs++; %>
+				                	<% if (idx == variations.size()-1) { %>
+				                		<script><%-- fix height of qb panel when an error occurs --%>
+					                		if (window.parent.document.quickbuyPanel && window.parent.document.quickbuyPanel.hasOwnProperty('id') && !window.parent.document.quickbuyPanel.resized) {
+				            					var frameId = window.parent.document.quickbuyPanel.id+'_frame';
+				            					
+				            					//set frame height	
+				            					setFrameHeight(frameId, <%= errorMsgs*11 %>);
+				            					
+				            					// re-center panel
+				            					window.parent.document.quickbuyPanel.center();
+
+				            					//mark as resized, so it won't keep growing
+				            					window.parent.document.quickbuyPanel.resized = true;
+					                		}
+					                	</script>
+					                <% } %>
+				                <% } %>
 				            </fd:ErrorHandler>
             
 				            <%-- Help FD Defs > Characteristics --%>

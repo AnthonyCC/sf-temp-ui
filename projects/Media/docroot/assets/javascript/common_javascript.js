@@ -67,93 +67,139 @@ function swapImageAndBurst( imgName, imgURL, w, h, hasBurst, burstName, burstURL
 
 
 var isIE = !!(window.attachEvent && !window.opera);
+var popInterval = null;
+var popReturnInterval = null;
+var newWin = null;
 
-var newWin='';
+/* all pop functionality in one function */
+function popWithInterval(urlVar, externalVar, hVar, wVar, nameVar, resizableVar, scrollbarsVar, closeFirstVar, retFuncVar) {
+	var url = url || urlVar;
+		if (!url) { return; }
+	var external = externalVar || false;
+	var h = hVar || 585;
+	var w = wVar || 400;
+	var resizable = resizableVar || true;
+	var scrollbars = scrollbarsVar || true;
+	var name = nameVar || 'popWin';
+	var closeFirst = closeFirstVar || false;
+	var retFunc = (typeof retFuncVar === 'function') ? retFuncVar : (typeof window[retFuncVar] === 'function') ? window[retFuncVar] : null;
+
+	var params = 'height='+h+',width='+w;
+		if (resizable) { params += ',resizable=1'; }
+		if (scrollbarsVar) { params += ',scrollbars=1'; }
+	
+	if (closeFirstVar && window.newWin && !window.newWin.closed) { window.newWin.close(); }
+
+	if (external) {
+		newWin = window.open('', name, params);
+		newWin.open(url, name, params);
+		return; //we can't do any more after opening
+	} else {
+		newWin = window.open(url, name, params);
+	}
+	
+	popInterval = window.setInterval(function() {
+		if (h < 100) { h = 585; }
+		if (w < 100) { w = 400; }
+		if (window.newWin && !window.newWin.closed) {
+			if (window.newWin.opener == null) { window.newWin.opener = self; }
+			if (window.newWin.resizeTo) {
+				window.clearInterval(popInterval);
+				window.newWin.resizeTo(h, w);
+			} else {
+				window.clearInterval(popInterval);
+			}
+			window.newWin.focus();
+		} else {
+			window.clearInterval(popInterval);
+		}
+	}, 500);
+
+	
+	/* only if a function was passed in */
+	if (retFunc != null) {
+		popReturnInterval = setInterval(
+			function() {
+				if (window.newWin.closed) {
+					clearInterval(popReturnInterval);
+					retFunc();
+				}
+			}, 
+		500);
+	}
+}
+
+/* open popup to external URL */
+function popExternal(URL, h, w, name) {
+	popWithInterval(URL, true, h, w, name);
+}
+
 /* simple pop */
 function pop(URL, h, w, name) {
-	var name = name || 'popWin';
-	newWin = window.open(URL, name, "height=" + h + ", width=" + w + ", resizable, scrollbars");
-	newWin.focus();
-	if (window.resizeTo) { newWin.resizeTo(w, h); }
+	popWithInterval(URL, false, h, w, name);
 } 
 
 /* currently being used for help section...*/
 function popold(URL,h,w) {
-
-	if(isIE){
-		if (window.newWin) { window.newWin.close(); }
-	}else{
-		//for Netscape	
-		if(window.newWin){
-			if(window.newWin.closed!=true){
-			    window.newWin.close();
-			}
-		}
-	}
-	specs = "HEIGHT=" + h + ",WIDTH=" + w + ",resizable,scrollbars";
-	newWin =  window.open(URL,"newWin",specs);
-	if (newWin.opener == null) newWin.opener = self;
-	newWin.focus();
+	popWithInterval(URL, false, h, w);
 }
 
+/* resize pop */
 function popResize(URL,h,w,name) {
-	if(isIE){
-		if (window.newWin) { window.newWin.close(); }
-	}else{
-        //for Netscape	
-		if(window.newWin){
-			if(window.newWin.closed!=true){
-			    window.newWin.close();
-			}
-		}
-	}
-	specs = "HEIGHT=" + h + ",WIDTH=" + w + ",resizable,scrollbars,top=0,screenY=0";
-	newWin =  window.open(URL,name,specs);
-	if (newWin.opener == null) newWin.opener = self;
-	newWin.focus();
+	popWithInterval(URL, false, h, w, name, true, true, true);
 }
+
+/* pop in help section */
 function popResizeHelp(URL,h,w,name) {
-	
-	specs = "HEIGHT=" + h + ",WIDTH=" + w + ",resizable,scrollbars,top=0,screenY=0";
-	newWin =  window.open(URL,name,specs);
-	
-	if (newWin.opener == null) newWin.opener = self;
-	newWin.focus();
+	popWithInterval(URL, false, h, w, name);
 }
+
+/* open a popup and call a function when it's closed */
+function popReturn(URL, h, w, name, retFuncVar) {
+	popWithInterval(URL, false, h, w, name, true, true, false, retFuncVar);
+}
+
+/* set sizes based on a type string */
+function popup(URL, type, name) {
+	var w = "375";
+	var h = "335";
+	if ("small" == type) {
+		w = "375";
+		h = "335";
+	} else if ("large" == type) {
+		w = "585";
+		h = "400";
+	} else if ("large_long" == type) {
+		w = "585";
+		h = "600";
+	} else if ("minimal" == type) {
+		w = "585";
+		h = "600";
+	} else if ("print" == type) {
+		w = "650";
+		h = "700";
+	}
+	
+	popWithInterval(URL, false, h, w, name);
+}
+
+/* send a url back to the opener */
 function backtoWin(url) {
 	if (window.opener && !window.opener.closed){
 		parent.window.opener.location = url ;
 		parent.window.opener.focus();		
+	} else {
+		window.location=url;
 	}
-	window.location=url;
 }
 
+/* open a 2nd popup in the opener of the 1st popup */
 function backtoWinPop(url, size) {
 	if (self.opener) {
 		self.opener.focus();
 		self.opener.popup(url, size, 'popInPop');
 	}else{
 		popup(url, size);
-	}
-}
-
-/* open a popup and call a function when it's closed */
-function popReturn(URL, h, w, name, retFunc) {
-	var name = name || 'popWin';
-	newWin = window.open(URL, name, "height=" + h + ", width=" + w + ", resizable, scrollbars");
-	newWin.focus();
-	if (window.resizeTo) { newWin.resizeTo(w, h); }
-	
-	/* only if a function was passed in */
-	if (typeof(retFunc) === 'function') {
-		var interval = setInterval(
-			function() {
-				if (newWin.closed) {
-					retFunc();
-					clearInterval(interval);
-				}
-			}, 
-		100);
 	}
 }
 
@@ -230,30 +276,6 @@ function deleteDeliveryAddress(context, addrPKId, idsUsedBySo, helpSoInfo){
 	
 	return false;
 }
-
-function popup(URL, type, name) {
-	var w = "375";
-	var h = "335";
-	if ("small" == type) {
-		w = "375";
-		h = "335";
-	} else if ("large" == type) {
-		w = "585";
-		h = "400";
-	} else if ("large_long" == type) {
-		w = "585";
-		h = "600";
-	} else if ("minimal" == type) {
-		w = "585";
-		h = "600";
-	} else if ("print" == type) {
-		w = "650";
-		h = "700";
-	}
-	pop(URL, h, w, name);
-} 
-
-
 function IsNumericNoDecimal(sText){
 	   var numericChars = "0123456789";
 	   var IsNumber=true;
@@ -937,7 +959,7 @@ function extract_query_string(theForm) {
 		if (loc.indexOf('lang=') != -1) {
 			loc = loc.replace(/lang=[^&]*/, 'lang='+lang);
 		} else {
-			if (loc.indexOf('&') != -1) {
+			if (loc.indexOf('&') != -1 || loc.indexOf('?') != -1) {
 				loc = loc + '&lang='+lang;
 			} else {
 				loc = loc + '?lang='+lang;
