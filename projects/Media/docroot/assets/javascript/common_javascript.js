@@ -1002,9 +1002,8 @@ function doOverlayWindow(olURL) {
 
                                         ccSettings.topColour = "#ffffff";
                                         ccSettings.bottomColour = "#ffffff";
-                                        curvyCornersHelper('MB_frame', ccSettings);
-					
-							setFormDefaults();
+                                        curvyCornersHelper('MB_frame', ccSettings);					
+							
 							fillVals('confirm_email', '','Verify your email');
                         },
                         afterHide: function() { 
