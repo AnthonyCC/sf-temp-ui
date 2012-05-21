@@ -2703,7 +2703,7 @@ public class FDStoreProperties {
     }
     
     public static String getModifyOrderMaxTotal() {
-    	return config.getProperty("PROP_MODIFY_ORDER_TOTOAL_MAX");
+    	return config.getProperty(PROP_MODIFY_ORDER_TOTOAL_MAX);
     }
     
     public static boolean isTransactionEmailEnabled() {
