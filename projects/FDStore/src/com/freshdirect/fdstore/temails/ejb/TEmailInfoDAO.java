@@ -141,8 +141,8 @@ public class TEmailInfoDAO {
 	
 	
 	public static final String INSERT_TRANS_EMAIL_DETAIL="INSERT INTO CUST.TRANS_EMAIL_DETAILS "+
-                                                        " ( ID,  TRANS_EMAIL_ID ,  FROM_ADDR , TO_ADDR , CC_ADDR,  BCC_ADDR,  SUBJECT, TEMPLATE_CONTENT ) "+ 
-                                                        " VALUES (CUST.SYSTEM_SEQ.NEXTVAL,?,?,?,?,?,?, ?)"; 
+                                                        " ( ID,  TRANS_EMAIL_ID ,  FROM_ADDR , TO_ADDR , CC_ADDR,  BCC_ADDR,  SUBJECT, TEMPLATE_CONTENT, SENT_DATE ) "+ 
+                                                        " VALUES (CUST.SYSTEM_SEQ.NEXTVAL,?,?,?,?,?,?, ?, sysdate)"; 
 	
 
 	
