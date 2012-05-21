@@ -222,6 +222,34 @@ order by cn.id
 ]]>
 						</script>
 					</CmsReport>
+
+					<CmsReport id="primaryHomes">
+						<name>Primary Homes</name>
+						<description>Show the product's primary homes</description>
+						<script>
+<![CDATA[
+select product as product_key$, r.child_contentnode_id as primary_home_key$, orphan from
+(select id as product, NVL2(product, 0, 1) as orphan from CMS.contentnode left join
+(select distinct product, root from
+(select child_contentnode_id as product, parent_contentnode_id, connect_by_root parent_contentnode_id as root from
+(select parent_contentnode_id, child_contentnode_id from CMS.relationship
+where def_name = 'departments' or (def_name = 'categories' and def_contenttype = 'Category')
+or (def_name = 'subcategories' and def_contenttype = 'Category') or def_name = 'products')
+
+start with parent_contentnode_id = 'Store:FreshDirect'
+connect by parent_contentnode_id = prior child_contentnode_id)
+
+where product like 'Product:%' and root = 'Store:FreshDirect')
+on id = product
+
+where contenttype_id = 'Product') q
+
+left join CMS.relationship r
+on q.product = r.parent_contentnode_id and r.def_name = 'PRIMARY_HOME' and r.def_contenttype = 'Category'
+]]>
+						</script>
+					</CmsReport>
+
 				</queries>
 			</CmsQueryFolder>
 					
