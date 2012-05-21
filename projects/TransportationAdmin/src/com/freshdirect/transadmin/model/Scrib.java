@@ -156,7 +156,8 @@ public class Scrib implements java.io.Serializable, IWaveInstanceSource {
 		int stemTime=0;
 		if(zone != null && zone.getStemNotNullFromTime()!=null)
 			stemTime = zone.getStemNotNullFromTime().intValue();
-
+		else if (destinationFacility != null && destinationFacility.getLeadFromTime() != null)
+			stemTime = destinationFacility.getLeadFromTime().intValue();
 		c.add(Calendar.MINUTE, stemTime);
 		return c.getTime();
 	}
@@ -187,7 +188,9 @@ public class Scrib implements java.io.Serializable, IWaveInstanceSource {
 		c.setTime(firstDeliveryTime);
 		int stemTime=0;
 		if(zone != null && zone.getStemToTime()!=null)
-				stemTime=zone.getStemToTime().intValue();
+			stemTime = zone.getStemToTime().intValue();
+		else if (destinationFacility != null && destinationFacility.getLeadToTime() != null)
+			stemTime = destinationFacility.getLeadToTime().intValue();
 		c.add(Calendar.MINUTE, -stemTime);
 		return c.getTime();
 	}
