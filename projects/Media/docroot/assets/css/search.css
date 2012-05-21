@@ -3,13 +3,26 @@
 }
 
 .content-header {
-	padding-bottom: 14px;
+	padding-bottom: 7px;
 	background:url('/media_stat/images/layout/dot_grey_h.gif') repeat-x bottom left;
+	position:relative;
 }
 
 .content-header-height {
 	height:46px;
 	line-height:46px;
+}
+
+.OAS-holder {
+	text-align: center;
+}
+
+.OAS-holder img {
+	margin-top:14px;
+}
+
+.OAS-holder img[width="2"] {
+	display:none;
 }
 
 .button {
@@ -47,10 +60,23 @@
 	height: 36px;
 }
 
+.result-text {
+	position:absolute;
+	height:100%;
+	top:0px;
+}
+
+.result-helper {
+	display:inline-block;
+	height:100%;
+	vertical-align:middle;
+	width:1px;
+}
+
 .search-header {
 	font-size:18px;
 	position:relative;
-	padding:20px 0 14px 0;
+	padding:7px 0 14px 0;
 }
 
 .startpage .search-header {
@@ -68,6 +94,7 @@
 #didyoumean {
 	color:#999999;
 	font-size:13px;
+	line-height:1.3em
 }
 
 #didyoumean a {

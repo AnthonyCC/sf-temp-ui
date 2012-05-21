@@ -27,8 +27,9 @@
 	</head>
 	<body class="searchpage <tmpl:get name="activeTab"/>-active <tmpl:get name="activeView"/>-view <tmpl:get name="noResult"/> <tmpl:get name="startPage"/>">
 		<%@ include file="/common/template/includes/globalnav.jspf" %> 
-    <div id="content_top" class="content-header container"><tmpl:get name="content-header"/></div>
-    <div class="search-header container"><div id="result-header" class="span-24"><tmpl:get name="search-header"/><div id="didyoumean"><tmpl:get name="didyoumean"/></div></div></div>
+    <div id="content_top" class="content-header container"><div class="span-7 orange eagle middle content-header-height result-text">Search Results<span class="result-helper"></span></span></div><tmpl:get name="content-header"/><div id="didyoumean" class="prepend-7 span-17 last"><tmpl:get name="didyoumean"/></div></div>
+    <div class="OAS-holder container"><script>OAS_AD('CategoryNote');</script></div>
+    <div class="search-header container"><div id="result-header" class="span-24"><tmpl:get name="search-header"/></div></div>
     <div class="tab-header container <tmpl:get name="productsOnly" />">
     	<ul id="tabs" class="span-24">
 			<li id="products-tab"><a href="<tmpl:get name="productTabLink"/>">Products (<tmpl:get name="productTabItemCount"/>)</a></li>
