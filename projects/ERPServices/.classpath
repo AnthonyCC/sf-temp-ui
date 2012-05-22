@@ -23,6 +23,6 @@
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/stringtemplate.jar"/>
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/xpp3_min.jar"/>
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/xstream.jar"/>
-	<classpathentry kind="lib" path="FD_LIBS/thirdparty/ctah-api-client.jar"/>
+	<classpathentry kind="var" path="FD_LIBS/thirdparty/ctah-api-client.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
