@@ -126,8 +126,6 @@ function backtoWin(url) {
 		window.close();
 	} else {
 		window.location=url;
-	} else {
-		window.location=url;
 	}
 }
 
