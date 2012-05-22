@@ -187,7 +187,8 @@ function popup(URL, type, name) {
 function backtoWin(url) {
 	if (window.opener && !window.opener.closed){
 		parent.window.opener.location = url ;
-		parent.window.opener.focus();		
+		parent.window.opener.focus();
+		window.close();
 	} else {
 		window.location=url;
 	}
