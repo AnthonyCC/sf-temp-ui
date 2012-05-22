@@ -251,13 +251,6 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag<Result> {
 				geographicRestrictions, deliveryModel, alcoholRestrictions,
 				forceOrder, address,
 				false);
-		// Post-op: remove unnecessary timeslots
-		TimeslotLogic.purge(timeslotList);
-
-		deliveryModel.setTimeslotList(timeslotList);
-		stats.apply(deliveryModel);
-		// update chefs table stats in user
-		stats.apply(user);
 
 
 
@@ -292,6 +285,13 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag<Result> {
 
 
 		
+		// Post-op: remove unnecessary timeslots
+		TimeslotLogic.purge(timeslotList);
+
+		deliveryModel.setTimeslotList(timeslotList);
+		stats.apply(deliveryModel);
+		// update chefs table stats in user
+		stats.apply(user);
 		
 		
 		deliveryModel.setZoneId(cart.getDeliveryZone());		
