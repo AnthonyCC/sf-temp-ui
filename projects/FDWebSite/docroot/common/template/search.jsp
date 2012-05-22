@@ -27,14 +27,17 @@
 	</head>
 	<body class="searchpage <tmpl:get name="activeTab"/>-active <tmpl:get name="activeView"/>-view <tmpl:get name="noResult"/> <tmpl:get name="startPage"/>">
 		<%@ include file="/common/template/includes/globalnav.jspf" %> 
-    <div id="content_top" class="content-header container"><div class="span-7 orange eagle middle content-header-height result-text">Search Results<span class="result-helper"></span></span></div><tmpl:get name="content-header"/><div id="didyoumean" class="prepend-7 span-17 last"><tmpl:get name="didyoumean"/></div></div>
+    <div id="content_top" class="content-header container"><div class="span-7 orange eagle middle content-header-height result-text">Search Results<span class="result-helper"></span></span></div><tmpl:get name="content-header"/></div>
     <div class="OAS-holder container"><script>OAS_AD('CategoryNote');</script></div>
-    <div class="search-header container"><div id="result-header" class="span-24"><tmpl:get name="search-header"/></div></div>
+    <div class="search-header container"></div>
     <div class="tab-header container <tmpl:get name="productsOnly" />">
-    	<ul id="tabs" class="span-24">
-			<li id="products-tab"><a href="<tmpl:get name="productTabLink"/>">Products (<tmpl:get name="productTabItemCount"/>)</a></li>
-			<li id="recipes-tab"><a href="<tmpl:get name="recipesTabLink"/>">Recipes (<tmpl:get name="recipeTabItemCount"/>)</a></li>    	
-    	</ul>
+    	<div class="span-24 last">
+	    	<ul id="tabs">
+				<li id="products-tab"><a href="<tmpl:get name="productTabLink"/>">Products (<tmpl:get name="productTabItemCount"/>)</a></li>
+				<li id="recipes-tab"><a href="<tmpl:get name="recipesTabLink"/>">Recipes (<tmpl:get name="recipeTabItemCount"/>)</a></li>    	
+	    	</ul>
+	    	<div id="result-header"><span id="result-header-aligner"></span><span id="result-header-content"><div><tmpl:get name="search-header"/></div><div><tmpl:get name="didyoumean"/></div></span></div>
+    	</div>
     </div>
     <div class="toolbar container"><div class="toolbar-content"><tmpl:get name="toolbar" /></div></div>
     <div id="main" class="container">

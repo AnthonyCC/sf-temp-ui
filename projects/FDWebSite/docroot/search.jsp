@@ -96,10 +96,9 @@ final int W_INDEX_RIGHT_CENTER = W_INDEX_TOTAL - 228 - W_INDEX_CENTER_PADDING;
 	<tmpl:put name="search-header">
 		<% int productCount = search.getProducts().size(); %>
 		<% if(search.getSuggestedTerm() == null || search.getSuggestedTerm().length() == 0 ) { %>
-		<div><span class="itemcount"><%= productCount %></span> product<%= productCount > 1 ? "s" : "" %> found for <span class="search-string"><%= nav.getSearchTerm() %></span></div>
+		<span class="itemcount"><%= productCount %></span> product<%= productCount > 1 ? "s" : "" %> found for <span class="search-string"><%= nav.getSearchTerm() %></span>
 		<% } else { %>
-		<div><span class="itemcount">0</span> product found for <span class="search-string"><%= nav.getSearchTerm() %></span></div>
-		<div>Showing <span class="itemcount"><%= itemCount %></span> product<%= productCount > 1 ? "s" : "" %> for <span class="search-string"><%= search.getSuggestedTerm() %></span></div>
+		<span class="itemcount">0</span> product found for <span class="search-string"><%= nav.getSearchTerm() %></span> | Showing <span class="itemcount"><%= itemCount %></span> product<%= productCount > 1 ? "s" : "" %> for <span class="search-string"><%= search.getSuggestedTerm() %></span>
 		<% } %>
 	</tmpl:put>
 

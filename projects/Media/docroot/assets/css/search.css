@@ -83,6 +83,24 @@
 	display:none;
 } 
 
+#tabs li,
+#result-header {
+	height:43px;
+}
+
+#result-header-aligner {
+	display:inline-block;
+	height:100%;
+	vertical-align:middle;
+}
+
+#result-header-content {
+	display:inline-block;
+}
+#result-header-content a {
+	font-weight:bold;
+}
+
 #result-header .itemcount {
 	font-weight:bold;
 }
@@ -114,10 +132,12 @@
 
 #tabs {
 	padding:0px;
+	overflow:hidden;
+	float:left;
+	margin:0 1em 0 0;	
 }
 
 #tabs li {
-	height:43px;
 	float:left;
 	list-style-type:none;
 	margin:0;
