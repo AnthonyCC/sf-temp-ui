@@ -67,6 +67,8 @@ public class RecommendationServiceFactory {
 
 	public static final String CKEY_CAT_AGGR = "cat_aggr";
 	public static final String CKEY_INCLUDE_CART_ITEMS = "include_cart_items";
+
+	@Deprecated
 	public static final String CKEY_SMART_SAVE = "smart_saving";
 	public static final String CKEY_COS_FILTER = "cos_filter";
 	public static final String CKEY_BRAND_SORTER = "brand_uniq_sort";
@@ -80,6 +82,10 @@ public class RecommendationServiceFactory {
 	
 	// APPREQ-735 - list of burst enums separated by comma
 	public static final String CKEY_HIDE_BURSTS = "hide_bursts";
+	
+	// APPDEV-2320 - determine cart'n'tabs look
+	// valid values: "tabs" - tabbed look (default) / "flat" - flattened look
+	public static final String CKEY_TABS_LOOK = "tabs_ui_look";
 	
 	
 	public static final Map<String,String> CONFIG_LABELS = new HashMap<String,String>();
@@ -104,6 +110,7 @@ public class RecommendationServiceFactory {
 		CONFIG_LABELS.put(CKEY_USE_ALTS, "Use Alternative Products");
 		CONFIG_LABELS.put(CKEY_HIDE_BURSTS, "Hide Bursts");
 		CONFIG_LABELS.put(CKEY_SHOW_TEMP_UNAVAILABLE, "Show Temporary Unavailable Products");
+		CONFIG_LABELS.put(CKEY_TABS_LOOK, "Tab Look & Feel");
 	}
 
 	public static final int DEFAULT_TOP_N = 20;
@@ -119,6 +126,8 @@ public class RecommendationServiceFactory {
 	public static final String DEFAULT_COS_FILTER = null;
 	public static final boolean DEFAULT_BRAND_SORTER = false;
 	public static final String DEFAULT_FAVORITE_LIST_ID = "fd_favorites";
+	
+	public static final String DEFAULT_TABS_LOOKNFEEL = "tabs";
 
 	public static final boolean DEFAULT_USE_ALTS = true;
 	public static final Map<EnumSiteFeature,Set<EnumBurstType>> DEF_HBSETS = new HashMap<EnumSiteFeature, Set<EnumBurstType>>();
@@ -158,9 +167,14 @@ public class RecommendationServiceFactory {
 			serviceConfig.setConfigStatus(statuses = new TreeMap<String, ConfigurationStatus>());
 
 		if (!RecommendationServiceType.TAB_STRATEGY.equals(serviceType)) {
+			/****
+			 * Smart Savings is no longer supported.
+			 * Marked for removal.
+			 * 
 			smartSave = extractSmartSave(serviceConfig, statuses, variant
 					.getSiteFeature());
 			variant.setSmartSavings(smartSave);
+			****/
 			// if smart saving used, we will return items from the cart.
 			includeCartItems = extractIncludeCartItems(serviceConfig, statuses,
 					smartSave);
@@ -171,6 +185,38 @@ public class RecommendationServiceFactory {
 			
 			Set<EnumBurstType> hb = extractHideBursts(serviceConfig, statuses, variant.getSiteFeature());
 			variant.setHideBursts(hb);
+		} else {
+			if (EnumSiteFeature.CART_N_TABS.equals( variant.getSiteFeature() ) &&
+					(variant.getServiceConfig() != null && RecommendationServiceType.TAB_STRATEGY.equals(variant.getServiceConfig().getType()) ) ) {
+				// APPDEV-2320
+				String cValue = serviceConfig.get(CKEY_TABS_LOOK);
+
+				if (cValue == null) {
+					// default look
+					statuses.put(CKEY_TABS_LOOK, new ConfigurationStatus(
+							CKEY_TABS_LOOK, null,
+							EnumConfigurationState.UNCONFIGURED_OK,
+							"Default 'tabs' value applied."));
+					
+					variant.setDefaultTabLook(true); // set default look
+				} else if ( DEFAULT_TABS_LOOKNFEEL.equalsIgnoreCase( cValue ) ) {
+					statuses.put(CKEY_TABS_LOOK, new ConfigurationStatus(
+							CKEY_TABS_LOOK, cValue,
+							EnumConfigurationState.CONFIGURED_OK ));
+
+					variant.setDefaultTabLook(true); // set default look
+				} else if ("flat".equalsIgnoreCase( cValue )) {
+					statuses.put(CKEY_TABS_LOOK, new ConfigurationStatus(
+							CKEY_TABS_LOOK, cValue,
+							EnumConfigurationState.CONFIGURED_OK ));
+
+					variant.setDefaultTabLook(false); // set new look
+				} else {
+					statuses.put(CKEY_TABS_LOOK, new ConfigurationStatus(
+							CKEY_TABS_LOOK, cValue,
+							EnumConfigurationState.CONFIGURED_WRONG ));
+				}
+			}
 		}
 
 		if (EnumSiteFeature.FEATURED_ITEMS.equals(variant.getSiteFeature())) {
@@ -380,6 +426,16 @@ public class RecommendationServiceFactory {
 		return includeCartItems;
 	}
 
+	
+	/**
+	 * SmartSavings feature is no longer supported
+	 * 
+	 * @param config
+	 * @param statuses
+	 * @param siteFeature
+	 * @return
+	 */
+	@Deprecated
 	protected static boolean extractSmartSave(RecommendationServiceConfig config,
 			Map<String,ConfigurationStatus> statuses, EnumSiteFeature siteFeature) {
 		boolean smartSave = DEFAULT_SMART_SAVE;

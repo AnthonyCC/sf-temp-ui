@@ -5,6 +5,7 @@
 <%@ page import="com.freshdirect.fdstore.customer.FDUserI" %>
 <%@ page import="com.freshdirect.webapp.taglib.fdstore.SessionName" %>
 <%@ page import="com.freshdirect.smartstore.fdstore.SmartStoreUtil"%>
+<%@page import="org.apache.commons.lang.StringEscapeUtils"%>
 <%@page import="java.net.URLEncoder"%>
 <%@page import="java.text.MessageFormat"%>
 <%@page import="java.util.Collections"%>
@@ -39,6 +40,7 @@
 			totalWidth = 601; // QS inner pages
 	}
 %>
+<fd:javascript src="/assets/javascript/cartntabs.js"/>
 <fd:PIPTab id="tab" maxTabs="3" maxRecommendations="5" facility="<%= smartStoreFacility %>">
 	<% 
 		
@@ -178,160 +180,33 @@
 
 
 			<%-- =============== AJAX =============== --%>
-			
-			<script type="text/javascript">
-			
-				var loadingMessage = "<br/><br/><br/><br/><p class=\"tab_text_simple\">Refreshing, please wait...</p><br/><br/><br/><br/>";
-				var errorMessage = "<br/><br/><br/><br/><p class=\"tab_text_simple\">Sorry, we weren't able to get recommendations.<br/><a href=\"/unsupported.jsp\" onClick=\"window.location.reload(false); return false;\">Click here</a> to refresh with new products. </p><br/><br/><br/><br/>";
-				var loadingLink = "<span class=\"text13bold\" style=\"color: #875087; \">Refreshing...</span>";
-				var smartStoreFacility = "<%= smartStoreFacility %>";
+<script type="text/javascript">
+var PIP;
 
-				var prezFormURI = '<%=response.encodeURL(request.getRequestURL().toString().replaceFirst("^[^:]*://[^/]*/", "/")) %>';
+YAHOO.util.Event.onDOMReady(function(){
+	var __tabVariants = [], __v2sf = {}, __impressionIds = [];
 
-				var PIP = {
-					tabs: [],
-					features: [],
-					selected: '<%= tab.get(selectedTab).getId() %>',
-					parentImpressionId : '<%= tab.getParentImpressionId() + ':' + tab.getTabVariant().getId() %>',
-					impressionIds: [],
-				
-				
-					onFailure: function(tabId) {
-						YAHOO.util.Dom.get('content_'+tabId).innerHTML = errorMessage;
-					},
-					
-				
-					onSuccess: function(resp, tabId) {
-						YAHOO.plugin.Dispatcher.process('content_'+tabId, resp.responseText);
-					},
+<%
+	for (int k=0; k<tab.size(); k++) {
+		Variant _tv = tab.get(k);
+%>
+__tabVariants.push('<%= _tv.getId() %>');
+	__v2sf['<%= _tv.getId() %>'] = '<%= _tv.getSiteFeature().getName() %>';
+	__impressionIds.push('<%= tab.getFeatureImpressionId(k) %>');
+<% } %>
 
-					onTimeout: function() {
-						window.location.reload(false);
-					},
-				
-					load: function(tab, tabPos) {
-						var ctnt = YAHOO.util.Dom.get('content_'+tab);
-						if (ctnt.childNodes.length == 0 || (ctnt.childNodes.length == 1 && ctnt.firstChild.nodeType != 1)) {
-							YAHOO.util.Dom.get('content_'+tab).innerHTML = loadingMessage;
-							PIP.refresh(tab, tabPos, false);
-						} else {
-							PIP.norefresh(tab, tabPos);
-						}
-					},
+	PIP = new PipClass(
+		'<%= smartStoreFacility %>',
+		'<%= response.encodeURL(request.getRequestURL().toString().replaceFirst("^[^:]*://[^/]*/", "/")) %>',
+		__tabVariants, __v2sf, __impressionIds,
+		'<%= tab.getParentImpressionId() + ':' + tab.getTabVariant().getId() %>',
+		'<%= tab.get(selectedTabIndex.intValue()).getId() %>'
+	);
 
-					_call: function(tabId, uri) {
-						var self = this;
-						if ( YAHOO.util.Dom.get('ra_'+tabId) != null ) {
-							YAHOO.util.Dom.get('ra_'+tabId).innerHTML = loadingLink;
-						}
-						YAHOO.util.Connect.asyncRequest('GET', uri, {
-							success: function(resp) {
-								if ( resp.status === 205 ) {
-									self.onTimeout();
-								} else {
-									self.onSuccess(resp, tabId);
-								}
-							},
-							failure: function(resp) {
-								self.onFailure(tabId);
-							}
-						});
-					},
+	PIP.attachHandlers();
+});
+</script>
 
-
-					baseURI: function(pageURI, tabId, tabPos, isRefresh) {
-						var uri = (pageURI || '/ajax/refresh.jsp')+
-							'?tab='+tabPos+
-							'&variant='+tabId+
-							'&siteFeature='+PIP.features[tabId]+
-							'&formUri='+prezFormURI+'&impId='+PIP.impressionIds[tabPos] +
-							'&pImpId='+PIP.parentImpressionId+
-							'&facility='+smartStoreFacility+
-							(isRefresh?'&refresh=true':'');
-						return uri;
-					},
-					
-					refresh: function(tabId, tabPos, isRefresh) {
-						var uri = this.baseURI(null, tabId, tabPos, isRefresh);
-						this._call(tabId, uri);
-					},
-
-					backward: function(tabId, tabPos, isRefresh) {
-						var uri = this.baseURI(null, tabId, tabPos, isRefresh)+'&page=prev';
-						this._call(tabId, uri);
-					},
-
-					forward: function(tabId, tabPos, isRefresh) {
-						var uri = this.baseURI(null, tabId, tabPos, isRefresh)+'&page=next';
-						this._call(tabId, uri);
-					},
-
-					goToPage: function(tabId, tabPos, isRefresh, pnumber) {
-						var uri = this.baseURI(null, tabId, tabPos, isRefresh)+'&page='+pnumber;
-						this._call(tabId, uri);
-					},
-
-					norefresh: function(tabId, tabPos) {
-						var uri = '/ajax/norefresh.jsp?tab='+tabPos+'&variant='+tabId+'&siteFeature='+PIP.features[tabId];
-						YAHOO.util.Connect.asyncRequest('HEAD', uri, {});
-					}
-				};
-		
-				
-				
-				<%-- init tabs --%>
-				<% for (int k=0; k<numTabs; k++) {
-				%>PIP.tabs.push('<%= tab.get(k).getId() %>');
-				PIP.features['<%= tab.get(k).getId() %>'] = '<%= tab.get(k).getSiteFeature().getName() %>';
-				PIP.impressionIds.push('<%= tab.getFeatureImpressionId(k) %>');
-				<% } %>
-				
-				<%-- attach to tabs --%>
-				for (k=0; k<PIP.tabs.length; k++) {
-					YAHOO.util.Event.on(YAHOO.util.Dom.get('td_'+PIP.tabs[k]), 'click', function(e) {
-						YAHOO.util.Event.preventDefault(e);
-		
-						var sel = this.getAttribute('vid');
-						
-						for ( ii=0; ii<PIP.tabs.length; ii++ ) {
-		
-							if ( ii === 0 ) { // first tab
-								YAHOO.util.Dom.get('img_'+PIP.tabs[ii]).src = '/media_stat/images/carttab_corners/carttab_first_left_'+(PIP.tabs[ii]===sel ? 'on' : 'off')+'.gif';
-							} else {
-								YAHOO.util.Dom.get('img_'+PIP.tabs[ii]).src = '/media_stat/images/carttab_corners/carttab_btwn_'+(PIP.tabs[ii-1]===sel ? 'on' : 'off')+'_'+(PIP.tabs[ii]===sel ? 'on' : 'off')+'.gif';
-							}
-		
-							if ( ii === PIP.tabs.length-1 ) { // last tab
-								YAHOO.util.Dom.get('img_last').src = '/media_stat/images/carttab_corners/carttab_btwn_'+(PIP.tabs[ii]===sel ? 'on' : 'off')+'_nothing.gif';
-							}					
-						}
-						
-						if (PIP.selected != this.getAttribute('vid')) {
-		
-							// previous selected tab					
-							YAHOO.util.Dom.get('content_'+PIP.selected).style.display = 'none';
-							YAHOO.util.Dom.get('header_'+PIP.selected).style.display = 'none';
-							YAHOO.util.Dom.get('footer_'+PIP.selected).style.display = 'none';
-							
-							YAHOO.util.Dom.get('a_'+PIP.selected).className = 'tab_inactive';				
-							YAHOO.util.Dom.get('td_'+PIP.selected).className = 'tab_title_inactive';					
-							
-							// newly selected tab 
-							PIP.selected = this.getAttribute('vid');
-							YAHOO.util.Dom.get('content_'+PIP.selected).style.display = '';
-							YAHOO.util.Dom.get('header_'+PIP.selected).style.display = '';
-							YAHOO.util.Dom.get('footer_'+PIP.selected).style.display = '';
-							
-							YAHOO.util.Dom.get('a_'+PIP.selected).className = 'tab_active';				
-							YAHOO.util.Dom.get('td_'+PIP.selected).className = 'tab_title_active';
-				
-							// load content (if necessary)
-							PIP.load(PIP.selected, this.getAttribute("tpos"));
-						}
-						
-					});
-				}
-			</script>
 			
 		<% } %>	
 </fd:PIPTab>

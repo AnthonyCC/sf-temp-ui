@@ -1,3 +1,4 @@
+<%@page import="com.freshdirect.smartstore.service.VariantRegistry"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" import="com.freshdirect.webapp.taglib.smartstore.Impression,java.util.Map,
 java.util.Iterator,com.freshdirect.smartstore.RecommendationService,com.freshdirect.framework.webapp.ActionResult,
 com.freshdirect.fdstore.customer.FDUserI,com.freshdirect.smartstore.fdstore.SmartStoreUtil,com.freshdirect.fdstore.util.EnumSiteFeature,
@@ -40,7 +41,7 @@ com.freshdirect.webapp.taglib.fdstore.SessionName,com.freshdirect.smartstore.Var
 			return;			
 		}
 		
-		Variant v = SmartStoreUtil.getVariant(request.getParameter("siteFeature"), request.getParameter("variant"));
+		Variant v = VariantRegistry.getInstance().getService( request.getParameter("variant") );
 		String impId = request.getParameter("impId");
 		if (impId!=null && !isContentRefresh) {
 		    Impression.tabClick(impId);
@@ -48,16 +49,25 @@ com.freshdirect.webapp.taglib.fdstore.SessionName,com.freshdirect.smartstore.Var
 
 		request.setAttribute("genericRecommendationsVariant", v);
 		String pimpId = request.getParameter("pImpId");
+		String _parentVariantId = null;
 		if (pimpId != null) {
 		    int indx = pimpId.indexOf(':');
 		    if (indx != -1) {
-		        String parentVariantId = pimpId.substring(indx + 1);
-				request.setAttribute("parentVariantId", parentVariantId);
+		    	_parentVariantId = pimpId.substring(indx + 1);
+				request.setAttribute("parentVariantId", _parentVariantId);
 		        pimpId = pimpId.substring(0, indx);
 		    }
 			request.setAttribute("parentImpressionId", pimpId);
 		}
-			
+		
+		// [APPDEV-2320] set fixed product image height for each recommender box
+		if (_parentVariantId != null) {
+			Variant pv = VariantRegistry.getInstance().getService(_parentVariantId);
+			if (!pv.isDefaultTabLook()) {
+			    request.setAttribute("globalCartProdHeight", 110);
+			}
+		}
+
 		if ( session.isNew() ) {	// session timeout
 			response.setStatus(HttpServletResponse.SC_RESET_CONTENT);
 		} else {

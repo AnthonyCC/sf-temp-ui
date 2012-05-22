@@ -16,6 +16,13 @@ h2.centerline span {
   font-weight: bold;
 }
 
+.lt-ie8 h2.centerline span {
+  top: -21px;
+
+  zoom: 1;
+}
+
+
 .hidden {
   display: none;
 }

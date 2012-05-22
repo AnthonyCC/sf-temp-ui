@@ -572,6 +572,7 @@
   </attribute>
   <attribute>
    <name>style</name>
+   <rtexprvalue>true</rtexprvalue>
   </attribute>
  </tag>
  <!-- ============ LAYOUT PATTERN TAGS ============ -->

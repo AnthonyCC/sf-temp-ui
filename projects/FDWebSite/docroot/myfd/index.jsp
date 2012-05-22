@@ -101,7 +101,8 @@ final int W_MYFD_LEFT = 232; /* 6 columns */
 			<%
 				String smartStoreFacility = "myfd";
 			%>
-			<%@ include file="/includes/smartstore/i_recommender_tabs.jspf"%>
+			<fd:TabLook><%@ include file="/includes/smartstore/i_recommender_tabs.jspf" %></fd:TabLook>
+			<fd:TabLook look="flat"><%@ include file="/includes/smartstore/i_flat_tabs.jspf" %></fd:TabLook>
 		</fd:FDShoppingCart>
 	</tmpl:put>
 </tmpl:insert>

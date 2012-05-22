@@ -3549,11 +3549,6 @@
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 		<attribute>
-			<name>skipCheck</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
 			<name>errorOccurred</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
@@ -3656,11 +3651,6 @@
 		</attribute>
 		<attribute>
 			<name>itemCount</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>skipCheck</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
@@ -4735,6 +4725,33 @@
 		<info></info>
 	</tag>
 	
+	<tag>
+		<name>TabLook</name>
+		<tagclass>com.freshdirect.webapp.taglib.smartstore.TabLookTag</tagclass>
+		<bodycontent>JSP</bodycontent>
+		<info></info>
+		<attribute>
+			<name>look</name>
+			<required>false</required>
+			<rtexprvalue>false</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>negate</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+	</tag>
+
+	<!-- APPDEV-2320 -->
+	<tag>
+		<name>GetCartNTabsWidth</name>
+		<tagclass>com.freshdirect.webapp.taglib.fdstore.GetCartNTabsWidth</tagclass>
+		<teiclass>com.freshdirect.webapp.taglib.fdstore.GetCartNTabsWidth$TagEI</teiclass>
+		<bodycontent>JSP</bodycontent>
+		<info></info>
+	</tag>
+
+
 	<tag>
 		<name>ReferAFriend</name>
 		<tagclass>com.freshdirect.webapp.taglib.fdstore.referral.ReferAFriendControllerTag</tagclass>

@@ -1,5 +1,6 @@
 package com.freshdirect.smartstore;
 
+import java.util.Collections;
 import java.util.List;
 
 import com.freshdirect.fdstore.util.EnumSiteFeature;
@@ -98,5 +99,13 @@ public class TabRecommendation {
         }
         return -1;
     }
-    
+
+
+    /**
+     * Returns the list of all variants.
+     * @return
+     */
+    public List<Variant> getVariants() {
+    	return Collections.unmodifiableList(this.variants);
+    }
 }

@@ -32,12 +32,6 @@ public abstract class RecommendationsTag extends AbstractGetterTag<Recommendatio
 	// maximum number of recommended items
     protected int     itemCount     = 5;
 
-    // skip checking user eligibility
-    /**
-     * @deprecated
-     * */
-    protected boolean skipCheck     = false;
-
     // if this set true tag should not recommend new. Instead, return the
     // previous if any
     protected boolean errorOccurred = false;
@@ -62,13 +56,6 @@ public abstract class RecommendationsTag extends AbstractGetterTag<Recommendatio
         this.parentVariantId = parentVariantId;
     }
     
-    /**
-     * @deprecated
-     * */
-    public void setSkipCheck(boolean flag) {
-        this.skipCheck = flag;
-    }
-
     public void setErrorOccurred(boolean flag) {
         this.errorOccurred = flag;
     }
@@ -134,6 +121,7 @@ public abstract class RecommendationsTag extends AbstractGetterTag<Recommendatio
      * 
      * @return List of <{@link Recommendation}>
      */
+    @Override
     protected Recommendations getResult() throws Exception {
         Recommendations results = getRecommendations();
         

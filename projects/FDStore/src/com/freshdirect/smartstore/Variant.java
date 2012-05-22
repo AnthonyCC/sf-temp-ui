@@ -30,12 +30,15 @@ public class Variant implements Comparable<Variant>, Serializable {
 	
 	private SortedMap<Integer, SortedMap<Integer, CartTabStrategyPriority>> tabStrategyPriorities;
 	
-	private boolean isSmartSavings = false;
-
 	private RecommendationService recommender;
 	
 	private Set<EnumBurstType> hideBursts;
-	
+
+	/*
+	 * APPDEV-2320 Determines the look of Cart'N'Tabs variant
+	 */
+	private boolean defaultTabLook = true;
+
 	/**
 	 * Get identifier.
 	 * @return id
@@ -119,13 +122,40 @@ public class Variant implements Comparable<Variant>, Serializable {
     public SortedMap<Integer, SortedMap<Integer, CartTabStrategyPriority>> getTabStrategyPriorities() {
 		return tabStrategyPriorities;
 	}
-   
+
+    /**
+     * Smart Savings feature is now deprecated
+     * Forced to return false value
+     * @return
+     */
+    @Deprecated
     public boolean isSmartSavings() {
-		return isSmartSavings;
+		return false;
 	}
     
+    
+    public boolean isDefaultTabLook() {
+		return defaultTabLook;
+	}
+    
+
+    /**
+     * APPDEV-2320 Sets default look of cart'n'tabs.
+     * True value means classic (or default) tabbed look, false means flattened look
+     * 
+     * @param defaultTabLook
+     */
+    public void setDefaultTabLook(boolean defaultTabLook) {
+		this.defaultTabLook = defaultTabLook;
+	}
+
+
+    /**
+     * Deprecated function. No longer has effect until removal
+     * @param isSmartSavings
+     */
+    @Deprecated
     public void setSmartSavings(boolean isSmartSavings) {
-		this.isSmartSavings = isSmartSavings;
 	}
 
 	public void setRecommender(RecommendationService recommender) {
