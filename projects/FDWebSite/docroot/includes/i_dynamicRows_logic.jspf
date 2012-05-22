@@ -121,6 +121,7 @@
 									log(myDebug, myDebugStr);if (myDebugPrint) { out.println("<div class=\"myDebug\">"+myDebugStr+"</div>"); }
 
 								String[] resultSubSub = resultSub[rowSubAtr].split("=");
+								brandUniqFilter = false; // reset to off by default
 
 								/* Add new KEY=VALUE pairs here */
 								if ("isTx".equalsIgnoreCase(resultSubSub[0])) {
@@ -226,6 +227,10 @@
 									myDebugStr = "found uniqR: "+resultSubSub[1];
 									log(myDebug, myDebugStr);if (myDebugPrint) { out.println("<div class=\"myDebug\">"+myDebugStr+"</div>"); }
 										uniqR = isTrue(resultSubSub[1]);
+								}else if ("brandUniqFilter".equalsIgnoreCase(resultSubSub[0])) {
+									myDebugStr = "found brandUniqFilter: "+resultSubSub[1];
+									log(myDebug, myDebugStr);if (myDebugPrint) { out.println("<div class=\"myDebug\">"+myDebugStr+"</div>"); }
+									brandUniqFilter = isTrue(resultSubSub[1]);
 								}else if ("showNewText".equalsIgnoreCase(resultSubSub[0])) {
 									myDebugStr = "found showNewText: "+resultSubSub[1];
 									log(myDebug, myDebugStr);if (myDebugPrint) { out.println("<div class=\"myDebug\">"+myDebugStr+"</div>"); }

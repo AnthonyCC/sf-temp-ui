@@ -67,73 +67,8 @@ function swapImageAndBurst( imgName, imgURL, w, h, hasBurst, burstName, burstURL
 
 
 var isIE = !!(window.attachEvent && !window.opera);
-var popInterval = null;
-var popReturnInterval = null;
-var newWin = null;
 
-/* all pop functionality in one function */
-function popWithInterval(urlVar, externalVar, hVar, wVar, nameVar, resizableVar, scrollbarsVar, closeFirstVar, retFuncVar) {
-	var url = url || urlVar;
-		if (!url) { return; }
-	var external = externalVar || false;
-	var h = hVar || 585;
-	var w = wVar || 400;
-	var resizable = resizableVar || true;
-	var scrollbars = scrollbarsVar || true;
-	var name = nameVar || 'popWin';
-	var closeFirst = closeFirstVar || false;
-	var retFunc = (typeof retFuncVar === 'function') ? retFuncVar : (typeof window[retFuncVar] === 'function') ? window[retFuncVar] : null;
-
-	var params = 'height='+h+',width='+w;
-		if (resizable) { params += ',resizable=1'; }
-		if (scrollbarsVar) { params += ',scrollbars=1'; }
-	
-	if (closeFirstVar && window.newWin && !window.newWin.closed) { window.newWin.close(); }
-
-	if (external) {
-		newWin = window.open('', name, params);
-		newWin.open(url, name, params);
-		return; //we can't do any more after opening
-	} else {
-		newWin = window.open(url, name, params);
-	}
-	
-	popInterval = window.setInterval(function() {
-		if (h < 100) { h = 585; }
-		if (w < 100) { w = 400; }
-		if (window.newWin && !window.newWin.closed) {
-			if (window.newWin.opener == null) { window.newWin.opener = self; }
-			if (window.newWin.resizeTo) {
-				window.clearInterval(popInterval);
-				window.newWin.resizeTo(h, w);
-			} else {
-				window.clearInterval(popInterval);
-			}
-			window.newWin.focus();
-		} else {
-			window.clearInterval(popInterval);
-		}
-	}, 500);
-
-	
-	/* only if a function was passed in */
-	if (retFunc != null) {
-		popReturnInterval = setInterval(
-			function() {
-				if (window.newWin.closed) {
-					clearInterval(popReturnInterval);
-					retFunc();
-				}
-			}, 
-		500);
-	}
-}
-
-/* open popup to external URL */
-function popExternal(URL, h, w, name) {
-	popWithInterval(URL, true, h, w, name);
-}
-
+var newWin='';
 /* simple pop */
 function pop(URL, h, w, name) {
 	popWithInterval(URL, false, h, w, name);
@@ -187,7 +122,10 @@ function popup(URL, type, name) {
 function backtoWin(url) {
 	if (window.opener && !window.opener.closed){
 		parent.window.opener.location = url ;
-		parent.window.opener.focus();		
+		parent.window.opener.focus();
+		window.close();
+	} else {
+		window.location=url;
 	} else {
 		window.location=url;
 	}

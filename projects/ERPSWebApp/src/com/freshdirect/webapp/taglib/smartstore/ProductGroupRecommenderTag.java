@@ -37,6 +37,8 @@ public class ProductGroupRecommenderTag extends RecommendationsTag {
      * This is required only if recommender utilizes SmartYMAL.
      */
     private YmalSource ymalSource = null;
+    
+    private boolean hide;
 
     public void setCurrentNode(ContentNodeModel cnm) {
         this.nodeModel = cnm;
@@ -54,11 +56,22 @@ public class ProductGroupRecommenderTag extends RecommendationsTag {
     public void setYmalSource(YmalSource source) {
 		this.ymalSource = source;
 	}
+    
+    public void setHide(boolean hide) {
+		this.hide = hide;
+	}
+    
+    public boolean isHide() {
+		return hide;
+	}
 
     /* (non-Javadoc)
      * @see com.freshdirect.webapp.taglib.smartstore.RecommendationsTag#getRecommendations()
      */
     protected Recommendations getRecommendations() throws FDResourceException, InvalidContentKeyException {
+    	if (hide)
+    		return null;
+
         if (nodeModel==null) {
             throw new RuntimeException("CurrentNode not set!");
         }

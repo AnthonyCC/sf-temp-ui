@@ -88,8 +88,12 @@ if (sortedColl==null) sortedColl = new ArrayList();
 		<img src="/media_stat/images/layout/clear.gif" width="1" height="6"><br>
 <%
 	// TEST CategoryModel testCat = (CategoryModel) ContentFactory.getInstance().getContentNode("cof_ef_org");
+	boolean hideFi = false;
+	if (currentFolder instanceof CategoryModel)
+		hideFi = ((CategoryModel) currentFolder).isHideFeaturedItems();
 %>
-<fd:ProductGroupRecommender siteFeature="FEATURED_ITEMS" id="recommendations" facility="cat_feat_items"  currentNode="<%= currentFolder %>" itemCount="4"><%
+<fd:ProductGroupRecommender siteFeature="FEATURED_ITEMS" id="recommendations" facility="cat_feat_items"  currentNode="<%= currentFolder %>" itemCount="4"
+		hide="<%= hideFi %>"><%
 	if (recommendations != null && recommendations.getProducts().size() > 0) {
 	    request.setAttribute("recommendationsRendered","true");
 	    int ord=1;

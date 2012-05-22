@@ -85,6 +85,7 @@
 		boolean igShowCh        = false; //ignore showChildren setting
 		boolean retHidFolds     = false; //return hidden folders
 		boolean retSecFolds     = false; //return secondary folders
+		boolean brandUniqFilter   = false; // whether to sort products for brand uniqueness
 	/* Deals values */
 		int favoritesToShow		= 0;
 		int FAVS_PER_LINE		= 5; //number of products to show per line
@@ -95,7 +96,7 @@
 	/* default collection declares */
 		Collection sortedColl=null;
 		Collection globalColl=new ArrayList(); //for page uniqueness
-		ArrayList rowColl=null;  //for row transactional
+		List rowColl=null;  //for row transactional
 		Collection rowCollIds=null; //for checking via id
 		HashMap globalRowColl=new HashMap(); //
 

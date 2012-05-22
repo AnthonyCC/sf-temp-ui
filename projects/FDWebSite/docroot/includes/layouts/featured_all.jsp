@@ -81,12 +81,17 @@ final int W_FEATURED_PADDING = 14;
 
 	BrowserInfo browserInfo = new BrowserInfo((HttpServletRequest) pageContext.getRequest());
 	boolean supportsPNG = !(browserInfo.isInternetExplorer() && browserInfo.getVersionNumber() < 8.0);
+	
+	boolean hideFi = false;
+	if (currentFolder instanceof CategoryModel)
+		hideFi = ((CategoryModel) currentFolder).isHideFeaturedItems();
 %>
 
 
 <%-- FEATURED ITEMS DISPLAY START --%>
 
-<fd:ProductGroupRecommender siteFeature="FEATURED_ITEMS" facility="cat_feat_items" id="recommendations"  currentNode="<%= currentFolder %>" itemCount="5"><%
+<fd:ProductGroupRecommender siteFeature="FEATURED_ITEMS" facility="cat_feat_items" id="recommendations"  currentNode="<%= currentFolder %>" itemCount="5"
+		hide="<%= hideFi %>"><%
 
 	if (recommendations != null && recommendations.getProducts().size() > 0) {
 		

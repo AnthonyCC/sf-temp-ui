@@ -152,8 +152,12 @@ if (currentCategory != null) {
 	//
 	// Favorite Products
 	//
+	boolean hideFi = false;
+	if (currentFolder instanceof CategoryModel)
+		hideFi = ((CategoryModel) currentFolder).isHideFeaturedItems();
 %>
-<fd:ProductGroupRecommender siteFeature="FEATURED_ITEMS" id="recommendations" facility="cat_feat_items"  currentNode="<%= currentFolder %>" itemCount="6"><%
+<fd:ProductGroupRecommender siteFeature="FEATURED_ITEMS" id="recommendations" facility="cat_feat_items"  currentNode="<%= currentFolder %>" itemCount="6"
+		hide="<%= hideFi %>"><%
 	if (recommendations != null && recommendations.getProducts().size() > 0) {
 		request.setAttribute("recommendationsRendered","true");
 	

@@ -288,6 +288,7 @@
 			<AttributeDef type="B" name="HIDE_WINE_RATING" label="Hide Wine Rating &amp; Pricing (Use Regular Display Instead)" inheritable="true"/>
             <AttributeDef type="S" name="GLOBAL_MENU_TITLE_LABEL" label="Global Menu Title Label"/>
             <AttributeDef type="S" name="GLOBAL_MENU_LINK_LABEL" label="Global Menu Link Label"/>
+            <AttributeDef type="B" name="HIDE_FEATURED_ITEMS"  label="Hide featured items" inheritable="true"/>
             <EnumDef type="S" name="PRODUCT_PROMOTION_TYPE" label="Product Promotion Type">
 				<EnumValue value="PRESIDENTS_PICKS" label="President's Picks"/>
 			</EnumDef>

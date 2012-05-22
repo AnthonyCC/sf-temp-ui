@@ -338,7 +338,7 @@ p.fi{margin:20px 0px;}
 	<% if (category != null) { %>
 	<p class="fi">
 	<fd:ProductGroupRecommender siteFeature="FEATURED_ITEMS" id="recommendations" facility="cat_feat_items_test"  
-			currentNode="<%= category %>" itemCount="<%= i_noOfItems %>">
+			currentNode="<%= category %>" itemCount="<%= i_noOfItems %>" hide="<%= category.isHideFeaturedItems() %>">
 		<%
 			if (recommendations.getProducts().size() > 0) {
 				request.setAttribute("recommendationsRendered", "true");

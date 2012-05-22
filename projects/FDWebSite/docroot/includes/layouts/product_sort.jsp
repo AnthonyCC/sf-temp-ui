@@ -93,7 +93,12 @@ if (sortedStuff==null) sortedStuff = new ArrayList();
     boolean showRelatedRatingImage = false;
     Comparator priceComp = new ProductModel.PriceComparator();
     showRelatedRatingImage = productContainer.isShowRatingRelatedImage();
-%><fd:ProductGroupRecommender siteFeature="FEATURED_ITEMS" id="recommendations" facility="cat_feat_items"  currentNode="<%= currentFolder %>" itemCount="5"><%
+
+	boolean hideFi = false;
+	if (currentFolder instanceof CategoryModel)
+		hideFi = ((CategoryModel) currentFolder).isHideFeaturedItems();    
+%><fd:ProductGroupRecommender siteFeature="FEATURED_ITEMS" id="recommendations" facility="cat_feat_items"  currentNode="<%= currentFolder %>" itemCount="5"
+		hide="<%= hideFi %>"><%
 		if (recommendations != null && recommendations.getProducts().size() > 0) {
 				
 				request.setAttribute("recommendationsRendered","true");

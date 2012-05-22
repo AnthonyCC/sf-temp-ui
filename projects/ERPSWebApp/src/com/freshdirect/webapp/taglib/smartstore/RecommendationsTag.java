@@ -137,13 +137,13 @@ public abstract class RecommendationsTag extends AbstractGetterTag<Recommendatio
     protected Recommendations getResult() throws Exception {
         Recommendations results = getRecommendations();
         
-        final List<ProductModel> products = results.getProducts();
-		if (products.size() == 0) {
+		if (results == null || results.getProducts().isEmpty()) {
         	LOGGER.debug("Return empty result");
         	results = null;
         }
 
         if (results != null && shouldLogImpressions()) {
+            final List<ProductModel> products = results.getProducts();
             // do impression logging
             logImpressions(results);
             

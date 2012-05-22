@@ -1,3 +1,6 @@
+<%@ page import='java.util.*' %>
+<%@ page import='com.freshdirect.fdstore.content.*' %>
+<%@ page import='com.freshdirect.fdstore.util.*' %>
 <%
 	int tempCounter=0;
 	rowColl = new ArrayList();
@@ -343,6 +346,7 @@
 			/* loop 2 */
 			
 			rowColl = new ArrayList(); //reset row list
+			Set<BrandModel> usedBrands = new HashSet<BrandModel>();
 	%>
 			<logic:iterate id="contentNode" collection="<%= sortedColl %>" type="java.lang.Object" indexId="idx">
 				<%
@@ -420,6 +424,22 @@
 						if(pm.isFrozen()) {
 							myDebugStr = "ROW "+curRow+": contentNode isFrozen ("+pm.isFrozen()+") : "+contentNode.toString();
 								log(myDebug, myDebugStr);if (myDebugPrint) { out.println("<div class=\"myDebug\">"+myDebugStr+"</div>"); }
+							continue;
+						}
+					}
+					if (brandUniqFilter) {
+						List<BrandModel> pmBrands = pm.getBrands();
+						boolean brandUsed = false;
+						for (BrandModel pmBrand: pmBrands) {
+							if (usedBrands.contains(pmBrand)) {
+								brandUsed = true;
+								break;
+							}
+						}
+						usedBrands.addAll(pmBrands);
+						if (brandUsed) {
+							myDebugStr = "ROW "+curRow+": contentNode brandUsed ("+pmBrands+") : "+contentNode.toString();
+							log(myDebug, myDebugStr);if (myDebugPrint) { out.println("<div class=\"myDebug\">"+myDebugStr+"</div>"); }
 							continue;
 						}
 					}

@@ -923,5 +923,10 @@ public class CategoryModel extends ProductContainer {
 		}
 		return null;
 	}
+	
+	/* APPDEV-2259 */
+	public boolean isHideFeaturedItems() {
+		return getAttribute("HIDE_FEATURED_ITEMS", false);
+	}
 
 }
