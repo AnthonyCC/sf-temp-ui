@@ -261,10 +261,8 @@ public class DomainManagerImpl
 			return new FDRouteMasterInfo(routeInfo);
 		}else {
 			return null;
-		}
-		
-	}
-
+		}		
+	}	
 	public Collection getAllRoutes(String requestedDate) {
 		
 		Collection validRoutes= getRoutes(requestedDate);
@@ -451,7 +449,7 @@ public class DomainManagerImpl
 						}
 						//execute queries for unchecked zones except New zones unchecked
  						getZoneExpansionDao().insertUncheckedZones(workTableModel.getCode(), regionId);
- 						LOGGER.debug(workTableModel.getCode() + "is copied from ZONE table into ZONE table with new REGION_DATA_ID");			
+ 						LOGGER.debug(workTableModel.getCode() + " is copied from ZONE table to ZONE table with new REGION_DATA_ID");			
 					}
 				}//end (TotalList) for loop
 			}//End main if

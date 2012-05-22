@@ -442,16 +442,12 @@ public class EmployeeManagerImpl extends BaseManagerImpl implements
 		this.punchInfoDAO = punchInfoDAO;
 	}
 
-	public Collection getPunchInfo(String date) {
-		try {
-			if (!TransportationAdminProperties.isKronosBlackhole()) {
-				return punchInfoDAO.getPunchInfo(date);
-			}
+	public Collection getPunchInfo(String date) throws Exception {
+		try {		
+			return punchInfoDAO.getPunchInfo(date);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw new Exception("Could not load employee punch information from kronos database", e);
 		}
-		return null;
 	}
 
 	public Collection getScheduleInfo(String date) {

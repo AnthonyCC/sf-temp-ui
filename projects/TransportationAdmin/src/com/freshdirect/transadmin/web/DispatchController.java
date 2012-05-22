@@ -85,10 +85,10 @@ import com.freshdirect.transadmin.util.EnumCachedDataType;
 import com.freshdirect.transadmin.util.ModelUtil;
 import com.freshdirect.transadmin.util.TransAdminCacheManager;
 import com.freshdirect.transadmin.util.TransStringUtil;
-import com.freshdirect.transadmin.util.WaveUtil;
 import com.freshdirect.transadmin.util.TransStringUtil.DateFilterException;
 import com.freshdirect.transadmin.util.TransportationAdminProperties;
 import com.freshdirect.transadmin.util.UPSDataCacheManager;
+import com.freshdirect.transadmin.util.WaveUtil;
 import com.freshdirect.transadmin.web.model.CustomTimeOfDay;
 import com.freshdirect.transadmin.web.model.DispatchCommand;
 import com.freshdirect.transadmin.web.model.WebDispatchStatistics;
@@ -1228,6 +1228,8 @@ public class DispatchController extends AbstractMultiActionController {
 			}
 
 			Map<String, EmployeeInfo> empInfo = TransAdminCacheManager.getInstance().getActiveInactiveEmployees(employeeManagerService);
+			Map<String, ErpTruckMasterInfo> truckMapping = TransAdminCacheManager.getInstance().getAllTruckMasterInfo();
+			Map<String, ErpRouteMasterInfo> routeMapping = TransAdminCacheManager.getInstance().getERPRouteInfo(TransStringUtil.serverDateFormat.parse(dispDate));
 			Map empRoleMap = null, empStatusMap = null, empTruckPrefMap = null, empTeams = null;
 			if (resourceIds != null && resourceIds.size() > 0) {
 				empRoleMap = employeeManagerService
@@ -1254,7 +1256,7 @@ public class DispatchController extends AbstractMultiActionController {
 				command.setTermintedEmployees(termintedEmployees);
 				if (isSummary) {
 					// Load Route/Stop Info
-					FDRouteMasterInfo routeInfo = domainManagerService.getRouteMasterInfo(command.getRoute(),TransStringUtil.serverDateFormat.parse(dispDate));
+					ErpRouteMasterInfo routeInfo = routeMapping.get(command.getRoute());//domainManagerService.getRouteMasterInfo(command.getRoute(),TransStringUtil.serverDateFormat.parse(dispDate));
 					if (routeInfo != null) {
 						command.setNoOfStops(routeInfo.getNumberOfStops());
 					}
@@ -1262,7 +1264,7 @@ public class DispatchController extends AbstractMultiActionController {
 				// Load Truck Info
 				ErpTruckMasterInfo truckInfo = null;
 				if (command.getTruck() != null)
-					truckInfo = domainManagerService.getERPTruck(command.getTruck());
+					truckInfo = truckMapping.get(command.getTruck()); //domainManagerService.getERPTruck(command.getTruck());
 				if (truckInfo != null)
 					command.setLocation(truckInfo.getLocation());
 

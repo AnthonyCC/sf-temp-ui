@@ -52,8 +52,6 @@ public class ZoneExpansionDaoOracleImpl implements ZoneExpansionDaoI{
 			+" select code, name, SDO_GEOM.VALIDATE_GEOMETRY(geoloc, 0.5) from DLV.NJ_ZONE_WORKTABLE"
 			+" where SDO_GEOM.VALIDATE_GEOMETRY(geoloc, 0.5) <> 'TRUE' union all"
 			+" select code, name, SDO_GEOM.VALIDATE_GEOMETRY(geoloc, 0.5) from DLV.HAMP_ZONE_WORKTABLE"
-			+" where SDO_GEOM.VALIDATE_GEOMETRY(geoloc, 0.5) <> 'TRUE' union all"
-			+" select code, name, SDO_GEOM.VALIDATE_GEOMETRY(geoloc, 0.5) from DLV.GEO_RESTRICTION_BOUNDARY"
 			+" where SDO_GEOM.VALIDATE_GEOMETRY(geoloc, 0.5) <> 'TRUE'";
 	
 	public Collection checkPolygons(){

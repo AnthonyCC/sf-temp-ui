@@ -46,33 +46,45 @@ public class TransAdminCacheManager {
 	};
 
 	private TrnAdmExpiringReference routeDataHolder = new TrnAdmExpiringReference(
-			TransportationAdminProperties.getRouteCacheExpiryTime() * 60 * 1000) {
+			TransportationAdminProperties.getRouteCacheExpiryTime() * 60 * 1000, TrnAdmExpiringReference.STORE_ROUTEINFODATA) {
 
 		protected Object load(Object requestParam) {
 			try {
 				if (!SapProperties.isBlackhole()) {
-					return loadAllRouteData(requestParam);
+					List routeData = loadAllRouteData(requestParam);
+					if(routeData != null && routeData.size() > 0) {
+						this.writeToStore(routeData);
+					}
+					return routeData;					
+				} else {
+					return this.getEx(requestParam);
 				}
 			} catch (SapException e) {
-				LOGGER.error("Could not load load Referral program due to: ", e);
+				LOGGER.error("Could not load route data from SAP: ", e);
+				return this.getEx(requestParam);
 			}
-			return Collections.EMPTY_LIST;
 		}
 
 	};
 	
 	private TrnAdmExpiringReference punchInfoDataHolder = new TrnAdmExpiringReference(
-			TransportationAdminProperties.getPunchInfoCacheExpiryTime() * 60 * 1000) {
+			TransportationAdminProperties.getPunchInfoCacheExpiryTime() * 60 * 1000, TrnAdmExpiringReference.STORE_EMPLOYEEPUNCHINFODATA) {
 
 		protected Object load(Object requestParam) {
 			try {
-				if (!TransportationAdminProperties.isKronosBlackhole()) {
-					return loadPunchInfoData(requestParam);
-				}
-			} catch (Exception e) {
-				LOGGER.error("Could not load punch info due to: ", e);
+				if(TransportationAdminProperties.isKronosBlackhole()) {
+					return this.getEx(requestParam);
+				} else {
+					Collection punchInfoData = loadPunchInfoData(requestParam);
+					if(punchInfoData != null && punchInfoData.size() > 0) {
+						this.writeToStore(punchInfoData);
+					}
+					return punchInfoData;
+				}				
+			} catch (Exception e) {				
+				LOGGER.debug("Loading PunchInfo from store due to connectivity issue with Kronos database: ", e);
+				return this.getEx(requestParam);
 			}
-			return Collections.EMPTY_LIST;
 		}
 
 	};
@@ -87,8 +99,6 @@ public class TransAdminCacheManager {
 					return this.getEx();
 				} else {
 					List data = loadAllEmployeeData();
-					/*if(data != null && data.size() > 0)
-						this.writeToStore(data);*/
 					return data != null && data.size() > 0 ? data : null;
 				}
 			} catch (SapException e) {
@@ -288,8 +298,7 @@ public class TransAdminCacheManager {
 			requestedDate = new Date();
 		}
 		try {
-			List trkList = (List) this.routeDataHolder.get(TransStringUtil
-					.getServerDate(requestedDate));
+			List trkList = (List) this.routeDataHolder.get(TransStringUtil.getServerDate(requestedDate));
 			if (trkList == null)
 				return null;
 			for (int i = 0; i < trkList.size(); i++) {
@@ -305,12 +314,33 @@ public class TransAdminCacheManager {
 		return null;
 	}
 	
+	@SuppressWarnings("rawtypes")
+	public Map<String, ErpRouteMasterInfo> getERPRouteInfo(Date requestedDate) {
+		if (requestedDate == null) {
+			requestedDate = new Date();
+		}
+		Map<String, ErpRouteMasterInfo> routeMapping = new HashMap<String, ErpRouteMasterInfo>();
+		try {
+			List trkList = (List) this.routeDataHolder.get(TransStringUtil.getServerDate(requestedDate));
+			if (trkList == null)
+				return null;
+			for (int i = 0; i < trkList.size(); i++) {
+				ErpRouteMasterInfo routeInfo = (ErpRouteMasterInfo) trkList.get(i);				
+				if (!routeMapping.containsKey(routeInfo.getRouteNumber()))
+					routeMapping.put(routeInfo.getRouteNumber(), routeInfo);					
+			}
+		} catch (Exception ex) {
+			throw new RuntimeException("Exception Occurred while getting Route details from SAP");
+		}
+		return routeMapping;
+	}
+	
 	public Map getActiveInactiveEmployees(EmployeeManagerI mgr) {
 		this.manager=mgr;
 		return  ((Map)this.activeInactivedEmployeeDataHolder.get());
 	}
 	
-	public Collection loadPunchInfoData(Object  requestedDate) throws SapException {		
+	public Collection loadPunchInfoData(Object  requestedDate) throws Exception {		
 		return this.manager.getPunchInfo((String)requestedDate);
 	}
 	

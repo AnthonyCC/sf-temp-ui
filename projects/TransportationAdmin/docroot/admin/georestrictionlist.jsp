@@ -84,7 +84,7 @@
 		
 		<div align="center">
 			<table width="100%" cellpadding="0" cellspacing="0" border="0">
-					<br><br>
+					<br>
 					<tr>
 				         <td class="screentitle">
 				             List of Geo Restrictions             
