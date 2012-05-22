@@ -78,7 +78,7 @@ final int W_INDEX_RIGHT_CENTER = W_INDEX_TOTAL - 228 - W_INDEX_CENTER_PADDING;
 	<tmpl:put name="startPage"><%= nav.getSearchTerm()==null || nav.getSearchTerm().length()==0 ? "startpage" : "resultpage" %></tmpl:put>
 
 	<tmpl:put name="content-header">
-		<form class="prepend-7 span-17 last"><span id="searchinput-wrapper" class="middle"><input type="text" name="searchParams" id="searchinput" class="top" autocomplete="off" value="<%= nav.getSearchTerm() %>"/></span><input type="submit" value="search" id="searchbutton" class="button middle brown_bg white bold"/></form>
+		<form class="span-17 last"><span id="searchinput-wrapper" class="middle"><input type="text" name="searchParams" id="searchinput" class="top" autocomplete="off" value="<%= nav.getSearchTerm() %>"/></span><input type="submit" value="search" id="searchbutton" class="button middle brown_bg white bold"/></form>
 	</tmpl:put>
 
 
