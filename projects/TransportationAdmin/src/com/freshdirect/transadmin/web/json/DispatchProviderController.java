@@ -219,6 +219,16 @@ public class DispatchProviderController extends JsonRpcController implements IDi
 		return null;
 	}
 	
+	public boolean validateAccessCode(String accessCode)
+	{
+		String hashedAccessCode = MD5Hasher.hash(accessCode);
+		if(hashedAccessCode != null && hashedAccessCode.equals(TransportationAdminProperties.getAccessKey())) {
+			return true;
+		}
+		return false;
+		
+	}
+	
 	public String generateCommunityReport(String routeDate, String cutOff) {
 			
 		Map reportData = new TreeMap();

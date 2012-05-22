@@ -223,6 +223,7 @@ public class TransportationAdminProperties {
 	private final static String PROP_TELARGO_BLACKHOLE = "transportation.telargo.blackhole";
 	
 	private static final String PROP_TRANSPORTATION_EMPLOYEE_PUNCHINFO_CACHE_EXPIRY_TIME = "transportation.employee.punchinfo.cache.expiry.time";
+	private final static String PROP_TXTMESSAGE_ACCESSKEY	= "routingservices.txtmessage.accesskey";
 	
 	static {
 
@@ -402,6 +403,7 @@ public class TransportationAdminProperties {
 		defaults.put(PROP_TELARGO_BLACKHOLE, "true");
 		
 		defaults.put(PROP_TRANSPORTATION_EMPLOYEE_PUNCHINFO_CACHE_EXPIRY_TIME, "5");
+		defaults.put(PROP_TXTMESSAGE_ACCESSKEY, "e79c258648510d3050f7756aabed5154");
 
 		refresh();
 	}
@@ -861,4 +863,9 @@ public class TransportationAdminProperties {
 		return getIntVal(get(PROP_TRANSPORTATION_EMPLOYEE_PUNCHINFO_CACHE_EXPIRY_TIME));
 
 	}
+	
+	public static String getAccessKey() {
+		return get(PROP_TXTMESSAGE_ACCESSKEY);
+	}
+	
 }

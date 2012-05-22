@@ -142,15 +142,6 @@ public class AirclicManager {
 			return messages;
 		}
 		
-		public boolean validateAccessCode(String accessCode)
-		{
-			String hashedAccessCode = MD5Hasher.hash(accessCode);
-			if(hashedAccessCode != null && hashedAccessCode.equals(RoutingServicesProperties.getAccessKey())) {
-				return true;
-			}
-			return false;
-			
-		}
 		
 		public Map<String, DispatchNextTelVO> getDispatchResourceNextTel(Date dispatchDate) throws FDResourceException {
 			

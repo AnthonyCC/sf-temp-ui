@@ -36,14 +36,20 @@ function loadPopup()
  	}
  	else if(paramValues>1 && dispatched)
  	{
+ 		try
+ 		{
  		var accesscode = prompt("You are about to send mass message to all the selected routes. Do you want to continue?","<Please enter access code>");
  		 if (accesscode != null && accesscode != "")  {
- 			var jsonrpcClient = new JSONRpcClient("api/message.jsp");
- 			var result=jsonrpcClient.manager.validateAccessCode(accesscode);
+ 			 var dispatchClient = new JSONRpcClient("dispatchprovider.ax");
+ 			var result = dispatchClient.AsyncDispatchProvider.validateAccessCode(accesscode);
  			
  			if(!result)
  				return false;
  		 }
+ 		}
+ 		catch(rpcException) {
+				alert("There was a problem in communication to the server. Please try to refresh the browser window!\n"+e);
+			}
  	    
  	}
     	// Show the overlay (disables rest of page)

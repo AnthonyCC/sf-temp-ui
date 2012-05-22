@@ -55,4 +55,5 @@ public interface IDispatchProvider {
 	String getTruckVendorInfo(String truckNumber);
 	String[] getFacilityInfo(String orgFacilityId, String destFacilityId);
 	boolean updateDispatchStatus(DispatchStatusList dispatches, String userId);
+	boolean validateAccessCode(String accessCode);
 }
