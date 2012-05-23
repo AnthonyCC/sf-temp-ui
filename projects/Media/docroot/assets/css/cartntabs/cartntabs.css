@@ -138,3 +138,8 @@
     float: right;
 	cursor: normal;
 }
+
+
+.cnt-qs-idx-container .prod-descr-box {
+	height: 110px;
+}

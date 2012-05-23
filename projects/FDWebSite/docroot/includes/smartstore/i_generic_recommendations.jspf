@@ -50,10 +50,6 @@
 <fd:javascript src="/assets/javascript/pricing.js"/>
 <%
 {
-	final int GLOBAL_PRD_DESC_HEIGHT	= 95;
-
-	final String __prdDescHeight = "height: " + GLOBAL_PRD_DESC_HEIGHT + "px;";
-	
 	// mandatory parameter
 	Variant genericRecommendationsVariant = (Variant) request.getAttribute("genericRecommendationsVariant");
 	String parentImpressionId = (String) request.getAttribute("parentImpressionId");
@@ -367,11 +363,11 @@ if (typeof(OST_<%= tx_pricing_FormName %>) == "undefined") {
 											<% } // !transactional %>
 										</table>
 																							
-										<display:TransparentBox disabled="<%= !shouldDimProduct %>" style="<%= __prdDescHeight %>">
+										<div class="prod-descr-box"><display:TransparentBox disabled="<%= !shouldDimProduct %>">
 											<display:ProductRating product="<%= product %>"/>
 											<display:ProductName product="<%= product %>" action="<%= actionURI %>" disabled="<%= shouldDimProduct %>"/>
 											<display:ProductPrice impression="<%= recommendations_row %>" savingsPercentage="<%= isVariantSavings ? pvm.getPercentageOff() : 0 %>" />
-										</display:TransparentBox>
+										</display:TransparentBox></div>
 										<% } else { // blank cell %>
 											&nbsp;
 										<% } %>	

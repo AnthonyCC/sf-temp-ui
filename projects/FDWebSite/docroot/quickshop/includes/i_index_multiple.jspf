@@ -68,7 +68,9 @@ final int W_QUICKSHOP_INDEX_MULTIPLE_LHALF = 350;
         </td></tr>
 	</table>
 	
-<%@ include file="/quickshop/includes/cart_n_tabs.jspf" %>
+	<div class="cnt-qs-idx-container">
+		<%@ include file="/quickshop/includes/cart_n_tabs.jspf" %>
+	</div>
 
 <BR>
 <IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
