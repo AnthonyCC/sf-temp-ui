@@ -53,15 +53,6 @@ public class ProductSavingTag extends BodyTagSupportEx {
 		return buf.toString();
 	}
 
-	public static String getGroupPriceLabel(FDGroup group, String zoneId) throws FDResourceException {
-		StringBuffer buf = new StringBuffer();
-		MaterialPrice matPrice = GroupScaleUtil.getGroupScalePrice(group, zoneId);
-		if (matPrice != null) {
-			buf.append("Mix 'n Match");
-		}
-		return buf.toString();
-	}
-
 	private ProductModel product;
 
 	/**
@@ -98,9 +89,14 @@ public class ProductSavingTag extends BodyTagSupportEx {
 			FDGroup group = price.getFDGroup();
 
 			StringBuffer buf = new StringBuffer();
+			MaterialPrice matPrice = null;
+			
+			if (group != null) {
+				matPrice = GroupScaleUtil.getGroupScalePrice(group, price.getPricingContext().getZoneId());
+			}
 
-			if (!excludeGroupSavings && group != null) {
-				buf.append(getGroupPriceLabel(group, price.getPricingContext().getZoneId()));
+			if (!excludeGroupSavings && matPrice != null) {
+				buf.append("Mix 'n Match");
 			} else {
 				String scaleString = price.getTieredPrice(0, excludeCaseDeals ? ProductBurstTag.EXCLUDED_WINE_TIERS : null);
 				if (scaleString != null) {
