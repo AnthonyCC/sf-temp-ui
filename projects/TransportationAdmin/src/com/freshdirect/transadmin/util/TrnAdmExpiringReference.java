@@ -5,12 +5,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
-import java.util.Set;
+
+import com.freshdirect.transadmin.exception.TransAdminCacheException;
 
 /**
  * Wrapper for caching a single object, with timed expiration and appropriate
@@ -27,11 +25,18 @@ public abstract class TrnAdmExpiringReference {
 	
 	protected static final String STORE_EMPLOYEEPUNCHINFODATA = "TRANSAPP_STORE_EMPLOYEE_PUNCHINFODATA.ser";
 	
+	protected static final String STORE_TRUCKINFODATA = "TRANSAPP_STORE_TRUCKINFODATA.ser";
+	
 	protected static final String STORE_ROUTEINFODATA = "TRANSAPP_STORE_ROUTEINFODATA.ser";
+	
+	protected static final String STORE_EMPLOYEEDATA = "TRANSAPP_STORE_EMPLOYEEDATA.ser";
+	
+	protected static final String STORE_TERMINATEDEMPLOYEEDATA = "TRANSAPP_STORE_TERMINATED_EMPLOYEEDATA.ser";
+	
+	protected static final String STORE_ACTINACTEMPLOYEEDATA = "TRANSAPP_STORE_ACTINACT_EMPLOYEEDATA.ser";
 		
 	/**
-	 * @param refreshPeriod
-	 *            in milliseconds
+	 * @param refreshPeriod in milliseconds
 	 */
 	public TrnAdmExpiringReference(long refreshPeriod) {
 		this.refreshPeriod = refreshPeriod;
@@ -42,64 +47,54 @@ public abstract class TrnAdmExpiringReference {
 		this.fileStore = fileStore;
 	}
 
+	@SuppressWarnings("unchecked")
 	public synchronized Object get(Object key) {
 
-		Set keySet = referentMap.keySet();
-		Iterator iterator = keySet.iterator();
-		while (iterator.hasNext()) {
-			Object time = (Object) iterator.next();
-			Long lastRefreshTime = (Long) referentMap.get(time);
-
-			if (System.currentTimeMillis() - lastRefreshTime.longValue() > this.refreshPeriod) {
-				// System.out.println("removing the cache content :"+time);
-				iterator.remove();
-				referentHolder.remove(time);
-			}
-
-		}
-
 		Long refreshObj = (Long) referentMap.get(key);
+		
+		boolean needReload = false;
 		if (refreshObj != null) {
 			lastRefresh = refreshObj.longValue();
 			if (System.currentTimeMillis() - lastRefresh > this.refreshPeriod) {
-				Object value = this.load(key);				
-				referentHolder.put(key, value);
-				lastRefresh = System.currentTimeMillis();
-				referentMap.put(key, new Long(lastRefresh));
-				return value;
-			} else {
-				return referentHolder.get(key);
+				needReload = true;						
 			}
 		} else {
-			Object value = this.load(key);			
-			referentHolder.put(key, value);
-			lastRefresh = System.currentTimeMillis();
-			referentMap.put(key, new Long(lastRefresh));
-			return value;
+			needReload = true;						
 		}
+		
+		if(needReload) {
+			try {
+				Object newValue = this.load(key);
+				referentHolder.put(key, newValue);
+				lastRefresh = System.currentTimeMillis();
+				referentMap.put(key, new Long(lastRefresh));
+				writeToStore();
+			} catch(TransAdminCacheException cacheExp) {				
+				// Do thing for now			
+			}
+		}
+		
+		if(referentHolder.keySet() == null || referentHolder.keySet().size() == 0) {
+			referentHolder = (HashMap)this.readFromStore();
+		}
+		
+		return referentHolder.get(key);
 	}
 
 	/**
 	 * Template method that gets invoked whenever the reference has to be loaded
 	 */
-	protected abstract Object load(Object requestParam);
+	protected abstract Object load(Object requestParam) throws TransAdminCacheException;
 
 	public synchronized void forceRefresh() {
 		referentHolder = new HashMap();
 		referentMap = new HashMap();
-	}
-	
-	public synchronized Object getEx(Object requestParam) {
-		if(this.referentHolder == null || (this.referentHolder != null && this.referentHolder.get(requestParam) == null)) {
-			return readFromStore();
-		}
-		return this.referentHolder != null ? this.referentHolder.get(requestParam) : Collections.EMPTY_LIST;		
-	}
-	
-	protected void writeToStore(Object data) {
+	}	
+		
+	protected void writeToStore() {
 		try {
 			ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(fileStore));
-			oos.writeObject(data);
+			oos.writeObject(referentHolder);
 		} catch (IOException ex) {
 			ex.printStackTrace();
 		}
@@ -115,5 +110,9 @@ public abstract class TrnAdmExpiringReference {
 			e.printStackTrace();
 		}
 		return null;
+	}
+	
+	public long getLastRefresh() {
+		return System.currentTimeMillis() - lastRefresh;
 	}
 }
