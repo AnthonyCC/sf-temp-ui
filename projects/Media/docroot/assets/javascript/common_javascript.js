@@ -105,7 +105,7 @@ function popWithInterval(urlVar, externalVar, hVar, wVar, nameVar, resizableVar,
 			if (window.newWin.opener == null) { window.newWin.opener = self; }
 			if (window.newWin.resizeTo) {
 				window.clearInterval(popInterval);
-				window.newWin.resizeTo(h, w);
+				window.newWin.resizeTo(w, h); /* resizeTo is WIDTH, HEIGHT, not HEIGHT, WIDTH */
 			} else {
 				window.clearInterval(popInterval);
 			}
