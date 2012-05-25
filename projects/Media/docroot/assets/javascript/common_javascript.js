@@ -899,6 +899,25 @@ function getFrameHeight(frameId) {
 	return innerDoc.body.parentNode.scrollHeight;
 }
 
+function setFrameWidth(frameId, offset) {
+	var f = window.parent.document.getElementById(frameId);
+
+	var hgt = getFrameWidth(frameId);
+	
+	if (offset == undefined)
+		offset = 0;
+	
+	f.style.width = (hgt+offset)+"px";
+}
+
+
+function getFrameWidth(frameId) {
+	var f = window.parent.document.getElementById(frameId);
+	var innerDoc = (f.contentDocument) ? f.contentDocument : f.contentWindow.document;
+
+	return innerDoc.body.parentNode.scrollWidth;
+}
+
 /**
  * Extract query string from the form
  * 

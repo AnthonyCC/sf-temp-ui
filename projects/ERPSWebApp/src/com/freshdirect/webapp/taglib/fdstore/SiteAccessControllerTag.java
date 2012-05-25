@@ -557,7 +557,7 @@ public class SiteAccessControllerTag extends com.freshdirect.framework.webapp.Bo
 			result.addError("".equals(company), EnumUserInfoName.DLV_COMPANY_NAME.getCode(), SystemMessageList.MSG_REQUIRED);			
 		}
 		
-		if (result.isFailure()) {
+		if (result.isFailure()) {			
 			return EVAL_BODY_BUFFERED;
 		}
 		try {
@@ -605,6 +605,7 @@ public class SiteAccessControllerTag extends com.freshdirect.framework.webapp.Bo
 				if(page.equals(successPage)) {
 					//everything is good, proceed with registration.
 					doRegistration(result);
+					return EVAL_BODY_BUFFERED;
 				} else {
 					String altDeliveryPage = "/site_access/alt_dlv_home.jsp";
 					if(page.equals(altDeliveryCorporatePage)) {
@@ -612,6 +613,7 @@ public class SiteAccessControllerTag extends com.freshdirect.framework.webapp.Bo
 					} else if (page.equals(altDeliveryHomePage)) {
 						this.pageContext.getSession().setAttribute("morepage", altDeliveryPage);
 					} else {
+						page = page + "?serviceType=" + this.serviceType;
 						this.pageContext.getSession().setAttribute("morepage", page);
 					} 
 				}

@@ -6,6 +6,47 @@
 
 <%@ taglib uri="freshdirect" prefix="fd" %>
 
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+	<title>FreshDirect</title>
+	<style>
+		.star {
+			color:orange;
+		}
+	</style>
+	
+	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.1/jquery.min.js"></script>
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.1/jquery-ui.min.js"></script>
+    <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.0/themes/base/jquery-ui.css"/>
+	<link rel="stylesheet" type="text/css" href="/assets/css/common/globalnav.css" />
+	<link rel="stylesheet" type="text/css" href="/assets/css/common/footer.css">
+  <link rel="stylesheet" type="text/css" href="/assets/css/common/freshdirect.css">
+  <link rel="stylesheet" type="text/css" href="/assets/css/common/globalnav_and_footer.css">
+
+  
+  <!--[if IE]>
+  <link rel="stylesheet" type="text/css" href="/assets/css/common/footer.ie.css?buildver=5b224e7e-1f1b-4429-902f-7dee6d79d5aa">
+  <![endif]-->
+  <!--[if lte IE 6]>
+  <link rel="stylesheet" type="text/css" href="/assets/css/common/globalnav.ie6.css?buildver=5b224e7e-1f1b-4429-902f-7dee6d79d5aa">
+  <![endif]-->
+
+  
+  <link rel="stylesheet" type="text/css" href="/assets/css/global.css">
+	<link rel="stylesheet" type="text/css" href="/assets/css/pc_ie.css">
+	<script src="/assets/javascript/jquery/1.7.2/jquery.js" type="text/javascript" language="javascript"></script>
+	<script src="/assets/javascript/jquery/ui/1.8.18/jquery-ui.min.js" type="text/javascript" language="javascript"></script>
+	<script src="/assets/javascript/jquery/corner/jquery.corner.js" type="text/javascript" language="javascript"></script>
+	<script type="text/javascript" src="/assets/javascript/common_javascript.js"></script>
+	<script type="text/javascript" src="/assets/javascript/prototype.js"></script>
+	
+	<script src="/assets/javascript/scriptaculous/1.9.0/scriptaculous.js?load=effects,builder" type="text/javascript" language="javascript"></script>
+	<script type="text/javascript" src="/assets/javascript/modalbox.js"></script>
+	
+</head>
+<body bgcolor="#ffffff" text="#333333" class="text10" leftmargin="0" topmargin="0" onload="setFrameHeight('signupframe', -300);setFrameWidth('signupframe',80);window.parent.document.getElementById('MB_window').style.left=200 + 'px';">
 
 <fd:SiteAccessController action="checkByAddress" successPage="/index.jsp" moreInfoPage="" failureHomePage="/site_access/delivery.jsp" failureCorporatePage="/survey/cos_site_access_survey.jsp" result="result">
 	<%
@@ -14,8 +55,14 @@
 			System.out.println("Did not come here  on site_access_address_lite.jsp?====================================================================================");
 		%>
 			<img src="/media_stat/images/navigation/spinner.gif" class="fleft" />
-			<script language="javascript">
-				window.location.href="/index.jsp";
+			<script language="javascript">				
+				//	alert('in site_access_address_lite.jsp');
+				  //  if (top === window) {
+				//		alert("this page is not in an iframe");
+					//} else {
+						//alert("the url of the top is" + top.location.href + "\nand not the url of this one is " + window.location.href );
+					//}
+				top.location.href ="/index.jsp";
 			</script>
 		<%		 
 		} else {		
@@ -41,24 +88,11 @@
 			}
 		}
 	%>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html>
-<head>
-	<title>FreshDirect</title>
-	<style>
-		.star {
-			color:orange;
-		}
-	</style>
-</head>
-<body bgcolor="#ffffff" text="#333333" class="text10" leftmargin="0" topmargin="0">
-
 	<center>
 	<table border="0" cellpadding="0" cellspacing="0" width="550" height="100%" style="margin: 10px;">
 		<tr valign="middle">
 			<td align="center">
-				<form name="litesignupaddress" id="litesignupaddress" method="post" action="">
+				<form name="litesignupaddress" id="litesignupaddress" method="post" action="/site_access/site_access_address_lite.jsp">
 					<input type="hidden" name="serviceType" value="<%= serviceType %>" />
 					<input type="hidden" name="corpServiceType" value="<%= serviceType %>" />
 					<input type="hidden" name="LITESIGNUP" value="true" />
@@ -124,7 +158,7 @@
 									<tr valign="MIDDLE">
 										<td colspan="4" <%= isCorporate ? "align=\"center\"" : ""%>>
 											<br />
-												<a href="#" onclick="doOverlayWindowFormSubmit('/site_access/site_access_address_lite.jsp','litesignupaddress'); return false;"><img src="/media_stat/images/buttons/check_my_address.gif" height="16" width="112" border="0"></a>		
+												<a href="#" onclick="document.litesignupaddress.submit();"><img src="/media_stat/images/buttons/check_my_address.gif" height="16" width="112" border="0"></a>		
 										</td>
 									</tr>
 								</table>
@@ -168,6 +202,6 @@
 	</table>
 	</center>
 	<% } %>
+</fd:SiteAccessController>
 </body>
 </html>
-</fd:SiteAccessController>

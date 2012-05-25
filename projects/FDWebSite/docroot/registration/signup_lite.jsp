@@ -9,8 +9,19 @@
 <%@ taglib uri="freshdirect" prefix="fd" %>
 
 <%
+	FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
 	String successPage = "index.jsp";
-	String serviceType = NVL.apply(request.getParameter("serviceType"), "HOME").trim();
+	String serviceType = NVL.apply(request.getParameter("serviceType"), "").trim();
+	System.out.println("\n\n\n"+user.getSelectedServiceType().getName()+"\n\n\n");
+	if("".equals(serviceType)) {
+		if(user != null) {
+			serviceType = user.getSelectedServiceType().getName();
+			if("PICKUP".equals(user.getSelectedServiceType().getName()))
+				serviceType = "HOME";
+		} else {
+			serviceType = "HOME";
+		}
+	}
 	boolean isCorporate = "CORPORATE".equalsIgnoreCase(serviceType);
 	
     String failurePage = "/registration/signup_lite.jsp?successPage="+ URLEncoder.encode(successPage)+"&ol=na&serviceType="+serviceType;	
@@ -19,14 +30,13 @@
 <fd:SiteAccessController action='signupLite' successPage='<%= successPage %>' moreInfoPage='' failureHomePage='<%= failurePage %>' result='result'>
 
 <%
-	if(session.getAttribute("morepage") != null) {
-		String mPage = (String) session.getAttribute("morepage");
+		if(session.getAttribute("morepage") != null) {
+			String mPage = (String) session.getAttribute("morepage");
 	%>
 		<jsp:include page="<%= mPage %>" flush="false"/>
 	<%
-	} else {
-%>
-
+		} else {
+	%>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
 	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -38,6 +48,35 @@
 			color:orange;
 		}
 	</style>
+	
+	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.1/jquery.min.js"></script>
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.1/jquery-ui.min.js"></script>
+    <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.0/themes/base/jquery-ui.css"/>
+	<link rel="stylesheet" type="text/css" href="/assets/css/common/globalnav.css" />
+	<link rel="stylesheet" type="text/css" href="/assets/css/common/footer.css">
+  <link rel="stylesheet" type="text/css" href="/assets/css/common/freshdirect.css">
+  <link rel="stylesheet" type="text/css" href="/assets/css/common/globalnav_and_footer.css">
+
+  
+  <!--[if IE]>
+  <link rel="stylesheet" type="text/css" href="/assets/css/common/footer.ie.css?buildver=5b224e7e-1f1b-4429-902f-7dee6d79d5aa">
+  <![endif]-->
+  <!--[if lte IE 6]>
+  <link rel="stylesheet" type="text/css" href="/assets/css/common/globalnav.ie6.css?buildver=5b224e7e-1f1b-4429-902f-7dee6d79d5aa">
+  <![endif]-->
+
+  
+  <link rel="stylesheet" type="text/css" href="/assets/css/global.css">
+	<link rel="stylesheet" type="text/css" href="/assets/css/pc_ie.css">
+	<script src="/assets/javascript/jquery/1.7.2/jquery.js" type="text/javascript" language="javascript"></script>
+	<script src="/assets/javascript/jquery/ui/1.8.18/jquery-ui.min.js" type="text/javascript" language="javascript"></script>
+	<script src="/assets/javascript/jquery/corner/jquery.corner.js" type="text/javascript" language="javascript"></script>
+	<script type="text/javascript" src="/assets/javascript/common_javascript.js"></script>
+	<script type="text/javascript" src="/assets/javascript/prototype.js"></script>
+	
+	<script src="/assets/javascript/scriptaculous/1.9.0/scriptaculous.js?load=effects,builder" type="text/javascript" language="javascript"></script>
+	<script type="text/javascript" src="/assets/javascript/modalbox.js"></script>
+	
 </head>
 <body bgcolor="#ffffff" text="#333333" class="text10" leftmargin="0" topmargin="0">
 	
@@ -56,12 +95,21 @@
 		%>
 			<img src="/media_stat/images/navigation/spinner.gif" class="fleft" />
 			<script language="javascript">
-				window.location.href="/index.jsp";
+				//alert('in signup_lite.jsp');
+				  //  if (top === window) {
+					//	alert("this page is not in an iframe");
+					///} else {
+						//alert("the url of the top is" + top.location.href + "\nand not the url of this one is " + window.location.href );
+					//}
+				window.top.location="/index.jsp";
 			</script>
 		<%		 
 		} else {
 			System.out.println("went to else part  on signup_liste.jsp?====================================================================================\n" );
-
+			
+			if(user != null && "".equals(zipcode)) {
+				zipcode = user.getZipCode();
+			}
 
 	%>
 	<div style="width:400px;height:auto;overflow-y: auto; overflow-x: hide;">
@@ -72,7 +120,7 @@
 	</div>
 	<div class="fright hline" id="" style="width:100%;"><!-- --></div>
 	<div id="form_feilds" style="">
-		<form id="litesignup" name="litesignup" method="post" action="" style="padding: 0; margin: 0;">
+		<form id="litesignup" name="litesignup" method="post" action="/registration/signup_lite.jsp" style="padding: 0; margin: 0;">
 			<input type="hidden" name="submission" value="done" />	
 			<input type="hidden" name="actionName" value="ordermobilepref" />	
 			<input type="hidden" name="successPage" value="<%= successPage %>" />
@@ -139,7 +187,7 @@
 			<table style="" class="butCont fleft">
 				<tbody><tr>
 					<td class="butOrangeLeft"><!-- --></td>
-					<td class="butOrangeMiddle"><a onclick="doOverlayWindowFormSubmit('/registration/signup_lite.jsp','litesignup'); return false;" href="#" class="butText" style="font-weight:bold;font-size:14px;">Sign Up &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img alt="" src="/media/images/buttons/button_orange_arrow.gif"></a></td>
+					<td class="butOrangeMiddle"><a onclick="document.litesignup.submit();" href="#" class="butText" style="font-weight:bold;font-size:14px;">Sign Up &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img alt="" src="/media/images/buttons/button_orange_arrow.gif"></a></td>
 					<td class="butOrangeRight"><!-- --></td>
 				</tr>
 			</tbody></table>
@@ -149,7 +197,6 @@
 	</div>
 	</div>
 	<% } %>
-	
 </body>
 </html>
 <% } %>
