@@ -77,7 +77,7 @@ if ( cart.getStandingOrderId() != null && user.getCheckoutMode() != EnumCheckout
 		<font class="text12">
 			Thank you for shopping with us! Your order is complete. To check your order status anytime, just visit the "<A HREF="/your_account/order_history.jsp">Your Orders</A>" section of Your Account.
 			<br><br>
-			Your estimated receipt is below. On the day of delivery, once we've assembled and weighed your goods, we'll e-mail your final receipt and include a printed copy with your order.
+			Your estimated receipt is below. On the day of delivery, once we've assembled and weighed your goods, we'll e-mail your final receipt<%= if(!customerModel.isGoGreen())?" and include a printed copy with your order":"" %>.
 			<% if (EnumUnattendedDeliveryFlag.OPT_IN.equals(dlvAddress.getUnattendedDeliveryFlag())) { %>
 			<br><br>
 			<fd:IncludeMedia name="/media/editorial/site_pages/unattended_delivery/receipt_notice.html">

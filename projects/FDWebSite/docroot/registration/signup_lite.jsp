@@ -8,6 +8,8 @@
 
 <%@ taglib uri="freshdirect" prefix="fd" %>
 
+<fd:CheckLoginStatus />
+
 <%
 	FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
 	String successPage = "index.jsp";
@@ -79,7 +81,7 @@
 	
 </head>
 <body bgcolor="#ffffff" text="#333333" class="text10" leftmargin="0" topmargin="0">
-	
+	<center>
 	<%
 		String email = NVL.apply(request.getParameter(EnumUserInfoName.EMAIL.getCode()), "");
 		String repeat_email = NVL.apply(request.getParameter(EnumUserInfoName.REPEAT_EMAIL.getCode()), "");
@@ -114,12 +116,12 @@
 	%>
 	<div style="width:400px;height:auto;overflow-y: auto; overflow-x: hide;">
 	<div id="top_image" style="float: left; padding-bottom: 10px; width: 100%;">
-		<span class="text12">Already have a password? <a href="/login/login.jsp" style="text-decoration:none;">Log in now</a></span> <br/><br/>
-		<img src="/media_stat/images/profile/signup_easy.jpg" border="0"/>
-		<br /><span class="text9" style="color:gray;">Sign up now and receive promotional materials or to place your first order.</span>
+		<span class="text12" style="float:left;">Already have a password? <a href="/login/login.jsp" style="text-decoration:none;">Log in now</a></span> <br/><br/>
+		<img src="/media_stat/images/profile/signup_easy.jpg" border="0" style="float:left;"/>
+		<br /><span class="text9" style="color:gray;float:left;">Sign up now and receive promotional materials or to place your first order.</span>
 	</div>
 	<div class="fright hline" id="" style="width:100%;"><!-- --></div>
-	<div id="form_feilds" style="">
+	<div id="form_feilds" style="float:left;">
 		<form id="litesignup" name="litesignup" method="post" action="/registration/signup_lite.jsp" style="padding: 0; margin: 0;">
 			<input type="hidden" name="submission" value="done" />	
 			<input type="hidden" name="actionName" value="ordermobilepref" />	
@@ -179,7 +181,7 @@
 			<tr><td><input type="text"  maxlength="25" class="text11ref inputUser" size="31" name="<%=EnumUserInfoName.PASSWORD_HINT.getCode()%>"  id="secret_answer"><br /></td></tr>
 			<tr><td><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.PASSWORD_HINT.getCode()%>' id='errorMsg'> <span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>&nbsp;</td></tr>
 			
-			<tr><td><div class="fright hline" id="" style="width:100%;"><!-- --> </div></td></tr>
+			<tr><td><div class="fright hline" id="" style="width:100%;"><!-- --></div></td></tr>
 			
 			<tr><td><span class="text9" style="color:gray;">By signing up, you agree to the <a href="javascript:popup('/registration/user_agreement.jsp','large')" style="font-weight:normal;">Terms of use</a></span></td></tr>
 			<tr><td>&nbsp;</td></tr>
@@ -197,6 +199,7 @@
 	</div>
 	</div>
 	<% } %>
+	</center>
 </body>
 </html>
 <% } %>

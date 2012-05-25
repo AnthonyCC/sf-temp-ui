@@ -899,15 +899,31 @@ function getFrameHeight(frameId) {
 	return innerDoc.body.parentNode.scrollHeight;
 }
 
-function setFrameWidth(frameId, offset) {
+function setFrameHeightSL(frameId, offset, original) {
+	var f = window.parent.document.getElementById(frameId);
+
+	var hgt = getFrameHeight(frameId);
+	
+	if (offset == undefined)
+		offset = 0;
+	
+	if(hgt > original) {	
+		f.style.height = (hgt+offset)+"px";
+	}
+}
+
+function setFrameWidthSL(frameId, offset, original) {
 	var f = window.parent.document.getElementById(frameId);
 
 	var hgt = getFrameWidth(frameId);
 	
 	if (offset == undefined)
 		offset = 0;
-	
-	f.style.width = (hgt+offset)+"px";
+		
+	window.alert('fwidth:' + hgt + '--original:' + original);
+		
+	if(hgt < original)	
+		f.style.width = (hgt+offset)+"px";
 }
 
 
