@@ -406,8 +406,8 @@ public class AirclicDAO {
 			long start = System.currentTimeMillis();
 			
 			ps = conn.prepareStatement("SELECT WEBORDERNUM,SIGNATURE_TIMESTAMP, DELIVEREDTO, RECIPIENT, CONTAINS_ALCOHOL, SIGNATURE FROM (SELECT DISTINCT " +
-					"WEBORDERNUM, EVENTID FROM DLV.CARTONSTATUS CS WHERE  CS.SCANDATE  between (SELECT MAX(LAST_EXPORT) LAST_EXPORT FROM CUST.SALESIGN_EXPORT " +
-					"WHERE SUCCESS= 'Y') and to_date(?,'MM/DD/YYYY HH:MI:SS AM') AND CS.CARTONSTATUS = 'DELIVERED'  ) CS, DLV.SIGNATURE S " +
+					"WEBORDERNUM, EVENTID FROM DLV.CARTONSTATUS CS WHERE  CS.SCANDATE  between NVL((SELECT MAX(LAST_EXPORT) LAST_EXPORT FROM CUST.SALESIGN_EXPORT " +
+					"WHERE SUCCESS= 'Y'),SYSDATE-1/24) and to_date(?,'MM/DD/YYYY HH:MI:SS AM') AND CS.CARTONSTATUS = 'DELIVERED'  ) CS, DLV.SIGNATURE S " +
 					"WHERE S.EVENTID = CS.EVENTID"); //toTime is required here because we want to know till what time we are getting the signatures. The same to Time
 			//will be updated in the last export.
 			ps.setString(1, sdf.format(toTime));
@@ -415,6 +415,8 @@ public class AirclicDAO {
 			
 			ps1 = conn.prepareStatement("INSERT INTO CUST.SALE_SIGNATURE (SALE_ID, SIGNATURE_TIMESTAMP, DELIVEREDTO, RECIPIENT, CONTAINS_ALCOHOL, SIGNATURE) " +
 					"VALUES (?,?,?,?,?,?)");
+			
+			int batchCount = 0;
 			
 			while (rs.next()) {
 				
@@ -429,10 +431,11 @@ public class AirclicDAO {
 					  	ps1.setString(5, rs.getString("CONTAINS_ALCOHOL"));
 					    ps1.setBytes(6, in);
 					    ps1.addBatch();
+					    batchCount++;
 					}
 				
 			}
-	
+			if(batchCount>0)
 			ps1.executeBatch();
 			
 			ps1 = conn.prepareStatement("INSERT INTO CUST.SALESIGN_EXPORT(LAST_EXPORT, SUCCESS) VALUES (?,'Y')");
