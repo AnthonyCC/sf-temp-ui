@@ -31,7 +31,7 @@ public class FilteringSortingItem<N extends ContentNodeModel> implements Seriali
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((node == null) ? 0 : node.hashCode());
+		result = prime * result + ((node == null) ? 0 : node.getContentKey().hashCode());
 		return result;
 	}
 
@@ -48,9 +48,14 @@ public class FilteringSortingItem<N extends ContentNodeModel> implements Seriali
 		if (node == null) {
 			if (other.node != null)
 				return false;
-		} else if (!node.equals(other.node))
+		} else if (!node.getContentKey().equals(other.node.getContentKey()))
 			return false;
 		return true;
+	}
+
+	@Override
+	public String toString() {
+		return "FilteringSortingItem [node=" + node + "]";
 	}
 
 	public N getNode() {

@@ -189,9 +189,9 @@ public class ContentSearch {
 			}
 		}
 
-		List<FilteringSortingItem<ProductModel>> productResults = new ArrayList<FilteringSortingItem<ProductModel>>();
-		List<FilteringSortingItem<Recipe>> recipeResults = new ArrayList<FilteringSortingItem<Recipe>>();
-		List<FilteringSortingItem<CategoryModel>> categoryResults = new ArrayList<FilteringSortingItem<CategoryModel>>();
+		Set<FilteringSortingItem<ProductModel>> productResults = new HashSet<FilteringSortingItem<ProductModel>>();
+		Set<FilteringSortingItem<Recipe>> recipeResults = new HashSet<FilteringSortingItem<Recipe>>();
+		Set<FilteringSortingItem<CategoryModel>> categoryResults = new HashSet<FilteringSortingItem<CategoryModel>>();
 
 		Set<ProductModel> alreadyAddedProducts = new HashSet<ProductModel>();
 
@@ -227,7 +227,9 @@ public class ContentSearch {
 			categoryResults.addAll(FilteringSortingItem.wrap(categories));
 		}
 		
-		return new SearchResults(productResults, recipeResults, categoryResults, searchTerm, quoted);
+		return new SearchResults(new ArrayList<FilteringSortingItem<ProductModel>>(productResults),
+				new ArrayList<FilteringSortingItem<Recipe>>(recipeResults), 
+				new ArrayList<FilteringSortingItem<CategoryModel>>(categoryResults), searchTerm, quoted);
 	}
 
 	private void extractCategoryProducts(List<CategoryModel> categories, List<ProductModel> products,
