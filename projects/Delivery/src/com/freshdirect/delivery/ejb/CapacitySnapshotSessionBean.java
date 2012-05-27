@@ -67,8 +67,8 @@ public class CapacitySnapshotSessionBean extends SessionBeanSupport {
 	private static final Category LOGGER = LoggerFactory.getInstance(CapacitySnapshotSessionBean.class);
 	
 	
-	public static String getOrderNo(ContactAddressModel address) {
-		return address.getId()!=null ? new StringBuilder("T").append(address.getId()).toString():new StringBuilder("T").append((int)(Math.random()/0.00001)).toString();
+	public static String getOrderNo(ILocationModel location) {
+		return location.getBuilding().getBuildingId()!=null ? new StringBuilder("T").append(location.getBuilding().getBuildingId()).toString():new StringBuilder("T").append((int)(Math.random()/0.00001)).toString();
 	}
 	
 	protected static boolean isDynamicEnabled(List<IDeliverySlot> timeSlots) {
@@ -152,6 +152,7 @@ public static IOrderModel getOrderModel(ILocationModel location, String orderNum
 				ContactAddressModel address = getAddressModel(location);
 				
 				ErpAddressModel erpAddress = new ErpAddressModel(address);
+				
 				ErpAddressModel address1 = performCosResidentialMerge(erpAddress);
 				
 				
@@ -175,9 +176,9 @@ public static IOrderModel getOrderModel(ILocationModel location, String orderNum
 					if(RoutingUtil.hasAnyDynamicEnabled(fdtimeslots)) {
 						try {
 							long startTime = System.currentTimeMillis();
-							fdtimeslots = getTimeslotForDateRangeAndZone(fdtimeslots, address1, location);
+							fdtimeslots = getTimeslotForDateRangeAndZone(fdtimeslots, location);
 							long endTime = System.currentTimeMillis();	
-							
+							order = getOrderModel(location, getOrderNo(location));
 							dlvSB.buildEvent(fdtimeslots, event, null, order, address1, EventType.GET_TIMESLOT, (int) (endTime-startTime));
 							SectorVO sectorInfo = FDDeliveryManager.getInstance().getSectorInfo(address1);
 							if(event!=null && event.getId()!=null && sectorInfo != null){
@@ -281,16 +282,15 @@ public static IOrderModel getOrderModel(ILocationModel location, String orderNum
 		return address;
     }
 
-	public static List<FDTimeslot> getTimeslotForDateRangeAndZone(List<FDTimeslot> _timeSlots
-																	, ContactAddressModel address, ILocationModel location) throws RoutingServiceException {
+	public static List<FDTimeslot> getTimeslotForDateRangeAndZone(List<FDTimeslot> _timeSlots, ILocationModel location) throws RoutingServiceException {
 		
-		if(_timeSlots==null || _timeSlots.isEmpty() || address==null)
+		if(_timeSlots==null || _timeSlots.isEmpty() || location==null)
 			return _timeSlots;
 		
 		DeliveryServiceProxy dlvService = new DeliveryServiceProxy();
 		RoutingInfoServiceProxy routingInfoproxy = new RoutingInfoServiceProxy();
 		
-		IOrderModel order = getOrderModel(location, RoutingUtil.getOrderNo(address));				
+		IOrderModel order = getOrderModel(location, getOrderNo(location));				
 		
 		RoutingAnalyzerContext context = new RoutingAnalyzerContext();
 		context.setDlvTimeSlots(_timeSlots);

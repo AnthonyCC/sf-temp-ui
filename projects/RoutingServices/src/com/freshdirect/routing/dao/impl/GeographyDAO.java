@@ -1051,11 +1051,10 @@ public class GeographyDAO extends BaseDAO implements IGeographyDAO  {
 			public void processRow(ResultSet rs) throws SQLException {
 
 				do {
-					if(rs.getString("dl")!=null)
-					{
+					
 						ILocationModel locModel = getLocationModel(rs);
 						locations.add(locModel);		
-					}
+					
 
 				} while(rs.next());
 			}
@@ -1084,9 +1083,14 @@ public class GeographyDAO extends BaseDAO implements IGeographyDAO  {
 		
 		ILocationModel _locModel= new LocationModel(building);
 		String location = rs.getString("dl");
+		if(location!=null){
 		String[] locationValues = location.split(" ");
 		_locModel.setApartmentNumber(locationValues[0]);
 		_locModel.setLocationId(locationValues[1]);
+		}
+		else{
+			_locModel.setLocationId(new StringBuilder().append((int)(Math.random()/0.00001)).toString());
+		}
 		_locModel.setServiceType(rs.getString("SERVICETYPE"));
 		GeographicLocation _geoLocModel = new GeographicLocation();
 		_geoLocModel.setLatitude(""+rs.getBigDecimal("LATITUDE"));
