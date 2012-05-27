@@ -102,7 +102,7 @@ public interface RequestParamName {
 
     //Apply/Remove Promo Code
     public static final String REQ_PARAM_AGE_VERIFIED = "age_verified";
-
+   
     //Cancel Order
     public static final String REQ_PARAM_ORDER_ID = "orderId";
 
@@ -273,5 +273,9 @@ public interface RequestParamName {
     public static final String  REQ_PARAM_CORP_SERVICE_TYPE = "corpServiceType";
     
     public static final String  REQ_PARAM_DELIVERY_STATUS = "requestedServiceTypeDlvStatus";
+    
+    public static final String  REQ_PARAM_REFERRAL_REGISTRATION = "referralRegistration";
+    
+    public static final String  REQ_PARAM_LITE_SIGNUP = "LITESIGNUP";   
     
 }

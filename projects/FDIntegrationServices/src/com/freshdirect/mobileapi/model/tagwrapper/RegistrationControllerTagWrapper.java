@@ -37,8 +37,8 @@ public class RegistrationControllerTagWrapper extends ControllerTagWrapper imple
     public ResultBundle register(RegisterMessage registerMessage) throws FDException {
         addExpectedSessionValues(new String[] {SESSION_PARAM_APPLICATION,SESSION_PARAM_CUSTOMER_SERVICE_REP, SESSION_PARAM_CRM_AGENT,
         		SESSION_PARAM_SS_PREV_RECOMMENDATIONS, SESSION_PARAM_SAVINGS_FEATURE_LOOK_UP_TABLE,
-        		SESSION_PARAM_PREV_SAVINGS_VARIANT, SESSION_PARAM_USER}, new String[] {SESSION_PARAM_SS_PREV_RECOMMENDATIONS, 
-        		SESSION_PARAM_SAVINGS_FEATURE_LOOK_UP_TABLE,SESSION_PARAM_PREV_SAVINGS_VARIANT, SESSION_PARAM_USER}); //gets,sets
+        		SESSION_PARAM_PREV_SAVINGS_VARIANT, SESSION_PARAM_USER, SESSION_PARAM_REFERRAL_NAME}, new String[] {SESSION_PARAM_SS_PREV_RECOMMENDATIONS, 
+        		SESSION_PARAM_SAVINGS_FEATURE_LOOK_UP_TABLE,SESSION_PARAM_PREV_SAVINGS_VARIANT, SESSION_PARAM_USER, SESSION_PARAM_LITE_SIGNUP_COMPLETE}); //gets,sets
     	
         addExpectedRequestValues(new String[] {"title", EnumUserInfoName.DLV_FIRST_NAME.getCode(),EnumUserInfoName.DLV_LAST_NAME.getCode(),
         		EnumUserInfoName.DLV_HOME_PHONE.getCode(),"homephoneext","busphone", "busphoneext", "cellphone", "cellphoneext",
@@ -53,7 +53,7 @@ public class RegistrationControllerTagWrapper extends ControllerTagWrapper imple
         		EnumUserInfoName.DLV_CITY.getCode(),
         		EnumUserInfoName.DLV_STATE.getCode(),
         		EnumUserInfoName.DLV_ZIPCODE.getCode(),
-        		"selectAddressList", "deliveryTypeFlag"}
+        		"selectAddressList", "deliveryTypeFlag", REQ_PARAM_LITE_SIGNUP}
         		, new String[] {});//gets,sets
         
         addRequestValue(EnumUserInfoName.DLV_FIRST_NAME.getCode(), registerMessage.getFirstName());

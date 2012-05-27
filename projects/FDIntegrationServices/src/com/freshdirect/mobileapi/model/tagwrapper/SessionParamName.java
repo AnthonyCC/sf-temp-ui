@@ -46,8 +46,16 @@ public interface SessionParamName {
     public static final String SESSION_PARAM_SAVINGS_FEATURE_LOOK_UP_TABLE = SessionName.SAVINGS_FEATURE_LOOK_UP_TABLE;
     
     public static final String SESSION_PARAM_PREV_SAVINGS_VARIANT = SessionName.PREV_SAVINGS_VARIANT;
-    
-    
+        
+    //Apply/Remove Promo Code
+     public static final String SESSION_PARAM_TSA_PROMO = SessionName.TSA_PROMO; 
+          
+     //Site Access More Page Param
+     public static final String SESSION_PARAM_SITEACCESS_MOREPAGE = "morepage";
+     
+     public static final String SESSION_PARAM_LITE_SIGNUP_COMPLETE = "LITESIGNUP_COMPLETE";
+     
+     public static final String SESSION_PARAM_REFERRAL_NAME = "REFERRALNAME";
 
     /*
      *             session.removeAttribute(SessionName.AUTHORIZED_PEOPLE);
