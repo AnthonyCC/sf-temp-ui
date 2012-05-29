@@ -920,7 +920,7 @@ function setFrameWidthSL(frameId, offset, original) {
 	if (offset == undefined)
 		offset = 0;
 		
-	window.alert('fwidth:' + hgt + '--original:' + original);
+	//window.alert('fwidth:' + hgt + '--original:' + original);
 		
 	if(hgt < original)	
 		f.style.width = (hgt+offset)+"px";
