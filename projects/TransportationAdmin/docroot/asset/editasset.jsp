@@ -272,18 +272,12 @@
 		         } 
 		      }; 
 		      
-		var onCellEdit = function() {
-			  if(this._oCellEditor == null){
-				  alert('Attribute value cannot be empty. Should contain a value or unknown');
-				  return;
-			  }    
-		};
+		
 		attributeDataTable.subscribe("cellMouseoverEvent", highlightEditableCell); 
 		attributeDataTable.subscribe("cellMouseoutEvent", attributeDataTable.onEventUnhighlightCell); 
 		attributeDataTable.subscribe('cellClickEvent', attributeDataTable.onEventShowCellEditor);
-		
-		attributeDataTable.subscribe("editorSaveEvent", onCellEdit); 
-		
+
+	
 		return { 
   			            oDS: attributeDataSource, 
   			            oDT: attributeDataTable 
@@ -338,10 +332,14 @@
      	  if(attributeDataTable.getRecordSet() != null 
      	  			&& attributeDataTable.getRecordSet().getRecords()) {
       	  	var records = attributeDataTable.getRecordSet().getRecords();
-      	  	for(i=0; i<records.length; i++) {
+      	  	for(i=0; i < records.length; i++) {
       	  		_data[i] = new Array();
       	  		_data[i][0] = records[i].getData('attributeType');
-      	  		_data[i][1] = records[i].getData('attributeValue');	
+      	  		_data[i][1] = records[i].getData('attributeValue');
+      	  		if(records[i].getData('attributeValue') == ''){
+      	  			addSysMessage("Attribute value cannot be empty. Should have a value or UNKNOWN", true);
+      	  			return;
+      	  		}
       	  	}
       	  }
       	  try { 
@@ -389,6 +387,7 @@
 	      	errContObj.style.fontWeight="bold";
       		YAHOO.util.Dom.get("errContainer").innerHTML = msg;
       }
+ 
  </script>
    	<style>
 		 .yui-skin-sam .yui-dt table {
