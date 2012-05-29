@@ -86,7 +86,7 @@ function popWithInterval(urlVar, externalVar, hVar, wVar, nameVar, resizableVar,
 
 	var params = 'height='+h+',width='+w;
 		if (resizable) { params += ',resizable=1'; }
-		if (scrollbarsVar) { params += ',scrollbars=1'; }
+		if (scrollbars) { params += ',scrollbars=1'; }
 	
 	if (closeFirstVar && window.newWin && !window.newWin.closed) { window.newWin.close(); }
 
