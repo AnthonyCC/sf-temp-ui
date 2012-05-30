@@ -68,6 +68,10 @@ public class RoutingServicesProperties {
 	
 	private final static String PROP_TRANSPORTATIONSUITE_PROXY_URL		= "routingservices.transportationsuite.proxyURL";
 	
+	private final static String PROP_TRANSPORTATIONSUITE_BATCHPROXY_URL		= "routingservices.transportationsuitebatch.proxyURL";
+	
+	
+	
 	private final static String PROP_TRANSPORTATIONSUITEBATCH_PROVIDER_URL		= "routingservices.transportationsuitebatch.providerURL";
 	
 	private final static String PROP_TRANSPORTATIONSUITEDBATCH_PROVIDER_URL		= "routingservices.transportationsuitedbatch.providerURL";
@@ -277,6 +281,10 @@ public class RoutingServicesProperties {
 	public static String getTransportationSuiteProxyURL() {
 		return get(get(PROP_TRANSPORTATIONSUITE_PROXY_URL));
 	}
+	
+	public static String getTransportationSuiteBatchProxyURL() {
+		return get(get(PROP_TRANSPORTATIONSUITE_BATCHPROXY_URL));
+	}
 
 
 	public static String getTransportationSuiteProviderURL(String serviceType) {
@@ -286,7 +294,15 @@ public class RoutingServicesProperties {
 		}
 		return null;
 	}
-
+	
+	public static String getTransportationSuiteBatchProviderURL(String serviceType) {
+		String _refUrl = get(PROP_TRANSPORTATIONSUITE_PROVIDER_URL+"."+serviceType);
+		if(_refUrl != null) {
+			return get(_refUrl);
+		}
+		return null;
+	}
+	
 	public static String getRoadNetProviderURL() {
 		return get(get(PROP_ROADNET_PROVIDER_URL));
 	}

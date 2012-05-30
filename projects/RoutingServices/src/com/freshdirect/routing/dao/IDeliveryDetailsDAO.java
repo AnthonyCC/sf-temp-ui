@@ -5,7 +5,11 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import com.freshdirect.delivery.DepotLocationModel;
+import com.freshdirect.delivery.model.DlvTimeslotModel;
+import com.freshdirect.delivery.model.UnassignedDlvReservationModel;
 import com.freshdirect.framework.util.EnumLogicalOperator;
+import com.freshdirect.routing.constants.EnumOrderMetricsSource;
 import com.freshdirect.routing.model.IDeliveryModel;
 import com.freshdirect.routing.model.IDeliverySlot;
 import com.freshdirect.routing.model.IDeliveryWindowMetrics;
@@ -53,4 +57,28 @@ public interface IDeliveryDetailsDAO {
 	
 	List<IDeliverySlot> getTimeslots(final Date deliveryDate, final Date cutOffTime, 
 			final double latitude, final double longitude, final String serviceType) throws SQLException;
+	
+	List<UnassignedDlvReservationModel> getUnassignedReservations(final Date deliveryDate, final Date cutOff) throws SQLException;
+	
+	Map<String, DepotLocationModel> getDepotLocations() throws SQLException;
+
+	DlvTimeslotModel getTimeslotById(String timeslotId) throws SQLException;
+
+	void clearUnassignedInfo(String reservationId) throws SQLException;
+	
+	void setUnassignedInfo(String reservationId, String action) throws SQLException;
+	
+	void setReservationMetricsDetails(String reservationId, long noOfCartons, long noOfCases
+			, long noOfFreezers, EnumOrderMetricsSource source) throws SQLException;
+	
+	void setInUPS(String reservationId, String orderNum ) throws SQLException;
+	
+	void setReservationReservedMetrics(String reservationId, double reservedOrderSize
+			, double reservedServiceTime, String status) throws SQLException;
+
+	void setReservationMetricsStatus(String reservationId, String status) throws SQLException;
+
+	List<UnassignedDlvReservationModel> getUnassignedReservationsEx(
+			Date deliveryDate, Date cutOff) throws SQLException;
+	
 }

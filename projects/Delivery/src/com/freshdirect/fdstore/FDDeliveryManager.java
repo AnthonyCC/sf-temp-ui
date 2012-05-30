@@ -402,18 +402,6 @@ public class FDDeliveryManager {
 		}
 	}
 
-
-/*	public Map<String, Map<Date,Date>> getCutoffTimes(AddressModel address, Date deliveryDate) throws FDResourceException {
-		try {
-			DlvManagerSB sb = getDlvManagerHome().create();
-			return sb.getCutoffTimes(address, deliveryDate);
-		} catch (RemoteException re) {
-			throw new FDResourceException(re);
-		} catch (CreateException ce) {
-			throw new FDResourceException(ce);
-		} 
-	}*/
-
 	public FDDynamicTimeslotList getTimeslotsForDateRangeAndZone(Date begDate, Date endDate,  TimeslotEventModel event,ContactAddressModel address) throws FDResourceException {
 		try {			
 			List<FDTimeslot> retLst = new ArrayList<FDTimeslot>();

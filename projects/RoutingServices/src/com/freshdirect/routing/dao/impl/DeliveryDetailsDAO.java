@@ -15,7 +15,23 @@ import java.util.TreeMap;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.RowCallbackHandler;
 
+import com.freshdirect.common.address.AddressInfo;
+import com.freshdirect.common.address.AddressModel;
+import com.freshdirect.common.address.PhoneNumber;
+import com.freshdirect.common.customer.EnumServiceType;
+import com.freshdirect.customer.EnumDeliverySetting;
+import com.freshdirect.customer.EnumUnattendedDeliveryFlag;
+import com.freshdirect.customer.ErpAddressModel;
+import com.freshdirect.delivery.DepotLocationModel;
+import com.freshdirect.delivery.EnumReservationType;
+import com.freshdirect.delivery.EnumTimeslotStatus;
+import com.freshdirect.delivery.model.DlvTimeslotModel;
+import com.freshdirect.delivery.model.UnassignedDlvReservationModel;
+import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.util.EnumLogicalOperator;
+import com.freshdirect.framework.util.NVL;
+import com.freshdirect.framework.util.TimeOfDay;
+import com.freshdirect.routing.constants.EnumOrderMetricsSource;
 import com.freshdirect.routing.constants.EnumReservationStatus;
 import com.freshdirect.routing.constants.EnumRoutingUpdateStatus;
 import com.freshdirect.routing.dao.IDeliveryDetailsDAO;
@@ -159,6 +175,105 @@ public class DeliveryDetailsDAO extends BaseDAO implements IDeliveryDetailsDAO {
 		+ "and t.base_date >= ? and t.base_date < ? "
 		+ "and to_date(to_char(t.base_date-1, 'MM/DD/YY ') || to_char(t.cutoff_time, 'HH:MI:SS AM'), 'MM/DD/YY HH:MI:SS AM') > SYSDATE ";
 	
+	private static final String TIMESLOT_BY_ID =
+			"select distinct ts.id, ts.base_date, ts.start_time, ts.end_time, ts.cutoff_time, ts.status, ts.zone_id, ts.capacity, ts.ct_capacity" +
+			", ta.AREA AREA_CODE, ta.STEM_MAX_TIME stemmax, ta.STEM_FROM_TIME stemfrom, ta.STEM_TO_TIME stemto, ta.ZONE_ECOFRIENDLY ecoFriendly, z.NAME ZONE_NAME, TO_CHAR(ts.CUTOFF_TIME, 'HH_MI_PM') WAVE_CODE, ts.IS_DYNAMIC IS_DYNAMIC, ts.IS_CLOSED IS_CLOSED, a.IS_DEPOT IS_DEPOT, a.DELIVERY_RATE AREA_DLV_RATE,"
+				+ "(select count(reservation.TIMESLOT_ID) from dlv.reservation "
+				+ "where zone_id = ts.zone_id AND ts.ID = reservation.TIMESLOT_ID and status_code <> ? and status_code <> ? and chefstable = ' ') as base_allocation, "
+				+ "(select count(reservation.TIMESLOT_ID) from dlv.reservation "
+				+ "where zone_id = ts.zone_id AND ts.ID = reservation.TIMESLOT_ID and status_code <> ? and status_code <> ? and chefstable = 'X') as ct_allocation, "
+				+ "(select z.ct_release_time from dlv.zone z where z.id = ts.zone_id) as ct_release_time, "
+				+ "(select z.ct_active from dlv.zone z where z.id = ts.zone_id) as ct_active, "
+				+ "(select z.zone_code from dlv.zone z where z.id=ts.zone_id ) as zone_code "
+				+ " from dlv.timeslot ts, dlv.zone z, transp.zone ta, transp.trn_area a, dlv.reservation r "
+				+ "where ts.id = ? AND ts.ZONE_ID = z.ID and z.ZONE_CODE = ta.ZONE_CODE and ta.AREA = a.CODE AND ts.id=r.TIMESLOT_ID(+)";
+
+		public DlvTimeslotModel getTimeslotById(final String timeslotId) throws SQLException {
+			final DlvTimeslotModel _tmpSlot = new DlvTimeslotModel();
+			 PreparedStatementCreator creator=new PreparedStatementCreator() {
+		            public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {		            	 
+		                PreparedStatement ps =
+		                    connection.prepareStatement(TIMESLOT_BY_ID);
+		                ps.setInt(1, EnumReservationStatus.CANCELED.getCode());
+		    			ps.setInt(2, EnumReservationStatus.EXPIRED.getCode());
+		    			ps.setInt(3, EnumReservationStatus.CANCELED.getCode());
+		    			ps.setInt(4, EnumReservationStatus.EXPIRED.getCode());				
+		    			
+		    			ps.setString(5, timeslotId);
+		
+		                return ps;
+		            }  
+		        };
+		       
+		        jdbcTemplate.query(creator, 
+		         		  new RowCallbackHandler() { 
+		         		      public void processRow(ResultSet rs) throws SQLException {
+		         		    	
+		         		    	do {
+
+
+		         					PrimaryKey pk = new PrimaryKey(rs.getString("ID"));
+		         					java.util.Date baseDate = rs.getDate("BASE_DATE");
+		         					TimeOfDay startTime = new TimeOfDay(rs.getTime("START_TIME"));
+		         					TimeOfDay endTime = new TimeOfDay(rs.getTime("END_TIME"));
+		         					TimeOfDay cutoffTime = new TimeOfDay(rs.getTime("CUTOFF_TIME"));
+		         					EnumTimeslotStatus status = EnumTimeslotStatus.getEnum(rs.getInt("STATUS"));
+		         					int capacity = rs.getInt("CAPACITY");
+		         					int baseAllocation = rs.getInt("BASE_ALLOCATION");
+		         					int ctAllocation = rs.getInt("CT_ALLOCATION");
+		         					String zoneId = rs.getString("ZONE_ID");
+		         					int ctCapacity = rs.getInt("CT_CAPACITY");
+		         					int ctReleaseTime = rs.getInt("CT_RELEASE_TIME");
+		         					boolean ctActive = "X".equals(rs.getString("CT_ACTIVE"));
+		         					String zoneCode = rs.getString("ZONE_CODE");
+		         					_tmpSlot.setPK(pk);
+		         					_tmpSlot.setZoneId(zoneId);
+		         					_tmpSlot.setBaseDate(baseDate);
+		         					_tmpSlot.setStartTime(startTime);
+		         					_tmpSlot.setEndTime(endTime);
+		         					_tmpSlot.setCutoffTime(cutoffTime);
+		         					_tmpSlot.setStatus(status);
+		         					_tmpSlot.setCapacity(capacity);
+		         					_tmpSlot.setChefsTableCapacity(ctCapacity);
+		         					_tmpSlot.setBaseAllocation(baseAllocation);
+		         					_tmpSlot.setChefsTableAllocation(ctAllocation);
+		         					_tmpSlot.setCtReleaseTime(ctReleaseTime);
+		         					_tmpSlot.setCtActive(ctActive);
+		         					_tmpSlot.setZoneCode(zoneCode);
+		         					
+		         					// Prepare routing slot configuration from result set
+		         					IDeliverySlot routingSlot = new DeliverySlot();
+		         					routingSlot.setStartTime(rs.getTimestamp("START_TIME"));
+		         					routingSlot.setStopTime(rs.getTimestamp("END_TIME"));
+		         					routingSlot.setWaveCode(rs.getString("WAVE_CODE"));
+		         					routingSlot.setDynamicActive("X".equalsIgnoreCase(rs.getString("IS_DYNAMIC")) ? true : false);
+		         					routingSlot.setManuallyClosed("X".equalsIgnoreCase(rs.getString("IS_CLOSED")) ? true : false);
+		         					routingSlot.setZoneCode(zoneCode);
+		         					routingSlot.setEcoFriendly(rs.getInt("ecoFriendly"));
+		         							
+		         					IRoutingSchedulerIdentity _schId = new RoutingSchedulerIdentity();
+		         					_schId.setDeliveryDate(baseDate);
+		         					
+		         					IAreaModel _aModel = new AreaModel();
+		         					_aModel.setAreaCode(rs.getString("AREA_CODE"));
+		         					_aModel.setDepot("X".equalsIgnoreCase(rs.getString("IS_DEPOT")) ? true : false);
+		         					_aModel.setDeliveryRate(rs.getDouble("AREA_DLV_RATE"));
+		         					_aModel.setStemFromTime(rs.getInt("stemfrom"));
+		         					_aModel.setStemToTime(rs.getInt("stemto"));
+		         					//_aModel.setMaxStemTime(rs.getInt("stemmax"));
+		         					
+		         					_schId.setRegionId(RoutingUtil.getRegion(_aModel));
+		         					_schId.setArea(_aModel);
+		         					_schId.setDepot(_aModel.isDepot());
+		         					
+		         					routingSlot.setSchedulerId(_schId);
+		         					_tmpSlot.setRoutingSlot(routingSlot);
+		         					        		    	
+		         		      } while(rs.next());
+		         		  }
+		        }); 
+			return _tmpSlot;
+		}
 
 	public IPackagingModel getHistoricOrderSize(final String customerId, final int range) throws SQLException {
 		
@@ -735,6 +850,205 @@ public class DeliveryDetailsDAO extends BaseDAO implements IDeliveryDetailsDAO {
 		return result;
 	}
 	
+	private static String FETCH_UNASSIGNED_RESERVATIONS_QUERY="SELECT  R.ID, R.ORDER_ID, R.CUSTOMER_ID, R.STATUS_CODE, R.TIMESLOT_ID, R.ZONE_ID, R.EXPIRATION_DATETIME, R.TYPE, R.ADDRESS_ID, "+
+	" T.BASE_DATE,to_char(T.CUTOFF_TIME, 'HH:MI AM') CUTOFF_TIME,T.START_TIME STIME, T.END_TIME ETIME, Z.ZONE_CODE,R.UNASSIGNED_DATETIME, R.UNASSIGNED_ACTION, R.IN_UPS, R.ORDER_SIZE, R.SERVICE_TIME, R.RESERVED_ORDER_SIZE" +
+	", R.RESERVED_SERVICE_TIME, R.UPDATE_STATUS, R.METRICS_SOURCE " +
+	", R.NUM_CARTONS , R.NUM_FREEZERS , R.NUM_CASES, " +
+	" A.ID as ADDRESS, A.FIRST_NAME,A.LAST_NAME,A.ADDRESS1,A.ADDRESS2,A.APARTMENT,A.CITY,A.STATE,A.ZIP,A.COUNTRY, "+
+	" A.PHONE,A.PHONE_EXT,A.DELIVERY_INSTRUCTIONS,A.SCRUBBED_ADDRESS,A.ALT_DEST,A.ALT_FIRST_NAME, "+
+	" A.ALT_LAST_NAME,A.ALT_APARTMENT,A.ALT_PHONE,A.ALT_PHONE_EXT,A.LONGITUDE,A.LATITUDE,A.SERVICE_TYPE, "+
+	" A.COMPANY_NAME,A.ALT_CONTACT_PHONE,A.ALT_CONTACT_EXT,A.UNATTENDED_FLAG,A.UNATTENDED_INSTR,A.CUSTOMER_ID "+
+	" FROM DLV.RESERVATION R, DLV.TIMESLOT T, DLV.ZONE Z,CUST.ADDRESS A "+
+	" WHERE R.ADDRESS_ID=A.ID(+) AND R.TIMESLOT_ID=T.ID AND R.ZONE_ID=Z.ID AND t.BASE_DATE=TRUNC(?) " +
+	" AND (unassigned_action IS NOT NULL OR (UPDATE_STATUS IS NOT NULL AND UPDATE_STATUS <> 'SUS')) " +
+	" AND to_char(t.cutoff_time, 'HH:MI AM') = to_char(?, 'HH:MI AM') ";
+	
+	public List<UnassignedDlvReservationModel> getUnassignedReservations(final Date deliveryDate, final Date cutOff) throws SQLException {
+	
+		final List<UnassignedDlvReservationModel>  reservations = new ArrayList<UnassignedDlvReservationModel>();
+		
+		PreparedStatementCreator creator = new PreparedStatementCreator() {
+			public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {		            	 
+				PreparedStatement ps =
+					connection.prepareStatement(FETCH_UNASSIGNED_RESERVATIONS_QUERY);
+				ps.setDate(1, new java.sql.Date(deliveryDate.getTime()));
+				ps.setTimestamp(2, new java.sql.Timestamp(cutOff.getTime()));
+				
+				return ps;
+			}  
+		};
+		jdbcTemplate.query(creator, 
+				new RowCallbackHandler() { 
+			public void processRow(ResultSet rs) throws SQLException {				    	
+				do { 
+					UnassignedDlvReservationModel reservation = new UnassignedDlvReservationModel(
+							new PrimaryKey(rs.getString("ID")),
+							rs.getString("ORDER_ID"),
+							rs.getString("CUSTOMER_ID"),
+							rs.getInt("STATUS_CODE"),
+							rs.getTimestamp("EXPIRATION_DATETIME"),
+							rs.getString("TIMESLOT_ID"),
+							rs.getString("ZONE_ID"),
+							EnumReservationType.getEnum(rs.getString("TYPE")),
+							rs.getString("ADDRESS")!=null?getAddress(rs):null,
+							rs.getDate("BASE_DATE"),
+							rs.getString("CUTOFF_TIME"),rs.getTimestamp("stime"), rs.getTimestamp("etime"),
+							rs.getString("ZONE_CODE"),
+							com.freshdirect.routing.constants.RoutingActivityType.getEnum( rs.getString("UNASSIGNED_ACTION")) ,
+							"X".equalsIgnoreCase(rs.getString("IN_UPS"))?true:false
+							, rs.getBigDecimal("ORDER_SIZE") != null ? new Double(rs.getDouble("ORDER_SIZE")) : null
+							, rs.getBigDecimal("SERVICE_TIME") != null ? new Double(rs.getDouble("SERVICE_TIME")) : null
+							, rs.getBigDecimal("RESERVED_ORDER_SIZE") != null ? new Double(rs.getDouble("RESERVED_ORDER_SIZE")) : null
+							, rs.getBigDecimal("RESERVED_SERVICE_TIME") != null ? new Double(rs.getDouble("RESERVED_SERVICE_TIME")) : null
+							, rs.getBigDecimal("NUM_CARTONS") != null ? new Long(rs.getLong("NUM_CARTONS")) : null
+							, rs.getBigDecimal("NUM_FREEZERS") != null ? new Long(rs.getLong("NUM_FREEZERS")) : null
+							, rs.getBigDecimal("NUM_CASES") != null ? new Long(rs.getLong("NUM_CASES")) : null
+							, EnumRoutingUpdateStatus.getEnum(rs.getString("UPDATE_STATUS"))
+							, EnumOrderMetricsSource.getEnum(rs.getString("METRICS_SOURCE")));
+							
+					reservations.add(reservation);
+				}while(rs.next());
+			}
+		});
+
+		return reservations;
+		
+	}
+	
+	private static String FETCH_UNASSIGNED_RESERVATIONS_QUERY1="SELECT  R.ID, R.ORDER_ID, R.CUSTOMER_ID, R.STATUS_CODE, R.TIMESLOT_ID, R.ZONE_ID, R.EXPIRATION_DATETIME, R.TYPE, R.ADDRESS_ID, "+
+	" T.BASE_DATE,to_char(T.CUTOFF_TIME, 'HH:MI AM') CUTOFF_TIME,T.START_TIME STIME, T.END_TIME ETIME, Z.ZONE_CODE,R.UNASSIGNED_DATETIME, R.UNASSIGNED_ACTION, R.IN_UPS, R.ORDER_SIZE, R.SERVICE_TIME, R.RESERVED_ORDER_SIZE" +
+	", R.RESERVED_SERVICE_TIME, R.UPDATE_STATUS, R.METRICS_SOURCE " +
+	", R.NUM_CARTONS , R.NUM_FREEZERS , R.NUM_CASES, " +
+	" A.ID as ADDRESS, A.FIRST_NAME,A.LAST_NAME,A.ADDRESS1,A.ADDRESS2,A.APARTMENT,A.CITY,A.STATE,A.ZIP,A.COUNTRY, "+
+	" A.PHONE,A.PHONE_EXT,A.DELIVERY_INSTRUCTIONS,A.SCRUBBED_ADDRESS,A.ALT_DEST,A.ALT_FIRST_NAME, "+
+	" A.ALT_LAST_NAME,A.ALT_APARTMENT,A.ALT_PHONE,A.ALT_PHONE_EXT,A.LONGITUDE,A.LATITUDE,A.SERVICE_TYPE, "+
+	" A.COMPANY_NAME,A.ALT_CONTACT_PHONE,A.ALT_CONTACT_EXT,A.UNATTENDED_FLAG,A.UNATTENDED_INSTR,A.CUSTOMER_ID "+
+	" FROM DLV.RESERVATION R, DLV.TIMESLOT T, DLV.ZONE Z,CUST.ADDRESS A "+
+	" WHERE R.ADDRESS_ID=A.ID(+) AND R.TIMESLOT_ID=T.ID AND R.ZONE_ID=Z.ID AND t.BASE_DATE=TRUNC(?) " +
+	" AND (unassigned_action IS NOT NULL) " +
+	" AND to_char(t.cutoff_time, 'HH:MI AM') = to_char(?, 'HH:MI AM') ";
+	
+	public List<UnassignedDlvReservationModel> getUnassignedReservationsEx(final Date deliveryDate, final Date cutOff) throws SQLException {
+	
+		final List<UnassignedDlvReservationModel>  reservations = new ArrayList<UnassignedDlvReservationModel>();
+		
+		PreparedStatementCreator creator = new PreparedStatementCreator() {
+			public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {		            	 
+				PreparedStatement ps =
+					connection.prepareStatement(FETCH_UNASSIGNED_RESERVATIONS_QUERY1);
+				ps.setDate(1, new java.sql.Date(deliveryDate.getTime()));
+				ps.setTimestamp(2, new java.sql.Timestamp(cutOff.getTime()));
+				
+				return ps;
+			}  
+		};
+		jdbcTemplate.query(creator, 
+				new RowCallbackHandler() { 
+			public void processRow(ResultSet rs) throws SQLException {				    	
+				do { 
+					UnassignedDlvReservationModel reservation = new UnassignedDlvReservationModel(
+							new PrimaryKey(rs.getString("ID")),
+							rs.getString("ORDER_ID"),
+							rs.getString("CUSTOMER_ID"),
+							rs.getInt("STATUS_CODE"),
+							rs.getTimestamp("EXPIRATION_DATETIME"),
+							rs.getString("TIMESLOT_ID"),
+							rs.getString("ZONE_ID"),
+							EnumReservationType.getEnum(rs.getString("TYPE")),
+							rs.getString("ADDRESS")!=null?getAddress(rs):null,
+							rs.getDate("BASE_DATE"),
+							rs.getString("CUTOFF_TIME"),rs.getTimestamp("stime"), rs.getTimestamp("etime"),
+							rs.getString("ZONE_CODE"),
+							com.freshdirect.routing.constants.RoutingActivityType.getEnum( rs.getString("UNASSIGNED_ACTION")) ,
+							"X".equalsIgnoreCase(rs.getString("IN_UPS"))?true:false
+							, rs.getBigDecimal("ORDER_SIZE") != null ? new Double(rs.getDouble("ORDER_SIZE")) : null
+							, rs.getBigDecimal("SERVICE_TIME") != null ? new Double(rs.getDouble("SERVICE_TIME")) : null
+							, rs.getBigDecimal("RESERVED_ORDER_SIZE") != null ? new Double(rs.getDouble("RESERVED_ORDER_SIZE")) : null
+							, rs.getBigDecimal("RESERVED_SERVICE_TIME") != null ? new Double(rs.getDouble("RESERVED_SERVICE_TIME")) : null
+							, rs.getBigDecimal("NUM_CARTONS") != null ? new Long(rs.getLong("NUM_CARTONS")) : null
+							, rs.getBigDecimal("NUM_FREEZERS") != null ? new Long(rs.getLong("NUM_FREEZERS")) : null
+							, rs.getBigDecimal("NUM_CASES") != null ? new Long(rs.getLong("NUM_CASES")) : null
+							, EnumRoutingUpdateStatus.getEnum(rs.getString("UPDATE_STATUS"))
+							, EnumOrderMetricsSource.getEnum(rs.getString("METRICS_SOURCE")));
+							
+					reservations.add(reservation);
+				}while(rs.next());
+			}
+		});
+
+		return reservations;
+		
+	}
+	
+	
+	private static String FETCH_DEPOTS ="SELECT L.*, D.PICKUP, D.CORPORATE_DEPOT, D.DEPOT_CODE FROM DLV.DEPOT D, DLV.LOCATION L WHERE L.DEPOT_ID = D.ID";
+	
+	public Map<String, DepotLocationModel> getDepotLocations() throws SQLException {
+		
+		final Map<String, DepotLocationModel>  depotLocations = new HashMap<String, DepotLocationModel>();
+		
+		PreparedStatementCreator creator = new PreparedStatementCreator() {
+			public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {		            	 
+				PreparedStatement ps =
+					connection.prepareStatement(FETCH_DEPOTS);
+				
+				return ps;
+			}  
+		};
+		jdbcTemplate.query(creator, 
+				new RowCallbackHandler() { 
+			public void processRow(ResultSet rs) throws SQLException {				    	
+				do { 
+					DepotLocationModel depotLocation = new DepotLocationModel(rs.getString("DEPOT_CODE"), 
+							new AddressModel(rs.getString("ADDRESS1"), rs.getString("APARTMENT"), rs.getString("CITY"), rs.getString("STATE"), 
+									 rs.getString("ZIPCODE")));
+					depotLocations.put(rs.getString("ID"), depotLocation);
+				}while(rs.next());
+			}
+		});
+
+		return depotLocations;
+		
+	}
+	
+	
+	
+	
+	private static PhoneNumber convertPhoneNumber(String phone, String extension) {
+		return "() -".equals(phone) ? null : new PhoneNumber(phone, NVL.apply(extension, ""));
+	}
+	private static ErpAddressModel getAddress(ResultSet rs) throws SQLException{
+		
+		ErpAddressModel model=new ErpAddressModel();
+		model.setFirstName(rs.getString("FIRST_NAME"));
+		model.setLastName(rs.getString("LAST_NAME"));
+		model.setAddress1(rs.getString("ADDRESS1"));
+		model.setAddress2(NVL.apply(rs.getString("ADDRESS2"), "").trim());
+		model.setApartment(NVL.apply(rs.getString("APARTMENT"), "").trim());
+		model.setCity(rs.getString("CITY"));
+		model.setState(rs.getString("STATE"));
+		model.setZipCode(rs.getString("ZIP"));
+		model.setCountry(rs.getString("COUNTRY"));
+		model.setPhone(convertPhoneNumber( rs.getString("PHONE"), rs.getString("PHONE_EXT") ));
+		model.setAltContactPhone(convertPhoneNumber( rs.getString("ALT_PHONE"), rs.getString("ALT_PHONE_EXT") ));
+		model.setInstructions(rs.getString("DELIVERY_INSTRUCTIONS"));
+		model.setServiceType(EnumServiceType.getEnum(rs.getString("SERVICE_TYPE")));
+		model.setCompanyName(rs.getString("COMPANY_NAME"));
+		model.setAltDelivery(EnumDeliverySetting.getDeliverySetting(rs.getString("ALT_DEST")));
+		model.setAltFirstName(rs.getString("ALT_FIRST_NAME"));
+		model.setAltLastName(rs.getString("ALT_LAST_NAME"));
+		model.setAltApartment(rs.getString("ALT_APARTMENT"));
+		model.setAltPhone(convertPhoneNumber(rs.getString("ALT_CONTACT_PHONE"), rs.getString("ALT_CONTACT_EXT")));		
+		model.setUnattendedDeliveryFlag(EnumUnattendedDeliveryFlag.fromSQLValue(rs.getString("UNATTENDED_FLAG")));
+		model.setUnattendedDeliveryInstructions(rs.getString("UNATTENDED_INSTR"));
+		model.setCustomerId(rs.getString("CUSTOMER_ID"));
+		AddressInfo addressInfo = new AddressInfo();
+		addressInfo.setLongitude(Double.parseDouble((rs.getBigDecimal("LONGITUDE")!=null)?rs.getBigDecimal("LONGITUDE").toString():"0"));
+		addressInfo.setLatitude(Double.parseDouble((rs.getBigDecimal("LATITUDE")!=null)?rs.getBigDecimal("LATITUDE").toString():"0"));
+		model.setAddressInfo(addressInfo);
+		return model;
+		
+	}
 	public int updateTimeslotForDynamicStatusByRegion(final Date baseDate, final String regionCode,final String cutOff, final boolean isDynamic) throws SQLException {
 
 		Connection connection=null;
@@ -838,4 +1152,127 @@ public class DeliveryDetailsDAO extends BaseDAO implements IDeliveryDetailsDAO {
 		return timeslots;
 	}
 
+
+	private static final String MARK_RESERVATION_ASSIGNED_QUERY="UPDATE DLV.RESERVATION SET UNASSIGNED_DATETIME=null, UNASSIGNED_ACTION=null, MODIFIED_DTTM=SYSDATE WHERE ID=?";
+	public void clearUnassignedInfo(String reservationId)  throws SQLException {
+		
+		
+		Connection connection=null;
+		int result;
+		try{
+			result = this.jdbcTemplate.update(MARK_RESERVATION_ASSIGNED_QUERY, new Object[] {reservationId});
+			
+			connection=this.jdbcTemplate.getDataSource().getConnection();	
+			
+		}finally{
+			if(connection!=null) connection.close();
+		}
+		if(result != 1) 
+			throw new SQLException("Cannot find reservation to clear unasssignedInfo for id: " + reservationId);
+	}
+	
+	
+	
+	private static final String UPDATE_RESERVATIONSOURCE_QUERY = "UPDATE DLV.RESERVATION SET NUM_CARTONS = ? " +
+																	", NUM_FREEZERS = ? , NUM_CASES = ?" +
+																		" , METRICS_SOURCE = ? WHERE ID=?";
+	public void setReservationMetricsDetails(String reservationId
+													, long noOfCartons, long noOfCases, long noOfFreezers
+													, EnumOrderMetricsSource source)  throws SQLException {
+		Connection connection=null;
+		int result;
+		try{
+			result = this.jdbcTemplate.update(UPDATE_RESERVATIONSOURCE_QUERY, new Object[] {new java.math.BigDecimal(noOfCartons),new java.math.BigDecimal(noOfFreezers),
+					new java.math.BigDecimal(noOfCases), (source != null ? source.value() : null),reservationId });
+			
+			connection=this.jdbcTemplate.getDataSource().getConnection();	
+			
+		}finally{
+			if(connection!=null) connection.close();
+		}
+		if(result != 1) 
+			throw new SQLException("Cannot find reservation to METRICS UPDATE STATUS for id: " + reservationId);
+	}
+
+	private static final String UNASSIGN_RESERVATION_QUERY="UPDATE DLV.RESERVATION SET UNASSIGNED_DATETIME=SYSDATE, MODIFIED_DTTM=SYSDATE, UNASSIGNED_ACTION=? WHERE ID=?";
+	
+	public void setUnassignedInfo(String reservationId,
+			String action) throws SQLException {
+		
+		Connection connection=null;
+		int result;
+		try{
+			result = this.jdbcTemplate.update(UNASSIGN_RESERVATION_QUERY, new Object[] {action,reservationId });
+			
+			connection=this.jdbcTemplate.getDataSource().getConnection();	
+			
+		}finally{
+			if(connection!=null) connection.close();
+		}
+		if(result != 1) 
+			throw new SQLException("Cannot find reservation to UNASSIGN for id: " + reservationId);
+	}
+
+	private static final String SET_RESERVATION_SET_TO_UPS_FLAG_QUERY = "UPDATE DLV.RESERVATION SET IN_UPS='X', ROUTING_ORDER_ID=? WHERE ID=?";
+	
+	@Override
+	public void setInUPS(String reservationId, String orderNum) throws SQLException {
+	
+		Connection connection=null;
+		int result;
+		try{
+			result = this.jdbcTemplate.update(SET_RESERVATION_SET_TO_UPS_FLAG_QUERY, new Object[] {orderNum,reservationId });
+			
+			connection=this.jdbcTemplate.getDataSource().getConnection();	
+			
+		}finally{
+			if(connection!=null) connection.close();
+		}
+		if(result != 1) 
+			throw new SQLException("Cannot find reservation to set IN_UPS for id: " + reservationId);
+	}
+	
+	private static final String UPDATE_RESERVATIONMETRICSSTATUS_QUERY = "UPDATE DLV.RESERVATION SET RESERVED_ORDER_SIZE = ?" +
+			"																, RESERVED_SERVICE_TIME = ?, UPDATE_STATUS = ? WHERE ID=?";
+
+	public void setReservationReservedMetrics(String reservationId,
+			double reservedOrderSize, double reservedServiceTime,
+			String status) throws SQLException {
+		
+		Connection connection=null;
+		int result;
+		try{
+			result = this.jdbcTemplate.update(UPDATE_RESERVATIONMETRICSSTATUS_QUERY, new Object[] { new java.math.BigDecimal(reservedOrderSize),new java.math.BigDecimal(reservedServiceTime),
+					status,reservationId });
+			
+			connection=this.jdbcTemplate.getDataSource().getConnection();	
+			
+		}finally{
+			if(connection!=null) connection.close();
+		}
+		if(result != 1) 
+			throw new SQLException("Cannot find reservation to METRICS UPDATE STATUS for id: " + reservationId);
+	}
+
+	private static final String UPDATE_RESERVATIONSTATUSONLY_QUERY = "UPDATE DLV.RESERVATION SET UPDATE_STATUS = ? WHERE ID=?";
+	
+	public void setReservationMetricsStatus(String reservationId, String status) throws SQLException {
+		
+		
+		Connection connection=null;
+		int result;
+		try{
+			result = this.jdbcTemplate.update(UPDATE_RESERVATIONSTATUSONLY_QUERY, new Object[] {status,reservationId });
+			
+			connection=this.jdbcTemplate.getDataSource().getConnection();	
+			
+		}finally{
+			if(connection!=null) connection.close();
+		}
+		if(result != 1) 
+			throw new SQLException("Cannot find reservation to METRICS UPDATE STATUS for id: " + reservationId);
+	
+		
+	}
+	
 }

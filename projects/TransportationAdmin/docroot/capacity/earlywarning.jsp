@@ -335,7 +335,7 @@
 							<td class="tableHeader" >% Allocated</td>
 							<td class="tableHeader" >#Trucks</td>
 							<td class="tableHeader" >&nbsp;</td>
-							<td class="tableHeader" >&nbsp;</td>
+							<%--<td class="tableHeader" >&nbsp;</td>--%>
 							<td class="tableHeader" >&nbsp;</td>							
 						</tr>
 						</thead>
@@ -363,12 +363,12 @@
 												value="<%= (_commandTS.getClosedCount() > 0 ? "C" : "O") %>" 
 														onclick="updateTimeslot(this, '<%= _commandTS.getReferenceId() %>', '0')"
 														<%= (com.freshdirect.transadmin.security.SecurityManager.isUserAdmin(request) ?  " " : " disabled=\"disabled\"") %> /></td>
-								<td><input type="button" 
+								<%-- <td><input type="button" 
 										class="<%= _commandTS.getDynamicActiveCount() > 0 ? "dynamic_enabled" : "dynamic_disabled" %>" 
 												value="<%= (_commandTS.getDynamicActiveCount() > 0 ? "D" : "S") %>" 
 														onclick="updateDynamicTimeslot(this, '<%= _commandTS.getReferenceId() %>', '0')"
 														<%= (com.freshdirect.transadmin.security.SecurityManager.isUserAdmin(request) ?  " " : " disabled=\"disabled\"") %> /></td>
-														
+								 --%>						
 								<td><%= _commandTS.isDiscounted() ? "<img src=\"images/dollar.gif\" style=\"border:0\"/>" : "&nbsp;" %></td>																												
 							</tr>
 	    					

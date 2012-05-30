@@ -9,6 +9,7 @@ public class RoutingSchedulerIdentity extends BaseModel implements IRoutingSched
     private java.util.Date deliveryDate;
     
     private boolean isDepot;
+    private boolean dynamic;
 
 	public boolean isDepot() {
 		return isDepot;
@@ -63,5 +64,18 @@ public class RoutingSchedulerIdentity extends BaseModel implements IRoutingSched
 	
 	public String toString() {
 		return regionId+"-"+area.getAreaCode()+"-["+deliveryDate+"]";
+	}
+
+	@Override
+	public boolean isDynamic() {
+		// TODO Auto-generated method stub
+		return dynamic;
+	}
+
+	@Override
+	public void setDynamic(boolean dynamic) {
+		// TODO Auto-generated method stub
+		this.dynamic = dynamic;
+		
 	}
 }

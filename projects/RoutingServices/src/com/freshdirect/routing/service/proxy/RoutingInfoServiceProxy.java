@@ -83,4 +83,8 @@ public class RoutingInfoServiceProxy  extends BaseServiceProxy  {
 	public Map<String, TrnFacility> retrieveTrnFacilityLocations() throws RoutingServiceException {
 		return getService().retrieveTrnFacilityLocations();
 	}
+
+	public List<String> getStaticZonesByDate(Date deliveryDate){
+		return getService().getStaticZonesByDate(deliveryDate);
+	}
 }

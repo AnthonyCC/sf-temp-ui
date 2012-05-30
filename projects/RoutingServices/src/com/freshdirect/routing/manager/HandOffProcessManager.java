@@ -4,7 +4,9 @@ import static com.freshdirect.routing.manager.IProcessMessage.LOADBALANCE_SUCCES
 import static com.freshdirect.routing.manager.IProcessMessage.ROUTING_SUCCESS;
 import static com.freshdirect.routing.manager.IProcessMessage.SENDROUTES_SUCCESS;
 
+import java.io.PrintWriter;
 import java.io.Serializable;
+import java.io.StringWriter;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -12,6 +14,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
@@ -23,19 +26,36 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+
+import com.freshdirect.analytics.TimeslotEventModel;
+import com.freshdirect.common.address.ContactAddressModel;
+import com.freshdirect.customer.ErpDepotAddressModel;
+import com.freshdirect.delivery.DepotLocationModel;
+import com.freshdirect.delivery.model.DlvReservationModel;
+import com.freshdirect.delivery.model.UnassignedDlvReservationModel;
+import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.fdstore.FDTimeslot;
 import com.freshdirect.framework.util.StringUtil;
+import com.freshdirect.routing.constants.RoutingActivityType;
+import com.freshdirect.routing.model.GeographicLocation;
 import com.freshdirect.routing.model.HandOffBatchSession;
 import com.freshdirect.routing.model.IHandOffBatch;
 import com.freshdirect.routing.model.IHandOffBatchSession;
+import com.freshdirect.routing.model.ILocationModel;
 import com.freshdirect.routing.model.IOrderModel;
 import com.freshdirect.routing.model.IRoutingDepotId;
 import com.freshdirect.routing.model.IRoutingSchedulerIdentity;
 import com.freshdirect.routing.model.IServiceTimeScenarioModel;
 import com.freshdirect.routing.model.IWaveInstance;
+import com.freshdirect.routing.model.IZoneModel;
 import com.freshdirect.routing.model.RoutingDepotId;
 import com.freshdirect.routing.model.RoutingSchedulerIdentity;
 import com.freshdirect.routing.model.TrnFacilityType;
 import com.freshdirect.routing.model.WaveInstance;
+import com.freshdirect.routing.proxy.stub.transportation.DeliveryAreaOrder;
 import com.freshdirect.routing.service.IGeographyService;
 import com.freshdirect.routing.service.RoutingServiceLocator;
 import com.freshdirect.routing.service.exception.IIssue;
@@ -220,34 +240,73 @@ public class HandOffProcessManager {
     	public void execute()  {
     		System.out.println("\n################### ROUTING START "+ sessionInfo.getKey().getSessionName() +"##################");
     		
-    		List<IOrderModel> orders = new ArrayList<IOrderModel>();
+    		List<IOrderModel> dynamicOrders = new ArrayList<IOrderModel>();
+    		List<IOrderModel> staticOrders = new ArrayList<IOrderModel>();
+    		Map<IRoutingSchedulerIdentity, List<IOrderModel>> dynamicSchMap = new HashMap<IRoutingSchedulerIdentity, List<IOrderModel>>();
+    		Map<IRoutingSchedulerIdentity, List<IOrderModel>> staticSchMap =  new HashMap<IRoutingSchedulerIdentity, List<IOrderModel>>();
+    		Map<IRoutingSchedulerIdentity, List> rsvSchMap =  new HashMap<IRoutingSchedulerIdentity, List>();
+    		
     		for(Map.Entry<IRoutingSchedulerIdentity, List<IOrderModel>> schEntry : sessionInfo.getValue().entrySet()) {
-    			orders.addAll(schEntry.getValue());
+    			if(schEntry.getKey().isDynamic())
+    			{
+    				dynamicOrders.addAll(schEntry.getValue());
+    				dynamicSchMap.put(schEntry.getKey(), schEntry.getValue());
+    			}
+    			else
+    			{
+    				staticOrders.addAll(schEntry.getValue());
+    				staticSchMap.put(schEntry.getKey(), schEntry.getValue());
+    			}
+    			
     		}
     		try {
-	    		//Save Location
-	    		saveLocations(orders, sessionInfo.getKey().getRegion());
-	    		
-	    		//Purge Scheduler Instances
-	    		purgeOrders(sessionInfo.getValue().keySet());
-	    		
-	    		if(RoutingServicesProperties.getRoutingBatchSyncEnabled()) {
-	    			//Setup WaveInstances for DeliveryDate and CutOff and empty out resources for other cutoff
-	    			setupWaveInstances(context.getHandOffBatch(), sessionInfo.getValue().keySet());
-	    		}
-	    		//Bulk Reserve and Other Child Processes
-	    		Map<IRoutingSchedulerIdentity, List> unassignedOrders = schedulerBulkReserveOrders(sessionInfo.getValue().keySet()
-	    																		, sessionInfo.getValue()
-	    																		, (IServiceTimeScenarioModel)context.getProcessScenario()
-	    																		, sessionInfo.getKey());
-	    		
-	    		// Save Unassigned to RoadNet
-	    		saveUnassignedToRoadNet(sessionInfo.getKey(), unassignedOrders);
-	    		    		 
-	    		new HandOffServiceProxy().addNewHandOffBatchSession(sessionInfo.getKey().getBatchId()
-	    															  , sessionInfo.getKey().getSessionName()
-	    															  , sessionInfo.getKey().getRegion());
-	    		
+    			if(staticOrders!=null && staticOrders.size()>0)
+    			{
+		    		//Save Location
+		    		saveLocations(staticOrders, sessionInfo.getKey().getRegion());
+		    		
+		    		//Purge Scheduler Instances
+		    		purgeOrders(staticSchMap.keySet());
+		    		
+		    		if(RoutingServicesProperties.getRoutingBatchSyncEnabled()) {
+		    			//Setup WaveInstances for DeliveryDate and CutOff and empty out resources for other cutoff
+		    			setupWaveInstances(context.getHandOffBatch(), staticSchMap.keySet());
+		    		}
+		    		//Bulk Reserve and Other Child Processes
+		    		Map<IRoutingSchedulerIdentity, List> unassignedOrders = schedulerBulkReserveOrders(staticSchMap.keySet()
+		    																		,staticSchMap
+		    																		, (IServiceTimeScenarioModel)context.getProcessScenario()
+		    																		, sessionInfo.getKey());
+		    		
+		    		
+		    		// Save Unassigned to RoadNet
+		    		saveUnassignedToRoadNet(sessionInfo.getKey(), unassignedOrders);
+		    		    		 
+		    	}
+    			if(dynamicOrders!=null && dynamicOrders.size()>0)
+    			{
+    				rsvSchMap = handleUnassignedReservations(sessionInfo.getKey().getRegion(), context.getHandOffBatch().getDeliveryDate(), context.getHandOffBatch().getCutOffDateTime());
+    				
+    				RoutingEngineServiceProxy proxy = new RoutingEngineServiceProxy();
+        	    	Iterator tmpIterator = dynamicSchMap.keySet().iterator();
+        			
+        	    	while(tmpIterator.hasNext()) 
+        			{
+        				IRoutingSchedulerIdentity schedulerId = (IRoutingSchedulerIdentity)tmpIterator.next();
+        				sendRouteToRoadNet(proxy, schedulerId,  sessionInfo.getKey(), RoutingDateUtil.getWaveCode(context.getHandOffBatch().getCutOffDateTime()));
+        			}
+        	    	if(rsvSchMap!=null && rsvSchMap.keySet().size()>0)
+    				saveUnassignedToRoadNet(sessionInfo.getKey(), rsvSchMap);
+    				
+    				
+    			}
+    			if((dynamicOrders!=null && dynamicOrders.size()>0) ||
+    			(staticOrders!=null && staticOrders.size()>0))
+    				new HandOffServiceProxy().addNewHandOffBatchSession(sessionInfo.getKey().getBatchId()
+		    															  , sessionInfo.getKey().getSessionName()
+    																	  , sessionInfo.getKey().getRegion());
+    			
+		    		
     		} catch (RoutingProcessException e) {
     			e.printStackTrace();
     			exception = e;
@@ -255,9 +314,153 @@ public class HandOffProcessManager {
 				ex.printStackTrace();
     			exception = ex;
 			}
+    		finally
+    		{
+    			
+    		}
     		System.out.println("\n################### ROUTING END "+ sessionInfo.getKey().getSessionName() +"##################");
     	}
     	
+    	private Map<IRoutingSchedulerIdentity, List> handleUnassignedReservations(String region, Date deliveryDate, Date cutOff)
+    	{
+    		long startTime = System.currentTimeMillis();
+    		DeliveryServiceProxy proxy = new DeliveryServiceProxy();
+    		RoutingEngineServiceProxy routingProxy = new RoutingEngineServiceProxy();
+			List<UnassignedDlvReservationModel> unassignedReservations=new ArrayList<UnassignedDlvReservationModel>();
+			Map<IRoutingSchedulerIdentity, List> rsvSchMap =  new HashMap<IRoutingSchedulerIdentity, List>();
+			IGeographyService geoService = RoutingServiceLocator.getInstance().getGeographyService();
+			RoutingEngineServiceProxy routingEngineProxy = new RoutingEngineServiceProxy();
+			
+				RoutingInfoServiceProxy routingInfoProxy = new RoutingInfoServiceProxy();
+				List<String> zones = routingInfoProxy.getStaticZonesByDate(context.getHandOffBatch().getDeliveryDate());
+		    	
+	    		unassignedReservations = proxy.getUnassignedReservations(deliveryDate,cutOff);
+	    		
+				if(unassignedReservations != null && unassignedReservations.size() > 0) {			
+					int unassignedProcessedCnt = 0;
+					int unassignedBatchCnt = 0;
+					
+					Map<String, DepotLocationModel> depots = proxy.getDepotLocations();
+					
+					for (UnassignedDlvReservationModel reservation : unassignedReservations) {
+						unassignedProcessedCnt++;
+						unassignedBatchCnt++;
+						if(unassignedBatchCnt > 25) {
+							unassignedBatchCnt = 0;
+							long batchTime = System.currentTimeMillis();
+							if((batchTime - startTime) > (FDStoreProperties.getUnassignedProcessingLimit() * 60 * 1000)) {
+								System.out.println("Unassigned Processing Batch Completed : "+unassignedProcessedCnt);
+								break;
+							}														
+						}						
+					
+						
+						processReservation(reservation,depots);
+					}
+				}
+				unassignedReservations = proxy.getUnassignedReservationsEx(deliveryDate,cutOff);
+				
+				int cancelReservations = 0;
+				for (UnassignedDlvReservationModel reservation : unassignedReservations) {
+					if(RoutingActivityType.CANCEL_TIMESLOT.equals(reservation.getUnassignedActivityType()))
+						cancelReservations++;
+				}
+				if(cancelReservations>0)
+					throw new RoutingProcessException(null, null,IIssue.PROCESS_CANCEL_RESERVATIONS);
+				
+				for (UnassignedDlvReservationModel reservation : unassignedReservations) {
+	    			IOrderModel orderModel = RoutingUtil.getOrderModel(reservation, reservation.getAddress(), reservation.getOrderId(), reservation.getId());
+	    			GeographicLocation _geoLocModel = new GeographicLocation();
+	    			_geoLocModel.setLatitude(
+	    					Double.toString(reservation.getAddress().getAddressInfo().getLatitude()));
+	    			_geoLocModel.setLongitude(
+	    					Double.toString(reservation.getAddress().getAddressInfo().getLatitude()));
+	    			orderModel.getDeliveryInfo().getDeliveryLocation().getBuilding().setGeographicLocation(_geoLocModel);
+	    			orderModel.getDeliveryInfo().setDeliveryStartTime(reservation.getStartTime());
+	    			
+	    			orderModel.getDeliveryInfo().setDeliveryEndTime(reservation.getEndTime());
+	    			orderModel.getDeliveryInfo().setDeliveryDate(deliveryDate);
+	    			ILocationModel location = orderModel.getDeliveryInfo().getDeliveryLocation();
+	    			location = geoService.getLocation(location);
+	    			orderModel.getDeliveryInfo().getDeliveryLocation().setLocationId(location.getLocationId());
+	    			
+	    			IZoneModel zoneModel = proxy.getDeliveryZone(reservation.getZoneCode());
+	    			orderModel.getDeliveryInfo().setDeliveryZone(zoneModel);
+	    			IRoutingSchedulerIdentity schedulerId = getSchedulerId(null,orderModel,zones);
+	    			DeliveryAreaOrder dlvOrder = routingProxy.getDeliveryAreaModel(schedulerId,orderModel,schedulerId.getRegionId(),
+							 RoutingServicesProperties.getDefaultLocationType()				
+							, RoutingServicesProperties.getDefaultOrderType());
+	    			if(region.equals(schedulerId.getRegionId()) && schedulerId.isDynamic())
+	    			{
+	    			if(!rsvSchMap.containsKey(schedulerId)) {
+	    				rsvSchMap.put(schedulerId, new ArrayList<IOrderModel>());
+					}
+	    			rsvSchMap.get(schedulerId).add(dlvOrder);
+	    			}
+	    		}
+				
+				
+				
+				
+    		return rsvSchMap;
+    	}
+    	
+    	public Context getInitialContext() throws NamingException {
+    		Hashtable<String, String> h = new Hashtable<String, String>();
+    		h.put(Context.INITIAL_CONTEXT_FACTORY, "weblogic.jndi.WLInitialContextFactory");
+    		h.put(Context.PROVIDER_URL, FDStoreProperties.getRoutingProviderURL());
+    		return new InitialContext(h);
+    	}
+    	
+    	 private void processReservation(DlvReservationModel reservation, Map<String, DepotLocationModel> depots) {
+    	    	try {
+    	    		
+    	    		TimeslotEventModel event = null;
+    	    		ContactAddressModel address =((UnassignedDlvReservationModel)reservation).getAddress(); 
+    	    		DeliveryServiceProxy proxy = new DeliveryServiceProxy();
+    				
+    	    		
+    	    		if(address == null) {//Depot
+
+    	    			String locationId = reservation.getAddressId();
+    	    			DepotLocationModel depot = depots.get(locationId);
+    	    			if(depot != null) {
+    		    			address=new ErpDepotAddressModel(depot.getAddress());  
+    	    			}
+    	    		}
+
+    	    		if(address != null) {
+    		    		RoutingActivityType unassignedAction = reservation.getUnassignedActivityType();
+    		    		FDTimeslot _timeslot = new FDTimeslot(proxy.getTimeslotById(reservation.getTimeslotId()));
+    		    		if(unassignedAction != null) {
+    			    		if(RoutingActivityType.RESERVE_TIMESLOT.equals(unassignedAction)) {
+    			    			if(_timeslot != null) {
+    			    				proxy.reserveTimeslotEx(reservation, address, _timeslot, event);
+    			    			}
+    			    		} else {
+    			
+    			    			proxy.commitReservationEx(reservation, address, event);  
+    			    			if(reservation.getUpdateStatus() != null) {
+    			    				proxy.updateReservationEx(reservation, address, _timeslot);
+    			    			}
+    						}
+    		    		} else if(reservation.getUpdateStatus() != null) {
+    		    			proxy.updateReservationEx(reservation, address, _timeslot);
+    		    		}
+    	    		} else {
+    	    			System.out.println("handleUnassignedOrders failed to fetch address reservation for id "+reservation.getId().toString());
+    	    		}
+    	    		
+    				 
+    				 
+    			} catch (Exception e) {
+    				StringWriter sw = new StringWriter();
+    				e.printStackTrace(new PrintWriter(sw));
+    			}
+    	    }
+    	    
+    	 
+    	 
     	private void saveLocations(List lstOrders, String region) throws  RoutingProcessException {
         	try {
     	    	RoutingEngineServiceProxy proxy = new RoutingEngineServiceProxy();
@@ -390,9 +593,9 @@ public class HandOffProcessManager {
     				
     				schedulerBalanceRoutes(proxy, schedulerId, scenario);
     				
-    				sendRouteToRoadNet(proxy, schedulerId, session);
+    				sendRouteToRoadNet(proxy, schedulerId, session, null);
     				
-    				schedulerRemoveFromServer(proxy, schedulerId);    				
+    				schedulerUnload(proxy, schedulerId);    				
     			}
         	} catch (RoutingServiceException e) {
         		e.printStackTrace();
@@ -402,7 +605,7 @@ public class HandOffProcessManager {
         	return unassignedOrders;
         }
         
-        private void schedulerRemoveFromServer(RoutingEngineServiceProxy proxy, IRoutingSchedulerIdentity schedulerId) throws  RoutingProcessException {
+        private void schedulerUnload(RoutingEngineServiceProxy proxy, IRoutingSchedulerIdentity schedulerId) throws  RoutingProcessException {
         	    	
         	try {
         		if(RoutingServicesProperties.isRemoveSchedulerEnabled()) {
@@ -444,10 +647,10 @@ public class HandOffProcessManager {
         }
         
         private String sendRouteToRoadNet(RoutingEngineServiceProxy proxy, IRoutingSchedulerIdentity schedulerId, 
-        											IHandOffBatchSession session) throws  RoutingProcessException {
+        											IHandOffBatchSession session, String waveCode) throws  RoutingProcessException {
         	String sessionDescription = null;    	
         	try {    		
-    			proxy.sendRoutesToRoadNet(schedulerId, session.getSessionName(),null);
+    			proxy.sendRoutesToRoadNet(schedulerId, session.getSessionName(), waveCode);
         	} catch (RoutingServiceException e) {
         		e.printStackTrace();
         		StringBuffer strBuf = new StringBuffer();
@@ -537,6 +740,9 @@ public class HandOffProcessManager {
     	countMapping.put("FD", regularCnt);
     	countMapping.put("MDP", depotCnt);
     	
+    	RoutingInfoServiceProxy routingInfoProxy = new RoutingInfoServiceProxy();
+    	List<String> zones = routingInfoProxy.getStaticZonesByDate(context.getHandOffBatch().getDeliveryDate());
+    	
     	String sessionDescription = null;
     	    	
     	Map<IRoutingSchedulerIdentity, List<IOrderModel>> schMapping = new HashMap<IRoutingSchedulerIdentity, List<IOrderModel>>();
@@ -547,7 +753,8 @@ public class HandOffProcessManager {
 			
 			while(tmpIterator.hasNext()) {
 				orderModel = (IOrderModel)tmpIterator.next();
-				schedulerId = getSchedulerId(null, orderModel);
+				schedulerId = getSchedulerId(null, orderModel, zones);
+				
 				if(!schMapping.containsKey(schedulerId)) {
 					schMapping.put(schedulerId, new ArrayList<IOrderModel>());
 				}
@@ -577,7 +784,7 @@ public class HandOffProcessManager {
 			Map.Entry entry = (Map.Entry)it.next();
 			sortedSchMapping.put((IRoutingSchedulerIdentity)entry.getKey(), (List<IOrderModel>)entry.getValue());
 		}
-				
+		
 		IHandOffBatchSession session = null;
 		
 		for(Map.Entry<IRoutingSchedulerIdentity, List<IOrderModel>> schEntry : sortedSchMapping.entrySet()) {
@@ -606,7 +813,7 @@ public class HandOffProcessManager {
     }
 
 
-    private IRoutingSchedulerIdentity getSchedulerId(IRoutingSchedulerIdentity schedulerId, IOrderModel orderModel) {
+    private IRoutingSchedulerIdentity getSchedulerId(IRoutingSchedulerIdentity schedulerId, IOrderModel orderModel, List<String> zones) {
 
     	if(schedulerId == null) {
     		schedulerId = new RoutingSchedulerIdentity();
@@ -618,8 +825,18 @@ public class HandOffProcessManager {
     				&& orderModel.getDeliveryInfo().getDeliveryZone() != null
     					&& orderModel.getDeliveryInfo().getDeliveryZone().getArea() != null) {
     		schedulerId.setDepot(orderModel.getDeliveryInfo().getDeliveryZone().getArea().isDepot());
-    	}
+    		
     	
+    	}
+    	if(zones.contains(schedulerId.getArea().getAreaCode()))
+		{
+			schedulerId.setDynamic(false);
+		}
+		else
+		{
+			schedulerId.setDynamic(true);
+		}
+			
     	return schedulerId;
     }
 

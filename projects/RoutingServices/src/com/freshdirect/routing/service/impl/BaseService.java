@@ -33,8 +33,8 @@ public class BaseService {
 		
 		try {
 			
-			if(schedulerId != null &&  schedulerId.isDepot()) {		
-				return RoutingServiceLocator.getInstance().getTransportationSuiteDBatchProviderService();
+			if(schedulerId != null &&  schedulerId.getArea() != null && schedulerId.getArea().getAreaCode() != null) {		
+				return RoutingServiceLocator.getInstance().getTransportationSuiteBatchProviderService(schedulerId.getArea().getAreaCode());
 			} else {
 				return RoutingServiceLocator.getInstance().getTransportationSuiteBatchProviderService();
 			}
@@ -44,7 +44,7 @@ public class BaseService {
 			throw new RemoteException();
 		}
 	}
-	
+		
 	public RouteNetWebService getRouteNetBatchService() throws RemoteException {
 		try {
 			return RoutingServiceLocator.getInstance().getRouteNetBatchService();

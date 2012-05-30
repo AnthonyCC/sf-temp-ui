@@ -186,7 +186,7 @@ public class RoutingDataEncoder {
 
 		DeliveryAreaOrder order = new DeliveryAreaOrder();
 		order.setIdentity(encodeDeliveryAreaOrderIdentity(schedulerId.getRegionId(),schedulerId.getArea().getAreaCode()
-				,schedulerId.getDeliveryDate(), orderModel.getOrderNumber()));
+				,schedulerId.getDeliveryDate(), (orderModel.getDeliveryInfo().getReservationId()!=null)?orderModel.getDeliveryInfo().getReservationId():orderModel.getOrderNumber() )); 
 		order.setOrderType(orderType);
 
 		order.setReservedTime(baseCalendar);
@@ -220,6 +220,8 @@ public class RoutingDataEncoder {
 				.getGeographicLocation().getLatitude())*1000000));
 		order.setLongitude((int)(getVal(orderModel.getDeliveryInfo().getDeliveryLocation().getBuilding()
 				.getGeographicLocation().getLongitude())*1000000));
+		
+		order.setReferenceNumber(orderModel.getOrderNumber());
 		return order;
 	}
 	
@@ -361,7 +363,7 @@ public class RoutingDataEncoder {
 		delOrderId.setRegionId(regionId);
 				
 		return delOrderId;
-	}
+	}	
 	
 	public static LocationIdentity encodeLocationIdentity(String regionId, String locationType, String locationId) {
 		//param1 regionId;
@@ -405,9 +407,8 @@ public class RoutingDataEncoder {
 		SchedulerSendRoutesToRoadnetExOptions options = new SchedulerSendRoutesToRoadnetExOptions();
 		options.setSessionDescription(sessionDescription);
 		options.setWaveCriteria(null);
-		if(waveCode!=null)
+		if(waveCode!=null) //Wavecode is passed for dynamic routes to send based on the cutoff.
 			options.setWaveCriteria(encodeWaveCriteria(waveCode));
-		
 		return options;
 	}
 	
@@ -456,6 +457,7 @@ public class RoutingDataEncoder {
 		schBuldRsvOrdersOptions.setSequenced(RoutingServicesProperties.getRoutingParamSequenced());
 		schBuldRsvOrdersOptions.setSingleRoute(RoutingServicesProperties.getRoutingParamSingleRoute());
 		schBuldRsvOrdersOptions.setMovable(RoutingServicesProperties.getRoutingParamMovable());
+		
 		return schBuldRsvOrdersOptions;		
 	}
 	

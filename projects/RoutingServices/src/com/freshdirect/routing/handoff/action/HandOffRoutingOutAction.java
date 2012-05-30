@@ -72,10 +72,23 @@ public class HandOffRoutingOutAction extends AbstractHandOffAction {
 		RoutingInfoServiceProxy routingInfoProxy = new RoutingInfoServiceProxy();
 		DeliveryServiceProxy dlvProxy = new DeliveryServiceProxy();
 		
+		Map<String,String> rsvToOrderMap = new HashMap<String, String>();
+		List<IHandOffBatchStop> _tmpStops =
+				proxy.getOrderByCutoff(this.getBatch().getDeliveryDate()
+				, this.getBatch().getCutOffDateTime());
+    	
+		Iterator<IHandOffBatchStop> _tmpStopIterator = _tmpStops.iterator();
+		while(_tmpStopIterator.hasNext())
+		{
+			IHandOffBatchStop _tmpStop = (IHandOffBatchStop)_tmpStopIterator.next();
+			rsvToOrderMap.put(_tmpStop.getDeliveryInfo().getReservationId(), _tmpStop.getOrderNumber());
+		}
+		
 		Map<IHandOffBatchSession, Map<String, Set<IRouteModel>>> sessionMapping = new HashMap<IHandOffBatchSession
 																						, Map<String, Set<IRouteModel>>>();
 		
 		List<IHandOffBatchStop> s_stops = new ArrayList<IHandOffBatchStop>();
+		TreeSet _stops = new TreeSet();
 		List<IHandOffBatchRoute> s_routes = new ArrayList<IHandOffBatchRoute>();
 		List<IHandOffBatchTrailer> s_trailers = new ArrayList<IHandOffBatchTrailer>();
 		IHandOffBatchStop s_stop = null;
@@ -141,7 +154,7 @@ public class HandOffRoutingOutAction extends AbstractHandOffAction {
 				
 				for(Map.Entry<IHandOffBatchSession, Map<String, Set<IRouteModel>>> sesEntry : sessionMapping.entrySet()) {
 					if(sesEntry.getKey().isDepot()) {
-						Map<String, Set<IRouteModel>> convertedDptRoutes = convertDptToRegOrders(sessionMapping.get(sesEntry.getKey()));						
+						Map<String, Set<IRouteModel>> convertedDptRoutes = convertDptToRegOrders(sessionMapping.get(sesEntry.getKey()),rsvToOrderMap);						
 						sessionMapping.put(sesEntry.getKey(), convertedDptRoutes);
 					} 					
 				}
@@ -167,7 +180,12 @@ public class HandOffRoutingOutAction extends AbstractHandOffAction {
 										throw new RoutingServiceException("Stop Arrival/Departure Time is not found. Check the routing session"
 												, null, IIssue.PROCESS_HANDOFFBATCH_ERROR);
 									}
+									if(rsvToOrderMap.containsKey(_stop.getOrderNumber()))
+										_stop.setOrderNumber(rsvToOrderMap.get(_stop.getOrderNumber()));
+									_stops.add(_stop);
 									s_stop = new HandOffBatchStop(_stop);
+									
+									
 									s_stop.setBatchId(this.getBatch().getBatchId());
 									s_stop.setRouteId(route.getRouteId());
 									s_stop.setSessionName(sesEntry.getKey().getSessionName());
@@ -179,6 +197,8 @@ public class HandOffRoutingOutAction extends AbstractHandOffAction {
 									}
 									s_stops.add(s_stop);
 								}
+								route.setStops(_stops);
+								
 								s_route = new HandOffBatchRoute(route);
 								s_route.setBatchId(this.getBatch().getBatchId());
 								s_route.setArea(areaEntry.getKey());
@@ -412,7 +432,7 @@ public class HandOffRoutingOutAction extends AbstractHandOffAction {
 		return EnumHandOffBatchStatus.ROUTEGENFAILED;
 	}
 	
-	protected Map<String, Set<IRouteModel>> convertDptToRegOrders(Map<String, Set<IRouteModel>> dptRoutes) throws RoutingServiceException {
+	protected Map<String, Set<IRouteModel>> convertDptToRegOrders(Map<String, Set<IRouteModel>> dptRoutes, Map<String,String> rsvToOrderMap) throws RoutingServiceException {
 				
 		int allowedDepartTimeDiff = RoutingServicesProperties.getDepotDepartTimeDiff();
 		
@@ -445,6 +465,9 @@ public class HandOffRoutingOutAction extends AbstractHandOffAction {
 						if(currRouteId == null) {
 							currRouteId = routeID;
 						}
+						
+						if(rsvToOrderMap.containsKey(_order.getOrderNumber()))
+							_order.setOrderNumber(rsvToOrderMap.get(_order.getOrderNumber()));
 						
 						if(_order.getOrderNumber() == null || _order.getOrderNumber().trim().length() == 0
 								//|| IRoutingStopModel.DEPOT_STOPNO.equalsIgnoreCase(_order.getOrderNumber())) {

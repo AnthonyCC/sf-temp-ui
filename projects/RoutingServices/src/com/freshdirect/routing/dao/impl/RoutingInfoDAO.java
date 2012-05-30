@@ -630,6 +630,35 @@ public class RoutingInfoDAO extends BaseDAO implements IRoutingInfoDAO   {
 		return result;
 	}
 
+	private static final String GET_STATIC_ZONEDATE_QRY = "select z.zone_code from dlv.zone z, dlv.timeslot t where t.zone_id = z.id " +
+			"and t.base_date = ? and t.is_dynamic is null group by z.zone_code having count(*) > 0";
+	
+	public List<String> getStaticZonesByDate(final Date deliveryDate)  throws SQLException {
+		final List<String> zones = new ArrayList<String>();
+
+		PreparedStatementCreator creator=new PreparedStatementCreator() {
+			public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
+
+				PreparedStatement ps = connection.prepareStatement(GET_STATIC_ZONEDATE_QRY);	
+				ps.setDate(1, new java.sql.Date(deliveryDate.getTime()));
+				
+				return ps;
+			}
+		};
+
+		jdbcTemplate.query(creator, 
+				new RowCallbackHandler() { 
+			public void processRow(ResultSet rs) throws SQLException {				    	
+				do {
+					zones.add(rs.getString("zone_code"));
+				} while(rs.next());		        		    	
+			}
+		}
+		);		
+		return zones;
+	}
+
+	
 	private static final String GET_PLANNEDTRAILERBYDATE_QRY = "select P.PLAN_DATE DISPATCH_DATE, P.REGION, P.START_TIME DISPATCH_TIME, P.FIRST_DLV_TIME, P.LAST_DLV_TIME, P.MAX_TIME, P.CUTOFF_DATETIME CUT_OFF, F.FACILITY_CODE, "+ 
 			"F.LEAD_TO_TIME TO_LEADTIME, F.LEAD_FROM_TIME FROM_LEADTIME, F.ROUTING_CODE " +
 			"from transp.plan p, TRANSP.TRN_FACILITY f "+

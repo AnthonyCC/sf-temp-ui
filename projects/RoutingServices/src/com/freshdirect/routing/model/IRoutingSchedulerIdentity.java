@@ -17,5 +17,10 @@ public interface IRoutingSchedulerIdentity {
 	boolean isDepot();
 
 	void setDepot(boolean isDepot);
+	
+	boolean isDynamic();
+	
+	void setDynamic(boolean isDynamic);
+	
 		
 }

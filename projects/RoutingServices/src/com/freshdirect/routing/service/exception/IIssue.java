@@ -59,4 +59,7 @@ public interface IIssue {
 	
 	public final static String PROCESS_AUTODISPATCH_ERROR = "ISSUE040";
 	
+	public final static String PROCESS_CANCEL_RESERVATIONS = "ISSUE041";
+	
+
 }

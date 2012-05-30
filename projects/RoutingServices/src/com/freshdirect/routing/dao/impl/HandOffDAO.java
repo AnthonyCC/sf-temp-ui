@@ -104,7 +104,7 @@ public class HandOffDAO extends BaseDAO implements IHandOffDAO   {
 	
 	private static String GET_ORDERSBY_DATE_CUTOFF = "SELECT /*+ USE_NL(s, sa) */ c.id customer_id, fdc.id fdc_id, ci.first_name, ci.last_name, c.user_id, ci.home_phone, ci.business_phone, "
 		+ "ci.cell_phone, s.id weborder_id, s.sap_number erporder_id, sa.requested_date, s.status, sa.amount, di.starttime, di.endtime, "
-		+ "di.cutofftime, di.zone ZONE, di.address1, di.address2, di.apartment, di.city, di.state, di.zip, di.country, di.delivery_type, rs.type, rs.NUM_CARTONS ,rs.NUM_FREEZERS, rs.NUM_CASES "
+		+ "di.cutofftime, di.zone ZONE, di.address1, di.address2, di.apartment, di.city, di.state, di.zip, di.country, di.delivery_type, rs.type, rs.NUM_CARTONS ,rs.NUM_FREEZERS, rs.NUM_CASES, rs.id "
 		+ "from cust.customer c, cust.fdcustomer fdc " 
 		+ ", cust.customerinfo ci " 
 		+ ", cust.sale s, cust.salesaction sa " 
@@ -118,7 +118,7 @@ public class HandOffDAO extends BaseDAO implements IHandOffDAO   {
 	
 	private static String GET_ORDERSBY_DATE_CUTOFFSTANDBY = "SELECT /*+ USE_NL(s, sa) */ c.id customer_id, fdc.id fdc_id, ci.first_name, ci.last_name, c.user_id, ci.home_phone, ci.business_phone, "
 		+ "ci.cell_phone, s.id weborder_id, s.sap_number erporder_id, sa.requested_date, s.status, sa.amount, di.starttime, di.endtime, "
-		+ "di.cutofftime, di.zone ZONE, di.address1, di.address2, di.apartment, di.city, di.state, di.zip, di.country, di.delivery_type, rs.type, rs.NUM_CARTONS , rs.NUM_FREEZERS , rs.NUM_CASES "
+		+ "di.cutofftime, di.zone ZONE, di.address1, di.address2, di.apartment, di.city, di.state, di.zip, di.country, di.delivery_type, rs.type, rs.NUM_CARTONS , rs.NUM_FREEZERS , rs.NUM_CASES. rs.id "
 		+ "from cust.customer@DBSTOSBY.NYC.FRESHDIRECT.COM c, cust.fdcustomer@DBSTOSBY.NYC.FRESHDIRECT.COM fdc " 
 		+ ", cust.customerinfo@DBSTOSBY.NYC.FRESHDIRECT.COM ci " 
 		+ ", cust.sale@DBSTOSBY.NYC.FRESHDIRECT.COM s, cust.salesaction@DBSTOSBY.NYC.FRESHDIRECT.COM sa " 
@@ -1325,9 +1325,12 @@ public class HandOffDAO extends BaseDAO implements IHandOffDAO   {
 						
 						ILocationModel locationModel = new LocationModel(bmodel);
 						locationModel.setApartmentNumber(rs.getString("APARTMENT"));
+						deliveryModel.setReservationId(rs.getString("id"));
 						
 						deliveryModel.setDeliveryLocation(locationModel);
 						infoModel.setDeliveryInfo(deliveryModel);
+						
+						
 	
 					} while(rs.next());		        		    	
 				}

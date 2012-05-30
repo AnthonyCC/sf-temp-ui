@@ -4,8 +4,16 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import com.freshdirect.analytics.TimeslotEventModel;
+import com.freshdirect.common.address.ContactAddressModel;
+import com.freshdirect.delivery.DepotLocationModel;
+import com.freshdirect.delivery.model.DlvReservationModel;
+import com.freshdirect.delivery.model.DlvTimeslotModel;
+import com.freshdirect.fdstore.FDTimeslot;
+import com.freshdirect.delivery.model.UnassignedDlvReservationModel;
 import com.freshdirect.framework.util.EnumLogicalOperator;
 import com.freshdirect.routing.model.IDeliveryModel;
+import com.freshdirect.routing.model.IDeliveryReservation;
 import com.freshdirect.routing.model.IDeliverySlot;
 import com.freshdirect.routing.model.IDeliveryWindowMetrics;
 import com.freshdirect.routing.model.IDrivingDirection;
@@ -100,5 +108,41 @@ public class DeliveryServiceProxy extends BaseServiceProxy {
 	
 	public List<IDeliverySlot> getTimeslots(Date deliveryDate, Date cutOffTime, double latitude, double longitude, final String serviceType) throws RoutingServiceException {
 		return getService().getTimeslots(deliveryDate, cutOffTime, latitude, longitude, serviceType);
+	}
+	public List<UnassignedDlvReservationModel> getUnassignedReservations(Date deliveryDate, Date cutOff) throws RoutingServiceException {
+		return getService().getUnassignedReservations(deliveryDate, cutOff);
+	}
+	public Map<String, DepotLocationModel> getDepotLocations() throws RoutingServiceException {
+		return getService().getDepotLocations();
+	}
+
+	public DlvTimeslotModel getTimeslotById(String timeslotId) {
+		return getService().getTimeslotById(timeslotId);
+	}
+
+	public IDeliveryReservation reserveTimeslotEx(DlvReservationModel reservation,
+			ContactAddressModel address, FDTimeslot _timeslot,
+			TimeslotEventModel event) {
+		return getService().reserveTimeslotEx(reservation,
+				 address, _timeslot,
+				 event);
+		
+	}
+
+	public void commitReservationEx(DlvReservationModel reservation,
+			ContactAddressModel address, TimeslotEventModel event) {
+		getService().commitReservationEx(reservation, address, event);
+		
+	}
+
+	public void updateReservationEx(DlvReservationModel reservation,
+			ContactAddressModel address, FDTimeslot _timeslot) {
+		getService().updateReservationEx(reservation, address,_timeslot);
+		
+	}
+
+	public List<UnassignedDlvReservationModel> getUnassignedReservationsEx(
+			Date deliveryDate, Date cutOff) {
+		return getService().getUnassignedReservationsEx(deliveryDate, cutOff);
 	}
 }

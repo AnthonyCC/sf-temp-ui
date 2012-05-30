@@ -5,18 +5,48 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Category;
 
+import com.freshdirect.common.address.ContactAddressModel;
+import com.freshdirect.delivery.model.DlvReservationModel;
+import com.freshdirect.delivery.model.DlvTimeslotModel;
 import com.freshdirect.fdstore.FDStoreProperties;
-import com.freshdirect.framework.util.DateUtil;
+import com.freshdirect.fdstore.FDTimeslot;
 import com.freshdirect.framework.util.StringUtil;
-import com.freshdirect.routing.constants.EnumGeocodeConfidenceType;
+import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.routing.model.BuildingModel;
+import com.freshdirect.routing.model.DeliveryModel;
+import com.freshdirect.routing.model.DeliverySlot;
 import com.freshdirect.routing.model.IAreaModel;
+import com.freshdirect.routing.model.IBuildingModel;
+import com.freshdirect.routing.model.IDeliveryModel;
+import com.freshdirect.routing.model.IDeliveryReservation;
+import com.freshdirect.routing.model.IDeliverySlot;
+import com.freshdirect.routing.model.ILocationModel;
+import com.freshdirect.routing.model.IOrderModel;
+import com.freshdirect.routing.model.IPackagingModel;
+import com.freshdirect.routing.model.IRoutingSchedulerIdentity;
+import com.freshdirect.routing.model.IServiceTimeScenarioModel;
+import com.freshdirect.routing.model.IServiceTimeTypeModel;
+import com.freshdirect.routing.model.IZoneModel;
+import com.freshdirect.routing.model.LocationModel;
+import com.freshdirect.routing.model.OrderEstimationResult;
+import com.freshdirect.routing.model.OrderModel;
+import com.freshdirect.routing.model.PackagingModel;
+import com.freshdirect.routing.model.RoutingSchedulerIdentity;
 import com.freshdirect.routing.service.exception.RoutingServiceException;
+import com.freshdirect.routing.service.proxy.DeliveryServiceProxy;
+import com.freshdirect.routing.service.proxy.GeographyServiceProxy;
+import com.freshdirect.routing.service.proxy.PlantServiceProxy;
+import com.freshdirect.routing.service.proxy.RoutingEngineServiceProxy;
+import com.freshdirect.routing.service.proxy.RoutingInfoServiceProxy;
 
 public class RoutingUtil {
 	
+	private static final Category LOGGER = LoggerFactory.getInstance(RoutingUtil.class);
 	
 	public static String standardizeStreetAddress(String s1, String s2) {
 		String streetAddressResult = null;
@@ -129,5 +159,282 @@ public class RoutingUtil {
 			return "000";
 		}
 	}
+	
+	public static IOrderModel getOrderModel(DlvReservationModel reservation, ContactAddressModel address
+			, String orderNumber, String reservationId) {
+		
+			IOrderModel order= new OrderModel();
+			order.setDeliveryInfo(getDeliveryModel(address, reservationId));
+			if(reservation != null) {
+			if(reservation.getReservedOrderSize() != null) {
+			order.setReservedOrderSize(reservation.getReservedOrderSize());
+			}
+			if(reservation.getReservedServiceTime() != null) {
+			order.setReservedServiceTime(reservation.getReservedServiceTime());
+			}
+			if(reservation.getOverrideOrderSize() != null) {
+			order.setOverrideOrderSize(reservation.getOverrideOrderSize());
+			}
+			if(reservation.getOverrideServiceTime() != null) {
+			order.setOverrideServiceTime(reservation.getOverrideServiceTime());
+			}
+			
+			IPackagingModel pModel = new PackagingModel();
+			if(reservation.getNoOfCartons() != null) {
+			pModel.setNoOfCartons(reservation.getNoOfCartons());
+			}
+			if(reservation.getNoOfCases() != null) {
+			pModel.setNoOfCases(reservation.getNoOfCases());
+			}
+			if(reservation.getNoOfFreezers() != null) {
+			pModel.setNoOfFreezers(reservation.getNoOfFreezers());
+			}
+			order.getDeliveryInfo().setPackagingDetail(pModel);
+			
+			}
+			order.setCustomerName(new StringBuffer(100).append(address.getLastName()).append(", ").append(address.getFirstName()).toString());
+			order.setCustomerNumber(address.getCustomerId());
+			order.setOrderNumber(orderNumber);
+			return order;
+		}
+	private static IDeliveryModel getDeliveryModel(ContactAddressModel address, String reservationId) {
+		IDeliveryModel dlvInfo=new DeliveryModel();
+		dlvInfo.setDeliveryLocation(getLocation(address));
+		dlvInfo.setReservationId(reservationId);
+		return dlvInfo;
+	}
+	private static ILocationModel getLocation(ContactAddressModel address) {
+		
+		IBuildingModel building = new BuildingModel();
+		
+		building.setStreetAddress1(address.getAddress1());
+		building.setStreetAddress2(address.getAddress2());
+		
+		building.setCity(address.getCity());
+		building.setCountry(address.getCountry());
+		building.setState(address.getState());
+		building.setZipCode(address.getZipCode());
+		
+		ILocationModel loc= new LocationModel(building);
+		loc.setApartmentNumber(address.getApartment());
+		return loc;
+	}
+
+	public  static void confirmTimeslot(DlvReservationModel reservation,IOrderModel order) throws RoutingServiceException {
+		DeliveryServiceProxy dlvService=new DeliveryServiceProxy();
+		order.getDeliveryInfo().setDeliveryLocation(locateOrder(order));
+		order.getDeliveryInfo().setDeliveryZone(dlvService.getDeliveryZone(reservation.getZoneCode()));
+		order.getDeliveryInfo().setDeliveryDate(reservation.getDeliveryDate());
+		//schedulerUpdateOrderNo(order);
+		schedulerConfirmOrder(order, reservation);
+	}
+
+	public static void cancelTimeslot(DlvReservationModel reservation, IOrderModel order) throws RoutingServiceException {
+		DeliveryServiceProxy dlvService=new DeliveryServiceProxy();
+		order.getDeliveryInfo().setDeliveryLocation(locateOrder(order));
+		order.getDeliveryInfo().setDeliveryZone(dlvService.getDeliveryZone(reservation.getZoneCode()));
+		order.getDeliveryInfo().setDeliveryDate(reservation.getDeliveryDate());
+		schedulerCancelOrder(order,reservation);
+	}
+	
+	private static void schedulerConfirmOrder(IOrderModel orderModel,DlvReservationModel reservation) throws RoutingServiceException {
+
+		RoutingEngineServiceProxy routingService=new RoutingEngineServiceProxy();
+		orderModel.setOrderNumber(reservation.getOrderId());
+		orderModel.getDeliveryInfo().setReservationId(reservation.getId());		
+		routingService.schedulerConfirmOrder(orderModel);
+		schedulerUpdateOrderNo(orderModel);
+	}
+
+	private static boolean schedulerUpdateOrderNo(IOrderModel orderModel) throws RoutingServiceException {
+
+		RoutingEngineServiceProxy routingService=new RoutingEngineServiceProxy();        
+        return routingService.schedulerUpdateOrderNo(orderModel);        
+	}
+
+	private static void schedulerCancelOrder(IOrderModel orderModel,DlvReservationModel reservation) throws RoutingServiceException {
+
+
+		RoutingEngineServiceProxy routingService=new RoutingEngineServiceProxy();
+		orderModel.setOrderNumber( reservation.getOrderId());
+		routingService.schedulerCancelOrder(orderModel);
+	}
+	
+	private static ILocationModel locateOrder(IOrderModel order) throws RoutingServiceException  {
+		GeographyServiceProxy geoSrv = new GeographyServiceProxy();
+		
+		ILocationModel location = geoSrv.locateOrder(order);
+		if(location != null && order != null && order.getDeliveryInfo() != null) {
+			order.getDeliveryInfo().setDeliveryLocation(location);
+		}
+		return location;
+	}
+
+	public static IDeliverySlot getDeliverySlot(DlvTimeslotModel timeSlot) {
+
+		IDeliverySlot deliverySlot=new DeliverySlot();
+		
+		IRoutingSchedulerIdentity identity=new RoutingSchedulerIdentity();
+		identity.setDeliveryDate(timeSlot.getBaseDate());
+		deliverySlot.setZoneCode(timeSlot.getZoneCode());
+		deliverySlot.setSchedulerId(identity);
+		deliverySlot.setStartTime(timeSlot.getStartTimeAsDate());
+		deliverySlot.setStopTime(timeSlot.getEndTimeAsDate());
+		deliverySlot.setWaveCode(RoutingDateUtil.getWaveCode(timeSlot.getCutoffTimeAsDate()));
+		return deliverySlot;
+	}
+
+
+	public static  IDeliveryReservation reserveTimeslot(DlvReservationModel reservation, IOrderModel order 
+															, FDTimeslot timeslot) throws RoutingServiceException {
+		
+		IDeliverySlot reservedSlot = null;
+		DeliveryServiceProxy dlvService = new DeliveryServiceProxy();
+		RoutingInfoServiceProxy routingInfoproxy = new RoutingInfoServiceProxy();
+		
+		IZoneModel zoneModel = dlvService.getDeliveryZone(timeslot.getZoneCode());
+		order.getDeliveryInfo().setDeliveryZone(zoneModel);
+		order.getDeliveryInfo().setDeliveryDate(timeslot.getBaseDate());
+		
+		if(reservation.getOverrideOrderSize() != null) {
+			IPackagingModel pModel = new PackagingModel();
+			pModel.setNoOfCartons(reservation.getOverrideOrderSize().longValue());			
+			order.getDeliveryInfo().setPackagingDetail(pModel);
+
+		} else if(reservation.getMetricsSource() != null) {
+			IPackagingModel pModel = new PackagingModel();
+			pModel.setNoOfCartons(reservation.getNoOfCartons().longValue());	
+			pModel.setNoOfCases(reservation.getNoOfCases().longValue());
+			pModel.setNoOfFreezers(reservation.getNoOfFreezers().longValue());
+			pModel.setSource(reservation.getMetricsSource());
+			order.getDeliveryInfo().setPackagingDetail(pModel);
+			
+		} else {
+			IPackagingModel historyPackageInfo = getHistoricOrderSize(order);
+			order.getDeliveryInfo().setPackagingDetail(historyPackageInfo);
+		}
+					
+		Map<String, IServiceTimeTypeModel> serviceTimeTypeMapping = routingInfoproxy.getRoutingServiceTimeTypes();
+		order.getDeliveryInfo().setDeliveryLocation(locateOrder(order));
+		
+		IServiceTimeScenarioModel srvScenario = getRoutingScenario(order.getDeliveryInfo().getDeliveryDate());
+		OrderEstimationResult calculatedSize = estimateOrderSize(order, srvScenario, order.getDeliveryInfo().getPackagingDetail());
+		order.getDeliveryInfo().setCalculatedOrderSize(calculatedSize.getCalculatedOrderSize());
+		order.getDeliveryInfo().setPackagingDetail(calculatedSize.getPackagingModel());
+		
+		srvScenario.setZoneConfiguration(routingInfoproxy.getRoutingScenarioMapping(srvScenario.getCode()));
+		if(zoneModel.getServiceTimeType().getCode() != null) {
+			zoneModel.setServiceTimeType(serviceTimeTypeMapping.get(zoneModel.getServiceTimeType().getCode()));
+		} else {
+			zoneModel.setServiceTimeType(null);
+		}
+		if(order.getDeliveryInfo().getDeliveryLocation().getServiceTimeType() != null) {
+			order.getDeliveryInfo().getDeliveryLocation().setServiceTimeType(serviceTimeTypeMapping
+														.get(order.getDeliveryInfo().getDeliveryLocation().getServiceTimeType().getCode()));
+		} else {
+			order.getDeliveryInfo().getDeliveryLocation().setServiceTimeType(null);
+		}
+		if(order.getDeliveryInfo().getDeliveryLocation().getBuilding() != null 
+				&& order.getDeliveryInfo().getDeliveryLocation().getBuilding().getServiceTimeType() != null) {
+			order.getDeliveryInfo().getDeliveryLocation().getBuilding().setServiceTimeType(serviceTimeTypeMapping
+					.get(order.getDeliveryInfo().getDeliveryLocation().getBuilding().getServiceTimeType().getCode()));
+		} else {
+			order.getDeliveryInfo().getDeliveryLocation().getBuilding().setServiceTimeType(null);
+		}
+		
+		order.getDeliveryInfo().setCalculatedServiceTime(dlvService.getServiceTime(order,srvScenario));
+				
+		reservedSlot = getDeliverySlot(timeslot.getDlvTimeslot());
+		
+		return schedulerReserveOrder(order, reservedSlot );
+	}
+	
+	protected static IServiceTimeScenarioModel getRoutingScenario(Date dlvDate) throws RoutingServiceException {
+		return new RoutingInfoServiceProxy().getRoutingScenarioByDate(dlvDate);
+	}
+
+	protected static OrderEstimationResult estimateOrderSize(IOrderModel order, IServiceTimeScenarioModel scenario, IPackagingModel historyInfo) throws RoutingServiceException {
+		return new PlantServiceProxy().estimateOrderSize(order, scenario, historyInfo);
+	}
+
+	protected static IPackagingModel getHistoricOrderSize(IOrderModel order) throws RoutingServiceException {
+		return new PlantServiceProxy().getHistoricOrderSize(order);
+	}
+	
+	public static String getOrderNo(ContactAddressModel address) {
+		return address.getId()!=null ? new StringBuilder("T").append(address.getId()).toString():new StringBuilder("T").append((int)(Math.random()/0.00001)).toString();
+	}
+
+private static IDeliveryReservation schedulerReserveOrder(IOrderModel orderModel, IDeliverySlot slot) throws RoutingServiceException {
+		
+		schedulerSaveLocation(orderModel);
+		IDeliveryReservation reservation=new RoutingEngineServiceProxy().schedulerReserveOrder(orderModel, slot
+											, RoutingServicesProperties.getDefaultLocationType(), RoutingServicesProperties.getDefaultOrderType());
+		LOGGER.info("schedulerReserveOrder():: DeliveryReservation:"+reservation.isReserved());
+		return reservation;
+	}
+
+
+private static void schedulerSaveLocation(IOrderModel orderModel) throws RoutingServiceException {
+
+	new RoutingEngineServiceProxy().schedulerSaveLocation(orderModel, RoutingServicesProperties.getDefaultLocationType());
+}
+
+
+public static IOrderModel calculateReservationSize(DlvReservationModel reservation, IOrderModel order
+														, FDTimeslot timeslot) throws RoutingServiceException {
+	
+	RoutingInfoServiceProxy routingInfoproxy = new RoutingInfoServiceProxy();
+	DeliveryServiceProxy dlvService = new DeliveryServiceProxy();
+	
+	IZoneModel zoneModel = dlvService.getDeliveryZone(timeslot.getZoneCode());
+	order.getDeliveryInfo().setDeliveryZone(zoneModel);
+	order.getDeliveryInfo().setDeliveryDate(timeslot.getBaseDate());
+	
+	Map<String, IServiceTimeTypeModel> serviceTimeTypeMapping = routingInfoproxy.getRoutingServiceTimeTypes();
+	order.getDeliveryInfo().setDeliveryLocation(locateOrder(order));
+	
+	IServiceTimeScenarioModel srvScenario = getRoutingScenario(order.getDeliveryInfo().getDeliveryDate());
+	OrderEstimationResult calculatedSize = estimateOrderSize(order, srvScenario, order.getDeliveryInfo().getPackagingDetail());
+	order.getDeliveryInfo().setPackagingDetail(calculatedSize.getPackagingModel());
+	order.getDeliveryInfo().setCalculatedOrderSize(calculatedSize.getCalculatedOrderSize());
+	
+	srvScenario.setZoneConfiguration(routingInfoproxy.getRoutingScenarioMapping(srvScenario.getCode()));
+	if(zoneModel.getServiceTimeType().getCode() != null) {
+		zoneModel.setServiceTimeType(serviceTimeTypeMapping.get(zoneModel.getServiceTimeType().getCode()));
+	} else {
+		zoneModel.setServiceTimeType(null);
+	}
+	if(order.getDeliveryInfo().getDeliveryLocation().getServiceTimeType() != null) {
+		order.getDeliveryInfo().getDeliveryLocation().setServiceTimeType(serviceTimeTypeMapping
+													.get(order.getDeliveryInfo().getDeliveryLocation().getServiceTimeType().getCode()));
+	} else {
+		order.getDeliveryInfo().getDeliveryLocation().setServiceTimeType(null);
+	}
+	if(order.getDeliveryInfo().getDeliveryLocation().getBuilding() != null 
+			&& order.getDeliveryInfo().getDeliveryLocation().getBuilding().getServiceTimeType() != null) {
+		order.getDeliveryInfo().getDeliveryLocation().getBuilding().setServiceTimeType(serviceTimeTypeMapping
+				.get(order.getDeliveryInfo().getDeliveryLocation().getBuilding().getServiceTimeType().getCode()));
+	} else {
+		order.getDeliveryInfo().getDeliveryLocation().getBuilding().setServiceTimeType(null);
+	}
+	
+	order.getDeliveryInfo().setCalculatedServiceTime(dlvService.getServiceTime(order,srvScenario));
+		
+	return order;
+}
+
+
+public static boolean updateReservation(DlvReservationModel reservation, IOrderModel order) throws RoutingServiceException {
+			
+	RoutingEngineServiceProxy engineProxy = new RoutingEngineServiceProxy();
+	
+	DeliveryServiceProxy dlvService=new DeliveryServiceProxy();
+	order.getDeliveryInfo().setDeliveryLocation(locateOrder(order));
+	order.getDeliveryInfo().setDeliveryZone(dlvService.getDeliveryZone(reservation.getZoneCode()));
+	order.getDeliveryInfo().setDeliveryDate(reservation.getDeliveryDate());
+	
+	return engineProxy.schedulerUpdateOrder(order);		
+}
 	
 }

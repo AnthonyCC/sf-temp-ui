@@ -48,4 +48,6 @@ public interface IRoutingInfoService {
 	Map<String, TrnFacilityType> retrieveTrnFacilitys()throws RoutingServiceException;
 
 	Map<String, TrnFacility> retrieveTrnFacilityLocations() throws RoutingServiceException;
+
+	List<String> getStaticZonesByDate(Date deliveryDate);
 }

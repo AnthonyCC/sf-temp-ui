@@ -4,8 +4,16 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import com.freshdirect.analytics.TimeslotEventModel;
+import com.freshdirect.common.address.ContactAddressModel;
+import com.freshdirect.delivery.DepotLocationModel;
+import com.freshdirect.delivery.model.DlvReservationModel;
+import com.freshdirect.delivery.model.DlvTimeslotModel;
+import com.freshdirect.delivery.model.UnassignedDlvReservationModel;
+import com.freshdirect.fdstore.FDTimeslot;
 import com.freshdirect.framework.util.EnumLogicalOperator;
 import com.freshdirect.routing.model.IDeliveryModel;
+import com.freshdirect.routing.model.IDeliveryReservation;
 import com.freshdirect.routing.model.IDeliverySlot;
 import com.freshdirect.routing.model.IDeliveryWindowMetrics;
 import com.freshdirect.routing.model.IDrivingDirection;
@@ -58,4 +66,23 @@ public interface IDeliveryService {
 	List<IOrderModel> getRoutingOrderByDate(Date deliveryDate, String zoneCode, boolean filterExpiredCancelled) throws RoutingServiceException;
 	
 	List<IDeliverySlot> getTimeslots(Date deliveryDate, Date cutOffTime, double latitude, double longitude, final String serviceType) throws RoutingServiceException;
+	
+	List<UnassignedDlvReservationModel> getUnassignedReservations(Date deliveryDate, Date cutOff) throws RoutingServiceException;
+	
+	Map<String, DepotLocationModel> getDepotLocations() throws RoutingServiceException;
+
+	DlvTimeslotModel getTimeslotById(String timeslotId);
+
+	IDeliveryReservation reserveTimeslotEx(DlvReservationModel reservation,
+			ContactAddressModel address, FDTimeslot _timeslot,
+			TimeslotEventModel event);
+
+	void commitReservationEx(DlvReservationModel reservation,
+			ContactAddressModel address, TimeslotEventModel event);
+
+	void updateReservationEx(DlvReservationModel reservation,
+			ContactAddressModel address, FDTimeslot _timeslot);
+
+	List<UnassignedDlvReservationModel> getUnassignedReservationsEx(
+			Date deliveryDate, Date cutOff);
 }

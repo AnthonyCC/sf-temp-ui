@@ -132,6 +132,15 @@ public class RoutingInfoService extends BaseService implements IRoutingInfoServi
 		}	
 	}
 	
+	public List<String> getStaticZonesByDate(Date deliveryDate)  throws RoutingServiceException {
+		try {
+			return routingInfoDAOImpl.getStaticZonesByDate(deliveryDate);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			throw new RoutingServiceException(e, IIssue.PROCESS_RETRIEVEWAVEINSTANCE_UNSUCCESSFUL);
+		}	
+	}
+	
 	public IRoutingInfoDAO getRoutingInfoDAOImpl() {
 		return routingInfoDAOImpl;
 	}
