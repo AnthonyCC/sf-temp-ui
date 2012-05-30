@@ -998,8 +998,8 @@ public class FDStoreProperties {
         defaults.put(PROP_MKTADMIN_USER_NAME, "qaadmin");
         defaults.put(PROP_MKTADMIN_PASSWORD, "password01");
 
-        defaults.put(PROP_PAYMENT_METHOD_VERIFICATION_ENABLED, "true");
-        defaults.put(PROP_PAYMENT_METHOD_VERIFICATION_LIMIT, "3");
+        defaults.put(PROP_PAYMENT_METHOD_VERIFICATION_ENABLED, "false");
+        defaults.put(PROP_PAYMENT_METHOD_VERIFICATION_LIMIT, "5");
 
         defaults.put(PROP_ORDER_HISTORY_QUERY_ID, "3");
 
