@@ -129,7 +129,7 @@
 	<div id="top_image" style="float: left; padding-bottom: 10px; width: 100%;">
 		<span class="text12" style="float:left;">Already have a password? <a href="/login/login.jsp" style="text-decoration:none;">Log in now</a></span> <br/><br/>
 		<img src="/media_stat/images/profile/signup_easy.jpg" border="0" style="float:left;"/>
-		<br /><span class="text9" style="color:gray;float:left;">Sign up now and receive promotional materials or to place your first order.</span>
+		<br /><span class="text9" style="color:gray;float:left;width:370px;">Sign up now and receive promotional materials or to place your first order.</span>
 	</div>
 	<div class="fright hline" id="" style="width:100%;"><!-- --></div>
 	<div id="form_feilds" style="float:left;">
@@ -194,7 +194,7 @@
 			
 			<tr><td><div class="fright hline" id="" style="width:100%;"><!-- --></div></td></tr>
 			
-			<tr><td><span class="text9" style="color:gray;">By signing up, you agree to the <a href="javascript:popup('/registration/user_agreement.jsp','large')" style="font-weight:normal;">Terms of use</a></span></td></tr>
+			<tr><td><span class="text9" style="color:gray;">By signing up, you agree to the <a href="javascript:popWithInterval('/registration/user_agreement.jsp', false, '585', '400', 'Terms', false, true, false, false)" style="font-weight:normal;">Terms of use</a></span></td></tr>
 			<tr><td>&nbsp;</td></tr>
 			<tr><td>
 			<table style="" class="butCont fleft">
