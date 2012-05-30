@@ -296,7 +296,7 @@ public class RoutingServicesProperties {
 	}
 	
 	public static String getTransportationSuiteBatchProviderURL(String serviceType) {
-		String _refUrl = get(PROP_TRANSPORTATIONSUITE_PROVIDER_URL+"."+serviceType);
+		String _refUrl = get(PROP_TRANSPORTATIONSUITEBATCH_PROVIDER_URL+"."+serviceType);
 		if(_refUrl != null) {
 			return get(_refUrl);
 		}
