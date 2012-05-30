@@ -2,7 +2,6 @@ package com.freshdirect.webapp.taglib.fdstore;
 
 import java.io.IOException;
 import java.text.MessageFormat;
-import java.util.Enumeration;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
@@ -22,17 +21,14 @@ import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDInvalidAddressException;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
-import com.freshdirect.fdstore.customer.FDAuthenticationException;
 import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
-import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.FDUser;
 import com.freshdirect.fdstore.referral.FDReferralManager;
-import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.util.NVL;
 import com.freshdirect.framework.util.log.LoggerFactory;
-import com.freshdirect.framework.webapp.ActionResult;
 import com.freshdirect.framework.webapp.ActionError;
+import com.freshdirect.framework.webapp.ActionResult;
 import com.freshdirect.webapp.action.Action;
 import com.freshdirect.webapp.action.HttpContext;
 import com.freshdirect.webapp.action.fdstore.RegistrationAction;
@@ -604,17 +600,16 @@ public class SiteAccessControllerTag extends com.freshdirect.framework.webapp.Bo
 			if("true".equals(request.getParameter("LITESIGNUP"))) {
 				if(page.equals(successPage)) {
 					//everything is good, proceed with registration.
-					doRegistration(result);
+					doRegistration(result);	
 					return EVAL_BODY_BUFFERED;
 				} else {
 					String altDeliveryPage = "/site_access/alt_dlv_home.jsp";
 					if(page.equals(altDeliveryCorporatePage)) {
-						this.pageContext.getSession().setAttribute("morepage", "/site_access/alt_dlv_corporate.jsp");
+						page = "/site_access/alt_dlv_corporate.jsp?referrer_page=slite";
 					} else if (page.equals(altDeliveryHomePage)) {
-						this.pageContext.getSession().setAttribute("morepage", altDeliveryPage);
+						page = altDeliveryPage + "?referrer_page=slite";
 					} else {
-						page = page + "?serviceType=" + this.serviceType;
-						this.pageContext.getSession().setAttribute("morepage", page);
+						page = page + "?serviceType=" + this.serviceType + "&referrer_page=slite";
 					} 
 				}
 			}

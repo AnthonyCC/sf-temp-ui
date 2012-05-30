@@ -17,20 +17,30 @@ if ("".equals(redirectSuccessPage)) {
 }
 
 String survey_source=(String)request.getAttribute("survey_source");
+String sPage = request.getRequestURI();
+String slite = "";
+if("slite".equals(request.getParameter("referrer_page"))) {
+	if(sPage.indexOf("?") != -1) {
+		sPage = sPage + "&referrer_page=slite";		
+	} else {
+		sPage = sPage + "?referrer_page=slite";
+	}
+	slite="&referrer_page=slite";	
+}
 %>
     
-<fd:CorporateServiceSurvey result='result' actionName='submitCorporateServiceSurvey' successPage='<%=request.getRequestURI()%>'>
+<fd:CorporateServiceSurvey result='result' actionName='submitCorporateServiceSurvey' successPage='<%=sPage%>'>
        
 
 <% if (submitted) { %>
 <table width="100%" cellpadding="0" cellspacing="0" border="0">
 <% if (request.getRequestURI().indexOf("cos_site_access_survey") > 0){%>
     <tr><td align="center" class="text12"><b><span class="title18" style="font-size: 28px;">THANK YOU</span><br><span class="text15">We greatly appreciate your time and interest.  We will keep you notified as our FreshDirect At The Office service expands.  To contact us in person, please call 1-866-283-7374.<br>
-    <a href="<%=request.getRequestURI()%>?successPage=<%=redirectSuccessPage%>&#survey"><b>Click here to submit another name.</a>
+    <a href="<%=request.getRequestURI()%>?successPage=<%=redirectSuccessPage%><%=slite%>&#survey"><b>Click here to submit another name.</a>
     </td></tr>
 <% } else { %>
     <tr><td align="center" class="text12"><b><span class="title18" style="font-size: 28px;">THANK YOU</span><br><span class="text15">For more details about FreshDirect At The Office <a href="javascript:popup('/help/faq_home_pop.jsp?page=cos','large')">click here</a>.<br>
-    <a href="<%=request.getRequestURI()%>?successPage=<%=redirectSuccessPage%>&#survey"><b>Click here to submit another name.</a>
+    <a href="<%=request.getRequestURI()%>?successPage=<%=redirectSuccessPage%><%=slite%>&#survey"><b>Click here to submit another name.</a>
     </td></tr>
 <% } %>
 </table>
@@ -44,6 +54,10 @@ String survey_source=(String)request.getAttribute("survey_source");
            <%@ include file="/includes/i_error_messages.jspf" %>   
     <% } %>
 <form method="post" name="corporateServiceSurvey" action="<%=request.getRequestURI()%>#survey">
+	<% if("slite".equals(request.getParameter("referrer_page"))) {
+	%>
+		<input type="hidden" name="referrer_page" value="slite" />
+	<% } %>
 <div align="center">
 <table cellpadding="0" cellspacing="0" border="0" width="100%">
 <%-- 1 --%>

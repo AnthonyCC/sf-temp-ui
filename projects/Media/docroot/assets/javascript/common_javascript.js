@@ -899,39 +899,16 @@ function getFrameHeight(frameId) {
 	return innerDoc.body.parentNode.scrollHeight;
 }
 
-function setFrameHeightSL(frameId, offset, original) {
+function setFrameHeightSL(frameId, hgt) {
 	var f = window.parent.document.getElementById(frameId);
 
-	var hgt = getFrameHeight(frameId);
-	
-	if (offset == undefined)
-		offset = 0;
-	
-	if(hgt > original) {	
-		f.style.height = (hgt+offset)+"px";
-	}
+	f.style.height = (hgt)+"px";
 }
 
-function setFrameWidthSL(frameId, offset, original) {
+function setFrameWidthSL(frameId, wth) {
 	var f = window.parent.document.getElementById(frameId);
 
-	var hgt = getFrameWidth(frameId);
-	
-	if (offset == undefined)
-		offset = 0;
-		
-	//window.alert('fwidth:' + hgt + '--original:' + original);
-		
-	if(hgt < original)	
-		f.style.width = (hgt+offset)+"px";
-}
-
-
-function getFrameWidth(frameId) {
-	var f = window.parent.document.getElementById(frameId);
-	var innerDoc = (f.contentDocument) ? f.contentDocument : f.contentWindow.document;
-
-	return innerDoc.body.parentNode.scrollWidth;
+	f.style.width = (wth)+"px";
 }
 
 /**

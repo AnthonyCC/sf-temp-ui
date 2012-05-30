@@ -28,6 +28,28 @@
 	<%@ include file="/common/template/includes/metatags.jspf" %>
 	<%@ include file="/common/template/includes/i_javascripts.jspf" %>
 	<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
+	
+	
+	<%
+	if("slite".equals(request.getParameter("referrer_page"))) {
+	%>
+		<script>
+			function resizeFrame() {
+				setFrameHeightSL('signupframe', 600);
+				setFrameWidthSL('signupframe',750);
+				var f = window.parent.document.getElementById("signupframe");
+				f.style.overflow = "hidden";				
+				window.parent.document.getElementById('MB_window').style.left=200 + 'px';
+				window.parent.document.getElementById('MB_window').style.width=780 + 'px';
+			}
+			
+			window.onload = resizeFrame();
+		</script>
+	<%
+		successPage = "#\" onclick=\"window.top.location=\'/index.jsp\'";
+	}
+%>
+	
 	</head>
 	<body bgcolor="white" text="#333333" class="text11" marginwidth="0" marginheight="20" leftmargin="0" topmargin="20">
 <div align="center">

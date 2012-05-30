@@ -9,6 +9,23 @@
 <%@ page import='com.freshdirect.framework.util.NVL'%>
 <%@ page import='com.freshdirect.fdstore.content.*'%>
 <fd:CheckLoginStatus />
+
+<%
+	if("slite".equals(request.getParameter("referrer_page"))) {
+	%>
+		<script>
+			function resizeFrame() {
+				setFrameHeightSL('signupframe', 600);
+				setFrameWidthSL('signupframe',700);
+				window.parent.document.getElementById('MB_window').style.left=200 + 'px';
+			}
+			
+			window.onload = resizeFrame();
+		</script>
+	<%
+	}
+%>
+
 <%
 
 	/*
