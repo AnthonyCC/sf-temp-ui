@@ -70,7 +70,8 @@ public abstract class TrnAdmExpiringReference {
 				referentMap.put(key, new Long(lastRefresh));
 				writeToStore();
 			} catch(TransAdminCacheException cacheExp) {				
-				// Do thing for now			
+				// Set the referent to empty to read from store	
+				referentHolder = new HashMap();
 			}
 		}
 		
