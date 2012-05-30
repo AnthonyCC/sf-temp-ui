@@ -535,6 +535,8 @@ public class FDStoreProperties {
 	
 	private final static String PROP_MODIFY_ORDER_TOTOAL_MAX = "fdstore.modify.order.maxtotal";
 	
+	private final static String PROP_LIGHT_SIGNUP_ENABLED = "fdstore.signuplight.enabled";
+	
 	
     static {
         defaults.put(PROP_ROUTING_PROVIDER_URL, "t3://localhost:7001");
@@ -1062,6 +1064,8 @@ public class FDStoreProperties {
 				"GC_CREDIT_CONFIRM,RH_ORDER_CONFIRM,GC_RECIPENT_ORDER,SMART_STORE_DYF");			
 		
 		defaults.put(PROP_MODIFY_ORDER_TOTOAL_MAX, "1500");
+		
+		defaults.put(PROP_LIGHT_SIGNUP_ENABLED, "true");
 		
         refresh();
     }
@@ -2734,5 +2738,9 @@ public class FDStoreProperties {
 				
 		return false;
 	}
+	
+	public static boolean isLightSignupEnabled() {
+        return (Boolean.valueOf(get(PROP_LIGHT_SIGNUP_ENABLED))).booleanValue();
+    }
     
 }

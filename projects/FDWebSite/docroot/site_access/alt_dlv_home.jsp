@@ -8,6 +8,7 @@ FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
 AddressModel address = null;
 if (user != null) { user.getAddress(); }
 request.setAttribute("survey_source","SiteAccess Page");
+String successPage = "/index.jsp";
 %>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
@@ -19,6 +20,26 @@ request.setAttribute("survey_source","SiteAccess Page");
 			<%@ include file="/common/template/includes/i_javascripts.jspf" %>
 			<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
 			<%@ include file="/shared/template/includes/ccl.jspf" %>
+			
+		<%
+	if("slite".equals(request.getParameter("referrer_page"))) {
+	%>
+		<script>
+			function resizeFrame() {
+				setFrameHeightSL('signupframe', 600);
+				setFrameWidthSL('signupframe',750);
+				var f = window.parent.document.getElementById("signupframe");
+				f.style.overflow = "hidden";				
+				window.parent.document.getElementById('MB_window').style.left=200 + 'px';
+				window.parent.document.getElementById('MB_window').style.width=780 + 'px';
+			}
+			
+			window.onload = resizeFrame();
+		</script>
+	<%
+		successPage = "#\" onclick=\"window.top.location=\'/index.jsp\'";
+	}
+%>
 	</head>
 	<body bgcolor="#ffffff" text="#333333" class="text11" marginwidth="0" marginheight="20" leftmargin="0" topmargin="20">
 		<div align="center"><br />
@@ -38,7 +59,7 @@ request.setAttribute("survey_source","SiteAccess Page");
 					We're expanding all the time based on demand, so to understand your needs, we ask that you fill out the following brief survey. Or, you can skip the survey and continue to our store.
 					<br /><br />
 					<a name="survey"></a><%@ include file="/survey/includes/cos.jsp" %><% if ("thankyou#survey".equals(request.getParameter("info")) || "thankyou".equals(request.getParameter("info"))) { %><br /><br /><% } %>
-					<a href="/index.jsp"><img src="/media_stat/images/template/site_access/continue_to_store.gif" width="124" height="16" border="0"></a><br /><br />
+					<a href="<%=successPage%>"><img src="/media_stat/images/template/site_access/continue_to_store.gif" width="124" height="16" border="0"></a><br /><br />
 					</td>
 				</tr>
 					

@@ -275,9 +275,9 @@ public class SiteAccessControllerTag extends com.freshdirect.framework.webapp.Bo
 							this.createUser(EnumServiceType.PICKUP, serviceResult.getAvailableServices());
 						}
 						
-						String altDeliveryPage = "/site_access/alt_dlv_home.jsp";
-						String failedCorpPage = "/survey/cos_site_access_survey.jsp?successPage=index.jsp";
-						String failedHomePage = "/site_access/delivery.jsp?successPage=index.jsp&serviceType=" + this.serviceType;
+						String altDeliveryPage = "/site_access/alt_dlv_home.jsp?referrer_page=slite&serviceType=" + this.serviceType;
+						String failedCorpPage = "/survey/cos_site_access_survey.jsp?successPage=index.jsp&referrer_page=slite";
+						String failedHomePage = "/site_access/delivery.jsp?successPage=index.jsp&referrer_page=slite&serviceType=" + this.serviceType + "&email="+ NVL.apply(request.getParameter(EnumUserInfoName.EMAIL.getCode()), "").trim();
 						String moreIngoPage = "/site_access/site_access_address_lite.jsp?successPage=index.jsp&serviceType=" + this.serviceType;
 						
 						

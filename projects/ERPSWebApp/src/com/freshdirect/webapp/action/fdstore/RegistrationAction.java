@@ -519,6 +519,7 @@ public class RegistrationAction extends WebActionSupport {
 
 		aInfo.validateEx(actionResult);
 		cInfo.validateEx(actionResult);
+		AccountUtil.validatePassword(actionResult, aInfo.password, aInfo.repeatPassword);
 		
 		try {
 			if(FDCustomerManager.dupeEmailAddress(aInfo.emailAddress) != null) {

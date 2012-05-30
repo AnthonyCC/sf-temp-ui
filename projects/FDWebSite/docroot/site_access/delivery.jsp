@@ -12,6 +12,7 @@ if (user.isNotServiceable()) {
 }
 boolean isBestCellars = request.getServerName().toLowerCase().indexOf("bestcellars") > -1;
 boolean emailSent = request.getParameter("email") != null && "sent".equalsIgnoreCase(request.getParameter("email"));
+String diff_zip_url = response.encodeURL("/about/index.jsp?siteAccessPage=aboutus&successPage=/index.jsp");
 %>	
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
 	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -22,6 +23,26 @@ boolean emailSent = request.getParameter("email") != null && "sent".equalsIgnore
 	<%@ include file="/common/template/includes/metatags.jspf" %>
 	<%@ include file="/common/template/includes/i_javascripts.jspf" %>
 	<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
+	
+	<%
+	if("slite".equals(request.getParameter("referrer_page"))) {
+	%>
+		<script>
+			function resizeFrame() {
+				setFrameHeightSL('signupframe', 600);
+				setFrameWidthSL('signupframe',750);
+				window.parent.document.getElementById('MB_window').style.left=200 + 'px';
+				window.parent.document.getElementById('MB_window').style.width=780 + 'px';
+			}
+			
+			window.onload = resizeFrame();
+		</script>
+	<%
+		successPage = "#\" onclick=\"window.top.location=\'/index.jsp\'";
+		diff_zip_url = "#\" onclick=\"window.top.location=\'/about/index.jsp?siteAccessPage=aboutus&successPage=/index.jsp\'";
+	}
+%>
+
 </head>
 <body bgcolor="#ffffff" text="#333333" class="text11" marginwidth="0" marginheight="20" leftmargin="0" topmargin="20">
 <fd:SiteAccessController action='saveEmail' successPage='<%= successPage %>' result='result' serviceType='<%=serviceType%>'>
@@ -98,7 +119,7 @@ boolean emailSent = request.getParameter("email") != null && "sent".equalsIgnore
 	<% } %>
 	<br>
 	<br>
-	<a href="javascript:popup('/help/delivery_zones.jsp?zipCheck=yes','large')">View our current delivery zones</a> or <a href='<%= response.encodeURL("/about/index.jsp?siteAccessPage=aboutus&successPage=/index.jsp") %>'>enter a different zip code.</a>
+	<a href="javascript:popup('/help/delivery_zones.jsp?zipCheck=yes','large')">View our current delivery zones</a> or <a href="<%= diff_zip_url %>">enter a different zip code.</a>
 	<br><br><br>
 	<% if (notServiceable) { %>
 		<img src="/media_stat/images/template/site_access/zipfail_coming_to_ny.gif" width="541" height="17">	
@@ -118,7 +139,16 @@ boolean emailSent = request.getParameter("email") != null && "sent".equalsIgnore
 <br><br>
 </form>
 </div>
+<%
+	if("slite".equals(request.getParameter("referrer_page"))) {
+	%>
+		<script>
+			window.onload = resizeFrame();
+		</script>
+	<%	}
+%>
 </fd:SiteAccessController>
+
 </body>
 </html>
 

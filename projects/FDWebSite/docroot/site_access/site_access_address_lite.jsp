@@ -213,5 +213,11 @@
 	</center>
 	<% } } %>
 </fd:SiteAccessController>
+<script>
+	setFrameHeightSL('signupframe', 425);
+	setFrameWidthSL('signupframe',700);
+	window.parent.document.getElementById('MB_window').style.left=200 + 'px';
+	window.parent.document.getElementById('MB_window').style.width=730 + 'px';
+</script>
 </body>
 </html>

@@ -6,6 +6,7 @@
 FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
 AddressModel address = null;
 if (user != null) { user.getAddress(); }
+String successPage = "/index.jsp";
 %>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
@@ -17,6 +18,27 @@ if (user != null) { user.getAddress(); }
 		<%@ include file="/common/template/includes/metatags.jspf" %>
 		<%@ include file="/common/template/includes/i_javascripts.jspf" %>
 		<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
+		
+		<%
+	if("slite".equals(request.getParameter("referrer_page"))) {
+	%>
+		<script>
+			function resizeFrame() {
+				setFrameHeightSL('signupframe', 600);
+				setFrameWidthSL('signupframe',750);
+				var f = window.parent.document.getElementById("signupframe");
+				f.style.overflow = "hidden";				
+				window.parent.document.getElementById('MB_window').style.left=200 + 'px';
+				window.parent.document.getElementById('MB_window').style.width=780 + 'px';
+			}
+			
+			window.onload = resizeFrame();
+		</script>
+	<%
+		successPage = "#\" onclick=\"window.top.location=\'/index.jsp\'";
+	}
+	%>
+	
 	</head>
 	<body bgcolor="#ffffff" text="#333333" class="text11" marginwidth="0" marginheight="20" leftmargin="0" topmargin="20">
 		<div align="center"><br />
@@ -34,7 +56,7 @@ if (user != null) { user.getAddress(); }
 					<br /><br />
 					If this is in fact a residential address and you would like our home delivery service instead, please call <b><%=(user == null)?"1-212-796-8002":user.getCustomerServiceContact()%></b>.
 					<br /><br />
-					<a href="/index.jsp"><img src="/media_stat/images/template/site_access/continue_to_store.gif" width="124" height="16" border="0"></a><br />
+					<a href="<%= successPage %>"><img src="/media_stat/images/template/site_access/continue_to_store.gif" width="124" height="16" border="0"></a><br />
 					</td>
 				</tr>
 					
