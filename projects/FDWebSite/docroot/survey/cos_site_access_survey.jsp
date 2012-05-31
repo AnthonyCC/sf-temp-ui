@@ -37,8 +37,6 @@
 			function resizeFrame() {
 				setFrameHeightSL('signupframe', 600);
 				setFrameWidthSL('signupframe',750);
-				var f = window.parent.document.getElementById("signupframe");
-				f.style.overflow = "hidden";				
 				window.parent.document.getElementById('MB_window').style.left=200 + 'px';
 				window.parent.document.getElementById('MB_window').style.width=780 + 'px';
 			}

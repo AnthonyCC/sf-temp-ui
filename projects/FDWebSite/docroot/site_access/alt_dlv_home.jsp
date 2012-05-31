@@ -9,6 +9,7 @@ AddressModel address = null;
 if (user != null) { user.getAddress(); }
 request.setAttribute("survey_source","SiteAccess Page");
 String successPage = "/index.jsp";
+String loginlink = "/login/login_main.jsp";
 %>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
@@ -28,16 +29,15 @@ String successPage = "/index.jsp";
 			function resizeFrame() {
 				setFrameHeightSL('signupframe', 600);
 				setFrameWidthSL('signupframe',750);
-				var f = window.parent.document.getElementById("signupframe");
-				f.style.overflow = "hidden";				
 				window.parent.document.getElementById('MB_window').style.left=200 + 'px';
 				window.parent.document.getElementById('MB_window').style.width=780 + 'px';
 			}
 			
-			window.onload = resizeFrame();
+			//window.onload = resizeFrame();
 		</script>
 	<%
 		successPage = "#\" onclick=\"window.top.location=\'/index.jsp\'";
+		loginlink = "#\" onclick=\"window.top.location=\'/login/login_main.jsp\'";
 	}
 %>
 	</head>
@@ -70,7 +70,7 @@ String successPage = "/index.jsp";
 						<br />
 						<a href="/login/login_main.jsp"><img src="/media_stat/images/template/site_access/current_customers.gif" width="113" height="11" border="0" alt="Current Customers"></a>
 						<br />
-						<a href="/login/login_main.jsp">Sign in here</a>
+						<a href="<%= loginlink %>">Sign in here</a>
 						<br /><br /><br />
 							<%@ include file="/shared/template/includes/copyright.jspf"%>
 						<br /><br />
@@ -78,5 +78,14 @@ String successPage = "/index.jsp";
 				</tr>
 			</table>
 		</div>
+		<%
+	if("slite".equals(request.getParameter("referrer_page"))) {
+	%>
+		<script>
+			window.onload = resizeFrame();
+		</script>
+	<%
+	}
+%>
 	</body>
 </html>
