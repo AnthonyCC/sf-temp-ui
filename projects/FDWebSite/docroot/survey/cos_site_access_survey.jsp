@@ -43,7 +43,7 @@
 				window.parent.document.getElementById('MB_window').style.width=780 + 'px';
 			}
 			
-			window.onload = resizeFrame();
+			//window.onload = resizeFrame();
 		</script>
 	<%
 		successPage = "#\" onclick=\"window.top.location=\'/index.jsp\'";
@@ -68,5 +68,14 @@
 </table>
 
 </div>
+<%
+	if("slite".equals(request.getParameter("referrer_page"))) {
+	%>
+		<script>
+			window.onload = resizeFrame();
+		</script>
+	<%
+	}
+%>
 </body>
 </html>

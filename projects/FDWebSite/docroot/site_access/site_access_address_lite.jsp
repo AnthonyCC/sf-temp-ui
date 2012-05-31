@@ -46,7 +46,7 @@
 	<script type="text/javascript" src="/assets/javascript/modalbox.js"></script>
 	
 </head>
-<body bgcolor="#ffffff" text="#333333" class="text10" leftmargin="0" topmargin="0" onload="setFrameHeightSL('signupframe', 425);setFrameWidthSL('signupframe',700);window.parent.document.getElementById('MB_window').style.left=200 + 'px';window.parent.document.getElementById('MB_window').style.width=730 + 'px';">
+<body bgcolor="#ffffff" text="#333333" class="text10" leftmargin="0" topmargin="0">
 
 <fd:SiteAccessController action="checkByAddress" successPage="/index.jsp" moreInfoPage="" failureHomePage="/site_access/delivery.jsp" failureCorporatePage="/survey/cos_site_access_survey.jsp" result="result">
 	<%
@@ -214,10 +214,14 @@
 	<% } } %>
 </fd:SiteAccessController>
 <script>
-	setFrameHeightSL('signupframe', 425);
-	setFrameWidthSL('signupframe',700);
-	window.parent.document.getElementById('MB_window').style.left=200 + 'px';
-	window.parent.document.getElementById('MB_window').style.width=730 + 'px';
+	function resizeFrame() {
+		setFrameHeightSL('signupframe', 425);
+		setFrameWidthSL('signupframe',700);
+		window.parent.document.getElementById('MB_window').style.left=200 + 'px';
+		window.parent.document.getElementById('MB_window').style.width=730 + 'px';
+	}
+	
+	window.onload = resizeFrame();
 </script>
 </body>
 </html>
