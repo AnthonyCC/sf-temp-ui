@@ -38,7 +38,6 @@ import com.freshdirect.routing.model.IHandOffBatchTrailer;
 import com.freshdirect.routing.model.IHandOffDispatch;
 import com.freshdirect.routing.model.IRouteModel;
 import com.freshdirect.routing.model.TrnFacility;
-import com.freshdirect.routing.model.TrnFacilityType;
 import com.freshdirect.routing.model.TruckPreferenceStat;
 import com.freshdirect.routing.service.exception.IIssue;
 import com.freshdirect.routing.service.exception.RoutingServiceException;
@@ -373,6 +372,7 @@ public class HandOffAutoDispatchAction extends AbstractHandOffAction {
 			_dispatch.setZone(_plan.getZoneCode());
 			_dispatch.setCutoffTime(_plan.getCutOffTime());
 			_dispatch.setBatchDispatchResources(_plan.getBatchPlanResources());
+			_dispatch.setDispatchType("RGD");
 			
 			if(isTrailer){
 				_dispatch.setTrailer(true);

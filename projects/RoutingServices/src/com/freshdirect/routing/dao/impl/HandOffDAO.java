@@ -313,7 +313,7 @@ public class HandOffDAO extends BaseDAO implements IHandOffDAO   {
             "and B.DISPATCHTIME not in (select distinct DX.DISPATCHTIME from TRANSP.HANDOFF_BATCH bx , TRANSP.HANDOFF_BATCHDISPATCHEX dx "+
             "where BX.BATCH_ID = DX.BATCH_ID and BX.DELIVERY_DATE = ? "+
             "and BX.CUTOFF_DATETIME < (select BZ.CUTOFF_DATETIME from TRANSP.HANDOFF_BATCH bz where BZ.BATCH_ID = ? ) "+
-            "and DX.STATUS = 'CPD' ))";
+            "and DX.STATUS = 'CPD' )) order by p.plan_date, p.zone, p.startTime, p.sequence ";
 	
 	private static final String GET_HANDOFFBATCH_PLANRESOURCES = "SELECT PR.* FROM TRANSP.PLAN_RESOURCE PR, TRANSP.PLAN P WHERE PR.PLAN_ID = P.PLAN_ID and P.PLAN_DATE = ? " +
 			"and P.START_TIME in (select B.DISPATCHTIME from TRANSP.HANDOFF_BATCHDISPATCHEX B where B.BATCH_ID = ? and B.STATUS = 'CPD' "+ 
@@ -323,8 +323,8 @@ public class HandOffDAO extends BaseDAO implements IHandOffDAO   {
             "and DX.STATUS = 'CPD'))";
 	
 	private static final String INSERT_HANDOFFBATCH_AUTODISPATCHES = "INSERT INTO TRANSP.DISPATCH ( DISPATCH_ID, DISPATCH_DATE, ORIGIN_FACILITY, DESTINATION_FACILITY, " +
-			" ZONE, SUPERVISOR_ID, ROUTE, START_TIME, FIRST_DLV_TIME, PLAN_ID, ISBULLPEN, REGION, PHYSICAL_TRUCK, CUTOFF_DATETIME ) " +
-			" VALUES ( ?,?,?,?,?,?,?,?,?,?,?,?,?,? )";
+			" ZONE, SUPERVISOR_ID, ROUTE, START_TIME, FIRST_DLV_TIME, PLAN_ID, ISBULLPEN, REGION, PHYSICAL_TRUCK, CUTOFF_DATETIME, DISPATCH_TYPE ) " +
+			" VALUES ( ?,?,?,?,?,?,?,?,?,?,?,?,?,?,? )";
 	
 	private static final String CLEAR_HANDOFFBATCH_AUTODISPATCHES = "DELETE FROM TRANSP.DISPATCH D WHERE D.DISPATCH_DATE = ? " +
 			"and D.START_TIME in (select B.DISPATCHTIME from TRANSP.HANDOFF_BATCHDISPATCHEX B where B.BATCH_ID = ? and B.STATUS = 'CPD' "+ 
@@ -1870,6 +1870,7 @@ public class HandOffDAO extends BaseDAO implements IHandOffDAO   {
 				batchUpdater.declareParameter(new SqlParameter(Types.VARCHAR));
 				batchUpdater.declareParameter(new SqlParameter(Types.VARCHAR));
 				batchUpdater.declareParameter(new SqlParameter(Types.TIMESTAMP));
+				batchUpdater.declareParameter(new SqlParameter(Types.VARCHAR));
 				batchUpdater.compile();
 	
 				connection = this.jdbcTemplate.getDataSource().getConnection();
@@ -1894,6 +1895,7 @@ public class HandOffDAO extends BaseDAO implements IHandOffDAO   {
 												, model.getRegion()
 												, model.getTruck()
 												, model.getCutoffTime()
+												, model.getDispatchType()
 										});
 				}			
 				batchUpdater.flush();

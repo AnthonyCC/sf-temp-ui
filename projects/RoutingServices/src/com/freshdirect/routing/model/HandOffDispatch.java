@@ -23,7 +23,7 @@ public class HandOffDispatch implements IHandOffDispatch  {
 	private String originFacility;
 	private String destinationFacility;
 	private boolean isTrailer;
-
+	private String dispatchType;
 	private Set batchDispatchResources = new HashSet(0);
 	
 	public HandOffDispatch() {
@@ -199,7 +199,13 @@ public class HandOffDispatch implements IHandOffDispatch  {
 	public void setTrailer(boolean isTrailer) {
 		this.isTrailer = isTrailer;
 	}
+	public String getDispatchType() {
+		return dispatchType;
+	}
 
+	public void setDispatchType(String dispatchType) {
+		this.dispatchType = dispatchType;
+	}
 	public int hashCode() {
 		final int PRIME = 31;
 		int result = 1;

@@ -60,5 +60,8 @@ public interface IHandOffDispatch {
 	 
 	 boolean isTrailer();
 	 void setTrailer(boolean isTrailer);
+	 
+	 String getDispatchType();
+	 void setDispatchType(String dispatchType);
 
 }
