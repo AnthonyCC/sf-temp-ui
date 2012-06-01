@@ -272,8 +272,11 @@
 				  <ec:column property="percentageAllocated" title="% Allocated" />
 				  <ec:column title=" " width="5px" 
 									filterable="false" sortable="false" cell="capacityCloseButtonCell" property="referenceId" />
+					
+					<%if(request.getParameter("cutOff") == null ||"".equals(request.getParameter("cutOff"))){ %>
 				  <ec:column title=" " width="5px" 
 									filterable="false" sortable="false" cell="capacityDynamicButtonCell" property="dynamicActive" />
+					<%} %>
 				  <ec:column title=" " width="5px" 
 									filterable="false" sortable="false" cell="discount" property="isDiscounted" />					
 																			  	                           
@@ -298,8 +301,10 @@
 	              <ec:column property="percentageAllocated" title="% Allocated" />
 				  <ec:column title=" " width="5px" 
 									filterable="false" sortable="false" cell="capacityCloseButtonCell"  property="referenceId" />
+					<%if(request.getParameter("cutOff") == null ||"".equals(request.getParameter("cutOff"))){ %>
 				  <ec:column title=" " width="5px" 
-									filterable="false" sortable="false" cell="capacityDynamicButtonCell"  property="dynamicActive" />
+									filterable="false" sortable="false" cell="capacityDynamicButtonCell" property="dynamicActive" />
+					<%} %>
 				  <ec:column title=" " width="5px" 
 									filterable="false" sortable="false" cell="discount" property="isDiscounted" />															  	                           
 	            </ec:row>
