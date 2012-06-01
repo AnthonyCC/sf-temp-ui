@@ -152,10 +152,10 @@ public class RoutingServiceLocator {
 		TransportationWebServiceStub stub = null;
 		if(RoutingServicesProperties.isProxyEnabled()) {
 			stub = new TransportationWebServiceStub(RoutingServicesProperties.getTransportationSuiteBatchProxyURL());
-			LOGGER.debug("RSL:getTransportationSuiteService()Proxy:"+ RoutingServicesProperties.getTransportationSuiteBatchProxyURL());
+			LOGGER.debug("RSL:getTransportationBatchSuiteService()Proxy:"+ RoutingServicesProperties.getTransportationSuiteBatchProxyURL());
 		} else {
 			stub = new TransportationWebServiceStub(RoutingServicesProperties.getTransportationSuiteBatchProviderURL());
-			LOGGER.debug("RSL:getTransportationSuiteService()No Proxy:"+ RoutingServicesProperties.getTransportationSuiteBatchProviderURL());
+			LOGGER.debug("RSL:getTransportationBatchSuiteService()No Proxy:"+ RoutingServicesProperties.getTransportationSuiteBatchProviderURL());
 		}
 		initStub(stub);
 		return stub;
