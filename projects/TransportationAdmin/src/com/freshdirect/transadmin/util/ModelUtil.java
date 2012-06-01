@@ -27,6 +27,7 @@ import com.freshdirect.routing.model.ILocationModel;
 import com.freshdirect.routing.model.IRoutingStopModel;
 import com.freshdirect.routing.model.LocationModel;
 import com.freshdirect.routing.model.RoutingStopModel;
+import com.freshdirect.transadmin.constants.EnumDispatchType;
 import com.freshdirect.transadmin.model.Dispatch;
 import com.freshdirect.transadmin.model.DispatchResource;
 import com.freshdirect.transadmin.model.DlvBuilding;
@@ -326,6 +327,7 @@ public class ModelUtil {
 			d.setFirstDlvTime(p.getFirstDeliveryTime());
 			d.setBullPen("Y".equalsIgnoreCase(p.getIsBullpen())? Boolean.TRUE:Boolean.FALSE);
 			d.setRegion(p.getRegion());
+			d.setDispatchType(EnumDispatchType.ROUTEDISPATCH.getName());
 			if(p.getZone() == null && p.getDestinationFacility() != null
 					&& EnumTransportationFacilitySrc.CROSSDOCK.getName().equalsIgnoreCase(p.getDestinationFacility().getTrnFacilityType().getName())){
 				isTrailerPlan = true;
