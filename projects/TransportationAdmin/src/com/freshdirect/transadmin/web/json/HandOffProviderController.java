@@ -33,6 +33,7 @@ import com.freshdirect.routing.model.IHandOffBatchDepotScheduleEx;
 import com.freshdirect.routing.model.IHandOffBatchDispatchResource;
 import com.freshdirect.routing.model.IHandOffBatchPlan;
 import com.freshdirect.routing.model.IServiceTimeScenarioModel;
+import com.freshdirect.routing.model.TriggerHandOffResult;
 import com.freshdirect.routing.service.exception.RoutingServiceException;
 import com.freshdirect.routing.service.proxy.HandOffServiceProxy;
 import com.freshdirect.routing.service.proxy.RoutingInfoServiceProxy;
@@ -161,7 +162,8 @@ public class HandOffProviderController extends BaseJsonRpcController  implements
 		IHandOffBatch batch;
 		try {
 			batch = proxy.getHandOffBatchById(handOffBatchId);
-			HandOffRoutingInAction process = new HandOffRoutingInAction(batch, userId);
+			TriggerHandOffResult result = new TriggerHandOffResult();
+			HandOffRoutingInAction process = new HandOffRoutingInAction(batch, userId, result);
 			process.execute();
 		} catch (RoutingServiceException e) {
 			LOGGER.error("routing service exception", e);

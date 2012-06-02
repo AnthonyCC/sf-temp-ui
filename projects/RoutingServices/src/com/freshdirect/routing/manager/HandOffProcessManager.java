@@ -385,7 +385,10 @@ public class HandOffProcessManager {
 				{
 					messages.add(IProcessMessage.ERROR_MESSAGE_CANCEL_RESERVATIONS);
 					messages.add("count" +"="+ pendingCancelList.size());
-					context.getResult().getMessages().addAll(messages);
+					if(context.getResult().getMessages() != null)
+						context.getResult().getMessages().addAll(messages);
+					else
+						context.getResult().setMessages(messages);
 					
 				}
 					
