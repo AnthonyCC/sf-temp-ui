@@ -915,7 +915,7 @@ public class DeliveryDetailsDAO extends BaseDAO implements IDeliveryDetailsDAO {
 		
 	}
 	
-	private static String FETCH_UNASSIGNED_RESERVATIONS_QUERY1="SELECT  R.ID, R.ORDER_ID, R.CUSTOMER_ID, R.STATUS_CODE, R.TIMESLOT_ID, R.ZONE_ID, R.EXPIRATION_DATETIME, R.TYPE, R.ADDRESS_ID, "+
+	private static String FETCH_UNASSIGNED_RESERVATIONS_QUERY_EX="SELECT  R.ID, R.ORDER_ID, R.CUSTOMER_ID, R.STATUS_CODE, R.TIMESLOT_ID, R.ZONE_ID, R.EXPIRATION_DATETIME, R.TYPE, R.ADDRESS_ID, "+
 	" T.BASE_DATE,to_char(T.CUTOFF_TIME, 'HH:MI AM') CUTOFF_TIME,T.START_TIME STIME, T.END_TIME ETIME, Z.ZONE_CODE,R.UNASSIGNED_DATETIME, R.UNASSIGNED_ACTION, R.IN_UPS, R.ORDER_SIZE, R.SERVICE_TIME, R.RESERVED_ORDER_SIZE" +
 	", R.RESERVED_SERVICE_TIME, R.UPDATE_STATUS, R.METRICS_SOURCE " +
 	", R.NUM_CARTONS , R.NUM_FREEZERS , R.NUM_CASES, " +
@@ -935,7 +935,7 @@ public class DeliveryDetailsDAO extends BaseDAO implements IDeliveryDetailsDAO {
 		PreparedStatementCreator creator = new PreparedStatementCreator() {
 			public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {		            	 
 				PreparedStatement ps =
-					connection.prepareStatement(FETCH_UNASSIGNED_RESERVATIONS_QUERY1);
+					connection.prepareStatement(FETCH_UNASSIGNED_RESERVATIONS_QUERY_EX);
 				ps.setDate(1, new java.sql.Date(deliveryDate.getTime()));
 				ps.setTimestamp(2, new java.sql.Timestamp(cutOff.getTime()));
 				

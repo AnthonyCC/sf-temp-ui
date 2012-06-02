@@ -17,6 +17,8 @@ public interface IRoutingEngineService {
 	
 	void saveLocations(Collection locationList, String region, String locationType) throws RoutingServiceException;
 	
+	void saveLocationsEx(Collection locationList, IRoutingSchedulerIdentity schedulerId, String region, String locationType) throws RoutingServiceException;
+	
 	void purgeOrders(IRoutingSchedulerIdentity schedulerId, boolean reloadXml) throws RoutingServiceException;
 	
 	void purgeBatchOrders(IRoutingSchedulerIdentity schedulerId, boolean reloadXml) throws RoutingServiceException;

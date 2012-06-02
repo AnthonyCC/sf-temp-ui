@@ -20,6 +20,11 @@ public class RoutingEngineServiceProxy extends BaseServiceProxy {
 	public void saveLocations(Collection locationList, String region, String locationType) throws RoutingServiceException {
 		getService().saveLocations(locationList, region, locationType);
 	}
+	public void saveLocationsEx(Collection locationList, IRoutingSchedulerIdentity schedulerId, String region, String locationType) throws RoutingServiceException {
+		getService().saveLocationsEx(locationList, schedulerId, region, locationType);
+	}
+	
+	
 	
 	public void purgeBatchOrders(IRoutingSchedulerIdentity schedulerId, boolean reloadXml) throws RoutingServiceException {
 		getService().purgeBatchOrders(schedulerId, reloadXml);

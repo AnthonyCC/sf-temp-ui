@@ -263,7 +263,7 @@ public class HandOffProcessManager {
     			if(staticOrders!=null && staticOrders.size()>0)
     			{
 		    		//Save Location
-		    		saveLocations(staticOrders, sessionInfo.getKey().getRegion());
+		    		saveLocations(staticSchMap, sessionInfo.getKey().getRegion());
 		    		
 		    		//Purge Scheduler Instances
 		    		purgeOrders(staticSchMap.keySet());
@@ -361,14 +361,42 @@ public class HandOffProcessManager {
 				unassignedReservations = proxy.getUnassignedReservationsEx(deliveryDate,cutOff);
 				
 				int cancelReservations = 0;
+				List<String> pendingCancelList = new ArrayList<String>();
+				List<String> pendingConfirmList = new ArrayList<String>();
+				List<UnassignedDlvReservationModel> filteredList = new ArrayList<UnassignedDlvReservationModel>();
 				for (UnassignedDlvReservationModel reservation : unassignedReservations) {
 					if(RoutingActivityType.CANCEL_TIMESLOT.equals(reservation.getUnassignedActivityType()))
-						cancelReservations++;
+					{
+						pendingCancelList.add(reservation.getOrderId());
+					}
+					else if(RoutingActivityType.CONFIRM_TIMESLOT.equals(reservation.getUnassignedActivityType()))
+					{
+						pendingConfirmList.add(reservation.getOrderId());
+					}
+					else
+					{
+						filteredList.add(reservation);
+					}
+					
 				}
-				if(cancelReservations>0)
-					throw new RoutingProcessException(null, null,IIssue.PROCESS_CANCEL_RESERVATIONS);
+				List<String> messages = new ArrayList<String>();
 				
-				for (UnassignedDlvReservationModel reservation : unassignedReservations) {
+				if(pendingCancelList.size()>0)
+				{
+					messages.add(IProcessMessage.ERROR_MESSAGE_CANCEL_RESERVATIONS);
+					messages.add("count" +"="+ pendingCancelList.size());
+					context.getResult().getMessages().addAll(messages);
+					
+				}
+					
+				if(pendingConfirmList.size()>0)
+				{
+					messages.add(IProcessMessage.ERROR_MESSAGE_CONFIRM_RESERVATIONS);
+					messages.add("count" +"="+ pendingConfirmList.size());
+					context.getResult().getMessages().addAll(messages);
+				}
+				
+				for (UnassignedDlvReservationModel reservation : filteredList) {
 	    			IOrderModel orderModel = RoutingUtil.getOrderModel(reservation, reservation.getAddress(), reservation.getOrderId(), reservation.getId());
 	    			GeographicLocation _geoLocModel = new GeographicLocation();
 	    			_geoLocModel.setLatitude(
@@ -461,10 +489,19 @@ public class HandOffProcessManager {
     	    
     	 
     	 
-    	private void saveLocations(List lstOrders, String region) throws  RoutingProcessException {
+    	private void saveLocations( Map<IRoutingSchedulerIdentity, List<IOrderModel>> orderMappedLst, String region) throws  RoutingProcessException {
         	try {
     	    	RoutingEngineServiceProxy proxy = new RoutingEngineServiceProxy();
-    	    	proxy.saveLocations(lstOrders, region, RoutingServicesProperties.getDefaultLocationType());
+    	    	if(orderMappedLst != null && orderMappedLst.keySet()!=null)
+    	    	{
+	    	    	Iterator tmpIterator = orderMappedLst.keySet().iterator();
+	    	    	IRoutingSchedulerIdentity schedulerId = null;
+	    			while(tmpIterator.hasNext()) {
+	    				schedulerId = (IRoutingSchedulerIdentity)tmpIterator.next();
+	    				proxy.saveLocationsEx(orderMappedLst.get(schedulerId), schedulerId, region, RoutingServicesProperties.getDefaultLocationType());
+	    			}
+    	    	}
+    			
         	} catch (RoutingServiceException e) {
         		e.printStackTrace();
     			throw new RoutingProcessException(null,e,IIssue.PROCESS_LOCATION_SAVEERROR);

@@ -21,6 +21,7 @@ import com.freshdirect.routing.manager.ProcessContext;
 import com.freshdirect.routing.manager.StorefrontPackagingManager;
 import com.freshdirect.routing.model.IHandOffBatch;
 import com.freshdirect.routing.model.IHandOffBatchStop;
+import com.freshdirect.routing.model.TriggerHandOffResult;
 import com.freshdirect.routing.service.exception.RoutingServiceException;
 import com.freshdirect.routing.service.proxy.HandOffServiceProxy;
 import com.freshdirect.routing.service.proxy.RoutingInfoServiceProxy;
@@ -29,9 +30,11 @@ import com.freshdirect.routing.util.RoutingDateUtil;
 import com.freshdirect.routing.util.RoutingServicesProperties;
 
 public class HandOffRoutingInAction extends AbstractHandOffAction {
-		
-	public HandOffRoutingInAction(IHandOffBatch batch, String userId) {
+	
+	private TriggerHandOffResult triggerHandOffResult;
+	public HandOffRoutingInAction(IHandOffBatch batch, String userId, TriggerHandOffResult triggerHandOffResult) {
 		super(batch, userId);
+		this.triggerHandOffResult = triggerHandOffResult;
 		// TODO Auto-generated constructor stub
 	}
 
@@ -40,7 +43,7 @@ public class HandOffRoutingInAction extends AbstractHandOffAction {
 		RoutingInTask task = new RoutingInTask();
 		Thread routingInThread = new Thread(task, "RoutingInTask");
 		routingInThread.start();
-		return null;
+		return HandOffRoutingInAction.this.getTriggerHandOffResult();
 	}
 	
 	private class RoutingInTask  implements Runnable {
@@ -80,7 +83,7 @@ public class HandOffRoutingInAction extends AbstractHandOffAction {
 					context.setHandOffProcess(true);
 					context.setHandOffBatch(HandOffRoutingInAction.this.getBatch());
 					context.setUserId(HandOffRoutingInAction.this.getUserId());
-					
+					context.setResult(HandOffRoutingInAction.this.getTriggerHandOffResult());
 					
 					List outputDataList = new ArrayList();
 					
@@ -104,6 +107,8 @@ public class HandOffRoutingInAction extends AbstractHandOffAction {
 					proxy.updateHandOffBatchMessage(HandOffRoutingInAction.this.getBatch().getBatchId(), INFO_MESSAGE_ROUTINGINPROGRESS);
 					//End the process which will complete the routing sequence
 					handOffProcessMgr.endProcess(context);
+					
+					HandOffRoutingInAction.this.setTriggerHandOffResult(context.getResult());
 					
 					// Logging routing in complete
 					proxy.updateHandOffBatchStatus(HandOffRoutingInAction.this.getBatch().getBatchId(), EnumHandOffBatchStatus.ROUTINGCOMPETE);
@@ -169,6 +174,14 @@ public class HandOffRoutingInAction extends AbstractHandOffAction {
 	public EnumHandOffBatchStatus getFailureStatus() {
 		// TODO Auto-generated method stub
 		return EnumHandOffBatchStatus.ROUTINGFAILED;
+	}
+
+	public TriggerHandOffResult getTriggerHandOffResult() {
+		return triggerHandOffResult;
+	}
+
+	public void setTriggerHandOffResult(TriggerHandOffResult triggerHandOffResult) {
+		this.triggerHandOffResult = triggerHandOffResult;
 	}
 
 }

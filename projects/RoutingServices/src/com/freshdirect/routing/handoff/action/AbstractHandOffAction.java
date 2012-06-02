@@ -217,12 +217,6 @@ public abstract class AbstractHandOffAction {
 							if (waveInstances != null) {
 								for (IWaveInstance waveInstance : waveInstances) {
 
-									if(routeModel.getArea().equals("019"))
-									{
-										System.out.println(routeModel.getArea()+" "+routeModel.getStartTime()+" "+routeModel.getPreferredRunTime()+" "+routeModel.getMaxRunTime());
-										System.out.println(waveInstance.getWaveStartTime()+" "+waveInstance.getPreferredRunTime()+" "+waveInstance.getMaxRunTime());
-										
-									}
 									if (areaModel.isDepot()) {
 
 										if (waveInstance.getDispatchTime() != null

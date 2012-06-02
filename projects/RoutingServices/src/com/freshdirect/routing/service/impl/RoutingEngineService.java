@@ -47,6 +47,21 @@ public class RoutingEngineService extends BaseService implements IRoutingEngineS
 		}
 	}
 	
+	public void saveLocationsEx(Collection orderList, IRoutingSchedulerIdentity schedulerId, String region, String locationType) throws RoutingServiceException {
+		
+		try {
+			TransportationWebService port = getTransportationSuiteBatchService(schedulerId);
+			Location[] result = port.saveLocationsEx(RoutingDataEncoder.encodeLocationList(orderList, region, locationType)
+														, RoutingDataEncoder.encodeSaveLocationsExOptions());
+			
+			if(result != null && result.length >0) {
+				throw new RoutingServiceException(null, IIssue.PROCESS_LOCATION_SAVEERROR);
+			}		
+		} catch (RemoteException exp) {
+			throw new RoutingServiceException(exp, IIssue.PROCESS_LOCATION_SAVEERROR);
+		}
+	}
+	
 	public void purgeBatchOrders(IRoutingSchedulerIdentity schedulerId, boolean reloadXml) throws RoutingServiceException {
 		
 		try {
@@ -120,7 +135,11 @@ public class RoutingEngineService extends BaseService implements IRoutingEngineS
 	
 	public void sendRoutesToRoadNet(IRoutingSchedulerIdentity schedulerId, String sessionDescription, String waveCode) throws RoutingServiceException {
 		try {
-			TransportationWebService port = getTransportationSuiteBatchService(schedulerId);//RoutingServiceLocator.getInstance().getTransportationSuiteService();
+			TransportationWebService port = null;
+			if(schedulerId.isDynamic())
+				port = getTransportationSuiteService(schedulerId);//RoutingServiceLocator.getInstance().getTransportationSuiteService();
+			else
+				port = getTransportationSuiteBatchService(schedulerId);//RoutingServiceLocator.getInstance().getTransportationSuiteService();
 			 
 			port.schedulerSendRoutesToRoadnetEx(RoutingDataEncoder.encodeSchedulerIdentity(schedulerId)
 												, RoutingDataEncoder.encodeSchedulerSendRoutesToRoadnetExOptions(sessionDescription, waveCode));
