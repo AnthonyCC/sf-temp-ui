@@ -130,11 +130,9 @@ public class HandOffFormController extends BaseFormController {
 				
 				if(triggerResult.getHandOffBatchId() != null) {
 					IHandOffBatch batch = proxy.getHandOffBatchById(triggerResult.getHandOffBatchId());
-					HandOffRoutingInAction routeInManager = new HandOffRoutingInAction(batch, userId, triggerResult);
+					HandOffRoutingInAction routeInManager = new HandOffRoutingInAction(batch, userId);
 					
 					routeInManager.execute();
-					
-					
 				}
 				saveErrorMessage(request, formatMessages(triggerResult.getMessages()));
 			//}
