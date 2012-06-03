@@ -11,7 +11,6 @@ import com.freshdirect.routing.model.IHandOffBatch;
 import com.freshdirect.routing.model.ILocationModel;
 import com.freshdirect.routing.model.IOrderModel;
 import com.freshdirect.routing.model.IServiceTimeScenarioModel;
-import com.freshdirect.routing.model.TriggerHandOffResult;
 
 public class ProcessContext implements Serializable {
 	
@@ -44,8 +43,6 @@ public class ProcessContext implements Serializable {
 	private Object serviceTimeTypeCache;
 	
 	private int maxSessionSize;
-	
-	private TriggerHandOffResult result;
 	
 	private boolean isHandOffProcess;
 			
@@ -217,11 +214,4 @@ public class ProcessContext implements Serializable {
 	public void setMaxSessionSize(int maxSessionSize) {
 		this.maxSessionSize = maxSessionSize;
 	}
-	public TriggerHandOffResult getResult() {
-		return result;
-	}
-	public void setResult(TriggerHandOffResult result) {
-		this.result = result;
-	}
-	
 }

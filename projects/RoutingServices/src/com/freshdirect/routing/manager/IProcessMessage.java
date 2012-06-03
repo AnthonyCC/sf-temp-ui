@@ -38,8 +38,6 @@ public interface IProcessMessage {
 	
 	String INFO_MESSAGE_AUTODISPATCHPROGRESS = "Auto-Dispatch in process";
 	
-	String ERROR_MESSAGE_CANCEL_RESERVATIONS = "Cancelled reservations failed to update in UPS. Please inform AppSupport and continue with the routing process.";
-	
-	String ERROR_MESSAGE_CONFIRM_RESERVATIONS = "Confirmed reservations failed to update in UPS. Please inform AppSupport and continue with the routing process.";
+	String INFO_MESSAGE_ROUTINGINPROGRESS_UPDATE_FAILED = "Routing in progress: cancelled or confirmed reservations failed to update in UPS. Please inform AppSupport.";
 	
 }

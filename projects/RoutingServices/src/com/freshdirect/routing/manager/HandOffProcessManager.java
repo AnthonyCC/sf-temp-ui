@@ -360,18 +360,12 @@ public class HandOffProcessManager {
 				}
 				unassignedReservations = proxy.getUnassignedReservationsEx(deliveryDate,cutOff);
 				
-				int cancelReservations = 0;
-				List<String> pendingCancelList = new ArrayList<String>();
-				List<String> pendingConfirmList = new ArrayList<String>();
+				boolean updateFailed = false;
 				List<UnassignedDlvReservationModel> filteredList = new ArrayList<UnassignedDlvReservationModel>();
 				for (UnassignedDlvReservationModel reservation : unassignedReservations) {
-					if(RoutingActivityType.CANCEL_TIMESLOT.equals(reservation.getUnassignedActivityType()))
+					if(RoutingActivityType.CANCEL_TIMESLOT.equals(reservation.getUnassignedActivityType()) || RoutingActivityType.CONFIRM_TIMESLOT.equals(reservation.getUnassignedActivityType()))
 					{
-						pendingCancelList.add(reservation.getOrderId());
-					}
-					else if(RoutingActivityType.CONFIRM_TIMESLOT.equals(reservation.getUnassignedActivityType()))
-					{
-						pendingConfirmList.add(reservation.getOrderId());
+						updateFailed = true;
 					}
 					else
 					{
@@ -380,23 +374,10 @@ public class HandOffProcessManager {
 					
 				}
 				List<String> messages = new ArrayList<String>();
-				
-				if(pendingCancelList.size()>0)
+				HandOffServiceProxy handOffProxy = new HandOffServiceProxy();
+				if(updateFailed)
 				{
-					messages.add(IProcessMessage.ERROR_MESSAGE_CANCEL_RESERVATIONS);
-					messages.add("count" +"="+ pendingCancelList.size());
-					if(context.getResult().getMessages() != null)
-						context.getResult().getMessages().addAll(messages);
-					else
-						context.getResult().setMessages(messages);
-					
-				}
-					
-				if(pendingConfirmList.size()>0)
-				{
-					messages.add(IProcessMessage.ERROR_MESSAGE_CONFIRM_RESERVATIONS);
-					messages.add("count" +"="+ pendingConfirmList.size());
-					context.getResult().getMessages().addAll(messages);
+					handOffProxy.updateHandOffBatchMessage(context.getHandOffBatch().getBatchId(), IProcessMessage.INFO_MESSAGE_ROUTINGINPROGRESS_UPDATE_FAILED);
 				}
 				
 				for (UnassignedDlvReservationModel reservation : filteredList) {
