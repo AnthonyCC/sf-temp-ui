@@ -152,7 +152,12 @@ public class RoutingEngineService extends BaseService implements IRoutingEngineS
 	public List saveUnassignedToRoadNet(IRoutingSchedulerIdentity schedulerId, String sessionId, Collection orderList) throws RoutingServiceException {
 		List unassignedList = new ArrayList();
 		try {			
-			TransportationWebService port = getTransportationSuiteBatchService(schedulerId);//RoutingServiceLocator.getInstance().getTransportationSuiteService();
+			TransportationWebService port = null;
+			if(schedulerId.isDynamic())
+				port = getTransportationSuiteService(schedulerId);
+			else
+				port = getTransportationSuiteBatchService(schedulerId);
+			
 			RoutingImportOrder[] unassignedOrders = port.saveRoutingImportOrders(schedulerId.getRegionId()
 													, RoutingDataEncoder.encodeImportOrderList(schedulerId, sessionId, orderList)
 													, RoutingDataEncoder.encodeTimeZoneOptions());
@@ -168,7 +173,12 @@ public class RoutingEngineService extends BaseService implements IRoutingEngineS
 	public String retrieveRoutingSession(IRoutingSchedulerIdentity schedulerId, String sessionDescription) throws RoutingServiceException {
 		String sessionId = null;
 		try {
-			TransportationWebService port = getTransportationSuiteBatchService(schedulerId);//RoutingServiceLocator.getInstance().getTransportationSuiteService();
+			TransportationWebService port = null;
+			if(schedulerId.isDynamic())
+				port = getTransportationSuiteService(schedulerId);
+			else
+				port = getTransportationSuiteBatchService(schedulerId);
+			
 			RoutingSession[] routingSession = port.retrieveRoutingSessionsByCriteria(RoutingDataEncoder.encodeRoutingSessionCriteria(schedulerId, sessionDescription)
 													, RoutingDataEncoder.encodeRouteInfoRetrieveOptions());			
 			if(routingSession != null && routingSession.length > 0) {				
