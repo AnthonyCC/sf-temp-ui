@@ -9,6 +9,7 @@ import java.io.Serializable;
 import java.io.StringWriter;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -39,6 +40,7 @@ import com.freshdirect.delivery.model.UnassignedDlvReservationModel;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.FDTimeslot;
 import com.freshdirect.framework.util.StringUtil;
+import com.freshdirect.framework.util.TimeOfDay;
 import com.freshdirect.routing.constants.RoutingActivityType;
 import com.freshdirect.routing.model.GeographicLocation;
 import com.freshdirect.routing.model.HandOffBatchSession;
@@ -285,6 +287,12 @@ public class HandOffProcessManager {
 		    	}
     			if(dynamicOrders!=null && dynamicOrders.size()>0)
     			{
+    				Calendar cal = Calendar.getInstance();
+    				TimeOfDay cutoffTime = new TimeOfDay(context.getHandOffBatch().getCutOffDateTime());
+    				Calendar cutoffCal = cutoffTime.getAsCalendar(context.getHandOffBatch().getDeliveryDate());
+    				cutoffCal.add(Calendar.DATE, -1);
+    				
+    				if(cal.getTime().after(cutoffCal.getTime()) || RoutingServicesProperties.isProcessUnassignedBeforeCutoff())
     				rsvSchMap = handleUnassignedReservations(sessionInfo.getKey().getRegion(), context.getHandOffBatch().getDeliveryDate(), context.getHandOffBatch().getCutOffDateTime());
     				
     				RoutingEngineServiceProxy proxy = new RoutingEngineServiceProxy();

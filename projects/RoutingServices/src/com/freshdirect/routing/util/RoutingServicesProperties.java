@@ -143,6 +143,8 @@ public class RoutingServicesProperties {
 
 	private final static String PROP_HANDOFF_SORTSTOPBYWINDOW		= "routingservices.handoff.sortstopbywindow";
 	
+	private final static String PROP_HANDOFF_PROCESS_UNASSIGNED_BEFORE_CUTOFF		= "routingservices.handoff.processunassign.beforecutoff";
+	
 	private static final Category LOGGER = LoggerFactory.getInstance( RoutingServicesProperties.class );
 	
 	static {
@@ -223,6 +225,7 @@ public class RoutingServicesProperties {
 	    defaults.put(PROP_TRAILER_ESTIMATIONCARTONSRANGE, 	"15");
 		defaults.put(PROP_DEFAULT_UPS_LOCATIONTYPE, "DPT");
 		defaults.put(PROP_TRAILERNUMFORMAT_ENABLED, "true");
+		defaults.put(PROP_HANDOFF_PROCESS_UNASSIGNED_BEFORE_CUTOFF, "false");
 		
 		refresh();		
 	}
@@ -540,6 +543,10 @@ public class RoutingServicesProperties {
 	
 	public static boolean isTrailerNoFormatEnabled() {
         return (new Boolean(get(PROP_TRAILERNUMFORMAT_ENABLED))).booleanValue();
+    }
+
+	public static boolean isProcessUnassignedBeforeCutoff() {
+        return (new Boolean(get(PROP_HANDOFF_PROCESS_UNASSIGNED_BEFORE_CUTOFF))).booleanValue();
     }
 
 	
