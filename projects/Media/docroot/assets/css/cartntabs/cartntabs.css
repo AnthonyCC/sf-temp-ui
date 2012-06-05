@@ -140,6 +140,24 @@
 }
 
 
-.cnt-qs-idx-container .prod-descr-box {
+.cartntabs .prod-descr-box {
 	height: 110px;
+}
+
+/* narrow space must be tolerated with bigger height */
+.quickshop .cartntabs .prod-descr-box {
+	height: 125px;
+}
+
+.prod-descr-box a {
+	display: inline-block;
+	
+	line-height: 1.5em;
+	max-height: 4.5em; /* 3 rows */
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.lt-ie7 .prod-descr-box a {
+	height: 4.5em; /* 3 rows */
 }

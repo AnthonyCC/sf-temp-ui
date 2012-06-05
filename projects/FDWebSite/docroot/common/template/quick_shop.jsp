@@ -1,6 +1,10 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
 	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html>
+<%-- paulirish.com/2008/conditional-stylesheets-vs-css-hacks-answer-neither/ --%>
+<!--[if lt IE 7]> <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang="en"> <![endif]-->
+<!--[if IE 7]>    <html class="no-js lt-ie9 lt-ie8" lang="en"> <![endif]-->
+<!--[if IE 8]>    <html class="no-js lt-ie9" lang="en"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
 <head>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
@@ -38,7 +42,8 @@ request.setAttribute("__yui_load_dispatcher__", Boolean.TRUE);%>
 
 <BODY BGCOLOR="#FFFFFF" LINK="#336600" VLINK="#336600" ALINK="#FF9900" TEXT="#333333"
     onload="<%= request.getAttribute("bodyOnLoad")%>" 
-    onunload="<%= request.getAttribute("bodyOnUnload")%>" >
+    onunload="<%= request.getAttribute("bodyOnUnload")%>"
+    class="quickshop">
 <%@ include file="/common/template/includes/globalnav.jspf" %>
 <CENTER CLASS="text10">
 <TABLE WIDTH="<%= W_QUICK_SHOP_TOTAL %>" CELLPADDING="0" CELLSPACING="0" BORDER="0">

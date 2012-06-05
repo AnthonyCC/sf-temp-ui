@@ -91,8 +91,8 @@
 	<div class="meals" style="background:url('<%= detailPath %>') left top no-repeat;margin-left:-<%= leftPadding %>px;padding-left:<%= leftPadding %>px">
 
 		<% if (meals != null) { %>
-		<display:ItemGrabber id="prods" category="<%= meals %>" depth="0" filterDiscontinued="true" returnSkus="false"
-				ignoreDuplicateProducts="true" ignoreShowChildren="false" returnHiddenFolders="false" returnSecondaryFolders="false">
+		<display:ItemGrabber id="prods" category="<%= meals %>" depth="1" filterDiscontinued="true" returnSkus="false"
+				ignoreDuplicateProducts="true" ignoreShowChildren="true" returnHiddenFolders="false" returnSecondaryFolders="false">
 		<% products = prods; %>
 		</display:ItemGrabber>
 		<display:ItemSorter nodes="<%= products %>" strategy="<%= sortStrategy %>"/>		

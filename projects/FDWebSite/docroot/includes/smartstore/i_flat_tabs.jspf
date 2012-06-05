@@ -23,7 +23,7 @@
 	request.setAttribute("actionResult", result);
     request.setAttribute("globalCartProdHeight", 110);
 %>
-<div class="cnt-flatbox-full" style="width: <%= tabsTotalWidth %>px;">
+<div class="cartntabs"><div class="cnt-flatbox-full" style="width: <%= tabsTotalWidth %>px;">
 <%
 	if (__v_top != null) {
 		request.setAttribute("genericRecommendationsVariant", __v_top);
@@ -108,7 +108,7 @@
 </jsp:include>
 		</div>
 	</span></div>
-<% } %>
+<% } %></div>
 <script type="text/javascript">
 var PIP;
 
