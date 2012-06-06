@@ -183,7 +183,7 @@ public class HandOffRoutingOutAction extends AbstractHandOffAction {
 									if(rsvToOrderMap.containsKey(_stop.getOrderNumber()))
 										_stop.setOrderNumber(rsvToOrderMap.get(_stop.getOrderNumber()));
 									else
-										throw new RoutingServiceException("Order is not in the system for the cutoff. Check the routing session"
+										throw new RoutingServiceException("Order Number "+_stop.getOrderNumber()+" is not in the system for the cutoff. Check the routing session"
 												, null, IIssue.PROCESS_HANDOFFBATCH_ERROR);
 									
 									_stops.add(_stop);
