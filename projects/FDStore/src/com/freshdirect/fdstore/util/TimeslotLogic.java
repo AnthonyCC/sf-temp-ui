@@ -155,8 +155,7 @@ public class TimeslotLogic {
 					double steeringDiscount = 0;
 					if (!genericTimeslots) {
 						// Calculate steering discount and apply to the current timeslot
-						PromotionHelper.getDiscount(
-								user, timeslot);
+						steeringDiscount = PromotionHelper.getDiscount(user, timeslot);
 						_ts.setSteeringDiscount(steeringDiscount);
 					}
 
