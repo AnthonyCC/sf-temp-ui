@@ -24,7 +24,10 @@
 
 <% //expanded page dimensions
 final int W_GROCERY_PRODUCT = 601;
+final int W_GROCERY_PRODUCT_NO_CART = 801;
 final int W_GROCERY_PRODUCT_CENTER_PADDING = 10;
+final int W_IMAGE = 85;
+final int W_IMAGE_NO_CART = 120;
 %>
 
 
@@ -34,6 +37,10 @@ FDUserI user = (FDUserI) session.getAttribute(SessionName.USER);
 
 String catId = request.getParameter("catId");
 String deptId = request.getParameter("deptId");
+String jspTemplate = (String) request.getAttribute("jspTemplate");
+boolean noCart = jspTemplate.contains("left_dnav");
+int contentWidth = noCart ? W_GROCERY_PRODUCT_NO_CART : W_GROCERY_PRODUCT;
+int imageCellWidth = noCart ? W_IMAGE_NO_CART : W_IMAGE;
 boolean isDepartment = false;
 
 ContentNodeModel currentFolder = null;
@@ -256,7 +263,7 @@ request.removeAttribute("successPage");
         // there are errors..Display them
         Collection myErrs=((ActionResult)result).getErrors();
 %>
-        <table border="0" cellspacing="0" cellpadding="0" width="<%=W_GROCERY_PRODUCT%>">
+        <table border="0" cellspacing="0" cellpadding="0" width="<%=contentWidth%>">
 	  
 <%
         for (Iterator errItr = myErrs.iterator();errItr.hasNext(); ) {
@@ -374,7 +381,7 @@ if(((pageNumber -1) * itemsToDisplay) > skuCount) {
 <% } %>
 <% /* where is the END tag for this "form"? */ %>
 <form name="groceryForm" id='grocery_form' method="POST">
-<table border="0" cellspacing="0" cellpadding="0" width="<%=W_GROCERY_PRODUCT%>">
+<table border="0" cellspacing="0" cellpadding="0" width="<%=contentWidth%>">
 <%
 //If there is a specific product selected then show it above the listings here
 //lets get the product with the product cod in the section, display this product, then the rest of the products
@@ -834,7 +841,7 @@ String  viewBrandURL = response.encodeURL("/category.jsp?catId="+groceryCategory
 <%
 	} else {
 %>
-<img src="/media_stat/images/layout/999999.gif" width="<%=W_GROCERY_PRODUCT%>" height="1" border="0" vspace"5"><br>
+<img src="/media_stat/images/layout/999999.gif" width="<%=contentWidth%>" height="1" border="0" vspace"5"><br>
 <%
 	}
 %>
@@ -892,7 +899,7 @@ if (brandLogo !=null) {
     </div>
 <% } %>
 <br />
-<table border="0" cellspacing="0" cellpadding="0" width="<%=W_GROCERY_PRODUCT%>">
+<table border="0" cellspacing="0" cellpadding="0" width="<%=contentWidth%>">
 
 <%
 //
@@ -990,7 +997,7 @@ if (doRenderEditorialPartial && editorialMedia != null && !editorialMedia.isBlan
 %>
 </table>
 
-<table border="0" cellspacing="0" cellpadding="0" width="<%=W_GROCERY_PRODUCT%>" style="padding-bottom: 5px;">
+<table border="0" cellspacing="0" cellpadding="0" width="<%=contentWidth%>" style="padding-bottom: 5px;">
 	<tr valign="top">
     	<td CLASS="text10bold" width="215">Page: <%=pageNumberLinks%></td>    
     <%
@@ -1032,7 +1039,7 @@ for(int i = (pageNumber -1) * itemsToDisplay; i < loopEnd && isAnyProdAvailable=
 }
  // if we are not displaying the amplified product (bigProduct area) then show the add selected to cart button at the top
 %>
-<table border="0" cellspacing="0" cellpadding="0" width="<%=W_GROCERY_PRODUCT%>"><tr>
+<table border="0" cellspacing="0" cellpadding="0" width="<%=contentWidth%>"><tr>
 <%
 	if(!bigProdShown && isAnyProdAvailable) {
 %><td><input type="image" name="addMultipleToCart" src="/media_stat/images/buttons/add_selected_to_cart.gif" width="145" height="20" hspace="4" vspace="4" border="0" alt="ADD SELECTED ITEMS TO CART"></td><%
@@ -1047,7 +1054,7 @@ for(int i = (pageNumber -1) * itemsToDisplay; i < loopEnd && isAnyProdAvailable=
                 //now in the main loop, we need two inner loops, the first loop prints 5 images horizontally, the second print the products vertically
                 int innerLoopEnd = Math.min(i + 6, loopEnd);
 %>
-<table border="0" cellspacing="0" cellpadding="0" align="left">
+<table border="0" cellspacing="0" cellpadding="0" <% if(noCart) { %> align="center" <% } else { %> align="left" <% } %>>
         <tr valign="top">
 <%
 	String otherParams = buildOtherParams(showThumbnails, itemsToDisplay, -1, brandValue, sortBy, nutriName,request, null);
@@ -1066,7 +1073,7 @@ for(int i = (pageNumber -1) * itemsToDisplay; i < loopEnd && isAnyProdAvailable=
                                 + "&prodCatId="+displayProduct.getParentNode()
                                 + "&productId="+displayProduct.getContentName())+"&trk=trans";
 %>
-                <td width="85" style="padding-left: 10px;">
+                <td width="<%= imageCellWidth %>" style="padding-left: 10px;">
                 <div id="prod_container" style="height: 90px; width: 90px; text-align: left;" onMouseOver="changeImg(document.bullet<%=imgShownIndex%>,'in',0)" onMouseOut="changeImg(document.bullet<%=imgShownIndex%>,'out',0)">
 					<div>
 
@@ -1081,7 +1088,7 @@ for(int i = (pageNumber -1) * itemsToDisplay; i < loopEnd && isAnyProdAvailable=
         </tr>
 </table><div style="font-size: 0px; clear: both;"></div>
 <br>
-<table width="<%=W_GROCERY_PRODUCT%>" border="0" cellspacing="0" cellpadding="0">
+<table width="<%=contentWidth%>" border="0" cellspacing="0" cellpadding="0">
 <%@include file="/includes/layouts/i_grocery_product_separator.jspf"%>
 <%
 	//now the second loop - displays product descriptions vertically
@@ -1103,7 +1110,7 @@ for(int i = (pageNumber -1) * itemsToDisplay; i < loopEnd && isAnyProdAvailable=
 } else {
 
         // we are not displaying thumbnails
-%><table width="<%=W_GROCERY_PRODUCT%>" border="0" cellspacing="0" cellpadding="0">
+%><table width="<%=contentWidth%>" border="0" cellspacing="0" cellpadding="0">
 <%@include file="/includes/layouts/i_grocery_product_separator.jspf"%>
 <%
 	for(int i = (pageNumber -1) * itemsToDisplay; i < loopEnd; i++) {
@@ -1133,7 +1140,7 @@ for(int i = (pageNumber -1) * itemsToDisplay; i < loopEnd && isAnyProdAvailable=
 <%
 if(isAnyProdAvailable) {
 %>
-        <table border="0" cellspacing="0" cellpadding="0" width="<%=W_GROCERY_PRODUCT%>"><tr valign="BOTTOM"><td width="<%=W_GROCERY_PRODUCT%>">
+        <table border="0" cellspacing="0" cellpadding="0" width="<%=contentWidth%>"><tr valign="BOTTOM"><td width="<%=contentWidth%>">
         <input type="image" name="addMultipleToCart" src="/media_stat/images/buttons/add_selected_to_cart.gif" width="145" height="20" hspace="4" vspace="4" border="0" alt="ADD SELECTED ITEMS TO CART">
         <br>
         <fd:CCLCheck>
@@ -1143,7 +1150,7 @@ if(isAnyProdAvailable) {
         </td></tr></table>
 <% } %>
 <br/>
-<table border="0" cellspacing="0" cellpadding="0" width="<%=W_GROCERY_PRODUCT%>">
+<table border="0" cellspacing="0" cellpadding="0" width="<%=contentWidth%>">
 <tr>
 <td><FONT CLASS="title11"><%=brandOrFolderName%></FONT> <FONT CLASS="text9">(<%= skuCount %> items)</FONT><br></td>
 <td ALIGN="RIGHT"><%
@@ -1161,7 +1168,7 @@ Thumbnails <A HREF="<%=thumbNailURL%>">ON</A> | <B>OFF</B><%
 <tr><td colspan="2" bgcolor="#FF9933"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td></tr>
 <tr><td colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="4"></td></tr>
 </table>
-<table border="0" cellspacing="0" cellpadding="0" width="<%=W_GROCERY_PRODUCT%>">
+<table border="0" cellspacing="0" cellpadding="0" width="<%=contentWidth%>">
 <tr valign="top"><td CLASS="text10bold" width="240">Page: <%= pageNumberLinks %><br></td>
 <td ALIGN="RIGHT" width="185">Display <%
 if (itemsToDisplay == 30) {
@@ -1197,5 +1204,4 @@ if (itemsToDisplay == 30) {
 <% } %>
         syncQty('big',syncProdIdx);
 </script>
-
 </fd:FDShoppingCart>

@@ -149,6 +149,7 @@ final int W_CATEGORY_NO_LEFT_NAV = 765;
 	}
 	request.setAttribute("layoutType", layoutType); //make layoutType available in jspTemplate
 	request.setAttribute("noLeftNav",noLeftNav);
+	request.setAttribute("jspTemplate",jspTemplate);
 %><tmpl:insert template='<%=jspTemplate%>'><%
 	if (!noLeftNav) {
 		%><tmpl:put name='leftnav' direct='true'> <%-- <<< some whitespace is needed here --%></tmpl:put><%
