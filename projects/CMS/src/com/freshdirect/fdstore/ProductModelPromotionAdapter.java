@@ -440,7 +440,7 @@ public class ProductModelPromotionAdapter implements ProductModel, Serializable,
 	@Override
 	public PriceCalculator getPriceCalculator() {
 		if(!isPreview){
-			return productModel.getPriceCalculator(getPricingContext());
+			return productModel.getPriceCalculator(ppSkuCode,getPricingContext());
 		}else{
 			return new ProductPromoPreviewPriceCalculator(getPricingContext(),productModel,productModel.getSku(ppSkuCode),fdProdInfo,fdProduct);
 		}
@@ -467,7 +467,7 @@ public class ProductModelPromotionAdapter implements ProductModel, Serializable,
 	@Override
 	public PriceCalculator getPriceCalculator(PricingContext pricingContext) {
 		if(!isPreview){
-			return productModel.getPriceCalculator(pricingContext);
+			return productModel.getPriceCalculator(ppSkuCode,pricingContext);
 		}else{
 			return new ProductPromoPreviewPriceCalculator(getPricingContext(),productModel,productModel.getSku(ppSkuCode),fdProdInfo,fdProduct);
 		}

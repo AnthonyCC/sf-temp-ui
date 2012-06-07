@@ -448,7 +448,7 @@ public class CategoryModel extends ProductContainer {
 
     public List<ProductModel> getProducts() {
     	
-    	List<ProductModel> prodList = null;
+    	List<ProductModel> prodList = new ArrayList<ProductModel>();
     	String zoneId = ContentFactory.getInstance().getCurrentPricingContext().getZoneId();
     	String currentProductPromotionType = getProductPromotionType();
     	if(currentProductPromotionType == null || !ContentFactory.getInstance().isEligibleForDDPP()){
