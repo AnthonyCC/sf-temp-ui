@@ -1329,7 +1329,7 @@ div.control, div.slotRow, div.time {
 	.ddpp .prodName {
 		font-size: 11px;
 		font-family: Verdana, Arial, sans-serif;
-		height: 46px;
+		height: 33px;
 		overflow-y: hidden;
 	}
 	.ddpp .prodName {
@@ -1386,6 +1386,11 @@ div.control, div.slotRow, div.time {
 	.ddpp .prodImageCont {
 		height: 150px;
 	}
+
+	.ddpp .prodImageCont img {
+		height: 100%;
+	}
+
 	.ddpp .ddpp_normal_prod_list_imgCont {
 	}
 
@@ -1396,7 +1401,7 @@ div.control, div.slotRow, div.time {
 		height: auto;
 	}
 	.ddpp .prodRating {
-		height: 12px;
+		height: 25px;
 	}
 	
 	.ddpp .socialMedia {

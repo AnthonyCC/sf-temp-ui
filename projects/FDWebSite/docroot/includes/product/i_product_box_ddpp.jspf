@@ -41,22 +41,8 @@
 	ProductModelPromotionAdapter pmPA = (ProductModelPromotionAdapter)pm;
  	
  	//change image to use if it's a wine product
-	String imageSize = "PROD_IMAGE_DETAIL";
+	String imageSize = "detail";
 %>
-	<fd:FDProductInfo id="productInfo" skuCode="<%= pmPA.getPpSkuCode() %>">
-		<%
-    		FDProduct product = null;
-	         try {
-	            product = FDCachedFactory.getProduct(productInfo);
-	            
-				if ( "USQ".equalsIgnoreCase(pm.getDepartment().toString()) && (product != null && !"".equals(product.getMaterial().getAlcoholicContent().getCode())) ) {
-					imageSize = "PROD_IMAGE_ZOOM";
-				}
-	        } catch (FDSkuNotFoundException fdsnf){
-	            JspLogger.PRODUCT.warn("DDPP Page: catching FDSkuNotFoundException and Continuing:\n FDProductInfo:="+productInfo+"\nException message:= "+fdsnf.getMessage());
-	        }
- 		%>
- 	</fd:FDProductInfo>
  <% if (isFeatProd) { /* Featured Products look */ %>
 	<%
 	 	String TX_FORM_NAMEi = TX_FORM_NAME+"_FP"+seqDDPP;
@@ -74,17 +60,19 @@
 		<div class="topText"><display:ProductPrice impression="<%= pi %>" showDescription="false" showAboutPrice="false" showRegularPrice="false" grpDisplayType="FEAT" dataDriven="true" /></div>
 		
 		<div class="prodImageCont">
-			<display:ProductImage 
-				product="<%= pm %>" 
-				showRolloverImage="false" 
-				action="<%= actionURI %>" 
-				hideBursts="<%= hideBursts %>" 
-				prodImageType="<%= imageSize %>" 
-				enableQuickBuy="false"
-				quickBuyImage="/media_stat/images/quickbuy/close.gif"
-				disabled="<%=disableLinks%>"
-				className="prodImage"
-			/>
+			<display:ProductLink product="<%= pm %>" trackingCode="<%= trk %>">
+			<%
+			  		FDProduct fdproduct = null;
+			        try {
+			        	fdproduct = FDCachedFactory.getProduct(pi.getProductInfo());
+			           
+					if ( "USQ".equalsIgnoreCase(pm.getDepartment().toString()) && (fdproduct != null && !"".equals(fdproduct.getMaterial().getAlcoholicContent().getCode())) ) {
+						imageSize = "zoom";
+					}
+			       } catch (Exception fdsnf){
+			       }
+			%>
+			<display:SimpleProductImage product="<%= pm %>" size="<%= imageSize %>"/></display:ProductLink>
 		</div>
 		<div class="prodRating"><display:ProductRating product="<%= pm %>" action="<%= actionURI %>" /></div>
 		<div class="prodName"><display:ProductName product="<%= pm %>" action="<%= actionURI %>" truncAt="80" useEllipsis="true" disabled="<%=disableLinks%>" /></div>
