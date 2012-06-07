@@ -32,6 +32,13 @@ public abstract class RecommendationsTag extends AbstractGetterTag<Recommendatio
 	// maximum number of recommended items
     protected int     itemCount     = 5;
 
+    /**
+     * Product window size property.
+     */
+    protected int windowSize = 0;
+    
+    
+
     // if this set true tag should not recommend new. Instead, return the
     // previous if any
     protected boolean errorOccurred = false;
@@ -47,6 +54,10 @@ public abstract class RecommendationsTag extends AbstractGetterTag<Recommendatio
     public void setItemCount(int cnt) {
         this.itemCount = cnt;
     }
+    
+	public void setWindowSize(int windowSize) {
+		this.windowSize = windowSize;
+	}
     
     public void setParentFeatureImpressionId(String id) {
         this.parentFeatureImpressionId = id;

@@ -118,7 +118,7 @@ public class Recommendations implements Serializable {
 	 */
 	public Recommendations(Variant variant, List<ContentNodeModel> products, SessionInput sessionInput,
 			boolean isRefreshable, boolean isSmartSavings) {
-		this(variant, products, isRefreshable, isSmartSavings, sessionInput != null && sessionInput.getMaxRecommendations() > 0 ? sessionInput.getMaxRecommendations() : MAX_PRODS,
+		this(variant, products, isRefreshable, isSmartSavings, sessionInput != null ? sessionInput.getWindowSize(MAX_PRODS) : MAX_PRODS,
 				sessionInput != null && sessionInput.getPricingContext() != null ? sessionInput.getPricingContext() : new PricingContext(ZonePriceListing.MASTER_DEFAULT_ZONE));
 		if (sessionInput != null) {
 		    this.previousRecommendations = sessionInput.getPreviousRecommendations();

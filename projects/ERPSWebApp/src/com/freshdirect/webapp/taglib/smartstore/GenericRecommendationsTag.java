@@ -50,7 +50,7 @@ public class GenericRecommendationsTag extends RecommendationsTag implements Ses
     	this.cacheId = cacheId;
     }
     
-    
+
     /**
      * 
      * @param v Original variant
@@ -138,6 +138,8 @@ public class GenericRecommendationsTag extends RecommendationsTag implements Ses
         FDStoreRecommender.initYmalSource(input, user, request);
         input.setCurrentNode(input.getYmalSource());
         input.setMaxRecommendations(itemCount);
+        if (windowSize > 0)
+        	input.setWindowSize(windowSize);
 
         recommendations = FDStoreRecommender.getInstance().getRecommendations(sf, user, input);
         collectRequestId(request, recommendations, user);

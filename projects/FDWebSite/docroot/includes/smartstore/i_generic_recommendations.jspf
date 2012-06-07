@@ -54,7 +54,8 @@
 	Variant genericRecommendationsVariant = (Variant) request.getAttribute("genericRecommendationsVariant");
 	String parentImpressionId = (String) request.getAttribute("parentImpressionId");
 	String parentVariantId = (String) request.getAttribute("parentVariantId");
-	int __maxItems = request.getAttribute("maxItems") != null ? (Integer) request.getAttribute("maxItems") : -1;
+	final int __maxItems = request.getAttribute("maxItems") != null ? (Integer) request.getAttribute("maxItems") : -1;
+	final int __windowSize = request.getAttribute("windowSize") != null ? (Integer) request.getAttribute("windowSize") : 0;
 	final FDUserI pip_u = (FDUserI) session.getAttribute(SessionName.USER);
 
 	int __fixedPrdImgHeight = 0;
@@ -131,7 +132,7 @@
 		final int maxItems = __maxItems > -1 ? __maxItems :
 			( "quickshop".equalsIgnoreCase(smartStoreFacility) ) ? 4 : 5;
 %>
-<fd:GenericRecommendations id="recommendations" facility="<%= smartStoreFacility %>" errorOccurred="<%= !pip_result.isSuccess() %>" parentFeatureImpressionId="<%= parentImpressionId %>" parentVariantId="<%= parentVariantId %>" cacheId="<%= parentImpressionId %>" itemCount="<%=maxItems%>">
+<fd:GenericRecommendations id="recommendations" facility="<%= smartStoreFacility %>" errorOccurred="<%= !pip_result.isSuccess() %>" parentFeatureImpressionId="<%= parentImpressionId %>" parentVariantId="<%= parentVariantId %>" cacheId="<%= parentImpressionId %>" itemCount="<%=maxItems%>" windowSize="<%= __windowSize %>">
 		<% 		
 		    isRendered = true;
 			ConfigurationContext confContext = new ConfigurationContext();

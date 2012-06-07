@@ -65,6 +65,11 @@ public class SessionInput implements Cloneable {
 
 	int maxRecommendations = Integer.MAX_VALUE;
 
+	/**
+	 * Page window size. Defaulted to maxRecommendations if set to 0
+	 */
+	private int windowSize = 0;
+	
 	private boolean checkForEnoughSavingsMode = false;
 
 	private String savingsVariantId;
@@ -332,6 +337,20 @@ public class SessionInput implements Cloneable {
 		return maxRecommendations;
 	}
 
+	public int getWindowSize() {
+		return windowSize;
+	}
+	
+	public int getWindowSize(int defaultValue) {
+		return windowSize > 0 ? windowSize : (
+				maxRecommendations > 0 ? maxRecommendations : defaultValue
+		);
+	}
+
+	public void setWindowSize(int windowSize) {
+		this.windowSize = windowSize;
+	}
+
 	public boolean isCheckForEnoughSavingsMode() {
 		return checkForEnoughSavingsMode;
 	}
@@ -459,6 +478,9 @@ public class SessionInput implements Cloneable {
 		cloned.setRecentItems(recentItems);
 		// pricingCtx <-- already set by constructor
 		cloned.setPrioritizedCount(prioritizedCount);
+		
+		cloned.setMaxRecommendations(maxRecommendations);
+		cloned.setWindowSize(windowSize);
 		
 		return cloned;
 	}

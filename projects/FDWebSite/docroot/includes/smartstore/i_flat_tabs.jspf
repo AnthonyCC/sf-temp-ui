@@ -73,7 +73,8 @@
 		request.setAttribute("genericRecommendationsVariant", __v_left);
 	    request.setAttribute("parentImpressionId", tab.getParentImpressionId());
 	    request.setAttribute("parentVariantId", tab.getTabVariant().getId());
-	    request.setAttribute("maxItems", 2);
+	    request.setAttribute("maxItems", 5);
+	    request.setAttribute("windowSize", 2);
 %>		
 		<div class="cnt-flatbox-center-left">
 			<h2 class="centerline">
@@ -94,7 +95,8 @@
 		request.setAttribute("genericRecommendationsVariant", __v_right);
 	    request.setAttribute("parentImpressionId", tab.getParentImpressionId());
 	    request.setAttribute("parentVariantId", tab.getTabVariant().getId());
-	    request.setAttribute("maxItems", 2);
+	    request.setAttribute("maxItems", 5);
+	    request.setAttribute("windowSize", 2);
 %>
 		<div class="cnt-flatbox-center-right">
 			<h2 class="centerline">

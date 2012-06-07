@@ -142,6 +142,8 @@ public class YMALRecommendationsTag extends RecommendationsTag implements Sessio
         }
 
         inp.setMaxRecommendations(itemCount);
+        if (windowSize > 0)
+        	inp.setWindowSize(windowSize);
 
         results = FDStoreRecommender.getInstance().getRecommendations(EnumSiteFeature.YMAL, user, inp);
         persistToSession(results);

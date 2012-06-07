@@ -3549,6 +3549,11 @@
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 		<attribute>
+			<name>windowSize</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
 			<name>errorOccurred</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
@@ -3592,6 +3597,11 @@
 		</attribute>
 		<attribute>
 			<name>itemCount</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>windowSize</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
@@ -3651,6 +3661,11 @@
 		</attribute>
 		<attribute>
 			<name>itemCount</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>windowSize</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>

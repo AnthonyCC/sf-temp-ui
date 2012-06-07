@@ -85,6 +85,8 @@ public class ProductGroupRecommenderTag extends RecommendationsTag {
         si.setCurrentNode(nodeModel);
         si.setNoShuffle(noShuffle);
         si.setMaxRecommendations(itemCount);
+        if (windowSize > 0)
+        	si.setWindowSize(windowSize);
         si.setExcludeAlcoholicContent(excludeAlcoholicContent);
         if (this.ymalSource != null) {
         	si.setYmalSource(ymalSource);
