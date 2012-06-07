@@ -482,12 +482,13 @@ public class HandOffProcessManager {
     	 
     	 
     	private void saveLocations( Map<IRoutingSchedulerIdentity, List<IOrderModel>> orderMappedLst, String region) throws  RoutingProcessException {
-        	try {
+    		IRoutingSchedulerIdentity schedulerId = null;
+    		try {
     	    	RoutingEngineServiceProxy proxy = new RoutingEngineServiceProxy();
+    	    	
     	    	if(orderMappedLst != null && orderMappedLst.keySet()!=null)
     	    	{
 	    	    	Iterator tmpIterator = orderMappedLst.keySet().iterator();
-	    	    	IRoutingSchedulerIdentity schedulerId = null;
 	    			while(tmpIterator.hasNext()) {
 	    				schedulerId = (IRoutingSchedulerIdentity)tmpIterator.next();
 	    				proxy.saveLocationsEx(orderMappedLst.get(schedulerId), schedulerId, region, RoutingServicesProperties.getDefaultLocationType());
@@ -496,28 +497,33 @@ public class HandOffProcessManager {
     			
         	} catch (RoutingServiceException e) {
         		e.printStackTrace();
-    			throw new RoutingProcessException(null,e,IIssue.PROCESS_LOCATION_SAVEERROR);
+        		StringBuffer strBuf = new StringBuffer();
+        		strBuf.append(this.getErrorMessage(Issue.getMessage(IIssue.PROCESS_LOCATION_SAVEERROR), (schedulerId!=null)?schedulerId.getArea().getAreaCode():""));
+        		throw new RoutingProcessException(strBuf.toString(),e,IIssue.PROCESS_LOCATION_SAVEERROR);
     		}
         }
 
         private void purgeOrders(Set schedulerIdLst) throws  RoutingProcessException {
-
+        	IRoutingSchedulerIdentity schedulerId = null;
         	try {
     	    	RoutingEngineServiceProxy proxy = new RoutingEngineServiceProxy();
     	    	Iterator tmpIterator = schedulerIdLst.iterator();
-    	    	IRoutingSchedulerIdentity schedulerId = null;
+    	    	
     			while(tmpIterator.hasNext()) {
     				schedulerId = (IRoutingSchedulerIdentity)tmpIterator.next();
     				proxy.purgeBatchOrders(schedulerId, true); //Changed to reload xml option
     			}
         	} catch (RoutingServiceException e) {
         		e.printStackTrace();
-    			throw new RoutingProcessException(null,e,IIssue.PROCESS_PURGEORDERS_UNSUCCESSFUL);
+        		StringBuffer strBuf = new StringBuffer();
+        		strBuf.append(this.getErrorMessage(Issue.getMessage(IIssue.PROCESS_PURGEORDERS_UNSUCCESSFUL), (schedulerId!=null)?schedulerId.getArea().getAreaCode():""));
+        		
+    			throw new RoutingProcessException(strBuf.toString(),e,IIssue.PROCESS_PURGEORDERS_UNSUCCESSFUL);
     		}
         }
         
         private void setupWaveInstances(IHandOffBatch handOffBatch, Set schedulerIdLst) throws  RoutingProcessException {
-
+        	IRoutingSchedulerIdentity schedulerId = null;
         	try {
     	    	RoutingEngineServiceProxy proxy = new RoutingEngineServiceProxy();
     	    	CapacityEngineServiceProxy capacityProxy = new CapacityEngineServiceProxy();
@@ -530,7 +536,7 @@ public class HandOffProcessManager {
 
     			if(waveInstanceTree != null) {																																
 	    	    	Iterator tmpIterator = schedulerIdLst.iterator();
-	    	    	IRoutingSchedulerIdentity schedulerId = null;
+	    	    	schedulerId = null;
 	    			while(tmpIterator.hasNext()) {
 	    				schedulerId = (IRoutingSchedulerIdentity)tmpIterator.next();
 	    				//Dispatch-> CutOff ->WaveInstance
@@ -598,7 +604,10 @@ public class HandOffProcessManager {
     			}
         	} catch (RoutingServiceException e) {
         		e.printStackTrace();
-    			throw new RoutingProcessException(null,e,IIssue.PROCESS_SAVEWAVEINSTANCE_UNSUCCESSFUL);
+        		StringBuffer strBuf = new StringBuffer();
+        		strBuf.append(this.getErrorMessage(Issue.getMessage(IIssue.PROCESS_SAVEWAVEINSTANCE_UNSUCCESSFUL), (schedulerId!=null)?schedulerId.getArea().getAreaCode():""));
+        		
+    			throw new RoutingProcessException(strBuf.toString(),e,IIssue.PROCESS_SAVEWAVEINSTANCE_UNSUCCESSFUL);
     		}
         }
 
@@ -628,8 +637,10 @@ public class HandOffProcessManager {
     			}
         	} catch (RoutingServiceException e) {
         		e.printStackTrace();
-    			throw new RoutingProcessException(getErrorMessage("", schedulerId.getArea().getAreaCode())
-    													,e,IIssue.PROCESS_BULKRESERVE_UNSUCCESSFUL);
+        		StringBuffer strBuf = new StringBuffer();
+        		strBuf.append(this.getErrorMessage(Issue.getMessage(IIssue.PROCESS_BULKRESERVE_UNSUCCESSFUL), (schedulerId!=null)?schedulerId.getArea().getAreaCode():""));
+        		
+    			throw new RoutingProcessException(strBuf.toString(),e,IIssue.PROCESS_BULKRESERVE_UNSUCCESSFUL);
     		}
         	return unassignedOrders;
         }
@@ -642,7 +653,10 @@ public class HandOffProcessManager {
         		}
         	} catch (RoutingServiceException e) {
         		e.printStackTrace();
-    			throw new RoutingProcessException(getErrorMessage("", schedulerId.getArea().getAreaCode())
+        		StringBuffer strBuf = new StringBuffer();
+        		strBuf.append(this.getErrorMessage(Issue.getMessage(IIssue.PROCESS_REMOVEFROMSERVER_UNSUCCESSFUL), (schedulerId!=null)?schedulerId.getArea().getAreaCode():""));
+        		
+    			throw new RoutingProcessException(strBuf.toString()
     													,e,IIssue.PROCESS_REMOVEFROMSERVER_UNSUCCESSFUL);
     		}
         }
