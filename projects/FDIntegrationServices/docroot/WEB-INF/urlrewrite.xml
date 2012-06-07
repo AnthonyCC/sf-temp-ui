@@ -555,6 +555,16 @@
 		<to last="true">/fdinterface.do?ver=$1</to>
 	</rule>
 	
+	<!-- Lookup -->
+	<rule>
+		<from>^/v/([0-9]+)/lookup/countries/(.*)</from>
+		<to last="true">/lookup.do?action=getCountries&amp;lookupKey=$2&amp;ver=$1</to>
+	</rule>
+	<rule>
+		<from>^/v/([0-9]+)/lookup/regions/(.*)</from>
+		<to last="true">/lookup.do?action=getRegions&amp;lookupKey=$2&amp;ver=$1</to>
+	</rule>
+		
 	<!-- Test -->
 	<rule>
 		<from>^/v/([0-9]+)/test/$</from>

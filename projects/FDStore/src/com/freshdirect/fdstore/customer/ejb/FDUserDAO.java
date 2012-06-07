@@ -372,7 +372,7 @@ public class FDUserDAO {
 		ps.setString(index++, user.getPK().getId());
 		
 		if (ps.executeUpdate() != 1) {
-			throw new SQLException("Row not updated");
+			throw new SQLException("FDUser Row not updated :"+user.getPK().getId());
 		}
 		ps.close();
 

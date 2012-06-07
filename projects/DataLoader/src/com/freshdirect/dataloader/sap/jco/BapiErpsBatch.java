@@ -47,15 +47,16 @@ public class BapiErpsBatch implements BapiFunctionI {
 				for (int i=0; i<bdes.length; i++) {
 					LOGGER.warn("Nested bad data exception", bdes[i]);
 					if(i == 0) {
-						if(bdes[0] != null)
-							firstLine = bdes[0].toString();
+						if(bdes[0] != null) {
+							firstLine = bdes[0].getMessage();
+						}
 					}
 				}
 			}
 			
 			// !!! make BDEs part of the SAP error msg
 
-			String errorMsg = ( le.getNestedException()==null ? le : le.getNestedException() ).toString();
+			String errorMsg = ( le.getNestedException()==null ? le : le.getMessage() ).toString();
 			String returnErr = firstLine + ": " + errorMsg;
 			returnErr = returnErr.substring(0, Math.min(255, returnErr.length()));
 			LOGGER.info("Error message to SAP: '"+returnErr+"'");

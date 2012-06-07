@@ -64,8 +64,10 @@ public class LineItemDiscountApplicator implements PromotionApplicatorI {
 			double p2 = ((FDCartLineI) o2).getBasePrice();
 			if(p1 == p2) {
 				//prices are same. so order by line number
-				p2 = Double.parseDouble(((FDCartLineI) o1).getCartlineId());
-				p1 = Double.parseDouble(((FDCartLineI) o2).getCartlineId());
+				p2 = Double.parseDouble( ((FDCartLineI) o1).getCartlineId() != null && ((FDCartLineI) o1).getCartlineId().length() > 0 
+																							? ((FDCartLineI) o1).getCartlineId() : "0");
+				p1 = Double.parseDouble( ((FDCartLineI) o2).getCartlineId() != null && ((FDCartLineI) o2).getCartlineId().length() > 0 
+																							? ((FDCartLineI) o2).getCartlineId() : "0");
 			}			
 			return Double.compare(p1, p2);
 		}

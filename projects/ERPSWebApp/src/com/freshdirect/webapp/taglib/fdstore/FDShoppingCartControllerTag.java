@@ -1590,12 +1590,12 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements Sessi
 									// add a new orderline for rest of the difference, if any
 									if (deltaQty > 0) {
 
-										FDCartLineI newLine = orderLine .createCopy();
+										FDCartLineI newLine = orderLine.createCopy();
 										newLine.setPricingContext(new PricingContext(user.getPricingZoneId()));
 										try {
 											OrderLineUtil.cleanup(newLine);
 										} catch (FDInvalidConfigurationException e) {
-											throw new JspException( "Orderline configuration no longer valid", e);
+											throw new JspException( "Orderline [" + newLine.getDescription() +"] configuration no longer valid", e);
 										}
 										newLine.setQuantity(deltaQty);
 										i.add(newLine);

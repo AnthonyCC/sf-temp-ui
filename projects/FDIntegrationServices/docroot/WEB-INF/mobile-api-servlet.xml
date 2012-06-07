@@ -49,6 +49,8 @@
 	<bean id="configurationController"
 		class="com.freshdirect.mobileapi.controller.ConfigurationController"
 		parent="baseController" />
+		
+	<bean id="lookupController" class="com.freshdirect.mobileapi.controller.LookupController" parent="baseController" />
 
 	<bean id="testController" class="com.freshdirect.mobileapi.controller.TestController" />
 
@@ -79,6 +81,7 @@
 				<prop key="**/contactus.do">contactUsController</prop>
 				<prop key="**/emailcapture.do">emailCaptureController</prop>
 				<prop key="**/configvalue.do">configurationController</prop>
+				<prop key="**/lookup.do">lookupController</prop>
 				<prop key="**/test.do">testController</prop>
 				<prop key="**/help.do">helpController</prop>
 				<prop key="**/browse.do">browseController</prop>

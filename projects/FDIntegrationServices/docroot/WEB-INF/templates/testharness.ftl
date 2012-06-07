@@ -517,6 +517,14 @@ function loadStuff() {
   	$("#url").val("/ext/t001");
   	$("#payload").val("2202928245,applicationdevelopment@freshdirect.com,qa@freshdirect.com");
   	$("#result").val("");
+  }  else if (loaddata == "GetCountries") {
+  	$("#url").val("/lookup/countries/");  
+  	$("#payload").val("");	
+  	$("#result").val("");
+  }  else if (loaddata == "GetRegions") {
+  	$("#url").val("/lookup/regions/"); 
+  	$("#payload").val(""); 	
+  	$("#result").val("");
   }  
 }
 
@@ -666,6 +674,10 @@ function doStuff() {
   <option value="CustomerAgreement">Help - Customer Agreement</option>
   <option value=""> ========== External Interface ========== </option>
   <option value="IvrEmail">Send - IVR Delivery Email</option>
+  
+  <option value=""> ========== Lookup ========== </option>
+  <option value="GetCountries">Lookup - Get Countries</option>
+  <option value="GetRegions">Lookup - Get Regions</option>
 
   </select>
   
