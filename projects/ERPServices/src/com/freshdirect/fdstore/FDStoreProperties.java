@@ -1090,7 +1090,7 @@ public class FDStoreProperties {
         }
     }
 
-    private static String get(String key) {
+    public static String get(String key) {
         refresh();
 
         return config.getProperty(key);

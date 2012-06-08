@@ -7,6 +7,7 @@ import org.apache.log4j.Category;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.freshdirect.fdstore.FDException;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.mobileapi.exception.JsonException;
 import com.freshdirect.mobileapi.exception.NoSessionException;
@@ -31,7 +32,11 @@ public class ConfigurationController extends BaseController {
     protected ModelAndView processRequest(HttpServletRequest request, HttpServletResponse response, ModelAndView model, String action,
             SessionUser user) throws JsonException, FDException, ServiceException, NoSessionException {
         String key = request.getParameter(PARAM_KEY);
-        model.addObject("data", configParams.get(key));
+        if(configParams.get(key) != null) {
+        	model.addObject("data", configParams.get(key));
+        } else {
+        	model.addObject("data", FDStoreProperties.get(key));
+        }
         return model;
     }
 }
