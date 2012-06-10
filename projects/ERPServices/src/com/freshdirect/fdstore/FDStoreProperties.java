@@ -883,7 +883,7 @@ public class FDStoreProperties {
 
         //comma separated list of faq section ids from CMS.
         defaults.put(PROP_FAQ_SECTIONS,
-            "payment,order_today,prblem_my_order,order_change,delivery_feedback,promotion,gen_feedback,req_feedback,website_technical,acct_info,what_we_do,signing_up,security,shopping,home_delivery,cos,chef_table,vending,inside");
+            "acct_info,cos,chef_table,delivery_feedback,gen_feedback,home_delivery,inside,order_change,order_today,payment,prblem_my_order,promotion,req_feedback,security,shopping,signing_up,vending,website_technical,what_we_do");
 
         // CRM Help Links to confluence.
         defaults.put(PROP_CRM_HELP_LINK_ADDR_VALIDATION,
