@@ -170,20 +170,20 @@ public class ContactFdControllerTag extends AbstractControllerTag implements Ses
 
 	public final static Selection[] selections =
 		{
-			new Selection(CrmCaseSubject.CODE_PROBLEM, "Problem with an order I received"),	
-			new Selection(CrmCaseSubject.CODE_SERVICE_AVAILABILITY, "Delivery Time Status"),
-			new Selection(CrmCaseSubject.CODE_PROMOTION, "Promotion"),
 			new Selection(CrmCaseSubject.CODE_ASQ_MISC , "Billing"),
-			new Selection(CrmCaseSubject.CODE_WEBSITE_PROBLEM, "Web Site/Technical"),
-			new Selection(CrmCaseSubject.CODE_COMPLAINT, "Delivery Feedback"),
-			new Selection(CrmCaseSubject.CODE_PRODUCT, "Product Request"),
-			new Selection(CrmCaseSubject.CODE_SERVICE_AVAILABILITY, "Delivery Areas"),
-			new Selection(CrmCaseSubject.CODE_GENERAL_INFO, "General Feedback"),
 			new Selection(CrmCaseSubject.CODE_CORPORATE_INFO , "Corporate/Commercial Services")	,
-			new Selection(CrmCaseSubject.CODE_GIFT_CARD_INFO , "Gift Cards"),
+			new Selection(CrmCaseSubject.CODE_SERVICE_AVAILABILITY, "Delivery Areas"),
+			new Selection(CrmCaseSubject.CODE_COMPLAINT, "Delivery Feedback"),
+			new Selection(CrmCaseSubject.CODE_SERVICE_AVAILABILITY, "Delivery Time Status"),
 			new Selection(CrmCaseSubject.CODE_IPHONE_INFO , "FreshDirect iPhone app"),
-			new Selection(CrmCaseSubject.CODE_GENERAL_INFO , "Fresh Meal Vending")
-			};
+			new Selection(CrmCaseSubject.CODE_GENERAL_INFO , "Fresh Meal Vending"),
+			new Selection(CrmCaseSubject.CODE_GENERAL_INFO, "General Feedback"),
+			new Selection(CrmCaseSubject.CODE_GIFT_CARD_INFO , "Gift Cards"),
+			new Selection(CrmCaseSubject.CODE_PROBLEM, "Problem with an order I received"),
+			new Selection(CrmCaseSubject.CODE_PRODUCT, "Product Request"),
+			new Selection(CrmCaseSubject.CODE_PROMOTION, "Promotion"),
+			new Selection(CrmCaseSubject.CODE_WEBSITE_PROBLEM, "Web Site/Technical")
+		};
 
 	private static class ContactForm implements WebFormI {
 
