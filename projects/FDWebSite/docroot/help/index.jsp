@@ -164,6 +164,16 @@ final int W_HELP_INDEX_TOTAL = 970;
 						<br /><%@ include file="/shared/help/i_loyalty_banner.jspf"%>
 					</div>
 					<div style="height: 30px; background: transparent url('/media_stat/images/layout/cccccc.gif') repeat-x left center;"><!--  --></div>
+					
+					<div style="margin-bottom: 16px;">
+							<div style="margin-bottom: 8px;" class="text11bold">
+								<img src="/media_stat/images/template/help/search.gif" border="0" alt="" />
+							</div>
+							<div style="margin-bottom: 8px;">
+								<input type="text" class="search" value="" maxlength="100" style="width: 180px;" name="searchFAQ" />
+								<input type="image" name="searchFAQButton" style="width: 35px; height: 14px; vertical-align: bottom; margin-left: 10px;" src="/media_stat/images/template/search/search_find_button.gif" onclick="submitForm()" />
+							</div>
+						</div>
 
 					<div style="float: left; width: 34%; border-right: 1px solid #ccc; padding-right: 6px;">
 						<div style="margin-bottom: 16px;">
@@ -198,7 +208,7 @@ final int W_HELP_INDEX_TOTAL = 970;
 								if (null !=savedList && savedList.size()>0 && null != savedList.get(0)) { %>
 									<div style="margin-bottom: 8px;" class="text11bold">
 										<div style="margin-bottom: 4px;">
-											Top Questions this Week:
+											<img src="/media_stat/images/template/help/top_questions.gif" border="0" alt="" />
 										</div>
 										<% if (null != faqSections) {
 											%>
@@ -227,7 +237,7 @@ final int W_HELP_INDEX_TOTAL = 970;
 
 						<div style="margin-bottom: 16px;">
 							<div style="margin-bottom: 8px;" class="text11bold">
-								Learn More
+								<img src="/media_stat/images/template/help/learnmore.gif"  border="0" alt="" />
 							</div>
 							<% if(null != faqSections) {
 								%>
@@ -250,15 +260,7 @@ final int W_HELP_INDEX_TOTAL = 970;
 							} %>
 						</div>
 
-						<div style="margin-bottom: 16px;">
-							<div style="margin-bottom: 8px;" class="text11bold">
-								Search our FAQs
-							</div>
-							<div style="margin-bottom: 8px;">
-								<input type="text" class="search" value="" maxlength="100" style="width: 180px;" name="searchFAQ" />
-								<input type="image" name="searchFAQButton" style="width: 35px; height: 14px; vertical-align: bottom; margin-left: 10px;" src="/media_stat/images/template/search/search_find_button.gif" onclick="submitForm()" />
-							</div>
-						</div>
+						
 					</div>
 
 					<div style="float: right; width: 64%; padding-left: 6px;" class="lineItems">
