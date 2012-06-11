@@ -1053,8 +1053,9 @@ for(int i = (pageNumber -1) * itemsToDisplay; i < loopEnd && isAnyProdAvailable=
         for(int i = (pageNumber -1) * itemsToDisplay; i < loopEnd; i += 6) {
                 //now in the main loop, we need two inner loops, the first loop prints 5 images horizontally, the second print the products vertically
                 int innerLoopEnd = Math.min(i + 6, loopEnd);
+                String imageTableAlign = noCart ? innerLoopEnd < 6 ? "left" : "center" : "left";
 %>
-<table border="0" cellspacing="0" cellpadding="0" <% if(noCart) { %> align="center" <% } else { %> align="left" <% } %>>
+<table border="0" cellspacing="0" cellpadding="0" align="<%= imageTableAlign%>" <% if(noCart) { %> style="margin-left: 20px;" <% } %>>
         <tr valign="top">
 <%
 	String otherParams = buildOtherParams(showThumbnails, itemsToDisplay, -1, brandValue, sortBy, nutriName,request, null);
