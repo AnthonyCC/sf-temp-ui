@@ -154,7 +154,7 @@ public class HandOffRoutingOutAction extends AbstractHandOffAction {
 				
 				for(Map.Entry<IHandOffBatchSession, Map<String, Set<IRouteModel>>> sesEntry : sessionMapping.entrySet()) {
 					if(sesEntry.getKey().isDepot()) {
-						Map<String, Set<IRouteModel>> convertedDptRoutes = convertDptToRegOrders(sessionMapping.get(sesEntry.getKey()),rsvToOrderMap);						
+						Map<String, Set<IRouteModel>> convertedDptRoutes = convertDptToRegOrders(sessionMapping.get(sesEntry.getKey()));						
 						sessionMapping.put(sesEntry.getKey(), convertedDptRoutes);
 					} 					
 				}
@@ -436,7 +436,7 @@ public class HandOffRoutingOutAction extends AbstractHandOffAction {
 		return EnumHandOffBatchStatus.ROUTEGENFAILED;
 	}
 	
-	protected Map<String, Set<IRouteModel>> convertDptToRegOrders(Map<String, Set<IRouteModel>> dptRoutes, Map<String,String> rsvToOrderMap) throws RoutingServiceException {
+	protected Map<String, Set<IRouteModel>> convertDptToRegOrders(Map<String, Set<IRouteModel>> dptRoutes) throws RoutingServiceException {
 				
 		int allowedDepartTimeDiff = RoutingServicesProperties.getDepotDepartTimeDiff();
 		
@@ -469,10 +469,7 @@ public class HandOffRoutingOutAction extends AbstractHandOffAction {
 						if(currRouteId == null) {
 							currRouteId = routeID;
 						}
-						
-						if(rsvToOrderMap.containsKey(_order.getOrderNumber()))
-							_order.setOrderNumber(rsvToOrderMap.get(_order.getOrderNumber()));
-						
+					
 						if(_order.getOrderNumber() == null || _order.getOrderNumber().trim().length() == 0
 								//|| IRoutingStopModel.DEPOT_STOPNO.equalsIgnoreCase(_order.getOrderNumber())) {
 								|| _order.getOrderNumber().startsWith(IRoutingStopModel.DEPOT_STOPNO)) {
