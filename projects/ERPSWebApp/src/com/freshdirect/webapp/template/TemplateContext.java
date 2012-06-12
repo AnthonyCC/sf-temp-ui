@@ -516,10 +516,19 @@ public class TemplateContext extends BaseTemplateContext{
 			ProductModel productNode = (ProductModel) node;
 			ProductImpression impression = new ProductImpression(productNode);
 			FDGroup group = impression.getFDGroup(); //Returns if group is associated with any sku linked to this product.
-			if(group != null) {
+			MaterialPrice matPrice = null;
+			if(null !=group){
 				try {
-					MaterialPrice matPrice = GroupScaleUtil.getGroupScalePrice(group, impression.getPricingZoneId());
-					if(matPrice != null) {
+					matPrice = GroupScaleUtil.getGroupScalePrice(group, impression.getPricingZoneId());
+				} catch (FDResourceException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			if(matPrice !=null) {
+				try {
+//					MaterialPrice matPrice = GroupScaleUtil.getGroupScalePrice(group, impression.getPricingZoneId());
+//					if(matPrice != null) {
 							double displayPrice = 0.0;
 							boolean isSaleUnitDiff = false;
 							if(matPrice.getPricingUnit().equals(matPrice.getScaleUnit()))
@@ -556,10 +565,13 @@ public class TemplateContext extends BaseTemplateContext{
 
 							}
 							scaleDisplay= buf1.toString();
-					}
+//					}
 				} catch (FDResourceException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
+					//no group, do the normal scale string fetch
+					PriceCalculator priceCalculator = impression.getProductModel().getPriceCalculator();
+					scaleDisplay = priceCalculator.getTieredPrice(0);
 				}
 			}else{
 				//no group, do the normal scale string fetch
@@ -576,10 +588,19 @@ public class TemplateContext extends BaseTemplateContext{
 			ProductModel productNode = (ProductModel) node;
 			ProductImpression impression = new ProductImpression(productNode);
 			FDGroup group = impression.getFDGroup(); //Returns if group is associated with any sku linked to this product.
-			if(group != null) {
+			MaterialPrice matPrice = null;
+			if(null !=group){
 				try {
-					MaterialPrice matPrice = GroupScaleUtil.getGroupScalePrice(group, impression.getPricingZoneId());
-					if(matPrice != null) {
+					matPrice = GroupScaleUtil.getGroupScalePrice(group, impression.getPricingZoneId());
+				} catch (FDResourceException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			if(matPrice !=null) {
+				try {
+//					MaterialPrice matPrice = GroupScaleUtil.getGroupScalePrice(group, impression.getPricingZoneId());
+//					if(matPrice != null) {
 							double displayPrice = 0.0;
 							boolean isSaleUnitDiff = false;
 							if(matPrice.getPricingUnit().equals(matPrice.getScaleUnit()))
@@ -616,10 +637,12 @@ public class TemplateContext extends BaseTemplateContext{
 
 							}
 							scaleDisplay= buf1.toString();
-					}
+//					}
 				} catch (FDResourceException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
+					PriceCalculator priceCalculator = impression.getProductModel().getPriceCalculator();
+					scaleDisplay = priceCalculator.getTieredPrice(0);
 				}
 			}else{
 				//no group, do the normal scale string fetch
