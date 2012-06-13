@@ -186,7 +186,7 @@ public class ServiceTest extends MockObjectTestCase {
 			new PrimaryKey("1"), timeSlot, expirationDT,
 			EnumReservationType.STANDARD_RESERVATION,
 			customerID, addressID,
-			false, false, null, false, null, 20);
+			false, false, null, false, null, 20,null);
 		return reservation;
 
 	}
