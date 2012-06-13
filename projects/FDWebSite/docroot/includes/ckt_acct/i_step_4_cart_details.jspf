@@ -261,18 +261,17 @@ int idx = 0;
 %>	
 		<tr valign="top" class="orderSummary">
 			<td colspan="3" align="right">Delivery Charge:</td>
-			<td width="30%" align="right"><%= DeliveryPassUtil.getDlvPassAppliedMessage(user) %></td>
+			<td width="30%" align="right"><%= cart.getDeliveryCharge()>0?JspMethods.formatPrice(cart.getDeliveryCharge()):DeliveryPassUtil.getDlvPassAppliedMessage(user) %></td>
 			<td></td>
 			<td colspan="6">&nbsp;</td>
 		</tr>
-<%
-	}	
-	else if (cart.getDeliverySurcharge() > 0) {
+		<%
+	}else if (cart.getDeliverySurcharge() > 0) {
 	
 		%>
 		<tr valign="top" class="orderSummary">
 			<td colspan="3" align="right">Delivery Charge<%if(cart.isDeliveryChargeWaived()){%> (waived)<%}%>:</td>
-			<td align="right"><%if(cart.isDeliveryChargeWaived()){%>$0.00<%}else{%><%=JspMethods.formatPrice(cart.getDeliverySurcharge())%><%}%></td>
+			<td align="right"><%if(cart.isDeliveryChargeWaived()){%>$0.00<%}else{%><%=JspMethods.formatPrice(cart.getDeliveryCharge())%><%}%></td>
 			<td></td>
 			<td colspan="6"><b><%=cart.isDeliveryChargeTaxable() && !cart.isDeliveryChargeWaived() ? "&nbsp;T" : "" %></b></td>
 		</tr>

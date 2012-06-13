@@ -75,13 +75,16 @@
 								<span jwcid="forEachDay_Z">
 									<table align="left" cellpadding="1" cellspacing="1" border="0" class="timeslotTable">
 										<tr>
-											<td class="dbSubHeader" colspan="8"><span jwcid="insertDayHeader_Z">Thursday<br>January 2, 2003</span></td>
+											<td class="dbSubHeader" colspan="13"><span jwcid="insertDayHeader_Z">Thursday<br>January 2, 2003</span></td>
 										</tr>
 		                                <tr bgcolor='dfdfdf'>
 											<td nowrap><b></b></td>
 											<td align="center" colspan="2" class="total"><b>Total</b></td>
 											<td align="center" colspan="2" class="base"><b>Base</b></td>  
-											<td align="center" colspan="3" class="ct" nowrap><b>Chef's Table</b></td>              
+											<td align="center" colspan="3" class="ct" nowrap><b>Chef's Table</b></td>  
+											<td align="center" colspan="2" class="premium" nowrap><b>Premium</b></td> 
+											<td align="center" colspan="3" class="premiumCt" nowrap><b>Premium Chef's Table</b></td> 
+											            
 										</tr>        
 									
 										<tr bgcolor='dfdfdf'>
@@ -90,9 +93,15 @@
 											<td class="total"><b>Alloc</b></td>
 											<td class="base"><b>Cap</b></td>
 											<td class="base"><b>Alloc</b></td>
+											
 											<td class="ct"><b>Cap</b></td>
 											<td class="ct"><b>Alloc</b></td>
-											<td class="ct"><b>% CT <br>Alloc/<br>Total <br>Alloc</b></td>            
+											<td class="ct"><b>% CT <br>Alloc/<br>Total <br>Alloc</b></td>     
+											<td class="premium"><b>Cap</b></td>
+											<td class="premium"><b>Alloc</b></td>
+											<td class="premiumCt"><b>Cap</b></td>
+											<td class="premiumCt"><b>Alloc</b></td>
+											<td class="premiumCt"><b>% Premium CT Alloc/Premium Alloc</b></td>        
 										</tr>
 										<span jwcid="forEachTimeslot_Z">
 											<tr>
@@ -110,7 +119,17 @@
 		                                        <span jwcid="@Else">
 									            	<td colspan="3" style="text-align:center;"><b>N/A</b></td>
 									            </span>
-		                                        
+									       		<td align="right" class="premium"><b><span jwcid="@Insert" value="ognl:currentTimeslot.premiumCapacity">32</span></b></td>                
+							        	        <td align="right" class="premium"><b><span jwcid="@Insert" value="ognl:currentTimeslot.calculatePremiumAllocation(page.currentDate)">32</span></b></td>
+							               
+							                 <span jwcid="@If" condition="ognl:currentTimeslot.premiumCtActive">                
+												<td align="right" class="premiumCt"><b><span jwcid="@Insert" value="ognl:currentTimeslot.premiumCtCapacity">32</span></b></td>                
+							        	        <td align="right" class="premiumCt"><b><span jwcid="@Insert" value="ognl:currentTimeslot.premiumCtAllocation">32</span></b></td>
+							            	    <td align="right" class="premiumCt"><b><span jwcid="insertPremiumCtPercentage_Z">32</span></b></td>
+							                </span>
+							                <span jwcid="@Else">
+									            	<td colspan="3" style="text-align:center;"><b>N/A</b></td>
+									            </span>
 											</tr>
 										</span>
 									
@@ -124,6 +143,15 @@
 		                	                <td class="ct"><b><span jwcid="insertCTCapacityTotal_Z" /></b></td>
 		                    	            <td class="ct"><b><span jwcid="insertCTAllocationTotal_Z" /></b></td>
 											<td class="ct"><b><span jwcid="insertPercentageTotal_Z" /></b></td>
+											<td class="premium"><b><span jwcid="insertPremiumCapacityTotal_Z">32</span></b></td>                
+        	        						<td class="premium"><b><span jwcid="insertPremiumAllocationTotal_Z">32</span></b></td>
+											<td class="premiumCt"><b><span jwcid="insertPremiumCtCapacityTotal_Z">32</span></b></td>                
+        	        						<td class="premiumCt"><b><span jwcid="insertPremiumCtAllocationTotal_Z">32</span></b></td>
+            	   							<td class="premiumCt"><b><span jwcid="insertPremiumCtPercentageTotal_Z">32</span></b></td>
+               
+                
+											
+											
 										</tr>
 									
 									</table>
@@ -158,7 +186,7 @@
 								
 									<table align="left" cellpadding="1" cellspacing="1" border="0" class="timeslotTable">
 										<tr>
-											<td class="dbSubHeader" colspan="9">
+											<td class="dbSubHeader" colspan="14">
 												<div>
 													Window: <span jwcid="insertTimeWindow">04:00 PM - 06:00 PM</span>
 												</div>
@@ -171,7 +199,9 @@
 											<td align="center" colspan="2"><b>Zone</b></td>
 											<td align="center" colspan="2" class="total"><b>Total</b></td>
 											<td align="center" colspan="2" class="base"><b>Base</b></td>  
-											<td align="center" colspan="3" class="ct" nowrap><b>Chef's Table</b></td>              
+											<td align="center" colspan="3" class="ct" nowrap><b>Chef's Table</b></td>
+											<td align="center" colspan="2" class="premium" nowrap><b>Premium</b></td>
+											<td align="center" colspan="3" class="premiumCt" nowrap><b>Premium Ct</b></td>              
 										</tr>        
 		
 										<tr bgcolor='dfdfdf'>
@@ -183,7 +213,12 @@
 											<td class="base"><b>Alloc</b></td>
 											<td class="ct"><b>Cap</b></td>
 											<td class="ct"><b>Alloc</b></td>
-											<td class="ct"><b>% CT <br>Alloc/<br>Total <br>Alloc</b></td>            
+											<td class="ct"><b>% CT <br>Alloc/<br>Total <br>Alloc</b></td>     
+											<td class="premium"><b>Cap</b></td>
+											<td class="premium"><b>Alloc</b></td>
+											<td class="premiumCt"><b>Cap</b></td>
+											<td class="premiumCt"><b>Alloc</b></td>
+											<td class="premiumCt"><b>% Premium CT Alloc/Premium Alloc</b></td>                
 										</tr>
 										<span jwcid="forEachZone_T">
 											<tr>
@@ -205,6 +240,18 @@
 									            <span jwcid="@Else">
 									            	<td colspan="3" style="text-align:center;"><b>N/A</b></td>
 									            </span>
+									            
+									           	<td align="right" class="premium"><b><span jwcid="@Insert" value="ognl:currentZoneTimeslot.value.premiumCapacity">32</span></b></td>                
+								        	    <td align="right" class="premium"><b><span jwcid="@Insert" value="ognl:currentZoneTimeslot.value.calculatePremiumAllocation(currentDate)">32</span></b></td>
+								                
+								                 <span jwcid="@If" condition="ognl:currentZoneTimeslot.value.premiumCtActive">                
+													<td align="right" class="premiumCt"><b><span jwcid="@Insert" value="ognl:currentZoneTimeslot.value.premiumCtCapacity">32</span></b></td>                
+								        	        <td align="right" class="premiumCt"><b><span jwcid="@Insert" value="ognl:currentZoneTimeslot.value.premiumCtAllocation">32</span></b></td>
+								            	    <td align="right" class="premiumCt"><b><span jwcid="insertPremiumCtPercentage_T">32</span></b></td>
+								                </span>
+								                <span jwcid="@Else">
+									            	<td colspan="3" style="text-align:center;"><b>N/A</b></td>
+									            </span>
 		                                        
 											</tr>
 										</span>
@@ -221,7 +268,12 @@
 		                	                <td class="ct"><b><span jwcid="insertCTCapacityTotal_T" /></b></td>
 		                    	            <td class="ct"><b><span jwcid="insertCTAllocationTotal_T" /></b></td>
 											<td class="ct"><b><span jwcid="insertPercentageTotal_T" /></b></td>
-											
+											<td class="premium"><b><span jwcid="insertPremiumCapacityTotal_T">32</span></b></td>                
+        	        						<td class="premium"><b><span jwcid="insertPremiumAllocationTotal_T">32</span></b></td>
+											<td class="premiumCt"><b><span jwcid="insertPremiumCtCapacityTotal_T">32</span></b></td>                
+        	        						<td class="premiumCt"><b><span jwcid="insertPremiumCtAllocationTotal_T">32</span></b></td>
+            	   							<td class="premiumCt"><b><span jwcid="insertPremiumCtPercentageTotal_T">32</span></b></td>
+               
 										</tr>
 										
 									</table>

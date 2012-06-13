@@ -973,6 +973,11 @@ public class FDUser extends ModelSupport implements FDUserI {
 		}
 		return referrerEligible.booleanValue();
 	}
+	public double getPremiumFee()
+	{
+		EligibilityCalculator calc = new EligibilityCalculator("PREMIUM");
+		return calc.getPremiumFee(new FDRulesContextImpl(this));
+	}
 
 	public boolean isECheckRestricted() throws FDResourceException {
 	    if (this.identity == null) {
@@ -1142,6 +1147,8 @@ public class FDUser extends ModelSupport implements FDUserI {
 				//If delivery promotion was applied, do not reapply the waiving of dlv charge.
 				this.getShoppingCart().setChargeWaived(EnumChargeType.DELIVERY,true, DlvPassConstants.PROMO_CODE);
 				this.getShoppingCart().setDlvPassApplied(true);
+				this.getShoppingCart().setDlvPassPremiumAllowedTC(dlvPassInfo.getPurchaseDate().after(FDStoreProperties.getDlvPassNewTCDate()));
+			//	this.getShoppingCart().setDlvPassPurchaseDate(this.getDlvPassInfo().getD)
 			}
 		} else if ((this.getShoppingCart() instanceof FDModifyCartModel)&&(this.getDlvPassInfo().isUnlimited())) {
 
@@ -1156,6 +1163,7 @@ public class FDUser extends ModelSupport implements FDUserI {
 					if(today.after(dlvPass.getExpirationDate()) && EnumDlvPassStatus.ACTIVE.equals(dlvPass.getStatus()) &&dlvPass.getId().equals(dpId)){
 						this.getShoppingCart().setChargeWaived(EnumChargeType.DELIVERY,true, DlvPassConstants.PROMO_CODE);
 						this.getShoppingCart().setDlvPassApplied(true);
+						this.getShoppingCart().setDlvPassPremiumAllowedTC(dlvPass.getPurchaseDate().after(FDStoreProperties.getDlvPassNewTCDate()));
 						break;
 
 					}

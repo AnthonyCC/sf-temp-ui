@@ -21,7 +21,7 @@ public class TimeslotLog implements java.io.Serializable, TrnBaseEntityI {
 	private Date eventDtm;
 	private String comments;
 	private String reservationId;
-	
+	private String sameDay;
 	private Set timeslotLogDtls = new HashSet(0);
 
 	public TimeslotLog() {
@@ -132,6 +132,14 @@ public class TimeslotLog implements java.io.Serializable, TrnBaseEntityI {
 	public boolean isObsoleteEntity() {
 		// TODO Auto-generated method stub
 		return false;
+	}
+
+	public String getSameDay() {
+		return sameDay;
+	}
+
+	public void setSameDay(String sameDay) {
+		this.sameDay = sameDay;
 	}
 
 	

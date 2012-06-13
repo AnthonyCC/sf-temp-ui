@@ -32,6 +32,7 @@ public class TimeslotEventModel extends EventModel {
 	private double latitude;
 	private double longitude;
 	private String serviceType;
+	private String sameDay;
 	private List<TimeslotEventDetailModel> detail;
 	public TimeslotEventModel(String transactionSource, boolean dlvPassApplied, double deliveryCharge, boolean deliveryChargeWaived, boolean zoneCtActive)
 	{
@@ -192,5 +193,13 @@ public class TimeslotEventModel extends EventModel {
 
 	public void setServiceType(String serviceType) {
 		this.serviceType = serviceType;
+	}
+
+	public String getSameDay() {
+		return sameDay;
+	}
+
+	public void setSameDay(String sameDay) {
+		this.sameDay = sameDay;
 	}
 }

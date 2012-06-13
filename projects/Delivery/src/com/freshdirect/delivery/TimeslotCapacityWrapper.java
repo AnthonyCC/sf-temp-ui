@@ -134,5 +134,35 @@ public class TimeslotCapacityWrapper implements Serializable {
 		}
 		return 0;
 	}
+	
+	public int getCalculatedDynamicPremiumCapacity() {
+
+		if(timeslot.getRoutingSlot() != null 
+				&& timeslot.getRoutingSlot().getDeliveryMetrics() != null ) {
+
+			int newCapacity = Math.max(0,((int)(((timeslot.getRoutingSlot().getDeliveryMetrics().getTotalCapacityTime() - 
+											(timeslot.getRoutingSlot().getDeliveryMetrics().getConfirmedServiceTime() 
+											+ timeslot.getRoutingSlot().getDeliveryMetrics().getConfirmedTravelTime()
+											+ timeslot.getRoutingSlot().getDeliveryMetrics().getReservedServiceTime()
+											+ timeslot.getRoutingSlot().getDeliveryMetrics().getReservedTravelTime()))/(60.0))
+											* timeslot.getRoutingSlot().getSchedulerId().getArea().getDeliveryRate())))
+											+ timeslot.getTotalAllocation();
+			if(timeslot.getCapacity() != 0) {
+				return (int)(Math.round((((double)timeslot.getPremiumCapacity()/(double)timeslot.getCapacity() )* (double)newCapacity)));				
+			} 
+
+		}
+		return 0;
+	}
+	
+	public int getCalculatedDynamicPremiumCTCapacity() {
+
+		if(timeslot.getPremiumCapacity()!=0) {
+
+				return (int)(Math.round((((double)timeslot.getPremiumCtCapacity()/(double)timeslot.getPremiumCapacity() )* (double)getCalculatedDynamicPremiumCapacity())));				
+			} 
+		return 0;
+	}
+	
 
 }

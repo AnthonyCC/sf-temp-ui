@@ -593,9 +593,9 @@ var OL_PRICES = {};
       <%
          if(order.isDlvPassApplied()) {
        %>
-      <%= DeliveryPassUtil.getDlvPassAppliedMessage(user) %>
+      <%=order.getDeliveryCharge()>0?JspMethods.formatPrice(order.getDeliveryCharge()):DeliveryPassUtil.getDlvPassAppliedMessage(user) %>
          <% } else { %>           
-            <%= (order.isDeliveryChargeWaived()) ? "WAIVED" : JspMethods.formatPrice(order.getDeliverySurcharge()) %>
+            <%= (order.isDeliveryChargeWaived()) ? "WAIVED" : JspMethods.formatPrice(order.getDeliveryCharge()) %>
        <% } %>       
         </td>
         <td>&nbsp;</td>
@@ -604,9 +604,10 @@ var OL_PRICES = {};
       <%
          if(order.isDlvPassApplied()) {
        %>
-      <%= DeliveryPassUtil.getDlvPassAppliedMessage(user) %>
+       <%=order.getDeliveryCharge()>0?JspMethods.formatPrice(order.getDeliveryCharge()):DeliveryPassUtil.getDlvPassAppliedMessage(user) %>
+      
          <% } else { %>           
-            <%= (order.isDeliveryChargeWaived()) ? "WAIVED" : JspMethods.formatPrice(order.getDeliverySurcharge()) %>
+            <%= (order.isDeliveryChargeWaived()) ? "WAIVED" : JspMethods.formatPrice(order.getDeliveryCharge()) %>
        <% } %>       
         </td>
         <td>&nbsp;</td>
@@ -615,9 +616,10 @@ var OL_PRICES = {};
       <%
          if(order.isDlvPassApplied()) {
        %>
-      <%= DeliveryPassUtil.getDlvPassAppliedMessage(user) %>
+      <%=order.getDeliveryCharge()>0?JspMethods.formatPrice(order.getDeliveryCharge()):DeliveryPassUtil.getDlvPassAppliedMessage(user) %>
+      
          <% } else { %>           
-            <%= (order.isDeliveryChargeWaived()) ? "WAIVED" : JspMethods.formatPrice(order.getDeliverySurcharge()) %>
+            <%= (order.isDeliveryChargeWaived()) ? "WAIVED" : JspMethods.formatPrice(order.getDeliveryCharge()) %>
        <% } %>       
         </td>
     </tr>

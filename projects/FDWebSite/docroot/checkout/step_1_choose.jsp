@@ -185,9 +185,8 @@ while (e.hasMoreElements()) {
 									String dlvCharge = JspMethods.formatPrice( cart.getDeliverySurcharge() );
 									if(cart.isDlvPassApplied()) {
 								%>
-									<%= DeliveryPassUtil.getDlvPassAppliedMessage(user) %>
-									
-								<%	} else if (cart.isDeliveryChargeWaived()) {
+									<%= cart.getDeliveryCharge()>0?JspMethods.formatPrice(cart.getDeliveryCharge()):DeliveryPassUtil.getDlvPassAppliedMessage(user) %>
+									<% } else if (cart.isDeliveryChargeWaived()) {
 										if((int)cart.getDeliverySurcharge() == 0){
 								%>     
 										Free! 
@@ -196,7 +195,7 @@ while (e.hasMoreElements()) {
 								<%  } else if((int)cart.getDeliverySurcharge() == 0) {%>
 										check&nbsp;<A HREF="javascript:popup('/help/delivery_info.jsp','large')">delivery fee</A>
 								<%} else { %>
-										<%= dlvCharge %>
+										<%=  JspMethods.formatPrice(cart.getDeliveryCharge()) %>
 								<%} %>
 						</td>
 						</tr>

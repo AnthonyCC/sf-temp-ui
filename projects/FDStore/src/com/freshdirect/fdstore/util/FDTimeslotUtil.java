@@ -311,4 +311,9 @@ public class FDTimeslotUtil implements Serializable {
 	public void setResponseTime(int responseTime) {
 		this.responseTime = responseTime;
 	}
+	
+	public void removeTimeslots(Date baseDate)
+	{
+		timeslotMap.remove(baseDate);
+	}
 }

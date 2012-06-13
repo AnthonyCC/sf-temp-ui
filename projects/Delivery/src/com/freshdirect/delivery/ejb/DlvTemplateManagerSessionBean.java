@@ -97,12 +97,17 @@ public class DlvTemplateManagerSessionBean extends SessionBeanSupport {
 	}
 	
     private final static String timeslotForDateRangeAndZoneQuery =
-        "select ts.id, ts.base_date, ts.start_time, ts.end_time, ts.cutoff_time, ts.status, ts.zone_id, z.zone_code, ts.capacity, ts.ct_capacity, ts.ct_capacity, ts.is_dynamic, " +
-        "(select count(*) from dlv.reservation where zone_id=z.id and ts.id=timeslot_id and status_code <> ? and status_code <> ? and chefstable = ' ') as base_allocation, " +
+        "select ts.id, ts.base_date, ts.start_time, ts.end_time, ts.cutoff_time, ts.status, ts.zone_id, z.zone_code, " +
+        "ts.capacity, ts.ct_capacity, ts.is_dynamic, " +
+        "(select count(*) from dlv.reservation where zone_id=z.id and ts.id=timeslot_id and status_code <> ? and status_code <> ? and chefstable = ' ') as base_allocation, " + 
         "(select count(*) from dlv.reservation where zone_id=z.id and ts.id=timeslot_id and status_code <> ? and status_code <> ? and chefstable = 'X') as ct_allocation, " +
-        "z.ct_release_time as ct_release_time, " +
-        "z.ct_active as ct_active " + 
-        "from dlv.zone z, dlv.timeslot ts " +
+        "z.ct_release_time as ct_release_time,  " +
+        "z.ct_active as ct_active, " + 
+         "ts.premium_cutoff_time, ts.premium_capacity, ts.premium_ct_capacity, z.premium_ct_release_time ," +
+         "z.premium_ct_active," +
+  		 "(select count(*) from dlv.reservation where timeslot_id=ts.id and status_code <> ? and status_code <> ? and class = 'P') as premium_allocation, " +
+  		 "(select count(*) from dlv.reservation where timeslot_id=ts.id and status_code <> ? and status_code <> ? and class = 'PC') as premium_ct_allocation " +
+         "from dlv.zone z, dlv.timeslot ts " +
         "where z.id=ts.zone_id and z.zone_code=? " +
         "and ts.base_date >= ? and ts.base_date < ? " + 
         "order by ts.start_time";
@@ -117,9 +122,13 @@ public class DlvTemplateManagerSessionBean extends SessionBeanSupport {
 			ps.setInt(2, EnumReservationStatus.EXPIRED.getCode());
 			ps.setInt(3, EnumReservationStatus.CANCELED.getCode());
 			ps.setInt(4, EnumReservationStatus.EXPIRED.getCode());
-			ps.setString(5, zoneCode);
-			ps.setDate(6, new java.sql.Date(startDate.getTime()));
-			ps.setDate(7, new java.sql.Date(endDate.getTime()));
+			ps.setInt(5, EnumReservationStatus.CANCELED.getCode());
+			ps.setInt(6, EnumReservationStatus.EXPIRED.getCode());
+			ps.setInt(7, EnumReservationStatus.CANCELED.getCode());
+			ps.setInt(8, EnumReservationStatus.EXPIRED.getCode());
+			ps.setString(9, zoneCode);
+			ps.setDate(10, new java.sql.Date(startDate.getTime()));
+			ps.setDate(11, new java.sql.Date(endDate.getTime()));
 			
 			ResultSet rs = ps.executeQuery();
 						
@@ -129,17 +138,31 @@ public class DlvTemplateManagerSessionBean extends SessionBeanSupport {
 				TimeOfDay startTime = new TimeOfDay(rs.getTime("START_TIME"));
 				TimeOfDay endTime = new TimeOfDay(rs.getTime("END_TIME"));
 				TimeOfDay cutoffTime = new TimeOfDay(rs.getTime("CUTOFF_TIME"));
+				
 				EnumTimeslotStatus status = EnumTimeslotStatus.getEnum(rs.getInt("STATUS"));
 				int capacity = rs.getInt("CAPACITY");
 				int chefsTableCapacity = rs.getInt("CT_CAPACITY");
+				
 				int baseAllocation = rs.getInt("base_allocation");
 				int ctAllocation = rs.getInt("ct_allocation");
 				int ctReleaseTime = rs.getInt("CT_RELEASE_TIME");
+				
+				TimeOfDay premiumCutoffTime = (rs.getTime("PREMIUM_CUTOFF_TIME")!=null)?new TimeOfDay(rs.getTime("PREMIUM_CUTOFF_TIME")):null;
+				int premiumCapacity = rs.getInt("PREMIUM_CAPACITY");
+				int premiumCtCapacity = rs.getInt("PREMIUM_CT_CAPACITY");
+				int premiumCtReleaseTime = rs.getInt("PREMIUM_CT_RELEASE_TIME");
+				boolean premiumCtActive = "X".equals(rs.getString("PREMIUM_CT_ACTIVE"));
+				int premiumAllocation = rs.getInt("PREMIUM_ALLOCATION");
+				int premiumCtAllocation = rs.getInt("PREMIUM_CT_ALLOCATION");
+				
 				boolean ctActive = "X".equals(rs.getString("CT_ACTIVE"));
 				String zoneId = rs.getString("ZONE_ID");
 				
 				 
-				DlvTimeslotModel model = new DlvTimeslotModel(pk, zoneId, baseDate, startTime, endTime, cutoffTime, status, capacity, chefsTableCapacity, baseAllocation, ctAllocation, ctReleaseTime, ctActive,zoneCode);
+				DlvTimeslotModel model = new DlvTimeslotModel(pk, zoneId, baseDate, startTime, endTime, cutoffTime, status, capacity, 
+						chefsTableCapacity, baseAllocation, ctAllocation, ctReleaseTime,ctActive,zoneCode, premiumCapacity,
+						  premiumCtCapacity, premiumCutoffTime,  premiumCtReleaseTime, 
+						  premiumCtActive, premiumAllocation,  premiumCtAllocation,false);
 				timeslots.add(model);
 			}
             rs.close();
@@ -161,10 +184,16 @@ public class DlvTemplateManagerSessionBean extends SessionBeanSupport {
 		return timeslots;
 		
 	}
-	private static final String TIMESLOT_REGION_QUERY = "select ts.id, ts.base_date, ts.start_time, ts.end_time, ts.cutoff_time, ts.status, ts.zone_id, z.zone_code, ts.capacity, ts.traffic_factor, ts.ct_capacity, ts.is_dynamic, "+
+	private static final String TIMESLOT_REGION_QUERY = "select ts.id, ts.base_date, ts.start_time, ts.end_time, ts.cutoff_time, ts.status, ts.zone_id, " +
+		"z.zone_code, ts.capacity, ts.traffic_factor, ts.ct_capacity, ts.is_dynamic, "+
 		"(select count(*) from dlv.reservation where zone_id=z.id and ts.id=timeslot_id and status_code <> ? and status_code <> ? and chefstable = ' ') as base_allocation, "+
 		"(select count(*) from dlv.reservation where zone_id=z.id and ts.id=timeslot_id and status_code <> ? and status_code <> ? and chefstable = 'X') as ct_allocation, "+
 		"(select z.ct_release_time from dlv.zone z where z.id = ts.zone_id) as ct_release_time, "+
+		"ts.premium_cutoff_time, ts.premium_capacity, ts.premium_ct_capacity, "+
+	  	"(select count(*) from dlv.reservation where timeslot_id=ts.id and status_code <> ? and status_code <> ? and class= 'P') as premium_allocation, " +
+	  	"(select count(*) from dlv.reservation where timeslot_id=ts.id and status_code <> ? and status_code <> ? and class = 'PC') as premium_ct_allocation, " +
+	    "(select z.premium_ct_release_time from dlv.zone z where z.id = ts.zone_id) as premium_ct_release_time, "+
+	    "(select z.premium_ct_active from dlv.zone z where z.id = ts.zone_id) as premium_ct_active, "+
 		"(select z.ct_active from dlv.zone z where z.id = ts.zone_id) as ct_active "+
 		"from dlv.timeslot ts, "+ 
 		"( "+
@@ -191,12 +220,16 @@ public class DlvTemplateManagerSessionBean extends SessionBeanSupport {
 			ps.setInt(2, EnumReservationStatus.EXPIRED.getCode());
 			ps.setInt(3, EnumReservationStatus.CANCELED.getCode());
 			ps.setInt(4, EnumReservationStatus.EXPIRED.getCode());
-			ps.setString(5, regionId);
-			ps.setDate(6, new java.sql.Date(startDate.getTime()));
-			ps.setString(7, regionId);
-			ps.setDate(8, new java.sql.Date(endDate.getTime()));
-			ps.setDate(9, new java.sql.Date(startDate.getTime()));
-			ps.setDate(10, new java.sql.Date(endDate.getTime()));
+			ps.setInt(5, EnumReservationStatus.CANCELED.getCode());
+			ps.setInt(6, EnumReservationStatus.EXPIRED.getCode());
+			ps.setInt(7, EnumReservationStatus.CANCELED.getCode());
+			ps.setInt(8, EnumReservationStatus.EXPIRED.getCode());
+			ps.setString(9, regionId);
+			ps.setDate(10, new java.sql.Date(startDate.getTime()));
+			ps.setString(11, regionId);
+			ps.setDate(12, new java.sql.Date(endDate.getTime()));
+			ps.setDate(13, new java.sql.Date(startDate.getTime()));
+			ps.setDate(14, new java.sql.Date(endDate.getTime()));
 			
 			ResultSet rs = ps.executeQuery();
 				
@@ -209,15 +242,28 @@ public class DlvTemplateManagerSessionBean extends SessionBeanSupport {
 				EnumTimeslotStatus status = EnumTimeslotStatus.getEnum(rs.getInt("STATUS"));
 				int capacity = rs.getInt("CAPACITY");
 		 		int chefsTableCapacity = rs.getInt("ct_capacity");
-				int baseAllocation = rs.getInt("base_allocation");
+		 		int baseAllocation = rs.getInt("base_allocation");
 				int ctAllocation = rs.getInt("ct_allocation");
 				int ctReleaseTime = rs.getInt("CT_RELEASE_TIME");
+				
+				TimeOfDay premiumCutoffTime = (rs.getTime("PREMIUM_CUTOFF_TIME")!=null)?new TimeOfDay(rs.getTime("PREMIUM_CUTOFF_TIME")):null;
+				int premiumCapacity = rs.getInt("PREMIUM_CAPACITY");
+				int premiumCtCapacity = rs.getInt("PREMIUM_CT_CAPACITY");
+				int premiumCtReleaseTime = rs.getInt("PREMIUM_CT_RELEASE_TIME");
+				boolean premiumCtActive = "X".equals(rs.getString("PREMIUM_CT_ACTIVE"));
+				int premiumAllocation = rs.getInt("PREMIUM_ALLOCATION");
+				int premiumCtAllocation = rs.getInt("PREMIUM_CT_ALLOCATION");
+				
+				
 				boolean ctActive = "X".equals(rs.getString("CT_ACTIVE"));
 				double trafficFactor = rs.getDouble("TRAFFIC_FACTOR");
 				String zoneId = rs.getString("ZONE_ID");
 		 		
 		 		String zoneCode = rs.getString("ZONE_CODE");
-				DlvTimeslotModel model = new DlvTimeslotModel(pk, zoneId, baseDate, startTime, endTime, cutoffTime, status, capacity, chefsTableCapacity, baseAllocation, ctAllocation, ctReleaseTime, ctActive,zoneCode);
+				DlvTimeslotModel model = new DlvTimeslotModel(pk, zoneId, baseDate, startTime, endTime, cutoffTime, status, capacity, 
+						chefsTableCapacity, baseAllocation, ctAllocation, ctReleaseTime,ctActive,zoneCode, premiumCapacity,
+						  premiumCtCapacity, premiumCutoffTime,   premiumCtReleaseTime, 
+						  premiumCtActive, premiumAllocation,  premiumCtAllocation, false);
 				model.setTrafficFactor(trafficFactor);
 				data.addTimeslot(zoneCode, model);
 			}

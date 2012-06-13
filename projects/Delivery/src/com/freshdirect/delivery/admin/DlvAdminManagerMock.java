@@ -228,4 +228,13 @@ public class DlvAdminManagerMock implements DlvAdminI {
 		
 	}
 
+	@Override
+	public void updatePremiumCtZone(String zoneCode, boolean premiumCtActive,
+			int premiumCtReleaseTime) throws DlvResourceException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	
+
 }

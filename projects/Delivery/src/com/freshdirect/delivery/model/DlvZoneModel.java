@@ -30,7 +30,8 @@ public class DlvZoneModel extends ModelSupport {
 	private String planId;
 	private boolean ctActive;
 	private int ctReleaseTime;
-	
+	private boolean premiumCtActive;
+	private int premiumCtReleaseTime;
 	private DlvZoneDescriptor zoneDescriptor;
 	
 	/** Creates new DlvZoneModel */
@@ -41,17 +42,20 @@ public class DlvZoneModel extends ModelSupport {
 	/**
 	 * Constructor with all properties
 	 */
-	public DlvZoneModel(PrimaryKey pk, String name, String planId, boolean ctActive, int ctReleaseTime, DlvZoneDescriptor zoneDescriptor){
+	public DlvZoneModel(PrimaryKey pk, String name, String planId, boolean ctActive, boolean premiumCtActive,  
+			int ctReleaseTime, int premiumCtReleaseTime, DlvZoneDescriptor zoneDescriptor){
 		super();
 		this.setPK(pk);
 		this.name = name;
 		this.planId = planId;
 		this.ctActive = ctActive;
 		this.ctReleaseTime = ctReleaseTime;
-		
+		this.premiumCtActive = premiumCtActive;
+		this.premiumCtReleaseTime = premiumCtReleaseTime;
 		this.zoneDescriptor = zoneDescriptor;
 	}
 
+	
 	/**
 	 * get name for this zone
 	 *
@@ -98,12 +102,28 @@ public class DlvZoneModel extends ModelSupport {
 		this.ctActive = ctActive;
 	}
 
+	public boolean isPremiumCtActive() {
+		return premiumCtActive;
+	}
+
+	public void setPremiumCtActive(boolean premiumCtActive) {
+		this.premiumCtActive =premiumCtActive;
+	}
+	
 	public int getCtReleaseTime() {
 		return ctReleaseTime;
 	}
 
 	public void setCtReleaseTime(int ctReleaseTime) {
 		this.ctReleaseTime = ctReleaseTime;
+	}
+	
+	public int getPremiumCtReleaseTime() {
+		return premiumCtReleaseTime;
+	}
+
+	public void setPremiumCtReleaseTime(int premiumCtReleaseTime) {
+		this.premiumCtReleaseTime = premiumCtReleaseTime;
 	}
 	
 	public DlvZoneDescriptor getZoneDescriptor() {

@@ -14,6 +14,12 @@
         <span jwcid="@If" condition="ognl:showCT">
 			<td align="center" colspan="2" class="ct" nowrap><b>Chef's Table</b></td>              
         </span>
+         <span jwcid="@If" condition="ognl:showPremium">
+			<td align="center" colspan="2" bgcolor="FFFF00" nowrap><b>Premium</b></td>              
+        </span>
+        <span jwcid="@If" condition="ognl:showPremiumCt">
+			<td align="center" colspan="2" bgcolor="FFFF00" nowrap><b>Premium CT</b></td>              
+        </span>
 	</tr>
 	<tr bgcolor='dfdfdf'>
 		<td nowrap><b>Start Time-End Time</b></td>
@@ -31,6 +37,14 @@
         <span jwcid="@If" condition="ognl:showCT">        
 	   		<td class="ct"><b>Cap</b></td>
 			<td class="ct"><b>Alloc</b></td>
+        </span>
+         <span jwcid="@If" condition="ognl:showPremium">        
+	   		<td class="premium"><b>Cap</b></td>
+			<td class="premium"><b>Alloc</b></td> 
+		</span> 
+		<span jwcid="@If" condition="ognl:showPremiumCt"> 
+	   		<td class="premiumCt"><b>Cap</b></td>
+			<td class="premiumCt"><b>Alloc</b></td>
         </span>
 	</tr>
 	<span jwcid="@Foreach" source="ognl:resource.timeslotsByStartDate" value="ognl:timeslot">
@@ -62,6 +76,28 @@
                     <td align="center" jwcid="@Any" bgcolor="ognl:timeslot.isCTCapacityReleased(page.currentDate)? 'red': 'dfdfdf'"><b><span jwcid="@Insert" value="ognl:timeslot.chefsTableCapacity">32</span></b></td>
                 </span>
 				<td align="right" bgcolor="dfdfdf"><span jwcid="@Insert" value="ognl:timeslot.chefsTableAllocation" /></td>
+            </span>
+            
+            <span jwcid="@If" condition="ognl:showPremium">
+             <span jwcid="@If" condition="ognl:PremiumEditable">
+             	<td align="right"><input size="4" class="text10" jwcid="inputPremiumCapacity"/><input type="submit" class="button" jwcid="@Submit" label="OW" listener="ognl:bindings.overrideListener.object"/></td>
+             </span>
+             <span jwcid="@Else">
+ 	        	<td align="right" bgcolor="dfdfdf"><b><span jwcid="@Insert" value="ognl:timeslot.premiumCapacity">32</span></b></td>
+ 	        </span>
+ 	        	
+				<td align="center" bgcolor="dfdfdf"><b><span jwcid="@Insert" value="ognl:timeslot.calculatePremiumAllocation(page.currentDate)">32</span></b></td>
+        	  
+            </span>
+            
+            <span jwcid="@If" condition="ognl:showPremiumCt && timeslot.premiumCtActive">
+                <span jwcid="@If" condition="ognl:premiumCTEditable">
+					<td align="center" jwcid="@Any" bgcolor="ognl:timeslot.isPremiumCtCapacityReleased(page.currentDate)? 'red': 'dfdfdf'"><input class="text10" size="5" jwcid="inputPremiumCtCapacity"/><input type="submit" class="button" jwcid="@Submit" label="OW" listener="ognl:bindings.overrideListener.object"/></td>
+                </span>
+                <span jwcid="@Else">
+                    <td align="center" jwcid="@Any" bgcolor="ognl:timeslot.isPremiumCtCapacityReleased(page.currentDate)? 'red': 'dfdfdf'"><b><span jwcid="@Insert" value="ognl:timeslot.premiumCtCapacity">32</span></b></td>
+                </span>
+				<td align="right" bgcolor="dfdfdf"><span jwcid="@Insert" value="ognl:timeslot.premiumCtAllocation" /></td>
             </span>
 		
             

@@ -29,6 +29,8 @@ public class Timeslot implements DateFormat {
     private Boolean isDepot;
     
     private Boolean alcoholRestricted;
+    
+    private double premiumAmount;
 
     private final SimpleDateFormat formatter = new SimpleDateFormat(STANDARDIZED_DATE_FORMAT);
 
@@ -51,6 +53,7 @@ public class Timeslot implements DateFormat {
         this.ecoFriendly = slot.isEcoFriendly();
         this.isDepot = slot.isDepot();
         this.alcoholRestricted = slot.isAlcoholRestricted();
+        this.premiumAmount = slot.getPremiumAmount();
     }
 
     public Timeslot(Date rangeStart, Date rangeEnd, Date cutoff) {
@@ -142,5 +145,8 @@ public class Timeslot implements DateFormat {
 	public void setAlcoholRestricted(Boolean alcoholRestricted) {
 		this.alcoholRestricted = alcoholRestricted;
 	}
-	
+
+	public double getPremiumAmount() {
+		return premiumAmount;
+	}
 }

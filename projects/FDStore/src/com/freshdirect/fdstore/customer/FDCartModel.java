@@ -1,6 +1,7 @@
 package com.freshdirect.fdstore.customer;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -44,6 +45,7 @@ import com.freshdirect.fdstore.FDGroup;
 import com.freshdirect.fdstore.FDReservation;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDRuntimeException;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.ZonePriceListing;
 import com.freshdirect.fdstore.atp.FDAvailabilityHelper;
 import com.freshdirect.fdstore.atp.FDAvailabilityI;
@@ -145,6 +147,8 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 	private String marketingMessage;
 
 	private boolean ageVerified = false;
+	
+	
 
 	private List<ErpDiscountLineModel> discounts = new ArrayList<ErpDiscountLineModel>();
 	
@@ -160,6 +164,8 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 
 	//This attribute flag is to denote whether a delivery pass was applied to this cart.
 	private boolean dlvPassApplied;
+	
+	private boolean dlvPassPremiumAllowedTC;
 	
 	//This attribute flag is to denote whether a delivery promotion was applied to this cart.
 	private boolean dlvPromotionApplied;
@@ -198,6 +204,7 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 		this.dlvPassApplied = dlvPassApplied;
 	}
 
+	
 	public boolean isDlvPromotionApplied() {
 		return dlvPromotionApplied;
 	}
@@ -674,7 +681,12 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 		ErpChargeLineModel charge = this.getCharge(chargeType);
 		return charge == null ? 0.0 : charge.getAmount();
 	}
-
+	
+	public double getChargeAmountDiscountApplied(EnumChargeType chargeType) {
+		ErpChargeLineModel charge = this.getCharge(chargeType);
+		return charge == null ? 0.0 : charge.getTotalAmount();
+	}
+	
 	public void setChargeAmount(EnumChargeType chargeType, double amount) {
 		ErpChargeLineModel charge = this.getCharge(chargeType);
 		if (charge == null) {
@@ -686,6 +698,7 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 		charge.setAmount(amount);
 	}
 
+	
 	public boolean isChargeWaived(EnumChargeType chargeType) {
 		ErpChargeLineModel charge = this.getCharge(chargeType);
 		return charge == null ? false : charge.getDiscount() != null;
@@ -734,12 +747,21 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 	//
 	//
 
+	
 	public double getDeliverySurcharge() {
-		return this.getChargeAmount(EnumChargeType.DELIVERY);
+		return this.getChargeAmount(EnumChargeType.DELIVERY)+this.getChargeAmount(EnumChargeType.DLVPREMIUM);
+	}
+	
+	public double getDeliveryCharge() {
+		return this.getChargeAmountDiscountApplied(EnumChargeType.DELIVERY)+this.getChargeAmountDiscountApplied(EnumChargeType.DLVPREMIUM);
+	}
+	
+	public double getDeliveryPremium() {
+		return this.getChargeAmount(EnumChargeType.DLVPREMIUM);
 	}
 
 	public boolean isDeliveryChargeWaived() {
-		return this.isChargeWaived(EnumChargeType.DELIVERY);
+		return this.isChargeWaived(EnumChargeType.DELIVERY) && this.isChargeWaived(EnumChargeType.DLVPREMIUM);
 	}
 	
 	public boolean isDeliverySurChargeWaived() {
@@ -747,7 +769,7 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 	}
 	
 	public boolean isDeliveryChargeTaxable() {
-		return this.isChargeTaxable(EnumChargeType.DELIVERY);
+		return this.isChargeTaxable(EnumChargeType.DELIVERY) || this.isChargeTaxable(EnumChargeType.DLVPREMIUM);
 	}
 	
 	public double getPhoneCharge() {
@@ -1287,7 +1309,7 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 			
 		}
 		setDeliveryPassCount(count);
-		if (this.getDeliverySurcharge() == 0.0) {
+		if (this.isChargeWaived(EnumChargeType.DELIVERY)) {
 			//If there is no applicable delivery charge then return;
 			return;
 		}//otherwise
@@ -1299,6 +1321,8 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 				//precedence.
 				setChargeWaived(EnumChargeType.DELIVERY, true, DlvPassConstants.PROMO_CODE);	
 				this.setDlvPassApplied(true);
+				Calendar cal = Calendar.getInstance();
+				this.setDlvPassPremiumAllowedTC(cal.getTime().after(FDStoreProperties.getDlvPassNewTCDate()));
 			}
 
 		}else{
@@ -1625,7 +1649,11 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 			FeeCalculator calc = new FeeCalculator("DLV");
 			double dlvFee = calc.calculateFee(ctx);
 			this.setChargeAmount(EnumChargeType.DELIVERY, dlvFee);
-
+			// MISC
+			calc = new FeeCalculator("DLV");
+			double premiumFee = calc.calculatePremiumFee(ctx);
+			if(premiumFee>0)
+			this.setChargeAmount(EnumChargeType.DLVPREMIUM, premiumFee);
 			// MISC
 			calc = new FeeCalculator("MISC");
 			double miscFee = calc.calculateFee(ctx);
@@ -1646,10 +1674,23 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 		if (c != null) {
 			c.setTaxRate(taxRate);
 		}
+		c = this.getCharge(EnumChargeType.DLVPREMIUM);
+		if (c != null) {
+			c.setTaxRate(taxRate);
+		}
 		c = this.getCharge(EnumChargeType.MISCELLANEOUS);
 		if (c != null) {
 			c.setTaxRate(taxRate);
 		}
 
 	}
+
+    public void setDlvPassPremiumAllowedTC(boolean dlvPassPremiumAllowedTC){
+    	this.dlvPassPremiumAllowedTC = dlvPassPremiumAllowedTC;
+    }
+	public boolean isDlvPassPremiumAllowedTC() {
+		return dlvPassPremiumAllowedTC;
+	}
+
+	
 }

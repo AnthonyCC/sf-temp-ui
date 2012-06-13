@@ -69,4 +69,25 @@ public class EligibilityCalculator implements Serializable {
 		return false;
 	}
 
+	public double getPremiumFee(FDRuleContextI ctx) {
+
+		RulesEngineI rulesEngine = getRulesEngine();
+		Map firedRules = null;
+
+		if (ctx != null && rulesEngine != null && (firedRules = rulesEngine.evaluateRules(ctx)) != null) {
+
+			Set rules = filterRulesWithLowPriority(firedRules.values());
+
+			for (Iterator i = rules.iterator(); i.hasNext();) {
+				Rule r = (Rule) i.next();
+				Object outcome = r.getOutcome();
+				
+				if(outcome instanceof Premium)
+					return ((Premium) r.getOutcome()).getValue();
+				
+			}
+		}
+		return 0;
+	}
+	
 }

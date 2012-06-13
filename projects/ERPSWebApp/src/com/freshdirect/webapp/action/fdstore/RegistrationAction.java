@@ -207,7 +207,7 @@ public class RegistrationAction extends WebActionSupport {
 					user.setZPServiceType(AddressUtil.getDeliveryServiceType(erpAddress));
 					user.updateUserState();
 					//Set the Default Delivery pass status.
-					FDUserDlvPassInfo dlvpassInfo = new FDUserDlvPassInfo(EnumDlvPassStatus.NONE, null, null, null,0,0,0,false,0,null,0);
+					FDUserDlvPassInfo dlvpassInfo = new FDUserDlvPassInfo(EnumDlvPassStatus.NONE, null, null, null,0,0,0,false,0,null,0,null);
 					user.getUser().setDlvPassInfo(dlvpassInfo);
 					session.setAttribute(SessionName.USER, user);
 				} catch (ErpDuplicateUserIdException de) {
@@ -438,7 +438,7 @@ public class RegistrationAction extends WebActionSupport {
 					}
 					user.updateUserState();
 					//Set the Default Delivery pass status.
-					FDUserDlvPassInfo dlvpassInfo = new FDUserDlvPassInfo(EnumDlvPassStatus.NONE, null, null, null,0,0,0,false,0,null,0);
+					FDUserDlvPassInfo dlvpassInfo = new FDUserDlvPassInfo(EnumDlvPassStatus.NONE, null, null, null,0,0,0,false,0,null,0,null);
 					user.getUser().setDlvPassInfo(dlvpassInfo);
 					session.setAttribute(SessionName.USER, user);
 					

@@ -25,9 +25,9 @@ public class FDUserDlvPassInfo implements Serializable{
 	private int daysSinceDPExpiry=0;
 	private int daysToDPExpiry=0;
 	private double dPSavings;
-
+	private Date purchaseDate;
 	
-	public FDUserDlvPassInfo(EnumDlvPassStatus status, DeliveryPassType type, Date expDate, String originalOrderId, int remCnt, int usedCount,int usablePassCount, boolean isFreeTrialRestricted,int autoRenewUsablePassCount, DeliveryPassType autoRenewDPType, double autoRenewPrice) {
+	public FDUserDlvPassInfo(EnumDlvPassStatus status, DeliveryPassType type, Date expDate, String originalOrderId, int remCnt, int usedCount,int usablePassCount, boolean isFreeTrialRestricted,int autoRenewUsablePassCount, DeliveryPassType autoRenewDPType, double autoRenewPrice, Date purchaseDate) {
 		super();
 		this.status = status;
 		this.type = type;
@@ -40,6 +40,7 @@ public class FDUserDlvPassInfo implements Serializable{
 		this.autoRenewUsablePassCount=autoRenewUsablePassCount;
 		this.autoRenewDPType=autoRenewDPType;
 		this.autoRenewPrice=autoRenewPrice;
+		this.purchaseDate = purchaseDate;
 	}
 
 	public int getUsablePassCount() {
@@ -153,6 +154,14 @@ public class FDUserDlvPassInfo implements Serializable{
 	public void setDPSavings(double savings) {
 		dPSavings = savings;
 }
+
+	public Date getPurchaseDate() {
+		return purchaseDate;
+	}
+
+	public void setPurchaseDate(Date purchaseDate) {
+		this.purchaseDate = purchaseDate;
+	}
 
 	
 }

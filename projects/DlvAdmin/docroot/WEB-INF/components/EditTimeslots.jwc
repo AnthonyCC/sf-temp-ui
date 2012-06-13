@@ -40,6 +40,12 @@
         <binding name="validator" expression='beans.timeValidator'/>
         <binding name="value" expression='components.forEachTimeslot.value.cutoffTime'/>
     </component>
+    
+    <component id="inputPremiumCutoffTime" type="ValidField">
+        <static-binding name="displayName">Premium Cutoff</static-binding>
+        <binding name="validator" expression='beans.timeValidator'/>
+        <binding name="value" expression='components.forEachTimeslot.value.premiumCutoffTime'/>
+    </component>
 
     <component id="inputEndTime" type="ValidField">
         <static-binding name="displayName">End Time</static-binding>

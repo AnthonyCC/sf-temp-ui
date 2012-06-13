@@ -211,6 +211,8 @@ public class DlvAdminManager implements DlvAdminI {
 		}		
 	}
 	
+	
+	
 	public void updateZoneUnattendedDeliveryStatus(String zoneCode, boolean unattended) throws DlvResourceException {
 		if(this.adminManagerHome == null){
 			this.lookupAdminManagerHome();
@@ -295,5 +297,24 @@ public class DlvAdminManager implements DlvAdminI {
 			}catch(NamingException e){}
 		}
 	}
+
+	@Override
+	public void updatePremiumCtZone(String zoneCode, boolean premiumCtActive,
+			int premiumCtReleaseTime) throws DlvResourceException {
+
+		if(this.adminManagerHome == null){
+			this.lookupAdminManagerHome();
+		}
+		try{
+			DlvAdminManagerSB sb = adminManagerHome.create();
+			sb.updatePremiumCtZone(zoneCode, premiumCtActive, premiumCtReleaseTime);
+		}catch(CreateException ce){
+			throw new DlvResourceException(ce, "Cannot create DlvAdminManagerSessionBean"); 
+		}catch(RemoteException re){
+			throw new DlvResourceException(re, "Cannot talk to DlvAdminManagerSessionBean");
+		}		
+	
+	}
+
 	
 }

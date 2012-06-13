@@ -35,6 +35,8 @@ public interface DlvAdminI {
 	
 	public void updateChefsTableZone(String zoneCode, boolean ctActive, int ctReleaseTime) throws DlvResourceException;
 	
+	public void updatePremiumCtZone(String zoneCode, boolean premiumCtActive, int premiumCtReleaseTime) throws DlvResourceException;
+
 	public void updateZoneUnattendedDeliveryStatus(String zoneCode, boolean unattended) throws DlvResourceException;
 	
 	public void updateRegionData(String regionDataId, Date startDate, double dlvCharge) throws DlvResourceException;
@@ -42,5 +44,6 @@ public interface DlvAdminI {
 	public List getMapLayersForRegion() throws DlvResourceException;
 	
 	public List getEarlyWarningData(Date day) throws DlvResourceException;
+
 	
 }

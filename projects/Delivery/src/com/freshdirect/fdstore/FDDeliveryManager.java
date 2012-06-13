@@ -14,7 +14,7 @@ import javax.ejb.EJBException;
 import javax.ejb.FinderException;
 import javax.ejb.ObjectNotFoundException;
 import javax.naming.NamingException;
-import com.freshdirect.routing.constants.*;
+
 import org.apache.log4j.Category;
 
 import com.freshdirect.analytics.EventType;
@@ -25,6 +25,8 @@ import com.freshdirect.common.address.ContactAddressModel;
 import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.common.pricing.MunicipalityInfo;
 import com.freshdirect.common.pricing.MunicipalityInfoWrapper;
+import com.freshdirect.customer.ErpAddressModel;
+import com.freshdirect.customer.ErpDepotAddressModel;
 import com.freshdirect.delivery.DlvAddressGeocodeResponse;
 import com.freshdirect.delivery.DlvAddressVerificationResponse;
 import com.freshdirect.delivery.DlvApartmentRange;
@@ -41,6 +43,8 @@ import com.freshdirect.delivery.ExceptionAddress;
 import com.freshdirect.delivery.InvalidAddressException;
 import com.freshdirect.delivery.ReservationException;
 import com.freshdirect.delivery.announcement.SiteAnnouncement;
+import com.freshdirect.delivery.depot.DlvDepotModel;
+import com.freshdirect.delivery.depot.DlvLocationModel;
 import com.freshdirect.delivery.ejb.DlvManagerHome;
 import com.freshdirect.delivery.ejb.DlvManagerSB;
 import com.freshdirect.delivery.model.DlvReservationModel;
@@ -51,11 +55,11 @@ import com.freshdirect.delivery.model.UnassignedDlvReservationModel;
 import com.freshdirect.delivery.restriction.DlvRestrictionsList;
 import com.freshdirect.delivery.restriction.GeographyRestriction;
 import com.freshdirect.delivery.restriction.RestrictionI;
-
 import com.freshdirect.erp.EnumStateCodes;
 import com.freshdirect.framework.core.ServiceLocator;
 import com.freshdirect.framework.util.TimedLruCache;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.routing.constants.RoutingActivityType;
 import com.freshdirect.routing.model.IDeliveryReservation;
 import com.freshdirect.routing.model.IOrderModel;
 
@@ -317,6 +321,39 @@ public class FDDeliveryManager {
 		}
 	}
 
+	public DlvZoneInfoModel getZoneId(ErpAddressModel address, Date day) throws FDResourceException {
+		DlvZoneInfoModel info = null;
+	if(address != null) {
+		
+		if(address instanceof ErpDepotAddressModel) {
+			ErpDepotAddressModel depotAddress = (ErpDepotAddressModel)address;
+			DlvDepotModel depot = FDDepotManager.getInstance().getDepotByLocationId(depotAddress.getLocationId());
+			if(depot != null) {
+				DlvLocationModel location = depot.getLocation(depotAddress.getLocationId());
+				if(location != null) {
+					info = FDDeliveryManager.getInstance().getZoneInfoForDepot(depot.getRegionId(), location.getZoneCode(), day);
+					
+				}
+			}
+		} else {
+			try {
+				info = FDDeliveryManager.getInstance().getZoneInfo(address, day);
+			} catch (FDInvalidAddressException e) {
+				LOGGER.info("Encountered InvalidAddressException while getting zoneInfo for address: "
+					+ address.getAddress1() 
+					+ " " 
+					+ address.getAltApartment() 
+					+ " " 
+					+ address.getCity() 
+					+ " " 
+					+ address.getState()
+					+ " "
+					+ address.getZipCode());
+			}
+		}
+	}
+	return info;
+	}
 	public List<DlvZoneCutoffInfo> getCutofftimeForZone(String zoneCode, Date day) throws FDResourceException {
 
 		if("".equals(zoneCode)) {
@@ -401,6 +438,7 @@ public class FDDeliveryManager {
 			throw new FDInvalidAddressException(iae.getMessage());
 		}
 	}
+
 
 	public FDDynamicTimeslotList getTimeslotsForDateRangeAndZone(Date begDate, Date endDate,  TimeslotEventModel event,ContactAddressModel address) throws FDResourceException {
 		try {			
@@ -528,7 +566,7 @@ public class FDDeliveryManager {
 				address.getId(),
 				dlvReservation.isChefsTable(),dlvReservation.getUnassignedActivityType()!=null, dlvReservation.getOrderId(),dlvReservation.isInUPS(),
 				dlvReservation.getUnassignedActivityType(),
-				dlvReservation.getStatusCode());
+				dlvReservation.getStatusCode(),dlvReservation.getRsvClass());
 			if(FDStoreProperties.isDynamicRoutingEnabled()) {
 				boolean isSent=RoutingUtil.getInstance().sendTimeslotReservationRequest(dlvReservation, address, timeslot, event);
 				if(!isSent) {
@@ -565,7 +603,7 @@ public class FDDeliveryManager {
 				,reservation.isUnassigned()
 				, reservation.getOrderId(),reservation.isInUPS(),
 				 reservation.getUnassignedActivityType(),
-				 reservation.getStatusCode());
+				 reservation.getStatusCode(),reservation.getRsvClass());
 
 		} catch (RemoteException re) {
 			throw new FDResourceException(re);
@@ -634,7 +672,7 @@ public class FDDeliveryManager {
 					dlvRsv.isChefsTable(),
 					dlvRsv.isUnassigned(), dlvRsv.getOrderId(),dlvRsv.isInUPS(),
 					dlvRsv.getUnassignedActivityType(),
-					dlvRsv.getStatusCode()));
+					dlvRsv.getStatusCode(),dlvRsv.getRsvClass()));
 			}
 			return rsvLst;
 
@@ -726,7 +764,7 @@ public class FDDeliveryManager {
 			FDReservation fdRes = new FDReservation(dlvRsv.getPK(), timeslot, dlvRsv.getExpirationDateTime(), dlvRsv
 				.getReservationType(), dlvRsv.getCustomerId(), dlvRsv.getAddressId(), dlvRsv.isChefsTable(),dlvRsv.isUnassigned()
 				, dlvRsv.getOrderId(),dlvRsv.isInUPS(),dlvRsv.getUnassignedActivityType(),
-				dlvRsv.getStatusCode());
+				dlvRsv.getStatusCode(),dlvRsv.getRsvClass());
 
 			return fdRes;
 		} catch (ObjectNotFoundException ex) {

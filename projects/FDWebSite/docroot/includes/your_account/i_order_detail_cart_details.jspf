@@ -90,7 +90,7 @@ if(cart.hasInvoice()) {
 	%>
 
 		<td colspan="4">Delivery Charge:</td>
-		<td align="right"><%= DeliveryPassUtil.getDlvPassAppliedMessage(user) %></td>
+		<td align="right"><%= cart.getDeliveryCharge()>0?JspMethods.formatPrice(cart.getDeliveryCharge()):DeliveryPassUtil.getDlvPassAppliedMessage(user) %></td>
 	<%
 	}
 	else if (cart.isDeliveryChargeWaived()) {
@@ -101,7 +101,7 @@ if(cart.hasInvoice()) {
 	} else {
 		%>
 		<td colspan="4">Delivery Charge:</td>
-		<td><%= currencyFormatter.format(cart.hasInvoice() ? cart.getInvoicedDeliveryCharge() : cart.getDeliverySurcharge()) %></td>
+		<td><%= currencyFormatter.format(cart.hasInvoice() ? cart.getInvoicedDeliveryCharge() : cart.getDeliveryCharge()) %></td>
 	<%}%>
 	<td><b><%=cart.isDeliveryChargeTaxable() && !cart.isDeliveryChargeWaived() ? "&nbsp;T" : "" %></b></td>
 	<td colspan="2"></td>

@@ -28,6 +28,7 @@ public class PageRegistry {
 		addPage("CapacityDashboard", "Dashboard", new String[] {ADMIN,MARKETING});
 		addPage("EarlyWarningPage", "Early Warning", new String[] {ADMIN,GUEST,MARKETING});
 		addPage("ManageCTZones", "Manage Chef's Table Zones", new String[] {ADMIN,MARKETING});
+		addPage("ManagePremiumZones", "Manage Premium Zones", new String[] {ADMIN,MARKETING});
 		addPage("UserAudit", "User Audit", new String[] {ADMIN, MARKETING, GUEST});
 		addPage("ManageUnattendedDeliveryZones","Manage Unattended Delivery Zones", new String[] {ADMIN,MARKETING,GUEST});
 		
@@ -37,7 +38,7 @@ public class PageRegistry {
 		addPage("depot/index.jsp", "Depot Admin", new String[] {ADMIN});
 		
 		NAV_GROUPS.put(null, new String[] {
-			"Home", "ShowCurrentTimeslots", "ViewTimeslots", "ManageResources", "ManageCTZones", "CapacityReportPage", "CapacityDashboard", "EarlyWarningPage", "MapPage",
+			"Home", "ShowCurrentTimeslots", "ViewTimeslots", "ManageResources", "ManageCTZones","ManagePremiumZones", "CapacityReportPage", "CapacityDashboard", "EarlyWarningPage", "MapPage",
 			"depot/index.jsp", "UserAudit", "ManageUnattendedDeliveryZones"
 		});
 		NAV_GROUPS.put("region", new String[] { "Home", "AddPlan" });

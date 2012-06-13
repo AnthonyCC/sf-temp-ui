@@ -68,6 +68,15 @@ public class DateUtil {
 		return cal;
 	}
 
+	public static int calcDiffIndays(Date d1, Date d2) {
+		Calendar cal1 = Calendar.getInstance();
+		cal1.setTime(d1);
+		Calendar cal2 = Calendar.getInstance();
+		cal2.setTime(d2);
+		
+		return Math.abs(cal2.get(Calendar.DATE) - cal1.get(Calendar.DATE));
+		
+	}
 	/* @return get absolute difference between d1/d2 in days, rounded to nearest */
 	public static int getDiffInDays(Date d1, Date d2) {
 		return Math.abs((int) Math.round(((d1.getTime() - d2.getTime()) / (double) DAY)));
@@ -301,4 +310,33 @@ public class DateUtil {
         return MONTH_DATE_YEAR_FORMATTER.format(dateVal);
 	}
 
+
+	public static boolean isPremiumSlot(Date baseDate, TimeOfDay cutoffTime,
+			TimeOfDay premiumCutoffTime) {
+		Calendar cal = Calendar.getInstance();
+		Date cutoffDateTime = null;
+		Date premiumCutoffDateTime =null;
+		Date now = cal.getTime();
+		if(cutoffTime!=null && premiumCutoffTime!=null)
+		{
+			 cutoffDateTime = DateUtil.addDays(cutoffTime.getAsDate(baseDate),-1);
+			 premiumCutoffDateTime = premiumCutoffTime.getAsDate(baseDate);
+			 cal.setTime(premiumCutoffDateTime);
+			 cal.add(Calendar.MINUTE, 30);
+			 premiumCutoffDateTime = cal.getTime();
+			if(now.after(cutoffDateTime) && now.before(premiumCutoffDateTime))
+				return true;
+		}
+		
+		return false;
+	}
+
+	
+	public static String getUTCDate(Date date)
+	{
+		TimeZone gmt = TimeZone.getTimeZone("UTC");
+		DateFormat formatter = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+		formatter.setTimeZone(gmt);
+		return formatter.format(date);
+	}
 } 

@@ -22,6 +22,7 @@ import javax.servlet.jsp.tagext.TagData;
 import javax.servlet.jsp.tagext.VariableInfo;
 
 import com.freshdirect.crm.CrmAgentModel;
+import com.freshdirect.delivery.EnumDeliveryOption;
 import com.freshdirect.delivery.model.DlvZoneModel;
 import com.freshdirect.enums.WeekDay;
 import com.freshdirect.fdstore.FDDeliveryManager;
@@ -71,10 +72,13 @@ public class PromotionDlvReqControllerTag extends AbstractControllerTag {
 			String commerical = NVL.apply(request.getParameter("commerical"),"").trim();
 			String pickup = NVL.apply(request.getParameter("pickup"),"").trim();
 			String exSameDayDlv = NVL.apply(request.getParameter("exSameDayDlv"),"").trim();
+			String deliveryDayType = NVL.apply(request.getParameter("deliveryDayType"),"").trim();
+			EnumDeliveryOption deliveryOption= EnumDeliveryOption.getEnum(deliveryDayType);
 			String geoRestrictionType= NVL.apply(request.getParameter("edit_dlvreq_geoRest"),"").trim();
 			String dlvDatesLength = NVL.apply(request.getParameter("dlvDatesIndexValue"),"");
 			FDPromoDlvZoneStrategyModel dlvZoneModel = new FDPromoDlvZoneStrategyModel();
 			FDPromoZipRestriction zipRestriction = new FDPromoZipRestriction();
+			
 			if(!"".equalsIgnoreCase(dlvDatesLength)){
 				List<FDPromoDlvDateModel> dlvDates = new ArrayList<FDPromoDlvDateModel>();
 			
@@ -113,6 +117,10 @@ public class PromotionDlvReqControllerTag extends AbstractControllerTag {
 				promotion.setZipRestrictions(zipRestrictionMap);
 				promotion.setDlvZoneStrategies(Collections.EMPTY_LIST);
 			}else if("ZONE".equalsIgnoreCase(geoRestrictionType)){
+				if(null ==deliveryOption){
+//					deliveryOption = EnumDeliveryOption.REGULAR;
+					actionResult.addError(true, "deliveryDayType", "Please choose a Delivery Day Type.");
+				}
 				String zoneType = request.getParameter("edit_dlvreq_zoneType");
 				String[] selectedZones = request.getParameterValues("edit_dlvreq_selected");
 				
@@ -223,6 +231,7 @@ public class PromotionDlvReqControllerTag extends AbstractControllerTag {
 				custModel.setOrderTypeCorporate(!"".equals(commerical));
 				custModel.setOrderTypePickup(!"".equals(pickup));
 				custModel.setExcludeSameDayDlv(!"".equals(exSameDayDlv));
+				custModel.setDeliveryDayType(deliveryOption);
 				custStrategies.add(custModel);
 			}else{
 				custStrategies = new ArrayList<FDPromoCustStrategyModel>();
@@ -231,6 +240,7 @@ public class PromotionDlvReqControllerTag extends AbstractControllerTag {
 				custModel.setOrderTypeCorporate(!"".equals(commerical));
 				custModel.setOrderTypePickup(!"".equals(pickup));
 				custModel.setExcludeSameDayDlv(!"".equals(exSameDayDlv));
+				custModel.setDeliveryDayType(deliveryOption);
 				custModel.setPromotionId(promotion.getId());
 				custStrategies.add(custModel);
 			}

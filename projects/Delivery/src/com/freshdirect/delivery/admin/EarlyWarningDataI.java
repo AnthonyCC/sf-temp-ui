@@ -25,4 +25,19 @@ public interface EarlyWarningDataI extends Serializable {
 	public int getCTOrder();
 	public double getPercentCTOrders();
 	public boolean getCTActive();
+	
+	public int getPremiumCapacity();
+	public int getPremiumOrder();
+	public int getPremiumAllocation();
+	public double getPremiumPercentOrders();
+	public double getPremiumPercentAllocation();
+	
+	public int getPremiumCtCapacity();
+	public int getPremiumCtAllocation();
+	public double getPremiumCtPercentAllocation();
+	public int getPremiumCtOrder();
+	public double getPremiumCtPercentOrders();
+	public boolean getPremiumCtActive();
+
+	
 }

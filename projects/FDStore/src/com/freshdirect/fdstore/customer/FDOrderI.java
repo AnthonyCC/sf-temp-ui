@@ -184,5 +184,9 @@ public interface FDOrderI extends FDCartI {
 	
 	public boolean hasSignature();
 	
+	public double getDeliveryCharge();
+	
 	public int getLineCnt();
+	
+	public double getDeliveryChargeOnReturn();
 }

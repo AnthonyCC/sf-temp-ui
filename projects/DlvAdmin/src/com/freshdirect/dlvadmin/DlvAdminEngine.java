@@ -152,6 +152,9 @@ public class DlvAdminEngine extends BaseEngine {
 		sm.add(null, "Standard");
 		sm.add("All", "All");
 		sm.add("CT", "Chef's Table");
+		sm.add("Premium", "Premium");
+		sm.add("Premium CT", "Premium CT");
+		
 		return sm;
 	}
 

@@ -174,6 +174,16 @@ public class DlvResourceModel extends DlvAbstractShiftModel{
 		}
 		return capacity;
 	}
+	
+	public int getPremiumCapacityTotal(){
+		int capacity = 0;
+		for(Iterator i = this.getTimeslots().iterator(); i.hasNext(); ){
+			DlvTimeslotModel timeslot = (DlvTimeslotModel)i.next();
+			capacity += timeslot.getPremiumCapacity();
+		}
+		return capacity;
+	}
+	
 
 	/**
 	 * NOTE: time dependent.
@@ -190,6 +200,17 @@ public class DlvResourceModel extends DlvAbstractShiftModel{
 		return allocation;
 	}
 
+	public int calculatePremiumAllocationTotal(){
+		Date now = new Date();
+		int allocation = 0;
+		for(Iterator i = this.getTimeslots().iterator(); i.hasNext(); ){
+			DlvTimeslotModel timeslot = (DlvTimeslotModel)i.next();
+			allocation += timeslot.calculatePremiumAllocation(now);
+		}
+		return allocation;
+	}
+
+	
 	public int getOrderTotal(){
 		int orderCount = 0;
 		for(Iterator i = this.getTimeslots().iterator(); i.hasNext(); ){
@@ -236,6 +257,16 @@ public class DlvResourceModel extends DlvAbstractShiftModel{
 		return capacity;
 	}
 	
+	public int getPremiumCtCapacityTotal(){
+		int capacity = 0;
+		for(Iterator i = this.getTimeslots().iterator(); i.hasNext(); ){
+			DlvTimeslotModel timeslot = (DlvTimeslotModel)i.next();
+			capacity += timeslot.getPremiumCtCapacity();
+		}
+		return capacity;
+	}
+	
+	
 	public int getCTAllocationTotal(){
 		int allocation = 0;
 		for(Iterator i = this.getTimeslots().iterator(); i.hasNext(); ){
@@ -245,7 +276,15 @@ public class DlvResourceModel extends DlvAbstractShiftModel{
 		return allocation;
 	}
 	
-
+	public int getPremiumCtAllocationTotal(){
+		int allocation = 0;
+		for(Iterator i = this.getTimeslots().iterator(); i.hasNext(); ){
+			DlvTimeslotModel timeslot = (DlvTimeslotModel)i.next();
+			allocation += timeslot.getPremiumCtAllocation();
+		}
+		return allocation;
+	}
+	
 	
 	public void setPK(PrimaryKey pk) {
 		super.setPK(pk);

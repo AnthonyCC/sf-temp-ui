@@ -280,7 +280,7 @@ public class RoutingUtil {
 		deliverySlot.setSchedulerId(identity);
 		deliverySlot.setStartTime(timeSlot.getStartTimeAsDate());
 		deliverySlot.setStopTime(timeSlot.getEndTimeAsDate());
-		deliverySlot.setWaveCode(RoutingDateUtil.getWaveCode(timeSlot.getCutoffTimeAsDate()));
+		deliverySlot.setWaveCode(timeSlot.getRoutingSlot().getWaveCode());
 		return deliverySlot;
 	}
 

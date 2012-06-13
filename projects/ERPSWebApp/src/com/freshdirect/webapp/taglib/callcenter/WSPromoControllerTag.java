@@ -48,6 +48,7 @@ import com.freshdirect.delivery.DlvAddressVerificationResponse;
 import com.freshdirect.delivery.DlvRestrictionManager;
 import com.freshdirect.delivery.DlvZoneInfoModel;
 import com.freshdirect.delivery.EnumAddressVerificationResult;
+import com.freshdirect.delivery.EnumDeliveryOption;
 import com.freshdirect.delivery.EnumRestrictedAddressReason;
 import com.freshdirect.delivery.model.RestrictedAddressModel;
 import com.freshdirect.delivery.restriction.EnumDlvRestrictionCriterion;
@@ -176,6 +177,10 @@ public class WSPromoControllerTag extends AbstractControllerTag {
 					String discount = request.getParameter("discount");
 					String redeemLimit = request.getParameter("redeemlimit");
 					String promoCode =  NVL.apply(request.getParameter("promoCode"), "").trim();
+					String deliveryDayType =NVL.apply(request.getParameter("deliveryDayType"), "").trim();
+					if("".equalsIgnoreCase(deliveryDayType)){
+						deliveryDayType = "R";//REGULAR
+					}
 					Date startDate = dateFormat.parse(startDateStr);
 					String[] cohorts = request.getParameterValues("cohorts");
 					if(promoCode.length() == 0 ){
@@ -196,7 +201,7 @@ public class WSPromoControllerTag extends AbstractControllerTag {
 							return true;
 						}
 						//Create a new WS Promotion.
-						FDPromotionNewModel promotion = constructPromotion(effectiveDate, startDateStr, endDateStr, zone, startTime, endTime, discount, redeemLimit, cohorts);
+						FDPromotionNewModel promotion = constructPromotion(effectiveDate, startDateStr, endDateStr, zone, startTime, endTime, discount, redeemLimit, cohorts,deliveryDayType);
 						postValidate(promotion, actionResult);
 						
 						
@@ -241,7 +246,7 @@ public class WSPromoControllerTag extends AbstractControllerTag {
 						}
 						promotion.setModifiedBy(agent.getUserId());
 						promotion.setModifiedDate(new Date());
-						updatePromotion(promotion, effectiveDate, startDateStr, endDateStr, zone, startTime, endTime, discount, redeemLimit);
+						updatePromotion(promotion, effectiveDate, startDateStr, endDateStr, zone, startTime, endTime, discount, redeemLimit,deliveryDayType);
 						postValidate(promotion, actionResult);
 						/*APPDEV-2004*/
 						List<FDPromoCustStrategyModel> custStrategies = promotion.getCustStrategies();
@@ -386,6 +391,11 @@ public class WSPromoControllerTag extends AbstractControllerTag {
 			actionResult.addError(true, "discount", "Please select a Discount Amount.");
 			success = false; 
 		}
+		String deliveryDayType = NVL.apply(request.getParameter("deliveryDayType"), "").trim();
+		if(deliveryDayType == null || deliveryDayType.length() == 0){
+			actionResult.addError(true, "deliveryDayType", "Please choose a Delivery Day Type.");
+			success = false; 
+		}
 		
 		String[] cohorts = request.getParameterValues("cohorts"); 
 		if(cohorts == null || cohorts.length == 0) {
@@ -437,7 +447,7 @@ public class WSPromoControllerTag extends AbstractControllerTag {
 			}
 	}
 	private FDPromotionNewModel constructPromotion(String effectiveDate, String startDateStr, String endDateStr, String zone, String startTime, 
-			String endTime, String discount, String redeemLimit, String[] cohorts) throws FDResourceException {
+			String endTime, String discount, String redeemLimit, String[] cohorts,String deliveryDayType) throws FDResourceException {
 		try {
 			Date startDate = dateFormat.parse(startDateStr);
 			Date expDate = endDateFormat.parse(endDateStr+" "+JUST_BEFORE_MIDNIGHT);
@@ -467,6 +477,8 @@ public class WSPromoControllerTag extends AbstractControllerTag {
 			custModel.setOrderTypeCorporate(true);
 			custModel.setOrderTypePickup(true);
 			custModel.setCohorts(cohorts);
+			EnumDeliveryOption deliveryOption= EnumDeliveryOption.getEnum(deliveryDayType);
+			custModel.setDeliveryDayType(deliveryOption);
 			custStrategies.add(custModel);
 			promotion.setCustStrategies(custStrategies);
 			promotion.setGeoRestrictionType("ZONE");
@@ -514,7 +526,7 @@ public class WSPromoControllerTag extends AbstractControllerTag {
 	}
 
 	private void updatePromotion(FDPromotionNewModel promotion, String effectiveDate, String startDateStr, String endDateStr, String zone, String startTime, 
-			String endTime, String discount, String redeemLimit) throws FDResourceException{
+			String endTime, String discount, String redeemLimit,String deliveryDayType) throws FDResourceException{
 		try {
 			Date startDate = dateFormat.parse(startDateStr);
 			Date expDate = endDateFormat.parse(endDateStr+" "+JUST_BEFORE_MIDNIGHT);
@@ -572,6 +584,8 @@ public class WSPromoControllerTag extends AbstractControllerTag {
 					//Clear PK
 					custStrategy.setPK(null);
 				}
+				EnumDeliveryOption deliveryOption= EnumDeliveryOption.getEnum(deliveryDayType);
+				custStrategy.setDeliveryDayType(deliveryOption);
 			}
 			promotion.setMaxAmount(discount);
 			promotion.setStatus(EnumPromotionStatus.PROGRESS);

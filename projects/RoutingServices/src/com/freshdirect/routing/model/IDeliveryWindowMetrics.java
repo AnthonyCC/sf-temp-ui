@@ -81,4 +81,12 @@ public interface IDeliveryWindowMetrics {
 
 	void setOrderCtCapacity(int ctCapacity);
 
+	int getOrderPremiumCapacity();
+
+	int getOrderPremiumCtCapacity();
+	
+	void setOrderPremiumCapacity(int orderPremiumCapacity);
+
+	void setOrderPremiumCtCapacity(int orderPremiumCtCapacity);
+
 }

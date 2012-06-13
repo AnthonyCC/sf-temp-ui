@@ -12,6 +12,8 @@ public abstract class EditResource extends BaseComponent {
 	private String view;
 	private final static String VIEW_CT = "CT";
 	private final static String VIEW_ALL = "All";
+	private final static String VIEW_PREMIUM = "Premium";
+	private final static String VIEW_PREMIUM_CT = "Premium CT";
 	
 	public DlvTruckAllocation getCurrentTruckAllocation() {
 		return this.getResource().getTruckAllocation(this.getTruckType());
@@ -47,14 +49,28 @@ public abstract class EditResource extends BaseComponent {
 	public boolean isShowBase() {
 		  return getView()!=null && getView().equals(VIEW_ALL); 
 	}
-	public boolean isShowTotal() {
+	public boolean isShowTotal() { 
 		  return getView()==null || getView().equals(VIEW_ALL); 
 	}
 	
+	public boolean isShowPremiumCt() { 
+		  return getView()!=null && (getView().equals(VIEW_ALL) || getView().equals(VIEW_PREMIUM_CT)); 
+	}
+	public boolean isShowPremium() { 
+		  return getView()!=null && (getView().equals(VIEW_ALL) || getView().equals(VIEW_PREMIUM)); 
+	}
+	
 	public boolean isTotalEditable(){
-		return ((DlvPage)this.getPage()).isUserAdmin();	
+		return ((DlvPage)this.getPage()).isUserAdmin() || ((DlvPage)this.getPage()).isUserMarketing();	
 	}
 	public boolean isCTEditable(){
+		return ((DlvPage)this.getPage()).isUserAdmin() || ((DlvPage)this.getPage()).isUserMarketing();	
+	}
+	public boolean isPremiumEditable(){
+		return ((DlvPage)this.getPage()).isUserAdmin() || ((DlvPage)this.getPage()).isUserMarketing();	
+	}
+	
+	public boolean isPremiumCTEditable(){
 		return ((DlvPage)this.getPage()).isUserAdmin() || ((DlvPage)this.getPage()).isUserMarketing();	
 	}
 

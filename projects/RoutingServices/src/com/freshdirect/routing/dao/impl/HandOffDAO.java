@@ -25,6 +25,7 @@ import oracle.sql.ArrayDescriptor;
 
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.RowCallbackHandler;
+import org.springframework.jdbc.core.RowCountCallbackHandler;
 import org.springframework.jdbc.core.SqlParameter;
 import org.springframework.jdbc.object.BatchSqlUpdate;
 
@@ -108,13 +109,14 @@ public class HandOffDAO extends BaseDAO implements IHandOffDAO   {
 		+ "from cust.customer c, cust.fdcustomer fdc " 
 		+ ", cust.customerinfo ci " 
 		+ ", cust.sale s, cust.salesaction sa " 
-		+ ", cust.deliveryinfo di, dlv.reservation rs "
+		+ ", cust.deliveryinfo di, dlv.reservation rs, dlv.timeslot ts "
 		+ "where c.id = ci.customer_id and c.id = fdc.erp_customer_id and c.id = s.customer_id " 
 		+ "and s.id = sa.sale_id  and sa.CUSTOMER_ID = s.CUSTOMER_ID  and sa.requested_date = ? and s.cromod_date=sa.action_date and sa.action_type IN ('CRO', 'MOD') "
 		+ "and s.type ='REG' "
 		+ "and s.status <> 'CAN' "
-		+ "and sa.id = di.salesaction_id and rs.id = di.reservation_id " 
-		+ "and to_char(di.cutofftime, 'HH:MI AM') = to_char(?, 'HH:MI AM')";
+		+ "and sa.id = di.salesaction_id and rs.id = di.reservation_id and rs.timeslot_id = ts.id ";
+	
+	private static final String CHECKFORSAMEDAYCUTOFF = " SELECT *  FROM DLV.TIMESLOT WHERE BASE_DATE =? AND TO_CHAR(PREMIUM_CUTOFF_TIME,'HH:MI AM') =TO_CHAR(?,'HH:MI AM')";
 	
 	private static String GET_ORDERSBY_DATE_CUTOFFSTANDBY = "SELECT /*+ USE_NL(s, sa) */ c.id customer_id, fdc.id fdc_id, ci.first_name, ci.last_name, c.user_id, ci.home_phone, ci.business_phone, "
 		+ "ci.cell_phone, s.id weborder_id, s.sap_number erporder_id, sa.requested_date, s.status, sa.amount, di.starttime, di.endtime, "
@@ -122,37 +124,34 @@ public class HandOffDAO extends BaseDAO implements IHandOffDAO   {
 		+ "from cust.customer@DBSTOSBY.NYC.FRESHDIRECT.COM c, cust.fdcustomer@DBSTOSBY.NYC.FRESHDIRECT.COM fdc " 
 		+ ", cust.customerinfo@DBSTOSBY.NYC.FRESHDIRECT.COM ci " 
 		+ ", cust.sale@DBSTOSBY.NYC.FRESHDIRECT.COM s, cust.salesaction@DBSTOSBY.NYC.FRESHDIRECT.COM sa " 
-		+ ", cust.deliveryinfo@DBSTOSBY.NYC.FRESHDIRECT.COM di, dlv.reservation@DBSTOSBY.NYC.FRESHDIRECT.COM rs "
+		+ ", cust.deliveryinfo@DBSTOSBY.NYC.FRESHDIRECT.COM di, dlv.reservation@DBSTOSBY.NYC.FRESHDIRECT.COM rs , dlv.timeslot@DBSTOSBY.NYC.FRESHDIRECT.COM ts "
 		+ "where c.id = ci.customer_id and c.id = fdc.erp_customer_id and c.id = s.customer_id " 
 		+ "and s.id = sa.sale_id  and sa.CUSTOMER_ID = s.CUSTOMER_ID  and sa.requested_date = ? and s.cromod_date=sa.action_date and sa.action_type IN ('CRO', 'MOD') "
 		+ "and s.type ='REG' "
 		+ "and s.status <> 'CAN' "
-		+ "and sa.id = di.salesaction_id and rs.id = di.reservation_id " 
-		+ "and to_char(di.cutofftime, 'HH:MI AM') = to_char(?, 'HH:MI AM')";
+		+ "and sa.id = di.salesaction_id and rs.id = di.reservation_id and rs.timeslot_id = ts.id ";
 	
 	private static String GET_ORDERSTATSBY_DATE_CUTOFF = "SELECT /*+ USE_NL(s, sa) */ s.status, count(*) as order_count "
 		+ "from cust.customer c, cust.fdcustomer fdc " 
 		+ ", cust.customerinfo ci " 
 		+ ", cust.sale s, cust.salesaction sa " 
-		+ ", cust.deliveryinfo di, dlv.reservation rs "
+		+ ", cust.deliveryinfo di, dlv.reservation rs , dlv.timeslot ts "
 		+ "where c.id = ci.customer_id and c.id = fdc.erp_customer_id and c.id = s.customer_id " 
 		+ "and s.id = sa.sale_id  and sa.CUSTOMER_ID = s.CUSTOMER_ID  and sa.requested_date = ? and s.cromod_date=sa.action_date and sa.action_type IN ('CRO', 'MOD') "
 		+ "and s.type ='REG' "
 		+ "and s.status <> 'CAN' "
-		+ "and sa.id = di.salesaction_id and rs.id = di.reservation_id " 
-		+ "and to_char(di.cutofftime, 'HH:MI AM') = to_char(?, 'HH:MI AM') group by s.status";
+		+ "and sa.id = di.salesaction_id and rs.id = di.reservation_id and rs.timeslot_id = ts.id ";
 	
 	private static String GET_ORDERSTATSBY_DATE_CUTOFFSTANDBY = "SELECT /*+ USE_NL(s, sa) */ s.status, count(*) as order_count "
 		+ "from cust.customer@DBSTOSBY.NYC.FRESHDIRECT.COM c, cust.fdcustomer@DBSTOSBY.NYC.FRESHDIRECT.COM fdc " 
 		+ ", cust.customerinfo@DBSTOSBY.NYC.FRESHDIRECT.COM ci " 
 		+ ", cust.sale@DBSTOSBY.NYC.FRESHDIRECT.COM s, cust.salesaction@DBSTOSBY.NYC.FRESHDIRECT.COM sa " 
-		+ ", cust.deliveryinfo@DBSTOSBY.NYC.FRESHDIRECT.COM di, dlv.reservation@DBSTOSBY.NYC.FRESHDIRECT.COM rs "
+		+ ", cust.deliveryinfo@DBSTOSBY.NYC.FRESHDIRECT.COM di, dlv.reservation@DBSTOSBY.NYC.FRESHDIRECT.COM rs  , dlv.timeslot@DBSTOSBY.NYC.FRESHDIRECT.COM ts"
 		+ "where c.id = ci.customer_id and c.id = fdc.erp_customer_id and c.id = s.customer_id " 
 		+ "and s.id = sa.sale_id  and sa.CUSTOMER_ID = s.CUSTOMER_ID  and sa.requested_date = ? and s.cromod_date=sa.action_date and sa.action_type IN ('CRO', 'MOD') "
 		+ "and s.type ='REG' "
 		+ "and s.status <> 'CAN' "
-		+ "and sa.id = di.salesaction_id and rs.id = di.reservation_id " 
-		+ "and to_char(di.cutofftime, 'HH:MI AM') = to_char(?, 'HH:MI AM') group by s.status";
+		+ "and sa.id = di.salesaction_id and rs.id = di.reservation_id and rs.timeslot_id = ts.id ";
 	
 	private static final String UPDATE_HANDOFFBATCH_MESSAGE = "UPDATE TRANSP.HANDOFF_BATCH SET SYS_MESSAGE = ? where BATCH_ID = ?";
 	
@@ -1234,16 +1233,53 @@ public class HandOffDAO extends BaseDAO implements IHandOffDAO   {
 		}
 	}
 	
+	private boolean checkIfSameDayCutoff(final Date deliveryDate, final Date cutOff)
+	{
+		PreparedStatementCreator creator = new PreparedStatementCreator() {
+			public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {	
+				String query = CHECKFORSAMEDAYCUTOFF;
+				
+				PreparedStatement ps =
+					connection.prepareStatement(query);
+				ps.setDate(1, new java.sql.Date(deliveryDate.getTime()));
+				ps.setTimestamp(2, new Timestamp(cutOff.getTime()));
+				return ps;
+			}  
+		};
+
+		RowCountCallbackHandler callbackHandler = new RowCountCallbackHandler();
+		jdbcTemplate.query(creator, callbackHandler);
+		if(callbackHandler.getRowCount()>0)
+			return true;
+		
+		return false;
+	}
 	
 	public Map<EnumSaleStatus, Integer> getOrderStatsByCutoff(final Date deliveryDate, final Date cutOff) throws SQLException {
 
 		final Map<EnumSaleStatus, Integer> result = new HashMap<EnumSaleStatus, Integer>();
-
+		
+		boolean sameDay = checkIfSameDayCutoff(deliveryDate, cutOff);
+		System.err.println("sameDay "+sameDay);
+		final StringBuffer cutoffQuery = new StringBuffer();final StringBuffer cutoffsbyQuery = new StringBuffer();
+		if(sameDay)
+		{
+			cutoffQuery.append(GET_ORDERSTATSBY_DATE_CUTOFF).append(" and ts.premium_cutoff_time is not null  and to_char(di.cutofftime, 'HH:MI AM')= to_char(ts.premium_cutoff_time, 'HH:MI AM') and to_char(ts.premium_cutoff_time, 'HH:MI AM') = to_char(?, 'HH:MI AM') group by s.status");
+			cutoffsbyQuery.append(GET_ORDERSTATSBY_DATE_CUTOFFSTANDBY).append(" and ts.premium_cutoff_time is not null  and to_char(di.cutofftime, 'HH:MI AM')= to_char(ts.premium_cutoff_time, 'HH:MI AM') and to_char(ts.premium_cutoff_time, 'HH:MI AM') = to_char(?, 'HH:MI AM') group by s.status");
+		}
+		else
+		{
+			cutoffQuery.append(GET_ORDERSTATSBY_DATE_CUTOFF).append(" and ts.premium_cutoff_time is null  and to_char(di.cutofftime, 'HH:MI AM')=  to_char(?, 'HH:MI AM') group by s.status");
+			cutoffsbyQuery.append(GET_ORDERSTATSBY_DATE_CUTOFFSTANDBY).append(" and ts.premium_cutoff_time is null  and to_char(di.cutofftime, 'HH:MI AM')=  to_char(?, 'HH:MI AM') group by s.status");
+		}
+		System.err.println(cutoffQuery);
+		System.err.println(cutoffsbyQuery);
+		
 		PreparedStatementCreator creator = new PreparedStatementCreator() {
 			public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {	
-				String query = GET_ORDERSTATSBY_DATE_CUTOFF;
+				String query = cutoffQuery.toString();
 				if(RoutingServicesProperties.getRoutingCutOffStandByEnabled()) {
-					query = GET_ORDERSTATSBY_DATE_CUTOFFSTANDBY;
+					query = cutoffsbyQuery.toString();
 				}
 				PreparedStatement ps =
 					connection.prepareStatement(query);
@@ -1270,11 +1306,26 @@ public class HandOffDAO extends BaseDAO implements IHandOffDAO   {
 
 		final List<IHandOffBatchStop> result = new ArrayList<IHandOffBatchStop>();
 
+		boolean sameDay = checkIfSameDayCutoff(deliveryDate, cutOff);
+		final StringBuffer cutoffQuery = new StringBuffer();final StringBuffer cutoffsbyQuery = new StringBuffer();
+		if(sameDay)
+		{
+			cutoffQuery.append(GET_ORDERSBY_DATE_CUTOFF).append(" and ts.premium_cutoff_time is not null  and to_char(di.cutofftime, 'HH:MI AM')= to_char(ts.premium_cutoff_time, 'HH:MI AM') and to_char(ts.premium_cutoff_time, 'HH:MI AM') = to_char(?, 'HH:MI AM')");
+			cutoffsbyQuery.append(GET_ORDERSBY_DATE_CUTOFFSTANDBY).append(" and ts.premium_cutoff_time is not null  and to_char(di.cutofftime, 'HH:MI AM')= to_char(ts.premium_cutoff_time, 'HH:MI AM') and to_char(ts.premium_cutoff_time, 'HH:MI AM') = to_char(?, 'HH:MI AM')");
+		}
+		else
+		{
+			cutoffQuery.append(GET_ORDERSBY_DATE_CUTOFF).append(" and ts.premium_cutoff_time is null  and to_char(di.cutofftime, 'HH:MI AM')=  to_char(?, 'HH:MI AM')");
+			cutoffsbyQuery.append(GET_ORDERSBY_DATE_CUTOFFSTANDBY).append(" and ts.premium_cutoff_time is null  and to_char(di.cutofftime, 'HH:MI AM')=  to_char(?, 'HH:MI AM')");
+		}
+		System.err.println(cutoffQuery);
+		System.err.println(cutoffsbyQuery);
+		
 		PreparedStatementCreator creator = new PreparedStatementCreator() {
 			public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {	
-				String query = GET_ORDERSBY_DATE_CUTOFF;
+				String query = cutoffQuery.toString();
 				if(RoutingServicesProperties.getRoutingCutOffStandByEnabled()) {
-					query = GET_ORDERSBY_DATE_CUTOFFSTANDBY;
+					query = cutoffsbyQuery.toString();
 				}
 				PreparedStatement ps =
 					connection.prepareStatement(query);

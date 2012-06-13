@@ -16,7 +16,8 @@
     <page name="MapPage" specification-path="pages/MapPage.page"/>
     <page name="ShowCurrentTimeslots" specification-path="pages/ShowCurrentTimeslots.page"/>
     <page name="CapacityReportPage" specification-path="pages/CapacityReportPage.page"/>
-    <page name="ManageCTZones" specification-path="pages/ManageCTZones.page"/>    
+    <page name="ManageCTZones" specification-path="pages/ManageCTZones.page"/>
+    <page name="ManagePremiumZones" specification-path="pages/ManagePremiumZones.page"/>    
     <page name="UserAudit" specification-path="pages/UserAudit.page"/>
     <page name="ManageUnattendedDeliveryZones" specification-path="pages/ManageUnattendedDeliveryZones.page"/>
 

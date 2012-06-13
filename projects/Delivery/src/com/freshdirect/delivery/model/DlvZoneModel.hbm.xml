@@ -19,6 +19,10 @@
         <property name="planId" column="PLAN_ID"/> 
         <property name="ctActive" column="CT_ACTIVE" not-null="true" type="fdBoolean"/>
         <property name="ctReleaseTime" column="CT_RELEASE_TIME" not-null="true"/>
+		<property name="premiumCtActive" column="PREMIUM_CT_ACTIVE" not-null="true" type="fdBoolean"/>
+        <property name="premiumCtReleaseTime" column="PREMIUM_CT_RELEASE_TIME" not-null="true"/>
+		
+
 
 		<many-to-one name="zoneDescriptor" class="DlvZoneDescriptor" column="ZONE_CODE">
 		</many-to-one>
@@ -39,5 +43,23 @@
     		and chefsTableCapacity != 0
     </query>
   
+ 
+ 
+    
+     <query name="updatePremiumCtZone">
+		update DlvZoneModel
+		set premiumCtActive = :premiumCtActive, premiumCtReleaseTime = :premiumCtReleaseTime
+		where zoneDescriptor = :zoneCode
+    </query>
+    
+    <query name="deactivatePremiumCtTimeslots">
+    	update DlvTimeslotModel
+    	set premiumCtCapacity = 0
+    	where
+    		zoneId in (select id from DlvZoneModel where zoneDescriptor = :zoneCode)
+    		and baseDate >= trunc(sysdate)
+    		and premiumCtCapacity != 0
+    </query>
+    
 
 </hibernate-mapping>

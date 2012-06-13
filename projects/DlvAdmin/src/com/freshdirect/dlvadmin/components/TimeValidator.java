@@ -14,7 +14,7 @@ public class TimeValidator extends BaseValidator {
 	private SimpleDateFormat timeFormatter = new SimpleDateFormat("hh:mm aa");
 
 	public Object toObject(IFormComponent field, String value) throws ValidatorException {
-		if (value == null) {
+		if (value == null || "".equals(value)) {
 			return null;
 		}
 		try {

@@ -627,7 +627,7 @@
 			%>
 					<tr valign="top" class="orderSummary">
 						<td colspan="3" align="right">Delivery Charge:</td>
-						<td colspan="1" align="right"><%= DeliveryPassUtil.getDlvPassAppliedMessage(user) %></td>
+						<td colspan="1" align="right"><%= cart.getDeliveryCharge()>0?JspMethods.formatPrice(cart.getDeliveryCharge()):DeliveryPassUtil.getDlvPassAppliedMessage(user) %></td>
 						<td colspan="3">&nbsp;</td>
 					</tr>
 			<%
@@ -635,7 +635,7 @@
 			%>
 					<tr valign="top" class="orderSummary">
 						<td colspan="3" align="right">Delivery Charge<%if(cart.isDeliveryChargeWaived()){%> (waived)<%}%>:</td>
-						<td colspan="1" align="right"><%if(cart.isDeliveryChargeWaived()){%>$0.00<%}else{%><%=JspMethods.formatPrice(cart.getDeliverySurcharge())%><%}%></td>
+						<td colspan="1" align="right"><%= (cart.isDeliveryChargeWaived())?0.0:JspMethods.formatPrice(cart.getDeliveryCharge()) %></td>
 						<td><%= cart.isDeliveryChargeTaxable() && !cart.isDeliveryChargeWaived() ? "&nbsp;<strong>T</strong>":""%></td>
 						<td colspan="2"></td>
 					</tr>

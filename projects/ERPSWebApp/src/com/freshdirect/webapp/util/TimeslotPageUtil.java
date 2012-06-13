@@ -169,4 +169,12 @@ public class TimeslotPageUtil {
 		return dayNameFormatterExp.format(requestedDate.getTime());
 	}
 	
+	public static String getPremiumCutoffDay(Date day) {
+		Calendar requestedDate = Calendar.getInstance();
+		requestedDate.setTime(day);
+	
+		return dayNameFormatterExp.format(requestedDate.getTime());
+	}
+	
+	
 }

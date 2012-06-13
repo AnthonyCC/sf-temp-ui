@@ -51,6 +51,17 @@
         <binding name="value" expression='currentData.percentOrders'/>
     </component>
 
+	<component id="insertPremiumPercentAlloc" type="Insert">
+        <binding name="format" expression='getPercentageFormatter()'/>
+        <binding name="value" expression='currentData.getPremiumPercentAllocation()'/>
+    </component>
+
+    <component id="insertPremiumPercentOrder" type="Insert">
+        <binding name="format" expression='getPercentageFormatter()'/>
+        <binding name="value" expression='currentData.getPremiumPercentOrders()'/>
+    </component>
+
+
     <component id="insertPercentBaseAlloc" type="Insert">
         <binding name="format" expression='getPercentageFormatter()'/>
         <binding name="value" expression='currentData.getPercentBaseAllocation()'/>
@@ -70,6 +81,17 @@
         <binding name="format" expression='getPercentageFormatter()'/>
         <binding name="value" expression='currentData.percentCTOrders'/>
     </component>
+    
+     <component id="insertPremiumCtPercentAlloc" type="Insert">
+        <binding name="format" expression='getPercentageFormatter()'/>
+        <binding name="value" expression='currentData.getPremiumCtPercentAllocation()'/>
+    </component>
+
+    <component id="insertPremiumCtPercentOrder" type="Insert">
+        <binding name="format" expression='getPercentageFormatter()'/>
+        <binding name="value" expression='currentData.getPremiumCtPercentOrders()'/>
+    </component>
+    
 
     <component id="selectDay" type="PropertySelection">
         <binding name="model" expression='getDaySelectionModel()'/>

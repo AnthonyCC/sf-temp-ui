@@ -18,6 +18,7 @@ import java.util.StringTokenizer;
 
 import javax.ejb.FinderException;
 
+import org.apache.commons.lang.time.DateUtils;
 import org.apache.log4j.Category;
 
 import com.freshdirect.common.address.AddressInfo;
@@ -51,6 +52,7 @@ import com.freshdirect.delivery.model.DlvZoneDescriptor;
 import com.freshdirect.delivery.model.DlvZoneModel;
 import com.freshdirect.delivery.model.SectorVO;
 import com.freshdirect.delivery.model.UnassignedDlvReservationModel;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.GenericSearchCriteria;
@@ -127,11 +129,17 @@ public class DlvManagerDAO {
 
 	private static final String TIMESLOTS =
 		"select t.id, t.base_date, t.start_time, t.end_time, t.cutoff_time, t.status, t.zone_id, t.capacity, z.zone_code, t.ct_capacity" +
-		", ta.AREA AREA_CODE, ta.STEM_MAX_TIME stemmax, ta.STEM_FROM_TIME stemfrom, ta.STEM_TO_TIME stemto, ta.ZONE_ECOFRIENDLY ecoFriendly, z.NAME ZONE_NAME, TO_CHAR(t.CUTOFF_TIME, 'HH_MI_PM') WAVE_CODE, t.IS_DYNAMIC IS_DYNAMIC, t.IS_CLOSED IS_CLOSED, a.IS_DEPOT IS_DEPOT, a.DELIVERY_RATE AREA_DLV_RATE,  " 
+		", ta.AREA AREA_CODE, ta.STEM_MAX_TIME stemmax, ta.STEM_FROM_TIME stemfrom, ta.STEM_TO_TIME stemto, ta.ZONE_ECOFRIENDLY ecoFriendly, z.NAME ZONE_NAME, " +
+		"case when t.premium_cutoff_time is null then TO_CHAR(t.CUTOFF_TIME, 'HH_MI_PM') else TO_CHAR(t.premium_cutoff_time, 'HH_MI_PM') end WAVE_CODE, t.IS_DYNAMIC IS_DYNAMIC, t.IS_CLOSED IS_CLOSED, a.IS_DEPOT IS_DEPOT, a.DELIVERY_RATE AREA_DLV_RATE,  " 
 		+ "(select count(*) from dlv.reservation where timeslot_id=t.id and status_code <> ? and status_code <> ? and chefstable = ' ') as base_allocation, " 
 		+ "(select count(*) from dlv.reservation where timeslot_id=t.id and status_code <> ? and status_code <> ? and chefstable = 'X') as ct_allocation, " 
 		+ "(select z.ct_release_time from dlv.zone z where z.id = t.zone_id) as ct_release_time, "
-		+ "(select z.ct_active from dlv.zone z where z.id = t.zone_id) as ct_active "
+		+ "(select z.ct_active from dlv.zone z where z.id = t.zone_id) as ct_active, "
+		+ "t.premium_cutoff_time, t.premium_capacity, t.premium_ct_capacity, " 
+	  	+ "(select count(*) from dlv.reservation where timeslot_id=t.id and status_code <> ? and status_code <> ? and class = 'P') as premium_allocation, " 
+	  	+ "(select count(*) from dlv.reservation where timeslot_id=t.id and status_code <> ? and status_code <> ? and class = 'PC') as premium_ct_allocation, " 
+	  	+ "(select z.premium_ct_release_time from dlv.zone z where z.id = t.zone_id) as premium_ct_release_time, "
+		+ "(select z.premium_ct_active from dlv.zone z where z.id = t.zone_id) as premium_ct_active "
 		+ "from dlv.region r, dlv.region_data rd, dlv.timeslot t, dlv.zone z, transp.zone ta, transp.trn_area a "
 		+ "where r.service_type = ? and r.id = rd.region_id "
 		+ "and rd.id = z.region_data_id "
@@ -140,7 +148,8 @@ public class DlvManagerDAO {
 		+ 	"or rd.start_date >= (select max(start_date) from dlv.region_data where start_date <= ? and region_id = r.id)) "
 		+ "and t.ZONE_ID = z.ID and z.ZONE_CODE = ta.ZONE_CODE and ta.AREA = a.CODE and t.base_date >= rd.start_date "
 		+ "and t.base_date >= ? and t.base_date < ? "
-		+ "and to_date(to_char(t.base_date-1, 'MM/DD/YY ') || to_char(t.cutoff_time, 'HH:MI:SS AM'), 'MM/DD/YY HH:MI:SS AM') > SYSDATE "
+		+ "and (( t.premium_cutoff_time is null and to_date(to_char(t.base_date-1, 'MM/DD/YY ') || to_char(t.cutoff_time, 'HH:MI:SS AM'), 'MM/DD/YY HH:MI:SS AM') > ?) or" +
+		" (t.premium_cutoff_time is not null and to_date(to_char(t.base_date, 'MM/DD/YY ') || to_char(t.premium_cutoff_time, 'HH:MI:SS AM'), 'MM/DD/YY HH:MI:SS AM') > ?)) "
 		+ "order by t.base_date, z.zone_code, t.start_time";
 
 	public static List<DlvTimeslotModel> getTimeslotForDateRangeAndZone(
@@ -160,15 +169,23 @@ public class DlvManagerDAO {
 		ps.setInt(2, EnumReservationStatus.EXPIRED.getCode());
 		ps.setInt(3, EnumReservationStatus.CANCELED.getCode());
 		ps.setInt(4, EnumReservationStatus.EXPIRED.getCode());
-		ps.setString(5, address.getServiceType().getName());
+		ps.setInt(5, EnumReservationStatus.CANCELED.getCode());
+		ps.setInt(6, EnumReservationStatus.EXPIRED.getCode());
+		ps.setInt(7, EnumReservationStatus.CANCELED.getCode());
+		ps.setInt(8, EnumReservationStatus.EXPIRED.getCode());
+		ps.setString(9, address.getServiceType().getName());
 		//ps.setDouble(6, address.getLongitude());
-		ps.setBigDecimal(6, new java.math.BigDecimal(address.getLongitude()));
+		ps.setBigDecimal(10, new java.math.BigDecimal(address.getLongitude()));
 		//ps.setDouble(7, address.getLatitude());
-		ps.setBigDecimal(7, new java.math.BigDecimal(address.getLatitude()));
-		ps.setDate(8, new java.sql.Date(startDate.getTime()));
-		ps.setDate(9, new java.sql.Date(endDate.getTime()));
-		ps.setDate(10, new java.sql.Date(startDate.getTime()));
-		ps.setDate(11, new java.sql.Date(endDate.getTime()));
+		ps.setBigDecimal(11, new java.math.BigDecimal(address.getLatitude()));
+		ps.setDate(12, new java.sql.Date(startDate.getTime()));
+		ps.setDate(13, new java.sql.Date(endDate.getTime()));
+		ps.setDate(14, new java.sql.Date(startDate.getTime()));
+		ps.setDate(15, new java.sql.Date(endDate.getTime()));
+		Calendar cal = Calendar.getInstance();
+		ps.setTimestamp(16, new java.sql.Timestamp(cal.getTimeInMillis()));
+		cal.add(Calendar.MINUTE, -1*FDStoreProperties.getSameDayMediaAfterCutoffDuration());
+		ps.setTimestamp(17, new java.sql.Timestamp(cal.getTimeInMillis()));
 		
 
 		ResultSet rs = ps.executeQuery();
@@ -181,11 +198,17 @@ public class DlvManagerDAO {
 
 	private static final String CF_TIMESLOTS =
 		"select ts.id, ts.base_date, ts.start_time, ts.end_time, ts.cutoff_time, ts.status, ts.zone_id, ts.capacity, z.zone_code, ts.ct_capacity" +
-		", ta.AREA AREA_CODE, ta.STEM_MAX_TIME stemmax, ta.STEM_FROM_TIME stemfrom, ta.STEM_TO_TIME stemto, ta.ZONE_ECOFRIENDLY ecoFriendly, z.NAME ZONE_NAME, TO_CHAR(ts.CUTOFF_TIME, 'HH_MI_PM') WAVE_CODE, ts.IS_DYNAMIC IS_DYNAMIC, ts.IS_CLOSED IS_CLOSED, a.IS_DEPOT IS_DEPOT, a.DELIVERY_RATE AREA_DLV_RATE,  "
+		", ta.AREA AREA_CODE, ta.STEM_MAX_TIME stemmax, ta.STEM_FROM_TIME stemfrom, ta.STEM_TO_TIME stemto, ta.ZONE_ECOFRIENDLY ecoFriendly, z.NAME ZONE_NAME, " +
+		"case when ts.premium_cutoff_time is null then TO_CHAR(ts.CUTOFF_TIME, 'HH_MI_PM') else TO_CHAR(ts.premium_cutoff_time, 'HH_MI_PM') end WAVE_CODE, ts.IS_DYNAMIC IS_DYNAMIC, ts.IS_CLOSED IS_CLOSED, a.IS_DEPOT IS_DEPOT, a.DELIVERY_RATE AREA_DLV_RATE,  "
 			+ "(select count(*) from dlv.reservation where timeslot_id=ts.id and status_code <> ? and status_code <> ? and chefstable = ' ') as base_allocation, "
 			+ "(select count(*) from dlv.reservation where timeslot_id=ts.id and status_code <> ? and status_code <> ? and chefstable = 'X') as ct_allocation, "
 			+ "(select z.ct_release_time from dlv.zone z where z.id = ts.zone_id) as ct_release_time, "
-			+ "(select z.ct_active from dlv.zone z where z.id = ts.zone_id) as ct_active "
+			+ "(select z.ct_active from dlv.zone z where z.id = ts.zone_id) as ct_active, "
+			+ "ts.premium_cutoff_time, ts.premium_capacity, ts.premium_ct_capacity, "
+		  	+ "(select count(*) from dlv.reservation where timeslot_id=ts.id and status_code <> ? and status_code <> ? and class = 'P') as premium_allocation, " 
+		  	+ "(select count(*) from dlv.reservation where timeslot_id=ts.id and status_code <> ? and status_code <> ? and class = 'PC') as premium_ct_allocation, " 
+		  	+ "(select z.premium_ct_release_time from dlv.zone z where z.id = ts.zone_id) as premium_ct_release_time, "
+		  	+ "(select z.premium_ct_active from dlv.zone z where z.id = ts.zone_id) as premium_ct_active "
 			+ "from dlv.region r, dlv.region_data rd, dlv.timeslot ts, dlv.zone z, transp.zone ta, transp.trn_area a "
 			+ "where r.id=rd.region_id and rd.id=z.region_data_id and ts.ZONE_ID = z.ID and z.ZONE_CODE = ta.ZONE_CODE and ta.AREA = a.CODE "
 			+ "and rd.start_date=( "
@@ -211,13 +234,18 @@ public class DlvManagerDAO {
 		ps.setInt(2, EnumReservationStatus.EXPIRED.getCode());
 		ps.setInt(3, EnumReservationStatus.CANCELED.getCode());
 		ps.setInt(4, EnumReservationStatus.EXPIRED.getCode());
-		ps.setDate(5, new java.sql.Date(startDate.getTime()));
-		ps.setDate(6, new java.sql.Date(endDate.getTime()));
-		ps.setString(7, address.getServiceType().getName());
+		ps.setInt(5, EnumReservationStatus.CANCELED.getCode());
+		ps.setInt(6, EnumReservationStatus.EXPIRED.getCode());
+		ps.setInt(7, EnumReservationStatus.CANCELED.getCode());
+		ps.setInt(8, EnumReservationStatus.EXPIRED.getCode());
+		
+		ps.setDate(9, new java.sql.Date(startDate.getTime()));
+		ps.setDate(10, new java.sql.Date(endDate.getTime()));
+		ps.setString(11, address.getServiceType().getName());
 		//ps.setDouble(8, address.getLongitude());
-		ps.setBigDecimal(8, new java.math.BigDecimal(address.getLongitude()));
+		ps.setBigDecimal(12, new java.math.BigDecimal(address.getLongitude()));
 		//ps.setDouble(9, address.getLatitude());
-		ps.setBigDecimal(9, new java.math.BigDecimal(address.getLatitude()));
+		ps.setBigDecimal(13, new java.math.BigDecimal(address.getLatitude()));
 
 		ResultSet rs = ps.executeQuery();
 		List<DlvTimeslotModel> timeslots = processTimeslotResultSet(rs);
@@ -280,6 +308,7 @@ public class DlvManagerDAO {
 		TimeOfDay startTime = new TimeOfDay(rs.getTime("START_TIME"));
 		TimeOfDay endTime = new TimeOfDay(rs.getTime("END_TIME"));
 		TimeOfDay cutoffTime = new TimeOfDay(rs.getTime("CUTOFF_TIME"));
+		
 		EnumTimeslotStatus status = EnumTimeslotStatus.getEnum(rs.getInt("STATUS"));
 		int capacity = rs.getInt("CAPACITY");
 		int baseAllocation = rs.getInt("BASE_ALLOCATION");
@@ -289,8 +318,23 @@ public class DlvManagerDAO {
 		int ctReleaseTime = rs.getInt("CT_RELEASE_TIME");
 		boolean ctActive = "X".equals(rs.getString("CT_ACTIVE"));
 		String zoneCode = rs.getString("ZONE_CODE");
-		DlvTimeslotModel _tmpSlot = new DlvTimeslotModel(pk, zoneId, baseDate, startTime, endTime, cutoffTime, status, capacity, ctCapacity, baseAllocation
-									, ctAllocation, ctReleaseTime, ctActive,zoneCode);
+		
+
+		TimeOfDay premiumCutoffTime = (rs.getTime("PREMIUM_CUTOFF_TIME")!=null)?new TimeOfDay(rs.getTime("PREMIUM_CUTOFF_TIME")):null;
+		int premiumCapacity = rs.getInt("PREMIUM_CAPACITY");
+		int premiumCtCapacity = rs.getInt("PREMIUM_CT_CAPACITY");
+		int premiumCtReleaseTime = rs.getInt("PREMIUM_CT_RELEASE_TIME");
+		boolean premiumCtActive = "X".equals(rs.getString("PREMIUM_CT_ACTIVE"));
+		int premiumAllocation = rs.getInt("PREMIUM_ALLOCATION");
+		int premiumCtAllocation = rs.getInt("PREMIUM_CT_ALLOCATION");
+		
+		Calendar cal = Calendar.getInstance();
+		boolean premiumSlot = DateUtil.isPremiumSlot(baseDate, cutoffTime, premiumCutoffTime);
+		
+		DlvTimeslotModel _tmpSlot =new DlvTimeslotModel(pk, zoneId, baseDate, startTime, endTime, cutoffTime, status, capacity, 
+				ctCapacity, baseAllocation, ctAllocation, ctReleaseTime,ctActive,zoneCode, premiumCapacity,
+				  premiumCtCapacity, premiumCutoffTime, premiumCtReleaseTime, 
+				  premiumCtActive, premiumAllocation,  premiumCtAllocation, premiumSlot);
 		
 		// Prepare routing slot configuration from result set
 		IDeliverySlot routingSlot = new DeliverySlot();
@@ -325,11 +369,17 @@ public class DlvManagerDAO {
 
 	private static final String DEPOT_TIMESLOTS =
 		"select ts.id, ts.base_date, ts.start_time, ts.end_time, ts.cutoff_time, ts.status, ts.zone_id, ts.capacity, z.zone_code, ts.ct_capacity" +
-		", ta.AREA AREA_CODE, ta.STEM_MAX_TIME stemmax, ta.STEM_FROM_TIME stemfrom, ta.STEM_TO_TIME stemto, ta.ZONE_ECOFRIENDLY ecoFriendly, z.NAME ZONE_NAME, TO_CHAR(ts.CUTOFF_TIME, 'HH_MI_PM') WAVE_CODE, ts.IS_DYNAMIC IS_DYNAMIC, ts.IS_CLOSED IS_CLOSED, a.IS_DEPOT IS_DEPOT, a.DELIVERY_RATE AREA_DLV_RATE,"
+		", ta.AREA AREA_CODE, ta.STEM_MAX_TIME stemmax, ta.STEM_FROM_TIME stemfrom, ta.STEM_TO_TIME stemto, ta.ZONE_ECOFRIENDLY ecoFriendly, z.NAME ZONE_NAME, " +
+		"case when ts.premium_cutoff_time is null then TO_CHAR(ts.CUTOFF_TIME, 'HH_MI_PM') else TO_CHAR(ts.premium_cutoff_time, 'HH_MI_PM') end WAVE_CODE, ts.IS_DYNAMIC IS_DYNAMIC, ts.IS_CLOSED IS_CLOSED, a.IS_DEPOT IS_DEPOT, a.DELIVERY_RATE AREA_DLV_RATE,"
 			+ "(select count(*) from dlv.reservation where timeslot_id=ts.id and status_code <> ? and status_code <> ? and chefstable = ' ') as base_allocation, "
 			+ "(select count(*) from dlv.reservation where timeslot_id=ts.id and status_code <> ? and status_code <> ? and chefstable = 'X') as ct_allocation, "
 			+ "(select z.ct_release_time from dlv.zone z where z.id = ts.zone_id) as ct_release_time, "
-			+ "(select z.ct_active from dlv.zone z where z.id = ts.zone_id) as ct_active "
+			+ "(select z.ct_active from dlv.zone z where z.id = ts.zone_id) as ct_active, "
+			+ "ts.premium_cutoff_time, ts.premium_capacity, ts.premium_ct_capacity, "
+			+ "(select count(*) from dlv.reservation where timeslot_id=ts.id and status_code <> ? and status_code <> ? and class = 'P') as premium_allocation, " 
+		  	+ "(select count(*) from dlv.reservation where timeslot_id=ts.id and status_code <> ? and status_code <> ? and class = 'PC') as premium_ct_allocation, " 
+		  	+ "(select z.premium_ct_release_time from dlv.zone z where z.id = ts.zone_id) as premium_ct_release_time, "
+		  	+ "(select z.premium_ct_active from dlv.zone z where z.id = ts.zone_id) as premium_ct_active "
 			+ "from dlv.region r, dlv.region_data rd, dlv.timeslot ts, dlv.zone z, transp.zone ta, transp.trn_area a "
 			+ "where r.id=rd.region_id "
 			+ "and rd.start_date=( "
@@ -337,7 +387,8 @@ public class DlvManagerDAO {
 			+ "where rd1.start_date<=ts.base_date and rd1.region_id = r.id) "
 			+ "and ts.base_date >= ? and ts.base_date < ? "
 			+ "and r.id = ? and rd.id = z.region_data_id and z.zone_code = ? and ts.ZONE_ID = z.ID and z.ZONE_CODE = ta.ZONE_CODE and ta.AREA = a.CODE "
-			+ "and to_date(to_char(ts.base_date-1, 'MM/DD/YY ') || to_char(ts.cutoff_time, 'HH:MI:SS AM'), 'MM/DD/YY HH:MI:SS AM') > SYSDATE "
+			+ "and (( ts.premium_cutoff_time is null and to_date(to_char(ts.base_date-1, 'MM/DD/YY ') || to_char(ts.cutoff_time, 'HH:MI:SS AM'), 'MM/DD/YY HH:MI:SS AM') > ?) or" +
+			" (ts.premium_cutoff_time is not null and to_date(to_char(ts.base_date, 'MM/DD/YY ') || to_char(ts.premium_cutoff_time, 'HH:MI:SS AM'), 'MM/DD/YY HH:MI:SS AM') > ?)) "
 			+ "order by ts.base_date, z.zone_code, ts.start_time ";
 
 	public static List<DlvTimeslotModel> getTimeslotsForDepot(
@@ -354,10 +405,20 @@ public class DlvManagerDAO {
 		ps.setInt(2, EnumReservationStatus.EXPIRED.getCode());
 		ps.setInt(3, EnumReservationStatus.CANCELED.getCode());
 		ps.setInt(4, EnumReservationStatus.EXPIRED.getCode());
-		ps.setDate(5, new java.sql.Date(startDate.getTime()));
-		ps.setDate(6, new java.sql.Date(endDate.getTime()));
-		ps.setString(7, regionId);
-		ps.setString(8, zoneCode);
+		ps.setInt(5, EnumReservationStatus.CANCELED.getCode());
+		ps.setInt(6, EnumReservationStatus.EXPIRED.getCode());
+		ps.setInt(7, EnumReservationStatus.CANCELED.getCode());
+		ps.setInt(8, EnumReservationStatus.EXPIRED.getCode());
+		
+		ps.setDate(9, new java.sql.Date(startDate.getTime()));
+		ps.setDate(10, new java.sql.Date(endDate.getTime()));
+		ps.setString(11, regionId);
+		ps.setString(12, zoneCode);
+		Calendar cal = Calendar.getInstance();
+		ps.setTimestamp(13, new java.sql.Timestamp(cal.getTimeInMillis()));
+		cal.add(Calendar.MINUTE, -1*FDStoreProperties.getSameDayMediaAfterCutoffDuration());
+		ps.setTimestamp(14, new java.sql.Timestamp(cal.getTimeInMillis()));
+		
 
 		ResultSet rs = ps.executeQuery();
 		List<DlvTimeslotModel> timeslots = processTimeslotResultSet(rs);
@@ -368,14 +429,22 @@ public class DlvManagerDAO {
 
 	private static final String TIMESLOT_BY_ID =
 		"select distinct ts.id, ts.base_date, ts.start_time, ts.end_time, ts.cutoff_time, ts.status, ts.zone_id, ts.capacity, ts.ct_capacity" +
-		", ta.AREA AREA_CODE, ta.STEM_MAX_TIME stemmax, ta.STEM_FROM_TIME stemfrom, ta.STEM_TO_TIME stemto, ta.ZONE_ECOFRIENDLY ecoFriendly, z.NAME ZONE_NAME, TO_CHAR(ts.CUTOFF_TIME, 'HH_MI_PM') WAVE_CODE, ts.IS_DYNAMIC IS_DYNAMIC, ts.IS_CLOSED IS_CLOSED, a.IS_DEPOT IS_DEPOT, a.DELIVERY_RATE AREA_DLV_RATE,"
+		", ta.AREA AREA_CODE, ta.STEM_MAX_TIME stemmax, ta.STEM_FROM_TIME stemfrom, ta.STEM_TO_TIME stemto, ta.ZONE_ECOFRIENDLY ecoFriendly, z.NAME ZONE_NAME, " +
+		"case when ts.premium_cutoff_time is null then TO_CHAR(ts.CUTOFF_TIME, 'HH_MI_PM') else TO_CHAR(ts.premium_cutoff_time, 'HH_MI_PM') end WAVE_CODE, ts.IS_DYNAMIC IS_DYNAMIC, ts.IS_CLOSED IS_CLOSED, a.IS_DEPOT IS_DEPOT, a.DELIVERY_RATE AREA_DLV_RATE,"
 			+ "(select count(reservation.TIMESLOT_ID) from dlv.reservation "
 			+ "where zone_id = ts.zone_id AND ts.ID = reservation.TIMESLOT_ID and status_code <> ? and status_code <> ? and chefstable = ' ') as base_allocation, "
 			+ "(select count(reservation.TIMESLOT_ID) from dlv.reservation "
 			+ "where zone_id = ts.zone_id AND ts.ID = reservation.TIMESLOT_ID and status_code <> ? and status_code <> ? and chefstable = 'X') as ct_allocation, "
 			+ "(select z.ct_release_time from dlv.zone z where z.id = ts.zone_id) as ct_release_time, "
 			+ "(select z.ct_active from dlv.zone z where z.id = ts.zone_id) as ct_active, "
-			+ "(select z.zone_code from dlv.zone z where z.id=ts.zone_id ) as zone_code "
+			+ "(select z.zone_code from dlv.zone z where z.id=ts.zone_id ) as zone_code, "
+			+ "ts.premium_cutoff_time, ts.premium_capacity, ts.premium_ct_capacity, " 
+		  	+ "(select count(reservation.TIMESLOT_ID) from dlv.reservation "
+			+ "where zone_id = ts.zone_id AND ts.ID = reservation.TIMESLOT_ID and status_code <> ? and status_code <> ? and class = 'P') as premium_allocation, " 
+			+ "(select count(reservation.TIMESLOT_ID) from dlv.reservation "
+			+ "where zone_id = ts.zone_id AND ts.ID = reservation.TIMESLOT_ID and status_code <> ? and status_code <> ? and class = 'PC') as premium_ct_allocation, " 
+			+ "(select z.premium_ct_release_time from dlv.zone z where z.id = ts.zone_id) as premium_ct_release_time, "
+			+ "(select z.premium_ct_active from dlv.zone z where z.id = ts.zone_id) as premium_ct_active "
 			+ " from dlv.timeslot ts, dlv.zone z, transp.zone ta, transp.trn_area a, dlv.reservation r "
 			+ "where ts.id = ? AND ts.ZONE_ID = z.ID and z.ZONE_CODE = ta.ZONE_CODE and ta.AREA = a.CODE AND ts.id=r.TIMESLOT_ID(+)";
 
@@ -384,9 +453,13 @@ public class DlvManagerDAO {
 		ps.setInt(1, EnumReservationStatus.CANCELED.getCode());
 		ps.setInt(2, EnumReservationStatus.EXPIRED.getCode());
 		ps.setInt(3, EnumReservationStatus.CANCELED.getCode());
-		ps.setInt(4, EnumReservationStatus.EXPIRED.getCode());				
+		ps.setInt(4, EnumReservationStatus.EXPIRED.getCode());
+		ps.setInt(5, EnumReservationStatus.CANCELED.getCode());
+		ps.setInt(6, EnumReservationStatus.EXPIRED.getCode());
+		ps.setInt(7, EnumReservationStatus.CANCELED.getCode());
+		ps.setInt(8, EnumReservationStatus.EXPIRED.getCode());
 		
-		ps.setString(5, timeslotId);
+		ps.setString(9, timeslotId);
 		ResultSet rs = ps.executeQuery();
 
 		if (rs.next()) {
@@ -698,11 +771,17 @@ public class DlvManagerDAO {
 	
 	private static final String ZONE_CAPACITY_QUERY = 
 		"select t.id, t.base_date, t.start_time, t.end_time, t.cutoff_time, t.status, t.zone_id, t.capacity, t.ct_capacity" +
-		", ta.AREA AREA_CODE, ta.STEM_MAX_TIME stemmax, ta.STEM_FROM_TIME stemfrom, ta.STEM_TO_TIME stemto, ta.ZONE_ECOFRIENDLY ecoFriendly, z.NAME ZONE_NAME, TO_CHAR(t.CUTOFF_TIME, 'HH_MI_PM') WAVE_CODE, t.IS_DYNAMIC IS_DYNAMIC, t.IS_CLOSED IS_CLOSED, a.IS_DEPOT IS_DEPOT, a.DELIVERY_RATE AREA_DLV_RATE," 
+		", ta.AREA AREA_CODE, ta.STEM_MAX_TIME stemmax, ta.STEM_FROM_TIME stemfrom, ta.STEM_TO_TIME stemto, ta.ZONE_ECOFRIENDLY ecoFriendly, z.NAME ZONE_NAME, " +
+		"case when t.premium_cutoff_time is null then TO_CHAR(t.CUTOFF_TIME, 'HH_MI_PM') else TO_CHAR(t.premium_cutoff_time, 'HH_MI_PM') end WAVE_CODE, t.IS_DYNAMIC IS_DYNAMIC, t.IS_CLOSED IS_CLOSED, a.IS_DEPOT IS_DEPOT, a.DELIVERY_RATE AREA_DLV_RATE," 
 			+ "(select count(*) from dlv.reservation where timeslot_id=t.id and status_code <> ? and status_code <> ? and chefstable = ' ') as base_allocation, "
 			+ "(select count(*) from dlv.reservation where timeslot_id=t.id and status_code <> ? and status_code <> ? and chefstable = 'X') as ct_allocation, "
 			+ "(select z.ct_release_time from dlv.zone z where z.id = t.zone_id) as ct_release_time, "
-			+ "(select z.ct_active from dlv.zone z where z.id = t.zone_id) as ct_active, p.zone_code "
+			+ "(select z.ct_active from dlv.zone z where z.id = t.zone_id) as ct_active, p.zone_code, "
+			+ "t.premium_cutoff_time, t.premium_capacity, t.premium_ct_capacity, " 
+		  	+ "(select count(*) from dlv.reservation where timeslot_id=t.id and status_code <> ? and status_code <> ? and class = 'P') as premium_allocation, " 
+		  	+ "(select count(*) from dlv.reservation where timeslot_id=t.id and status_code <> ? and status_code <> ? and class = 'PC') as premium_ct_allocation, " 
+		  	+ "(select z.premium_ct_release_time from dlv.zone z where z.id = t.zone_id) as premium_ct_release_time, "
+			+ "(select z.premium_ct_active from dlv.zone z where z.id = t.zone_id) as premium_ct_active "
 			+ "from dlv.planning_resource p, dlv.timeslot t, dlv.zone z, transp.zone ta, transp.trn_area a " 
 			+ "where p.id = t.resource_id and t.ZONE_ID = z.ID and z.ZONE_CODE = ta.ZONE_CODE and ta.AREA = a.CODE and p.zone_code = ? " 
 			+ "and p.day >= ? and p.day < ? "
@@ -715,9 +794,13 @@ public class DlvManagerDAO {
 		ps.setInt(2, EnumReservationStatus.EXPIRED.getCode());
 		ps.setInt(3, EnumReservationStatus.CANCELED.getCode());
 		ps.setInt(4, EnumReservationStatus.EXPIRED.getCode());
-		ps.setString(5, zoneCode);
-		ps.setDate(6, new java.sql.Date(start.getTime()));
-		ps.setDate(7, new java.sql.Date(end.getTime()));
+		ps.setInt(5, EnumReservationStatus.CANCELED.getCode());
+		ps.setInt(6, EnumReservationStatus.EXPIRED.getCode());
+		ps.setInt(7, EnumReservationStatus.CANCELED.getCode());
+		ps.setInt(8, EnumReservationStatus.EXPIRED.getCode());
+		ps.setString(9, zoneCode);
+		ps.setDate(10, new java.sql.Date(start.getTime()));
+		ps.setDate(11, new java.sql.Date(end.getTime()));
 		
 		ResultSet rs = ps.executeQuery();
 		List<DlvTimeslotModel> timeslots = new ArrayList<DlvTimeslotModel>();
@@ -1075,7 +1158,12 @@ public class DlvManagerDAO {
 		
 		return cutOffTimes;
 	}
+
 	
+
+   
+          
+          
 	private static final String UNASSIGN_RESERVATION_QUERY="UPDATE DLV.RESERVATION SET UNASSIGNED_DATETIME=SYSDATE, MODIFIED_DTTM=SYSDATE, UNASSIGNED_ACTION=? WHERE ID=?";
 	public static void setUnassignedInfo(Connection conn,String reservationId, String action)  throws SQLException {
 		
@@ -1268,11 +1356,13 @@ public class DlvManagerDAO {
 	{
 		if(_date.equals(startDate.getTime()))
 		{
-			updateQ.append(" AND to_char(t.base_date-1, 'MM/DD/YYYY')||' '||to_char(t.cutoff_time, 'HH:MI AM') > to_char(SYSDATE+1/96, 'MM/DD/YYYY HH:MI AM')");
+		updateQ.append(" and (( premium_cutoff_time is null and to_date(to_char(t.base_date-1, 'MM/DD/YY ') || to_char(t.cutoff_time, 'HH:MI:SS AM'), 'MM/DD/YY HH:MI:SS AM') > SYSDATE+1/96 ) or" +
+		" (premium_cutoff_time is not null and to_date(to_char(t.base_date, 'MM/DD/YY ') || to_char(t.premium_cutoff_time, 'HH:MI:SS AM'), 'MM/DD/YY HH:MI:SS AM') > SYSDATE+1/96 )) ");
 		}
 		
 		updateQ.append(" ORDER BY R.unassigned_action, R.UPDATE_STATUS NULLS LAST");
 	}
+	
 	PreparedStatement ps =
 			conn.prepareStatement(updateQ.toString());
 		ps.setDate(1, new java.sql.Date(_date.getTime()));
@@ -1366,12 +1456,17 @@ public class DlvManagerDAO {
 	}
 	
 	private static final String TIMESLOTS_BY_DATE =
-		"select ts.id, ts.base_date, ts.start_time, ts.end_time, ts.cutoff_time, ts.status, ts.zone_id, ts.capacity" +
-		", z.zone_code, ts.ct_capacity, ta.AREA AREA_CODE, ta.STEM_MAX_TIME stemmax, ta.STEM_FROM_TIME stemfrom, ta.STEM_TO_TIME stemto, ta.ZONE_ECOFRIENDLY ecoFriendly, z.NAME ZONE_NAME, TO_CHAR(ts.CUTOFF_TIME, 'HH_MI_PM') WAVE_CODE, ts.IS_DYNAMIC IS_DYNAMIC, ts.IS_CLOSED IS_CLOSED, a.IS_DEPOT IS_DEPOT, a.DELIVERY_RATE AREA_DLV_RATE, "
+		"select ts.id, ts.base_date, ts.start_time, ts.end_time, ts.cutoff_time, ts.premium_cutoff_time, ts.status, ts.zone_id, ts.capacity, ts.premium_capacity," +
+		" z.zone_code, ts.ct_capacity,ts.premium_ct_capacity, ta.AREA AREA_CODE, ta.STEM_MAX_TIME stemmax, ta.STEM_FROM_TIME stemfrom, ta.STEM_TO_TIME stemto, ta.ZONE_ECOFRIENDLY ecoFriendly, z.NAME ZONE_NAME, " +
+		"case when ts.premium_cutoff_time is null then TO_CHAR(ts.CUTOFF_TIME, 'HH_MI_PM') else TO_CHAR(ts.premium_cutoff_time, 'HH_MI_PM') end WAVE_CODE, ts.IS_DYNAMIC IS_DYNAMIC, ts.IS_CLOSED IS_CLOSED, a.IS_DEPOT IS_DEPOT, a.DELIVERY_RATE AREA_DLV_RATE, "
 		+ "(select count(*) from dlv.reservation where timeslot_id=ts.id and status_code <> ? and status_code <> ? and chefstable = ' ') as base_allocation, "
 		+ "(select count(*) from dlv.reservation where timeslot_id=ts.id and status_code <> ? and status_code <> ? and chefstable = 'X') as ct_allocation, "
+		+ "(select count(*) from dlv.reservation where timeslot_id=ts.id and status_code <> ? and status_code <> ? and class = 'P') as premium_allocation, "
+		+ "(select count(*) from dlv.reservation where timeslot_id=ts.id and status_code <> ? and status_code <> ? and class = 'PC') as premium_ct_allocation, "
 		+ "(select z.ct_release_time from dlv.zone z where z.id = ts.zone_id) as ct_release_time, "
-		+ "(select z.ct_active from dlv.zone z where z.id = ts.zone_id) as ct_active "
+		+ "(select z.premium_ct_release_time from dlv.zone z where z.id = ts.zone_id) as premium_ct_release_time, "
+		+ "(select z.ct_active from dlv.zone z where z.id = ts.zone_id) as ct_active, "
+		+ "(select z.premium_ct_active from dlv.zone z where z.id = ts.zone_id) as premium_ct_active "
 		+ "from dlv.region r, dlv.region_data rd, dlv.timeslot ts, dlv.zone z, transp.zone ta, transp.trn_area a "
 		+ "where r.id=rd.region_id and rd.id=z.region_data_id and ts.ZONE_ID = z.ID and z.ZONE_CODE = ta.ZONE_CODE and ta.AREA = a.CODE " +
 		"and (rd.start_date >= (select max(start_date) from dlv.region_data where start_date <= ? and region_id = r.id)	" +
@@ -1387,10 +1482,14 @@ public class DlvManagerDAO {
 		ps.setInt(2, EnumReservationStatus.EXPIRED.getCode());
 		ps.setInt(3, EnumReservationStatus.CANCELED.getCode());
 		ps.setInt(4, EnumReservationStatus.EXPIRED.getCode());
+		ps.setInt(5, EnumReservationStatus.CANCELED.getCode());
+		ps.setInt(6, EnumReservationStatus.EXPIRED.getCode());
+		ps.setInt(7, EnumReservationStatus.CANCELED.getCode());
+		ps.setInt(8, EnumReservationStatus.EXPIRED.getCode());
 		
-		ps.setDate(5, new java.sql.Date(startDate.getTime()));
-		ps.setDate(6, new java.sql.Date(startDate.getTime()));
-		ps.setDate(7, new java.sql.Date(startDate.getTime()));
+		ps.setDate(9, new java.sql.Date(startDate.getTime()));
+		ps.setDate(10, new java.sql.Date(startDate.getTime()));
+		ps.setDate(11, new java.sql.Date(startDate.getTime()));
 		
 		ResultSet rs = ps.executeQuery();
 		
@@ -1400,7 +1499,7 @@ public class DlvManagerDAO {
 		return timeslots;
 	}
 	
-	private static final String FUTURETIMESLOT_DATES = "select distinct  T.BASE_DATE FUTURE_DATE from dlv.timeslot t where T.BASE_DATE > sysdate order by BASE_DATE";
+	private static final String FUTURETIMESLOT_DATES = "select distinct  T.BASE_DATE FUTURE_DATE from dlv.timeslot t where T.BASE_DATE >= trunc(sysdate) order by BASE_DATE";
 	
 	public static List<Date> getFutureTimeslotDates(Connection conn) throws SQLException {
 		
@@ -1417,7 +1516,7 @@ public class DlvManagerDAO {
 	}
 	
 	
-	private static final String UPDATE_TIMESLOTS_BY_ID = "UPDATE DLV.TIMESLOT SET CAPACITY = ? , CT_CAPACITY = ? WHERE ID = ?";
+	private static final String UPDATE_TIMESLOTS_BY_ID = "UPDATE DLV.TIMESLOT SET CAPACITY = ? , CT_CAPACITY = ?, PREMIUM_CAPACITY=?, PREMIUM_CT_CAPACITY=? WHERE ID = ?";
 	
 	public static int updateTimeslotsCapacity(Connection conn, List<DlvTimeslotModel> dlvTimeSlots ) throws SQLException{
 		
@@ -1429,7 +1528,9 @@ public class DlvManagerDAO {
 	    			_slot.getRoutingSlot().getDeliveryMetrics() != null) {
 				ps.setInt(1, _slot.getRoutingSlot().getDeliveryMetrics().getOrderCapacity());
 				ps.setInt(2, _slot.getRoutingSlot().getDeliveryMetrics().getOrderCtCapacity());
-			    ps.setString(3, _slot.getId());
+				ps.setInt(3, _slot.getRoutingSlot().getDeliveryMetrics().getOrderPremiumCapacity());
+				ps.setInt(4, _slot.getRoutingSlot().getDeliveryMetrics().getOrderPremiumCtCapacity());
+			    ps.setString(5, _slot.getId());
 			    ps.addBatch();
 	    	}
 		}
@@ -1678,5 +1779,39 @@ public class DlvManagerDAO {
 			ps.close();
 		}
 		return response;
+	}
+
+	private static final String CUTOFF_TIMES_QUERY = 
+			"select case when max(t.cutoff_time) is not null then max(to_date(to_char(p.day-1,'MM/DD/YYYY')||to_char(t.cutoff_time,'HH:MI:SS AM'),'MM/DD/YYYY HH:MI:SS AM')) else null end as cutofftime ," +
+			"case when t.premium_cutoff_time is not null then to_date(to_char(p.day,'MM/DD/YYYY')||to_char(t.premium_cutoff_time,'HH:MI:SS AM'),'MM/DD/YYYY HH:MI:SS AM') else null end as premium_cutoff_time, " +
+			"p.day from dlv.planning_resource p, dlv.timeslot t,dlv.zone z where p.id = t.resource_id and t.zone_id = z.id " +
+			"and mdsys.sdo_relate(z.geoloc, mdsys.sdo_geometry(2001, 8265, mdsys.sdo_point_type(?, ?,NULL), NULL, NULL), 'mask=ANYINTERACT querytype=WINDOW') ='TRUE' " +
+			" and p.day between  ? and ? group by p.day, t.premium_cutoff_time";
+ 
+	public static Map<String, Map<Date,Date>> getCutoffTimes(Connection conn,AddressModel address, Date day) throws SQLException {
+		
+		PreparedStatement ps = conn.prepareStatement(CUTOFF_TIMES_QUERY);
+		ps.setDouble(1, address.getLongitude());
+		ps.setDouble(2, address.getLatitude());
+		ps.setDate(3,new java.sql.Date(day.getTime()));
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(day);
+		cal.add(Calendar.DATE, 1);
+		
+		ps.setDate(4,new java.sql.Date(cal.getTimeInMillis()));
+		ResultSet rs = ps.executeQuery();
+		Map<Date,Date> cutoffMap = new HashMap<Date,Date>(), premiumcutOffMap = new HashMap<Date,Date>();
+		Map<String, Map<Date,Date>> map = new HashMap<String, Map<Date,Date>>();
+		while(rs.next())
+		{
+			if(rs.getTimestamp("day")!=null)
+			{
+				cutoffMap.put(new java.util.Date(rs.getTimestamp("day").getTime()), (rs.getTimestamp("cutofftime")!=null)?new java.util.Date(rs.getTimestamp("cutofftime").getTime()):null);
+				premiumcutOffMap.put(new java.util.Date(rs.getTimestamp("day").getTime()), (rs.getTimestamp("premium_cutoff_time")!=null)?new java.util.Date(rs.getTimestamp("premium_cutoff_time").getTime()):null);
+			}
+		}
+		map.put("cutoffs", cutoffMap);
+		map.put("premiumCutoffs", premiumcutOffMap);
+		return map;
 	}
 }

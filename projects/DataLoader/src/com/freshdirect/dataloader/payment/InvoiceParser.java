@@ -292,15 +292,27 @@ public class InvoiceParser extends FlatFileParser implements SAPConstants, Produ
 				
 					boolean chargeMatch = false;
 					for (Iterator i = EnumChargeType.getEnumList().iterator(); i.hasNext();) {
+						
 						EnumChargeType chargeType = (EnumChargeType) i.next();
-						if (materialNumber.equals(chargeType.getMaterialNumber())) {
-							chargeMatch = true;
-							ErpChargeLineModel charge = new ErpChargeLineModel();
-							charge.setType(chargeType);
-							charge.setAmount(amount);
-							invoice.addCharge(charge);
-
-							invoice.setSubTotal(invoice.getSubTotal() - amount);
+						if(!EnumChargeType.DLVPREMIUM.equals(chargeType))
+						{
+							if (materialNumber.equals(chargeType.getMaterialNumber())) {
+								chargeMatch = true;
+								ErpChargeLineModel charge = invoice.getCharge(chargeType);
+								if(charge == null)
+								{
+									charge = new ErpChargeLineModel();
+									charge.setType(chargeType);
+									charge.setAmount(amount);
+									invoice.addCharge(charge);
+								}
+								else
+								{
+									charge.setAmount(charge.getAmount() + amount);
+								}
+	
+								invoice.setSubTotal(invoice.getSubTotal() - amount);
+							}
 						}
 					}
 					

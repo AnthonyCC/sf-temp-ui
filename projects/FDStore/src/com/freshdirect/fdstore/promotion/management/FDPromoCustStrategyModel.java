@@ -3,6 +3,7 @@ package com.freshdirect.fdstore.promotion.management;
 import java.util.Date;
 
 import com.freshdirect.common.customer.EnumCardType;
+import com.freshdirect.delivery.EnumDeliveryOption;
 import com.freshdirect.framework.core.ModelSupport;
 
 public class FDPromoCustStrategyModel extends ModelSupport {
@@ -22,6 +23,7 @@ public class FDPromoCustStrategyModel extends ModelSupport {
 	private EnumCardType[] paymentType;
 	private String priorEcheckUse;
 	private boolean excludeSameDayDlv;
+	private EnumDeliveryOption deliveryDayType;
 	
 
 	public FDPromoCustStrategyModel() {
@@ -146,6 +148,13 @@ public class FDPromoCustStrategyModel extends ModelSupport {
 	public void setDpTypes(String[] dpTypes) {
 		this.dpTypes = dpTypes;
 	}
+	public EnumDeliveryOption getDeliveryDayType() {
+		return deliveryDayType;
+	}
+	public void setDeliveryDayType(EnumDeliveryOption deliveryDayType) {
+		this.deliveryDayType = deliveryDayType;
+	}
+	
 	
 	
 }

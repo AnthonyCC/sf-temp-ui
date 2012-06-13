@@ -7,6 +7,7 @@
 <%@ page import='com.freshdirect.fdstore.util.ClickToCallUtil'%>
 <%@ page import="com.freshdirect.dataloader.autoorder.create.util.DateUtil" %>
 <%@ page import="com.freshdirect.common.pricing.Discount" %>
+<%@ page import="com.freshdirect.customer.EnumChargeType" %>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
@@ -165,9 +166,9 @@ StringBuffer buffer = new StringBuffer(
 								String dlvCharge = JspMethods.formatPrice( cart.getDeliverySurcharge() );
 							if(cart.isDlvPassApplied()) {
 						%>
-							<%= DeliveryPassUtil.getDlvPassAppliedMessage(user) %>
-							
-						<%	} else if (cart.isDeliveryChargeWaived()) {
+						<%= cart.getDeliveryCharge()>0?JspMethods.formatPrice(cart.getDeliveryCharge()):DeliveryPassUtil.getDlvPassAppliedMessage(user) %>
+
+						<%} else if (cart.isDeliveryChargeWaived()) {
 								if((int)cart.getDeliverySurcharge() == 0){
 						%>     
 								Free! 
@@ -176,7 +177,7 @@ StringBuffer buffer = new StringBuffer(
 						<%  } else if((int)cart.getDeliverySurcharge() == 0) {%>
 								<b>$</b>&nbsp;<b>--</b>
 						<%} else { %>
-							<%= dlvCharge %>
+							<%= JspMethods.formatPrice(cart.getDeliveryCharge()) %>
 						<%} %>
 					</td>
 				</tr>
@@ -219,6 +220,7 @@ StringBuffer buffer = new StringBuffer(
 <!-- ===================================== -->
 <!-- ============ Cart & tabs ============ -->
 <!-- ===================================== -->
+
 
 <% String smartStoreFacility = "view_cart"; %>
 <fd:TabLook><%@ include file="/includes/smartstore/i_recommender_tabs.jspf" %></fd:TabLook>

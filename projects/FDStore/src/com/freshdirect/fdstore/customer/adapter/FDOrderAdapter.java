@@ -136,7 +136,7 @@ public class FDOrderAdapter implements FDOrderI {
 					info.getDeliveryCutoffTime(),
 					EnumReservationType.STANDARD_RESERVATION,
 					getCustomerId(),
-					null, false,false, sale.getId(),false,null,20);
+					null, false,false, sale.getId(),false,null,20,null);
 			}
 		} catch (FDResourceException ex) {
 			throw new FDRuntimeException(ex);
@@ -654,7 +654,11 @@ public class FDOrderAdapter implements FDOrderI {
 	}
 
 	public double getDeliverySurcharge() {
-		ErpChargeLineModel charge = erpOrder.getCharge(EnumChargeType.DELIVERY);
+		return this.getChargeAmount(EnumChargeType.DELIVERY)+this.getChargeAmount(EnumChargeType.DLVPREMIUM);
+	}
+	
+	public double getDeliveryPremium() {
+		ErpChargeLineModel charge = erpOrder.getCharge(EnumChargeType.DLVPREMIUM);
 		return charge == null ? 0.0 : charge.getAmount();
 	}
 	
@@ -663,7 +667,7 @@ public class FDOrderAdapter implements FDOrderI {
 	}
 
 	public boolean isDeliveryChargeWaived() {
-		return isChargeWaived(EnumChargeType.DELIVERY);
+		return this.isChargeWaived(EnumChargeType.DELIVERY) && this.isChargeWaived(EnumChargeType.DLVPREMIUM);
 	}
 	
 	public boolean isDeliverySurChargeWaived() {
@@ -671,7 +675,7 @@ public class FDOrderAdapter implements FDOrderI {
 	}
 	
 	public boolean isDeliveryChargeTaxable() {
-		return isChargeTaxable(EnumChargeType.DELIVERY);
+		return this.isChargeTaxable(EnumChargeType.DELIVERY) || this.isChargeTaxable(EnumChargeType.DLVPREMIUM);
 	}
 
 	public boolean isChargeWaived(EnumChargeType chargeType) {
@@ -748,6 +752,11 @@ public class FDOrderAdapter implements FDOrderI {
 		return charge == null ? 0.0 : charge.getAmount();
 	}
 
+	private double getChargeAmountOnReturn(EnumChargeType type) {
+		ErpChargeLineModel charge = returnOrder.getCharge(type);
+		return charge == null ? 0.0 : charge.getAmount();
+	}
+	
 	public double getPhoneCharge() {
 		return getChargeAmount(EnumChargeType.PHONE);
 	}
@@ -1083,8 +1092,11 @@ public class FDOrderAdapter implements FDOrderI {
 	}
 	
 	public double getDeliverySurchargeOnReturn() {
-		ErpChargeLineModel charge = returnOrder.getCharge(EnumChargeType.DELIVERY);
-		return charge == null ? 0.0 : charge.getAmount();
+		return this.getChargeAmountOnReturn(EnumChargeType.DELIVERY) + this.getChargeAmountOnReturn(EnumChargeType.DLVPREMIUM);
+	}
+	
+	public double getDeliveryChargeOnReturn() {
+		return this.getChargeAmountDiscAppliedOnReturn(EnumChargeType.DELIVERY) + this.getChargeAmountDiscAppliedOnReturn(EnumChargeType.DLVPREMIUM);
 	}
 
 	public boolean containsDeliveryPass() {
@@ -1336,5 +1348,25 @@ public class FDOrderAdapter implements FDOrderI {
 	public int getLineCnt() {
 		return orderLines == null ? 0 : orderLines.size();
 	}
+
+	@Override
+	public boolean isDlvPassPremiumAllowedTC() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public double getDeliveryCharge() {
+		return this.getChargeAmountDiscountApplied(EnumChargeType.DELIVERY)+this.getChargeAmountDiscountApplied(EnumChargeType.DLVPREMIUM);
+	}
+	public double getChargeAmountDiscountApplied(EnumChargeType chargeType) {
+		ErpChargeLineModel charge = erpOrder.getCharge(chargeType);
+		return charge == null ? 0.0 : charge.getTotalAmount();
+	}
+	public double getChargeAmountDiscAppliedOnReturn(EnumChargeType chargeType) {
+		ErpChargeLineModel charge = returnOrder.getCharge(chargeType);
+		return charge == null ? 0.0 : charge.getTotalAmount();
+	}
+	
 	
 }

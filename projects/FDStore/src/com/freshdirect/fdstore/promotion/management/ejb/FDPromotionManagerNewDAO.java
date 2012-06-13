@@ -30,6 +30,7 @@ import oracle.sql.ArrayDescriptor;
 import org.apache.log4j.Logger;
 
 import com.freshdirect.common.customer.EnumCardType;
+import com.freshdirect.delivery.EnumDeliveryOption;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.promotion.EnumDCPDContentType;
 import com.freshdirect.fdstore.promotion.EnumPromoChangeType;
@@ -223,7 +224,7 @@ public class FDPromotionManagerNewDAO {
 	}
 	private final static String GET_WS_PROMOTION_INFOS = 
 		"select P.ID, P.CODE, P.NAME, D.START_DATE DLV_DATE, P.START_DATE,  P.EXPIRATION_DATE, (select COLUMN_VALUE from cust.promo_dlv_zone_strategy , table(cust. PROMO_DLV_ZONE_STRATEGY.DLV_ZONE ) x " 
-		+ "where id= z.id) zone_code, T.START_TIME, T.END_TIME, P.MAX_AMOUNT,  P.REDEEM_CNT, P.STATUS from cust.promotion_new p, cust.promo_cust_strategy pc, "
+		+ "where id= z.id) zone_code, T.START_TIME, T.END_TIME, P.MAX_AMOUNT,  P.REDEEM_CNT, P.STATUS,pc.DELIVERY_DAY_TYPE from cust.promotion_new p, cust.promo_cust_strategy pc, "
 		+ "cust.promo_dlv_zone_strategy z, cust.promo_dlv_timeslot t, cust.promo_delivery_dates d "
 		+ "where p.id = PC.PROMOTION_ID "
 		+ "and P.ID = Z.PROMOTION_ID " 
@@ -262,6 +263,7 @@ public class FDPromotionManagerNewDAO {
 			if(expDate.before(today) && wsPromotionInfo.getStatus().equals(EnumPromotionStatus.LIVE)){
 				wsPromotionInfo.setStatus(EnumPromotionStatus.EXPIRED);
 			}
+			wsPromotionInfo.setDeliveryDayType(EnumDeliveryOption.getEnum(rs.getString("DELIVERY_DAY_TYPE")));
 			infos.add(wsPromotionInfo);
 		}
 
@@ -272,7 +274,7 @@ public class FDPromotionManagerNewDAO {
 
 	private final static String GET_WS_PROMOTION_INFO = 
 		"select P.ID, P.CODE, P.NAME, P.START_DATE,  (select COLUMN_VALUE from cust.promo_dlv_zone_strategy , table(cust. PROMO_DLV_ZONE_STRATEGY.DLV_ZONE ) x " 
-		+ "where id= z.id) zone_code, T.START_TIME, T.END_TIME, P.MAX_AMOUNT, P.REDEEM_CNT, P.STATUS from cust.promotion_new p, cust.promo_cust_strategy pc, "
+		+ "where id= z.id) zone_code, T.START_TIME, T.END_TIME, P.MAX_AMOUNT, P.REDEEM_CNT, P.STATUS,pc.DELIVERY_DAY_TYPE from cust.promotion_new p, cust.promo_cust_strategy pc, "
 		+ "cust.promo_dlv_zone_strategy z, cust.promo_dlv_timeslot t, cust.promo_delivery_dates d "
 		+ "where p.id = PC.PROMOTION_ID "
 		+ "and P.ID = Z.PROMOTION_ID "
@@ -313,6 +315,7 @@ public class FDPromotionManagerNewDAO {
 			wsPromotionInfo.setDiscount(rs.getDouble("MAX_AMOUNT"));
 			wsPromotionInfo.setRedeemCount(rs.getInt("REDEEM_CNT"));
 			wsPromotionInfo.setStatus(EnumPromotionStatus.getEnum(rs.getString("STATUS")));
+			wsPromotionInfo.setDeliveryDayType(EnumDeliveryOption.getEnum(rs.getString("DELIVERY_DAY_TYPE")));
 		}
 
 		rs.close();
@@ -1120,11 +1123,11 @@ public class FDPromotionManagerNewDAO {
 
 	private static String INSERT_PROMO_CUST_STRATEGY = "INSERT INTO cust.promo_cust_strategy"
 			+ " (id, promotion_id, order_range_start, order_range_end, cohort,dp_types, dp_status, dp_exp_start, dp_exp_end," +
-					"ordertype_home, ordertype_pickup, ordertype_corporate, payment_type, prior_echeck_use)"
-			+ " VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+					"ordertype_home, ordertype_pickup, ordertype_corporate, payment_type, prior_echeck_use,DELIVERY_DAY_TYPE)"
+			+ " VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
 	private static String UPDATE_PROMO_CUST_STRATEGY = "UPDATE cust.promo_cust_strategy"
-			+ " SET order_range_start=?,order_range_end=?, cohort=?,dp_types=?, dp_status=?,dp_exp_start=?,dp_exp_end=?,ordertype_home=?,ordertype_pickup=?,ordertype_corporate=?,payment_type=?,prior_echeck_use=? where promotion_id = ?";
+			+ " SET order_range_start=?,order_range_end=?, cohort=?,dp_types=?, dp_status=?,dp_exp_start=?,dp_exp_end=?,ordertype_home=?,ordertype_pickup=?,ordertype_corporate=?,payment_type=?,prior_echeck_use=?,DELIVERY_DAY_TYPE=? where promotion_id = ?";
 	
 	private static void storeCustomerStrategy(Connection conn, String promotionId,
 			FDPromotionNewModel promotion) throws SQLException {
@@ -1219,6 +1222,11 @@ public class FDPromotionManagerNewDAO {
 				}
 				ps.setString(index++,paymentType.toString());
 				ps.setString(index++, model.getPriorEcheckUse());
+				if(null !=model.getDeliveryDayType()){
+					ps.setString(index++,model.getDeliveryDayType().getName());
+				}else{
+					ps.setNull(index++, Types.VARCHAR);
+				}
 				if (null !=model.getId()) {
 					ps.setString(index++, promotionId);
 				}
@@ -1449,6 +1457,7 @@ public class FDPromotionManagerNewDAO {
 			promoCustStrategyModel.setOrderTypePickup("X".equalsIgnoreCase(rs.getString("ORDERTYPE_PICKUP"))?true:false);
 			promoCustStrategyModel.setOrderTypeCorporate("X".equalsIgnoreCase(rs.getString("ORDERTYPE_CORPORATE"))?true:false);
 			promoCustStrategyModel.setExcludeSameDayDlv("Y".equalsIgnoreCase(rs.getString("EXCLUDE_SAMEDAY_DELIVERY"))?true:false);
+			promoCustStrategyModel.setDeliveryDayType(EnumDeliveryOption.getEnum(rs.getString("DELIVERY_DAY_TYPE")));
 			String paymentType = rs.getString("PAYMENT_TYPE");
 			if(null !=paymentType){
 				String[] paymentTypes = paymentType.split(",");
@@ -2526,7 +2535,7 @@ public class FDPromotionManagerNewDAO {
 		FDPromotionNewModel promotion = (FDPromotionNewModel) model;
 		PreparedStatement ps =
 			conn.prepareStatement(
-				"UPDATE CUST.PROMO_CUST_STRATEGY SET ORDERTYPE_HOME = ?, ORDERTYPE_CORPORATE = ?, ORDERTYPE_PICKUP= ?, EXCLUDE_SAMEDAY_DELIVERY=? WHERE ID = ?");
+				"UPDATE CUST.PROMO_CUST_STRATEGY SET ORDERTYPE_HOME = ?, ORDERTYPE_CORPORATE = ?, ORDERTYPE_PICKUP= ?, EXCLUDE_SAMEDAY_DELIVERY=?,DELIVERY_DAY_TYPE=? WHERE ID = ?");
 		int i = 1;
 		List<FDPromoCustStrategyModel> custStrategies = promotion.getCustStrategies();
 		if(null != custStrategies && !custStrategies.isEmpty()){
@@ -2535,17 +2544,27 @@ public class FDPromotionManagerNewDAO {
 				ps.setString(i++, promoCustModel.isOrderTypeHome()?"X":"");
 				ps.setString(i++, promoCustModel.isOrderTypeCorporate()?"X":"");
 				ps.setString(i++, promoCustModel.isOrderTypePickup()?"X":"");
-				ps.setString(i++, promoCustModel.isExcludeSameDayDlv()?"Y":"N");				
+				ps.setString(i++, promoCustModel.isExcludeSameDayDlv()?"Y":"N");
+				if(null !=promoCustModel.getDeliveryDayType()){
+					ps.setString(i++,promoCustModel.getDeliveryDayType().getName());
+				}else{
+					ps.setNull(i++, Types.VARCHAR);
+				}
 				ps.setString(i++, promoCustModel.getPK().getId());
 			}
 			else{
-				ps = conn.prepareStatement("INSERT INTO cust.PROMO_CUST_STRATEGY (id, promotion_id, ORDERTYPE_HOME,ORDERTYPE_CORPORATE,ORDERTYPE_PICKUP,EXCLUDE_SAMEDAY_DELIVERY) VALUES(?,?,?,?,?,?)");
+				ps = conn.prepareStatement("INSERT INTO cust.PROMO_CUST_STRATEGY (id, promotion_id, ORDERTYPE_HOME,ORDERTYPE_CORPORATE,ORDERTYPE_PICKUP,EXCLUDE_SAMEDAY_DELIVERY,DELIVERY_DAY_TYPE) VALUES(?,?,?,?,?,?,?)");
 				ps.setString(i++, SequenceGenerator.getNextId(conn,"CUST"));
 				ps.setString(i++, promoCustModel.getPromotionId());
 				ps.setString(i++, promoCustModel.isOrderTypeHome()?"X":"");
 				ps.setString(i++, promoCustModel.isOrderTypeCorporate()?"X":"");
 				ps.setString(i++, promoCustModel.isOrderTypePickup()?"X":"");
-				ps.setString(i++, promoCustModel.isExcludeSameDayDlv()?"Y":"N");	
+				ps.setString(i++, promoCustModel.isExcludeSameDayDlv()?"Y":"N");
+				if(null !=promoCustModel.getDeliveryDayType()){
+					ps.setString(i++,promoCustModel.getDeliveryDayType().getName());
+				}else{
+					ps.setNull(i++, Types.VARCHAR);
+				}
 			}		
 			
 			if (ps.executeUpdate() != 1) {

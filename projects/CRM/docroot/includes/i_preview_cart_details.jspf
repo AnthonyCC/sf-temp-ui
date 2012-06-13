@@ -287,10 +287,12 @@
 			<%
 				if (cart.isDlvPassApplied()) {
 			%>	
-				<%= DeliveryPassUtil.getDlvPassAppliedMessage(user) %>
-			<% } else { %>
-				<%= JspMethods.formatPrice(order.isDeliveryChargeWaived()?0.0:order.getDeliverySurcharge()) %>
-			<%}%>	
+				<%= cart.getDeliveryCharge()>0?JspMethods.formatPrice(cart.getDeliveryCharge()):DeliveryPassUtil.getDlvPassAppliedMessage(user) %>
+			<%}else if (cart.isDeliveryChargeWaived()){ %> 
+				<%= JspMethods.formatPrice(0.0) %>
+			<%} else{%>
+				<%= JspMethods.formatPrice(cart.getDeliveryCharge()) %>
+			<%}%>
 			</td>
 		<%}%>
 			<td><b><%=order.isDeliveryChargeTaxable() && !order.isDeliveryChargeWaived() ? "&nbsp;T" : "" %></b></td>

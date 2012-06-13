@@ -28,7 +28,9 @@
      	<component name="cutoffTime" class="com.freshdirect.framework.util.TimeOfDay"> 
         	<property name="normalDate" column="CUTOFF_TIME" type="timestamp" not-null="true"/>
         </component>       
-
+		<component name="premiumCutoffTime" class="com.freshdirect.framework.util.TimeOfDay"> 
+        	<property name="normalDate" column="PREMIUM_CUTOFF_TIME" type="timestamp" not-null="false"/>
+        </component>     
     </class>
 
 </hibernate-mapping>

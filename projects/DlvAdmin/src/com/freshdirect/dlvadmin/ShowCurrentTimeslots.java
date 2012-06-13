@@ -47,6 +47,14 @@ public abstract class ShowCurrentTimeslots extends DlvPage {
 		else
 			return (double)currentTimeslot.getChefsTableAllocation()/currentTimeslot.calculateCurrentAllocation(getCurrentDate());
 	}
+	
+	public double getPremiumCtPercentage(){
+		if(currentTimeslot.calculatePremiumAllocation(getCurrentDate())==0)
+			return 0;
+		else
+			return (double)currentTimeslot.getPremiumCtAllocation()/currentTimeslot.calculatePremiumAllocation(getCurrentDate());
+	}
+	
 	public abstract DlvRegionModel getSelectedRegion();
 	
 	public abstract void setSelectedRegion(DlvRegionModel region);

@@ -415,6 +415,33 @@ public class DlvAdminManagerSessionBean extends SessionBeanSupport {
 			session.close();
 		}
 	}
+	
+	public void updatePremiumCtZone(String zoneCode, boolean premiumCtActive, int premiumCtReleaseTime) throws DlvResourceException {
+		Session session = sf.getCurrentSession();
+		try {
+			if (!premiumCtActive) {
+				premiumCtReleaseTime = 0;
+			}
+			Query q = session.getNamedQuery("updatePremiumCtZone");
+			q.setString("zoneCode", zoneCode);
+			q.setParameter("premiumCtActive", Boolean.valueOf(premiumCtActive), Hibernate.custom(BooleanType.class));
+			q.setInteger("premiumCtReleaseTime", premiumCtReleaseTime);
+			q.executeUpdate();
+			
+			if (!premiumCtActive) {
+				q = session.getNamedQuery("deactivatePremiumCtTimeslots");
+				q.setString("zoneCode", zoneCode);
+				q.executeUpdate();
+			}
+			
+			session.flush();
+			
+		} catch (RuntimeException e) {
+			throw new DlvResourceException(e, "Cannot deactivate zone: " + zoneCode);
+		} finally {
+			session.close();
+		}
+	}
 
 	public void updateZoneUnattendedDeliveryStatus(String zoneCode, boolean unattended) throws DlvResourceException {
 		Session session = sf.getCurrentSession();
@@ -436,26 +463,41 @@ public class DlvAdminManagerSessionBean extends SessionBeanSupport {
 	
 
 	private static final String EARLY_WARNING_QUERY =
-		"select code, name, sum(orders) as total_order, sum(capacity) as capacity, "
-			+ "sum(total_alloc) as total_alloc, "
-			+ "sum(base_orders) as base_orders, "
-			+ "sum(base_alloc) as base_alloc, "
-			+ "sum(ct_capacity) as ct_capacity, "
-			+ "sum(ct_alloc) as ct_alloc, "
-			+ "sum(ct_orders) as ct_orders, "
-			+ "ct_active "
-			+ "from "
-			+ "( "
-			+ "select z.zone_code as code, z.name, ts.capacity, ts.ct_capacity, z.ct_active as ct_active, "
-			+ "(select count(*) from dlv.reservation where timeslot_id=ts.id and status_code = ? ) as orders, "
-			+ "decode((sysdate-(TO_DATE(TO_CHAR(ts.base_date - 1, 'YYYY-MM-DD')||' '||to_char(ts.cutoff_time - (z.ct_release_time/60/24), 'HH24:MI:SS'), 'YYYY-MM-DD HH24:MI:SS'))- abs(sysdate-(TO_DATE(TO_CHAR(ts.base_date - 1, 'YYYY-MM-DD')||' '||to_char(ts.cutoff_time - (z.ct_release_time/60/24), 'HH24:MI:SS'), 'YYYY-MM-DD HH24:MI:SS')))),0,(select count(*) from dlv.reservation where timeslot_id=ts.id and status_code <> ? and status_code <> ? ),(select count(*) from dlv.reservation where timeslot_id=ts.id and  status_code <> ? and status_code <> ? and chefstable = ' ')+ts.ct_capacity) as total_alloc, "
-			+ "(select count(*) from dlv.reservation where timeslot_id=ts.id and status_code = ? and chefstable = ' ') as base_orders, "
-			+ "(select count(*) from dlv.reservation where timeslot_id=ts.id and  status_code <> ? and status_code <> ? and chefstable = ' ') as base_alloc, "
-			+ "(select count(*) from dlv.reservation where timeslot_id=ts.id and  status_code <> ? and status_code <> ? and chefstable = 'X') as ct_alloc, "
-			+ "(select count(*) from dlv.reservation where timeslot_id=ts.id and status_code = ? and chefstable = 'X') as ct_orders "
-			+ "from dlv.timeslot ts, dlv.zone z "
-			+ "where ts.zone_id=z.id and ts.capacity<>0 and ts.base_date = ? "
-			+ ") group by code, name, ct_active order by code ";
+		"select code, name, sum(orders) as total_order, sum(capacity) as capacity, " +
+		"sum(total_alloc) as total_alloc, " +
+		"sum(base_orders) as base_orders, " +
+		"sum(base_alloc) as base_alloc, " +
+		"sum(ct_capacity) as ct_capacity, " +
+		"sum(ct_alloc) as ct_alloc, " +
+		"sum(ct_orders) as ct_orders, " +
+		"ct_active, " +
+		"sum(premium_capacity) as premium_capacity, " +
+		"sum(premium_orders) as premium_orders, " +
+		"sum(premium_alloc) as premium_alloc, " +
+		"sum(premium_ct_capacity) as premium_ct_capacity, " +
+		"sum(premium_ct_alloc) as premium_ct_alloc, " +
+		"sum(premium_ct_orders) as premium_ct_orders, " +
+		"premium_ct_active " +
+		"from "+
+        "( "+
+        "select z.zone_code as code, z.name, ts.capacity, ts.ct_capacity, z.ct_active as ct_active, z.premium_ct_active as premium_ct_active, "+ 
+        "(select count(*) from dlv.reservation where timeslot_id=ts.id and status_code = ? ) as orders, " +
+        "decode((sysdate-(TO_DATE(TO_CHAR(ts.base_date - 1, 'YYYY-MM-DD')||' '||to_char(ts.cutoff_time - " +
+        "(z.ct_release_time/60/24), 'HH24:MI:SS'), 'YYYY-MM-DD HH24:MI:SS'))- abs(sysdate-(TO_DATE(TO_CHAR(ts.base_date - 1, 'YYYY-MM-DD')||' '||to_char(ts.cutoff_time " +
+        "- (z.ct_release_time/60/24), 'HH24:MI:SS'), 'YYYY-MM-DD HH24:MI:SS')))),0,(select count(*) from dlv.reservation where timeslot_id=ts.id and status_code <> ?" +
+        "and status_code <> ? ),(select count(*) from dlv.reservation where timeslot_id=ts.id and  status_code <> ? and status_code <> ? and chefstable = ' ' and class not in ('P','PC'))+ts.ct_capacity+ts.premium_capacity) as total_alloc, " +
+        "(select count(*) from dlv.reservation where timeslot_id=ts.id and status_code = ? and chefstable = ' ') as base_orders, " +
+        "(select count(*) from dlv.reservation where timeslot_id=ts.id and  status_code <> ? and status_code <> ? and chefstable = ' ') as base_alloc, " +
+        "(select count(*) from dlv.reservation where timeslot_id=ts.id and  status_code <> ? and status_code <> ? and chefstable = 'X') as ct_alloc," + 
+        "(select count(*) from dlv.reservation where timeslot_id=ts.id and status_code = ? and chefstable = 'X') as ct_orders ," +
+        "TS.PREMIUM_CAPACITY, TS.PREMIUM_CT_CAPACITY, " +
+        "(select count(*) from dlv.reservation where timeslot_id=ts.id and status_code = ? and class = 'P') as premium_orders, " +
+        " (select count(*) from dlv.reservation where timeslot_id=ts.id and  status_code <> ? and status_code <> ? and class = 'P') as premium_alloc," +
+        " (select count(*) from dlv.reservation where timeslot_id=ts.id and  status_code <> ? and status_code <> ? and class = 'PC') as premium_ct_alloc," +
+        " (select count(*) from dlv.reservation where timeslot_id=ts.id and status_code = ? and class = 'PC') as premium_ct_orders " +
+        " from dlv.timeslot ts, dlv.zone z " +
+        " where ts.zone_id=z.id and ts.capacity<>0 and ts.base_date = ? " +
+        " ) group by code, name, ct_active, premium_ct_active order by code";
 
 	public List getEarlyWarningData(Date day) throws DlvResourceException {
 		Connection conn = null;
@@ -474,7 +516,14 @@ public class DlvAdminManagerSessionBean extends SessionBeanSupport {
 			ps.setInt(9, EnumReservationStatus.CANCELED.getCode());
 			ps.setInt(10, EnumReservationStatus.EXPIRED.getCode());
 			ps.setInt(11, EnumReservationStatus.COMMITTED.getCode());
-			ps.setDate(12, new java.sql.Date(day.getTime()));
+			ps.setInt(12, EnumReservationStatus.COMMITTED.getCode());
+			ps.setInt(13, EnumReservationStatus.CANCELED.getCode());
+			ps.setInt(14, EnumReservationStatus.EXPIRED.getCode());
+			ps.setInt(15, EnumReservationStatus.CANCELED.getCode());
+			ps.setInt(16, EnumReservationStatus.EXPIRED.getCode());
+			
+			ps.setInt(17, EnumReservationStatus.COMMITTED.getCode());
+			ps.setDate(18, new java.sql.Date(day.getTime()));
 
 			ResultSet rs = ps.executeQuery();
 			List data = new ArrayList();
@@ -494,7 +543,18 @@ public class DlvAdminManagerSessionBean extends SessionBeanSupport {
 						rs.getInt("CT_CAPACITY"),
 						rs.getInt("CT_ALLOC"),
 						rs.getInt("CT_ORDERS"),
-						rs.getString("CT_ACTIVE")
+						rs.getString("CT_ACTIVE"),
+						
+						rs.getInt("premium_orders"),
+						rs.getInt("premium_capacity"),
+						
+						rs.getInt("premium_alloc"),
+						rs.getInt("premium_ct_capacity"),
+						rs.getInt("premium_ct_alloc"),
+						rs.getInt("premium_ct_orders"),
+						
+						rs.getString("premium_CT_ACTIVE")
+						
 					));
 			}
 
@@ -517,6 +577,57 @@ public class DlvAdminManagerSessionBean extends SessionBeanSupport {
 
 	public static class EarlyWarningData implements EarlyWarningDataI {
 
+		public EarlyWarningData(String zoneCode, String zoneName, int order,
+				int capacity, int totalAlloc,
+				 int baseOrder, int baseAlloc,
+				 int ctCapacity, int ctAlloc,
+				int ctOrder,
+				String ctActive, int premiumOrder, int premiumCapacity,
+				int premiumAlloc,
+				 int premiumCtCapacity,
+				int premiumCtAlloc, int premiumCtOrder,
+				String premiumCtActive) {
+			super();
+			
+			
+			
+			
+			this.zoneCode = zoneCode;
+			this.zoneName = zoneName;
+			this.order = order;
+			this.capacity = capacity;
+			this.percentOrders = (double) order / (double) capacity;
+			
+			this.totalAlloc = totalAlloc;
+			this.percentAlloc = (double) totalAlloc / (double) capacity;
+			
+			this.baseOrder = baseOrder;
+			this.baseCapacity = capacity - ctCapacity;
+			this.percentbaseOrders = (double) baseOrder / (double) (capacity - ctCapacity);
+			this.baseAlloc = baseAlloc;
+			this.percentbaseAlloc = (double) baseAlloc / (double) (capacity - ctCapacity);
+			this.ctCapacity = ctCapacity;
+			this.ctAlloc = ctAlloc;
+			this.ctOrder = ctOrder;
+			this.percentCTAlloc = ctCapacity == 0 ? 0 : (double) ctAlloc / (double) ctCapacity;
+			this.percentCTOrders = ctCapacity == 0 ? 0 : (double) ctOrder / (double) ctCapacity;
+			this.ctActive = "X".equals(ctActive) ? true : false ;
+			
+			this.premiumOrder = premiumOrder;
+			this.premiumCapacity = premiumCapacity;
+			this.premiumPercentOrders =  (double) premiumOrder / (double) (premiumCapacity); 
+			this.premiumAlloc = premiumAlloc;
+			this.premiumPercentAlloc = (double) premiumAlloc / (double) (premiumCapacity);
+			
+			this.premiumCtCapacity = premiumCtCapacity;
+			this.premiumCtAlloc = premiumCtAlloc;
+			this.premiumCtOrder = premiumCtOrder;
+			this.premiumCtPercentAlloc =  premiumCtCapacity == 0 ? 0 : (double) premiumCtAlloc / (double) premiumCtCapacity;
+			this.premiumCtPercentOrders = premiumCtCapacity == 0 ? 0 : (double) premiumCtOrder / (double) premiumCtCapacity;
+			this.premiumCtActive = "X".equals(premiumCtActive) ? true : false ;
+			
+		}
+
 		private final String zoneCode;
 		private final String zoneName;
 		private final int order;
@@ -537,41 +648,20 @@ public class DlvAdminManagerSessionBean extends SessionBeanSupport {
 		private final double percentCTAlloc;
 		private final double percentCTOrders;
 		private final boolean ctActive;
+		
+		private final int premiumOrder;
+		private final int premiumCapacity;
+		private final double premiumPercentOrders;
+		private final int premiumAlloc;
+		private final double premiumPercentAlloc;
 
-		public EarlyWarningData(
-			String zoneCode,
-			String zoneName,
-			int order,
-			int capacity,
-			int totalAlloc,
-			int baseOrder,
-			int baseAlloc,
-			int ctCapacity,
-			int ctAlloc,
-			int ctOrder,
-			String ctActive
-			) {
-			this.zoneCode = zoneCode;
-			this.zoneName = zoneName;
-			this.order = order;
-			this.capacity = capacity;
-			this.percentOrders = (double) order / (double) capacity;
-			
-			this.totalAlloc = totalAlloc;
-			this.percentAlloc = (double) totalAlloc / (double) capacity;
-			this.baseOrder = baseOrder;
-			this.baseCapacity = capacity - ctCapacity;
-			this.percentbaseOrders = (double) baseOrder / (double) (capacity - ctCapacity);
-			this.baseAlloc = baseAlloc;
-			this.percentbaseAlloc = (double) baseAlloc / (double) (capacity - ctCapacity);
-			this.ctCapacity = ctCapacity;
-			this.ctAlloc = ctAlloc;
-			this.ctOrder = ctOrder;
-			this.percentCTAlloc = ctCapacity == 0 ? 0 : (double) ctAlloc / (double) ctCapacity;
-			this.percentCTOrders = ctCapacity == 0 ? 0 : (double) ctOrder / (double) ctCapacity;
-			this.ctActive = "X".equals(ctActive) ? true : false ;
-		}
-
+		private final int premiumCtCapacity;
+		private final int premiumCtAlloc;
+		private final int premiumCtOrder;
+		private final double premiumCtPercentAlloc;
+		private final double premiumCtPercentOrders;
+		private final boolean premiumCtActive;
+		
 		public String getZoneCode() {
 			return this.zoneCode;
 		}
@@ -632,7 +722,77 @@ public class DlvAdminManagerSessionBean extends SessionBeanSupport {
 		}		
 		public boolean getCTActive(){
 			return this.ctActive;
-		}		
-	}
+		}
 
+		public int getPremiumOrder() {
+			return premiumOrder;
+		}
+
+		public int getPremiumCapacity() {
+			return premiumCapacity;
+		}
+
+		public double getPremiumPercentOrders() {
+			return premiumPercentOrders;
+		}
+
+		public int getPremiumAlloc() {
+			return premiumAlloc;
+		}
+
+		public double getPremiumPercentAlloc() {
+			return premiumPercentAlloc;
+		}
+
+		public int getPremiumCtCapacity() {
+			return premiumCtCapacity;
+		}
+
+		public int getPremiumCtAlloc() {
+			return premiumCtAlloc;
+		}
+
+		public int getPremiumCtOrder() {
+			return premiumCtOrder;
+		}
+
+		public double getPremiumCtPercentAlloc() {
+			return premiumCtPercentAlloc;
+		}
+
+		public double getPremiumCtPercentOrders() {
+			return premiumCtPercentOrders;
+		}
+
+		public boolean isPremiumCtActive() {
+			return premiumCtActive;
+		}
+
+		@Override
+		public int getPremiumAllocation() {
+			return this.premiumAlloc;
+		}
+
+		@Override
+		public double getPremiumPercentAllocation() {
+			return this.premiumPercentAlloc;
+		}
+
+		@Override
+		public int getPremiumCtAllocation() {
+			return this.premiumCtAlloc;
+		}
+
+		@Override
+		public double getPremiumCtPercentAllocation() {
+			return this.premiumCtPercentAlloc;
+		}
+
+		@Override
+		public boolean getPremiumCtActive() {
+			// TODO Auto-generated method stub
+			return this.premiumCtActive;
+		}
+
+}
 }

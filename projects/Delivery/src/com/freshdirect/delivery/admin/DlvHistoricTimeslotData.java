@@ -172,6 +172,34 @@ public class DlvHistoricTimeslotData implements Serializable {
 			
 		}.calculate(timeslots);
 	}
+	/**
+	 * Base capacity total in timeslots.
+	 * @param timeslots
+	 * @return sum of {@link DlvTimeslotModel#getBaseCapacity()}
+	 */
+	public static int getPremiumCapacityTotal(Collection timeslots) {
+		return new Accummulate() {
+
+			public int get(DlvTimeslotModel slot) {
+				return slot.getPremiumCapacity();
+			}
+			
+		}.calculate(timeslots);
+	}
+	/**
+	 * Base capacity total in timeslots.
+	 * @param timeslots
+	 * @return sum of {@link DlvTimeslotModel#getBaseCapacity()}
+	 */
+	public static int getPremiumAllocationTotal(Collection timeslots, final Date date) {
+		return new Accummulate() {
+
+			public int get(DlvTimeslotModel slot) {
+				return slot.calculatePremiumAllocation(date);
+			}
+			
+		}.calculate(timeslots);
+	}
 	
 	/**
 	 * Base allocation total in timeslots.
@@ -206,6 +234,23 @@ public class DlvHistoricTimeslotData implements Serializable {
 	}
 	
 	/**
+	 * Premium Chefs table capacity total in timeslots.
+	 * 
+	 * @param timeslots
+	 * @return sum of {@link DlvTimeslotModel#getChefsTableCapacity()}
+	 */
+	public static int getPremiumCtCapacityTotal(Collection timeslots) {
+		return new Accummulate() {
+
+			public int get(DlvTimeslotModel slot) {
+				return slot.getPremiumCtCapacity();
+			}
+			
+		}.calculate(timeslots);
+	}
+	
+	
+	/**
 	 * Chefs table allocation total.
 	 * 
 	 * @param timeslots
@@ -220,6 +265,24 @@ public class DlvHistoricTimeslotData implements Serializable {
 			
 		}.calculate(timeslots);
 	}
+	
+	/**
+	 * Chefs table allocation total.
+	 * 
+	 * @param timeslots
+	 * @return sum of {@link DlvTimeslotModel#getChefsTableAllocation()}
+	 */
+	public static int getPremiumCtAllocationTotal(Collection timeslots) {
+		return new Accummulate() {
+
+			public int get(DlvTimeslotModel slot) {
+				return slot.getPremiumCtAllocation();
+			}
+			
+		}.calculate(timeslots);
+	}	
+	
+	
 	
 	/**
 	 * Get percentage total in timeslots on given date.
@@ -239,4 +302,24 @@ public class DlvHistoricTimeslotData implements Serializable {
 		
 		return ((double)CTAllocationTotal)/currentAllocationTotal;
 	}
+	
+	/**
+	 * Get percentage total in timeslots on given date.
+	 * 
+	 *  
+	 * @param timeslots
+	 * @param date
+	 * @return {@link #getCTAllocationTotal(Collection) getCTAllocation(timeslots)}/
+	 *         {@link #getAllocationTotal(Collection, Date) getAllocationTotal(timeslots,date)} or 0 if no allocations
+	 */
+	public static double getPremiumPercentageTotal(Collection timeslots, final Date date) {
+		int currentAllocationTotal = getPremiumAllocationTotal(timeslots, date);
+				
+		if (currentAllocationTotal == 0) return 0;
+		
+		int CTAllocationTotal = getPremiumCtAllocationTotal(timeslots);
+		
+		return ((double)CTAllocationTotal)/currentAllocationTotal;
+	}
+	
 }

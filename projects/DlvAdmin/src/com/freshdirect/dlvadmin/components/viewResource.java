@@ -13,6 +13,8 @@ public class viewResource extends BaseComponent {
 	private String view;
 	private final static String VIEW_CT = "CT";
 	private final static String VIEW_ALL = "All";
+	private final static String VIEW_PREMIUM = "Premium";
+	private final static String VIEW_PREMIUM_CT = "Premium CT";
 	
 	/** forEach */
 	private DlvTimeslotModel currentTimeslot;
@@ -49,5 +51,11 @@ public class viewResource extends BaseComponent {
 	}
 	public boolean isShowTotal() {
 		  return getView()==null || getView().equals(VIEW_ALL); 
+	}
+	public boolean isShowPremium() {
+		  return getView()==null || (getView().equals(VIEW_ALL)|| getView().equals(VIEW_PREMIUM)); 
+	}
+	public boolean isShowPremiumCt() {
+		  return getView()==null || (getView().equals(VIEW_ALL)|| getView().equals(VIEW_PREMIUM_CT)); 
 	}
 }

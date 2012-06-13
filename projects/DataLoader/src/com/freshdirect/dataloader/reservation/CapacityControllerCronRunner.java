@@ -114,6 +114,11 @@ public class CapacityControllerCronRunner extends BaseCapacityCronRunner {
 					
 					List<DlvTimeslotModel> slots = dsb.getTimeslotsForDate(processDate);
 					
+					if(slots!=null)
+						for(DlvTimeslotModel slot:slots)
+							slot.setPremiumSlot(false);
+						
+					
 					Map<String, TrnFacilityType> routingLocationMap = dsb.retrieveTrnFacilitys();
 
 					LOGGER.info("CapacityControllerCronRunner beginning to synchronize "+slots.size()
@@ -159,7 +164,8 @@ public class CapacityControllerCronRunner extends BaseCapacityCronRunner {
 						List<DlvTimeslotModel> filteredTimeSlots = new ArrayList<DlvTimeslotModel>();
 						
 						for(DlvTimeslotModel _tmpSlot : slots) {
-							if(_tmpSlot.getCutoffTimeAsDate().after(now)) { // Check if the timeslot has not passed cutoff
+							if(_tmpSlot.getCutoffTimeAsDate().after(now) || (_tmpSlot.getCutoffTimeAsDate().before(now) 
+									&& _tmpSlot.getPremiumCutoffTime()!=null && _tmpSlot.getPremiumCutoffAsDate().after(now) )) { // Check if the timeslot has not passed cutoff
 								filteredTimeSlots.add(_tmpSlot);
 							}
 						}

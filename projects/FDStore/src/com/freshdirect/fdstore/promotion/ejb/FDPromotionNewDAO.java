@@ -22,6 +22,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.apache.log4j.Logger;
 
 import com.freshdirect.customer.EnumChargeType;
+import com.freshdirect.delivery.EnumDeliveryOption;
 import com.freshdirect.deliverypass.EnumDlvPassStatus;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.content.ProductReference;
@@ -1421,6 +1422,22 @@ public class FDPromotionNewDAO {
 			ps.close();
 		}
 		dlvZoneStrategy.setDlvTimeSlots(dlvTimeSlots);
+		loadDlvDayTypeStrategy(conn, promoPK, dlvZoneStrategy);
+	}
+
+	private static void loadDlvDayTypeStrategy(Connection conn, String promoPK,
+			DlvZoneStrategy dlvZoneStrategy) throws SQLException {
+		PreparedStatement ps;
+		ResultSet rs;
+		ps = conn.prepareStatement("SELECT DELIVERY_DAY_TYPE FROM CUST.PROMO_CUST_STRATEGY WHERE PROMOTION_ID=?");
+		ps.setString(1, promoPK);
+		rs = ps.executeQuery();
+		if(rs.next()) {
+			String dlvDayType = rs.getString("DELIVERY_DAY_TYPE");
+			dlvZoneStrategy.setDlvDayType(EnumDeliveryOption.getEnum(dlvDayType));
+		}
+		rs.close();
+		ps.close();
 	}
 
 	private static void loadDlvDates(Connection conn, String promoPK,

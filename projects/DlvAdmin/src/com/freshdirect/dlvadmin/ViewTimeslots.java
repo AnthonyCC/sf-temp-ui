@@ -502,6 +502,8 @@ public abstract class ViewTimeslots extends DlvPage implements PageDetachListene
 		return DlvHistoricTimeslotData.getAllocationTotal(getTimeslotIndex().getZoneTimeslots(date, window, cutoff),getCurrentDate());
 	}
 	
+	
+	
 	public int getAllocationTotal(String zoneCode, Date date) {
 		return DlvHistoricTimeslotData.getAllocationTotal(getZoneIndex().getTimeslots(zoneCode,date),getCurrentDate());
 	}
@@ -510,32 +512,63 @@ public abstract class ViewTimeslots extends DlvPage implements PageDetachListene
 		return DlvHistoricTimeslotData.getBaseCapacityTotal(getTimeslotIndex().getZoneTimeslots(date, window, cutoff));
 	}
 	
+	public int getPremiumCapacityTotal(Date date, DateRange window, Date cutoff) {
+		return DlvHistoricTimeslotData.getPremiumCapacityTotal(getTimeslotIndex().getZoneTimeslots(date, window, cutoff));
+	}
+	
+	
 	public int getBaseCapacityTotal(String zoneCode, Date date) {
 		return DlvHistoricTimeslotData.getBaseCapacityTotal(getZoneIndex().getTimeslots(zoneCode,date));
+	}
+	
+	public int getPremiumCapacityTotal(String zoneCode, Date date) {
+		return DlvHistoricTimeslotData.getPremiumCapacityTotal(getZoneIndex().getTimeslots(zoneCode,date));
 	}
 	
 	public int getBaseAllocationTotal(Date date, DateRange window, Date cutoff) {
 		return DlvHistoricTimeslotData.getBaseAllocationTotal(getTimeslotIndex().getZoneTimeslots(date, window, cutoff));
 	}
+	public int getPremiumAllocationTotal(Date date, DateRange window, Date cutoff) {
+		return DlvHistoricTimeslotData.getPremiumAllocationTotal(getTimeslotIndex().getZoneTimeslots(date, window, cutoff),getCurrentDate());
+	}
 	
 	public int getBaseAllocationTotal(String zoneCode, Date date) {
 		return DlvHistoricTimeslotData.getBaseAllocationTotal(getZoneIndex().getTimeslots(zoneCode, date));
 	}
-	
+	public int getPremiumAllocationTotal(String zoneCode, Date date) {
+		return DlvHistoricTimeslotData.getPremiumAllocationTotal(getZoneIndex().getTimeslots(zoneCode, date),getCurrentDate());
+	}
 	public int getCTCapacityTotal(Date date, DateRange window, Date cutoff) {
 		return DlvHistoricTimeslotData.getCTCapacityTotal(getTimeslotIndex().getZoneTimeslots(date, window, cutoff));
 	}
+	public int getPremiumCtCapacityTotal(Date date, DateRange window, Date cutoff) {
+		return DlvHistoricTimeslotData.getPremiumCtCapacityTotal(getTimeslotIndex().getZoneTimeslots(date, window, cutoff));
+	}
+	
 	
 	public int getCTCapacityTotal(String zoneCode, Date date) {
 		return DlvHistoricTimeslotData.getCTCapacityTotal(getZoneIndex().getTimeslots(zoneCode, date));
+	}
+	
+	public int getPremiumCtCapacityTotal(String zoneCode, Date date) {
+		return DlvHistoricTimeslotData.getPremiumCtCapacityTotal(getZoneIndex().getTimeslots(zoneCode, date));
 	}
 	
 	public int getCTAllocationTotal(Date date, DateRange window, Date cutoff) {
 		return DlvHistoricTimeslotData.getCTAllocationTotal(getTimeslotIndex().getZoneTimeslots(date, window, cutoff));
 	}
 	
+	public int getPremiumCtAllocationTotal(Date date, DateRange window, Date cutoff) {
+		return DlvHistoricTimeslotData.getPremiumCtAllocationTotal(getTimeslotIndex().getZoneTimeslots(date, window, cutoff));
+	}
+	
+	
 	public int getCTAllocationTotal(String zoneCode, Date date) {
 		return DlvHistoricTimeslotData.getCTAllocationTotal(getZoneIndex().getTimeslots(zoneCode, date));
+	}
+
+	public int getPremiumCtAllocationTotal(String zoneCode, Date date) {
+		return DlvHistoricTimeslotData.getPremiumCtAllocationTotal(getZoneIndex().getTimeslots(zoneCode, date));
 	}
 	
 	public double getPercentage(DlvTimeslotModel currentTimeslot) {
@@ -544,13 +577,31 @@ public abstract class ViewTimeslots extends DlvPage implements PageDetachListene
 			currentAllocation == 0 ? 0 :
 			((double)currentTimeslot.getChefsTableAllocation())/currentAllocation;
 	}
+	public double getPremiumCtPercentage(DlvTimeslotModel currentTimeslot){
+		int currentAllocation = currentTimeslot.calculatePremiumAllocation(getCurrentDate());
+			
+		return 
+				currentAllocation == 0 ? 0 :
+			((double)currentTimeslot.getPremiumCtAllocation())/currentAllocation;
+	}
+	
+	
 
 	public double getPercentageTotal(Date date, DateRange window, Date cutoff) {
 		return DlvHistoricTimeslotData.getPercentageTotal(getTimeslotIndex().getZoneTimeslots(date, window, cutoff),getCurrentDate());
 	}
 	
+	public double getPremiumPercentageTotal(Date date, DateRange window, Date cutoff) {
+		return DlvHistoricTimeslotData.getPremiumPercentageTotal(getTimeslotIndex().getZoneTimeslots(date, window, cutoff),getCurrentDate());
+	}
+	
+	
 	public double getPercentageTotal(String zoneCode, Date date) {
 		return DlvHistoricTimeslotData.getPercentageTotal(getZoneIndex().getTimeslots(zoneCode, date),getCurrentDate());
+	}
+	
+	public double getPremiumPercentageTotal(String zoneCode, Date date) {
+		return DlvHistoricTimeslotData.getPremiumPercentageTotal(getZoneIndex().getTimeslots(zoneCode, date),getCurrentDate());
 	}
 	
 	
@@ -558,8 +609,9 @@ public abstract class ViewTimeslots extends DlvPage implements PageDetachListene
 		return DlvHistoricTimeslotData.getCapacityTotal(getZoneIndex().getTimeslots(zoneCode));
 	}
 	
+
 	public int getZoneAllocationTotal(String zoneCode) {
 		return DlvHistoricTimeslotData.getAllocationTotal(getZoneIndex().getTimeslots(zoneCode), getCurrentDate());
 	}
-
+	
 }

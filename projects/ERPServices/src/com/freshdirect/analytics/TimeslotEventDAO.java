@@ -26,8 +26,8 @@ public class TimeslotEventDAO {
 
 	private static final Category LOGGER = LoggerFactory.getInstance(TimeslotEventDAO.class);
 	private static final String TIMESLOT_LOG_INSERT="INSERT INTO MIS.TIMESLOT_EVENT_HDR (ID, EVENT_DTM,RESERVATION_ID, " +
-			"ORDER_ID, CUSTOMER_ID, EVENTTYPE,RESPONSE_TIME,COMMENTS,TransactionSource,DlvPassApplied,DeliveryCharge,isDeliveryChargeWaived,zonectactive,sector, latitude, longitude, servicetype) " +
-			"VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+			"ORDER_ID, CUSTOMER_ID, EVENTTYPE,RESPONSE_TIME,COMMENTS,TransactionSource,DlvPassApplied,DeliveryCharge,isDeliveryChargeWaived,zonectactive,sector, latitude, longitude, servicetype,sameday) " +
+			"VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 	
 	private static final String TIMESLOT_LOG_DTL_INSERT="INSERT INTO MIS.TIMESLOT_EVENT_DTL (TIMESLOT_LOG_ID, BASE_DATE, START_TIME" +
 			", END_TIME, ZONE_CODE) VALUES (?,?,?,?,?)";
@@ -43,7 +43,7 @@ public class TimeslotEventDAO {
 		
 	private static final String TIMESLOT_EVENT_DETAIL_QRY = "SELECT * FROM MIS.TIMESLOT_EVENT_DTL WHERE TIMESLOT_LOG_ID = ?";
 	
-	private static final String EVENTS_QRY = "select * from MIS.session_event s where s.logout_time between SYSDATE-1/48 AND SYSDATE  and last_get_timeslot is not null";
+	private static final String EVENTS_QRY = "select * from MIS.session_event s where s.logout_time between SYSDATE-1/48 AND SYSDATE  and last_get_timeslot is not null and sameday <> 'X'";
 	
 	private static final String TIMESLOT_EVENTS_CUSTOMER_QRY = " select * from MIS.timeslot_event_hdr where id in  (select max(to_number(id)) from MIS.timeslot_event_hdr where event_dtm" +
 	" between to_date(?,  'MM-DD-YYYY HH12:MI:SS AM') and to_date(?,  'MM-DD-YYYY HH12:MI:SS AM') and customer_id = ? and " +
@@ -53,7 +53,7 @@ public class TimeslotEventDAO {
 			" WHERE s.ID=sa.SALE_ID AND se.CUSTOMER_ID = s.CUSTOMER_ID AND se.LOGOUT_TIME BETWEEN SYSDATE-1/48 AND SYSDATE " +
 			" AND s.CUSTOMER_ID=sa.CUSTOMER_ID AND s.CROMOD_DATE=sa.ACTION_DATE AND s.CROMOD_DATE BETWEEN se.LOGIN_TIME AND se.LOGOUT_TIME " +
 			"AND sa.ACTION_TYPE IN ('CRO','MOD') AND sa.REQUESTED_DATE > TRUNC(SYSDATE)" +
-			" AND s.type='REG'";
+			" AND s.type='REG' and se.sameday <> 'X'";
 	
 	private static final String CANCEL_RESERVATION_EVENTS_QRY = "SELECT H1.*, D1.ZONE_CODE, D1.CUTOFF, D1.BASE_DATE, D1.TIMESLOT_LOG_ID FROM MIS.TIMESLOT_EVENT_HDR H1, MIS.TIMESLOT_EVENT_DTL D1 WHERE" +
 			" D1.TIMESLOT_LOG_ID = H1.ID AND H1.EVENT_DTM BETWEEN SYSDATE-1/48 AND SYSDATE AND H1.TRANSACTIONSOURCE = 'SYS' AND " +
@@ -320,6 +320,7 @@ public class TimeslotEventDAO {
 	    	ps.setBigDecimal(15, new java.math.BigDecimal(event.getLatitude()));
 			ps.setBigDecimal(16, new java.math.BigDecimal(event.getLongitude()));			
 			ps.setString(17, event.getServiceType());
+			ps.setString(18, event.getSameDay());
 	    	ps.execute();
 	 	    ps.close();
 	 	    

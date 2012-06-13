@@ -1,5 +1,6 @@
 package com.freshdirect.delivery.ejb;
 
+import java.io.Serializable;
 import java.rmi.RemoteException;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -26,7 +27,7 @@ import com.freshdirect.framework.core.ServiceLocator;
 import com.freshdirect.framework.util.MD5Hasher;
 import com.freshdirect.routing.util.RoutingServicesProperties;
 
-public class AirclicManager {
+public class AirclicManager implements Serializable {
 	private final ServiceLocator serviceLocator;
 	
 	private static AirclicManager instance;

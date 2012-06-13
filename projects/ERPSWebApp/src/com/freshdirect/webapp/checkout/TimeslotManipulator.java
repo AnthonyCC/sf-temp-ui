@@ -40,7 +40,7 @@ public class TimeslotManipulator extends CheckoutManipulator {
 		if ( phoneOrders >= 3 ) {
 			LOGGER.debug( "setting phone handling charge of $" + ErpServicesProperties.getPhoneHandlingFee() );
 			FDCartModel cart = getCart();
-			cart.setChargeAmount( EnumChargeType.PHONE, Double.parseDouble( ErpServicesProperties.getPhoneHandlingFee() ) );
+			cart.setChargeAmount( EnumChargeType.PHONE, Double.parseDouble( ErpServicesProperties.getPhoneHandlingFee() ));
 		}
 
 	}

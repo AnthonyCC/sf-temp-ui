@@ -20,7 +20,9 @@ public abstract class EarlyWarningPage extends DlvPage {
 
 	private final static String VIEW_CT = "CT";
 	private final static String VIEW_ALL = "All";
-
+	private final static String VIEW_PREMIUM = "Premium";
+	private final static String VIEW_PREMIUM_CT = "Premium CT";
+	
 	private EarlyWarningDataI currentData;
 	private List earlyWarningData;
 		
@@ -111,6 +113,32 @@ public abstract class EarlyWarningPage extends DlvPage {
 		}
 		return capacity;
 	}
+	public int getPremiumCapacityTotal(){
+		int capacity = 0;
+		for(Iterator i = this.earlyWarningData.iterator(); i.hasNext(); ){
+			EarlyWarningDataI data = (EarlyWarningDataI) i.next();
+			capacity += data.getPremiumCapacity();
+		}
+		return capacity;
+	}
+	
+	public int getPremiumAllocationTotal() {
+		int aTotal = 0;
+		for(Iterator i = this.earlyWarningData.iterator(); i.hasNext() ;){
+			EarlyWarningDataI d = (EarlyWarningDataI) i.next();
+			aTotal += d.getPremiumAllocation();
+		}
+		return aTotal;
+	}
+	
+	public int getPremiumOrderTotal(){
+		int orderTotal = 0;
+		for(Iterator i = this.earlyWarningData.iterator(); i.hasNext(); ){
+			EarlyWarningDataI data = (EarlyWarningDataI)i.next();
+			orderTotal += data.getPremiumOrder(); 
+		}
+		return orderTotal;
+	}
 	
 	public int getBaseAllocationTotal() {
 		int aTotal = 0;
@@ -160,6 +188,34 @@ public abstract class EarlyWarningPage extends DlvPage {
 		return orderTotal;
 	}
 	
+	public int getPremiumCtCapacityTotal(){
+		int capacity = 0;
+		for(Iterator i = this.earlyWarningData.iterator(); i.hasNext(); ){
+			EarlyWarningDataI data = (EarlyWarningDataI) i.next();
+			if(data.getCTActive())
+				capacity += data.getPremiumCtCapacity();
+		}
+		return capacity;
+	}	
+	public int getPremiumCtAllocationTotal() {
+	int aTotal = 0;
+	for(Iterator i = this.earlyWarningData.iterator(); i.hasNext() ;){
+		EarlyWarningDataI d = (EarlyWarningDataI) i.next();
+		if(d.getCTActive())
+			aTotal += d.getPremiumCtAllocation();
+	}
+	return aTotal;
+	}
+	public int getPremiumCtOrderTotal(){
+		int orderTotal = 0;
+		for(Iterator i = this.earlyWarningData.iterator(); i.hasNext(); ){
+			EarlyWarningDataI data = (EarlyWarningDataI)i.next();
+			if(data.getCTActive())
+				orderTotal += data.getPremiumCtOrder(); 
+		}
+		return orderTotal;
+	}
+	
 	public int getCTCapacityTotal(){
 		int capacity = 0;
 		for(Iterator i = this.earlyWarningData.iterator(); i.hasNext(); ){
@@ -180,6 +236,27 @@ public abstract class EarlyWarningPage extends DlvPage {
 	}
 	public boolean isShowTotal() {
 		  return getSelectedView()==null || getSelectedView().equals(VIEW_ALL); 
+	}
+
+	public boolean isShowPremiumCt() { 
+	  return getSelectedView()!=null && (getSelectedView().equals(VIEW_ALL) || getSelectedView().equals(VIEW_PREMIUM_CT)); 
+	}
+	public boolean isShowPremium() {
+		  return getSelectedView()!=null && (getSelectedView().equals(VIEW_ALL) || getSelectedView().equals(VIEW_PREMIUM)); 
+	}
+	
+	public boolean isTotalEditable(){
+		return ((DlvPage)this.getPage()).isUserAdmin() || ((DlvPage)this.getPage()).isUserMarketing();	
+	}
+	public boolean isCTEditable(){
+		return ((DlvPage)this.getPage()).isUserAdmin() || ((DlvPage)this.getPage()).isUserMarketing();	
+	}
+	public boolean isPremiumEditable(){
+		return ((DlvPage)this.getPage()).isUserAdmin() || ((DlvPage)this.getPage()).isUserMarketing();	
+	}
+	
+	public boolean isPremiumCTEditable(){
+		return ((DlvPage)this.getPage()).isUserAdmin() || ((DlvPage)this.getPage()).isUserMarketing();	
 	}
 
 }

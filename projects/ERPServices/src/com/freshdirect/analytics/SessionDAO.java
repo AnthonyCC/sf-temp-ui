@@ -28,8 +28,8 @@ public class SessionDAO {
 	private static final Category LOGGER = LoggerFactory.getInstance(SessionDAO.class);
 	
 	private static final String SESSION_INSERT="INSERT INTO MIS.session_event (customer_id, login_time, logout_time, cutoff, avail_count, " +
-			"sold_count, hidden_count, zone, last_get_timeslot, is_timeout, last_gettype, order_id, sector) " +
-			"VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)";
+			"sold_count, hidden_count, zone, last_get_timeslot, is_timeout, last_gettype, order_id, sector,sameday) " +
+			"VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 	
 	
 	public static void insert(SessionEvent sessionEvent, Connection conn) 
@@ -64,6 +64,7 @@ public class SessionDAO {
 			    ps.setString(11, sessionEvent.getPageType());
 			    ps.setString(12, sessionEvent.getOrderId());
 			    ps.setString(13, sessionEvent.getSector());
+			    ps.setString(14, sessionEvent.getSameDay());
 			    ps.execute();
 		}
 		catch(Exception e)

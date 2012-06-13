@@ -8,6 +8,7 @@
  */
 package com.freshdirect.customer.adapter;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
@@ -138,14 +139,13 @@ public class SapOrderAdapter implements SapOrderI {
 	}
 
 	public SapChargeLineI[] getChargeLines() {
-		List erpCharges = this.erpOrder.getCharges();
-		SapChargeLineI[] sapCharges = new SapChargeLineI[erpCharges.size()];
-		for (int i = 0; i < sapCharges.length; i++) {
-			ErpChargeLineModel charge = (ErpChargeLineModel) erpCharges.get(i);
-			sapCharges[i] = new SapChargeLineAdapter(charge);
-
-		}
-		return sapCharges;
+		List<ErpChargeLineModel> erpCharges = this.erpOrder.getCharges();
+		
+		List<SapChargeLineI> sapCharges = new ArrayList<SapChargeLineI>();
+		for (ErpChargeLineModel charge : erpCharges) {
+				sapCharges.add(new SapChargeLineAdapter(charge));
+			}
+		return (SapChargeLineI[]) sapCharges.toArray(new SapChargeLineI[sapCharges.size()]);
 	}
 
 	public String getDeliveryZone() {
@@ -583,6 +583,11 @@ public class SapOrderAdapter implements SapOrderI {
 			//Ignore begining zeroes. 0000100000 --> 100000
 			return orderLine.getPricingZoneId();
 		}
+	}
+
+	@Override
+	public ErpChargeLineModel getCharge(EnumChargeType chargeType) {
+		return erpOrder.getCharge(chargeType);
 	}
 
 }

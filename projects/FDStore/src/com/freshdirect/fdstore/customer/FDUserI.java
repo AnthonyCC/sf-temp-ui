@@ -80,6 +80,8 @@ public interface FDUserI extends java.io.Serializable {
 	public int getLevel();
 
 	public boolean isInZone();
+	
+	public double getPremiumFee();
 
     public void isLoggedIn(boolean loggedId);
 

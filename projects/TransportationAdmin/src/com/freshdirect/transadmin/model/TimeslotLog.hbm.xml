@@ -29,6 +29,9 @@
         <property name="comments" type="string">
             <column name="COMMENTS" />
         </property>
+          <property name="sameDay" type="string">
+            <column name="sameDay" />
+        </property>
         <set name="timeslotLogDtls" inverse="false" lazy="false" table="TIMESLOT_EVENT_DTL" fetch="join">
             <key>
                 <column name="TIMESLOT_LOG_ID" length="16" />

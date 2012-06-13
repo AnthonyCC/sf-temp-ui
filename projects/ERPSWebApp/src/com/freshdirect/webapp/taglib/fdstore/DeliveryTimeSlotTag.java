@@ -10,6 +10,7 @@
 package com.freshdirect.webapp.taglib.fdstore;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
@@ -17,6 +18,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
@@ -137,9 +139,9 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag<Result> {
 	
 	
 	
-	private DateRange createDateRange(int end) {
+	private DateRange createDateRange(int begin, int end) {
 		Calendar begCal = Calendar.getInstance();
-		begCal.add(Calendar.DATE, 1);
+		begCal.add(Calendar.DATE, begin);
 		begCal = DateUtil.truncate(begCal);
 
 		Calendar endCal = Calendar.getInstance();
@@ -173,8 +175,10 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag<Result> {
 		//getRestriction reasons
 		getRestrictionReason(cart, deliveryModel);
 		
-		DateRange baseRange = createDateRange(8);
-		DateRange geoRestrictionRange = createDateRange(7);
+		boolean showPremiumSlots = false;
+		
+		DateRange baseRange = createDateRange(0, 8);
+		DateRange geoRestrictionRange = createDateRange(0, 7);
 		
 		DlvRestrictionsList restrictions = FDDeliveryManager.getInstance().getDlvRestrictions();
 
@@ -222,6 +226,14 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag<Result> {
 		
 		List<FDTimeslotUtil> timeslotList = getFDTimeslotListForDateRange(restrictions, dateRanges,
 				result, timeslotAddress, user,event);
+		
+		if(!cart.isDlvPassPremiumAllowedTC())
+			TimeslotLogic.purgeSDSlots(timeslotList);
+		
+		showPremiumSlots =TimeslotLogic.hasPremiumSlots(timeslotList, baseRange.getStartDate(), DateUtil.addDays(baseRange.getEndDate(),-1));
+		event.setSameDay(showPremiumSlots?"X":"");
+		
+		
 			
 		// list of timeslots that must be shown regardless of capacity
 		Set<String> retainTimeslotIds = new HashSet<String>();
@@ -301,13 +313,14 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag<Result> {
 		//set cart to model
 		deliveryModel.setShoppingCart(cart);
 		
+		deliveryModel.setShowPremiumSlots(showPremiumSlots);
+		deliveryModel.setSameDayCutoff(stats.getSameDayCutoff());
+		deliveryModel.setSameDayCutoffUTC(stats.getSameDayCutoffUTC());
 		result.setDeliveryTimeslotModel(deliveryModel);
+		
 		return result;
 	}
 	
-
-	
-
 	private Result getGenericTimeslots() throws FDResourceException {
 		final FDUserI user = (FDUserI) pageContext.getSession().getAttribute(SessionName.USER);
 		final FDCartModel cart = user.getShoppingCart();
@@ -322,7 +335,7 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag<Result> {
 		ErpAddressModel tsAddress = performCosResidentialMerge();
 
 		
-		DateRange range = createDateRange(8);
+		DateRange range = createDateRange(1,8);
 		// DateRange geoRestrictionRange = createDateRange(7);
 
 
@@ -413,7 +426,7 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag<Result> {
 			} else {
 				sessionEvent = new SessionEvent();
 			}
-			
+			sessionEvent.setSameDay(event.getSameDay());
 			for (FDTimeslotUtil timeslots : timeslotList) {
 				if(timeslots != null) 
 				{

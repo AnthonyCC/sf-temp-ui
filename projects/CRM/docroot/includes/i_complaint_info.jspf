@@ -333,14 +333,14 @@ ErpPaymentMethodI __paymentMethod	= (ErpPaymentMethodI) paymentMethod;
         <td width="4%" colspan="2"><BR></td>
         <td width="23%" align="right">&nbsp;</td>
         <td width="9%">Shipping&nbsp;</td>
-        <td width="7%" align="center"><%= (__order.isDeliveryChargeWaived()) ? "WAIVED" : JspMethods.formatPrice(__order.getDeliverySurcharge()) %></td>
+        <td width="7%" align="center"><%= (__order.isDeliveryChargeWaived()) ? "WAIVED" : JspMethods.formatPrice(__order.getDeliveryCharge()) %></td>
         <td width="7%" colspan="2">&nbsp;</td>
         <td width="7%">Shipping&nbsp;</td>
-        <td width="5%" align="center"><%= (__order.isDeliveryChargeWaived()) ? "WAIVED" : JspMethods.formatPrice(__order.getDeliverySurcharge()) %></td>
+        <td width="5%" align="center"><%= (__order.isDeliveryChargeWaived()) ? "WAIVED" : JspMethods.formatPrice(__order.getDeliveryCharge()) %></td>
         <td width="5%" colspan="2" align="center"><BR></td>
         <td width="17%" align="RIGHT">&nbsp;</td>
         <td width="8%">Shipping</td>
-        <td width="5%" align="center"><%= (__order.isDeliveryChargeWaived()) ? "WAIVED" : JspMethods.formatPrice(__order.getDeliverySurcharge()) %></td>
+        <td width="5%" align="center"><%= (__order.isDeliveryChargeWaived()) ? "WAIVED" : JspMethods.formatPrice(__order.getDeliveryCharge()) %></td>
         <td width="1%">&nbsp;</td>
     </tr>
     <tr valign="bottom">

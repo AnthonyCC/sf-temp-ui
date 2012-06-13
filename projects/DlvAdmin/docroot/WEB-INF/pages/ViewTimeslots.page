@@ -116,33 +116,74 @@
         <binding name="value" expression='getBaseCapacityTotal(currentZone.zoneCode,currentDay)'/>
     </component>
 
+ 	<component id="insertPremiumCapacityTotal_Z" type="Insert">
+        <binding name="value" expression='getPremiumCapacityTotal(currentZone.zoneCode,currentDay)'/>
+    </component>
+    
     <component id="insertBaseCapacityTotal_T" type="Insert">
         <binding name="value" expression='getBaseCapacityTotal(currentDay,window,cutoff)'/>
+    </component>
+    
+    <component id="insertPremiumCapacityTotal_T" type="Insert">
+        <binding name="value" expression='getPremiumCapacityTotal(currentDay,window,cutoff)'/>
     </component>
     
    	<component id="insertBaseAllocationTotal_Z" type="Insert">
         <binding name="value" expression='getBaseAllocationTotal(currentZone.zoneCode,currentDay)'/>
     </component>
 
+   	<component id="insertPremiumAllocationTotal_Z" type="Insert">
+        <binding name="value" expression='getPremiumAllocationTotal(currentZone.zoneCode,currentDay)'/>
+    </component>
+
+
     <component id="insertBaseAllocationTotal_T" type="Insert">
         <binding name="value" expression='getBaseAllocationTotal(currentDay,window,cutoff)'/>
     </component>
     
+    <component id="insertPremiumAllocationTotal_T" type="Insert">
+        <binding name="value" expression='getPremiumAllocationTotal(currentDay,window,cutoff)'/>
+    </component>
+    
+    
+    
     <component id="insertCTCapacityTotal_Z" type="Insert">
         <binding name="value" expression='getCTCapacityTotal(currentZone.zoneCode,currentDay)'/>
     </component>
+    
+   	<component id="insertPremiumCtCapacityTotal_Z" type="Insert">
+        <binding name="value" expression='getPremiumCtCapacityTotal(currentZone.zoneCode,currentDay)'/>
+    </component>
+
 
     <component id="insertCTCapacityTotal_T" type="Insert">
         <binding name="value" expression='getCTCapacityTotal(currentDay,window,cutoff)'/>
     </component>
     
+    <component id="insertPremiumCtCapacityTotal_T" type="Insert">
+        <binding name="value" expression='getPremiumCtCapacityTotal(currentDay,window,cutoff)'/>
+    </component>
+    
+    
     <component id="insertCTAllocationTotal_Z" type="Insert">
         <binding name="value" expression='getCTAllocationTotal(currentZone.zoneCode,currentDay)'/>
     </component>
+    
+    <component id="insertPremiumCtAllocationTotal_Z" type="Insert">
+        <binding name="value" expression='getPremiumCtAllocationTotal(currentZone.zoneCode,currentDay)'/>
+    </component>
+    
+    
+    
 
     <component id="insertCTAllocationTotal_T" type="Insert">
         <binding name="value" expression='getCTAllocationTotal(currentDay,window,cutoff)'/>
     </component>
+
+	 <component id="insertPremiumCtAllocationTotal_T" type="Insert">
+        <binding name="value" expression='getPremiumCtAllocationTotal(currentDay,window,cutoff)'/>
+    </component>
+
 
     <component id="insertDayHeader_T" type="Insert">
         <binding name="format" expression='dateFormatter'/>
@@ -200,20 +241,42 @@
         <binding name="value" expression='getPercentage(currentZoneTimeslot.value)'/>
     </component>
     
+    <component id="insertPremiumCtPercentage_T" type="Insert">
+        <binding name="format" expression='getPercentageFormatter()'/>
+        <binding name="value" expression='getPremiumCtPercentage(currentZoneTimeslot.value)'/>
+    </component>
+    
     <component id="insertPercentage_Z" type="Insert">
         <binding name="format" expression='getPercentageFormatter()'/>
         <binding name="value" expression='getPercentage(currentTimeslot)'/>
     </component>
+    
+    <component id="insertPremiumCtPercentage_Z" type="Insert">
+        <binding name="format" expression='getPercentageFormatter()'/>
+        <binding name="value" expression='getPremiumCtPercentage(currentTimeslot)'/>
+    </component>
+    
 
     <component id="insertPercentageTotal_Z" type="Insert">
         <binding name="format" expression='getPercentageFormatter()'/>
         <binding name="value" expression='getPercentageTotal(currentZone.zoneCode,currentDay)'/>
     </component>
     
+    <component id="insertPremiumCtPercentageTotal_Z" type="Insert">
+        <binding name="format" expression='getPercentageFormatter()'/>
+        <binding name="value" expression='getPremiumPercentageTotal(currentZone.zoneCode,currentDay)'/>
+    </component> 
+    
     <component id="insertPercentageTotal_T" type="Insert">
         <binding name="format" expression='getPercentageFormatter()'/>
         <binding name="value" expression='getPercentageTotal(currentDay,window,cutoff)'/>
     </component>
+    
+    <component id="insertPremiumCtPercentageTotal_T" type="Insert">
+        <binding name="format" expression='getPercentageFormatter()'/>
+        <binding name="value" expression='getPremiumPercentageTotal(currentDay,window,cutoff)'/>
+    </component>
+    
     
     <component id="insertZoneCapTotal" type="Insert">
         <binding name="value" expression='getZoneCapacityTotal(currentZone.zoneCode)'/>

@@ -536,8 +536,12 @@ public class FDStoreProperties {
 	private final static String PROP_MODIFY_ORDER_TOTOAL_MAX = "fdstore.modify.order.maxtotal";
 	
 	private final static String PROP_LIGHT_SIGNUP_ENABLED = "fdstore.signuplight.enabled";
+	private final static String ALLOW_DISCOUNTS_ON_PREMIUM_SLOT = "fdstore.allow.discount.premium.slot";
 	
+	private final static String DLV_PASS_NEW_TC_DATE = "fdstore.dlvpass.newtc.date";
 	
+	private final static String SAME_DAY_MEDIA_AFTER_CUTOFF = "fdstore.sameday.aftercutoffmedia.duration";
+
     static {
         defaults.put(PROP_ROUTING_PROVIDER_URL, "t3://localhost:7001");
         defaults.put(PROP_PROVIDER_URL, "t3://localhost:7001");
@@ -1066,6 +1070,10 @@ public class FDStoreProperties {
 		defaults.put(PROP_MODIFY_ORDER_TOTOAL_MAX, "1500");
 		
 		defaults.put(PROP_LIGHT_SIGNUP_ENABLED, "true");
+		
+		defaults.put(ALLOW_DISCOUNTS_ON_PREMIUM_SLOT, "false");
+		defaults.put(DLV_PASS_NEW_TC_DATE, "2012-06-06");
+		defaults.put(SAME_DAY_MEDIA_AFTER_CUTOFF, "30");
 		
         refresh();
     }
@@ -2707,7 +2715,11 @@ public class FDStoreProperties {
     }
     
     public static String getModifyOrderMaxTotal() {
-    	return config.getProperty(PROP_MODIFY_ORDER_TOTOAL_MAX);
+    	return config.getProperty("PROP_MODIFY_ORDER_TOTOAL_MAX");
+    }
+    
+    public static int getSameDayMediaAfterCutoffDuration() {
+    	return  Integer.parseInt(get(SAME_DAY_MEDIA_AFTER_CUTOFF));
     }
     
     public static boolean isTransactionEmailEnabled() {
@@ -2738,9 +2750,30 @@ public class FDStoreProperties {
 				
 		return false;
 	}
+
+	public static boolean allowDiscountsOnPremiumSlots() {
+		        return Boolean.getBoolean(get(ALLOW_DISCOUNTS_ON_PREMIUM_SLOT));
+		    }
 	
-	public static boolean isLightSignupEnabled() {
+	 public static Date getDlvPassNewTCDate() {
+	        Date date = null;
+	       
+	        try {
+	            date = SF.parse(get(DLV_PASS_NEW_TC_DATE));
+	        } catch (ParseException e) {
+	            try {
+	                date = SF.parse("2199-01-01");
+	                LOGGER.warn(
+	                    "fdstore.dlvpass.newtc.date property in fdstore.properties is not in correct yyyy-MM-dd format, defaulting to 2199-01-01");
+	            } catch (ParseException f) {
+	                throw new FDRuntimeException(
+	                    "Error parsing dlv tc date, default value");
+	            }
+	        }
+			return date;
+	        
+	 }
+    public static boolean isLightSignupEnabled() {
         return (Boolean.valueOf(get(PROP_LIGHT_SIGNUP_ENABLED))).booleanValue();
     }
-    
 }

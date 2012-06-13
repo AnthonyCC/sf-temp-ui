@@ -1,6 +1,7 @@
 package com.freshdirect.fdstore.util;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -22,7 +23,8 @@ public class DlvTimeslotStats {
 	int neighbourhoodSlots = 0;
 	double soldOut = 0.0;
 	double totalSlots = 0.0;
-
+	Date sameDayCutoff;
+	String sameDayCutoffUTC;
 	HashMap<String, DlvZoneModel> zonesMap = new HashMap<String, DlvZoneModel>();
 	boolean isAlcoholDelivery = false;
 	
@@ -124,4 +126,21 @@ public class DlvTimeslotStats {
 					.round((soldOut / totalSlots) * 100) : 0.0);
 		}
 	}
+
+	public Date getSameDayCutoff() {
+		return sameDayCutoff;
+	}
+
+	public void setSameDayCutoff(Date sameDayCutoff) {
+		this.sameDayCutoff = sameDayCutoff;
+	}
+
+	public String getSameDayCutoffUTC() {
+		return sameDayCutoffUTC;
+	}
+
+	public void setSameDayCutoffUTC(String sameDayCutoffUTC) {
+		this.sameDayCutoffUTC = sameDayCutoffUTC;
+	}
+
 }

@@ -269,7 +269,7 @@
 			<td colspan="1" align="right" width="60">
 				<xsl:choose>
 					<xsl:when test="order/deliveryChargeWaived = 'true'">$0.00</xsl:when>
-					<xsl:otherwise><xsl:value-of select="format-number(order/deliverySurcharge, '$###,##0.00', 'USD')"/></xsl:otherwise>
+					<xsl:otherwise><xsl:value-of select="format-number(order/deliveryCharge, '$###,##0.00', 'USD')"/></xsl:otherwise>
 				</xsl:choose>
 			</td>
 			<td></td>

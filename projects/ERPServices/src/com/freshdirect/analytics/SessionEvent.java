@@ -18,6 +18,7 @@ public class SessionEvent extends EventModel{
 	private String isTimeout = "Y";
 	private String pageType;
 	private String sector;
+	private String sameDay;
 	
 	public String getCustomerId() {
 		return customerId;
@@ -96,5 +97,11 @@ public class SessionEvent extends EventModel{
 	}
 	public void setSector(String sector) {
 		this.sector = sector;
+	}
+	public String getSameDay() {
+		return sameDay;
+	}
+	public void setSameDay(String sameDay) {
+		this.sameDay = sameDay;
 	}
 }

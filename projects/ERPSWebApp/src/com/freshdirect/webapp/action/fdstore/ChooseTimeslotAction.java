@@ -1,5 +1,7 @@
 package com.freshdirect.webapp.action.fdstore;
 
+import java.util.Calendar;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
@@ -22,6 +24,7 @@ import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDModifyCartModel;
 import com.freshdirect.fdstore.standingorders.FDStandingOrder;
 import com.freshdirect.fdstore.util.CTDeliveryCapacityLogic;
+import com.freshdirect.fdstore.util.TimeslotLogic;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.webapp.action.WebActionSupport;
 import com.freshdirect.webapp.taglib.fdstore.AddressUtil;
@@ -61,6 +64,7 @@ public class ChooseTimeslotAction extends WebActionSupport {
 		boolean chefsTable = user.isChefsTable() || "true".equals(request.getParameter("chefstable"));
 
 		FDTimeslot timeSlot = FDDeliveryManager.getInstance().getTimeslotsById(deliveryTimeSlotId);
+		
         String ctDeliveryProfile=CTDeliveryCapacityLogic.isEligible(user,timeSlot);
         if(timeSlot.getBaseAvailable()>0||chefsTable)
         {

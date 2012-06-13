@@ -42,6 +42,10 @@ public class DeliveryWindowMetrics  extends BaseModel  implements IDeliveryWindo
 	
 	private double totalCapacityTime;
 	
+	private int orderPremiumCapacity;
+	
+	private int orderPremiumCtCapacity;
+	
 	
 	public int getOrderCtCapacity() {
 		return orderCtCapacity;
@@ -193,5 +197,25 @@ public class DeliveryWindowMetrics  extends BaseModel  implements IDeliveryWindo
 
 	public void setTotalAllocatedOrders(int totalAllocatedOrders) {
 		this.totalAllocatedOrders = totalAllocatedOrders;
+	}
+
+	@Override
+	public int getOrderPremiumCapacity() {
+		return orderPremiumCapacity;
+	}
+
+	@Override
+	public int getOrderPremiumCtCapacity() {
+		return orderPremiumCtCapacity;
+	}
+
+	@Override
+	public void setOrderPremiumCapacity(int orderPremiumCapacity) {
+		 this.orderPremiumCapacity = orderPremiumCapacity;
+	}
+
+	@Override
+	public void setOrderPremiumCtCapacity(int orderPremiumCtCapacity) {
+		 this.orderPremiumCtCapacity = orderPremiumCtCapacity;
 	}
 }

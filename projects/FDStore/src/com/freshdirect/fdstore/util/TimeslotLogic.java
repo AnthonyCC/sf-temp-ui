@@ -3,6 +3,7 @@
  */
 package com.freshdirect.fdstore.util;
 
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -11,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang.time.DateUtils;
 import org.apache.log4j.Logger;
 
 import com.freshdirect.customer.ErpAddressModel;
@@ -24,12 +26,14 @@ import com.freshdirect.delivery.restriction.GeographyRestriction;
 import com.freshdirect.delivery.restriction.RestrictionI;
 import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.FDTimeslot;
 import com.freshdirect.fdstore.FDZoneNotFoundException;
 import com.freshdirect.fdstore.customer.FDDeliveryTimeslotModel;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.promotion.PromotionHelper;
 import com.freshdirect.framework.util.DateRange;
+import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.routing.model.IDeliverySlot;
 import com.freshdirect.routing.model.IDeliveryWindowMetrics;
@@ -87,6 +91,8 @@ public class TimeslotLogic {
 				
 				_metrics.setOrderCapacity(capacityProvider.getCalculatedDynamicCapacity());
 				_metrics.setOrderCtCapacity(capacityProvider.getCalculatedDynamicCTCapacity());
+				_metrics.setOrderPremiumCapacity(capacityProvider.getCalculatedDynamicPremiumCapacity());
+				_metrics.setOrderPremiumCtCapacity(capacityProvider.getCalculatedDynamicPremiumCTCapacity());
 			}
 		}
 		return _metrics;
@@ -129,11 +135,10 @@ public class TimeslotLogic {
 
 		final DlvTimeslotStats stats = new DlvTimeslotStats();
 		HashMap<String, DlvZoneModel> _zonesMap = new HashMap<String, DlvZoneModel>();
-
+		final double premiumFee = user.getPremiumFee();
 		final boolean isAlcoholDlv = FDDeliveryManager.getInstance()
 				.checkForAlcoholDelivery(address);
 		stats.setAlcoholDelivery(isAlcoholDlv);
-
 		for (FDTimeslotUtil list : timeslotList) {
 			for (Collection<FDTimeslot> col : list.getTimeslots()) {
 				for (FDTimeslot timeslot : col) {
@@ -155,10 +160,20 @@ public class TimeslotLogic {
 					double steeringDiscount = 0;
 					if (!genericTimeslots) {
 						// Calculate steering discount and apply to the current timeslot
-						steeringDiscount = PromotionHelper.getDiscount(user, timeslot);
+						if(_ts.isPremiumSlot())
+						{
+							_ts.setPremiumAmount(premiumFee);
+							stats.setSameDayCutoffUTC(DateUtil.getUTCDate(_ts.getCutoffTimeAsDate()));
+							stats.setSameDayCutoff(_ts.getCutoffTimeAsDate());
+						}
+						else if(!_ts.isPremiumSlot() || (_ts.isPremiumSlot() && FDStoreProperties.allowDiscountsOnPremiumSlots()))
+						{
+							steeringDiscount = PromotionHelper.getDiscount(
+								user, timeslot);
 						_ts.setSteeringDiscount(steeringDiscount);
+						}
 					}
-
+					
 					// Apply geo restrictions and
 					//   mark timeslot for removal if restricted
 					{
@@ -175,6 +190,16 @@ public class TimeslotLogic {
 							_remove = true;
 						}
 					}
+					
+					Calendar cal = Calendar.getInstance();
+					Date now = cal.getTime();
+					//Remove the same day slots that are passed cutoff
+					if(timeslot.getDlvTimeslot().isPremiumSlot() && timeslot.getCutoffDateTime().before(now))
+					{
+						timeslot.setUnavailable(true);
+						_remove = true;
+					}
+					
 
 
 					// Build zone map
@@ -346,5 +371,68 @@ public class TimeslotLogic {
 				}
 			}
 		}
+	}
+	
+
+	/**
+	 * Utility method to purge SameDay items from timeslot list
+	 * 
+	 * @param timeslotList
+	 */
+	public static void purgeSDSlots(Collection<FDTimeslotUtil> timeslotList) {
+		for (FDTimeslotUtil list : timeslotList) {
+			for (Collection<FDTimeslot> col : list.getTimeslots()) {
+				for (Iterator<FDTimeslot> k = col.iterator(); k.hasNext(); ) {
+					FDTimeslot timeslot = k.next();
+					if (timeslot.getDlvTimeslot().isPremiumSlot())
+						k.remove();
+				}
+			}
+		}
+	}
+	public static boolean hasPremiumSlots(List<FDTimeslotUtil> timeslotList, Date startDate, Date endDate)
+	{
+		Iterator<FDTimeslotUtil> it = timeslotList.iterator();
+		FDTimeslotUtil fdTsu;List<FDTimeslot> fdTsList;
+		for(;it.hasNext();)
+		{
+			fdTsu = it.next();
+			fdTsList = fdTsu.getTimeslotsForDate(startDate);
+			if(fdTsList==null || fdTsList.size()==0 )
+			{
+				fdTsu.removeTimeslots(startDate);
+				startDate = DateUtil.addDays(startDate, 1);
+				fdTsList = fdTsu.getTimeslotsForDate(startDate);
+				return hasPremiumSlot(fdTsList);
+			}
+			else if(fdTsList!=null && fdTsList.size()>0 )
+			{
+				fdTsu.removeTimeslots(endDate);
+				return hasPremiumSlot(fdTsList);
+			}
+		}
+		
+		return false;
+	}
+	
+	public static boolean hasPremiumSlot(List<FDTimeslot> fdTsList)
+	{
+		FDTimeslot fdT;
+		if(fdTsList!=null && fdTsList.size()>0 )
+		{
+			Iterator<FDTimeslot> fit = fdTsList.iterator();
+			for(;fit.hasNext();)
+			{
+				fdT = fit.next();
+				return hasPremiumSlot(fdT);
+				
+			}
+		}
+		return false;
+	}
+	
+	public static boolean hasPremiumSlot(FDTimeslot fdT)
+	{
+		return fdT.getDlvTimeslot().isPremiumSlot();
 	}
 }

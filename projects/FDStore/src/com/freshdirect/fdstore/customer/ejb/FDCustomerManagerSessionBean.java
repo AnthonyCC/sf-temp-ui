@@ -643,7 +643,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 					expDate, originalOrderId, remDlvs, usedDlvs,
 					usablePassCount, isFreeTrialRestricted,
 					autoRenewUsablePassCount, autoRenewDPType,
-					autoRenewDPPrice.doubleValue());
+					autoRenewDPPrice.doubleValue(),model.getPurchaseDate());
 			if (!EnumDlvPassStatus.NONE.equals(dlvPassStatus)
 					&& (type.isUnlimited())
 					&& (EnumDlvPassStatus.CANCELLED.equals(dlvPassStatus) || EnumDlvPassStatus.EXPIRED
@@ -678,7 +678,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			// Identity will be null when he/she is a anonymous user. Create
 			// a default info object.
 			dlvPassInfo = new FDUserDlvPassInfo(EnumDlvPassStatus.NONE,
-					null, null, null, 0, 0, 0, false, 0, null, 0);
+					null, null, null, 0, 0, 0, false, 0, null, 0,null);
 			dlvPassInfo.setDPSavings(0.0);
 		}
 		return dlvPassInfo;
@@ -3675,7 +3675,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 				.getExpirationDateTime(), rsv.getReservationType(), rsv
 				.getCustomerId(), addressId, rsv.isChefsTable(), rsv
 				.isUnassigned(), rsv.getOrderId(), rsv.isInUPS(), rsv
-				.getUnassignedActivityType(), rsv.getStatusCode());
+				.getUnassignedActivityType(), rsv.getStatusCode(),rsv.getRsvClass());
 
 	}
 

@@ -44,4 +44,7 @@ public interface DlvAdminManagerSB extends EJBObject {
 	
 	public List getEarlyWarningData(Date day) throws DlvResourceException, RemoteException;
 
+	public void updatePremiumCtZone(String zoneCode,
+			boolean premiumCtActive, int premiumCtReleaseTime)throws DlvResourceException, RemoteException;
+	
 }

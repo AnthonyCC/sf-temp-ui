@@ -263,24 +263,24 @@
          
             if(order.isDlvPassApplied()) {
             	displayString = "Delivery Charge:";
-		value.append(DeliveryPassUtil.getDlvPassAppliedMessage(user));
+		value.append(order.getDeliveryCharge()>0?JspMethods.formatPrice(order.getDeliveryCharge()):DeliveryPassUtil.getDlvPassAppliedMessage(user) );
 	    } else if(order.isDeliveryChargeWaived()) {
 		displayString = "Delivery Charge (waived):";
 		value.append("$0.00");
 	    } else {
 		displayString = "Delivery Charge:";
-		value.append(JspMethods.formatPrice(order.hasInvoice() ? order.getInvoicedDeliveryCharge() : order.getDeliverySurcharge()));
+		value.append(JspMethods.formatPrice(order.hasInvoice() ? order.getInvoicedDeliveryCharge() : order.getDeliveryCharge()));
 		value.append(order.isDeliveryChargeTaxable() ? "&nbsp;T" : "");
 	    }
 	    
 	    if(order.hasReturn()) {
 	     	value.append(" / ");
 	        if(order.isDlvPassAppliedOnReturn()) {
-		   returnValue.append(DeliveryPassUtil.getDlvPassAppliedMessage(user));
+		   returnValue.append(order.getDeliveryCharge()>0?JspMethods.formatPrice(order.getDeliveryCharge()):DeliveryPassUtil.getDlvPassAppliedMessage(user) );
 	        } else if(order.isChargedWaivedForReturn(EnumChargeType.DELIVERY)) {
 		   returnValue.append("$0.00 (waived)");
 	        } else {
-		   returnValue.append(JspMethods.formatPrice(order.getDeliverySurchargeOnReturn()));
+		   returnValue.append(JspMethods.formatPrice(order.getDeliveryChargeOnReturn()));
 		   returnValue.append(order.isDeliveryChargeTaxable() ? "&nbsp;T" : "");
 	        }
 	     	

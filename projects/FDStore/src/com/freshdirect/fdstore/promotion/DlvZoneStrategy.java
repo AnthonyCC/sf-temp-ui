@@ -7,6 +7,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import com.freshdirect.delivery.EnumDeliveryOption;
+import com.freshdirect.delivery.model.DlvTimeslotModel;
 import com.freshdirect.fdstore.FDReservation;
 import com.freshdirect.fdstore.FDTimeslot;
 import com.freshdirect.framework.util.DateUtil;
@@ -19,6 +21,7 @@ public class DlvZoneStrategy implements PromotionStrategyI {
 	private Map<Integer,List<PromotionDlvTimeSlot>> dlvTimeSlots;
 	private List<PromotionDlvDate> dlvDates;
 	private String dlvZoneId;
+	private EnumDeliveryOption dlvDayType;
 	
 	
 	public String getDlvDays() {
@@ -79,7 +82,8 @@ public class DlvZoneStrategy implements PromotionStrategyI {
 						TimeOfDay dlvEndTimeOfDay = dlvReservation.getTimeslot().getDlvTimeslot().getEndTime();
 						List<PromotionDlvTimeSlot> dlvTimeSlotList = dlvTimeSlots.get(day);
 						if(null != dlvTimeSlotList){
-							if(checkDlvTimeSlots(dlvStartTimeOfDay,dlvEndTimeOfDay, dlvTimeSlotList))
+//							if(checkDlvTimeSlots(dlvStartTimeOfDay,dlvEndTimeOfDay, dlvTimeSlotList))
+							if(checkDlvTimeSlots(dlvReservation.getTimeslot().getDlvTimeslot(), dlvTimeSlotList))
 								return ALLOW;
 							else{
 								context.getUser().addPromoErrorCode(promotionCode, PromotionErrorType.NO_ELIGIBLE_TIMESLOT_SELECTED.getErrorCode());
@@ -113,6 +117,25 @@ public class DlvZoneStrategy implements PromotionStrategyI {
 			if((dlvStartTimeOfDay.equals(promoDlvSlotStartTime) || dlvStartTimeOfDay.after(promoDlvSlotStartTime)) && 
 					(dlvEndTimeOfDay.before(promoDlvSlotEndTime) || dlvEndTimeOfDay.equals(promoDlvSlotEndTime))){
 				isOK = true;
+			}
+		}
+		return isOK;
+	}
+	
+	private boolean checkDlvTimeSlots(DlvTimeslotModel dlvTimeslotModel, List<PromotionDlvTimeSlot> dlvTimeSlotList) {
+		boolean isOK = false;
+		if(null !=dlvTimeslotModel){
+			TimeOfDay dlvStartTimeOfDay = dlvTimeslotModel.getStartTime();
+			TimeOfDay dlvEndTimeOfDay = dlvTimeslotModel.getEndTime();
+			for (Iterator<PromotionDlvTimeSlot> iterator = dlvTimeSlotList.iterator(); iterator.hasNext();) {
+				PromotionDlvTimeSlot promoDlvTimeSlot = iterator.next();
+				TimeOfDay promoDlvSlotStartTime = new TimeOfDay(promoDlvTimeSlot.getDlvTimeStart());									
+				TimeOfDay promoDlvSlotEndTime = new TimeOfDay(promoDlvTimeSlot.getDlvTimeEnd());
+				if((dlvStartTimeOfDay.equals(promoDlvSlotStartTime) || dlvStartTimeOfDay.after(promoDlvSlotStartTime)) && 
+						(dlvEndTimeOfDay.before(promoDlvSlotEndTime) || dlvEndTimeOfDay.equals(promoDlvSlotEndTime))
+						&& checkDlvDayTypeEligibility(dlvTimeslotModel.isPremiumSlot())){
+					isOK = true;
+				}
 			}
 		}
 		return isOK;
@@ -176,8 +199,8 @@ public class DlvZoneStrategy implements PromotionStrategyI {
 			TimeOfDay dlvEndTimeOfDay = ts.getDlvTimeslot().getEndTime();
 			List<PromotionDlvTimeSlot> dlvTimeSlotList = dlvTimeSlots.get(day);
 			if(null!= dlvTimeSlotList){
-				return checkDlvTimeSlots(dlvStartTimeOfDay,
-						dlvEndTimeOfDay, dlvTimeSlotList); 
+//				return checkDlvTimeSlots(dlvStartTimeOfDay,dlvEndTimeOfDay, dlvTimeSlotList);
+				return checkDlvTimeSlots(ts.getDlvTimeslot(), dlvTimeSlotList);
 			}
 		}
 		return e;
@@ -188,7 +211,28 @@ public class DlvZoneStrategy implements PromotionStrategyI {
 		
 		return 0;
 	}
+
+	public EnumDeliveryOption getDlvDayType() {
+		return dlvDayType;
+	}
+
+	public void setDlvDayType(EnumDeliveryOption dlvDayType) {
+		this.dlvDayType = dlvDayType;
+	}
 	
+	public boolean checkDlvDayTypeEligibility(boolean isPremiumSlot){
+		boolean isOK = false;
+		if(null == dlvDayType || EnumDeliveryOption.ALL.equals(dlvDayType)){
+			isOK = true;
+		}else{
+			if(isPremiumSlot){
+				isOK = EnumDeliveryOption.SAMEDAY.equals(dlvDayType) ;
+			}else{
+				isOK = EnumDeliveryOption.REGULAR.equals(dlvDayType); 
+			}
+		}
+		return isOK;		
+	}
 	/*public int evaluateByZoneCode(String zoneCode){
 		if(null != zoneCode && !"".equals(zoneCode.trim())){
 			if(null != dlvZones && dlvZones.size() != 0 && (dlvZones.contains(zoneCode) || dlvZones.contains("ALL"))){

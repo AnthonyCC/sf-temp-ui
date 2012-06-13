@@ -2,6 +2,7 @@ package com.freshdirect.fdstore.promotion.management;
 
 import java.util.Date;
 
+import com.freshdirect.delivery.EnumDeliveryOption;
 import com.freshdirect.fdstore.promotion.EnumPromotionStatus;
 import com.freshdirect.framework.core.ModelSupport;
 
@@ -11,6 +12,7 @@ public class WSPromotionInfo extends ModelSupport {
 	private Date effectiveDate;
 	private Date startDate;
 	private Date endDate;
+	private EnumDeliveryOption deliveryDayType;
 	public Date getStartDate() {
 		return startDate;
 	}
@@ -99,6 +101,12 @@ public class WSPromotionInfo extends ModelSupport {
 	}
 	public void setStatus(EnumPromotionStatus status) {
 		this.status = status;
+	}
+	public EnumDeliveryOption getDeliveryDayType() {
+		return deliveryDayType;
+	}
+	public void setDeliveryDayType(EnumDeliveryOption deliveryDayType) {
+		this.deliveryDayType = deliveryDayType;
 	}
 	
 }

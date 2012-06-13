@@ -31,6 +31,12 @@
         		<span jwcid="@If" condition="ognl:showCT">
 					<td align="center" colspan="5" class="ct" nowrap><b>Chef's Table</b></td>              
         		</span>
+        		<span jwcid="@If" condition="ognl:showPremium">
+					<td align="center" colspan="5" class="premium" nowrap><b>Premium</b></td>              
+        		</span>
+        		<span jwcid="@If" condition="ognl:showPremiumCt">
+					<td align="center" colspan="5" class="premiumCt" nowrap><b>Premium CT</b></td>              
+        		</span>
             </tr>    
 			<tr>
 				<td><b>Name</b></td>
@@ -48,13 +54,27 @@
 					<td class="base"><b>% Orders</b></td>
 					<td class="base"><b>Base Alloc</b></td>
 					<td class="base"><b>% Alloc</b></td>
-                </span>    
-            	<span jwcid="@If" condition="ognl:showCT">
+                </span>  
+                <span jwcid="@If" condition="ognl:showCT">
 					<td class="ct"><b>Cap</b></td>
 					<td class="ct"><b>Orders</b></td>
-					<td class="ct"><b>%</b></td>
-					<td class="ct"><b>Alloc</b></td>
-					<td class="ct"><b>%</b></td>
+					<td class="ct"><b>% Orders</b></td>
+					<td class="ct"><b>Base Alloc</b></td>
+					<td class="ct"><b>% Alloc</b></td>
+                </span>    
+            	<span jwcid="@If" condition="ognl:showPremium">
+					<td class="premium"><b>Cap</b></td>
+					<td class="premium"><b>Orders</b></td>
+					<td class="premium"><b>%</b></td>
+					<td class="premium"><b>Alloc</b></td>
+					<td class="premium"><b>%</b></td>
+                </span> 
+                <span jwcid="@If" condition="ognl:showPremiumCt">
+					<td class="premiumCt"><b>Cap</b></td>
+					<td class="premiumCt"><b>Orders</b></td>
+					<td class="premiumCt"><b>%</b></td>
+					<td class="premiumCt"><b>Alloc</b></td>
+					<td class="premiumCt"><b>%</b></td>
                 </span>    
                  
 			</tr>
@@ -82,6 +102,20 @@
 						<td jwcid="@Any" class="ognl:getDataRowClass(currentData.getPercentCTAllocation())"><span jwcid="insertPercentCTOrder" /></td>
 						<td jwcid="@Any" class="ognl:getDataRowClass(currentData.getPercentCTAllocation())"><span jwcid="@Insert" value="ognl:currentData.getCTAllocation()" /></td> 
 						<td jwcid="@Any" class="ognl:getDataRowClass(currentData.getPercentCTAllocation())"><span jwcid="insertPercentCTAlloc" /></td>
+                    </span>   
+                    <span jwcid="@If" condition="ognl:showPremium">
+						<td jwcid="@Any" class="ognl:getDataRowClass(currentData.getPremiumPercentAllocation())"><span jwcid="@Insert" value="ognl:currentData.getPremiumCapacity()" /></td>
+						<td jwcid="@Any" class="ognl:getDataRowClass(currentData.getPremiumPercentAllocation())"><span jwcid="@Insert" value="ognl:currentData.getPremiumOrder()" /></td> 
+						<td jwcid="@Any" class="ognl:getDataRowClass(currentData.getPremiumPercentAllocation())"><span jwcid="insertPremiumPercentOrder" /></td>
+						<td jwcid="@Any" class="ognl:getDataRowClass(currentData.getPremiumPercentAllocation())"><span jwcid="@Insert" value="ognl:currentData.getPremiumAllocation()" /></td>
+						<td jwcid="@Any" class="ognl:getDataRowClass(currentData.getPremiumPercentAllocation())"><span jwcid="insertPremiumPercentAlloc" /></td>
+                     </span>  
+                    <span jwcid="@If" condition="ognl:showPremiumCt && currentData.getPremiumCtActive()">  
+						<td jwcid="@Any" class="ognl:getDataRowClass(currentData.getPremiumPercentAllocation())"><span jwcid="@Insert" value="ognl:currentData.getPremiumCtCapacity()" /></td>
+						<td jwcid="@Any" class="ognl:getDataRowClass(currentData.getPercentCTAllocation())"><span jwcid="@Insert" value="ognl:currentData.getPremiumCtOrder()" /></td> 
+						<td jwcid="@Any" class="ognl:getDataRowClass(currentData.getPercentCTAllocation())"><span jwcid="insertPremiumCtPercentOrder" /></td>
+						<td jwcid="@Any" class="ognl:getDataRowClass(currentData.getPercentCTAllocation())"><span jwcid="@Insert" value="ognl:currentData.getPremiumCtAllocation()" /></td> 
+						<td jwcid="@Any" class="ognl:getDataRowClass(currentData.getPercentCTAllocation())"><span jwcid="insertPremiumCtPercentAlloc" /></td>
                     </span>                          
 				</tr>
 			</span>
@@ -109,6 +143,21 @@
                     <td><b><span jwcid="@Insert" value="ognl:getCTAllocationTotal()" /></b></td>                    
                     <td></td> 
                 </span>
+                 <span jwcid="@If" condition="ognl:showPremium">
+                    <td><b><span jwcid="@Insert" value="ognl:getPremiumCapacityTotal()" /></b></td>
+                    <td><b><span jwcid="@Insert" value="ognl:getPremiumOrderTotal()" /></b></td>
+                    <td></td>
+                    <td><b><span jwcid="@Insert" value="ognl:getPremiumAllocationTotal()" /></b></td>
+                    <td></td>   
+                </span>   
+				<span jwcid="@If" condition="ognl:showPremiumCt">  
+                    <td><b><span jwcid="@Insert" value="ognl:getPremiumCtCapacityTotal()" /></b></td>   
+                    <td><b><span jwcid="@Insert" value="ognl:getPremiumCtOrderTotal()" /></b></td>
+                    <td></td>
+                    <td><b><span jwcid="@Insert" value="ognl:getPremiumCtAllocationTotal()" /></b></td>                    
+                    <td></td> 
+                </span>
+                
 			</tr>
 		</table>
 		<br/><br/>

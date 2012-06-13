@@ -9,11 +9,12 @@
 <%@ page import="com.freshdirect.smartstore.fdstore.VariantSelection" %>
 <%@page import="com.freshdirect.framework.util.NVL"%>
 <%@page import="com.freshdirect.webapp.util.CCFormatter"%>
+<%@page import="com.freshdirect.delivery.EnumDeliveryOption"%>
 
 
 <%@page import="java.text.DateFormat"%>
 <%@page import="java.text.SimpleDateFormat"%>
-
+<fd:javascript src="/assets/javascript/promo.js"/>
 <%@page import="java.text.DecimalFormat"%><tmpl:insert template='/template/top_nav.jsp'>
 <%!
 	DateFormat DATE_YEAR_FORMATTER = new SimpleDateFormat("yyyy-MM-dd");
@@ -76,7 +77,8 @@ function numbersonly(myfield, e, dec)
 	String endTime = request.getParameter("endTime");
 	String discount = request.getParameter("discount");
 	String redeemLimit = request.getParameter("redeemlimit");
-
+	String deliveryDayType = request.getParameter("deliveryDayType");
+	EnumDeliveryOption dlvOption = EnumDeliveryOption.getEnum(deliveryDayType);
 	if(promotion != null && promotion.getPromotionCode() != null) {
 		if(f_effectiveDate == null)
 			f_effectiveDate =  CCFormatter.formatDateYear(promotion.getWSSelectedDlvDate());
@@ -94,6 +96,12 @@ function numbersonly(myfield, e, dec)
 			discount = promotion.getMaxAmount();
 		if(redeemLimit == null)
 			redeemLimit = String.valueOf(promotion.getRedeemCount());
+		if(deliveryDayType == null){
+			dlvOption =promotion.getCustStrategies().get(0).getDeliveryDayType();
+			if(null !=dlvOption){
+				deliveryDayType = dlvOption.getName(); 
+			}
+		}
 
 	}
 	Date defaultDate = DateUtil.addDays(today, 1); //Today + 1
@@ -146,6 +154,9 @@ function numbersonly(myfield, e, dec)
 				   <%@ include file="/includes/i_error_messages.jspf" %>   
 				</fd:ErrorHandler>
 				<fd:ErrorHandler result='<%= result %>' name='discount' id='errorMsg'>
+				   <%@ include file="/includes/i_error_messages.jspf" %>   
+				</fd:ErrorHandler>
+				<fd:ErrorHandler result='<%= result %>' name='deliveryDayType' id='errorMsg'>
 				   <%@ include file="/includes/i_error_messages.jspf" %>   
 				</fd:ErrorHandler>
 				<fd:ErrorHandler result='<%= result %>' name='timeslotError' id='errorMsg'>
@@ -338,8 +349,9 @@ function numbersonly(myfield, e, dec)
 			
 						    }
 			
-						</script>
+						</script>						
 					</td>		
+					
 				</tr>
 				<tr>
 					<td width="3%">&nbsp;</td>
@@ -441,7 +453,22 @@ function numbersonly(myfield, e, dec)
 							</logic:iterate>
 						</select>
 					</td>
-				</tr>		
+				</tr>	
+				<tr>
+					<td width="3%"></td>
+					<td class="alignL vTop padL8R16"><b>Delivery Day Type: </b>
+						<table class="tableCollapse" id="edit_dlvreq_addTypeParent" name="edit_dlvreq_addTypeParent" width="250px">
+							<tr>
+								<td><input type="radio" id="regular" value="R" name="deliveryDayType" <%= (null!=dlvOption && (EnumDeliveryOption.REGULAR.equals(dlvOption)))?"checked":"" %>/> <%=EnumDeliveryOption.REGULAR.getDeliveryOption() %></td>
+								<td><input type="radio" id="sameday" value="S" name="deliveryDayType" <%= (null!=dlvOption && EnumDeliveryOption.SAMEDAY.equals(dlvOption))?"checked":"" %>/> <%=EnumDeliveryOption.SAMEDAY.getDeliveryOption() %></td>
+								<td><input type="radio" id="all" value="A" name="deliveryDayType" <%= (( EnumDeliveryOption.ALL.equals(dlvOption)))?"checked":"" %>/> <%=EnumDeliveryOption.ALL.getDeliveryOption() %></td>
+								<td>&nbsp;</td>
+							</tr>							
+						</table>
+					</td>
+				</tr>										
+				
+				
 				<tr>
 					<td width="3%">&nbsp;</td>
 					<td width="35%">

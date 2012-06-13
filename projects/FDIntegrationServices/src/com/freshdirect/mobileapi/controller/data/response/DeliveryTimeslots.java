@@ -30,6 +30,8 @@ public class DeliveryTimeslots extends CheckoutResponse {
     private String selectedTimeslotId;
 
     private String reservedTimeslotId;
+    
+    private boolean showPremiumSlots;
 
     public String getReservedTimeslotId() {
         return reservedTimeslotId;
@@ -73,6 +75,16 @@ public class DeliveryTimeslots extends CheckoutResponse {
         }
         this.selectedTimeslotId = result.getPreselectedTimeslotId();
         this.reservedTimeslotId = result.getReservationTimeslotId();
+        this.showPremiumSlots = result.isshowPremiumSlots();
+        
     }
+
+	public boolean isShowPremiumSlots() {
+		return showPremiumSlots;
+	}
+
+	public void setShowPremiumSlots(boolean showPremiumSlots) {
+		this.showPremiumSlots = showPremiumSlots;
+	}
 
 }

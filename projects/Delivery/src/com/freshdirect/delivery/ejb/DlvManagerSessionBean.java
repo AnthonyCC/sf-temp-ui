@@ -75,6 +75,7 @@ import com.freshdirect.delivery.model.DlvReservationModel;
 import com.freshdirect.delivery.model.DlvTimeslotModel;
 import com.freshdirect.delivery.model.DlvZoneDescriptor;
 import com.freshdirect.delivery.model.DlvZoneModel;
+import com.freshdirect.delivery.model.EnumReservationClass;
 import com.freshdirect.delivery.model.SectorVO;
 import com.freshdirect.delivery.model.UnassignedDlvReservationModel;
 import com.freshdirect.delivery.restriction.GeographyRestriction;
@@ -378,7 +379,7 @@ public class DlvManagerSessionBean extends GatewaySessionBeanSupport {
 			SectorVO sectorInfo = DlvManagerDAO.getSectorInfo(con, address);
 			ps = con
 				.prepareStatement("INSERT INTO dlv.reservation(ID, TIMESLOT_ID, ZONE_ID, ORDER_ID, CUSTOMER_ID, STATUS_CODE" +
-						", EXPIRATION_DATETIME, TYPE, ADDRESS_ID, CHEFSTABLE, MODIFIED_DTTM,CT_DELIVERY_PROFILE,IS_FORCED, SECTOR) values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?,SYSDATE,?,?,?)");
+						", EXPIRATION_DATETIME, TYPE, ADDRESS_ID, CHEFSTABLE, MODIFIED_DTTM,CT_DELIVERY_PROFILE,IS_FORCED, SECTOR, CLASS) values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?,SYSDATE,?,?,?,?)");
 			String newId = this.getNextId(con, "DLV");
 			ps.setString(1, newId);
 			ps.setString(2, timeslotModel.getId());
@@ -393,6 +394,7 @@ public class DlvManagerSessionBean extends GatewaySessionBeanSupport {
 			ps.setString(11, profileName);
 			ps.setString(12, isForced  ? "X" : null );
 			ps.setString(13, sectorInfo != null  ? sectorInfo.getName() : null );
+			ps.setString(14, (timeslotModel.isPremiumSlot() && chefsTable ? EnumReservationClass.PREMIUMCT.getName(): (timeslotModel.isPremiumSlot() && !chefsTable)?EnumReservationClass.PREMIUM.getName():""));
 
 			ps.executeUpdate();
 			DlvReservationModel rsv = new DlvReservationModel(
@@ -408,6 +410,9 @@ public class DlvManagerSessionBean extends GatewaySessionBeanSupport {
 				timeslotModel.getBaseDate(),
 				timeslotModel.getZoneCode(),null,false,null, null, null, null, null, null, null, null, null);
 
+			EnumReservationClass rsvClass = (timeslotModel.isPremiumSlot() && chefsTable) ? EnumReservationClass.PREMIUMCT: (timeslotModel.isPremiumSlot() && !chefsTable)?EnumReservationClass.PREMIUM:null;
+			rsv.setRsvClass(rsvClass);
+			
 			return rsv;
 		} catch (SQLException se) {
 			this.getSessionContext().setRollbackOnly();
@@ -445,7 +450,6 @@ public class DlvManagerSessionBean extends GatewaySessionBeanSupport {
 			event.setEventDate(new Date());
 			event.setLatitude(address.getLatitude());
 			event.setLongitude(address.getLongitude());
-			event.setServiceType((address.getServiceType()!=null)?address.getServiceType().getName():"");
 			
 	
 			List<TimeslotEventDetailModel> slots = new ArrayList<TimeslotEventDetailModel>();
@@ -526,7 +530,6 @@ public class DlvManagerSessionBean extends GatewaySessionBeanSupport {
 		}
 		catch(Exception e)
 			{
-				e.printStackTrace();
 				LOGGER.info("Exception while logging the timeslot: "+e.getMessage());
 			}
 		finally
@@ -860,7 +863,8 @@ public class DlvManagerSessionBean extends GatewaySessionBeanSupport {
 	}
 
 	private final static String FIND_ZONES_BY_ZONEID_QUERY =
-		"select dz.id id, dz.name name, dz.region_data_id region_data_id , dz.zone_code zone_code , dz.plan_id plan_id, dz.CT_ACTIVE CT_ACTIVE, dz.CT_RELEASE_TIME CT_RELEASE_TIME, unattended from dlv.zone dz, transp.zone tz "+
+		"select dz.id id, dz.name name, dz.region_data_id region_data_id , dz.zone_code zone_code , dz.plan_id plan_id, dz.CT_ACTIVE CT_ACTIVE, " +
+		"dz.CT_RELEASE_TIME CT_RELEASE_TIME, dz.premium_ct_release_time, unattended, dz.premium_ct_active from dlv.zone dz, transp.zone tz "+
 		" where dz.zone_code = tz.zone_code(+)  "+
 		" and id = ? ";
 
@@ -878,11 +882,11 @@ public class DlvManagerSessionBean extends GatewaySessionBeanSupport {
 			rs = ps.executeQuery();
 			if (rs.next()) {
 				zoneModel = new DlvZoneModel(new PrimaryKey(rs.getString("id")),
-					rs.getString("name"),
-					rs.getString("plan_id"),
-					"X".equals(rs.getString("CT_ACTIVE")),
-					rs.getInt("CT_RELEASE_TIME"),
-					new DlvZoneDescriptor(rs.getString("zone_code"),"X".equals(rs.getString("unattended"))));
+						rs.getString("name"),
+						rs.getString("plan_id"),
+						"X".equals(rs.getString("CT_ACTIVE")),
+						"X".equals(rs.getString("PREMIUM_CT_ACTIVE")), rs.getInt("CT_RELEASE_TIME"),rs.getInt("PREMIUM_CT_RELEASE_TIME"),
+						new DlvZoneDescriptor(rs.getString("zone_code"),"X".equals(rs.getString("unattended"))));
 
 			} else {
 				throw new FinderException("Cannot find zone for zoneId: " + zoneId);
@@ -930,7 +934,8 @@ public class DlvManagerSessionBean extends GatewaySessionBeanSupport {
 	}
 
 	private static final String FIND_ZONES_BY_REGIONID_QUERY =
-	"select dz.id id, dz.name name, dz.region_data_id region_data_id, dz.zone_code zone_code, dz.plan_id plan_id, dz.CT_ACTIVE CT_ACTIVE, dz.CT_RELEASE_TIME CT_RELEASE_TIME, tz.unattended unattended "+
+	"select dz.id id, dz.name name, dz.region_data_id region_data_id, dz.zone_code zone_code, dz.plan_id plan_id, dz.CT_ACTIVE CT_ACTIVE, " +
+	"dz.premium_ct_active, dz.CT_RELEASE_TIME CT_RELEASE_TIME, dz.premium_ct_release_time, tz.unattended unattended "+
 	" from dlv.zone dz, transp.zone tz"+
 	" where dz.ZONE_CODE=tz.ZONE_CODE(+) "+
 	" and dz.region_data_id =?";
@@ -955,7 +960,7 @@ public class DlvManagerSessionBean extends GatewaySessionBeanSupport {
 					rs.getString("name"),
 					rs.getString("plan_id"),
 					"X".equals(rs.getString("CT_ACTIVE")),
-					rs.getInt("CT_RELEASE_TIME"),
+					"X".equals(rs.getString("PREMIUM_CT_ACTIVE")), rs.getInt("CT_RELEASE_TIME"),rs.getInt("PREMIUM_CT_RELEASE_TIME"),
 					new DlvZoneDescriptor(rs.getString("zone_code"),"X".equals(rs.getString("unattended"))));
 				ret.add(zoneModel);
 			}
@@ -1838,6 +1843,25 @@ public class DlvManagerSessionBean extends GatewaySessionBeanSupport {
 		}
 	}
 
+	
+	public Map<String, Map<Date,Date>> getCutoffTimes(AddressModel address, Date day) {
+		Connection conn = null;
+		try{
+			conn = this.getConnection();
+			return DlvManagerDAO.getCutoffTimes(conn, address, day);
+		}catch (SQLException e) {
+			throw new EJBException(e);
+		} finally {
+			try {
+				if (conn != null) {
+					conn.close();
+					conn = null;
+				}
+			} catch (SQLException e) {
+				LOGGER.warn("DlvManagerSB getCutoffInfo: Exception while cleaning: ", e);
+			}
+		}
+	}
 
 
 	public FDDynamicTimeslotList getTimeslotForDateRangeAndZoneEx(List<FDTimeslot> _timeSlots, TimeslotEventModel event, ContactAddressModel address) {

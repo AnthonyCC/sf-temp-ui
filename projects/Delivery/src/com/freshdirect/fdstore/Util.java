@@ -26,7 +26,7 @@ public class Util {
 		return (dlvZoneModel == null)?false:dlvZoneModel.isCtActive();
 		
 	}
-	
+		
 	public static boolean isDlvChargeWaived(ErpAbstractOrderModel order)
 	{
 		ErpChargeLineModel dlvCharge;

@@ -62,7 +62,8 @@ double cartTotal = ((FDUserI)session.getAttribute(SessionName.USER)).getShopping
 									String dlvCharge = JspMethods.formatPrice( cart.getDeliverySurcharge() );
 									if(cart.isDlvPassApplied()) {
 								%>
-									<%= DeliveryPassUtil.getDlvPassAppliedMessage(user) %>
+									<%= cart.getDeliveryCharge()>0?JspMethods.formatPrice(cart.getDeliveryCharge()):DeliveryPassUtil.getDlvPassAppliedMessage(user) %>
+									
 									
 								<%	} else if (cart.isDeliveryChargeWaived()) {
 										if((int)cart.getDeliverySurcharge() == 0){
@@ -71,7 +72,7 @@ double cartTotal = ((FDUserI)session.getAttribute(SessionName.USER)).getShopping
 										<% }else{ %> Free!(<%= dlvCharge %> waived)<% } %>
 												
 <%	} else { %>
-										<%= (int)cart.getDeliverySurcharge() == 0 ? "Free!" : dlvCharge %>
+										<%= (int)cart.getDeliverySurcharge() == 0 ? "Free!" : JspMethods.formatPrice(cart.getDeliveryCharge()) %>
 <%	} %>
 						</td>
 </tr>

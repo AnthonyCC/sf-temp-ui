@@ -2,6 +2,7 @@
 <%@page import="com.freshdirect.fdstore.promotion.management.FDPromoDlvTimeSlotModel"%>
 <%@page import="com.freshdirect.fdstore.promotion.management.FDPromoZipRestriction"%>
 <%@page import="com.freshdirect.fdstore.promotion.management.FDPromoStateCountyRestriction"%>
+<%@page import="com.freshdirect.delivery.EnumDeliveryOption"%>
 <%@page import="java.util.Set"%>
 <%@page import="java.util.Iterator"%>
 <%@page import="java.util.Map"%>
@@ -34,6 +35,7 @@
 <%
 	//construct the ordType string
 	String ordType = "";
+	String dlvDayType ="";
 		if (csm != null) {
 			ordType += (csm.isOrderTypeHome()) ? "Residential" : "";
 			ordType += (csm.isOrderTypeCorporate())
@@ -42,7 +44,11 @@
 			ordType += (csm.isOrderTypePickup())
 							? (csm.isOrderTypeHome() || csm.isOrderTypeCorporate()) ? ", Pickup" : "Pickup"
 							: "";
+			if(null !=csm.getDeliveryDayType()){
+				dlvDayType=csm.getDeliveryDayType().getName();
 			}
+			}
+	
 %>
 
 <%
@@ -80,6 +86,12 @@
 							<td class="alignL"><%= ordType %></td>
 						</tr>
 					<% } %>
+					
+						<tr>
+							<td class="promo_detail_label">Delivery day type:</td>
+							<td class="alignL"><%= null!=EnumDeliveryOption.getEnum(dlvDayType)?EnumDeliveryOption.getEnum(dlvDayType).getDeliveryOption():"" %></td>
+						</tr>
+					
 					<% if (zsm != null) { %>
 						<tr>
 							<td class="promo_detail_label">Delivery day(s):</td>

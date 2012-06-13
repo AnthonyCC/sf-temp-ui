@@ -13,6 +13,12 @@
         <span jwcid="@If" condition="ognl:showCT">
 			<td align="center" colspan="2" bgcolor="FFFF00" nowrap><b>Chef's Table</b></td>              
         </span>
+        <span jwcid="@If" condition="ognl:showPremium">
+			<td align="center" colspan="2" class="premium" nowrap><b>Premium</b></td>              
+        </span>
+        <span jwcid="@If" condition="ognl:showPremiumCt">
+			<td align="center" colspan="2" class="premiumCt" nowrap><b>Premium CT</b></td>              
+        </span>
 	</tr>
 	<tr bgcolor='dfdfdf'>
 			<td nowrap><b>Start Time-End Time</b></td>
@@ -31,6 +37,15 @@
 	   		<td class="ct"><b>Cap</b></td>
 			<td class="ct"><b>Alloc</b></td>
         </span>
+        <span jwcid="@If" condition="ognl:showPremium">        
+	   		<td class="premium"><b>Cap</b></td>
+			<td class="premium"><b>Alloc</b></td> 
+		</span> 
+		<span jwcid="@If" condition="ognl:showPremiumCt"> 
+	   		<td class="premiumCt"><b>Cap</b></td>
+			<td class="premiumCt"><b>Alloc</b></td>
+        </span>
+        
 	</tr>
     <span jwcid="@Foreach" source="ognl:resource.timeslotsByStartDate" value="ognl:currentTimeslot" >
 		<tr jwcid="@Any" class="ognl:currentTimeslot.capacityOverriden ? 'overriden' : 'normal'">
@@ -50,6 +65,15 @@
 				<td align="center" jwcid="@Any" bgcolor="ognl:currentTimeslot.isCTCapacityReleased(page.currentDate) ? 'red': 'dfdfdf'"><b><span jwcid="@Insert" value="ognl:currentTimeslot.chefsTableCapacity">32</span></b></td>
 				<td align="right" bgcolor="dfdfdf"><span  jwcid="@Insert" value="ognl:currentTimeslot.chefsTableAllocation" /></td>
             </span>
+            <span jwcid="@If" condition="ognl:showPremium">
+ 	        	<td align="center" bgcolor="dfdfdf"><b><span jwcid="@Insert" value="ognl:currentTimeslot.premiumCapacity">32</span></b></td>
+				<td align="center" bgcolor="dfdfdf"><b><span jwcid="@Insert" value="ognl:currentTimeslot.calculatePremiumAllocation(page.currentDate)">32</span></b></td>
+            </span>
+            <span jwcid="@If" condition="ognl:showPremiumCt && currentTimeslot.premiumCtActive">
+				<td align="center" jwcid="@Any" bgcolor="ognl:currentTimeslot.isPremiumCtCapacityReleased(page.currentDate) ? 'red': 'dfdfdf'"><b><span jwcid="@Insert" value="ognl:currentTimeslot.premiumCtCapacity">32</span></b></td>
+				<td align="right" bgcolor="dfdfdf"><span  jwcid="@Insert" value="ognl:currentTimeslot.premiumCtAllocation" /></td>
+            </span>
+            
 		</tr>
 	</span>
     	<tr bgcolor="dfdfdf">
@@ -69,6 +93,15 @@
 			<td><span jwcid="@Insert" value="ognl:resource.getCTCapacityTotal()" /></td>
 			<td><span jwcid="@Insert" value="ognl:resource.getCTAllocationTotal()" /></td>
         </span>
+         <span jwcid="@If" condition="ognl:showPremium">
+			<td><span jwcid="@Insert" value="ognl:resource.getPremiumCapacityTotal()" /></td>
+			<td><span jwcid="@Insert" value="ognl:resource.calculatePremiumAllocationTotal()" /></td>
+        </span>
+        <span jwcid="@If" condition="ognl:showPremiumCt && currentTimeslot.premiumCtActive">        
+			<td><span jwcid="@Insert" value="ognl:resource.getPremiumCtCapacityTotal()" /></td>
+			<td><span jwcid="@Insert" value="ognl:resource.getPremiumCtAllocationTotal()" /></td>
+        </span>
+        
 	</tr>
 </table>        
 </span>  

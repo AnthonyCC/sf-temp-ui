@@ -57,4 +57,9 @@
         <binding name="format" expression='getPercentageFormatter()'/>
         <binding name="value" expression='getPercentage()'/>
     </component>
+   
+      <component id="insertPremiumCtPercentage" type="Insert">
+        <binding name="format" expression='getPercentageFormatter()'/>
+        <binding name="value" expression='getPremiumCtPercentage()'/>
+    </component>
 </page-specification>

@@ -43,13 +43,16 @@
 <span jwcid="forEachDay">
 	<table align="left" cellpadding="1" cellspacing="1" border="1" class="timeslotTable">
 		<tr>
-			<td class="dbSubHeader" colspan="8"><span jwcid="insertDay">Thursday<br>January 2, 2003</span></td>
+			<td class="dbSubHeader" colspan="13"><span jwcid="insertDay">Thursday<br>January 2, 2003</span></td>
 		</tr>
    		<tr bgcolor='dfdfdf'>
 			<td nowrap><b></b></td>
 			<td align="center" colspan="2" class="total"><b>Total</b></td>
 			<td align="center" colspan="2" class="base"><b>Base</b></td>  
-			<td align="center" colspan="3" class="ct" nowrap><b>Chef's Table</b></td>              
+			<td align="center" colspan="3" class="ct" nowrap><b>Chef's Table</b></td>
+			<td align="center" colspan="2" class="premium" nowrap><b>Premium</b></td> 
+			<td align="center" colspan="3" class="premiumCt" nowrap><b>Premium Chef's Table</b></td> 
+			              
     	</tr>        
 		<tr bgcolor='dfdfdf'>
 			<td nowrap><b>Start Time-End Time-Cutoff</b></td>
@@ -57,9 +60,15 @@
 			<td class="total"><b>Alloc</b></td>
     		<td class="base"><b>Cap</b></td>
 			<td class="base"><b>Alloc</b></td>
+			
 			<td class="ct"><b>Cap</b></td>
 			<td class="ct"><b>Alloc</b></td>
-			<td class="ct"><b>% CT Alloc/Total Alloc</b></td>            
+			<td class="ct"><b>% CT Alloc/Total Alloc</b></td>    
+			<td class="premium"><b>Cap</b></td>
+			<td class="premium"><b>Alloc</b></td>
+			<td class="premiumCt"><b>Cap</b></td>
+			<td class="premiumCt"><b>Alloc</b></td>
+			<td class="premiumCt"><b>% Premium CT Alloc/Premium Alloc</b></td>         
     	</tr>
 		<span jwcid="forEachTimeslot">
 			<tr>
@@ -73,6 +82,19 @@
                 	<td align="right" class="ct"><b><span jwcid="@Insert" value="ognl:currentTimeslot.chefsTableAllocation">32</span></b></td>
 	                <td align="right" class="ct"><b><span jwcid="insertPercentage">32</span></b></td>
                 </span>
+                	<td align="right" class="premium"><b><span jwcid="@Insert" value="ognl:currentTimeslot.premiumCapacity">32</span></b></td>                
+        	        <td align="right" class="premium"><b><span jwcid="@Insert" value="ognl:currentTimeslot.calculatePremiumAllocation(page.currentDate)">32</span></b></td>
+                
+		                                      
+                 <span jwcid="@If" condition="ognl:currentTimeslot.premiumCtActive">                
+					<td align="right" class="premiumCt"><b><span jwcid="@Insert" value="ognl:currentTimeslot.premiumCtCapacity">32</span></b></td>                
+        	        <td align="right" class="premiumCt"><b><span jwcid="@Insert" value="ognl:currentTimeslot.premiumCtAllocation">32</span></b></td>
+            	    <td align="right" class="premiumCt"><b><span jwcid="insertPremiumCtPercentage">32</span></b></td>
+                </span>
+                 <span jwcid="@Else">
+					<td colspan="3" style="text-align:center;"><b>N/A</b></td>
+				</span>
+		        
 			</tr>
 		</span>
 		<span jwcid="$remove$">

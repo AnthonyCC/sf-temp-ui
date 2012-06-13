@@ -2,6 +2,7 @@ package com.freshdirect.fdstore.rules;
 
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -94,15 +95,37 @@ public class FeeCalculator implements Serializable {
 		Set<Rule> rules = resolveConflicts(firedRules.values());
 
 		//System.out.println("AFTER RESOLVE CONFLICT: " + rules);
-
+		Map<String, Double> fees = new HashMap<String, Double>();
 		double value = 0.0;
+		double premium = 0.0;
 		for (Rule r : rules) {
 			Object outcome = r.getOutcome();
 			if (outcome instanceof BasePrice) {
 				value += ((BasePrice) r.getOutcome()).getPrice();
-			} else if (outcome instanceof Adjustment) {
+			}
+			else if (outcome instanceof Adjustment) {
 				value -= ((Adjustment) r.getOutcome()).getValue();
 			}
+		}
+
+		return value < 0 ? 0 : MathUtil.roundDecimal(value);
+	}
+	
+	public double calculatePremiumFee(FDRuleContextI ctx) {
+		Map<?,Rule> firedRules = (Map<?,Rule>)getRulesEngine().evaluateRules(ctx);
+
+		//System.out.println("FIRED RULES: " + firedRules);
+
+		Set<Rule> rules = resolveConflicts(firedRules.values());
+
+		//System.out.println("AFTER RESOLVE CONFLICT: " + rules);
+
+		double value = 0.0;
+		for (Rule r : rules) {
+			Object outcome = r.getOutcome();
+			if(outcome instanceof Premium)
+				value += ((Premium) r.getOutcome()).getValue();
+			
 		}
 
 		return value < 0 ? 0 : MathUtil.roundDecimal(value);

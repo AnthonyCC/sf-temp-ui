@@ -2,14 +2,15 @@
 
 <span jwcid="showErrors"/>
 
-<table width="175" cellpadding="0" cellspacing="0" border="0">
-	<tr>
+<table width="175" cellpadding="0" cellspacing="2" border="0">
+	<tr bgcolor="c00cc3d">
 		<td nowrap><b>Start Time-End Time</b></td>
 		<td><b>Status</b></td>
 		<td colspan="2"><b>Cutoff Time</b></td>
+		<td colspan="2"><b>Premium Cutoff</b></td>
 	</tr>
 	<tr>
-		<td colspan="4"><font color="#ffffff" class="space2pix">.</font></td>
+		<td colspan="6"><font color="#ffffff" class="space2pix">.</font></td>
 	</tr>
 	<span jwcid="forEachTimeslot">
 	<tr>
@@ -21,13 +22,14 @@
 				<option value="2">PRE</option>
 			</select>
 		</td>
-		<td><input size="9" class="text10" jwcid="inputCutoffTime" /></td>
+		<td colspan="2"><input size="9" class="text10" jwcid="inputCutoffTime" /></td>
+		<td colspan="2"><input size="9" class="text10" jwcid="inputPremiumCutoffTime" /></td>
 		<td><input jwcid="submitDeleteTimeslot" type="submit" value="X" class="button" /></td>
 	</tr>
 	</span>
 	<tr>
-		<td colspan="2" align="center"><input type="submit" value="Add Timeslot" jwcid="submitAddTimeslot" class="button" /></td>
-		<td colspan="2" align="right"><input jwcid="submitCommitChanges" type="submit" value="OK" class="button"/></td>
+		<td colspan="3" align="center"><input type="submit" value="Add Timeslot" jwcid="submitAddTimeslot" class="button" /></td>
+		<td colspan="3" align="right"><input jwcid="submitCommitChanges" type="submit" value="OK" class="button"/></td>
 	</tr>
 
 </table>

@@ -14,8 +14,6 @@ import java.util.StringTokenizer;
 
 import org.apache.commons.lang.StringUtils;
 
-import weblogic.auddi.util.Logger;
-
 import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.affiliate.ErpAffiliate;
 import com.freshdirect.common.address.BasicAddressI;
@@ -247,25 +245,25 @@ class SalesOrderHelper {
 		// charge lines
 		SapChargeLineI[] charges = sapOrder.getChargeLines();
 		for (int i=0; i<charges.length; i++) {
-			int pos = fakePosition++;
-			SapChargeLineI c = charges[i];
-			this.addFakeLine(sapOrder, pos, c.getMaterialNumber(), isCreateOrder);
-			
-			passVBAP(sapOrder, PosexUtil.getPosex(pos), false, isCreateOrder, null,null);
-
-			if (c.getTaxRate() > 0) {
-				this.bapi.addCondition(
-					PosexUtil.getPosexInt(pos),
-					ErpAffiliate.getEnum(ErpAffiliate.CODE_FD).getTaxConditionType(),
-					c.getTaxRate() * 100,
-					"");
-			}
-			
-			this.bapi.addCondition(PosexUtil.getPosexInt(pos), "PB00", c.getAmount(), "USD");
-			Discount promo = c.getDiscount();
-			if (promo!= null && promo.getAmount() != 0.0) {
-				this.addPromotionCondition(pos, promo);				
-			}
+				int pos = fakePosition++;
+				SapChargeLineI c = charges[i];
+				this.addFakeLine(sapOrder, pos, c.getMaterialNumber(), isCreateOrder);
+				
+				passVBAP(sapOrder, PosexUtil.getPosex(pos), false, isCreateOrder, null,null);
+	
+				if (c.getTaxRate() > 0) {
+					this.bapi.addCondition(
+						PosexUtil.getPosexInt(pos),
+						ErpAffiliate.getEnum(ErpAffiliate.CODE_FD).getTaxConditionType(),
+						c.getTaxRate() * 100,
+						"");
+				}
+				
+				this.bapi.addCondition(PosexUtil.getPosexInt(pos), "PB00", c.getAmount(), "USD");
+				Discount promo = c.getDiscount();
+				if (promo!= null && promo.getAmount() != 0.0) {
+						this.addPromotionCondition(pos, promo);				
+				}
 		}
 
 	}

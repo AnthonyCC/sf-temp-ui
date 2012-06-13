@@ -1,6 +1,7 @@
 package com.freshdirect.fdstore.customer;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -81,6 +82,12 @@ public class FDDeliveryTimeslotModel implements Serializable{
 	}
 	private int neighbourhoodCount;
     private double percSlotsSold;
+
+
+	private boolean showPremiumSlots;
+	private String sameDay;
+	Date sameDayCutoff;
+	String sameDayCutoffUTC;
     
     public double getPercSlotsSold() {
 		return percSlotsSold;
@@ -249,4 +256,27 @@ public class FDDeliveryTimeslotModel implements Serializable{
 	public void setAlcoholRestriction(boolean alcoholRestriction) {
 		this.alcoholRestriction = alcoholRestriction;
 	}
+	public void setShowPremiumSlots(boolean showPremiumSlots) {
+		this.showPremiumSlots = showPremiumSlots;
+	}
+	public boolean isShowPremiumSlots() {
+		return this.showPremiumSlots;
+	}
+	
+	public Date getSameDayCutoff() {
+		return sameDayCutoff;
+	}
+
+	public void setSameDayCutoff(Date sameDayCutoff) {
+		this.sameDayCutoff = sameDayCutoff;
+	}
+
+	public String getSameDayCutoffUTC() {
+		return sameDayCutoffUTC;
+	}
+
+	public void setSameDayCutoffUTC(String sameDayCutoffUTC) {
+		this.sameDayCutoffUTC = sameDayCutoffUTC;
+	}
+
 }

@@ -30,6 +30,9 @@ public interface FDCartI extends java.io.Serializable {
 	public ErpPaymentMethodI getPaymentMethod();
 
 	public double getDeliverySurcharge();
+	public double getDeliveryCharge();
+	
+	public double getDeliveryPremium();
 	public boolean isDeliverySurChargeWaived();
 	public boolean isDeliveryChargeWaived();
 	public boolean isDeliveryChargeTaxable();
@@ -119,4 +122,7 @@ public interface FDCartI extends java.io.Serializable {
 	public String getExtendDPDiscountDescription();
 	
 	public boolean hasClientCodes();
+
+	public boolean isDlvPassPremiumAllowedTC();
+
 }

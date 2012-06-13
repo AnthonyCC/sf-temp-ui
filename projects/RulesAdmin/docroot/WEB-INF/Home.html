@@ -48,6 +48,11 @@
 						<span jwcid="@If" condition="ognl:selectedRule.outcome instanceof com.freshdirect.fdstore.rules.Adjustment">
 							<input jwcid="@TextField" validators="validators:required" value="ognl:selectedRule.outcome.value" displayName="price" size="5" />
 						</span>
+						
+						<span jwcid="@If" condition="ognl:selectedRule.outcome instanceof com.freshdirect.fdstore.rules.Premium">
+							<input jwcid="@TextField" validators="validators:required" value="ognl:selectedRule.outcome.value" displayName="price" size="5" />
+						</span>
+						
 						<span jwcid="@If" condition="ognl:selectedRule.outcome instanceof java.lang.String">
 							<input jwcid="@TextField" validators="validators:required" value="ognl:selectedRule.outcome" displayName="Promo Code" size="20" />
 						</span>

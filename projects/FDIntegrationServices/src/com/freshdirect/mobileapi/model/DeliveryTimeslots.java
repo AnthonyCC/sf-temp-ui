@@ -14,6 +14,7 @@ import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.customer.FDDeliveryTimeslotModel;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.util.FDTimeslotUtil;
+import com.freshdirect.fdstore.util.TimeslotLogic;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.mobileapi.model.tagwrapper.CheckoutControllerTagWrapper;
 import com.freshdirect.webapp.taglib.fdstore.Result;
@@ -72,6 +73,8 @@ public class DeliveryTimeslots {
 
         private boolean isUserChefTable = false;
 
+		private boolean showPremiumSlots= false;
+
         public boolean isUserChefTable() {
             return isUserChefTable;
         }
@@ -95,7 +98,7 @@ public class DeliveryTimeslots {
          * @throws FDResourceException
          */
         public TimeSlotCalculationResult(FDDeliveryTimeslotModel model, boolean isUserChefTable, boolean preReservationMode) throws FDResourceException {
-            this(model.getTimeslotList(), model.getZones(), model.isZoneCtActive(), model.getGeoRestrictionmessages(), isUserChefTable);
+            this(model.getTimeslotList(), model.getZones(), model.isZoneCtActive(), model.getGeoRestrictionmessages(), isUserChefTable, model.isShowPremiumSlots());
         }
         
         
@@ -108,13 +111,15 @@ public class DeliveryTimeslots {
          * @throws FDResourceException
          */
         public TimeSlotCalculationResult(List<FDTimeslotUtil> timeslotLists, Map<String, DlvZoneModel> zones, boolean zoneCtActive,
-                List<String> messages, boolean isUserChefTable) throws FDResourceException {
+                List<String> messages, boolean isUserChefTable, boolean showPremiumSlots) throws FDResourceException {
             this.timeslotList = TimeslotList.wrap(timeslotLists);
             //this.zones = zones;
             this.zoneCtActive = zoneCtActive;
             this.messages = messages;
             this.isUserChefTable = isUserChefTable;
             calculatSlotAvailability();
+            this.showPremiumSlots = showPremiumSlots;
+            
         }
 
         /**
@@ -173,7 +178,13 @@ public class DeliveryTimeslots {
         public void setPreselectedTimeslotId(String preselectedTimeslotId) {
             this.preselectedTimeslotId = preselectedTimeslotId;
         }
+        public boolean isshowPremiumSlots() {
+            return showPremiumSlots;
+        }
 
+        public void setShowPremiumSlots(boolean showPremiumSlots) {
+            this.showPremiumSlots = showPremiumSlots;
+        }
     }
 
 }

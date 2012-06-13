@@ -26,6 +26,7 @@
 <%@ page import="com.freshdirect.fdstore.util.AddressFinder" %>
 <%@ page import="com.freshdirect.fdstore.util.TimeslotLogic" %>
 <%@ page import="com.freshdirect.fdstore.util.RestrictionUtil" %>
+<%@ page import="com.freshdirect.customer.EnumChargeType %>
 
 <%
     String successPage = "checkout_select_payment.jsp";
@@ -355,16 +356,16 @@
     <TD WIDTH="70%" style="padding-left: 10px;">
 		<b>Delivery Charge:</b> 
 		<%
-	String dlvCharge = JspMethods.formatPrice( cart.getDeliverySurcharge() );
-	if(cart.isDlvPassApplied()) {
+	String dlvCharge = JspMethods.formatPrice( cart.getDeliverySurcharge());
+	if (cart.isDlvPassApplied()) {
 	%>
-	<%= DeliveryPassUtil.getDlvPassAppliedMessage(user) %>
+	<%= cart.getDeliveryCharge()>0?JspMethods.formatPrice(cart.getDeliveryCharge()):DeliveryPassUtil.getDlvPassAppliedMessage(user) %>
 	<%
 	} else if (cart.isDeliveryChargeWaived()) {
 	%>
 		Free! We've waived the standard <%= dlvCharge %> delivery charge for this order.
 	<%}else {%>
-		<%= dlvCharge %>
+		<%= JspMethods.formatPrice(cart.getDeliveryCharge()) %>
 		<%}%><br>(Our delivery personnel are allowed to accept tips if exceptional service is provided).
 		</TD>
 </TR>

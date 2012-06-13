@@ -28,6 +28,7 @@ import org.apache.tools.ant.util.DateUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import com.freshdirect.delivery.EnumDeliveryOption;
 import com.freshdirect.fdstore.promotion.EnumPromotionStatus;
 import com.freshdirect.fdstore.promotion.management.FDPromoChangeDetailModel;
 import com.freshdirect.fdstore.promotion.management.FDPromoChangeModel;
@@ -60,7 +61,7 @@ public class FDPromotionJSONSerializer extends AbstractSerializer {
 		FDPromoPaymentStrategyModel.class, FDPromotionNewModel.class,
 		FDPromoChangeModel.class, FDPromoChangeDetailModel.class,
 		FDPromoDlvZoneStrategyModel.class, FDPromoDlvTimeSlotModel.class, WSPromotionInfo.class,WSAdminInfo.class, EnumPromotionStatus.class,
-		FDPromoDollarDiscount.class,FDPromoStateCountyRestriction.class
+		FDPromoDollarDiscount.class,FDPromoStateCountyRestriction.class,EnumDeliveryOption.class
 	};
 
 	private static Class<?>[] _JSONClasses = new Class[] { JSONObject.class };

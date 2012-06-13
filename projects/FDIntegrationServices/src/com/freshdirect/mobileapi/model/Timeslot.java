@@ -149,6 +149,10 @@ public class Timeslot {
 		return slot.getSteeringDiscount();
 	}
 
+	public double getPremiumAmount() {
+		return slot.getPremiumAmount();
+	}
+	
 	/* Eco Friendly timeslot*/
 	public boolean isEcoFriendly() {
 		return slot.isEcoFriendly();

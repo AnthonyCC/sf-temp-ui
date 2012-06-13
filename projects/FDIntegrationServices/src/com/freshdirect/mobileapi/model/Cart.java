@@ -712,14 +712,20 @@ public class Cart {
 
         //Delivery Charge 
         if (cartDetail.isDlvPassApplied()) {
-
-            cartDetail.addSummaryLineCharge(new SummaryLineCharge(0, false, false, false, "Delivery Charge", false, DeliveryPassUtil
-                    .getDlvPassAppliedMessage(user.getFDSessionUser())));
+        	if(cart.getDeliveryCharge()==0)
+        		cartDetail.addSummaryLineCharge(new SummaryLineCharge(0, false, false, false, "Delivery Charge", false, DeliveryPassUtil.getDlvPassAppliedMessage(user.getFDSessionUser())));
+        	else
+        		cartDetail.addSummaryLineCharge(new SummaryLineCharge(cart.getDeliveryCharge(), cart.isDeliveryChargeTaxable(), cart
+                        .isDeliveryChargeWaived(), false, "Delivery Charge"));
         } else {
             double deliveyCharge = cart.getDeliverySurcharge();
             if (cart.isDeliveryChargeWaived()) {
                 deliveyCharge = 0;
             }
+            else{
+            	 deliveyCharge = cart.getDeliveryCharge();
+            }
+            	
             cartDetail.addSummaryLineCharge(new SummaryLineCharge(deliveyCharge, cart.isDeliveryChargeTaxable(), cart
                     .isDeliveryChargeWaived(), false, "Delivery Charge"));
         }
