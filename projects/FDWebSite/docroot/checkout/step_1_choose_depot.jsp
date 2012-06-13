@@ -65,7 +65,7 @@ final int W_CHECKOUT_STEP_1_CHOOSE_DEPOT_TOTAL = 970;
 										<% }else{ %> Free!(<%= dlvCharge %> waived)<% } %>
 												
 								<%  } else {%>
-										<%= (int)cart.getDeliverySurcharge() == 0 ? "Free!" :  JspMethods.formatPrice( cart.getDeliveryCharge() %>
+										<%= (int)cart.getDeliverySurcharge() == 0 ? "Free!" :  JspMethods.formatPrice( cart.getDeliveryCharge()) %>
 								<%}%>
 						</td>
 						</tr>
