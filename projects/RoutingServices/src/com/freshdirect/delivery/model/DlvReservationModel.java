@@ -39,7 +39,7 @@ public class DlvReservationModel extends ModelSupport {
 	private RoutingActivityType unassignedActivityType;
 	private String profileName;	
 	private boolean inUPS;
-	
+	private EnumReservationClass rsvClass;
 	private Double overrideOrderSize;
 	private Double overrideServiceTime;
 	
@@ -302,6 +302,14 @@ public class DlvReservationModel extends ModelSupport {
 
 	public void setProfileName(String profileName) {
 		this.profileName = profileName;
+	}
+
+	public EnumReservationClass getRsvClass() {
+		return rsvClass;
+	}
+
+	public void setRsvClass(EnumReservationClass rsvClass) {
+		this.rsvClass = rsvClass;
 	}
 
 }

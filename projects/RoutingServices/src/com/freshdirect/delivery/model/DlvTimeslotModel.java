@@ -27,7 +27,11 @@ public class DlvTimeslotModel extends DlvShiftTimeslotModel {
 
 	/** Chef's Table Capacity (ctCapacity <= capacity) */
 	private int chefsTableCapacity;
+	
+	private int premiumCapacity;
 
+	private int premiumCtCapacity;
+	
 	/** Planned total capacity (informational) */
 	private int plannedCapacity;
 
@@ -42,12 +46,21 @@ public class DlvTimeslotModel extends DlvShiftTimeslotModel {
 
 	/** minutes of CT capacity auto release time */
 	private int ctReleaseTime;
+
+	private int premiumCtReleaseTime;
 	
 	/** CT capacity activated indicator */
 	private boolean ctActive;
 	
+	private boolean premiumCtActive;
+	
+	private int premiumAllocation;
+	
+	private int premiumCtAllocation;
+	
 	private String zoneCode;
 	
+	private boolean premiumSlot;
 	
 	private IDeliverySlot routingSlot;
 	
@@ -57,6 +70,8 @@ public class DlvTimeslotModel extends DlvShiftTimeslotModel {
 	
 	/* Window Steering Discount Value*/
 	private double steeringDiscount;
+
+	private double premiumAmount;
 	
 	public boolean isEcoFriendly() {		
 		if(this.getRoutingSlot() != null && this.getRoutingSlot().getDeliveryCost() != null){
@@ -113,13 +128,17 @@ public class DlvTimeslotModel extends DlvShiftTimeslotModel {
 		this.setStartTime(shiftTimeslot.getStartTime());
 		this.setEndTime(shiftTimeslot.getEndTime());
 		this.setCutoffTime(shiftTimeslot.getCutoffTime());
+		if(shiftTimeslot.getPremiumCutoffTime()!=null)
+		this.setPremiumCutoffTime(shiftTimeslot.getPremiumCutoffTime());
 		this.setStatus(shiftTimeslot.getStatus());
 	}
 
 	public DlvTimeslotModel(PrimaryKey pk, String zoneId, Date baseDate,
 			TimeOfDay startTime, TimeOfDay endTime, TimeOfDay cutoffTime,
 			EnumTimeslotStatus status, int capacity, int ctCapacity,
-			int baseAllocation, int ctAllocation, int ctReleaseTime, boolean ctActive,String zoneCode) {
+			int baseAllocation, int ctAllocation, int ctReleaseTime, boolean ctActive,String zoneCode, int premiumCapacity,
+			 int premiumCtCapacity, TimeOfDay premiumCutoffTime, int premiumCtReleaseTime, 
+			 boolean premiumCtActive,int premiumAllocation, int premiumCtAllocation, boolean premiumSlot) {
 		super();
 		this.setPK(pk);
 		this.setBaseDate(baseDate);
@@ -127,14 +146,24 @@ public class DlvTimeslotModel extends DlvShiftTimeslotModel {
 		this.setStartTime(startTime);
 		this.setEndTime(endTime);
 		this.setCutoffTime(cutoffTime);
+		this.setPremiumCutoffTime(premiumCutoffTime);
 		this.setStatus(status);
 		this.setCapacity(capacity);
+		this.setChefsTableCapacity(ctCapacity);
+		this.setPremiumCapacity(premiumCapacity);
+		this.setPremiumCtCapacity(premiumCtCapacity);
+		
 		this.setChefsTableCapacity(ctCapacity);
 		this.setBaseAllocation(baseAllocation);
 		this.setChefsTableAllocation(ctAllocation);
 		this.setCtReleaseTime(ctReleaseTime);
+		this.setPremiumCtReleaseTime(premiumCtReleaseTime);
+		this.setPremiumCtActive(premiumCtActive);
 		this.setCtActive(ctActive);
-		this.setZoneCode(zoneCode);		
+		this.setZoneCode(zoneCode);	
+		this.setPremiumAllocation(premiumAllocation);
+		this.setPremiumCtAllocation(premiumCtAllocation);
+		this.setPremiumSlot(premiumSlot);
 	}
 	
 	
@@ -143,6 +172,24 @@ public class DlvTimeslotModel extends DlvShiftTimeslotModel {
 	//
 
 	
+	public void setPremiumCtAllocation(int premiumCtAllocation) {
+		this.premiumCtAllocation = premiumCtAllocation;
+		
+	}
+
+	public void setPremiumAllocation(int premiumAllocation) {
+		this.premiumAllocation = premiumAllocation;
+		
+	}
+	public int getPremiumCtAllocation() {
+		return premiumCtAllocation;
+		
+	}
+
+	public int getPremiumBaseAllocation() {
+		return premiumAllocation;
+		
+	}
 	public String getZoneCode() {
 		return this.zoneCode;
 	}
@@ -160,7 +207,10 @@ public class DlvTimeslotModel extends DlvShiftTimeslotModel {
 	}
 
 	public int getCapacity() {
-		return capacity;
+		if(!premiumSlot)
+			return capacity;
+		else
+			return getPremiumCapacity();
 	}
 
 	public int getOrder() {
@@ -176,7 +226,10 @@ public class DlvTimeslotModel extends DlvShiftTimeslotModel {
 	}
 
 	public int getChefsTableCapacity() {
-		return chefsTableCapacity;
+		if(!premiumSlot)
+			return chefsTableCapacity;
+		else
+			return getPremiumCtCapacity();
 	}
 
 	public void setChefsTableCapacity(int chefsTableCapacity) {
@@ -192,7 +245,10 @@ public class DlvTimeslotModel extends DlvShiftTimeslotModel {
 	}
 
 	public int getBaseAllocation() {
-		return baseAllocation;
+		if(!premiumSlot)
+			return baseAllocation;
+		else
+			return getPremiumBaseAllocation();
 	}
 
 	public void setBaseAllocation(int baseReservationCount) {
@@ -200,7 +256,10 @@ public class DlvTimeslotModel extends DlvShiftTimeslotModel {
 	}
 
 	public int getChefsTableAllocation() {
-		return chefsTableAllocation;
+		if(!premiumSlot)
+			return chefsTableAllocation;
+		else
+			return getPremiumCtAllocation();
 	}
 
 	public void setChefsTableAllocation(int chefstableReservationCount) {
@@ -224,7 +283,10 @@ public class DlvTimeslotModel extends DlvShiftTimeslotModel {
 	}
 
 	public int getCtReleaseTime() {
-		return ctReleaseTime;
+		if(!premiumSlot)
+			return ctReleaseTime;
+		else
+			return getPremiumCtReleaseTime();
 	}
 
 	public void setCtReleaseTime(int ctReleaseTime) {
@@ -232,7 +294,10 @@ public class DlvTimeslotModel extends DlvShiftTimeslotModel {
 	}
 	
 	public boolean isCtActive() {
-		return this.ctActive;
+		if(!premiumSlot)
+			return this.ctActive;
+		else
+			return isPremiumCtActive();
 	}
 
 	public void setCtActive(boolean ctActive) {
@@ -247,25 +312,46 @@ public class DlvTimeslotModel extends DlvShiftTimeslotModel {
 	 * @return total allocation = base allocation + chef's table allocation
 	 */
 	public int getTotalAllocation() {
-		return getBaseAllocation() + getChefsTableAllocation();
+		if(!premiumSlot)
+			return getBaseAllocation() + getChefsTableAllocation() + getPremiumBaseAllocation() + getPremiumCtAllocation();
+		else
+			return getPremiumBaseAllocation() + getPremiumCtAllocation();
 	}
 	
 	public int getBaseCapacity() {
-		return getCapacity() - getChefsTableCapacity();
+		if(!premiumSlot)
+			return getCapacity() - getChefsTableCapacity() - getPremiumCapacity();
+		else
+			return getPremiumCapacity() - getPremiumCtCapacity();
 	}
 
 	public int getTotalAvailable() {
-		return this.getCapacity() - this.getTotalAllocation();
+		if(!premiumSlot)
+			return this.getCapacity() - this.getTotalAllocation();
+		else
+			return getPremiumCapacity() - this.getTotalAllocation();
 	}
 
 	public int getBaseAvailable() {
-		return this.getBaseCapacity() - this.getBaseAllocation();
+		if(!premiumSlot)
+			return this.getBaseCapacity() - this.getBaseAllocation();
+		else
+			return this.getPremiumBaseCapacity() - this.getBaseAllocation();
+		
 	}
 	
 	public int getChefsTableAvailable() {
-		return this.getChefsTableCapacity() - this.getChefsTableAllocation();
+		if(!premiumSlot)
+			return this.getChefsTableCapacity() - this.getChefsTableAllocation();
+		else
+			return getPremiumCtAvailable();
 	}
-	
+	public int getPremiumBaseAvailable() {
+		return this.getPremiumBaseCapacity() - this.getPremiumBaseAllocation();
+	}
+	public int getPremiumCtAvailable() {
+		return this.getPremiumCtCapacity() - this.getPremiumCtAllocation();
+	}
 	//
 	// helper methods
 	//
@@ -281,17 +367,61 @@ public class DlvTimeslotModel extends DlvShiftTimeslotModel {
 	 * @return current allocation based on current date.
 	 */
 	public int calculateCurrentAllocation(Date currentDate) {
+		if(!premiumSlot)
+		{
+		int allocation = 0;
+		
+		allocation = getBaseAllocation();
+		
 		if (isCTCapacityReleased(currentDate))
-			return getTotalAllocation();
+			allocation += getChefsTableAllocation();
 		else
-			return getChefsTableCapacity() + getBaseAllocation();
+			allocation +=  getChefsTableCapacity();
+		
+		allocation += getPremiumCapacity();
+			
+		return allocation;
+		}
+		else
+		return calculatePremiumAllocation(currentDate);
 	}
-
+	
+	public int calculatePremiumAllocation(Date currentDate) {
+		
+		int allocation = 0;
+		
+		allocation = getPremiumBaseAllocation();
+		
+		if (isPremiumCtCapacityReleased(currentDate))
+			allocation += getPremiumCtAllocation();
+		else
+			allocation +=  getPremiumCtCapacity();
+		
+		return allocation;
+			
+	}
 	public boolean isCTCapacityReleased(Date currentDate) {
+		if(!premiumSlot)
+		{
 		if (isCtActive())  {
 			Calendar releaseCal = Calendar.getInstance();
 			releaseCal.setTime(getCutoffTimeAsDate());
 			releaseCal.add(Calendar.MINUTE, -getCtReleaseTime());
+			Calendar now = DateUtil.toCalendar(currentDate);
+			return now.after(releaseCal);
+		}else
+			return false;
+		}
+		else
+			return isPremiumCtCapacityReleased(currentDate);
+		 
+	}
+
+	public boolean isPremiumCtCapacityReleased(Date currentDate) {
+		if (isPremiumCtActive() && getPremiumCutoffTime()!=null)  {
+			Calendar releaseCal = Calendar.getInstance();
+			releaseCal.setTime(getPremiumCutoffAsDate());
+			releaseCal.add(Calendar.MINUTE, -getPremiumCtReleaseTime());
 			Calendar now = DateUtil.toCalendar(currentDate);
 			return now.after(releaseCal);
 		}else
@@ -314,16 +444,32 @@ public class DlvTimeslotModel extends DlvShiftTimeslotModel {
 	public Date getEndTimeAsDate() {
 		return getEndTime().getAsDate(getBaseDate());
 	}
+	
+	public Date getPremiumCutoffAsDate() {
+		return getPremiumCutoffTime().getAsDate(getBaseDate());
+	}
 
 	public Date getCutoffTimeAsDate() {
+		if(!premiumSlot)
+		{
 		Calendar cutoffCal = getCutoffTime().getAsCalendar(getBaseDate());
 		// as cutoff time is always the day before
 		cutoffCal.add(Calendar.DATE, -1);
 		return cutoffCal.getTime();
+		}
+		else
+			return getPremiumCutoffAsDate();
 	}
 
 	public Date getCutoffTimeAsNormalDate() {
-		return getCutoffTime().getNormalDate();		
+		if(!premiumSlot)
+		{
+		return getCutoffTime().getNormalDate();	
+		}
+		else
+		{
+		return getPremiumCutoffTime().getNormalDate();			
+		}
 	}
 
 	public boolean isMatching(Date baseDate, Date startTime, Date endTime) {
@@ -372,7 +518,65 @@ public class DlvTimeslotModel extends DlvShiftTimeslotModel {
 		return result;
 	}
 	
+	public double getPremiumCapacityPercentage() {
+		//System.out.println(getCapacity()+"-COST->" +getChefsTableCapacity());
+		double result = 0.0;
+		if(getCapacity() > 0) {
+			return getPremiumCapacity()/(double)getCapacity();
+		}
+		return result;
+	}
+
+	public int getPremiumCapacity() {
+		return premiumCapacity;
+	}
+	public int getPremiumBaseCapacity() {
+		return getPremiumCapacity() - getPremiumCtCapacity();
+	}
 	
-		
+
+	public void setPremiumCapacity(int premiumCapacity) {
+		this.premiumCapacity = premiumCapacity;
+	}
+
+	public int getPremiumCtCapacity() {
+		return premiumCtCapacity;
+	}
+
+	public void setPremiumCtCapacity(int premiumCtCapacity) {
+		this.premiumCtCapacity = premiumCtCapacity;
+	}
+
+	public int getPremiumCtReleaseTime() {
+		return premiumCtReleaseTime;
+	}
+
+	public void setPremiumCtReleaseTime(int premiumCtReleaseTime) {
+		this.premiumCtReleaseTime = premiumCtReleaseTime;
+	}
+
+	public boolean isPremiumCtActive() {
+		return premiumCtActive;
+	}
+
+	public void setPremiumCtActive(boolean premiumCtActive) {
+		this.premiumCtActive = premiumCtActive;
+	}
+
+	public boolean isPremiumSlot() {
+		return premiumSlot;
+	}
+
+	public void setPremiumSlot(boolean premiumSlot) {
+		this.premiumSlot = premiumSlot;
+	}
+
+	public double getPremiumAmount() {
+		return premiumAmount;
+	}
+	
+	public void setPremiumAmount(double premiumAmount) {
+		this.premiumAmount = premiumAmount;
+	}
 
 }

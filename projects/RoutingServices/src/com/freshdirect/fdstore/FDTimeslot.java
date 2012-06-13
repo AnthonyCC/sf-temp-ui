@@ -10,6 +10,7 @@ import com.freshdirect.delivery.EnumDayShift;
 import com.freshdirect.delivery.model.DlvTimeslotModel;
 import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import java.text.DecimalFormat;
 
 /**
  * @version $Revision:3$
@@ -31,6 +32,8 @@ public class FDTimeslot implements Serializable, Comparable<FDTimeslot> {
 	private boolean timeslotRemoved;
 	private boolean geoRestricted;
 	private String storeFrontAvailable;
+	private boolean unavailable;
+	private DecimalFormat premiumAmountFmt = new DecimalFormat("#.##");
 	/** Creates new FDTimeslot */
 	public FDTimeslot(DlvTimeslotModel dlvTimeslot) {
 		this.dlvTimeslot = dlvTimeslot;
@@ -58,6 +61,10 @@ public class FDTimeslot implements Serializable, Comparable<FDTimeslot> {
 
 	public Date getCutoffDateTime() {
 		return dlvTimeslot.getCutoffTimeAsDate();
+	}
+	
+	public Date getPremiumCutoffDateTime() {
+		return dlvTimeslot.getPremiumCutoffAsDate();
 	}
 
 	public Date getCutoffNormalDateTime() {
@@ -244,5 +251,21 @@ public class FDTimeslot implements Serializable, Comparable<FDTimeslot> {
 
 	public void setStoreFrontAvailable(String storeFrontAvailable) {
 		this.storeFrontAvailable = storeFrontAvailable;
+	}
+	
+	public boolean isUnavailable() {
+		return unavailable;
+	}
+
+	public void setUnavailable(boolean unavailable) {
+		this.unavailable = unavailable;
+	}
+
+	public double getPremiumAmount() {
+		return dlvTimeslot.getPremiumAmount();
+	}
+	
+	public String getPremiumAmountFmt() {
+		return "ADD&nbsp;$"+premiumAmountFmt.format(dlvTimeslot.getPremiumAmount());
 	}
 }
