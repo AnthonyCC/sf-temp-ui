@@ -41,8 +41,14 @@
 	if ( displayCutoffMessage ) {
 		cutoffTime = slot.getCutoffDateTime();
 
-		String inner = __genericTsTable ? "" : "<b>Order&nbsp;by&nbsp;"+TimeslotPageUtil.getCutoffTimeDisplay(slot.getCutoffNormalDateTime())+"&nbsp;"+TimeslotPageUtil.getCutoffDay(day)+"</b>";
+		String inner = "";
 		
+		if(!slot.getDlvTimeslot().isPremiumSlot())
+			inner = __genericTsTable ? "" : "<b>Order&nbsp;by&nbsp;"+TimeslotPageUtil.getCutoffTimeDisplay(slot.getCutoffNormalDateTime())+"&nbsp;"+TimeslotPageUtil.getCutoffDay(day)+"</b>";
+		else
+			inner = __genericTsTable ? "" : "<b>Order&nbsp;by&nbsp;<span id=\"premCOtime\">"+TimeslotPageUtil.getCutoffTimeDisplay(slot.getCutoffNormalDateTime())+"</span>&nbsp;"+TimeslotPageUtil.getPremiumCutoffDay(day)+"</b>";
+				 
+			
 		stringBuffer.append("							<td class=\"cutoff\">\n")
 					.append("								<div class=\"cutoffDispChild\" id=\"co_d"+dayIndex+"_ts"+slotIndex+"\" style=\"display: none;\">\n")
 					.append("									<div>" + inner + "</div>\n")
@@ -52,6 +58,10 @@
 		if(!isForAdvOrdSlots && !isForNewAdvOrdSlots){
 			%>refData[<%=dayIndex%>][1][<%=slotIndex%>]='refCutoff';
 			<%
+			if (showPremiumSlots) { //this SHOULD be a UTC timestamp instead of localized
+				%>var premSlotsCO = '<%= sameDayCutoffUTC %>';
+				<%
+			}
 		}else{
 			%>refAdvData[<%=dayIndex%>][1][<%=slotIndex%>]='refCutoff';
 			<%
@@ -87,7 +97,7 @@
 				.append("							<td id=\"ts_d"+dayIndex+"_ts"+slotIndex+"\" class=\"tsCol tsContainerC tsContainerBGC")
 				.append(
 					(
-						(soldOut) 
+						(soldOut||slot.isUnavailable()) 
 							? ""
 							: (isSelectedSlotId)
 								? " tsContentSelE"
@@ -98,7 +108,7 @@
 				+"\">\n")
 				.append("								<div class=\"tsContent\">\n")
 				.append("									<div id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_rbCont\" class=\"fleft ts_rb\">");
-					if (soldOut) {
+					if (soldOut||slot.isUnavailable()) {
 						if (isStaticSlot) { /* do nothing? */
 							} else {
 						}
@@ -132,23 +142,25 @@
 	stringBuffer.append("									<div id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_time\" class=\"fleft tsCont ")
 				.append(
 					(
-						(soldOut)
+						(soldOut||slot.isUnavailable())
 							? "tsSoldoutC"
-							: (isSelectedSlotId)
-								? "tsContentSelC"
-									: (isPreReservedSlotId && hasPreReserved)
-									? "tsReservationTimeE"
-										: (request.getAttribute("SHOW_WINDOWS_STEERING")!=null && "true".equals(request.getAttribute("SHOW_WINDOWS_STEERING")) && slot.getSteeringDiscount() > 0)
-										? "tsDiscountTimeC"
-										: (slot.isEcoFriendly() && slot.isDepot() && !(!slot.hasNormalAvailCapacity() && slot.hasAvailCTCapacity()))
-											? "tsNeighbourhoodTimeC"
-											: (slot.isEcoFriendly() && !(!slot.hasNormalAvailCapacity() && slot.hasAvailCTCapacity()))
-												? "tsEcoFriendlyTimeC"
-												: ""
+							: (slot.getDlvTimeslot().isPremiumSlot() && slot.getPremiumAmount()>0)
+								? "tsPremiumTimeC"
+								: (isSelectedSlotId)
+									? "tsContentSelC"
+										: (isPreReservedSlotId && hasPreReserved)
+										? "tsReservationTimeE"
+											: (request.getAttribute("SHOW_WINDOWS_STEERING")!=null && "true".equals(request.getAttribute("SHOW_WINDOWS_STEERING")) && slot.getSteeringDiscount() > 0)
+											? "tsDiscountTimeC"
+											: (slot.isEcoFriendly() && slot.isDepot() && !(!slot.hasNormalAvailCapacity() && slot.hasAvailCTCapacity()))
+												? "tsNeighbourhoodTimeC"
+												: (slot.isEcoFriendly() && !(!slot.hasNormalAvailCapacity() && slot.hasAvailCTCapacity()))
+													? "tsEcoFriendlyTimeC"
+													: "" 
 					)+"\">"+slot.getDisplayString(true)+"</div>\n");
 
 	/* START Timeslot promotion display */
-	if (!soldOut && deliveryModel.isAlcoholDelivery() && slot.isAlcoholRestricted()) {
+	if ((!soldOut||!slot.isUnavailable()) && deliveryModel.isAlcoholDelivery() && slot.isAlcoholRestricted()) {
 		stringBuffer.append("									<div class=\"fleft tsAlcoholResPropE\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_msgARE\">")
 						.append("<img class=\"tsAlcoholImage\" src=\"/media_stat/images/timeslots/no_alcohol.gif\" width=\"16\" height=\"16\" border=\"0\">")
 					.append("</div>\n");
@@ -157,15 +169,34 @@
 						.append("<img src=\"/media_stat/images/layout/clear.gif\" width=\"16\" height=\"16\" border=\"0\">")
 					.append("</div>\n");
 	}
-
-	if (soldOut) {
+	if (slot.isUnavailable()) {
+		stringBuffer.append("									<div class=\"tsSoldoutPropE\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_msgE\">\n")
+		.append("										<div class=\"tsSoldoutE_cont\">")
+				.append("<img src=\"/media_stat/images/layout/clear.gif\" width=\"16\" height=\"16\" border=\"0\">")
+				.append("<div><font class=\"tsSoldoutE\">UNAVAILABLE</font></div>")
+			.append("</div>")
+		.append("</div>\n");
+	}
+	else if (soldOut) {
 		stringBuffer.append("									<div class=\"tsSoldoutPropE\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_msgE\">\n")
 					.append("										<div class=\"tsSoldoutE_cont\">")
 							.append("<img src=\"/media_stat/images/layout/clear.gif\" width=\"16\" height=\"16\" border=\"0\">")
 							.append("<div><font class=\"tsSoldoutE\">SOLD&nbsp;OUT</font></div>")
 						.append("</div>")
 					.append("</div>\n");
-	} else if (isSelectedSlotId) {
+	} 
+	else if (slot.getDlvTimeslot().isPremiumSlot() && slot.getPremiumAmount()>0) {
+		stringBuffer.append("									<div class=\"tsPremiumPropE\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_msgE\">")
+					.append("										<div>")
+							.append("<img src=\"/media_stat/images/layout/clear.gif\" width=\"16\" height=\"16\" border=\"0\">")
+							.append("<div><font class=\"tsPremiumE\">"+slot.getPremiumAmountFmt()+"</font></div>")
+						.append("</div>\n")
+					.append("									</div>")
+					.append("									<div class=\"tsPremiumPropC\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_msgC\">\n")
+					.append("										<div><font class=\"tsPremiumC\">"+slot.getPremiumAmountFmt()+"</font></div>\n")
+					.append("									</div>");
+	}
+	else if (isSelectedSlotId) {
 		stringBuffer.append("									<div class=\"tsSelectedSlotPropE\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_msgE\">\n")
 					.append("										<div>")
 							.append("<img src=\"/media_stat/images/timeslots/check_mark.gif\" width=\"17\" height=\"13\" border=\"0\">")

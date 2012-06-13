@@ -32,6 +32,12 @@
  --%>
 <%
 
+
+boolean showPremiumSlots =  deliveryModel.isShowPremiumSlots();
+Date sameDayCutoff = deliveryModel.getSameDayCutoff();
+String sameDayCutoffUTC = deliveryModel.getSameDayCutoffUTC();
+
+
 final boolean __genericTsTable = (boolean) abstractTimeslots; // Hack to help Content Assist recognize type
 boolean isForce =  "true".equalsIgnoreCase(request.getParameter("forceorder")) ;
 boolean isNextDayTimeSlotNotAvailable = false;
@@ -83,21 +89,35 @@ if (timeslots.size() > 0) {
 		}
 
 		/* output special slot contents */ %>
-	<div id="NDdayE" style="display: none;"> 
-		<fd:IncludeMedia name="/media/editorial/timeslots/msgE_nodelivery.html"/> 
-	</div>
-	<div id="NDdayC" style="display: none;"> 
-		<fd:IncludeMedia name="/media/editorial/timeslots/msgC_nodelivery.html"/> 
-	</div>
-	<div id="CPdayC" style="display: none;"> 
-		<fd:IncludeMedia name="/media/editorial/timeslots/msgC_cutoff_passed.html"/> 
-	</div>
-	<div id="CPdayE" style="display: none;"> 
-		<fd:IncludeMedia name="/media/editorial/timeslots/msgE_cutoff_passed.html"/> 
-	</div>
-	<div class="learnMoreTimeslot">
-		<fd:IncludeMedia name="/media/editorial/timeslots/holidays/msg_learnmore_nodelivery.html"/>
-	</div>
+		<div id="NDdayE" style="display: none;"> 
+			<fd:IncludeMedia name="/media/editorial/timeslots/msgE_nodelivery.html"/> 
+		</div>
+		<div id="NDdayC" style="display: none;"> 
+			<fd:IncludeMedia name="/media/editorial/timeslots/msgC_nodelivery.html"/> 
+		</div>
+		<div id="CPdayC" style="display: none;"> 
+			<fd:IncludeMedia name="/media/editorial/timeslots/msgC_cutoff_passed.html"/> 
+		</div>
+		<div id="CPdayE" style="display: none;"> 
+			<fd:IncludeMedia name="/media/editorial/timeslots/msgE_cutoff_passed.html"/> 
+		</div>
+		<div class="learnMoreTimeslot">
+			<fd:IncludeMedia name="/media/editorial/timeslots/holidays/msg_learnmore_nodelivery.html"/>
+		</div>
+		<%
+			/* 
+				content for premium slots, this could be normal, cutoff passed, etc
+				the ID on these divs should match the name in the first, AM timeslot TD minus the C/E like: "premSlots_PREday"
+			*/
+			if (showPremiumSlots) {
+		%>
+			<div id="PREdayC" style="display: none;">
+				<fd:IncludeMedia name="/media/editorial/timeslots/msgC_premium.html"/> 
+			</div>
+			<div id="PREdayE" style="display: none;">
+				<fd:IncludeMedia name="/media/editorial/timeslots/msgE_premium.html"/> 
+			</div>
+		<% } %>
 	<% } %>
 
 
@@ -115,6 +135,7 @@ if (timeslots.size() > 0) {
 		var maxPmAdvSlots<%= (isForAdvOrdSlots) ? " = -1" : "" %>;
 		var maxPmAdvNewSlots<%= (isForNewAdvOrdSlots) ? " = -1" : "" %>;
 		var dayName = '';
+		var showPremiumSlots = <%= showPremiumSlots %>;
 		<%
 			int emptySectionMinRows = 4;
 
@@ -263,13 +284,15 @@ if (timeslots.size() > 0) {
 			stringBuffer.append("						<tr id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_tr\" class=\"tsEmp\">\n")
 						.append("							<td class=\"tsCol tsContainerC tsContainerBGC\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"\" name=\"")
 							.append(
-								(timeslots.getHolidays().contains(day))
-									? "holiday_day"+dayIndex
-									: (showCutoffMedia)
-										? "cutoffpassed_CPday"
-										: (!timeslots.getHolidays().contains(day) && timeslots.getTimeslotsForDate(day).size()==0)
-											? "nodelivery_NDday"
-											: ""
+								(i == 0 && showPremiumSlots && dayIndex == 0 && !isForAdvOrdSlots && !isForNewAdvOrdSlots)
+									? "premslots_PREday"
+									:	(timeslots.getHolidays().contains(day))
+											? "holiday_day"+dayIndex
+											: (showCutoffMedia && !showPremiumSlots)
+												? "cutoffpassed_CPday"
+												: (!timeslots.getHolidays().contains(day) && timeslots.getTimeslotsForDate(day).size()==0)
+													? "nodelivery_NDday"
+													: ""
 							)
 						.append("\">\n")
 						.append("								<div class=\"tsContent\">\n")
@@ -307,13 +330,15 @@ if (timeslots.size() > 0) {
 			stringBuffer.append("						<tr id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_tr\" class=\"tsEmp\">\n")
 						.append("							<td class=\"tsCol tsContainerC tsContainerBGC\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"\" name=\"")
 							.append(
-								(timeslots.getHolidays().contains(day))
-									? "holiday_day"+dayIndex
-									: (showCutoffMedia)
-										? "cutoffpassed_CPday"
-										: (!timeslots.getHolidays().contains(day) && timeslots.getTimeslotsForDate(day).size()==0)
-											? "nodelivery_NDday"
-											: ""
+								(i == 0 && showPremiumSlots && dayIndex == 0 && !isForAdvOrdSlots && !isForNewAdvOrdSlots)
+									? "premslots_PREday"
+									:	(timeslots.getHolidays().contains(day))
+											? "holiday_day"+dayIndex
+											: (showCutoffMedia && !showPremiumSlots)
+												? "cutoffpassed_CPday"
+												: (!timeslots.getHolidays().contains(day) && timeslots.getTimeslotsForDate(day).size()==0)
+													? "nodelivery_NDday"
+													: ""
 							)
 						.append("\">\n")
 						.append("								<div class=\"tsContent\">\n")
@@ -395,7 +420,7 @@ if (timeslots.size() > 0) {
 							.append(
 								(timeslots.getHolidays().contains(day))
 									? "holiday_day"+dayIndex
-									: (showCutoffMedia)
+									: (showCutoffMedia && !showPremiumSlots)
 										? "cutoffpassed_CPday"
 										: (!timeslots.getHolidays().contains(day) && timeslots.getTimeslotsForDate(day).size()==0)
 											? "nodelivery_NDday"
@@ -439,7 +464,7 @@ if (timeslots.size() > 0) {
 							.append(
 								(timeslots.getHolidays().contains(day))
 									? "holiday_day"+dayIndex
-									: (showCutoffMedia)
+									: (showCutoffMedia && !showPremiumSlots)
 										? "cutoffpassed_CPday"
 										: (!timeslots.getHolidays().contains(day) && timeslots.getTimeslotsForDate(day).size()==0)
 											? "nodelivery_NDday"
@@ -476,7 +501,7 @@ if (timeslots.size() > 0) {
 
 	dayIndex++;
 	showCutoffMedia = false;
-
+	
 /* END DAY ITERATOR */%></logic:iterate><% 
 	
 	stringBuffer.append("			</tr>\n");
