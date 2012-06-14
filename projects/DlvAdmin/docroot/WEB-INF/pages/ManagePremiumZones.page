@@ -32,13 +32,13 @@
     </component>
     
     <component id="activateCT" type="Submit">
-        <binding name="listener" expression='listeners.updatePremiumCtZone'/>
+        <binding name="listener" expression='listeners.updatePremiumCTZone'/>
         <binding name="parameters" expression='true'/>
         <binding name="onClick">"javascript:return confirm('Are you sure to activate zone " + zone.name + "? Have you notified all parties including Marketing, Transportation and Finance?');"</binding>
      </component>
 
       <component id="deactivateCT" type="Submit">
-        <binding name="listener" expression='listeners.updatePremiumCtZone'/>
+        <binding name="listener" expression='listeners.updatePremiumCTZone'/>
         <binding name="parameters" expression='false'/>
         <binding name="onClick">"javascript:return confirm('Are you sure to deactivate zone " + zone.name + "?');"</binding>
      </component>
