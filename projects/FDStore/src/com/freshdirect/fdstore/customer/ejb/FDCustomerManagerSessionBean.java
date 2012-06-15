@@ -643,7 +643,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 					expDate, originalOrderId, remDlvs, usedDlvs,
 					usablePassCount, isFreeTrialRestricted,
 					autoRenewUsablePassCount, autoRenewDPType,
-					autoRenewDPPrice.doubleValue(),model.getPurchaseDate());
+					autoRenewDPPrice.doubleValue(),(model == null)?null:model.getPurchaseDate());
 			if (!EnumDlvPassStatus.NONE.equals(dlvPassStatus)
 					&& (type.isUnlimited())
 					&& (EnumDlvPassStatus.CANCELLED.equals(dlvPassStatus) || EnumDlvPassStatus.EXPIRED

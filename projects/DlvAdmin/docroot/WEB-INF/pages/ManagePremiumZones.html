@@ -28,7 +28,6 @@
     <tr><td colspan="3"><span jwcid="showErrors" /></td><tr>
 	<tr>
         <td>Zone</td>
-        <td>Premium</td>
         <td align="center">Auto-release minutes</td>
         <td>Premium CT</td>
 	</tr>   
@@ -38,7 +37,7 @@
 			
 			<td align="center"><span jwcid="releaseTime">0</span></td>
 			<td><span jwcid="@If" condition="ognl:zone.premiumCtActive">
-                <input jwcid="@Submit" label="Update" listener="ognl:listeners.updatePremiumCtZone" parameters="ognl:true" class="button"/>
+                <input jwcid="@Submit" label="Update" listener="ognl:listeners.updatePremiumCTZone" parameters="ognl:true" class="button"/>
             	<input jwcid="deactivateCT" label="Deactivate" class="button" />
             </span>
             <span jwcid="@Else">
