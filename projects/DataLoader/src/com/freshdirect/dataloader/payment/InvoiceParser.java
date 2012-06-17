@@ -36,6 +36,8 @@ import com.freshdirect.customer.ErpShippingInfo;
 import com.freshdirect.dataloader.BadDataException;
 import com.freshdirect.dataloader.FlatFileParser;
 import com.freshdirect.dataloader.sap.SAPConstants;
+import com.freshdirect.fdstore.customer.FDCustomerManager;
+import com.freshdirect.fdstore.customer.FDOrderI;
 
 /**
  * Beware, this class is Evil. It's a mutant flat file parser, with three different sets of fields.
@@ -76,6 +78,7 @@ public class InvoiceParser extends FlatFileParser implements SAPConstants, Produ
     public void parseFile(String filename) {
 		super.parseFile(filename);
 		invoice.setInvoiceLines(invoiceLines);
+		addCharges(pk);
 		this.consumer.consume(invoice, pk, billingType, this.shippingInfo);
 	}
 
@@ -88,6 +91,27 @@ public class InvoiceParser extends FlatFileParser implements SAPConstants, Produ
 				)
 			)
 		);
+	}
+	
+	private void addCharges(String pk)
+	{
+		List charges = new ArrayList();
+		try
+		{
+			double chargeAmount = 0;
+			FDOrderI order = FDCustomerManager.getOrder(pk);
+			for(Iterator i = order.getCharges().iterator(); i.hasNext(); ){
+				ErpChargeLineModel charge = new ErpChargeLineModel((ErpChargeLineModel)i.next());
+				chargeAmount += charge.getTotalAmount();
+				charges.add(charge);
+			}
+			invoice.setSubTotal(invoice.getSubTotal() - chargeAmount);
+			invoice.setCharges(charges);
+		}
+		catch(Exception e)
+		{
+			exceptions.add(new BadDataException(e, "Found an invoice with order not in the system."));
+		}
 	}
 
 	/**
@@ -246,6 +270,7 @@ public class InvoiceParser extends FlatFileParser implements SAPConstants, Produ
 				if(invoice != null){
 					
 					invoice.setInvoiceLines(invoiceLines);
+					addCharges(pk);
 					this.consumer.consume(invoice, pk, billingType, this.shippingInfo);
 					invoiceLines = new ArrayList<ErpInvoiceLineModel>();
 				}
@@ -294,28 +319,11 @@ public class InvoiceParser extends FlatFileParser implements SAPConstants, Produ
 					for (Iterator i = EnumChargeType.getEnumList().iterator(); i.hasNext();) {
 						
 						EnumChargeType chargeType = (EnumChargeType) i.next();
-						if(!EnumChargeType.DLVPREMIUM.equals(chargeType))
-						{
 							if (materialNumber.equals(chargeType.getMaterialNumber())) {
-								chargeMatch = true;
-								ErpChargeLineModel charge = invoice.getCharge(chargeType);
-								if(charge == null)
-								{
-									charge = new ErpChargeLineModel();
-									charge.setType(chargeType);
-									charge.setAmount(amount);
-									invoice.addCharge(charge);
-								}
-								else
-								{
-									charge.setAmount(charge.getAmount() + amount);
-								}
-	
-								invoice.setSubTotal(invoice.getSubTotal() - amount);
+								chargeMatch = true; //ignore the chargelines sent from sap. use from the order instead.
+								break;
 							}
-						}
 					}
-					
 					
 					if (!chargeMatch) {
 						// process as regular invoice line

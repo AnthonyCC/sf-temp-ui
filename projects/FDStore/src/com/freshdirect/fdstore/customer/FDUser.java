@@ -1147,6 +1147,7 @@ public class FDUser extends ModelSupport implements FDUserI {
 				//If delivery promotion was applied, do not reapply the waiving of dlv charge.
 				this.getShoppingCart().setChargeWaived(EnumChargeType.DELIVERY,true, DlvPassConstants.PROMO_CODE);
 				this.getShoppingCart().setDlvPassApplied(true);
+				if(dlvPassInfo.getPurchaseDate()!=null)
 				this.getShoppingCart().setDlvPassPremiumAllowedTC(dlvPassInfo.getPurchaseDate().after(FDStoreProperties.getDlvPassNewTCDate()));
 			//	this.getShoppingCart().setDlvPassPurchaseDate(this.getDlvPassInfo().getD)
 			}
