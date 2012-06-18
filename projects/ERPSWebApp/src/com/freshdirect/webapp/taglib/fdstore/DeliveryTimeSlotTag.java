@@ -227,7 +227,7 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag<Result> {
 		List<FDTimeslotUtil> timeslotList = getFDTimeslotListForDateRange(restrictions, dateRanges,
 				result, timeslotAddress, user,event);
 		
-		if(!cart.isDlvPassPremiumAllowedTC())
+		if(cart.isDlvPassApplied() && !cart.isDlvPassPremiumAllowedTC())
 			TimeslotLogic.purgeSDSlots(timeslotList);
 		
 		showPremiumSlots =TimeslotLogic.hasPremiumSlots(timeslotList, baseRange.getStartDate(), DateUtil.addDays(baseRange.getEndDate(),-1));
