@@ -263,25 +263,25 @@
          
             if(order.isDlvPassApplied()) {
             	displayString = "Delivery Charge:";
-		value.append(order.getDeliveryCharge()>0?JspMethods.formatPrice(order.getDeliveryCharge()):DeliveryPassUtil.getDlvPassAppliedMessage(user) );
-	    } else if(order.isDeliveryChargeWaived()) {
+		value.append(DeliveryPassUtil.getDlvPassAppliedMessage(user));
+	    } else if(order.isChargeWaived(EnumChargeType.DELIVERY)) {
 		displayString = "Delivery Charge (waived):";
 		value.append("$0.00");
 	    } else {
 		displayString = "Delivery Charge:";
-		value.append(JspMethods.formatPrice(order.hasInvoice() ? order.getInvoicedDeliveryCharge() : order.getDeliveryCharge()));
+		value.append(JspMethods.formatPrice(order.hasInvoice() ? order.getInvoicedDeliveryCharge() : order.getChargeAmountDiscountApplied(EnumChargeType.DELIVERY)));
 		value.append(order.isDeliveryChargeTaxable() ? "&nbsp;T" : "");
 	    }
 	    
 	    if(order.hasReturn()) {
 	     	value.append(" / ");
 	        if(order.isDlvPassAppliedOnReturn()) {
-		   returnValue.append(order.getDeliveryCharge()>0?JspMethods.formatPrice(order.getDeliveryCharge()):DeliveryPassUtil.getDlvPassAppliedMessage(user) );
+		   returnValue.append(DeliveryPassUtil.getDlvPassAppliedMessage(user));
 	        } else if(order.isChargedWaivedForReturn(EnumChargeType.DELIVERY)) {
 		   returnValue.append("$0.00 (waived)");
 	        } else {
-		   returnValue.append(JspMethods.formatPrice(order.getDeliveryChargeOnReturn()));
-		   returnValue.append(order.isDeliveryChargeTaxable() ? "&nbsp;T" : "");
+		   returnValue.append(JspMethods.formatPrice(order.getChargeAmountDiscAppliedOnReturn(EnumChargeType.DELIVERY)));
+		   returnValue.append(order.isChargeTaxable(EnumChargeType.DELIVERY) ? "&nbsp;T" : "");
 	        }
 	     	
 	    }
@@ -296,6 +296,42 @@
             <%  }   %>
         </tr>    
 	  
+	  <% if (order.getChargeAmount(EnumChargeType.DLVPREMIUM) > 0.0) {    
+         
+        displayString = "";
+	    value = new StringBuffer();
+	    returnValue = new StringBuffer();
+        
+        if(order.isChargeWaived(EnumChargeType.DLVPREMIUM)) {
+		displayString = "Delivery Premium (waived):";
+		value.append("$0.00");
+	    } else {
+		displayString = "Delivery Premium:";
+		value.append(JspMethods.formatPrice(order.hasInvoice() ? order.getInvoicedDeliveryPremium() : order.getChargeAmountDiscountApplied(EnumChargeType.DLVPREMIUM)));
+		value.append(order.isChargeTaxable(EnumChargeType.DLVPREMIUM) ? "&nbsp;T" : "");
+	    }
+	    
+	    if(order.hasReturn()) {
+	     	value.append(" / ");
+	        if(order.isChargedWaivedForReturn(EnumChargeType.DLVPREMIUM)) {
+		   returnValue.append("$0.00 (waived)");
+	        } else {
+		   returnValue.append(JspMethods.formatPrice(order.getChargeAmountDiscAppliedOnReturn(EnumChargeType.DLVPREMIUM)));
+		   returnValue.append(order.isChargeTaxable(EnumChargeType.DLVPREMIUM) ? "&nbsp;T" : "");
+	        }
+	     	
+	    }
+	  %>  
+	     <tr>
+            <td colspan="3"></td>
+            <td colspan="2"><%= displayString %></td>
+            <td colspan="2" align="right"><%= value %><b><%= returnValue %></b></td>
+            <td colspan="3"></td>
+            <%  if (hasInvoice) { %>
+	             <td colspan="3"></td>
+            <%  }   %>
+        </tr>   
+		<%} %>
 	    <%  if (order.getMiscellaneousCharge() > 0.0) { %>
 		<tr>
             <td colspan="3"></td>

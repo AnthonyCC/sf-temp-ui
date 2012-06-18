@@ -481,7 +481,10 @@ public class SubmitOrderAction extends WebActionSupport {
 			LOGGER.debug("Delivery charge waive requested by CSR: "+ csrWaivedDeliveryCharge);
 			cart.setCsrWaivedDeliveryCharge(csrWaivedDeliveryCharge);
 				
-
+			// Check for delviery premium waiver (CALLCENTER)
+			cart.setChargeWaived(EnumChargeType.DLVPREMIUM, "true".equalsIgnoreCase(request.getParameter("waive_delivery_premium_fee")), "CSR");
+			
+			
 			//
 			// Check for phone handling charge waiver (CALLCENTER)
 			//

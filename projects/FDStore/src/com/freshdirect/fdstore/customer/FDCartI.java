@@ -124,5 +124,8 @@ public interface FDCartI extends java.io.Serializable {
 	public boolean hasClientCodes();
 
 	public boolean isDlvPassPremiumAllowedTC();
+	public boolean isChargeTaxable(EnumChargeType chargeType);
+	public double getChargeAmountDiscountApplied(EnumChargeType chargeType);
+	public double getChargeAmount(EnumChargeType chargeType);
 
 }

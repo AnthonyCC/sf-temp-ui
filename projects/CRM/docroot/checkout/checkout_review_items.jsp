@@ -627,16 +627,25 @@
 			%>
 					<tr valign="top" class="orderSummary">
 						<td colspan="3" align="right">Delivery Charge:</td>
-						<td colspan="1" align="right"><%= cart.getDeliveryCharge()>0?JspMethods.formatPrice(cart.getDeliveryCharge()):DeliveryPassUtil.getDlvPassAppliedMessage(user) %></td>
+						<td colspan="1" align="right"><%= DeliveryPassUtil.getDlvPassAppliedMessage(user) %></td>
 						<td colspan="3">&nbsp;</td>
 					</tr>
 			<%
-				} else if (cart.getDeliverySurcharge() > 0) {
+				} else if (cart.getChargeAmount(EnumChargeType.DELIVERY) > 0) {
 			%>
 					<tr valign="top" class="orderSummary">
-						<td colspan="3" align="right">Delivery Charge<%if(cart.isDeliveryChargeWaived()){%> (waived)<%}%>:</td>
-						<td colspan="1" align="right"><%= (cart.isDeliveryChargeWaived())?0.0:JspMethods.formatPrice(cart.getDeliveryCharge()) %></td>
-						<td><%= cart.isDeliveryChargeTaxable() && !cart.isDeliveryChargeWaived() ? "&nbsp;<strong>T</strong>":""%></td>
+						<td colspan="3" align="right">Delivery Charge<%if(cart.isChargeWaived(EnumChargeType.DELIVERY)){%> (waived)<%}%>:</td>
+						<td colspan="1" align="right"><%= (cart.isChargeWaived(EnumChargeType.DELIVERY))?0.0:JspMethods.formatPrice(cart.getChargeAmountDiscountApplied(EnumChargeType.DELIVERY)) %></td>
+						<td><%= cart.isChargeTaxable(EnumChargeType.DELIVERY) && !cart.isChargeWaived(EnumChargeType.DELIVERY) ? "&nbsp;<strong>T</strong>":""%></td>
+						<td colspan="2"></td>
+					</tr>
+			<%
+				}else if (cart.getChargeAmount(EnumChargeType.DLVPREMIUM) > 0) {
+			%>
+					<tr valign="top" class="orderSummary">
+						<td colspan="3" align="right">Delivery Premium<%if(cart.isChargeWaived(EnumChargeType.DLVPREMIUM)){%> (waived)<%}%>:</td>
+						<td colspan="1" align="right"><%= (cart.isChargeWaived(EnumChargeType.DLVPREMIUM))?0.0:JspMethods.formatPrice(cart.getChargeAmountDiscountApplied(EnumChargeType.DLVPREMIUM)) %></td>
+						<td><%= cart.isChargeTaxable(EnumChargeType.DLVPREMIUM) && !cart.isChargeWaived(EnumChargeType.DLVPREMIUM) ? "&nbsp;<strong>T</strong>":""%></td>
 						<td colspan="2"></td>
 					</tr>
 			<%

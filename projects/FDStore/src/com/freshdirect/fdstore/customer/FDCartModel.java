@@ -183,6 +183,7 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 	private ExtendDPDiscountModel dlvPassExtn;
 	
 	private int skuCount = 0;
+	private boolean csrWaivedDeliveryPremium = false;
 	
 	public void incrementSkuCount(int quantity) {
 		skuCount += quantity;
@@ -820,6 +821,15 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 		csrWaivedDeliveryCharge = b;
 	}
 
+	public boolean isCsrWaivedDeliveryPremium() {
+		return csrWaivedDeliveryPremium;
+	}
+
+	public void setCsrWaivedDeliveryPremium(boolean b) {
+		csrWaivedDeliveryPremium = b;
+	}
+
+	
 	public boolean isAddressMismatch() {
 		if (this.deliveryAddress == null || this.paymentMethod == null) {
 			return false;
@@ -1640,7 +1650,7 @@ public class FDCartModel extends ModelSupport implements FDCartI {
     public void updateSurcharges(FDRuleContextI ctx) {
 		this.clearCharge(EnumChargeType.DELIVERY);
 		this.clearCharge(EnumChargeType.MISCELLANEOUS);
-
+		this.clearCharge(EnumChargeType.DLVPREMIUM);
 		AddressModel address = this.getDeliveryAddress();
 		
 		// final FDRulesContextImpl ctx = new FDRulesContextImpl(user);
@@ -1649,7 +1659,7 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 			FeeCalculator calc = new FeeCalculator("DLV");
 			double dlvFee = calc.calculateFee(ctx);
 			this.setChargeAmount(EnumChargeType.DELIVERY, dlvFee);
-			// MISC
+			// DLVPREMIUM
 			calc = new FeeCalculator("DLV");
 			double premiumFee = calc.calculatePremiumFee(ctx);
 			if(premiumFee>0)

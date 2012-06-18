@@ -83,8 +83,14 @@ public class FDInvoiceAdapter implements Serializable {
     
     public double getInvoicedDeliveryCharge(){
     	ErpChargeLineModel c = getCharge(EnumChargeType.DELIVERY);
-    	return c != null ? c.getAmount() : 0.0;
+    	return c != null ? c.getTotalAmount() : 0.0;
     }
+    
+    public double getInvoicedDeliveryPremium(){
+    	ErpChargeLineModel c = getCharge(EnumChargeType.DLVPREMIUM);
+    	return c != null ? c.getTotalAmount() : 0.0;
+    }
+    
     
 	public ErpChargeLineModel getCharge(EnumChargeType chargeType) {
 		for ( ErpChargeLineModel curr : invoice.getCharges() ) {

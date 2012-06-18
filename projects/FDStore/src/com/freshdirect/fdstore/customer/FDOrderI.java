@@ -17,14 +17,13 @@ import com.freshdirect.affiliate.ErpAffiliate;
 import com.freshdirect.customer.EnumChargeType;
 import com.freshdirect.customer.EnumDeliveryType;
 import com.freshdirect.customer.EnumSaleStatus;
+import com.freshdirect.customer.EnumSaleType;
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.customer.ErpComplaintModel;
 import com.freshdirect.customer.ErpOrderLineModel;
 import com.freshdirect.customer.ErpShippingInfo;
-import com.freshdirect.customer.EnumSaleType;
 import com.freshdirect.giftcard.ErpGCDlvInformationHolder;
 import com.freshdirect.giftcard.ErpGiftCardDlvConfirmModel;
-import com.freshdirect.giftcard.ErpGiftCardUtil;
 import com.freshdirect.giftcard.ErpRecipentModel;
 
 /**
@@ -189,4 +188,10 @@ public interface FDOrderI extends FDCartI {
 	public int getLineCnt();
 	
 	public double getDeliveryChargeOnReturn();
+	
+	public double getChargeAmountDiscountApplied(EnumChargeType chargeType); 
+	public double getChargeAmountDiscAppliedOnReturn(EnumChargeType chargeType); 
+	public boolean isChargeTaxable(EnumChargeType chargeType);
+	public double getChargeAmount(EnumChargeType type);
+	public double getInvoicedDeliveryPremium();
 }

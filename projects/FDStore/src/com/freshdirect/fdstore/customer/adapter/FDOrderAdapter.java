@@ -665,6 +665,11 @@ public class FDOrderAdapter implements FDOrderI {
 	public double getInvoicedDeliveryCharge(){
 		return lastInvoice.getInvoicedDeliveryCharge();
 	}
+	
+	public double getInvoicedDeliveryPremium(){
+		return lastInvoice.getInvoicedDeliveryPremium();
+	}
+	
 
 	public boolean isDeliveryChargeWaived() {
 		return this.isChargeWaived(EnumChargeType.DELIVERY) && this.isChargeWaived(EnumChargeType.DLVPREMIUM);
@@ -747,7 +752,7 @@ public class FDOrderAdapter implements FDOrderI {
 		return erpOrder.getDeliveryInfo().getDeliveryAddress().getInstructions();
 	}
 
-	private double getChargeAmount(EnumChargeType type) {
+	public double getChargeAmount(EnumChargeType type) {
 		ErpChargeLineModel charge = hasInvoice() ? lastInvoice.getCharge(type) : erpOrder.getCharge(type);
 		return charge == null ? 0.0 : charge.getAmount();
 	}

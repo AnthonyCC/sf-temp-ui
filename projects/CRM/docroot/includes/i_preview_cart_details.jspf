@@ -274,7 +274,7 @@
 		
 		<tr>
             <td colspan="4"></td>
-		<% if(order.isDeliveryChargeWaived() && !isSubmitOrderStep) {%>
+		<% if(order.isChargeWaived(EnumChargeType.DELIVERY) && !isSubmitOrderStep) {%>
 			<td colspan="2">Delivery Charge (waived): </td>
 			<td align="right">$0.00</td>
 		<%}else{%>
@@ -287,18 +287,44 @@
 			<%
 				if (cart.isDlvPassApplied()) {
 			%>	
-				<%= cart.getDeliveryCharge()>0?JspMethods.formatPrice(cart.getDeliveryCharge()):DeliveryPassUtil.getDlvPassAppliedMessage(user) %>
-			<%}else if (cart.isDeliveryChargeWaived()){ %> 
+				<%= DeliveryPassUtil.getDlvPassAppliedMessage(user) %>
+			<%}else if (order.isChargeWaived(EnumChargeType.DELIVERY)){ %> 
 				<%= JspMethods.formatPrice(0.0) %>
 			<%} else{%>
-				<%= JspMethods.formatPrice(cart.getDeliveryCharge()) %>
+				<%= JspMethods.formatPrice(order.getChargeAmountDiscountApplied(EnumChargeType.DELIVERY)) %>
 			<%}%>
 			</td>
 		<%}%>
-			<td><b><%=order.isDeliveryChargeTaxable() && !order.isDeliveryChargeWaived() ? "&nbsp;T" : "" %></b></td>
+			<td><b><%=order.isChargeTaxable(EnumChargeType.DELIVERY) && !order.isChargeWaived(EnumChargeType.DELIVERY) ? "&nbsp;T" : "" %></b></td>
 			<td colspan="2"></td>
 		</tr>
-
+		
+		 <% if (order.getChargeAmount(EnumChargeType.DLVPREMIUM) > 0.0) {    %>
+      
+		<tr>
+            <td colspan="4"></td>
+		<% if(order.isChargeWaived(EnumChargeType.DLVPREMIUM) && !isSubmitOrderStep) {%>
+			<td colspan="2">Delivery Premium (waived): </td>
+			<td align="right">$0.00</td>
+		<%}else{%>
+			<td colspan="2">Delivery Premium: &nbsp;&nbsp; 
+			<%if (isSubmitOrderStep ) {%>
+            	Force Waive <input type="checkbox" value="true" <%=((FDCartModel)order).isCsrWaivedDeliveryPremium()?"checked":"" %> name="waive_delivery_premium_fee">
+			<%}%>
+            </td>
+			<td align="right">
+			<%if (order.isChargeWaived(EnumChargeType.DLVPREMIUM)){ %> 
+				<%= JspMethods.formatPrice(0.0) %>
+			<%} else{%>
+				<%= JspMethods.formatPrice(order.getChargeAmountDiscountApplied(EnumChargeType.DLVPREMIUM)) %>
+			<%}%>
+			</td>
+		<%}%>
+			<td><b><%=order.isChargeTaxable(EnumChargeType.DLVPREMIUM) && !order.isChargeWaived(EnumChargeType.DLVPREMIUM) ? "&nbsp;T" : "" %></b></td>
+			<td colspan="2"></td>
+		</tr>
+		<%} %>
+		
 		<tr>
             <td colspan="4"></td>
 			<td colspan="2"><a href="javascript:popup('/shared/fee_info.jsp?type=fuel','large');">Fuel Surcharge</a><%if(order.isMiscellaneousChargeWaived()){%> (waived)<%}%>:</td>
