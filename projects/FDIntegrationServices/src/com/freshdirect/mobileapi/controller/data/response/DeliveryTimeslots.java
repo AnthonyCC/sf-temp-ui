@@ -1,6 +1,7 @@
 package com.freshdirect.mobileapi.controller.data.response;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -32,6 +33,8 @@ public class DeliveryTimeslots extends CheckoutResponse {
     private String reservedTimeslotId;
     
     private boolean showPremiumSlots;
+
+    private Date sameDayCutoff;
 
     public String getReservedTimeslotId() {
         return reservedTimeslotId;
@@ -76,6 +79,7 @@ public class DeliveryTimeslots extends CheckoutResponse {
         this.selectedTimeslotId = result.getPreselectedTimeslotId();
         this.reservedTimeslotId = result.getReservationTimeslotId();
         this.showPremiumSlots = result.isShowPremiumSlots();
+        this.sameDayCutoff = result.getSameDayCutoff();
         
     }
 
@@ -85,6 +89,14 @@ public class DeliveryTimeslots extends CheckoutResponse {
 
 	public void setShowPremiumSlots(boolean showPremiumSlots) {
 		this.showPremiumSlots = showPremiumSlots;
+	}
+
+	public Date getSameDayCutoff() {
+		return sameDayCutoff;
+	}
+
+	public void setSameDayCutoff(Date sameDayCutoff) {
+		this.sameDayCutoff = sameDayCutoff;
 	}
 
 }
