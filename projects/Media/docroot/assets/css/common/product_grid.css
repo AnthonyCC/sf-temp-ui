@@ -87,18 +87,22 @@
 	height:2em;
 	font-size:24px;
 	line-height:1em;
-	color:#f7ad5f;
+	color:#c00;
     font-family: 'BebasNeueRegular';
+}
+
+.grid-item-saving .mixnmatch {
+	color:#f7ad5f;
 }
 
 .grid-item-saving b {
 	font-weight:normal;
-	color:#f59637;	
 }
 
 .grid-item-price {
 	font-size:15px;
-	height:50px;
+	height:54px;
+	overflow:hidden;
 }
 
 .ie6 .grid-item-price {
@@ -129,7 +133,7 @@
 
 .grid-item-price .save-price {
 	height:22px;
-	color:#ed902d;
+	color:#c00;
 	font-weight:bold;
 }
 
@@ -291,6 +295,10 @@
 	font-weight:bold;
 }
 
+.grid-item-unavailable {
+	opacity:0.5;
+} 
+
 .grid-item-unavailable-text {
 	font-size:13px;
 	color:#f89e3e;
@@ -299,14 +307,6 @@
 	overflow:hidden;
 	display:none;
 }
-
-.grid-item-unavailable .grid-item-image,
-.grid-item-unavailable .grid-item-name,
-.grid-item-unavailable .grid-item-price,
-.grid-item-unavailable .grid-item-saving,
-.grid-item-unavailable .grid-item-rating {
-	opacity:0.5;
-} 
 
 .grid-item-unavailable .grid-item-unavailable-text {
 	display:block;
@@ -444,3 +444,50 @@
 	overflow:hidden;
 }
 
+
+.grid-view .featurebox .grid-item-controls {
+	position:absolute;
+	height:0px;
+	bottom:184px;
+	left:0;
+	width:100%;
+	background:rgba(255,255,255,0.8);
+	overflow:hidden;
+	
+	-webkit-transition:height 0.2s ease-in-out;
+	-moz-transition:height 0.23s ease-in-out;
+	-o-transition:height 0.2s ease-in-out;
+	-ms-transition:height 0.2s ease-in-out;	
+	transition:height 0.2s ease-in-out;	
+} 
+
+.grid-view .featurebox:hover .grid-item-controls {
+	height:72px;
+}
+
+.list-view .featurebox .grid-item {
+	padding-right:0;
+}
+
+.list-view .featurebox .grid-item .grid-item-controls {
+	width:0;
+	background:rgba(255,255,255,0.8);
+	overflow:hidden;
+	left:0;
+	
+	-webkit-transition:width 0.2s ease-in-out;
+	-moz-transition:width 0.23s ease-in-out;
+	-o-transition:width 0.2s ease-in-out;
+	-ms-transition:width 0.2s ease-in-out;	
+	transition:width 0.2s ease-in-out;	
+} 
+
+.list-view .featurebox:hover .grid-item .grid-item-controls {
+	width:150px;
+}
+
+.list-view .featurebox .grid-item .grid-item-status {
+	text-align:left;
+	position:static;
+	width:auto;
+}

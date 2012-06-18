@@ -53,6 +53,15 @@
 	margin:0px;
 }
 
+#searchTerms .yui-ac-bd {
+	font-size:14px;
+	line-height:17px;
+	width:377px;
+	border:1px solid #cdcdcd;
+	border-radius:3px;
+	border-top:none;
+}
+
 #searchbutton {
 	background:url('/media_stat/images/search/searchbutton_bg.png') no-repeat top left white;
 	display: inline-block;

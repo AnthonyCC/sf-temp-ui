@@ -12,6 +12,7 @@ import com.freshdirect.common.pricing.MaterialPrice;
 import com.freshdirect.common.pricing.util.GroupScaleUtil;
 import com.freshdirect.fdstore.FDGroup;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.GroupScalePricing;
 import com.freshdirect.fdstore.content.PriceCalculator;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.framework.webapp.BodyTagSupportEx;
@@ -25,6 +26,8 @@ public class ProductSavingTag extends BodyTagSupportEx {
 	public static String getGroupPrice(FDGroup group, String zoneId) throws FDResourceException {
 		StringBuffer buf = new StringBuffer();
 		MaterialPrice matPrice = GroupScaleUtil.getGroupScalePrice(group, zoneId);
+        GroupScalePricing grpPricing = GroupScaleUtil.lookupGroupPricing(group);
+        
 		if (matPrice != null) {
 			String grpQty = "0";
 			String grpTotalPrice = "0";
@@ -47,6 +50,10 @@ public class ProductSavingTag extends BodyTagSupportEx {
 
 			buf.append("Any ");
 			buf.append(grpQty);
+
+			if(grpPricing != null) {
+				buf.append(" " +grpPricing.getShortDesc());				
+			}
 			buf.append(" for ");
 			buf.append(grpTotalPrice);
 		}
@@ -96,7 +103,7 @@ public class ProductSavingTag extends BodyTagSupportEx {
 			}
 
 			if (!excludeGroupSavings && matPrice != null) {
-				buf.append("Mix 'n Match");
+				buf.append("<span class=\"mixnmatch\">Mix 'n Match</span>");
 			} else {
 				String scaleString = price.getTieredPrice(0, excludeCaseDeals ? ProductBurstTag.EXCLUDED_WINE_TIERS : null);
 				if (scaleString != null) {

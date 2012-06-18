@@ -79,6 +79,10 @@ final int W_INDEX_RIGHT_CENTER = W_INDEX_TOTAL - 228 - W_INDEX_CENTER_PADDING;
 
 	<tmpl:put name="content-header">
 		<form class="span-17 last"><span id="searchinput-wrapper" class="middle"><input type="text" name="searchParams" id="searchinput" class="top" autocomplete="off" value="<%= nav.getSearchTerm() %>"/></span><input type="submit" value="search" id="searchbutton" class="button middle brown_bg white bold"/></form>
+		<% if (FDStoreProperties.isSearchGlobalnavAutocompleteEnabled()) { %>
+		<div id="searchTerms" class="termsStyle" style="position: absolute; background-color: white"></div>
+		<script type="text/javascript">YAHOO.util.Event.onDOMReady(autoCompleteFunctionFactory(null, "searchTerms", "searchinput"));</script>
+		<% } %>
 	</tmpl:put>
 
 
