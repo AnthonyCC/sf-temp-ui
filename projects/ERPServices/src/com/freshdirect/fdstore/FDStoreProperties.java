@@ -1039,7 +1039,7 @@ public class FDStoreProperties {
         //[APPDEV-1993] voiceshot
         defaults.put(PROP_VS_USERNAME, "mtrachtenberg");
         defaults.put(PROP_VS_PASSWORD, "whitshell");
-        defaults.put(PROP_VS_URL, "http://apiproxy.voiceshot.com/ivrapi.asp");
+        defaults.put(PROP_VS_URL, "http://api.voiceshot.com/ivrapi.asp");
         defaults.put(PROP_ENABLE_AIRCLIC, "false");
         defaults.put(PROP_FD_GIVEX_WEB_USER, "freshdirect");
         defaults.put(PROP_DAY_OF_WEEK_FOR_COS_MON_AUTHS, "6");
