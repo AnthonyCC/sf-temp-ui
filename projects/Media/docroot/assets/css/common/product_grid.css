@@ -41,7 +41,7 @@
 	position:absolute;
 	top:0px;
 	left:0px;
-	background:yellow;
+	display:none;
 }
 
 .grid-item-image .burst-new {
