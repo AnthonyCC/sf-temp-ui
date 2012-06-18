@@ -31,8 +31,11 @@ public class Timeslot implements DateFormat {
     private Boolean alcoholRestricted;
     
     private double premiumAmount;
+    private boolean premiumSlot;
 
     private final SimpleDateFormat formatter = new SimpleDateFormat(STANDARDIZED_DATE_FORMAT);
+
+	private boolean unavailable;
 
     public static List<Timeslot> initWithList(List<com.freshdirect.mobileapi.model.Timeslot> slots) {
         List<Timeslot> newInstances = new ArrayList<Timeslot>();
@@ -54,6 +57,9 @@ public class Timeslot implements DateFormat {
         this.isDepot = slot.isDepot();
         this.alcoholRestricted = slot.isAlcoholRestricted();
         this.premiumAmount = slot.getPremiumAmount();
+        this.premiumSlot = slot.isPremiumSlot();
+        this.unavailable = slot.isUnavailable();
+    
     }
 
     public Timeslot(Date rangeStart, Date rangeEnd, Date cutoff) {
@@ -149,4 +155,13 @@ public class Timeslot implements DateFormat {
 	public double getPremiumAmount() {
 		return premiumAmount;
 	}
+	
+	public boolean isPremiumSlot() {
+		return premiumSlot;
+	}
+	
+	public boolean isUnavailable() {
+		return unavailable;
+	}
+	
 }

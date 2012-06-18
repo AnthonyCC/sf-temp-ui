@@ -153,6 +153,14 @@ public class Timeslot {
 		return slot.getPremiumAmount();
 	}
 	
+	public boolean isPremiumSlot() {
+		return slot.getDlvTimeslot().isPremiumSlot();
+	}
+	
+	public boolean isUnavailable() {
+		return slot.isUnavailable();
+	}
+	
 	/* Eco Friendly timeslot*/
 	public boolean isEcoFriendly() {
 		return slot.isEcoFriendly();

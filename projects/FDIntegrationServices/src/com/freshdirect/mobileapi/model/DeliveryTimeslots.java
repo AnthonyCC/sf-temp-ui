@@ -1,6 +1,7 @@
 package com.freshdirect.mobileapi.model;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -75,6 +76,8 @@ public class DeliveryTimeslots {
 
 		private boolean showPremiumSlots= false;
 
+		private Date sameDayCutoff;
+
         public boolean isUserChefTable() {
             return isUserChefTable;
         }
@@ -98,7 +101,7 @@ public class DeliveryTimeslots {
          * @throws FDResourceException
          */
         public TimeSlotCalculationResult(FDDeliveryTimeslotModel model, boolean isUserChefTable, boolean preReservationMode) throws FDResourceException {
-            this(model.getTimeslotList(), model.getZones(), model.isZoneCtActive(), model.getGeoRestrictionmessages(), isUserChefTable, model.isShowPremiumSlots());
+            this(model.getTimeslotList(), model.getZones(), model.isZoneCtActive(), model.getGeoRestrictionmessages(), isUserChefTable, model.isShowPremiumSlots(), model.getSameDayCutoff());
         }
         
         
@@ -111,7 +114,7 @@ public class DeliveryTimeslots {
          * @throws FDResourceException
          */
         public TimeSlotCalculationResult(List<FDTimeslotUtil> timeslotLists, Map<String, DlvZoneModel> zones, boolean zoneCtActive,
-                List<String> messages, boolean isUserChefTable, boolean showPremiumSlots) throws FDResourceException {
+                List<String> messages, boolean isUserChefTable, boolean showPremiumSlots, Date sameDayCutoff) throws FDResourceException {
             this.timeslotList = TimeslotList.wrap(timeslotLists);
             //this.zones = zones;
             this.zoneCtActive = zoneCtActive;
@@ -119,6 +122,7 @@ public class DeliveryTimeslots {
             this.isUserChefTable = isUserChefTable;
             calculatSlotAvailability();
             this.showPremiumSlots = showPremiumSlots;
+            this.sameDayCutoff = sameDayCutoff;
             
         }
 
@@ -178,13 +182,14 @@ public class DeliveryTimeslots {
         public void setPreselectedTimeslotId(String preselectedTimeslotId) {
             this.preselectedTimeslotId = preselectedTimeslotId;
         }
-        public boolean isshowPremiumSlots() {
-            return showPremiumSlots;
-        }
+        
+		public Date getSameDayCutoff() {
+			return sameDayCutoff;
+		}
 
-        public void setShowPremiumSlots(boolean showPremiumSlots) {
-            this.showPremiumSlots = showPremiumSlots;
-        }
+		public boolean isShowPremiumSlots() {
+			return showPremiumSlots;
+		}
     }
 
 }

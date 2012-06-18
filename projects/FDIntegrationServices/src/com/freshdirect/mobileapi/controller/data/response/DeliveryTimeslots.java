@@ -75,7 +75,7 @@ public class DeliveryTimeslots extends CheckoutResponse {
         }
         this.selectedTimeslotId = result.getPreselectedTimeslotId();
         this.reservedTimeslotId = result.getReservationTimeslotId();
-        this.showPremiumSlots = result.isshowPremiumSlots();
+        this.showPremiumSlots = result.isShowPremiumSlots();
         
     }
 
