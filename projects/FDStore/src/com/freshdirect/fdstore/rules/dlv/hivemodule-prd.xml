@@ -11,7 +11,7 @@
 			<condition class="com.freshdirect.fdstore.rules.CountyCondition" label="County" xmlTag="County"/>
 			<outcome class="com.freshdirect.fdstore.rules.BasePrice" label="Base Price" xmlTag="BasePrice"/>
 			<outcome class="com.freshdirect.fdstore.rules.Adjustment" label="Adjustment" xmlTag="Adjustment"/>
-			<outcome class="com.freshdirect.fdstore.rules.Premium" label="Premium" xmlTag="Premium"/>
+			<outcome class="com.freshdirect.fdstore.rules.DlvPremium" label="Premium" xmlTag="Premium"/>
 		</rulesConfig>
 	</contribution>
 	

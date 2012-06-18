@@ -72,6 +72,7 @@ import com.freshdirect.fdstore.promotion.EnumOfferType;
 import com.freshdirect.fdstore.promotion.EnumPromotionType;
 import com.freshdirect.fdstore.promotion.PromotionFactory;
 import com.freshdirect.fdstore.promotion.PromotionI;
+import com.freshdirect.fdstore.rules.FDRuleContextI;
 import com.freshdirect.framework.util.MathUtil;
 import com.freshdirect.framework.util.TimeOfDay;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -1371,6 +1372,12 @@ public class FDOrderAdapter implements FDOrderI {
 	public double getChargeAmountDiscAppliedOnReturn(EnumChargeType chargeType) {
 		ErpChargeLineModel charge = returnOrder.getCharge(chargeType);
 		return charge == null ? 0.0 : charge.getTotalAmount();
+	}
+
+	@Override
+	public double getPremiumFee(FDRuleContextI ctx) {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 	
 	

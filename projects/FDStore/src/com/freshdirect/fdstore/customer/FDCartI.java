@@ -10,6 +10,7 @@ import com.freshdirect.customer.ErpChargeLineModel;
 import com.freshdirect.customer.ErpDiscountLineModel;
 import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.fdstore.FDReservation;
+import com.freshdirect.fdstore.rules.FDRuleContextI;
 
 public interface FDCartI extends java.io.Serializable {
 
@@ -127,5 +128,6 @@ public interface FDCartI extends java.io.Serializable {
 	public boolean isChargeTaxable(EnumChargeType chargeType);
 	public double getChargeAmountDiscountApplied(EnumChargeType chargeType);
 	public double getChargeAmount(EnumChargeType chargeType);
+	public double getPremiumFee(FDRuleContextI ctx);
 
 }

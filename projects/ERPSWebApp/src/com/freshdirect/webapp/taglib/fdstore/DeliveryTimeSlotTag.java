@@ -230,7 +230,7 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag<Result> {
 		if(cart.getDeliveryPassCount() ==0 && user.getDlvPassInfo()!=null && user.getDlvPassInfo().getPurchaseDate()!=null)
 			cart.setDlvPassPremiumAllowedTC(user.getDlvPassInfo().getPurchaseDate().after(FDStoreProperties.getDlvPassNewTCDate()));
 		
-		if(cart.isDlvPassApplied() && !cart.isDlvPassPremiumAllowedTC())
+		if((cart.isDlvPassApplied() && !cart.isDlvPassPremiumAllowedTC()) || deliveryInfo)
 			TimeslotLogic.purgeSDSlots(timeslotList);
 		
 		showPremiumSlots =TimeslotLogic.hasPremiumSlots(timeslotList, baseRange.getStartDate(), DateUtil.addDays(baseRange.getEndDate(),-1));

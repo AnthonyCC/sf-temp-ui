@@ -1,22 +1,22 @@
 <?xml version="1.0"?>
-<module id="com.freshdirect.fdstore.rules.premium" version="1.0.0">
+<module id="com.freshdirect.fdstore.rules.dlvpremium" version="1.0.0">
 
 	<contribution configuration-id="com.freshdirect.rules.Configurations">
-		<rulesConfig subsystem="PREMIUM" serviceName="com.freshdirect.fdstore.rules.premium.Engine">
+		<rulesConfig subsystem="DLVPREMIUM" serviceName="com.freshdirect.fdstore.rules.dlvpremium.Engine">
 			<condition class="com.freshdirect.rules.OgnlCondition" label="OGNL Condition" xmlTag="OgnlCondition"/>
 			<condition class="com.freshdirect.rules.RuleRef" label="Rule Reference" xmlTag="rule-ref"/>
 			<condition class="com.freshdirect.fdstore.rules.ProfileCondition" label="Profile Value" xmlTag="ProfileCondition"/>
 			<condition class="com.freshdirect.fdstore.rules.OrderAmount" label="Order Amount" xmlTag="OrderAmount"/>
 			<condition class="com.freshdirect.fdstore.rules.ServiceTypeCondition" label="Service Type" xmlTag="serviceType"/>
 			<condition class="com.freshdirect.fdstore.rules.CountyCondition" label="County" xmlTag="County"/>
-			<outcome class="com.freshdirect.fdstore.rules.Premium" label="Premium" xmlTag="Premium"/>
+			<outcome class="com.freshdirect.fdstore.rules.DlvPremium" label="Premium" xmlTag="Premium"/>
 		</rulesConfig>
 	</contribution>
 	
 	<service-point id="Store" interface="com.freshdirect.rules.RulesStoreI">
 		<invoke-factory>
 			<construct class="com.freshdirect.rules.XMLRulesStore">
-				<string>${com.freshdirect.fdstore.rules.premium.location}</string>
+				<string>${com.freshdirect.fdstore.rules.dlvpremium.location}</string>
 				<string>PREMIUM</string>
 				<configuration>com.freshdirect.rules.Configurations</configuration>
 			</construct>

@@ -973,12 +973,7 @@ public class FDUser extends ModelSupport implements FDUserI {
 		}
 		return referrerEligible.booleanValue();
 	}
-	public double getPremiumFee()
-	{
-		EligibilityCalculator calc = new EligibilityCalculator("PREMIUM");
-		return calc.getPremiumFee(new FDRulesContextImpl(this));
-	}
-
+	
 	public boolean isECheckRestricted() throws FDResourceException {
 	    if (this.identity == null) {
 			return false;

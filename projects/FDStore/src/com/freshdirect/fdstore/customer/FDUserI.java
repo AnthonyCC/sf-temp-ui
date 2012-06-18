@@ -81,8 +81,6 @@ public interface FDUserI extends java.io.Serializable {
 
 	public boolean isInZone();
 	
-	public double getPremiumFee();
-
     public void isLoggedIn(boolean loggedId);
 
 	public FDCartModel getShoppingCart();

@@ -59,6 +59,7 @@ import com.freshdirect.fdstore.content.Recipe;
 import com.freshdirect.fdstore.content.RecipeSource;
 import com.freshdirect.fdstore.promotion.PromotionFactory;
 import com.freshdirect.fdstore.promotion.PromotionI;
+import com.freshdirect.fdstore.rules.EligibilityCalculator;
 import com.freshdirect.fdstore.rules.FDRuleContextI;
 import com.freshdirect.fdstore.rules.FeeCalculator;
 import com.freshdirect.framework.core.ModelSupport;
@@ -221,7 +222,12 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 	public void setDeliveryPassCount(int dlvPassCount) {
 		this.deliveryPassCount = dlvPassCount;
 	}
-	
+	public double getPremiumFee(FDRuleContextI ctx)
+	{
+		EligibilityCalculator calc = new EligibilityCalculator("DLVPREMIUM");
+		return calc.getPremiumFee(ctx);
+	}
+
 	
 	public FDCartModel() {
 	}
@@ -1659,10 +1665,11 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 			FeeCalculator calc = new FeeCalculator("DLV");
 			double dlvFee = calc.calculateFee(ctx);
 			this.setChargeAmount(EnumChargeType.DELIVERY, dlvFee);
-			// DLVPREMIUM
-			calc = new FeeCalculator("DLV");
-			double premiumFee = calc.calculatePremiumFee(ctx);
-			if(premiumFee>0)
+			double premiumFee = 0.0;
+			premiumFee = this.getPremiumFee(ctx);
+			if(this.getDeliveryReservation()!=null && this.getDeliveryReservation().getTimeslot()!=null 
+					&& this.getDeliveryReservation().getTimeslot().getDlvTimeslot()!=null && 
+					this.getDeliveryReservation().getTimeslot().getDlvTimeslot().isPremiumSlot() && premiumFee>0)
 			this.setChargeAmount(EnumChargeType.DLVPREMIUM, premiumFee);
 			// MISC
 			calc = new FeeCalculator("MISC");

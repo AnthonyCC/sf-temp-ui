@@ -1360,11 +1360,5 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 		this.user.setTsaPromoCode(tsaPromoCode);
 	}
 
-	@Override
-	public double getPremiumFee() {
-		return this.user.getPremiumFee();
-	}
-
-
 }
 

@@ -82,8 +82,8 @@ public class EligibilityCalculator implements Serializable {
 				Rule r = (Rule) i.next();
 				Object outcome = r.getOutcome();
 				
-				if(outcome instanceof Premium)
-					return ((Premium) r.getOutcome()).getValue();
+				if(outcome instanceof DlvPremium)
+					return ((DlvPremium) r.getOutcome()).getValue();
 				
 			}
 		}

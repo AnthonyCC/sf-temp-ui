@@ -110,24 +110,4 @@ public class FeeCalculator implements Serializable {
 
 		return value < 0 ? 0 : MathUtil.roundDecimal(value);
 	}
-	
-	public double calculatePremiumFee(FDRuleContextI ctx) {
-		Map<?,Rule> firedRules = (Map<?,Rule>)getRulesEngine().evaluateRules(ctx);
-
-		//System.out.println("FIRED RULES: " + firedRules);
-
-		Set<Rule> rules = resolveConflicts(firedRules.values());
-
-		//System.out.println("AFTER RESOLVE CONFLICT: " + rules);
-
-		double value = 0.0;
-		for (Rule r : rules) {
-			Object outcome = r.getOutcome();
-			if(outcome instanceof Premium)
-				value += ((Premium) r.getOutcome()).getValue();
-			
-		}
-
-		return value < 0 ? 0 : MathUtil.roundDecimal(value);
-	}
 }

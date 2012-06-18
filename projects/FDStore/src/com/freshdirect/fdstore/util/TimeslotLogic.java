@@ -32,6 +32,7 @@ import com.freshdirect.fdstore.FDZoneNotFoundException;
 import com.freshdirect.fdstore.customer.FDDeliveryTimeslotModel;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.promotion.PromotionHelper;
+import com.freshdirect.fdstore.rules.FDRulesContextImpl;
 import com.freshdirect.framework.util.DateRange;
 import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -135,7 +136,7 @@ public class TimeslotLogic {
 
 		final DlvTimeslotStats stats = new DlvTimeslotStats();
 		HashMap<String, DlvZoneModel> _zonesMap = new HashMap<String, DlvZoneModel>();
-		final double premiumFee = user.getPremiumFee();
+		final double premiumFee = user.getShoppingCart().getPremiumFee(new FDRulesContextImpl(user));
 		final boolean isAlcoholDlv = FDDeliveryManager.getInstance()
 				.checkForAlcoholDelivery(address);
 		stats.setAlcoholDelivery(isAlcoholDlv);

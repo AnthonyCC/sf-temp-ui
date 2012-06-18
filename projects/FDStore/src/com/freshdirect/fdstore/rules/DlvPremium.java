@@ -2,15 +2,15 @@ package com.freshdirect.fdstore.rules;
 
 import java.io.Serializable;
 
-public class Premium implements Serializable {
+public class DlvPremium implements Serializable {
 	
 	private double value;
 	
-	public Premium() {
+	public DlvPremium() {
 		
 	}
 	
-	public Premium(double value) {
+	public DlvPremium(double value) {
 		this();
 		this.value = value;
 	}
@@ -24,6 +24,6 @@ public class Premium implements Serializable {
 	}
 	
 	public String toString() {
-		return  "Premium[" + value + "]";
+		return  "DlvPremium[" + value + "]";
 	}
 }
