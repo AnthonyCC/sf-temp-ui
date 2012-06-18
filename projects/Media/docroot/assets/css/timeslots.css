@@ -427,6 +427,59 @@ div.tsHeaderC {
 	margin-top: 5px; 
 	margin-bottom: -5px;
 }
+/* same day */
+.tsPremiumE {
+	color: #78ABDC;
+	font-weight: bold;
+	font-size: 11px; 
+	font-family: Verdana, Arial, sans-serif;
+}
+.tsPremiumPropE {
+	overflow: hidden;
+	margin-top: 2px;
+	text-align: right;
+	padding: 2px 0px 0 0;
+}
+
+.tsCol div.tsContent div.tsPremiumPropE {
+	height: 28px;
+}
+.tsPremiumC {
+	color: #78ABDC;
+	font-weight: bold;
+	font-size: 10px; 
+	font-family: Verdana, Arial, sans-serif;
+	float: left;
+}
+.tsPremiumPropC {
+	padding:2px 0 0 4px;
+}
+.tsPremiumPropE div div { 
+	float: left;
+	margin-top: 5px; 
+	margin-bottom: -5px;
+}
+
+.tsPremiumPropE div img { 
+	float: left; 
+	margin-top: 5px; 
+	margin-bottom: -5px;
+}
+.cutoffLR .cutoffDispChild div.premSlotTimer,
+.cutoffLR .cutoffDispChild div.premSlotMsg {
+}
+.premSlotTimer {
+	font-size: 18px;
+	line-height: 18px;
+	color: #d33;
+}
+.premSlotMsg {
+	font-size: 15px;
+	line-height: 15px;
+	color: #555;
+	font-weight: bold;
+}
+
 /*Reservation slot*/
 .tsContentResC {
 	background: transparent url('/media/editorial/timeslots/images/reservedSlotBGC.gif') repeat-x left top;
@@ -645,6 +698,14 @@ td.noTopBorder {
 	padding-top:3px;
 }
 
+.tsContainerBGC div.tsContent div.tsPremiumTimeC {
+	padding-top:3px;
+}
+
+.tsContainerNoDelBGC div.tsContent div.tsPremiumTimeC {
+	padding-top:3px;
+}
+
 .tsForceC {
 	text-align:right;
 	padding:10px 10px 0 0;
@@ -754,6 +815,8 @@ td.noTopBorder {
 .tsContainerBGC .tsEcoFriendlyPropE, 
 .tsContainerBGE .tsNeighbourhoodPropC, 
 .tsContainerBGC .tsNeighbourhoodPropE, 
+.tsContainerBGE .tsPremiumPropC,
+.tsContainerBGC .tsPremiumPropE,  
 .tsContainerBGE .tsReservationPropC, 
 .tsContainerBGC .tsReservationPropE, 
 .tsContainerBGE .tsSelectedSlotPropC, 
@@ -775,6 +838,8 @@ td.noTopBorder {
 .tsContainerBGE .tsEcoFriendlyPropE, 
 .tsContainerBGC .tsNeighbourhoodPropC, 
 .tsContainerBGE .tsNeighbourhoodPropE, 
+.tsContainerBGC .tsPremiumPropC,
+.tsContainerBGE .tsPremiumPropE, 
 .tsContainerBGC .tsReservationPropC, 
 .tsContainerBGE .tsReservationPropE, 
 .tsContainerBGC .tsSelectedSlotPropC, 
