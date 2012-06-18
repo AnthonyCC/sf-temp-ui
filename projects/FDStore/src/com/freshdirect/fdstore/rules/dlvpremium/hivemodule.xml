@@ -9,7 +9,7 @@
 			<condition class="com.freshdirect.fdstore.rules.OrderAmount" label="Order Amount" xmlTag="OrderAmount"/>
 			<condition class="com.freshdirect.fdstore.rules.ServiceTypeCondition" label="Service Type" xmlTag="serviceType"/>
 			<condition class="com.freshdirect.fdstore.rules.CountyCondition" label="County" xmlTag="County"/>
-			<outcome class="com.freshdirect.fdstore.rules.DlvPremium" label="Premium" xmlTag="Premium"/>
+			<outcome class="com.freshdirect.fdstore.rules.DlvPremium" label="Premium" xmlTag="DlvPremium"/>
 		</rulesConfig>
 	</contribution>
 	
@@ -17,7 +17,7 @@
 		<invoke-factory>
 			<construct class="com.freshdirect.rules.DbRulesStore">
 				<service>com.freshdirect.fdstore.DataSource</service>
-				<string>PREMIUM</string>
+				<string>DLVPREMIUM</string>
 				<configuration>com.freshdirect.rules.Configurations</configuration>
 			</construct>
 		</invoke-factory>

@@ -49,7 +49,7 @@
 							<input jwcid="@TextField" validators="validators:required" value="ognl:selectedRule.outcome.value" displayName="price" size="5" />
 						</span>
 						
-						<span jwcid="@If" condition="ognl:selectedRule.outcome instanceof com.freshdirect.fdstore.rules.Premium">
+						<span jwcid="@If" condition="ognl:selectedRule.outcome instanceof com.freshdirect.fdstore.rules.DlvPremium">
 							<input jwcid="@TextField" validators="validators:required" value="ognl:selectedRule.outcome.value" displayName="price" size="5" />
 						</span>
 						
