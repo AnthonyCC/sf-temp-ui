@@ -38,7 +38,6 @@
 .grid-item-image .burst-back {
 	width:35px;
 	height:35px;
-	display:none;
 	position:absolute;
 	top:0px;
 	left:0px;
@@ -111,8 +110,8 @@
 
 .grid-item-price-description {
 	font-size:11px;
-	height:2em;
-	line-height:1.5em;
+	height:2.6em;
+	line-height:1.3em;
 	position:relative;
 	overflow:hidden;
 }
