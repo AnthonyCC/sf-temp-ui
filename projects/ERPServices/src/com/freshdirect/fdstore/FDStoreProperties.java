@@ -533,7 +533,7 @@ public class FDStoreProperties {
 	private static final String PROP_TRANS_EMAIL_ENABLED="fdstore.trans.email.enabled";
 	private final static String PROP_TRANS_EMAIL_TYPES = "fdstore.trans.email.types";
 	
-	private final static String PROP_MODIFY_ORDER_TOTOAL_MAX = "fdstore.modify.order.maxtotal";
+	private final static String PROP_MODIFY_ORDER_TOTAL_MAX = "fdstore.modify.order.maxtotal";
 	
 	private final static String PROP_LIGHT_SIGNUP_ENABLED = "fdstore.signuplight.enabled";
 	private final static String ALLOW_DISCOUNTS_ON_PREMIUM_SLOT = "fdstore.allow.discount.premium.slot";
@@ -1067,7 +1067,7 @@ public class FDStoreProperties {
 				" GC_BULK_ORDER_SUBMIT,GC_AUTH_FAILURE,GC_CANCEL_PURCHASER,GC_CANCEL_RECIPENT,GC_BALANCE_TRANSFER,"+
 				"GC_CREDIT_CONFIRM,RH_ORDER_CONFIRM,GC_RECIPENT_ORDER,SMART_STORE_DYF");			
 		
-		defaults.put(PROP_MODIFY_ORDER_TOTOAL_MAX, "1500");
+		defaults.put(PROP_MODIFY_ORDER_TOTAL_MAX, "1500");
 		
 		defaults.put(PROP_LIGHT_SIGNUP_ENABLED, "true");
 		
@@ -2715,7 +2715,7 @@ public class FDStoreProperties {
     }
     
     public static String getModifyOrderMaxTotal() {
-    	return config.getProperty("PROP_MODIFY_ORDER_TOTOAL_MAX");
+    	return config.getProperty(PROP_MODIFY_ORDER_TOTAL_MAX);
     }
     
     public static int getSameDayMediaAfterCutoffDuration() {
