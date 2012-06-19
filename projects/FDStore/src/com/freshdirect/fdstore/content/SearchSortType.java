@@ -10,7 +10,7 @@ public enum SearchSortType {
 	DEFAULT(4, "tdef", "Default", "Default", "Default"),			// 'default' sort on text view
 	BY_SALE(5, "sale", "Sale", "Sale (yes)", "Sale (no)"),
 	BY_RECENCY(6, "recency", "Recent", "Recent", "Recent"),
-	BY_OURFAVES(6, "ourFaves", "Our Favourites", "Our Favourites", "Our Favourites"),
+	BY_OURFAVES(6, "ourFaves", "Our Favorites", "Our Favorites", "Our Favorites"),
 	BY_DEPARTMENT(7, "dept", "Department", "Department", "Department");
     
     private int type;
