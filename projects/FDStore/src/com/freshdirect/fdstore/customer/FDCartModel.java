@@ -1666,11 +1666,15 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 			double dlvFee = calc.calculateFee(ctx);
 			this.setChargeAmount(EnumChargeType.DELIVERY, dlvFee);
 			double premiumFee = 0.0;
-			premiumFee = this.getPremiumFee(ctx);
+			
 			if(this.getDeliveryReservation()!=null && this.getDeliveryReservation().getTimeslot()!=null 
 					&& this.getDeliveryReservation().getTimeslot().getDlvTimeslot()!=null && 
-					this.getDeliveryReservation().getTimeslot().getDlvTimeslot().isPremiumSlot() && premiumFee>0)
-			this.setChargeAmount(EnumChargeType.DLVPREMIUM, premiumFee);
+					this.getDeliveryReservation().getTimeslot().getDlvTimeslot().isPremiumSlot())
+			{
+				premiumFee = this.getPremiumFee(ctx);
+				if(premiumFee>0)
+					this.setChargeAmount(EnumChargeType.DLVPREMIUM, premiumFee);
+			}
 			// MISC
 			calc = new FeeCalculator("MISC");
 			double miscFee = calc.calculateFee(ctx);

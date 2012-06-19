@@ -485,11 +485,11 @@ public class DlvAdminManagerSessionBean extends SessionBeanSupport {
         "decode((sysdate-(TO_DATE(TO_CHAR(ts.base_date - 1, 'YYYY-MM-DD')||' '||to_char(ts.cutoff_time - " +
         "(z.ct_release_time/60/24), 'HH24:MI:SS'), 'YYYY-MM-DD HH24:MI:SS'))- abs(sysdate-(TO_DATE(TO_CHAR(ts.base_date - 1, 'YYYY-MM-DD')||' '||to_char(ts.cutoff_time " +
         "- (z.ct_release_time/60/24), 'HH24:MI:SS'), 'YYYY-MM-DD HH24:MI:SS')))),0,(select count(*) from dlv.reservation where timeslot_id=ts.id and status_code <> ?" +
-        "and status_code <> ? ),(select count(*) from dlv.reservation where timeslot_id=ts.id and  status_code <> ? and status_code <> ? and chefstable = ' ' and class not in ('P','PC'))+ts.ct_capacity+ts.premium_capacity) as total_alloc, " +
-        "(select count(*) from dlv.reservation where timeslot_id=ts.id and status_code = ? and chefstable = ' ') as base_orders, " +
-        "(select count(*) from dlv.reservation where timeslot_id=ts.id and  status_code <> ? and status_code <> ? and chefstable = ' ') as base_alloc, " +
-        "(select count(*) from dlv.reservation where timeslot_id=ts.id and  status_code <> ? and status_code <> ? and chefstable = 'X') as ct_alloc," + 
-        "(select count(*) from dlv.reservation where timeslot_id=ts.id and status_code = ? and chefstable = 'X') as ct_orders ," +
+        "and status_code <> ? and class not in ('P','PC'))+ts.premium_capacity,(select count(*) from dlv.reservation where timeslot_id=ts.id and  status_code <> ? and status_code <> ? and chefstable = ' ' and class not in ('P','PC'))+ts.ct_capacity+ts.premium_capacity) as total_alloc, " +
+        "(select count(*) from dlv.reservation where timeslot_id=ts.id and status_code = ? and chefstable = ' ' and class not in ('P','PC')) as base_orders, " +
+        "(select count(*) from dlv.reservation where timeslot_id=ts.id and  status_code <> ? and status_code <> ? and chefstable = ' ' and class not in ('P','PC')) as base_alloc, " +
+        "(select count(*) from dlv.reservation where timeslot_id=ts.id and  status_code <> ? and status_code <> ? and chefstable = 'X' and class not in ('P','PC')) as ct_alloc," + 
+        "(select count(*) from dlv.reservation where timeslot_id=ts.id and status_code = ? and chefstable = 'X' and class not in ('P','PC')) as ct_orders ," +
         "TS.PREMIUM_CAPACITY, TS.PREMIUM_CT_CAPACITY, " +
         "(select count(*) from dlv.reservation where timeslot_id=ts.id and status_code = ? and class = 'P') as premium_orders, " +
         " (select count(*) from dlv.reservation where timeslot_id=ts.id and  status_code <> ? and status_code <> ? and class = 'P') as premium_alloc," +
@@ -596,16 +596,17 @@ public class DlvAdminManagerSessionBean extends SessionBeanSupport {
 			this.zoneName = zoneName;
 			this.order = order;
 			this.capacity = capacity;
-			this.percentOrders = (double) order / (double) capacity;
+			this.percentOrders = (capacity>0)?((double) order / (double) capacity):0;
 			
 			this.totalAlloc = totalAlloc;
-			this.percentAlloc = (double) totalAlloc / (double) capacity;
+			this.percentAlloc = (capacity>0)?((double) totalAlloc / (double) capacity):0;
 			
 			this.baseOrder = baseOrder;
+			capacity = capacity - premiumCapacity;
 			this.baseCapacity = capacity - ctCapacity;
-			this.percentbaseOrders = (double) baseOrder / (double) (capacity - ctCapacity);
+			this.percentbaseOrders = (capacity - ctCapacity>0)?((double) baseOrder / (double) (capacity - ctCapacity)):0;
 			this.baseAlloc = baseAlloc;
-			this.percentbaseAlloc = (double) baseAlloc / (double) (capacity - ctCapacity);
+			this.percentbaseAlloc = (capacity - ctCapacity>0)?((double) baseAlloc / (double) (capacity - ctCapacity)):0;
 			this.ctCapacity = ctCapacity;
 			this.ctAlloc = ctAlloc;
 			this.ctOrder = ctOrder;
@@ -615,9 +616,9 @@ public class DlvAdminManagerSessionBean extends SessionBeanSupport {
 			
 			this.premiumOrder = premiumOrder;
 			this.premiumCapacity = premiumCapacity;
-			this.premiumPercentOrders =  (double) premiumOrder / (double) (premiumCapacity); 
+			this.premiumPercentOrders = (premiumCapacity>0)?((double) premiumOrder / (double) (premiumCapacity)):0; 
 			this.premiumAlloc = premiumAlloc;
-			this.premiumPercentAlloc = (double) premiumAlloc / (double) (premiumCapacity);
+			this.premiumPercentAlloc = (premiumCapacity>0)?((double) premiumAlloc / (double) (premiumCapacity)):0;
 			
 			this.premiumCtCapacity = premiumCtCapacity;
 			this.premiumCtAlloc = premiumCtAlloc;

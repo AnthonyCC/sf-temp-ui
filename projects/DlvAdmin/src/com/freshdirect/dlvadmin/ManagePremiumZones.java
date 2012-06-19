@@ -25,10 +25,10 @@ public abstract class ManagePremiumZones extends DlvPage {
 				DlvZoneModel z = getZone();
 				z.setPremiumCtActive(premiumCtActive);
 				if (!premiumCtActive) {
-					z.setCtReleaseTime(0);
+					z.setPremiumCtReleaseTime(0);
 				}
 				DlvAdminManager.getInstance().updatePremiumCtZone(
-						z.getZoneCode(),  premiumCtActive, z.getCtReleaseTime());
+						z.getZoneCode(),  premiumCtActive, z.getPremiumCtReleaseTime());
 			}
 		} catch (DlvResourceException de) {
 			throw new ApplicationRuntimeException(de);

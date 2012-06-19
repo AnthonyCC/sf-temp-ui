@@ -53,9 +53,9 @@ public class viewResource extends BaseComponent {
 		  return getView()==null || getView().equals(VIEW_ALL); 
 	}
 	public boolean isShowPremium() {
-		  return getView()==null || (getView().equals(VIEW_ALL)|| getView().equals(VIEW_PREMIUM)); 
+		  return getView()!=null || (getView().equals(VIEW_ALL)|| getView().equals(VIEW_PREMIUM)); 
 	}
 	public boolean isShowPremiumCt() {
-		  return getView()==null || (getView().equals(VIEW_ALL)|| getView().equals(VIEW_PREMIUM_CT)); 
+		  return getView()!=null || (getView().equals(VIEW_ALL)|| getView().equals(VIEW_PREMIUM_CT)); 
 	}
 }
