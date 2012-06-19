@@ -229,15 +229,7 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
         		  e.printStackTrace();
         	}
 		}
-        try
-        {
-        if(event!=null && event.getSession()!=null)
-        	event.getSession().removeAttribute("JSONRPCBridge");
-        }
-        catch(Exception e)
-        { //Ignore 
-        }
-        
+                
         if(FDStoreProperties.isRealTimeAnalysisEnabled())
 		{
         	FDEventProcessorI processor = new FDEventProcessor();
