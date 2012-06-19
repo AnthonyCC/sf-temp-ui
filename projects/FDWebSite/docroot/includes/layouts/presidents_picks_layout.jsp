@@ -178,6 +178,128 @@
 	<fd:javascript src="/assets/yui-2.9.0/selector/selector-min.js" />
 	<fd:javascript src="/assets/javascript/statusupdate.js" />
 		<script type="text/javascript">
+			<%--
+				Override the QB show panel function to make it look and act like how we want for ddpp
+			--%>
+			FD_QuickBuy.showPanelDDPP = function(deptId, catId, prdId, statusPlaceholderId) {
+				return function() {
+					var elementId= prdId+'_'+FD_QuickBuy._randomId(16);
+					var ctPanel = new YAHOO.widget.Panel(elementId, {
+						fixedcenter: true, 
+						constraintoviewport: true, 
+						underlay: "matte", 
+						close: true, 
+						visible: true,
+						modal: true,
+						draggable: false,
+						zIndex: '10'
+					});
+					var isWineDept = ("usq" == deptId);
+					
+					ctPanel.setHeader( "&nbsp;" );
+
+					var winTitle = document.title.substring(14);
+
+					var content = "";
+					var uri = '/quickbuy/product.jsp?catId='+catId+'&amp;productId='+prdId+'&amp;fdsc.source=quickbuy&amp;refTitle='+escape(winTitle)+'&amp;referer='+escape(window.location.href)+'&amp;uid='+elementId;
+					if (statusPlaceholderId)
+						uri += '&amp;statusPlaceholderId='+escape(statusPlaceholderId);
+					content += '<div id="'+elementId+'_ctnt">\n';
+					content += '  <div id="'+elementId+'_overbox" class="overbox">\n';
+					content += '    <div id="'+elementId+'_nfeat" class="nfeat roundedbox"></div>\n';
+					content += '    <div id="'+elementId+'_errors" class="alerts roundedbox"></div>\n';
+					content += '  </div>\n';
+					content += '  <iframe id="'+elementId+'_frame" frameborder="0" src="'+uri+'" class="prodframe"></iframe>';
+					content += '</div>\n';
+					
+					ctPanel.setBody( content );
+					
+					ctPanel.render(document.body);
+					
+					// override .yui-panel hidden setting
+					YAHOO.util.Dom.get(elementId).style.overflow = "hidden";
+
+					YAHOO.util.Dom.addClass(elementId+'_c','quickbuy-dialog');
+					
+					if (isWineDept) {
+						YAHOO.util.Dom.addClass(ctPanel.header, 'hd_bg_wine');
+						YAHOO.util.Dom.addClass( FD_QuickBuy._getCloseButton(ctPanel.body), 'container-close_wine' );
+					} else {
+						//YAHOO.util.Dom.addClass(ctPanel.header, 'hd_bg_normal');
+						YAHOO.util.Dom.addClass(ctPanel.header, 'hd_bg_ddpp');
+						//YAHOO.util.Dom.addClass( FD_QuickBuy._getCloseButton(ctPanel.body), 'container-hd_bg_normal' );
+						YAHOO.util.Dom.addClass( FD_QuickBuy._getCloseButton(ctPanel.body), 'container-hd_bg_ddpp' );
+					}
+					
+					ctPanel.hideEvent.subscribe(function(e){
+						YAHOO.util.Dom.get(elementId+'_overbox').style.visibility = "hidden";
+						<%-- destroy panel on close, this saves a lot of headache. is there any real benefit in not destroying? --%>
+						setTimeout(function() {
+							ctPanel.destroy();
+							if (document.quickbuyPanel) { document.quickbuyPanel = {}; } 
+						}, 0);
+						/* on panel close, it's either ATC or a simple close */
+						var statusElem = $jq('#'+statusPlaceholderId);
+						var prodAddCont = statusElem.closest('.prodAddFP');
+						var CTAButton = null;
+						//check for a closed panel (no ATC)
+						if (prodAddCont.length == 1) { //FP
+							CTAButton = prodAddCont.find('.CTAButtonFP');
+							if (statusElem.html() == '') {
+								prodAddCont.animate({ height: '0', top: '200'}, 'fast');
+								CTAButton.data('usedCTA', false);
+							} else if (statusElem.html().indexOf('<%= EnumQuickbuyStatus.ADDED_TO_CART.getMessage() %>') != -1) {
+								//added in customize
+								//change to succss look and msg
+								statusElem.removeClass('prodATCStatusError').addClass('prodATCStatusSuccess').prepend('<%=checkHtml%>');
+								//change button look
+								CTAButton.attr('src', '/media/images/buttons/customize_blue_s.png');
+								//kick off timer for close effect
+								setTimeout(function () {
+									statusElem.fadeOut('400', function() {
+										setTimeout(function () {
+											prodAddCont.animate({ height: '0', top: '200'}, 'fast');
+											//remove add to cart text, and show div again
+											statusElem.empty().show();
+										}, 500);
+										CTAButton.data('usedCTA', false);
+									});
+								}, 2000);
+							}
+						} else {
+							prodAddCont = statusElem.closest('.prodAdd');
+							if (prodAddCont.length == 1) { //NFP
+								CTAButton = prodAddCont.find('.CTAButtonNFP');
+								if (statusElem.html() == '') {
+									CTAButton.data('usedCTA', false);
+								} else if (statusElem.html().indexOf('<%= EnumQuickbuyStatus.ADDED_TO_CART.getMessage() %>') != -1) {
+									//added in customize
+									//change to succss look and msg
+									statusElem.removeClass('prodATCStatusError').addClass('prodATCStatusSuccess').prepend('<%=checkHtml%>');
+									//change button look
+									CTAButton.attr('src', '/media/images/buttons/customize_blue_s.png');
+									//kick off timer for close effect
+									setTimeout(function () {
+										statusElem.fadeOut('400', function() {
+											statusElem.empty().show();
+											CTAButton.data('usedCTA', false);
+										});
+									}, 2000);
+								}
+							}
+						}
+					});
+					
+					document.quickbuyPanel = ctPanel;
+
+					// show panel
+					ctPanel.center();
+					ctPanel.show();
+
+					// Load New Feature popup content
+					FD_QuickBuy.loadNewFeatureInner(elementId);
+				};
+			};
 
 			$jq(document).ready(function(){
 				$jq('.ddpp_feat_prod').corner('round 4px');
@@ -272,7 +394,6 @@
 						isFeatProd = true;
 						String prodContStyle = "";
 					%>
-					
 						<logic:iterate id="contentNode" collection="<%= featProds %>" type="java.lang.Object" indexId="idx">
 							<%
 								seqDDPP = idx; //use a seperate var for include
@@ -406,3 +527,19 @@
 		</td>
 	</tr>
 </table>
+<%
+	CategoryModel cat = (CategoryModel)currentFolder;
+	if (cat.getBottomMedia() != null) {
+		String deptBotItm = null;
+		
+		for(Iterator<Html> deptBotItr = cat.getBottomMedia().iterator(); deptBotItr.hasNext();) {
+			Html piece = deptBotItr.next();
+			if (piece != null) {
+				deptBotItm = piece.getPath();
+			}
+		}
+		if (deptBotItm != null) {
+			%><fd:IncludeMedia name='<%= deptBotItm %>' /><%
+		}
+	}
+%>
