@@ -103,7 +103,7 @@ int page_type = TimeslotLogic.PAGE_NORMAL;
 	    successPage = "/checkout/step_2_check.jsp?successPage="+URLEncoder.encode(successPage);
 
 %>
-<fd:DeliveryTimeSlot id="DeliveryTimeSlotResult" address="<%=address%>" timeSlotId="<%=timeSlotId%>" generic="<%= abstractTimeslots %>" >
+<fd:DeliveryTimeSlot id="DeliveryTimeSlotResult" address="<%=address%>" timeSlotId="<%=timeSlotId%>" generic="<%= abstractTimeslots %>" timeSlotContext="<%=timeSlotCtx %>" >
 
 <%	
 

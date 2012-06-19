@@ -52,9 +52,10 @@
 	int page_type = TimeslotLogic.PAGE_NORMAL;
 	
 	final boolean forceOrder = "true".equalsIgnoreCase(request.getParameter("forceorder"));
+	TimeslotContext timeSlotCtx= TimeslotContext.CHECKOUT_TIMESLOTS;
 %>
 
-<fd:DeliveryTimeSlot id="DeliveryTimeSlotResult" address="<%=address%>" timeSlotId="<%=timeSlotId%>" forceOrder="<%= forceOrder %>">
+<fd:DeliveryTimeSlot id="DeliveryTimeSlotResult" address="<%=address%>" timeSlotId="<%=timeSlotId%>" forceOrder="<%= forceOrder %>" timeSlotContext="<%=timeSlotCtx %>">
 
 <%
 	FDDeliveryTimeslotModel deliveryModel = DeliveryTimeSlotResult.getDeliveryTimeslotModel();
