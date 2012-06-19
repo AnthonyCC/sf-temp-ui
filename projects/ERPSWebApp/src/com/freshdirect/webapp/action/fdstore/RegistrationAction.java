@@ -755,14 +755,16 @@ public class RegistrationAction extends WebActionSupport {
 			FDSurveyResponse surveyResponse = new FDSurveyResponse(null, surveyKey);
 			FDSurvey survey = FDSurveyFactory.getInstance().getSurvey(surveyKey);
 			
-			for (FDSurveyQuestion q : survey.getQuestions()) {
-			    String[] value = request.getParameterValues(q.getName());
-			    if (value != null && value.length > 0) {
-			        surveyResponse.addAnswer(q.getName(), value);
-			    }
+			if(survey != null) {
+				for (FDSurveyQuestion q : survey.getQuestions()) {
+				    String[] value = request.getParameterValues(q.getName());
+				    if (value != null && value.length > 0) {
+				        surveyResponse.addAnswer(q.getName(), value);
+				    }
+				}
 			}
 			
-                        return surveyResponse.getAnswers().isEmpty() ? null : surveyResponse;
+            return surveyResponse.getAnswers().isEmpty() ? null : surveyResponse;
 		}
 
 		public String getPasswordHint() {
