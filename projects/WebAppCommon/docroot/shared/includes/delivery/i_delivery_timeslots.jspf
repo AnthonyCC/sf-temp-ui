@@ -108,7 +108,7 @@
 		<tr>
 			<td>
 			<% // fix for advance orders showing on this page
-			if (idx.intValue() == timeslotList.size()-1 && timeslotList.size() > idx.intValue()) { %>
+			if (!timeslots.isAdvanced()) { %>
 				<%@ include file="/shared/includes/delivery/i_delivery_slots.jspf"%>
 			<% } %>
 			</td>

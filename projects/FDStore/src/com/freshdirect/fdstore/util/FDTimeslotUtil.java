@@ -38,7 +38,8 @@ public class FDTimeslotUtil implements Serializable {
 	private final Set<Date> holidaySet = new HashSet<Date>();
 	
 	private int responseTime; 
-	public FDTimeslotUtil( List<FDTimeslot> timeslots, Calendar startCal, Calendar endCal, DlvRestrictionsList restrictions, int responseTime ) {
+	private boolean advanced;
+	public FDTimeslotUtil( List<FDTimeslot> timeslots, Calendar startCal, Calendar endCal, DlvRestrictionsList restrictions, int responseTime, boolean advanced ) {
 		Collections.sort( timeslots );
 		
 		for ( FDTimeslot timeslot : timeslots ) {
@@ -80,7 +81,7 @@ public class FDTimeslotUtil implements Serializable {
 			}			
 			startCal.add( Calendar.DATE, 1 );
 		}	
-		
+		this.setAdvanced(advanced);
 		this.setResponseTime(responseTime);
 	}
 	
@@ -315,5 +316,13 @@ public class FDTimeslotUtil implements Serializable {
 	public void removeTimeslots(Date baseDate)
 	{
 		timeslotMap.remove(baseDate);
+	}
+
+	public boolean isAdvanced() {
+		return advanced;
+	}
+
+	public void setAdvanced(boolean advanced) {
+		this.advanced = advanced;
 	}
 }
