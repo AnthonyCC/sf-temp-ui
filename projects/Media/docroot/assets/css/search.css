@@ -94,6 +94,11 @@
 	height:43px;
 }
 
+#result-header {
+	width:650px;
+	float:left;
+}
+
 #result-header-aligner {
 	display:inline-block;
 	height:100%;
@@ -103,6 +108,14 @@
 #result-header-content {
 	display:inline-block;
 }
+
+#result-header-content div {
+	width:650px;
+	white-space: nowrap;
+	overflow:hidden;
+	text-overflow:ellipsis;
+}
+
 #result-header-content a {
 	font-weight:bold;
 }
