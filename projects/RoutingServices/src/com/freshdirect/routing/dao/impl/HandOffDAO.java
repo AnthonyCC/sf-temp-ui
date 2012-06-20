@@ -312,7 +312,7 @@ public class HandOffDAO extends BaseDAO implements IHandOffDAO   {
             "and B.DISPATCHTIME not in (select distinct DX.DISPATCHTIME from TRANSP.HANDOFF_BATCH bx , TRANSP.HANDOFF_BATCHDISPATCHEX dx "+
             "where BX.BATCH_ID = DX.BATCH_ID and BX.DELIVERY_DATE = ? "+
             "and BX.CUTOFF_DATETIME < (select BZ.CUTOFF_DATETIME from TRANSP.HANDOFF_BATCH bz where BZ.BATCH_ID = ? ) "+
-            "and DX.STATUS = 'CPD' )) order by p.plan_date, p.zone, p.startTime, p.sequence ";
+            "and DX.STATUS = 'CPD' )) order by p.plan_date, p.zone, p.start_time, p.sequence ";
 	
 	private static final String GET_HANDOFFBATCH_PLANRESOURCES = "SELECT PR.* FROM TRANSP.PLAN_RESOURCE PR, TRANSP.PLAN P WHERE PR.PLAN_ID = P.PLAN_ID and P.PLAN_DATE = ? " +
 			"and P.START_TIME in (select B.DISPATCHTIME from TRANSP.HANDOFF_BATCHDISPATCHEX B where B.BATCH_ID = ? and B.STATUS = 'CPD' "+ 
