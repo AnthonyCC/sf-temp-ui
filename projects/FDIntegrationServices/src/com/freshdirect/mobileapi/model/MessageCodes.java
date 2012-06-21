@@ -207,9 +207,6 @@ public interface MessageCodes {
     public static final String ERR_PAYMENT_METHOD_FRAUD = "ERR_PAYMENT_METHOD_FRAUD";
     public static final String ERR_PAYMENT_METHOD_FRAUD_MSG = "There was a problem with the credit card you added. Please try adding a different payment method.";
 
-    public static final String ERR_INVALID_CARD_BRAND = "ERR_INVALID_CARD_BRAND";
-    public static final String ERR_INVALID_CARD_BRAND_MSG = "Invalid card brand.";
-    
     public static class ErrorMessage {
         public final static String PASS_THROUGH = "PASS_THROUGH";
 
@@ -236,7 +233,7 @@ public interface MessageCodes {
         private static Map<String, ErrorMessage> translations = new HashMap<String, ErrorMessage>();
 
         static {
-            translations.put("undeliverableAddress", new ErrorMessage(ERR_RESTRICTED_ADDRESS, ERR_RESTRICTED_ADDRESS_MSG));
+            translations.put("undeliverableAddress", new ErrorMessage(ERR_RESTRICTED_ADDRESS, ERR_RESTRICTED_ADDRESS_MSG));        	 
             translations.put("zipcode", new ErrorMessage(ERR_ZIP_REQUIRED, ERR_ZIP_REQUIRED_MSG));
             translations.put("state", new ErrorMessage(ERR_STATE_REQUIRED, ERR_STATE_REQUIRED_MSG));
             translations.put("address1", new ErrorMessage(ERR_ADDRESS1_REQUIRED, ERR_ADDRESS1_REQUIRED_MSG));
@@ -261,9 +258,6 @@ public interface MessageCodes {
             translations.put("bil_state", new ErrorMessage(ERR_BILL_STATE_REQUIRED, ERR_BILL_STATE_REQUIRED_MSG));
             translations.put("bil_zipcode", new ErrorMessage(ERR_BILL_ZIP_REQUIRED, ERR_BILL_ZIP_REQUIRED_MSG));
             translations.put("bil_city", new ErrorMessage(ERR_CITY_REQUIRED, ERR_CITY_REQUIRED_MSG));
-            translations.put("payment_method_fraud", new ErrorMessage(ERR_PAYMENT_METHOD_FRAUD, ERR_PAYMENT_METHOD_FRAUD_MSG));
-            translations.put("cardBrand", new ErrorMessage(ERR_INVALID_CARD_BRAND, ERR_INVALID_CARD_BRAND_MSG));
-            
         }
 
         public static ErrorMessage translate(String key, String desc, SessionUser user) {
@@ -302,11 +296,13 @@ public interface MessageCodes {
                 } else {
                     returnValue = new ErrorMessage(ERR_CHECKOUT_AMOUNT_TOO_LARGE, desc);
                 }
+            } else if("payment_method_fraud".equals(key)) {
+            	returnValue = new ErrorMessage(ERR_PAYMENT_METHOD_FRAUD, ERR_PAYMENT_METHOD_FRAUD_MSG);
             } else if ("error_dlv_pass_only".equals(key)) {
                 returnValue = new ErrorMessage(ERR_DLV_PASS_ONLY, desc);
             } else if ("redemption_error".equals(key)) {
                 returnValue = new ErrorMessage(ERR_REDEMPTION_ERROR, desc);
-            } else if (translations.containsKey(key)) {
+            } else if (SystemMessageList.MSG_REQUIRED.equals(desc) && translations.containsKey(key)) {
                 returnValue = translations.get(key);
             }
 

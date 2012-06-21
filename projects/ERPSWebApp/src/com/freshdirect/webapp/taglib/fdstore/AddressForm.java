@@ -205,7 +205,7 @@ public class AddressForm implements WebFormI { //, AddressName
 	}
 	
 	public void validateFormEx(ActionResult result) {
-		this.validateDeliveryFieldsEx(result);
+		this.validateDeliveryFields(result);
 	}
 	
     private void validateDeliveryFields(ActionResult result) {
@@ -235,32 +235,7 @@ public class AddressForm implements WebFormI { //, AddressName
         	//result.addError("".equals(altContactPhone)||altContactPhone==null, EnumUserInfoName.DLV_ALT_CONTACT_PHONE.getCode(), SystemMessageList.MSG_REQUIRED);
         }
     }
-    
-    private void validateDeliveryFieldsEx(ActionResult result) {
-        
-        result.addError(
-	        homePhone==null || homePhone.length() < 10,
-	        EnumUserInfoName.DLV_HOME_PHONE.getCode(), SystemMessageList.MSG_REQUIRED
-        );
-
-		result.addError("".equals(street1), EnumUserInfoName.DLV_ADDRESS_1.getCode(), SystemMessageList.MSG_REQUIRED);
-        result.addError("".equals(city), EnumUserInfoName.DLV_CITY.getCode(), SystemMessageList.MSG_REQUIRED);
-
-        if (state.length() < 2) {
-            result.addError(new ActionError(EnumUserInfoName.DLV_STATE.getCode(), SystemMessageList.MSG_REQUIRED));
-        } else {
-			result.addError(!AddressUtil.validateState(state), EnumUserInfoName.DLV_STATE.getCode(), SystemMessageList.MSG_UNRECOGNIZE_STATE);
-        }
-
-        result.addError(zipcode.length() < 5, EnumUserInfoName.DLV_ZIPCODE.getCode(), SystemMessageList.MSG_REQUIRED);
-        
-        if(EnumServiceType.CORPORATE.equals(serviceType)){
-        	result.addError("".equals(companyName)||companyName==null, EnumUserInfoName.DLV_COMPANY_NAME.getCode(), SystemMessageList.MSG_REQUIRED);
-        	/* remove alt contact as being required for COS users */
-        	//result.addError("".equals(altContactPhone)||altContactPhone==null, EnumUserInfoName.DLV_ALT_CONTACT_PHONE.getCode(), SystemMessageList.MSG_REQUIRED);
-        }
-    }
-
+   
     
     private void validateAltDeliveryFields(ActionResult result) {
         
