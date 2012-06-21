@@ -125,7 +125,7 @@
 			}
 
 	%>
-	<div style="width:400px;height:auto;overflow-y: auto; overflow-x: hide;">
+	<div style="width:450px;height:auto;overflow-y: auto; overflow-x: hide;">
 	<div id="top_image" style="float: left; padding-bottom: 10px; width: 100%;">
 		<span class="text12" style="float:left;">Already have a password? <a href="/login/login.jsp" style="text-decoration:none;">Log in now</a></span> <br/><br/>
 		<img src="/media_stat/images/profile/signup_easy.jpg" border="0" style="float:left;"/>
@@ -140,23 +140,21 @@
 			<input type="hidden" name="terms" value="true" />
 			<input type="hidden" name="LITESIGNUP" value="true" />
 			
-			<br /><br/>
-			
 			<table border="0" cellpadding="0" cellspacing="0">
-			<tr><td><span class="bodyCopy">First Name <span class="star">*</span> </span> </td></tr>
+			<tr><td><span class="bodyCopy" style="font-size:9px;">First Name <span class="star">*</span> </span> </td></tr>
 			<tr><td><input type="text" class="text11ref inputUser" maxlength="25" size="31" name="<%=EnumUserInfoName.DLV_FIRST_NAME.getCode()%>" value="<%=firstname%>" id="first_name"></td></tr>
 			<tr><td><fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.DLV_FIRST_NAME.getCode()%>" id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>&nbsp;</td></tr>
 			
-			<tr><td><span class="bodyCopy">Last Name <span class="star">*</span> </span> </td></tr>
+			<tr><td><span class="bodyCopy" style="font-size:9px;">Last Name <span class="star">*</span> </span> </td></tr>
 			<tr><td><input type="text"  maxlength="25" class="text11ref inputUser" size="31" name="<%=EnumUserInfoName.DLV_LAST_NAME.getCode()%>" value="<%=lastname%>" id="last_name"></td></tr>
 			<tr><td><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_LAST_NAME.getCode()%>' id='errorMsg'> <span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>&nbsp;</td></tr>
 			
-			<tr><td><span class="bodyCopy">Delivery Zip Code <span class="star">*</span> </span> </td></tr>
+			<tr><td><span class="bodyCopy" style="font-size:9px;">Delivery Zip Code <span class="star">*</span> </span> </td></tr>
 			<tr><td>
 				<table><tr><td>
 					<input type="text"  maxlength="25" class="text11ref inputUser" size="31" name="zipcode" value="<%=zipcode%>" id="zipcode">
 					</td><td>			
-					&nbsp;<span class="bodyCopy"><input type="radio" name="serviceType" value="HOME" <%= (serviceType.equals("HOME"))?"checked":"" %>/>HOME&nbsp;<input type="radio" name="serviceType" value="CORPORATE" <%= (serviceType.equals("CORPORATE"))?"checked":"" %>/>OFFICE</span>
+					&nbsp;<span class="bodyCopy" style="font-size:9px;"><input type="radio" name="serviceType" value="HOME" <%= (serviceType.equals("HOME"))?"checked":"" %>/>HOME&nbsp;<input type="radio" name="serviceType" value="CORPORATE" <%= (serviceType.equals("CORPORATE"))?"checked":"" %>/>OFFICE</span>
 				</td></tr></table>
 			</td></tr>
 			<tr><td>
@@ -167,27 +165,27 @@
 				</td></tr></table>
 			</td></tr>
 			
-			<tr><td><span class="bodyCopy">Email Address <span class="star">*</span> </span></td></tr>			
+			<tr><td><span class="bodyCopy" style="font-size:9px;">Email Address <span class="star">*</span> </span></td></tr>			
 			<tr><td><input type="text" class="text11ref inputDef" maxlength="128" size="31" name="<%=EnumUserInfoName.EMAIL.getCode()%>" value="<%=email%>" id="email">
 			<br/><span class="text9" style="color:gray;">This will be your User Name. You will use this to access the site. </span></td></tr>
 			<tr><td><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.EMAIL.getCode()%>' id='errorMsg'>
 			<span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>&nbsp;</td></tr>
 			
-			<tr><td><span class="bodyCopy">Confirm Email Address <span class="star">*</span> </span></td></tr>
+			<tr><td><span class="bodyCopy" style="font-size:9px;">Confirm Email Address <span class="star">*</span> </span></td></tr>
 			<tr><td><input type="text" class="text11ref inputDef" maxlength="128" size="31" name="<%=EnumUserInfoName.REPEAT_EMAIL.getCode()%>" value="<%=repeat_email%>" id="confirm_email"></td></tr>
 			<tr><td><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.REPEAT_EMAIL.getCode()%>' id='errorMsg'>
 			<span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>&nbsp;</td></tr>
 			
-			<tr><td><span class="bodyCopy">Choose Password <span class="star">*</span> </span> </td></tr>
+			<tr><td><span class="bodyCopy" style="font-size:9px;">Choose Password <span class="star">*</span> </span> </td></tr>
 			<tr><td><input type="password"  class="text11ref inputUser" size="31" name="<%=EnumUserInfoName.PASSWORD.getCode()%>" id="password1">
 			<br/><span class="text9" style="color:gray;">Must be atleast 4 characters. Passwords are case sensitive. </span></td></tr>
 			<tr><td><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.PASSWORD.getCode()%>' id='errorMsg'> <span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>&nbsp;</td></tr>
 			
-			<tr><td><span class="bodyCopy">Confirm Password <span class="star">*</span> </span> </td></tr>
+			<tr><td><span class="bodyCopy" style="font-size:9px;">Confirm Password <span class="star">*</span> </span> </td></tr>
 			<tr><td><input type="password"  class="text11ref inputUser" size="31" name="<%=EnumUserInfoName.REPEAT_PASSWORD.getCode()%>" id="password1"></td></tr>
 			<tr><td><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.REPEAT_PASSWORD.getCode()%>' id='errorMsg'> <span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>&nbsp;</td></tr>
 			
-			<tr><td><span class="bodyCopy">Security Question <span class="star">*</span> </span> <br/>
+			<tr><td><span class="bodyCopy" style="font-size:9px;">Security Question <span class="star">*</span> </span> <br/>
 			<span class="text9" style="color:gray;">What is your town of birth or mother's  maiden name? </span></td></tr>
 			<tr><td><input type="text"  maxlength="25" class="text11ref inputUser" size="31" name="<%=EnumUserInfoName.PASSWORD_HINT.getCode()%>"  id="secret_answer"><br /></td></tr>
 			<tr><td><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.PASSWORD_HINT.getCode()%>' id='errorMsg'> <span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>&nbsp;</td></tr>

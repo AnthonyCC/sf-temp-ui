@@ -1033,7 +1033,7 @@ function doOverlayWindow(olURL) {
                                         $('MB_window').style.width = 'auto';
                                         $('MB_window').style.height = 'auto';
                                         $('MB_window').style.left = parseInt(($('MB_overlay').clientWidth-$('MB_window').clientWidth)/2)+'px';
-                                        $('MB_content').style.padding = '20px';
+                                        //$('MB_content').style.padding = '20px';
 
                                         ccSettings.topColour = "#ffffff";
                                         ccSettings.bottomColour = "#ffffff";
@@ -1071,7 +1071,7 @@ function doOverlayWindow(olURL) {
 					$('MB_window').style.width = 'auto';
 					$('MB_window').style.height = 'auto';
 					$('MB_window').style.left = parseInt(($('MB_overlay').clientWidth-$('MB_window').clientWidth)/2)+'px';
-					$('MB_content').style.padding = '20px';
+					//$('MB_content').style.padding = '20px';
 
 					ccSettings.topColour = "#ffffff";
 					ccSettings.bottomColour = "#ffffff";
