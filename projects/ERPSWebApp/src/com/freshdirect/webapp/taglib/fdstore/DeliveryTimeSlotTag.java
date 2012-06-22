@@ -182,23 +182,6 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag<Result> {
 		
 		DlvRestrictionsList restrictions = FDDeliveryManager.getInstance().getDlvRestrictions();
 
-		
-		EnumDlvRestrictionReason specialHoliday = getNextHoliday(restrictions, baseRange, FDStoreProperties
-			.getHolidayLookaheadDays());
-
-		LOGGER.debug("specialHoliday :"+specialHoliday);
-		
-		final boolean containsSpecialHoliday = cart.getApplicableRestrictions().contains(specialHoliday);
-		final boolean containsAdvanceOrderItem = cart.hasAdvanceOrderItem();
-
-		LOGGER.debug("containsSpecialHoliday :"+containsSpecialHoliday+" :containsAdvanceOrderItem:"+containsAdvanceOrderItem);
-		
-		List<DateRange> dateRanges = getDateRanges(baseRange,
-								(containsSpecialHoliday && !deliveryInfo), restrictions,specialHoliday, containsAdvanceOrderItem);
-		Collections.sort(dateRanges, new DateRangeComparator());
-		/*Holiday & specialItems restrictions*/
-		getHolidayRestrictions(restrictions, dateRanges, deliveryModel);
-		
 		// set standing order
 		if (user.getCheckoutMode().isModifyStandingOrder()){
 			deliveryModel.setCurrentStandingOrder(user.getCurrentStandingOrder());
@@ -223,7 +206,8 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag<Result> {
 				cart.isDlvPassApplied(),cart.getDeliverySurcharge(), cart.isDeliveryChargeWaived(),
 				Util.isZoneCtActive(zoneId));
 		
-		
+		List<DateRange> dateRanges = new ArrayList<DateRange>();
+		dateRanges.add(baseRange);
 		List<FDTimeslotUtil> timeslotList = getFDTimeslotListForDateRange(restrictions, dateRanges,
 				result, timeslotAddress, user,event);
 		
@@ -236,7 +220,30 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag<Result> {
 		showPremiumSlots =TimeslotLogic.hasPremiumSlots(timeslotList, baseRange.getStartDate(), DateUtil.addDays(baseRange.getEndDate(),-1));
 		event.setSameDay(showPremiumSlots?"X":"");
 		
+		baseRange = new DateRange(timeslotList.get(0).getStartDate(),timeslotList.get(0).getEndDate());
 		
+		EnumDlvRestrictionReason specialHoliday = getNextHoliday(restrictions, baseRange, FDStoreProperties
+				.getHolidayLookaheadDays());
+
+		LOGGER.debug("specialHoliday :"+specialHoliday);
+			
+		final boolean containsSpecialHoliday = cart.getApplicableRestrictions().contains(specialHoliday);
+		final boolean containsAdvanceOrderItem = cart.hasAdvanceOrderItem();
+
+		LOGGER.debug("containsSpecialHoliday :"+containsSpecialHoliday+" :containsAdvanceOrderItem:"+containsAdvanceOrderItem);
+		
+		dateRanges = getDateRanges(baseRange,
+				(containsSpecialHoliday && !deliveryInfo), restrictions,specialHoliday, containsAdvanceOrderItem);
+		
+		Collections.sort(dateRanges, new DateRangeComparator());
+		
+		/*Holiday & specialItems restrictions*/
+		getHolidayRestrictions(restrictions, dateRanges, deliveryModel);
+		
+		dateRanges.remove(0);
+		
+		timeslotList.addAll(getFDTimeslotListForDateRange(restrictions, dateRanges,
+				result, timeslotAddress, user,event));
 			
 		// list of timeslots that must be shown regardless of capacity
 		Set<String> retainTimeslotIds = new HashSet<String>();
