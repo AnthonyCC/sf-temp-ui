@@ -220,7 +220,7 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag<Result> {
 		showPremiumSlots =TimeslotLogic.hasPremiumSlots(timeslotList, baseRange.getStartDate(), DateUtil.addDays(baseRange.getEndDate(),-1));
 		event.setSameDay(showPremiumSlots?"X":"");
 		
-		baseRange = new DateRange(timeslotList.get(0).getStartDate(),timeslotList.get(0).getEndDate());
+		baseRange = new DateRange(timeslotList.get(0).getStartDate(),DateUtil.addDays(timeslotList.get(0).getEndDate(),1));
 		
 		EnumDlvRestrictionReason specialHoliday = getNextHoliday(restrictions, baseRange, FDStoreProperties
 				.getHolidayLookaheadDays());
