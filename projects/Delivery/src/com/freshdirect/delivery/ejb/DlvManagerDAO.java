@@ -18,7 +18,6 @@ import java.util.StringTokenizer;
 
 import javax.ejb.FinderException;
 
-import org.apache.commons.lang.time.DateUtils;
 import org.apache.log4j.Category;
 
 import com.freshdirect.common.address.AddressInfo;
@@ -131,12 +130,12 @@ public class DlvManagerDAO {
 		"select t.id, t.base_date, t.start_time, t.end_time, t.cutoff_time, t.status, t.zone_id, t.capacity, z.zone_code, t.ct_capacity" +
 		", ta.AREA AREA_CODE, ta.STEM_MAX_TIME stemmax, ta.STEM_FROM_TIME stemfrom, ta.STEM_TO_TIME stemto, ta.ZONE_ECOFRIENDLY ecoFriendly, z.NAME ZONE_NAME, " +
 		"case when t.premium_cutoff_time is null then TO_CHAR(t.CUTOFF_TIME, 'HH_MI_PM') else TO_CHAR(t.premium_cutoff_time, 'HH_MI_PM') end WAVE_CODE, t.IS_DYNAMIC IS_DYNAMIC, t.IS_CLOSED IS_CLOSED, a.IS_DEPOT IS_DEPOT, a.DELIVERY_RATE AREA_DLV_RATE,  " 
-		+ "(select count(*) from dlv.reservation where timeslot_id=t.id and status_code <> ? and status_code <> ? and chefstable = ' ') as base_allocation, " 
-		+ "(select count(*) from dlv.reservation where timeslot_id=t.id and status_code <> ? and status_code <> ? and chefstable = 'X') as ct_allocation, " 
+		+ "(select count(*) from dlv.reservation where timeslot_id=t.id and status_code <> ? and status_code <> ? and chefstable = ' ' and class not in ('P','PC')) as base_allocation, " 
+		+ "(select count(*) from dlv.reservation where timeslot_id=t.id and status_code <> ? and status_code <> ? and chefstable = 'X' and class not in ('P','PC')) as ct_allocation, " 
 		+ "(select z.ct_release_time from dlv.zone z where z.id = t.zone_id) as ct_release_time, "
 		+ "(select z.ct_active from dlv.zone z where z.id = t.zone_id) as ct_active, "
 		+ "t.premium_cutoff_time, t.premium_capacity, t.premium_ct_capacity, " 
-	  	+ "(select count(*) from dlv.reservation where timeslot_id=t.id and status_code <> ? and status_code <> ? and class = 'P') as premium_allocation, " 
+	  	+ "(select count(*) from dlv.reservation where timeslot_id=t.id and status_code <> ? and status_code <> ? and class = 'P') as premium_base_allocation, " 
 	  	+ "(select count(*) from dlv.reservation where timeslot_id=t.id and status_code <> ? and status_code <> ? and class = 'PC') as premium_ct_allocation, " 
 	  	+ "(select z.premium_ct_release_time from dlv.zone z where z.id = t.zone_id) as premium_ct_release_time, "
 		+ "(select z.premium_ct_active from dlv.zone z where z.id = t.zone_id) as premium_ct_active "
@@ -189,7 +188,7 @@ public class DlvManagerDAO {
 		
 
 		ResultSet rs = ps.executeQuery();
-		List<DlvTimeslotModel> timeslots = processTimeslotResultSet(rs);
+		List<DlvTimeslotModel> timeslots = processTimeslotResultSet(rs, true);
 		rs.close();
 		ps.close();
 		return timeslots;
@@ -248,7 +247,7 @@ public class DlvManagerDAO {
 		ps.setBigDecimal(13, new java.math.BigDecimal(address.getLatitude()));
 
 		ResultSet rs = ps.executeQuery();
-		List<DlvTimeslotModel> timeslots = processTimeslotResultSet(rs);
+		List<DlvTimeslotModel> timeslots = processTimeslotResultSet(rs, false);
 		rs.close();
 		ps.close();
 		return timeslots;
@@ -272,7 +271,7 @@ public class DlvManagerDAO {
 		}
 	}
 
-	private static List<DlvTimeslotModel> processTimeslotResultSet(ResultSet rs) throws SQLException {
+	private static List<DlvTimeslotModel> processTimeslotResultSet(ResultSet rs, boolean checkPremium) throws SQLException {
 		List<DlvTimeslotModel> lst = new ArrayList<DlvTimeslotModel>();
 		java.util.Date baseDate = null;
 		String zoneCode = null;
@@ -288,20 +287,20 @@ public class DlvManagerDAO {
 				continue;
 			}
 			
-			lst.add(getTimeslot(rs));
+			lst.add(getTimeslot(rs, checkPremium));
 		}
 		return lst;
 	}
 	
-	private static List<DlvTimeslotModel> processTimeslotCompositeResultSet(ResultSet rs) throws SQLException {
+	private static List<DlvTimeslotModel> processTimeslotCompositeResultSet(ResultSet rs, boolean checkPremium) throws SQLException {
 		List<DlvTimeslotModel> lst = new ArrayList<DlvTimeslotModel>();
 		while (rs.next()) {			
-			lst.add(getTimeslot(rs));
+			lst.add(getTimeslot(rs, checkPremium));
 		}
 		return lst;
 	}
 
-	private static DlvTimeslotModel getTimeslot(ResultSet rs) throws SQLException {
+	private static DlvTimeslotModel getTimeslot(ResultSet rs, boolean checkPremium) throws SQLException {
 
 		PrimaryKey pk = new PrimaryKey(rs.getString("ID"));
 		java.util.Date baseDate = rs.getDate("BASE_DATE");
@@ -325,16 +324,28 @@ public class DlvManagerDAO {
 		int premiumCtCapacity = rs.getInt("PREMIUM_CT_CAPACITY");
 		int premiumCtReleaseTime = rs.getInt("PREMIUM_CT_RELEASE_TIME");
 		boolean premiumCtActive = "X".equals(rs.getString("PREMIUM_CT_ACTIVE"));
-		int premiumAllocation = rs.getInt("PREMIUM_ALLOCATION");
+		int premiumBaseAllocation = rs.getInt("PREMIUM_BASE_ALLOCATION");
 		int premiumCtAllocation = rs.getInt("PREMIUM_CT_ALLOCATION");
-		
-		Calendar cal = Calendar.getInstance();
-		boolean premiumSlot = DateUtil.isPremiumSlot(baseDate, cutoffTime, premiumCutoffTime);
-		
+		boolean premiumSlot = false;
 		DlvTimeslotModel _tmpSlot =new DlvTimeslotModel(pk, zoneId, baseDate, startTime, endTime, cutoffTime, status, capacity, 
 				ctCapacity, baseAllocation, ctAllocation, ctReleaseTime,ctActive,zoneCode, premiumCapacity,
 				  premiumCtCapacity, premiumCutoffTime, premiumCtReleaseTime, 
-				  premiumCtActive, premiumAllocation,  premiumCtAllocation, premiumSlot);
+				  premiumCtActive, premiumBaseAllocation,  premiumCtAllocation, premiumSlot);
+		
+		if(checkPremium)
+		{
+			premiumSlot = DateUtil.isPremiumSlot(baseDate, cutoffTime, premiumCutoffTime);
+			if(premiumSlot)
+			{
+				_tmpSlot.setChefsTableCapacity(premiumCtCapacity);
+				_tmpSlot.setCapacity(premiumCapacity);
+				_tmpSlot.setBaseAllocation(premiumBaseAllocation);
+				_tmpSlot.setChefsTableAllocation(premiumCtAllocation);
+				_tmpSlot.setCtReleaseTime(premiumCtReleaseTime);
+				_tmpSlot.setCtActive(premiumCtActive);
+				_tmpSlot.setPremiumSlot(premiumSlot);
+			}
+		}
 		
 		// Prepare routing slot configuration from result set
 		IDeliverySlot routingSlot = new DeliverySlot();
@@ -366,7 +377,7 @@ public class DlvManagerDAO {
 		
 		return _tmpSlot; 
 	}
-
+	
 	private static final String DEPOT_TIMESLOTS =
 		"select ts.id, ts.base_date, ts.start_time, ts.end_time, ts.cutoff_time, ts.status, ts.zone_id, ts.capacity, z.zone_code, ts.ct_capacity" +
 		", ta.AREA AREA_CODE, ta.STEM_MAX_TIME stemmax, ta.STEM_FROM_TIME stemfrom, ta.STEM_TO_TIME stemto, ta.ZONE_ECOFRIENDLY ecoFriendly, z.NAME ZONE_NAME, " +
@@ -421,7 +432,7 @@ public class DlvManagerDAO {
 		
 
 		ResultSet rs = ps.executeQuery();
-		List<DlvTimeslotModel> timeslots = processTimeslotResultSet(rs);
+		List<DlvTimeslotModel> timeslots = processTimeslotResultSet(rs, true);
 		rs.close();
 		ps.close();
 		return timeslots;
@@ -463,7 +474,7 @@ public class DlvManagerDAO {
 		ResultSet rs = ps.executeQuery();
 
 		if (rs.next()) {
-			return getTimeslot(rs);
+			return getTimeslot(rs, true);
 		} else {
 			throw new FinderException("No timeslot found for timeslotId: " + timeslotId);
 		}
@@ -805,7 +816,7 @@ public class DlvManagerDAO {
 		ResultSet rs = ps.executeQuery();
 		List<DlvTimeslotModel> timeslots = new ArrayList<DlvTimeslotModel>();
 		while(rs.next()) {
-			timeslots.add(getTimeslot(rs));
+			timeslots.add(getTimeslot(rs, true));
 		}
 		
 		rs.close();
@@ -1493,7 +1504,7 @@ public class DlvManagerDAO {
 		
 		ResultSet rs = ps.executeQuery();
 		
-		List timeslots = processTimeslotCompositeResultSet(rs);
+		List timeslots = processTimeslotCompositeResultSet(rs, false);
 		rs.close();
 		ps.close();
 		return timeslots;
@@ -1779,39 +1790,5 @@ public class DlvManagerDAO {
 			ps.close();
 		}
 		return response;
-	}
-
-	private static final String CUTOFF_TIMES_QUERY = 
-			"select case when max(t.cutoff_time) is not null then max(to_date(to_char(p.day-1,'MM/DD/YYYY')||to_char(t.cutoff_time,'HH:MI:SS AM'),'MM/DD/YYYY HH:MI:SS AM')) else null end as cutofftime ," +
-			"case when t.premium_cutoff_time is not null then to_date(to_char(p.day,'MM/DD/YYYY')||to_char(t.premium_cutoff_time,'HH:MI:SS AM'),'MM/DD/YYYY HH:MI:SS AM') else null end as premium_cutoff_time, " +
-			"p.day from dlv.planning_resource p, dlv.timeslot t,dlv.zone z where p.id = t.resource_id and t.zone_id = z.id " +
-			"and mdsys.sdo_relate(z.geoloc, mdsys.sdo_geometry(2001, 8265, mdsys.sdo_point_type(?, ?,NULL), NULL, NULL), 'mask=ANYINTERACT querytype=WINDOW') ='TRUE' " +
-			" and p.day between  ? and ? group by p.day, t.premium_cutoff_time";
- 
-	public static Map<String, Map<Date,Date>> getCutoffTimes(Connection conn,AddressModel address, Date day) throws SQLException {
-		
-		PreparedStatement ps = conn.prepareStatement(CUTOFF_TIMES_QUERY);
-		ps.setDouble(1, address.getLongitude());
-		ps.setDouble(2, address.getLatitude());
-		ps.setDate(3,new java.sql.Date(day.getTime()));
-		Calendar cal = Calendar.getInstance();
-		cal.setTime(day);
-		cal.add(Calendar.DATE, 1);
-		
-		ps.setDate(4,new java.sql.Date(cal.getTimeInMillis()));
-		ResultSet rs = ps.executeQuery();
-		Map<Date,Date> cutoffMap = new HashMap<Date,Date>(), premiumcutOffMap = new HashMap<Date,Date>();
-		Map<String, Map<Date,Date>> map = new HashMap<String, Map<Date,Date>>();
-		while(rs.next())
-		{
-			if(rs.getTimestamp("day")!=null)
-			{
-				cutoffMap.put(new java.util.Date(rs.getTimestamp("day").getTime()), (rs.getTimestamp("cutofftime")!=null)?new java.util.Date(rs.getTimestamp("cutofftime").getTime()):null);
-				premiumcutOffMap.put(new java.util.Date(rs.getTimestamp("day").getTime()), (rs.getTimestamp("premium_cutoff_time")!=null)?new java.util.Date(rs.getTimestamp("premium_cutoff_time").getTime()):null);
-			}
-		}
-		map.put("cutoffs", cutoffMap);
-		map.put("premiumCutoffs", premiumcutOffMap);
-		return map;
 	}
 }

@@ -224,6 +224,4 @@ public interface DlvManagerSB extends EJBObject {
 	
 	public SectorVO getSectorInfo(AddressModel address)throws RemoteException;
 	
-	public Map<String, Map<Date,Date>> getCutoffTimes(AddressModel address, Date deliveryDate) throws RemoteException;
-	
 }   

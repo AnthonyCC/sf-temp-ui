@@ -114,10 +114,6 @@ public class CapacityControllerCronRunner extends BaseCapacityCronRunner {
 					
 					List<DlvTimeslotModel> slots = dsb.getTimeslotsForDate(processDate);
 					
-					if(slots!=null)
-						for(DlvTimeslotModel slot:slots)
-							slot.setPremiumSlot(false);
-						
 					
 					Map<String, TrnFacilityType> routingLocationMap = dsb.retrieveTrnFacilitys();
 

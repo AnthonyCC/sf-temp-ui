@@ -6,11 +6,13 @@
 
 package com.freshdirect.crm;
 
+import java.io.Serializable;
+
 import com.freshdirect.framework.core.PrimaryKey;
 
 
 
-public class CrmStatus{
+public class CrmStatus implements Serializable{
 	private final PrimaryKey agentPK;
 	private String saleId;
 	private String erpCustomerId;

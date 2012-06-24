@@ -81,7 +81,6 @@ import com.freshdirect.delivery.model.UnassignedDlvReservationModel;
 import com.freshdirect.delivery.restriction.GeographyRestriction;
 import com.freshdirect.delivery.restriction.RestrictionI;
 import com.freshdirect.delivery.restriction.ejb.DlvRestrictionDAO;
-import com.freshdirect.routing.constants.RoutingActivityType;
 import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDDynamicTimeslotList;
 import com.freshdirect.fdstore.FDRuntimeException;
@@ -98,6 +97,7 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.routing.constants.EnumOrderMetricsSource;
 import com.freshdirect.routing.constants.EnumRoutingUpdateStatus;
 import com.freshdirect.routing.constants.EnumWaveInstanceStatus;
+import com.freshdirect.routing.constants.RoutingActivityType;
 import com.freshdirect.routing.model.IDeliveryReservation;
 import com.freshdirect.routing.model.IDeliverySlot;
 import com.freshdirect.routing.model.IDeliverySlotCost;
@@ -930,7 +930,6 @@ public class DlvManagerSessionBean extends GatewaySessionBeanSupport {
 				LOGGER.warn("SQLException while trying to cleanup", e);
 			}
 		}
-
 	}
 
 	private static final String FIND_ZONES_BY_REGIONID_QUERY =
@@ -1842,27 +1841,6 @@ public class DlvManagerSessionBean extends GatewaySessionBeanSupport {
 			}
 		}
 	}
-
-	
-	public Map<String, Map<Date,Date>> getCutoffTimes(AddressModel address, Date day) {
-		Connection conn = null;
-		try{
-			conn = this.getConnection();
-			return DlvManagerDAO.getCutoffTimes(conn, address, day);
-		}catch (SQLException e) {
-			throw new EJBException(e);
-		} finally {
-			try {
-				if (conn != null) {
-					conn.close();
-					conn = null;
-				}
-			} catch (SQLException e) {
-				LOGGER.warn("DlvManagerSB getCutoffInfo: Exception while cleaning: ", e);
-			}
-		}
-	}
-
 
 	public FDDynamicTimeslotList getTimeslotForDateRangeAndZoneEx(List<FDTimeslot> _timeSlots, TimeslotEventModel event, ContactAddressModel address) {
 

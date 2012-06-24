@@ -4,6 +4,8 @@
 
 package com.freshdirect.webapp.taglib.crm;
 
+import java.io.Serializable;
+
 import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpSessionBindingEvent;
 import javax.servlet.http.HttpSessionBindingListener;
@@ -21,7 +23,7 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.webapp.crm.security.CrmSecurityManager;
 
 
-public class CrmSessionStatus implements HttpSessionBindingListener{
+public class CrmSessionStatus implements HttpSessionBindingListener, Serializable{
     private static Category LOGGER = LoggerFactory.getInstance( CrmStatus.class );
     private CrmStatus status;
     private HttpSession session;

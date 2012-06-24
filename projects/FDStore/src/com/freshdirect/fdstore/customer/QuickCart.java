@@ -8,6 +8,7 @@
  */
 package com.freshdirect.fdstore.customer;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -25,7 +26,7 @@ import com.freshdirect.fdstore.content.ProductModel;
  * @version	$Revision:$
  * @author	 $Author:$
  */
-public class QuickCart implements FDProductCollectionI {
+public class QuickCart implements FDProductCollectionI, Serializable {
 
 	private final List<FDProductSelectionI> orderLines = new ArrayList<FDProductSelectionI>();
 	private String orderId = null;
