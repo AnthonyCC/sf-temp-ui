@@ -1260,20 +1260,17 @@ public class HandOffDAO extends BaseDAO implements IHandOffDAO   {
 		final Map<EnumSaleStatus, Integer> result = new HashMap<EnumSaleStatus, Integer>();
 		
 		boolean sameDay = checkIfSameDayCutoff(deliveryDate, cutOff);
-		System.err.println("sameDay "+sameDay);
 		final StringBuffer cutoffQuery = new StringBuffer();final StringBuffer cutoffsbyQuery = new StringBuffer();
 		if(sameDay)
 		{
-			cutoffQuery.append(GET_ORDERSTATSBY_DATE_CUTOFF).append(" and ts.premium_cutoff_time is not null  and to_char(di.cutofftime, 'HH:MI AM')= to_char(ts.premium_cutoff_time, 'HH:MI AM') and to_char(ts.premium_cutoff_time, 'HH:MI AM') = to_char(?, 'HH:MI AM') group by s.status");
-			cutoffsbyQuery.append(GET_ORDERSTATSBY_DATE_CUTOFFSTANDBY).append(" and ts.premium_cutoff_time is not null  and to_char(di.cutofftime, 'HH:MI AM')= to_char(ts.premium_cutoff_time, 'HH:MI AM') and to_char(ts.premium_cutoff_time, 'HH:MI AM') = to_char(?, 'HH:MI AM') group by s.status");
+			cutoffQuery.append(GET_ORDERSTATSBY_DATE_CUTOFF).append(" and ts.premium_cutoff_time is not null  and (to_char(di.cutofftime, 'HH:MI AM')= to_char(ts.premium_cutoff_time, 'HH:MI AM') or to_char(di.cutofftime, 'HH:MI AM')= to_char(ts.cutoff_time, 'HH:MI AM')) and to_char(ts.premium_cutoff_time, 'HH:MI AM') = to_char(?, 'HH:MI AM') group by s.status");
+			cutoffsbyQuery.append(GET_ORDERSTATSBY_DATE_CUTOFFSTANDBY).append(" and ts.premium_cutoff_time is not null  and (to_char(di.cutofftime, 'HH:MI AM')= to_char(ts.premium_cutoff_time, 'HH:MI AM') or to_char(di.cutofftime, 'HH:MI AM')= to_char(ts.cutoff_time, 'HH:MI AM')) and to_char(ts.premium_cutoff_time, 'HH:MI AM') = to_char(?, 'HH:MI AM') group by s.status");
 		}
 		else
 		{
 			cutoffQuery.append(GET_ORDERSTATSBY_DATE_CUTOFF).append(" and ts.premium_cutoff_time is null  and to_char(di.cutofftime, 'HH:MI AM')=  to_char(?, 'HH:MI AM') group by s.status");
 			cutoffsbyQuery.append(GET_ORDERSTATSBY_DATE_CUTOFFSTANDBY).append(" and ts.premium_cutoff_time is null  and to_char(di.cutofftime, 'HH:MI AM')=  to_char(?, 'HH:MI AM') group by s.status");
 		}
-		System.err.println(cutoffQuery);
-		System.err.println(cutoffsbyQuery);
 		
 		PreparedStatementCreator creator = new PreparedStatementCreator() {
 			public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {	
@@ -1310,8 +1307,8 @@ public class HandOffDAO extends BaseDAO implements IHandOffDAO   {
 		final StringBuffer cutoffQuery = new StringBuffer();final StringBuffer cutoffsbyQuery = new StringBuffer();
 		if(sameDay)
 		{
-			cutoffQuery.append(GET_ORDERSBY_DATE_CUTOFF).append(" and ts.premium_cutoff_time is not null  and to_char(di.cutofftime, 'HH:MI AM')= to_char(ts.premium_cutoff_time, 'HH:MI AM') and to_char(ts.premium_cutoff_time, 'HH:MI AM') = to_char(?, 'HH:MI AM')");
-			cutoffsbyQuery.append(GET_ORDERSBY_DATE_CUTOFFSTANDBY).append(" and ts.premium_cutoff_time is not null  and to_char(di.cutofftime, 'HH:MI AM')= to_char(ts.premium_cutoff_time, 'HH:MI AM') and to_char(ts.premium_cutoff_time, 'HH:MI AM') = to_char(?, 'HH:MI AM')");
+			cutoffQuery.append(GET_ORDERSBY_DATE_CUTOFF).append(" and ts.premium_cutoff_time is not null  and (to_char(di.cutofftime, 'HH:MI AM')= to_char(ts.premium_cutoff_time, 'HH:MI AM') or to_char(di.cutofftime, 'HH:MI AM')= to_char(ts.cutoff_time, 'HH:MI AM')) and to_char(ts.premium_cutoff_time, 'HH:MI AM') = to_char(?, 'HH:MI AM')");
+			cutoffsbyQuery.append(GET_ORDERSBY_DATE_CUTOFFSTANDBY).append(" and ts.premium_cutoff_time is not null  and (to_char(di.cutofftime, 'HH:MI AM')= to_char(ts.premium_cutoff_time, 'HH:MI AM') or to_char(di.cutofftime, 'HH:MI AM')= to_char(ts.cutoff_time, 'HH:MI AM')) and to_char(ts.premium_cutoff_time, 'HH:MI AM') = to_char(?, 'HH:MI AM')");
 		}
 		else
 		{

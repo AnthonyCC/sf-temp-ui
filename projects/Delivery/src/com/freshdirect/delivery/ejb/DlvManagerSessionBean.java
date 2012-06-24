@@ -1962,7 +1962,7 @@ public class DlvManagerSessionBean extends GatewaySessionBeanSupport {
 						|| (reservation.getReservedServiceTime() != null
 								&& order.getDeliveryInfo().getCalculatedServiceTime() < reservation.getReservedServiceTime()))
 								&& (timeslot != null && DateUtil.getDiffInMinutes(Calendar.getInstance().getTime()
-														, DateUtil.addDays(timeslot.getDlvTimeslot().getCutoffTime().getAsDate(timeslot.getBaseDate()), -1))
+														, timeslot.getDlvTimeslot().getCutoffTimeAsDate())
 										> RoutingServicesProperties.getOMUseOriginalThreshold()) 
 								&& !EnumRoutingUpdateStatus.OVERRIDDEN.equals(reservation.getUpdateStatus())) {
 						return;

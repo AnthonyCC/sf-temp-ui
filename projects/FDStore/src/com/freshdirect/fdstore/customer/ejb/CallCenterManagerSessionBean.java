@@ -1084,14 +1084,12 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 		}
 	}
 
-	private static final String CUTOFF_REPORT_QUERY = "select s.status, di.cutofftime, count(*) as order_count "
-		+ "from cust.sale s, cust.salesaction sa, cust.deliveryinfo di "
-		+ "where s.id=sa.sale_id and sa.id=di.salesaction_id and s.type<>'SUB' and sa.action_type in ('CRO','MOD') and sa.requested_date=? "
-		+ "and s.type = 'REG' "
-		+ "and sa.action_date=(select max(action_date) from cust.salesaction where sale_id=s.id and action_type in ('CRO','MOD')) "
-		+ "and di.starttime > ? and di.starttime < ? "
-		+ "group by s.status, di.cutofftime "
-		+ "order by di.cutofftime, s.status ";
+	private static final String CUTOFF_REPORT_QUERY = "select s.status, (case when t.premium_cutoff_time is null then t.cutoff_time else t.premium_cutoff_time end) " +
+			"cutofftime , count(*) as order_count from cust.sale s, cust.salesaction sa, cust.deliveryinfo di, dlv.reservation r, dlv.timeslot t " +
+			"where s.id=sa.sale_id and sa.id=di.salesaction_id and s.type<>'SUB' and sa.action_type in ('CRO','MOD') and sa.requested_date=? and s.type = 'REG' " +
+			"and sa.action_date=(select max(action_date) from cust.salesaction where sale_id=s.id and action_type in ('CRO','MOD')) and di.starttime > ? " +
+			"and di.starttime < ? and DI.RESERVATION_ID = r.id and R.TIMESLOT_ID = t.id group by s.status,t.cutoff_time, t.premium_cutoff_time order by t.cutoff_time, " +
+			"t.premium_cutoff_time, s.status";
 
 	public List getCutoffTimeReport(java.util.Date day) throws FDResourceException {
 		Connection conn = null;

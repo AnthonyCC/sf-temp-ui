@@ -1145,12 +1145,10 @@ public class DlvManagerDAO {
 	}
 	
 	private static final String CUTOFF_BY_DATE_QUERY = 
-		"select t.cutoff_time as cutofftime "   
-			+ "from dlv.planning_resource p, dlv.timeslot t " 
-			+ "where p.id = t.resource_id "
-			+ "and p.day = ? "
-			+ "group by t.cutoff_time "
-			+ "order by t.cutoff_time ";
+		"select distinct case when t.premium_cutoff_time is null then t.cutoff_time else t.premium_cutoff_time end as cutofftime " +
+		"from dlv.planning_resource p, dlv.timeslot t " +
+		"where p.id = t.resource_id " +
+		"and p.day = ? order by cutofftime asc ";
 	
 	public static List<Date> getCutoffTimesByDate(Connection conn, Date start) throws SQLException {
 		PreparedStatement ps = conn.prepareStatement(CUTOFF_BY_DATE_QUERY);
