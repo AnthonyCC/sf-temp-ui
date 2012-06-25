@@ -209,6 +209,9 @@
 	</div>
 	<% } %>
 	</center>
+	<script language="javascript">
+		setFrameHeight('signupframe', 20);
+	</script>
 </body>
 </html>
 <% } %>
