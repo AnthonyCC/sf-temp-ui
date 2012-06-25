@@ -127,7 +127,7 @@
 	%>
 	<div style="width:450px;height:auto;overflow-y: auto; overflow-x: hide;">
 	<div id="top_image" style="float: left; padding-bottom: 10px; width: 100%;">
-		<span class="text12" style="float:left;">Already have a password? <a href="/login/login.jsp" style="text-decoration:none;">Log in now</a></span> <br/><br/>
+		<span class="text12" style="float:left;">Already have a password? <a href="#" onclick="window.top.location='/login/login.jsp'" style="text-decoration:none;">Log in now</a></span> <br/><br/>
 		<img src="/media_stat/images/profile/signup_easy.jpg" border="0" style="float:left;"/>
 		<br /><span class="text9" style="color:gray;float:left;width:370px;">Sign up now and receive promotional materials or to place your first order.</span>
 	</div>
