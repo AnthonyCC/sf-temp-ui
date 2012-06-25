@@ -203,10 +203,7 @@ public interface MessageCodes {
     
     public static final String ERR_BILL_STATE_REQUIRED = "ERR_BILL_STATE_REQUIRED";
     public static final String ERR_BILL_STATE_REQUIRED_MSG = "Billing State is required.";
-    
-    public static final String ERR_PAYMENT_METHOD_FRAUD = "ERR_PAYMENT_METHOD_FRAUD";
-    public static final String ERR_PAYMENT_METHOD_FRAUD_MSG = "There was a problem with the credit card you added. Please try adding a different payment method.";
-
+   
     public static class ErrorMessage {
         public final static String PASS_THROUGH = "PASS_THROUGH";
 
@@ -296,8 +293,6 @@ public interface MessageCodes {
                 } else {
                     returnValue = new ErrorMessage(ERR_CHECKOUT_AMOUNT_TOO_LARGE, desc);
                 }
-            } else if("payment_method_fraud".equals(key)) {
-            	returnValue = new ErrorMessage(ERR_PAYMENT_METHOD_FRAUD, ERR_PAYMENT_METHOD_FRAUD_MSG);
             } else if ("error_dlv_pass_only".equals(key)) {
                 returnValue = new ErrorMessage(ERR_DLV_PASS_ONLY, desc);
             } else if ("redemption_error".equals(key)) {

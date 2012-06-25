@@ -217,13 +217,13 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 	private boolean matchAddress(ErpAddressModel addr1, ErpAddressModel addr2){
 		if(addr1 == null || addr2 == null) return false;
 			if(addr1.getAddress1() != null 
-				&& addr1.getAddress1().equals(addr2.getAddress1()) 
+				&& addr1.getAddress1().equalsIgnoreCase(addr2.getAddress1()) 
 				&& ((addr1.getAddress2() == null && addr2.getAddress2() == null) 
-						|| (addr1.getAddress2() != null && addr1.getAddress2().equals(addr2.getAddress2())))
+						|| (addr1.getAddress2() != null && addr1.getAddress2().equalsIgnoreCase(addr2.getAddress2())))
 				&& ((addr1.getApartment() == null && addr2.getApartment() == null) 
-						|| (addr1.getApartment() != null && addr1.getApartment().equals(addr2.getApartment())))
+						|| (addr1.getApartment() != null && addr1.getApartment().equalsIgnoreCase(addr2.getApartment())))
 				&& addr1.getCity() != null 
-					&& addr1.getCity().equals(addr2.getCity())						
+					&& addr1.getCity().equalsIgnoreCase(addr2.getCity())						
 						){
 			return true;
 		}
