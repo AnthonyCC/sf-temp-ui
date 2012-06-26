@@ -18,6 +18,8 @@ public interface MessageCodes {
     public static final String ERR_NO_PAYMENT_METHOD_MSG = "Sorry, you do not have a payment method associated with your account. Please visit our website to add payment information.";    
 
     public static final String ERR_SESSION_EXPIRED = "ERR_SESSION_EXPIRED";
+    
+    public static final String WARN_SESSION_REMOVED = "WARN_SESSION_REMOVED";
 
     public static final String ERR_CART_EXPIRED = "ERR_CART_EXPIRED";
 
@@ -203,7 +205,12 @@ public interface MessageCodes {
     
     public static final String ERR_BILL_STATE_REQUIRED = "ERR_BILL_STATE_REQUIRED";
     public static final String ERR_BILL_STATE_REQUIRED_MSG = "Billing State is required.";
-   
+    
+    public final static String MSG_DONT_DELIVER_TO_ADDRESS_MOB				= "We're sorry; FreshDirect does not deliver to this address.";
+    public final static String MSG_RESTRICTED_ADDRESS_MOB 					= "We're sorry; FreshDirect does not deliver to this address because it is a commercial building. Unfortunately we are only able to make deliveries to residential buildings. You may enter another address or choose the Pickup option below.";
+    
+    public static final String MSG_AUTHENTICATION_FAILED = "We're unable to find and account that matches this information. Please double-check you email address and password. If you have forgotten your password, click on the \"Forgot your password?\" link.";
+    
     public static class ErrorMessage {
         public final static String PASS_THROUGH = "PASS_THROUGH";
 
@@ -227,34 +234,38 @@ public interface MessageCodes {
     }
 
     public static class ErrorCodeTranslator {
-        private static Map<String, ErrorMessage> translations = new HashMap<String, ErrorMessage>();
+        private static Map<String, ErrorMessage> reqfield_translations = new HashMap<String, ErrorMessage>();
+        
+        private static Map<String, ErrorMessage> webToMobile_translations = new HashMap<String, ErrorMessage>();
 
-        static {
-            translations.put("undeliverableAddress", new ErrorMessage(ERR_RESTRICTED_ADDRESS, ERR_RESTRICTED_ADDRESS_MSG));        	 
-            translations.put("zipcode", new ErrorMessage(ERR_ZIP_REQUIRED, ERR_ZIP_REQUIRED_MSG));
-            translations.put("state", new ErrorMessage(ERR_STATE_REQUIRED, ERR_STATE_REQUIRED_MSG));
-            translations.put("address1", new ErrorMessage(ERR_ADDRESS1_REQUIRED, ERR_ADDRESS1_REQUIRED_MSG));
-            translations.put("city", new ErrorMessage(ERR_CITY_REQUIRED, ERR_CITY_REQUIRED_MSG));
-            translations.put("dlvfirstname", new ErrorMessage(ERR_FIRSTNAME_REQUIRED, ERR_FIRSTNAME_REQUIRED_MSG));
-            translations.put("dlvlastname", new ErrorMessage(ERR_LASTNAME_REQUIRED, ERR_LASTNAME_REQUIRED_MSG));
-            translations.put("email", new ErrorMessage(ERR_EMAIL_REQUIRED, ERR_EMAIL_REQUIRED_MSG));
-            translations.put("repeat_email", new ErrorMessage(ERR_REPEATEMAIL_REQUIRED, ERR_REPEATEMAIL_MISMATCH_MSG));
-            translations.put("password", new ErrorMessage(ERR_PASSWORD_REQUIRED, ERR_PASSWORD_REQUIRED_MSG));
-            //translations.put("repeat_password", new ErrorMessage(ERR_REPEAT_PASSWORD_MISMATCH, ERR_REPEAT_PASSWORD_MISMATCH_MSG));
-            translations.put("password_hint", new ErrorMessage(ERR_PASSWORDHINT_REQUIRED, ERR_PASSWORDHINT_REQUIRED_MSG));
-            translations.put("dlvhomephone", new ErrorMessage(ERR_DLVPHONE_REQUIRED, ERR_DLVPHONE_REQUIRED_MSG));
-            translations.put("expiration", new ErrorMessage(ERR_CCEXPIRATION_REQUIRED, ERR_CCEXPIRATION_REQUIRED_MSG));
-            translations.put("cardNum", new ErrorMessage(ERR_ACCTNUMBER_REQUIRED, ERR_ACCTNUMBER_REQUIRED_MSG));
-            translations.put("csv", new ErrorMessage(ERR_CVV_REQUIRED, ERR_CVV_REQUIRED_MSG));
-            translations.put("cardBrand", new ErrorMessage(ERR_CARDBRAND_REQUIRED, ERR_CARDBRAND_REQUIRED_MSG));
-            translations.put("bankAccountType", new ErrorMessage(ERR_ACCTTYPE_REQUIRED, ERR_ACCTTYPE_REQUIRED_MSG));
-            translations.put("abaRouteNumber", new ErrorMessage(ERR_ABAROUTE_NUMBER_REQUIRED, ERR_ABAROUTE_NUMBER_REQUIRED_MSG));
-            translations.put("bankName", new ErrorMessage(ERR_BANK_NAME_REQUIRED, ERR_BANK_NAME_REQUIRED_MSG));
-            translations.put("cardHolderName", new ErrorMessage(ERR_ACCOUNT_HOLDER_NAME_REQUIRED, ERR_ACCOUNT_HOLDER_NAME_REQUIRED_MSG));
-            translations.put("bil_address1", new ErrorMessage(ERR_BILL_ADDRESS1_REQUIRED, ERR_BILL_ADDRESS1_REQUIRED_MSG));
-            translations.put("bil_state", new ErrorMessage(ERR_BILL_STATE_REQUIRED, ERR_BILL_STATE_REQUIRED_MSG));
-            translations.put("bil_zipcode", new ErrorMessage(ERR_BILL_ZIP_REQUIRED, ERR_BILL_ZIP_REQUIRED_MSG));
-            translations.put("bil_city", new ErrorMessage(ERR_CITY_REQUIRED, ERR_CITY_REQUIRED_MSG));
+        static {        	        	 
+        	reqfield_translations.put("zipcode", new ErrorMessage(ERR_ZIP_REQUIRED, ERR_ZIP_REQUIRED_MSG));
+        	reqfield_translations.put("state", new ErrorMessage(ERR_STATE_REQUIRED, ERR_STATE_REQUIRED_MSG));
+        	reqfield_translations.put("address1", new ErrorMessage(ERR_ADDRESS1_REQUIRED, ERR_ADDRESS1_REQUIRED_MSG));
+        	reqfield_translations.put("city", new ErrorMessage(ERR_CITY_REQUIRED, ERR_CITY_REQUIRED_MSG));
+        	reqfield_translations.put("dlvfirstname", new ErrorMessage(ERR_FIRSTNAME_REQUIRED, ERR_FIRSTNAME_REQUIRED_MSG));
+        	reqfield_translations.put("dlvlastname", new ErrorMessage(ERR_LASTNAME_REQUIRED, ERR_LASTNAME_REQUIRED_MSG));
+        	reqfield_translations.put("email", new ErrorMessage(ERR_EMAIL_REQUIRED, ERR_EMAIL_REQUIRED_MSG));
+        	reqfield_translations.put("repeat_email", new ErrorMessage(ERR_REPEATEMAIL_REQUIRED, ERR_REPEATEMAIL_MISMATCH_MSG));
+        	reqfield_translations.put("password", new ErrorMessage(ERR_PASSWORD_REQUIRED, ERR_PASSWORD_REQUIRED_MSG));
+            //reqfield_translations.put("repeat_password", new ErrorMessage(ERR_REPEAT_PASSWORD_MISMATCH, ERR_REPEAT_PASSWORD_MISMATCH_MSG));
+        	reqfield_translations.put("password_hint", new ErrorMessage(ERR_PASSWORDHINT_REQUIRED, ERR_PASSWORDHINT_REQUIRED_MSG));
+        	reqfield_translations.put("dlvhomephone", new ErrorMessage(ERR_DLVPHONE_REQUIRED, ERR_DLVPHONE_REQUIRED_MSG));
+        	reqfield_translations.put("expiration", new ErrorMessage(ERR_CCEXPIRATION_REQUIRED, ERR_CCEXPIRATION_REQUIRED_MSG));
+        	reqfield_translations.put("cardNum", new ErrorMessage(ERR_ACCTNUMBER_REQUIRED, ERR_ACCTNUMBER_REQUIRED_MSG));
+        	reqfield_translations.put("csv", new ErrorMessage(ERR_CVV_REQUIRED, ERR_CVV_REQUIRED_MSG));
+        	reqfield_translations.put("cardBrand", new ErrorMessage(ERR_CARDBRAND_REQUIRED, ERR_CARDBRAND_REQUIRED_MSG));
+        	reqfield_translations.put("bankAccountType", new ErrorMessage(ERR_ACCTTYPE_REQUIRED, ERR_ACCTTYPE_REQUIRED_MSG));
+        	reqfield_translations.put("abaRouteNumber", new ErrorMessage(ERR_ABAROUTE_NUMBER_REQUIRED, ERR_ABAROUTE_NUMBER_REQUIRED_MSG));
+        	reqfield_translations.put("bankName", new ErrorMessage(ERR_BANK_NAME_REQUIRED, ERR_BANK_NAME_REQUIRED_MSG));
+        	reqfield_translations.put("cardHolderName", new ErrorMessage(ERR_ACCOUNT_HOLDER_NAME_REQUIRED, ERR_ACCOUNT_HOLDER_NAME_REQUIRED_MSG));
+        	reqfield_translations.put("bil_address1", new ErrorMessage(ERR_BILL_ADDRESS1_REQUIRED, ERR_BILL_ADDRESS1_REQUIRED_MSG));
+        	reqfield_translations.put("bil_state", new ErrorMessage(ERR_BILL_STATE_REQUIRED, ERR_BILL_STATE_REQUIRED_MSG));
+        	reqfield_translations.put("bil_zipcode", new ErrorMessage(ERR_BILL_ZIP_REQUIRED, ERR_BILL_ZIP_REQUIRED_MSG));
+        	reqfield_translations.put("bil_city", new ErrorMessage(ERR_CITY_REQUIRED, ERR_CITY_REQUIRED_MSG));
+        	
+        	webToMobile_translations.put(SystemMessageList.MSG_DONT_DELIVER_TO_ADDRESS, new ErrorMessage(ERR_NO_DELIVERY_ADDRESS, MSG_DONT_DELIVER_TO_ADDRESS_MOB));
+        	webToMobile_translations.put(SystemMessageList.MSG_RESTRICTED_ADDRESS, new ErrorMessage(ERR_NO_DELIVERY_ADDRESS, MSG_RESTRICTED_ADDRESS_MOB));
         }
 
         public static ErrorMessage translate(String key, String desc, SessionUser user) {
@@ -297,8 +308,10 @@ public interface MessageCodes {
                 returnValue = new ErrorMessage(ERR_DLV_PASS_ONLY, desc);
             } else if ("redemption_error".equals(key)) {
                 returnValue = new ErrorMessage(ERR_REDEMPTION_ERROR, desc);
-            } else if (SystemMessageList.MSG_REQUIRED.equals(desc) && translations.containsKey(key)) {
-                returnValue = translations.get(key);
+            } else if (SystemMessageList.MSG_REQUIRED.equals(desc) && reqfield_translations.containsKey(key)) {
+                returnValue = reqfield_translations.get(key);
+            } else if (webToMobile_translations.containsKey(desc)) {
+            	returnValue = webToMobile_translations.get(desc);
             }
 
             return returnValue;

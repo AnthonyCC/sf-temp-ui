@@ -115,8 +115,8 @@ public class CheckoutControllerTagWrapper extends ControllerTagWrapper implement
     }
 
     public ResultBundle setPaymentMethod(String paymentMethodId, String billingReference) throws FDException {
-        addExpectedSessionValues(new String[] { SESSION_PARAM_APPLICATION, SESSION_PARAM_CUSTOMER_SERVICE_REP, SESSION_PARAM_CRM_AGENT },
-                new String[] { SESSION_PARAM_USER }); //gets,sets
+        addExpectedSessionValues(new String[] { SESSION_PARAM_APPLICATION, SESSION_PARAM_CUSTOMER_SERVICE_REP, SESSION_PARAM_CRM_AGENT,SESSION_PARAM_PYMT_VERIFYFLD },
+                new String[] { SESSION_PARAM_USER, SESSION_PARAM_PYMT_VERIFYFLD }); //gets,sets
         addExpectedRequestValues(new String[] { REQ_PARAM_CHEF_TABLE, REQ_PARAM_PAYMENT_METHOD_ID, REQ_PARAM_BILLING_REF,
                 REQ_PARAM_GIFT_CARD, REQ_PARAM_DONATION, REQ_PARAM_BYPASS_ACCOUNT_CHECK }, new String[] { REQ_PARAM_PAYMENT_METHOD_ID,
                 REQ_PARAM_BILLING_REF });//gets,sets
@@ -190,8 +190,8 @@ public class CheckoutControllerTagWrapper extends ControllerTagWrapper implement
     }
 
     public ResultBundle addPaymentMethod(PaymentMethodRequest paymentMethod) throws FDException {
-        addExpectedSessionValues(new String[] { SESSION_PARAM_APPLICATION, SESSION_PARAM_CUSTOMER_SERVICE_REP, SESSION_PARAM_CRM_AGENT },
-                new String[] { SESSION_PARAM_USER }); //gets,sets
+        addExpectedSessionValues(new String[] { SESSION_PARAM_APPLICATION, SESSION_PARAM_CUSTOMER_SERVICE_REP, SESSION_PARAM_CRM_AGENT, SESSION_PARAM_PYMT_VERIFYFLD },
+                new String[] { SESSION_PARAM_USER, SESSION_PARAM_PYMT_VERIFYFLD }); //gets,sets
         addExpectedRequestValues(new String[] { REQ_PARAM_CARD_EXP_MONTH, REQ_PARAM_CARD_EXP_YEAR, REQ_PARAM_CARD_BRAND,
         		REQ_PARAM_ACCOUNT_NUMBER, REQ_PARAM_ABA_ROUTE_NUMBER, REQ_PARAM_BANK_NAME, REQ_PARAM_BYPASS_BAD_ACCOUNT_CHECK, REQ_PARAM_TERMS,
         		REQ_PARAM_ACCOUNT_NUMBER_VERIFY,REQ_PARAM_BANK_ACCOUNT_TYPE,REQ_PARAM_ACCOUNT_HOLDER,REQ_PARAM_BIL_ADDRESS_1,
@@ -224,12 +224,13 @@ public class CheckoutControllerTagWrapper extends ControllerTagWrapper implement
 
         getWrapTarget().setActionName(ACTION_ADD_PAYMENT_METHOD);
         setMethodMode(true);
+        
         return new ResultBundle(executeTagLogic(), this);
     }
 
     public ResultBundle addAndSetPaymentMethod(PaymentMethodRequest paymentMethod) throws FDException {
-        addExpectedSessionValues(new String[] { SESSION_PARAM_APPLICATION, SESSION_PARAM_CUSTOMER_SERVICE_REP, SESSION_PARAM_CRM_AGENT },
-                new String[] { SESSION_PARAM_USER }); //gets,sets
+        addExpectedSessionValues(new String[] { SESSION_PARAM_APPLICATION, SESSION_PARAM_CUSTOMER_SERVICE_REP, SESSION_PARAM_CRM_AGENT, SESSION_PARAM_PYMT_VERIFYFLD },
+                new String[] { SESSION_PARAM_USER, SESSION_PARAM_PYMT_VERIFYFLD }); //gets,sets
         addExpectedRequestValues(new String[] { REQ_PARAM_CARD_EXP_MONTH, REQ_PARAM_CARD_EXP_YEAR, REQ_PARAM_CARD_BRAND,
         		REQ_PARAM_ACCOUNT_NUMBER, REQ_PARAM_ABA_ROUTE_NUMBER, REQ_PARAM_BANK_NAME, REQ_PARAM_BYPASS_BAD_ACCOUNT_CHECK, REQ_PARAM_TERMS,
         		REQ_PARAM_ACCOUNT_NUMBER_VERIFY,REQ_PARAM_BANK_ACCOUNT_TYPE,REQ_PARAM_ACCOUNT_HOLDER,REQ_PARAM_BIL_ADDRESS_1,
@@ -266,8 +267,8 @@ public class CheckoutControllerTagWrapper extends ControllerTagWrapper implement
     }
 
     public ResultBundle editPaymentMethod(PaymentMethodRequest paymentMethod) throws FDException {
-        addExpectedSessionValues(new String[] { SESSION_PARAM_APPLICATION, SESSION_PARAM_CUSTOMER_SERVICE_REP, SESSION_PARAM_CRM_AGENT },
-                new String[] { SESSION_PARAM_USER }); //gets,sets
+        addExpectedSessionValues(new String[] { SESSION_PARAM_APPLICATION, SESSION_PARAM_CUSTOMER_SERVICE_REP, SESSION_PARAM_CRM_AGENT, SESSION_PARAM_PYMT_VERIFYFLD },
+                new String[] { SESSION_PARAM_USER, SESSION_PARAM_PYMT_VERIFYFLD }); //gets,sets
         addExpectedRequestValues(new String[] { REQ_PARAM_CARD_EXP_MONTH, REQ_PARAM_CARD_EXP_YEAR, REQ_PARAM_CARD_BRAND,
         		REQ_PARAM_ACCOUNT_NUMBER, REQ_PARAM_ABA_ROUTE_NUMBER, REQ_PARAM_BANK_NAME, REQ_PARAM_BYPASS_BAD_ACCOUNT_CHECK, REQ_PARAM_TERMS,
         		REQ_PARAM_ACCOUNT_NUMBER_VERIFY,REQ_PARAM_BANK_ACCOUNT_TYPE,REQ_PARAM_ACCOUNT_HOLDER,REQ_PARAM_BIL_ADDRESS_1,

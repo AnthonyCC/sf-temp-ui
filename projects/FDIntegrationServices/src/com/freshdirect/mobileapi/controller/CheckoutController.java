@@ -48,6 +48,7 @@ import com.freshdirect.mobileapi.model.ShipToAddress;
 import com.freshdirect.mobileapi.model.User;
 import com.freshdirect.mobileapi.model.DeliveryAddress.DeliveryAddressType;
 import com.freshdirect.mobileapi.model.DeliveryTimeslots.TimeSlotCalculationResult;
+import com.freshdirect.mobileapi.model.tagwrapper.SessionParamName;
 import com.freshdirect.mobileapi.service.ServiceException;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
 
@@ -148,13 +149,13 @@ public class CheckoutController extends BaseController {
             model = verifyAlcoholAge(model, user, request);
         }else if (ACTION_ADD_PAYMENT_METHOD.equals(action)) {
         	PaymentMethodRequest requestMessage = parseRequestObject(request, response, PaymentMethodRequest.class);
-            model = addPaymentMethod(model, user, requestMessage, request);
+            model = addPaymentMethod(model, user, requestMessage, request, response);
         }else if (ACTION_ADD_AND_SET_PAYMENT_METHOD.equals(action)) {
         	PaymentMethodRequest requestMessage = parseRequestObject(request, response, PaymentMethodRequest.class);
-            model = addAndSetPaymentMethod(model, user, requestMessage, request);
+            model = addAndSetPaymentMethod(model, user, requestMessage, request, response);
         }else if (ACTION_EDIT_PAYMENT_METHOD.equals(action)) {
         	PaymentMethodRequest requestMessage = parseRequestObject(request, response, PaymentMethodRequest.class);
-            model = editPaymentMethod(model, user, requestMessage, request);
+            model = editPaymentMethod(model, user, requestMessage, request, response);
         }else if (ACTION_DELETE_PAYMENT_METHOD.equals(action)) {
         	PaymentMethodRequest requestMessage = parseRequestObject(request, response, PaymentMethodRequest.class);
             model = deletePaymentMethod(model, user, requestMessage, request);
@@ -499,15 +500,24 @@ public class CheckoutController extends BaseController {
         setResponseMessage(model, responseMessage, user);
         return model;
     }
-
+    
+    private void verifyPaymentMethodFailure(HttpServletRequest request, HttpServletResponse response
+    											, SessionUser user, Message responseMessage) {
+    	if(request.getSession().getAttribute(SessionParamName.SESSION_PARAM_PYMT_VERIFYFLD) !=null) {
+    		removeUserInSession(user, request, response);
+    		responseMessage.addWarningMessage(WARN_SESSION_REMOVED, "true");
+        }
+    }
+    
     private ModelAndView addPaymentMethod(ModelAndView model, SessionUser user, PaymentMethodRequest reqestMessage,
-            HttpServletRequest request) throws FDException, JsonException {
+            HttpServletRequest request, HttpServletResponse response) throws FDException, JsonException {
         Checkout checkout = new Checkout(user);
         ResultBundle resultBundle = checkout.addPaymentMethod(reqestMessage);
+        
         ActionResult result = resultBundle.getActionResult();
-
+        
         propogateSetSessionValues(request.getSession(), resultBundle);
-
+                
         Message responseMessage = null;
         if (result.isSuccess()) {
             responseMessage = Message.createSuccessMessage("Payment method added successfully.");
@@ -515,18 +525,19 @@ public class CheckoutController extends BaseController {
             responseMessage = getErrorMessage(result, request);
         }
         responseMessage.addWarningMessages(result.getWarnings());
-        setResponseMessage(model, responseMessage, user);
+        verifyPaymentMethodFailure(request, response, user, responseMessage);
+        setResponseMessage(model, responseMessage, user);        
         return model;
     }
 
     private ModelAndView addAndSetPaymentMethod(ModelAndView model, SessionUser user, PaymentMethodRequest reqestMessage,
-            HttpServletRequest request) throws FDException, JsonException {
+            HttpServletRequest request, HttpServletResponse response) throws FDException, JsonException {
         Checkout checkout = new Checkout(user);
         ResultBundle resultBundle = checkout.addAndSetPaymentMethod(reqestMessage);
         ActionResult result = resultBundle.getActionResult();
 
         propogateSetSessionValues(request.getSession(), resultBundle);
-
+                
         Message responseMessage = null;
         if (result.isSuccess()) {
             responseMessage = Message.createSuccessMessage("Payment method added successfully.");
@@ -534,26 +545,33 @@ public class CheckoutController extends BaseController {
             responseMessage = getErrorMessage(result, request);
         }
         responseMessage.addWarningMessages(result.getWarnings());
+        verifyPaymentMethodFailure(request, response, user, responseMessage);
+        
         setResponseMessage(model, responseMessage, user);
+        
         return model;
     }
 
     private ModelAndView editPaymentMethod(ModelAndView model, SessionUser user, PaymentMethodRequest reqestMessage,
-            HttpServletRequest request) throws FDException, JsonException {
+            HttpServletRequest request, HttpServletResponse response) throws FDException, JsonException {
         Checkout checkout = new Checkout(user);
         ResultBundle resultBundle = checkout.editPaymentMethod(reqestMessage);
         ActionResult result = resultBundle.getActionResult();
 
         propogateSetSessionValues(request.getSession(), resultBundle);
-
+        
+        
         Message responseMessage = null;
         if (result.isSuccess()) {
             responseMessage = Message.createSuccessMessage("Payment method updated successfully.");
         } else {
             responseMessage = getErrorMessage(result, request);
         }
-        responseMessage.addWarningMessages(result.getWarnings());
+        responseMessage.addWarningMessages(result.getWarnings()); 
+        verifyPaymentMethodFailure(request, response, user, responseMessage);
+                
         setResponseMessage(model, responseMessage, user);
+        
         return model;
     }
     

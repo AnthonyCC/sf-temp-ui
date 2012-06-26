@@ -3,6 +3,7 @@ package com.freshdirect.mobileapi.controller;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -41,6 +42,7 @@ import com.freshdirect.mobileapi.service.Oas247Service;
 import com.freshdirect.mobileapi.service.OasService;
 import com.freshdirect.mobileapi.service.ServiceException;
 import com.freshdirect.mobileapi.util.MobileApiProperties;
+import com.freshdirect.webapp.taglib.fdstore.CookieMonster;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
 import com.freshdirect.webapp.taglib.fdstore.UserUtil;
 
@@ -320,6 +322,24 @@ public abstract class BaseController extends AbstractController implements Messa
 
     protected void setUserInSession(SessionUser sessionUser, HttpServletRequest request, HttpServletResponse response) {
         request.getSession().setAttribute(SessionName.USER, sessionUser.getFDSessionUser());
+    }
+    
+    protected void removeUserInSession(SessionUser user, HttpServletRequest request, HttpServletResponse response) {
+    	
+    	user.touch();
+        HttpSession session = request.getSession();
+
+        // clear session
+        Enumeration e = session.getAttributeNames();
+        while (e.hasMoreElements()) {
+            String name = (String) e.nextElement();
+            session.removeAttribute(name);
+        }
+        // end session
+        session.invalidate();
+        // remove cookie
+        CookieMonster.clearCookie(response);
+        resetMobileSessionData(request);
     }
 
     protected ObjectMapper getMapper() {

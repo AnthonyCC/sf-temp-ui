@@ -1,6 +1,7 @@
 package com.freshdirect.mobileapi.controller;
 
 import java.io.IOException;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Enumeration;
@@ -37,6 +38,8 @@ import com.freshdirect.mobileapi.model.User;
 import com.freshdirect.mobileapi.service.ServiceException;
 import com.freshdirect.mobileapi.util.MobileApiProperties;
 import com.freshdirect.webapp.taglib.fdstore.CookieMonster;
+import com.freshdirect.webapp.taglib.fdstore.SystemMessageList;
+import com.freshdirect.webapp.taglib.fdstore.UserUtil;
 
 public class LoginController extends BaseController {
 
@@ -108,20 +111,8 @@ public class LoginController extends BaseController {
      */
     private ModelAndView logout(ModelAndView model, SessionUser user, HttpServletRequest request, HttpServletResponse response)
             throws JsonException {
-        user.touch();
-        HttpSession session = request.getSession();
-
-        // clear session
-        Enumeration e = session.getAttributeNames();
-        while (e.hasMoreElements()) {
-            String name = (String) e.nextElement();
-            session.removeAttribute(name);
-        }
-        // end session
-        session.invalidate();
-        // remove cookie
-        CookieMonster.clearCookie(response);
-        resetMobileSessionData(request);
+    	
+    	removeUserInSession(user, request, response);
 
         Message responseMessage = Message.createSuccessMessage("User logged out successfully.");
         setResponseMessage(model, responseMessage, user);
@@ -168,7 +159,12 @@ public class LoginController extends BaseController {
             resetMobileSessionData(request);
 
         } catch (FDAuthenticationException ex) {
-            responseMessage = getErrorMessage(ERR_AUTHENTICATION, "Invalid username and/or password");
+        	if("Account disabled".equals(ex.getMessage())) {
+        		responseMessage = getErrorMessage(ERR_AUTHENTICATION, MessageFormat.format(SystemMessageList.MSG_DEACTIVATED, 
+	            		new Object[] { UserUtil.getCustomerServiceContact(request)}));
+        	} else {
+        		responseMessage = getErrorMessage(ERR_AUTHENTICATION, MessageCodes.MSG_AUTHENTICATION_FAILED);
+        	}
         }
         setResponseMessage(model, responseMessage, user);
         return model;

@@ -56,6 +56,8 @@ public interface SessionParamName {
      public static final String SESSION_PARAM_LITE_SIGNUP_COMPLETE = "LITESIGNUP_COMPLETE";
      
      public static final String SESSION_PARAM_REFERRAL_NAME = "REFERRALNAME";
+     
+     public static final String SESSION_PARAM_PYMT_VERIFYFLD = "verifyFail";
 
     /*
      *             session.removeAttribute(SessionName.AUTHORIZED_PEOPLE);
