@@ -312,7 +312,7 @@ public class DateUtil {
 
 
 	public static boolean isPremiumSlot(Date baseDate, TimeOfDay cutoffTime,
-			TimeOfDay premiumCutoffTime) {
+			TimeOfDay premiumCutoffTime, int duration) {
 		Calendar cal = Calendar.getInstance();
 		Date cutoffDateTime = null;
 		Date premiumCutoffDateTime =null;
@@ -322,9 +322,9 @@ public class DateUtil {
 			 cutoffDateTime = DateUtil.addDays(cutoffTime.getAsDate(baseDate),-1);
 			 premiumCutoffDateTime = premiumCutoffTime.getAsDate(baseDate);
 			 cal.setTime(premiumCutoffDateTime);
-			 cal.add(Calendar.MINUTE, 30);
+			 cal.add(Calendar.MINUTE, duration);
 			 premiumCutoffDateTime = cal.getTime();
-			if(now.after(cutoffDateTime) && now.before(premiumCutoffDateTime))
+			if(now.after(cutoffDateTime))
 				return true;
 		}
 		

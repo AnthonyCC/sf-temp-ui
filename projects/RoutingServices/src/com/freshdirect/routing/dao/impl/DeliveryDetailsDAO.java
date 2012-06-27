@@ -26,6 +26,7 @@ import com.freshdirect.delivery.DepotLocationModel;
 import com.freshdirect.delivery.EnumReservationType;
 import com.freshdirect.delivery.EnumTimeslotStatus;
 import com.freshdirect.delivery.model.DlvTimeslotModel;
+import com.freshdirect.delivery.model.EnumReservationClass;
 import com.freshdirect.delivery.model.UnassignedDlvReservationModel;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.util.EnumLogicalOperator;
@@ -143,7 +144,7 @@ public class DeliveryDetailsDAO extends BaseDAO implements IDeliveryDetailsDAO {
 			+ "( "
 			+ "select z.zone_code as code, z.name, ts.capacity, ts.ct_capacity, ts.START_TIME st, ts.END_TIME et, z.ct_active as ct_active, "
 			+ "(select count(*) from dlv.reservation where timeslot_id=ts.id and status_code = '10' ) as orders, "
-			+ "decode((sysdate-(TO_DATE(TO_CHAR(ts.base_date - 1, 'YYYY-MM-DD')||' '||to_char(ts.cutoff_time - (z.ct_release_time/60/24), 'HH24:MI:SS'), 'YYYY-MM-DD HH24:MI:SS'))- abs(sysdate-(TO_DATE(TO_CHAR(ts.base_date - 1, 'YYYY-MM-DD')||' '||to_char(ts.cutoff_time - (z.ct_release_time/60/24), 'HH24:MI:SS'), 'YYYY-MM-DD HH24:MI:SS')))),0,(select count(*) from dlv.reservation where timeslot_id=ts.id and status_code <> '15' and status_code <> '20' ),(select count(*) from dlv.reservation where timeslot_id=ts.id and  status_code <> '15' and status_code <> '20' and chefstable = ' ')+ts.ct_capacity) as total_alloc, "
+			+ "decode((sysdate-(TO_DATE(TO_CHAR(ts.base_date - 1, 'YYYY-MM-DD')||' '||to_char(ts.cutoff_time - (z.ct_release_time/60/24), 'HH24:MI:SS'), 'YYYY-MM-DD HH24:MI:SS'))- abs(sysdate-(TO_DATE(TO_CHAR(ts.base_date - 1, 'YYYY-MM-DD')||' '||to_char(ts.cutoff_time - (z.ct_release_time/60/24), 'HH24:MI:SS'), 'YYYY-MM-DD HH24:MI:SS')))),0,(select count(*) from dlv.reservation where timeslot_id=ts.id and status_code <> '15' and status_code <> '20' ),(select count(*) from dlv.reservation where timeslot_id=ts.id and  status_code <> '15' and status_code <> '20' and chefstable = ' ')+ts.ct_capacity)+ts.premium_capacity as total_alloc, "
 			+ "(select count(*) from dlv.reservation where timeslot_id=ts.id and status_code = '10' and chefstable = ' ') as base_orders, "
 			+ "(select count(*) from dlv.reservation where timeslot_id=ts.id and  status_code <> '15' and status_code <> '20' and chefstable = ' ') as base_alloc, "
 			+ "(select count(*) from dlv.reservation where timeslot_id=ts.id and  status_code <> '15' and status_code <> '20' and chefstable = 'X') as ct_alloc, "
@@ -174,10 +175,11 @@ public class DeliveryDetailsDAO extends BaseDAO implements IDeliveryDetailsDAO {
 		+ 	"or rd.start_date >= (select max(start_date) from dlv.region_data where start_date <= ? and region_id = r.id)) "
 		+ "and t.ZONE_ID = z.ID and z.ZONE_CODE = ta.ZONE_CODE and ta.AREA = a.CODE and t.base_date >= rd.start_date "
 		+ "and t.base_date >= ? and t.base_date < ? "
-		+ "and to_date(to_char(t.base_date-1, 'MM/DD/YY ') || to_char(t.cutoff_time, 'HH:MI:SS AM'), 'MM/DD/YY HH:MI:SS AM') > SYSDATE ";
+		+ "and ((t.premium_cutoff_Time is not null and to_date(to_char(t.base_date-1, 'MM/DD/YY ') || to_char(t.cutoff_time, 'HH:MI:SS AM'), 'MM/DD/YY HH:MI:SS AM') > SYSDATE) or " +
+		" (t.premium_cutoff_Time is null and to_date(to_char(t.base_date, 'MM/DD/YY ') || to_char(t.cutoff_time, 'HH:MI:SS AM'), 'MM/DD/YY HH:MI:SS AM') > SYSDATE)) ";
 	
 	private static final String TIMESLOT_BY_ID =
-			"select distinct ts.id, ts.base_date, ts.start_time, ts.end_time, ts.cutoff_time, ts.status, ts.zone_id, ts.capacity, ts.ct_capacity" +
+			"select distinct ts.id, ts.base_date, ts.start_time, ts.end_time, ts.cutoff_time, ts.premium_cutoff_time,ts.status, ts.zone_id, ts.capacity, ts.ct_capacity" +
 			", ta.AREA AREA_CODE, ta.STEM_MAX_TIME stemmax, ta.STEM_FROM_TIME stemfrom, ta.STEM_TO_TIME stemto, ta.ZONE_ECOFRIENDLY ecoFriendly, z.NAME ZONE_NAME, " +
 			"case when ts.premium_cutoff_time is null then TO_CHAR(ts.CUTOFF_TIME, 'HH_MI_PM') else TO_CHAR(ts.premium_cutoff_time, 'HH_MI_PM') end WAVE_CODE, ts.IS_DYNAMIC IS_DYNAMIC, ts.IS_CLOSED IS_CLOSED, a.IS_DEPOT IS_DEPOT, a.DELIVERY_RATE AREA_DLV_RATE,"
 				+ "(select count(reservation.TIMESLOT_ID) from dlv.reservation "
@@ -219,6 +221,7 @@ public class DeliveryDetailsDAO extends BaseDAO implements IDeliveryDetailsDAO {
 		         					TimeOfDay startTime = new TimeOfDay(rs.getTime("START_TIME"));
 		         					TimeOfDay endTime = new TimeOfDay(rs.getTime("END_TIME"));
 		         					TimeOfDay cutoffTime = new TimeOfDay(rs.getTime("CUTOFF_TIME"));
+		         					Date premiumCutoffTime = rs.getTime("PREMIUM_CUTOFF_TIME");
 		         					EnumTimeslotStatus status = EnumTimeslotStatus.getEnum(rs.getInt("STATUS"));
 		         					int capacity = rs.getInt("CAPACITY");
 		         					int baseAllocation = rs.getInt("BASE_ALLOCATION");
@@ -242,6 +245,10 @@ public class DeliveryDetailsDAO extends BaseDAO implements IDeliveryDetailsDAO {
 		         					_tmpSlot.setCtReleaseTime(ctReleaseTime);
 		         					_tmpSlot.setCtActive(ctActive);
 		         					_tmpSlot.setZoneCode(zoneCode);
+		         					
+		         					//this method is only used to update the reservation size. It will use the premium cutoff to determine when it should update.
+		         					_tmpSlot.setPremiumSlot((premiumCutoffTime!=null)?true:false);
+		         					_tmpSlot.setPremiumCutoffTime((premiumCutoffTime!=null)?new TimeOfDay(premiumCutoffTime):null);
 		         					
 		         					// Prepare routing slot configuration from result set
 		         					IDeliverySlot routingSlot = new DeliverySlot();
@@ -418,7 +425,7 @@ public class DeliveryDetailsDAO extends BaseDAO implements IDeliveryDetailsDAO {
 			conditionValue = condition.getName();
 		}
 		if(cutOffTime != null) {
-			query.append(" and t.cutoff_time "+conditionValue+" ?");
+			query.append(" and ((t.premium_cutoff_Time is not null and t.premium_cutoff_Time "+conditionValue+" ?) or (t.premium_cutoff_Time is null and t.CUTOFF_TIME "+conditionValue+" ?))");
 		}
 		query.append(" order by z.ZONE_CODE, t.START_TIME");
 		
@@ -486,7 +493,7 @@ public class DeliveryDetailsDAO extends BaseDAO implements IDeliveryDetailsDAO {
 			conditionValue = condition.getName();
 		}
 		if(cutOffTime != null) {
-			query.append(" and ts.CUTOFF_TIME "+conditionValue+" ?");
+			query.append(" and ((ts.premium_cutoff_Time is not null and ts.premium_cutoff_Time "+conditionValue+" ?) or (ts.premium_cutoff_Time is null and ts.CUTOFF_TIME "+conditionValue+" ?))");
 		}
 		
 		query.append(") group by code, name, st, et order by code");
@@ -855,7 +862,7 @@ public class DeliveryDetailsDAO extends BaseDAO implements IDeliveryDetailsDAO {
 	private static String FETCH_UNASSIGNED_RESERVATIONS_QUERY="SELECT  R.ID, R.ORDER_ID, R.CUSTOMER_ID, R.STATUS_CODE, R.TIMESLOT_ID, R.ZONE_ID, R.EXPIRATION_DATETIME, R.TYPE, R.ADDRESS_ID, "+
 	" T.BASE_DATE,to_char(T.CUTOFF_TIME, 'HH:MI AM') CUTOFF_TIME,T.START_TIME STIME, T.END_TIME ETIME, Z.ZONE_CODE,R.UNASSIGNED_DATETIME, R.UNASSIGNED_ACTION, R.IN_UPS, R.ORDER_SIZE, R.SERVICE_TIME, R.RESERVED_ORDER_SIZE" +
 	", R.RESERVED_SERVICE_TIME, R.UPDATE_STATUS, R.METRICS_SOURCE " +
-	", R.NUM_CARTONS , R.NUM_FREEZERS , R.NUM_CASES, " +
+	", R.NUM_CARTONS , R.NUM_FREEZERS , R.NUM_CASES, R.CLASS, " +
 	" A.ID as ADDRESS, A.FIRST_NAME,A.LAST_NAME,A.ADDRESS1,A.ADDRESS2,A.APARTMENT,A.CITY,A.STATE,A.ZIP,A.COUNTRY, "+
 	" A.PHONE,A.PHONE_EXT,A.DELIVERY_INSTRUCTIONS,A.SCRUBBED_ADDRESS,A.ALT_DEST,A.ALT_FIRST_NAME, "+
 	" A.ALT_LAST_NAME,A.ALT_APARTMENT,A.ALT_PHONE,A.ALT_PHONE_EXT,A.LONGITUDE,A.LATITUDE,A.SERVICE_TYPE, "+
@@ -905,6 +912,7 @@ public class DeliveryDetailsDAO extends BaseDAO implements IDeliveryDetailsDAO {
 							, rs.getBigDecimal("NUM_CARTONS") != null ? new Long(rs.getLong("NUM_CARTONS")) : null
 							, rs.getBigDecimal("NUM_FREEZERS") != null ? new Long(rs.getLong("NUM_FREEZERS")) : null
 							, rs.getBigDecimal("NUM_CASES") != null ? new Long(rs.getLong("NUM_CASES")) : null
+							, EnumReservationClass.getEnum(rs.getString("CLASS"))
 							, EnumRoutingUpdateStatus.getEnum(rs.getString("UPDATE_STATUS"))
 							, EnumOrderMetricsSource.getEnum(rs.getString("METRICS_SOURCE")));
 							
@@ -920,7 +928,7 @@ public class DeliveryDetailsDAO extends BaseDAO implements IDeliveryDetailsDAO {
 	private static String FETCH_UNASSIGNED_RESERVATIONS_QUERY_EX="SELECT  R.ID, R.ORDER_ID, R.CUSTOMER_ID, R.STATUS_CODE, R.TIMESLOT_ID, R.ZONE_ID, R.EXPIRATION_DATETIME, R.TYPE, R.ADDRESS_ID, "+
 	" T.BASE_DATE,to_char(T.CUTOFF_TIME, 'HH:MI AM') CUTOFF_TIME,T.START_TIME STIME, T.END_TIME ETIME, Z.ZONE_CODE,R.UNASSIGNED_DATETIME, R.UNASSIGNED_ACTION, R.IN_UPS, R.ORDER_SIZE, R.SERVICE_TIME, R.RESERVED_ORDER_SIZE" +
 	", R.RESERVED_SERVICE_TIME, R.UPDATE_STATUS, R.METRICS_SOURCE " +
-	", R.NUM_CARTONS , R.NUM_FREEZERS , R.NUM_CASES, " +
+	", R.NUM_CARTONS , R.NUM_FREEZERS , R.NUM_CASES,  R.CLASS, " +
 	" A.ID as ADDRESS, A.FIRST_NAME,A.LAST_NAME,A.ADDRESS1,A.ADDRESS2,A.APARTMENT,A.CITY,A.STATE,A.ZIP,A.COUNTRY, "+
 	" A.PHONE,A.PHONE_EXT,A.DELIVERY_INSTRUCTIONS,A.SCRUBBED_ADDRESS,A.ALT_DEST,A.ALT_FIRST_NAME, "+
 	" A.ALT_LAST_NAME,A.ALT_APARTMENT,A.ALT_PHONE,A.ALT_PHONE_EXT,A.LONGITUDE,A.LATITUDE,A.SERVICE_TYPE, "+
@@ -970,6 +978,7 @@ public class DeliveryDetailsDAO extends BaseDAO implements IDeliveryDetailsDAO {
 							, rs.getBigDecimal("NUM_CARTONS") != null ? new Long(rs.getLong("NUM_CARTONS")) : null
 							, rs.getBigDecimal("NUM_FREEZERS") != null ? new Long(rs.getLong("NUM_FREEZERS")) : null
 							, rs.getBigDecimal("NUM_CASES") != null ? new Long(rs.getLong("NUM_CASES")) : null
+							, EnumReservationClass.getEnum(rs.getString("CLASS"))
 							, EnumRoutingUpdateStatus.getEnum(rs.getString("UPDATE_STATUS"))
 							, EnumOrderMetricsSource.getEnum(rs.getString("METRICS_SOURCE")));
 							
@@ -1083,7 +1092,7 @@ public class DeliveryDetailsDAO extends BaseDAO implements IDeliveryDetailsDAO {
 		query.append(GET_TIMESLOTSBYDATEANDZONE_QRY);
 		
 		if(cutOffTime != null) {
-			query.append(" and t.cutoff_time = ?");
+			query.append(" and ((t.premium_cutoff_Time is not null and t.premium_cutoff_Time = ?) or (t.premium_cutoff_Time is null and t.CUTOFF_TIME = ?))");
 		}
 		query.append(" order by t.base_date, z.zone_code, t.start_time");
 		

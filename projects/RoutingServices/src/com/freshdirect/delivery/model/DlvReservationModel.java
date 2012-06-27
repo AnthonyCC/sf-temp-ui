@@ -164,7 +164,7 @@ public class DlvReservationModel extends ModelSupport {
 		String zoneId,
 		EnumReservationType type, String addressId, Date deliveryDate, String zoneCode/*,Date unassignedDateTime*/,RoutingActivityType unassignedActivityType,boolean inUPS,
 		Double overrideOrderSize, Double overrideServiceTime, Double reservedOrderSize, Double reservedServiceTime, 
-		Long noOfCartons, Long noOfCases, Long noOfFreezers, EnumRoutingUpdateStatus status, EnumOrderMetricsSource metricsSource) {
+		Long noOfCartons, Long noOfCases, Long noOfFreezers,EnumReservationClass rsvClass,  EnumRoutingUpdateStatus status, EnumOrderMetricsSource metricsSource) {
 			
 		this.orderId = orderId;
 		this.customerId = customerId;
@@ -191,6 +191,8 @@ public class DlvReservationModel extends ModelSupport {
 		this.noOfCartons =  noOfCartons;
 		this.noOfCases =  noOfCases;
 		this.noOfFreezers =  noOfFreezers;
+		
+		this.rsvClass = rsvClass;
 	}
 
 	public DlvReservationModel(
@@ -203,12 +205,12 @@ public class DlvReservationModel extends ModelSupport {
 		String zoneId,
 		com.freshdirect.delivery.EnumReservationType type2, String addressId, Date deliveryDate, String zoneCode/*,Date unassignedDateTime*/,RoutingActivityType unassignedActivityType,boolean inUPS, 
 		Double overrideOrderSize, Double overrideServiceTime, Double reservedOrderSize, Double reservedServiceTime,
-		Long noOfCartons, Long noOfCases, Long noOfFreezers, EnumRoutingUpdateStatus status, EnumOrderMetricsSource metricsSource) {
+		Long noOfCartons, Long noOfCases, Long noOfFreezers, EnumReservationClass rsvClass, EnumRoutingUpdateStatus status, EnumOrderMetricsSource metricsSource) {
 			
 		this(orderId, customerId, statusCode, expirationDateTime, timeslotId, zoneId, type2, addressId,deliveryDate
 						,zoneCode/*,unassignedDateTime*/,unassignedActivityType,inUPS
 						, overrideOrderSize, overrideServiceTime, reservedOrderSize, reservedServiceTime,
-						noOfCartons, noOfCases, noOfFreezers, status, metricsSource);
+						noOfCartons, noOfCases, noOfFreezers, rsvClass, status, metricsSource);
 		this.setPK(pk);
 
 	}

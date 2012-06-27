@@ -397,6 +397,8 @@ public class DlvManagerSessionBean extends GatewaySessionBeanSupport {
 			ps.setString(14, (timeslotModel.isPremiumSlot() && chefsTable ? EnumReservationClass.PREMIUMCT.getName(): (timeslotModel.isPremiumSlot() && !chefsTable)?EnumReservationClass.PREMIUM.getName():""));
 
 			ps.executeUpdate();
+			EnumReservationClass rsvClass = (timeslotModel.isPremiumSlot() && chefsTable) ? EnumReservationClass.PREMIUMCT: (timeslotModel.isPremiumSlot() && !chefsTable)?EnumReservationClass.PREMIUM:null;
+			
 			DlvReservationModel rsv = new DlvReservationModel(
 				new PrimaryKey(newId),
 				"x" + newId,
@@ -408,11 +410,7 @@ public class DlvManagerSessionBean extends GatewaySessionBeanSupport {
 				type,
 				address.getId(),
 				timeslotModel.getBaseDate(),
-				timeslotModel.getZoneCode(),null,false,null, null, null, null, null, null, null, null, null);
-
-			EnumReservationClass rsvClass = (timeslotModel.isPremiumSlot() && chefsTable) ? EnumReservationClass.PREMIUMCT: (timeslotModel.isPremiumSlot() && !chefsTable)?EnumReservationClass.PREMIUM:null;
-			rsv.setRsvClass(rsvClass);
-			
+				timeslotModel.getZoneCode(),null,false,null, null, null, null, null, null, null, rsvClass, null, null);
 			return rsv;
 		} catch (SQLException se) {
 			this.getSessionContext().setRollbackOnly();
@@ -549,7 +547,7 @@ public class DlvManagerSessionBean extends GatewaySessionBeanSupport {
 	private static final String RESERVATION_BY_ID="SELECT R.ID, R.ORDER_ID, R.CUSTOMER_ID, R.STATUS_CODE, R.TIMESLOT_ID, R.ZONE_ID" +
 			", R.EXPIRATION_DATETIME, R.TYPE, R.ADDRESS_ID,T.BASE_DATE, Z.ZONE_CODE,R.UNASSIGNED_DATETIME, R.UNASSIGNED_ACTION" +
 			", R.IN_UPS, R.ORDER_SIZE, R.SERVICE_TIME, R.RESERVED_ORDER_SIZE, R.RESERVED_SERVICE_TIME" +
-			", R.UPDATE_STATUS, R.METRICS_SOURCE, R.NUM_CARTONS , R.NUM_FREEZERS , R.NUM_CASES  FROM DLV.RESERVATION R, "+
+			", R.UPDATE_STATUS, R.METRICS_SOURCE, R.NUM_CARTONS , R.NUM_FREEZERS , R.NUM_CASES, R.CLASS  FROM DLV.RESERVATION R, "+
             " DLV.TIMESLOT T, DLV.ZONE Z WHERE R.TIMESLOT_ID=T.ID AND R.ZONE_ID=Z.ID AND R.ID=?";
 
 	private DlvReservationModel getReservation(Connection con, String rsvId) throws SQLException {
@@ -575,6 +573,7 @@ public class DlvManagerSessionBean extends GatewaySessionBeanSupport {
 			, rs.getBigDecimal("NUM_CARTONS") != null ? new Long(rs.getLong("NUM_CARTONS")) : null
 			, rs.getBigDecimal("NUM_FREEZERS") != null ? new Long(rs.getLong("NUM_FREEZERS")) : null
 			, rs.getBigDecimal("NUM_CASES") != null ? new Long(rs.getLong("NUM_CASES")) : null
+			, EnumReservationClass.getEnum(rs.getString("CLASS"))
 			, EnumRoutingUpdateStatus.getEnum(rs.getString("UPDATE_STATUS"))
 			, EnumOrderMetricsSource.getEnum(rs.getString("METRICS_SOURCE")));
 
