@@ -1026,6 +1026,7 @@ function doOverlayWindow(olURL) {
 							}
 						},
                         afterLoad: function() {
+                            			$('MB_content').style.overflowX = 'hidden';
                                         $('MB_frame').style.border = '1px solid #CCCCCC';
                                         $('MB_header').style.border = '0px solid #CCCCCC';
                                         $('MB_header').style.display = 'block';
@@ -1037,7 +1038,7 @@ function doOverlayWindow(olURL) {
 
                                         ccSettings.topColour = "#ffffff";
                                         ccSettings.bottomColour = "#ffffff";
-                                        curvyCornersHelper('MB_frame', ccSettings);					
+                                        curvyCornersHelper('MB_frame', ccSettings);
 							
                         },
                         afterHide: function() { 
