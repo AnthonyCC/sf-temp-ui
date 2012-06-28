@@ -497,10 +497,10 @@ public class FDDeliveryManager {
 		}
 	}
 
-	public FDTimeslot getTimeslotsById(String timeslotId) throws FDResourceException {
+	public FDTimeslot getTimeslotsById(String timeslotId, boolean checkPremium) throws FDResourceException {
 		try {
 			DlvManagerSB sb = getDlvManagerHome().create();
-			DlvTimeslotModel model = sb.getTimeslotById(timeslotId);
+			DlvTimeslotModel model = sb.getTimeslotById(timeslotId, checkPremium);
 			return new FDTimeslot(model);
 		} catch (RemoteException re) {
 			throw new FDResourceException(re);
@@ -661,7 +661,7 @@ public class FDDeliveryManager {
 
 			List<FDReservation> rsvLst = new ArrayList<FDReservation>();
 			for ( DlvReservationModel dlvRsv : reservations ) {
-				FDTimeslot timeslot = this.getTimeslotsById(dlvRsv.getTimeslotId());
+				FDTimeslot timeslot = this.getTimeslotsById(dlvRsv.getTimeslotId(), dlvRsv.isPremium());
 				rsvLst.add(new FDReservation(
 					dlvRsv.getPK(),
 					timeslot,
@@ -759,7 +759,7 @@ public class FDDeliveryManager {
 		try {
 			DlvManagerSB sb = getDlvManagerHome().create();
 			DlvReservationModel dlvRsv = sb.getReservation(rsvId);
-			FDTimeslot timeslot = this.getTimeslotsById(dlvRsv.getTimeslotId());
+			FDTimeslot timeslot = this.getTimeslotsById(dlvRsv.getTimeslotId(), dlvRsv.isPremium());
 
 			FDReservation fdRes = new FDReservation(dlvRsv.getPK(), timeslot, dlvRsv.getExpirationDateTime(), dlvRsv
 				.getReservationType(), dlvRsv.getCustomerId(), dlvRsv.getAddressId(), dlvRsv.isChefsTable(),dlvRsv.isUnassigned()

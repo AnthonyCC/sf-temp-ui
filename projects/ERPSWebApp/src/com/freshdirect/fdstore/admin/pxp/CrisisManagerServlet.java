@@ -380,7 +380,7 @@ public class CrisisManagerServlet extends HttpServlet {
 			TimeslotEventModel event = new TimeslotEventModel(EnumTransactionSource.SYSTEM.getCode(), (cart != null) ? cart.isDlvPassApplied() : false, (cart != null) ? cart.getDeliverySurcharge() : 0.00,
 					(cart != null) ? cart.isDeliveryChargeWaived() : false, Util.isZoneCtActive(zoneId));
 		
-			FDTimeslot timeslot = FDDeliveryManager.getInstance().getTimeslotsById(rsvModel.getTimeSlotId());
+			FDTimeslot timeslot = FDDeliveryManager.getInstance().getTimeslotsById(rsvModel.getTimeSlotId(), true);
 			
 			if(userReservation != null){
 				ErpAddressModel address = getAddress(user.getIdentity(),userReservation.getAddressId());

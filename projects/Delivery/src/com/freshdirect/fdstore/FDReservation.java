@@ -127,4 +127,9 @@ public class FDReservation extends ModelSupport {
 	public EnumReservationClass getRsvClass() {
 		return rsvClass;
 	}
+	
+	public boolean isPremium(){
+		return EnumReservationClass.PREMIUM.equals(this.getRsvClass())||EnumReservationClass.PREMIUMCT.equals(this.getRsvClass());
+	}
+
 }

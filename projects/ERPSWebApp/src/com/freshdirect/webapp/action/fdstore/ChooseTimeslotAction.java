@@ -63,7 +63,7 @@ public class ChooseTimeslotAction extends WebActionSupport {
 		}
 		boolean chefsTable = user.isChefsTable() || "true".equals(request.getParameter("chefstable"));
 
-		FDTimeslot timeSlot = FDDeliveryManager.getInstance().getTimeslotsById(deliveryTimeSlotId);
+		FDTimeslot timeSlot = FDDeliveryManager.getInstance().getTimeslotsById(deliveryTimeSlotId, true);
 		
         String ctDeliveryProfile=CTDeliveryCapacityLogic.isEligible(user,timeSlot);
         if(timeSlot.getBaseAvailable()>0||chefsTable)

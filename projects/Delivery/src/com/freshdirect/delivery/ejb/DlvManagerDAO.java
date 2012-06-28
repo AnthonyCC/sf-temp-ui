@@ -460,7 +460,7 @@ public class DlvManagerDAO {
 			+ " from dlv.timeslot ts, dlv.zone z, transp.zone ta, transp.trn_area a, dlv.reservation r "
 			+ "where ts.id = ? AND ts.ZONE_ID = z.ID and z.ZONE_CODE = ta.ZONE_CODE and ta.AREA = a.CODE AND ts.id=r.TIMESLOT_ID(+)";
 
-	public static DlvTimeslotModel getTimeslotById(Connection conn, String timeslotId) throws SQLException, FinderException {
+	public static DlvTimeslotModel getTimeslotById(Connection conn, String timeslotId, boolean checkPremium) throws SQLException, FinderException {
 		PreparedStatement ps = conn.prepareStatement(TIMESLOT_BY_ID);
 		ps.setInt(1, EnumReservationStatus.CANCELED.getCode());
 		ps.setInt(2, EnumReservationStatus.EXPIRED.getCode());
@@ -475,7 +475,7 @@ public class DlvManagerDAO {
 		ResultSet rs = ps.executeQuery();
 
 		if (rs.next()) {
-			return getTimeslot(rs, true);
+			return getTimeslot(rs, checkPremium);
 		} else {
 			throw new FinderException("No timeslot found for timeslotId: " + timeslotId);
 		}

@@ -183,7 +183,7 @@
 				              <ec:column property="preferredRunTimeInfo" title="Run Time" />
 				              <ec:column property="maxRunTimeInfo" title="Max Time" />
 				              <ec:column property="noOfResources" title="Resources" />
-				              <ec:column property="cutOffTime" title="CutOff" />
+				              <ec:column property="cutOffTime" title="Handoff Time" />
 				              <ec:column property="source" title="Source" />				              
 				              <ec:column cell="waveinstancestatus" property="isInSync" title="Status"/>
 				              <ec:column cell="positive" property="force" title="Force"/>

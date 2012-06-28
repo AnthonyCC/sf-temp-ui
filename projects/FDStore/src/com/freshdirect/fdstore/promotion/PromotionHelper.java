@@ -135,7 +135,7 @@ public class PromotionHelper {
 					if(timeSlotId.startsWith("f_")) {
 						timeSlotId = timeSlotId.replaceAll("f_", "");
 					}
-					FDTimeslot timeSlot = FDDeliveryManager.getInstance().getTimeslotsById(timeSlotId);
+					FDTimeslot timeSlot = FDDeliveryManager.getInstance().getTimeslotsById(timeSlotId, true);
 					if(null != timeSlot){
 						PromotionApplicatorI app = promotion.getApplicator();
 						if (app != null) {

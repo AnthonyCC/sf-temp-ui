@@ -198,7 +198,7 @@ public class CheckoutControllerTag extends AbstractControllerTag {
 
 				if (so != null && EnumCheckoutMode.MODIFY_SO_TMPL.equals(mode)) {
 					final String tsId = request.getParameter("deliveryTimeslotId");
-					final FDTimeslot ts = FDDeliveryManager.getInstance().getTimeslotsById(tsId);
+					final FDTimeslot ts = FDDeliveryManager.getInstance().getTimeslotsById(tsId, true);
 					if (ts != null) {
 						// let's extract date and time interval
 						StandingOrderHelper.DeliveryTime dt = new StandingOrderHelper.DeliveryTime(ts);

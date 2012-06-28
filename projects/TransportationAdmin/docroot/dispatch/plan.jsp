@@ -93,7 +93,7 @@
               <ec:column  filterable="true" property="runners"  cell="com.freshdirect.transadmin.web.ui.FDPlanResourceCell" title="Runner" alias="runners"/>
               <ec:column property="sequence"  width="4px" title="Rank"/>
               <ec:column property="open"  width="4px" title="Open"/>
-              <ec:column cell="date" format="hh:mm aaa" alias="cutOffTime" property="cutOffTimeEx" title="CutOff"/>
+              <ec:column cell="date" format="hh:mm aaa" alias="cutOffTime" property="cutOffTimeEx" title="Handoff Time"/>
             </ec:row>
           </ec:table>
        </form>

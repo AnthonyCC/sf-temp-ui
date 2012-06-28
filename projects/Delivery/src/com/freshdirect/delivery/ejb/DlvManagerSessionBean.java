@@ -455,7 +455,7 @@ public class DlvManagerSessionBean extends GatewaySessionBeanSupport {
 		
 			if(!(eventType==EventType.GET_TIMESLOT || eventType==EventType.CHECK_TIMESLOT ) && responseTime>0)
 			{
-				IDeliverySlot slot =  RoutingUtil.getDeliverySlot(getTimeslotById(reservation.getTimeslotId()));
+				IDeliverySlot slot =  RoutingUtil.getDeliverySlot(getTimeslotById(reservation.getTimeslotId(), reservation.isPremium()));
 				TimeslotEventDetailModel eventD = new TimeslotEventDetailModel();
 				List<TimeslotEventDetailModel> eventDL = new ArrayList<TimeslotEventDetailModel>();
 				
@@ -912,12 +912,12 @@ public class DlvManagerSessionBean extends GatewaySessionBeanSupport {
 
 	}
 
-	public DlvTimeslotModel getTimeslotById(String timeslotId) throws FinderException {
+	public DlvTimeslotModel getTimeslotById(String timeslotId, boolean checkPremium) throws FinderException {
 
 		Connection conn = null;
 		try {
 			conn = getConnection();
-			return DlvManagerDAO.getTimeslotById(conn, timeslotId);
+			return DlvManagerDAO.getTimeslotById(conn, timeslotId, checkPremium);
 		} catch (SQLException e) {
 			throw new EJBException(e);
 		} finally {

@@ -313,5 +313,9 @@ public class DlvReservationModel extends ModelSupport {
 	public void setRsvClass(EnumReservationClass rsvClass) {
 		this.rsvClass = rsvClass;
 	}
+	
+	public boolean isPremium(){
+		return EnumReservationClass.PREMIUM.equals(this.getRsvClass())||EnumReservationClass.PREMIUMCT.equals(this.getRsvClass());
+	}
 
 }

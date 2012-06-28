@@ -5,7 +5,7 @@
 <tmpl:insert template='/common/sitelayout.jsp'>
 
 <% 
-	String pageTitle = "Cut Off";
+	String pageTitle = "Handoff Time";
 %>
 
     <tmpl:put name='title' direct='true'> Routing : <%=pageTitle%></tmpl:put>
@@ -51,7 +51,7 @@
 							  <ec:column property="name" title="Name"/>
 							  <ec:column property="description" title="Description"/>
 							  <ec:column property="sequenceNo" title="Sequence No"/>  
-							  <ec:column property="cutOffTime" title="Cut Off Time"/>            
+							  <ec:column property="cutOffTime" title="Handoff Time"/>            
 							</ec:row>
 						  </ec:table>
 					 </form>

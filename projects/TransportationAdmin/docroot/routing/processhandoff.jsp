@@ -73,7 +73,7 @@
                         <td>
                           <spring:bind path="command.cutOff">
                             <select id="<c:out value="${status.expression}"/>" name="<c:out value="${status.expression}"/>">
-                              <option value="">--Please Select Cut Off</option> 
+                              <option value="">--Please Select Handoff Time</option> 
                               <c:forEach var="cutOffRow" items="${cutoffs}">                             
                                   <c:choose>
                                     <c:when test="${status.value == cutOffRow.cutOffId}" > 

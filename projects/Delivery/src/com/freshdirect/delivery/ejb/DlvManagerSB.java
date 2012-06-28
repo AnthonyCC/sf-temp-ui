@@ -80,7 +80,7 @@ public interface DlvManagerSB extends EJBObject {
     public DlvZoneModel findZoneById(String zoneId) throws FinderException, RemoteException;
 	public DlvReservationModel getReservation(String reservationId) throws FinderException, RemoteException;
 	
-    public DlvTimeslotModel getTimeslotById(String timeslotId) throws FinderException, RemoteException;
+    public DlvTimeslotModel getTimeslotById(String timeslotId, boolean checkPremium) throws FinderException, RemoteException;
 	public List<DlvZoneModel> getAllZonesByRegion(String regionId)throws RemoteException;
 	public DlvZoneInfoModel getZoneInfo(AddressModel address, Date date) throws InvalidAddressException, RemoteException;
 	public List<DlvZoneCutoffInfo> getCutoffInfo(String zoneCode, Date day) throws RemoteException;

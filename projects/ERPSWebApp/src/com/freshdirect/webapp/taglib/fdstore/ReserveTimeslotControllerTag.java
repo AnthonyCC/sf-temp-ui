@@ -55,7 +55,7 @@ public class ReserveTimeslotControllerTag extends AbstractControllerTag {
 				if (actionResult.isFailure()) {
 					return true;
 				}
-				FDTimeslot timeslot = FDDeliveryManager.getInstance().getTimeslotsById(timeslotId);
+				FDTimeslot timeslot = FDDeliveryManager.getInstance().getTimeslotsById(timeslotId, true);
 				
 				if(reservation != null && !reservation.isAnonymous()){
 					this.changeReservation(user, reservation, timeslot, event);
@@ -71,7 +71,7 @@ public class ReserveTimeslotControllerTag extends AbstractControllerTag {
 				if(actionResult.isFailure()){
 					return true;
 				}
-				FDTimeslot timeslot = FDDeliveryManager.getInstance().getTimeslotsById(timeslotId);
+				FDTimeslot timeslot = FDDeliveryManager.getInstance().getTimeslotsById(timeslotId, true);
 				FDCustomerManager.updateWeeklyReservation(user.getIdentity(), timeslot, addressId, AccountActivityUtil.getActionInfo(session));
 			}
 
@@ -85,7 +85,7 @@ public class ReserveTimeslotControllerTag extends AbstractControllerTag {
 					ErpAddressModel address=getAddress(user.getIdentity(),reservation.getAddressId());
 					FDDeliveryManager.getInstance().removeReservation(reservation.getPK().getId(),address, event);
 				}
-				FDTimeslot timeslot = FDDeliveryManager.getInstance().getTimeslotsById(timeslotId);
+				FDTimeslot timeslot = FDDeliveryManager.getInstance().getTimeslotsById(timeslotId, true);
 				this.reserveTimeslot(user, timeslot, AccountActivityUtil.getActionInfo(session), event);
 				session.setAttribute(SessionName.USER, user);
 

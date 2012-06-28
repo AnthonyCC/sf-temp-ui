@@ -234,7 +234,7 @@ public class UnassignedReservationCronRunner extends BaseReservationCronRunner {
 
     		if(address != null) {
 	    		RoutingActivityType unassignedAction = reservation.getUnassignedActivityType();
-	    		FDTimeslot _timeslot = new FDTimeslot(dlvManager.getTimeslotById(reservation.getTimeslotId()));
+	    		FDTimeslot _timeslot = new FDTimeslot(dlvManager.getTimeslotById(reservation.getTimeslotId(), reservation.isPremium()));
 	    		if(unassignedAction != null) {
 		    		if(RoutingActivityType.RESERVE_TIMESLOT.equals(unassignedAction)) {
 		    			if(_timeslot != null) {
