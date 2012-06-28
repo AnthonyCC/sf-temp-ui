@@ -640,7 +640,6 @@ public class RoutingDataEncoder {
 		window.setStart(getTime(slot.getStartTime()));
 		window.setEnd(getTime(slot.getStopTime()));
 		window.setWaveCode(slot.getWaveCode());
-		System.err.println("windowbase "+slot.getZoneCode()+" "+slot.getWaveCode());
 		
 		return window;
 	}
@@ -651,7 +650,7 @@ public class RoutingDataEncoder {
 		window.setStartTime(getTime(slot.getStartTime()));
 		window.setStopTime(getTime(slot.getStopTime()));
 		window.setWaveCode(slot.getWaveCode());
-		System.err.println("encodeDeliveryWindow "+slot.getZoneCode()+" "+slot.getWaveCode());
+		
 		return window;
 	}
 	
@@ -781,7 +780,6 @@ public class RoutingDataEncoder {
 		attributes.setNumberOfVehicles(waveInstance.getNoOfResources());
 		attributes.setStartTime(getTime(waveInstance.getWaveStartTime().getAsDate()));		
 		attributes.setWaveCode(RoutingDateUtil.getWaveCode(waveInstance.getCutOffTime().getAsDate()));	
-		System.err.println("encodeDeliveryWaveAttributes "+attributes.getWaveCode()+" "+waveInstance.getCutOffTime()+ " "+waveInstance.toString());
 		
 		attributes.setAdvancedRushHour(waveInstance.isAdvancedRushHour());
 		attributes.setCapacityCheck1(waveInstance.isCapacityCheck1());

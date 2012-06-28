@@ -337,14 +337,14 @@ public class TimeslotLogic {
 
 			boolean availCapacity = getAvailableCapacity(
 					timeslot.getDlvTimeslot(), new Date(), pageType_ct,
-					tempZoneModel.getCtReleaseTime());
+					timeslot.getDlvTimeslot().isPremiumSlot()?tempZoneModel.getPremiumCtReleaseTime():tempZoneModel.getCtReleaseTime());
 			boolean normalAvailCapacity = availCapacity;
 
 			if (TimeslotLogic.PAGE_CHEFSTABLE == pageType_ct && !isCTCapacity) {
 				normalAvailCapacity = getAvailableCapacity(
 						timeslot.getDlvTimeslot(), new Date(),
 						TimeslotLogic.PAGE_NORMAL,
-						tempZoneModel.getCtReleaseTime());
+						timeslot.getDlvTimeslot().isPremiumSlot()?tempZoneModel.getPremiumCtReleaseTime():tempZoneModel.getCtReleaseTime());
 			}
 
 			timeslot.setNormalAvailCapacity(normalAvailCapacity);

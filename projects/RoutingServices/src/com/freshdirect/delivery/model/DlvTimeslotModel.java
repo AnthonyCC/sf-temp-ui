@@ -559,7 +559,7 @@ public class DlvTimeslotModel extends DlvShiftTimeslotModel {
 	}
 	
 	public String toString() {
-		return "DlvTimesotModel[startTime:"+super.getStartTime()+" endTime:"+super.getEndTime()+"capacity:"+this.getCapacity()+" ctCapacity:"+this.getChefsTableCapacity()+" baseAlloc:"+this.getBaseAllocation()+" ctAlloc:"+this.getChefsTableAllocation()+": "+this.getPK()+"]";
+		return "DlvTimesotModel[startTime:"+super.getStartTime()+" endTime:"+super.getEndTime()+" capacity:"+this.getCapacity()+" ctCapacity:"+this.getChefsTableCapacity()+" baseAlloc:"+this.getBaseAllocation()+" ctAlloc:"+this.getChefsTableAllocation()+": "+this.getPK()+"]";
 	}
 	
 
