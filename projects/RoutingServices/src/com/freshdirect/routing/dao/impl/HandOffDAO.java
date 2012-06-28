@@ -1259,18 +1259,11 @@ public class HandOffDAO extends BaseDAO implements IHandOffDAO   {
 
 		final Map<EnumSaleStatus, Integer> result = new HashMap<EnumSaleStatus, Integer>();
 		
-		final boolean sameDay = checkIfSameDayCutoff(deliveryDate, cutOff);
 		final StringBuffer cutoffQuery = new StringBuffer();final StringBuffer cutoffsbyQuery = new StringBuffer();
-		if(sameDay)
-		{
-			cutoffQuery.append(GET_ORDERSTATSBY_DATE_CUTOFF).append(" and to_char(ts.premium_cutoff_time, 'HH:MI AM') = to_char(?, 'HH:MI AM') group by s.status");
-			cutoffsbyQuery.append(GET_ORDERSTATSBY_DATE_CUTOFFSTANDBY).append(" and to_char(ts.premium_cutoff_time, 'HH:MI AM') = to_char(?, 'HH:MI AM') group by s.status");
-		}
-		else
-		{
-			cutoffQuery.append(GET_ORDERSTATSBY_DATE_CUTOFF).append("  and to_char(di.cutofftime, 'HH:MI AM')=  to_char(?, 'HH:MI AM') group by s.status");
-			cutoffsbyQuery.append(GET_ORDERSTATSBY_DATE_CUTOFFSTANDBY).append("  and to_char(di.cutofftime, 'HH:MI AM')=  to_char(?, 'HH:MI AM') group by s.status");
-		}
+		
+		cutoffQuery.append(GET_ORDERSTATSBY_DATE_CUTOFF).append(" and ((ts.premium_cutoff_time is not null and to_char(ts.premium_cutoff_time, 'HH:MI AM') = to_char(?, 'HH:MI AM')) or (ts.premium_cutoff_time is null and to_char(di.cutofftime, 'HH:MI AM')=  to_char(?, 'HH:MI AM'))) group by s.status");
+		cutoffsbyQuery.append(GET_ORDERSTATSBY_DATE_CUTOFFSTANDBY).append(" and ((ts.premium_cutoff_time is not null and to_char(ts.premium_cutoff_time, 'HH:MI AM') = to_char(?, 'HH:MI AM')) or (ts.premium_cutoff_time is null and to_char(di.cutofftime, 'HH:MI AM')=  to_char(?, 'HH:MI AM'))) group by s.status");
+		
 		
 		PreparedStatementCreator creator = new PreparedStatementCreator() {
 			public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {	
@@ -1282,6 +1275,7 @@ public class HandOffDAO extends BaseDAO implements IHandOffDAO   {
 					connection.prepareStatement(query);
 				ps.setDate(1, new java.sql.Date(deliveryDate.getTime()));
 				ps.setTimestamp(2, new Timestamp(cutOff.getTime()));
+				ps.setTimestamp(3, new Timestamp(cutOff.getTime()));
 				return ps;
 			}  
 		};
@@ -1307,13 +1301,13 @@ public class HandOffDAO extends BaseDAO implements IHandOffDAO   {
 		final StringBuffer cutoffQuery = new StringBuffer();final StringBuffer cutoffsbyQuery = new StringBuffer();
 		if(sameDay)
 		{
-			cutoffQuery.append(GET_ORDERSBY_DATE_CUTOFF).append(" and to_char(ts.premium_cutoff_time, 'HH:MI AM') = to_char(?, 'HH:MI AM')");
-			cutoffsbyQuery.append(GET_ORDERSBY_DATE_CUTOFFSTANDBY).append(" and to_char(ts.premium_cutoff_time, 'HH:MI AM') = to_char(?, 'HH:MI AM')");
+			cutoffQuery.append(GET_ORDERSBY_DATE_CUTOFF).append(" and ((ts.premium_cutoff_time is not null and to_char(ts.premium_cutoff_time, 'HH:MI AM') = to_char(?, 'HH:MI AM')) or (ts.premium_cutoff_time is null and to_char(di.cutofftime, 'HH:MI AM')=  to_char(?, 'HH:MI AM'))) ");
+			cutoffsbyQuery.append(GET_ORDERSBY_DATE_CUTOFFSTANDBY).append(" and ((ts.premium_cutoff_time is not null and to_char(ts.premium_cutoff_time, 'HH:MI AM') = to_char(?, 'HH:MI AM')) or (ts.premium_cutoff_time is null and to_char(di.cutofftime, 'HH:MI AM')=  to_char(?, 'HH:MI AM'))) ");
 		}
 		else
 		{
-			cutoffQuery.append(GET_ORDERSBY_DATE_CUTOFF).append(" and to_char(di.cutofftime, 'HH:MI AM')=  to_char(?, 'HH:MI AM')");
-			cutoffsbyQuery.append(GET_ORDERSBY_DATE_CUTOFFSTANDBY).append(" and to_char(di.cutofftime, 'HH:MI AM')=  to_char(?, 'HH:MI AM')");
+			cutoffQuery.append(GET_ORDERSBY_DATE_CUTOFF).append(" and ((ts.premium_cutoff_time is not null and to_char(ts.premium_cutoff_time, 'HH:MI AM') = to_char(?, 'HH:MI AM')) or (ts.premium_cutoff_time is null and to_char(di.cutofftime, 'HH:MI AM')=  to_char(?, 'HH:MI AM'))) ");
+			cutoffsbyQuery.append(GET_ORDERSBY_DATE_CUTOFFSTANDBY).append(" and ((ts.premium_cutoff_time is not null and to_char(ts.premium_cutoff_time, 'HH:MI AM') = to_char(?, 'HH:MI AM')) or (ts.premium_cutoff_time is null and to_char(di.cutofftime, 'HH:MI AM')=  to_char(?, 'HH:MI AM'))) ");
 		}
 		
 		PreparedStatementCreator creator = new PreparedStatementCreator() {
@@ -1327,6 +1321,7 @@ public class HandOffDAO extends BaseDAO implements IHandOffDAO   {
 				
 				ps.setDate(1, new java.sql.Date(deliveryDate.getTime()));
 				ps.setTimestamp(2, new Timestamp(cutOff.getTime()));
+				ps.setTimestamp(3, new Timestamp(cutOff.getTime()));
 				return ps;
 			}  
 		};
