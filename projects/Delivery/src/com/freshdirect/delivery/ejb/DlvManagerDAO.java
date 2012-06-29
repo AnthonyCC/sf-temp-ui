@@ -1368,8 +1368,8 @@ public class DlvManagerDAO {
 	{
 		if(_date.equals(startDate.getTime()))
 		{
-		updateQ.append(" and (( premium_cutoff_time is null and to_date(to_char(t.base_date-1, 'MM/DD/YY ') || to_char(t.cutoff_time, 'HH:MI:SS AM'), 'MM/DD/YY HH:MI:SS AM') > SYSDATE+1/96 ) or" +
-		" (premium_cutoff_time is not null and to_date(to_char(t.base_date, 'MM/DD/YY ') || to_char(t.premium_cutoff_time, 'HH:MI:SS AM'), 'MM/DD/YY HH:MI:SS AM') > SYSDATE+1/96 )) ");
+		updateQ.append(" and (( t.premium_cutoff_time is null and to_date(to_char(t.base_date-1, 'MM/DD/YY ') || to_char(t.cutoff_time, 'HH:MI:SS AM'), 'MM/DD/YY HH:MI:SS AM') > SYSDATE+1/96 ) or" +
+		" (t.premium_cutoff_time is not null and to_date(to_char(t.base_date, 'MM/DD/YY ') || to_char(t.premium_cutoff_time, 'HH:MI:SS AM'), 'MM/DD/YY HH:MI:SS AM') > SYSDATE+1/96 )) ");
 		}
 		
 		updateQ.append(" ORDER BY R.unassigned_action, R.UPDATE_STATUS NULLS LAST");

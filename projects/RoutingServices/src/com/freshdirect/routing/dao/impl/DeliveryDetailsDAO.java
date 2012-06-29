@@ -175,8 +175,8 @@ public class DeliveryDetailsDAO extends BaseDAO implements IDeliveryDetailsDAO {
 		+ 	"or rd.start_date >= (select max(start_date) from dlv.region_data where start_date <= ? and region_id = r.id)) "
 		+ "and t.ZONE_ID = z.ID and z.ZONE_CODE = ta.ZONE_CODE and ta.AREA = a.CODE and t.base_date >= rd.start_date "
 		+ "and t.base_date >= ? and t.base_date < ? "
-		+ "and ((t.premium_cutoff_Time is not null and to_date(to_char(t.base_date-1, 'MM/DD/YY ') || to_char(t.cutoff_time, 'HH:MI:SS AM'), 'MM/DD/YY HH:MI:SS AM') > SYSDATE) or " +
-		" (t.premium_cutoff_Time is null and to_date(to_char(t.base_date, 'MM/DD/YY ') || to_char(t.cutoff_time, 'HH:MI:SS AM'), 'MM/DD/YY HH:MI:SS AM') > SYSDATE)) ";
+		+ "and ((t.premium_cutoff_Time is null and to_date(to_char(t.base_date-1, 'MM/DD/YY ') || to_char(t.cutoff_time, 'HH:MI:SS AM'), 'MM/DD/YY HH:MI:SS AM') > SYSDATE) or " +
+		" (t.premium_cutoff_Time is not null and to_date(to_char(t.base_date, 'MM/DD/YY ') || to_char(t.cutoff_time, 'HH:MI:SS AM'), 'MM/DD/YY HH:MI:SS AM') > SYSDATE)) ";
 	
 	private static final String TIMESLOT_BY_ID =
 			"select distinct ts.id, ts.base_date, ts.start_time, ts.end_time, ts.cutoff_time, ts.premium_cutoff_time,ts.status, ts.zone_id, ts.capacity, ts.ct_capacity" +
@@ -870,7 +870,8 @@ public class DeliveryDetailsDAO extends BaseDAO implements IDeliveryDetailsDAO {
 	" FROM DLV.RESERVATION R, DLV.TIMESLOT T, DLV.ZONE Z,CUST.ADDRESS A "+
 	" WHERE R.ADDRESS_ID=A.ID(+) AND R.TIMESLOT_ID=T.ID AND R.ZONE_ID=Z.ID AND t.BASE_DATE=TRUNC(?) " +
 	" AND (unassigned_action IS NOT NULL OR (UPDATE_STATUS IS NOT NULL AND UPDATE_STATUS <> 'SUS')) " +
-	" AND to_char(t.cutoff_time, 'HH:MI AM') = to_char(?, 'HH:MI AM') ";
+	" AND ((t.premium_cutoff_time is null and to_char(t.cutoff_time, 'HH:MI AM') = to_char(?, 'HH:MI AM')) or " +
+	"(t.premium_cutoff_time is not null and to_char(t.premium_cutoff_time, 'HH:MI AM') = to_char(?, 'HH:MI AM'))) ";
 	
 	public List<UnassignedDlvReservationModel> getUnassignedReservations(final Date deliveryDate, final Date cutOff) throws SQLException {
 	
@@ -882,6 +883,7 @@ public class DeliveryDetailsDAO extends BaseDAO implements IDeliveryDetailsDAO {
 					connection.prepareStatement(FETCH_UNASSIGNED_RESERVATIONS_QUERY);
 				ps.setDate(1, new java.sql.Date(deliveryDate.getTime()));
 				ps.setTimestamp(2, new java.sql.Timestamp(cutOff.getTime()));
+				ps.setTimestamp(3, new java.sql.Timestamp(cutOff.getTime()));
 				
 				return ps;
 			}  
@@ -936,7 +938,8 @@ public class DeliveryDetailsDAO extends BaseDAO implements IDeliveryDetailsDAO {
 	" FROM DLV.RESERVATION R, DLV.TIMESLOT T, DLV.ZONE Z,CUST.ADDRESS A "+
 	" WHERE R.ADDRESS_ID=A.ID(+) AND R.TIMESLOT_ID=T.ID AND R.ZONE_ID=Z.ID AND t.BASE_DATE=TRUNC(?) " +
 	" AND (unassigned_action IS NOT NULL) " +
-	" AND to_char(t.cutoff_time, 'HH:MI AM') = to_char(?, 'HH:MI AM') ";
+	" AND ((t.premium_cutoff_time is null and to_char(t.cutoff_time, 'HH:MI AM') = to_char(?, 'HH:MI AM')) or " +
+	"(t.premium_cutoff_time is not null and to_char(t.premium_cutoff_time, 'HH:MI AM') = to_char(?, 'HH:MI AM'))) ";
 	
 	public List<UnassignedDlvReservationModel> getUnassignedReservationsEx(final Date deliveryDate, final Date cutOff) throws SQLException {
 	
@@ -948,6 +951,7 @@ public class DeliveryDetailsDAO extends BaseDAO implements IDeliveryDetailsDAO {
 					connection.prepareStatement(FETCH_UNASSIGNED_RESERVATIONS_QUERY_EX);
 				ps.setDate(1, new java.sql.Date(deliveryDate.getTime()));
 				ps.setTimestamp(2, new java.sql.Timestamp(cutOff.getTime()));
+				ps.setTimestamp(3, new java.sql.Timestamp(cutOff.getTime()));
 				
 				return ps;
 			}  
