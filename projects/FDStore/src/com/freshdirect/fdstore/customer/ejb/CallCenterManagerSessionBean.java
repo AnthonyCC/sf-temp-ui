@@ -1084,12 +1084,13 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 		}
 	}
 
-	private static final String CUTOFF_REPORT_QUERY = "select s.status, (case when t.premium_cutoff_time is null then t.cutoff_time else t.premium_cutoff_time end) " +
-			"cutofftime , count(*) as order_count from cust.sale s, cust.salesaction sa, cust.deliveryinfo di, dlv.reservation r, dlv.timeslot t " +
+	private static final String CUTOFF_REPORT_QUERY = "select s.status, case when t.premium_cutoff_time is null then t.cutoff_time else t.premium_cutoff_time end as cutofftime " +
+			" , count(*) as order_count from cust.sale s, cust.salesaction sa, cust.deliveryinfo di, dlv.reservation r, dlv.timeslot t " +
 			"where s.id=sa.sale_id and sa.id=di.salesaction_id and s.type<>'SUB' and sa.action_type in ('CRO','MOD') and sa.requested_date=? and s.type = 'REG' " +
 			"and sa.action_date=(select max(action_date) from cust.salesaction where sale_id=s.id and action_type in ('CRO','MOD')) and di.starttime > ? " +
-			"and di.starttime < ? and DI.RESERVATION_ID = r.id and R.TIMESLOT_ID = t.id group by s.status,t.cutoff_time, t.premium_cutoff_time order by t.cutoff_time, " +
-			"t.premium_cutoff_time, s.status";
+			"and di.starttime < ? and DI.RESERVATION_ID = r.id and R.TIMESLOT_ID = t.id group by s.status, " +
+			"case when t.premium_cutoff_time is null then t.cutoff_time else t.premium_cutoff_time end order by cutofftime, " +
+			" s.status";
 
 	public List getCutoffTimeReport(java.util.Date day) throws FDResourceException {
 		Connection conn = null;
@@ -1153,9 +1154,9 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 			StringBuffer buff = new StringBuffer();
 			String br = "\n";
 
-			buff.append("Cutoff Time Report for ").append(dateFormatter.format(deliveryDate)).append(br);
+			buff.append("Handoff Report for ").append(dateFormatter.format(deliveryDate)).append(br);
 			buff.append(br);
-			buff.append("Cutoff Time").append("\t\t\t").append("Order Count").append("\t\t").append("Sale Status").append(br);
+			buff.append("Handoff Time").append("\t\t\t").append("Order Count").append("\t\t").append("Sale Status").append(br);
 			buff.append("----------------------------------------------------------------------------------").append(br);
 
 			for(Iterator i = cReport.iterator(); i.hasNext();){
@@ -1172,7 +1173,7 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 			mailer.sendMail(ErpServicesProperties.getSapMailFrom(),
 							ErpServicesProperties.getSapMailTo(),
 							ErpServicesProperties.getSapMailCC(),
-							"Cutoff Report For " + dateFormatter.format(deliveryDate), buff.toString());
+							"Handoff Report For " + dateFormatter.format(deliveryDate), buff.toString());
 
 		} catch (MessagingException e) {
 			LOGGER.warn("Error Sending cutoff time report: ", e);
