@@ -210,11 +210,13 @@ public class ZoneExpansionDaoOracleImpl implements ZoneExpansionDaoI{
 	//Only when new zone is selected
 	private static String MAX_REGION_ID="select id from dlv.region_data where region_id=? order by start_date desc, id desc";
 	
-	private static String INSERT_NEW_ZONE="insert into dlv.zone (id, name, geoloc, zone_code, region_data_id, plan_id, ct_active, ct_release_time)"
+	private static String INSERT_NEW_ZONE="insert into dlv.zone (id, name, geoloc, zone_code, region_data_id, plan_id, ct_active, ct_release_time, premium_ct_active, premium_ct_release_time)"
 		+" select dlv.system_seq.nextval, name, geoloc, code, XYZ,"
 		+" (select plan_id from dlv.zone where zone_code = z.code and region_data_id = ?) as plan_id,"
 		+" ' ' as ct_active,"
-		+" 0 as ct_release_time"
+		+" 0 as ct_release_time,"
+		+" ' ' as premium_ct_active,"
+		+" 0 as premium_ct_release_time"
 		+" from DLV.WORKTABLE z where"
 		+" z.code = ?";
 	
@@ -295,14 +297,18 @@ public class ZoneExpansionDaoOracleImpl implements ZoneExpansionDaoI{
 	
 	
 	//Common zones selected
-	private static String INSERT_COMMON_ZONES="insert into dlv.zone (id, name, geoloc, zone_code, region_data_id, plan_id, ct_active, ct_release_time)"
+	private static String INSERT_COMMON_ZONES="insert into dlv.zone (id, name, geoloc, zone_code, region_data_id, plan_id, ct_active, ct_release_time, premium_ct_active, premium_ct_release_time)"
 		+" select dlv.system_seq.nextval, name, geoloc, code, XYZ,"
 		+" (select plan_id from dlv.zone where zone_code = z.code"
 		+" and region_data_id = ?) as plan_id,"
 		+" (select ct_active from dlv.zone where zone_code = z.code"
 		+" and region_data_id = ?) as ct_active,"
 		+" (select ct_release_time from dlv.zone where zone_code = z.code"
-		+" and region_data_id = ?) as ct_release_time"
+		+" and region_data_id = ?) as ct_release_time,"
+		+" (select premium_ct_active from dlv.zone where zone_code = z.code"
+		+" and region_data_id = ?) as premium_ct_active,"
+		+" (select premium_ct_release_time from dlv.zone where zone_code = z.code"
+		+" and region_data_id = ?) as premium_ct_release_time"
 		+" from DLV.WORKTABLE z where"
 		+" z.code = ?";
 
@@ -344,7 +350,7 @@ public class ZoneExpansionDaoOracleImpl implements ZoneExpansionDaoI{
 	
 	//Unchecked zones from zone table
 	private final static String INSERT_REMAINING_ZONES=
-		" insert into dlv.zone (id, name, geoloc, zone_code, region_data_id, plan_id, ct_active, ct_release_time)"
+		" insert into dlv.zone (id, name, geoloc, zone_code, region_data_id, plan_id, ct_active, ct_release_time, premium_ct_active, premium_ct_release_time)"
 			+" select dlv.system_seq.nextval,"
 		    +" (select name from dlv.zone where zone_code = z.zone_code and region_data_id = z.region_data_id) as name,"
 		    +" (select geoloc from dlv.zone where zone_code = z.zone_code and region_data_id = z.region_data_id) as geoloc,"
@@ -352,7 +358,9 @@ public class ZoneExpansionDaoOracleImpl implements ZoneExpansionDaoI{
 		    +" XYZ,"  
             +" (select plan_id from dlv.zone where zone_code = z.zone_code and region_data_id = z.region_data_id) as plan_id,"
 		    +" (select ct_active from dlv.zone where zone_code = z.zone_code and region_data_id = z.region_data_id) as ct_active,"
-		    +" (select ct_release_time from dlv.zone where zone_code = z.zone_code and region_data_id = z.region_data_id) as ct_release_time"
+		    +" (select ct_release_time from dlv.zone where zone_code = z.zone_code and region_data_id = z.region_data_id) as ct_release_time,"
+		    +" (select premium_ct_active from dlv.zone where zone_code = z.zone_code and region_data_id = z.region_data_id) as premium_ct_active,"
+		    +" (select premium_ct_release_time from dlv.zone where zone_code = z.zone_code and region_data_id = z.region_data_id) as premium_ct_release_time"
 	    +" from dlv.zone z where zone_code = ? and region_data_id = ?";
 		
 	public void insertUncheckedZones(final String zoneCode, final String regionId){
