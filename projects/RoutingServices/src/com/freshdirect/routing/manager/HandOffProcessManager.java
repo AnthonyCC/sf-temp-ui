@@ -403,11 +403,12 @@ public class HandOffProcessManager {
 	    			ILocationModel location = orderModel.getDeliveryInfo().getDeliveryLocation();
 	    			
 	    			String scrubbedAddress = geoService.standardizeStreetAddress(location);
-	    			if(scrubbedAddress!=null)
-	    				location.getBuilding().setStreetAddress1(scrubbedAddress);
-	    			else if(reservation.getAddress().getScrubbedStreet()!=null)
-	    				location.getBuilding().setStreetAddress1(reservation.getAddress().getScrubbedStreet());
-	    			
+                    if(scrubbedAddress != null) {
+                          location.getBuilding().setStreetAddress1(scrubbedAddress);
+                    } else if(reservation.getAddress() != null && reservation.getAddress().getScrubbedStreet() != null) {
+                           location.getBuilding().setStreetAddress1(reservation.getAddress().getScrubbedStreet());
+                    }
+                    
 	    			location = geoService.getLocation(location);
 	    			orderModel.getDeliveryInfo().getDeliveryLocation().setLocationId(location.getLocationId());
 	    			
