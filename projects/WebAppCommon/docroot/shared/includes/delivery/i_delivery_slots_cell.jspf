@@ -170,10 +170,10 @@
 					.append("</div>\n");
 	}
 	if (slot.isUnavailable()) {
-		stringBuffer.append("									<div class=\"tsSoldoutPropE\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_msgE\">\n")
-		.append("										<div class=\"tsSoldoutE_cont\">")
+		stringBuffer.append("									<div class=\"tsUnavailPropE\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_msgE\">\n")
+		.append("										<div class=\"tsUnavailE_cont\">")
 				.append("<img src=\"/media_stat/images/layout/clear.gif\" width=\"16\" height=\"16\" border=\"0\">")
-				.append("<div><font class=\"tsSoldoutE\">UNAVAILABLE</font></div>")
+				.append("<div><font class=\"tsUnavailE\">UNAVAILABLE</font></div>")
 			.append("</div>")
 		.append("</div>\n");
 	}

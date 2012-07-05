@@ -537,26 +537,26 @@ div.tsHeaderC {
 	margin-top: 5px; 
 	margin-bottom: -5px;
 }
-/*SoldOut slot*/
-.tsSoldoutE {
+/*SoldOut and Unavail slot*/
+.tsSoldoutE, .tsUnavailE {
 	color:#666666;
 	font-weight:normal;
 	font-size: 9px; 
 	font-family: Verdana, Arial, sans-serif;
 }
-.tsCol div.tsContent div.tsSoldoutPropE {
+.tsCol div.tsContent div.tsSoldoutPropE, .tsCol div.tsContent div.tsUnavailPropE {
 	height: 28px;
 }
-.tsSoldoutPropE {
+.tsSoldoutPropE, .tsUnavailPropE {
 	overflow: hidden;
 	padding: 0px 10px 0 0;
 	text-align: right;
 }
 
-.tsSoldoutC {
+.tsSoldoutC, .tsUnavailC {
 	text-decoration:line-through;
 }
-.tsSoldoutPropE div div { 
+.tsSoldoutPropE div div, .tsUnavailPropE div div { 
 	float: left; 
 	margin-top: 10px; 
 	margin-left: 3px; 
@@ -567,6 +567,9 @@ div.tsHeaderC {
 	float: left; 
 	margin-top: 5px; 
 	margin-bottom: -5px;
+}
+.tsUnavailPropE div img { 
+	display: none;
 }
 
 /*EcoFriendly slot*/
@@ -822,6 +825,7 @@ td.noTopBorder {
 .tsContainerBGE .tsSelectedSlotPropC, 
 .tsContainerBGC .tsSelectedSlotPropE, 
 .tsContainerBGC .tsSoldoutE_cont, 
+.tsContainerBGC .tsUnavailE_cont, 
 .tsContainerBGC .ts_rb
 {
 	display: none;
@@ -845,6 +849,7 @@ td.noTopBorder {
 .tsContainerBGC .tsSelectedSlotPropC, 
 .tsContainerBGE .tsSelectedSlotPropE, 
 .tsContainerBGE .tsSoldoutE_cont,
+.tsContainerBGE .tsUnavailE_cont,
 .tsContainerBGE .ts_rb
 {
 	display: block;
