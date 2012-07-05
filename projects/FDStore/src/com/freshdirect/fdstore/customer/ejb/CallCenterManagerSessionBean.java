@@ -828,7 +828,7 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 		+ "from cust.sale s, cust.salesaction sa, cust.customer c, cust.customerinfo ci, cust.fdcustomer fdc "
 		+ "where s.id=sa.sale_id and s.customer_id=c.id and c.id=ci.customer_id and fdc.erp_customer_id=c.id "
 		+ "and s.type = 'REG' "
-		+ "and sa.requested_date > trunc(SYSDATE) and s.status='AVE' and sa.promotion_campaign='SIGNUP' and sa.action_type in ('CRO','MOD') "
+		+ "and sa.requested_date >= trunc(SYSDATE) and s.status='AVE' and sa.promotion_campaign='SIGNUP' and sa.action_type in ('CRO','MOD') "
 		+ "and sa.action_date=(select max(action_date) from cust.salesaction where sale_id=s.id and action_type in ('CRO','MOD'))";
 
 	public List getSignupPromoAVSExceptions() throws FDResourceException {

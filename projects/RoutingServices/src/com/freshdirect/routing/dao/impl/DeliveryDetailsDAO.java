@@ -937,7 +937,7 @@ public class DeliveryDetailsDAO extends BaseDAO implements IDeliveryDetailsDAO {
 	" A.COMPANY_NAME,A.ALT_CONTACT_PHONE,A.ALT_CONTACT_EXT,A.UNATTENDED_FLAG,A.UNATTENDED_INSTR,A.CUSTOMER_ID "+
 	" FROM DLV.RESERVATION R, DLV.TIMESLOT T, DLV.ZONE Z,CUST.ADDRESS A "+
 	" WHERE R.ADDRESS_ID=A.ID(+) AND R.TIMESLOT_ID=T.ID AND R.ZONE_ID=Z.ID AND t.BASE_DATE=TRUNC(?) " +
-	" AND (unassigned_action IS NOT NULL) " +
+	" AND (r.unassigned_action IS NOT NULL) AND r.status_code = '10'" +
 	" AND ((t.premium_cutoff_time is null and to_char(t.cutoff_time, 'HH:MI AM') = to_char(?, 'HH:MI AM')) or " +
 	"(t.premium_cutoff_time is not null and to_char(t.premium_cutoff_time, 'HH:MI AM') = to_char(?, 'HH:MI AM'))) ";
 	
