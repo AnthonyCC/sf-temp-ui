@@ -304,9 +304,9 @@ public class SaleCronRunner {
 	private static String emailBody(List<DlvReservationModel> reservation, int idx)
 	{
 		StringBuffer buf = new StringBuffer();
-		buf.append(labels[idx]).append("<br>");
+		buf.append("<br><br><br><p><b>").append(labels[idx]).append("</b></p>");
 		
-		buf.append("<table border=\"1\" valign=\"top\" align=\"left\" cellpadding=\"0\" cellspacing=\"0\">");
+		buf.append("<table border=\"1\" valign=\"top\" align=\"left\" cellpadding=\"0\" cellspacing=\"2\">");
 		buf.append("<tr>").append("<th>").append("Delivery Date").append("</th>")
 						.append("<th>").append("Zone").append("</th>")
 						.append("<th>").append("Reservation ID").append("</th>")
@@ -314,7 +314,7 @@ public class SaleCronRunner {
 						.append("<th>").append("Status Code").append("</th>")
 						.append("<th>").append("Reservation Type").append("</th>")
 						.append("<th>").append("Unassigned Action").append("</th>")
-						.append("<th>").append("Expiration DateTime").append("</th>")
+						.append("<th>").append("Expiration Date").append("</th>")
 						.append("</tr>");
 		for(Iterator<DlvReservationModel> i = reservation.iterator(); i.hasNext();){
 			DlvReservationModel info =  i.next();

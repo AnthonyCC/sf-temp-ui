@@ -1795,15 +1795,15 @@ public class DlvManagerDAO {
 
 	private static final String FETCH_UNCONFIRMED_RESERVATIONS_INUPS="SELECT R.ID, R.ORDER_ID, R.CUSTOMER_ID, R.STATUS_CODE, R.TIMESLOT_ID, R.ZONE_ID, " +
 			"R.EXPIRATION_DATETIME, R.TYPE, R.ADDRESS_ID,T.BASE_DATE, Z.ZONE_CODE, R.UNASSIGNED_DATETIME, R.UNASSIGNED_ACTION, R.IN_UPS, R.ORDER_SIZE, " +
-			"R.SERVICE_TIME, R.RESERVED_ORDER_SIZE, R.RESERVED_SERVICE_TIME, R.UPDATE_STATUS, R.METRICS_SOURCE, R.NUM_CARTONS, R.NUM_FREEZERS, R.NUM_CASES " +
+			"R.SERVICE_TIME, R.RESERVED_ORDER_SIZE, R.RESERVED_SERVICE_TIME, R.UPDATE_STATUS, R.METRICS_SOURCE, R.NUM_CARTONS, R.NUM_FREEZERS, R.NUM_CASES, R.CLASS " +
 			"from dlv.reservation r, dlv.timeslot t, dlv.zone z where T.BASE_DATE > sysdate and t.zone_id = z.id and T.ID = R.TIMESLOT_ID and " +
 			"R.STATUS_CODE = '10' and R.UNASSIGNED_ACTION is null and R.IN_UPS = 'X' and not exists (select 1 from MIS.TIMESLOT_EVENT_HDR h where  " +
-			"H.EVENTTYPE = 'CONFIRM_TIMESLOT' and H.ORDER_ID = R.ORDER_ID and H.CUSTOMER_ID = R.CUSTOMER_ID ) ";
+			"H.EVENTTYPE = 'CONFIRM_TIMESLOT' and H.ORDER_ID = R.ORDER_ID and H.CUSTOMER_ID = R.CUSTOMER_ID )";
 	
 	private static final String FIX_UNCONFIRMED_RESERVATIONS_INUPS = "update dlv.reservation rdx set rdx.UNASSIGNED_ACTION = 'CONFIRM_TIMESLOT', " +
 			"rdx.UNASSIGNED_DATETIME = sysdate where RDX.ID in (select r.ID from dlv.reservation r, dlv.timeslot t  where T.BASE_DATE > sysdate and T.ID = " +
 			"R.TIMESLOT_ID  and R.STATUS_CODE = '10' and R.UNASSIGNED_ACTION is null and R.IN_UPS = 'X' and not exists (select 1 from MIS.TIMESLOT_EVENT_HDR h " +
-			"where  H.EVENTTYPE = 'CONFIRM_TIMESLOT' and H.ORDER_ID = R.ORDER_ID and H.CUSTOMER_ID = R.CUSTOMER_ID ) ))";
+			"where  H.EVENTTYPE = 'CONFIRM_TIMESLOT' and H.ORDER_ID = R.ORDER_ID and H.CUSTOMER_ID = R.CUSTOMER_ID ))";
 	
 	public static List<DlvReservationModel> getUnconfirmedReservations(Connection conn)  throws SQLException {
 		PreparedStatement ps =
@@ -1816,8 +1816,10 @@ public class DlvManagerDAO {
 			reservations.add(rsv);
 		}
 
-		if(reservations.size()>0)
+		if(reservations.size()>0){
 			ps = conn.prepareStatement(FIX_UNCONFIRMED_RESERVATIONS_INUPS);
+			ps.execute();
+		}
 		
 		rs.close();
 		ps.close();
@@ -1827,7 +1829,7 @@ public class DlvManagerDAO {
 	
 	private static final String FETCH_CONFIRMED_RESERVATIONS_CANCELLED_ORDERS="select  R.ID, R.ORDER_ID, R.CUSTOMER_ID, R.STATUS_CODE, R.TIMESLOT_ID, R.ZONE_ID, " +
 			"R.EXPIRATION_DATETIME, R.TYPE, R.ADDRESS_ID,T.BASE_DATE, Z.ZONE_CODE,R.UNASSIGNED_DATETIME, R.UNASSIGNED_ACTION, R.IN_UPS, R.ORDER_SIZE, R.SERVICE_TIME " +
-			", R.RESERVED_ORDER_SIZE, R.RESERVED_SERVICE_TIME, R.UPDATE_STATUS, R.METRICS_SOURCE, R.NUM_CARTONS , R.NUM_FREEZERS , R.NUM_CASES from cust.sale s, " +
+			", R.RESERVED_ORDER_SIZE, R.RESERVED_SERVICE_TIME, R.UPDATE_STATUS, R.METRICS_SOURCE, R.NUM_CARTONS , R.NUM_FREEZERS , R.NUM_CASES, R.CLASS from cust.sale s, " +
 			"cust.salesaction sa, cust.deliveryinfo di, dlv.reservation r, dlv.timeslot t, dlv.zone z where s.id=sa.sale_id and s.customer_id=sa.customer_id and " +
 			"S.CROMOD_DATE=sa.action_date  and sa.action_type in ('CRO','MOD') and sa.requested_date>=trunc(sysdate) and DI.RESERVATION_ID=r.id and " +
 			"sa.id=di.salesaction_id and R.ORDER_ID=s.id  and s.status='CAN' and R.IN_UPS='X' and R.STATUS_CODE='10' and T.ZONE_ID = Z.ID and " +
@@ -1852,8 +1854,10 @@ public class DlvManagerDAO {
 				reservations.add(rsv);
 			}
 
-			if(reservations.size()>0)
+			if(reservations.size()>0){
 				ps = conn.prepareStatement(FIX_CONFIRMED_RESERVATIONS_CANCELLED_ORDERS);
+				ps.execute();
+			}
 			
 			rs.close();
 			ps.close();
@@ -1863,7 +1867,7 @@ public class DlvManagerDAO {
 	
 	private static final String FETCH_CANCELLED_RESERVATIONS_IN_UPS="select R.ID, R.ORDER_ID, R.CUSTOMER_ID, R.STATUS_CODE, R.TIMESLOT_ID, R.ZONE_ID, R.EXPIRATION_DATETIME, " +
 			"R.TYPE, R.ADDRESS_ID,T.BASE_DATE, Z.ZONE_CODE ,R.UNASSIGNED_DATETIME, R.UNASSIGNED_ACTION, R.IN_UPS, R.ORDER_SIZE, R.SERVICE_TIME , R.RESERVED_ORDER_SIZE, " +
-			"R.RESERVED_SERVICE_TIME, R.UPDATE_STATUS, R.METRICS_SOURCE , R.NUM_CARTONS , R.NUM_FREEZERS , R.NUM_CASES from dlv.reservation r, dlv.timeslot t, dlv.zone z " +
+			"R.RESERVED_SERVICE_TIME, R.UPDATE_STATUS, R.METRICS_SOURCE , R.NUM_CARTONS , R.NUM_FREEZERS , R.NUM_CASES, R.CLASS from dlv.reservation r, dlv.timeslot t, dlv.zone z " +
 			" where T.BASE_DATE > sysdate and T.ID = R.TIMESLOT_ID and t.zone_id = z.id and R.STATUS_CODE = '15' and R.UNASSIGNED_ACTION is null and R.IN_UPS = 'X' " +
 			"and not exists (select 1 from MIS.TIMESLOT_EVENT_HDR h where H.EVENTTYPE = 'CANCEL_TIMESLOT' and H.ORDER_ID = R.ORDER_ID and H.CUSTOMER_ID = R.CUSTOMER_ID " +
 			"and r.id=H.RESERVATION_ID )";
@@ -1886,8 +1890,10 @@ public class DlvManagerDAO {
 				reservations.add(rsv);
 			}
 
-			if(reservations.size()>0)
+			if(reservations.size()>0){
 				ps = conn.prepareStatement(FIX_CANCELLED_RESERVATIONS_IN_UPS);
+				ps.execute();
+			}
 			
 			rs.close();
 			ps.close();
@@ -1898,7 +1904,7 @@ public class DlvManagerDAO {
 	
 	private static final String FETCH_ORDERS_WITH_CANCELLED_RESERVATIONS="select R.ID, R.ORDER_ID, R.CUSTOMER_ID, R.STATUS_CODE, R.TIMESLOT_ID, R.ZONE_ID, R.EXPIRATION_DATETIME, " +
 			"R.TYPE, R.ADDRESS_ID,T.BASE_DATE, Z.ZONE_CODE,R.UNASSIGNED_DATETIME, R.UNASSIGNED_ACTION, R.IN_UPS, R.ORDER_SIZE, R.SERVICE_TIME, R.RESERVED_ORDER_SIZE, " +
-			"R.RESERVED_SERVICE_TIME, R.UPDATE_STATUS, R.METRICS_SOURCE, R.NUM_CARTONS , R.NUM_FREEZERS , R.NUM_CASES from cust.sale s, cust.salesaction sa, " +
+			"R.RESERVED_SERVICE_TIME, R.UPDATE_STATUS, R.METRICS_SOURCE, R.NUM_CARTONS , R.NUM_FREEZERS , R.NUM_CASES, R.CLASS from cust.sale s, cust.salesaction sa, " +
 			"cust.deliveryinfo di, dlv.reservation r, dlv.timeslot t, dlv.zone z where s.id=sa.sale_id and s.customer_id=sa.customer_id and S.CROMOD_DATE=sa.action_date  " +
 			"and sa.action_type in ('CRO','MOD') and t.zone_id = z.id and R.TIMESLOT_ID = T.ID and sa.requested_date>=trunc(sysdate) and DI.RESERVATION_ID=r.id and " +
 			"sa.id=di.salesaction_id and s.status!='CAN' and R.STATUS_CODE!='10' ";
@@ -1907,7 +1913,7 @@ public class DlvManagerDAO {
 			"rdx.UNASSIGNED_DATETIME = sysdate,rdx.STATUS_CODE = '10' where rdx.id IN  (select r.id  from cust.sale s, cust.salesaction sa, " +
 			"cust.deliveryinfo di, dlv.reservation r where s.id=sa.sale_id and s.customer_id=sa.customer_id and S.CROMOD_DATE=sa.action_date  " +
 			"and sa.action_type in ('CRO','MOD') and sa.requested_date>=trunc(sysdate) and DI.RESERVATION_ID=r.id and sa.id=di.salesaction_id " +
-			"and s.status!='CAN' and R.STATUS_CODE!='10'";
+			"and s.status!='CAN' and R.STATUS_CODE!='10')";
 	
 	
 	public static List<DlvReservationModel> getOrdersWithCancelledRsv(
@@ -1922,8 +1928,10 @@ public class DlvManagerDAO {
 				reservations.add(rsv);
 			}
 
-			if(reservations.size()>0)
+			if(reservations.size()>0){
 				ps = conn.prepareStatement(FIX_ORDERS_WITH_CANCELLED_RESERVATIONS);
+				ps.execute();
+			}
 			
 			rs.close();
 			ps.close();
