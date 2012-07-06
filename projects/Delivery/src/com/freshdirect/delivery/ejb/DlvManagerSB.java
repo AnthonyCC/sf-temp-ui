@@ -220,12 +220,12 @@ public interface DlvManagerSB extends EJBObject {
 	int unBlockTimeslotCapacity(Date sourceDate
 			, Date cutoffDate, String[] area, Date startTime, Date endTime) throws DlvResourceException, RemoteException;
 
-	Map<String, TrnFacilityType> retrieveTrnFacilitys()throws RemoteException;
+	Map<String, TrnFacilityType> retrieveTrnFacilitys() throws RemoteException;
 	
-	public SectorVO getSectorInfo(AddressModel address)throws RemoteException;
-	public List<DlvReservationModel> getUnconfirmedReservations();
-	public List<DlvReservationModel> getConfirmedRsvForCancelledOrders();
-	public List<DlvReservationModel> getCancelledRsvInUPS();
-	public List<DlvReservationModel> getOrdersWithCancelledRsv();
+	public SectorVO getSectorInfo(AddressModel address) throws RemoteException;
+	public List<DlvReservationModel> getUnconfirmedReservations() throws RemoteException;
+	public List<DlvReservationModel> getConfirmedRsvForCancelledOrders() throws RemoteException;
+	public List<DlvReservationModel> getCancelledRsvInUPS() throws RemoteException;
+	public List<DlvReservationModel> getOrdersWithCancelledRsv() throws RemoteException;
 	
 }   
