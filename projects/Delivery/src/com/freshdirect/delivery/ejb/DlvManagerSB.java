@@ -223,5 +223,9 @@ public interface DlvManagerSB extends EJBObject {
 	Map<String, TrnFacilityType> retrieveTrnFacilitys()throws RemoteException;
 	
 	public SectorVO getSectorInfo(AddressModel address)throws RemoteException;
+	public List<DlvReservationModel> getUnconfirmedReservations();
+	public List<DlvReservationModel> getConfirmedRsvForCancelledOrders();
+	public List<DlvReservationModel> getCancelledRsvInUPS();
+	public List<DlvReservationModel> getOrdersWithCancelledRsv();
 	
 }   

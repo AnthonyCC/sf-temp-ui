@@ -14,6 +14,7 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.rmi.RemoteException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Hashtable;
@@ -34,6 +35,7 @@ import com.freshdirect.dataloader.payment.ejb.SaleCronSB;
 import com.freshdirect.delivery.DlvResourceException;
 import com.freshdirect.delivery.ejb.DlvManagerHome;
 import com.freshdirect.delivery.ejb.DlvManagerSB;
+import com.freshdirect.delivery.model.DlvReservationModel;
 import com.freshdirect.delivery.model.UnassignedDlvReservationModel;
 import com.freshdirect.fdstore.CallCenterServices;
 import com.freshdirect.framework.util.DateUtil;
@@ -80,6 +82,7 @@ public class SaleCronRunner {
 				LOGGER.debug("Sending report for " + cal.getTime() + "...");
 				CallCenterServices.emailCutoffTimeReport(cal.getTime());
 				emailUnassigned();
+				emailResolvedReservationIssues();
 			}
 			//First clear pending reverse auth for cancelled orders.
 			sb.reverseAuthorizeSales(authTimeout);
@@ -133,13 +136,48 @@ public class SaleCronRunner {
 			DlvManagerHome dlh =(DlvManagerHome) ctx.lookup("freshdirect.delivery.DeliveryManager");
 			dlvManager = dlh.create();
 			List<UnassignedDlvReservationModel> _unassignedReservations = dlvManager.getUnassignedReservations(cal.getTime(),true);
-			email(_unassignedReservations, cal.getTime());
+			if(_unassignedReservations.size()>0)
+				email(_unassignedReservations, cal.getTime());
 		}
 		catch(NamingException e)
 		{
 			e.printStackTrace();
 		} catch (DlvResourceException e) {
 			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (RemoteException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (CreateException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	private static void emailResolvedReservationIssues()
+	{
+		try
+		{
+			Context ctx = null;
+			ctx = getInitialContext();
+			
+			DlvManagerSB dlvManager = null;
+			DlvManagerHome dlh =(DlvManagerHome) ctx.lookup("freshdirect.delivery.DeliveryManager");
+			dlvManager = dlh.create();
+			List<List<DlvReservationModel>> reservations = new ArrayList<List<DlvReservationModel>>();
+			List<DlvReservationModel> unconfirmedReservations = dlvManager.getUnconfirmedReservations();
+			reservations.add(unconfirmedReservations);
+			List<DlvReservationModel> confirmedReservationsCancelledOrders = dlvManager.getConfirmedRsvForCancelledOrders();
+			reservations.add(confirmedReservationsCancelledOrders);
+			List<DlvReservationModel> cancelledReservationsInUPS = dlvManager.getCancelledRsvInUPS();
+			reservations.add(cancelledReservationsInUPS);
+			List<DlvReservationModel> ordersWithCancelledRsv = dlvManager.getOrdersWithCancelledRsv();
+			reservations.add(ordersWithCancelledRsv);
+			
+			email(reservations);
+		}
+		catch(NamingException e)
+		{
 			e.printStackTrace();
 		} catch (RemoteException e) {
 			// TODO Auto-generated catch block
@@ -232,6 +270,68 @@ public class SaleCronRunner {
 			LOGGER.warn("Error Sending Unassigned Reservation Cron report email: ", e);
 		}
 		
+	}
+	
+	
+	final static String[] labels = {"UnConfirmed Reservations in UPS", "Cancelled Orders in Storefront/Confirmed in UPS",
+			"Cancelled Reservation in Storefront/Not Cancelled in UPS","Orders with Cancelled Reservations"};
+	
+	private static void email(List<List<DlvReservationModel>> reservations) {
+		// TODO Auto-generated method stub
+		try {
+			String subject="Reservation Issue Resolver";
+			StringBuffer buf = new StringBuffer();
+			buf.append("<html>").append("<body>");
+			int index=0;
+			for(List<DlvReservationModel> reservation: reservations)
+			{
+				if(reservation.size()>0) buf.append(emailBody(reservation, index));
+				index++;
+			}
+			buf.append("</body>").append("</html>");
+			
+			ErpMailSender mailer = new ErpMailSender();
+			mailer.sendMail(ErpServicesProperties.getCronFailureMailFrom(),
+					ErpServicesProperties.getCronFailureMailTo(),"",
+					subject, buf.toString(), true, "");
+			
+		}catch (MessagingException e) {
+			LOGGER.warn("Error Sending Reservation resolver Cron report email: ", e);
+		}
+		
+	}
+	
+	private static String emailBody(List<DlvReservationModel> reservation, int idx)
+	{
+		StringBuffer buf = new StringBuffer();
+		buf.append(labels[idx]).append("<br>");
+		
+		buf.append("<table border=\"1\" valign=\"top\" align=\"left\" cellpadding=\"0\" cellspacing=\"0\">");
+		buf.append("<tr>").append("<th>").append("Delivery Date").append("</th>")
+						.append("<th>").append("Zone").append("</th>")
+						.append("<th>").append("Reservation ID").append("</th>")
+						.append("<th>").append("Order ID").append("</th>")
+						.append("<th>").append("Status Code").append("</th>")
+						.append("<th>").append("Reservation Type").append("</th>")
+						.append("<th>").append("Unassigned Action").append("</th>")
+						.append("<th>").append("Expiration DateTime").append("</th>")
+						.append("</tr>");
+		for(Iterator<DlvReservationModel> i = reservation.iterator(); i.hasNext();){
+			DlvReservationModel info =  i.next();
+				buf.append("<tr><td>")
+				.append(info.getDeliveryDate()).append("</td><td>")
+				.append(info.getZoneCode()).append("</td><td>")
+				.append(info.getId()).append("</td><td>")
+				.append(info.getOrderId()).append("</td><td>")
+				.append(info.getStatusCode()).append("</td><td>")
+				.append(info.getReservationType().getName()).append("</td><td>")
+				.append((info.getUnassignedActivityType()==null)?"":info.getUnassignedActivityType()).append("</td><td>")
+				.append(info.getExpirationDateTime()).append("</td></tr>");
+		}
+		buf.append("</table>");
+		
+		return buf.toString();
+	
 	}
 
 }

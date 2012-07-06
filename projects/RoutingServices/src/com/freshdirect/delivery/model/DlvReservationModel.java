@@ -55,6 +55,8 @@ public class DlvReservationModel extends ModelSupport {
 	
 	private EnumOrderMetricsSource metricsSource;
 		
+	private boolean dynamic;
+	
 	public EnumOrderMetricsSource getMetricsSource() {
 		return metricsSource;
 	}
@@ -316,6 +318,14 @@ public class DlvReservationModel extends ModelSupport {
 	
 	public boolean isPremium(){
 		return EnumReservationClass.PREMIUM.equals(this.getRsvClass())||EnumReservationClass.PREMIUMCT.equals(this.getRsvClass());
+	}
+
+	public boolean isDynamic() {
+		return dynamic;
+	}
+
+	public void setDynamic(boolean dynamic) {
+		this.dynamic = dynamic;
 	}
 
 }

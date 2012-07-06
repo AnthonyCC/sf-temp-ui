@@ -296,7 +296,7 @@ public class DlvTimeslotModel extends DlvShiftTimeslotModel {
 	public int getTotalAllocation() {
 		if(!premiumSlot)
 			return getBaseAllocation() + getChefsTableAllocation() + 
-					getPremiumBaseAllocation() + getPremiumCtAllocation();
+					getPremiumCapacity();
 		else
 			return getBaseAllocation() + getChefsTableAllocation();
 	}

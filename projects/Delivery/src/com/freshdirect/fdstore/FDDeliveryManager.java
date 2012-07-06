@@ -567,7 +567,8 @@ public class FDDeliveryManager {
 				dlvReservation.isChefsTable(),dlvReservation.getUnassignedActivityType()!=null, dlvReservation.getOrderId(),dlvReservation.isInUPS(),
 				dlvReservation.getUnassignedActivityType(),
 				dlvReservation.getStatusCode(),dlvReservation.getRsvClass());
-			if(FDStoreProperties.isDynamicRoutingEnabled()) {
+			if(FDStoreProperties.isDynamicRoutingEnabled() && (timeslot.getDlvTimeslot() != null && timeslot.getDlvTimeslot().getRoutingSlot() != null 
+					&& timeslot.getDlvTimeslot().getRoutingSlot().isDynamicActive())) {
 				boolean isSent=RoutingUtil.getInstance().sendTimeslotReservationRequest(dlvReservation, address, timeslot, event);
 				if(!isSent) {
 					sb.setUnassignedInfo(dlvReservation.getId(), RoutingActivityType.RESERVE_TIMESLOT);
@@ -632,9 +633,8 @@ public class FDDeliveryManager {
 	public void removeReservationEx(String reservationId,ContactAddressModel address, TimeslotEventModel event) throws FDResourceException {
 		try {
 			DlvManagerSB sb = getDlvManagerHome().create();
-
-			if(FDStoreProperties.isDynamicRoutingEnabled()) {
-				DlvReservationModel reservation=sb.getReservation(reservationId);
+			DlvReservationModel reservation=sb.getReservation(reservationId);
+			if(FDStoreProperties.isDynamicRoutingEnabled() && reservation.isDynamic()) {
 				boolean isSent=	RoutingUtil.getInstance().sendReleaseReservationRequest(reservation,address, event);
 				if(!isSent && !reservation.isUnassigned()) {
 						sb.setUnassignedInfo(reservationId, RoutingActivityType.CANCEL_TIMESLOT);
@@ -688,8 +688,9 @@ public class FDDeliveryManager {
 
 			DlvManagerSB sb = getDlvManagerHome().create();
 			sb.commitReservation(rsvId, customerId, orderId,pr1);
-			if(FDStoreProperties.isDynamicRoutingEnabled()) {
-				DlvReservationModel reservation=sb.getReservation(rsvId);
+			DlvReservationModel reservation=sb.getReservation(rsvId);
+			
+			if(FDStoreProperties.isDynamicRoutingEnabled() && reservation.isDynamic()) {
 				SectorVO neighbourhoodInfo = FDDeliveryManager.getInstance().getSectorInfo(address);
 				if (neighbourhoodInfo != null) {
 					event.setSector(neighbourhoodInfo.getName());
@@ -713,9 +714,9 @@ public class FDDeliveryManager {
 		try {
 			DlvManagerSB sb = getDlvManagerHome().create();
 			 boolean isRestored=sb.releaseReservation(rsvId);
-			 //System.out.println("Reservation ID in releaseReservation() is -->"+rsvId+". isRestored--> "+isRestored);
-			 if(FDStoreProperties.isDynamicRoutingEnabled()) {
-				 DlvReservationModel reservation=sb.getReservation(rsvId);
+			 DlvReservationModel reservation=sb.getReservation(rsvId);
+			 if(FDStoreProperties.isDynamicRoutingEnabled() && reservation.isDynamic()) {
+				 
 				 if(isRestored) {
 					 //RoutingUtil.getInstance().sendUpdateReservationRequest(reservation,address);
 				 } else {

@@ -131,8 +131,8 @@ public class DlvManagerDAO {
 		"select t.id, t.base_date, t.start_time, t.end_time, t.cutoff_time, t.status, t.zone_id, t.capacity, z.zone_code, t.ct_capacity" +
 		", ta.AREA AREA_CODE, ta.STEM_MAX_TIME stemmax, ta.STEM_FROM_TIME stemfrom, ta.STEM_TO_TIME stemto, ta.ZONE_ECOFRIENDLY ecoFriendly, z.NAME ZONE_NAME, " +
 		"case when t.premium_cutoff_time is null then TO_CHAR(t.CUTOFF_TIME, 'HH_MI_PM') else TO_CHAR(t.premium_cutoff_time, 'HH_MI_PM') end WAVE_CODE, t.IS_DYNAMIC IS_DYNAMIC, t.IS_CLOSED IS_CLOSED, a.IS_DEPOT IS_DEPOT, a.DELIVERY_RATE AREA_DLV_RATE,  " 
-		+ "(select count(*) from dlv.reservation where timeslot_id=t.id and status_code <> ? and status_code <> ? and chefstable = ' ' and class not in ('P','PC')) as base_allocation, " 
-		+ "(select count(*) from dlv.reservation where timeslot_id=t.id and status_code <> ? and status_code <> ? and chefstable = 'X' and class not in ('P','PC')) as ct_allocation, " 
+		+ "(select count(*) from dlv.reservation where timeslot_id=t.id and status_code <> ? and status_code <> ? and chefstable = ' ' and class is null) as base_allocation, " 
+		+ "(select count(*) from dlv.reservation where timeslot_id=t.id and status_code <> ? and status_code <> ? and chefstable = 'X' and class is null) as ct_allocation, " 
 		+ "(select z.ct_release_time from dlv.zone z where z.id = t.zone_id) as ct_release_time, "
 		+ "(select z.ct_active from dlv.zone z where z.id = t.zone_id) as ct_active, "
 		+ "t.premium_cutoff_time, t.premium_capacity, t.premium_ct_capacity, " 
@@ -638,7 +638,7 @@ public class DlvManagerDAO {
 	}
 	
 	public static void restoreReservation(Connection conn, String rsvId) throws SQLException {
-	    PreparedStatement ps = conn.prepareStatement("UPDATE DLV.RESERVATION SET STATUS_CODE = ?,ORDER_ID='x'||ID, MODIFIED_DTTM=SYSDATE WHERE ID = ? ");
+	    PreparedStatement ps = conn.prepareStatement("UPDATE DLV.RESERVATION SET STATUS_CODE = ?,ORDER_ID='x'||ID, MODIFIED_DTTM=SYSDATE WHERE ID = ? AND EXPIRATION_DATETIME > SYSDATE");
 	    ps.setInt(1, EnumReservationStatus.RESERVED.getCode());
 	    ps.setString(2, rsvId);
 	    if(ps.executeUpdate() != 1){
@@ -1792,4 +1792,145 @@ public class DlvManagerDAO {
 		}
 		return response;
 	}
+
+	private static final String FETCH_UNCONFIRMED_RESERVATIONS_INUPS="SELECT R.ID, R.ORDER_ID, R.CUSTOMER_ID, R.STATUS_CODE, R.TIMESLOT_ID, R.ZONE_ID, " +
+			"R.EXPIRATION_DATETIME, R.TYPE, R.ADDRESS_ID,T.BASE_DATE, Z.ZONE_CODE, R.UNASSIGNED_DATETIME, R.UNASSIGNED_ACTION, R.IN_UPS, R.ORDER_SIZE, " +
+			"R.SERVICE_TIME, R.RESERVED_ORDER_SIZE, R.RESERVED_SERVICE_TIME, R.UPDATE_STATUS, R.METRICS_SOURCE, R.NUM_CARTONS, R.NUM_FREEZERS, R.NUM_CASES " +
+			"from dlv.reservation r, dlv.timeslot t, dlv.zone z where T.BASE_DATE > sysdate and t.zone_id = z.id and T.ID = R.TIMESLOT_ID and " +
+			"R.STATUS_CODE = '10' and R.UNASSIGNED_ACTION is null and R.IN_UPS = 'X' and not exists (select 1 from MIS.TIMESLOT_EVENT_HDR h where  " +
+			"H.EVENTTYPE = 'CONFIRM_TIMESLOT' and H.ORDER_ID = R.ORDER_ID and H.CUSTOMER_ID = R.CUSTOMER_ID ) ";
+	
+	private static final String FIX_UNCONFIRMED_RESERVATIONS_INUPS = "update dlv.reservation rdx set rdx.UNASSIGNED_ACTION = 'CONFIRM_TIMESLOT', " +
+			"rdx.UNASSIGNED_DATETIME = sysdate where RDX.ID in (select r.ID from dlv.reservation r, dlv.timeslot t  where T.BASE_DATE > sysdate and T.ID = " +
+			"R.TIMESLOT_ID  and R.STATUS_CODE = '10' and R.UNASSIGNED_ACTION is null and R.IN_UPS = 'X' and not exists (select 1 from MIS.TIMESLOT_EVENT_HDR h " +
+			"where  H.EVENTTYPE = 'CONFIRM_TIMESLOT' and H.ORDER_ID = R.ORDER_ID and H.CUSTOMER_ID = R.CUSTOMER_ID ) ))";
+	
+	public static List<DlvReservationModel> getUnconfirmedReservations(Connection conn)  throws SQLException {
+		PreparedStatement ps =
+			conn.prepareStatement(FETCH_UNCONFIRMED_RESERVATIONS_INUPS);
+		
+		ResultSet rs = ps.executeQuery();
+		List<DlvReservationModel>  reservations = new ArrayList<DlvReservationModel>();
+		while (rs.next()) {
+			DlvReservationModel rsv = loadReservationFromResultSet(rs);
+			reservations.add(rsv);
+		}
+
+		if(reservations.size()>0)
+			ps = conn.prepareStatement(FIX_UNCONFIRMED_RESERVATIONS_INUPS);
+		
+		rs.close();
+		ps.close();
+       
+		return reservations;
+	}
+	
+	private static final String FETCH_CONFIRMED_RESERVATIONS_CANCELLED_ORDERS="select  R.ID, R.ORDER_ID, R.CUSTOMER_ID, R.STATUS_CODE, R.TIMESLOT_ID, R.ZONE_ID, " +
+			"R.EXPIRATION_DATETIME, R.TYPE, R.ADDRESS_ID,T.BASE_DATE, Z.ZONE_CODE,R.UNASSIGNED_DATETIME, R.UNASSIGNED_ACTION, R.IN_UPS, R.ORDER_SIZE, R.SERVICE_TIME " +
+			", R.RESERVED_ORDER_SIZE, R.RESERVED_SERVICE_TIME, R.UPDATE_STATUS, R.METRICS_SOURCE, R.NUM_CARTONS , R.NUM_FREEZERS , R.NUM_CASES from cust.sale s, " +
+			"cust.salesaction sa, cust.deliveryinfo di, dlv.reservation r, dlv.timeslot t, dlv.zone z where s.id=sa.sale_id and s.customer_id=sa.customer_id and " +
+			"S.CROMOD_DATE=sa.action_date  and sa.action_type in ('CRO','MOD') and sa.requested_date>=trunc(sysdate) and DI.RESERVATION_ID=r.id and " +
+			"sa.id=di.salesaction_id and R.ORDER_ID=s.id  and s.status='CAN' and R.IN_UPS='X' and R.STATUS_CODE='10' and T.ZONE_ID = Z.ID and " +
+			"R.TIMESLOT_ID = T.ID and  R.UNASSIGNED_ACTION is null";
+	
+	private static final String FIX_CONFIRMED_RESERVATIONS_CANCELLED_ORDERS = "update dlv.reservation r set R.UNASSIGNED_DATETIME = sysdate , R.UNASSIGNED_ACTION " +
+			"= 'CANCEL_TIMESLOT', R.STATUS_CODE = '15' where R.ID IN (select r.id   from cust.sale s, cust.salesaction sa, cust.deliveryinfo di, dlv.reservation r " +
+			"where s.id=sa.sale_id and s.customer_id=sa.customer_id and S.CROMOD_DATE=sa.action_date  and sa.action_type in ('CRO','MOD') and " +
+			"sa.requested_date>=trunc(sysdate) and DI.RESERVATION_ID=r.id and sa.id=di.salesaction_id and R.ORDER_ID=s.id  and s.status='CAN' " +
+			"and R.IN_UPS='X' and R.STATUS_CODE='10' and  R.UNASSIGNED_ACTION is null)";
+	
+	
+	public static List<DlvReservationModel> getConfirmedRsvForCancelledOrders(
+			Connection conn) throws SQLException {
+		PreparedStatement ps =
+				conn.prepareStatement(FETCH_CONFIRMED_RESERVATIONS_CANCELLED_ORDERS);
+			
+			ResultSet rs = ps.executeQuery();
+			List<DlvReservationModel>  reservations = new ArrayList<DlvReservationModel>();
+			while (rs.next()) {
+				DlvReservationModel rsv = loadReservationFromResultSet(rs);
+				reservations.add(rsv);
+			}
+
+			if(reservations.size()>0)
+				ps = conn.prepareStatement(FIX_CONFIRMED_RESERVATIONS_CANCELLED_ORDERS);
+			
+			rs.close();
+			ps.close();
+	       
+			return reservations;
+		}
+	
+	private static final String FETCH_CANCELLED_RESERVATIONS_IN_UPS="select R.ID, R.ORDER_ID, R.CUSTOMER_ID, R.STATUS_CODE, R.TIMESLOT_ID, R.ZONE_ID, R.EXPIRATION_DATETIME, " +
+			"R.TYPE, R.ADDRESS_ID,T.BASE_DATE, Z.ZONE_CODE ,R.UNASSIGNED_DATETIME, R.UNASSIGNED_ACTION, R.IN_UPS, R.ORDER_SIZE, R.SERVICE_TIME , R.RESERVED_ORDER_SIZE, " +
+			"R.RESERVED_SERVICE_TIME, R.UPDATE_STATUS, R.METRICS_SOURCE , R.NUM_CARTONS , R.NUM_FREEZERS , R.NUM_CASES from dlv.reservation r, dlv.timeslot t, dlv.zone z " +
+			" where T.BASE_DATE > sysdate and T.ID = R.TIMESLOT_ID and t.zone_id = z.id and R.STATUS_CODE = '15' and R.UNASSIGNED_ACTION is null and R.IN_UPS = 'X' " +
+			"and not exists (select 1 from MIS.TIMESLOT_EVENT_HDR h where H.EVENTTYPE = 'CANCEL_TIMESLOT' and H.ORDER_ID = R.ORDER_ID and H.CUSTOMER_ID = R.CUSTOMER_ID " +
+			"and r.id=H.RESERVATION_ID )";
+	
+	private static final String FIX_CANCELLED_RESERVATIONS_IN_UPS = "update dlv.reservation r set R.UNASSIGNED_DATETIME = sysdate , R.UNASSIGNED_ACTION = " +
+			"'CANCEL_TIMESLOT' where R.ID IN (select r.ID from dlv.reservation r, dlv.timeslot t  where T.BASE_DATE > sysdate and T.ID = R.TIMESLOT_ID " +
+			"and R.STATUS_CODE = '15' and R.UNASSIGNED_ACTION is null and R.IN_UPS = 'X' and not exists (select 1 from MIS.TIMESLOT_EVENT_HDR h where " +
+			" H.EVENTTYPE = 'CANCEL_TIMESLOT' and H.ORDER_ID = R.ORDER_ID and H.CUSTOMER_ID = R.CUSTOMER_ID and r.id=H.RESERVATION_ID ))";
+	
+	
+	public static List<DlvReservationModel> getCancelledRsvInUPS(
+			Connection conn) throws SQLException {
+		PreparedStatement ps =
+				conn.prepareStatement(FETCH_CANCELLED_RESERVATIONS_IN_UPS);
+			
+			ResultSet rs = ps.executeQuery();
+			List<DlvReservationModel>  reservations = new ArrayList<DlvReservationModel>();
+			while (rs.next()) {
+				DlvReservationModel rsv = loadReservationFromResultSet(rs);
+				reservations.add(rsv);
+			}
+
+			if(reservations.size()>0)
+				ps = conn.prepareStatement(FIX_CANCELLED_RESERVATIONS_IN_UPS);
+			
+			rs.close();
+			ps.close();
+	       
+			return reservations;
+		}
+
+	
+	private static final String FETCH_ORDERS_WITH_CANCELLED_RESERVATIONS="select R.ID, R.ORDER_ID, R.CUSTOMER_ID, R.STATUS_CODE, R.TIMESLOT_ID, R.ZONE_ID, R.EXPIRATION_DATETIME, " +
+			"R.TYPE, R.ADDRESS_ID,T.BASE_DATE, Z.ZONE_CODE,R.UNASSIGNED_DATETIME, R.UNASSIGNED_ACTION, R.IN_UPS, R.ORDER_SIZE, R.SERVICE_TIME, R.RESERVED_ORDER_SIZE, " +
+			"R.RESERVED_SERVICE_TIME, R.UPDATE_STATUS, R.METRICS_SOURCE, R.NUM_CARTONS , R.NUM_FREEZERS , R.NUM_CASES from cust.sale s, cust.salesaction sa, " +
+			"cust.deliveryinfo di, dlv.reservation r, dlv.timeslot t, dlv.zone z where s.id=sa.sale_id and s.customer_id=sa.customer_id and S.CROMOD_DATE=sa.action_date  " +
+			"and sa.action_type in ('CRO','MOD') and t.zone_id = z.id and R.TIMESLOT_ID = T.ID and sa.requested_date>=trunc(sysdate) and DI.RESERVATION_ID=r.id and " +
+			"sa.id=di.salesaction_id and s.status!='CAN' and R.STATUS_CODE!='10' ";
+	
+	private static final String FIX_ORDERS_WITH_CANCELLED_RESERVATIONS = "update dlv.reservation rdx  set rdx.UNASSIGNED_ACTION = 'RESERVE_TIMESLOT', " +
+			"rdx.UNASSIGNED_DATETIME = sysdate,rdx.STATUS_CODE = '10' where rdx.id IN  (select r.id  from cust.sale s, cust.salesaction sa, " +
+			"cust.deliveryinfo di, dlv.reservation r where s.id=sa.sale_id and s.customer_id=sa.customer_id and S.CROMOD_DATE=sa.action_date  " +
+			"and sa.action_type in ('CRO','MOD') and sa.requested_date>=trunc(sysdate) and DI.RESERVATION_ID=r.id and sa.id=di.salesaction_id " +
+			"and s.status!='CAN' and R.STATUS_CODE!='10'";
+	
+	
+	public static List<DlvReservationModel> getOrdersWithCancelledRsv(
+			Connection conn) throws SQLException {
+		PreparedStatement ps =
+				conn.prepareStatement(FETCH_ORDERS_WITH_CANCELLED_RESERVATIONS);
+			
+			ResultSet rs = ps.executeQuery();
+			List<DlvReservationModel>  reservations = new ArrayList<DlvReservationModel>();
+			while (rs.next()) {
+				DlvReservationModel rsv = loadReservationFromResultSet(rs);
+				reservations.add(rsv);
+			}
+
+			if(reservations.size()>0)
+				ps = conn.prepareStatement(FIX_ORDERS_WITH_CANCELLED_RESERVATIONS);
+			
+			rs.close();
+			ps.close();
+	       
+			return reservations;
+		}
+
+	
+	
 }

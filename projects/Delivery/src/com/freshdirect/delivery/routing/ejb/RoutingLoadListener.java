@@ -117,10 +117,7 @@ public class RoutingLoadListener extends MessageDrivenBeanSupport {
 			rx.printStackTrace();
 			LOGGER.error("JMSException occured while executing address load command, holding RuntimeException", rx);	
 			//throw new RuntimeException("JMSException occured while reading command: " + rx.getMessage());
-		}
-		/* catch (FDResourceException e) {
-			//throw new RuntimeException("JMSException occured while reading command: " + e.getMessage());
-		}*/
+		} 
 		catch(Exception e) {
 			//getMessageDrivenContext().setRollbackOnly();
 			e.printStackTrace();
@@ -196,15 +193,9 @@ public class RoutingLoadListener extends MessageDrivenBeanSupport {
 	}
 	
     private void process(ConfirmTimeslotCommand command) throws FDResourceException {
-		
-    	if(command != null && command.isUpdateOnly()) {
-    		FDDeliveryManager.getInstance().commitReservationEx(command.getReservation(), command.getAddress(), command.getEvent());
-    	} else {
-    		FDDeliveryManager.getInstance().commitReservationEx(command.getReservation(), command.getAddress(), command.getEvent());
-		
-    	}
-    
-	}
+   		
+			FDDeliveryManager.getInstance().commitReservationEx(command.getReservation(), command.getAddress(), command.getEvent());
+    }
     
     private void process(ReservationUpdateCommand command) throws FDResourceException {
 		
