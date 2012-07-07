@@ -26,8 +26,8 @@
         <property name="premiumCapacity" column="PREMIUM_CAPACITY" type="int" />
         <property name="premiumCtCapacity" column="PREMIUM_CT_CAPACITY" />
         <property name="plannedCapacity" column="PLANNED_CAPACITY" />
-        <property name="chefsTableAllocation" formula="(select count(*) from dlv.reservation r where r.timeslot_id=ID and r.status_code &lt;&gt; '15' and r.status_code &lt;&gt; '20' and r.chefstable = 'X')"/>
-        <property name="baseAllocation" formula="(select count(*) from dlv.reservation r where r.timeslot_id=ID and r.status_code &lt;&gt; '15' and r.status_code &lt;&gt; '20' and r.chefstable = ' ')"/>
+        <property name="chefsTableAllocation" formula="(select count(*) from dlv.reservation r where r.timeslot_id=ID and r.status_code &lt;&gt; '15' and r.status_code &lt;&gt; '20' and r.chefstable = 'X' and r.class is null)"/>
+        <property name="baseAllocation" formula="(select count(*) from dlv.reservation r where r.timeslot_id=ID and r.status_code &lt;&gt; '15' and r.status_code &lt;&gt; '20' and r.chefstable = ' ' and r.class is null)"/>
         <property name="preAllocation" formula="(select count(*) from dlv.reservation r where r.timeslot_id=ID and r.status_code ='5' and r.type &lt;&gt; 'STD')"/>
         <property name="order" formula="(select count(*) from dlv.reservation r where r.timeslot_id=ID and r.status_code = '10')"/>
         <property name="ctReleaseTime" formula="(select z.ct_release_time from dlv.zone z where z.id = ZONE_ID)" />
