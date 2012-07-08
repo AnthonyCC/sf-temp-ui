@@ -551,12 +551,12 @@ function fdTSDisplay(refIdArg) {
 						//timestamp
 						match = premSlotsCO.match("^(\\d{2})-(\\d{2})-(\\d{4})\\s(\\d{1,2}):(\\d{1,2}):(\\d{1,2})$");
 						this.opts.premSlotsCO = new Date(Date.UTC(
-							parseInt(match[3]), // Y
-							parseInt(match[2]) - 1, // M
-							parseInt(match[1]), // D
-							parseInt(match[4]), // h
-							parseInt(match[5]), // m
-							parseInt(match[6]), // s
+							parseInt(match[3], 10), // Y
+							parseInt(match[2], 10) - 1, // M
+							parseInt(match[1], 10), // D
+							parseInt(match[4], 10), // h
+							parseInt(match[5], 10), // m
+							parseInt(match[6], 10), // s
 							0 //ms
 						));
 					} else {
