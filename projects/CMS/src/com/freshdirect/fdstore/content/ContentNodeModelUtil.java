@@ -94,8 +94,8 @@ public class ContentNodeModelUtil {
 		TYPE_MODEL_MAP.put("FavoriteList", FavoriteList.class);
 		TYPE_MODEL_MAP.put("Recommender", Recommender.class);
 		TYPE_MODEL_MAP.put("RecommenderStrategy", RecommenderStrategy.class);
-                TYPE_MODEL_MAP.put("Tile", Tile.class);
-                TYPE_MODEL_MAP.put("TileList", TileList.class);
+        TYPE_MODEL_MAP.put("Tile", Tile.class);
+        TYPE_MODEL_MAP.put("TileList", TileList.class);
 		TYPE_MODEL_MAP.put("FAQ", Faq.class);
 		TYPE_MODEL_MAP.put("Producer", ProducerModel.class);
         TYPE_MODEL_MAP.put("ProducerType", ProducerTypeModel.class);
@@ -103,6 +103,7 @@ public class ContentNodeModelUtil {
         TYPE_MODEL_MAP.put("HolidayGreeting", HolidayGreeting.class);
         TYPE_MODEL_MAP.put("GlobalMenuItem", GlobalMenuItemModel.class);
         TYPE_MODEL_MAP.put("GlobalMenuSection", GlobalMenuSectionModel.class);
+        TYPE_MODEL_MAP.put("DonationOrganization", DonationOrganization.class);
 	}
 
 	/**

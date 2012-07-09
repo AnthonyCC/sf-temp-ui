@@ -124,6 +124,9 @@ public class EnumUserInfoName implements Serializable {
 	public final static EnumUserInfoName					MOBILE_NUMBER							= new EnumUserInfoName( "mobile_number", "Mobile Number" );
 	public final static EnumUserInfoName					TEXT_OPTION								= new EnumUserInfoName( "text_option", "Text Messaging Preferences" );
 	public final static EnumUserInfoName					DISPLAY_NAME							= new EnumUserInfoName( "displayName", "Display Name" );
+
+	// Gift Card Donation
+	public final static EnumUserInfoName					GC_DONOR_ORGANIZATION_NAME				= new EnumUserInfoName( "gcDonorOrganizationName", "Donor Organization Name" );
 	
 	private int id;
 	private String code;

@@ -56,17 +56,17 @@
 		<%
 			if (gcList !=null) {
 				for(int i=0;i<gcList.size();i++) {
-					DomainValue gcType=(DomainValue)gcList.get(i);
+					DomainValue gcOption=(DomainValue)gcList.get(i);
 					%>
 					cardArr[<%=i%>]=Array(
 						<%=i%>,						// fdCard.index
-						'<%= gcType.getID() %>',	// fdCard.id
-						URLDecode('<%= URLEncoder.encode(gcType.getLabel()) %>'),	// fdCard.displayName
+						'<%= gcOption.getID() %>',	// fdCard.id
+						URLDecode('<%= URLEncoder.encode(gcOption.getLabel()) %>'),	// fdCard.displayName
 						true						// fdCard.preLoad
 					);
 					<%
 					//if this is the id we've passed, make it the initial card
-					if ((gcType.getID()).equals(fdTemplateId)) {
+					if ((gcOption.getID()).equals(fdTemplateId)) {
 						gcInitialCard = i;
 					}
 				}

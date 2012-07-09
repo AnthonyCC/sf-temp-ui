@@ -24,6 +24,11 @@
 <%@ taglib uri='bean' prefix='bean' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 
+<%@ page import='com.freshdirect.cms.*'%>
+<%@ page import='com.freshdirect.cms.application.CmsManager'%>
+<%@ page import='com.freshdirect.cms.fdstore.FDContentTypes'%>
+<%@ page import='com.freshdirect.fdstore.content.*'%>
+
 <% //expanded page dimensions
 final int W_GIFTCARD_RECEIPT_TOTAL = 970;
 %>
@@ -44,33 +49,84 @@ java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyIns
         request.setAttribute("listPos", "ReceiptBotLeft,ReceiptBotRight,SystemMessage");
 %>
 <%
+FDSessionUser sessionuser = (FDSessionUser)session.getAttribute(SessionName.USER);
+EnumGiftCardType gcType = sessionuser.getGiftCardType();
+
 
 
 String orderNumber = (String)session.getAttribute(SessionName.RECENT_ORDER_NUMBER);
 %>
 <fd:GetOrder id='cart' saleId='<%=orderNumber%>'>
 
-<%ErpPaymentMethodI paymentMethod = (ErpPaymentMethodI) cart.getPaymentMethod();
+<%
+	FDRecipientList recipients = cart.getGiftCardRecipients();
 
-String lineWidth = "290";
+	String _donOrgName = "";
+	String _donOrgLogo = "";
+	if(gcType != null && EnumGiftCardType.DONATION_GIFTCARD.equals(gcType)) {
+		List<DonationOrganization> donationOrgList = new ArrayList<DonationOrganization>();
+		CmsManager manager = CmsManager.getInstance();	
+		ContentKey contentKey = new ContentKey(FDContentTypes.FDFOLDER, "donationOrganizationList");
+		ContentNodeI contentNode = manager.getContentNode(contentKey);
 
-int idx = 0;
+		if(null != contentNode){
+			Set subNodes = contentNode.getChildKeys();
+			for (Object object : subNodes) {
+				ContentKey subContentKey = (ContentKey) object;
+				if(null != subContentKey){
+					ContentType contentType = subContentKey.getType(); 
+					if(FDContentTypes.DONATION_ORGANIZATION.equals(contentType)){
+						DonationOrganization _org = new DonationOrganization(subContentKey);
+						donationOrgList.add(_org);
+					}
+				}
+			}
+			for (DonationOrganization _org : donationOrgList) {			
+				Iterator<RecipientModel> i = recipients.getRecipients().listIterator();
+				while(i.hasNext()) {
+					ErpRecipentModel erm = (ErpRecipentModel)i.next();
+					if(erm.getRecipientEmail().equalsIgnoreCase(_org.getEmail())){
+						_donOrgName = _org.getOrganizationName();
+						_donOrgLogo = (_org.getOrganizationLogoSmall() != null) ? _org.getOrganizationLogoSmall().toHtml() : ""; 
+					}
+				}
+			}
+		}
+	}
+
+	ErpPaymentMethodI paymentMethod = (ErpPaymentMethodI) cart.getPaymentMethod();
+
+	String lineWidth = "290";
+
+	int idx = 0;
 %>
 
 <TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="<%=W_GIFTCARD_RECEIPT_TOTAL%>">
 <tr>
 	<td colspan="6"class="text11">
-		<span class="title18">Thank you for buying Gift Cards.</span><br>
-		<br>
+
+		<% if(gcType != null && EnumGiftCardType.REGULAR_GIFTCARD.equals(gcType)) {%>
+			<span class="title18">
+			Thank you for buying Gift Cards.
+			</span>
+		<% } else if(gcType != null && EnumGiftCardType.DONATION_GIFTCARD.equals(gcType)) {%>
+			<table>
+				<tr>
+					<td><%= _donOrgLogo %></td>
+					<td class="title18">Thank you for supporting <%= _donOrgName %>!</td>
+				</tr>
+			</table>
+		<% }%>
 		<img src="/media_stat/images/layout/ff9933.gif" width="<%=W_GIFTCARD_RECEIPT_TOTAL%>" height="1" border="0" vspace="8"><br><br>
 	</td>
+
 </tr>
 
 <TR VALIGN="TOP">
     <TD WIDTH="<%=W_GIFTCARD_RECEIPT_TOTAL-340%>">
         <TABLE CELLPADDING="0" CELLSPACING="0" BORDER="0" WIDTH="<%=W_GIFTCARD_RECEIPT_TOTAL-340%>">
         <TR VALIGN="TOP">
-            <TD WIDTH="<%=W_GIFTCARD_RECEIPT_TOTAL-340%>" COLSPAN="2"><span class="title18"><b>PLEASE NOTE:</b></span><BR>
+            <TD WIDTH="<%=W_GIFTCARD_RECEIPT_TOTAL-340%>" COLSPAN="2"><span class="title18"><b>PLEASE NOTE:</b><br/></span><BR>
             It may take up to <b>TWO HOURS OR MORE</b> to activate your Gift Cards.  Thank you for your patience.<BR><BR>
             We will send <b>confirmation to you via email</b> once your newly purchased Gift Cards are active.<br><br>
             <a href="<%=response.encodeURL("/your_account/gc_order_details.jsp?orderId="+orderNumber)%>">
@@ -152,7 +208,6 @@ int idx = 0;
 <% 
 //for display of recipient number
 int indx = 1;
-FDRecipientList recipients = cart.getGiftCardRecipients();
 %>
 
  
@@ -198,7 +253,7 @@ FDRecipientList recipients = cart.getGiftCardRecipients();
 		</tr>
 
         <tr>
-            <td class="recipTotal">TOTAL: $<%=  recipients.getFormattedSubTotal() %></td>
+            <td class="recipTotal">TOTAL: $<%=  recipients.getFormattedSubTotal(gcType) %></td>
         </tr>
 <% if (FDStoreProperties.isAdServerEnabled()) { %>
 <tr><td><br><br></td></tr>

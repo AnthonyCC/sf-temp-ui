@@ -373,7 +373,7 @@ public class GiftCardControllerTag extends com.freshdirect.framework.webapp.Body
             			FDReservation reservation= UserUtil.getFDReservation(user.getIdentity().getErpCustomerPK(),null);
             			user.getGiftCart().setDeliveryReservation(reservation);
             			
-            			List repList = convertSavedToErpRecipienntModel(user.getRecipientList().getRecipients(),user.getIdentity().getErpCustomerPK());	
+            			List repList = convertSavedToErpRecipienntModel(user.getRecipientList().getRecipients(user.getGiftCardType()),user.getIdentity().getErpCustomerPK());	
             			
             		    try {
     						String saleId;

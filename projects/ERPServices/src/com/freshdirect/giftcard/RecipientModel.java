@@ -75,6 +75,22 @@ public class RecipientModel extends ModelSupport {
 		this.personalMessage = personalMessage;
 	}
 
+	public EnumGiftCardType getGiftCardType() {
+		return giftCardType;
+	}
+
+	public void setGiftCardType(EnumGiftCardType giftCardType) {
+		this.giftCardType = giftCardType;
+	}
+	
+	public String getDonorOrganizationName() {
+		return donorOrganizationName;
+	}
+
+	public void setDonorOrganizationName(String donorOrganizationName) {
+		this.donorOrganizationName = donorOrganizationName;
+	}
+
 	public String getFormattedAmount() {
 		return FormatterUtil.formatToTwoDecimal(this.getAmount());
 	}
@@ -86,8 +102,10 @@ public class RecipientModel extends ModelSupport {
 	private double amount=0;
 	private EnumGCDeliveryMode deliveryMode=null;
 	private String personalMessage=null;
+	private EnumGiftCardType giftCardType=null;
+	private String donorOrganizationName;
 	
-	public RecipientModel(){		
+	public RecipientModel(){
 	}
 	
 	public int getRandomId() {

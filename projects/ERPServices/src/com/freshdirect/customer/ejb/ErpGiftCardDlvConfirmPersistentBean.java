@@ -15,6 +15,7 @@ import com.freshdirect.giftcard.EnumGCDeliveryMode;
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.customer.EnumTransactionType;
 import com.freshdirect.customer.ErpAuthorizationModel;
+import com.freshdirect.giftcard.EnumGiftCardType;
 import com.freshdirect.giftcard.ErpEmailGiftCardModel;
 import com.freshdirect.giftcard.ErpGCDlvInformationHolder;
 import com.freshdirect.giftcard.ErpGiftCardDlvConfirmModel;
@@ -195,7 +196,7 @@ public class ErpGiftCardDlvConfirmPersistentBean extends ErpGiftCardPersistentBe
 	}
 	
 	private static final String SELECT_GC_RECEPIENTS_SQL="SELECT GCR.ID as ID, GCR.CUSTOMER_ID,GCR.SENDER_NAME,GCR.SENDER_EMAIL,GCR.RECIP_NAME,GCR.RECIP_EMAIL,GCR.TEMPLATE_ID,GCR.DELIVERY_MODE, GCR.AMOUNT GC_AMOUNT,GCR.PERSONAL_MSG, "+ 
-														"GDCC.GIFT_CARD_ID,GDCC.DELIVERY_MODE,GDCC.EMAIL_SENT,GC.GIVEX_NUM, GCR.ORDERLINE_NUMBER " +
+														"GDCC.GIFT_CARD_ID,GDCC.DELIVERY_MODE,GDCC.EMAIL_SENT,GC.GIVEX_NUM, GCR.ORDERLINE_NUMBER, GCR.DONOR_ORGNAME, GCR.GIFTCARD_TYPE " +
 														"FROM CUST.GIFT_CARD_RECIPIENT GCR,CUST.GIFT_CARD_DELIVERY_INFO GDCC, CUST.GIFT_CARD GC "+ 
 														"WHERE GDCC.SALESACTION_ID=? AND GCR.ID=GDCC.RECIPIENT_ID AND GC.ID = GDCC.GIFT_CARD_ID";
 		/** 
@@ -228,6 +229,8 @@ public class ErpGiftCardDlvConfirmPersistentBean extends ErpGiftCardPersistentBe
 			recModel.setPersonalMessage(rs.getString("PERSONAL_MSG"));
 			recModel.setAmount(rs.getDouble("GC_AMOUNT"));
 			recModel.setOrderLineId(rs.getString("ORDERLINE_NUMBER"));
+			recModel.setDonorOrganizationName(rs.getString("DONOR_ORGNAME"));
+			recModel.setGiftCardType(EnumGiftCardType.getEnum(rs.getString("GIFTCARD_TYPE")));
 			holder.setGiftCardId(rs.getString("GIFT_CARD_ID"));
 			holder.setGivexNum(ErpGiftCardUtil.decryptGivexNum(rs.getString("GIVEX_NUM")));
 			holder.setRecepientModel(recModel);

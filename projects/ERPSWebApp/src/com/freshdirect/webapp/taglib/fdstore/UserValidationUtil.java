@@ -11,6 +11,7 @@ import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.framework.webapp.ActionError;
 import com.freshdirect.framework.webapp.ActionResult;
+import com.freshdirect.giftcard.EnumGiftCardType;
 import com.freshdirect.webapp.taglib.crm.CrmSession;
 
 public class UserValidationUtil {
@@ -96,8 +97,8 @@ public class UserValidationUtil {
 		
 		HttpSession session = request.getSession();
 		FDUserI user = (FDUserI) session.getAttribute(SessionName.USER);
-	   
-		if (user.getRecipientList().size() == 0) {
+
+		if (user.getRecipientList().getRecipients(user.getGiftCardType()).size() == 0) {
 			result.addError(
 				new ActionError(
 					"recipients_empty",

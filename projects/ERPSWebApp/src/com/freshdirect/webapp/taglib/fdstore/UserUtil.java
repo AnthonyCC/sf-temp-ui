@@ -40,6 +40,7 @@ import com.freshdirect.fdstore.customer.FDUser;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.customer.SavedRecipientModel;
 import com.freshdirect.framework.core.PrimaryKey;
+import com.freshdirect.giftcard.EnumGiftCardType;
 
 public class UserUtil {
 
@@ -85,7 +86,7 @@ public class UserUtil {
 			ContentFactory contentFactory = ContentFactory.getInstance();
 			int n = 0;
 		
-			List recipList = user.getRecipientList().getRecipients(); //FDCustomerManager.loadSavedRecipients(user.getUser());			
+			List recipList = user.getRecipientList().getRecipients(user.getGiftCardType()); //FDCustomerManager.loadSavedRecipients(user.getUser());			
 			int quantity = 1;
 			Map optionMap = new HashMap();
 

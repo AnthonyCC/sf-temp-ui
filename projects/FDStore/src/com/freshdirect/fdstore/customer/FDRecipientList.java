@@ -6,6 +6,7 @@ import java.util.List;
 
 import com.freshdirect.framework.core.ModelSupport;
 import com.freshdirect.framework.util.FormatterUtil;
+import com.freshdirect.giftcard.EnumGiftCardType;
 import com.freshdirect.giftcard.RecipientModel;
 
 public class FDRecipientList extends ModelSupport {
@@ -75,17 +76,9 @@ public class FDRecipientList extends ModelSupport {
 		this.removeRecipient(idx);
 		return true;
 	}
-	
-	public double getSubtotal() {
-		double subtotal = 0;
-		for( RecipientModel model : recipients ) {
-			subtotal += model.getAmount();
-		}
-		return subtotal;
-	}
-	
-	public String getFormattedSubTotal() {
-		return FormatterUtil.formatToTwoDecimal(getSubtotal());
+
+	public String getFormattedSubTotal(EnumGiftCardType gcType) {
+		return FormatterUtil.formatToTwoDecimal(getSubtotal(gcType));
 	}
 	
 	public int size(){
@@ -94,5 +87,36 @@ public class FDRecipientList extends ModelSupport {
 	
 	public void clear(){
 		this.recipients.clear();
+	}
+
+	public List<RecipientModel> getRecipients(EnumGiftCardType giftCardType) {
+		
+		List<RecipientModel> models = new ArrayList<RecipientModel>();		
+		for ( RecipientModel model : recipients ) {
+			if (giftCardType != null && model.getGiftCardType() != null && model.getGiftCardType().equals(giftCardType)) {
+				models.add(model);
+			}
+		}
+		return models;
+	}
+
+	public void removeRecipients(EnumGiftCardType giftCardType) {	
+		int randomId = 0;
+		for ( RecipientModel model : recipients ) {
+			if (giftCardType != null && model.getGiftCardType() != null && model.getGiftCardType().equals(giftCardType)) {
+				randomId = model.getRandomId();
+			}
+		}
+		this.removeOrderLineById(randomId);
+	}
+
+	public double getSubtotal(EnumGiftCardType giftCardType) {
+		double subtotal = 0;
+		for( RecipientModel model : recipients ) {
+			if (giftCardType != null && model.getGiftCardType() != null && model.getGiftCardType().equals(giftCardType)) {
+				subtotal += model.getAmount();
+			}
+		}
+		return subtotal;
 	}
 }

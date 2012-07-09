@@ -18,6 +18,7 @@ import com.freshdirect.affiliate.ErpAffiliate;
 import com.freshdirect.common.pricing.EnumDiscountType;
 import com.freshdirect.common.pricing.Discount;
 import com.freshdirect.giftcard.EnumGCDeliveryMode;
+import com.freshdirect.giftcard.EnumGiftCardType;
 import com.freshdirect.customer.ErpOrderLineModel;
 import com.freshdirect.giftcard.ErpRecipentModel;
 import com.freshdirect.fdstore.EnumOrderLineRating;
@@ -96,7 +97,7 @@ public class ErpGCRecipientPersitanceBean extends ErpReadOnlyPersistentBean {
 	 */
 	public static List findByParent(Connection conn, PrimaryKey parentPK) throws SQLException {
 		java.util.List lst = new java.util.LinkedList();
-		PreparedStatement ps = conn.prepareStatement("select ID,CUSTOMER_ID,SENDER_NAME,SENDER_EMAIL,RECIP_NAME,RECIP_EMAIL,TEMPLATE_ID,DELIVERY_MODE,AMOUNT,PERSONAL_MSG from cust.GIFT_CARD_RECIPIENT where SALESACTION_ID=?");
+		PreparedStatement ps = conn.prepareStatement("select ID,CUSTOMER_ID,SENDER_NAME,SENDER_EMAIL,RECIP_NAME,RECIP_EMAIL,TEMPLATE_ID,DELIVERY_MODE,AMOUNT,PERSONAL_MSG,DONOR_ORGNAME,GIFTCARD_TYPE from cust.GIFT_CARD_RECIPIENT where SALESACTION_ID=?");
 		ps.setString(1, parentPK.getId());
 		ResultSet rs = ps.executeQuery();		
 		while (rs.next()) {
@@ -111,7 +112,7 @@ public class ErpGCRecipientPersitanceBean extends ErpReadOnlyPersistentBean {
 	}
 	
 	private final static String INSERT_QUERY =
-		"INSERT INTO CUST.GIFT_CARD_RECIPIENT(ID,CUSTOMER_ID,SENDER_NAME,SENDER_EMAIL,RECIP_NAME,RECIP_EMAIL,TEMPLATE_ID,DELIVERY_MODE,AMOUNT,PERSONAL_MSG,SALESACTION_ID,ORDERLINE_NUMBER) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)";
+		"INSERT INTO CUST.GIFT_CARD_RECIPIENT(ID,CUSTOMER_ID,SENDER_NAME,SENDER_EMAIL,RECIP_NAME,RECIP_EMAIL,TEMPLATE_ID,DELIVERY_MODE,AMOUNT,PERSONAL_MSG,SALESACTION_ID,ORDERLINE_NUMBER,DONOR_ORGNAME,GIFTCARD_TYPE) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
 	public PrimaryKey create(Connection conn) throws SQLException {
 				
@@ -156,6 +157,9 @@ public class ErpGCRecipientPersitanceBean extends ErpReadOnlyPersistentBean {
 		ps.setString(10, model.getPersonalMessage());
 		ps.setString(11, this.getParentPK().getId());
 		ps.setString(12,model.getOrderLineId());
+		ps.setString(13, model.getDonorOrganizationName());
+		ps.setString(14, model.getGiftCardType() != null ? model.getGiftCardType().getName() : null);
+
 		try {
 			if (ps.executeUpdate() != 1) {
 				throw new SQLException("Row not created");
@@ -173,7 +177,7 @@ public class ErpGCRecipientPersitanceBean extends ErpReadOnlyPersistentBean {
 
 	public void load(Connection conn) throws SQLException {
 				
-		PreparedStatement ps = conn.prepareStatement("select ID,CUSTOMER_ID,SENDER_NAME,SENDER_EMAIL,RECIP_NAME,RECIP_EMAIL,TEMPLATE_ID,DELIVERY_MODE,AMOUNT,PERSONAL_MSG from cust.GIFT_CARD_RECIPIENT where ID=?");
+		PreparedStatement ps = conn.prepareStatement("select ID,CUSTOMER_ID,SENDER_NAME,SENDER_EMAIL,RECIP_NAME,RECIP_EMAIL,TEMPLATE_ID,DELIVERY_MODE,AMOUNT,PERSONAL_MSG,DONOR_ORGNAME,GIFTCARD_TYPE from cust.GIFT_CARD_RECIPIENT where ID=?");
 		ps.setString(1, this.getPK().getId());
 		ResultSet rs = ps.executeQuery();
 		if (rs.next()) {
@@ -197,6 +201,8 @@ public class ErpGCRecipientPersitanceBean extends ErpReadOnlyPersistentBean {
 		this.model.setDeliveryMode(EnumGCDeliveryMode.getEnum(rs.getString("DELIVERY_MODE")));
 		this.model.setPersonalMessage(rs.getString("PERSONAL_MSG"));
 		this.model.setAmount(rs.getDouble("AMOUNT"));
+		this.model.setDonorOrganizationName(rs.getString("DONOR_ORGNAME"));
+		this.model.setGiftCardType(EnumGiftCardType.getEnum(rs.getString("GIFTCARD_TYPE")));
 		this.unsetModified();
 	}
 }

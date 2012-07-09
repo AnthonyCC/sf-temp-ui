@@ -57,6 +57,7 @@ import com.freshdirect.fdstore.promotion.SignupDiscountRule;
 import com.freshdirect.fdstore.standingorders.FDStandingOrder;
 import com.freshdirect.fdstore.util.IgnoreCaseString;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.giftcard.EnumGiftCardType;
 import com.freshdirect.smartstore.SessionImpressionLogEntry;
 import com.freshdirect.smartstore.fdstore.SessionImpressionLog;
 import com.freshdirect.webapp.listeners.FDEventProcessor;
@@ -1352,12 +1353,18 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 		this.user.setTsaPromoCode(tsaPromoCode);
 	}
 
+	public EnumGiftCardType getGiftCardType() {
+		return this.user.getGiftCardType();
+	}
+
+	public void setGiftCardType(EnumGiftCardType giftCardType) {
+		this.user.setGiftCardType(giftCardType);
+	}
+
 	public boolean isEbtAccepted() {
 		return this.user.isEbtAccepted();
 	}
-
 	public void setEbtAccepted(boolean ebtAccepted) {
 		this.user.setEbtAccepted(ebtAccepted);
 	}
 }
-

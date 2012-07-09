@@ -24,7 +24,8 @@ public class GiftCardOrderInfo implements Serializable{
 	private String gcType;
 	private String gcRecipientEmail;
 	private String gcSenderEmail;
-	
+	private String gcTemplateId;
+	private String gcDonorOrgName;
 	
 	public GiftCardOrderInfo(String gcId, double gcAmount,
 			String gcRedempcode, String gcFor, String gcFrom, String gcMessage,
@@ -147,8 +148,25 @@ public class GiftCardOrderInfo implements Serializable{
 	public void setGcSenderEmail(String gcSenderEmail) {
 		this.gcSenderEmail = gcSenderEmail;
 	}
-	
-	
-	
+
+
+	public String getGcTemplateId() {
+		return gcTemplateId;
+	}
+
+
+	public void setGcTemplateId(String gcTemplateId) {
+		this.gcTemplateId = gcTemplateId;
+	}
+
+
+	public String getGcDonorOrgName() {
+		return gcDonorOrgName;
+	}
+
+
+	public void setGcDonorOrgName(String gcDonorOrgName) {
+		this.gcDonorOrgName = gcDonorOrgName;
+	}
 
 }

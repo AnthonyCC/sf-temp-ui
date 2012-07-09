@@ -12,7 +12,7 @@
 <%@ taglib uri='bean' prefix='bean' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri='crm' prefix='crm' %>
-
+<%@ page import='com.freshdirect.giftcard.EnumGiftCardType' %>
 
 
 <% boolean isGuest = false; %>
@@ -46,11 +46,14 @@
 %>
 		<fd:AddSavedRecipientController actionName='<%=action_name%>' resultName='result' successPage='/gift_card/purchase/add_giftcard.jsp'>
             <%
-               FDSessionUser sessionuser = (FDSessionUser)session.getAttribute(SessionName.USER);
-            if(sessionuser.getGiftCart().getDeliveryAddress()!=null) {
-                 UserValidationUtil.validateRecipientListEmpty(request, result); 
-                 sessionuser.getGiftCart().setDeliveryAddress(null);
-             }
+               	FDSessionUser sessionuser = (FDSessionUser)session.getAttribute(SessionName.USER);
+	            sessionuser.setGiftCardType(EnumGiftCardType.REGULAR_GIFTCARD);
+	            if(sessionuser.getGiftCart().getDeliveryAddress()!=null) {
+	                 UserValidationUtil.validateRecipientListEmpty(request, result); 
+	                 sessionuser.getGiftCart().setDeliveryAddress(null);
+	            }
+	            
+	            EnumGiftCardType gcType = sessionuser.getGiftCardType();
              %>
             <fd:ErrorHandler result='<%=result%>' name='gc_amount_minimum' id='errorMsg'>
                <%@ include file="/includes/i_error_messages.jspf" %>

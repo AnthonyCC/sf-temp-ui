@@ -34,6 +34,7 @@ import com.freshdirect.fdstore.promotion.PromotionI;
 import com.freshdirect.fdstore.promotion.SignupDiscountRule;
 import com.freshdirect.fdstore.standingorders.FDStandingOrder;
 import com.freshdirect.fdstore.util.IgnoreCaseString;
+import com.freshdirect.giftcard.EnumGiftCardType;
 
 
 public interface FDUserI extends java.io.Serializable {
@@ -500,7 +501,12 @@ public interface FDUserI extends java.io.Serializable {
 
 	public void setTsaPromoCode(String tsaPromoCode);
 	
+	public EnumGiftCardType getGiftCardType();
+
+	public void setGiftCardType(EnumGiftCardType giftCardType);
+	
 	public boolean isEbtAccepted();
 
-	public void setEbtAccepted(boolean ebtAccepted) ;
+	public void setEbtAccepted(boolean ebtAccepted);
+
 }

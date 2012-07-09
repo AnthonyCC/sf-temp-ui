@@ -81,7 +81,7 @@
 									<img src="/media_stat/images/layout/cccccc.gif" width="1" height="280"><br />
 								</td>
 								<td width="300">
-									<img src="/media_stat/images/navigation/payment_info.gif" width="91" height="9" border="0" alt="PAYMENT INFO"><br />
+									<img src="/media_stat/images/navigation/payment_info.gif" width="100" height="15" border="0" alt="PAYMENT INFO"><br />
 									<img src="/media_stat/images/layout/999966.gif" width="<%=lineWidth%>" height="1" border="0" vspace="3"><br />
 									<table cellpadding="0" cellspacing="0" border="0" width="300">
 										<tr valign="top">

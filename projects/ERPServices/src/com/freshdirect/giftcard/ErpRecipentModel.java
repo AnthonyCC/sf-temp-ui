@@ -45,6 +45,8 @@ public class ErpRecipentModel extends RecipientModel {
         this.setPersonalMessage(model.getPersonalMessage());
         this.setSenderEmail(model.getSenderEmail());
         this.setSenderName(model.getSenderName());
-        this.setTemplateId(model.getTemplateId());            
+        this.setTemplateId(model.getTemplateId());
+        this.setGiftCardType(model.getGiftCardType());
+        this.setDonorOrganizationName(model.getDonorOrganizationName());
   }
 }

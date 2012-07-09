@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.freshdirect.giftcard.EnumGCDeliveryMode;
+import com.freshdirect.giftcard.EnumGiftCardType;
 import com.freshdirect.giftcard.RecipientModel;
 import com.freshdirect.fdstore.customer.SavedRecipientModel;
 import com.freshdirect.framework.core.SequenceGenerator;
@@ -16,8 +17,8 @@ public class SavedRecipientDAO {
 	
 	private static String INSERT_SAVED_RECIPIENT =
 		"INSERT INTO CUST.SAVED_RECIPIENT( "+
-		"ID,FDUSER_ID,SENDER_NAME,SENDER_EMAIL,RECIP_NAME,RECIP_EMAIL,TEMPLATE_ID,DELIVERY_MODE,AMOUNT,PERSONAL_MSG)"+ 
-	    "VALUES (?,?,?,?,?,?,?,?,?,?)";
+		"ID,FDUSER_ID,SENDER_NAME,SENDER_EMAIL,RECIP_NAME,RECIP_EMAIL,TEMPLATE_ID,DELIVERY_MODE,AMOUNT,PERSONAL_MSG,DONOR_ORGNAME,GIFTCARD_TYPE)"+ 
+	    "VALUES (?,?,?,?,?,?,?,?,?,?,?,?)";
 	
 	private static String nvl(String str) {
 		return (str == null) ? "" : str;
@@ -48,6 +49,8 @@ public class SavedRecipientDAO {
 			//ps.setDouble(9, model.getAmount());
 			ps.setBigDecimal(9, new java.math.BigDecimal(model.getAmount()));
 			ps.setString(10, nvl(model.getPersonalMessage()));
+			ps.setString(11, nvl(model.getDonorOrganizationName()));
+			ps.setString(12, nvl(model.getGiftCardType().getName()));		
 			ps.addBatch();
 		} 
 			
@@ -72,6 +75,8 @@ public class SavedRecipientDAO {
 			//ps.setDouble(9, model.getAmount());
 			ps.setBigDecimal(9, new java.math.BigDecimal(model.getAmount()));
 			ps.setString(10, nvl(model.getPersonalMessage()));
+			ps.setString(11, nvl(model.getDonorOrganizationName()));
+			ps.setString(12, nvl(model.getGiftCardType().getName()));
 			ps.execute();
 			
 			ps.close();
@@ -80,7 +85,7 @@ public class SavedRecipientDAO {
 	public static void updateSavedRecipient(Connection conn, String fdUserId, SavedRecipientModel model) throws SQLException {
 		PreparedStatement ps = 
 			conn.prepareStatement("update cust.SAVED_RECIPIENT set FDUSER_ID=?,SENDER_NAME=?,SENDER_EMAIL=?,RECIP_NAME=?," +
-					"RECIP_EMAIL=?,TEMPLATE_ID=?,DELIVERY_MODE=?,AMOUNT=?,PERSONAL_MSG=? " +
+					"RECIP_EMAIL=?,TEMPLATE_ID=?,DELIVERY_MODE=?,AMOUNT=?,PERSONAL_MSG=?,GIFTCARD_TYPE=?,DONOR_ORGNAME=? " +
 					"WHERE ID=?");
 			
 			ps.setString(1, nvl(fdUserId));System.out.println("fdUserId = " + fdUserId);
@@ -93,7 +98,9 @@ public class SavedRecipientDAO {
 			//ps.setDouble(8, model.getAmount());
 			ps.setBigDecimal(8, new java.math.BigDecimal(model.getAmount()));
 			ps.setString(9, nvl(model.getPersonalMessage()));
-			ps.setString(10, model.getPK().getId());
+			ps.setString(10, nvl(model.getGiftCardType().getName()));
+			ps.setString(11, nvl(model.getDonorOrganizationName()));
+			ps.setString(12, model.getPK().getId());
 			
 			
 			if (ps.executeUpdate() != 1) {
@@ -121,7 +128,7 @@ public class SavedRecipientDAO {
 			ps.close();
 	}
 	
-	private static final String SELECT_RECIPIENTS_SQL="select ID,FDUSER_ID,SENDER_NAME,SENDER_EMAIL,RECIP_NAME,RECIP_EMAIL,TEMPLATE_ID,DELIVERY_MODE,AMOUNT,PERSONAL_MSG from cust.SAVED_RECIPIENT where FDUSER_ID=?";
+	private static final String SELECT_RECIPIENTS_SQL="select ID,FDUSER_ID,SENDER_NAME,SENDER_EMAIL,RECIP_NAME,RECIP_EMAIL,TEMPLATE_ID,DELIVERY_MODE,AMOUNT,PERSONAL_MSG,DONOR_ORGNAME,GIFTCARD_TYPE from cust.SAVED_RECIPIENT where FDUSER_ID=?";
 	
 	public static List<SavedRecipientModel> loadSavedRecipients(Connection conn, String fdUserId) throws SQLException{
 		List<SavedRecipientModel> recipientList = new ArrayList<SavedRecipientModel>();
@@ -143,6 +150,8 @@ public class SavedRecipientDAO {
             model.setDeliveryMode(EnumGCDeliveryMode.getEnum(rs.getString("DELIVERY_MODE")));
             model.setPersonalMessage(rs.getString("PERSONAL_MSG"));
             model.setAmount(rs.getDouble("AMOUNT"));
+            model.setDonorOrganizationName(rs.getString("DONOR_ORGNAME"));
+            model.setGiftCardType(EnumGiftCardType.getEnum(rs.getString("GIFTCARD_TYPE")));
             recipientList.add(model);                                        
 		}
 		

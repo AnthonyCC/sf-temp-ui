@@ -159,6 +159,8 @@ function showDialogs() {
 			this.mediaRoot = '/media/editorial/giftcards/';
 			this.mediaStaticRoot = '/media_stat/images/giftcards/';
 
+			this.dotSelectionContainer = this.refId+'dot_img';
+
 		// an array of fdCard objects
 			this.cards = new Array();
 
@@ -488,8 +490,22 @@ function showDialogs() {
 					this.err('\tCannot get right_img_containerId ('+this.right_img_containerId+'), '+$(this.right_img_containerId)+', '+this.display[2]+', '+this.cards[this.display[2]]);
 				}
 
-				this.selectCard(); // call update for select box
+					if($(this.dotSelectionContainer)){
+						var gcObject = this.display;
+						$(this.dotSelectionContainer).select('img').each(function(e, i) {
+							console.log('\tTestIndex: '+i);
+							console.log('\tTestIndex element: '+e);
+							console.log('\tTestIndex element: '+gcObject[1]);
+							if(i === gcObject[1]){
+								$(e).show();
+							} else {
+								$(e).hide();
+							}
+						});
+					}
+				
 
+				this.selectCard(); // call update for select box
 			}
 
 		/* selct a card action */
@@ -625,6 +641,140 @@ function showDialogs() {
 						]);
 
 						break;
+					case 3:
+						
+						var optionArray = new Array;
+						for (var i=0;i < this.cards.length;i++) {
+							
+							optionArray[i] = Builder.node( 'div', [
+							                          
+							                           Builder.node( 'div', { className: "dot_selection_controls" }, [ Builder.node( 'img', { src: this.mediaStaticRoot+'landing/dot_img.gif', alt: 'Choose Design', id: 'bullotImg'+i })]),
+							                           Builder.node( 'div', { className: "link_selection_controls" }, [ Builder.node( 'a', { href: '#', onClick: 'window[\''+this.refId+'\'].display[1]='+i+';window[\''+this.refId+'\'].updateDisplay();return false;' }, [ this.cards[i].displayName,  Builder.node( 'br', []) ])])
+							                          
+							                          ]);
+							
+						}
+						
+						this.displayObj =  Builder.node('table', { className: 'card_options'},
+															[ Builder
+																.node('tr',
+																		[ 
+																		  Builder
+																			.node('td',{width:'20%'},[
+																			            
+																			           Builder.node( 'div', { className: 'card_controls_header' }, [
+																			                                      Builder.node( 'img', { src: this.mediaStaticRoot+'landing/giftcard_options.gif', alt: 'Choose Design', id: 'gcChooseDesign_img' } )
+																			                                    , Builder.node( 'br', []) 
+																			                                    ]),
+																			           Builder.node( 'div', { className: 'card_controls_select', id: this.dotSelectionContainer }, [ optionArray ])
+																			           
+																			     ]),
+																		
+																		  																	  
+																		  Builder
+																			.node('td',{align:'right'},[
+																			            
+																					Builder.node('table', {className: 'card_options_img'}, 
+																							[ Builder
+																									.node(
+																											'tr',
+																											[
+																													Builder
+																															.node(
+																																	'td',
+																																	[
+																					
+																																	Builder
+																																			.node(
+																																					'a',
+																																					{
+																																						href : '#',
+																																						onClick : 'window[\''
+																																								+ this.refId
+																																								+ '\'].rotate(\'RIGHT\'); return false;',
+																																						id : this.refId
+																																								+ 'card_control_left'
+																																					},
+																																					[ Builder
+																																							.node(
+																																									'img',
+																																									{
+																																										src : this.mediaStaticRoot
+																																												+ 'landing/arrow_left_on.gif',
+																																										alt : 'scroll left'
+																																									}) ])
+																					
+																																	])
+																					
+																													,
+																													Builder
+																															.node(
+																																	'td',
+																																	[
+																					
+																																	Builder
+																																			.node(
+																																					'a',
+																																					{
+																																						href : '#',
+																																						onClick : '$(\''
+																																								+ this.partOfForm
+																																								+ '\').submit();return false;'
+																																					},
+																																					[ Builder
+																																							.node(
+																																									'img',
+																																									{
+																																										src : '',
+																																										alt : 'c',
+																																										id : this.center_img_containerId
+																																									}) ])
+																					
+																																	,Builder.node( 'div', { className: 'card_controls_msg' }, [
+																																	                   										'Click arrows to scroll & preview card designs.'
+																																	                										]) 
+																																	
+																																									
+																																									])
+																					
+																													,
+																													Builder
+																															.node(
+																																	'td',
+																																	[
+																					
+																																	Builder
+																																			.node(
+																																					'a',
+																																					{
+																																						href : '#',
+																																						onClick : 'window[\''
+																																								+ this.refId
+																																								+ '\'].rotate(\'LEFT\'); return false;',
+																																						id : this.refId
+																																								+ 'card_control_right'
+																																					},
+																																					[ Builder
+																																							.node(
+																																									'img',
+																																									{
+																																										src : this.mediaStaticRoot
+																																												+ 'landing/arrow_right_on.gif',
+																																										alt : 'scroll right'
+																																									}) ])
+																					
+																																	])
+																					
+																											])
+																					
+																							]),
+																				                               							
+																							Builder.node( 'p', [ ] )									            
+																				])
+																])
+										]);
+						break;
+						
 					default:
 						this.displayObj = Builder.node( 'div', { className: 'card_display' }, [
 							Builder.node( 'div', { className: 'card_center' }, [

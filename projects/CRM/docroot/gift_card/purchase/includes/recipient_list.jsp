@@ -9,6 +9,7 @@
 <%@ page import="com.freshdirect.fdstore.customer.SavedRecipientModel"%>
 <%@ page import="com.freshdirect.giftcard.RecipientModel"%>
 <%@ page import='com.freshdirect.framework.util.FormatterUtil' %>
+<%@ page import='com.freshdirect.giftcard.EnumGiftCardType' %>
 
 <%
 //for display of recipient number
@@ -24,14 +25,14 @@ FDUserI giftUser = (FDUserI)session.getAttribute(SessionName.USER);
 
 FDRecipientList recipList = giftUser.getRecipientList();
 if(recipList != null) {
-	List<RecipientModel> recipients =  recipList.getRecipients();
+	List<RecipientModel> recipients =  recipList.getRecipients(gcType);
 	if(!recipients.isEmpty()) {
 		if (isConfirm) {
 			//we're on payment info page
 		%><table width="100%" cellspacing="0" cellpadding="0" border="0" class="gc_tableBody">
 			<tr>
 				<td><!-- <img src="/media_stat/images/giftcards/purchase/gc_review_recip_list.gif" width="176" height="13" alt="Review Your Recipient List" /> -->
-                 <b>Selected Cards (<%=recipList.size()%>):</b>
+                 <b>Selected Cards (<%=recipients.size()%>):</b>
                 <br /><br />
 					Check the names and amounts of your gifts below.
 				</td>
@@ -44,7 +45,7 @@ if(recipList != null) {
 		<table width="100%" cellspacing="0" cellpadding="0" border="0" class="gc_tableBody">
 			<tr>
 				<td><!-- <img src="/media_stat/images/giftcards/purchase/recip_list.gif" width="120" height="21" alt="Recipient List" /> -->
-					<b>Selected Cards (<%=recipList.size()%>):</b>
+					<b>Selected Cards (<%=recipients.size()%>):</b>
 				</td>
 			</tr>
 		</table>
@@ -92,7 +93,7 @@ if(recipList != null) {
 							<%= GiftCardUtil.getTemplateName(srm.getTemplateId()) %>
 						</td>
 						<td class="recipLinks">
-							<a href="#" onClick="recipPreview('<%=srm.getRandomId()%>'); return false;">Preview</a><a href="/gift_card/purchase/add_giftcard.jsp?recipId=<%=srm.getRandomId()%>">Edit</a><a href="<%= request.getRequestURI() %>?deleteId=<%=srm.getRandomId()%>">Delete</a>
+							<a href="#" onClick="recipPreview('<%=srm.getRandomId()%>'); return false;">Preview</a><a href="/gift_card/purchase/add_giftcard.jsp?recipId=<%=srm.getRandomId()%>">Edit</a><% if(EnumGiftCardType.REGULAR_GIFTCARD.equals(gcType)) { %><a href="<%= request.getRequestURI() %>?deleteId=<%=srm.getRandomId()%>">Delete</a><% } %> 
 							<%= srm.getDeliveryMode().getDescription() %>
 						</td>
 						<td class="recipAmt">
@@ -115,7 +116,7 @@ if(recipList != null) {
 				//we're on payment info page
 			%>
 				<tr>
-					<td class="right">Subtotal: <div class="recipAmount">$<%=recipList.getFormattedSubTotal() %></div></td>
+					<td class="right">Subtotal: <div class="recipAmount">$<%=recipList.getFormattedSubTotal(gcType) %></div></td>
 				</tr>
 				<tr>
 					<td><img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0" /></td>
@@ -141,7 +142,7 @@ if(recipList != null) {
 						</tr>		   
 				<%  } %>
 				<tr>
-					<td class="recipTotal"><div class="recipTotal recipAmount" style="width: auto;">SUBTOTAL: $<%=recipList.getFormattedSubTotal() %></div></td>
+					<td class="recipTotal"><div class="recipTotal recipAmount" style="width: auto;">SUBTOTAL: $<%=recipList.getFormattedSubTotal(gcType) %></div></td>
 				</tr>
 			<% } %>
 			</table>

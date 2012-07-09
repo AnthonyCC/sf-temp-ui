@@ -31,6 +31,7 @@ import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.core.SequenceGenerator;
 import com.freshdirect.framework.util.GenericSearchCriteria;
 import com.freshdirect.giftcard.EnumGCDeliveryMode;
+import com.freshdirect.giftcard.EnumGiftCardType;
 import com.freshdirect.giftcard.ErpGCDlvInformationHolder;
 import com.freshdirect.giftcard.ErpGiftCardAuthModel;
 import com.freshdirect.giftcard.ErpGiftCardModel;
@@ -42,8 +43,8 @@ import com.freshdirect.payment.EnumGiftCardTransactionType;
 public class GiftCardPersistanceDAO {
 
 	private static String INSERT = "INSERT INTO CUST.GIFT_CARD_RECIPIENT( "
-			+ "ID,CUSTOMER_ID,SENDER_NAME,SENDER_EMAIL,RECIP_NAME,RECIP_EMAIL,TEMPLATE_ID,DELIVERY_MODE,AMOUNT,PERSONAL_MSG,SALESACTION_ID,ORDERLINE_NUMBER)"
-			+ "VALUES (?,?,?,?,?,?,?,?,?,?,?,?)";
+			+ "ID,CUSTOMER_ID,SENDER_NAME,SENDER_EMAIL,RECIP_NAME,RECIP_EMAIL,TEMPLATE_ID,DELIVERY_MODE,AMOUNT,PERSONAL_MSG,SALESACTION_ID,ORDERLINE_NUMBER,DONOR_ORGNAME,GIFTCARD_TYPE)"
+			+ "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
 	private static String nvl(String str) {
 		return (str == null) ? "" : str;
@@ -70,6 +71,13 @@ public class GiftCardPersistanceDAO {
 			ps.setString(10, nvl(model.getPersonalMessage()));
 			ps.setString(11, nvl(saleId));
 			ps.setString(12, nvl(model.getOrderLineId()));
+			ps.setString(13, nvl(model.getDonorOrganizationName()));
+
+			if(model.getGiftCardType() != null){
+				 ps.setString(14, model.getGiftCardType().getName());
+			} else {
+				 ps.setNull(14, Types.NULL);
+			}
 			ps.addBatch();
 		}
 
@@ -94,7 +102,7 @@ public class GiftCardPersistanceDAO {
 	"PURCHASE_DATE FROM ( "+
 	"SELECT GCR.ID as REC_ID,  "+
 	"GCR.CUSTOMER_ID,S.ID AS SALE_ID, GCR.SENDER_NAME,GCR.SENDER_EMAIL,GCR.RECIP_NAME,GCR.RECIP_EMAIL,GCR.TEMPLATE_ID, "+
-	"GCR.AMOUNT ,GCR.PERSONAL_MSG,GCR.ORDERLINE_NUMBER, GCR.DELIVERY_MODE,SA.ACTION_DATE, "+
+	"GCR.AMOUNT ,GCR.PERSONAL_MSG,GCR.ORDERLINE_NUMBER, GCR.DELIVERY_MODE, GCR.DONOR_ORGNAME,GCR.GIFTCARD_TYPE, SA.ACTION_DATE, "+
 	"(SELECT ACTION_DATE FROM CUST.SALESACTION WHERE SALE_ID = S.ID AND ACTION_TYPE = 'CRO') AS PURCHASE_DATE "+
 	"FROM  CUST.SALE S, CUST.SALESACTION SA, CUST.GIFT_CARD_RECIPIENT GCR "+
 	"WHERE S.CUSTOMER_ID = SA.CUSTOMER_ID "+
@@ -143,6 +151,8 @@ public class GiftCardPersistanceDAO {
 			recModel.setPersonalMessage(rs.getString("PERSONAL_MSG"));
 			recModel.setAmount(rs.getDouble("AMOUNT"));
 			recModel.setOrderLineId(rs.getString("ORDERLINE_NUMBER"));
+			recModel.setDonorOrganizationName(rs.getString("DONOR_ORGNAME"));
+			recModel.setGiftCardType(EnumGiftCardType.getEnum(rs.getString("GIFTCARD_TYPE")));
 			if(null != rs.getString("GIFT_CARD_ID"))
 				holder.setGiftCardId(rs.getString("GIFT_CARD_ID"));
 			if(null != rs.getString("GIVEX_NUM"))
@@ -160,7 +170,7 @@ public class GiftCardPersistanceDAO {
 	
 	
 	private static final String SELECT_GC_GIVEX_SQL= " SELECT GC.GIVEX_NUM, GCR.ID AS ID, "+
-														 " GCR.CUSTOMER_ID,GC.SALE_ID, GCR.SENDER_NAME,GCR.SENDER_EMAIL,GCR.RECIP_NAME,GCR.RECIP_EMAIL,GCR.TEMPLATE_ID,GCR.DELIVERY_MODE, GCR.AMOUNT GC_AMOUNT,GCR.PERSONAL_MSG,GCR.ORDERLINE_NUMBER, "+  
+														 " GCR.CUSTOMER_ID,GC.SALE_ID, GCR.SENDER_NAME,GCR.SENDER_EMAIL,GCR.RECIP_NAME,GCR.RECIP_EMAIL,GCR.TEMPLATE_ID,GCR.DELIVERY_MODE, GCR.AMOUNT GC_AMOUNT,GCR.PERSONAL_MSG,GCR.ORDERLINE_NUMBER,GCR.DONOR_ORGNAME,GCR.GIFTCARD_TYPE "+  
 														 " GDCC.GIFT_CARD_ID,GDCC.DELIVERY_MODE,GDCC.EMAIL_SENT, SA.ACTION_DATE "+
 														 " FROM  CUST.SALESACTION SA, CUST.GIFT_CARD_RECIPIENT GCR,CUST.GIFT_CARD_DELIVERY_INFO GDCC, "+
 														 " CUST.GIFT_CARD GC "+ 
@@ -172,7 +182,7 @@ public class GiftCardPersistanceDAO {
 														 " GC.ID = GDCC.GIFT_CARD_ID ";
 
 	private static final String SELECT_GC_RECIP_SQL= "SELECT DISTINCT GC.SALE_ID, GC.GIVEX_NUM, GCR.ID AS ID, "+
-													 " GCR.CUSTOMER_ID, GCR.SENDER_NAME,GCR.SENDER_EMAIL,GCR.RECIP_NAME,GCR.RECIP_EMAIL,GCR.TEMPLATE_ID,GCR.DELIVERY_MODE, GCR.AMOUNT GC_AMOUNT,GCR.PERSONAL_MSG,GCR.ORDERLINE_NUMBER, "+  
+													 " GCR.CUSTOMER_ID, GCR.SENDER_NAME,GCR.SENDER_EMAIL,GCR.RECIP_NAME,GCR.RECIP_EMAIL,GCR.TEMPLATE_ID,GCR.DELIVERY_MODE, GCR.AMOUNT GC_AMOUNT,GCR.PERSONAL_MSG,GCR.ORDERLINE_NUMBER,GCR.DONOR_ORGNAME,GCR.GIFTCARD_TYPE "+  
 													 " GDCC.GIFT_CARD_ID,GDCC.DELIVERY_MODE,GDCC.EMAIL_SENT, SA.ACTION_DATE FROM "+  
 													 " CUST.SALESACTION SA, CUST.GIFT_CARD_RECIPIENT GCR,CUST.GIFT_CARD_DELIVERY_INFO GDCC, "+
 													 " CUST.GIFT_CARD GC, "+ 
@@ -223,6 +233,8 @@ public class GiftCardPersistanceDAO {
 				recModel.setOrderLineId(rs.getString("ORDERLINE_NUMBER"));
 				holder.setGiftCardId(rs.getString("GIFT_CARD_ID"));
 				System.out.println("rs.getString(GIVEX_NUM) :"+rs.getString("GIVEX_NUM"));
+				recModel.setDonorOrganizationName(rs.getString("DONOR_ORGNAME"));
+				recModel.setGiftCardType(EnumGiftCardType.getEnum(rs.getString("GIFTCARD_TYPE")));				
 				holder.setGivexNum(ErpGiftCardUtil.decryptGivexNum(rs.getString("GIVEX_NUM")));
 				holder.setPurchaseDate(rs.getDate("ACTION_DATE"));
 				holder.setRecepientModel(recModel);
@@ -707,7 +719,7 @@ public class GiftCardPersistanceDAO {
 	
 	
 	private static final String SELECT_GC_RECIPENTS_SALE_ID_SQL = "SELECT GC.GIVEX_NUM, GCR.ID as ID, "
-		+ "GCR.CUSTOMER_ID,GC.SALE_ID, GCR.SENDER_NAME,GCR.SENDER_EMAIL,GCR.RECIP_NAME,GCR.RECIP_EMAIL,GCR.TEMPLATE_ID,GCR.DELIVERY_MODE, GCR.AMOUNT GC_AMOUNT,GCR.PERSONAL_MSG,GCR.ORDERLINE_NUMBER, "
+		+ "GCR.CUSTOMER_ID,GC.SALE_ID, GCR.SENDER_NAME,GCR.SENDER_EMAIL,GCR.RECIP_NAME,GCR.RECIP_EMAIL,GCR.TEMPLATE_ID,GCR.DELIVERY_MODE, GCR.AMOUNT GC_AMOUNT,GCR.PERSONAL_MSG,GCR.ORDERLINE_NUMBER,GCR.DONOR_ORGNAME,GCR.GIFTCARD_TYPE "
 		+ "GDCC.GIFT_CARD_ID,GDCC.DELIVERY_MODE,GDCC.EMAIL_SENT, SA.ACTION_DATE "
 		+ "FROM  CUST.SALESACTION SA, CUST.GIFT_CARD_RECIPIENT GCR,CUST.GIFT_CARD_DELIVERY_INFO GDCC, "
 		+ "CUST.SALESACTION SA1, CUST.GIFT_CARD GC WHERE "
@@ -830,6 +842,8 @@ public class GiftCardPersistanceDAO {
 			recModel.setPersonalMessage(rs.getString("PERSONAL_MSG"));
 			recModel.setAmount(rs.getDouble("GC_AMOUNT"));
 			recModel.setOrderLineId(rs.getString("ORDERLINE_NUMBER"));
+			recModel.setDonorOrganizationName(rs.getString("DONOR_ORGNAME"));
+			recModel.setGiftCardType(EnumGiftCardType.getEnum(rs.getString("GIFTCARD_TYPE")));
 			holder.setGiftCardId(rs.getString("GIFT_CARD_ID"));
 			holder.setGivexNum("GIVEX_NUM");
 			holder.setPurchaseDate(rs.getDate("ACTION_DATE"));

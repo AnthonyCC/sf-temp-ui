@@ -46,7 +46,7 @@ public class ErpEmailFactory  {
 				super.getParameters().put("gcRedempCode", giftCardInfo.getGcRedempcode());
 				super.getParameters().put("gcFor", giftCardInfo.getGcFor());
 				super.getParameters().put("gcFrom", giftCardInfo.getGcFrom());
-				super.getParameters().put("gcMessage", giftCardInfo.getGcMessage());
+				super.getParameters().put("gcMessage", giftCardInfo.getGcMessage() !=null ? giftCardInfo.getGcMessage() : "");
 				super.getParameters().put("gcRecipientEmail", giftCardInfo.getGcRecipientEmail());
 			}
 		}
@@ -80,11 +80,11 @@ public class ErpEmailFactory  {
 	public FTLEmailI createGCEmail(GiftCardOrderInfo giftCardInfo) {
 		
 		String gcMediaPath = FDStoreProperties.getMediaGiftCardTemplatePath();//&& !"".equalsIgnoreCase(FDStoreProperties.getMediaGiftCardTemplatePath()))?FDStoreProperties.getMediaGiftCardTemplatePath():"media/editorial/giftcards/");
-		String ftlPath = FDStoreProperties.getMediaGiftCardTemplatePath()+giftCardInfo.getGcType()+"/"+GC_FTL_TEMPLATE_NAME;		
+		String ftlPath = FDStoreProperties.getMediaGiftCardTemplatePath()+giftCardInfo.getGcTemplateId()+"/"+GC_FTL_TEMPLATE_NAME;		
 		FDGiftCardFtlEmail email = new FDGiftCardFtlEmail(giftCardInfo);
 		email.decorateMap();
 		email.getParameters().put(MailName.GC_FTL_PATH, ftlPath);
-		email.getParameters().put("gcMediaRoot", FDStoreProperties.getGCTemplateBaseUrl()+gcMediaPath+giftCardInfo.getGcType()+"/");
+		email.getParameters().put("gcMediaRoot", FDStoreProperties.getGCTemplateBaseUrl()+gcMediaPath+giftCardInfo.getGcTemplateId()+"/");
 		//email.getParameters().put("gcMediaRootWithTemplate", FDStoreProperties.getMediaPath()+gcMediaPath+giftCardInfo.getGcType()+"/");
 		email.setFromAddress(new EmailAddress(giftCardInfo.getGcFrom(), giftCardInfo.getGcSenderEmail()));
 		email.setSubject(giftCardInfo.getGcFrom()+" Has Sent You a FreshDirect Gift Card.");

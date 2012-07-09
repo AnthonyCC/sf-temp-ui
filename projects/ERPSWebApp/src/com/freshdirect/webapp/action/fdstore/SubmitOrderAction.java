@@ -285,7 +285,7 @@ public class SubmitOrderAction extends WebActionSupport {
 				// new order -> place it
 				orderNumber = FDCustomerManager.placeGiftCardOrder( AccountActivityUtil.getActionInfo( session, note ), cart, Collections.<String>emptySet(), sendEmail, cra, status, repList, isBulkOrder );
 			} else {
-				List<ErpRecipentModel> repList = convertSavedToErpRecipientModel( user.getRecipientList().getRecipients() );
+				List<ErpRecipentModel> repList = convertSavedToErpRecipientModel( user.getRecipientList().getRecipients(user.getGiftCardType()) );
 				// new order -> place it
 				orderNumber = FDCustomerManager.placeGiftCardOrder( AccountActivityUtil.getActionInfo( session, note ), cart, Collections.<String>emptySet(), sendEmail, cra, status, repList, isBulkOrder );
 			}

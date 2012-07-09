@@ -39,10 +39,42 @@
 				<DestinationDef contentType="Tile" />
 				<DestinationDef contentType="TileList" />
 				<DestinationDef contentType="GlobalMenuItem" />
+				<DestinationDef contentType="DonationOrganization" />
 			</RelationshipDef>
 		</RelationshipDefs>
 	</ContentTypeDef>
-	
+
+	<!--
+		DONATION ORGANIZATION
+	-->
+	<ContentTypeDef name="DonationOrganization">
+		<AttributeDefs>
+			<AttributeDef type="S" name="ORGANIZATION_NAME" label="Organization Name"/>
+			<AttributeDef type="S" name="EMAIL" label="Recipient Email"/>
+			<AttributeDef type="S" name="CONTACT_INFO" label="Contact Info"/>
+		</AttributeDefs>
+		<RelationshipDefs>
+			<RelationshipDef name="ORGANIZATION_LOGO" cardinality="One"  label="Organization logo" >
+				<DestinationDef contentType="Image" />
+			</RelationshipDef>
+			<RelationshipDef name="ORGANIZATION_LOGO_SMALL" cardinality="One"  label="Organization logo Small" >
+				<DestinationDef contentType="Image" />
+			</RelationshipDef
+            <RelationshipDef name="GIFTCARD_TYPE" label="Gift Card Types" cardinality="Many">
+				<DestinationDef contentType="DomainValue" />
+			</RelationshipDef>
+			<RelationshipDef name="EDITORIAL_MAIN" cardinality="One"  label="Editorial for Main Content" >
+				<DestinationDef contentType="Html" />
+			</RelationshipDef>
+			<RelationshipDef name="EDITORIAL_HEADER_MEDIA" cardinality="One"  label="Editorial for Header Content" >
+				<DestinationDef contentType="Html" />
+			</RelationshipDef>
+			<RelationshipDef name="EDITORIAL_DETAIL" cardinality="One"  label="Editorial for Detail Content" >
+				<DestinationDef contentType="Html" />
+			</RelationshipDef>
+			
+		</RelationshipDefs>
+	</ContentTypeDef>
 	
 	<!--
 		

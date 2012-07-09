@@ -24,6 +24,7 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionError;
 import com.freshdirect.framework.webapp.ActionResult;
 import com.freshdirect.giftcard.EnumGCDeliveryMode;
+import com.freshdirect.giftcard.EnumGiftCardType;
 import com.freshdirect.mail.EmailUtil;
 import com.freshdirect.webapp.util.JspMethods;
 
@@ -51,6 +52,7 @@ public class AddSavedRecipientControllerTag extends com.freshdirect.framework.we
     String fldDeliveryMethod = null;
     String fldMessage = null;
     String gcTemplateId = null;
+    String donorOrganizationName = null;
     
     public String getSuccessPage() {
         return this.successPage;
@@ -75,9 +77,9 @@ public class AddSavedRecipientControllerTag extends com.freshdirect.framework.we
     public void setResultName(String resultName) {
         this.resultName = resultName;
     }
-
     
-    public int doStartTag() throws JspException {
+
+	public int doStartTag() throws JspException {
 
         HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
         ActionResult result = new ActionResult();
@@ -140,7 +142,6 @@ public class AddSavedRecipientControllerTag extends com.freshdirect.framework.we
                     validateGiftCard(request, result);
                     if(result.getErrors().isEmpty()) {
                     	SavedRecipientModel srm = populateSavedRecipient();
-                    	//srm.setId(request.getParameter("recipId"));
                     	String repId = request.getParameter("recipId");
                 		if (repId == null) {
                 			result.addError(new ActionError("system", SystemMessageList.MSG_IDENTIFY_RECIPIENT));
@@ -163,11 +164,31 @@ public class AddSavedRecipientControllerTag extends com.freshdirect.framework.we
                     	//FDCustomerManager.updateSavedRecipient(user, srm);
                     }
                 } else if("checkout".equalsIgnoreCase(actionName)) {
-                	UserValidationUtil.validateRecipientListEmpty(request, result);
-                	setSuccessPage(gcSubmitOrderPage);
-                	fs_user.setLastRecipAdded(false);
-                }
                 	
+                	if(user.getGiftCardType() != null && user.getGiftCardType().equals(EnumGiftCardType.DONATION_GIFTCARD)){ 
+	                	getFormData(request, result);
+	                    result = validateGiftCard(request, result);
+	                     
+	                    if(result.getErrors().isEmpty()) {
+	                    	SavedRecipientModel srm = populateSavedRecipient();	  
+	                    	user.getRecipientList().removeRecipients(EnumGiftCardType.DONATION_GIFTCARD);
+	                        user.getRecipientList().addRecipient(srm);
+	                    	
+	                        //Set the last entered sender name and sender email to request.
+	                        fs_user.setLastSenderName(fldYourName);
+	                    	fs_user.setLastSenderEmail(fldYourEmail);
+	                    	isCartChanged = true;
+	                    	
+	                    	UserValidationUtil.validateRecipientListEmpty(request, result);
+	                    	setSuccessPage(gcSubmitOrderPage);
+	                    	fs_user.setLastRecipAdded(false);
+	                    }
+                	} else {
+	                	UserValidationUtil.validateRecipientListEmpty(request, result);
+	                	setSuccessPage(gcSubmitOrderPage);
+	                	fs_user.setLastRecipAdded(false);
+                	}
+                }
             } catch (FDResourceException ex) {
                 LOGGER.warn("FDResourceException while trying to update customer info & addresses", ex);
                 result.addError(new ActionError("technical_difficulty", "Could not update profile due to technical difficulty."));
@@ -179,6 +200,9 @@ public class AddSavedRecipientControllerTag extends com.freshdirect.framework.we
             if (result.getErrors().isEmpty() && (successPage != null)) {
                 LOGGER.debug("Success, redirecting to: "+successPage);                
                 try {
+                	if(user.getGiftCardType() != null && user.getGiftCardType().equals(EnumGiftCardType.DONATION_GIFTCARD)){
+                		successPage = successPage+"?gcDonId="+request.getParameter("gcDonId");
+                	}
                     response.sendRedirect(response.encodeRedirectURL(successPage));
                     JspWriter writer = pageContext.getOut();
                     writer.close();
@@ -197,7 +221,7 @@ public class AddSavedRecipientControllerTag extends com.freshdirect.framework.we
             
             LOGGER.debug("setSuccessPage null: ");
         	setSuccessPage(null);
-            
+
         	if("deleteSavedRecipient".equalsIgnoreCase(actionName)) {
             	String repId = request.getParameter("deleteId");
         		if (repId == null) {
@@ -267,7 +291,8 @@ public class AddSavedRecipientControllerTag extends com.freshdirect.framework.we
     	fldRecipientEmail =  request.getParameter(EnumUserInfoName.GC_RECIPIENT_EMAIL.getCode());
     	fldDeliveryMethod =  request.getParameter(EnumUserInfoName.DLV_METHOD.getCode());
     	fldMessage =  request.getParameter("fldMessage");
-    	gcTemplateId =request.getParameter("gcTemplateId");
+    	gcTemplateId = request.getParameter("gcTemplateId");
+    	donorOrganizationName = request.getParameter(EnumUserInfoName.GC_DONOR_ORGANIZATION_NAME.getCode());
     }
     
     /**
@@ -334,11 +359,13 @@ public class AddSavedRecipientControllerTag extends com.freshdirect.framework.we
     	srm.setSenderName(fldYourName);
     	srm.setRecipientName(fldRecipientName);
     	srm.setTemplateId(gcTemplateId);
+    	srm.setDonorOrganizationName(donorOrganizationName);
     	if(fldAmount != null && fldAmount.length() > 1 && !fldAmount.equalsIgnoreCase("other")) {
     		srm.setAmount(Double.parseDouble(fldAmount));
     	} else if(fldAltAmount != null && fldAltAmount.length() > 1) {
     		srm.setAmount(Double.parseDouble(fldAltAmount));
-    	} 
+    	}
+    	srm.setGiftCardType(user.getGiftCardType());
     	return srm;
     }
         

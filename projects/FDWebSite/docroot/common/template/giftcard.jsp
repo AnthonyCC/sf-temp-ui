@@ -97,7 +97,7 @@ final int W_GIFTCARD_TOTAL = 970;
 				<!-- content lands here -->
 				<tmpl:get name='content'/>
 				<!-- content ends above here-->
-				<br /><br />
+				<br />
 			</td>
 		</tr>
 		<tr>

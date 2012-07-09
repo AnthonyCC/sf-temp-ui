@@ -13,6 +13,7 @@ import com.freshdirect.customer.EnumTransactionType;
 import com.freshdirect.framework.core.ModelI;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.core.SequenceGenerator;
+import com.freshdirect.giftcard.EnumGiftCardType;
 import com.freshdirect.giftcard.ErpEmailGiftCardModel;
 import com.freshdirect.giftcard.ErpGCDlvInformationHolder;
 import com.freshdirect.giftcard.ErpGiftCardDlvConfirmModel;
@@ -111,7 +112,7 @@ public class ErpEmailGiftCardPersistentBean extends ErpGiftCardDlvConfirmPersist
 	public PrimaryKey create(Connection conn) throws SQLException {		
 		String salesactionId=super.create(conn,(ErpGiftCardTransModel)this.getModel()).getId();		
 		setSalesActionId(salesactionId);
-		PreparedStatement ps = conn.prepareStatement("INSERT INTO CUST.GIFT_CARD_RECIPIENT(ID,CUSTOMER_ID,SENDER_NAME,SENDER_EMAIL,RECIP_NAME,RECIP_EMAIL,TEMPLATE_ID,DELIVERY_MODE,AMOUNT,PERSONAL_MSG,SALESACTION_ID,ORDERLINE_NUMBER) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)");
+		PreparedStatement ps = conn.prepareStatement("INSERT INTO CUST.GIFT_CARD_RECIPIENT(ID,CUSTOMER_ID,SENDER_NAME,SENDER_EMAIL,RECIP_NAME,RECIP_EMAIL,TEMPLATE_ID,DELIVERY_MODE,AMOUNT,PERSONAL_MSG,SALESACTION_ID,ORDERLINE_NUMBER,DONOR_ORGNAME,GIFTCARD_TYPE) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
 		
 		int index = 1;
 		ErpGiftCardDlvConfirmModel model = (ErpGiftCardDlvConfirmModel)super.getModel();
@@ -161,6 +162,14 @@ public class ErpEmailGiftCardPersistentBean extends ErpGiftCardDlvConfirmPersist
 			ps.setString(10, recModel.getPersonalMessage());
 			ps.setString(11, salesactionId);
 			ps.setString(12,recModel.getOrderLineId());
+			ps.setString(13, recModel.getDonorOrganizationName());
+			
+			if(recModel.getGiftCardType()!=null){
+				 ps.setString(14, recModel.getGiftCardType().getName());
+			}else{
+				  ps.setNull(14, Types.NULL);
+			}
+
 			recModel.setId(id);
 			ps.addBatch();
 		} 

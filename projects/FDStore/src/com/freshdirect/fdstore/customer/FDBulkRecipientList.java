@@ -7,6 +7,7 @@ import java.util.List;
 
 import com.freshdirect.framework.core.ModelSupport;
 import com.freshdirect.framework.util.FormatterUtil;
+import com.freshdirect.giftcard.EnumGiftCardType;
 
 public class FDBulkRecipientList extends ModelSupport{
 
@@ -115,6 +116,7 @@ public class FDBulkRecipientList extends ModelSupport{
 			    	srm.setRecipientName(model.getRecipientEmail());
 			    	srm.setTemplateId(model.getTemplateId());
 			    	srm.setAmount(model.getAmount());
+			    	srm.setGiftCardType(EnumGiftCardType.REGULAR_GIFTCARD);
 			    	list.add(srm);
 			    }
 			}   

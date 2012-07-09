@@ -5,6 +5,8 @@
 <%@ page import='com.freshdirect.payment.*' %>
 <%@ page import='com.freshdirect.payment.fraud.*' %>
 <%@ page import='java.util.*' %>
+<%@ page import='com.freshdirect.giftcard.*' %>
+ 
 
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>

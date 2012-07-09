@@ -31,6 +31,7 @@ import com.freshdirect.fdstore.customer.SavedRecipientModel;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionError;
 import com.freshdirect.framework.webapp.ActionResult;
+import com.freshdirect.giftcard.EnumGiftCardType;
 import com.freshdirect.giftcard.RecipientModel;
 import com.freshdirect.mail.EmailUtil;
 import com.freshdirect.webapp.taglib.AbstractControllerTag;
@@ -123,8 +124,11 @@ public class LoginControllerTag extends AbstractControllerTag {
                 		SavedRecipientModel srm = (SavedRecipientModel)iterator.next();
                 		// reset the FDUserId to the login user
                 		srm.setFdUserId(loginUser.getUserId());
+                		loginUser.getRecipientList().removeRecipients(EnumGiftCardType.DONATION_GIFTCARD);
                 		loginUser.getRecipientList().addRecipient(srm);
                 	}
+                	loginUser.setGiftCardType(currentUser.getGiftCardType());
+
                 	/*Seems like no need to clear the recipients
                 	ListIterator i = currentUser.getRecipentList().getRecipents().listIterator();
                 	int index = 0;
@@ -134,6 +138,7 @@ public class LoginControllerTag extends AbstractControllerTag {
                 		index++;
                 	}*/
                 }
+
                 if(currentUser.getDonationTotalQuantity()>0){
                 	loginUser.setDonationTotalQuantity(currentUser.getDonationTotalQuantity());
                 }

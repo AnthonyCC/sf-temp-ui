@@ -9,6 +9,7 @@
 <%@ page import="com.freshdirect.webapp.taglib.fdstore.SessionName"%>
 <%@ page import="com.freshdirect.fdstore.customer.FDCustomerCreditUtil"%>
 <%@ page import="com.freshdirect.fdstore.customer.SavedRecipientModel"%>
+<%@ page import='com.freshdirect.giftcard.EnumGiftCardType' %>
 
 <% //expanded page dimensions
 final int W_RECIPENT_LIST_TOTAL = 970;
@@ -27,8 +28,8 @@ FDUserI giftUser = (FDUserI)session.getAttribute(SessionName.USER);
 
 FDRecipientList recipList = giftUser.getRecipientList();
  if(recipList != null) {
-	List<RecipientModel> recipients =  recipList.getRecipients();
- 	if(!recipients.isEmpty()) {
+	List<RecipientModel> recipients =  recipList.getRecipients(giftUser.getGiftCardType());	
+ 	if(recipients != null && !recipients.isEmpty()) {
 		if (isConfirm) {
 			//we're on payment info page
 		%><table width="<%=W_RECIPENT_LIST_TOTAL%>" cellspacing="0" cellpadding="0" border="0" valign="middle">
@@ -57,7 +58,7 @@ FDRecipientList recipList = giftUser.getRecipientList();
 			</tr>
 				<%
 				for (RecipientModel rm : recipients) {
-					SavedRecipientModel srm = (SavedRecipientModel) rm;
+					SavedRecipientModel srm = (SavedRecipientModel) rm;					
 				%>
 			<tr>
 				<td>
@@ -66,8 +67,11 @@ FDRecipientList recipList = giftUser.getRecipientList();
 						<div class="recipName" id="<%=srm.getRandomId()%>Name"><%= srm.getRecipientName()%></div>
 
 						<div class="recipAmount" id="<%=srm.getRandomId()%>Amount">$<%= srm.getFormattedAmount() %></div>
-
-						<div class="recipLinks" id="<%=srm.getRandomId()%>Links">&nbsp;<a href="#" onClick="recipPreview('<%=srm.getRandomId()%>'); return false;">Preview</a><a href="/gift_card/purchase/add_giftcard.jsp?recipId=<%=srm.getRandomId()%>">Edit</a><a href="<%= request.getRequestURI() %>?deleteId=<%=srm.getRandomId()%>">Delete</a></div>
+						<% if(EnumGiftCardType.DONATION_GIFTCARD.equals(giftUser.getGiftCardType())) { %>
+							<div class="recipLinks" id="<%=srm.getRandomId()%>Links">&nbsp;<a href="#" onClick="recipPreview('<%=srm.getRandomId()%>'); return false;">Preview</a><a href="/gift_card/purchase/add_donation_giftcard.jsp?recipId=<%=srm.getRandomId()%>&gcDonId=<%= request.getParameter("gcDonId") %>">Edit</a></div>
+						<% } else { %>
+							<div class="recipLinks" id="<%=srm.getRandomId()%>Links">&nbsp;<a href="#" onClick="recipPreview('<%=srm.getRandomId()%>'); return false;">Preview</a><a href="/gift_card/purchase/add_giftcard.jsp?recipId=<%=srm.getRandomId()%>">Edit</a><a href="<%= request.getRequestURI() %>?deleteId=<%=srm.getRandomId()%>">Delete</a></div>
+						<% } %>
 					</div>
 				</td>
 			</tr>
@@ -87,7 +91,7 @@ FDRecipientList recipList = giftUser.getRecipientList();
 			//we're on payment info page
 		%>
 			<tr>
-				<td class="right">Subtotal: $<%= recipList.getFormattedSubTotal() %></td>
+				<td class="right">Subtotal: $<%= recipList.getFormattedSubTotal(giftUser.getGiftCardType()) %></td>
 			</tr>
 			<% 
                if(null != giftUser && null != giftUser.getGiftCart() && null != giftUser.getIdentity()) {
@@ -114,7 +118,7 @@ FDRecipientList recipList = giftUser.getRecipientList();
 			//we're on gift & recipient options page
 		%>
 			<tr>
-				<td class="recipTotal">SUBTOTAL:  $<%= recipList.getFormattedSubTotal() %></td>
+				<td class="recipTotal">SUBTOTAL:  $<%= recipList.getFormattedSubTotal(giftUser.getGiftCardType()) %></td>
 			</tr>
 		<% } %>
 		</table>

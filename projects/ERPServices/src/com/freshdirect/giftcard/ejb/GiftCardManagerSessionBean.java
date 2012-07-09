@@ -1227,7 +1227,9 @@ public class GiftCardManagerSessionBean extends ERPSessionBeanSupport {
 					giftCardOrderInfo.setGcSenderEmail(erpGCDlvInformationHolder.getRecepientModel().getSenderEmail());
 					giftCardOrderInfo.setGcMessage(erpGCDlvInformationHolder.getRecepientModel().getPersonalMessage());
 					giftCardOrderInfo.setGcRedempcode((null == erpGCDlvInformationHolder.getGivexNum()? " " :erpGCDlvInformationHolder.getGivexNum()));//FTL won't accept 'null' values.
-					giftCardOrderInfo.setGcType(erpGCDlvInformationHolder.getRecepientModel().getTemplateId());
+					giftCardOrderInfo.setGcTemplateId(erpGCDlvInformationHolder.getRecepientModel().getTemplateId());
+					giftCardOrderInfo.setGcType(erpGCDlvInformationHolder.getRecepientModel().getGiftCardType().getName());
+					giftCardOrderInfo.setGcDonorOrgName(erpGCDlvInformationHolder.getRecepientModel().getDonorOrganizationName());
 					
 					//Sending 'Gift Card' to the recipient by email.
 					this.doEmail(ErpEmailFactory.getInstance().createGCEmail(giftCardOrderInfo));	

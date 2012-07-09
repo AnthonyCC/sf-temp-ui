@@ -15,7 +15,7 @@
 	</tr>
 	</table><br/>
 	<u><b><a href="http://www.freshdirect.com/your_account/order_history.jsp"><font face="verdana, arial, sans-serif" size="2" color="black">View this order (and get printable versions of your gifts) in Your Account.</font></a></b></u><br/>
-	<xsl:for-each select="order/giftCardRecipients/recipents/recipents">
+	<xsl:for-each select="order/giftCardRecipients/recipients/recipients">
 	<table width="100%" cellspacing="0" cellpadding="0" border="0"><font face="verdana, arial, sans-serif" size="1" color="black">
 		
 		<b>

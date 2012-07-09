@@ -98,6 +98,7 @@ import com.freshdirect.fdstore.zone.FDZoneInfoManager;
 import com.freshdirect.framework.core.ModelSupport;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.giftcard.EnumGiftCardType;
 import com.freshdirect.giftcard.ErpGCDlvInformationHolder;
 import com.freshdirect.smartstore.fdstore.CohortSelector;
 import com.freshdirect.smartstore.fdstore.DatabaseScoreFactorProvider;
@@ -233,6 +234,9 @@ public class FDUser extends ModelSupport implements FDUserI {
 	Boolean referralFlag = null;
 	boolean referralFraud = false;
 	public String tsaPromoCode = null;
+
+	private EnumGiftCardType giftCardType = null;
+	
 	private boolean ebtAccepted = false;
 
 	public String getTsaPromoCode() {
@@ -1645,7 +1649,7 @@ public class FDUser extends ModelSupport implements FDUserI {
 	}
 	
     public boolean isGCOrderMinimumMet() {
-		double subTotal = this.getRecipientList().getSubtotal();
+		double subTotal = this.getRecipientList().getSubtotal(null);
 		return subTotal >= this.getMinimumOrderAmount();
     }
     
@@ -2243,11 +2247,19 @@ public class FDUser extends ModelSupport implements FDUserI {
 		}
 		return this.getFDCustomer().isEligibleForDDPP();
 	}
+	
+	public EnumGiftCardType getGiftCardType() {
+		return giftCardType;
+	}
+
+	public void setGiftCardType(EnumGiftCardType giftCardType) {
+		this.giftCardType = giftCardType;
+	}
 
 	public boolean isEbtAccepted() {
 		return ebtAccepted;
 	}
-
+	
 	public void setEbtAccepted(boolean ebtAccepted) {
 		this.ebtAccepted = ebtAccepted;
 	}

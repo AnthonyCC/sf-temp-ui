@@ -13,6 +13,7 @@
 <%@ taglib uri='bean' prefix='bean' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri='crm' prefix='crm' %>
+<%@ page import='com.freshdirect.giftcard.*' %>
 
 
 <%request.setAttribute("listPos", "CategoryNote");%>
@@ -64,6 +65,7 @@
 			}
 			FDSessionUser user = (FDSessionUser) session.getAttribute( SessionName.USER );
 			request.setAttribute("giftcard", "true");
+
 			UserUtil.initializeGiftCart(user);
 		%>
 

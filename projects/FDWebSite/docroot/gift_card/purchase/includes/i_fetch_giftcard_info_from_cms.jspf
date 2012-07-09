@@ -1,7 +1,12 @@
+<%@page import="java.util.HashMap"%>
 <%@ page import='com.freshdirect.fdstore.content.*'%>
 <%@ page import='com.freshdirect.fdstore.FDStoreProperties' %>
 <%@ page import='java.net.URLEncoder' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
+<%@ page import='com.freshdirect.cms.*'%>
+<%@ page import='com.freshdirect.cms.application.CmsManager'%>
+<%@ page import='com.freshdirect.cms.fdstore.FDContentTypes'%>
+
 
 <%
 	/* these values should be set in the page calling this include */
@@ -43,7 +48,36 @@
 		String gcDisplayContainerToUse = gcDisplayContainer;
 	// This is the ID of the container element that will hold the template ID
 		String gcDisplayTemplateContainerIdToUse = gcDisplayTemplateContainerId;
+		List<DonationOrganization> donationOrgList = new ArrayList<DonationOrganization>();
+		Map<String, DonationOrganization> donationOrgMap = new HashMap<String, DonationOrganization>();
+		DonationOrganization _donOrganization = null;
+		String donStr = (String)request.getAttribute("donation");
+		if("true".equalsIgnoreCase(donStr)) {
+			
+			CmsManager manager = CmsManager.getInstance();	
+			ContentKey contentKey = new ContentKey(FDContentTypes.FDFOLDER, "donationOrganizationList");
+			ContentNodeI contentNode = manager.getContentNode(contentKey);
+			
+			if(null != contentNode){
+				Set subNodes = contentNode.getChildKeys();
+				for (Object object : subNodes) {
+					ContentKey subContentKey = (ContentKey) object;
+					if(null != subContentKey){
+						ContentType contentType = subContentKey.getType(); 
+						if(FDContentTypes.DONATION_ORGANIZATION.equals(contentType)){
+							DonationOrganization _org = new DonationOrganization(subContentKey);
+							donationOrgList.add(_org);
+							donationOrgMap.put(_org.getContentName(), _org);
+						}
+					}
+				}
 
+				_donOrganization = donationOrgMap.get(request.getParameter("gcDonId"));
+				if(_donOrganization != null){
+					gcList = _donOrganization.getGiftcardType();
+				}
+			}
+		}
 %>
 <fd:Department id='department' departmentId='<%= deptIdToUse %>'/>
 
@@ -56,7 +90,7 @@
 		<%
 			if (gcList !=null) {
 				for(int i=0;i<gcList.size();i++) {
-					DomainValue gcType=(DomainValue)gcList.get(i);
+					DomainValue gcOption=(DomainValue)gcList.get(i);
 					/*
 					 *	Tested against chars:
 					 *		!"#$%&'()*+,-./0123456789:;<=>?@
@@ -71,13 +105,13 @@
 					%>
 					cardArr[<%=i%>]=Array(
 						<%=i%>,						// fdCard.index
-						'<%= gcType.getID() %>',	// fdCard.id
-						URLDecode('<%= URLEncoder.encode(gcType.getLabel()) %>'),	// fdCard.displayName
+						'<%= gcOption.getID() %>',	// fdCard.id
+						URLDecode('<%= URLEncoder.encode(gcOption.getLabel()) %>'),	// fdCard.displayName
 						true						// fdCard.preLoad
 					);
 					<%
 					//if this is the id we've passed, make it the initial card
-					if ((gcType.getID()).equals(fdTemplateId)) {
+					if ((gcOption.getID()).equals(fdTemplateId)) {
 						gcInitialCard = i;
 					}
 				}

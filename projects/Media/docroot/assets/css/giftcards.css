@@ -41,6 +41,7 @@ div.card_controls {
 		color: #999;
 		font-family: Verdana, Arial, sans-serif;
 		font-size: 9px;
+		text-align:center;
 	}
 	/* 'Giftcard design: Design' */
 	div.card_controls_msg_type {
@@ -827,4 +828,23 @@ table.promo_table1 td {
 .flatRow {
 	line-height: 0px;
 	font-size: 0px;
+}
+
+.card_options td {
+   vertical-align: top;
+}
+
+.card_options_img td {
+   vertical-align: middle;
+}
+
+.dot_selection_controls {
+	float: left;
+	padding-top: 3px;
+    width: 10px;
+}
+
+.link_selection_controls {
+	margin-left: 20px;
+	text-indent: -8px;
 }

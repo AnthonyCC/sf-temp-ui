@@ -27,6 +27,7 @@
 			<CmsEditor ref="recommender" />
 			<CmsEditor ref="recommenderStrategy" />
 			<CmsEditor ref="faq" />
+			<CmsEditor ref="donationOrganization" />
 		</editors>
 	</CmsFolder>
 	
@@ -1403,5 +1404,45 @@
 			</CmsPage>
 		</pages>
 	</CmsEditor>
+
+    <CmsEditor id="donationOrganization">
+        <contentType>DonationOrganization</contentType>
+        <pages>
+            <CmsPage>
+                <title>Core Attributes</title>
+                <sections>
+                    <CmsSection>
+                        <title>Organization Attributes</title>
+                        <fields>
+                            <CmsField><attribute>ORGANIZATION_NAME</attribute></CmsField>
+                            <CmsField><attribute>EMAIL</attribute></CmsField>
+                            <CmsField><attribute>CONTACT_INFO</attribute></CmsField>                            
+                        </fields>
+                    </CmsSection>
+                    <CmsSection>
+						<title>IMAGES</title>
+						<fields>
+							<CmsField><attribute>ORGANIZATION_LOGO</attribute></CmsField>
+							<CmsField><attribute>ORGANIZATION_LOGO_SMALL</attribute></CmsField>							
+						</fields>
+					</CmsSection>
+					<CmsSection>
+						<title>Gift Card Domains</title>
+						<fields>
+							<CmsField><attribute>GIFTCARD_TYPE</attribute></CmsField>
+						</fields>
+					</CmsSection>
+					<CmsSection>
+						<title>EDITORIAL</title>
+						<fields>
+							<CmsField><attribute>EDITORIAL_MAIN</attribute></CmsField>
+							<CmsField><attribute>EDITORIAL_HEADER_MEDIA</attribute></CmsField>
+							<CmsField><attribute>EDITORIAL_DETAIL</attribute></CmsField>
+						</fields>
+					</CmsSection> 
+                </sections>
+            </CmsPage>
+        </pages>
+    </CmsEditor>
 	
 </Content>
