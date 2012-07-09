@@ -218,7 +218,8 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag<Result> {
 			TimeslotLogic.purgeSDSlots(timeslotList);
 		
 		showPremiumSlots =TimeslotLogic.hasPremiumSlots(timeslotList, baseRange.getStartDate(), DateUtil.addDays(baseRange.getEndDate(),-1));
-		event.setSameDay(showPremiumSlots?"X":"");
+		
+		deliveryModel.setShowPremiumSlots(showPremiumSlots);
 		
 		baseRange = new DateRange(timeslotList.get(0).getStartDate(),DateUtil.addDays(timeslotList.get(0).getEndDate(),1));
 		
@@ -303,6 +304,8 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag<Result> {
 			{
 				logTimeslotSessionInfo(user, timeslotList, event);
 			}
+			
+			event.setSameDay(deliveryModel.isShowPremiumSlots()?"X":"");
 		}
 
 
@@ -323,7 +326,7 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag<Result> {
 		//set cart to model
 		deliveryModel.setShoppingCart(cart);
 		
-		deliveryModel.setShowPremiumSlots(showPremiumSlots);
+		
 		deliveryModel.setSameDayCutoff(stats.getSameDayCutoff());
 		deliveryModel.setSameDayCutoffUTC(stats.getSameDayCutoffUTC());
 		result.setDeliveryTimeslotModel(deliveryModel);

@@ -147,7 +147,7 @@ public class TimeslotLogic {
 					if (!genericTimeslots && list.getHolidays().contains(timeslot.getBaseDate())) {
 						timeslot.setHolidayRestricted(true);
 						timeslot.setStoreFrontAvailable("R");
-
+						if(timeslot.getDlvTimeslot().isPremiumSlot()) deliveryModel.setShowPremiumSlots(false);
 						continue;
 					} else {
 						// ... available for store front

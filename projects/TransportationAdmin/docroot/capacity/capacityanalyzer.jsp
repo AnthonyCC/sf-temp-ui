@@ -83,7 +83,7 @@
 						<span style="font-weight:bold">
 							&nbsp;
 							<select id="cutOff" name="cutOff">
-								<option value="">--All Cut Off</option> 
+								<option value="">--All Handoff</option> 
 					              <c:forEach var="cutoff" items="${cutoffs}">
 									  <c:choose>
 											<c:when test="${cutOff == cutoff.cutOffId}" > 

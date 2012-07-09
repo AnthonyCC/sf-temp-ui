@@ -69,7 +69,7 @@
                </tr>
                
                <tr>
-               <td>Cut Off</td>
+               <td>HandOff</td>
                         <td>
                           <spring:bind path="command.cutOff">
                             <select id="<c:out value="${status.expression}"/>" name="<c:out value="${status.expression}"/>">

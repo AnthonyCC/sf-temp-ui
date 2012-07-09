@@ -113,11 +113,11 @@
                </tr>    
                
               <tr>
-               <td>Cut Off</td>
+               <td>Hand Off</td>
                         <td>
                           <spring:bind path="command.cutOff">
                             <select id="<c:out value="${status.expression}"/>" name="<c:out value="${status.expression}"/>">
-                              <option value="">--Please Select Cut Off</option> 
+                              <option value="">--Please Select Hand Off</option> 
                               <c:forEach var="cutOffRow" items="${cutoffs}">                             
                                   <c:choose>
                                     <c:when test="${status.value == cutOffRow.cutOffId}" > 
@@ -169,7 +169,7 @@
                       <td> 
                   <spring:bind path="command.cutoffReportFilePath">
                     <c:if test="${!empty status.value}">
-                                      <a href='<c:out value="${status.value}"/>' >CutOff Report</a> 
+                                      <a href='<c:out value="${status.value}"/>' >HandOff Report</a> 
                                     </c:if>                                                                
                                 </spring:bind>
                               </td>

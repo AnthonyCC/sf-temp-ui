@@ -10,6 +10,7 @@ import java.util.Map;
 import com.freshdirect.delivery.EnumDeliveryOption;
 import com.freshdirect.delivery.model.DlvTimeslotModel;
 import com.freshdirect.fdstore.FDReservation;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.FDTimeslot;
 import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.TimeOfDay;
@@ -67,39 +68,44 @@ public class DlvZoneStrategy implements PromotionStrategyI {
 	@Override
 	public int evaluate(String promotionCode, PromotionContextI context) {
 		String zoneCode =context.getDeliveryZone();
-		if(null != zoneCode && !"".equals(zoneCode.trim())){
-			if(null == dlvDates || dlvDates.size()==0 || checkDlvDates(context.getDeliveryReservation())){
-				if(null != dlvZones && dlvZones.size() != 0 && ((dlvZones.contains(zoneCode) || dlvZones.contains("ALL")))){
-					FDReservation dlvReservation = context.getDeliveryReservation();
-					if(null == dlvDays || dlvDays.isEmpty() || null ==dlvReservation){
-						context.getUser().addPromoErrorCode(promotionCode, PromotionErrorType.NO_ELIGIBLE_TIMESLOT_SELECTED.getErrorCode());
-						return DENY;
-					}
-					int day = dlvReservation.getTimeslot().getDayOfWeek();		
-					boolean e = dlvDays.contains(String.valueOf(day));
-					if(e && null !=dlvTimeSlots && !dlvTimeSlots.isEmpty()){
-						TimeOfDay dlvStartTimeOfDay = dlvReservation.getTimeslot().getDlvTimeslot().getStartTime();
-						TimeOfDay dlvEndTimeOfDay = dlvReservation.getTimeslot().getDlvTimeslot().getEndTime();
-						List<PromotionDlvTimeSlot> dlvTimeSlotList = dlvTimeSlots.get(day);
-						if(null != dlvTimeSlotList){
-//							if(checkDlvTimeSlots(dlvStartTimeOfDay,dlvEndTimeOfDay, dlvTimeSlotList))
-							if(checkDlvTimeSlots(dlvReservation.getTimeslot().getDlvTimeslot(), dlvTimeSlotList))
-								return ALLOW;
-							else{
-								context.getUser().addPromoErrorCode(promotionCode, PromotionErrorType.NO_ELIGIBLE_TIMESLOT_SELECTED.getErrorCode());
-								return DENY;
+		boolean isPremiumSlot = null !=context.getDeliveryReservation()?context.getDeliveryReservation().isPremium():false;
+		if(checkDlvDayTypeEligibility(isPremiumSlot)){
+			if(null != zoneCode && !"".equals(zoneCode.trim())){
+				if(null == dlvDates || dlvDates.size()==0 || checkDlvDates(context.getDeliveryReservation())){
+					if(null != dlvZones && dlvZones.size() != 0 && ((dlvZones.contains(zoneCode) || dlvZones.contains("ALL")))){
+						FDReservation dlvReservation = context.getDeliveryReservation();
+						if(null == dlvDays || dlvDays.isEmpty() || null ==dlvReservation){
+							context.getUser().addPromoErrorCode(promotionCode, PromotionErrorType.NO_ELIGIBLE_TIMESLOT_SELECTED.getErrorCode());
+							return DENY;
+						}
+						int day = dlvReservation.getTimeslot().getDayOfWeek();		
+						boolean e = dlvDays.contains(String.valueOf(day));
+						if(e && null !=dlvTimeSlots && !dlvTimeSlots.isEmpty()){
+							TimeOfDay dlvStartTimeOfDay = dlvReservation.getTimeslot().getDlvTimeslot().getStartTime();
+							TimeOfDay dlvEndTimeOfDay = dlvReservation.getTimeslot().getDlvTimeslot().getEndTime();
+							List<PromotionDlvTimeSlot> dlvTimeSlotList = dlvTimeSlots.get(day);
+							if(null != dlvTimeSlotList){
+	//							if(checkDlvTimeSlots(dlvStartTimeOfDay,dlvEndTimeOfDay, dlvTimeSlotList))
+								if((!(dlvReservation.getTimeslot().getDlvTimeslot().isPremiumSlot() && promotionCode.startsWith("WS_"))
+										|| FDStoreProperties.allowDiscountsOnPremiumSlots())
+										&& checkDlvTimeSlots(dlvReservation.getTimeslot().getDlvTimeslot(), dlvTimeSlotList))
+									return ALLOW;
+								else{
+									context.getUser().addPromoErrorCode(promotionCode, PromotionErrorType.NO_ELIGIBLE_TIMESLOT_SELECTED.getErrorCode());
+									return DENY;
+								}
 							}
 						}
+						if(!e){
+							context.getUser().addPromoErrorCode(promotionCode, PromotionErrorType.NO_ELIGIBLE_TIMESLOT_SELECTED.getErrorCode());
+						}
+						return e ? ALLOW : DENY;
+					}else {
+						if(null != dlvZones && dlvZones.size() != 0){
+							return DENY;
+						}
+						return ALLOW;
 					}
-					if(!e){
-						context.getUser().addPromoErrorCode(promotionCode, PromotionErrorType.NO_ELIGIBLE_TIMESLOT_SELECTED.getErrorCode());
-					}
-					return e ? ALLOW : DENY;
-				}else {
-					if(null != dlvZones && dlvZones.size() != 0){
-						return DENY;
-					}
-					return ALLOW;
 				}
 			}
 		}

@@ -251,7 +251,7 @@ public class FDPromotionNewDAO {
 			//Set the zone strategy if applicable.
 			if(null != applicator && null != dlvZoneStrategyI){
 				DlvZoneStrategy dlvZoneStrategy = (DlvZoneStrategy)dlvZoneStrategyI;
-				if((null !=dlvZoneStrategy.getDlvDates() && !dlvZoneStrategy.getDlvDates().isEmpty()) || null != dlvZoneStrategy.getDlvZoneId()){			
+				if(dlvZoneStrategy.getDlvDayType()!=null || (null !=dlvZoneStrategy.getDlvDates() && !dlvZoneStrategy.getDlvDates().isEmpty()) || null != dlvZoneStrategy.getDlvZoneId()){			
 					applicator.setZoneStrategy(dlvZoneStrategy);
 				}
 			}
@@ -508,7 +508,7 @@ public class FDPromotionNewDAO {
 		PromotionStrategyI dlvZoneStrategyI = loadDlvZoneStrategy(conn, promoId);
 		if(applicator != null && null != dlvZoneStrategyI){
 			DlvZoneStrategy dlvZoneStrategy = (DlvZoneStrategy)dlvZoneStrategyI;
-			if((null !=dlvZoneStrategy.getDlvDates() && !dlvZoneStrategy.getDlvDates().isEmpty()) || null != dlvZoneStrategy.getDlvZoneId()){			
+			if(dlvZoneStrategy.getDlvDayType()!=null || (null !=dlvZoneStrategy.getDlvDates() && !dlvZoneStrategy.getDlvDates().isEmpty()) || null != dlvZoneStrategy.getDlvZoneId()){			
 				applicator.setZoneStrategy(dlvZoneStrategy);
 			}
 		}		

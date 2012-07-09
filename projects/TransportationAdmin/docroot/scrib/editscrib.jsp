@@ -184,10 +184,10 @@
 							<td><form:errors path="supervisorCode" />&nbsp;</td>   
 						</tr>
 						<tr>
-							<td align="right">CutOff&nbsp;Time</td>
+							<td align="right">Handoff&nbsp;Time</td>
 							<td> 
 								<form:select path="cutOffTimeS">
-									<form:option value="" label="--Please Select CutOff"/>
+									<form:option value="" label="--Please Select Handoff"/>
 									<form:options items="${cutoffs}" itemLabel="name" itemValue="cutOffTimeEx" />
 								</form:select>
 							</td>
