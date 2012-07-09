@@ -64,6 +64,30 @@
 
 
 	<script type="text/javascript" language="javascript" src="/assets/javascript/phone_number.js"></script>
+	
+	<%--
+		using the same /directory/version/ system as scriptaculous for jquery
+		also to avoid conflicts, jQuery's $ will always be set to $jq
+	--%>
+	<script src="/assets/javascript/jquery/1.7.2/jquery.js" type="text/javascript" language="javascript"></script>
+	<script src="/assets/javascript/jquery/ui/1.8.18/jquery-ui.min.js" type="text/javascript" language="javascript"></script>
+	<script src="/assets/javascript/jquery/corner/jquery.corner.js" type="text/javascript" language="javascript"></script>
+	<script type="text/javascript" language="javascript">
+		var $jq;
+		var jqInit = false; 
+
+		function initJQuery() {
+			if (typeof(jQuery) == 'undefined') {
+				if (!jqInit) {
+					jqInit = true;
+				}
+				setTimeout("initJQuery()", 100);
+			} else {
+				$jq = jQuery.noConflict();
+			}
+		}
+		initJQuery();
+	</script>
 
 	<script language="javascript">
 		/* temp fix for CRM errors */
