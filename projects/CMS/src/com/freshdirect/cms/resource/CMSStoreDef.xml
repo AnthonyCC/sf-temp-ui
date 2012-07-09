@@ -562,6 +562,7 @@
 			<AttributeDef type="S" name="PROD_PAGE_TEXT_RATINGS" inheritable="true"   label="Prod Page Text Ratings" />
 			<AttributeDef type="S" name="RATING_PROD_NAME"  label="Prod Page Rating Name" inheritable="true"/>
 			<AttributeDef type="B" name="DEFAULT_SUSTAINABILITY_RATING" label="Show Default Sustainability Rating" inheritable="true"/>
+			<AttributeDef type="B" name="EXCLUDED_EBT_PAYMENT" label="Exclude for EBT Payment" inheritable="true"/>
 			<!-- IPhone related -->           
 			<AttributeDef type="B" name="HIDE_IPHONE" label="Hide from IPhone" inheritable="true"/>         
             

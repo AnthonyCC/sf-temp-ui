@@ -9,7 +9,9 @@ import javax.servlet.jsp.PageContext;
 
 import org.apache.log4j.Category;
 
+import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.customer.EnumPaymentType;
+import com.freshdirect.customer.ErpDepotAddressModel;
 import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.customer.ErpPaymentMethodModel;
 import com.freshdirect.fdstore.FDResourceException;
@@ -149,6 +151,11 @@ public class PaymentMethodManipulator extends CheckoutManipulator {
 		}
 
 		FDCartModel cart = getCart();
+		EnumServiceType selectedServiceType=cart.getDeliveryAddress().getServiceType();
+		if(EnumPaymentMethodType.EBT.equals(paymentMethod.getPaymentMethodType())&& !getUser().isEbtAccepted()/*!(cart.getDeliveryAddress() instanceof ErpDepotAddressModel)*/){
+			result.addError(new ActionError("ebtPaymentNotAllowed",SystemMessageList.MSG_EBT_NOT_ALLOWED));
+		}
+			
 		paymentMethod.setBillingRef( billingRef );
 		paymentMethod.setPaymentType( makeGoodOrder ? EnumPaymentType.MAKE_GOOD : EnumPaymentType.REGULAR );
 		paymentMethod.setReferencedOrder( referencedOrder );

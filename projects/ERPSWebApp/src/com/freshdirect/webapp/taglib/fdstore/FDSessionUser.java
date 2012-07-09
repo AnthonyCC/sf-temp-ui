@@ -1352,5 +1352,12 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 		this.user.setTsaPromoCode(tsaPromoCode);
 	}
 
+	public boolean isEbtAccepted() {
+		return this.user.isEbtAccepted();
+	}
+
+	public void setEbtAccepted(boolean ebtAccepted) {
+		this.user.setEbtAccepted(ebtAccepted);
+	}
 }
 

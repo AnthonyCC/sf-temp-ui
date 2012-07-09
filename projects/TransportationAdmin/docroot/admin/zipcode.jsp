@@ -48,7 +48,7 @@
 							  <ec:column alias="zipcode" property="zipCode" title="Zip Code"/>
 							  <ec:column property="homeCoverage" title="Home Coverage"/>
 							  <ec:column property="cosCoverage" title="COS Coverage"/>
-
+							  <ec:column property="ebtAccepted" title="EBT Accepted"/>
 							</ec:row>
 							 <div id="zipcode_container" style="display:none;">
 							  <%
@@ -80,8 +80,12 @@
 																   <td><input size="30" id="dCosCoverage" value='<%=_command.getCosCoverage() %>' /></td>
 															</tr>
 															<tr>
+																   <td align="right">EBT Accepted</td>
+				   												   <td><input type="checkbox"  id="ebtAccepted" <%="X".equals(_command.getEbtAccepted())?"checked":"" %> /></td>
+															</tr>
+															<tr>
 																<td align="center" colspan="2">
-																	<input type="button" id="add" value="&nbsp;Save&nbsp;" onclick="javascript:updateZipCodeCoverage('dZipCode','dHomeCoverage','dCosCoverage');" /> &nbsp;&nbsp;
+																	<input type="button" id="add" value="&nbsp;Save&nbsp;" onclick="javascript:updateZipCodeCoverage('dZipCode','dHomeCoverage','dCosCoverage','ebtAccepted');" /> &nbsp;&nbsp;
 																</td>
 															</tr>
 											</tbody>
@@ -123,8 +127,12 @@
    												   <td><input size="30" id="dCosCoverage" value="0" /></td>
 											</tr>
 											<tr>
+												   <td align="right">EBT Accepted</td>
+   												   <td><input type="checkbox"  id="ebtAccepted" /></td>
+											</tr>
+											<tr>
 												<td align="center" colspan="2">
-													<input type="button" id="add" value="&nbsp;Save&nbsp;" onclick="javascript:addNewZipCodeCoverage('dZipCode','dHomeCoverage','dCosCoverage');" /> &nbsp;&nbsp;
+													<input type="button" id="add" value="&nbsp;Save&nbsp;" onclick="javascript:addNewZipCodeCoverage('dZipCode','dHomeCoverage','dCosCoverage','ebtAccepted');" /> &nbsp;&nbsp;
 												</td>
 											</tr>
 							</tbody>
@@ -193,27 +201,29 @@
           			zcPanel.show();
         }
 
-		 function updateZipCodeCoverage(compId1,compId2,compId3) { 
+		 function updateZipCodeCoverage(compId1,compId2,compId3,compId4) { 
 			var _zipCode = document.getElementById(compId1).value;
 			var _homeCoverage = document.getElementById(compId2).value;
 			var _cosCoverage = document.getElementById(compId3).value;
-
+			var _ebtAccepted = ""+document.getElementById(compId4).checked;			
+			_ebtAccepted = (_ebtAccepted=="true")?"X":"";
 			if(_homeCoverage.trim().length ==0 ||  _cosCoverage.trim().length == 0) {
 				 addSysMessage("Please enter required values!", true);
 			}else if(_zipCode.trim().length > 0 && _homeCoverage.trim().length > 0 && _cosCoverage.trim().length > 0) {
-     			var result = jsonrpcClient.AsyncDomainProvider.updateZipCodeCoverage(zipCodeUpdateCallBack, _zipCode, _homeCoverage, _cosCoverage);
+     			var result = jsonrpcClient.AsyncDomainProvider.updateZipCodeCoverage(zipCodeUpdateCallBack, _zipCode, _homeCoverage, _cosCoverage,_ebtAccepted);
 			} 
         }
 
-		function addNewZipCodeCoverage(compId1,compId2,compId3) { 
+		function addNewZipCodeCoverage(compId1,compId2,compId3,compId4) { 
 			var _zipCode = document.getElementById(compId1).value;
 			var _homeCoverage = document.getElementById(compId2).value;
 			var _cosCoverage = document.getElementById(compId3).value;
-
+			var _ebtAccepted = ""+document.getElementById(compId4).checked;
+			_ebtAccepted = (_ebtAccepted=="true")?"X":"";
 			if(_homeCoverage.trim().length == 0 ||  _cosCoverage.trim().length == 0) {
 				 addSysMessage("Please enter required values!", true);
 			}else if(_zipCode.trim().length > 0 && _homeCoverage.trim().length > 0 && _cosCoverage.trim().length > 0) {
-     			var result = jsonrpcClient.AsyncDomainProvider.addNewZipCodeCoverage(zipCodeCallBack, _zipCode, _homeCoverage, _cosCoverage,'<%= envName %>');
+     			var result = jsonrpcClient.AsyncDomainProvider.addNewZipCodeCoverage(zipCodeCallBack, _zipCode, _homeCoverage, _cosCoverage,'<%= envName %>',_ebtAccepted);
 			} 
         }
 

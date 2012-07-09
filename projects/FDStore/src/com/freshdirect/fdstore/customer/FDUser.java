@@ -233,6 +233,7 @@ public class FDUser extends ModelSupport implements FDUserI {
 	Boolean referralFlag = null;
 	boolean referralFraud = false;
 	public String tsaPromoCode = null;
+	private boolean ebtAccepted = false;
 
 	public String getTsaPromoCode() {
 		return tsaPromoCode;
@@ -2241,5 +2242,13 @@ public class FDUser extends ModelSupport implements FDUserI {
 			return false;
 		}
 		return this.getFDCustomer().isEligibleForDDPP();
+	}
+
+	public boolean isEbtAccepted() {
+		return ebtAccepted;
+	}
+
+	public void setEbtAccepted(boolean ebtAccepted) {
+		this.ebtAccepted = ebtAccepted;
 	}
 }

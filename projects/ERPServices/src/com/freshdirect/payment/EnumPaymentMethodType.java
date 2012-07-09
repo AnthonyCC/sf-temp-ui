@@ -11,6 +11,7 @@ public class EnumPaymentMethodType extends ValuedEnum {
 	public final static EnumPaymentMethodType CREDITCARD = new EnumPaymentMethodType("CC", "Credit Card", 0);
 	public final static EnumPaymentMethodType ECHECK = new EnumPaymentMethodType("EC", "E-Check", 1);
 	public final static EnumPaymentMethodType GIFTCARD = new EnumPaymentMethodType("GC", "Gift-Card", 1);
+	public final static EnumPaymentMethodType EBT = new EnumPaymentMethodType("ET", "EBT", 1);
 
 	private String description;
 	

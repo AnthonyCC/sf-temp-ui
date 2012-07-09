@@ -448,7 +448,7 @@ if(isPaymentRequired) {
 	<%
 	JspMethods.dumpErrors(result);
 	%>
-		<% String[] checkPaymentForm = {"system", "order_minimum", "payment_inadequate", "technical_difficulty", "paymentMethodList", "payment", "declinedCCD", "matching_addresses", "expiration","bil_apartment","bil_address1","cardNum"}; %>
+		<% String[] checkPaymentForm = {"system", "order_minimum", "payment_inadequate", "technical_difficulty", "paymentMethodList", "payment", "declinedCCD", "matching_addresses", "expiration","bil_apartment","bil_address1","cardNum","ebtPaymentNotAllowed"}; %>
 		<fd:ErrorHandler result='<%=result%>' field='<%=checkPaymentForm%>' id='errorMsg'>
 			<%@ include file="/includes/i_error_messages.jspf" %>	
 		</fd:ErrorHandler>	
@@ -588,7 +588,21 @@ user.setAddressVerificationError(false);
 				<BR><BR>
 			<%
 			}%>
-			
+			<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="<%=W_CHECKOUT_STEP_3_CHOOSE_TOTAL%>">
+		<TR VALIGN="TOP">
+		<TD WIDTH="<%=W_CHECKOUT_STEP_3_CHOOSE_TOTAL%>"><img src="/media_stat/images/navigation/choose_credit1_card.gif" WIDTH="135" HEIGHT="9" border="0" alt="CHOOSE EBT CARD">&nbsp;&nbsp;&nbsp;<BR>
+			<IMG src="/media_stat/images/layout/999966.gif" WIDTH="<%=W_CHECKOUT_STEP_3_CHOOSE_TOTAL%>" HEIGHT="1" BORDER="0" VSPACE="3"><BR>
+			<FONT CLASS="space2pix"><BR></FONT>
+			<span CLASS="text12">If you need to enter another EBT card: </span><a href="/checkout/step_3_ebt_add.jsp"><img ALT="Add New Card" src="/media_stat/images/buttons/add_new_card.gif" WIDTH="96" HEIGHT="16" border="0" VSPACE="3" HSPACE="5" ALIGN="middle"></a></TD>
+		</TR>
+		</TABLE>
+		<%@ include file="/includes/ckt_acct/i_ebtcard_select.jspf" %><BR><BR>
+			<%
+			if(EnumServiceType.CORPORATE.equals(user.getSelectedServiceType())){%>
+				<%@ include file="/checkout/includes/i_billing_ref.jspf" %>
+				<BR><BR>
+			<%
+			}%>
 </fd:GetStandingOrderHelpInfo>
 </fd:GetStandingOrderDependencyIds>
 			

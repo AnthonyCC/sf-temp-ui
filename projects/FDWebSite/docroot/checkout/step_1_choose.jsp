@@ -60,7 +60,8 @@ if (!user.isSurveySkipped() && user.getAdjustedValidOrderCount()==1 && user.getD
 	    
     }
 }
-
+request.setAttribute("sitePage", "www.freshdirect.com/checkout/step_1_choose.jsp");
+request.setAttribute("listPos", "SystemMessage,ZDeliveryRight");
 %>
 <%-- =================================================================================================== --%>
 
@@ -230,7 +231,7 @@ while (e.hasMoreElements()) {
 
 	<TABLE border="0" cellspacing="0" cellpadding="0" width="<%=W_CHECKOUT_STEP_1_CHOOSE_TOTAL%>">
 		 <tr valign="top"> 
-	    <td class="text12" width="375" valign="bottom"> 
+	    <td class="text12"  valign="top"> 
 	            <font class="title18">Choose Delivery Address (Step 1 of 4)</font><br/>
 					<%if(user.isPickupOnly() ){%>   
 	        <b>Please Note: </b>Your home address is not in a FreshDirect <a href="javascript:popup('/help/delivery_zones.jsp','large');">delivery zone</a>.
@@ -241,6 +242,16 @@ while (e.hasMoreElements()) {
 	        Where would you like to receive this order?
 	            <%}%>
 	        </td>
+	        <td align="right">
+		                    <% if (FDStoreProperties.isAdServerEnabled()) { %>
+				                <SCRIPT LANGUAGE=JavaScript>
+		                        <!--
+		                            OAS_AD('ZDeliveryRight');
+		                        //-->
+		      	                </SCRIPT><br><br>
+		                	 <% } %>
+		
+				        </td>
 	    </tr>
 	</TABLE>
 	<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="16" BORDER="0"><BR>

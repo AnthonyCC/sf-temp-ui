@@ -1247,4 +1247,8 @@ public class ProductModelFeaturedAdapter implements ProductModel, Serializable,
 	public Object clone() {
 		return productModel.clone();
 	}
+	
+	public boolean isExcludedForEBTPayment(){
+		return productModel.isExcludedForEBTPayment();
+	}
 }

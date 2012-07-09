@@ -118,8 +118,10 @@ Collections.sort(activities, new ReverseComparator(ErpActivityRecord.COMP_DATE))
 
 int numCreditCards = 0;
 int numEChecks = 0;
+int numECards=0;
 int ccNum = 0;
 int ecNum = 0;
+int ebtNum=0;
 
 %>
 
@@ -561,6 +563,8 @@ String case_required_add = "<span class=\"cust_module_content_edit\">Case requir
             	numCreditCards++;
             }else if(EnumPaymentMethodType.ECHECK.equals(payment.getPaymentMethodType())){
             	numEChecks++;
+            }else if(EnumPaymentMethodType.EBT.equals(payment.getPaymentMethodType())){
+            	numECards++;
             }
             %>
             </logic:iterate>
@@ -745,6 +749,84 @@ String case_required_add = "<span class=\"cust_module_content_edit\">Case requir
             	}%>
             </logic:iterate>
 			<%-- END CHECKING ACCT --%>
+			
+			<%-- START EBT CARDS --%>
+			<table border="0" cellpadding="0" cellspacing="0" width="100%" style="border-bottom: solid 1px #999999;"><tr><td width="20%"  style="padding: 4px; margin-top: 5px; border-bottom: none; background:#E8FFE8;"><b>EBT Cards</b></td><td width="59%" class="field_note">&nbsp;<span class="error">Payment using EBT card is allowed only for pick-up orders.</span><%--a href="#">View check usage promotion</a--%></td><td align="right" width="20%"><%if (!forPrint){%><%if(editable){%><a href="/customer_account/new_ebt_card.jsp" class="add">ADD</a><%}else{%><%=case_required_add%><%}%><%}%></td><td width="1%"></td></tr></table>
+			<logic:iterate id="payment" collection="<%=customer.getPaymentMethods()%>" type="com.freshdirect.customer.ErpPaymentMethodI" indexId="idx">
+            <%
+            if(EnumPaymentMethodType.EBT.equals(payment.getPaymentMethodType())){
+            %>
+                <div class="cust_inner_module" style="width: 32%;<%=ebtNum < 3 ?"border-top: none;":""%>">
+                     <div class="cust_module_content">
+                     <table width="100%" cellpadding="0" cellspacing="0" class="cust_module_content_text">
+                        <tr valign="top">
+                        <td class="cust_module_content_note"><%=ebtNum+1%></td>
+                        <td>
+                        <form name="paymentForm_<%=idx.intValue()%>" method="POST">
+                        <table width="90%" cellpadding="3" cellspacing="0" class="cust_module_content_text" align="center">
+                            <tr>
+                                <td align="right" width="40%">Name on account:&nbsp;&nbsp;</td>
+                                <td width="60%"><%=payment.getName()%></td>
+                            </tr>							
+							<tr>
+                                <td align="right">Account number:&nbsp;&nbsp;</td>
+                                <td><%=payment.getMaskedAccountNumber()%></td>
+                            </tr>
+							
+                            <tr>
+                                <td align="right">Account address:&nbsp;&nbsp;</td>
+                                <td><%=payment.getAddress1()%>&nbsp;Apt. <%=payment.getApartment()%>
+                                    <%if(payment.getAddress2() != null && !"".equalsIgnoreCase(payment.getAddress2())){%>
+                                        <br><%=payment.getAddress2()%><%}%><br><%=payment.getCity()%>,&nbsp;<%=payment.getState()%>&nbsp;<%=payment.getZipCode()%>
+                                </td>
+                            </tr>
+                            <%if (!forPrint){%>
+                                <tr><td colspan="3" height="8"></td></tr>
+                                <tr>
+                                <% if (editable) { %>
+                                    <td><a href="javascript:confirmDelete(paymentForm_<%=idx.intValue()%>, 'payment method')" class="delete">DELETE</a></td>
+                                    <td <%= numECards > 1 ? "align=\"right\"" : "colspan=\"2\" align=\"center\""%> ><a href="/customer_account/edit_ebt_card.jsp?paymentId=<%=((ErpPaymentMethodModel)payment).getPK().getId()%>" class="edit">EDIT</a></td>
+                                <% } else { %>
+                                    <td colspan="2" align="center" class="cust_module_content_edit"><%=case_required%></td>
+                                <% } %>
+                                </tr>
+                            <% } %>
+							<crm:CrmGetIsBadAccount id="isRestrictedAccount" paymentMethod="<%=payment%>">
+							<% 
+								if (isRestrictedAccount.booleanValue()) {
+							%>
+							<tr><td colspan="2"><div style="border: solid 1px #CC0000; padding 5px; font-size: 8pt; text-align: center;"><b>Payment for an order <span class="error_detail">failed</span> with this account</b></div></td></tr>
+							<% 
+								} else {
+							%>
+							<tr><td colspan="2">&nbsp;</td></tr>
+							<%
+								}
+							%>
+							</crm:CrmGetIsBadAccount>
+                            <input type="hidden" name="actionName" value="deletePaymentMethod">
+                            <input type="hidden" name="deletePaymentId" value="<%=((ErpPaymentMethodModel)payment).getPK().getId()%>">
+                            </form>
+                        </table>
+                        </td></tr></table>	
+                    </div>
+                    
+                    <% Set billingInfoActivity = new HashSet();
+                    billingInfoActivity.add(EnumAccountActivityType.UPDATE_BIL_ADDRESS);
+                    billingInfoActivity.add(EnumAccountActivityType.UPDATE_PAYMENT_METHOD);
+                    
+                    ErpActivityRecord lastBillingInfo = getLatest(activities, billingInfoActivity, ((ErpPaymentMethodModel)payment).getPK().getId()); 
+                    if (lastBillingInfo != null) { %>
+                        <%= getLastModified(lastBillingInfo) %> 
+                    <% } %>
+
+                </div>
+                <%if(ebtNum != 0 && (ebtNum + 1) % 3 == 0 && ((ebtNum + 1) < numECards)){%>
+                    <br clear="all">
+                <%}
+                ebtNum++;
+            	}%>
+            </logic:iterate>
 		<br>
 		</div>
     </tmpl:put>

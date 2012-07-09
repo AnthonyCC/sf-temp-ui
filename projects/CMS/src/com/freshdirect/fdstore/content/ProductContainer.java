@@ -282,4 +282,8 @@ public abstract class ProductContainer extends ContentNodeModelImpl implements H
 	public String getGlobalMenuLinkLabel() {
 		return getAttribute("GLOBAL_MENU_LINK_LABEL", "show all");
 	}
+	
+	public boolean isExcludedForEBTPayment(){
+		return getAttribute("EXCLUDED_EBT_PAYMENT", false);
+	}
 }

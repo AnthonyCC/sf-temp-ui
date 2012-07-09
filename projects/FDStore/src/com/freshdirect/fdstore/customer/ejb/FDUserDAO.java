@@ -169,6 +169,7 @@ public class FDUserDAO {
 			FDRecipientList repList = new FDRecipientList(recipients);
 			user.setRecipientList(repList);
 		}
+		user.setEbtAccepted(checkEbtPaymentAccepted(conn,user.getZipCode()));
 		rs.close();
 		ps.close();
 
@@ -195,11 +196,14 @@ public class FDUserDAO {
 			cart.addOrderLines(convertToCartLines(FDCartLineDAO.loadCartLines(conn, user.getPK())));
 			user.setShoppingCart(cart);
 		}
+		user.setEbtAccepted(checkEbtPaymentAccepted(conn,user.getZipCode()));
 		rs.close();
 		ps.close();
 
 		return user;
 	}
+	
+	
 
 	private static final String LOAD_FROM_COOKIE_QUERY =
 		"SELECT fdu.ID as fduser_id, fdu.COOKIE, fdu.ADDRESS1, fdu.APARTMENT, fdu.ZIPCODE, fdu.DEPOT_CODE, fdu.SERVICE_TYPE, fdu.HPLETTER_VISITED, fdu.CAMPAIGN_VIEWED, fdc.id as fdcust_id, erpc.id as erpcust_id, fdu.ref_tracking_code, " +
@@ -227,7 +231,7 @@ public class FDUserDAO {
 			FDRecipientList repList = new FDRecipientList(recipients);
 			user.setRecipientList(repList);
 		}
-
+		user.setEbtAccepted(checkEbtPaymentAccepted(conn,user.getZipCode()));
 		rs.close();
 		ps.close();
 
@@ -282,7 +286,23 @@ public class FDUserDAO {
 		return user;
 	}
 	
+	private final static String EBT_ZipCodeQuery = "select EBT_ACCEPTED from dlv.zipcode where zipcode = ?";
+	private static boolean checkEbtPaymentAccepted(Connection conn, String zipCode) throws SQLException {
+		boolean isEBTAccepted = false;
+		PreparedStatement ps = conn.prepareStatement(EBT_ZipCodeQuery);
+		ps.setString(1, zipCode);
+		ResultSet rs = ps.executeQuery();
 
+		if (rs.next()) {
+			isEBTAccepted = "X".equalsIgnoreCase(rs.getString("EBT_ACCEPTED"))?true:false;
+		}
+		rs.close();
+		ps.close();
+
+		return isEBTAccepted;
+	}
+	
+	
 	private static final String STORE_USER_SQL =
 		"UPDATE CUST.FDUSER " +
 		"SET COOKIE=?, ZIPCODE=?, FDCUSTOMER_ID=?, DEPOT_CODE=?, SERVICE_TYPE=?, ADDRESS1=?, APARTMENT=?, " +

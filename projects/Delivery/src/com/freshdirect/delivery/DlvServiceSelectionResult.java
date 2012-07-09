@@ -20,6 +20,7 @@ public class DlvServiceSelectionResult implements Serializable {
 	
 	private Map<EnumServiceType,EnumDeliveryStatus> serviceStatus = new HashMap<EnumServiceType,EnumDeliveryStatus>();
 	private EnumRestrictedAddressReason restrictionReason = EnumRestrictedAddressReason.NONE;
+	private boolean ebtAccepted = false;
 
 	public void setRestrictionReason(EnumRestrictedAddressReason restrictionReason) {
 		this.restrictionReason = restrictionReason;
@@ -56,5 +57,13 @@ public class DlvServiceSelectionResult implements Serializable {
 		}
 		
 		return s;
+	}
+
+	public boolean isEbtAccepted() {
+		return ebtAccepted;
+	}
+
+	public void setEbtAccepted(boolean ebtAccepted) {
+		this.ebtAccepted = ebtAccepted;
 	}
 }

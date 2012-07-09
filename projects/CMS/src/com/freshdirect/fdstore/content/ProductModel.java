@@ -974,4 +974,6 @@ public interface ProductModel extends AvailabilityI, YmalSource, YmalSetSource, 
 	public boolean showDefaultSustainabilityRating();
 	
 	public FDGroup getFDGroup() throws FDResourceException;
+	
+	public boolean isExcludedForEBTPayment();
 }

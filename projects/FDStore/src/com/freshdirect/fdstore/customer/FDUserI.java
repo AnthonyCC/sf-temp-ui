@@ -499,4 +499,8 @@ public interface FDUserI extends java.io.Serializable {
 	public String getTsaPromoCode();
 
 	public void setTsaPromoCode(String tsaPromoCode);
+	
+	public boolean isEbtAccepted();
+
+	public void setEbtAccepted(boolean ebtAccepted) ;
 }

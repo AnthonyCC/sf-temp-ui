@@ -30,6 +30,8 @@ import com.freshdirect.customer.ErpDuplicateDisplayNameException;
 import com.freshdirect.customer.ErpDuplicateUserIdException;
 import com.freshdirect.customer.ErpInvalidPasswordException;
 import com.freshdirect.customer.ejb.ErpLogActivityCommand;
+import com.freshdirect.delivery.DlvServiceSelectionResult;
+import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDDepotManager;
 import com.freshdirect.fdstore.FDReservation;
 import com.freshdirect.fdstore.FDResourceException;
@@ -381,7 +383,8 @@ public class RegistrationControllerTag extends AbstractControllerTag implements 
 		}
 	
 		AddressModel scrubbedAddress = validator.getScrubbedAddress(); // get 'normalized' address
-
+		DlvServiceSelectionResult serviceResult =FDDeliveryManager.getInstance().checkZipCode(scrubbedAddress.getZipCode());
+		boolean isEBTAccepted = null !=serviceResult ? serviceResult.isEbtAccepted():false;
 		if (validator.isAddressDeliverable()) {
 			FDSessionUser user = (FDSessionUser) session.getAttribute(USER);
 			if (user.isPickupOnly() && user.getOrderHistory().getValidOrderCount()==0) {
@@ -392,6 +395,7 @@ public class RegistrationControllerTag extends AbstractControllerTag implements 
 				//Added the following line for zone pricing to keep user service type up-to-date.
 				user.setZPServiceType(scrubbedAddress.getServiceType());
 				user.setZipCode(scrubbedAddress.getZipCode());
+				user.setEbtAccepted(isEBTAccepted);
 				FDCustomerManager.storeUser(user.getUser());
 				session.setAttribute(USER, user);
 			}else {
@@ -402,6 +406,7 @@ public class RegistrationControllerTag extends AbstractControllerTag implements 
 					//Added the following line for zone pricing to keep user service type up-to-date.
 					user.setZPServiceType(scrubbedAddress.getServiceType());
 					user.setZipCode(scrubbedAddress.getZipCode());
+					user.setEbtAccepted(isEBTAccepted);
 					FDCustomerManager.storeUser(user.getUser());
 					session.setAttribute(USER, user);
 				}

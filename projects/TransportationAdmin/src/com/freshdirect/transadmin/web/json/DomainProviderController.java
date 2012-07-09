@@ -145,13 +145,13 @@ public class DomainProviderController extends BaseJsonRpcController  implements 
 		return result;
 	}
 	
-	public boolean updateZipCodeCoverage(String zipCode, String homeCoverage, String cosCoverage) {
+	public boolean updateZipCodeCoverage(String zipCode, String homeCoverage, String cosCoverage,String ebtAccepted) {
 		
 		try {
 			
 			ZipCodeModel modelIn = new ZipCodeModel(zipCode
 				                                           , Double.parseDouble(homeCoverage)
-				                                           , Double.parseDouble(cosCoverage));
+				                                           , Double.parseDouble(cosCoverage),ebtAccepted);
 			
 			getZoneManagerService().updateDeliveryZipCodeCoverage(modelIn);		
 		} catch (SQLException e) {			
@@ -163,12 +163,12 @@ public class DomainProviderController extends BaseJsonRpcController  implements 
 	}
 	
 	@SuppressWarnings("unchecked")
-	public int addNewZipCodeCoverage(String zipCode, String homeCoverage, String cosCoverage, String envName) {
+	public int addNewZipCodeCoverage(String zipCode, String homeCoverage, String cosCoverage, String envName,String ebtAccepted) {
 		
 		try {			
 				ZipCodeModel modelIn = new ZipCodeModel(zipCode
 				                                           , Double.parseDouble(homeCoverage)
-				                                           , Double.parseDouble(cosCoverage));
+				                                           , Double.parseDouble(cosCoverage),ebtAccepted);
 				
 				boolean hasStreetData = getZoneManagerService().checkNavTechZipCodeInfo(modelIn.getZipCode());
 				if(hasStreetData){

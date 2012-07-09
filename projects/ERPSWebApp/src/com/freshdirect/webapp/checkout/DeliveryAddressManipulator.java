@@ -28,6 +28,7 @@ import com.freshdirect.customer.ErpDuplicateAddressException;
 import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.customer.ErpPaymentMethodModel;
 import com.freshdirect.delivery.DlvAddressGeocodeResponse;
+import com.freshdirect.delivery.DlvServiceSelectionResult;
 import com.freshdirect.delivery.DlvZoneInfoModel;
 import com.freshdirect.delivery.EnumRestrictedAddressReason;
 import com.freshdirect.delivery.depot.DlvDepotModel;
@@ -42,6 +43,7 @@ import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDCustomerFactory;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
+import com.freshdirect.fdstore.customer.FDDeliveryTimeslotModel;
 import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.promotion.PromotionI;
@@ -286,7 +288,8 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 		}
 	
 		AddressModel scrubbedAddress = validator.getScrubbedAddress(); // get 'normalized' address
-
+		DlvServiceSelectionResult serviceResult =FDDeliveryManager.getInstance().checkZipCode(scrubbedAddress.getZipCode());
+		boolean isEBTAccepted = null !=serviceResult ? serviceResult.isEbtAccepted():false;
 		if (validator.isAddressDeliverable()) {
 			FDSessionUser user = (FDSessionUser) session.getAttribute(SessionName.USER);
 			if (user.isPickupOnly() && user.getOrderHistory().getValidOrderCount()==0) {
@@ -297,6 +300,7 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 				//Added the following line for zone pricing to keep user service type up-to-date.
 				user.setZPServiceType(scrubbedAddress.getServiceType());
 				user.setZipCode(scrubbedAddress.getZipCode());
+				user.setEbtAccepted(isEBTAccepted);
 				FDCustomerManager.storeUser(user.getUser());
 				session.setAttribute(SessionName.USER, user);
 			}else {
@@ -307,6 +311,7 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 					//Added the following line for zone pricing to keep user service type up-to-date.
 					user.setZPServiceType(scrubbedAddress.getServiceType());
 					user.setZipCode(scrubbedAddress.getZipCode());
+					user.setEbtAccepted(isEBTAccepted);
 					FDCustomerManager.storeUser(user.getUser());
 					session.setAttribute(SessionName.USER, user);
 				}
@@ -379,7 +384,8 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 
 		ErpAddressModel thisAddress = FDCustomerManager.getAddress( getIdentity(), addressId );
 
-		
+		DlvServiceSelectionResult serviceResult =FDDeliveryManager.getInstance().checkZipCode(thisAddress.getZipCode());
+		boolean isEBTAccepted = null !=serviceResult ? serviceResult.isEbtAccepted():false;
 		FDSessionUser user = (FDSessionUser)session.getAttribute( SessionName.USER );
 		if (EnumCheckoutMode.NORMAL == user.getCheckoutMode()) {
 			String zoneId = zoneInfo.getZoneCode();
@@ -400,6 +406,7 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 					//Added the following line for zone pricing to keep user service type up-to-date.
 					user.setZPServiceType(dlvAddress.getServiceType());
 					user.setZipCode(dlvAddress.getZipCode());
+					user.setEbtAccepted(isEBTAccepted);
 					FDCustomerManager.storeUser(user.getUser());
 				}else {
 					//Already is a home or a corporate customer.
@@ -409,6 +416,7 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 						//Added the following line for zone pricing to keep user service type up-to-date.
 						user.setZPServiceType(dlvAddress.getServiceType());
 						user.setZipCode(dlvAddress.getZipCode());
+						user.setEbtAccepted(isEBTAccepted);
 						FDCustomerManager.storeUser(user.getUser());
 					}
 				}
@@ -439,6 +447,9 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 		}
 
 		AddressModel address = AddressUtil.scrubAddress( shippingAddress, result );
+		DlvServiceSelectionResult serviceResult =FDDeliveryManager.getInstance().checkZipCode(address.getZipCode());
+		boolean isEBTAccepted = null !=serviceResult ? serviceResult.isEbtAccepted():false;
+		user.setEbtAccepted(isEBTAccepted);
 		// if it is a Hamptons address without the altContactNumber have user
 		// edit and provide it.
 		/*

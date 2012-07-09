@@ -5,6 +5,7 @@ public class ZipCodeModel {
 	private String zipCode;
 	private double homeCoverage;
 	private double cosCoverage;
+	private String ebtAccepted;
 		
 	public ZipCodeModel(String zipCode, double homeCoverage, double cosCoverage) {
 		super();
@@ -12,6 +13,15 @@ public class ZipCodeModel {
 		this.homeCoverage = homeCoverage;
 		this.cosCoverage = cosCoverage;
 	}
+	
+	public ZipCodeModel(String zipCode, double homeCoverage, double cosCoverage,String ebtAccepted) {
+		super();
+		this.zipCode = zipCode;
+		this.homeCoverage = homeCoverage;
+		this.cosCoverage = cosCoverage;
+		this.ebtAccepted = ebtAccepted;
+	}
+	
 	public String getZipCode() {
 		return zipCode;
 	}
@@ -53,6 +63,12 @@ public class ZipCodeModel {
 		} else if (!zipCode.equals(other.zipCode))
 			return false;
 		return true;
+	}
+	public String getEbtAccepted() {
+		return ebtAccepted;
+	}
+	public void setEbtAccepted(String ebtAccepted) {
+		this.ebtAccepted = ebtAccepted;
 	}	
 	
 	

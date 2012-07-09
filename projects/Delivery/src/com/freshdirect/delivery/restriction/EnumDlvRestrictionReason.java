@@ -36,6 +36,8 @@ public class EnumDlvRestrictionReason extends Enum {
 	// test easter/passover meals (meals == advanced order)
 	public static final EnumDlvRestrictionReason EASTER_MEALS = new EnumDlvRestrictionReason("EASML", "Easter Meals", true);
 	
+	public static final EnumDlvRestrictionReason EBT_PAYMENT = new EnumDlvRestrictionReason("EBT_PMNT", "EBT Payment");
+	
 	private final String description;
 	private final boolean specialHoliday;
 

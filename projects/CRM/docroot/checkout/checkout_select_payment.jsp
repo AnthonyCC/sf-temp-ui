@@ -69,6 +69,8 @@
 	int ccNum = 0;	
 	int numEChecks = 0;
 	int ecNum = 0;	
+	int numECards = 0;
+	int ebtNum = 0;
     
     	// Get cart's selected payment method
 	String cardStatus ="";
@@ -212,7 +214,7 @@
                                     	 PaymentMethodName.ACCOUNT_HOLDER, PaymentMethodName.CARD_BRAND, PaymentMethodName.ACCOUNT_NUMBER,
                                     	 "expiration", EnumUserInfoName.BIL_ADDRESS_1.getCode(),EnumUserInfoName.BIL_APARTMENT.getCode(),
                                     	 EnumUserInfoName.BIL_CITY.getCode(),        
-                                    	 EnumUserInfoName.BIL_STATE.getCode(), EnumUserInfoName.BIL_ZIPCODE.getCode(), "pickup_contact_number"
+                                    	 EnumUserInfoName.BIL_STATE.getCode(), EnumUserInfoName.BIL_ZIPCODE.getCode(), "pickup_contact_number","ebtPaymentNotAllowed"
          }; 
 %>
 	<fd:ErrorHandler result='<%=result%>' field='<%=checkDlvPaymentForm%>' id='errorMsg'>
@@ -334,6 +336,8 @@
 				numCreditCards++;
 			} else if (EnumPaymentMethodType.ECHECK.equals(payment.getPaymentMethodType())) { 
 				numEChecks++;
+			} else if (EnumPaymentMethodType.EBT.equals(payment.getPaymentMethodType())) { 
+				numECards++;
 			}		
 %>
 		</logic:iterate>
@@ -444,6 +448,77 @@
 <%
 				}
 				ecNum++;
+			} 
+%>
+        	</logic:iterate>
+		<%--END CHECKING--%>
+		
+		<br clear="all">
+
+		<%-- START EBT CARD --%>
+		<table border="0" cellpadding="0" cellspacing="0" width="100%" style="border-bottom: solid 1px #999999;">
+        		<tr>
+        	        <td bgcolor="#E8FFE8" width="20%" style="padding: 4px; border-top: solid 1 px #666666; border-left: solid 1 px #666666; border-right: solid 1 px #666666;">
+        	        <b>EBT Cards</b>
+        	        </td>
+        	        <td width="59%" class="field_note">
+        	        &nbsp;Payment using EBT card is allowed only for pick-up orders. 
+        	        </td>
+        	        <td align="right" width="20%">
+        	        <a href="/checkout/checkout_new_checkacct.jsp" class="add">ADD</a>
+        	        </td>
+        	        <td width="1%"></td>
+        	        </tr>
+		</table>
+        	<%-- using cc data for display purposes --%>
+		<logic:iterate id="payment" collection="<%= paymentMethods %>" type="com.freshdirect.customer.ErpPaymentMethodI" indexId="ccCounter">
+<%      
+			if (EnumPaymentMethodType.EBT.equals(payment.getPaymentMethodType())) { 			
+%>
+				<div class="cust_inner_module" style="width: 33%;<%=ebtNum < 3 ?"border-top: none;":""%>">
+				<div class="cust_module_content">
+<%
+				methodChecked = "";
+				String paymentPKId = ((ErpPaymentMethodModel)payment).getPK().getId();
+
+				if (paymentPKId.equals(selectedPaymPKId)){
+					methodChecked = "checked";
+					selectedPaymentMethodExists = true;
+				}
+				else if("new".equalsIgnoreCase(selectedPaymPKId) && ccCounter.intValue() == numEChecks-1){
+					methodChecked = "checked";
+				}
+				if ( methodChecked.equals("") && ccCounter.intValue() == numECards-1 && !selectedPaymentMethodExists) {
+					methodChecked = "checked";
+				}
+%>
+				<crm:CrmGetIsBadAccount id="isRestrictedAccount" paymentMethod="<%=payment%>">
+				<table width="100%" cellpadding="0" cellspacing="0" border="0" ALIGN="CENTER" class="order">
+					<tr valign="top">
+<% 
+					if(!isRestrictedAccount.booleanValue()) { 
+%>	
+						<td class="note"><input type="radio" name="paymentMethodList" value="<%= paymentPKId %>" <%= methodChecked %>> <%=ebtNum + 1%></td>
+<% 	
+					} else {
+%>	
+						<td class="note"><%=ebtNum + 1%></td>
+<% 
+					} 
+%>
+					<td><%@ include file="/includes/i_payment_select.jspf"%></td>
+					</tr>
+				</table>
+				</crm:CrmGetIsBadAccount>
+				</div>
+				</div>
+<%
+				if(ebtNum != 0 && (ebtNum+1) % 3 == 0 && (ebtNum+1 < numECards)) {
+%>
+					<br clear="all">
+<%
+				}
+				ebtNum++;
 			} 
 %>
         	</logic:iterate>

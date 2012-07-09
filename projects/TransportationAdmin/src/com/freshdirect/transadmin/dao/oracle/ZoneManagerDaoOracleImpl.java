@@ -215,7 +215,7 @@ public class ZoneManagerDaoOracleImpl implements ZoneManagerDaoI {
 	}
 	
 	private static final String DELIVERABLE_ZIPS = 
-		"select zipcode, home_coverage, cos_coverage from dlv.zipcode order by zipcode asc";
+		"select zipcode, home_coverage, cos_coverage,ebt_accepted from dlv.zipcode order by zipcode asc";
 	
 	private static final String GET_ZIPCODEINFO_NAVTECH = "select l_postcode ZIP_CODE, sdo_aggr_convexhull(MDSYS.SDOAGGRTYPE(geoloc, 0.5)) "+ 
 		" FROM dlv.navtech_geocode n where l_postcode = ? or n.r_postcode = ? group by n.l_postcode ";
@@ -230,7 +230,7 @@ public class ZoneManagerDaoOracleImpl implements ZoneManagerDaoI {
 		" (?, (select geoloc FROM dlv.zipcode_worktab where zipcode = ?))";
 	
 	//insert zip code coverage
-	private static final String UPDATE_ZIPCODE_COVERAGE = "update dlv.zipcode z set z.geoloc = (select geoloc FROM dlv.zipcode_worktab where zipcode = ?), z.home_coverage = ?, z.cos_coverage = ? "+ 
+	private static final String UPDATE_ZIPCODE_COVERAGE = "update dlv.zipcode z set z.geoloc = (select geoloc FROM dlv.zipcode_worktab where zipcode = ?), z.home_coverage = ?, z.cos_coverage = ?,z.ebt_accepted = ? "+ 
 			" where zipcode = ? ";
 	
 	private static final String GET_ZIPCODEINFO = "select * FROM dlv.zipcode where zipcode = ? ";
@@ -253,7 +253,7 @@ public class ZoneManagerDaoOracleImpl implements ZoneManagerDaoI {
 	       		      public void processRow(ResultSet rs) throws SQLException {
 	       		    	ZipCodeModel model;
 	       		    	do {       		 
-	       		    		model = new ZipCodeModel(rs.getString("zipcode"),rs.getDouble("home_coverage"),rs.getDouble("cos_coverage"));
+	       		    		model = new ZipCodeModel(rs.getString("zipcode"),rs.getDouble("home_coverage"),rs.getDouble("cos_coverage"),rs.getString("ebt_accepted"));
 	       		    		result.add(model);
 	       		    	}  while(rs.next());
 	       		      }
@@ -390,6 +390,7 @@ public class ZoneManagerDaoOracleImpl implements ZoneManagerDaoI {
 			batchUpdater.declareParameter(new SqlParameter(Types.DOUBLE));
 			batchUpdater.declareParameter(new SqlParameter(Types.DOUBLE));
 			batchUpdater.declareParameter(new SqlParameter(Types.VARCHAR));
+			batchUpdater.declareParameter(new SqlParameter(Types.VARCHAR));
 			
 			batchUpdater.compile();			
 			connection = this.jdbcTemplate.getDataSource().getConnection();
@@ -399,7 +400,9 @@ public class ZoneManagerDaoOracleImpl implements ZoneManagerDaoI {
 				batchUpdater.update(new Object[]{ model.getZipCode()
 								, model.getHomeCoverage()
 								, model.getCosCoverage()
+								, model.getEbtAccepted()
 								, model.getZipCode()
+								
 				});
 			}			
 			batchUpdater.flush();
@@ -424,7 +427,7 @@ public class ZoneManagerDaoOracleImpl implements ZoneManagerDaoI {
 	       		      public void processRow(ResultSet rs) throws SQLException {
 	       		    	ZipCodeModel model;
 	       		    	do {       		 
-	       		    		model = new ZipCodeModel(rs.getString("zipcode"),rs.getDouble("home_coverage"),rs.getDouble("cos_coverage"));
+	       		    		model = new ZipCodeModel(rs.getString("zipcode"),rs.getDouble("home_coverage"),rs.getDouble("cos_coverage"),rs.getString("ebt_accepted"));
 	       		    		result.add(model);
 	       		    	}  while(rs.next());
 	       		      }

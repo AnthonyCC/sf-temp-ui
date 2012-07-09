@@ -16,7 +16,7 @@ public interface IDomainProvider {
 	
 	Map<EmployeeInfo, Set<EmployeeInfo>> getTeamMapping(String ids);
 	
-	int addNewZipCodeCoverage(String zipCode, String homeCoverage, String cosCoverage, String envName);
+	int addNewZipCodeCoverage(String zipCode, String homeCoverage, String cosCoverage, String envName,String ebtAccepted);
 	
-	boolean updateZipCodeCoverage(String zipCode, String homeCoverage, String cosCoverage);
+	boolean updateZipCodeCoverage(String zipCode, String homeCoverage, String cosCoverage,String ebtAccepted);
 }

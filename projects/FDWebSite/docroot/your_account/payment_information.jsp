@@ -118,6 +118,26 @@ To learn more about our <b>Security Policies</b>, <a href="javascript:popup('/he
 			</td></tr>
 		</table>
 		<br>
+		<table width="<%= W_YA_PAYMENT_INFO_TOTAL %>" border="0" cellspacing="0" cellpadding="0">
+		<tr valign="top">
+		    <td><img src="/media_stat/images/navigation/credit_card_details1.gif"
+		WIDTH="152" HEIGHT="15" border="0" alt="CREDIT CARD DETAILS">&nbsp;&nbsp;&nbsp;<BR>
+		    <IMG src="/media_stat/images/layout/999966.gif" WIDTH="<%= W_YA_PAYMENT_INFO_TOTAL %>" HEIGHT="1" BORDER="0" VSPACE="3"><BR>
+		    </td>
+		</tr>
+		<tr valign="middle">
+			<td class="text11" style="padding-top: 5px; padding-bottom: 10px;">If you need to enter another EBT card: <a href="/your_account/add_ebt_card.jsp"><IMG src="/media_stat/images/buttons/add_new_card.gif" WIDTH="96" HEIGHT="16" ALT="Add New Credit Card" BORDER="0" ALIGN="absmiddle"></a>
+			</td>
+			</tr>
+			<tr><td>
+				<form name=ebtcard_form method="post">
+				<input type="hidden" name="actionName" value="">
+				<input type="hidden" name="deletePaymentId" value="">
+				<%@ include file="/includes/ckt_acct/i_ebtcard_select.jspf" %>
+				</form>
+			</td></tr>
+		</table>
+		<br>
 		<IMG src="/media_stat/images/layout/ff9933.gif" WIDTH="<%= W_YA_PAYMENT_INFO_TOTAL %>" HEIGHT="1" BORDER="0"><BR>
 		<FONT CLASS="space4pix"><BR><BR></FONT>
 		<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="<%= W_YA_PAYMENT_INFO_TOTAL %>">

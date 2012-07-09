@@ -18,11 +18,13 @@ import com.freshdirect.crm.CrmAgentRole;
 import com.freshdirect.customer.ErpComplaintException;
 import com.freshdirect.customer.ErpComplaintLineModel;
 import com.freshdirect.customer.ErpComplaintModel;
+import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.fdstore.EnumCheckoutMode;
 import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDTimeslot;
 import com.freshdirect.fdstore.Util;
+import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDIdentity;
@@ -31,6 +33,7 @@ import com.freshdirect.fdstore.standingorders.FDStandingOrder;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionError;
 import com.freshdirect.framework.webapp.ActionResult;
+import com.freshdirect.payment.EnumPaymentMethodType;
 import com.freshdirect.webapp.action.Action;
 import com.freshdirect.webapp.action.HttpContext;
 import com.freshdirect.webapp.action.HttpContextAware;
@@ -247,6 +250,19 @@ public class CheckoutControllerTag extends AbstractControllerTag {
 				
 				if ( result.isSuccess() ) {
 					UserValidationUtil.validateOrderMinimum( request, result );
+					ErpPaymentMethodI paymentMethod =cart.getPaymentMethod();
+					if(null != paymentMethod && EnumPaymentMethodType.EBT.equals(paymentMethod.getPaymentMethodType())){
+						boolean isEBTBlocked = false;
+						for (FDCartLineI cartLine : cart.getOrderLines()) {
+							isEBTBlocked =cartLine.getProductRef().lookupProductModel().isExcludedForEBTPayment();
+							if(isEBTBlocked){
+								break;
+							}
+						}
+						if(isEBTBlocked){
+							this.setSuccessPage( "/checkout/step_3_unavail.jsp?successPage="+getSuccessPage());
+						}
+					}
 					if ( currentUser.isPromotionAddressMismatch() && isNotCallCenter ) {
 						this.setSuccessPage( "/checkout/step_3_waive.jsp" );
 					}

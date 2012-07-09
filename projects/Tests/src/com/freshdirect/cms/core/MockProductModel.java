@@ -1981,6 +1981,12 @@ public class MockProductModel extends MockContentNodeModel implements
 	}
 
 	@Override
+	public boolean isExcludedForEBTPayment() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
 	public List<FDLimitedAvailabilityInfo> getLimitedAvailability() {
 		// TODO Auto-generated method stub
 		return null;

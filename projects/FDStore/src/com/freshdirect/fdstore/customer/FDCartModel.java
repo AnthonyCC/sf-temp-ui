@@ -68,6 +68,7 @@ import com.freshdirect.framework.util.FormatterUtil;
 import com.freshdirect.framework.util.MathUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.giftcard.ErpGiftCardModel;
+import com.freshdirect.payment.EnumPaymentMethodType;
 
 /**
  * FDShoppingCart model class.
@@ -185,6 +186,8 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 	
 	private int skuCount = 0;
 	private boolean csrWaivedDeliveryPremium = false;
+	
+	private List<FDCartLineI> ebtIneligibleOrderLines = new ArrayList<FDCartLineI>();
 	
 	public void incrementSkuCount(int quantity) {
 		skuCount += quantity;
@@ -1209,6 +1212,7 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 		
 		FDDeliveryManager fdMan = FDDeliveryManager.getInstance();
 		
+		
 		MunicipalityInfoWrapper miw = fdMan.getMunicipalityInfos();
 		MunicipalityInfo mi = null;
 		
@@ -1219,8 +1223,10 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 			mi = miw.getMunicipalityInfo(fdMan.lookupStateByZip(zipcode), fdMan.lookupCountyByZip(zipcode), null);
 		}
 		
-		if(mi != null){
-			taxRate = mi.getTaxRate();
+		if(mi != null ){
+			if(null ==getPaymentMethod() || !EnumPaymentMethodType.EBT.equals(getPaymentMethod().getPaymentMethodType())){
+				taxRate = mi.getTaxRate();
+			}
 			depositRate = mi.getBottleDeposit();
 		}
 	
@@ -1663,7 +1669,10 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 		if (address != null) {
 			// DLV
 			FeeCalculator calc = new FeeCalculator("DLV");
-			double dlvFee = calc.calculateFee(ctx);
+			double dlvFee = 0.0;
+			if(null ==getPaymentMethod() || !EnumPaymentMethodType.EBT.equals(getPaymentMethod().getPaymentMethodType())){
+				dlvFee = calc.calculateFee(ctx);
+			}
 			this.setChargeAmount(EnumChargeType.DELIVERY, dlvFee);
 			double premiumFee = 0.0;
 			
@@ -1677,7 +1686,10 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 			}
 			// MISC
 			calc = new FeeCalculator("MISC");
-			double miscFee = calc.calculateFee(ctx);
+			double miscFee = 0.0;
+			if(null ==getPaymentMethod() || !EnumPaymentMethodType.EBT.equals(getPaymentMethod().getPaymentMethodType())){
+				miscFee =calc.calculateFee(ctx);
+			}
 			this.setChargeAmount(EnumChargeType.MISCELLANEOUS, miscFee);
 
 		}
@@ -1704,6 +1716,10 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 			c.setTaxRate(taxRate);
 		}
 
+	}   
+
+	public List<FDCartLineI> getEbtIneligibleOrderLines() {
+		return ebtIneligibleOrderLines;
 	}
 
     public void setDlvPassPremiumAllowedTC(boolean dlvPassPremiumAllowedTC){
@@ -1714,4 +1730,9 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 	}
 
 	
+}
+
+	public void setEbtIneligibleOrderLines(List<FDCartLineI> ebtIneligibleOrderLines) {
+		this.ebtIneligibleOrderLines = ebtIneligibleOrderLines;
+	}
 }

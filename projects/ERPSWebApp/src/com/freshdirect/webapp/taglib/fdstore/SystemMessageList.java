@@ -181,4 +181,6 @@ public interface SystemMessageList {
 	public final static String MSG_INVALID_CC_NAME="Please enter name exactly as it appears on card.";
 	public final static String MSG_INVALID_CHK_NAME="Please enter your name.";
 	
+	public final static String MSG_EBT_NOT_ALLOWED 	= "Selected payment method(EBT) is only allowed for pick-up orders. Please select another payment option to continue.";
+	
 }

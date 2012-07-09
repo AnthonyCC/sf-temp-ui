@@ -1176,7 +1176,7 @@ public class DlvManagerSessionBean extends GatewaySessionBeanSupport {
 			result.addServiceStatus(EnumServiceType.HOME, status);
 			status = this.getServiceStatus(DlvManagerDAO.checkZipcode(conn, zipcode, EnumServiceType.CORPORATE));
 			result.addServiceStatus(EnumServiceType.CORPORATE, status);
-
+			result.setEbtAccepted(checkEbtPaymentAccepted(conn,zipcode));
 			return result;
 		} catch (SQLException e) {
 			throw new EJBException(e);
@@ -1213,7 +1213,7 @@ public class DlvManagerSessionBean extends GatewaySessionBeanSupport {
 			}
 
 			result.setRestrictionReason(DlvManagerDAO.isAddressRestricted(conn, address));
-
+			result.setEbtAccepted(checkEbtPaymentAccepted(conn,address.getZipCode()));
 			LOGGER.debug(result);
 
 			return result;
@@ -3019,5 +3019,21 @@ public class DlvManagerSessionBean extends GatewaySessionBeanSupport {
 			}
 		}
 		return null;
+	}
+	
+	private final static String EBT_ZipCodeQuery = "select EBT_ACCEPTED from dlv.zipcode where zipcode = ?";
+	private boolean checkEbtPaymentAccepted(Connection conn, String zipCode) throws SQLException {
+		boolean isEBTAccepted = false;
+		PreparedStatement ps = conn.prepareStatement(EBT_ZipCodeQuery);
+		ps.setString(1, zipCode);
+		ResultSet rs = ps.executeQuery();
+
+		if (rs.next()) {
+			isEBTAccepted = "X".equalsIgnoreCase(rs.getString("EBT_ACCEPTED"))?true:false;
+		}
+		rs.close();
+		ps.close();
+
+		return isEBTAccepted;
 	}
 }

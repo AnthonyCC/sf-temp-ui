@@ -601,5 +601,8 @@ public abstract class AbstractProductModelImpl extends ContentNodeModelImpl impl
 	public 	boolean showDefaultSustainabilityRating() {
 		return getAttribute("DEFAULT_SUSTAINABILITY_RATING", false);
 	}
-	
+
+	public boolean isExcludedForEBTPayment(){
+		return getAttribute("EXCLUDED_EBT_PAYMENT", false);
+	}
 }

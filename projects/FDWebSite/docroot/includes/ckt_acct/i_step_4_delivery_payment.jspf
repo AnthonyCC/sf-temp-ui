@@ -29,6 +29,7 @@
 	
 	
     boolean isDepotAddress = false;
+    boolean isEBTPayment =false;
     ErpDepotAddressModel depotAddress = null;
 	String hamptonsDepotCode ="HAM";
 	String depotCode=null;
@@ -60,11 +61,13 @@
     	if (isDepotAddress) {
     		depotAddress = (ErpDepotAddressModel) ((FDOrderI)cart).getDeliveryAddress() ;
     	}
+    	isEBTPayment = (null !=((FDOrderI)cart).getPaymentMethod() &&EnumPaymentMethodType.EBT.equals(((FDOrderI)cart).getPaymentMethod().getPaymentMethodType()));
     } else {
     	isDepotAddress = user.getShoppingCart().getDeliveryAddress() instanceof ErpDepotAddressModel ? true : false;
     	if (isDepotAddress) {
     		depotAddress = (ErpDepotAddressModel) user.getShoppingCart().getDeliveryAddress(); 
-    	}    	
+    	}
+    	isEBTPayment = (null !=user.getShoppingCart().getPaymentMethod() &&EnumPaymentMethodType.EBT.equals(user.getShoppingCart().getPaymentMethod().getPaymentMethodType()));
     }
     if(!isSOTMPL && cart instanceof FDCartModel){
     	perishableBufferAmount = FDCustomerManager.getPerishableBufferAmount((FDCartModel)cart);

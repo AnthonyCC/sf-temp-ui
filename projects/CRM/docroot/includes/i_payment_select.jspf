@@ -1,4 +1,5 @@
 <%@ page import="com.freshdirect.webapp.util.CCFormatter"%>
+<%@ page import="com.freshdirect.payment.EnumPaymentMethodType"%>
 <%-- **************************************************
 	THIS FILE REQUIRES:
 	- import com.freshdirect.customer.*
@@ -66,7 +67,7 @@
 			</TABLE><BR>
 <% 	if (showCCButtons) { 
 String currPage = request.getRequestURI();
-String editPage = currPage.indexOf("checkout") > -1 ? "/checkout/checkout_edit_credit_card" : "/customer_account/edit_credit_card";
+String editPage = currPage.indexOf("checkout") > -1 ? (EnumPaymentMethodType.EBT.equals(payment.getPaymentMethodType())?"/checkout/checkout_edit_ebt_card":"/checkout/checkout_edit_credit_card") : "/customer_account/edit_credit_card";
 String retPage = "";
 if (currPage.indexOf("charge_order") > -1) {
  retPage += "&returnPage=/order/charge_order.jsp?orderId=" + request.getParameter("orderId");

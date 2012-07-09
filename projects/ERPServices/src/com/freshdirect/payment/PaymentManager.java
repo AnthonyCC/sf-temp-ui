@@ -14,6 +14,7 @@ import com.freshdirect.customer.ErpAuthorizationModel;
 import com.freshdirect.customer.ErpCashbackModel;
 import com.freshdirect.customer.ErpCreditCardModel;
 import com.freshdirect.customer.ErpECheckModel;
+import com.freshdirect.customer.ErpEbtCardModel;
 import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.customer.ErpPaymentMethodModel;
 import com.freshdirect.customer.ErpTransactionException;
@@ -194,6 +195,8 @@ public class PaymentManager {
 		}
 		else if (EnumPaymentMethodType.ECHECK.equals(paymentMethodType)) {
 			paymentMethod = new ErpECheckModel();
+		} else if (EnumPaymentMethodType.EBT.equals(paymentMethodType)) {
+			paymentMethod = new ErpEbtCardModel(); 
 		} else {
 			paymentMethod = new ErpCreditCardModel(); // default as of now    		
 		}

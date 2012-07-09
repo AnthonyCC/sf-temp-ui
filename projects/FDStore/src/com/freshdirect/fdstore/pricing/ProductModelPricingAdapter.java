@@ -1408,4 +1408,8 @@ public class ProductModelPricingAdapter implements ProductModel, Serializable,
 	public boolean showDefaultSustainabilityRating() {
 		return this.prodModel.showDefaultSustainabilityRating();
 	}
+	
+	public boolean isExcludedForEBTPayment(){
+		return this.prodModel.isExcludedForEBTPayment();
+	}
 }

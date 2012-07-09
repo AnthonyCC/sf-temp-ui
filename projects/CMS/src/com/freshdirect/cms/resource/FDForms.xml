@@ -60,6 +60,7 @@
 							<CmsField><attribute>DEPT_MENU_LABEL</attribute></CmsField>
 							<CmsField><attribute>DEPT_MENU_MORE_LABEL</attribute></CmsField>
 							<CmsField><attribute>DEFAULT_SUSTAINABILITY_RATING</attribute></CmsField>
+							<CmsField><attribute>EXCLUDED_EBT_PAYMENT</attribute></CmsField>
 						</fields>
 					</CmsSection>
 					<CmsSection>
@@ -197,6 +198,7 @@
 							<CmsField><attribute>DEPT_MENU_LABEL</attribute></CmsField>
 							<CmsField><attribute>DEPT_MENU_MORE_LABEL</attribute></CmsField>
 							<CmsField><attribute>DEFAULT_SUSTAINABILITY_RATING</attribute></CmsField>
+							<CmsField><attribute>EXCLUDED_EBT_PAYMENT</attribute></CmsField>
 						</fields>
 					</CmsSection>
 					<CmsSection>
@@ -500,6 +502,7 @@
 							<CmsField><attribute>HIDE_URL</attribute></CmsField>
 							<CmsField><attribute>REDIRECT_URL</attribute></CmsField>
 							<CmsField><attribute>HIDE_IPHONE</attribute></CmsField>
+							<CmsField><attribute>EXCLUDED_EBT_PAYMENT</attribute></CmsField>
 						</fields>
 					</CmsSection>
 					<CmsSection>

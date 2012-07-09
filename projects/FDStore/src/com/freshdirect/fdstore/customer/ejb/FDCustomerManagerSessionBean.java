@@ -6246,7 +6246,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 				}
 				CustomerRatingAdaptor cra = new CustomerRatingAdaptor(fdCustomer.getProfile(),isCorporateUser,orderCount);
 				EnumPaymentType pt = order.getPaymentMethod().getPaymentType();
-				if (EnumPaymentType.REGULAR.equals(pt) && cra.isOnFDAccount()) {
+				if (EnumPaymentType.REGULAR.equals(pt) && (cra.isOnFDAccount()||EnumPaymentMethodType.EBT.equals(order.getPaymentMethod().getPaymentMethodType()))) {
 					order.getPaymentMethod().setPaymentType(EnumPaymentType.ON_FD_ACCOUNT);
 				}
 

@@ -1327,4 +1327,8 @@ public class ProductModelPromotionAdapter implements ProductModel, Serializable,
 	public String toString() {		
 		return productModel.toString();
 	}
+	
+	public boolean isExcludedForEBTPayment(){
+		return productModel.isExcludedForEBTPayment();
+	}
 }
