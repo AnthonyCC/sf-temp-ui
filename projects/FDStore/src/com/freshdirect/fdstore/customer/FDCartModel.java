@@ -1729,9 +1729,6 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 		return dlvPassPremiumAllowedTC;
 	}
 
-	
-}
-
 	public void setEbtIneligibleOrderLines(List<FDCartLineI> ebtIneligibleOrderLines) {
 		this.ebtIneligibleOrderLines = ebtIneligibleOrderLines;
 	}
