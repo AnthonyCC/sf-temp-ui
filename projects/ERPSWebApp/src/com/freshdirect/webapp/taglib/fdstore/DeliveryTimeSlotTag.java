@@ -294,7 +294,7 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag<Result> {
 			if(sectorInfo != null){
 				event.setSector(sectorInfo.getName());
 			}
-	
+			event.setSameDay(deliveryModel.isShowPremiumSlots()?"X":"");
 			// log timeslot
 			if (FDStoreProperties.isSessionLoggingEnabled() && result.isSuccess() &&
 					(
@@ -305,7 +305,6 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag<Result> {
 				logTimeslotSessionInfo(user, timeslotList, event);
 			}
 			
-			event.setSameDay(deliveryModel.isShowPremiumSlots()?"X":"");
 		}
 
 

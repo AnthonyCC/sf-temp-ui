@@ -103,13 +103,14 @@ final int W_CHECKOUT_STEP_3_CHOOSE_TOTAL = 970;
 	}
 
 	Date currentDlvStart = DateUtil.truncate(cart.getDeliveryReservation().getStartTime());
+	Calendar now = Calendar.getInstance();
 	if(!user.isAddressVerificationError()) {
     
         for (Iterator<FDOrderInfoI> hIter = orderHistoryInfo.iterator(); hIter.hasNext(); ) {
             FDOrderInfoI oi = hIter.next();
             if (!(oi.getErpSalesId().equals(ignoreSaleId))
                 && oi.isPending()
-                && currentDlvStart.equals(DateUtil.truncate(oi.getDeliveryStartTime()))) {
+                && currentDlvStart.equals(DateUtil.truncate(oi.getDeliveryStartTime())) && now.getTime().before(oi.getDeliveryCutoffTime())) {
                 response.sendRedirect(response.encodeRedirectURL("/checkout/step_2_duplicate.jsp?successPage=/checkout/step_3_choose.jsp"));
                 return;
             }

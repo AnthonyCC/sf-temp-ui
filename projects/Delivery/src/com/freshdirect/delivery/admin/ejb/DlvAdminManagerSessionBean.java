@@ -465,6 +465,7 @@ public class DlvAdminManagerSessionBean extends SessionBeanSupport {
 	private static final String EARLY_WARNING_QUERY =
 		"select code, name, sum(orders) as total_order, sum(capacity) as capacity, " +
 		"sum(total_alloc) as total_alloc, " +
+		"sum(premium_alloc) as premium_alloc, " +
 		"sum(base_orders) as base_orders, " +
 		"sum(base_alloc) as base_alloc, " +
 		"sum(ct_capacity) as ct_capacity, " +
@@ -473,7 +474,7 @@ public class DlvAdminManagerSessionBean extends SessionBeanSupport {
 		"ct_active, " +
 		"sum(premium_capacity) as premium_capacity, " +
 		"sum(premium_orders) as premium_orders, " +
-		"sum(premium_alloc) as premium_alloc, " +
+		"sum(premium_base_alloc) as premium_base_alloc, " +
 		"sum(premium_ct_capacity) as premium_ct_capacity, " +
 		"sum(premium_ct_alloc) as premium_ct_alloc, " +
 		"sum(premium_ct_orders) as premium_ct_orders, " +
@@ -485,14 +486,18 @@ public class DlvAdminManagerSessionBean extends SessionBeanSupport {
         "decode((sysdate-(TO_DATE(TO_CHAR(ts.base_date - 1, 'YYYY-MM-DD')||' '||to_char(ts.cutoff_time - " +
         "(z.ct_release_time/60/24), 'HH24:MI:SS'), 'YYYY-MM-DD HH24:MI:SS'))- abs(sysdate-(TO_DATE(TO_CHAR(ts.base_date - 1, 'YYYY-MM-DD')||' '||to_char(ts.cutoff_time " +
         "- (z.ct_release_time/60/24), 'HH24:MI:SS'), 'YYYY-MM-DD HH24:MI:SS')))),0,(select count(*) from dlv.reservation where timeslot_id=ts.id and status_code <> ?" +
-        "and status_code <> ? and class is null)+ts.premium_capacity,(select count(*) from dlv.reservation where timeslot_id=ts.id and  status_code <> ? and status_code <> ? and chefstable = ' ' and class is null)+ts.ct_capacity+ts.premium_capacity) as total_alloc, " +
+        "and status_code <> ? and class is null),(select count(*) from dlv.reservation where timeslot_id=ts.id and  status_code <> ? and status_code <> ? and chefstable = ' ' and class is null)+ts.ct_capacity) as total_alloc, " +
+        "decode((sysdate-(TO_DATE(TO_CHAR(ts.base_date, 'YYYY-MM-DD')||' '||to_char(ts.premium_cutoff_time - " +
+        "(z.premium_ct_release_time/60/24), 'HH24:MI:SS'), 'YYYY-MM-DD HH24:MI:SS'))- abs(sysdate-(TO_DATE(TO_CHAR(ts.base_date, 'YYYY-MM-DD')||' '||to_char(ts.premium_cutoff_time " +
+        "- (z.premium_ct_release_time/60/24), 'HH24:MI:SS'), 'YYYY-MM-DD HH24:MI:SS')))),0,(select count(*) from dlv.reservation where timeslot_id=ts.id and status_code <> ?" +
+        "and status_code <> ? and class is not null),(select count(*) from dlv.reservation where timeslot_id=ts.id and  status_code <> ? and status_code <> ? and class = 'P')+ts.premium_ct_capacity) as premium_alloc, " +
         "(select count(*) from dlv.reservation where timeslot_id=ts.id and status_code = ? and chefstable = ' ' and class is null) as base_orders, " +
         "(select count(*) from dlv.reservation where timeslot_id=ts.id and  status_code <> ? and status_code <> ? and chefstable = ' ' and class is null) as base_alloc, " +
         "(select count(*) from dlv.reservation where timeslot_id=ts.id and  status_code <> ? and status_code <> ? and chefstable = 'X' and class is null) as ct_alloc," + 
         "(select count(*) from dlv.reservation where timeslot_id=ts.id and status_code = ? and chefstable = 'X' and class is null) as ct_orders ," +
         "TS.PREMIUM_CAPACITY, TS.PREMIUM_CT_CAPACITY, " +
         "(select count(*) from dlv.reservation where timeslot_id=ts.id and status_code = ? and class = 'P') as premium_orders, " +
-        " (select count(*) from dlv.reservation where timeslot_id=ts.id and  status_code <> ? and status_code <> ? and class = 'P') as premium_alloc," +
+        " (select count(*) from dlv.reservation where timeslot_id=ts.id and  status_code <> ? and status_code <> ? and class = 'P') as premium_base_alloc," +
         " (select count(*) from dlv.reservation where timeslot_id=ts.id and  status_code <> ? and status_code <> ? and class = 'PC') as premium_ct_alloc," +
         " (select count(*) from dlv.reservation where timeslot_id=ts.id and status_code = ? and class = 'PC') as premium_ct_orders " +
         " from dlv.timeslot ts, dlv.zone z " +
@@ -535,7 +540,7 @@ public class DlvAdminManagerSessionBean extends SessionBeanSupport {
 						
 						rs.getInt("TOTAL_ORDER"),
 						rs.getInt("CAPACITY"),
-						rs.getInt("TOTAL_ALLOC"),
+						rs.getInt("TOTAL_ALLOC")+rs.getInt("premium_alloc"),
 												
 						rs.getInt("BASE_ORDERS"),
 						rs.getInt("BASE_ALLOC"),
@@ -548,7 +553,7 @@ public class DlvAdminManagerSessionBean extends SessionBeanSupport {
 						rs.getInt("premium_orders"),
 						rs.getInt("premium_capacity"),
 						
-						rs.getInt("premium_alloc"),
+						rs.getInt("premium_base_alloc"),
 						rs.getInt("premium_ct_capacity"),
 						rs.getInt("premium_ct_alloc"),
 						rs.getInt("premium_ct_orders"),
