@@ -25,7 +25,7 @@ FDUserI giftUser = (FDUserI)session.getAttribute(SessionName.USER);
 
 FDRecipientList recipList = giftUser.getRecipientList();
 if(recipList != null) {
-	List<RecipientModel> recipients =  recipList.getRecipients(gcType);
+	List<RecipientModel> recipients =  recipList.getRecipients(giftUser.getGiftCardType());
 	if(!recipients.isEmpty()) {
 		if (isConfirm) {
 			//we're on payment info page
@@ -93,7 +93,7 @@ if(recipList != null) {
 							<%= GiftCardUtil.getTemplateName(srm.getTemplateId()) %>
 						</td>
 						<td class="recipLinks">
-							<a href="#" onClick="recipPreview('<%=srm.getRandomId()%>'); return false;">Preview</a><a href="/gift_card/purchase/add_giftcard.jsp?recipId=<%=srm.getRandomId()%>">Edit</a><% if(EnumGiftCardType.REGULAR_GIFTCARD.equals(gcType)) { %><a href="<%= request.getRequestURI() %>?deleteId=<%=srm.getRandomId()%>">Delete</a><% } %> 
+							<a href="#" onClick="recipPreview('<%=srm.getRandomId()%>'); return false;">Preview</a><a href="/gift_card/purchase/add_giftcard.jsp?recipId=<%=srm.getRandomId()%>">Edit</a><% if(EnumGiftCardType.REGULAR_GIFTCARD.equals(giftUser.getGiftCardType())) { %><a href="<%= request.getRequestURI() %>?deleteId=<%=srm.getRandomId()%>">Delete</a><% } %> 
 							<%= srm.getDeliveryMode().getDescription() %>
 						</td>
 						<td class="recipAmt">
@@ -116,7 +116,7 @@ if(recipList != null) {
 				//we're on payment info page
 			%>
 				<tr>
-					<td class="right">Subtotal: <div class="recipAmount">$<%=recipList.getFormattedSubTotal(gcType) %></div></td>
+					<td class="right">Subtotal: <div class="recipAmount">$<%=recipList.getFormattedSubTotal(giftUser.getGiftCardType()) %></div></td>
 				</tr>
 				<tr>
 					<td><img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0" /></td>
@@ -142,7 +142,7 @@ if(recipList != null) {
 						</tr>		   
 				<%  } %>
 				<tr>
-					<td class="recipTotal"><div class="recipTotal recipAmount" style="width: auto;">SUBTOTAL: $<%=recipList.getFormattedSubTotal(gcType) %></div></td>
+					<td class="recipTotal"><div class="recipTotal recipAmount" style="width: auto;">SUBTOTAL: $<%=recipList.getFormattedSubTotal(giftUser.getGiftCardType()) %></div></td>
 				</tr>
 			<% } %>
 			</table>
