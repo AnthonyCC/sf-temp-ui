@@ -258,10 +258,10 @@
 							</td>
 						</tr>
 						<tr>
-							<td>CutOff&nbsp;Time</td>
+							<td>HandOff&nbsp;Time</td>
 							<td> 
 								<form:select path="cutOffTime">
-									<form:option value="" label="--Please Select CutOff"/>
+									<form:option value="" label="--Please Select HandOff"/>
 									<form:options items="${cutoffs}" itemLabel="name" itemValue="cutOffTimeEx" />
 								</form:select>
 							</td>
