@@ -14,7 +14,7 @@
 	FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
 	String successPage = "index.jsp";
 	String serviceType = NVL.apply(request.getParameter("serviceType"), "").trim();
-	System.out.println("\n\n\n"+user.getSelectedServiceType().getName()+"\n\n\n");
+	//System.out.println("\n\n\n"+user.getSelectedServiceType().getName()+"\n\n\n");
 	if("".equals(serviceType)) {
 		if(user != null) {
 			serviceType = user.getSelectedServiceType().getName();
@@ -51,9 +51,9 @@
 		}
 	</style>
 	
-	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.1/jquery.min.js"></script>
-    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.1/jquery-ui.min.js"></script>
-    <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.0/themes/base/jquery-ui.css"/>
+	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.1/jquery.min.js"></script>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.1/jquery-ui.min.js"></script>
+    <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.7.0/themes/base/jquery-ui.css"/>
 	<link rel="stylesheet" type="text/css" href="/assets/css/common/globalnav.css" />
 	<link rel="stylesheet" type="text/css" href="/assets/css/common/footer.css">
   <link rel="stylesheet" type="text/css" href="/assets/css/common/freshdirect.css">
@@ -104,7 +104,7 @@
 
 		if(session.getAttribute("LITESIGNUP_COMPLETE") != null) {
 			//phew finally complete
-			System.out.println("Did not come here on signup_liste.jsp?====================================================================================");
+			//System.out.println("Did not come here on signup_liste.jsp?====================================================================================");
 		%>
 			<img src="/media_stat/images/navigation/spinner.gif" class="fleft" />
 			<script language="javascript">
@@ -118,7 +118,7 @@
 			</script>
 		<%		 
 		} else {
-			System.out.println("went to else part  on signup_liste.jsp?====================================================================================\n" );
+			//System.out.println("went to else part  on signup_liste.jsp?====================================================================================\n" );
 			
 			if(user != null && "".equals(zipcode)) {
 				zipcode = user.getZipCode();
@@ -210,7 +210,7 @@
 	<% } %>
 	</center>
 	<script language="javascript">
-		setFrameHeight('signupframe', 20);
+		//setFrameHeight('signupframe', 20);
 	</script>
 </body>
 </html>

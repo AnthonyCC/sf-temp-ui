@@ -1026,8 +1026,8 @@ function doOverlayWindow(olURL) {
 							}
 						},
                         afterLoad: function() {
-                            			$('MB_content').style.overflowX = 'hidden';
                                         $('MB_frame').style.border = '1px solid #CCCCCC';
+										$('MB_content').style.overflowX = 'hidden';
                                         $('MB_header').style.border = '0px solid #CCCCCC';
                                         $('MB_header').style.display = 'block';
                                         window.scrollTo(0,0);
@@ -1038,7 +1038,7 @@ function doOverlayWindow(olURL) {
 
                                         ccSettings.topColour = "#ffffff";
                                         ccSettings.bottomColour = "#ffffff";
-                                        curvyCornersHelper('MB_frame', ccSettings);
+                                        curvyCornersHelper('MB_frame', ccSettings);					
 							
                         },
                         afterHide: function() { 
@@ -1066,6 +1066,7 @@ function doOverlayWindow(olURL) {
 			closeValue: '<img src="/media/editorial/site_access/images/round_x.gif" />',
 			afterLoad: function() {
 					$('MB_frame').style.border = '1px solid #CCCCCC';
+					$('MB_content').style.overflowX = 'hidden';
 					$('MB_header').style.border = '0px solid #CCCCCC';
 					$('MB_header').style.display = 'block';
 					window.scrollTo(0,0);
