@@ -4,6 +4,7 @@
 <%@ taglib uri='bean' prefix='bean' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ page import='com.freshdirect.giftcard.EnumGiftCardType' %>
+<%@ page import='com.freshdirect.fdstore.FDStoreProperties' %>
 
 <% //expanded page dimensions
 final int W_GIFTCARD_LANDING_TOTAL = 970;
@@ -76,7 +77,7 @@ final int W_GIFTCARD_DONATION_TOTAL = 300;
 						</tr> 				
 					</table>
 				</td>
-		<% if(donationOrgList != null && donationOrgList.size() > 0) { %>
+		<% if(FDStoreProperties.isGiftCardDonationEnabled() && donationOrgList != null && donationOrgList.size() > 0) { %>
 				<td>&nbsp;</td>
 				<td bgcolor="#cccccc">
 					<img src="/media_stat/images/layout/dotted_line_w.gif" width="1" height="1" border="0" />
@@ -139,7 +140,7 @@ final int W_GIFTCARD_DONATION_TOTAL = 300;
 				<td colspan="3" align="center"><a href="">
 					<input type="image" src="/media_stat/images/giftcards/landing/shop_giftcard_btn.jpg" alt="Shop Now" name="gcLand_shopNow" id="gcLand_shopNow" border="0" onclick="$('giftcard_form').submit();return false;" />
 				</td>
-			<%if(donationOrgList != null && donationOrgList.size() > 0) { %>
+			<%if(FDStoreProperties.isGiftCardDonationEnabled() && donationOrgList != null && donationOrgList.size() > 0) { %>
 				<td align="center" colspan="2">
 					<input type="image" src="/media_stat/images/giftcards/landing/donate_giftcard_btn.jpg" alt="Donate Giftcard" name="gcDonateLand_shopNow" id="gcLand_shopNow" border="0" onClick="return pendGC();return false;" />
 				</td>

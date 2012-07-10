@@ -542,6 +542,8 @@ public class FDStoreProperties {
 	
 	private final static String SAME_DAY_MEDIA_AFTER_CUTOFF = "fdstore.sameday.aftercutoffmedia.duration";
 
+	private final static String PROP_GIFTCARD_DONATION_ENABLED = "fdstore.giftcard.donation.enabled";
+
     static {
         defaults.put(PROP_ROUTING_PROVIDER_URL, "t3://localhost:7001");
         defaults.put(PROP_PROVIDER_URL, "t3://localhost:7001");
@@ -1075,6 +1077,8 @@ public class FDStoreProperties {
 		defaults.put(DLV_PASS_NEW_TC_DATE, "2012-06-06");
 		defaults.put(SAME_DAY_MEDIA_AFTER_CUTOFF, "30");
 		
+		defaults.put(PROP_GIFTCARD_DONATION_ENABLED, "true");
+
         refresh();
     }
 
@@ -2775,5 +2779,9 @@ public class FDStoreProperties {
 	 }
     public static boolean isLightSignupEnabled() {
         return (Boolean.valueOf(get(PROP_LIGHT_SIGNUP_ENABLED))).booleanValue();
+    }
+
+	public static boolean isGiftCardDonationEnabled() {
+        return (Boolean.valueOf(get(PROP_GIFTCARD_DONATION_ENABLED))).booleanValue();
     }
 }
