@@ -47,6 +47,7 @@ function fdTSDisplay(refIdArg) {
 		premSlotsTimerElem: null, //html elem where timer is displayed as child (pre extended)
 		premSlotsTimerElem_timer: 'premSlotsTimer', //html elem id for timer
 		premSlotsTimerElem_msg: 'premSlotsTimerMsg', //html elem id for timer msg
+		premSlotsTimerElemClass: 'premSlotTimer', //timer elems have this className
 		premSlotsClock: null //timer interval storage
 	};
 
@@ -597,7 +598,11 @@ function fdTSDisplay(refIdArg) {
 				}
 			}
 
-			$(window.fdTSDisplay.opts.premSlotsTimerElem).innerHTML = timeDisp + ' LEFT';
+			//update all timer elems
+			$$('.'+window.fdTSDisplay.opts.premSlotsTimerElemClass).each(function(e, i) {
+				$(e).innerHTML = timeDisp + ' LEFT';
+			});
+
 
 			//killtimer safety
 			if (timeDisp.indexOf('00:00:00') != -1) {
@@ -1932,8 +1937,12 @@ function fdTSDisplay(refIdArg) {
 			var curSlotObj =  this.slotObjs[curSlotId];
 			curSlotObj.contentId = 'CPday'+curSlotObj.contentId.slice(curSlotObj.contentId.length-1);
 			curSlotObj.ext.innerHTML = $(curSlotObj.contentId).innerHTML;
-			$(this.opts.premSlotsTimerElem).innerHTML = 'UNAVAILABLE';
-			$(this.opts.premSlotsTimerElem_msg).innerHTML = 'Choose Another Day';
+			
+			$$('.'+window.fdTSDisplay.opts.premSlotsTimerElemClass).each(function(e, i) {
+				$(e).innerHTML = 'UNAVAILABLE';
+			});
+
+			$(this.opts.premSlotsTimerElem_msg).innerHTML = 'Choose Another Day'; //expanded
 			//loop through ts's and disable radio button (if they exist)
 			for (slotIdIndex in this.dayObjs[this.opts.premSlotsDayId].TSIds) {
 				var slotId = this.dayObjs[this.opts.premSlotsDayId].TSIds[slotIdIndex];
