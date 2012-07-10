@@ -121,7 +121,7 @@ final int W_GIFTCARD_NAV_TOTAL = 970;
 	String step1_link = "/gift_card/purchase/add_giftcard.jsp";
 
 	if(EnumGiftCardType.DONATION_GIFTCARD.equals(giftType))	{
-		step1_link = "/gift_card/purchase/add_donation_giftcard.jsp?gcDonId="+request.getParameter("gcDonId");
+		step1_link = "/gift_card/purchase/add_donation_giftcard.jsp";
 	}
 	String step2_link = "/gift_card/purchase/purchase_giftcard.jsp";
 		String step2b_link = "/gift_card/purchase/register_and_purchase.jsp"; // step 2 has two pages
@@ -141,6 +141,9 @@ final int W_GIFTCARD_NAV_TOTAL = 970;
 	if (globalUri.indexOf(step0_link) > -1) { step = 0; }
 	if (globalUri.indexOf("/gift_card/purchase/tac.jsp") > -1) { step = 0; }
 	if (globalUri.indexOf(step1_link) > -1) { step = 1;}
+	if(EnumGiftCardType.DONATION_GIFTCARD.equals(giftType))	{
+		step1_link = step1_link+"?gcDonId="+request.getParameter("gcDonId");
+	}
 	if (globalUri.indexOf(step2_link) > -1) { step = 2; }
 		if (globalUri.indexOf(step2b_link) > -1) { step = 2; }
 		if (globalUri.indexOf(step2c_link) > -1) { step = 2; }
