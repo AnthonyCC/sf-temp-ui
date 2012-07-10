@@ -59,7 +59,7 @@
 			</RelationshipDef>
 			<RelationshipDef name="ORGANIZATION_LOGO_SMALL" cardinality="One"  label="Organization logo Small" >
 				<DestinationDef contentType="Image" />
-			</RelationshipDef
+			</RelationshipDef>
             <RelationshipDef name="GIFTCARD_TYPE" label="Gift Card Types" cardinality="Many">
 				<DestinationDef contentType="DomainValue" />
 			</RelationshipDef>
