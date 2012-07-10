@@ -2756,7 +2756,7 @@ public class FDStoreProperties {
 	}
 
 	public static boolean allowDiscountsOnPremiumSlots() {
-		        return Boolean.getBoolean(get(ALLOW_DISCOUNTS_ON_PREMIUM_SLOT));
+		        return Boolean.valueOf(get(ALLOW_DISCOUNTS_ON_PREMIUM_SLOT)).booleanValue();
 		    }
 	
 	 public static Date getDlvPassNewTCDate() {
