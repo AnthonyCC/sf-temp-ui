@@ -252,7 +252,7 @@ public class TransportationAdminProperties {
 		
 		defaults.put(PROP_TRANSPORTATION_FILENAME_ROUTINGOUTORDERTRUCK,"trn_routestops_");
 
-		defaults.put(PROP_TRANSPORTATION_FILENAME_CUTOFFREPORT,"trn_cutoffreport_");
+		defaults.put(PROP_TRANSPORTATION_FILENAME_CUTOFFREPORT,"trn_handoffreport_");
 
 		defaults.put(PROP_TRANSPORTATION_FILENAME_DRIVINGDIRECTION,"trn_drivingdirection_");
 

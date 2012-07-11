@@ -176,7 +176,7 @@
 									formatter:"dropdown", dropdownOptions:["","ROUTEIN","ROUTEOUT","COMMIT","AUTODISPATCH","CANCEL"] },
 
 					{key:"report", label:"Download", sortable:false, width: 150, className:"forms1",
-									formatter:"dropdown", dropdownOptions:["","CutOff Report","Community Report","SAP Upload Files"] }
+									formatter:"dropdown", dropdownOptions:["","HandOff Report","Community Report","SAP Upload Files"] }
 					
 			 ];
 		<%}else{%>
@@ -192,7 +192,7 @@
 									formatter:"dropdown", dropdownOptions:["","ROUTEIN","ROUTEOUT","COMMIT","CANCEL"] },
 
 					{key:"report", label:"Download", sortable:false, width: 150, className:"forms1",
-									formatter:"dropdown", dropdownOptions:["","CutOff Report","Community Report","SAP Upload Files"] }
+									formatter:"dropdown", dropdownOptions:["","HandOff Report","Community Report","SAP Upload Files"] }
 					
 			 ];
 		<%}%>
@@ -276,7 +276,7 @@
       				alert("There was a problem in communication to the server. Please try to refresh the browser window!\n"+e);
       			}
 				
-      			if(actionType == 'CutOff Report') {
+      			if(actionType == 'HandOff Report') {
       				location.href = 'cutoffreport.do?handOffBatchId='+currentBatchId;
       			} else if(actionType == 'SAP Upload Files') {
       				location.href = 'sapupload.do?handOffBatchId='+currentBatchId;

@@ -1189,7 +1189,7 @@ public class XlsCutOffReport extends BaseXlsReport implements ICutOffReport  {
         hssfCell = row.createCell(cellnum++);		        
         hssfCell.setCellStyle((HSSFCellStyle) styles.get("boldStyle"));
         hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
-        hssfCell.setCellValue(new HSSFRichTextString("Pending CutOff"));
+        hssfCell.setCellValue(new HSSFRichTextString("Pending HandOff"));
         
 		for(Map.Entry<RoutingTimeOfDay, DispatchStatusInfo> dispatchEntry : dispatchStatusInfo.entrySet()) {
 			cellnum = 0;

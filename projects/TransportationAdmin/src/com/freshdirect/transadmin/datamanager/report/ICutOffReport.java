@@ -10,11 +10,11 @@ public interface ICutOffReport {
 	
 	String CSV_SEPARATOR = ",";
 	
-	String CUTOFFREPORT_TITLE = "UPS Route Cutoff Report";
+	String CUTOFFREPORT_TITLE = "UPS Route Handoff Report";
 	
 	String CUTOFFREPORT_DATETITLE = "Date";
 	
-	String CUTOFFREPORT_CUTOFFTITLE = "Cut Off";
+	String CUTOFFREPORT_CUTOFFTITLE = "Hand Off";
 	
 	String CUTOFFREPORT_ROUTETITLE = "Routes";
 	
