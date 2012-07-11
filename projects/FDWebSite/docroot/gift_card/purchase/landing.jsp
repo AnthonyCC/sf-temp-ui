@@ -55,7 +55,7 @@ final int W_GIFTCARD_DONATION_TOTAL = 300;
 		<table border="0" cellspacing="0" cellpadding="0" width="<%=W_GIFTCARD_LANDING_TOTAL%>">
 			<tr>
 				<td valign="top">
-					<table border="0" cellspacing="0" cellpadding="2" width="<%= (donationOrgList != null && donationOrgList.size() > 0) ? W_GIFTCARD_OPTIONS_TOTAL : W_GIFTCARD_LANDING_TOTAL %>">
+					<table border="0" cellspacing="0" cellpadding="2" width="<%= (FDStoreProperties.isGiftCardDonationEnabled() && donationOrgList != null && donationOrgList.size() > 0) ? W_GIFTCARD_OPTIONS_TOTAL : W_GIFTCARD_LANDING_TOTAL %>">
 						<tr>
 							<td align="left">
 								<fd:IncludeMedia name="/media/editorial/giftcards/media_includes/landing_header.html" />
@@ -163,7 +163,7 @@ final int W_GIFTCARD_DONATION_TOTAL = 300;
 			showPopUp = true;
 			if ($('gcDonId').checked) { showPopUp = false; }
 			if (showPopUp) {
-				var popUp='<div style="text-align: left;" class="pendGCPop" id="pendGCPop"><a href="#" onclick="Modalbox.hide(); return false;"><img src="/media_stat/images/giftcards/your_account/close.gif" width="50" height="11" alt="close" border="0" style="float: right;" /></a><br style="clear: both;" /><br /><br />Please select organization you want to donate giftcard, then click "Donate A Gift Card."<br /><br />Close this popup to make more changes.<br /><br /><div style="text-align: center;"><a href="#" onclick="Modalbox.hide(); return false;">Close</a></div></div>';
+				var popUp='<div style="text-align: left;" class="pendGCPop" id="pendGCPop"><a href="#" onclick="Modalbox.hide(); return false;"><img src="/media_stat/images/giftcards/your_account/close.gif" width="50" height="11" alt="close" border="0" style="float: right;" /></a><br style="clear: both;" /><br /><br />Please select organization you want to donate giftcard, then click "Donate A Gift Card."<br /><br />Close this popup to choose organization you want to donate.<br /><br /><div style="text-align: center;"><a href="#" onclick="Modalbox.hide(); return false;">Close</a></div></div>';
 
 
 				Modalbox.show(popUp, {

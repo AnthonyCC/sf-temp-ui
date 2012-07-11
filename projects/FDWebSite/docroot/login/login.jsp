@@ -112,11 +112,11 @@ String sPage = (request.getParameter("successPage")!=null)?request.getParameter(
 				</tr>
 				<tr>					
 					<td class="text13">
-					 	<img src="/media_stat/images/navigation/signup_recieve.jpg" border="0" alt="CURRENT CUSTOMERS LOG IN NOW">					 
-						<br/><br/>This offer is not valid towards giftcard donations,<br/> this is FPO.<br/><br/><br/>
+					 	<img src="/media_stat/images/navigation/signup_recieve.jpg" border="0" alt="CURRENT CUSTOMERS LOG IN NOW">
+						<br/><br/><fd:IncludeMedia name="/media/editorial/site_pages/create_account_info.html" /><br/><br/><br/><br/>
 					</td>
 				</tr>
-				<tr>					
+				<tr>
 					<td class="text13">
 					<% if( null != request.getParameter("successPage")) { %>
 						<% if(request.getParameter("successPage").toLowerCase().indexOf("gift_card") > 0 ) { %>
@@ -137,22 +137,27 @@ String sPage = (request.getParameter("successPage")!=null)?request.getParameter(
 		</tr>
 		
 		<script>
-			function setCheckAccess() {				
+			function setCheckAccess() {
 				document.fd_login.submit();
 			}
 			
-			function setCreateAccount(id) {				
-				if(id !== null){					
+			function setCreateAccount(id) {
+				if(id !== null){
 					if(id === 1) {
 						<%
 							String donIdParam = null;
 							if( null != request.getParameter("successPage")) {
-								String queryString = URLDecoder.decode(request.getParameter("successPage"));								
-								donIdParam = queryString != null ? queryString.substring(queryString.indexOf("?")+1) : null;
+								String queryString = URLDecoder.decode(request.getParameter("successPage"));
+								donIdParam = (queryString != null && queryString.indexOf("?") != -1) ? queryString.substring(queryString.indexOf("?")+1) : null;
 								donIdParam = donIdParam != null ? donIdParam.substring(donIdParam.indexOf("=")+1) : null;
 							}
+							if(donIdParam != null){
+								donIdParam = "?gcDonId="+donIdParam;
+							} else {
+								donIdParam = "";
+							}
 						%>
-						document.location = '<%= response.encodeURL("/gift_card/purchase/register_and_purchase.jsp?gcDonId="+donIdParam) %>';
+						document.location = '<%= response.encodeURL("/gift_card/purchase/register_and_purchase.jsp"+donIdParam) %>';
 					} else if(id === 2) {
 						document.location = '<%= response.encodeURL("/robin_hood/register_purchase.jsp") %>';
 					} else if(id === 3) {
