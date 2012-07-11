@@ -628,7 +628,7 @@ public class DeliveryService extends BaseService implements IDeliveryService {
 						|| (reservation.getReservedServiceTime() != null
 								&& order.getDeliveryInfo().getCalculatedServiceTime() < reservation.getReservedServiceTime()))
 								&& (timeslot != null && DateUtil.getDiffInMinutes(Calendar.getInstance().getTime()
-														,timeslot.getDlvTimeslot().getCutoffTimeAsDate())
+														,(timeslot.getDlvTimeslot().getPremiumCutoffTime()!=null)?timeslot.getDlvTimeslot().getPremiumCutoffAsDate():timeslot.getDlvTimeslot().getCutoffTimeAsDate())
 										> RoutingServicesProperties.getOMUseOriginalThreshold()) 
 								&& !EnumRoutingUpdateStatus.OVERRIDDEN.equals(reservation.getUpdateStatus())) {
 						return;
