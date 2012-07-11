@@ -1494,7 +1494,11 @@ function fdTSDisplay(refIdArg) {
 							curTSRow.hide();
 							hiddenRows++;
 						}else{
-							if (!dayObj.showPremium) { curTSRow.show(); }
+							if (!dayObj.showPremium) {
+								curTSRow.show();
+							} else if (dayObj.showPremium && dayObj.TSs[t] === '' && t >= dayObj.dayPart) {
+								curTSRow.hide();
+							}
 							//time, toggle className
 							this.toggleClassName(this.slotObjs[dayObj.TSIds[t]].ext, 'tsContainerBGC');
 							this.toggleClassName(this.slotObjs[dayObj.TSIds[t]].ext, 'tsContainerC');
@@ -1523,7 +1527,7 @@ function fdTSDisplay(refIdArg) {
 					curSlotObj = this.slotObjs[dayObj.TSIds[lastVisRow]];
 					curSlotObj.ext.style.height = this.getCalcdRowHeight(hiddenRows, null, false, 0);
 					//and remove it's bottom line
-					curSlotObj.ext.style.borderBottom = '1px solid #fff';
+					curSlotObj.ext.style.borderBottom = '0px solid #fff';
 				}
 			}else{
 				//day is contracted
