@@ -103,5 +103,8 @@ public interface IWaveInstance {
 	String getTimePeriodTravelSpeedsType();
 
 	void setTimePeriodTravelSpeedsType(String timePeriodTravelSpeedsType);
-			
+	
+	String getTODRestrictionModel();
+
+	void setTODRestrictionModel(String tODRestrictionModel);	
 }

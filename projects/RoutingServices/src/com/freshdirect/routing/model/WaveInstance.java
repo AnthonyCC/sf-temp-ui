@@ -48,6 +48,8 @@ public class WaveInstance  extends BaseModel implements IWaveInstance {
 	private String originFacility;
 	private String routingCode;
 	
+	private String tODRestrictionModel;
+	
 	public String getRoutingCode() {
 		return routingCode;
 	}
@@ -413,4 +415,13 @@ public class WaveInstance  extends BaseModel implements IWaveInstance {
 			String timePeriodTravelSpeedsType) {
 		this.timePeriodTravelSpeedsType = timePeriodTravelSpeedsType;
 	}
+
+	public String getTODRestrictionModel() {
+		return tODRestrictionModel;
+	}
+
+	public void setTODRestrictionModel(String tODRestrictionModel) {
+		tODRestrictionModel = tODRestrictionModel;
+	}
+	
 }

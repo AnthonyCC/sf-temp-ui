@@ -470,7 +470,6 @@ public class RoutingDataDecoder {
 		if(waveInstance != null) {
 			result = new WaveInstance();
 			
-			//result.setDispatchTime(dispatchTime);
 			result.setMaxRunTime(waveInstance.getMaximumRuntime());
 			result.setNoOfResources(waveInstance.getNumberOfVehicles());
 			result.setPreferredRunTime(waveInstance.getPreferredRuntime());
@@ -491,6 +490,8 @@ public class RoutingDataDecoder {
 			result.setOvertimeWage(waveInstance.getOvertimeWage());
 			result.setRushHourModel(waveInstance.getRushHourModel());			
 			result.setTimePeriodTravelSpeedsType(decodeTimePeriodTravelSpeedsType(waveInstance.getTimePeriodTravelSpeedsType()));
+			result.setTODRestrictionModel(waveInstance.getTODRestrictionModel());
+			
 		}
 		return result;
 	}
