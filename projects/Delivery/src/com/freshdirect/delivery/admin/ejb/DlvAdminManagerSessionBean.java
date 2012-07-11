@@ -514,21 +514,24 @@ public class DlvAdminManagerSessionBean extends SessionBeanSupport {
 			ps.setInt(3, EnumReservationStatus.EXPIRED.getCode());
 			ps.setInt(4, EnumReservationStatus.CANCELED.getCode());
 			ps.setInt(5, EnumReservationStatus.EXPIRED.getCode());
-			
-			ps.setInt(6, EnumReservationStatus.COMMITTED.getCode());
-			ps.setInt(7, EnumReservationStatus.CANCELED.getCode());
-			ps.setInt(8, EnumReservationStatus.EXPIRED.getCode());
-			ps.setInt(9, EnumReservationStatus.CANCELED.getCode());
-			ps.setInt(10, EnumReservationStatus.EXPIRED.getCode());
-			ps.setInt(11, EnumReservationStatus.COMMITTED.getCode());
-			ps.setInt(12, EnumReservationStatus.COMMITTED.getCode());
+			ps.setInt(6, EnumReservationStatus.CANCELED.getCode());
+			ps.setInt(7, EnumReservationStatus.EXPIRED.getCode());
+			ps.setInt(8, EnumReservationStatus.CANCELED.getCode());
+			ps.setInt(9, EnumReservationStatus.EXPIRED.getCode());
+			ps.setInt(10, EnumReservationStatus.COMMITTED.getCode());
+			ps.setInt(11, EnumReservationStatus.CANCELED.getCode());
+			ps.setInt(12, EnumReservationStatus.EXPIRED.getCode());
 			ps.setInt(13, EnumReservationStatus.CANCELED.getCode());
 			ps.setInt(14, EnumReservationStatus.EXPIRED.getCode());
-			ps.setInt(15, EnumReservationStatus.CANCELED.getCode());
-			ps.setInt(16, EnumReservationStatus.EXPIRED.getCode());
+			ps.setInt(15, EnumReservationStatus.COMMITTED.getCode());
+			ps.setInt(16, EnumReservationStatus.COMMITTED.getCode());
+			ps.setInt(17, EnumReservationStatus.CANCELED.getCode());
+			ps.setInt(18, EnumReservationStatus.EXPIRED.getCode());
+			ps.setInt(19, EnumReservationStatus.CANCELED.getCode());
+			ps.setInt(20, EnumReservationStatus.EXPIRED.getCode());
 			
-			ps.setInt(17, EnumReservationStatus.COMMITTED.getCode());
-			ps.setDate(18, new java.sql.Date(day.getTime()));
+			ps.setInt(21, EnumReservationStatus.COMMITTED.getCode());
+			ps.setDate(22, new java.sql.Date(day.getTime()));
 
 			ResultSet rs = ps.executeQuery();
 			List data = new ArrayList();
