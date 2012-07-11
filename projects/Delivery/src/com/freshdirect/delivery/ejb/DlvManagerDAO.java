@@ -1355,8 +1355,6 @@ public class DlvManagerDAO {
 	
 	public static List<UnassignedDlvReservationModel> getUnassignedReservations(Connection conn, Date _date,boolean includeCutoff)  throws SQLException {
 		
-	Calendar startDate=DateUtil.truncate(Calendar.getInstance());
-	
 	final StringBuffer updateQ = new StringBuffer();
 	updateQ.append(FETCH_UNASSIGNED_RESERVATIONS_QUERY);
 	if(includeCutoff)
@@ -1365,13 +1363,8 @@ public class DlvManagerDAO {
 	}
 	else
 	{
-		if(_date.equals(startDate.getTime()))
-		{
-		updateQ.append(" and (( t.premium_cutoff_time is null and to_date(to_char(t.base_date-1, 'MM/DD/YY ') || to_char(t.cutoff_time, 'HH:MI:SS AM'), 'MM/DD/YY HH:MI:SS AM') > SYSDATE+1/96 ) or" +
-		" (t.premium_cutoff_time is not null and to_date(to_char(t.base_date, 'MM/DD/YY ') || to_char(t.premium_cutoff_time, 'HH:MI:SS AM'), 'MM/DD/YY HH:MI:SS AM') > SYSDATE+1/96 )) ");
-		}
-		
-		updateQ.append(" ORDER BY R.unassigned_action, R.UPDATE_STATUS NULLS LAST");
+	updateQ.append(" and (( t.premium_cutoff_time is null and to_date(to_char(t.base_date-1, 'MM/DD/YY ') || to_char(t.cutoff_time, 'HH:MI:SS AM'), 'MM/DD/YY HH:MI:SS AM') > SYSDATE+1/96 ) or" +
+	" (t.premium_cutoff_time is not null and to_date(to_char(t.base_date, 'MM/DD/YY ') || to_char(t.premium_cutoff_time, 'HH:MI:SS AM'), 'MM/DD/YY HH:MI:SS AM') > SYSDATE+1/96 )) ORDER BY R.unassigned_action, R.UPDATE_STATUS NULLS LAST");
 	}
 	
 	PreparedStatement ps =

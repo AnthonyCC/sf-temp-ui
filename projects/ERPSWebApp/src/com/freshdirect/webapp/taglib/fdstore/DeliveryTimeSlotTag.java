@@ -10,7 +10,6 @@
 package com.freshdirect.webapp.taglib.fdstore;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
@@ -18,7 +17,6 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
@@ -57,7 +55,6 @@ import com.freshdirect.fdstore.customer.FDModifyCartModel;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.promotion.PromotionHelper;
 import com.freshdirect.fdstore.standingorders.FDStandingOrder;
-import com.freshdirect.fdstore.util.AddressFinder;
 import com.freshdirect.fdstore.util.DlvTimeslotStats;
 import com.freshdirect.fdstore.util.FDTimeslotUtil;
 import com.freshdirect.fdstore.util.RestrictionUtil;
