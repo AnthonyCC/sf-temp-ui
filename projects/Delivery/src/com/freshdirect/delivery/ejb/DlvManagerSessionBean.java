@@ -572,8 +572,8 @@ public class DlvManagerSessionBean extends GatewaySessionBeanSupport {
 			, rs.getBigDecimal("RESERVED_ORDER_SIZE") != null ? new Double(rs.getDouble("RESERVED_ORDER_SIZE")) : null
 			, rs.getBigDecimal("RESERVED_SERVICE_TIME") != null ? new Double(rs.getDouble("RESERVED_SERVICE_TIME")) : null
 			, rs.getBigDecimal("NUM_CARTONS") != null ? new Long(rs.getLong("NUM_CARTONS")) : null
-			, rs.getBigDecimal("NUM_FREEZERS") != null ? new Long(rs.getLong("NUM_FREEZERS")) : null
 			, rs.getBigDecimal("NUM_CASES") != null ? new Long(rs.getLong("NUM_CASES")) : null
+			, rs.getBigDecimal("NUM_FREEZERS") != null ? new Long(rs.getLong("NUM_FREEZERS")) : null
 			, EnumReservationClass.getEnum(rs.getString("CLASS"))
 			, EnumRoutingUpdateStatus.getEnum(rs.getString("UPDATE_STATUS"))
 			, EnumOrderMetricsSource.getEnum(rs.getString("METRICS_SOURCE")));
@@ -1975,7 +1975,7 @@ public class DlvManagerSessionBean extends GatewaySessionBeanSupport {
 						|| (reservation.getReservedServiceTime() != null
 								&& order.getDeliveryInfo().getCalculatedServiceTime() < reservation.getReservedServiceTime()))
 								&& (timeslot != null && DateUtil.getDiffInMinutes(Calendar.getInstance().getTime()
-														, timeslot.getDlvTimeslot().getCutoffTimeAsDate())
+														, (timeslot.getDlvTimeslot().getPremiumCutoffTime()!=null)?timeslot.getDlvTimeslot().getPremiumCutoffAsDate():timeslot.getDlvTimeslot().getCutoffTimeAsDate())
 										> RoutingServicesProperties.getOMUseOriginalThreshold()) 
 								&& !EnumRoutingUpdateStatus.OVERRIDDEN.equals(reservation.getUpdateStatus())) {
 						return;
