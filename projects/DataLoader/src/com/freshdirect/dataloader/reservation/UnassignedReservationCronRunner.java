@@ -43,7 +43,7 @@ public class UnassignedReservationCronRunner extends BaseReservationCronRunner {
 
 	private final static Category LOGGER = LoggerFactory.getInstance(UnassignedReservationCronRunner.class);
 
-	private static final int DEFAULT_DAYS=7;
+	private static final int DEFAULT_DAYS=8;
 	
 	public static void main(String[] args) {
 		
@@ -69,14 +69,12 @@ public class UnassignedReservationCronRunner extends BaseReservationCronRunner {
 					startDate=DateUtil.truncate(DateUtil.toCalendar(DateUtil.parse(args[0])));
 					Calendar now=Calendar.getInstance();
 			        now=DateUtil.truncate(now);
-					now.add(Calendar.DATE, 1);
 					if(startDate.before(now)) {
 						throw new Exception("Invalid date argument. Accepted Format is [yyyy-MM-dd]" );
 					}
 					hasArg=true;
 				} else {
 					startDate=DateUtil.truncate(Calendar.getInstance());
-					startDate.add(Calendar.DATE, 1);
 				}
 			} catch (Exception e) {
 				StringWriter sw = new StringWriter();
