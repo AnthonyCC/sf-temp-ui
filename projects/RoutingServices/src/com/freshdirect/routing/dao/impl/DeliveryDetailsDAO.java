@@ -446,6 +446,7 @@ public class DeliveryDetailsDAO extends BaseDAO implements IDeliveryDetailsDAO {
                 
                 if(cutOffTime != null) {
                 	ps.setTimestamp(2, new java.sql.Timestamp(cutOffTime.getTime()));
+                	ps.setTimestamp(3, new java.sql.Timestamp(cutOffTime.getTime()));
                 }
                 return ps;
             }  
@@ -515,6 +516,7 @@ public class DeliveryDetailsDAO extends BaseDAO implements IDeliveryDetailsDAO {
                 
                 if(cutOffTime != null) {
                 	ps.setTimestamp(2, new java.sql.Timestamp(cutOffTime.getTime()));
+                	ps.setTimestamp(3, new java.sql.Timestamp(cutOffTime.getTime()));
                 }
                 
                 return ps;
