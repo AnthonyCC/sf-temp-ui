@@ -553,7 +553,7 @@ public class DlvAdminManagerSessionBean extends SessionBeanSupport {
 						rs.getInt("CT_ORDERS"),
 						rs.getString("CT_ACTIVE"),
 						
-						rs.getInt("premium_orders"),
+						rs.getInt("premium_orders")+rs.getInt("premium_ct_orders"),
 						rs.getInt("premium_capacity"),
 						
 						rs.getInt("premium_base_alloc"),

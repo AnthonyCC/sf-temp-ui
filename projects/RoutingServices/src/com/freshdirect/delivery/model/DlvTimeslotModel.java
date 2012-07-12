@@ -185,6 +185,10 @@ public class DlvTimeslotModel extends DlvShiftTimeslotModel {
 		return premiumCtAllocation;
 		
 	}
+	public int getPremiumAllocation() {
+		return premiumAllocation;
+		
+	}
 
 	public int getPremiumBaseAllocation() {
 		return premiumAllocation;

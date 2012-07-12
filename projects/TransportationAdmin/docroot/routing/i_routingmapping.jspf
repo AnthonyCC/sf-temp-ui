@@ -116,7 +116,7 @@
                       </td> 
 		         </tr> 
 		         <tr>
-		                  <td>Cut Off</td>
+		                  <td>Hand Off</td>
 		                  <td><select id="rCutOff" name="rCutOff" ></select></td> 
 		         </tr>
 		         <tr>

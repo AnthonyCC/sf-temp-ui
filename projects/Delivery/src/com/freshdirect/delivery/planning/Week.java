@@ -26,6 +26,13 @@ public class Week implements Serializable {
 		this.weekEnd = cal.getTime();
 	}
 	
+	public Week(Date weekStart,Date weekEnd){
+		this.weekStart = weekStart;
+		this.weekEnd = weekEnd;
+	}
+	
+	
+	
 	public Date getWeekStart() {
 		return weekStart;
 	}
@@ -68,6 +75,31 @@ public class Week implements Serializable {
 		return days;
 	}
 	
+	public Date[] getDays(int num){
+		Calendar startCal = Calendar.getInstance();
+		startCal.setTime(weekStart);
+		
+		startCal.set(Calendar.HOUR_OF_DAY, 0);
+		startCal.set(Calendar.MINUTE, 0);
+		startCal.set(Calendar.SECOND, 0);
+		startCal.set(Calendar.MILLISECOND, 0);
+		
+		Calendar endCal = Calendar.getInstance();
+		endCal.setTime(weekEnd);
+		
+		endCal.set(Calendar.HOUR_OF_DAY, 0);
+		endCal.set(Calendar.MINUTE, 0);
+		endCal.set(Calendar.SECOND, 0);
+		endCal.set(Calendar.MILLISECOND, 0);
+		Date[] days = new Date[num];
+		int idx = 0;
+		while(startCal.before(endCal) || startCal.equals(endCal)){
+			days[idx++] = startCal.getTime();
+			startCal.add(Calendar.DATE, 1);
+		}
+		
+		return days;
+	}
 	public String toString(){
 		return SF.format(weekStart) +" - "+SF.format(weekEnd);
 	}

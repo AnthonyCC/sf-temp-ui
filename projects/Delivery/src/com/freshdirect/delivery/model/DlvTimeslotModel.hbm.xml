@@ -29,6 +29,8 @@
         <property name="chefsTableAllocation" formula="(select count(*) from dlv.reservation r where r.timeslot_id=ID and r.status_code &lt;&gt; '15' and r.status_code &lt;&gt; '20' and r.chefstable = 'X' and r.class is null)"/>
         <property name="baseAllocation" formula="(select count(*) from dlv.reservation r where r.timeslot_id=ID and r.status_code &lt;&gt; '15' and r.status_code &lt;&gt; '20' and r.chefstable = ' ' and r.class is null)"/>
         <property name="preAllocation" formula="(select count(*) from dlv.reservation r where r.timeslot_id=ID and r.status_code ='5' and r.type &lt;&gt; 'STD')"/>
+        <property name="premiumAllocation" formula="(select count(*) from dlv.reservation r where r.timeslot_id=ID and r.status_code &lt;&gt; '15' and r.status_code &lt;&gt; '20' and r.class = 'P')"/>
+        <property name="premiumCtAllocation" formula="(select count(*) from dlv.reservation r where r.timeslot_id=ID and r.status_code &lt;&gt; '15' and r.status_code &lt;&gt; '20' and r.class = 'PC')"/>
         <property name="order" formula="(select count(*) from dlv.reservation r where r.timeslot_id=ID and r.status_code = '10')"/>
         <property name="ctReleaseTime" formula="(select z.ct_release_time from dlv.zone z where z.id = ZONE_ID)" />
         <property name="premiumCtReleaseTime" formula="(select z.premium_ct_release_time from dlv.zone z where z.id = ZONE_ID)" />

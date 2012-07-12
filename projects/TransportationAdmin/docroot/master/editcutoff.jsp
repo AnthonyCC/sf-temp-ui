@@ -5,7 +5,7 @@
 
 <tmpl:insert template='/common/sitelayout.jsp'>
 
-    <tmpl:put name='title' direct='true'> Routing : Cut Off : Add/Edit Cut Off</tmpl:put>
+    <tmpl:put name='title' direct='true'> Routing : Hand Off : Add/Edit Hand Off</tmpl:put>
 
   <tmpl:put name='content' direct='true'>
     <br/> 
@@ -14,7 +14,7 @@
       <form:hidden path="cutOffId"/>      
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
           <tr>
-            <td class="screentitle">Add/Edit Cut Off</td>
+            <td class="screentitle">Add/Edit Hand Off</td>
           </tr>
           <tr>
             <td class="screenmessages"><jsp:include page='/common/messages.jsp'/></td>
@@ -24,7 +24,7 @@
             <td class="screencontent">
               <table class="forms1">                  
                 <tr>
-                  <td>Cut Off Name</td>
+                  <td>Hand Off Name</td>
                   <td>                  
                     <form:input maxlength="50" size="30" path="name" />
                 </td>
@@ -54,7 +54,7 @@
                </tr>
                
                <tr>
-                  <td>Cut Off Time</td>
+                  <td>Hand Off Time</td>
                   <td>                  
                     <form:input maxlength="50" size="30" path="cutOffTime" onblur="this.value=time(this.value);"/>
                 </td>

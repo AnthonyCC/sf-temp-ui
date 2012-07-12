@@ -89,20 +89,31 @@
 						<td jwcid="@Any" class="ognl:getDataRowClass(currentData.getPercentAllocation())"><span jwcid="@Insert" value="ognl:currentData.getTotalAllocation()" /></td>
 						<td jwcid="@Any" class="ognl:getDataRowClass(currentData.getPercentAllocation())"><span jwcid="insertPercentAlloc" /></td>
                     </span>
-                    <span jwcid="@If" condition="ognl:showBase && currentData.getCTActive()">
-						<td jwcid="@Any" class="ognl:getDataRowClass(currentData.getPercentBaseAllocation())"><span jwcid="@Insert" value="ognl:currentData.getBaseCapacity()" /></td>
-						<td jwcid="@Any" class="ognl:getDataRowClass(currentData.getPercentBaseAllocation())"><span jwcid="@Insert" value="ognl:currentData.getBaseOrder()" /></td> 
-						<td jwcid="@Any" class="ognl:getDataRowClass(currentData.getPercentBaseAllocation())"><span jwcid="insertPercentBaseOrder" /></td>
-						<td jwcid="@Any" class="ognl:getDataRowClass(currentData.getPercentBaseAllocation())"><span jwcid="@Insert" value="ognl:currentData.getBaseAllocation()" /></td>
-						<td jwcid="@Any" class="ognl:getDataRowClass(currentData.getPercentBaseAllocation())"><span jwcid="insertPercentBaseAlloc" /></td>
-                     </span>   
-					<span jwcid="@If" condition="ognl:showCT && currentData.getCTActive()">  
-						<td jwcid="@Any" class="ognl:getDataRowClass(currentData.getPercentCTAllocation())"><span jwcid="@Insert" value="ognl:currentData.getCTCapacity()" /></td>
-						<td jwcid="@Any" class="ognl:getDataRowClass(currentData.getPercentCTAllocation())"><span jwcid="@Insert" value="ognl:currentData.getCTOrder()" /></td> 
-						<td jwcid="@Any" class="ognl:getDataRowClass(currentData.getPercentCTAllocation())"><span jwcid="insertPercentCTOrder" /></td>
-						<td jwcid="@Any" class="ognl:getDataRowClass(currentData.getPercentCTAllocation())"><span jwcid="@Insert" value="ognl:currentData.getCTAllocation()" /></td> 
-						<td jwcid="@Any" class="ognl:getDataRowClass(currentData.getPercentCTAllocation())"><span jwcid="insertPercentCTAlloc" /></td>
-                    </span>   
+                    <span jwcid="@If" condition="ognl:showBase" >
+	                    <span jwcid="@If" condition="ognl:currentData.getCTActive()">
+							<td jwcid="@Any" class="ognl:getDataRowClass(currentData.getPercentBaseAllocation())"><span jwcid="@Insert" value="ognl:currentData.getBaseCapacity()" /></td>
+							<td jwcid="@Any" class="ognl:getDataRowClass(currentData.getPercentBaseAllocation())"><span jwcid="@Insert" value="ognl:currentData.getBaseOrder()" /></td> 
+							<td jwcid="@Any" class="ognl:getDataRowClass(currentData.getPercentBaseAllocation())"><span jwcid="insertPercentBaseOrder" /></td>
+							<td jwcid="@Any" class="ognl:getDataRowClass(currentData.getPercentBaseAllocation())"><span jwcid="@Insert" value="ognl:currentData.getBaseAllocation()" /></td>
+							<td jwcid="@Any" class="ognl:getDataRowClass(currentData.getPercentBaseAllocation())"><span jwcid="insertPercentBaseAlloc" /></td>
+	                     </span>   
+	                    <span jwcid="@Else">
+							<td colspan="5" style="text-align:center;"><b>N/A</b></td>
+						</span>
+					</span>
+					<span jwcid="@If" condition="ognl:showCT" >
+						<span jwcid="@If" condition="ognl:currentData.getCTActive()">  
+							<td jwcid="@Any" class="ognl:getDataRowClass(currentData.getPercentCTAllocation())"><span jwcid="@Insert" value="ognl:currentData.getCTCapacity()" /></td>
+							<td jwcid="@Any" class="ognl:getDataRowClass(currentData.getPercentCTAllocation())"><span jwcid="@Insert" value="ognl:currentData.getCTOrder()" /></td> 
+							<td jwcid="@Any" class="ognl:getDataRowClass(currentData.getPercentCTAllocation())"><span jwcid="insertPercentCTOrder" /></td>
+							<td jwcid="@Any" class="ognl:getDataRowClass(currentData.getPercentCTAllocation())"><span jwcid="@Insert" value="ognl:currentData.getCTAllocation()" /></td> 
+							<td jwcid="@Any" class="ognl:getDataRowClass(currentData.getPercentCTAllocation())"><span jwcid="insertPercentCTAlloc" /></td>
+	                    </span> 
+	                    
+	                     <span jwcid="@Else">
+							<td colspan="5" style="text-align:center;"><b>N/A</b></td>
+						</span>
+					</span>
                     <span jwcid="@If" condition="ognl:showPremium">
 						<td jwcid="@Any" class="ognl:getDataRowClass(currentData.getPremiumPercentAllocation())"><span jwcid="@Insert" value="ognl:currentData.getPremiumCapacity()" /></td>
 						<td jwcid="@Any" class="ognl:getDataRowClass(currentData.getPremiumPercentAllocation())"><span jwcid="@Insert" value="ognl:currentData.getPremiumOrder()" /></td> 
@@ -110,7 +121,7 @@
 						<td jwcid="@Any" class="ognl:getDataRowClass(currentData.getPremiumPercentAllocation())"><span jwcid="@Insert" value="ognl:currentData.getPremiumAllocation()" /></td>
 						<td jwcid="@Any" class="ognl:getDataRowClass(currentData.getPremiumPercentAllocation())"><span jwcid="insertPremiumPercentAlloc" /></td>
                      </span>  
-                    <span jwcid="@If" condition="ognl:showPremiumCt && currentData.getPremiumCtActive()">  
+                    <span jwcid="@If" condition="ognl:showPremiumCt && ognl:currentData.getPremiumCtActive()">  
 						<td jwcid="@Any" class="ognl:getDataRowClass(currentData.getPremiumCtPercentAllocation())"><span jwcid="@Insert" value="ognl:currentData.getPremiumCtCapacity()" /></td>
 						<td jwcid="@Any" class="ognl:getDataRowClass(currentData.getPremiumCtPercentAllocation())"><span jwcid="@Insert" value="ognl:currentData.getPremiumCtOrder()" /></td> 
 						<td jwcid="@Any" class="ognl:getDataRowClass(currentData.getPremiumCtPercentAllocation())"><span jwcid="insertPremiumCtPercentOrder" /></td>

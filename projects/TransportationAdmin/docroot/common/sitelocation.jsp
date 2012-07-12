@@ -50,7 +50,7 @@
 						<td width="10%" align="center"><a href="dlvbuilding.do" >&nbsp;Building&nbsp;</a></td>
 						<td width="10%" align="center"><a href="dlvbuildingdtl.do" >&nbsp;Building Detail&nbsp;</a></td>
 						<td width="10%" align="center"><a href="dlvlocation.do" >&nbsp;Location&nbsp;</a></td>
-						<td width="10%" align="center"><a href="cutoff.do" >&nbsp;Cut Off&nbsp;</a></td>
+						<td width="10%" align="center"><a href="cutoff.do" >&nbsp;Hand Off&nbsp;</a></td>
 						<td width="10%" align="center"><a href="dlvservicetime.do" >&nbsp;Service Time&nbsp;</a></td>						
 						<td width="10%" align="center"><a href="dlvservicetimetype.do" >&nbsp;Service Time Type&nbsp;</a></td>
 						<td width="10%" align="center"><a href="dlvservicetimescenario.do" >&nbsp;Scenario&nbsp;</a></td>		

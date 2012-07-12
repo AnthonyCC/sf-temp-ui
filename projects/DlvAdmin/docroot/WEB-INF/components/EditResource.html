@@ -15,10 +15,10 @@
 			<td align="center" colspan="2" class="ct" nowrap><b>Chef's Table</b></td>              
         </span>
          <span jwcid="@If" condition="ognl:showPremium">
-			<td align="center" colspan="2" bgcolor="FFFF00" nowrap><b>Premium</b></td>              
+			<td align="center" colspan="2" class="premium" nowrap><b>Premium</b></td>              
         </span>
         <span jwcid="@If" condition="ognl:showPremiumCt">
-			<td align="center" colspan="2" bgcolor="FFFF00" nowrap><b>Premium CT</b></td>              
+			<td align="center" colspan="2" class="premiumCt" nowrap><b>Premium CT</b></td>              
         </span>
 	</tr>
 	<tr bgcolor='dfdfdf'>
@@ -68,18 +68,23 @@
 				<td align="center" bgcolor="dfdfdf"><b><span jwcid="@Insert" value="ognl:timeslot.baseAllocation">32</span></b></td>
         	    <td align="center" bgcolor="dfdfdf"><b><span jwcid="@Insert" value="ognl:timeslot.preAllocation">32</span></b></td>
             </span>
-            <span jwcid="@If" condition="ognl:showCT && timeslot.ctActive">
-                <span jwcid="@If" condition="ognl:CTEditable">
-					<td align="center" jwcid="@Any" bgcolor="ognl:timeslot.isCTCapacityReleased(page.currentDate)? 'red': 'dfdfdf'"><input class="text10" size="5" jwcid="inputCtCapacity"/><input type="submit" class="button" jwcid="@Submit" label="OW" listener="ognl:bindings.overrideListener.object"/></td>
-                </span>
-                <span jwcid="@Else">
-                    <td align="center" jwcid="@Any" bgcolor="ognl:timeslot.isCTCapacityReleased(page.currentDate)? 'red': 'dfdfdf'"><b><span jwcid="@Insert" value="ognl:timeslot.chefsTableCapacity">32</span></b></td>
-                </span>
-				<td align="right" bgcolor="dfdfdf"><span jwcid="@Insert" value="ognl:timeslot.chefsTableAllocation" /></td>
-            </span>
-            
+            <span jwcid="@If" condition="ognl:showCT">
+	            <span jwcid="@If" condition="ognl:timeslot.ctActive">
+	                <span jwcid="@If" condition="ognl:CTEditable">
+						<td align="center" jwcid="@Any" bgcolor="ognl:timeslot.isCTCapacityReleased(page.currentDate)? 'red': 'dfdfdf'"><input class="text10" size="5" jwcid="inputCtCapacity"/><input type="submit" class="button" jwcid="@Submit" label="OW" listener="ognl:bindings.overrideListener.object"/></td>
+	                </span>
+	                <span jwcid="@Else">
+	                    <td align="center" jwcid="@Any" bgcolor="ognl:timeslot.isCTCapacityReleased(page.currentDate)? 'red': 'dfdfdf'"><b><span jwcid="@Insert" value="ognl:timeslot.chefsTableCapacity">32</span></b></td>
+	                </span>
+					<td align="right" bgcolor="dfdfdf"><span jwcid="@Insert" value="ognl:timeslot.chefsTableAllocation" /></td>
+	            </span>
+	            <span jwcid="@Else">
+					<td colspan="2" style="text-align:center;"><b>N/A</b></td>
+				</span>
+			</span>
+			
             <span jwcid="@If" condition="ognl:showPremium">
-             <span jwcid="@If" condition="ognl:PremiumEditable">
+             <span jwcid="@If" condition="ognl:PremiumEditable && timeslot.premiumCutoffTime!=null">
              	<td align="right"><input size="4" class="text10" jwcid="inputPremiumCapacity"/><input type="submit" class="button" jwcid="@Submit" label="OW" listener="ognl:bindings.overrideListener.object"/></td>
              </span>
              <span jwcid="@Else">

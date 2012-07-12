@@ -28,7 +28,7 @@ public class PageRegistry {
 		addPage("CapacityDashboard", "Dashboard", new String[] {ADMIN,MARKETING});
 		addPage("EarlyWarningPage", "Early Warning", new String[] {ADMIN,GUEST,MARKETING});
 		addPage("ManageCTZones", "Manage Chef's Table Zones", new String[] {ADMIN,MARKETING});
-		addPage("ManagePremiumZones", "Manage Premium Zones", new String[] {ADMIN,MARKETING});
+		addPage("ManagePremiumZones", "Manage Premium CT Zones", new String[] {ADMIN,MARKETING});
 		addPage("UserAudit", "User Audit", new String[] {ADMIN, MARKETING, GUEST});
 		addPage("ManageUnattendedDeliveryZones","Manage Unattended Delivery Zones", new String[] {ADMIN,MARKETING,GUEST});
 		

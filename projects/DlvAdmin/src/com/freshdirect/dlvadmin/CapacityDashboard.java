@@ -69,7 +69,7 @@ public abstract class CapacityDashboard extends DlvPage {
 
 
 	public IPropertySelectionModel getDaySelectionModel() {
-		return new DaySelectionModel(this.getSelectedWeek().getDays());
+		return new DaySelectionModel(this.getSelectedWeek().getDays(8));
 	}
 
 	public Date[] getDays() {
@@ -78,12 +78,13 @@ public abstract class CapacityDashboard extends DlvPage {
 		}
 		
 		if(this.getSelectedWeek() == null){
-			Calendar cal = Calendar.getInstance();
-			cal.add(Calendar.DATE, 1);
-			this.setSelectedWeek(new Week(cal.getTime()));
+			Calendar startCal = Calendar.getInstance();
+			Calendar endCal = Calendar.getInstance();
+			endCal.add(Calendar.DATE, 7);
+			this.setSelectedWeek(new Week(startCal.getTime(),endCal.getTime()));
 		}
 		
-		return this.getSelectedWeek().getDays();
+		return this.getSelectedWeek().getDays(8);
 	}
 
 	private Map loadDailyResources() {

@@ -82,6 +82,9 @@
                 	<td align="right" class="ct"><b><span jwcid="@Insert" value="ognl:currentTimeslot.chefsTableAllocation">32</span></b></td>
 	                <td align="right" class="ct"><b><span jwcid="insertPercentage">32</span></b></td>
                 </span>
+                <span jwcid="@Else">
+				   	<td colspan="5" style="text-align:center;"><b>N/A</b></td>
+				</span>
                 	<td align="right" class="premium"><b><span jwcid="@Insert" value="ognl:currentTimeslot.premiumCapacity">32</span></b></td>                
         	        <td align="right" class="premium"><b><span jwcid="@Insert" value="ognl:currentTimeslot.calculatePremiumAllocation(page.currentDate)">32</span></b></td>
                 
