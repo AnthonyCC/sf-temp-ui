@@ -51,7 +51,6 @@
 		<AttributeDefs>
 			<AttributeDef type="S" name="ORGANIZATION_NAME" label="Organization Name"/>
 			<AttributeDef type="S" name="EMAIL" label="Recipient Email"/>
-			<AttributeDef type="S" name="CONTACT_INFO" label="Contact Info"/>
 		</AttributeDefs>
 		<RelationshipDefs>
 			<RelationshipDef name="ORGANIZATION_LOGO" cardinality="One"  label="Organization logo" >
