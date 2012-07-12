@@ -8,7 +8,6 @@ delete from CMS.RELATIONSHIPDESTINATION where ID ='FDFolder.children.DonationOrg
 
 delete from cms.attributedefinition where ID = 'DonationOrganization.ORGANIZATION_NAME';
 delete from cms.attributedefinition where ID = 'DonationOrganization.EMAIL';
-delete from cms.attributedefinition where ID = 'DonationOrganization.CONTACT_INFO';
 
 delete from cms.relationshipdestination where ID = 'DonationOrganization.ORGANIZATION_LOGO.Image';
 delete from cms.relationshipdestination where ID = 'DonationOrganization.ORGANIZATION_LOGO_SMALL.Image';

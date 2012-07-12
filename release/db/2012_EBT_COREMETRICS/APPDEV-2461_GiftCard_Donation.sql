@@ -7,7 +7,6 @@ INSERT INTO cms.contenttype (ID, NAME, DESCRIPTION, GENERATE_ID) VALUES ('Donati
 
 INSERT INTO cms.attributedefinition (NAME, ID, CONTENTTYPE_ID, ATTRIBUTETYPE_CODE, INHERITABLE, REQUIRED, LABEL, CARDINALITY_CODE, LOOKUP_CODE) VALUES ('ORGANIZATION_NAME', 'DonationOrganization.ORGANIZATION_NAME', 'DonationOrganization', 'S', 'F', 'T', 'Organization Name', 'One', NULL);
 INSERT INTO cms.attributedefinition (NAME, ID, CONTENTTYPE_ID, ATTRIBUTETYPE_CODE, INHERITABLE, REQUIRED, LABEL, CARDINALITY_CODE, LOOKUP_CODE) VALUES ('EMAIL', 'DonationOrganization.EMAIL', 'DonationOrganization', 'S', 'F', 'T', 'Recipient Email', 'One', NULL);
-INSERT INTO cms.attributedefinition (NAME, ID, CONTENTTYPE_ID, ATTRIBUTETYPE_CODE, INHERITABLE, REQUIRED, LABEL, CARDINALITY_CODE, LOOKUP_CODE) VALUES ('CONTACT_INFO', 'DonationOrganization.CONTACT_INFO', 'DonationOrganization', 'S', 'F', 'F', 'Contact Info', 'One', NULL);
 
 INSERT INTO cms.relationshipdefinition (NAME, ID, CONTENTTYPE_ID, INHERITABLE, REQUIRED, NAVIGABLE, READONLY, LABEL, CARDINALITY_CODE) VALUES ('ORGANIZATION_LOGO', 'DonationOrganization.ORGANIZATION_LOGO', 'DonationOrganization', 'F', 'T', 'F', 'F', 'Organization logo', 'One');
 INSERT INTO cms.relationshipdefinition (NAME, ID, CONTENTTYPE_ID, INHERITABLE, REQUIRED, NAVIGABLE, READONLY, LABEL, CARDINALITY_CODE) VALUES ('ORGANIZATION_LOGO_SMALL', 'DonationOrganization.ORGANIZATION_LOGO_SMALL', 'DonationOrganization', 'F', 'F', 'F', 'F', 'Organization logo Small', 'One');
@@ -36,5 +35,6 @@ Insert into CMS.ATTRIBUTE
  Values
    ('FDFolder:donationOrganizationList', cms.system_seq.nextval, 'Donation Organizations', 0, 'name', 'FDFolder');
    
+
 
  
