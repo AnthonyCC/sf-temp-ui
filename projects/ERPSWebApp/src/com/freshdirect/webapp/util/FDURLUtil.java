@@ -67,6 +67,31 @@ public class FDURLUtil {
 		return FDURLUtil.getProductURI(productNode, trackingCode, null);
 	}
 
+	public static String getProductURI(ProductModel productNode, String trackingCode,String variantId,String catId) {
+		StringBuilder uri = new StringBuilder();
+		
+		appendProduct(uri, null, productNode,catId);
+
+		// product page with category ID
+		// uri.append(ProductDisplayUtil.PRODUCT_PAGE_BASE + "?catId=" + ProductDisplayUtil.getRealParent(productNode).getContentName());
+		
+		// tracking code 
+		if (trackingCode != null) {
+			uri.append(ProductDisplayUtil.URL_PARAM_SEP + "trk=" + trackingCode);
+		}
+		
+		// append product ID
+		// uri.append(ProductDisplayUtil.URL_PARAM_SEP + "productId=" + ProductDisplayUtil.getRealProduct(productNode).getContentName());
+		
+		// append variant ID (optional)
+		if (variantId != null) {
+			// variant ID may contain SPACE or other non-ASCII characters ...
+			uri.append(ProductDisplayUtil.URL_PARAM_SEP + "variant=" + safeURLEncode(variantId));
+			uri.append(ProductDisplayUtil.URL_PARAM_SEP + "fdsc.source=SS");
+		}
+
+		return uri.toString();
+	}
 	
 	public static String getProductURI(ProductModel productNode, Variant variant) {
 		return FDURLUtil.getProductURI(productNode,
@@ -312,6 +337,54 @@ public class FDURLUtil {
 			
 			if (matching == null) {
 				uri.append(ProductDisplayUtil.PRODUCT_PAGE_BASE + "?catId=" + ProductDisplayUtil.getRealParent(productNode).getContentName());
+				uri.append(ProductDisplayUtil.URL_PARAM_SEP + "productId=" + ProductDisplayUtil.getRealProduct(productNode).getContentName());
+			} else {
+				uri.append(ProductDisplayUtil.PRODUCT_PAGE_BASE + "?catId=" + matching.getId());
+				uri.append(ProductDisplayUtil.URL_PARAM_SEP + "productId=" + productNode.getContentKey().getId());
+			}
+		}
+
+		return uri;
+	}
+	
+	private static StringBuilder appendProduct(StringBuilder uri, ProductContainer parent, ProductModel productNode,String catId) {
+		if (parent == null) {
+			// product page with category ID
+			if(null !=catId && !"".equals(catId)){
+				uri.append(ProductDisplayUtil.PRODUCT_PAGE_BASE + "?catId=" + catId);
+			}else{
+				uri.append(ProductDisplayUtil.PRODUCT_PAGE_BASE + "?catId=" + ProductDisplayUtil.getRealParent(productNode).getContentName());
+			}
+	
+			// append product ID
+			uri.append(ProductDisplayUtil.URL_PARAM_SEP + "productId=" + ProductDisplayUtil.getRealProduct(productNode).getContentName());
+		} else {
+			// find direct parent
+			Collection<ContentKey> parentKeys = productNode.getParentKeys();
+			ContentKey matching = null;
+			for (ContentKey parentKey : parentKeys) {
+				if (parent.getContentKey().equals(parentKey)) {
+					// direct parent, trivial
+					matching = parentKey;
+					break;
+				}
+
+				ContentNodeModel node = ContentFactory.getInstance().getContentNodeByKey(parentKey);
+				if (node != null) {
+					if (ContentNodeModelUtil.isChildOf(parent, node, true)) {
+						matching = parentKey;
+						break;
+					}
+				}
+			}
+			
+			if (matching == null) {
+				if(null !=catId && !"".equals(catId)){
+					uri.append(ProductDisplayUtil.PRODUCT_PAGE_BASE + "?catId=" + catId);
+				}else{
+					uri.append(ProductDisplayUtil.PRODUCT_PAGE_BASE + "?catId=" + ProductDisplayUtil.getRealParent(productNode).getContentName());
+				}
+//				uri.append(ProductDisplayUtil.PRODUCT_PAGE_BASE + "?catId=" + ProductDisplayUtil.getRealParent(productNode).getContentName());
 				uri.append(ProductDisplayUtil.URL_PARAM_SEP + "productId=" + ProductDisplayUtil.getRealProduct(productNode).getContentName());
 			} else {
 				uri.append(ProductDisplayUtil.PRODUCT_PAGE_BASE + "?catId=" + matching.getId());

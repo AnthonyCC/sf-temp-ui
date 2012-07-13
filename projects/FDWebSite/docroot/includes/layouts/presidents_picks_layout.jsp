@@ -82,7 +82,7 @@
 	String order = NVL.apply(request.getParameter("order"), "asc"); //switch sort param, if not "price", "priceDesc" or "dept", then use default ("ourFaves")
 		if ("".equals(order)) { order = "asc"; }
 	String trkCode =  NVL.apply(request.getParameter("trkCode"), "ddpp");
-		if ("".equals(trkCode)) { sort = "ddpp"; }
+		if ("".equals(trkCode)) { trkCode = "ddpp"; }
 		
 	boolean isFeatProd = true;
 	int tempCounter = 0;

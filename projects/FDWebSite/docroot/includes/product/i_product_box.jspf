@@ -34,7 +34,7 @@
 <div class="grid-item-saving"><display:ProductSaving product="<%= pm %>"/></div>
 <display:ProductBurstClass id="burstClass" product="<%= pm %>" hideDeal="true">
 <div class="grid-item-image">
-<display:ProductLink product="<%= pm %>" trackingCode="<%= trk %>">
+<display:ProductLink product="<%= pm %>" trackingCode="<%= trk %>" catId="<%= catId %>">
 <%
   		FDProduct fdproduct = null;
         try {
@@ -50,12 +50,12 @@
 </div>
 </display:ProductBurstClass>
 <div class="grid-item-rating">
-<display:ProductLink product="<%= pm %>" trackingCode="<%= trk %>">
+<display:ProductLink product="<%= pm %>" trackingCode="<%= trk %>" catId="<%= catId %>">
 <display:ProductRating product="<%= pm %>" noBr="true"/>
 </display:ProductLink>
 </div>
 <div class="grid-item-name">
-<display:ProductLink product="<%= pm %>" trackingCode="<%= trk %>">
+<display:ProductLink product="<%= pm %>" trackingCode="<%= trk %>" catId="<%= catId %>">
 <display:ProductName product="<%= pm %>"/>
 </display:ProductLink>
 </div>
