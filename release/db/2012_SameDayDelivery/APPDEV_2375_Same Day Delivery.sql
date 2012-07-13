@@ -4,7 +4,7 @@ alter table dlv.timeslot add ( PREMIUM_CUTOFF_TIME  DATE, PREMIUM_CAPACITY NUMBE
 
 alter table dlv.reservation add (CLASS VARCHAR2(2 BYTE));
 
-alter table dlv.zone add (PREMIUM_CT_RELEASE_TIME NUMBER(4) DEFAULT 0 NOT NULL, PREMIUM_CT_ACTIVE VARCHAR2(1 BYTE));
+alter table dlv.zone add (PREMIUM_CT_RELEASE_TIME NUMBER(4) DEFAULT 0 NOT NULL, PREMIUM_CT_ACTIVE VARCHAR2(1 BYTE) DEFAULT ' ' NOT NULL);
 
 alter table mis.timeslot_event_hdr add sameday char(1 BYTE);
 
