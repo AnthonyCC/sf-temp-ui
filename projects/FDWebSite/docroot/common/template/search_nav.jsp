@@ -31,8 +31,10 @@ final String trk = "srch"; // tracking code
 String criteria = request.getParameter("searchParams");
 %>
 <fd:javascript src="/assets/javascript/rounded_corners.inc.js"/>
+<%@ include file="/shared/template/includes/i_head_end.jspf" %>
 </head>
 <BODY BGCOLOR="#FFFFFF" LINK="#336600" VLINK="#336600" ALINK="#FF9900" TEXT="#333333">
+<%@ include file="/shared/template/includes/i_body_start.jspf" %>
 <%@ include file="/common/template/includes/globalnav.jspf" %> 
 <%@ include file="/includes/search/autocomplete.jspf" %>
 <CENTER CLASS="text10">

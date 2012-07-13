@@ -27,8 +27,10 @@ final int W_RIGHT_DNAV_RIGHT = 191;
   <%@ include file="/shared/template/includes/style_sheet_grid_compat.jspf" %>
 	<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
 	<%@ include file="/shared/template/includes/ccl.jspf" %>
+<%@ include file="/shared/template/includes/i_head_end.jspf" %>
 </head>
 <BODY BGCOLOR="#FFFFFF" LINK="#336600" VLINK="#336600" ALINK="#FF9900" TEXT="#333333">
+<%@ include file="/shared/template/includes/i_body_start.jspf" %>
 <%@ include file="/common/template/includes/globalnav.jspf" %>
 <CENTER CLASS="text10">
 <TABLE WIDTH="<%=W_RIGHT_DNAV_TOTAL%>" BORDER="0" CELLPADDING="0" CELLSPACING="0">

@@ -11,6 +11,7 @@ if(request.getParameter("qNumber") != null){
 	<%@ include file="/common/template/includes/metatags.jspf" %>
 	<%@ include file="/common/template/includes/i_javascripts.jspf" %>
 	<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
+<%@ include file="/shared/template/includes/i_head_end.jspf" %>
 </head>
 <FRAMESET ROWS="47,*" BORDER="0" FRAMEBORDER="0" FRAMESPACING="0" BORDERCOLOR="#FFFFFF">
 <FRAME MARGINWIDTH="0" 

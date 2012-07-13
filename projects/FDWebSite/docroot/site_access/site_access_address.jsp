@@ -26,8 +26,10 @@
 	<%@ include file="/common/template/includes/i_javascripts.jspf" %>
 	<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
 	<%-- NOT CCL @ include file="/shared/template/includes/ccl.jspf" --%>
+<%@ include file="/shared/template/includes/i_head_end.jspf" %>
 </head>
 <body bgcolor="#ffffff" text="#333333" class="text10" leftmargin="0" topmargin="0">
+<%@ include file="/shared/template/includes/i_body_start.jspf" %>
 	<fd:SiteAccessController action='checkByAddress' successPage='<%= successPage %>' moreInfoPage='<%= moreInfoPage %>' failureHomePage='<%= failurePage %>' failureCorporatePage='<%= failureCorporatePage %>' result='result'>
 	<%
 		String fldAddress1 = NVL.apply(request.getParameter(EnumUserInfoName.DLV_ADDRESS_1.getCode()), "");

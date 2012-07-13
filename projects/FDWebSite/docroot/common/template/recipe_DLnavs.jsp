@@ -30,8 +30,10 @@ final int W_RECIPE_DL_NAVS_RIGHT = 820;
   <%@ include file="/shared/template/includes/style_sheet_grid_compat.jspf" %>
 	<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
   <%@ include file="/shared/template/includes/ccl.jspf" %>
+<%@ include file="/shared/template/includes/i_head_end.jspf" %>
 </head>
 <BODY bgcolor="#FFFFFF" LINK="#336600" VLINK="#336600" ALINK="#FF9900" TEXT="#333333">
+<%@ include file="/shared/template/includes/i_body_start.jspf" %>
 <%
 	// go find the recipeDepartment...(should be a method on contentFactory
 	ContentType cType = ContentType.get("RecipeDepartment");

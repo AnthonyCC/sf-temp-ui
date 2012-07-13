@@ -53,6 +53,7 @@ import com.freshdirect.webapp.action.HttpContext;
 import com.freshdirect.webapp.action.fdstore.RegistrationAction;
 import com.freshdirect.webapp.checkout.DeliveryAddressManipulator;
 import com.freshdirect.webapp.taglib.AbstractControllerTag;
+import com.freshdirect.webapp.taglib.coremetrics.CmRegistrationTag;
 import com.freshdirect.webapp.util.AccountUtil;
 
 /**
@@ -120,6 +121,7 @@ public class RegistrationControllerTag extends AbstractControllerTag implements 
 				ra.setSuccessPage(this.getSuccessPage());
 
 				ra.execute();
+				CmRegistrationTag.setPendingRegistrationEvent(session);
 				this.setSuccessPage(ra.getSuccessPage()); //reset if changed.
 
 			} else if ("registerEx".equalsIgnoreCase(actionName)) {
@@ -167,6 +169,7 @@ public class RegistrationControllerTag extends AbstractControllerTag implements 
 							//this.pageContext.getSession().removeAttribute("EXISTING_CUSTOMERID");
 							this.setSuccessPage("/registration/referee_signup2.jsp");
 							this.setAjax(true);
+							CmRegistrationTag.setPendingRegistrationEvent(session);
 						} catch (Exception e) {
 							LOGGER.error("Exception when trying to update FDCustomer with referral ID",e);
 						}
@@ -175,11 +178,12 @@ public class RegistrationControllerTag extends AbstractControllerTag implements 
 							this.setSuccessPage("/registration/signup_lite.jsp");
 							this.setAjax(true);
 							this.pageContext.getSession().setAttribute("LITESIGNUP_COMPLETE", "true");
+							CmRegistrationTag.setPendingRegistrationEvent(pageContext.getSession());
 						}
 					}
 				}
 
-			}else if ("addDeliveryAddressEx".equalsIgnoreCase(actionName)) {
+			} else if ("addDeliveryAddressEx".equalsIgnoreCase(actionName)) {
 				DeliveryAddressManipulator m = new DeliveryAddressManipulator(this.pageContext, actionResult, actionName);
 				m.performAddDeliveryAddress();
 
@@ -199,6 +203,7 @@ public class RegistrationControllerTag extends AbstractControllerTag implements 
 
 			} else if ("changeUserID".equalsIgnoreCase(actionName)) {
 				this.performChangeUserID(request, actionResult);
+				CmRegistrationTag.setPendingRegistrationEvent(session);
 
 			} else if ("changePassword".equalsIgnoreCase(actionName)) {
 				this.performChangePassword(request, actionResult);

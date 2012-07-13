@@ -22,10 +22,14 @@ final int W_CHECKOUT_NAV_TOTAL = 970;
 		<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
 		<fd:css href="/assets/css/timeslots.css"/>
 		<%@ include file="/shared/template/includes/ccl.jspf" %>
-	</head>
+	<%@ include file="/shared/template/includes/i_head_end.jspf" %>
+</head>
 	
 	<body bgcolor="#FFFFFF" link="#336600" vlink="#336600" alink="#FF9900" text="#333333" class="text10">
-		<center>
+	
+	<%@ include file="/shared/template/includes/i_body_start.jspf" %>
+	
+			<center>
 		
 			<%
 			boolean modOrder = false;

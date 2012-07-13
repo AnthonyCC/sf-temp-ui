@@ -88,9 +88,10 @@ function paintItem() {
 
  // stop hiding -->
 </SCRIPT>
+<%@ include file="/shared/template/includes/i_head_end.jspf" %>
 </HEAD>
 <BODY BGCOLOR="#FFFFFF" LINK="#336600" VLINK="#336600" ALINK="#FF9900" TEXT="#333333" <%--onLoad="go();"--%>>
-
+<%@ include file="/shared/template/includes/i_body_start.jspf" %>
 <CENTER>
 
 <!-- DON'T REMOVE THIS COMMENT: IE does not render the page until sufficient data is received.. this is *that* data, ya know... -->

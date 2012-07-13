@@ -274,5 +274,6 @@ if (FDStoreProperties.IsHomePageMediaEnabled() && (!user.isHomePageLetterVisited
 		</div> 
 	</div>
 </fd:GetSegmentMessage>
+<fd:CmRegistration wrapIntoScriptTag="true"/>
 </tmpl:put>
 </tmpl:insert>

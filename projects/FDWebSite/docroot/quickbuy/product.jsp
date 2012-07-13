@@ -86,8 +86,11 @@
 		<%
 	}
 	%>
+<%@ include file="/shared/template/includes/i_head_end.jspf" %>
 </head>
 <body class="qbBody">
+<%@ include file="/shared/template/includes/i_body_start.jspf" %>
+<fd:CmProductView quickbuy="true" wrapIntoScriptTag="true" productModel="<%=productNode%>"/>
 <div id="qbContainer">
 	<% if (FDStoreProperties.isAnnotationMode()) { %>
 		<div id="overDiv" style="position: absolute; visibility: hidden; z-index: 10000;"></div>

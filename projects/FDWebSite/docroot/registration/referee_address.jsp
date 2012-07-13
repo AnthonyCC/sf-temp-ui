@@ -57,9 +57,11 @@ System.out.println("IN REFEREE_ADDRESS.jsp======================================
 		<%@ include file="/common/template/includes/i_javascripts.jspf" %>
 		<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
 		<%-- NOT CCL @ include file="/shared/template/includes/ccl.jspf" --%>
-	</head>
+	<%@ include file="/shared/template/includes/i_head_end.jspf" %>
+</head>
 	<body bgcolor="#ffffff" text="#333333" class="text10" leftmargin="0" topmargin="0">
-	<script>
+	<%@ include file="/shared/template/includes/i_body_start.jspf" %>
+		<script>
 	</script>
 	<center>
 	<table border="0" cellpadding="0" cellspacing="0" width="550" height="100%" style="margin: 10px;">

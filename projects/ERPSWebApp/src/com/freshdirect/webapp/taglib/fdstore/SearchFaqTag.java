@@ -37,6 +37,8 @@ public class SearchFaqTag extends AbstractGetterTag {
 			}
 			faqKeyword = NVL.apply(faqKeyword, "");
 			if("".equals(faqKeyword.trim())){
+				pageContext.setAttribute("searchResultsSize", 0);
+				pageContext.setAttribute("keywords", "");
 				return null;				
 			}
 
@@ -57,6 +59,7 @@ public class SearchFaqTag extends AbstractGetterTag {
 			}
 			
 //			pageContext.setAttribute("searchResult", result);
+			pageContext.setAttribute("searchResultsSize", faqsList.size());
 			pageContext.setAttribute("keywords", faqKeyword);
 			return faqsList;	
 //			}

@@ -17,8 +17,10 @@
     <fd:javascript src="/assets/javascript/common_javascript.js"/>
      <%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
      <%@ include file="/shared/template/includes/ccl.jspf" %>
+<%@ include file="/shared/template/includes/i_head_end.jspf" %>
 </head>
 <body class="qbBody">
+<%@ include file="/shared/template/includes/i_body_start.jspf" %>
 <%
 	if (cart.getRecentOrderLines().size() > 0) {
 		FDCartLineI orderLine = cart.getRecentOrderLines().get(0);
@@ -26,6 +28,7 @@
 
 		final boolean __isWineLayout = EnumProductLayout.NEW_WINE_PRODUCT.equals(productNode.getProductLayout());
 %>
+<fd:CmShop5 wrapIntoScriptTag="true" cart="<%=cart%>"/>
 <div class="left">
 	<div class="title14 info" style="color: #ff9933">You have just<br>added to your cart</div>
 	<div class="title14"><%= productNode.getFullName() %>&nbsp;<a href="/product_modify.jsp?cartLine=<%= orderLine.getRandomId() %>&amp;trk=conf&amp;referer=<%= URLEncoder.encode(request.getParameter("referer"), "UTF8") %>" target="_top"><img src="/media_stat/images/buttons/edit_product.gif" width="32" height="14" alt="Edit" border="0"></a></div>

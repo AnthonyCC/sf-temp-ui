@@ -9,8 +9,10 @@
 <title><tmpl:get name='title'/></title>
  <%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
  <fd:javascript src="/assets/javascript/common_javascript.js"/>
+<%@ include file="/shared/template/includes/i_head_end.jspf" %>
 </head>
 <body bgcolor="#FFFFFF" link="#336600" vlink="#336600" alink="#FF9900" text="#333333" onLoad="window.focus();" topmargin="0" marginheight="0">
+<%@ include file="/shared/template/includes/i_body_start.jspf" %>
 <table border="0" cellpadding="0" cellspacing="0" width="330">
 <tr valign="top">
 	<td><a href="javascript:window.close();"><img src="/media_stat/images/template/pop_up_header_sm.gif" alt="FreshDirect" width="330" height="43" border="0"></a><br>

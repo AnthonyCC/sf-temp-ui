@@ -24,8 +24,10 @@
 				header:'quickbuy-noheader'
 		};
 		</script>
-	</head>
+	<%@ include file="/shared/template/includes/i_head_end.jspf" %>
+</head>
 	<body class="searchpage <tmpl:get name="activeTab"/>-active <tmpl:get name="activeView"/>-view <tmpl:get name="noResult"/> <tmpl:get name="startPage"/>">
+<%@ include file="/shared/template/includes/i_body_start.jspf" %>      
 		<%@ include file="/common/template/includes/globalnav.jspf" %> 
     <div id="content_top" class="content-header container"><div class="span-7 orange eagle middle content-header-height result-text">Search Results<span class="result-helper"></span></span></div><tmpl:get name="content-header"/></div>
     <div class="OAS-holder container"><script>OAS_AD('CategoryNote');</script></div>

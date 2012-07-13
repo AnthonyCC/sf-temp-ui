@@ -52,12 +52,14 @@ request.setAttribute("__yui_load_dispatcher__", Boolean.TRUE);
     <tmpl:get name='head'/>
     <tmpl:get name='extrahead'/>
 
+<%@ include file="/shared/template/includes/i_head_end.jspf" %>
 </head>
 
 <BODY BGCOLOR="#FFFFFF" LINK="#336600" VLINK="#336600" ALINK="#FF9900" TEXT="#333333"
       onload="<%= request.getAttribute("bodyOnLoad")%>" 
       onunload="<%= request.getAttribute("bodyOnUnload")%>"
       class="quickshop">
+<%@ include file="/shared/template/includes/i_body_start.jspf" %>      
 <%@ include file="/common/template/includes/globalnav.jspf" %>
 <CENTER CLASS="text10">
 <TABLE WIDTH="<%= W_QUICK_SHOP_TOTAL %>" CELLPADDING="0" CELLSPACING="0" BORDER="0">

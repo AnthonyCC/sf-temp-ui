@@ -52,8 +52,10 @@ final int W_GIFTCARD_TOTAL = 970;
     } // local block
 %>
 
+<%@ include file="/shared/template/includes/i_head_end.jspf" %>
 </head>
 <body onload="<%= request.getAttribute("bodyOnLoad")%>" onunload="<%= request.getAttribute("bodyOnUnload")%>" >	
+<%@ include file="/shared/template/includes/i_body_start.jspf" %>      
 	<center>
 	<%
 		boolean modOrder = false;

@@ -32,6 +32,7 @@ import com.freshdirect.framework.webapp.ActionResult;
 import com.freshdirect.webapp.action.Action;
 import com.freshdirect.webapp.action.HttpContext;
 import com.freshdirect.webapp.action.fdstore.RegistrationAction;
+import com.freshdirect.webapp.taglib.coremetrics.CmRegistrationTag;
 import com.freshdirect.webapp.util.AccountUtil;
 
 public class SiteAccessControllerTag extends com.freshdirect.framework.webapp.BodyTagSupport {
@@ -346,9 +347,11 @@ public class SiteAccessControllerTag extends com.freshdirect.framework.webapp.Bo
 			String res = ra.executeEx();
 			if((Action.SUCCESS).equals(res)) {
 				this.setSuccessPage("/registration/signup_lite.jsp");										
-				this.pageContext.getSession().setAttribute("LITESIGNUP_COMPLETE", "true");
-				this.pageContext.getSession().removeAttribute("LITEACCOUNTINFO");
-				this.pageContext.getSession().removeAttribute("LITECONTACTINFO");
+				HttpSession session = pageContext.getSession();
+				session.setAttribute("LITESIGNUP_COMPLETE", "true");
+				session.removeAttribute("LITEACCOUNTINFO");
+				session.removeAttribute("LITECONTACTINFO");
+				CmRegistrationTag.setPendingRegistrationEvent(session);
 			}
 		} catch (Exception ex) {
 			LOGGER.error("Error performing action signupLite", ex);

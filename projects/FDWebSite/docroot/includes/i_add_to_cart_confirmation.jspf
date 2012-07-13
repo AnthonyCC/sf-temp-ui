@@ -272,4 +272,4 @@ lastDepartmentName = null;
 		</TABLE>
 
 		<%} %>
-		
+<fd:CmShop5 wrapIntoScriptTag="true" cart="<%=cart%>"/>		

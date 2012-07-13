@@ -26,8 +26,10 @@
 <HTML>
 <HEAD>
 <TITLE>WINE ATTRIBUTES</TITLE>
+<%@ include file="/shared/template/includes/i_head_end.jspf" %>
 </HEAD>
 <BODY>
+<%@ include file="/shared/template/includes/i_body_start.jspf" %>
 <%
     String contentId=request.getParameter("contentNodeId");
 %>

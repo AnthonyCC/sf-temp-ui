@@ -24,8 +24,10 @@ boolean emailSent = request.getParameter("email") != null && "sent".equalsIgnore
 <fd:javascript src="/assets/javascript/common_javascript.js"/>
 
 <%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
+<%@ include file="/shared/template/includes/i_head_end.jspf" %>
 </head>
 <body bgcolor="white" text="#333333" class="text11" marginwidth="0" marginheight="20" leftmargin="0" topmargin="20">
+<%@ include file="/shared/template/includes/i_body_start.jspf" %>
 <fd:SiteAccessController action='doPrereg' successPage='<%= successPage %>' result='result' serviceType='<%=serviceType%>'>
 
 <%!

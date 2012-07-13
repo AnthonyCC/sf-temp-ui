@@ -53,9 +53,13 @@ if(windowSize.equalsIgnoreCase("custom")){
 	<title> <%=name%></title>
 		<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
 		<fd:javascript src="/assets/javascript/common_javascript.js"/>
+<%@ include file="/shared/template/includes/i_head_end.jspf" %>
 </head>
 
 <body bgcolor="#ffffff" link="#336600" vlink="#336600" alink="#ff9900" text="#333333"  onLoad="window.focus()">
+
+<%@ include file="/shared/template/includes/i_body_start.jspf" %>
+
 <center>
 <a name="top"></a>
 <table border="0" cellpadding="0" cellspacing="0" width="<%=tableWidth%>">

@@ -131,14 +131,14 @@
 			$('dyn_shortBools_D').checked = true;
 		}
 
-		var cX = 0; var cY = 0; var rX = 0; var rY = 0;
+		var cursorX = 0; var cursorY = 0; var rollX = 0; var rollY = 0;
 
 		function UpdateCursorPosition(e) {
-			cX = e.pageX; cY = e.pageY;
+			cursorX = e.pageX; cursorY = e.pageY;
 		}
 
 		function UpdateCursorPositionDocAll(e) {
-			cX = event.clientX; cY = event.clientY;
+			cursorX = event.clientX; cursorY = event.clientY;
 		}
 
 		if(document.all) { document.onmousemove = UpdateCursorPositionDocAll; }
@@ -146,23 +146,23 @@
 
 		function AssignPosition(d) {
 			if(self.pageYOffset) {
-				rX = self.pageXOffset;
-				rY = self.pageYOffset;
+				rollX = self.pageXOffset;
+				rollY = self.pageYOffset;
 				}
 			else if(document.documentElement && document.documentElement.scrollTop) {
-				rX = document.documentElement.scrollLeft;
-				rY = document.documentElement.scrollTop;
+				rollX = document.documentElement.scrollLeft;
+				rollY = document.documentElement.scrollTop;
 				}
 			else if(document.body) {
-				rX = document.body.scrollLeft;
-				rY = document.body.scrollTop;
+				rollX = document.body.scrollLeft;
+				rollY = document.body.scrollTop;
 				}
 			if(document.all) {
-				cX += rX; 
-				cY += rY;
+				cursorX += rollX; 
+				cursorY += rollY;
 				}
-			d.style.left = (cX+10) + "px";
-			d.style.top = (cY+10) + "px";
+			d.style.left = (cursorX+10) + "px";
+			d.style.top = (cursorY+10) + "px";
 		}
 
 		function hideContent(d) {

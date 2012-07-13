@@ -35,8 +35,6 @@ This page is included by step_4_confirmation.jsp and step_4_receipt.jsp
 %>
 <fd:GetOrder id='cart' saleId='<%= orderNumber %>'>
 <%
-
-
 FDReservation reservation = cart.getDeliveryReservation();
 ErpAddressModel dlvAddress = cart.getDeliveryAddress(); 
 ErpPaymentMethodI paymentMethod = (ErpPaymentMethodI) cart.getPaymentMethod();

@@ -22,8 +22,10 @@
 <html>
 <head>
 	<title>FreshDirect</title>
+<%@ include file="/shared/template/includes/i_head_end.jspf" %>
 </head>
 <body bgcolor="#ffffff" text="#333333" class="text10" leftmargin="0" topmargin="0">
+<%@ include file="/shared/template/includes/i_body_start.jspf" %>
 
 	<fd:RegistrationController actionName='registerEx' successPage='<%= successPage %>' fraudPage='<%= failurePage %>' result='result'>
 	<%
@@ -40,6 +42,7 @@
 		%>
 			<img src="/media_stat/images/navigation/spinner.gif" class="fleft" />
 			<script language="javascript">
+			    <%--APPDEV-2394: if this is changes fd:CmRegistration tag has to be inserted in destination page--%>
 				window.location.href="/index.jsp";
 			</script>
 		<%		 

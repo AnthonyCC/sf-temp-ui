@@ -536,10 +536,19 @@ public class FDStoreProperties {
 	private final static String PROP_MODIFY_ORDER_TOTAL_MAX = "fdstore.modify.order.maxtotal";
 	
 	private final static String PROP_LIGHT_SIGNUP_ENABLED = "fdstore.signuplight.enabled";
+
+	//APPDEV-2394 Coremetrics Implementation 
+	private final static String PROP_COREMETRICS_CLIENT_ID = "fdstore.coremetrics.clientid";
+	private final static String PROP_COREMETRICS_DATA_COLLECTION_METHOD = "fdstore.coremetrics.datacollectionmethod";
+	private final static String PROP_COREMETRICS_DATA_COLLECTION_DOMAIN = "fdstore.coremetrics.datacollectiondomain";
+	private final static String PROP_COREMETRICS_COOKIE_DOMAIN = "fdstore.coremetrics.cookiedomain";
+	private final static String PROP_COREMETRICS_CATID_DIRS = "fdstore.coremetrics.catid.dirs";
+	private final static String PROP_COREMETRICS_CATID_BLOG = "fdstore.coremetrics.catid.blog";
+	private final static String PROP_COREMETRICS_CATID_OTHERPAGE = "fdstore.coremetrics.catid.otherpage";
+
 	private final static String ALLOW_DISCOUNTS_ON_PREMIUM_SLOT = "fdstore.allow.discount.premium.slot";
 	
 	private final static String DLV_PASS_NEW_TC_DATE = "fdstore.dlvpass.newtc.date";
-	
 	private final static String SAME_DAY_MEDIA_AFTER_CUTOFF = "fdstore.sameday.aftercutoffmedia.duration";
 
 	private final static String PROP_GIFTCARD_DONATION_ENABLED = "fdstore.giftcard.donation.enabled";
@@ -1072,6 +1081,15 @@ public class FDStoreProperties {
 		defaults.put(PROP_MODIFY_ORDER_TOTAL_MAX, "1500");
 		
 		defaults.put(PROP_LIGHT_SIGNUP_ENABLED, "true");
+		
+		//defaults for test environment
+		defaults.put(PROP_COREMETRICS_CLIENT_ID, "60391309");
+		defaults.put(PROP_COREMETRICS_DATA_COLLECTION_METHOD, "false");
+		defaults.put(PROP_COREMETRICS_DATA_COLLECTION_DOMAIN, "testdata.coremetrics.com");
+		defaults.put(PROP_COREMETRICS_COOKIE_DOMAIN, "freshdirect.com");
+		defaults.put(PROP_COREMETRICS_CATID_DIRS, "help,your_account,quickshop,checkout,gift_card,robin_hood,about,survey,login,site_access,registration");
+		defaults.put(PROP_COREMETRICS_CATID_BLOG, "blog");
+		defaults.put(PROP_COREMETRICS_CATID_OTHERPAGE, "other_page");
 		
 		defaults.put(ALLOW_DISCOUNTS_ON_PREMIUM_SLOT, "false");
 		defaults.put(DLV_PASS_NEW_TC_DATE, "2012-06-06");
@@ -2780,6 +2798,34 @@ public class FDStoreProperties {
     public static boolean isLightSignupEnabled() {
         return (Boolean.valueOf(get(PROP_LIGHT_SIGNUP_ENABLED))).booleanValue();
     }
+ 
+	public static String getCoremetricsClientId() {
+	   	return get(PROP_COREMETRICS_CLIENT_ID);
+	}
+
+	public static String getCoremetricsDataCollectionMethod() {
+	   	return get(PROP_COREMETRICS_DATA_COLLECTION_METHOD);
+	}
+
+	public static String getCoremetricsDataCollectionDomain() {
+	   	return get(PROP_COREMETRICS_DATA_COLLECTION_DOMAIN);
+	}
+
+	public static String getCoremetricsCookieDomain() {
+	   	return get(PROP_COREMETRICS_COOKIE_DOMAIN);
+	}
+	
+	public static String getCoremetricsCatIdDirs() {
+	   	return get(PROP_COREMETRICS_CATID_DIRS);
+	}
+
+	public static String getCoremetricsCatIdBlog() {
+	   	return get(PROP_COREMETRICS_CATID_BLOG);
+	}
+
+	public static String getCoremetricsCatIdOtherPage() {
+	   	return get(PROP_COREMETRICS_CATID_OTHERPAGE);
+	}
 
 	public static boolean isGiftCardDonationEnabled() {
         return (Boolean.valueOf(get(PROP_GIFTCARD_DONATION_ENABLED))).booleanValue();

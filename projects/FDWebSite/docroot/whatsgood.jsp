@@ -43,7 +43,7 @@
 	<tmpl:insert template='<%= templatePath %>'>
 	<tmpl:put name='title' direct='true'>FreshDirect - What's Good</tmpl:put>
 	<tmpl:put name='content' direct='true'>
-
+	<fd:CmPageView wrapIntoScriptTag="true" currentFolder="<%=ContentFactory.getInstance().getContentNode(deptId)%>"/>
 	
 	<%
 		//--------OAS Page Variables-----------------------

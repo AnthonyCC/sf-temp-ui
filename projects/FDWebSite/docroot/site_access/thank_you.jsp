@@ -7,8 +7,10 @@
 	<%@ include file="/common/template/includes/metatags.jspf" %>
 	<%@ include file="/common/template/includes/i_javascripts.jspf" %>
 	<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
+<%@ include file="/shared/template/includes/i_head_end.jspf" %>
 </HEAD>
 <BODY BGCOLOR="#ffffff" TEXT="#333333" CLASS="text10" leftmargin="0" topmargin="0">
+<%@ include file="/shared/template/includes/i_body_start.jspf" %>
 
 <TABLE BORDER="0" CELLPADDING="0" CELLSPACING="0" WIDTH="790" HEIGHT="100%">
 <TR VALIGN="MIDDLE">

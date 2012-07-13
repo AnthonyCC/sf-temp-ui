@@ -198,4 +198,27 @@ public class AddressModel extends ModelSupport implements AddressI {
 			+ "]";
 	}
 
+	public String toShortString(boolean isCorporate, String delimiter) {
+
+		StringBuilder sb = new StringBuilder();
+		
+		if(address1!=null){
+			sb.append(address1);
+
+			if (apartment!=null && apartment.trim().length()>0) {
+				sb.append(", ");
+				sb.append(isCorporate ? "Floor/Suite " : "Apt. ");
+				sb.append(apartment);
+			}
+		}
+		
+
+		if(address2!=null && address2.trim().length()>0) {
+			sb.append(delimiter);
+			sb.append(address2);
+		}
+		
+		return sb.toString();
+	}
+
 }

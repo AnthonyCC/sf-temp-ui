@@ -19,9 +19,11 @@
     <%@ include file="/shared/template/includes/style_sheet_grid_compat.jspf" %>
     <%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
     <%@ include file="/shared/template/includes/ccl.jspf" %>
-	</head>
+	<%@ include file="/shared/template/includes/i_head_end.jspf" %>
+</head>
 	<body>
-		<%@ include file="/common/template/includes/globalnav.jspf" %> 
+	<%@ include file="/shared/template/includes/i_body_start.jspf" %>
+			<%@ include file="/common/template/includes/globalnav.jspf" %> 
     <div id="content">
       <center class="text10">
       <!-- content lands here -->

@@ -122,7 +122,8 @@ if (EnumTemplateType.WINE.equals( productNode.getTemplateType() )) {
     <tmpl:put name='leftnav' direct='true'>
     </tmpl:put>
 <tmpl:put name='content' direct='true'>
-
+	<fd:CmPageView wrapIntoScriptTag="true" productModel="<%=productNode%>"/>
+	<fd:CmProductView quickbuy="false" wrapIntoScriptTag="true" productModel="<%=productNode%>"/>
 <%if (FDStoreProperties.isAdServerEnabled()) {%>
 
 	<script type="text/javascript">

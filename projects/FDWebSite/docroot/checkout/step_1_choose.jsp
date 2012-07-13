@@ -324,5 +324,6 @@ while (e.hasMoreElements()) {
 <%-- ~~~~~~~~~~~~~~~~~~~~~~ END BOTTOM MODEULES DISPLAY SECTION ~~~~~~~~~~~~~~~~~~~~~~ --%>
 
 </fd:CheckoutController>
+<fd:CmRegistration wrapIntoScriptTag="true"/>
 </tmpl:put>
 </tmpl:insert>

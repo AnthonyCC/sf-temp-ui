@@ -9,8 +9,10 @@
     <title><tmpl:get name='title'/></title>
 	    <%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
         <fd:javascript src="/assets/javascript/common_javascript.js"/>
+<%@ include file="/shared/template/includes/i_head_end.jspf" %>
 </head>
 <body bgcolor="#FFFFFF" link="#336600" vlink="#336600" alink="#FF9900" text="#333333" onLoad="window.resizeTo(375,335); window.focus();" topmargin="8" marginheight="8">
+<%@ include file="/shared/template/includes/i_body_start.jspf" %>
 <%-- don't resize onLoad, tmpl used for plant tour --%>
 <center>
 <a name="top"></a>

@@ -90,8 +90,10 @@
 
 	</script>
 	
+<%@ include file="/shared/template/includes/i_head_end.jspf" %>
 </head>
 <body bgcolor="#ffffff" text="#333333" class="text10" leftmargin="0" topmargin="0">
+<%@ include file="/shared/template/includes/i_body_start.jspf" %>
 	<center>
 	<%
 		String email = NVL.apply(request.getParameter(EnumUserInfoName.EMAIL.getCode()), "");
@@ -114,6 +116,7 @@
 					///} else {
 						//alert("the url of the top is" + top.location.href + "\nand not the url of this one is " + window.location.href );
 					//}
+				<%--APPDEV-2394: if this is changed fd:CmRegistration tag has to be inserted in destination page--%>  
 				window.top.location="/index.jsp";
 			</script>
 		<%		 

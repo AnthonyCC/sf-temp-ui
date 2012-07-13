@@ -28,6 +28,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <title>FD - 4MM test page</title>
+<%@ include file="/shared/template/includes/i_head_end.jspf" %>
 </head>
 
 <%
@@ -44,6 +45,9 @@
 %>
 
 <body>
+
+<%@ include file="/shared/template/includes/i_body_start.jspf" %>
+
 	<b>ALL 4MM TEST PAGE</b><br/><br/>	
 	
 	<hr/>

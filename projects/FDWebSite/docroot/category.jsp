@@ -125,7 +125,6 @@ final int W_CATEGORY_NO_LEFT_NAV = 765;
 	if(layoutType==EnumLayoutType.MEAT_DEALS.getId()){
 		noLeftNav=true;
 	}
-	
 	// [APPREQ-77] Page uses include media type layout
 	boolean isIncludeMediaLayout = (layoutType == EnumLayoutType.MEDIA_INCLUDE.getId() || layoutType == EnumLayoutType.TEMPLATE_LAYOUT.getId()); // [APPREQ-77] || [APPDEV-2370]
                                                             
@@ -146,7 +145,7 @@ final int W_CATEGORY_NO_LEFT_NAV = 765;
 				jspTemplate = "/common/template/both_dnav.jsp";
 			}
 	    }
-	}
+	}	
 	request.setAttribute("layoutType", layoutType); //make layoutType available in jspTemplate
 	request.setAttribute("noLeftNav",noLeftNav);
 	request.setAttribute("jspTemplate",jspTemplate);
@@ -156,7 +155,12 @@ final int W_CATEGORY_NO_LEFT_NAV = 765;
 	} 
 	%><tmpl:put name='title' direct='true'>FreshDirect - <%= currentFolder.getFullName() %></tmpl:put><%
 	
-	%><tmpl:put name='content' direct='true'><%
+	%><tmpl:put name='content' direct='true'>
+		<fd:CmPageView wrapIntoScriptTag="true" currentFolder="<%=currentFolder%>"/>
+		<%
+		if(layoutType == EnumLayoutType.GROCERY_PRODUCT.getId()){
+			%><fd:CmProductView quickbuy="false" wrapIntoScriptTag="true" productModel="<%=prodModel%>"/> <%
+		}
 		// TODO duplicated -- boolean virtualGrocerySpecified = request.getParameter("groceryVirtual")!=null;
 		//if (layoutType==EnumLayoutType.FEATURED_ALL.getId()) layoutType=19;
 		boolean noCache =  (EnumLayoutType.GROCERY_PRODUCT.getId()==layoutType

@@ -23,8 +23,10 @@ String recTable = product.getRecommendTable().getPath();
 	<%@ include file="/common/template/includes/metatags.jspf" %>
 	<%@ include file="/common/template/includes/i_javascripts.jspf" %>
 	<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
+<%@ include file="/shared/template/includes/i_head_end.jspf" %>
 </HEAD>
 <BODY BGCOLOR="#FFFFFF" LINK="#336600" VLINK="#336600" ALINK="#FF9900" TEXT="#333333"  onLoad="window.focus()">
+<%@ include file="/shared/template/includes/i_body_start.jspf" %>
 <CENTER>
 <A NAME="top"></A>
 

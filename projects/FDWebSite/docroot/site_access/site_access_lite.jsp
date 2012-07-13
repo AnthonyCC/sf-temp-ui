@@ -68,7 +68,8 @@ request.setAttribute("listPos", "CategoryNote");
 	<%@ include file="/common/template/includes/metatags.jspf" %>
 	<%@ include file="/common/template/includes/i_javascripts.jspf" %>
 	<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
-	</head>
+	<%@ include file="/shared/template/includes/i_head_end.jspf" %>
+</head>
 	<script language='javascript'>
 		function validate(){
 			var zipcode = document.forms[0].zipcode.value;
@@ -91,7 +92,7 @@ request.setAttribute("listPos", "CategoryNote");
 		}
 	</script>
 	<body bgcolor="white" text="#333333" class="text11" marginwidth="0" marginheight="20" leftmargin="0" topmargin="20" onLoad="window.document.site_access_corp.<%=EnumUserInfoName.DLV_ZIPCODE.getCode()%>.focus();">
-		
+<%@ include file="/shared/template/includes/i_body_start.jspf" %>      		
 	<jsp:include page="/shared/template/includes/server_info.jsp" flush="false"/>
     <jsp:include page="/common/template/includes/ad_server.jsp" flush="false"/>
     

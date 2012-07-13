@@ -91,4 +91,5 @@ if(__uri.indexOf("quickshop") > -1) {
 		}
 %>
 	</table>
+	<fd:CmShop5 wrapIntoScriptTag="true" cart="<%=cart%>"/>
 </div>

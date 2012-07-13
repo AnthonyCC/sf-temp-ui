@@ -70,6 +70,7 @@ final Logger LOG = LoggerFactory.getInstance("department.jsp");
 <tmpl:insert template='<%= (isIncludeMediaLayout ? "/common/template/no_nav.jsp" : "/common/template/right_nav.jsp") %>'>
 <tmpl:put name='title' direct='true'>FreshDirect - <%= departmentModel.getFullName() %></tmpl:put>
 <tmpl:put name='content' direct='true'>
+	<fd:CmPageView wrapIntoScriptTag="true" currentFolder="<%=currentFolder%>"/>
 	<%
 		int ttl=14400; 
 		String keyPrefix="deptLayout_";
@@ -83,7 +84,9 @@ final Logger LOG = LoggerFactory.getInstance("department.jsp");
 		} else if("mea".equals(deptId)){
 			keyPrefix=keyPrefix+user.getPricingZoneId();
 			ttl=120;
-		}
+		} else if("COS".equals(deptId)){%>
+			<fd:CmRegistration wrapIntoScriptTag="true"/>
+		<%}
 		
 		boolean useOsCache = true;
 		if ( "fdi".equals(deptId) || "usq".equals(deptId) ) {

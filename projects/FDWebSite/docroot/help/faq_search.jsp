@@ -78,7 +78,7 @@ final int W_FAQ_SEARCH_TOTAL = 806;
 		
 		</table>
 		</form>
-		
+		<fd:CmPageView wrapIntoScriptTag="true" searchTerm='<%=(String)(pageContext.getAttribute("keywords"))%>' searchResultsSize='<%=(Integer)(pageContext.getAttribute("searchResultsSize"))%>'/>
 	</tmpl:put>
 	
 	</tmpl:insert>

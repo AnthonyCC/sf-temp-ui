@@ -46,6 +46,11 @@
 
 
 <tmpl:put name='content' direct='true'>
+	<fd:CmInit/>
+	<fd:CmPageView wrapIntoScriptTag="true" forceTagEffect="true"/>
+	<fd:GetOrder id='sale' saleId='<%=orderId%>'>
+		<fd:CmOrder order="<%=sale%>" wrapIntoScriptTag="true"/>
+	</fd:GetOrder>
 <jsp:include page='/includes/order_header.jsp'/>
 
 <%  
