@@ -1421,8 +1421,9 @@
                     <CmsSection>
 						<title>IMAGES</title>
 						<fields>
-							<CmsField><attribute>ORGANIZATION_LOGO</attribute></CmsField>
-							<CmsField><attribute>ORGANIZATION_LOGO_SMALL</attribute></CmsField>							
+							<CmsField><attribute>ORGANIZATION_LOGO_SMALL</attribute></CmsField>
+							<CmsField><attribute>ORGANIZATION_LOGO</attribute></CmsField>							
+							<CmsField><attribute>ORGANIZATION_RECIEPT_LOGO</attribute></CmsField>														
 						</fields>
 					</CmsSection>
 					<CmsSection>

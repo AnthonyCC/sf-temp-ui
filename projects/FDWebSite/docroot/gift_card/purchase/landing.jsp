@@ -108,7 +108,7 @@ final int W_GIFTCARD_DONATION_TOTAL = 300;
 													<%
 														String addDefaultOrgLogo = "<input type=\"image\" name=\"default_org_logo\" src=\"/media/editorial/giftcards_donation/org_logo_blank.gif\" width=\"61\" height=\"61\" alt=\"\" border=\"0\" />";
 													%>		
-													<%= (donId.getOrganizationLogoSmall() != null) ? donId.getOrganizationLogoSmall().toHtml() : addDefaultOrgLogo %>
+													<%= (donId.getLogoSmall() != null) ? donId.getLogoSmall().toHtml() : addDefaultOrgLogo %>
 													&nbsp;
 												</td>
 												<td valign="top" width="255">

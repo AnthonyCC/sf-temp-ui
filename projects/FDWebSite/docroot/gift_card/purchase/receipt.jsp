@@ -87,7 +87,7 @@ String orderNumber = (String)session.getAttribute(SessionName.RECENT_ORDER_NUMBE
 					ErpRecipentModel erm = (ErpRecipentModel)i.next();
 					if(erm.getRecipientEmail().equalsIgnoreCase(_org.getEmail())){
 						_donOrgName = _org.getOrganizationName();
-						_donOrgLogo = (_org.getOrganizationLogoSmall() != null) ? _org.getOrganizationLogoSmall().toHtml() : ""; 
+						_donOrgLogo = (_org.getLogoSmallEx() != null) ? _org.getLogoSmallEx().toHtml() : ""; 
 					}
 				}
 			}

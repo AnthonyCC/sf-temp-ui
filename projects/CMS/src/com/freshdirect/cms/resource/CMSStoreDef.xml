@@ -53,10 +53,13 @@
 			<AttributeDef type="S" name="EMAIL" label="Recipient Email"/>
 		</AttributeDefs>
 		<RelationshipDefs>
+			<RelationshipDef name="ORGANIZATION_LOGO_SMALL" cardinality="One"  label="Organization logo Small" >
+				<DestinationDef contentType="Image" />
+			</RelationshipDef>
 			<RelationshipDef name="ORGANIZATION_LOGO" cardinality="One"  label="Organization logo" >
 				<DestinationDef contentType="Image" />
 			</RelationshipDef>
-			<RelationshipDef name="ORGANIZATION_LOGO_SMALL" cardinality="One"  label="Organization logo Small" >
+			<RelationshipDef name="ORGANIZATION_RECIEPT_LOGO" cardinality="One"  label="Organization Reciept Page logo" >
 				<DestinationDef contentType="Image" />
 			</RelationshipDef>
             <RelationshipDef name="GIFTCARD_TYPE" label="Gift Card Types" cardinality="Many">

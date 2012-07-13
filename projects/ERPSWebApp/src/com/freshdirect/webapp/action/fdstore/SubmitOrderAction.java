@@ -63,6 +63,7 @@ import com.freshdirect.fdstore.standingorders.FDStandingOrdersManager;
 import com.freshdirect.fdstore.util.CTDeliveryCapacityLogic;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.giftcard.EnumGiftCardType;
 import com.freshdirect.giftcard.ErpRecipentModel;
 import com.freshdirect.giftcard.RecipientModel;
 import com.freshdirect.giftcard.ServiceUnavailableException;
@@ -90,6 +91,7 @@ public class SubmitOrderAction extends WebActionSupport {
 	private String gcFraudPage;
 	private FDStandingOrder standingOrder;
 	private String addGcPage = "/gift_card/purchase/add_giftcard.jsp";
+	private String addGcDonPage = "/gift_card/purchase/add_donation_giftcard.jsp?gcDonId=";
 	private String crmAddBulkGcPage = "/gift_card/purchase/add_bulk_giftcard.jsp";
 	
 	public void setCcdProblemPage(String ccdProblemPage){
@@ -220,7 +222,7 @@ public class SubmitOrderAction extends WebActionSupport {
 		if (!isBulkOrder && UserValidationUtil.validateRecipientListEmpty(request, this.getResult())) {
 			HttpServletResponse response = this.getWebActionContext().getResponse();
 			try {
-				response.sendRedirect(this.addGcPage);
+				response.sendRedirect(EnumGiftCardType.DONATION_GIFTCARD.equals(user.getGiftCardType()) ? this.addGcDonPage+request.getParameter("gcDonId") : this.addGcPage);
 			} catch (IOException ioe) {
 				throw new FDResourceException(ioe.getMessage());
 			}

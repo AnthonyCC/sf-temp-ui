@@ -11,6 +11,7 @@ delete from cms.attributedefinition where ID = 'DonationOrganization.EMAIL';
 
 delete from cms.relationshipdestination where ID = 'DonationOrganization.ORGANIZATION_LOGO.Image';
 delete from cms.relationshipdestination where ID = 'DonationOrganization.ORGANIZATION_LOGO_SMALL.Image';
+delete from cms.relationshipdestination where ID = 'DonationOrganization.ORGANIZATION_RECIEPT_LOGO.Image';
 delete from cms.relationshipdestination where ID = 'DonationOrganization.GIFTCARD_TYPE.DomainValue';
 delete from cms.relationshipdestination where ID = 'DonationOrganization.EDITORIAL_MAIN.Html';
 delete from cms.relationshipdestination where ID = 'DonationOrganization.EDITORIAL_DETAIL.Html';

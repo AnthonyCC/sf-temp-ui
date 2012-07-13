@@ -127,7 +127,6 @@ public class LoginControllerTag extends AbstractControllerTag {
                 		loginUser.getRecipientList().removeRecipients(EnumGiftCardType.DONATION_GIFTCARD);
                 		loginUser.getRecipientList().addRecipient(srm);
                 	}
-                	loginUser.setGiftCardType(currentUser.getGiftCardType());
 
                 	/*Seems like no need to clear the recipients
                 	ListIterator i = currentUser.getRecipentList().getRecipents().listIterator();
@@ -138,7 +137,9 @@ public class LoginControllerTag extends AbstractControllerTag {
                 		index++;
                 	}*/
                 }
-
+                
+                loginUser.setGiftCardType(currentUser.getGiftCardType());
+                
                 if(currentUser.getDonationTotalQuantity()>0){
                 	loginUser.setDonationTotalQuantity(currentUser.getDonationTotalQuantity());
                 }

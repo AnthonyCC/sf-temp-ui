@@ -37,10 +37,14 @@ public class DonationOrganization extends ContentNodeModelImpl {
         return FDAttributeFactory.constructImage(this, "ORGANIZATION_LOGO");
 	}
 
-	public Image getOrganizationLogoSmall() {
+	public Image getLogoSmall() {
         return FDAttributeFactory.constructImage(this, "ORGANIZATION_LOGO_SMALL");
 	}
 	
+	public Image getLogoSmallEx() {
+        return FDAttributeFactory.constructImage(this, "ORGANIZATION_RECIEPT_LOGO");
+	}
+
 	public Html getEditorialMain() {
 		return FDAttributeFactory.constructHtml(this, "EDITORIAL_MAIN");
 	}

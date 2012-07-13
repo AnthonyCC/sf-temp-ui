@@ -252,6 +252,7 @@ user.setAddressVerificationError(false);
 						</tr>
 						<tr valign="top">
 							<td width="100%" align="right">
+								<input type="hidden" id="gcDonId" name="gcDonId" value="<%= request.getParameter("gcDonId") %>">
 								<input type="image" name="form_action_name" src="/media_stat/images/giftcards/purchase/gc_submit_order.gif" width="90" height="25"  hspace="4" vspace="4" alt="continue" border="0" onclick="$('submitForm').submit();" />
 							</td>
 						</tr>
