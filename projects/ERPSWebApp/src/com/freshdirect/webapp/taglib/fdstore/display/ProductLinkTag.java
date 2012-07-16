@@ -17,8 +17,6 @@ public class ProductLinkTag extends BodyTagSupportEx {
 	private String trackingCode;
 
 	private boolean appendWineParams = false;
-	
-	private String catId;
 
 	@SuppressWarnings("unchecked")
 	@Override
@@ -27,7 +25,7 @@ public class ProductLinkTag extends BodyTagSupportEx {
 		if (appendWineParams) {
 			url = FDURLUtil.getWineProductURI(product, trackingCode, (Map<String, String[]>) request.getParameterMap());
 		} else {
-			url = FDURLUtil.getProductURI(product, trackingCode,null,catId);
+			url = FDURLUtil.getProductURI(product, trackingCode);
 		}
 
 		try {
@@ -67,13 +65,5 @@ public class ProductLinkTag extends BodyTagSupportEx {
 
 	public void setAppendWineParams(boolean appendWineParams) {
 		this.appendWineParams = appendWineParams;
-	}
-
-	public String getCatId() {
-		return catId;
-	}
-
-	public void setCatId(String catId) {
-		this.catId = catId;
 	}
 }

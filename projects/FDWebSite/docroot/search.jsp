@@ -51,7 +51,6 @@ final int W_INDEX_RIGHT_CENTER = W_INDEX_TOTAL - 228 - W_INDEX_CENTER_PADDING;
 	
 	final int hideAfter = 8;
 	boolean otherFilters=false;
-	String catId=null;
 	
 %>
 <fd:SimpleSearch id="search" nav="<%= nav %>"/>

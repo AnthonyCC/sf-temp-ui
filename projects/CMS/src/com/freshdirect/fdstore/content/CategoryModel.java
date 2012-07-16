@@ -531,7 +531,7 @@ public class CategoryModel extends ProductContainer {
             for ( ProductModel prod : srcProducts ) {
             	ProductModel newProdModel = (ProductModel)prod.clone();
             	ProductModel newProd = ((ProductModelPromotionAdapter)newProdModel).getProductModel();
-//                ( (ContentNodeModelImpl)newProd ).setParentNode(this);
+                ( (ContentNodeModelImpl)newProd ).setParentNode(this);
                 if (!destProducts.contains(newProdModel)) {
                     ( (ContentNodeModelImpl)newProd ).setPriority(destProducts.size());
                     destProducts.add(newProdModel);
