@@ -2,6 +2,7 @@ package com.freshdirect.cms.util;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -28,6 +29,7 @@ import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.ProductPromotionData;
 import com.freshdirect.fdstore.content.SkuModel;
+import com.freshdirect.framework.util.NVL;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
 public class ProductPromotionUtil {
@@ -132,7 +134,7 @@ public class ProductPromotionUtil {
 		List<ProductModel> nonFeatProducts =  getNonFeaturedProducts(products, isPreview);
 		if(null != sortByType){
 			if(sortByType.equalsIgnoreCase(ProductPromotionData.SORT_BY_DEPT_VIEW)){
-				Collections.sort(nonFeatProducts, ProductModel.DEPTFULL_COMPARATOR); 
+				Collections.sort(nonFeatProducts, DEPTFULL_COMPARATOR); 
 			}else if(sortByType.equalsIgnoreCase(ProductPromotionData.SORT_BY_PRICE_VIEW)){
 				Collections.sort(nonFeatProducts, ProductModel.PRODUCT_MODEL_PRICE_COMPARATOR); 
 			}else if(sortByType.equalsIgnoreCase(ProductPromotionData.SORT_BY_PRICE_VIEW_INVERSE)){
@@ -142,6 +144,30 @@ public class ProductPromotionUtil {
 		return nonFeatProducts;
 	}
 	
+	/**
+	 * Method to sort by product's original parent department.
+	 */
+	public final static Comparator<ProductModel> DEPTFULL_COMPARATOR = new Comparator<ProductModel>() {
+
+		public int compare(ProductModel p1, ProductModel p2) {
+			String p1Dept = "";
+			String p2Dept = "";
+			
+			ProductModel prodModel1 = ((SkuModel) ContentFactory.getInstance().getContentNodeByKey(new ContentKey(FDContentTypes.SKU, p1.getDefaultSkuCode()))).getProductModel();
+			ProductModel prodModel2 = ((SkuModel) ContentFactory.getInstance().getContentNodeByKey(new ContentKey(FDContentTypes.SKU, p2.getDefaultSkuCode()))).getProductModel();
+			//check that getDepartment != null (fix for new prods in cmsTest)
+			p1Dept = (prodModel1.getDepartment() != null) ? NVL.apply(prodModel1.getDepartment().getFullName(), "") : "";
+			p2Dept = (prodModel2.getDepartment() != null) ? NVL.apply(prodModel2.getDepartment().getFullName(), "") : "";
+			
+			int ret = p1Dept.compareTo(p2Dept);
+
+			if (ret == 0) {
+				ret = prodModel1.getFullName().compareTo(prodModel2.getFullName());
+			}
+			
+			return ret;
+		}
+	};
 	public static Map<String, List<FDProductPromotionInfo>> formatProductPromotionPreviewInfo(
 			ErpProductPromotionPreviewInfo erpProductPromotionPreviewInfo)
 			throws FDResourceException {
