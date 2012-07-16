@@ -208,10 +208,10 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag<Result> {
 		List<FDTimeslotUtil> timeslotList = getFDTimeslotListForDateRange(restrictions, dateRanges,
 				result, timeslotAddress, user,event);
 		
-		if(cart.getDeliveryPassCount() ==0 && user.getDlvPassInfo()!=null && user.getDlvPassInfo().getPurchaseDate()!=null)
-			cart.setDlvPassPremiumAllowedTC(user.getDlvPassInfo().getPurchaseDate().after(FDStoreProperties.getDlvPassNewTCDate()));
-		
-		if((cart.isDlvPassApplied() && !cart.isDlvPassPremiumAllowedTC()) || (timeSlotContext!=null && !timeSlotContext.equals(TimeslotContext.CHECKOUT_TIMESLOTS)))
+		/* if(cart.getDeliveryPassCount() ==0 && user.getDlvPassInfo()!=null && user.getDlvPassInfo().getPurchaseDate()!=null)
+			cart.setDlvPassPremiumAllowedTC(user.isDpNewTcBlocking()); //do we still need this check?
+		*/
+		if(/*(!cart.isDlvPassPremiumAllowedTC()) || */(timeSlotContext!=null && !timeSlotContext.equals(TimeslotContext.CHECKOUT_TIMESLOTS)))
 			TimeslotLogic.purgeSDSlots(timeslotList);
 		
 		showPremiumSlots =TimeslotLogic.hasPremiumSlots(timeslotList, baseRange.getStartDate(), DateUtil.addDays(baseRange.getEndDate(),-1));

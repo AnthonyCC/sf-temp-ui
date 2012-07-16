@@ -1,4 +1,3 @@
-
 <%@ page import='com.freshdirect.fdstore.*' %>
 <%@ page import='com.freshdirect.fdstore.customer.*' %>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
@@ -8,50 +7,56 @@
 <%@ page import='com.freshdirect.webapp.util.CCFormatter' %>
 <%@ page import='com.freshdirect.deliverypass.EnumDPAutoRenewalType' %>
 <%@ page import='com.freshdirect.fdstore.deliverypass.FDUserDlvPassInfo' %>
+<%@ page import='com.freshdirect.webapp.util.JspMethods' %>
+<%@ page import="java.util.Calendar" %>
+<%@ page import='java.util.Date' %>
 <%@ taglib uri="template" prefix="tmpl" %>
 <%@ taglib uri="logic" prefix="logic" %>
 <%@ taglib uri="freshdirect" prefix="fd" %>
-<% //expanded page dimensions
-final int W_YA_DELIVERY_PASS_TOTAL = 970;
+<%
+	//expanded page dimensions
+	final int W_YA_DELIVERY_PASS_TOTAL = 970;
+	FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
 %>
-<%@page import="com.freshdirect.webapp.util.JspMethods"%><script language="javascript">
-    	function redirectToSignup() {
-		
-	    var form = document.forms['signup'];
-	    form.elements['action'].value='signup';
-	    form.method='POST';
-	    form.submit();
-	    return false;
-    	
-    	}
-    	
-    	function flipAutoRenewalOFF() {
-	    var form = document.forms['autoRenew'];
-	    form.elements['action'].value='FLIP_AUTORENEW_OFF';
-	    form.method='POST';
-	    form.submit();
-	    return false;
-    	
-    	}
-    	function flipAutoRenewalON() {
-	    var form = document.forms['autoRenew'];
-	    form.elements['action'].value='FLIP_AUTORENEW_ON';
-	    form.method='POST';
-	    form.submit();
-	    return false;
-    	
-    	}
-
-</script>
 <fd:CheckLoginStatus guestAllowed="false" recognizedAllowed="false" />
 
 <tmpl:insert template='/common/template/dnav.jsp'>
     <tmpl:put name='title' direct='true'>FreshDirect - Your Account - FreshDirect DeliveryPass</tmpl:put>
     <tmpl:put name='content' direct='true'>
+		<script type="text/javascript">
+		    	function redirectToSignup() {
+				    var form = document.forms['signup'];
+				    form.elements['action'].value='signup';
+				    form.method='POST';
+				    form.submit();
+				    return false;		    	
+		    	}
+		    	
+		    	function flipAutoRenewalOFF() {
+				    var form = document.forms['autoRenew'];
+				    form.elements['action'].value='FLIP_AUTORENEW_OFF';
+				    form.method='POST';
+				    form.submit();
+				    return false;
+		    	}
+		    	
+		    	function flipAutoRenewalON() {
+				    var form = document.forms['autoRenew'];
+				    form.elements['action'].value='FLIP_AUTORENEW_ON';
+				    form.method='POST';
+				    form.submit();
+				    return false;
+		    	}
+		    <% if (user.isDpNewTcBlocking()) { %>
+	    		$jq(document).ready(function() {
+		    		doOverlayWindow('/your_account/delivery_pass_tc.jsp?showButtons=true&count=true');
+	    		});
+	    	<% } %>
+		</script>
     <fd:DlvPassSignupController result="result" callCenter="false">
-	<fd:ErrorHandler result='<%=result%>' name='dlvpass_discontinued' id='errorMsg'>
-	   <%@ include file="/includes/i_error_messages.jspf" %>   
-	</fd:ErrorHandler>
+		<fd:ErrorHandler result='<%=result%>' name='dlvpass_discontinued' id='errorMsg'>
+		   <%@ include file="/includes/i_error_messages.jspf" %>   
+		</fd:ErrorHandler>
     
         <fd:WebViewDeliveryPass id='viewContent'>
         	
@@ -94,7 +99,6 @@ final int W_YA_DELIVERY_PASS_TOTAL = 970;
 				</td>
 			</tr>
 			<%
-			FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
 			EnumDlvPassStatus status = user.getDeliveryPassStatus();
                   EnumDPAutoRenewalType arType=user.hasAutoRenewDP();
                   if(user.getDlvPassInfo().getAutoRenewUsablePassCount()==0)  {
@@ -102,50 +106,52 @@ final int W_YA_DELIVERY_PASS_TOTAL = 970;
                   } 
 
 			if(user.isEligibleForDeliveryPass() && (user.getUsableDeliveryPassCount()==FDStoreProperties.getMaxDlvPassPurchaseLimit()) &&(EnumDPAutoRenewalType.NONE.equals(arType))) { %>
-			<form name="signup" method="POST">
-			<input type="hidden" name="action" value="">
 				<tr>
 					<td colspan="2">
+						<form name="signup" method="POST">
+						<input type="hidden" name="action" value="">
 						<b>DeliveryPass Refills </b>&nbsp;You have <%=DeliveryPassUtil.getAsText(user.getUsableDeliveryPassCount()-1)%>  DeliveryPass refills on your account. A refill will go into effect automatically when your current pass runs out. You can keep up to two refills in your account at a time. 
 						<br><br><br>
+						</form>
 					</td>
-				</tr>	
-			</form>
+				</tr>
 			<%} else if (user.isEligibleForDeliveryPass() && (user.getUsableDeliveryPassCount()>1)&&(EnumDPAutoRenewalType.NONE.equals(arType)) ) {%>
-			<form name="signup" method="POST">
-			<input type="hidden" name="action" value="">
 				<tr>
 					<td colspan="2">
-					<b>DeliveryPass Refills </b>&nbsp;You have <%=DeliveryPassUtil.getAsText(user.getUsableDeliveryPassCount()-1)%> DeliveryPass refill
+						<form name="signup" method="POST">
+						<input type="hidden" name="action" value="">
+						<b>DeliveryPass Refills </b>&nbsp;You have <%=DeliveryPassUtil.getAsText(user.getUsableDeliveryPassCount()-1)%> DeliveryPass refill
   on your account. Now you can purchase a refill DeliveryPass which renews automatically! Simply 
 						<A HREF="#" onClick="javascript:redirectToSignup()">purchase an additional FreshDirect DeliveryPass</A> and you'll never need to worry about running out.
 
 						<br><br><br>
+						</form>
 					</td>
-				</tr>	
-			</form>
+				</tr>
 			<%} else if (user.isEligibleForDeliveryPass() && (user.getUsableDeliveryPassCount()==1)&&(EnumDPAutoRenewalType.NONE.equals(arType))&& (user.getDlvPassInfo().getAutoRenewUsablePassCount()==0)) {%>
-			<form name="signup" method="POST">
-			<input type="hidden" name="action" value="">
 				<tr>
 					<td colspan="2">
+						<form name="signup" method="POST">
+						<input type="hidden" name="action" value="">
 						<b>DeliveryPass Refills </b>&nbsp;You do not have any DeliveryPass refills on your account. Now you can purchase a refill DeliveryPass which renews automatically! Simply
 						<A HREF="#" onClick="javascript:redirectToSignup()">purchase an additional DeliveryPass</A> and you'll never need to worry about running out.
 
-						<br><br><br>
+						<br><br><br>	
+						</form>
 					</td>
-				</tr>	
-			</form>
+				</tr>
                   <%}else if (user.isEligibleForDeliveryPass() && (user.getUsableDeliveryPassCount()==0)&&(EnumDPAutoRenewalType.NONE.equals(arType))) {%>
-			<form name="signup" method="POST">
-			<input type="hidden" name="action" value="">
+			
 				<tr>
 					<td colspan="2">
+						<form name="signup" method="POST">
+						<input type="hidden" name="action" value="">
 						<br>
 						<A HREF="#" onClick="javascript:redirectToSignup()"><font class="text11bold">Click here</font></A> to sign up for DeliveryPass today!
+						</form>
 					</td>
 				</tr>	
-			</form>
+			
                   <%}%>
 
 		      <% if(EnumDPAutoRenewalType.YES.equals(arType) || EnumDPAutoRenewalType.NO.equals(arType)) {%>

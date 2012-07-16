@@ -788,5 +788,9 @@ public interface FDCustomerManagerSB extends EJBObject {
 	public boolean isDisplayNameUsed(String displayName,String custId) throws ErpDuplicateDisplayNameException, RemoteException;
 	
 	public void storeSMSWindowDisplayedFlag(String customerId) throws FDResourceException, RemoteException;
+	
+	/* APPDEV-2475 DP T&C */
+	public void storeDPTCViews(String customerId, int dpTcViewCount) throws FDResourceException, RemoteException;
+	public void storeDPTCAgreeDate(String customerId, Date dpTcAgreeDate) throws FDResourceException, RemoteException;
 }
 

@@ -33,7 +33,8 @@
 <%
 
 
-boolean showPremiumSlots =  deliveryModel.isShowPremiumSlots();
+boolean showPremiumSlots = deliveryModel.isShowPremiumSlots();
+boolean dpNewTcBlock = user.isDpNewTcBlocking();
 Date sameDayCutoff = deliveryModel.getSameDayCutoff();
 String sameDayCutoffUTC = deliveryModel.getSameDayCutoffUTC();
 
@@ -125,6 +126,14 @@ if (timeslots.size() > 0) {
 			<div id="PREdayE" style="display: none;">
 				<fd:IncludeMedia name="/media/editorial/timeslots/msgE_premium.html"/> 
 			</div>
+			<% if (dpNewTcBlock) { %>
+				<div id="PREDPTCdayC" style="display: none;">
+					<fd:IncludeMedia name="/media/editorial/timeslots/msgC_premium_tc.html"/> 
+				</div>
+				<div id="PREDPTCdayE" style="display: none;">
+					<fd:IncludeMedia name="/media/editorial/timeslots/msgE_premium_tc.html"/> 
+				</div>
+			<% } %>
 		<% } %>
 	<% } %>
 
@@ -144,6 +153,7 @@ if (timeslots.size() > 0) {
 		var maxPmAdvNewSlots<%= (isForNewAdvOrdSlots) ? " = -1" : "" %>;
 		var dayName = '';
 		var showPremiumSlots = <%= showPremiumSlots %>;
+		var showDpTc = <%= dpNewTcBlock %>;
 		<%
 			int emptySectionMinRows = 4;
 

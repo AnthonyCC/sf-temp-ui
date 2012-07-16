@@ -552,6 +552,9 @@ public class FDStoreProperties {
 	private final static String SAME_DAY_MEDIA_AFTER_CUTOFF = "fdstore.sameday.aftercutoffmedia.duration";
 
 	private final static String PROP_GIFTCARD_DONATION_ENABLED = "fdstore.giftcard.donation.enabled";
+	
+	/* APPDEV-2475 DP T&C */
+	private final static String PROP_DLV_PASS_NEW_TC_VIEWLIMIT = "fdstore.dlvpass.newtc.viewlimit";
 
     static {
         defaults.put(PROP_ROUTING_PROVIDER_URL, "t3://localhost:7001");
@@ -1096,6 +1099,8 @@ public class FDStoreProperties {
 		defaults.put(SAME_DAY_MEDIA_AFTER_CUTOFF, "30");
 		
 		defaults.put(PROP_GIFTCARD_DONATION_ENABLED, "true");
+		
+		defaults.put(PROP_DLV_PASS_NEW_TC_VIEWLIMIT, "3");
 
         refresh();
     }
@@ -2830,4 +2835,8 @@ public class FDStoreProperties {
 	public static boolean isGiftCardDonationEnabled() {
         return (Boolean.valueOf(get(PROP_GIFTCARD_DONATION_ENABLED))).booleanValue();
     }
+	
+	public static int getDpTcViewLimit() {
+        return Integer.parseInt(get(PROP_DLV_PASS_NEW_TC_VIEWLIMIT));
+    }  
 }

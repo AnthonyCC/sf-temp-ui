@@ -48,7 +48,8 @@ function fdTSDisplay(refIdArg) {
 		premSlotsTimerElem_timer: 'premSlotsTimer', //html elem id for timer
 		premSlotsTimerElem_msg: 'premSlotsTimerMsg', //html elem id for timer msg
 		premSlotsTimerElemClass: 'premSlotTimer', //timer elems have this className
-		premSlotsClock: null //timer interval storage
+		premSlotsClock: null, //timer interval storage
+		showDpTc: false //show DP T & C
 	};
 
 	this.extendQueue = {};
@@ -92,6 +93,8 @@ function fdTSDisplay(refIdArg) {
 			this.setTimeSlotInfo();
 			//set prem.slots global
 			this.setShowPremiumSlots();
+			//set DP T & C global
+			this.setShowDpTc();
 
 			if (this.opts.IEver !== -1 && this.opts.IEver <= 7) {
 				/* turn off extending objects as we hit them
@@ -610,6 +613,13 @@ function fdTSDisplay(refIdArg) {
 			}
 		}
 	
+	/* set DPTC bool */
+		this.setShowDpTc = function() {
+			if (window.showDpTc) {
+				this.opts.showDpTc = showDpTc;
+			}
+		}
+
 	/* format timer for display */
 		this.formatTimer = function(timeVal) {
 					//this.log('display timer:'+timeVal)
@@ -733,7 +743,7 @@ function fdTSDisplay(refIdArg) {
 					reorgEnd = -1;
 					sequenceCount = 0; //reset count
 				}
-				if (startSequence && day.TSs[t] === '') {
+				if (startSequence && day.TSs[t] === '' || (day.showDpTc && t >= dayPart)) {
 					sequenceCount++;
 					if (lastWasTS) {
 						reorgStart = t; //reset to current ts
@@ -810,6 +820,11 @@ function fdTSDisplay(refIdArg) {
 				//check for prem.slots display
 				if (this.opts.showPremiumSlots && (this.getID('dayId', d) == this.opts.premSlotsDayId)) {
 					tempDay.showPremium = true; //false by default
+				}
+				
+				//check for DP T& C display (must be in prem slots day)
+				if (this.opts.showDpTc && (this.getID('dayId', d) == this.opts.premSlotsDayId)) {
+					tempDay.showDpTc = true; //false by default
 				}
 				
 				if (this.opts.preExtend) {
@@ -1481,10 +1496,13 @@ function fdTSDisplay(refIdArg) {
 						if (dayObj.COs[t] === '') {
 							curCORow.hide();
 						}else{
-							curCORow.show(); //tr
-							curCORow.down('.cutoffDispChild').show(); //div
-							//and add l/r lines
-							curCORow.down('td').className = 'cutoffLR';
+							//don't show CO's for expanded DP T&C view
+							if (!dayObj.showDpTc) {
+								curCORow.show(); //tr
+								curCORow.down('.cutoffDispChild').show(); //div
+								//and add l/r lines
+								curCORow.down('td').className = 'cutoffLR';
+							}
 						}
 						
 
@@ -1505,9 +1523,18 @@ function fdTSDisplay(refIdArg) {
 						}
 						
 						//check prem.slots
-						if (t === 0 && dayObj.showPremium) {
-							//adjust height, expanded
-							curSlotObj.ext.style.height = (parseInt(curSlotObj.ext.style.height) + this.opts.cutoffHeight)+'px';
+						//contents can be overriden here (check t vs dayPart for AM vs PM)
+						if (dayObj.showPremium) {
+							if (t === 0) {
+								//adjust height, expanded
+								curSlotObj.ext.style.height = (parseInt(curSlotObj.ext.style.height) + this.opts.cutoffHeight)+'px';
+							}
+
+							if (t >= dayObj.dayPart && dayObj.showDpTc) {
+								curSlotObj.contentId = 'PREDPTCdayE';
+							}
+
+
 							//change content (assuming we have it) change to expanded and proceed like normal
 							var curContentId = curSlotObj.contentId;
 							if (curContentId && curSlotObj.contentId.slice(curSlotObj.contentId.length-1) === 'C') {
@@ -1520,6 +1547,7 @@ function fdTSDisplay(refIdArg) {
 								curSlotObj.contentId = curContentId;
 							}
 						}
+						
 
 					}
 					//adjust height of final VISIBLE row
@@ -2025,6 +2053,7 @@ function fdTSDisplay(refIdArg) {
 		this.isExpanded = false; //is currently expanded
 		this.parentId = null; //parent (row) ease key
 		this.showPremium = false; //show prem.slots
+		this.showDpTc = false; //show DP T & C
 		this.lastCO = null; //last cutoff as html elemId
 	}
 

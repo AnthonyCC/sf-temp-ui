@@ -72,6 +72,10 @@ public class ErpCustomerInfoModel extends ModelSupport {
 	private boolean deliveryNotification;
 	private boolean offersNotification;
 	private boolean goGreen;
+	
+	/* APPDEV-2475 DP T&C */
+	private int dpTcViewCount;
+	private Date dpTcAgreeDate;
 
 	public PhoneNumber getMobileNumber() {
 		return mobileNumber;
@@ -145,6 +149,7 @@ public class ErpCustomerInfoModel extends ModelSupport {
 	public void setReceiveNewsletter(boolean receiveNewsletter) { this.receiveNewsletter = receiveNewsletter; }
 
 	public PhoneNumber getHomePhone() { return this.homePhone; }
+	
 	public void setHomePhone(PhoneNumber homePhone) { this.homePhone = homePhone; }
 
 	public PhoneNumber getBusinessPhone() { return this.businessPhone; }
@@ -317,5 +322,11 @@ public class ErpCustomerInfoModel extends ModelSupport {
 	public void setDisplayName(String displayName) {
 		this.displayName = displayName;
 	}
+
+	/* APPDEV-2475 DP T&C */
+	public int getDpTcViewCount() { return dpTcViewCount; }
+	public void setDpTcViewCount(int dpTcViewCount) { this.dpTcViewCount = dpTcViewCount; }
+	public Date getDpTcAgreeDate() { return dpTcAgreeDate; }
+	public void setDpTcAgreeDate(Date dpTcAgreeDate) { this.dpTcAgreeDate = dpTcAgreeDate; }
 
 }

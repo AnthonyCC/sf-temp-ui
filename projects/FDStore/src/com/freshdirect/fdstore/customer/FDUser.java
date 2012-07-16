@@ -2263,4 +2263,39 @@ public class FDUser extends ModelSupport implements FDUserI {
 	public void setEbtAccepted(boolean ebtAccepted) {
 		this.ebtAccepted = ebtAccepted;
 	}
+	
+	public boolean isDpNewTcBlocking() {
+		boolean isBlocking = false;
+		
+		try {
+			ErpCustomerInfoModel cm = FDCustomerFactory.getErpCustomerInfo(identity);
+
+			int dpTcViewCount = cm.getDpTcViewCount();
+			Date dpTcAgreeDate = cm.getDpTcAgreeDate();
+			Date dpNewTcStartDate = FDStoreProperties.getDlvPassNewTCDate();
+			Calendar calNow = Calendar.getInstance();
+			Calendar calNewTcStart = Calendar.getInstance();
+				calNewTcStart.setTime(dpNewTcStartDate);
+			Calendar calAgree = null;
+			if (dpTcAgreeDate != null) {
+				calAgree = Calendar.getInstance();
+				calAgree.setTime(dpTcAgreeDate);
+			}
+			
+			if (this.isDlvPassActive() && calNewTcStart.getTime().after(this.getDlvPassInfo().getPurchaseDate())) { //exclude users with no pass, and ones that purchased after new terms start
+	    		if (calNow.getTime().after(dpNewTcStartDate)) { //check that new terms should be in effect
+		    		if ( dpTcAgreeDate == null || ( calAgree != null && calAgree.getTime().before(dpNewTcStartDate) ) ) { //either never agreed, or agree before new terms
+			    		if (dpTcViewCount < FDStoreProperties.getDpTcViewLimit()) { //check view count
+			    			isBlocking = true;
+			    		}
+		    		}
+	    		}
+			}
+		} catch (FDResourceException e) {
+			LOGGER.error("Error checking isDpNewTcBlocking in FDUser.",e);
+		}
+		
+		return isBlocking;
+	}
+	
 }

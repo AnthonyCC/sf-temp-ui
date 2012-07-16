@@ -81,6 +81,10 @@ public class ErpCustomerInfoPersistentBean extends DependentPersistentBeanSuppor
 	private boolean offersNotification;
 	private boolean goGreen;
 	
+	/* APPDEV-2475 DP T&C */
+	private java.util.Date dpTcAgreeDate;
+	private int dpTcViewCount;
+	
 
 	/**
 	 * Default constructor.
@@ -131,6 +135,10 @@ public class ErpCustomerInfoPersistentBean extends DependentPersistentBeanSuppor
 		this.deliveryNotification = false;
 		this.offersNotification = false;
 		this.goGreen = false;
+		
+		/* APPDEV-2475 DP T&C */
+		this.dpTcViewCount = 0;
+		this.dpTcAgreeDate = null;
 	}
 
 	/**
@@ -211,6 +219,10 @@ public class ErpCustomerInfoPersistentBean extends DependentPersistentBeanSuppor
 		model.setDeliveryNotification(this.deliveryNotification);
 		model.setOffersNotification(this.offersNotification);
 		model.setGoGreen(this.goGreen);
+		
+		/* APPDEV-2475 DP T&C */
+		model.setDpTcViewCount(this.dpTcViewCount);
+		model.setDpTcAgreeDate(this.dpTcAgreeDate);
 
 		return model;
 	}
@@ -269,6 +281,10 @@ public class ErpCustomerInfoPersistentBean extends DependentPersistentBeanSuppor
 		this.offersNotification = m.isOffersNotification();
 		this.goGreen = m.isGoGreen();
 
+		/* APPDEV-2475 DP T&C */
+		this.dpTcViewCount = m.getDpTcViewCount();
+		this.dpTcAgreeDate = m.getDpTcAgreeDate();
+
 		this.setModified();
 	}
 
@@ -318,8 +334,8 @@ public class ErpCustomerInfoPersistentBean extends DependentPersistentBeanSuppor
 				+ " RECEIVE_NEWS, HOME_PHONE, HOME_EXT, BUSINESS_PHONE, BUSINESS_EXT, CELL_PHONE, CELL_EXT, OTHER_PHONE, OTHER_EXT, FAX, "
 				+ " FAX_EXT, WORK_DEPARTMENT, EMPLOYEE_ID, REMINDER_LAST_SEND, REMINDER_FREQUENCY, REMINDER_DAY_OF_WEEK, REMINDER_ALT_EMAIL, "
 				+ " RSV_DAY_OF_WEEK, RSV_START_TIME, RSV_END_TIME, RSV_ADDRESS_ID, UNSUBSCRIBE_DATE, REG_REF_TRACKING_CODE, REG_REF_PROG_ID, "
-				+ " REF_PROG_INVT_ID, RECEIVE_OPTINNEWSLETTER, EMAIL_LEVEL, NO_CONTACT_MAIL, NO_CONTACT_PHONE, DISPLAY_NAME) "
-					+ " values (?,?,?,?,?,?,?,?,?,replace(replace(replace(replace(replace(?,'('),')'),' '),'-'),'.'),?,replace(replace(replace(replace(replace(?,'('),')'),' '),'-'),'.'),?,replace(replace(replace(replace(replace(?,'('),')'),' '),'-'),'.'),?,replace(replace(replace(replace(?,'('),')'),' '),'-'),?,replace(replace(replace(replace(replace(?,'('),')'),' '),'-'),'.'),?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+				+ " REF_PROG_INVT_ID, RECEIVE_OPTINNEWSLETTER, EMAIL_LEVEL, NO_CONTACT_MAIL, NO_CONTACT_PHONE, DISPLAY_NAME, DP_TC_VIEWS, DP_TC_AGREE_DATE) "
+					+ " values (?,?,?,?,?,?,?,?,?,replace(replace(replace(replace(replace(?,'('),')'),' '),'-'),'.'),?,replace(replace(replace(replace(replace(?,'('),')'),' '),'-'),'.'),?,replace(replace(replace(replace(replace(?,'('),')'),' '),'-'),'.'),?,replace(replace(replace(replace(?,'('),')'),' '),'-'),?,replace(replace(replace(replace(replace(?,'('),')'),' '),'-'),'.'),?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
 
 		ps.setString(1, this.getParentPK().getId());
 		ps.setString(2, this.title);
@@ -400,6 +416,14 @@ public class ErpCustomerInfoPersistentBean extends DependentPersistentBeanSuppor
 		ps.setString(37, this.noContactPhone ? "X" : "");
 		ps.setString(38, this.displayName);
 		
+		/* APPDEV-2475 DP T&C */
+		ps.setInt(39, this.dpTcViewCount);
+		if (this.dpTcAgreeDate == null) {
+			ps.setNull(40, Types.TIMESTAMP);
+		} else {
+			ps.setTimestamp(40, new Timestamp(this.dpTcAgreeDate.getTime()));
+		}
+		
 		
 		if (ps.executeUpdate() != 1) {
 			throw new SQLException("Row not created");
@@ -423,8 +447,9 @@ public class ErpCustomerInfoPersistentBean extends DependentPersistentBeanSuppor
 					+ " '('||substr(FAX,1,3)||') '||substr(FAX,4,3)||'-'||substr(FAX,7,4) as FAX, FAX_EXT, WORK_DEPARTMENT, EMPLOYEE_ID, "
 					+ " REMINDER_LAST_SEND, REMINDER_FREQUENCY, REMINDER_DAY_OF_WEEK, REMINDER_ALT_EMAIL, RSV_DAY_OF_WEEK, RSV_START_TIME, "
 					+ " RSV_END_TIME, RSV_ADDRESS_ID, UNSUBSCRIBE_DATE, REG_REF_TRACKING_CODE, REG_REF_PROG_ID, REF_PROG_INVT_ID, "
-					+ " RECEIVE_OPTINNEWSLETTER, HAS_AUTORENEW_DP, AUTORENEW_DP_TYPE, EMAIL_LEVEL, NO_CONTACT_MAIL, NO_CONTACT_PHONE "
-					+ " ,mobile_number, mobile_preference_flag, delivery_notification, offers_notification, go_green, display_name "
+					+ " RECEIVE_OPTINNEWSLETTER, HAS_AUTORENEW_DP, AUTORENEW_DP_TYPE, EMAIL_LEVEL, NO_CONTACT_MAIL, NO_CONTACT_PHONE, "
+					+ " mobile_number, mobile_preference_flag, delivery_notification, offers_notification, go_green, display_name, "
+					+ " DP_TC_VIEWS, DP_TC_AGREE_DATE"
 					+ " FROM CUST.CUSTOMERINFO WHERE CUSTOMER_ID = ?");
 		ps.setString(1, this.getPK().getId());
 		ResultSet rs = ps.executeQuery();
@@ -479,6 +504,9 @@ public class ErpCustomerInfoPersistentBean extends DependentPersistentBeanSuppor
 			this.goGreen = "Y".equals(rs.getString("go_green"))?true:false;
 			this.displayName = rs.getString("display_name");
 			
+			/* APPDEV-2475 DP T&C */
+			this.dpTcViewCount = rs.getInt("DP_TC_VIEWS");
+			this.dpTcAgreeDate = rs.getDate("DP_TC_AGREE_DATE");
 		} else {
 			throw new SQLException("No such ErpCustomerInfo PK: " + this.getPK());
 		}
@@ -500,8 +528,9 @@ public class ErpCustomerInfoPersistentBean extends DependentPersistentBeanSuppor
 				+ " REMINDER_LAST_SEND=?, REMINDER_FREQUENCY=?, REMINDER_DAY_OF_WEEK=?, REMINDER_ALT_EMAIL=?, RSV_DAY_OF_WEEK=?, "
 				+ " RSV_START_TIME=?, RSV_END_TIME=?, RSV_ADDRESS_ID=?, UNSUBSCRIBE_DATE=?, REG_REF_TRACKING_CODE=?, REG_REF_PROG_ID=?, "
 				+ " REF_PROG_INVT_ID=?, RECEIVE_OPTINNEWSLETTER=?, HAS_AUTORENEW_DP=?, AUTORENEW_DP_TYPE=?, "
-				+" EMAIL_LEVEL=?, NO_CONTACT_MAIL=?, NO_CONTACT_PHONE=?"
-				+ " ,mobile_number=?, delivery_notification=?, offers_notification=?, go_green=?, display_name=? "
+				+ " EMAIL_LEVEL=?, NO_CONTACT_MAIL=?, NO_CONTACT_PHONE=?,"
+				+ " mobile_number=?, delivery_notification=?, offers_notification=?, go_green=?, display_name=?,"
+				+ " DP_TC_VIEWS=?, DP_TC_AGREE_DATE=?"
 				+" WHERE CUSTOMER_ID=?");
 		//ps.setString(, this.getPK().getId() );
 
@@ -613,7 +642,16 @@ public class ErpCustomerInfoPersistentBean extends DependentPersistentBeanSuppor
 		
 		ps.setString(43, this.displayName);
 		
-		ps.setString(44, this.getPK().getId());
+		/* APPDEV-2475 DP T&C */
+		ps.setInt(44, this.dpTcViewCount);
+		
+		if (this.dpTcAgreeDate == null) {
+			ps.setNull(45, Types.TIMESTAMP);
+		} else {
+			ps.setDate(45, new java.sql.Date(this.dpTcAgreeDate.getTime()));
+		}
+		
+		ps.setString(46, this.getPK().getId());
 
 		
         if (ps.executeUpdate() != 1) {

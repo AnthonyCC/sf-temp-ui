@@ -1367,4 +1367,8 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 	public void setEbtAccepted(boolean ebtAccepted) {
 		this.user.setEbtAccepted(ebtAccepted);
 	}
+	
+	public boolean isDpNewTcBlocking() {
+		return this.user.isDpNewTcBlocking();
+	}
 }

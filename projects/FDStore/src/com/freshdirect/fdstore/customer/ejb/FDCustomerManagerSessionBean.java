@@ -6471,5 +6471,29 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 	}
 	
 
+	/* APPDEV-2475 DP T&C */
+	public void storeDPTCViews(String customerId, int dpTcViewCount) throws FDResourceException {
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			FDUserDAO.storeDPTCViews(conn, customerId, dpTcViewCount);
+		} catch (SQLException sqle) {
+			throw new FDResourceException(sqle);
+		} finally {
+			close(conn);
+		}
+	}
+	public void storeDPTCAgreeDate(String customerId, Date dpTcAgreeDate) throws FDResourceException {
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			FDUserDAO.storeDPTCAgreeDate(conn, customerId, dpTcAgreeDate);
+		} catch (SQLException sqle) {
+			throw new FDResourceException(sqle);
+		} finally {
+			close(conn);
+		}
+	}
+
 }
 
