@@ -301,7 +301,7 @@ public class HandOffDAO extends BaseDAO implements IHandOffDAO   {
             "MINUS "+
                 "( select distinct BD.DISPATCHTIME  from TRANSP.HANDOFF_BATCHDISPATCHEX BD, transp.HANDOFF_BATCH b where "+ 
                 "b.batch_id=bd.batch_id and B.DELIVERY_DATE=(select delivery_date from TRANSP.HANDOFF_BATCH where batch_id = ?) "+
-                "and BD.BATCH_ID < to_number(?) AND BD.STATUS = ? and B.BATCH_STATUS IN ('CPD/ADC','CPD','CPD/ADF'))) " +
+                "and b.cutoff_datetime < (select cutoff_datetime from TRANSP.HANDOFF_BATCH where batch_id = ?) AND BD.STATUS = ? and B.BATCH_STATUS IN ('CPD/ADC','CPD','CPD/ADF'))) " +
                 ") T, transp.HANDOFF_BATCH b, TRANSP.HANDOFF_BATCHROUTE R, TRANSP.TRN_AREA A " +
          "where B.DELIVERY_DATE = ? "+ 
          "and B.BATCH_ID = R.BATCH_ID and R.AREA=A.CODE and B.BATCH_STATUS IN ('CPD/ADC','CPD','CPD/ADF') "+
