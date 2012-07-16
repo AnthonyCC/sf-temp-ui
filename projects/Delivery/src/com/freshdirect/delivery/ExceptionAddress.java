@@ -4,10 +4,16 @@
 
 package com.freshdirect.delivery;
 
+import java.io.Serializable;
+
 import com.freshdirect.common.address.EnumAddressType;
 
-public class ExceptionAddress {
+public class ExceptionAddress implements Serializable {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 7114236036930357556L;
 	private String id;
 	private String streetAddress;
 	private String aptNumLow;
