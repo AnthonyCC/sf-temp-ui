@@ -5,8 +5,9 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <title>Insert title here</title>
+<%@ include file="/shared/template/includes/i_head_end.jspf" %>
 </head>
 <body>
-
+<%@ include file="/shared/template/includes/i_body_start.jspf" %>
 </body>
 </html>
