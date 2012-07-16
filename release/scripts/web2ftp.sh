@@ -28,7 +28,8 @@ fi
 echo ">>>>>>> UPLOADING FILE TO FTP"
 
 FTPLOG="web2ftp.log"
-ftp ftp://$4:$5@$3 -v <<EOT | tee $FTPLOG
+ftp -v -u -n $3 <<EOT | tee $FTPLOG
+user $4 $5
 put $2
 bye
 EOT
