@@ -121,7 +121,7 @@
 						<td jwcid="@Any" class="ognl:getDataRowClass(currentData.getPremiumPercentAllocation())"><span jwcid="@Insert" value="ognl:currentData.getPremiumAllocation()" /></td>
 						<td jwcid="@Any" class="ognl:getDataRowClass(currentData.getPremiumPercentAllocation())"><span jwcid="insertPremiumPercentAlloc" /></td>
                      </span>  
-                    <span jwcid="@If" condition="ognl:showPremiumCt && ognl:currentData.getPremiumCtActive()">  
+                    <span jwcid="@If" condition="ognl:showPremiumCt && currentData.getPremiumCtActive()">  
 						<td jwcid="@Any" class="ognl:getDataRowClass(currentData.getPremiumCtPercentAllocation())"><span jwcid="@Insert" value="ognl:currentData.getPremiumCtCapacity()" /></td>
 						<td jwcid="@Any" class="ognl:getDataRowClass(currentData.getPremiumCtPercentAllocation())"><span jwcid="@Insert" value="ognl:currentData.getPremiumCtOrder()" /></td> 
 						<td jwcid="@Any" class="ognl:getDataRowClass(currentData.getPremiumCtPercentAllocation())"><span jwcid="insertPremiumCtPercentOrder" /></td>
