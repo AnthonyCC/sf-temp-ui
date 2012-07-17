@@ -486,7 +486,7 @@ public class DlvAdminManagerSessionBean extends SessionBeanSupport {
         "decode((sysdate-(TO_DATE(TO_CHAR(ts.base_date - 1, 'YYYY-MM-DD')||' '||to_char(ts.cutoff_time - " +
         "(z.ct_release_time/60/24), 'HH24:MI:SS'), 'YYYY-MM-DD HH24:MI:SS'))- abs(sysdate-(TO_DATE(TO_CHAR(ts.base_date - 1, 'YYYY-MM-DD')||' '||to_char(ts.cutoff_time " +
         "- (z.ct_release_time/60/24), 'HH24:MI:SS'), 'YYYY-MM-DD HH24:MI:SS')))),0,(select count(*) from dlv.reservation where timeslot_id=ts.id and status_code <> ?" +
-        "and status_code <> ? and class is null),(select count(*) from dlv.reservation where timeslot_id=ts.id and  status_code <> ? and status_code <> ? and chefstable = ' ' and class is null)+ts.ct_capacity) as total_alloc, " +
+        "and status_code <> ? and class is null),(select count(*) from dlv.reservation where timeslot_id=ts.id and  status_code <> ? and status_code <> ? and chefstable = ' ' and class is null)+ts.ct_capacity)+ts.premium_capacity as total_alloc, " +
         "decode((sysdate-(TO_DATE(TO_CHAR(ts.base_date, 'YYYY-MM-DD')||' '||to_char(ts.premium_cutoff_time - " +
         "(z.premium_ct_release_time/60/24), 'HH24:MI:SS'), 'YYYY-MM-DD HH24:MI:SS'))- abs(sysdate-(TO_DATE(TO_CHAR(ts.base_date, 'YYYY-MM-DD')||' '||to_char(ts.premium_cutoff_time " +
         "- (z.premium_ct_release_time/60/24), 'HH24:MI:SS'), 'YYYY-MM-DD HH24:MI:SS')))),0,(select count(*) from dlv.reservation where timeslot_id=ts.id and status_code <> ?" +
@@ -543,7 +543,7 @@ public class DlvAdminManagerSessionBean extends SessionBeanSupport {
 						
 						rs.getInt("TOTAL_ORDER"),
 						rs.getInt("CAPACITY"),
-						rs.getInt("TOTAL_ALLOC")+rs.getInt("premium_alloc"),
+						rs.getInt("TOTAL_ALLOC"),
 												
 						rs.getInt("BASE_ORDERS"),
 						rs.getInt("BASE_ALLOC"),

@@ -1904,18 +1904,20 @@ public class DlvManagerSessionBean extends GatewaySessionBeanSupport {
 	}
 
 	public void commitReservationEx(DlvReservationModel reservation,ContactAddressModel address, TimeslotEventModel event) throws FDResourceException{
-
-		if(reservation==null || address==null || !reservation.isDynamic())
-			return ;
 		
 		/* Refresh the reservation from the database as the flag isInUPS might have changed after the CONFIRM_TIMESLOT payload was put in the queue.
 		 This code is to handle scenarios when CONFIRM_TIMESLOT payload is processed before the RESERVE_TIMESLOT */
 		try {
-			reservation=getReservation(reservation.getId());
+			if(reservation!=null)
+				reservation=getReservation(reservation.getId());
 		} catch (FinderException e) {
 			
 			e.printStackTrace();
 		}
+		
+		if(reservation==null || address==null || !reservation.isDynamic())
+			return ;
+		
 		// Put the CONFIRM_TIMESLOT payload back in the queue to be retried after the redelivery interval configured in application server.
 		if(reservation.isDynamic() && !reservation.isInUPS() && reservation.getStatusCode() == 10)
 		{
@@ -2003,17 +2005,18 @@ public class DlvManagerSessionBean extends GatewaySessionBeanSupport {
 	
 	public void releaseReservationEx(DlvReservationModel reservation,ContactAddressModel address , TimeslotEventModel event) {
 
-		if(reservation==null || address==null || !reservation.isDynamic())
-			return ;
-		
 		/* Refresh the reservation from the database as the flag isInUPS might have changed after the CANCEL_TIMESLOT payload was put in the queue.
 		 This code is to handle scenarios when CANCEL_TIMESLOT payload is processed before the RESERVE_TIMESLOT */
 		try {
-			reservation=getReservation(reservation.getId());
+			if(reservation!=null)
+				reservation=getReservation(reservation.getId());
 		} catch (FinderException e) {
 			
 			e.printStackTrace();
 		}
+		if(reservation==null || address==null || !reservation.isDynamic())
+			return ;
+		
 		// Put the CANCEL_TIMESLOT payload back in the queue to be retried after the redelivery interval configured in application server.
 		if(reservation.isDynamic() && !reservation.isInUPS() && reservation.getStatusCode() == 15)
 		{
