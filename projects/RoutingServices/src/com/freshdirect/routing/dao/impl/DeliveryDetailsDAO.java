@@ -149,7 +149,7 @@ public class DeliveryDetailsDAO extends BaseDAO implements IDeliveryDetailsDAO {
 			+ "'YYYY-MM-DD HH24:MI:SS'))- abs(sysdate-(TO_DATE(TO_CHAR(ts.base_date - 1, 'YYYY-MM-DD')||' '||to_char(ts.cutoff_time - (z.ct_release_time/60/24), " 
 			+ "'HH24:MI:SS'), 'YYYY-MM-DD HH24:MI:SS')))),0,(select count(*) from dlv.reservation where timeslot_id=ts.id and status_code <> '15' and status_code <> '20' " 
 			+ "and class is null),(select count(*) from dlv.reservation where timeslot_id=ts.id and  status_code <> '15' and status_code <> '20' and chefstable = ' ' " 
-			+ "and class is null)+ts.ct_capacity) as total_alloc, "
+			+ "and class is null)+ts.ct_capacity)+ts.premium_capacity as total_alloc, "
 			+ "decode((sysdate-(TO_DATE(TO_CHAR(ts.base_date, 'YYYY-MM-DD')||' '||to_char(ts.premium_cutoff_time - (z.premium_ct_release_time/60/24), 'HH24:MI:SS'), " 
 			+ "'YYYY-MM-DD HH24:MI:SS'))- abs(sysdate-(TO_DATE(TO_CHAR(ts.base_date, 'YYYY-MM-DD')||' '||to_char(ts.premium_cutoff_time - (z.premium_ct_release_time/60/24), " 
 			+ "'HH24:MI:SS'), 'YYYY-MM-DD HH24:MI:SS')))),0,(select count(*) from dlv.reservation where timeslot_id=ts.id and status_code <> '15' and status_code <> '20' " 
@@ -534,7 +534,7 @@ public class DeliveryDetailsDAO extends BaseDAO implements IDeliveryDetailsDAO {
 				    		metrics.setDeliveryEndTime(rs.getTimestamp("et"));
 				    		metrics.setOrderCapacity(rs.getInt("capacity"));
 				    		metrics.setTotalConfirmedOrders(rs.getInt("total_order"));
-				    		metrics.setTotalAllocatedOrders(rs.getInt("total_alloc")+rs.getInt("premium_alloc"));
+				    		metrics.setTotalAllocatedOrders(rs.getInt("total_alloc"));
 				    		
 				    		if(!timeslotByZone.containsKey(zCode)) {
 				    			timeslotByZone.put(zCode, new ArrayList<IDeliveryWindowMetrics>());

@@ -163,7 +163,10 @@ public class TimeslotLogic {
 						// Calculate steering discount and apply to the current timeslot
 						if(_ts.isPremiumSlot())
 						{
-							_ts.setPremiumAmount(premiumFee);
+							if(user.getShoppingCart()!=null && user.getShoppingCart().getDeliveryPremium()>0)
+									_ts.setPremiumAmount(0);
+							else
+									_ts.setPremiumAmount(premiumFee);
 							stats.setSameDayCutoffUTC(DateUtil.getUTCDate(_ts.getCutoffTimeAsDate()));
 							stats.setSameDayCutoff(_ts.getCutoffTimeAsDate());
 						}

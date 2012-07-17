@@ -25,6 +25,7 @@ import com.freshdirect.routing.constants.RoutingActivityType;
 
 public class DlvReservationModel extends ModelSupport {
 
+	static final long serialVersionUID = -8162831638079894392L;
 	private String orderId;
 	private String customerId;
 	private int statusCode;
