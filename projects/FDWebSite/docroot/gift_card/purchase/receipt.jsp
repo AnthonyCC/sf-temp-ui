@@ -63,6 +63,7 @@ String orderNumber = (String)session.getAttribute(SessionName.RECENT_ORDER_NUMBE
 
 	String _donOrgName = "";
 	String _donOrgLogo = "";
+	Html _donOrgMedia = null;
 	if(gcType != null && EnumGiftCardType.DONATION_GIFTCARD.equals(gcType)) {
 		List<DonationOrganization> donationOrgList = new ArrayList<DonationOrganization>();
 		CmsManager manager = CmsManager.getInstance();	
@@ -87,7 +88,9 @@ String orderNumber = (String)session.getAttribute(SessionName.RECENT_ORDER_NUMBE
 					ErpRecipentModel erm = (ErpRecipentModel)i.next();
 					if(erm.getRecipientEmail().equalsIgnoreCase(_org.getEmail())){
 						_donOrgName = _org.getOrganizationName();
-						_donOrgLogo = (_org.getLogoSmallEx() != null) ? _org.getLogoSmallEx().toHtml() : ""; 
+						_donOrgLogo = (_org.getLogoSmallEx() != null) ? _org.getLogoSmallEx().toHtml() : "";
+						_donOrgMedia = _org.getReceiptEditorialMedia();
+						break;
 					}
 				}
 			}
@@ -126,11 +129,23 @@ String orderNumber = (String)session.getAttribute(SessionName.RECENT_ORDER_NUMBE
     <TD WIDTH="<%=W_GIFTCARD_RECEIPT_TOTAL-340%>">
         <TABLE CELLPADDING="0" CELLSPACING="0" BORDER="0" WIDTH="<%=W_GIFTCARD_RECEIPT_TOTAL-340%>">
         <TR VALIGN="TOP">
-            <TD WIDTH="<%=W_GIFTCARD_RECEIPT_TOTAL-340%>" COLSPAN="2"><span class="title18"><b>PLEASE NOTE:</b><br/></span><BR>
-            It may take up to <b>TWO HOURS OR MORE</b> to activate your Gift Cards.  Thank you for your patience.<BR><BR>
-            We will send <b>confirmation to you via email</b> once your newly purchased Gift Cards are active.<br><br>
-            <a href="<%=response.encodeURL("/your_account/gc_order_details.jsp?orderId="+orderNumber)%>">
-            View this order (and download printable PDFs of your gifts) in Your Account.</a></TD>
+            <TD WIDTH="<%=W_GIFTCARD_RECEIPT_TOTAL-340%>" COLSPAN="2">
+            	<span class="title18"><b>PLEASE NOTE:</b><br/></span><BR>
+            	<% if(gcType != null && EnumGiftCardType.REGULAR_GIFTCARD.equals(gcType)) {%>
+			           
+			            It may take up to <b>TWO HOURS OR MORE</b> to activate your Gift Cards.  Thank you for your patience.<BR><BR>
+			            We will send <b>confirmation to you via email</b> once your newly purchased Gift Cards are active.<br><br>
+			            <a href="<%=response.encodeURL("/your_account/gc_order_details.jsp?orderId="+orderNumber)%>">
+			            View this order (and download printable PDFs of your gifts) in Your Account.</a>
+            	<% } else if(gcType != null && EnumGiftCardType.DONATION_GIFTCARD.equals(gcType)) {
+            			if (_donOrgMedia != null) {
+					%>
+						<fd:IncludeMedia name='<%= _donOrgMedia.getPath() %>' />
+					<%
+						}
+					%>
+            <% } %>
+            </TD>
         </TR>
         <TR VALIGN="TOP">
             <TD WIDTH="10"><BR></TD>

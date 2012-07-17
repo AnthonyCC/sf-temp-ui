@@ -74,7 +74,9 @@
 			<RelationshipDef name="EDITORIAL_DETAIL" cardinality="One"  label="Editorial for Detail Content" >
 				<DestinationDef contentType="Html" />
 			</RelationshipDef>
-			
+			<RelationshipDef name="EDITORIAL_RECEIPT_MEDIA" cardinality="One"  label="Editorial for Receipt Content" >
+				<DestinationDef contentType="Html" />
+			</RelationshipDef>
 		</RelationshipDefs>
 	</ContentTypeDef>
 	

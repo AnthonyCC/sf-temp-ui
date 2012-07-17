@@ -16,6 +16,7 @@ delete from cms.relationshipdestination where ID = 'DonationOrganization.GIFTCAR
 delete from cms.relationshipdestination where ID = 'DonationOrganization.EDITORIAL_MAIN.Html';
 delete from cms.relationshipdestination where ID = 'DonationOrganization.EDITORIAL_DETAIL.Html';
 delete from cms.relationshipdestination where ID = 'DonationOrganization.EDITORIAL_HEADER_MEDIA.Html';
+delete from cms.relationshipdestination where ID = 'DonationOrganization.EDITORIAL_RECEIPT_MEDIA.Html';
 
 delete from cms.relationshipdefinition where ID = 'DonationOrganization.ORGANIZATION_LOGO';
 delete from cms.relationshipdefinition where ID = 'DonationOrganization.ORGANIZATION_LOGO_SMALL';
@@ -23,5 +24,6 @@ delete from cms.relationshipdefinition where ID = 'DonationOrganization.GIFTCARD
 delete from cms.relationshipdefinition where ID = 'DonationOrganization.EDITORIAL_MAIN';
 delete from cms.relationshipdefinition where ID = 'DonationOrganization.EDITORIAL_DETAIL';
 delete from cms.relationshipdefinition where ID = 'DonationOrganization.EDITORIAL_HEADER_MEDIA';
+delete from cms.relationshipdefinition where ID = 'DonationOrganization.EDITORIAL_RECEIPT_MEDIA';
 
 delete from cms.contenttype ID = 'DonationOrganization';

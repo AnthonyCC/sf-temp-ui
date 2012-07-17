@@ -91,7 +91,7 @@ public class SubmitOrderAction extends WebActionSupport {
 	private String gcFraudPage;
 	private FDStandingOrder standingOrder;
 	private String addGcPage = "/gift_card/purchase/add_giftcard.jsp";
-	private String addGcDonPage = "/gift_card/purchase/add_donation_giftcard.jsp?gcDonId=";
+	private String addGcDonPage = "/gift_card/purchase/landing.jsp";
 	private String crmAddBulkGcPage = "/gift_card/purchase/add_bulk_giftcard.jsp";
 	
 	public void setCcdProblemPage(String ccdProblemPage){
@@ -222,7 +222,7 @@ public class SubmitOrderAction extends WebActionSupport {
 		if (!isBulkOrder && UserValidationUtil.validateRecipientListEmpty(request, this.getResult())) {
 			HttpServletResponse response = this.getWebActionContext().getResponse();
 			try {
-				response.sendRedirect(EnumGiftCardType.DONATION_GIFTCARD.equals(user.getGiftCardType()) ? this.addGcDonPage+request.getParameter("gcDonId") : this.addGcPage);
+				response.sendRedirect(EnumGiftCardType.DONATION_GIFTCARD.equals(user.getGiftCardType()) ? this.addGcDonPage : this.addGcPage);
 			} catch (IOException ioe) {
 				throw new FDResourceException(ioe.getMessage());
 			}

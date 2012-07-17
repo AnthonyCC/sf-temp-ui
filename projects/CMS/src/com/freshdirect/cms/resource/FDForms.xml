@@ -1438,6 +1438,7 @@
 							<CmsField><attribute>EDITORIAL_MAIN</attribute></CmsField>
 							<CmsField><attribute>EDITORIAL_HEADER_MEDIA</attribute></CmsField>
 							<CmsField><attribute>EDITORIAL_DETAIL</attribute></CmsField>
+							<CmsField><attribute>EDITORIAL_RECEIPT_MEDIA</attribute></CmsField>
 						</fields>
 					</CmsSection> 
                 </sections>

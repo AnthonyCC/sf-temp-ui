@@ -169,7 +169,7 @@ if (_donOrganization != null && request.getParameter("gcDonId") != null) {
 			</span>
 		</td>
         <td colspan="2">
-			<input type="text" maxlength="80" tabIndex="2"  size="40" class="text11" name="<%=EnumUserInfoName.GC_DONOR_ORGANIZATION_NAME.getCode()%>"  id="<%=EnumUserInfoName.GC_DONOR_ORGANIZATION_NAME.getCode()%>" required="false" value="<%= fldDonorOrgName %>" />
+			<input type="text" maxlength="55" tabIndex="2"  size="40" class="text11" name="<%=EnumUserInfoName.GC_DONOR_ORGANIZATION_NAME.getCode()%>"  id="<%=EnumUserInfoName.GC_DONOR_ORGANIZATION_NAME.getCode()%>" required="false" value="<%= fldDonorOrgName %>" />
 	</td>
     </tr>
     <tr>
@@ -192,25 +192,10 @@ if (_donOrganization != null && request.getParameter("gcDonId") != null) {
 			<input type="hidden" maxlength="55" tabIndex="3"  class="text11" size="40" name="<%= EnumUserInfoName.GC_RECIPIENT_NAME.getCode() %>" id="<%= EnumUserInfoName.GC_RECIPIENT_NAME.getCode() %>" value="<%= fldRecipientName%>" />
 			<input type="hidden" maxlength="80" tabIndex="6"  size="40" class="text11" name="<%= EnumUserInfoName.GC_RECIPIENT_EMAIL.getCode() %>" id="<%= EnumUserInfoName.GC_RECIPIENT_EMAIL.getCode() %>" required="true" value="<%= fldRecipientEmail %>"  />
 			<label><%= fldRecipientName %></label>
+			<input  type="hidden" type="radio" tabIndex="4"  class="text11" name="<%= EnumUserInfoName.DLV_METHOD.getCode() %>" id="<%= EnumUserInfoName.DLV_METHOD.getCode() %>Email" value="<%=value1%>" <%= "checked" %> onclick="$('gcRecipientEmail').disabled=false; $('recipEmailStar').innerHTML='*';" />
         </td>
     </tr>
-    <tr>
-    	<td align="right" class="text12">
-			<span <fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.DLV_METHOD.getCode()%>">  class="text11rbold"</fd:ErrorHandler>>
-				&nbsp;Delivery&nbsp;Method
-			</span>
-    	</td>
-    	<td colspan="2">
-			<table border="0" cellpadding="0" cellspacing="0" width="100%">
-				<tr>
-					<td width="15">
-						<input type="radio" tabIndex="4"  class="text11" name="<%= EnumUserInfoName.DLV_METHOD.getCode() %>" id="<%= EnumUserInfoName.DLV_METHOD.getCode() %>Email" value="<%=value1%>" <%= "checked" %> onclick="$('gcRecipientEmail').disabled=false; $('recipEmailStar').innerHTML='*';" />
-    				</td>
-					<td width="100%">Email</td>					
-				</tr>
-			</table>
-    	</td>
-    </tr>
+
     	
 	
 	<tr>

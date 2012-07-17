@@ -57,4 +57,8 @@ public class DonationOrganization extends ContentNodeModelImpl {
 		return FDAttributeFactory.constructHtml(this, "EDITORIAL_HEADER_MEDIA");
 	}
 
+	public Html getReceiptEditorialMedia(){
+		return FDAttributeFactory.constructHtml(this, "EDITORIAL_RECEIPT_MEDIA");
+	}
+
 }
