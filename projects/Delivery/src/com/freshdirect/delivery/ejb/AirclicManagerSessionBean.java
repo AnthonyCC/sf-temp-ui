@@ -14,11 +14,14 @@ package com.freshdirect.delivery.ejb;
 import java.rmi.RemoteException;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import javax.ejb.EJBException;
 
 import org.apache.log4j.Category;
 
@@ -26,12 +29,10 @@ import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.delivery.DlvResourceException;
 import com.freshdirect.delivery.dao.AirclicDAO;
 import com.freshdirect.delivery.model.AirclicMessageVO;
-import com.freshdirect.delivery.model.AirclicNextTelAsset;
 import com.freshdirect.delivery.model.AirclicNextelVO;
 import com.freshdirect.delivery.model.AirclicTextMessageVO;
 import com.freshdirect.delivery.model.DispatchNextTelVO;
 import com.freshdirect.delivery.model.SignatureVO;
-import com.freshdirect.framework.core.ServiceLocator;
 import com.freshdirect.framework.core.SessionBeanSupport;
 import com.freshdirect.framework.util.log.LoggerFactory;
 

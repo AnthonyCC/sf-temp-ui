@@ -15,7 +15,6 @@ import javax.naming.NamingException;
 
 import com.freshdirect.delivery.DlvResourceException;
 import com.freshdirect.delivery.model.AirclicMessageVO;
-import com.freshdirect.delivery.model.AirclicNextTelAsset;
 import com.freshdirect.delivery.model.AirclicNextelVO;
 import com.freshdirect.delivery.model.AirclicTextMessageVO;
 import com.freshdirect.delivery.model.DispatchNextTelVO;
@@ -23,8 +22,6 @@ import com.freshdirect.delivery.model.SignatureVO;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.core.ServiceLocator;
-import com.freshdirect.framework.util.MD5Hasher;
-import com.freshdirect.routing.util.RoutingServicesProperties;
 
 public class AirclicManager {
 	private final ServiceLocator serviceLocator;
@@ -106,7 +103,7 @@ public class AirclicManager {
 				if(data[2]!=null) stop = Integer.parseInt(data[2]);
 				
 			AirclicTextMessageVO textMessage = new AirclicTextMessageVO(deliveryDate, data[1], stop ,
-					data[3], data[4], data[5], data[6]);
+					data[3], data[4], data[5], data[6], data[7]);
 			
 			AirclicManagerSB sb = getAirclicManagerHome().create();
 			

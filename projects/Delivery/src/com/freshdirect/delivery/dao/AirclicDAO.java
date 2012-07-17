@@ -1,21 +1,32 @@
 package com.freshdirect.delivery.dao;
 
+import java.io.IOException;
 import java.io.OutputStream;
 import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+import javax.sql.DataSource;
+
 import com.freshdirect.crm.ejb.CriteriaBuilder;
+import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.delivery.DlvResourceException;
 import com.freshdirect.delivery.model.AirclicMessageVO;
 import com.freshdirect.delivery.model.AirclicNextelVO;
@@ -222,7 +233,8 @@ public class AirclicDAO {
 	
 		try
 		{
-			ps = conn.prepareStatement("INSERT INTO DLV.AIRCLIC_TXTMESSAGE(ID, CREATEDATE, DELIVERYDATE, SENDER, MESSAGE, SOURCE, ROUTE, STOP, ORDERID) VALUES(?,SYSDATE,?,?,?,?,?,?,?)");
+			ps = conn.prepareStatement("INSERT INTO DLV.AIRCLIC_TXTMESSAGE(ID, CREATEDATE, DELIVERYDATE, SENDER, MESSAGE, " +
+					"SOURCE, ROUTE, STOP, ORDERID, CUSTOMERID) VALUES(?,SYSDATE,?,?,?,?,?,?,?,?)");
 			ps.setString(1, message.getId());
 			ps.setDate(2, new java.sql.Date(message.getDeliveryDate().getTime()));
 			ps.setString(3, message.getSender());
@@ -231,6 +243,7 @@ public class AirclicDAO {
 			ps.setString(6, message.getRoute());
 			ps.setInt(7, message.getStop());
 			ps.setString(8, message.getOrderId());
+			ps.setString(9, message.getCustomerId());
 			ps.execute();
 		}
 		catch(SQLException e)
@@ -394,23 +407,28 @@ public class AirclicDAO {
 	{
 		PreparedStatement ps = null,ps1 = null;
 		ResultSet rs = null;
-		//InputStream in = null;
 		byte[] in = null;
-		String order;
 		
 		DateFormat sdf = new SimpleDateFormat("MM/dd/yyyy hh:mm:ss a");
 		Date toTime = null;
-		
+		Date fromTime = null;
 		try	{
 			toTime = new Date();
 			long start = System.currentTimeMillis();
 			
+			ps = conn.prepareStatement("SELECT NVL(MAX(LAST_EXPORT),SYSDATE-1/24) LAST_EXPORT FROM CUST.SALESIGN_EXPORT " +
+					"WHERE SUCCESS= 'Y'");
+			
+			rs = ps.executeQuery();
+			if(rs.next())
+				fromTime = new java.util.Date(rs.getTimestamp("LAST_EXPORT").getTime());
+			
 			ps = conn.prepareStatement("SELECT WEBORDERNUM,SIGNATURE_TIMESTAMP, DELIVEREDTO, RECIPIENT, CONTAINS_ALCOHOL, SIGNATURE FROM (SELECT DISTINCT " +
-					"WEBORDERNUM, EVENTID FROM DLV.CARTONSTATUS CS WHERE  CS.SCANDATE  between NVL((SELECT MAX(LAST_EXPORT) LAST_EXPORT FROM CUST.SALESIGN_EXPORT " +
-					"WHERE SUCCESS= 'Y'),SYSDATE-1/24) and to_date(?,'MM/DD/YYYY HH:MI:SS AM') AND CS.CARTONSTATUS = 'DELIVERED'  ) CS, DLV.SIGNATURE S " +
+					"WEBORDERNUM, EVENTID FROM DLV.CARTONSTATUS CS WHERE  CS.SCANDATE  between to_date(?,'MM/DD/YYYY HH:MI:SS AM') and to_date(?,'MM/DD/YYYY HH:MI:SS AM') AND CS.CARTONSTATUS = 'DELIVERED'  ) CS, DLV.SIGNATURE S " +
 					"WHERE S.EVENTID = CS.EVENTID"); //toTime is required here because we want to know till what time we are getting the signatures. The same to Time
 			//will be updated in the last export.
-			ps.setString(1, sdf.format(toTime));
+			ps.setString(1, sdf.format(fromTime));
+			ps.setString(2, sdf.format(toTime));
 			rs = ps.executeQuery();
 			
 			ps1 = conn.prepareStatement("INSERT INTO CUST.SALE_SIGNATURE (SALE_ID, SIGNATURE_TIMESTAMP, DELIVEREDTO, RECIPIENT, CONTAINS_ALCOHOL, SIGNATURE) " +
@@ -424,12 +442,12 @@ public class AirclicDAO {
 				
 				if(in!=null && in.length>0)
 					{
+						ps1.setBytes(6, in);
 					  	ps1.setString(1, rs.getString("WEBORDERNUM"));
 					  	ps1.setTimestamp(2, rs.getTimestamp("SIGNATURE_TIMESTAMP"));
 					  	ps1.setString(3, rs.getString("DELIVEREDTO"));
 					  	ps1.setString(4, rs.getString("RECIPIENT"));
 					  	ps1.setString(5, rs.getString("CONTAINS_ALCOHOL"));
-					    ps1.setBytes(6, in);
 					    ps1.addBatch();
 					    batchCount++;
 					}
@@ -609,34 +627,6 @@ public class AirclicDAO {
 		}
 	}
 	
-/*	public static void main(String s[]) throws SQLException, NamingException, IOException, DlvResourceException	{
-		
-		Connection conn = getDataSource().getConnection();
-		getSignatureData(conn, null);
-		
-	}
-
-	public static DataSource getDataSource() throws NamingException {
-		InitialContext initCtx = null;
-		try {
-			initCtx = getInitialContext();
-			return (DataSource) initCtx.lookup("fddatasource");
-		} finally {
-			if (initCtx != null)
-				try {
-					initCtx.close();
-				} catch (NamingException ne) {
-				}
-		}
-	}
-
-	static public InitialContext getInitialContext() throws NamingException {
-		Hashtable h = new Hashtable();
-		h.put(Context.INITIAL_CONTEXT_FACTORY, "weblogic.jndi.WLInitialContextFactory");
-		h.put(Context.PROVIDER_URL, "t3://localhost:7001");
-		return new InitialContext(h);
-	}
-	*/
 	   
-	   
+   
 }
