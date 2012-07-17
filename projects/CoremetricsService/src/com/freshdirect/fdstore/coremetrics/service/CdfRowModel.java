@@ -1,8 +1,11 @@
-package com.freshdirect.fdstore.coremetrics;
+package com.freshdirect.fdstore.coremetrics.service;
+
+import java.io.Serializable;
 
 import com.freshdirect.fdstore.FDStoreProperties;
 
-public class CdfRowModel {
+public class CdfRowModel implements Serializable {
+	private static final long serialVersionUID = -7000720031923667576L;
 	public static final String DELIMITER = ",";
 	public static final String CAT_NAME_QUOTE = "\"";
 	private String categoryId;

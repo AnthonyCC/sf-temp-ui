@@ -545,7 +545,9 @@ public class FDStoreProperties {
 	private final static String PROP_COREMETRICS_CATID_DIRS = "fdstore.coremetrics.catid.dirs";
 	private final static String PROP_COREMETRICS_CATID_BLOG = "fdstore.coremetrics.catid.blog";
 	private final static String PROP_COREMETRICS_CATID_OTHERPAGE = "fdstore.coremetrics.catid.otherpage";
-
+	private final static String PROP_COREMETRICS_FTP_URL = "fdstore.coremetrics.ftp.url";
+	private final static String PROP_COREMETRICS_FTP_PASSWORD = "fdstore.coremetrics.ftp.password";
+	
 	private final static String ALLOW_DISCOUNTS_ON_PREMIUM_SLOT = "fdstore.allow.discount.premium.slot";
 	
 	private final static String DLV_PASS_NEW_TC_DATE = "fdstore.dlvpass.newtc.date";
@@ -1093,6 +1095,8 @@ public class FDStoreProperties {
 		defaults.put(PROP_COREMETRICS_CATID_DIRS, "help,your_account,quickshop,checkout,gift_card,robin_hood,about,survey,login,site_access,registration");
 		defaults.put(PROP_COREMETRICS_CATID_BLOG, "blog");
 		defaults.put(PROP_COREMETRICS_CATID_OTHERPAGE, "other_page");
+		defaults.put(PROP_COREMETRICS_FTP_URL, "ftp.coremetrics.com");
+		defaults.put(PROP_COREMETRICS_FTP_PASSWORD, "Delivers2u!");
 		
 		defaults.put(ALLOW_DISCOUNTS_ON_PREMIUM_SLOT, "false");
 		defaults.put(DLV_PASS_NEW_TC_DATE, "2012-06-06");
@@ -2832,6 +2836,14 @@ public class FDStoreProperties {
 	   	return get(PROP_COREMETRICS_CATID_OTHERPAGE);
 	}
 
+	public static String getCoremetricsFtpUrl() {
+	   	return get(PROP_COREMETRICS_FTP_URL);
+	}
+
+	public static String getCoremetricsFtpPassword() {
+	   	return get(PROP_COREMETRICS_FTP_PASSWORD);
+	}
+	
 	public static boolean isGiftCardDonationEnabled() {
         return (Boolean.valueOf(get(PROP_GIFTCARD_DONATION_ENABLED))).booleanValue();
     }

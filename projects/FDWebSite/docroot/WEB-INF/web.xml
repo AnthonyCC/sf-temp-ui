@@ -88,11 +88,6 @@
 		<jsp-file>/registration/referee_signup.jsp</jsp-file>
 	</servlet>
 
-	<servlet>
-		<servlet-name>CdfGeneratorServlet</servlet-name>
-		<servlet-class>com.freshdirect.webapp.coremetrics.CdfGeneratorServlet</servlet-class>
-	</servlet>
-
    
    <servlet-mapping>
      <servlet-name>com.freshdirect.webapp.util.json.FDJSONRPCServlet</servlet-name>
@@ -127,11 +122,6 @@
 	<servlet-mapping>
 		<servlet-name>referralregistration</servlet-name>
 		<url-pattern>/invite/*</url-pattern>
-	</servlet-mapping>
-
-	<servlet-mapping>
-		<servlet-name>CdfGeneratorServlet</servlet-name>
-		<url-pattern>/coremetrics/cdf</url-pattern>
 	</servlet-mapping>
 
     <session-config>
