@@ -451,7 +451,10 @@ public class FDUser extends ModelSupport implements FDUserI {
 		//this.setPromoVariantMap(null);
 		// evaluate special dlv charge override
 		WaiveDeliveryCharge.apply(this);
-
+		
+		if(this.getShoppingCart().isCsrWaivedDeliveryPremium())
+			this.getShoppingCart().setChargeWaived(EnumChargeType.DLVPREMIUM, true, "DELIVERY");
+		
 		// apply promotions
 		this.promotionEligibility = FDPromotionVisitor.applyPromotions(new PromotionContextAdapter(this));
 		//Add all applied promotion codes so far to this list. Used by MaxRedemptionStrategy

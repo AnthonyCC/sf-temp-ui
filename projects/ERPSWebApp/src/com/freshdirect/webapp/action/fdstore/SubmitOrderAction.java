@@ -484,7 +484,8 @@ public class SubmitOrderAction extends WebActionSupport {
 			cart.setCsrWaivedDeliveryCharge(csrWaivedDeliveryCharge);
 				
 			// Check for delviery premium waiver (CALLCENTER)
-			cart.setChargeWaived(EnumChargeType.DLVPREMIUM, "true".equalsIgnoreCase(request.getParameter("waive_delivery_premium_fee")), "CSR");
+			boolean csrWaivedDeliveryPremium =  "true".equalsIgnoreCase(request.getParameter("waive_delivery_premium_fee"));
+			cart.setCsrWaivedDeliveryPremium(csrWaivedDeliveryPremium);
 			
 			
 			//
