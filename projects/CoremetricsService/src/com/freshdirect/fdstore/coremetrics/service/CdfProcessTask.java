@@ -30,7 +30,7 @@ public class CdfProcessTask {
 	private String cdfFilePath;
 	private String cdfFileName;
 	
-	public boolean process(){
+	public CdfProcessResult process(){
 		generateCdfModel();
 		try {
 			saveCdfFile();
@@ -38,10 +38,10 @@ public class CdfProcessTask {
 		
 		} catch (FDResourceException e) {
 			LOGGER.error("CdfProcessTask failed",e);
-			return false;
+			return new CdfProcessResult(false, e.getMessage());
 		}
 		
-		return true;
+		return new CdfProcessResult(true, null);
 	}
 	
 	private void generateCdfModel(){

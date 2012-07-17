@@ -64,8 +64,9 @@ public class CoremetricsCdfServiceCmd {
 	
 	public static void main( String[] args ) {	
 		try{
-			if (!processCdf()) {
-				throw new Exception("Upload Cdf success is false");
+			CdfProcessResult result = processCdf(); 
+			if (!result.isSuccess()) {
+				throw new Exception("ProcessCdf failed: " + result.getError());
 			}
 			
 		} catch (Exception e) {
@@ -74,29 +75,31 @@ public class CoremetricsCdfServiceCmd {
 		}
 	}
 
-	private static boolean processCdf() {
+	private static CdfProcessResult processCdf() {
 		try {
 			LOGGER.info( "Starting to process Coremetrics CDF..." );
 			lookupCdfHome();
 
 			CoremetricsCdfServiceSB sb = cdfHome.get().create();
-			boolean success = sb.processCdf();
+			CdfProcessResult result = sb.processCdf();
 
-			LOGGER.info( "Coremetrics CDF process " + (success ? "is successful" : "FAILED"));
-			return success;
+			LOGGER.info( "Coremetrics CDF process " + (result.isSuccess() ? "is successful" : "FAILED"));
+			return result;
 			
 		} catch ( CreateException e ) {
 			invalidateCdfHome();
 			LOGGER.error("CreateException",e);
-			return false;
+			return new CdfProcessResult(false, e.getMessage());
+		
 		} catch ( RemoteException e ) {
 			invalidateCdfHome();
 			LOGGER.error("RemoteException",e);
-			return false;
+			return new CdfProcessResult(false, e.getMessage());
+		
 		} catch ( FDResourceException e ) {
 			invalidateCdfHome();
 			LOGGER.error("FDResourceException",e);
-			return false;
+			return new CdfProcessResult(false, e.getMessage());
 		}
 	}
 
