@@ -1078,7 +1078,9 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements Sessi
 					throw new JspException( "Selected product not found in specified category: category: " + catName + " Product: " + prodName);
 				}
 			} else {
-				prodNode = ContentFactory.getInstance().getProduct(skuCode);
+				if (skuCode!=null && !"".equalsIgnoreCase(skuCode)) {
+					prodNode = ContentFactory.getInstance().getProduct(skuCode);
+				}
 			}
 		} catch (FDSkuNotFoundException ex) {
 			throw new JspException("Error accessing resources: " + ex.getMessage());

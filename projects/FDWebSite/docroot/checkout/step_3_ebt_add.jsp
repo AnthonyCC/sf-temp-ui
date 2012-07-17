@@ -24,7 +24,7 @@ final int W_CHECKOUT_STEP_3_CARD_ADD_TOTAL = 970;
 <fd:CheckLoginStatus guestAllowed="false" recognizedAllowed="false" redirectPage='/checkout/view_cart.jsp' />
 
 <tmpl:insert template='/common/template/checkout_nav.jsp'>
-<tmpl:put name='title' direct='true'>FreshDirect - Checkout - Add Credit Card</tmpl:put>
+<tmpl:put name='title' direct='true'>FreshDirect - Checkout - Add EBT Card</tmpl:put>
 <tmpl:put name='content' direct='true'>
 <%	
 FDSessionUser user = (FDSessionUser)session.getAttribute(SessionName.USER);
@@ -120,8 +120,8 @@ double cartTotal = user.getShoppingCart().getTotal();
 <TABLE WIDTH="<%=W_CHECKOUT_STEP_3_CARD_ADD_TOTAL%>" cellspacing="0" cellpadding="0" border="0">	
 	<TR>
 		<TD class="text11" WIDTH="395">
-			<font class="title18">Add Credit Card</font><br>
-			Please enter new credit card information.<BR>
+			<font class="title18">Add EBT Card</font><br>
+			Please enter new EBT card information.<BR>
 		</TD>
 		<TD WIDTH="<%=W_CHECKOUT_STEP_3_CARD_ADD_TOTAL-430%>" ALIGN="RIGHT" VALIGN="MIDDLE" CLASS="text10bold"><FONT CLASS="space2pix"><BR></FONT>
 			<IMG src="/media_stat/images/layout/clear.gif" WIDTH="265" HEIGHT="1" BORDER="0"><BR>

@@ -254,7 +254,7 @@ if (isValidPaymentId) {
 	<input type="hidden" name="<%=PaymentMethodName.CARD_BRAND%>" value="<%=cardBrand%>">
 	<TR VALIGN="bottom">
 		<TD WIDTH="<%=proceedThruCheckout? W_CKT_ACCT_CREDITCARD_FIELDS_TOTAL: W_CKT_ACCT_CREDITCARD_FIELDS_TOTAL-200 %>">
-			<img src="/media_stat/images/navigation/credit_card_details.gif" WIDTH="152" HEIGHT="15" border="0" alt="CREDIT CARD DETAILS">&nbsp;&nbsp;&nbsp;
+			<img src="/media_stat/images/navigation/ebt_card_details.gif" WIDTH="119" HEIGHT="11" border="0" alt="EBT CARD DETAILS">&nbsp;&nbsp;&nbsp;
 			<FONT CLASS="text12">* Required information</FONT>
 		</TD>
 		<%if (!proceedThruCheckout) { %>
@@ -305,7 +305,7 @@ if (isValidPaymentId) {
 		<IMG src="/media_stat/images/layout/dotted_line_w.gif" WIDTH="<%=W_CKT_ACCT_CREDITCARD_FIELDS_TOTAL%>" HEIGHT="1" BORDER="0" vspace="3"><BR>
 <%
 		if (yuzer.isEligibleForSignupPromotion()) {
-			%><img src="/media_stat/images/layout/clear.gif" width="1" height="2"><br><b>NOTE</b>: <font class="text11orbold">On your first home delivery order, to receive the free food promotion, your billing and delivery address must match.</font><% } else { %><font class="text12">Please enter billing address as it appears on your credit card statement.</font><%
+			%><img src="/media_stat/images/layout/clear.gif" width="1" height="2"><br><b>NOTE</b>: <font class="text11orbold">On your first home delivery order, to receive the free food promotion, your billing and delivery address must match.</font><% } else { %><font class="text12">Please enter billing address as it appears on your EBT card statement.</font><%
 		}
 %>
 		<br><img src="/media_stat/images/layout/clear.gif" width="1" height="4" alt="" border="0"><br></TD></TR>

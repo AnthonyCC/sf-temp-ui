@@ -10,7 +10,8 @@
 final int W_YA_OD_CART_DETAILS_TOTAL = 970;
 %>
 <%! private final static java.text.DecimalFormat QUANTITY_FORMATTER = new java.text.DecimalFormat("0.##"); %>
-<table border="0" cellspacing="0" cellpadding="1" width="<%= W_YA_OD_CART_DETAILS_TOTAL %>" align="center">
+
+<%@page import="com.freshdirect.payment.EnumPaymentMethodType"%><table border="0" cellspacing="0" cellpadding="1" width="<%= W_YA_OD_CART_DETAILS_TOTAL %>" align="center">
 <tr>
 	<td width="120"></td>
   <td width="<%= W_YA_OD_CART_DETAILS_TOTAL - 455 %>"></td>
@@ -230,6 +231,14 @@ if (cart.hasSettledReturn()) {
 	</td>
 	<td colspan="3"><%=cart.isEstimatedPrice() ? "*" : ""%></td>
 </tr>
+<% if(null !=cart.getPaymentMethod() && EnumPaymentMethodType.EBT.equals(cart.getPaymentMethod().getPaymentMethodType())){ %>
+<tr>
+	<td colspan="4" align="right"><a href="/help/delivery_info.jsp">EBT Purchase Total</a></td>
+	<td align="right">
+		<b><%=currencyFormatter.format(cart.hasInvoice() ? (cart.getInvoicedTotal() <=cart.getTotal()?cart.getInvoicedTotal():cart.getTotal()): cart.getTotal())%></b>
+	</td>
+</tr>
+<% } %>
 <%
 if (EnumPaymentType.MAKE_GOOD.equals(cart.getPaymentMethod().getPaymentType())) {
 	%>

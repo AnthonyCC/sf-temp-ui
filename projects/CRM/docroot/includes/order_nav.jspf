@@ -48,6 +48,7 @@ boolean isDonationOrder = EnumSaleType.DONATION.equals(orderType);
 
 String app = (String) session.getAttribute(SessionName.APPLICATION);
 boolean makeGood = EnumPaymentType.MAKE_GOOD.equals(nav_order.getPaymentMethod().getPaymentType());
+boolean isEBTPayment = EnumPaymentMethodType.EBT.equals(nav_order.getPaymentMethod().getPaymentMethodType());
 OrderPermissionsI orderPermissions = new OrderPermissionsImpl(nav_order.getOrderStatus(), app, makeGood, nav_order.hasCreditIssued());
 
 boolean displayChargeOrderLink = EnumSaleStatus.SETTLEMENT_FAILED.equals(nav_order.getOrderStatus()) || EnumSaleStatus.PAYMENT_PENDING.equals(nav_order.getOrderStatus());
@@ -90,7 +91,8 @@ for (ErpComplaintModel complaint : nav_complaints ) {
 }
 boolean hasCase = false;
 %>
-<crm:ResubmitOrderController orderId="<%= nav_orderId %>" actionName='<%=request.getParameter("action")%>' result="nav_result" successPage="<%= nav_successPage %>">
+
+<%@page import="com.freshdirect.payment.EnumPaymentMethodType"%><crm:ResubmitOrderController orderId="<%= nav_orderId %>" actionName='<%=request.getParameter("action")%>' result="nav_result" successPage="<%= nav_successPage %>">
 <crm:GetCurrentAgent id='currentAgent'>
 <% String agentRole1 = currentAgent.getRole().getLdapRoleName(); %>
 <crm:GetLockedCase id="cm">
@@ -190,13 +192,13 @@ boolean hasCase = false;
 					<div class="cust_sub_nav" style="width: 120px;"><%if(hasCustomerCase){%><a href="/order/cancel_order.jsp?orderId=<%= nav_orderId %>" class="cust_sub_nav_text"><%}%>Cancel Order<%if(hasCustomerCase ){%></a><%}%></div>
 				<% } %>
 				<!-- issue credit button -->
-				<% if (!o_issue_credit && orderPermissions.allowComplaint()) { %>
+				<% if (!o_issue_credit && orderPermissions.allowComplaint()&& !isEBTPayment) { %>
 				<%
 					boolean isGiftCardOrder1 = (orderType.getSaleType().equalsIgnoreCase("GCD"))?true:false;
 					if(isGiftCardOrder1 && CrmSecurityManager.hasAccessToPage(agentRole1,"issue_credit.jsp")){					
 				%>
 					<div class="cust_sub_nav" style="width: 120px;"><a href="/returns/issue_credit.jsp?orderId=<%= nav_orderId %>&view=dept" class="cust_sub_nav_text">Issue Credit</a></div>
-				<% } else if(CrmSecurityManager.hasAccessToPage(agentRole1,"issue_credit.jsp")) { %>
+				<% } else if(CrmSecurityManager.hasAccessToPage(agentRole1,"issue_credit.jsp")&& !isEBTPayment) { %>
 					<div class="cust_sub_nav" style="width: 120px;"><a href="/returns/issue_credit.jsp?orderId=<%= nav_orderId %>" class="cust_sub_nav_text">Issue Credit</a></div>
 				<% } %>
 				<% } else if ( !o_approve_credit && nav_order.hasCreditIssued() == 2 && CrmSecurityManager.hasAccessToPage(agentRole1,"approve_credit.jsp")) { %>
@@ -230,7 +232,7 @@ boolean hasCase = false;
 				<% } %>
 				
 				<!-- issue & reverse credit button for Robin Hood -->
-				<% if (!o_issue_credit && orderPermissions.allowComplaint()) { 
+				<% if (!o_issue_credit && orderPermissions.allowComplaint()&& !isEBTPayment ) { 
 					
 				    boolean isDonationOrder1 = (orderType.getSaleType().equalsIgnoreCase("DON"))?true:false;
 				    if(isDonationOrder1 && CrmSecurityManager.hasAccessToPage(agentRole1,"issue_credit.jsp")){

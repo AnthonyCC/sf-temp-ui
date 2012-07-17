@@ -120,8 +120,7 @@ To learn more about our <b>Security Policies</b>, <a href="javascript:popup('/he
 		<br>
 		<table width="<%= W_YA_PAYMENT_INFO_TOTAL %>" border="0" cellspacing="0" cellpadding="0">
 		<tr valign="top">
-		    <td><img src="/media_stat/images/navigation/credit_card_details1.gif"
-		WIDTH="152" HEIGHT="15" border="0" alt="CREDIT CARD DETAILS">&nbsp;&nbsp;&nbsp;<BR>
+		    <td><img src="/media_stat/images/navigation/ebt_card_details.gif" WIDTH="119" HEIGHT="11" border="0" alt="EBT CARD DETAILS">&nbsp;&nbsp;&nbsp;<BR>
 		    <IMG src="/media_stat/images/layout/999966.gif" WIDTH="<%= W_YA_PAYMENT_INFO_TOTAL %>" HEIGHT="1" BORDER="0" VSPACE="3"><BR>
 		    </td>
 		</tr>

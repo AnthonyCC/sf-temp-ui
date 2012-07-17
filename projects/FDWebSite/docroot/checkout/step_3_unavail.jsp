@@ -121,26 +121,13 @@ if(true ){//if(isEBTBlocked ){
 <img src="/media_stat/images/layout/clear.gif" width="1" height="6" border="0"><br>
 <table border="0" cellspacing="0" cellpadding="0" width="<%=W_CHECKOUT_STEP_2_UNAVAIL_TOTAL%>">
 	<tr valign="TOP">
-		<td width="25"><a href="<% if (day != null) { %>/checkout/step_2_select<% } else { %>/checkout/step_3_choose<% } %>.jsp?duplicateCheck=skip"><img src="/media_stat/images/buttons/arrow_green_left.gif" width="28" height="28" alt="" border="0"></a></td>
-		<td><img src="/media_stat/images/layout/clear.gif" width="10" height="1" alt="" border="0"></td>
-		<td width="350">
-			<img src="/media_stat/images/layout/clear.gif" width="1" height="5" alt="" border="0"><br>
-			<% if (day != null) { %>
-			<a href="/checkout/step_2_select.jsp"><img src="/media_stat/images/template/checkout/choose_another_time.gif" width="180" height="9" alt="Choose another delivery time" border="0"></a><br>
-			All items will be kept in your cart.
-			<% } else { %>
-			<a href="/checkout/step_3_choose.jsp?duplicateCheck=skip"><img src="/media_stat/images/template/checkout/shop_for_replacements.gif" width="140" height="9" alt="" border="0"></a><br>
-			Choose different payment method.
-			<% } %>
-		</td>
+		<td width="350"><a href="/checkout/step_3_choose.jsp?duplicateCheck=skip"><img src="/media_stat/images/navigation/ebt_choose_non_ebt.jpg" width="280" height="32" alt="" border="0"></a></td>
+		
 		<td></td>
 		<td width="<%=W_CHECKOUT_STEP_2_UNAVAIL_TOTAL-410%>" align="RIGHT" valign="MIDDLE">
-			<a href="/checkout/step_2_adjust.jsp?successPage=<%=request.getParameter("successPage")%>&ebt=true"><img src="/media_stat/images/buttons/continue_checkout.gif" WIDTH="91" HEIGHT="11" border="0" alt="CONTINUE CHECKOUT" vspace="0"></a>
-			<br>Items will be removed from your cart<br>
+			<a href="/checkout/step_2_adjust.jsp?successPage=<%=request.getParameter("successPage")%>&ebt=true"><img src="/media_stat/images/navigation/ebt_check_forward.jpg" WIDTH="254" HEIGHT="32" border="0" alt="CONTINUE CHECKOUT" vspace="0"></a>			
 		</td>
-		<td width="35" align="RIGHT" valign="MIDDLE">
-			<font class="space2pix"><br></font><a href="/checkout/step_2_adjust.jsp?successPage=<%=request.getParameter("successPage")%>&ebt=true"><img src="/media_stat/images/buttons/checkout_arrow.gif" width="29" height="29" border="0" alt="CONTINUE CHECKOUT" vspace="0"></a>
-		</td>
+		
 	</tr>
 </table>
 <img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0"><br>

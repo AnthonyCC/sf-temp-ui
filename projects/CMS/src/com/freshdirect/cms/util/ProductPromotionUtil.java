@@ -145,7 +145,7 @@ public class ProductPromotionUtil {
 	}
 	
 	/**
-	 * Method to sort by product's original parent department.
+	 * To sort by product's original parent department.
 	 */
 	public final static Comparator<ProductModel> DEPTFULL_COMPARATOR = new Comparator<ProductModel>() {
 
