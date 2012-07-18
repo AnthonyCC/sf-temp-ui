@@ -5,10 +5,9 @@ import javax.servlet.jsp.PageContext;
 
 import org.apache.log4j.Logger;
 
-import com.freshdirect.fdstore.coremetrics.builder.SkipTagException;
 import com.freshdirect.fdstore.coremetrics.builder.RegistrationTagModelBuilder;
+import com.freshdirect.fdstore.coremetrics.builder.SkipTagException;
 import com.freshdirect.fdstore.coremetrics.tagmodel.RegistrationTagModel;
-import com.freshdirect.fdstore.customer.FDOrderI;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
@@ -18,6 +17,7 @@ public class CmRegistrationTag extends AbstractCmTag {
 	private static final Logger LOGGER = LoggerFactory.getInstance(CmRegistrationTag.class);
 	private static final String REGISTRATION_TAG_FS = "cmCreateRegistrationTag(%s,%s,%s,%s,%s,%s,%s);";
 	private static final String PENDING_REGISTRATION_EVENT = "pendingCoremetricsRegistrationEvent";
+	private static final String REGISTRATION_LOCATION = "coremetricsRegistrationLocation";
 	
 	private RegistrationTagModelBuilder builder = new RegistrationTagModelBuilder();
 	private boolean force;
@@ -25,7 +25,11 @@ public class CmRegistrationTag extends AbstractCmTag {
 	public static void setPendingRegistrationEvent(HttpSession session){
 		session.setAttribute(PENDING_REGISTRATION_EVENT, true);
 	}
-	
+
+	public static void setRegistrationLocation(HttpSession session, String location){
+		session.setAttribute(REGISTRATION_LOCATION, location);
+	}
+
 	@Override
 	protected String getTagJs() throws SkipTagException {
 
@@ -36,6 +40,9 @@ public class CmRegistrationTag extends AbstractCmTag {
 			session.removeAttribute(PENDING_REGISTRATION_EVENT);
 			
 			builder.setUser((FDUserI) session.getAttribute(SessionName.USER));
+			builder.setLocation((String)session.getAttribute(REGISTRATION_LOCATION));
+			session.removeAttribute(REGISTRATION_LOCATION);
+						
 			RegistrationTagModel model = builder.buildTagModel();
 						
 			String setProductScript = String.format(REGISTRATION_TAG_FS,
@@ -55,10 +62,6 @@ public class CmRegistrationTag extends AbstractCmTag {
 		}		
 	}
 
-	public void setOrder(FDOrderI order) {
-		builder.setOrder(order);
-	}
-	
 	public void setForce(boolean force) {
 		this.force = force;
 	}

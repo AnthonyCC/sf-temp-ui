@@ -6,7 +6,6 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 
 import com.freshdirect.common.address.AddressModel;
-import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpCustomerModel;
 import com.freshdirect.fdstore.FDResourceException;
@@ -14,7 +13,6 @@ import com.freshdirect.fdstore.coremetrics.tagmodel.RegistrationTagModel;
 import com.freshdirect.fdstore.customer.FDCustomerFactory;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDIdentity;
-import com.freshdirect.fdstore.customer.FDOrderI;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
@@ -23,10 +21,10 @@ public class RegistrationTagModelBuilder  {
 	private static final Logger LOGGER = LoggerFactory.getInstance(RegistrationTagModelBuilder.class);
 
 	private FDUserI user;
-	private FDOrderI order;
 	private boolean update;
 	private RegistrationTagModel tagModel = new RegistrationTagModel();
 	private AddressModel addressModel;
+	private String location;
 	
 	
 	public RegistrationTagModel buildTagModel() throws SkipTagException{
@@ -92,16 +90,23 @@ public class RegistrationTagModelBuilder  {
 	public void identifyAttributes() throws SkipTagException{
 		Map<Integer, String> attributesMap = tagModel.getAttributesMaps();
 		
-		EnumServiceType serviceType = user.getUserServiceType();
-		attributesMap.put(1, serviceType==null ? "" : serviceType.toString());
-		
-		if (addressModel != null){
-			attributesMap.put(2, addressModel.toShortString(EnumServiceType.CORPORATE.equals(serviceType), " / "));
+		if (location != null){
+			attributesMap.put(2, location);
 		}
 		
-		if (order != null){
-			attributesMap.put(3, TagModelUtil.getCmOrderId(order));
+		int orderCount = 0;
+
+		if (update){
+			try {
+				orderCount = user.getOrderHistory().getTotalOrderCount();
+			} catch (FDResourceException e) {
+				LOGGER.error(e);
+				throw new SkipTagException("FDResourceException occured", e);
+			}
 		}
+			
+		attributesMap.put(3, Integer.toString(orderCount));
+		
 		
 		attributesMap.put(4, user.getCohortName());
 	}
@@ -109,14 +114,12 @@ public class RegistrationTagModelBuilder  {
 	public void setUser(FDUserI user) {
 		this.user = user;
 	}
-		
-	public void setOrder(FDOrderI order){
-		this.order = order;
-		setUpdate(true);
-	}
 	
 	public void setUpdate(boolean update){
 		this.update = update;
 	}
 
+	public void setLocation(String location) {
+		this.location = location;
+	}
 }

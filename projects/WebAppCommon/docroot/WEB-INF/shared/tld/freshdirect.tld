@@ -4923,11 +4923,6 @@
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 		<attribute>
-			<name>order</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
 			<name>force</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>

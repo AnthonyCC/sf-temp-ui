@@ -28,7 +28,7 @@ final int W_CHECKOUT_STEP_4_RECEIPT_TOTAL = 970;
 	
 	<fd:GetOrder id='order' saleId='<%=_ordNum%>'>
 		<fd:CmOrder order="<%=order%>" wrapIntoScriptTag="true"/>
-		<fd:CmRegistration wrapIntoScriptTag="true" order="<%=order%>" force="true"/>
+		<fd:CmRegistration wrapIntoScriptTag="true" update="true" force="true"/>
 	</fd:GetOrder>
 	<%
 	if(session.getAttribute("MODIFIED" + _ordNum) != null && session.getAttribute("MODIFIED" + _ordNum).equals(_ordNum)) {
