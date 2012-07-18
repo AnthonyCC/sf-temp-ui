@@ -326,8 +326,12 @@ public class CapacityControllerCronRunner extends BaseCapacityCronRunner {
 				.append("<th>").append("WINDOW END").append("</th>")
 				.append("<th>").append("CAPACITY").append("</th>")
 				.append("<th>").append("CTCAPACITY").append("</th>")
+				.append("<th>").append("PREMIUM_CAPACITY").append("</th>")
+				.append("<th>").append("PREMIUM_CT_CAPACITY").append("</th>")
 				.append("<th>").append("ROUTING_CAPACITY").append("</th>")
-				.append("<th>").append("ROUTING_CTCAPACITY").append("</th>").append("</tr>");
+				.append("<th>").append("ROUTING_CTCAPACITY").append("</th>")
+				.append("<th>").append("ROUTING_PREMIUMCAPACITY").append("</th>")
+				.append("<th>").append("ROUTING_PREMIUMCTCAPACITY").append("</th>").append("</tr>");
 				while(_itr.hasNext()) {
 					_dlvTimeSlot = _itr.next();	
 					buff.append("<tr>")
@@ -335,11 +339,15 @@ public class CapacityControllerCronRunner extends BaseCapacityCronRunner {
 					.append("<td>").append(DateFormat.getTimeInstance().format(_dlvTimeSlot.getStartTimeAsDate())).append("</td>")
 					.append("<td>").append(DateFormat.getTimeInstance().format(_dlvTimeSlot.getEndTimeAsDate())).append("</td>")
 					.append("<td>").append(_dlvTimeSlot.getCapacity()).append("</td>")
-					.append("<td>").append(_dlvTimeSlot.getChefsTableCapacity()).append("</td>");
+					.append("<td>").append(_dlvTimeSlot.getChefsTableCapacity()).append("</td>")
+					.append("<td>").append(_dlvTimeSlot.getPremiumCapacity()).append("</td>")
+					.append("<td>").append(_dlvTimeSlot.getPremiumCtCapacity()).append("</td>");
 					if(_dlvTimeSlot.getRoutingSlot() != null && 
 							_dlvTimeSlot.getRoutingSlot().getDeliveryMetrics() != null) {
 						buff.append("<td>").append(_dlvTimeSlot.getRoutingSlot().getDeliveryMetrics().getOrderCapacity()).append("</td>")
-						.append("<td>").append(_dlvTimeSlot.getRoutingSlot().getDeliveryMetrics().getOrderCtCapacity()).append("</td>");
+						.append("<td>").append(_dlvTimeSlot.getRoutingSlot().getDeliveryMetrics().getOrderCtCapacity()).append("</td>")
+						.append("<td>").append(_dlvTimeSlot.getRoutingSlot().getDeliveryMetrics().getOrderPremiumCapacity()).append("</td>")
+						.append("<td>").append(_dlvTimeSlot.getRoutingSlot().getDeliveryMetrics().getOrderPremiumCtCapacity()).append("</td>");
 					} else {
 						buff.append("<td>").append("ERROR").append("</td>")
 						.append("<td>").append("ERROR").append("</td>");
