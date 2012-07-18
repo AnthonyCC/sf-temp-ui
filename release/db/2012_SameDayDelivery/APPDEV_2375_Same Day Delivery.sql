@@ -24,3 +24,4 @@ RSV_PREMIUM_CTONLY_STD_UNCO NUMBER(10) ,
 RSV_PREMIUMCT_REGONLY_STD_COMM NUMBER(10) ,
 RSV_PREMIUMCT_REGONLY_STD_UNCO NUMBER(10) );
   
+update transp.trn_cutoff set name = replace(lower(name), 'cutoff','Handoff') ,description = replace(lower(description), 'cutoff','Handoff');
