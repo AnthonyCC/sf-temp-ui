@@ -1092,7 +1092,7 @@ public class FDStoreProperties {
 		defaults.put(PROP_COREMETRICS_DATA_COLLECTION_METHOD, "false");
 		defaults.put(PROP_COREMETRICS_DATA_COLLECTION_DOMAIN, "testdata.coremetrics.com");
 		defaults.put(PROP_COREMETRICS_COOKIE_DOMAIN, "freshdirect.com");
-		defaults.put(PROP_COREMETRICS_CATID_DIRS, "help,your_account,quickshop,checkout,gift_card,robin_hood,about,survey,login,site_access,registration");
+		defaults.put(PROP_COREMETRICS_CATID_DIRS, "help,your_account,quickshop,checkout,gift_card,robin_hood,about,survey,login,site_access,registration,wine,4mm");
 		defaults.put(PROP_COREMETRICS_CATID_BLOG, "blog");
 		defaults.put(PROP_COREMETRICS_CATID_OTHERPAGE, "other_page");
 		defaults.put(PROP_COREMETRICS_FTP_URL, "ftp.coremetrics.com");
