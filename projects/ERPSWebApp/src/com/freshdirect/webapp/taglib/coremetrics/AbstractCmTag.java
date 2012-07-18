@@ -12,6 +12,7 @@ import org.apache.log4j.Logger;
 
 import com.freshdirect.crm.CrmAgentModel;
 import com.freshdirect.fdstore.coremetrics.builder.SkipTagException;
+import com.freshdirect.framework.util.StringUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
 
@@ -62,7 +63,7 @@ public abstract class AbstractCmTag extends SimpleTagSupport {
 		if (var==null){
 			return "null";
 		} else {
-			return "\""+var.toString()+"\"";
+			return "\""+StringUtil.escapeJavaScript(var.toString())+"\"";
 		}
 	}
 
