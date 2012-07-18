@@ -82,6 +82,10 @@ public class FDReservation extends ModelSupport {
 	public String getZoneId() {
 		return this.timeslot.getZoneId();
 	}
+	
+	public String getZoneCode() {
+		return this.timeslot.getZoneCode();
+	}
 
 	public Date getExpirationDateTime() {
 		return expirationDateTime;

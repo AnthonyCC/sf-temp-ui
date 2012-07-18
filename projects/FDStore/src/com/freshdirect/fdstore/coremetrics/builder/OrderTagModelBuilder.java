@@ -42,7 +42,7 @@ public class OrderTagModelBuilder {
 				model.getAttributesMaps().put(4, FDTimeslot.format(reservation.getStartTime(), reservation.getEndTime()));
 		}
 		
-		model.getAttributesMaps().put(5, reservation.getZoneId()); //deliveryZone
+		model.getAttributesMaps().put(5, reservation.getZoneCode()); //deliveryZone
 		
 		/** payment promos and discounts **/
 		String cardType = order.getPaymentMethod().getPaymentMethodType().equals(EnumPaymentMethodType.CREDITCARD) ? ":"+order.getPaymentMethod().getCardType().getDisplayName() : "";
