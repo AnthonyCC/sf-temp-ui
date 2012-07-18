@@ -101,12 +101,12 @@ final int W_GIFTCARD_DONATION_TOTAL = 300;
 										<logic:iterate id="donId" collection="<%= donationOrgList %>" type="com.freshdirect.fdstore.content.DonationOrganization">
 											<tr>
 												<td width="15" valign="top">
-													<div style="padding-top:20px"><input type="radio" class="text11" name="gcDonId" id="gcDonId" value="<%= donId.getContentName() %>" <%= (fdGCDonId != null && donId.getContentName().equals(fdGCDonId)) ? "checked" : "" %> />
+													<div style="padding-top:20px"><input type="radio" class="text11" name="gcDonId" id="gcDonId_<%= donId.getContentName() %>" value="<%= donId.getContentName() %>" <%= (fdGCDonId != null && donId.getContentName().equals(fdGCDonId)) ? "checked" : "" %> />
 													</div>
 												</td>
 												<td width="65" valign="top">											
 													<%
-														String addDefaultOrgLogo = "<input type=\"image\" name=\"default_org_logo\" src=\"/media/editorial/giftcards_donation/org_logo_blank.gif\" width=\"61\" height=\"61\" alt=\"\" border=\"0\" />";
+														String addDefaultOrgLogo = "<input type=\"image\" name=\"default_org_logo\" src=\"/media/editorial/giftcards/org_logo_blank.gif\" width=\"61\" height=\"61\" alt=\"\" border=\"0\" />";
 													%>		
 													<%= (donId.getLogoSmall() != null) ? donId.getLogoSmall().toHtml() : addDefaultOrgLogo %>
 													&nbsp;
@@ -161,7 +161,13 @@ final int W_GIFTCARD_DONATION_TOTAL = 300;
 		<script>
 		function pendGC() {
 			showPopUp = true;
-			if ($('gcDonId').checked) { showPopUp = false; }
+			var arrRadioBtn = document.getElementsByName("gcDonId");
+			for(var i=0;i<arrRadioBtn.length;i++){
+				if($(arrRadioBtn[i]).checked){
+					showPopUp = false;
+					break;
+				}
+			}
 			if (showPopUp) {
 				var popUp='<div style="text-align: left;" class="pendGCPop" id="pendGCPop"><a href="#" onclick="Modalbox.hide(); return false;"><img src="/media_stat/images/giftcards/your_account/close.gif" width="50" height="11" alt="close" border="0" style="float: right;" /></a><br style="clear: both;" /><br /><br />Please select organization you want to donate giftcard, then click "Donate A Gift Card."<br /><br />Close this popup to choose organization you want to donate.<br /><br /><div style="text-align: center;"><a href="#" onclick="Modalbox.hide(); return false;">Close</a></div></div>';
 
@@ -178,7 +184,7 @@ final int W_GIFTCARD_DONATION_TOTAL = 300;
 					afterLoad: function() { window.scrollTo(0,0); },
 					afterHide: function() { window.scrollTo(Modalbox.initScrollX,Modalbox.initScrollY); }
 				});
-				
+				showPopUp = false;
 				return false;
 			}else{
 				setCheckOut();

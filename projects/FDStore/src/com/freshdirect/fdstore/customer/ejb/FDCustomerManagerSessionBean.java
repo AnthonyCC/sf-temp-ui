@@ -3384,7 +3384,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		Connection conn = null;
 		try {
 			conn = getConnection();
-			SavedRecipientDAO.deleteSavedRecipients(conn, user.getPrimaryKey());
+			SavedRecipientDAO.deleteSavedRecipients(conn, user.getPrimaryKey(), user.getGiftCardType() != null ? user.getGiftCardType().getName() : null);
 		} catch (SQLException sqle) {
 			throw new FDResourceException(sqle,
 					"Unable to delete saved recipient  for user");

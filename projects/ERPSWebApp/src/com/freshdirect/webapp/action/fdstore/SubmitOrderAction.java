@@ -305,8 +305,12 @@ public class SubmitOrderAction extends WebActionSupport {
 			if(rsv != null && rsv.getPK().equals(cart.getDeliveryReservation().getPK())){
 			    user.setReservation(null);
 			}
-			//Clear Recipient List
-			user.setRecipientList(new FDRecipientList());
+			
+			//Clear Recipient List of gift card type
+			if(user.getRecipientList() != null){
+				user.getRecipientList().removeRecipients(user.getGiftCardType());
+			}
+			
 			user.setBulkRecipientList(new FDBulkRecipientList());
 			user.setRedeemedPromotion(null);
 			//CLear the fake delivery address.

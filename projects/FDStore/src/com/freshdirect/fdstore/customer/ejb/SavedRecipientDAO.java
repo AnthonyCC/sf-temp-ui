@@ -110,11 +110,12 @@ public class SavedRecipientDAO {
 	}
 	
 	
-	public static void deleteSavedRecipients(Connection conn, String fdUserId) throws SQLException {
+	public static void deleteSavedRecipients(Connection conn, String fdUserId, String giftcardType) throws SQLException {
 		PreparedStatement ps = 
-			conn.prepareStatement("delete from cust.SAVED_RECIPIENT where FDUSER_ID=?");
+			conn.prepareStatement("delete from cust.SAVED_RECIPIENT where FDUSER_ID=? and GIFTCARD_TYPE=?");
 			
 			ps.setString(1, fdUserId);
+			ps.setString(2, giftcardType);
 			ps.execute();
 			ps.close();
 	}
