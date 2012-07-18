@@ -174,6 +174,7 @@ public class CrmAddressControllerTag extends AbstractControllerTag {
 				boolean isEBTAccepted = null !=serviceResult ? serviceResult.isEbtAccepted():false;
 				if (validator.isAddressDeliverable()) {
 					FDSessionUser user = (FDSessionUser)CrmSession.getUser(pageContext.getSession());
+					isEBTAccepted = isEBTAccepted && (user.getOrderHistory().getUnSettledEBTOrderCount()<=0);
 					if (user.isPickupOnly() && user.getOrderHistory().getValidOrderCount()==0) {
 						//
 						// now eligible for home/corporate delivery and still not placed an order.

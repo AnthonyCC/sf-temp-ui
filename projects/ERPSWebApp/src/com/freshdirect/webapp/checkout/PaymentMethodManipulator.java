@@ -154,6 +154,9 @@ public class PaymentMethodManipulator extends CheckoutManipulator {
 		EnumServiceType selectedServiceType=cart.getDeliveryAddress().getServiceType();
 		if(EnumPaymentMethodType.EBT.equals(paymentMethod.getPaymentMethodType())&& !getUser().isEbtAccepted()/*!(cart.getDeliveryAddress() instanceof ErpDepotAddressModel)*/){
 			result.addError(new ActionError("ebtPaymentNotAllowed",SystemMessageList.MSG_EBT_NOT_ALLOWED));
+			if(getUser().getOrderHistory().getUnSettledEBTOrderCount() > 0){
+				result.addError(new ActionError("ebtPaymentNotAllowed",SystemMessageList.MSG_EBT_NOT_ALLOWED_UNSETTLED_ORDERS));
+			}
 		}
 			
 		paymentMethod.setBillingRef( billingRef );

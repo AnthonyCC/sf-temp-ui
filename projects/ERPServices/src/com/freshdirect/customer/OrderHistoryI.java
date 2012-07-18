@@ -49,4 +49,6 @@ public interface OrderHistoryI extends Serializable {
 	public int getTotalRegularOrderCount();
 	
 	public int getSettledECheckOrderCount();
+	
+	public int getUnSettledEBTOrderCount();
 }

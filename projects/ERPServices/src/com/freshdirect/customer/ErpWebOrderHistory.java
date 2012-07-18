@@ -30,6 +30,7 @@ public class ErpWebOrderHistory implements OrderHistoryI {
 	private static final String VALID_ORDER_COUNT = "validOrderCount";
 	private static final String VALID_PHONE_ORDER_COUNT = "validPhoneOrderCount";
 	private static final String SETTLED_ORDER_COUNT = "settledOrderCount";
+	private static final String UNSETTLED_EBT_ORDER_COUNT = "UnsettledEBTOrderCount";
 	/**
 	 * 
 	 * @param erpSaleInfos
@@ -52,6 +53,7 @@ public class ErpWebOrderHistory implements OrderHistoryI {
 		orderHistoryInfo.put(VALID_ORDER_COUNT, new Integer(ErpOrderHistoryUtil.getValidOrderCount(erpSaleInfos)));
 		orderHistoryInfo.put(VALID_PHONE_ORDER_COUNT, new Integer(ErpOrderHistoryUtil.getValidPhoneOrderCount(erpSaleInfos)));
 		orderHistoryInfo.put(SETTLED_ORDER_COUNT, new Integer(ErpOrderHistoryUtil.getSettledOrderCount(erpSaleInfos)));
+		orderHistoryInfo.put(UNSETTLED_EBT_ORDER_COUNT, new Integer(ErpOrderHistoryUtil.getUnSettledEBTOrderCount(erpSaleInfos)));
 	}
 
 	public int getDeliveredOrderCount(){
@@ -148,6 +150,7 @@ public class ErpWebOrderHistory implements OrderHistoryI {
 		buf.append("ReturnOrderCount "+getReturnOrderCount()+"\n");
 		buf.append("DeliveredOrderCount "+getDeliveredOrderCount()+"\n");
 		buf.append("SettledOrderCount "+getSettledOrderCount()+"\n");
+		buf.append("UnSettledEBTOrderCount "+getUnSettledEBTOrderCount()+"\n");
 		return buf.toString();
 	}
 
@@ -155,5 +158,10 @@ public class ErpWebOrderHistory implements OrderHistoryI {
 	public int getOrderCountForChefsTableEligibility() {
 		// TODO Auto-generated method stub
 		return 0;
+	}
+	
+	
+	public int getUnSettledEBTOrderCount(){
+		return ((Integer)orderHistoryInfo.get(UNSETTLED_EBT_ORDER_COUNT)).intValue();
 	}
 }

@@ -292,6 +292,7 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 		boolean isEBTAccepted = null !=serviceResult ? serviceResult.isEbtAccepted():false;
 		if (validator.isAddressDeliverable()) {
 			FDSessionUser user = (FDSessionUser) session.getAttribute(SessionName.USER);
+			isEBTAccepted = isEBTAccepted && (user.getOrderHistory().getUnSettledEBTOrderCount()<=0);
 			if (user.isPickupOnly() && user.getOrderHistory().getValidOrderCount()==0) {
 				//
 				// now eligible for home/corporate delivery and still not placed an order.
@@ -384,9 +385,10 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 
 		ErpAddressModel thisAddress = FDCustomerManager.getAddress( getIdentity(), addressId );
 
-		DlvServiceSelectionResult serviceResult =FDDeliveryManager.getInstance().checkZipCode(thisAddress.getZipCode());
-		boolean isEBTAccepted = null !=serviceResult ? serviceResult.isEbtAccepted():false;
+		DlvServiceSelectionResult serviceResult =FDDeliveryManager.getInstance().checkZipCode(thisAddress.getZipCode());		
 		FDSessionUser user = (FDSessionUser)session.getAttribute( SessionName.USER );
+		boolean isEBTAccepted = null !=serviceResult ? serviceResult.isEbtAccepted():false;
+		isEBTAccepted = isEBTAccepted && (user.getOrderHistory().getUnSettledEBTOrderCount()<=0);
 		if (EnumCheckoutMode.NORMAL == user.getCheckoutMode()) {
 			String zoneId = zoneInfo.getZoneCode();
 			if ( zoneId != null && zoneId.length() > 0 ) {
@@ -448,7 +450,7 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 
 		AddressModel address = AddressUtil.scrubAddress( shippingAddress, result );
 		DlvServiceSelectionResult serviceResult =FDDeliveryManager.getInstance().checkZipCode(address.getZipCode());
-		boolean isEBTAccepted = null !=serviceResult ? serviceResult.isEbtAccepted():false;
+		boolean isEBTAccepted = null !=serviceResult ? (serviceResult.isEbtAccepted() && (user.getOrderHistory().getUnSettledEBTOrderCount()<=0)):false;
 		user.setEbtAccepted(isEBTAccepted);
 		// if it is a Hamptons address without the altContactNumber have user
 		// edit and provide it.

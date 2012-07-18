@@ -323,4 +323,15 @@ public class ErpOrderHistoryUtil {
 		}
 		return ret;
 	}
+	
+	public static int getUnSettledEBTOrderCount(Collection erpSaleInfos){
+		int ret = 0;
+		for(Iterator i = erpSaleInfos.iterator(); i.hasNext(); ){
+			ErpSaleInfo saleInfo = (ErpSaleInfo)i.next();
+			if (!saleInfo.isSettled()&& !saleInfo.getStatus().isCanceled() && EnumPaymentMethodType.EBT.equals(saleInfo.getPaymentMethodType())){
+				ret++;
+			}
+		}
+		return ret;
+	}
 }
