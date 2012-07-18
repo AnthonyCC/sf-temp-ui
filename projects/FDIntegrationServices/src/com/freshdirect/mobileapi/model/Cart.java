@@ -407,6 +407,10 @@ public class Cart {
         return cart.getDeliverySurcharge();
     }
 
+    public double getDeliveryCharge() {
+        return cart.getDeliveryCharge();
+    }
+    
     public double getSubTotal() {
         return cart.getSubTotal();
     }

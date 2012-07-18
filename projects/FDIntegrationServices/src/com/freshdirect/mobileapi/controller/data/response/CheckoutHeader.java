@@ -46,7 +46,7 @@ public class CheckoutHeader {
             //If delivery charge waived, set delivery fee to 'zero'
             this.deliverySurcharge = 0;
         } else {
-            this.deliverySurcharge = cart.getDeliverySurcharge();
+            this.deliverySurcharge = cart.getDeliveryCharge();
         }
         this.subTotal = cart.getSubTotal();
         this.total = cart.getTotal();
