@@ -111,6 +111,8 @@ public class CdfProcessTask {
 		
 		LOGGER.info("uploading Coremetrics CDF to " + ftpUser +"@"+ ftpUrl);
 		FTPClient client = new FTPClient();
+		client.setDefaultTimeout(600000);
+		client.setDataTimeout(600000);
         FileInputStream fis = null;
         
         try {
