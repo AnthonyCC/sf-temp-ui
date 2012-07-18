@@ -638,7 +638,7 @@ public class DlvManagerDAO {
 	}
 	
 	public static void restoreReservation(Connection conn, String rsvId) throws SQLException {
-	    PreparedStatement ps = conn.prepareStatement("UPDATE DLV.RESERVATION SET STATUS_CODE = ?,ORDER_ID='x'||ID, MODIFIED_DTTM=SYSDATE WHERE ID = ? AND EXPIRATION_DATETIME > SYSDATE");
+	    PreparedStatement ps = conn.prepareStatement("UPDATE DLV.RESERVATION SET STATUS_CODE = ?,ORDER_ID='x'||ID, MODIFIED_DTTM=SYSDATE WHERE ID = ?");
 	    ps.setInt(1, EnumReservationStatus.RESERVED.getCode());
 	    ps.setString(2, rsvId);
 	    if(ps.executeUpdate() != 1){
