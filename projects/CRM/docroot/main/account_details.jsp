@@ -144,7 +144,7 @@ String case_required_add = "<span class=\"cust_module_content_edit\">Case requir
     <tmpl:put name='content' direct='true'>
     <fd:CmInit/>
 	<fd:CmPageView wrapIntoScriptTag="true" forceTagEffect="true"/>
-	<fd:CmRegistration wrapIntoScriptTag="true"/>
+	<fd:CmRegistration wrapIntoScriptTag="true" update="true" force="true"/>
     
     <% if (forPrint) { %>
         <div class="sub_nav">Customer: <b><%= custInfo.getFirstName() %> <%= custInfo.getMiddleName() %> <%= custInfo.getLastName() %></b> &middot; ID: <b><%= user.getIdentity().getErpCustomerPK() %></b> &middot; Email: <%= custInfo.getEmail() %><br><span class="cust_header_field">Order<%= user.getAdjustedValidOrderCount() > 1 ? "s" : "" %>:</span> <b><%= user.getAdjustedValidOrderCount() %></b>
