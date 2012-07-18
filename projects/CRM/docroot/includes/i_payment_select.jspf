@@ -53,6 +53,7 @@
             boolean bypassAVSCheck=payment.isBypassAVSCheck();
 
 			%>	
+			<%if(!EnumPaymentMethodType.EBT.equals(payment.getPaymentMethodType())){ %>
 			 <tr>
 				<td align="right">AVS Status:</td>
 				<td><font color="red"><%=avsStatusFailed?"AVS FAILED":""%></font></td>
@@ -61,6 +62,7 @@
 				<td align="right">Bypass AVS Check:</td>
 				<td><font color="red"><%=bypassAVSCheck?"AVS Bypass":""%></font></td>				
 			</tr>
+			<% }%>
 				
 				
 				

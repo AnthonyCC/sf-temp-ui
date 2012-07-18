@@ -386,6 +386,8 @@ public class PaymentMethodUtil implements PaymentMethodName { //AddressName,
         		paymentMethod.getAccountNumber() == null || "".equals(paymentMethod.getAccountNumber()),
 				PaymentMethodName.ACCOUNT_NUMBER, SystemMessageList.MSG_REQUIRED
 		);
+        
+        if(EnumPaymentMethodType.CREDITCARD.equals(paymentMethod.getPaymentMethodType())||EnumPaymentMethodType.EBT.equals(paymentMethod.getPaymentMethodType())){
         if(EnumPaymentMethodType.CREDITCARD.equals(paymentMethod.getPaymentMethodType())){        	
 	        //check brand
 	        result.addError(
@@ -449,6 +451,8 @@ public class PaymentMethodUtil implements PaymentMethodName { //AddressName,
 	        "expiration", SystemMessageList.MSG_CARD_EXPIRATION_DATE
 	        );
 	        
+        }
+         
 	        result.addError(
 	        		paymentMethod.getAddress1()==null || paymentMethod.getAddress1().trim().length() < 1,
 					EnumUserInfoName.BIL_ADDRESS_1.getCode(),SystemMessageList.MSG_REQUIRED
@@ -487,7 +491,9 @@ public class PaymentMethodUtil implements PaymentMethodName { //AddressName,
 	        	}
 	        	
 	        }
+        
 	        
+        if(EnumPaymentMethodType.CREDITCARD.equals(paymentMethod.getPaymentMethodType())){
 	        if(!result.isFailure() && FDStoreProperties.isPaymentMethodVerificationEnabled()&& !paymentMethod.isBypassAVSCheck()&& verifyCC) {
 	        	
 	        	
@@ -555,7 +561,8 @@ public class PaymentMethodUtil implements PaymentMethodName { //AddressName,
 	        		result.addError(new ActionError("payment_method_fraud", SystemMessageList.MSG_TECHNICAL_ERROR+" "+e.toString()));
 				}
 	        }
-        } else if (EnumPaymentMethodType.ECHECK.equals(paymentMethod.getPaymentMethodType())) {
+        } 
+        }else if (EnumPaymentMethodType.ECHECK.equals(paymentMethod.getPaymentMethodType())) {
         	        	
 	        if (paymentMethod.getAbaRouteNumber() != null && !"".equals(paymentMethod.getAbaRouteNumber())) {
 	        	paymentMethod.setAbaRouteNumber(StringUtils.leftPad(paymentMethod.getAbaRouteNumber(), 9, "0"));
@@ -612,7 +619,7 @@ public class PaymentMethodUtil implements PaymentMethodName { //AddressName,
         //
         // standardize billing address on all credit cards
         //
-        if (result.isSuccess()&& !EnumPaymentMethodType.CREDITCARD.equals(paymentMethod.getPaymentMethodType())) {   
+        if (result.isSuccess()&& !EnumPaymentMethodType.CREDITCARD.equals(paymentMethod.getPaymentMethodType())&&!EnumPaymentMethodType.EBT.equals(paymentMethod.getPaymentMethodType())) {   
         	
         	AddressModel cleanAddress = scrubAddress(paymentMethod.getAddress(), result,isFiftyStateValidationReqd);
     		paymentMethod.setAddress1(cleanAddress.getAddress1());

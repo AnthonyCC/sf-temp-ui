@@ -23,7 +23,7 @@
 </table>
 <%@ include file="/includes/i_modifyorder.jspf" %>
 	<%
-	ErpPaymentMethodI paymentMethod = PaymentManager.createInstance();  // defaulting to ErpCreditCardModel
+	ErpPaymentMethodI paymentMethod = PaymentManager.createInstance(EnumPaymentMethodType.EBT);  // defaulting to ErpCreditCardModel
 	String actionName= "addPaymentMethod";        
 	%>
 	

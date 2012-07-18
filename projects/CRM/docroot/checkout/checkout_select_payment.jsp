@@ -462,10 +462,10 @@
         	        <b>EBT Cards</b>
         	        </td>
         	        <td width="59%" class="field_note">
-        	        &nbsp;Payment using EBT card is allowed only for pick-up orders. 
+        	        &nbsp;
         	        </td>
         	        <td align="right" width="20%">
-        	        <a href="/checkout/checkout_new_checkacct.jsp" class="add">ADD</a>
+        	        <a href="/checkout/checkout_new_ebt_card.jsp" class="add">ADD</a>
         	        </td>
         	        <td width="1%"></td>
         	        </tr>
@@ -485,7 +485,7 @@
 					methodChecked = "checked";
 					selectedPaymentMethodExists = true;
 				}
-				else if("new".equalsIgnoreCase(selectedPaymPKId) && ccCounter.intValue() == numEChecks-1){
+				else if("new".equalsIgnoreCase(selectedPaymPKId) && ccCounter.intValue() == numECards-1){
 					methodChecked = "checked";
 				}
 				if ( methodChecked.equals("") && ccCounter.intValue() == numECards-1 && !selectedPaymentMethodExists) {

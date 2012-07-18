@@ -755,7 +755,8 @@ String case_required_add = "<span class=\"cust_module_content_edit\">Case requir
 			<%-- END CHECKING ACCT --%>
 			
 			<%-- START EBT CARDS --%>
-			<table border="0" cellpadding="0" cellspacing="0" width="100%" style="border-bottom: solid 1px #999999;"><tr><td width="20%"  style="padding: 4px; margin-top: 5px; border-bottom: none; background:#E8FFE8;"><b>EBT Cards</b></td><td width="59%" class="field_note">&nbsp;<span class="error">Payment using EBT card is allowed only for pick-up orders.</span><%--a href="#">View check usage promotion</a--%></td><td align="right" width="20%"><%if (!forPrint){%><%if(editable){%><a href="/customer_account/new_ebt_card.jsp" class="add">ADD</a><%}else{%><%=case_required_add%><%}%><%}%></td><td width="1%"></td></tr></table>
+			<% if(user.isEbtAccepted() ||numECards>0){ %>
+			<table border="0" cellpadding="0" cellspacing="0" width="100%" style="border-bottom: solid 1px #999999;"><tr><td width="20%"  style="padding: 4px; margin-top: 5px; border-bottom: none; background:#E8FFE8;"><b>EBT Cards</b></td><td width="59%" class="field_note">&nbsp;<span class="error"><!-- Payment using EBT card is allowed only for pick-up orders. --></span><%--a href="#">View check usage promotion</a--%></td><td align="right" width="20%"><%if (!forPrint){%><%if(editable && user.isEbtAccepted()){%><a href="/customer_account/new_ebt_card.jsp" class="add">ADD</a><%}else{%><%=case_required_add%><%}%><%}%></td><td width="1%"></td></tr></table>
 			<logic:iterate id="payment" collection="<%=customer.getPaymentMethods()%>" type="com.freshdirect.customer.ErpPaymentMethodI" indexId="idx">
             <%
             if(EnumPaymentMethodType.EBT.equals(payment.getPaymentMethodType())){
@@ -831,6 +832,7 @@ String case_required_add = "<span class=\"cust_module_content_edit\">Case requir
                 ebtNum++;
             	}%>
             </logic:iterate>
+            <% } %> 
 		<br>
 		</div>
     </tmpl:put>

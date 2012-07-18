@@ -98,12 +98,15 @@ public class ProductPromotionUtil {
 	public static List<ProductModel> getFeaturedProducts(List<ProductModel> products,boolean isPreview){
 		List<ProductModel> featProducts = new ArrayList<ProductModel>();
 		if(null != products){
+			int i=0;
 			for (Iterator iterator = products.iterator(); iterator.hasNext();) {
 				ProductModel productModel = (ProductModel) iterator.next();
 				if(isPreview ||(!isPreview &&!productModel.isUnavailable()))
 				if (productModel instanceof ProductModelPromotionAdapter) {
 					if(((ProductModelPromotionAdapter)productModel).isFeatured() ){
 						featProducts.add(productModel);
+						i++;
+						if(i>=3)break;
 					}					
 				}				
 				
@@ -119,9 +122,9 @@ public class ProductPromotionUtil {
 				ProductModel productModel = (ProductModel) iterator.next();
 				if(isPreview ||(!isPreview &&!productModel.isUnavailable())){
 					if (productModel instanceof ProductModelPromotionAdapter) {
-						if(!((ProductModelPromotionAdapter)productModel).isFeatured() ){
+//						if(!((ProductModelPromotionAdapter)productModel).isFeatured() ){
 							nonFeatProducts.add(productModel);
-						}					
+//						}					
 					}				
 				}
 				

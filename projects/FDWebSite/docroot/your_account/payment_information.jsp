@@ -25,6 +25,7 @@ final int W_YA_PAYMENT_INFO_TOTAL = 970;
 
 <%
 boolean hasCheck = false;
+boolean hasEBT = false;
 FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
 Collection paymentMethods = null;
 FDIdentity identity = null;
@@ -38,6 +39,8 @@ if(user!=null  && user.getIdentity()!=null) {
   		ErpPaymentMethodI  paymentM = (ErpPaymentMethodI) payItr.next();
  		if (EnumPaymentMethodType.ECHECK.equals(paymentM.getPaymentMethodType())) {
             	hasCheck = true;
+        }else if (EnumPaymentMethodType.EBT.equals(paymentM.getPaymentMethodType())) {
+            	hasEBT = true;
         }
 	}
 	
@@ -118,16 +121,19 @@ To learn more about our <b>Security Policies</b>, <a href="javascript:popup('/he
 			</td></tr>
 		</table>
 		<br>
+		<% if(user.isEbtAccepted()|| hasEBT){ %>
 		<table width="<%= W_YA_PAYMENT_INFO_TOTAL %>" border="0" cellspacing="0" cellpadding="0">
 		<tr valign="top">
 		    <td><img src="/media_stat/images/navigation/ebt_card_details.gif" WIDTH="119" HEIGHT="11" border="0" alt="EBT CARD DETAILS">&nbsp;&nbsp;&nbsp;<BR>
 		    <IMG src="/media_stat/images/layout/999966.gif" WIDTH="<%= W_YA_PAYMENT_INFO_TOTAL %>" HEIGHT="1" BORDER="0" VSPACE="3"><BR>
 		    </td>
 		</tr>
+		<%if(user.isEbtAccepted()){ %>
 		<tr valign="middle">
-			<td class="text11" style="padding-top: 5px; padding-bottom: 10px;">If you need to enter another EBT card: <a href="/your_account/add_ebt_card.jsp"><IMG src="/media_stat/images/buttons/add_new_card.gif" WIDTH="96" HEIGHT="16" ALT="Add New Credit Card" BORDER="0" ALIGN="absmiddle"></a>
+			<td class="text11" style="padding-top: 5px; padding-bottom: 10px;">If you need to enter another EBT card: <a href="/your_account/add_ebt_card.jsp"><IMG src="/media_stat/images/buttons/add_new_ebt_card.jpg" WIDTH="117" HEIGHT="16" ALT="Add New Credit Card" BORDER="0" ALIGN="absmiddle"></a>
 			</td>
 			</tr>
+			<% } %>
 			<tr><td>
 				<form name=ebtcard_form method="post">
 				<input type="hidden" name="actionName" value="">
@@ -136,6 +142,7 @@ To learn more about our <b>Security Policies</b>, <a href="javascript:popup('/he
 				</form>
 			</td></tr>
 		</table>
+		<% } %>
 		<br>
 		<IMG src="/media_stat/images/layout/ff9933.gif" WIDTH="<%= W_YA_PAYMENT_INFO_TOTAL %>" HEIGHT="1" BORDER="0"><BR>
 		<FONT CLASS="space4pix"><BR><BR></FONT>
