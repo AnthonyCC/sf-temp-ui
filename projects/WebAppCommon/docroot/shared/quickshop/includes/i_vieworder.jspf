@@ -481,7 +481,7 @@ if (showRecent && showThis &&  skusAdded!=null && skusAdded.contains("skuCode_"+
 		    }
 
 		    StringBuffer aqsLink = 
-		        new StringBuffer(landingPageRoot).append("?lineId=").append(orderLine.getCustomerListLineId()).append('&');
+		        new StringBuffer(service).append("?lineId=").append(orderLine.getCustomerListLineId()).append('&');
 		    if (isCCLorSO) aqsLink.append(CclUtils.CC_LIST_ID).append('=').append(ccListIdStr).append("&qcType=").append(cartType);
 		    else aqsLink.append("alt=true&orderId=").append(orderId);
 

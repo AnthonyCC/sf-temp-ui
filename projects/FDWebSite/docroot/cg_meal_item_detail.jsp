@@ -314,9 +314,12 @@ int prodCount = 0;%>
 		<% } %>
 
 	<% 
-		if (fdprd!=null && fdprd.hasIngredients()) {    %>
+		if (fdprd!=null && fdprd.hasIngredients()) {   
+			ProductModel tmpProduct = productNode;
+			productNode = compProduct; %>
 	       <br><%@ include file="/includes/product/i_product_ingredients.jspf"%>
-	<%  }  %>
+	<%  	productNode = tmpProduct;
+		}  %>
 	
 	<%@ include file="/includes/product/kosher.jspf" %>
 	
