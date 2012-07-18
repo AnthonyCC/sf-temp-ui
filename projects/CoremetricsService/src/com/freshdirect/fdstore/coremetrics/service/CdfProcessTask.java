@@ -111,7 +111,6 @@ public class CdfProcessTask {
 		
 		LOGGER.info("uploading Coremetrics CDF to " + ftpUser +"@"+ ftpUrl);
 		FTPClient client = new FTPClient();
-		client.enterLocalPassiveMode();
 		client.setDefaultTimeout(600000);
 		client.setDataTimeout(600000);
 		
@@ -123,7 +122,8 @@ public class CdfProcessTask {
             if (!client.login(ftpUser, FDStoreProperties.getCoremetricsFtpPassword())) {
             	throw new FDResourceException("ftp login failed"); 
             }
-            
+    		client.enterLocalPassiveMode();
+
             fis = new FileInputStream(cdfFilePath);
             if (!client.storeFile(cdfFileName, fis)) {
             	throw new FDResourceException("ftp file store failed");
