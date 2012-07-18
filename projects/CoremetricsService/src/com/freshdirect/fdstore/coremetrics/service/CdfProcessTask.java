@@ -41,6 +41,7 @@ public class CdfProcessTask {
 			return new CdfProcessResult(false, e.getMessage());
 		}
 		
+		LOGGER.info("CdfProcessTask complete");
 		return new CdfProcessResult(true, null);
 	}
 	
