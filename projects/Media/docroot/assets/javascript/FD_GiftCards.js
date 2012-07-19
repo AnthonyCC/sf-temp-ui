@@ -1077,6 +1077,7 @@ function showDialogs() {
 			$('gcResendRecipMsg').value = params.gcMessage;
 			$('gcSaleId').value = params.gcSaleId;
 			$('gcCertNum').value = params.gcCertNum;
+			$('gcType').value = params.gcType;
 
 			Modalbox.show($('gcResendBox'), {
 				loadingString: 'Loading Preview...',
@@ -1087,7 +1088,13 @@ function showDialogs() {
 				transitions: false,
 				autoFocusing: false,
 				centered: true,
-				afterLoad: function() { window.scrollTo(0,0); },
+				afterLoad: function() { 
+						window.scrollTo(0,0);   
+						
+						if($('gcType').value === 'DGC') { 
+							$('gcResendRecipEmail').disabled = true;
+						} 
+					},
 				afterHide: function() { window.scrollTo(Modalbox.initScrollX,Modalbox.initScrollY); }
 			})
 

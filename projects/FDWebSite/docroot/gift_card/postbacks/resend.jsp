@@ -41,6 +41,7 @@
                 json.put("gcMessage",dlvInfo.getRecepientModel().getPersonalMessage());
                 json.put("gcSaleId",saleId);
                 json.put("gcCertNum",dlvInfo.getCertificationNumber());
+                json.put("gcType",dlvInfo.getRecepientModel().getGiftCardType().getName());
             }
 		//return the json string which the js will then push into the overlay box
 	%>     </fd:GetGiftCardRecipientDlvInfo>  <%=json.toString()%>

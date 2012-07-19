@@ -299,9 +299,9 @@ public class HandOffDAO extends BaseDAO implements IHandOffDAO   {
        "decode(A.IS_DEPOT , 'X', (SELECT max(S.STOP_DEPARTUREDATETIME ) + 3/48  from TRANSP.HANDOFF_BATCHSTOP s where S.BATCH_ID = R.BATCH_ID and S.ROUTE_NO = R.ROUTE_NO), R.COMPLETETIME) COMPLETETIME "+ 
        "from (select dispatchtime as dt from ((select BD.DISPATCHTIME from  TRANSP.HANDOFF_BATCHDISPATCHEX BD where BD.BATCH_ID = ? AND BD.STATUS = ?) "+
             "MINUS "+
-                "( select distinct BD.DISPATCHTIME  from TRANSP.HANDOFF_BATCHDISPATCHEX BD, transp.HANDOFF_BATCH b where "+ 
-                "b.batch_id=bd.batch_id and B.DELIVERY_DATE=(select delivery_date from TRANSP.HANDOFF_BATCH where batch_id = ?) "+
-                "and b.cutoff_datetime < (select cutoff_datetime from TRANSP.HANDOFF_BATCH where batch_id = ?) AND BD.STATUS = ? and B.BATCH_STATUS IN ('CPD/ADC','CPD','CPD/ADF'))) " +
+                "( select distinct BD.DISPATCHTIME  from TRANSP.HANDOFF_BATCHDISPATCHEX BD, transp.HANDOFF_BATCH b, TRANSP.TRN_CUTOFF cx where "+ 
+                "b.batch_id=bd.batch_id and CX.CUTOFF_TIME = B.CUTOFF_DATETIME and B.DELIVERY_DATE=(select delivery_date from TRANSP.HANDOFF_BATCH where batch_id = ?) "+
+                "and CX.SEQUENCENO < (select CZ.SEQUENCENO from TRANSP.HANDOFF_BATCH bz, TRANSP.TRN_CUTOFF cz, where CZ.CUTOFF_TIME = BZ.CUTOFF_DATETIME and batch_id = ?) AND BD.STATUS = ? and B.BATCH_STATUS IN ('CPD/ADC','CPD','CPD/ADF'))) " +
                 ") T, transp.HANDOFF_BATCH b, TRANSP.HANDOFF_BATCHROUTE R, TRANSP.TRN_AREA A " +
          "where B.DELIVERY_DATE = ? "+ 
          "and B.BATCH_ID = R.BATCH_ID and R.AREA=A.CODE and B.BATCH_STATUS IN ('CPD/ADC','CPD','CPD/ADF') "+
@@ -309,16 +309,16 @@ public class HandOffDAO extends BaseDAO implements IHandOffDAO   {
 
 	private static final String GET_HANDOFFBATCH_PLANS = "SELECT * FROM TRANSP.PLAN P WHERE P.PLAN_DATE = ? "+
             "and P.START_TIME in (select B.DISPATCHTIME from TRANSP.HANDOFF_BATCHDISPATCHEX B where B.BATCH_ID = ? and B.STATUS = 'CPD' "+ 
-            "and B.DISPATCHTIME not in (select distinct DX.DISPATCHTIME from TRANSP.HANDOFF_BATCH bx , TRANSP.HANDOFF_BATCHDISPATCHEX dx "+
-            "where BX.BATCH_ID = DX.BATCH_ID and BX.DELIVERY_DATE = ? "+
-            "and BX.CUTOFF_DATETIME < (select BZ.CUTOFF_DATETIME from TRANSP.HANDOFF_BATCH bz where BZ.BATCH_ID = ? ) "+
+            "and B.DISPATCHTIME not in (select distinct DX.DISPATCHTIME from TRANSP.HANDOFF_BATCH bx , TRANSP.HANDOFF_BATCHDISPATCHEX dx, TRANSP.TRN_CUTOFF cx "+
+            "where BX.BATCH_ID = DX.BATCH_ID and CX.CUTOFF_TIME = BX.CUTOFF_DATETIME and BX.DELIVERY_DATE = ? "+
+            "and CX.SEQUENCENO < (select CZ.SEQUENCENO from TRANSP.HANDOFF_BATCH bz, TRANSP.TRN_CUTOFF cz, where CZ.CUTOFF_TIME = BZ.CUTOFF_DATETIME and BZ.BATCH_ID = ? ) "+
             "and DX.STATUS = 'CPD' )) order by p.plan_date, p.zone, p.start_time, p.sequence ";
 	
 	private static final String GET_HANDOFFBATCH_PLANRESOURCES = "SELECT PR.* FROM TRANSP.PLAN_RESOURCE PR, TRANSP.PLAN P WHERE PR.PLAN_ID = P.PLAN_ID and P.PLAN_DATE = ? " +
 			"and P.START_TIME in (select B.DISPATCHTIME from TRANSP.HANDOFF_BATCHDISPATCHEX B where B.BATCH_ID = ? and B.STATUS = 'CPD' "+ 
-            "and B.DISPATCHTIME not in (select distinct DX.DISPATCHTIME from TRANSP.HANDOFF_BATCH bx , TRANSP.HANDOFF_BATCHDISPATCHEX dx "+
-            "where BX.BATCH_ID = DX.BATCH_ID and BX.DELIVERY_DATE = ? "+
-            "and BX.CUTOFF_DATETIME < (select BZ.CUTOFF_DATETIME from TRANSP.HANDOFF_BATCH bz where BZ.BATCH_ID = ? ) "+
+            "and B.DISPATCHTIME not in (select distinct DX.DISPATCHTIME from TRANSP.HANDOFF_BATCH bx , TRANSP.HANDOFF_BATCHDISPATCHEX dx, TRANSP.TRN_CUTOFF cx "+
+            "where BX.BATCH_ID = DX.BATCH_ID and CX.CUTOFF_TIME = BX.CUTOFF_DATETIME and BX.DELIVERY_DATE = ? "+
+            "and CX.SEQUENCENO < (select CZ.SEQUENCENO from TRANSP.HANDOFF_BATCH bz, TRANSP.TRN_CUTOFF cz, where CZ.CUTOFF_TIME = BZ.CUTOFF_DATETIME and BZ.BATCH_ID = ? ) "+
             "and DX.STATUS = 'CPD'))";
 	
 	private static final String INSERT_HANDOFFBATCH_AUTODISPATCHES = "INSERT INTO TRANSP.DISPATCH ( DISPATCH_ID, DISPATCH_DATE, ORIGIN_FACILITY, DESTINATION_FACILITY, " +
@@ -327,23 +327,23 @@ public class HandOffDAO extends BaseDAO implements IHandOffDAO   {
 	
 	private static final String CLEAR_HANDOFFBATCH_AUTODISPATCHES = "DELETE FROM TRANSP.DISPATCH D WHERE D.DISPATCH_DATE = ? " +
 			"and D.START_TIME in (select B.DISPATCHTIME from TRANSP.HANDOFF_BATCHDISPATCHEX B where B.BATCH_ID = ? and B.STATUS = 'CPD' "+ 
-            "and B.DISPATCHTIME not in (select distinct DX.DISPATCHTIME from TRANSP.HANDOFF_BATCH bx , TRANSP.HANDOFF_BATCHDISPATCHEX dx "+
-            "where BX.BATCH_ID = DX.BATCH_ID and BX.DELIVERY_DATE = ? "+
-            "and BX.CUTOFF_DATETIME < (select BZ.CUTOFF_DATETIME from TRANSP.HANDOFF_BATCH bz where BZ.BATCH_ID = ? ) "+
+            "and B.DISPATCHTIME not in (select distinct DX.DISPATCHTIME from TRANSP.HANDOFF_BATCH bx , TRANSP.HANDOFF_BATCHDISPATCHEX dx, TRANSP.TRN_CUTOFF cx "+
+            "where BX.BATCH_ID = DX.BATCH_ID and CX.CUTOFF_TIME = BX.CUTOFF_DATETIME and BX.DELIVERY_DATE = ? "+
+            "and CX.SEQUENCENO < (select CZ.SEQUENCENO from TRANSP.HANDOFF_BATCH bz, TRANSP.TRN_CUTOFF cz, where CZ.CUTOFF_TIME = BZ.CUTOFF_DATETIME and BZ.BATCH_ID = ? ) "+
             "and DX.STATUS = 'CPD'))";
 	
 	private static final String CLEAR_HANDOFFBATCH_AUTODISPATCHRESOURCES  = "DELETE FROM TRANSP.DISPATCH_RESOURCE DR WHERE DR.DISPATCH_ID IN (SELECT D.DISPATCH_ID FROM TRANSP.DISPATCH D WHERE D.DISPATCH_DATE = ? " +
 			"and D.START_TIME in (select B.DISPATCHTIME from TRANSP.HANDOFF_BATCHDISPATCHEX B where B.BATCH_ID = ? and B.STATUS = 'CPD' "+ 
-            "and B.DISPATCHTIME not in (select distinct DX.DISPATCHTIME from TRANSP.HANDOFF_BATCH bx , TRANSP.HANDOFF_BATCHDISPATCHEX dx "+
-            "where BX.BATCH_ID = DX.BATCH_ID and BX.DELIVERY_DATE = ? "+
-            "and BX.CUTOFF_DATETIME < (select BZ.CUTOFF_DATETIME from TRANSP.HANDOFF_BATCH bz where BZ.BATCH_ID = ? ) "+
+            "and B.DISPATCHTIME not in (select distinct DX.DISPATCHTIME from TRANSP.HANDOFF_BATCH bx , TRANSP.HANDOFF_BATCHDISPATCHEX dx, TRANSP.TRN_CUTOFF cx "+
+            "where BX.BATCH_ID = DX.BATCH_ID and CX.CUTOFF_TIME = BX.CUTOFF_DATETIME and BX.DELIVERY_DATE = ? "+
+            "and CX.SEQUENCENO < (select CZ.SEQUENCENO from TRANSP.HANDOFF_BATCH bz, TRANSP.TRN_CUTOFF cz, where CZ.CUTOFF_TIME = BZ.CUTOFF_DATETIME and BZ.BATCH_ID = ? ) "+
             "and DX.STATUS = 'CPD')))";
 	
 	private static final String GET_DISPATCHES_DELIVERYDATE = "select * FROM TRANSP.DISPATCH d WHERE d.DISPATCH_DATE = ? " +
 			"and D.START_TIME in (select B.DISPATCHTIME from TRANSP.HANDOFF_BATCHDISPATCHEX B where B.BATCH_ID = ? and B.STATUS = 'CPD' "+ 
-            "and B.DISPATCHTIME not in (select distinct DX.DISPATCHTIME from TRANSP.HANDOFF_BATCH bx , TRANSP.HANDOFF_BATCHDISPATCHEX dx "+
-            "where BX.BATCH_ID = DX.BATCH_ID and BX.DELIVERY_DATE = ? "+
-            "and BX.CUTOFF_DATETIME < (select BZ.CUTOFF_DATETIME from TRANSP.HANDOFF_BATCH bz where BZ.BATCH_ID = ? ) "+
+            "and B.DISPATCHTIME not in (select distinct DX.DISPATCHTIME from TRANSP.HANDOFF_BATCH bx , TRANSP.HANDOFF_BATCHDISPATCHEX dx, TRANSP.TRN_CUTOFF cx "+
+            "where BX.BATCH_ID = DX.BATCH_ID and CX.CUTOFF_TIME = BX.CUTOFF_DATETIME and BX.DELIVERY_DATE = ? "+
+            "and CX.SEQUENCENO < (select CZ.SEQUENCENO from TRANSP.HANDOFF_BATCH bz, TRANSP.TRN_CUTOFF cz, where CZ.CUTOFF_TIME = BZ.CUTOFF_DATETIME and BZ.BATCH_ID = ? ) "+
             "and DX.STATUS = 'CPD'))";
 	
 	private static final String INSERT_HANDOFFBATCH_AUTODISPATCHRESOURCES = "INSERT INTO TRANSP.DISPATCH_RESOURCE ( DISPATCH_ID, RESOURCE_ID , ROLE )" +
@@ -569,7 +569,7 @@ public class HandOffDAO extends BaseDAO implements IHandOffDAO   {
 							
 							//routeModel.setRoutingRouteId(rs.getString("RROUTING_ROUTE_NO"));
 							routeModel.setArea(rs.getString("RAREA"));
-							//routeModel.setSessionName(rs.getString("SESSION_NAME"));
+							routeModel.setSessionName(rs.getString("SESSION_NAME"));
 							routeModel.setStartTime(rs.getTimestamp("RSTARTTIME"));
 							routeModel.setCompletionTime(rs.getTimestamp("RCOMPLETETIME"));
 							routeModel.setDistance(rs.getDouble("RDISTANCE"));

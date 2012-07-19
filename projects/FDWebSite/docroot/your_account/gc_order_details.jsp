@@ -43,6 +43,7 @@ final int W_YA_GC_ORDER_DETAILS = 970;
 			<br /><br /><img src="/media_stat/images/layout/cccccc.gif" width="390" height="1" border="0" /><br /><br />
 			<input type="hidden" id="gcSaleId" value="" />
 			<input type="hidden" id="gcCertNum" value="" />
+			<input type="hidden" id="gcType" value="" />
 			<table border="0" cellspacing="0" cellpadding="4" width="100%">
 				<tr>
 					<td width="130" align="right">Recipient Name:</td>
