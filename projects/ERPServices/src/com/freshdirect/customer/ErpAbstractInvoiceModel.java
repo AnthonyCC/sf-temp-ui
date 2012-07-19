@@ -183,5 +183,8 @@ public abstract class ErpAbstractInvoiceModel extends ErpTransactionModel {
     public void setInvoiceNumber(String invoiceNum){
 		this.invoiceNumber = invoiceNum;
 	}
-	
+    public double getDeliveryPremium(){
+		ErpChargeLineModel charge = this.getCharge(EnumChargeType.DLVPREMIUM);
+		return charge==null ? 0.0 : charge.getAmount();
+	}
 }

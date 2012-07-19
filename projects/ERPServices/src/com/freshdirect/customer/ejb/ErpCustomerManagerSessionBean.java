@@ -2079,6 +2079,7 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 				+ invoice.getTax()
 				+ invoice.getDepositValue()
 				+ invoice.getDeliverySurcharge()
+				+ invoice.getDeliveryPremium()
 				+ invoice.getPhoneCharge()
 				- invoice.getDiscountAmount();
 			
@@ -2114,6 +2115,12 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 			deliveryAmount += delivery.getTotalAmount();
 			deliveryAmount += delivery.getTotalAmount() * delivery.getTaxRate();
 		}
+		ErpChargeLineModel dlvpremium = invoice.getCharge(EnumChargeType.DLVPREMIUM);
+		if (dlvpremium != null) {
+			deliveryAmount += dlvpremium.getTotalAmount();
+			deliveryAmount += dlvpremium.getTotalAmount() * delivery.getTaxRate();
+		}
+		
 		ErpChargeLineModel misc = invoice.getCharge(EnumChargeType.MISCELLANEOUS);
 		if (misc != null) {
 			deliveryAmount += misc.getTotalAmount();
