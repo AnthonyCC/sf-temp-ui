@@ -2,6 +2,7 @@
 <%@ page import='com.freshdirect.fdstore.sempixel.FDSemPixelCache' %>
 <%@ page import='com.freshdirect.fdstore.sempixel.SemPixelModel' %>
 <%@ page import='com.freshdirect.fdstore.FDStoreProperties' %>
+<%@ page import='com.freshdirect.fdstore.customer.*' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%-- this file will be included in the <head> tag --%>
 	<%--
@@ -61,3 +62,20 @@
         <% } %>
 
 	<fd:IncludeMedia name="/media/editorial/site_pages/javascript.html"/>
+	
+	<%
+		FDUserI dpTcCheckUser = (FDUserI)session.getAttribute(SessionName.USER);
+		FDSessionUser dpTcCheckSessionUser = (FDSessionUser)session.getAttribute(SessionName.USER);
+
+		if (dpTcCheckUser != null && request.getRequestURI().indexOf("brownie_points.jsp") == -1 &&
+				(dpTcCheckUser.getLevel() == FDSessionUser.SIGNED_IN && Boolean.FALSE.equals(dpTcCheckSessionUser.hasSeenDpNewTc()) && dpTcCheckUser.isDpNewTcBlocking())
+			) {
+			%>
+				<script type="text/javascript">
+		    		$jq(document).ready(function() {
+			    		doOverlayWindow('/your_account/delivery_pass_tc.jsp?showButtons=true&count=true');
+		    		});
+		    	</script>
+	    	<%
+		}
+	%>

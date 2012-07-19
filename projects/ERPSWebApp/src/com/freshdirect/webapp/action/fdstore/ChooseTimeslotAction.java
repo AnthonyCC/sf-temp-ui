@@ -65,6 +65,12 @@ public class ChooseTimeslotAction extends WebActionSupport {
 
 		FDTimeslot timeSlot = FDDeliveryManager.getInstance().getTimeslotsById(deliveryTimeSlotId, true);
 		
+		if (timeSlot.getDlvTimeslot().isPremiumSlot() && user.isDpNewTcBlocking()) {
+			//user bypassed dp terms block
+			this.addError("bypassedDpTcBlock", "You must agree to the new DeliveryPass Terms & Conditions before selecting a Same Day time slot.");
+			return ERROR;
+		}
+		
         String ctDeliveryProfile=CTDeliveryCapacityLogic.isEligible(user,timeSlot);
         if(timeSlot.getBaseAvailable()>0||chefsTable)
         {

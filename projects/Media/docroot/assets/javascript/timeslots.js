@@ -49,7 +49,9 @@ function fdTSDisplay(refIdArg) {
 		premSlotsTimerElem_msg: 'premSlotsTimerMsg', //html elem id for timer msg
 		premSlotsTimerElemClass: 'premSlotTimer', //timer elems have this className
 		premSlotsClock: null, //timer interval storage
-		showDpTc: false //show DP T & C
+		showDpTc: false, //show DP T & C
+		premSlotsDpTcElem: 'premDpTc', //the container for the dp t&c
+		premDcTpAgreed: false //has user agreed to dctp
 	};
 
 	this.extendQueue = {};
@@ -192,6 +194,20 @@ function fdTSDisplay(refIdArg) {
 					this.log('Timer CO:'+lastCO.innerHTML);
 					//hide existing CO display info
 					lastCO.childElements().each(function(e) { e.hide(); });
+					
+					//add t&c div for hover display (put this first, so it covers the timer)
+					if (this.opts.showDpTc && $('PREDPTCdayE')) { //PREDPTCdayE div is in the page
+						this.opts.premSlotsTimerElem = lastCO.appendChild( new Element('div', {'id': this.opts.premSlotsDpTcElem, 'class': 'premSlotDpTc', 'style': 'display: none;'}) );
+						//set height to cover all slots (+2 for double CO row)
+						$(this.opts.premSlotsDpTcElem).style.height = this.getCalcdRowHeight( ((this.dayObjs[this.rowObjs[rowId].dayIds[0]].TSs.length-this.dayObjs[this.rowObjs[rowId].dayIds[0]].dayPart)+2), null, false, 0);
+						//and the content
+						$(this.opts.premSlotsDpTcElem).innerHTML = $('PREDPTCdayE').innerHTML;
+						//add mouse out to terms block
+						this.addEvent('mouseOvers', this.opts.premSlotsDpTcElem);
+						//add mouseover to CO
+						this.addEvent('mouseOversClickOnly', lastCO.id, 'coId');
+					}
+
 					//add timer elem
 					this.opts.premSlotsTimerElem = lastCO.appendChild( new Element('div', {'id': this.opts.premSlotsTimerElem_timer, 'class': 'premSlotTimer'}) );
 					//add msg elem
@@ -276,6 +292,7 @@ function fdTSDisplay(refIdArg) {
 				case 'mouseOversClickOnly':
 					switch (objTypeAndRef.typeStr) {
 						case 'tsId':
+						case 'coId': //needed for DpTc
 							//day needs expand
 							eventObject.observe('mouseover', this.tsMouseOverClickOnly.bindAsEventListener(this, eventObject.id));
 							eventObject.observe('mouseout', this.tsMouseOutClickOnly.bindAsEventListener(this, eventObject.id));
@@ -489,11 +506,18 @@ function fdTSDisplay(refIdArg) {
 				
 				//check extend queue
 				this.checkQueue(elemId);
-				this.checkQueue(slotObj.radio);
+				if (slotObj) { this.checkQueue(slotObj.radio); }
 
 				//only show colors on non-expanded days, on slots that have radios
 				if (slotObj && slotObj.radioExt) {
 					slotObj.ext.className += ' clickOnlyMouseOver';
+				}
+
+				//hover on for dp T&C
+				if (this.opts.showDpTc && !this.opts.premDcTpAgreed) {
+					if (this.dayObjs[dayId].showDpTc) {
+						$(this.opts.premSlotsDpTcElem).show();
+					}
 				}
 
 			}
@@ -502,9 +526,16 @@ function fdTSDisplay(refIdArg) {
 				var elemId = arguments[1];
 				var fdTSDisplay = this; //ref to fdTSDisplay
 				var slotObj = fdTSDisplay.slotObjs[elemId];
+				var dayId = fdTSDisplay.convertId(elemId, 'dayId');
 
 				if (slotObj) {
 					slotObj.ext.className = slotObj.ext.className.replace(' clickOnlyMouseOver', '');
+				}
+				//hover on for dp T&C
+				if (this.opts.showDpTc) {
+					if (!this.dayObjs[dayId].showDpTc || elemId !== this.opts.premSlotsDpTcElem) {
+						$(this.opts.premSlotsDpTcElem).hide();
+					}
 				}
 
 			}
@@ -743,7 +774,7 @@ function fdTSDisplay(refIdArg) {
 					reorgEnd = -1;
 					sequenceCount = 0; //reset count
 				}
-				if (startSequence && day.TSs[t] === '' || (day.showDpTc && t >= dayPart)) {
+				if (startSequence && day.TSs[t] === '') {
 					sequenceCount++;
 					if (lastWasTS) {
 						reorgStart = t; //reset to current ts
@@ -1070,7 +1101,7 @@ function fdTSDisplay(refIdArg) {
 				var t = this.parseTime(elemId);
 				elemId = this.getID(toIdType, d, t, index);
 
-				if (elemId.indexOf('-1') === -1) {
+				if (!elemId || elemId.indexOf('-1') === -1) {
 					return elemId;
 				}else{
 					return -1;
@@ -1249,7 +1280,7 @@ function fdTSDisplay(refIdArg) {
 	 *	pxSubtractArg = px to be subtracted from final total (not per row)
 	 */
 		this.getCalcdRowHeight = function (numRowsArg, pxEachArg, addOneArg, pxSubtractArg) {
-			var numRows = numRowsArg || 1;
+			var numRows = parseInt(numRowsArg, 10) || 1;
 			var pxEach = pxEachArg || this.opts.rowHeight;
 			var addOne = addOneArg || false;
 			var pxSubtract = pxSubtractArg || 0;
@@ -1258,6 +1289,7 @@ function fdTSDisplay(refIdArg) {
 			pxTotal = pxEach * numRows;
 			if (addOne) { pxTotal = pxTotal + pxEach; }
 			if (pxSubtract) { pxTotal = pxTotal - pxSubtract; }
+			
 			return pxTotal+'px';
 		}
 
@@ -1496,13 +1528,10 @@ function fdTSDisplay(refIdArg) {
 						if (dayObj.COs[t] === '') {
 							curCORow.hide();
 						}else{
-							//don't show CO's for expanded DP T&C view
-							if (!dayObj.showDpTc) {
-								curCORow.show(); //tr
-								curCORow.down('.cutoffDispChild').show(); //div
-								//and add l/r lines
-								curCORow.down('td').className = 'cutoffLR';
-							}
+							curCORow.show(); //tr
+							curCORow.down('.cutoffDispChild').show(); //div
+							//and add l/r lines
+							curCORow.down('td').className = 'cutoffLR';
 						}
 						
 
@@ -1529,11 +1558,6 @@ function fdTSDisplay(refIdArg) {
 								//adjust height, expanded
 								curSlotObj.ext.style.height = (parseInt(curSlotObj.ext.style.height) + this.opts.cutoffHeight)+'px';
 							}
-
-							if (t >= dayObj.dayPart && dayObj.showDpTc) {
-								curSlotObj.contentId = 'PREDPTCdayE';
-							}
-
 
 							//change content (assuming we have it) change to expanded and proceed like normal
 							var curContentId = curSlotObj.contentId;

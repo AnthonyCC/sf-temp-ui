@@ -47,11 +47,6 @@
 				    form.submit();
 				    return false;
 		    	}
-		    <% if (user.isDpNewTcBlocking()) { %>
-	    		$jq(document).ready(function() {
-		    		doOverlayWindow('/your_account/delivery_pass_tc.jsp?showButtons=true&count=true');
-	    		});
-	    	<% } %>
 		</script>
     <fd:DlvPassSignupController result="result" callCenter="false">
 		<fd:ErrorHandler result='<%=result%>' name='dlvpass_discontinued' id='errorMsg'>

@@ -110,6 +110,8 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
     private boolean lastCOSSurveySuccess;	//holds if survey was success
     private String lastCOSSurvey = null;	//holds name of survey
     
+    private boolean seenDpNewTc = false;
+    
 	public void setLastCOSSurveySuccess(boolean lastCOSSurveySuccess) {
 		this.lastCOSSurveySuccess = lastCOSSurveySuccess;
 	}
@@ -1370,5 +1372,13 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 	
 	public boolean isDpNewTcBlocking() {
 		return this.user.isDpNewTcBlocking();
+	}
+	
+	public boolean hasSeenDpNewTc() {
+		return seenDpNewTc;
+	}
+
+	public void setSeenDpNewTc(boolean seenDpNewTc) {
+		this.seenDpNewTc = seenDpNewTc;
 	}
 }

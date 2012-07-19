@@ -122,21 +122,19 @@
 							if (!slot.hasAvailCTCapacity() && !(isSelectedSlotId || isPreReservedSlotId) && isForce) {
 								/* do nothing? */
 							}
-							if (!(slot.getDlvTimeslot().isPremiumSlot() && dpNewTcBlock)) {
-								stringBuffer.append("<input type=\"radio\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_rb\" name=\"deliveryTimeslotId\"") 
-											.append(
-												( isSelectedSlotId || ("".equals(selectedSlotId) && isPreReservedSlotId && hasPreReserved) ) 
-												? "checked" : ""
-											)
-											.append(
-												" value=\""+
-												(
-													(isForce && !slot.hasAvailCTCapacity())
-														? ("f_"+ slot.getTimeslotId())
-														: slot.getTimeslotId()
-												)+"\" />"
-											);
-							}
+							stringBuffer.append("<input type=\"radio\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_rb\" name=\"deliveryTimeslotId\"") 
+										.append(
+											( isSelectedSlotId || ("".equals(selectedSlotId) && isPreReservedSlotId && hasPreReserved) ) 
+											? "checked" : ""
+										)
+										.append(
+											" value=\""+
+											(
+												(isForce && !slot.hasAvailCTCapacity())
+													? ("f_"+ slot.getTimeslotId())
+													: slot.getTimeslotId()
+											)+"\" />"
+										);
 						}
 					}
 	stringBuffer.append("</div>\n");
@@ -146,22 +144,20 @@
 					(
 						(soldOut||slot.isUnavailable())
 							? "tsSoldoutC"
-							: (slot.getDlvTimeslot().isPremiumSlot() && dpNewTcBlock && !__isAm)
-								? "tsPremiumDpTcTimeC"
-								: (slot.getDlvTimeslot().isPremiumSlot() && slot.getPremiumAmount()>0)
-									? "tsPremiumTimeC"
-									: (isSelectedSlotId)
-										? "tsContentSelC"
+							: (slot.getDlvTimeslot().isPremiumSlot() && slot.getPremiumAmount()>0)
+								? "tsPremiumTimeC"
+								: (isSelectedSlotId)
+									? "tsContentSelC"
 										: (isPreReservedSlotId && hasPreReserved)
-											? "tsReservationTimeE"
+										? "tsReservationTimeE"
 											: (request.getAttribute("SHOW_WINDOWS_STEERING")!=null && "true".equals(request.getAttribute("SHOW_WINDOWS_STEERING")) && slot.getSteeringDiscount() > 0)
-												? "tsDiscountTimeC"
-												: (slot.isEcoFriendly() && slot.isDepot() && !(!slot.hasNormalAvailCapacity() && slot.hasAvailCTCapacity()))
-													? "tsNeighbourhoodTimeC"
-													: (slot.isEcoFriendly() && !(!slot.hasNormalAvailCapacity() && slot.hasAvailCTCapacity()))
-														? "tsEcoFriendlyTimeC"
-														: "" 
-					)+"\">"+((slot.getDlvTimeslot().isPremiumSlot() && dpNewTcBlock) ? "" : slot.getDisplayString(true))+"</div>\n");
+											? "tsDiscountTimeC"
+											: (slot.isEcoFriendly() && slot.isDepot() && !(!slot.hasNormalAvailCapacity() && slot.hasAvailCTCapacity()))
+												? "tsNeighbourhoodTimeC"
+												: (slot.isEcoFriendly() && !(!slot.hasNormalAvailCapacity() && slot.hasAvailCTCapacity()))
+													? "tsEcoFriendlyTimeC"
+													: "" 
+					)+"\">"+slot.getDisplayString(true)+"</div>\n");
 
 	/* START Timeslot promotion display */
 	if ((!soldOut||!slot.isUnavailable()) && deliveryModel.isAlcoholDelivery() && slot.isAlcoholRestricted()) {
@@ -188,28 +184,6 @@
 							.append("<div><font class=\"tsSoldoutE\">SOLD&nbsp;OUT</font></div>")
 						.append("</div>")
 					.append("</div>\n");
-	} 
-	else if (slot.getDlvTimeslot().isPremiumSlot() && dpNewTcBlock && !__isAm) {
-		stringBuffer.append("									<div class=\"tsPremiumDpTcPropE\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_msgE\">")
-					.append("										<div>")
-							.append("<img src=\"/media_stat/images/layout/clear.gif\" width=\"16\" height=\"16\" border=\"0\">")
-							.append("<div><font class=\"tsPremiumDpTcE\">&nbsp;</font></div>")
-						.append("</div>\n")
-					.append("									</div>")
-					.append("									<div class=\"tsPremiumDpTcPropC\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_msgC\">\n")
-					.append("										<div><font class=\"tsPremiumDpTcC\">&nbsp;</font></div>\n")
-					.append("									</div>");
-	} 
-	else if (slot.getDlvTimeslot().isPremiumSlot() && slot.getPremiumAmount()>0) {
-		stringBuffer.append("									<div class=\"tsPremiumPropE\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_msgE\">")
-					.append("										<div>")
-							.append("<img src=\"/media_stat/images/layout/clear.gif\" width=\"16\" height=\"16\" border=\"0\">")
-							.append("<div><font class=\"tsPremiumE\">"+slot.getPremiumAmountFmt()+"</font></div>")
-						.append("</div>\n")
-					.append("									</div>")
-					.append("									<div class=\"tsPremiumPropC\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_msgC\">\n")
-					.append("										<div><font class=\"tsPremiumC\">"+slot.getPremiumAmountFmt()+"</font></div>\n")
-					.append("									</div>");
 	}
 	else if (isSelectedSlotId) {
 		stringBuffer.append("									<div class=\"tsSelectedSlotPropE\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_msgE\">\n")

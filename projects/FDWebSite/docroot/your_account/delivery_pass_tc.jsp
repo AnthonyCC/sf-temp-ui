@@ -10,6 +10,7 @@
 <fd:CheckLoginStatus guestAllowed="false" recognizedAllowed="false" />
 <%
  	FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
+	FDSessionUser sessionUser = (FDSessionUser)session.getAttribute(SessionName.USER);
  	FDIdentity identity  = user.getIdentity();
  	ErpCustomerInfoModel cm = FDCustomerFactory.getErpCustomerInfo(identity);
  		
@@ -24,6 +25,8 @@
 			/* every time this display is loaded, increase view count, assuming it should be counted */
 	 		dpTcViewCount++;
 			FDCustomerManager.storeDPTCViews(identity.getErpCustomerPK(), dpTcViewCount);
+			//set as seen for session
+			sessionUser.setSeenDpNewTc(true);
 		}
 %>
 		<div>
@@ -35,31 +38,13 @@
 			
 			<% if (showButtons) { %>
 				<div class="hline"><!--  --></div>
-				<div class="text13" style="padding: 10px 20px;">I have read and agree to the updated Delivery Pass <span class="text13bold">Terms and Conditions</span></div>
-				<div class="hline"><!--  --></div>
 				<div style="padding: 10px 20px;">
-						<table width="100%" border="0">
-							<tr>
-								<td align="left">
-									<table class="butCont">
-										<tr>
-											<td class="butBrownLeft"><!-- --></td>
-											<td class="butBrownMiddle"><a class="butText" style="color:#000000;text-shadow:none;font-weight:bold;vertical-align:middle; width: 130px; text-align: center;" href="#" onclick="Modalbox.hide(); return false;">Remind&nbsp;Me&nbsp;Later</a></td>
-											<td class="butBrownRight"><!-- --></td>
-										</tr>
-									</table>
-								</td>
-								<td align="right">
-									<table class="butCont fright">
-										<tr>
-											<td class="butOrangeLeft"><!-- --></td>
-											<td class="butOrangeMiddle"><a class="butText" style="font-weight:bold;text-shadow:none;vertical-align:middle; width: 130px; text-align: center;" href="#" onclick="doOverlayWindow('/your_account/delivery_pass_tc.jsp?userAgreed=true'); return false;">I&nbsp;Agree</a></td>
-											<td class="butOrangeRight"><!-- --></td>
-										</tr>
-									</table>
-								</td>
-							</tr>
-						</table>
+					<div class="fleft">
+						<a class="butText" href="#" onclick="Modalbox.hide(); return false;"><img src="/media/editorial/site_pages/deliverypass/images/but_remindmelater_f1.gif" width="173" height="32" border="0" alt="Remind Me Later" /></a>
+					</div>
+					<div class="fright">
+						<a class="butText" href="#" onclick="doOverlayWindow('/your_account/delivery_pass_tc.jsp?userAgreed=true'); return false;"><img src="/media/editorial/site_pages/deliverypass/images/but_iagree_f1.gif" width="170" height="33" border="0" alt="I Agree" /></a>
+					</div>
 				</div>
 			<% } %>
 		</div>

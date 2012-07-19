@@ -298,7 +298,7 @@ zonePromoEnabled=true;
 
 
 <!-- Error Messages -->
-	<% String[] checkErrorType = {"system", "technical_difficulty", "deliveryTime", "pickup_didnot_agree"}; %>
+	<% String[] checkErrorType = {"system", "technical_difficulty", "deliveryTime", "pickup_didnot_agree", "bypassedDpTcBlock"}; %>
     <fd:ErrorHandler result='<%=result%>' field='<%=checkErrorType%>' id='errorMsg'>
 		<%@ include file="/includes/i_timeslot_error_messages.jspf" %>
     </fd:ErrorHandler>
