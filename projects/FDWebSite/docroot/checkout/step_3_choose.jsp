@@ -582,7 +582,7 @@ user.setAddressVerificationError(false);
 		<TD WIDTH="<%=W_CHECKOUT_STEP_3_CHOOSE_TOTAL%>"><img src="/media_stat/images/navigation/choose_credit_card.gif" WIDTH="135" HEIGHT="9" border="0" alt="CHOOSE CREDIT CARD">&nbsp;&nbsp;&nbsp;<BR>
 			<IMG src="/media_stat/images/layout/999966.gif" WIDTH="<%=W_CHECKOUT_STEP_3_CHOOSE_TOTAL%>" HEIGHT="1" BORDER="0" VSPACE="3"><BR>
 			<FONT CLASS="space2pix"><BR></FONT>
-			<span CLASS="text12">If you need to enter another credit card: </span><a href="/checkout/step_3_card_add.jsp"><img ALT="Add New Card" src="/media_stat/images/buttons/add_new_card.gif" WIDTH="96" HEIGHT="16" border="0" VSPACE="3" HSPACE="5" ALIGN="middle"></a></TD>
+			<span CLASS="text12">If you need to enter another credit card: </span><a href="/checkout/step_3_card_add.jsp"><img ALT="Add New Card" src="/media_stat/images/buttons/add_new_credit_card.jpg" WIDTH="137" HEIGHT="16" border="0" VSPACE="3" HSPACE="5" ALIGN="middle"></a></TD>
 		</TR>
 		</TABLE><br>
 		<%@ include file="/includes/ckt_acct/i_creditcard_select.jspf" %><BR><BR>			
