@@ -105,8 +105,9 @@ public class ProductPromotionUtil {
 				if (productModel instanceof ProductModelPromotionAdapter) {
 					if(((ProductModelPromotionAdapter)productModel).isFeatured() ){
 						featProducts.add(productModel);
+						iterator.remove();
 						i++;
-						if(i>=3)break;
+						if(i>=3)break;//Need only 3 featured products to show.
 					}					
 				}				
 				
@@ -115,16 +116,23 @@ public class ProductPromotionUtil {
 		return featProducts;
 	}
 	
+	/*
+	 * Except the first 3 featured products, remaining all are non-featured products.
+	 */
 	public static List<ProductModel> getNonFeaturedProducts(List<ProductModel> products,boolean isPreview){
 		List<ProductModel> nonFeatProducts = new ArrayList<ProductModel>();
 		if(null != products){
+			int i=0;
 			for (Iterator iterator = products.iterator(); iterator.hasNext();) {
 				ProductModel productModel = (ProductModel) iterator.next();
 				if(isPreview ||(!isPreview &&!productModel.isUnavailable())){
 					if (productModel instanceof ProductModelPromotionAdapter) {
-//						if(!((ProductModelPromotionAdapter)productModel).isFeatured() ){
-							nonFeatProducts.add(productModel);
-//						}					
+//						if(i<=2 &&((ProductModelPromotionAdapter)productModel).isFeatured() ){
+//							i++;//To skip the first 3 featured products.
+//						}else{
+//							nonFeatProducts.add(productModel);
+//						}		
+						nonFeatProducts.add(productModel);
 					}				
 				}
 				
