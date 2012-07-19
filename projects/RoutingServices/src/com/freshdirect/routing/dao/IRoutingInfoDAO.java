@@ -49,5 +49,7 @@ public interface IRoutingInfoDAO {
 	Map<String, TrnFacility> retrieveTrnFacilityLocations()throws SQLException;
 	
 	List<String> getStaticZonesByDate(Date deliveryDate)  throws SQLException;
+
+	Map<RoutingTimeOfDay, Integer> getCutoffSequence()   throws SQLException;
 	
 }

@@ -76,7 +76,7 @@ public class SaleCronRunner {
 			if (affected > 0 && "true".equalsIgnoreCase(ErpServicesProperties.getSendCutoffEmail())) {
 				Calendar cal = DateUtil.toCalendar(new Date());
 
-				if (cal.get(Calendar.HOUR) > 2) {
+				if (cal.get(Calendar.HOUR_OF_DAY) >= 12) {
 					cal.add(Calendar.DATE, 1);
 				}
 				LOGGER.debug("Sending report for " + cal.getTime() + "...");

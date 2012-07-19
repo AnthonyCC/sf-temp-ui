@@ -1,6 +1,5 @@
 package com.freshdirect.routing.service;
 
-import java.sql.Connection;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -50,4 +49,6 @@ public interface IRoutingInfoService {
 	Map<String, TrnFacility> retrieveTrnFacilityLocations() throws RoutingServiceException;
 
 	List<String> getStaticZonesByDate(Date deliveryDate);
+
+	Map<RoutingTimeOfDay, Integer>  getCutoffSequence() throws RoutingServiceException;
 }

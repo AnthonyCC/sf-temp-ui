@@ -827,4 +827,33 @@ public class RoutingInfoDAO extends BaseDAO implements IRoutingInfoDAO   {
 		
 		return result;
 	}
+	
+	private static final String GET_CUTOFF_SEQUENCE  = "SELECT SEQUENCENO, CUTOFF_TIME FROM TRANSP.TRN_CUTOFF";
+		
+		public Map<RoutingTimeOfDay, Integer> getCutoffSequence() throws SQLException{
+			
+			final Map<RoutingTimeOfDay, Integer> result = new HashMap<RoutingTimeOfDay, Integer>();
+			
+			PreparedStatementCreator creator = new PreparedStatementCreator() {
+				public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
+				
+					PreparedStatement ps =	connection.prepareStatement(GET_CUTOFF_SEQUENCE);			
+					return ps;
+				}
+			};
+			
+			jdbcTemplate.query(creator, 
+					  new RowCallbackHandler() { 
+					      public void processRow(ResultSet rs) throws SQLException {				    	
+					    	  	do {				    	  				
+					    	  		RoutingTimeOfDay _cutOffTime = new RoutingTimeOfDay(rs.getTimestamp("CUTOFF_TIME"));
+					    	  		Integer sequence = rs.getInt("SEQUENCENO");
+					    			result.put(_cutOffTime, sequence);
+					    	  	}while(rs.next());
+					      }
+			});	
+			
+			return result;
+		}
+	
 }

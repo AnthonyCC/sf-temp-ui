@@ -25,6 +25,8 @@ import com.freshdirect.routing.model.IHandOffBatch;
 import com.freshdirect.routing.model.IHandOffBatchRoute;
 import com.freshdirect.routing.model.IHandOffBatchTrailer;
 import com.freshdirect.routing.model.IWaveInstance;
+import com.freshdirect.routing.service.proxy.RoutingInfoServiceProxy;
+import com.freshdirect.routing.util.RoutingDateUtil;
 import com.freshdirect.routing.util.RoutingTimeOfDay;
 import com.freshdirect.transadmin.datamanager.RouteFileManager;
 import com.freshdirect.transadmin.datamanager.model.OrderRouteInfoModel;
@@ -1475,6 +1477,9 @@ public class XlsCutOffReport extends BaseXlsReport implements ICutOffReport  {
 		Map<RoutingTimeOfDay, DispatchStatusInfo> result = new TreeMap<RoutingTimeOfDay, DispatchStatusInfo>();
 		Map<String, List<RoutingTimeOfDay>> pendingDetails = null;
 		String area = null;
+		RoutingInfoServiceProxy routingInfoProxy = new RoutingInfoServiceProxy();
+
+		Map<RoutingTimeOfDay, Integer> cutOffSeqMap = routingInfoProxy.getCutoffSequence();
 		
 		if(reportData.getPlannedDispatchTree() != null && reportData.getBatch() != null) {
 			RoutingTimeOfDay rCutOff = new RoutingTimeOfDay(reportData.getBatch().getCutOffDateTime());
@@ -1484,7 +1489,7 @@ public class XlsCutOffReport extends BaseXlsReport implements ICutOffReport  {
 						if(!result.containsKey(dispEntry.getKey())) {
 							result.put(dispEntry.getKey(), new DispatchStatusInfo());
 						}
-						if(cutOffEntry.getKey().after(rCutOff)) {
+						if (RoutingDateUtil.isLaterCutoff(cutOffSeqMap, cutOffEntry.getKey(), rCutOff)) {
 							result.get(dispEntry.getKey()).setStatus(EnumHandOffDispatchStatus.PENDING);
 							pendingDetails = result.get(dispEntry.getKey()).getPendingDetails();
 							if(cutOffEntry.getValue().size() > 0) { 

@@ -61,5 +61,7 @@ public interface IIssue {
 	
 	public final static String PROCESS_CANCEL_RESERVATIONS = "ISSUE041";
 	
+	public final static String RETRIEVE_CUTOFFS_FAILED = "ISSUE042";
+	
 
 }

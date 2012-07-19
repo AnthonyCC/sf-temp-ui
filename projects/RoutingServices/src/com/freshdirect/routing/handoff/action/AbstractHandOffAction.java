@@ -24,6 +24,7 @@ import com.freshdirect.routing.service.exception.RoutingProcessException;
 import com.freshdirect.routing.service.exception.RoutingServiceException;
 import com.freshdirect.routing.service.proxy.HandOffServiceProxy;
 import com.freshdirect.routing.service.proxy.RoutingInfoServiceProxy;
+import com.freshdirect.routing.util.RoutingDateUtil;
 import com.freshdirect.routing.util.RoutingServicesProperties;
 import com.freshdirect.routing.util.RoutingTimeOfDay;
 
@@ -179,6 +180,9 @@ public abstract class AbstractHandOffAction {
 		DispatchCorrelationResult result = new DispatchCorrelationResult();
 		RoutingInfoServiceProxy routingInfoProxy = new RoutingInfoServiceProxy();
 
+		Map<RoutingTimeOfDay, Integer> cutOffSeqMap = routingInfoProxy.getCutoffSequence();
+		
+		
 		// Map<ZoneCode, Map<DispatchTime, Map<CutOffTime, IWaveInstance>>>
 		Map<String, Map<RoutingTimeOfDay, Map<RoutingTimeOfDay, List<IWaveInstance>>>> plannedDispatchTree = null;
 
@@ -269,7 +273,7 @@ public abstract class AbstractHandOffAction {
 							dispatchStatus.put(dispEntry.getKey(),
 									EnumHandOffDispatchStatus.COMPLETE);
 						}
-						if (cutOffEntry.getKey().after(rCutOff)) {
+						if (RoutingDateUtil.isLaterCutoff(cutOffSeqMap, cutOffEntry.getKey(), rCutOff)) {
 							dispatchStatus.put(dispEntry.getKey(),
 									EnumHandOffDispatchStatus.PENDING);
 						}
@@ -293,7 +297,7 @@ public abstract class AbstractHandOffAction {
 							dispatchStatus.put(dispEntry.getKey(),
 									EnumHandOffDispatchStatus.COMPLETE);
 						}
-						if (cutOffEntry.getKey().after(rCutOff)) {
+						if (RoutingDateUtil.isLaterCutoff(cutOffSeqMap, cutOffEntry.getKey(), rCutOff)) {
 							dispatchStatus.put(dispEntry.getKey(),
 									EnumHandOffDispatchStatus.PENDING);
 						}

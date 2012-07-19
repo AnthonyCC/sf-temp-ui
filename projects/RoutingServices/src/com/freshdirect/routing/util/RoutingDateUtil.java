@@ -5,6 +5,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Map;
 
 import com.freshdirect.framework.util.DateUtil;
 
@@ -188,5 +189,12 @@ public class RoutingDateUtil {
 	
 	public static Date getServerTime(String clientDate) throws ParseException {       
         return (Date)serverTimeFormat.parse(clientDate);
+	}
+	/** sequence number in transp.trn_Cutoff table is used to determine whether the cutOffEntry is later to rCutOff */
+	
+	public static boolean isLaterCutoff(Map<RoutingTimeOfDay, Integer> cutOffSeqMap, RoutingTimeOfDay cutOffEntry, RoutingTimeOfDay rCutOff)
+	{
+		return cutOffSeqMap!=null && cutOffSeqMap.get(cutOffEntry)!=null && cutOffSeqMap.get(rCutOff)!=null &&
+				 cutOffSeqMap.get(cutOffEntry) > cutOffSeqMap.get(rCutOff);
 	}
 }

@@ -87,4 +87,9 @@ public class RoutingInfoServiceProxy  extends BaseServiceProxy  {
 	public List<String> getStaticZonesByDate(Date deliveryDate){
 		return getService().getStaticZonesByDate(deliveryDate);
 	}
+	public Map<RoutingTimeOfDay, Integer> getCutoffSequence() throws RoutingServiceException {
+		return getService().getCutoffSequence();
+	}
+	
+	
 }

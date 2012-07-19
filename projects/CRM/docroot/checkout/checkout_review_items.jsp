@@ -640,7 +640,7 @@
 						<td colspan="2"></td>
 					</tr>
 			<%
-				}else if (cart.getChargeAmount(EnumChargeType.DLVPREMIUM) > 0) {
+				}if (cart.getChargeAmount(EnumChargeType.DLVPREMIUM) > 0) {
 			%>
 					<tr valign="top" class="orderSummary">
 						<td colspan="3" align="right">Delivery Premium<%if(cart.isChargeWaived(EnumChargeType.DLVPREMIUM)){%> (waived)<%}%>:</td>

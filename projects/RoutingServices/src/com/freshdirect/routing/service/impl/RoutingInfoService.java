@@ -175,4 +175,13 @@ public class RoutingInfoService extends BaseService implements IRoutingInfoServi
 		}
 	}
 	
+	public Map<RoutingTimeOfDay, Integer> getCutoffSequence() throws RoutingServiceException {
+		try {
+			return routingInfoDAOImpl.getCutoffSequence();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			throw new RoutingServiceException(e, IIssue.PROCESS_RETRIEVEWAVEINSTANCE_UNSUCCESSFUL);
+		}
+	}
+	
 }
