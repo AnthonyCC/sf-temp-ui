@@ -917,3 +917,7 @@ td.noTopBorder {
 	}
 */
 
+.premSlotDpTc {
+	background-color: #fff;
+	position: absolute;
+}
