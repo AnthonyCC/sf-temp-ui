@@ -17,9 +17,9 @@
 		}
 	</style>
 	
-	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.1/jquery.min.js"></script>
-    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.1/jquery-ui.min.js"></script>
-    <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.0/themes/base/jquery-ui.css"/>
+	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.1/jquery.min.js"></script>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.1/jquery-ui.min.js"></script>
+    <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.7.0/themes/base/jquery-ui.css"/>
 	<link rel="stylesheet" type="text/css" href="/assets/css/common/globalnav.css" />
 	<link rel="stylesheet" type="text/css" href="/assets/css/common/footer.css">
   <link rel="stylesheet" type="text/css" href="/assets/css/common/freshdirect.css">
@@ -102,7 +102,7 @@
 		}
 	%>
 	<center>
-	<table border="0" cellpadding="0" cellspacing="0" width="550" height="100%" style="margin: 10px;">
+	<table border="0" cellpadding="0" cellspacing="0" width="550" style="margin: 10px;">
 		<tr valign="middle">
 			<td align="center">
 				<form name="litesignupaddress" id="litesignupaddress" method="post" action="/site_access/site_access_address_lite.jsp">
@@ -220,8 +220,8 @@
 	function resizeFrame() {
 		setFrameHeightSL('signupframe', 425);
 		setFrameWidthSL('signupframe',700);
-		window.parent.document.getElementById('MB_window').style.left=200 + 'px';
-		window.parent.document.getElementById('MB_window').style.width=730 + 'px';
+		window.parent['Modalbox'].resizeToContent();
+		window.parent['Modalbox']._setWidthAndPosition();
 	}
 	
 	window.onload = resizeFrame();
