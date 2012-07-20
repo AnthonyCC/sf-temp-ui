@@ -217,11 +217,17 @@
 	<% } } %>
 </fd:SiteAccessController>
 <script>
+
 	function resizeFrame() {
 		setFrameHeightSL('signupframe', 425);
 		setFrameWidthSL('signupframe',700);
-		window.parent['Modalbox'].resizeToContent();
-		window.parent['Modalbox']._setWidthAndPosition();
+		if(navigator.userAgent.indexOf('MSIE 9') > 0) {
+			window.parent.document.getElementById('MB_window').style.left=200 + 'px';
+			window.parent.document.getElementById('MB_window').style.width=730 + 'px';
+		} else {
+			window.parent['Modalbox'].resizeToContent();
+			window.parent['Modalbox']._setWidthAndPosition();
+		}
 	}
 	
 	window.onload = resizeFrame();
