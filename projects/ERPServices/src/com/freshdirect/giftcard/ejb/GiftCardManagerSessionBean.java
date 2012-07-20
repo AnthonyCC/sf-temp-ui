@@ -28,6 +28,7 @@ import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.customer.EnumTransactionType;
 import com.freshdirect.customer.ErpAbstractOrderModel;
 import com.freshdirect.customer.ErpCancelOrderModel;
+import com.freshdirect.customer.ErpCustomerInfoModel;
 import com.freshdirect.customer.ErpInvoiceModel;
 import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.customer.ErpSaleModel;
@@ -35,6 +36,7 @@ import com.freshdirect.customer.ErpTransactionException;
 import com.freshdirect.customer.ejb.ErpCustomerEB;
 import com.freshdirect.customer.ejb.ErpSaleEB;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.mail.EmailI;
 import com.freshdirect.framework.util.GenericSearchCriteria;
@@ -44,6 +46,7 @@ import com.freshdirect.giftcard.CardInUseException;
 import com.freshdirect.giftcard.CardOnHoldException;
 import com.freshdirect.giftcard.EnumGCDeliveryMode;
 import com.freshdirect.giftcard.EnumGiftCardStatus;
+import com.freshdirect.giftcard.EnumGiftCardType;
 import com.freshdirect.giftcard.ErpAppliedGiftCardModel;
 import com.freshdirect.giftcard.ErpGCDlvInformationHolder;
 import com.freshdirect.giftcard.ErpGiftCardAuthModel;
@@ -106,7 +109,8 @@ public class GiftCardManagerSessionBean extends ERPSessionBeanSupport {
 			List gcList = GiftCardPersistanceDAO.loadGiftCardbySaleId(conn, saleId);
 			//regFailureList = getRecentRegistrationFailures(regModel);		
 			ErpGiftCardTransModel model=createGiftCardTransModel(amount,saleId,EnumTransactionType.REGISTER_GIFTCARD);
-			GivexResponseModel rspModel=null;		
+			GivexResponseModel rspModel=null;	
+			
 			ErpGiftCardDlvConfirmModel dlvInfoTrans=(ErpGiftCardDlvConfirmModel)createGiftCardTransModel(amount,saleId,EnumTransactionType.GIFTCARD_DLV_CONFIRM);			
 				for(int i=0;i<recipentList.size();i++){			
 					String referenceId = convertToGivexReference(saleId, count++);				
@@ -116,11 +120,13 @@ public class GiftCardManagerSessionBean extends ERPSessionBeanSupport {
 						if(availableGCId == null) {
 							rspModel=GivexServerGateway.registerCard(recModel.getAmount(), referenceId);
 							addGiftCardTransactionModel(rspModel,saleId,EnumGiftCardTransactionType.REGISTER,model, referenceId);
-							String gcId=storeGiftCardInfo(convertGiftCardModel(model,rspModel, saleId));
+							ErpGiftCardModel erpGiftCardModel = convertGiftCardModel(model,rspModel, saleId);
+							String gcId=storeGiftCardInfo(erpGiftCardModel);
 							ErpGCDlvInformationHolder dlvModel=new ErpGCDlvInformationHolder();
 							dlvModel.setRecepientModel(recModel);
 							dlvModel.setGiftCardId(gcId);
 							dlvModel.setGivexNum(rspModel.getGivexNumber());
+							dlvModel.setGiftCard(erpGiftCardModel);
 							dlvInfoTrans.addGiftCardDlvInfo(dlvModel);
 						} else {
 							ErpGCDlvInformationHolder dlvModel=new ErpGCDlvInformationHolder();
@@ -165,6 +171,7 @@ public class GiftCardManagerSessionBean extends ERPSessionBeanSupport {
 					// one more no tweek :))						
 					//Sending the GiftCard emails to all the applicable recipients.
 					sendGiftCardToRecipients(dlvInfoTrans, false);
+					autoApplyGiftCardToRecipients(dlvInfoTrans);
 					saleEB.addGiftCardDeliveryConfirm(dlvInfoTrans);				
 					
 					//ErpDeliveryConfirmModel deliveryConfirmModel = new ErpDeliveryConfirmModel();
@@ -1515,6 +1522,33 @@ public class GiftCardManagerSessionBean extends ERPSessionBeanSupport {
 		} catch (MessagingException e) {
 			throw new EJBException(e);
 		}		
+	}
+	
+	private void autoApplyGiftCardToRecipients(ErpGiftCardDlvConfirmModel dlvConfirmModel)throws FDResourceException{
+		
+		if(FDStoreProperties.isAutoApplyDonationGiftCardsEnabled()){//Property check whether autoApplyDonationGC is enabled or not.			
+			List dlvInfoTranactionList = dlvConfirmModel.getDlvInfoTranactionList();
+			if(null != dlvInfoTranactionList && !dlvInfoTranactionList.isEmpty()){
+				Iterator itr =dlvInfoTranactionList.iterator();
+				while (itr.hasNext()) {
+					ErpGCDlvInformationHolder erpGCDlvInformationHolder = (ErpGCDlvInformationHolder) itr.next();
+					if(EnumGiftCardType.DONATION_GIFTCARD.equals(erpGCDlvInformationHolder.getRecepientModel().getGiftCardType())){
+						String recEmail =erpGCDlvInformationHolder.getRecepientModel().getRecipientEmail();
+						try {						
+							ErpCustomerEB customerEB = this.getErpCustomerHome().findByUserId(recEmail);
+							ErpCustomerInfoModel custInfoModel = customerEB.getCustomerInfo();
+							ErpGiftCardModel erpGiftCardModel=erpGCDlvInformationHolder.getGiftCard();
+							erpGiftCardModel.setPK(null);
+							erpGiftCardModel.setName(custInfoModel.getFirstName() + " "+ custInfoModel.getLastName());
+							customerEB.addPaymentMethod(erpGiftCardModel);	
+						}catch (Exception e) {
+							LOGGER.warn("Error while autoApplyGiftCardToRecipients for:"+recEmail, e);
+						}
+					}
+				}
+			}
+			
+		}
 	}
 
 

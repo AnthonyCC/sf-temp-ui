@@ -447,6 +447,19 @@
             <td colspan="3"></td>
             <% } %>
 		</tr>
+		<% if(null !=order.getPaymentMethod() && EnumPaymentMethodType.EBT.equals(order.getPaymentMethod().getPaymentMethodType())){ %>
+		<tr>
+            <td colspan="3"></td>
+		    <td colspan="2"><b>EBT Purchase Total</b></td>
+		    <td colspan="2" align="right"><b><%=hasInvoice ? (order.getInvoicedTotal() <=order.getTotal()?JspMethods.formatPrice(order.getInvoicedTotal()):JspMethods.formatPrice(order.getTotal())): JspMethods.formatPrice(order.getTotal())%>		    </b></td>
+		    <td><% if (hasEstimatedItems) out.print("*"); %></td>
+            <td colspan="3"></td>
+            <% if (hasInvoice) { %>
+            <td colspan="3"></td>
+            <% } %>
+		</tr>
+		<% } %>
+		
 
 		<%  if (order.hasChargeInvoice()) { %>
 		<tr>

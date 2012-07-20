@@ -557,6 +557,7 @@ public class FDStoreProperties {
 	
 	/* APPDEV-2475 DP T&C */
 	private final static String PROP_DLV_PASS_NEW_TC_VIEWLIMIT = "fdstore.dlvpass.newtc.viewlimit";
+	private final static String PROP_AUTO_APPLY_DONATION_GC = "fdstore.auto.apply.donation.gc";
 
     static {
         defaults.put(PROP_ROUTING_PROVIDER_URL, "t3://localhost:7001");
@@ -1105,6 +1106,7 @@ public class FDStoreProperties {
 		defaults.put(PROP_GIFTCARD_DONATION_ENABLED, "true");
 		
 		defaults.put(PROP_DLV_PASS_NEW_TC_VIEWLIMIT, "3");
+		defaults.put(PROP_AUTO_APPLY_DONATION_GC, "false");
 
         refresh();
     }
@@ -2851,4 +2853,9 @@ public class FDStoreProperties {
 	public static int getDpTcViewLimit() {
         return Integer.parseInt(get(PROP_DLV_PASS_NEW_TC_VIEWLIMIT));
     }  
+	
+	public static boolean isAutoApplyDonationGiftCardsEnabled() {
+		return (Boolean.valueOf(get(PROP_AUTO_APPLY_DONATION_GC))).booleanValue();
+    }
+	
 }

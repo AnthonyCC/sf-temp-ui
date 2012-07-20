@@ -10,6 +10,7 @@ public class ErpGCDlvInformationHolder extends ModelSupport {
 	private ErpRecipentModel recepientModel;
 	private String givexNum;
 	private Date purchaseDate;
+	private ErpGiftCardModel giftCard;
 
 	public ErpGCDlvInformationHolder(){
 		
@@ -65,5 +66,13 @@ public class ErpGCDlvInformationHolder extends ModelSupport {
     	return  "xxxxxxxx".substring(0, numMaskedDigits) + givexNum.substring(givexNum.length()-numDisplayedDigits);  
 		//int pmLen = this.accountNumber.length()-4;
 		//return "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx".substring(0,pmLen) + this.accountNumber.substring(pmLen);
+	}
+
+	public ErpGiftCardModel getGiftCard() {
+		return giftCard;
+	}
+
+	public void setGiftCard(ErpGiftCardModel giftCard) {
+		this.giftCard = giftCard;
 	}
 }

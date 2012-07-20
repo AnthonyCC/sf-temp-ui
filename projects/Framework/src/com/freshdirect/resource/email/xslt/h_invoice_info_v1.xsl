@@ -208,6 +208,22 @@
 		</td>
 		<td colspan="3">&nbsp;</td>
 	</tr>
+	<xsl:if test="order/paymentMethod/paymentMethodType = 'EBT'">
+		<tr valign="top" class="orderTotal">
+		<td colspan="2" align="right"><b>EBT PURCHASE TOTAL:</b></td>
+		<td align="right">
+			<xsl:choose>
+			<xsl:when test="order/invoicedTotal <= order/total">
+			<b>$<xsl:value-of select='format-number(order/invoicedTotal, "###,##0.00", "USD")'/></b>
+			</xsl:when>
+			<xsl:otherwise>
+			<b>$<xsl:value-of select='format-number(order/total, "###,##0.00", "USD")'/></b>
+			</xsl:otherwise>
+			</xsl:choose>
+		</td>
+		<td colspan="3">&nbsp;</td>
+		</tr>
+	</xsl:if>
 	
 	<xsl:if test="order/paymentMethod/paymentType = 'M'">
 	<tr valign="top" class="orderTotal">
