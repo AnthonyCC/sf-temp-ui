@@ -66,20 +66,8 @@
 				</table>
 			</div>
 			<div class="hline"><!--  --></div>
-			<div style="padding: 10px 20px 10px 20px;">
-				<table width="100%" border="0">
-					<tr>
-						<td align="middle" class="trpad">
-							<table class="butCont">
-								<tr>
-									<td class="butOrangeLeft"><!-- --></td>
-									<td class="butOrangeMiddle"><a class="butText" style="font-weight:bold;text-shadow:none;vertical-align:middle; width: 130px; text-align: center;" href="#" onclick="Modalbox.hide();<%= (reloadParentPage) ? "window.document.location = window.document.location;" : "" %> return false;">Close</a></td>
-									<td class="butOrangeRight"><!-- --></td>
-								</tr>
-							</table>
-						</td>
-					</tr>
-				</table>
+			<div style="padding: 10px 20px 10px 20px; text-align: center;">
+				<a class="butText" href="#" onclick="Modalbox.hide();<%= (reloadParentPage) ? "window.document.location = window.document.location;" : "" %> return false;"><img src="/media/editorial/site_pages/deliverypass/images/but_close.jpg" width="216" height="33" border="0" alt="Close" /></a>
 			</div>
 			<% if (reloadParentPage) { %>
 				<div style="padding: 10px 20px 10px 20px;">Automatically refreshing in <span id="relTime">5</span> seconds...</div>

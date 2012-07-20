@@ -128,11 +128,11 @@ function fdTSDisplay(refIdArg) {
 
 					//set row calcd height
 					if (this.rowObjs[rowId].dayIds[0] && this.dayObjs[this.rowObjs[rowId].dayIds[0]]) {
-						if (this.opts.showPremiumSlots) { //add one row height to compensate for prem.slots
-							this.rowObjs[rowId].ext.style.height = this.getCalcdRowHeight(this.dayObjs[this.rowObjs[rowId].dayIds[0]].TSs.length+1, null, false, this.opts.negSubt);
-						} else {
+						//if (this.opts.showPremiumSlots) { //add one row height to compensate for prem.slots
+						//	this.rowObjs[rowId].ext.style.height = this.getCalcdRowHeight(this.dayObjs[this.rowObjs[rowId].dayIds[0]].TSs.length+1, null, false, this.opts.negSubt);
+						//} else {
 							this.rowObjs[rowId].ext.style.height = this.getCalcdRowHeight(this.dayObjs[this.rowObjs[rowId].dayIds[0]].TSs.length, null, false, this.opts.negSubt);
-						}
+						//}
 					}
 				}
 			}
@@ -193,19 +193,26 @@ function fdTSDisplay(refIdArg) {
 				if (lastCO) {
 					this.log('Timer CO:'+lastCO.innerHTML);
 					//hide existing CO display info
-					lastCO.childElements().each(function(e) { e.hide(); });
+					/* lastCO.childElements().each(function(e) { e.hide(); }); */
 					
 					//add t&c div for hover display (put this first, so it covers the timer)
 					if (this.opts.showDpTc && $('PREDPTCdayE')) { //PREDPTCdayE div is in the page
-						this.opts.premSlotsTimerElem = lastCO.appendChild( new Element('div', {'id': this.opts.premSlotsDpTcElem, 'class': 'premSlotDpTc', 'style': 'display: none;'}) );
-						//set height to cover all slots (+2 for double CO row)
-						$(this.opts.premSlotsDpTcElem).style.height = this.getCalcdRowHeight( ((this.dayObjs[this.rowObjs[rowId].dayIds[0]].TSs.length-this.dayObjs[this.rowObjs[rowId].dayIds[0]].dayPart)+2), null, false, 0);
+						var firstPmTs = $(this.dayObjs[this.rowObjs[rowId].dayIds[0]].TSIds[this.dayObjs[this.rowObjs[rowId].dayIds[0]].dayPart]);
+						firstPmTs.insertBefore( new Element('div', {'id': this.opts.premSlotsDpTcElem, 'class': 'premSlotDpTc', 'style': 'display: none;'}), firstPmTs.firstChild );
+						var realTs = 0;
+						for (var i=this.dayObjs[this.rowObjs[rowId].dayIds[0]].dayPart; i < this.dayObjs[this.rowObjs[rowId].dayIds[0]].TSs.length; i++) {
+							if (this.dayObjs[this.rowObjs[rowId].dayIds[0]].TSs[i] !== '') { realTs++; }
+						}
+						//move up a TS row's worth
+						$(this.opts.premSlotsDpTcElem).style.top = (this.getCalcdRowHeight(1, null, false, this.getCalcdRowHeight(1, null, false, 0)));
+						//set height to cover all slots
+						$(this.opts.premSlotsDpTcElem).style.height = this.getCalcdRowHeight( realTs, null, false, 0);
 						//and the content
 						$(this.opts.premSlotsDpTcElem).innerHTML = $('PREDPTCdayE').innerHTML;
 						//add mouse out to terms block
 						this.addEvent('mouseOvers', this.opts.premSlotsDpTcElem);
 						//add mouseover to CO
-						this.addEvent('mouseOversClickOnly', lastCO.id, 'coId');
+						//this.addEvent('mouseOversClickOnly', lastCO.id, 'coId');
 					}
 
 					//add timer elem
@@ -215,7 +222,7 @@ function fdTSDisplay(refIdArg) {
 					//kick off interval function to show timer
 					this.opts.premSlotsClock = setInterval(this.premSlotsTimer, 750);
 					//modify height
-					lastCO.style.height = this.getCalcdRowHeight(2, null, false, 1);
+					//lastCO.style.height = this.getCalcdRowHeight(2, null, false, 1);
 				}
 			}
 		}
@@ -515,7 +522,7 @@ function fdTSDisplay(refIdArg) {
 
 				//hover on for dp T&C
 				if (this.opts.showDpTc && !this.opts.premDcTpAgreed) {
-					if (this.dayObjs[dayId].showDpTc) {
+					if (this.dayObjs[dayId].showDpTc && this.dayObjs[dayId].isExpanded) {
 						$(this.opts.premSlotsDpTcElem).show();
 					}
 				}
@@ -634,7 +641,12 @@ function fdTSDisplay(refIdArg) {
 
 			//update all timer elems
 			$$('.'+window.fdTSDisplay.opts.premSlotsTimerElemClass).each(function(e, i) {
-				$(e).innerHTML = timeDisp + ' LEFT';
+				var iHtml = timeDisp + ' LEFT';
+				if ($(e).up('div').className === 'premSlotTimerExpanded') {
+					iHtml += '<div>to place your order</div>';
+				}
+				
+				$(e).innerHTML = iHtml;
 			});
 
 
@@ -1525,7 +1537,7 @@ function fdTSDisplay(refIdArg) {
 						var curTSRow = curSlotObj.ext.up('tr');
 
 						//hide all empty cutoffs
-						if (dayObj.COs[t] === '') {
+						if (dayObj.COs[t] === '' || dayObj.showPremium) {
 							curCORow.hide();
 						}else{
 							curCORow.show(); //tr
@@ -1545,6 +1557,7 @@ function fdTSDisplay(refIdArg) {
 								curTSRow.show();
 							} else if (dayObj.showPremium && dayObj.TSs[t] === '' && t >= dayObj.dayPart) {
 								curTSRow.hide();
+								hiddenRows++;
 							}
 							//time, toggle className
 							this.toggleClassName(this.slotObjs[dayObj.TSIds[t]].ext, 'tsContainerBGC');

@@ -1371,7 +1371,11 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 	}
 	
 	public boolean isDpNewTcBlocking() {
-		return this.user.isDpNewTcBlocking();
+		return this.user.isDpNewTcBlocking(true);
+	}
+
+	public boolean isDpNewTcBlocking(boolean includeViewCount) {
+		return this.user.isDpNewTcBlocking(includeViewCount);
 	}
 	
 	public boolean hasSeenDpNewTc() {

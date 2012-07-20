@@ -34,7 +34,7 @@
 
 
 boolean showPremiumSlots = deliveryModel.isShowPremiumSlots();
-boolean dpNewTcBlock = user.isDpNewTcBlocking();
+boolean dpNewTcBlock = user.isDpNewTcBlocking(false);
 Date sameDayCutoff = deliveryModel.getSameDayCutoff();
 String sameDayCutoffUTC = deliveryModel.getSameDayCutoffUTC();
 

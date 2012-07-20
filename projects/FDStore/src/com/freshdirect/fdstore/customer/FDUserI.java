@@ -510,4 +510,6 @@ public interface FDUserI extends java.io.Serializable {
 	public void setEbtAccepted(boolean ebtAccepted);
 	
 	public boolean isDpNewTcBlocking();
+	
+	public boolean isDpNewTcBlocking(boolean includeViewCount);
 }

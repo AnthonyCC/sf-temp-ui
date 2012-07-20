@@ -2266,8 +2266,12 @@ public class FDUser extends ModelSupport implements FDUserI {
 	public void setEbtAccepted(boolean ebtAccepted) {
 		this.ebtAccepted = ebtAccepted;
 	}
-	
+
 	public boolean isDpNewTcBlocking() {
+		return isDpNewTcBlocking(true);
+	}
+	
+	public boolean isDpNewTcBlocking(boolean includeViewCount) {
 		boolean isBlocking = false;
 		
 		try {
@@ -2288,7 +2292,7 @@ public class FDUser extends ModelSupport implements FDUserI {
 			if (this.isDlvPassActive() && calNewTcStart.getTime().after(this.getDlvPassInfo().getPurchaseDate())) { //exclude users with no pass, and ones that purchased after new terms start
 	    		if (calNow.getTime().after(dpNewTcStartDate)) { //check that new terms should be in effect
 		    		if ( dpTcAgreeDate == null || ( calAgree != null && calAgree.getTime().before(dpNewTcStartDate) ) ) { //either never agreed, or agree before new terms
-			    		if (dpTcViewCount < FDStoreProperties.getDpTcViewLimit()) { //check view count
+			    		if (dpTcViewCount < FDStoreProperties.getDpTcViewLimit() || Boolean.FALSE.equals(includeViewCount)) { //check view count
 			    			isBlocking = true;
 			    		}
 		    		}
