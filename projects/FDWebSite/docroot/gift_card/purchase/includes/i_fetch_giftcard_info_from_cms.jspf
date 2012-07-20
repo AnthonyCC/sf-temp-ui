@@ -66,8 +66,14 @@
 						ContentType contentType = subContentKey.getType(); 
 						if(FDContentTypes.DONATION_ORGANIZATION.equals(contentType)){
 							DonationOrganization _org = new DonationOrganization(subContentKey);
-							donationOrgList.add(_org);
-							donationOrgMap.put(_org.getContentName(), _org);
+							if(_org.getEmail() != null && _org.getEmail().trim().length() > 0){
+								com.freshdirect.framework.core.PrimaryKey pk = com.freshdirect.fdstore.customer.FDCustomerManager.getCustomerId(_org.getEmail());
+								if(pk != null){
+									donationOrgList.add(_org);
+									donationOrgMap.put(_org.getContentName(), _org);
+								}
+							}
+							
 						}
 					}
 				}
