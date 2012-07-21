@@ -67,7 +67,11 @@
 						if(FDContentTypes.DONATION_ORGANIZATION.equals(contentType)){
 							DonationOrganization _org = new DonationOrganization(subContentKey);
 							if(_org.getEmail() != null && _org.getEmail().trim().length() > 0){
-								com.freshdirect.framework.core.PrimaryKey pk = com.freshdirect.fdstore.customer.FDCustomerManager.getCustomerId(_org.getEmail());
+								com.freshdirect.framework.core.PrimaryKey pk = null;
+								try {
+								     pk = com.freshdirect.fdstore.customer.FDCustomerManager.getCustomerId(_org.getEmail());
+								} catch(com.freshdirect.fdstore.FDResourceException e) {	}
+								
 								if(pk != null){
 									donationOrgList.add(_org);
 									donationOrgMap.put(_org.getContentName(), _org);
