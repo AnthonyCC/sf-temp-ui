@@ -228,7 +228,7 @@ public class ErpGenerateInvoiceCommand {
 		List newCharges = new ArrayList();
 		for (Iterator i = charges.iterator(); i.hasNext();) {
 			ErpChargeLineModel charge = (ErpChargeLineModel) i.next();
-			if(EnumChargeType.DELIVERY.equals(charge.getType()) && tax > 0){
+			if((EnumChargeType.DELIVERY.equals(charge.getType()) || EnumChargeType.DLVPREMIUM.equals(charge.getType()))  && tax > 0){
 				charge.setTaxRate(getDeliveryTaxRate(order.getCharges()));
 			}
 			

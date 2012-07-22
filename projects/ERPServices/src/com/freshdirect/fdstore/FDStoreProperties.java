@@ -1100,7 +1100,7 @@ public class FDStoreProperties {
 		defaults.put(PROP_COREMETRICS_FTP_PASSWORD, "Delivers2u!");
 		
 		defaults.put(ALLOW_DISCOUNTS_ON_PREMIUM_SLOT, "false");
-		defaults.put(DLV_PASS_NEW_TC_DATE, "2012-06-06");
+		defaults.put(DLV_PASS_NEW_TC_DATE, "2012-05-09");
 		defaults.put(SAME_DAY_MEDIA_AFTER_CUTOFF, "30");
 		
 		defaults.put(PROP_GIFTCARD_DONATION_ENABLED, "true");
@@ -2795,7 +2795,7 @@ public class FDStoreProperties {
 	            date = SF.parse(get(DLV_PASS_NEW_TC_DATE));
 	        } catch (ParseException e) {
 	            try {
-	                date = SF.parse("2199-01-01");
+	                date = SF.parse("2012-05-09");
 	                LOGGER.warn(
 	                    "fdstore.dlvpass.newtc.date property in fdstore.properties is not in correct yyyy-MM-dd format, defaulting to 2199-01-01");
 	            } catch (ParseException f) {

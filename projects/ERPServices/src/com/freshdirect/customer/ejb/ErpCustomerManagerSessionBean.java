@@ -2118,7 +2118,7 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 		ErpChargeLineModel dlvpremium = invoice.getCharge(EnumChargeType.DLVPREMIUM);
 		if (dlvpremium != null) {
 			deliveryAmount += dlvpremium.getTotalAmount();
-			deliveryAmount += dlvpremium.getTotalAmount() * delivery.getTaxRate();
+			deliveryAmount += dlvpremium.getTotalAmount() * dlvpremium.getTaxRate();
 		}
 		
 		ErpChargeLineModel misc = invoice.getCharge(EnumChargeType.MISCELLANEOUS);

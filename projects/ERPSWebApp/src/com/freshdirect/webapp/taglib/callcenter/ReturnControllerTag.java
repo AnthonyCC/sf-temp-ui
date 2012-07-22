@@ -190,6 +190,10 @@ public class ReturnControllerTag extends AbstractControllerTag implements Sessio
 					charge.setDiscount(new Discount("DELIVERY", EnumDiscountType.PERCENT_OFF, 1.0));
 					continue;
 				}
+				if(EnumChargeType.DLVPREMIUM.equals(charge.getType()) && dlvCharge != null) {
+					charge.setDiscount(new Discount("DELIVERY", EnumDiscountType.PERCENT_OFF, 1.0));
+					continue;
+				}
 				if(EnumChargeType.PHONE.equals(charge.getType()) && phoneCharge != null) {
 					charge.setDiscount(new Discount(null, EnumDiscountType.PERCENT_OFF, 1.0));
 					continue;
@@ -258,6 +262,8 @@ public class ReturnControllerTag extends AbstractControllerTag implements Sessio
 					//Get the Delivery charge line.
 					ErpChargeLineModel dlvChargeLine = returnOrder.getCharge(EnumChargeType.DELIVERY);
 					ErpChargeLineModel mscChargeLine = returnOrder.getCharge(EnumChargeType.MISCELLANEOUS);
+					ErpChargeLineModel dlvPremium = returnOrder.getCharge(EnumChargeType.DLVPREMIUM);
+					
 					if(returnOrder.isRestockingApplied()){
 						//The CSR did not waive off the delivery fee and restocking fee was applied.
 						//Apply delivery fee and msc charges is any.
@@ -265,13 +271,18 @@ public class ReturnControllerTag extends AbstractControllerTag implements Sessio
 						if(mscChargeLine.getAmount() > 0.0){
 							mscChargeLine.setDiscount(null);	
 						}
-						
+						if(dlvPremium!=null && dlvPremium.getAmount() > 0.0){
+							dlvPremium.setDiscount(null);	
+						}
 					} else {
 						//The CSR did not waive off the delivery fee and no restocking fee was applied.
 						//System automatically Waives delivery fee and msc charges is any.
 						dlvChargeLine.setDiscount(new Discount("DELIVERY", EnumDiscountType.PERCENT_OFF, 1.0));
 						if(mscChargeLine.getAmount() > 0.0){
 							mscChargeLine.setDiscount(new Discount("DELIVERY", EnumDiscountType.PERCENT_OFF, 1.0));	
+						}
+						if(dlvPremium!=null && dlvPremium.getAmount() > 0.0){
+							dlvPremium.setDiscount(new Discount("DELIVERY", EnumDiscountType.PERCENT_OFF, 1.0));	
 						}
 						
 					}
@@ -285,6 +296,7 @@ public class ReturnControllerTag extends AbstractControllerTag implements Sessio
 					//If csr did not waive the delivery fee. Get the Delivery charge line.
 					if(!returnOrder.isRestockingApplied()){
 						ErpChargeLineModel dlvChargeLine = returnOrder.getCharge(EnumChargeType.DELIVERY);
+						ErpChargeLineModel dlvPremium = returnOrder.getCharge(EnumChargeType.DLVPREMIUM);
 						ErpChargeLineModel mscChargeLine = returnOrder.getCharge(EnumChargeType.MISCELLANEOUS);
 						//No restocking fee was applied.
 						//System automatically Waives delivery fee and msc charges is any.
@@ -292,6 +304,8 @@ public class ReturnControllerTag extends AbstractControllerTag implements Sessio
 						if(mscChargeLine.getAmount() > 0.0){
 							mscChargeLine.setDiscount(new Discount("DELIVERY", EnumDiscountType.PERCENT_OFF, 1.0));	
 						}
+						if(dlvPremium!=null && dlvPremium.getAmount() > 0.0)
+							dlvPremium.setDiscount(new Discount("DELIVERY", EnumDiscountType.PERCENT_OFF, 1.0));	
 						
 					}
 				}
