@@ -43,7 +43,7 @@
 						<a class="butText" href="#" onclick="Modalbox.hide(); return false;"><img src="/media/editorial/site_pages/deliverypass/images/but_remindmelater_f1.gif" width="173" height="32" border="0" alt="Remind Me Later" /></a>
 					</div>
 					<div class="fright">
-						<a class="butText" href="#" onclick="doOverlayWindow('/your_account/delivery_pass_tc.jsp?userAgreed=true'); return false;"><img src="/media/editorial/site_pages/deliverypass/images/but_iagree_f1.gif" width="170" height="33" border="0" alt="I Agree" /></a>
+						<a class="butText" href="#" onclick="doOverlayWindow('/shared/delivery_pass_tc.jsp?userAgreed=true'); return false;"><img src="/media/editorial/site_pages/deliverypass/images/but_iagree_f1.gif" width="170" height="33" border="0" alt="I Agree" /></a>
 					</div>
 					<br style="clear:both" />
 				</div>
