@@ -109,7 +109,7 @@
 
 <jsp:include page='/includes/order_header.jsp'/>
 
-<% String[] checkErrorType = {"deliveryTime", "technical_difficulty", "pickup_didnot_agree"}; %>
+<% String[] checkErrorType = {"deliveryTime", "technical_difficulty", "pickup_didnot_agree", "bypassedDpTcBlock"}; %>
 <fd:ErrorHandler result="<%=result%>" field="<%=checkErrorType%>" id="errorMsg">
 	<%@ include file="/includes/i_error_messages.jspf" %>
 </fd:ErrorHandler>

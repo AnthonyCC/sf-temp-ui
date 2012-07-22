@@ -985,7 +985,11 @@ function extract_query_string(theForm) {
 
 function curvyCornersHelper(elemId, settingsObj) {
                 if (document.getElementById(elemId)) {
-                        var temp = new curvyCorners(settingsObj, document.getElementById(elemId)).applyCornersToAll();
+						try {
+	                        var temp = new curvyCorners(settingsObj, document.getElementById(elemId)).applyCornersToAll();
+						} catch(e) {
+							//ignore
+						}
                 }
         }
 

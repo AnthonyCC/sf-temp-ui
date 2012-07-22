@@ -198,21 +198,30 @@ function fdTSDisplay(refIdArg) {
 					//add t&c div for hover display (put this first, so it covers the timer)
 					if (this.opts.showDpTc && $('PREDPTCdayE')) { //PREDPTCdayE div is in the page
 						var firstPmTs = $(this.dayObjs[this.rowObjs[rowId].dayIds[0]].TSIds[this.dayObjs[this.rowObjs[rowId].dayIds[0]].dayPart]);
-						firstPmTs.insertBefore( new Element('div', {'id': this.opts.premSlotsDpTcElem, 'class': 'premSlotDpTc', 'style': 'display: none;'}), firstPmTs.firstChild );
 						var realTs = 0;
 						for (var i=this.dayObjs[this.rowObjs[rowId].dayIds[0]].dayPart; i < this.dayObjs[this.rowObjs[rowId].dayIds[0]].TSs.length; i++) {
 							if (this.dayObjs[this.rowObjs[rowId].dayIds[0]].TSs[i] !== '') { realTs++; }
 						}
-						//move up a TS row's worth
-						$(this.opts.premSlotsDpTcElem).style.top = (this.getCalcdRowHeight(1, null, false, this.getCalcdRowHeight(1, null, false, 0)));
-						//set height to cover all slots
-						$(this.opts.premSlotsDpTcElem).style.height = this.getCalcdRowHeight( realTs, null, false, 0);
-						//and the content
-						$(this.opts.premSlotsDpTcElem).innerHTML = $('PREDPTCdayE').innerHTML;
-						//add mouse out to terms block
-						this.addEvent('mouseOvers', this.opts.premSlotsDpTcElem);
-						//add mouseover to CO
-						//this.addEvent('mouseOversClickOnly', lastCO.id, 'coId');
+
+						var negSub = parseInt(this.getCalcdRowHeight(1, null, false, 0), 10);
+
+						var styleString = 'display: none;';
+							//styleString += 'top: '+this.getCalcdRowHeight(1, null, false, negSub)+';';
+							styleString += 'height: '+this.getCalcdRowHeight(realTs, null, false, 0)+';';
+
+						firstPmTs.insertBefore( new Element('div', {'id': this.opts.premSlotsDpTcElem, 'class': 'premSlotDpTc', 'style': styleString }), firstPmTs.firstChild );
+						
+						var dpTcElem = $(this.opts.premSlotsDpTcElem);
+						if (dpTcElem) {
+							
+							//add the content
+							dpTcElem.innerHTML = $('PREDPTCdayE').innerHTML;
+							//add mouse out to terms block
+							this.addEvent('mouseOvers', dpTcElem);
+
+							//add mouseover to CO
+							//this.addEvent('mouseOversClickOnly', lastCO.id, 'coId');
+						}
 					}
 
 					//add timer elem
@@ -523,7 +532,7 @@ function fdTSDisplay(refIdArg) {
 				//hover on for dp T&C
 				if (this.opts.showDpTc && !this.opts.premDcTpAgreed) {
 					if (this.dayObjs[dayId].showDpTc && this.dayObjs[dayId].isExpanded) {
-						$(this.opts.premSlotsDpTcElem).show();
+						if ($(this.opts.premSlotsDpTcElem)) { $(this.opts.premSlotsDpTcElem).show(); }
 					}
 				}
 
@@ -541,7 +550,7 @@ function fdTSDisplay(refIdArg) {
 				//hover on for dp T&C
 				if (this.opts.showDpTc) {
 					if (!this.dayObjs[dayId].showDpTc || elemId !== this.opts.premSlotsDpTcElem) {
-						$(this.opts.premSlotsDpTcElem).hide();
+						if ($(this.opts.premSlotsDpTcElem)) { $(this.opts.premSlotsDpTcElem).hide(); }
 					}
 				}
 
@@ -608,13 +617,13 @@ function fdTSDisplay(refIdArg) {
 					//no timstamp, set to now so it's expired.
 					this.opts.premSlotsCO = new Date().getTime();
 				}
+			
+				if (showPremiumSlots && match != null && match[1] != new Date().getDay()) {
+					this.log('same day mismatch, check data.');
+				}
 			}else{
 				//clear premSlotsDayId so it can't be referenced
 				this.opts.premSlotsDayId = null;
-			}
-			
-			if (showPremiumSlots && match != null && match[1] != new Date().getDay()) {
-				this.log('same day mismatch, check data.');
 			}
 
 			this.log('Timestamp:'+window.premSlotsCO+' Parsed after:'+this.opts.premSlotsCO);
