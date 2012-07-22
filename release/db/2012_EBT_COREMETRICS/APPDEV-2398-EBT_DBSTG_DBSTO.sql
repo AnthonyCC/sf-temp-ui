@@ -1,0 +1,1 @@
+alter table dlv.zipcode add (EBT_ACCEPTED char(1));
