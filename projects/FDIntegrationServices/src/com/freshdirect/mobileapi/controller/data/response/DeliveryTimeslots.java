@@ -33,6 +33,8 @@ public class DeliveryTimeslots extends CheckoutResponse {
     private String reservedTimeslotId;
     
     private boolean showPremiumSlots;
+    
+    private boolean showDPTermsAndConditions;
 
     private Date sameDayCutoff;
 
@@ -79,6 +81,7 @@ public class DeliveryTimeslots extends CheckoutResponse {
         this.selectedTimeslotId = result.getPreselectedTimeslotId();
         this.reservedTimeslotId = result.getReservationTimeslotId();
         this.showPremiumSlots = result.isShowPremiumSlots();
+        this.showDPTermsAndConditions = result.isShowDPTermsAndConditions();
         this.sameDayCutoff = result.getSameDayCutoff();
         
     }
@@ -97,6 +100,14 @@ public class DeliveryTimeslots extends CheckoutResponse {
 
 	public void setSameDayCutoff(Date sameDayCutoff) {
 		this.sameDayCutoff = sameDayCutoff;
+	}
+
+	public boolean isShowDPTermsAndConditions() {
+		return showDPTermsAndConditions;
+	}
+
+	public void setShowDPTermsAndConditions(boolean showDPTermsAndConditions) {
+		this.showDPTermsAndConditions = showDPTermsAndConditions;
 	}
 
 }

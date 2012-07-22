@@ -57,7 +57,7 @@ function loadStuff() {
   	$("#result").val("");
   } else if(loaddata == "Login") {  	
   	$("#url").val("/saptest12@freshdirect.com/login/");
-  	$("#payload").val('{ "username" : "saptest12@freshdirect.com", "password" : "test" }');
+  	$("#payload").val('{ "username" : "bogus@freshdirect.com", "password" : "test" }');
   	$("#result").val("");
   } else if (loaddata == "AddPromo") {
   	$("#url").val("/saptest12@freshdirect.com/cart/promo/apply/TEST_P0002");
@@ -138,7 +138,7 @@ function loadStuff() {
   	$("#result").val("");
   } else if (loaddata == "CheckoutAuthenticate") {
   	$("#url").val("/saptest12@freshdirect.com/checkout/authenticate/");
-    $("#payload").val('{ "username" : "saptest12@freshdirect.com", "password" : "test" }');
+    $("#payload").val('{ "username" : "bogus@freshdirect.com", "password" : "test" }');
   	$("#result").val("");
   } else if (loaddata == "GetDeliveryAddresses") {
   	$("#url").val("/saptest12@freshdirect.com/checkout/deliveryaddresses/getall/");
@@ -146,7 +146,11 @@ function loadStuff() {
   	$("#result").val("");
   } else if (loaddata == "SetDeliveryAddress") {
   	$("#url").val("/saptest12@freshdirect.com/checkout/deliveryaddresses/set/");
-  	$("#payload").val('{ "id" : "2150625068", "type" : "RESIDENTIAL" }');
+  	$("#payload").val('{ "id" : "2150625068", "type" : "RESIDENTIAL"  }');
+  	$("#result").val("");
+  } else if (loaddata == "AcceptDeliveryPassTermsAndConditionsReturnTimeslots") {
+  	$("#url").val("/saptest12@freshdirect.com/checkout/dpacceptterms/");
+  	$("#payload").val("");
   	$("#result").val("");
   } else if (loaddata == "ReserveDeliverySlot") {
   	$("#url").val("/saptest12@freshdirect.com/checkout/deliverytimeslot/reserve/2150625068/");
@@ -274,6 +278,10 @@ function loadStuff() {
   	$("#result").val("");
   } else if (loaddata == "GetOrderHistory") {
   	$("#url").val("/saptest12@freshdirect.com/account/orders/");
+  	$("#payload").val("");
+  	$("#result").val("");
+  } else if (loaddata == "AcceptDeliveryPassTermsAndConditions") {
+  	$("#url").val("/saptest12@freshdirect.com/account/dpacceptterms/");
   	$("#payload").val("");
   	$("#result").val("");
   } else if (loaddata == "ModifyOrder") {
@@ -480,7 +488,11 @@ function loadStuff() {
   	$("#url").val("/help/termsOfUse");
   	$("#payload").val("");
   	$("#result").val("");
-  }  else if (loaddata == "Ping") {
+  } else if (loaddata == "DeliveryPassTermsAndConditions") {
+  	$("#url").val("/help/deliveryPassTermsAndConditions");
+  	$("#payload").val("");
+  	$("#result").val("");
+  } else if (loaddata == "Ping") {
   	$("#url").val("/saptest12@freshdirect.com/ping/");
   	$("#payload").val("");
   	$("#result").val("");
@@ -611,6 +623,7 @@ function doStuff() {
   <option value="SubmitOrder">CHECKOUT - Submit Order</option>
   <option value="GetSelectedDeliveryAddress">CHECKOUT - Get Selected Delivery Address</option>
   <option value="GetPaymentMethodVerifyStatus">CHECKOUT - Get Payment Method Verificaton Status(CVV)</option>
+  <option value="AcceptDeliveryPassTermsAndConditionsReturnTimeslots">CHECKOUT - Accept DeliveryPass TermsAndConditions</option>
   <option value=""> ========== SEARCH ========== </option>
   <option value="Search">SEARCH - Basic</option>
   <option value="SearchUPC">SEARCH - UPC barcode</option>
@@ -664,6 +677,7 @@ function doStuff() {
   <option value="AddPaymentMethod">ACCOUNT - Add Payment Method</option>
   <option value="EditPaymentMethod">ACCOUNT - Edit Payment Method</option>
   <option value="DeletePaymentMethod">ACCOUNT - Delete Payment Method</option>
+  <option value="AcceptDeliveryPassTermsAndConditions">ACCOUNT - Accept DeliveryPass TermsAndConditions</option>  
   <option value=""> ========== MISC ========== </option>
   <option value="EmailCapture">Email Capture</option>
   <option value="ConfiguredValues">Configured Values</option>
@@ -672,6 +686,7 @@ function doStuff() {
   <option value="HelpContactUs">Help - Contact Us</option>
   <option value="HelpLearnMorePromo">Help - Learn More Promo</option>
   <option value="CustomerAgreement">Help - Customer Agreement</option>
+  <option value="DeliveryPassTermsAndConditions">Help - DeliveryPass TermsAndConditions</option>
   <option value=""> ========== External Interface ========== </option>
   <option value="IvrEmail">Send - IVR Delivery Email</option>
   

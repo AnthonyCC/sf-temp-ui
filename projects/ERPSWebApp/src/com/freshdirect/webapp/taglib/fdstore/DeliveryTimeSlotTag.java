@@ -83,6 +83,7 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag<Result> {
 
 	private ErpAddressModel address = null;
 	private boolean deliveryInfo = false;
+	private boolean returnSameDaySlots = true;
 	
 	private TimeslotContext timeSlotContext = null;
 	
@@ -112,8 +113,11 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag<Result> {
 	public void setTimeSlotId(String timeSlotId) {
 		this.timeSlotId = timeSlotId;
 	}
-
 	
+	
+	public void setReturnSameDaySlots(boolean returnSameDaySlots) {
+		this.returnSameDaySlots = returnSameDaySlots;
+	}
 
 	/**
 	 * Used in CRM interface
@@ -211,8 +215,10 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag<Result> {
 		/* if(cart.getDeliveryPassCount() ==0 && user.getDlvPassInfo()!=null && user.getDlvPassInfo().getPurchaseDate()!=null)
 			cart.setDlvPassPremiumAllowedTC(user.isDpNewTcBlocking()); //do we still need this check?
 		*/
-		if(/*(!cart.isDlvPassPremiumAllowedTC()) || */(timeSlotContext!=null && !timeSlotContext.equals(TimeslotContext.CHECKOUT_TIMESLOTS)))
+		//if(/*(!cart.isDlvPassPremiumAllowedTC()) || */(timeSlotContext!=null && !timeSlotContext.equals(TimeslotContext.CHECKOUT_TIMESLOTS)))
+		if(!returnSameDaySlots || (timeSlotContext!=null && !timeSlotContext.equals(TimeslotContext.CHECKOUT_TIMESLOTS))) {		
 			TimeslotLogic.purgeSDSlots(timeslotList);
+		}
 		
 		showPremiumSlots =TimeslotLogic.hasPremiumSlots(timeslotList, baseRange.getStartDate(), DateUtil.addDays(baseRange.getEndDate(),-1));
 		

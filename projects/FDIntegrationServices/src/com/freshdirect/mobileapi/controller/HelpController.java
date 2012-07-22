@@ -39,6 +39,10 @@ public class HelpController extends BaseController {
     private String helpPath = "/media/mobile/iphone/help/help.json";
     
     private String customerAgreementPath = "/media/mobile/iphone/customer_agreement/customer_agreement.json";
+    
+    private String dpAgreementPath = "/media/editorial/site_pages/deliverypass/DP_terms.json";
+    
+    public static final String DP_TERMS_AND_CONDITIONS_ACTION = "deliveryPassTermsAndConditions";
 
     @Override
     protected ModelAndView processRequest(HttpServletRequest request, HttpServletResponse response, ModelAndView model, String action,
@@ -65,6 +69,14 @@ public class HelpController extends BaseController {
         } else if (TERMS_OF_USE_ACTION.equals(action)) {
             try {
                 remoteUrl = new URL(mediaPath + customerAgreementPath);
+                data = ProductUtil.readContent(remoteUrl);
+            } catch (IOException e) {
+                LOGGER.warn("Unable to rerieve data from " + remoteUrl.toString());
+                data = "";
+            }
+        } else if (DP_TERMS_AND_CONDITIONS_ACTION.equalsIgnoreCase(action)) {
+            try {
+                remoteUrl = new URL(mediaPath + dpAgreementPath);
                 data = ProductUtil.readContent(remoteUrl);
             } catch (IOException e) {
                 LOGGER.warn("Unable to rerieve data from " + remoteUrl.toString());

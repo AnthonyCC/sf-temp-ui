@@ -424,8 +424,10 @@ public class SessionUser {
      */
     public String getCutoffInfo() throws FDException {
         GetCutoffInfoTagWrapper wrapper = new GetCutoffInfoTagWrapper(this);
-        CutoffInfo cutoffInfo = wrapper.getCutoff();
         String messageString = null;
+        
+        CutoffInfo cutoffInfo = wrapper.getCutoff();
+        
         /*
          * DUP: FDWebSite/docroot/common/template/includes/i_cutoff_warning.jsp
          * LAST UPDATED ON: 11/17/2009
@@ -481,7 +483,7 @@ public class SessionUser {
             }
             messageString = message.toString();
         }
-
+        
         return messageString;
     }
 
@@ -536,5 +538,9 @@ public class SessionUser {
     
     public AddressModel getAddress() {
     	return sessionUser.getAddress();
+    }
+    
+    public boolean isDpNewTcBlocking() {
+    	return sessionUser.isDpNewTcBlocking();
     }
 }

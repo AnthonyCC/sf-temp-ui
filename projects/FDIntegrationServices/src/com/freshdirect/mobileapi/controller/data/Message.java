@@ -32,6 +32,13 @@ public class Message implements DateFormat, Cloneable {
         message.addDebugMessage(messageString);
         return message;
     }
+    
+    public static Message createFailureMessage(String messageString) {
+        Message message = new Message();
+        message.status = STATUS_FAILED;
+        message.addErrorMessage(messageString);
+        return message;
+    }
 
     public void setSuccessMessage(String messageString) {
         status = STATUS_SUCCESS;

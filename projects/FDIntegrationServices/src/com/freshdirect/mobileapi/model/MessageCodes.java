@@ -211,6 +211,12 @@ public interface MessageCodes {
     
     public static final String MSG_AUTHENTICATION_FAILED = "We're unable to find an account that matches this information. Please double-check your email address and password. If you have forgotten your password, click on the \"Forgot your password?\" link.";
     
+    public final static String MSG_ACCEPT_DP_TERMSANDCONDITIONS 					= "Delivery Pass Terms And Condition Accepted Successfully.";
+    
+    public final static String MSG_ACCEPT_DP_TERMSANDCONDITIONS_FAILED 					= "Delivery Pass Terms And Condition Acceptance Failed.";
+    
+    public final static String MSG_ACCEPT_DP_TERMSANDCONDITIONS_NOADDRESS 					= "Delivery Pass Terms And Condition Acceptance Successfully. Address not found in cart";
+    
     public static class ErrorMessage {
         public final static String PASS_THROUGH = "PASS_THROUGH";
 

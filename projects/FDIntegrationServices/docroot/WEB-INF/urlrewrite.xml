@@ -168,6 +168,10 @@
 		<to last="true">/checkout.do?action=setdeliveryaddress&amp;ver=$1</to>
 	</rule>
 	<rule>
+		<from>^/v/([0-9]+)/(.*)/checkout/dpacceptterms/</from>
+		<to last="true">/checkout.do?action=acceptDeliveryPassTermsAndConditions&amp;ver=$1</to>
+	</rule>	
+	<rule>
 		<from>^/v/([0-9]+)/(.*)/deliveryaddress/add/</from>
 		<to last="true">/register.do?action=adddeliveryaddress&amp;ver=$1</to>
 	</rule>
@@ -507,6 +511,12 @@
 		<from>^/v/([0-9]+)/(.*)/account/orders/</from>
 		<to last="true">/account.do?action=getorders&amp;ver=$1</to>
 	</rule>
+	
+	<!-- Delivery Pass Accept Terms and Conditions -->
+	<rule>
+		<from>^/v/([0-9]+)/(.*)/account/dpacceptterms/</from>
+		<to last="true">/account.do?action=acceptDeliveryPassTermsAndConditions&amp;ver=$1</to>
+	</rule>
 
 	<!-- Email capture -->
 	<rule>
@@ -525,6 +535,7 @@
 		<from>^/v/([0-9]+)/help/(.*)</from>
 		<to last="true">/help.do?action=$2&amp;ver=$1</to>
 	</rule>
+	
 	<!-- Help -->
 		
 	<!-- Browse -->

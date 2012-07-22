@@ -6,6 +6,7 @@ import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.util.TimeslotContext;
 import com.freshdirect.mobileapi.model.SessionUser;
+import com.freshdirect.mobileapi.util.MobileApiProperties;
 import com.freshdirect.webapp.taglib.fdstore.DeliveryTimeSlotTag;
 import com.freshdirect.webapp.taglib.fdstore.Result;
 
@@ -21,6 +22,7 @@ public class DeliveryTimeSlotTagWrapper extends GetterTagWrapper {
     public Result getDeliveryTimeSlotResult(ErpAddressModel address) throws FDException {
         ((DeliveryTimeSlotTag)wrapTarget).setAddress(address);
         ((DeliveryTimeSlotTag)wrapTarget).setDeliveryInfo(true);
+        ((DeliveryTimeSlotTag)wrapTarget).setReturnSameDaySlots(showSameDaySlots());
         if(null !=getUser() && getUser().isEligibleForPreReservation()){
     		((DeliveryTimeSlotTag)wrapTarget).setTimeSlotContext(TimeslotContext.RESERVE_TIMESLOTS);
     	}else{
@@ -32,6 +34,7 @@ public class DeliveryTimeSlotTagWrapper extends GetterTagWrapper {
     public Result getDeliveryTimeSlotResult(ErpAddressModel address, boolean isAuthenticated) throws FDException {
         ((DeliveryTimeSlotTag)wrapTarget).setAddress(address);
         ((DeliveryTimeSlotTag)wrapTarget).setDeliveryInfo(true);
+        ((DeliveryTimeSlotTag)wrapTarget).setReturnSameDaySlots(showSameDaySlots());
         if(isAuthenticated){
         	((DeliveryTimeSlotTag)wrapTarget).setTimeSlotContext(TimeslotContext.CHECKOUT_TIMESLOTS);
         }else{
@@ -59,5 +62,9 @@ public class DeliveryTimeSlotTagWrapper extends GetterTagWrapper {
         return pageContext.getAttribute(GET_RESULT);
     }
     
-
+    private boolean showSameDaySlots() {
+    	return !(this.getUser() != null 
+    				&& this.getUser().isDpNewTcBlocking() 
+    						&& !MobileApiProperties.isSameDayDpCompatible());
+    }
 }

@@ -50,6 +50,8 @@ public class MobileApiProperties {
     private final static String PROP_EXTERNAL_INTERFACE_ENABLED = "mobileapi.extint.enabled";
     
     private final static String PROP_SUSTAINABILITY_RATING_ENABLED = "mobileapi.sustainabilityrating.enabled";
+    
+    private final static String PROP_SAMEDAY_DP_COMPATIBLE = "mobileapi.samedaydp.compatible";
 
     public final static String UPGRADE = "UPGRADE";
 
@@ -72,6 +74,7 @@ public class MobileApiProperties {
         defaults.put(PROP_BROWSE_ENABLED, "true");
         defaults.put(PROP_EXTERNAL_INTERFACE_ENABLED, "true");
         defaults.put(PROP_SUSTAINABILITY_RATING_ENABLED, "true");
+        defaults.put(PROP_SAMEDAY_DP_COMPATIBLE, "true");
         refresh();
     }
 
@@ -167,4 +170,7 @@ public class MobileApiProperties {
         return (Boolean.valueOf(get(PROP_SUSTAINABILITY_RATING_ENABLED)).booleanValue());
     }
     
+    public static boolean isSameDayDpCompatible() {
+    	return (Boolean.valueOf(get(PROP_SAMEDAY_DP_COMPATIBLE)).booleanValue());
+    }
 }

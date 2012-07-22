@@ -75,6 +75,8 @@ public class DeliveryTimeslots {
         private boolean isUserChefTable = false;
 
 		private boolean showPremiumSlots= false;
+		
+		private boolean showDPTermsAndConditions = false;
 
 		private Date sameDayCutoff;
 
@@ -100,8 +102,9 @@ public class DeliveryTimeslots {
          * @param isUserChefTable
          * @throws FDResourceException
          */
-        public TimeSlotCalculationResult(FDDeliveryTimeslotModel model, boolean isUserChefTable, boolean preReservationMode) throws FDResourceException {
-            this(model.getTimeslotList(), model.getZones(), model.isZoneCtActive(), model.getGeoRestrictionmessages(), isUserChefTable, model.isShowPremiumSlots(), model.getSameDayCutoff());
+        public TimeSlotCalculationResult(FDDeliveryTimeslotModel model, boolean isUserChefTable, boolean preReservationMode, boolean isDpNewTcBlocking) throws FDResourceException {
+            this(model.getTimeslotList(), model.getZones(), model.isZoneCtActive(), model.getGeoRestrictionmessages(), isUserChefTable
+            			, model.isShowPremiumSlots(), isDpNewTcBlocking, model.getSameDayCutoff());
         }
         
         
@@ -114,7 +117,7 @@ public class DeliveryTimeslots {
          * @throws FDResourceException
          */
         public TimeSlotCalculationResult(List<FDTimeslotUtil> timeslotLists, Map<String, DlvZoneModel> zones, boolean zoneCtActive,
-                List<String> messages, boolean isUserChefTable, boolean showPremiumSlots, Date sameDayCutoff) throws FDResourceException {
+                List<String> messages, boolean isUserChefTable, boolean showPremiumSlots, boolean isDpNewTcBlocking, Date sameDayCutoff) throws FDResourceException {
             this.timeslotList = TimeslotList.wrap(timeslotLists);
             //this.zones = zones;
             this.zoneCtActive = zoneCtActive;
@@ -122,6 +125,7 @@ public class DeliveryTimeslots {
             this.isUserChefTable = isUserChefTable;
             calculatSlotAvailability();
             this.showPremiumSlots = showPremiumSlots;
+            this.showDPTermsAndConditions = showPremiumSlots && isDpNewTcBlocking;
             this.sameDayCutoff = sameDayCutoff;
             
         }
@@ -190,6 +194,11 @@ public class DeliveryTimeslots {
 		public boolean isShowPremiumSlots() {
 			return showPremiumSlots;
 		}
+		
+		public boolean isShowDPTermsAndConditions() {
+			return showDPTermsAndConditions;
+		}
+		
     }
 
 }

@@ -2,6 +2,7 @@ package com.freshdirect.mobileapi.controller;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -19,6 +20,7 @@ import com.freshdirect.fdstore.FDDepotManager;
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDOrderI;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionError;
@@ -97,6 +99,8 @@ public class CheckoutController extends BaseController {
     private final static String ACTION_GET_SELECTED_DELIVERY_ADDRESS = "getselecteddeliveryaddress";
     
     private final static String ACTION_GET_PAYMENTMETHOD_VERIFY_STATUS = "getpmverifystatus";
+    
+    private static final String ACTION_ACCEPT_DP_TERMSANDCONDITIONS = "acceptDeliveryPassTermsAndConditions";
 
     /* (non-Javadoc)
      * @see org.springframework.web.servlet.mvc.Controller#handleRequest(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
@@ -166,6 +170,8 @@ public class CheckoutController extends BaseController {
             model = getSelectedDeliveryAddress(model, user);
         }else if (ACTION_GET_PAYMENTMETHOD_VERIFY_STATUS.equals(action)) {
             model = getCVVStatus(model, user);
+        }  else if (ACTION_ACCEPT_DP_TERMSANDCONDITIONS.equals(action)) {            
+            model = this.acceptDeliveryPassTerms(model, user, request);
         }
         return model;
     }
@@ -311,7 +317,47 @@ public class CheckoutController extends BaseController {
         setResponseMessage(model, responseMessage, user);
         return model;
     }
+    
+    /**
+     * @param model
+     * @param user
+     * @param reqestMessage
+     * @param request
+     * @return
+     * @throws FDException
+     * @throws JsonException
+     */
+    private ModelAndView acceptDeliveryPassTerms(ModelAndView model, SessionUser user, HttpServletRequest request) throws FDException, JsonException {
+    	
+    	try {
+			FDCustomerManager.storeDPTCAgreeDate(user.getFDSessionUser().getIdentity().getErpCustomerPK(), new Date());
+		} catch(FDResourceException exp) {
+			exp.printStackTrace();
+			setResponseMessage(model, Message.createFailureMessage(MSG_ACCEPT_DP_TERMSANDCONDITIONS_FAILED), user);
+			return model;
+		}
+        
+        Message responseMessage = null;
+        if (user.getShoppingCart() != null && user.getShoppingCart().getDeliveryAddress() != null ) {
+        	
+        	DeliveryAddress deliveryAddress = DeliveryAddress.wrap(user.getShoppingCart().getDeliveryAddress());
+            TimeSlotCalculationResult timeSlotResult = deliveryAddress.getDeliveryTimeslot(user, false,isCheckoutAuthenticated(request));
 
+            com.freshdirect.mobileapi.controller.data.response.DeliveryTimeslots slotResponse = new com.freshdirect.mobileapi.controller.data.response.DeliveryTimeslots(
+                    timeSlotResult);
+            slotResponse.getCheckoutHeader().setHeader(user.getShoppingCart());
+            responseMessage = slotResponse;
+            responseMessage.setSuccessMessage("Order delivery Address have been set successfully.");
+            
+        } else {
+        	
+        	setResponseMessage(model, Message.createFailureMessage(MSG_ACCEPT_DP_TERMSANDCONDITIONS_NOADDRESS), user);
+        }
+        setResponseMessage(model, responseMessage, user);
+        
+        return model;
+    }
+    
     /**
      * @param model
      * @param user
@@ -323,17 +369,17 @@ public class CheckoutController extends BaseController {
      */
     private ModelAndView setDeliveryAddress(ModelAndView model, SessionUser user, DeliveryAddressSelection reqestMessage,
             HttpServletRequest request) throws FDException, JsonException {
-    	LOGGER.debug("setDeliveryAddress[START] :"+ getSessionUserId(user));
+    	    	
     	Checkout checkout = new Checkout(user);
-    	LOGGER.debug("setDeliveryAddress[START1] :"+ getSessionUserId(user));
+    	
         ResultBundle resultBundle = checkout.setCheckoutDeliveryAddress(reqestMessage.getId(), DeliveryAddressType.valueOf(reqestMessage
                 .getType()));
         ActionResult result = resultBundle.getActionResult();
         propogateSetSessionValues(request.getSession(), resultBundle);
-        LOGGER.debug("setDeliveryAddress[END1] :"+ getSessionUserId(user));
+        
         Message responseMessage = null;
         if (result.isSuccess()) {
-        	LOGGER.debug("setDeliveryAddress[START2] :"+ getSessionUserId(user));
+        	
         	DeliveryAddress deliveryAddress = DeliveryAddress.wrap(user.getShoppingCart().getDeliveryAddress());
             TimeSlotCalculationResult timeSlotResult = deliveryAddress.getDeliveryTimeslot(user, false,isCheckoutAuthenticated(request));
 
@@ -342,13 +388,13 @@ public class CheckoutController extends BaseController {
             slotResponse.getCheckoutHeader().setHeader(user.getShoppingCart());
             responseMessage = slotResponse;
             responseMessage.setSuccessMessage("Order delivery Address have been set successfully.");
-            LOGGER.debug("setDeliveryAddress[END2] :"+ getSessionUserId(user));
+            
         } else {
-        	LOGGER.debug("setDeliveryAddress[ERROR] :"+ getSessionUserId(user));
+        	
             responseMessage = getErrorMessage(result, request);
         }
         setResponseMessage(model, responseMessage, user);
-        LOGGER.debug("setDeliveryAddress[END] :"+ getSessionUserId(user));
+        
         return model;
     }
 

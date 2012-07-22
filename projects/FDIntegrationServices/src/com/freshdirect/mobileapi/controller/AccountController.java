@@ -1,6 +1,7 @@
 package com.freshdirect.mobileapi.controller;
 
 import java.io.IOException;
+import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -13,6 +14,7 @@ import org.codehaus.jackson.map.JsonMappingException;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.freshdirect.fdstore.FDException;
+import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionResult;
 import com.freshdirect.mobileapi.controller.data.Message;
@@ -50,7 +52,7 @@ public class AccountController extends BaseController {
     
     private static final String ACTION_GET_ORDER_HISTORY = "getorders";
 
-
+    private static final String ACTION_ACCEPT_DP_TERMSANDCONDITIONS = "acceptDeliveryPassTermsAndConditions";
 
     @Override
     protected ModelAndView processRequest(HttpServletRequest request, HttpServletResponse response, ModelAndView model, String action,
@@ -75,6 +77,9 @@ public class AccountController extends BaseController {
             model = makeReservation(model, user, addressId, defaultReservationType(requestMessage), request);
         } else if (ACTION_GET_ORDER_HISTORY.equals(action)) {
             model = getOrderHistory(model, user, request, response);
+        } else if (ACTION_ACCEPT_DP_TERMSANDCONDITIONS.equals(action)) {
+            FDCustomerManager.storeDPTCAgreeDate(user.getFDSessionUser().getIdentity().getErpCustomerPK(), new Date());
+            setResponseMessage(model, Message.createSuccessMessage(MSG_ACCEPT_DP_TERMSANDCONDITIONS), user);
         }
         return model;
     }
