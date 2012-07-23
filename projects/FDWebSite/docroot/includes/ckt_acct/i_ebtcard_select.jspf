@@ -85,17 +85,18 @@ final int W_EBTCARD_SELECT_CARD = 280;
             // rule is to select an ECheck account if possible.  Only select a credit card if eCheck is not available or 
             // if it's a modified order where a credit card account was already selected
             boolean isECheckOptionNotAvailable =  numEChecks == 0 || isECheckRestricted || !isCheckEligible;
+            boolean isCCOptionNotAvailable = numCreditCards==0;
 			if(!methodChecked) {
-				if (paymentPKId.equals(selectedPaymPKId) && (!isNewOrder || isECheckOptionNotAvailable)){
+				if (paymentPKId.equals(selectedPaymPKId)){
 					methodChecked = true;
 					checked = "checked"; 
 				}
-				else if(selectedPaymPKId.equalsIgnoreCase("new") && itemNum == numCreditCards-1 && isECheckOptionNotAvailable){
+				else if(selectedPaymPKId.equalsIgnoreCase("new") && itemNum == numEBTCards-1 && (isECheckOptionNotAvailable && isCCOptionNotAvailable)){
 					methodChecked = true;
 					checked = "checked";
 				}
 			}
-			if ( !methodChecked && itemNum == numCreditCards-1 && isECheckOptionNotAvailable) {
+			if ( !methodChecked && itemNum == numEBTCards-1 && (isECheckOptionNotAvailable && isCCOptionNotAvailable)) {
 				methodChecked = true;
 				checked = "checked";
 			}

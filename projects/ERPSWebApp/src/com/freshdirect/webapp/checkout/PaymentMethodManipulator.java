@@ -21,6 +21,7 @@ import com.freshdirect.fdstore.customer.FDCustomerCreditUtil;
 import com.freshdirect.fdstore.customer.FDCustomerFactory;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDIdentity;
+import com.freshdirect.fdstore.customer.FDModifyCartModel;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.util.NVL;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -153,9 +154,13 @@ public class PaymentMethodManipulator extends CheckoutManipulator {
 		FDCartModel cart = getCart();
 		EnumServiceType selectedServiceType=cart.getDeliveryAddress().getServiceType();
 		if(EnumPaymentMethodType.EBT.equals(paymentMethod.getPaymentMethodType())&& !getUser().isEbtAccepted()/*!(cart.getDeliveryAddress() instanceof ErpDepotAddressModel)*/){
-			result.addError(new ActionError("ebtPaymentNotAllowed",SystemMessageList.MSG_EBT_NOT_ALLOWED));
-			if(getUser().getOrderHistory().getUnSettledEBTOrderCount() > 0){
-				result.addError(new ActionError("ebtPaymentNotAllowed",SystemMessageList.MSG_EBT_NOT_ALLOWED_UNSETTLED_ORDERS));
+			if(null ==getUser().getShoppingCart().getPaymentMethod() || !EnumPaymentMethodType.EBT.equals(getUser().getShoppingCart().getPaymentMethod().getPaymentMethodType()) ||
+					!(getUser().getShoppingCart() instanceof FDModifyCartModel)){	
+				
+				result.addError(new ActionError("ebtPaymentNotAllowed",SystemMessageList.MSG_EBT_NOT_ALLOWED));
+				if(getUser().getOrderHistory().getUnSettledEBTOrderCount() > 0 ){
+					result.addError(new ActionError("ebtPaymentNotAllowed",SystemMessageList.MSG_EBT_NOT_ALLOWED_UNSETTLED_ORDERS));
+				}
 			}
 		}
 			
