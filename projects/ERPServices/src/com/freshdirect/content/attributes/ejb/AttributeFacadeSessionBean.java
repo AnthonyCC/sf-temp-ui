@@ -228,6 +228,8 @@ public class AttributeFacadeSessionBean extends SessionBeanSupport {
 			// get all unique Root IDs
 			Set rootIds = new HashSet();
 			for (int i = 0; i < rawAttributes.length; i++) {
+				FlatAttribute fa = (FlatAttribute) rawAttributes[i];
+				System.out.println("--------------FA----------"+ fa.toString());
 				rootIds.add(rawAttributes[i].getIdPath()[0]);
 			}
 

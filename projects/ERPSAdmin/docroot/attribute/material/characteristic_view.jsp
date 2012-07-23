@@ -32,6 +32,7 @@
                     <form action="characteristic_view.jsp" method="post">
                     <input type=hidden name=action value=save>
 					<input type=hidden name=sapId value="<%= material.getSapId() %>">
+					<input type="hidden" name="characterviewpage" value="true" />
 
                     <table>
                         <tr>
