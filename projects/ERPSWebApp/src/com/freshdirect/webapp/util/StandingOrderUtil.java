@@ -125,7 +125,8 @@ public class StandingOrderUtil {
 	 * @throws FDResourceException
 	 * 
 	 */
-	public static SOResult.Result process( FDStandingOrder so, Date altDate, TimeslotEventModel event, FDActionInfo info, MailerGatewayHome mailerHome, boolean forceCapacity, boolean createIfSoiExistsForWeek) throws FDResourceException {
+	public static SOResult.Result process( FDStandingOrder so, Date altDate, TimeslotEventModel event, FDActionInfo info
+					, MailerGatewayHome mailerHome, boolean forceCapacity, boolean createIfSoiExistsForWeek, boolean isSendReminderNotificationEmail) throws FDResourceException {
 		
 		LOGGER.info( "Processing Standing Order : " + so );
 		
@@ -184,8 +185,9 @@ public class StandingOrderUtil {
 		// =====================
 		//  2days notification 
 		// =====================
-		
-		sendNotification( so, mailerHome );
+		if(isSendReminderNotificationEmail) {
+			sendNotification( so, mailerHome );
+		}
 		
 		
 		// ==========================
@@ -405,10 +407,10 @@ public class StandingOrderUtil {
 						e1.printStackTrace();
 					}
 					selectedTimeslot = timeslot;
-					LOGGER.info( "Timeslot reserved successfully: " + timeslot.toString() );
+					LOGGER.info( "Timeslot reserved successfully[forceCapacity]: " + timeslot.toString() );
 				} else {
 					// no more capacity in this timeslot
-					LOGGER.info( "No more capacity in timeslot: " + timeslot.toString(), e );
+					LOGGER.info( "No more capacity in timeslot[forceCapacity]: " + timeslot.toString(), e );
 				}
 			} catch (ReservationException e) {
 				if(forceCapacity){
@@ -418,10 +420,10 @@ public class StandingOrderUtil {
 						e1.printStackTrace();
 					}
 					selectedTimeslot = timeslot;
-					LOGGER.info( "Timeslot reserved successfully: " + timeslot.toString() );
+					LOGGER.info( "Timeslot reserved successfully[forceCapacity]: " + timeslot.toString() );
 				} else {
 					// other error
-					LOGGER.warn( "Reservation failed for timeslot: " + timeslot.toString(), e );
+					LOGGER.warn( "Reservation failed for timeslot[forceCapacity]: " + timeslot.toString(), e );
 				}
 			}
 			if ( reservation != null ) 

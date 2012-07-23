@@ -207,7 +207,7 @@ public class CrisisManagerServlet extends HttpServlet {
 					so.setStartTime(startTime);
 					so.setEndTime(endTime);
 					so.clearLastError();
-					result = StandingOrderUtil.process( so, altDate, event, info, mailerHome, true, true );
+					result = StandingOrderUtil.process( so, altDate, event, info, mailerHome, true, true, false );
 				}else{
 					LOGGER.info( "Alternate date for standing order # " + standingOrderId + " missing." );
 					return null;

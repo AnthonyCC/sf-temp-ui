@@ -810,7 +810,7 @@ public class FDStoreProperties {
 
         defaults.put(TEMP_DIR, "/tmp");
 
-        defaults.put(PROP_GEOCODE_USELOCATIONDB, "false");
+        defaults.put(PROP_GEOCODE_USELOCATIONDB, "true");
         defaults.put(PROP_ROUTING_SENDADDRESS, "false");
 
         defaults.put(SMART_SEARCH_ENABLED, "false");

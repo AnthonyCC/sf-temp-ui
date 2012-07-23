@@ -77,7 +77,7 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 	}
 	
 
-	public SOResult.ResultList placeStandingOrders(Collection<String> soIdList, boolean createIfSoiExistsForWeek) {
+	public SOResult.ResultList placeStandingOrders(Collection<String> soIdList, StandingOrdersJobConfig jobConfig) {
 		Collection<FDStandingOrder> soList;
 		
 		if ( soIdList == null ) {
@@ -138,8 +138,9 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 			Result result;
 			try {			
 				// The main processing occurs here.
-				lookupMailerHome();		
-				result = StandingOrderUtil.process( so, null != altDates ? altDates.get(so.getNextDeliveryDate()) : null, null, null, mailerHome, false, createIfSoiExistsForWeek );
+				lookupMailerHome();				
+				result = StandingOrderUtil.process( so, null != altDates ? altDates.get(so.getNextDeliveryDate()) : null, null, null, mailerHome
+											, jobConfig.isForceCapacity(), jobConfig.isCreateIfSoiExistsForWeek(), jobConfig.isSendReminderNotificationEmail() );
 			} catch (FDResourceException re) {
 				LOGGER.error( "Processing standing order failed with FDResourceException!", re );
 				result = SOResult.createTechnicalError( so, "Processing standing order failed with FDResourceException!" );

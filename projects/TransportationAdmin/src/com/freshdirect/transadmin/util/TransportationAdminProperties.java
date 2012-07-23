@@ -105,6 +105,7 @@ public class TransportationAdminProperties {
 	//minimum thresholds
 	private static final String PROP_TRANSPORTATION_EMPLOYEE_CACHE_MIN_EXPIRY_TIME="transportation.employee.cache.min.expiry.time";
 	private static final String PROP_TRANSPORTATION_TRK_CACHE_MIN_EXPIRY_TIME="transportation.employee.cache.min.expiry.time";
+	private static final String PROP_TRANSPORTATION_ROUTE_CACHE_MIN_EXPIRY_TIME="transportation.route.cache.min.expiry.time";
 	
 	private static long lastRefresh = 0;
 	private final static long REFRESH_PERIOD = 5 * 60 * 1000;
@@ -307,10 +308,17 @@ public class TransportationAdminProperties {
 		defaults.put(PROP_TRANSPORTATION_TRK_CACHE_EXPIRY_TIME, "60");
 		defaults.put(PROP_TRANSPORTATION_ROUTE_CACHE_EXPIRY_TIME, "60");
 		defaults.put(PROP_TRANSPORTATION_EMPLOYEE_CACHE_EXPIRY_TIME, "60");
+		
+		defaults.put(PROP_TRANSPORTATION_EMPLOYEE_PUNCHINFO_CACHE_EXPIRY_TIME, "5");
+		
+		defaults.put(PROP_TRANSPORTATION_TRK_CACHE_MIN_EXPIRY_TIME, "60000 * 15");
+		defaults.put(PROP_TRANSPORTATION_EMPLOYEE_CACHE_MIN_EXPIRY_TIME, "60000");
+		defaults.put(PROP_TRANSPORTATION_ROUTE_CACHE_MIN_EXPIRY_TIME, "60000");
+		
+		
 		defaults.put(PROP_TRANSPORTATION_DEPOT_DEPARTTIMEDIFF, "0");
 		
-		defaults.put(PROP_TRANSPORTATION_TRK_CACHE_MIN_EXPIRY_TIME, "60000");
-		defaults.put(PROP_TRANSPORTATION_EMPLOYEE_CACHE_MIN_EXPIRY_TIME, "60000");
+		
 
 		defaults.put(PROP_TRANSPORTATION_DEPOT_USESTPARRTIME, "true");
 		defaults.put(PROP_TRANSPORTATION_DISPATCH_REFRESHTIME, "45");
@@ -402,7 +410,7 @@ public class TransportationAdminProperties {
 		defaults.put(PROP_ENABLE_AIRCLIC, "false");
 		defaults.put(PROP_TELARGO_BLACKHOLE, "true");
 		
-		defaults.put(PROP_TRANSPORTATION_EMPLOYEE_PUNCHINFO_CACHE_EXPIRY_TIME, "5");
+		
 		defaults.put(PROP_TXTMESSAGE_ACCESSKEY, "e79c258648510d3050f7756aabed5154");
 
 		refresh();
@@ -617,6 +625,11 @@ public class TransportationAdminProperties {
 	public static int getEmployeeCacheMinExpiryTime() {
 		return getIntVal(get(PROP_TRANSPORTATION_EMPLOYEE_CACHE_MIN_EXPIRY_TIME));
 	}
+	
+	public static int getRouteCacheMinExpiryTime() {
+		return getIntVal(get(PROP_TRANSPORTATION_ROUTE_CACHE_MIN_EXPIRY_TIME));
+	}
+	
 	
 	public static String getCellDataSeperator() {
 		return get(PROP_TRANSPORTATION_CELLDATA_SEPERATOR);

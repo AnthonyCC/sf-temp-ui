@@ -56,11 +56,11 @@ public class StandingOrdersServiceManager {
 		return sharedInstance;
 	}
 	
-	public void placeStandingOrders(Collection<String> soList, boolean createIfSoiExistsForWeek) throws FDResourceException {
+	public void placeStandingOrders(Collection<String> soList, StandingOrdersJobConfig jobConfig) throws FDResourceException {
 		lookupServiceHome();
 		try {
 			StandingOrdersServiceSB sb = soHome.create();			
-			sb.placeStandingOrders(soList, createIfSoiExistsForWeek);
+			sb.placeStandingOrders(soList, jobConfig);
 		} catch (CreateException ce) {
 			invalidateHome();
 			throw new FDResourceException(ce, "Error creating session bean");

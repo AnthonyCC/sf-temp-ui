@@ -81,11 +81,7 @@ public class StandingOrdersServiceCmd {
 	
 	
 	public static void main( String[] args ) {	
-		boolean isSendEmail = false;
-		
-		//'create SO instance even another one has been created for that week'
-		//setting it to 'true' can be useful when testing. It can be given as a command line argument.
-		boolean createIfSoiExistsForWeek = false;
+		StandingOrdersJobConfig jobConfig = new StandingOrdersJobConfig();
 		
 		List<String> soIdList = null;
 		try{
@@ -100,10 +96,12 @@ public class StandingOrdersServiceCmd {
 								soIdList = new ArrayList<String>(soSet);
 								
 							}
-						}  else if (arg.startsWith("sendEmail=")) {								
-							isSendEmail = Boolean.valueOf(arg.substring("sendEmail=".length())).booleanValue(); 
-						} else if(arg.startsWith("createIfSoiExistsForWeek=")) {
-							createIfSoiExistsForWeek = Boolean.valueOf(arg.substring("createIfSoiExistsForWeek=".length())).booleanValue(); 							
+						}  else if (arg.startsWith("sendReportEmail=")) {								
+							jobConfig.setSendReportEmail(Boolean.valueOf(arg.substring("sendReportEmail=".length())).booleanValue()); 
+						}  else if (arg.startsWith("isSendReminderNotificationEmail=")) {								
+							jobConfig.setSendReminderNotificationEmail(Boolean.valueOf(arg.substring("isSendReminderNotificationEmail=".length())).booleanValue()); 
+						}  else if(arg.startsWith("createIfSoiExistsForWeek=")) {
+							jobConfig.setCreateIfSoiExistsForWeek(Boolean.valueOf(arg.substring("createIfSoiExistsForWeek=".length())).booleanValue()); 							
 						}
 					} catch (Exception e) {
 						System.err.println("Usage: java com.freshdirect.fdstore.standingorders.service.StandingOrdersServiceCmd [orders=(,) separated}] [sendEmail={true | false}]");
@@ -111,12 +109,11 @@ public class StandingOrdersServiceCmd {
 					}
 				}
 			}
-			LOGGER.info( "isSendEmail: "+ isSendEmail );
-			LOGGER.info( "createIfSoiExistsForWeek: "+ createIfSoiExistsForWeek );
-			
-			SOResult.ResultList result = placeStandingOrders(soIdList, createIfSoiExistsForWeek);
+			LOGGER.info( "jobConfig: "+ jobConfig );
+						
+			SOResult.ResultList result = placeStandingOrders(soIdList, jobConfig);
 				
-			if (isSendEmail) {
+			if (jobConfig.isSendReportEmail()) {
 				sendReportMail(result);
 			}
 			
@@ -126,14 +123,14 @@ public class StandingOrdersServiceCmd {
 		}
 	}
 
-	private static SOResult.ResultList placeStandingOrders(Collection<String> soList, boolean createIfSoiExistsForWeek) {
+	private static SOResult.ResultList placeStandingOrders(Collection<String> soList, StandingOrdersJobConfig jobConfig) {
 		try {
 			lookupSOSHome();
 			StandingOrdersServiceSB sb = sosHome.get().create();
 			
 			LOGGER.info( "Starting to place orders..." );
 			
-			SOResult.ResultList result = sb.placeStandingOrders(soList, createIfSoiExistsForWeek);
+			SOResult.ResultList result = sb.placeStandingOrders(soList, jobConfig);
 			
 			LOGGER.info( "Finished placing orders." );
 			LOGGER.info( "  success : " + result.getSuccessCount() );

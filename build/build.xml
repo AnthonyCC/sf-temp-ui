@@ -1606,6 +1606,7 @@
                 <pathelement location="${thirdparty.home}/wsdl4j-1.5.1.jar"/>
                 <pathelement location="${thirdparty.home}/xml-apis.jar"/>
 				<pathelement location="${thirdparty.home}/lpsolve55j.jar"/>
+				<pathelement location="${thirdparty.home}/guava-12.0.jar"/>
 				<pathelement location="${thirdparty.home}/gwt/gwt-dev-oophm.jar"/>
 				<pathelement location="${thirdparty.home}/jsonrpc-1.0.jar"/>
 				<pathelement location="${thirdparty.home}/telargoservices.jar"/>
@@ -2114,6 +2115,7 @@
 			<pathelement location="${thirdparty.home}/poi-3.5-FINAL-20090928.jar"/>
 			<pathelement location="${thirdparty.home}/fop-0.20.5.jar"/>
 			<pathelement location="${thirdparty.home}/lpsolve55j.jar"/>
+			<pathelement location="${thirdparty.home}/guava-12.0.jar"/>
 			<pathelement location="${thirdparty.home}/telargoservices.jar"/>
 		</path>
 		<trycatch>
@@ -2160,6 +2162,7 @@
 			<fileset dir="${thirdparty.home}" includes="extremecomponents-1.0.1.jar" />
 			<fileset dir="${work.dir}" includes="RoutingServices.jar" />
 			<fileset dir="${thirdparty.home}" includes="lpsolve55j.jar" />
+			<fileset dir="${thirdparty.home}" includes="guava-12.0.jar" />
 			<fileset dir="${thirdparty.home}" includes="telargoservices.jar" />
 		</copy>
 
@@ -2495,6 +2498,7 @@
 				<include name="JFEP-0.1.0.jar"/>
 				<include name="antlr-2.7.5H3.jar"/>
 				<include name="lpsolve55j.jar"/>
+				<include name="guava-12.0.jar"/>
 				<include name="ctah-api-client.jar"/>
 			</lib>
 		</makeFDAdminEar>

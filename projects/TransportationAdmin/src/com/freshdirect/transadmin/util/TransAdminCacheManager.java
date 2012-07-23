@@ -16,7 +16,9 @@ import com.freshdirect.sap.SapProperties;
 import com.freshdirect.sap.command.SapRouteMasterInfo;
 import com.freshdirect.sap.command.SapTruckMasterInfo;
 import com.freshdirect.sap.ejb.SapException;
-import com.freshdirect.transadmin.exception.TransAdminCacheException;
+import com.freshdirect.transadmin.cache.AsyncCacheException;
+import com.freshdirect.transadmin.cache.AsyncCacheExceptionType;
+import com.freshdirect.transadmin.cache.BaseAsyncCache;
 import com.freshdirect.transadmin.model.EmployeeInfo;
 import com.freshdirect.transadmin.service.EmployeeManagerI;
 
@@ -27,6 +29,18 @@ public class TransAdminCacheManager {
 	private EmployeeManagerI manager = null;
 
 	private static Category LOGGER = LoggerFactory.getInstance(TransAdminCacheManager.class);
+	
+	protected static final String STORE_EMPLOYEEPUNCHINFODATA = "TRANSAPP_CACHE_EMPLOYEE_PUNCHINFODATA.ser";
+	
+	protected static final String STORE_TRUCKINFODATA = "TRANSAPP_CACHE_TRUCKINFODATA.ser";
+	
+	protected static final String STORE_ROUTEINFODATA = "TRANSAPP_CACHE_ROUTEINFODATA.ser";
+	
+	protected static final String STORE_EMPLOYEEDATA = "TRANSAPP_CACHE_EMPLOYEEDATA.ser";
+	
+	protected static final String STORE_TERMINATEDEMPLOYEEDATA = "TRANSAPP_CACHE_TERMINATED_EMPLOYEEDATA.ser";
+	
+	protected static final String STORE_ACTINACTEMPLOYEEDATA = "TRANSAPP_CACHE_ACTINACT_EMPLOYEEDATA.ser";
 	
 	private TransAdminCacheManager() {
 	}
@@ -41,20 +55,25 @@ public class TransAdminCacheManager {
 	public void refreshCacheData(EnumCachedDataType dataType) {
 
 		if (EnumCachedDataType.TRUCK_DATA.equals(dataType)) {
-			if (!(truckDataHolder.getLastRefresh() < TransportationAdminProperties.getTruckCacheExpiryTime()))
+			if (!(truckDataHolder.getLastRefresh() < TransportationAdminProperties.getTruckCacheMinExpiryTime())) {
 				truckDataHolder.forceRefresh();
+			}
 		}
 		if (EnumCachedDataType.ROUTE_DATA.equals(dataType)) {
-			if (!(routeDataHolder.getLastRefresh() < TransportationAdminProperties.getRouteCacheExpiryTime()))
+			if (!(routeDataHolder.getLastRefresh() < TransportationAdminProperties.getRouteCacheMinExpiryTime())) {
 				routeDataHolder.forceRefresh();
+			}
 		}
 		if (EnumCachedDataType.EMPLOYEE_DATA.equals(dataType)) {
-			if (!(employeeDataHolder.getLastRefresh() < TransportationAdminProperties.getEmployeeCacheMinExpiryTime()))
+			if (!(employeeDataHolder.getLastRefresh() < TransportationAdminProperties.getEmployeeCacheMinExpiryTime())) {
 				employeeDataHolder.forceRefresh();
-			if (!(activeInactivedEmployeeDataHolder.getLastRefresh() < TransportationAdminProperties.getEmployeeCacheMinExpiryTime()))
+			}
+			if (!(activeInactivedEmployeeDataHolder.getLastRefresh() < TransportationAdminProperties.getEmployeeCacheMinExpiryTime())) {
 				activeInactivedEmployeeDataHolder.forceRefresh();
-			if (!(terminatedEmployeeDataHolder.getLastRefresh() < TransportationAdminProperties.getEmployeeCacheMinExpiryTime()))
+			}
+			if (!(terminatedEmployeeDataHolder.getLastRefresh() < TransportationAdminProperties.getEmployeeCacheMinExpiryTime())) {
 				terminatedEmployeeDataHolder.forceRefresh();
+			}
 		}
 	}
 	
@@ -62,115 +81,134 @@ public class TransAdminCacheManager {
 	 * Cache to SAP Master truck information from SAP
 	 */
 	@SuppressWarnings("rawtypes")
-	private TrnAdmExpiringReference truckDataHolder = new TrnAdmExpiringReference(
-			TransportationAdminProperties.getTruckCacheExpiryTime() * 60 * 1000, TrnAdmExpiringReference.STORE_TRUCKINFODATA) {
-		protected Object load(Object requestParam) {
+	private BaseAsyncCache<String, Map<String, ErpTruckMasterInfo>> truckDataHolder = new BaseAsyncCache<String, Map<String, ErpTruckMasterInfo>>(
+			TransportationAdminProperties.getTruckCacheExpiryTime() * 60 * 1000, STORE_TRUCKINFODATA) {
+		protected Map<String, ErpTruckMasterInfo> loadData(String requestParam) throws AsyncCacheException {
 			try {
 				if (SapProperties.isBlackhole()) {
-					throw new TransAdminCacheException("1004", null);
+					throw new AsyncCacheException(AsyncCacheExceptionType.LOAD_BLOCKED);
 				} else {
 					return loadAllTruckData();
 				}
 			} catch (SapException e) {
-				LOGGER.error("Could not load load Referral program due to: ", e);
-				throw new TransAdminCacheException("1003", e);
+				LOGGER.error("Could not load truck data due to: ", e);
+				throw new AsyncCacheException(e, AsyncCacheExceptionType.LOAD_FAILED);
 			}
+		}
+		
+		protected Map<String, ErpTruckMasterInfo> loadDefault(String requestParam) {
+			return new HashMap<String, ErpTruckMasterInfo>();
 		}
 	};
 		
 	/**
 	 * Cache to SAP Route information from SAP
 	 */
-	private TrnAdmExpiringReference routeDataHolder = new TrnAdmExpiringReference(
-			TransportationAdminProperties.getRouteCacheExpiryTime() * 60 * 1000, TrnAdmExpiringReference.STORE_ROUTEINFODATA) {
+	private BaseAsyncCache<String, List> routeDataHolder = new BaseAsyncCache<String, List>(
+			TransportationAdminProperties.getRouteCacheExpiryTime() * 60 * 1000, STORE_ROUTEINFODATA) {
 
-		protected Object load(Object requestParam) {
+		protected List loadData(String requestParam)  throws AsyncCacheException {
 			try {
 				if (SapProperties.isBlackhole()) {
-					throw new TransAdminCacheException("1004", null);
+					throw new AsyncCacheException(AsyncCacheExceptionType.LOAD_BLOCKED);
 				} else {
 					return loadAllRouteData(requestParam);		
 				}
 			} catch (SapException e) {
 				LOGGER.error("Could not load route data from SAP: ", e);
-				throw new TransAdminCacheException("1003", e);
+				throw new AsyncCacheException(e, AsyncCacheExceptionType.LOAD_FAILED);
 			}
+		}
+		
+		protected List loadDefault(String requestParam) {
+			return new ArrayList();
 		}
 	};
 	
 	/**
 	 * Cache to store employee punch info from KRONOS
 	 */
-	private TrnAdmExpiringReference punchInfoDataHolder = new TrnAdmExpiringReference(
-			TransportationAdminProperties.getPunchInfoCacheExpiryTime() * 60 * 1000, TrnAdmExpiringReference.STORE_EMPLOYEEPUNCHINFODATA) {
+	private BaseAsyncCache<String, Collection> punchInfoDataHolder = new BaseAsyncCache <String, Collection>(
+			TransportationAdminProperties.getPunchInfoCacheExpiryTime() * 60 * 1000, STORE_EMPLOYEEPUNCHINFODATA) {
 
-		protected Object load(Object requestParam) throws TransAdminCacheException {
+		protected Collection loadData(String requestParam)  throws AsyncCacheException {
 			try {
 				if(TransportationAdminProperties.isKronosBlackhole()) {
-					throw new TransAdminCacheException("1004", null);
+					throw new AsyncCacheException(AsyncCacheExceptionType.LOAD_BLOCKED);
 				} else {
 					return loadPunchInfoData(requestParam);
 				}
 			} catch (Exception e) {				
 				LOGGER.debug("Loading PunchInfo from store due to connectivity issue with Kronos database: ", e);
-				throw new TransAdminCacheException("1003", e);
+				throw new AsyncCacheException(e, AsyncCacheExceptionType.LOAD_FAILED);
 			}
+		}
+		
+		protected Collection loadDefault(String requestParam) {
+			return new ArrayList();
 		}
 	};
 	
 	/**
 	 * Cache to store all employee data from KRONOS database
 	 */
-	private TrnAdmExpiringReference employeeDataHolder = new TrnAdmExpiringReference
+	private BaseAsyncCache<String, List> employeeDataHolder = new BaseAsyncCache<String, List>
 													(TransportationAdminProperties.getEmployeeCacheExpiryTime() * 60 * 1000
-															, TrnAdmExpiringReference.STORE_EMPLOYEEDATA) {
+															, STORE_EMPLOYEEDATA) {
 
-		protected Object load(Object requestParam) {
+		protected List loadData(String requestParam) throws AsyncCacheException {
 			try {
 				if(TransportationAdminProperties.isKronosBlackhole()) {
-					throw new TransAdminCacheException("1004", null);
+					throw new AsyncCacheException(AsyncCacheExceptionType.LOAD_BLOCKED);
 				} else {
 					return loadAllEmployeeData();
 				}
 			} catch (Exception e) {
-				LOGGER.error("Could not load load Referral program due to: ", e);
-				throw new TransAdminCacheException("1003", e);
+				LOGGER.error("Could not load Employee Data due to: ", e);
+				throw new AsyncCacheException(e, AsyncCacheExceptionType.LOAD_FAILED);
 			}
+		}
+		
+		protected List loadDefault(String requestParam) {
+			return new ArrayList();
 		}
 	};
 	
 	/**
 	 * Cache to store all terminated employee data from KRONOS database
 	 */
-	private TrnAdmExpiringReference terminatedEmployeeDataHolder = new TrnAdmExpiringReference
+	private BaseAsyncCache<String, List> terminatedEmployeeDataHolder = new BaseAsyncCache<String, List>
 												(TransportationAdminProperties.getEmployeeCacheExpiryTime() * 60 * 1000
-														, TrnAdmExpiringReference.STORE_TERMINATEDEMPLOYEEDATA) {
+														, STORE_TERMINATEDEMPLOYEEDATA) {
 
-		protected Object load(Object requestParam) {
+		protected List loadData(String requestParam) throws AsyncCacheException  {
 			try {
 				if(TransportationAdminProperties.isKronosBlackhole()) {
-					throw new TransAdminCacheException("1004", null);
+					throw new AsyncCacheException(AsyncCacheExceptionType.LOAD_BLOCKED);
 				} else {
 					return loadAllTerminatedEmployeeData();					
 				}				
 			} catch (Exception e) {
-				LOGGER.error("Could not load load Referral program due to: ", e);
-				throw new TransAdminCacheException("1003", e);
+				LOGGER.error("Could not load terminated employee data due to: ", e);
+				throw new AsyncCacheException(e, AsyncCacheExceptionType.LOAD_FAILED);
 			}
 		}
-	};
-
-	@SuppressWarnings("unchecked")
-	class EmployeeActiveInactiveReference extends TrnAdmExpiringReference {
-				
-		public EmployeeActiveInactiveReference(long refreshPeriod) {
-			super(refreshPeriod, STORE_ACTINACTEMPLOYEEDATA);
-		}
 		
-		protected Object load(Object requestParam) {
+		protected List loadDefault(String requestParam) {
+			return new ArrayList();
+		}
+	};
+	
+	/**
+	 * Cache to store all terminated employee data from KRONOS database
+	 */
+	private BaseAsyncCache<String, Map<String, EmployeeInfo>> activeInactivedEmployeeDataHolder = new BaseAsyncCache<String, Map<String, EmployeeInfo>>
+												(TransportationAdminProperties.getEmployeeCacheExpiryTime() * 60 * 1000
+														, STORE_ACTINACTEMPLOYEEDATA) {
+		protected Map<String, EmployeeInfo> loadData(String requestParam) throws AsyncCacheException  {
 			try {
 				if(TransportationAdminProperties.isKronosBlackhole()) {
-					throw new TransAdminCacheException("1004", null);
+					throw new AsyncCacheException(AsyncCacheExceptionType.LOAD_BLOCKED);
 				} else {
 					List <EmployeeInfo> _listInfo = loadActiveInactiveEmployeeData();					
 					Map<String, EmployeeInfo> employeeMapping = new HashMap<String, EmployeeInfo>();
@@ -182,20 +220,15 @@ public class TransAdminCacheManager {
 					return employeeMapping != null && employeeMapping.size() > 0 ? employeeMapping : null;					
 				}				
 			} catch (Exception e) {
-				LOGGER.error("Could not load load Referral program due to: ", e);
-				throw new TransAdminCacheException("1003", e);
+				LOGGER.error("Could not load active inactive employee due to: ", e);
+				throw new AsyncCacheException(e, AsyncCacheExceptionType.LOAD_FAILED);
 			}
 		}
-
-		protected Map<String, EmployeeInfo> getEmployeeMapping() {
-			return (Map<String, EmployeeInfo>)this.get(null);
+		
+		protected Map<String, EmployeeInfo> loadDefault(String requestParam) {
+			return new HashMap<String, EmployeeInfo>();
 		}
-	}
-	
-	/**
-	 * Cache to store all active/Inactive employee data from KRONOS database
-	 */
-	private EmployeeActiveInactiveReference activeInactivedEmployeeDataHolder = new EmployeeActiveInactiveReference(TransportationAdminProperties.getEmployeeCacheExpiryTime() * 60 * 1000);
+	};
 
 	public List loadAllTerminatedEmployeeData() throws SapException {
 		return (List) manager.getKronosTerminatedEmployees();
@@ -221,12 +254,12 @@ public class TransAdminCacheManager {
 		return routeInfos.getRouteMasterInfos();
 	}
 
-	public Map getAllTruckMasterInfo() {
-		return (Map) this.truckDataHolder.get(null);
+	public Map<String, ErpTruckMasterInfo> getAllTruckMasterInfo() {
+		return this.truckDataHolder.get("");
 	}
 
 	public ErpTruckMasterInfo getTruckMasterInfo(String truckNumber) {
-		Map trkList = (Map) this.truckDataHolder.get(null);
+		Map trkList = this.truckDataHolder.get("");
 		if (trkList != null && trkList.containsKey(truckNumber))
 			return (ErpTruckMasterInfo) trkList.get(truckNumber);
 		return null;
@@ -239,8 +272,8 @@ public class TransAdminCacheManager {
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public Collection getAllEmployeeInfo(EmployeeManagerI mgr) {
 		this.manager = mgr;
-		if (null != (this.employeeDataHolder.get(null))) {
-			return new ArrayList((List) this.employeeDataHolder.get(null));
+		if (null != (this.employeeDataHolder.get(""))) {
+			return new ArrayList((List) this.employeeDataHolder.get(""));
 		} else {
 			return new ArrayList();
 		}
@@ -249,8 +282,8 @@ public class TransAdminCacheManager {
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public Collection getActiveInactiveEmployeeInfo(EmployeeManagerI mgr) {
 		this.manager = mgr;
-		if (null != (this.activeInactivedEmployeeDataHolder.get(null))) {
-			return new ArrayList((((Map) this.activeInactivedEmployeeDataHolder.get(null)).values()));
+		if (null != (this.activeInactivedEmployeeDataHolder.get(""))) {
+			return new ArrayList((((Map) this.activeInactivedEmployeeDataHolder.get("")).values()));
 		} else {
 			return new ArrayList();
 		}
@@ -259,8 +292,8 @@ public class TransAdminCacheManager {
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public Collection getAllTerminatedEmployeeInfo(EmployeeManagerI mgr) {
 		this.manager = mgr;
-		if (null != (this.terminatedEmployeeDataHolder.get(null))) {
-			return new ArrayList((List) this.terminatedEmployeeDataHolder.get(null));
+		if (null != (this.terminatedEmployeeDataHolder.get(""))) {
+			return new ArrayList((List) this.terminatedEmployeeDataHolder.get(""));
 		} else {
 			return new ArrayList();
 		}
@@ -268,7 +301,7 @@ public class TransAdminCacheManager {
 
 	public EmployeeInfo getEmployeeInfo(String empId, EmployeeManagerI mgr) {
 		this.manager = mgr;
-		List empList = (List) this.employeeDataHolder.get(null);
+		List empList = (List) this.employeeDataHolder.get("");
 		if (empList == null)
 			return null;
 		for (int i = 0; i < empList.size(); i++) {
@@ -281,7 +314,7 @@ public class TransAdminCacheManager {
 
 	public EmployeeInfo getActiveInactiveEmployeeInfo(String empId,	EmployeeManagerI mgr) {
 		this.manager = mgr;
-		return this.activeInactivedEmployeeDataHolder.getEmployeeMapping().get(empId);
+		return this.activeInactivedEmployeeDataHolder.get("").get(empId);
 	}
 
 	public ErpRouteMasterInfo getRouteMasterInfo(String routeNumber, Date requestedDate) {
@@ -328,12 +361,12 @@ public class TransAdminCacheManager {
 	
 	public Map getActiveInactiveEmployees(EmployeeManagerI mgr) {
 		this.manager = mgr;
-		return  ((Map)this.activeInactivedEmployeeDataHolder.get(null));
+		return  ((Map)this.activeInactivedEmployeeDataHolder.get(""));
 	}
 	
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public Collection loadPunchInfoData(Object  requestedDate) throws Exception {		
-		return this.manager.getPunchInfo((String)requestedDate);
+	public Collection loadPunchInfoData(String  requestedDate) throws Exception {		
+		return this.manager.getPunchInfo(requestedDate);
 	}
 	
 	@SuppressWarnings({ "rawtypes", "unchecked" })
