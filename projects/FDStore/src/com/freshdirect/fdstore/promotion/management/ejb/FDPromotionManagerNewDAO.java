@@ -450,7 +450,13 @@ public class FDPromotionManagerNewDAO {
 		promotion.setCombineOffer("Y".equalsIgnoreCase(rs.getString("COMBINE_OFFER"))?true:false);
 		promotion.setCategoryName(rs.getString("CATEGORY_NAME"));
 		promotion.setProductName(rs.getString("PRODUCT_NAME"));
-		promotion.setExtendDpDays(rs.getInt("EXTEND_DP_DAYS"));
+		int ext_dlv_days = rs.getInt("EXTEND_DP_DAYS");
+		if(!rs.wasNull()) {
+			promotion.setExtendDpDays(rs.getInt("EXTEND_DP_DAYS"));
+		} else {
+			promotion.setExtendDpDays(null);
+		}
+		
 		promotion.setSubTotalExcludeSkus(rs.getString("EXCLUDE_SKU_SUBTOTAL"));
 		promotion.setOfferType(rs.getString("OFFER_TYPE"));
 		promotion.setMaxItemCount(rs.getInt("MAX_ITEM_COUNT"));
