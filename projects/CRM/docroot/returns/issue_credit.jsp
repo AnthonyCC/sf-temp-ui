@@ -219,7 +219,11 @@ var OL_PRICES = {};
 <fd:ErrorHandler result="<%=result%>" field="<%=checkedErrors%>" id='errorMsg'>
   <div class="error_detail"><%= errorMsg %></div>
 </fd:ErrorHandler>
-
+<% String successMsg = request.getParameter("successMsg");
+	if(request.getMethod().equals("GET")&&successMsg != null){%>
+	<div class="dlv_pass_name"><%= successMsg %></div>	
+	<%}
+	%>
 <div class="content_scroll" style="height: 72%; padding-top: 0px;">
 <form id="form-issue-credit" "name="issue_credit" method="POST" action="issue_credit.jsp?orderId=<%= orderId %>&view=<%= isClassicView ? "dept" : "cartons" %>">
 <input type="hidden" name="orig_sale_id" value="<%= orderId %>">

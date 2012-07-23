@@ -405,7 +405,7 @@ String caseRequiredForManualRenewal = "<span class=\"cust_module_content_edit\">
 							<tr>
 								<td>	
 									<select name="cancelReason" class="cancel_combo_text" style="width: 210px;">
-										<option>Select a reason to cancel</option>
+										<option value="">Select a reason to cancel</option>
 										<logic:iterate id="cancelReason" collection="<%= EnumDlvPassCancelReason.getEnumList() %>" type="com.freshdirect.deliverypass.EnumDlvPassCancelReason">
 											<option value="<%= cancelReason.getName() %>"><%= cancelReason.getDisplayName() %></option>
 										</logic:iterate>

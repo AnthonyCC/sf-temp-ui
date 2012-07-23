@@ -50,7 +50,7 @@
 				<% String errorMsg=SystemMessageList.MSG_MISSING_INFO; %>	
 				<%@ include file="/includes/i_error_messages.jspf" %>
 			</fd:ErrorHandler>
-
+			<% String[] checkErrorType=new String[]{"gc_amount_minimum","gc_amount_maximum"}; %>
 			<fd:ErrorHandler result='<%=result%>' field='<%=checkErrorType%>' id='errorMsg'>
 				<%@ include file="/includes/i_error_messages.jspf" %>
 			</fd:ErrorHandler>
