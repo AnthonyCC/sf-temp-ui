@@ -1,5 +1,6 @@
 package com.freshdirect.webapp.taglib.fdstore.display;
 
+import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.content.EnumBurstType;
 import com.freshdirect.fdstore.content.Image;
@@ -8,6 +9,7 @@ import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.util.ProductLabeling;
 
+import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.BodyTagSupport;
 
 import com.freshdirect.webapp.taglib.fdstore.BrowserInfo;
@@ -25,6 +27,9 @@ import javax.servlet.jsp.tagext.TagData;
 import javax.servlet.jsp.tagext.TagExtraInfo;
 import javax.servlet.jsp.tagext.VariableInfo;
 
+import org.apache.log4j.Category;
+
+
 
 /**
  * Product Image Tag
@@ -34,6 +39,7 @@ import javax.servlet.jsp.tagext.VariableInfo;
  */
 public class ProductImageTag extends BodyTagSupport {
     private static final long serialVersionUID = 8159061278833068855L;
+    private static Category		LOGGER				= LoggerFactory.getInstance( ProductImageTag.class );
     public static final String imageWidthVariableName = "productImageWidth";
     public static final String imageHeightVariableName = "productImageHeight";
     ProductModel product; // product (mandatory if calculator is null)
@@ -609,9 +615,17 @@ public class ProductImageTag extends BodyTagSupport {
         if (savingsPercentage > 0) {
             deal = (int) (savingsPercentage * 100);
         } else if (pl.isDisplayDeal()) {
-            //deal = product.getHighestDealPercentage();
-            deal = (int) calculator.getBurstDealsPercentage(excludeCaseDeals
-                    ? ProductBurstTag.EXCLUDED_WINE_TIERS : null);
+        	//APPDEV-2414
+        	try {
+				if(product.getFDGroup() != null) {
+					deal = calculator.getHighestDealPercentage();
+				} else {
+					deal = (int) calculator.getBurstDealsPercentage(excludeCaseDeals
+				        ? ProductBurstTag.EXCLUDED_WINE_TIERS : null);
+				}
+			} catch (FDResourceException e) {
+				LOGGER.error("FDResourceException",e);
+			}
         }
 
         if ((deal < FDStoreProperties.getBurstsLowerLimit()) ||

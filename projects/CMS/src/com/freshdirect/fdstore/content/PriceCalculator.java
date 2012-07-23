@@ -261,13 +261,21 @@ public class PriceCalculator {
     			if(priceModel != null) {
     				int tieredPercentage = priceModel.getTieredDealPercentage();
     				FDGroup group = productInfo.getGroup();
-    				if(tieredPercentage > 0 && group != null){
+    				//if(tieredPercentage > 0 && group != null){
+    				//APPDEV-2414 - Take group price into account if exists when calculating highest deal percentage
+    				if(priceModel.isItemOnSale() && group != null){
     					//Check to see current pricing zone has group price defined.
     					if(group != null) {
     						MaterialPrice gsPrice = GroupScaleUtil.getGroupScalePrice(group, ctx.getZoneId());
     						if(gsPrice != null) {
     							//return regular deal percentage
-    							return priceModel.getDealPercentage();
+    							//return priceModel.getDealPercentage();
+    							double sellingPrice = priceModel.getSellingPrice();
+    							int val = (int) ((sellingPrice - gsPrice.getPrice()) * 100.0 / sellingPrice + 0.2);
+    							if( ((val%5)==0)||((val%2)==0)) {
+    								return val;
+    							}
+    							return val-1;
     						}
     					}
     				}
