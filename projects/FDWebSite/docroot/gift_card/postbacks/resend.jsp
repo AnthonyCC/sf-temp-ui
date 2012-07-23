@@ -38,7 +38,7 @@
                 json.put("gcRecipName", dlvInfo.getRecepientModel().getRecipientName());
                 json.put("gcRecipEmail",dlvInfo.getRecepientModel().getRecipientEmail());
                 json.put("gcAmount", currencyFormatter.format(dlvInfo.getRecepientModel().getAmount())); //this is in the page, displayed
-                json.put("gcMessage",dlvInfo.getRecepientModel().getPersonalMessage());
+                json.put("gcMessage",dlvInfo.getRecepientModel().getPersonalMessage() != null ? dlvInfo.getRecepientModel().getPersonalMessage() : "");
                 json.put("gcSaleId",saleId);
                 json.put("gcCertNum",dlvInfo.getCertificationNumber());
                 json.put("gcType",dlvInfo.getRecepientModel().getGiftCardType().getName());
