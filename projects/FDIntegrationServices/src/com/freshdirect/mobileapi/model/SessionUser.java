@@ -541,6 +541,6 @@ public class SessionUser {
     }
     
     public boolean isDpNewTcBlocking() {
-    	return sessionUser.isDpNewTcBlocking();
+    	return sessionUser.isDpNewTcBlocking(false); //Mobile API doesnt care about view count of t&c
     }
 }
