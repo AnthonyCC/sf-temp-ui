@@ -156,7 +156,7 @@ request.setAttribute("listPos", "HPLeftTop");
 <table cellpadding="0" cellspacing="0" border="0" width="100%">
 	<tr>
 		<td class="t20px bolded">
-			Freshdirect Account Credits <br/> <span class="t11px" style="font-weight:normal;">Please review your orders. To check the status of an order, click on the order number.</span>
+			FreshDirect Account Credits <br/> <span class="t11px" style="font-weight:normal;">Please review your orders. To check the status of an order, click on the order number.</span>
 		</td>
 		<td align="right">
 			<span class="tcredits">Total remaining credits: <span id="totalAmount" class="t11px bolded"><% if (mimList.size() == 0) { %>$0.00<% } %></span></span>
