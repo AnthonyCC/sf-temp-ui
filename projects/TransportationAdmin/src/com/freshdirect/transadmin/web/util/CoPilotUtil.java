@@ -118,7 +118,7 @@ public class CoPilotUtil {
 									
 									points.add(_geoPoint);
 								}
-								route.setDrivingDirection(proxy.buildDriverDirections(points));
+								//route.setDrivingDirection(proxy.buildDriverDirections(points));
 
 								Object[] _stops = route.getStops().toArray();								
 								IRoutingStopModel _nextStop = null;
