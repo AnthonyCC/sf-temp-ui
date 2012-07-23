@@ -29,7 +29,7 @@
 <%@page import="java.text.DateFormat"%>
 <%@page import="java.text.SimpleDateFormat"%>
 <fd:javascript src="/assets/javascript/promo.js"/>
-<%@page import="java.text.DecimalFormat"%><tmpl:insert template='/template/top_nav.jsp'>
+<%@page import="java.text.DecimalFormat"%>
 
 <%!
 	DateFormat DATE_YEAR_FORMATTER = new SimpleDateFormat("yyyy-MM-dd");
