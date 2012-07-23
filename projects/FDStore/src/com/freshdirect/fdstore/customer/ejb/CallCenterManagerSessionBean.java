@@ -1133,25 +1133,8 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 	public void emailCutoffTimeReport(Date deliveryDate) throws FDResourceException{
 		try {
 			deliveryDate = DateUtil.truncate(deliveryDate);
-			Calendar cutoffDate = DateUtil.toCalendar(deliveryDate);
-			cutoffDate.add(Calendar.DATE, -1);
-
 			SimpleDateFormat dateFormatter = new SimpleDateFormat("EEE, MMM d, yyyy");
-			/*
-			LOGGER.debug("Getting cutoff times for " + new SimpleDateFormat().format(cutoffDate.getTime()));
-			List cutoffTimes = this.getCutoffTimeForDate(cutoffDate.getTime());
-			Collections.sort(cutoffTimes);
-			TimeOfDay cutoff = null;
-
-			for(Iterator cIter = cutoffTimes.iterator(); cIter.hasNext();){
-				Date c = (Date)cIter.next();
-
-				if(new TimeOfDay(c).before(new TimeOfDay(new Date()))){
-					cutoff = new TimeOfDay(c);
-					break;
-				}
-			}*/
-
+			
 			List cReport = getCutoffTimeReport(deliveryDate);
 			StringBuffer buff = new StringBuffer();
 			String br = "\n";
@@ -1163,10 +1146,8 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 
 			for(Iterator i = cReport.iterator(); i.hasNext();){
 				FDCutoffTimeInfo info = (FDCutoffTimeInfo) i.next();
-				//if(info.getCutoffTime().equals(deliveryDate)){
 					buff.append(new SimpleDateFormat().format(info.getCutoffTime())).append("\t\t").append(info.getOrderCount()).append("\t\t\t").append(info.getStatus()).append(br);
-
-				//}
+	
 			}
 
 			buff.append("----------------------------------------------------------------------------------");

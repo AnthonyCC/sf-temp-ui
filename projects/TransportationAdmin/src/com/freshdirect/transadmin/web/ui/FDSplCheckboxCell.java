@@ -64,7 +64,7 @@ public class FDSplCheckboxCell extends FDBaseCell {
 						}
 					}
 				}
-				// if(command.isTodayTomorrow())
+			
 				{
 					if ("checkedIn".equalsIgnoreCase(column.getProperty())) {
 						if ((command.getDispatchStatus() == EnumStatus.Dispatched)

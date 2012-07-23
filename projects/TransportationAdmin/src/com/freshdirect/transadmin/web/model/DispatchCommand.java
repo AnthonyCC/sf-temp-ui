@@ -444,15 +444,6 @@ public class DispatchCommand extends WebPlanInfo {
 		}
 		return false;
 	}
-
-	public boolean isTodayTomorrow() {
-		try {
-			return TransStringUtil.isTodayTomorrow(dispatchDate);
-		} catch (ParseException e) {
-
-		}
-		return false;
-	}
 	
 	public boolean isKeysReady() {
 		return keysReady;
