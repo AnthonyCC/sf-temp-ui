@@ -15,6 +15,8 @@ import org.apache.log4j.Category;
 import com.freshdirect.analytics.TimeslotEventModel;
 import com.freshdirect.crm.CrmAgentModel;
 import com.freshdirect.crm.CrmAgentRole;
+import com.freshdirect.customer.EnumTransactionSource;
+import com.freshdirect.customer.EnumUnattendedDeliveryFlag;
 import com.freshdirect.customer.ErpComplaintException;
 import com.freshdirect.customer.ErpComplaintLineModel;
 import com.freshdirect.customer.ErpComplaintModel;
@@ -140,7 +142,19 @@ public class CheckoutControllerTag extends AbstractControllerTag {
 						// Set the selected gift carts for processing.
 						currentUser.getShoppingCart().setSelectedGiftCards( currentUser.getGiftCardList().getSelectedGiftcards() );
 					}
+					
+					if(EnumTransactionSource.IPHONE_WEBSITE.getCode().equals(app)) {
+						com.freshdirect.customer.ErpAddressModel dlvAddress = currentUser.getShoppingCart().getDeliveryAddress();
+						if (dlvAddress != null) {
+					        if (EnumUnattendedDeliveryFlag.NOT_SEEN.equals(dlvAddress.getUnattendedDeliveryFlag())) {
+					        	dlvAddress.setUnattendedDeliveryFlag(EnumUnattendedDeliveryFlag.OPT_IN);
+					        	result.addError(new ActionError("SHOW_UNATTENDED_MSG", "true"));
+					        }
+						}
+					}
 				}
+				
+				
 				LOGGER.debug("setDeliveryAddress[END] :");
 			}  else if ( "addAndSetDeliveryAddress".equalsIgnoreCase( action ) ) { //Added IPhone functionality APPDEV-1565
 				DeliveryAddressManipulator m = new DeliveryAddressManipulator(this.pageContext, result, "addDeliveryAddressEx");

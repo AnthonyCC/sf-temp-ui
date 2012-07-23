@@ -42,6 +42,8 @@ public class MobileApiProperties {
     private final static String PROP_ALCOHOL_AGE_WARNING = "mobileapi.mediapath.alcohol.agewarning";
 
     private final static String PROP_ALCOHOL_HEALTH_WARNING = "mobileapi.mediapath.alcohol.healthwarning";
+    
+    private final static String PROP_UNATTENDED_DLV_MSG = "mobileapi.mediapath.unattende.ddlv.msg";
 
     private final static String PROP_OAS_CACHE_TIMEOUT = "mobileapi.oas.timeout";
     
@@ -173,4 +175,9 @@ public class MobileApiProperties {
     public static boolean isSameDayDpCompatible() {
     	return (Boolean.valueOf(get(PROP_SAMEDAY_DP_COMPATIBLE)).booleanValue());
     }
+    
+    public static String getUnattendedDeliveryMediaPath() {
+        return get(PROP_UNATTENDED_DLV_MSG);
+    }
+    
 }

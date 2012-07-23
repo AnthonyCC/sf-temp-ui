@@ -185,6 +185,11 @@ public class CheckoutControllerTagWrapper extends ControllerTagWrapper implement
             actionResult.addError(new ActionError(ERR_AGE_VERIFICATION, MobileApiProperties.getMediaPath()
                     + MobileApiProperties.getAlcoholAgeWarningMediaPath()));
         }
+        
+        if("true".equals(actionResult.getError("SHOW_UNATTENDED_MSG"))) {
+        	actionResult.addError(new ActionError("SHOW_UNATTENDED_MSG", MobileApiProperties.getMediaPath()
+                    + MobileApiProperties.getUnattendedDeliveryMediaPath()));
+        }
         LOGGER.debug("addAndSetDeliveryAddress[END] ");
         return new ResultBundle(actionResult, this);
     }
