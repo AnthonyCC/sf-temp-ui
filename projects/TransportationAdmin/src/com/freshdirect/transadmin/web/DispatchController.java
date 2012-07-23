@@ -48,6 +48,7 @@ import com.freshdirect.routing.model.GeoPoint;
 import com.freshdirect.routing.model.IDeliverySlot;
 import com.freshdirect.routing.model.IFacilityModel;
 import com.freshdirect.routing.model.IGeoPoint;
+import com.freshdirect.routing.model.IHandOffBatchRoute;
 import com.freshdirect.routing.model.IRouteModel;
 import com.freshdirect.routing.model.IRoutingSchedulerIdentity;
 import com.freshdirect.routing.model.IRoutingStopModel;
@@ -65,7 +66,6 @@ import com.freshdirect.transadmin.model.Dispatch;
 import com.freshdirect.transadmin.model.EmployeeInfo;
 import com.freshdirect.transadmin.model.EmployeeRole;
 import com.freshdirect.transadmin.model.EmployeeSubRoleType;
-import com.freshdirect.transadmin.model.FDRouteMasterInfo;
 import com.freshdirect.transadmin.model.HTOutScanAsset;
 import com.freshdirect.transadmin.model.Plan;
 import com.freshdirect.transadmin.model.PlanResource;
@@ -1256,7 +1256,7 @@ public class DispatchController extends AbstractMultiActionController {
 				command.setTermintedEmployees(termintedEmployees);
 				if (isSummary) {
 					// Load Route/Stop Info
-					ErpRouteMasterInfo routeInfo = routeMapping.get(command.getRoute());//domainManagerService.getRouteMasterInfo(command.getRoute(),TransStringUtil.serverDateFormat.parse(dispDate));
+					ErpRouteMasterInfo routeInfo = routeMapping.get(command.getRoute());
 					if (routeInfo != null) {
 						command.setNoOfStops(routeInfo.getNumberOfStops());
 					}
@@ -1264,7 +1264,7 @@ public class DispatchController extends AbstractMultiActionController {
 				// Load Truck Info
 				ErpTruckMasterInfo truckInfo = null;
 				if (command.getTruck() != null)
-					truckInfo = truckMapping.get(command.getTruck()); //domainManagerService.getERPTruck(command.getTruck());
+					truckInfo = truckMapping.get(command.getTruck()); 
 				if (truckInfo != null)
 					command.setLocation(truckInfo.getLocation());
 
@@ -1672,7 +1672,7 @@ public class DispatchController extends AbstractMultiActionController {
 				Iterator _itr = routingRouteIds.iterator();
 				String routingRouteId = null;
 				Map directionRoutes = new TreeMap();
-				IRouteModel _tmpRoute = null;
+				IHandOffBatchRoute _tmpRoute = null;
 				
 				while(_itr.hasNext()) {
 					routingRouteId = (String)_itr.next();
@@ -1684,39 +1684,6 @@ public class DispatchController extends AbstractMultiActionController {
 							_tmpRoute.setOriginId(_dispatch.getOriginFacility().getName());
 						};
 						directionRoutes.put(routingRouteId, _tmpRoute);
-					} else {
-						Collection routes = domainManagerService.getRouteMapping(TransStringUtil.getServerDate(routeDate), routingRouteId);
-						boolean hasRoutes = false;
-						
-						if(routes != null && routes.size() == 1) {
-							
-							RouteMapping routeMapping = (RouteMapping)routes.toArray()[0];	
-													
-							IRoutingSchedulerIdentity schedulerId = new RoutingSchedulerIdentity();
-							schedulerId.setRegionId(RoutingServicesProperties.getDefaultTruckRegion());
-									
-							String sessionId = engineProxy.retrieveRoutingSession(schedulerId, routeMapping.getRoutingSessionID());
-							
-							List routingRoutes = proxy.getRoutes(TransStringUtil.getDate(routeDate), sessionId
-																	, routeMapping.getRouteMappingId().getRoutingRouteID());
-							
-							if(routingRoutes != null && routingRoutes.size() > 0) {
-								_tmpRoute = (IRouteModel)routingRoutes.get(0);
-								
-								if(_tmpRoute.getStops() != null && _tmpRoute.getStops().size() > 0) {
-									Collection dispatchLst = dispatchManagerService.getDispatchForRoute(TransStringUtil.getDate(routeDate), routingRouteId);
-									if(dispatchLst != null){
-										Dispatch _dispatch = (Dispatch)dispatchLst.toArray()[0];
-										_tmpRoute.setOriginId(_dispatch.getOriginFacility().getName());
-									};
-									directionRoutes.put(routingRouteId, _tmpRoute);
-									hasRoutes = true;
-								} 
-							}
-						}
-						if(!hasRoutes) {
-							directionRoutes.put(routingRouteId, null);
-						}
 					}
 				}
 				DrivingDirectionsReport reportEngine = new DrivingDirectionsReport();
@@ -1764,7 +1731,7 @@ public class DispatchController extends AbstractMultiActionController {
 				Iterator _itr = routingRouteIds.iterator();
 				String routingRouteId = null;
 				Map directionRoutes = new TreeMap();
-				IRouteModel route = null;
+				IHandOffBatchRoute route = null;
 
 				routingRouteId = (String)_itr.next();
 
@@ -1783,7 +1750,7 @@ public class DispatchController extends AbstractMultiActionController {
 
 						List routingRoutes = proxy.getRoutes(TransStringUtil.getDate(routeDate), sessionId
 								, routeMapping.getRouteMappingId().getRoutingRouteID());
-						route = (IRouteModel)routingRoutes.get(0);
+						route = (IHandOffBatchRoute)routingRoutes.get(0);
 					} 
 					if(route != null) {
 
@@ -1794,41 +1761,11 @@ public class DispatchController extends AbstractMultiActionController {
 								route.getStops().add(ModelUtil.getStop(Integer.MAX_VALUE, "DPT-FD", "", "",
 										"", "40740250", "-73951989", true));
 
+								IRoutingSchedulerIdentity schedulerId = new RoutingSchedulerIdentity();
+								schedulerId.setRegionId(RoutingServicesProperties.getDefaultTruckRegion());
 
-								List points = new ArrayList();
-
-								Iterator stopIterator = route.getStops().iterator();
-								IRoutingStopModel _stop = null;
-								IGeoPoint _geoPoint = null;
-
-								while (stopIterator.hasNext()) {
-
-									_stop = (IRoutingStopModel) stopIterator.next();
-									_geoPoint = new GeoPoint();
-									if(TransStringUtil.isValidInteger(_stop.getDeliveryInfo().getDeliveryLocation()
-											.getBuilding().getGeographicLocation().getLatitude())) {
-										_geoPoint.setLatitude(Integer.parseInt(_stop.getDeliveryInfo().getDeliveryLocation()
-												.getBuilding().getGeographicLocation().getLatitude()));
-									} else {
-										_geoPoint.setLatitude((int)(Double.parseDouble(_stop.getDeliveryInfo().getDeliveryLocation()
-												.getBuilding().getGeographicLocation().getLatitude()) * 1000000.0));
-
-									}
-
-									if(TransStringUtil.isValidInteger(_stop.getDeliveryInfo().getDeliveryLocation()
-											.getBuilding().getGeographicLocation().getLongitude())) {
-										_geoPoint.setLongitude(Integer.parseInt(_stop.getDeliveryInfo().getDeliveryLocation()
-												.getBuilding().getGeographicLocation().getLongitude()));
-									} else {
-										_geoPoint.setLongitude((int)(Double.parseDouble(_stop.getDeliveryInfo().getDeliveryLocation()
-												.getBuilding().getGeographicLocation().getLongitude()) * 1000000.0));
-
-									}
-									
-									points.add(_geoPoint);
-								}
-								route.setDrivingDirection(proxy.buildDriverDirections(points));
-
+								String sessionId = engineProxy.retrieveRoutingSession(schedulerId, route.getSessionName());
+								route.setDrivingDirection(proxy.buildDriverDirections(routingRouteId, sessionId, schedulerId.getRegionId()));
 								Object[] _stops = route.getStops().toArray();								
 								IRoutingStopModel _nextStop = null;
 
@@ -1890,16 +1827,17 @@ public class DispatchController extends AbstractMultiActionController {
 		Map result = new TreeMap();
 		DeliveryServiceProxy proxy = new DeliveryServiceProxy();
 		GeographyServiceProxy geoProxy = new GeographyServiceProxy();
+		RoutingEngineServiceProxy engineProxy = new RoutingEngineServiceProxy();
 		Map<String, IFacilityModel> facilityLookup = geoProxy.getFacilityLookup();
 
 		try {
 			Iterator _itr = routes.keySet().iterator();
 			String _routeId = null;
-			IRouteModel route = null;
+			IHandOffBatchRoute route = null;
 			
 			while(_itr.hasNext()) {
 				_routeId = (String)_itr.next();
-				route = (IRouteModel)routes.get(_routeId);
+				route = (IHandOffBatchRoute)routes.get(_routeId);
 				String originId = null;
 				if(route != null) {
 					
@@ -1919,38 +1857,11 @@ public class DispatchController extends AbstractMultiActionController {
 								"", "40740250", "-73951989", true));
 					}
 					
-					List points = new ArrayList();
-					
-					Iterator stopIterator = route.getStops().iterator();
-					IRoutingStopModel _stop = null;
-					IGeoPoint _geoPoint = null;
-					
-					while (stopIterator.hasNext()) {
-						
-						_stop = (IRoutingStopModel) stopIterator.next();
-						_geoPoint = new GeoPoint();
-						if(TransStringUtil.isValidInteger(_stop.getDeliveryInfo().getDeliveryLocation()
-															.getBuilding().getGeographicLocation().getLatitude())) {
-							_geoPoint.setLatitude(Integer.parseInt(_stop.getDeliveryInfo().getDeliveryLocation()
-									.getBuilding().getGeographicLocation().getLatitude()));
-						} else {
-							_geoPoint.setLatitude((int)(Double.parseDouble(_stop.getDeliveryInfo().getDeliveryLocation()
-									.getBuilding().getGeographicLocation().getLatitude()) * 1000000.0));
+					IRoutingSchedulerIdentity schedulerId = new RoutingSchedulerIdentity();
+					schedulerId.setRegionId(RoutingServicesProperties.getDefaultTruckRegion());
 							
-						}
-						
-						if(TransStringUtil.isValidInteger(_stop.getDeliveryInfo().getDeliveryLocation()
-								.getBuilding().getGeographicLocation().getLongitude())) {
-							_geoPoint.setLongitude(Integer.parseInt(_stop.getDeliveryInfo().getDeliveryLocation()
-									.getBuilding().getGeographicLocation().getLongitude()));
-						} else {
-							_geoPoint.setLongitude((int)(Double.parseDouble(_stop.getDeliveryInfo().getDeliveryLocation()
-									.getBuilding().getGeographicLocation().getLongitude()) * 1000000.0));
-
-						}
-						points.add(_geoPoint);
-					}
-					route.setDrivingDirection(proxy.buildDriverDirections(points));
+					String sessionId = engineProxy.retrieveRoutingSession(schedulerId, route.getSessionName());
+					route.setDrivingDirection(proxy.buildDriverDirections(_routeId, sessionId, schedulerId.getRegionId()));
 					result.put(_routeId, route);
 				} else {
 					result.put(_routeId, null);
@@ -1972,7 +1883,6 @@ public class DispatchController extends AbstractMultiActionController {
 			Iterator iterator = termintedList.iterator();
 			WebEmployeeInfo info = null;
 			while(iterator.hasNext()) {
-				//System.out.println(iterator.next());
 				info = (WebEmployeeInfo)iterator.next();
 				result.add(info.getEmployeeId());
 			}

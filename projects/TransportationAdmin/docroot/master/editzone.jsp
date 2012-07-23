@@ -189,6 +189,15 @@
                   &nbsp;<form:errors path="ecoFriendly" />
                 </td>
                </tr>
+                <tr>
+                  <td>Steering Radius</td>
+                  <td>
+                    <form:input maxlength="50" size="30" path="steeringRadius"/>
+                  </td>
+                <td>
+                  &nbsp;<form:errors path="steeringRadius" />
+                </td>
+               </tr>
               <tr><td colspan="3">&nbsp;</td></tr>
               <tr>
                   <td colspan="3" align="center">

@@ -136,21 +136,22 @@ public class ZoneManagerDaoOracleImpl implements ZoneManagerDaoI {
 	}	
 	
 	private static final String GET_ALL_WINDOWSTEERING_DISCOUNTS =
-		"select p.id PID, P.MAX_AMOUNT PAMOUNT, P.OFFER_TYPE, PDZ.DLV_ZONE ZONES, PTS.DAY_ID DAY_OF_WEEK, PTS.START_TIME STIME, PTS.END_TIME ETIME " +
-		"from CUST.PROMOTION_NEW p, CUST.PROMO_DLV_ZONE_STRATEGY pdz, CUST.PROMO_DLV_TIMESLOT pts " +
-		"where p.campaign_code='HEADER' and p.offer_type = 'WINDOW_STEERING' and p.status='LIVE' and P.EXPIRATION_DATE > sysdate and to_char(?,'D') = PTS.DAY_ID " +
-		"and PDZ.PROMOTION_ID = p.id and PTS.PROMO_DLV_ZONE_ID = PDZ.ID ";
+		"select p.id PID, P.MAX_AMOUNT PAMOUNT, P.OFFER_TYPE, PDZ.DLV_ZONE ZONES, PTS.DAY_ID DAY_OF_WEEK, PTS.START_TIME STIME, PTS.END_TIME ETIME, PTS.DLV_WINDOWTYPE WINDOWTYPE " +
+		"from CUST.PROMOTION_NEW p, CUST.PROMO_DLV_ZONE_STRATEGY pdz, CUST.PROMO_DLV_TIMESLOT pts, CUST.PROMO_DELIVERY_DATES pds " +
+		"where p.campaign_code='HEADER' and p.offer_type = 'WINDOW_STEERING' and p.status='LIVE' and P.EXPIRATION_DATE >= sysdate and to_char(?,'D') = PTS.DAY_ID and PDS.START_DATE <= ? and PDS.END_DATE >= ? " +
+		"and PDZ.PROMOTION_ID = p.id and PTS.PROMO_DLV_ZONE_ID = PDZ.ID and p.id = PDS.PROMOTION_ID ";
 	
 	public Map<String, List<TimeRange>> getWindowSteeringDiscounts(final Date deliveryDate) throws DataAccessException {
 		
 		final Map<String, List<TimeRange>> result = new HashMap<String, List<TimeRange>>();
 		
         PreparedStatementCreator creator=new PreparedStatementCreator() {
-            public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {		            	 
+            public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
                 PreparedStatement ps =
                     connection.prepareStatement(GET_ALL_WINDOWSTEERING_DISCOUNTS);  
-                //ps.setDate(1, new java.sql.Date(new java.util.Date());
                 ps.setDate(1, new java.sql.Date(deliveryDate.getTime()));
+                ps.setDate(2, new java.sql.Date(deliveryDate.getTime()));
+                ps.setDate(3, new java.sql.Date(deliveryDate.getTime())); 
                 return ps;
             }  
         };
@@ -160,10 +161,20 @@ public class ZoneManagerDaoOracleImpl implements ZoneManagerDaoI {
        		    	
        		    	do { 
        		    		Array array = rs.getArray("ZONES");
+       		    		Array windowTypeArray = rs.getArray("WINDOWTYPE");
        		    		
        		    		TimeRange capacity = new TimeRange();
-       		    		capacity.setStartTime(new CustomTimeOfDay(rs.getString("STIME")));
-       		    		capacity.setEndTime(new CustomTimeOfDay(rs.getString("ETIME")));
+       		    		if(rs.getString("STIME") != null)
+       		    			capacity.setStartTime(new CustomTimeOfDay(rs.getString("STIME")));
+       		    		if(rs.getString("ETIME") != null)
+       		    			capacity.setEndTime(new CustomTimeOfDay(rs.getString("ETIME")));
+       		    		
+       		    		if(windowTypeArray != null){
+       		    			String[] windowTypeDuration = (String[]) windowTypeArray.getArray();
+       		    			if(windowTypeDuration != null) {
+       		    				capacity.setWindowType(windowTypeDuration);
+       		    			}
+       		    		}
        		    		
        		    		if(array != null) {
        		    			String[] zoneCodes = (String[])array.getArray();

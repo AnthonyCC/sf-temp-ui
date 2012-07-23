@@ -8,6 +8,8 @@ public class FDPromoDlvTimeSlotModel extends ModelSupport {
 	private Integer dayId;
 	private String dlvTimeStart;
 	private String dlvTimeEnd;
+	private String radius;
+	private String[] windowTypes;
 	
 	public String getPromoDlvZoneId() {
 		return promoDlvZoneId;
@@ -32,6 +34,18 @@ public class FDPromoDlvTimeSlotModel extends ModelSupport {
 	}
 	public void setDlvTimeEnd(String dlvTimeEnd) {
 		this.dlvTimeEnd = dlvTimeEnd;
+	}
+	public String getRadius() {
+		return radius;
+	}
+	public void setRadius(String radius) {
+		this.radius = radius;
+	}
+	public String[] getWindowTypes() {
+		return windowTypes;
+	}
+	public void setWindowTypes(String[] windowTypes) {
+		this.windowTypes = windowTypes;
 	}
 	@Override
 	public String toString() {

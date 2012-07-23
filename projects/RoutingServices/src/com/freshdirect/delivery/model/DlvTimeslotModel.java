@@ -73,6 +73,19 @@ public class DlvTimeslotModel extends DlvShiftTimeslotModel {
 
 	private double premiumAmount;
 	
+	public boolean hasSteeringRadius() {
+		if(this.getRoutingSlot() != null && this.getRoutingSlot().getDeliveryCost() != null){
+			if(this.getRoutingSlot().getSteeringRadius() != 0)	{
+				if(this.getRoutingSlot().getDeliveryCost().getAdditionalDistance() <= this.getRoutingSlot().getSteeringRadius())
+						return true;
+			} else {
+				if(this.getRoutingSlot().getDeliveryCost().getAdditionalDistance()== 0) 
+					return true;
+			}
+		}
+		return false;
+	}
+	
 	public boolean isEcoFriendly() {		
 		if(this.getRoutingSlot() != null && this.getRoutingSlot().getDeliveryCost() != null){
 			if(this.getRoutingSlot().getEcoFriendly()!= 0)	{

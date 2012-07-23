@@ -25,6 +25,10 @@ public class ActivityLog implements java.io.Serializable, TrnBaseEntityI
 			case 2: return "PLAN RESOURCE";
 			case 3: return "DISPATCH";
 			case 4: return "DISPATCH RESOURCE";
+			case 5: return "DISPATCH AM";
+			case 6: return "DISPATCH PM";
+			case 7: return "DISPATCH REGION AM";
+			case 8: return "DISPATCH REGION PM";
 			default :return "";
 		}
 		

@@ -7,6 +7,20 @@
 <%@ page import="com.freshdirect.fdstore.promotion.management.*" %>
 <%@ page import="com.freshdirect.delivery.model.*" %>
 <%@ page import="com.freshdirect.smartstore.fdstore.VariantSelection" %>
+<%@ page import="com.freshdirect.fdstore.promotion.EnumPromotionProfileAttribute"%>
+<%@ page import="com.freshdirect.fdstore.customer.FDCustomerManager"%>
+<%@ page import="java.text.DateFormat"%>
+<%@ page import="java.text.SimpleDateFormat"%>
+<%@ page import="java.text.DecimalFormat"%>
+<%
+	//fetch profiles
+	Map profileAttributeNames = FDCustomerManager.loadProfileAttributeNames();
+	//sort them
+	List<String> profileAttributeNamesSorted = new ArrayList<String>(profileAttributeNames.keySet());
+	Collections.sort(profileAttributeNamesSorted);
+%>
+<tmpl:insert template='/template/top_nav.jsp'>
+
 <%@page import="com.freshdirect.framework.util.NVL"%>
 <%@page import="com.freshdirect.webapp.util.CCFormatter"%>
 <%@page import="com.freshdirect.delivery.EnumDeliveryOption"%>
@@ -16,6 +30,7 @@
 <%@page import="java.text.SimpleDateFormat"%>
 <fd:javascript src="/assets/javascript/promo.js"/>
 <%@page import="java.text.DecimalFormat"%><tmpl:insert template='/template/top_nav.jsp'>
+
 <%!
 	DateFormat DATE_YEAR_FORMATTER = new SimpleDateFormat("yyyy-MM-dd");
 %>
@@ -77,8 +92,12 @@ function numbersonly(myfield, e, dec)
 	String endTime = request.getParameter("endTime");
 	String discount = request.getParameter("discount");
 	String redeemLimit = request.getParameter("redeemlimit");
+	String radius = request.getParameter("radius");
+	
+
 	String deliveryDayType = request.getParameter("deliveryDayType");
 	EnumDeliveryOption dlvOption = EnumDeliveryOption.getEnum(deliveryDayType);
+	
 	if(promotion != null && promotion.getPromotionCode() != null) {
 		if(f_effectiveDate == null)
 			f_effectiveDate =  CCFormatter.formatDateYear(promotion.getWSSelectedDlvDate());
@@ -96,13 +115,14 @@ function numbersonly(myfield, e, dec)
 			discount = promotion.getMaxAmount();
 		if(redeemLimit == null)
 			redeemLimit = String.valueOf(promotion.getRedeemCount());
+		if(radius == null)
+			radius = promotion.getRadius();
 		if(deliveryDayType == null){
 			dlvOption =promotion.getCustStrategies().get(0).getDeliveryDayType();
 			if(null !=dlvOption){
 				deliveryDayType = dlvOption.getName(); 
 			}
 		}
-
 	}
 	Date defaultDate = DateUtil.addDays(today, 1); //Today + 1
 	f_effectiveDate = (f_effectiveDate != null) ? f_effectiveDate : CCFormatter.formatDateYear(defaultDate);
@@ -116,6 +136,8 @@ function numbersonly(myfield, e, dec)
 	Date effectiveDate = DATE_YEAR_FORMATTER.parse(f_effectiveDate);
 	String f_displayDate = CCFormatter.formatDateMonth(effectiveDate);
 	boolean isToday = f_today.equals(f_displayDate);
+	String radiusChecked = (radius != null && !"".equalsIgnoreCase(radius)) ? "checked" : "";
+	List<FDPromotionAttributeParam> attrList = (promotion.getAttributeList() != null && promotion.getAttributeList().size()>0) ? promotion.getAttributeList() : new ArrayList();
 
 %>
 
@@ -198,6 +220,9 @@ function numbersonly(myfield, e, dec)
 				</fd:ErrorHandler>							
 				<fd:ErrorHandler result='<%= result %>' name='redemptionCodeDuplicate' id='errorMsg'>
 				   <%@ include file="/includes/i_error_messages.jspf" %>   
+				</fd:ErrorHandler>
+				<fd:ErrorHandler result='<%= result %>' name='windowTypeEmpty' id='errorMsg'>
+				   <%@ include file="/includes/i_error_messages.jspf" %>   
 				</fd:ErrorHandler>							
 				<%
 					String publish = NVL.apply(request.getParameter("publish"), "");
@@ -250,6 +275,7 @@ function numbersonly(myfield, e, dec)
 				%>		
 			</div>
 			<table width="100%" border="0" cellspacing="5" cellpadding="5">
+				
 				<tr class="flatRow">
 					<%-- sets the column widths --%>
 					<td width="130px"><img width="1" height="0" src="/media_stat/crm/images/clear.gif" alt="" /></td>
@@ -258,22 +284,32 @@ function numbersonly(myfield, e, dec)
 				<tr class="flatRow">
 					<td colspan="2"><img width="1" height="1" src="/media_stat/crm/images/clear.gif" alt="" class="promo_edit_offer-spacer" /></td>
 				</tr>
+				<tr>
+						<td class="promo_page_header_text" colspan="3">Edit&nbsp;Delivery&nbsp;Requirement&nbsp;</td>
+				</tr>
 				<% if(promotion != null && promotion.getPromotionCode() != null) { %>
 				<tr>
 					<td width="3%">&nbsp;</td>
-					<td><span><b>Promotion ID:</b> <%= promotion.getPromotionCode() %></span></td>
-					<td><span><b>Promotion Name:</b> <%= promotion.getName() %></span></td>
+					<td width="35%" align="right" colspan="2">
+						<input type="button" onclick="javascript:doPublish();" name="publish" value=" PUBLISH " class="submit">
+						<input name="cancel" type="button" value=" CANCEL " class="submit" onclick="location.href('/promotion/promo_ws_view.jsp')" >	
+					</td>				
+				</tr>
+				<tr>
+					<td width="3%">&nbsp;</td>
+					<td><span>Promotion ID: <%= promotion.getPromotionCode() %></span></td>
+					<td><span>Promotion Name: <%= promotion.getName() %></span></td>
 				</tr>
 				<% } %>
 				<tr>
 					<td width="3%">&nbsp;</td>
-					<td><b>Delivery Date: 
+					<td>Delivery Date: 
 					<% if(isToday) { %>
 						today -<%= f_displayDate %> 
 					<% } else  {%>
 						<%= f_displayDate %>
 					<% } %>
-					</b>&nbsp;&nbsp;
+					&nbsp;&nbsp;
 					<input type="hidden" name="effectiveDate" id="effectiveDate" value="<%=f_effectiveDate%>">
 					<input type="hidden" name="startDate" id="startDate" value="<%=startDate%>">
 					<input type="hidden" name="endDate" id="endDate" value="<%=endDate%>">
@@ -306,11 +342,13 @@ function numbersonly(myfield, e, dec)
 			    
 				</script>
 							 		
-					</td>	
+					</td>
+						
 				</tr>
+				
 				<tr>
 					<td width="3%">&nbsp;</td>
-					<td><b>Start Date: </b>&nbsp;&nbsp;           
+					<td>Start Date: &nbsp;&nbsp;           
 						<input type="hidden" name="startDate" id="startDate" value="<%=startDate%>">                        
 			            <input type="text" name="newStartDate" id="newStartDate" size="10" value="<%=startDate%>" disabled="true" onchange="setDate1(this);">
 			            	&nbsp;<a href="#" id="trigger_startDate" ><img id="imgStartDate" src="/media_stat/crm/images/calendar.gif" width="16" height="16" alt="" /></a>
@@ -338,7 +376,7 @@ function numbersonly(myfield, e, dec)
 							    var year = d.getFullYear();
 						    	var fd = year + "-" + month + "-" + date;                    
 						    	document.getElementById("startDate").value = fd;
-			                  document.getElementById("newStartDate").value = fd;
+			                  	document.getElementById("newStartDate").value = fd;
 						    	document.getElementById("reason").value = "";
 						    	document.getElementById("message").value = "all";
 						    	document.getElementById("restrictedType").value = "";
@@ -350,12 +388,12 @@ function numbersonly(myfield, e, dec)
 						    }
 			
 						</script>						
-					</td>		
+					</td>
 					
 				</tr>
 				<tr>
 					<td width="3%">&nbsp;</td>
-					<td><b>End Date: </b>&nbsp;&nbsp;			
+					<td>End Date: &nbsp;&nbsp;			
 						<input type="hidden" name="endDate" id="endDate" value="<%=endDate%>">                        
 			            <input type="text" name="newEndDate" id="newEndDate" size="10" value="<%=endDate%>" disabled="true" onchange="setDate2(this);">
             			&nbsp;<a href="#" id="trigger_endDate"><img id="imgEndDate" src="/media_stat/crm/images/calendar.gif" width="16" height="16" alt="" /></a>
@@ -389,7 +427,7 @@ function numbersonly(myfield, e, dec)
 				
 				<tr>
 					<td width="3%">&nbsp;</td>
-					<td> 
+					<td> Zone: &nbsp;&nbsp;
 						<select id="zone" name="zone" class="h10px w200px">
 							<option value="">Select Zone</option>
 		 					<logic:iterate id="zoneModel" collection="<%= availableDeliveryZones %>" type="com.freshdirect.delivery.model.DlvZoneModel" indexId="idx">
@@ -401,7 +439,130 @@ function numbersonly(myfield, e, dec)
 							</logic:iterate>
 						</select>
 					</td>
-				</tr>	
+				</tr>
+				<tr>
+					<td width="3%">&nbsp;</td>
+					<td><span>Radius&nbsp;&nbsp;<input onclick="toggleRadius()" type="checkbox" id="radius" name="radius" value="<%= (radius == null || "".equalsIgnoreCase(radius))  ? "X" : radius %>" <%= radiusChecked %>/></span></td>
+					
+					<script language="javascript">
+					
+					function toggleRadius(){							
+							if(document.getElementById("radius").checked){
+								document.timePick.picked0.value = '';
+								document.timePick.picked1.value = '';
+								document.timePick.picked0.disabled = true;
+								document.timePick.picked1.disabled = true;
+								document.timePick.datepicker0.disabled = true;
+								document.timePick.datepicker1.disabled = true;	
+								document.getElementById("window_type").disabled=false;
+							} else {								
+								document.timePick.picked0.disabled = false;
+								document.timePick.picked1.disabled = false;
+								document.timePick.datepicker0.disabled = false;
+								document.timePick.datepicker1.disabled = false;	
+								document.timePick.picked0.value = '';
+								document.timePick.picked1.value = '';
+								deleteAllWindowType('windowTypeListTB');
+								document.getElementById("window_type").disabled=true;
+							}
+						}
+					</script>
+					
+					<td>
+						<table>
+							
+							<tr>
+								<td class="promo_edit_offer_label">Window Type:</td>
+								<td class="alignL vTop padL8R16">
+									<table class="tableCollapse">							
+										<tr>
+											<td>									
+												<input type="text" id="window_type" name="window_type" class="w200px" /> in Min(s) &nbsp;							
+												<input type="button" value="ADD/UPDATE" onclick="javascript:addWindowType('timePick');" class="promo_btn_gry" />
+											</td>
+										</tr>
+									</table>
+								</td>
+							</tr>	
+				<tr class="flatRow">
+						<td>
+							<img width="1" height="1" src="/media_stat/crm/images/clear.gif" alt="" class="promo_edit_offer-spacer" />
+						</td>
+				</tr>
+				<tr>
+					<td class="promo_edit_offer_label">
+						<img width="1" height="0" src="/media_stat/crm/images/clear.gif" alt="" />
+					</td>
+					<td class="alignL vTop padL8R16" colspan="2">
+						
+						<table style="border-collapse: collapse;" id="windowTypeListTB">
+							<thead>
+								<tr>
+									<th class="gray8pt padL8R16">&nbsp;</th>
+									<th class="bordLgrayDash gray8pt padL8R16">Window Duration (in mins)</th>
+									<th class="gray8pt padL8R16"><a href="#" onclick="deleteAllWindowType('windowTypeListTB'); return false;" class="greenLink clickAllExclude">(Delete All)</a></th>
+								</tr>
+							</thead>
+							<tbody>
+							<%
+							
+										List windowTypeList = new ArrayList();
+										if(promotion != null) {
+											List<FDPromoDlvZoneStrategyModel> zsms = promotion.getDlvZoneStrategies();
+											if(zsms != null && zsms.size() > 0) {
+												FDPromoDlvZoneStrategyModel zsm = (FDPromoDlvZoneStrategyModel) zsms.get(0);
+												if(zsm != null && zsm.getDlvTimeSlots() != null) {
+													FDPromoDlvTimeSlotModel tm = (FDPromoDlvTimeSlotModel) zsm.getDlvTimeSlots().get(0);
+													if(tm.getWindowTypes() != null && tm.getWindowTypes().length != 0){
+														windowTypeList = Arrays.asList(tm.getWindowTypes());
+													}
+												}								
+											}
+										}
+							
+							
+										for (int n = 0; n < windowTypeList.size(); n++) {
+											String tempAttr = (String) windowTypeList.get(n);
+											if (tempAttr != null) {
+												%><tr id="windowTypeList[<%=n%>]"><%
+												if (n == 0) {
+													%><td class="padL8R16">&nbsp;</td><%
+												}else{
+													%><td class="bordLgrayDash padL8R16"> OR </td><%
+												}
+												%>																										
+													<td class="bordLgrayDash padL8R16 alignC"><%= tempAttr %></td>
+													<td class="bordLgrayDash padL8R16"><a href="#" onclick="deleteWindowType('windowTypeList[<%=n%>]'); return false;" class="greenLink">Delete</a></td>
+												</tr>
+												<%
+											}
+										}
+									%>
+							</tbody>
+						</table>
+						<%-- Add existing windowTypeList in hidden fields --%>
+						<%
+						
+							for (int n = 0; n < windowTypeList.size(); n++) {
+								String tempAttr = (String) windowTypeList.get(n);
+								%>
+									<input type="hidden" name="windowTypeList[<%=n%>].desiredValue" id="windowTypeList[<%=n%>].desiredValue" value="<%= tempAttr %>">
+								<%
+							} %>
+							<script type="text/javascript">
+							<!--
+								rollingIndex01 = <%=windowTypeList.size()%>;
+							//-->
+							</script>
+					</td>
+				</tr>
+							
+							
+						</table>
+					</td>
+					
+				</tr>
+					
 				<tr>
 					<td width="3%">&nbsp;</td>
 					<td> 
@@ -436,7 +597,7 @@ function numbersonly(myfield, e, dec)
 				<tr>
 					<td width="3%">&nbsp;</td>
 					<td>
-						<span><b>Redemption Limit: </b><INPUT type="text" name="redeemlimit" value="<%= redeemLimit %>" size="5" maxlength="5"  onKeyPress="return numbersonly(this, event)"/></span>
+						<span>Redemption Limit: <INPUT type="text" name="redeemlimit" value="<%= redeemLimit %>" size="5" maxlength="5"  onKeyPress="return numbersonly(this, event)"/></span>
 					</td> 
 				</tr>										
 				<tr>
@@ -479,6 +640,7 @@ function numbersonly(myfield, e, dec)
 					</td>
 					
 				</tr>
+
 				
 				<tr>
 						<td class="promo_page_header_text">Edit&nbsp;Customer&nbsp;Requirement&nbsp;</td>
@@ -539,6 +701,142 @@ function numbersonly(myfield, e, dec)
 						</table>
 						<%} %>
 					</td>
+				</tr>
+				
+				<tr>
+					<td class="promo_edit_offer_label">Profile Information:</td>
+					<td class="alignL vTop padL8R16">
+						<table class="tableCollapse">
+							<tr>
+								<td>
+									<input type="radio" id="profile_condition0" name="custreq_profileAndOr" value="AND" <%="AND".equals(promotion.getProfileOperator())?"checked":"" %>/> <strong>Match All (AND)</strong>
+									<input type="radio" id="profile_condition1" name="custreq_profileAndOr" value="OR" <%="OR".equals(promotion.getProfileOperator())?"checked":"" %>/> <strong>Match Any (OR)</strong>
+									<input type="hidden" value="AND" class="input" name="profileOperator" id="profileOperator" />
+								</td>
+							</tr>
+							<tr>
+								<td><img width="1" height="1" src="/media_stat/crm/images/clear.gif" alt="" class="promo_edit_offer-spacer" /></td>
+							</tr>
+							<tr>
+								<td>
+									<select id="profile_value" id="profile_value" class="w200px">
+									<option value=""></option>
+									<%for(Iterator i = profileAttributeNamesSorted.iterator(); i.hasNext(); ){
+										String iName = (String) i.next();
+									 %>
+										<option value="<%=iName%>"><%=iName%></option>
+									<%	} %>
+									</select>
+									with Value: <input type="text" id="profile_name" name="profile_name" class="w200px" />
+								</td>
+							</tr>
+							<tr>
+								<td><img width="1" height="1" src="/media_stat/crm/images/clear.gif" alt="" class="promo_edit_offer-spacer" /></td>
+							</tr>
+							<tr>
+								<td>
+									<table id="edit_custreq_profsParent">
+										<tr>
+											<%-- sets the column widths --%>
+											<td class="w150px"><img width="1" height="0" src="/media_stat/crm/images/clear.gif" alt="" /></td>
+											<td class="w150px"><img width="1" height="0" src="/media_stat/crm/images/clear.gif" alt="" /></td>
+											<td class="w150px"><img width="1" height="0" src="/media_stat/crm/images/clear.gif" alt="" /></td>
+										</tr>
+										<tr>
+											<td><input type="checkbox" id="sc_chefstable" />Chefs Table</td>
+											<td><input type="checkbox" id="sc_vip" />VIP/Reserved Dlv</td>
+											<td><input type="checkbox" id="sc_inactive" />Inactive</td>
+										</tr>
+										<tr>
+											<td><input type="checkbox" id="sc_gold" />Gold</td>
+											<td><input type="checkbox" id="sc_silver" />Silver</td>
+											<td><input type="checkbox" id="sc_bronze" />Bronze</td>
+										</tr>
+										<tr>
+											<td><input type="checkbox" id="sc_copper" />Copper</td>
+											<td><input type="checkbox" id="sc_tin" />Tin</td>
+											<td><input type="checkbox" id="sc_new" />New</td>
+										</tr>
+										<tr>
+											<td colspan="3" class="alignR">
+												<a href="#" onclick="selectAllCB('edit_custreq_profsParent'); return false;" class="greenLink">(Select All)</a>&nbsp;
+												<a href="#" onclick="selectNoneCB('edit_custreq_profsParent'); return false;" class="greenLink">(Select None)</a>
+											</td>
+										</tr>
+									</table>
+								</td>
+							</tr>
+							<tr>
+								<td><img width="1" height="1" src="/media_stat/crm/images/clear.gif" alt="" class="promo_edit_offer-spacer" /></td>
+							</tr>
+							<tr>
+								<td><input type="button" value="ADD PROFILE/UPDATE OPERATOR" onclick="javascript:addProfile('timePick');" class="promo_btn_gry" /></td>
+							</tr>
+						</table>
+					</td>
+					
+							<tr class="flatRow">
+					<td><img width="1" height="1" src="/media_stat/crm/images/clear.gif" alt="" class="promo_edit_offer-spacer" /></td>
+				</tr>
+				<tr>
+					<td class="promo_edit_offer_label"><img width="1" height="0" src="/media_stat/crm/images/clear.gif" alt="" /></td>
+					<td class="alignL vTop padL8R16" colspan="2">
+						<%--
+							Make sure to look at:
+								/includes/promotion_fields.jspf
+							
+							All the old java logic is there, but the JS has changed
+						--%>
+						<table style="border-collapse: collapse;" id="profileListTB">
+							<thead>
+							<tr>
+								<th class="gray8pt padL8R16">&nbsp;</th>
+								<th class="bordLgrayDash gray8pt padL8R16">Name</th>
+								<th class="bordLgrayDash gray8pt padL8R16">Attribute</th>
+								<th class="bordLgrayDash gray8pt padL8R16">Value</th>
+								<th class="gray8pt padL8R16"><a href="#" onclick="deleteAllProfiles('profileListTB'); return false;" class="greenLink clickAllExclude">(Delete All)</a></th>
+							</tr>
+							</thead>
+							<tbody>
+							<%
+										for (int n = 0; n < attrList.size(); n++) {
+											FDPromotionAttributeParam tempAttr = (FDPromotionAttributeParam)attrList.get(n);
+											if (tempAttr != null) {
+												%><tr id="attributeList[<%=n%>]"><%
+												if (n == 0) {
+													%><td class="padL8R16">&nbsp;</td><%
+												}else{
+													%><td class="bordLgrayDash padL8R16"><%= null!=promotion.getProfileOperator()?promotion.getProfileOperator():"" %></td><%
+												}
+												%>
+													<td class="bordLgrayDash padL8R16"><%= ( "".equals(EnumPromotionProfileAttribute.getName(tempAttr.getAttributeName(),tempAttr.getDesiredValue())) ? tempAttr.getAttributeName() : EnumPromotionProfileAttribute.getName(tempAttr.getAttributeName(),tempAttr.getDesiredValue()) )%></td>
+													<td class="bordLgrayDash padL8R16"><%= tempAttr.getAttributeName() %></td>
+													<td class="bordLgrayDash padL8R16 alignC"><%= tempAttr.getDesiredValue() %></td>
+													<td class="bordLgrayDash padL8R16"><a href="#" onclick="deleteProfile('attributeList[<%=n%>]'); return false;" class="greenLink">Delete</a></td>
+												</tr>
+												<%
+											}
+										}
+									%>
+							</tbody>
+						</table>
+						<%-- Add existing attrs in hidden fields --%>
+						<%
+						
+							for (int n = 0; n < attrList.size(); n++) {
+								FDPromotionAttributeParam tempAttr = (FDPromotionAttributeParam)attrList.get(n);
+								%>
+									<input type="hidden" name="attributeList[<%=n%>].attributeName" id="attributeList[<%=n%>].attributeName" value="<%= tempAttr.getAttributeName() %>">
+									<input type="hidden" name="attributeList[<%=n%>].desiredValue" id="attributeList[<%=n%>].desiredValue" value="<%= tempAttr.getDesiredValue() %>">
+								<%
+							} %>
+							<script type="text/javascript">
+							<!--
+								rollingIndex = <%=attrList.size()%>;
+							//-->
+							</script>
+					</td>
+				</tr>
 				</tr>
 															
 			</table>			

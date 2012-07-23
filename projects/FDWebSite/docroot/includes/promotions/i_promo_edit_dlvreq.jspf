@@ -380,8 +380,84 @@
 											</tr>
 										</table>
 										<!-- -----------APPDEV-1786-------------- -->
+										<%--<%
+											String radius = request.getParameter("radius");
+											if(radius == null){
+												radius = promotion.getRadius();
+											}
+											String radiusChecked = (radius != null && !"".equalsIgnoreCase(radius)) ? "checked" : "";
+										%>
 										<div><img width="1" height="1" src="/media_stat/crm/images/clear.gif" alt="" class="promo_edit_offer-spacer" /></div>
-										<div class="gray">Eligible timeslot(s):</div>
+										 <div class="gray">Radius<input onclick="toggleRadius();" type="checkbox" id="radius" name="radius" value="<%= (radius == null || !"".equalsIgnoreCase(radius))  ? "X" : radius %>" <%= radiusChecked %>/></div>
+										<script language="javascript">
+												window.onload =  function(){
+													toggleRadius();				
+												}
+												function toggleRadius(){
+														var enabled = false;
+														if(document.getElementById("radius").checked) {															
+															document.getElementById('edit_dlvreq_dayOfWeekParent').style.display = 'none';
+															document.getElementById('edit_custreq_ssParent').style.display = '';
+															document.getElementById('timeslotDisp').style.display = 'none';
+															document.getElementById('windowDisp').style.display = '';
+															/* var x = document.getElementsByName('windowTypes');
+															for(var i=0;i < x.length;i++){
+																x[i].disabled = false;
+															}  */
+														} else {
+															enabled = true;
+															document.getElementById('edit_dlvreq_dayOfWeekParent').style.display = '';
+															document.getElementById('edit_custreq_ssParent').style.display = 'none';
+															document.getElementById('windowDisp').style.display = 'none';
+															document.getElementById('timeslotDisp').style.display = '';
+															/* var x = document.getElementsByName('windowTypes');
+															for(var i=0;i < x.length;i++){
+																x[i].checked = false;
+																x[i].disabled = true;
+															} */
+														}
+													}
+										</script>
+										<div><img width="1" height="1" src="/media_stat/crm/images/clear.gif" alt="" class="promo_edit_offer-spacer" /></div>
+										<div class="gray" id="windowDisp">Window Type</div>
+										<table class="tableCollapse" id="edit_custreq_ssParent">
+												<%
+													List<DlvTimeslotWindowModel> availableWindowTypes = (List)FDDeliveryManager.getInstance().getActiveTimeslotWindows();
+													
+													List windowList = new ArrayList();
+													if(promotion != null) {
+														List<FDPromoDlvZoneStrategyModel> zsms1 = promotion.getDlvZoneStrategies();
+														if(zsms1 != null && zsms1.size() > 0) {
+															FDPromoDlvZoneStrategyModel zsm1 = (FDPromoDlvZoneStrategyModel) zsms1.get(0);
+															if(zsm1 != null && zsm1.getDlvTimeSlots() != null && !zsm1.getDlvTimeSlots().isEmpty()) {
+																FDPromoDlvTimeSlotModel tm = (FDPromoDlvTimeSlotModel) zsm1.getDlvTimeSlots().get(0);
+																windowList = Arrays.asList(tm.getWindowTypes());
+															}								
+														}
+													}
+													
+													if(null != availableWindowTypes && !availableWindowTypes.isEmpty()){
+														
+														 for(int i=0;i < availableWindowTypes.size();i++){
+																String checked = "";
+																if(windowList.contains(availableWindowTypes.get(i).getWindowType())) {
+																	checked = "checked";
+																}
+												%>
+												  			<% if(i%2 == 0){ %>
+																<tr>
+																<td><input type="checkbox" id="windowTypes" name="windowTypes" value="<%= availableWindowTypes.get(i).getWindowType()%>" <%= checked %>/> <%= availableWindowTypes.get(i).getWindowType()%> hour</td>
+															<%} else { %>
+																<td><input type="checkbox" id="windowTypes" name="windowTypes" value="<%= availableWindowTypes.get(i).getWindowType()%>" <%= checked %>/> <%= availableWindowTypes.get(i).getWindowType()%> hour</td>
+															 	<% if((i*2) % 2 != 0){ %></tr><%} %>
+															<%} %>
+															
+														<%} %>
+												<%  } %>
+										</table> --%>
+						
+										<div><img width="1" height="1" src="/media_stat/crm/images/clear.gif" alt="" class="promo_edit_offer-spacer" /></div>
+										<div class="gray" id="timeslotDisp">Eligible timeslot(s):</div>
 										<table class="tableCollapse" width="100%" id="edit_dlvreq_dayOfWeekParent" name="edit_dlvreq_dayOfWeekParent">
 											<tr>
 												<%-- sets the column widths --%>

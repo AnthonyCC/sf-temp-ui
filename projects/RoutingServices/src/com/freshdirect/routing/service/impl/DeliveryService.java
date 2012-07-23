@@ -43,6 +43,7 @@ import com.freshdirect.routing.model.RoutingSchedulerIdentity;
 import com.freshdirect.routing.proxy.stub.roadnet.DriverDirectionsOptions;
 import com.freshdirect.routing.proxy.stub.roadnet.RouteNetWebService;
 import com.freshdirect.routing.proxy.stub.transportation.RoutingRoute;
+import com.freshdirect.routing.proxy.stub.transportation.RoutingRouteIdentity;
 import com.freshdirect.routing.proxy.stub.transportation.RoutingSession;
 import com.freshdirect.routing.proxy.stub.transportation.TransportationWebService;
 import com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceStub;
@@ -236,11 +237,11 @@ public class DeliveryService extends BaseService implements IDeliveryService {
 		return null;
 	}
 	
-	public IDrivingDirection buildDriverDirections(List destinations)  throws RoutingServiceException {
+	public IDrivingDirection buildDriverDirections(String routeID, String sessionID, String regionID)  throws RoutingServiceException {
 		try {
-			RouteNetWebService port = getRouteNetBatchService();
-			return RoutingDataDecoder.decodeDrivingDirection(port.buildDriverDirections(RoutingDataEncoder.encodeGeoPointList(destinations)
-												, new DriverDirectionsOptions()));
+			TransportationWebService port = getTransportationSuiteService(null);			
+			return RoutingDataDecoder.decodeDrivingDirection(port.buildRoutingDriverDirections
+					(RoutingDataEncoder.encodeRoutingRouteIdentity(routeID, sessionID, regionID)));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -674,7 +675,6 @@ public class DeliveryService extends BaseService implements IDeliveryService {
 			throw new RoutingServiceException(e, "Unable to pull unassigned");
 		}
 	}
-	
 	
 /*	private String getAddressString(ContactAddressModel address) {
 		StringBuilder resp=new StringBuilder();

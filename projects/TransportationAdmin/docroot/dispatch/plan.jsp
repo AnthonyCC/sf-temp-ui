@@ -16,8 +16,10 @@
 
 <tmpl:insert template='/common/sitelayout.jsp'>
 
-	<tmpl:put name='title' direct='true'> Operations : <%=pageTitle%></tmpl:put>
-
+<tmpl:put name='title' direct='true'> Operations : <%=pageTitle%></tmpl:put>
+	<tmpl:put name='yui-lib'>
+		<%@ include file='/common/i_yui.jspf'%>
+	</tmpl:put>
   <tmpl:put name='content' direct='true'> 
 
 	<c:if test="${not empty messages}">
@@ -54,6 +56,9 @@
 	                      <input style="font-size:11px" type = "button" height="18" value=" U/A " onclick="javascript:doUnavailable('plan.do','weekdate','daterange','y')" />
 	                      <input style="font-size:11px" type = "button" height="18" value="Kronos" onclick="javascript:doKronos('plan.do','weekdate','daterange','y','1')" />                  
 	                      <input style="font-size:11px" type = "button" height="18" value="Publish" onclick="javascript:doPublish();" />
+	                      <%if(com.freshdirect.transadmin.security.SecurityManager.isUserAdmin(request)){%> 
+		                    <input style="font-size:11px" type = "button" value="Activity Log" onclick="javascript:doActivityLog('daterange')" />		                  
+		                  <%} %>
 	                   </div>  
 				</div>
 			</div>
@@ -102,14 +107,13 @@
 				</div>
      </div>   
      <script>
-
+     var jsonrpcClient = new JSONRpcClient("dispatchprovider.ax");
      function doPublish(){
   		var deliveryDate = document.getElementById('daterange').value;
   		if(deliveryDate == null || deliveryDate.trim().length == 0) {
       		alert("Please select valid Day!");
   		} else {
-  			var dispatchRpcClient = new JSONRpcClient("dispatchprovider.ax");
-  			var result = dispatchRpcClient.AsyncDispatchProvider.canPublishWave(deliveryDate);
+  			var result = jsonrpcClient.AsyncDispatchProvider.canPublishWave(deliveryDate);
   			if(result != null && result.hasPerviousPublish) {
      			var source = "Plan";
      			if(result.previousPublishScrib) {
@@ -121,7 +125,7 @@
  			}
  			try {
  				document.getElementById('ajaxBusy').style.display = 'block';
-  				dispatchRpcClient.AsyncDispatchProvider.publishWave(deliveryDate);
+ 				jsonrpcClient.AsyncDispatchProvider.publishWave(deliveryDate);
   				document.getElementById('ajaxBusy').style.display = 'none';
   				alert("Publish completed successfully");
  			} catch(rpcException) {
@@ -197,7 +201,11 @@
         var id4 = "file";          
         location.href =url+"?"+id1+"="+ param1+"&"+id2+"="+param2+"&"+id3+"="+param3+"&"+id4+"="+param3  ;
 	  }
-
+	  
+	  function doActivityLog(compId1) {
+     	 var param1 = document.getElementById(compId1).value;
+     	 showForm(param1, 'P');
+      }
 	   Calendar.setup(
                {
                  showsTime : false,
@@ -220,5 +228,6 @@
                );
 
     </script>   
+    <%@ include file='i_activityLog.jspf'%> 
   </tmpl:put>
 </tmpl:insert>

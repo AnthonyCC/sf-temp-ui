@@ -13,7 +13,7 @@ public interface IDispatchProvider {
 	
 	int updateRouteMapping(String routeDate, String cutOffId, String sessionId, boolean isDepot);
 	Collection getActiveRoute(String date,String zone, boolean isTrailerRoute);
-	Collection getActivityLog(String date);
+	Collection getActivityLog(String date, String view);
 	String generateCommunityReport(String routeDate, String cutOff);
 	int updateUserPref(String key,String value);
 	String getUserPref(String key);

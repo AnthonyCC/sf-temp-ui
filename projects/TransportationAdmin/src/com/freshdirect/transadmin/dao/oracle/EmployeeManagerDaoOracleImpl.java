@@ -211,7 +211,7 @@ public class EmployeeManagerDaoOracleImpl implements EmployeeManagerDaoI {
        		      }
        		  }
        	);
-        LOGGER.debug("EmployeeManagerDaoOracleImpl : getEmployee list  "+list.size());
+        LOGGER.debug("EmployeeManagerDaoOracleImpl : getTerminatedEmployee list  "+list.size());
         return list;
 	}
 
@@ -259,7 +259,7 @@ public class EmployeeManagerDaoOracleImpl implements EmployeeManagerDaoI {
        		      }
        		  }
        	);
-        LOGGER.debug("EmployeeManagerDaoOracleImpl : getEmployee list  "+list.size());
+        LOGGER.debug("EmployeeManagerDaoOracleImpl : getActiveInactiveEmployees list  "+list.size());
         return list;
 
 	}

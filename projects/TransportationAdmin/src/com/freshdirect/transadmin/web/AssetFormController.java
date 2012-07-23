@@ -33,6 +33,7 @@ public class AssetFormController extends AbstractFormController {
 		Map<String, Collection> refData = new HashMap<String, Collection>();
 		
 		refData.put("assetstatuses", EnumAssetStatus.getEnumList());
+		refData.put("assetTypes", getAssetManagerService().getAssetTypes());
 		refData.put("assetTemplates"
 				, getAssetManagerService().getAssetTemplates(request.getParameter("pAssetType")==null ? request.getParameter("assetType"): request.getParameter("pAssetType")));
 		return refData;
@@ -50,9 +51,7 @@ public class AssetFormController extends AbstractFormController {
 			Object  tmp = getBackingObject(id);
 			return tmp;
 		} else {
-			Asset asset = new Asset();
-			asset.setAssetType(new AssetType(request.getParameter("pAssetType"), null));
-			return asset;
+			return new Asset();
 		}
 	}
 	

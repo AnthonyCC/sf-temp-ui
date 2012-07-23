@@ -43,7 +43,7 @@ public interface IDeliveryService {
 	
 	List getRoutes(Date routeDate, String internalSessionID, String routeID) throws RoutingServiceException;
 	
-	IDrivingDirection buildDriverDirections(List destinations)  throws RoutingServiceException;
+	IDrivingDirection buildDriverDirections(String routeID, String sessionID, String regionID)  throws RoutingServiceException;
 		
 	IZoneModel getDeliveryZone(String zoneCode)  throws RoutingServiceException ;
 	

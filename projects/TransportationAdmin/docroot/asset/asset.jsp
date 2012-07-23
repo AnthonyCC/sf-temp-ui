@@ -113,8 +113,15 @@
 		<script>		
 		 	var jsonrpcClient = new JSONRpcClient("asset.ax");
 		 	
-			addMultiRowHandlersColumn('ec_table', 'rowMouseOver',
-					'editasset.do', 'id', 0, 0, 'assetType');
+			addMultiRowHandlersColumn('ec_table', 'rowMouseOver', 'editasset.do', 'id', 0, 0, 'assetType');
+			
+			function getFilterTestValue() {
+				var filters = getFilterValue(document.getElementById("assetForm"),false);
+				filters+="&pAssetType="+document.getElementById("assetType").value; 	
+				filters+="&atrName="+document.getElementById("atrName").value;
+			    filters+="&atrValue="+document.getElementById("atrValue").value;
+	            return escape(filters);
+	       }
 
 			function doCompositeLink() {
 				location.href = "asset.do?pAssetType=" + $('#assetType').val()

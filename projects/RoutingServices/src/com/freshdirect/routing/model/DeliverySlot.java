@@ -20,6 +20,7 @@ public class DeliverySlot extends BaseModel implements IDeliverySlot  {
 	private String referenceId;
 	
 	private int ecoFriendly;
+	private int steeringRadius;
 	
 	public int getEcoFriendly() {
 		return ecoFriendly;
@@ -101,4 +102,11 @@ public class DeliverySlot extends BaseModel implements IDeliverySlot  {
 	public void setWaveCode(String waveCode) {
 		this.waveCode = waveCode;
 	}
+	public int getSteeringRadius() {
+		return steeringRadius;
+	}
+	public void setSteeringRadius(int steeringRadius) {
+		this.steeringRadius = steeringRadius;
+	}
+	
 }

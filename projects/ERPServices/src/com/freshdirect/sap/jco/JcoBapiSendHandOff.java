@@ -66,7 +66,7 @@ class JcoBapiSendHandOff extends JcoBapiFunction implements BapiSendHandOff {
 			routes.setValue(route.getDispatchSequence(), "ZTRUCK_DISPA_SEQ");			
 			routes.setValue(formatTime(route.getDepartTime()), "ZTRUCK_DEPA_TIME");
 			routes.setValue(formatTime(route.getFirstStopTime()), "ZTRUCK_FRT_STOP");
-			routes.setValue(formatTime(route.getLastStopCompletionTime()), "ZTRUCK_RTN_TIME");
+			routes.setValue(formatTime(route.getReturnToBuildingTime()), "ZTRUCK_RTN_TIME");
 			routes.setValue(formatTime(route.getCheckInTime()), "ZTRUCK_CHECK_IN");
 			//added the flag to reduce the dependency with SAP changes. The handoff will work even if SAP reverts back the changes.
 			if(ErpServicesProperties.isSendTrailerInfo())

@@ -54,6 +54,8 @@ function openURL(inLocationURL) {
 	<td class="border_bold">&nbsp;</td>
 	<td valign="bottom" class="border_bold"><span class="detail_text"><b>End Time</b></span></td>	
 	<td class="border_bold">&nbsp;</td>
+	<td valign="bottom" class="border_bold"><span class="detail_text"><b>Window Type</b></span></td>	
+	<td class="border_bold">&nbsp;</td>
 	<td valign="bottom" class="border_bold"><span class="detail_text"><b>Discount</b></span></td>	
 	<td class="border_bold">&nbsp;</td>
 	<td valign="bottom" class="border_bold"><span class="detail_text"><b>Redemption Limit</b></span></td>	
@@ -103,6 +105,8 @@ function openURL(inLocationURL) {
 	<td class="border_bottom"><span class="detail_text"><%= promotion.getStartTime() %></span></td>
 	<td class="border_bottom">&nbsp;</td>
 	<td class="border_bottom"><span class="detail_text"><%= promotion.getEndTime() %></span></td>
+	<td class="border_bottom">&nbsp;</td>
+	<td class="border_bottom"><span class="detail_text"><%= promotion.getWindowTypeStr() %></span></td>
 	<td class="border_bottom">&nbsp;</td>
 	<td class="border_bottom"><span class="detail_text">$<%= df.format(promotion.getDiscount()) %></span></td>
 	<td class="border_bottom">&nbsp;</td>

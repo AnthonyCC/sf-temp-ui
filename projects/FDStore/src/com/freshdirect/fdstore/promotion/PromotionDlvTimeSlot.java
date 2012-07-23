@@ -10,13 +10,15 @@ public class PromotionDlvTimeSlot extends ModelSupport {
 	private Integer dayId;
 	private String dlvTimeStart;
 	private String dlvTimeEnd;
+	private String[] windowTypes;
 	
 	public PromotionDlvTimeSlot(Integer dayId, String dlvTimeStart,
-			String dlvTimeEnd) {
+			String dlvTimeEnd, String[] windowTypes) {
 		super();
 		this.dayId = dayId;
 		this.dlvTimeStart = dlvTimeStart;
 		this.dlvTimeEnd = dlvTimeEnd;
+		this.windowTypes = windowTypes;
 	}
 	
 	public Integer getDayId() {
@@ -37,8 +39,10 @@ public class PromotionDlvTimeSlot extends ModelSupport {
 	public void setDlvTimeEnd(String dlvTimeEnd) {
 		this.dlvTimeEnd = dlvTimeEnd;
 	}
-	
-	
-	
-	
+	public String[] getWindowTypes() {
+		return windowTypes;
+	}
+	public void setWindowTypes(String[] windowTypes) {
+		this.windowTypes = windowTypes;
+	}	
 }

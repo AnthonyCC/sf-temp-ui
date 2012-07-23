@@ -197,7 +197,7 @@ public class DispatchProviderController extends JsonRpcController implements IDi
 		return results;
 	}
 
-	public Collection getActivityLog(String date) {
+	public Collection getActivityLog(String date, String view) {
 		try {
 			Date fromDate = TransStringUtil.getDate(date);
 			Date toDate = TransStringUtil.getDate(date);
@@ -209,7 +209,7 @@ public class DispatchProviderController extends JsonRpcController implements IDi
 
 			fromDate = new Timestamp(fromDate.getTime());
 			toDate = new Timestamp(toDate.getTime());
-			Collection list = logManager.getLogs(fromDate, toDate);
+			Collection list = logManager.getLogs(fromDate, toDate, view);
 			
 			return list;
 		} catch (ParseException e) {

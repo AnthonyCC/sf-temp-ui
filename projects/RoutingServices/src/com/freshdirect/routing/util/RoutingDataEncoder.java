@@ -44,6 +44,7 @@ import com.freshdirect.routing.proxy.stub.transportation.RouteIdentity;
 import com.freshdirect.routing.proxy.stub.transportation.RoutingDetailLevel;
 import com.freshdirect.routing.proxy.stub.transportation.RoutingImportOrder;
 import com.freshdirect.routing.proxy.stub.transportation.RoutingRouteCriteria;
+import com.freshdirect.routing.proxy.stub.transportation.RoutingRouteIdentity;
 import com.freshdirect.routing.proxy.stub.transportation.RoutingRouteInfoRetrieveOptions;
 import com.freshdirect.routing.proxy.stub.transportation.RoutingSessionCriteria;
 import com.freshdirect.routing.proxy.stub.transportation.RoutingSessionIdentity;
@@ -820,7 +821,14 @@ public class RoutingDataEncoder {
 		depot.setRegionID(id.getRegionID());
 		return depot;
 	}
-	
+	public static RoutingRouteIdentity encodeRoutingRouteIdentity(String routeID, String sessionID, String regionID) {
+		RoutingRouteIdentity routeIdentity = new RoutingRouteIdentity();
+		routeIdentity.setInternalRouteID(routeID != null ? Integer.parseInt(routeID) : null);
+		routeIdentity.setInternalSessionID(sessionID != null ? Integer.parseInt(sessionID) : null);
+		routeIdentity.setRegionID(regionID);
+		return routeIdentity;
+		
+	}
 	private static Time getTime(Date date) {
 		
 		try {

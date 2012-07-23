@@ -360,7 +360,8 @@ function addMultiRowHandlersColumn(tableId, rowClassName, url, paramName, column
 			      		var cell = this.parentNode.getElementsByTagName("td")[columnIndex];
 			      		var selectBox = this.parentNode.getElementsByTagName("input")[0];			      		
 			      		location.href = url+"?"+ paramName + "=" + selectBox.name+"&"
-			      			+document.getElementById(requestParam).name + "=" +document.getElementById(requestParam).value;
+			      			+"pAssetType=" +document.getElementById(requestParam).value
+			      			+"&filter="+getFilterTestValue();
 			    	};
 		    	}
 	        }

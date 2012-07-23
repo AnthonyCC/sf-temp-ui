@@ -36,5 +36,8 @@ public interface IDeliverySlot {
 	
 	int getEcoFriendly();
 	void setEcoFriendly(int ecoFriendly);
+	
+	int getSteeringRadius();
+	void setSteeringRadius(int steeringRadius);
 
 }

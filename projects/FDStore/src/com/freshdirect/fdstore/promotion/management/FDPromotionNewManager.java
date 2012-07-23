@@ -739,12 +739,12 @@ public class FDPromotionNewManager {
 	}
 	
 	public static WSPromotionInfo getWSPromotionInfo(String zoneCode, String startTime, 
-			String endTime, Date effectiveDate) throws FDResourceException {
+			String endTime, Date effectiveDate, String[] windowTypes) throws FDResourceException {
 		lookupManagerHome();
 
 		try {
 			FDPromotionManagerNewSB sb = managerHome.create();
-			return sb.getWSPromotionInfo(zoneCode, startTime, endTime, effectiveDate);
+			return sb.getWSPromotionInfo(zoneCode, startTime, endTime, effectiveDate, windowTypes);
 		} catch (CreateException ce) {
 			invalidateManagerHome();
 			throw new FDResourceException(ce, "Error creating session bean");

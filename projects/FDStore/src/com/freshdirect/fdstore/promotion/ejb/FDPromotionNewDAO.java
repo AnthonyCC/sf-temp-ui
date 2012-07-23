@@ -1410,7 +1410,9 @@ public class FDPromotionNewDAO {
 			rs = ps.executeQuery();
 			while (rs.next()) {
 				Integer dayId = rs.getInt("DAY_ID");
-				PromotionDlvTimeSlot dlvTimeSlot = new PromotionDlvTimeSlot(dayId,rs.getString("START_TIME"),rs.getString("END_TIME"));
+				Array windowArray = rs.getArray("DLV_WINDOWTYPE");
+				String[] windowType = windowArray != null ? (String[]) windowArray.getArray() : null;
+				PromotionDlvTimeSlot dlvTimeSlot = new PromotionDlvTimeSlot(dayId,rs.getString("START_TIME"),rs.getString("END_TIME"), windowType);
 				List<PromotionDlvTimeSlot> dlvTimeSlotList = dlvTimeSlots.get(dayId);
 				if(null == dlvTimeSlotList){
 					dlvTimeSlotList = new ArrayList<PromotionDlvTimeSlot>();

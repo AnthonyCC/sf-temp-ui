@@ -103,6 +103,7 @@ public class FDPromotionNewModel extends ModelSupport {
 	private boolean isReferralPromo = false;
 	private Integer skuLimit;
 	private String tsaPromoCode;
+	private String radius;
 	/*
 	 * Number of successful publishes
 	 */
@@ -1147,6 +1148,32 @@ public class FDPromotionNewModel extends ModelSupport {
 		return tsaPromoCode;
 	}
 
-	
+	public String getRadius() {
+		return radius;
+	}
+
+	public void setRadius(String radius) {
+		this.radius = radius;
+	}
+
+	public String[] getWSSelectedWindows() {
+		 String[] windowTypes = null;
+		 List<FDPromoDlvZoneStrategyModel> list = getDlvZoneStrategies(); 
+		 if(null != list && !list.isEmpty()){
+			 FDPromoDlvZoneStrategyModel zoneStrgyModel =(FDPromoDlvZoneStrategyModel)list.get(0);
+			 if(zoneStrgyModel != null) {
+				 String selectedZoneId = zoneStrgyModel.getId();
+				 List<FDPromoDlvTimeSlotModel> dlvTimeSlots = zoneStrgyModel.getDlvTimeSlots();
+				 if(dlvTimeSlots != null && dlvTimeSlots.size() > 0){
+					 for(Iterator<FDPromoDlvTimeSlotModel> it = dlvTimeSlots.iterator(); it.hasNext();){
+						 FDPromoDlvTimeSlotModel timeSlotModel = it.next();
+						 if(timeSlotModel != null && timeSlotModel.getPromoDlvZoneId().equals(selectedZoneId))
+							 windowTypes = timeSlotModel.getWindowTypes();
+					 }
+				 }
+			 }
+		 } 
+		 return windowTypes;
+	}
 	
 }

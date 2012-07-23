@@ -131,7 +131,7 @@ insertD +='<input type="hidden" name="pickedAm" value=" am">';
 insertD +='<input type="hidden" name="pickWhat" value=0>';
 for (var i=0;i<howMany;i++){
 insertD +='<input type="text" name="picked'+i+'" readonly size=8>&nbsp;';
-insertD +='<input class="btn2" type="button" value="'+pickerName[i]+'" onClick="showPicker('+i+');document.timePick.pickWhat.value='+i+';">&nbsp;&nbsp;';
+insertD +='<input class="btn2" type="button" id="datepicker'+i+'" value="'+pickerName[i]+'" onClick="showPicker('+i+');document.timePick.pickWhat.value='+i+';">&nbsp;&nbsp;';
 }
 insertD +='<div id="pick">';
 insertD +='<img class="close" src="/ccassets/javascript/timepicker/Help.gif" id="helpImg" alt="&nbsp;Help me...&nbsp;" title="&nbsp;Help me...&nbsp;" border=0 onClick="showHelp()"><img class="close" src="/ccassets/javascript/timepicker/Close.gif" id="closeImg" alt="&nbsp;Close time picker...&nbsp;" title="&nbsp;Close time picker...&nbsp;" border=0 onClick="showPicker(document.timePick.pickWhat.value)">';

@@ -393,7 +393,7 @@
         }        
 		function doActivityLog(compId1) {
         	 var param1 = document.getElementById(compId1).value;
-        	 showForm(param1);
+        	 showForm(param1, 'D');
         }
 		function doReasonCode() 
 		{

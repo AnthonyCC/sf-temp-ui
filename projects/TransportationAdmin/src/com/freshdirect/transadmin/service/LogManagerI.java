@@ -7,7 +7,7 @@ public interface LogManagerI  extends BaseManagerI {
 	
 	void log(String userId,int type,Object obj);
 	
-	Collection getLogs(Date fromDate,Date toDate);
+	Collection getLogs(Date fromDate,Date toDate, String view);
 	
 	Collection getTimeSlotLogs(Date fromDate, Date toDate);
 }

@@ -8,7 +8,7 @@ public class TimeRange  implements java.io.Serializable, Comparable<TimeRange> {
 	
 	private CustomTimeOfDay startTime;
 	private CustomTimeOfDay endTime;
-	
+	private String[] windowType;
 
 	public TimeRange() {		
 	}
@@ -54,5 +54,14 @@ public class TimeRange  implements java.io.Serializable, Comparable<TimeRange> {
 	public String getTimeRangeString() {
 		return startTime.getTimeString()+ "\n" +" - " + "\n" + endTime.getTimeString();
 	}
+
+	public String[] getWindowType() {
+		return windowType;
+	}
+
+	public void setWindowType(String[] windowType) {
+		this.windowType = windowType;
+	}
+	
 	
 }

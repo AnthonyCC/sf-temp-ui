@@ -39,6 +39,7 @@ public class Zone implements java.io.Serializable {
 	private BigDecimal loadingPriority;
 	
 	private BigDecimal ecoFriendly;
+	private BigDecimal steeringRadius;
 	
     public Set getZoneSupervisors() {
 		return zoneSupervisors;
@@ -233,5 +234,14 @@ public class Zone implements java.io.Serializable {
 	public void setEcoFriendly(BigDecimal ecoFriendly) {
 		this.ecoFriendly = ecoFriendly;
 	}
+
+	public BigDecimal getSteeringRadius() {
+		return steeringRadius;
+	}
+
+	public void setSteeringRadius(BigDecimal steeringRadius) {
+		this.steeringRadius = steeringRadius;
+	}
+	
 
 }

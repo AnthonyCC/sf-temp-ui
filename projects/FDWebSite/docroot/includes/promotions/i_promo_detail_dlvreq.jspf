@@ -164,8 +164,18 @@
 									<table class="vTop tableCollapse">
 										<tr>
 											<td class="vTop w325px"><%= (zsm != null) ? dlvZonesString : "" %></td>
-											<td class="vTop promo_detail_label" style="width: 100px;">Timeslot:</td>
-											<td class="vTop"><%= (tsList != null) ? dlvTimeslotsString : "" %></td>
+											<%
+											if (tsList != null && !"".equals(dlvTimeslotsString)) {
+											%>
+												<td class="vTop promo_detail_label" style="width: 100px;">Timeslot:</td>
+												<td class="vTop"><%= (tsList != null) ? dlvTimeslotsString : "" %></td>
+											<% } %>
+											<%
+											if (tsList != null && !"".equals(dlvWindowTypesString)) {
+											%>
+												<td class="vTop promo_detail_label" style="width: 100px;">Window Type:</td>
+												<td class="vTop"><%= (tsList != null) ? dlvWindowTypesString : "" %></td>
+											<% } %>
 										</tr>
 									</table>
 								</td>

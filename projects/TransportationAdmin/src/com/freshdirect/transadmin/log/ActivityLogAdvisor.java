@@ -248,17 +248,18 @@ abstract class LogComparator implements Comparator
     	return compareValues(name,field1.toString(),field2.toString());
     }
 	//public abstract List getPlanUpdateFields();
-	public Object compareValues(String name,Object field1,Object field2)
-	{
-		if(field1==null&&field2==null) return null;
-		if(field1==null&&field2!=null){ result++; return new Object[]{id,name,field1,field2};}
-		if(!field1.equals(field2))
-		{
-			 if(field1 instanceof Comparable) 
-			 {
-				 result+=((Comparable) field1).compareTo(field2);
-			 }			 
-			 return new Object[]{id,name,field1,field2};
+	public Object compareValues(String name, Object field1, Object field2) {
+		if (field1 == null && field2 == null)
+			return null;
+		if (field1 == null && field2 != null) {
+			result++;
+			return new Object[] { id, name, field1, field2 };
+		}
+		if (!field1.equals(field2)) {
+			if (field1 instanceof Comparable) {
+				result += ((Comparable) field1).compareTo(field2);
+			}
+			return new Object[] { id, name, field1, field2 };
 		}
 		return null;
 	}
@@ -282,6 +283,14 @@ class PlanComparator extends LogComparator
 			updates=new ArrayList();
 			Object obj;
 			if(( obj=compareValues("PLAN_DATE",getTimeOnly(oldPlan.getPlanDate(),sf1),getTimeOnly(newPlan.getPlanDate(),sf1)))!=null)
+			{
+				updates.add(obj);
+			}
+			if(( obj=compareValues("ORIGIN_FACILITY",oldPlan.getOriginFacility(),newPlan.getOriginFacility()))!=null)
+			{
+				updates.add(obj);
+			}
+			if(( obj=compareValues("DESTINATION_FACILITY",oldPlan.getDestinationFacility(),newPlan.getDestinationFacility()))!=null)
 			{
 				updates.add(obj);
 			}
@@ -397,10 +406,20 @@ class DispatchComparator extends LogComparator
 			{
 				updates.add(obj);
 			}
-			String o="";
-			String n="";
-			if(oldDispatch.getZone()!=null)o=oldDispatch.getZone().getZoneCode();
-			if(newDispatch.getZone()!=null)n=newDispatch.getZone().getZoneCode();
+			if(( obj=compareValues("ORIGIN_FACILITY",oldDispatch.getOriginFacility(),newDispatch.getOriginFacility()))!=null)
+			{
+				updates.add(obj);
+			}
+			if(( obj=compareValues("DESTINATION_FACILITY",oldDispatch.getDestinationFacility(),newDispatch.getDestinationFacility()))!=null)
+			{
+				updates.add(obj);
+			}
+			String o = "";
+			String n = "";
+			if (oldDispatch.getZone() != null)
+				o = oldDispatch.getZone().getZoneCode();
+			if (newDispatch.getZone() != null)
+				n = newDispatch.getZone().getZoneCode();
 			if(( obj=compareValues("ZONE",o,n))!=null)
 			{
 				updates.add(obj);

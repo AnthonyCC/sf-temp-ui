@@ -59,9 +59,12 @@
 											</tr>
 											<tr>
 												<td>Asset Type</td>
-												<td><form:input readOnly="true" maxlength="15"
-														size="15" path="assetType.code" /></td>
-												<td>&nbsp;<form:errors path="assetNo" />
+												<td>
+													<form:select path="assetType">
+														<form:option value="null" label="--Please Select Asset Type" />
+														<form:options items="${assetTypes}" itemLabel="code" itemValue="code" />
+													</form:select></td>
+												<td>&nbsp;<form:errors path="assetType" />
 												</td>
 											</tr>
 
@@ -353,7 +356,7 @@
           		addSysMessage("Asset Status is a required field", true);
           	}  else { 
 	     	 	var result = jsonrpcClient.AsyncAssetProvider.saveAsset(document.getElementById('assetId').value
-	     													, document.getElementById('assetType.code').value
+	     													, document.getElementById('assetType').value
 	     													, document.getElementById('assetNo').value
 	     													, document.getElementById('assetDescription').value
 	     													, document.getElementById('assetStatus').value
@@ -387,6 +390,19 @@
 	      	errContObj.style.fontWeight="bold";
       		YAHOO.util.Dom.get("errContainer").innerHTML = msg;
       }
+    
+    function back()
+    {
+      	var filters = unescape(getParameter("filter"));      	
+      	var params = filters.split("&");
+      	var assetForm = document.forms["asset"];
+      	for(var i=0;i < params.length;i++)
+      	{
+      		var param = params[i].split("=");         				
+      		add_input(assetForm,"hidden",param[0],param[1]);
+      	}     	      	
+      	assetForm.submit();
+    }
  
  </script>
    	<style>
@@ -396,3 +412,4 @@
 	 </style>
   </tmpl:put>
 </tmpl:insert>
+<form name="asset" action="asset.do" method="post">  </form>

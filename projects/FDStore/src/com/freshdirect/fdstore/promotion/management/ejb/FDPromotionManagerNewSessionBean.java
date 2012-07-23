@@ -101,12 +101,12 @@ public class FDPromotionManagerNewSessionBean extends FDSessionBeanSupport {
 		}
 	}
 	public WSPromotionInfo getWSPromotionInfo(String zoneCode, String startTime, 
-					String endTime, Date effectiveDate) throws FDResourceException {
+					String endTime, Date effectiveDate, String[] windowTypes) throws FDResourceException {
 		Connection conn = null;
 		try {
 			conn = getConnection();
 			return FDPromotionManagerNewDAO.getWSPromotionInfo(conn, zoneCode, startTime, endTime, 
-					new java.sql.Date(effectiveDate.getTime()));
+					new java.sql.Date(effectiveDate.getTime()), windowTypes);
 
 		} catch (SQLException sqle) {
 			throw new FDResourceException(sqle);

@@ -252,6 +252,11 @@ public class FDTimeslot implements Serializable, Comparable<FDTimeslot> {
 	public void setStoreFrontAvailable(String storeFrontAvailable) {
 		this.storeFrontAvailable = storeFrontAvailable;
 	}
+
+	/* Steering Radius */
+	public boolean hasSteeringRadius() {
+		return dlvTimeslot.hasSteeringRadius();
+	}
 	
 	public boolean isUnavailable() {
 		return unavailable;

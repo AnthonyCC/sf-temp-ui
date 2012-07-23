@@ -103,6 +103,10 @@ public class TimeOfDay implements Comparable<TimeOfDay>, Serializable {
 	public double getAsHours() {
 		return this.normalDate.getTime() / (double) (1000 * 60 * 60);
 	}
+	
+	public double getAsMinutes() {
+		return this.normalDate.getTime() / (double) (1000 * 60);
+	}
 
 	public String toString() {
 		return this.getAsString();
@@ -138,6 +142,10 @@ public class TimeOfDay implements Comparable<TimeOfDay>, Serializable {
 			return 24.0 - start.getAsHours() - end.getAsHours();
 		}
 		return end.getAsHours() - start.getAsHours();
+	}
+	
+	public static double getDurationAsMinutes(TimeOfDay start, TimeOfDay end) {		
+		return end.getAsMinutes() - start.getAsMinutes();
 	}
 
 	private static Date convert(String time, SimpleDateFormat format) {

@@ -462,7 +462,7 @@
 	if (tsList != null) {
 		for (int i = 0; i < tsList.size(); i++) {
 			FDPromoDlvTimeSlotModel tempTs = (FDPromoDlvTimeSlotModel)tsList.get(i);
-			if (tempTs != null) {
+			if (tempTs != null && tempTs.getDlvTimeStart() != null && tempTs.getDlvTimeEnd() != null) {
 				if (dlvTimesStrings[tempTs.getDayId()-1] == null) { dlvTimesStrings[tempTs.getDayId()-1] = ""; }
 				if (!"".equals(dlvTimesStrings[tempTs.getDayId()-1])) { dlvTimesStrings[tempTs.getDayId()-1] += ", "; }
 				dlvTimesStrings[tempTs.getDayId()-1] += "'"+(tempTs.getDayId()-1) +"_"+tempTs.getDlvTimeStart()+"', '"+(tempTs.getDayId()-1)+"_"+tempTs.getDlvTimeEnd()+"'";
@@ -508,6 +508,67 @@
 		if (!"".equals(dlvTimeslotsString)) {
 			dlvTimeslotsString = "<table class=\"tableCollapse\">"+dlvTimeslotsString+"</table>";
 		}
+		
+		String dlvWindowTypesStrings[] = new String[7];
+		if (tsList != null) {
+			List windowTypes = null;
+			for (int i = 0; i < tsList.size(); i++) {
+				FDPromoDlvTimeSlotModel tempTs = (FDPromoDlvTimeSlotModel)tsList.get(i);
+				if (tempTs != null && tempTs.getWindowTypes() != null && tempTs.getWindowTypes().length > 0 ) {
+					if (dlvWindowTypesStrings[tempTs.getDayId()-1] == null) { dlvWindowTypesStrings[tempTs.getDayId()-1] = ""; }
+					if (!"".equals(dlvWindowTypesStrings[tempTs.getDayId()-1])) { dlvWindowTypesStrings[tempTs.getDayId()-1] += ", "; }
+					windowTypes = Arrays.asList(tempTs.getWindowTypes());
+					StringBuffer buf = new StringBuffer();
+					if(windowTypes != null){
+						for (int j = 0; j < windowTypes.size(); j++) {
+							buf.append(windowTypes.get(j));
+						
+							if(j != windowTypes.size() -1)  {
+								buf.append("$");
+							}
+						}
+					}
+					
+					dlvWindowTypesStrings[tempTs.getDayId()-1] += "'"+(tempTs.getDayId()-1)+"_"+buf.toString()+"'";
+				}
+			}
+		}
+		
+		String dlvWindowTypesString = "";
+		rowOpen = false;
+		colCount=0;
+		List dlvWindowTypesList = null;
+			for (int i = 0; i < dlvWindowTypesStrings.length; i++) {
+				if (dlvWindowTypesStrings[i] != null && !"".equals(dlvWindowTypesStrings[i])) {
+					dlvWindowTypesList = Arrays.asList(dlvWindowTypesStrings[i].split(","));
+
+						for (int j = 0; j < dlvWindowTypesList.size(); j++) {
+							if (!rowOpen) {
+								dlvWindowTypesString += "<tr>";
+								dlvWindowTypesString += "<td class=\"w100px bordLgrayDash padL8R16\">"+strDays[Integer.parseInt(dlvWindowTypesList.get(j).toString().split("_")[0].split("'")[1].trim())]+"</td>";
+								rowOpen = !rowOpen;
+							}
+							if (colCount < 2) {
+								//add window type data
+								dlvWindowTypesString += "<td class=\"bordLgrayDash padL8R16\">"+dlvWindowTypesList.get(j).toString().split("_")[1].replace("\'","").replace("$",",")+" min window </td>";
+								colCount++;
+							}
+
+							if (colCount >= 2) {
+								dlvWindowTypesString += "</tr>";
+								colCount=0;
+								rowOpen = !rowOpen;
+							}
+						}
+				}
+			}
+			//close row if left open
+			if (rowOpen) {
+				dlvWindowTypesString += "<td colspan=\""+colCount*2+"\"><!-- blank --></td></tr>";
+			}
+			if (!"".equals(dlvWindowTypesString)) {
+				dlvWindowTypesString = "<table class=\"tableCollapse\">"+dlvWindowTypesString+"</table>";
+			}
 
 	TreeMap<Date,FDPromoZipRestriction> zipRests = (promotion != null && promotion.getZipRestrictions() != null) ? promotion.getZipRestrictions() : null;
 

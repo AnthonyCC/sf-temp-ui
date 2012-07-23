@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.GregorianCalendar;
@@ -115,6 +116,7 @@ import com.freshdirect.fdstore.promotion.management.FDPromoDlvDateModel;
 import com.freshdirect.fdstore.promotion.management.FDPromoDlvTimeSlotModel;
 import com.freshdirect.fdstore.promotion.management.FDPromoDlvZoneStrategyModel;
 import com.freshdirect.fdstore.promotion.management.FDPromoTypeNotFoundException;
+import com.freshdirect.fdstore.promotion.management.FDPromotionAttributeParam;
 import com.freshdirect.fdstore.promotion.management.FDPromotionModel;
 import com.freshdirect.fdstore.promotion.management.FDPromotionNewManager;
 import com.freshdirect.fdstore.promotion.management.FDPromotionNewModel;
@@ -161,6 +163,7 @@ public class WSPromoControllerTag extends AbstractControllerTag {
     						"Offers modified after this time will not be eligible. Offer is nontransferable. Void where prohibited.";
 
 	
+	@SuppressWarnings("unchecked")
 	protected boolean performAction(HttpServletRequest request, ActionResult actionResult) throws JspException {
 		String actionName = request.getParameter("actionName");
 		try {
@@ -183,17 +186,38 @@ public class WSPromoControllerTag extends AbstractControllerTag {
 					}
 					Date startDate = dateFormat.parse(startDateStr);
 					String[] cohorts = request.getParameterValues("cohorts");
+					String radius = request.getParameter("radius");					
+					List<FDPromotionAttributeParam>  attrParamList = getAttributeParamList(request);
+					Collections.sort(attrParamList);
+					List<String> windowTypeList  = getWindowTypeParamList(request);
+					Collections.sort(windowTypeList);
+					String[] windowTypes = windowTypeList.toArray(new String[windowTypeList.size()]);
+					if("X".equalsIgnoreCase(radius) && windowTypes != null && windowTypes.length == 0){
+						//set to all window types
+						windowTypes = new String[]{"ALL"};
+					}
 					if(promoCode.length() == 0 ){
-						//Validate if the given effecttive_date/zone/timeslot combination already exists.
-						WSPromotionInfo pInfo = FDPromotionNewManager.getWSPromotionInfo(zone, startTime, endTime, startDate);
+						//Validate if the given effecttive_date/zone/timeslot or window type combination already exists.
+						WSPromotionInfo pInfo = FDPromotionNewManager.getWSPromotionInfo(zone, startTime, endTime, startDate, windowTypes);
 						if(pInfo != null){
 							StringBuffer buf = new StringBuffer();
 							buf.append("Promotion for zone ");
 							buf.append(zone);
-							buf.append(", timeslot ");
-							buf.append(startTime);
-							buf.append(" to ");
-							buf.append(endTime);
+							if(!"X".equalsIgnoreCase(radius)) {
+								buf.append(", timeslot ");
+								buf.append(startTime);
+								buf.append(" to ");
+								buf.append(endTime);
+							} else {
+								buf.append(", window { ");
+								for(int intCount = 0; intCount < windowTypes.length; intCount++ ) {
+									buf.append(windowTypes[intCount]);				
+									if(intCount < windowTypes.length-1) {
+										buf.append(",");
+									}
+								}
+								buf.append(" } min");
+							}
 							buf.append(" and delivery date ");
 							buf.append(effectiveDate);
 							buf.append(" already exists.");
@@ -201,10 +225,10 @@ public class WSPromoControllerTag extends AbstractControllerTag {
 							return true;
 						}
 						//Create a new WS Promotion.
-						FDPromotionNewModel promotion = constructPromotion(effectiveDate, startDateStr, endDateStr, zone, startTime, endTime, discount, redeemLimit, cohorts,deliveryDayType);
+						FDPromotionNewModel promotion = constructPromotion(effectiveDate, startDateStr, endDateStr, zone, startTime, endTime, discount, redeemLimit, cohorts, deliveryDayType, radius, windowTypes, attrParamList);
 						postValidate(promotion, actionResult);
 						
-						
+
 						if(actionResult.isSuccess()){
 							promotion.setStatus(EnumPromotionStatus.APPROVE);
 							promotion.setCreatedBy(agent.getUserId());
@@ -228,16 +252,31 @@ public class WSPromoControllerTag extends AbstractControllerTag {
 							throw new FDResourceException("Unable to locate Windows Steering Promotion. Please contact AppSupport.");
 						}
 						promotion.setAuditChanges(FDPromotionNewManager.loadPromoAuditChanges(promotion.getId()));
-						//Validate if the given effecttive_date/zone/timeslot combination already exists.
-						WSPromotionInfo pInfo = FDPromotionNewManager.getWSPromotionInfo(zone, startTime, endTime, startDate);
+						if("X".equalsIgnoreCase(radius) && windowTypes != null && windowTypes.length == 0){
+							//set to all window types
+							windowTypes = new String[]{"ALL"};
+						}
+						//Validate if the given effecttive_date/zone/timeslot or window type combination already exists.
+						WSPromotionInfo pInfo = FDPromotionNewManager.getWSPromotionInfo(zone, startTime, endTime, startDate, windowTypes);
 						if(pInfo != null && !pInfo.getPromotionCode().equals(promotion.getPromotionCode())) {
 							StringBuffer buf = new StringBuffer();
 							buf.append("Promotion for zone ");
 							buf.append(zone);
-							buf.append(", timeslot ");
-							buf.append(startTime);
-							buf.append(" to ");
-							buf.append(endTime);
+							if(!"X".equalsIgnoreCase(radius)) {
+								buf.append(", timeslot ");
+								buf.append(startTime);
+								buf.append(" to ");
+								buf.append(endTime);
+							} else {
+								buf.append(", window { ");								
+								for(int intCount = 0; intCount < windowTypes.length; intCount++ ) {
+									buf.append(windowTypes[intCount]);				
+									if(intCount < windowTypes.length-1) {
+										buf.append(",");
+									}
+								}								
+								buf.append(" } min");
+							}						
 							buf.append(" and delivery date ");
 							buf.append(effectiveDate);
 							buf.append(" already exists.");
@@ -246,12 +285,16 @@ public class WSPromoControllerTag extends AbstractControllerTag {
 						}
 						promotion.setModifiedBy(agent.getUserId());
 						promotion.setModifiedDate(new Date());
-						updatePromotion(promotion, effectiveDate, startDateStr, endDateStr, zone, startTime, endTime, discount, redeemLimit,deliveryDayType);
+
+						updatePromotion(promotion, effectiveDate, startDateStr, endDateStr, zone, startTime, endTime, discount, redeemLimit, deliveryDayType, radius, windowTypes);
+
 						postValidate(promotion, actionResult);
 						/*APPDEV-2004*/
 						List<FDPromoCustStrategyModel> custStrategies = promotion.getCustStrategies();
 						FDPromoCustStrategyModel model = custStrategies.get(0);
 						model.setCohorts(cohorts);
+						/*APPDEV-2304*/
+						promotion.setAttributeList(attrParamList);
 						
 						if(actionResult.isSuccess()){
 							promotion.setStatus(EnumPromotionStatus.APPROVE);
@@ -377,12 +420,12 @@ public class WSPromoControllerTag extends AbstractControllerTag {
 			success = false; 
 		}
 		String startTime = NVL.apply(request.getParameter("startTime"), "").trim();
-		if(startTime == null || startTime.length() == 0){
+		if(!"X".equalsIgnoreCase(request.getParameter("radius")) && (startTime == null || startTime.length() == 0)){
 			actionResult.addError(true, "startTime", "Please select a Start Time.");
 			success = false; 
 		}
 		String endTime = NVL.apply(request.getParameter("endTime"), "").trim();
-		if(endTime == null || endTime.length() == 0){
+		if(!"X".equalsIgnoreCase(request.getParameter("radius")) && (endTime == null || endTime.length() == 0)){
 			actionResult.addError(true, "endTime", "Please select a End Time.");
 			success = false; 
 		}
@@ -446,8 +489,10 @@ public class WSPromoControllerTag extends AbstractControllerTag {
 				actionResult.addError(true, "promo.publish", "An error occured during publish");
 			}
 	}
-	private FDPromotionNewModel constructPromotion(String effectiveDate, String startDateStr, String endDateStr, String zone, String startTime, 
-			String endTime, String discount, String redeemLimit, String[] cohorts,String deliveryDayType) throws FDResourceException {
+	@SuppressWarnings("unchecked")
+	private FDPromotionNewModel constructPromotion(String effectiveDate, String startDateStr, String endDateStr, String zone, String startTime,
+			String endTime, String discount, String redeemLimit, String[] cohorts, String deliveryDayType, String radius, String[] windowTypes, List attrParamList) throws FDResourceException {
+
 		try {
 			Date startDate = dateFormat.parse(startDateStr);
 			Date expDate = endDateFormat.parse(endDateStr+" "+JUST_BEFORE_MIDNIGHT);
@@ -492,6 +537,7 @@ public class WSPromoControllerTag extends AbstractControllerTag {
 			promotion.setExpirationDate(expDate);
 
 			Date dlvDate = dateFormat.parse(effectiveDate);
+			promotion.setRadius(radius);
 			FDPromoDlvDateModel dateModel = new FDPromoDlvDateModel();
 			dateModel.setDlvDateStart(dlvDate);
 			dateModel.setDlvDateEnd(dlvDate);
@@ -499,9 +545,13 @@ public class WSPromoControllerTag extends AbstractControllerTag {
 			dlvDates.add(dateModel);
 			promotion.setDlvDates(dlvDates);
 			FDPromoDlvTimeSlotModel timeSlotModel = new FDPromoDlvTimeSlotModel();
-			timeSlotModel.setDlvTimeStart(startTime);
-			timeSlotModel.setDlvTimeEnd(endTime);
 			timeSlotModel.setPromoDlvZoneId(zone);
+			if(!"X".equalsIgnoreCase(radius)){
+				timeSlotModel.setDlvTimeStart(startTime);
+				timeSlotModel.setDlvTimeEnd(endTime);
+			} else {
+				timeSlotModel.setWindowTypes(windowTypes);
+			}
 			Calendar cal = Calendar.getInstance();
 			cal.setTime(dlvDate);
 			int dayId = cal.get(Calendar.DAY_OF_WEEK);
@@ -519,6 +569,7 @@ public class WSPromoControllerTag extends AbstractControllerTag {
 			promotion.setMaxAmount(discount);
 			promotion.setStatus(EnumPromotionStatus.DRAFT);
 			populatePromoChangeModelOnCreate(promotion);
+			promotion.setAttributeList(attrParamList);
 			return promotion;
 		}catch(ParseException pe){
 			throw new IllegalArgumentException("Invalid Date Format");
@@ -526,7 +577,7 @@ public class WSPromoControllerTag extends AbstractControllerTag {
 	}
 
 	private void updatePromotion(FDPromotionNewModel promotion, String effectiveDate, String startDateStr, String endDateStr, String zone, String startTime, 
-			String endTime, String discount, String redeemLimit,String deliveryDayType) throws FDResourceException{
+			String endTime, String discount, String redeemLimit, String deliveryDayType, String radius, String[] windowTypes) throws FDResourceException{
 		try {
 			Date startDate = dateFormat.parse(startDateStr);
 			Date expDate = endDateFormat.parse(endDateStr+" "+JUST_BEFORE_MIDNIGHT);
@@ -560,8 +611,12 @@ public class WSPromoControllerTag extends AbstractControllerTag {
 			dlvDates.add(dateModel);
 			promotion.setDlvDates(dlvDates);
 			FDPromoDlvTimeSlotModel timeSlotModel = new FDPromoDlvTimeSlotModel();
-			timeSlotModel.setDlvTimeStart(startTime);
-			timeSlotModel.setDlvTimeEnd(endTime);
+			if(!"X".equalsIgnoreCase(radius)){
+				timeSlotModel.setDlvTimeStart(startTime);
+				timeSlotModel.setDlvTimeEnd(endTime);
+			} else {
+				timeSlotModel.setWindowTypes(windowTypes);
+			}
 			timeSlotModel.setPromoDlvZoneId(zone);
 			Calendar cal = Calendar.getInstance();
 			cal.setTime(dlvDate);
@@ -590,6 +645,7 @@ public class WSPromoControllerTag extends AbstractControllerTag {
 			promotion.setMaxAmount(discount);
 			promotion.setStatus(EnumPromotionStatus.PROGRESS);
 			populatePromoChangeModelOnModify(promotion, dlvZoneModel);
+			promotion.setRadius(radius);
 		}catch(ParseException pe){
 			throw new IllegalArgumentException("Invalid Date Format");
 		}
@@ -697,7 +753,8 @@ public class WSPromoControllerTag extends AbstractControllerTag {
 	}
 
 	private void postValidate(FDPromotionNewModel promotion,ActionResult result) throws FDResourceException{
-				if(null ==promotion.getStartDate()){
+
+				if(null == promotion.getStartDate()){
 					result.addError(true, "startDateEmpty", "Promotion Start Date can't be empty.");
 				}
 				if(null == promotion.getExpirationDate()){
@@ -740,6 +797,20 @@ public class WSPromoControllerTag extends AbstractControllerTag {
 				if(FDPromotionNewManager.isRedemptionCodeExists(promotion.getRedemptionCode(),promotion.getId())){
 					result.addError(true, "redemptionCodeDuplicate", " An active promotion exists with the same redemption code, please change the redemption code.");				
 				}
+
+				if("X".equals(promotion.getRadius())) {
+					List<FDPromoDlvZoneStrategyModel> zoneStrategies = promotion.getDlvZoneStrategies();
+				
+					if(null!= zoneStrategies && !zoneStrategies.isEmpty()){
+						FDPromoDlvZoneStrategyModel zoneModel = (FDPromoDlvZoneStrategyModel)zoneStrategies.get(0);
+						if(zoneModel.getDlvTimeSlots() != null){
+							FDPromoDlvTimeSlotModel tm = (FDPromoDlvTimeSlotModel) zoneModel.getDlvTimeSlots().get(0);
+							if(tm.getWindowTypes() != null && tm.getWindowTypes().length == 0){
+								result.addError(true, "windowTypeEmpty", "Window Type cannot be Empty.");
+							}
+						}
+					}
+				}
 	}
 
 	private String formatPromoDescription(String pattern, String discount) {
@@ -778,5 +849,83 @@ public class WSPromoControllerTag extends AbstractControllerTag {
 		    }
 	}
 	
+	private List<String> getWindowTypeParamList(HttpServletRequest request) {
+		
+		Enumeration paramNames = request.getParameterNames();
+		
+		List<String> dataList = new ArrayList<String>();
+		List dataTmpKeyList = new ArrayList();
+		
+		String paramName = null;
+				
+		String tmpIndex = null;
+		int tmpBracesIndex = -1;
+		int endBracesIndex = -1;
+				
+	    while(paramNames.hasMoreElements()) {
+	      paramName = (String)paramNames.nextElement();
+	      if(paramName.startsWith("windowTypeList")) {	    	  
+	       	  tmpBracesIndex = paramName.indexOf("[");
+	       	  endBracesIndex =	paramName.indexOf("]", tmpBracesIndex);
+	    	  if(tmpBracesIndex != -1 && endBracesIndex != -1) {
+	    		  tmpIndex = paramName.substring(tmpBracesIndex+1,endBracesIndex);
+	    		  
+	    		  if(!dataTmpKeyList.contains(tmpIndex)) {
+	    			  dataList.add(getWindowTypeParam(request, tmpIndex));
+	    			  dataTmpKeyList.add(tmpIndex);
+	    		  }
+	    	  }
+	      }
+	    }	    
+	    return dataList;
+	}
 	
+	private List<FDPromotionAttributeParam> getAttributeParamList(HttpServletRequest request) {
+		
+		Enumeration paramNames = request.getParameterNames();
+		
+		List<FDPromotionAttributeParam> dataList = new ArrayList<FDPromotionAttributeParam>();
+		List dataTmpKeyList = new ArrayList();
+		
+		String paramName = null;
+				
+		String tmpIndex = null;
+		int tmpBracesIndex = -1;
+		int endBracesIndex = -1;
+				
+	    while(paramNames.hasMoreElements()) {
+	      paramName = (String)paramNames.nextElement();
+	      if(paramName.startsWith("attributeList")) {	    	  
+	       	  tmpBracesIndex = paramName.indexOf("[");
+	       	  endBracesIndex =	paramName.indexOf("]", tmpBracesIndex);
+	    	  if(tmpBracesIndex != -1 && endBracesIndex != -1) {
+	    		  tmpIndex = paramName.substring(tmpBracesIndex+1,endBracesIndex);
+	    		  
+	    		  if(!dataTmpKeyList.contains(tmpIndex)) {
+	    			  dataList.add(getAttributeParam(request, tmpIndex));
+	    			  dataTmpKeyList.add(tmpIndex);
+	    		  }
+	    	  }
+	      }
+	    }
+	    return dataList;
+	}
+
+	private FDPromotionAttributeParam getAttributeParam(HttpServletRequest request, String index) {
+
+		FDPromotionAttributeParam tmpParam = new FDPromotionAttributeParam();
+		String key = "attributeList["+index+"].";
+		tmpParam.setAttributeIndex(index);
+		tmpParam.setAttributeName(request.getParameter(key+"attributeName"));
+		tmpParam.setDesiredValue(request.getParameter(key+"desiredValue").trim());// Fix to trim invalid profiles with space.		
+		return tmpParam;
+	}
+
+	private String getWindowTypeParam(HttpServletRequest request, String index) {
+	
+		String key = "windowTypeList["+index+"].";
+		String atrValue = request.getParameter(key+"desiredValue").trim();		
+		return atrValue;
+	}
+
 }

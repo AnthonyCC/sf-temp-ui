@@ -28,8 +28,8 @@ public class LogManagerImpl extends BaseManagerImpl implements LogManagerI {
 	}
 
 
-	public Collection getLogs(Date fromDate, Date toDate) 	{
-		return logManagerDao.getLogs(fromDate, toDate);
+	public Collection getLogs(Date fromDate, Date toDate, String view) 	{
+		return logManagerDao.getLogs(fromDate, toDate, view);
 	}
 	
 	public Collection getTimeSlotLogs(Date fromDate, Date toDate) 	{

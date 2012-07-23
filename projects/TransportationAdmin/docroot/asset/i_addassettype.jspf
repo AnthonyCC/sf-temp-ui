@@ -42,14 +42,14 @@
 	}
 
 	function addAssetTypeSysMessage(msg, isError) {
-		var errContObj = YAHOO.util.Dom.get("errContainer");
+		var errContObj = YAHOO.util.Dom.get("errContainer01");
 		if (isError) {
 			errContObj.style.color = errColor;
 		} else {
 			errContObj.style.color = msgColor;
 		}
 		errContObj.style.fontWeight = "bold";
-		YAHOO.util.Dom.get("errContainer").innerHTML = msg;
+		YAHOO.util.Dom.get("errContainer01").innerHTML = msg;
 	}
 
 	function assetTypeFormCallback(result, exception) {
@@ -96,7 +96,7 @@
 		              <td><input type="text" size="30" id="assettypedesc" value="" /></td> 
 		         </tr>			
 		      	 <tr>
-		              <td colspan="2" align="center"><input type="button" value="Add" onclick="javascript:sendAssetTypeForm();" /> </td>
+		              <td colspan="2" align="center"><input type="button" value="Add" onclick="javascript:sendAssetTypeForm()" /> </td>
 		         </tr>
 		      </table>
 	      </div>      

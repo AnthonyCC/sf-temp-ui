@@ -27,6 +27,7 @@ import java.util.Map.Entry;
 import oracle.sql.ARRAY;
 import oracle.sql.ArrayDescriptor;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.log4j.Logger;
 
 import com.freshdirect.common.customer.EnumCardType;
@@ -224,7 +225,7 @@ public class FDPromotionManagerNewDAO {
 	}
 	private final static String GET_WS_PROMOTION_INFOS = 
 		"select P.ID, P.CODE, P.NAME, D.START_DATE DLV_DATE, P.START_DATE,  P.EXPIRATION_DATE, (select COLUMN_VALUE from cust.promo_dlv_zone_strategy , table(cust. PROMO_DLV_ZONE_STRATEGY.DLV_ZONE ) x " 
-		+ "where id= z.id) zone_code, T.START_TIME, T.END_TIME, P.MAX_AMOUNT,  P.REDEEM_CNT, P.STATUS,pc.DELIVERY_DAY_TYPE from cust.promotion_new p, cust.promo_cust_strategy pc, "
+		+ "where id= z.id) zone_code, T.START_TIME, T.END_TIME, T.DLV_WINDOWTYPE, P.MAX_AMOUNT,  P.REDEEM_CNT, P.STATUS, pc.DELIVERY_DAY_TYPE from cust.promotion_new p, cust.promo_cust_strategy pc, "
 		+ "cust.promo_dlv_zone_strategy z, cust.promo_dlv_timeslot t, cust.promo_delivery_dates d "
 		+ "where p.id = PC.PROMOTION_ID "
 		+ "and P.ID = Z.PROMOTION_ID " 
@@ -257,6 +258,8 @@ public class FDPromotionManagerNewDAO {
 			wsPromotionInfo.setEndTime(rs.getString("END_TIME"));
 			wsPromotionInfo.setDiscount(rs.getDouble("MAX_AMOUNT"));
 			wsPromotionInfo.setRedeemCount(rs.getInt("REDEEM_CNT"));
+			Array windowArray = rs.getArray("DLV_WINDOWTYPE");
+			wsPromotionInfo.setWindowType(windowArray != null ? (String[]) rs.getArray("DLV_WINDOWTYPE").getArray() : null);
 			wsPromotionInfo.setStatus(EnumPromotionStatus.getEnum(rs.getString("STATUS"))); 
 			Timestamp expDate = rs.getTimestamp("EXPIRATION_DATE");
 			java.util.Date today = new java.util.Date();
@@ -273,8 +276,9 @@ public class FDPromotionManagerNewDAO {
 	}
 
 	private final static String GET_WS_PROMOTION_INFO = 
-		"select P.ID, P.CODE, P.NAME, P.START_DATE,  (select COLUMN_VALUE from cust.promo_dlv_zone_strategy , table(cust. PROMO_DLV_ZONE_STRATEGY.DLV_ZONE ) x " 
-		+ "where id= z.id) zone_code, T.START_TIME, T.END_TIME, P.MAX_AMOUNT, P.REDEEM_CNT, P.STATUS,pc.DELIVERY_DAY_TYPE from cust.promotion_new p, cust.promo_cust_strategy pc, "
+
+		"select P.ID, P.CODE, P.NAME, P.START_DATE,  (select COLUMN_VALUE from cust.promo_dlv_zone_strategy, table(cust. PROMO_DLV_ZONE_STRATEGY.DLV_ZONE ) x " 
+		+ "where id= z.id) zone_code, T.START_TIME, T.END_TIME, T.DLV_WINDOWTYPE, P.MAX_AMOUNT, P.REDEEM_CNT, P.STATUS, pc.DELIVERY_DAY_TYPE from cust.promotion_new p, cust.promo_cust_strategy pc, "
 		+ "cust.promo_dlv_zone_strategy z, cust.promo_dlv_timeslot t, cust.promo_delivery_dates d "
 		+ "where p.id = PC.PROMOTION_ID "
 		+ "and P.ID = Z.PROMOTION_ID "
@@ -288,20 +292,25 @@ public class FDPromotionManagerNewDAO {
 		+ "and P.CAMPAIGN_CODE = 'HEADER' "
 		+ "and (select COLUMN_VALUE from cust.promo_dlv_zone_strategy , table(cust. PROMO_DLV_ZONE_STRATEGY.DLV_ZONE"
 		+ ") x where id= z.id) = ? "
-		+ "and T.START_TIME = ? "
-		+ "and T.END_TIME = ? "
 		+ "and P.START_DATE = ? "; 
 
 
-	public static WSPromotionInfo getWSPromotionInfo(Connection conn, String zoneCode, String startTime, String endTime, Date effectiveDate) throws SQLException {
+	public static WSPromotionInfo getWSPromotionInfo(Connection conn, String zoneCode, String startTime, String endTime, Date effectiveDate, String[] windowTypes) throws SQLException {
 		WSPromotionInfo wsPromotionInfo = null;
-		PreparedStatement ps = conn.prepareStatement(GET_WS_PROMOTION_INFO);
-		ps.setString(1, zoneCode);
-		ps.setString(2, startTime);
-		ps.setString(3, endTime);
-		ps.setDate(4, effectiveDate);
+		StringBuffer buf = new StringBuffer();
+		buf.append(GET_WS_PROMOTION_INFO);
+		if(startTime != null && endTime != null) {
+			buf.append(" and T.START_TIME = ? and T.END_TIME = ? ");
+		}
+		PreparedStatement ps = conn.prepareStatement(buf.toString());
+		ps.setString(1, zoneCode);		
+		ps.setDate(2, effectiveDate);
+		if(startTime != null && endTime != null) {
+			ps.setString(3, startTime);
+			ps.setString(4, endTime);
+		}
+		
 		ResultSet rs = ps.executeQuery();
-
 
 		if (rs.next()) {
 			wsPromotionInfo = new WSPromotionInfo();
@@ -315,11 +324,19 @@ public class FDPromotionManagerNewDAO {
 			wsPromotionInfo.setDiscount(rs.getDouble("MAX_AMOUNT"));
 			wsPromotionInfo.setRedeemCount(rs.getInt("REDEEM_CNT"));
 			wsPromotionInfo.setStatus(EnumPromotionStatus.getEnum(rs.getString("STATUS")));
-			wsPromotionInfo.setDeliveryDayType(EnumDeliveryOption.getEnum(rs.getString("DELIVERY_DAY_TYPE")));
-		}
 
+			Array windowArray = rs.getArray("DLV_WINDOWTYPE");
+			wsPromotionInfo.setWindowType(windowArray != null ? (String[]) rs.getArray("DLV_WINDOWTYPE").getArray() : null);
+
+			wsPromotionInfo.setDeliveryDayType(EnumDeliveryOption.getEnum(rs.getString("DELIVERY_DAY_TYPE")));
+
+		}
 		rs.close();
 		ps.close();
+		boolean windowArray = Arrays.equals(windowTypes, wsPromotionInfo != null ? wsPromotionInfo.getWindowType() : null);
+		if(windowArray) {
+			wsPromotionInfo = null;
+		}
 		return wsPromotionInfo;
 	}
 
@@ -463,8 +480,8 @@ public class FDPromotionManagerNewDAO {
 		promotion.setOnHold("Y".equalsIgnoreCase(rs.getString("ON_HOLD"))?true:false);
 		promotion.setGeoRestrictionType(rs.getString("GEO_RESTRICTION_TYPE"));
 		promotion.setPublishes(rs.getInt("PUBLISHES"));
-		promotion.setSkuLimit(rs.getInt("SKU_LIMIT"));
-
+		promotion.setSkuLimit(rs.getInt("SKU_LIMIT"));		
+		promotion.setRadius(rs.getString("RADIUS"));
 		return promotion;
 	}
 
@@ -667,8 +684,8 @@ public class FDPromotionManagerNewDAO {
 								"AUDIENCE_DESC, TERMS, REDEEM_CNT, HASSKUQUANTITY, " +
 								"PERISHABLEONLY, NEEDDRYGOODS, NEEDCUSTOMERLIST, " +
 								"RULE_BASED, FAVORITES_ONLY, COMBINE_OFFER, " +
-								"CREATED_BY, CREATE_DATE, MODIFIED_BY, MODIFY_DATE, DONOT_APPLY_FRAUD, PUBLISHES,OFFER_TYPE, INCL_FUEL_SURCHARGE , SKU_LIMIT, referral_promo, tsa_promo_code)"
-						+ " VALUES(?,?,?,?,?,?,?,?,?,?, ?,?,?,?,?,?,?,?,?,?, ?,?,?,?,?,?,?,?,?,?, ?,?,?,?,?,?,?)");
+								"CREATED_BY, CREATE_DATE, MODIFIED_BY, MODIFY_DATE, DONOT_APPLY_FRAUD, PUBLISHES,OFFER_TYPE, INCL_FUEL_SURCHARGE , SKU_LIMIT, referral_promo, tsa_promo_code, radius)"
+						+ " VALUES(?,?,?,?,?,?,?,?,?,?, ?,?,?,?,?,?,?,?,?,?, ?,?,?,?,?,?,?,?,?,?, ?,?,?,?,?,?,?,?)");
 
 		int i = 1;
 		ps.setString(i++, id); // 1
@@ -710,6 +727,11 @@ public class FDPromotionManagerNewDAO {
 		ps.setString(i++, promotion.isReferralPromo()?"Y":"N");
 		if (!"".equals(promotion.getTsaPromoCode())) {
 			ps.setString(i++, promotion.getTsaPromoCode());
+		} else {
+			ps.setNull(i++, Types.VARCHAR);
+		}
+		if (!"".equals(promotion.getRadius())) {
+			ps.setString(i++, promotion.getRadius());
 		} else {
 			ps.setNull(i++, Types.VARCHAR);
 		}
@@ -1541,8 +1563,8 @@ public class FDPromotionManagerNewDAO {
 		+ " VALUES(?,?,?,?)";
 	
 	private static String INSERT_PROMO_DLV_TIMESLOT = "INSERT INTO cust.PROMO_DLV_TIMESLOT"
-		+ " (id, PROMO_DLV_ZONE_ID,DAY_ID,START_TIME,END_TIME)"
-		+ " VALUES(?,?,?,?,?)";
+		+ " (id, PROMO_DLV_ZONE_ID,DAY_ID,START_TIME,END_TIME,DLV_WINDOWTYPE)"
+		+ " VALUES(?,?,?,?,?,?)";
 
 	private static void storePromoDlvZoneStrategy(Connection conn,
 			String promotionId, FDPromotionNewModel promotion)
@@ -1567,6 +1589,9 @@ public class FDPromotionManagerNewDAO {
 							ps1.setInt(3, promoDlvTimeSlotModel.getDayId());
 							ps1.setString(4, promoDlvTimeSlotModel.getDlvTimeStart());
 							ps1.setString(5, promoDlvTimeSlotModel.getDlvTimeEnd());
+							ArrayDescriptor windowDesc = ArrayDescriptor.createDescriptor("CUST.PROMO_DLV_WINDOWTYPES", conn);
+							ARRAY newWindowArray = new ARRAY(windowDesc, conn, promoDlvTimeSlotModel.getWindowTypes());
+							ps1.setArray(6, newWindowArray);
 							ps1.addBatch();
 						}						
 					}
@@ -1689,7 +1714,7 @@ public class FDPromotionManagerNewDAO {
 		+ " from cust.PROMO_DLV_ZONE_STRATEGY plzs "
 		+ "where plzs.promotion_id = ?";
 	
-	private final static String LOAD_PROMO_TIME_SLOTS = "select id, PROMO_DLV_ZONE_ID, DAY_ID, START_TIME, END_TIME"
+	private final static String LOAD_PROMO_TIME_SLOTS = "select id, PROMO_DLV_ZONE_ID, DAY_ID, START_TIME, END_TIME, DLV_WINDOWTYPE"
 		+ " from cust.PROMO_DLV_TIMESLOT pdt "
 		+ "where pdt.PROMO_DLV_ZONE_ID = ?";
 
@@ -1725,7 +1750,10 @@ public class FDPromotionManagerNewDAO {
 							.getId());
 					timeSlotModel.setDayId(rs1.getInt("DAY_ID"));
 					timeSlotModel.setDlvTimeStart(rs1.getString("START_TIME"));
-					timeSlotModel.setDlvTimeEnd(rs1.getString("END_TIME"));
+					timeSlotModel.setDlvTimeEnd(rs1.getString("END_TIME"));					
+					Array windowArray = rs1.getArray("DLV_WINDOWTYPE");
+					String[] windowTypes = windowArray != null ? (String[]) windowArray.getArray() : null;
+					timeSlotModel.setWindowTypes(windowTypes);
 					timeSlotList.add(timeSlotModel);
 				}
 				dlvZoneStrategyModel.setDlvTimeSlots(timeSlotList);
@@ -2886,7 +2914,7 @@ public class FDPromotionManagerNewDAO {
 						+ " ROLLING_EXPIRATION_DAYS=?, STATUS=?, OFFER_DESC=?, AUDIENCE_DESC=?, TERMS=?, REDEEM_CNT=?,"
 						+ " HASSKUQUANTITY=?, PERISHABLEONLY=?, NEEDDRYGOODS=?, NEEDCUSTOMERLIST=?, RULE_BASED=?,"
 						+ " FAVORITES_ONLY=?, COMBINE_OFFER=?, MODIFIED_BY=?, MODIFY_DATE=?,"
-						+ " DONOT_APPLY_FRAUD=?, PUBLISHES=?, INCL_FUEL_SURCHARGE=?, SKU_LIMIT=?, referral_promo=?, tsa_promo_code=?"
+						+ " DONOT_APPLY_FRAUD=?, PUBLISHES=?, INCL_FUEL_SURCHARGE=?, SKU_LIMIT=?, referral_promo=?, tsa_promo_code=?, radius=?"
 						+ " WHERE ID = ?");
 
 		int i = 1;
@@ -2920,9 +2948,12 @@ public class FDPromotionManagerNewDAO {
 		} else {
 			ps.setNull(i++, Types.VARCHAR);
 		}
-		
+		if (!"".equals(promotion.getRadius())) {
+			ps.setString(i++, promotion.getRadius());
+		} else {
+			ps.setNull(i++, Types.VARCHAR);
+		}
 		ps.setString(i++, promotion.getPK().getId());
-
 		// Execute update
 		if (ps.executeUpdate() != 1) {
 			ps.close();

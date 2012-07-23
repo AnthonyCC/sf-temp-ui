@@ -205,7 +205,6 @@
 	<bean id="yardManagerDAO" class="com.freshdirect.transadmin.dao.oracle.YardManagerDAO">
 		<property name="dataSource" ref="dataSource"/>
 	</bean>	
-	
     <!-- who is driving the transactions? No one... Probably should use directly -->
     <bean id="domainManager" class="com.freshdirect.transadmin.service.impl.DomainManagerImpl">
         <property name="domainManagerDao" ref="domainManagerDAO"/>
@@ -351,7 +350,7 @@
          <ref local="activityLogAdvice"/>
       </property>
       <property name="patterns">
-         <value>.*removeEntity.*,.*saveEntityList.*,.*saveEntity.*,.*saveDispatch.*</value>
+         <value>.*removeEntity.*,.*saveEntityList.*,.*saveEntity.*,.*saveDispatch.*,.*savePlan.*</value>
       </property>
    </bean>	
     

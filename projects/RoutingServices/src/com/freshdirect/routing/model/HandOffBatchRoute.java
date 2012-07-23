@@ -120,7 +120,7 @@ public class HandOffBatchRoute extends RouteModel implements IHandOffBatchRoute 
 		
 		if(this.getStops() != null && this.getStops().size() > 0) {
 			IRoutingStopModel stop = (IRoutingStopModel)this.getStops().first();
-			return stop.getStopDepartureTime();
+			return stop.getStopArrivalTime();
 		}
 		return null;
 	}

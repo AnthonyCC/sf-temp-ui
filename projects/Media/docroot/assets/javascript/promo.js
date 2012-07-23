@@ -1070,3 +1070,95 @@ function filterSubmit(){
 	document.forms['frmPromoList'].action = "/main/promo_home.jsp";
 	document.forms['frmPromoList'].submit();
 }
+
+function addWindowType(toFormId) {
+	var windowTypeValueFld = $('window_type');
+	var tmpConditionValue = 'OR';	
+
+	if(windowTypeValueFld != null && windowTypeValueFld.value.length > 0) {
+		addWindowTypeRow(tmpConditionValue, windowTypeValueFld.value, toFormId);
+		windowTypeValueFld.value='';
+	}
+}
+	
+	var rollingIndex01 = 0;
+	
+	function addWindowTypeRow(cellCondition, cellValue, toFormId) {
+		if( document.createElement && document.childNodes ) {
+			var windowTypeTableFld = $('windowTypeListTB').tBodies[0];
+			if(windowTypeTableFld != null) {
+					var row = document.createElement('tr');
+					rollingIndex01++;
+					var tmpID = 'windowTypeList['+rollingIndex01+']';
+					row.id = tmpID;
+					var td1 = document.createElement('td');
+						td1.appendChild(document.createTextNode(cellCondition));
+						td1.className = "bordLgrayDash padL8R16";
+					var td4 = document.createElement('td');
+						td4.appendChild (document.createTextNode(cellValue));
+						td4.className = "bordLgrayDash padL8R16 alignC";
+					var tdDelete = document.createElement('a');
+						tdDelete.innerHTML = 'Delete';
+						tdDelete.setAttribute("onclick", "javascript:deleteWindowType('"+tmpID+"');");
+						tdDelete.href = "javascript:deleteWindowType('"+tmpID+"');";
+						tdDelete.className = "greenLink padL8R16 alignC";
+					var td5 = document.createElement('td');
+						td5.className = "bordLgrayDash";
+						td5.appendChild (tdDelete);
+					row.appendChild(td1);					
+					row.appendChild(td4);
+					row.appendChild(td5);
+					windowTypeTableFld.appendChild(row);
+					createWTHiddenInput(rollingIndex01, cellValue, cellCondition, toFormId);
+			}
+		}
+	}
+	
+	function createWTHiddenInput(indexVal, cellValue, cellCondition, toFormId) {
+		
+		var tmpId = 'windowTypeList['+indexVal+']'+'.';
+		
+		var newElementValue = document.createElement("input");
+		newElementValue.setAttribute("type", "hidden");
+		newElementValue.setAttribute("name", tmpId+'desiredValue');
+		newElementValue.setAttribute("id", tmpId+'desiredValue');
+		newElementValue.setAttribute("value", cellValue);
+	
+		var toFormId = toFormId || '';
+		var toForm = null;
+		if (toFormId != '') { toForm = $(toFormId) } else { toForm = document.forms[0]; }
+		if (toForm == null) {
+			alert('Error: Cannot add window type values to non-existent form with ID: "'+toFormId+'".');
+		} else {		
+			toForm.appendChild(newElementValue);
+		}
+	}
+	
+	function deleteWindowType(theCell) {
+		var windowTypeTableFld = $('windowTypeListTB');
+		var windowTypeTableRow = $(theCell);
+		
+		if( document.createElement && document.childNodes 
+				&& windowTypeTableFld != null 
+				&& windowTypeTableRow != null) {
+	
+			var rowIndex = windowTypeTableRow.rowIndex;			
+			var hiddenValueElement = $(windowTypeTableRow.id+'.desiredValue');
+			var parentElementNode = hiddenValueElement.parentNode;
+			
+			parentElementNode.removeChild(hiddenValueElement);
+			windowTypeTableFld.deleteRow(rowIndex);			
+		}
+	}
+	
+	/* delete all for window types */
+	function deleteAllWindowType(parentId) {
+		var parent = $(parentId);
+		if (parent == null) { return; }
+		var children = parent.getElementsByTagName('a');
+	
+		//remove all links except "Delete All"
+		if (children.length > 1) {
+			clickAllHREF(parentId);
+		}
+	}

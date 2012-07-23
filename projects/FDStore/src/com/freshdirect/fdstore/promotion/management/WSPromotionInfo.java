@@ -33,6 +33,7 @@ public class WSPromotionInfo extends ModelSupport {
 	private int redeemCount;
 	private int redemptions;
 	private int dayofweek;
+	private String[] windowType;
 	
 	public int getRedemptions() {
 		return redemptions;
@@ -102,6 +103,12 @@ public class WSPromotionInfo extends ModelSupport {
 	public void setStatus(EnumPromotionStatus status) {
 		this.status = status;
 	}
+	public String[] getWindowType() {
+		return windowType;
+	}
+	public void setWindowType(String[] windowType) {
+		this.windowType = windowType;
+	}
 	public EnumDeliveryOption getDeliveryDayType() {
 		return deliveryDayType;
 	}
@@ -109,4 +116,16 @@ public class WSPromotionInfo extends ModelSupport {
 		this.deliveryDayType = deliveryDayType;
 	}
 	
+	public String getWindowTypeStr() {
+		StringBuffer buf = new StringBuffer();
+		if(this.windowType != null && this.windowType.length > 0){
+			for(int i=0;i < this.windowType.length;i++){
+				buf.append(this.windowType[i]);
+				if(i < this.windowType.length-1)
+				buf.append(",");
+			}
+			buf.append(" min(s)");
+		}
+		return buf.toString();
+	}
 }

@@ -30,11 +30,14 @@ public class LogManagerDaoHibernateImpl extends BaseManagerDaoHibernateImpl
 		getHibernateTemplate().save(log);
 	}
 
-	public Collection getLogs(Date fromDate, Date toDate) {
-		String query = "from ActivityLog a where a.date between ? and ? order by a.date desc";
-
-		return (Collection) getHibernateTemplate().find(query,
-				new Object[] { fromDate, toDate });
+	public Collection getLogs(Date fromDate, Date toDate, String view) {
+		String query = "";
+		if("P".equalsIgnoreCase(view)) {
+			query = "from ActivityLog a where a.type in ('1','2') and a.date between ? and ? order by a.date desc";
+		} else {
+			query = "from ActivityLog a where a.type not in ('1','2') and a.date between ? and ? order by a.date desc";
+		}
+		return (Collection) getHibernateTemplate().find(query, new Object[] { fromDate, toDate });
 	}
 
 	public Collection getTimeSlotLogs(Date fromDate, Date toDate) {
