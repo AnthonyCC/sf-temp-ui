@@ -426,13 +426,19 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 			//
 			// Locate and reverse any potential applied credits
 			//
-			HashMap<String,Double> creditsMap = new HashMap<String,Double>();
+			HashMap<String,List<Double>> creditsMap = new HashMap<String,List<Double>>();
 
 			ErpAbstractOrderModel order = saleEB.getCurrentOrder();
 			
-
+			List<Double> creditAmts=null;
 			for ( ErpAppliedCreditModel ac : order.getAppliedCredits() ) {
-				creditsMap.put(ac.getCustomerCreditPk().getId(), new Double(ac.getAmount()));
+//				creditsMap.put(ac.getCustomerCreditPk().getId(), new Double(ac.getAmount()));
+				creditAmts = creditsMap.get(ac.getCustomerCreditPk().getId());
+				if(null == creditAmts){
+					creditAmts = new ArrayList<Double>();
+				}
+				creditAmts.add(new Double(ac.getAmount()));
+				creditsMap.put(ac.getCustomerCreditPk().getId(), creditAmts);
 			}
             			
 
@@ -486,9 +492,15 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 			// reverse credits applied to the last order Transaction
 			ErpAbstractOrderModel originalOrder = saleEB.getCurrentOrder();
 			List<ErpAppliedCreditModel> credits = originalOrder.getAppliedCredits();
-			HashMap<String, Double> creditsMap = new HashMap<String, Double>();
+			HashMap<String, List<Double>> creditsMap = new HashMap<String, List<Double>>();
+			List<Double> creditAmts = null;;
 			for ( ErpAppliedCreditModel ac : credits ) {
-				creditsMap.put(ac.getCustomerCreditPk().getId(), new Double(ac.getAmount()));
+				creditAmts = creditsMap.get(ac.getCustomerCreditPk().getId());
+				if(null == creditAmts){
+					creditAmts = new ArrayList<Double>();
+				}
+				creditAmts.add(new Double(ac.getAmount()));
+				creditsMap.put(ac.getCustomerCreditPk().getId(), creditAmts);
 			}
 			reverseAppliedCredits(sale.getCustomerPk(), creditsMap);
 
@@ -627,7 +639,7 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 		return null;
 	}
 
-	private void reverseAppliedCredits(PrimaryKey customerPk, HashMap<String, Double> creditsMap) {
+	private void reverseAppliedCredits(PrimaryKey customerPk, HashMap<String, List<Double>> creditsMap) {
 		try {
 			ErpCustomerEB customerEB = this.getErpCustomerHome().findByPrimaryKey(customerPk);
 			ErpCustomerModel customerModel = (ErpCustomerModel) customerEB.getModel();
@@ -635,16 +647,19 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 			for ( ErpCustomerCreditModel credit : credits ) {
 				String thisCreditId = credit.getPK().getId();
 				if (creditsMap.containsKey(thisCreditId)) {
-					Double delta = creditsMap.get(thisCreditId);
-					LOGGER.debug(
-						"Reversing credit (#"
-							+ thisCreditId
-							+ "): was $"
-							+ credit.getAmount()
-							+ ", now is $"
-							+ (credit.getAmount() + delta.doubleValue()));
-					//credit.setAmount( credit.getAmount() + delta.doubleValue() );
-					customerEB.updateCustomerCredit(thisCreditId, delta.doubleValue());
+					List<Double> listAmts = creditsMap.get(thisCreditId);
+					for (Iterator iterator = listAmts.iterator(); iterator.hasNext();) {						
+						Double delta = (Double) iterator.next();
+						LOGGER.debug(
+							"Reversing credit (#"
+								+ thisCreditId
+								+ "): was $"
+								+ credit.getAmount()
+								+ ", now is $"
+								+ (credit.getAmount() + delta.doubleValue()));
+						//credit.setAmount( credit.getAmount() + delta.doubleValue() );
+						customerEB.updateCustomerCredit(thisCreditId, delta.doubleValue());
+					}
 				}
 			}
 		} catch (FinderException ex) {

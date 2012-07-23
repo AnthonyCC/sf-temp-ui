@@ -27,6 +27,8 @@ import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 
+import java.util.Iterator;
+import java.util.List;
 import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
@@ -247,6 +249,22 @@ public class ProductPriceTag extends BodyTagSupport {
                     MaterialPrice matPrice = GroupScaleUtil.getGroupScalePrice(group,
                             impression.getPricingZoneId());
 
+                    GroupScalePricing gsPricing = GroupScaleUtil.lookupGroupPricing(group);
+                    if(null !=gsPricing){
+	                    List<String> gsSkus =gsPricing.getSkuList();
+	                    List<String> prodSkus = prodModel.getSkuCodes();
+	                    //[APPDEV-2269]-If the product is part of the group but the current sku is not part of group scale, then get the actual sku from the product which is part the groupscale.
+	                    if(null != gsSkus && !gsSkus.contains(skuCode)){
+		                    for (Iterator iterator = prodSkus.iterator(); iterator
+									.hasNext();) {
+								String sku = (String) iterator.next();
+								if(gsSkus.contains(sku)){
+									skuCode=sku;
+									break;
+								}						
+							}
+	                    }
+                    }
                     if (matPrice != null) {
                         //catId=pr&prodCatId=pr&productId=pr_bartlett&skuCode=FRU0005348&grpId=ORG_PEARS&version=10443&trk=trkCode
                         String prodCatId = prodModel.getParentNode()

@@ -267,6 +267,21 @@ final int W_GROUPSCALE_TOTAL = 601;
 	String prodCatId = checkParam(request, "prodCatId");
 	String productCode = checkParam(request, "productId");
 	String reqSkuCode = checkParam(request, "skuCode");
+	if(null != reqSkuCode){
+		boolean isSkuValidGS= false;
+		for (Iterator itr = sortedColl.iterator(); itr.hasNext(); ){
+			ContentNodeModel item = (ContentNodeModel)itr.next();
+			if ((item instanceof SkuModel)) {
+				if(((SkuModel)item).getSkuCode().equals(reqSkuCode)){
+					isSkuValidGS=true;
+					break;
+				}
+			}
+		}
+		if(!isSkuValidGS){
+			reqSkuCode = null;
+		}
+	}
 	//if any of these are null, set from the first product
 	if (prodCatId == null || productCode == null || reqSkuCode == null) {
 		ProductModel pmTemp = (ProductModel)request.getAttribute("defaultPM");

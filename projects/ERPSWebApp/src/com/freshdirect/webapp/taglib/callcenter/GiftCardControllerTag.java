@@ -696,9 +696,9 @@ public class GiftCardControllerTag extends com.freshdirect.framework.webapp.Body
     		result.addError(new ActionError(EnumUserInfoName.GC_BUYER_EMAIL.getCode(), SystemMessageList.MSG_EMAIL_FORMAT));
     	}
     	
-    	if((fldAmount==null || fldAmount.length() < 1) && ( fldAltAmount==null || fldAltAmount.length() < 1)) {
-            result.addError(new ActionError("amount", "Invalid or missing amount"));
-        }  
+    	/*if(("OTHER".equals(fldAmount) ||fldAmount==null || fldAmount.length() < 1) && ( fldAltAmount==null || fldAltAmount.length() < 1)) {
+            result.addError(new ActionError("fldAmount", "Invalid or missing amount"));
+        }*/  
 
     	if((fldQuantity==null || fldQuantity.length() < 1) && ( fldQuantity==null || fldQuantity.length() < 1)) {
             result.addError(new ActionError(EnumUserInfoName.GC_QUANTITY.getCode(), "Invalid or missing quantity"));
@@ -709,7 +709,7 @@ public class GiftCardControllerTag extends com.freshdirect.framework.webapp.Body
 				result.addError(new ActionError(EnumUserInfoName.GC_QUANTITY.getCode(), "Invalid or missing quantity"));
 			}
         }
-    	if((fldAmount==null || "".equals(fldAmount)) && ( fldAltAmount==null || "".equals(fldAltAmount))) {
+    	if(("OTHER".equals(fldAmount) ||fldAmount==null || "".equals(fldAmount)) && ( fldAltAmount==null || "".equals(fldAltAmount))) {
             result.addError(new ActionError("fldAmount", "Invalid or missing amount"));
         }else {
         	if(fldAltAmount != null && fldAltAmount.length() > 0) {
