@@ -85,6 +85,8 @@
 
 	// [APPDEV-2149] Display abstract timeslot table (Just days of week, no restrictions, etc.)
 	final boolean abstractTimeslots = false;
+	
+	session.setAttribute("inCrmCheckout", true);
 %>
 
 <crm:GetCurrentAgent id="currentAgent">

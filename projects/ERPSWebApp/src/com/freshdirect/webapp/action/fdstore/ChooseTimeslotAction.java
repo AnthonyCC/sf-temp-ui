@@ -9,6 +9,7 @@ import org.apache.log4j.Category;
 
 import com.freshdirect.analytics.TimeslotEventModel;
 import com.freshdirect.customer.ErpAddressModel;
+import com.freshdirect.customer.ErpCustomerInfoModel;
 import com.freshdirect.customer.ErpDepotAddressModel;
 import com.freshdirect.delivery.DlvZoneInfoModel;
 import com.freshdirect.delivery.EnumReservationType;
@@ -18,9 +19,11 @@ import com.freshdirect.fdstore.EnumCheckoutMode;
 import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDReservation;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.FDTimeslot;
 import com.freshdirect.fdstore.Util;
 import com.freshdirect.fdstore.customer.FDCartModel;
+import com.freshdirect.fdstore.customer.FDCustomerFactory;
 import com.freshdirect.fdstore.customer.FDModifyCartModel;
 import com.freshdirect.fdstore.standingorders.FDStandingOrder;
 import com.freshdirect.fdstore.util.CTDeliveryCapacityLogic;
@@ -65,7 +68,10 @@ public class ChooseTimeslotAction extends WebActionSupport {
 
 		FDTimeslot timeSlot = FDDeliveryManager.getInstance().getTimeslotsById(deliveryTimeSlotId, true);
 		
-		if (timeSlot.getDlvTimeslot().isPremiumSlot() && user.isDpNewTcBlocking()) {
+
+		ErpCustomerInfoModel cm = FDCustomerFactory.getErpCustomerInfo(user.getUser().getIdentity());
+		
+		if (timeSlot.getDlvTimeslot().isPremiumSlot() && cm.getDpTcViewCount() <= FDStoreProperties.getDpTcViewLimit()) {
 			//user bypassed dp terms block
 			this.addError("bypassedDpTcBlock", "You must agree to the new DeliveryPass Terms & Conditions before selecting a Same Day time slot.");
 			return ERROR;

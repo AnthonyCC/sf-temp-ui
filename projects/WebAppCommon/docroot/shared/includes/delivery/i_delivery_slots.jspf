@@ -37,7 +37,7 @@ boolean showPremiumSlots = deliveryModel.isShowPremiumSlots();
 boolean dpNewTcBlock = user.isDpNewTcBlocking(false);
 Date sameDayCutoff = deliveryModel.getSameDayCutoff();
 String sameDayCutoffUTC = deliveryModel.getSameDayCutoffUTC();
-
+boolean inCRM = (session.getAttribute("inCrmCheckout") != null && "true".equalsIgnoreCase(session.getAttribute("inCrmCheckout").toString())) ? true : false;
 
 final boolean __genericTsTable = (boolean) abstractTimeslots; // Hack to help Content Assist recognize type
 boolean isForce =  "true".equalsIgnoreCase(request.getParameter("forceorder")) ;
@@ -126,7 +126,7 @@ if (timeslots.size() > 0) {
 			<div id="PREdayE" style="display: none;">
 				<fd:IncludeMedia name="/media/editorial/timeslots/msgE_premium.html"/> 
 			</div>
-			<% if (dpNewTcBlock) { %>
+			<% if (!inCRM && dpNewTcBlock) { %>
 				<div id="PREDPTCdayC" style="display: none;">
 					<fd:IncludeMedia name="/media/editorial/timeslots/msgC_premium_tc.html"/> 
 				</div>
