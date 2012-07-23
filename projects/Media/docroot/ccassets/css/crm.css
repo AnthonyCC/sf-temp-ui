@@ -51,7 +51,7 @@ a:hover     { color: #009900; text-decoration: overline underline; }
 	margin: 0px;
 	overflow-y: auto;
 	overflow-x: hidden;
-	min-height: 700px;
+	min-height: 30%;
 }
 
 .content_bgcolor {

@@ -16,45 +16,61 @@ final int W_YA_ADD_DELIVERY_ADDR = 970;
 
 <fd:RegistrationController actionName="addDeliveryAddress" result="result" successPage="/your_account/delivery_information.jsp">
 
-<fd:ErrorHandler result='<%=result%>' field='<%=checkErrorType%>' id='errorMsg'>
-	<%@ include file="/includes/i_error_messages.jspf" %>
-</fd:ErrorHandler>
-
-<fd:ErrorHandler result='<%=result%>' field='<%=checkAddressForm%>'>
-<% String errorMsg = SystemMessageList.MSG_MISSING_INFO; %>
-	<%@ include file="/includes/i_error_messages.jspf" %>	
-</fd:ErrorHandler>
-
-<TABLE WIDTH="<%= W_YA_ADD_DELIVERY_ADDR %>" BORDER="0" CELLPADDING="0" CELLSPACING="0">
-<form name="address" method="post">
-<TR>
-<TD width="<%= W_YA_ADD_DELIVERY_ADDR %>" class="text11">
-<font class="title18">Add New Delivery Address</font></td></tr>
-</TABLE>
-<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
-<IMG src="/media_stat/images/layout/ff9933.gif" WIDTH="<%= W_YA_ADD_DELIVERY_ADDR %>" HEIGHT="1" BORDER="0"><BR>
-<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><br><br>
-<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="2" WIDTH="<%= W_YA_ADD_DELIVERY_ADDR %>">
-<TR VALIGN="TOP">
-	<TD WIDTH="<%= W_YA_ADD_DELIVERY_ADDR %>">
-		<img src="/media_stat/images/navigation/delivery_address.gif" WIDTH="133" HEIGHT="15" border="0" alt="DELIVERY ADDRESS">
-		&nbsp;&nbsp;&nbsp;<FONT CLASS="text9">* Required information</FONT><BR>
-		<IMG src="/media_stat/images/layout/999966.gif" WIDTH="<%= W_YA_ADD_DELIVERY_ADDR %>" HEIGHT="1" BORDER="0" VSPACE="3"><BR>
-	</TD>
-</TR>
-</TABLE>
-<%@ include file="/includes/ckt_acct/i_delivery_address_field.jspf" %><br><br>
-<BR><BR>
-<TABLE CELLPADDING="0" CELLSPACING="0" BORDER="0" WIDTH="<%= W_YA_ADD_DELIVERY_ADDR %>">
-<TR VALIGN="TOP" BGCOLOR="#FF9933">
-	<TD WIDTH="<%= W_YA_ADD_DELIVERY_ADDR %>" COLSPAN="2"><IMG src="/media_stat/images/layout/ff9933.gif" HSPACE="0" WIDTH="1" HEIGHT="1" BORDER="0"></TD>
-</TR>
-<TR>
-  <TD WIDTH="<%= W_YA_ADD_DELIVERY_ADDR %>" ALIGN="RIGHT" VALIGN="TOP"><FONT CLASS="space2pix"><BR></FONT><a href="<%=response.encodeURL("/your_account/delivery_information.jsp")%>"><image src="/media_stat/images/buttons/cancel.gif" height="16" width="54" alt="Cancel" border="0" hspace="4" vspace="4" name="cancel_delivery"></a><input type="image" src="/media_stat/images/buttons/save_address.gif"  alt="Save Address" border="0" hspace="4" vspace="4" name="edit_delivery_address"></td>
-</TR>
-<tr><td><img src="/media_stat/images/layout/clear.gif" width="1" height="10" alt="" border="0"></td></tr>
-</form>
-</table>
+	<script>var doubleSubmitAddrAdd = false;</script>
+	
+	<fd:ErrorHandler result='<%=result%>' field='<%=checkErrorType%>' id='errorMsg'>
+		<%@ include file="/includes/i_error_messages.jspf" %>
+		<script>doubleSubmitAddrAdd = false;</script>
+	</fd:ErrorHandler>
+	
+	<fd:ErrorHandler result='<%=result%>' field='<%=checkAddressForm%>'>
+	<% String errorMsg = SystemMessageList.MSG_MISSING_INFO; %>
+		<%@ include file="/includes/i_error_messages.jspf" %>	
+		<script>doubleSubmitAddrAdd = false;</script>
+	</fd:ErrorHandler>
+	
+	
+	<form name="address" method="post" onSubmit="doubleSubmitAddrAdd=true;">
+		<table width="<%= W_YA_ADD_DELIVERY_ADDR %>" border="0" cellpadding="0" cellspacing="0">
+			<tr>
+				<td width="<%= W_YA_ADD_DELIVERY_ADDR %>" class="title18">Add New Delivery Address</td>
+			</tr>
+		</table>
+		
+		<img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0" alt="" /><br />
+		<img src="/media_stat/images/layout/ff9933.gif" width="<%= W_YA_ADD_DELIVERY_ADDR %>" height="1" border="0" alt="" /><br />
+		<img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0" alt="" /><br /><br />
+		
+		<table border="0" cellspacing="0" cellpadding="2" width="<%= W_YA_ADD_DELIVERY_ADDR %>">
+			<tr valign="top">
+				<td width="<%= W_YA_ADD_DELIVERY_ADDR %>">
+					<img src="/media_stat/images/navigation/delivery_address.gif" width="133" height="15" border="0" alt="DELIVERY ADDRESS" />
+					&nbsp;&nbsp;&nbsp;<span class="text9">* Required information</span><br />
+					<img src="/media_stat/images/layout/999966.gif" width="<%= W_YA_ADD_DELIVERY_ADDR %>" height="1" border="0" vspace="3" alt="" /><br />
+				</td>
+			</tr>
+		</table>
+		
+		<%@ include file="/includes/ckt_acct/i_delivery_address_field.jspf" %><br /><br /><br /><br />
+		
+		<table cellpadding="0" cellspacing="0" border="0" width="<%= W_YA_ADD_DELIVERY_ADDR %>">
+			<tr valign="top">
+				<td width="<%= W_YA_ADD_DELIVERY_ADDR %>" colspan="2"><img src="/media_stat/images/layout/ff9933.gif" hspace="0" width="1" height="1" border="0"></TD>
+			</tr>
+			<tr>
+				<td width="<%= W_YA_ADD_DELIVERY_ADDR %>" align="right" valign="top"><br class="space2pix" /><a href="<%=response.encodeURL("/your_account/delivery_information.jsp")%>"><img src="/media_stat/images/buttons/cancel.gif" height="16" width="54" alt="Cancel" border="0" hspace="4" vspace="4" name="cancel_delivery" /></a><input type="image" src="/media_stat/images/buttons/save_address.gif" alt="Save Address" border="0" hspace="4" vspace="4" name="edit_delivery_address" id="edit_delivery_address"></td>
+			</tr>
+			<tr>
+				<td><img src="/media_stat/images/layout/clear.gif" width="1" height="10" alt="" border="0" /></td>
+			</tr>
+		</table>
+	</form>
+	
+	<script>
+		$jq('#edit_delivery_address').on('click', function(event) {
+			if (doubleSubmitAddrAdd) { event.preventDefault(); }
+		});
+	</script>
 
 </fd:RegistrationController>
 </tmpl:put>
