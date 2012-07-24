@@ -792,5 +792,6 @@ public interface FDCustomerManagerSB extends EJBObject {
 	/* APPDEV-2475 DP T&C */
 	public void storeDPTCViews(String customerId, int dpTcViewCount) throws FDResourceException, RemoteException;
 	public void storeDPTCAgreeDate(String customerId, Date dpTcAgreeDate) throws FDResourceException, RemoteException;
+	public void storeDPTCAgreeDate(FDActionInfo info, String customerId, Date dpTcAgreeDate) throws FDResourceException, RemoteException;
 }
 

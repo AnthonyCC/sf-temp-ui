@@ -18,6 +18,7 @@
  	boolean userAgreed = ("true").equalsIgnoreCase(NVL.apply(request.getParameter("userAgreed"), ""));
  	boolean showButtons = ("true").equalsIgnoreCase(NVL.apply(request.getParameter("showButtons"), "false"));
  	boolean reloadParentPage = ("true").equalsIgnoreCase(NVL.apply(request.getParameter("reload"), "false"));
+ 	boolean viaModal = ("true").equalsIgnoreCase(NVL.apply(request.getParameter("modal"), "false"));
  	boolean count = ("true").equalsIgnoreCase(NVL.apply(request.getParameter("count"), "false"));
  	
 	if (!userAgreed) { //normal display
@@ -43,7 +44,7 @@
 						<a class="butText" href="#" onclick="Modalbox.hide(); return false;"><img src="/media/editorial/site_pages/deliverypass/images/but_remindmelater_f1.gif" width="173" height="32" border="0" alt="Remind Me Later" /></a>
 					</div>
 					<div class="fright">
-						<a class="butText" href="#" onclick="doOverlayWindow('/your_account/delivery_pass_tc.jsp?userAgreed=true'); return false;"><img src="/media/editorial/site_pages/deliverypass/images/but_iagree_f1.gif" width="170" height="33" border="0" alt="I Agree" /></a>
+						<a class="butText" href="#" onclick="doOverlayWindow('/your_account/delivery_pass_tc.jsp?userAgreed=true&modal=true'); return false;"><img src="/media/editorial/site_pages/deliverypass/images/but_iagree_f1.gif" width="170" height="33" border="0" alt="I Agree" /></a>
 					</div>
 					<br style="clear:both" />
 				</div>
@@ -52,7 +53,7 @@
 <%	
 	} else { //agreed, success display
 		Date now = new Date();
-		FDCustomerManager.storeDPTCAgreeDate(identity.getErpCustomerPK(), now);
+		FDCustomerManager.storeDPTCAgreeDate(AccountActivityUtil.getActionInfo(session, (viaModal) ? " (via modal overlay)" : " (via TS overlay)"), identity.getErpCustomerPK(), now);
 %>
 		<div style="width: 575px;">
 			<div style="padding: 0 20px 10px 20px;">

@@ -20,6 +20,7 @@ import javax.ejb.CreateException;
 import javax.ejb.EJBException;
 import javax.naming.Context;
 import javax.naming.NamingException;
+import javax.servlet.http.HttpServletRequest;
 import javax.xml.transform.TransformerException;
 
 import org.apache.log4j.Category;
@@ -4019,11 +4020,20 @@ public class FDCustomerManager {
 			throw new FDResourceException(e, "Error creating session bean");
 		}
 	}
+
 	public static void storeDPTCAgreeDate(String customerId, Date dpTcAgreeDate) throws FDResourceException {
+		storeDPTCAgreeDate(null, customerId, dpTcAgreeDate);
+	}
+	/* pass in info as non-null to log to activity log */
+	public static void storeDPTCAgreeDate(FDActionInfo info, String customerId, Date dpTcAgreeDate) throws FDResourceException {
 		lookupManagerHome();
 		try {
 			FDCustomerManagerSB sb = managerHome.create();
-			sb.storeDPTCAgreeDate(customerId, dpTcAgreeDate);
+			if (info == null) {
+				sb.storeDPTCAgreeDate(customerId, dpTcAgreeDate);
+			} else {
+				sb.storeDPTCAgreeDate(info, customerId, dpTcAgreeDate);
+			}
 		} catch (RemoteException e) {
 			invalidateManagerHome();
 			throw new FDResourceException(e, "Error creating session bean");

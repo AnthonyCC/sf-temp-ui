@@ -122,6 +122,7 @@ public class EnumAccountActivityType implements java.io.Serializable {
 	public final static EnumAccountActivityType		NO_THANKS	                        = new EnumAccountActivityType( "No Thanks", "Mobile Preferences - No thanks" );
 	public final static EnumAccountActivityType		REFEREE_FNLNZIP_CHECK               = new EnumAccountActivityType( "Referee-FNLNZip", "Referee FN-LN-Zip check Failed" );
 	public final static EnumAccountActivityType		DISABLE_REFERRAL_PROMO				= new EnumAccountActivityType( "Disable RAFPromo", "Disable Referral Promotion" );
+	public final static EnumAccountActivityType		NEW_DP_TC_AGREE						= new EnumAccountActivityType( "Agreed To DpTc", "Agreed To New DeliveryPass Terms" );
 	
     private EnumAccountActivityType(String code, String name) {
         this.id = idCounter++;
