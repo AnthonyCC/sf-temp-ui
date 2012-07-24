@@ -34,7 +34,7 @@
 
 .grid-item-image img {
 	max-height:160px;
-	width:100%;
+	max-width:100%;
 	vertical-align:bottom;
 	float:left;
 	display:block;
