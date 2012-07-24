@@ -293,7 +293,7 @@ public class HandOffProcessManager {
     				cutoffCal.add(Calendar.DATE, -1);
     				
     				if(cal.getTime().after(cutoffCal.getTime()) || RoutingServicesProperties.isProcessUnassignedBeforeCutoff())
-    				rsvSchMap = handleUnassignedReservations(sessionInfo.getKey().getRegion(), context.getHandOffBatch().getDeliveryDate(), context.getHandOffBatch().getCutOffDateTime());
+    				rsvSchMap = handleUnassignedReservations(sessionInfo.getKey().getRegion(), context.getHandOffBatch().getDeliveryDate(), context.getHandOffBatch().getCutOffDateTime(), dynamicOrders);
     				
     				RoutingEngineServiceProxy proxy = new RoutingEngineServiceProxy();
         	    	Iterator tmpIterator = dynamicSchMap.keySet().iterator();
@@ -329,15 +329,11 @@ public class HandOffProcessManager {
     		System.out.println("\n################### ROUTING END "+ sessionInfo.getKey().getSessionName() +"##################");
     	}
     	
-    	private Map<IRoutingSchedulerIdentity, List> handleUnassignedReservations(String region, Date deliveryDate, Date cutOff)
+    	private Map<IRoutingSchedulerIdentity, List> handleUnassignedReservations(String region, Date deliveryDate, Date cutOff, List<IOrderModel> dynamicOrders)
     	{
     		long startTime = System.currentTimeMillis();
     		DeliveryServiceProxy proxy = new DeliveryServiceProxy();
-    		RoutingEngineServiceProxy routingProxy = new RoutingEngineServiceProxy();
-			List<UnassignedDlvReservationModel> unassignedReservations=new ArrayList<UnassignedDlvReservationModel>();
-			Map<IRoutingSchedulerIdentity, List> rsvSchMap =  new HashMap<IRoutingSchedulerIdentity, List>();
-			IGeographyService geoService = RoutingServiceLocator.getInstance().getGeographyService();
-			RoutingEngineServiceProxy routingEngineProxy = new RoutingEngineServiceProxy();
+    		List<UnassignedDlvReservationModel> unassignedReservations=new ArrayList<UnassignedDlvReservationModel>();
 			
 				RoutingInfoServiceProxy routingInfoProxy = new RoutingInfoServiceProxy();
 				List<String> zones = routingInfoProxy.getStaticZonesByDate(context.getHandOffBatch().getDeliveryDate());
@@ -366,73 +362,60 @@ public class HandOffProcessManager {
 						processReservation(reservation,depots);
 					}
 				}
-				unassignedReservations = proxy.getUnassignedReservationsEx(deliveryDate,cutOff);
 				
-				boolean updateFailed = false;
-				List<UnassignedDlvReservationModel> filteredList = new ArrayList<UnassignedDlvReservationModel>();
-				for (UnassignedDlvReservationModel reservation : unassignedReservations) {
-					if(RoutingActivityType.CANCEL_TIMESLOT.equals(reservation.getUnassignedActivityType()) || RoutingActivityType.CONFIRM_TIMESLOT.equals(reservation.getUnassignedActivityType()))
-					{
-						updateFailed = true;
-					}
-					else
-					{
-						filteredList.add(reservation);
-					}
-					
-				}
-				List<String> messages = new ArrayList<String>();
-				HandOffServiceProxy handOffProxy = new HandOffServiceProxy();
-				if(updateFailed)
-				{
-					handOffProxy.updateHandOffBatchMessage(context.getHandOffBatch().getBatchId(), IProcessMessage.INFO_MESSAGE_ROUTINGINPROGRESS_UPDATE_FAILED);
-				}
+			unassignedReservations = proxy.getUnassignedReservationsEx(deliveryDate,cutOff);
 				
-				for (UnassignedDlvReservationModel reservation : filteredList) {
-	    			IOrderModel orderModel = RoutingUtil.getOrderModel(reservation, reservation.getAddress(), reservation.getOrderId(), reservation.getId());
-	    			GeographicLocation _geoLocModel = new GeographicLocation();
-	    			_geoLocModel.setLatitude(
-	    					Double.toString(reservation.getAddress().getAddressInfo().getLatitude()));
-	    			_geoLocModel.setLongitude(
-	    					Double.toString(reservation.getAddress().getAddressInfo().getLatitude()));
-	    			orderModel.getDeliveryInfo().getDeliveryLocation().getBuilding().setGeographicLocation(_geoLocModel);
-	    			orderModel.getDeliveryInfo().setDeliveryStartTime(reservation.getStartTime());
-	    			
-	    			orderModel.getDeliveryInfo().setDeliveryEndTime(reservation.getEndTime());
-	    			orderModel.getDeliveryInfo().setDeliveryDate(deliveryDate);
-	    			ILocationModel location = orderModel.getDeliveryInfo().getDeliveryLocation();
-	    			
-	    			String scrubbedAddress = geoService.standardizeStreetAddress(location);
-                    if(scrubbedAddress != null) {
-                          location.getBuilding().setStreetAddress1(scrubbedAddress);
-                    } else if(reservation.getAddress() != null && reservation.getAddress().getScrubbedStreet() != null) {
-                           location.getBuilding().setStreetAddress1(reservation.getAddress().getScrubbedStreet());
-                    }
-                    
-	    			location = geoService.getLocation(location);
-	    			orderModel.getDeliveryInfo().getDeliveryLocation().setLocationId(location.getLocationId());
-	    			
-	    			IZoneModel zoneModel = proxy.getDeliveryZone(reservation.getZoneCode());
-	    			orderModel.getDeliveryInfo().setDeliveryZone(zoneModel);
-	    			IRoutingSchedulerIdentity schedulerId = getSchedulerId(null,orderModel,zones);
-	    			DeliveryAreaOrder dlvOrder = routingProxy.getDeliveryAreaModel(schedulerId,orderModel,schedulerId.getRegionId(),
-							 RoutingServicesProperties.getDefaultLocationType()				
-							, RoutingServicesProperties.getDefaultOrderType());
-	    			if(region.equals(schedulerId.getRegionId()) && schedulerId.isDynamic())
-	    			{
-	    			if(!rsvSchMap.containsKey(schedulerId)) {
-	    				rsvSchMap.put(schedulerId, new ArrayList<IOrderModel>());
-					}
-	    			rsvSchMap.get(schedulerId).add(dlvOrder);
-	    			}
-	    		}
-				
-				
-				
-				
-    		return rsvSchMap;
+    		return getFinalUnassignedReservations(region, dynamicOrders, unassignedReservations, zones);
     	}
     	
+    	private Map<IRoutingSchedulerIdentity, List> getFinalUnassignedReservations(String region, List<IOrderModel> dynamicOrders,
+				List<UnassignedDlvReservationModel> unassignedReservations,List<String> zones)
+    	{
+    		RoutingEngineServiceProxy routingProxy = new RoutingEngineServiceProxy();
+    		Map<IRoutingSchedulerIdentity, List> rsvSchMap =  new HashMap<IRoutingSchedulerIdentity, List>();
+			
+    		Map<String, IOrderModel> orderMap = new HashMap<String, IOrderModel>();
+			for(IOrderModel order : dynamicOrders)
+			{
+				orderMap.put(order.getOrderNumber(), order);
+			}
+			
+			boolean updateFailed = false;
+			List<UnassignedDlvReservationModel> filteredList = new ArrayList<UnassignedDlvReservationModel>();
+			for (UnassignedDlvReservationModel reservation : unassignedReservations) {
+				if(RoutingActivityType.CANCEL_TIMESLOT.equals(reservation.getUnassignedActivityType()) || RoutingActivityType.CONFIRM_TIMESLOT.equals(reservation.getUnassignedActivityType()))
+				{
+					updateFailed = true;
+				}
+				else
+				{
+					filteredList.add(reservation);
+				}
+				
+			}
+			HandOffServiceProxy handOffProxy = new HandOffServiceProxy();
+			if(updateFailed)
+			{
+				handOffProxy.updateHandOffBatchMessage(context.getHandOffBatch().getBatchId(), IProcessMessage.INFO_MESSAGE_ROUTINGINPROGRESS_UPDATE_FAILED);
+			}
+			
+			for (UnassignedDlvReservationModel reservation : filteredList) {
+				
+				IOrderModel orderModel = orderMap.get(reservation.getOrderId());
+    			IRoutingSchedulerIdentity schedulerId = getSchedulerId(null,orderModel,zones);
+    			DeliveryAreaOrder dlvOrder = routingProxy.getDeliveryAreaModel(schedulerId,orderModel,schedulerId.getRegionId(),
+						 RoutingServicesProperties.getDefaultLocationType()				
+						, RoutingServicesProperties.getDefaultOrderType());
+    			if(region.equals(schedulerId.getRegionId()) && schedulerId.isDynamic())
+    			{
+    			if(!rsvSchMap.containsKey(schedulerId)) {
+    				rsvSchMap.put(schedulerId, new ArrayList<IOrderModel>());
+				}
+    			rsvSchMap.get(schedulerId).add(dlvOrder);
+    			}
+    		}
+			return rsvSchMap;
+    	}
     	public Context getInitialContext() throws NamingException {
     		Hashtable<String, String> h = new Hashtable<String, String>();
     		h.put(Context.INITIAL_CONTEXT_FACTORY, "weblogic.jndi.WLInitialContextFactory");

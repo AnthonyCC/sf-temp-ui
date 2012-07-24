@@ -1296,19 +1296,11 @@ public class HandOffDAO extends BaseDAO implements IHandOffDAO   {
 	public List<IHandOffBatchStop> getOrderByCutoff(final Date deliveryDate, final Date cutOff) throws SQLException {
 
 		final List<IHandOffBatchStop> result = new ArrayList<IHandOffBatchStop>();
-
-		final boolean sameDay = checkIfSameDayCutoff(deliveryDate, cutOff);
 		final StringBuffer cutoffQuery = new StringBuffer();final StringBuffer cutoffsbyQuery = new StringBuffer();
-		if(sameDay)
-		{
-			cutoffQuery.append(GET_ORDERSBY_DATE_CUTOFF).append(" and ((ts.premium_cutoff_time is not null and to_char(ts.premium_cutoff_time, 'HH:MI AM') = to_char(?, 'HH:MI AM')) or (ts.premium_cutoff_time is null and to_char(di.cutofftime, 'HH:MI AM')=  to_char(?, 'HH:MI AM'))) ");
-			cutoffsbyQuery.append(GET_ORDERSBY_DATE_CUTOFFSTANDBY).append(" and ((ts.premium_cutoff_time is not null and to_char(ts.premium_cutoff_time, 'HH:MI AM') = to_char(?, 'HH:MI AM')) or (ts.premium_cutoff_time is null and to_char(di.cutofftime, 'HH:MI AM')=  to_char(?, 'HH:MI AM'))) ");
-		}
-		else
-		{
-			cutoffQuery.append(GET_ORDERSBY_DATE_CUTOFF).append(" and ((ts.premium_cutoff_time is not null and to_char(ts.premium_cutoff_time, 'HH:MI AM') = to_char(?, 'HH:MI AM')) or (ts.premium_cutoff_time is null and to_char(di.cutofftime, 'HH:MI AM')=  to_char(?, 'HH:MI AM'))) ");
-			cutoffsbyQuery.append(GET_ORDERSBY_DATE_CUTOFFSTANDBY).append(" and ((ts.premium_cutoff_time is not null and to_char(ts.premium_cutoff_time, 'HH:MI AM') = to_char(?, 'HH:MI AM')) or (ts.premium_cutoff_time is null and to_char(di.cutofftime, 'HH:MI AM')=  to_char(?, 'HH:MI AM'))) ");
-		}
+		
+		cutoffQuery.append(GET_ORDERSBY_DATE_CUTOFF).append(" and ((ts.premium_cutoff_time is not null and to_char(ts.premium_cutoff_time, 'HH:MI AM') = to_char(?, 'HH:MI AM')) or (ts.premium_cutoff_time is null and to_char(di.cutofftime, 'HH:MI AM')=  to_char(?, 'HH:MI AM'))) ");
+		cutoffsbyQuery.append(GET_ORDERSBY_DATE_CUTOFFSTANDBY).append(" and ((ts.premium_cutoff_time is not null and to_char(ts.premium_cutoff_time, 'HH:MI AM') = to_char(?, 'HH:MI AM')) or (ts.premium_cutoff_time is null and to_char(di.cutofftime, 'HH:MI AM')=  to_char(?, 'HH:MI AM'))) ");
+	
 		
 		PreparedStatementCreator creator = new PreparedStatementCreator() {
 			public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {	
