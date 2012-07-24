@@ -96,7 +96,7 @@ final int W_GIFTCARD_DONATION_TOTAL = 300;
 						<tr>
 							<td>
 								<form name="giftcard_donation_form" id="giftcard_donation_form" method="get" action="add_donation_giftcard.jsp">	
-									<div style="overflow-y:scroll;height:300px;border:1px solid #cccccc;padding-top: 10px;">			
+									<div style="overflow-y:scroll;overflow-x:hidden;height:300px;border:1px solid #cccccc;padding-top: 10px;">			
 									<table border="0" cellspacing="0" cellpadding="2" width="278" >
 										<logic:iterate id="donId" collection="<%= donationOrgList %>" type="com.freshdirect.fdstore.content.DonationOrganization">
 											<tr>

@@ -246,6 +246,17 @@ if (isValidPaymentId) {
 <% if (((FDUserI)session.getAttribute(SessionName.USER)).isCheckEligible() && !"true".equals(request.getParameter("rh")) && !"true".equals(request.getParameter("gc"))) {%>
 			<%@ include file="/includes/your_account/checkacct_promo.jspf"%><br><br>
 <% } %>
+<% if(user.isEbtAccepted()){ %>
+<table width="970" border="0" cellpadding="0" cellspacing="0">
+<% String currentPage = request.getRequestURI(); 
+boolean fromCheckout1 = currentPage.indexOf("checkout") > -1;
+String addEBTPage = fromCheckout1 ? "/checkout/step_3_ebt_add.jsp" : "/your_account/add_ebt_card.jsp";%>
+<tr>
+<%-- if new to check --%>
+<td><span CLASS="text12">If you need to enter another EBT card: </span><a href="<%=addEBTPage%>"><img ALT="Add New Card" src="/media_stat/images/buttons/add_new_ebt_card.jpg" WIDTH="137" HEIGHT="16" border="0" VSPACE="3" HSPACE="5" ALIGN="middle"></a></TD>
+</tr>
+</table>
+<% } %>
 <%-- IF NO PAYMENT METHOD YET, FIRST TIME, DEFAULTED HERE, SHOW CHECK PROMO--%>
 	<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="<%=W_CKT_ACCT_CREDITCARD_FIELDS_TOTAL%>">
 	<TR VALIGN="bottom">
