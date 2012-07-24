@@ -19,21 +19,7 @@ final int W_EBTCARD_SELECT_CARD = 280;
     if(request.getParameter("card")!=null){
             cardStatus1 = request.getParameter("card");
     }
-
-    String selectedPaymPKId1 = request.getParameter("paymentId");
-
-	if (request.getParameter("paymentMethodList") != null){
-		selectedPaymPKId1 = request.getParameter("paymentMethodList");
-	} else if(cardStatus.equalsIgnoreCase("new")){
-    	selectedPaymPKId1 = "new";
-    }
-    else if (selectedPaymPKId==null ) {
-        if(_cart1.getPaymentMethod() != null && !(_cart1 instanceof FDModifyCartModel) && null != ((ErpPaymentMethodModel)_cart1.getPaymentMethod()).getPK()) {
-            selectedPaymPKId1 = ((ErpPaymentMethodModel)_cart1.getPaymentMethod()).getPK().getId();
-        } else {
-			selectedPaymPKId1 = FDCustomerManager.getDefaultPaymentMethodPK(_user1.getIdentity());
-		}
-    }
+    
 
     boolean showRadioButtons1 = false;
     
@@ -135,9 +121,8 @@ final int W_EBTCARD_SELECT_CARD = 280;
 			<A HREF="<%=editPage1%>?paymentId=<%=paymentPKId%>">
 		<% } %>
 		<IMG src="/media_stat/images/buttons/edit.gif" WIDTH="51" HEIGHT="16" ALT="Edit" BORDER="0"></A>&nbsp;
-<%      if (numEBTCards>1) { %>
-<input name="delete_cc" type="IMAGE" src="/media_stat/images/buttons/delete.gif" WIDTH="51" HEIGHT="16" ALT="Delete" BORDER="0" onClick="javascript:return deletePaymentMethod(this,'<%=paymentPKId%>', <%=standingOrderDependencyIds%>, helpSoInfo)">
-<%      }%>
+	<input name="delete_cc" type="IMAGE" src="/media_stat/images/buttons/delete.gif" WIDTH="51" HEIGHT="16" ALT="Delete" BORDER="0" onClick="javascript:return deletePaymentMethod(this,'<%=paymentPKId%>', <%=standingOrderDependencyIds%>, helpSoInfo)">
+
 	<!-- error message about card being expired goes here -->
   <IMG src="/media_stat/images/layout/clear.gif" WIDTH="<%= W_EBTCARD_SELECT_CARD %>" HEIGHT="1">
 	</TD>

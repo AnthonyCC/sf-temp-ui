@@ -274,7 +274,11 @@ public class CheckoutControllerTag extends AbstractControllerTag {
 							}
 						}
 						if(isEBTBlocked){
-							this.setSuccessPage( "/checkout/step_3_unavail.jsp?successPage="+getSuccessPage());
+							if(isNotCallCenter){
+								this.setSuccessPage( "/checkout/step_3_unavail.jsp?successPage="+getSuccessPage());
+							}else{
+								this.setSuccessPage( "/checkout/checkout_EBT_unavail.jsp?successPage="+getSuccessPage());
+							}
 						}
 					}
 					if ( currentUser.isPromotionAddressMismatch() && isNotCallCenter ) {

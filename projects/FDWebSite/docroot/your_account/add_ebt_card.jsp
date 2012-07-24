@@ -9,7 +9,7 @@ final int W_YA_ADD_CREDITCARD = 970;
 <fd:CheckLoginStatus guestAllowed="false" recognizedAllowed="false" />
 
 <tmpl:insert template='/common/template/dnav.jsp'>
-    <tmpl:put name='title' direct='true'>FreshDirect - Your Account - Add Credit Card</tmpl:put>
+    <tmpl:put name='title' direct='true'>FreshDirect - Your Account - Add EBT Card</tmpl:put>
 
     <tmpl:put name='content' direct='true'>
 
@@ -35,8 +35,11 @@ if (!result.hasError("payment_method_fraud") && !result.hasError("technical_diff
 <table WIDTH="<%= W_YA_ADD_CREDITCARD %>" cellspacing="0" cellpadding="0" border="0">
 <form method="post">
 <tr>
+<td><IMG src="/media_stat/images/snapIcon.jpg" WIDTH="29" HEIGHT="33" BORDER="0"></td>
+<td>&nbsp;</td>
 <td class="text11" WIDTH="<%= W_YA_ADD_CREDITCARD %>">
 <font class="title18">Add EBT Card</font><br>
+Please enter new EBT card information.
 </td>
 </tr>
 </table>

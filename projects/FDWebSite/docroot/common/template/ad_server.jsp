@@ -331,7 +331,7 @@
 				queryString.addParam("state", NVL.apply(user.getAddress().getState(), ""));
 			}
 			if(user.isEbtAccepted()){
-				queryString.addParam("ebtAccepted", "true");
+				queryString.addParam("ebt_accepted", "true");
 			}
 		} else { //! user == null
 			if (request.getAttribute("RefProgId") != null) {
