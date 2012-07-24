@@ -342,7 +342,7 @@ public class ZoneExpansionDaoOracleImpl implements ZoneExpansionDaoI{
 		
 		String INSERT_COMMON_ZONES_02 = INSERT_COMMON_ZONES_01.replace("WORKTABLE", worktable);
 		
-		this.jdbcTemplate.update(INSERT_COMMON_ZONES_02, new Object[]{secondMaxId, secondMaxId, secondMaxId,zoneCode});
+		this.jdbcTemplate.update(INSERT_COMMON_ZONES_02, new Object[]{secondMaxId, secondMaxId, secondMaxId,secondMaxId, secondMaxId,zoneCode});
 		
 		LOGGER.debug("ZONE INFO FROM WORKTABLE INSERTED");
 
