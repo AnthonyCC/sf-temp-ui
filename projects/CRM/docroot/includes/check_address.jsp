@@ -109,6 +109,7 @@ if ("post".equalsIgnoreCase(request.getMethod()) && request.getParameter("addApa
             <option value="NY" <%= "NY".equalsIgnoreCase(dlvAddress.getState()) ? "selected" : "" %>>NY</option>
 			<option value="NJ" <%= "NJ".equalsIgnoreCase(dlvAddress.getState()) ? "selected" : "" %>>NJ</option>
 			<option value="CT" <%= "CT".equalsIgnoreCase(dlvAddress.getState()) ? "selected" : "" %>>CT</option>
+			<option value="PA" <%= "PA".equalsIgnoreCase(dlvAddress.getState()) ? "selected" : "" %>>PA</option>
   		</select>
 		<fd:ErrorHandler result='<%=result%>' name='<%= EnumUserInfoName.DLV_STATE.getCode() %>' id='errorMsg'><span class="error_detail"><%=errorMsg%></span></fd:ErrorHandler>
 		</td>
