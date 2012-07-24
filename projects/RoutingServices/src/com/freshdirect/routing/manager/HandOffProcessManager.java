@@ -402,17 +402,20 @@ public class HandOffProcessManager {
 			for (UnassignedDlvReservationModel reservation : filteredList) {
 				
 				IOrderModel orderModel = orderMap.get(reservation.getOrderId());
-    			IRoutingSchedulerIdentity schedulerId = getSchedulerId(null,orderModel,zones);
-    			DeliveryAreaOrder dlvOrder = routingProxy.getDeliveryAreaModel(schedulerId,orderModel,schedulerId.getRegionId(),
-						 RoutingServicesProperties.getDefaultLocationType()				
-						, RoutingServicesProperties.getDefaultOrderType());
-    			if(region.equals(schedulerId.getRegionId()) && schedulerId.isDynamic())
-    			{
-    			if(!rsvSchMap.containsKey(schedulerId)) {
-    				rsvSchMap.put(schedulerId, new ArrayList<IOrderModel>());
-				}
-    			rsvSchMap.get(schedulerId).add(dlvOrder);
-    			}
+				if(orderModel!=null)
+					{
+	    			IRoutingSchedulerIdentity schedulerId = getSchedulerId(null,orderModel,zones);
+	    			DeliveryAreaOrder dlvOrder = routingProxy.getDeliveryAreaModel(schedulerId,orderModel,schedulerId.getRegionId(),
+							 RoutingServicesProperties.getDefaultLocationType()				
+							, RoutingServicesProperties.getDefaultOrderType());
+	    			if(region.equals(schedulerId.getRegionId()) && schedulerId.isDynamic())
+		    		{
+		    			if(!rsvSchMap.containsKey(schedulerId)) {
+		    				rsvSchMap.put(schedulerId, new ArrayList<IOrderModel>());
+						}
+		    			rsvSchMap.get(schedulerId).add(dlvOrder);
+		    		}
+	    		}
     		}
 			return rsvSchMap;
     	}
