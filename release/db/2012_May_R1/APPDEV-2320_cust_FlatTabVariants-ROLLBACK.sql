@@ -28,7 +28,7 @@ INSERT INTO CUST.SS_VARIANT_ASSIGNMENT (COHORT_ID, VARIANT_ID, "DATE") VALUES ('
 -- Revert tab strategies
 --
 DELETE FROM CUST.SS_TAB_STRATEGY_PRIORITY
-where TAB_STRATEGY_ID in ('tabs_var1fave_c2_test', 'tabs_var1fave_c2_test');
+where TAB_STRATEGY_ID in ('tabs_var1fave_c2_test', 'tabs_var1f_scrb2_test');
 
 
 -- restore tab variant column size
@@ -37,7 +37,7 @@ ALTER TABLE CUST.SS_TAB_STRATEGY_PRIORITY
 modify (TAB_STRATEGY_ID VARCHAR2(16));
 
 
--- Last step would be to delete 'tabs_var1fave_c2_test' and 'tabs_var1fave_c2_test'
+-- Last step would be to delete 'tabs_var1fave_c2_test' and 'tabs_var1f_scrb2_test'
 --   tab variants and their params too.
 -- Once they are referred by other entities such as LOG entries they no longer be removed
 -- So leave them as-is.
