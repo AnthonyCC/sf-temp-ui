@@ -25,6 +25,7 @@ import com.freshdirect.fdstore.Util;
 import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDCustomerFactory;
 import com.freshdirect.fdstore.customer.FDModifyCartModel;
+import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.standingorders.FDStandingOrder;
 import com.freshdirect.fdstore.util.CTDeliveryCapacityLogic;
 import com.freshdirect.fdstore.util.TimeslotLogic;
@@ -51,6 +52,7 @@ public class ChooseTimeslotAction extends WebActionSupport {
 		HttpServletRequest request = this.getWebActionContext().getRequest();
 
 		FDSessionUser user = (FDSessionUser) session.getAttribute(SessionName.USER);
+		FDUserI dpTcCheckUser = (FDUserI)session.getAttribute(SessionName.USER);
 		FDCartModel cart = user.getShoppingCart();
 
 		boolean isForced = false;
@@ -71,7 +73,7 @@ public class ChooseTimeslotAction extends WebActionSupport {
 
 		ErpCustomerInfoModel cm = FDCustomerFactory.getErpCustomerInfo(user.getUser().getIdentity());
 		
-		if (timeSlot.getDlvTimeslot().isPremiumSlot() && cm.getDpTcViewCount() <= FDStoreProperties.getDpTcViewLimit()) {
+		if (timeSlot.getDlvTimeslot().isPremiumSlot() && dpTcCheckUser.isDpNewTcBlocking(false) && cm.getDpTcViewCount() <= FDStoreProperties.getDpTcViewLimit()) {
 			//user bypassed dp terms block
 			this.addError("bypassedDpTcBlock", "You must agree to the new DeliveryPass Terms & Conditions before selecting a Same Day time slot.");
 			return ERROR;
