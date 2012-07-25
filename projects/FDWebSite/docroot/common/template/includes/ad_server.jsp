@@ -326,7 +326,12 @@
 					}
 				}
 			}
-
+			if(user.getAddress()!=null){
+				queryString.addParam("state", NVL.apply(user.getAddress().getState(), ""));
+			}
+			if(user.isEbtAccepted()){
+				queryString.addParam("ebt_accepted", "true");
+			}
 			// record cohort ID
 			queryString.addParam("cohort", user.getCohortName());
 		} else { //! user == null

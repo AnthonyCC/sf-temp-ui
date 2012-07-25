@@ -1109,7 +1109,7 @@ public class FDStoreProperties {
 		defaults.put(PROP_GIFTCARD_DONATION_ENABLED, "true");
 		
 		defaults.put(PROP_DLV_PASS_NEW_TC_VIEWLIMIT, "3");
-		defaults.put(PROP_AUTO_APPLY_DONATION_GC, "false");
+		defaults.put(PROP_AUTO_APPLY_DONATION_GC, "true");
 
         refresh();
     }
