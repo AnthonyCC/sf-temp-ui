@@ -1,32 +1,21 @@
 package com.freshdirect.delivery.dao;
 
-import java.io.IOException;
 import java.io.OutputStream;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
-import javax.sql.DataSource;
-
 import com.freshdirect.crm.ejb.CriteriaBuilder;
-import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.delivery.DlvResourceException;
 import com.freshdirect.delivery.model.AirclicMessageVO;
 import com.freshdirect.delivery.model.AirclicNextelVO;
@@ -87,7 +76,6 @@ public class AirclicDAO {
 	{
 		PreparedStatement ps = null;
 		ResultSet rs = null;
-		String sql = null;
 		Map<String,Set<String>> userIds = new HashMap<String,Set<String>>();
 		String[] routes;
 		DateFormat df = new SimpleDateFormat("MM/dd/yyyy");
@@ -152,7 +140,6 @@ public class AirclicDAO {
 		//airclic table
 
 		PreparedStatement ps = null;
-		ResultSet rs = null;
 		try
 		{
 			
@@ -170,7 +157,7 @@ public class AirclicDAO {
 						ps.setString(3, message.getMessage());
 						ps.addBatch();
 					}
-					int[] test =	ps.executeBatch();
+					ps.executeBatch();
 				}
 				else
 				{
@@ -266,7 +253,6 @@ public class AirclicDAO {
 	public static SignatureVO getSignatureDetails(Connection conn, String order) throws DlvResourceException {
 		PreparedStatement ps = null;
 		ResultSet rs = null;
-		OutputStream out = null;
 		SignatureVO vo = null;
 		try {
 			ps = conn.prepareStatement("select sale_id, signature_timestamp, deliveredto , recipient , contains_alcohol  from cust.sale_signature where sale_id = ?");
@@ -308,7 +294,6 @@ public class AirclicDAO {
 	public static byte[] getSignature(Connection conn, String order) throws DlvResourceException {
 		PreparedStatement ps = null;
 		ResultSet rs = null;
-		OutputStream out = null;
 		byte[] _image = null;
 		try {
 			ps = conn.prepareStatement("select signature from cust.sale_signature where sale_id = ?");
