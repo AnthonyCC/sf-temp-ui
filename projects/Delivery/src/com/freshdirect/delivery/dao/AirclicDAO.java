@@ -423,12 +423,17 @@ public class AirclicDAO {
 			if(rs.next())
 				fromTime = new java.util.Date(rs.getTimestamp("LAST_EXPORT").getTime());
 			
-			ps = conn.prepareStatement("SELECT WEBORDERNUM,SIGNATURE_TIMESTAMP, DELIVEREDTO, RECIPIENT, CONTAINS_ALCOHOL, SIGNATURE FROM (SELECT DISTINCT " +
-					"WEBORDERNUM, EVENTID FROM DLV.CARTONSTATUS CS WHERE  CS.SCANDATE  between to_date(?,'MM/DD/YYYY HH:MI:SS AM') and to_date(?,'MM/DD/YYYY HH:MI:SS AM') AND CS.CARTONSTATUS = 'DELIVERED'  ) CS, DLV.SIGNATURE S " +
-					"WHERE S.EVENTID = CS.EVENTID"); //toTime is required here because we want to know till what time we are getting the signatures. The same to Time
+			ps = conn.prepareStatement("SELECT WEBORDERNUM,INSERT_TIMESTAMP, DELIVEREDTO, RECIPIENT, CONTAINS_ALCOHOL, SIGNATURE FROM (SELECT DISTINCT " +
+					"WEBORDERNUM, EVENTID FROM DLV.CARTONSTATUS CS WHERE  CS.SCANDATE  between to_date(?,'MM/DD/YYYY HH:MI:SS AM') and " +
+					"to_date(?,'MM/DD/YYYY HH:MI:SS AM') AND CS.CARTONSTATUS = 'DELIVERED') CS, DLV.SIGNATURE S WHERE S.INSERT_TIMESTAMP between " +
+					"to_date(?,'MM/DD/YYYY HH:MI:SS AM') and to_date(?,'MM/DD/YYYY HH:MI:SS AM') AND S.EVENTID = CS.EVENTID"); 
+			//toTime is required here because we want to know till what time we are getting the signatures. The same to Time
 			//will be updated in the last export.
 			ps.setString(1, sdf.format(fromTime));
 			ps.setString(2, sdf.format(toTime));
+			ps.setString(3, sdf.format(fromTime));
+			ps.setString(4, sdf.format(toTime));
+			
 			rs = ps.executeQuery();
 			
 			ps1 = conn.prepareStatement("INSERT INTO CUST.SALE_SIGNATURE (SALE_ID, SIGNATURE_TIMESTAMP, DELIVEREDTO, RECIPIENT, CONTAINS_ALCOHOL, SIGNATURE) " +
@@ -444,7 +449,7 @@ public class AirclicDAO {
 					{
 						ps1.setBytes(6, in);
 					  	ps1.setString(1, rs.getString("WEBORDERNUM"));
-					  	ps1.setTimestamp(2, rs.getTimestamp("SIGNATURE_TIMESTAMP"));
+					  	ps1.setTimestamp(2, rs.getTimestamp("INSERT_TIMESTAMP"));
 					  	ps1.setString(3, rs.getString("DELIVEREDTO"));
 					  	ps1.setString(4, rs.getString("RECIPIENT"));
 					  	ps1.setString(5, rs.getString("CONTAINS_ALCOHOL"));
