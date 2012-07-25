@@ -474,12 +474,12 @@ public class ProductPriceTag extends BodyTagSupport {
                             if (dataDriven) {
                                 if ("FEAT".equalsIgnoreCase(grpDisplayType)) {
                                 	//TODO: ADD THIS DISPLAY
-                                	buf1.append("Mix <span class=\"lor\">'n</span><br />Match");
+                                	buf1.append("<span class=\"mixnmatch\">Mix <span class=\"lor\">'n</span><br />Match</span>");
                                 }
 
                                 if ("NONFEAT".equalsIgnoreCase(grpDisplayType)) {
                                 	//TODO: ADD THIS DISPLAY 
-                                	buf1.append("Mix <span class=\"lor\">'n</span> Match");
+                                	buf1.append("<span class=\"mixnmatch\">Mix <span class=\"lor\">'n</span> Match</span>");
                                 }
                             } else {
                                 //default to "SMALL".equalsIgnoreCase(grpDisplayType) a short, linked, description

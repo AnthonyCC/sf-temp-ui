@@ -1253,6 +1253,7 @@ div.control, div.slotRow, div.time {
 	}
 	.ddpp .ddpp_feat_prod {
 		background-color: #fff;
+		color: #333;
 		margin: 4px 7px;
 		border: 2px solid #ddd !important;
 		width: 241px;
@@ -1303,6 +1304,17 @@ div.control, div.slotRow, div.time {
 		text-align: center;
 		line-height: 20px;
 	}
+	.ddpp .ddpp_feat_prod .topText .price .styleScale,
+	.ddpp .ddpp_feat_prod .topText .price .styleScale .lor,
+	.ddpp .ddpp_feat_prod .topText .price .styleWas,
+	.ddpp .ddpp_feat_prod .topText .price .styleWas .lor {
+		color: #c00;
+		font-weight: normal;
+	} 
+	.ddpp .ddpp_feat_prod .topText .styleScale .mixnmatch,
+	.ddpp .ddpp_feat_prod .topText .styleScale .mixnmatch .lor {
+		color: #f59637;
+	} 
 	
 	.ddpp .ddpp_normal_prod .topText .styleScale, 
 	.ddpp .ddpp_normal_prod .topText .styleWas
@@ -1316,6 +1328,9 @@ div.control, div.slotRow, div.time {
 	{
 		font-size: 26px;
 		line-height: 26px;
+	}
+	.ddpp .ddpp_feat_prod .styleRegularWithWas {
+		font-size: 15px;
 	}
 	
 	.ddpp .ddpp_feat_prod .topText,
@@ -1351,6 +1366,15 @@ div.control, div.slotRow, div.time {
 	.ddpp .price .styleAboutOnly {
 		font-weight: normal;
 	}
+	.ddpp .ddpp_feat_prod .price {
+		color: #333;
+	}
+	.ddpp .ddpp_feat_prod .price .styleWas {
+		color: #666;
+	}
+	.ddpp .ddpp_feat_prod .topText .styleWas {
+		color: #666;
+	}
 	.ddpp .ddpp_feat_prod .price .styleRegularWithScaled,
 	.ddpp .ddpp_feat_prod .price .styleRegularOnly
 	{
@@ -1369,7 +1393,7 @@ div.control, div.slotRow, div.time {
 	.ddpp .price .styleRegularWithScaled,
 	.ddpp .price .styleRegularOnly
 	{
-		color: #f59637;
+		color: #333;
 	}
 	.ddpp .price {
 	}
