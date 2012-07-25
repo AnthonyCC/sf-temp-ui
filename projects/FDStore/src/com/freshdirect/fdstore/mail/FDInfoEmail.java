@@ -9,15 +9,20 @@ import com.freshdirect.framework.mail.EmailSupport;
 import com.freshdirect.framework.mail.XMLEmailI;
 
 public class FDInfoEmail extends EmailSupport implements XMLEmailI {
+	private static final long serialVersionUID = -4523407316264096202L;
 
 	private final FDCustomerInfo customer;
 
 	private String htmlXsl;
 	private String textXsl;
 	
+	private boolean htmlEmail = true;
+	
 	public FDInfoEmail(FDCustomerInfo customer) {
 		super();
 		this.customer = customer;
+
+		this.htmlEmail = customer.isHtmlEmail();
 	}
 
 	/**
@@ -30,8 +35,17 @@ public class FDInfoEmail extends EmailSupport implements XMLEmailI {
 	/**
 	 * @see com.freshdirect.framework.mail.XMLEmail#isHtmlEmail()
 	 */
+	@Override
 	public boolean isHtmlEmail() {
-		return this.customer.isHtmlEmail();
+		return this.htmlEmail;
+	}
+
+	/**
+	 * Enables manual override of HTML mode. Used only for test purposes.
+	 * @param htmlEmail
+	 */
+	public void setHtmlEmail(boolean htmlEmail) {
+		this.htmlEmail = htmlEmail;
 	}
 
 	public void setXslPath(String htmlXsl, String textXsl) {
@@ -42,6 +56,7 @@ public class FDInfoEmail extends EmailSupport implements XMLEmailI {
 	/**
 	 * @see com.freshdirect.framework.mail.XMLEmail#getXslPath()
 	 */
+	@Override
 	public String getXslPath() {
 		return isHtmlEmail() ? this.htmlXsl : this.textXsl;
 	}
@@ -49,6 +64,7 @@ public class FDInfoEmail extends EmailSupport implements XMLEmailI {
 	/**
 	 * @see com.freshdirect.framework.mail.XMLEmail#getXML()
 	 */
+	@Override
 	public final String getXML() {
 		FDXMLSerializer s = new FDXMLSerializer();
 		Map map = new HashMap();

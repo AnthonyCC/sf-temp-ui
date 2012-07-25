@@ -108,10 +108,14 @@
 		</div>
 	<%
 	if (__isWineLayout) {
-		if (productNode.getAlternateImage() != null) { 
+		if (productNode.getAlternateImage() != null) {
+			Image descImage = productNode.getDescriptiveImage();
+			if(descImage == null){
+				descImage = new Image("/media/images/temp/soon_100x100.gif", 100, 100);
+			}
 	%>		<div>
 				<img src="<%= productNode.getAlternateImage().getPath() %>" width="<%= productNode.getAlternateImage().getWidth() %>" height="<%= productNode.getAlternateImage().getHeight() %>" style="vertical-align: top;">
-				<img src="<%= productNode.getDescriptiveImage().getPath() %>" width="<%= productNode.getDescriptiveImage().getWidth() %>" height="<%= productNode.getDescriptiveImage().getHeight() %>" style="vertical-align: top;">
+				<img src="<%= descImage.getPath() %>" width="<%= descImage.getWidth() %>" height="<%= descImage.getHeight() %>" style="vertical-align: top;">
 			</div>
 		<%
 		} else {

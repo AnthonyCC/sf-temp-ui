@@ -32,6 +32,7 @@ import org.apache.log4j.Logger;
 
 import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.customer.FDCustomerFactory;
 import com.freshdirect.fdstore.customer.FDUser;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.oauth.provider.OAuthProvider;
@@ -74,10 +75,10 @@ public class UserDataServlet extends HttpServlet {
             		"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" + 
             		"<user>\n" + 
             		"	<id>%1$s</id>\n" + 
-            		"	<name>%2$s %3$s</name>\n" +
-            		"	<screen_name>%2$s %3$s</screen_name>\n" +
-            		"	<avatar_url>%4$s</avatar_url>\n" +
-            		"</user>", fdUser.getUserId(), fdUser.getFirstName(), fdUser.getLastName(), getUserProfileImageUrl(fdUser)));
+            		"	<name>%2$s</name>\n" +
+            		"	<screen_name>%2$s</screen_name>\n" +
+            		"	<avatar_url>%3$s</avatar_url>\n" +
+            		"</user>", fdUser.getUserId(), FDCustomerFactory.getErpCustomerInfo(fdUser.getIdentity()).getDisplayName(), getUserProfileImageUrl(fdUser)));
             out.close();
             
         } catch (Exception e){

@@ -691,4 +691,9 @@ public abstract class ProxyProduct extends AbstractProductModelImpl {
 	public EnumSustainabilityRating getSustainabilityRatingEnum() throws FDResourceException {
 		return getProduct().getSustainabilityRatingEnum();
 	}
+	
+	@Override
+	public boolean isRetainOriginalSkuOrder() {
+		return getProduct().isRetainOriginalSkuOrder();
+	}
 }

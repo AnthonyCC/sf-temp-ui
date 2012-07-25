@@ -12,6 +12,37 @@
 <head>
 	<title>Your standing order for <xsl:call-template name="format-delivery-date"><xsl:with-param name="dateTime" select="order/deliveryReservation/startTime" /></xsl:call-template><xsl:if test="hasUnavailableItems"> (some items unavailable)</xsl:if></title>
 	<link rel="stylesheet" href="http://www.freshdirect.com/assets/css/emails.css"/>
+	<style type="text/css">
+table {
+	padding: 0;
+	margin: 0;
+	
+	border-collapse: collapse;
+	border-spacing: 0;
+	border-style: none;
+}
+
+.unavTable {
+	margin: 1em 0 1em 0;
+}
+
+.unavTable td {
+	font-weight: bold;
+}
+
+.unavTable .descr-cell {
+	padding-right: 3em;
+}
+
+.unavTable .descr-cell .config {
+	margin-left: 1em;
+}
+
+.error {
+	font-weight: bold;
+	color: #990000;
+}
+	</style>
 </head>
 <body bgcolor="#FFFFFF">
 <table cellpadding="0" cellspacing="0" width="100%">
@@ -44,12 +75,22 @@
 								<p>We've taken $<xsl:value-of select='format-number(order/totalDiscountValue, "###,##0.00", "USD")'/> off your order.</p>
 							</xsl:if>
 
-							<xsl:if test="order/paymentMethod/paymentType != 'M'">
-							<p>
-							<xsl:if test="hasUnavailableItems != 'false'">
-							<b style="color: #990000;">Some of the items in your standing order list were not available when your order was placed. Please check the content of the order below to make sure you're getting everything you need.</b>
+
+							<xsl:if test="order/paymentMethod/paymentType != 'M' and hasUnavailableItems = 'true'">
+							<div class="error">Unfortunately, the following items in your standing order were unavailable:</div>
+							<table class="unavTable" cellpadding="0" cellspacing="0">
+								<xsl:for-each select="unavailableItems/unavailableItems">
+								<tr>
+									<td class="descr-cell"><xsl:value-of select="description"/> <xsl:if test="configurationDesc != 'null'"> <span class="config">(<xsl:value-of select="configurationDesc"/>)</span></xsl:if></td>
+									<td>(<xsl:value-of select="unitPrice"/>)</td>
+								</tr>
+								</xsl:for-each>
+							</table>
+							<div>Please check the contents of your order below to make sure you're getting everything you need. If you would like to make changes or additions, modify this order in <a href="http://www.freshdirect.com/your_account/order_history.jsp">Your Orders</a>, located in Your Account, before <xsl:call-template name="format-delivery-start"><xsl:with-param name="dateTime" select="order/deliveryReservation/cutoffTime" /></xsl:call-template> on <xsl:call-template name="format-delivery-date"><xsl:with-param name="dateTime" select="order/deliveryReservation/cutoffTime" /></xsl:call-template>.</div>
 							</xsl:if>
-							If you would like to make updates or additions to your order, go to <a href="http://www.freshdirect.com/your_account/manage_account.jsp">Your Account</a> to make changes before <xsl:call-template name="format-delivery-start"><xsl:with-param name="dateTime" select="order/deliveryReservation/cutoffTime" /></xsl:call-template> on <xsl:call-template name="format-delivery-date"><xsl:with-param name="dateTime" select="order/deliveryReservation/cutoffTime" /></xsl:call-template>.</p>
+
+							<xsl:if test="order/paymentMethod/paymentType != 'M' and hasUnavailableItems = 'false'">
+							<p>If you would like to make updates or additions to your order, go to <a href="http://www.freshdirect.com/your_account/manage_account.jsp">Your Account</a> to make changes before <xsl:call-template name="format-delivery-start"><xsl:with-param name="dateTime" select="order/deliveryReservation/cutoffTime" /></xsl:call-template> on <xsl:call-template name="format-delivery-date"><xsl:with-param name="dateTime" select="order/deliveryReservation/cutoffTime" /></xsl:call-template>.</p>
 							</xsl:if>
 							
 							

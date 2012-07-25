@@ -6,25 +6,22 @@ class api_client {
 	var $polldaddy_url = 'http://api.polldaddy.com/';
 	var $partnerGUID;
 	var $userCode;
-	var $admin = 0;
-	var $version = '1.0';
-
-	var $request = null;
-	var $response = null;
-	var $request_xml = '';
-	var $response_xml = '';	
-	
-	var $requests = array();
-	var $responses = array();
-
-	var $errors = array();
+	var $admin        = 0;
+	var $version      = '1.0';
+	var $request      = null;
+	var $response     = null;
+	var $request_xml  = '';
+	var $response_xml = '';
+	var $requests     = array();
+	var $responses    = array();
+	var $errors       = array();
 
 	function api_client( $partnerGUID = '', $userCode = null ) {
 		$this->partnerGUID = $partnerGUID;
 		$this->userCode = $userCode;
 	}
 
-	function send_request() {
+	function send_request( $timeout = 3 ) {
 		$this->request_xml  = "<?xml version='1.0' encoding='utf-8' ?>\n";
 		$this->request_xml .= $this->request->xml( 'all' );
 		
@@ -33,7 +30,8 @@ class api_client {
 		if ( function_exists( 'wp_remote_post' ) ) {
 			$response = wp_remote_post( $this->polldaddy_url, array(
 				'headers' => array( 'Content-Type' => 'text/xml; charset=utf-8', 'Content-Length' => strlen( $this->request_xml ) ),
-				'user-agent' => 'PollDaddy PHP Client/0.1',
+				'user-agent' => 'Polldaddy PHP Client/0.1',
+				'timeout' => $timeout,
 				'body' => $this->request_xml
 			) );
 			if ( !$response || is_wp_error( $response ) ) {
@@ -54,7 +52,7 @@ class api_client {
 				$parsed['scheme'] == 'ssl' || $parsed['scheme'] == 'https' && extension_loaded('openssl') ? 443 : 80,
 				$err_num,
 				$err_str,
-				3
+				$timeout
 			);
 
 			if ( !$fp ) {
@@ -63,14 +61,14 @@ class api_client {
 			}
 
 			if ( function_exists( 'stream_set_timeout' ) )
-				stream_set_timeout( $fp, 3 );
+				stream_set_timeout( $fp, $timeout );
 
 			if ( !isset( $parsed['path']) || !$path = $parsed['path'] . ( isset($parsed['query']) ? '?' . $parsed['query'] : '' ) )
 				$path = '/';
 
 			$request  = "POST $path HTTP/1.0\r\n";
 			$request .= "Host: {$parsed['host']}\r\n";
-			$request .= "User-agent: PollDaddy PHP Client/0.1\r\n";
+			$request .= "User-agent: Polldaddy PHP Client/0.1\r\n";
 			$request .= "Content-Type: text/xml; charset=utf-8\r\n";
 			$request .= 'Content-Length: ' . strlen( $this->request_xml ) . "\r\n";
 
@@ -91,7 +89,8 @@ class api_client {
 		
 		$this->responses[] = $this->response_xml;
 
-		$parser = new PollDaddy_XML_Parser( $this->response_xml );
+		$parser = new Polldaddy_XML_Parser( $this->response_xml );
+		
 		$this->response =& $parser->objects[0];
 		if ( isset( $this->response->errors->error ) ) {
 			if ( !is_array( $this->response->errors->error ) )
@@ -118,10 +117,10 @@ class api_client {
 	}
 
 	function add_request( $demand, $object = null ) {
-		if ( !is_a( $this->request, 'PollDaddy_Request' ) )
-			$this->request = new PollDaddy_Request( array(
+		if ( !is_a( $this->request, 'Polldaddy_Request' ) )
+			$this->request = new Polldaddy_Request( array(
 				'userCode' => $this->userCode,
-				'demands' => new PollDaddy_Demands( array( 'demand' => array() ) )
+				'demands' => new Polldaddy_Demands( array( 'demand' => array() ) )
 			), array(
 				'version' => $this->version,
 				'admin' => $this->admin,
@@ -135,17 +134,21 @@ class api_client {
 		else
 			$args = null;
 
-		$this->request->demands->demand[] = new PollDaddy_Demand( $args, array( 'id' => $demand ) );
+		$this->request->demands->demand[] = new Polldaddy_Demand( $args, array( 'id' => $demand ) );
 
 		return count( $this->request->demands->demand ) - 1;
 	}
 
 	function reset() {
-		$this->request = null;
-		$this->response = null;
-		$this->request_xml = '';
-		$this->response_xml = '';
-		$this->errors = array();
+		$this->request       = null;
+		$this->response      = null;
+		$this->request_data  = '';
+		$this->response_data = '';
+		$this->request_xml   = '';
+		$this->response_xml  = '';
+		$this->request_json  = '';
+		$this->response_json = '';
+		$this->errors        = array();
 	}
 
 /* pdInitiate: Initiate API "connection" */
@@ -154,10 +157,10 @@ class api_client {
 	 * @param string $Email
 	 * @param string $Password
 	 * @param int $partnerUserID
-	 * @return string|false PollDaddy userCode or false on failure
+	 * @return string|false Polldaddy userCode or false on failure
 	 */
 	function initiate( $Email, $Password, $partnerUserID ) {
-		$this->request = new PollDaddy_Initiate( compact( 'Email', 'Password' ), array( 'partnerGUID' => $this->partnerGUID, 'partnerUserID' => $partnerUserID ) );
+		$this->request = new Polldaddy_Initiate( compact( 'Email', 'Password' ), array( 'partnerGUID' => $this->partnerGUID, 'partnerUserID' => $partnerUserID ) );
 		$this->send_request();
 		if ( isset( $this->response->userCode ) )
 			return $this->response->userCode;
@@ -169,12 +172,12 @@ class api_client {
 
 	/**
 	 * @param string $partnerUserID
-	 * @return string|false PollDaddy userCode or false on failure
+	 * @return string|false Polldaddy userCode or false on failure
 	 */
 	function get_usercode( $partnerUserID ) {
-		$this->request = new PollDaddy_Access( array(
-//			'demands' => new PollDaddy_Demands( array( 'demand' => new PollDaddy_Demand( null, array( 'id' => __FUNCTION__ ) ) ) )
-			'demands' => new PollDaddy_Demands( array( 'demand' => new PollDaddy_Demand( null, array( 'id' => 'getusercode' ) ) ) )
+		$this->request = new Polldaddy_Access( array(
+//			'demands' => new Polldaddy_Demands( array( 'demand' => new Polldaddy_Demand( null, array( 'id' => __FUNCTION__ ) ) ) )
+			'demands' => new Polldaddy_Demands( array( 'demand' => new Polldaddy_Demand( null, array( 'id' => 'getusercode' ) ) ) )
 		), array(
 			'partnerGUID' => $this->partnerGUID,
 			'partnerUserID' => $partnerUserID
@@ -194,15 +197,15 @@ class api_client {
 	 * @see polldaddy_account()
 	 * @param int $partnerUserID
 	 * @param array $args polldaddy_account() args
-	 * @return string|false PollDaddy userCode or false on failure
+	 * @return string|false Polldaddy userCode or false on failure
 	 */
 	function create_account( $partnerUserID, $args ) {
 		if ( !$account = polldaddy_account( $args ) )
 			return false;
 
-		$this->request = new PollDaddy_Access( array(
-//			'demands' => new PollDaddy_Demands( array( 'demand' => new PollDaddy_Demand( compact( 'account' ), array( 'id' => __FUNCTION__ ) ) ) )
-			'demands' => new PollDaddy_Demands( array( 'demand' => new PollDaddy_Demand( compact( 'account' ), array( 'id' => 'createaccount' ) ) ) )
+		$this->request = new Polldaddy_Access( array(
+//			'demands' => new Polldaddy_Demands( array( 'demand' => new Polldaddy_Demand( compact( 'account' ), array( 'id' => __FUNCTION__ ) ) ) )
+			'demands' => new Polldaddy_Demands( array( 'demand' => new Polldaddy_Demand( compact( 'account' ), array( 'id' => 'createaccount' ) ) ) )
 		), array(
 			'partnerGUID' => $this->partnerGUID,
 			'partnerUserID' => $partnerUserID
@@ -214,7 +217,7 @@ class api_client {
 	}
 
 function sync_rating( ){
-          $pos = $this->add_request( 'syncrating', new PollDaddy_Rating( null , null ) );
+          $pos = $this->add_request( 'syncrating', new Polldaddy_Rating( null , null ) );
   
           $this->send_request();
   
@@ -232,7 +235,7 @@ function sync_rating( ){
 
   /* Accounts */
 	/**
-	 * @return object|false PollDaddy Account or false on failure
+	 * @return object|false Polldaddy Account or false on failure
 	 */
 	function get_account() {
 //		$pos = $this->add_request( __FUNCTION__ );
@@ -247,7 +250,7 @@ function sync_rating( ){
 	/**
 	 * @see polldaddy_account()
 	 * @param array $args polldaddy_account() args
-	 * @return string|false PollDaddy userCode or false on failure
+	 * @return string|false Polldaddy userCode or false on failure
 	 */
 	function update_account( $args ) {
 		if ( !$account = polldaddy_account( $args ) )
@@ -263,7 +266,7 @@ function sync_rating( ){
 
   /* Polls */
 	/**
-	 * @return array|false Array of PollDaddy Polls or false on failure
+	 * @return array|false Array of Polldaddy Polls or false on failure
 	 */
 	function get_polls( $start = 0, $end = 0 ) {
 		$start = (int) $start;
@@ -272,8 +275,8 @@ function sync_rating( ){
 //			$pos = $this->add_request( __FUNCTION__ );
 			$pos = $this->add_request( 'getpolls' );
 		else
-//			$pos = $this->add_request( __FUNCTION__, new PollDaddy_List( null, compact( 'start', 'end' ) ) );
-			$pos = $this->add_request( 'getpolls', new PollDaddy_List( null, compact( 'start', 'end' ) ) );
+//			$pos = $this->add_request( __FUNCTION__, new Polldaddy_List( null, compact( 'start', 'end' ) ) );
+			$pos = $this->add_request( 'getpolls', new Polldaddy_List( null, compact( 'start', 'end' ) ) );
 		$this->send_request();
 		$r = $this->response_part( $pos );
 		if ( isset( $r->polls ) ) {
@@ -287,7 +290,7 @@ function sync_rating( ){
 	}
 
 	/**
-	 * @return array|false Array of PollDaddy Polls or false on failure
+	 * @return array|false Array of Polldaddy Polls or false on failure
 	 */
 	function get_polls_by_parent_id( $start = 0, $end = 0, $id = null ) {
 		$start = (int) $start;
@@ -299,8 +302,8 @@ function sync_rating( ){
 //			$pos = $this->add_request( __FUNCTION__ );
 			$pos = $this->add_request( 'getpolls', compact( 'id' ) );
 		else
-//			$pos = $this->add_request( __FUNCTION__, new PollDaddy_List( null, compact( 'start', 'end', 'id' ) ) );
-			$pos = $this->add_request( 'getpolls', new PollDaddy_List( null, compact( 'start', 'end', 'id' ) ) );
+//			$pos = $this->add_request( __FUNCTION__, new Polldaddy_List( null, compact( 'start', 'end', 'id' ) ) );
+			$pos = $this->add_request( 'getpolls', new Polldaddy_List( null, compact( 'start', 'end', 'id' ) ) );
 		$this->send_request();
 		$r = $this->response_part( $pos );
 		if ( isset( $r->polls ) ) {
@@ -314,15 +317,15 @@ function sync_rating( ){
 	}
 
 	/**
-	 * @param int $id PollDaddy Poll ID
-	 * @return array|false PollDaddy Poll or false on failure
+	 * @param int $id Polldaddy Poll ID
+	 * @return array|false Polldaddy Poll or false on failure
 	 */
 	function get_poll( $id ) {
 		if ( !$id = (int) $id )
 			return false;
 
-//		$pos = $this->add_request( __FUNCTION__, new PollDaddy_Poll( null, compact( 'id' ) ) );
-		$pos = $this->add_request( 'getpoll', new PollDaddy_Poll( null, compact( 'id' ) ) );
+//		$pos = $this->add_request( __FUNCTION__, new Polldaddy_Poll( null, compact( 'id' ) ) );
+		$pos = $this->add_request( 'getpoll', new Polldaddy_Poll( null, compact( 'id' ) ) );
 		$this->send_request();
 
 		$demand = $this->response_part( $pos );
@@ -339,15 +342,15 @@ function sync_rating( ){
 	}
 
 	/**
-	 * @param int $id PollDaddy Poll ID
-	 * @return array|false PollDaddy Poll or false on failure
+	 * @param int $id Polldaddy Poll ID
+	 * @return array|false Polldaddy Poll or false on failure
 	 */
 	function build_poll( $id ) {
 		if ( !$id = (int) $id )
 			return false;
 
-//		$pos = $this->add_request( __FUNCTION__, new PollDaddy_Poll( null, compact( 'id' ) ) );
-		$pos = $this->add_request( 'buildpoll', new PollDaddy_Poll( null, compact( 'id' ) ) );
+//		$pos = $this->add_request( __FUNCTION__, new Polldaddy_Poll( null, compact( 'id' ) ) );
+		$pos = $this->add_request( 'buildpoll', new Polldaddy_Poll( null, compact( 'id' ) ) );
 		$this->send_request();
 
 		$demand = $this->response_part( $pos );
@@ -364,45 +367,45 @@ function sync_rating( ){
 	}
 	
 	/**
-	 * @param int $id PollDaddy Poll ID
+	 * @param int $id Polldaddy Poll ID
 	 * @return bool success
 	 */
 	function delete_poll( $id ) {
 		if ( !$id = (int) $id )
 			return false;
 
-//		$pos = $this->add_request( __FUNCTION__, new PollDaddy_Poll( null, compact( 'id' ) ) );
-		$pos = $this->add_request( 'deletepoll', new PollDaddy_Poll( null, compact( 'id' ) ) );
+//		$pos = $this->add_request( __FUNCTION__, new Polldaddy_Poll( null, compact( 'id' ) ) );
+		$pos = $this->add_request( 'deletepoll', new Polldaddy_Poll( null, compact( 'id' ) ) );
 		$this->send_request();
 
 		return empty( $this->errors );
 	}
 
 	/**
-	 * @param int $id PollDaddy Poll ID
+	 * @param int $id Polldaddy Poll ID
 	 * @return bool success
 	 */
 	function open_poll( $id ) {
 		if ( !$id = (int) $id )
 			return false;
 
-//		$pos = $this->add_request( __FUNCTION__, new PollDaddy_Poll( null, compact( 'id' ) ) );
-		$pos = $this->add_request( 'openpoll', new PollDaddy_Poll( null, compact( 'id' ) ) );
+//		$pos = $this->add_request( __FUNCTION__, new Polldaddy_Poll( null, compact( 'id' ) ) );
+		$pos = $this->add_request( 'openpoll', new Polldaddy_Poll( null, compact( 'id' ) ) );
 		$this->send_request();
 
 		return empty( $this->errors );
 	}
 	
 	/**
-	 * @param int $id PollDaddy Poll ID
+	 * @param int $id Polldaddy Poll ID
 	 * @return bool success
 	 */
 	function close_poll( $id ) {
 		if ( !$id = (int) $id )
 			return false;
 
-//		$pos = $this->add_request( __FUNCTION__, new PollDaddy_Poll( null, compact( 'id' ) ) );
-		$pos = $this->add_request( 'closepoll', new PollDaddy_Poll( null, compact( 'id' ) ) );
+//		$pos = $this->add_request( __FUNCTION__, new Polldaddy_Poll( null, compact( 'id' ) ) );
+		$pos = $this->add_request( 'closepoll', new Polldaddy_Poll( null, compact( 'id' ) ) );
 		$this->send_request();
 
 		return empty( $this->errors );
@@ -411,7 +414,7 @@ function sync_rating( ){
 	/**
 	 * @see polldaddy_poll()
 	 * @param array $args polldaddy_poll() args
-	 * @return array|false PollDaddy Poll or false on failure
+	 * @return array|false Polldaddy Poll or false on failure
 	 */
 	function create_poll( $args = null ) {
 		if ( !$poll = polldaddy_poll( $args ) )
@@ -429,9 +432,9 @@ function sync_rating( ){
 
 	/**
 	 * @see polldaddy_poll()
-	 * @param int $id PollDaddy Poll ID
+	 * @param int $id Polldaddy Poll ID
 	 * @param array $args polldaddy_poll() args
-	 * @return array|false PollDaddy Poll or false on failure
+	 * @return array|false Polldaddy Poll or false on failure
 	 */
 	function update_poll( $id, $args = null ) {
 		if ( !$id = (int) $id )
@@ -452,14 +455,14 @@ function sync_rating( ){
 
 	/**
 	 * @see polldaddy_poll()
-	 * @param int $id PollDaddy Folder ID
+	 * @param int $id Polldaddy Folder ID
 	 * @param array $args polldaddy_poll() args
 	 * @return false on failure
 	 */
 	function update_poll_defaults( $folderID,  $args = null ) {
 		$folderID = (int) $folderID;
        
-		if ( !$poll = new PollDaddy_Poll( $args, compact( 'folderID' ) ) )
+		if ( !$poll = new Polldaddy_Poll( $args, compact( 'folderID' ) ) )
 			return false;
 
 //		$pos = $this->add_request( __FUNCTION__, $poll );
@@ -470,8 +473,8 @@ function sync_rating( ){
 
   /* Poll Results */
 	/**
-	 * @param int $id PollDaddy Poll ID
-	 * @return array|false PollDaddy Result or false on failure
+	 * @param int $id Polldaddy Poll ID
+	 * @return array|false Polldaddy Result or false on failure
 	 */
 	function get_poll_results( $id ) {
 		if ( !$id = (int) $id )
@@ -480,10 +483,10 @@ function sync_rating( ){
 			$start = 0;
 			$end = 2;
 
-//		$pos = $this->add_request( __FUNCTION__, new PollDaddy_Poll_Result( null, compact( 'id' ) ) );
-		$pos = $this->add_request( 'getpollresults', new PollDaddy_Poll( null, compact( 'id' ) ) );
+//		$pos = $this->add_request( __FUNCTION__, new Polldaddy_Poll_Result( null, compact( 'id' ) ) );
+		$pos = $this->add_request( 'getpollresults', new Polldaddy_Poll( null, compact( 'id' ) ) );
 		//Optionally if you want to list other answers... 
-		//$pos = $this->add_request( 'getpollresults', new PollDaddy_List( null, compact( 'id', 'start', 'end' ) ) );
+		//$pos = $this->add_request( 'getpollresults', new Polldaddy_List( null, compact( 'id', 'start', 'end' ) ) );
 		$this->send_request();
 
 		$demand = $this->response_part( $pos );
@@ -512,15 +515,15 @@ function sync_rating( ){
 	}
 
 	/**
-	 * @param int $id PollDaddy Poll ID
+	 * @param int $id Polldaddy Poll ID
 	 * @return bool success
 	 */
 	function reset_poll_results( $id ) {
 		if ( !$id = (int) $id )
 			return false;
 
-//		$pos = $this->add_request( __FUNCTION__, new PollDaddy_Poll_Result( null, compact( 'id' ) ) );
-		$pos = $this->add_request( 'resetpollresults', new PollDaddy_Poll( null, compact( 'id' ) ) );
+//		$pos = $this->add_request( __FUNCTION__, new Polldaddy_Poll_Result( null, compact( 'id' ) ) );
+		$pos = $this->add_request( 'resetpollresults', new Polldaddy_Poll( null, compact( 'id' ) ) );
 		$this->send_request();
 
 		return empty( $this->errors );
@@ -528,15 +531,15 @@ function sync_rating( ){
 
   /* Poll Comments */
 	/**
-	 * @param int $id PollDaddy Poll ID
-	 * @return array|false PollDaddy Comments or false on failure
+	 * @param int $id Polldaddy Poll ID
+	 * @return array|false Polldaddy Comments or false on failure
 	 */
 	function get_poll_comments( $id ) {
 		if ( !$id = (int) $id )
 			return false;
 
-//		$pos = $this->add_request( __FUNCTION__, new PollDaddy_Comments( null, compact( 'id' ) ) );
-		$pos = $this->add_request( 'getpollcomments', new PollDaddy_Poll( null, compact( 'id' ) ) );
+//		$pos = $this->add_request( __FUNCTION__, new Polldaddy_Comments( null, compact( 'id' ) ) );
+		$pos = $this->add_request( 'getpollcomments', new Polldaddy_Poll( null, compact( 'id' ) ) );
 		$this->send_request();
 
 		$demand = $this->response_part( $pos );
@@ -565,7 +568,7 @@ function sync_rating( ){
 		if ( !$comment = polldaddy_comment( $args, $id ) )
 			return false;
 
-//		$this->add_request( __FUNCTION__, new PollDaddy_Comments( $comments ) );
+//		$this->add_request( __FUNCTION__, new Polldaddy_Comments( $comments ) );
 		$this->add_request( 'moderatecomment', $comment);
 		$this->send_request();
 		
@@ -574,7 +577,7 @@ function sync_rating( ){
 
 	/* Languages */
 		/**
-		 * @return array|false PollDaddy Languages or false on failure
+		 * @return array|false Polldaddy Languages or false on failure
 		 */
 	function get_languages() {
 
@@ -598,7 +601,7 @@ function sync_rating( ){
 
    /* Language Packs */
 	/**
-	 * @return array|false PollDaddy Packs or false on failure
+	 * @return array|false Polldaddy Packs or false on failure
 	 */
 	function get_packs() {
 
@@ -618,15 +621,15 @@ function sync_rating( ){
 	}
 	
 	/**
-	 * @param int $id PollDaddy Pack ID
-	 * @return array|false PollDaddy Pack or false on failure
+	 * @param int $id Polldaddy Pack ID
+	 * @return array|false Polldaddy Pack or false on failure
 	 */
 	function get_pack( $id ) {
 		if ( !$id = (int) $id )
 			return false;
 
-//		$pos = $this->add_request( __FUNCTION__, new PollDaddy_Pack( null, compact( 'id' ) ) );
-		$pos = $this->add_request( 'getpack', new PollDaddy_Pack( null, compact( 'id' ) ) );
+//		$pos = $this->add_request( __FUNCTION__, new Polldaddy_Pack( null, compact( 'id' ) ) );
+		$pos = $this->add_request( 'getpack', new Polldaddy_Pack( null, compact( 'id' ) ) );
 		$this->send_request();
 
 		$demand = $this->response_part( $pos );
@@ -638,15 +641,15 @@ function sync_rating( ){
 	}
 
 	/**
-	 * @param int $id PollDaddy Pack ID
+	 * @param int $id Polldaddy Pack ID
 	 * @return bool success
 	 */
 	function delete_pack( $id ) {
 		if ( !$id = (int) $id )
 			return false;
 
-//		$pos = $this->add_request( __FUNCTION__, new PollDaddy_Pack( null, compact( 'id' ) ) );
-		$pos = $this->add_request( 'deletepack', new PollDaddy_Pack( null, compact( 'id' ) ) );
+//		$pos = $this->add_request( __FUNCTION__, new Polldaddy_Pack( null, compact( 'id' ) ) );
+		$pos = $this->add_request( 'deletepack', new Polldaddy_Pack( null, compact( 'id' ) ) );
 		$this->send_request();
 
 		return empty( $this->errors );
@@ -655,7 +658,7 @@ function sync_rating( ){
 	/**
 	 * @see polldaddy_pack()
 	 * @param array $args polldaddy_pack() args
-	 * @return array|false PollDaddy Pack or false on failure
+	 * @return array|false Polldaddy Pack or false on failure
 	 */
 	function create_pack( $args = null ) {
 		if ( !$pack = polldaddy_pack( $args ) )
@@ -672,9 +675,9 @@ function sync_rating( ){
 
 	/**
 	 * @see polldaddy_pack()
-	 * @param int $id PollDaddy Pack ID
+	 * @param int $id Polldaddy Pack ID
 	 * @param array $args polldaddy_pack() args
-	 * @return array|false PollDaddy Pack or false on failure
+	 * @return array|false Polldaddy Pack or false on failure
 	 */
 	function update_pack( $id, $args = null ) {
 		if ( !$id = (int) $id )
@@ -691,7 +694,7 @@ function sync_rating( ){
 
    /* Styles */
 	/**
-	 * @return array|false PollDaddy Styles or false on failure
+	 * @return array|false Polldaddy Styles or false on failure
 	 */
 	function get_styles() {
 
@@ -711,15 +714,15 @@ function sync_rating( ){
 	}
 
 	/**
-	 * @param int $id PollDaddy Style ID
-	 * @return array|false PollDaddy Style or false on failure
+	 * @param int $id Polldaddy Style ID
+	 * @return array|false Polldaddy Style or false on failure
 	 */
 	function get_style( $id ) {
 		if ( !$id = (int) $id )
 			return false;
 
-	//	$pos = $this->add_request( __FUNCTION__, new PollDaddy_Style( null, compact( 'id' ) ) );
-		$pos = $this->add_request( 'getstyle', new PollDaddy_Style( null, compact( 'id' ) ) );
+	//	$pos = $this->add_request( __FUNCTION__, new Polldaddy_Style( null, compact( 'id' ) ) );
+		$pos = $this->add_request( 'getstyle', new Polldaddy_Style( null, compact( 'id' ) ) );
 		$this->send_request();
 
 		$demand = $this->response_part( $pos );
@@ -731,15 +734,15 @@ function sync_rating( ){
 	}
 
 	/**
-	 * @param int $id PollDaddy Style ID
+	 * @param int $id Polldaddy Style ID
 	 * @return bool success
 	 */
 	function delete_style( $id ) {
 		if ( !$id = (int) $id )
 			return false;
 
-//		$pos = $this->add_request( __FUNCTION__, new PollDaddy_Style( null, compact( 'id' ) ) );
-		$pos = $this->add_request( 'deletestyle', new PollDaddy_Style( null, compact( 'id' ) ) );
+//		$pos = $this->add_request( __FUNCTION__, new Polldaddy_Style( null, compact( 'id' ) ) );
+		$pos = $this->add_request( 'deletestyle', new Polldaddy_Style( null, compact( 'id' ) ) );
 		$this->send_request();
 
 		return empty( $this->errors );
@@ -748,7 +751,7 @@ function sync_rating( ){
 	/**
 	 * @see polldaddy_style()
 	 * @param array $args polldaddy_style() args
-	 * @return array|false PollDaddy Style or false on failure
+	 * @return array|false Polldaddy Style or false on failure
 	 */
 	function create_style( $args = null ) {
 		if ( !$style = polldaddy_style( $args ) )
@@ -765,9 +768,9 @@ function sync_rating( ){
 
 	/**
 	 * @see polldaddy_style()
-	 * @param int $id PollDaddy Style ID
+	 * @param int $id Polldaddy Style ID
 	 * @param array $args polldaddy_style() args
-	 * @return array|false PollDaddy Style or false on failure
+	 * @return array|false Polldaddy Style or false on failure
 	 */
 	function update_style( $id, $args = null ) {
 		if ( !$id = (int) $id )
@@ -778,7 +781,7 @@ function sync_rating( ){
 
 //		$pos = $this->add_request( __FUNCTION__, $style );
 		$pos = $this->add_request( 'updatestyle', $style );
-		$this->send_request();
+		$this->send_request(30);
 		if ( !$demand = $this->response_part( $pos ) )
 			return $demand;
 		if ( !isset( $demand->style ) )
@@ -790,7 +793,7 @@ function sync_rating( ){
 		if ( !$id = (int) $id )
 			return false;
 		
-		$pos = $this->add_request( 'getrating', new PollDaddy_Rating( null , compact( 'id' ) ) );
+		$pos = $this->add_request( 'getrating', new Polldaddy_Rating( null , compact( 'id' ) ) );
 
 		$this->send_request();
 
@@ -809,7 +812,7 @@ function sync_rating( ){
 	    if ( !$id = (int) $id )
 	        return false;
 
-	    $pos = $this->add_request( 'updaterating', new PollDaddy_Rating( compact( 'settings'  ) , compact( 'id', 'type' ) ) );
+	    $pos = $this->add_request( 'updaterating', new Polldaddy_Rating( compact( 'settings'  ) , compact( 'id', 'type' ) ) );
 
 	    $this->send_request();
 
@@ -824,14 +827,14 @@ function sync_rating( ){
 	}
 
     /* Create Rating 
-	 * @param string $name PollDaddy rating name
-	 * @param string $type PollDaddy rating type
-	 * @return array|false PollDaddy Result or false on failure
+	 * @param string $name Polldaddy rating name
+	 * @param string $type Polldaddy rating type
+	 * @return array|false Polldaddy Result or false on failure
 	 */
 
     function create_rating( $name, $type ){
 
-	    $pos = $this->add_request( 'createrating', new PollDaddy_Rating( compact( 'name'  ) , compact( 'type' ) ) );
+	    $pos = $this->add_request( 'createrating', new Polldaddy_Rating( compact( 'name'  ) , compact( 'type' ) ) );
 
 	    $this->send_request();
 
@@ -848,17 +851,17 @@ function sync_rating( ){
 	
 	/* Rating Results */
 	/**
-	 * @param int $id PollDaddy Poll ID
+	 * @param int $id Polldaddy Poll ID
 	 * @param string $period Rating period
 	 * @param int $start paging start
 	 * @param int $end paging end
-	 * @return array|false PollDaddy Rating Result or false on failure
+	 * @return array|false Polldaddy Rating Result or false on failure
 	 */
 	function get_rating_results( $id, $period = '90', $start = 0, $end = 2 ) {
 		if ( !$id = (int) $id )
 			return false;
 
-		$pos = $this->add_request( 'getratingresults', new PollDaddy_List( compact( 'period' ) , compact( 'id', 'start', 'end' ) ) );
+		$pos = $this->add_request( 'getratingresults', new Polldaddy_List( compact( 'period' ) , compact( 'id', 'start', 'end' ) ) );
 
 		$this->send_request();
 
@@ -880,7 +883,7 @@ function sync_rating( ){
 		if ( !$id = (int) $id )
 			return false;
 		
-		$pos = $this->add_request( 'deleteratingresult', new PollDaddy_Rating( compact( 'uid' ) , compact( 'id' ) ) );
+		$pos = $this->add_request( 'deleteratingresult', new Polldaddy_Rating( compact( 'uid' ) , compact( 'id' ) ) );
 
 		$this->send_request();
 
@@ -894,6 +897,46 @@ function sync_rating( ){
 		
 	}
 	
+	/* Add Media 
+	 * @param string $name Polldaddy media name
+	 * @param string $type Polldaddy media type
+	 * @param string $size Polldaddy media size
+	 * @param string $data Polldaddy media data
+	 * @return array|false Polldaddy Media or false on failure
+	 */
+
+    function upload_image( $name, $url, $type, $id = 0 ){
+
+	    $pos = $this->add_request( 'uploadimageurl', new Polldaddy_Media( compact( 'name', 'type', 'url'  ) , compact( 'id' ) ) );
+
+	    $this->send_request(30);
+
+	    $demand = $this->response_part( $pos );
+
+	    if ( is_a( $demand, 'Ghetto_XML_Object' ) && isset( $demand->media ) ){
+	        return $demand->media;
+	    }
+
+	    return false;
+    }
+    
+    function get_media( $id ){
+		if ( !$id = (int) $id )
+			return false;
+			
+	    $pos = $this->add_request( 'getmedia', new Polldaddy_Media( null, compact( 'id' ) ) );
+
+	    $this->send_request();
+
+	    $demand = $this->response_part( $pos );
+
+	    if ( is_a( $demand, 'Ghetto_XML_Object' ) && isset( $demand->media ) ){
+	        return $demand->media;
+	    }
+
+	    return false;
+    }
+	
 	function get_xml(){
 		return array( 'REQUEST' => $this->request_xml, 'RESPONSE' => $this->response_xml );
 	}
@@ -903,7 +946,7 @@ function &polldaddy_activity( $act ) {
 	if ( !is_string( $act ) || !$act )
 		return false;
 
-	$obj = new PollDaddy_Activity( $act );
+	$obj = new Polldaddy_Activity( $act );
 	
 	return $obj; 
 }
@@ -915,7 +958,7 @@ function &polldaddy_activity( $act ) {
  */
 function &polldaddy_style( $args = null, $id = null, $_require_data = true ) {
 	$false = false;
-	if ( is_a( $args, 'PollDaddy_Style' ) ) {
+	if ( is_a( $args, 'Polldaddy_Style' ) ) {
 		if ( is_null( $id ) )
 			return $args;
 		if ( !$id = (int) $id )
@@ -939,7 +982,7 @@ function &polldaddy_style( $args = null, $id = null, $_require_data = true ) {
 		unset( $args['id'] );
 	}
 
-	$obj = new PollDaddy_Style( $args, compact( 'id', 'retro' ) );
+	$obj = new Polldaddy_Style( $args, compact( 'id', 'retro' ) );
 	
 	return $obj; 
 }
@@ -960,7 +1003,7 @@ function _polldaddy_style_defaults() {
  */
 function &polldaddy_pack( $args = null, $id = null, $_require_data = true ) {
 	$false = false;
-	if ( is_a( $args, 'PollDaddy_Pack' ) ) {
+	if ( is_a( $args, 'Polldaddy_Pack' ) ) {
 		if ( is_null( $id ) )
 			return $args;
 		if ( !$id = (int) $id )
@@ -986,7 +1029,7 @@ function &polldaddy_pack( $args = null, $id = null, $_require_data = true ) {
 		unset( $args['id'] );
 	}
 
-	$obj = new PollDaddy_Pack( $args, compact( 'id', 'retro' ) );
+	$obj = new Polldaddy_Pack( $args, compact( 'id', 'retro' ) );
 	
 	return $obj; 
 }
@@ -1018,7 +1061,7 @@ function &polldaddy_custom_phrase( $phrase, $phraseID = null ) {
 }
 
 function polldaddy_email( $args = null, $id = null, $_require_data = true ) {
-	if ( is_a( $args, 'PollDaddy_Email' ) ) {
+	if ( is_a( $args, 'Polldaddy_Email' ) ) {
 		if ( is_null( $id ) )
 			return $args;
 		if ( !$id = (int) $id )
@@ -1042,7 +1085,7 @@ function polldaddy_email( $args = null, $id = null, $_require_data = true ) {
 			return false;
 	}
 
-	return new PollDaddy_Email( $args, compact( 'id' ) );
+	return new Polldaddy_Email( $args, compact( 'id' ) );
 }
 
 /**
@@ -1061,7 +1104,7 @@ function polldaddy_email( $args = null, $id = null, $_require_data = true ) {
  */
 function &polldaddy_account( $args = null ) {
 	$false = false;
-	if ( is_a( $args, 'PollDaddy_Account' ) )
+	if ( is_a( $args, 'Polldaddy_Account' ) )
 		return $args;
 
 	$defaults = _polldaddy_account_defaults();
@@ -1072,7 +1115,7 @@ function &polldaddy_account( $args = null ) {
 		if ( !is_string( $args[$required] ) || !$args[$required] )
 			return $false;
 
-	$obj = new PollDaddy_Account( $args );
+	$obj = new Polldaddy_Account( $args );
 	
 	return $obj;
 }
@@ -1095,7 +1138,7 @@ function _polldaddy_account_defaults() {
 
 function &polldaddy_poll( $args = null, $id = null, $_require_data = true ) {
 	$false = false;
-	if ( is_a( $args, 'PollDaddy_Poll' ) ) {
+	if ( is_a( $args, 'Polldaddy_Poll' ) ) {
 		if ( is_null( $id ) )
 			return $args;
 		if ( !$id = (int) $id )
@@ -1118,10 +1161,15 @@ function &polldaddy_poll( $args = null, $id = null, $_require_data = true ) {
 				return $false;
 		}
 
-		foreach ( array( 'multipleChoice', 'randomiseAnswers', 'otherAnswer', 'makePublic', 'closePoll', 'closePollNow', 'sharing' ) as $bool ) {
+		foreach ( array( 'multipleChoice', 'randomiseAnswers', 'makePublic', 'otherAnswer', 'closePoll', 'closePollNow', 'sharing' ) as $bool ) {
 			if ( 'no' !== $args[$bool] && 'yes' !== $args[$bool] )
 				$args[$bool] = $defaults[$bool];
 		}
+		
+		global $wpdb;		
+		$public = (int) $wpdb->get_var( $wpdb->prepare( "SELECT public FROM wp_blogs WHERE blog_id = %d", $wpdb->blogid ) );
+		if( $public == -1 )
+			$args['makePublic'] = 'no';
 
 		foreach ( array( 'styleID', 'packID', 'folderID', 'languageID', 'choices', 'blockExpiration' ) as $int )
 			if ( !is_numeric( $args[$int] ) )
@@ -1141,14 +1189,14 @@ function &polldaddy_poll( $args = null, $id = null, $_require_data = true ) {
 		if ( !$args['closeDate'] )
 			$args['closeDate'] = gmdate( 'Y-m-d H:i:s' );
 
-		$args['answers'] = new PollDaddy_Poll_Answers( array( 'answer' => $args['answers'] ) );
+		$args['answers'] = new Polldaddy_Poll_Answers( array( 'answer' => $args['answers'] ) );
 
 		if ( is_null( $id ) )
 			$id = $args['id'];
 		unset( $args['id'] );
 	}
 	
-	$obj = new PollDaddy_Poll( $args, compact( 'id' ) );
+	$obj = new Polldaddy_Poll( $args, compact( 'id' ) );
 
 	return $obj;
 }
@@ -1190,7 +1238,7 @@ function &polldaddy_comment( $args = null, $id = null ) {
 
 	$atts = wp_parse_args( $args, $defaults );
 	
-	$obj = new PollDaddy_Comment( null, $atts );
+	$obj = new Polldaddy_Comment( null, $atts );
 	
 	return $obj; 
 }
@@ -1208,7 +1256,7 @@ function _polldaddy_comment_defaults() {
  */
 function &polldaddy_comments( $args = null, $id = null ) {
 	$false = false;
-	if ( is_a( $args, 'PollDaddy_Comments' ) )
+	if ( is_a( $args, 'Polldaddy_Comments' ) )
 		return $args;
 
 	$defaults = _polldaddy_comments_defaults();
@@ -1219,7 +1267,7 @@ function &polldaddy_comments( $args = null, $id = null ) {
 		$id = $args['id'];
 	unset( $args['id'] );
 	
-	$obj = new PollDaddy_Comments( $args, compact( 'id' ) );
+	$obj = new Polldaddy_Comments( $args, compact( 'id' ) );
 	
 	return $obj; 
 }
@@ -1238,10 +1286,11 @@ function _polldaddy_poll_default_language_id() {
 endif;
 
 function &polldaddy_poll_answer( $args, $id = null ) {
-	if ( !is_string( $args['text'] ) || !$args['text'] )
-		return false;
-		
-	$answer = new PollDaddy_Poll_Answer( $args, compact( 'id' ) );
+	$answer = false;
+	
+	if ( is_string( $args['text'] ) && strlen($args['text'] ) > 0 ){
+		$answer = new Polldaddy_Poll_Answer( $args, compact( 'id' ) );
+	}
 
 	return $answer;
 }

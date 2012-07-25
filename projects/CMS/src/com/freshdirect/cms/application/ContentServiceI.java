@@ -51,6 +51,12 @@ public interface ContentServiceI {
 	public ContentNodeI getContentNode(ContentKey key);
 	
 	/**
+	 * @param key
+	 * @return real content nodes (persisted in CMS DB). ERPS only content nodes are not returned!
+	 */
+	public ContentNodeI getRealContentNode(ContentKey key);
+	
+	/**
 	 * Retrieve multiple nodes.
 	 * 
 	 * @param keys Set of ContentKey

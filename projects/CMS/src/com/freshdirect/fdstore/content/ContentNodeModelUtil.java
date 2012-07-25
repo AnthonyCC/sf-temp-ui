@@ -104,6 +104,7 @@ public class ContentNodeModelUtil {
         TYPE_MODEL_MAP.put("GlobalMenuItem", GlobalMenuItemModel.class);
         TYPE_MODEL_MAP.put("GlobalMenuSection", GlobalMenuSectionModel.class);
         TYPE_MODEL_MAP.put("DonationOrganization", DonationOrganization.class);
+        TYPE_MODEL_MAP.put("YoutubeVideo", YoutubeVideoModel.class);
 	}
 
 	/**

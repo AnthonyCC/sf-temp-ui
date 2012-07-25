@@ -397,7 +397,7 @@ public class ContentFactory {
         try {
             ProductModel prod = this.getProduct(skuCode);
 
-            if (prod.isHidden() || !prod.isSearchable() || prod.isUnavailable()) {
+            if (prod.isHidden() || prod.isUnavailable()) {
                 return null;
             }
 

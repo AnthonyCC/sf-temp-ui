@@ -26,10 +26,13 @@
  String separatorChar = "";
 	String productView = request.getParameter("product_view");
         SkuModel defaultSku = !productNode.isUnavailable() ? productNode.getDefaultSku() : (SkuModel)productNode.getSkus().get(0);
+        if(productNode.isTempUnavailable()){
+        	defaultSku = productNode.getDefaultTemporaryUnavSku();
+        }
         String aboutLabel = null;
-        
         if (defaultSku!=null) {
-        	FDProduct fdprd = productNode.isUnavailable()? null:defaultSku.getProduct();
+
+        	FDProduct fdprd = (productNode.isUnavailable() && !productNode.isTempUnavailable()) ? null : defaultSku.getProduct();
 			
                 if (showAbout && !pd_isWineLayout) {
                     separatorChar = "|";

@@ -28,6 +28,7 @@
 			<CmsEditor ref="recommenderStrategy" />
 			<CmsEditor ref="faq" />
 			<CmsEditor ref="donationOrganization" />
+			<CmsEditor ref="youtubeVideo"/>
 		</editors>
 	</CmsFolder>
 	
@@ -255,12 +256,6 @@
 						</fields>
 					</CmsSection>
 					<CmsSection ref="scarabRecommender"/>
-					<CmsSection>
-						<title>PRODUCT PROMOTION</title>
-						<fields>
-							<CmsField><attribute>PRODUCT_PROMOTION_TYPE</attribute></CmsField>
-						</fields>
-					</CmsSection>
 				</sections>
 			</CmsPage>
 			<CmsPage>
@@ -417,6 +412,7 @@
 						<fields>
 							<CmsField><attribute>SS_EXPERT_WEIGHTING</attribute></CmsField>
 							<CmsField><attribute>EXCLUDED_RECOMMENDATION</attribute></CmsField>
+							<CmsField><attribute>DISABLED_RECOMMENDATION</attribute></CmsField>
 						</fields>
 					</CmsSection>
 					<CmsSection id="scarabRecommender">
@@ -499,6 +495,7 @@
 							<CmsField><attribute>GROCERY</attribute></CmsField>
 							<CmsField><attribute>NOT_SEARCHABLE</attribute></CmsField>
 							<CmsField><attribute>EXCLUDED_RECOMMENDATION</attribute></CmsField>
+							<CmsField><attribute>DISABLED_RECOMMENDATION</attribute></CmsField>
 							<CmsField><attribute>INVISIBLE</attribute></CmsField>
 							<CmsField><attribute>HIDE_URL</attribute></CmsField>
 							<CmsField><attribute>REDIRECT_URL</attribute></CmsField>
@@ -608,6 +605,7 @@
 								<attribute>skus</attribute>
 								<component>VariationMatrix</component>
 							</CmsCustomField>
+							<CmsField><attribute>retainOriginalSkuOrder</attribute></CmsField>
 						</fields>
 					</CmsSection>
 					<!-- Gift Card changes -->
@@ -737,6 +735,7 @@
 					<CmsField><attribute>RELATED_PRODUCTS</attribute></CmsField>
 					<CmsField><attribute>RELATED_RECIPES</attribute></CmsField>
 					<CmsField><attribute>ymalSets</attribute></CmsField>
+					<CmsField><attribute>retainOriginalSkuOrder</attribute></CmsField>
 				</fields>
 			</CmsSection>
 			<CmsSection>
@@ -744,6 +743,7 @@
 				<fields>
 					<CmsField><attribute>SS_EXPERT_WEIGHTING</attribute></CmsField>
 					<CmsField><attribute>EXCLUDED_RECOMMENDATION</attribute></CmsField>
+					<CmsField><attribute>DISABLED_RECOMMENDATION</attribute></CmsField>
 				</fields>
 			</CmsSection>
 			<CmsSection ref="scarabRecommender"/>
@@ -1445,5 +1445,24 @@
             </CmsPage>
         </pages>
     </CmsEditor>
+	
+	<CmsEditor id="youtubeVideo">
+		<contentType>YoutubeVideo</contentType>
+		<pages>
+			<CmsPage>
+				<title>Attributes</title>
+				<sections>
+					<CmsSection>
+						<title>Content</title>
+						<fields>
+							<CmsField><attribute>YOUTUBE_VIDEO_ID</attribute></CmsField>
+							<CmsField><attribute>TITLE</attribute></CmsField>
+							<CmsField><attribute>CONTENT</attribute></CmsField>
+						</fields>
+					</CmsSection>
+				</sections>
+			</CmsPage>
+		</pages>
+	</CmsEditor>
 	
 </Content>

@@ -5,16 +5,16 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Formatter;
 import java.util.List;
 
 import org.apache.log4j.Logger;
 
 import com.freshdirect.fdstore.FDException;
+import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDTimeslot;
+import com.freshdirect.fdstore.customer.FDOrderInfoI;
 import com.freshdirect.fdstore.standingorders.FDStandingOrder;
 import com.freshdirect.fdstore.util.FDTimeslotUtil;
-import com.freshdirect.framework.util.DateUtil;
 
 /**
  * Helper class for standing orders, any static method which has no place anywhere else should be here.
@@ -387,14 +387,19 @@ public class StandingOrderHelper {
 	 * Size of matrix is [n_days,freq]
 	 * 
 	 * @param so
+	 * @param offsetStart Must be >= 1
+	 * 
 	 * @return
 	 */
-	public static List<List<Date>> getAllDeliveryDateCandidates(FDStandingOrder so) {
+	public static List<List<Date>> getAllDeliveryDateCandidates(FDStandingOrder so, int offsetStart) {
 		List<List<Date>> cMat = new ArrayList<List<Date>>(7);
 
 		// prepare calendar
 		final Calendar c = Calendar.getInstance();
 		// c.setTime(so.getNextDeliveryDate());
+
+		if (offsetStart < 1)
+			offsetStart = 1;
 
 		
 		for (int dayOfWeek = Calendar.SUNDAY; dayOfWeek <= Calendar.SATURDAY; dayOfWeek++) {
@@ -408,19 +413,55 @@ public class StandingOrderHelper {
 			c.set(Calendar.MINUTE, 0);
 			c.set(Calendar.SECOND, 0);
 			c.set(Calendar.MILLISECOND, 0);
-			
+
+			// set starting week
+			c.add(Calendar.WEEK_OF_YEAR, offsetStart);
+
 			for (int k = 0; k<so.getFrequency(); k++) {
-				// leap ahead with a week
-				c.add(Calendar.WEEK_OF_YEAR, 1);
 				// this ensures that a newly chosen delivery date will fall
 				// at least in the next week or later 
 
 				candidates.add(c.getTime());
+
+				// leap ahead with a week
+				c.add(Calendar.WEEK_OF_YEAR, 1);
 			}
 
 			cMat.add(candidates);
 		}
 		
 		return cMat;
+	}
+	
+
+	/**
+	 * Calculate the starting week offset for next delivery date candidates 
+	 * 
+	 * @param instances
+	 *
+	 * @return
+	 * @throws FDResourceException
+	 */
+	public static int getFirstAvailableWeekOffset(List<FDOrderInfoI> instances) {
+		int offset = 1; // next week (0=current week)
+		
+		if (instances != null && instances.size() > 0) {
+			final Calendar c = Calendar.getInstance();
+			
+			c.setTimeInMillis( System.currentTimeMillis() );
+			final int curw = c.get(Calendar.WEEK_OF_YEAR);
+			int k = c.get(Calendar.WEEK_OF_YEAR);
+			
+			// get the latest schedule
+			for (FDOrderInfoI info : instances ) {
+				c.setTime( info.getDeliveryStartTime() );
+				k = Math.max(k, c.get(Calendar.WEEK_OF_YEAR) );
+			}
+			
+			// update offset according to the calculations
+			offset = (k-curw)+1;
+		}
+		
+		return offset;
 	}
 }

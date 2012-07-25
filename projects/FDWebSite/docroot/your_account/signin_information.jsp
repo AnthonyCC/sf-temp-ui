@@ -5,6 +5,7 @@
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
 <%@ page import="java.text.SimpleDateFormat" %>
 <%@ page import='com.freshdirect.fdstore.FDStoreProperties' %>
+<%@ page import="com.freshdirect.fdstore.myfd.blog.MyFdFeed"%>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='bean' prefix='bean' %>
@@ -607,3 +608,6 @@ FreshDirect.PhoneValidator.register(document.getElementById("uci_cellPhone"));
 <fd:CmRegistration wrapIntoScriptTag="true" update="true"/>
 </tmpl:put>
 </tmpl:insert>
+<%if (request.getParameter("displayName")!=null) { %>
+	<iframe src="<%=MyFdFeed.getInstance().getBlogUrl()%>/?autologout" width="0" height="0" frameBorder="0"/>
+<%} %>

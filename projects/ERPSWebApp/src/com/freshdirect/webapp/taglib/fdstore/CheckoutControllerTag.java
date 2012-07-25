@@ -30,6 +30,8 @@ import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDIdentity;
+import com.freshdirect.fdstore.customer.FDOrderHistory;
+import com.freshdirect.fdstore.customer.FDOrderInfoI;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.standingorders.FDStandingOrder;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -210,32 +212,7 @@ public class CheckoutControllerTag extends AbstractControllerTag {
 				StandingOrderUtil.updateStandingOrder(session, mode, cart, so, null);
 				StandingOrderUtil.endStandingOrderCheckoutPhase(session);
 			} else if ("changeSONextDeliveryDate".equalsIgnoreCase( action )) {
-				final FDStandingOrder so = currentUser.getCurrentStandingOrder();
-				final EnumCheckoutMode mode = currentUser.getCheckoutMode();
-
-				if (so != null && EnumCheckoutMode.MODIFY_SO_TMPL.equals(mode)) {
-					final String tsId = request.getParameter("deliveryTimeslotId");
-					final FDTimeslot ts = FDDeliveryManager.getInstance().getTimeslotsById(tsId, true);
-					if (ts != null) {
-						// let's extract date and time interval
-						StandingOrderHelper.DeliveryTime dt = new StandingOrderHelper.DeliveryTime(ts);
-						
-						if ( request.getParameter("soDeliveryWeekOffset") != null) {
-							int offset = Integer.parseInt(request.getParameter("soDeliveryWeekOffset"));
-							dt.setWeekOffset( offset );
-						}
-
-						dt.update(so);
-						
-					} else {
-						LOGGER.error("No such timeslot with ID " + tsId);
-					}
-				} else {
-					if (so == null)
-						LOGGER.error("Missing standing order object!");
-					else
-						LOGGER.error("Invalid checkout mode " + mode);
-				}
+				changeStandingOrderDeliveryDate(request, currentUser);
 			} else if ( "gc_submitGiftCardOrder".equalsIgnoreCase( action ) || 
 						"gc_submitGiftCardBulkOrder".equalsIgnoreCase( action ) || 
 						"gc_onestep_submitGiftCardOrder".equalsIgnoreCase( action ) || 
@@ -379,6 +356,36 @@ public class CheckoutControllerTag extends AbstractControllerTag {
 		}
 
 		return true;
+	}
+
+	protected void changeStandingOrderDeliveryDate(HttpServletRequest request,
+			final FDSessionUser currentUser) throws FDResourceException {
+		final FDStandingOrder so = currentUser.getCurrentStandingOrder();
+				final EnumCheckoutMode mode = currentUser.getCheckoutMode();
+
+				if (so != null && EnumCheckoutMode.MODIFY_SO_TMPL.equals(mode)) {
+					final String tsId = request.getParameter("deliveryTimeslotId");
+					final FDTimeslot ts = FDDeliveryManager.getInstance().getTimeslotsById(tsId, true);
+					if (ts != null) {
+						// let's extract date and time interval
+						StandingOrderHelper.DeliveryTime dt = new StandingOrderHelper.DeliveryTime(ts);
+						
+						if ( request.getParameter("soDeliveryWeekOffset") != null) {
+							int offset = Integer.parseInt(request.getParameter("soDeliveryWeekOffset"));
+							dt.setWeekOffset( offset );
+						}
+
+						dt.update(so);
+						
+					} else {
+						LOGGER.error("No such timeslot with ID " + tsId);
+					}
+				} else {
+					if (so == null)
+						LOGGER.error("Missing standing order object!");
+					else
+						LOGGER.error("Invalid checkout mode " + mode);
+				}
 	}
 
 

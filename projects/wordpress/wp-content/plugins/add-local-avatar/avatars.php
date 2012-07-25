@@ -4,70 +4,79 @@
 	Plugin URI:		http://www.sterling-adventures.co.uk/blog/2008/03/01/avatars-plugin/
 	Description:	A plugin to manage public and private avatars.
 	Author:			Peter Sterling
-	Version:		9.0
-	Changes:		0.1 - Initial release.
-					1.0 - Added pagination of users list.
-					2.0 - Added pagination of the commenters list too.
-					2.1 - Added example formatting information.
-					3.0 - Added ability to place avatars in written post content (plus other tweaks).
-					3.1 - Minor tweaks to usage text and options.
-					3.2 - Added check for administration pages to stop user URL wrapping breaking comment editing.
-					3.3 - Spelling fixes!
-					4.0 - Wavatar, Monster ID and Identicon can be used.
-					4.1 - Author credit.
-					4.2 - Fix for credit option un-setting.
-					5.0 - Avatar options should only be managed by Administrators.
-					5.1 - Minor fix to repetition of show avatars WordPress setting.
-					5.2 - Cope with WP 2.6 avatar default.
-					6.0 - Added feature to allow users to upload their own avatar.
-					6.1 - Explanation of directory structure and 'chmod' fix, thanks to Tobias Schwarz.
-					6.2 - Improved unique file name creation, optional avatar upload resizing/cropping, and PHP 4 fix. Thanks to Gioele Agostinelli.
-					6.3 - Oops, a bug (mistake) with the scaling size fixed.
-					6.4 - Error in file naming fixed, with some help from "noyz319".
-					6.5 - Upload file type check (thanks to SumoSulsi) and internationalisation preparation.
-					6.6 - Fix to scaling when upgrading from old version of plugin without scaling option.
-					6.7 - Fix for uppercase extensions.
-					6.8 - Option for nickname / first name & surname.
-					7.0 - Support for user profile widget plug-in.
-					7.1 - Update for Marc Adrian to provide support for option for showing text in the optional widget.
-					7.2 - Class added to help with styling widget.
-					7.3 - Fix for user avatar upload that doesn't need re-sizing and a Russian translation thanks to Fatcow - http://www.fatcow.com/
-					7.4 - Root directory no longer DOCUMENT_ROOT.
-					7.5 - Use DOCUMENT_ROOT option for legacy users.
-					7.6 - Check for required core WP upload functions, only required for themes that expose the user profile pages.
-					8.0 - Added option to try to use a Twitter avatar.
-					8.1 - Simplified Twitter image URL logic.
-					8.2 - Control anchor wrapping of Avatars.
-					8.3 - Allow Twitter ID for optional widget.
-					9.0 - WPMU/Network re-work.  Thanks to Michael D. Tran for his efforts!
-	Author URI:		http://www.sterling-adventures.co.uk/
+	Version:		10.5
+	Changes:		0.1 -	Initial release.
+					1.0 -	Added pagination of users list.
+					2.0 -	Added pagination of the commenters list too.
+					2.1 -	Added example formatting information.
+					3.0 -	Added ability to place avatars in written post content (plus other tweaks).
+					3.1 -	Minor tweaks to usage text and options.
+					3.2 -	Added check for administration pages to stop user URL wrapping breaking comment editing.
+					3.3 -	Spelling fixes!
+					4.0 -	Wavatar, Monster ID and Identicon can be used.
+					4.1 -	Author credit.
+					4.2 -	Fix for credit option un-setting.
+					5.0 -	Avatar options should only be managed by Administrators.
+					5.1 -	Minor fix to repetition of show avatars WordPress setting.
+					5.2 -	Cope with WP 2.6 avatar default.
+					6.0 -	Added feature to allow users to upload their own avatar.
+					6.1 -	Explanation of directory structure and 'chmod' fix, thanks to Tobias Schwarz.
+					6.2 -	Improved unique file name creation, optional avatar upload resizing/cropping, and PHP 4 fix. Thanks to Gioele Agostinelli.
+					6.3 -	Oops, a bug (mistake) with the scaling size fixed.
+					6.4 -	Error in file naming fixed, with some help from "noyz319".
+					6.5 -	Upload file type check (thanks to SumoSulsi) and internationalisation preparation.
+					6.6 -	Fix to scaling when upgrading from old version of plugin without scaling option.
+					6.7 -	Fix for uppercase extensions.
+					6.8 -	Option for nickname / first name & surname.
+					7.0 -	Support for user profile widget plug-in.
+					7.1 -	Update for Marc Adrian to provide support for option for showing text in the optional widget.
+					7.2 -	Class added to help with styling widget.
+					7.3 -	Fix for user avatar upload that doesn't need re-sizing and a Russian translation.
+					7.4 -	Root directory no longer DOCUMENT_ROOT.
+					7.5 -	Use DOCUMENT_ROOT option for legacy users.
+					7.6 -	Check for required core WP upload functions, only required for themes that expose the user profile pages.
+					8.0 -	Added option to try to use a Twitter avatar.
+					8.1 -	Simplified Twitter image URL logic.
+					8.2 -	Control anchor wrapping of Avatars.
+					8.3 -	Allow Twitter ID for optional widget.
+					9.0 -	WPMU/Network re-work.  Thanks to Michael D Tran for his efforts!
+					9.1 -	Update for Admin Bar in WordPress v3.1
+					9.2 -	Fix for local avatar upload to cope with the ever changing WP!
+					10.0 -	New option to upsize local avatar images that are smaller than the set size.  Thanks to Nicholas Craig.
+					10.1 -	Update for networked WP.  Thanks to Michael D Tran.
+					10.2 -	alt tag for avatar img.
+					10.3 -	Compress the paging header for Avatar tables, plus tidy up of table output code.
+					10.4 -	Add 'retro' dynamic automatic Avatar type.
+					10.5 -	Small change to hack for new (WP 3.3) Admin Bar style.
+	Author URI:		http://www.sterling-adventures.co.uk/blog/
 */
 
-define('AVATAR_VER', '9.0');															// Plug-in version.
+define('AVATAR_VER', '10.5');															// Plug-in version.
 define('UNKNOWN', 'unknown@gravatar.com');												// Unknown e-mail.
 define('BLANK', 'blank');																// Blank e-mail.
 define('FALLBACK', 'http://www.gravatar.com/avatar/ad516503a11cd5ca435acc9bb6523536');	// Fallback Gravatar URL (blank man).
 define('SCALED_SIZE', '80');															// Default size to scale uploads to.
 define('TWITTER_URL', 'http://api.twitter.com/1/users/show.xml?id=');					// Twitter's XML URL.
 define('TWITTER_STATIC', 'static.twitter.com');											// URL tell-tale for default Twitter avatar.
-define('TYPE_TWITTER',	'T');
+
+define('TYPE_TWITTER',	'T');															// Avatar types.
 define('TYPE_GLOBAL',	'G');
 define('TYPE_LOCAL',	'L');
 
 
-
+if (!class_exists('add_local_avatars')) :
 class add_local_avatars {
 
 	public $avatar_options;
-	private $networked = false;		// are we in WP Network mode or is this a WPMU install?
-	private $requestURI = "";		// if installed under mu-plugins, then the call is different, full path from the root
+	private $networked = false;		// Are we in WP Network mode or is this a WPMU install?
+	private $requestURI = "";		// If installed under mu-plugins, then the call is different, full path from the root.
 
 	function __construct()
 	{
 		if (function_exists("is_multisite")) {	// WP 3+
 			$this->networked = is_multisite();
 		}
-		elseif (defined("WPMU")) {		// WPMU
+		elseif (defined("WPMU")) {				// WPMU
 			if (WPMU) {
 				$this->networked = true;
 			}
@@ -83,6 +92,7 @@ class add_local_avatars {
 				'size' => '30',
 				'scale' => SCALED_SIZE,
 				'resize' => 'off',
+				'upsize' => 'off',
 				'snapshots' => 'off',
 				'in_posts' => 'on',
 				'credit' => 'on',
@@ -96,21 +106,25 @@ class add_local_avatars {
 				'legacy' => 'off',
 				'upload_allowed' => 'Y'
 			);
-			if ($this->networked)
+			if($this->networked) {
 				update_site_option('plugin_avatars', $this->avatar_options);
-			else
+			}
+			else {
 				update_option('plugin_avatars', $this->avatar_options);
+			}
 		}
 		if(!isset($this->avatar_options['credit'])) {
 			$this->avatar_options['credit'] = 'on';
 			
-			if ($this->networked)
+			if($this->networked) {
 				update_site_option('plugin_avatars', $this->avatar_options);
-			else
+			}
+			else {
 				update_option('plugin_avatars', $this->avatar_options);
+			}
 		}
 
-		
+	
 		// User profile widget included?
 		if(file_exists(ABSPATH . '/wp-content/plugins/add-local-avatar/avatars-widget.php')) {
 			include(ABSPATH . '/wp-content/plugins/add-local-avatar/avatars-widget.php');
@@ -123,6 +137,7 @@ class add_local_avatars {
 		
 		// Hooks...
 		add_action('admin_menu', array(&$this, 'avatar_menu'));
+		add_action('network_admin_menu', array(&$this, 'network_admin_menu'));
 		add_filter('the_content', array(&$this, 'generate_avatar_in_posts'));
 		add_action('get_footer', array(&$this, 'avatar_footer'));
 		add_action('show_user_profile', array(&$this, 'avatar_uploader_option'));
@@ -137,10 +152,12 @@ class add_local_avatars {
 	// Helper function to find root directory.
 	function avatar_root()
 	{
-		if ($this->avatar_options['legacy'] == 'on') 
+		if ($this->avatar_options['legacy'] == 'on') {
 			return $_SERVER['DOCUMENT_ROOT'];
-		else
+		}
+		else {
 			return substr(ABSPATH, 0, -strlen(strrchr(substr(ABSPATH, 0, -1), '/')) - 1);
+		}
 	}
 
 
@@ -238,6 +255,7 @@ class add_local_avatars {
 				'size' => $_POST['size'],
 				'scale' => $_POST['scale'],
 				'resize' => $_POST['resize'],
+				'upsize' => $_POST['upsize'],
 				'snapshots' => $_POST['snapshots'],
 				'in_posts' => $_POST['in_posts'],
 				'credit' => $_POST['credit'],
@@ -263,7 +281,7 @@ class add_local_avatars {
 			}
 			
 			$msg = __('Options saved', 'avatars');
-		} // end if
+		}
 
 		// Get options and set form action var
 		if ($this->networked) {
@@ -277,8 +295,8 @@ class add_local_avatars {
 		}
 
 		// Output any action message (note, can only be from a POST or GET not both).
-		if(!empty($msg)) echo "<div id='message' class='updated fade'><p>", $msg, "</p></div>";
-	?>
+		if(!empty($msg)) echo "<div id='message' class='updated fade'><p>", $msg, "</p></div>"; ?>
+
 		<script language="Javascript">
 			function set_input_values(num)
 			{
@@ -290,12 +308,6 @@ class add_local_avatars {
 
 		<div class="wrap">
 			<h2><?php echo __('Avatar Settings', 'avatars'); ?> (v<?php echo AVATAR_VER; ?>)</h2>
-			<?php
-				if ($this->networked && strpos(__FILE__, WPMU_PLUGIN_DIR) === false) {
-					// display a warning if in networked mode and not installed under mu-plugins
-					echo "<div class='updated'><p>" . __("WPMU/Network mode detected, you should install this into your mu-plugins folder.", "avatars") . "</p></div>";
-				}
-			?>
 			<p>
 				<?php echo __("Please visit the author's site,", 'avatars'); ?> <a href='http://www.sterling-adventures.co.uk/blog/' title='Sterling Adventures'>Sterling Adventures</a>, <?php echo __('and say "Hi"', 'avatars'); ?>...<br />
 				<?php echo __('Control the behaviour of the avatar plug-in.', 'avatars'); ?>
@@ -303,22 +315,21 @@ class add_local_avatars {
 			
 			<h3><?php echo __('User Avatars', 'avatars'); ?></h3>
 			<?php
-			
-				// do not show the table of this site's users/commentors if avatars are disabled
-				// instead place a hyperlink for them to enable it 
-				if (!get_option('show_avatars')) {
+				// Do not show the table of this site's users/commentors if Avatars are disabled, instead place a hyperlink for them to enable it.
+				if(!get_option('show_avatars')) {
 					echo __('Avatars have been disabled for this site.  Enable avatars under <a href="/wp-admin/options-discussion.php">Settings &gt; Discussion</a>', "avatars");
 				}
 				else {
-					
 					$user_search = new WP_User_Search('', $_GET['userspage'], '');
 
 					// Do we have to page the results?
 					if($user_search->total_users_for_query > $user_search->users_per_page) {
-						if ($this->networked)
+						if ($this->networked) {
 							$paging_base = basename($this->requestURI) . '&amp;%_%';
-						else
+						}
+						else {
 							$paging_base = 'users.php?page=avatars.php&amp;%_%';
+						}
 						
 						$user_search->paging_text = paginate_links(array(
 							'total' => ceil($user_search->total_users_for_query / $user_search->users_per_page),
@@ -330,124 +341,120 @@ class add_local_avatars {
 
 					// How many per page (for commenters, if shown)?
 					$per_page = $user_search->users_per_page;
-			?>
 
-			<div class="tablenav">
-				<?php if($user_search->results_are_paged()) : ?>
-					<div class="tablenav-pages"><?php $user_search->page_links(); ?></div>
-				<?php endif; ?>
-			</div>
+					if($user_search->results_are_paged()) : ?>
+						<div class="tablenav">
+							<div class="tablenav-pages"><?php $user_search->page_links(); ?></div>
+						</div>
+					<?php endif; ?>
 
-			<table class='widefat'>
-				<thead>
-					<tr>
-						<th><?php echo __('Username', 'avatars'); ?></th>
-						<th><?php echo __('Name (Nickname)', 'avatars'); ?></th>
-						<th><?php echo __('e-Mail', 'avatars'); ?></th>
-						<th><?php echo __('Twitter ID', 'avatars'); ?></th>
-						<th><?php echo __('Local', 'avatars'); ?></th>
-						<th style="text-align: center;"><?php echo __('Avatar', 'avatars'); ?></th>
-						<th><?php echo __('Type', 'avatars'); ?></th><th><?php echo __('Action', 'avatars'); ?></th>
-					</tr>
-				</thead>
-				<tbody>
-				<?php
-					$i = 0;
-					foreach($user_search->get_results() as $id) {
-						$user = new WP_User($id);
-						echo '<tr', ($i % 2 == 0 ? " class='alternate'" : ""), '>' .
-							'<td><a href="', 'user-edit.php?user_id=', $id, '">', $user->user_login, '</a></td>' .
-							'<td>', $user->first_name, ' ', $user->last_name, (empty($user->nickname) ? '-' : ' (' . $user->nickname . ')'), '</a></td>' .
-							'<td><a href="mailto:', $user->user_email, '">', $user->user_email, '</td>' .
-							'<td><input type="text" value="', $user->twitter_id, '" size="35" id="twitter_id-', $i, '" /></td>' .
-							'<td><input type="text" value="', $user->avatar, '" size="35" id="avatar-', $i, '" /></td>' .
-							'<td style="text-align: center;">', get_avatar($id), '</td>' .
-							'<td>', $this->get_avatar_type(), '</td>' .
-							'<td><a href="' . $this->requestURI . '&amp;user_id=', $id, '" class="edit" onclick="set_input_values(', $i, ');" id="href-', $i, '">', __('Update', 'avatars'), '</a></td>' .
-							"</tr>\n";
-						$i++;
-					}
-				?>
-				</tbody>
-			</table>
-
-			<div class="tablenav">
-				<?php if($user_search->results_are_paged()) : ?>
-					<div class="tablenav-pages"><?php $user_search->page_links(); ?></div>
-				<?php endif; ?>
-			</div>
-
-			<p><?php
-					if(!$all) echo __("Not showing avatars for commenters.", 'avatars'), " <a href='" . $this->requestURI . "&amp;act=all'>", __('Click here', 'avatars'), '</a> ', __("to show commenter avatars.", 'avatars');
-					else echo __("Showing avatars for commenters.", 'avatars'), " <a href='" . $this->requestURI . "'>", __('Click here', 'avatars'), '</a> ', __("to hide commenter avatars.", 'avatars');
-			?></p>
-			<?php
-					$com_page = (isset($_GET['comspage']) ? $_GET['comspage'] : 1);
-
-					if($all) {
-						$total = $wpdb->get_var("select count(distinct comment_author_email) from $wpdb->comments where comment_author_email != ''");
-						$limit_start = ($com_page - 1) * $per_page;
-						$coms = $wpdb->get_results("select comment_author_email EML, comment_author ATH, count(comment_content) CNT from $wpdb->comments where comment_author_email != '' group by comment_author_email order by CNT DESC limit $limit_start, $per_page");
-
-						if($total > $per_page) {
-							$paging_text = paginate_links(array(
-								'total' => ceil($total / $per_page),
-								'current' => $com_page,
-								'base' => 'users.php?page=avatars.php&amp;act=all&amp;%_%',
-								'format' => 'comspage=%#%'
-							));
-						}
-
-						if($coms) { ?>
-							<h3><?php echo __('Commenter Avatars', 'avatars'); ?></h3>
-
-							<div class="tablenav">
-								<?php if($paging_text) : ?>
-									<div class="tablenav-pages"><?php echo $paging_text; ?></div>
-								<?php endif; ?>
-								<br class="clear" />
-							</div>
-							<br class="clear" />
-
-							<table class='widefat'>
-								<thead>
-									<tr><th><?php echo __('Name', 'avatars'); ?></th><th><?php echo __('e-Mail', 'avatars'); ?></th><th class="num"><div class="vers"><img alt="Comments" src="images/comment-grey-bubble.png" /></div></th><th style="text-align: center;"><?php echo __('Avatar', 'avatars'); ?></th></tr>
-								</thead>
-								<tbody> <?php
+					<table class='widefat'>
+						<thead>
+							<tr>
+								<th><?php echo __('Username', 'avatars'); ?></th>
+								<th><?php echo __('Name (Nickname)', 'avatars'); ?></th>
+								<th><?php echo __('e-Mail', 'avatars'); ?></th>
+								<th><?php echo __('Twitter ID', 'avatars'); ?></th>
+								<th><?php echo __('Local', 'avatars'); ?></th>
+								<th style="text-align: center;"><?php echo __('Avatar', 'avatars'); ?></th>
+								<th><?php echo __('Type', 'avatars'); ?></th><th><?php echo __('Action', 'avatars'); ?></th>
+							</tr>
+						</thead>
+						<tbody>
+							<?php
 								$i = 0;
-								foreach($coms as $com) if(!empty($com->EML)) {
-									echo '<tr', ($i % 2 == 0 ? " class='alternate'" : ""), '>' .
-										'<td>', $com->ATH, '</td>' .
-										'<td><a href="mailto:', $com->EML, '">', $com->EML, '</td>' .
-										'<td class="num"><div class="post-com-count-wrapper post-com-count"><span class="comment-count">', $com->CNT, '</span></div></td>' .
-										'<td style="text-align: center;">', get_avatar($com->EML), '</td>' .
-										"</tr>\n";
+								foreach($user_search->get_results() as $id) {
+									$user = new WP_User($id);
+									printf('<tr%s>', ($i % 2 == 0 ? " class='alternate'" : ""));
+									printf('<td><a href="user-edit.php?user_id=%s">%s</a></td>', $id, $user->user_login);
+									printf('<td>%s %s%s</td>', $user->first_name, $user->last_name, (empty($user->nickname) ? '' : ' (' . $user->nickname . ')'));
+									printf('<td><a href="mailto:%1$s">%1$s</a></td>', $user->user_email);
+									printf('<td><input type="text" value="%s" id="twitter_id-%d" /></td>', $user->twitter_id, $i);
+									printf('<td><input type="text" value="%s" size="35" id="avatar-%d" /></td>', $user->avatar, $i);
+									printf('<td style="text-align: center;">%s</td>', get_avatar($id));
+									printf('<td>%s</td>', $this->get_avatar_type());
+									printf('<td><a href="%1$s&amp;user_id=%2$s" class="edit" onclick="set_input_values(%3$d);" id="href-%3$d">%4$s</a></td>', $this->requestURI, $id, $i, __('Update', 'avatars'));
+									echo "</tr>\n";
 									$i++;
-								} ?>
-								</tbody>
-							</table>
+								}
+							?>
+						</tbody>
+					</table>
 
-							<div class="tablenav">
+					<?php if($user_search->results_are_paged()) : ?>
+						<div class="tablenav">
+							<div class="tablenav-pages"><?php $user_search->page_links(); ?></div>
+						</div>
+					<?php endif; ?>
+
+					<p><?php
+						if(!$all) echo __("Not showing avatars for commenters.", 'avatars'), " <a href='" . $this->requestURI . "&amp;act=all'>", __('Click here', 'avatars'), '</a> ', __("to show commenter avatars.", 'avatars');
+						else echo __("Showing avatars for commenters.", 'avatars'), " <a href='" . $this->requestURI . "'>", __('Click here', 'avatars'), '</a> ', __("to hide commenter avatars.", 'avatars');
+					?></p>
+
+					<?php
+						$com_page = (isset($_GET['comspage']) ? $_GET['comspage'] : 1);
+
+						if($all) {
+							$total = $wpdb->get_var("select count(distinct comment_author_email) from $wpdb->comments where comment_author_email != ''");
+							$limit_start = ($com_page - 1) * $per_page;
+							$coms = $wpdb->get_results("select comment_author_email EML, comment_author ATH, count(comment_content) CNT from $wpdb->comments where comment_author_email != '' group by comment_author_email order by CNT DESC limit $limit_start, $per_page");
+
+							if($total > $per_page) {
+								$paging_text = paginate_links(array(
+									'total' => ceil($total / $per_page),
+									'current' => $com_page,
+									'base' => 'users.php?page=avatars.php&amp;act=all&amp;%_%',
+									'format' => 'comspage=%#%'
+								));
+							}
+
+							if($coms) { ?>
+								<h3><?php echo __('Commenter Avatars', 'avatars'); ?></h3>
+
 								<?php if($paging_text) : ?>
-									<div class="tablenav-pages"><?php echo $paging_text; ?></div>
+									<div class="tablenav">
+										<div class="tablenav-pages"><?php echo $paging_text; ?></div>
+									</div>
 								<?php endif; ?>
-								<br class="clear" />
-							</div>
-							<br class="clear" />
-						<?php }
-						
-					} // end if 
-					
-				} // end if 
+
+								<table class='widefat'>
+									<thead>
+										<tr><th><?php echo __('Name', 'avatars'); ?></th><th><?php echo __('e-Mail', 'avatars'); ?></th><th style="text-align: center;"><?php echo __('Comments', 'avatars'); ?></th><th style="text-align: center;"><?php echo __('Avatar', 'avatars'); ?></th></tr>
+									</thead>
+									<tbody> <?php
+									$i = 0;
+									foreach($coms as $com) if(!empty($com->EML)) {
+										printf('<tr%s>', ($i % 2 == 0 ? " class='alternate'" : ""));
+										printf('<td>%s</td>', $com->ATH);
+										printf('<td><a href="mailto:%1$s">%1$s</a></td>', $com->EML);
+										printf('<td class="num">%s</td>', $com->CNT);
+										printf('<td style="text-align: center;">%s</td>', get_avatar($com->EML));
+										echo "</tr>\n";
+										$i++;
+									} ?>
+									</tbody>
+								</table>
+
+								<?php if($paging_text) : ?>
+									<div class="tablenav">
+										<div class="tablenav-pages"><?php echo $paging_text; ?></div>
+									</div>
+								<?php endif;
+							}
+						}
+					?>
+
+				<?php } // end if
 			?>
 
 			<h3><?php echo __('Avatar Options', 'avatars'); ?></h3>
 			<form method="post" action="<?php echo $form_action; ?>">
 				<table class='form-table'>
-				<?php
-					if (!$this->networked) :
-						// do not repeat Settings > Discussion options in networked mode
-				?>
+					<?php
+						// Do not repeat Settings > Discussion options in networked mode.
+						if (!$this->networked) :
+					?>
 					<tr>
 						<td><label for="show_avatars"><?php echo __('Show avatars:', 'avatars'); ?></label><br /><small><?php echo __('Repeated from <i>Settings  &raquo;  Discussion</i>', 'avatars'); ?></small></td>
 						<td><input type="checkbox" name="show_avatars" <?php echo (get_option('show_avatars') ? 'checked' : ''); ?> /></td>
@@ -462,15 +469,15 @@ class add_local_avatars {
 							<input type='radio' name='avatar_rating' value='X'  <?php echo (get_option('avatar_rating') == 'X'  ? 'checked="checked"' : ''); ?> /> X
 						</td>
 						<td>
-							- <?php echo __('Suitable for all audiences', 'avatars'); ?><br />
-							- <?php echo __('Possibly offensive, usually for audiences 13 and above', 'avatars'); ?><br />
-							- <?php echo __('Intended for adult audiences above 17', 'avatars'); ?><br />
-							- <?php echo __('Even more mature than above', 'avatars'); ?>
+							<small>- <?php echo __('Suitable for all audiences', 'avatars'); ?></small><br />
+							<small>- <?php echo __('Possibly offensive, usually for audiences 13 and above', 'avatars'); ?></small><br />
+							<small>- <?php echo __('Intended for adult audiences above 17', 'avatars'); ?></small><br />
+							<small>- <?php echo __('Even more mature than above', 'avatars'); ?></small>
 						</td>
 					</tr>
-				<?php
-					endif;
-				?>
+
+					<?php endif; ?>
+
 					<tr>
 						<td><label for="idAvatarSize"><?php echo __('Size:', 'avatars'); ?></label></td>
 						<td style="width: 70px;"><select id="idAvatarSize" name='size'><?php
@@ -493,29 +500,41 @@ class add_local_avatars {
 								?>
 							</label></small></td>
 						</tr>
-					<?php 
-						} 
-					
-						if (!$this->networked) {
-					?>
-					<tr>
-						<td><?php echo __('Gravatar default:', 'avatars'); ?><br /><small><?php echo __('Enhanced repeat from <i>Settings &raquo; Discussion</i>', 'avatars'); ?></small></td>
-						<td><?php echo get_avatar($wavatar, $this->avatar_options['size'], $wavatar); ?></td>
-						<td>
-							<select name='wavatar'>
-								<option value="custom" <?php echo ($wavatar == 'custom' ? 'selected' : ''); ?> >- <?php echo __('none', 'avatars'); ?> -</option>
-								<option value="mystery" <?php echo ($wavatar == 'mystery' ? 'selected' : ''); ?> ><?php echo __('Mystery Man', 'avatars'); ?></option>
-								<option value="blank" <?php echo ($wavatar == 'blank' ? 'selected' : ''); ?> ><?php echo __('Blank', 'avatars'); ?></option>
-								<option value="gravatar_default" <?php echo ($wavatar == 'gravatar_default' ? 'selected' : ''); ?> >Gravatar <?php echo __('Logo', 'avatars'); ?></option>
-								<option value="wavatar" <?php echo ($wavatar == 'wavatar' ? 'selected' : ''); ?> >Wavatar</option>
-								<option value="monsterid" <?php echo ($wavatar == 'monsterid' ? 'selected' : ''); ?> >Monster ID</option>
-								<option value="identicon" <?php echo ($wavatar == 'identicon' ? 'selected' : ''); ?> >Identicon</option>
-							</select>
-							<br />
-							<small><?php echo __('Give users without Global or Local avatars a unique avatar.', 'avatars'); ?></small>
-						</td>
-					</tr>
+					<?php }
+
+					if (!$this->networked) { ?>
+						<tr>
+							<td><?php echo __('Gravatar default:', 'avatars'); ?><br /><small><?php echo __('Enhanced repeat from <i>Settings &raquo; Discussion</i>', 'avatars'); ?></small></td>
+							<td><?php echo get_avatar($wavatar, $this->avatar_options['size'], $wavatar); ?></td>
+							<td>
+								<select name='wavatar'>
+									<?php
+										$avatar_defaults = array(
+											'custom' => __('none', 'avatars'),
+											'mystery' => __('Mystery Man'),
+											'blank' => __('Blank'),
+											'gravatar_default' => __('Gravatar Logo'),
+											'identicon' => __('Identicon'),
+											'wavatar' => __('Wavatar'),
+											'monsterid' => __('MonsterID'),
+											'retro' => __('Retro')
+										);
+
+										$avatar_defaults = apply_filters('avatar_defaults', $avatar_defaults);
+										$avatar_list = '';
+										foreach($avatar_defaults as $default_key => $default_name) {
+											$selected = ($wavatar == $default_key) ? 'selected' : '';
+											$avatar_list .= "\n\t<option value='" . esc_attr($default_key)  . "' {$selected} >" . $default_name . "</option>";
+										}
+										echo apply_filters('default_avatar_select', $avatar_list);
+									?>
+								</select>
+								<br />
+								<small><?php echo __('Give users without Global or Local avatars a unique avatar.', 'avatars'); ?></small>
+							</td>
+						</tr>
 					<?php } ?>
+
 					<tr>
 						<td><label for="idAvatarDefault"><?php echo __('Default image:', 'avatars'); ?></label></td>
 						<td><?php echo get_avatar('', '', $this->avatar_options['default']); ?></td>
@@ -549,7 +568,11 @@ class add_local_avatars {
 					<tr>
 						<td><label for="idAvatarResize"><?php echo __('Resize uploads:', 'avatars'); ?></label></td>
 						<td><input type="checkbox" id="idAvatarResize" name="resize" <?php if($this->avatar_options['upload_allowed'] != 'on') echo 'disabled="true"'; ?> <?php echo $this->avatar_options['resize'] == 'on' ? 'checked' : ''; ?> /></td>
-						<td><label for="idAvatarResize"><small><?php echo __('Non-square uploads will be cropped.', 'avatars'); ?></small></label></td>
+						<td>
+							<label for="idAvatarResize"><small><?php echo __('Non-square uploads will be cropped.', 'avatars'); ?></small></label>
+							<br />
+							<input type="checkbox" id="idAvatarUpsize" name="upsize" <?php echo $this->avatar_options['upsize'] == 'on' ? 'checked' : ''; ?> /> <label for="idAvatarUpsize"><?php echo __('pad images smaller than <i>resize</i> set below with a white background?  This option stops small images becoming pixelated.'); ?></label>
+						</td>
 					</tr>
 					<tr>
 						<td><label for="idAvatarResizeSize"><?php echo __('Resize uploads size:', 'avatars'); ?></label></td>
@@ -569,7 +592,8 @@ class add_local_avatars {
 							<td><?php echo __('Enable user profile widget:', 'avatars'); ?></td>
 							<td><input type="checkbox" name="widget_enabled" <?php echo $this->avatar_options['widget_enabled'] == 'on' ? 'checked' : ''; ?> /></td>
 							<td><small><?php echo __('Enable the user profile widget; configure the widget at <i>Appearance &raquo; Widgets</i>.', 'avatars'); ?></small></td>
-						<?php } else { ?>
+						<?php }
+						else { ?>
 							<td colspan="3"><?php echo __('Get the user profile widget at the <a href="http://www.sterling-adventures.co.uk/blog/2008/03/01/avatars-plugin/">Avatars Home Page</a>, and enable avatar upload from your blog sidebar.', 'avatars'); ?></td>
 						<?php } ?>
 					</tr>
@@ -595,9 +619,9 @@ class add_local_avatars {
 							<input type='radio' name='credit' value='off' <?php echo ($this->avatar_options['credit'] == 'off' ? 'checked="checked"' : ''); ?> id='idCreditOff' /><label for="idCreditOff">&nbsp;<?php echo __('None', 'avatars'); ?></label><br />
 						</td>
 						<td>
-							- <?php echo __('Includes a visible credit. Customise the style in', 'avatars'), ' <code>', dirname(__FILE__); ?>/avatars.css</code>.<br />
-							- <?php echo __('Includes an invisible credit. Invisibile to preserve the <i>look</i> of your WP theme.', 'avatars'); ?><br />
-							- <?php echo __('No credit.', 'avatars'); ?>
+							<small>- <?php echo __('Includes a visible credit. Customise the style in', 'avatars'), ' <code>', dirname(__FILE__); ?>/avatars.css</code>.</small><br />
+							<small>- <?php echo __('Includes an invisible credit. Invisibile to preserve the <i>look</i> of your WP theme.', 'avatars'); ?></small><br />
+							<small>- <?php echo __('No credit.', 'avatars'); ?></small>
 						</td>
 					</tr>
 				</table>
@@ -605,7 +629,9 @@ class add_local_avatars {
 			</form>
 
 			<h3><?php echo __('Avatars Usage', 'avatars'); ?></h3>
-			<p><?php echo __('Put this code in your template files where you want avatars to appear:', 'avatars'); ?><br />
+			<p><?php echo __('Make sure you have read the ', 'avatars'); ?><a href='http://wordpress.org/extend/plugins/add-local-avatar/faq/'>FAQ</a> &amp; <a href='http://wordpress.org/extend/plugins/add-local-avatar/installation/'>Installation</a> <?php echo __('notes.', 'avatars'); ?></p>
+			<p><?php echo __('If your WP Theme does not support Avatars (almost all Themes do now-a-days) follow these hints.', 'avatars'); ?><br />
+			<?php echo __('Put this code in your template files where you want avatars to appear:', 'avatars'); ?><br />
 			<code>&lt;?php $avtr = get_avatar(id [, size [, default-image-url]]); echo $avtr; ?&gt;</code></p>
 			<p><?php echo __('The function takes the following parameters:', 'avatars'); ?><br />
 			<ol>
@@ -623,13 +649,14 @@ class add_local_avatars {
 				<li><?php echo __('Inside the comment loop of', 'avatars'); ?> <code>comments.php</code> <?php echo __('use', 'avatars'); ?> <code>&lt;?php echo get_avatar($comment); ?&gt;</code> <?php echo __("to show the comment author's avatar.", 'avatars'); ?></li>
 			</ul></p>
 		</div>
-<style type="text/css">
-table.form-table td {
-	border-bottom: 1px solid #e3e3e3;
-	padding-bottom: 1.25em !important;
-	vertical-align: top;
-}
-</style>
+
+		<style type="text/css">
+			table.form-table td {
+				border-bottom: 1px solid #e3e3e3;
+				padding-bottom: 1.25em !important;
+				vertical-align: top;
+			}
+		</style>
 	<?php }
 
 
@@ -652,14 +679,25 @@ table.form-table td {
 	// Add sub-menus...
 	function avatar_menu()
 	{
+		global $wp_version;
+		
 		if ($this->networked) {
 			if( is_site_admin() ) {
-				add_submenu_page('wpmu-admin.php', __('Avatars', 'avatars'), __('Avatars', 'avatars'), 'unfiltered_html', 'add_local_avatar', array(&$this, 'manage_avatar_cache'));
+				if(version_compare($wp_version, '3.1', '<')) {
+					add_submenu_page('wpmu-admin.php', __('Avatars', 'avatars'), __('Avatars', 'avatars'), 'unfiltered_html', 'add_local_avatar', array(&$this, 'manage_avatar_cache'));
+				}
 			}
 		}
 		else			
 			if(current_user_can('manage_options')) 
 				add_users_page(__('Avatars', 'avatars'), __('Avatars', 'avatars'), 1, basename(__FILE__), array(&$this, 'manage_avatar_cache') );
+	}
+	
+	
+	// WP 3.1 network admin menu
+	function network_admin_menu()
+	{
+		add_submenu_page('settings.php', __('Avatars', 'avatars'), __('Avatars', 'avatars'), 'manage_options', 'add_local_avatar', array(&$this, 'manage_avatar_cache'));
 	}
 
 
@@ -771,6 +809,7 @@ table.form-table td {
 	function avatar_upload($user_id)
 	{
 		if(!function_exists('wp_load_image')) include_once(ABSPATH . '/wp-admin/includes/image.php');
+		if(!function_exists('image_resize')) include_once(ABSPATH . '/wp-admin/includes/media.php');
 
 		define('TRIES', 4);			// Number of attempts to create a unique file name.
 		define('SUFFIX', 'avatar');	// Suffix for cropped avatar files.
@@ -854,6 +893,16 @@ table.form-table td {
 							}
 							else $error = __('Unable to resize image.', 'avatars');
 						}
+						// Image is too small, and upscale turned on...
+						else if($this->avatar_options['upsize'] == 'on') {
+							$resized_file = $this->image_upsize($root . $path . $file, $scaled_size, $scaled_size, "FFFFFF", SUFFIX);
+							if(!is_wp_error($resized_file) && $resized_file && $info = getimagesize($resized_file)) {
+								$parts = pathinfo($file);
+								$file = basename($resized_file, '.' . $parts['extension']) . '.' . $parts['extension'];
+							}
+							else $error = __('Unable to upsize image.', 'avatars');
+						}
+
 					}
 				}
 			}
@@ -867,12 +916,85 @@ table.form-table td {
 		if(!empty($error)) update_usermeta($user_id, 'avatar_error', $error);
 	}
 
-} // end class
+
+	// Upsize Avatar images that are too small.
+	function image_upsize($file, $max_w, $max_h, $color = null, $suffix = null, $dest_path = null, $jpeg_quality = 90 )
+	{
+		$image = wp_load_image($file);
+		if(!is_resource($image)) return new WP_Error('error_loading_image', $image, $file);
+
+		$size = @getimagesize($file);
+		if(!$size) return new WP_Error('invalid_image', __('Could not read image size'), $file);
+
+		list($orig_w, $orig_h, $orig_type) = $size;
+		$dst_x = (int)($max_w/2) - ($orig_w/2);
+		$dst_y = (int)($max_h/2) - ($orig_h/2);
+		$src_x = 0;
+		$src_y = 0;
+		$dst_w = $max_w;
+		$dst_h = $max_h;
+		$src_w = $orig_w;
+		$src_h = $orig_h;
+
+		$newimage = wp_imagecreatetruecolor($dst_w, $dst_h);
+
+		if(!empty($color)) {
+			$r = base_convert(substr($color, 0, 2), 16, 10);
+			$g = base_convert(substr($color, 2, 2), 16, 10);
+			$b = base_convert(substr($color, 4, 2), 16, 10);
+			$background = imagecolorallocate($newimage,  $r, $g, $b);
+			imagefill($newimage, 0, 0, $background);
+		}
+		imagecopyresampled($newimage, $image, $dst_x, $dst_y, $src_x, $src_y, $src_w, $src_h, $src_w, $src_h);
+
+		// Convert from full colors to index colors, like original PNG.
+		if(IMAGETYPE_PNG == $orig_type && function_exists('imageistruecolor') && !imageistruecolor($image)) imagetruecolortopalette($newimage, false, imagecolorstotal($image));
+
+		// We don't need the original in memory anymore.
+		imagedestroy($image);
+
+		// $suffix will be appended to the destination filename, just before the extension.
+		if(!$suffix) $suffix = "{$dst_w}x{$dst_h}";
+
+		$info = pathinfo($file);
+		$dir = $info['dirname'];
+		$ext = $info['extension'];
+		$name = basename($file, ".{$ext}");
+		if(!is_null($dest_path) && $_dest_path = realpath($dest_path)) $dir = $_dest_path;
+
+		$destfilename = "{$dir}/{$name}-{$suffix}.{$ext}";
+
+		if(IMAGETYPE_GIF == $orig_type) {
+			if(!imagegif($newimage, $destfilename)) return new WP_Error('resize_path_invalid', __('Resize path invalid'));
+		}
+		elseif(IMAGETYPE_PNG == $orig_type) {
+			if(!imagepng($newimage, $destfilename)) return new WP_Error('resize_path_invalid', __('Resize path invalid'));
+		}
+		else {
+			// All other formats are converted to jpg.
+			$destfilename = "{$dir}/{$name}-{$suffix}.jpg";
+			if(!imagejpeg($newimage, $destfilename, apply_filters('jpeg_quality', $jpeg_quality, 'image_resize'))) return new WP_Error('resize_path_invalid', __('Resize path invalid'));
+		}
+
+		imagedestroy($newimage);
+
+		// Set correct file permissions.
+		$stat = stat(dirname($destfilename));
+		$perms = $stat['mode'] & 0000666; // Same permissions as parent folder, strip off the executable bits.
+		@chmod( $destfilename, $perms);
+
+		// Delete old image.
+		unlink($file);
+		return $destfilename;
+	}
 
 
+} // end class.
+endif;
 
-	// do the magic
-	$add_local_avatars = new add_local_avatars();
+
+// do the magic
+$add_local_avatars = new add_local_avatars();
 
 	
 // Main template tag - outputs the avatar (returns false if avatars are switched off)...
@@ -995,11 +1117,15 @@ function get_avatar($id_or_email, $size = '', $default = '', $post = false)
 		$avatar_type = TYPE_GLOBAL;
 	}
 
-	$avatar = "<img alt='{$name}' src='{$src}' class='{$class} avatar-{$size} avatar-default' height='{$size}' width='{$size}' />";
+	$avatar = "<img src='{$src}' class='{$class} avatar-{$size} avatar-default' height='{$size}' width='{$size}' style='width: {$size}px; height: {$size}px;' alt='avatar' />";
 
-	// If not in admin pages and there is a URL, wrap the avatar markup with an anchor.
-	if(!empty($url) && $url != 'http://' && !is_admin() && $add_local_avatars->avatar_options['url_wrap'] == 'on') {
-		$avatar = sprintf("<a href='%s' rel='external nofollow' %s title='%s' %s>%s</a>", attribute_escape($url), ($user ? "" : "target='_blank'"), (empty($name) ? '' : __('Visit', 'avatars') . " $name&rsquo;" . (substr($name, -1) == 's' ? "" : "s") . " " . (empty($add_local_avatars->avatar_options['location']) ? 'website' : $add_local_avatars->avatar_options['location'])), ($add_local_avatars->avatar_options['snapshots'] == 'on' ? '' : "class='snap_noshots'"), $avatar);
+	// Hack to stop URL wrapping if the caller is the 'Admin Bar'.
+	$backtrace = debug_backtrace();
+	if($backtrace[1]['function'] != 'wp_admin_bar_my_account_item' && $backtrace[1]['function'] != 'wp_admin_bar_my_account_menu') {
+		// If not in admin pages and there is a URL, wrap the avatar markup with an anchor.
+		if(!empty($url) && $url != 'http://' && !is_admin() && $add_local_avatars->avatar_options['url_wrap'] == 'on') {
+			$avatar = sprintf("<a href='%s' rel='external nofollow' %s title='%s' %s>%s</a>", attribute_escape($url), ($user ? "" : "target='_blank'"), (empty($name) ? '' : __('Visit', 'avatars') . " $name&rsquo;" . (substr($name, -1) == 's' ? "" : "s") . " " . (empty($add_local_avatars->avatar_options['location']) ? 'website' : $add_local_avatars->avatar_options['location'])), ($add_local_avatars->avatar_options['snapshots'] == 'on' ? '' : "class='snap_noshots'"), $avatar);
+		}
 	}
 
 	// Return the filtered result.

@@ -256,6 +256,11 @@ public class ProductModelPromotionAdapter implements ProductModel, Serializable,
 	public SkuModel getDefaultSku(PricingContext context) {		 
 		return getDefaultSku();//productModel.getDefaultSku(context);
 	}
+	
+	@Override
+	public SkuModel getDefaultTemporaryUnavSku() {
+		return getDefaultSku();
+	}
 
 	@Override
 	public String getDefaultSkuCode() {		 
@@ -1330,5 +1335,15 @@ public class ProductModelPromotionAdapter implements ProductModel, Serializable,
 	
 	public boolean isExcludedForEBTPayment(){
 		return productModel.isExcludedForEBTPayment();
+	}
+
+	@Override
+	public boolean isDisabledRecommendations() {
+		return productModel.isDisabledRecommendations();
+	}
+
+	@Override
+	public boolean isRetainOriginalSkuOrder() {
+		return productModel.isRetainOriginalSkuOrder();
 	}
 }

@@ -3,9 +3,9 @@
 Plugin Name: Authors Widget
 Plugin URI: http://blog.fleischer.hu/wordpress/authors/
 Description: Authors Widget shows the list or cloud of the authors, with the number of posts, link to RSS feed next to their name, avatar. It is useful in a multi-author blog, where you want to have the list in the sidemenu.
-Version: 2.0
+Version: 2.2
 Author: Gavriel Fleischer
-Author URI: http://blog.fleischer.hu/gavriel/
+Author URI: http://blog.fleischer.hu/author/gavriel/
 */
 
 // Multi-language support
@@ -57,7 +57,8 @@ if ( function_exists('register_sidebar_widget') ) :
 			'feed' => '', 'feed_image' => '', 'feed_type' => '', 'echo' => true,
 			'limit' => 0, 'em_step' => 0.1,
 			'orderby' => 'name',
-			'exclude' => '"0"'
+			'exclude' => '"0"',
+			'include' => '',
 		);
 
 		$r = wp_parse_args( $args, $defaults );
@@ -65,7 +66,14 @@ if ( function_exists('register_sidebar_widget') ) :
 
 		$return = '';
 
-		$authors = $wpdb->get_results('SELECT ID, user_nicename, display_name FROM ' . $wpdb->users . ' WHERE 0=0' . ($exclude_admin ? ' AND ID <> 1' : '') . ' AND ID NOT IN (' . $exclude . ') AND user_login NOT IN (' . $exclude . ') ORDER BY display_name');
+		if (empty($include)) {
+			$include_sql = '';
+			$exclude_sql = ' AND ID NOT IN (' . $exclude . ') AND user_login NOT IN (' . $exclude . ')';
+		} else {
+			$include_sql = ' AND (ID IN (' . $include . ') OR user_login IN (' . $include . '))';
+			$exclude_sql = '';
+		}
+		$authors = $wpdb->get_results('SELECT ID, user_nicename, display_name FROM ' . $wpdb->users . ' WHERE 0=0' . ($exclude_admin ? ' AND ID <> 1' : '') . $exclude_sql . $include_sql . ' ORDER BY display_name');
 
 		$author_count = array();
 		foreach ((array) $wpdb->get_results('SELECT DISTINCT post_author, COUNT(ID) AS count FROM '.$wpdb->posts.' WHERE post_type = "post" AND ' . get_private_posts_cap_sql( 'post' ) . ' GROUP BY post_author') as $row) {
@@ -182,15 +190,23 @@ function widget_authors_list_authors($args = '') {
 		'style' => 'list', 'html' => true,
 		'show_avatar' => false, 'avatar_size' => 32,
 		'orderby' => 'name',
-		'exclude' => '"0"'
+		'exclude' => '"0"',
+		'include' => '',
 	);
 
 	$r = wp_parse_args( $args, $defaults );
 	extract($r, EXTR_SKIP);
 	$return = '';
 
+	if (empty($include)) {
+		$include_sql = '';
+		$exclude_sql = ' AND ID NOT IN (' . $exclude . ') AND user_login NOT IN (' . $exclude . ')';
+	} else {
+		$include_sql = ' AND (ID IN (' . $include . ') OR user_login IN (' . $include . '))';
+		$exclude_sql = '';
+	}
 	/** @todo Move select to get_authors(). */
-	$authors = $wpdb->get_results('SELECT ID, user_nicename FROM ' . $wpdb->users . ' WHERE 0=0' . ($exclude_admin ? ' AND ID <> 1' : '') . ' AND ID NOT IN (' . $exclude . ') AND user_login NOT IN (' . $exclude . ') ORDER BY display_name');
+	$authors = $wpdb->get_results('SELECT ID, user_nicename FROM ' . $wpdb->users . ' WHERE 0=0' . ($exclude_admin ? ' AND ID <> 1' : '') . $exclude_sql . $include_sql . ' ORDER BY display_name');
 
 	$author_count = array();
 	foreach ((array) $wpdb->get_results('SELECT DISTINCT post_author, COUNT(ID) AS count FROM ' . $wpdb->posts . ' WHERE post_type = "post" AND ' . get_private_posts_cap_sql('post') . ' GROUP BY post_author') as $row) {
@@ -307,31 +323,30 @@ function widget_authors_list_authors($args = '') {
 		$count = $options['count'] ? '1' : '0';
 		$exclude_admin = $options['exclude_admin'] ? '1' : '0';
 		$exclude = !empty($options['exclude']) ? $options['exclude'] : '"0"';
+		$include = !empty($options['include']) ? $options['include'] : '';
 		$hide_credit = $options['hide_credit'] ? '1' : '0';
 
 		?>
 		<?php echo $before_widget; ?>
 			<?php echo $before_title . $title . $after_title; ?>
-			<ul>
-				<?php
-					$list_args = array('orderby'=>$order, 'limit'=>$limit, 'show_fullname'=>$show_fullname, 'show_avatar'=>$show_avatar, 'avatar_size'=>$avatar_size, 'optioncount'=>$count, 'exclude_admin'=>$exclude_admin, 'exclude'=>$exclude, 'hide_empty'=>1);
-					if ($feedlink) {
-						$list_args['feed'] = 'RSS';
-						$list_args['feed_image'] = '';
-					}
-					if ('cloud' == $format && function_exists('seo_tag_cloud_generate') ) {
-						widget_authors_cloud($list_args);
-					}
-					elseif ('dropdown' == $format) {
-						widget_authors_dropdown($list_args);
-					}
-					else /*if ('list' == $format)*/ {
-						$list_args['echo'] = false;
-						$arr = widget_authors_order_by($list_args);
-						echo '<li>'.implode('<li>', $arr);
-					}
-				?>
-			</ul>
+			<?php
+				$list_args = array('orderby'=>$order, 'limit'=>$limit, 'show_fullname'=>$show_fullname, 'show_avatar'=>$show_avatar, 'avatar_size'=>$avatar_size, 'optioncount'=>$count, 'exclude_admin'=>$exclude_admin, 'exclude'=>$exclude, 'include'=>$include, 'hide_empty'=>1);
+				if ($feedlink) {
+					$list_args['feed'] = 'RSS';
+					$list_args['feed_image'] = '';
+				}
+				if ('cloud' == $format && function_exists('seo_tag_cloud_generate') ) {
+					widget_authors_cloud($list_args);
+				}
+				elseif ('dropdown' == $format) {
+					widget_authors_dropdown($list_args);
+				}
+				else /*if ('list' == $format)*/ {
+					$list_args['echo'] = false;
+					$arr = widget_authors_order_by($list_args);
+					echo '<ul><li>' . implode('<li>', $arr) . '</ul>';
+				}
+			?>
 			<?php if ($options['hide_credit'] != 1) printf('<span class="credit">'.__('Powered by %s','authors').'</span>', '<a href="http://blog.fleischer.hu/wordpress/authors/" title="'.__('Authors Widget Plugin for Wordpress','authors').'">'.__('Authors Widget','authors').'</a>');?>
 		<?php echo $after_widget; ?>
 	<?php
@@ -398,10 +413,12 @@ function widget_authors_list_authors($args = '') {
 				$avatar_size = !empty($widget_authors['avatar_size']) ? $widget_authors['avatar_size'] : 32;
 				$feedlink = isset($widget_authors['feedlink']);
 				$count = isset($widget_authors['count']);
+				$hide_empty = isset($widget_authors['hide_empty']);
 				$exclude_admin = isset($widget_authors['exclude_admin']);
 				$exclude = trim(strip_tags(stripslashes($widget_authors['exclude'])));
+				$include = trim(strip_tags(stripslashes($widget_authors['include'])));
 				$hide_credit = isset($widget_authors['hide_credit']);
-				$options[$widget_number] = compact( 'title', 'format', 'order', 'limit', 'show_fullname', 'show_avatar', 'avatar_size', 'feedlink', 'count', 'exclude_admin', 'exclude', 'hide_credit' );
+				$options[$widget_number] = compact( 'title', 'format', 'order', 'limit', 'show_fullname', 'show_avatar', 'avatar_size', 'feedlink', 'count', 'hide_empty', 'exclude_admin', 'exclude', 'include', 'hide_credit' );
 			}
 
 			update_option('widget_authors', $options);
@@ -418,8 +435,10 @@ function widget_authors_list_authors($args = '') {
 			$avatar_size = 32;
 			$feedlink = false;
 			$count = false;
+			$hide_empty = 0;
 			$exclude_admin = 0;
 			$exclude = '';
+			$include = '';
 			$hide_credit = 0;
 			$number = '%i%';
 		} else {
@@ -432,8 +451,10 @@ function widget_authors_list_authors($args = '') {
 			$avatar_size = attribute_escape( $options[$number]['avatar_size'] );
 			$feedlink = (bool) $options[$number]['feedlink'];
 			$count = (bool) $options[$number]['count'];
+			$hide_empty = (bool) $options[$number]['hide_empty'];
 			$exclude_admin = (bool) $options[$number]['exclude_admin'];
 			$exclude = $options[$number]['exclude'];
+			$include = $options[$number]['include'];
 			$hide_credit = (bool) $options[$number]['hide_credit'];
 		}
 		?>
@@ -459,8 +480,10 @@ function widget_authors_list_authors($args = '') {
 		<p><label for="authors-avatar-size-<?php echo $number; ?>"><?php _e('Avatar size', 'authors') ?>: <input type="text" class="widefat" style="width: 25px; text-align: center;" id="authors-avatar-size-<?php echo $number; ?>" name="widget-authors[<?php echo $number; ?>][avatar_size]" value="<?php echo $avatar_size ?>" /></label></p>
 		<p><label for="authors-feedlink-<?php echo $number; ?>"><input id="authors-feedlink-<?php echo $number; ?>" name="widget-authors[<?php echo $number; ?>][feedlink]" type="checkbox" <?php checked( $feedlink, true ); ?> class="checkbox" /> <?php _e('Show RSS links','authors'); ?></label></p>
 		<p><label for="authors-count-<?php echo $number; ?>"><input id="authors-count-<?php echo $number; ?>" name="widget-authors[<?php echo $number; ?>][count]" type="checkbox" <?php checked( $count, true ); ?> class="checkbox" /> <?php _e('Show post counts','authors'); ?></label></p>
+		<p><label for="authors-hide-empty-<?php echo $number; ?>"><input id="authors-hide-empty-<?php echo $number; ?>" name="widget-authors[<?php echo $number; ?>][hide_empty]" type="checkbox" <?php checked( $hide_empty, true ); ?> class="checkbox" /> <?php _e('Hide empty','authors'); ?></label></p>
 		<p><label for="authors-exclude-admin-<?php echo $number; ?>"><input id="authors-exclude-admin-<?php echo $number; ?>" name="widget-authors[<?php echo $number; ?>][exclude_admin]" type="checkbox" <?php checked( $exclude_admin, true ); ?> class="checkbox" /> <?php _e('Exclude admin','authors'); ?></label></p>
 		<p><label for="authors-exclude-<?php echo $number; ?>"><?php _e('Exclude','authors'); ?>: <input id="authors-exclude-<?php echo $number; ?>" name="widget-authors[<?php echo $number; ?>][exclude]" type="text" value="<?php echo htmlspecialchars($exclude); ?>" class="widefat" style="width:100px" /></label></p>
+		<p><label for="authors-include-<?php echo $number; ?>"><?php _e('Include','authors'); ?>: <input id="authors-include-<?php echo $number; ?>" name="widget-authors[<?php echo $number; ?>][include]" type="text" value="<?php echo htmlspecialchars($include); ?>" class="widefat" style="width:100px" /></label></p>
 		<p><label for="authors-hide-credit-<?php echo $number; ?>"><input id="authors-hide-credit-<?php echo $number; ?>" name="widget-authors[<?php echo $number; ?>][hide_credit]" type="checkbox" <?php checked( $hide_credit, true ); ?> class="checkbox" /> <?php _e('Hide credit','authors'); ?></label></p>
 		<p><a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&amp;hosted_button_id=10234211" target="_blank"><img src="https://www.paypal.com/en_US/i/btn/btn_donate_SM.gif" alt="<?_e('Donate')?>" /></a></p>
 		<input type="hidden" name="widget-authors[<?php echo $number; ?>][submit]" value="1" />

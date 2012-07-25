@@ -22,6 +22,10 @@ msgstr ""
 msgid "Authors"
 msgstr "Auteurs"
 
+#: authors.php:143
+msgid "Select Author..."
+msgstr "Choisir l'auteur"
+
 #: authors.php:118
 msgid "Title"
 msgstr "Titre"

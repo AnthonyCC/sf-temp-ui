@@ -3,7 +3,7 @@ Contributors: flocsy
 Donate link: http://blog.fleischer.hu/wordpress/authors/
 Tags: authors, author, multi-author, multi-user, list, sidemenu, sidebar, links, widgets, widget, plugin, avatar, gravatar
 Requires at least: 2.0.2
-Tested up to: 3.0
+Tested up to: 3.4
 Stable tag: trunk
 
 Authors Widget shows the list or cloud of the authors in the sidemenu.
@@ -47,6 +47,13 @@ And you're welcome to [donate](http://blog.fleischer.hu/wordpress/authors/) to k
 * Hungarian / Magyar
 * Russian / Русский by [Fat Cow](http://www.fatcow.com "Fat Cow")
 * Spanish / Español by [Jos Velasco](http://cuanticawebs.com/ "Cuántica Webs")
+* Turkish / Türkçe by [losing911]
+* Bulgarian / български by [Dimitar Kolevski](http://webhostinggeeks.com/ "Web Geek")
+* German / Deutsch by [Roland Heide](http://www.designcontest.com/ "Design Contest"), [Ralph Stenzel](http://www.fuerther-freiheit.info/)
+* Lithuanian by [Nata Strazda](http://www.webhostinghub.com/ "Web Hub")
+* Hebrew / עברית by [Sagive](http://sagive.co.il "Sagive SEO")
+* Belarusian / беларуская by [Alexander Ovsov](http://webhostinggeeks.com/science/ "Web Geek Sciense")
+* Polish / Polski [Krzysztof](http://pl2wp.prywatny.eu/)
 
 = How can I exclude certain authors from being displayed? =
 
@@ -55,6 +62,11 @@ Add them to the Exclude list either by ID or user_login:
 1,3,7
 
 "admin","bob","joe"
+
+= How can I include only certain authors? =
+
+Add them to the Include list. The format is the same as for the Exclude.
+Fill only one of the fields: either Include or Exclude, but not both of them.
 
 == Screenshots ==
 
@@ -67,7 +79,29 @@ Add them to the Exclude list either by ID or user_login:
 7. Drop it to your Sidebar and set up the widget options
 8. This is how it looks in older WP versions
 
+== Upgrade Notice ==
+
 == Changelog ==
+
+= 2.2 =
+* Added feature: hide_empty - hide authors with 0 posts
+
+= 2.1.1 =
+* Added Polish translation
+
+= 2.1 =
+* Added option to Include certain authors
+
+= 2.0.3 =
+* Improved German translation
+* Fixed ul bug
+
+= 2.0.2 =
+* Added Belarusian translation
+
+= 2.0.1 =
+* Added Turkish translation
+* Added Hebrew translation
 
 = 2.0 =
 * Added feature: Exclude authors by ID or "user_login"
@@ -111,11 +145,3 @@ Add them to the Exclude list either by ID or user_login:
 = 1.1 =
 
 = 1.0 =
-
-== Upgrade Notice ==
-
-= 1.7 =
-Added the long waited Avatar support.
-
-= 2.0 =
-Added the long waited Exclude by ID or user_login support

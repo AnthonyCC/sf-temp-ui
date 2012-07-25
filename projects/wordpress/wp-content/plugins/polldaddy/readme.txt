@@ -1,34 +1,83 @@
-=== PollDaddy Polls & Ratings ===
-Contributors: mdawaffe, eoigal
+=== Polldaddy Polls & Ratings ===
+Contributors: eoigal, alternatekev, mdawaffe, donncha, johnny5
 Tags: polls, poll, polldaddy,  wppolls, vote, polling, surveys, rate, rating, ratings
 Requires at least: 2.6
-Tested up to: 3.0.1
-Stable tag: 1.8.9
+Tested up to: 3.3.1
+Stable tag: 2.0.13
 
-Create and manage PollDaddy polls and ratings from within WordPress.
+Create and manage Polldaddy polls and ratings from within WordPress.
 
 == Description ==
 
-The PollDaddy Polls and Ratings plugin allows you to create and manage polls and ratings from within your WordPress dashboard. You can create polls, choose from 20 different styles for your polls, and view all results for your polls as they come in. All PollDaddy polls are fully customizable, you can set a close date for your poll, create multiple choice polls, choose whether to display the results or keep them private. You can also create your own custom style for your poll. You can even embed the polls you create on other websites. You can collect unlimited votes and create unlimited polls. The new ratings menu allows you to embed ratings into your posts, pages or comments. The rating editor allows you to fully customize you rating. You can also avail of the the 'Top Rated' widget that will allow you to place the widget in your sidebar. This widget will show you the top rated posts, pages and comments today, this week and this month.
+The Polldaddy Polls and Ratings plugin allows you to create and manage polls and ratings from within your WordPress dashboard. You can create polls, choose from 20 different styles for your polls, and view all results for your polls as they come in. All Polldaddy polls are fully customizable, you can set a close date for your poll, create multiple choice polls, choose whether to display the results or keep them private. You can also create your own custom style for your poll. You can even embed the polls you create on other websites. You can collect unlimited votes and create unlimited polls. The new ratings menu allows you to embed ratings into your posts, pages or comments. The rating editor allows you to fully customize you rating. You can also avail of the the 'Top Rated' widget that will allow you to place the widget in your sidebar. This widget will show you the top rated posts, pages and comments today, this week and this month.
 
-PollDaddy Polls is localizable and currently available in:
+Polldaddy Polls is localizable and currently available in:
 
-* English
-* Arabic (thanks <a href="http://www.Ghorab.ws" target="_blank">Ghorab.ws</a>)
-* French
-* Spanish
+* Arabic
+* Assamese
+* Bengali
+* Bosnian
+* Bulgarian
+* Burmese
+* Catalan
+* Chinese(China)
+* Chinese(Taiwan)
+* Croatian
 * Czech
 * Danish
+* Dutch
+* Finnish
+* French(Canada)
+* French(France)
+* French(Switzerland)
+* Galician
+* German
+* Greek
+* Greek(Polytonic)
+* Hebrew
+* Hungarian
+* Indonesian
+* Irish
+* Italian
+* Japanese
 * Khmer
-* Tegulu
+* Korean
+* Kurdish(Sorani)
+* Lithuanian
+* Macedonian
+* Malay
+* Mari(Meadow)
+* Norwegian
+* Norwegian(Nynorsk)
+* Persian
+* Polish
+* Portuguese(Brazil)
+* Portuguese(Portugal)
+* Romanian
+* Russian
+* Serbian
+* Slovak
+* Spanish(PuertoRico)
+* Spanish(Spain)
+* Sundanese
+* Swedish
+* Tagalog
+* Tamil
+* Telugu
+* Thai
+* Turkish
+* Uighur
+* Ukrainian
+* Vietnamese
+* Welsh
 
-A messages.pot file is included in the plugin - please do send us any language files!
+Want to help translate the plugin or keep an existing translation up-to-date? Head on over to http://translate.wordpress.com/projects/polldaddy/plugin
 
 == Installation ==
 
-Upload the plugin to your blog, Activate it, then enter your PollDaddy.com email address and password.
+Upload the plugin to your blog, Activate it, then enter your Polldaddy.com email address and password.
 
-More info here - http://support.polldaddy.com/installing-wordpress-org-plugin/
+You can find further help on our [support page](http://support.polldaddy.com/installing-wordpress-org-plugin/). If you have any problems please use the [support forum](http://wordpress.org/tags/polldaddy?forum_id=10). The plugin also logs activity to a file using the [WP Debug Logger](http://wordpress.org/extend/plugins/wp-debug-logger/) plugin which can be useful in determining the cause of a problem.
 
 == Screenshots ==
 
@@ -43,11 +92,11 @@ More info here - http://support.polldaddy.com/installing-wordpress-org-plugin/
 
 = I have multiple authors on my blog?  What happens? =
 
-Each author that wants to create polls will need his or her own PollDaddy.com account.
+Each author that wants to create polls will need his or her own Polldaddy.com account.
 
 = But, as an Administrator, can I edit my Authors' polls =
 
-Yes. You'll be able to edit the polls they create from your blog.  (You won't be able to edit any of their non-blog, personal polls they create through PollDaddy.com.)
+Yes. You'll be able to edit the polls they create from your blog.  (You won't be able to edit any of their non-blog, personal polls they create through Polldaddy.com.)
 
 = Neat! Um... can my Authors edit MY blog polls? =
 
@@ -59,14 +108,106 @@ Check your theme's footer.php calls wp_footer. The rating javascript is loaded o
 
 More info here - http://codex.wordpress.org/Theme_Development#Plugin_API_Hooks
 
-= I cannot access my ratings settings, I am getting a "Sorry! There was an error creating your rating widget. Please contact PollDaddy support to fix this." message. =
+= I cannot access my ratings settings, I am getting a "Sorry! There was an error creating your rating widget. Please contact Polldaddy support to fix this." message. =
 
 You need to select the synchronize ratings account in the Options menu to make sure the ratings API key is valid.
 
-== Change Log ==
+= When I try to use a rating on a page, I get a PHP warning about the post title. =
+
+Your rating uses the filter 'wp_title' by default when retrieving the post title, you may need to remove this in the Polls & Ratings settings to allow ratings to work with your theme.
+
+= Why is a poll loading in the footer of my main page? =
+
+Your theme is getting the post content, without necessarily showing it. If the post has a poll, the poll javascript is loaded in the footer. To fix this, you need to enable the 'Load Shortcodes Inline' setting in the Polls & Ratings settings. This will load the poll shortcode inline and will only load the poll if the content of the post is actually displayed.
+
+
+== Upgrade Notice ==
+= 2.0.13 =
+Bugfixes
+
+== Changelog ==
+
+= 2.0.13 =
+* Updated translation files and fixed gettext domain in plugin strings
+* Fixed wp_title filter parameter
+* Fixed ratings to show on category and archive pages.
+* Added better sanitization to stop xss vulnerabilities
+
+= 2.0.12 =
+* Fix for CSS bug on admin pages with WordPress 3.3
+* Add range of new languages to further localize the plugin
+* Updated the shortcodes to be better sanitized to prevent possibility of XSS 
+
+= 2.0.11 =
+* Fix for CSS bug on admin pages with WordPress 3.3
+* Update Translation files from GlotPress to use 
+
+= 2.0.10 =
+* Added option to custom style editor to set direction of text.
+* Added option to allow shortcodes to load inline rather than in the footer. Some themes need this.
+
+= 2.0.9 =
+* Added support for slider popup polls and variable sized surveys
+* Added activity logging
+* Added Latvian translation
+* Added setting to configure filter used on blog title with ratings
+* Fixed bug in preview polls
+
+= 2.0.8 =
+* Fixed display of ratings on posts and pages.
+* Fixed confirmation dialog when deleting polls
+* Changed PollDaddy to Polldaddy
+
+= 2.0.7 =
+* Fixed bug in displaying multiple polls in a post
+* Fixed bug when using json_encode, it converts utf8 charaters to unicode values in post title but they were not getting escaped properly and thus were not displayed properly in reports or in top rated widget.
+
+= 2.0.6 =
+* Tidy up shortcodes - remove keywords from no script tags, inline javascript is now xhtml compatible, load survey and poll javascript files in the footer to assist page load speeds
+
+= 2.0.5 =
+* Tested with version 3.2
+* Added extra shortcode handler for inline surveys
+* Fix Polldaddy icon position on poll pages
+* Remove rating javascript code from feeds and ajax
+
+= 2.0.4 =
+* Fixed bugs with using new ajax.php in PHP 4
+* Fixed issue with conflicts with other plugins using ajax.php
+* Fixed bug in poll question media upload
+* Fixed bug in adding answers, if you clicked button multiple times, multiple answers were added with same name.
+
+= 2.0.3 =
+* Fixed side nav gray theme icon bug introduced by usage of sprite image
+
+= 2.0.2 =
+* Added support to the shortcode for alignment. Usage: [polldaddy poll=xxxxxx align=right|left]
+* Fixed layout issues in Firefox 4 on embed interface
+* Fixed extraneous dividers bug
+* Changed nav menu icon to sprite to fix hover flash bug
+
+= 2.0.1 =
+* Fixed bug in selecting custom styles in poll editor for webkit browsers
+
+= 2.0 =
+* Updated the UI
+* Added media embeds in poll editor
+* Added poll comments option
+* Fixed layout issues when viewing plugin in iframe/popup
+* Fixed bug in multiple choices dropdown
+* Fixed bug in updating style when updating all polls using that style 
+
+= 1.8.10 =
+* Updated shortcodes to use latest Polldaddy code
+* Fixed minor bug in rating results
+* Fixed minor bug in poll editor to allow use of 0 as poll answer
+* Added extra check to edit permissions on whether user is a blog member
+* Added Turkish and Polish language packs
+
 = 1.8.9 =
 * Added option to rating settings to disable ratings results popup
 * Fixed bug in choosing rating text color
+
 = 1.8.8 =
 * Updated style editor to catch some missing strings so they can be now be localised
 * Added string maps to javascript files to allow them to be localised
@@ -111,7 +252,7 @@ You need to select the synchronize ratings account in the Options menu to make s
 * Bug Fix: Fixed typo in API request URL.
 
 = 1.7.8 =
-* Added Options menu, that will allow users to set poll defaults settings, import another PollDaddy account and there is also a setting to allow each blog user to import their own PollDaddy account.
+* Added Options menu, that will allow users to set poll defaults settings, import another Polldaddy account and there is also a setting to allow each blog user to import their own Polldaddy account.
 * Added the Top Rated widget.
 * Added survey and rating short codes.
 * Added a pot file to allow the plugin to be localized.
@@ -121,7 +262,7 @@ You need to select the synchronize ratings account in the Options menu to make s
 * Bug Fix: Fixed notices thrown by ratings when first loaded, empty response from API.
 
 = 1.7.6 =
-* Added PollDaddy Ratings, you can now add ratings to your posts, pages and comments
+* Added Polldaddy Ratings, you can now add ratings to your posts, pages and comments
 * Bug Fix: Sub-menu now highlights the correct option
 
 = 1.7.5 =
@@ -144,9 +285,9 @@ You need to select the synchronize ratings account in the Options menu to make s
 
 = 1.7 =
 * Added Poll Style Editor
-* Updated the PollDaddy API Client code
+* Updated the Polldaddy API Client code
 * Removed style picker javascript, now reference static file on Polldaddy
-* Bug Fix: PollDaddy Answers link to poll in poll embed code now correct
+* Bug Fix: Polldaddy Answers link to poll in poll embed code now correct
 * Bug Fix: iframe view of poll editor now display design area
 * Bug Fix: Only print API error once
 
@@ -162,21 +303,21 @@ You need to select the synchronize ratings account in the Options menu to make s
  
 = 1.3 =
 * Added Close/Open poll to poll actions
-* Added Custom Styles link to Edit poll, under Design. This link will be only present when the user has custom styles created on the PollDaddy.com site.
+* Added Custom Styles link to Edit poll, under Design. This link will be only present when the user has custom styles created on the Polldaddy.com site.
 * Added option to make normal request every login
 
 = 1.2 =
-* Bug Fix: SSL request for PollDaddy API key sometimes failed due to host constraints, included option to make a normal http request in this case.
+* Bug Fix: SSL request for Polldaddy API key sometimes failed due to host constraints, included option to make a normal http request in this case.
 * Bug Fix: Redirect after login now goes to list polls
 
 = 1.1 =
-* Bug Fix: Don't call PollDaddy API on every admin page load
+* Bug Fix: Don't call Polldaddy API on every admin page load
 * Bug Fix: Correct Image locations
 * Bug Fix: CSS Tweaks for upcoming WordPress 2.8
 * Make Javascript image selector more robust
 
 = 1.0 =
-* New PollDaddy API
+* New Polldaddy API
 * Do not store UserCode, retrieve from API
 * Bug Fix: Fix API key retrieval.  Improper use of wp_remote_post()
 
@@ -192,7 +333,7 @@ You need to select the synchronize ratings account in the Options menu to make s
 * Potential bug fix: Maybe get rid of 'Invalid Poll Author' error... again.
 
 = 0.6 =
-* Bug fix: Allow reauthentication with PollDaddy email address and PollDaddy password.  This is necessary because the stored PollDaddy User API key is invalidated if the user's details change on PollDaddy.com.
+* Bug fix: Allow reauthentication with Polldaddy email address and Polldaddy password.  This is necessary because the stored Polldaddy User API key is invalidated if the user's details change on Polldaddy.com.
 * Buf fix: Speed up CSS and JS.
 * Feature: Link to view Shortcode and JavaScript code for each poll.
 

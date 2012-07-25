@@ -5,7 +5,7 @@ Author URI: http://www.sterling-adventures.co.uk/
 Plugin URI: http://www.sterling-adventures.co.uk/blog/2008/03/01/avatars-plugin/
 Tags: avatar, gravatar, images, user, pictures, photos, global, local
 Requires at least: 2.5
-Tested up to: 3.0.1
+Tested up to: 3.3
 Stable tag: trunk
 
 This plugin adds the ability to have local avatars in WordPress 2.5+
@@ -13,9 +13,9 @@ This plugin adds the ability to have local avatars in WordPress 2.5+
 == Description ==
 Adds local (private) avatars for your users.  Maybe your users don't want a global avatar, aren't IT savvy enough to set a Gravatar up, simply want a private avatar for your blog, or any other reason too...
 
-<b>v9.0 Requires PHP version 5.1.3 or greater.</b>
+<b>From v9.0 Avatars requires PHP version 5.1.3 or greater.</b>
 
-The plug-in now delivers the much requested feature of allowing users to upload their own local avatar.  And, the latest new feature allows your users to use their <a href="http://twitter.com" rel="nofollow">Twitter</a> avatar.  The order of precedence is; <i>Local</i>, <i>Twitter</i>, then <i>Global</i>.  In other words; if you define a Local avatar for a user, that will be used, if there is no Local avatar defined and a Twitter ID is given for a user, the plugin will try to use that avatar.  Lastly, where no Local avatar is defined and no Twitter ID is given (or Twitter doesn't return a match), a unique Global avatar (<a href="http://gravatar.com/" rel="nofollow">Gravatar</a>) will be generated.
+The plug-in now delivers the much requested feature of allowing users to upload their own local avatar.  And, the latest new feature allows your users to use their <a href="http://twitter.com" rel="nofollow">Twitter</a> avatar.  The order of precedence is; *Local*, *Twitter*, then *Global*.  In other words; if you define a Local avatar for a user, that will be used, if there is no Local avatar defined and a Twitter ID is given for a user, the plugin will try to use that avatar.  Lastly, where no Local avatar is defined and no Twitter ID is given (or Twitter doesn't return a match), a unique Global avatar (<a href="http://gravatar.com/" rel="nofollow">Gravatar</a>) will be generated.
 
 The local avatar feature list:<ul>
 <li>Have global or local avatars for your users.</li>
@@ -32,13 +32,15 @@ Plus there is now a new sidebar widget extension to the plug-in that provides a 
 
 <a href="http://www.sterling-adventures.co.uk/blog/2008/03/01/avatars-plugin/">Donations</a> are welcome and help keep development going.
 
+
 == Installation ==
 * Just put the plug-in into your plug-in directory and activate it.
 * Use the form, <code>Users</code> &raquo; <code>Avatars</code>, to define any local avatars for your users.  Specify the URI for an avatar image, something like <code>http://your.domain/avatars/image.jpg</code>, where <code>avatars</code> is a directory containing your local images.
 * Also, you may set a default size (in pixels) for avatars and define a default image (e.g. <code>http://your.domain/avatars/default.jpg</code>) to use when no local or global avatar is available.
-* Plus, you can also take advantage of the Gravatar.com feature to use Wavatar, Monster ID or Identicon.
+* Plus, you can also take advantage of the Gravatar.com feature to use Wavatar, Monster ID, Identicon, etc.
 * Use: <code>&lt;?php $avtr = get_avatar(id [, size [, default-image-url]]); echo $avtr; ?&gt;</code>
 * More example code to include in your template files is documented on the <code>Users</code> &raquo; <code>Avatars</code> page.
+
 
 == Change Log ==
 Changes and feature additions for the Local Avatar plugin:<ul>
@@ -68,7 +70,7 @@ Changes and feature additions for the Local Avatar plugin:<ul>
 <li>7.0 - Support for user profile widget plug-in.</li>
 <li>7.1 - Update for Marc Adrian to provide support for option for showing text in the optional widget.</li>
 <li>7.2 - Class added to help with styling widget.</li>
-<li>7.3 - Fix for user avatar upload that doesn't need re-sizing and a Russian translation thanks to "Fatcow".</li>
+<li>7.3 - Fix for user avatar upload that doesn't need re-sizing and a Russian translation.</li>
 <li>7.4 - Root directory no longer DOCUMENT_ROOT.</li>
 <li>7.5 - Use DOCUMENT_ROOT option for legacy users.</li>
 <li>7.6 - Check for required core WP upload functions, only required for themes that expose the user profile pages.</li>
@@ -77,12 +79,22 @@ Changes and feature additions for the Local Avatar plugin:<ul>
 <li>8.2 - Control anchor wrapping of Avatars.</li>
 <li>8.3 - Allow Twitter ID for optional widget.</li>
 <li>9.0 - WPMU/Network re-work.  Thanks to Michael D. Tran for his efforts!</li>
+<li>9.1 - Update for Admin Bar in WordPress v3.1</li>
+<li>9.2 - Fix for local avatar upload to cope with the ever changing WP!</li>
+<li>10.0 - New option to upsize local avatar images that are smaller than the set size.  Thanks to Nicholas Craig.</li>
+<li>10.1 - Update for networked WP.  Thanks to Michael D Tran.</li>
+<li>10.2 - alt tag for avatar img.</li>
+<li>10.3 - Compress the paging header for Avatar tables, plus tidy up of table output code.</li>
+<li>10.4 - Add 'retro' dynamic automatic Avatar type.</li>
+<li>10.5 - Small change to hack for new (WP 3.3) Admin Bar style.</li>
 </ul>
+
 
 == Screenshots ==
 1. An example of the main avatars page.  Manage users global and local avatars etc.
 2. The avatars options configuration section of the main avatars page.
 3. From the WordPress profile page, the new section allows users to upload their own local avatar.
+
 
 == Thanks ==
 A lot of hard work has gone in to this plug-in, much of it at the request of people who use it, and I hope it is useful to you too!  Please consider these things...<ul>
@@ -93,16 +105,59 @@ A lot of hard work has gone in to this plug-in, much of it at the request of peo
 
 Enjoy!
 
+
+== Frequently Asked Questions ==
+
+= How to install Avatars in a WordPress Multi Site environment =
+Getting this plugin to work under a WordPress (WP) Multi Site (MS) configuration can be tricky, but as the instructions for WP MS installations say, you are expected to know what you are doing and have basic WordPress development, PHP, HTML, CSS, and UNIX/Linux administration experience.  See http://codex.wordpress.org/Create_A_Network.  However, here are some steps that have worked for others configuring this plugin for WP MS.<ol>
+<li>In the <strong>Network Admin</strong> area, <em>network activate</em> the plugin.</li>
+<li>Now under <strong>Users</strong> &raquo; <strong>Avatars</strong> look for the User Uploads option, check the box and save.</li>
+</ol>
+
+= When to use the Legacy Method for User Uploads =
+Often the *legacy method* for User Uploads is required when using sub-domains.  Therefore, this is also regularly required for WordPress Multi Site setups.
+
+= Setting the User Upload directory =
+The directory uploaded Avatars are stored in is set by the field next to the enable user uploads option.  There is an example <code>/avatars</code> given in the instructions beneath the field.
+This directory must be relative to your web-root.  For example, if all of your HTML files and your WP installation are in a directory <code>public_html</code> provided by your web host, this is the web-root.  So the <code>/avatars</code> directory goes here, i.e. <code>~/public_html/avatars</code>.
+Make sure the privileges are set correctly.
+
+= Where are the Avatar options =
+The options for the Avatar plugin are available on the <code>User</code> &raquo; <code>Avatars</code> page, at the bottom.
+
+= Show the Avatar of the logged in User =
+If you are trying to show, say somewhere in a sidebar, the Avatar of the user who is logged-in try code something like this:
+<code>
+&lt;?php
+	global $current_user;
+	$known = !empty($current_user->nickname);
+?&gt;
+&lt;div style="float: right; margin: 4px;"&gt;
+&lt;?php if($known) echo get_avatar($current_user->id, 30); ?&gt;
+&lt;/div&gt;
+</code>
+
+= Get the Avatar setting content higher up the User Profile page =
+I've not tested this extensively, but it is possible to move the Avatar setting section higher up the User Profile page by making these changes to the plugin (alter the code at your own risk!).
+Find the two lines with <code>show_user_profile</code> and <code>edit_user_profile</code>, comment them out, and add the <code>profile_personal_options</code> line - the code now looks like this:
+<code>
+		add_action('profile_personal_options', array(&$this, 'avatar_uploader_option'));
+//		add_action('show_user_profile', array(&$this, 'avatar_uploader_option'));
+//		add_action('edit_user_profile', array(&$this, 'avatar_uploader_option'));
+</code>
+
+
 == Internationalisation ==
-Avatars provides support for language translations.  Ensure WPLANG is set in your wp-config file.
+Avatars provides support for language translations.  Ensure WPLANG is set in your <code>wp-config</code> file.
 To help with the available translations create a .po translation and compile a .mo file.  If you would like this to be included in the general distribution please send these files back via the <a href="http://www.sterling-adventures.co.uk/Comments/feedback.php">feedback link</a>.  I can't accept any credit for these languages files, nor can I guarantee they are correct.
 
 Available translations, from the English default, are:<ul>
 <li>Persian (WPLANG = fa_IR).  Thanks to Mustafa Sufi.</li>
 <li>Russian (WPLANG = ru_RU).  Thanks to Levati.</li>
-<li>French (WPLANG - fr_FR).  Thanks to Adrien Schvalberg.</li>
-<li>Spanish (WPLANG - es_ES).  Thanks to Naceira - http://www.naceira.com/</li>
-<li>Ukrainian (WPLANG - uk_UK).  Thanks to Vadim Nekhai, website: http://onix.name/portfolio/</li>
-<li>Portuguese Brazil (WPLANG - pt_BR).  Thanks to Steff.</li>
-<li>Japanese (WPLANG - pt_ja).  Thanks to Kazuhiko Maeda.</li>
+<li>French (WPLANG = fr_FR).  Thanks to Adrien Schvalberg.</li>
+<li>Spanish (WPLANG = es_ES).  Thanks to Naceira - http://www.naceira.com/</li>
+<li>Ukrainian (WPLANG = uk_UK).  Thanks to Vadim Nekhai, website: http://onix.name/portfolio/</li>
+<li>Portuguese Brazil (WPLANG = pt_BR).  Thanks to Steff.</li>
+<li>Japanese (WPLANG = pt_ja).  Thanks to Kazuhiko Maeda.</li>
+<li> Czech (WPLANG = cs_CZ).  Thanks to Dominik Chrástecký.</li>
 </ul>

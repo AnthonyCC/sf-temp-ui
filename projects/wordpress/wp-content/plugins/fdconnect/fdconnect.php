@@ -96,6 +96,7 @@ add_action('bp_after_sidebar_login_form', 'twc_login_form');
 add_filter('comment_form_defaults', 'fdc_comment_form_defaults');
 add_filter('login_url', 'fdc_login_url',1,2);
 add_filter('option_twc_local', 'fdc_option_twc_local');
+add_filter('get_comment', 'fdc_get_comment');
 
 if (session_id() == "") {
 	session_start();
@@ -151,23 +152,25 @@ function twc_init()
 	
 	if(!is_user_logged_in())
 	{
-		if(isset($_GET['oauth_token']))
-		{
-			twc_oAuth_Confirm();
-		}
-		else
-		{
-
-			$ref= (isset($_SERVER['HTTP_REFERER'])) ? $_SERVER['HTTP_REFERER'] : '';
-			$myfd_pos = strpos($ref,"/myfd/");
-			$autoAuth = $myfd_pos!=false;
-			
-			if( isset($_GET['twc_oauth_start']))
+		if(!isset($_GET['nodisplayname'])){
+			if(isset($_GET['oauth_token']))
 			{
-				twc_oAuth_Start();
-
-			} elseif ($autoAuth){
-				twc_oAuth_Start(true);
+				twc_oAuth_Confirm();
+			} 
+			else
+			{
+	
+				$ref= (isset($_SERVER['HTTP_REFERER'])) ? $_SERVER['HTTP_REFERER'] : '';
+				$myfd_pos = strpos($ref,"/myfd/");
+				$autoAuth = $myfd_pos!=false;
+				
+				if( isset($_GET['twc_oauth_start']))
+				{
+					twc_oAuth_Start();
+	
+				} elseif ($autoAuth){
+					twc_oAuth_Start(true);
+				}
 			}
 		}
 		if(isset($_GET['twc_req_key']))
@@ -1073,6 +1076,15 @@ function twc_get_buttons()
 //*****************************************************************************
 function twc_the_content($text)
 {
+	if(isset($_GET['nodisplayname'])) {
+		$text =
+			'<div class="myfd-warning">'.
+			'	<div class="myfd-warning-excl"><img width="18" height="22" border="0" alt="!" src="'.get_bloginfo('template_url').'/media_stat/images/template/system_msgs/exclaim_CC3300.gif"></div>'.
+			'	<div class="myfd-warning-text text11rbold">Please set Display Name in <a href="'.get_option('fdc_fd_storefront_base').'/your_account/signin_information.jsp#setdisplayname">Your Account Preferences</a> before posting a comment.</div>'.
+			'</div>'.
+			$text;
+	}
+	
 	global $twc_tweet_button, $post_ID;
 
 	$tweet_pattern = '/(\[tweet\](.*?)\[\/tweet\])/is';
@@ -1189,7 +1201,7 @@ function fdc_comment_form_defaults($defaults)
 {
 	global $user_identity;
 	$defaults['logged_in_as'] = '<p class="logged-in-as">Logged in as '.$user_identity.'</p>';
-	$defaults['comment_field'] = '<p class="comment-form-comment"><div style="overflow:hidden"><label for="comment" style="float:left;padding:3px 0px">' . _x( 'Comment', 'noun' ) . '</label><a style="float:right;padding-right:8px;padding-top:3px" href="'.get_option('fdc_fd_storefront_base').'/help/privacy_policy.jsp">Privacy Policy</a></div><textarea id="comment" name="comment" cols="45" rows="8" aria-required="true"></textarea></p>';
+	$defaults['comment_field'] = '<p class="comment-form-comment"><div style="overflow:hidden"><label for="comment" style="float:left;padding:3px 0px">' . _x( 'Comment', 'noun' ) . '</label><a style="float:right;padding-right:8px;padding-top:3px" href="'.get_option('fdc_fd_storefront_base').'/media/editorial/myfd/blog/user_guidelines.html">User Guidelines</a></div><textarea id="comment" name="comment" cols="45" rows="8" aria-required="true"></textarea></p>';
 	return $defaults;
 }
 
@@ -1227,6 +1239,28 @@ function fdc_option_twc_local()
 {
 	return 'Y';
 }
+
+
+//*****************************************************************************
+//* fdc_option_twc_local
+//*****************************************************************************
+function fdc_get_comment($comment)
+{
+	global $USER_NAME_CACHE;
+	$user_id = $comment->user_id;
+
+	if (!empty($user_id)){
+		$author = $USER_NAME_CACHE[$user_id];
+		if (empty($author)) {
+			$author = get_userdata($comment->user_id)->user_login;
+			$USER_NAME_CACHE[$user_id] = $author;
+		}
+		$comment->comment_author = $author;
+	}
+	
+	return $comment;
+}
+
 
 
 //*****************************************************************************

@@ -1,28 +1,39 @@
 // For use with Rich Text Tags, Categories, and Taxonomies WordPress Plugin
 
-//this is for compatability with cforms
-var purl = '';
+function kwsTriggerSave() {
+	var rich = (typeof tinyMCE != "undefined") && tinyMCE.activeEditor && !tinyMCE.activeEditor.isHidden();
+	if (rich) {
+		ed = tinyMCE.activeEditor;
+		if ( 'mce_fullscreen' == ed.id || 'wp_mce_fullscreen' == ed.id ) {
+			tinyMCE.get(0).setContent(ed.getContent({format : 'raw'}), {format : 'raw'});
+		}
+		tinyMCE.triggerSave();
+	}
+}
 
-jQuery(document).ready(function($) { 
-		
-		$("textarea#description, textarea#category_description").attr('id', 'content');
-		$("label[for='description'], label[for='category_description']").attr('for', 'content');
-		
-		// Add the Rich Text Editor to the "description" textarea
-		tinyMCE.execCommand('mceAddControl',false,'content');
-		tinyMCE.settings['save_callback'] = function (e,c,body) { return c; }
-		
-		$('label[for="content"]').parent().append('<div id="toggleRichText" class="hide-if-no-js"><p><a href="#">Toggle Rich Text Editor</a></p></div>');
-		
-		$('#toggleRichText').click(function(e) {  
-			e.preventDefault();
-			tinyMCE.execCommand('mceToggleEditor',false,'content');
-			return false;
-		});	
-		
-		// Move floating media buttons into the media buttons div
-		$('#editor-toolbar').remove().prependTo($("textarea#content").parent());
-		$('.wrap form a[href*=TB_inline]:has(img)').remove().appendTo('#media-buttons');
-		$('.wrap form a[href=#]:has(img)').remove().appendTo('#media-buttons');
+jQuery(document).ready(function($) {
+
+	// Remove the non-rich fields
+	$('.form-field').has('#tag-description').remove();
+	$('.form-field').has('#category-description').remove();
+	$('.form-field').has('#description').remove();
+	
+	
+	var profileTable = $('.user-edit-php .form-table, .profile-php .form-table').not('.rich-text-tags').has('textarea#description');
+	profileTable.prev('h3').insertBefore('table.rich-text-tags');
+	profileTable.remove();
+	
+	// Make sure you're saving the latest content
+	$('input#submit').click(function(e) {	
+		kwsTriggerSave();
+	});
 		
 });	/* end ready() */	
+
+// On a successful save, reset field
+jQuery(document).ajaxComplete(function(e, xhr, settings) {
+	if(settings.data.match(/action=(add|update)-tag/)) {
+		tinyMCE.get(0).setContent('');
+		kwsTriggerSave();
+	}
+});

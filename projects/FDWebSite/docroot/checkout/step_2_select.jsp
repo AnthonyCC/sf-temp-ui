@@ -500,36 +500,28 @@ if (errorMsg!=null) {%>
 		request.setAttribute("standingOrder", currentStandingOrder);
 		
 		%>
-		
+		<fd:javascript src="/assets/javascript/fd/modules/common/utils.js"/>
+		<fd:javascript src="/assets/javascript/fd/modules/standingorder/nextdlvchooser.js"/>
 		<div><img width="18" border="0" height="18" src="/media_stat/images/timeslots/star_large.gif" style="margin-right:10px">
 		<span class="title18"><%if (currentStandingOrder.getFrequency() != 1) {%>CHOOSE <%}%>START DATE</span></FONT>
 		<hr style="margin-bottom:10px">
-		<div style="margin-bottom: 2em; width: 970px">
-		<div style="" class="text12bold">
+		<div class="text12bold" style="margin-bottom: 2em; width: 970px">
 			<span style="font-size: 14px; font-weight: bold; color: #855386;">Deliver this Standing Order beginning on:</span>
-			<div id="candidatesContainer" style="display: inline-block">
-				<%@ include file="/checkout/includes/i_next_dlv_candidates.jspf" %>
-			</div>
+			<div style="display: inline-block"><fd:NextDeliveryDateChooser standingOrder="<%= currentStandingOrder %>"/></div>
 		</div>
-		</div>
-		<%
-
-		// extend timeslot logic
-		%><script type="text/javascript">
+<script type="text/javascript">
 YAHOO.util.Event.onDOMReady(function() {
+	var f = new FreshDirect.modules.standingorder.NextDeliveryDateChooserObserver(<%= sodlv_selectable %>, <%= sodlv_candidates %>, 'soDeliveryWeekOffset');
 	var radios = YAHOO.util.Selector.query('input[type=radio]', 'step2Form');
 	var i;
 	for (i=0; i<radios.length; i++) {
 		YAHOO.util.Event.on(radios[i], 'click', function(e) {
-			var _id = e.target.id; // <- ts_d1_ts2
-			var _dow = Number(_id[4])+1;
-			
-			SO_DlvCandidates.selectDay(_dow);
+			f( Number(e.target.id[4])+1 );
 		});
 	}
 });
 </script>
-<%
+		<%
 	}
 	%>
 

@@ -58,8 +58,8 @@ final int W_INDEX_RIGHT_CENTER = W_INDEX_TOTAL - 228 - W_INDEX_CENTER_PADDING;
 
 <tmpl:insert template='/common/template/search.jsp'>
 	<tmpl:put name="customCss">
-		<fd:css href="/assets/css/common/grid_supplement.css"></fd:css>
-		<fd:css href="/assets/css/common/product_grid.css"></fd:css>
+		<fd:css href="/assets/css/common/grid_supplement.css" />
+		<fd:css href="/assets/css/common/product_grid.css" />
 		<style>
 			.product-grid { width:803px; }
 			.items { width:804px; }

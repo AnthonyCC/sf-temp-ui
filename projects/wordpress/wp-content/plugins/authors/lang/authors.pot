@@ -1,130 +1,132 @@
-# Translation of the WordPress plugin Authors Widget 2.0 by Gavriel Fleischer.
-# Copyright (C) 2010 Gavriel Fleischer
+# Copyright (C) 2012 Authors Widget
 # This file is distributed under the same license as the Authors Widget package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2010.
-#
-#, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: Authors Widget 2.0\n"
+"Project-Id-Version: Authors Widget 2.2\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/authors\n"
-"POT-Creation-Date: 2010-08-13 09:47+0000\n"
-"PO-Revision-Date: 2010-MO-DA HO:MI+ZONE\n"
+"POT-Creation-Date: 2012-05-03 07:30:38+00:00\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"PO-Revision-Date: 2012-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
-"MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=utf-8\n"
-"Content-Transfer-Encoding: 8bit\n"
 
-#: authors.php:143
+#: authors.php:151
 msgid "Select Author..."
 msgstr ""
 
-#: authors.php:239
-#, php-format
+#: authors.php:255
 msgid "Posts by %s"
 msgstr ""
 
-#: authors.php:299 authors.php:505
+#: authors.php:315 authors.php:528
 msgid "Authors"
 msgstr ""
 
-#: authors.php:335
-#, php-format
+#: authors.php:350
 msgid "Powered by %s"
 msgstr ""
 
-#: authors.php:335
+#: authors.php:350
 msgid "Authors Widget Plugin for Wordpress"
 msgstr ""
 
-#. #-#-#-#-#  plugin.pot (Authors Widget 2.0)  #-#-#-#-#
+#. #-#-#-#-#  plugin.pot (Authors Widget 2.2)  #-#-#-#-#
 #. Plugin Name of the plugin/theme
-#: authors.php:335
+#: authors.php:350
 msgid "Authors Widget"
 msgstr ""
 
-#: authors.php:440
+#: authors.php:461
 msgid "Title"
 msgstr ""
 
-#: authors.php:442
+#: authors.php:463
 msgid "Format"
 msgstr ""
 
-#: authors.php:443
+#: authors.php:464
 msgid "List"
 msgstr ""
 
-#: authors.php:445
+#: authors.php:466
 msgid "Cloud"
 msgstr ""
 
-#: authors.php:447
+#: authors.php:468
 msgid "Dropdown"
 msgstr ""
 
-#: authors.php:450
+#: authors.php:471
 msgid "Order by"
 msgstr ""
 
-#: authors.php:451
+#: authors.php:472
 msgid "Display name"
 msgstr ""
 
-#: authors.php:452
+#: authors.php:473
 msgid "First name"
 msgstr ""
 
-#: authors.php:453
+#: authors.php:474
 msgid "Last name"
 msgstr ""
 
-#: authors.php:454
+#: authors.php:475
 msgid "Post count"
 msgstr ""
 
-#: authors.php:456
+#: authors.php:477
 msgid "Number of authors to show"
 msgstr ""
 
-#: authors.php:457
+#: authors.php:478
 msgid "Show full name"
 msgstr ""
 
-#: authors.php:458
+#: authors.php:479
 msgid "Show avatar"
 msgstr ""
 
-#: authors.php:459
+#: authors.php:480
 msgid "Avatar size"
 msgstr ""
 
-#: authors.php:460
+#: authors.php:481
 msgid "Show RSS links"
 msgstr ""
 
-#: authors.php:461
+#: authors.php:482
 msgid "Show post counts"
 msgstr ""
 
-#: authors.php:462
+#: authors.php:483
+msgid "Hide empty"
+msgstr ""
+
+#: authors.php:484
 msgid "Exclude admin"
 msgstr ""
 
-#: authors.php:463
+#: authors.php:485
 msgid "Exclude"
 msgstr ""
 
-#: authors.php:464
+#: authors.php:486
+msgid "Include"
+msgstr ""
+
+#: authors.php:487
 msgid "Hide credit"
 msgstr ""
 
-#: authors.php:465
+#: authors.php:488
 msgid "Donate"
 msgstr ""
 
-#: authors.php:503
+#: authors.php:526
 msgid "A list of the authors"
 msgstr ""
 
@@ -144,5 +146,5 @@ msgid "Gavriel Fleischer"
 msgstr ""
 
 #. Author URI of the plugin/theme
-msgid "http://blog.fleischer.hu/gavriel/"
+msgid "http://blog.fleischer.hu/author/gavriel/"
 msgstr ""

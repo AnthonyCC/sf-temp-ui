@@ -1,72 +1,157 @@
-=== WordPress HTTPS ===
+=== WordPress HTTPS (SSL) ===
 Contributors: Mvied
-Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=6ZL95VTJ388HG
-Tags: ssl, shared ssl, private ssl, http, https, admin, administration, secure admin, login, secure login, security, encryption, encrypted
-Requires at least: 2.7.0
-Tested up to: 3.0.3
-Stable tag: 1.8.5
-
-WordPress HTTPS is intended to be an all-in-one solution to using SSL on WordPress sites. Free support provided!
-
-== Description ==
+Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=N9NFVADLVUR7A
+Tags: security, encryption, ssl, shared ssl, private ssl, public ssl, private ssl, http, https
+Requires at least: 3.0
+Tested up to: 3.4
+Stable tag: 3.0.3
 
 WordPress HTTPS is intended to be an all-in-one solution to using SSL on WordPress sites.
 
-Here are the currently available features:
-
-<ul>
- <li>Change all internal scripts, stylesheets and images to HTTPS if the page is being viewed via HTTPS to prevent partially encrypted errors.</li>
- <li>Supports Shared and Private SSL.</li>
- <li>Force HTTPS on only the pages you need to be HTTPS.</li>
- <li>Force pages to HTTP that have not been forced to HTTPS.</li>
- <li>Change external elements to HTTPS. The plugin will check for the existence of external elements over HTTPS and, if available, will change them to HTTPS.</li>
- <li>Override the external element HTTPS check. If you know that all external elements can be loaded over HTTPS, this option will save some load time on your pages.</li>
- <li>Disable WordPress 3.0+ from changing all of your page, category and post links to HTTPS.</li>
-</ul>
-
-There are a few things that can cause a page to still be loaded insecurely after enabling this plugin.
-<ul>
- <li>YouTube videos - YouTube does not allow videos to be streamed over HTTPS.</li>
- <li>Google Maps - Loading Google maps over HTTPS requires a Google Maps API Premiere account. (<a href="http://code.google.com/apis/maps/faq.html#ssl">source</a>)</li>
- <li>External elements that can not be delivered over HTTPS - I would suggest removing these or hosting them on your own server.</li>
-</ul>
-
-If you're still having trouble getting your site to load over HTTPS, or any other issues, please <a href="http://wordpress.org/tags/wordpress-https#postform">start a support topic</a> and I will do my best to assist you.
+== Description ==
+If you're having partially encrypted/mixed content errors or other problems, please read the <a href="http://wordpress.org/extend/plugins/wordpress-https/faq/">FAQ</a>. If you're still having trouble, please <a href="http://wordpress.org/tags/wordpress-https#postform">start a support topic</a> and I will do my best to assist you.
 
 == Installation ==
-
-1. Upload `wordpress-https.php` to the `/wp-content/plugins/` directory
+1. Upload the `wordpress-https` folder to the `/wp-content/plugins/` directory.
 1. Activate the plugin through the 'Plugins' menu in WordPress.
 
 == Frequently Asked Questions ==
+= How do I make my whole website secure? =
+To make your entire website secure, you simply need to change your home url and site url to use HTTPS instead of HTTP. Please read <a href="http://codex.wordpress.org/Changing_The_Site_URL" target="_blank">how to change the site url</a>.
 
-= How do I make my whole website HTTPS? =
+= How do I make only certain pages secure? =
+In the Publish box on the add/edit post screen, a checkbox for 'Force SSL' has been added to make this process easy. See Screenshots if you're having a hard time finding it.
 
-To make your entire website HTTPS, you simply need to change your home url and site url to HTTPS instead of HTTP. Please read <a href="http://codex.wordpress.org/Changing_The_Site_URL">how to change the site url</a>.
+= I changed my SSL Host and now I can't get into my admin panel! =
+Go to /wp-content/plugins/wordpress-https/wordpress-https.php and uncomment (remove the two forward slashes before) the line below, or go to your wp-config.php file and add this line. Hit any page on your site, and then remove it or comment it out again.
+`define('WPHTTPS_RESET', true);`
 
-= How do I make only my administration panel HTTPS? =
+= I'm getting 404 errors on all of my pages. Why? =
+If you're using a public/shared SSL, try disabling your custom permalink structure. Some public/shared SSL's have issues with WordPress' permalinks because of the way they are configured.
 
-WordPress already has this process well documented. Please read <a href="http://codex.wordpress.org/Administration_Over_SSL">how to set up administration over SSL</a>.
+= How do I fix partially encrypted/mixed content errors? =
+To identify what is causing your page(s) to be insecure, please follow the instructions below.
+<ol>
+ <li>Download <a href="http://www.google.com/chrome" target="_blank">Google Chrome</a>.</li>
+ <li>Open the page you're having trouble with in Google Chrome.</li>
+ <li>Open the Developer Tools. <a href="http://code.google.com/chrome/devtools/docs/overview.html#access" target="_blank">How to access the Developer Tools.</a></li>
+ <li>Click on the Console tab.</li>
+</ol>
+For each item that is making your page partially encrypted, you should see an entry in the console similar to "The page at https://www.example.com/ displayed insecure content from http://www.example.com/." Note that the URL that is loading insecure content is HTTP and not HTTPS.
 
-= How do I make only certain pages HTTPS? =
-
-As of version 1.5, this plugin grants that ability. Within the Publish box on the add/edit post screen, a checkbox for 'Force SSL' has been added to make this process easy. See Screenshots if you're having a hard time finding it.
-
-= Will this plugin fix all of my partially encrypted errors? =
-
-In most cases, yes. There are limitations to what this plugin can fix. Here are a few that I've run into:
+Most insecure content warnings can generally be resolved by changing absolute references to elements, or removing the insecure elements from the page completely. Although WordPress HTTPS does its best to fix all insecure content, there are a few cases that are impossible to fix.
 <ul>
- <li>YouTube videos - YouTube does not allow videos to be streamed over HTTPS.</li>
- <li>Google Maps - Loading Google maps over HTTPS requires a Google Maps API Premiere account. (<a href="http://code.google.com/apis/maps/faq.html#ssl">source</a>)</li>
- <li>External elements that can not be delivered over HTTPS - I would suggest removing these or hosting them on your own server.</li>
+ <li>Elements loaded via JavaScript that are hard-coded to HTTP. Usually this can be fixed by altering the JavaScript calling these elements.</li>
+ <li>External elements that can not be delivered over HTTPS. These elements will have to be removed from the page, or hosted locally so that they can be loaded over HTTPS.</li>
+ <li>YouTube videos - YouTube allows videos to use HTTPS. <a href="http://support.google.com/youtube/bin/answer.py?hl=en&answer=171780&expand=UseHTTPS">How to embed a YouTube video</a>.</li>
+ <li>Google Maps - Loading Google maps over HTTPS requires a Google Maps API Premiere account. (<a href="http://code.google.com/apis/maps/faq.html#ssl" target="_blank">source</a>)</li>
 </ul>
+
+= Is there a hook or filter to force pages to be secure? =
+
+Yes! Here is an example of how to use the 'force_ssl' hook to force a page to be secure.
+`function custom_force_ssl( $force_ssl, $post_id ) {
+	if ( $post_id == 5 ) {
+		return true
+	}
+	return $force_ssl;
+}
+
+add_filter('force_ssl' , 'custom_force_ssl', 10, 2);`
+
+You can also use this filter to filter pages based on their URL. Let's say you have an E-commerce site and all of your E-commerce URL's contain 'store'.
+`function store_force_ssl( $force_ssl, $post_id ) {
+	if ( strpos($_SERVER['REQUEST_URI'], 'store') !== false ) {
+		$force_ssl = true;
+	}
+	return $force_ssl;
+}
+
+add_filter('force_ssl', 'store_force_ssl', 10, 2);`
 
 == Screenshots ==
 1. WordPress HTTPS Settings screen
 2. Force SSL checkbox added to add/edit posts screen
 
 == Changelog ==
-
+= 3.0.3 =
+* Any element on an HTTP page that is set to HTTPS should be auto-corrected.
+* Added support for domain mapper plugin.
+* Bug Fix - SSL Host should now always end in a trailing slash.
+* Bug Fix - Fixed bug in cookie logic that prevented some users from logging in.
+* Bug Fix - Fixed bug in redirects that would cause login issues and 404 errors.
+= 3.0.2 =
+* Added setting to change where HTTPS settings appear in the admin panel.
+* Bug Fix - Plugin should no longer interefere with editing posts and using images from the Media Library.
+* Bug Fix - Fixed major bug that occurred when site was installed in the base directory.
+* Bug Fix - File uploader should no longer produce an HTTP Error.
+* Bug Fix - Fixed performance issue that caused the login page to load for a long period of time.
+* Bug Fix - Proxy check should no longer interfere with RSS Feeds, HTML Validators, etc.
+* Bug Fix - Force SSL and SSL Front Page should no longer conflict.
+* Bug Fix - If Force SSL Exclusively is enabled and Secure Front Page is not (or the front page is not secured), links to the front page will be set to HTTP.
+= 3.0.1 =
+* Bug Fix - Fixed major issue when upgrading from previous version of WordPress HTTPS.
+* Bug Fix - Added is_ssl method back to main plugin class to avoid errors with Gravity Forms.
+* Bug Fix - Archive widget links should now appear correctly.
+= 3.0 =
+* The plugin has been completely re-written.
+* Redirect loops should no longer be an issue.
+* Bugs are likely to occur.
+= 2.0.4 =
+* Bug Fix - Users using Shared SSL should no longer have broken URL's and redirects.
+* Bug Fix - Pages should correctly be identified as HTTPS if PHP returns an IP address for SERVER_ADDR in $_SERVER.
+* Bug Fix - Users using the default permalink structure should now have URL's being properly changed to/from HTTPS.
+= 2.0.3 =
+* Force SSL Admin will always be enabled when FORCE_SSL_ADMIN is true in wp-config.php.
+* Bug Fix - Users using Shared SSL should no longer have issues with the SSL Host path duplicating in URL's.
+* Bug Fix - The plugin should now function properly when using a subdomain as the SSL Host.
+* Bug Fix - Page and post links will only be forced to HTTPS when using a different SSL Host that is not a subdomain of your Home URL.
+* Bug Fix - WordPress HTTPS should no longer generate erroneous notices and warnings in apache error logs. (If I missed any, let me know)
+= 2.0.2 =
+* Bug Fix - SSL Host option was not being saved correctly upon subsequent saves. This was causing redirect loops for most users.
+= 2.0.1 =
+* Ensured that deprected options are removed from a WordPress installation when activating the plugin.
+* Added a button to the WordPress HTTPS settings page to reset all plugin settings and cache.
+* Bug Fix - URL's entered for SSL Host were not validing correctly.
+* Bug Fix - External URL's were not always being identified as valid external elements.
+* Bug Fix - Slight enhancement to SSL detection.
+= 2.0 =
+* Full support for using a custom SSL port has been added. A special thanks to <a href="http://chrisdoingweb.com/">Chris "doingweb" Antes</a> for his feedback and testing of this feature.
+* Forcing pages to/from HTTPS is now pluggable using the 'force_ssl' filter.
+* When using Force Shared SSL Admin, links to the admin panel will always be rewritten with the Shared SSL Host.
+* When using Shared SSL, all links to post and pages from within the admin panel will use the Shared SSL Host to retain administration functionality on those pages.
+* Redirects to the admin panel now hook into wp_redirect rather than using the auth_redirect pluggable function.
+* Canonical redirects will now still occur on sites usinga different SSL Host, but not on secure pages.
+* Cookies are now set with hooks rather than pluggable functions.
+* Plugin will now delete all options and custom metadata when uninstalled.
+* Added a HTTP_X_FORWARDED_PROTO check to the is_ssl function.
+* Internal HTTPS Elements option has been removed. Disabling this option was never a good idea, so it was removed and the plugin will always act as it did when this option was enabled.
+* External HTTPS Elements option has been removed. The handling of external elements has improved in such a way that this option is no longer required.
+* Disable Automatic HTTPS option has been removed. This option should have generally been enabled anyway.
+* Bug Fix - After logging in, the logged_in cookie was not being set properly. This caused the admin bar to not show up in both HTTP and HTTPS.
+* Bug Fix - When using Shared SSL, the login page would not honor the redirect_to variable after a successful login.
+= 1.9.2 =
+* Added External URL caching to the plugin so that external elements will only be checked for once, increasing the speed of sites not using the Bypass External Check option.
+* Any forms whose action points to page that has the Forced SSL option on will be updated to HTTPS even on HTTP pages.
+* Bug Fix - When using Shared SSL, permalink structure was being buggy.
+* Bug Fix - Certain server configurations were causing the plugin to create redirect loops when using the Force SSL Exclusively option.
+= 1.9.1 =
+* Bug Fix - Cookies were not being set to the correct paths when logging in, causing logins to fail.
+* Bug Fix - Links to the front page when using latest posts were not correctly being set to HTTP/HTTPS.
+* Bug Fix - When using Shared SSL, the HTTPS version of the site_url was not being correctly replaced with the Shared SSL URL for internal elements.
+* Bug Fix - When using Shared SSL, the admin login page was not always redirecting properly due to output buffering.
+* Bug Fix - When using Shared SSL, the auth_redirect function was not redirecting to the Shared SSL URL.
+* Bug Fix - If the home_url contained 'www' but the URL appeared without 'www', the URL would not be fixed.
+* Standards - Updated redirect method to use https or http as a an argument rather than true or false to better comply with WordPress coding standards.
+= 1.9 =
+* Created Updates widget on settings screen to allow for dynamic updates from the plugin developers.
+* Added support for PHP4.
+* Converted all spaces to tabs in source.
+* Force Shared SSL Admin option added to allow those using Shared SSL the ability to use their certificate for their admin dashboard.
+* Bug fix - Force SSL checkbox will now appear on WordPress versions below 2.9.
+* Bug fix - Password protected pages forced to SSL will now work properly.
+* Bug fix - Plugin should no longer break feeds.
+* Numerous other bug fixes that have since been forgotten due to the length of time this version has been in development.
 = 1.8.5 =
 * In version 1.8.5, when a page is forced to HTTPS, any links to that page will always be HTTPS, even when using the 'Disable Automatic HTTPS' option. Likewise, when the 'Force SSL Exclusively' option is enabled, all links to pages not forced to HTTPS will be changed to HTTP on HTTPS pages.
 * Updated RegEx's for more complicated URL's.

@@ -459,6 +459,31 @@ public class ProductModelImpl extends AbstractProductModelImpl {
         return Collections.min(skus, new ZonePriceComparator(context.getZoneId()));
 	}
 	
+	public SkuModel getDefaultTemporaryUnavSku() {
+		
+		PricingContext context = getPricingContext();
+		
+		if (context == null) {
+	        context = PricingContext.DEFAULT;
+	    }
+        List<SkuModel> skus = this.getSkus();
+
+        ContentKey preferredSku = (ContentKey) getCmsAttributeValue("PREFERRED_SKU");
+
+        for (ListIterator<SkuModel> li = skus.listIterator(); li.hasNext();) {
+            SkuModel sku = li.next();
+            if (sku.isUnavailable() && !sku.isTempUnavailable()) {
+                li.remove();
+            } else if (sku.getContentKey().equals(preferredSku)) {
+                return sku;
+            }
+        }
+        if (skus.size() == 0)
+            return null;
+        
+        return Collections.min(skus, new ZonePriceComparator(context.getZoneId()));
+	}
+	
 	/**
 	 * @param type a multivalued ErpNutritionInfoType
 	 * @return common Set of nutrition information of all available SKUs 
@@ -1757,5 +1782,10 @@ inner:
 
         return rating;
     }
+
+	@Override
+	public boolean isDisabledRecommendations() {
+		return getAttribute("DISABLED_RECOMMENDATION", false);
+	}
 
 }

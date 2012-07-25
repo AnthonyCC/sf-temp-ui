@@ -85,5 +85,9 @@ public class ProxyContentService implements ContentServiceI {
 	public ContentServiceI getSelf() {
 		return this;
 	}
+
+	public ContentNodeI getRealContentNode(ContentKey key) {
+		return getProxiedService().getRealContentNode(key);
+	}
 	
 }

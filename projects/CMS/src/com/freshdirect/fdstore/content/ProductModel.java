@@ -705,6 +705,8 @@ public interface ProductModel extends AvailabilityI, YmalSource, YmalSetSource, 
 
 	public SkuModel getDefaultSku();
 	
+	public SkuModel getDefaultTemporaryUnavSku();
+	
 	public String getDefaultSkuCode();
 
 	public SkuModel getDefaultSku(PricingContext context);
@@ -976,4 +978,15 @@ public interface ProductModel extends AvailabilityI, YmalSource, YmalSetSource, 
 	public FDGroup getFDGroup() throws FDResourceException;
 	
 	public boolean isExcludedForEBTPayment();
+	
+	public boolean isDisabledRecommendations();
+	
+	/**
+	 * If this is set to <code>true</code> order of SKUs on the storefront will be the same as in CMS.
+	 * If it's <code>false</code>, SKU order will be determined by domain values.
+	 * Default value is <code>false</code>
+	 * This attribute is inheritable.
+	 * @return Value of <code>retainOriginalSkuOrder</code> flag.
+	 */
+	public boolean isRetainOriginalSkuOrder();
 }

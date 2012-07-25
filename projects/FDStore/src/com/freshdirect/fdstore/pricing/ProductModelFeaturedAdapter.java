@@ -243,6 +243,11 @@ public class ProductModelFeaturedAdapter implements ProductModel, Serializable,
 	public SkuModel getDefaultSku(PricingContext context) {		 
 		return productModel.getDefaultSku(context);
 	}
+	
+	@Override
+	public SkuModel getDefaultTemporaryUnavSku() {
+		return productModel.getDefaultTemporaryUnavSku();
+	}
 
 	@Override
 	public String getDefaultSkuCode() {		 
@@ -1250,5 +1255,15 @@ public class ProductModelFeaturedAdapter implements ProductModel, Serializable,
 	
 	public boolean isExcludedForEBTPayment(){
 		return productModel.isExcludedForEBTPayment();
+	}
+
+	@Override
+	public boolean isDisabledRecommendations() {
+		return productModel.isDisabledRecommendations();
+	}
+
+	@Override
+	public boolean isRetainOriginalSkuOrder() {
+		return productModel.isRetainOriginalSkuOrder();
 	}
 }

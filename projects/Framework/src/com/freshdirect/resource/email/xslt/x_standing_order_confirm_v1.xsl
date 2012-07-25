@@ -19,7 +19,15 @@ Your standing order has been scheduled for delivery. <xsl:choose><xsl:when test=
 Please note that you are not being charged for this order. The amount displayed below, as well as your account with FreshDirect, will reflect a zero balance within the next 48 hours.
 </xsl:if>
 
-<xsl:if test="order/paymentMethod/paymentType != 'M'"><xsl:if test="hasUnavailableItems != 'false'">Some of the items in your standing order list were not available when your order was placed. Please check the content of the order below to make sure you're getting everything you need. </xsl:if>If you would like to make updates or additions to your order, go to your account to make changes before <xsl:call-template name="format-delivery-start"><xsl:with-param name="dateTime" select="order/deliveryReservation/cutoffTime" /></xsl:call-template> on <xsl:call-template name="format-delivery-date"><xsl:with-param name="dateTime" select="order/deliveryReservation/cutoffTime" /></xsl:call-template>.</xsl:if>
+<xsl:if test="order/paymentMethod/paymentType != 'M' and hasUnavailableItems = 'true'">
+Unfortunately, the following items in your standing order were unavailable:
+<xsl:for-each select="unavailableItems/unavailableItems">
+* <xsl:value-of select="description"/> <xsl:if test="configurationDesc != 'null'"> (<xsl:value-of select="configurationDesc"/>)</xsl:if>   (<xsl:value-of select="unitPrice"/>)</xsl:for-each>
+
+Please check the contents of your order below to make sure you're getting everything you need. If you would like to make changes or additions, modify this order in Your Orders, located in Your Account, before <xsl:call-template name="format-delivery-start"><xsl:with-param name="dateTime" select="order/deliveryReservation/cutoffTime" /></xsl:call-template> on <xsl:call-template name="format-delivery-date"><xsl:with-param name="dateTime" select="order/deliveryReservation/cutoffTime" /></xsl:call-template>.
+</xsl:if>
+
+<xsl:if test="order/paymentMethod/paymentType != 'M' and hasUnavailableItems = 'false'"><xsl:if test="hasUnavailableItems != 'false'">Some of the items in your standing order list were not available when your order was placed. Please check the content of the order below to make sure you're getting everything you need. </xsl:if>If you would like to make updates or additions to your order, go to your account to make changes before <xsl:call-template name="format-delivery-start"><xsl:with-param name="dateTime" select="order/deliveryReservation/cutoffTime" /></xsl:call-template> on <xsl:call-template name="format-delivery-date"><xsl:with-param name="dateTime" select="order/deliveryReservation/cutoffTime" /></xsl:call-template>.</xsl:if>
 
 As soon as we select and weigh your items, we'll send you an e-mail with the final order total. We'll also include an itemized, printed receipt with your delivery.
 

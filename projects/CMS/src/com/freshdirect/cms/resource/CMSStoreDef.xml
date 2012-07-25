@@ -39,6 +39,7 @@
 				<DestinationDef contentType="Tile" />
 				<DestinationDef contentType="TileList" />
 				<DestinationDef contentType="GlobalMenuItem" />
+				<DestinationDef contentType="YoutubeVideo"/>
 				<DestinationDef contentType="DonationOrganization" />
 			</RelationshipDef>
 		</RelationshipDefs>
@@ -325,9 +326,6 @@
             <AttributeDef type="S" name="GLOBAL_MENU_TITLE_LABEL" label="Global Menu Title Label"/>
             <AttributeDef type="S" name="GLOBAL_MENU_LINK_LABEL" label="Global Menu Link Label"/>
             <AttributeDef type="B" name="HIDE_FEATURED_ITEMS"  label="Hide featured items" inheritable="true"/>
-            <EnumDef type="S" name="PRODUCT_PROMOTION_TYPE" label="Product Promotion Type">
-				<EnumValue value="PRESIDENTS_PICKS" label="President's Picks"/>
-			</EnumDef>
 		</AttributeDefs>
 		<RelationshipDefs>
 			<RelationshipDef name="ALTERNATE_CONTENT" label="Alternate Content">
@@ -548,7 +546,6 @@
                 <EnumValue value="100" label="Wine_Category"/><!-- [USQ] new layout -->
                 <EnumValue value="101" label="Transactional_multi_Paired_Items"/><!-- [USQ] new layout -->
                 <EnumValue value="102" label="Template_Layout"/><!-- [USQ] new layout -->
-                <EnumValue value="200" label="President's Picks"/><!-- promo page -->
 			</EnumDef>
 			<EnumDef type="I" name="TEMPLATE_TYPE"  label="Template Type" inheritable="true">
 				<EnumValue value="1" label="Fresh Direct Default Template"/>
@@ -610,6 +607,7 @@
             <AttributeDef type="S" name="WINE_CITY" label="Wine City" />
             <!--  SmartStore  -->
 			<AttributeDef type="B" name="EXCLUDED_RECOMMENDATION" label="Excluded Recommendation" inheritable="true"/>
+			<AttributeDef type="B" name="DISABLED_RECOMMENDATION" label="Disabled Recommendation" inheritable="true"/>
 			<EnumDef type="I" name="SS_EXPERT_WEIGHTING" label="Expert Weighting" inheritable="true">
 				<EnumValue value="-5" label="-5"/>
 				<EnumValue value="-4" label="-4"/>
@@ -623,6 +621,7 @@
 				<EnumValue value="4" label="4"/>
 				<EnumValue value="5" label="5"/>
 			</EnumDef>
+			<AttributeDef type="B" name="retainOriginalSkuOrder"  label="Retain Original SKU Order" inheritable="true"/>
 		</AttributeDefs>
 		
 		
@@ -1783,6 +1782,18 @@
 				<DestinationDef contentType="Category"/>
 			</RelationshipDef>
 			<RelationshipDef name="editorial" cardinality="One" navigable="false" label="Editorial" >
+				<DestinationDef contentType="Html" />
+			</RelationshipDef>
+		</RelationshipDefs>
+	</ContentTypeDef>
+	
+	<ContentTypeDef name="YoutubeVideo">
+		<AttributeDefs>
+			<AttributeDef name="YOUTUBE_VIDEO_ID" type="S" required="true" label="YouTube Video Id"/>
+			<AttributeDef name="TITLE" type="S" required="false" label="Title"/>
+		</AttributeDefs>
+		<RelationshipDefs>
+			<RelationshipDef name="CONTENT" cardinality="One" label="Content" >
 				<DestinationDef contentType="Html" />
 			</RelationshipDef>
 		</RelationshipDefs>

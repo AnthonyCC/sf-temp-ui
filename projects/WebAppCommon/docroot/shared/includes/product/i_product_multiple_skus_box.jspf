@@ -2,7 +2,26 @@
 final int W_PRODUCT_MULTIPLE_SKUS_TOTAL = 218;
 final int W_PRODUCT_MULTIPLE_SKUS_SEC_DOMAIN = 15;
 %>
-
+<%@page import="com.freshdirect.fdstore.content.ProductModel"%>
+<%@page import="java.util.Map"%>
+<%@page import="java.util.TreeMap"%>
+<%@page import="java.util.Iterator"%>
+<%@page import="com.freshdirect.fdstore.content.SkuModel"%>
+<%@page import="java.util.List"%>
+<%@page import="com.freshdirect.fdstore.content.DomainValue"%>
+<%@page import="java.util.ArrayList"%>
+<%@page import="java.util.Collections"%>
+<%@page import="com.freshdirect.fdstore.content.Html"%>
+<%@page import="com.freshdirect.fdstore.content.TitledMedia"%>
+<%@page import="com.freshdirect.fdstore.content.EnumPopupType"%>
+<%@page import="java.util.Date"%>
+<%@page import="java.util.Calendar"%>
+<%@page import="java.util.GregorianCalendar"%>
+<%@page import="com.freshdirect.framework.util.DateUtil"%>
+<%@page import="com.freshdirect.ErpServicesProperties"%>
+<%@page import="com.freshdirect.framework.util.QuickDateFormat"%>
+<%@ taglib uri='logic' prefix='logic' %>
+<%@ taglib uri='freshdirect' prefix='fd' %>
 <%
 	// multiple skus
 
@@ -12,56 +31,100 @@ final int W_PRODUCT_MULTIPLE_SKUS_SEC_DOMAIN = 15;
 
 	ProductModel.PriceComparator priceComparator = new ProductModel.PriceComparator();
 
-    Map matrix = new TreeMap(domainValueComp);
+    Map<DomainValue, List<SkuModel>> matrix = new TreeMap<DomainValue, List<SkuModel>>(domainValueComp);
     
-    Iterator skui = skus.iterator();
-    while ( skui.hasNext() ) {
-        SkuModel sku = (SkuModel)skui.next();
-	List<DomainValue> domainValues = sku.getVariationMatrix();
-        if (domainValues.size()==0) {
-            continue;
-        }
-        DomainValue key = (DomainValue)domainValues.get(0);
-        if ( matrix.containsKey(key) ) {
-            List coll = (List)matrix.get(key);
-            coll.add(sku);
-        } else {
-            List coll = new ArrayList();
-            coll.add(sku);
-            matrix.put(key, coll);
-        }
-
+    /* Primary domain values ordered as SKU list. */
+    List<DomainValue> retainedOrderDvs = new ArrayList<DomainValue>();
+    List<List<SkuModel>> retainedOrderSkus = new ArrayList<List<SkuModel>>();
+    
+    Iterator<SkuModel> skui = skus.iterator();
+    if(productNode.isRetainOriginalSkuOrder()) {
+	    while ( skui.hasNext() ) {
+	        SkuModel sku = skui.next();
+			List<DomainValue> domainValues = sku.getVariationMatrix();
+	        if (domainValues.isEmpty()) {
+	            continue;
+	        }
+	        DomainValue key = (DomainValue)domainValues.get(0);
+	        if (retainedOrderDvs.isEmpty() ||
+	        		!retainedOrderDvs.get(retainedOrderDvs.size() - 1).equals(key)) {
+	        	retainedOrderDvs.add(key);
+	        	List<SkuModel> retOrSkus = new ArrayList<SkuModel>();
+	        	retOrSkus.add(sku);
+	        	retainedOrderSkus.add(retOrSkus);
+	        } else {
+	        	retainedOrderSkus.get(retainedOrderSkus.size() - 1).add(sku);
+	        }
+	    }
+    } else {
+	    while ( skui.hasNext() ) {
+	        SkuModel sku = skui.next();
+			List<DomainValue> domainValues = sku.getVariationMatrix();
+	        if (domainValues.isEmpty()) {
+	            continue;
+	        }
+	        DomainValue key = (DomainValue)domainValues.get(0);
+	        if ( matrix.containsKey(key) ) {
+	            List<SkuModel> coll = matrix.get(key);
+	            coll.add(sku);
+	        } else {
+	            List<SkuModel> coll = new ArrayList<SkuModel>();
+	            coll.add(sku);
+	            matrix.put(key, coll);
+	        }
+	    }
     }
 
     // === really big loop ===
-    Iterator keyIter = matrix.keySet().iterator();
+    Iterator<DomainValue> keyIter;
+    Iterator<List<SkuModel>> groupIter = null;
+    if(matrix.isEmpty()) {
+     	keyIter = retainedOrderDvs.iterator();
+     	groupIter = retainedOrderSkus.iterator();
+    } else {
+    	keyIter = matrix.keySet().iterator(); // default
+    }
     
     while ( keyIter.hasNext() ) {
-        DomainValue priDomainValue = (DomainValue) keyIter.next();
-        List group = (List)matrix.get(priDomainValue);
+        DomainValue priDomainValue = keyIter.next();
+        // System.err.println("dv: " + priDomainValue);
+        List<SkuModel> group;
+        if (groupIter != null) {
+        	group = groupIter.next();
+    	} else
+        	group = matrix.get(priDomainValue);
+        // System.err.println("gr: " + group);
 
         // are the skus all the same price?
         boolean allSamePrice = false;
         if (hasSecondaryDomain || group.size()>1) {
+        	// yuck! this sorts unnecessarily and this is how it determines if all are the same price
+        	// yuck again!
             priceComparator.reset();
-            Collections.sort(group, priceComparator);
+            // I hacked around this so-called 'algorithm' by wrapping the group list into anonymous list
+            // so that it does not have the side effect of changing the original list
+            Collections.sort(new ArrayList<SkuModel>(group), priceComparator);
             allSamePrice = priceComparator.allTheSame();
+            // and ouch too !!! sorry but this is very disgusting heritage of the predecessors
         }
 
         // do all skus have the same optional variations?
         boolean allSameOption = true;
-        List<DomainValue> variationOption = ((SkuModel)group.get(0)).getVariationOptions();
-        if ( variationOption!=null && variationOption.size()>0) {
-            String dvId = ((DomainValue) variationOption.get(0)).getContentKey().getId();
+        List<DomainValue> variationOption = group.get(0).getVariationOptions();
+        if ( variationOption!=null && variationOption.size() > 0 ) {
+            String dvId = variationOption.get(0).getContentKey().getId();
             
-            Iterator skuIter = group.iterator();
+            Iterator<SkuModel> skuIter = group.iterator();
             while ( skuIter.hasNext() ) {
-                SkuModel sku = (SkuModel) skuIter.next();
-                allSameOption &= dvId.equals( ((DomainValue) sku.getVariationOptions().get(0)).getContentKey().getId());
+                SkuModel sku = skuIter.next();
+                allSameOption &= dvId.equals(sku.getVariationOptions().get(0).getContentKey().getId());
             }
         }
 
-        if (hasSecondaryDomain) {
+        if (hasSecondaryDomain && groupIter == null) {
+        	// if we have group iterator then we have retained order
+        	// so that we should not sort
+
             // sort the group by secondary domainvalue priority
             Collections.sort(group, skuSecDomainValueComp);
         }
@@ -75,8 +138,8 @@ final int W_PRODUCT_MULTIPLE_SKUS_SEC_DOMAIN = 15;
 <%-- ============================================================================================================================================= --%>
         
         <%-- Nested Table 2 Options list - radio buttions/ multiple SKUs --%>
-        
-		<table width="100%" <%-- "<%=W_PRODUCT_MULTIPLE_SKUS_TOTAL%>" --%> cellpadding="0" cellspacing="2" border="0"> 
+		
+	<table width="100%" <%-- "<%=W_PRODUCT_MULTIPLE_SKUS_TOTAL%>" --%> cellpadding="0" cellspacing="2" border="0"> 
          <% if ( hasSecondaryDomain ) { %>
              <tr valign="bottom">
                  <td colspan="2" align="right"><br/>
@@ -317,4 +380,4 @@ final int W_PRODUCT_MULTIPLE_SKUS_SEC_DOMAIN = 15;
 			</fd:FDProductInfo>
 		</logic:iterate>
 	</table>
-<% } %>
+<% } // keyIter %>

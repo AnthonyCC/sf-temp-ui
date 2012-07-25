@@ -1,9 +1,9 @@
 === Rich Text Tags ===
 Contributors: katzwebdesign
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=zackkatz%40gmail%2ecom&item_name=Rich%20Text%20Tags&no_shipping=0&no_note=1&tax=0&currency_code=USD&lc=US&bn=PP%2dDonationsBF&charset=UTF%2d8
-Tags: tag, tags, taxonomy, taxonomies, category, categories, category description, rich text category, editor, rich text, description, tag description, taxonomy description, rich text, wysiwyg, tinyMCE, SEO, search engine optimization
-Requires at least: 2.6
-Tested up to: 3.1
+Tags: tag, tags, taxonomy, taxonomies, category, categories, category description, rich text category, editor, rich text, description, tag description, taxonomy description, rich text, wysiwyg, tinyMCE, SEO, search engine optimization, terms, bio, biography, user, user data, user description
+Requires at least: 3.3
+Tested up to: 3.3.1
 Stable tag: trunk
 
 The Rich Text Tags Plugin allows you to edit tag, category, and taxonomy descriptions using Wordpress' built in WYSIWYG editor.
@@ -15,13 +15,12 @@ The Rich Text Tags Plugin allows you to edit tag, category, and taxonomy descrip
 ### A TinyMCE Editor for Tags, Categories, and Taxonomies ###
 The Rich Text Tags Plugin allows you to edit tag descriptions, category descriptions, and taxonomy descriptions using Wordpress' built in rich-text editor. Switch between WYSIWYG and HTML editing modes with the click of a link. Use the WordPress uploader to insert images from your computer or site's Media Library.
 
-Use the PHP functions `tag_description()` and `category_description()` in your theme to show the descriptions. To learn how to show taxonomy descriptions, <a href="http://www.seodenver.com/rich-text-tags/" rel="nofollow">read more on the plugin page</a>.
+Use the WordPress functions `tag_description()` and `category_description()` in your theme to show the descriptions. To learn how to show taxonomy descriptions, <a href="http://www.seodenver.com/rich-text-tags/" rel="nofollow">read more on the plugin page</a>.
 
 <h4>Features</h4>
-* Edit tag descriptions with tinyMCE's WYSIWYG editor
+* Edit term descriptions with WordPress's built-in WYSIWYG editor
 * Works with custom taxonomies (and custom post types, introduced in WP 3.0)
-* Capability to turn off rich text editing with a click, so you can edit the HTML
-
+* Now supports user biography fields!
 
 == Installation ==
 
@@ -33,7 +32,40 @@ Use the PHP functions `tag_description()` and `category_description()` in your t
 = What is the license of this plugin? =
 * This plugin is released under a GPL license.
 
+= Neat plugin page image. = 
+Thanks, it's by <a href="http://www.flickr.com/photos/laurenmanning/5659535988/" rel="nofollow">Lauren Manning</a>.
+
 == Upgrade Notice ==
+
+= 1.6.2 =
+* Made plugin load even later to allow for more custom taxonomies.
+
+= 1.6.1 =
+* Fixed issue with filters stripping tags.
+
+= 1.6 =
+* Added support for rich text editing user biography fields!
+* Made load a little later for support of more taxonomies
+
+= 1.5.2 =
+* Plugin now loads later to allow for custom taxonomies
+
+= 1.5.1 = 
+* Fixed: restored `do_shortcode` filter on term descriptions
+
+= 1.5 =
+* The plugin now requires WordPress 3.3
+
+= 1.4.1 =
+* Added support for WordPress 3.3 (thanks, <a href="http://wordpress.org/support/topic/plugin-rich-text-tags-tinymce-editor-not-loading-in-wp-33-beta4" rel="nofollow">fountaininternet</a>)
+
+= 1.4 =
+* Improved functionality in WordPress 3.2.1
+* Fixed `First argument is expected to be a valid callback, 'wp_tiny_mce_preload_dialogs'` error (<a href="http://wordpress.org/support/topic/625561">issue <a href="http://wordpress.org/support/topic/625561">625561</a> and <a href="http://wordpress.org/support/topic/603480">603480</a>
+* Improved plugin layout on main taxonomy page
+
+= 1.3.3 = 
+* Fixed issue <a href="http://wordpress.org/support/topic/537590">#537590</a>, where the rich text editor's link button wouldn't work. Thanks to <a href="http://wordpress.org/support/profile/deannas" rel="nofollow">DeannaS</a>
 
 = 1.3.2 =
 * Fixed "Attempt to assign property of non-object error" <a href="http://wordpress.org/support/topic/plugin-rich-text-tags-error-after-upgrading" rel="nofollow">as reported by chp2009</a>
@@ -58,6 +90,34 @@ Use the PHP functions `tag_description()` and `category_description()` in your t
 * Fixed issues with rich text being stripped by WordPress (issue <a href="http://wordpress.org/support/topic/386264" rel="nofollow">386264</a> and <a href="http://wordpress.org/support/topic/460685" rel="nofollow">460685</a>
 
 == Changelog ==
+
+= 1.6.2 =
+* Made plugin load even later to allow for more custom taxonomies.
+
+= 1.6.1 =
+* Fixed issue with filters stripping tags.
+
+= 1.6 =
+* Added support for rich text editing user biography fields!
+* Made load a little later for support of more taxonomies
+
+= 1.5.2 =
+* Plugin now loads later to allow for custom taxonomies
+
+= 1.5.1 = 
+* Fixed: restored `do_shortcode` filter on term descriptions
+
+= 1.5 =
+* The plugin now uses WordPress's built-in <a href="http://codex.wordpress.org/Function_Reference/wp_editor" rel="nofollow">wp_editor()</a> and requires WordPress 3.3
+* Added localization support (multiple languages)
+
+= 1.4 =
+* Improved functionality in WordPress 3.2.1
+* Fixed `First argument is expected to be a valid callback, 'wp_tiny_mce_preload_dialogs'` error (<a href="http://wordpress.org/support/topic/625561">issue <a href="http://wordpress.org/support/topic/625561">625561</a> and <a href="http://wordpress.org/support/topic/603480">603480</a>
+* Improved plugin layout on main taxonomy page
+
+= 1.3.3 = 
+* Fixed issue <a href="http://wordpress.org/support/topic/537590">#537590</a>, where the rich text editor's link button wouldn't work. Thanks to <a href="http://wordpress.org/support/profile/deannas" rel="nofollow">DeannaS</a>
 
 = 1.3.2 =
 * Fixed "Attempt to assign property of non-object error" <a href="http://wordpress.org/support/topic/plugin-rich-text-tags-error-after-upgrading" rel="nofollow">as reported by chp2009</a>
@@ -102,5 +162,5 @@ Use the PHP functions `tag_description()` and `category_description()` in your t
 
 == Screenshots ==
 
-1. How the rich text editor looks in the Edit Tags Page
-2. The editor with rich text editing disabled
+1. How the rich text editor looks in the Tags page
+2. How the rich text editor looks in the Edit Tag page

@@ -77,8 +77,10 @@ import com.freshdirect.fdstore.rules.FDRuleContextI;
 import com.freshdirect.fdstore.rules.FDRulesContextImpl;
 import com.freshdirect.fdstore.standingorders.DeliveryInterval;
 import com.freshdirect.fdstore.standingorders.FDStandingOrder;
+import com.freshdirect.fdstore.standingorders.ProcessActionResult;
 import com.freshdirect.fdstore.standingorders.FDStandingOrder.ErrorCode;
 import com.freshdirect.fdstore.standingorders.FDStandingOrdersManager;
+import com.freshdirect.fdstore.standingorders.ProcessActionResult.Reason;
 import com.freshdirect.fdstore.standingorders.SOResult;
 import com.freshdirect.framework.mail.XMLEmailI;
 import com.freshdirect.framework.util.DateRange;
@@ -462,7 +464,9 @@ public class StandingOrderUtil {
 		
 		ProcessActionResult vr = new ProcessActionResult();
 		FDCartModel cart = buildCart(so.getCustomerList(), paymentMethod, deliveryAddressModel, timeslots, zoneInfo, reservation, vr);
-		boolean hasInvalidItems = vr.hasInvalidItems();
+		// boolean hasInvalidItems = vr.isFail();
+		
+		final List<FDCartLineI> originalCartItems = cart.getOrderLines();
 		
 		// set users shopping cart, needed for delivery fee rules later
 		customerUser.setShoppingCart( cart );
@@ -485,11 +489,9 @@ public class StandingOrderUtil {
 		//      (SKU availability)
 		// ============================
 		List<String> unavailableItems = new ArrayList<String>();
-		vr = new ProcessActionResult();
+		// vr = new ProcessActionResult();
 		doAvailabilityCheck(customer, cart, vr, unavailableItems);
-		if (vr.hasInvalidItems()) {
-			hasInvalidItems = true;
-		}
+
 		// Note: unavailableItems will be added to the result if the order creation succeeds 
 		LOGGER.info( "SKU availability check passed." );
 
@@ -497,11 +499,9 @@ public class StandingOrderUtil {
 		//    Check inventory availability
 		//            (ATP Check)
 		// ==================================
-		vr = new ProcessActionResult();
+		// vr = new ProcessActionResult();
 		doATPCheck(customer, cart, vr);
-		if (vr.hasInvalidItems()) {
-			hasInvalidItems = true;
-		}
+
 		// Note: hasInvalidItems will be added to the result if the order creation succeeds 
 		LOGGER.info( "ATP check passed." );
 
@@ -539,13 +539,20 @@ public class StandingOrderUtil {
 		// ==========================
 		
 		try {
+			final boolean hasInvalidItems = vr.isFail();
+			final List<FDCartLineI> unavCartItems = new ArrayList<FDCartLineI>(originalCartItems);
+			
 			FDActionInfo orderActionInfo = info; 
-			if(orderActionInfo == null){
+			if (orderActionInfo == null){
 				orderActionInfo = new FDActionInfo( EnumTransactionSource.STANDING_ORDER, customer, INITIATOR_NAME, "Placing order for Standing Order", null );
-			}else{
+			} else{
 				orderActionInfo.setNote("Placing order for Standing Order");
 			}
 			CustomerRatingI cra = new CustomerRatingAdaptor( customerUser.getFDCustomer().getProfile(), customerUser.isCorporateUser(), customerUser.getAdjustedValidOrderCount() );
+
+			// Get unavailable cart items (ie. not shipped with the recent order)
+			unavCartItems.retainAll(cart.getOrderLines());
+			
 			String orderId = FDCustomerManager.placeOrder( orderActionInfo, cart, null, false, cra, null );
 
 			try {
@@ -564,7 +571,7 @@ public class StandingOrderUtil {
 
 			LOGGER.info( "Order placed successfully. OrderId = " + orderId );
 			
-			sendSuccessMail( so, customerInfo, orderId, hasInvalidItems, mailerHome );
+			sendSuccessMail( so, customerInfo, orderId, unavCartItems, mailerHome );
 			
 			// step delivery date 
 			so.skipDeliveryDate();
@@ -598,10 +605,10 @@ public class StandingOrderUtil {
 		}
 	}
 	
-	private static void sendSuccessMail ( FDStandingOrder so, FDCustomerInfo customerInfo, String orderId, boolean hasInvalidItems, MailerGatewayHome mailerHome ) {
+	private static void sendSuccessMail ( FDStandingOrder so, FDCustomerInfo customerInfo, String orderId, List<FDCartLineI> unavCartItems, MailerGatewayHome mailerHome ) {
 		try {
 			FDOrderI order = FDCustomerManager.getOrder( orderId );
-			XMLEmailI mail = FDEmailFactory.getInstance().createConfirmStandingOrderEmail( customerInfo, order, so, hasInvalidItems );		
+			XMLEmailI mail = FDEmailFactory.getInstance().createConfirmStandingOrderEmail( customerInfo, order, so, unavCartItems );		
 			MailerGatewaySB mailer = mailerHome.create();
 			mailer.enqueueEmail( mail );
 		} catch ( FDResourceException e ) {
@@ -616,7 +623,7 @@ public class StandingOrderUtil {
 	private static void sendNotificationMail ( FDStandingOrder so, FDCustomerInfo customerInfo, String orderId, MailerGatewayHome mailerHome ) {
 		try {
 			FDOrderI order = FDCustomerManager.getOrder( orderId );
-			XMLEmailI mail = FDEmailFactory.getInstance().createConfirmDeliveryStandingOrderEmail( customerInfo, order, so );		
+			XMLEmailI mail = FDEmailFactory.getInstance().createConfirmDeliveryStandingOrderEmail( customerInfo, order, so, null );		
 			MailerGatewaySB mailer = mailerHome.create();
 			mailer.enqueueEmail( mail );
 		} catch ( FDResourceException e ) {
@@ -669,7 +676,8 @@ public class StandingOrderUtil {
 		
 		if ( ! isValidCustomerList( soList.getLineItems() ) ) {
 			LOGGER.info( "Shopping list contains some unavailable/invalid items." );
-			vr.increment();
+			vr.markGeneralIssue();
+
 			// This is not an error
 			//return new Result( ErrorCode.CART, "Shopping list contains some unavailable/invalid items.", customerInfo );
 		}
@@ -697,13 +705,13 @@ public class StandingOrderUtil {
 				if ( !cartLine.isInvalidConfig() ) {
 					cart.addOrderLine( cartLine );
 				} else {
-					vr.increment();
+					vr.addUnavailableItem(cartLine, ProcessActionResult.Reason.INVALID_CONFIG, null);
 				}
 			}
 			cart.refreshAll(true);			
 		} catch ( FDInvalidConfigurationException e ) {
-			LOGGER.info( "Shopping list contains some items with invalid configuration." );
-			vr.increment();
+			LOGGER.warn( "Shopping list contains some items with invalid configuration.", e);
+			vr.markGeneralIssue();
 			// This is not an error
 			// return new Result( ErrorCode.CART, "Shopping list contains some items with invalid configuration.", customerInfo );
 		}
@@ -733,14 +741,15 @@ public class StandingOrderUtil {
 			int randomId = cartLine.getRandomId();
 			FDProductInfo prodInfo = cartLine.lookupFDProductInfo();
 			if (!prodInfo.isAvailable()) {
+				final String err = "Item " + randomId + " / '" + cartLine.getProductName() + "' - SKU is unavailable/discontinued and therefore item was removed.";
 				unavailableItems.add(prodInfo.getSkuCode() + " " + cartLine.getProductName());
-				vr.increment();
+				vr.addUnavailableItem(cartLine, ProcessActionResult.Reason.UNAV, err);
 				cart.removeOrderLineById(randomId);
-				LOGGER.debug("[AVAILABILITY CHECK] Item " + randomId + " / '" + cartLine.getProductName() + "' - SKU is unavailable/discontinued and therefore item was removed.");
+				LOGGER.debug("[AVAILABILITY CHECK] " + err);
 			}
 		}
 
-		return vr.hasInvalidItems();
+		return vr.isFail();
 	}
 
 
@@ -774,23 +783,13 @@ public class StandingOrderUtil {
 			FDAvailabilityInfo info = invsInfoMap.get(key);
 			final Integer randomId = new Integer(key);
 			FDCartLineI cartLine = cart.getOrderLineById(randomId);
+			final String lineId = cartLine.getRandomId() + " / '" + cartLine.getProductName();
 
 			if (info instanceof FDRestrictedAvailabilityInfo) {
-				/**
-				 * Cause:  restriction problem
-				 * Effect: remove cartLine item
-				 */
-				LOGGER.debug("[ATP CHECK/1] Item " + cartLine.getRandomId() + " / '" + cartLine.getProductName() + "' has restriction: " + ((FDRestrictedAvailabilityInfo)info).getRestriction().getReason());
+				LOGGER.debug("[ATP CHECK/1] Item '" + lineId + "' has restriction: " + ((FDRestrictedAvailabilityInfo)info).getRestriction().getReason());
 				
-				/*** EnumDlvRestrictionReason rsn = ((FDRestrictedAvailabilityInfo)info).getRestriction().getReason();
-				if (EnumDlvRestrictionReason.KOSHER.equals(rsn)) {
-					// Kosher production item</a> - not available Fri, Sat, Sun AM, and holidays
-					LOGGER.debug("Item " + cartLine.getProductName() + "/" + cartLine.getCartlineId() + " is Kosher product");
-				} else {
-					// Restriction message: ((FDRestrictedAvailabilityInfo)info).getRestriction().getMessage()
-				} ***/
 
-				vr.increment();
+				vr.addUnavailableItem(cartLine, ProcessActionResult.Reason.ATP, "Restricted availabity");
 				cart.removeOrderLineById(randomId);
 			} else if (info instanceof FDStockAvailabilityInfo) {
 				/**
@@ -801,12 +800,12 @@ public class StandingOrderUtil {
 
 				// Limited quantity zero or less than desired amount available
 				double availQty = ((FDStockAvailabilityInfo)info).getQuantity();
-				LOGGER.debug("[ATP CHECK/2] Item " + cartLine.getRandomId() + " / '" + cartLine.getProductName() + "' has only " + availQty + " items available.");
+				LOGGER.debug("[ATP CHECK/2] Item '" + lineId + "' has only " + availQty + " items available.");
 				if (availQty > 0) {
 					// adjust quantity to amount of available
 					cart.getOrderLineById(randomId).setQuantity(availQty);
 				} else {
-					vr.increment();
+					vr.addUnavailableItem(cartLine, ProcessActionResult.Reason.ATP, "Zero quantity");
 					cart.removeOrderLineById(randomId);
 				}
 			} else if (info instanceof FDCompositeAvailabilityInfo) {
@@ -814,68 +813,34 @@ public class StandingOrderUtil {
 				 * Cause:  some options are unavailable
 				 * Effect: remove cartLine item
 				 */
-				LOGGER.debug("[ATP CHECK/3] Item " + cartLine.getRandomId() + " / '" + cartLine.getProductName() + "' has problem with its options.");
+				LOGGER.debug("[ATP CHECK/3] Item '" + lineId + "' has problem with its options.");
 
-				// The following options are unavailable: ...
-				//
-				/**** Map<String,FDAvailabilityInfo> componentInfos = ((FDCompositeAvailabilityInfo)info).getComponentInfo();
-				boolean singleOptionIsOut= false;
-				for (Iterator<Entry<String, FDAvailabilityInfo>> i = componentInfos.entrySet().iterator(); i.hasNext(); ) {
-					Map.Entry<String, FDAvailabilityInfo> e = i.next();
-					String componentKey = (String)e.getKey();
-					if (componentKey != null) {
-						FDAvailabilityInfo componentInfo = (FDAvailabilityInfo)e.getValue();
-
-						FDProduct fdp = cartLine.lookupFDProduct();
-						String matNo = StringUtils.right(componentKey, 9);
-						FDVariationOption option = fdp.getVariationOption(matNo);
-						if (option != null) {
-							/// Print missing option.getDescription()
-
-							// Check to see if this option is the only option for the variation
-							FDVariation[] vars = fdp.getVariations();
-							for (int vi=0; vi <vars.length;vi++){
-								FDVariation aVar = vars[vi];
-								if (vars[vi].getVariationOption(matNo)!=null && vars[vi].getVariationOptions().length>0) {
-								    singleOptionIsOut = true;
-								}
-							}
-							
-						}
-					}
-				}
-				
-				if (!singleOptionIsOut) {
-					// JSP: go to modify other options...
-				} ****/
-
-
-				vr.increment();
+				vr.addUnavailableItem(cartLine, ProcessActionResult.Reason.ATP, "Some options are unavailable");
 				cart.removeOrderLineById(randomId);
 			} else if (info instanceof FDMuniAvailabilityInfo) {
 				/**
 				 * Cause:  'FreshDirect does not deliver alcohol outside NY'
 				 * Effect: remove cartLine item
 				 */
-				LOGGER.debug("[ATP CHECK/4] Item " + cartLine.getRandomId() + " / '" + cartLine.getProductName() + "' -- 'FreshDirect does not deliver alcohol outside NY'");
+				LOGGER.debug("[ATP CHECK/4] Item '" + lineId + "' -- 'FreshDirect does not deliver alcohol outside NY'");
 
 				/// final MunicipalityInfo muni = ((FDMuniAvailabilityInfo)info).getMunicipalityInfo();
 				//
-				vr.increment();
+				vr.addUnavailableItem(cartLine, ProcessActionResult.Reason.ATP, "FreshDirect does not deliver alcohol outside NY");
 				cart.removeOrderLineById(randomId);
 			} else { /* info.isa? {@link FDStatusAvailabilityInfo} */
 				/**
 				 * Cause:  OUT OF STOCK
 				 * Effect: remove cartLine item
 				 */
-				LOGGER.debug("[ATP CHECK/5] Item " + cartLine.getRandomId() + " / '" + cartLine.getProductName() + "' OUT OF STOCK");
+				LOGGER.debug("[ATP CHECK/5] Item '" + lineId + "' OUT OF STOCK");
 
-				vr.increment();
+				vr.addUnavailableItem(cartLine, ProcessActionResult.Reason.ATP, "Out of stock");
 				cart.removeOrderLineById(randomId);
 			}
 		}
 
-		return vr.hasInvalidItems();
+		return vr.isFail();
 	}
 	
 	private static void sendNotification( FDStandingOrder so, MailerGatewayHome mailerHome ) throws FDResourceException {		
@@ -930,22 +895,6 @@ public class StandingOrderUtil {
 		return false;
 	}
 	
-	public static class ProcessActionResult {
-		private int counter = 0;
-		
-		public void increment() {
-			counter++;
-		}
-	
-		public boolean hasInvalidItems() {
-			return counter > 0;
-		}
-		
-		@Override
-		public String toString() {
-			return "Bad items: " + counter + " -> " + hasInvalidItems();
-		}
-	}
 	
 	private static AddressModel performCosResidentialMerge(AddressModel address)	throws FDResourceException {
 		AddressModel timeslotAddress = address;

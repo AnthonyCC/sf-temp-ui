@@ -270,4 +270,8 @@ public class HibernateContentService extends AbstractContentService implements H
 		return sessionFactory;
 	}
 
+	public ContentNodeI getRealContentNode(ContentKey key) {
+		return getContentNode(key);
+	}
+
 }

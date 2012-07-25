@@ -55,12 +55,12 @@ import com.freshdirect.fdstore.customer.ProfileModel;
 import com.freshdirect.fdstore.lists.FDCustomerList;
 import com.freshdirect.fdstore.lists.FDCustomerListItem;
 import com.freshdirect.fdstore.rules.FDRuleContextI;
+import com.freshdirect.fdstore.standingorders.ProcessActionResult;
 import com.freshdirect.framework.conf.FDRegistry;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.util.TimeOfDay;
 import com.freshdirect.giftcard.ErpGiftCardModel;
 import com.freshdirect.webapp.util.StandingOrderUtil;
-import com.freshdirect.webapp.util.StandingOrderUtil.ProcessActionResult;
 
 public class ServiceTest extends MockObjectTestCase {
 	private final static DateFormat DF = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
@@ -465,7 +465,7 @@ public class ServiceTest extends MockObjectTestCase {
 		ProcessActionResult vr = new ProcessActionResult();
 		StandingOrderUtil.doATPCheck(identity, cart, vr);
 
-		return vr.hasInvalidItems();
+		return vr.isFail();
 	}
 }
 

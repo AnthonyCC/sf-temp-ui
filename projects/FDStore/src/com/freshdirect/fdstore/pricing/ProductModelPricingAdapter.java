@@ -427,6 +427,11 @@ public class ProductModelPricingAdapter implements ProductModel, Serializable,
 	public SkuModel getDefaultSku(PricingContext ctx) {
 		return prodModel.getDefaultSku(ctx);
 	}
+	
+	@Override
+	public SkuModel getDefaultTemporaryUnavSku() {
+		return prodModel.getDefaultTemporaryUnavSku();
+	}
 
 	@Override
 	public DepartmentModel getDepartment() {
@@ -1405,11 +1410,21 @@ public class ProductModelPricingAdapter implements ProductModel, Serializable,
 	}
 
 	@Override
+	public boolean isRetainOriginalSkuOrder() {
+		return prodModel.isRetainOriginalSkuOrder();
+	}
+
+	@Override
 	public boolean showDefaultSustainabilityRating() {
 		return this.prodModel.showDefaultSustainabilityRating();
 	}
 	
 	public boolean isExcludedForEBTPayment(){
 		return this.prodModel.isExcludedForEBTPayment();
+	}
+
+	@Override
+	public boolean isDisabledRecommendations() {
+		return this.prodModel.isDisabledRecommendations();
 	}
 }

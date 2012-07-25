@@ -346,6 +346,18 @@
 		<div class="pageDesc">Display cached SKU info.</div>
 	</div>
 
+	<div class="tag sku">
+		<div class="pageName"><span>Available SKUs</span></div>
+		<div class="link"><a href="/test/data/skus.jsp">/test/data/skus.jsp</a></div>
+		<div class="pageDesc">Display cached SKU info.</div>
+	</div>
+
+	<div class="tag CMS sku">
+		<div class="pageName"><span>Available Products with Multiple SKUs</span></div>
+		<div class="link"><a href="/test/data/multi_sku_products.jsp">/test/data/multi_sku_products.jsp</a></div>
+		<div class="pageDesc">Display available products having stacked SKUs.</div>
+	</div>
+
 	<div class="tag CMS">
 		<div class="pageName"><span>Data</span></div>
 		<div class="link"><a href="/test/data/data.jsp">/test/data/data.jsp</a></div>
@@ -856,6 +868,12 @@
 		<div class="pageName"><span>/test/stress/save_cart.jsp</span></div>
 		<div class="link"><a href="/test/stress/save_cart.jsp">/test/stress/save_cart.jsp</a></div>
 		<div class="pageDesc">Needs Description.</div>
+	</div>
+
+	<div class="tag standingOrder">
+		<div class="pageName"><span>SO Confirmation E-mail</span></div>
+		<div class="link"><a href="/test/standingorder/confirm_email.jsp">/test/standingorder/confirm_email.jsp</a></div>
+		<div class="pageDesc">Test page to send out a confirmation e-mail that a standing order instance is set to be delivered.</div>
 	</div>
 
 	<div class="tag">

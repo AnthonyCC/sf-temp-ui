@@ -71,6 +71,8 @@ public class FDContentTypes {
 
 	public final static ContentType HOLIDAY_GREETING = ContentType.get("HolidayGreetings");
 	public final static ContentType MYFD = ContentType.get("MyFD");
+	
+	public final static ContentType YOUTUBE_VIDEO = ContentType.get("YoutubeVideo");
 	public final static ContentType DONATION_ORGANIZATION = ContentType.get("DonationOrganization");
 
 	private FDContentTypes() {

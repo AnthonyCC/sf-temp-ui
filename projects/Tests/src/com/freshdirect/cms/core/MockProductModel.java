@@ -1991,9 +1991,24 @@ public class MockProductModel extends MockContentNodeModel implements
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	@Override
+	public boolean isRetainOriginalSkuOrder() {
+		return false;
+	}
 	
 	@Override
 	public 	boolean showDefaultSustainabilityRating() {
 		return false;
+	}
+
+	@Override
+	public boolean isDisabledRecommendations() {
+		return false;
+	}
+
+	@Override
+	public SkuModel getDefaultTemporaryUnavSku() {
+		return null;
 	}
 }

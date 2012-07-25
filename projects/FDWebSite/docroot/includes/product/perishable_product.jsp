@@ -203,7 +203,8 @@ final int W_PERISHABLE_PRODUCT_RIGHT = 369;
 <%-- **************************************** END Shelf Life ****************************************************************************** --%>
 			<%-- [APPDEV-2241] Carousel STARTS here --%>
 			<% // [APPBUG-677] disable YMAL recommender in quickshop pages
-				if (!request.getRequestURI().startsWith("/quickshop")) { %>
+			   // [APPDEV-2415] disable YMAL if recommendations are disabled on product
+				if (!request.getRequestURI().startsWith("/quickshop") && !productNode.isDisabledRecommendations()) { %>
 			<fd:ProductGroupRecommender itemCount="6" siteFeature="YMAL_PDTL" facility="ymal_pdtl" currentNode="<%= __prd %>" id="recommendedProducts" excludeAlcoholicContent="<%= true %>" ymalSource="<%= __prd %>">
 			<div id="ymal_pdtl_container" class="carousel-box" style="padding-top: 32px;">
 				<div style="text-align: center; padding-bottom: 10px; margin-bottom: 10px; border-bottom: 1px dotted gray;">
@@ -272,7 +273,7 @@ final int W_PERISHABLE_PRODUCT_RIGHT = 369;
 		        <%@ include file="/shared/includes/product/i_product_right_column.jspf" %>
 
 			<% } else {
-
+				
 				SkuModel dfltSku = (SkuModel)productNode.getSkus().get( 0 );
 				FDProduct fdprod = dfltSku.getProduct();
 
@@ -286,7 +287,7 @@ final int W_PERISHABLE_PRODUCT_RIGHT = 369;
 				<% if ( productDesc != null ) { %>
 		     		<b>About</b>
 				<% } %>
-
+				
 				<%@ include file="/shared/includes/product/i_product_about.jspf" %>
 
 				<% if ( hasNutriOrIngrd ) { %>
@@ -294,7 +295,6 @@ final int W_PERISHABLE_PRODUCT_RIGHT = 369;
 				<% } else { %>
 					<br/>Please check product label for nutrition, ingredients, and allergens.
 				<% } %>
-
 				<br/><br/>
 
 			<% } %>

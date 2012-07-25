@@ -147,6 +147,7 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 			//APPDEV-2286 catch unchecked exceptions
 			} catch (Exception e) {
 				LOGGER.error( "Processing standing order failed with Exception!", e );
+				e.printStackTrace(); // DEBUG
 				result = SOResult.createTechnicalError( so, "Processing standing order failed with unchecked exception!!!" );				
 			} finally {
 				invalidateMailerHome();

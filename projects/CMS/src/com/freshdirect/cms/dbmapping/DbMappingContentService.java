@@ -159,5 +159,9 @@ public class DbMappingContentService extends AbstractContentService implements D
 		return this.dataSource;
 	}
 
+	public ContentNodeI getRealContentNode(ContentKey key) {
+		return null;
+	}
+
 	
 }

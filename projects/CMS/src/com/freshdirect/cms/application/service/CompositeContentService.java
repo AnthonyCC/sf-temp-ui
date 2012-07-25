@@ -232,4 +232,28 @@ public class CompositeContentService extends AbstractContentService implements C
 		return reqByService;
 	}
 
+	public ContentNodeI getRealContentNode(ContentKey key) {
+		Map nodes = new LinkedHashMap();
+		boolean found = false;
+		for (int i = 0; i < contentServices.size(); i++) {
+			ContentServiceI service = (ContentServiceI) contentServices.get(i);
+			if (service.getTypeService().getContentTypeDefinition(key.getType()) == null) {
+				continue;
+			}
+			ContentNodeI node = service.getRealContentNode(key);
+			if (node == null) {
+				node = service.createPrototypeContentNode(key);
+			} else {
+				found = true;
+			}
+			if (node != null) {
+				nodes.put(service.getName(), node);
+			}
+		}
+		if (!found) {
+			return null;
+		}
+		return new CompositeContentNode(this, key, nodes);
+	}
+
 }

@@ -7,6 +7,7 @@
 <%@ page import="com.freshdirect.webapp.util.JspMethods"%>
 <%@ page import="com.freshdirect.fdstore.content.EnumProductLayout"%>
 <%@ page import="com.freshdirect.fdstore.customer.EnumQuickbuyStatus"%>
+<%@page import="com.freshdirect.fdstore.content.Image"%>
 <%@ taglib uri='/WEB-INF/shared/tld/freshdirect.tld' prefix='fd' %>
 <%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %>
 <fd:CheckLoginStatus id="user"/>
@@ -45,9 +46,17 @@
 <div class="right">
 	<%
 	if (__isWineLayout) {
+		Image descImage = productNode.getDescriptiveImage();
+		Image altImage = productNode.getAlternateImage();
+		if(descImage == null){
+			descImage = new Image("/media/images/temp/soon_100x100.gif", 100, 100);
+		}
+		if(altImage == null){
+			altImage = new Image("/media/images/temp/soon_100x100.gif", 100, 100);
+		}
 	%>		<div>
-				<img src="<%= productNode.getAlternateImage().getPath() %>" style="width: <%= productNode.getAlternateImage().getWidth() %>px; height <%= productNode.getAlternateImage().getHeight() %>px; vertical-align: top;">
-				<img src="<%= productNode.getDescriptiveImage().getPath() %>" style="width: <%= productNode.getDescriptiveImage().getWidth() %>px; height <%= productNode.getDescriptiveImage().getHeight() %>px; vertical-align: top;">
+				<img src="<%= altImage.getPath() %>" style="width: <%= altImage.getWidth() %>px; height <%= altImage.getHeight() %>px; vertical-align: top;">
+				<img src="<%= descImage.getPath() %>" style="width: <%= descImage.getWidth() %>px; height <%= descImage.getHeight() %>px; vertical-align: top;">
 			</div>
 	<%
 	} else {

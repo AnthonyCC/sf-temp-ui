@@ -308,4 +308,8 @@ public class MediaService extends AbstractContentService implements MediaService
 			}
 		}
 	}
+
+	public ContentNodeI getRealContentNode(ContentKey key) {
+		return getContentNode(key);
+	}
 }

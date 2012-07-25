@@ -30,6 +30,7 @@ import net.oauth.OAuthAccessor;
 import net.oauth.OAuthMessage;
 import net.oauth.server.OAuthServlet;
 
+import com.freshdirect.fdstore.customer.FDCustomerFactory;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.oauth.provider.OAuthProvider;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
@@ -54,7 +55,7 @@ public class AuthorizationServlet extends HttpServlet {
            
             if (Boolean.TRUE.equals(accessor.getProperty("authorized"))) {
                 // already authorized send the user back
-                returnToConsumer(request, response, accessor);
+                returnToConsumer(request, response, accessor, false);
             
             } else { 
             	FDSessionUser user = (FDSessionUser)request.getSession().getAttribute(SessionName.USER);
@@ -78,8 +79,18 @@ public class AuthorizationServlet extends HttpServlet {
 					response.sendRedirect(response.encodeRedirectURL(redirBuf.toString()));
 
             	} else {
-            		accessor = OAuthProvider.markAsAuthorized(accessor, user.getUserId());
-                    returnToConsumer(request, response, accessor);
+            		
+            		//authorization fails if display name is not set - disables commenting 
+            		String displayName = FDCustomerFactory.getErpCustomerInfo(user.getIdentity()).getDisplayName();
+
+            		if (displayName == null || displayName.length() == 0){
+                        returnToConsumer(request, response, accessor, true);
+            			
+            		} else {
+                		accessor = OAuthProvider.markAsAuthorized(accessor, user.getUserId());
+                        returnToConsumer(request, response, accessor, false);
+            		}
+            		
             	}
             }
         
@@ -93,7 +104,7 @@ public class AuthorizationServlet extends HttpServlet {
     	doGet(request, response);
     }
     
-    private void returnToConsumer(HttpServletRequest request, HttpServletResponse response, OAuthAccessor accessor) throws IOException, ServletException{
+    private void returnToConsumer(HttpServletRequest request, HttpServletResponse response, OAuthAccessor accessor, boolean noDisplayName) throws IOException, ServletException{
 
     	// send the user back to site's callBackUrl
         String callback = request.getParameter("oauth_callback");
@@ -117,6 +128,9 @@ public class AuthorizationServlet extends HttpServlet {
             String token = accessor.requestToken;
             if (token != null) {
                 callback = OAuth.addParameters(callback, "oauth_token", token);
+                if (noDisplayName){
+                	callback += "&nodisplayname";
+                }
             }
 
             response.setStatus(HttpServletResponse.SC_MOVED_TEMPORARILY);

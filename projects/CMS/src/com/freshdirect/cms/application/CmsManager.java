@@ -185,4 +185,8 @@ public class CmsManager implements ContentServiceI {
 		return this;
 	}
 
+	public ContentNodeI getRealContentNode(ContentKey key) {
+		return pipeline.getRealContentNode(key);
+	}
+
 }

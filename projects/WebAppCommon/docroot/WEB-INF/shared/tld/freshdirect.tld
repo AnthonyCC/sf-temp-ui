@@ -4938,4 +4938,41 @@
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 	</tag>
+	<tag>
+		<name>YoutubeVideoTag</name>
+		<tagclass>com.freshdirect.webapp.taglib.fdstore.YoutubeVideoTag</tagclass>
+		<info></info>
+		<attribute>
+			<name>attrName</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>title</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+	</tag>
+	<tag>
+		<name>AnalyticsInit</name>
+		<tagclass>com.freshdirect.webapp.taglib.AnalyticsInitTag</tagclass>
+		<info></info>
+	</tag>
+	<tag>
+		<name>NextDeliveryDateChooser</name>
+		<tagclass>com.freshdirect.webapp.taglib.standingorder.NextDeliveryDateChooserTag</tagclass>
+		<teiclass>com.freshdirect.webapp.taglib.standingorder.NextDeliveryDateChooserTag$TagEI</teiclass>
+		<bodycontent>JSP</bodycontent>
+		<info></info>
+		<attribute>
+			<name>standingOrder</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>inputName</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+	</tag>
 </taglib>

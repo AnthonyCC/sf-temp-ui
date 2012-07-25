@@ -91,4 +91,12 @@ public class MaskContentService extends AbstractContentService implements Conten
 		return mask.handle(request);
 	}
 
+	public ContentNodeI getRealContentNode(ContentKey key) {
+		ContentNodeI n = mask.getRealContentNode(key);
+		if (n == null) {
+			n = base.getRealContentNode(key);
+		}
+		return n;
+	}
+
 }

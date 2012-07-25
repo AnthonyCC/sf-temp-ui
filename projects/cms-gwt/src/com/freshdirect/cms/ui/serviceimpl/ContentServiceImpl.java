@@ -64,6 +64,7 @@ import com.freshdirect.cms.validation.ContentValidationException;
 import com.freshdirect.cms.validation.ContentValidationMessage;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.content.GlobalMenuItemModel;
+import com.freshdirect.fdstore.content.YoutubeVideoModel;
 import com.freshdirect.framework.conf.FDRegistry;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
@@ -80,7 +81,7 @@ public class ContentServiceImpl extends RemoteServiceServlet implements ContentS
     
     private static final String[] ROOTKEYS         = { "Store:FreshDirect", "MediaFolder:/", "CmsFolder:forms", "CmsQueryFolder:queries",
             "CmsQuery:orphans", "FDFolder:recipes", "FDFolder:ymals", GlobalMenuItemModel.DEFAULT_MENU_FOLDER, "FDFolder:starterLists", "FDFolder:synonymList",
-            "FDFolder:spellingSynonymList", SearchRelevancyList.SEARCH_RELEVANCY_KEY, "FDFolder:FAQ", "FDFolder:donationOrganizationList" };
+            "FDFolder:spellingSynonymList", SearchRelevancyList.SEARCH_RELEVANCY_KEY, "FDFolder:FAQ", "FDFolder:donationOrganizationList", YoutubeVideoModel.DEFAULT_YOUTUBE_FOLDER };
 
     @Override
     public void init() throws ServletException {

@@ -110,7 +110,7 @@ public class TranslatorToGwt {
             ContentNodeI node;
             try {
                 ContentKey keey = ContentKey.create(ContentType.get(type), id);
-                ContentNodeI oldNode = CmsManager.getInstance().getContentNode(keey);
+                ContentNodeI oldNode = CmsManager.getInstance().getRealContentNode(keey);
                 if (oldNode != null) {
                     // there is already a node, return null.
                     return null;

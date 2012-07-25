@@ -7,13 +7,15 @@
 <%@ page import="com.freshdirect.customer.*"%>
 <%@ page import='com.freshdirect.fdstore.survey.*' %>
 <%@ page import='com.freshdirect.webapp.util.*' %>
-<%@page import="com.freshdirect.common.customer.EnumServiceType"%>
+<%@ page import="com.freshdirect.common.customer.EnumServiceType"%>
+<%@ page import="com.freshdirect.fdstore.myfd.blog.MyFdFeed"%>
 <%@ page import="java.net.URLEncoder" %>
 <%@ page import='java.text.*' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri='bean' prefix='bean' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='template' prefix='tmpl' %>
+
 <% //expanded page dimensions
 final int W_YA_CUSTOMER_PROFILE_SUMMARY_TOTAL = 970;
 %>
@@ -282,3 +284,4 @@ response.setHeader("Cache-Control", "no-cache");
 
 	</tmpl:put>
 </tmpl:insert>
+<iframe src="<%=MyFdFeed.getInstance().getBlogUrl()%>/?autologout" width="0" height="0" frameBorder="0"/>

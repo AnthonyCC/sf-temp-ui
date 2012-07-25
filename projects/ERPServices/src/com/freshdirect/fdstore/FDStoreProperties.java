@@ -495,6 +495,8 @@ public class FDStoreProperties {
     //APPDEV-2072 google analytics environment specific key
     private static final String PROP_GOOGLE_ANALYTICS_KEY = "fdstore.google.analytics.key";
     
+    private static final String PROP_GOOGLE_ANALYTICS_DOMAIN = "fdstore.google.analytics.domain";
+    
     //APPDEV-2062 CS Hours.
     private static final String CUST_SERV_HOURS_DAYS="fdstore.cust_serv_days";
     private static final String CUST_SERV_HOURS_HOURS="fdstore.cust_serv_hours";
@@ -1048,6 +1050,7 @@ public class FDStoreProperties {
 		
 		//APPDEV-2072 google analytics key
         defaults.put(PROP_GOOGLE_ANALYTICS_KEY, ""); //default to an empty string
+        defaults.put(PROP_GOOGLE_ANALYTICS_DOMAIN, ".freshdirect.com");
 
         defaults.put(PROP_AVAILABILITY_DAYS_IN_PAST_TO_LOOKUP, "7");
         defaults.put(CUST_SERV_HOURS_DAYS, "Monday through Sunday");
@@ -2654,6 +2657,10 @@ public class FDStoreProperties {
 	//APPDEV-2072 google analytics key
     public static String getGoogleAnalyticsKey() {
         return get(PROP_GOOGLE_ANALYTICS_KEY);
+    }
+    
+    public static String getGoogleAnlayticsDomain() {
+    	return get(PROP_GOOGLE_ANALYTICS_DOMAIN);
     }
 
 	//APPDEV-991 

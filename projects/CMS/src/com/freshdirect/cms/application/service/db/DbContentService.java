@@ -481,4 +481,8 @@ public class DbContentService extends AbstractContentService implements ContentS
 		return new CmsResponse();
 	}
 
+	public ContentNodeI getRealContentNode(ContentKey key) {
+		return getContentNode(key);
+	}
+
 }

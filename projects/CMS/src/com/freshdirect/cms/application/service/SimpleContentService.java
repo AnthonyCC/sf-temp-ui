@@ -100,4 +100,8 @@ public class SimpleContentService extends AbstractContentService implements Cont
 		this.nodeParentsByKey = ContentNodeUtil.getParentIndex(nodesByKey.values());
 	}
 
+	public ContentNodeI getRealContentNode(ContentKey key) {
+		return getContentNode(key);
+	}
+
 }

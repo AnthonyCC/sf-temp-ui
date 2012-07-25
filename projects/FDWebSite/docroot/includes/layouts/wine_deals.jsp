@@ -222,7 +222,10 @@ if (rest != null) {
 	<div style="padding-top: 10px;"><img src="/media/editorial/win_usq/deals/hdr_allsale.gif" alt="MISSING HEADER IMAGE"></div>
 	<table width="<%=W_WINE_DEALS_TOTAL%>" cellspacing="0" cellpadding="0" border="0">
 	<% for (ProductModel product : rest) { PriceCalculator price = product.getPriceCalculator(); 
-		   Image img = product.getDescriptiveImage(); %>
+		   Image img = product.getDescriptiveImage();
+		   if(img == null){
+			   img = new Image("/media/images/temp/soon_100x100.gif", 100, 100);
+		   }%>
 		<display:GetContentNodeWebId id="webId" product="<%= product %>" clientSafe="<%= true %>">
 		<tr>
 			<td align="center" width="<%=W_WINE_DEALS_SALE_LEFT%>">

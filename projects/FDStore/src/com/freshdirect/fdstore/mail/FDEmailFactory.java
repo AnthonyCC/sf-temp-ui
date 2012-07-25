@@ -33,6 +33,7 @@ import com.freshdirect.fdstore.content.Recipe;
 import com.freshdirect.fdstore.content.RecipeSource;
 import com.freshdirect.fdstore.customer.FDCSContactHours;
 import com.freshdirect.fdstore.customer.FDCSContactHoursUtil;
+import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDCustomerInfo;
 import com.freshdirect.fdstore.customer.FDOrderI;
 import com.freshdirect.fdstore.customer.FDOrderInfoI;
@@ -1041,8 +1042,8 @@ public class FDEmailFactory {
 		return email;
 	}
 
-	public XMLEmailI createConfirmStandingOrderEmail(FDCustomerInfo customer, FDOrderI order, FDStandingOrder standingOrder, boolean hasUnavailableItems) {
-		FDStandingOrderEmail email = new FDStandingOrderEmail(customer, order, standingOrder, hasUnavailableItems);
+	public XMLEmailI createConfirmStandingOrderEmail(FDCustomerInfo customer, FDOrderI order, FDStandingOrder standingOrder, List<FDCartLineI> unavCartItems) {
+		FDStandingOrderEmail email = new FDStandingOrderEmail(customer, order, standingOrder, unavCartItems);
 
 		email.setXslPath("h_standing_order_confirm_v1.xsl", "x_standing_order_confirm_v1.xsl");
 
@@ -1050,15 +1051,15 @@ public class FDEmailFactory {
 
 		StringBuilder subject = new StringBuilder("Your standing order for ");
 		subject.append(df.format(order.getRequestedDate()));
-		if (hasUnavailableItems)
+		if (unavCartItems.size() > 0)
 			subject.append(" (some items unavailable)");
 		email.setSubject(subject.toString());
 
 		return email;
 	}
 
-	public XMLEmailI createConfirmDeliveryStandingOrderEmail(FDCustomerInfo customer, FDOrderI order, FDStandingOrder standingOrder) {
-		FDStandingOrderEmail email = new FDStandingOrderEmail(customer, order, standingOrder, false);
+	public XMLEmailI createConfirmDeliveryStandingOrderEmail(FDCustomerInfo customer, FDOrderI order, FDStandingOrder standingOrder, List<FDCartLineI> unavCartItems) {
+		FDStandingOrderEmail email = new FDStandingOrderEmail(customer, order, standingOrder, unavCartItems);
 
 		email.setXslPath("h_standing_order_delivery_v1.xsl", "x_standing_order_delivery_v1.xsl");
 

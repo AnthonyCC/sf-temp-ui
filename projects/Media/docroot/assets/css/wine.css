@@ -2330,6 +2330,39 @@ a .usq-rating-sm,a .usq-rating-lg,a .usq-rating-half-sm,a .usq-rating-half-lg {
 	overflow: hidden;
 }
 
+.myfd-warning {
+    margin: 20px 0;
+    width: 629px;
+    border: 1px solid #cc3300;
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    border-radius: 4px;
+    height: 35px;
+    overflow: hidden;
+}
+
+
+
+.myfd-warning-excl{
+	background-color: #cc3300;
+    color: #fff;
+    font-weight: bold;
+    padding: 4px 0px;
+    height:35px;
+    float: left;
+    
+}
+
+.myfd-warning-text{
+    margin: 10px 30px;
+}
+
+.myfd-warning-text a {
+	color: #cc0000 !important;
+}
+
+
+
 .a2a_button_facebook .a2a_img {
 	background: url(../../media_stat/images/myfd/facebook.png) no-repeat center ! important;		
 	display: inline-block ! important;
