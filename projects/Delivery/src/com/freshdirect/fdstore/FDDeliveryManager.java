@@ -685,7 +685,8 @@ public class FDDeliveryManager {
 
 	public void commitReservation(String rsvId, String customerId, String orderId, ContactAddressModel address,boolean pr1, TimeslotEventModel event) throws ReservationException, FDResourceException {
 		try {
-
+			LOGGER.info("start commitReservation rsv "+rsvId);
+			
 			DlvManagerSB sb = getDlvManagerHome().create();
 			sb.commitReservation(rsvId, customerId, orderId,pr1);
 			DlvReservationModel reservation=sb.getReservation(rsvId);
@@ -700,6 +701,8 @@ public class FDDeliveryManager {
 					sb.setUnassignedInfo(rsvId, RoutingActivityType.CONFIRM_TIMESLOT);
 				}
 			}
+			LOGGER.info("end commitReservation rsv "+rsvId);
+			
 		} catch (RemoteException re) {
 			throw new FDResourceException(re);
 		} catch (CreateException ce) {

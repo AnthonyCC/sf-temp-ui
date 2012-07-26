@@ -535,6 +535,8 @@ public class RoutingUtil {
 
 		try {
 			RoutingGatewaySB routingSB = getRoutingGatewayHome().create();
+			LOGGER.info("sending commitReservation to queue..rsv "+reservation!=null? reservation.getId():null);
+			
 			routingSB.sendCommitReservationRequest(reservation, address,event);
 			return true;
 
@@ -554,6 +556,8 @@ public class RoutingUtil {
 
 		try {
 			RoutingGatewaySB routingSB = getRoutingGatewayHome().create();
+			LOGGER.info("sending releaseReservation to queue..rsv "+reservation!=null? reservation.getId():null);
+			
 			routingSB.sendReleaseReservationRequest(reservation,address,event);
 			return true;
 

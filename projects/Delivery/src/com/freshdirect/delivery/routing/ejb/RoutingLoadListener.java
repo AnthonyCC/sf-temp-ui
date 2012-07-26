@@ -188,21 +188,25 @@ public class RoutingLoadListener extends MessageDrivenBeanSupport {
 	}
 	
     private void process(ReserveTimeslotCommand command) throws FDResourceException {
+    	LOGGER.info("receiving reservation from queue..."+command.getReservation()!=null ?"customer "+command.getReservation().getCustomerId()+"timeslot "+command.getReservation().getTimeslotId():null);
 		
 		FDDeliveryManager.getInstance().reserveTimeslotEx(command.getReservation(), command.getAddress(), command.getTimeslot(), command.getEvent());
 	}
 	
     private void process(ConfirmTimeslotCommand command) throws FDResourceException {
-   		
+    	LOGGER.info("receiving commitReservation from queue..."+command.getReservation()!=null ?command.getReservation().getId():null);
+		
 			FDDeliveryManager.getInstance().commitReservationEx(command.getReservation(), command.getAddress(), command.getEvent());
     }
     
     private void process(ReservationUpdateCommand command) throws FDResourceException {
-		
+    	LOGGER.info("receiving updateReservationStatus from queue..."+ command.getReservationId());
+			
 		FDDeliveryManager.getInstance().updateReservationStatus(command.getReservationId(), command.getAddress(), command.getSapOrderNumber());
 	}
 
     private void process(CancelTimeslotCommand command) throws FDResourceException {
+    	LOGGER.info("receiving cancelReservation from queue..."+command.getReservation()!=null ?command.getReservation().getId():null);
 		
 		FDDeliveryManager.getInstance().releaseReservationEx(command.getReservation(), command.getAddress(), command.getEvent());
 	}
