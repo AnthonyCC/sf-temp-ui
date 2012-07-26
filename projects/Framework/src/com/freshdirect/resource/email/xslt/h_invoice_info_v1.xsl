@@ -213,7 +213,7 @@
 		<td colspan="2" align="right"><b>EBT PURCHASE TOTAL:</b></td>
 		<td align="right">
 			<xsl:choose>
-			<xsl:when test="order/invoicedTotal <= order/total">
+			<xsl:when test="order/invoicedTotal &lt;= order/total">
 			<b>$<xsl:value-of select='format-number(order/invoicedTotal, "###,##0.00", "USD")'/></b>
 			</xsl:when>
 			<xsl:otherwise>
