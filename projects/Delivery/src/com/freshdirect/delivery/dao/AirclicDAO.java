@@ -221,7 +221,7 @@ public class AirclicDAO {
 		try
 		{
 			ps = conn.prepareStatement("INSERT INTO DLV.AIRCLIC_TXTMESSAGE(ID, CREATEDATE, DELIVERYDATE, SENDER, MESSAGE, " +
-					"SOURCE, ROUTE, STOP, ORDERID, CUSTOMERID) VALUES(?,SYSDATE,?,?,?,?,?,?,?,?)");
+					"SOURCE, ROUTE, STOP, ORDERID) VALUES(?,SYSDATE,?,?,?,?,?,?,?)");
 			ps.setString(1, message.getId());
 			ps.setDate(2, new java.sql.Date(message.getDeliveryDate().getTime()));
 			ps.setString(3, message.getSender());
@@ -230,7 +230,6 @@ public class AirclicDAO {
 			ps.setString(6, message.getRoute());
 			ps.setInt(7, message.getStop());
 			ps.setString(8, message.getOrderId());
-			ps.setString(9, message.getCustomerId());
 			ps.execute();
 		}
 		catch(SQLException e)
@@ -409,8 +408,8 @@ public class AirclicDAO {
 				fromTime = new java.util.Date(rs.getTimestamp("LAST_EXPORT").getTime());
 			
 			ps = conn.prepareStatement("SELECT WEBORDERNUM,INSERT_TIMESTAMP, DELIVEREDTO, RECIPIENT, CONTAINS_ALCOHOL, SIGNATURE FROM (SELECT DISTINCT " +
-					"WEBORDERNUM, EVENTID FROM DLV.CARTONSTATUS CS WHERE  CS.SCANDATE  between to_date(?,'MM/DD/YYYY HH:MI:SS AM') and " +
-					"to_date(?,'MM/DD/YYYY HH:MI:SS AM') AND CS.CARTONSTATUS = 'DELIVERED') CS, DLV.SIGNATURE S WHERE S.INSERT_TIMESTAMP between " +
+					"WEBORDERNUM, EVENTID FROM DLV.CARTONSTATUS@dbsto.nyc.freshdirect.com CS WHERE  CS.SCANDATE  between to_date(?,'MM/DD/YYYY HH:MI:SS AM') and " +
+					"to_date(?,'MM/DD/YYYY HH:MI:SS AM') AND CS.CARTONSTATUS = 'DELIVERED') CS, DLV.SIGNATURE@dbsto.nyc.freshdirect.com S WHERE S.INSERT_TIMESTAMP between " +
 					"to_date(?,'MM/DD/YYYY HH:MI:SS AM') and to_date(?,'MM/DD/YYYY HH:MI:SS AM') AND S.EVENTID = CS.EVENTID"); 
 			//toTime is required here because we want to know till what time we are getting the signatures. The same to Time
 			//will be updated in the last export.

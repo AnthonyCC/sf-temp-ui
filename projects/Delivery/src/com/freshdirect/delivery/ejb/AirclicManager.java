@@ -103,7 +103,7 @@ public class AirclicManager {
 				if(data[2]!=null) stop = Integer.parseInt(data[2]);
 				
 			AirclicTextMessageVO textMessage = new AirclicTextMessageVO(deliveryDate, data[1], stop ,
-					data[3], data[4], data[5], data[6], data[7]);
+					data[3], data[4], data[5], data[6]);
 			
 			AirclicManagerSB sb = getAirclicManagerHome().create();
 			
