@@ -14,30 +14,29 @@
 }
 
 .grid-item-image {
-	height:176px;
-	line-height:176px;
+	height:160px;
+	line-height:160px;
 	position:relative;
 	overflow:hidden;
+	padding:16px 16px 0 15px;
 }
 
 .ie6 .grid-item-image {
-	width:100%;
 }
 
 .grid-item-image a {
 	display:inline-block;
 	position:relative;
 	vertical-align:bottom;	
-	padding:16px 16px 0 15px;
 	overflow:hidden;
+	width:100%;
 }
 
 .grid-item-image img {
 	max-height:160px;
 	max-width:100%;
 	vertical-align:bottom;
-	float:left;
-	display:block;
+	display:inline-block;
 }
 
 
