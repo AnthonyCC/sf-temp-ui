@@ -1695,11 +1695,12 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 								.getName());
 			}
 			//End apply delivery pass extension promotion.
-
+			LOGGER.info("Before commiting the reservation "+reservationId);
 			FDDeliveryManager.getInstance().commitReservation(reservationId,
 					identity.getErpCustomerPK(), pk.getId(),
 					createOrder.getDeliveryInfo().getDeliveryAddress(), info.isPR1(), event);
-
+			LOGGER.info("After commiting the reservation "+reservationId);
+			
 			if (null != createOrder.getSelectedGiftCards()
 					&& createOrder.getSelectedGiftCards().size() > 0) {
 				// Verify status of gift cards being applied on this order.
@@ -2311,6 +2312,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 				// now commit the new Reservation
 				// dlvSB.commitReservation(newReservationId,
 				// identity.getErpCustomerPK(), saleId);
+				
 				FDDeliveryManager.getInstance().commitReservation(
 						newReservationId, identity.getErpCustomerPK(), saleId,
 						order.getDeliveryInfo().getDeliveryAddress(), info.isPR1(), event);

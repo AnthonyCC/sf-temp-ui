@@ -165,7 +165,7 @@ public class DlvReservationModel extends ModelSupport {
 		Date expirationDateTime,
 		String timeslotId,
 		String zoneId,
-		EnumReservationType type, String addressId, Date deliveryDate, String zoneCode/*,Date unassignedDateTime*/,RoutingActivityType unassignedActivityType,boolean inUPS,
+		EnumReservationType type, String addressId, Date deliveryDate, String zoneCode, RoutingActivityType unassignedActivityType,boolean inUPS,
 		Double overrideOrderSize, Double overrideServiceTime, Double reservedOrderSize, Double reservedServiceTime, 
 		Long noOfCartons, Long noOfCases, Long noOfFreezers,EnumReservationClass rsvClass,  EnumRoutingUpdateStatus status, EnumOrderMetricsSource metricsSource) {
 			
@@ -179,23 +179,21 @@ public class DlvReservationModel extends ModelSupport {
 		this.addressId = addressId;
 		this.deliveryDate=deliveryDate;
 		this.zoneCode=zoneCode;
-		//this.unassignedDateTime=unassignedDateTime;
 		this.unassignedActivityType=unassignedActivityType;
 		this.inUPS=inUPS;
-		//this.routingOrderId=routingOrderId;
-		//this.orderSize = orderSize;
+	
 		this.overrideOrderSize = overrideOrderSize;
 		this.overrideServiceTime = overrideServiceTime;
 		
 		this.reservedOrderSize = reservedOrderSize;
 		this.reservedServiceTime = reservedServiceTime;
-		this.updateStatus = status;
 		
 		this.noOfCartons =  noOfCartons;
 		this.noOfCases =  noOfCases;
 		this.noOfFreezers =  noOfFreezers;
-		
 		this.rsvClass = rsvClass;
+		this.updateStatus = status;
+		
 	}
 
 	public DlvReservationModel(
