@@ -718,10 +718,12 @@ public class CheckoutController extends BaseController {
         List paymentMethods = user.getPaymentMethods();
         List<PaymentMethod> electronicChecks = user.getElectronicChecks(paymentMethods);
         List<PaymentMethod> creditCards = user.getCreditCards(paymentMethods);
+        List<PaymentMethod> ebtCards = user.getEBTCards(paymentMethods);
         boolean isCheckEligible = user.isCheckEligible();
         boolean isEcheckRestricted = user.isEcheckRestricted();
+        boolean isEbtAccepted = user.isEbtAccepted();
 
-        PaymentMethods responseMessage = new PaymentMethods(isCheckEligible, isEcheckRestricted, creditCards, electronicChecks);
+        PaymentMethods responseMessage = new PaymentMethods(isCheckEligible, isEcheckRestricted, creditCards, electronicChecks,ebtCards);
 
         if ((responseMessage.getCreditCards() != null && responseMessage.getCreditCards().size() == 0) 
         		&& (responseMessage.getElectronicChecks() != null && responseMessage.getElectronicChecks().size() == 0)) {

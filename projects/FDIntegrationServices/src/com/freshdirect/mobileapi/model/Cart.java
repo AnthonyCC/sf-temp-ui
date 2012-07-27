@@ -480,7 +480,9 @@ public class Cart {
                 checkoutDetail.setPaymentMethod(new ElectronicCheck(PaymentMethod.wrap(paymentMethod)));
             } else if (EnumPaymentMethodType.CREDITCARD.equals(paymentMethod.getPaymentMethodType())) {
                 checkoutDetail.setPaymentMethod(new CreditCard(PaymentMethod.wrap(paymentMethod)));
-            } else {
+            } else if (EnumPaymentMethodType.EBT.equals(paymentMethod.getPaymentMethodType())) {
+            	checkoutDetail.setPaymentMethod(new com.freshdirect.mobileapi.controller.data.response.PaymentMethod(PaymentMethod.wrap(paymentMethod)));
+            }else {
                 throw new IllegalArgumentException("Unrecongized payment type. paymentMethod.getPaymentMethodType="
                         + paymentMethod.getPaymentMethodType());
             }

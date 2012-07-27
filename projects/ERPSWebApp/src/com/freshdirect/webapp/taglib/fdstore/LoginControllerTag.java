@@ -156,7 +156,7 @@ public class LoginControllerTag extends AbstractControllerTag {
                 currentUser.isLoggedIn(true);
                 session.setAttribute(SessionName.USER, currentUser);
             }
-            
+          loginUser.setEbtAccepted(loginUser.isEbtAccepted()&&(loginUser.getOrderHistory().getUnSettledEBTOrderCount()<=0));  
           FDSessionUser user = (FDSessionUser) session.getAttribute(SessionName.USER);
           
           if (user!=null && EnumServiceType.CORPORATE.equals(user.getUserServiceType())) {

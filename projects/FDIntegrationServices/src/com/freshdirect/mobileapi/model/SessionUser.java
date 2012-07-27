@@ -101,6 +101,18 @@ public class SessionUser {
         }
         return electronicChecks;
     }
+    
+    public List<PaymentMethod> getEBTCards(List paymentMethods) {
+        List<PaymentMethod> ebtCards = new ArrayList<PaymentMethod>();
+        if(null !=paymentMethods){
+	        for (ErpPaymentMethodI paymentMethod : (List<ErpPaymentMethodI>) paymentMethods) {
+	            if (EnumPaymentMethodType.EBT.equals(paymentMethod.getPaymentMethodType())) {
+	            	ebtCards.add(PaymentMethod.wrap(paymentMethod));
+	            }
+	        }
+        }
+        return ebtCards;
+    }
 
     public Order getOrder(String saleId) throws FDException {
         GetOrderTagWrapper wrapper = new GetOrderTagWrapper(this);
@@ -543,4 +555,8 @@ public class SessionUser {
     public boolean isDpNewTcBlocking() {
     	return sessionUser.isDpNewTcBlocking(false); //Mobile API doesnt care about view count of t&c
     }
+    
+    public boolean isEbtAccepted() {
+		return sessionUser.isEbtAccepted();
+	}
 }

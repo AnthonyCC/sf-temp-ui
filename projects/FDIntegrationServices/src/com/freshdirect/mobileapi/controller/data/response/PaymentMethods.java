@@ -4,30 +4,36 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.freshdirect.fdstore.FDException;
-import com.freshdirect.mobileapi.model.PaymentMethod;
 
 public class PaymentMethods extends CheckoutResponse {
 
     private List<ElectronicCheck> electronicChecks = new ArrayList<ElectronicCheck>();
 
     private List<CreditCard> creditCards = new ArrayList<CreditCard>();
+    
+    private List<PaymentMethod> ebtCards = new ArrayList<PaymentMethod>();
 
     private String selectedId;
 
     private boolean isCheckEligible;
 
     private boolean isECheckRestricted;
+    
+    private boolean isEbtAccepted;
 
-    public PaymentMethods(boolean isCheckEligible, boolean isECheckRestricted, List<PaymentMethod> creditCards,
-            List<PaymentMethod> electronicChecks) throws FDException {
+    public PaymentMethods(boolean isCheckEligible, boolean isECheckRestricted, List<com.freshdirect.mobileapi.model.PaymentMethod> creditCards,
+            List<com.freshdirect.mobileapi.model.PaymentMethod> electronicChecks, List<com.freshdirect.mobileapi.model.PaymentMethod> ebtCards) throws FDException {
         this.isCheckEligible = isCheckEligible;
         this.isECheckRestricted = isECheckRestricted;
 
-        for (PaymentMethod creditCard : creditCards) {
+        for (com.freshdirect.mobileapi.model.PaymentMethod creditCard : creditCards) {
             this.creditCards.add(new CreditCard(creditCard));
         }
-        for (PaymentMethod electronicCheck : electronicChecks) {
+        for (com.freshdirect.mobileapi.model.PaymentMethod electronicCheck : electronicChecks) {
             this.electronicChecks.add(new ElectronicCheck(electronicCheck));
+        }
+        for (com.freshdirect.mobileapi.model.PaymentMethod ebtCard : ebtCards) {
+            this.ebtCards.add(new PaymentMethod(ebtCard));
         }
         setStatus(STATUS_SUCCESS);
     }
@@ -71,5 +77,13 @@ public class PaymentMethods extends CheckoutResponse {
     public void setSelectedId(String selectedId) {
         this.selectedId = selectedId;
     }
+
+	public boolean isEbtAccepted() {
+		return isEbtAccepted;
+	}
+
+	public void setEbtAccepted(boolean isEbtAccepted) {
+		this.isEbtAccepted = isEbtAccepted;
+	}
 
 }
