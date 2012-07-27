@@ -382,12 +382,13 @@ public class PaymentMethodUtil implements PaymentMethodName { //AddressName,
         paymentMethod.getName()==null || paymentMethod.getName().trim().length() < 1,
         PaymentMethodName.ACCOUNT_HOLDER, SystemMessageList.MSG_REQUIRED
         );
-        result.addError(
-        		paymentMethod.getAccountNumber() == null || "".equals(paymentMethod.getAccountNumber()),
-				PaymentMethodName.ACCOUNT_NUMBER, SystemMessageList.MSG_REQUIRED
-		);
+       
         
         if(EnumPaymentMethodType.CREDITCARD.equals(paymentMethod.getPaymentMethodType())||EnumPaymentMethodType.EBT.equals(paymentMethod.getPaymentMethodType())){
+        	 result.addError(
+             		paymentMethod.getAccountNumber() == null || "".equals(paymentMethod.getAccountNumber()),
+     				PaymentMethodName.ACCOUNT_NUMBER, SystemMessageList.MSG_REQUIRED
+     		);
         if(EnumPaymentMethodType.CREDITCARD.equals(paymentMethod.getPaymentMethodType())){        	
 	        //check brand
 	        result.addError(
@@ -396,10 +397,10 @@ public class PaymentMethodUtil implements PaymentMethodName { //AddressName,
 	        );
 	        
 	        // Check card number
-	       /* result.addError(
+	        result.addError(
 	        paymentMethod.getCardType() == null || (paymentMethod.getAccountNumber() == null || "".equals(paymentMethod.getAccountNumber()) || !validateCreditCardNumber(paymentMethod.getAccountNumber(), paymentMethod.getCardType().getFdName())),
 	        PaymentMethodName.ACCOUNT_NUMBER, SystemMessageList.MSG_INVALID_ACCOUNT_NUMBER
-	        );*/
+	        );
 	        String csv=paymentMethod.getCVV();
             if(FDStoreProperties.isPaymentMethodVerificationEnabled()&& !paymentMethod.isBypassAVSCheck()&& verifyCC) {
 	        	result.addError(
