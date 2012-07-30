@@ -186,10 +186,12 @@ public class CheckoutControllerTagWrapper extends ControllerTagWrapper implement
                     + MobileApiProperties.getAlcoholAgeWarningMediaPath()));
         }
         
+        /*
         if("true".equals(actionResult.getError("SHOW_UNATTENDED_MSG"))) {
         	actionResult.addError(new ActionError("SHOW_UNATTENDED_MSG", MobileApiProperties.getMediaPath()
                     + MobileApiProperties.getUnattendedDeliveryMediaPath()));
         }
+        */
         LOGGER.debug("addAndSetDeliveryAddress[END] ");
         return new ResultBundle(actionResult, this);
     }
