@@ -361,31 +361,46 @@ public class CheckoutControllerTag extends AbstractControllerTag {
 	protected void changeStandingOrderDeliveryDate(HttpServletRequest request,
 			final FDSessionUser currentUser) throws FDResourceException {
 		final FDStandingOrder so = currentUser.getCurrentStandingOrder();
-				final EnumCheckoutMode mode = currentUser.getCheckoutMode();
+		final EnumCheckoutMode mode = currentUser.getCheckoutMode();
 
-				if (so != null && EnumCheckoutMode.MODIFY_SO_TMPL.equals(mode)) {
-					final String tsId = request.getParameter("deliveryTimeslotId");
-					final FDTimeslot ts = FDDeliveryManager.getInstance().getTimeslotsById(tsId, true);
-					if (ts != null) {
-						// let's extract date and time interval
-						StandingOrderHelper.DeliveryTime dt = new StandingOrderHelper.DeliveryTime(ts);
-						
-						if ( request.getParameter("soDeliveryWeekOffset") != null) {
-							int offset = Integer.parseInt(request.getParameter("soDeliveryWeekOffset"));
-							dt.setWeekOffset( offset );
-						}
+		if (so != null && EnumCheckoutMode.MODIFY_SO_TMPL.equals(mode)) {
+			final String tsId = request.getParameter("deliveryTimeslotId");
+			final FDTimeslot ts = FDDeliveryManager.getInstance().getTimeslotsById(tsId);
+			if (ts != null) {
 
-						dt.update(so);
-						
-					} else {
-						LOGGER.error("No such timeslot with ID " + tsId);
-					}
-				} else {
-					if (so == null)
-						LOGGER.error("Missing standing order object!");
-					else
-						LOGGER.error("Invalid checkout mode " + mode);
+				
+				
+				int offsetStart = 1;
+				try {
+					FDOrderHistory history = (FDOrderHistory) FDCustomerManager.getOrderHistoryInfo(currentUser.getIdentity());
+					offsetStart = StandingOrderHelper.getFirstAvailableWeekOffset( history.getStandingOrderInstances(so.getId()) );
+				} catch (FDResourceException exc ) {
+					LOGGER.error("Failed to retrieve scheduled orders for standing order " + so.getId(), exc);
 				}
+				
+				
+				
+				
+				// let's extract date and time interval
+				StandingOrderHelper.DeliveryTime dt = new StandingOrderHelper.DeliveryTime(ts);
+				
+				if ( request.getParameter("soDeliveryWeekOffset") != null) {
+					int offset = Integer.parseInt(request.getParameter("soDeliveryWeekOffset"));
+					// both offset and offsetStart starts from next week so one must be decreased
+					dt.setWeekOffset( offsetStart + offset  -1 );
+				}
+
+				dt.update(so);
+				
+			} else {
+				LOGGER.error("No such timeslot with ID " + tsId);
+			}
+		} else {
+			if (so == null)
+				LOGGER.error("Missing standing order object!");
+			else
+				LOGGER.error("Invalid checkout mode " + mode);
+		}
 	}
 
 
