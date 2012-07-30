@@ -50,7 +50,8 @@ final int W_CHECKOUT_STEP_1_EDIT_TOTAL = 970;
 <tmpl:put name='title' direct='true'>FreshDirect - Checkout - Edit Delivery Address</tmpl:put>
 <tmpl:put name='content' direct='true'>
 <fd:CheckoutController actionName="editAndSetDeliveryAddress" result="result" successPage="<%= successPage %>">
-
+	<script>var doubleSubmitAddrAdd = false;</script>
+	
 <%
 	String fName = user.getFirstName();
 	
@@ -60,27 +61,31 @@ final int W_CHECKOUT_STEP_1_EDIT_TOTAL = 970;
 		result.addError(true, EnumUserInfoName.DLV_ALT_CONTACT_PHONE.getCode(), SystemMessageList.MSG_REQUIRED);
 		%>
 		<%@ include file="/includes/i_error_messages.jspf" %>
+		<script>doubleSubmitAddrAdd = false;</script>
 		<%
 	}
 %>
 
 <fd:ErrorHandler result='<%=result%>' field='<%=checkAddressForm%>'>
 	<% String errorMsg = SystemMessageList.MSG_MISSING_INFO; %>
-	<%@ include file="/includes/i_error_messages.jspf" %>	
+	<%@ include file="/includes/i_error_messages.jspf" %>
+	<script>doubleSubmitAddrAdd = false;</script>
 </fd:ErrorHandler>
 
 <fd:ErrorHandler result='<%=result%>' field='<%=checkErrorType%>' id='errorMsg'>
-	<%@ include file="/includes/i_error_messages.jspf" %>	
+	<%@ include file="/includes/i_error_messages.jspf" %>
+	<script>doubleSubmitAddrAdd = false;</script>
 </fd:ErrorHandler>
 
 <% String[] checkErrorType2 = {"dont_deliver_to_address", "address", "order_minimum"}; %>
 
 <fd:ErrorHandler result='<%=result%>' field='<%=checkErrorType2%>' id='errorMsg'>
-	<%@ include file="/includes/i_error_messages.jspf" %>	
+	<%@ include file="/includes/i_error_messages.jspf" %>
+	<script>doubleSubmitAddrAdd = false;</script>	
 </fd:ErrorHandler>
 
 
-<FORM name="address" method="POST">
+<FORM name="address" method="POST" onSubmit="doubleSubmitAddrAdd=true;">
 <input type="hidden" name="updateShipToAddressId" value="<%=request.getParameter("addressId")%>">
 	
 	<%	if (proceedThruCheckout) { %>
@@ -174,7 +179,7 @@ final int W_CHECKOUT_STEP_1_EDIT_TOTAL = 970;
 		<TD WIDTH="200" ALIGN="RIGHT">
 			<a href="<%=response.encodeURL("/checkout/step_1_choose.jsp")%>">
 			<image src="/media_stat/images/buttons/cancel.gif" WIDTH="72" HEIGHT="19"  HSPACE="4" VSPACE="4" alt="CANCEL" border="0"></a>
-			<input type="image" name="checkout_delivery_address_edit" src="/media_stat/images/buttons/save_changes.gif" WIDTH="91" HEIGHT="18" HSPACE="4" VSPACE="4" alt="SAVE ADDRESS"  border="0">
+			<input type="image" name="checkout_delivery_address_edit" src="/media_stat/images/buttons/save_changes.gif" WIDTH="91" HEIGHT="18" HSPACE="4" VSPACE="4" alt="SAVE ADDRESS"  border="0" class="edit_delivery_address" />
 		</TD>
 	</TR>
 	</TABLE>
@@ -210,7 +215,7 @@ final int W_CHECKOUT_STEP_1_EDIT_TOTAL = 970;
 <%	} else { %>
 		<TD WIDTH="<%=W_CHECKOUT_STEP_1_EDIT_TOTAL%>" ALIGN="RIGHT">
 			<a href="<%=response.encodeURL("/checkout/step_1_choose.jsp")%>">
-			<img  src="/media_stat/images/buttons/cancel.gif" WIDTH="72" HEIGHT="19"  HSPACE="4" VSPACE="4" alt="CANCEL" border="0"></a><input type="image" name="checkout_delivery_address_edit" src="/media_stat/images/buttons/save_changes.gif" WIDTH="91" HEIGHT="18" HSPACE="4" VSPACE="4" alt="SAVE ADDRESS"  border="0">
+			<img src="/media_stat/images/buttons/cancel.gif" WIDTH="72" HEIGHT="19"  HSPACE="4" VSPACE="4" alt="CANCEL" border="0"></a><input type="image" name="checkout_delivery_address_edit" src="/media_stat/images/buttons/save_changes.gif" WIDTH="91" HEIGHT="18" HSPACE="4" VSPACE="4" alt="SAVE ADDRESS"  border="0" class="edit_delivery_address" />
 		</TD>
 <%	} %>
 		</TR>
@@ -243,6 +248,13 @@ final int W_CHECKOUT_STEP_1_EDIT_TOTAL = 970;
 	
 <%-- ~~~~~~~~~~~~~~~~~~~~~~ END BOTTOM MODEULES DISPLAY SECTION ~~~~~~~~~~~~~~~~~~~~~~ --%>
 </FORM>
+	<script>
+		$jq('input.edit_delivery_address').each( function(index, elem){
+			$jq(elem).on('click', function(event) {
+				if (doubleSubmitAddrAdd) { event.preventDefault(); }
+			});
+		});
+	</script>
 </fd:CheckoutController>
 </tmpl:put>
 </tmpl:insert>

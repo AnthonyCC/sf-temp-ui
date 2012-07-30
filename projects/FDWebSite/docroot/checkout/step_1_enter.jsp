@@ -38,13 +38,17 @@ if (requestQryString !=null && requestQryString.trim().length() > 0 ) {
 <fd:CheckLoginStatus guestAllowed="false" redirectPage='/checkout/signup_ckt.jsp' />
 <fd:RegistrationController actionName="addDeliveryAddress" result="result" successPage='/checkout/step_1_choose.jsp?addressStatus=new'>
 
+<script>var doubleSubmitAddrAdd = false;</script>
+
 <fd:ErrorHandler result='<%=result%>' field='<%=checkErrorType%>' id='errorMsg'>
-	<%@ include file="/includes/i_error_messages.jspf" %>	
+	<%@ include file="/includes/i_error_messages.jspf" %>
+	<script>doubleSubmitAddrAdd = false;</script>	
 </fd:ErrorHandler>
 
 <fd:ErrorHandler result='<%=result%>' field='<%=checkAddressForm%>'>
 <% String errorMsg = SystemMessageList.MSG_MISSING_INFO; %>
-	<%@ include file="/includes/i_error_messages.jspf" %>	
+	<%@ include file="/includes/i_error_messages.jspf" %>
+	<script>doubleSubmitAddrAdd = false;</script>
 </fd:ErrorHandler>
 
 <TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="<%=W_CHECKOUT_STEP_1_ENTER_TOTAL%>">
@@ -79,7 +83,7 @@ if (requestQryString !=null && requestQryString.trim().length() > 0 ) {
 	</TABLE>
 	<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="16" BORDER="0"><BR>
 
-<FORM name="address" method="post">
+<FORM name="address" method="post" onSubmit="doubleSubmitAddrAdd=true;">
 	<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="<%=W_CHECKOUT_STEP_1_ENTER_TOTAL%>">
 	<TR VALIGN="MIDDLE">
 		<TD WIDTH="<%=W_CHECKOUT_STEP_1_ENTER_TOTAL-200%>">
@@ -92,7 +96,7 @@ if (requestQryString !=null && requestQryString.trim().length() > 0 ) {
 		<TD WIDTH="200" ALIGN="RIGHT">
 				<a href="<%=response.encodeURL("/checkout/step_1_choose.jsp")%>">
 				<image name="checkout_delivery_address_cancel" src="/media_stat/images/buttons/cancel.gif" WIDTH="72" HEIGHT="19"  HSPACE="4" VSPACE="4" alt="CANCEL" border="0"></a>
-				<input type="image" name="checkout_delivery_address_add" src="/media_stat/images/buttons/save_changes.gif" WIDTH="91" HEIGHT="18" HSPACE="4" VSPACE="4" alt="SAVE ADDRESS"  border="0">
+				<input type="image" name="checkout_delivery_address_add" src="/media_stat/images/buttons/save_changes.gif" WIDTH="91" HEIGHT="18" HSPACE="4" VSPACE="4" alt="SAVE ADDRESS"  border="0" class="edit_delivery_address" />
 				
 		</TD>
 	</TR>
@@ -110,7 +114,7 @@ if (requestQryString !=null && requestQryString.trim().length() > 0 ) {
 			<TD WIDTH="<%=W_CHECKOUT_STEP_1_ENTER_TOTAL%>" ALIGN="RIGHT">
 				<a href="<%=response.encodeURL("/checkout/step_1_choose.jsp")%>">
 				<image name="checkout_delivery_address_cancel" src="/media_stat/images/buttons/cancel.gif" WIDTH="72" HEIGHT="19"  HSPACE="4" VSPACE="4" alt="CANCEL" border="0"></a>
-				<input type="image" name="checkout_delivery_address_add" src="/media_stat/images/buttons/save_changes.gif" WIDTH="91" HEIGHT="18" HSPACE="4" VSPACE="4" alt="SAVE ADDRESS"  border="0">
+				<input type="image" name="checkout_delivery_address_add" src="/media_stat/images/buttons/save_changes.gif" WIDTH="91" HEIGHT="18" HSPACE="4" VSPACE="4" alt="SAVE ADDRESS"  border="0" class="edit_delivery_address" />
 			</TD>
 </TR>
 </TABLE>
@@ -148,6 +152,15 @@ if (requestQryString !=null && requestQryString.trim().length() > 0 ) {
 
 
 </FORM>
+
+	
+	<script>
+		$jq('input.edit_delivery_address').each( function(index, elem){
+			$jq(elem).on('click', function(event) {
+				if (doubleSubmitAddrAdd) { event.preventDefault(); }
+			});
+		});
+	</script>
 </fd:RegistrationController>
 </tmpl:put>
 </tmpl:insert>
