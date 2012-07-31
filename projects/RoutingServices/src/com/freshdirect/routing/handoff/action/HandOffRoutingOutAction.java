@@ -88,7 +88,7 @@ public class HandOffRoutingOutAction extends AbstractHandOffAction {
 																						, Map<String, Set<IRouteModel>>>();
 		
 		List<IHandOffBatchStop> s_stops = new ArrayList<IHandOffBatchStop>();
-		TreeSet _stops = new TreeSet();
+		TreeSet _stops = null;
 		List<IHandOffBatchRoute> s_routes = new ArrayList<IHandOffBatchRoute>();
 		List<IHandOffBatchTrailer> s_trailers = new ArrayList<IHandOffBatchTrailer>();
 		IHandOffBatchStop s_stop = null;
@@ -165,6 +165,7 @@ public class HandOffRoutingOutAction extends AbstractHandOffAction {
 						
 						if(areaEntry.getValue() != null) {
 							for(IRouteModel route : areaEntry.getValue()) {
+								_stops = new TreeSet();
 								if(!routeCnts.containsKey(areaEntry.getKey())) {
 									routeCnts.put(areaEntry.getKey(), 0);
 								}
