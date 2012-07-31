@@ -32,7 +32,11 @@ import com.freshdirect.transadmin.model.RouteMapping;
 import com.freshdirect.transadmin.service.DomainManagerI;
 import com.freshdirect.transadmin.util.ModelUtil;
 import com.freshdirect.transadmin.util.TransStringUtil;
-
+/**
+ * @deprecated Driving Directions will be available in Airclic
+ * @author tbalumuri
+ *
+ */
 public class CoPilotUtil {
 	
 

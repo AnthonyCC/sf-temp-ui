@@ -359,11 +359,13 @@
                   		<img src="./images/gpsadmin.gif" border="0" alt="Garmin" title="GPS Admin" />
                   	</a>
                   </td>
+                <!--  
+                This functionality is not required for Copilot as the driving directions will be available from Airclic
                   <td>
 	                    <a href="javascript:loadGpsEx('ec_table','gpsadminex.do', 11)">
 	                  		<img src="./images/copilot.png" border="0" alt="CoPilot" title="CoPilot" />
 	                  	</a>
-	              </td>
+	              </td>-->  
 	              <td>	
 						<% 
 						if(airclic_msg && TransportationAdminProperties.isAirclicEnabled())

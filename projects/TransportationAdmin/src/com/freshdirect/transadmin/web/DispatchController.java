@@ -1704,10 +1704,6 @@ public class DispatchController extends AbstractMultiActionController {
 		return null;
 	}
 	
-	public ModelAndView gpsDrivingDirectionsHandlerEx(HttpServletRequest request, HttpServletResponse response) throws ServletException {
-		return CoPilotUtil.gpsDrivingDirectionsHandlerEx(request, response, this.getDomainManagerService());
-	}
-	
 	
 	/**
 	 * Custom handler for welcome
