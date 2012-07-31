@@ -293,7 +293,14 @@ public class HandOffProcessManager {
     				cutoffCal.add(Calendar.DATE, -1);
     				
     				if(cal.getTime().after(cutoffCal.getTime()) || RoutingServicesProperties.isProcessUnassignedBeforeCutoff())
-    				rsvSchMap = handleUnassignedReservations(sessionInfo.getKey().getRegion(), context.getHandOffBatch().getDeliveryDate(), context.getHandOffBatch().getCutOffDateTime(), dynamicOrders);
+    				{
+    					/* cancel expired reservations before HandOff route-in. 
+    					 * This should cover any expired reservation in UPS from the point the stored procedure EXPIRE_RESERVATION last executed and running the route-in */
+    					
+    					flagExpiredReservations();
+    					rsvSchMap = handleUnassignedReservations(sessionInfo.getKey().getRegion(), context.getHandOffBatch().getDeliveryDate(), context.getHandOffBatch().getCutOffDateTime(), dynamicOrders);
+    					
+    				}
     				
     				RoutingEngineServiceProxy proxy = new RoutingEngineServiceProxy();
         	    	Iterator tmpIterator = dynamicSchMap.keySet().iterator();
@@ -329,7 +336,12 @@ public class HandOffProcessManager {
     		System.out.println("\n################### ROUTING END "+ sessionInfo.getKey().getSessionName() +"##################");
     	}
     	
-    	private Map<IRoutingSchedulerIdentity, List> handleUnassignedReservations(String region, Date deliveryDate, Date cutOff, List<IOrderModel> dynamicOrders)
+    	private void flagExpiredReservations() {
+    		DeliveryServiceProxy proxy = new DeliveryServiceProxy();
+    		proxy.flagExpiredReservations();
+    	}
+
+		private Map<IRoutingSchedulerIdentity, List> handleUnassignedReservations(String region, Date deliveryDate, Date cutOff, List<IOrderModel> dynamicOrders)
     	{
     		long startTime = System.currentTimeMillis();
     		DeliveryServiceProxy proxy = new DeliveryServiceProxy();

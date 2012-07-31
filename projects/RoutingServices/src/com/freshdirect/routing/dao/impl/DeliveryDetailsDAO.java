@@ -1302,4 +1302,20 @@ public class DeliveryDetailsDAO extends BaseDAO implements IDeliveryDetailsDAO {
 		
 	}
 	
+
+	private static final String FLAG_EXPIRED_RESERVATIONS_QUERY = "update DLV.reservation set status_code = 20, UNASSIGNED_DATETIME = sysdate,UNASSIGNED_ACTION = 'CANCEL_TIMESLOT'," +
+			" MODIFIED_DTTM = sysdate where expiration_datetime <= sysdate and status_code = 5 and UNASSIGNED_ACTION is null and IN_UPS = 'X'";
+	@Override
+	public void flagExpiredReservations() throws SQLException {
+		
+		Connection connection=null;
+		try{
+			this.jdbcTemplate.update(FLAG_EXPIRED_RESERVATIONS_QUERY);
+			
+			connection=this.jdbcTemplate.getDataSource().getConnection();	
+			
+		}finally{
+			if(connection!=null) connection.close();
+		}
+	}
 }

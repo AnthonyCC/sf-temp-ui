@@ -40,10 +40,7 @@ import com.freshdirect.routing.model.IUnassignedModel;
 import com.freshdirect.routing.model.IZoneModel;
 import com.freshdirect.routing.model.IZoneScenarioModel;
 import com.freshdirect.routing.model.RoutingSchedulerIdentity;
-import com.freshdirect.routing.proxy.stub.roadnet.DriverDirectionsOptions;
-import com.freshdirect.routing.proxy.stub.roadnet.RouteNetWebService;
 import com.freshdirect.routing.proxy.stub.transportation.RoutingRoute;
-import com.freshdirect.routing.proxy.stub.transportation.RoutingRouteIdentity;
 import com.freshdirect.routing.proxy.stub.transportation.RoutingSession;
 import com.freshdirect.routing.proxy.stub.transportation.TransportationWebService;
 import com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceStub;
@@ -674,5 +671,16 @@ public class DeliveryService extends BaseService implements IDeliveryService {
 		}catch(SQLException e){
 			throw new RoutingServiceException(e, "Unable to pull unassigned");
 		}
+	}
+
+	@Override
+	public void flagExpiredReservations() {
+
+		try{
+			deliveryDAOImpl.flagExpiredReservations();
+		}catch(SQLException e){
+			LOGGER.debug("Unable to flag expired reservations."+e.toString());
+		}
+		
 	}
 }

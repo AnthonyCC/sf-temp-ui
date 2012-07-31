@@ -145,4 +145,8 @@ public class DeliveryServiceProxy extends BaseServiceProxy {
 			Date deliveryDate, Date cutOff) {
 		return getService().getUnassignedReservationsEx(deliveryDate, cutOff);
 	}
+
+	public void flagExpiredReservations() {
+		getService().flagExpiredReservations();
+	}
 }

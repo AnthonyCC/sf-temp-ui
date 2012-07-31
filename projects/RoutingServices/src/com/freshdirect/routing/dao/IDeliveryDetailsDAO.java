@@ -80,5 +80,7 @@ public interface IDeliveryDetailsDAO {
 
 	List<UnassignedDlvReservationModel> getUnassignedReservationsEx(
 			Date deliveryDate, Date cutOff) throws SQLException;
+
+	void flagExpiredReservations() throws SQLException;
 	
 }

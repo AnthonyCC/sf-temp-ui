@@ -85,4 +85,6 @@ public interface IDeliveryService {
 
 	List<UnassignedDlvReservationModel> getUnassignedReservationsEx(
 			Date deliveryDate, Date cutOff);
+
+	void flagExpiredReservations();
 }
