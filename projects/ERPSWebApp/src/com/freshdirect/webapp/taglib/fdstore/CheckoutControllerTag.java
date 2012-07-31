@@ -154,8 +154,9 @@ public class CheckoutControllerTag extends AbstractControllerTag {
 					        }
 						}
 					}
+					*/
 				}
-				*/
+				
 				
 				
 				LOGGER.debug("setDeliveryAddress[END] :");
