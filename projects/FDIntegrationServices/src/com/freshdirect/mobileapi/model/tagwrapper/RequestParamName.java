@@ -276,6 +276,8 @@ public interface RequestParamName {
     
     public static final String  REQ_PARAM_REFERRAL_REGISTRATION = "referralRegistration";
     
-    public static final String  REQ_PARAM_LITE_SIGNUP = "LITESIGNUP";   
+    public static final String  REQ_PARAM_LITE_SIGNUP = "LITESIGNUP"; 
+    
+    public static final String REQ_PARAM_CUSTOMER_EBT = "ebt";
     
 }

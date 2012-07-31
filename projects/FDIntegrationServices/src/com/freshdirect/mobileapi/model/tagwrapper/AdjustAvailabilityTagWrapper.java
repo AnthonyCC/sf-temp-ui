@@ -15,8 +15,8 @@ public class AdjustAvailabilityTagWrapper extends CartEventTagWrapper {
 
     public ResultBundle removeUnavailableItemsFromCart(CartEvent cartEvent) throws FDException {
         setCartEventLoggingSetsAndGets(cartEvent);
-        addExpectedRequestValues(new String[] { REQ_PARAM_CUSTOMER_CREATED_LIST_ID },
-                new String[] { REQ_PARAM_CART_CLEANUP_REMOVED_STUFF_FLAG }); //gets,sets
+        addExpectedRequestValues(new String[] { REQ_PARAM_CUSTOMER_CREATED_LIST_ID, REQ_PARAM_CUSTOMER_EBT },
+                new String[] { REQ_PARAM_CART_CLEANUP_REMOVED_STUFF_FLAG, REQ_PARAM_CUSTOMER_EBT }); //gets,sets
         addExpectedSessionValues(new String[] { SESSION_PARAM_APPLICATION }, new String[] { SESSION_PARAM_USER, SESSION_PARAM_SKUS_ADDED }); //gets,sets
 
         return new ResultBundle(executeTagLogic(), this);
