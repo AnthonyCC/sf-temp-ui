@@ -13,7 +13,6 @@
 <%@page import="javax.xml.transform.stream.*"%>
 
 <%@ page import='java.util.*' %>
-<%@ page errorPage='product_error.jsp' %>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>

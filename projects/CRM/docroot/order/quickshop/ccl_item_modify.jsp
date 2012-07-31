@@ -10,7 +10,6 @@
 <%@ page import='com.freshdirect.fdstore.lists.*' %>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
 <%@ page import='com.freshdirect.webapp.util.*' %>
-<%@ page errorPage='product_error.jsp' %>
 
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
@@ -32,6 +31,7 @@
     String orderId = request.getParameter("orderId");
     String ccListIdStr = orderId == null ? (String)request.getParameter(CclUtils.CC_LIST_ID) : orderId;
     String lineId = request.getParameter("lineId");
+	String qcType = request.getParameter("qcType");
   
     String successPage = ccListIdStr == null ? "/order/quickshop/all_lists.jsp" : "/order/quickshop/shop_from_list.jsp?" + CclUtils.CC_LIST_ID + "=" + ccListIdStr;
     String tagAction = request.getParameter("action");
@@ -82,6 +82,7 @@ request.setAttribute("user", user);
 request.setAttribute("productNode", productNode);
 request.setAttribute("cartMode",cartMode);
 request.setAttribute("templateLine",templateLine);
+request.setAttribute("qcType", request.getParameter("qcType"));
 
 EnumProductLayout prodPageLayout = productNode.getProductLayout();
 // if this is the wine product layout, then modification always uses the perishable product layout
