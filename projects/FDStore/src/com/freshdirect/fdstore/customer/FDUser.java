@@ -2274,6 +2274,9 @@ public class FDUser extends ModelSupport implements FDUserI {
 	public boolean isDpNewTcBlocking(boolean includeViewCount) {
 		boolean isBlocking = false;
 		
+		//guestAllowed pages will have a null identity
+		if (identity == null) { return isBlocking; }
+		
 		try {
 			ErpCustomerInfoModel cm = FDCustomerFactory.getErpCustomerInfo(identity);
 
