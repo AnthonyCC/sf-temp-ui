@@ -590,7 +590,6 @@ public class DlvManagerSessionBean extends GatewaySessionBeanSupport {
 		ResultSet rs = null;
 
 		DlvReservationModel rsv = null;
-		LOGGER.debug("Going to commit the reservation for id: " + rsvId);
 		try {
 			con = getConnection();
 			ps1 = con
@@ -599,9 +598,8 @@ public class DlvManagerSessionBean extends GatewaySessionBeanSupport {
 			rsv = this.getReservation(con, rsvId);
 
 			if (rsv.getCustomerId().equals(customerId)) {
-				
-				LOGGER.info("update status code "+ rsvId + " "+rsv.getStatusCode()+ " "+rsv.getOrderId()+" "+orderId);
-				
+				LOGGER.debug("Going to commit the reservation for id: " + rsvId + " orderId: "+orderId+" customerId: "+customerId);
+						
 				rsv.setOrderId(orderId);
 				rsv.setStatusCode(EnumReservationStatus.COMMITTED.getCode());
 				ps1.setString(1, rsv.getOrderId());
@@ -1891,7 +1889,7 @@ public class DlvManagerSessionBean extends GatewaySessionBeanSupport {
 				return null;
 			}
 			
-			LOGGER.debug("Start reserveTimeslotEx for : " + reservation.getCustomerId()+ " "+reservation.getStatusCode());
+			LOGGER.debug("Start reserveTimeslotEx for customerId: " + reservation.getCustomerId()+ " statusCode: "+reservation.getStatusCode());
 			
 			if (RoutingActivityType.RESERVE_TIMESLOT.equals(reservation.getUnassignedActivityType())) {
 				if(reservation.getStatusCode() == 5) {
@@ -1907,7 +1905,7 @@ public class DlvManagerSessionBean extends GatewaySessionBeanSupport {
 			} else {
 				_reservation = doReserveEx(reservation, address, timeslot, event);
 			}
-			LOGGER.debug("End reserveTimeslotEx "+ reservation.getCustomerId());
+			LOGGER.debug("End reserveTimeslotEx for customerId:"+ reservation.getCustomerId());
 			
 		return _reservation;
 	}
@@ -1926,18 +1924,14 @@ public class DlvManagerSessionBean extends GatewaySessionBeanSupport {
 			e.printStackTrace();
 		}
 		
-		LOGGER.info("Start commitReservationEx");
-		
-		LOGGER.info("reservation payload "+ reservation != null?reservation.toString():null);
-		
 		if(reservation==null || address==null || !reservation.isDynamic())
 			return ;
+		
+		LOGGER.debug("Start commitReservationEx for Id: "+reservation.getId()+" statusCode: "+reservation.getStatusCode()+" UA:"+reservation.getUnassignedActivityType());
 		
 		// Put the CONFIRM_TIMESLOT payload back in the queue to be retried after the redelivery interval configured in application server.
 		if(reservation.isDynamic() && !reservation.isInUPS() && reservation.getStatusCode() == 10)
 		{
-			LOGGER.info("put it back in queue "+ reservation != null?reservation.toString():null);
-			
 			throw new RuntimeException("Reserve is not in UPS yet. putting it back in queue.");
 		}
 
@@ -1956,7 +1950,7 @@ public class DlvManagerSessionBean extends GatewaySessionBeanSupport {
 		}
 		
 
-		LOGGER.info("End commitReservationEx");
+		LOGGER.debug("End commitReservationEx for Id: "+reservation.getId());
 		
 	}
 	
@@ -1965,8 +1959,8 @@ public class DlvManagerSessionBean extends GatewaySessionBeanSupport {
 		if(reservation==null || reservation.getStatusCode() != 10 /* || !reservation.isInUPS() || reservation.getUnassignedActivityType().*/)
 			return ;
 		
-		LOGGER.info("Start updateReservationStatus rsvId="+reservation.getId()+"orderId "+reservation.getOrderId()+"status "+
-				reservation.getStatusCode()+"dynamic "+reservation.isDynamic());
+		LOGGER.debug("Start updateReservationStatus for Id: "+reservation.getId()+" orderId: "+reservation.getOrderId()+"statusCode: "+
+				reservation.getStatusCode());
 				
 		IOrderModel order = RoutingUtil.getOrderModel(reservation, address, reservation.getOrderId(), reservation.getId());
 		try {
@@ -1984,7 +1978,7 @@ public class DlvManagerSessionBean extends GatewaySessionBeanSupport {
 			LOGGER.debug("Exception in updateReservationStatus():"+e.toString());
 			e.printStackTrace();			
 		}
-		LOGGER.info("End updateReservationStatus rsvId="+reservation.getId());
+		LOGGER.debug("End updateReservationStatus for Id: "+reservation.getId());
 	}
 	
 	public void updateReservationEx(DlvReservationModel reservation, ContactAddressModel address, FDTimeslot timeslot) {
@@ -1993,7 +1987,7 @@ public class DlvManagerSessionBean extends GatewaySessionBeanSupport {
 			return ;
 		IOrderModel order = RoutingUtil.getOrderModel(reservation, address, reservation.getOrderId(), reservation.getId());
 		
-		LOGGER.info("Start updateReservationEx rsv"+ reservation.getId());
+		LOGGER.debug("Start updateReservationEx for Id: "+ reservation.getId());
 		try {
 			if(reservation.getStatusCode() == 15 || reservation.getStatusCode() == 20) {
 				setReservationMetricsStatus(reservation.getId(), EnumRoutingUpdateStatus.SUCCESS);
@@ -2028,7 +2022,7 @@ public class DlvManagerSessionBean extends GatewaySessionBeanSupport {
 			LOGGER.debug("Exception in updateReservationEx():"+e.toString());
 			e.printStackTrace();			
 		}
-		LOGGER.info("End updateReservationEx rsv"+ reservation.getId());
+		LOGGER.debug("End updateReservationEx Id: "+ reservation.getId());
 		
 	}
 	
@@ -2045,7 +2039,7 @@ public class DlvManagerSessionBean extends GatewaySessionBeanSupport {
 		}
 		if(reservation==null || address==null || !reservation.isDynamic())
 			return ;
-		LOGGER.info("Start releaseReservationEx rsv"+ reservation.getId());
+		LOGGER.debug("Start releaseReservationEx Id: "+ reservation.getId()+ " statusCode: "+reservation.getStatusCode());
 		
 		// Put the CANCEL_TIMESLOT payload back in the queue to be retried after the redelivery interval configured in application server.
 		if(reservation.isDynamic() && !reservation.isInUPS() && reservation.getStatusCode() == 15)
@@ -2057,7 +2051,7 @@ public class DlvManagerSessionBean extends GatewaySessionBeanSupport {
 		} else {
 			doReleaseReservationEx(reservation, address, event);
 		}
-		LOGGER.info("End releaseReservationEx rsv"+ reservation.getId());
+		LOGGER.info("End releaseReservationEx Id: "+ reservation.getId());
 		
 	}
 
@@ -2508,7 +2502,7 @@ public class DlvManagerSessionBean extends GatewaySessionBeanSupport {
 	
 	private IDeliveryReservation doReserveEx(DlvReservationModel reservation,ContactAddressModel address , FDTimeslot timeslot, TimeslotEventModel event) {
 
-		LOGGER.info("Start doReserveEx timeslot"+ reservation.getTimeslotId()+" for customer"+reservation.getCustomerId());
+		LOGGER.debug("Start doReserveEx timeslot: "+ reservation.getTimeslotId()+" for customer: "+reservation.getCustomerId());
 		
 		long startTime=System.currentTimeMillis();
 		IOrderModel order=RoutingUtil.getOrderModel(reservation, address, reservation.getOrderId(), reservation.getId());
@@ -2549,7 +2543,7 @@ public class DlvManagerSessionBean extends GatewaySessionBeanSupport {
 			setUnassignedInfo(reservation.getId(),RoutingActivityType.RESERVE_TIMESLOT);			
 		}
 		setRoutingIndicator(reservation.getId(), order.getOrderNumber());
-		LOGGER.info("End doReserveEx timeslot"+ reservation.getTimeslotId()+" for customer"+reservation.getCustomerId());
+		LOGGER.debug("End doReserveEx timeslot: "+ reservation.getTimeslotId()+" for customer: "+reservation.getCustomerId());
 		
 		return _reservation;
 	}
@@ -2560,11 +2554,11 @@ public class DlvManagerSessionBean extends GatewaySessionBeanSupport {
 		IOrderModel order= RoutingUtil.getOrderModel(reservation, address, reservation.getOrderId(), reservation.getId());
 
 		try {
-			LOGGER.info("Start doConfirmEx to UPS..."+reservation.getId());
+			LOGGER.debug("Start doConfirmEx to UPS..."+reservation.getId());
 			
             RoutingUtil.confirmTimeslot(reservation, order);
             
-            LOGGER.info("End doConfirmEx to UPS..."+reservation.getId());
+            LOGGER.debug("End doConfirmEx to UPS..."+reservation.getId());
 			
 			long endTime=System.currentTimeMillis();
 			event = buildEvent(null, event, reservation,order,address, EventType.CONFIRM_TIMESLOT,(int)(endTime-startTime));
@@ -2593,7 +2587,7 @@ public class DlvManagerSessionBean extends GatewaySessionBeanSupport {
 		if(reservation==null || address==null ||!reservation.isInUPS())
 			return ;
 
-		LOGGER.info("Start doReleaseReservationEx "+ reservation.getId()+" for customer"+reservation.getCustomerId());
+		LOGGER.debug("Start doReleaseReservationEx "+ reservation.getId()+" for customer"+reservation.getCustomerId());
 		
 		IOrderModel order= RoutingUtil.getOrderModel(reservation, address, reservation.getOrderId(), reservation.getId());
 		try {
@@ -2615,7 +2609,7 @@ public class DlvManagerSessionBean extends GatewaySessionBeanSupport {
 			LOGGER.debug(reservation);
 			setUnassignedInfo(reservation.getId(),RoutingActivityType.CANCEL_TIMESLOT);
 		}
-		LOGGER.info("End doReleaseReservationEx "+ reservation.getId()+" for customer"+reservation.getCustomerId());
+		LOGGER.debug("End doReleaseReservationEx "+ reservation.getId()+" for customer"+reservation.getCustomerId());
 		
 
 	}
