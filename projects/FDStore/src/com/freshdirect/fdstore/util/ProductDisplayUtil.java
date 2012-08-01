@@ -129,6 +129,7 @@ public class ProductDisplayUtil {
      * @return
      */
     public static int getDealsPercentage(PriceCalculator calculator) {
+    	/*
         try {
             int tieredPercentage = calculator.getTieredDealPercentage();
             FDGroup group = calculator.getFDGroup();
@@ -145,6 +146,7 @@ public class ProductDisplayUtil {
         } catch (FDResourceException e) {
             // ignore
         }
+        */
         // At this point there is no gs price defined for default sku.
         return calculator.getHighestDealPercentage();
     }
