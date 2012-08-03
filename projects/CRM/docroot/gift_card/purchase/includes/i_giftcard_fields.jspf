@@ -211,6 +211,7 @@ if (request.getParameter("fldMessage") !=null) {
 			<select class="text9" name="fldAmount" id="fldAmount" onChange="($('fldAmount').value!='OTHER')?$('fldAltAmount').value=$('fldAmount').value:$('fldAltAmount').value='<%=fldAltAmount%>';$('fldAltAmount').disabled=($('fldAmount').value=='OTHER')?false:true;">
 			   <option value="" <%="".equalsIgnoreCase(fldAmount)?"selected":""%>> </option>	
 			   <option value="OTHER" <%=!"".equalsIgnoreCase(fldAmount)?"selected":""%>>OTHER</option>
+			   <option value="20.00" <%="20.00".equalsIgnoreCase(fldAmount)?"selected":""%>>20.00</option>
 			   <option value="30.00" <%="30.00".equalsIgnoreCase(fldAmount)?"selected":""%>>30.00</option>		
 			   <option value="50.00" <%="50.00".equalsIgnoreCase(fldAmount)?"selected":""%>>50.00</option>
 			   <option value="100.00" <%="100.00".equalsIgnoreCase(fldAmount)?"selected":""%>>100.00</option>
