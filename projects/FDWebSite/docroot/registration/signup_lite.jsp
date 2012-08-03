@@ -198,16 +198,12 @@
 			
 			<tr><td><div class="fright hline" id="" style="width:100%;"><!-- --></div></td></tr>
 			
-			<tr><td><span class="text9" style="color:gray;">By signing up, you agree to the <a href="javascript:popWithInterval('/registration/user_agreement.jsp', false, '585', '400', 'Terms', false, true, false, false)" style="font-weight:normal;">Terms of use</a></span></td></tr>
+			<tr><td><span class="text9" style="color:gray;">By signing up, you agree to the <a href="javascript:popup('/registration/user_agreement.jsp', 'large')" style="font-weight:normal;">Terms of use</a></span></td></tr>
 			<tr><td>&nbsp;</td></tr>
 			<tr><td>
-			<table style="" class="butCont fleft">
-				<tbody><tr>
-					<td class="butOrangeLeft"><!-- --></td>
-					<td class="butOrangeMiddle"><a onclick="document.litesignup.submit();" href="#" class="butText" style="font-weight:bold;font-size:14px;">Sign Up &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img alt="" src="/media/images/buttons/button_orange_arrow.gif"></a></td>
-					<td class="butOrangeRight"><!-- --></td>
-				</tr>
-			</tbody></table>
+			<a onclick="document.litesignup.submit();" href="#" class="butText" style="font-weight:bold;font-size:14px;"><img alt="" src="/media/images/buttons/button_orange_arrow.gif"></a>
+			</td></tr>
+			<tr><td align="right" style="font:Verdana;font-weight:bold;font-size:12 pt;">Having problems signing up?Call 1-212-796-8002
 			</td></tr>
 			</table>
 		</form>
@@ -215,9 +211,6 @@
 	</div>
 	<% } %>
 	</center>
-	<script language="javascript">
-		//setFrameHeight('signupframe', 20);
-	</script>
 </body>
 </html>
 <% } %>

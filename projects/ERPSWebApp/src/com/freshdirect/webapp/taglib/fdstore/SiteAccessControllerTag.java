@@ -553,7 +553,12 @@ public class SiteAccessControllerTag extends com.freshdirect.framework.webapp.Bo
 		
 		if("true".equals(request.getParameter("LITESIGNUP")) && this.serviceType.getName().equals(EnumServiceType.CORPORATE.getName())) {
 			String company = NVL.apply(request.getParameter(EnumUserInfoName.DLV_COMPANY_NAME.getCode()), "").trim();
-			result.addError("".equals(company), EnumUserInfoName.DLV_COMPANY_NAME.getCode(), SystemMessageList.MSG_REQUIRED);			
+			result.addError("".equals(company), EnumUserInfoName.DLV_COMPANY_NAME.getCode(), SystemMessageList.MSG_REQUIRED);
+			String workPhone = NVL.apply(request.getParameter("busphone"), "").trim();
+			result.addError("".equals(workPhone), EnumUserInfoName.DLV_WORK_PHONE.getCode(), SystemMessageList.MSG_REQUIRED);
+			if(workPhone != null && !"".equals(workPhone) && workPhone.length() > 0 && workPhone.length() < 10){
+				result.addError(new ActionError(EnumUserInfoName.DLV_WORK_PHONE.getCode(), SystemMessageList.MSG_NUM_REQ ));
+			}			
 		}
 		
 		if (result.isFailure()) {			

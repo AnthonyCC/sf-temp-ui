@@ -284,11 +284,12 @@ public class RegistrationAction extends WebActionSupport {
 		if("true".equals(request.getParameter("LITESIGNUP"))) {
 			if(session.getAttribute("LITECONTACTINFO") != null && session.getAttribute("LITEACCOUNTINFO") != null) {		
 				cInfo = (ContactInfo) session.getAttribute("LITECONTACTINFO");
-				aInfo = (AccountInfo) session.getAttribute("LITEACCOUNTINFO");
+				aInfo = (AccountInfo) session.getAttribute("LITEACCOUNTINFO");				
 			} 
-			String sType = user.getSelectedServiceType().getName();
 			if(user.getSelectedServiceType().getName().equals(EnumServiceType.CORPORATE.getName())) {				
 				addInfo.validate(actionResult);
+				cInfo.workPhone = NVL.apply(request.getParameter("busphone"), "").trim();
+				cInfo.workPhoneExt = NVL.apply(request.getParameter("busphoneext"), "").trim();
 			}
 		}
 
@@ -526,8 +527,8 @@ public class RegistrationAction extends WebActionSupport {
 				actionResult.addError(new ActionError(EnumUserInfoName.EMAIL.getCode(),SystemMessageList.MSG_UNIQUE_USERNAME_FOR_LSIGNUP));				
 			}
 		} catch (FDResourceException e) {			
-		}		
-
+		}
+		
 		if (!actionResult.isSuccess()) {
 			return ERROR;
 		}
@@ -625,7 +626,7 @@ public class RegistrationAction extends WebActionSupport {
 		
 		}
 		
-		private boolean validatePhoneNumber(String phoneNumber){
+		public boolean validatePhoneNumber(String phoneNumber){
 			phoneNumber = phoneNumber.trim();
 			if(phoneNumber != null && !"".equals(phoneNumber) && phoneNumber.length() > 0 && phoneNumber.length() < 10){
 				return false;

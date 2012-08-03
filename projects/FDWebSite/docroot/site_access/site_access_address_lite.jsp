@@ -92,7 +92,7 @@
 		String fldApartment = NVL.apply(request.getParameter(EnumUserInfoName.DLV_APARTMENT.getCode()), "");
 		String fldCity = NVL.apply(request.getParameter(EnumUserInfoName.DLV_CITY.getCode()), "");
 		String fldState = NVL.apply(request.getParameter(EnumUserInfoName.DLV_STATE.getCode()), "");
-		String fldZipCode = NVL.apply(request.getParameter(EnumUserInfoName.DLV_ZIPCODE.getCode()), "");
+		String fldZipCode = NVL.apply(request.getParameter(EnumUserInfoName.DLV_ZIPCODE.getCode()), "");		
 
 		if ("".equals(fldZipCode)) {
 			FDUserI user = (FDUserI) session.getAttribute(SessionName.USER);
@@ -139,11 +139,18 @@
 								<table border="0" cellspacing="1" cellpadding="0" width="100%">
 									<% if (isCorporate) { 
 										String fldCompanyName 		= NVL.apply(request.getParameter(EnumUserInfoName.DLV_COMPANY_NAME.getCode()), "");
+										String fldBusinessPhone 	= request.getParameter("busphone");
 									%>
 										<tr valign="top">
 										<td width="130" ALIGN="RIGHT" class="bodyCopy">* Company Name</td>
 										<td colspan="3" ALIGN="LEFT"><img src="/media_stat/images/layout/clear.gif" width="7" border="0" height="10" alt="" /><input type="text" class="text11" maxlength="50" size="21" name="<%= EnumUserInfoName.DLV_COMPANY_NAME.getCode() %>" value="<%=fldCompanyName%>"><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_COMPANY_NAME.getCode()%>' id='errorMsg'><br /><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></td>
 									</tr>
+									
+										<tr valign="top">
+										<td width="130" ALIGN="RIGHT" class="bodyCopy">* Contact Phone #</td>
+										<td colspan="3" ALIGN="LEFT"><img src="/media_stat/images/layout/clear.gif" width="7" border="0" height="10" alt="" /><input type="text" class="text11" maxlength="50" size="21" name="<%= EnumUserInfoName.DLV_WORK_PHONE.getCode() %>" value="<%=fldBusinessPhone%>"><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_WORK_PHONE.getCode()%>' id='errorMsg'><br /><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></td>
+									</tr>
+										
 										
 									<% } %>
 									<tr valign="top">

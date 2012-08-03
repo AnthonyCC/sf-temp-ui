@@ -31,11 +31,19 @@ String[] checkErrorType = {"technical_difficulty", EnumUserInfoName.DLV_NOT_IN_Z
 <%
     FDUserI _user = (FDUserI) session.getAttribute(SessionName.USER);
     FDIdentity _identity = null;
+	ErpCustomerInfoModel cm = null;
     if (_user != null){
         _identity = _user.getIdentity();
+		cm = FDCustomerFactory.getErpCustomerInfo(_identity);
     }else {
         throw new JspException("Missing Identity.");
     }
+	
+	boolean prefillname = false;
+	if(FDCustomerManager.getShipToAddresses(_identity).size() == 0) {
+		prefillname = true;
+	}
+	
     //DLV_ALTERNATE_THRESHHOLD
     boolean showDoorman = _user.getAdjustedValidOrderCount() < AddressName.DLV_ALTERNATE_THRESHHOLD;
     boolean showAltDelivery = _user.getAdjustedValidOrderCount() >= AddressName.DLV_ALTERNATE_THRESHHOLD;
@@ -166,10 +174,16 @@ String[] checkErrorType = {"technical_difficulty", EnumUserInfoName.DLV_NOT_IN_Z
         fldAltContactExt = NVL.apply(request.getParameter(EnumUserInfoName.DLV_ALT_CONTACT_EXT.getCode()), "");
         if (request.getParameter(EnumUserInfoName.DLV_LAST_NAME.getCode()) !=null) {
             fldLastName =  request.getParameter(EnumUserInfoName.DLV_LAST_NAME.getCode());
-        }
+        } else {
+			if(prefillname)
+				fldLastName = cm.getLastName();
+		}
         if (request.getParameter(EnumUserInfoName.DLV_FIRST_NAME.getCode()) !=null) {
             fldFirstName =  request.getParameter(EnumUserInfoName.DLV_FIRST_NAME.getCode());
-        }
+        } else {
+			if(prefillname)
+				fldFirstName = cm.getFirstName();
+		}
         if (request.getParameter(EnumUserInfoName.DLV_DELIVERY_INSTRUCTIONS.getCode()) !=null) {
            fldDlvInstructions =  request.getParameter(EnumUserInfoName.DLV_DELIVERY_INSTRUCTIONS.getCode());
         }
