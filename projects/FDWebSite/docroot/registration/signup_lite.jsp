@@ -201,7 +201,7 @@
 			<tr><td><span class="text9" style="color:gray;">By signing up, you agree to the <a href="javascript:popup('/registration/user_agreement.jsp', 'large')" style="font-weight:normal;">Terms of use</a></span></td></tr>
 			<tr><td>&nbsp;</td></tr>
 			<tr><td>
-			<a onclick="document.litesignup.submit();" href="#" class="butText" style="font-weight:bold;font-size:14px;"><img alt="" src="/media/images/buttons/button_orange_arrow.gif"></a>
+			<a onclick="document.litesignup.submit();" href="#" class="butText" style="font-weight:bold;font-size:14px;"><img alt="" src="/media_stat/images/buttons/signup.gif"></a>
 			</td></tr>
 			<tr><td align="right" style="font:Verdana;font-weight:bold;font-size:12 pt;">Having problems signing up?Call 1-212-796-8002
 			</td></tr>
