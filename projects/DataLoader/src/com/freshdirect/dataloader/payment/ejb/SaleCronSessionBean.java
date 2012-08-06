@@ -664,16 +664,15 @@ public class SaleCronSessionBean extends SessionBeanSupport {
 		PreparedStatement ps  = null;
 		ResultSet rs = null;
 		Connection conn =null;
+		List<Date> dates = new ArrayList<Date>();
 		try
 		{
-			List<Date> dates = new ArrayList<Date>();
 			conn = this.getConnection();
 			ps = conn.prepareStatement(CUTOFF_DELIVERY_DATES_QUERY);
 			rs = ps.executeQuery();
 			while (rs.next()) {
 				dates.add(rs.getDate("REQUESTED_DATE"));
 			}
-			return dates;
 		}
 		finally
 		{
@@ -688,6 +687,7 @@ public class SaleCronSessionBean extends SessionBeanSupport {
 				LOGGER.warn("Exception while trying to cleanup", se);
 			}
 		}
+		return dates;
 	}
 	/**
 	 * This method updates status for sales whose cutoff time has elapsed.
