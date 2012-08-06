@@ -250,14 +250,24 @@ public class JcoBapiProductPromotionPreview extends JcoBapiFunction implements B
 					ErpMaterialPrice materialPrice = null;
 					if("R".equalsIgnoreCase(priceType)){
 						materialPrice = new ErpMaterialPrice(price,priceUOM,0.0,"",0.0,zoneId);
+						for (Iterator iterator = matPrices.iterator(); iterator.hasNext();) {
+							ErpMaterialPrice erpMaterialPrice = (ErpMaterialPrice) iterator.next();
+							if(erpMaterialPrice.getPromoPrice()>0 && erpMaterialPrice.getSapZoneId().equals(zoneId)){
+								materialPrice.setPromoPrice(erpMaterialPrice.getPromoPrice());
+								iterator.remove();
+							}							
+						}
 					}else if("S".equalsIgnoreCase(priceType)){
 						materialPrice = new ErpMaterialPrice(price,priceUOM,0.0,priceUOM,qty,zoneId);
 					}else if("P".equalsIgnoreCase(priceType)){
 						for (Iterator iterator = matPrices.iterator(); iterator.hasNext();) {
 							ErpMaterialPrice erpMaterialPrice = (ErpMaterialPrice) iterator.next();
-							if(erpMaterialPrice.getScaleQuantity()<=0){
+							if(erpMaterialPrice.getScaleQuantity()<=0 && erpMaterialPrice.getSapZoneId().equals(zoneId)){
 								erpMaterialPrice.setPromoPrice(price);
 							}							
+						}
+						if(null==materialPrice){
+							materialPrice = new ErpMaterialPrice(0,priceUOM,price,"",0.0,zoneId);
 						}
 					}else{
 						LOGGER.warn("ZPRICE_TYPE:"+priceType+", is invalid or empty for Sku:"+skuCode+", Material:"+matNum+" and Zone:"+zoneId);
