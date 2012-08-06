@@ -663,10 +663,11 @@ public class SaleCronSessionBean extends SessionBeanSupport {
 	public List<Date> queryCutoffReportDeliveryDates() throws SQLException {
 		PreparedStatement ps  = null;
 		ResultSet rs = null;
+		Connection conn =null;
 		try
 		{
 			List<Date> dates = new ArrayList<Date>();
-			Connection conn = this.getConnection();
+			conn = this.getConnection();
 			ps = conn.prepareStatement(CUTOFF_DELIVERY_DATES_QUERY);
 			rs = ps.executeQuery();
 			while (rs.next()) {
@@ -676,10 +677,16 @@ public class SaleCronSessionBean extends SessionBeanSupport {
 		}
 		finally
 		{
+			try {
 			if(rs!=null)
 				rs.close();
 			if(ps!=null)
 				ps.close();
+			if (conn != null) 
+				conn.close();
+			}catch (SQLException se) {
+				LOGGER.warn("Exception while trying to cleanup", se);
+			}
 		}
 	}
 	/**
