@@ -466,7 +466,7 @@ public class StandingOrderUtil {
 		FDCartModel cart = buildCart(so.getCustomerList(), paymentMethod, deliveryAddressModel, timeslots, zoneInfo, reservation, vr);
 		// boolean hasInvalidItems = vr.isFail();
 		
-		final List<FDCartLineI> originalCartItems = cart.getOrderLines();
+		final List<FDCartLineI> originalCartItems = new ArrayList<FDCartLineI>(cart.getOrderLines());
 		
 		// set users shopping cart, needed for delivery fee rules later
 		customerUser.setShoppingCart( cart );
@@ -551,7 +551,7 @@ public class StandingOrderUtil {
 			CustomerRatingI cra = new CustomerRatingAdaptor( customerUser.getFDCustomer().getProfile(), customerUser.isCorporateUser(), customerUser.getAdjustedValidOrderCount() );
 
 			// Get unavailable cart items (ie. not shipped with the recent order)
-			unavCartItems.retainAll(cart.getOrderLines());
+			unavCartItems.removeAll(cart.getOrderLines());
 			
 			String orderId = FDCustomerManager.placeOrder( orderActionInfo, cart, null, false, cra, null );
 
