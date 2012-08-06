@@ -24,7 +24,7 @@ public class CmInitTag extends AbstractCmTag {
 	private String getSetClientIdScript(){
 		String setClientIdScript = String.format(SET_CLIENT_ID_FS, 
 				toJsVar(FDStoreProperties.getCoremetricsClientId()), 
-				toJsVar(FDStoreProperties.getCoremetricsDataCollectionMethod()), 
+				FDStoreProperties.getCoremetricsDataCollectionMethod(), //boolean value
 				toJsVar(FDStoreProperties.getCoremetricsDataCollectionDomain()), 
 				toJsVar(FDStoreProperties.getCoremetricsCookieDomain()) );
 		
