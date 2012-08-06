@@ -84,9 +84,7 @@ final Logger LOG = LoggerFactory.getInstance("department.jsp");
 		} else if("mea".equals(deptId)){
 			keyPrefix=keyPrefix+user.getPricingZoneId();
 			ttl=120;
-		} else if("COS".equals(deptId)){%>
-			<fd:CmRegistration wrapIntoScriptTag="true"/>
-		<%}
+		}
 		
 		boolean useOsCache = true;
 		if ( "fdi".equals(deptId) || "usq".equals(deptId) ) {

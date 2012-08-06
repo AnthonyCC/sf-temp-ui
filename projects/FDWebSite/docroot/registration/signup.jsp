@@ -22,7 +22,6 @@ final int W_SIGNUP_TOTAL = 970;
 	String regContSuccessPage = "/unattended_redirect.jsp?successPage=";
 	String regContFraudPage = "/unattended_redirect.jsp?successPage=/registration/registration_note.jsp";
 
-	//APPDEV-2394: if success pages are changed fd:CmRegistration tag has to be inserted in destination pages
 	if(userx.isCorporateUser()){
 		regType = AccountUtil.CORP_USER;
 		regContSuccessPage += "/department.jsp?deptId=COS";

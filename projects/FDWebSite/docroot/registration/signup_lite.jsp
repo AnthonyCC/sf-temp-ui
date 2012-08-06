@@ -119,7 +119,6 @@
 					///} else {
 						//alert("the url of the top is" + top.location.href + "\nand not the url of this one is " + window.location.href );
 					//}
-				<%--APPDEV-2394: if this is changed fd:CmRegistration tag has to be inserted in destination page--%>  
 				window.top.location="/index.jsp";
 			</script>
 		<%		 

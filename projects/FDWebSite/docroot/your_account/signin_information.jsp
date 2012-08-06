@@ -605,7 +605,6 @@ FreshDirect.PhoneValidator.register(document.getElementById("uci_cellPhone"));
 </tr>
 </table>
 </fd:RegistrationController>
-<fd:CmRegistration wrapIntoScriptTag="true" update="true"/>
 </tmpl:put>
 </tmpl:insert>
 <%if (request.getParameter("displayName")!=null) { %>

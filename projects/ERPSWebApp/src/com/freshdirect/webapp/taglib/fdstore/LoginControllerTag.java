@@ -35,6 +35,7 @@ import com.freshdirect.giftcard.EnumGiftCardType;
 import com.freshdirect.giftcard.RecipientModel;
 import com.freshdirect.mail.EmailUtil;
 import com.freshdirect.webapp.taglib.AbstractControllerTag;
+import com.freshdirect.webapp.taglib.coremetrics.CmRegistrationTag;
 /**
  *
  *
@@ -180,7 +181,9 @@ public class LoginControllerTag extends AbstractControllerTag {
         	  }
         	  session.removeAttribute("TICK_TIE_CUSTOMER");
           }
-            
+
+          CmRegistrationTag.setPendingRegistrationEvent(session);
+          
         } catch (FDResourceException fdre) {
             LOGGER.warn("Resource error during authentication", fdre);
             actionResult.addError(new ActionError("technical_difficulty", SystemMessageList.MSG_TECHNICAL_ERROR));

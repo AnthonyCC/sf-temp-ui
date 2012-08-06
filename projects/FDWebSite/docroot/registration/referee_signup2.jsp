@@ -45,7 +45,6 @@
 		%>
 			<img src="/media_stat/images/navigation/spinner.gif" class="fleft" />
 			<script language="javascript">
-			    <%--APPDEV-2394: if this is changes fd:CmRegistration tag has to be inserted in destination page--%>
 				window.location.href="/index.jsp";
 			</script>
 		<%		 

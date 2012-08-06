@@ -18,7 +18,6 @@ final int W_CHECKOUT_SIGNUP_TOTAL = 970;
 <%
 	FDUserI usery = (FDUserI)session.getAttribute(SessionName.USER);
 	int regType = 0;
-	//APPDEV-2394: if this is changed fd:CmRegistration tag has to be inserted in destination page
 	String regContSuccessPage = "/unattended_redirect.jsp?successPage=/checkout/step_1_choose.jsp";
 	String regContFraudPage = "/unattended_redirect.jsp?successPage=/checkout/registration_note.jsp";
 

@@ -1,2 +1,3 @@
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <fd:CmPageView wrapIntoScriptTag="true"/>
+<fd:CmRegistration wrapIntoScriptTag="true" update="true"/>
