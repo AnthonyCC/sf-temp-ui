@@ -71,16 +71,16 @@ public class SaleCronRunner {
 
 			SaleCronSB sb = home.create();
 			sb.cancelAuthorizationFailed();
+			List<Date> dates = sb.queryCutoffReportDeliveryDates();
 			int affected = sb.cutoffSales();
-
+			
 			if (affected > 0 && "true".equalsIgnoreCase(ErpServicesProperties.getSendCutoffEmail())) {
-				Calendar cal = DateUtil.toCalendar(new Date());
-
-				if (cal.get(Calendar.HOUR_OF_DAY) >= 12) {
-					cal.add(Calendar.DATE, 1);
-				}
-				LOGGER.debug("Sending report for " + cal.getTime() + "...");
-				CallCenterServices.emailCutoffTimeReport(cal.getTime());
+				for(Date day : dates)
+					{
+					Calendar cal = DateUtil.toCalendar(day);
+					LOGGER.debug("Sending report for " + cal.getTime() + "...");
+					CallCenterServices.emailCutoffTimeReport(cal.getTime());
+					}
 				emailUnassigned();
 				emailResolvedReservationIssues();
 			}

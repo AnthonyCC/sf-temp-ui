@@ -7,6 +7,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -162,6 +163,13 @@ public class SaleCronSessionBean extends SessionBeanSupport {
 			+ "where sale.id = s.id and sale.type='REG' and sa.sale_id=s.id and sa.action_type in ('CRO','MOD') "
 			+ "and sa.action_date=(select max(action_date) from cust.salesaction za where za.action_type in ('CRO','MOD') and za.sale_id=s.id) "
 			+ "and di.salesaction_id=sa.id and di.starttime > sysdate - 1 and di.cutofftime < sysdate)";
+	
+	private final static String CUTOFF_DELIVERY_DATES_QUERY =
+			"select distinct SA.REQUESTED_DATE from cust.sale s, cust.salesaction sa, CUST.DELIVERYINFO di where sa.sale_id=s.id " +
+			"and SA.ID = DI.SALESACTION_ID and sa.action_type in ('CRO','MOD') and s.type='REG' and sa.action_date = S.CROMOD_DATE and " +
+			"di.starttime > sysdate-1 and di.cutofftime < sysdate and status in ('AUT', 'AVE', 'SUB')";
+	
+	
 	private final static String AUTH_NEEDED_CORP_ORDERS_FOR_MONDAY_TUESDAY =
 	"SELECT s.id FROM cust.sale s, cust.salesaction sa, cust.deliveryinfo di "+ 
     "WHERE s.status='SUB' AND s.type='REG' AND sa.sale_id=s.id AND sa.action_type in ('CRO','MOD') "+ 
@@ -651,6 +659,29 @@ public class SaleCronSessionBean extends SessionBeanSupport {
 		}
 	}
 
+	
+	public List<Date> queryCutoffReportDeliveryDates() throws SQLException {
+		PreparedStatement ps  = null;
+		ResultSet rs = null;
+		try
+		{
+			List<Date> dates = new ArrayList<Date>();
+			Connection conn = this.getConnection();
+			ps = conn.prepareStatement(CUTOFF_DELIVERY_DATES_QUERY);
+			rs = ps.executeQuery();
+			while (rs.next()) {
+				dates.add(rs.getDate("REQUESTED_DATE"));
+			}
+			return dates;
+		}
+		finally
+		{
+			if(rs!=null)
+				rs.close();
+			if(ps!=null)
+				ps.close();
+		}
+	}
 	/**
 	 * This method updates status for sales whose cutoff time has elapsed.
 	 */

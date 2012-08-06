@@ -1,6 +1,8 @@
 package com.freshdirect.dataloader.payment.ejb;
 
 import java.rmi.RemoteException;
+import java.util.Date;
+import java.util.List;
 
 import javax.ejb.EJBObject;
 
@@ -23,4 +25,6 @@ public interface SaleCronSB extends EJBObject{
 	public void reverseAuthorizeSales(long timeout)throws RemoteException;
 	
 	public void postAuthSales(long timeout) throws RemoteException;
+	
+	public List<Date> queryCutoffReportDeliveryDates() throws RemoteException;
 }
