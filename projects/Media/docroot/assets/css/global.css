@@ -1332,6 +1332,12 @@ div.control, div.slotRow, div.time {
 	.ddpp .ddpp_feat_prod .styleRegularWithWas {
 		font-size: 15px;
 	}
+	.ddpp .ddpp_feat_prod .product-group-price-link {
+		font-size: 11px;
+		font-family: Verdana, Arial, sans-serif;
+		color: #C00;
+		font-weight: bold;
+	}
 	
 	.ddpp .ddpp_feat_prod .topText,
 	.ddpp .ddpp_normal_prod .topText

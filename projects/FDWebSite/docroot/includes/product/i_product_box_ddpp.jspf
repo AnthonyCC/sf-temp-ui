@@ -79,6 +79,8 @@
 		
 		<display:ProductPrice impression="<%= pi %>" showDescription="true" dataDriven="true" /><%-- don't pass grpDisplayType in here (for apple pricing override) --%>
 		
+		<display:ProductGroupLink impression="<%= pi %>" trackingCode="<%= trk %>"><display:ProductGroupPricing product="<%= pm %>"/></display:ProductGroupLink>
+		
 		<div class="prodAddFP">
 			<div class="prodAddTr"></div>
 			<div class="prodAdd"<%= (isPpPreview)?"style=\"display: none;\"":""%>>
