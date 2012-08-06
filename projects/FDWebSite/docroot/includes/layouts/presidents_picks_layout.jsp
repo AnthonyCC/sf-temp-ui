@@ -310,13 +310,13 @@
 				$jq('#ddpp_BNDdai_viewAll').corner('round 4px');
 
 				$jq('.ddpp_feat_prod').hover(function() {
-					if (!$jq(this).find('.CTAButtonFP').data('usedCTA')) {
-						$jq(this).stop().find('.prodAddFP').animate({ height: '+=115', top: '85'}, 'fast');
-					}
+					//if (!$jq(this).find('.CTAButtonFP').data('usedCTA')) {
+						$jq(this).find('.prodAddFP').stop().animate({ height: '+=115', top: '85'}, 'fast');
+					//}
 				}, function() {
-					if (!$jq(this).find('.CTAButtonFP').data('usedCTA')) {
-						$jq(this).stop().find('.prodAddFP').animate({ height: '0', top: '200'}, 'fast');
-					}
+					//if (!$jq(this).find('.CTAButtonFP').data('usedCTA')) {
+						$jq(this).find('.prodAddFP').stop().animate({ height: '0', top: '200'}, 'fast');
+					//}
 				});
 
 
