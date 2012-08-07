@@ -36,6 +36,6 @@ public class FDStandingOrderEmail extends FDTransactionalEmail {
 		map.put("standingOrder", standingOrder);
 		// map.put("result", result);
 		map.put("unavailableItems", unavCartItems);
-		map.put("hasUnavailableItems", unavCartItems.size() > 0);
+		map.put("hasUnavailableItems", unavCartItems == null ? false : unavCartItems.size() > 0);
 	}
 }
