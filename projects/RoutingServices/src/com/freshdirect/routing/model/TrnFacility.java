@@ -103,4 +103,11 @@ public class TrnFacility implements Serializable {
 			return false;
 		return true;
 	}
+
+	@Override
+	public String toString() {
+		return "Facility [code=" + name + "]";
+	}
+	
+	
 }
