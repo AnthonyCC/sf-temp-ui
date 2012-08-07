@@ -1927,7 +1927,7 @@ public class DlvManagerSessionBean extends GatewaySessionBeanSupport {
 		if(reservation==null || address==null || !reservation.isDynamic())
 			return ;
 		
-		LOGGER.debug("Start commitReservationEx for Id: "+reservation.getId()+" statusCode: "+reservation.getStatusCode()+" UA:"+reservation.getUnassignedActivityType());
+		LOGGER.debug("Start commitReservationEx for Id: "+reservation.getId()+" statusCode: "+reservation.getStatusCode()+" UA:"+reservation.getUnassignedActivityType()+" OrderId:"+reservation.getOrderId());
 		
 		// Put the CONFIRM_TIMESLOT payload back in the queue to be retried after the redelivery interval configured in application server.
 		if(reservation.isDynamic() && !reservation.isInUPS() && reservation.getStatusCode() == 10)
