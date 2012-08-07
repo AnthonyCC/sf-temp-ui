@@ -83,6 +83,7 @@ import com.freshdirect.giftcard.ErpGiftCardDlvConfirmModel;
 import com.freshdirect.giftcard.ErpGiftCardModel;
 import com.freshdirect.giftcard.ErpGiftCardUtil;
 import com.freshdirect.giftcard.ErpRecipentModel;
+import com.freshdirect.payment.EnumPaymentMethodType;
 
 public class FDOrderAdapter implements FDOrderI {
 	
@@ -1380,5 +1381,14 @@ public class FDOrderAdapter implements FDOrderI {
 		return 0;
 	}
 	
+	public Double getEbtPurchaseAmount() {
 	
+		Double result = null;
+		if(getPaymentMethod() != null && EnumPaymentMethodType.EBT.equals(getPaymentMethod().getPaymentMethodType())
+				&& hasInvoice()) {
+			result = (getInvoicedTotal() <= getTotal()) ? getInvoicedTotal(): getTotal();
+		}
+		return result;
+	}
+
 }

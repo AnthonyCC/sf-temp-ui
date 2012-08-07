@@ -34,6 +34,7 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.mobileapi.controller.data.ProductConfiguration;
 import com.freshdirect.mobileapi.controller.data.response.CreditCard;
 import com.freshdirect.mobileapi.controller.data.response.DepotLocation;
+import com.freshdirect.mobileapi.controller.data.response.EBTCard;
 import com.freshdirect.mobileapi.controller.data.response.ElectronicCheck;
 import com.freshdirect.mobileapi.exception.ModelException;
 import com.freshdirect.mobileapi.model.tagwrapper.ModifyOrderControllerTagWrapper;
@@ -148,7 +149,7 @@ public class Order {
             } else if (EnumPaymentMethodType.CREDITCARD.equals(paymentMethod.getPaymentMethodType())) {
                 orderDetail.setPaymentMethod(new CreditCard(PaymentMethod.wrap(paymentMethod)));
             } else if (EnumPaymentMethodType.EBT.equals(paymentMethod.getPaymentMethodType())) {
-            	orderDetail.setPaymentMethod(new com.freshdirect.mobileapi.controller.data.response.PaymentMethod(PaymentMethod.wrap(paymentMethod)));
+            	orderDetail.setPaymentMethod(new EBTCard(PaymentMethod.wrap(paymentMethod)));
             }else {
                 throw new IllegalArgumentException("Unrecongized payment type. paymentMethod.getPaymentMethodType="
                         + paymentMethod.getPaymentMethodType());

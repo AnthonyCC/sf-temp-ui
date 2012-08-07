@@ -11,7 +11,7 @@ public class PaymentMethods extends CheckoutResponse {
 
     private List<CreditCard> creditCards = new ArrayList<CreditCard>();
     
-    private List<PaymentMethod> ebtCards = new ArrayList<PaymentMethod>();
+    private List<EBTCard> ebtCards = new ArrayList<EBTCard>();
 
     private String selectedId;
 
@@ -21,10 +21,11 @@ public class PaymentMethods extends CheckoutResponse {
     
     private boolean isEbtAccepted;
 
-    public PaymentMethods(boolean isCheckEligible, boolean isECheckRestricted, List<com.freshdirect.mobileapi.model.PaymentMethod> creditCards,
+    public PaymentMethods(boolean isCheckEligible, boolean isECheckRestricted, boolean isEbtAccepted, List<com.freshdirect.mobileapi.model.PaymentMethod> creditCards,
             List<com.freshdirect.mobileapi.model.PaymentMethod> electronicChecks, List<com.freshdirect.mobileapi.model.PaymentMethod> ebtCards) throws FDException {
         this.isCheckEligible = isCheckEligible;
         this.isECheckRestricted = isECheckRestricted;
+        this.isEbtAccepted = isEbtAccepted;
 
         for (com.freshdirect.mobileapi.model.PaymentMethod creditCard : creditCards) {
             this.creditCards.add(new CreditCard(creditCard));
@@ -33,7 +34,7 @@ public class PaymentMethods extends CheckoutResponse {
             this.electronicChecks.add(new ElectronicCheck(electronicCheck));
         }
         for (com.freshdirect.mobileapi.model.PaymentMethod ebtCard : ebtCards) {
-            this.ebtCards.add(new PaymentMethod(ebtCard));
+            this.ebtCards.add(new EBTCard(ebtCard));
         }
         setStatus(STATUS_SUCCESS);
     }
@@ -84,6 +85,14 @@ public class PaymentMethods extends CheckoutResponse {
 
 	public void setEbtAccepted(boolean isEbtAccepted) {
 		this.isEbtAccepted = isEbtAccepted;
+	}
+
+	public List<EBTCard> getEbtCards() {
+		return ebtCards;
+	}
+
+	public void setEbtCards(List<EBTCard> ebtCards) {
+		this.ebtCards = ebtCards;
 	}
 
 }

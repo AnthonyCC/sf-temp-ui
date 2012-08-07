@@ -41,8 +41,18 @@ public class CartDetail {
     public void setEstimatedTotal(double estimatedTotal) {
         this.estimatedTotal = estimatedTotal;
     }
+    
+    private Double ebtPurchaseAmount;
+    
+    public Double getEbtPurchaseAmount() {
+		return ebtPurchaseAmount;
+	}
 
-    private double subtotal;
+	public void setEbtPurchaseAmount(Double ebtPurchaseAmount) {
+		this.ebtPurchaseAmount = ebtPurchaseAmount;
+	}
+
+	private double subtotal;
 
     public double getSubtotal() {
         return subtotal;

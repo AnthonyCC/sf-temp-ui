@@ -124,7 +124,8 @@ public class CheckoutControllerTagWrapper extends ControllerTagWrapper implement
         addRequestValue(REQ_PARAM_BILLING_REF, billingReference);
         getWrapTarget().setActionName(ACTION_SET_PAYMENT_METHOD);
         setMethodMode(true);
-        return new ResultBundle(executeTagLogic(), this);
+        
+        return doPaymentTagLogic();
     }
 
     public ResultBundle addAndSetDeliveryAddress(DeliveryAddressRequest deliveryAddress) throws FDException {
@@ -270,7 +271,8 @@ public class CheckoutControllerTagWrapper extends ControllerTagWrapper implement
 
         getWrapTarget().setActionName(ACTION_ADD_SET_PAYMENT_METHOD);
         setMethodMode(true);
-        return new ResultBundle(executeTagLogic(), this);
+        
+        return doPaymentTagLogic();
     }
 
     public ResultBundle editPaymentMethod(PaymentMethodRequest paymentMethod) throws FDException {
@@ -411,6 +413,25 @@ public class CheckoutControllerTagWrapper extends ControllerTagWrapper implement
             return false;
         }
         return true;
+    }
+    
+    private ResultBundle doPaymentTagLogic() throws FDException {
+    	
+    	ActionResult actionResult = executeTagLogic();        
+        String successPage = ((CheckoutControllerTag) wrapTarget).getSuccessPage();
+
+        if (actionResult == null) {
+            actionResult = new ActionResult();
+        }
+
+        CheckoutControllerTag wrappedTag = (CheckoutControllerTag) this.getWrapTarget();
+        if (successPage != null && (successPage.startsWith(wrappedTag.getEbtUnavailableItemsPage())
+        		|| successPage.startsWith(wrappedTag.getEbtCRMUnavailableItemsPage())) ) {
+        	
+            actionResult.addError(new ActionError(ERR_EBT_RESTRICTED, MSG_EBT_PRODUCT_NOT_ALLOWED));
+        }
+        
+        return new ResultBundle(actionResult, this);
     }
 
 }

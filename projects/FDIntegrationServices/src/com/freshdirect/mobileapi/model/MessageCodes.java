@@ -46,7 +46,7 @@ public interface MessageCodes {
     public static final String ERR_CHECKOUT_AUTHENTICATION_REQUIRED = "ERR_CHECKOUT_AUTHENTICATION_REQUIRED";
 
     public static final String ERR_ATP_FAILED = "ERR_ATP_FAILED";
-
+    
     public static final String ERR_ATP_TYPE_KOSHER = "ERR_ATP_TYPE_KOSHER";
 
     public static final String ERR_ATP_TYPE_GENERIC_RESTRICTED_AVAILABILITY = "ERR_ATP_TYPE_GENERIC_RESTRICTED_AVAILABILITY";
@@ -216,6 +216,9 @@ public interface MessageCodes {
     public final static String MSG_ACCEPT_DP_TERMSANDCONDITIONS_FAILED 					= "Delivery Pass Terms And Condition Acceptance Failed.";
     
     public final static String MSG_ACCEPT_DP_TERMSANDCONDITIONS_NOADDRESS 					= "Delivery Pass Terms And Condition Acceptance Successfully. Address not found in cart";
+    
+    public static final String ERR_EBT_RESTRICTED = "ERR_EBT_RESTRICTED";
+    public final static String MSG_EBT_PRODUCT_NOT_ALLOWED 	= "Some of the products are not eligible to purchase with EBT Payment";
     
     public static class ErrorMessage {
         public final static String PASS_THROUGH = "PASS_THROUGH";

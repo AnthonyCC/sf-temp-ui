@@ -1718,10 +1718,7 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 
 	}   
 
-	public List<FDCartLineI> getEbtIneligibleOrderLines() {
-		return ebtIneligibleOrderLines;
-	}
-
+	
     public void setDlvPassPremiumAllowedTC(boolean dlvPassPremiumAllowedTC){
     	this.dlvPassPremiumAllowedTC = dlvPassPremiumAllowedTC;
     }
@@ -1732,4 +1729,9 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 	public void setEbtIneligibleOrderLines(List<FDCartLineI> ebtIneligibleOrderLines) {
 		this.ebtIneligibleOrderLines = ebtIneligibleOrderLines;
 	}
+	
+	public List<FDCartLineI> getEbtIneligibleOrderLines() {
+		return ebtIneligibleOrderLines;
+	}
+	
 }

@@ -42,9 +42,10 @@ import com.freshdirect.mobileapi.controller.data.Message;
 import com.freshdirect.mobileapi.controller.data.request.DeliveryAddressRequest;
 import com.freshdirect.mobileapi.controller.data.request.PaymentMethodRequest;
 import com.freshdirect.mobileapi.controller.data.response.AtpError;
+import com.freshdirect.mobileapi.controller.data.response.AtpError.ItemAvailabilityError;
 import com.freshdirect.mobileapi.controller.data.response.Order;
 import com.freshdirect.mobileapi.controller.data.response.OrderReceipt;
-import com.freshdirect.mobileapi.controller.data.response.AtpError.ItemAvailabilityError;
+import com.freshdirect.mobileapi.controller.data.response.SpecialRestrictedItemsError;
 import com.freshdirect.mobileapi.exception.ValidationException;
 import com.freshdirect.mobileapi.model.DeliveryAddress.DeliveryAddressType;
 import com.freshdirect.mobileapi.model.DeliveryTimeslots.TimeSlotCalculationResult;
@@ -53,6 +54,7 @@ import com.freshdirect.mobileapi.model.tagwrapper.AgeVerificationControllerTagWr
 import com.freshdirect.mobileapi.model.tagwrapper.CheckoutControllerTagWrapper;
 import com.freshdirect.mobileapi.model.tagwrapper.DlvPassAvailabilityControllerTagWrapper;
 import com.freshdirect.mobileapi.model.tagwrapper.OrderHistoryInfoTagWrapper;
+import com.freshdirect.mobileapi.model.tagwrapper.RequestParamName;
 
 public class Checkout {
 
@@ -321,8 +323,8 @@ public class Checkout {
         orderReceipt.setOrderNumber(orderNumber);
         return orderReceipt;
     }
-
-    /**
+    
+     /**
      * TODO: Model should not return request data class.  Unnecessary coupling of model and view.
      * @return
      */
@@ -491,6 +493,55 @@ public class Checkout {
         CartEvent cartEvent = new CartEvent(CartEvent.FD_REMOVE_CART_EVENT);
         cartEvent.setRequestData(requestData);
         ResultBundle result = wrapper.removeUnavailableItemsFromCart(cartEvent);
+        return result;
+    }
+    
+ // Code from checkout/step_3_unavail.jsp
+    public Message getSpecialRestrictedItemDetail() {
+    	
+    	SpecialRestrictedItemsError splRestrictionError = new SpecialRestrictedItemsError();
+    	
+    	if(this.sessionUser != null && this.sessionUser.getShoppingCart() != null) {
+    		
+    		Cart cart = this.sessionUser.getShoppingCart();
+	    	List<FDCartLineI> ebtIneligibleOrderLines = new ArrayList<FDCartLineI>();
+	    		    	
+	    	List<FDCartLineI> orderLines = cart.getOrderLines();
+	    	if(orderLines != null && orderLines.size() > 0) {
+	    		
+	    		for(FDCartLineI cartLine : orderLines) {
+	    			if(cartLine.getProductRef().lookupProductModel().isExcludedForEBTPayment()) {
+	    				ebtIneligibleOrderLines.add(cartLine);
+	    				
+	    				SpecialRestrictedItemsError.CartLineItem item = new SpecialRestrictedItemsError.CartLineItem();
+	    				splRestrictionError.addCartLineItem(item);
+	
+	                    item.setQuantity(cartLine.getQuantity());
+	                    item.setDescription(cartLine.getDescription());
+	                    item.setConfigurationDesc(cartLine.getConfigurationDesc());
+	    			}
+	    		}
+	    		
+	    		if(splRestrictionError.getItems() != null && ebtIneligibleOrderLines.size() > 0) {
+	    			splRestrictionError.setErrorCode(MessageCodes.ERR_EBT_RESTRICTED);
+		    		splRestrictionError.setMessage(MessageCodes.MSG_EBT_PRODUCT_NOT_ALLOWED);
+		    		cart.setEbtIneligibleOrderLines(ebtIneligibleOrderLines);
+	    		}
+	    	}
+    	}
+    	return splRestrictionError;
+    }
+    
+    /**
+     * @param requestData [For now special means EBT restricted item, may be useful in future for other special restriction]
+     * @return
+     * @throws FDException
+     */
+    public ResultBundle removeSpecialRestrictedItemsFromCart(RequestData requestData) throws FDException {
+        AdjustAvailabilityTagWrapper wrapper = new AdjustAvailabilityTagWrapper(this.sessionUser);        
+        CartEvent cartEvent = new CartEvent(CartEvent.FD_REMOVE_CART_EVENT);
+        cartEvent.setRequestData(requestData);
+        ResultBundle result = wrapper.removeSpecialRestrictedItemsFromCart(cartEvent);
         return result;
     }
 

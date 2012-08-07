@@ -15,8 +15,6 @@ import org.springframework.web.servlet.ModelAndView;
 import com.freshdirect.customer.EnumDeliveryType;
 import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpDepotAddressModel;
-import com.freshdirect.delivery.depot.DlvDepotModel;
-import com.freshdirect.fdstore.FDDepotManager;
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
@@ -34,22 +32,21 @@ import com.freshdirect.mobileapi.controller.data.request.PaymentMethodRequest;
 import com.freshdirect.mobileapi.controller.data.request.PaymentMethodSelection;
 import com.freshdirect.mobileapi.controller.data.response.CVVResponse;
 import com.freshdirect.mobileapi.controller.data.response.DeliveryAddresses;
-import com.freshdirect.mobileapi.controller.data.response.DepotLocation;
 import com.freshdirect.mobileapi.controller.data.response.OrderReceipt;
 import com.freshdirect.mobileapi.controller.data.response.PaymentMethods;
 import com.freshdirect.mobileapi.exception.JsonException;
 import com.freshdirect.mobileapi.model.Cart;
 import com.freshdirect.mobileapi.model.Checkout;
 import com.freshdirect.mobileapi.model.DeliveryAddress;
+import com.freshdirect.mobileapi.model.DeliveryAddress.DeliveryAddressType;
 import com.freshdirect.mobileapi.model.DeliveryTimeslots;
+import com.freshdirect.mobileapi.model.DeliveryTimeslots.TimeSlotCalculationResult;
 import com.freshdirect.mobileapi.model.Depot;
 import com.freshdirect.mobileapi.model.PaymentMethod;
 import com.freshdirect.mobileapi.model.ResultBundle;
 import com.freshdirect.mobileapi.model.SessionUser;
 import com.freshdirect.mobileapi.model.ShipToAddress;
 import com.freshdirect.mobileapi.model.User;
-import com.freshdirect.mobileapi.model.DeliveryAddress.DeliveryAddressType;
-import com.freshdirect.mobileapi.model.DeliveryTimeslots.TimeSlotCalculationResult;
 import com.freshdirect.mobileapi.model.tagwrapper.SessionParamName;
 import com.freshdirect.mobileapi.service.ServiceException;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
@@ -101,6 +98,10 @@ public class CheckoutController extends BaseController {
     private final static String ACTION_GET_PAYMENTMETHOD_VERIFY_STATUS = "getpmverifystatus";
     
     private static final String ACTION_ACCEPT_DP_TERMSANDCONDITIONS = "acceptDeliveryPassTermsAndConditions";
+    
+    private final static String ACTION_REMOVE_SPECIAL_RESTRICTED_ITEMS = "removesplrestricteditems";
+
+    private final static String ACTION_GET_SPECIAL_RESTRICTED_DETAIL = "getsplrestricteditemdetail";
 
     /* (non-Javadoc)
      * @see org.springframework.web.servlet.mvc.Controller#handleRequest(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
@@ -172,6 +173,10 @@ public class CheckoutController extends BaseController {
             model = getCVVStatus(model, user);
         }  else if (ACTION_ACCEPT_DP_TERMSANDCONDITIONS.equals(action)) {            
             model = this.acceptDeliveryPassTerms(model, user, request);
+        }  else if (ACTION_REMOVE_SPECIAL_RESTRICTED_ITEMS.equals(action)) {
+            model = removeSpecialRestrictedItemsFromCart(model, user, request);
+        }  else if (ACTION_GET_SPECIAL_RESTRICTED_DETAIL.equals(action)) {
+            model = getSpecialRestrictedItemDetail(model, user, request);
         }
         return model;
     }
@@ -723,7 +728,7 @@ public class CheckoutController extends BaseController {
         boolean isEcheckRestricted = user.isEcheckRestricted();
         boolean isEbtAccepted = user.isEbtAccepted();
 
-        PaymentMethods responseMessage = new PaymentMethods(isCheckEligible, isEcheckRestricted, creditCards, electronicChecks,ebtCards);
+        PaymentMethods responseMessage = new PaymentMethods(isCheckEligible, isEcheckRestricted, isEbtAccepted, creditCards, electronicChecks,ebtCards);
 
         if ((responseMessage.getCreditCards() != null && responseMessage.getCreditCards().size() == 0) 
         		&& (responseMessage.getElectronicChecks() != null && responseMessage.getElectronicChecks().size() == 0)) {
@@ -751,6 +756,51 @@ public class CheckoutController extends BaseController {
             responseMessage = getErrorMessage(result, request);
         }
         responseMessage.addWarningMessages(result.getWarnings());
+        setResponseMessage(model, responseMessage, user);
+        return model;
+    }
+    
+    /**
+     * @param model
+     * @param user
+     * @param request
+     * @return
+     * @throws FDException
+     * @throws JsonException
+     */
+    private ModelAndView removeSpecialRestrictedItemsFromCart(ModelAndView model, SessionUser user, HttpServletRequest request)
+            throws FDException, JsonException {
+    	
+        Message responseMessage = null;
+        Checkout checkout = new Checkout(user);
+        ResultBundle resultBundle = checkout.removeSpecialRestrictedItemsFromCart(qetRequestData(request));
+        ActionResult result = resultBundle.getActionResult();
+        propogateSetSessionValues(request.getSession(), resultBundle);
+
+        if (result.isSuccess()) {
+            responseMessage = Message.createSuccessMessage("Item(s) removed successfully.");
+        } else {
+            responseMessage = getErrorMessage(result, request);
+        }
+        responseMessage.addWarningMessages(result.getWarnings());
+
+        setResponseMessage(model, responseMessage, user);
+
+        return model;
+    }
+    
+    /**
+     * @param model
+     * @param user
+     * @param request
+     * @return
+     * @throws FDException
+     * @throws JsonException
+     */
+    private ModelAndView getSpecialRestrictedItemDetail(ModelAndView model, SessionUser user, HttpServletRequest request) throws FDException,
+            JsonException {
+        Checkout checkout = new Checkout(user);
+        Message responseMessage = checkout.getSpecialRestrictedItemDetail();
         setResponseMessage(model, responseMessage, user);
         return model;
     }

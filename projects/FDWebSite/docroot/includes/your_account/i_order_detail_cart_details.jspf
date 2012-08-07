@@ -231,11 +231,13 @@ if (cart.hasSettledReturn()) {
 	</td>
 	<td colspan="3"><%=cart.isEstimatedPrice() ? "*" : ""%></td>
 </tr>
-<% if(null !=cart.getPaymentMethod() && EnumPaymentMethodType.EBT.equals(cart.getPaymentMethod().getPaymentMethodType())){ %>
+<% 
+Double ebtPurchaseAmount = cart.getEbtPurchaseAmount();
+if(ebtPurchaseAmount != null){ %>
 <tr>
 	<td colspan="4" align="right"><a href="/help/delivery_info.jsp">EBT Purchase Total</a></td>
 	<td align="right">
-		<b><%=currencyFormatter.format(cart.hasInvoice() ? (cart.getInvoicedTotal() <=cart.getTotal()?cart.getInvoicedTotal():cart.getTotal()): cart.getTotal())%></b>
+		<b><%=currencyFormatter.format(ebtPurchaseAmount.doubleValue())%></b>
 	</td>
 </tr>
 <% } %>

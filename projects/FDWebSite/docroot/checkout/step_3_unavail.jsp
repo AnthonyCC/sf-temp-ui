@@ -32,16 +32,7 @@ boolean isEBTBlocked = false;
 String resultPage = null;
 List<FDCartLineI> ebtIneligibleOrderLines = new ArrayList<FDCartLineI>();
 cart.setEbtIneligibleOrderLines(ebtIneligibleOrderLines);
-/*for (FDCartLineI cartLine : cart.getOrderLines()) {
-	isEBTBlocked =cartLine.getProductRef().lookupProductModel().isExcludedForEBTPayment();
-	if(isEBTBlocked){
-		break;
-	}
-}*/
-FDReservation reservation = cart.getDeliveryReservation();
 
-// get map of cartLineId -> unav FDAvailabilityInfos
-Map<String,FDAvailabilityInfo> invsInfoMap = cart.getUnavailabilityMap();
 Date day = null;
 if(true ){//if(isEBTBlocked ){
 %>

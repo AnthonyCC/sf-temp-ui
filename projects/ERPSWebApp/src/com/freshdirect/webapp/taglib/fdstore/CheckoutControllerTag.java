@@ -1,5 +1,6 @@
 package com.freshdirect.webapp.taglib.fdstore;
 
+import java.text.MessageFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -70,8 +71,19 @@ public class CheckoutControllerTag extends AbstractControllerTag {
 	private final String		gcAVSExceptionPage	= "/gift_card/purchase/purchase_giftcard.jsp";
 	private String 				noContactPhonePage	= "/checkout/step_1_edit.jsp";
 
-
-
+	private final String ebtUnavailableItemsPage	= "/checkout/step_3_unavail.jsp";
+	private final String ebtCRMUnavailableItemsPage	= "/checkout/checkout_EBT_unavail.jsp";
+	
+	
+	/** Used by FDIntegrationService / CheckoutControllerTagWrapper */
+	public String getEbtUnavailableItemsPage() {
+		return ebtUnavailableItemsPage;
+	}
+	
+	/** Used by FDIntegrationService / CheckoutControllerTagWrapper */
+	public String getEbtCRMUnavailableItemsPage() {
+		return ebtCRMUnavailableItemsPage;
+	}
 
 	/** Used by FDIntegrationService / CheckoutControllerTagWrapper */
 	public String getAgeVerificationPage() {
@@ -243,23 +255,7 @@ public class CheckoutControllerTag extends AbstractControllerTag {
 				
 				if ( result.isSuccess() ) {
 					UserValidationUtil.validateOrderMinimum( request, result );
-					ErpPaymentMethodI paymentMethod =cart.getPaymentMethod();
-					if(null != paymentMethod && EnumPaymentMethodType.EBT.equals(paymentMethod.getPaymentMethodType())){
-						boolean isEBTBlocked = false;
-						for (FDCartLineI cartLine : cart.getOrderLines()) {
-							isEBTBlocked =cartLine.getProductRef().lookupProductModel().isExcludedForEBTPayment();
-							if(isEBTBlocked){
-								break;
-							}
-						}
-						if(isEBTBlocked){
-							if(isNotCallCenter){
-								this.setSuccessPage( "/checkout/step_3_unavail.jsp?successPage="+getSuccessPage());
-							}else{
-								this.setSuccessPage( "/checkout/checkout_EBT_unavail.jsp?successPage="+getSuccessPage());
-							}
-						}
-					}
+					checkEBTRestrictedLineItems(cart, isNotCallCenter);
 					if ( currentUser.isPromotionAddressMismatch() && isNotCallCenter ) {
 						this.setSuccessPage( "/checkout/step_3_waive.jsp" );
 					}
@@ -281,6 +277,7 @@ public class CheckoutControllerTag extends AbstractControllerTag {
 				m.performAddAndSetPaymentMethod();
 				if ( result.isSuccess() ) {
 					UserValidationUtil.validateOrderMinimum( request, result );
+					checkEBTRestrictedLineItems(cart, isNotCallCenter);
 				}
 
 			} else if ( "addPaymentMethod".equalsIgnoreCase( action ) || "gc_addPaymentMethod".equalsIgnoreCase( action ) ) {
@@ -359,7 +356,28 @@ public class CheckoutControllerTag extends AbstractControllerTag {
 
 		return true;
 	}
-
+	//Method to check EBT Restricted item, which redirected to the restricted item screen.
+	protected void checkEBTRestrictedLineItems(FDCartModel cart, boolean isNotCallCenter) {
+		
+		ErpPaymentMethodI paymentMethod = cart.getPaymentMethod();
+		if(null != paymentMethod && EnumPaymentMethodType.EBT.equals(paymentMethod.getPaymentMethodType())){
+			boolean isEBTBlocked = false;
+			for (FDCartLineI cartLine : cart.getOrderLines()) {
+				isEBTBlocked =cartLine.getProductRef().lookupProductModel().isExcludedForEBTPayment();
+				if(isEBTBlocked){
+					break;
+				}
+			}
+			if(isEBTBlocked) {
+				
+				if(isNotCallCenter){
+					this.setSuccessPage( ebtUnavailableItemsPage+ "?successPage="+getSuccessPage());
+				}else{
+					this.setSuccessPage( ebtCRMUnavailableItemsPage +"?successPage="+getSuccessPage());
+				}
+			}
+		}
+	}
 	protected void changeStandingOrderDeliveryDate(HttpServletRequest request,
 			final FDSessionUser currentUser) throws FDResourceException {
 		final FDStandingOrder so = currentUser.getCurrentStandingOrder();

@@ -306,7 +306,18 @@
 		<from>^/v/([0-9]+)/(.*)/checkout/atp/removeitems/</from>
 		<to last="true">/checkout.do?action=removeunavailableitems&amp;ver=$1</to>
 	</rule>
-
+	
+	<!-- Special Restriction Handling START -->
+	<rule>
+		<from>^/v/([0-9]+)/(.*)/checkout/specialrestriction/details/</from>
+		<to last="true">/checkout.do?action=getsplrestricteditemdetail&amp;ver=$1</to>
+	</rule>
+	
+	<rule>
+		<from>^/v/([0-9]+)/(.*)/checkout/specialrestriction/removeitems/</from>
+		<to last="true">/checkout.do?action=removesplrestricteditems&amp;ver=$1</to>
+	</rule>
+	<!-- Special Restriction Handling END -->
 	<!-- Verify Age for Alcohol Purchase -->
 	<rule>
 		<from>^/v/([0-9]+)/(.*)/alcohol/verifyage/</from>

@@ -194,4 +194,6 @@ public interface FDOrderI extends FDCartI {
 	public boolean isChargeTaxable(EnumChargeType chargeType);
 	public double getChargeAmount(EnumChargeType type);
 	public double getInvoicedDeliveryPremium();
+	
+	Double getEbtPurchaseAmount();
 }

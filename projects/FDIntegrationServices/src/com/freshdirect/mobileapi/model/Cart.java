@@ -65,6 +65,7 @@ import com.freshdirect.mobileapi.controller.data.response.CartDetail.RedemptionP
 import com.freshdirect.mobileapi.controller.data.response.CartDetail.SummaryLineCharge;
 import com.freshdirect.mobileapi.controller.data.response.CreditCard;
 import com.freshdirect.mobileapi.controller.data.response.DepotLocation;
+import com.freshdirect.mobileapi.controller.data.response.EBTCard;
 import com.freshdirect.mobileapi.controller.data.response.ElectronicCheck;
 import com.freshdirect.mobileapi.controller.data.response.ModifyCartDetail;
 import com.freshdirect.mobileapi.controller.data.response.Order;
@@ -481,7 +482,7 @@ public class Cart {
             } else if (EnumPaymentMethodType.CREDITCARD.equals(paymentMethod.getPaymentMethodType())) {
                 checkoutDetail.setPaymentMethod(new CreditCard(PaymentMethod.wrap(paymentMethod)));
             } else if (EnumPaymentMethodType.EBT.equals(paymentMethod.getPaymentMethodType())) {
-            	checkoutDetail.setPaymentMethod(new com.freshdirect.mobileapi.controller.data.response.PaymentMethod(PaymentMethod.wrap(paymentMethod)));
+            	checkoutDetail.setPaymentMethod(new EBTCard(PaymentMethod.wrap(paymentMethod)));
             }else {
                 throw new IllegalArgumentException("Unrecongized payment type. paymentMethod.getPaymentMethodType="
                         + paymentMethod.getPaymentMethodType());
@@ -712,6 +713,7 @@ public class Cart {
 
         if (cart instanceof FDOrderI) {
             cartDetail.setIsDlvPassApplied(((FDOrderI) cart).isDlvPassApplied());
+            cartDetail.setEbtPurchaseAmount(((FDOrderI) cart).getEbtPurchaseAmount());
         } else if (cart instanceof FDCartModel) {
             cartDetail.setIsDlvPassApplied(((FDCartModel) cart).isDlvPassApplied());
         }
@@ -987,4 +989,11 @@ public class Cart {
         return cart.isDeliveryChargeWaived();
     }
     
+    public void setEbtIneligibleOrderLines(List<FDCartLineI> ebtIneligibleOrderLines) {
+    	((FDCartModel) this.cart).setEbtIneligibleOrderLines(ebtIneligibleOrderLines);
+    }
+	
+    public List<FDCartLineI> getEbtIneligibleOrderLines() {
+    	 return ((FDCartModel) this.cart).getEbtIneligibleOrderLines();
+    }
 }

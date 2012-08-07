@@ -164,6 +164,14 @@ function loadStuff() {
   	$("#url").val("/saptest12@freshdirect.com/checkout/atp/removeitems/");
   	$("#payload").val('');
   	$("#result").val("");
+  }  else if (loaddata == "SpecialRestrictionErrorDetails") {
+  	$("#url").val("/saptest12@freshdirect.com/checkout/specialrestriction/details/");
+  	$("#payload").val('');
+  	$("#result").val("");
+  } else if (loaddata == "SpecialRestrictionRemoveItem") {
+  	$("#url").val("/saptest12@freshdirect.com/checkout/specialrestriction/removeitems/");
+  	$("#payload").val('');
+  	$("#result").val("");
   } else if (loaddata == "GetPaymentMethods") {
   	$("#url").val("/saptest12@freshdirect.com/checkout/paymentmethod/getall/");
   	$("#payload").val("");
@@ -614,6 +622,8 @@ function doStuff() {
   <option value="ReserveDeliverySlot">CHECKOUT - Set Delivery Slot</option>
   <option value="ATPErrorDetails">CHECKOUT - Get ATP Error Details</option>
   <option value="ATPRemove">CHECKOUT - Remove all unavailable items</option>
+   <option value="SpecialRestrictionErrorDetails">CHECKOUT - Get Special Restriction Error Details[EBT]</option>
+  <option value="SpecialRestrictionRemoveItem">CHECKOUT - Remove all Special Restriction items[EBT]</option>
   <option value="GetPaymentMethods">CHECKOUT - Get Payment Methods</option>
   <option value="SetPaymentMethods">CHECKOUT - Set Payment Methods</option>
   <option value="AddAndSetPaymentMethod">CHECKOUT - Add and Set Payment Method</option>

@@ -38,7 +38,8 @@ public class AdjustAvailabilityTag extends
 		com.freshdirect.framework.webapp.BodyTagSupport {
 
 	private String sourcePage = null;
-
+	
+	
 	public String getSourcePage() {
 		return sourcePage;
 	}
@@ -46,7 +47,7 @@ public class AdjustAvailabilityTag extends
 	public void setSourcePage(String sourcePage) {
 		this.sourcePage = sourcePage;
 	}
-
+	
 	public int doStartTag() throws JspException {
 		//
 		// perform any actions requested by the user if the request was a POST
@@ -57,14 +58,11 @@ public class AdjustAvailabilityTag extends
 		FDCartModel cart = user.getShoppingCart();
 		String isEBT = request.getParameter("ebt");
 		if("true".equalsIgnoreCase(isEBT)){
-			boolean isEBTBlockedItem = false;
+			
 			for (FDCartLineI cartLine : cart.getEbtIneligibleOrderLines()) {
-				isEBTBlockedItem =cartLine.getProductRef().lookupProductModel().isExcludedForEBTPayment();
-				if(isEBTBlockedItem){
-					cart.removeOrderLineById(cartLine.getRandomId());
-					// Create FD remove cart event.
-					FDEventUtil.logRemoveCartEvent(cartLine, request);
-				}
+				cart.removeOrderLineById(cartLine.getRandomId());
+				// Create FD remove cart event.
+				FDEventUtil.logRemoveCartEvent(cartLine, request);
 			}
 		}else{
 			Map<String,FDAvailabilityInfo> unavMap = cart.getUnavailabilityMap();
