@@ -73,8 +73,4 @@ public class CmRegistrationTag extends AbstractCmTag {
 	public void setForce(boolean force) {
 		this.force = force;
 	}
-	
-	public void setUpdate(boolean update) {
-		builder.setUpdate(update);
-	}
 }

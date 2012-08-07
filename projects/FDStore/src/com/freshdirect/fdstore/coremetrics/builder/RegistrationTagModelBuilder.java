@@ -21,7 +21,6 @@ public class RegistrationTagModelBuilder  {
 	private static final Logger LOGGER = LoggerFactory.getInstance(RegistrationTagModelBuilder.class);
 
 	private FDUserI user;
-	private boolean update;
 	private RegistrationTagModel tagModel = new RegistrationTagModel();
 	private AddressModel addressModel;
 	private String location;
@@ -31,9 +30,7 @@ public class RegistrationTagModelBuilder  {
 	public RegistrationTagModel buildTagModel() throws SkipTagException{
 		
 		//try to find out if user has a defaultShipToAddress (for existing users)
-		if (update) {
-			identifyDefaultShipToAddress();
-		}
+		identifyDefaultShipToAddress();
 		
 		//try to get address info of newly registered COS user
 		if (addressModel == null) {
@@ -98,14 +95,11 @@ public class RegistrationTagModelBuilder  {
 		}
 		
 		int orderCount = 0;
-
-		if (update){
-			try {
-				orderCount = user.getOrderHistory().getTotalOrderCount();
-			} catch (FDResourceException e) {
-				LOGGER.error(e);
-				throw new SkipTagException("FDResourceException occured", e);
-			}
+		try {
+			orderCount = user.getOrderHistory().getTotalOrderCount();
+		} catch (FDResourceException e) {
+			LOGGER.error(e);
+			throw new SkipTagException("FDResourceException occured", e);
 		}
 			
 		attributesMap.put(3, Integer.toString(orderCount));
@@ -118,10 +112,6 @@ public class RegistrationTagModelBuilder  {
 		this.user = user;
 	}
 	
-	public void setUpdate(boolean update){
-		this.update = update;
-	}
-
 	public void setLocation(String location) {
 		this.location = location;
 	}

@@ -4937,11 +4937,6 @@
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
-		<attribute>
-			<name>update</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
 	</tag>
 	<tag>
 		<name>YoutubeVideoTag</name>

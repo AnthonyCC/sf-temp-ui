@@ -50,7 +50,7 @@
 	<fd:CmPageView wrapIntoScriptTag="true" forceTagEffect="true"/>
 	<fd:GetOrder id='sale' saleId='<%=orderId%>'>
 		<fd:CmOrder order="<%=sale%>" wrapIntoScriptTag="true"/>
-		<fd:CmRegistration wrapIntoScriptTag="true" update="true" force="true"/>
+		<fd:CmRegistration wrapIntoScriptTag="true" force="true"/>
 	</fd:GetOrder>
 <jsp:include page='/includes/order_header.jsp'/>
 
