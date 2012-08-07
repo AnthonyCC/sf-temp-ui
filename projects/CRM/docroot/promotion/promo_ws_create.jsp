@@ -581,7 +581,7 @@ function numbersonly(myfield, e, dec)
 							var show24=0;//set to 1, if 00:00 o'clock should be displayed as 24:00
 
 							if(document.getElementById){
-								document.write(writeAll());
+								document.write(writeAll(false));
 								document.close();
 							}
 							else{
