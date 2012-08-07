@@ -25,6 +25,7 @@ public class RegistrationTagModelBuilder  {
 	private RegistrationTagModel tagModel = new RegistrationTagModel();
 	private AddressModel addressModel;
 	private String location;
+	private String origZipCode;
 	
 	
 	public RegistrationTagModel buildTagModel() throws SkipTagException{
@@ -32,15 +33,17 @@ public class RegistrationTagModelBuilder  {
 		//try to find out if user has a defaultShipToAddress (for existing users)
 		if (update) {
 			identifyDefaultShipToAddress();
-
-		} else {
-			//try to get address info of newly registered COS user
+		}
+		
+		//try to get address info of newly registered COS user
+		if (addressModel == null) {
 			identifyFirstShipToAddress();
 		}
 		
 		//address info of newly registered residential user (fall back if no defaultShipToAddress or COS address exists)
 		if (addressModel == null){
-			addressModel = user.getAddress();
+			//user.getAddress() doesn't work because original zip code is lost in lite reg
+			addressModel = new AddressModel(null, null, null, null, origZipCode);
 		}
 		
 		if (addressModel != null){
@@ -121,5 +124,9 @@ public class RegistrationTagModelBuilder  {
 
 	public void setLocation(String location) {
 		this.location = location;
+	}
+
+	public void setOrigZipCode(String origZipCode) {
+		this.origZipCode = origZipCode;
 	}
 }

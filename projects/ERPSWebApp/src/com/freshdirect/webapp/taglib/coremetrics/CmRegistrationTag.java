@@ -18,6 +18,7 @@ public class CmRegistrationTag extends AbstractCmTag {
 	private static final String REGISTRATION_TAG_FS = "cmCreateRegistrationTag(%s,%s,%s,%s,%s,%s,%s);";
 	private static final String PENDING_REGISTRATION_EVENT = "pendingCoremetricsRegistrationEvent";
 	private static final String REGISTRATION_LOCATION = "coremetricsRegistrationLocation";
+	private static final String REGISTRATION_ORIG_ZIP_CODE = "coremetricsRegistrationOrigZipCode";
 	
 	private RegistrationTagModelBuilder builder = new RegistrationTagModelBuilder();
 	private boolean force;
@@ -28,6 +29,10 @@ public class CmRegistrationTag extends AbstractCmTag {
 
 	public static void setRegistrationLocation(HttpSession session, String location){
 		session.setAttribute(REGISTRATION_LOCATION, location);
+	}
+
+	public static void setRegistrationOrigZipCode(HttpSession session, String origZipCode){
+		session.setAttribute(REGISTRATION_ORIG_ZIP_CODE, origZipCode);
 	}
 
 	@Override
@@ -42,7 +47,10 @@ public class CmRegistrationTag extends AbstractCmTag {
 			builder.setUser((FDUserI) session.getAttribute(SessionName.USER));
 			builder.setLocation((String)session.getAttribute(REGISTRATION_LOCATION));
 			session.removeAttribute(REGISTRATION_LOCATION);
-						
+			
+			builder.setOrigZipCode((String)session.getAttribute(REGISTRATION_ORIG_ZIP_CODE));
+			session.removeAttribute(REGISTRATION_ORIG_ZIP_CODE);
+			
 			RegistrationTagModel model = builder.buildTagModel();
 						
 			String setProductScript = String.format(REGISTRATION_TAG_FS,

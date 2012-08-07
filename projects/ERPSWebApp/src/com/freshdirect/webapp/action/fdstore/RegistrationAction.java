@@ -46,6 +46,7 @@ import com.freshdirect.framework.webapp.ActionResult;
 import com.freshdirect.mail.EmailUtil;
 import com.freshdirect.payment.EnumPaymentMethodType;
 import com.freshdirect.webapp.action.WebActionSupport;
+import com.freshdirect.webapp.taglib.coremetrics.CmRegistrationTag;
 import com.freshdirect.webapp.taglib.fdstore.AccountActivityUtil;
 import com.freshdirect.webapp.taglib.fdstore.AddressUtil;
 import com.freshdirect.webapp.taglib.fdstore.CookieMonster;
@@ -397,6 +398,10 @@ public class RegistrationAction extends WebActionSupport {
 					erpAddress.setState("NY");
 					erpAddress.setCountry("US");
 					erpAddress.setZipCode("11101");
+
+					//save original zip code before it's overwritten by dummy value
+					CmRegistrationTag.setRegistrationOrigZipCode(session, user.getZipCode());
+					
 					/*
 					 * Alternatively we can pass the actual city,state and zipcode to SAP.
 					 */
