@@ -92,7 +92,9 @@
 			form.notes.focus();
 			return;
             	}
-		form.notes.value=form.notes.value+". The refund amount is "+form.elements['refundAmount'].value;
+            	if(form.elements['refundAmount']){
+					form.notes.value=form.notes.value+". The refund amount is "+form.elements['refundAmount'].value;
+            	}
             	
             }
             form.method='POST';
@@ -342,7 +344,7 @@ String caseRequiredForManualRenewal = "<span class=\"cust_module_content_edit\">
 							%>
 							<form name="deliverypass" method="POST">
 							<input type="hidden" name="action_name" value="extend_week">
-							<input type="hidden" name="refundAmount" value=<%=JspMethods.formatPrice(refundAmt.doubleValue())%>>
+							<input type="hidden" name="refundAmount" value="<%=JspMethods.formatPrice(refundAmt.doubleValue())%>">
 							<tr>
 								<td colspan="2">	
 									<select name="orderAssigned" class="combo_text" style="width: 210px;">

@@ -700,11 +700,14 @@ public class GiftCardControllerTag extends com.freshdirect.framework.webapp.Body
             result.addError(new ActionError("fldAmount", "Invalid or missing amount"));
         }*/  
 
-    	if((fldQuantity==null || fldQuantity.length() < 1) && ( fldQuantity==null || fldQuantity.length() < 1)) {
+    	if((fldQuantity==null || fldQuantity.length() < 1)) {
             result.addError(new ActionError(EnumUserInfoName.GC_QUANTITY.getCode(), "Invalid or missing quantity"));
         }else{
         	try {
 				Integer qty = Integer.parseInt(fldQuantity);
+				if(qty<1){
+					result.addError(new ActionError(EnumUserInfoName.GC_QUANTITY.getCode(), "Invalid or missing quantity"));
+				}
 			} catch (NumberFormatException e) {
 				result.addError(new ActionError(EnumUserInfoName.GC_QUANTITY.getCode(), "Invalid or missing quantity"));
 			}
@@ -715,11 +718,15 @@ public class GiftCardControllerTag extends com.freshdirect.framework.webapp.Body
         	if(fldAltAmount != null && fldAltAmount.length() > 0) {
         		try {
 					double amount = Double.parseDouble(fldAltAmount);
-					if(amount < FDStoreProperties.getGiftCardMinAmount()){
-						result.addError(new ActionError("gc_amount_minimum", formatGCMinMaxMsg(SystemMessageList.MSG_GC_MIN_AMOUNT, FDStoreProperties.getGiftCardMinAmount())));
-					}
-					if(amount > FDStoreProperties.getGiftCardMaxAmount()){
-						result.addError(new ActionError("gc_amount_maximum", formatGCMinMaxMsg(SystemMessageList.MSG_GC_MAX_AMOUNT, FDStoreProperties.getGiftCardMaxAmount())));
+					if(amount <=0){
+						result.addError(new ActionError("fldAmount", "Invalid or missing amount"));
+					}else{
+						if(amount < FDStoreProperties.getGiftCardMinAmount()){
+							result.addError(new ActionError("gc_amount_minimum", formatGCMinMaxMsg(SystemMessageList.MSG_GC_MIN_AMOUNT, FDStoreProperties.getGiftCardMinAmount())));
+						}
+						if(amount > FDStoreProperties.getGiftCardMaxAmount()){
+							result.addError(new ActionError("gc_amount_maximum", formatGCMinMaxMsg(SystemMessageList.MSG_GC_MAX_AMOUNT, FDStoreProperties.getGiftCardMaxAmount())));
+						}
 					}
 				}catch (NumberFormatException e) {
 					  result.addError(new ActionError("fldAmount", "Invalid or missing amount"));
