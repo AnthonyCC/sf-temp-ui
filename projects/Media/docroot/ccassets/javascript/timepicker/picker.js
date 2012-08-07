@@ -182,6 +182,46 @@ insert +='</div><div id="helpSpan" class="help" onClick="this.style.display=\'no
 }
 return insert;
 }
+
+function writePicker(what, val){
+	hPic=document.timePick.pickedH;
+	mPic=document.timePick.pickedM;
+	hhPic=document.timePick.pickedHH;
+	mmPic=document.timePick.pickedMM;
+	amPic=document.timePick.pickedAm;
+	insert='';
+	for (var j=1;j<=12;j++){
+	if (what=='pickHour'){
+	insert +='<div class="pickClock" id="'+what+j+'" onClick="pickAm(this.innerHTML,\'hour\',null);" onmouseover="dispAm('+j+',this,\'hour\');" onmouseout="hideAm(this);">'+j+'</div>';
+	}
+	if (what=='pickMinute'&&showMin!=0){
+	num=(j*5);
+	if ((j*5)==60){
+	num=0;
+	}
+	if (num%showMin==0){
+	insert +='<div class="pickClock" id="'+what+num+'" onClick="pickAm('+j+',\'minute\','+num+');" onmouseover="dispAm('+j+',this,\'minute\');" onmouseout="hideAm(this);">'+num+'</div>';
+	}
+	else{
+	insert +='<div class="pickClock" id="'+what+num+'"><font color="red">'+num+'</font></div>';
+	}
+	}
+	}
+	if (what=='pickMinute'){
+	insert +='<div class="disp" id="display"><input type="radio" value=" am" name="ampm" checked onClick="amOrPm(this,0)">&nbsp;am&nbsp;-&nbsp;pm&nbsp;<input type="radio" value=" pm" name="ampm" onClick="amOrPm(this,0)">&nbsp;&nbsp;';
+	if(val)
+		insert +='<input type="checkbox" name="clockType" onClick="amOrPm(null,1);">&nbsp;24 h clock&nbsp;&nbsp;';
+	else
+		insert +='<input type="checkbox" name="clockType" onClick="amOrPm(null,0);" style="display:none;">';
+	
+	insert +='<input id="mm" class="btn" type="button" value="min -" onClick="minusOne()" title="subtract one minute...">&nbsp;&nbsp;<input id="mp" class="btn" type="button" value="min +" onClick="plusOne()" title="add one minute..."></div>';
+	insert +='</div><div id="helpSpan" class="help" onClick="this.style.display=\'none\';">Click the numbers to insert hours and minutes.<br><br>Use the radio buttons for toggling from am to pm; when doing so in 24 hours mode, this will toggle between 0 to 12 and 13 to 24 o\'clock.<br><br>Click somewhere in this area to hide help...</div>';
+	}
+	
+
+	return insert;
+	}
+
 function rewritePicker(what,val){
 for (var j=1;j<=12;j++){
 var newHour=j+val;
@@ -425,3 +465,11 @@ document.write(writePicker('pickMinute'));
 pickClockhand('pickHour','pickMinute');
 return '';
 }
+function writeAll(disable24hr){
+	document.write(writeDivs());
+	document.write(writePicker('pickHour'));
+	document.write(writePicker('pickMinute',disable24hr));
+	pickClockhand('pickHour','pickMinute');
+	return '';
+	}
+
