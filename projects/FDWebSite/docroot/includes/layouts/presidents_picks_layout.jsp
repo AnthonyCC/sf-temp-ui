@@ -181,35 +181,61 @@
 			<%--
 				Override the QB show panel function to make it look and act like how we want for ddpp
 			--%>
-			FD_QuickBuy.showPanelDDPP = function(deptId, catId, prdId, statusPlaceholderId) {
+			FD_QuickBuy.showPanelDDPP = function(deptId, catId, prdId, iatcNamespace, tracking) {
 				return function() {
-					var elementId= prdId+'_'+FD_QuickBuy._randomId(16);
+					var elementId= prdId+'_'+FD_QuickBuy._randomId(16), oStyle;
 					var ctPanel = new YAHOO.widget.Panel(elementId, {
 						fixedcenter: true, 
 						constraintoviewport: true, 
 						underlay: "matte", 
 						close: true, 
-						visible: true,
+						visible: false,
 						modal: true,
+						monitorresize: true,
 						draggable: false,
 						zIndex: '10'
 					});
 					var isWineDept = ("usq" == deptId);
 					
+					if(isWineDept) {
+						oStyle={
+							closeButton:'container-close_wine',
+							header:'hd_bg_wine'
+						};
+					} else {
+						oStyle=FD_QuickBuy.style;			
+					}
+					
 					ctPanel.setHeader( "&nbsp;" );
 
 					var winTitle = document.title.substring(14);
 
+					var uri = '/quickbuy/product.jsp?catId='+encodeURIComponent(catId)+'&amp;productId='+encodeURIComponent(prdId)+'&amp;fdsc.source=quickbuy&amp;refTitle='+escape(winTitle)+'&amp;referer='+escape(window.location.href)+'&amp;uid='+elementId;
+
+					if (tracking && tracking.source)
+						uri += "&amp;fdsc.source="+encodeURIComponent(tracking.source);
+
+					// store DOM ID
+					uri += '&amp;uid='+encodeURIComponent(elementId);
+
+					// include various codes for tracking purposes
+					uri = FD_QuickBuy._includeTrackingCodes(uri, tracking);
+					uri += '&amp;trkd=qb';
+					
+					// store master page URL and title for back-reference
+					uri += '&amp;refTitle='+encodeURIComponent(winTitle)+'&amp;referer='+encodeURIComponent(window.location.href);
+
 					var content = "";
-					var uri = '/quickbuy/product.jsp?catId='+catId+'&amp;productId='+prdId+'&amp;fdsc.source=quickbuy&amp;refTitle='+escape(winTitle)+'&amp;referer='+escape(window.location.href)+'&amp;uid='+elementId;
-					if (statusPlaceholderId)
-						uri += '&amp;statusPlaceholderId='+escape(statusPlaceholderId);
+					
+					if (iatcNamespace)
+						uri += '&amp;iatcNamespace='+escape(iatcNamespace);
 					content += '<div id="'+elementId+'_ctnt">\n';
 					content += '  <div id="'+elementId+'_overbox" class="overbox">\n';
 					content += '    <div id="'+elementId+'_nfeat" class="nfeat roundedbox"></div>\n';
 					content += '    <div id="'+elementId+'_errors" class="alerts roundedbox"></div>\n';
 					content += '  </div>\n';
-					content += '  <iframe id="'+elementId+'_frame" frameborder="0" src="'+uri+'" class="prodframe"></iframe>';
+					content += '<div class="quickbuy-loading">Loading product...</div>\n';		
+					content += '<iframe id="'+elementId+'_frame" frameborder="0" src="'+uri+'" class="prodframe" style="height:1px"></iframe>';
 					content += '</div>\n';
 					
 					ctPanel.setBody( content );
@@ -217,29 +243,23 @@
 					ctPanel.render(document.body);
 					
 					// override .yui-panel hidden setting
-					YAHOO.util.Dom.get(elementId).style.overflow = "hidden";
+					YAHOO.util.Dom.get(elementId).style.overflow = "visible";
 
 					YAHOO.util.Dom.addClass(elementId+'_c','quickbuy-dialog');
 					
-					if (isWineDept) {
-						YAHOO.util.Dom.addClass(ctPanel.header, 'hd_bg_wine');
-						YAHOO.util.Dom.addClass( FD_QuickBuy._getCloseButton(ctPanel.body), 'container-close_wine' );
-					} else {
-						//YAHOO.util.Dom.addClass(ctPanel.header, 'hd_bg_normal');
-						YAHOO.util.Dom.addClass(ctPanel.header, 'hd_bg_ddpp');
-						//YAHOO.util.Dom.addClass( FD_QuickBuy._getCloseButton(ctPanel.body), 'container-hd_bg_normal' );
-						YAHOO.util.Dom.addClass( FD_QuickBuy._getCloseButton(ctPanel.body), 'container-hd_bg_ddpp' );
-					}
+					YAHOO.util.Dom.addClass( ctPanel.header, oStyle.header );
+					YAHOO.util.Dom.addClass( FD_QuickBuy._getCloseButton(ctPanel.body), oStyle.closeButton );
+					
 					
 					ctPanel.hideEvent.subscribe(function(e){
 						YAHOO.util.Dom.get(elementId+'_overbox').style.visibility = "hidden";
-						<%-- destroy panel on close, this saves a lot of headache. is there any real benefit in not destroying? --%>
+
 						setTimeout(function() {
 							ctPanel.destroy();
 							if (document.quickbuyPanel) { document.quickbuyPanel = {}; } 
 						}, 0);
 						/* on panel close, it's either ATC or a simple close */
-						var statusElem = $jq('#'+statusPlaceholderId);
+						var statusElem = $jq('#'+iatcNamespace);
 						var prodAddCont = statusElem.closest('.prodAddFP');
 						var CTAButton = null;
 						//check for a closed panel (no ATC)
@@ -310,13 +330,13 @@
 				$jq('#ddpp_BNDdai_viewAll').corner('round 4px');
 
 				$jq('.ddpp_feat_prod').hover(function() {
-					//if (!$jq(this).find('.CTAButtonFP').data('usedCTA')) {
-						$jq(this).find('.prodAddFP').stop().animate({ height: '+=115', top: '85'}, 'fast');
-					//}
+					if (!$jq(this).find('.CTAButtonFP').data('usedCTA')) {
+						$jq(this).stop().find('.prodAddFP').animate({ height: '+=115', top: '85'}, 'fast');
+					}
 				}, function() {
-					//if (!$jq(this).find('.CTAButtonFP').data('usedCTA')) {
-						$jq(this).find('.prodAddFP').stop().animate({ height: '0', top: '200'}, 'fast');
-					//}
+					if (!$jq(this).find('.CTAButtonFP').data('usedCTA')) {
+						$jq(this).stop().find('.prodAddFP').animate({ height: '0', top: '200'}, 'fast');
+					}
 				});
 
 
