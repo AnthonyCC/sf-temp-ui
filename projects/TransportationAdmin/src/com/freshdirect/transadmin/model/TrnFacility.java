@@ -120,4 +120,9 @@ public class TrnFacility implements java.io.Serializable {
 		return true;
 	}
 
+	@Override
+	public String toString() {
+		return "Facility [code=" + name + "]";
+	}
+
 }
