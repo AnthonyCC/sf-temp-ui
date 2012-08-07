@@ -69,14 +69,16 @@ public class CancelDPControllerTag extends AbstractControllerTag {
 				crmManager.cancelDeliveryPass(dlvPass, agentModel, notes, cancelReason, orderAssigned);
 				currentUser.updateDlvPassInfo();
 				buffer = new StringBuffer(SystemMessageList.MSG_DLV_PASS_CANCELLED);
+				this.setSuccessPage("/includes/deliverypass/pass_history_usage.jsp?orderId="+orderAssigned+"&successMsg="+buffer.toString());
+//				this.setSuccessPage("/returns/issue_credit.jsp?orderId="+orderAssigned+"&successMsg="+buffer.toString());
 				//Load the delivery pass status from DB.
 			}
 			if(buffer==null) {
 				this.setSuccessPage("/main/delivery_pass.jsp");
 			}
-			else if("cancel_RTU_pass".equalsIgnoreCase(this.getActionName())) {
+			/*else if("cancel_RTU_pass".equalsIgnoreCase(this.getActionName())) {
 				this.setSuccessPage("/includes/deliverypass/pass_history_usage.jsp?successMsg="+buffer.toString());
-			}
+			}*/
 			pageContext.getSession().removeAttribute(DlvPassConstants.DLV_PASS_SESSION_ID);
 
 		}catch (FDResourceException e) {

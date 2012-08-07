@@ -14,6 +14,7 @@
 <%@ page import="com.freshdirect.deliverypass.EnumDlvPassCancelReason"%>
 <%@ page import="com.freshdirect.deliverypass.DeliveryPassModel"%>
 <%@ page import="com.freshdirect.deliverypass.EnumDlvPassStatus"%>
+<%@ page import="com.freshdirect.webapp.crm.security.*" %>
 
 
 <%@ taglib uri='logic' prefix='logic' %>
@@ -119,9 +120,11 @@ body {
 </script>
 <%
 	FDUserI	user = (FDSessionUser) session.getAttribute(SessionName.USER);
-	
+	String agentRole1 =null;
 %>
-
+<crm:GetCurrentAgent id="currentAgent">
+<% agentRole1 = currentAgent.getRole().getLdapRoleName(); %>
+</crm:GetCurrentAgent>
 <% boolean editable = false; %>
 <crm:GetLockedCase id="cm">
     <% if (cm!=null && cm.getCustomerPK()!=null) { 
@@ -409,9 +412,14 @@ String case_required = "<span class=\"cust_module_content_edit\">-Case required 
 <%
 	String successMsg = request.getParameter("successMsg");
 	if(request.getMethod().equals("GET")&&successMsg != null){
-
+	String orderId= request.getParameter("orderId");
+	if(null !=agentRole1 && CrmSecurityManager.hasAccessToPage(agentRole1,"issue_credit.jsp")){
 %>
-	<script language="JavaScript">
-		alert('<%= successMsg %>');
+	<script language="JavaScript">		
+		window.top.location.href = "/returns/issue_credit.jsp?orderId=<%=orderId%>&successMsg=<%=successMsg%>"; 
 	</script>
-<% } %>	
+<% } else{%>
+<script language="JavaScript">		
+		alert('<%= successMsg %>'); 
+	</script>
+<% } } %>	

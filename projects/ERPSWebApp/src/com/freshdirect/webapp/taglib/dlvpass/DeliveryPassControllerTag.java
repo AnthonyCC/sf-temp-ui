@@ -23,6 +23,7 @@ import com.freshdirect.framework.webapp.ActionError;
 import com.freshdirect.framework.webapp.ActionResult;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
+import com.freshdirect.webapp.crm.security.CrmSecurityManager;
 import com.freshdirect.webapp.taglib.AbstractControllerTag;
 import com.freshdirect.webapp.taglib.crm.CrmSession;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
@@ -104,19 +105,21 @@ public class DeliveryPassControllerTag extends AbstractControllerTag {
 			if ("cancel_pass".equalsIgnoreCase(this.getActionName())) {
 				crmManager.cancelDeliveryPass(this.dlvPass, agentModel, notes, cancelReason, orderAssigned);
 				//Load the delivery pass status from DB.
-				currentUser.updateDlvPassInfo();
+				currentUser.updateDlvPassInfo();				
+				buffer = new StringBuffer(SystemMessageList.MSG_DLV_PASS_CANCELLED);				
+			}
+		
+			if(buffer==null) {
+				this.setSuccessPage("/main/delivery_pass.jsp");
+			}
+			else {
+				this.setSuccessPage("/main/delivery_pass.jsp?successMsg="+buffer.toString());
 				//[APPDEV-2309]-taking the user to issue credits page after successfully canceling the delivery pass.
-				buffer = new StringBuffer(SystemMessageList.MSG_DLV_PASS_CANCELLED);
-				this.setSuccessPage("/returns/issue_credit.jsp?orderId="+orderAssigned+"&successMsg="+buffer.toString());
-			}
-			if(!"cancel_pass".equalsIgnoreCase(this.getActionName())){
-				if(buffer==null) {
-					this.setSuccessPage("/main/delivery_pass.jsp");
-				}
-				else {
-					this.setSuccessPage("/main/delivery_pass.jsp?successMsg="+buffer.toString());
+				if("cancel_pass".equalsIgnoreCase(this.getActionName()) && CrmSecurityManager.hasAccessToPage(agentModel.getRole().getLdapRoleName(),"issue_credit.jsp")){
+					this.setSuccessPage("/returns/issue_credit.jsp?orderId="+orderAssigned+"&successMsg="+buffer.toString());
 				}
 			}
+
 			pageContext.getSession().removeAttribute(DlvPassConstants.DLV_PASS_SESSION_ID);
 
 		}catch(CrmAuthorizationException e){
