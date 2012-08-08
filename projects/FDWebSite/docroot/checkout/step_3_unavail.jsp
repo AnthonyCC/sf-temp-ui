@@ -37,20 +37,20 @@ Date day = null;
 if(true ){//if(isEBTBlocked ){
 %>
 <table width="<%=W_CHECKOUT_STEP_2_UNAVAIL_TOTAL%>" cellpadding="0" cellspacing="0" border="0">
-<tr><td><span class="title18">Some Items are not eligible to be payed by EBT</span></td></tr>
+<tr><td><span class="title18">Some items are ineligible with EBT Card payment</span></td></tr>
 <tr><td><img src="/media_stat/images/layout/clear.gif" width="1" height="3" border="0"><br>
 <img src="/media_stat/images/layout/ff9933.gif" width="<%=W_CHECKOUT_STEP_2_UNAVAIL_TOTAL%>" height="1" border="0"><br>
 <img src="/media_stat/images/layout/clear.gif" width="1" height="6" border="0"><br>
 </td></tr>
 <tr><td class="text11">
-		We're sorry, but some items are not available for payment through EBT card.
+		We're sorry, but some items are restricted for payment with EBT card.
 		If you choose to continue, the items below will be removed from your cart.
-		<b>Everything else in your cart is eligible.</b>
+		<b>Everything else in your cart is eligible for EBT card payment.</b>
 		
 		<br><br>
 			
 		<font class="text12bold" color="#CC3300">
-			All items will remain in your cart until you click below to Continue Checkout.
+			All items will remain in your cart until you click below to continue Checkout.
 		</font>
 		
 		<br><img src="/media_stat/images/layout/clear.gif" width="1" height="4">
@@ -62,7 +62,7 @@ if(true ){//if(isEBTBlocked ){
 
 <table BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="<%=W_CHECKOUT_STEP_2_UNAVAIL_TOTAL%>">
 <tr VALIGN="TOP">
-<td WIDTH="<%=(W_CHECKOUT_STEP_2_UNAVAIL_TOTAL-18)/2%>" COLSPAN="2" CLASS="text12bold">Ineligible items to be payed by EBT<br></td>
+<td WIDTH="<%=(W_CHECKOUT_STEP_2_UNAVAIL_TOTAL-18)/2%>" COLSPAN="2" CLASS="text12bold">Ineligible items restricted by EBT payment<br></td>
 <td WIDTH="18"><br></td>
 <!-- <td WIDTH="<%=(W_CHECKOUT_STEP_2_UNAVAIL_TOTAL-18)/2%>" COLSPAN="2" CLASS="text12bold">Details<br></td> -->
 </tr>

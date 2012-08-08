@@ -218,7 +218,7 @@ public interface MessageCodes {
     public final static String MSG_ACCEPT_DP_TERMSANDCONDITIONS_NOADDRESS 					= "Delivery Pass Terms And Condition Acceptance Successfully. Address not found in cart";
     
     public static final String ERR_EBT_RESTRICTED = "ERR_EBT_RESTRICTED";
-    public final static String MSG_EBT_PRODUCT_NOT_ALLOWED 	= "Some of the products are not eligible to purchase with EBT Payment";
+    public final static String MSG_EBT_PRODUCT_NOT_ALLOWED 	= "Some items are ineligible with EBT Card payment";
     
     public static class ErrorMessage {
         public final static String PASS_THROUGH = "PASS_THROUGH";
