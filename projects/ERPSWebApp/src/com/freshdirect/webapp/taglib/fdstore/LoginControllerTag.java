@@ -182,7 +182,7 @@ public class LoginControllerTag extends AbstractControllerTag {
         	  session.removeAttribute("TICK_TIE_CUSTOMER");
           }
 
-          CmRegistrationTag.setPendingRegistrationEvent(session);
+          CmRegistrationTag.setPendingLoginEvent(session);
           
         } catch (FDResourceException fdre) {
             LOGGER.warn("Resource error during authentication", fdre);

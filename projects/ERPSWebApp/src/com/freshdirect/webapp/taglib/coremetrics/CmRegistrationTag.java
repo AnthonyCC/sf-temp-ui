@@ -17,6 +17,7 @@ public class CmRegistrationTag extends AbstractCmTag {
 	private static final Logger LOGGER = LoggerFactory.getInstance(CmRegistrationTag.class);
 	private static final String REGISTRATION_TAG_FS = "cmCreateRegistrationTag(%s,%s,%s,%s,%s,%s,%s);";
 	private static final String PENDING_REGISTRATION_EVENT = "pendingCoremetricsRegistrationEvent";
+	private static final String PENDING_LOGIN_EVENT = "pendingCoremetricsLoginEvent";
 	private static final String REGISTRATION_LOCATION = "coremetricsRegistrationLocation";
 	private static final String REGISTRATION_ORIG_ZIP_CODE = "coremetricsRegistrationOrigZipCode";
 	
@@ -27,6 +28,10 @@ public class CmRegistrationTag extends AbstractCmTag {
 		session.setAttribute(PENDING_REGISTRATION_EVENT, true);
 	}
 
+	public static void setPendingLoginEvent(HttpSession session){
+		session.setAttribute(PENDING_LOGIN_EVENT, true);
+	}
+	
 	public static void setRegistrationLocation(HttpSession session, String location){
 		session.setAttribute(REGISTRATION_LOCATION, location);
 	}
@@ -39,12 +44,16 @@ public class CmRegistrationTag extends AbstractCmTag {
 	protected String getTagJs() throws SkipTagException {
 
 		HttpSession session = ((PageContext) getJspContext()).getSession();
-		Boolean pendingEventAttr = (Boolean) session.getAttribute(PENDING_REGISTRATION_EVENT);
+		boolean pendingRegistration = Boolean.TRUE.equals(session.getAttribute(PENDING_REGISTRATION_EVENT));
+		boolean pendingLogin = Boolean.TRUE.equals(session.getAttribute(PENDING_LOGIN_EVENT));
 
-		if (force || (pendingEventAttr!=null && pendingEventAttr.equals(true))){
+		if (force || pendingRegistration || pendingLogin){
+			
 			session.removeAttribute(PENDING_REGISTRATION_EVENT);
+			session.removeAttribute(PENDING_LOGIN_EVENT);
 			
 			builder.setUser((FDUserI) session.getAttribute(SessionName.USER));
+			
 			builder.setLocation((String)session.getAttribute(REGISTRATION_LOCATION));
 			session.removeAttribute(REGISTRATION_LOCATION);
 			
@@ -70,6 +79,7 @@ public class CmRegistrationTag extends AbstractCmTag {
 		}		
 	}
 
+	
 	public void setForce(boolean force) {
 		this.force = force;
 	}
