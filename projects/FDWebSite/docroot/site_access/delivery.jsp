@@ -31,11 +31,18 @@ String diff_zip_url = response.encodeURL("/about/index.jsp?siteAccessPage=aboutu
 			function resizeFrame() {
 				setFrameHeightSL('signupframe', 600);
 				setFrameWidthSL('signupframe',750);
-				window.parent.document.getElementById('MB_window').style.left=200 + 'px';
-				window.parent.document.getElementById('MB_window').style.width=780 + 'px';
+				if(navigator.userAgent.indexOf('MSIE 9') > 0) {
+					window.parent.document.getElementById('MB_window').style.left=200 + 'px';
+					window.parent.document.getElementById('MB_window').style.width=780 + 'px';
+				} else {
+					window.parent['Modalbox'].resizeToContent();
+					window.parent['Modalbox']._setWidthAndPosition();
+				}
 			}
 			
 			window.onload = resizeFrame();
+			
+			
 		</script>
 	<%
 		successPage = "#\" onclick=\"window.top.location=\'/index.jsp\'";

@@ -29,8 +29,13 @@ String loginlink = "/login/login_main.jsp";
 			function resizeFrame() {
 				setFrameHeightSL('signupframe', 600);
 				setFrameWidthSL('signupframe',750);
-				window.parent.document.getElementById('MB_window').style.left=200 + 'px';
-				window.parent.document.getElementById('MB_window').style.width=780 + 'px';
+				if(navigator.userAgent.indexOf('MSIE 9') > 0) {
+					window.parent.document.getElementById('MB_window').style.left=200 + 'px';
+					window.parent.document.getElementById('MB_window').style.width=780 + 'px';
+				} else {
+					window.parent['Modalbox'].resizeToContent();
+					window.parent['Modalbox']._setWidthAndPosition();
+				}	
 			}
 			
 			//window.onload = resizeFrame();
