@@ -8,6 +8,10 @@
     <tmpl:put name='title' direct='true'>FreshDirect - Help - Customer Agreement</tmpl:put>
 
     <tmpl:put name='content' direct='true'>
+	
+	<%
+		final int W_USER_AGREEMENT_TOTAL = 970;
+		%>
 
 <%@ include file="/shared/includes/registration/i_user_agreement.jspf"%>	
 	
