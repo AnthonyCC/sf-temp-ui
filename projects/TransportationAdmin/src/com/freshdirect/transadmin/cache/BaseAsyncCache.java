@@ -58,8 +58,8 @@ public abstract class BaseAsyncCache<K, V> {
 	    				   try {
 	    					   LOGGER.info("START TO LOAD CACHE "+getCacheIdentifier());
 	    					   lastRefresh = System.currentTimeMillis();
-	    					   throw new AsyncCacheException(AsyncCacheExceptionType.LOAD_BLOCKED);
-	    					   //result = loadData(key);
+	    					   //throw new AsyncCacheException(AsyncCacheExceptionType.LOAD_BLOCKED);
+	    					   result = loadData(key);
 						   } catch (AsyncCacheException e) {
 								Map<K, V> fileStoreBackup = readFromStore();
 								if(fileStoreBackup != null) {
