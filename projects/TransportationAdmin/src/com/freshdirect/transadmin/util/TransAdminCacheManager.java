@@ -90,7 +90,7 @@ public class TransAdminCacheManager {
 				} else {
 					return loadAllTruckData();
 				}
-			} catch (SapException e) {
+			} catch (Exception e) {
 				LOGGER.error("Could not load truck data due to: ", e);
 				throw new AsyncCacheException(e, AsyncCacheExceptionType.LOAD_FAILED);
 			}
@@ -114,7 +114,7 @@ public class TransAdminCacheManager {
 				} else {
 					return loadAllRouteData(requestParam);		
 				}
-			} catch (SapException e) {
+			} catch (Exception e) {
 				LOGGER.error("Could not load route data from SAP: ", e);
 				throw new AsyncCacheException(e, AsyncCacheExceptionType.LOAD_FAILED);
 			}
