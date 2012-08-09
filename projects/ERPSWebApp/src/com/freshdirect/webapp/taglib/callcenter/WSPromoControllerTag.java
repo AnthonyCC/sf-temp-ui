@@ -504,7 +504,10 @@ public class WSPromoControllerTag extends AbstractControllerTag {
 			Date today = new Date();
 			promotion.setPromotionCode("WS_"+today.getTime());
 			long E4 = Math.round(Math.random()*1000); //Unique counter
-			promotion.setName("WS_"+effectiveDate+"_Zone"+zone+"_"+E4+"_$"+discount);
+			
+			String section1 = "X".equalsIgnoreCase(radius)?"RADIUS":"STATIC";
+			promotion.setName("WS_"+effectiveDate+"_Zone"+zone+"_"+section1+"_"+E4+"_$"+discount);
+			
 			promotion.setPromotionType(EnumPromotionType.HEADER.getName());
 			promotion.setOfferType(EnumOfferType.WINDOW_STEERING.getName());
 			promotion.setCombineOffer(true);
@@ -587,7 +590,8 @@ public class WSPromoControllerTag extends AbstractControllerTag {
 			}
 			
 			long E4 = Math.round(Math.random()*1000); //Unique counter
-			promotion.setName("WS_"+effectiveDate+"_Zone"+zone+"_"+E4+"_$"+discount);
+			String section1 = "X".equalsIgnoreCase(radius)?"RADIUS":"STATIC";
+			promotion.setName("WS_"+effectiveDate+"_Zone"+zone+"_"+section1+"_"+E4+"_$"+discount);
 			promotion.setDescription(formatPromoDescription(PROMO_DESCRIPTION, discount));
 			promotion.setOfferDesc(formatAudienceDescription(OFFER_DESCRIPTION, discount, zone, CCFormatter.defaultFormatDate(startDate), startTime, endTime));
 			promotion.setAudienceDesc(formatOfferDescription(AUDIENCE_DESCRIPTION, zone, CCFormatter.defaultFormatDate(startDate), startTime, endTime));
