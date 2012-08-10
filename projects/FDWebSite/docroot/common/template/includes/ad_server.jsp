@@ -326,8 +326,8 @@
 					}
 				}
 			}
-			if(user.getShoppingCart()!=null && user.getShoppingCart().getDeliveryAddress()!=null){
-				queryString.addParam("state", NVL.apply(user.getShoppingCart().getDeliveryAddress().getState(), ""));
+			if(user.getDefaultState()!=null){
+				queryString.addParam("state", user.getDefaultState());
 			}
 			if(user.isEbtAccepted()){
 				queryString.addParam("ebt_accepted", "true");

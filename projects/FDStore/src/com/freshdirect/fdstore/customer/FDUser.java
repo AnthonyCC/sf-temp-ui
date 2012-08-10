@@ -97,6 +97,7 @@ import com.freshdirect.fdstore.util.SiteFeatureHelper;
 import com.freshdirect.fdstore.zone.FDZoneInfoManager;
 import com.freshdirect.framework.core.ModelSupport;
 import com.freshdirect.framework.core.PrimaryKey;
+import com.freshdirect.framework.util.NVL;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.giftcard.EnumGiftCardType;
 import com.freshdirect.giftcard.ErpGCDlvInformationHolder;
@@ -1020,6 +1021,22 @@ public class FDUser extends ModelSupport implements FDUserI {
 		}
 
 		return county;
+	}
+	
+	public String getDefaultState() throws FDResourceException{
+		String state = null;		
+
+		//check address on cart, recognize user handles all the complex logic with defaultAddresses
+		if(this.shoppingCart != null && this.shoppingCart.getDeliveryAddress()!=null){
+			state = NVL.apply(this.shoppingCart.getDeliveryAddress().getState(), "");
+		}
+
+		//if we got nothing so far return state of zipcode on zipcheck
+		if(this.getZipCode() != null && (state == null || "".equals(state))){
+			state = FDDeliveryManager.getInstance().lookupStateByZip(this.getZipCode());
+		}
+
+		return state;
 	}
 
 	public void setActive(boolean active) {

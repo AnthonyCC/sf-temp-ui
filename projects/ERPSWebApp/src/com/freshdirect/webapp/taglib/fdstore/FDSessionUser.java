@@ -717,6 +717,10 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 	public String getDefaultCounty() throws FDResourceException{
 		return (user != null) ? user.getDefaultCounty() : null;
 	}
+	
+	public String getDefaultState() throws FDResourceException{
+		return (user != null) ? user.getDefaultState() : null;
+	}
 
 	public boolean isActive() {
 		return user.isActive();

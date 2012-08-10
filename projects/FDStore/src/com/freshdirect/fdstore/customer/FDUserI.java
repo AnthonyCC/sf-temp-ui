@@ -235,6 +235,8 @@ public interface FDUserI extends java.io.Serializable {
 
 
 	public String getDefaultCounty() throws FDResourceException;
+	
+	public String getDefaultState() throws FDResourceException;
 
 	public boolean isActive();
 
