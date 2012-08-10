@@ -266,7 +266,7 @@ public class SiteAccessControllerTag extends com.freshdirect.framework.webapp.Bo
 						setRequestedServiceTypeDlvStatus(serviceResult.getServiceStatus(this.serviceType));
 					
 					if (result.isSuccess()) {
-						newSession();
+						//newSession();
 						
 						EnumDeliveryStatus dlvStatus = serviceResult.getServiceStatus(this.serviceType);
 							

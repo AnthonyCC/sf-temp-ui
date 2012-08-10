@@ -31,10 +31,8 @@ String[] checkErrorType = {"technical_difficulty", EnumUserInfoName.DLV_NOT_IN_Z
 <%
     FDUserI _user = (FDUserI) session.getAttribute(SessionName.USER);
     FDIdentity _identity = null;
-	ErpCustomerInfoModel cm = null;
     if (_user != null){
         _identity = _user.getIdentity();
-		cm = FDCustomerFactory.getErpCustomerInfo(_identity);
     }else {
         throw new JspException("Missing Identity.");
     }
@@ -163,7 +161,11 @@ String[] checkErrorType = {"technical_difficulty", EnumUserInfoName.DLV_NOT_IN_Z
         }
         if (request.getParameter(EnumUserInfoName.DLV_ZIPCODE.getCode()) !=null) {
             fldZipCode =  request.getParameter(EnumUserInfoName.DLV_ZIPCODE.getCode());
-        }
+        } else {
+			if(prefillname) {
+				fldZipCode = _user.getZipCode();
+			}
+		}
         if (request.getParameter(EnumUserInfoName.DLV_HOME_PHONE.getCode()) !=null) {
             fldHomePhone =  request.getParameter(EnumUserInfoName.DLV_HOME_PHONE.getCode());
         }
@@ -176,13 +178,13 @@ String[] checkErrorType = {"technical_difficulty", EnumUserInfoName.DLV_NOT_IN_Z
             fldLastName =  request.getParameter(EnumUserInfoName.DLV_LAST_NAME.getCode());
         } else {
 			if(prefillname)
-				fldLastName = cm.getLastName();
+				fldLastName = _customerModel.getLastName();
 		}
         if (request.getParameter(EnumUserInfoName.DLV_FIRST_NAME.getCode()) !=null) {
             fldFirstName =  request.getParameter(EnumUserInfoName.DLV_FIRST_NAME.getCode());
         } else {
 			if(prefillname)
-				fldFirstName = cm.getFirstName();
+				fldFirstName = _customerModel.getFirstName();
 		}
         if (request.getParameter(EnumUserInfoName.DLV_DELIVERY_INSTRUCTIONS.getCode()) !=null) {
            fldDlvInstructions =  request.getParameter(EnumUserInfoName.DLV_DELIVERY_INSTRUCTIONS.getCode());

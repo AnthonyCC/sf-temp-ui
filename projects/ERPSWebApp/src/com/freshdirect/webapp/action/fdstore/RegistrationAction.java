@@ -381,6 +381,11 @@ public class RegistrationAction extends WebActionSupport {
 					erpAddress.setFirstName(customerInfo.getFirstName());
 					erpAddress.setLastName(customerInfo.getLastName());
 					erpAddress.setPhone(customerInfo.getHomePhone());
+					if("true".equals(request.getParameter("LITESIGNUP"))) {
+						if(user.getSelectedServiceType().getName().equals(EnumServiceType.CORPORATE.getName())) {
+							erpAddress.setPhone(new PhoneNumber(NVL.apply(request.getParameter("busphone"), "").trim()));
+						}
+					}
 					erpAddress.setAddressInfo(address.getAddressInfo());
 					erpAddress.setServiceType(serviceType);
 					erpCustomer.addShipToAddress(erpAddress);
