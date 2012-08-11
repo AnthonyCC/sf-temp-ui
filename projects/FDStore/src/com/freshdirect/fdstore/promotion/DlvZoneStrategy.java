@@ -117,17 +117,19 @@ public class DlvZoneStrategy implements PromotionStrategyI {
 			PromotionDlvTimeSlot promoDlvTimeSlot = iterator.next();
 			String[] windowType = promoDlvTimeSlot.getWindowTypes();
 			double windowDuration = TimeOfDay.getDurationAsMinutes(dlvStartTimeOfDay, dlvEndTimeOfDay);
-			if(hasSteeringRadius && windowType != null && windowType.length > 0) {	
-				for(int i = 0;i < windowType.length; i++) {
-					if(!"ALL".equalsIgnoreCase(windowType[i].trim())){
-						double d = Double.valueOf(windowType[i].trim()).doubleValue();
-						if(windowDuration == d){
+			if(windowType != null && windowType.length > 0) {
+				if(hasSteeringRadius){
+					for(int i = 0;i < windowType.length; i++) {
+						if(!"ALL".equalsIgnoreCase(windowType[i].trim())){
+							double d = Double.valueOf(windowType[i].trim()).doubleValue();
+							if(windowDuration == d){
+								isOK = true;
+								break;
+							}
+						} else {
 							isOK = true;
 							break;
 						}
-					} else {
-						isOK = true;
-						break;
 					}
 				}
 			} else {
@@ -154,17 +156,19 @@ public class DlvZoneStrategy implements PromotionStrategyI {
 				PromotionDlvTimeSlot promoDlvTimeSlot = iterator.next();
 				String[] windowType = promoDlvTimeSlot.getWindowTypes();
 				double windowDuration = TimeOfDay.getDurationAsMinutes(dlvStartTimeOfDay, dlvEndTimeOfDay);
-				if(dlvTimeslotModel.hasSteeringRadius() && windowType != null && windowType.length > 0) {	
-					for(int i = 0;i < windowType.length; i++) {
-						if(!"ALL".equalsIgnoreCase(windowType[i].trim())){
-							double d = Double.valueOf(windowType[i].trim()).doubleValue();
-							if(windowDuration == d){
+				if(windowType != null && windowType.length > 0) {
+					if(dlvTimeslotModel.hasSteeringRadius()){
+						for(int i = 0;i < windowType.length; i++) {
+							if(!"ALL".equalsIgnoreCase(windowType[i].trim())){
+								double d = Double.valueOf(windowType[i].trim()).doubleValue();
+								if(windowDuration == d){
+									isOK = true;
+									break;
+								}
+							} else {
 								isOK = true;
 								break;
 							}
-						} else {
-							isOK = true;
-							break;
 						}
 					}
 				} else {

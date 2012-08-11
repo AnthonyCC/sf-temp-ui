@@ -113,6 +113,10 @@ public class ErpOrderHistory implements OrderHistoryI {
 		return ErpOrderHistoryUtil.getUnSettledEBTOrderCount(erpRegSaleInfos);
 	}
 	
+	public int getUnSettledEBTOrderCount(String currSaleId){
+		return ErpOrderHistoryUtil.getUnSettledEBTOrderCount(erpRegSaleInfos,currSaleId);
+	}
+	
 	public String toString() {
 		StringBuffer buf = new StringBuffer();
 		buf.append("ErpOrderHistory version $$$$$$$$$$$$$$$$$$$"+"\n");

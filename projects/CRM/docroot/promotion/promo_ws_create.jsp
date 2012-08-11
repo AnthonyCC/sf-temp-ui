@@ -442,7 +442,7 @@ function numbersonly(myfield, e, dec)
 				</tr>
 				<tr>
 					<td width="3%">&nbsp;</td>
-					<td><span>Radius&nbsp;&nbsp;<input onclick="toggleRadius()" type="checkbox" id="radius" name="radius" value="<%= (radius == null || "".equalsIgnoreCase(radius))  ? "X" : radius %>" <%= radiusChecked %>/></span></td>
+					<td><span>Radius&nbsp;&nbsp;<input onclick="toggleRadius()" type="checkbox" id="radius" name="radius" value="<%= (radius == null || "".equalsIgnoreCase(radius))  ? "X" : radius %>" <%= radiusChecked %> disabled="disabled"/></span></td>
 					
 					<script language="javascript">
 					
@@ -667,9 +667,10 @@ function numbersonly(myfield, e, dec)
 						 <% for(int i=0;i<cohorts.size();i++){
 								String checked = "";
 								if(cohortList.isEmpty() || cohortList.size() == 0) {
-									if(!cohorts.get(i).equals("C3") && !cohorts.get(i).equals("C4")) {
+									/*if(!cohorts.get(i).equals("C3") && !cohorts.get(i).equals("C4")) {
 										checked = "checked";
-									}
+									}*/
+									checked = "checked";
 								} else {
 									if(cohortList.contains(cohorts.get(i))) {
 										checked = "checked";

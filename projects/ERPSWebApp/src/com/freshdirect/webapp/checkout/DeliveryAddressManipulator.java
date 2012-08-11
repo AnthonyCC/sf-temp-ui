@@ -45,6 +45,7 @@ import com.freshdirect.fdstore.customer.FDCustomerFactory;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDDeliveryTimeslotModel;
 import com.freshdirect.fdstore.customer.FDIdentity;
+import com.freshdirect.fdstore.customer.FDModifyCartModel;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.promotion.PromotionI;
 import com.freshdirect.fdstore.standingorders.FDStandingOrder;
@@ -288,11 +289,11 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 		}
 	
 		AddressModel scrubbedAddress = validator.getScrubbedAddress(); // get 'normalized' address
-		DlvServiceSelectionResult serviceResult =FDDeliveryManager.getInstance().checkZipCode(scrubbedAddress.getZipCode());
-		boolean isEBTAccepted = null !=serviceResult ? serviceResult.isEbtAccepted():false;
+//		DlvServiceSelectionResult serviceResult =FDDeliveryManager.getInstance().checkZipCode(scrubbedAddress.getZipCode());
+		
 		if (validator.isAddressDeliverable()) {
 			FDSessionUser user = (FDSessionUser) session.getAttribute(SessionName.USER);
-			isEBTAccepted = isEBTAccepted && (user.getOrderHistory().getUnSettledEBTOrderCount()<=0);
+			checkAndSetEbtAccepted(scrubbedAddress.getZipCode(), user);
 			if (user.isPickupOnly() && user.getOrderHistory().getValidOrderCount()==0) {
 				//
 				// now eligible for home/corporate delivery and still not placed an order.
@@ -301,7 +302,7 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 				//Added the following line for zone pricing to keep user service type up-to-date.
 				user.setZPServiceType(scrubbedAddress.getServiceType());
 				user.setZipCode(scrubbedAddress.getZipCode());
-				user.setEbtAccepted(isEBTAccepted);
+//				user.setEbtAccepted(isEBTAccepted);
 				FDCustomerManager.storeUser(user.getUser());
 				session.setAttribute(SessionName.USER, user);
 			}else {
@@ -312,7 +313,7 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 					//Added the following line for zone pricing to keep user service type up-to-date.
 					user.setZPServiceType(scrubbedAddress.getServiceType());
 					user.setZipCode(scrubbedAddress.getZipCode());
-					user.setEbtAccepted(isEBTAccepted);
+//					user.setEbtAccepted(isEBTAccepted);
 					FDCustomerManager.storeUser(user.getUser());
 					session.setAttribute(SessionName.USER, user);
 				}
@@ -336,6 +337,26 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 		*/
 
 		return erpAddress;
+	}
+
+
+
+	private void checkAndSetEbtAccepted(String zipCode, FDUserI user)
+			throws FDResourceException {
+		if(null != zipCode){
+			DlvServiceSelectionResult serviceResult =FDDeliveryManager.getInstance().checkZipCode(zipCode);
+			boolean isEBTAccepted = null !=serviceResult ? serviceResult.isEbtAccepted():false;
+			if(isEBTAccepted){
+				FDCartModel cart = user.getShoppingCart();
+				if(cart instanceof FDModifyCartModel){
+					String orgSaleId =((FDModifyCartModel) cart).getOriginalOrder().getErpSalesId();
+					isEBTAccepted = isEBTAccepted && (user.getOrderHistory().getUnSettledEBTOrderCount(orgSaleId)<1);
+				}else{
+					isEBTAccepted = isEBTAccepted && (user.getOrderHistory().getUnSettledEBTOrderCount()<1);
+				}
+			}
+			user.setEbtAccepted(isEBTAccepted);
+		}
 	}
 
 	/**
@@ -449,9 +470,9 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 		}
 
 		AddressModel address = AddressUtil.scrubAddress( shippingAddress, result );
-		DlvServiceSelectionResult serviceResult =FDDeliveryManager.getInstance().checkZipCode(address.getZipCode());
-		boolean isEBTAccepted = null !=serviceResult ? (serviceResult.isEbtAccepted() && (user.getOrderHistory().getUnSettledEBTOrderCount()<=0)):false;
-		user.setEbtAccepted(isEBTAccepted);
+//		DlvServiceSelectionResult serviceResult =FDDeliveryManager.getInstance().checkZipCode(address.getZipCode());
+		/*boolean isEBTAccepted = null !=serviceResult ? (serviceResult.isEbtAccepted() && (user.getOrderHistory().getUnSettledEBTOrderCount()<=0)):false;
+		user.setEbtAccepted(isEBTAccepted);*/
 		// if it is a Hamptons address without the altContactNumber have user
 		// edit and provide it.
 		/*
@@ -713,13 +734,14 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 	 * @return
 	 */
 	private FDUserI setDeliveryAddressInternal(ErpAddressModel address,
-			DlvZoneInfoModel zoneInfo, boolean setServiceType) {
+			DlvZoneInfoModel zoneInfo, boolean setServiceType) throws FDResourceException{
 		final FDCartModel cart = getCart();
 		
 		cart.setZoneInfo( zoneInfo );
 		cart.setDeliveryAddress( address );
 
 		final FDUserI user = this.getUser();
+		checkAndSetEbtAccepted(address.getZipCode(), user);
 
 		// store service type except for depot locations
 		if (setServiceType)
@@ -729,7 +751,7 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 		return user;
 	}
 
-	private void setSODeliveryAddress(ErpAddressModel address, DlvZoneInfoModel zoneInfo, String pk) {
+	private void setSODeliveryAddress(ErpAddressModel address, DlvZoneInfoModel zoneInfo, String pk) throws FDResourceException{
 		setDeliveryAddressInternal(address, zoneInfo, true);
 		
 		FDStandingOrder so = getUser().getCurrentStandingOrder();

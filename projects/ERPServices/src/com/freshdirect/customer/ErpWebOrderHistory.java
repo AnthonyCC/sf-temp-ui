@@ -164,4 +164,9 @@ public class ErpWebOrderHistory implements OrderHistoryI {
 	public int getUnSettledEBTOrderCount(){
 		return ((Integer)orderHistoryInfo.get(UNSETTLED_EBT_ORDER_COUNT)).intValue();
 	}
+	
+	public int getUnSettledEBTOrderCount(String currSaleId){
+		//TODO: Need to fix this, if somebody wants to use it.
+		return 0;
+	}
 }
