@@ -47,6 +47,9 @@ public class ErpAddressModel extends ContactAddressModel {
 
 	//This field is used for storing specific service type when service type is WEB.
 	private EnumWebServiceType webServiceType;
+	
+	//This is a non-persistent field.
+	private boolean isEbtAccepted;
 	/**
 	 * Default constructor.
 	 */
@@ -295,6 +298,14 @@ public class ErpAddressModel extends ContactAddressModel {
 			sb.append(getApartment());
 		}
 		return sb.toString();
+	}
+
+	public boolean isEbtAccepted() {
+		return isEbtAccepted;
+	}
+
+	public void setEbtAccepted(boolean isEbtAccepted) {
+		this.isEbtAccepted = isEbtAccepted;
 	}
 
 }
