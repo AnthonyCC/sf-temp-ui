@@ -29,6 +29,7 @@ public class HandOffBatchRoute extends RouteModel implements IHandOffBatchRoute 
 		this.setRoutingRouteId(refModel.getRoutingRouteId());
 		this.setMaxRunTime(refModel.getMaxRunTime());
 		this.setPreferredRunTime(refModel.getPreferredRunTime());
+		this.setRoadNetRouteId(refModel.getRoadNetRouteId());
 	}
 	
 	public HandOffBatchRoute() {

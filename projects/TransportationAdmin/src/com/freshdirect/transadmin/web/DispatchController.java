@@ -1761,7 +1761,12 @@ public class DispatchController extends AbstractMultiActionController {
 								schedulerId.setRegionId(RoutingServicesProperties.getDefaultTruckRegion());
 
 								String sessionId = engineProxy.retrieveRoutingSession(schedulerId, route.getSessionName());
-								route.setDrivingDirection(proxy.buildDriverDirections(routingRouteId, sessionId, schedulerId.getRegionId()));
+								
+								if(route.getRoadNetRouteId()!=null)
+									route.setDrivingDirection(proxy.buildDriverDirections(route.getRoadNetRouteId(), sessionId, schedulerId.getRegionId()));
+								else
+									route.setDrivingDirection(proxy.buildDriverDirections(routingRouteId, sessionId, schedulerId.getRegionId()));
+								
 								Object[] _stops = route.getStops().toArray();								
 								IRoutingStopModel _nextStop = null;
 
@@ -1857,7 +1862,10 @@ public class DispatchController extends AbstractMultiActionController {
 					schedulerId.setRegionId(RoutingServicesProperties.getDefaultTruckRegion());
 							
 					String sessionId = engineProxy.retrieveRoutingSession(schedulerId, route.getSessionName());
-					route.setDrivingDirection(proxy.buildDriverDirections(_routeId, sessionId, schedulerId.getRegionId()));
+					if(route.getRoadNetRouteId()!=null)
+						route.setDrivingDirection(proxy.buildDriverDirections(route.getRoadNetRouteId(), sessionId, schedulerId.getRegionId()));
+					else
+						route.setDrivingDirection(proxy.buildDriverDirections(_routeId, sessionId, schedulerId.getRegionId()));
 					result.put(_routeId, route);
 				} else {
 					result.put(_routeId, null);

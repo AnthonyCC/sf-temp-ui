@@ -34,6 +34,7 @@ public class RouteModel extends BaseModel implements IRouteModel {
 		
 	private RoutingTimeOfDay dispatchTime;	
 	private int dispatchSequence;
+	private String roadNetRouteId;
 	
 	public void copyWaveProperties(IWaveInstance waveInstance) {
 		this.setMaxRunTime(waveInstance.getMaxRunTime());
@@ -205,5 +206,14 @@ public class RouteModel extends BaseModel implements IRouteModel {
 		}
 		buf.append("####################################################################################################\n\n");*/
 		return buf.toString();
+	}
+
+	
+	public String getRoadNetRouteId() {
+		return roadNetRouteId;
+	}
+	
+	public void setRoadNetRouteId(String roadNetRouteId) {
+		this.roadNetRouteId = roadNetRouteId;
 	}
 }
