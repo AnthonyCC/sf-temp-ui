@@ -12,6 +12,7 @@
 <%@ page import="java.text.DateFormat"%>
 <%@ page import="java.text.SimpleDateFormat"%>
 <%@ page import="java.text.DecimalFormat"%>
+<%@ page import="com.freshdirect.webapp.taglib.callcenter.WSPromoControllerTag"%>
 <%
 	//fetch profiles
 	Map profileAttributeNames = FDCustomerManager.loadProfileAttributeNames();
@@ -94,6 +95,10 @@ function numbersonly(myfield, e, dec)
 	String redeemLimit = request.getParameter("redeemlimit");
 	String radius = request.getParameter("radius");
 	
+	Enumeration paramNames = request.getParameterNames();
+	
+	List<FDPromotionAttributeParam> attrList = new ArrayList<FDPromotionAttributeParam>();
+	attrList = WSPromoControllerTag.getAttributeParamList(request);	
 
 	String deliveryDayType = request.getParameter("deliveryDayType");
 	EnumDeliveryOption dlvOption = EnumDeliveryOption.getEnum(deliveryDayType);
@@ -137,7 +142,7 @@ function numbersonly(myfield, e, dec)
 	String f_displayDate = CCFormatter.formatDateMonth(effectiveDate);
 	boolean isToday = f_today.equals(f_displayDate);
 	String radiusChecked = (radius != null && !"".equalsIgnoreCase(radius)) ? "checked" : "";
-	List<FDPromotionAttributeParam> attrList = (promotion.getAttributeList() != null && promotion.getAttributeList().size()>0) ? promotion.getAttributeList() : new ArrayList();
+	attrList = !attrList.isEmpty()?attrList:((promotion.getAttributeList() != null && promotion.getAttributeList().size()>0) ? promotion.getAttributeList() : new ArrayList());
 
 %>
 

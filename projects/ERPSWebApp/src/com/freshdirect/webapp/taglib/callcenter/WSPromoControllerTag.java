@@ -884,7 +884,7 @@ public class WSPromoControllerTag extends AbstractControllerTag {
 	    return dataList;
 	}
 	
-	private List<FDPromotionAttributeParam> getAttributeParamList(HttpServletRequest request) {
+	public static List<FDPromotionAttributeParam> getAttributeParamList(HttpServletRequest request) {
 		
 		Enumeration paramNames = request.getParameterNames();
 		
@@ -915,7 +915,7 @@ public class WSPromoControllerTag extends AbstractControllerTag {
 	    return dataList;
 	}
 
-	private FDPromotionAttributeParam getAttributeParam(HttpServletRequest request, String index) {
+	public static FDPromotionAttributeParam getAttributeParam(HttpServletRequest request, String index) {
 
 		FDPromotionAttributeParam tmpParam = new FDPromotionAttributeParam();
 		String key = "attributeList["+index+"].";

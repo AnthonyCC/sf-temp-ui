@@ -157,8 +157,11 @@ public class LoginControllerTag extends AbstractControllerTag {
                 currentUser.isLoggedIn(true);
                 session.setAttribute(SessionName.USER, currentUser);
             }
-          loginUser.setEbtAccepted(loginUser.isEbtAccepted()&&(loginUser.getOrderHistory().getUnSettledEBTOrderCount()<=0));  
+//          loginUser.setEbtAccepted(loginUser.isEbtAccepted()&&(loginUser.getOrderHistory().getUnSettledEBTOrderCount()<=0));  
           FDSessionUser user = (FDSessionUser) session.getAttribute(SessionName.USER);
+          if(null !=user){
+              user.setEbtAccepted(user.isEbtAccepted()&&(user.getOrderHistory().getUnSettledEBTOrderCount()<1));
+          }
           
           if (user!=null && EnumServiceType.CORPORATE.equals(user.getUserServiceType())) {
         	  if(request.getRequestURI().indexOf("index.jsp")!=-1 || (getSuccessPage()!=null && getSuccessPage().indexOf("/login/index.jsp")!=-1)){        	  
