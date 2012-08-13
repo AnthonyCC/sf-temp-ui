@@ -345,9 +345,11 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 			throws FDResourceException {
 		if(null != zipCode){
 			DlvServiceSelectionResult serviceResult =FDDeliveryManager.getInstance().checkZipCode(zipCode);
+			FDCartModel cart = user.getShoppingCart();
 			boolean isEBTAccepted = null !=serviceResult ? serviceResult.isEbtAccepted():false;
+			cart.getDeliveryAddress().setEbtAccepted(isEBTAccepted);
 			if(isEBTAccepted){
-				FDCartModel cart = user.getShoppingCart();
+				
 				if(cart instanceof FDModifyCartModel){
 					String orgSaleId =((FDModifyCartModel) cart).getOriginalOrder().getErpSalesId();
 					isEBTAccepted = isEBTAccepted && (user.getOrderHistory().getUnSettledEBTOrderCount(orgSaleId)<1);
