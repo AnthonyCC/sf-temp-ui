@@ -146,7 +146,7 @@ public class RoutingDataDecoder {
 			result.setRouteId(route.getRouteID());
 			result.setStartTime(route.getStartTime() != null ? route.getStartTime().getTime() : null);
 			result.setCompletionTime(route.getCompleteTime() != null ? route.getCompleteTime().getTime() : null);
-						
+			result.setRoadNetRouteId(new Integer((route.getRouteIdentity()!=null)?route.getRouteIdentity().getInternalRouteID():0).toString());		
 			result.setDistance(route.getDistance());
 			result.setTravelTime(route.getTravelTime());
 			result.setServiceTime(route.getServiceTime());

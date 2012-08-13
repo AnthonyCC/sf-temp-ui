@@ -115,9 +115,7 @@ public class HandOffDAO extends BaseDAO implements IHandOffDAO   {
 		+ "and s.type ='REG' "
 		+ "and s.status <> 'CAN' "
 		+ "and sa.id = di.salesaction_id and rs.id = di.reservation_id and rs.timeslot_id = ts.id and ts.base_date = sa.requested_date ";
-	
-	private static final String CHECKFORSAMEDAYCUTOFF = " SELECT *  FROM DLV.TIMESLOT WHERE BASE_DATE =? AND TO_CHAR(PREMIUM_CUTOFF_TIME,'HH:MI AM') =TO_CHAR(?,'HH:MI AM')";
-	
+		
 	private static String GET_ORDERSBY_DATE_CUTOFFSTANDBY = "SELECT /*+ USE_NL(s, sa) */ c.id customer_id, fdc.id fdc_id, ci.first_name, ci.last_name, c.user_id, ci.home_phone, ci.business_phone, "
 		+ "ci.cell_phone, s.id weborder_id, s.sap_number erporder_id, sa.requested_date, s.status, sa.amount, di.starttime, di.endtime, "
 		+ "di.cutofftime, di.zone ZONE, di.address1, di.address2, di.apartment, di.city, di.state, di.zip, di.country, di.delivery_type, rs.type, rs.NUM_CARTONS , rs.NUM_FREEZERS , rs.NUM_CASES. rs.id "
@@ -210,7 +208,7 @@ public class HandOffDAO extends BaseDAO implements IHandOffDAO   {
 		"ACTUAL_RESOURCES ,STATUS) VALUES ( ?,?,?,?,?)";
 			
 	private static final String INSERT_HANDOFFBATCH_ROUTE = "INSERT INTO TRANSP.HANDOFF_BATCHROUTE ( BATCH_ID , SESSION_NAME, ROUTE_NO ," +
-			"ROUTING_ROUTE_NO ,AREA ,STARTTIME,COMPLETETIME ,DISTANCE, TRAVELTIME, SERVICETIME, DISPATCHTIME, DISPATCHSEQUENCE ) VALUES ( ?,?,?,?,?,?,?,?,?,?,?,?)";
+			"ROUTING_ROUTE_NO ,AREA ,STARTTIME,COMPLETETIME ,DISTANCE, TRAVELTIME, SERVICETIME, DISPATCHTIME, DISPATCHSEQUENCE,RN_ROUTE_ID ) VALUES ( ?,?,?,?,?,?,?,?,?,?,?,?,?)";
 	
 	private static final String UPDATE_HANDOFFBATCH_STOP = "UPDATE TRANSP.HANDOFF_BATCHSTOP X set X.ROUTE_NO = ?,X.ROUTING_ROUTE_NO = ?, " +
 			"X.SESSION_NAME = ?, X.STOP_SEQUENCE = ?,  X.STOP_ARRIVALDATETIME = ? ,  X.STOP_DEPARTUREDATETIME = ?, X.TRAVELTIME = ? , X.SERVICETIME = ? " +
@@ -253,7 +251,7 @@ public class HandOffDAO extends BaseDAO implements IHandOffDAO   {
 			", s.ROUTING_ROUTE_NO , s.STOP_SEQUENCE , s.STOP_ARRIVALDATETIME , s.STOP_DEPARTUREDATETIME, s.IS_EXCEPTION " +
 			", b.SCRUBBED_STREET bSCRUBBED_STREET, b.ZIP bzip ,b.COUNTRY  bCOUNTRY, b.CITY bCITY, b.STATE bSTATE" +
 			", b.LONGITUDE  BLONG, b.LATITUDE BLAT, l.APARTMENT LOCAPART" +
-			", r.ROUTE_NO RROUTE_NO,r.ROUTING_ROUTE_NO RROUTING_ROUTE_NO, r.AREA RAREA " +
+			", r.ROUTE_NO RROUTE_NO,r.ROUTING_ROUTE_NO RROUTING_ROUTE_NO, r.RN_ROUTE_ID RN_ROUTE_ID, r.AREA RAREA " +
 			",r.STARTTIME RSTARTTIME , r.COMPLETETIME RCOMPLETETIME  ,r.DISTANCE RDISTANCE" +
 			", r.TRAVELTIME RTRAVELTIME, r.SERVICETIME RSERVICETIME " +
 			" from transp.HANDOFF_BATCH hb , TRANSP.HANDOFF_BATCHROUTE r, transp.HANDOFF_BATCHSTOP s" +
@@ -562,6 +560,7 @@ public class HandOffDAO extends BaseDAO implements IHandOffDAO   {
 							routeModel = new HandOffBatchRoute();
 							
 							routeModel.setRouteId(rs.getString("RROUTE_NO"));
+							routeModel.setRoadNetRouteId(rs.getString("RN_ROUTE_ID"));
 							Array array = rs.getArray("RROUTING_ROUTE_NO");
 							if(array != null) {															
 								routeModel.setRoutingRouteId(new ArrayList<String>(Arrays.asList((String[]) array.getArray())));
@@ -748,7 +747,8 @@ public class HandOffDAO extends BaseDAO implements IHandOffDAO   {
 			batchUpdater.declareParameter(new SqlParameter(Types.NUMERIC));
 			batchUpdater.declareParameter(new SqlParameter(Types.TIMESTAMP));
 			batchUpdater.declareParameter(new SqlParameter(Types.NUMERIC));
-
+			batchUpdater.declareParameter(new SqlParameter(Types.VARCHAR));
+			
 			batchUpdater.compile();			
 			connection = this.jdbcTemplate.getDataSource().getConnection();
 			ArrayDescriptor desc = ArrayDescriptor.createDescriptor("TRANSP.HANDOFF_ROUTING_ROUTE_NO", connection);
@@ -771,6 +771,7 @@ public class HandOffDAO extends BaseDAO implements IHandOffDAO   {
 											, model.getServiceTime()
 											, model.getDispatchTime().getAsDate()
 											, model.getDispatchSequence()
+											, model.getRoadNetRouteId()
 									});
 			}			
 			batchUpdater.flush();
@@ -1231,28 +1232,6 @@ public class HandOffDAO extends BaseDAO implements IHandOffDAO   {
 		} finally {
 			if(connection!=null) connection.close();
 		}
-	}
-	
-	private boolean checkIfSameDayCutoff(final Date deliveryDate, final Date cutOff)
-	{
-		PreparedStatementCreator creator = new PreparedStatementCreator() {
-			public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {	
-				String query = CHECKFORSAMEDAYCUTOFF;
-				
-				PreparedStatement ps =
-					connection.prepareStatement(query);
-				ps.setDate(1, new java.sql.Date(deliveryDate.getTime()));
-				ps.setTimestamp(2, new Timestamp(cutOff.getTime()));
-				return ps;
-			}  
-		};
-
-		RowCountCallbackHandler callbackHandler = new RowCountCallbackHandler();
-		jdbcTemplate.query(creator, callbackHandler);
-		if(callbackHandler.getRowCount()>0)
-			return true;
-		
-		return false;
 	}
 	
 	public Map<EnumSaleStatus, Integer> getOrderStatsByCutoff(final Date deliveryDate, final Date cutOff) throws SQLException {
