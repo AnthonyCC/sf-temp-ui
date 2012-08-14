@@ -347,7 +347,9 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 			DlvServiceSelectionResult serviceResult =FDDeliveryManager.getInstance().checkZipCode(zipCode);
 			FDCartModel cart = user.getShoppingCart();
 			boolean isEBTAccepted = null !=serviceResult ? serviceResult.isEbtAccepted():false;
-			cart.getDeliveryAddress().setEbtAccepted(isEBTAccepted);
+			if(null !=cart.getDeliveryAddress()){
+				cart.getDeliveryAddress().setEbtAccepted(isEBTAccepted);
+			}
 			if(isEBTAccepted){
 				
 				if(cart instanceof FDModifyCartModel){

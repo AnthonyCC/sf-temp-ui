@@ -159,7 +159,7 @@ public class PaymentMethodManipulator extends CheckoutManipulator {
 					!(getUser().getShoppingCart() instanceof FDModifyCartModel)){*/	
 				
 				result.addError(new ActionError("ebtPaymentNotAllowed",SystemMessageList.MSG_EBT_NOT_ALLOWED));
-				if(cart.getDeliveryAddress().isEbtAccepted()){ 
+				if(null!= cart.getDeliveryAddress() && cart.getDeliveryAddress().isEbtAccepted()){ 
 					result.addError(new ActionError("ebtPaymentNotAllowed",SystemMessageList.MSG_EBT_NOT_ALLOWED_UNSETTLED_ORDERS));
 				}
 //			}
