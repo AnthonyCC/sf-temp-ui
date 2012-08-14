@@ -91,6 +91,23 @@ public class RoutingDataDecoder {
 		return result;
 	}
 	
+	public static IDrivingDirection decodeDrivingDirections(List<DirectionData> directions) {
+		IDrivingDirection result =  new DrivingDirection();
+		result.setPathDirections(new ArrayList());
+		for(DirectionData direction : directions)
+		{
+			result.setTime(result.getTime()+direction.getTime());
+			result.setDistance(result.getDistance()+direction.getDistance());
+			if(direction.getPathDirections() != null) {
+					for(int intCount=0; intCount < direction.getPathDirections().length; intCount++) {
+						result.getPathDirections().add(decodePathDirection(direction.getPathDirections()[intCount]));
+					}
+			}
+		}
+		return result;
+	}
+	
+
 	public static IPathDirection decodePathDirection(PathDirections path) {
 		IPathDirection result = null;
 		if(path != null) {

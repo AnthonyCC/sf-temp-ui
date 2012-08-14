@@ -560,8 +560,12 @@ public class HandOffDAO extends BaseDAO implements IHandOffDAO   {
 							routeModel = new HandOffBatchRoute();
 							
 							routeModel.setRouteId(rs.getString("RROUTE_NO"));
-							routeModel.setRoadNetRouteId(rs.getString("RN_ROUTE_ID"));
-							Array array = rs.getArray("RROUTING_ROUTE_NO");
+							Array array = rs.getArray("RN_ROUTE_ID");
+							if(array != null) {															
+								routeModel.setRoadNetRouteIds(new ArrayList<String>(Arrays.asList((String[]) array.getArray())));
+							}
+							
+							array = rs.getArray("RROUTING_ROUTE_NO");
 							if(array != null) {															
 								routeModel.setRoutingRouteId(new ArrayList<String>(Arrays.asList((String[]) array.getArray())));
 							}
@@ -747,17 +751,22 @@ public class HandOffDAO extends BaseDAO implements IHandOffDAO   {
 			batchUpdater.declareParameter(new SqlParameter(Types.NUMERIC));
 			batchUpdater.declareParameter(new SqlParameter(Types.TIMESTAMP));
 			batchUpdater.declareParameter(new SqlParameter(Types.NUMERIC));
-			batchUpdater.declareParameter(new SqlParameter(Types.VARCHAR));
+			batchUpdater.declareParameter(new SqlParameter(Types.ARRAY));
 			
 			batchUpdater.compile();			
 			connection = this.jdbcTemplate.getDataSource().getConnection();
 			ArrayDescriptor desc = ArrayDescriptor.createDescriptor("TRANSP.HANDOFF_ROUTING_ROUTE_NO", connection);
-			
 			ARRAY routingRouteId = null;
+			ArrayDescriptor rndesc = ArrayDescriptor.createDescriptor("TRANSP.HANDOFF_ROADNET_ROUTE_NO", connection);
+			ARRAY roadNetRouteIds = null;
 			for(IHandOffBatchRoute model : dataList) {
 				if(model.getRoutingRouteId() != null) {					
 					routingRouteId = new ARRAY(desc, connection, RoutingUtil.toStringArray(model.getRoutingRouteId()));
 				}
+				if(model.getRoadNetRouteIds() != null) {					
+					roadNetRouteIds = new ARRAY(rndesc, connection, RoutingUtil.toStringArray(model.getRoadNetRouteIds()));
+				}
+				
 				//System.out.println("ROUTE --->"+model.getBatchId()+"-"+model.getSessionName()+"-"+model.getRouteId());
 				batchUpdater.update(new Object[]{ model.getBatchId()
 											, model.getSessionName()
@@ -771,7 +780,7 @@ public class HandOffDAO extends BaseDAO implements IHandOffDAO   {
 											, model.getServiceTime()
 											, model.getDispatchTime().getAsDate()
 											, model.getDispatchSequence()
-											, model.getRoadNetRouteId()
+											, roadNetRouteIds
 									});
 			}			
 			batchUpdater.flush();
