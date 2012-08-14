@@ -121,7 +121,7 @@ if(user != null) {
 	<%             } else if (user.getLevel() == FDUserI.RECOGNIZED) {	%>
 			          <a href="/login/login.jsp"><b>Click here to log in</b></a>
 	<%	} else {	%>
-				<b>New customer?</b> <% if(FDStoreProperties.isLightSignupEnabled()) { %><a href="#" onclick="doOverlayWindow('<iframe id=\'signupframe\' src=\'/registration/signup_lite.jsp\' width=\'480px\' height=\'590px\' scrolling=\'no\' frameborder=\'0\' ></iframe>')">Sign Up</a><% } else {%><a href="/registration/signup.jsp">Sign Up</a><% } %><img src="/media_stat/images/layout/clear.gif" width="25" height="1" hspace="2" vspace="3" alt=""><b>Current customer?</b> <a href="/login/login.jsp">Log In</a>
+				<b>New customer?</b> <% if(FDStoreProperties.isLightSignupEnabled()) { %><a href="#" onclick="doOverlayWindow('<iframe id=\'signupframe\' src=\'/registration/signup_lite.jsp\' width=\'480px\' height=\'590px\' frameborder=\'0\' ></iframe>')">Sign Up</a><% } else {%><a href="/registration/signup.jsp">Sign Up</a><% } %><img src="/media_stat/images/layout/clear.gif" width="25" height="1" hspace="2" vspace="3" alt=""><b>Current customer?</b> <a href="/login/login.jsp">Log In</a>
 	<%
 	     }
 	%>
