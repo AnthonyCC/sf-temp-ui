@@ -44,10 +44,9 @@ import com.freshdirect.customer.ErpRouteMasterInfo;
 import com.freshdirect.customer.ErpTruckMasterInfo;
 import com.freshdirect.framework.util.StringUtil;
 import com.freshdirect.routing.constants.EnumWaveInstancePublishSrc;
-import com.freshdirect.routing.model.GeoPoint;
+import com.freshdirect.routing.model.IAreaModel;
 import com.freshdirect.routing.model.IDeliverySlot;
 import com.freshdirect.routing.model.IFacilityModel;
-import com.freshdirect.routing.model.IGeoPoint;
 import com.freshdirect.routing.model.IHandOffBatchRoute;
 import com.freshdirect.routing.model.IRouteModel;
 import com.freshdirect.routing.model.IRoutingSchedulerIdentity;
@@ -95,7 +94,6 @@ import com.freshdirect.transadmin.web.model.WebDispatchStatistics;
 import com.freshdirect.transadmin.web.model.WebEmployeeInfo;
 import com.freshdirect.transadmin.web.model.WebPlanInfo;
 import com.freshdirect.transadmin.web.model.WebPlanResource;
-import com.freshdirect.transadmin.web.util.CoPilotUtil;
 import com.freshdirect.transadmin.web.util.TransWebUtil;
 
 public class DispatchController extends AbstractMultiActionController {
@@ -1688,7 +1686,7 @@ public class DispatchController extends AbstractMultiActionController {
 				}
 				DrivingDirectionsReport reportEngine = new DrivingDirectionsReport();
 				if(directionRoutes != null && directionRoutes.size() > 0) {
-					Map directionsReportData = this.getRouteDirections(directionRoutes);
+					Map directionsReportData = this.getRouteDirections(routeDate, directionRoutes);
 					reportEngine.generateDrivingDirectionsReport(response.getOutputStream(), directionsReportData);
 					
 				} else {
@@ -1762,11 +1760,11 @@ public class DispatchController extends AbstractMultiActionController {
 
 								String sessionId = engineProxy.retrieveRoutingSession(schedulerId, route.getSessionName());
 								
-								if(route.getRoadNetRouteId()!=null)
-									route.setDrivingDirection(proxy.buildDriverDirections(route.getRoadNetRouteId(), sessionId, schedulerId.getRegionId()));
+							/*	if(route.getRoadNetRouteId()!=null)
+									route.setDrivingDirection(proxy.buildDriverDirections(route.getRoadNetRouteIds(), sessionId, schedulerId.getRegionId()));
 								else
 									route.setDrivingDirection(proxy.buildDriverDirections(routingRouteId, sessionId, schedulerId.getRegionId()));
-								
+								*/
 								Object[] _stops = route.getStops().toArray();								
 								IRoutingStopModel _nextStop = null;
 
@@ -1824,7 +1822,7 @@ public class DispatchController extends AbstractMultiActionController {
 		return mav;
 	}
 	
-	private Map getRouteDirections(Map routes) throws ReportGenerationException {
+	private Map getRouteDirections(String routeDate, Map routes) throws ReportGenerationException {
 		Map result = new TreeMap();
 		DeliveryServiceProxy proxy = new DeliveryServiceProxy();
 		GeographyServiceProxy geoProxy = new GeographyServiceProxy();
@@ -1832,6 +1830,8 @@ public class DispatchController extends AbstractMultiActionController {
 		Map<String, IFacilityModel> facilityLookup = geoProxy.getFacilityLookup();
 
 		try {
+			Map<String, IAreaModel> areaLookup = geoProxy.getAreaLookup();
+			
 			Iterator _itr = routes.keySet().iterator();
 			String _routeId = null;
 			IHandOffBatchRoute route = null;
@@ -1857,15 +1857,52 @@ public class DispatchController extends AbstractMultiActionController {
 						route.getStops().add(ModelUtil.getStop(Integer.MAX_VALUE, "DPT/FD", "", "",
 								"", "40740250", "-73951989", true));
 					}
-					
+					IAreaModel areaModel = areaLookup.get(route.getArea());
 					IRoutingSchedulerIdentity schedulerId = new RoutingSchedulerIdentity();
-					schedulerId.setRegionId(RoutingServicesProperties.getDefaultTruckRegion());
+					if(areaModel.isDepot())
+					{
+						schedulerId.setRegionId(RoutingServicesProperties.getDefaultDepotRegion());
+						schedulerId.setDepot(areaModel.isDepot());
+					}
+					else
+					{
+						schedulerId.setRegionId(RoutingServicesProperties.getDefaultTruckRegion());
+					}
 							
 					String sessionId = engineProxy.retrieveRoutingSession(schedulerId, route.getSessionName());
-					if(route.getRoadNetRouteId()!=null)
-						route.setDrivingDirection(proxy.buildDriverDirections(route.getRoadNetRouteId(), sessionId, schedulerId.getRegionId()));
+					Set _roadNetRoutes = new HashSet();
+					Set<String> _routingRoutes = new HashSet<String>();
+					if(route.getRoadNetRouteIds()!=null && route.getRoadNetRouteIds().size()>0)
+					{
+						_roadNetRoutes = new HashSet(route.getRoadNetRouteIds());
+						route.setDrivingDirection(proxy.buildDriverDirections(_roadNetRoutes, sessionId, schedulerId.getRegionId()));
+					}
 					else
-						route.setDrivingDirection(proxy.buildDriverDirections(_routeId, sessionId, schedulerId.getRegionId()));
+					{ // This else block is only as a fallback. Going forward the RoadNet ID will be stored in storefront and does not need an extra call to UPS.
+						
+						try {
+							_routingRoutes = new HashSet<String>(route.getRoutingRouteId());
+							
+								for(String routingRoute : _routingRoutes)
+								{
+									List<IRouteModel> routingRoutes = proxy.getRoutes(TransStringUtil.getDate(routeDate), sessionId
+											, routingRoute);
+									for(IRouteModel routingRoute1: routingRoutes)
+									{
+										_roadNetRoutes.add(routingRoute1.getRoadNetRouteId());
+									}
+								}
+							if(_roadNetRoutes.size()>0)
+								route.setDrivingDirection(proxy.buildDriverDirections(_roadNetRoutes, sessionId, schedulerId.getRegionId()));
+							else
+								throw new ReportGenerationException(
+										"Unable to generate driver directions");
+						} catch (ParseException e) {
+							throw new ReportGenerationException(
+									"Unable to generate driver directions");
+						}
+						
+					}
 					result.put(_routeId, route);
 				} else {
 					result.put(_routeId, null);
