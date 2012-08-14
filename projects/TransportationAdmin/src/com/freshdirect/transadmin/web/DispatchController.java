@@ -1863,10 +1863,12 @@ public class DispatchController extends AbstractMultiActionController {
 					{
 						schedulerId.setRegionId(RoutingServicesProperties.getDefaultDepotRegion());
 						schedulerId.setDepot(areaModel.isDepot());
+						schedulerId.setArea(areaModel);
 					}
 					else
 					{
 						schedulerId.setRegionId(RoutingServicesProperties.getDefaultTruckRegion());
+						schedulerId.setArea(areaModel);
 					}
 							
 					String sessionId = engineProxy.retrieveRoutingSession(schedulerId, route.getSessionName());
