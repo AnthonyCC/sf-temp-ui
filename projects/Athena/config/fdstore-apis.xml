@@ -1,0 +1,24 @@
+<serviceconfig name="storefrontservices">
+	<apis>
+		  <api name="orderrate"> 
+		  		<datasource>dev_storefront</datasource>
+				<endpoint>orderrate</endpoint>
+						<call><![CDATA[select "Order Count","Time Frame" FROM (
+							select to_number( to_char(s.cromod_Date,'HH24')), count(1) as "Order Count", 
+							to_number( to_char(s.cromod_Date,'HH24'))|| '-'|| (to_number( to_char(s.cromod_Date,'HH24'))+1) as "Time Frame" from cust.sale s, cust.salesaction sa
+							where S.CROMOD_DATE=sa.action_date and sa.action_type in ('CRO','MOD') and s.id=sa.sale_id and
+							S.CROMOD_DATE between trunc(sysdate-1) and trunc(sysdate) and s.status!='CAN' and sa.requested_Date>trunc(sysdate-1)
+							group by to_number( to_char(s.cromod_Date,'HH24')) 
+							order by  to_number(to_char(s.cromod_Date,'HH24'))
+							)
+					]]>
+			<parameters>				
+			</parameters>
+			<cache>
+				<maxsize></maxsize>
+				<frequency></frequency>
+			</cache>
+			</call>
+		</api>    
+	</apis>
+</serviceconfig>

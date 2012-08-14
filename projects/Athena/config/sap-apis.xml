@@ -1,0 +1,39 @@
+<serviceconfig name="sap_bapis">
+	<apis>
+		  <api name="orderdetails"> 
+		  		<datasource>sapdev</datasource>
+				<endpoint>orderdetails</endpoint>
+						<call><![CDATA[ZBAPI_ORDER_DETAILS]]>
+						<parameters>							
+						</parameters>
+						<cache>
+							<maxsize></maxsize>
+							<frequency></frequency>
+						</cache>
+						</call>
+		  </api> 
+		  
+		  <api name="wavestats"> 
+		  		<datasource>sapprod</datasource>
+				<endpoint>wavestats</endpoint>
+						<call><![CDATA[ZBAPI_WAVE_ORDER_PACK_COUNT]]>
+						<parameters>
+							<parameter>
+								<name>I_VDATU</name>
+								<type>DATE</type>
+								<default>2012-08-10</default>								
+							</parameter>
+							<parameter>
+								<name>I_SHIFT</name>
+								<type>STRING</type>
+								<default>1</default>								
+							</parameter>
+						</parameters>
+						<cache>
+							<maxsize></maxsize>
+							<frequency></frequency>
+						</cache>
+						</call>
+		  </api>    
+	</apis>
+</serviceconfig>

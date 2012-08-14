@@ -1,0 +1,16 @@
+<athenaconfig>
+	<datasources>
+		<config-file>fdstore-dev-datasources.xml</config-file>
+		<config-file>fdsapdev-datasources.xml</config-file>
+		<config-file>fdsapprod-datasources.xml</config-file>
+	</datasources>
+	<services>
+		<config-file>fdstore-apis.xml</config-file>
+		<config-file>sap-apis.xml</config-file>
+	</services>
+	<properties>
+		<entry key="debug">
+			<value>true</value>
+		</entry>	      
+	</properties>
+</athenaconfig>
