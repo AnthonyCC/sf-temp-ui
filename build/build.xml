@@ -2316,7 +2316,7 @@
 			</copy>
 	
 			<!-- create .war file -->
-			<jar destfile="${work.dir}/Athena.war">
+			<jar destfile="${work.dir}/athena.war">
 	            <manifest>
 	                <attribute name="Specification-Version" value="${build.counter}"/>
 	                <attribute name="Specification-Vendor" value="FreshDirect LLC"/>
