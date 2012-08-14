@@ -3,6 +3,7 @@ package com.freshdirect.routing.service;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import com.freshdirect.analytics.TimeslotEventModel;
 import com.freshdirect.common.address.ContactAddressModel;
@@ -43,7 +44,7 @@ public interface IDeliveryService {
 	
 	List getRoutes(Date routeDate, String internalSessionID, String routeID) throws RoutingServiceException;
 	
-	IDrivingDirection buildDriverDirections(String routeID, String sessionID, String regionID)  throws RoutingServiceException;
+	IDrivingDirection buildDriverDirections(Set<String> routeIDs, String sessionID, String regionID)  throws RoutingServiceException;
 		
 	IZoneModel getDeliveryZone(String zoneCode)  throws RoutingServiceException ;
 	

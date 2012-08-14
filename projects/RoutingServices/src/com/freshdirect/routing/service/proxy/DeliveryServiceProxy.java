@@ -3,6 +3,7 @@ package com.freshdirect.routing.service.proxy;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import com.freshdirect.analytics.TimeslotEventModel;
 import com.freshdirect.common.address.ContactAddressModel;
@@ -62,8 +63,8 @@ public class DeliveryServiceProxy extends BaseServiceProxy {
 		return getService().getRoutes(routeDate, internalSessionID, routeID);
 	}
 	
-	public IDrivingDirection buildDriverDirections(String routeID, String sessionID, String regionID)  throws RoutingServiceException {
-		return getService().buildDriverDirections(routeID, sessionID, regionID);
+	public IDrivingDirection buildDriverDirections(Set<String> routeIDs, String sessionID, String regionID)  throws RoutingServiceException {
+		return getService().buildDriverDirections(routeIDs, sessionID, regionID);
 	}
 	
 	public IZoneModel getDeliveryZone(String zoneCode)  throws RoutingServiceException {

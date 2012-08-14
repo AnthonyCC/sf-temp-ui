@@ -171,6 +171,7 @@ public class HandOffRoutingOutAction extends AbstractHandOffAction {
 								}
 								routeCnts.put(areaEntry.getKey(), routeCnts.get(areaEntry.getKey()).intValue()+1);
 								route.appendRoutingRoute(route.getRouteId());//New VArray Change
+								route.appendRoadNetRouteId(route.getRoadNetRouteId());//New VArray Change
 								route.setRouteId(areaLookup.get(areaEntry.getKey()).getPrefix()
 														+ areaEntry.getKey()+ formatRouteNumber(routeCnts.get(areaEntry.getKey())));
 								Iterator itr = route.getStops().iterator();

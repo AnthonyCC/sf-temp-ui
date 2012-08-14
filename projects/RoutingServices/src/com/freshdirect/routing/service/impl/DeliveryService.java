@@ -1,12 +1,13 @@
 package com.freshdirect.routing.service.impl;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
-import org.apache.axis2.client.Stub;
 import org.apache.log4j.Category;
 
 import com.freshdirect.analytics.TimeslotEventModel;
@@ -39,11 +40,10 @@ import com.freshdirect.routing.model.IServiceTimeTypeModel;
 import com.freshdirect.routing.model.IUnassignedModel;
 import com.freshdirect.routing.model.IZoneModel;
 import com.freshdirect.routing.model.IZoneScenarioModel;
-import com.freshdirect.routing.model.RoutingSchedulerIdentity;
+import com.freshdirect.routing.proxy.stub.transportation.DirectionData;
 import com.freshdirect.routing.proxy.stub.transportation.RoutingRoute;
 import com.freshdirect.routing.proxy.stub.transportation.RoutingSession;
 import com.freshdirect.routing.proxy.stub.transportation.TransportationWebService;
-import com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceStub;
 import com.freshdirect.routing.service.IDeliveryService;
 import com.freshdirect.routing.service.exception.IIssue;
 import com.freshdirect.routing.service.exception.RoutingServiceException;
@@ -196,32 +196,6 @@ public class DeliveryService extends BaseService implements IDeliveryService {
 		}
 	}
 	
-	public static void main(String a[]) throws Exception {
-		
-		IRoutingSchedulerIdentity schedulerId = new RoutingSchedulerIdentity();
-		
-		//String region = "MDP";
-		//String sessionDescription = "chiguita_Depot_20100707_190849";
-		
-		String region = "FD";
-		String sessionDescription = "chiguita_Trucks_20100707_190955";
-		String url = "http://10.55.20.148:81";
-		
-		schedulerId.setRegionId(region);
-				
-		TransportationWebService port = new TransportationWebServiceStub(url);
-		((Stub) port)._getServiceClient().getOptions().setTimeOutInMilliSeconds(30 * 1000);
-		RoutingSession[] sessions = port.retrieveRoutingSessionsByCriteria(RoutingDataEncoder.encodeRoutingSessionCriteria(schedulerId, sessionDescription)
-				, RoutingDataEncoder.encodeRouteInfoRetrieveFullOptions());			
-		if(sessions != null) {
-			for(RoutingSession session : sessions) {
-				RoutingRoute[] routes = session.getRoutes();
-				System.out.println(RoutingDataDecoder.decodeRouteList(routes));
-			}
-		}
-		
-	}
-	
 	public List getRoutes(Date routeDate, String internalSessionID, String routeID) throws RoutingServiceException {
 		try {
 			TransportationWebService port = getTransportationSuiteBatchService(null);
@@ -234,17 +208,23 @@ public class DeliveryService extends BaseService implements IDeliveryService {
 		return null;
 	}
 	
-	public IDrivingDirection buildDriverDirections(String routeID, String sessionID, String regionID)  throws RoutingServiceException {
+	public IDrivingDirection buildDriverDirections(Set<String> routeIDs, String sessionID, String regionID)  throws RoutingServiceException {
 		try {
-			TransportationWebService port = getTransportationSuiteService(null);			
-			return RoutingDataDecoder.decodeDrivingDirection(port.buildRoutingDriverDirections
-					(RoutingDataEncoder.encodeRoutingRouteIdentity(routeID, sessionID, regionID)));
+			TransportationWebService port = getTransportationSuiteService(null);
+			List<DirectionData> directions = new ArrayList<DirectionData>();
+			for(String routeID: routeIDs)
+			{
+				DirectionData direction =  port.buildRoutingDriverDirections
+					(RoutingDataEncoder.encodeRoutingRouteIdentity(routeID, sessionID, regionID));
+				directions.add(direction);
+			}
+			if(directions.size()>0)
+			return RoutingDataDecoder.decodeDrivingDirections(directions);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return null;
 	}
-	
 	
 	public Map<String, List<IDeliverySlot>> getTimeslotsByDate(Date deliveryDate, Date cutOffTime, String zoneCode, EnumLogicalOperator condition) throws RoutingServiceException {
 		
@@ -683,4 +663,5 @@ public class DeliveryService extends BaseService implements IDeliveryService {
 		}
 		
 	}
+
 }

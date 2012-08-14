@@ -56,7 +56,13 @@ public interface IRouteModel {
 	Date getFirstDeliveryTime();
 	void setFirstDeliveryTime(Date firstDeliveryTime);
 	
+	List<String> getRoadNetRouteIds();
+	void setRoadNetRouteIds(List<String> roadNetRouteId);
+	
 	String getRoadNetRouteId();
 	void setRoadNetRouteId(String roadNetRouteId);
+	
+	void appendRoadNetRouteId(String roadNetRouteId);
+	
 	
 }

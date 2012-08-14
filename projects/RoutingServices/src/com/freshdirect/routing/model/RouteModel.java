@@ -34,6 +34,7 @@ public class RouteModel extends BaseModel implements IRouteModel {
 		
 	private RoutingTimeOfDay dispatchTime;	
 	private int dispatchSequence;
+	private List<String> roadNetRouteIds;
 	private String roadNetRouteId;
 	
 	public void copyWaveProperties(IWaveInstance waveInstance) {
@@ -208,12 +209,29 @@ public class RouteModel extends BaseModel implements IRouteModel {
 		return buf.toString();
 	}
 
-	
+	public List<String> getRoadNetRouteIds() {
+		return roadNetRouteIds;
+	}
+
+	public void setRoadNetRouteIds(List<String> roadNetRouteIds) {
+		this.roadNetRouteIds = roadNetRouteIds;
+	}
+
+	@Override
 	public String getRoadNetRouteId() {
 		return roadNetRouteId;
 	}
-	
+
+	@Override
 	public void setRoadNetRouteId(String roadNetRouteId) {
 		this.roadNetRouteId = roadNetRouteId;
+	}
+
+	@Override
+	public void appendRoadNetRouteId(String roadNetRouteId) {
+		if(this.getRoadNetRouteIds() == null) {
+			this.setRoadNetRouteIds(new ArrayList<String>());
+		} 
+		this.getRoadNetRouteIds().add(roadNetRouteId);
 	}
 }
