@@ -47,7 +47,7 @@
 	
 <%@ include file="/shared/template/includes/i_head_end.jspf" %>
 </head>
-<body bgcolor="#ffffff" text="#333333" class="text10" leftmargin="0" topmargin="0">
+<body bgcolor="#ffffff" text="#333333" class="text10" leftmargin="0" topmargin="0" style="overflow: hidden">
 <%@ include file="/shared/template/includes/i_body_start.jspf" %>
 
 <fd:SiteAccessController action="checkByAddress" successPage="/index.jsp" moreInfoPage="" failureHomePage="/site_access/delivery.jsp" failureCorporatePage="/survey/cos_site_access_survey.jsp" result="result">

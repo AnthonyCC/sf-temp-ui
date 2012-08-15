@@ -436,7 +436,10 @@ public class RegistrationAction extends WebActionSupport {
 					user.setIdentity(regIdent);
 					user.invalidateCache();
 					user.isLoggedIn(true);
-					user.setZipCode(erpAddress.getZipCode());
+					if(address != null && address.getAddress1() != null && address.getAddress1().length() > 0) {
+						//update user's zip only if a valid address is supplied. Without this check user's zip will be updated to default zip 11101
+						user.setZipCode(erpAddress.getZipCode());
+					}
 					if(address != null) {
 						//This is from partial zip check page from where we will have a valid address.
 						user.setSelectedServiceType(AddressUtil.getDeliveryServiceType(erpAddress));
