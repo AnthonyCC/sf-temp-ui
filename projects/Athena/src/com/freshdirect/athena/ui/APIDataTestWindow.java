@@ -33,6 +33,8 @@ public class APIDataTestWindow extends Window {
         addComponent(emContainer);
         emContainer.setSizeFull();
 		emContainer.setHeight("500px");
+		
+		center();
     }
 	
 	public void setTestData(HttpServletRequest request, Api api) {

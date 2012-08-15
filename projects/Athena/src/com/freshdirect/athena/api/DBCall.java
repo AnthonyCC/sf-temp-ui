@@ -8,6 +8,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
 import com.freshdirect.athena.config.Api;
 import com.freshdirect.athena.config.Parameter;
 import com.freshdirect.athena.data.Data;
@@ -17,7 +19,9 @@ import com.freshdirect.athena.util.TypeUtil;
 
 public class DBCall implements ICall  {
 	
-	Connection dbConnection;
+	private static final Logger LOGGER = Logger.getLogger(JCOCall.class);
+	
+	private Connection dbConnection;
 	
 	public DBCall(Connection dbConnection) {
 		super();
@@ -27,7 +31,7 @@ public class DBCall implements ICall  {
 	@Override
 	public Data getData(Api api, List<Parameter> params) {
 		
-		
+		LOGGER.debug("DBCall,getData() =>"+api.getName());
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		

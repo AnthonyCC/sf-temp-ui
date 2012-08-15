@@ -41,14 +41,14 @@ public class AthenaServlet  extends HttpServlet {
 		
 		String url = request.getRequestURI().substring(request.getContextPath().length());
 		if (LOGGER.isDebugEnabled()) {
-			LOGGER.debug("url => {}"+ url);
-			LOGGER.debug("HTTP_METHOD => {}"+ request.getMethod());
-			LOGGER.debug("queryString => {}"+ request.getQueryString());
-			LOGGER.debug("Context [{}]"+ request.getContextPath());
+			LOGGER.debug("url => "+ url);
+			LOGGER.debug("HTTP_METHOD => "+ request.getMethod());
+			LOGGER.debug("queryString => "+ request.getQueryString());
+			LOGGER.debug("Context => "+ request.getContextPath());
 		}
 
 		UrlInfo urlInfo = UrlUtil.getUrlInfo(url);
-		LOGGER.debug("urlInfo => {}"+ urlInfo);	
+		LOGGER.debug("UrlInfo => "+ urlInfo);	
 		requestHandler.handleRequest(request, response, urlInfo);
 	}
 	

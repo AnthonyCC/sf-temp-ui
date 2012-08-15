@@ -21,13 +21,8 @@
 							<parameter>
 								<name>I_VDATU</name>
 								<type>DATE</type>
-								<default>2012-08-10</default>								
-							</parameter>
-							<parameter>
-								<name>I_SHIFT</name>
-								<type>STRING</type>
-								<default>1</default>								
-							</parameter>
+								<default>2012-08-14</default>								
+							</parameter>							
 						</parameters>
 						<cache>
 							<maxsize></maxsize>

@@ -7,6 +7,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.log4j.Logger;
 import org.simpleframework.xml.Serializer;
 import org.simpleframework.xml.core.Persister;
 
@@ -17,15 +18,16 @@ import com.freshdirect.athena.config.Datasource;
 
 public class RequestHandler {
 	
-
+	private static final Logger LOGGER = Logger.getLogger(RequestHandler.class);
+	
 	private Serializer serializer = new Persister();
 	
 	public void handleRequest(HttpServletRequest request, HttpServletResponse response, UrlInfo urlInfo)  throws ServletException, IOException  {
-		
+				
 		if(urlInfo.getApi() != null && CacheManager.getInstance().isSupportedApi(urlInfo.getApi())) {
 			response.setContentType("text/xml");	
 			try {
-				
+				LOGGER.debug("RequestHandler.handleApi() =>"+urlInfo.getApi());
 				serializer.write(CacheManager.getInstance().getData(urlInfo.getApi(), urlInfo.getParams())
 										,  response.getWriter());
 			} catch (Exception e) {
@@ -33,7 +35,8 @@ public class RequestHandler {
 				e.printStackTrace();
 				throw new ServletException();
 			}
-		} else {			
+		} else {	
+			
 			response.setContentType("text/html");		    
 		    response.getWriter().println(getIndexText());
 		}

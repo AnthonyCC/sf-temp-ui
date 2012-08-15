@@ -10,6 +10,7 @@ import com.freshdirect.athena.cache.CacheManager;
 import com.freshdirect.athena.common.SystemMessageManager;
 import com.freshdirect.athena.concurrency.ConfigReloadService;
 import com.freshdirect.athena.connection.BasePool;
+import com.freshdirect.athena.exception.ConfigException;
 import com.freshdirect.athena.exception.PoolException;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.Service;
@@ -39,9 +40,14 @@ public class ConfigManager {
 	
 	public void init() {
 		LOGGER.debug("ConfigManager ::: init");
-		
-		ListenableFuture<Service.State>  future = reloadService.start();	// Start the reload Process	
-		/*try {
+		try {
+			adjustConfig(ConfigLoader.loadConfigs());
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		/*ListenableFuture<Service.State>  future = reloadService.start();	// Start the reload Process	
+		try {
 			reloadService.loadConfigs();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -49,16 +55,16 @@ public class ConfigManager {
 		}*/
 	}
 	
-	public void adjustConfig() {
+	public void adjustConfig(ConfigGroup configGrp) {
 		
-		AthenaConfig athenaConfig = reloadService.getAthenaConfig();
+		AthenaConfig athenaConfig = configGrp.getAthenaConfig();
 		if(athenaConfig.getProperties() != null) {
 			for(Entry entry : athenaConfig.getProperties()) {
 				systemProperties.put(entry.getKey(), entry.getValue());
 			}
 		}
 		
-		List<DatasourceConfig> dsConfigs = reloadService.getDsConfigs();
+		List<DatasourceConfig> dsConfigs = configGrp.getDsConfigs();
 		if(dsConfigs != null) {
 			for(DatasourceConfig dsConfig : dsConfigs) {
 				List<Datasource> datasources = dsConfig.getDatasources();
@@ -70,7 +76,7 @@ public class ConfigManager {
 			}
 		}
 		
-		List<ApiConfig> serviceConfigs = reloadService.getServiceConfigs();
+		List<ApiConfig> serviceConfigs = configGrp.getServiceConfigs();
 		
 		if(serviceConfigs != null) {
 			for(ApiConfig serviceConfig : serviceConfigs) {
@@ -87,15 +93,7 @@ public class ConfigManager {
 		CacheManager.getInstance().adjustCache(dataSourceMapping, serviceMapping);
 		//LOGGER.debug("ConfigManager ::: Reload ReEvent\n"+dataSourceMapping+"\n"+serviceMapping);		
 	}
-	
-	public int getDefaultCacheFrequency() {
-		return Integer.parseInt(systemProperties.get(ISystemProperty.DEFAULT_CACHE_FEQUENCY));
-	}
-	
-	public int getConfigRefreshFrequency() {
-		return Integer.parseInt(systemProperties.get(ISystemProperty.CONFIG_REFRESH_FREQUENCY));
-	}
-	
+		
 	public Map<String, Datasource> getDataSourceMapping() {
 		return dataSourceMapping;
 	}

@@ -3,6 +3,9 @@ package com.freshdirect.athena.api;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
+import com.freshdirect.athena.AthenaServlet;
 import com.freshdirect.athena.config.Api;
 import com.freshdirect.athena.config.Parameter;
 import com.freshdirect.athena.data.Data;
@@ -15,6 +18,8 @@ import com.sap.mw.jco.JCO;
 
 public class JCOCall implements ICall {
 	
+	private static final Logger LOGGER = Logger.getLogger(JCOCall.class);
+	
 	IRepository repository = null;
 	
 	public JCOCall(IRepository repository) {
@@ -24,8 +29,8 @@ public class JCOCall implements ICall {
 
 	@Override
 	public Data getData(Api api, List<Parameter> params)  {
-		// TODO Auto-generated method stub
 		
+		LOGGER.debug("JCOCall.getData() =>"+api.getName());
 		Data result = new Data();
 		Variable variable = new Variable(api.getEndpoint());
 		result.setVariable(variable);

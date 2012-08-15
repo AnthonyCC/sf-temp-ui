@@ -172,6 +172,7 @@ public class AdminConfigConsole extends Panel {
 		
 		refreshButton.addListener(new Button.ClickListener() {
 			public void buttonClick(ClickEvent event) {
+				ConfigManager.getInstance().init();
 				initTables();
 			}
 		});

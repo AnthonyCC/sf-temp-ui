@@ -48,7 +48,8 @@ public class CacheManager {
 	}
 		
 	public void adjustCache(Map<String, Datasource> dataSourceMapping, Map<String, Api> serviceMapping) {
-		initDBPool(dataSourceMapping);	
+		apiConfigCache = serviceMapping;
+		initDSPool(dataSourceMapping);	
 		initApiConfig(serviceMapping);
 	}
 	
@@ -65,14 +66,17 @@ public class CacheManager {
 				}
 				
 				if(!apiCache.containsKey(apiEntry.getKey())) {
-					apiCache.put(apiEntry.getKey(), new ApiCache(apiEntry.getValue()));
+					try {
+						apiCache.put(apiEntry.getKey(), new ApiCache(apiEntry.getValue()));
+					} catch(Exception e) {
+						e.printStackTrace();
+					}
 				}
 			}
 		}
-		apiConfigCache = serviceMapping;
 	}
 	
-	public void initDBPool(Map<String, Datasource> dataSourceMapping) {
+	public void initDSPool(Map<String, Datasource> dataSourceMapping) {
 		
 		if(dataSourceMapping != null) {
 			
@@ -93,20 +97,22 @@ public class CacheManager {
 				//Clean Done now please reinit
 				if(!dsCache.containsKey(dbEntry.getKey())) {
 					if(ConnectionType.DB.equals(dbEntry.getValue().getConnectionType())) {
-						DBPool pool = new DBPool(dbEntry.getValue());
+						
 						try {
+							DBPool pool = new DBPool(dbEntry.getValue());
 							pool.init();
 							dsCache.put(dbEntry.getKey() , pool);
-						} catch (PoolException e) {
+						} catch (Exception e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
 					} else if(ConnectionType.JCO.equals(dbEntry.getValue().getConnectionType())) {
-						JCOPool pool = new JCOPool(dbEntry.getValue());
+						
 						try {
+							JCOPool pool = new JCOPool(dbEntry.getValue());
 							pool.init();
 							dsCache.put(dbEntry.getKey() , pool);
-						} catch (PoolException e) {
+						} catch (Exception e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
@@ -132,9 +138,10 @@ public class CacheManager {
 	public Data getData(String apiName, Map<String, String> params) {
 		
 		ApiCache cache = apiCache.get(apiName);
+		LOGGER.debug("CacheManager.getData(ApiCache) =>"+cache);
 		if(cache != null) {
 			Api api = cache.getApi();
-			//ApiKey apiKeyForCache = new ApiKey();
+			
 			List<Parameter> actualParameters = new ArrayList<Parameter>();
 			for(Parameter param : api.getParameters()) {
 				try {
@@ -149,6 +156,7 @@ public class CacheManager {
 				}
 			}
 			ApiKey apiKey = new ApiKey(api.getName(), actualParameters);
+			LOGGER.debug("CacheManager.getData() =>"+apiKey);
 			return cache.getData(apiKey);
 		}
 		return new Data();
@@ -165,4 +173,14 @@ public class CacheManager {
 			dsCache.remove(dbPoolEntry.getKey());
 		}
 	}
+
+	public Map<String, BasePool> getDsCache() {
+		return dsCache;
+	}
+
+	public Map<String, ApiCache> getApiCache() {
+		return apiCache;
+	}
+	
+	
 }

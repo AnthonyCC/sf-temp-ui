@@ -122,6 +122,7 @@ public abstract class GuavaAsyncCache<K, V> {
 		try {
 			return cache.get(key);
 		} catch (ExecutionException e) {
+			e.printStackTrace();
 			return null;
 		}
 	}
