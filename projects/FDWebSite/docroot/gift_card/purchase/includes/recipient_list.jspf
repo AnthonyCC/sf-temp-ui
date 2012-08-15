@@ -67,8 +67,13 @@ FDRecipientList recipList = giftUser.getRecipientList();
 						<div class="recipName" id="<%=srm.getRandomId()%>Name"><%= srm.getRecipientName()%></div>
 
 						<div class="recipAmount" id="<%=srm.getRandomId()%>Amount">$<%= srm.getFormattedAmount() %></div>
-						<% if(EnumGiftCardType.DONATION_GIFTCARD.equals(giftUser.getGiftCardType())) { %>
-							<div class="recipLinks" id="<%=srm.getRandomId()%>Links">&nbsp;<a href="#" onClick="recipPreview('<%=srm.getRandomId()%>'); return false;">Preview</a><a href="/gift_card/purchase/add_donation_giftcard.jsp?recipId=<%=srm.getRandomId()%>&gcDonId=<%= request.getParameter("gcDonId") %>">Edit</a></div>
+						<% if(EnumGiftCardType.DONATION_GIFTCARD.equals(giftUser.getGiftCardType())) {
+							String gcDonId=request.getParameter("gcDonId");
+							if(null==gcDonId){
+								gcDonId= srm.getTemplateId();
+							}
+							%>
+							<div class="recipLinks" id="<%=srm.getRandomId()%>Links">&nbsp;<a href="#" onClick="recipPreview('<%=srm.getRandomId()%>'); return false;">Preview</a><a href="/gift_card/purchase/add_donation_giftcard.jsp?recipId=<%=srm.getRandomId()%>&gcDonId=<%= gcDonId %>">Edit</a></div>
 						<% } else { %>
 							<div class="recipLinks" id="<%=srm.getRandomId()%>Links">&nbsp;<a href="#" onClick="recipPreview('<%=srm.getRandomId()%>'); return false;">Preview</a><a href="/gift_card/purchase/add_giftcard.jsp?recipId=<%=srm.getRandomId()%>">Edit</a><a href="<%= request.getRequestURI() %>?deleteId=<%=srm.getRandomId()%>">Delete</a></div>
 						<% } %>

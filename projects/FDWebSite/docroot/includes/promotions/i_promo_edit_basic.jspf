@@ -33,7 +33,7 @@
 				</tr>
 				<tr>
 					<td class="promo_detail_label"><span <fd:ErrorHandler result="<%=result%>" name="nameEmpty" id="errorMsg">class="error"</fd:ErrorHandler>>* Name:</span></td>
-					<td class="alignL"><input type="text" id="promo_name" name="promo_name" class="w300px" value="<%= promotion.getName() %>" maxlength="50" /></td>
+					<td class="alignL"><input type="text" id="promo_name" name="promo_name" class="w300px" value="<%= promotion.getName() %>" maxlength="32" /></td>
 				</tr>
 				<tr>
 					<td class="promo_detail_label"><span <fd:ErrorHandler result="<%=result%>" name="descriptionEmpty" id="errorMsg">class="error"</fd:ErrorHandler>>* Description:</span></td>
