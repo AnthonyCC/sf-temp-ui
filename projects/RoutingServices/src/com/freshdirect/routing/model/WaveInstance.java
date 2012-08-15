@@ -46,6 +46,7 @@ public class WaveInstance  extends BaseModel implements IWaveInstance {
 	
 	private EnumWaveInstancePublishSrc source;
 	private String originFacility;
+	private String destinationFacility;
 	private String routingCode;
 	
 	private String tODRestrictionModel;
@@ -422,6 +423,14 @@ public class WaveInstance  extends BaseModel implements IWaveInstance {
 
 	public void setTODRestrictionModel(String tODRestrictionModel) {
 		tODRestrictionModel = tODRestrictionModel;
+	}
+
+	public String getDestinationFacility() {
+		return destinationFacility;
+	}
+
+	public void setDestinationFacility(String destinationFacility) {
+		this.destinationFacility = destinationFacility;
 	}
 	
 }

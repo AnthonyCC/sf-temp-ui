@@ -244,7 +244,9 @@ public abstract class AbstractHandOffAction {
 														.getPreferredRunTime() == routeModel
 														.getPreferredRunTime()
 												&& waveInstance.getMaxRunTime() == routeModel
-														.getMaxRunTime()) {
+														.getMaxRunTime()
+														
+												&& waveInstance.getOriginFacility().equals(routeModel.getOriginId())) {
 											foundWave = true;
 											routeModel
 													.copyWaveProperties(waveInstance);

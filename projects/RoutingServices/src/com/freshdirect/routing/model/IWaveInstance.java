@@ -97,6 +97,10 @@ public interface IWaveInstance {
 	String getOriginFacility();
 	void setOriginFacility(String originFacility);
 
+	String getDestinationFacility();
+	void setDestinationFacility(String destinationFacility);
+
+	
 	String getRoutingCode();
 	void setRoutingCode(String routingCode);
 	

@@ -407,14 +407,15 @@ public class RoutingInfoDAO extends BaseDAO implements IRoutingInfoDAO   {
 		return result;
 	}
 	
-	private static final String GET_PLANBYDATE_QRY = "select P.PLAN_DATE DISPATCH_DATE, P.ZONE ZONE, P.CUTOFF_DATETIME CUT_OFF " +
+	private static final String GET_PLANBYDATE_QRY = "select P.PLAN_DATE DISPATCH_DATE, P.ZONE ZONE, P.CUTOFF_DATETIME CUT_OFF, P.ORIGIN_FACILITY, P.DESTINATION_FACILITY " +
 			", P.START_TIME DISPATCH_TIME, P.FIRST_DLV_TIME, P.LAST_DLV_TIME " +
 			", Z.STEM_TO_TIME TO_ZONETIME, Z.STEM_FROM_TIME FROM_ZONETIME, Z.LOADING_PRIORITY " +
-		  //"from transp.plan p, transp.zone z where P.PLAN_DATE = ? and P.ZONE = Z.ZONE_CODE and P.ZONE is not null and (P.IS_OPEN = '' or P.IS_OPEN is null) " +
-			"from transp.plan p, transp.zone z where P.PLAN_DATE = ? and P.ZONE = Z.ZONE_CODE and P.ZONE is not null " +
+		 	"from transp.plan p, transp.zone z where P.PLAN_DATE = ? and P.ZONE = Z.ZONE_CODE and P.ZONE is not null " +
 			"order by P.ZONE, P.CUTOFF_DATETIME, P.FIRST_DLV_TIME";
 	//Result Description -> Map<ZoneCode, Map<DispatchTIme, Map<CutOffTime, IWaveInstance>>>
 	public Map<String, Map<RoutingTimeOfDay, Map<RoutingTimeOfDay, List<IWaveInstance>>>> getPlannedDispatchTree(final Date deliveryDate)  throws SQLException {
+		
+		final Map<String, TrnFacility> facilityMap = retrieveTrnFacilityLocations();
 		
 		final Map<String, Map<RoutingTimeOfDay, Map<RoutingTimeOfDay, List<IWaveInstance>>>> result = new HashMap<String
 																							, Map<RoutingTimeOfDay, Map<RoutingTimeOfDay, List<IWaveInstance>>>>();
@@ -442,6 +443,9 @@ public class RoutingInfoDAO extends BaseDAO implements IRoutingInfoDAO   {
 				    		int toZoneTime = rs.getInt("TO_ZONETIME");
 				    		int fromZoneTime = rs.getInt("FROM_ZONETIME");
 				    		
+				    		String originFacility =  rs.getString("ORIGIN_FACILITY");
+				    		String destinationFacility =  rs.getString("DESTINATION_FACILITY");
+				    		
 				    		if(_firstDeliveryTime != null && _lastDeliveryTime != null 
 				    					&& _startTime != null && _cutOffTime != null && _zoneCode != null) {
 				    			
@@ -462,6 +466,9 @@ public class RoutingInfoDAO extends BaseDAO implements IRoutingInfoDAO   {
 					    		waveInstance.setWaveStartTime(_waveStartTime);
 					    		waveInstance.setMaxRunTime(runTime);
 					    		waveInstance.setPreferredRunTime(runTime);
+					    		
+					    		waveInstance.setOriginFacility((facilityMap.get(originFacility)!=null)?facilityMap.get(originFacility).getName():"");
+					    		waveInstance.setDestinationFacility((facilityMap.get(destinationFacility)!=null)?facilityMap.get(destinationFacility).getName():"");
 					    		
 					    		IAreaModel areaModel = new AreaModel();
 					    		areaModel.setAreaCode(_zoneCode);
