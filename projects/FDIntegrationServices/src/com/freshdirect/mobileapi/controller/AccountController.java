@@ -35,6 +35,7 @@ import com.freshdirect.mobileapi.model.ShipToAddress;
 import com.freshdirect.mobileapi.model.Timeslot;
 import com.freshdirect.mobileapi.service.ServiceException;
 import com.freshdirect.mobileapi.util.ListPaginator;
+import com.freshdirect.webapp.taglib.fdstore.AccountActivityUtil;
 
 public class AccountController extends BaseController {
 
@@ -78,7 +79,9 @@ public class AccountController extends BaseController {
         } else if (ACTION_GET_ORDER_HISTORY.equals(action)) {
             model = getOrderHistory(model, user, request, response);
         } else if (ACTION_ACCEPT_DP_TERMSANDCONDITIONS.equals(action)) {
-            FDCustomerManager.storeDPTCAgreeDate(user.getFDSessionUser().getIdentity().getErpCustomerPK(), new Date());
+           // APPDEV-2567 Logging DP Terms acceptance - mobile API
+            FDCustomerManager.storeDPTCAgreeDate(AccountActivityUtil.getActionInfo(request.getSession())
+            										, user.getFDSessionUser().getIdentity().getErpCustomerPK(), new Date());
             setResponseMessage(model, Message.createSuccessMessage(MSG_ACCEPT_DP_TERMSANDCONDITIONS), user);
         }
         return model;
