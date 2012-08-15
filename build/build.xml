@@ -2304,14 +2304,14 @@
 			<!-- copy dependent jar files -->
 	  		<copy todir="${work.dir}/Athena/WEB-INF/lib">
 	  			<fileset dir="${thirdparty.home}" includes="log4j.jar"/>
-				<fileset dir="${thirdparty.home}" includes="servlet-api.jar"/>
+				<!-- <fileset dir="${thirdparty.home}" includes="servlet-api.jar"/> -->
 				<fileset dir="${thirdparty.home}" includes="simple-xml-2.6.6.jar"/>
 				<fileset dir="${thirdparty.home}" includes="guava-12.0.jar"/>
 				<fileset dir="${thirdparty.home}" includes="c3p0-0.9.2-pre4.jar"/>
 				<fileset dir="${thirdparty.home}" includes="c3p0-oracle-thin-extras-0.9.2-pre4.jar"/>
 				<fileset dir="${thirdparty.home}" includes="mchange-commons-java-0.2.2.jar"/>
 				<fileset dir="${thirdparty.home}" includes="sapjco.jar"/>
-				<fileset dir="${thirdparty.home}" includes="ojdbc6.jar"/>
+				<!-- <fileset dir="${thirdparty.home}" includes="ojdbc6.jar"/> -->
 				<fileset dir="${thirdparty.home}" includes="vaadin-6.8.2.jar"/>				
 			</copy>
 	
