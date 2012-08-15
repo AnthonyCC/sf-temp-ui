@@ -107,6 +107,7 @@
 		String password = NVL.apply(request.getParameter(EnumUserInfoName.PASSWORD.getCode()), "");
 		String passwordhint = NVL.apply(request.getParameter(EnumUserInfoName.PASSWORD_HINT.getCode()), "");	
 		String zipcode = NVL.apply(request.getParameter(EnumUserInfoName.DLV_ZIPCODE.getCode()), "");	
+		String posn = "right";
 
 		if(session.getAttribute("LITESIGNUP_COMPLETE") != null) {
 			//phew finally complete
@@ -180,7 +181,7 @@
 			<tr><td><span class="bodyCopy" style="font-size:9px;">Confirm Email Address <span class="star">*</span> </span></td></tr>
 			<tr><td><input type="text" class="text11ref inputDef" maxlength="128" size="31" name="<%=EnumUserInfoName.REPEAT_EMAIL.getCode()%>" value="<%=repeat_email%>" id="confirm_email"></td></tr>
 			<tr><td><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.REPEAT_EMAIL.getCode()%>' id='errorMsg'>
-			<span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>&nbsp;</td></tr>
+			<span class="text11rbold"><%=errorMsg%></span><%posn="center";%></fd:ErrorHandler>&nbsp;</td></tr>
 			
 			<tr><td><span class="bodyCopy" style="font-size:9px;">Choose Password <span class="star">*</span> </span> </td></tr>
 			<tr><td><input type="password"  class="text11ref inputUser" size="31" name="<%=EnumUserInfoName.PASSWORD.getCode()%>" id="password1">
@@ -189,7 +190,7 @@
 			
 			<tr><td><span class="bodyCopy" style="font-size:9px;">Confirm Password <span class="star">*</span> </span> </td></tr>
 			<tr><td><input type="password"  class="text11ref inputUser" size="31" name="<%=EnumUserInfoName.REPEAT_PASSWORD.getCode()%>" id="password1"></td></tr>
-			<tr><td><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.REPEAT_PASSWORD.getCode()%>' id='errorMsg'> <span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>&nbsp;</td></tr>
+			<tr><td><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.REPEAT_PASSWORD.getCode()%>' id='errorMsg'> <span class="text11rbold"><%=errorMsg%></span><%posn="center";%></fd:ErrorHandler>&nbsp;</td></tr>
 			
 			<tr><td><span class="bodyCopy" style="font-size:9px;">Security Question <span class="star">*</span> </span> <br/>
 			<span class="text9" style="color:gray;">What is your town of birth or mother's  maiden name? </span></td></tr>
@@ -203,7 +204,7 @@
 			<tr><td>
 			<a onclick="document.litesignup.submit();" href="#" class="butText" style="font-weight:bold;font-size:14px;"><img alt="" src="/media_stat/images/buttons/signup.gif"></a>
 			</td></tr>
-			<tr><td align="right" style="font:Verdana;font-weight:bold;font-size:12 pt;padding:10px;">Having problems signing up? Call 1-212-796-8002
+			<tr><td align="<%=posn%>" style="font:Verdana;font-weight:bold;font-size:12 pt;padding:10px;">Having problems signing up? Call 1-212-796-8002
 			</td></tr>
 			</table>
 		</form>
