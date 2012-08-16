@@ -80,6 +80,9 @@ public class DBCall implements ICall  {
 				if(rs != null) {
 					rs.close();
 				}
+				if(dbConnection != null) {
+					dbConnection.close();
+				}
 			} catch (Exception ex) {
 				ex.printStackTrace();
 			}

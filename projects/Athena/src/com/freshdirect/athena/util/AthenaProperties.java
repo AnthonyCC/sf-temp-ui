@@ -19,6 +19,7 @@ public class AthenaProperties implements ISystemProperty {
 	static {
         defaults.put(CONFIG_REFRESH_FREQUENCY, "300000");
         defaults.put(DEFAULT_CACHE_FEQUENCY, "600000");
+        defaults.put(XCELSIUS_ROOT, "xcelsius");
         refresh();
     }
 	
@@ -28,7 +29,11 @@ public class AthenaProperties implements ISystemProperty {
 	
 	public static int getDefaultCacheFrequency() {
         return Integer.parseInt(get(DEFAULT_CACHE_FEQUENCY));
-    }	
+    }
+	
+	public static String getDefaultXcelsiusRoot() {
+        return get(XCELSIUS_ROOT);
+    }
 
     private AthenaProperties() {
     }

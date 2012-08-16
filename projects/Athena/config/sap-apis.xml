@@ -19,9 +19,9 @@
 						<call><![CDATA[ZBAPI_WAVE_ORDER_PACK_COUNT]]>
 						<parameters>
 							<parameter>
-								<name>I_VDATU</name>
+								<name>i_vdatu</name>
 								<type>DATE</type>
-								<default>2012-08-14</default>								
+								<default>$SYSDATE</default>								
 							</parameter>							
 						</parameters>
 						<cache>

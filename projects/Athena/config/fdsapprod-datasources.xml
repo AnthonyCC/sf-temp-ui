@@ -9,7 +9,7 @@
 				<password>direct</password>
 				<client>300</client>
       			<systemno>20</systemno>
-      			<poolsize>1</poolsize>
+      			<poolsize>5</poolsize>
 		</datasource>    
 	</datasources>
 </datasourceconfig>

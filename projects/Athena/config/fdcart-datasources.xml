@@ -21,7 +21,7 @@
 				<password>usro</password>
 				<client>y</client>
       			<systemno>x</systemno>
-      			<poolsize>1</poolsize>
+      			<poolsize>5</poolsize>
 		</datasource>    
 	</datasources>
 </datasourceconfig>

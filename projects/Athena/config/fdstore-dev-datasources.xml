@@ -9,7 +9,7 @@
 				<password>fdstore_prda</password>
 				<client></client>
       			<systemno></systemno>
-      			<poolsize>1</poolsize>
+      			<poolsize>5</poolsize>
 		</datasource>    
 	</datasources>
 </datasourceconfig>

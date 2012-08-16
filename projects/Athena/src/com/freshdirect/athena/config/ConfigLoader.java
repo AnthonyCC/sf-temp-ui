@@ -59,7 +59,7 @@ public class ConfigLoader {
 				}
 			}
 			ConfigGroup result = new ConfigGroup(athenaConfig, dsConfigs, serviceConfigs); 
-			LOGGER.debug("ConfigLoader ::: result"+result);
+			//LOGGER.debug("ConfigLoader ::: result"+result);
 			return result;
 		} catch (Exception e) {
 			throw new ConfigException(e, ConfigExceptionType.LOAD_FAILED);

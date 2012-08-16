@@ -16,6 +16,12 @@
 	</servlet>
 	
 	<servlet>
+		<servlet-name>dashboard</servlet-name>
+		<servlet-class>com.freshdirect.athena.DashboardServlet</servlet-class>
+		<load-on-startup>10</load-on-startup>
+	</servlet>
+	
+	<servlet>
 	    <servlet-name>athenaui</servlet-name>
 	    <servlet-class>com.vaadin.terminal.gwt.server.ApplicationServlet</servlet-class>
 	    <init-param>
@@ -28,6 +34,11 @@
 	 		<param-value>true</param-value>
 	    </init-param>
   </servlet>
+  
+  <servlet-mapping>
+    <servlet-name>dashboard</servlet-name>
+    <url-pattern>/dashboard/*</url-pattern>
+  </servlet-mapping>
   
   <servlet-mapping>
     <servlet-name>athenaui</servlet-name>
