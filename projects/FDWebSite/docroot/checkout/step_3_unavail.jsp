@@ -50,7 +50,7 @@ if(true ){//if(isEBTBlocked ){
 		<br><br>
 			
 		<font class="text12bold" color="#CC3300">
-			All items will remain in your cart until you click below to continue Checkout.
+			All items will remain in your cart until you click the button below to proceed with checkout.
 		</font>
 		
 		<br><img src="/media_stat/images/layout/clear.gif" width="1" height="4">
