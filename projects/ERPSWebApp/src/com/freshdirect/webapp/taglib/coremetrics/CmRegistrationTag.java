@@ -12,14 +12,10 @@ import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
 
-public class CmRegistrationTag extends AbstractCmTag {
+public class CmRegistrationTag extends AbstractCmTag implements SessionName{
 
 	private static final Logger LOGGER = LoggerFactory.getInstance(CmRegistrationTag.class);
 	private static final String REGISTRATION_TAG_FS = "cmCreateRegistrationTag(%s,%s,%s,%s,%s,%s,%s);";
-	private static final String PENDING_REGISTRATION_EVENT = "pendingCoremetricsRegistrationEvent";
-	private static final String PENDING_LOGIN_EVENT = "pendingCoremetricsLoginEvent";
-	private static final String REGISTRATION_LOCATION = "coremetricsRegistrationLocation";
-	private static final String REGISTRATION_ORIG_ZIP_CODE = "coremetricsRegistrationOrigZipCode";
 	
 	private RegistrationTagModelBuilder builder = new RegistrationTagModelBuilder();
 	private boolean force;

@@ -48,7 +48,7 @@ public class WaiveDeliveryCharge {
 	}
 
 	private static void waiveCharge(FDUserI user, String promoCode) {
-		user.getShoppingCart().setChargeWaived(EnumChargeType.DELIVERY, true, promoCode);
+		user.getShoppingCart().setChargeWaived(EnumChargeType.DELIVERY, true, promoCode, false);
 	}
 
 	private static void revokeWaiveCharge(FDUserI user, String promoCode) {

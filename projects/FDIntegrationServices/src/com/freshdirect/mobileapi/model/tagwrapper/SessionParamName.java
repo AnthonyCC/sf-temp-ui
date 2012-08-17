@@ -58,6 +58,14 @@ public interface SessionParamName {
      public static final String SESSION_PARAM_REFERRAL_NAME = "REFERRALNAME";
      
      public static final String SESSION_PARAM_PYMT_VERIFYFLD = "verifyFail";
+     
+     public static final String SESSION_PARAM_PENDING_REGISTRATION_EVENT = SessionName.PENDING_REGISTRATION_EVENT;
+     
+     public static final String SESSION_PARAM_PENDING_LOGIN_EVENT = SessionName.PENDING_LOGIN_EVENT;
+
+     public static final String SESSION_PARAM_REGISTRATION_LOCATION = SessionName.REGISTRATION_LOCATION;
+
+     public static final String SESSION_PARAM_REGISTRATION_ORIG_ZIP_CODE = SessionName.REGISTRATION_ORIG_ZIP_CODE;
 
     /*
      *             session.removeAttribute(SessionName.AUTHORIZED_PEOPLE);
