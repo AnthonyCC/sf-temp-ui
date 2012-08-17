@@ -49,6 +49,7 @@ import com.freshdirect.mobileapi.model.ShipToAddress;
 import com.freshdirect.mobileapi.model.User;
 import com.freshdirect.mobileapi.model.tagwrapper.SessionParamName;
 import com.freshdirect.mobileapi.service.ServiceException;
+import com.freshdirect.webapp.taglib.fdstore.AccountActivityUtil;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
 
 public class CheckoutController extends BaseController {
@@ -335,7 +336,7 @@ public class CheckoutController extends BaseController {
     private ModelAndView acceptDeliveryPassTerms(ModelAndView model, SessionUser user, HttpServletRequest request) throws FDException, JsonException {
     	
     	try {
-			FDCustomerManager.storeDPTCAgreeDate(user.getFDSessionUser().getIdentity().getErpCustomerPK(), new Date());
+			FDCustomerManager.storeDPTCAgreeDate(AccountActivityUtil.getActionInfo(request.getSession()), user.getFDSessionUser().getIdentity().getErpCustomerPK(), new Date());
 		} catch(FDResourceException exp) {
 			exp.printStackTrace();
 			setResponseMessage(model, Message.createFailureMessage(MSG_ACCEPT_DP_TERMSANDCONDITIONS_FAILED), user);
