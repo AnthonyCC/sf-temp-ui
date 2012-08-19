@@ -1,12 +1,14 @@
 package com.freshdirect.athena.config;
 
+import java.io.Serializable;
+
 import org.simpleframework.xml.Element;
 import org.simpleframework.xml.Root;
 
 import com.freshdirect.athena.connection.ConnectionType;
 
 @Root
-public class Datasource { 
+public class Datasource implements Serializable { 
 
 	@Element
 	private String type;

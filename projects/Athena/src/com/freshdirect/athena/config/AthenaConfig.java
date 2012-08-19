@@ -1,6 +1,7 @@
 package com.freshdirect.athena.config;
 
 import java.io.File;
+import java.io.Serializable;
 import java.util.List;
 
 import org.simpleframework.xml.ElementList;
@@ -9,7 +10,7 @@ import org.simpleframework.xml.Serializer;
 import org.simpleframework.xml.core.Persister;
 
 @Root
-public class AthenaConfig { // athena-config.xml
+public class AthenaConfig implements Serializable { // athena-config.xml
 		
 	@ElementList
 	private List<String> datasources;

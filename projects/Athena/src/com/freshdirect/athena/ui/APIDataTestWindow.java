@@ -21,9 +21,7 @@ import com.vaadin.ui.Window;
 public class APIDataTestWindow extends Window {
     
 	private Table emContainer = new Table();
-	
-	Serializer serializer = new Persister();
-	    
+		    
 	public APIDataTestWindow() {
 		
     	super("API Data Tester");
@@ -56,8 +54,12 @@ public class APIDataTestWindow extends Window {
 	        	strBuf.append(inputLine);
 	        }
 	        
-	        Data data = serializer.read(Data.class, strBuf.toString());
-	        initTable(data);
+	        Serializer serializer = new Persister();
+	        
+	        if(serializer != null) {
+	        	Data data = serializer.read(Data.class, strBuf.toString());
+	        	initTable(data);
+	        }
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

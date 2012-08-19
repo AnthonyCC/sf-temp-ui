@@ -1,10 +1,11 @@
 <athenaconfig>
 	<datasources>
-		<config-file>fdstore-dev-datasources.xml</config-file>
-		<config-file>fdsapdev-datasources.xml</config-file>
+		<config-file>fdcart-datasources.xml</config-file>
 		<config-file>fdsapprod-datasources.xml</config-file>
+		<config-file>fdstore-prod-datasources.xml</config-file>
 	</datasources>
 	<services>
+		<config-file>fdcart-apis.xml</config-file>
 		<config-file>fdstore-apis.xml</config-file>
 		<config-file>sap-apis.xml</config-file>
 	</services>

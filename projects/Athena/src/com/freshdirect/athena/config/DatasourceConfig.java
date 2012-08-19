@@ -1,6 +1,7 @@
 package com.freshdirect.athena.config;
 
 import java.io.File;
+import java.io.Serializable;
 import java.util.List;
 
 import org.simpleframework.xml.Attribute;
@@ -10,7 +11,7 @@ import org.simpleframework.xml.Serializer;
 import org.simpleframework.xml.core.Persister;
 
 @Root
-public class DatasourceConfig { //fdcart-datasources.xml, fdsapprod-datasources.xml
+public class DatasourceConfig implements Serializable{ //fdcart-datasources.xml, fdsapprod-datasources.xml
 	
 	@ElementList
 	private List<Datasource> datasources;

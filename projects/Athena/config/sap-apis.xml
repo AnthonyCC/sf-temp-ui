@@ -1,7 +1,7 @@
 <serviceconfig name="sap_bapis">
 	<apis>
 		  <api name="orderdetails"> 
-		  		<datasource>sapdev</datasource>
+		  		<datasource>prod_sap</datasource>
 				<endpoint>orderdetails</endpoint>
 						<call><![CDATA[ZBAPI_ORDER_DETAILS]]>
 						<parameters>							
@@ -14,7 +14,7 @@
 		  </api> 
 		  
 		  <api name="wavestats"> 
-		  		<datasource>sapprod</datasource>
+		  		<datasource>prod_sap</datasource>
 				<endpoint>wavestats</endpoint>
 						<call><![CDATA[ZBAPI_WAVE_ORDER_PACK_COUNT]]>
 						<parameters>
@@ -26,9 +26,32 @@
 						</parameters>
 						<cache>
 							<maxsize></maxsize>
-							<frequency></frequency>
+							<frequency>300</frequency>
 						</cache>
 						</call>
-		  </api>    
+		  </api> 
+		  
+		  <api name="shippingstats"> 
+				<datasource>prod_sap</datasource>
+				<endpoint>shippingstats</endpoint>
+						<call><![CDATA[ZBAPI_SHIP_LOAD]]>
+						<parameters>
+							<parameter>
+								<name>delivery_date</name>
+								<type>DATE</type>
+								<default>$SYSDATE</default>								
+							</parameter>
+							<parameter>
+								<name>route</name>
+								<type>STRING</type>
+								<default></default>								
+							</parameter>
+						</parameters>
+						<cache>
+							<maxsize></maxsize>
+							<frequency>300</frequency>
+						</cache>
+						</call>
+		  </api>
 	</apis>
 </serviceconfig>

@@ -3,9 +3,10 @@ package com.freshdirect.athena.util;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.List;
 
 public class TypeUtil {
 	
@@ -13,23 +14,30 @@ public class TypeUtil {
 	
 	private static final DateFormat DATETIME_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//2008-10-31
 	
-	private static Map<String, Object> defaultParameters = new ConcurrentHashMap<String, Object>();
+	private static List<String> SUPPORTED_EXPRESSION = new ArrayList<String>();
 	
+	private static final String SYSDATE = "$SYSDATE";
 	static {
-		defaultParameters.put("$SYSDATE", new Date());
+		SUPPORTED_EXPRESSION.add(SYSDATE);
+	}
+	
+	public static boolean isExpressionSupported(String input) {
+		return SUPPORTED_EXPRESSION.contains(input);
+	}
+	
+	public static String evaluateExpression(String input) {
+		if(SYSDATE.equalsIgnoreCase(input)) {
+			return DATE_FORMAT.format(Calendar.getInstance().getTime());
+		}
+		return null;
 	}
 	
 	public static long getTimestampMilliseconds(String input) {
-		if(input != null && defaultParameters.containsKey(input)) {
-			return ((Date)defaultParameters.get(input)).getTime();
-		}
 		return getTimestamp(input).getTime();
 	}
 	
 	public static Date getTimestamp(String input) {
-		if(input != null && defaultParameters.containsKey(input)) {
-			return ((Date)defaultParameters.get(input));
-		}
+		
 		try {
 			return DATETIME_FORMAT.parse(input);
 		} catch (ParseException e) {
@@ -40,16 +48,11 @@ public class TypeUtil {
 	}
 	
 	public static long getDateMilliseconds(String input) {
-		if(input != null && defaultParameters.containsKey(input)) {
-			return ((Date)defaultParameters.get(input)).getTime();
-		}
 		return getDate(input).getTime();
 	}
 	
 	public static Date getDate(String input) {
-		if(input != null && defaultParameters.containsKey(input)) {
-			return ((Date)defaultParameters.get(input));
-		}
+		
 		try {
 			return DATE_FORMAT.parse(input);
 		} catch (ParseException e) {
@@ -60,9 +63,7 @@ public class TypeUtil {
 	}
 	
 	public static Integer getInt(String input) {
-		if(input != null && defaultParameters.containsKey(input)) {
-			return ((Integer)defaultParameters.get(input));
-		}
+		
 		Integer result = new Integer(0);
 		try {
 			result =  Integer.parseInt(input);
@@ -74,9 +75,7 @@ public class TypeUtil {
 	}
 	
 	public static Double getDouble(String input) {
-		if(input != null && defaultParameters.containsKey(input)) {
-			return ((Double)defaultParameters.get(input));
-		}
+		
 		Double result = new Double(0);
 		try {
 			result =  Double.parseDouble(input);
@@ -88,9 +87,7 @@ public class TypeUtil {
 	}
 	
 	public static Float getFloat(String input) {
-		if(input != null && defaultParameters.containsKey(input)) {
-			return ((Float)defaultParameters.get(input));
-		}
+		
 		Float result = new Float(0);
 		try {
 			result =  Float.parseFloat(input);

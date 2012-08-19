@@ -1,10 +1,12 @@
 package com.freshdirect.athena.config;
 
+import java.io.Serializable;
+
 import org.simpleframework.xml.Element;
 import org.simpleframework.xml.Root;
 
 @Root
-public class Cache {
+public class Cache implements Serializable {
 	
 	@Element(required=false)
 	private int maxsize;

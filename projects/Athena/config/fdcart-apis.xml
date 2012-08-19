@@ -1,8 +1,8 @@
 <serviceconfig name="prod_pickcart_db">
 	<apis>
-		  <api name="pickcart1"> 
-		  		<datasource>pickcart1</datasource>
-				<endpoint>pickcart1</endpoint>
+		  <api name="cartpackstats"> 
+		  		<datasource>prod_fdcart</datasource>
+				<endpoint>cartpackstats</endpoint>
 						<call><![CDATA[
 		    	SELECT y.user_id,
 			         y.name,

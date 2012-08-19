@@ -1,5 +1,6 @@
 package com.freshdirect.athena.config;
 
+import java.io.Serializable;
 import java.util.List;
 
 import org.simpleframework.xml.Attribute;
@@ -8,7 +9,7 @@ import org.simpleframework.xml.ElementList;
 import org.simpleframework.xml.Root;
 
 @Root
-public class Api {
+public class Api implements Serializable {
 		
 	@Attribute
 	private String name;

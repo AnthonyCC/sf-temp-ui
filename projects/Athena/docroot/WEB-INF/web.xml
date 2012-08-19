@@ -12,13 +12,13 @@
 	<servlet>
 		<servlet-name>athena</servlet-name>
 		<servlet-class>com.freshdirect.athena.AthenaServlet</servlet-class>
-		<load-on-startup>10</load-on-startup>
+		<load-on-startup>25</load-on-startup>
 	</servlet>
 	
 	<servlet>
 		<servlet-name>dashboard</servlet-name>
 		<servlet-class>com.freshdirect.athena.DashboardServlet</servlet-class>
-		<load-on-startup>10</load-on-startup>
+		<load-on-startup>25</load-on-startup>
 	</servlet>
 	
 	<servlet>

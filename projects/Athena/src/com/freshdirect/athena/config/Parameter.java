@@ -1,10 +1,12 @@
 package com.freshdirect.athena.config;
 
+import java.io.Serializable;
+
 import org.simpleframework.xml.Element;
 import org.simpleframework.xml.Root;
 
 @Root
-public class Parameter implements Cloneable {
+public class Parameter implements Cloneable, Serializable {
 	
 	@Element(required=false)
 	private String name;

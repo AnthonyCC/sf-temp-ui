@@ -3,7 +3,7 @@
 		  <datasource> 
 				<type>DB</type>
 				<driver>oracle.jdbc.driver.OracleDriver</driver>
-				<name>pickcart1</name>
+				<name>prod_fdcart</name>
 				<url><![CDATA[jdbc:oracle:thin:@(DESCRIPTION =
 				 (ADDRESS = (PROTOCOL = TCP)(HOST = db01-vip.plprd01.nyc1.freshdirect.com)(PORT = 1521))
 				 (ADDRESS = (PROTOCOL = TCP)(HOST = db02-vip.plprd01.nyc1.freshdirect.com)(PORT = 1521))
@@ -19,9 +19,9 @@
 				)]]></url>
 				<user>usro</user>
 				<password>usro</password>
-				<client>y</client>
-      			<systemno>x</systemno>
-      			<poolsize>5</poolsize>
+				<client></client>
+      			<systemno></systemno>
+      			<poolsize>10</poolsize>
 		</datasource>    
 	</datasources>
 </datasourceconfig>

@@ -9,7 +9,6 @@ import org.apache.log4j.Logger;
 
 import com.freshdirect.athena.common.SystemMessageManager;
 import com.freshdirect.athena.config.Api;
-import com.freshdirect.athena.config.ConfigManager;
 import com.freshdirect.athena.config.Datasource;
 import com.freshdirect.athena.config.Parameter;
 import com.freshdirect.athena.connection.BasePool;
@@ -18,6 +17,7 @@ import com.freshdirect.athena.connection.DBPool;
 import com.freshdirect.athena.connection.JCOPool;
 import com.freshdirect.athena.data.Data;
 import com.freshdirect.athena.exception.PoolException;
+import com.freshdirect.athena.util.TypeUtil;
 
 
 public class CacheManager {
@@ -147,6 +147,11 @@ public class CacheManager {
 				try {
 					Parameter actualParam = (Parameter)param.clone();
 					actualParameters.add(actualParam);
+					
+					if(TypeUtil.isExpressionSupported(actualParam.getValue())) {
+						actualParam.setValue(TypeUtil.evaluateExpression(actualParam.getValue()));
+					}
+					
 					if(params.containsKey(actualParam.getName())) {
 						actualParam.setValue(params.get(actualParam.getName()));
 					}
