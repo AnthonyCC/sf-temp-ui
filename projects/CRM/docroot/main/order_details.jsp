@@ -98,12 +98,21 @@
 <div class="content_<%=forPrint?"fixed":"scroll"%>" style="height:72%;">
 <% String receipt = "true"; %>
 <%if(!isGiftCardOrder)
-					if( order.getDeliveryReservation()!=null &&  order.getDeliveryReservation().getStartTime()!=null)
+					if(order instanceof FDOrderI && order.getDeliveryReservation()!=null &&  order.getDeliveryReservation().getStartTime()!=null 
+					&& order.getShippingInfo()!=null && order.getShippingInfo().getTruckNumber()!=null && order.getShippingInfo().getStopSequence()!=null)
 					{
 					airclic_msg  = CCFormatter.defaultFormatDate(order.getDeliveryReservation().getStartTime())
 							.equals(CCFormatter.defaultFormatDate(DateUtil.getCurrentTime())) && !EnumSaleStatus.CANCELED.equals(order.getOrderStatus());
 					}
 				%>
+
+<% 
+if(airclic_msg && FDStoreProperties.isAirclicEnabled())
+{%>
+<%@ include file="/includes/airclic_msg.jspf%>
+<% 	
+}
+%>
 	<%@ include file="/includes/i_order_dlv_payment.jspf"%>
 	
 	<%	boolean showEditOrderButtons = false;

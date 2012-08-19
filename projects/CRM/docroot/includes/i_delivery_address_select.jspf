@@ -160,7 +160,9 @@
 <% 
 if(airclic_msg && FDStoreProperties.isAirclicEnabled())
 {%>
-<%@ include file="/includes/airclic_msg.jspf%>
+<div>
+	<p><a href="javascript:void(0);" onclick="loadPopup()">Delivery Instructions for Driver</a></p>	
+</div>
 <% 	
 }
 %>

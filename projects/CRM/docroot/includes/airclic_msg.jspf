@@ -181,7 +181,7 @@ cellspacing:10px;
 		<td><label for="route">Route: </label> </td><td> <input disabled="disabled" name="route" id="route" type="text" value="<%= shippingInfo.getTruckNumber() %>"></td>
 		<tr>
 		<td><label for="stop">Stop: </label> </td><td><input disabled="disabled" name="stop" id="stop" type="text" value="<%= shippingInfo.getStopSequence()%>"></td>
-		<input type="hidden" name="source" id="source" value="<%=source%>" />
+		<input type="hidden" name="source" id="source" value="CRM" />
 		<input type="hidden" name="userId" id="userId" value="<%=request.getRemoteUser()%>" />
 		<input type="hidden" name="orderId" id="orderId" value="<%=_order.getErpSalesId()%>" />
 		
@@ -204,17 +204,19 @@ cellspacing:10px;
 		<td></td>
 		<td><textarea rows="4" cols="25" id="messageDesc"></textarea></td>
 		
+		
+		<tr><td><input onclick="addEntry($F('ddate'), $F('route'), $F('stop'), $F('messageDesc'), $F('source'), $F('userId'), $F('orderId'));" value="Send" type="button" /></td>
 		</table>
 		<% 
 		JSONRPCBridge j = JSONRPCBridge.getGlobalBridge();
 		if(j != null) {
 			j.registerObject("manager", AirclicManager.getInstance());
 		} %>
-		<input onclick="addEntry($F('ddate'), $F('route'), $F('stop'), $F('messageDesc'), $F('source'), $F('userId'), $F('orderId'));" value="Send" type="button"><br>
+		<br>
 	
 	<%} %>
 	</div>
+	
 
-<div>
-	<p><a href="javascript:void(0);" onclick="loadPopup()">Delivery Instructions for Driver</a></p>	
-</div>
+
+
