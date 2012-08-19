@@ -1659,7 +1659,7 @@ public class DispatchController extends AbstractMultiActionController {
 
 		List routingRouteIds = Arrays.asList(StringUtil.decodeStrings(request.getParameter("routeId")));
 		String routeDate = request.getParameter("rdate");
-		
+		long startTime = System.currentTimeMillis();
 		try {
 			if(routingRouteIds != null) {
 				
@@ -1698,6 +1698,9 @@ public class DispatchController extends AbstractMultiActionController {
 			e.printStackTrace();
 			saveMessage(request, getMessage("app.actionmessage.123", null));
 		}
+		long endTime = System.currentTimeMillis();
+		System.out.println("Driving Directions Response Time in sec "+(endTime- startTime) /1000);
+		
 		response.setContentType("application/pdf");
 		return null;
 	}
@@ -1877,7 +1880,7 @@ public class DispatchController extends AbstractMultiActionController {
 					if(route.getRoadNetRouteIds()!=null && route.getRoadNetRouteIds().size()>0)
 					{
 						_roadNetRoutes = new HashSet(route.getRoadNetRouteIds());
-						route.setDrivingDirection(proxy.buildDriverDirections(_roadNetRoutes, sessionId, schedulerId.getRegionId()));
+						route.setDrivingDirection(proxy.buildDriverDirections(_roadNetRoutes, sessionId, schedulerId));
 					}
 					else
 					{ // This else block is only as a fallback. Going forward the RoadNet ID will be stored in storefront and does not need an extra call to UPS.
@@ -1895,7 +1898,7 @@ public class DispatchController extends AbstractMultiActionController {
 									}
 								}
 							if(_roadNetRoutes.size()>0)
-								route.setDrivingDirection(proxy.buildDriverDirections(_roadNetRoutes, sessionId, schedulerId.getRegionId()));
+								route.setDrivingDirection(proxy.buildDriverDirections(_roadNetRoutes, sessionId, schedulerId));
 							else
 								throw new ReportGenerationException(
 										"Unable to generate driver directions");

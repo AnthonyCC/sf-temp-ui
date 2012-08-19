@@ -286,11 +286,13 @@ class PlanComparator extends LogComparator
 			{
 				updates.add(obj);
 			}
-			if(( obj=compareValues("ORIGIN_FACILITY",oldPlan.getOriginFacility().getFacilityId(),newPlan.getOriginFacility().getFacilityId()))!=null)
+			if(oldPlan.getOriginFacility()!=null && newPlan.getOriginFacility()!=null &&
+					( obj=compareValues("ORIGIN_FACILITY",oldPlan.getOriginFacility().getFacilityId(),newPlan.getOriginFacility().getFacilityId()))!=null)
 			{
 				updates.add(obj);
 			}
-			if(( obj=compareValues("DESTINATION_FACILITY",oldPlan.getDestinationFacility().getFacilityId(),newPlan.getDestinationFacility().getFacilityId()))!=null)
+			if(oldPlan.getDestinationFacility()!=null && newPlan.getDestinationFacility()!=null &&
+					( obj=compareValues("DESTINATION_FACILITY",oldPlan.getDestinationFacility().getFacilityId(),newPlan.getDestinationFacility().getFacilityId()))!=null)
 			{
 				updates.add(obj);
 			}
@@ -406,11 +408,13 @@ class DispatchComparator extends LogComparator
 			{
 				updates.add(obj);
 			}
-			if(( obj=compareValues("ORIGIN_FACILITY",oldDispatch.getOriginFacility().getFacilityId(),newDispatch.getOriginFacility().getFacilityId()))!=null)
+			if(oldDispatch.getOriginFacility()!=null && newDispatch.getOriginFacility()!=null && 
+					( obj=compareValues("ORIGIN_FACILITY",oldDispatch.getOriginFacility().getFacilityId(),newDispatch.getOriginFacility().getFacilityId()))!=null)
 			{
 				updates.add(obj);
 			}
-			if(( obj=compareValues("DESTINATION_FACILITY",oldDispatch.getDestinationFacility().getFacilityId(),newDispatch.getDestinationFacility().getFacilityId()))!=null)
+			if(oldDispatch.getDestinationFacility()!=null && newDispatch.getDestinationFacility()!=null && 
+					( obj=compareValues("DESTINATION_FACILITY",oldDispatch.getDestinationFacility().getFacilityId(),newDispatch.getDestinationFacility().getFacilityId()))!=null)
 			{
 				updates.add(obj);
 			}

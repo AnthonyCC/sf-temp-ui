@@ -208,14 +208,14 @@ public class DeliveryService extends BaseService implements IDeliveryService {
 		return null;
 	}
 	
-	public IDrivingDirection buildDriverDirections(Set<String> routeIDs, String sessionID, String regionID)  throws RoutingServiceException {
+	public IDrivingDirection buildDriverDirections(Set<String> routeIDs, String sessionID, IRoutingSchedulerIdentity schedulerId)  throws RoutingServiceException {
 		try {
-			TransportationWebService port = getTransportationSuiteService(null);
+			TransportationWebService port = getTransportationSuiteService(schedulerId);
 			List<DirectionData> directions = new ArrayList<DirectionData>();
 			for(String routeID: routeIDs)
 			{
 				DirectionData direction =  port.buildRoutingDriverDirections
-					(RoutingDataEncoder.encodeRoutingRouteIdentity(routeID, sessionID, regionID));
+					(RoutingDataEncoder.encodeRoutingRouteIdentity(routeID, sessionID, schedulerId.getRegionId()));
 				directions.add(direction);
 			}
 			if(directions.size()>0)

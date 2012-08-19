@@ -63,8 +63,8 @@ public class DeliveryServiceProxy extends BaseServiceProxy {
 		return getService().getRoutes(routeDate, internalSessionID, routeID);
 	}
 	
-	public IDrivingDirection buildDriverDirections(Set<String> routeIDs, String sessionID, String regionID)  throws RoutingServiceException {
-		return getService().buildDriverDirections(routeIDs, sessionID, regionID);
+	public IDrivingDirection buildDriverDirections(Set<String> routeIDs, String sessionID, IRoutingSchedulerIdentity schedulerId)  throws RoutingServiceException {
+		return getService().buildDriverDirections(routeIDs, sessionID, schedulerId);
 	}
 	
 	public IZoneModel getDeliveryZone(String zoneCode)  throws RoutingServiceException {
