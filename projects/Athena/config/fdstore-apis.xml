@@ -1,7 +1,7 @@
 <serviceconfig name="storefrontservices">
 	<apis>
 		  <api name="orderrate"> 
-		  		<datasource>prod_storefront</datasource>
+		  		<datasource>db_storefront</datasource>
 				<endpoint>orderrate</endpoint>
 						<call><![CDATA[select "Order Count","Time Frame" FROM (
 							select to_number( to_char(s.cromod_Date,'HH24')), count(1) as "Order Count", 
@@ -22,7 +22,7 @@
 		</api> 
 		
 		<api name="handoffdetails"> 
-		  		<datasource>prod_storefront</datasource>
+		  		<datasource>db_storefront</datasource>
 				<endpoint>handoffdetails</endpoint>
 						<call><![CDATA[select DI.CUTOFFTIME "Cut Off Time",
 							case when t.premium_cutoff_time is null then to_date(to_char(t.base_date-1, 'MM/DD/YY ') || to_char(t.cutoff_time, 'HH:MI:SS AM'),

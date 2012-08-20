@@ -1,12 +1,5 @@
 package com.freshdirect.athena.cache;
 
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
@@ -60,14 +53,10 @@ public abstract class GuavaAsyncCache<K, V> {
 	    				   try {
 	    					   LOGGER.info("START TO LOAD "+getCacheIdentifier());
 	    					   lastRefresh = System.currentTimeMillis();
-	    					   result = doLoad(key);
-	    					   
+	    					   SystemMessageManager.getInstance().addMessage("Start Cache load for "+getCacheIdentifier());
+	    					   result = doLoad(key);	    					   
 						   } catch (AsyncCacheException e) {
-							   e.printStackTrace();
-								/*Map<K, V> fileStoreBackup = readFromStore();
-								if(fileStoreBackup != null) {
-									result = fileStoreBackup.get(key);
-								} */
+							   e.printStackTrace();								
 						  }
 						   if(result == null) {
 							   result = loadDefault(key);
@@ -80,7 +69,7 @@ public abstract class GuavaAsyncCache<K, V> {
     					   V result = loadData(key);
     					   long endTime = System.currentTimeMillis();
     					   LOGGER.debug("END LOAD :" + getCacheIdentifier() + " completed in " + (endTime - startTime) + " milliseconds");
-    					   SystemMessageManager.getInstance().addMessage("Cache Reload for "+getCacheIdentifier() 
+    					   SystemMessageManager.getInstance().addMessage("Cache load for "+getCacheIdentifier() 
     							   						+ " took " + (endTime - startTime) + " milliseconds");
     					   return result;
 	    			   }
@@ -94,9 +83,10 @@ public abstract class GuavaAsyncCache<K, V> {
 	    					   public V call() {
 	    						   V result = null; // Never return null to Guava
 	    						   try {
-	    							  // writeToStore(); // Let backup data before reload
+	    							  
 	    							   LOGGER.info("START TO RE-LOAD "+getCacheIdentifier());
 	    							   lastRefresh = System.currentTimeMillis();
+	    							   SystemMessageManager.getInstance().addMessage("Start Cache reload for "+getCacheIdentifier());
 	    							   result = doLoad(key);
 	    						   } catch (AsyncCacheException e) {
 	    							   e.printStackTrace();
@@ -126,52 +116,7 @@ public abstract class GuavaAsyncCache<K, V> {
 			return null;
 		}
 	}
-	
-	//Used to write file backup of cache data
-	private void writeToStore() {
 		
-		ObjectOutputStream oos = null;
-		try {
-			oos = new ObjectOutputStream(new FileOutputStream(getCacheIdentifier()));
-			HashMap<K, V> offlineData = new HashMap<K, V>();
-			offlineData.putAll(cache.asMap());			
-			oos.writeObject(offlineData);
-		} catch (IOException ex) {
-			ex.printStackTrace();
-		} finally {
-			if(oos != null) {
-				try {
-					oos.close();
-				} catch (Exception e) {
-					LOGGER.error("Unable to close writeToStore Stream for:"+getCacheIdentifier());
-				}
-			}
-		}
-	}
-	
-	//Used to read from file backup of cache data
-	private Map<K, V> readFromStore() {
-		
-		ObjectInputStream ois = null;
-		try {
-			ois = new ObjectInputStream(new FileInputStream(getCacheIdentifier()));
-			return (Map<K, V>) ois.readObject();
-		} catch (IOException ex) {
-			ex.printStackTrace();
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-		} finally {
-			if(ois != null) {
-				try {
-					ois.close();
-				} catch (Exception e) {
-					LOGGER.error("Unable to close readFromStore Stream for:"+getCacheIdentifier());
-				}
-			}
-		}
-		return null;
-	}
-	
 	public void forceRefresh() {
 		Set<K> cacheKeys = cache.asMap().keySet();
 		if(cacheKeys != null) {
