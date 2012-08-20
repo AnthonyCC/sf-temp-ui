@@ -1456,7 +1456,7 @@ public class FDCustomerManager {
 
 		try {
 			EnumPaymentType pt = cart.getPaymentMethod().getPaymentType();
-			if (EnumPaymentType.REGULAR.equals(pt) && (cra.isOnFDAccount()||EnumPaymentMethodType.EBT.equals(cart.getPaymentMethod().getPaymentMethodType()))) {
+			if (EnumPaymentType.REGULAR.equals(pt) && (cra.isOnFDAccount()/*||EnumPaymentMethodType.EBT.equals(cart.getPaymentMethod().getPaymentMethodType())*/)) {
 				cart.getPaymentMethod().setPaymentType(EnumPaymentType.ON_FD_ACCOUNT);
 			}
 			ErpCreateOrderModel createOrder = FDOrderTranslator.getErpCreateOrderModel(cart);
@@ -1537,7 +1537,7 @@ public class FDCustomerManager {
 				throw new FDResourceException("Order not found in current user's order history.");
 			}
 			EnumPaymentType pt = cart.getPaymentMethod().getPaymentType();
-			if (EnumPaymentType.REGULAR.equals(pt) && (cra.isOnFDAccount()|| EnumPaymentMethodType.EBT.equals(cart.getPaymentMethod().getPaymentMethodType()))) {
+			if (EnumPaymentType.REGULAR.equals(pt) && (cra.isOnFDAccount()/*|| EnumPaymentMethodType.EBT.equals(cart.getPaymentMethod().getPaymentMethodType())*/)) {
 				cart.getPaymentMethod().setPaymentType(EnumPaymentType.ON_FD_ACCOUNT);
 			}
 			
@@ -2772,7 +2772,7 @@ public class FDCustomerManager {
 		String orderId="";
 		try {
 			EnumPaymentType pt = cart.getPaymentMethod().getPaymentType();
-			if (EnumPaymentType.REGULAR.equals(pt) && (cra.isOnFDAccount()||EnumPaymentMethodType.EBT.equals(cart.getPaymentMethod().getPaymentMethodType()))) {
+			if (EnumPaymentType.REGULAR.equals(pt) && (cra.isOnFDAccount()/*||EnumPaymentMethodType.EBT.equals(cart.getPaymentMethod().getPaymentMethodType())*/)) {
 				cart.getPaymentMethod().setPaymentType(EnumPaymentType.ON_FD_ACCOUNT);
 		    }
 			ErpCreateOrderModel createOrder = FDOrderTranslator.getErpCreateOrderModel(cart);
@@ -2819,7 +2819,7 @@ public class FDCustomerManager {
 		String orderId = "";
 		try {
 			EnumPaymentType pt = cart.getPaymentMethod().getPaymentType();
-			if (EnumPaymentType.REGULAR.equals(pt) && (cra.isOnFDAccount()||EnumPaymentMethodType.EBT.equals(cart.getPaymentMethod().getPaymentMethodType()))) {
+			if (EnumPaymentType.REGULAR.equals(pt) && (cra.isOnFDAccount()/*||EnumPaymentMethodType.EBT.equals(cart.getPaymentMethod().getPaymentMethodType())*/)) {
 				cart.getPaymentMethod().setPaymentType(
 						EnumPaymentType.ON_FD_ACCOUNT);
 			}
@@ -3407,7 +3407,7 @@ public class FDCustomerManager {
 		String orderId = "";
 		try {
 			EnumPaymentType pt = cart.getPaymentMethod().getPaymentType();
-			if (EnumPaymentType.REGULAR.equals(pt) && (cra.isOnFDAccount()||EnumPaymentMethodType.EBT.equals(cart.getPaymentMethod().getPaymentMethodType()))) {
+			if (EnumPaymentType.REGULAR.equals(pt) && (cra.isOnFDAccount()/*||EnumPaymentMethodType.EBT.equals(cart.getPaymentMethod().getPaymentMethodType())*/)) {
 				cart.getPaymentMethod().setPaymentType(
 						EnumPaymentType.ON_FD_ACCOUNT);
 			}

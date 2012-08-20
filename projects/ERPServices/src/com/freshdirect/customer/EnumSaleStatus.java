@@ -61,6 +61,7 @@ public class EnumSaleStatus implements java.io.Serializable {
 	public final static EnumSaleStatus					REG_PENDING					= new EnumSaleStatus( "RPG", "Registration Pending", "In Process", true );
 	public final static EnumSaleStatus					POST_AUTH_PENDING			= new EnumSaleStatus( "POG", "Post Auth Pending", "Completed", true );
 	public final static EnumSaleStatus					SETTLEMENT_PENDING			= new EnumSaleStatus( "STP", "Settlement Pending", "In Process", true );
+	public final static EnumSaleStatus					SETTLEMENT_SAP_PENDING		= new EnumSaleStatus( "SSP", "Settlement to SAP Pending", "Delivered", true );//Used for EBT orders.
 
 	private final int id;
 	private final String statusCode;

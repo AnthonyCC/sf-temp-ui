@@ -93,7 +93,7 @@
 			<td align="center"><input type="radio" name="deliverystatus_<%=saleInfo.getSaleId()%>" value="delivered" checked></td>
 			<td align="center" nowrap><input type="radio" name="deliverystatus_<%=saleInfo.getSaleId()%>" value="refused"><input type="checkbox" name="full_<%=saleInfo.getSaleId()%>"><b>Full</b>&nbsp<input type="checkbox" name="alcohol_<%=saleInfo.getSaleId()%>"><b>Alcohol</b></td>
 		<%}else{ 
-			if(EnumSaleStatus.CAPTURE_PENDING.equals(saleInfo.getStatus())||EnumSaleStatus.PAYMENT_PENDING.equals(saleInfo.getStatus()) || EnumSaleStatus.SETTLED.equals(saleInfo.getStatus())){%>
+			if(EnumSaleStatus.CAPTURE_PENDING.equals(saleInfo.getStatus())||EnumSaleStatus.PAYMENT_PENDING.equals(saleInfo.getStatus())||EnumSaleStatus.SETTLEMENT_SAP_PENDING.equals(saleInfo.getStatus()) || EnumSaleStatus.SETTLED.equals(saleInfo.getStatus())){%>
 				<td align="center" style="color:green;font-weight:bold">X</td>
 				<td align="center"><img src="images/images/clear.gif" height="18" width="1"></td>
 			<%}else if(EnumSaleStatus.PENDING.equals(saleInfo.getStatus())){%>

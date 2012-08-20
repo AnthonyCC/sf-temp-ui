@@ -67,6 +67,10 @@ public class AuthorizationCommand {
 		if (EnumPaymentType.ON_FD_ACCOUNT.equals(pt) || EnumPaymentType.MAKE_GOOD.equals(pt)) {
 			return createFDAuthorization(paymentMethod, authAmount, 0.0);
 		}
+		
+		if (EnumPaymentMethodType.EBT.equals(paymentMethod.getPaymentMethodType())) {
+			return createEBTAuthorization(paymentMethod, authAmount, 0.0);
+		}
 
 		if ((EnumCardType.DISC.equals(paymentMethod.getCardType()) || EnumCardType.AMEX.equals(paymentMethod.getCardType())) && authAmount < 1.0) {
 			authAmount = 1.0;
@@ -90,6 +94,25 @@ public class AuthorizationCommand {
 		auth.setResponseCode(EnumPaymentResponse.APPROVED);
 		auth.setDescription("FD APPROVAL");
 		auth.setSequenceNumber("FD AUTH");
+		auth.setAvs("Y");
+		auth.setAmount(amount);
+		auth.setTax(tax);
+		auth.setCardType(pm.getCardType());
+		String accountNumber = pm.getAccountNumber();
+		if(accountNumber != null && accountNumber.length() >= 4){
+			auth.setCcNumLast4(accountNumber.substring(accountNumber.length()-4));
+		}
+		return auth;
+	}
+	
+	private ErpAuthorizationModel createEBTAuthorization(ErpPaymentMethodI pm, double amount, double tax){
+		ErpAuthorizationModel auth = new ErpAuthorizationModel();
+		auth.setTransactionSource(EnumTransactionSource.SYSTEM);
+		auth.setReturnCode(0);
+		auth.setAuthCode("EBT1000");
+		auth.setResponseCode(EnumPaymentResponse.APPROVED);
+		auth.setDescription("EBT APPROVAL");
+		auth.setSequenceNumber("EBT AUTH");
 		auth.setAvs("Y");
 		auth.setAmount(amount);
 		auth.setTax(tax);

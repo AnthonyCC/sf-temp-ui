@@ -829,6 +829,8 @@ public class ReconciliationSessionBean extends SessionBeanSupport{
 			}	*/		
 			ErpSaleEB saleEB = this.getErpSaleHome().findByPrimaryKey(new PrimaryKey(saleId));		
 			List validPostAuths = saleEB.getValidGCPostAuthorizations();
+			ErpPaymentMethodI paymentMethod = saleEB.getCurrentOrder().getPaymentMethod();
+			boolean isEBTOrder = (null !=paymentMethod && EnumPaymentMethodType.EBT.equals(paymentMethod.getPaymentMethodType()));
 			if(validPostAuths == null || validPostAuths.size() == 0){
 				return Collections.EMPTY_LIST;
 			}
@@ -863,10 +865,14 @@ public class ReconciliationSessionBean extends SessionBeanSupport{
 			}
 			EnumSaleStatus status = saleEB.getStatus();
 			if(EnumSaleStatus.SETTLEMENT_PENDING.equals(status)) {
-				if(!settlementFailed)
-					saleEB.forceSettlement();
+				if(!settlementFailed){
+					if(!isEBTOrder)
+						saleEB.forceSettlement();
+					else
+						saleEB.markAsSettlementToSAPPending();
+				}
 				else
-					saleEB.forceSettlementFailed();
+					saleEB.forceSettlementFailed();//TODO: check whether to mark the sale as 'STF' OR re-attempt to do post-auth again.
 			}
 			
 		}catch (FinderException fe) {

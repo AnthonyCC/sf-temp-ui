@@ -22,6 +22,7 @@ import javax.transaction.UserTransaction;
 import org.apache.log4j.Category;
 
 import com.freshdirect.affiliate.ErpAffiliate;
+import com.freshdirect.common.customer.EnumCardType;
 import com.freshdirect.customer.EnumPaymentType;
 import com.freshdirect.customer.EnumSaleStatus;
 import com.freshdirect.customer.EnumTransactionSource;
@@ -61,6 +62,7 @@ public class PaymentSessionBean extends SessionBeanSupport{
 	public void captureAuthorization(String saleId) throws ErpTransactionException {
 		ErpSaleModel sale = null;
 		boolean freeOrder = false;
+		boolean ebtOrder = false;
 		if(this.erpSaleHome == null){
 			this.lookupErpSaleHome();
 		}
@@ -90,7 +92,7 @@ public class PaymentSessionBean extends SessionBeanSupport{
 			
 			EnumPaymentType paymentType = eb.getCurrentOrder().getPaymentMethod().getPaymentType();
 			freeOrder = EnumPaymentType.MAKE_GOOD.equals(paymentType) || EnumPaymentType.ON_FD_ACCOUNT.equals(paymentType);
-			
+			ebtOrder = EnumPaymentMethodType.EBT.equals(paymentMethod.getPaymentMethodType());
 			utx.commit();
 		
 		}catch(Exception e){
@@ -237,10 +239,38 @@ public class PaymentSessionBean extends SessionBeanSupport{
 		return capture;
 	}
 	
+	private ErpCaptureModel doEBTCapture(ErpAuthorizationModel auth, double amount, double tax) {
+		
+		ErpCaptureModel capture = new ErpCaptureModel();
+		capture.setCardType(EnumCardType.EBT);
+		capture.setAuthCode(auth.getAuthCode());
+		capture.setResponseCode(auth.getResponseCode().getCode());
+		capture.setDescription(auth.getDescription());
+		capture.setSequenceNumber("EBT CAPTURE");
+		capture.setTransactionSource(EnumTransactionSource.SYSTEM);
+		capture.setAmount(amount);
+		capture.setTax(tax);
+		capture.setAffiliate(auth.getAffiliate());
+			
+		return capture;
+	}
+	
 	private ErpSettlementModel getFDSettlement(ErpCaptureModel capture){
 		ErpSettlementModel settlement = new ErpSettlementModel();
 		settlement.setAmount(capture.getAmount());
 		settlement.setSequenceNumber("FD SETTLEMENT");
+		settlement.setTax(capture.getTax());
+		settlement.setTransactionDate(new Date());
+		settlement.setTransactionSource(EnumTransactionSource.SYSTEM);
+		settlement.setAffiliate(capture.getAffiliate());
+		
+		return settlement;
+	}
+	
+	private ErpSettlementModel getEBTSettlement(ErpCaptureModel capture){
+		ErpSettlementModel settlement = new ErpSettlementModel();
+		settlement.setAmount(capture.getAmount());
+		settlement.setSequenceNumber("EBT SETTLEMENT");
 		settlement.setTax(capture.getTax());
 		settlement.setTransactionDate(new Date());
 		settlement.setTransactionSource(EnumTransactionSource.SYSTEM);
@@ -490,4 +520,159 @@ public class PaymentSessionBean extends SessionBeanSupport{
 				}
 			};
 
+	public void captureAuthEBTSale(String saleId) throws ErpTransactionException {
+
+		ErpSaleModel sale = null;
+		boolean isEBTOrder = false;
+		if(this.erpSaleHome == null){
+			this.lookupErpSaleHome();
+		}
+		
+		ErpPaymentMethodI paymentMethod = null;
+		UserTransaction utx = null;
+		try{
+			
+			LOGGER.info("settleEBTOrder - start. saleId="+saleId);
+			utx = this.getSessionContext().getUserTransaction();
+			utx.begin();
+			
+			ErpSaleEB eb = erpSaleHome.findByPrimaryKey(new PrimaryKey(saleId));
+			sale = (ErpSaleModel) eb.getModel();
+			EnumSaleStatus status = sale.getStatus();
+			if(status.equals(EnumSaleStatus.SETTLED)){
+				//If sale is already 'settled', do not throw ErpTransactionException LOG and return
+				LOGGER.warn("Sale is already Captured saleId: "+saleId);
+				utx.commit();
+				return;
+			}
+			
+			paymentMethod = sale.getCurrentOrder().getPaymentMethod();
+			isEBTOrder = EnumPaymentMethodType.EBT.equals(paymentMethod.getPaymentMethodType());
+			utx.commit();
+			if(!isEBTOrder){
+				LOGGER.warn("Sale is not by EBT payment: "+saleId);
+				return;
+			}
+		
+		}catch(Exception e){
+			LOGGER.warn(e);
+			try{
+				utx.rollback();
+			}catch(SystemException se){
+				LOGGER.warn("Error while trying to rollback transaction", se);
+			}
+			throw new EJBException(e);
+		}
+		
+		Map requiredCaptures = new CaptureStrategy(sale).getOutstandingCaptureAmounts();
+				
+		try{
+				
+			List ebtCaptures = isEBTOrder ? new ArrayList() : Collections.EMPTY_LIST;
+			if(!requiredCaptures.isEmpty()) {
+				for(Iterator i = requiredCaptures.keySet().iterator(); i.hasNext(); ) {
+					double remainingAmount = 0;
+					ErpAffiliate aff = (ErpAffiliate) i.next();
+					Double amount = (Double) requiredCaptures.get(aff);
+					if(amount != null) {
+						remainingAmount = amount.doubleValue();
+					}
+					List auths = sale.getApprovedAuthorizations(aff, paymentMethod);
+					Map captureMap = getCaptureAmounts(auths, remainingAmount);
+			
+					utx = null;
+					
+					for (Iterator j = auths.iterator(); j.hasNext(); ) {
+						if(captureMap.isEmpty()) break;
+						
+						utx = this.getSessionContext().getUserTransaction();
+						utx.begin();
+						
+						ErpAuthorizationModel auth = (ErpAuthorizationModel)j.next();
+						Double captureAmount = (Double) captureMap.get(auth.getPK().getId());
+						if(captureAmount == null){
+							utx.commit();
+							continue;
+						}
+						
+						ErpSaleEB eb = erpSaleHome.findByPrimaryKey(new PrimaryKey(saleId));
+						//before capturing, making sure that we will be able to add capture to sale
+						EnumSaleStatus status = eb.getStatus();
+						if ( !status.isCapturable()) {
+							throw new ErpTransactionException("Sale status is not ENROUTE or PENDING or CAPTURE_PENDING or REDELIVERY");
+						}
+	
+						ErpCaptureModel capture = null;
+						capture = this.doEBTCapture(auth, captureAmount.doubleValue(), 0.0);
+						ebtCaptures.add(capture);
+						
+						eb.addCapture(capture);
+						utx.commit();
+						LOGGER.info("Capture Amount: "+captureAmount);
+						LOGGER.info("Remaining Amount: "+remainingAmount);
+					}
+				
+				}
+			
+				LOGGER.info("Capture authorization - done. saleId="+saleId);
+			}
+				
+				
+			LOGGER.info("Forcing the Status - start. saleId="+saleId);
+			utx = null;
+			utx = this.getSessionContext().getUserTransaction();
+			utx.begin();
+			ErpSaleEB eb = erpSaleHome.findByPrimaryKey(new PrimaryKey(saleId));
+			eb.forcePaymentStatus();
+			utx.commit();
+			LOGGER.info("Forcing the Status - done. saleId="+saleId);
+			
+			if(!ebtCaptures.isEmpty()){
+				utx = null;
+				for(Iterator i = ebtCaptures.iterator(); i.hasNext(); ) {
+					utx = this.getSessionContext().getUserTransaction();
+					utx.begin();
+					eb = erpSaleHome.findByPrimaryKey(new PrimaryKey(saleId));
+					ErpCaptureModel capture = (ErpCaptureModel) i.next();
+					eb.addSettlement(this.getEBTSettlement(capture));
+					utx.commit();
+				}
+			}
+			/*
+			 *  In the case of gro orders that requires GC payments only we put the order
+			 *  in Settlement Pending status for settlement reconcilation to pick it up.
+			 */			
+			if(null == requiredCaptures || requiredCaptures.isEmpty()){
+				//Update the status to 'SETTLEMENT_PENDING'- for GiftCard used only orders.
+				utx = this.getSessionContext().getUserTransaction();
+				utx.begin();
+				eb = erpSaleHome.findByPrimaryKey(new PrimaryKey(saleId));
+				eb.markAsSettlementPending();
+				utx.commit();
+			}
+			
+			//TODO: Decide whether to introduce new status 'SETTLEMENT_SAP_PENDING' or not.
+			//Check the sale status, if its settled, settle the sale in SAP.
+			/*eb = erpSaleHome.findByPrimaryKey(new PrimaryKey(saleId));
+			sale = (ErpSaleModel) eb.getModel();
+			EnumSaleStatus status = sale.getStatus();
+			if(EnumSaleStatus.SETTLED.equals(status)){
+				//TODO:Settle the order in SAP.
+				if(!SapProperties.isBlackhole()){
+					SapSendEBTSettlementCommand command = createSapSendEBTSettlementCommand(sale);
+					command.execute();
+				}
+				
+			}*/
+		}catch(Exception e){
+			LOGGER.warn(e);
+			try{
+				utx.rollback();
+			}catch(SystemException se){
+				LOGGER.warn("Error rolling back transaction", se);
+			}
+			throw new EJBException(e);
+		}
+			
+	}	
 }

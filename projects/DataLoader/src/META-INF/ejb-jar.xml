@@ -156,6 +156,12 @@
                 <home>com.freshdirect.giftcard.ejb.GCGatewayHome</home>
                 <remote>com.freshdirect.giftcard.ejb.GCGatewaySB</remote>
             </ejb-ref>  
+            <ejb-ref>
+                <ejb-ref-name>ejb/ErpSale</ejb-ref-name>
+                <ejb-ref-type>Entity</ejb-ref-type>
+                <home>com.freshdirect.customer.ejb.ErpSaleHome</home>
+                <remote>com.freshdirect.customer.ejb.ErpSaleEB</remote>
+            </ejb-ref>
 			<resource-ref>
 				<res-ref-name>jdbc/dbpool</res-ref-name>
 				<res-type>javax.sql.DataSource</res-type>

@@ -282,4 +282,6 @@ public interface ErpSaleEB extends EntityBeanRemoteI, ErpSaleI {
 	
 	public void addDeliveryConfirm(ErpDeliveryConfirmModel deliveryConfirmModel, EnumSaleStatus enumSaleStatus) throws ErpTransactionException, RemoteException;
 	
+	public void markAsSettlementToSAPPending() throws ErpTransactionException, RemoteException;
+	
 }

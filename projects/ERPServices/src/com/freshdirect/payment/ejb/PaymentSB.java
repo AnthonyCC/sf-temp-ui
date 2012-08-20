@@ -32,4 +32,6 @@ public interface PaymentSB extends EJBObject {
 	
 	public void unconfirm(String saleId) throws ErpTransactionException, RemoteException;
 	
+	public void captureAuthEBTSale(String saleId) throws ErpTransactionException, RemoteException;
+	
 }

@@ -27,4 +27,10 @@ public interface SaleCronSB extends EJBObject{
 	public void postAuthSales(long timeout) throws RemoteException;
 	
 	public List<Date> queryCutoffReportDeliveryDates() throws RemoteException;
+	
+	public void postAuthEBTSales(long timeout) throws RemoteException;
+	
+	public void captureAndSettleEBTSales(long timeout) throws RemoteException;
+	
+	public void settleEBTSales(List<String> saleIds)throws RemoteException;
 }

@@ -23,6 +23,7 @@ import com.freshdirect.giftcard.ErpRegisterGiftCardModel;
 import com.freshdirect.giftcard.ErpReverseAuthGiftCardModel;
 import com.freshdirect.payment.AuthorizationStrategy;
 import com.freshdirect.payment.EnumGiftCardTransactionStatus;
+import com.freshdirect.payment.EnumPaymentMethodType;
 
 /**
  * ErpSale model class.
@@ -371,7 +372,10 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 					//so auths get reversed.
 					status =  EnumSaleStatus.POST_AUTH_PENDING;
 				} else {
-					status = EnumSaleStatus.SETTLED;			
+					if(!isEBTOrder())
+						status = EnumSaleStatus.SETTLED; 
+					else
+						status = EnumSaleStatus.SETTLEMENT_SAP_PENDING;			
 				}
 			}
 		} else {
@@ -766,7 +770,11 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 			int settle = (int) Math.round(MathUtil.roundDecimal(settledAmt - stlFail) * 100);
 			int capture = (int) Math.round(capturedAmt * 100);
 			if (settle >= capture) {
-				status = EnumSaleStatus.SETTLED;
+				if(isEBTOrder()){
+					status = EnumSaleStatus.SETTLEMENT_SAP_PENDING;
+				}else{
+					status = EnumSaleStatus.SETTLED;
+				}
 			}
 		}
 	}
@@ -924,7 +932,11 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 
 		ErpInvoiceModel invoice = getInvoice();
 		if (((int) Math.round(invoice.getAmount() * 100)) == 0) {
-			status = EnumSaleStatus.SETTLED;
+			if(!isEBTOrder()){
+				status = EnumSaleStatus.SETTLED;
+			}else{
+				status = EnumSaleStatus.SETTLEMENT_SAP_PENDING;
+			}
 		} else {
 			status = EnumSaleStatus.PAYMENT_PENDING;
 		}
@@ -933,7 +945,7 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 	public void forceSettlement() throws ErpTransactionException {
 		assertStatus(
 			new EnumSaleStatus[] {
-					EnumSaleStatus.SETTLEMENT_PENDING
+					EnumSaleStatus.SETTLEMENT_PENDING,EnumSaleStatus.SETTLEMENT_SAP_PENDING
 			});
 
 		status = EnumSaleStatus.SETTLED;
@@ -1279,6 +1291,18 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 	public void markAsSettlementPending() throws ErpTransactionException {
 		assertStatus(EnumSaleStatus.PAYMENT_PENDING);
 		status = EnumSaleStatus.SETTLEMENT_PENDING;
+	}
+	
+	/**
+	 * This method is only used for regular orders with EBT payment.
+	 * @throws ErpTransactionException
+	 */
+	public void markAsSettlementToSAPPending() throws ErpTransactionException {
+		assertStatus(new EnumSaleStatus[] {EnumSaleStatus.CAPTURE_PENDING,
+						EnumSaleStatus.POST_AUTH_PENDING,
+						EnumSaleStatus.SETTLEMENT_PENDING
+						});
+		status = EnumSaleStatus.SETTLEMENT_SAP_PENDING;
 	}
 	
 	public List<ErpAuthorizationModel> getFailedAuthorizations() {
@@ -1703,5 +1727,12 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 
 	public String getStandingOrderId() {
 		return standingOrderId;
+	}
+	
+	private boolean isEBTOrder(){
+		ErpAbstractOrderModel orderModel = getCurrentOrder();
+		ErpPaymentMethodI paymentMethod = orderModel.getPaymentMethod();
+		boolean isEBTOrder = (null !=paymentMethod && EnumPaymentMethodType.EBT.equals(paymentMethod.getPaymentMethodType()));
+		return isEBTOrder;
 	}
 }

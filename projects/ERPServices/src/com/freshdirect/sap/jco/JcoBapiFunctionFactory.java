@@ -21,6 +21,7 @@ import com.freshdirect.sap.bapi.BapiSalesOrderCancel;
 import com.freshdirect.sap.bapi.BapiSalesOrderChange;
 import com.freshdirect.sap.bapi.BapiSalesOrderCreate;
 import com.freshdirect.sap.bapi.BapiSalesOrderSimulate;
+import com.freshdirect.sap.bapi.BapiSendSettlementByCommand;
 import com.freshdirect.sap.bapi.BapiSendEmployeeInfo;
 import com.freshdirect.sap.bapi.BapiSendHandOff;
 import com.freshdirect.sap.bapi.BapiSendPhysicalTruckInfo;
@@ -125,6 +126,10 @@ public class JcoBapiFunctionFactory extends BapiFactory {
 	@Override
 	public BapiProductPromotionPreviewI getBapiProductPromotionPreviewBuilder() {
 		return new JcoBapiProductPromotionPreview("ZDDPP_PREVIEW");
+	}
+	
+	public BapiSendSettlementByCommand getBapiSendEBTSettlementSender() {
+		return new JcoBapiSendSettlementByCommand();
 	}
 
 }

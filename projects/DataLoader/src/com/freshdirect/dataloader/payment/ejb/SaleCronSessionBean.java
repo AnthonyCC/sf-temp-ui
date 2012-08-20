@@ -17,6 +17,9 @@ import java.util.Set;
 
 import javax.ejb.CreateException;
 import javax.ejb.EJBException;
+import javax.ejb.FinderException;
+import javax.naming.Context;
+import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.transaction.SystemException;
 import javax.transaction.UserTransaction;
@@ -27,6 +30,11 @@ import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.customer.EnumSaleStatus;
 import com.freshdirect.customer.EnumSaleType;
 import com.freshdirect.customer.EnumTransactionSource;
+import com.freshdirect.customer.ErpCaptureModel;
+import com.freshdirect.customer.ErpSaleModel;
+import com.freshdirect.customer.ErpTransactionException;
+import com.freshdirect.customer.ejb.ErpSaleEB;
+import com.freshdirect.customer.ejb.ErpSaleHome;
 import com.freshdirect.delivery.DlvProperties;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDActionInfo;
@@ -36,6 +44,7 @@ import com.freshdirect.fdstore.customer.FDUser;
 import com.freshdirect.fdstore.customer.adapter.CustomerRatingAdaptor;
 import com.freshdirect.fdstore.customer.ejb.FDCustomerManagerHome;
 import com.freshdirect.fdstore.customer.ejb.FDCustomerManagerSB;
+import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.core.ServiceLocator;
 import com.freshdirect.framework.core.SessionBeanSupport;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -49,6 +58,12 @@ import com.freshdirect.payment.ejb.PaymentGatewayHome;
 import com.freshdirect.payment.ejb.PaymentGatewaySB;
 import com.freshdirect.payment.ejb.PaymentHome;
 import com.freshdirect.payment.ejb.PaymentSB;
+import com.freshdirect.sap.SapEBTOrderSettlementInfo;
+import com.freshdirect.sap.SapOrderSettlementInfo;
+import com.freshdirect.sap.SapProperties;
+import com.freshdirect.sap.bapi.BapiInfo;
+import com.freshdirect.sap.command.SapSendEBTSettlementCommand;
+import com.freshdirect.sap.ejb.SapException;
 
 public class SaleCronSessionBean extends SessionBeanSupport {
 
@@ -60,6 +75,8 @@ public class SaleCronSessionBean extends SessionBeanSupport {
     private final static Category LOGGER = LoggerFactory.getInstance(SaleCronSessionBean.class);
 
 	private final static ServiceLocator LOCATOR = new ServiceLocator();
+	
+	private transient ErpSaleHome erpSaleHome = null;
 
 	private final static String QUERY_AUTH_NEEDED =
 		"select s.id from cust.sale s, cust.salesaction sa, cust.deliveryinfo di "
@@ -101,19 +118,57 @@ public class SaleCronSessionBean extends SessionBeanSupport {
 			+ "or(sa.action_type='GCD' "
 			+ "and (sysdate-(select max(action_date) from cust.salesaction za where za.action_type='GCD' and za.sale_id = s.id))*24 >=?))";
 
-	private final static String QUERY_SALE_IN_CPG_STATUS_NO_BIND =
+	/*private final static String QUERY_SALE_IN_CPG_STATUS_NO_BIND =
 		"select distinct s.id from cust.sale s, cust.salesaction sa where s.status = 'CPG' "
 			+ "and sa.sale_id=s.id and (sa.action_type='RET' or(sa.action_type='DLC' "
 			+ "and (sysdate-(select max(action_date) from cust.salesaction za where za.action_type='DLC' and za.sale_id = s.id))*24 >=4) " 
 			+ "or(sa.action_type='GCD' "
-			+ "and (sysdate-(select max(action_date) from cust.salesaction za where za.action_type='GCD' and za.sale_id = s.id))*24 >=4))";
+			+ "and (sysdate-(select max(action_date) from cust.salesaction za where za.action_type='GCD' and za.sale_id = s.id))*24 >=4))";*/
 	
-	private final static String QUERY_SALE_IN_POG_STATUS_NO_BIND =
+	private final static String QUERY_SALE_IN_CPG_STATUS_NO_BIND =
+			"select distinct s.id from cust.sale s, cust.salesaction sa where s.status = 'CPG'  "
+			+ " and sa.sale_id=s.id and (sa.action_type='RET' or(sa.action_type='DLC'  "
+			+ "and (sysdate-(select max(action_date) from cust.salesaction za where za.action_type='DLC' and za.sale_id = s.id))*24 >=4)  " 
+			+ "or(sa.action_type='GCD' "
+			+ " and (sysdate-(select max(action_date) from cust.salesaction za where za.action_type='GCD' and za.sale_id = s.id))*24 >=4)) "
+			+ " and exists (select sa1.sale_id from cust.salesaction sa1,cust.paymentinfo pi where SA1.SALE_ID=s.id and SA1.ACTION_DATE=S.CROMOD_DATE and SA1.ACTION_TYPE in('CRO','MOD') "
+			+ " and sa1.id=pi.salesaction_id and PI.CARD_TYPE<>'EBT'  )";
+	
+	private final static String QUERY_SALE_IN_CPG_STATUS_NO_BIND_EBT_ONLY =
+		"select distinct s.id from cust.sale s, cust.salesaction sa where sa.sale_id=s.id and ((s.status = 'CPG'   "
+		+ "   and   (sa.action_type='RET' or sa.action_type='DLC'    "
+		+ "  or sa.action_type='GCD' )) or (s.status='ENR' and  exists(select 1 from CUST.SALE_SIGNATURE ss where ss.sale_id=S.ID)   ))  "
+		+ "  and exists (select sa1.sale_id from cust.salesaction sa1,cust.paymentinfo pi where SA1.SALE_ID=s.id and SA1.ACTION_DATE=S.CROMOD_DATE and SA1.ACTION_TYPE in('CRO','MOD')  "
+		+ "   and sa1.id=pi.salesaction_id and PI.CARD_TYPE='EBT')"; 
+            
+	
+	/*private final static String QUERY_SALE_IN_POG_STATUS_NO_BIND =
 		"select distinct s.id from cust.sale s, cust.salesaction sa where s.status = 'POG' "
 			+ "and sa.sale_id=s.id and (sa.action_type='RET' or(sa.action_type='DLC' "
 			+ "and (sysdate-(select max(action_date) from cust.salesaction za where za.action_type='DLC' and za.sale_id = s.id))*24 >=4) " 
 			+ "or(sa.action_type='GCD' "
-			+ "and (sysdate-(select max(action_date) from cust.salesaction za where za.action_type='GCD' and za.sale_id = s.id))*24 >=4))";
+			+ "and (sysdate-(select max(action_date) from cust.salesaction za where za.action_type='GCD' and za.sale_id = s.id))*24 >=4))";*/
+	
+	private final static String QUERY_SALE_IN_POG_STATUS_NO_BIND =
+		"select distinct s.id from cust.sale s, cust.salesaction sa where s.status = 'POG' "
+            +"and sa.sale_id=s.id and (sa.action_type='RET' or(sa.action_type='DLC' " 
+            +"and (sysdate-(select max(action_date) from cust.salesaction za where za.action_type='DLC' and za.sale_id = s.id))*24 >=4) "  
+            +"or(sa.action_type='GCD'  "
+            +"and (sysdate-(select max(action_date) from cust.salesaction za where za.action_type='GCD' and za.sale_id = s.id))*24 >=4)) "
+            +"and exists (select sa1.sale_id from cust.salesaction sa1,cust.paymentinfo pi where SA1.SALE_ID=s.id and SA1.ACTION_DATE=S.CROMOD_DATE and SA1.ACTION_TYPE in('CRO','MOD') "
+            +"and sa1.id=pi.salesaction_id and PI.CARD_TYPE<>'EBT')";
+	
+	private final static String QUERY_SALE_IN_POG_STATUS_NO_BIND_EBT_ONLY =
+		"select distinct s.id from cust.sale s, cust.salesaction sa where sa.sale_id=s.id and ((s.status = 'POG' " 
+		+"and   (sa.action_type='RET' or sa.action_type='DLC'   "
+		+" or sa.action_type='GCD' )) or (s.status='ENR' and  exists(select 1 from CUST.SALE_SIGNATURE ss where ss.sale_id=S.ID)   )) "
+		+" and exists (select sa1.sale_id from cust.salesaction sa1,cust.paymentinfo pi where SA1.SALE_ID=s.id and SA1.ACTION_DATE=S.CROMOD_DATE and SA1.ACTION_TYPE in('CRO','MOD') "
+		+"and sa1.id=pi.salesaction_id and PI.CARD_TYPE='EBT')"; 
+    
+	private final static String QUERY_SALE_IN_SSP_STATUS_NO_BIND_EBT_ONLY =
+		"select distinct s.id from cust.sale s where s.status = 'SSP'   "
+		+ "  and exists (select sa1.sale_id from cust.salesaction sa1,cust.paymentinfo pi where SA1.SALE_ID=s.id and SA1.ACTION_DATE=S.CROMOD_DATE and SA1.ACTION_TYPE in('CRO','MOD')  "
+		+ "  and sa1.id=pi.salesaction_id and PI.CARD_TYPE='EBT')"; 
 	
 	private final static String QUERY_SALE_IN_RPG_STATUS =
 			"select s.id, sa.sub_total from cust.sale s, cust.salesaction sa where sa.customer_id = s.customer_id and" +
@@ -554,6 +609,18 @@ public class SaleCronSessionBean extends SessionBeanSupport {
 		return saleIds;
 	}
 	private List<String> querySalesInStatusCPG(Connection conn, String query) throws SQLException {
+		List<String> saleIds = new ArrayList<String>();
+		PreparedStatement ps = conn.prepareStatement(query);
+		ResultSet rs = ps.executeQuery();
+		while (rs.next()) {
+			saleIds.add(rs.getString(1));
+		}
+		rs.close();
+		ps.close();
+		return saleIds;
+	}
+	
+	private List<String> queryForSales(Connection conn, String query) throws SQLException {
 		List<String> saleIds = new ArrayList<String>();
 		PreparedStatement ps = conn.prepareStatement(query);
 		ResultSet rs = ps.executeQuery();
@@ -1063,5 +1130,286 @@ public class SaleCronSessionBean extends SessionBeanSupport {
 			 }
 		}
 		return selected;
+	}
+	
+	public void postAuthEBTSales(long timeout){
+		if(FDStoreProperties.isGivexBlackHoleEnabled()){
+			//Post auth is not performed at this point.
+			return;
+		}
+
+		Connection con = null;
+		UserTransaction utx = null;
+
+		List<String> saleIds;
+
+		try {
+			utx = this.getSessionContext().getUserTransaction();
+			utx.begin();
+			con = this.getConnection();			
+			saleIds = this.queryForSales(con, QUERY_SALE_IN_POG_STATUS_NO_BIND_EBT_ONLY);
+			utx.commit();
+		} catch (Exception e) {
+			LOGGER.warn(e);
+			try {
+				utx.rollback();
+			} catch (SystemException se) {
+				LOGGER.warn("Error while trying to rollback transaction", se);
+			}
+			throw new EJBException(e);
+		} finally {
+			try {
+				if (con != null) {
+					con.close();
+					con = null;
+				}
+			} catch (SQLException se) {
+				LOGGER.warn("Exception while trying to cleanup", se);
+			}
+		}
+		long startTime = System.currentTimeMillis();
+
+		GiftCardManagerSB gsb = this.getGiftCardManagerSB();
+ 
+		//LOGGER.info("********** use queue:"+ErpServicesProperties.isUseQueue());
+		for (int i = 0, size = saleIds.size(); i < size; i++) {
+
+			if (System.currentTimeMillis() - startTime > timeout) {
+				LOGGER.warn("Post Auth for GC process was running longer than" + timeout / 60 / 1000);
+				break;
+			}
+
+			utx = null;
+			try {
+				utx = this.getSessionContext().getUserTransaction();
+				utx.begin();
+				gsb.postAuthorizeSales(saleIds.get(i));
+				LOGGER.info("*******do post authorize transaction for order:"+saleIds.get(i));
+
+				utx.commit();
+			} catch (Exception e) {
+				LOGGER.warn("Exception occured during Post Auth", e);
+				if (utx != null) {
+					try {
+						utx.rollback();
+					} catch (SystemException se) {
+						LOGGER.warn("Error while trying to rollback transaction", se);
+					}					
+				}
+			}
+		}
+	}
+	
+	public void captureAndSettleEBTSales(long timeout){
+
+
+		Connection con = null;
+		UserTransaction utx = null;
+
+		List<String> saleIds;
+
+		try {
+			utx = this.getSessionContext().getUserTransaction();
+			utx.begin();
+			con = this.getConnection();
+			saleIds = this.queryForSales(con, QUERY_SALE_IN_CPG_STATUS_NO_BIND_EBT_ONLY);
+			utx.commit();
+		} catch (Exception e) {
+			LOGGER.warn(e);
+			try {
+				utx.rollback();
+			} catch (SystemException se) {
+				LOGGER.warn("Error while trying to rollback transaction", se);
+			}
+			throw new EJBException(e);
+		} finally {
+			try {
+				if (con != null) {
+					con.close();
+					con = null;
+				}
+			} catch (SQLException se) {
+				LOGGER.warn("Exception while trying to cleanup", se);
+			}
+		}
+		long startTime = System.currentTimeMillis();
+		
+		for (int i = 0, size = saleIds.size(); i < size; i++) {
+			if (System.currentTimeMillis() - startTime > timeout) {
+				LOGGER.warn("EBT settlement process was running longer than" + timeout / 60 / 1000);
+				break;
+			}
+			captureEBTSale(saleIds.get(i));
+		}
+	
+		if(!SapProperties.isBlackhole()){
+			settleEBTSalesInSAP();
+		}
+		
+	}
+	
+	
+	public void settleEBTSales(List<String> saleIds ){
+		if(null != saleIds){
+			try {
+				for (int i = 0, size = saleIds.size(); i < size; i++) {		
+					captureEBTSale(saleIds.get(i));
+				}
+
+				//Settle the orders in SAP.
+				settleEBTSalesInSAP(saleIds);
+			} catch (Exception e) {
+				LOGGER.warn("Exception occured during EBT order settlement ", e);
+			}
+		
+		}
+		
+	}
+	private void captureEBTSale(String saleId) {
+		UserTransaction utx =null;
+		try {
+			PaymentSB psb = this.getPaymentSB();
+			utx = this.getSessionContext().getUserTransaction();
+			utx.begin();				
+			psb.captureAuthEBTSale(saleId);
+			LOGGER.info("*******do capture transaction for order:"+saleId);
+			utx.commit();
+		} catch (Exception e) {
+			LOGGER.warn("Exception occured during EBT order settlement ", e);
+			if (utx != null) {
+				try {
+					utx.rollback();
+				} catch (SystemException se) {
+					LOGGER.warn("Error while trying to rollback transaction", se);
+				}
+				// just keep going :)
+			}
+		}
+	}
+	
+	private void settleEBTSalesInSAP() {
+		
+		if(SapProperties.isBlackhole()){
+			LOGGER.warn("SAP Blackhole enabled.");
+			return;
+		}
+		List<String> saleIds=null;
+		Connection con = null;
+		UserTransaction utx = null;
+		try {
+			utx = this.getSessionContext().getUserTransaction();
+			utx.begin();
+			con = this.getConnection();
+			saleIds = this.queryForSales(con, QUERY_SALE_IN_SSP_STATUS_NO_BIND_EBT_ONLY);			
+			utx.commit();
+			utx = null;
+			if(null == erpSaleHome){
+				this.lookupErpSaleHome();
+			}
+			settleEBTSalesInSAP(saleIds);
+		} catch (Exception e) {
+			LOGGER.warn(e);
+			try {
+				if(null !=utx)
+				utx.rollback();
+			} catch (SystemException se) {
+				LOGGER.warn("Error while trying to rollback transaction", se);
+			}
+			throw new EJBException(e);
+		} finally {
+			try {
+				if (con != null) {
+					con.close();
+					con = null;
+				}
+			} catch (SQLException se) {
+				LOGGER.warn("Exception while trying to cleanup", se);
+			}
+		}
+	}
+	private void settleEBTSalesInSAP(List<String> saleIds) throws FinderException, RemoteException,
+			ErpTransactionException, SapException {
+		ErpSaleEB eb;
+		UserTransaction utx=null;
+		if(null !=saleIds && !saleIds.isEmpty()){
+			List<SapOrderSettlementInfo> list = new ArrayList<SapOrderSettlementInfo>();
+			for (int i = 0, size = saleIds.size(); i < size; i++) {
+				eb = erpSaleHome.findByPrimaryKey(new PrimaryKey(saleIds.get(i)));
+				ErpSaleModel sale = (ErpSaleModel) eb.getModel();
+				list =createSapSendEBTSettlementCommand(sale,list);					
+			}
+			if(null !=list && !list.isEmpty()){
+				SapSendEBTSettlementCommand sapCommand = new SapSendEBTSettlementCommand(list);
+				sapCommand.execute();
+				BapiInfo[] bapiInfos = sapCommand.getBapiInfos();
+				boolean isOK = true;					
+				if(bapiInfos != null) {
+					for (int i = 0; i < bapiInfos.length; i++) {							
+						BapiInfo bapiInfo = bapiInfos[i];
+						if (BapiInfo.LEVEL_ERROR == bapiInfo.getLevel()) {
+							isOK = false;
+							break;
+						}
+					}
+				}
+				//If the settlement with SAP is successful, we can mark the corresponding EBT sale as 'settled'.
+				if(isOK){					
+					for (int i = 0, size = saleIds.size(); i < size; i++) {
+						try {
+							eb = erpSaleHome.findByPrimaryKey(new PrimaryKey(saleIds.get(i)));
+							utx = this.getSessionContext().getUserTransaction();
+							utx.begin();
+							eb.forceSettlement();
+							utx.commit();
+							utx = null;
+						} catch (Exception e) {
+							LOGGER.warn(e);
+							try {
+								if(null !=utx)
+								utx.rollback();
+							} catch (SystemException se) {
+								LOGGER.warn("Error while trying to rollback transaction", se);
+							}//Continue with the next sale.
+						}
+					}
+				}
+			}
+		}
+	}
+	
+	private void lookupErpSaleHome() {
+		Context ctx = null;
+		try {
+			ctx = new InitialContext();
+			this.erpSaleHome = (ErpSaleHome) ctx.lookup("java:comp/env/ejb/ErpSale");
+		} catch (NamingException ex) {
+			LOGGER.warn("NamingException while trying to lookup ", ex);
+			throw new EJBException(ex);
+		} finally {
+			try {
+				ctx.close();
+			} catch (NamingException ne) {
+				LOGGER.warn("NamingException while trying to close ", ne);
+			}
+		}
+	}
+	
+	private List<SapOrderSettlementInfo> createSapSendEBTSettlementCommand(
+			ErpSaleModel sale,List<SapOrderSettlementInfo> list) throws ErpTransactionException {
+		List<ErpCaptureModel> captures =sale.getCaptures();
+		if(null != captures && !captures.isEmpty()){
+			for (ErpCaptureModel erpCaptureModel : captures) {				
+				SapOrderSettlementInfo settlementInfo= new SapEBTOrderSettlementInfo();
+				settlementInfo.setDeliveryDate(sale.getCurrentOrder().getRequestedDate());
+				settlementInfo.setWebSalesOrder(sale.getId());
+				settlementInfo.setSapSalesOrder(sale.getSapOrderNumber());
+				settlementInfo.setAmount(erpCaptureModel.getAmount());
+				settlementInfo.setAcctNumber(sale.getInvoice().getInvoiceNumber());
+				settlementInfo.setCurrency("USD");
+				settlementInfo.setCompanyCode(erpCaptureModel.getAffiliate().getCode());
+				list.add(settlementInfo);		
+			}
+		}
+		return list;
 	}
 }

@@ -1414,6 +1414,17 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 		
 	}
 	
+	public void markAsSettlementToSAPPending() throws ErpTransactionException {
+		try {
+			model.markAsSettlementToSAPPending();
+			setModified();
+		}catch(ErpTransactionException e){
+			getEntityContext().setRollbackOnly();
+			throw e;
+		}			
+		
+	}
+	
 	private static class ErpTransactionList extends DependentPersistentBeanList {
 
 		private static final long	serialVersionUID	= 4204931950533869261L;

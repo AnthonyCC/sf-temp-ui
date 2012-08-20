@@ -174,6 +174,10 @@
 	        <ejb-reference-description>
                 <ejb-ref-name>ejb/GCGateway</ejb-ref-name>
                 <jndi-name>freshdirect.giftcard.Gateway</jndi-name>
+            </ejb-reference-description>
+            <ejb-reference-description>
+                <ejb-ref-name>ejb/ErpSale</ejb-ref-name>
+                <jndi-name>freshdirect.erp.Sale</jndi-name>
             </ejb-reference-description>			
 		</reference-descriptor>
 		<jndi-name>freshdirect.dataloader.SaleCron</jndi-name>
