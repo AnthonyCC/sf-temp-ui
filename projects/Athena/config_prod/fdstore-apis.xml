@@ -24,20 +24,14 @@
 		<api name="handoffdetails"> 
 		  		<datasource>db_storefront</datasource>
 				<endpoint>handoffdetails</endpoint>
-						<call><![CDATA[select DI.CUTOFFTIME "Cut Off Time",
-							case when t.premium_cutoff_time is null then to_date(to_char(t.base_date-1, 'MM/DD/YY ') || to_char(t.cutoff_time, 'HH:MI:SS AM'),
-							            'MM/DD/YY HH:MI:SS AM') else to_date(to_char(t.base_date, 'MM/DD/YY ') || to_char(t.premium_cutoff_time, 'HH:MI:SS AM'), 
-							            'MM/DD/YY HH:MI:SS AM') end  "Hand Off Time", count(1) "Order Count"
+						<call><![CDATA[select to_char(DI.CUTOFFTIME,'MM/DD/YY HH:MI:SS AM') "Cut Off Time",
+							case when t.premium_cutoff_time is null then to_char(t.base_date-1, 'MM/DD/YY ') || to_char(t.cutoff_time, 'HH:MI:SS AM') else to_char(t.base_date, 'MM/DD/YY ') || to_char(t.premium_cutoff_time, 'HH:MI:SS AM') end  "Hand Off Time", count(1) "Order Count"
 							 from cust.sale s, cust.salesaction sa, cust.deliveryinfo di, dlv.reservation r, dlv.timeslot t
 							where s.id=sa.sale_id and s.cromod_date=sa.action_date and sa.action_type in ('CRO','MOD')
 							and sa.requested_date=? and sa.id=di.salesaction_id and s.type='REG' and s.status!='CAN' 
 							and DI.RESERVATION_ID=r.id and r.timeslot_id=t.id
-							group by DI.CUTOFFTIME,case when t.premium_cutoff_time is null then to_date(to_char(t.base_date-1, 'MM/DD/YY ') || to_char(t.cutoff_time, 'HH:MI:SS AM'),
-							            'MM/DD/YY HH:MI:SS AM') else to_date(to_char(t.base_date, 'MM/DD/YY ') || to_char(t.premium_cutoff_time, 'HH:MI:SS AM'), 
-							            'MM/DD/YY HH:MI:SS AM') end
-							            order by case when t.premium_cutoff_time is null then to_date(to_char(t.base_date-1, 'MM/DD/YY ') || to_char(t.cutoff_time, 'HH:MI:SS AM'),
-							            'MM/DD/YY HH:MI:SS AM') else to_date(to_char(t.base_date, 'MM/DD/YY ') || to_char(t.premium_cutoff_time, 'HH:MI:SS AM'), 
-							            'MM/DD/YY HH:MI:SS AM') end
+							group by DI.CUTOFFTIME,case when t.premium_cutoff_time is null then to_char(t.base_date-1, 'MM/DD/YY ') || to_char(t.cutoff_time, 'HH:MI:SS AM')  else to_char(t.base_date, 'MM/DD/YY ') || to_char(t.premium_cutoff_time, 'HH:MI:SS AM') end
+							            order by case when t.premium_cutoff_time is null then to_char(t.base_date-1, 'MM/DD/YY ') || to_char(t.cutoff_time, 'HH:MI:SS AM') else to_char(t.base_date, 'MM/DD/YY ') || to_char(t.premium_cutoff_time, 'HH:MI:SS AM') end
 					]]>
 				<parameters>
 							<parameter>
