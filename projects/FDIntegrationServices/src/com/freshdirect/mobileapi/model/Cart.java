@@ -718,41 +718,50 @@ public class Cart {
             cartDetail.setIsDlvPassApplied(((FDCartModel) cart).isDlvPassApplied());
         }
 
-        //Delivery Charge 
-        if (cartDetail.isDlvPassApplied()) {
-        	if(cart.getDeliveryCharge()==0)
-        		cartDetail.addSummaryLineCharge(new SummaryLineCharge(0, false, false, false, "Delivery Charge", false, DeliveryPassUtil.getDlvPassAppliedMessage(user.getFDSessionUser())));
-        	else
-        		cartDetail.addSummaryLineCharge(new SummaryLineCharge(cart.getDeliveryCharge(), cart.isDeliveryChargeTaxable(), cart
-                        .isDeliveryChargeWaived(), false, "Delivery Charge"));
-        } else {
-            double deliveyCharge = cart.getDeliverySurcharge();
-            if (cart.isDeliveryChargeWaived()) {
-                deliveyCharge = 0;
-            }
-            else{
-            	 deliveyCharge = cart.getDeliveryCharge();
-            }
-            	
-            cartDetail.addSummaryLineCharge(new SummaryLineCharge(deliveyCharge, cart.isDeliveryChargeTaxable(), cart
-                    .isDeliveryChargeWaived(), false, "Delivery Charge"));
-        }
-
-        //Misc Charge
-        //        if (cart.isMiscellaneousChargeWaived()) {
-        //            //If waived, may need to show it w/ (waived labeling) 
-        //            cartDetail.addSummaryLineCharge(new SummaryLineCharge(0, cart.isMiscellaneousChargeTaxable(), true, false, MobileApiProperties
-        //                    .getMiscChargeLabel()));
-        //        } else {
-        //If not waived, show only if the value is greater than zero
-        if (cart.getMiscellaneousCharge() > 0) {
-        	double deliveySurCharge = cart.getMiscellaneousCharge();
-            if (cart.isDeliverySurChargeWaived()) {
-            	deliveySurCharge = 0;
-            }
-            
-            cartDetail.addSummaryLineCharge(new SummaryLineCharge(deliveySurCharge, cart.isMiscellaneousChargeTaxable(),
-                    false, false, MobileApiProperties.getMiscChargeLabel()));
+        ErpPaymentMethodI paymentMethod = cart.getPaymentMethod();
+        boolean isEBTPayment = (null!=paymentMethod && EnumPaymentMethodType.EBT.equals(paymentMethod.getPaymentMethodType()));
+        if(!isEBTPayment){
+	        //Delivery Charge 
+	        if (cartDetail.isDlvPassApplied()) {
+	        	if(cart.getDeliveryCharge()==0)
+	        		cartDetail.addSummaryLineCharge(new SummaryLineCharge(0, false, false, false, "Delivery Charge", false, DeliveryPassUtil.getDlvPassAppliedMessage(user.getFDSessionUser())));
+	        	else
+	        		cartDetail.addSummaryLineCharge(new SummaryLineCharge(cart.getDeliveryCharge(), cart.isDeliveryChargeTaxable(), cart
+	                        .isDeliveryChargeWaived(), false, "Delivery Charge"));
+	        } else {
+	            double deliveyCharge = cart.getDeliverySurcharge();
+	            if (cart.isDeliveryChargeWaived()) {
+	                deliveyCharge = 0;
+	            }
+	            else{
+	            	 deliveyCharge = cart.getDeliveryCharge();
+	            }
+	            	
+	            cartDetail.addSummaryLineCharge(new SummaryLineCharge(deliveyCharge, cart.isDeliveryChargeTaxable(), cart
+	                    .isDeliveryChargeWaived(), false, "Delivery Charge"));
+	        }
+	
+	        //Misc Charge
+	        //        if (cart.isMiscellaneousChargeWaived()) {
+	        //            //If waived, may need to show it w/ (waived labeling) 
+	        //            cartDetail.addSummaryLineCharge(new SummaryLineCharge(0, cart.isMiscellaneousChargeTaxable(), true, false, MobileApiProperties
+	        //                    .getMiscChargeLabel()));
+	        //        } else {
+	        //If not waived, show only if the value is greater than zero
+	        if (cart.getMiscellaneousCharge() > 0) {
+	        	double deliveySurCharge = cart.getMiscellaneousCharge();
+	            if (cart.isDeliverySurChargeWaived()) {
+	            	deliveySurCharge = 0;
+	            }
+	            
+	            cartDetail.addSummaryLineCharge(new SummaryLineCharge(deliveySurCharge, cart.isMiscellaneousChargeTaxable(),
+	                    false, false, MobileApiProperties.getMiscChargeLabel()));
+	        }
+        }else{
+            cartDetail.addSummaryLineCharge(new SummaryLineCharge(0.0, cart.isDeliveryChargeTaxable(), cart
+                    .isDeliveryChargeWaived(), false, "Delivery Charge (waived)"));
+        	cartDetail.addSummaryLineCharge(new SummaryLineCharge(0.0, cart.isMiscellaneousChargeTaxable(),
+                    false, false, MobileApiProperties.getMiscChargeLabel()+" (waived)"));
         }
         //        }
 
