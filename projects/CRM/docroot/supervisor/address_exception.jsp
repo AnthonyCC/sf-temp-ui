@@ -74,6 +74,7 @@
 						<option value="NY" <%= "NY".equalsIgnoreCase(request.getParameter("state")) ? "selected" : "" %>>NY</option>
 						<option value="NJ" <%= "NJ".equalsIgnoreCase(request.getParameter("state")) ? "selected" : "" %>>NJ</option>
 						<option value="CT" <%= "CT".equalsIgnoreCase(request.getParameter("state")) ? "selected" : "" %>>CT</option>
+						<option value="PA" <%= "PA".equalsIgnoreCase(request.getParameter("state")) ? "selected" : "" %>>PA</option>
 					</select>
 				</td>
 			</tr>

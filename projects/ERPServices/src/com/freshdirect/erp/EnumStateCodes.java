@@ -5,7 +5,8 @@ public enum EnumStateCodes {
 
     ENUM_STATE_NY("NY", "New York, NY"), 
     ENUM_STATE_NJ("NJ", "New Jersey, NJ"), 
-    ENUM_STATE_CT("CT", "Connecticut, CT");
+    ENUM_STATE_CT("CT", "Connecticut, CT"),
+    ENUM_STATE_PA("PA", "Pennsylvania, PA");
 
     private final String desc;
     private final String id;

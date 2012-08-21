@@ -188,7 +188,7 @@ String show = request.getParameter("show");
 	<%@ include file="/includes/back_to_top.jspf" %><br><br>
 	<a name="3StateCC"></a>
 	<b>Why doesn't FreshDirect accept out-of-state credit cards?</b><br>
-	FreshDirect does accept out-of-state credit cards, but since FreshDirect only has access to the Post Office database for NY, NJ, and CT we can only accept billing addresses within those 3 states.
+	FreshDirect does accept out-of-state credit cards, but since FreshDirect only has access to the Post Office database for NY, NJ, CT and PA we can only accept billing addresses within those 3 states.
 	<%@ include file="/includes/back_to_top.jspf" %><br><br>
 	<a name="ChangeCCInfo"></a>
 	<b>What if I don't want to change my billing information on my credit card?</b><br>

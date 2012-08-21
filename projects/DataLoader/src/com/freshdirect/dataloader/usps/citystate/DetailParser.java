@@ -49,6 +49,7 @@ public class DetailParser extends FieldDelimitedFileParser implements Synchronou
         validStates.add("NJ");
         validStates.add("CT");
         validStates.add("AE");
+        validStates.add("PA");
         
         fields.add(new Field(ZIP_CODE,                  5, true));
         fields.add(new Field(CITY_STATE_KEY,            6, true));

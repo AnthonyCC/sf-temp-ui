@@ -199,6 +199,7 @@ public class AddressUtil {
 		triStateAbbrevs.add("NJ");
 		triStateAbbrevs.add("CT");
 		triStateAbbrevs.add("NY");
+		triStateAbbrevs.add("PA");
 	}
 	private final static Set<String> stateAbbrevs = new HashSet<String>();
 	static {

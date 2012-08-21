@@ -6,6 +6,7 @@
 	var nyCounties = new Array();
 	var njCounties = new Array();
 	var ctCounties = new Array();
+	var paCounties = new Array();
 </script>		
 <table class="home_search_module_field" border="0" cellpadding="2" cellspacing="2" width="100%">
 
@@ -54,6 +55,19 @@
 		}
 	}
 %>
+<%
+	List paCounties = stateCounties.get("PA");
+	if(paCounties != null && paCounties.size() > 0) {
+	%>
+		paCounties = new Array(<%= paCounties.size() %>);
+	<%
+		for(int i = 0; i< paCounties.size();i++) {
+	%>
+		paCounties[<%=i %>] = '<%= paCounties.get(i) %>';
+	<%
+		}
+	}
+%>
 function getCounties(state) {
 	if(document.forms[0].county.options == undefined)
 		return;
@@ -88,7 +102,16 @@ function getCounties(state) {
 				document.forms[0].county.options[document.forms[0].county.options.length]= new Option(ctCounties[i],ctCounties[i],false,false);
 		}
 	}
-	
+	if(state == 'PA') {
+		document.forms[0].county.options.length=1;
+		for(var i=0;i<paCounties.length;i++)
+		{
+			if(paCounties[i] == '<%= county %>')
+				document.forms[0].county.options[document.forms[0].county.options.length]= new Option(paCounties[i],paCounties[i],true,true);
+			else
+				document.forms[0].county.options[document.forms[0].county.options.length]= new Option(paCounties[i],paCounties[i],false,false);
+		}
+	}
 }
 
 </script>
@@ -108,6 +131,7 @@ function getCounties(state) {
 					<option value="NY" <%= state.equals("NY") ? "SELECTED" : "" %>>NY</option>
 					<option value="NJ" <%= state.equals("NJ") ? "SELECTED" : "" %>>NJ</option>
 					<option value="CT" <%= state.equals("CT") ? "SELECTED" : "" %>>CT</option>
+					<option value="PA" <%= state.equals("PA") ? "SELECTED" : "" %>>PA</option>
 				</select>
 		 	</td>
 		 <% } %>

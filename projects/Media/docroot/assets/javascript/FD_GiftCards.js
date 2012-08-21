@@ -984,6 +984,8 @@ function showDialogs() {
 			state = 'NJ';
 		} else if ($('stateCT') && $('stateCT').checked) {
 			state = 'CT';
+		} else if ($('statePA') && $('statePA').checked) {
+			state = 'PA';
 		}
 
 		if (state != null) {
