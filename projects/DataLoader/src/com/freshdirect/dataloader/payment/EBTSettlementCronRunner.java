@@ -83,7 +83,7 @@ public class EBTSettlementCronRunner {
 			buff.append("<html>").append("<body>");			
 			
 			if(exceptionMsg != null) {
-				buff.append("b").append(exceptionMsg).append("/b");
+				buff.append("<b>").append(exceptionMsg).append("</b>");
 			}
 			buff.append("</body>").append("</html>");
 
@@ -93,7 +93,7 @@ public class EBTSettlementCronRunner {
 					subject, buff.toString(), true, "");
 			
 		}catch (MessagingException e) {
-			LOGGER.warn("Error Sending CaptureCron report email: ", e);
+			LOGGER.warn("Error Sending EBTSettlementCron report email: ", e);
 		}
 		
 	}
