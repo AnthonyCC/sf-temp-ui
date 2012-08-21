@@ -1117,7 +1117,8 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 		for ( ErpTransactionModel obj : transactions ) {
 			if (obj instanceof ErpPostAuthGiftCardModel) {
 				ErpPostAuthGiftCardModel pauth = (ErpPostAuthGiftCardModel)obj;
-				if(pauth.getCertificateNum().equals(pm.getCertificateNumber()) && pauth.getPreAuthCode().equals(preAuthCode))
+				if(pauth.getCertificateNum().equals(pm.getCertificateNumber()) && pauth.getPreAuthCode().equals(preAuthCode)
+						&& pauth.isApproved())
 					return true;
 			}
 		}
@@ -1179,7 +1180,7 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 		for ( ErpTransactionModel obj : transactions ) {
 			if (obj instanceof ErpPostAuthGiftCardModel) {
 				ErpPostAuthGiftCardModel pauth = (ErpPostAuthGiftCardModel)obj;
-				if(pauth.isApproved() || pauth.isDeclined())
+				if(pauth.isApproved()/* || pauth.isDeclined()*/)
 					pAuths.add(pauth);
 			}
 		}
