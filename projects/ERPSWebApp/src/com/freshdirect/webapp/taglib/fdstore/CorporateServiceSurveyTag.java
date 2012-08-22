@@ -169,13 +169,14 @@ public class CorporateServiceSurveyTag extends AbstractControllerTag implements 
 		return this.redirectSuccessPage;
 	}
 
+	
 	protected boolean performAction(HttpServletRequest request, ActionResult actionResult) throws JspException {
 		String actionName = this.getActionName();
 		try {
 			LOGGER.debug("actionName " + actionName);
 			if ("submitCorporateServiceSurvey".equalsIgnoreCase(actionName)) {
 				//this.performSendCorporateServiceInfo(request, actionResult);
-				LOGGER.debug("Error performing action " + actionName);
+				LOGGER.debug("Error performing action " + actionName); //why? site access always uses this action?
 				this.storeCorporateServiceInfo(request, actionResult);
 			}else{
 				this.storeCorporateServiceInfo(request, actionResult, actionName);
@@ -233,6 +234,7 @@ public class CorporateServiceSurveyTag extends AbstractControllerTag implements 
 		if (user!= null) { user.setLastCOSSurveySuccess(false); }
 	}
 	
+	//no action name is only called from site access
 	protected void storeCorporateServiceInfo(HttpServletRequest request, ActionResult result) throws FDResourceException {
 		populateCorporateServiceForm(request);
 		validateCorporateServiceForm(result);
@@ -253,7 +255,7 @@ public class CorporateServiceSurveyTag extends AbstractControllerTag implements 
 			
 			FDCustomerManager.storeSurvey(surveyResponse);
 
-			this.setSuccessPage(this.getSuccessPage()+((this.getSuccessPage().indexOf("?")>0)?"&":"?")+"successPage="+URLEncoder.encode(redirectSuccessPage)+"&info=thankyou#survey");
+			this.setSuccessPage(this.getSuccessPage()+((this.getSuccessPage().indexOf("?")>0)?"&":"?")+"successPage="+URLEncoder.encode(redirectSuccessPage)+"&sa=true&info=thankyou#survey");
 
 			pageContext.setAttribute("formSubmitted", true);
 		} 

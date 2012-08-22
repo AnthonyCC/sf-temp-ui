@@ -17,65 +17,38 @@
 	    successPage = "/index.jsp";
     }
     request.setAttribute("survey_source","SiteAccess Page");
+
+	if("slite".equals(request.getParameter("referrer_page"))) {
+		successPage = "#\" onclick=\"window.top.location=\'/index.jsp\'";
+	}
 %>	
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
 	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html>
+<html xmlns="http://www.w3.org/1999/xhtml">
 	<head>
 		<title>FreshDirect</title>
-
-	<%@ include file="/common/template/includes/metatags.jspf" %>
-	<%@ include file="/common/template/includes/i_javascripts.jspf" %>
-	<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
-	
-	
-	<%
-	if("slite".equals(request.getParameter("referrer_page"))) {
-	%>
-		<script>
-			function resizeFrame() {
-				setFrameHeightSL('signupframe', 600);
-				setFrameWidthSL('signupframe',750);
-				window.parent.document.getElementById('MB_window').style.left=200 + 'px';
-				window.parent.document.getElementById('MB_window').style.width=780 + 'px';
-			}
-			
-			//window.onload = resizeFrame();
-		</script>
-	<%
-		successPage = "#\" onclick=\"window.top.location=\'/index.jsp\'";
-	}
-%>
-	
-	<%@ include file="/shared/template/includes/i_head_end.jspf" %>
-</head>
-	<body bgcolor="white" text="#333333" class="text11" marginwidth="0" marginheight="20" leftmargin="0" topmargin="20">
+		<%@ include file="/shared/template/includes/i_head_end.jspf" %>
+	</head>
+	<body>
 	<%@ include file="/shared/template/includes/i_body_start.jspf" %>
-	<div align="center">
-    <table width="500" cellpadding="0" cellspacing="0" border="0">
-	<tr>
-		<td align="center" class="text12">
-			<img src="/media_stat/images/logos/fd_cos_logo.gif" width="232" height="67" border="0" alt="FreshDirect At The Office">
-			<br><img src="/media_stat/images/layout/999966.gif" width="100%" height="1" border="0" vspace="8"><br>
-			<a name="survey"></a><%@ include file="/survey/includes/cos.jsp" %><% if ("thankyou#survey".equals(request.getParameter("info"))) { %><br><br><% } %><br>
-			<a href="<%= successPage %>"><img src="/media_stat/images/template/site_access/continue_to_store.gif" width="124" height="16" border="0"></a><br><br>
-		</td>
-	</tr>
-	<tr>
-        <td><img src="/media_stat/images/layout/999966.gif" width="100%" height="1" vspace="10"></td>
-    <tr>
-</table>
+	
+	<%--
+		re-use the options object from site access (if it exists, otherwise just create it)
+		Put any java-related variables needed by the page into the _page_options object. 
+		all the new vars here go in to a sub-variable, so we don't override pre-existing vars
+	--%>
+	<script type="text/javascript">
 
-</div>
-<%
-	if("slite".equals(request.getParameter("referrer_page"))) {
-	%>
-		<script>
-			window.onload = resizeFrame();
-		</script>
-	<%
-	}
-%>
+		top.window['_page_options'] = $jq.extend(true, top.window['_page_options']||{}, {
+			noServiceCOS: {
+				referrer_page: '<%= request.getParameter("referrer_page") %>',
+				successPage: '<%= successPage %>',
+				cosSurveyContentUrl: '/survey/includes/cos.jsp?survey=cos_site_access_survey&sa=true'
+			}
+		});
+	</script>
+
+	<fd:IncludeMedia name="/media/editorial/site_access/zipfail/cos_site_access_survey.html" />
 </body>
 </html>

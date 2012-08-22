@@ -42,7 +42,11 @@ public class MergeCartControllerTag extends com.freshdirect.framework.webapp.Bod
 	
 	public int doStartTag() throws JspException {
 		HttpSession session = pageContext.getSession();	
-
+		if (session.getAttribute(CURRENT_CART) == null) {
+			session.setAttribute(CURRENT_CART, new FDCartModel());
+			return EVAL_BODY_BUFFERED;
+		}
+		
 		//
         // the uers's saved cart has already been recalled in the login process
         //

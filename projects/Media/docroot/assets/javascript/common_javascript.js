@@ -1097,3 +1097,102 @@ function doOverlayWindow(olURL) {
 			}
 			return rv;
 		}
+
+	function doOverlayDialog(olURL) {
+		var overlayDialog = $jq('<div id="uimodal-output"></div>');
+
+		$jq("body").append(overlayDialog);
+		overlayDialog.dialog({
+			title: "", /* no title */
+			modal: true,
+			autoOpen: false,
+			height: 'auto',
+			width: 'auto',
+			maxClientHeight: 1,
+			maxClientWidth: 1,
+			maxHeight: 1,
+			maxWidth: 1,
+			openHeight: -1,
+			openWidth: -1,
+			closeText: 'hide',
+			position: 'center',
+			resizable: false,
+			draggable: false,
+			open: function() {
+				$jq('html').css({ 'overflow': 'hidden' });
+				//$jq('body').css({ 'overflow': 'hidden' });
+				
+				overlayDialog.dialog('option', 'maxClientHeight', 0.95);
+				overlayDialog.dialog('option', 'maxClientWidth', 0.95);
+				overlayDialog.dialog('option', 'maxHeight', Math.round(document.documentElement.clientHeight * overlayDialog.dialog('option', 'maxClientHeight')));
+				overlayDialog.dialog('option', 'maxWidth',  Math.round(document.documentElement.clientWidth * overlayDialog.dialog('option', 'maxClientWidth')));
+
+				//dialogWindowResizeTimer = setTimeout(dialogWindowResizeFunc, 100);
+				if (overlayDialog.height() > overlayDialog.dialog('option', 'maxHeight')) { 
+					setTimeout(function(){ overlayDialog.dialog('option', 'height', overlayDialog.dialog('option', 'maxHeight')); }, 100);
+				} else {
+					overlayDialog.dialog('option', 'openHeight', $jq('#uimodal-output').height());
+				}
+				if (overlayDialog.width() > overlayDialog.dialog('option', 'maxWidth')) {
+					setTimeout(function(){ overlayDialog.dialog('option', 'width', overlayDialog.dialog('option', 'maxWidth')); }, 100);
+				} else {
+					overlayDialog.dialog('option', 'openWidth', $jq('#uimodal-output').width());
+				}
+
+				//allow off-click to close
+				$jq('.ui-widget-overlay').bind('click', function(){ overlayDialog.dialog('close'); });
+
+
+			},
+			close: function () {
+				
+				$jq('html').css({ 'overflow': 'auto' });
+				//$jq('body').css({ 'overflow': 'auto' });
+			},
+		});
+		
+		overlayDialog.load(olURL, function() { overlayDialog.dialog('open'); });
+
+	}
+
+	function dialogWindowResizeFunc() {
+		var overlayDialog = $jq('#uimodal-output');
+		var maxContextHeight = Math.round(document.documentElement.clientHeight * overlayDialog.dialog('option', 'maxClientHeight'));
+		var maxContextWidth = Math.round(document.documentElement.clientWidth * overlayDialog.dialog('option', 'maxClientWidth'));
+		
+		if (overlayDialog.height() >= maxContextHeight) { 
+			overlayDialog.dialog('option', 'height', maxContextHeight);
+			if (overlayDialog.dialog('option', 'openHeight') == -1) { overlayDialog.dialog('option', 'openHeight', overlayDialog.height()); }
+		} else {
+			if (overlayDialog.dialog('option', 'openHeight') == -1) { overlayDialog.dialog('option', 'openHeight', overlayDialog.height()); }
+
+			if (overlayDialog.dialog('option', 'openHeight') >= maxContextHeight) {
+				overlayDialog.dialog('option', 'height', maxContextHeight);
+			} else {
+				overlayDialog.dialog('option', 'height', overlayDialog.dialog('option', 'openHeight'));
+			}
+		}
+		if (overlayDialog.width() >= maxContextWidth) {
+			overlayDialog.dialog('option', 'width', maxContextWidth);
+			if (overlayDialog.dialog('option', 'openWidth') == -1) { overlayDialog.dialog('option', 'openWidth', overlayDialog.width()); }
+		} else {
+			if (overlayDialog.dialog('option', 'openWidth') == -1) { overlayDialog.dialog('option', 'openWidth', overlayDialog.width()); }
+			
+			if (overlayDialog.dialog('option', 'openHeight') >= maxContextWidth) {
+				overlayDialog.dialog('option', 'width', maxContextWidth);
+			} else {
+				overlayDialog.dialog('option', 'width', overlayDialog.dialog('option', 'openWidth'));
+			}
+			
+		}
+
+		overlayDialog.dialog('option', 'position', overlayDialog.dialog('option', 'position'));
+	};
+
+	var dialogWindowResizeTimer;
+	if (window['$jq']) { //make sure jQuery is available
+		$jq(window).resize(function() {
+			clearTimeout(dialogWindowResizeTimer);
+			dialogWindowResizeTimer = setTimeout(dialogWindowResizeFunc, 100);
+		});
+	}

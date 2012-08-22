@@ -12,7 +12,7 @@
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri="freshdirect" prefix="fd" %>
 <%
-	response.addHeader("Pragma", "no-cache"); 
+	response.addHeader("Pragma", "no-cache");
 	boolean isBestCellars = request.getServerName().toLowerCase().indexOf("bestcellars") > -1;
 	String successPage = NVL.apply(request.getParameter("successPage"), "");
 	String zipcode = NVL.apply(request.getParameter("zipcode"), "");
@@ -136,7 +136,6 @@ request.setAttribute("listPos", "CategoryNote,SiteAccess");
 				Put any java-related variables needed by the page into the _page_options object. 
 			--%>
 			<script type="text/javascript">
-			<!--
 				var _page_options = {
 					gc: {
 						isEnabled: <%=FDStoreProperties.isGiftCardEnabled()%>,
@@ -206,7 +205,6 @@ request.setAttribute("listPos", "CategoryNote,SiteAccess");
 						_page_options.overlayURL = '<%= "/survey/cos_site_access_survey.jsp?successPage=" + URLEncoder.encode(successPage) %>';
 					<% } %>
 				<% } %>
-			//-->
 			</script>
 
 		

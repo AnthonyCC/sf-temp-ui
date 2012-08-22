@@ -23,6 +23,7 @@
   <![endif]-->
 
   <%-- old css files --%>
+  	<fd:css href="/assets/css/common/jquery-ui_base/jquery-ui.css" /><%-- jQuery UI base, override in global.css --%>
   	<fd:css href="/assets/css/modalbox.css" />
 	<fd:css href="/assets/css/global.css" />
 	<%

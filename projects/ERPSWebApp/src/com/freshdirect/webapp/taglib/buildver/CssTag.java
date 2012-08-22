@@ -28,7 +28,7 @@ public class CssTag extends AbstractBuildverTag {
 		}
 		buf.append("rel=\"stylesheet\" type=\"text/css\" href=\"");
 		buf.append(StringEscapeUtils.escapeHtml(uri));
-		buf.append("\">");
+		buf.append("\" />");
 		out.print(buf);
 	}
 

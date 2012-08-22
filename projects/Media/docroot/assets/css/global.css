@@ -1604,4 +1604,24 @@ div.control, div.slotRow, div.time {
 		margin: 0;
 		padding: 0;
 	}
-	
+
+/* jQuery UI css overrides */
+	.ui-dialog .ui-widget-header,  .ui-dialog .ui-widget-header .ui-state-hover {
+		background: none;
+		border: 0 none;
+	}
+	.ui-dialog .ui-dialog-titlebar-close {
+		padding: 0px;
+	}
+	.ui-dialog .ui-widget-header .ui-icon {
+		background: transparent url('/media/editorial/site_access/images/round_x.gif') no-repeat;
+		width: 20px;
+		height: 18px;
+	}
+	.ui-dialog .ui-widget-header .ui-state-hover {
+		background: none;
+	}
+	.ui-widget-overlay {
+		background-color: #fff;
+		opacity: 0.8;
+	}

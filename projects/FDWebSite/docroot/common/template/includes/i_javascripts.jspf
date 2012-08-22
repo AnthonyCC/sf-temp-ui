@@ -11,7 +11,7 @@
 	--%>
 	
 	<script src="/assets/javascript/jquery/1.7.2/jquery.js" type="text/javascript" language="javascript"></script>
-	<script src="/assets/javascript/jquery/ui/1.8.18/jquery-ui.min.js" type="text/javascript" language="javascript"></script>
+	<script src="/assets/javascript/jquery/ui/1.8.23/jquery-ui.min.js" type="text/javascript" language="javascript"></script>
 	<script src="/assets/javascript/jquery/corner/jquery.corner.js" type="text/javascript" language="javascript"></script>
 	
 	<script type="text/javascript" language="javascript">
@@ -37,6 +37,7 @@
 	<% if (request.getRequestURI().indexOf("brownie_points.jsp") == -1)  { %>
 		<fd:javascript src="/assets/javascript/common_javascript.js"/>
 	<% } %>
+	<fd:javascript src="/assets/javascript/rounded_corners.inc.js"/>
 	<fd:javascript src="/assets/javascript/FD_PromoEligibility.js"/>
 
 	<%
