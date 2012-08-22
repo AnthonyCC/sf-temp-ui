@@ -1,9 +1,15 @@
 package com.freshdirect.sap;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class SapOrderSettlementInfo {
+public class SapOrderSettlementInfo implements Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -3647117568838616718L;
+	
 	private Date deliveryDate;
 	private String acctNumber;
 	private String sapSalesOrder;
@@ -53,5 +59,10 @@ public class SapOrderSettlementInfo {
 	}
 	public void setCompanyCode(String companyCode) {
 		this.companyCode = companyCode;
+	}
+	@Override
+	public String toString() {
+		// TODO Auto-generated method stub
+		return "SapOrderSettlementInfo["+webSalesOrder+"]";
 	}
 }

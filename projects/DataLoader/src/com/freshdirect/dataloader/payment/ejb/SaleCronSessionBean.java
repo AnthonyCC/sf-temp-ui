@@ -1300,7 +1300,7 @@ public class SaleCronSessionBean extends SessionBeanSupport {
 			utx = this.getSessionContext().getUserTransaction();
 			utx.begin();
 			con = this.getConnection();
-			saleIds = this.queryForSales(con, QUERY_SALE_IN_SSP_STATUS_NO_BIND_EBT_ONLY);			
+			saleIds = this.queryForSales(con, QUERY_SALE_IN_SSP_STATUS_NO_BIND_EBT_ONLY);	
 			utx.commit();
 			utx = null;
 			if(null == erpSaleHome){
@@ -1339,9 +1339,11 @@ public class SaleCronSessionBean extends SessionBeanSupport {
 				list =createSapSendEBTSettlementCommand(sale,list);					
 			}
 			if(null !=list && !list.isEmpty()){
+				LOGGER.info("EBT Sales to be sent to SAP:"+list);
 				SapSendEBTSettlementCommand sapCommand = new SapSendEBTSettlementCommand(list);
 				sapCommand.execute();
-				BapiInfo[] bapiInfos = sapCommand.getBapiInfos();
+				LOGGER.info("EBT Sales sent to SAP successfully.");
+				/*BapiInfo[] bapiInfos = sapCommand.getBapiInfos();
 				boolean isOK = true;					
 				if(bapiInfos != null) {
 					for (int i = 0; i < bapiInfos.length; i++) {							
@@ -1351,9 +1353,9 @@ public class SaleCronSessionBean extends SessionBeanSupport {
 							break;
 						}
 					}
-				}
+				}*/
 				//If the settlement with SAP is successful, we can mark the corresponding EBT sale as 'settled'.
-				if(isOK){					
+//				if(isOK){					
 					for (int i = 0, size = saleIds.size(); i < size; i++) {
 						try {
 							eb = erpSaleHome.findByPrimaryKey(new PrimaryKey(saleIds.get(i)));
@@ -1372,7 +1374,7 @@ public class SaleCronSessionBean extends SessionBeanSupport {
 							}//Continue with the next sale.
 						}
 					}
-				}
+//				}
 			}
 		}
 	}

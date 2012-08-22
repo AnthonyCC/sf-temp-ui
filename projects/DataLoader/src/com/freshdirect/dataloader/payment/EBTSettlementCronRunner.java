@@ -50,7 +50,6 @@ public class EBTSettlementCronRunner {
 		} catch (Exception e) {
 			LOGGER.error(e);
 			LOGGER.info(new StringBuilder("EBTSettlementCron failed with Exception...").append(e.toString()).toString());
-			LOGGER.error(e);
 			email(Calendar.getInstance().getTime(), e.toString());
 		} finally {
 			try {
