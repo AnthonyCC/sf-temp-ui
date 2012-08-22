@@ -1,3 +1,4 @@
+<%@page import="com.freshdirect.fdstore.FDSkuNotFoundException"%>
 <%@ taglib uri="logic" prefix="logic" %>
 <%
 /* This include paints the: description/nutrition/ratings/tell a friend items for the product page 
@@ -26,14 +27,19 @@
  String separatorChar = "";
 	String productView = request.getParameter("product_view");
         SkuModel defaultSku = !productNode.isUnavailable() ? productNode.getDefaultSku() : (SkuModel)productNode.getSkus().get(0);
-        if(productNode.isTempUnavailable()){
+        
+        if(productNode.isUnavailable()){
         	defaultSku = productNode.getDefaultTemporaryUnavSku();
         }
+        
         String aboutLabel = null;
         if (defaultSku!=null) {
-
-        	FDProduct fdprd = (productNode.isUnavailable() && !productNode.isTempUnavailable()) ? null : defaultSku.getProduct();
-			
+        	FDProduct fdprd = null;
+        	try{
+        		fdprd = defaultSku.getProduct(); //try to show nutrition and ingredients info even if the product is unavailable		
+        	}catch(FDSkuNotFoundException e){
+        	}
+        			
                 if (showAbout && !pd_isWineLayout) {
                     separatorChar = "|";
 				

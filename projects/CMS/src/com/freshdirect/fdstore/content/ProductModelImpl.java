@@ -459,6 +459,10 @@ public class ProductModelImpl extends AbstractProductModelImpl {
         return Collections.min(skus, new ZonePriceComparator(context.getZoneId()));
 	}
 	
+	/**
+	 * Return a SkuModel which is available or temporary unavailable. Skus with nutrition info are preferred.
+	 * Used for show nutrition infos for temporary unavailable products, if available
+	 */
 	public SkuModel getDefaultTemporaryUnavSku() {
 		
 		PricingContext context = getPricingContext();
@@ -470,6 +474,7 @@ public class ProductModelImpl extends AbstractProductModelImpl {
 
         ContentKey preferredSku = (ContentKey) getCmsAttributeValue("PREFERRED_SKU");
 
+        /** try to find the preferred sku first */
         for (ListIterator<SkuModel> li = skus.listIterator(); li.hasNext();) {
             SkuModel sku = li.next();
             if (sku.isUnavailable() && !sku.isTempUnavailable()) {
@@ -478,10 +483,26 @@ public class ProductModelImpl extends AbstractProductModelImpl {
                 return sku;
             }
         }
-        if (skus.size() == 0)
-            return null;
         
-        return Collections.min(skus, new ZonePriceComparator(context.getZoneId()));
+        /** try to find the one with nutrition info if no preferred sku found */
+        for(ListIterator<SkuModel> li = skus.listIterator(); li.hasNext();){
+        	SkuModel sku = li.next();
+        	try{
+        		FDProduct fdProduct = sku.getProduct();
+        		if(fdProduct!=null && fdProduct.hasNutritionFacts()){
+        			return sku;
+        		}
+        	} catch(FDSkuNotFoundException e){
+        		//ignore
+        	} catch (FDResourceException ex) {
+        		throw new FDRuntimeException(ex);
+			}
+        }
+        
+        if (skus.size() == 0)
+        	return null;
+        
+        return skus.get(0);
 	}
 	
 	/**
