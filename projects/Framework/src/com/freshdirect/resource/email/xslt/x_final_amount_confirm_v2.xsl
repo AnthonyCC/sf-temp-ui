@@ -24,7 +24,7 @@
 	</xsl:choose>
 	<xsl:text> and </xsl:text><xsl:call-template name="format-delivery-end"><xsl:with-param name="dateTime" select="order/deliveryReservation/endTime" /></xsl:call-template>
 	<xsl:text> on </xsl:text><xsl:call-template name="format-delivery-date"><xsl:with-param name="dateTime" select="order/deliveryReservation/startTime" /></xsl:call-template>
-	<xsl:text>to pick up your order. You'll need to bring <xsl:if test="order/paymentMethod/paymentMethodType = 'EBT'"> your EBT card to complete purchase and a valid </xsl:if>photo ID to pick up your food. Just present it to the attendant when you arrive. 
+	<xsl:text>to pick up your order. You'll need to bring <xsl:if test="order/paymentMethod/paymentMethodType = 'EBT'"> your EBT card ready to complete the purchase and a valid </xsl:if>photo ID to pick up your food. Just present it to the attendant when you arrive. 
 	<xsl:if test="order/paymentMethod/paymentMethodType = 'EBT'"> If you need more information on the EBT purchase process, <a href="http://www.freshdirect.com/category.jsp?catId=about_ebt">click here</a> to see our EBT Info Page.</xsl:if>
 	We hope you find everything absolutely fresh and delicious.
 
@@ -34,7 +34,7 @@
 	<xsl:text>Hello again! Your order (#</xsl:text><xsl:value-of select="order/erpSalesId"/><xsl:text>) is on its way to you. </xsl:text>
 	<xsl:text>It will be delivered between </xsl:text><xsl:call-template name="format-delivery-start"><xsl:with-param name="dateTime" select="order/deliveryReservation/startTime"/></xsl:call-template>
 	<xsl:text> and </xsl:text><xsl:call-template name="format-delivery-end"><xsl:with-param name="dateTime" select="order/deliveryReservation/endTime" /></xsl:call-template>
-	<xsl:text> on </xsl:text><xsl:call-template name="format-delivery-date"><xsl:with-param name="dateTime" select="order/deliveryReservation/startTime" /></xsl:call-template><xsl:text>. <xsl:if test="order/paymentMethod/paymentMethodType = 'EBT'">When your order arrives, please make sure you have your EBT card to complete purchase.  If you need more information on the EBT purchase process, <a href="http://www.freshdirect.com/category.jsp?catId=about_ebt">click here</a> to see our EBT Info Page. </xsl:if></xsl:text>
+	<xsl:text> on </xsl:text><xsl:call-template name="format-delivery-date"><xsl:with-param name="dateTime" select="order/deliveryReservation/startTime" /></xsl:call-template><xsl:text>. <xsl:if test="order/paymentMethod/paymentMethodType = 'EBT'">When your order arrives, please make sure you have your EBT card ready to complete the purchase.  If you need more information on the EBT purchase process, <a href="http://www.freshdirect.com/category.jsp?catId=about_ebt">click here</a> to see our EBT Info Page. </xsl:if></xsl:text>
 	<xsl:text>We hope you find everything absolutely fresh and delicious.
 		
 </xsl:text>

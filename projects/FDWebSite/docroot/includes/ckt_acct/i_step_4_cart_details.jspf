@@ -318,6 +318,11 @@ int idx = 0;
 			<td colspan="6"></td>		    	
 			
 		</tr>
+		<tr valign="top" class="orderSummary">
+			<td colspan="3" align="right">Total Tax (waived):</td>
+			<td align="right">$0.00</td>
+			<td colspan="7"></td>
+		</tr>
 	<% } %>
 	
 	<% if (cart.getDepositValue() != 0) {
