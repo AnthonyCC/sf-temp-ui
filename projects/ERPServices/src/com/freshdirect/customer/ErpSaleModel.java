@@ -452,7 +452,8 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 				EnumSaleStatus.REDELIVERY,
 				EnumSaleStatus.CHARGEBACK,
 				EnumSaleStatus.POST_AUTH_PENDING,
-				EnumSaleStatus.SETTLEMENT_PENDING});
+				EnumSaleStatus.SETTLEMENT_PENDING,
+				EnumSaleStatus.SETTLEMENT_SAP_PENDING});
 
 		ErpInvoiceModel lastInvoice = null;
 		List<ErpTransactionModel> txs = new ArrayList<ErpTransactionModel>(transactions);
