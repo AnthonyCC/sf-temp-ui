@@ -66,8 +66,10 @@ import com.freshdirect.routing.model.AreaModel;
 import com.freshdirect.routing.model.DeliverySlot;
 import com.freshdirect.routing.model.IAreaModel;
 import com.freshdirect.routing.model.IDeliverySlot;
+import com.freshdirect.routing.model.IRegionModel;
 import com.freshdirect.routing.model.IRoutingSchedulerIdentity;
 import com.freshdirect.routing.model.IWaveInstance;
+import com.freshdirect.routing.model.RegionModel;
 import com.freshdirect.routing.model.RoutingSchedulerIdentity;
 import com.freshdirect.routing.model.TrnFacilityType;
 import com.freshdirect.routing.util.RoutingUtil;
@@ -130,7 +132,7 @@ public class DlvManagerDAO {
 	private static final String TIMESLOTS =
 		"select t.id, t.base_date, t.start_time, t.end_time, t.cutoff_time, t.status, t.zone_id, t.capacity, z.zone_code, t.ct_capacity" 
 		+ ", ta.AREA AREA_CODE, ta.STEM_MAX_TIME stemmax, ta.STEM_FROM_TIME stemfrom, ta.STEM_TO_TIME stemto, ta.ZONE_ECOFRIENDLY ecoFriendly, ta.STEERING_RADIUS steeringRadius, z.NAME ZONE_NAME, " 
-		+ "case when t.premium_cutoff_time is null then TO_CHAR(t.CUTOFF_TIME, 'HH_MI_PM') else TO_CHAR(t.premium_cutoff_time, 'HH_MI_PM') end WAVE_CODE, t.IS_DYNAMIC IS_DYNAMIC, t.IS_CLOSED IS_CLOSED, a.IS_DEPOT IS_DEPOT, a.DELIVERY_RATE AREA_DLV_RATE, " 
+		+ "case when t.premium_cutoff_time is null then TO_CHAR(t.CUTOFF_TIME, 'HH_MI_PM') else TO_CHAR(t.premium_cutoff_time, 'HH_MI_PM') end WAVE_CODE, t.IS_DYNAMIC IS_DYNAMIC, t.IS_CLOSED IS_CLOSED, tr.IS_DEPOT IS_DEPOT, tr.code REGION_CODE, tr.name REGION_NAME, tr.description REGION_DESCR, a.DELIVERY_RATE AREA_DLV_RATE, " 
 		+ "(select count(*) from dlv.reservation where timeslot_id=t.id and status_code <> ? and status_code <> ? and chefstable = ' ' and class is null) as base_allocation, " 
 		+ "(select count(*) from dlv.reservation where timeslot_id=t.id and status_code <> ? and status_code <> ? and chefstable = 'X' and class is null) as ct_allocation, " 
 		+ "(select z.ct_release_time from dlv.zone z where z.id = t.zone_id) as ct_release_time, "
@@ -140,13 +142,13 @@ public class DlvManagerDAO {
 	  	+ "(select count(*) from dlv.reservation where timeslot_id=t.id and status_code <> ? and status_code <> ? and class = 'PC') as premium_ct_allocation, " 
 	  	+ "(select z.premium_ct_release_time from dlv.zone z where z.id = t.zone_id) as premium_ct_release_time, "
 		+ "(select z.premium_ct_active from dlv.zone z where z.id = t.zone_id) as premium_ct_active "
-		+ "from dlv.region r, dlv.region_data rd, dlv.timeslot t, dlv.zone z, transp.zone ta, transp.trn_area a "
+		+ "from dlv.region r, dlv.region_data rd, dlv.timeslot t, dlv.zone z, transp.zone ta, transp.trn_area a,transp.trn_region tr "
 		+ "where r.service_type = ? and r.id = rd.region_id "
 		+ "and rd.id = z.region_data_id "
 		+ "and mdsys.sdo_relate(z.geoloc, mdsys.sdo_geometry(2001, 8265, mdsys.sdo_point_type(?, ?,NULL), NULL, NULL), 'mask=ANYINTERACT querytype=WINDOW') ='TRUE' "
 		+ "and (rd.start_date >= (select max(start_date) from dlv.region_data where start_date <= ? and region_id = r.id) "
 		+ 	"or rd.start_date >= (select max(start_date) from dlv.region_data where start_date <= ? and region_id = r.id)) "
-		+ "and t.ZONE_ID = z.ID and z.ZONE_CODE = ta.ZONE_CODE and ta.AREA = a.CODE and t.base_date >= rd.start_date "
+		+ "and t.ZONE_ID = z.ID and z.ZONE_CODE = ta.ZONE_CODE and ta.AREA = a.CODE  and a.region_code = tr.code and t.base_date >= rd.start_date "
 		+ "and t.base_date >= ? and t.base_date < ? "
 		+ "and (( t.premium_cutoff_time is null and to_date(to_char(t.base_date-1, 'MM/DD/YY ') || to_char(t.cutoff_time, 'HH:MI:SS AM'), 'MM/DD/YY HH:MI:SS AM') > ?) or" +
 		" (t.premium_cutoff_time is not null and to_date(to_char(t.base_date, 'MM/DD/YY ') || to_char(t.premium_cutoff_time, 'HH:MI:SS AM'), 'MM/DD/YY HH:MI:SS AM') > ?)) "
@@ -199,7 +201,7 @@ public class DlvManagerDAO {
 	private static final String CF_TIMESLOTS =
 		"select ts.id, ts.base_date, ts.start_time, ts.end_time, ts.cutoff_time, ts.status, ts.zone_id, ts.capacity, z.zone_code, ts.ct_capacity" 
 		+" , ta.AREA AREA_CODE, ta.STEM_MAX_TIME stemmax, ta.STEM_FROM_TIME stemfrom, ta.STEM_TO_TIME stemto, ta.ZONE_ECOFRIENDLY ecoFriendly, ta.STEERING_RADIUS steeringRadius, z.NAME ZONE_NAME, " 
-		+" case when ts.premium_cutoff_time is null then TO_CHAR(ts.CUTOFF_TIME, 'HH_MI_PM') else TO_CHAR(ts.premium_cutoff_time, 'HH_MI_PM') end WAVE_CODE, ts.IS_DYNAMIC IS_DYNAMIC, ts.IS_CLOSED IS_CLOSED, a.IS_DEPOT IS_DEPOT, a.DELIVERY_RATE AREA_DLV_RATE,  "
+		+" case when ts.premium_cutoff_time is null then TO_CHAR(ts.CUTOFF_TIME, 'HH_MI_PM') else TO_CHAR(ts.premium_cutoff_time, 'HH_MI_PM') end WAVE_CODE, ts.IS_DYNAMIC IS_DYNAMIC, ts.IS_CLOSED IS_CLOSED, tr.IS_DEPOT IS_DEPOT, a.DELIVERY_RATE AREA_DLV_RATE,  "
 			+ "(select count(*) from dlv.reservation where timeslot_id=ts.id and status_code <> ? and status_code <> ? and chefstable = ' ' and class is null) as base_allocation, "
 			+ "(select count(*) from dlv.reservation where timeslot_id=ts.id and status_code <> ? and status_code <> ? and chefstable = 'X' and class is null) as ct_allocation, "
 			+ "(select z.ct_release_time from dlv.zone z where z.id = ts.zone_id) as ct_release_time, "
@@ -209,8 +211,8 @@ public class DlvManagerDAO {
 		  	+ "(select count(*) from dlv.reservation where timeslot_id=ts.id and status_code <> ? and status_code <> ? and class = 'PC') as premium_ct_allocation, " 
 		  	+ "(select z.premium_ct_release_time from dlv.zone z where z.id = ts.zone_id) as premium_ct_release_time, "
 		  	+ "(select z.premium_ct_active from dlv.zone z where z.id = ts.zone_id) as premium_ct_active "
-			+ "from dlv.region r, dlv.region_data rd, dlv.timeslot ts, dlv.zone z, transp.zone ta, transp.trn_area a "
-			+ "where r.id=rd.region_id and rd.id=z.region_data_id and ts.ZONE_ID = z.ID and z.ZONE_CODE = ta.ZONE_CODE and ta.AREA = a.CODE "
+			+ "from dlv.region r, dlv.region_data rd, dlv.timeslot ts, dlv.zone z, transp.zone ta, transp.trn_area a,transp.trn_region tr "
+			+ "where r.id=rd.region_id and rd.id=z.region_data_id and ts.ZONE_ID = z.ID and z.ZONE_CODE = ta.ZONE_CODE and ta.AREA = a.CODE and a.region_code = tr.code "
 			+ "and rd.start_date=( "
 			+ "select max(start_date) from dlv.region_data rd1 "
 			+ "where rd1.start_date<=ts.base_date and rd1.region_id = r.id) "
@@ -364,11 +366,16 @@ public class DlvManagerDAO {
 		
 		IAreaModel _aModel = new AreaModel();
 		_aModel.setAreaCode(rs.getString("AREA_CODE"));
-		_aModel.setDepot("X".equalsIgnoreCase(rs.getString("IS_DEPOT")) ? true : false);
 		_aModel.setDeliveryRate(rs.getDouble("AREA_DLV_RATE"));
 		_aModel.setStemFromTime(rs.getInt("stemfrom"));
 		_aModel.setStemToTime(rs.getInt("stemto"));
-		//_aModel.setMaxStemTime(rs.getInt("stemmax"));
+		
+		IRegionModel _rModel = new RegionModel();
+		_rModel.setDepot("X".equalsIgnoreCase(rs.getString("IS_DEPOT")) ? true : false);
+		_rModel.setRegionCode(rs.getString("REGION_CODE"));
+		_rModel.setName(rs.getString("REGION_NAME"));
+		_rModel.setDescription(rs.getString("REGION_DESCR"));
+		_aModel.setRegion(_rModel);
 		
 		_schId.setRegionId(RoutingUtil.getRegion(_aModel));
 		_schId.setArea(_aModel);
@@ -383,7 +390,7 @@ public class DlvManagerDAO {
 	private static final String DEPOT_TIMESLOTS =
 		"select ts.id, ts.base_date, ts.start_time, ts.end_time, ts.cutoff_time, ts.status, ts.zone_id, ts.capacity, z.zone_code, ts.ct_capacity" +
 		", ta.AREA AREA_CODE, ta.STEM_MAX_TIME stemmax, ta.STEM_FROM_TIME stemfrom, ta.STEM_TO_TIME stemto, ta.ZONE_ECOFRIENDLY ecoFriendly, ta.STEERING_RADIUS steeringRadius, z.NAME ZONE_NAME, " +
-		"case when ts.premium_cutoff_time is null then TO_CHAR(ts.CUTOFF_TIME, 'HH_MI_PM') else TO_CHAR(ts.premium_cutoff_time, 'HH_MI_PM') end WAVE_CODE, ts.IS_DYNAMIC IS_DYNAMIC, ts.IS_CLOSED IS_CLOSED, a.IS_DEPOT IS_DEPOT, a.DELIVERY_RATE AREA_DLV_RATE,"
+		"case when ts.premium_cutoff_time is null then TO_CHAR(ts.CUTOFF_TIME, 'HH_MI_PM') else TO_CHAR(ts.premium_cutoff_time, 'HH_MI_PM') end WAVE_CODE, ts.IS_DYNAMIC IS_DYNAMIC, ts.IS_CLOSED IS_CLOSED, tr.IS_DEPOT IS_DEPOT, tr.code REGION_CODE, tr.name REGION_NAME, tr.description REGION_DESCR, a.DELIVERY_RATE AREA_DLV_RATE,"
 			+ "(select count(*) from dlv.reservation where timeslot_id=ts.id and status_code <> ? and status_code <> ? and chefstable = ' ' and class is null) as base_allocation, "
 			+ "(select count(*) from dlv.reservation where timeslot_id=ts.id and status_code <> ? and status_code <> ? and chefstable = 'X' and class is null) as ct_allocation, "
 			+ "(select z.ct_release_time from dlv.zone z where z.id = ts.zone_id) as ct_release_time, "
@@ -393,13 +400,13 @@ public class DlvManagerDAO {
 		  	+ "(select count(*) from dlv.reservation where timeslot_id=ts.id and status_code <> ? and status_code <> ? and class = 'PC') as premium_ct_allocation, " 
 		  	+ "(select z.premium_ct_release_time from dlv.zone z where z.id = ts.zone_id) as premium_ct_release_time, "
 		  	+ "(select z.premium_ct_active from dlv.zone z where z.id = ts.zone_id) as premium_ct_active "
-			+ "from dlv.region r, dlv.region_data rd, dlv.timeslot ts, dlv.zone z, transp.zone ta, transp.trn_area a "
+			+ "from dlv.region r, dlv.region_data rd, dlv.timeslot ts, dlv.zone z, transp.zone ta, transp.trn_area a,transp.trn_region tr "
 			+ "where r.id=rd.region_id "
 			+ "and rd.start_date=( "
 			+ "select max(start_date) from dlv.region_data rd1 "
 			+ "where rd1.start_date<=ts.base_date and rd1.region_id = r.id) "
 			+ "and ts.base_date >= ? and ts.base_date < ? "
-			+ "and r.id = ? and rd.id = z.region_data_id and z.zone_code = ? and ts.ZONE_ID = z.ID and z.ZONE_CODE = ta.ZONE_CODE and ta.AREA = a.CODE "
+			+ "and r.id = ? and rd.id = z.region_data_id and z.zone_code = ? and ts.ZONE_ID = z.ID and z.ZONE_CODE = ta.ZONE_CODE and ta.AREA = a.CODE and a.region_code = tr.code  "
 			+ "and (( ts.premium_cutoff_time is null and to_date(to_char(ts.base_date-1, 'MM/DD/YY ') || to_char(ts.cutoff_time, 'HH:MI:SS AM'), 'MM/DD/YY HH:MI:SS AM') > ?) or" +
 			" (ts.premium_cutoff_time is not null and to_date(to_char(ts.base_date, 'MM/DD/YY ') || to_char(ts.premium_cutoff_time, 'HH:MI:SS AM'), 'MM/DD/YY HH:MI:SS AM') > ?)) "
 			+ "order by ts.base_date, z.zone_code, ts.start_time ";
@@ -443,7 +450,7 @@ public class DlvManagerDAO {
 	private static final String TIMESLOT_BY_ID =
 		"select distinct ts.id, ts.base_date, ts.start_time, ts.end_time, ts.cutoff_time, ts.status, ts.zone_id, ts.capacity, ts.ct_capacity" +
 		", ta.AREA AREA_CODE, ta.STEM_MAX_TIME stemmax, ta.STEM_FROM_TIME stemfrom, ta.STEM_TO_TIME stemto, ta.ZONE_ECOFRIENDLY ecoFriendly, ta.STEERING_RADIUS steeringRadius, z.NAME ZONE_NAME, " +
-		"case when ts.premium_cutoff_time is null then TO_CHAR(ts.CUTOFF_TIME, 'HH_MI_PM') else TO_CHAR(ts.premium_cutoff_time, 'HH_MI_PM') end WAVE_CODE, ts.IS_DYNAMIC IS_DYNAMIC, ts.IS_CLOSED IS_CLOSED, a.IS_DEPOT IS_DEPOT, a.DELIVERY_RATE AREA_DLV_RATE,"
+		"case when ts.premium_cutoff_time is null then TO_CHAR(ts.CUTOFF_TIME, 'HH_MI_PM') else TO_CHAR(ts.premium_cutoff_time, 'HH_MI_PM') end WAVE_CODE, ts.IS_DYNAMIC IS_DYNAMIC, ts.IS_CLOSED IS_CLOSED, tr.IS_DEPOT IS_DEPOT, tr.code REGION_CODE, tr.name REGION_NAME, tr.description REGION_DESCR,  a.DELIVERY_RATE AREA_DLV_RATE,"
 			+ "(select count(reservation.TIMESLOT_ID) from dlv.reservation "
 			+ "where zone_id = ts.zone_id AND ts.ID = reservation.TIMESLOT_ID and status_code <> ? and status_code <> ? and chefstable = ' ' and class is null) as base_allocation, "
 			+ "(select count(reservation.TIMESLOT_ID) from dlv.reservation "
@@ -458,8 +465,8 @@ public class DlvManagerDAO {
 			+ "where zone_id = ts.zone_id AND ts.ID = reservation.TIMESLOT_ID and status_code <> ? and status_code <> ? and class = 'PC') as premium_ct_allocation, " 
 			+ "(select z.premium_ct_release_time from dlv.zone z where z.id = ts.zone_id) as premium_ct_release_time, "
 			+ "(select z.premium_ct_active from dlv.zone z where z.id = ts.zone_id) as premium_ct_active "
-			+ " from dlv.timeslot ts, dlv.zone z, transp.zone ta, transp.trn_area a, dlv.reservation r "
-			+ "where ts.id = ? AND ts.ZONE_ID = z.ID and z.ZONE_CODE = ta.ZONE_CODE and ta.AREA = a.CODE AND ts.id=r.TIMESLOT_ID(+)";
+			+ " from dlv.timeslot ts, dlv.zone z, transp.zone ta, transp.trn_area a,transp.trn_region tr,  dlv.reservation r "
+			+ "where ts.id = ? AND ts.ZONE_ID = z.ID and z.ZONE_CODE = ta.ZONE_CODE and ta.AREA = a.CODE  and a.region_code = tr.code  AND ts.id=r.TIMESLOT_ID(+)";
 
 	public static DlvTimeslotModel getTimeslotById(Connection conn, String timeslotId, boolean checkPremium) throws SQLException, FinderException {
 		PreparedStatement ps = conn.prepareStatement(TIMESLOT_BY_ID);
@@ -787,7 +794,7 @@ public class DlvManagerDAO {
 	private static final String ZONE_CAPACITY_QUERY = 
 		"select t.id, t.base_date, t.start_time, t.end_time, t.cutoff_time, t.status, t.zone_id, t.capacity, t.ct_capacity" +
 		", ta.AREA AREA_CODE, ta.STEM_MAX_TIME stemmax, ta.STEM_FROM_TIME stemfrom, ta.STEM_TO_TIME stemto, ta.ZONE_ECOFRIENDLY ecoFriendly, ta.STEERING_RADIUS steeringRadius, z.NAME ZONE_NAME, " +
-		"case when t.premium_cutoff_time is null then TO_CHAR(t.CUTOFF_TIME, 'HH_MI_PM') else TO_CHAR(t.premium_cutoff_time, 'HH_MI_PM') end WAVE_CODE, t.IS_DYNAMIC IS_DYNAMIC, t.IS_CLOSED IS_CLOSED, a.IS_DEPOT IS_DEPOT, a.DELIVERY_RATE AREA_DLV_RATE," 
+		"case when t.premium_cutoff_time is null then TO_CHAR(t.CUTOFF_TIME, 'HH_MI_PM') else TO_CHAR(t.premium_cutoff_time, 'HH_MI_PM') end WAVE_CODE, t.IS_DYNAMIC IS_DYNAMIC, t.IS_CLOSED IS_CLOSED, tr.IS_DEPOT IS_DEPOT, tr.code REGION_CODE, tr.name REGION_NAME, tr.description REGION_DESCR,  a.DELIVERY_RATE AREA_DLV_RATE," 
 			+ "(select count(*) from dlv.reservation where timeslot_id=t.id and status_code <> ? and status_code <> ? and chefstable = ' ' and class is null) as base_allocation, "
 			+ "(select count(*) from dlv.reservation where timeslot_id=t.id and status_code <> ? and status_code <> ? and chefstable = 'X' and class is null) as ct_allocation, "
 			+ "(select z.ct_release_time from dlv.zone z where z.id = t.zone_id) as ct_release_time, "
@@ -797,8 +804,8 @@ public class DlvManagerDAO {
 		  	+ "(select count(*) from dlv.reservation where timeslot_id=t.id and status_code <> ? and status_code <> ? and class = 'PC') as premium_ct_allocation, " 
 		  	+ "(select z.premium_ct_release_time from dlv.zone z where z.id = t.zone_id) as premium_ct_release_time, "
 			+ "(select z.premium_ct_active from dlv.zone z where z.id = t.zone_id) as premium_ct_active "
-			+ "from dlv.planning_resource p, dlv.timeslot t, dlv.zone z, transp.zone ta, transp.trn_area a " 
-			+ "where p.id = t.resource_id and t.ZONE_ID = z.ID and z.ZONE_CODE = ta.ZONE_CODE and ta.AREA = a.CODE and p.zone_code = ? " 
+			+ "from dlv.planning_resource p, dlv.timeslot t, dlv.zone z, transp.zone ta, transp.trn_area a,transp.trn_region tr " 
+			+ "where p.id = t.resource_id and t.ZONE_ID = z.ID and z.ZONE_CODE = ta.ZONE_CODE and ta.AREA = a.CODE  and a.region_code = tr.code  and p.zone_code = ? " 
 			+ "and p.day >= ? and p.day < ? "
 			+ "and to_date(to_char(t.base_date-1, 'MM/DD/YY ') || to_char(t.cutoff_time, 'HH:MI:SS AM'), 'MM/DD/YY HH:MI:SS AM') > SYSDATE "
 			+ "order by t.base_date, p.zone_code, t.start_time ";
@@ -1463,7 +1470,7 @@ public class DlvManagerDAO {
 	private static final String TIMESLOTS_BY_DATE =
 		"select ts.id, ts.base_date, ts.start_time, ts.end_time, ts.cutoff_time, ts.premium_cutoff_time, ts.status, ts.zone_id, ts.capacity, ts.premium_capacity,  ta.STEERING_RADIUS steeringRadius," +
 		" z.zone_code, ts.ct_capacity,ts.premium_ct_capacity, ta.AREA AREA_CODE, ta.STEM_MAX_TIME stemmax, ta.STEM_FROM_TIME stemfrom, ta.STEM_TO_TIME stemto, ta.ZONE_ECOFRIENDLY ecoFriendly, z.NAME ZONE_NAME, " +
-		"case when ts.premium_cutoff_time is null then TO_CHAR(ts.CUTOFF_TIME, 'HH_MI_PM') else TO_CHAR(ts.premium_cutoff_time, 'HH_MI_PM') end WAVE_CODE, ts.IS_DYNAMIC IS_DYNAMIC, ts.IS_CLOSED IS_CLOSED, a.IS_DEPOT IS_DEPOT, a.DELIVERY_RATE AREA_DLV_RATE, "
+		"case when ts.premium_cutoff_time is null then TO_CHAR(ts.CUTOFF_TIME, 'HH_MI_PM') else TO_CHAR(ts.premium_cutoff_time, 'HH_MI_PM') end WAVE_CODE, ts.IS_DYNAMIC IS_DYNAMIC, ts.IS_CLOSED IS_CLOSED, tr.IS_DEPOT IS_DEPOT, tr.code REGION_CODE, tr.name REGION_NAME, tr.description REGION_DESCR, a.DELIVERY_RATE AREA_DLV_RATE, "
 		+ "(select count(*) from dlv.reservation where timeslot_id=ts.id and status_code <> ? and status_code <> ? and chefstable = ' ' and class is null) as base_allocation, "
 		+ "(select count(*) from dlv.reservation where timeslot_id=ts.id and status_code <> ? and status_code <> ? and chefstable = 'X' and class is null) as ct_allocation, "
 		+ "(select count(*) from dlv.reservation where timeslot_id=ts.id and status_code <> ? and status_code <> ? and class = 'P') as premium_base_allocation, "
@@ -1472,11 +1479,11 @@ public class DlvManagerDAO {
 		+ "(select z.premium_ct_release_time from dlv.zone z where z.id = ts.zone_id) as premium_ct_release_time, "
 		+ "(select z.ct_active from dlv.zone z where z.id = ts.zone_id) as ct_active, "
 		+ "(select z.premium_ct_active from dlv.zone z where z.id = ts.zone_id) as premium_ct_active "
-		+ "from dlv.region r, dlv.region_data rd, dlv.timeslot ts, dlv.zone z, transp.zone ta, transp.trn_area a "
+		+ "from dlv.region r, dlv.region_data rd, dlv.timeslot ts, dlv.zone z, transp.zone ta, transp.trn_area a,transp.trn_region tr "
 		+ "where r.id=rd.region_id and rd.id=z.region_data_id and ts.ZONE_ID = z.ID and z.ZONE_CODE = ta.ZONE_CODE and ta.AREA = a.CODE " +
 		"and (rd.start_date >= (select max(start_date) from dlv.region_data where start_date <= ? and region_id = r.id)	" +
 		"or rd.start_date >= (select max(start_date) from dlv.region_data where start_date <= ? and region_id = r.id)) " +
-		"and ts.ZONE_ID = z.ID and z.ZONE_CODE = ta.ZONE_CODE and ta.AREA = a.CODE and ts.base_date >= rd.start_date	and ts.base_date = ?	" +
+		"and ts.ZONE_ID = z.ID and z.ZONE_CODE = ta.ZONE_CODE and ta.AREA = a.CODE and a.region_code = tr.code and ts.base_date >= rd.start_date	and ts.base_date = ?	" +
 		"and ts.is_dynamic = 'X'	" +
 		"order by ts.base_date, z.zone_code, ts.start_time";
 
