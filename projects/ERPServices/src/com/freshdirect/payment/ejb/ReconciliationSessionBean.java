@@ -871,8 +871,8 @@ public class ReconciliationSessionBean extends SessionBeanSupport{
 					else
 						saleEB.markAsSettlementToSAPPending();
 				}
-//				else
-//					saleEB.forceSettlementFailed();//TODO: check whether to mark the sale as 'STF' OR re-attempt to do post-auth again.
+				else
+					saleEB.forceSettlementFailed();//TODO: check whether to mark the sale as 'STF' OR re-attempt to do post-auth again.
 			}
 			
 		}catch (FinderException fe) {
