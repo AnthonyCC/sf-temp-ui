@@ -1257,7 +1257,7 @@ div.control, div.slotRow, div.time {
 		margin: 4px 7px;
 		border: 2px solid #ddd !important;
 		width: 241px;
-		height: 320px;
+		height: auto;
 		position: absolute;
 		top: 0px;
 		z-index: 2;
@@ -1329,9 +1329,14 @@ div.control, div.slotRow, div.time {
 		font-size: 26px;
 		line-height: 26px;
 	}
-	.ddpp .ddpp_feat_prod .styleRegularWithWas {
+	.ddpp .ddpp_feat_prod .styleRegularWithWas,
+	.ddpp .ddpp_feat_prod .styleRegularWithBoth {
 		font-size: 15px;
 	}
+	.ddpp .ddpp_feat_prod .styleRegularWithBoth {
+		font-weight: bold;
+	}
+
 	.ddpp .ddpp_feat_prod .product-group-price-link {
 		font-size: 11px;
 		font-family: Verdana, Arial, sans-serif;

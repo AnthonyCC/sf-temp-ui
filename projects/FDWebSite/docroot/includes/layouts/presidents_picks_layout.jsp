@@ -368,6 +368,21 @@
 				    jqElem.css({ height: parHeight });
 				});
 
+				var featProdContHeight = 0;
+				$jq('div.ddpp_feat_prod').each(function (index, elem) {
+					var eH = $jq(elem).height();
+					if (eH > featProdContHeight) {
+						featProdContHeight = eH;
+					}
+				}).each(function (index, elem) {
+					if (featProdContHeight > 0) {
+						$jq(elem).css({ 'height': featProdContHeight+'px' });
+						if (index === 0) {
+							$jq('.ddpp_feat_prod_cont').css({ 'height': (featProdContHeight+14)+'px' });
+						}
+					}
+				});
+
 			});
 		</script>
 		<style>
