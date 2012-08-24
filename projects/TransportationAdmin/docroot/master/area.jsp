@@ -50,6 +50,7 @@
 							 <ec:column alias="areacode" property="code" title="Area Code"/>                    
 							  <ec:column property="name" title="Area Name"/>
 							  <ec:column property="description" title="Description"/>	
+							  <ec:column property="region" title="Region"/>
 							  <ec:column property="deliveryRate" title="Orders/Hour" width="18px"/>				  							  
 							  <ec:column property="needsLoadBalance" title="Load Balance" width="18px"/> 
 							  <ec:column property="loadBalanceFactor" title="Balance Factor" width="18px"/>							  

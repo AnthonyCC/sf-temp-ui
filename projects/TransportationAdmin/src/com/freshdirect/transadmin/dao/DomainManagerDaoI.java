@@ -20,6 +20,7 @@ import com.freshdirect.transadmin.model.Region;
 import com.freshdirect.transadmin.model.TrnAdHocRoute;
 import com.freshdirect.transadmin.model.TrnArea;
 import com.freshdirect.transadmin.model.TrnCutOff;
+import com.freshdirect.transadmin.model.TrnRegion;
 //import com.freshdirect.transadmin.model.TrnPlantCapacity;
 import com.freshdirect.transadmin.model.TrnZoneType;
 import com.freshdirect.transadmin.model.VIRRecord;
@@ -175,5 +176,9 @@ public interface DomainManagerDaoI extends BaseManagerDaoI {
 	Collection getSnapshotLocations();
 
 	Object getSnapshotLocation(String buildingId, String serviceType);
+	
+	Collection getRoutingRegions();
+
+	TrnRegion getRoutingRegion(String id)  throws DataAccessException;
 
 }

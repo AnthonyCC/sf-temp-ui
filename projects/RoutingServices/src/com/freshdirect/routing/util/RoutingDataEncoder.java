@@ -506,14 +506,14 @@ public class RoutingDataEncoder {
 		return identity;
 	}
 	
-	public static RoutingRouteCriteria encodeRouteCriteria(Date routeDate, String internalSessionID, String routeID) {
+	public static RoutingRouteCriteria encodeRouteCriteria(Date routeDate, String internalSessionID, String routeID, String regionId) {
 		//param1 regionIdentity;
 		//param2 dateStart;
 		//param3 dateEnd;
 		//param4 scenario;
 		//param5 description;
 		RoutingRouteCriteria criteria = new RoutingRouteCriteria();
-		criteria.setRegionIdentity(RoutingServicesProperties.getDefaultTruckRegion());
+		criteria.setRegionIdentity(regionId);
 		criteria.setRouteID(routeID);
 		criteria.setDateStart(routeDate);
 		criteria.setInternalSessionID(Integer.parseInt(internalSessionID));

@@ -13,4 +13,6 @@ public interface IHandOffBatchSession {
 	void setRegion(String region);
 	
 	boolean isDepot();
+	void setDepot(boolean isDepot);
+
 }

@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -29,7 +30,6 @@ import org.springframework.util.FileCopyUtils;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.freshdirect.customer.ErpTruckMasterInfo;
-import com.freshdirect.sap.command.SapTruckMasterInfo;
 import com.freshdirect.transadmin.constants.EnumIssueStatus;
 import com.freshdirect.transadmin.constants.EnumServiceStatus;
 import com.freshdirect.transadmin.datamanager.assembler.IDataAssembler;
@@ -42,7 +42,7 @@ import com.freshdirect.transadmin.model.ScheduleEmployeeInfo;
 import com.freshdirect.transadmin.model.TrnAdHocRoute;
 import com.freshdirect.transadmin.model.TrnArea;
 import com.freshdirect.transadmin.model.TrnCutOff;
-//import com.freshdirect.transadmin.model.TrnPlantCapacity;
+import com.freshdirect.transadmin.model.TrnRegion;
 import com.freshdirect.transadmin.model.TrnZoneType;
 import com.freshdirect.transadmin.model.VIRRecord;
 import com.freshdirect.transadmin.model.Zone;
@@ -51,9 +51,7 @@ import com.freshdirect.transadmin.service.DomainManagerI;
 import com.freshdirect.transadmin.service.EmployeeManagerI;
 import com.freshdirect.transadmin.service.LocationManagerI;
 import com.freshdirect.transadmin.service.ZoneManagerI;
-import com.freshdirect.transadmin.util.DispatchPlanUtil;
 import com.freshdirect.transadmin.util.EnumCachedDataType;
-import com.freshdirect.transadmin.util.EnumResourceType;
 import com.freshdirect.transadmin.util.ModelUtil;
 import com.freshdirect.transadmin.util.TransStringUtil;
 import com.freshdirect.transadmin.util.TransportationAdminProperties;
@@ -514,6 +512,13 @@ public class DomainController extends AbstractMultiActionController {
 		return new ModelAndView("areaView","areas",dataList);
 	}
 
+	public ModelAndView routingRegionHandler(HttpServletRequest request, HttpServletResponse response) throws ServletException {
+
+		Collection dataList = domainManagerService.getRoutingRegions();
+		return new ModelAndView("routingRegionView","routingRegions",dataList);
+	}
+
+	
 	/**
 	 * Custom handler for welcome
 	 * @param request current HTTP request
@@ -675,6 +680,28 @@ public class DomainController extends AbstractMultiActionController {
 		return areaHandler(request, response);
 	}
 
+	public ModelAndView routingRegionDeleteHandler(HttpServletRequest request, HttpServletResponse response) throws ServletException {
+
+		Set routingRegionSet=new HashSet();
+		String arrEntityList[] = getParamList(request);
+		TrnRegion tmpEntity = null;
+		if (arrEntityList != null) {
+			int arrLength = arrEntityList.length;
+			for (int intCount = 0; intCount < arrLength; intCount++) {
+				tmpEntity = domainManagerService.getRoutingRegion(arrEntityList[intCount]);
+				routingRegionSet.add(tmpEntity);
+			}
+		}
+		try {
+			domainManagerService.removeEntity(routingRegionSet);
+			saveMessage(request, getMessage("app.actionmessage.103", null));
+		} catch (DataIntegrityViolationException e) {
+			saveMessage(request, getMessage("app.actionmessage.127", null));
+		}
+		return routingRegionHandler(request, response);
+	}
+
+	
 	/**
 	 * Custom handler for welcome
 	 * @param request current HTTP request

@@ -42,6 +42,7 @@ import com.freshdirect.transadmin.model.ScheduleEmployee;
 import com.freshdirect.transadmin.model.TrnAdHocRoute;
 import com.freshdirect.transadmin.model.TrnArea;
 import com.freshdirect.transadmin.model.TrnCutOff;
+import com.freshdirect.transadmin.model.TrnRegion;
 //import com.freshdirect.transadmin.model.TrnPlantCapacity;
 import com.freshdirect.transadmin.model.TrnZoneType;
 import com.freshdirect.transadmin.model.VIRRecord;
@@ -175,6 +176,9 @@ public class DomainManagerImpl
 		return getDomainManagerDao().getArea(id);	
 	}
 	
+	public TrnRegion getRoutingRegion(String id)  {
+		return getDomainManagerDao().getRoutingRegion(id);	
+	}
 	public Collection getZoneTypes() {
 		return getDomainManagerDao().getZoneTypes();
 	}
@@ -1048,5 +1052,11 @@ public class DomainManagerImpl
 		return getDomainManagerDao().getSnapshotLocation( buildingId,
 				 serviceType);
 	}
+	
+	public Collection getRoutingRegions() {
+		// TODO Auto-generated method stub
+		return getDomainManagerDao().getRoutingRegions();
+	}
+	
 }
 

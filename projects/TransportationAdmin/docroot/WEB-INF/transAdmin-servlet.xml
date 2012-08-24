@@ -80,6 +80,9 @@
 				<prop key="/area.do">domainController</prop>
 				<prop key="/deletearea.do">domainController</prop>					                
 				<prop key="/editarea.do">areaFormController</prop>
+				<prop key="/routingRegion.do">domainController</prop>
+				<prop key="/deleteRoutingRegion.do">domainController</prop>					                
+				<prop key="/editRoutingRegion.do">routingRegionFormController</prop>
 				<prop key="/dlvbuilding.do">locationController</prop>
  				<prop key="/dlvbuildingdtl.do">locationController</prop>
 		 	    <prop key="/deletedlvbuilding.do">locationController</prop>
@@ -298,6 +301,8 @@
  		 	<prop key="/deletecapacitySnapshot.do">snapshotDeleteHandler</prop>
  		 	<prop key="/area.do">areaHandler</prop>					                
  		 	<prop key="/deletearea.do">areaDeleteHandler</prop>
+ 		 	<prop key="/routingRegion.do">routingRegionHandler</prop>					                
+ 		 	<prop key="/deleteRoutingRegion.do">routingRegionDeleteHandler</prop>
  		 	<prop key="/dlvbuilding.do">dlvBuildingHandler</prop>	 	   
   		 	<prop key="/dlvbuildingdtl.do">dlvBuildingDetailHandler</prop> 	   
 	 	    <prop key="/deletedlvbuilding.do">dlvBuildingDeleteHandler</prop>
@@ -426,6 +431,15 @@
         <property name="validator" ref="areaValidator"/>
         <property name="successView" value="areaEdit" />
         <property name="formView" value="areaEdit" />
+	</bean>
+	<bean id="routingRegionFormController" class="com.freshdirect.transadmin.web.RoutingRegionFormController">
+		<property name="domainManagerService" ref="domainManager"/>
+		<property name="sessionForm" value="true"/>
+        <property name="commandName" value="routingRegionForm"/>
+        <property name="commandClass" value="com.freshdirect.transadmin.model.TrnRegion"/>
+        <property name="validator" ref="routingRegionValidator"/>
+        <property name="successView" value="routingRegionEdit" />
+        <property name="formView" value="routingRegionEdit" />
 	</bean>
 	
 	<bean id="cutOffFormController" class="com.freshdirect.transadmin.web.CutOffFormController">
@@ -856,6 +870,7 @@
 	<bean id="deliveryBuildingDtlValidator" class="com.freshdirect.transadmin.web.validation.DlvBuildingDtlValidator"/>
     <bean id="dlvServiceTimeScenarioValidator" class="com.freshdirect.transadmin.web.validation.DlvServiceTimeScenarioValidator"/>
 	<bean id="areaValidator" class="com.freshdirect.transadmin.web.validation.AreaValidator"/>
+	<bean id="routingRegionValidator" class="com.freshdirect.transadmin.web.validation.RoutingRegionValidator"/>
 	<bean id="routingInValidator" class="com.freshdirect.transadmin.web.validation.FileUploadValidator"/>
 	<bean id="routingOutValidator" class="com.freshdirect.transadmin.web.validation.RoutingOutValidator"/>
 	<bean id="routingMergeValidator" class="com.freshdirect.transadmin.web.validation.RoutingMergeValidator"/>

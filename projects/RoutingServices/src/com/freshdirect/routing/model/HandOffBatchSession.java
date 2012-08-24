@@ -6,6 +6,7 @@ public class HandOffBatchSession extends BaseModel implements IHandOffBatchSessi
 	private String batchId;
 	private String sessionName;
 	private String region;
+	private boolean isDepot;
 		
 	public HandOffBatchSession(String batchId, String sessionName, String region) {
 		super();
@@ -83,11 +84,14 @@ public class HandOffBatchSession extends BaseModel implements IHandOffBatchSessi
 		return "HandOffBatchSession [batchId=" + batchId  + ", region=" + region + ", sessionName="
 				+ sessionName + "]";
 	}
-	@Override
-	public boolean isDepot() {
-		// TODO Auto-generated method stub
-		return getRegion() != null && getRegion().equalsIgnoreCase("MDP");
-	}
 	
+	
+	public boolean isDepot() {
+		return isDepot;
+	}
+
+	public void setDepot(boolean isDepot) {
+		this.isDepot = isDepot;
+	}
 	
 }

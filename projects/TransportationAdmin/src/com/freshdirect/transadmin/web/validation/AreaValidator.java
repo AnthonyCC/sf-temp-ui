@@ -27,7 +27,9 @@ public class AreaValidator extends AbstractValidator {
 		if(model != null && (model.getDeliveryModel() == null || model.getDeliveryModel() == null) || "null".equals(model.getDeliveryModel())) {
 			errors.rejectValue("deliveryModel", "app.error.112", new Object[]{"Delivery Model"},"required field");
 		}
-		
+		if(model != null && model.getRegion() == null || "null".equals(model.getRegion())) {
+			errors.rejectValue("region", "app.error.112", new Object[]{"Region"},"required field");
+		}
 		validateLength("code", model.getCode(), 8, errors);
 		validateLength("name", model.getName(), 32, errors);
 		validateLength("description", model.getDescription(), 256, errors);		

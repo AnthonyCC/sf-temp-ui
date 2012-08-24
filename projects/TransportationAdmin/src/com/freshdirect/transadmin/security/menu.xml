@@ -114,6 +114,11 @@
 	     	<access-roles>TrnAdmin,TrnPlanning</access-roles>
 	     </menu>
 	     
+	     <menu id="GEO012" title="Routing Region" orientation="RIGHT" link="routingRegion.do">
+	     	<access-uris>routingRegion.do,deleteRoutingRegion.do,editRoutingRegion.do</access-uris>
+	     	<access-roles>TrnAdmin,TrnPlanning</access-roles>
+	     </menu>
+	     
 	     <menu id="GEO002" title="Zone Type" orientation="RIGHT" link="zonetype.do">
 	     	<access-uris>zonetype.do,deletezonetype.do,editzonetype.do</access-uris>
 	     	<access-roles>TrnAdmin,TrnPlanning</access-roles>

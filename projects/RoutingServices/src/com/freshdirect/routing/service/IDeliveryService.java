@@ -42,7 +42,7 @@ public interface IDeliveryService {
 	
 	List getLateDeliveryOrders(String query) throws RoutingServiceException;
 	
-	List getRoutes(Date routeDate, String internalSessionID, String routeID) throws RoutingServiceException;
+	List getRoutes(Date routeDate, String internalSessionID, String routeID, String regionId) throws RoutingServiceException;
 	
 	IDrivingDirection buildDriverDirections(Set<String> routeIDs, String sessionID, IRoutingSchedulerIdentity schedulerId)  throws RoutingServiceException;
 		

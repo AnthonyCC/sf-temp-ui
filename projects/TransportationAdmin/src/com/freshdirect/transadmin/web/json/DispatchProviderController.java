@@ -17,7 +17,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeMap;
 
 import org.apache.log4j.Category;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -28,18 +27,9 @@ import com.freshdirect.framework.util.StringUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.routing.constants.EnumArithmeticOperator;
 import com.freshdirect.routing.constants.EnumWaveInstancePublishSrc;
-import com.freshdirect.routing.model.IRouteModel;
-import com.freshdirect.routing.model.IRoutingSchedulerIdentity;
-import com.freshdirect.routing.model.IRoutingStopModel;
-import com.freshdirect.routing.model.RoutingSchedulerIdentity;
 import com.freshdirect.routing.service.IDeliveryService;
-import com.freshdirect.routing.service.proxy.DeliveryServiceProxy;
-import com.freshdirect.routing.service.proxy.RoutingEngineServiceProxy;
-import com.freshdirect.routing.util.RoutingServicesProperties;
 import com.freshdirect.transadmin.constants.EnumIssueStatus;
 import com.freshdirect.transadmin.constants.EnumServiceStatus;
-import com.freshdirect.transadmin.datamanager.report.ICommunityReport;
-import com.freshdirect.transadmin.datamanager.report.XlsCommunityReport;
 import com.freshdirect.transadmin.model.Asset;
 import com.freshdirect.transadmin.model.AssetAttribute;
 import com.freshdirect.transadmin.model.Dispatch;
@@ -51,13 +41,11 @@ import com.freshdirect.transadmin.model.IssueSubType;
 import com.freshdirect.transadmin.model.IssueType;
 import com.freshdirect.transadmin.model.MaintenanceIssue;
 import com.freshdirect.transadmin.model.Plan;
-import com.freshdirect.transadmin.model.RouteMapping;
 import com.freshdirect.transadmin.model.ScenarioZonesId;
 import com.freshdirect.transadmin.model.Scrib;
 import com.freshdirect.transadmin.model.ScribLabel;
 import com.freshdirect.transadmin.model.TrnAdHocRoute;
 import com.freshdirect.transadmin.model.TrnArea;
-import com.freshdirect.transadmin.model.TrnCutOff;
 import com.freshdirect.transadmin.model.TrnFacility;
 import com.freshdirect.transadmin.model.UserPref;
 import com.freshdirect.transadmin.model.WaveInstancePublish;
@@ -78,7 +66,6 @@ import com.freshdirect.transadmin.web.model.DispatchStatus;
 import com.freshdirect.transadmin.web.model.DispatchStatusList;
 import com.freshdirect.transadmin.web.model.IssueSubTypeCommand;
 import com.freshdirect.transadmin.web.model.ScenarioZoneCommand;
-import com.freshdirect.transadmin.web.model.SpatialBoundary;
 import com.freshdirect.transadmin.web.model.WavePublishValidationResult;
 import com.freshdirect.transadmin.web.model.WebEmployeeInfo;
 import com.freshdirect.transadmin.web.model.WebPlanInfo;
@@ -229,105 +216,6 @@ public class DispatchProviderController extends JsonRpcController implements IDi
 		
 	}
 	
-	public String generateCommunityReport(String routeDate, String cutOff) {
-			
-		Map reportData = new TreeMap();
-		Map stopCounts = new HashMap();
-		Set processedRoutes = new HashSet();
-		String resultFile = null;
-		
-		try {
-			Collection routingRouteIds = domainManagerService.getRouteMappingByCutOff(TransStringUtil.getServerDate(routeDate), cutOff);
-			Map areaMapping = getAreaMapping(domainManagerService.getAreas());
-			TrnCutOff cutOffName = domainManagerService.getCutOff(cutOff);
-			
-			if(routingRouteIds != null) {
-				
-				DeliveryServiceProxy proxy = new DeliveryServiceProxy();
-				RoutingEngineServiceProxy engineProxy = new RoutingEngineServiceProxy();
-				
-				Iterator _itr = routingRouteIds.iterator();
-				String routingRouteId = null;
-				
-				IRouteModel _tmpRoute = null;
-				
-					while(_itr.hasNext()) {
-						routingRouteId = ((RouteMapping)_itr.next()).getRouteMappingId().getRouteID();
-						
-						if(!processedRoutes.contains(routingRouteId)) {
-							processedRoutes.add(routingRouteId);
-							Collection routes = domainManagerService.getRouteMapping(TransStringUtil.getServerDate(routeDate)
-																						, routingRouteId);
-											
-							if(routes != null && routes.size() == 1) {
-								
-								RouteMapping routeMapping = (RouteMapping)routes.toArray()[0];	
-								
-								
-								
-								IRoutingSchedulerIdentity schedulerId = new RoutingSchedulerIdentity();
-								schedulerId.setRegionId(RoutingServicesProperties.getDefaultTruckRegion());
-										
-								String sessionId = engineProxy.retrieveRoutingSession(schedulerId, routeMapping.getRoutingSessionID());
-								
-								List routingRoutes = proxy.getRoutes(TransStringUtil.getDate(routeDate), sessionId
-																		, routeMapping.getRouteMappingId().getRoutingRouteID());
-								
-								if(routingRoutes != null && routingRoutes.size() > 0) {
-									
-									_tmpRoute = (IRouteModel)routingRoutes.get(0);
-									if(_tmpRoute.getStops() != null && _tmpRoute.getStops().size() > 0) {
-										
-										stopCounts.put(routingRouteId, new Integer(_tmpRoute.getStops().size()));
-										Iterator _stopsItr = _tmpRoute.getStops().iterator();
-										IRoutingStopModel _stop = null;
-										while(_stopsItr.hasNext()) {
-																						
-											_stop = (IRoutingStopModel)_stopsItr.next();
-											
-											String deliveryModel = ((TrnArea)areaMapping.get(routeMapping.getRouteMappingId().getGroupCode())).getDeliveryModel();
-											List comunities = dispatchManagerService.matchCommunity
-																	(Double.parseDouble(_stop.getDeliveryInfo().getDeliveryLocation().getBuilding().getGeographicLocation().getLatitude())/1000000.0
-																				, Double.parseDouble(_stop.getDeliveryInfo().getDeliveryLocation().getBuilding().getGeographicLocation().getLongitude())/1000000.0
-																				, deliveryModel);
-											if(comunities != null && comunities.size() > 0) {
-												if(!reportData.containsKey(routingRouteId)) {
-													reportData.put(routingRouteId, new HashMap());
-												}
-												Iterator _spaItr = comunities.iterator();
-												SpatialBoundary _boundary = null;
-												while(_spaItr.hasNext()) {
-													_boundary = (SpatialBoundary)_spaItr.next();
-													if(!((Map)reportData.get(routingRouteId)).containsKey(_boundary)) {
-														((Map)reportData.get(routingRouteId)).put(_boundary, new ArrayList());
-													}
-													((List)((Map)reportData.get(routingRouteId)).get(_boundary)).add(_stop);
-												}
-											}
-										}
-										
-										
-									} 
-								}
-							}
-							
-						}	
-					}
-					resultFile = TransportationAdminProperties.getCommunityRptFileName()+System.currentTimeMillis()+".xls";
-					ICommunityReport report = new XlsCommunityReport();
-					report.generateCommunityReport(resultFile, reportData, stopCounts, routeDate, cutOffName.getName());
-					resultFile = TransportationAdminProperties.getDownloadProviderUrl()+"?filePath="+resultFile;
-			}
-		
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		
-		return resultFile;
-	}
-	
-	
-
 	protected Map getAreaMapping(Collection areaLst) {
 		Map areaMapping = new HashMap();
 		if(areaLst != null) {
@@ -1109,6 +997,12 @@ public class DispatchProviderController extends JsonRpcController implements IDi
 		}
 		
 		return true;
+	}
+
+	@Override
+	public String generateCommunityReport(String routeDate, String cutOff) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Set;
 
 import com.freshdirect.routing.constants.EnumWaveInstanceStatus;
+import com.freshdirect.routing.model.IRegionModel;
 import com.freshdirect.routing.model.IServiceTimeScenarioModel;
 import com.freshdirect.routing.model.IServiceTimeTypeModel;
 import com.freshdirect.routing.model.IWaveInstance;
@@ -51,5 +52,7 @@ public interface IRoutingInfoDAO {
 	List<String> getStaticZonesByDate(Date deliveryDate)  throws SQLException;
 
 	Map<RoutingTimeOfDay, Integer> getCutoffSequence()   throws SQLException;
+
+	List<IRegionModel> getRegions()  throws SQLException;
 	
 }

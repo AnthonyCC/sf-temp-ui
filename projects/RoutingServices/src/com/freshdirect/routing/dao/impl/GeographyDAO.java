@@ -34,9 +34,11 @@ import com.freshdirect.routing.model.IBuildingModel;
 import com.freshdirect.routing.model.IFacilityModel;
 import com.freshdirect.routing.model.IGeographicLocation;
 import com.freshdirect.routing.model.ILocationModel;
+import com.freshdirect.routing.model.IRegionModel;
 import com.freshdirect.routing.model.IServiceTimeTypeModel;
 import com.freshdirect.routing.model.IZoneModel;
 import com.freshdirect.routing.model.LocationModel;
+import com.freshdirect.routing.model.RegionModel;
 import com.freshdirect.routing.model.ServiceTimeTypeModel;
 import com.freshdirect.routing.model.ZoneModel;
 import com.freshdirect.routing.service.exception.RoutingServiceException;
@@ -103,14 +105,14 @@ public class GeographyDAO extends BaseDAO implements IGeographyDAO  {
 	"where db.SCRUBBED_STREET = ? ";
 
 	private static final String ZONE_AREA_MAPPING =
-		"select z.zone_code ZONE_CODE, a.code AREA_CODE, a.is_depot IS_DEPOT "
-		+ "from dlv.region r, dlv.region_data rd, dlv.zone z, transp.zone  zd, transp.trn_area a "
-		+ "where zd.zone_code = z.zone_code and rd.id = z.region_data_id and rd.region_id = r.id and zd.area = a.code "
+		"select z.zone_code ZONE_CODE, a.code AREA_CODE, tr.IS_DEPOT IS_DEPOT, tr.code REGION_CODE, tr.name REGION_NAME, tr.description REGION_DESCR "
+		+ "from dlv.region r, dlv.region_data rd, dlv.zone z, transp.zone  zd, transp.trn_area a,transp.trn_region tr "
+		+ "where zd.zone_code = z.zone_code and rd.id = z.region_data_id and rd.region_id = r.id and zd.area = a.code  and a.region_code = tr.code "
 		+ "and rd.start_date = (select max(start_date) from dlv.region_data where start_date <= sysdate and region_id=r.id) "
 		+ "and mdsys.sdo_relate(z.geoloc, mdsys.sdo_geometry(2001, 8265, mdsys.sdo_point_type(?, ?,NULL), NULL, NULL), 'mask=ANYINTERACT querytype=WINDOW') ='TRUE' "
 		+ "order by z.zone_code";
 	
-	private static final String GET_AREAS = "select * from transp.trn_area a ";
+	private static final String GET_AREAS = "select A.CODE, A.DELIVERYMODEL, A.PREFIX, tr.IS_DEPOT IS_DEPOT, tr.code REGION_CODE, tr.name REGION_NAME, tr.description REGION_DESCR   from transp.trn_area a,transp.trn_region tr where a.region_code = tr.code";
 	private static final String GET_ZONES = "select * from transp.zone z ";
 	
 	private static final String GET_FACILITYS = "select f.FACILITY_CODE CODE, f.ROUTING_CODE ROUTING_CODE, f.PREFIX, f.LEAD_FROM_TIME "
@@ -872,10 +874,16 @@ public class GeographyDAO extends BaseDAO implements IGeographyDAO  {
 					
 					IAreaModel areaModel = new AreaModel();
 					areaModel.setAreaCode(rs.getString("CODE"));
-					areaModel.setDepot("X".equalsIgnoreCase(rs.getString("IS_DEPOT")));
 					areaModel.setPrefix(rs.getString("PREFIX"));
 					areaModel.setDeliveryModel(rs.getString("DELIVERYMODEL"));
-					
+					IRegionModel _rModel = new RegionModel();
+ 					_rModel.setDepot("X".equalsIgnoreCase(rs.getString("IS_DEPOT")) ? true : false);
+ 					_rModel.setRegionCode(rs.getString("REGION_CODE"));
+ 					_rModel.setName(rs.getString("REGION_NAME"));
+ 					_rModel.setDescription(rs.getString("REGION_DESCR"));
+ 					
+ 					areaModel.setRegion(_rModel);
+ 					
 					result.put(areaModel.getAreaCode(), areaModel);				    		
 
 				} while(rs.next());
@@ -980,7 +988,13 @@ public class GeographyDAO extends BaseDAO implements IGeographyDAO  {
 					zoneModel.setZoneNumber(rs.getString("ZONE_CODE"));
 					IAreaModel areaModel = new AreaModel();
 					areaModel.setAreaCode(rs.getString("AREA_CODE"));
-					areaModel.setDepot("X".equalsIgnoreCase(rs.getString("IS_DEPOT")));
+					IRegionModel _rModel = new RegionModel();
+ 					_rModel.setDepot("X".equalsIgnoreCase(rs.getString("IS_DEPOT")) ? true : false);
+ 					_rModel.setRegionCode(rs.getString("REGION_CODE"));
+ 					_rModel.setName(rs.getString("REGION_NAME"));
+ 					_rModel.setDescription(rs.getString("REGION_DESCR"));
+ 					
+ 					areaModel.setRegion(_rModel);
 					zoneModel.setArea(areaModel);
 
 					result.add(zoneModel);				    		

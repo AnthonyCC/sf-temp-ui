@@ -1,6 +1,7 @@
 package com.freshdirect.transadmin.web;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -9,10 +10,11 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 
 import com.freshdirect.transadmin.model.TrnArea;
+import com.freshdirect.transadmin.model.TrnRegion;
 import com.freshdirect.transadmin.service.DomainManagerI;
 import com.freshdirect.transadmin.util.TransStringUtil;
 
-public class AreaFormController extends AbstractFormController {
+public class RoutingRegionFormController extends AbstractFormController {
 	
 	private DomainManagerI domainManagerService;
 			
@@ -26,33 +28,30 @@ public class AreaFormController extends AbstractFormController {
 
 	protected Map referenceData(HttpServletRequest request) throws ServletException {
 		Map refData = new HashMap();
-		refData.put("deliverymodels", getDomainManagerService().getDeliveryModels());
-		refData.put("balancebys", getDomainManagerService().getBalanceBys());
-		refData.put("routingRegions", getDomainManagerService().getRoutingRegions());
 		return refData;
 	}
 	
 	public Object getBackingObject(String id) {
-		return getDomainManagerService().getArea(id);
+		return getDomainManagerService().getRoutingRegion(id);
 	}
 	
 	public Object getDefaultBackingObject() {
-		TrnArea area = new TrnArea();
-		area.setIsNew("true");
-		return area;
+		TrnRegion routingRegion = new TrnRegion();
+		routingRegion.setIsNew("true");
+		return routingRegion;
 	}
 	
 	public boolean isNew(Object command) {
-		TrnArea modelIn = (TrnArea)command;
+		TrnRegion modelIn = (TrnRegion)command;
 		return (modelIn.getCode() == null);
 	}
 	
 	public String getDomainObjectName() {
-		return "Area";
+		return "Routing Region";
 	}
 	
 	protected void preProcessDomainObject(Object domainObject) {
-		TrnArea modelIn = (TrnArea)domainObject;
+		TrnRegion modelIn = (TrnRegion)domainObject;
 		if(TransStringUtil.isEmpty(modelIn.getCode()) ) {
 			modelIn.setCode(modelIn.getCode());
 		}
@@ -60,17 +59,8 @@ public class AreaFormController extends AbstractFormController {
 	
 	public List saveDomainObject(HttpServletRequest request, Object domainObject) {
 		List errorList = new ArrayList();
-		TrnArea modelNew = (TrnArea)domainObject;
-		if(!"X".equalsIgnoreCase(modelNew.getNeedsLoadBalance())) {
-			modelNew.setBalanceBy(null);
-			modelNew.setLoadBalanceFactor(null);
-		}
-		if("true".equals(modelNew.getIsNew())) {
-			TrnArea refDomain = getDomainManagerService().getArea(modelNew.getCode());
-			if(refDomain != null) {
-				errorList.add(this.getMessage("app.actionmessage.119", new Object[]{getDomainObjectName()}));
-			} 
-		}
+		TrnRegion modelNew = (TrnRegion)domainObject;
+		
 		if(errorList.size() == 0) {
 			getDomainManagerService().saveEntity(modelNew);
 			modelNew.setIsNew(null);

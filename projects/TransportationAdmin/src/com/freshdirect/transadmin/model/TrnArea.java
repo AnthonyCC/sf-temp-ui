@@ -24,6 +24,8 @@ public class TrnArea  implements java.io.Serializable, TrnBaseEntityI {
 	private String needsLoadBalance;
 	
 	private String isDepot;
+	
+	private String region;
 
 	public String getIsNew() {
 		return isNew;
@@ -147,6 +149,14 @@ public class TrnArea  implements java.io.Serializable, TrnBaseEntityI {
 		} else if (!code.equals(other.code))
 			return false;
 		return true;
+	}
+
+	public String getRegion() {
+		return region;
+	}
+
+	public void setRegion(String region) {
+		this.region = region;
 	}
 
 }

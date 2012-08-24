@@ -37,6 +37,9 @@
         </property>
         <property name="isDepot" type="string">
             <column name="IS_DEPOT" length="1" />
-        </property>         
+        </property> 
+         <property name="region" type="string">
+            <column name="region_code" length="8" />
+        </property>
     </class>
 </hibernate-mapping>

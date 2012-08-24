@@ -36,6 +36,7 @@ import com.freshdirect.transadmin.model.RouteMappingId;
 import com.freshdirect.transadmin.model.TrnAdHocRoute;
 import com.freshdirect.transadmin.model.TrnArea;
 import com.freshdirect.transadmin.model.TrnCutOff;
+import com.freshdirect.transadmin.model.TrnRegion;
 //import com.freshdirect.transadmin.model.TrnPlantCapacity;
 import com.freshdirect.transadmin.model.TrnZoneType;
 import com.freshdirect.transadmin.model.VIRRecord;
@@ -55,6 +56,11 @@ public class DomainManagerDaoHibernateImpl
 	public Collection getAreas() throws DataAccessException {
 
 		return getDataList("TrnArea Order By CODE");
+	}
+	
+	public Collection getRoutingRegions() throws DataAccessException {
+
+		return getDataList("TrnRegion Order By CODE");
 	}
 
 	public Collection getAdHocRoutes() throws DataAccessException {
@@ -100,7 +106,10 @@ public class DomainManagerDaoHibernateImpl
 	public TrnArea getArea(String id) throws DataAccessException  {
 		return (TrnArea)getEntityById("TrnArea","code",id);
 	}
-
+	public TrnRegion getRoutingRegion(String id) throws DataAccessException  {
+		return (TrnRegion)getEntityById("TrnRegion","code",id);
+	}
+	
 	public TrnCutOff getCutOff(String id) throws DataAccessException {
 		return (TrnCutOff)getEntityById("TrnCutOff","cutOffId",id);
 	}

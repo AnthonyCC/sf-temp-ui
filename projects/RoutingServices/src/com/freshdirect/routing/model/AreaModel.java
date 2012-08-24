@@ -20,6 +20,8 @@ public class AreaModel extends BaseModel implements IAreaModel  {
 	
     private int stemToTime;
     
+    private IRegionModel region;
+    
     //private int maxStemTime;
 	
     private String prefix;
@@ -139,15 +141,20 @@ public class AreaModel extends BaseModel implements IAreaModel  {
 	}
 
 	public boolean isDepot() {
-		return isDepot;
-	}
-
-	public void setDepot(boolean isDepot) {
-		this.isDepot = isDepot;
+		return region.isDepot();
 	}
 	
 	public String toString() {
 		return areaCode+"|"+isActive+"|"+deliveryRate;
 	}
+
+	public IRegionModel getRegion() {
+		return region;
+	}
+
+	public void setRegion(IRegionModel region) {
+		this.region = region;
+	}
+
 	
 }

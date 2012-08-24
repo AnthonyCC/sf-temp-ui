@@ -134,6 +134,20 @@
                </tr>
                
                <tr>
+                  <td>Region</td>
+                  <td> 
+                  <form:select path="region">
+                        <form:option value="null" label="--Please Select Region"/>
+                    <form:options items="${routingRegions}" itemLabel="name" itemValue="code" />
+                   </form:select>
+                </td>
+                <td>
+                  &nbsp;<form:errors path="region" />
+                </td>
+               </tr>
+               
+               
+               <tr>
                   <td>Balance By Factor</td>
                   <td>                  
                     <form:input maxlength="50" size="30" path="loadBalanceFactor" />

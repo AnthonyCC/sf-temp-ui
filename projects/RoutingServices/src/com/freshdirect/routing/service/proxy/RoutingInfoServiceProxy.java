@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Set;
 
 import com.freshdirect.routing.constants.EnumWaveInstanceStatus;
+import com.freshdirect.routing.model.IRegionModel;
 import com.freshdirect.routing.model.IServiceTimeScenarioModel;
 import com.freshdirect.routing.model.IServiceTimeTypeModel;
 import com.freshdirect.routing.model.IWaveInstance;
@@ -91,5 +92,7 @@ public class RoutingInfoServiceProxy  extends BaseServiceProxy  {
 		return getService().getCutoffSequence();
 	}
 	
-	
+	public List<IRegionModel> getRegions(){
+		return getService().getRegions();
+	}
 }

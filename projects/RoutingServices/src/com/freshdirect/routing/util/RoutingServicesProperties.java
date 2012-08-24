@@ -60,9 +60,7 @@ public class RoutingServicesProperties {
 	private final static String PROP_LATEDELIVERY_QUERY		= "routingservices.latedelivery.query";
 	
 	private final static String PROP_LDPROCESSING_ENABLED		= "routingservices.ldprocessing.enabled";
-	
-	private final static String PROP_DEFAULTDEPOT_LOCATIONTYPE		= "routingservices.defaultdepot.locationtype";
-	
+		
 	private static long lastRefresh = 0;
 	private final static long REFRESH_PERIOD = 5 * 60 * 1000;
 	
@@ -155,7 +153,6 @@ public class RoutingServicesProperties {
 		defaults.put(PROP_DEFAULT_TRUCKREGION, 	"FD");
 		defaults.put(PROP_DEFAULT_DEPOTREGION, 	"MDP");
 		defaults.put(PROP_DEFAULT_LOCATIONTYPE, 	"SIT");
-		defaults.put(PROP_DEFAULTDEPOT_LOCATIONTYPE, 	"MDP");
 		defaults.put(PROP_DEFAULT_ORDERTYPE, 	"DEF");
 		defaults.put(PROP_DEFAULT_FIXEDSERVICETIME, 	"5");
 		defaults.put(PROP_DEFAULT_VARIABLESERVICETIME, 	"5");
@@ -321,11 +318,7 @@ public class RoutingServicesProperties {
 	public static String getDefaultTruckRegion() {
 		return get(PROP_DEFAULT_TRUCKREGION);
 	}
-	
-	public static String getDefaultDepotRegion() {
-		return get(PROP_DEFAULT_DEPOTREGION);
-	}
-	
+		
 	public static String getDefaultLocationType() {
 		return get(PROP_DEFAULT_LOCATIONTYPE);
 	}

@@ -10,7 +10,6 @@ public class EnumRouteType extends Enum {
 	
 	public static final EnumRouteType DELIVERYZONE = new EnumRouteType("SIT", "REGULARDELIVERY");
 	public static final EnumRouteType CROSSDOCK = new EnumRouteType("CRD", "CROSS DOCK");
-	//public static final EnumRouteType FD = new EnumRouteType("FD", "MAINFACILITY");
 	public static final EnumRouteType DEPOTDELIVERY = new EnumRouteType("DPT", "REGULARDEPOT");
 
 	private final String displayName;

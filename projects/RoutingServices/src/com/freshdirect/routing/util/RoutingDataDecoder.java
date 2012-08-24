@@ -1,7 +1,6 @@
 package com.freshdirect.routing.util;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.TreeSet;
 
@@ -29,6 +28,7 @@ import com.freshdirect.routing.model.IGeographicLocation;
 import com.freshdirect.routing.model.ILocationModel;
 import com.freshdirect.routing.model.IOrderModel;
 import com.freshdirect.routing.model.IPathDirection;
+import com.freshdirect.routing.model.IRegionModel;
 import com.freshdirect.routing.model.IRouteModel;
 import com.freshdirect.routing.model.IRoutingDepotId;
 import com.freshdirect.routing.model.IRoutingEquipmentType;
@@ -40,6 +40,7 @@ import com.freshdirect.routing.model.IZoneModel;
 import com.freshdirect.routing.model.LocationModel;
 import com.freshdirect.routing.model.OrderModel;
 import com.freshdirect.routing.model.PathDirection;
+import com.freshdirect.routing.model.RegionModel;
 import com.freshdirect.routing.model.RouteModel;
 import com.freshdirect.routing.model.RoutingDepotId;
 import com.freshdirect.routing.model.RoutingEquipmentType;
@@ -48,18 +49,18 @@ import com.freshdirect.routing.model.RoutingSchedulerIdentity;
 import com.freshdirect.routing.model.RoutingStopModel;
 import com.freshdirect.routing.model.WaveInstance;
 import com.freshdirect.routing.model.ZoneModel;
-import com.freshdirect.routing.proxy.stub.transportation.DirectionArc;
-import com.freshdirect.routing.proxy.stub.transportation.DirectionData;
-import com.freshdirect.routing.proxy.stub.transportation.PathDirections;
 import com.freshdirect.routing.proxy.stub.transportation.ChangedOrderIdentity;
 import com.freshdirect.routing.proxy.stub.transportation.DeliveryAreaOrder;
 import com.freshdirect.routing.proxy.stub.transportation.DeliveryAreaOrderIdentity;
 import com.freshdirect.routing.proxy.stub.transportation.DeliveryCost;
 import com.freshdirect.routing.proxy.stub.transportation.DeliveryWaveInstance;
 import com.freshdirect.routing.proxy.stub.transportation.DeliveryWindow;
+import com.freshdirect.routing.proxy.stub.transportation.DirectionArc;
+import com.freshdirect.routing.proxy.stub.transportation.DirectionData;
 import com.freshdirect.routing.proxy.stub.transportation.EquipmentTypeIdentity;
 import com.freshdirect.routing.proxy.stub.transportation.LocationIdentity;
 import com.freshdirect.routing.proxy.stub.transportation.Notification;
+import com.freshdirect.routing.proxy.stub.transportation.PathDirections;
 import com.freshdirect.routing.proxy.stub.transportation.ReserveResult;
 import com.freshdirect.routing.proxy.stub.transportation.ReserveResultType;
 import com.freshdirect.routing.proxy.stub.transportation.RouteChangeNotification;
@@ -444,6 +445,9 @@ public class RoutingDataDecoder {
     		IZoneModel zModel = new ZoneModel();
     		IAreaModel areaModel = new AreaModel();
     		areaModel.setAreaCode(model.getIdentity().getArea());
+    		IRegionModel _rModel = new RegionModel();
+    		_rModel.setRegionCode(model.getIdentity().getRegionId());
+    		areaModel.setRegion(_rModel);
     		zModel.setArea(areaModel);
     		
     		dModel.setDeliveryZone(zModel);

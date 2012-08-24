@@ -20,6 +20,7 @@ import com.freshdirect.transadmin.model.SectorZipcode;
 import com.freshdirect.transadmin.model.TrnAdHocRoute;
 import com.freshdirect.transadmin.model.TrnArea;
 import com.freshdirect.transadmin.model.TrnCutOff;
+import com.freshdirect.transadmin.model.TrnRegion;
 import com.freshdirect.transadmin.model.TrnZoneType;
 import com.freshdirect.transadmin.model.VIRRecord;
 import com.freshdirect.transadmin.model.Zone;
@@ -92,7 +93,7 @@ public interface DomainManagerI extends BaseManagerI {
 	Collection getTruckNumbers();
 	
 	Collection getBalanceBys();
-
+	
 	Collection getActiveZones();
 	
 	void saveRouteNumberGroup(Map routeMapping);	
@@ -198,4 +199,8 @@ public interface DomainManagerI extends BaseManagerI {
 	Collection getSnapshotLocations();
 
 	Object getSnapshotLocation(String buildingId, String serviceType);
+	
+	Collection getRoutingRegions();
+	
+	TrnRegion getRoutingRegion(String id);
 }

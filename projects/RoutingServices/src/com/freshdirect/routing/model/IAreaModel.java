@@ -16,7 +16,6 @@ public interface IAreaModel {
 	void setNeedsLoadBalance(boolean needsLoadBalance);
 	
 	boolean isDepot();
-	void setDepot(boolean isDepot);
 	
 	boolean isActive();
 	void setActive(boolean isActive);	
@@ -36,6 +35,6 @@ public interface IAreaModel {
 	String getDeliveryModel();
 	void setDeliveryModel(String deliveryModel);
 	
-	/*int getMaxStemTime();
-	void setMaxStemTime(int maxStemTime);*/
+	IRegionModel getRegion();
+	void setRegion(IRegionModel region);
 }

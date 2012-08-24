@@ -24,10 +24,12 @@ import com.freshdirect.routing.constants.EnumWaveInstanceStatus;
 import com.freshdirect.routing.dao.IRoutingInfoDAO;
 import com.freshdirect.routing.model.AreaModel;
 import com.freshdirect.routing.model.IAreaModel;
+import com.freshdirect.routing.model.IRegionModel;
 import com.freshdirect.routing.model.IServiceTimeScenarioModel;
 import com.freshdirect.routing.model.IServiceTimeTypeModel;
 import com.freshdirect.routing.model.IWaveInstance;
 import com.freshdirect.routing.model.IZoneScenarioModel;
+import com.freshdirect.routing.model.RegionModel;
 import com.freshdirect.routing.model.ServiceTimeScenario;
 import com.freshdirect.routing.model.ServiceTimeTypeModel;
 import com.freshdirect.routing.model.TrnFacility;
@@ -274,26 +276,26 @@ public class RoutingInfoDAO extends BaseDAO implements IRoutingInfoDAO   {
 	
 	private static final String GET_WAVEINSTANCE_BYSTATUS_QRY = "select P.DELIVERY_DATE DISPATCH_DATE, F.FACILITY_CODE ORIGIN_FACILITY, P.AREA ZONE, P.CUTOFF_DATETIME CUT_OFF " +
 	", P.DISPATCH_TIME DISPATCH_TIME, P.FIRST_DLV_TIME, P.LAST_DLV_TIME, P.RESOURCE_COUNT, P.FORCE_SYNCHRONIZE, P.REFERENCE_ID, P.WAVEINSTANCE_ID, P.SOURCE, P.STATUS, P.NOTIFICATION_MSG " +
-	", Z.STEM_TO_TIME TO_ZONETIME, Z.STEM_FROM_TIME FROM_ZONETIME, Z.LOADING_PRIORITY, a.IS_DEPOT IS_DEPOT " +
-	"from transp.WAVE_INSTANCE p, transp.zone z, transp.trn_area a, transp.trn_facility f where P.DELIVERY_DATE = ?  and P.AREA = Z.ZONE_CODE and z.AREA = a.CODE and f.ID = P.ORIGIN_FACILITY and STATUS = ? " +
+	", Z.STEM_TO_TIME TO_ZONETIME, Z.STEM_FROM_TIME FROM_ZONETIME, Z.LOADING_PRIORITY, TR.IS_DEPOT IS_DEPOT " +
+	"from transp.WAVE_INSTANCE p, transp.zone z, transp.trn_area a, TRANSP.TRN_REGION TR, transp.trn_facility f where P.DELIVERY_DATE = ?  and P.AREA = Z.ZONE_CODE and z.AREA = a.CODE AND TR.CODE = A.REGION_CODE and f.ID = P.ORIGIN_FACILITY and STATUS = ? " +
 	"order by P.DELIVERY_DATE, P.AREA, P.CUTOFF_DATETIME, P.FIRST_DLV_TIME";
 	
 	private static final String GET_WAVEINSTANCE_QRY = "select P.DELIVERY_DATE DISPATCH_DATE, F.FACILITY_CODE ORIGIN_FACILITY, P.AREA ZONE, P.CUTOFF_DATETIME CUT_OFF " +
 	", P.DISPATCH_TIME DISPATCH_TIME, P.FIRST_DLV_TIME, P.LAST_DLV_TIME, P.RESOURCE_COUNT, P.FORCE_SYNCHRONIZE, P.REFERENCE_ID, P.WAVEINSTANCE_ID, P.SOURCE, P.STATUS, P.NOTIFICATION_MSG " +
-	", Z.STEM_TO_TIME TO_ZONETIME, Z.STEM_FROM_TIME FROM_ZONETIME, Z.LOADING_PRIORITY, a.IS_DEPOT IS_DEPOT " +
-	"from transp.WAVE_INSTANCE p, transp.zone z, transp.trn_area a, transp.trn_facility f where P.DELIVERY_DATE = ?  and P.AREA = Z.ZONE_CODE and z.AREA = a.CODE and f.ID = P.ORIGIN_FACILITY " +
+	", Z.STEM_TO_TIME TO_ZONETIME, Z.STEM_FROM_TIME FROM_ZONETIME, Z.LOADING_PRIORITY, TR.IS_DEPOT IS_DEPOT " +
+	"from transp.WAVE_INSTANCE p, transp.zone z, transp.trn_area a,  TRANSP.TRN_REGION TR, transp.trn_facility f where P.DELIVERY_DATE = ?  and P.AREA = Z.ZONE_CODE and z.AREA = a.CODE AND TR.CODE = A.REGION_CODE and f.ID = P.ORIGIN_FACILITY " +
 	"order by P.DELIVERY_DATE, P.AREA, P.CUTOFF_DATETIME, P.FIRST_DLV_TIME";
 	
 	private static final String GET_FUTURE_WAVEINSTANCE_QRY = "select P.DELIVERY_DATE DISPATCH_DATE, F.FACILITY_CODE ORIGIN_FACILITY, P.AREA ZONE, P.CUTOFF_DATETIME CUT_OFF " +
 	", P.DISPATCH_TIME DISPATCH_TIME, P.FIRST_DLV_TIME, P.LAST_DLV_TIME, P.RESOURCE_COUNT, P.FORCE_SYNCHRONIZE, P.REFERENCE_ID, P.WAVEINSTANCE_ID, P.SOURCE, P.STATUS, P.NOTIFICATION_MSG " +
-	", Z.STEM_TO_TIME TO_ZONETIME, Z.STEM_FROM_TIME FROM_ZONETIME, Z.LOADING_PRIORITY, a.IS_DEPOT IS_DEPOT " +
-	" from transp.WAVE_INSTANCE p, transp.zone z, transp.trn_area a, transp.trn_facility f where P.DELIVERY_DATE > sysdate  and P.AREA = Z.ZONE_CODE and z.AREA = a.CODE and f.ID = P.ORIGIN_FACILITY " +
+	", Z.STEM_TO_TIME TO_ZONETIME, Z.STEM_FROM_TIME FROM_ZONETIME, Z.LOADING_PRIORITY, TR.IS_DEPOT IS_DEPOT " +
+	" from transp.WAVE_INSTANCE p, transp.zone z, transp.trn_area a, TRANSP.TRN_REGION TR, transp.trn_facility f where P.DELIVERY_DATE > sysdate  and P.AREA = Z.ZONE_CODE and z.AREA = a.CODE AND TR.CODE = A.REGION_CODE and f.ID = P.ORIGIN_FACILITY " +
 	"order by P.DELIVERY_DATE, P.AREA, P.CUTOFF_DATETIME, P.FIRST_DLV_TIME";
 	
 	private static final String GET_FUTURE_WAVEINSTANCE_BYSTATUS_QRY = "select P.DELIVERY_DATE DISPATCH_DATE, F.FACILITY_CODE ORIGIN_FACILITY, P.AREA ZONE, P.CUTOFF_DATETIME CUT_OFF " +
 	", P.DISPATCH_TIME DISPATCH_TIME, P.FIRST_DLV_TIME, P.LAST_DLV_TIME, P.RESOURCE_COUNT, P.FORCE_SYNCHRONIZE, P.REFERENCE_ID, P.WAVEINSTANCE_ID, P.SOURCE, P.STATUS, P.NOTIFICATION_MSG " +
-	", Z.STEM_TO_TIME TO_ZONETIME, Z.STEM_FROM_TIME FROM_ZONETIME, Z.LOADING_PRIORITY, a.IS_DEPOT IS_DEPOT " +
-	" from transp.WAVE_INSTANCE p, transp.zone z, transp.trn_area a, transp.trn_facility f where P.DELIVERY_DATE > sysdate  and P.AREA = Z.ZONE_CODE and z.AREA = a.CODE and f.ID = P.ORIGIN_FACILITY and STATUS = ? " +
+	", Z.STEM_TO_TIME TO_ZONETIME, Z.STEM_FROM_TIME FROM_ZONETIME, Z.LOADING_PRIORITY, TR.IS_DEPOT IS_DEPOT " +
+	" from transp.WAVE_INSTANCE p, transp.zone z, transp.trn_area a,TRANSP.TRN_REGION TR, transp.trn_facility f where P.DELIVERY_DATE > sysdate  and P.AREA = Z.ZONE_CODE and z.AREA = a.CODE AND TR.CODE = A.REGION_CODE  and f.ID = P.ORIGIN_FACILITY and STATUS = ? " +
 	"order by P.DELIVERY_DATE, P.AREA, P.CUTOFF_DATETIME, P.FIRST_DLV_TIME";
 	
 	public Map<Date, Map<String, Map<RoutingTimeOfDay, Map<RoutingTimeOfDay, List<IWaveInstance>>>>> getWaveInstanceTree
@@ -856,6 +858,39 @@ public class RoutingInfoDAO extends BaseDAO implements IRoutingInfoDAO   {
 					    	  		RoutingTimeOfDay _cutOffTime = new RoutingTimeOfDay(rs.getTimestamp("CUTOFF_TIME"));
 					    	  		Integer sequence = rs.getInt("SEQUENCENO");
 					    			result.put(_cutOffTime, sequence);
+					    	  	}while(rs.next());
+					      }
+			});	
+			
+			return result;
+		}
+
+		private static final String GET_REGIONS  = "SELECT * FROM TRANSP.TRN_REGION";
+		
+		@Override
+		public List<IRegionModel> getRegions() {
+			
+			final List<IRegionModel> result = new ArrayList<IRegionModel>();
+			
+			PreparedStatementCreator creator = new PreparedStatementCreator() {
+				public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
+				
+					PreparedStatement ps =	connection.prepareStatement(GET_REGIONS);			
+					return ps;
+				}
+			};
+			
+			jdbcTemplate.query(creator, 
+					  new RowCallbackHandler() { 
+					      public void processRow(ResultSet rs) throws SQLException {				    	
+					    	  	do {
+					    	  		IRegionModel _rModel = new RegionModel();
+					    	  		_rModel.setDepot("X".equalsIgnoreCase(rs.getString("IS_DEPOT")) ? true : false);
+		         					_rModel.setRegionCode(rs.getString("CODE"));
+		         					_rModel.setName(rs.getString("NAME"));
+		         					_rModel.setDescription(rs.getString("DESCRIPTION"));
+		         					
+					    			result.add(_rModel);
 					    	  	}while(rs.next());
 					      }
 			});	

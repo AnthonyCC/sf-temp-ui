@@ -106,11 +106,7 @@ public class RoutingUtil {
 	}
 	
 	public static String getRegion(IAreaModel model) {
-		if(model != null && model.isDepot()) {
-			return RoutingServicesProperties.getDefaultDepotRegion();
-		} else {
-			return RoutingServicesProperties.getDefaultTruckRegion();
-		}
+			return model.getRegion().getRegionCode();
 	}
 	
 	public static double getDouble(String input) {

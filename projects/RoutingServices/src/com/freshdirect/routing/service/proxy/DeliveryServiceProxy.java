@@ -59,8 +59,8 @@ public class DeliveryServiceProxy extends BaseServiceProxy {
 		return getService().getLateDeliveryOrders(query);
 	}
 	
-	public List getRoutes(Date routeDate, String internalSessionID, String routeID) throws RoutingServiceException {
-		return getService().getRoutes(routeDate, internalSessionID, routeID);
+	public List getRoutes(Date routeDate, String internalSessionID, String routeID, String regionId) throws RoutingServiceException {
+		return getService().getRoutes(routeDate, internalSessionID, routeID, regionId);
 	}
 	
 	public IDrivingDirection buildDriverDirections(Set<String> routeIDs, String sessionID, IRoutingSchedulerIdentity schedulerId)  throws RoutingServiceException {

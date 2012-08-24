@@ -22,14 +22,7 @@ import org.springframework.jdbc.core.RowCallbackHandler;
 import org.springframework.jdbc.core.SqlParameter;
 import org.springframework.jdbc.object.BatchSqlUpdate;
 
-import weblogic.jms.common.UOOHelper;
-
 import com.freshdirect.framework.util.log.LoggerFactory;
-import com.freshdirect.routing.constants.EnumWaveInstanceStatus;
-import com.freshdirect.routing.model.AreaModel;
-import com.freshdirect.routing.model.IAreaModel;
-import com.freshdirect.routing.model.IWaveInstance;
-import com.freshdirect.routing.model.WaveInstance;
 import com.freshdirect.transadmin.dao.RouteManagerDaoI;
 import com.freshdirect.transadmin.model.HTOutScanAsset;
 import com.freshdirect.transadmin.model.RouteMappingId;

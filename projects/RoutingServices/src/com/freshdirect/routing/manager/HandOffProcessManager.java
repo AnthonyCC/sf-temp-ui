@@ -42,17 +42,15 @@ import com.freshdirect.fdstore.FDTimeslot;
 import com.freshdirect.framework.util.StringUtil;
 import com.freshdirect.framework.util.TimeOfDay;
 import com.freshdirect.routing.constants.RoutingActivityType;
-import com.freshdirect.routing.model.GeographicLocation;
 import com.freshdirect.routing.model.HandOffBatchSession;
 import com.freshdirect.routing.model.IHandOffBatch;
 import com.freshdirect.routing.model.IHandOffBatchSession;
-import com.freshdirect.routing.model.ILocationModel;
 import com.freshdirect.routing.model.IOrderModel;
+import com.freshdirect.routing.model.IRegionModel;
 import com.freshdirect.routing.model.IRoutingDepotId;
 import com.freshdirect.routing.model.IRoutingSchedulerIdentity;
 import com.freshdirect.routing.model.IServiceTimeScenarioModel;
 import com.freshdirect.routing.model.IWaveInstance;
-import com.freshdirect.routing.model.IZoneModel;
 import com.freshdirect.routing.model.RoutingDepotId;
 import com.freshdirect.routing.model.RoutingSchedulerIdentity;
 import com.freshdirect.routing.model.TrnFacilityType;
@@ -780,16 +778,16 @@ public class HandOffProcessManager {
     	String currentTime = getCurrentTime();
     	
     	Map<String, List<Integer>> countMapping = new HashMap<String, List<Integer>>();
-    	List<Integer> regularCnt = new ArrayList<Integer>();
-    	regularCnt.add(0);
-    	
-    	List<Integer> depotCnt = new ArrayList<Integer>();
-    	depotCnt.add(0);
-    	
-    	countMapping.put("FD", regularCnt);
-    	countMapping.put("MDP", depotCnt);
     	
     	RoutingInfoServiceProxy routingInfoProxy = new RoutingInfoServiceProxy();
+    	List<IRegionModel> regions = routingInfoProxy.getRegions();
+    	for(IRegionModel region:regions)
+    	{
+    		List<Integer> cnt = new ArrayList<Integer>();
+    		cnt.add(0);
+    		countMapping.put(region.getRegionCode(),cnt);
+    	}
+    	
     	List<String> zones = routingInfoProxy.getStaticZonesByDate(context.getHandOffBatch().getDeliveryDate());
     	
     	String sessionDescription = null;
