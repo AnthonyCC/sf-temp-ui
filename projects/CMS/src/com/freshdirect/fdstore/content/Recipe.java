@@ -175,19 +175,6 @@ public class Recipe extends ContentNodeModelImpl implements ContentStatusI, Ymal
 	}
 
 	/**
-	 *  Return all the YMAL products, of all types, that are related to this
-	 *  product. The returned list will not contain any items from YMAL sets
-	 *  related to this product.
-	 *  
-	 *  @return a list of content nodes that are YMALs to this product.
-	 *  @deprecated
-	 */
-	@SuppressWarnings( { "unchecked" } )
-	public List<ProductModel> getYouMightAlsoLike() {
-		return (List)getYmals();
-	}
-	
-	/**
 	 *  Return all YMAL products for this recipe.
 	 *  
 	 *  @return a list of all related products for this recipe, of type
@@ -471,7 +458,7 @@ public class Recipe extends ContentNodeModelImpl implements ContentStatusI, Ymal
 	}
 
 	public List<ProductModel> getRelatedProducts() {
-		return getYouMightAlsoLike();
+		return getYmals(FDContentTypes.PRODUCT);
 	}
 
 	public Html getDescription() {
