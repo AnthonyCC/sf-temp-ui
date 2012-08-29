@@ -625,15 +625,15 @@ public class HandOffRoutingOutAction extends AbstractHandOffAction {
 			}
 		}
 
-		int maxCartonsPerCont = 0;
-		int maxContPerTrailer = 0;
+		int maxCartonsPerPallet = 0;
+		int maxPalletPerTrailer = 0;
 		if(scenarioModel != null && scenarioModel.getDefaultContainerCartonCount() !=0 &&
 				scenarioModel.getDefaultTrailerContainerCount() != 0){
-			 maxCartonsPerCont = scenarioModel.getDefaultContainerCartonCount();
-			 maxContPerTrailer = scenarioModel.getDefaultTrailerContainerCount();
+			 maxCartonsPerPallet = scenarioModel.getDefaultContainerCartonCount();
+			 maxPalletPerTrailer = scenarioModel.getDefaultTrailerContainerCount();
 		}else{
-			maxCartonsPerCont = RoutingServicesProperties.getMaxTrailerCartonSize();
-			maxContPerTrailer = RoutingServicesProperties.getMaxTrailerContainerSize();
+			maxCartonsPerPallet = RoutingServicesProperties.getMaxTrailerCartonSize();
+			maxPalletPerTrailer = RoutingServicesProperties.getMaxTrailerContainerSize();
 		}
 		
 		Set<ITrailerModel> trailers = new TreeSet<ITrailerModel>(new TrailerComparator1());
@@ -677,7 +677,7 @@ public class HandOffRoutingOutAction extends AbstractHandOffAction {
 		}
 
 		for(ITrailerModel trailer : trailers){
-			double trailerContainerCnt = 0;						
+			double trailerPalletCnt = 0;						
 			Collections.sort(crossDockRoutes, new HandOffBatchRouteComparator());
 			Iterator<IHandOffBatchRoute> routeItr = crossDockRoutes.iterator();
 			while(routeItr.hasNext()){
@@ -685,7 +685,7 @@ public class HandOffRoutingOutAction extends AbstractHandOffAction {
 				
 				if(route.getDispatchTime() != null && route.getDispatchTime().after(new RoutingTimeOfDay(trailer.getCompletionTime()))){
 									double routeCartonCnt = 0;
-									double routeContCnt = 0;
+									double routePalletCnt = 0;
 									Iterator<IRoutingStopModel> _stopItr = route.getStops().iterator();							
 									IRoutingStopModel _order = null;
 									while(_stopItr.hasNext()){
@@ -694,10 +694,10 @@ public class HandOffRoutingOutAction extends AbstractHandOffAction {
 																			? orderNoToCartonNo.get(_order.getOrderNumber()) : 0;								
 									}
 									
-									routeContCnt = routeCartonCnt/maxCartonsPerCont;
-									
-									if ((routeContCnt + trailerContainerCnt) <= maxContPerTrailer) {
-										trailerContainerCnt += routeContCnt;
+									routePalletCnt = routeCartonCnt/maxCartonsPerPallet;
+									routePalletCnt  = Math.ceil(routePalletCnt);
+									if ((routePalletCnt + trailerPalletCnt) <= maxPalletPerTrailer) {
+										trailerPalletCnt += routePalletCnt;
 										trailer.getRoutes().add(route);
 										routeItr.remove();
 									} else {
