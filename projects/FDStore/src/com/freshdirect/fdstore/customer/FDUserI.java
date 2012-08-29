@@ -514,4 +514,6 @@ public interface FDUserI extends java.io.Serializable {
 	public boolean isDpNewTcBlocking();
 	
 	public boolean isDpNewTcBlocking(boolean includeViewCount);
+	
+	public boolean hasEBTAlert() ;
 }

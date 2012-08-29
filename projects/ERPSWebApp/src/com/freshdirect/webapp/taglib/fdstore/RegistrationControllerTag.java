@@ -392,7 +392,7 @@ public class RegistrationControllerTag extends AbstractControllerTag implements 
 		boolean isEBTAccepted = null !=serviceResult ? serviceResult.isEbtAccepted():false;
 		if (validator.isAddressDeliverable()) {
 			FDSessionUser user = (FDSessionUser) session.getAttribute(USER);
-			isEBTAccepted = isEBTAccepted && (user.getOrderHistory().getUnSettledEBTOrderCount()<=0);
+			isEBTAccepted = isEBTAccepted && (user.getOrderHistory().getUnSettledEBTOrderCount()<=0)&&!user.hasEBTAlert();
 			if (user.isPickupOnly() && user.getOrderHistory().getValidOrderCount()==0) {
 				//
 				// now eligible for home/corporate delivery and still not placed an order.

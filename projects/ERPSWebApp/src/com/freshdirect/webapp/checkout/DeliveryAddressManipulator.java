@@ -18,6 +18,7 @@ import com.freshdirect.common.address.AddressInfo;
 import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.address.PhoneNumber;
 import com.freshdirect.common.customer.EnumServiceType;
+import com.freshdirect.customer.EnumAlertType;
 import com.freshdirect.customer.EnumDeliverySetting;
 import com.freshdirect.customer.EnumUnattendedDeliveryFlag;
 import com.freshdirect.customer.ErpAddressModel;
@@ -350,13 +351,12 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 			if(null !=cart.getDeliveryAddress()){
 				cart.getDeliveryAddress().setEbtAccepted(isEBTAccepted);
 			}
-			if(isEBTAccepted){
-				
+			if(isEBTAccepted){				
 				if(cart instanceof FDModifyCartModel){
 					String orgSaleId =((FDModifyCartModel) cart).getOriginalOrder().getErpSalesId();
-					isEBTAccepted = isEBTAccepted && (user.getOrderHistory().getUnSettledEBTOrderCount(orgSaleId)<1);
+					isEBTAccepted = isEBTAccepted &&!user.hasEBTAlert() && (user.getOrderHistory().getUnSettledEBTOrderCount(orgSaleId)<1);
 				}else{
-					isEBTAccepted = isEBTAccepted && (user.getOrderHistory().getUnSettledEBTOrderCount()<1);
+					isEBTAccepted = isEBTAccepted &&!user.hasEBTAlert() && (user.getOrderHistory().getUnSettledEBTOrderCount()<1);
 				}
 			}
 			user.setEbtAccepted(isEBTAccepted);
@@ -413,7 +413,7 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 		DlvServiceSelectionResult serviceResult =FDDeliveryManager.getInstance().checkZipCode(thisAddress.getZipCode());		
 		FDSessionUser user = (FDSessionUser)session.getAttribute( SessionName.USER );
 		boolean isEBTAccepted = null !=serviceResult ? serviceResult.isEbtAccepted():false;
-		isEBTAccepted = isEBTAccepted && (user.getOrderHistory().getUnSettledEBTOrderCount()<=0);
+		isEBTAccepted = isEBTAccepted && (user.getOrderHistory().getUnSettledEBTOrderCount()<=0)&&!user.hasEBTAlert();
 		if (EnumCheckoutMode.NORMAL == user.getCheckoutMode()) {
 			String zoneId = zoneInfo.getZoneCode();
 			if ( zoneId != null && zoneId.length() > 0 ) {

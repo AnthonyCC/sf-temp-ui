@@ -1091,6 +1091,15 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 				details = "Nobody over 21 yrs was home to take delivery of alcoholic items";
 			}
 			this.createCaseForSale(saleId, "refused_order", details);
+			
+			// If the order is an EBT order, add an 'EBT' alert to the customer account .
+			ErpSaleModel sale = (ErpSaleModel)eb.getModel();
+			ErpAbstractOrderModel order =sale.getCurrentOrder();
+			PrimaryKey customerPk =eb.getCustomerPk();
+			if(null!=order.getPaymentMethod() && EnumPaymentMethodType.EBT.equals(order.getPaymentMethod().getPaymentMethodType())
+					&& !isOnAlert(eb.getCustomerPk(),EnumAlertType.EBT.getName())){
+				addEbtAlertForCustomer(saleId, customerPk);
+			}
 		} catch (FinderException fe) {
 			LOGGER.warn("Cannot find sale for sale", fe);
 			throw new EJBException("No sale found for the given saleId: " + saleId, fe);
@@ -1098,6 +1107,19 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 			LOGGER.warn("RemoteException: ", re);
 			throw new EJBException("Exception while talking to Sale", re);
 		}
+	}
+
+
+	private void addEbtAlertForCustomer(String saleId, PrimaryKey customerPk) {
+		String note="System is placing an EBT alert, as the EBT order:"+saleId+" is refused/returned.";
+		ErpCustomerAlertModel customerAlert = new ErpCustomerAlertModel();
+		customerAlert.setCustomerId(customerPk.getId());
+		customerAlert.setAlertType(EnumAlertType.EBT.getName());
+		customerAlert.setCreateUserId(EnumTransactionSource.SYSTEM.getCode());
+		customerAlert.setCreateDate(new Date());
+		customerAlert.setNote(note);
+		setAlert(customerPk, customerAlert, true);
+		logAlertActivity(customerPk, EnumAccountActivityType.PLACE_ALERT, note, EnumTransactionSource.SYSTEM);
 	}
 
 	public void markAsRedelivery(String saleId) throws ErpTransactionException, ErpSaleNotFoundException {

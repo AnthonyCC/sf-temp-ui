@@ -1389,4 +1389,8 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 	public void setSeenDpNewTc(boolean seenDpNewTc) {
 		this.seenDpNewTc = seenDpNewTc;
 	}
+	
+	public boolean hasEBTAlert() {
+		return this.user.hasEBTAlert();
+	}
 }

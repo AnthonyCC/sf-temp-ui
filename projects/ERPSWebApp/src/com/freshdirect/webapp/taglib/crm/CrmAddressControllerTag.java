@@ -7,6 +7,7 @@ import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.address.EnumAddressType;
 import com.freshdirect.common.address.PhoneNumber;
 import com.freshdirect.common.customer.EnumServiceType;
+import com.freshdirect.customer.EnumAlertType;
 import com.freshdirect.customer.EnumDeliverySetting;
 import com.freshdirect.customer.EnumUnattendedDeliveryFlag;
 import com.freshdirect.customer.ErpAddressModel;
@@ -174,7 +175,7 @@ public class CrmAddressControllerTag extends AbstractControllerTag {
 				boolean isEBTAccepted = null !=serviceResult ? serviceResult.isEbtAccepted():false;
 				if (validator.isAddressDeliverable()) {
 					FDSessionUser user = (FDSessionUser)CrmSession.getUser(pageContext.getSession());
-					isEBTAccepted = isEBTAccepted && (user.getOrderHistory().getUnSettledEBTOrderCount()<=0);
+					isEBTAccepted = isEBTAccepted && (user.getOrderHistory().getUnSettledEBTOrderCount()<=0)&&!user.hasEBTAlert();
 					if (user.isPickupOnly() && user.getOrderHistory().getValidOrderCount()==0) {
 						//
 						// now eligible for home/corporate delivery and still not placed an order.

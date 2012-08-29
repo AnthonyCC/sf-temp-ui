@@ -21,6 +21,7 @@ import javax.servlet.jsp.JspException;
 import org.apache.log4j.Category;
 
 import com.freshdirect.common.customer.EnumServiceType;
+import com.freshdirect.customer.EnumAlertType;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.customer.FDAuthenticationException;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
@@ -160,7 +161,7 @@ public class LoginControllerTag extends AbstractControllerTag {
 //          loginUser.setEbtAccepted(loginUser.isEbtAccepted()&&(loginUser.getOrderHistory().getUnSettledEBTOrderCount()<=0));  
           FDSessionUser user = (FDSessionUser) session.getAttribute(SessionName.USER);
           if(null !=user){
-              user.setEbtAccepted(user.isEbtAccepted()&&(user.getOrderHistory().getUnSettledEBTOrderCount()<1));
+              user.setEbtAccepted(user.isEbtAccepted()&&(user.getOrderHistory().getUnSettledEBTOrderCount()<1)&&!user.hasEBTAlert());
           }
           
           if (user!=null && EnumServiceType.CORPORATE.equals(user.getUserServiceType())) {

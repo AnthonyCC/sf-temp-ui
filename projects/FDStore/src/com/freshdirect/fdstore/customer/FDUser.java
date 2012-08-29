@@ -31,6 +31,7 @@ import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.customer.ActivityLog;
 import com.freshdirect.customer.EnumAccountActivityType;
+import com.freshdirect.customer.EnumAlertType;
 import com.freshdirect.customer.EnumChargeType;
 import com.freshdirect.customer.EnumDeliveryType;
 import com.freshdirect.customer.EnumSaleStatus;
@@ -206,6 +207,7 @@ public class FDUser extends ModelSupport implements FDUserI {
 	private PricingContext pricingContext;
 	
 	protected Boolean isSOEligible = null;
+	protected Boolean hasEBTAlert = null;
 
 	protected Boolean cliCodeEligible = null;
 	private Set<String> allAppliedPromos = new HashSet<String>();
@@ -511,6 +513,7 @@ public class FDUser extends ModelSupport implements FDUserI {
 		this.cachedPromoHistory = null;
 		this.promoVariantMap = null;
 		this.isSOEligible = null;
+		this.hasEBTAlert = null;
     }
     /*
      * This method was introduced as part of PERF-22 task.
@@ -2323,6 +2326,24 @@ public class FDUser extends ModelSupport implements FDUserI {
 		}
 		
 		return isBlocking;
+	}
+	
+	public boolean hasEBTAlert() {
+		if (hasEBTAlert == null) {
+			hasEBTAlert = Boolean.FALSE;
+
+			try {
+				if (null !=getIdentity() && FDCustomerManager.isOnAlert(getIdentity().getErpCustomerPK(), EnumAlertType.EBT.getName())) {
+					hasEBTAlert = Boolean.TRUE;;
+				}
+			} catch (FDResourceException e) {
+				LOGGER.error("Error checking hasEBTAlert in FDUser.",e);
+			}
+		}
+
+		LOGGER.debug("Customer has an EBT Alert: " + hasEBTAlert);
+
+		return hasEBTAlert.booleanValue();
 	}
 	
 }

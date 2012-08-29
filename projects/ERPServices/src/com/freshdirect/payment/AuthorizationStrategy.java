@@ -169,7 +169,7 @@ public class AuthorizationStrategy extends PaymentStrategy {
 			double amount = getAmount();
 			for ( ErpAuthorizationModel auth : auths ) {
 				if (EnumPaymentType.MAKE_GOOD.equals(pm.getPaymentType())
-					|| EnumPaymentType.ON_FD_ACCOUNT.equals(pm.getPaymentType()) ||EnumPaymentMethodType.EBT.equals(pm.getPaymentMethodType())) {
+					|| EnumPaymentType.ON_FD_ACCOUNT.equals(pm.getPaymentType()) ||(EnumPaymentMethodType.EBT.equals(pm.getPaymentMethodType()) && pm.getPaymentMethodType().equals(auth.getPaymentMethodType()))) {
 					amount = MathUtil.roundDecimal(amount - auth.getAmount());
 				} else {
 					if (EnumPaymentMethodType.ECHECK.equals(pm.getPaymentMethodType())
