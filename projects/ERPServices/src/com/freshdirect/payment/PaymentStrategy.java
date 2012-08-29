@@ -4,9 +4,11 @@ import java.io.Serializable;
 
 import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.affiliate.ErpAffiliate;
+import com.freshdirect.customer.ErpAbstractOrderModel;
 import com.freshdirect.customer.ErpChargeLineModel;
 import com.freshdirect.customer.ErpInvoiceLineModel;
 import com.freshdirect.customer.ErpOrderLineModel;
+import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.customer.ErpSaleModel;
 import com.freshdirect.framework.util.MathUtil;
 
@@ -18,6 +20,7 @@ public abstract class PaymentStrategy implements Serializable {
 		this.sale = sale;
 	}
 
+	
 	
 	protected static abstract class PaymentInfo {
 		protected final String saleId;
@@ -32,10 +35,24 @@ public abstract class PaymentStrategy implements Serializable {
 		//Payment made through Gift cards.
 		private double gcPaymentAmount;
 		
+		@Deprecated
 		public PaymentInfo(String saleId, ErpAffiliate affiliate) {
 			this.saleId = saleId;
 			this.affiliate = affiliate;
 			this.perishableBuffer = MathUtil.roundDecimal(ErpServicesProperties.getPerishableAuthBuffer());
+			this.subtotal = 0.0;
+			this.tax = 0.0;
+			this.depositValue = 0.0;
+			this.deductionAmount = 0.0;
+			this.chargeAmount = 0.0;
+			this.perishableBufferAmount = 0.0;
+			this.gcPaymentAmount = 0.0;
+		}
+		
+		public PaymentInfo(String saleId, ErpAffiliate affiliate,double perishableBuffer) {
+			this.saleId = saleId;
+			this.affiliate = affiliate;
+			this.perishableBuffer = perishableBuffer;
 			this.subtotal = 0.0;
 			this.tax = 0.0;
 			this.depositValue = 0.0;
@@ -133,5 +150,36 @@ public abstract class PaymentStrategy implements Serializable {
 		}
 
 	}
+	
+	/**
+	 * Method to get the perishable buffer value based on the payment method of the order.
+	 * @param sale
+	 * @return perishable buffer.
+	 */
+	protected static double getPerishableBuffer(ErpSaleModel sale){		
+		double perishableBuffer=ErpServicesProperties.getPerishableAuthBuffer();
+		if(null !=sale){
+			ErpAbstractOrderModel order = sale.getCurrentOrder();
+			ErpPaymentMethodI paymentMethod =order.getPaymentMethod();
+			perishableBuffer = getPerishableBufferForEBT(perishableBuffer,paymentMethod);
+		}
+		return perishableBuffer;
+	}	
 
+	protected static double getPerishableBuffer(ErpAbstractOrderModel order){		
+		double perishableBuffer=ErpServicesProperties.getPerishableAuthBuffer();
+		if(null !=order){
+			ErpPaymentMethodI paymentMethod =order.getPaymentMethod();
+			perishableBuffer = getPerishableBufferForEBT(perishableBuffer,paymentMethod);
+		}
+		return perishableBuffer;
+	}
+	
+	private static double getPerishableBufferForEBT(double perishableBuffer,
+			ErpPaymentMethodI paymentMethod) {
+		if(null !=paymentMethod && EnumPaymentMethodType.EBT.equals(paymentMethod.getPaymentMethodType())){
+			perishableBuffer = 0.0;
+		}
+		return perishableBuffer;
+	}
 }

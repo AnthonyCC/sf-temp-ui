@@ -1200,7 +1200,7 @@ public class SaleCronSessionBean extends SessionBeanSupport {
 		}
 	}
 	
-	public void captureAndSettleEBTSales(long timeout){
+	public void captureEBTSales(long timeout){
 
 
 		Connection con = null;
@@ -1242,29 +1242,12 @@ public class SaleCronSessionBean extends SessionBeanSupport {
 			captureEBTSale(saleIds.get(i));
 		}
 	
-		if(!SapProperties.isBlackhole()){
-			settleEBTSalesInSAP();
-		}
+		/*if(!SapProperties.isBlackhole()){
+			settleEBTSales();
+		}*/
 		
-	}
+	}	
 	
-	
-	public void settleEBTSales(List<String> saleIds ){
-		if(null != saleIds){
-			try {
-				for (int i = 0, size = saleIds.size(); i < size; i++) {		
-					captureEBTSale(saleIds.get(i));
-				}
-
-				//Settle the orders in SAP.
-				settleEBTSalesInSAP(saleIds);
-			} catch (Exception e) {
-				LOGGER.warn("Exception occured during EBT order settlement ", e);
-			}
-		
-		}
-		
-	}
 	private void captureEBTSale(String saleId) {
 		UserTransaction utx =null;
 		try {
@@ -1287,7 +1270,7 @@ public class SaleCronSessionBean extends SessionBeanSupport {
 		}
 	}
 	
-	private void settleEBTSalesInSAP() {
+	public void settleEBTSales() {
 		
 		if(SapProperties.isBlackhole()){
 			LOGGER.warn("SAP Blackhole enabled.");
@@ -1306,7 +1289,7 @@ public class SaleCronSessionBean extends SessionBeanSupport {
 			if(null == erpSaleHome){
 				this.lookupErpSaleHome();
 			}
-			settleEBTSalesInSAP(saleIds);
+			settleEBTSales(saleIds);
 		} catch (Exception e) {
 			LOGGER.warn(e);
 			try {
@@ -1327,7 +1310,7 @@ public class SaleCronSessionBean extends SessionBeanSupport {
 			}
 		}
 	}
-	private void settleEBTSalesInSAP(List<String> saleIds) throws FinderException, RemoteException,
+	public void settleEBTSales(List<String> saleIds) throws FinderException, RemoteException,
 			ErpTransactionException, SapException {
 		ErpSaleEB eb;
 		UserTransaction utx=null;

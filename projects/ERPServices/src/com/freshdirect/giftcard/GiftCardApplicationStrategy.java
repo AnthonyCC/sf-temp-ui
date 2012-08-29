@@ -32,14 +32,15 @@ public class GiftCardApplicationStrategy extends PaymentStrategy {
 		super(null);
 		this.order = order;
 		this.inv = invoice;
+		double perishableBuffer=getPerishableBuffer(order);
 		this.fdAppInfo = new ApplicationInfo(
 			null, 
 			null,
-			ErpAffiliate.getPrimaryAffiliate());
+			ErpAffiliate.getPrimaryAffiliate(),perishableBuffer);
 		this.usqAppInfo = new ApplicationInfo(
 				null,
 				null,
-				ErpAffiliate.getEnum(ErpAffiliate.CODE_USQ));
+				ErpAffiliate.getEnum(ErpAffiliate.CODE_USQ),perishableBuffer);
 	}
 
 	public void generateAppliedGiftCardsInfo() {
@@ -153,8 +154,8 @@ public class GiftCardApplicationStrategy extends PaymentStrategy {
 		private final String customerId;
 		private double gcPaymentAmount;
 		
-		public ApplicationInfo(String saleId, String customerId, ErpAffiliate affiliate) {
-			super(saleId, affiliate);
+		public ApplicationInfo(String saleId, String customerId, ErpAffiliate affiliate,double perishableBuffer) {
+			super(saleId, affiliate,perishableBuffer);
 			this.customerId = customerId;
 		}
 

@@ -195,12 +195,15 @@ public class SapChangeSalesOrder extends SapCommandSupport implements SapOrderCo
 		String recipeFlag = StringUtils.rightPad(order.isRecipeOrder() ? "1" : " ", 5);
 		
 		String goGreen = StringUtils.rightPad(order.getCustomer().isGoGreen() ? "GREEN" : " ", 5);
+		String gcAmount = StringUtils.rightPad(String.valueOf(order.getGcAmount()), 10);
 	
 		// 10 spaces + 5 (flag) + 5 (GREEN) + 65 spaces + 20 chars
 		bapi.addExtension("BAPE_VBAK", salesDocumentNumber
 			+ recipeFlag
 			+ goGreen
-			+ StringUtils.repeat(" ", 65)
+			+ StringUtils.repeat(" ", 15)
+			+ gcAmount
+			+ StringUtils.repeat(" ", 40)
 			+ billingRef
 			+ StringUtils.repeat(" ", 20) // offset 106 - 125
 			+ StringUtils.left(NVL.apply(order.getDeliveryRegionId(), "").trim(), 20)  // offset 126  --> 145
@@ -209,7 +212,9 @@ public class SapChangeSalesOrder extends SapCommandSupport implements SapOrderCo
 		// order no (10) + X + 9 spaces + X + 1 space + X
 		bapi.addExtension("BAPE_VBAKX", salesDocumentNumber
 				+ "X" // recipe chg flag
-				+ StringUtils.repeat(" ", 9)
+				+ StringUtils.repeat(" ", 4)
+				+ "X" //gcAmount
+				+ StringUtils.repeat(" ", 4)
 				+ "X"
 				+ " "
 				+ "X");

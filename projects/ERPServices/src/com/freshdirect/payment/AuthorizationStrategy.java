@@ -31,18 +31,19 @@ public class AuthorizationStrategy extends PaymentStrategy {
 
 	public AuthorizationStrategy(ErpSaleModel sale) {
 		super(sale);
+		double perishableBuffer = getPerishableBuffer(sale);
 		this.fdAuthInfo = new AuthInfo(
 			sale.getPK().getId(), 
 			sale.getCustomerPk().getId(),
-			ErpAffiliate.getPrimaryAffiliate());
+			ErpAffiliate.getPrimaryAffiliate(),perishableBuffer);
 		this.bcAuthInfo = new AuthInfo(
 			sale.getPK().getId(),
 			sale.getCustomerPk().getId(),
-			ErpAffiliate.getEnum(ErpAffiliate.CODE_BC));
+			ErpAffiliate.getEnum(ErpAffiliate.CODE_BC),perishableBuffer);
 		this.usqAuthInfo = new AuthInfo(
 				sale.getPK().getId(),
 				sale.getCustomerPk().getId(),
-				ErpAffiliate.getEnum(ErpAffiliate.CODE_USQ));
+				ErpAffiliate.getEnum(ErpAffiliate.CODE_USQ),perishableBuffer);
 	}
 
 	public List<AuthorizationInfo> getOutstandingAuthorizations() {
@@ -154,8 +155,8 @@ public class AuthorizationStrategy extends PaymentStrategy {
 		private final String				customerId;
 		private List<ErpAuthorizationModel>	auths;
 
-		public AuthInfo(String saleId, String customerId, ErpAffiliate affiliate) {
-			super(saleId, affiliate);
+		public AuthInfo(String saleId, String customerId, ErpAffiliate affiliate, double perishableBuffer) {
+			super(saleId, affiliate,perishableBuffer);
 			this.customerId = customerId;
 		}
 

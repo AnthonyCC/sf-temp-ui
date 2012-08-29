@@ -30,7 +30,9 @@ public interface SaleCronSB extends EJBObject{
 	
 	public void postAuthEBTSales(long timeout) throws RemoteException;
 	
-	public void captureAndSettleEBTSales(long timeout) throws RemoteException;
+	public void captureEBTSales(long timeout) throws RemoteException;
+	
+	public void settleEBTSales() throws RemoteException;
 	
 	public void settleEBTSales(List<String> saleIds)throws RemoteException;
 }

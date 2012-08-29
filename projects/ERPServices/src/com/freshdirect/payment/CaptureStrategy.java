@@ -28,12 +28,13 @@ public class CaptureStrategy extends PaymentStrategy {
 	
 	public CaptureStrategy (ErpSaleModel sale) {
 		super(sale);
+		double perishableBuffer=getPerishableBuffer(sale);
 		ErpAffiliate fd = ErpAffiliate.getPrimaryAffiliate();
-		this.fdInfo = new CapInfo(sale.getPK().getId(), fd, sale.getCaptures(fd));
+		this.fdInfo = new CapInfo(sale.getPK().getId(), fd, sale.getCaptures(fd),perishableBuffer);
 		ErpAffiliate bc = ErpAffiliate.getEnum(ErpAffiliate.CODE_BC);
-		this.bcInfo = new CapInfo(sale.getPK().getId(), bc, sale.getCaptures(bc));
+		this.bcInfo = new CapInfo(sale.getPK().getId(), bc, sale.getCaptures(bc),perishableBuffer);
 		ErpAffiliate usq = ErpAffiliate.getEnum(ErpAffiliate.CODE_USQ);
-		this.usqInfo = new CapInfo(sale.getPK().getId(), usq, sale.getCaptures(usq));
+		this.usqInfo = new CapInfo(sale.getPK().getId(), usq, sale.getCaptures(usq),perishableBuffer);
 
 	}
 	
@@ -142,8 +143,8 @@ public class CaptureStrategy extends PaymentStrategy {
 		
 		private final List captures;
 		
-		public CapInfo(String saleId, ErpAffiliate affiliate, List captures) {
-			super(saleId, affiliate);
+		public CapInfo(String saleId, ErpAffiliate affiliate, List captures, double perishableBuffer) {
+			super(saleId, affiliate, perishableBuffer);
 			this.captures = captures;
 		}
 

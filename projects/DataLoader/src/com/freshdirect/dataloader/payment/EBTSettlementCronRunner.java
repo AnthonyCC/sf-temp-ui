@@ -45,7 +45,8 @@ public class EBTSettlementCronRunner {
 
 			SaleCronSB sb = home.create();
 			sb.postAuthEBTSales(captureTimeout);
-			sb.captureAndSettleEBTSales(captureTimeout);
+			sb.captureEBTSales(captureTimeout);
+			sb.settleEBTSales();
 			LOGGER.info("EBTSettlementCron finished");
 		} catch (Exception e) {
 			LOGGER.error(e);

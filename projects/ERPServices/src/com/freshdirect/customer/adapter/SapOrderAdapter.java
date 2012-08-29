@@ -589,5 +589,9 @@ public class SapOrderAdapter implements SapOrderI {
 	public ErpChargeLineModel getCharge(EnumChargeType chargeType) {
 		return erpOrder.getCharge(chargeType);
 	}
+	
+	public double getGcAmount(){
+		return erpOrder.getAppliedGiftCardAmount();
+	}
 
 }
