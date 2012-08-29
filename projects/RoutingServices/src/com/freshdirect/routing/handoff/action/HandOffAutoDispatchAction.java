@@ -409,6 +409,14 @@ public class HandOffAutoDispatchAction extends AbstractHandOffAction {
 	private static IHandOffBatchRoute matchRoute(IHandOffBatchPlan p, List<IHandOffBatchRoute> routeList) throws ParseException {
 		IHandOffBatchRoute result = null;
 		if(routeList != null && p != null) {
+			Collections.sort(routeList, new Comparator<IHandOffBatchRoute>(){
+			
+				public int compare(IHandOffBatchRoute obj1, IHandOffBatchRoute obj2) {
+					int routeId1 = getRouteIndex1(obj1.getRouteId());
+					int routeId2 = getRouteIndex1(obj2.getRouteId());			
+					return routeId1 - routeId2;
+				}
+			});
 			Iterator<IHandOffBatchRoute> _routeItr = routeList.iterator();
 			while(_routeItr.hasNext()) {
 				IHandOffBatchRoute route = _routeItr.next();
@@ -947,5 +955,4 @@ public class HandOffAutoDispatchAction extends AbstractHandOffAction {
 			}
 		}
 	}
-	
 }

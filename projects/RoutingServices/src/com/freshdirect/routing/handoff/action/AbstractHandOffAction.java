@@ -76,6 +76,18 @@ public abstract class AbstractHandOffAction {
 		}
 		return 0;
 	}
+	
+	public static int getRouteIndex1(String search) {
+		try {
+			String dataLst = StringUtils.substring(search, 4);
+			if (dataLst != null) {
+				return Integer.parseInt(dataLst);
+			}
+		} catch (Exception e) {
+			// do nothing
+		}
+		return 0;
+	}
 
 	public static int getTrailerIndex(String search) {
 		try {
