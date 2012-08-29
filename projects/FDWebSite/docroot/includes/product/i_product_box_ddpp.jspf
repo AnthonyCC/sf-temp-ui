@@ -57,7 +57,7 @@
 				<div class="ddpp_feat_ribbon"><img src="/media/images/ddpp_ribbons/<%= pmPA.getFeaturedHeader() %>.png" alt="" /></div>
 			<% } %>
 		<a name="<%=prodATCId.replaceFirst("#","")%>"></a>
-		<div class="topText"><display:ProductPrice impression="<%= pi %>" showDescription="false" showAboutPrice="false" showRegularPrice="false" grpDisplayType="FEAT" dataDriven="true" /></div>
+		<div class="topText"><div class="grid-item-saving"><display:ProductSaving product="<%= pm %>"/></div></div>
 		
 		<div class="prodImageCont">
 			<display:ProductLink product="<%= pm %>" trackingCode="<%= trk %>">
