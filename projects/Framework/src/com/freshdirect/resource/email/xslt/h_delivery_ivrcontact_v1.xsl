@@ -38,7 +38,7 @@
 							<p><b>Hello <xsl:value-of select="customer/firstName"/></b>,</p>
 							<p>This is FreshDirect's automated notification system.</p>
 							<p>This e-mail was sent to you because our delivery team would like to speak with you about your order.</p>
-							<p>Please call us at <xsl:choose><xsl:when test="customer/chefsTable = 'true'">1-866-511-1240</xsl:when><xsl:otherwise>1-212-796-8002</xsl:otherwise></xsl:choose> at your earliest convenience</p>
+							<p>Please call us at <xsl:value-of select="customer/customerServiceContact"/> at your earliest convenience</p>
 							<p>Press option 1.</p>
 							<p>Your order number is <b>(#<xsl:value-of select="orderNumber"/>)</b></p> 
 							

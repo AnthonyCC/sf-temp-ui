@@ -35,7 +35,7 @@
 				<tr>
 					<td valign="top">
 						<p>We are unable to process your order <b>(#<xsl:value-of select="orderNumber"/>)</b> using the Gift Card you have chosen.
-The card may be on hold, or there may be a network error. So that we can process your order as soon as possible, please call customer service at <xsl:choose><xsl:when test="customer/chefsTable = 'true'">1-866-511-1240</xsl:when><xsl:otherwise>1-212-796-8002</xsl:otherwise></xsl:choose>. </p>
+The card may be on hold, or there may be a network error. So that we can process your order as soon as possible, please call customer service at <xsl:value-of select="customer/customerServiceContact"/>. </p>
 <br/>
 
 <p>To be sure that your order is delivered, please make any changes before <xsl:call-template name="format-delivery-start"><xsl:with-param name="dateTime" select="cutoffTime"/></xsl:call-template> on <b><xsl:call-template name="format-delivery-date"><xsl:with-param name="dateTime" select="cutoffTime"/></xsl:call-template></b>.

@@ -13,7 +13,7 @@ We received your cancellation request for your order (#<xsl:value-of select="ord
 Reorder with Quickshop:
 http://www.freshdirect.com/quickshop/index.jsp
 
-We're always trying to improve and your feedback is important to us. If you have a moment, please e-mail us at <xsl:choose><xsl:when test="customer/chefsTable = 'true'">chefstable@freshdirect.com</xsl:when><xsl:otherwise>service@freshdirect.com</xsl:otherwise></xsl:choose> and tell us your reasons for canceling. (You can also call us at <xsl:choose><xsl:when test="customer/chefsTable = 'true'">1-866-511-1240</xsl:when><xsl:otherwise>1-212-796-8002</xsl:otherwise></xsl:choose>.)
+We're always trying to improve and your feedback is important to us. If you have a moment, please e-mail us at <xsl:choose><xsl:when test="customer/chefsTable = 'true'">chefstable@freshdirect.com</xsl:when><xsl:otherwise>service@freshdirect.com</xsl:otherwise></xsl:choose> and tell us your reasons for canceling. (You can also call us at <xsl:value-of select="customer/customerServiceContact"/>.)
 
 We hope you come back soon.
 

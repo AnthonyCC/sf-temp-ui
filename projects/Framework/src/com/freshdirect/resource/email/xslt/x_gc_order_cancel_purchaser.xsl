@@ -11,7 +11,7 @@
 
 Dear <xsl:value-of select="customer/firstName"/>,
 
-There was an error processing your recent Gift Card purchase (Order #<xsl:value-of select="order/erpSalesId"/>). This order has been placed on hold. For more information regarding this action, please email FreshDirect Customer Service at <a href="mailto:service@freshdirect.com">service@freshdirect.com</a> or call 1-866-511-1240.
+There was an error processing your recent Gift Card purchase (Order #<xsl:value-of select="order/erpSalesId"/>). This order has been placed on hold. For more information regarding this action, please email FreshDirect Customer Service at <a href="mailto:service@freshdirect.com">service@freshdirect.com</a> or call <xsl:value-of select="customer/customerServiceContact"/>.
 
 For details of your Gift Card purchases, please sign in and visit Your Account.
 

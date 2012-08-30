@@ -41,7 +41,7 @@
 						and <xsl:call-template name="format-delivery-end"><xsl:with-param name="dateTime" select="deliveryEndTime"/></xsl:call-template></b>
 						on <b><xsl:call-template name="format-delivery-date"><xsl:with-param name="dateTime" select="deliveryStartTime"/></xsl:call-template></b>
 						using the payment method you have chosen. Credit card authorization can fail for a number of reasons -- often the cause is an incorrect expiration date.
-						So that we can process your order as soon as possible, please call customer service at <xsl:choose><xsl:when test="customer/chefsTable = 'true'">1-866-511-1240</xsl:when><xsl:otherwise>1-212-796-8002</xsl:otherwise></xsl:choose>.</p>
+						So that we can process your order as soon as possible, please call customer service at <xsl:value-of select="customer/customerServiceContact"/>.</p>
 						<p>To be sure that your order is delivered, please make any changes before <xsl:call-template name="format-delivery-start"><xsl:with-param name="dateTime" select="cutoffTime"/></xsl:call-template> on <b><xsl:call-template name="format-delivery-date"><xsl:with-param name="dateTime" select="cutoffTime"/></xsl:call-template></b>.
 						If you need further assistance, we're here:</p>
 					</td>

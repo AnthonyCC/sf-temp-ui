@@ -35,7 +35,7 @@
 							<p>We are unable to renew your FreshDirect Unlimited DeliveryPass membership because we could not authorize 
 							the charge against your most recently-used credit card. Unfortunately, direct payment from checking cannot be used for membership renewals.</p>
 							
-							<p>At your earliest convenience, please call our Customer Service team at <xsl:choose><xsl:when test="customer/chefsTable = 'true'">1-866-511-1240</xsl:when><xsl:otherwise>1-212-796-8002</xsl:otherwise></xsl:choose>. A representative will help you update your account and renew your Unlimited DeliveryPass membership.</p>
+							<p>At your earliest convenience, please call our Customer Service team at <xsl:value-of select="customer/customerServiceContact"/>. A representative will help you update your account and renew your Unlimited DeliveryPass membership.</p>
 
 							<p>We're here to assist you <xsl:for-each select="contactHours/contactHours"><xsl:value-of select="daysDisplay"/><xsl:value-of select="hoursDisplay"/>;</xsl:for-each></p>
 							

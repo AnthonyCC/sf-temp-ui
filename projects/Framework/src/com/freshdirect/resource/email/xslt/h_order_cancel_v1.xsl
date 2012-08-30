@@ -43,7 +43,7 @@
 							on <b><xsl:call-template name="format-delivery-date"><xsl:with-param name="dateTime" select="deliveryStartTime" /></xsl:call-template></b>. 
 							The order will not be delivered and you won't be charged. All of the items from this order will be stored as <a href="http://www.freshdirect.com/quickshop/index.jsp">"Your Last Order"</a> in Quickshop.</p>
 
-							<p>We're always trying to improve and your feedback is important to us. If you have a moment, please <a href="http://www.freshdirect.com/help/contact_fd.jsp">tell us</a> your reasons for canceling. (You can also call us at <xsl:choose><xsl:when test="customer/chefsTable = 'true'">1-866-511-1240</xsl:when><xsl:otherwise>1-212-796-8002</xsl:otherwise></xsl:choose>.)</p>
+							<p>We're always trying to improve and your feedback is important to us. If you have a moment, please <a href="http://www.freshdirect.com/help/contact_fd.jsp">tell us</a> your reasons for canceling. (You can also call us at <xsl:value-of select="customer/customerServiceContact"/>.)</p>
 
 							<p>We hope you <a href="http://www.freshdirect.com/">come back</a> soon for more of the freshest, highest-quality food at the best prices in New York.</p>
 

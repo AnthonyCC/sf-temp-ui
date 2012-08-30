@@ -927,6 +927,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 				fdInfo.setDepotCode(depotCode);
 			}
 			fdInfo.setChefsTable(fduser.isChefsTable());
+			fdInfo.setCustomerServiceContact(fduser.getCustomerServiceContact());
 			
 			/*APPDEV-2114*/
 			fdInfo.setGoGreen(erpCustomerInfo.isGoGreen());

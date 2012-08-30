@@ -12,7 +12,7 @@ This is FreshDirect's automated notification system.
 
 This e-mail was sent to you because our delivery team would like to speak with you about your order.
 
-Please call us at <xsl:choose><xsl:when test="customer/chefsTable = 'true'">1-866-511-1240</xsl:when><xsl:otherwise>1-212-796-8002</xsl:otherwise></xsl:choose> at your earliest convenience
+Please call us at <xsl:value-of select="customer/customerServiceContact"/> at your earliest convenience
 
 Press option 1.
 
