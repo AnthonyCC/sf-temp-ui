@@ -91,6 +91,8 @@ final int W_HELP_INDEX_TOTAL = 970;
 	if(request.getParameter("message")!=null){
 		body=request.getParameter("message");
 	}
+
+	String csNumberMedia = user.getCustomerServiceContactMediaPath();
 %>
 <tmpl:insert template='/common/template/no_nav.jsp'>
 	<tmpl:put name='title' direct='true'>FreshDirect - Help</tmpl:put>
@@ -419,11 +421,7 @@ final int W_HELP_INDEX_TOTAL = 970;
 							<div style="margin-bottom: 16px;">
 								<%--MEDIA INCLUDE--%><fd:IncludeMedia name="/media/editorial/site_pages/help_home_hours.html" /><%--END MEDIA INCLUDE --%>
 							</div>
-							<% if (user.isChefsTable()) { %>
-								<div>You may also call toll-free at <fd:IncludeMedia name="/media/editorial/site_pages/chef_contact_serivce_number.html" /></div>
-							<% } else { %>
-								<div>You may also call us at <%--MEDIA INCLUDE--%><fd:IncludeMedia name="/media/editorial/site_pages/contact_serivce_number.html" /></div>
-							<% } %>
+							<div>You may also call <%= (user.isChefsTable()) ? "toll-free" : "us" %> at <fd:IncludeMedia name="<%= csNumberMedia %>" /></div>
 						</div>
 					</div>
 

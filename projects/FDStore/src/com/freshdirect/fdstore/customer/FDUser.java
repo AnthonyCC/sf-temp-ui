@@ -283,6 +283,10 @@ public class FDUser extends ModelSupport implements FDUserI {
         this.cookie = cookie;
         this.invalidateCache();
     }
+    
+    public String getState() {
+        return this.address == null ? null : this.address.getState();
+    }
 
     public String getZipCode() {
         return this.address == null ? null : this.address.getZipCode();
@@ -907,7 +911,28 @@ public class FDUser extends ModelSupport implements FDUserI {
 
 	public String getCustomerServiceContact() {
 		try {
-			return this.isChefsTable() ? "1-866-511-1240" : "1-212-796-8002";
+			if (this.isChefsTable()) {
+				return "1-866-511-1240";
+			} else if (this.getState() != null && "PA".equalsIgnoreCase(this.getState())) {
+				return "1-215-825-5726";
+			} else {
+				return "1-212-796-8002";
+			}
+		} catch (FDResourceException e) {
+			throw new FDRuntimeException(e);
+		}
+	}
+	
+	public String getCustomerServiceContactMediaPath() {
+		try {
+
+			if (this.isChefsTable()) {
+				return "/media/editorial/site_pages/chef_contact_serivce_number.html";
+			} else if (this.getState() != null && "PA".equalsIgnoreCase(this.getState())) {
+				return "/media/editorial/site_pages/contact_serivce_number_PA.html";
+			} else {
+				return "/media/editorial/site_pages/contact_serivce_number.html";
+			}
 		} catch (FDResourceException e) {
 			throw new FDRuntimeException(e);
 		}

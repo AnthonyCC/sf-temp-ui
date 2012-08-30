@@ -200,6 +200,8 @@ public interface FDUserI extends java.io.Serializable {
 	public void setSelectedServiceType(EnumServiceType serviceType);
 
 	public String getCustomerServiceContact();
+	
+	public String getCustomerServiceContactMediaPath();
 
 	public String getCustomerServiceEmail() throws FDResourceException;
 

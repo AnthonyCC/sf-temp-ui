@@ -674,6 +674,10 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 		return this.user.getCustomerServiceContact();
 	}
 
+	public String getCustomerServiceContactMediaPath() {
+		return this.user.getCustomerServiceContactMediaPath();
+	}
+
     public String getCustomerServiceEmail() throws FDResourceException {
 		return this.user.getCustomerServiceEmail();
 	}
