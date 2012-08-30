@@ -47,11 +47,11 @@ public class DashboardServlet  extends HttpServlet {
 
 		UrlInfo urlInfo = UrlUtil.getUrlInfo(url);
 		LOGGER.debug("UrlInfo => "+ urlInfo);		    
-	    response.getWriter().println(getDashboard(urlInfo.getApi()));
+	    response.getWriter().println(getDashboard(urlInfo.getApi(), request.getQueryString()));
 	}
 	
 		
-	private String getDashboard(String dashboardId) {
+	private String getDashboard(String dashboardId, String queryString) {
 		
 		StringBuffer result = new StringBuffer();
 		
@@ -74,10 +74,20 @@ public class DashboardServlet  extends HttpServlet {
 				result.append("<param name=\"movie\" value=\"").append("/")
 									.append(AthenaProperties.getDefaultXcelsiusRoot()).append("/")
 											.append(dashboardId).append(".swf\" />");
+				if(queryString!=null)
+					result.append("<param name=FlashVars value=\"")
+					.append(queryString).
+					append("\" />");
+			  
 				result.append("<!--[if !IE]>-->");
 				result.append("<object type=\"application/x-shockwave-flash\" data=\"").append("/")
 									.append(AthenaProperties.getDefaultXcelsiusRoot()).append("/")
 											.append(dashboardId).append(".swf\" width=\"100%\" height=\"100%\">");
+				if(queryString!=null)
+					result.append("<param name=FlashVars value=\"")
+					.append(queryString).
+					append("\" />");
+				
 				result.append("<!--<![endif]-->");
 				
 				result.append("<!--[if !IE]>-->");
