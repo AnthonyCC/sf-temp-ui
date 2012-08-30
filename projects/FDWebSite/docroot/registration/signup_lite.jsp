@@ -204,7 +204,7 @@
 			<tr><td>
 			<a onclick="document.litesignup.submit();" href="#" class="butText" style="font-weight:bold;font-size:14px;"><img alt="" src="/media_stat/images/buttons/signup.gif"></a>
 			</td></tr>
-			<tr><td align="<%=posn%>" style="font:Verdana;font-weight:bold;font-size:12 pt;padding:10px;">Having problems signing up? Call 1-212-796-8002
+			<tr><td align="right" style="font:Verdana;font-weight:bold;font-size:12 pt;padding:10px;">Having problems signing up? Call <%=(user == null)?"1-212-796-8002":user.getCustomerServiceContact()%>
 			</td></tr>
 			</table>
 		</form>
