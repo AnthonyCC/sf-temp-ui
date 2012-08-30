@@ -1,5 +1,6 @@
 package com.freshdirect.webapp.checkout;
 
+import java.text.MessageFormat;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
@@ -36,6 +37,7 @@ import com.freshdirect.webapp.taglib.fdstore.PaymentMethodName;
 import com.freshdirect.webapp.taglib.fdstore.PaymentMethodUtil;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
 import com.freshdirect.webapp.taglib.fdstore.SystemMessageList;
+import com.freshdirect.webapp.taglib.fdstore.UserUtil;
 
 public class PaymentMethodManipulator extends CheckoutManipulator {
 	private static Category		LOGGER	= LoggerFactory.getInstance( PaymentMethodManipulator.class );
@@ -163,7 +165,8 @@ public class PaymentMethodManipulator extends CheckoutManipulator {
 					result.addError(new ActionError("ebtPaymentNotAllowed",SystemMessageList.MSG_EBT_NOT_ALLOWED_UNSETTLED_ORDERS));
 				}
 				if(getUser().hasEBTAlert()){
-					result.addError(new ActionError("ebtPaymentNotAllowed",SystemMessageList.MSG_EBT_NOT_ALLOWED_UNSETTLED_ORDERS));
+					result.addError(new ActionError("ebtPaymentNotAllowed",MessageFormat.format(SystemMessageList.MSG_EBT_NOT_ALLOWED_ON_ALERT, 
+		            		new Object[] { UserUtil.getCustomerServiceContact(request)})));
 				}
 //			}
 		}
