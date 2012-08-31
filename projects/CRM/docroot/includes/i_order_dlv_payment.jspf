@@ -221,7 +221,9 @@ function loadSignature(order)
 					<td width="35%">Payment Method</td>
 					<td width="65%"><%= paymentMethod.getPaymentMethodType() %></td>
 				</tr> 
-        	    <% if(!EnumPaymentMethodType.GIFTCARD.equals(paymentMethod.getPaymentMethodType())) { %> 
+        	   <% if(!EnumPaymentMethodType.GIFTCARD.equals(paymentMethod.getPaymentMethodType())) {
+        	    
+        	    	%> 
         	    <% if(order.getTotalAppliedGCAmount()> 0){ %>     
         	    <tr>
 					<td width="35%"> Amount to Be Charged to Your Account:</td>
@@ -229,7 +231,12 @@ function loadSignature(order)
 	            <% if(order instanceof FDCartModel) { %>
 	            <%= JspMethods.formatPrice(order.getCCPaymentAmount()+ ccBufferAmount) %>*<BR>
 	            <% } else if(order instanceof FDOrderI && ((FDOrderI)order).hasInvoice()){ %>
+	            <% boolean isEBTPayment = (null !=((FDOrderI)order ).getPaymentMethod() &&EnumPaymentMethodType.EBT.equals(((FDOrderI)order ).getPaymentMethod().getPaymentMethodType()));
+			if(isEBTPayment){ %>
+	             <%= JspMethods.formatPrice(order.getEbtPurchaseAmount()-order.getTotalAppliedGCAmount()) %>
+	             <% } else { %>
 	             <%= JspMethods.formatPrice(order.getCCPaymentAmount()) %>
+	             <% } %>
 	            <% } else { %>
 	            <%= JspMethods.formatPrice(order.getCCPaymentAmount()+ order.getBufferAmt()) %>*<BR>     
 	            <% } %></td></tr>

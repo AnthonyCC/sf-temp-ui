@@ -12,6 +12,7 @@ final int W_YA_OD_DELIVERY_PAYMENT_DELIMITER = 150;
     if (request.getRequestURI().toLowerCase().indexOf("step_4_receipt")>-1 || request.getRequestURI().toLowerCase().indexOf("order_detail")>-1 ){
         showModify = false;
     }
+    boolean isEBTPayment1 = (null !=((FDOrderI)cart).getPaymentMethod() &&EnumPaymentMethodType.EBT.equals(((FDOrderI)cart).getPaymentMethod().getPaymentMethodType()));
     
 %>
 <TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="<%= W_YA_OD_DELIVERY_PAYMENT_TOTAL %>">
@@ -114,11 +115,16 @@ final int W_YA_OD_DELIVERY_PAYMENT_DELIMITER = 150;
 	            <font class="space4pix"><br></font>
 	            <FONT CLASS="text12">
 	            <%if(cart.hasInvoice()){%>
-	             <b>Amount Charged to Your Account:</b><BR>
-	            <font class="space4pix"><br></font>	            
-	            <%= currencyFormatter.format(cart.getInvoicedTotal()- cart.getTotalAppliedGCAmount()) %>*<BR>
+	            <% if(isEBTPayment1){ %>
+		            <b>Amount Charged to Your Account:</b><BR>
+		            <font class="space4pix"><br></font>	            
+		            <%= currencyFormatter.format(cart.getEbtPurchaseAmount()- cart.getTotalAppliedGCAmount()) %>*<BR>
+	            <% } else { %>
+		             <b>Amount Charged to Your Account:</b><BR>
+		            <font class="space4pix"><br></font>	            
+		            <%= currencyFormatter.format(cart.getInvoicedTotal()- cart.getTotalAppliedGCAmount()) %>*<BR>
 	           	 
-	            <% }else { %>
+	            <% } }else { %>
 	            <b>Amount to Be Charged to Your Account:</b><BR>
 	            <font class="space4pix"><br></font>	            
 	            <%= currencyFormatter.format(cart.getCCPaymentAmount()+ cart.getBufferAmt()) %>*<BR>
