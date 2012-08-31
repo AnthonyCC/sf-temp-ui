@@ -540,6 +540,7 @@ public class FDStoreProperties {
 	private final static String PROP_LIGHT_SIGNUP_ENABLED = "fdstore.signuplight.enabled";
 
 	//APPDEV-2394 Coremetrics Implementation 
+	private final static String PROP_COREMETRICS_ENABLED = "fdstore.coremetrics.enabled";
 	private final static String PROP_COREMETRICS_CLIENT_ID = "fdstore.coremetrics.clientid";
 	private final static String PROP_COREMETRICS_DATA_COLLECTION_METHOD = "fdstore.coremetrics.datacollectionmethod";
 	private final static String PROP_COREMETRICS_DATA_COLLECTION_DOMAIN = "fdstore.coremetrics.datacollectiondomain";
@@ -1092,6 +1093,7 @@ public class FDStoreProperties {
 		defaults.put(PROP_LIGHT_SIGNUP_ENABLED, "true");
 		
 		//defaults for test environment
+		defaults.put(PROP_COREMETRICS_ENABLED, "true");
 		defaults.put(PROP_COREMETRICS_CLIENT_ID, "60391309");
 		defaults.put(PROP_COREMETRICS_DATA_COLLECTION_METHOD, "false");
 		defaults.put(PROP_COREMETRICS_DATA_COLLECTION_DOMAIN, "testdata.coremetrics.com");
@@ -2817,6 +2819,10 @@ public class FDStoreProperties {
         return (Boolean.valueOf(get(PROP_LIGHT_SIGNUP_ENABLED))).booleanValue();
     }
  
+	public static boolean isCoremetricsEnabled() {
+        return (Boolean.valueOf(get(PROP_COREMETRICS_ENABLED))).booleanValue();
+    }
+
 	public static String getCoremetricsClientId() {
 	   	return get(PROP_COREMETRICS_CLIENT_ID);
 	}

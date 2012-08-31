@@ -16,6 +16,7 @@ import org.apache.log4j.Logger;
 
 import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.mail.ErpMailSender;
 
@@ -63,15 +64,20 @@ public class CoremetricsCdfServiceCmd {
 	
 	
 	public static void main( String[] args ) {	
-		try{
-			CdfProcessResult result = processCdf(); 
-			if (!result.isSuccess()) {
-				throw new Exception("ProcessCdf failed: " + result.getError());
+		if (FDStoreProperties.isCoremetricsEnabled()){
+			try{
+				CdfProcessResult result = processCdf(); 
+				if (!result.isSuccess()) {
+					throw new Exception("ProcessCdf failed: " + result.getError());
+				}
+				
+			} catch (Exception e) {
+				LOGGER.error("CoremetricsCdfService failed with Exception...",e);
+				sendExceptionMail(Calendar.getInstance().getTime(), e);
 			}
-			
-		} catch (Exception e) {
-			LOGGER.error("CoremetricsCdfService failed with Exception...",e);
-			sendExceptionMail(Calendar.getInstance().getTime(), e);
+
+		} else {
+			LOGGER.info("Coremetrics is disabled");
 		}
 	}
 

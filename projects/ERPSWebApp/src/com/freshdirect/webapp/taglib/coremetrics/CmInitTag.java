@@ -14,8 +14,7 @@ public class CmInitTag extends AbstractCmTag {
 	private static final String INCLUDE_CM_JS = "<script type=\"text/javascript\" src=\"//libs.coremetrics.com/eluminate.js\"></script>";
 	private static final String SET_CLIENT_ID_FS = "cmSetClientID(%s,%s,%s,%s);";
 	
-	@Override
-	public void doTag() throws JspException, IOException {
+	public void doCmTag() throws JspException, IOException {
 		JspWriter out = getJspContext().getOut();
 		out.println(INCLUDE_CM_JS);
 		out.println(wrapIntoScriptTag(getSetClientIdScript()));
@@ -33,7 +32,7 @@ public class CmInitTag extends AbstractCmTag {
 	}
 
 	/**
-	 * Class overrides doTag so getTagJs is not used
+	 * Class overrides doCmTag so getTagJs is not used
 	 */
 	@Override
 	protected String getTagJs() {

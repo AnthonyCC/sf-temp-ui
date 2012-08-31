@@ -11,6 +11,7 @@ import javax.servlet.jsp.tagext.SimpleTagSupport;
 import org.apache.log4j.Logger;
 
 import com.freshdirect.crm.CrmAgentModel;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.coremetrics.builder.SkipTagException;
 import com.freshdirect.framework.util.StringUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -26,8 +27,15 @@ public abstract class AbstractCmTag extends SimpleTagSupport {
 		
 	private boolean wrapIntoScriptTag;
 	
-	@Override
 	public void doTag() throws JspException, IOException {
+		if (FDStoreProperties.isCoremetricsEnabled()){
+			doCmTag();
+		} else {
+			LOGGER.debug("Coremetrics is disabled");
+		}
+	}
+	
+	public void doCmTag() throws JspException, IOException{
 		try {
 			checkContext();
 			String tagJs = getTagJs();
