@@ -1331,7 +1331,7 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 			
 		}
 		setDeliveryPassCount(count);
-		if (this.isChargeWaived(EnumChargeType.DELIVERY)) {
+		if (this.getChargeAmount(EnumChargeType.DELIVERY) == 0.0) {
 			//If there is no applicable delivery charge then return;
 			return;
 		}//otherwise
