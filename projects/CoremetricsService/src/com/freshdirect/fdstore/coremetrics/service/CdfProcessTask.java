@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.log4j.Logger;
@@ -21,6 +22,11 @@ import com.freshdirect.fdstore.coremetrics.builder.PageViewTagModelBuilder;
 import com.freshdirect.fdstore.coremetrics.builder.PageViewTagModelBuilder.CustomCategory;
 import com.freshdirect.framework.util.RuntimeServiceUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.jcraft.jsch.ChannelSftp;
+import com.jcraft.jsch.JSch;
+import com.jcraft.jsch.JSchException;
+import com.jcraft.jsch.Session;
+import com.jcraft.jsch.SftpException;
 
 public class CdfProcessTask {
 	
@@ -96,7 +102,7 @@ public class CdfProcessTask {
 			
 			writer.close();
 		} catch (IOException e) {
-			throw new FDResourceException("saveCdfFile failed", e);
+			throw new FDResourceException("saveCdfFile failed: "+e.getMessage(), e);
 		
 		} finally {
 			if (writer != null){
@@ -109,40 +115,90 @@ public class CdfProcessTask {
 		
 		String ftpUrl = FDStoreProperties.getCoremetricsFtpUrl();
 		String ftpUser = FDStoreProperties.getCoremetricsClientId() + "-import";
+		String ftpPassword = FDStoreProperties.getCoremetricsFtpPassword();
+		int sftpPort = FDStoreProperties.getCoremetricsFtpSftpPort();
+		boolean secure = FDStoreProperties.isCoremetricsFtpSecure();
 		
-		LOGGER.info("uploading Coremetrics CDF to " + ftpUser +"@"+ ftpUrl);
-		FTPClient client = new FTPClient();
-		client.setDefaultTimeout(600000);
-		client.setDataTimeout(600000);
+		LOGGER.info("uploading Coremetrics CDF to " + ftpUser +"@"+ ftpUrl + " (via " + (secure ? "sftp on port " +sftpPort : "ftp") + ")");
 		
-        FileInputStream fis = null;
-        
-        try {
-            client.connect(ftpUrl);
-            
-            if (!client.login(ftpUser, FDStoreProperties.getCoremetricsFtpPassword())) {
-            	throw new FDResourceException("ftp login failed"); 
-            }
-    		client.enterLocalPassiveMode();
+		if(secure){
+			
+			ChannelSftp sftp = null;
+			Session session = null;
+			
+			Properties config = new Properties();
+			config.put("StrictHostKeyChecking", "no");
+			
+			JSch jsch = new JSch();
+			try {
+				session=jsch.getSession(ftpUser, ftpUrl, sftpPort);
+				session.setPassword(ftpPassword);				
+				session.setConfig(config);
+				
+				session.connect();
+				sftp = (ChannelSftp) session.openChannel("sftp");
+				
+				LOGGER.debug("SFTP: Connecting..");
+				sftp.connect();
 
-            fis = new FileInputStream(cdfFilePath);
-            if (!client.storeFile(cdfFileName, fis)) {
-            	throw new FDResourceException("ftp file store failed");
-            }
-            
-            client.logout();
-
-        } catch (IOException e) {
-            throw new FDResourceException("uploadFile", e);
-            
-        } finally {
-            try {
-                if (fis != null) {
-                    fis.close();
-                }
-                client.disconnect();
-            } catch (IOException e) {
-            }
-        }
-    }
+				sftp.put(cdfFilePath, cdfFileName);
+				
+				sftp.disconnect();
+				session.disconnect();
+				
+			} catch (JSchException e) {
+				 throw new FDResourceException("sftp uploadFile: "+e.getMessage(), e);
+			
+			} catch (SftpException e) {
+				throw new FDResourceException("sftp uploadFile: "+e.getMessage(), e);
+			
+			} finally {
+				if (null != sftp && sftp.isConnected()) {
+					LOGGER.debug("SFTP: disconnecting");
+					sftp.disconnect();			
+				}
+				
+				if (null != session && session.isConnected()) {
+					LOGGER.debug("SFTP: disconnecting");
+					session.disconnect();			
+				}
+			}	
+			
+		} else {
+		
+			FTPClient client = new FTPClient();
+			client.setDefaultTimeout(600000);
+			client.setDataTimeout(600000);
+			
+	        FileInputStream fis = null;
+	        
+	        try {
+	            client.connect(ftpUrl);
+	            
+	            if (!client.login(ftpUser, ftpPassword)) {
+	            	throw new FDResourceException("ftp login failed"); 
+	            }
+	    		client.enterLocalPassiveMode();
+	
+	            fis = new FileInputStream(cdfFilePath);
+	            if (!client.storeFile(cdfFileName, fis)) {
+	            	throw new FDResourceException("ftp file store failed");
+	            }
+	            
+	            client.logout();
+	
+	        } catch (IOException e) {
+	            throw new FDResourceException("ftp uploadFile: "+e.getMessage(), e);
+	            
+	        } finally {
+	            try {
+	                if (fis != null) {
+	                    fis.close();
+	                }
+	                client.disconnect();
+	            } catch (IOException e) {
+	            }
+	        }
+	    }
+	}
 }

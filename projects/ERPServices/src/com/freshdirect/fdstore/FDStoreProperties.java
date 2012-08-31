@@ -550,6 +550,9 @@ public class FDStoreProperties {
 	private final static String PROP_COREMETRICS_CATID_OTHERPAGE = "fdstore.coremetrics.catid.otherpage";
 	private final static String PROP_COREMETRICS_FTP_URL = "fdstore.coremetrics.ftp.url";
 	private final static String PROP_COREMETRICS_FTP_PASSWORD = "fdstore.coremetrics.ftp.password";
+	private final static String PROP_COREMETRICS_FTP_SECURE = "fdstore.coremetrics.ftp.secure";
+	private final static String PROP_COREMETRICS_FTP_SFTP_PORT = "fdstore.coremetrics.ftp.sftpport";
+
 	
 	private final static String ALLOW_DISCOUNTS_ON_PREMIUM_SLOT = "fdstore.allow.discount.premium.slot";
 	
@@ -1103,6 +1106,8 @@ public class FDStoreProperties {
 		defaults.put(PROP_COREMETRICS_CATID_OTHERPAGE, "other_page");
 		defaults.put(PROP_COREMETRICS_FTP_URL, "ftp.coremetrics.com");
 		defaults.put(PROP_COREMETRICS_FTP_PASSWORD, "Delivers2u!");
+		defaults.put(PROP_COREMETRICS_FTP_SECURE, "false");
+		defaults.put(PROP_COREMETRICS_FTP_SFTP_PORT, "998");
 		
 		defaults.put(ALLOW_DISCOUNTS_ON_PREMIUM_SLOT, "false");
 		defaults.put(DLV_PASS_NEW_TC_DATE, "2012-05-09");
@@ -2857,6 +2862,14 @@ public class FDStoreProperties {
 
 	public static String getCoremetricsFtpPassword() {
 	   	return get(PROP_COREMETRICS_FTP_PASSWORD);
+	}
+	
+	public static boolean isCoremetricsFtpSecure() {
+		 return Boolean.valueOf(get(PROP_COREMETRICS_FTP_SECURE));
+	}
+
+	public static int getCoremetricsFtpSftpPort() {
+		 return Integer.parseInt(get(PROP_COREMETRICS_FTP_SFTP_PORT));
 	}
 	
 	public static boolean isGiftCardDonationEnabled() {
