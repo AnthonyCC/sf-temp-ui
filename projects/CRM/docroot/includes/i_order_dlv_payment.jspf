@@ -233,7 +233,7 @@ function loadSignature(order)
 	            <% } else if(order instanceof FDOrderI && ((FDOrderI)order).hasInvoice()){ %>
 	            <% boolean isEBTPayment = (null !=((FDOrderI)order ).getPaymentMethod() &&EnumPaymentMethodType.EBT.equals(((FDOrderI)order ).getPaymentMethod().getPaymentMethodType()));
 			if(isEBTPayment){ %>
-	             <%= JspMethods.formatPrice(order.getEbtPurchaseAmount()-order.getTotalAppliedGCAmount()) %>
+	              <%= JspMethods.formatPrice(((FDOrderI)order).getEbtPurchaseAmount()-order.getTotalAppliedGCAmount()) %>
 	             <% } else { %>
 	             <%= JspMethods.formatPrice(order.getCCPaymentAmount()) %>
 	             <% } %>
