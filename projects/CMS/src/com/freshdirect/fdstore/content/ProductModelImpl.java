@@ -477,7 +477,7 @@ public class ProductModelImpl extends AbstractProductModelImpl {
         /** try to find the preferred sku first */
         for (ListIterator<SkuModel> li = skus.listIterator(); li.hasNext();) {
             SkuModel sku = li.next();
-            if (sku.isUnavailable() && !sku.isTempUnavailable()) {
+            if (sku.isDiscontinued()) {
                 li.remove();
             } else if (sku.getContentKey().equals(preferredSku)) {
                 return sku;
