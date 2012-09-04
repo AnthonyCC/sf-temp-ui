@@ -842,7 +842,7 @@ public class HandOffProcessManager {
 				currSize.add(0);
 			}
 			
-			sessionDescription = context.getUserId()+"_"+getSessionType(schEntry.getKey())+"_"
+			sessionDescription = context.getUserId()+"_"+schEntry.getKey().getRegionId()+"_"+getSessionType(schEntry.getKey())+"_"
 									+ RoutingDateUtil.formatPlain(schEntry.getKey().getDeliveryDate())+"_"+currentTime
 																									 +"_"+currSize.size();
 			session = new HandOffBatchSession(context.getHandOffBatch().getBatchId(), 

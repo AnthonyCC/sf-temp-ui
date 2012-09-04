@@ -334,7 +334,7 @@ public abstract class BaseProcessManager implements  IProcessManager {
     									String userId, String currentTime) throws  RoutingProcessException {
     	String sessionDescription = null;    	
     	try {
-    		sessionDescription = userId+"_"+getSessionType(schedulerId)
+    		sessionDescription = userId+"_"+schedulerId.getRegionId()+"_"+getSessionType(schedulerId)
     								+"_"+RoutingDateUtil.formatPlain(schedulerId.getDeliveryDate())
     									+"_"+currentTime;
 			proxy.sendRoutesToRoadNet(schedulerId, sessionDescription,null);
