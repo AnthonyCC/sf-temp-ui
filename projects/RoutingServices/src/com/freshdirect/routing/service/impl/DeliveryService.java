@@ -45,6 +45,7 @@ import com.freshdirect.routing.proxy.stub.transportation.RoutingRoute;
 import com.freshdirect.routing.proxy.stub.transportation.RoutingSession;
 import com.freshdirect.routing.proxy.stub.transportation.TransportationWebService;
 import com.freshdirect.routing.service.IDeliveryService;
+import com.freshdirect.routing.service.RoutingServiceLocator;
 import com.freshdirect.routing.service.exception.IIssue;
 import com.freshdirect.routing.service.exception.RoutingServiceException;
 import com.freshdirect.routing.util.RoutingDataDecoder;
@@ -210,7 +211,7 @@ public class DeliveryService extends BaseService implements IDeliveryService {
 	
 	public IDrivingDirection buildDriverDirections(Set<String> routeIDs, String sessionID, IRoutingSchedulerIdentity schedulerId)  throws RoutingServiceException {
 		try {
-			TransportationWebService port = getTransportationSuiteService(schedulerId);
+			TransportationWebService port = RoutingServiceLocator.getInstance().getTransportationSuiteService("DRIVINGDIRECTIONS");
 			List<DirectionData> directions = new ArrayList<DirectionData>();
 			for(String routeID: routeIDs)
 			{
