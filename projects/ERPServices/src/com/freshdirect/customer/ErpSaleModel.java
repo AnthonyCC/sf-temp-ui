@@ -372,10 +372,7 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 					//so auths get reversed.
 					status =  EnumSaleStatus.POST_AUTH_PENDING;
 				} else {
-					if(!isEBTOrder())
-						status = EnumSaleStatus.SETTLED; 
-					else
-						status = EnumSaleStatus.SETTLEMENT_SAP_PENDING;			
+					status = EnumSaleStatus.SETTLED;			
 				}
 			}
 		} else {
@@ -937,11 +934,7 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 
 		ErpInvoiceModel invoice = getInvoice();
 		if (((int) Math.round(invoice.getAmount() * 100)) == 0) {
-			if(!isEBTOrder()){
-				status = EnumSaleStatus.SETTLED;
-			}else{
-				status = EnumSaleStatus.SETTLEMENT_SAP_PENDING;
-			}
+			status = EnumSaleStatus.SETTLED;			
 		} else {
 			status = EnumSaleStatus.PAYMENT_PENDING;
 		}
@@ -1306,6 +1299,7 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 	public void markAsSettlementToSAPPending() throws ErpTransactionException {
 		assertStatus(new EnumSaleStatus[] {EnumSaleStatus.CAPTURE_PENDING,
 						EnumSaleStatus.POST_AUTH_PENDING,
+						EnumSaleStatus.PAYMENT_PENDING,
 						EnumSaleStatus.SETTLEMENT_PENDING
 						});
 		status = EnumSaleStatus.SETTLEMENT_SAP_PENDING;

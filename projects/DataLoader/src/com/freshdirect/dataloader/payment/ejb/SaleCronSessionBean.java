@@ -1337,28 +1337,29 @@ public class SaleCronSessionBean extends SessionBeanSupport {
 						}
 					}
 				}*/
+			}
 				//If the settlement with SAP is successful, we can mark the corresponding EBT sale as 'settled'.
 //				if(isOK){					
-					for (int i = 0, size = saleIds.size(); i < size; i++) {
+				for (int i = 0, size = saleIds.size(); i < size; i++) {
+					try {
+						eb = erpSaleHome.findByPrimaryKey(new PrimaryKey(saleIds.get(i)));
+						utx = this.getSessionContext().getUserTransaction();
+						utx.begin();
+						eb.forceSettlement();
+						utx.commit();
+						utx = null;
+					} catch (Exception e) {
+						LOGGER.warn(e);
 						try {
-							eb = erpSaleHome.findByPrimaryKey(new PrimaryKey(saleIds.get(i)));
-							utx = this.getSessionContext().getUserTransaction();
-							utx.begin();
-							eb.forceSettlement();
-							utx.commit();
-							utx = null;
-						} catch (Exception e) {
-							LOGGER.warn(e);
-							try {
-								if(null !=utx)
-								utx.rollback();
-							} catch (SystemException se) {
-								LOGGER.warn("Error while trying to rollback transaction", se);
-							}//Continue with the next sale.
-						}
+							if(null !=utx)
+							utx.rollback();
+						} catch (SystemException se) {
+							LOGGER.warn("Error while trying to rollback transaction", se);
+						}//Continue with the next sale.
 					}
+				}
 //				}
-			}
+			
 		}
 	}
 	
