@@ -1915,10 +1915,16 @@ public class DlvManagerSessionBean extends GatewaySessionBeanSupport {
 		/* Refresh the reservation from the database as the flag isInUPS might have changed after the CONFIRM_TIMESLOT payload was put in the queue.
 		 This code is to handle scenarios when CONFIRM_TIMESLOT payload is processed before the RESERVE_TIMESLOT */
 		
+		String orderId = reservation.getOrderId();
+		int statusCode = reservation.getStatusCode();
 		
 		try {
 			if(reservation!=null)
+			{
 				reservation=getReservation(reservation.getId());
+				reservation.setOrderId(orderId);
+				reservation.setStatusCode(statusCode);
+			}
 		} catch (FinderException e) {
 			
 			e.printStackTrace();

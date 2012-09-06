@@ -14,18 +14,24 @@ package com.freshdirect.delivery.ejb;
 import java.rmi.RemoteException;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.ejb.EJBException;
-
 import org.apache.log4j.Category;
 
 import com.freshdirect.ErpServicesProperties;
+import com.freshdirect.crm.CrmCaseAction;
+import com.freshdirect.crm.CrmCaseActionType;
+import com.freshdirect.crm.CrmCaseInfo;
+import com.freshdirect.crm.CrmCaseModel;
+import com.freshdirect.crm.CrmCaseOrigin;
+import com.freshdirect.crm.CrmCasePriority;
+import com.freshdirect.crm.CrmCaseState;
+import com.freshdirect.crm.CrmCaseSubject;
+import com.freshdirect.crm.CrmManager;
 import com.freshdirect.delivery.DlvResourceException;
 import com.freshdirect.delivery.dao.AirclicDAO;
 import com.freshdirect.delivery.model.AirclicMessageVO;
@@ -33,6 +39,7 @@ import com.freshdirect.delivery.model.AirclicNextelVO;
 import com.freshdirect.delivery.model.AirclicTextMessageVO;
 import com.freshdirect.delivery.model.DispatchNextTelVO;
 import com.freshdirect.delivery.model.SignatureVO;
+import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.core.SessionBeanSupport;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
@@ -93,6 +100,7 @@ public class AirclicManagerSessionBean extends SessionBeanSupport {
 				saveMessageInQueue(textMessage);
 				sendMessage(userIds, textMessage);
 				updateMessage(textMessage);
+				createCase(textMessage);
 				return "Message Sent to Airclic";
 			}
 	
@@ -383,6 +391,44 @@ public class AirclicManagerSessionBean extends SessionBeanSupport {
 				LOGGER.warn("AirclicManagerSB getNXOutScan: Exception while cleaning: " + se);
 			}
 		}	
+	}
+	
+	private void createCase(AirclicTextMessageVO textMessage)
+	{
+		try
+		{
+			CrmCaseInfo caseInfo = new CrmCaseInfo();
+			caseInfo.setOrigin(CrmCaseOrigin.getEnum(CrmCaseOrigin.CODE_SYS)); // FIXME: ...
+			CrmCaseSubject subject = CrmCaseSubject.getEnum(CrmCaseSubject.CODE_ORDER_ENROUTE_SPL_INSTRUCTION);
+			caseInfo.setSubject(subject);
+			caseInfo.setPriority(CrmCasePriority.getEnum(CrmCasePriority.CODE_LOW));
+			caseInfo.setSummary("Message sent to delivery team");
+			
+			caseInfo.setAssignedAgentPK(new PrimaryKey(textMessage.getSender()));
+			caseInfo.setCustomerPK((textMessage.getCustomerId()!=null)? new PrimaryKey(textMessage.getCustomerId()):null);
+			caseInfo.setSalePK((textMessage.getOrderId()!=null)?new PrimaryKey(textMessage.getOrderId()):null);
+			
+			CrmCaseModel newCase = new CrmCaseModel(caseInfo);
+			newCase.setState(CrmCaseState.getEnum(CrmCaseState.CODE_OPEN));
+			newCase.setCrmCaseMedia("other");
+			
+			{
+				CrmCaseAction caseAction = new CrmCaseAction();
+				caseAction.setType(CrmCaseActionType.getEnum( CrmCaseActionType.CODE_NOTE ) );
+				caseAction.setTimestamp(new Date());
+				caseAction.setAgentPK(caseInfo.getAssignedAgentPK());
+	
+				caseAction.setNote(textMessage.getMessage());
+				newCase.addAction(caseAction);																		
+			}
+			
+			CrmManager.getInstance().createCase(newCase);
+		}
+		catch(Exception e)
+		{
+			LOGGER.warn("AirclicManagerSB createCase: Exception while creating case: " + e);
+		}
+
 	}
 	
 }

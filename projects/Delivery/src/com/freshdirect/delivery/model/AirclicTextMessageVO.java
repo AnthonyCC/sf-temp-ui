@@ -23,6 +23,13 @@ public class AirclicTextMessageVO implements Serializable  {
 		this.stop = stop;
 		this.orderId = orderId;
 	}
+	
+	public AirclicTextMessageVO(Date deliveryDate,String route,int stop,
+			String message,  String source,  String sender, 
+			 String orderId, String customerId) {
+		this(deliveryDate,route,stop,message,source,sender,orderId);
+		this.customerId = customerId;
+	}
 	public AirclicTextMessageVO()
 	{
 		super();
@@ -37,6 +44,7 @@ public class AirclicTextMessageVO implements Serializable  {
 	private int stop;
 	private String orderId;
 	private String id;
+	private String customerId;
 	public Date getCreateDate() {
 		return createDate;
 	}
@@ -90,6 +98,14 @@ public class AirclicTextMessageVO implements Serializable  {
 	}
 	public void setId(String id) {
 		this.id = id;
+	}
+
+	public String getCustomerId() {
+		return customerId;
+	}
+
+	public void setCustomerId(String customerId) {
+		this.customerId = customerId;
 	}
 	
 }

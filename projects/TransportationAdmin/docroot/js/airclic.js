@@ -86,7 +86,7 @@ function closeDialogue()
 	$('dialogue').hide();
 }
 
-function addEntry(date, route, stop, message, msgSrc, userId, orderId)
+function addEntry(date, route, stop, message, msgSrc, userId, orderId,customerId)
 {
 	try
 	{
@@ -107,7 +107,7 @@ function addEntry(date, route, stop, message, msgSrc, userId, orderId)
 			 _data[4] = msgSrc;
 			 _data[5] = userId;
 			 _data[6] = orderId;
-			 
+			 _data[7] = customerId;
 			 var result=jsonrpcClient.manager.sendMessage(_data);
 			 $('ac_error').update("");
 			 $('ac_info').update(result);

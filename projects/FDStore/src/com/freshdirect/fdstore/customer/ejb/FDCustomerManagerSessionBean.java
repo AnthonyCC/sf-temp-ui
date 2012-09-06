@@ -986,6 +986,9 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			erpCustomerEB.addPaymentMethod(paymentMethod);
 
 			String note = paymentMethod.getMaskedAccountNumber() + (paymentMethod.getIsTermsAccepted() ? ", enrollment agreement" : "");
+			
+			note = getByPassAvsNotes(info, paymentMethod, note);
+			
 			this.logActivity(info.createActivity(EnumAccountActivityType.ADD_PAYMENT_METHOD, note));
 
 		} catch (RemoteException re) {
@@ -997,6 +1000,27 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		}
 	}
 
+	private String getByPassAvsNotes(FDActionInfo info, ErpPaymentMethodI paymentMethod, String note)
+	{
+		try
+		{
+			if(paymentMethod.getAddress()!=null && paymentMethod.isBypassAVSCheck())
+			{
+				FDUserI user = recognize(info.getIdentity());
+				
+				ContactAddressModel address = paymentMethod.getAddress();
+				note = note + " Bypass AVS Check:Y, Customer email: "+user.getUserId()
+						+ " Address: "+address.getAddress1()+ " "+address.getApartment()+ " "+address.getAddress2()
+						+" "+address.getCity()+" "+address.getState()+" "+address.getZipCode();
+			}
+		}
+		catch(Exception e)
+		{
+			LOGGER.debug(e.getMessage());
+		}
+		return note;
+		
+	}
 	/**
 	 * set the default payment method on the customer
 	 * 
@@ -1104,8 +1128,12 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			ErpCustomerEB erpCustomerEB = checkPaymentMethodModification(info, paymentMethod);
 
 			erpCustomerEB.updatePaymentMethod(paymentMethod);
-
-			this.logActivity(info.createActivity(EnumAccountActivityType.UPDATE_PAYMENT_METHOD, ((ErpPaymentMethodModel)paymentMethod).getPK().getId()));
+			
+			String note = paymentMethod.getPK().getId();
+			
+			note = getByPassAvsNotes(info, paymentMethod, note);
+			
+			this.logActivity(info.createActivity(EnumAccountActivityType.UPDATE_PAYMENT_METHOD, note));
 
 		} catch (RemoteException ex) {
 			throw new FDResourceException(ex);

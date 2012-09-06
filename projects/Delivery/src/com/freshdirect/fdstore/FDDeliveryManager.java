@@ -37,6 +37,7 @@ import com.freshdirect.delivery.DlvZipInfoModel;
 import com.freshdirect.delivery.DlvZoneCapacityInfo;
 import com.freshdirect.delivery.DlvZoneCutoffInfo;
 import com.freshdirect.delivery.DlvZoneInfoModel;
+import com.freshdirect.delivery.EnumReservationStatus;
 import com.freshdirect.delivery.EnumReservationType;
 import com.freshdirect.delivery.EnumRestrictedAddressReason;
 import com.freshdirect.delivery.ExceptionAddress;
@@ -689,6 +690,8 @@ public class FDDeliveryManager {
 			DlvManagerSB sb = getDlvManagerHome().create();
 			sb.commitReservation(rsvId, customerId, orderId,pr1);
 			DlvReservationModel reservation=sb.getReservation(rsvId);
+			reservation.setOrderId(orderId);
+			reservation.setStatusCode(EnumReservationStatus.COMMITTED.getCode());
 			
 			if(FDStoreProperties.isDynamicRoutingEnabled() && reservation.isDynamic()) {
 				SectorVO neighbourhoodInfo = FDDeliveryManager.getInstance().getSectorInfo(address);

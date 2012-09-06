@@ -54,8 +54,8 @@ public class CrmPaymentMethodControllerTag extends AbstractControllerTag {
 	}
 
 	private void editPaymentMethod(HttpServletRequest request, ActionResult actionResult) throws FDResourceException {
-		this.populatePaymentMethod(request, actionResult);
 		FDUserI user = CrmSession.getUser(pageContext.getSession());
+		this.populatePaymentMethod(request, actionResult, user);
 		
 		PaymentMethodUtil.validatePaymentMethod(request, this.paymentMethod, actionResult, user,true);
 		if (actionResult.isSuccess()) {
@@ -67,7 +67,7 @@ public class CrmPaymentMethodControllerTag extends AbstractControllerTag {
 
 	private void addPaymentMethod(HttpServletRequest request, ActionResult actionResult) throws FDResourceException {
 		FDUserI user = CrmSession.getUser(pageContext.getSession());
-		this.populatePaymentMethod(request, actionResult);
+		this.populatePaymentMethod(request, actionResult, user);
 		if(this.paymentMethod.getCustomerId()==null) {
 			this.paymentMethod.setCustomerId(user.getIdentity().getErpCustomerPK());
 		}
@@ -105,7 +105,7 @@ public class CrmPaymentMethodControllerTag extends AbstractControllerTag {
 		}
 	}
 
-	private void populatePaymentMethod(HttpServletRequest request, ActionResult actionResult) {
+	private void populatePaymentMethod(HttpServletRequest request, ActionResult actionResult, FDUserI user) {
 
 		EnumPaymentMethodType paymentMethodType = EnumPaymentMethodType.getEnum(request.getParameter(PaymentMethodName.PAYMENT_METHOD_TYPE));
 		if (paymentMethod == null) {

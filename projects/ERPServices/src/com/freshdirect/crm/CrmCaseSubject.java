@@ -62,6 +62,9 @@ public class CrmCaseSubject extends EnumModel implements TerminableI {
 
 	public static final String CODE_SECURITY_INTERNAL="SEQ-003";
 	
+	public static final String CODE_ORDER_ENROUTE_SPL_INSTRUCTION="DSQ-012";
+	
+	
 	private final boolean obsolete;
 	private final String queueCode;
 	private final String priorityCode;

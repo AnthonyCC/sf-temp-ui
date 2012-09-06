@@ -27,7 +27,7 @@ public class WaiveDeliveryCharge {
 		//Make sure the dlv pass is not applied if the service type is not HOME.
 		if(cart.isDlvPassApplied()) {
 				if(user.getSelectedServiceType() == EnumServiceType.HOME) {
-					waiveCharge(user, DlvPassConstants.PROMO_CODE);
+					waiveCharge(user, DlvPassConstants.PROMO_CODE, false);
 				}else{
 					//Else if coporate delivery revoke the delivery pass.
 					cart.setDlvPassApplied(false);
@@ -48,9 +48,13 @@ public class WaiveDeliveryCharge {
 	}
 
 	private static void waiveCharge(FDUserI user, String promoCode) {
-		user.getShoppingCart().setChargeWaived(EnumChargeType.DELIVERY, true, promoCode, false);
+		user.getShoppingCart().setChargeWaived(EnumChargeType.DELIVERY, true, promoCode);
 	}
 
+	private static void waiveCharge(FDUserI user, String promoCode, boolean fuelSurcharge) {
+		user.getShoppingCart().setChargeWaived(EnumChargeType.DELIVERY, true, promoCode, fuelSurcharge);
+	}
+	
 	private static void revokeWaiveCharge(FDUserI user, String promoCode) {
 		user.getShoppingCart().setChargeWaived(EnumChargeType.DELIVERY, false, promoCode);
 	}

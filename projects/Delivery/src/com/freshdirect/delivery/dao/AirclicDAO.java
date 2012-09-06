@@ -1,6 +1,5 @@
 package com.freshdirect.delivery.dao;
 
-import java.io.OutputStream;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -191,7 +190,8 @@ public class AirclicDAO {
 				
 					ps.setString(1, message.getMessage());
 					ps.setString(2, message.getOrderId());
-					ps.execute();
+					if(ps.executeUpdate()==0)
+						throw new DlvResourceException("order is not found in airclic: "+message.getOrderId());
 			
 			}
 		}
@@ -616,6 +616,137 @@ public class AirclicDAO {
 		}
 	}
 	
+/*public static void main(String s[]) throws SQLException, NamingException, IOException, DlvResourceException	{
+		
+		DriverManager.registerDriver(new oracle.jdbc.driver.OracleDriver());
+			
+		getSignatureDataEx();
+		
+	}
+
+	
+	public static void getSignatureDataEx() throws DlvResourceException, NamingException 
+	{
+		
+		PreparedStatement ps = null,ps1 = null;
+		ResultSet rs = null;
+		byte[] in = null;
+		Connection devConn = null;
+		Connection conn  = null;
+		
+		try	{
+			
+			conn =DriverManager.getConnection("jdbc:oracle:thin:@(DESCRIPTION=(ADDRESS_LIST=(ADDRESS=(PROTOCOL=TCP)(HOST=db01-VIP.stdb.nyc2.freshdirect.com)(PORT=1521))(ADDRESS=(PROTOCOL=TCP)(HOST=db02-VIP.stdb.nyc2.freshdirect.com)(PORT=1521)) (ADDRESS=(PROTOCOL=TCP)(HOST=db0-VIP.stdb.nyc2.freshdirect.com)(PORT=1521)))(CONNECT_DATA=(FAILOVER_MODE=(TYPE=session)(METHOD=basic)(RETRIES=20))(SERVER=dedicated)(SERVICE_NAME=dbsto_prod)))", "appdev", "readn0wrt");
+				
+			devConn =DriverManager.getConnection("jdbc:oracle:thin:@(DESCRIPTION=(LOAD_BALANCE=yes)(ADDRESS_LIST=(ADDRESS=(PROTOCOL=TCP)(HOST=nyc1dbcl01-vip01.nyc1.freshdirect.com)(PORT=1521))(ADDRESS=(PROTOCOL=TCP)(HOST=nyc1dbcl01-vip02.nyc1.freshdirect.com)(PORT=1521)))(CONNECT_DATA=(FAILOVER_MODE=(TYPE=select)(METHOD=basic)(RETRIES=180)(DELAY=5))(SERVER=dedicated)(SERVICE_NAME=devint)))", "fdstore_prda", "fdstore_prda");
+				
+			
+			//conn = getProdDataSource().getConnection();
+			//devConn = getDataSource().getConnection();
+			
+			
+			ps = conn.prepareStatement("SELECT * FROM CUST.SALE_SIGNATURE WHERE TO_CHAR(SIGNATURE_TIMESTAMP, 'MMDDYYYYHH24') >= '0807201200' " +
+					" and TO_CHAR(SIGNATURE_TIMESTAMP, 'MMDDYYYYHH24') <=  '0807201215' "); 
+			
+			//toTime is required here because we want to know till what time we are getting the signatures. The same to Time
+			
+			rs = ps.executeQuery();
+			
+			ps1 = devConn.prepareStatement("INSERT INTO CUST.SALE_SIGNATURE (SALE_ID, SIGNATURE_TIMESTAMP, DELIVEREDTO, RECIPIENT, CONTAINS_ALCOHOL, SIGNATURE, SIG_SIZE) " +
+					"VALUES (?,?,?,?,?,?,?)");
+		
+			
+			int batchCount = 0;
+			
+			while (rs.next()) {
+				
+				in=rs.getBytes("SIGNATURE");
+				
+				if(in!=null && in.length>0)
+					{
+						ps1.setBytes(6, in);
+					  	ps1.setString(1, rs.getString("SALE_ID"));
+					  	ps1.setTimestamp(2, rs.getTimestamp("SIGNATURE_TIMESTAMP"));
+					  	ps1.setString(3, rs.getString("DELIVEREDTO"));
+					  	ps1.setString(4, rs.getString("RECIPIENT"));
+					  	ps1.setString(5, rs.getString("CONTAINS_ALCOHOL"));
+					  	ps1.setInt(7, in.length);
+					    ps1.addBatch();
+					    batchCount++;
+					}
+				
+			}
+			if(batchCount>0)
+			ps1.executeBatch();
+			
+			
+		} 
+		catch(SQLException e)
+		{
+			throw new DlvResourceException(e);
+		}
+		finally {
+			try {
+				if (rs != null)
+					rs.close();
+				if (ps != null)
+					ps.close();
+				if (ps1 != null)
+					ps1.close();
+				if (conn != null)
+					conn.close();
+				if (devConn != null)
+					devConn.close();
+
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+	}
+		
+		public static DataSource getDataSource() throws NamingException {
+		InitialContext initCtx = null;
+		try {
+			initCtx = getInitialContext();
+			return (DataSource) initCtx.lookup("fddatasource");
+		} finally {
+			if (initCtx != null)
+				try {
+					initCtx.close();
+				} catch (NamingException ne) {
+				}
+		}
+	}
+
+		public static DataSource getProdDataSource() throws NamingException {
+			InitialContext initCtx = null;
+			try {
+				initCtx = getProdInitialContext();
+				return (DataSource) initCtx.lookup("fddatasource");
+			} finally {
+				if (initCtx != null)
+					try {
+						initCtx.close();
+					} catch (NamingException ne) {
+					}
+			}
+		}
+		
+	static public InitialContext getInitialContext() throws NamingException {
+		Hashtable h = new Hashtable();
+		h.put(Context.INITIAL_CONTEXT_FACTORY, "weblogic.jndi.WLInitialContextFactory");
+		h.put(Context.PROVIDER_URL, "t3://localhost:7001");
+		return new InitialContext(h);
+	}
+		
+	static public InitialContext getProdInitialContext() throws NamingException {
+		Hashtable h = new Hashtable();
+		h.put(Context.INITIAL_CONTEXT_FACTORY, "weblogic.jndi.WLInitialContextFactory");
+		h.put(Context.PROVIDER_URL, "t3://int02.stprd01.nyc2.freshdirect.com:7001");
+		return new InitialContext(h);
+	}
+	*/
 	   
    
 }

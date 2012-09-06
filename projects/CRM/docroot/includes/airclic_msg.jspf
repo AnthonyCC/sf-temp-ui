@@ -43,7 +43,7 @@ function closeDialogue()
 
 
 // Adds an entry
-function addEntry(date, route, stop, message, msgSrc, userId, orderId)
+function addEntry(date, route, stop, message, msgSrc, userId, orderId, customerId)
 {
 	try
 	{
@@ -63,6 +63,7 @@ function addEntry(date, route, stop, message, msgSrc, userId, orderId)
 			 _data[4] = msgSrc;
 			 _data[5] = userId;
 			 _data[6] = orderId;
+			 _data[7] = customerId;
 			 
 			 var result = jsonrpcClient.manager.sendMessage(_data);
 			 $('ac_error').update("");
@@ -182,8 +183,9 @@ cellspacing:10px;
 		<tr>
 		<td><label for="stop">Stop: </label> </td><td><input disabled="disabled" name="stop" id="stop" type="text" value="<%= shippingInfo.getStopSequence()%>"></td>
 		<input type="hidden" name="source" id="source" value="CRM" />
-		<input type="hidden" name="userId" id="userId" value="<%=request.getRemoteUser()%>" />
+		<input type="hidden" name="userId" id="userId" value="<%=CrmSession.getCurrentAgent(request.getSession()).getPK().getId()%>" />
 		<input type="hidden" name="orderId" id="orderId" value="<%=_order.getErpSalesId()%>" />
+		<input type="hidden" name="customerId" id="customerId" value="<%=_order.getCustomerId()%>" />
 		
 		<tr>
 		<td><label for="message">Message</label> </td><td><select id="message" name="message" value="" style="width: 120px;" onchange="populateText($F('message'));">
@@ -205,7 +207,7 @@ cellspacing:10px;
 		<td><textarea rows="4" cols="25" id="messageDesc"></textarea></td>
 		
 		
-		<tr><td><input onclick="addEntry($F('ddate'), $F('route'), $F('stop'), $F('messageDesc'), $F('source'), $F('userId'), $F('orderId'));" value="Send" type="button" /></td>
+		<tr><td><input onclick="addEntry($F('ddate'), $F('route'), $F('stop'), $F('messageDesc'), $F('source'), $F('userId'), $F('orderId'),$F('customerId'));" value="Send" type="button" /></td>
 		</table>
 		<% 
 		JSONRPCBridge j = JSONRPCBridge.getGlobalBridge();

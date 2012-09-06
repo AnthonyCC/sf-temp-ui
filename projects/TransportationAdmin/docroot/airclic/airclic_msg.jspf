@@ -30,7 +30,7 @@
 		<td></td>
 		<td><textarea rows="4"  cols="15" style="resize:none" id="messageDesc"></textarea></td>
 		
-		<tr><td><input onclick="addEntry($F('ddate'), $F('route'), null, $F('messageDesc'), $F('source'), $F('userId'), null);" value="Send" type="button"><br>
+		<tr><td><input onclick="addEntry($F('ddate'), $F('route'), null, $F('messageDesc'), $F('source'), $F('userId'), null, null);" value="Send" type="button"><br>
 	
 		</table>		
 		<% 
