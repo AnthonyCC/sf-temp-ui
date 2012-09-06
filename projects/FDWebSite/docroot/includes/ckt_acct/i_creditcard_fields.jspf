@@ -246,7 +246,7 @@ if (isValidPaymentId) {
 <% if (((FDUserI)session.getAttribute(SessionName.USER)).isCheckEligible() && !"true".equals(request.getParameter("rh")) && !"true".equals(request.getParameter("gc"))) {%>
 			<%@ include file="/includes/your_account/checkacct_promo.jspf"%><br><br>
 <% } %>
-<% if(((FDUserI)session.getAttribute(SessionName.USER)).isEbtAccepted()){ %>
+<% if(((FDUserI)session.getAttribute(SessionName.USER)).isEbtAccepted()&& !"true".equals(request.getParameter("rh")) && !"true".equals(request.getParameter("gc"))){ %>
 <table width="970" border="0" cellpadding="0" cellspacing="0">
 <% String currentPage = request.getRequestURI(); 
 boolean fromCheckout1 = currentPage.indexOf("checkout") > -1;

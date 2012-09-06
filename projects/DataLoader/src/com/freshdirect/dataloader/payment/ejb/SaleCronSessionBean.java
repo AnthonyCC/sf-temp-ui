@@ -30,6 +30,7 @@ import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.customer.EnumSaleStatus;
 import com.freshdirect.customer.EnumSaleType;
 import com.freshdirect.customer.EnumTransactionSource;
+import com.freshdirect.customer.ErpAbstractOrderModel;
 import com.freshdirect.customer.ErpCaptureModel;
 import com.freshdirect.customer.ErpSaleModel;
 import com.freshdirect.customer.ErpTransactionException;
@@ -1343,9 +1344,15 @@ public class SaleCronSessionBean extends SessionBeanSupport {
 				for (int i = 0, size = saleIds.size(); i < size; i++) {
 					try {
 						eb = erpSaleHome.findByPrimaryKey(new PrimaryKey(saleIds.get(i)));
+						ErpSaleModel sale = (ErpSaleModel) eb.getModel();
 						utx = this.getSessionContext().getUserTransaction();
 						utx.begin();
-						eb.forceSettlement();
+						ErpAbstractOrderModel orderModel = sale.getCurrentOrder();
+						if(null !=orderModel.getAppliedGiftcards() && orderModel.getAppliedGiftcards().size() > 0){
+							eb.markAsSettlementPending();
+						}else{
+							eb.forceSettlement();
+						}
 						utx.commit();
 						utx = null;
 					} catch (Exception e) {

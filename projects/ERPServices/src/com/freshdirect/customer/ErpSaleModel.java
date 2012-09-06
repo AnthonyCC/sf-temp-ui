@@ -770,10 +770,10 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 			if (settle >= capture) {
 				if(isEBTOrder()){
 					status = EnumSaleStatus.SETTLEMENT_SAP_PENDING;
-					ErpAbstractOrderModel orderModel = getCurrentOrder();
+					/*ErpAbstractOrderModel orderModel = getCurrentOrder();
 					if(null !=orderModel.getAppliedGiftcards() && orderModel.getAppliedGiftcards().size() > 0){
 						status = EnumSaleStatus.SETTLEMENT_PENDING;
-					}
+					}*/
 				}else{
 					status = EnumSaleStatus.SETTLED;
 				}

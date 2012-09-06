@@ -866,10 +866,7 @@ public class ReconciliationSessionBean extends SessionBeanSupport{
 			EnumSaleStatus status = saleEB.getStatus();
 			if(EnumSaleStatus.SETTLEMENT_PENDING.equals(status)) {
 				if(!settlementFailed){
-					if(!isEBTOrder)
-						saleEB.forceSettlement();
-					else
-						saleEB.markAsSettlementToSAPPending();
+					saleEB.forceSettlement();					
 				}
 				else
 					saleEB.forceSettlementFailed();//TODO: check whether to mark the sale as 'STF' OR re-attempt to do post-auth again.
