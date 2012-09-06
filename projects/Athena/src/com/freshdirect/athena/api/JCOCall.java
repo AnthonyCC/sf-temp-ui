@@ -12,6 +12,7 @@ import com.freshdirect.athena.data.Data;
 import com.freshdirect.athena.data.Row;
 import com.freshdirect.athena.data.Variable;
 import com.freshdirect.athena.util.TypeUtil;
+import com.freshdirect.athena.util.XmlTagUtil;
 import com.sap.mw.jco.IFunctionTemplate;
 import com.sap.mw.jco.IRepository;
 import com.sap.mw.jco.JCO;
@@ -33,7 +34,7 @@ public class JCOCall implements ICall {
 		LOGGER.debug("JCOCall.getData() =>"+api.getName());
 		Data result = new Data();
 		Variable variable = new Variable(api.getEndpoint());
-		result.setVariable(variable);
+		result.addVariable(variable);
 		String call = api.getCall().replaceAll("\\p{Cntrl}", ""); //Simple XML Parser adds control character to end of CDATA elements.
 						
 		IFunctionTemplate ftemplate = repository.getFunctionTemplate(call);
@@ -78,6 +79,7 @@ public class JCOCall implements ICall {
 		      } while(baseTable.nextRow());
 		}
 		
+		result = XmlTagUtil.addLastRefresh(result);
 		return result;
 	}
 	

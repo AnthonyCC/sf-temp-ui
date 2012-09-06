@@ -53,5 +53,23 @@
 						</cache>
 						</call>
 		  </api>
+		  <api name="shippingdock"> 
+				<datasource>jco_sap</datasource>
+				<endpoint>shippingdock</endpoint>
+						<call><![CDATA[ZBAPI_SHIP_LOAD2]]>
+						<parameters>
+							<parameter>
+								<name>dock_number</name>
+								<type>STRING</type>
+								<default>01</default>								
+							</parameter>
+						</parameters>
+						<cache>
+							<maxsize></maxsize>
+							<frequency>300</frequency>
+						</cache>
+						</call>
+		  </api>
+		  
 	</apis>
 </serviceconfig>

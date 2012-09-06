@@ -58,7 +58,7 @@ public class APIDataTestWindow extends Window {
 	        
 	        if(serializer != null) {
 	        	Data data = serializer.read(Data.class, strBuf.toString());
-	        	initTable(data);
+	        	initTable(data, api.getEndpoint());
 	        }
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -75,16 +75,16 @@ public class APIDataTestWindow extends Window {
 		}
 	}
 	
-	private void initTable(Data data) {
-		if(data != null && data.getVariable() != null 
-					&& data.getVariable().getRow() != null
-					&& data.getVariable().getRow().size() > 0) {
-			int totalCols = data.getVariable().getRow().get(0).getColumn().size();
+	private void initTable(Data data, String endPoint) {
+		if(data != null && data.getVariables() != null && data.getVariable(endPoint)!=null
+					&&  data.getVariable(endPoint).getRow() != null
+					&&  data.getVariable(endPoint).getRow().size() > 0) {
+			int totalCols =  data.getVariable(endPoint).getRow().get(0).getColumn().size();
 			String[] column = new String[totalCols];
 			for(int col=0; col < totalCols ; col++) {
 				column[col] = "Column_"+col;
 			}
-			IndexedContainer icData = getTableData(data, column);
+			IndexedContainer icData = getTableData(data, column, endPoint);
 			emContainer.setContainerDataSource(icData);
 			emContainer.setVisibleColumns(column);		
 			emContainer.setImmediate(true);
@@ -92,14 +92,14 @@ public class APIDataTestWindow extends Window {
 				
 	}
 
-	private IndexedContainer getTableData(Data rawData, String[] column) {
+	private IndexedContainer getTableData(Data rawData, String[] column,String endPoint) {
 
 		IndexedContainer data = new IndexedContainer();
 		for(String colVal : column) {
 			data.addContainerProperty(colVal, String.class, "");
 		}
 		
-		for(Row row : rawData.getVariable().getRow()) {
+		for(Row row : rawData.getVariable(endPoint).getRow()) {
 			Object id = data.addItem();
 			int colIndex = 0;
 			for(String col : row.getColumn()) {

@@ -92,9 +92,13 @@ public abstract class GuavaAsyncCache<K, V> {
 	    							   e.printStackTrace();
 	    							   result =  prevGraph;
 	    						   }
+	    						   	finally{
+	    							   System.out.println("reload ");
+	    						   }
 	    						   if(result == null) {
 	    							   result = loadDefault(key);
 	    						   }
+	    						   
 	    						   return result;
 	    					   }
 	    				   });

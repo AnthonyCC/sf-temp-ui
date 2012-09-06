@@ -56,7 +56,7 @@ public class ApiCache  implements Serializable {
 								
 				Data data = new Data();
 				Variable variable = new Variable("nodata");
-				data.setVariable(variable);
+				data.addVariable(variable);
 				return data;
 			}
 		};	

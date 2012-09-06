@@ -16,6 +16,7 @@ import com.freshdirect.athena.data.Data;
 import com.freshdirect.athena.data.Row;
 import com.freshdirect.athena.data.Variable;
 import com.freshdirect.athena.util.TypeUtil;
+import com.freshdirect.athena.util.XmlTagUtil;
 
 public class DBCall implements ICall  {
 	
@@ -37,7 +38,7 @@ public class DBCall implements ICall  {
 		
 		Data result = new Data();
 		Variable variable = new Variable(api.getEndpoint());
-		result.setVariable(variable);
+		result.addVariable(variable);
 		
 		try {
 			
@@ -72,6 +73,8 @@ public class DBCall implements ICall  {
 					}
 				}
 			}
+			
+			result = XmlTagUtil.addLastRefresh(result);
 
 		} catch (Exception ex) {			
 			ex.printStackTrace();
