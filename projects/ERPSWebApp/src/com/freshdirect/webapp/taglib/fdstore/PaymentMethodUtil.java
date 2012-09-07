@@ -389,6 +389,11 @@ public class PaymentMethodUtil implements PaymentMethodName { //AddressName,
              		paymentMethod.getAccountNumber() == null || "".equals(paymentMethod.getAccountNumber()),
      				PaymentMethodName.ACCOUNT_NUMBER, SystemMessageList.MSG_REQUIRED
      		);
+        	 if(EnumPaymentMethodType.EBT.equals(paymentMethod.getPaymentMethodType()) && paymentMethod.getAccountNumber() != null && !"".equals(paymentMethod.getAccountNumber())){
+            	 result.addError(paymentMethod.getAccountNumber().length()<=5,
+            		        PaymentMethodName.ACCOUNT_NUMBER, SystemMessageList.MSG_INVALID_ACCOUNT_NUMBER
+            		        );
+        	 } 
         if(EnumPaymentMethodType.CREDITCARD.equals(paymentMethod.getPaymentMethodType())){        	
 	        //check brand
 	        result.addError(
