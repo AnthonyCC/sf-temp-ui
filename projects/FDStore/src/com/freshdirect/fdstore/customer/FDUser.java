@@ -1211,16 +1211,11 @@ public class FDUser extends ModelSupport implements FDUserI {
 	}
 
 	public void performDlvPassStatusCheck()  throws FDResourceException {
-		boolean waiveFuelSurcharge = isDpNewTcBlocking(false); //check if user is on OLD dp terms, and waive fuel charge fee
-		
 		if (this.isDlvPassActive()){
 			if(!(this.getShoppingCart().isChargeWaived(EnumChargeType.DELIVERY))){
 				//If delivery promotion was applied, do not reapply the waiving of dlv charge.
-				this.getShoppingCart().setChargeWaived(EnumChargeType.DELIVERY,true, DlvPassConstants.PROMO_CODE, waiveFuelSurcharge);
+				this.getShoppingCart().setChargeWaived(EnumChargeType.DELIVERY,true, DlvPassConstants.PROMO_CODE, false);
 				this.getShoppingCart().setDlvPassApplied(true);
-			}
-			if(!waiveFuelSurcharge){
-				this.getShoppingCart().setChargeWaived(EnumChargeType.MISCELLANEOUS,false,DlvPassConstants.PROMO_CODE);
 			}
 		} else if ((this.getShoppingCart() instanceof FDModifyCartModel)&&(this.getDlvPassInfo().isUnlimited())) {
 
@@ -1233,7 +1228,7 @@ public class FDUser extends ModelSupport implements FDUserI {
 					dlvPass=(DeliveryPassModel)passes.get(i);
 
 					if(today.after(dlvPass.getExpirationDate()) && EnumDlvPassStatus.ACTIVE.equals(dlvPass.getStatus()) &&dlvPass.getId().equals(dpId)){
-						this.getShoppingCart().setChargeWaived(EnumChargeType.DELIVERY,true, DlvPassConstants.PROMO_CODE, waiveFuelSurcharge);
+						this.getShoppingCart().setChargeWaived(EnumChargeType.DELIVERY,true, DlvPassConstants.PROMO_CODE, false);
 						this.getShoppingCart().setDlvPassApplied(true);
 						this.getShoppingCart().setDlvPassPremiumAllowedTC(dlvPass.getPurchaseDate().after(FDStoreProperties.getDlvPassNewTCDate()));
 						break;
