@@ -939,18 +939,24 @@ public class FDUser extends ModelSupport implements FDUserI {
 	}
 	
 	public String getCustomerServiceContactMediaPath() {
-		try {
 
+		try {
+			String state="";
+			String contactMedia="/media/editorial/site_pages/contact_serivce_number.html";//DEFAULT
 			if (this.isChefsTable()) {
-				return "/media/editorial/site_pages/chef_contact_serivce_number.html";
-			} else if (this.getState() != null && "PA".equalsIgnoreCase(this.getState())) {
-				return "/media/editorial/site_pages/contact_serivce_number_PA.html";
-			} else {
-				return "/media/editorial/site_pages/contact_serivce_number.html";
+				contactMedia= "/media/editorial/site_pages/chef_contact_serivce_number.html";
+			}else{
+				state= extractStateFromAddress();
+				if("PA".equalsIgnoreCase(state)){
+					contactMedia= "/media/editorial/site_pages/contact_serivce_number_PA.html";
+				}
 			}
+			return contactMedia;
+			
 		} catch (FDResourceException e) {
 			throw new FDRuntimeException(e);
 		}
+		
 	}
 
 
