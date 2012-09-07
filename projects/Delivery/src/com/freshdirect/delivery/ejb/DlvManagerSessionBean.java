@@ -1965,7 +1965,7 @@ public class DlvManagerSessionBean extends GatewaySessionBeanSupport {
 		if(reservation==null || reservation.getStatusCode() != 10 /* || !reservation.isInUPS() || reservation.getUnassignedActivityType().*/)
 			return ;
 		
-		LOGGER.debug("Start updateReservationStatus for Id: "+reservation.getId()+" orderId: "+reservation.getOrderId()+"statusCode: "+
+		LOGGER.info("Start updateReservationStatus for Id: "+reservation.getId()+" orderId: "+reservation.getOrderId()+"statusCode: "+
 				reservation.getStatusCode());
 				
 		IOrderModel order = RoutingUtil.getOrderModel(reservation, address, reservation.getOrderId(), reservation.getId());
@@ -1974,6 +1974,11 @@ public class DlvManagerSessionBean extends GatewaySessionBeanSupport {
 			order = RoutingUtil.calculateReservationSize(reservation, order, erpOrderId);
 			if(order.getDeliveryInfo() != null && order.getDeliveryInfo().getPackagingDetail() != null
 						&& !EnumOrderMetricsSource.DEFAULT.equals(order.getDeliveryInfo().getPackagingDetail().getSource())) {
+				
+				LOGGER.info("update actual reservation size "+reservation.getId()+" "+order.getDeliveryInfo().getPackagingDetail().getNoOfCartons()
+												+" "+order.getDeliveryInfo().getPackagingDetail().getNoOfCases()
+												+" "+order.getDeliveryInfo().getPackagingDetail().getNoOfFreezers());
+				
 				setReservationMetricsDetails(reservation.getId(), order.getDeliveryInfo().getPackagingDetail().getNoOfCartons()
 											, order.getDeliveryInfo().getPackagingDetail().getNoOfCases()
 											, order.getDeliveryInfo().getPackagingDetail().getNoOfFreezers()

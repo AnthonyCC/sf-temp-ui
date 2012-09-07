@@ -83,7 +83,7 @@ public class RouteManagerDaoOracleImpl implements RouteManagerDaoI  {
 	
 	private static String UPDATE_ROUTEMAPPING_QRY="" +
 		"UPDATE TRANSP.ROUTE_MAPPING r set r.ROUTING_SESSION_ID = ? where r.ROUTE_DATE = ? " +
-		"and r.CUTOFF_ID = ? and r.GROUP_CODE in (SELECT a.CODE FROM TRANSP.TRN_AREA a where a.IS_DEPOT ";//<> 'X')";
+		"and r.CUTOFF_ID = ? and r.GROUP_CODE in (SELECT a.CODE FROM TRANSP.TRN_AREA a, TRANSP.TRN_REGION TR where TR.CODE = A.REGION_CODE and TR.IS_DEPOT ";//<> 'X')";
 	
 	public int updateRouteMapping(Date routeDate, String cutOffId, String sessionId, boolean isDepot) throws DataAccessException {
 		
