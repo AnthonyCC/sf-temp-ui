@@ -1288,7 +1288,10 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 	 * This method is only used in the case of gro orders that has gift payments only.
 	 */
 	public void markAsSettlementPending() throws ErpTransactionException {
-		assertStatus(EnumSaleStatus.PAYMENT_PENDING);
+//		assertStatus(EnumSaleStatus.PAYMENT_PENDING);
+		assertStatus(new EnumSaleStatus[] {EnumSaleStatus.PAYMENT_PENDING,
+				EnumSaleStatus.SETTLEMENT_SAP_PENDING
+				});
 		status = EnumSaleStatus.SETTLEMENT_PENDING;
 	}
 	
