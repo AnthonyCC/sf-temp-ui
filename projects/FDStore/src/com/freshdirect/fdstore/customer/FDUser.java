@@ -911,22 +911,31 @@ public class FDUser extends ModelSupport implements FDUserI {
 
 	public String getCustomerServiceContact() {
 		try {
+			String state="";
+			String contactNumber="1-212-796-8002";//DEFAULT
 			if (this.isChefsTable()) {
-				return "1-866-511-1240";
-			} else if (this.getShoppingCart() != null && this.getShoppingCart().getDeliveryAddress() != null) {
-				if ("PA".equalsIgnoreCase(this.getShoppingCart().getDeliveryAddress().getState())) {
-					return "1-215-825-5726";
-				} else {
-					return "1-212-796-8002";
+				contactNumber= "1-866-511-1240";
+			}else{
+				state= extractStateFromAddress();
+				if("PA".equalsIgnoreCase(state)){
+					contactNumber= "1-215-825-5726";
 				}
-			} else if (this.getState() != null && "PA".equalsIgnoreCase(this.getState())) {
-				return "1-215-825-5726";
-			} else {
-				return "1-212-796-8002";
 			}
+			return contactNumber;
+			
 		} catch (FDResourceException e) {
 			throw new FDRuntimeException(e);
 		}
+	}
+
+	private String extractStateFromAddress() {
+		String state="";
+		if (this.getShoppingCart() != null && this.getShoppingCart().getDeliveryAddress() != null) {
+			state= this.getShoppingCart().getDeliveryAddress().getState();
+		} else if (this.getState() != null) {
+			state= this.getState();
+		} 
+		return state;
 	}
 	
 	public String getCustomerServiceContactMediaPath() {

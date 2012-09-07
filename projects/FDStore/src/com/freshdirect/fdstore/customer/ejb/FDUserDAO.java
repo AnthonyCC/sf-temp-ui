@@ -16,8 +16,10 @@ import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.address.PhoneNumber;
 import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.customer.ErpOrderLineModel;
+import com.freshdirect.delivery.ejb.GeographyDAO;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDRuntimeException;
+import com.freshdirect.fdstore.StateCounty;
 import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDCartLineModel;
 import com.freshdirect.fdstore.customer.FDCartModel;
@@ -94,8 +96,35 @@ public class FDUserDAO {
 		user.setCookie(cookie);
 		user.setZipCode(zipCode);
 		user.setDepotCode(depotCode);
+		
+		setStateForAddressbyZipCode(conn, zipCode, user);
+		
 		// no need to create children, a new user doesn't have a cart yet
 		return user;
+	}
+
+	private static void setStateForAddressbyZipCode(Connection conn,
+			String zipCode, FDUser user) {
+		if(user.getAddress()!=null){
+			String state= getStateByZipcode(conn, zipCode);
+			if (state!=null) {
+				user.getAddress().setState(state);
+			}
+		}
+	}
+
+	private static String getStateByZipcode(Connection conn, String zipCode) {
+		String state= null;
+		GeographyDAO dao = new GeographyDAO();
+		try{
+			StateCounty stateCounty= dao.lookupStateCountyByZip(conn, zipCode);
+			if (null !=stateCounty && stateCounty.getState()!=null) {
+				state=stateCounty.getState();
+			}
+		} catch (SQLException e) {
+			LOGGER.info("State information not found for zipcode:"+zipCode);
+		} 
+		return state;
 	}
 
 	private static List<ErpOrderLineModel> convertToErpOrderlines(List<FDCartLineI> cartlines) throws FDResourceException {
@@ -161,7 +190,8 @@ public class FDUserDAO {
 		ps.setString(1, identity.getErpCustomerPK());
 		ResultSet rs = ps.executeQuery();
 		FDUser user = loadUserFromResultSet(rs);
-
+		setStateForAddressbyZipCode(conn,user.getZipCode(),user);
+		
 		if (!user.isAnonymous()) {
 			FDCartModel cart = new FDCartModel();
 			cart.addOrderLines(convertToCartLines(FDCartLineDAO.loadCartLines(conn, user.getPK())));
@@ -192,6 +222,7 @@ public class FDUserDAO {
 		ps.setString(1, email);
 		ResultSet rs = ps.executeQuery();
 		FDUser user = loadUserFromResultSet(rs);
+		setStateForAddressbyZipCode(conn,user.getZipCode(),user);
 
 		if (!user.isAnonymous()) {
 			FDCartModel cart = new FDCartModel();
@@ -223,6 +254,7 @@ public class FDUserDAO {
 		ps.setString(1, cookie);
 		ResultSet rs = ps.executeQuery();
 		FDUser user = loadUserFromResultSet(rs);
+		setStateForAddressbyZipCode(conn,user.getZipCode(),user);
 
 		if (!user.isAnonymous()) {
 			FDCartModel cart = new FDCartModel();
