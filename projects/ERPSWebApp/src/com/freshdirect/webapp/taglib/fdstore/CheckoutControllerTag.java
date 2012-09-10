@@ -156,17 +156,16 @@ public class CheckoutControllerTag extends AbstractControllerTag {
 						// Set the selected gift carts for processing.
 						currentUser.getShoppingCart().setSelectedGiftCards( currentUser.getGiftCardList().getSelectedGiftcards() );
 					}
-					/*
+					
 					if(EnumTransactionSource.IPHONE_WEBSITE.getCode().equals(app)) {
 						com.freshdirect.customer.ErpAddressModel dlvAddress = currentUser.getShoppingCart().getDeliveryAddress();
 						if (dlvAddress != null) {
 					        if (EnumUnattendedDeliveryFlag.NOT_SEEN.equals(dlvAddress.getUnattendedDeliveryFlag())) {
-					        	dlvAddress.setUnattendedDeliveryFlag(EnumUnattendedDeliveryFlag.OPT_IN);
-					        	result.addError(new ActionError("SHOW_UNATTENDED_MSG", "true"));
+					        	dlvAddress.setUnattendedDeliveryFlag(EnumUnattendedDeliveryFlag.OPT_IN);					        	
 					        }
 						}
 					}
-					*/
+					
 				}
 				
 				
