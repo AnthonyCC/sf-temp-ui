@@ -26,7 +26,7 @@
 					<td class="alignL"><%= (null == promotion.getRedemptionCode() ||"".equals(promotion.getRedemptionCode()))?"None - Automatic": promotion.getRedemptionCode() %></td>
 				</tr>
 				<tr>
-					<td class="promo_detail_label">TSA Promo code:</td>
+					<td class="promo_detail_label">Auto-apply (apc) code:</td>
 					<td class="alignL"><%= (null == promotion.getTsaPromoCode() ||"".equals(promotion.getTsaPromoCode()))?" ": promotion.getTsaPromoCode() %></td>
 				</tr>
 				<% if ( promotion.getTerms() != null && !"".equals(promotion.getTerms()) ) { %>
