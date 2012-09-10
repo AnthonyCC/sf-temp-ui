@@ -395,7 +395,12 @@
 					}
 			    }
 			}
+		}		
+		if(request.getParameter("apc") != null) {
+			queryString.addParam("apc", request.getParameter("apc"));
 		}
+		//APPDEV-2500 - add subtotal to oas query string
+		queryString.addParam("sub", user.getShoppingCart().getSubTotal() + "");
 		String sitePage = request.getAttribute("sitePage") == null ? "www.freshdirect.com"
 				: (String) request.getAttribute("sitePage");
 		String listPos = request.getAttribute("listPos") == null ? "SystemMessage"
