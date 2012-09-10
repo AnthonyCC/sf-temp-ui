@@ -42,25 +42,29 @@ if(template.getTotalRows() > increment && template.getStartRecord() == 0 && temp
     allLink = "<a href="+request.getRequestURI() + queryString + "startRecord=0&endRecord="+increment+">Paginate results</a>";
 }
 %>
-    <div class="sub_nav">
-        <span class="case_mgmt_header">
-        <% if (template.getQueue() != null) { %>
-            <%= previousLink + "&nbsp;&nbsp;" + template.getQueue().getCode() %> &middot; <%= template.getQueue().getName() + "&nbsp;&nbsp;" + nextLink%> 
-            (<span class="result"><%=template.getStartRecord()+ " - "%>
-                <%= ( template.getEndRecord()>template.getTotalRows())? template.getTotalRows() : template.getEndRecord()%>
-                <%=" / "+ template.getTotalRows()%></span>)
-        <% } else if ("searchCase".equalsIgnoreCase(request.getParameter("action"))) { %>
-            <%=previousLink%>&nbsp;&nbsp;Search Results &nbsp;&nbsp; <%=nextLink%>
-            (<span class="result"><%=template.getStartRecord()+ " - "%>
-                <%= ( template.getEndRecord()>template.getTotalRows())? template.getTotalRows() : template.getEndRecord()%>
-                <%=" / "+ template.getTotalRows()%></span>) 
-        <% } else if(request.getRequestURI().indexOf("main/case_history.jsp")<0){ %>
-            < Select Queue to view
-        <% } %>
-        &nbsp;&nbsp;
-        <%=allLink%>
-        </span>
-    </div>
+
+
+<div id="pagenums"><br/>
+	<div id="pagenums" style="" class="yui-pg-container"><style='padding:10px;'>Page: <span id="yui-pg0-0-pages72" class="yui-pg-pages">
+	
+<% int pages = template.getTotalRows()/increment + (template.getTotalRows() % increment > 0?1:0); 
+							for(int i=0; i < pages; i++ ) {
+								int startIdx = increment * i;
+								int endIdx = increment * (i + 1);
+								if(startRecord == startIdx) {
+									%>
+										<span class="yui-pg-current-page yui-pg-page"><%= i+1 %></span>
+									<%
+								} else {
+								%>									
+									<a title="Page <%= i %>" page="<%= i %>" class="yui-pg-page" href="<%=request.getRequestURI() + queryString%>startRecord=<%=startIdx%>&endRecord=<%=endIdx%>"><%=i+1%></a>
+								<%
+								}
+							}
+						%>
+						<br/><br/>
+	</div>
+</div>	
     <%
     if(template!=null){
         if(template.getStartDate()!=null){
