@@ -22,6 +22,8 @@
 		successPage = "#\" onclick=\"window.top.location=\'/index.jsp\'";
 		diff_zip_url = "#\" onclick=\"window.top.location=\'/about/index.jsp?siteAccessPage=aboutus&successPage=/index.jsp\'";
 	}
+	
+	String refPage = request.getParameter("referrer_page");
 %>
 <%!
     java.text.SimpleDateFormat dFormat = new java.text.SimpleDateFormat("MMMMMMMM d");
@@ -31,6 +33,11 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 	<title>FreshDirect</title>
+	<% if("slite".equals(request.getParameter("referrer_page"))) { %>
+		<%@ include file="/common/template/includes/metatags.jspf" %>
+		<%@ include file="/common/template/includes/i_javascripts.jspf" %>
+		<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
+	<% } %>
 	<%@ include file="/shared/template/includes/i_head_end.jspf" %>
 </head>
 <body>
@@ -53,18 +60,18 @@
 			all the new vars here go in to a sub-variable, so we don't override pre-existing vars
 		--%>
 		<script type="text/javascript">
-	
+			if (!top.window['_page_options']) { var _page_options = {}; }
 			top.window['_page_options'] = $jq.extend(true, top.window['_page_options']||{}, {
 				noService: {
-					referrer_page: '<%= request.getParameter("referrer_page") %>',
-					successPage: '<%= successPage %>',
+					referrer_page: '<%= refPage %>',
+					successPage: '<%= StringEscapeUtils.escapeJavaScript( successPage ) %>',
 					serviceType: '<%= serviceType %>',
 					actionURI: '<%= request.getRequestURI() %>',
 					notServiceable: <%= notServiceable %>,
 					serviceClass: '<%= (notServiceable) ? "serviceable" : "notServiceable" %>',
 					enteredEmail: '<%= request.getParameter("email")!=null?request.getParameter("email"):"" %>',
 					emailSent: <%= emailSent %>,
-					diffZipUrl: '<%= diff_zip_url %>',
+					diffZipUrl: '<%= StringEscapeUtils.escapeJavaScript( diff_zip_url ) %>',
 					errMsgs: '<%= StringEscapeUtils.escapeJavaScript( errMsgs ) %>'
 				}
 			});

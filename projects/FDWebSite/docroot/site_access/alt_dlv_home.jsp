@@ -1,6 +1,7 @@
 <%@ page import="com.freshdirect.fdstore.customer.FDUserI" %>
 <%@ page import="com.freshdirect.webapp.taglib.fdstore.SessionName" %>
 <%@ page import="com.freshdirect.common.address.AddressModel" %>
+<%@ page import="org.apache.commons.lang.StringEscapeUtils" %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%
 	FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
@@ -19,6 +20,11 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 	<head>
 		<title>FreshDirect</title>
+		<% if("slite".equals(request.getParameter("referrer_page"))) { %>
+			<%@ include file="/common/template/includes/metatags.jspf" %>
+			<%@ include file="/common/template/includes/i_javascripts.jspf" %>
+			<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
+		<% } %>
 		<%@ include file="/shared/template/includes/i_head_end.jspf" %>
 	</head>
 	<body>
@@ -31,10 +37,11 @@
 	--%>
 	<script type="text/javascript">
 
+		if (!top.window['_page_options']) { var _page_options = {}; }
 		top.window['_page_options'] = $jq.extend(true, top.window['_page_options']||{}, {
 			altDlvHome: {
 				referrer_page: '<%= request.getParameter("referrer_page") %>',
-				successPage: '<%= successPage %>',
+				successPage: '<%= StringEscapeUtils.escapeJavaScript( successPage ) %>',
 				loginLink: '/login/login_main.jsp',
 				addzipText: '<%= (address != null && address.getAddress1() != null && address.getAddress1().trim().length()>0) ? "address" : "Zip Code" %>',
 				addressText: '<%= (address != null && address.getAddress1() != null && address.getAddress1().trim().length()>0) ? ""+address.getAddress1()+", "+address.getApartment()+"<br /> ZIP "+address.getZipCode() : "" %>',

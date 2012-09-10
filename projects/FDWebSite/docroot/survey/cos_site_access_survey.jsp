@@ -7,6 +7,7 @@
 <%@ page import='com.freshdirect.fdstore.customer.*'%>
 <%@ page import='com.freshdirect.webapp.util.JspMethods' %>
 <%@ page import='com.freshdirect.framework.util.NVL'%>
+<%@ page import="org.apache.commons.lang.StringEscapeUtils" %>
 
 <fd:CheckLoginStatus id="user" guestAllowed="true" /> 
 
@@ -28,6 +29,11 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 	<head>
 		<title>FreshDirect</title>
+		<% if("slite".equals(request.getParameter("referrer_page"))) { %>
+			<%@ include file="/common/template/includes/metatags.jspf" %>
+			<%@ include file="/common/template/includes/i_javascripts.jspf" %>
+			<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
+		<% } %>
 		<%@ include file="/shared/template/includes/i_head_end.jspf" %>
 	</head>
 	<body>
@@ -40,10 +46,11 @@
 	--%>
 	<script type="text/javascript">
 
+		if (!top.window['_page_options']) { var _page_options = {}; }
 		top.window['_page_options'] = $jq.extend(true, top.window['_page_options']||{}, {
 			noServiceCOS: {
 				referrer_page: '<%= request.getParameter("referrer_page") %>',
-				successPage: '<%= successPage %>',
+				successPage: '<%= StringEscapeUtils.escapeJavaScript( successPage ) %>',
 				cosSurveyContentUrl: '/survey/includes/cos.jsp?survey=cos_site_access_survey&sa=true'
 			}
 		});
