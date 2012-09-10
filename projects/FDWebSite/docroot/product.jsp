@@ -124,6 +124,11 @@ if (EnumTemplateType.WINE.equals( productNode.getTemplateType() )) {
 <tmpl:put name='content' direct='true'>
 	<fd:CmPageView wrapIntoScriptTag="true" productModel="<%=productNode%>"/>
 	<fd:CmProductView quickbuy="false" wrapIntoScriptTag="true" productModel="<%=productNode%>"/>
+	<%
+		SkuModel _dfltSku = (SkuModel)productNode.getSkus().get( 0 );
+		FDProduct _fdprod = _dfltSku.getProduct();
+		int leadTime = _fdprod.getMaterial().getLeadTime();
+	%>
 <%if (FDStoreProperties.isAdServerEnabled()) {%>
 
 	<script type="text/javascript">
@@ -133,6 +138,11 @@ if (EnumTemplateType.WINE.equals( productNode.getTemplateType() )) {
 <%} else {%>
     <%@ include file="/shared/includes/product/i_product_quality_note.jspf" %>
 <%}%>
+
+<% if(leadTime > 0) { %>
+<CENTER><font class="text11"><b>CURRENTLY AVAILABLE - <font class="text11rbold"><%=JspMethods.convertNumToWord(leadTime)%> DAY LEAD TIME</font>.</b><br></CENTER> To assure the highest quality, our chefs prepare this item to order. <br> Please order at least two days in advance<br>(for example, order on Thursday for Saturday delivery).</font><p>
+<% } %>
+
 <fd:FDShoppingCart id='cart' result='actionResult' action='<%= tgAction %>' successPage='<%= sPage %>' source='<%= request.getParameter("fdsc.source")%>' >
 <%  //hand the action results off to the dynamic include
 	FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);

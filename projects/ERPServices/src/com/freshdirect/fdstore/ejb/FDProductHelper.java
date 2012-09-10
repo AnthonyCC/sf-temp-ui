@@ -125,7 +125,8 @@ public class FDProductHelper {
 				material.isTaxable(),
 				material.isKosherProduction(),
 				material.isPlatter(),
-				material.getBlockedDays());
+				material.getBlockedDays(),
+				material.getLeadTime());
 		
 		// Construct FDNutrition from ErpNutritionModel.value map
 		ArrayList<FDNutrition> nutrition = new ArrayList<FDNutrition>();
@@ -243,6 +244,7 @@ public class FDProductHelper {
 		double defaultPrice=0.0;
 		String defaultPriceUnit = "";
 		double promoPrice = 0.0;
+		//LOGGER.debug("Came to buildZonePriceInfo for :" + skuCode);
 		if(matPriceList == null || matPriceList.size() == 0)
 			return null;
 						
@@ -293,16 +295,17 @@ public class FDProductHelper {
 		boolean itemOnSale = DealsHelper.isItemOnSale(defaultPrice,promoPrice);;
 		int dealsPercentage=0;
 		if(itemOnSale) {
-			//LOGGER.debug("has was price for SKU " + erpProductInfo.getSkuCode());			
+			//LOGGER.debug("has was price for SKU " + skuCode);			
 			dealsPercentage=Math.max(DealsHelper.getVariancePercentage(defaultPrice, promoPrice), 0);
-		}
+		} 
 		
 		boolean isShowBurstImage = DealsHelper.isShowBurstImage(defaultPrice,promoPrice);;
 		
 		ErpMaterialPrice[] matPrices = matPriceList.toArray(new ErpMaterialPrice[0]);
 		int tieredDeal = DealsHelper.determineTieredDeal(defaultPrice, matPrices);
+		//LOGGER.debug("Tiered deal for sku: " + skuCode + " is:" + tieredDeal);
 		if (tieredDeal > 0 && DealsHelper.isDealOutOfBounds(tieredDeal)) {
-			//LOGGER.debug("tiered deal is out of bounds for SKU " + erpProductInfo.getSkuCode());
+			//LOGGER.debug("tiered deal is out of bounds for SKU " + skuCode);
 			tieredDeal = 0;
 		}
 		if ( tieredDeal > 0 ) {

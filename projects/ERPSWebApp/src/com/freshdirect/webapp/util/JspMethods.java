@@ -969,4 +969,12 @@ public class JspMethods {
 	public static ZonePriceInfoModel getZonePriceInfo(FDProductInfo productInfo, FDUserI user) {
 	    return productInfo.getZonePriceInfo(user != null ? user.getPricingContext().getZoneId() : PricingContext.DEFAULT.getZoneId());
 	}
+	
+	public static String[] numToWords = {"zero", "ONE", "TWO", "THREE", "FOUR", "FIVE", "SIX", "SEVEN", "EIGHT", "NINE", "TEN"  };
+	
+	public static String convertNumToWord(int idx) {
+		if(idx < 10)
+			return numToWords[idx];
+		return idx +"";
+	}
 }

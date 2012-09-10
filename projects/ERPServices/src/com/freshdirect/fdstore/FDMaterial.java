@@ -24,6 +24,7 @@ public class FDMaterial extends FDAttributeProxy {
 	private final boolean kosherProduction;
 	private final boolean platter;
 	private final DayOfWeekSet blockedDays;
+	private final int leadTime;
 
 	public FDMaterial(
 		AttributesI attributes,
@@ -35,7 +36,8 @@ public class FDMaterial extends FDAttributeProxy {
 		boolean taxable,
 		boolean kosherProduction,
 		boolean platter,
-		DayOfWeekSet blockedDays) {
+		DayOfWeekSet blockedDays,
+		int leadTime) {
 		super(attributes);
 		this.materialNumber = materialNumber;
 		this.atpRule = atpRule;
@@ -46,6 +48,7 @@ public class FDMaterial extends FDAttributeProxy {
 		this.kosherProduction = kosherProduction;
 		this.platter = platter;
 		this.blockedDays = blockedDays;
+		this.leadTime = leadTime;
 	}
 
 	public String getMaterialNumber() {
@@ -93,6 +96,11 @@ public class FDMaterial extends FDAttributeProxy {
 	public DayOfWeekSet getBlockedDays() {
 		return this.blockedDays == null ? DayOfWeekSet.EMPTY : this.blockedDays;
 	}
+	
+	public int getLeadTime() {
+		return leadTime;
+	}
+	
 	
 	@Override
 	public String toString() {
