@@ -1972,6 +1972,14 @@ public class DlvManagerSessionBean extends GatewaySessionBeanSupport {
 		try {
 			
 			order = RoutingUtil.calculateReservationSize(reservation, order, erpOrderId);
+			
+			// Retry SAP call if the estimate order size call fails the first time
+			if(order.getDeliveryInfo() != null && order.getDeliveryInfo().getPackagingDetail() != null
+					&& EnumOrderMetricsSource.DEFAULT.equals(order.getDeliveryInfo().getPackagingDetail().getSource())) {
+				LOGGER.info("Retrying update actual reservation size for rsvId "+ reservation.getId());
+				order = RoutingUtil.calculateReservationSize(reservation, order, erpOrderId);
+			}
+			
 			if(order.getDeliveryInfo() != null && order.getDeliveryInfo().getPackagingDetail() != null
 						&& !EnumOrderMetricsSource.DEFAULT.equals(order.getDeliveryInfo().getPackagingDetail().getSource())) {
 				
