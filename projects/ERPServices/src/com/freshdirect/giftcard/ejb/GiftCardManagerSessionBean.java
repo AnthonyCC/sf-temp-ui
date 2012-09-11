@@ -68,6 +68,7 @@ import com.freshdirect.mail.GiftCardOrderInfo;
 import com.freshdirect.mail.ejb.MailerGatewaySB;
 import com.freshdirect.payment.EnumGiftCardTransactionStatus;
 import com.freshdirect.payment.EnumGiftCardTransactionType;
+import com.freshdirect.payment.EnumPaymentMethodType;
 import com.freshdirect.payment.GivexException;
 import com.freshdirect.payment.GivexResponseModel;
 import com.freshdirect.payment.ejb.GivexServerGateway;
@@ -1354,8 +1355,11 @@ public class GiftCardManagerSessionBean extends ERPSessionBeanSupport {
                         double appliedAmt = ErpGiftCardUtil.getAppliedAmount(pm.getCertificateNumber(), invoiceGiftCards);
                         //Need to return ErpPostAuthModel    
                         ErpPostAuthGiftCardModel postAuth = postAuthGiftCard(pm, auth, referenceId, appliedAmt);							
-                        if(postAuth.isApproved() || postAuth.isDeclined())
+                        if(postAuth.isApproved() || postAuth.isDeclined()){
                             saleEB.addPostAuthorization(postAuth);
+                            if(/*EnumPaymentMethodType.GIFTCARD.equals(order.getPaymentMethod()) && */postAuth.isDeclined())
+                            	transComplete = false;
+                        }
                         else
                             transComplete = false;
                     }else{

@@ -389,6 +389,7 @@
 							<CmsField><attribute>PROD_DESCR</attribute></CmsField>
 							<CmsField><attribute>BLURB</attribute></CmsField>
 							<CmsField><attribute>SUBTITLE</attribute></CmsField>
+							<CmsField><attribute>EXCLUDED_EBT_PAYMENT</attribute></CmsField>
 						</fields>
 					</CmsSection>
 					<CmsSection>
@@ -506,7 +507,7 @@
 							<CmsField><attribute>HIDE_URL</attribute></CmsField>
 							<CmsField><attribute>REDIRECT_URL</attribute></CmsField>
 							<CmsField><attribute>HIDE_IPHONE</attribute></CmsField>
-							<CmsField><attribute>EXCLUDED_EBT_PAYMENT</attribute></CmsField>
+<!--							<CmsField><attribute>EXCLUDED_EBT_PAYMENT</attribute></CmsField>-->
 						</fields>
 					</CmsSection>
 					<CmsSection>

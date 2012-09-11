@@ -41,7 +41,9 @@ public class PercentOffApplicator implements PromotionApplicatorI {
 		if (subTotal < this.getMinSubtotal()) {
 			return false;
 		}
-		double amount = context.getShoppingCart().getPreDeductionTotal() * this.percentOff;
+		//[APPDEV-2407]-Change to Percent-Off Promotion Discount Logic (Header Level)
+		//double amount = context.getShoppingCart().getPreDeductionTotal() * this.percentOff;
+		double amount = context.getShoppingCart().getSubTotal() * this.percentOff;
 		return context.applyHeaderDiscount(promo, amount);
 	}
 	
