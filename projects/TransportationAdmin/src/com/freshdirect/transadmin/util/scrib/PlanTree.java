@@ -14,6 +14,7 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 
+import com.freshdirect.routing.constants.EnumTransportationFacilitySrc;
 import com.freshdirect.transadmin.model.EmployeeRole;
 import com.freshdirect.transadmin.model.EmployeeRoleType;
 import com.freshdirect.transadmin.model.EmployeeTeam;
@@ -323,7 +324,7 @@ class ZoneNode  extends PlanTreeNode {
 	}
 
 	Map<Date, DepotTimeNode> times = new HashMap<Date, DepotTimeNode>();
-	Map<Date, List<ScheduleEmployeeDetails>> runners = new HashMap<Date, List<ScheduleEmployeeDetails>>();
+//	Map<Date, List<ScheduleEmployeeDetails>> runners = new HashMap<Date, List<ScheduleEmployeeDetails>>();
 
 	public void prepare(Scrib s) {
 		Date key = s.getStartTime();
@@ -336,15 +337,6 @@ class ZoneNode  extends PlanTreeNode {
 	}
 
 	public void prepare(ScheduleEmployeeDetails s) {
-		if (TreeDataUtil.isRole(ScheduleEmployeeInfo.RUNNER, s.getEmpRoles())) {
-			Date key = s.getSchedule().getTime();
-			List value = (List) runners.get(key);
-			if (value == null) {
-				value = new ArrayList();
-				runners.put(key, value);
-			}
-			value.add(s);
-		} else {
 			Date key = s.getSchedule().getTime();
 			DepotTimeNode value = (DepotTimeNode) times.get(key);
 			if (value == null) {
@@ -352,7 +344,6 @@ class ZoneNode  extends PlanTreeNode {
 				times.put(key, value);
 			}
 			value.prepare(s);
-		}
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
@@ -361,50 +352,6 @@ class ZoneNode  extends PlanTreeNode {
 		for (Iterator i = times.values().iterator(); i.hasNext();) {
 			DepotTimeNode value = (DepotTimeNode) i.next();
 			result.addAll(value.getPlan());
-		}
-		if(this.runners != null && runners.size() > 0){		
-			List<ScheduleEmployeeDetails> runnerResLst = new ArrayList<ScheduleEmployeeDetails>();
-			Map<Date, List<ScheduleEmployeeDetails>> runnerMapping = (Map<Date, List<ScheduleEmployeeDetails>>)runners;
-			for(Map.Entry<Date, List<ScheduleEmployeeDetails>> runnerEntry : runnerMapping.entrySet()) {
-				runnerResLst.addAll(runnerEntry.getValue());
-			}
-			while(runnerResLst.size() > 0) {
-				Collections.sort(runnerResLst, new EmployeeScheduleComparator());
-				ScheduleEmployeeDetails s = (ScheduleEmployeeDetails) runnerResLst.toArray()[0];
-				Plan p = new Plan();
-				result.add(p);
-				
-				p.setPlanDate(s.getDate());
-				p.setRegion(s.getSchedule().getRegion());
-				p.setStartTime(s.getSchedule().getTime());
-				p.setFirstDeliveryTime(s.getSchedule().getTime());
-				p.setLastDeliveryTime(s.getSchedule().getTime());			
-				p.setIsBullpen("Y");
-				
-				int runnerMax = TransportationAdminProperties.getHelperMaxForBullpen();
-				int runnerCount = 0;
-				
-				for (Iterator k = runnerResLst.iterator(); k.hasNext();) {
-						ScheduleEmployeeDetails se = (ScheduleEmployeeDetails) k.next();
-						Collection c = se.getEmpRoles();				
-						PlanResource planResource = new PlanResource();
-						EmployeeRoleType type = new EmployeeRoleType();
-						for (Iterator si = se.getEmpRoles().iterator(); si.hasNext();) {
-							type.setCode(((EmployeeRole) (si.next())).getId().getRole());						
-							break;
-						}
-						ResourceId resource = new ResourceId();
-						resource.setResourceId(se.info.getEmployeeId());
-						planResource.setEmployeeRoleType(type);
-						planResource.setId(resource);
-						
-						if(TreeDataUtil.isRole(ScheduleEmployeeInfo.RUNNER, c)  && runnerCount < runnerMax){
-							runnerCount++;
-							p.getPlanResources().add(planResource);
-							k.remove();
-						}				
-				}
-			}
 		}
 		return result;
 	}
@@ -415,11 +362,6 @@ class ZoneNode  extends PlanTreeNode {
 			for (Map.Entry<Date, DepotTimeNode> entry : times.entrySet()) {
 				Date key = entry.getKey();
 				DepotTimeNode value = entry.getValue();
-				strBuf.append("\n\t\t\t").append(TransStringUtil.getTime(key)).append(" -> ").append(value.toString());
-			}
-			for (Map.Entry<Date, List<ScheduleEmployeeDetails>> entry : runners.entrySet()) {
-				Date key = entry.getKey();
-				List<ScheduleEmployeeDetails> value = entry.getValue();
 				strBuf.append("\n\t\t\t").append(TransStringUtil.getTime(key)).append(" -> ").append(value.toString());
 			}
 		} catch(Exception e) {
@@ -793,7 +735,7 @@ class DepotTimeNode extends PlanTreeNode  {
 	}
 
 	public void prepare(Scrib s) {
-		int n = s.getCount();
+		int n = s.getNoOfResources();
 		for (int i = 0; i < n; i++) {
 			TruckNode t = new TruckNode(this.getTree());
 			trucks.add(t);
@@ -849,12 +791,15 @@ class DepotTimeNode extends PlanTreeNode  {
 						}
 						resources.remove(_currResource);
 					} else {
-							zoneTypeResources = s.getZone().getTrnZoneType().getZonetypeResources();
+						zoneTypeResources = s.getZone().getTrnZoneType().getZonetypeResources();
+						
+						if(EnumTransportationFacilitySrc.DEPOTDELIVERY.getName().equals(s.getDestinationFacility().getTrnFacilityType().getName()))
+						{
 							for (Iterator j = zoneTypeResources.iterator(); j.hasNext();) {
 								ZonetypeResource r = (ZonetypeResource) j.next();
 								// Driver
 								if (ScheduleEmployeeInfo.DRIVER.equalsIgnoreCase(r.getId().getRole())) {
-									int min = r.getRequiredNo().intValue();
+									int min = 1;//r.getRequiredNo().intValue();
 									int count = 0;
 									for (Iterator k = resources.iterator(); k.hasNext();) {
 										ScheduleEmployeeDetails se = (ScheduleEmployeeDetails) k.next();
@@ -892,31 +837,26 @@ class DepotTimeNode extends PlanTreeNode  {
 									}
 								}
 							}
-							
-							// Runner[add all the runners available]
-							List runners = getRunners(s.getFirstDeliveryTime());
-							if (runners != null) {
-								int count = 0, max = 6;
-								for (Iterator k = runners.iterator(); k.hasNext();) {
-									if (count >= max) break;
-									ScheduleEmployeeDetails se = (ScheduleEmployeeDetails) k.next();
-									PlanResource planResource = new PlanResource();
-									EmployeeRoleType type = new EmployeeRoleType();
-									type.setCode(ScheduleEmployeeInfo.RUNNER);
-									ResourceId resource = new ResourceId();
-									resource.setResourceId(se.info.getEmployeeId());
-									planResource.setEmployeeRoleType(type);
-									planResource.setId(resource);
-									p.getPlanResources().add(planResource);
-									k.remove();
-									count++;
-								}
-								if(this.parent.runners != null && runners.size() > 0){											
-									this.parent.runners.remove(((ScheduleEmployeeDetails)runners.get(0)).getSchedule().getTime());									
-									this.parent.runners.put(((ScheduleEmployeeDetails)runners.get(0)).getSchedule().getTime(), runners);
+						}
+						else
+						{
+							int count = 0;
+							for (Iterator k = resources.iterator(); k.hasNext();) {
+								ScheduleEmployeeDetails se = (ScheduleEmployeeDetails) k.next();
+								if(se.getMembers() == null || se.getMembers().size() == 0) {
+									if (count >= 1)
+										break;
+									
+									_tmpPlanResource = TreeDataUtil.matchResource(se, ScheduleEmployeeInfo.RUNNER);
+									if(_tmpPlanResource != null) {
+										p.getPlanResources().add(_tmpPlanResource);
+										k.remove();
+										count++;
+									}
 								}
 							}
-						}				
+						}
+					}				
 				}
 			} else {
 				if(trailerResources.size() > 0) {
@@ -1018,7 +958,7 @@ class DepotTimeNode extends PlanTreeNode  {
 			
 			int driverMax = TransportationAdminProperties.getDriverMaxForBullpen();
 			int helperMax = TransportationAdminProperties.getHelperMaxForBullpen();
-			int runnerMax = TransportationAdminProperties.getHelperMaxForBullpen();
+			int runnerMax = TransportationAdminProperties.getRunnerMaxForBullpen();
 			int driverCount = 0, helperCount = 0, runnerCount = 0;
 			
 			for (Iterator k = resources.iterator(); k.hasNext();) {
@@ -1043,7 +983,13 @@ class DepotTimeNode extends PlanTreeNode  {
 						helperCount++;
 						p.getPlanResources().add(planResource);
 						k.remove();
-					}				
+					}	
+					if(TreeDataUtil.isRole(ScheduleEmployeeInfo.RUNNER, c)  && runnerCount < runnerMax){
+						runnerCount++;
+						p.getPlanResources().add(planResource);
+						k.remove();
+					}
+					
 			}
 		}
 		
@@ -1096,7 +1042,7 @@ class DepotTimeNode extends PlanTreeNode  {
 		}
 	}
 
-	public List getRunners(Date time) {
+	/*public List getRunners(Date time) {
 		Date key = null;
 		Map r = this.parent.runners;
 		for (Iterator i = r.keySet().iterator(); i.hasNext();) {
@@ -1113,7 +1059,7 @@ class DepotTimeNode extends PlanTreeNode  {
 		return (List) r.get(key);
 
 	}
-	
+	*/
 	public String toString() {
 		StringBuffer strBuf = new StringBuffer();
 		//strBuf.append("\n\t\t\t");

@@ -13,6 +13,7 @@ public class WaveInstanceKey implements java.io.Serializable {
 	private Date cutOffTime;
 	private String zone;
 	private TrnFacility originFacility;	
+	private TrnFacility destinationFacility;	
 
 	public TrnFacility getOriginFacility() {
 		return originFacility;
@@ -67,6 +68,10 @@ public class WaveInstanceKey implements java.io.Serializable {
 				+ ((cutOffTime == null) ? 0 : cutOffTime.hashCode());
 		result = prime * result
 				+ ((deliveryDate == null) ? 0 : deliveryDate.hashCode());
+		result = prime
+				* result
+				+ ((destinationFacility == null) ? 0 : destinationFacility
+						.hashCode());
 		result = prime * result
 				+ ((dispatchTime == null) ? 0 : dispatchTime.hashCode());
 		result = prime
@@ -76,9 +81,9 @@ public class WaveInstanceKey implements java.io.Serializable {
 		result = prime
 				* result
 				+ ((lastDeliveryTime == null) ? 0 : lastDeliveryTime.hashCode());
+		result = prime * result
+				+ ((originFacility == null) ? 0 : originFacility.hashCode());
 		result = prime * result + ((zone == null) ? 0 : zone.hashCode());
-		result = prime * result + ((originFacility == null) ? 0 : originFacility.hashCode());
-
 		return result;
 	}
 	@Override
@@ -100,6 +105,11 @@ public class WaveInstanceKey implements java.io.Serializable {
 				return false;
 		} else if (!deliveryDate.equals(other.deliveryDate))
 			return false;
+		if (destinationFacility == null) {
+			if (other.destinationFacility != null)
+				return false;
+		} else if (!destinationFacility.equals(other.destinationFacility))
+			return false;
 		if (dispatchTime == null) {
 			if (other.dispatchTime != null)
 				return false;
@@ -115,17 +125,25 @@ public class WaveInstanceKey implements java.io.Serializable {
 				return false;
 		} else if (!lastDeliveryTime.equals(other.lastDeliveryTime))
 			return false;
-		if (zone == null) {
-			if (other.zone != null)
-				return false;
-		} else if (!zone.equals(other.zone))
-			return false;
 		if (originFacility == null) {
 			if (other.originFacility != null)
 				return false;
 		} else if (!originFacility.equals(other.originFacility))
 			return false;
+		if (zone == null) {
+			if (other.zone != null)
+				return false;
+		} else if (!zone.equals(other.zone))
+			return false;
 		return true;
+	}
+
+	public TrnFacility getDestinationFacility() {
+		return destinationFacility;
+	}
+
+	public void setDestinationFacility(TrnFacility destinationFacility) {
+		this.destinationFacility = destinationFacility;
 	}
 	
 	

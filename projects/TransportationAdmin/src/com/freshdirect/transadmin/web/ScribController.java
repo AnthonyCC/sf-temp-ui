@@ -22,6 +22,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.freshdirect.framework.util.StringUtil;
+import com.freshdirect.routing.constants.EnumTransportationFacilitySrc;
 import com.freshdirect.routing.constants.EnumWaveInstancePublishSrc;
 import com.freshdirect.routing.model.IDeliverySlot;
 import com.freshdirect.routing.service.proxy.DeliveryServiceProxy;
@@ -414,7 +415,7 @@ public class ScribController extends AbstractMultiActionController
       			}
       			scribMapping.get(_scrib.getZone().getZoneCode()).put(_timeOfDay
       											, scribMapping.get(_scrib.getZone().getZoneCode()).get(_timeOfDay)
-      																			+ _scrib.getCount());
+      																			+ _scrib.getNoOfResources());
       		  }
       	  }        	  
         }

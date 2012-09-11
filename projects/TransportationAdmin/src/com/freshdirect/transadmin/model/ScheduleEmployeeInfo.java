@@ -23,6 +23,7 @@ public class ScheduleEmployeeInfo
 	private Collection schedule;
 	private Collection  empRole;
 	private String trnStatus;
+	private int scheduledDays;
 	
 	private EmployeeInfo leadInfo;
 	private boolean isLead;
@@ -50,6 +51,10 @@ public class ScheduleEmployeeInfo
 	public String getLastName()
 	{
 		return empInfo!=null?empInfo.getLastName():"";
+	}
+	public Date getHireDate()
+	{
+		return empInfo!=null?empInfo.getHireDate():null;
 	}
 	public EmployeeInfo getEmpInfo() {
 		return empInfo;
@@ -93,13 +98,30 @@ public class ScheduleEmployeeInfo
 							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
-						result=(se.getDepotZone()!=null?se.getDepotZone().getName()+"-":"")+se.getRegion().getName()+"-"+time;
+						result=(se.getDepotZone()!=null?se.getDepotZone().getZoneCode()+"-":"")+se.getRegion().getName()+"-"+time;
+						
 					}
 				}
 			}
 		}
 		if(result==null)result=NO_SHIFT;
 		return result;
+	}
+	
+	
+	public int getScheduledDays()
+	{
+		scheduledDays = 0;
+		if(schedule!=null)
+		{
+			for(Iterator it=schedule.iterator();it.hasNext();)
+			{
+				ScheduleEmployee se=(ScheduleEmployee)it.next();
+				if(!(se.getRegion()==null&&se.getTime()==null))
+					scheduledDays++;
+			}
+		}
+		return scheduledDays;
 	}
 	
 	public String getMon()

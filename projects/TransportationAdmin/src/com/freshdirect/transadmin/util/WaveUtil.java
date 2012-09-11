@@ -53,9 +53,9 @@ public class WaveUtil {
 		// Calculate and consolidate Wave Instance as needed
 		for(Map.Entry<String, List<IWaveInstanceSource>> waveByZone: waveMapping.entrySet()) {	
 			waveSourceForCalc = waveByZone.getValue();
-			if(zonesForConsolidation.contains(waveByZone.getKey())) {
+			/*if(zonesForConsolidation.contains(waveByZone.getKey())) {
 				waveSourceForCalc = consolidateWaveInstance(waveSourceForCalc);
-			}
+			}*/
 			List<List<WaveInstance>> _tmpResult = calculateWaveInstance(waveSourceForCalc, deliveryDate, waveByZone.getKey()
 																			, actionBy, source, dispManager);
 			waveInstancesToSave.addAll(_tmpResult.get(0));
@@ -129,6 +129,7 @@ public class WaveUtil {
 				key.setCutOffTime(_tmpWaveInstance.getCutOffTime());
 				key.setZone(_tmpWaveInstance.getArea());
 				key.setOriginFacility(_tmpWaveInstance.getOriginFacility());
+				key.setDestinationFacility(_tmpWaveInstance.getDestinationFacility());
 
 				waveMappingCurrent.put(key, _tmpWaveInstance);
 			}

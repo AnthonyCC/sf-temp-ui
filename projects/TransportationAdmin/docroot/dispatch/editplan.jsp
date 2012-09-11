@@ -327,7 +327,7 @@
 			  if( result[0] === 'SIT'){
 				  alert('Origin facility cannot be delivery zone.');
 				  originRefVar.selectedIndex = 0; return;
-			  } else if( result[1] === 'DPT'){
+			  } else if( result[1] === 'PLANT'){
 				  alert('Destination facility cannot be main plant.');
 				  destRefVar.selectedIndex = 0; return;
 			  } else if((result[1] === result[0]) && (originRef != '' && destRef != '')){

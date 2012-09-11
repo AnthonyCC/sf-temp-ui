@@ -7,6 +7,7 @@ public interface IWaveInstanceSource {
 	
 	Date getDeliveryDate();
 	TrnFacility getOriginFacility();
+	TrnFacility getDestinationFacility();
 	Zone getZone();
 	Date getStartTime();
 	Date getFirstDeliveryTime();
@@ -17,6 +18,7 @@ public interface IWaveInstanceSource {
 	boolean needsConsolidation();
 	
 	void setOriginFacility(TrnFacility originFacility);
+	void setDestinationFacility(TrnFacility destinationFacility);
 	void setStartTime(Date value);
 	void setFirstDeliveryTime(Date value);
 	void setLastDeliveryTime(Date value);

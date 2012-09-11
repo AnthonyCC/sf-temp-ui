@@ -30,6 +30,8 @@ public class WaveInstance implements java.io.Serializable, TrnBaseEntityI  {
 	private String notificationMessage;
 	private Boolean forceSynchronize;
 	private TrnFacility originFacility;
+	private TrnFacility destinationFacility;	
+
 	
 	public TrnFacility getOriginFacility() {
 		return originFacility;
@@ -136,6 +138,14 @@ public class WaveInstance implements java.io.Serializable, TrnBaseEntityI  {
 	public boolean isObsoleteEntity() {
 		// TODO Auto-generated method stub
 		return false;
+	}
+
+	public TrnFacility getDestinationFacility() {
+		return destinationFacility;
+	}
+
+	public void setDestinationFacility(TrnFacility destinationFacility) {
+		this.destinationFacility = destinationFacility;
 	}
 
 }

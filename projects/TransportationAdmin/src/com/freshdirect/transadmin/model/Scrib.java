@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.TimeZone;
 
+import com.freshdirect.routing.constants.EnumTransportationFacilitySrc;
 import com.freshdirect.transadmin.util.TransStringUtil;
 
 public class Scrib implements java.io.Serializable, IWaveInstanceSource {
@@ -395,7 +396,8 @@ public class Scrib implements java.io.Serializable, IWaveInstanceSource {
 	public int getNoOfResources() {
 		// TODO Auto-generated method stub
 		return this.getZone() != null && this.getZone().getArea() != null 
-						&& "X".equalsIgnoreCase(this.getZone().getArea().getIsDepot()) ? this.getResources() : this.getCount() ;
+						&& "X".equalsIgnoreCase(this.getZone().getArea().getIsDepot()) 
+						&& EnumTransportationFacilitySrc.DEPOTDELIVERY.getName().equals(this.getOriginFacility().getTrnFacilityType().getName()) ? this.getResources() : this.getCount() ;
 	}
 
 	@Override
@@ -419,7 +421,8 @@ public class Scrib implements java.io.Serializable, IWaveInstanceSource {
 	public void setNoOfResources(int value) {
 		// TODO Auto-generated method stub
 		if(this.getZone() != null && this.getZone().getArea() != null 
-				&& "X".equalsIgnoreCase(this.getZone().getArea().getIsDepot())) {
+				&& "X".equalsIgnoreCase(this.getZone().getArea().getIsDepot())
+				&& EnumTransportationFacilitySrc.DEPOTDELIVERY.getName().equals(this.getOriginFacility().getTrnFacilityType().getName())) {
 			this.setResources(value);
 		} else {
 			this.setCount(value);

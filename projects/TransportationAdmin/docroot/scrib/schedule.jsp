@@ -156,7 +156,8 @@
 								<ec:column property="status" title="Status"/>						
 								<ec:column property="firstName" title="First Name"/>
 								<ec:column property="lastName" title="Last Name"/>
-								<ec:column alias="kronosId" property="employeeId" title="KronosID"/>   
+								<ec:column alias="kronosId" property="employeeId" title="KronosID"/> 
+								<ec:column property="hireDate" title="Seniority Rank Date"/> 
 								<ec:column  property="employeeRoleType" title="Role"/> 
 								<ec:column property="leadInfoEx.name" title="Lead"/>                                  								
                                 <ec:column property="mon" title="MON"/>
@@ -166,6 +167,8 @@
                                 <ec:column property="fri" title="FRI"/>
                                 <ec:column property="sat" title="SAT"/>
                                 <ec:column property="sun" title="SUN"/>
+                               	<ec:column property="scheduledDays" title="Days"/>
+                                
 							</ec:row>
 						</ec:table>
     

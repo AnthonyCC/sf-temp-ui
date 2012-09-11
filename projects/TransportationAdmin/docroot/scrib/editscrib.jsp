@@ -95,7 +95,7 @@
 						<tr id="zoneRow">
 							<td align="right">Zone</td>
 							<td>
-								<c:if test="${scribForm.destinationFacility.trnFacilityType.name ne 'SIT'}">
+								<c:if test="${scribForm.destinationFacility.trnFacilityType.name ne 'SIT' and scribForm.destinationFacility.trnFacilityType.name ne 'DPT'}">
 									<c:set var="_disableZone" value="true"/>
 								</c:if>
 								<form:select path="zoneS" disabled="${_disableZone}" onChange="zoneChanged()">
@@ -245,7 +245,7 @@
 			  if( result[0] === 'SIT'){
 				  alert('Origin facility cannot be delivery zone.');
 				  originRefVar.selectedIndex = 0;
-			  } else if( result[1] === 'DPT'){
+			  } else if( result[1] === 'PLANT'){
 				  alert('Destination facility cannot be main plant.');
 				  destRefVar.selectedIndex = 0;
 			  } else if((result[1] === result[0]) && (originRef != '' && destRef != '')){
@@ -256,7 +256,11 @@
 					if( result[1] === 'SIT'){
 						document.getElementById("zoneS").disabled=false;
 						document.getElementById('region').disabled= true;
-					}else{
+					}else if(result[1] === 'DPT'){
+						document.getElementById("zoneS").disabled=false;
+						document.getElementById('region').disabled= false;
+					}
+					else{
 						document.getElementById("zoneS").disabled=true;
 						document.getElementById("zoneS").selectedIndex=0;
 						document.getElementById('region').disabled= false;

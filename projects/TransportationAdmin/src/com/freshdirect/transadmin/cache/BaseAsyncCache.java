@@ -56,7 +56,7 @@ public abstract class BaseAsyncCache<K, V> {
 	    			   public V load(K key) {
 	    				   V result = null;  // Never return null to Guava
 	    				   try {
-	    					   LOGGER.info("START TO LOAD CACHE "+getCacheIdentifier());
+	    					   LOGGER.info("START TO LOAD CACHE "+getCacheIdentifier()+" for key "+key);
 	    					   lastRefresh = System.currentTimeMillis();
 	    					   //throw new AsyncCacheException(AsyncCacheExceptionType.LOAD_BLOCKED);
 	    					   result = loadData(key);

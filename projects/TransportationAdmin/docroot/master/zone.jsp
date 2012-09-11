@@ -76,7 +76,7 @@
 							  <ec:column property="name" title="Zone Name"/>
 							  <ec:column alias="trnZoneType" property="trnZoneType.name" title="Zone Type"/>
 							  <ec:column alias="area" property="area.name" title="Area"/>
-							  <ec:column alias="region" property="region.name" title="Region"/>
+							  <ec:column alias="region" property="region.name" title="Zone Region"/>
 							  <ec:column alias="serviceTimeType" property="defaultServiceTimeType.name" title="ServiceTime Type"/>
 							  <ec:column alias="unattended" property="unattended" title="Unattended"/>
                               <ec:column  filterable="true" property="amZoneSupervisors"  cell="com.freshdirect.transadmin.web.ui.FDZoneSupervisorCell" title="AM Supervisors" alias="amSupervisors"/>
