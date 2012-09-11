@@ -217,10 +217,13 @@ if (request.getParameter("employeeId") != null) {
 <%// CONFIRMATION MESSAGE %>
 <%if(result.isSuccess() && "POST".equalsIgnoreCase(request.getMethod())){
     String confirmationMsg = "Your changes have been saved.";
+    /* remove fraud messaging 
 	if ( user.isFraudulent()) { 
 		confirmationMsg = confirmationMsg +"<br><br>" + MessageFormat.format(SystemMessageList.MSG_NOT_UNIQUE_INFO, new Object[]{user.getCustomerServiceContact()});
 	}
+    */
 %>
+<%= confirmationMsg %>
 <%@ include file="/includes/i_confirmation_messages.jspf"%>
 <%	} %>
 
