@@ -190,7 +190,7 @@
                </tr>
                
 			    <tr>
-                  <td>No. of Containers / Trailer</td>
+                  <td>No. of Pallets / Trailer</td>
                   <td>                  
                     <form:input maxlength="50" size="30" path="defaultTrailerContainerCount" />
                 </td>
@@ -200,7 +200,7 @@
                </tr>
 
 			    <tr>
-                  <td>No. of Cartons / Container</td>
+                  <td>No. of Cartons / Pallet</td>
                   <td>                  
                     <form:input maxlength="50" size="30" path="defaultContainerCartonCount" />
                 </td>

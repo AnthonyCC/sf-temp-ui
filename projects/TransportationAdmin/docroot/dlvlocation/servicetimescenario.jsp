@@ -118,8 +118,8 @@
 		          <ec:column property="scenario.needsLoadBalance" width="5px" title="Load Balance"/> 
 		          <ec:column property="scenario.loadBalanceFactor" width="5px" title="Balance Factor"/>
 		          <ec:column format="com.freshdirect.routing.constants.EnumBalanceBy" cell="enumcol" property="scenario.balanceBy" title="Balance By"/>                         
-		          <ec:column property="scenario.defaultTrailerContainerCount" width="10px" title="No. of Containers/ Trailer"/>
-				  <ec:column property="scenario.defaultContainerCartonCount" width="10px" title="No. of Cartons/ Container"/>
+		          <ec:column property="scenario.defaultTrailerContainerCount" width="10px" title="No. of Pallets/ Trailer"/>
+				  <ec:column property="scenario.defaultContainerCartonCount" width="10px" title="No. of Cartons/ Pallet"/>
           </ec:row>
           </ec:table>
        </form>
