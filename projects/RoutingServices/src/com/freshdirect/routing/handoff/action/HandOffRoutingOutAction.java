@@ -164,7 +164,11 @@ public class HandOffRoutingOutAction extends AbstractHandOffAction {
 					for(Map.Entry<String, Set<IRouteModel>> areaEntry : sesEntry.getValue().entrySet()) {
 						
 						if(areaEntry.getValue() != null) {
-							for(IRouteModel route : areaEntry.getValue()) {
+							
+							Set<IRouteModel> routeEntry =  new TreeSet<IRouteModel>(new RouteDispatchComparator());
+							routeEntry = areaEntry.getValue();
+						
+							for(IRouteModel route : routeEntry) {
 								_stops = new TreeSet();
 								if(!routeCnts.containsKey(areaEntry.getKey())) {
 									routeCnts.put(areaEntry.getKey(), 0);
@@ -416,6 +420,16 @@ public class HandOffRoutingOutAction extends AbstractHandOffAction {
 			int routeId2 = getRouteIndex(( (IRouteModel) obj2).getRouteId());			
 			return routeId1 - routeId2;
 		}		
+	}
+
+	protected class RouteDispatchComparator implements Comparator<IRouteModel> {		
+		
+		public int compare(IRouteModel obj1, IRouteModel obj2){
+			if(obj1.getDispatchTime() != null &&  obj2.getDispatchTime() != null) {
+				return obj1.getDispatchTime().getAsDate().compareTo(obj2.getDispatchTime().getAsDate());
+			}
+			return 0;
+		}	
 	}
 	
 	protected class StopComparator implements Comparator<IRoutingStopModel> {		
@@ -816,7 +830,7 @@ public class HandOffRoutingOutAction extends AbstractHandOffAction {
 		public int compare(IHandOffBatchRoute route1, IHandOffBatchRoute route2) {
 			if(route1.getDispatchTime() != null &&  route2.getDispatchTime() != null) {
 				return route1.getDispatchTime().getAsDate().compareTo(route2.getDispatchTime().getAsDate());
-}
+			}
 			return 0;
 		}
 
