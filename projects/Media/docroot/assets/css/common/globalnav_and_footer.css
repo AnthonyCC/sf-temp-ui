@@ -36,9 +36,12 @@
 	height:23px;
 	line-height:23px;
 	text-align:center;
-	padding-top:30px;
 	font-size:13px;
 	background:url('../../../media_stat/images/navigation/globalnav_and_footer/headernav.png') no-repeat; 
+}
+
+.globalnavitem span {
+	visibility: hidden;
 }
 
 .ie6 .globalnavitem {
