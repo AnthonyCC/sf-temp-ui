@@ -37,7 +37,7 @@
 	--%>
 	<script type="text/javascript">
 
-		_page_options = $jq.extend(true, _page_options||{}, {
+		var _page_options = $jq.extend(true, _page_options||{}, {
 			altDlvHome: {
 				referrer_page: '<%= request.getParameter("referrer_page") %>',
 				successPage: '<%= StringEscapeUtils.escapeJavaScript( successPage ) %>',
