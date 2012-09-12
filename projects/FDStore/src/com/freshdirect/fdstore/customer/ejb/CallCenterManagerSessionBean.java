@@ -75,6 +75,7 @@ import com.freshdirect.customer.ErpActivityRecord;
 import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpChargeLineModel;
 import com.freshdirect.customer.ErpComplaintException;
+import com.freshdirect.customer.ErpComplaintReason;
 import com.freshdirect.customer.ErpDeliveryInfoModel;
 import com.freshdirect.customer.ErpInvoiceLineI;
 import com.freshdirect.customer.ErpPaymentMethodI;
@@ -106,6 +107,7 @@ import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.content.meal.MealModel;
 import com.freshdirect.fdstore.content.meal.ejb.MealPersistentBean;
+import com.freshdirect.fdstore.customer.CustomerCreditModel;
 import com.freshdirect.fdstore.customer.FDActionInfo;
 import com.freshdirect.fdstore.customer.FDAuthInfo;
 import com.freshdirect.fdstore.customer.FDAuthInfoSearchCriteria;
@@ -3274,6 +3276,155 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 			}
 		}
 		return vsMsg;
+	}
+	
+	public List getAutoLateDeliveryCredits() throws FDResourceException {
+		Connection conn = null;
+		PreparedStatement ps = null;
+		ResultSet rset = null;
+		List<CustomerCreditModel> ccmList = new ArrayList<CustomerCreditModel>();
+		try {
+			conn = this.getConnection();
+			ps = conn.prepareStatement("select ID, to_char(order_Date, 'MM/DD/YYYY') as order_date, status, approved_by from cust.AUTO_LATE_DELIVERY order by order_date desc");
+			rset = ps.executeQuery();
+			while(rset.next()) {
+				CustomerCreditModel ccm = new CustomerCreditModel();
+				ccm.setId(rset.getString("ID"));
+				ccm.setOrderDate(rset.getString("order_date"));
+				ccm.setStatus(rset.getString("status"));
+				ccm.setApprovedBy(rset.getString("approved_by"));
+				ccmList.add(ccm);
+			}
+		} catch (SQLException sqle) {
+			LOGGER.error(sqle.getMessage(), sqle);			
+		} finally {
+			try {
+				if (conn != null) 				
+					conn.close();
+				if(ps != null)
+					ps.close();
+				if(rset != null)
+					rset.close();
+			} catch (SQLException sqle) {
+				LOGGER.debug("Error while cleaning:", sqle);
+			}
+		}
+		return ccmList;
+	}
+	
+	public List getAutoLateDeliveryOrders(String id) throws FDResourceException {
+		Connection conn = null;
+		PreparedStatement ps = null;
+		ResultSet rset = null;
+		List<CustomerCreditModel> ccmList = new ArrayList<CustomerCreditModel>();
+		try {
+			conn = this.getConnection();
+			ps = conn.prepareStatement("select sale_id, a.customer_id, rem_amount, rem_type, original_amount, tax_amount, tax_rate, dlv_pass_id, CI.FIRST_NAME, CI.LAST_NAME, complaint_code, c.user_id, a.status " +
+											"from cust.AUTO_LATE_DELIVERY_ORDERS a, " +
+											"cust.customerinfo ci, " +
+											"cust.customer c " +
+											"where auto_late_delivery_id = ? " +
+											"and a.customer_id = ci.customer_id " +
+											"and a.customer_id = c.id " +
+											"and a.dlv_pass_id is null");
+			ps.setString(1, id);
+			rset = ps.executeQuery();
+			while(rset.next()) {
+				CustomerCreditModel ccm = new CustomerCreditModel();
+				ccm.setId(id);
+				ccm.setSaleId(rset.getString("sale_id"));
+				ccm.setCustomerId(rset.getString("customer_id"));
+				ccm.setRemainingAmout(rset.getDouble("rem_amount"));
+				ccm.setRemType(rset.getString("rem_type"));
+				ccm.setOriginalAmount(rset.getDouble("original_amount"));
+				ccm.setTaxAmount(rset.getDouble("tax_amount"));
+				ccm.setTaxRate(rset.getDouble("tax_rate"));
+				ccm.setDlvPassId(rset.getString("dlv_pass_id"));
+				ccm.setFirstName(rset.getString("first_name"));
+				ccm.setLastName(rset.getString("last_name"));
+				ccm.setNewCode(rset.getString("complaint_code"));
+				ccm.setEmail(rset.getString("user_id"));
+				ccm.setStatus(rset.getString("status"));
+				ccmList.add(ccm);
+			}
+		} catch (SQLException sqle) {
+			LOGGER.error(sqle.getMessage(), sqle);			
+		} finally {
+			try {
+				if (conn != null) 				
+					conn.close();
+				if(ps != null)
+					ps.close();
+				if(rset != null)
+					rset.close();
+			} catch (SQLException sqle) {
+				LOGGER.debug("Error while cleaning:", sqle);
+			}
+		}
+		return ccmList;
+	}
+	
+	public List getAutoLateDlvPassOrders(String id) throws FDResourceException {
+		Connection conn = null;
+		PreparedStatement ps = null;
+		ResultSet rset = null;
+		List<CustomerCreditModel> ccmList = new ArrayList<CustomerCreditModel>();
+		try {
+			conn = this.getConnection();
+			ps = conn.prepareStatement("select sale_id, a.customer_id, rem_amount, rem_type, original_amount, tax_amount, tax_rate, dlv_pass_id, CI.FIRST_NAME, CI.LAST_NAME, complaint_code, c.user_id, a.status " +
+											"from cust.AUTO_LATE_DELIVERY_ORDERS a, " +
+											"cust.customerinfo ci, " +
+											"cust.customer c " +
+											"where auto_late_delivery_id = ? " +
+											"and a.customer_id = ci.customer_id " +
+											"and a.customer_id = c.id " +
+											"and a.dlv_pass_id is not null");
+			ps.setString(1, id);
+			rset = ps.executeQuery();
+			while(rset.next()) {
+				CustomerCreditModel ccm = new CustomerCreditModel();
+				ccm.setId(id);
+				ccm.setSaleId(rset.getString("sale_id"));
+				ccm.setCustomerId(rset.getString("customer_id"));
+				ccm.setRemainingAmout(rset.getDouble("rem_amount"));
+				ccm.setRemType(rset.getString("rem_type"));
+				ccm.setOriginalAmount(rset.getDouble("original_amount"));
+				ccm.setTaxAmount(rset.getDouble("tax_amount"));
+				ccm.setTaxRate(rset.getDouble("tax_rate"));
+				ccm.setDlvPassId(rset.getString("dlv_pass_id"));
+				ccm.setFirstName(rset.getString("first_name"));
+				ccm.setLastName(rset.getString("last_name"));
+				ccm.setNewCode(rset.getString("complaint_code"));
+				ccm.setEmail(rset.getString("user_id"));
+				ccm.setStatus(rset.getString("status"));
+				ccmList.add(ccm);
+			}
+		} catch (SQLException sqle) {
+			LOGGER.error(sqle.getMessage(), sqle);			
+		} finally {
+			try {
+				if (conn != null) 				
+					conn.close();
+				if(ps != null)
+					ps.close();
+				if(rset != null)
+					rset.close();
+			} catch (SQLException sqle) {
+				LOGGER.debug("Error while cleaning:", sqle);
+			}
+		}
+		return ccmList;
+	}
+	
+	public ErpComplaintReason getReasonByCompCode(String cCode) throws FDResourceException {
+		try {
+			ErpComplaintManagerSB complaintSB = this.getComplaintManagerHome().create();
+			return complaintSB.getReasonByCompCode(cCode);
+		} catch (RemoteException re) {
+			throw new FDResourceException(re);
+		} catch (CreateException ce) {
+			throw new FDResourceException(ce);
+		}
 	}
 	
 }

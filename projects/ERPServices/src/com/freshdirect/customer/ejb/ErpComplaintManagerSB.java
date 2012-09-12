@@ -9,6 +9,9 @@
 package com.freshdirect.customer.ejb;
 
 import javax.ejb.*;
+
+import com.freshdirect.customer.ErpComplaintReason;
+
 import java.rmi.RemoteException;
 import java.util.Collection;
 import java.util.Map;
@@ -28,4 +31,6 @@ public interface ErpComplaintManagerSB extends EJBObject {
 	 public Collection getPendingComplaintSaleIds() throws RemoteException;
 
 	 public void rejectMakegoodComplaint(String makegood_sale_id) throws RemoteException;
+	 
+	 public ErpComplaintReason getReasonByCompCode(String cCode) throws RemoteException;
 }

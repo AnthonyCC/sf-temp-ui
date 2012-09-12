@@ -29,6 +29,7 @@ import com.freshdirect.deliverypass.DeliveryPassModel;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDRuntimeException;
 import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.customer.CustomerCreditModel;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.core.ServiceLocator;
 import com.freshdirect.framework.util.ExpiringReference;
@@ -558,6 +559,54 @@ public class CrmManager {
 			return this.getCrmManagerSB().getAuthorizations(role, filter);
 		} catch (RemoteException e) {
 			throw new FDResourceException(e, "Error in CrmManagerSB while getting authorizations.");
+		}
+	}
+	
+	public CustomerCreditModel getOrderForLateCredit(String saleId, String autoId) throws FDResourceException {
+		try {			
+			return this.getCrmManagerSB().getOrderForLateCredit(saleId,autoId);
+		} catch (RemoteException e) {
+			throw new FDResourceException(e, "Error in CrmManagerSB while getting getOrderForLateCredit.");
+		}
+	}
+	
+	public boolean isOrderCreditedForLateDelivery(String saleId) throws FDResourceException {
+		try {
+			return this.getCrmManagerSB().isOrderCreditedForLateDelivery(saleId);
+		} catch (RemoteException e) {
+			throw new FDResourceException(e, "Error in CrmManagerSB while getting isOrderCreditedForLateDelivery.");
+		}
+	}
+	
+	public DeliveryPassModel getDeliveryPassInfo(String dlvPassId) throws FDResourceException {
+		try {
+			return this.getCrmManagerSB().getDeliveryPassInfoById(dlvPassId);
+		} catch (RemoteException e) {
+			throw new FDResourceException(e, "Error in CrmManagerSB while getting getDeliveryPassInfo.");
+		}
+	}
+	
+	public void updateAutoLateCredit(String autoId, String orderId) throws FDResourceException {		
+		try {
+			this.getCrmManagerSB().updateAutoLateCredit(autoId, orderId);
+		} catch (RemoteException e) {
+			throw new FDResourceException(e, "Error in CrmManagerSB while getting updateAutoLateCredit.");
+		}
+	}
+	
+	public DeliveryPassModel getActiveDP(String custId) throws FDResourceException {
+		try {
+			return this.getCrmManagerSB().getActiveDP(custId);
+		} catch (RemoteException e) {
+			throw new FDResourceException(e, "Error in CrmManagerSB while getting getActiveDP.");
+		}
+	}
+	
+	public void updateLateCreditsRejected(String autoId, String agent) throws FDResourceException {
+		try {
+			this.getCrmManagerSB().updateLateCreditsRejected(autoId, agent);
+		} catch (RemoteException e) {
+			throw new FDResourceException(e, "Error in CrmManagerSB while getting getActiveDP.");
 		}
 	}
 	

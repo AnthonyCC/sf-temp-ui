@@ -115,5 +115,30 @@ public class ComplaintDAO implements java.io.Serializable {
 		ps.close();
 		ps = null;
 	}
+	
+	public ErpComplaintReason getReasonByCompCode(Connection conn, String cCode) throws SQLException {
+		PreparedStatement stmt = conn.prepareStatement(GET_REASON);		
+		stmt.setString(1, cCode);
+		ResultSet rs = stmt.executeQuery();
+		ErpComplaintReason ecr = null;
+		while (rs.next()) {
+            ecr = new ErpComplaintReason(rs.getString(1), rs.getString(2),rs.getString(3), rs.getString(4),
+            		rs.getInt(5), rs.getString(6), EnumComplaintDlvIssueType.getEnum(rs.getString(6)) );
+		}
+		rs.close();
+		stmt.close();
+		return ecr;
+	}
+	
+	public static String GET_REASON = 
+		"select cdc.id, cd.code as deptCode, cd.NAME as deptName, cc.name as reason, " + 
+          "cc.priority as priority, cc.subject_code as subject, dlv_issue_code " +
+        "from cust.complaint_dept cd, " +
+          "cust.complaint_code cc, " +
+          "cust.complaint_dept_code cdc " + 
+        "where cc.code=cdc.comp_code " +
+          "and cd.code=cdc.comp_dept " +
+          "and cdc.obsolete is null " +
+          "and cdc.comp_code = ?";
 
 }

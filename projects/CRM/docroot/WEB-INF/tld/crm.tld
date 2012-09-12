@@ -1462,4 +1462,16 @@
             <rtexprvalue>true</rtexprvalue>
         </attribute>
     </tag>
+	<tag>
+		<name>AutoLateDlvCreditTag</name>
+		<tagclass>com.freshdirect.webapp.taglib.callcenter.AutoLateDlvCreditTag</tagclass>
+		<teiclass>com.freshdirect.webapp.taglib.callcenter.AutoLateDlvCreditTag$TagEI</teiclass>
+		<bodycontent>JSP</bodycontent>
+		<info></info>	
+		<attribute>
+            <name>result</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>		
+	</tag>
 </taglib>

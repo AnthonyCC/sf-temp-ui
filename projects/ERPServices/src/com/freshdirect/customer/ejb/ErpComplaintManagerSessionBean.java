@@ -8,12 +8,14 @@
  */
 package com.freshdirect.customer.ejb;
 
+import java.rmi.RemoteException;
 import java.sql.*;
 import java.util.*;
 import javax.ejb.*;
 
 import org.apache.log4j.*;
 
+import com.freshdirect.customer.ErpComplaintReason;
 import com.freshdirect.framework.core.*;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
@@ -95,6 +97,24 @@ public class ErpComplaintManagerSessionBean extends SessionBeanSupport {
 		try {
 			conn = getConnection();
 			dao.rejectMakegoodComplaint(conn, makegood_sale_id);
+		} catch (SQLException ex) {
+			LOGGER.error("SQLException occured", ex);
+			throw new EJBException( ex.getMessage() );
+		} finally {
+			try {
+				if (conn!=null) conn.close();
+			} catch (SQLException ex) {
+				LOGGER.warn("Unable to close Connection", ex);
+				throw new EJBException( ex.getMessage() );
+			}
+		}
+	}
+	
+	public ErpComplaintReason getReasonByCompCode(String cCode) {
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			return dao.getReasonByCompCode(conn, cCode);
 		} catch (SQLException ex) {
 			LOGGER.error("SQLException occured", ex);
 			throw new EJBException( ex.getMessage() );

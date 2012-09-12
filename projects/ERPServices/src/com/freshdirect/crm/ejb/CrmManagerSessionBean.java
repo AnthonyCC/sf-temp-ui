@@ -10,6 +10,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -65,6 +66,7 @@ import com.freshdirect.deliverypass.EnumDlvPassStatus;
 import com.freshdirect.deliverypass.ejb.DlvPassManagerHome;
 import com.freshdirect.deliverypass.ejb.DlvPassManagerSB;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.customer.CustomerCreditModel;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.core.ServiceLocator;
 import com.freshdirect.framework.core.SessionBeanSupport;
@@ -1313,4 +1315,132 @@ public class CrmManagerSessionBean extends SessionBeanSupport {
 			}
 		}
 	}
+	
+	public CustomerCreditModel getOrderForLateCredit(String saleId, String autoId) throws FDResourceException {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rset = null;
+		CustomerCreditModel ccm = new CustomerCreditModel();
+		try {
+			conn = getConnection();
+			pstmt = conn.prepareStatement(GET_SALE_DETS);
+			pstmt.setString(1, saleId);
+			pstmt.setString(2, autoId);
+			rset = pstmt.executeQuery();
+			while(rset.next()) {
+				ccm.setSaleId(rset.getString("SALE_ID"));
+				ccm.setRemType(rset.getString("REM_TYPE"));
+				ccm.setCustomerId(rset.getString("CUSTOMER_ID"));
+				ccm.setRemainingAmout(rset.getDouble("REM_AMOUNT"));
+				ccm.setOriginalAmount(rset.getDouble("ORIGINAL_AMOUNT"));
+				ccm.setTaxRate(rset.getDouble("TAX_RATE"));
+				ccm.setDlvPassId(rset.getString("DLV_PASS_ID"));
+				ccm.setNewCode(rset.getString("complaint_code"));
+				ccm.setFdCustomerId(rset.getString("ID"));
+			}
+		} catch (SQLException sqle) {
+			throw new FDResourceException(sqle);
+		} finally {
+			close(conn);
+		}
+		return ccm;
+	}
+	
+	public boolean isOrderCreditedForLateDelivery(String saleId) throws FDResourceException {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rset = null;
+		try {
+			conn = getConnection();
+			pstmt = conn.prepareStatement(GET_COMPLAINT_CODE);
+			pstmt.setString(1, saleId);
+			rset = pstmt.executeQuery();
+			if(rset.next()) {
+				return true;
+			}
+		} catch (SQLException sqle) {
+			throw new FDResourceException(sqle);
+		} finally {
+			close(conn);
+		}
+		return false;
+	}
+	
+	public DeliveryPassModel getDeliveryPassInfoById(String dlvPassId) throws CreateException, RemoteException, FDResourceException {
+		DlvPassManagerSB sb = this.getDlvPassManagerHome().create();		
+		return sb.getDeliveryPassInfo(dlvPassId);
+	}
+	
+	public void updateAutoLateCredit(String autoId, String orderId) throws FDResourceException {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rset = null;
+		try {
+			conn = getConnection();
+			pstmt = conn.prepareStatement(UPDATE_STATUS_FLAG);
+			pstmt.setString(1, autoId);
+			pstmt.setString(2, orderId);
+			pstmt.execute();
+		} catch (SQLException sqle) {
+			throw new FDResourceException(sqle);
+		} finally {
+			close(conn);
+		}
+	}
+	
+	public DeliveryPassModel getActiveDP(String custId) throws FDResourceException,RemoteException,CreateException {
+		DlvPassManagerSB sb = this.getDlvPassManagerHome().create();		
+		List dps = sb.getDeliveryPasses(custId);
+		Iterator iter = dps.iterator();
+		while(iter.hasNext()) {
+			DeliveryPassModel dp = (DeliveryPassModel) iter.next();
+			if(dp.getStatus() == EnumDlvPassStatus.ACTIVE || dp.getStatus() == EnumDlvPassStatus.READY_TO_USE) {
+				return dp;
+			}
+		}
+		return null;
+	}
+	
+	public void updateLateCreditsRejected(String autoId, String agent) throws FDResourceException {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		PreparedStatement pstmt2 = null;
+		ResultSet rset = null;
+		try {
+			conn = getConnection();
+			pstmt = conn.prepareStatement(UPDATE_REJECT_FLAG);
+			pstmt.setString(1, autoId);
+			pstmt.execute();
+			
+			pstmt2 = conn.prepareStatement(UPDATE_STATUS);
+			pstmt2.setString(1, agent);
+			pstmt2.setString(2, autoId);
+			pstmt2.execute();
+		} catch (SQLException sqle) {
+			//sqle.printStackTrace();
+			throw new FDResourceException(sqle);
+		} finally {
+			close(conn);
+		}
+	}
+	
+	public static String UPDATE_REJECT_FLAG = "update CUST.AUTO_LATE_DELIVERY_ORDERS set status = 'R' where AUTO_LATE_DELIVERY_ID=? and (status is null or status != 'A')";
+	
+	public static String UPDATE_STATUS_FLAG = "update CUST.AUTO_LATE_DELIVERY_ORDERS set status = 'A' where AUTO_LATE_DELIVERY_ID=? and SALE_ID=?";
+	
+	public static String UPDATE_STATUS = "update cust.AUTO_LATE_DELIVERY set STATUS='A', APPROVED_BY=? where ID = ?";
+	
+	public static String GET_COMPLAINT_CODE =  
+		"select comp_code from cust.complaint_dept_code where id in " + 
+        "(select complaint_dept_code_id from cust.complaintline where complaint_id in " + 
+            "(select id from cust.complaint where sale_id=? " +
+                "and STATUS in ('PEN','APP')) " +
+        ") and comp_code in (select comp_code from CUST.LATE_DLV_COMPLAINT_CODES)";
+	
+	public static String GET_SALE_DETS = "select AUTO_LATE_DELIVERY_ID,SALE_ID,CUSTOMER_ID,REM_AMOUNT,REM_TYPE,ORIGINAL_AMOUNT, " + 
+									"TAX_AMOUNT,TAX_RATE,DLV_PASS_ID,complaint_code, f.id from  " +
+									"CUST.AUTO_LATE_DELIVERY_ORDERS a, " +
+									"cust.fdcustomer f " +
+									"where sale_id = ? and AUTO_LATE_DELIVERY_ID=? " +
+									"and a.customer_id = f.erp_customer_id";
 }

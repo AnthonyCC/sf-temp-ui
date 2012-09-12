@@ -64,6 +64,7 @@ import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDTimeslot;
 import com.freshdirect.fdstore.URLRewriteRule;
 import com.freshdirect.fdstore.atp.FDAvailabilityI;
+import com.freshdirect.fdstore.customer.CustomerCreditModel;
 import com.freshdirect.fdstore.customer.EnumIPhoneCaptureType;
 import com.freshdirect.fdstore.customer.FDActionInfo;
 import com.freshdirect.fdstore.customer.FDAuthenticationException;
@@ -793,5 +794,14 @@ public interface FDCustomerManagerSB extends EJBObject {
 	public void storeDPTCViews(String customerId, int dpTcViewCount) throws FDResourceException, RemoteException;
 	public void storeDPTCAgreeDate(String customerId, Date dpTcAgreeDate) throws FDResourceException, RemoteException;
 	public void storeDPTCAgreeDate(FDActionInfo info, String customerId, Date dpTcAgreeDate) throws FDResourceException, RemoteException;
+	
+	public List<CustomerCreditModel> getCustomerReprotedLates() throws FDResourceException, RemoteException;
+	
+	public List<CustomerCreditModel> getDriverReportedLates() throws FDResourceException, RemoteException;
+	
+	public List<CustomerCreditModel> getScanReportedLates() throws FDResourceException, RemoteException;
+	
+	public void storeLists(List cmList) throws FDResourceException, RemoteException;
+	
 }
 

@@ -34,6 +34,7 @@ import com.freshdirect.customer.EnumPaymentResponse;
 import com.freshdirect.customer.EnumSaleStatus;
 import com.freshdirect.customer.EnumSaleType;
 import com.freshdirect.customer.ErpComplaintException;
+import com.freshdirect.customer.ErpComplaintReason;
 import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.customer.ErpRedeliveryModel;
 import com.freshdirect.customer.ErpReturnOrderModel;
@@ -1123,6 +1124,70 @@ public class CallCenterServices {
 		} catch (RemoteException re) {
 			callCenterHome = null;
 			throw new FDResourceException(re, "Error talking to bean");
+		}
+	}
+	
+	public static List getAutoLateDeliveryCredits() throws FDResourceException{
+		if (callCenterHome == null) {
+			lookupManagerHome();
+		}
+		try {
+			CallCenterManagerSB sb = callCenterHome.create();
+			return sb.getAutoLateDeliveryCredits();
+		} catch (CreateException ce) {
+			callCenterHome = null;
+			throw new FDResourceException(ce, "Error creating bean");
+		} catch (RemoteException re) {
+			callCenterHome = null;
+			throw new FDResourceException(re, "Error talking to bean");
+		}
+	}
+	
+	public static List getAutoLateDeliveryOrders(String id) throws FDResourceException{
+		if (callCenterHome == null) {
+			lookupManagerHome();
+		}
+		try {
+			CallCenterManagerSB sb = callCenterHome.create();
+			return sb.getAutoLateDeliveryOrders(id);
+		} catch (CreateException ce) {
+			callCenterHome = null;
+			throw new FDResourceException(ce, "Error creating bean");
+		} catch (RemoteException re) {
+			callCenterHome = null;
+			throw new FDResourceException(re, "Error talking to bean");
+		}
+	}
+	
+	public static List getAutoLateDlvPassOrders(String id) throws FDResourceException{
+		if (callCenterHome == null) {
+			lookupManagerHome();
+		}
+		try {
+			CallCenterManagerSB sb = callCenterHome.create();
+			return sb.getAutoLateDlvPassOrders(id);
+		} catch (CreateException ce) {
+			callCenterHome = null;
+			throw new FDResourceException(ce, "Error creating bean");
+		} catch (RemoteException re) {
+			callCenterHome = null;
+			throw new FDResourceException(re, "Error talking to bean");
+		}
+	}
+	
+	public static ErpComplaintReason getReasonByCompCode(String cCode) throws FDResourceException {
+		if (callCenterHome == null) {
+			lookupManagerHome();
+		}
+		try {
+			CallCenterManagerSB sb = callCenterHome.create();
+			return sb.getReasonByCompCode(cCode);
+		} catch (CreateException ce) {
+			callCenterHome = null;
+			throw new FDResourceException(ce, "Error creating session bean");
+		} catch (RemoteException re) {
+			callCenterHome = null;
+			throw new FDResourceException(re, "Error talking to session bean");
 		}
 	}
 	

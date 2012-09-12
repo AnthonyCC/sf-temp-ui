@@ -35,6 +35,7 @@ import com.freshdirect.customer.ErpDuplicateUserIdException;
 import com.freshdirect.customer.ErpTruckInfo;
 import com.freshdirect.deliverypass.DeliveryPassModel;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.customer.CustomerCreditModel;
 import com.freshdirect.framework.core.PrimaryKey;
 
 public interface CrmManagerSB extends EJBObject {
@@ -146,4 +147,16 @@ public interface CrmManagerSB extends EJBObject {
 	public CrmAgentModel getAgentByLdapId(String agentLdapId) throws FDResourceException, CrmAuthenticationException,RemoteException;
 	
 	public List<CrmAuthInfo> getAuthorizations(CrmAgentRole role,CrmAuthSearchCriteria filter)throws FDResourceException, RemoteException;
+	
+	public CustomerCreditModel getOrderForLateCredit(String saleId, String autoId) throws FDResourceException, RemoteException;
+	
+	public boolean isOrderCreditedForLateDelivery(String saleId) throws FDResourceException, RemoteException;
+	
+	public DeliveryPassModel getDeliveryPassInfoById(String dlvPassId) throws FDResourceException, RemoteException;
+	
+	public void updateAutoLateCredit(String autoId, String orderId) throws FDResourceException, RemoteException;
+	
+	public DeliveryPassModel getActiveDP(String custId) throws FDResourceException, RemoteException;
+	
+	public void updateLateCreditsRejected(String autoId, String agent) throws FDResourceException, RemoteException;
 }

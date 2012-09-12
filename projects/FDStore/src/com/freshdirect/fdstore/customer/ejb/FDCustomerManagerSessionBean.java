@@ -12,6 +12,7 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -25,7 +26,6 @@ import javax.ejb.CreateException;
 import javax.ejb.EJBException;
 import javax.ejb.FinderException;
 import javax.ejb.ObjectNotFoundException;
-import javax.servlet.http.HttpServletRequest;
 
 import org.apache.log4j.Logger;
 
@@ -130,6 +130,7 @@ import com.freshdirect.fdstore.atp.NullAvailability;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.SkuModel;
+import com.freshdirect.fdstore.customer.CustomerCreditModel;
 import com.freshdirect.fdstore.customer.EnumIPhoneCaptureType;
 import com.freshdirect.fdstore.customer.FDActionInfo;
 import com.freshdirect.fdstore.customer.FDAuthenticationException;
@@ -203,6 +204,7 @@ import com.freshdirect.fdstore.temails.ejb.TEmailInfoSB;
 import com.freshdirect.mail.EnumEmailType;
 import com.freshdirect.mail.EnumTranEmailType;
 import com.freshdirect.temails.TEmailRuntimeException;
+import com.sun.org.apache.xalan.internal.xsltc.runtime.Hashtable;
 
 /**
  * @version $Revision:78$
@@ -6502,7 +6504,6 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		}
 	}
 	
-
 	/* APPDEV-2475 DP T&C */
 	public void storeDPTCViews(String customerId, int dpTcViewCount) throws FDResourceException {
 		Connection conn = null;
@@ -6533,6 +6534,303 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			close(conn);
 		}
 	}
+	
+	public List<CustomerCreditModel> getCustomerReprotedLates() throws FDResourceException {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rset = null;
+		List<CustomerCreditModel> ccmList = new ArrayList<CustomerCreditModel>();
+		try {
+			conn = getConnection();
+			pstmt = conn.prepareStatement(GET_CUST_LATES);
+			rset = pstmt.executeQuery();
+			while(rset.next()) {
+				CustomerCreditModel ccm = new CustomerCreditModel();
+				ccm.setSaleId(rset.getString("ID"));
+				ccm.setRemType(rset.getString("REM_TYPE"));
+				ccm.setCustomerId(rset.getString("CUSTOMER_ID"));
+				ccm.setFirstName(rset.getString("FIRST_NAME"));
+				ccm.setLastName(rset.getString("LAST_NAME"));
+				ccm.setEmail(rset.getString("USER_ID"));
+				ccm.setRemainingAmout(rset.getDouble("REM_AMT"));
+				ccm.setOriginalAmount(rset.getDouble("AMOUNT"));
+				ccm.setTaxRate(rset.getDouble("TAX_RATE"));
+				ccm.setDlvPassId(rset.getString("DLV_PASS_ID"));
+				ccm.setNewCode(rset.getString("NEW_COMP_CODE"));
+				ccmList.add(ccm);
+			}
+		} catch (SQLException sqle) {
+			throw new FDResourceException(sqle);
+		} finally {
+			close(conn);
+		}
+		return ccmList;
+	}
+	
+	public List<CustomerCreditModel> getDriverReportedLates() throws FDResourceException {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rset = null;
+		List<CustomerCreditModel> ccmList = new ArrayList<CustomerCreditModel>();
+		try {
+			conn = getConnection();
+			pstmt = conn.prepareStatement(GET_DRIVER_REPORTED_LATES);
+			rset = pstmt.executeQuery();
+			Hashtable driverlates = new Hashtable();
+			while(rset.next()) {
+				driverlates.put(rset.getString("ID"), rset.getString("ID"));
+			}
+			//Remove the orders that have been scanned on time
+			pstmt = conn.prepareStatement(GET_ON_TIME_ORDERS);
+			rset = pstmt.executeQuery();
+			while(rset.next()) {
+				String orderId = rset.getString("WEBORDERNUM");
+				if(driverlates.containsKey(orderId)) {					
+					driverlates.remove(orderId);
+				}
+			}
+			//get details for the remaining orderids
+			Enumeration eobj = driverlates.keys();
+			while(eobj.hasMoreElements()) {
+				Object saleId = eobj.nextElement();
+				ccmList.add(getSaleDetails((String) saleId));
+			}
+		} catch (SQLException sqle) {
+			throw new FDResourceException(sqle);
+		} finally {
+			close(conn);
+		}
+		return ccmList;
+	}
+	
+	public CustomerCreditModel getSaleDetails(String saleId) throws FDResourceException {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rset = null;
+		CustomerCreditModel ccm = new CustomerCreditModel();
+		try {
+			conn = getConnection();
+			pstmt = conn.prepareStatement(GET_CUST_LATES);
+			rset = pstmt.executeQuery();
+			while(rset.next()) {
+				ccm.setSaleId(rset.getString("ID"));
+				ccm.setRemType(rset.getString("REM_TYPE"));
+				ccm.setCustomerId(rset.getString("CUSTOMER_ID"));
+				ccm.setFirstName(rset.getString("FIRST_NAME"));
+				ccm.setLastName(rset.getString("LAST_NAME"));
+				ccm.setEmail(rset.getString("USER_ID"));
+				ccm.setRemainingAmout(rset.getDouble("REM_AMT"));
+				ccm.setOriginalAmount(rset.getDouble("AMOUNT"));
+				ccm.setTaxRate(rset.getDouble("TAX_RATE"));
+				ccm.setDlvPassId(rset.getString("DLV_PASS_ID"));
+				ccm.setNewCode(rset.getString("NEW_COMP_CODE"));
+			}
+		} catch (SQLException sqle) {
+			throw new FDResourceException(sqle);
+		} finally {
+			close(conn);
+		}
+		return ccm;
+	}
+	
+	public List<CustomerCreditModel> getScanReportedLates() throws FDResourceException {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rset = null;
+		List<CustomerCreditModel> ccmList = new ArrayList<CustomerCreditModel>();
+		try {
+			conn = getConnection();
+			pstmt = conn.prepareStatement(GET_SCAN_REPORTED_LATES);
+			rset = pstmt.executeQuery();
+			Hashtable driverlates = new Hashtable();
+			while(rset.next()) {
+				driverlates.put(rset.getString("ID"), rset.getString("ID"));
+			}
+			//Remove the orders that have been scanned on time
+			pstmt = conn.prepareStatement(GET_ON_TIME_ORDERS);
+			rset = pstmt.executeQuery();
+			while(rset.next()) {
+				String orderId = rset.getString("WEBORDERNUM");
+				if(driverlates.containsKey(orderId)) {					
+					driverlates.remove(orderId);
+				}
+			}
+			//get details for the remaining orderids
+			Enumeration eobj = driverlates.keys();
+			while(eobj.hasMoreElements()) {
+				Object saleId = eobj.nextElement();
+				CustomerCreditModel ccm = getSaleDetails((String) saleId);
+				ccm.setNewCode("SCANLATE");
+				ccmList.add(ccm);
+			}
+		} catch (SQLException sqle) {
+			throw new FDResourceException(sqle);
+		} finally {
+			close(conn);
+		}
+		return ccmList;
+	}
+	
+	public void storeLists(List cmList) throws FDResourceException {
+		Connection conn = null;
+		PreparedStatement pstmt = null;		
+		String autoID = insertAutoDlv();
+		final int batchSize = 1000;
+		int count = 0;
+		try {
+			conn = getConnection();
+			pstmt = conn.prepareStatement(INSERT_ORDERS);
+			Iterator iter = cmList.iterator();
+			while(iter.hasNext()) {
+				CustomerCreditModel ccm = (CustomerCreditModel) iter.next();
+				pstmt.setString(1, autoID);
+				pstmt.setString(2, ccm.getSaleId());
+				pstmt.setString(3, ccm.getCustomerId());
+				pstmt.setDouble(4, ccm.getRemainingAmount());
+				pstmt.setString(5, ccm.getRemType());
+				pstmt.setDouble(6, ccm.getOriginalAmount());
+				pstmt.setDouble(7, ccm.getTaxAmount());
+				pstmt.setDouble(8, ccm.getTaxRate());
+				pstmt.setString(9, ccm.getDlvPassId());
+				pstmt.setString(10, ccm.getNewCode());
+				pstmt.addBatch();
+				
+				if(++count % batchSize == 0) {
+			        pstmt.executeBatch();
+			    }				
+			}
+			pstmt.executeBatch(); // insert remaining records
+			pstmt.close();
+		} catch (SQLException sqle) {
+			throw new FDResourceException(sqle);
+		} finally {
+			close(conn);
+		}
+		
+	}
+	
+	public String insertAutoDlv()  throws FDResourceException {
+		Connection conn = null;
+		PreparedStatement pstmt = null;		
+		try {
+			conn = getConnection();
+			String id = SequenceGenerator.getNextId(conn, "CUST");
+			pstmt = conn.prepareStatement(INSERT_AUTO_CREDIT);
+			pstmt.setString(1, id);
+			pstmt.execute();
+			return id;
+		} catch (SQLException sqle) {
+			throw new FDResourceException(sqle);
+		} finally {
+			close(conn);
+		}
+	}
+	
+	public static String INSERT_AUTO_CREDIT = "insert into CUST.AUTO_LATE_DELIVERY(ID,ORDER_DATE,STATUS,APPROVED_BY) values (?,trunc(sysdate),null,null)";
+	
+	public static String INSERT_ORDERS = "insert into CUST.AUTO_LATE_DELIVERY_ORDERS(AUTO_LATE_DELIVERY_ID,SALE_ID,CUSTOMER_ID,REM_AMOUNT,REM_TYPE,ORIGINAL_AMOUNT, " +
+											"TAX_AMOUNT,TAX_RATE,DLV_PASS_ID,complaint_code) values (?,?,?,?,?,?, ?,?,?,?)";
+	
+	public static String GET_SCAN_REPORTED_LATES = 
+		"SELECT " +
+		  "a.WEBORDERNUM, min(a.scandate) " +
+		"FROM " +
+		  "DLV.CARTONSTATUS a " +
+		"WHERE " +
+		"TO_DATE(TO_CHAR(a.SCANDATE,'HH24:MI:ss'),'HH24:MI:ss') >= TO_DATE(SUBSTR(a.WINDOW,7,8),'HH24:MI:ss') + (1800/86400) " +
+		"AND a.CARTONSTATUS  In  ( 'DELIVERED','REFUSED'  ) " +
+		"AND a.SCANDATE BETWEEN sysdate - 1 AND sysdate " +
+		"group by a.webordernum";
+	
+	public static String GET_ON_TIME_ORDERS = 
+								"SELECT " +
+								  "a.WEBORDERNUM, a.window, min(a.SCANDATE) " +
+								"FROM " +
+								  "DLV.CARTONSTATUS a " +
+								"WHERE " +
+								"a.CARTONSTATUS  In ('DELIVERED','REFUSED') " +
+								"AND a.SCANDATE BETWEEN sysdate-1  AND sysdate " +
+								"AND TO_DATE(TO_CHAR(a.SCANDATE,'HH24:MI'),'HH24:MI') < TO_DATE(SUBSTR(a.WINDOW,7,5),'HH24:MI') " +
+								"group by a.webordernum, a.window";		
+	
+	public static String GET_DRIVER_REPORTED_LATES = "SELECT " +
+													        "CUST.SALE.ID " +
+													"FROM " +
+													      "CUST.SALE, " +
+													      "CUST.SALESACTION, " +
+													      "CUST.LATEISSUE_ORDERS " +
+													"WHERE " +
+													      "CUST.SALE.ID = CUST.SALESACTION.SALE_ID and CUST.SALE.status <> 'CAN' " + 
+													      "and CUST.SALESACTION.ACTION_DATE=CUST.SALE.CROMOD_DATE " +
+													      "and CUST.LATEISSUE_ORDERS.SALE_ID=CUST.SALE.ID " +
+													    "AND CUST.SALESACTION.REQUESTED_DATE BETWEEN sysdate-1 AND sysdate";
+			
+	public static String GET_SALE_DETAILS = 
+		"SELECT distinct " +
+		  "CUST.SALE.ID, " +
+		  "decode(cust.CHARGELINE.PROMOTION_AMT, null, 'F',1,'W') REM_TYPE, " +
+		  "CUST.SALE.CUSTOMER_ID, " +
+		  "CUST.CUSTOMERINFO.FIRST_NAME, " +
+		  "CUST.CUSTOMERINFO.LAST_NAME, " +
+		  "CUST.CUSTOMER.USER_ID, " +
+		  "(CUST.CHARGELINE.AMOUNT + CUST.CHARGELINE.AMOUNT * nvl(CUST.CHARGELINE.TAX_RATE,0))*decode(((nvl(CHARGELINE.PROMOTION_AMT,2)-1) + decode(DLV_PASS_ID,null,1,0)),0,0,1,1,2,1) REM_AMT, " +
+		  "CUST.CHARGELINE.AMOUNT, " +
+		  "CUST.CHARGELINE.TAX_RATE, " +
+		  "cust.sale.DLV_PASS_ID, " +
+		  "'DRVRLATE' NEW_COMP_CODE " +
+		"FROM " +
+		  "CUST.SALE, " +
+		  "CUST.SALESACTION, " +
+		  "CUST.CUSTOMER, " +
+		  "CUST.CUSTOMERINFO, " +
+		  "CUST.CHARGELINE " +
+		"WHERE " +
+		   "CUST.SALE.ID= ? " +
+		   "AND  CUST.SALE.ID = CUST.SALESACTION.SALE_ID and CUST.SALE.status<>'CAN' " + 
+		   "AND  CUST.SALESACTION.REQUESTED_DATE BETWEEN sysdate-1 AND sysdate " +
+		   "AND CUST.CUSTOMER.ID=CUST.CUSTOMERINFO.CUSTOMER_ID " +
+		   "AND CUST.SALE.CUSTOMER_ID=CUST.CUSTOMER.ID " +
+		   "AND CUST.SALE.CUSTOMER_ID=CUST.SALESACTION.CUSTOMER_ID " + 
+		   "AND CUST.SALESACTION.ACTION_DATE=CUST.SALE.CROMOD_DATE " +
+		   "AND CUST.SALESACTION.ID=CUST.CHARGELINE.SALESACTION_ID " +
+		   "AND CUST.CHARGELINE.TYPE = 'DLV' " +
+		   "order by REM_TYPE";
+
+	
+	public static String GET_CUST_LATES = "SELECT distinct " +
+						  "CUST.SALE.ID, " +
+						  "decode(cust.CHARGELINE.PROMOTION_AMT, null, 'F',1,'W') REM_TYPE, " +
+						  "CUST.SALE.CUSTOMER_ID, " +
+						  "CUST.CUSTOMERINFO.FIRST_NAME, " +
+						  "CUST.CUSTOMERINFO.LAST_NAME, " +
+						  "CUST.CUSTOMER.USER_ID, " +
+						  "(CUST.CHARGELINE.AMOUNT + CUST.CHARGELINE.AMOUNT * nvl(CUST.CHARGELINE.TAX_RATE,0))*decode(((nvl(CHARGELINE.PROMOTION_AMT,2)-1) + decode(DLV_PASS_ID,null,1,0)),0,0,1,1,2,1) REM_AMT, " +
+						  "CUST.CHARGELINE.AMOUNT, " +
+						  "CUST.CHARGELINE.TAX_RATE, " +
+						  "cust.sale.DLV_PASS_ID, " +
+						  "'CUSTLATE' NEW_COMP_CODE " +
+						"FROM " +
+						  "CUST.SALE, " +
+						  "CUST.SALESACTION, " +
+						  "CUST.CASE, " +
+						  "CUST.CUSTOMER, " +
+						  "CUST.CUSTOMERINFO, " +
+						  "CUST.CHARGELINE " +
+						"WHERE " +
+						  "( CUST.SALE.ID=CUST.CASE.SALE_ID  ) " +
+						  "AND  CUST.SALE.ID = CUST.SALESACTION.SALE_ID and CUST.SALE.status<>'CAN' " + 
+						  "AND " +
+						     "CUST.SALESACTION.REQUESTED_DATE BETWEEN sysdate-1 AND sysdate " +
+						   "AND " +
+						   "CUST.CASE.CASE_SUBJECT  In  ( 'LDQ-004','LDQ-005','LDQ-006','LDQ-007','LDQ-009','LDQ-010'  ) " +
+						   "AND CUST.CUSTOMER.ID=CUST.CUSTOMERINFO.CUSTOMER_ID " +
+						   "AND CUST.SALE.CUSTOMER_ID=CUST.CUSTOMER.ID " +
+						   "AND CUST.SALE.CUSTOMER_ID=CUST.SALESACTION.CUSTOMER_ID " + 
+						   "AND CUST.SALESACTION.ACTION_DATE=CUST.SALE.CROMOD_DATE " +
+						   "AND CUST.SALESACTION.ID=CUST.CHARGELINE.SALESACTION_ID " +
+						   "AND CUST.CHARGELINE.TYPE = 'DLV' " +
+						   "order by REM_TYPE";
+			 
 
 }
 

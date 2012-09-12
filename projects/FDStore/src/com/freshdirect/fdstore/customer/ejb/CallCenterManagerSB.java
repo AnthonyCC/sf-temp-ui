@@ -150,4 +150,12 @@ public interface CallCenterManagerSB extends EJBObject {
 	
 	public String getSoundFileMessage(String campaignId) throws FDResourceException, RemoteException;
 	
+	public List getAutoLateDeliveryCredits() throws FDResourceException, RemoteException;
+	
+	public List getAutoLateDeliveryOrders(String id) throws FDResourceException, RemoteException;
+	
+	public List getAutoLateDlvPassOrders(String id) throws FDResourceException, RemoteException;
+	
+	public ErpComplaintReason getReasonByCompCode(String cCode) throws FDResourceException, RemoteException;
+	
 }
