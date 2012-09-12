@@ -413,7 +413,8 @@ class TestFDProduct extends FDProduct {
     			false, // taxable
     			false, // kosher
     			false, // platter
-    			DayOfWeekSet.EMPTY
+    			DayOfWeekSet.EMPTY,
+    			0
     	);
 		FDVariation[] variations;
 		FDSalesUnit[] salesUnits;
