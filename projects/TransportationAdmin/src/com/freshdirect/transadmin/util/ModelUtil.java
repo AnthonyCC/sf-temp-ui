@@ -332,7 +332,30 @@ public class ModelUtil {
 					&& EnumTransportationFacilitySrc.CROSSDOCK.getName().equalsIgnoreCase(p.getDestinationFacility().getTrnFacilityType().getName())){
 				isTrailerPlan = true;
 			}
-			List routeMatch = matchRoute(p, zoneRouteList, isTrailerPlan);
+			List routeMatch = null;
+			if("X".equals(p.getZone().getArea().getIsDepot()))
+			{
+				if(p.getDestinationFacility().getTrnFacilityType().getName().equals(EnumTransportationFacilitySrc.DEPOTDELIVERY.getName()))
+				{
+					routeMatch = matchRoute(p, zoneRouteList, isTrailerPlan);
+					if(routeMatch!=null)
+					{
+						for(Plan runnerPlan:zonePlanList)
+						{
+							if(runnerPlan.getOriginFacility().equals(p.getDestinationFacility()) && 
+									(runnerPlan.getFirstDeliveryTime().after(p.getFirstDeliveryTime()) || runnerPlan.getFirstDeliveryTime().equals(p.getFirstDeliveryTime())) &&  
+									(runnerPlan.getLastDeliveryTime().before(p.getLastDeliveryTime()) || runnerPlan.getLastDeliveryTime().equals(p.getLastDeliveryTime())))
+							{
+								d.getDispatchResources().addAll(convertPlnToDispatchResource(runnerPlan.getPlanResources(),d));
+							}
+						}
+					}
+				}
+			}
+			else
+			{
+				routeMatch = matchRoute(p, zoneRouteList, isTrailerPlan);
+			}
 			if(routeMatch != null) {
 				r = (ErpRouteMasterInfo)routeMatch.get(0);
 				firstDlvTime = (Date)routeMatch.get(1);

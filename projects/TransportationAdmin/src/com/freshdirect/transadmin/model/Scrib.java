@@ -400,6 +400,13 @@ public class Scrib implements java.io.Serializable, IWaveInstanceSource {
 						&& EnumTransportationFacilitySrc.DEPOTDELIVERY.getName().equals(this.getOriginFacility().getTrnFacilityType().getName()) ? this.getResources() : this.getCount() ;
 	}
 
+	public int getNoOfResources1() {
+		// TODO Auto-generated method stub
+		return this.getZone() != null && this.getZone().getArea() != null 
+						&& "X".equalsIgnoreCase(this.getZone().getArea().getIsDepot()) 
+						 ? this.getResources() : this.getCount() ;
+	}
+
 	@Override
 	public boolean isValidSource() {
 		// TODO Auto-generated method stub

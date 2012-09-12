@@ -265,6 +265,12 @@ public class Plan implements java.io.Serializable, TrnBaseEntityI, IWaveInstance
 				&& "X".equalsIgnoreCase(this.getZone().getArea().getIsDepot()) ? getNoOfRunners() : 1 ;
 	}
 	
+	public int getNoOfResources1() {
+		// TODO Auto-generated method stub
+		return this.getZone() != null && this.getZone().getArea() != null 
+				&& "X".equalsIgnoreCase(this.getZone().getArea().getIsDepot()) ? getNoOfRunners() : 1 ;
+	}
+	
 	private int getNoOfRunners() {
 		int runnerCount = 0;
 		if(this.getWaveResources() != null && this.getWaveResources().size() > 0){

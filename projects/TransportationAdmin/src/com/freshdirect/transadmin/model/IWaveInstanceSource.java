@@ -23,6 +23,7 @@ public interface IWaveInstanceSource {
 	void setFirstDeliveryTime(Date value);
 	void setLastDeliveryTime(Date value);
 	void setCutOffTime(Date value);
-	void setNoOfResources(int value); 
+	void setNoOfResources(int value);
+	int getNoOfResources1(); 
 }
 

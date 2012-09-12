@@ -155,7 +155,7 @@ public class WaveUtil {
 					if(waveMappingNew.containsKey(key)) {
 						initialResource = initialResource + waveMappingNew.get(key);
 					}
-					waveMappingNew.put(key, initialResource + instanceSource.getNoOfResources());
+					waveMappingNew.put(key, initialResource + instanceSource.getNoOfResources1());
 					if(waveMappingCurrent.containsKey(key)) {
 						foundCurrentKeys.add(key);
 					}
