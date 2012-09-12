@@ -66,8 +66,7 @@
 		--%>
 		<script type="text/javascript">
 
-			if (!top.window['_page_options']) { var _page_options = {}; }
-			top.window['_page_options'] = $jq.extend(true, top.window['_page_options']||{}, {
+		_page_options = $jq.extend(true, _page_options||{}, {
 				saAddress: {
 					fldAddress: {
 						fldAddress1: {

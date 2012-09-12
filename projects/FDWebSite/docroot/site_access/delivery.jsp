@@ -60,8 +60,7 @@
 			all the new vars here go in to a sub-variable, so we don't override pre-existing vars
 		--%>
 		<script type="text/javascript">
-			if (!top.window['_page_options']) { var _page_options = {}; }
-			top.window['_page_options'] = $jq.extend(true, top.window['_page_options']||{}, {
+		_page_options = $jq.extend(true, _page_options||{}, {
 				noService: {
 					referrer_page: '<%= refPage %>',
 					successPage: '<%= StringEscapeUtils.escapeJavaScript( successPage ) %>',
