@@ -303,6 +303,22 @@ public class ModelUtil {
 		return dispatchLst;
 	}
 	
+	
+	@SuppressWarnings("unchecked")
+	public static List<Plan> getRunnerPlans(List<Plan> zoneRouteList){
+		List<Plan> runnerPlans = new ArrayList<Plan>();
+		if(zoneRouteList!=null && zoneRouteList.size() > 0) {
+			for (Iterator<Plan> k = zoneRouteList.iterator(); k.hasNext();) {
+				Plan p = k.next();
+				if(p.getOriginFacility().getTrnFacilityType().getName().equals(EnumTransportationFacilitySrc.DEPOTDELIVERY.getName())){
+					runnerPlans.add(p);
+					k.remove();
+				}
+			}
+		}
+		return runnerPlans;
+	}
+	
 	@SuppressWarnings("unchecked")
 	private static void constructDispatchModelList(
 			List<Dispatch> dispatchLst,
@@ -310,6 +326,8 @@ public class ModelUtil {
 		
 		ErpRouteMasterInfo r = null;
 		Date firstDlvTime = null;
+		
+		List<Plan> runnerPlans = getRunnerPlans(zonePlanList);
 
 		Iterator<Plan> planItr = zonePlanList.iterator();
 		while (planItr.hasNext()) {
@@ -340,13 +358,15 @@ public class ModelUtil {
 					routeMatch = matchRoute(p, zoneRouteList, isTrailerPlan);
 					if(routeMatch!=null)
 					{
-						for(Plan runnerPlan:zonePlanList)
+						for (Iterator<Plan> k = runnerPlans.iterator(); k.hasNext();) 
 						{
+							Plan runnerPlan = k.next();
 							if(runnerPlan.getOriginFacility().equals(p.getDestinationFacility()) && 
 									(runnerPlan.getFirstDeliveryTime().after(p.getFirstDeliveryTime()) || runnerPlan.getFirstDeliveryTime().equals(p.getFirstDeliveryTime())) &&  
 									(runnerPlan.getLastDeliveryTime().before(p.getLastDeliveryTime()) || runnerPlan.getLastDeliveryTime().equals(p.getLastDeliveryTime())))
 							{
 								d.getDispatchResources().addAll(convertPlnToDispatchResource(runnerPlan.getPlanResources(),d));
+								k.remove();
 							}
 						}
 					}
