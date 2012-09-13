@@ -144,7 +144,7 @@ public class DispatchFormController extends AbstractFormController {
 			}
 		}
 		if(facility != null && 
-				!EnumTransportationFacilitySrc.DELIVERYZONE.getName().equalsIgnoreCase(facility.getTrnFacilityType().getName())){
+				EnumTransportationFacilitySrc.CROSSDOCK.getName().equalsIgnoreCase(facility.getTrnFacilityType().getName())){
 
 			drivers = DispatchPlanUtil.getSortedResources(employeeManagerService.getEmployeesByRoleAndSubRole(EnumResourceType.DRIVER.getName()
 																										, EnumResourceSubType.TRAILER_DRIVER.getName()));
@@ -289,7 +289,7 @@ public class DispatchFormController extends AbstractFormController {
 
 		TrnFacility deliveryFacility = locationManagerService.getTrnFacility(request.getParameter("destinationFacility"));
 		if(deliveryFacility != null && 
-				!EnumTransportationFacilitySrc.DELIVERYZONE.getName().equalsIgnoreCase(deliveryFacility.getTrnFacilityType().getName())){
+				EnumTransportationFacilitySrc.CROSSDOCK.getName().equalsIgnoreCase(deliveryFacility.getTrnFacilityType().getName())){
 			model.setZoneCode("");
 			model.setZoneName("");
 		}

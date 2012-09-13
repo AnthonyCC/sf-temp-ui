@@ -114,8 +114,7 @@ public class ScribFormController extends AbstractDomainFormController {
 		TrnFacility deliveryFacility = locationManagerService.getTrnFacility(destFacility);
 		model.setDestinationFacility(deliveryFacility);
 		if(deliveryFacility != null && 
-				!(EnumTransportationFacilitySrc.DELIVERYZONE.getName().equalsIgnoreCase(deliveryFacility.getTrnFacilityType().getName())
-						|| EnumTransportationFacilitySrc.DEPOTDELIVERY.getName().equalsIgnoreCase(deliveryFacility.getTrnFacilityType().getName()))){
+				EnumTransportationFacilitySrc.CROSSDOCK.getName().equalsIgnoreCase(deliveryFacility.getTrnFacilityType().getName())){
 			model.setZone(null);
 		}
 		model= ScribUtil.reconstructWebPlanInfo(model,zone,model.getFirstDeliveryTimeModified(),

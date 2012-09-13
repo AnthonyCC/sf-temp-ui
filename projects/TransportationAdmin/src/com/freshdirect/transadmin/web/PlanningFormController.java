@@ -137,7 +137,7 @@ public class PlanningFormController extends AbstractFormController {
 		TrnFacility deliveryFacility = locationManagerService.getTrnFacility(destFacility == null ? (model != null &&  model.getDestinationFacility() != null ?
 				 model.getDestinationFacility().getFacilityId() : destFacility) : destFacility);
 		if(deliveryFacility != null && 
-				!EnumTransportationFacilitySrc.DELIVERYZONE.getName().equalsIgnoreCase(deliveryFacility.getTrnFacilityType().getName())){
+				EnumTransportationFacilitySrc.CROSSDOCK.getName().equalsIgnoreCase(deliveryFacility.getTrnFacilityType().getName())){
 			drivers = DispatchPlanUtil.getSortedResources(employeeManagerService.getEmployeesByRoleAndSubRole(EnumResourceType.DRIVER.getName()
 																										, EnumResourceSubType.TRAILER_DRIVER.getName()));
 			helpers = DispatchPlanUtil.getSortedResources(employeeManagerService.getEmployeesByRoleAndSubRole(EnumResourceType.HELPER.getName()
@@ -244,7 +244,7 @@ public class PlanningFormController extends AbstractFormController {
 
 		TrnFacility deliveryFacility = locationManagerService.getTrnFacility(destFacility);
 		if(deliveryFacility != null && 
-				!EnumTransportationFacilitySrc.DELIVERYZONE.getName().equalsIgnoreCase(deliveryFacility.getTrnFacilityType().getName())){
+				EnumTransportationFacilitySrc.CROSSDOCK.getName().equalsIgnoreCase(deliveryFacility.getTrnFacilityType().getName())){
 			model.setZoneCode("");
 			model.setZoneName("");
 		}

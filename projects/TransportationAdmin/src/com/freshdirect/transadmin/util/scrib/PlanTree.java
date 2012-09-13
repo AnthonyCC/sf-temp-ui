@@ -799,7 +799,7 @@ class DepotTimeNode extends PlanTreeNode  {
 								ZonetypeResource r = (ZonetypeResource) j.next();
 								// Driver
 								if (ScheduleEmployeeInfo.DRIVER.equalsIgnoreCase(r.getId().getRole())) {
-									int min = 1;//r.getRequiredNo().intValue();
+									int min = r.getRequiredNo().intValue();
 									int count = 0;
 									for (Iterator k = resources.iterator(); k.hasNext();) {
 										ScheduleEmployeeDetails se = (ScheduleEmployeeDetails) k.next();

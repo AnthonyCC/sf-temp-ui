@@ -42,7 +42,7 @@ public class PlanValidator extends AbstractValidator {
 			errors.rejectValue("destinationFacility", "app.error.112", new Object[]{"Destination Facility"},"required field");
 		}
 		if(model != null && TransStringUtil.isEmpty(model.getZoneCode()) && model.getDestinationFacility() != null && model.getDestinationFacility().getTrnFacilityType() != null
-				&& !DispatchPlanUtil.isBullpen(model.getIsBullpen()) && EnumTransportationFacilitySrc.DELIVERYZONE.getName().equalsIgnoreCase(model.getDestinationFacility().getTrnFacilityType().getName())) {
+				&& !DispatchPlanUtil.isBullpen(model.getIsBullpen()) && !EnumTransportationFacilitySrc.CROSSDOCK.getName().equalsIgnoreCase(model.getDestinationFacility().getTrnFacilityType().getName())) {
 			errors.rejectValue("zoneCode", "app.error.112", new Object[]{"Zone"},"required field");
 		}
 		if(TransStringUtil.isEmpty(model.getRegionCode())) {

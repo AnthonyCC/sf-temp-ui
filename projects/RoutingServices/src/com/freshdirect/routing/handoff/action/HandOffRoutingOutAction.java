@@ -543,7 +543,7 @@ public class HandOffRoutingOutAction extends AbstractHandOffAction {
 				newRoute.setRouteId(areaEntry.getKey()+"-"+intRountCount);
 				newRoute.setStartTime(route.getTruckDepartureTime());
 				newRoute.setCompletionTime(route.getDepotArrivalTime());
-				
+				newRoute.setOriginId(route.getOriginId());
 				newRoute.setStops(new TreeSet());
 				
 				result.get(areaEntry.getKey()).add(newRoute);
