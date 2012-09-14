@@ -1214,7 +1214,7 @@ public class FDUser extends ModelSupport implements FDUserI {
 		if (this.isDlvPassActive()){
 			if(!(this.getShoppingCart().isChargeWaived(EnumChargeType.DELIVERY))){
 				//If delivery promotion was applied, do not reapply the waiving of dlv charge.
-				this.getShoppingCart().setChargeWaived(EnumChargeType.DELIVERY,true, DlvPassConstants.PROMO_CODE, false);
+				this.getShoppingCart().setChargeWaived(EnumChargeType.DELIVERY,true, DlvPassConstants.PROMO_CODE,  this.isDpNewTcBlocking(false));
 				this.getShoppingCart().setDlvPassApplied(true);
 			}
 		} else if ((this.getShoppingCart() instanceof FDModifyCartModel)&&(this.getDlvPassInfo().isUnlimited())) {
@@ -1228,7 +1228,7 @@ public class FDUser extends ModelSupport implements FDUserI {
 					dlvPass=(DeliveryPassModel)passes.get(i);
 
 					if(today.after(dlvPass.getExpirationDate()) && EnumDlvPassStatus.ACTIVE.equals(dlvPass.getStatus()) &&dlvPass.getId().equals(dpId)){
-						this.getShoppingCart().setChargeWaived(EnumChargeType.DELIVERY,true, DlvPassConstants.PROMO_CODE, false);
+						this.getShoppingCart().setChargeWaived(EnumChargeType.DELIVERY,true, DlvPassConstants.PROMO_CODE,  this.isDpNewTcBlocking(false));
 						this.getShoppingCart().setDlvPassApplied(true);
 						this.getShoppingCart().setDlvPassPremiumAllowedTC(dlvPass.getPurchaseDate().after(FDStoreProperties.getDlvPassNewTCDate()));
 						break;
