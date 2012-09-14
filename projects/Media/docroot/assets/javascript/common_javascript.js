@@ -1148,7 +1148,7 @@ function doOverlayWindow(olURL) {
 				
 				$jq('html').css({ 'overflow': 'auto' });
 				//$jq('body').css({ 'overflow': 'auto' });
-			},
+			}
 		});
 		
 		overlayDialog.load(olURL, function() { overlayDialog.dialog('open'); });
