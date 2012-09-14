@@ -355,7 +355,9 @@ public class HandOffAutoDispatchAction extends AbstractHandOffAction {
 		if(zoneRouteList!=null && zoneRouteList.size() > 0) {
 			for (Iterator<IHandOffBatchPlan> k = zoneRouteList.iterator(); k.hasNext();) {
 				IHandOffBatchPlan p = k.next();
-				if(facilityLookUp.get(p.getOriginFacility()).getTrnFacilityType().getName().equals(EnumTransportationFacilitySrc.DEPOTDELIVERY.getName())){
+				if(p.getOriginFacility()!=null &&
+						facilityLookUp.get(p.getOriginFacility())!=null &&
+								facilityLookUp.get(p.getOriginFacility()).getTrnFacilityType().getName().equals(EnumTransportationFacilitySrc.DEPOTDELIVERY.getName())){
 					runnerPlans.add(p);
 					k.remove();
 				}
@@ -412,9 +414,12 @@ public class HandOffAutoDispatchAction extends AbstractHandOffAction {
 			else 
 			{
 				IHandOffBatchRoute route = null;
-				if("X".equals(zoneLookup.get(_plan.getZoneCode()).getArea().isDepot()))
+				if(_plan.getZoneCode()!=null && zoneLookup.get(_plan.getZoneCode())!=null && zoneLookup.get(_plan.getZoneCode()).getArea()!=null
+						&& zoneLookup.get(_plan.getZoneCode()).getArea().isDepot())
 				{
-					if(facilityLookUp.get(_plan.getDestinationFacility()).getTrnFacilityType().getName().equals(EnumTransportationFacilitySrc.DEPOTDELIVERY.getName()))
+					if(_plan.getDestinationFacility()!=null &&
+							facilityLookUp.get(_plan.getDestinationFacility())!=null &&
+									facilityLookUp.get(_plan.getDestinationFacility()).getTrnFacilityType().getName().equals(EnumTransportationFacilitySrc.DEPOTDELIVERY.getName()))
 					{
 						route  = matchRoute(_plan, zoneRouteList);
 						if(route!=null)
@@ -424,7 +429,8 @@ public class HandOffAutoDispatchAction extends AbstractHandOffAction {
 								IHandOffBatchPlan runnerPlan = k.next();
 								if(runnerPlan.getOriginFacility().equals(_dispatch.getDestinationFacility()) && 
 										(runnerPlan.getFirstDeliveryTime().after(_plan.getFirstDeliveryTime()) || runnerPlan.getFirstDeliveryTime().equals(_plan.getFirstDeliveryTime())) &&  
-										(runnerPlan.getLastDeliveryTime().before(_plan.getLastDeliveryTime()) || runnerPlan.getLastDeliveryTime().equals(_plan.getLastDeliveryTime())))
+										(runnerPlan.getLastDeliveryTime().before(_plan.getLastDeliveryTime()) || runnerPlan.getLastDeliveryTime().equals(_plan.getLastDeliveryTime())) &&
+										runnerPlan.getBatchPlanResources()!=null && runnerPlan.getBatchPlanResources().size()>0)
 								{
 									_dispatch.getBatchDispatchResources().addAll(runnerPlan.getBatchPlanResources());
 									k.remove();

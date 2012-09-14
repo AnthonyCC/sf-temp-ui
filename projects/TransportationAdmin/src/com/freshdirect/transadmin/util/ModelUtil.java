@@ -351,9 +351,10 @@ public class ModelUtil {
 				isTrailerPlan = true;
 			}
 			List routeMatch = null;
-			if("X".equals(p.getZone().getArea().getIsDepot()))
+			if(p.getZone()!=null && p.getZone().getArea()!=null && "X".equals(p.getZone().getArea().getIsDepot()))
 			{
-				if(p.getDestinationFacility().getTrnFacilityType().getName().equals(EnumTransportationFacilitySrc.DEPOTDELIVERY.getName()))
+				if(p.getDestinationFacility()!=null && p.getDestinationFacility().getTrnFacilityType()!=null &&
+						 p.getDestinationFacility().getTrnFacilityType().getName().equals(EnumTransportationFacilitySrc.DEPOTDELIVERY.getName()))
 				{
 					routeMatch = matchRoute(p, zoneRouteList, isTrailerPlan);
 					if(routeMatch!=null)
@@ -363,7 +364,8 @@ public class ModelUtil {
 							Plan runnerPlan = k.next();
 							if(runnerPlan.getOriginFacility().equals(p.getDestinationFacility()) && 
 									(runnerPlan.getFirstDeliveryTime().after(p.getFirstDeliveryTime()) || runnerPlan.getFirstDeliveryTime().equals(p.getFirstDeliveryTime())) &&  
-									(runnerPlan.getLastDeliveryTime().before(p.getLastDeliveryTime()) || runnerPlan.getLastDeliveryTime().equals(p.getLastDeliveryTime())))
+									(runnerPlan.getLastDeliveryTime().before(p.getLastDeliveryTime()) || runnerPlan.getLastDeliveryTime().equals(p.getLastDeliveryTime())) && 
+									runnerPlan.getPlanResources()!=null && runnerPlan.getPlanResources().size()>0)
 							{
 								d.getDispatchResources().addAll(convertPlnToDispatchResource(runnerPlan.getPlanResources(),d));
 								k.remove();
