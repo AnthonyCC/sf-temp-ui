@@ -1214,7 +1214,7 @@ public class FDUser extends ModelSupport implements FDUserI {
 		if (this.isDlvPassActive()){
 			if(!(this.getShoppingCart().isChargeWaived(EnumChargeType.DELIVERY))){
 				//If delivery promotion was applied, do not reapply the waiving of dlv charge.
-				this.getShoppingCart().setChargeWaived(EnumChargeType.DELIVERY,true, DlvPassConstants.PROMO_CODE,  this.isDpNewTcBlocking(false));
+				this.getShoppingCart().setChargeWaived(EnumChargeType.DELIVERY,true, DlvPassConstants.PROMO_CODE,  this.isWaiveDPFuelSurCharge(false));
 				this.getShoppingCart().setDlvPassApplied(true);
 			}
 		} else if ((this.getShoppingCart() instanceof FDModifyCartModel)&&(this.getDlvPassInfo().isUnlimited())) {
@@ -1228,7 +1228,7 @@ public class FDUser extends ModelSupport implements FDUserI {
 					dlvPass=(DeliveryPassModel)passes.get(i);
 
 					if(today.after(dlvPass.getExpirationDate()) && EnumDlvPassStatus.ACTIVE.equals(dlvPass.getStatus()) &&dlvPass.getId().equals(dpId)){
-						this.getShoppingCart().setChargeWaived(EnumChargeType.DELIVERY,true, DlvPassConstants.PROMO_CODE,  this.isDpNewTcBlocking(false));
+						this.getShoppingCart().setChargeWaived(EnumChargeType.DELIVERY,true, DlvPassConstants.PROMO_CODE,  this.isWaiveDPFuelSurCharge(false));
 						this.getShoppingCart().setDlvPassApplied(true);
 						this.getShoppingCart().setDlvPassPremiumAllowedTC(dlvPass.getPurchaseDate().after(FDStoreProperties.getDlvPassNewTCDate()));
 						break;
@@ -2373,6 +2373,45 @@ public class FDUser extends ModelSupport implements FDUserI {
 		
 		return isBlocking;
 	}
+	public boolean isWaiveDPFuelSurCharge(boolean includeViewCount) {
+		boolean isBlocking = false;
+		
+		//guestAllowed pages will have a null identity
+		if (identity == null) { return isBlocking; }
+		
+		try {
+			ErpCustomerInfoModel cm = FDCustomerFactory.getErpCustomerInfo(identity);
+
+			int dpTcViewCount = cm.getDpTcViewCount();
+			Date dpTcAgreeDate = cm.getDpTcAgreeDate();
+			Date dpNewTcStartDate = FDStoreProperties.getDlvPassNewTCDate();
+			Calendar calNow = Calendar.getInstance();
+			Calendar calNewTcStart = Calendar.getInstance();
+				calNewTcStart.setTime(dpNewTcStartDate);
+			Calendar calAgree = null;
+			if (dpTcAgreeDate != null) {
+				calAgree = Calendar.getInstance();
+				calAgree.setTime(dpTcAgreeDate);
+			}
+			
+			if (this.isDlvPassActive()) { //exclude users with no pass, and ones that purchased after new terms start
+	    		if (calNow.getTime().after(dpNewTcStartDate)) { //check that new terms should be in effect
+		    		if ( dpTcAgreeDate == null || ( calAgree != null && calAgree.getTime().before(dpNewTcStartDate) ) ) { //either never agreed, or agree before new terms
+			    		if (dpTcViewCount < FDStoreProperties.getDpTcViewLimit() || Boolean.FALSE.equals(includeViewCount)) { //check view count
+			    			isBlocking = true;
+			    		}
+		    		}
+	    		}
+			}
+		} catch (FDResourceException e) {
+			LOGGER.error("Error checking isDpNewTcBlocking in FDUser.",e);
+		}
+		
+		return isBlocking;
+	}
+	
+	
+	
 	
 	public boolean hasEBTAlert() {
 		if (hasEBTAlert == null) {

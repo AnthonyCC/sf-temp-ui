@@ -1386,6 +1386,10 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 		return this.user.isDpNewTcBlocking(includeViewCount);
 	}
 	
+	public boolean isWaiveDPFuelSurCharge(boolean includeViewCount) {
+		return this.user.isWaiveDPFuelSurCharge(includeViewCount);
+	}
+	
 	public boolean hasSeenDpNewTc() {
 		return seenDpNewTc;
 	}
