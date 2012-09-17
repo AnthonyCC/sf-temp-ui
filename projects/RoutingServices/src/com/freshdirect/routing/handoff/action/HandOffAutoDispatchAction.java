@@ -415,34 +415,26 @@ public class HandOffAutoDispatchAction extends AbstractHandOffAction {
 			{
 				IHandOffBatchRoute route = null;
 				if(_plan.getZoneCode()!=null && zoneLookup.get(_plan.getZoneCode())!=null && zoneLookup.get(_plan.getZoneCode()).getArea()!=null
-						&& zoneLookup.get(_plan.getZoneCode()).getArea().isDepot())
+						&& zoneLookup.get(_plan.getZoneCode()).getArea().isDepot() && _plan.getDestinationFacility()!=null &&
+								facilityLookUp.get(_plan.getDestinationFacility())!=null &&
+								facilityLookUp.get(_plan.getDestinationFacility()).getTrnFacilityType().getName().equals(EnumTransportationFacilitySrc.DEPOTDELIVERY.getName()))
 				{
-					if(_plan.getDestinationFacility()!=null &&
-							facilityLookUp.get(_plan.getDestinationFacility())!=null &&
-									facilityLookUp.get(_plan.getDestinationFacility()).getTrnFacilityType().getName().equals(EnumTransportationFacilitySrc.DEPOTDELIVERY.getName()))
-					{
-						route  = matchRoute(_plan, zoneRouteList);
-						if(route!=null)
+						
+						for (Iterator<IHandOffBatchPlan> k = runnerPlans.iterator(); k.hasNext();) 
 						{
-							for (Iterator<IHandOffBatchPlan> k = runnerPlans.iterator(); k.hasNext();) 
+							IHandOffBatchPlan runnerPlan = k.next();
+							if(runnerPlan.getOriginFacility().equals(_dispatch.getDestinationFacility()) && 
+									(runnerPlan.getFirstDeliveryTime().after(_plan.getFirstDeliveryTime()) || runnerPlan.getFirstDeliveryTime().equals(_plan.getFirstDeliveryTime())) &&  
+									(runnerPlan.getLastDeliveryTime().before(_plan.getLastDeliveryTime()) || runnerPlan.getLastDeliveryTime().equals(_plan.getLastDeliveryTime())) &&
+									runnerPlan.getBatchPlanResources()!=null && runnerPlan.getBatchPlanResources().size()>0)
 							{
-								IHandOffBatchPlan runnerPlan = k.next();
-								if(runnerPlan.getOriginFacility().equals(_dispatch.getDestinationFacility()) && 
-										(runnerPlan.getFirstDeliveryTime().after(_plan.getFirstDeliveryTime()) || runnerPlan.getFirstDeliveryTime().equals(_plan.getFirstDeliveryTime())) &&  
-										(runnerPlan.getLastDeliveryTime().before(_plan.getLastDeliveryTime()) || runnerPlan.getLastDeliveryTime().equals(_plan.getLastDeliveryTime())) &&
-										runnerPlan.getBatchPlanResources()!=null && runnerPlan.getBatchPlanResources().size()>0)
-								{
-									_dispatch.getBatchDispatchResources().addAll(runnerPlan.getBatchPlanResources());
-									k.remove();
-								}
+								_dispatch.getBatchDispatchResources().addAll(runnerPlan.getBatchPlanResources());
+								k.remove();
 							}
 						}
-					}
 				}
-				else
-				{
-					route = matchRoute(_plan, zoneRouteList);	
-				}
+				route = matchRoute(_plan, zoneRouteList);	
+				
 				if(route != null) {
 					_dispatch.setRoute(route.getRouteId());
 					if(route.getFirstDeliveryTime() != null){
