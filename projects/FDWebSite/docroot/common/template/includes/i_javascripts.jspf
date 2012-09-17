@@ -48,19 +48,39 @@
 	<%
 		if(request.getRequestURI().endsWith("referee_signup.jsp") || request.getRequestURI().indexOf("invite") != -1) {
 	%>
-		 <script type="text/javascript">                     
-					   var _gaq = _gaq || [];
-                      _gaq.push(['_setAccount', 'UA-20535945-1']);
-                      _gaq.push(['_setDomainName', '.freshdirect.com']);
-					  _gaq.push(['_setCustomVar',1,'RAF','Responder',1]);					 
-					 _gaq.push(['_trackPageview', '/registration/referee_signup.jsp']); 
-					  _gaq.push(['_setReferrerOverride', '/registration/referee_signup.jsp?utm_medium=internal&utm_source=raf&utm_campaign=raf']);
-                       (function() { var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true; ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js'; var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s); })();
+		<script type="text/javascript">                     
+			var _gaq = _gaq || [];
+			_gaq.push(['_setAccount', 'UA-20535945-1']);
+			_gaq.push(['_setDomainName', '.freshdirect.com']);
+			_gaq.push(['_setCustomVar',1,'RAF','Responder',1]);					 
+			_gaq.push(['_trackPageview', '/registration/referee_signup.jsp']); 
+			_gaq.push(['_setReferrerOverride', '/registration/referee_signup.jsp?utm_medium=internal&utm_source=raf&utm_campaign=raf']);
+			(function() { var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true; ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js'; var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s); })();
+		</script>
+	<% } else { %>
+		<fd:SemPixelIncludeMedia pixelNames="GoogleAnalytics" />
+	<% } %>
+	
+	<%
+		/* ConvergeTrack Pixel */
+		SemPixelModel semPixel_CT = FDSemPixelCache.getInstance().getSemPixel("ConvergeTrack");
+		semPixel_CT.setParam("footer", "false");
+	
+		//always include this
+		semPixel_CT.setParam("landing", "true");
+		
+		if(session != null && session.getAttribute("LITESIGNUP_COMPLETE") != null) {
+			//user just completed sign up lite add param
+			semPixel_CT.setParam("signUp", "true");
 
-         </script>
-        <% } else { %>
-        <fd:SemPixelIncludeMedia pixelNames="GoogleAnalytics" />
-        <% } %>
+			FDUserI sem_user_CT = (FDUserI)session.getAttribute(SessionName.USER);
+			if (sem_user_CT != null) {
+				semPixel_CT.setParam("custId", sem_user_CT.getIdentity().getErpCustomerPK().toString());
+			}
+		}
+
+		%><fd:SemPixelIncludeMedia pixelNames="ConvergeTrack" /><%
+	%>
 
 	<fd:IncludeMedia name="/media/editorial/site_pages/javascript.html"/>
 	

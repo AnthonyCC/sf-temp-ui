@@ -287,9 +287,21 @@ doRemoteOverlay('sms_capture.jsp');
 			semPixel_LS.setParam("discountAmount", sem_totalDiscountAmount);
 			semPixel_LS.setParam("isNew", ("1".equals(sem_validOrderCount))?"true":"false");
 			semPixel_LS.setParam("isOrderModify",String.valueOf(isOrderModify));
-			%><fd:SemPixelIncludeMedia pixelNames="LinkShare" />
-			
-<%
+			%><fd:SemPixelIncludeMedia pixelNames="LinkShare" /><%
+		}
+		
+
+		if ( !isOrderModify ) { //do not send on order modify
+			/* ConvergeTrack Pixel */
+			SemPixelModel semPixel_CT = FDSemPixelCache.getInstance().getSemPixel("ConvergeTrack");
+		
+			//always include this
+			semPixel_CT.setParam("receipt", "true");
+			semPixel_CT.setParam("orderId", sem_orderNumber);
+			semPixel_CT.setParam("isNew", ("1".equals(sem_validOrderCount))?"true":"false");
+			semPixel_CT.setParam("subtotal", sem_cartSubtotal);
+	
+			%><fd:SemPixelIncludeMedia pixelNames="ConvergeTrack" /><%
 		}
 	}
 %>
