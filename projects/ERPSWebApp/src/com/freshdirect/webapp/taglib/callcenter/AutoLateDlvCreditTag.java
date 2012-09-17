@@ -11,6 +11,8 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.TagData;
 import javax.servlet.jsp.tagext.VariableInfo;
 
+import org.apache.log4j.Category;
+
 import com.freshdirect.crm.CrmAgentModel;
 import com.freshdirect.crm.CrmAuthorizationException;
 import com.freshdirect.crm.CrmManager;
@@ -34,6 +36,7 @@ import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.FDOrderI;
 import com.freshdirect.fdstore.mail.FDEmailFactory;
+import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionResult;
 import com.freshdirect.webapp.taglib.AbstractControllerTag;
 import com.freshdirect.webapp.taglib.crm.CrmSession;
@@ -41,6 +44,8 @@ import com.freshdirect.webapp.taglib.crm.CrmSession;
 public class AutoLateDlvCreditTag extends AbstractControllerTag {
 	
 	private static final long serialVersionUID = 1L;
+	
+	private static final Category LOGGER = LoggerFactory.getInstance(AutoLateDlvCreditTag.class);
 
 
 	protected boolean performAction(HttpServletRequest request, ActionResult actionResult) throws JspException {		
@@ -79,22 +84,28 @@ public class AutoLateDlvCreditTag extends AbstractControllerTag {
 					        	//Extend dlv PAss
 					        	CustomerCreditModel ccm = CrmManager.getInstance().getOrderForLateCredit(orderId, autoId);
 					        	
-					        	DeliveryPassModel dpm = CrmManager.getInstance().getDeliveryPassInfo(ccm.getDlvPassId());				        	
+					        	DeliveryPassModel dpm = CrmManager.getInstance().getDeliveryPassInfo(ccm.getDlvPassId());		
 					        	
-					        	//Check if the DP is expired.
-					        	if(dpm.getExpirationDate().before(new java.util.Date())) {
-					        		//DP is expired, see if there is any active DP to renew
-					        		DeliveryPassModel altDp = CrmManager.getInstance().getActiveDP(ccm.getCustomerId());
-					        		if(altDp == null) {
-					        			//No more DP's for the user. Credit the original amount
-					        			issueLateCredit(orderId, autoId, agent, true);
-					        		} else {
-					        			//extend DP by one week
-					        			extendDP(altDp, agent, orderId, ccm);
-					        		}
+					        	//check if DP is already extended
+					        	if(!CrmManager.getInstance().isDlvPassAlreadyExtended(orderId, ccm.getCustomerId())) {
+					        	
+						        	//Check if the DP is expired.
+						        	if(dpm.getExpirationDate().before(new java.util.Date())) {
+						        		//DP is expired, see if there is any active DP to renew
+						        		DeliveryPassModel altDp = CrmManager.getInstance().getActiveDP(ccm.getCustomerId());
+						        		if(altDp == null) {
+						        			//No more DP's for the user. Credit the original amount
+						        			issueLateCredit(orderId, autoId, agent, true);
+						        		} else {
+						        			//extend DP by one week
+						        			extendDP(altDp, agent, orderId, ccm);
+						        		}
+						        	} else {
+						        		//extend DP by one week
+						        		extendDP(dpm, agent, orderId, ccm);
+						        	}
 					        	} else {
-					        		//extend DP by one week
-					        		extendDP(dpm, agent, orderId, ccm);
+					        		LOGGER.info("Already extended the deliverypass:" + orderId + "-dpId:" + ccm.getDlvPassId());
 					        	}
 					        }
 					    }
@@ -113,8 +124,8 @@ public class AutoLateDlvCreditTag extends AbstractControllerTag {
 	
 	private static void extendDP(DeliveryPassModel dpm, CrmAgentModel agent, String orderId, CustomerCreditModel ccm ) throws FDResourceException {
 		int numDays = 7;
-		try {
-			CrmManager.getInstance().incrExpirationPeriod(dpm, agent, numDays, "Late Delivery Extn", EnumDlvPassExtendReason.DLV_PROBLEM_LATE_DELIVERY.getName(), orderId);
+		try {			
+			CrmManager.getInstance().incrExpirationPeriod(dpm, agent, numDays, "Late Delivery Extn", ccm.getNewCode(), orderId);
 			FDIdentity identity = new FDIdentity(ccm.getCustomerId(), ccm.getFdCustomerId());
 			FDCustomerInfo custInfo = FDCustomerManager.getCustomerInfo(identity);
 			FDCustomerManager.doEmail(FDEmailFactory.getInstance().createDPCreditEmail(custInfo, orderId, 1,EnumDlvPassProfileType.UNLIMITED.getName()));

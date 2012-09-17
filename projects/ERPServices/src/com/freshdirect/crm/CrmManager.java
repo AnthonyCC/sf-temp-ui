@@ -610,6 +610,14 @@ public class CrmManager {
 		}
 	}
 	
+	public boolean isDlvPassAlreadyExtended(String orderId, String customerId) throws FDResourceException {
+		try {
+			return this.getCrmManagerSB().isDlvPassAlreadyExtended(orderId, customerId);
+		} catch (RemoteException e) {
+			throw new FDResourceException(e, "Error in CrmManagerSB while getting getActiveDP.");
+		}
+	}
+	
 	public static void main (String[] a) throws Exception {
 		CrmAuthSearchCriteria sc=new CrmAuthSearchCriteria();
 		sc.setFromDateStr("11-16-2011 00:00");

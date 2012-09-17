@@ -1424,6 +1424,30 @@ public class CrmManagerSessionBean extends SessionBeanSupport {
 		}
 	}
 	
+	public boolean isDlvPassAlreadyExtended(String orderId, String customerId) throws FDResourceException {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rset = null;
+		try {
+			conn = getConnection();
+			pstmt = conn.prepareStatement(DLV_PASS_CHECK);
+			pstmt.setString(1, customerId);
+			pstmt.setString(1, orderId);
+			rset = pstmt.executeQuery();
+			if(rset.next()) {
+				return true;
+			}			
+		} catch (SQLException sqle) {
+			//sqle.printStackTrace();
+			throw new FDResourceException(sqle);
+		} finally {
+			close(conn);
+		}
+		return false;
+	}
+	
+	public static String DLV_PASS_CHECK = "SELECT reason FROM CUST.ACTIVITY_LOG where customer_id=? and sale_id=? and reason in (select comp_code from CUST.LATE_DLV_COMPLAINT_CODES)";
+	
 	public static String UPDATE_REJECT_FLAG = "update CUST.AUTO_LATE_DELIVERY_ORDERS set status = 'R' where AUTO_LATE_DELIVERY_ID=? and (status is null or status != 'A')";
 	
 	public static String UPDATE_STATUS_FLAG = "update CUST.AUTO_LATE_DELIVERY_ORDERS set status = 'A' where AUTO_LATE_DELIVERY_ID=? and SALE_ID=?";

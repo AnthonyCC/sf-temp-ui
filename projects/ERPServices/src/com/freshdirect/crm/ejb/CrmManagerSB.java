@@ -159,4 +159,6 @@ public interface CrmManagerSB extends EJBObject {
 	public DeliveryPassModel getActiveDP(String custId) throws FDResourceException, RemoteException;
 	
 	public void updateLateCreditsRejected(String autoId, String agent) throws FDResourceException, RemoteException;
+	
+	public boolean isDlvPassAlreadyExtended(String orderId, String customerId) throws FDResourceException, RemoteException;
 }
