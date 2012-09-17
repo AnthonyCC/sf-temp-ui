@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
+import com.freshdirect.routing.constants.EnumTransportationFacilitySrc;
 import com.freshdirect.transadmin.util.EnumResourceType;
 
 /**
@@ -309,7 +310,8 @@ public class Plan implements java.io.Serializable, TrnBaseEntityI, IWaveInstance
 		// It can be turned off anytime based on future business requirements
 		//return false;
 		return this.getZone() != null && this.getZone().getArea() != null 
-								&& "X".equalsIgnoreCase(this.getZone().getArea().getIsDepot());
+								&& "X".equalsIgnoreCase(this.getZone().getArea().getIsDepot())
+								&& !(this.getOriginFacility()!=null && this.getOriginFacility().getTrnFacilityType().getName().equals(EnumTransportationFacilitySrc.DEPOTDELIVERY.getName()));
 	}
 
 	@Override

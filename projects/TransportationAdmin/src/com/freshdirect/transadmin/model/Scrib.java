@@ -421,7 +421,8 @@ public class Scrib implements java.io.Serializable, IWaveInstanceSource {
 		// It can be turned off anytime based on future business requirements
 		//return false;
 		return this.getZone() != null && this.getZone().getArea() != null 
-				&& "X".equalsIgnoreCase(this.getZone().getArea().getIsDepot());
+				&& "X".equalsIgnoreCase(this.getZone().getArea().getIsDepot())
+				&& !(this.getOriginFacility()!=null && this.getOriginFacility().getTrnFacilityType().getName().equals(EnumTransportationFacilitySrc.DEPOTDELIVERY.getName()));
 	}
 
 	@Override
