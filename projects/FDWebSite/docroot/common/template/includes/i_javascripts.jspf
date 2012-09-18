@@ -77,6 +77,7 @@
 			if (sem_user_CT != null) {
 				semPixel_CT.setParam("custId", sem_user_CT.getIdentity().getErpCustomerPK().toString());
 			}
+			session.removeAttribute("regSuccess"); /* remove sign up marker once used, so every other page isn't logged */
 		}
 
 		%><fd:SemPixelIncludeMedia pixelNames="ConvergeTrack" /><%
