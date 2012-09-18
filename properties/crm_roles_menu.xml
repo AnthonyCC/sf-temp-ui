@@ -344,7 +344,7 @@ delivery_available_slots.jsp,delivery_check_slots.jsp,activity_log.jsp,referral_
 
 	<role name="CRM_SeniorAgent">
 		<links name="main">
-			main_index.jsp,crmLateIssues.jsp,VSStatusLog.jsp,campaigns.jsp,add_campaign.jsp,delete_campaign.jsp,update_campaign.jsp,vsDetails.jsp,vsRedial.jsp,worklist.jsp,giftcard_landing.jsp,profile_list.jsp,add_bad_account.jsp
+			main_index.jsp,case_mgmt_index.jsp,crmLateIssues.jsp,VSStatusLog.jsp,campaigns.jsp,add_campaign.jsp,delete_campaign.jsp,update_campaign.jsp,vsDetails.jsp,vsRedial.jsp,worklist.jsp,giftcard_landing.jsp,profile_list.jsp,add_bad_account.jsp
 		</links>
 		<links name="reports">route_stop_report.jsp</links>
 		<links name="quickshop">
