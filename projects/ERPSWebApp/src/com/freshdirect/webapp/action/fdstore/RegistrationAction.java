@@ -263,6 +263,9 @@ public class RegistrationAction extends WebActionSupport {
 					this.setSuccessPage(this.statusChangePage + ( ((this.statusChangePage).indexOf("?") == -1) ? "?" : "&" ) + "promoChange=" + promoChanged + "&dlvChange=" + dlvChanged);
 				}
 			}
+			//set a session attribute so we know registration completed successfully
+			session.setAttribute("regSuccess", true);
+			
 			//Set the
 			return SUCCESS;
 		} else {

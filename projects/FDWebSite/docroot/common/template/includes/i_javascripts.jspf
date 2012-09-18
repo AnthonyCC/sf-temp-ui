@@ -69,8 +69,8 @@
 		//always include this
 		semPixel_CT.setParam("landing", "true");
 		
-		if(session != null && session.getAttribute("LITESIGNUP_COMPLETE") != null) {
-			//user just completed sign up lite add param
+		if(session != null && (session.getAttribute("LITESIGNUP_COMPLETE") != null || session.getAttribute("regSuccess") != null)) {
+			/* user just completed sign up lite or checkout sign up, add param */
 			semPixel_CT.setParam("signUp", "true");
 
 			FDUserI sem_user_CT = (FDUserI)session.getAttribute(SessionName.USER);
