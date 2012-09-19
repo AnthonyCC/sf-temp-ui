@@ -208,6 +208,94 @@
                             
 
                         /**
+                        * field for EmployeeID
+                        */
+
+                        
+                                    protected java.lang.String localEmployeeID ;
+                                
+                           /*  This tracker boolean wil be used to detect whether the user called the set method
+                          *   for this attribute. It will be used to determine whether to include this field
+                           *   in the serialized XML
+                           */
+                           protected boolean localEmployeeIDTracker = false ;
+                           
+
+                           /**
+                           * Auto generated getter method
+                           * @return java.lang.String
+                           */
+                           public  java.lang.String getEmployeeID(){
+                               return localEmployeeID;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param EmployeeID
+                               */
+                               public void setEmployeeID(java.lang.String param){
+                            
+                                       if (param != null){
+                                          //update the setting tracker
+                                          localEmployeeIDTracker = true;
+                                       } else {
+                                          localEmployeeIDTracker = false;
+                                              
+                                       }
+                                   
+                                            this.localEmployeeID=param;
+                                    
+
+                               }
+                            
+
+                        /**
+                        * field for ModifiedSince
+                        */
+
+                        
+                                    protected java.util.Date localModifiedSince ;
+                                
+                           /*  This tracker boolean wil be used to detect whether the user called the set method
+                          *   for this attribute. It will be used to determine whether to include this field
+                           *   in the serialized XML
+                           */
+                           protected boolean localModifiedSinceTracker = false ;
+                           
+
+                           /**
+                           * Auto generated getter method
+                           * @return java.util.Date
+                           */
+                           public  java.util.Date getModifiedSince(){
+                               return localModifiedSince;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param ModifiedSince
+                               */
+                               public void setModifiedSince(java.util.Date param){
+                            
+                                       if (param != null){
+                                          //update the setting tracker
+                                          localModifiedSinceTracker = true;
+                                       } else {
+                                          localModifiedSinceTracker = false;
+                                              
+                                       }
+                                   
+                                            this.localModifiedSince=param;
+                                    
+
+                               }
+                            
+
+                        /**
                         * field for MaximumLocationsRetrieved
                         */
 
@@ -470,6 +558,74 @@
                                           }
                                     
                                    xmlWriter.writeEndElement();
+                             } if (localEmployeeIDTracker){
+                                    namespace = "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService";
+                                    if (! namespace.equals("")) {
+                                        prefix = xmlWriter.getPrefix(namespace);
+
+                                        if (prefix == null) {
+                                            prefix = generatePrefix(namespace);
+
+                                            xmlWriter.writeStartElement(prefix,"employeeID", namespace);
+                                            xmlWriter.writeNamespace(prefix, namespace);
+                                            xmlWriter.setPrefix(prefix, namespace);
+
+                                        } else {
+                                            xmlWriter.writeStartElement(namespace,"employeeID");
+                                        }
+
+                                    } else {
+                                        xmlWriter.writeStartElement("employeeID");
+                                    }
+                                
+
+                                          if (localEmployeeID==null){
+                                              // write the nil attribute
+                                              
+                                                     throw new org.apache.axis2.databinding.ADBException("employeeID cannot be null!!");
+                                                  
+                                          }else{
+
+                                        
+                                                   xmlWriter.writeCharacters(localEmployeeID);
+                                            
+                                          }
+                                    
+                                   xmlWriter.writeEndElement();
+                             } if (localModifiedSinceTracker){
+                                    namespace = "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService";
+                                    if (! namespace.equals("")) {
+                                        prefix = xmlWriter.getPrefix(namespace);
+
+                                        if (prefix == null) {
+                                            prefix = generatePrefix(namespace);
+
+                                            xmlWriter.writeStartElement(prefix,"modifiedSince", namespace);
+                                            xmlWriter.writeNamespace(prefix, namespace);
+                                            xmlWriter.setPrefix(prefix, namespace);
+
+                                        } else {
+                                            xmlWriter.writeStartElement(namespace,"modifiedSince");
+                                        }
+
+                                    } else {
+                                        xmlWriter.writeStartElement("modifiedSince");
+                                    }
+                                
+
+                                          if (localModifiedSince==null){
+                                              // write the nil attribute
+                                              
+                                                     throw new org.apache.axis2.databinding.ADBException("modifiedSince cannot be null!!");
+                                                  
+                                          }else{
+
+                                        
+                                                   xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localModifiedSince));
+                                            
+                                          }
+                                    
+                                   xmlWriter.writeEndElement();
                              }
                                     namespace = "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService";
                                     if (! namespace.equals("")) {
@@ -697,6 +853,24 @@
                                         } else {
                                            throw new org.apache.axis2.databinding.ADBException("description cannot be null!!");
                                         }
+                                    } if (localEmployeeIDTracker){
+                                      elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
+                                                                      "employeeID"));
+                                 
+                                        if (localEmployeeID != null){
+                                            elementList.add(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localEmployeeID));
+                                        } else {
+                                           throw new org.apache.axis2.databinding.ADBException("employeeID cannot be null!!");
+                                        }
+                                    } if (localModifiedSinceTracker){
+                                      elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
+                                                                      "modifiedSince"));
+                                 
+                                        if (localModifiedSince != null){
+                                            elementList.add(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localModifiedSince));
+                                        } else {
+                                           throw new org.apache.axis2.databinding.ADBException("modifiedSince cannot be null!!");
+                                        }
                                     }
                                       elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
                                                                       "maximumLocationsRetrieved"));
@@ -842,6 +1016,42 @@
                                     
                                               object.setDescription(
                                                     org.apache.axis2.databinding.utils.ConverterUtil.convertToString(content));
+                                              
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                    else {
+                                        
+                                    }
+                                
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","employeeID").equals(reader.getName())){
+                                
+                                    java.lang.String content = reader.getElementText();
+                                    
+                                              object.setEmployeeID(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToString(content));
+                                              
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                    else {
+                                        
+                                    }
+                                
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","modifiedSince").equals(reader.getName())){
+                                
+                                    java.lang.String content = reader.getElementText();
+                                    
+                                              object.setModifiedSince(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToDate(content));
                                               
                                         reader.next();
                                     

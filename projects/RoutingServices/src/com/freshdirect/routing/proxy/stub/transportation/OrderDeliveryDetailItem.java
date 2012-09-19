@@ -38,12 +38,6 @@
                         
                                     protected com.freshdirect.routing.proxy.stub.transportation.OrderIdentity localOrderIdentity ;
                                 
-                           /*  This tracker boolean wil be used to detect whether the user called the set method
-                          *   for this attribute. It will be used to determine whether to include this field
-                           *   in the serialized XML
-                           */
-                           protected boolean localOrderIdentityTracker = false ;
-                           
 
                            /**
                            * Auto generated getter method
@@ -61,14 +55,6 @@
                                */
                                public void setOrderIdentity(com.freshdirect.routing.proxy.stub.transportation.OrderIdentity param){
                             
-                                       if (param != null){
-                                          //update the setting tracker
-                                          localOrderIdentityTracker = true;
-                                       } else {
-                                          localOrderIdentityTracker = true;
-                                              
-                                       }
-                                   
                                             this.localOrderIdentity=param;
                                     
 
@@ -419,38 +405,13 @@
                                           }
                                     
                                    xmlWriter.writeEndElement();
-                             } if (localOrderIdentityTracker){
-                                    if (localOrderIdentity==null){
-
-                                            java.lang.String namespace2 = "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService";
-
-                                        if (! namespace2.equals("")) {
-                                            java.lang.String prefix2 = xmlWriter.getPrefix(namespace2);
-
-                                            if (prefix2 == null) {
-                                                prefix2 = generatePrefix(namespace2);
-
-                                                xmlWriter.writeStartElement(prefix2,"orderIdentity", namespace2);
-                                                xmlWriter.writeNamespace(prefix2, namespace2);
-                                                xmlWriter.setPrefix(prefix2, namespace2);
-
-                                            } else {
-                                                xmlWriter.writeStartElement(namespace2,"orderIdentity");
+                             }
+                                            if (localOrderIdentity==null){
+                                                 throw new org.apache.axis2.databinding.ADBException("orderIdentity cannot be null!!");
                                             }
-
-                                        } else {
-                                            xmlWriter.writeStartElement("orderIdentity");
-                                        }
-
-
-                                       // write the nil attribute
-                                      writeAttribute("xsi","http://www.w3.org/2001/XMLSchema-instance","nil","1",xmlWriter);
-                                      xmlWriter.writeEndElement();
-                                    }else{
-                                     localOrderIdentity.serialize(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","orderIdentity"),
-                                        factory,xmlWriter);
-                                    }
-                                } if (localOrderStatusCodeTracker){
+                                           localOrderIdentity.serialize(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","orderIdentity"),
+                                               factory,xmlWriter);
+                                         if (localOrderStatusCodeTracker){
                                     namespace = "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService";
                                     if (! namespace.equals("")) {
                                         prefix = xmlWriter.getPrefix(namespace);
@@ -724,14 +685,16 @@
                                         } else {
                                            throw new org.apache.axis2.databinding.ADBException("userDefinedField3 cannot be null!!");
                                         }
-                                    } if (localOrderIdentityTracker){
+                                    }
                             elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
                                                                       "orderIdentity"));
                             
                             
-                                    elementList.add(localOrderIdentity==null?null:
-                                    localOrderIdentity);
-                                } if (localOrderStatusCodeTracker){
+                                    if (localOrderIdentity==null){
+                                         throw new org.apache.axis2.databinding.ADBException("orderIdentity cannot be null!!");
+                                    }
+                                    elementList.add(localOrderIdentity);
+                                 if (localOrderStatusCodeTracker){
                                       elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
                                                                       "orderStatusCode"));
                                  
@@ -932,25 +895,17 @@
                                 
                                     if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","orderIdentity").equals(reader.getName())){
                                 
-                                      nillableValue = reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance","nil");
-                                      if ("true".equals(nillableValue) || "1".equals(nillableValue)){
-                                          object.setOrderIdentity(null);
-                                          reader.next();
-                                            
-                                            reader.next();
-                                          
-                                      }else{
-                                    
                                                 object.setOrderIdentity(com.freshdirect.routing.proxy.stub.transportation.OrderIdentity.Factory.parse(reader));
                                               
                                         reader.next();
-                                    }
+                                    
                               }  // End of if for expected property start element
                                 
-                                    else {
-                                        
-                                    }
-                                
+                                else{
+                                    // A start element we are not expecting indicates an invalid parameter was passed
+                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
+                                }
+                            
                                     
                                     while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
                                 

@@ -71,6 +71,9 @@
                                     public static final java.lang.String _uprcBadPositionTime =
                                         org.apache.axis2.databinding.utils.ConverterUtil.convertToString("uprcBadPositionTime");
                                 
+                                    public static final java.lang.String _uprcDataValidationError =
+                                        org.apache.axis2.databinding.utils.ConverterUtil.convertToString("uprcDataValidationError");
+                                
                                 public static final UpdatePositionReturnCode uprcUnknown =
                                     new UpdatePositionReturnCode(_uprcUnknown,true);
                             
@@ -88,6 +91,9 @@
                             
                                 public static final UpdatePositionReturnCode uprcBadPositionTime =
                                     new UpdatePositionReturnCode(_uprcBadPositionTime,true);
+                            
+                                public static final UpdatePositionReturnCode uprcDataValidationError =
+                                    new UpdatePositionReturnCode(_uprcDataValidationError,true);
                             
 
                                 public java.lang.String getValue() { return localUpdatePositionReturnCode;}

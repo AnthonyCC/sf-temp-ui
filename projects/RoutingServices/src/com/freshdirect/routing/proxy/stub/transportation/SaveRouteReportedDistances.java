@@ -1,6 +1,6 @@
 
 /**
- * RoutingImportOrderActivity.java
+ * SaveRouteReportedDistances.java
  *
  * This file was auto-generated from WSDL
  * by the Apache Axis2 version: 1.5  Built on : Apr 30, 2009 (06:07:47 EDT)
@@ -10,16 +10,17 @@
             
 
             /**
-            *  RoutingImportOrderActivity bean class
+            *  SaveRouteReportedDistances bean class
             */
         
-        public  class RoutingImportOrderActivity
+        public  class SaveRouteReportedDistances
         implements org.apache.axis2.databinding.ADBBean{
-        /* This type was generated from the piece of schema that had
-                name = RoutingImportOrderActivity
-                Namespace URI = http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService
-                Namespace Prefix = ns1
-                */
+        
+                public static final javax.xml.namespace.QName MY_QNAME = new javax.xml.namespace.QName(
+                "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
+                "SaveRouteReportedDistances",
+                "ns1");
+
             
 
         private static java.lang.String generatePrefix(java.lang.String namespace) {
@@ -32,65 +33,86 @@
         
 
                         /**
-                        * field for ActivityId
+                        * field for ReportedDistances
+                        * This was an Array!
                         */
 
                         
-                                    protected java.lang.String localActivityId ;
+                                    protected com.freshdirect.routing.proxy.stub.transportation.RouteReportedDistance[] localReportedDistances ;
                                 
+                           /*  This tracker boolean wil be used to detect whether the user called the set method
+                          *   for this attribute. It will be used to determine whether to include this field
+                           *   in the serialized XML
+                           */
+                           protected boolean localReportedDistancesTracker = false ;
+                           
 
                            /**
                            * Auto generated getter method
-                           * @return java.lang.String
+                           * @return com.freshdirect.routing.proxy.stub.transportation.RouteReportedDistance[]
                            */
-                           public  java.lang.String getActivityId(){
-                               return localActivityId;
+                           public  com.freshdirect.routing.proxy.stub.transportation.RouteReportedDistance[] getReportedDistances(){
+                               return localReportedDistances;
                            }
 
                            
                         
-                            /**
-                               * Auto generated setter method
-                               * @param param ActivityId
+
+
+                               
+                              /**
+                               * validate the array for ReportedDistances
                                */
-                               public void setActivityId(java.lang.String param){
+                              protected void validateReportedDistances(com.freshdirect.routing.proxy.stub.transportation.RouteReportedDistance[] param){
+                             
+                              }
+
+
+                             /**
+                              * Auto generated setter method
+                              * @param param ReportedDistances
+                              */
+                              public void setReportedDistances(com.freshdirect.routing.proxy.stub.transportation.RouteReportedDistance[] param){
+                              
+                                   validateReportedDistances(param);
+
+                               
+                                          if (param != null){
+                                             //update the setting tracker
+                                             localReportedDistancesTracker = true;
+                                          } else {
+                                             localReportedDistancesTracker = false;
+                                                 
+                                          }
+                                      
+                                      this.localReportedDistances=param;
+                              }
+
+                               
+                             
+                             /**
+                             * Auto generated add method for the array for convenience
+                             * @param param com.freshdirect.routing.proxy.stub.transportation.RouteReportedDistance
+                             */
+                             public void addReportedDistances(com.freshdirect.routing.proxy.stub.transportation.RouteReportedDistance param){
+                                   if (localReportedDistances == null){
+                                   localReportedDistances = new com.freshdirect.routing.proxy.stub.transportation.RouteReportedDistance[]{};
+                                   }
+
                             
-                                            this.localActivityId=param;
-                                    
-
-                               }
+                                 //update the setting tracker
+                                localReportedDistancesTracker = true;
                             
 
-                        /**
-                        * field for ActivitySequence
-                        */
+                               java.util.List list =
+                            org.apache.axis2.databinding.utils.ConverterUtil.toList(localReportedDistances);
+                               list.add(param);
+                               this.localReportedDistances =
+                             (com.freshdirect.routing.proxy.stub.transportation.RouteReportedDistance[])list.toArray(
+                            new com.freshdirect.routing.proxy.stub.transportation.RouteReportedDistance[list.size()]);
 
-                        
-                                    protected double localActivitySequence =
-                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToDouble("-1.000000");
-                                
-
-                           /**
-                           * Auto generated getter method
-                           * @return double
-                           */
-                           public  double getActivitySequence(){
-                               return localActivitySequence;
-                           }
-
-                           
-                        
-                            /**
-                               * Auto generated setter method
-                               * @param param ActivitySequence
-                               */
-                               public void setActivitySequence(double param){
-                            
-                                            this.localActivitySequence=param;
-                                    
-
-                               }
-                            
+                             }
+                             
 
      /**
      * isReaderMTOMAware
@@ -120,15 +142,15 @@
 
 
         
-               org.apache.axiom.om.OMDataSource dataSource =
-                       new org.apache.axis2.databinding.ADBDataSource(this,parentQName){
+                org.apache.axiom.om.OMDataSource dataSource =
+                       new org.apache.axis2.databinding.ADBDataSource(this,MY_QNAME){
 
                  public void serialize(org.apache.axis2.databinding.utils.writer.MTOMAwareXMLStreamWriter xmlWriter) throws javax.xml.stream.XMLStreamException {
-                       RoutingImportOrderActivity.this.serialize(parentQName,factory,xmlWriter);
+                       SaveRouteReportedDistances.this.serialize(MY_QNAME,factory,xmlWriter);
                  }
                };
                return new org.apache.axiom.om.impl.llom.OMSourcedElementImpl(
-               parentQName,factory,dataSource);
+               MY_QNAME,factory,dataSource);
             
        }
 
@@ -178,80 +200,35 @@
                    java.lang.String namespacePrefix = registerPrefix(xmlWriter,"http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService");
                    if ((namespacePrefix != null) && (namespacePrefix.trim().length() > 0)){
                        writeAttribute("xsi","http://www.w3.org/2001/XMLSchema-instance","type",
-                           namespacePrefix+":RoutingImportOrderActivity",
+                           namespacePrefix+":SaveRouteReportedDistances",
                            xmlWriter);
                    } else {
                        writeAttribute("xsi","http://www.w3.org/2001/XMLSchema-instance","type",
-                           "RoutingImportOrderActivity",
+                           "SaveRouteReportedDistances",
                            xmlWriter);
                    }
 
                
                    }
-               
-                                    namespace = "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService";
-                                    if (! namespace.equals("")) {
-                                        prefix = xmlWriter.getPrefix(namespace);
+                if (localReportedDistancesTracker){
+                                       if (localReportedDistances!=null){
+                                            for (int i = 0;i < localReportedDistances.length;i++){
+                                                if (localReportedDistances[i] != null){
+                                                 localReportedDistances[i].serialize(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","reportedDistances"),
+                                                           factory,xmlWriter);
+                                                } else {
+                                                   
+                                                        // we don't have to do any thing since minOccures is zero
+                                                    
+                                                }
 
-                                        if (prefix == null) {
-                                            prefix = generatePrefix(namespace);
-
-                                            xmlWriter.writeStartElement(prefix,"activityId", namespace);
-                                            xmlWriter.writeNamespace(prefix, namespace);
-                                            xmlWriter.setPrefix(prefix, namespace);
-
-                                        } else {
-                                            xmlWriter.writeStartElement(namespace,"activityId");
-                                        }
-
-                                    } else {
-                                        xmlWriter.writeStartElement("activityId");
-                                    }
-                                
-
-                                          if (localActivityId==null){
-                                              // write the nil attribute
-                                              
-                                                     throw new org.apache.axis2.databinding.ADBException("activityId cannot be null!!");
-                                                  
-                                          }else{
-
+                                            }
+                                     } else {
                                         
-                                                   xmlWriter.writeCharacters(localActivityId);
-                                            
-                                          }
-                                    
-                                   xmlWriter.writeEndElement();
-                             
-                                    namespace = "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService";
-                                    if (! namespace.equals("")) {
-                                        prefix = xmlWriter.getPrefix(namespace);
-
-                                        if (prefix == null) {
-                                            prefix = generatePrefix(namespace);
-
-                                            xmlWriter.writeStartElement(prefix,"activitySequence", namespace);
-                                            xmlWriter.writeNamespace(prefix, namespace);
-                                            xmlWriter.setPrefix(prefix, namespace);
-
-                                        } else {
-                                            xmlWriter.writeStartElement(namespace,"activitySequence");
-                                        }
-
-                                    } else {
-                                        xmlWriter.writeStartElement("activitySequence");
+                                               throw new org.apache.axis2.databinding.ADBException("reportedDistances cannot be null!!");
+                                        
                                     }
-                                
-                                               if (java.lang.Double.isNaN(localActivitySequence)) {
-                                           
-                                                         throw new org.apache.axis2.databinding.ADBException("activitySequence cannot be null!!");
-                                                      
-                                               } else {
-                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localActivitySequence));
-                                               }
-                                    
-                                   xmlWriter.writeEndElement();
-                             
+                                 }
                     xmlWriter.writeEndElement();
                
 
@@ -413,22 +390,28 @@
                  java.util.ArrayList elementList = new java.util.ArrayList();
                  java.util.ArrayList attribList = new java.util.ArrayList();
 
-                
-                                      elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
-                                                                      "activityId"));
+                 if (localReportedDistancesTracker){
+                             if (localReportedDistances!=null) {
+                                 for (int i = 0;i < localReportedDistances.length;i++){
+
+                                    if (localReportedDistances[i] != null){
+                                         elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
+                                                                          "reportedDistances"));
+                                         elementList.add(localReportedDistances[i]);
+                                    } else {
+                                        
+                                                // nothing to do
+                                            
+                                    }
+
+                                 }
+                             } else {
                                  
-                                        if (localActivityId != null){
-                                            elementList.add(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localActivityId));
-                                        } else {
-                                           throw new org.apache.axis2.databinding.ADBException("activityId cannot be null!!");
-                                        }
+                                        throw new org.apache.axis2.databinding.ADBException("reportedDistances cannot be null!!");
                                     
-                                      elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
-                                                                      "activitySequence"));
-                                 
-                                elementList.add(
-                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localActivitySequence));
-                            
+                             }
+
+                        }
 
                 return new org.apache.axis2.databinding.utils.reader.ADBXMLStreamReaderImpl(qName, elementList.toArray(), attribList.toArray());
             
@@ -453,9 +436,9 @@
         * Postcondition: If this object is an element, the reader is positioned at its end element
         *                If this object is a complex type, the reader is positioned at the end element of its outer element
         */
-        public static RoutingImportOrderActivity parse(javax.xml.stream.XMLStreamReader reader) throws java.lang.Exception{
-            RoutingImportOrderActivity object =
-                new RoutingImportOrderActivity();
+        public static SaveRouteReportedDistances parse(javax.xml.stream.XMLStreamReader reader) throws java.lang.Exception{
+            SaveRouteReportedDistances object =
+                new SaveRouteReportedDistances();
 
             int event;
             java.lang.String nillableValue = null;
@@ -479,10 +462,10 @@
 
                     java.lang.String type = fullTypeName.substring(fullTypeName.indexOf(":")+1);
                     
-                            if (!"RoutingImportOrderActivity".equals(type)){
+                            if (!"SaveRouteReportedDistances".equals(type)){
                                 //find namespace for the prefix
                                 java.lang.String nsUri = reader.getNamespaceContext().getNamespaceURI(nsPrefix);
-                                return (RoutingImportOrderActivity)com.freshdirect.routing.proxy.stub.transportation.ExtensionMapper.getTypeObject(
+                                return (SaveRouteReportedDistances)com.freshdirect.routing.proxy.stub.transportation.ExtensionMapper.getTypeObject(
                                      nsUri,type,reader);
                               }
                         
@@ -504,44 +487,54 @@
                     
                     reader.next();
                 
+                        java.util.ArrayList list1 = new java.util.ArrayList();
+                    
                                     
                                     while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
                                 
-                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","activityId").equals(reader.getName())){
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","reportedDistances").equals(reader.getName())){
                                 
-                                    java.lang.String content = reader.getElementText();
                                     
-                                              object.setActivityId(
-                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToString(content));
-                                              
-                                        reader.next();
                                     
+                                    // Process the array and step past its final element's end.
+                                    list1.add(com.freshdirect.routing.proxy.stub.transportation.RouteReportedDistance.Factory.parse(reader));
+                                                                
+                                                        //loop until we find a start element that is not part of this array
+                                                        boolean loopDone1 = false;
+                                                        while(!loopDone1){
+                                                            // We should be at the end element, but make sure
+                                                            while (!reader.isEndElement())
+                                                                reader.next();
+                                                            // Step out of this element
+                                                            reader.next();
+                                                            // Step to next element event.
+                                                            while (!reader.isStartElement() && !reader.isEndElement())
+                                                                reader.next();
+                                                            if (reader.isEndElement()){
+                                                                //two continuous end elements means we are exiting the xml structure
+                                                                loopDone1 = true;
+                                                            } else {
+                                                                if (new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","reportedDistances").equals(reader.getName())){
+                                                                    list1.add(com.freshdirect.routing.proxy.stub.transportation.RouteReportedDistance.Factory.parse(reader));
+                                                                        
+                                                                }else{
+                                                                    loopDone1 = true;
+                                                                }
+                                                            }
+                                                        }
+                                                        // call the converter utility  to convert and set the array
+                                                        
+                                                        object.setReportedDistances((com.freshdirect.routing.proxy.stub.transportation.RouteReportedDistance[])
+                                                            org.apache.axis2.databinding.utils.ConverterUtil.convertToArray(
+                                                                com.freshdirect.routing.proxy.stub.transportation.RouteReportedDistance.class,
+                                                                list1));
+                                                            
                               }  // End of if for expected property start element
                                 
-                                else{
-                                    // A start element we are not expecting indicates an invalid parameter was passed
-                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
-                                }
-                            
-                                    
-                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
-                                
-                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","activitySequence").equals(reader.getName())){
-                                
-                                    java.lang.String content = reader.getElementText();
-                                    
-                                              object.setActivitySequence(
-                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToDouble(content));
-                                              
-                                        reader.next();
-                                    
-                              }  // End of if for expected property start element
-                                
-                                else{
-                                    // A start element we are not expecting indicates an invalid parameter was passed
-                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
-                                }
-                              
+                                    else {
+                                        
+                                    }
+                                  
                             while (!reader.isStartElement() && !reader.isEndElement())
                                 reader.next();
                             

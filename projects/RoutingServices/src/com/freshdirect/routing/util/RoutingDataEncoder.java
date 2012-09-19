@@ -681,7 +681,7 @@ public class RoutingDataEncoder {
 		
 		
 		SchedulerDeliveryWindowMetricsOptions schMetricsOptions = new SchedulerDeliveryWindowMetricsOptions();
-		schMetricsOptions.setType(SchedulerDeliveryWindowMetricsType.sdwmfPlannedArrivalTime);
+		//schMetricsOptions.setType(SchedulerDeliveryWindowMetricsType.sdwmfPlannedArrivalTime);
 		//schMetricsOptions.setType(SchedulerDeliveryWindowMetricsType.sdwmfAssignedDeliveryWindow);
 		schMetricsOptions.setTimeZone(TimeZoneValue.tmzEasternTimeUSCanada);
 						
