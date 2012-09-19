@@ -125,9 +125,10 @@ public class SaleCronRunner {
 	
 	private static void emailUnassigned()
 	{
+		Context ctx = null;
 		try
 		{
-			Context ctx = null;
+			
 			ctx = getInitialContext();
 			Calendar cal = Calendar.getInstance();
 			cal.add(Calendar.DATE, 1);
@@ -152,13 +153,27 @@ public class SaleCronRunner {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		finally {
+			try {
+				if (ctx != null) {
+					ctx.close();
+					ctx = null;
+				}
+			} catch (NamingException ne) {
+
+				// TODO Auto-generated catch block
+				ne.printStackTrace();
+			
+			}
+		}
 	}
 	
 	private static void emailResolvedReservationIssues()
 	{
+		Context ctx = null;
 		try
 		{
-			Context ctx = null;
+			
 			ctx = getInitialContext();
 			
 			DlvManagerSB dlvManager = null;
@@ -185,6 +200,15 @@ public class SaleCronRunner {
 		} catch (CreateException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		}
+		finally {
+			try {
+				if (ctx != null) {
+					ctx.close();
+					ctx = null;
+				}
+			} catch (NamingException ne) {// TODO Auto-generated catch block
+				ne.printStackTrace();}
 		}
 	}
 	
