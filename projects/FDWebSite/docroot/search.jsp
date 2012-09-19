@@ -239,6 +239,19 @@ final int W_INDEX_RIGHT_CENTER = W_INDEX_TOTAL - 228 - W_INDEX_CENTER_PADDING;
 	</fd:FilterList>
 	</tmpl:put>
 	
+	<tmpl:put name='customerRatingFilter'>
+  <%-- TODO: bazaarvoice based rating filter --%>
+		<div id="customerrating" class="filterbox sidebar-content">
+			<h3>Customer rating</h3>
+      <ul>
+        <li><a href="#"><span class="star-rating rating-5"></span></a></li>
+        <li><a href="#"><span class="star-rating rating-4"></span></a></li>
+        <li><a href="#"><span class="star-rating rating-3"></span></a></li>
+        <li><a href="#"><span class="star-rating rating-2"></span></a></li>
+        <li><a href="#"><span class="star-rating rating-1"></span></a></li>
+      </ul>
+    </div>
+	</tmpl:put>
 	
 	<tmpl:put name="otherKosherFilter">
 	<fd:FilterList domainName="<%= EnumFilteringValue.KOSHER %>" filters='<%= menus %>' id="filterItems">

@@ -13,6 +13,7 @@
   <fd:css href="/assets/css/common/footer.css" />
   <fd:css href="/assets/css/common/freshdirect.css" />
   <fd:css href="/assets/css/common/globalnav_and_footer.css"/>
+  <fd:css href="/assets/css/common/star_rating.css"/>
 
   <%-- IE + IE6 fixes --%>
   <!--[if IE]>

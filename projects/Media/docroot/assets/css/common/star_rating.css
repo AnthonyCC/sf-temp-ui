@@ -1,0 +1,33 @@
+span.star-rating {
+  background-image: url(/media_stat/images/common/sprites/star_rating.png);
+  background-repeat: no-repeat;
+  background-position: -95px 0;
+  display: inline-block;
+  height: 19px;
+  width: 95px;
+}
+
+span.rating-5 {
+  background-position: 0 0;
+}
+
+span.rating-4 {
+  background-position: -19px 0;
+}
+
+span.rating-3 {
+  background-position: -38px 0;
+}
+
+span.rating-2 {
+  background-position: -57px 0;
+}
+
+span.rating-1 {
+  background-position: -76px 0;
+}
+
+.qbBody span.star-rating {
+  margin-bottom: 20px;
+}
+
