@@ -34,7 +34,7 @@ fd_carousel._start=function(container, numItems,hideContainer,text,cName,parentI
 
 
 		carousel = new YAHOO.widget.Carousel(container,{numVisible:numItems,animation:{speed: 0.5}});
-		carousel.CONFIG.MAX_PAGER_BUTTONS=8;
+		carousel.CONFIG.MAX_PAGER_BUTTONS=9;
 		carousel.CONFIG.HORZ_MIN_WIDTH=100;
 		carousel.render();
 		carousel.show();

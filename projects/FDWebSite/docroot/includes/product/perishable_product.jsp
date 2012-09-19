@@ -205,12 +205,12 @@ final int W_PERISHABLE_PRODUCT_RIGHT = 369;
 			<% // [APPBUG-677] disable YMAL recommender in quickshop pages
 			   // [APPDEV-2415] disable YMAL if recommendations are disabled on product
 				if (!request.getRequestURI().startsWith("/quickshop") && !productNode.isDisabledRecommendations()) { %>
-			<fd:ProductGroupRecommender itemCount="6" siteFeature="YMAL_PDTL" facility="ymal_pdtl" currentNode="<%= __prd %>" id="recommendedProducts" excludeAlcoholicContent="<%= true %>" ymalSource="<%= __prd %>">
+			<fd:ProductGroupRecommender itemCount="9" siteFeature="YMAL_PDTL" facility="ymal_pdtl" currentNode="<%= __prd %>" id="recommendedProducts" excludeAlcoholicContent="<%= true %>" ymalSource="<%= __prd %>">
 			<div id="ymal_pdtl_container" class="carousel-box" style="padding-top: 32px;">
 				<div style="text-align: center; padding-bottom: 10px; margin-bottom: 10px; border-bottom: 1px dotted gray;">
 					<img src="/media_stat/images/template/ymal_title.gif" alt="YMAL" width="140" height="12" style="border: 0">
 				</div>
-					<display:Carousel id="cat2_carousel" carouselId="cat2_carousel" width="150" numItems="1" showCategories="false" itemsToShow="<%= recommendedProducts.getProducts() %>" trackingCode="ymal_pdtl" maxItems="6" style="margin-left: auto; margin-right: auto;">
+					<display:Carousel id="cat2_carousel" carouselId="cat2_carousel" width="150" numItems="1" showCategories="false" itemsToShow="<%= recommendedProducts.getProducts() %>" trackingCode="ymal_pdtl" maxItems="9" style="margin-left: auto; margin-right: auto;">
 						<%
 							final ProductModel __c_prd = (ProductModel) currentItem;
 							final int __c_maxHeight = ProductDisplayUtil.getMaxHeight(recommendedProducts.getProducts()); 
