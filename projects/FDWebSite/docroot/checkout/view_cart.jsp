@@ -240,8 +240,7 @@ StringBuffer buffer = new StringBuffer(
 
 
 <% String smartStoreFacility = "checkout"; %>
-<fd:TabLook><%@ include file="/includes/smartstore/i_recommender_tabs.jspf" %></fd:TabLook>
-<fd:TabLook look="flat"><%@ include file="/includes/smartstore/i_flat_tabs.jspf" %></fd:TabLook>
+<%@ include file="/includes/smartstore/i_recommender_tabs.jspf" %>
 
 
 

@@ -49,25 +49,16 @@ com.freshdirect.webapp.taglib.fdstore.SessionName,com.freshdirect.smartstore.Var
 
 		request.setAttribute("genericRecommendationsVariant", v);
 		String pimpId = request.getParameter("pImpId");
-		String _parentVariantId = null;
 		if (pimpId != null) {
 		    int indx = pimpId.indexOf(':');
 		    if (indx != -1) {
-		    	_parentVariantId = pimpId.substring(indx + 1);
+		    	String _parentVariantId = pimpId.substring(indx + 1);
 				request.setAttribute("parentVariantId", _parentVariantId);
 		        pimpId = pimpId.substring(0, indx);
 		    }
 			request.setAttribute("parentImpressionId", pimpId);
 		}
 		
-		// [APPDEV-2320] set fixed product image height for each recommender box
-		if (_parentVariantId != null) {
-			Variant pv = VariantRegistry.getInstance().getService(_parentVariantId);
-			if (!pv.isDefaultTabLook()) {
-			    request.setAttribute("globalCartProdHeight", 110);
-			}
-		}
-
 		if ( session.isNew() ) {	// session timeout
 			response.setStatus(HttpServletResponse.SC_RESET_CONTENT);
 		} else {

@@ -223,8 +223,7 @@ StringBuffer buffer = new StringBuffer(
 
 
 <% String smartStoreFacility = "view_cart"; %>
-<fd:TabLook><%@ include file="/includes/smartstore/i_recommender_tabs.jspf" %></fd:TabLook>
-<fd:TabLook look="flat"><%@ include file="/includes/smartstore/i_flat_tabs.jspf" %></fd:TabLook>
+<%@ include file="/includes/smartstore/i_recommender_tabs.jspf" %>
 
 <BR>
 <IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><BR>

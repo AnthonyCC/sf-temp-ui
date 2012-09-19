@@ -80,46 +80,12 @@
 	final boolean isAjax = (request.getHeader("X-Requested-With") != null);
 
 	String formUri = request.getRequestURI();
-
-	Map<String,String> optionalParams = new HashMap<String,String>();
 	if (isAjax) {
 		formUri = (String) request.getParameter("formUri");
-		
-		// [APPDEV-2320] Extract debug parameter from referer
-		String ref = request.getHeader("referer");
-		if (ref != null) {
-			try {
-				// URI __ref_uri = URI.create(ref);
-				final String qry = URI.create(ref).getQuery();
-				if (qry != null) {
-				    for (String param : qry.split("&")) {
-				        String pair[] = param.split("=");
-				        String key = URLDecoder.decode(pair[0], "UTF-8");
-				        String value = "";
-				        if (pair.length > 1) {
-				            value = URLDecoder.decode(pair[1], "UTF-8");
-				        }
-				        
-				        if ("_tablook".equalsIgnoreCase(key)) {
-							optionalParams.put("_tablook", value);
-							break;
-				        }
-				    }
-				}
-			} catch (UnsupportedEncodingException exc) {
-			}
-		}
 	} else {
 		// Remember selected department ID in QS Every Item Ever Ordered page
 		if (request.getRequestURI().indexOf("quickshop/every_item.jsp") > 0 &&
 				request.getParameter("qsDeptId") != null) {
-			optionalParams.put("qsDeptId", request.getParameter("qsDeptId"));
-		}
-		
-		// [APPDEV-2320] debug parameter
-		String str = request.getParameter("_tablook");
-		if (str != null) {
-			optionalParams.put("_tablook", str);
 		}
 	}
 
@@ -216,36 +182,15 @@ if (typeof(OST_<%= tx_pricing_FormName %>) == "undefined") {
 }
 </script>
 <%
-	String formQueryParams = null;
-	if (optionalParams.size() > 0) {
-		StringBuilder buf = new StringBuilder();
-		Iterator<String> it = optionalParams.keySet().iterator();
-		while (it.hasNext()) {
-			String key = it.next();
-			try {
-				buf.append(URLEncoder.encode(key, "UTF-8"));
-				buf.append("=");
-				buf.append(URLEncoder.encode(optionalParams.get(key), "UTF-8"));
-				if (it.hasNext()) {
-					buf.append("&");
-				}
-			} catch (UnsupportedEncodingException exc) {}
-		}
-
-		formQueryParams = buf.toString();
-	}
-
-
-
 	// pager vars
 	final boolean multiplePages = recommendations.getNumberOfPages() > 1;
 	final boolean cnt_showFirstBtn = multiplePages && !recommendations.isFirstPage();
 	final boolean cnt_showLastBtn = multiplePages && !recommendations.isLastPage();
 	final int selTab = ((Integer)session.getAttribute(SessionName.SS_SELECTED_TAB)).intValue();
 %>
-				<form id="id_<%= tx_pricing_FormName %>" name="<%= tx_pricing_FormName %>" method="post" action="<%= (formQueryParams != null ? formUri+"?"+formQueryParams : formUri) %>#cartRec" style="margin:0px">
+				<form id="id_<%= tx_pricing_FormName %>" name="<%= tx_pricing_FormName %>" method="post" action="<%= formUri %>#cartRec" style="margin:0px">
 					<input type="hidden" name="fdsc.action" value="addMultipleToCart"/>
-					<input type="hidden" name="fdsc.succpage" value="<%= formUri %>?confirm=1<%= (formQueryParams != null ? "&"+formQueryParams : "") %>#cartRec">
+					<input type="hidden" name="fdsc.succpage" value="<%= formUri %>?confirm=1#cartRec">
 					<input type="hidden" name="fdsc.source"  value="SS">
 
 					<display:StoreRecommendation recommendations="<%= recommendations %>"/>
@@ -254,11 +199,6 @@ if (typeof(OST_<%= tx_pricing_FormName %>) == "undefined") {
 					<fd:TxProductPricingSupport formName="<%= tx_pricing_FormName %>" namespace="<%= tx_pricing_JSNameSpace %>" customer="<%= pip_u %>" impressions="<%= impressions %>" inputNamePostfix="<%= tx_input_postfix %>"/>
 
 					<fd:PIPLayout rowSize="5" impressions="<%= impressions %>" id="recommendations_layout" singleRowMode="<%= true %>" maxRowHeight="rowHeight" >
-						<fd:TabLook look="flat">
-						<% if (cnt_showFirstBtn) { %><div id="ra_bwd_<%= _uid %>" class="cnt-pager-left"></div><% } else { %><div class="cnt-pager-left-off"></div><% } %>
-						<% if (cnt_showLastBtn) { %><div id="ra_fwd_<%= _uid %>" class="cnt-pager-right"></div><% } else { %><div class="cnt-pager-right-off"></div><% } %>
-						<div class="cnt-content">
-						</fd:TabLook>
 						<table class="cnt-product-box" style="width: 100%;">
 							<%
 								// ERROR DISPLAY
@@ -382,7 +322,7 @@ if (typeof(OST_<%= tx_pricing_FormName %>) == "undefined") {
 
 						<% if (hasAnyItemAddable) { %><input type="hidden" name="itemCount" value="<%= txProdCount %>"><% } %>
 
-						<fd:TabLook><table style="width: 100%;">
+						<table style="width: 100%;">
 							<tr>
 								<td id="ra_<%= _uid %>" colspan="<%= recommendations_layout.size() %>" style="text-align: center;">
 									<table border="0" style="margin: 8px auto 0;">
@@ -416,15 +356,7 @@ if (typeof(OST_<%= tx_pricing_FormName %>) == "undefined") {
 									</table>
 								</td>
 							</tr>
-						</table></fd:TabLook><fd:TabLook look="flat">
-						<div class="cnt-bottom-panel">
-							<input type="image" name="addMultipleToCart" style="padding: 0px 6px; border: 0" src="/media_stat/images/buttons/add_selected_to_cart.gif" alt="ADD SELECTED TO CART"/>
-						</div>
-						</fd:TabLook>
-						
-						<fd:TabLook look="flat">
-						</div>
-						</fd:TabLook>
+						</table>
 					</fd:PIPLayout>
 							
 					<script type="text/javascript">
