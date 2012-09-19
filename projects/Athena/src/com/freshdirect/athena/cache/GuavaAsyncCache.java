@@ -51,7 +51,7 @@ public abstract class GuavaAsyncCache<K, V> {
 	    			   public V load(K key) {
 	    				   V result = null;  // Never return null to Guava
 	    				   try {
-	    					   LOGGER.info("START TO LOAD "+getCacheIdentifier());
+	    					   LOGGER.info("START TO LOAD "+getCacheIdentifier()+ " "+key);
 	    					   lastRefresh = System.currentTimeMillis();
 	    					   SystemMessageManager.getInstance().addMessage("Start Cache load for "+getCacheIdentifier());
 	    					   result = doLoad(key);	    					   
@@ -59,6 +59,7 @@ public abstract class GuavaAsyncCache<K, V> {
 							   e.printStackTrace();								
 						  }
 						   if(result == null) {
+							   LOGGER.info("LOAD DEFAULT "+getCacheIdentifier()+ " "+key);
 							   result = loadDefault(key);
 						   }
 						   return result;
@@ -68,7 +69,7 @@ public abstract class GuavaAsyncCache<K, V> {
 	    				   long startTime = System.currentTimeMillis();
     					   V result = loadData(key);
     					   long endTime = System.currentTimeMillis();
-    					   LOGGER.debug("END LOAD :" + getCacheIdentifier() + " completed in " + (endTime - startTime) + " milliseconds");
+    					   LOGGER.debug("END LOAD :" + getCacheIdentifier()+ " "+key + " completed in " + (endTime - startTime) + " milliseconds");
     					   SystemMessageManager.getInstance().addMessage("Cache load for "+getCacheIdentifier() 
     							   						+ " took " + (endTime - startTime) + " milliseconds");
     					   return result;
@@ -84,18 +85,20 @@ public abstract class GuavaAsyncCache<K, V> {
 	    						   V result = null; // Never return null to Guava
 	    						   try {
 	    							  
-	    							   LOGGER.info("START TO RE-LOAD "+getCacheIdentifier());
-	    							   lastRefresh = System.currentTimeMillis();
-	    							   SystemMessageManager.getInstance().addMessage("Start Cache reload for "+getCacheIdentifier());
+	    							   LOGGER.info("START TO RE-LOAD "+getCacheIdentifier()+ " "+key);
+	    							   SystemMessageManager.getInstance().addMessage("Start Cache reload for "+getCacheIdentifier()+ " "+key);
 	    							   result = doLoad(key);
+	    							   lastRefresh = System.currentTimeMillis();
+	    							   
 	    						   } catch (AsyncCacheException e) {
 	    							   e.printStackTrace();
 	    							   result =  prevGraph;
 	    						   }
 	    						   	finally{
-	    							   System.out.println("reload ");
+	    							   System.out.println("reload IN Finally block");
 	    						   }
 	    						   if(result == null) {
+	    							   LOGGER.info("LOAD DEFAULT "+getCacheIdentifier()+ " "+key);
 	    							   result = loadDefault(key);
 	    						   }
 	    						   
