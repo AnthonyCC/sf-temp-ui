@@ -308,6 +308,7 @@ public class TxSingleProductPricingSupportTag extends BodyTagSupport {
 		buf.append("  		success: function(o) {\n");
 		buf.append("  			" + namespace + ".updateStatus(o.responseText);\n");
 		buf.append("  			updateYourCartPanel();\n");
+		buf.append("  			fdCoremetrics.trackAddToCartEvent();\n");
 		buf.append("  		},\n");
 		buf.append("  		failure: function(o) {\n");
 		buf.append("  			" + namespace + ".updateStatus('Connection error');\n");

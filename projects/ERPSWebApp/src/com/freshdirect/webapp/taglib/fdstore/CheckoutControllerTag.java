@@ -27,6 +27,7 @@ import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDTimeslot;
 import com.freshdirect.fdstore.Util;
+import com.freshdirect.fdstore.coremetrics.builder.ConversionEventTagModelBuilder;
 import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
@@ -50,6 +51,8 @@ import com.freshdirect.webapp.checkout.RedirectToPage;
 import com.freshdirect.webapp.checkout.TimeslotManipulator;
 import com.freshdirect.webapp.crm.security.CrmSecurityManager;
 import com.freshdirect.webapp.taglib.AbstractControllerTag;
+import com.freshdirect.webapp.taglib.coremetrics.CmConversionEventTag;
+import com.freshdirect.webapp.taglib.coremetrics.CmShop9Tag;
 import com.freshdirect.webapp.taglib.crm.CrmSession;
 import com.freshdirect.webapp.util.StandingOrderHelper;
 import com.freshdirect.webapp.util.StandingOrderUtil;
@@ -211,11 +214,19 @@ public class CheckoutControllerTag extends AbstractControllerTag {
 					session.removeAttribute( "makeGoodOrder" );
 					session.removeAttribute( "referencedOrder" );
 				}
+				
+				//prepare and store model for Coremetrics report
+				CmConversionEventTag.buildPendingOrderModifiedModels(session, cart);
+				CmShop9Tag.buildPendingModels(session, cart);
 
+				
 				saveCart = true;
 				if ( outcome.equals( Action.NONE ) ) {
 					return false; // SKIP_BODY
 				}
+				
+				
+				
 			} else if ( "modifyStandingOrderTemplate".equalsIgnoreCase( action )) {
 				// Modify standing order template according to changes made during checkout
 				// and return to standing order detail page

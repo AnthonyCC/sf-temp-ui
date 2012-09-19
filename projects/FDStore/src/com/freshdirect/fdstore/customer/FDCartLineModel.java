@@ -172,5 +172,13 @@ public class FDCartLineModel extends AbstractCartLine {
 	public FDGroup getOriginalGroup() {
 		return this.orderLine.getFDGroup();
 	}
-	
+
+	public boolean isAddedFromSearch() {
+		return orderLine.isAddedFromSearch();
+	}
+
+	public void setAddedFromSearch(boolean addedFromSearch) {
+		orderLine.setAddedFromSearch(addedFromSearch);
+	}
+
 }

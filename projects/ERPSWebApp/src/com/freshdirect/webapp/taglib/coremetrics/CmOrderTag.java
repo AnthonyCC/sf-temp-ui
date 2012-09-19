@@ -34,7 +34,7 @@ public class CmOrderTag extends AbstractCmTag {
 		OrderTagModelBuilder builder = new OrderTagModelBuilder(order, user);
 		OrderTagModel model = builder.buildTagModel();
 		
-		String setOrderScript=String.format(ORDER_TAG_FS,
+		String tagJs=String.format(ORDER_TAG_FS,
 				toJsVar(model.getOrderId()),
 				toJsVar(model.getOrderSubtotal()),
 				toJsVar(model.getOrderShipping()),
@@ -44,8 +44,8 @@ public class CmOrderTag extends AbstractCmTag {
 				toJsVar(model.getRegistrantPostalCode()),
 				toJsVar(mapToAttrString(model.getAttributesMaps())));
 		
-		LOGGER.debug(setOrderScript);
-		return setOrderScript;
+		LOGGER.debug(tagJs);
+		return tagJs;
 	}
 
 	protected boolean insertTagInCaseOfCrmContext(){

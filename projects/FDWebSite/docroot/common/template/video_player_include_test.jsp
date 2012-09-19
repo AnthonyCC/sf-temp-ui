@@ -3,7 +3,7 @@
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 
-	<title>Youtube Test Page</title>
+	<title>Youtube Google Analytics Test Page</title>
 	<fd:AnalyticsInit/>
 	<!-- Load the swfobject library-->
 	<fd:javascript src="/assets/javascript/swfobject.js" />

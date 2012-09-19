@@ -13,19 +13,24 @@ import org.apache.log4j.Logger;
 import com.freshdirect.crm.CrmAgentModel;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.coremetrics.builder.SkipTagException;
+import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.framework.util.StringUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.webapp.taglib.fdstore.SessionName;
 
 
 public abstract class AbstractCmTag extends SimpleTagSupport {
 	private static final Logger LOGGER = LoggerFactory.getInstance(AbstractCmTag.class);
 	private static final String START_SCRIPT_TAG = "<script type=\"text/javascript\">";
 	private static final String END_SCRIPT_TAG = "</script>";
+	private static final String START_FUNCTION = "function() {";
+	private static final String END_FUNCTION = "}";
 	private static final String ATTR_DELIMITER = "-_-";
 	
 	private static final String AGENT_SESSION_NAME = "EDITING_AGENT";
 		
 	private boolean wrapIntoScriptTag;
+	private boolean wrapIntoFunction;
 	
 	public void doTag() throws JspException, IOException {
 		if (FDStoreProperties.isCoremetricsEnabled()){
@@ -38,8 +43,9 @@ public abstract class AbstractCmTag extends SimpleTagSupport {
 	public void doCmTag() throws JspException, IOException{
 		try {
 			checkContext();
-			String tagJs = getTagJs();
-			String tagOut = wrapIntoScriptTag ? wrapIntoScriptTag(tagJs) : tagJs;
+			String tagOut = getTagJs();
+			tagOut = wrapIntoFunction ? wrapIntoFunction(tagOut) : tagOut;
+			tagOut = wrapIntoScriptTag ? wrapIntoScriptTag(tagOut) : tagOut;
 			LOGGER.debug(tagOut);
 			getJspContext().getOut().println(tagOut);
 
@@ -54,7 +60,10 @@ public abstract class AbstractCmTag extends SimpleTagSupport {
 		HttpSession session = ((PageContext)getJspContext()).getSession();
 		CrmAgentModel agent = (CrmAgentModel) session.getAttribute(AGENT_SESSION_NAME);
 		
-		if(agent!=null && !insertTagInCaseOfCrmContext()){
+		FDUserI user = (FDUserI) session.getAttribute(SessionName.USER);
+		String masqueradeAgent = (user == null) ? null : user.getMasqueradeAgent();
+		
+		if((agent!=null || masqueradeAgent!=null) && !insertTagInCaseOfCrmContext()){
 			throw new CmContextException("Context is CRM! No Coremetrics action needed.");
 		}
 	}
@@ -63,15 +72,27 @@ public abstract class AbstractCmTag extends SimpleTagSupport {
 		return false;
 	}
 
-	protected String wrapIntoScriptTag(String tagJs){
+	protected static String wrapIntoScriptTag(String tagJs){
 		return START_SCRIPT_TAG + tagJs + END_SCRIPT_TAG;
 	}
 	
-	protected String toJsVar(Object var){
+	protected static String wrapIntoFunction(String tagJs){
+		return START_FUNCTION + tagJs + END_FUNCTION;
+	}
+	
+	protected static String toJsVar(Object var){
 		if (var==null){
 			return "null";
 		} else {
 			return "\""+StringUtil.escapeJavaScript(var.toString())+"\"";
+		}
+	}
+	
+	protected static String toJsObject(Object var){
+		if (var==null){
+			return "null";
+		} else {
+			return StringUtil.escapeJavaScript(var.toString());
 		}
 	}
 
@@ -80,8 +101,12 @@ public abstract class AbstractCmTag extends SimpleTagSupport {
 	public void setWrapIntoScriptTag(boolean wrapIntoScriptTag){
 		this.wrapIntoScriptTag = wrapIntoScriptTag;
 	}
+
+	public void setWrapIntoFunction(boolean wrapIntoFunction){
+		this.wrapIntoFunction = wrapIntoFunction;
+	}
 	
-	protected String mapToAttrString(Map<Integer,String> attributesMap){
+	protected static String mapToAttrString(Map<Integer,String> attributesMap){
 		StringBuilder attrSb = new StringBuilder();
 		
 		int maxKey = 0; 
@@ -103,10 +128,5 @@ public abstract class AbstractCmTag extends SimpleTagSupport {
 			return attrSb.toString();
 		}
 		
-	}
-	
-	protected String dropExtension(String filename){
-		int dotIndex = filename.lastIndexOf(".");
-		return dotIndex > -1 ? filename.substring(0, dotIndex) : filename;
 	}
 }

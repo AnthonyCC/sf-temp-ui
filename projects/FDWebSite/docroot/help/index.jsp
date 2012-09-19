@@ -1,3 +1,4 @@
+<%@page import="com.freshdirect.framework.util.StringUtil"%>
 <%@ page import='com.freshdirect.fdstore.content.*' %>
 <%@ page import='com.freshdirect.fdstore.attributes.*' %>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
@@ -282,15 +283,37 @@ final int W_HELP_INDEX_TOTAL = 970;
 							<img src="/media_stat/images/layout/999966.gif" height="1" border="0" width="100%" alt="" />
 						</div>
 
+						<script type="text/javascript">
+		
+							var coremetricsGetHelpEmailFunctionMap = [
+							<logic:iterate id="subject" indexId="idx" collection="<%= ContactFdControllerTag.selections %>" type="com.freshdirect.webapp.taglib.fdstore.ContactFdControllerTag.Selection">
+							 <%if (idx!=0){%>,<%}%><fd:CmConversionEvent wrapIntoFunction="true" eventId="email" firstPhase="true" subject="<%=StringUtil.escapeJavaScript(subject.getDescription())%>"/>
+							</logic:iterate>
+							];
+							
+							var coremetricsGetHelpEmailStartLogged = false;
+							function coremetricsGetHelpEmailStart(index) {
+								if (!coremetricsGetHelpEmailStartLogged) {
+									coremetricsGetHelpEmailStartLogged=true;
+									coremetricsGetHelpEmailFunctionMap[index]();
+								}
+							}
+						</script>
+
 						<div style="margin-bottom: 16px;">
 							<div style="float: left; width: 12px;">*</div><div style="float: left; width: 55px; font-weight: bold; padding-right: 10px;">Subject:</div>
-							<select class="text12" name="subject" id="contact_subject" style="width: 246px;">
+							<select class="text12" name="subject" id="contact_subject" style="width: 246px;" onchange="coremetricsGetHelpEmailStart(this.options[this.selectedIndex].value)">
 								<option value="">Select Subject:</option>
 								<logic:iterate id="subject" indexId="idx" collection="<%= ContactFdControllerTag.selections %>" type="com.freshdirect.webapp.taglib.fdstore.ContactFdControllerTag.Selection">
 									<option value="<%= idx %>" <%= idx.intValue() == subjectIndex ? "selected" : "" %>><%= subject.getDescription() %></option>
 								</logic:iterate>
 							</select>
 							<fd:ErrorHandler result='<%=result%>' name='subject' id='errorMsg'>
+								<%--if error occured with subject selection, tracking is needed, because subject will be changed automatically--%>
+								<script type="text/javascript">
+									var subjectSelect = document.getElementById('contact_subject');	
+									coremetricsGetHelpEmailStart(subjectSelect.options[subjectSelect.selectedIndex].value)
+								</script>
 								<div class="text11rbold">
 									<%=errorMsg%>
 								</div>

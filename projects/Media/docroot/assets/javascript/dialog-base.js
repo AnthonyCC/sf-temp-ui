@@ -68,11 +68,11 @@ if(!window.parent['FDModalDialog']) {
 			});
 		}
 
-		var openVideo = function(title,titleText,width,height) {
+		var openVideo = function(title,page,titleText,width,height) {
 			var w = width || 450,
-				h = height || 350;
-			
-			return openUrl('/common/template/includes/youtube_video_player.jsp?title='+title+'&ispopup=1',titleText,w,h,'fd-dialog-video');
+				h = height || 350,
+				page = page || "youtube_video_player.jsp";
+			return openUrl('/common/template/includes/'+page+'?title='+title+'&ispopup=1',titleText,w,h,'fd-dialog-video');
 		};
 		
 		return {

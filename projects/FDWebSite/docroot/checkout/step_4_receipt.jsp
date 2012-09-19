@@ -24,16 +24,23 @@ final int W_CHECKOUT_STEP_4_RECEIPT_TOTAL = 970;
 <tmpl:put name='content' direct='true'>
 <%  boolean _modifyOrderMode = false; 	
 	String _ordNum = (String)session.getAttribute(SessionName.RECENT_ORDER_NUMBER);
-	%>
-	
-	<fd:GetOrder id='order' saleId='<%=_ordNum%>'>
-		<fd:CmOrder order="<%=order%>" wrapIntoScriptTag="true"/>
-		<fd:CmRegistration wrapIntoScriptTag="true" force="true"/>
-	</fd:GetOrder>
-	<%
 	if(session.getAttribute("MODIFIED" + _ordNum) != null && session.getAttribute("MODIFIED" + _ordNum).equals(_ordNum)) {
 		_modifyOrderMode = true;
 	}
+	%>
+	
+	<fd:GetOrder id='order' saleId='<%=_ordNum%>'>
+		<script type="text/javascript">
+			<fd:CmShop9 order="<%=order%>"/>
+			<fd:CmOrder order="<%=order%>"/>
+			<fd:CmRegistration force="true"/>
+			<fd:CmConversionEvent eventId="became_a_customer"/>
+			<% if(_modifyOrderMode){ %>
+				<fd:CmConversionEvent order="<%=order%>" orderModified="true"/>
+			<% } %>
+		</script>
+	</fd:GetOrder>
+	<%
 
 	if(!_modifyOrderMode) {
 	FDUserI curruser = (FDUserI)session.getAttribute(SessionName.USER);

@@ -1,8 +1,8 @@
-var fd_carousel=function(id,numItems,hideContainer,text,cName,parentId,offset) {
-	fd_carousel.start(id,numItems,hideContainer,text,cName,parentId,offset);
+var fd_carousel=function(id,numItems,hideContainer,text,cName,parentId,offset,eventHandlers) {
+	fd_carousel.start(id,numItems,hideContainer,text,cName,parentId,offset,eventHandlers);
 };
 
-fd_carousel._start=function(container, numItems,hideContainer,text,cName,parentId,offset) {
+fd_carousel._start=function(container, numItems,hideContainer,text,cName,parentId,offset,eventHandlers) {
 		var carousel, lineItems, i,l,maxHeight=0, region, reg2;
 		var pContainer, mh;
 		lineItems = YAHOO.util.Dom.getElementsBy(function(){return true;},'li',container);
@@ -53,10 +53,18 @@ fd_carousel._start=function(container, numItems,hideContainer,text,cName,parentI
 				parent.style.display = 'none';
 			}
 		}
+		
+		if (eventHandlers != null){
+			for (var eventKey in eventHandlers) {
+				if(eventHandlers.hasOwnProperty(eventKey)) {
+					carousel.on(eventKey, eventHandlers[eventKey] ); 				
+				}
+			}
+		}
 };
 
-fd_carousel.start=function(container, numItems, hideContainer, text, cName, parentId, offset) {
-	YAHOO.util.Event.onContentReady(container, function() {fd_carousel._start(container, numItems, hideContainer, text, cName, parentId, offset);});
+fd_carousel.start=function(container, numItems, hideContainer, text, cName, parentId, offset, eventHandlers ) {
+	YAHOO.util.Event.onContentReady(container, function() {fd_carousel._start(container, numItems, hideContainer, text, cName, parentId, offset, eventHandlers);});
 };
 
 fd_carousel.fixItemHeights = function(container, maxHeight) {

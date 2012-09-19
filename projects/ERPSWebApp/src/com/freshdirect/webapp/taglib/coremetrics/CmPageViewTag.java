@@ -26,15 +26,15 @@ public class CmPageViewTag extends AbstractCmTag {
 		tagModelBuilder.setRequest((HttpServletRequest) ((PageContext) getJspContext()).getRequest());
 		PageViewTagModel tagModel = tagModelBuilder.buildTagModel();
 
-		String setClientIdScript = String.format(PAGE_VIEW_TAG_FS, 
+		String tagJs = String.format(PAGE_VIEW_TAG_FS, 
 				toJsVar(tagModel.getPageId()), 
 				toJsVar(tagModel.getCategoryId()), 
 				toJsVar(tagModel.getSearchTerm()), 
 				toJsVar(tagModel.getSearchResults()), 
 				toJsVar(mapToAttrString(tagModel.getAttributesMaps())));
 		
-		LOGGER.debug(setClientIdScript);
-		return setClientIdScript;
+		LOGGER.debug(tagJs);
+		return tagJs;
 	}
 
 	public void setSearchResultsSize(Integer searchResultsSize) {

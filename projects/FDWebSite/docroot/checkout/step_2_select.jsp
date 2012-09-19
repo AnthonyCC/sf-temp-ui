@@ -491,6 +491,8 @@ if (errorMsg!=null) {%>
 			}
 		}
 	}
+
+request.setAttribute("isSoTemplate", currentStandingOrder != null );
 %>
 	<BR><%@ include file="/shared/includes/delivery/i_delivery_slots.jspf"%>
 	
@@ -517,6 +519,7 @@ YAHOO.util.Event.onDOMReady(function() {
 	for (i=0; i<radios.length; i++) {
 		YAHOO.util.Event.on(radios[i], 'click', function(e) {
 			f( Number(e.target.id[4])+1 );
+			
 		});
 	}
 });

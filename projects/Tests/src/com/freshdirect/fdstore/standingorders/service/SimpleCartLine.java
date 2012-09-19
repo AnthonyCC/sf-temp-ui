@@ -625,5 +625,12 @@ public class SimpleCartLine implements FDCartLineI {
 	public double getBasePrice() {
 		return 0.0;
 	}
+	
+	public boolean isAddedFromSearch() {
+		return false;
+	}
+
+	public void setAddedFromSearch(boolean addedFromSearch) {
+	}
 
 }

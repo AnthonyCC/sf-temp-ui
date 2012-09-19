@@ -1,6 +1,7 @@
 <%@ page import="com.freshdirect.fdstore.customer.FDCSContactHoursUtil" %>
 <%@ page import="com.freshdirect.fdstore.customer.FDCSContactHours" %>
 <%@ taglib uri='template' prefix='tmpl' %>
+<%@ taglib uri='freshdirect' prefix='fd' %>
 
 <% List<FDCSContactHours> csHours = FDCSContactHoursUtil.getFDCSHours(); %>
 
@@ -42,5 +43,6 @@
 			</td>		
 		</tr>
 	</table><br><br>
+	<fd:CmConversionEvent eventId="email" wrapIntoScriptTag="true"/>
 </tmpl:put>
 </tmpl:insert>

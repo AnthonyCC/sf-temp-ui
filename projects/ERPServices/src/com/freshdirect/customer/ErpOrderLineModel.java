@@ -64,6 +64,8 @@ public class ErpOrderLineModel extends ModelSupport implements FDConfigurableI {
 // sustainability rating
     
     private EnumSustainabilityRating sustainabilityRating=null;
+    
+    private boolean addedFromSearch;
 	
     public FDGroup getFDGroup() {
 		return group;
@@ -334,6 +336,14 @@ public class ErpOrderLineModel extends ModelSupport implements FDConfigurableI {
 
 	public void setSustainabilityRating(EnumSustainabilityRating sustainabilityRating) {
 		this.sustainabilityRating = sustainabilityRating;
+	}
+	
+	public boolean isAddedFromSearch() {
+		return addedFromSearch;
+	}
+
+	public void setAddedFromSearch(boolean addedFromSearch) {
+		this.addedFromSearch = addedFromSearch;
 	}
 }
 

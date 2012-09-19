@@ -93,6 +93,7 @@ final int W_MYFD_LEFT = 232; /* 6 columns */
 			<%
 				if (cart.getRecentOrderLines().size() > 0 && "1".equals(request.getParameter("confirm"))) {
 			%><%@ include file="/includes/smartstore/i_recent_orderlines.jspf"%>
+			<fd:CmShop5 wrapIntoScriptTag="true" cart="<%=cart%>"/>
 			<br />
 			<%
 				}

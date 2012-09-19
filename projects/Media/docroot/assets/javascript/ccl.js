@@ -1936,6 +1936,8 @@ CCLClass.prototype.help_so = function(helpSoInfo, scope) {
         self.show();
         self.help.style.display = "none";
 		
+        helpSoInfo.onOpen();
+        
         self.currentState = "shown";
         self.handleStateEvent("auto", self);
 	};
@@ -1982,7 +1984,9 @@ CCLClass.prototype.help_so = function(helpSoInfo, scope) {
             } catch(e) {
             	alert(e);
             }
-
+            
+            helpSoInfo.onSubmit();
+            
             self.currentState = "complete";
         }
     };

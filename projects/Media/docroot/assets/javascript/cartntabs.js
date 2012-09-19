@@ -135,7 +135,7 @@ var PipClass = function(facility, formURI, tabs, features, impressions, parentIm
 
 
 
-	my.attachHandlers = function() {
+	my.attachHandlers = function(clickHandlers) {
 		var k;
 		for (k=0; k<my.tabs.length; k++) {
 			YAHOO.util.Event.on('td_'+my.tabs[k], 'click', function(e) {
@@ -178,6 +178,10 @@ var PipClass = function(facility, formURI, tabs, features, impressions, parentIm
 		
 					// load content (if necessary)
 					my.load(my.selected, this.getAttribute("tpos"));
+				}
+
+				if(clickHandlers!=null){
+					clickHandlers[this.getAttribute("tpos")]();
 				}
 				
 			});

@@ -26,7 +26,7 @@ public class FDCartLineDAO {
 	}
 
 	private final static String QUERY_CARTLINES =
-		"SELECT ID, SKU_CODE, VERSION, QUANTITY, SALES_UNIT, CONFIGURATION, RECIPE_SOURCE_ID, REQUEST_NOTIFICATION, VARIANT_ID, DISCOUNT_APPLIED, SAVINGS_ID "
+		"SELECT ID, SKU_CODE, VERSION, QUANTITY, SALES_UNIT, CONFIGURATION, RECIPE_SOURCE_ID, REQUEST_NOTIFICATION, VARIANT_ID, ADDED_FROM_SEARCH, DISCOUNT_APPLIED, SAVINGS_ID "
 			+ " FROM CUST.FDCARTLINE WHERE FDUSER_ID = ?";
 	
 	private final static String QUERY_CARTLINE_CLIENTCODES =
@@ -68,6 +68,7 @@ public class FDCartLineDAO {
 			line.setRecipeSourceId(rs.getString("RECIPE_SOURCE_ID"));
 			line.setRequestNotification(NVL.apply(rs.getString("REQUEST_NOTIFICATION"), "").equals("X"));
 			line.setVariantId(rs.getString("VARIANT_ID"));
+			line.setAddedFromSearch("X".equals(rs.getString("ADDED_FROM_SEARCH")));
 			if(rs.getString("DISCOUNT_APPLIED")!=null && rs.getString("DISCOUNT_APPLIED").equalsIgnoreCase("X")){
 			line.setDiscountFlag(true);
 			line.setSavingsId(rs.getString("SAVINGS_ID"));
@@ -110,7 +111,7 @@ public class FDCartLineDAO {
 
 		ps =
 			conn.prepareStatement(
-				"INSERT INTO CUST.FDCARTLINE (ID, FDUSER_ID, SKU_CODE, VERSION, QUANTITY, SALES_UNIT, CONFIGURATION, RECIPE_SOURCE_ID, REQUEST_NOTIFICATION, VARIANT_ID, DISCOUNT_APPLIED, SAVINGS_ID) values (?,?,?,?,?,?,?,?,?,?,?,?)");
+				"INSERT INTO CUST.FDCARTLINE (ID, FDUSER_ID, SKU_CODE, VERSION, QUANTITY, SALES_UNIT, CONFIGURATION, RECIPE_SOURCE_ID, REQUEST_NOTIFICATION, VARIANT_ID, DISCOUNT_APPLIED, SAVINGS_ID, ADDED_FROM_SEARCH) values (?,?,?,?,?,?,?,?,?,?,?,?,?)");
 
 		for ( ErpOrderLineModel line : erpOrderlines ) {
 			ps.setString(1, line.getCartlineId());
@@ -125,6 +126,7 @@ public class FDCartLineDAO {
 			ps.setString(10, line.getVariantId());
 			ps.setString(11, line.isDiscountFlag()? "X" : "");			
 			ps.setString(12, line.getSavingsId());
+			ps.setString(13, line.isAddedFromSearch()? "X" : "");
 			ps.addBatch();
 		}
 

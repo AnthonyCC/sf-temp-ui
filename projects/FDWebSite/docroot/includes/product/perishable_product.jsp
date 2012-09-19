@@ -210,7 +210,10 @@ final int W_PERISHABLE_PRODUCT_RIGHT = 369;
 				<div style="text-align: center; padding-bottom: 10px; margin-bottom: 10px; border-bottom: 1px dotted gray;">
 					<img src="/media_stat/images/template/ymal_title.gif" alt="YMAL" width="140" height="12" style="border: 0">
 				</div>
-					<display:Carousel id="cat2_carousel" carouselId="cat2_carousel" width="150" numItems="1" showCategories="false" itemsToShow="<%= recommendedProducts.getProducts() %>" trackingCode="ymal_pdtl" maxItems="9" style="margin-left: auto; margin-right: auto;">
+					<script type="text/javascript">
+						var ymal_pdtl_events = {"afterScroll":  <fd:CmElement wrapIntoFunction="true" siteFeature="YMAL_PDTL" elementCategory="carousel"/>} 
+					</script>
+					<display:Carousel id="cat2_carousel" carouselId="cat2_carousel" width="150" numItems="1" showCategories="false" itemsToShow="<%= recommendedProducts.getProducts() %>" trackingCode="ymal_pdtl" maxItems="9" style="margin-left: auto; margin-right: auto;" eventHandlersObj="ymal_pdtl_events">
 						<%
 							final ProductModel __c_prd = (ProductModel) currentItem;
 							final int __c_maxHeight = ProductDisplayUtil.getMaxHeight(recommendedProducts.getProducts()); 

@@ -1,3 +1,5 @@
+<%@page import="com.freshdirect.fdstore.content.ContentFactory"%>
+<%@page import="com.freshdirect.fdstore.content.CategoryModel"%>
 <%@page import="java.util.HashSet"%>
 <%@page import="com.freshdirect.fdstore.content.EnumBurstType"%>
 <%@page import="java.util.Set"%>
@@ -27,6 +29,7 @@ final int W_FAVORITE_PRODUCTS_BND = 683;
 <fd:ProductGroupRecommender itemCount="24" siteFeature="PROD_GRP_YF" facility="4mm_dept_yf" currentNode="<%= dept %>" id="deptYf">		
 	<%  
 	List<ProductModel> YFProds = deptYf.getProducts(); 
+	
 	if ( YFProds.size() >=3 ) {
 		Set<EnumBurstType> hideBursts = new HashSet<EnumBurstType>(1);
 		hideBursts.add( EnumBurstType.YOUR_FAVE );
@@ -34,7 +37,10 @@ final int W_FAVORITE_PRODUCTS_BND = 683;
 		%>
 		<div class="carousel-box" style="margin-top:0px;">
 			<div class="separator" style="margin-bottom:15px"><img src="/media/4mm/dpt_4mm_hdr_your_fave_return.gif" /></div>
-			<display:Carousel id="your_favourites_carousel" carouselId="your_favourites_carousel" width="<%=W_FAVORITE_PRODUCTS_BND%>" numItems="5" showCategories="false" itemsToShow="<%= YFProds %>" trackingCode="yf-4mm" maxItems="12">
+			<script type="text/javascript">
+				var your_favourites_events = {"afterScroll":  <fd:CmElement wrapIntoFunction="true" siteFeature="PROD_GRP_YF" elementCategory="carousel"/>} 
+			</script>
+			<display:Carousel id="your_favourites_carousel" carouselId="your_favourites_carousel" width="<%=W_FAVORITE_PRODUCTS_BND%>" numItems="5" showCategories="false" itemsToShow="<%= YFProds %>" trackingCode="yf-4mm" maxItems="12" eventHandlersObj="your_favourites_events">
 				<display:GetContentNodeWebId id="webId" product="<%= currentItem %>" clientSafe="<%= true %>">
 					<display:ProductImage product="<%= (ProductModel)currentItem %>" showRolloverImage="true" action="<%= actionUrl %>"
 							useAlternateImage="true" hideBursts="<%= hideBursts %>" className="productImage" height="90" enableQuickBuy="true" webId="<%= webId %>"/>

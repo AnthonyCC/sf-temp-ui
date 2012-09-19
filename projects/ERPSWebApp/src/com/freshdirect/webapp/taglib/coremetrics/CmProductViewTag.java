@@ -20,14 +20,14 @@ public class CmProductViewTag extends AbstractCmTag {
 
 		ProductViewTagModel model = builder.buildTagModel();
 		
-		String setProductScript = String.format(PRODUCT_VIEW_TAG_FS,
+		String tagJs = String.format(PRODUCT_VIEW_TAG_FS,
 				toJsVar(model.getProductId()),
 				toJsVar(model.getProductName()),
 				toJsVar(model.getCategoryId()),
 				toJsVar(mapToAttrString(model.getAttributesMaps())));
 		
-		LOGGER.debug(setProductScript);
-		return setProductScript;
+		LOGGER.debug(tagJs);
+		return tagJs;
 	}
 
 	public void setProductModel(ProductModel productModel) {

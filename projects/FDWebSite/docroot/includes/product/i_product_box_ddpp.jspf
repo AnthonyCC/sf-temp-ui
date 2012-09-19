@@ -129,6 +129,8 @@
 												$jq('#<%= TX_FORM_NAMEi %>').find('.CTAButtonFP').data('usedCTA', false);
 											});
 										}, 2000);
+										//coremetrics tracking
+										fdCoremetrics.trackAddToCartEvent();
 										<%--
 											here is the place where you can do further changes,
 											e.g. disable quantity and add-to-cart controls
@@ -264,6 +266,8 @@
 														$jq('#<%= TX_FORM_NAMEi %>').find('.CTAButtonNFP').data('usedCTA', false);
 													});
 												}, 2000);
+												//coremetrics tracking
+												fdCoremetrics.trackAddToCartEvent();
 												<%--
 													here is the place where you can do further changes,
 													e.g. disable quantity and add-to-cart controls
@@ -378,6 +382,8 @@
 														$jq('#<%= TX_FORM_NAMEi %>').find('.CTAButtonNFP').data('usedCTA', false);
 													});
 												}, 2000);
+												//coremetrics tracking
+												fdCoremetrics.trackAddToCartEvent();
 												<%--
 													here is the place where you can do further changes,
 													e.g. disable quantity and add-to-cart controls

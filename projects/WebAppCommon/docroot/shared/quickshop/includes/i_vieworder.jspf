@@ -711,7 +711,6 @@ if (showRecent && showThis &&  skusAdded!=null && skusAdded.contains("skuCode_"+
 <input type="hidden" name="sortedBy" value="<%=request.getParameter("sortBy")%>">
 <input type="hidden" name="qsDeptId" value="<%=request.getParameter("qsDeptId")%>">
 <input type="hidden" name="<%=CclUtils.CC_LIST_ID%>" value="<%=request.getParameter(CclUtils.CC_LIST_ID)%>"/>
-<input type="hidden" name="fdActionSource" value="<%=qsPage%>"/>
 <!-- <input type="hidden" name="action" value=""> -->
 <%--white spacer, purp line --%>
 <tr>

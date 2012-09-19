@@ -154,5 +154,7 @@ public interface FDCartLineI extends FDProductSelectionI {
 	public void setCartonNumber(String no);
 	public String getCartonNumber();
 	public FDGroup getOriginalGroup();
+	public boolean isAddedFromSearch();
+	public void setAddedFromSearch(boolean addedFromSearch);
 	
 }

@@ -24,6 +24,7 @@ public class CarouselTag extends ContentNodeIteratorTag {
 	private String bottomHeaderClass = null;
 	private String hideContainer = null;
 	private boolean useAlternateImage = false;
+	private String eventHandlersObj;
 	
 	private String style; /* Additional styles for the carousel container element (optional) */
 	
@@ -114,7 +115,10 @@ public class CarouselTag extends ContentNodeIteratorTag {
 		this.style = style;
 	}
 	
-	
+	public void setEventHandlersObj(String eventHandlersObj) {
+		this.eventHandlersObj = eventHandlersObj;
+	}
+
 	/**
 	 * May not be initialized if called before doFirst()!
 	 * @return maximum image height
@@ -221,6 +225,9 @@ public class CarouselTag extends ContentNodeIteratorTag {
 		carouselCall.append( offset > 0 ? offset : "0" );
 		// carouselCall.append("");
 
+		// param #8 eventHandlers
+		carouselCall.append(", ");
+		carouselCall.append( eventHandlersObj == null ? "null" : eventHandlersObj );
 
 		carouselCall.append(");");
 		println("<script>" + carouselCall + "</script>");

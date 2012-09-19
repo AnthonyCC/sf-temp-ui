@@ -9,6 +9,8 @@
 	@param boolean __genericTsTable              true = generic timeslot table / false = Normal timeslots
 	@param boolean __isAm                        true = AM / false = PM
  --%>
+ 
+
 <%
 	stringBuffer.append("						<tr id=\""+"co_d"+dayIndex+"_ts"+slotIndex+"_tr"+"\" class=\"cutoff_tr\""+((slotIndex!=0)?" style=\"display: none;\"":"")+">\n");
 
@@ -122,7 +124,7 @@
 							if (!slot.hasAvailCTCapacity() && !(isSelectedSlotId || isPreReservedSlotId) && isForce) {
 								/* do nothing? */
 							}
-							stringBuffer.append("<input type=\"radio\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_rb\" name=\"deliveryTimeslotId\"") 
+							stringBuffer.append("<input type=\"radio\" onclick=\"logChange('"+slot.getTimeslotId()+"')\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_rb\" name=\"deliveryTimeslotId\"") 
 										.append(
 											( isSelectedSlotId || ("".equals(selectedSlotId) && isPreReservedSlotId && hasPreReserved) ) 
 											? "checked" : ""

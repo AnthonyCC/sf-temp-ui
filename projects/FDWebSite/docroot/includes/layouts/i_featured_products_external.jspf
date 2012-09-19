@@ -103,8 +103,13 @@
 		
 				<tr><td id="<%=temp_tdId%>">
 					<center>
+					<script type="text/javascript">
+						var cmPageCarousel = cmPageCarousel || {};
+						<%String handlerObj = "cmPageCarousel[\"" + temp_carouselId + "\"]"; %>
+						<%=handlerObj%> = {"afterScroll":  <fd:CmElement wrapIntoFunction="true" carouselId='<%=featExtIdPrefix%>' elementCategory="carousel"/>} 
+					</script>
 					<display:Carousel id="bnd" carouselId="<%=temp_carouselId%>" width="<%=featExtCarWidth%>" numItems="<%=featExtNumItems%>" showCategories="false" itemsToShow="<%= curRowUniqueItems %>" 
-							trackingCode="<%=featExtTrackCode%>" maxItems="<%=featExtMaxItems%>" parentId="<%=temp_tdId%>">
+							trackingCode="<%=featExtTrackCode%>" maxItems="<%=featExtMaxItems%>" parentId="<%=temp_tdId%>" eventHandlersObj='<%=handlerObj%>'>
 						<display:GetContentNodeWebId id="webId" product="<%= currentItem %>" clientSafe="<%= true %>">
 							<display:ProductImage product="<%= (ProductModel)currentItem %>" showRolloverImage="true" action="<%= actionUrl %>" className="productImage" enableQuickBuy="<%=featExtUseQuickBuy%>" disabled="<%=featExtDisableLinks%>" />
 							<display:ProductRating product="<%= (ProductModel)currentItem %>" action="<%= actionUrl %>"/>

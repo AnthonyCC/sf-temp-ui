@@ -2,20 +2,27 @@ package com.freshdirect.webapp.taglib.standingorder;
 
 import javax.servlet.http.HttpSession;
 
+import org.apache.log4j.Logger;
+
 import com.freshdirect.common.address.PhoneNumber;
 import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpCustomerInfoModel;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.fdstore.coremetrics.builder.ConversionEventTagModelBuilder;
+import com.freshdirect.fdstore.coremetrics.builder.SkipTagException;
 import com.freshdirect.fdstore.customer.FDCustomerFactory;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.standingorders.FDStandingOrder;
 import com.freshdirect.framework.util.StringUtil;
+import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.webapp.taglib.AbstractGetterTag;
+import com.freshdirect.webapp.taglib.coremetrics.CmConversionEventTag;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
 
 public class GetStandingOrderHelpInfoTag extends AbstractGetterTag<String> {
 	private static final long serialVersionUID = -5753626070767051722L;
+	private static final Logger LOGGER = LoggerFactory.getInstance(GetStandingOrderHelpInfoTag.class);
 	private FDStandingOrder so;
 	
 	@Override
@@ -52,12 +59,41 @@ public class GetStandingOrderHelpInfoTag extends AbstractGetterTag<String> {
 		result.append("custPhone:'").append(custPhone==null? "" : StringUtil.escapeJavaScript(custPhone)).append("',");
 		result.append("companyName:'").append(companyName==null ? "" : StringUtil.escapeJavaScript(companyName)).append("',");
 		result.append("sourcePage:'").append(request.getServletPath());
-
+		
 		String queryString = request.getQueryString();
 		if (queryString != null){
 			result.append("?").append(queryString);
 		}
-		result.append("'");
+		result.append("',");
+
+	
+		String conversionEventStartJs = "";
+			
+		try {
+			ConversionEventTagModelBuilder conversionEventBuilder = new ConversionEventTagModelBuilder();
+			conversionEventBuilder.setEventId(ConversionEventTagModelBuilder.EVENT_SO_HELP);
+			conversionEventBuilder.setUrl(request.getRequestURI());
+			conversionEventBuilder.setFirstPhase(true);
+			conversionEventStartJs = CmConversionEventTag.getTagJs(conversionEventBuilder.buildTagModel());
+		} catch (SkipTagException e){
+			LOGGER.error("tracking function generation failed",e);
+		}
+			
+		result.append("onOpen: function() { ").append(conversionEventStartJs).append(" },");
+
+		String conversionEventEndJs = "";
+		
+		try {
+			ConversionEventTagModelBuilder conversionEventBuilder = new ConversionEventTagModelBuilder();
+			conversionEventBuilder.setEventId(ConversionEventTagModelBuilder.EVENT_SO_HELP);
+			conversionEventBuilder.setUrl(request.getRequestURI());
+			conversionEventEndJs = CmConversionEventTag.getTagJs(conversionEventBuilder.buildTagModel());
+		} catch (SkipTagException e){
+			LOGGER.error("tracking function generation failed",e);
+		}
+			
+		result.append("onSubmit: function() { ").append(conversionEventEndJs).append(" }");
+		
 		return result.append("}").toString();
 	}
 

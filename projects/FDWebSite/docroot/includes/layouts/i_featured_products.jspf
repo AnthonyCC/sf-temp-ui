@@ -57,8 +57,11 @@ final int W_FEATURED_PRODUCTS_BND = 683;
 	</td></tr>
 
 	<tr><td align="center" colspan="5" id="bnd-td">
+		<script type="text/javascript">
+			var bnd_events = {"afterScroll":  <fd:CmElement wrapIntoFunction="true" siteFeature="BRAND_NAME_DEALS" elementCategory="carousel"/>} 
+		</script>
 		<display:Carousel id="bnd" carouselId="bnd" width="<%=W_FEATURED_PRODUCTS_BND%>" numItems="6" showCategories="false" itemsToShow="<%= brandDealRecommendations.getAllProducts() %>" 
-				trackingCode="brand-name-deals" maxItems="30" parentId="bnd-td">
+				trackingCode="brand-name-deals" maxItems="30" parentId="bnd-td" eventHandlersObj="bnd_events">
 			<display:GetContentNodeWebId id="webId" product="<%= currentItem %>" clientSafe="<%= true %>">
 				<display:ProductImage product="<%= (ProductModel)currentItem %>" showRolloverImage="true" action="<%= actionUrl %>" className="productImage"/>
 				<display:ProductRating product="<%= (ProductModel)currentItem %>" action="<%= actionUrl %>"/>

@@ -1,0 +1,45 @@
+package com.freshdirect.webapp.taglib.coremetrics;
+
+import java.util.List;
+
+import org.apache.log4j.Logger;
+
+import com.freshdirect.fdstore.coremetrics.builder.AbstractShopTagModelBuilder;
+import com.freshdirect.fdstore.coremetrics.builder.SkipTagException;
+import com.freshdirect.fdstore.coremetrics.tagmodel.ShopTagModel;
+import com.freshdirect.fdstore.customer.FDCartModel;
+import com.freshdirect.framework.util.log.LoggerFactory;
+
+public abstract class AbstractCmShopTag <X extends AbstractShopTagModelBuilder> extends AbstractCmTag {
+	private static final Logger LOGGER = LoggerFactory.getInstance(AbstractCmShopTag.class);
+	private static final String DISPLAY_SHOPS = "cmDisplayShops();";
+
+	protected X tagModelBuilder;
+	
+	@Override
+	protected String getTagJs() throws SkipTagException {
+		initTag();
+		StringBuilder shopScriptSb = new StringBuilder();
+		List<ShopTagModel> tagModels = tagModelBuilder.buildTagModels();
+
+		for (ShopTagModel tagModel : tagModels) {
+			appendTag(shopScriptSb, tagModel);
+		}
+
+		if (tagModels.size()>0){
+			shopScriptSb.append("\n").append(DISPLAY_SHOPS).append("\n");
+		}
+		
+		String shopScript = shopScriptSb.toString();
+		LOGGER.debug(shopScript);
+		return shopScript;
+	}
+	
+	public void setCart(FDCartModel cart) {
+		tagModelBuilder.setCart(cart);
+	}
+
+	protected abstract void initTag();
+	
+	protected abstract void appendTag(StringBuilder shopScriptSb, ShopTagModel tagModel);
+}

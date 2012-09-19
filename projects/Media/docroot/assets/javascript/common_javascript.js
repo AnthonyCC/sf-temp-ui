@@ -1097,6 +1097,33 @@ function doOverlayWindow(olURL) {
 			}
 			return rv;
 		}
+	
+	
+	var fdCoremetrics = (function(){
+		
+		var iFrame = null;
+		
+		var createIFrame = function(){
+			iFrame = document.createElement("iframe");
+			iFrame.className = "coremetrics-iframe";
+			document.body.appendChild(iFrame);
+		}; 
+
+		var initIFrame = function(){
+			if(iFrame === null){
+				createIFrame();
+			};  
+		}; 
+		
+		var trackAddToCartEvent = function(){
+			initIFrame();
+			iFrame.src = "/coremetrics/shop5.jsp";
+		}; 
+
+		return {
+			trackAddToCartEvent: trackAddToCartEvent
+		}
+	})(); 
 
 	function doOverlayDialog(olURL) {
 		var overlayDialog = $jq('<div id="uimodal-output"></div>');

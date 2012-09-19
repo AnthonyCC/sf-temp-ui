@@ -596,7 +596,7 @@ public class FilteringNavigator {
 		return view;
 	}
 
-	protected String getViewName() {
+	public String getViewName() {
 		switch (view) {
 			case VIEW_LIST:
 				return "list";

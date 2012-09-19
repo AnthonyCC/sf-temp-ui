@@ -1,3 +1,4 @@
+<%@page import="com.freshdirect.webapp.taglib.fdstore.FDShoppingCartControllerTag"%>
 <%@ taglib uri='freshdirect' prefix='fd'%>
 <%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %>
 <%@page import="java.util.Collections"%>
@@ -91,6 +92,7 @@
 <fd:TxProductControl txNumber="0" namespace="<%= namespaceName %>" impression="<%= (TransactionalProductImpression) pi %>" setMinimumQt="true" />
 <div id="<%= subTotalId %>" class="subtotal">subtotal: <span id="<%= subTotalId %>_value" class="value"></span></div>
 <div><button class="addtocart" onclick="<%= namespaceName %>.instantATC();"></button></div>
+<input type="hidden" name="<%=FDShoppingCartControllerTag.PARAM_ADDED_FROM_SEARCH%>" value="<%=pageContext.getAttribute("ISONSEARCHPAGE") != null ? "true":"false" %>">
 </form>
 <%
 		} else {

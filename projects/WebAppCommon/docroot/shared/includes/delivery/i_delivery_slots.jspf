@@ -45,6 +45,10 @@ boolean isNextDayTimeSlotNotAvailable = false;
 Date nextDay = DateUtil.getNextDate();
 Calendar nextDayVal = Calendar.getInstance();
 nextDayVal.add(Calendar.DATE, 1);
+boolean soType = false;
+if(request.getAttribute("isSoTemplate")!=null && (Boolean)request.getAttribute("isSoTemplate")){
+	soType = true;
+}
 
 // [APPDEV-2149] rearrange week table to start with Monday 
 int __shift = 0;
@@ -282,8 +286,19 @@ if (timeslots.size() > 0) {
 
 /* START AM SLOT ITERATOR */
 	boolean __isAm = true;
-%><logic:iterate id="slot" collection="<%= timeslots.getTimeslotsForDayAndShift(day,EnumDayShift.DAY_SHIFT_AM.getName()) %>" type="com.freshdirect.fdstore.FDTimeslot">
-<%@ include file="/shared/includes/delivery/i_delivery_slots_cell.jspf" %>
+%>
+	var timeslotChooserFunctions = {
+	<logic:iterate id="slot" indexId="idx" collection="<%= timeslots.getTimeslotsFlat() %>" type="com.freshdirect.fdstore.FDTimeslot">
+	 	<%if (idx!=0){%>,<%}%> <%= slot.getTimeslotId() %> : <fd:CmElement wrapIntoFunction="true" elementCategory="timeslot_chooser" soType="<%= soType %>" timeSlot="<%= slot %>" />
+	</logic:iterate>
+	};
+
+function logChange(timeSlotId){	
+	timeslotChooserFunctions[timeSlotId]();	
+}
+
+<logic:iterate id="slot" collection="<%= timeslots.getTimeslotsForDayAndShift(day,EnumDayShift.DAY_SHIFT_AM.getName()) %>" type="com.freshdirect.fdstore.FDTimeslot">
+<%@ include file="/shared/includes/delivery/i_delivery_slots_cell.jspf"  %>
 </logic:iterate><%
 
 	/* fill in any empty slots */

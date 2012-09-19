@@ -34,6 +34,7 @@ import com.freshdirect.framework.webapp.ActionResult;
 import com.freshdirect.framework.webapp.WebFormI;
 import com.freshdirect.mail.EmailUtil;
 import com.freshdirect.webapp.taglib.AbstractControllerTag;
+import com.freshdirect.webapp.taglib.coremetrics.CmConversionEventTag;
 
 public class ContactFdControllerTag extends AbstractControllerTag implements SessionName  {
 
@@ -52,6 +53,7 @@ public class ContactFdControllerTag extends AbstractControllerTag implements Ses
 				
 				if (actionResult.isSuccess()) {
 					this.performContactFd(form, user);
+					CmConversionEventTag.setPendingHelpEmailSubject(session, form.subject);
 				}
 	
 			}else{

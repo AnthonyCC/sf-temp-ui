@@ -11,15 +11,13 @@ import com.freshdirect.customer.ErpCustomerModel;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.coremetrics.tagmodel.RegistrationTagModel;
 import com.freshdirect.fdstore.customer.FDCustomerFactory;
-import com.freshdirect.fdstore.customer.FDCustomerManager;
-import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
 public class RegistrationTagModelBuilder  {
 	
 	private static final Logger LOGGER = LoggerFactory.getInstance(RegistrationTagModelBuilder.class);
-
+	
 	private FDUserI user;
 	private RegistrationTagModel tagModel = new RegistrationTagModel();
 	private AddressModel addressModel;
@@ -58,18 +56,10 @@ public class RegistrationTagModelBuilder  {
 	}
 
 	public void identifyDefaultShipToAddress() throws SkipTagException{
-		try {
-			FDIdentity identity = user.getIdentity();
-			String addrPk = FDCustomerManager.getDefaultShipToAddressPK(identity);
-			if (addrPk!=null){
-				ErpAddressModel erpAddressModel = FDCustomerManager.getAddress(identity, addrPk);
-				if (erpAddressModel != null){
-					addressModel = new AddressModel(erpAddressModel);
-				}
-			}
-		} catch (FDResourceException e) {
-			LOGGER.error(e);
-			throw new SkipTagException("FDResourceException occured", e);
+		ErpAddressModel erpAddressModel = TagModelUtil.getDefaultShipToErpAddressModel(user);
+		
+		if (erpAddressModel != null){
+			addressModel = new AddressModel(erpAddressModel);
 		}
 	}
 	
@@ -94,17 +84,7 @@ public class RegistrationTagModelBuilder  {
 			attributesMap.put(2, location);
 		}
 		
-		int orderCount = 0;
-		try {
-			orderCount = user.getOrderHistory().getTotalOrderCount();
-		} catch (FDResourceException e) {
-			LOGGER.error(e);
-			throw new SkipTagException("FDResourceException occured", e);
-		}
-			
-		attributesMap.put(3, Integer.toString(orderCount));
-		
-		
+		attributesMap.put(3, Integer.toString(TagModelUtil.getOrderCount(user)));
 		attributesMap.put(4, user.getCohortName());
 	}
 	

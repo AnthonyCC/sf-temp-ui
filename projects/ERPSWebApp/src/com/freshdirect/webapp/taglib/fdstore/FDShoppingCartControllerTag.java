@@ -93,6 +93,7 @@ import com.freshdirect.webapp.util.RequestUtil;
 
 public class FDShoppingCartControllerTag extends BodyTagSupport implements SessionName {
 
+	public static String PARAM_ADDED_FROM_SEARCH = "addedfromsearch";
 
 	private static final long serialVersionUID = -7350790143456750035L;
 
@@ -951,6 +952,7 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements Sessi
 			if (cartLine != null) {
 				cart.addOrderLine(cartLine);
 				cartLine.setSource(getEventSource());
+				cartLine.setAddedFromSearch(Boolean.parseBoolean(request.getParameter(PARAM_ADDED_FROM_SEARCH)));
 				/*
 				 * Logs a AddToCartEvent whenever the user adds a single item
 				 * from Product detail page.
@@ -991,6 +993,7 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements Sessi
 					// don't care
 				}
 				cartLine.setSource(getEventSource());
+				cartLine.setAddedFromSearch(Boolean.parseBoolean(request.getParameter(PARAM_ADDED_FROM_SEARCH)));
 				FDEventUtil.logAddToCartEvent(cartLine, request);
 				addedLines++;
 				frmSkuIds.add("skuCode_" + i);
