@@ -419,17 +419,18 @@ public class HandOffAutoDispatchAction extends AbstractHandOffAction {
 								facilityLookUp.get(_plan.getDestinationFacility())!=null &&
 								facilityLookUp.get(_plan.getDestinationFacility()).getTrnFacilityType().getName().equals(EnumTransportationFacilitySrc.DEPOTDELIVERY.getName()))
 				{
-						
-						for (Iterator<IHandOffBatchPlan> k = runnerPlans.iterator(); k.hasNext();) 
+					int runnerCount = 0;	
+						for (Iterator<IHandOffBatchPlan> k = runnerPlans.iterator(); k.hasNext() && runnerCount<6;) 
 						{
 							IHandOffBatchPlan runnerPlan = k.next();
 							if(runnerPlan.getOriginFacility().equals(_dispatch.getDestinationFacility()) && 
 									(runnerPlan.getFirstDeliveryTime().after(_plan.getFirstDeliveryTime()) || runnerPlan.getFirstDeliveryTime().equals(_plan.getFirstDeliveryTime())) &&  
-									(runnerPlan.getLastDeliveryTime().before(_plan.getLastDeliveryTime()) || runnerPlan.getLastDeliveryTime().equals(_plan.getLastDeliveryTime())) &&
+									(runnerPlan.getLastDeliveryTime().before(_plan.getLastDeliveryTime())) &&
 									runnerPlan.getBatchPlanResources()!=null && runnerPlan.getBatchPlanResources().size()>0)
 							{
 								_dispatch.getBatchDispatchResources().addAll(runnerPlan.getBatchPlanResources());
 								k.remove();
+								runnerCount++;
 							}
 						}
 				}

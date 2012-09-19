@@ -354,16 +354,19 @@ public class ModelUtil {
 					p.getDestinationFacility()!=null && p.getDestinationFacility().getTrnFacilityType()!=null &&
 					 p.getDestinationFacility().getTrnFacilityType().getName().equals(EnumTransportationFacilitySrc.DEPOTDELIVERY.getName()))
 			{
-				for (Iterator<Plan> k = runnerPlans.iterator(); k.hasNext();) 
+				int runnerCount = 0;
+				for ( Iterator<Plan> k = runnerPlans.iterator(); k.hasNext()&& runnerCount<6;) 
 					{
 						Plan runnerPlan = k.next();
 						if(runnerPlan.getOriginFacility().equals(p.getDestinationFacility()) && 
 								(runnerPlan.getFirstDeliveryTime().after(p.getFirstDeliveryTime()) || runnerPlan.getFirstDeliveryTime().equals(p.getFirstDeliveryTime())) &&  
-								(runnerPlan.getLastDeliveryTime().before(p.getLastDeliveryTime()) || runnerPlan.getLastDeliveryTime().equals(p.getLastDeliveryTime())) && 
+								(runnerPlan.getLastDeliveryTime().before(p.getLastDeliveryTime())) && 
 								runnerPlan.getPlanResources()!=null && runnerPlan.getPlanResources().size()>0)
 						{
+							
 							d.getDispatchResources().addAll(convertPlnToDispatchResource(runnerPlan.getPlanResources(),d));
 							k.remove();
+							runnerCount++;
 						}
 					}
 			}
