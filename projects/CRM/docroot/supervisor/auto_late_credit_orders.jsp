@@ -10,6 +10,14 @@
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='crm' prefix='crm' %>
 
+<%
+	//System.out.println("*******************"+session.getAttribute("LATE_CREDITS"));
+	if("submitted".equals(request.getParameter("action")) && session.getAttribute("LATE_CREDITS") != null && "done".equals((String)session.getAttribute("LATE_CREDITS"))) {		
+		session.removeAttribute("LATE_CREDITS");
+%>
+	<jsp:include page="auto_late_dlv_credits.jsp" />
+<% } else { %>
+
 <tmpl:insert template='/template/supervisor_resources.jsp'>
 
 <tmpl:put name='title' direct='true'>Supervisor Resources > Auto Late Delivery Credits</tmpl:put>
@@ -120,7 +128,7 @@
 	
 %>
 	<tr valign="top" <%= count % 2 == 0 ? "class='list_odd_row'" : "" %> style="cursor: pointer;">		
-		<td width="1%"><input type="checkbox" name="dlvPassSaleId|<%=ccm.getSaleId()%>" value="<%=ccm.getSaleId()%>"></td>
+		<td width="1%"><% if(!"A".equals(ccm.getStatus())) { %><input type="checkbox" name="dlvPassSaleId|<%=ccm.getSaleId()%>" value="<%=ccm.getSaleId()%>"><% } else {%>&nbsp;<%}%></td>
 		<td width="10%"><a class="key" href="/supervisor/auto_late_credit_orders.jsp?id=<%=ccm.getId()%>"><b><%=ccm.getSaleId()%></b></a></td>
 		<td width="12%"><%=  ccm.getFirstName() %></td>
 		<td width="12%"><%=ccm.getLastName()%></td>
@@ -153,3 +161,5 @@
 </tmpl:put>
 
 </tmpl:insert>
+
+<% } %>

@@ -50,18 +50,21 @@ public class AutoLateDlvCreditTag extends AbstractControllerTag {
 
 	protected boolean performAction(HttpServletRequest request, ActionResult actionResult) throws JspException {		
 		HttpSession session = (HttpSession) request.getSession();
-		CrmAgentModel agent = CrmSession.getCurrentAgent(session);
+		CrmAgentModel agent = CrmSession.getCurrentAgent(session);		
 		System.out.println("Came to execure AutoLateDlvCreditTag");
 		try {			
 			if("submitted".equals(request.getParameter("action"))) {
 				System.out.println("Action is submitted");
+				System.out.println("Adding session attribute");
+				session.setAttribute("LATE_CREDITS", "done");
 				//Process credits
 				String autoId = request.getParameter("autoId");
 				String orderId = "";
 				//Get all the selected sale Id's and start credit processing
 				Map<String, String[]> parameters = request.getParameterMap();
-				for(String parameter : parameters.keySet()) {
-					if(parameter.toLowerCase().startsWith("saleid|") || parameter.toLowerCase().startsWith("dlvPassSaleId|")) {
+				for(String parameter : parameters.keySet()) {					
+					System.out.println(parameter.toLowerCase());
+					if(parameter.toLowerCase().startsWith("saleid|") || parameter.toLowerCase().startsWith("dlvpasssaleid|")) {
 					    if(parameter.toLowerCase().startsWith("saleid|")) {
 					        String[] values = parameters.get(parameter);
 					        String value = values[0];
@@ -76,7 +79,7 @@ public class AutoLateDlvCreditTag extends AbstractControllerTag {
 					        		issueLateCredit(orderId, autoId, agent, false);
 					        	}
 					        }
-					    } else if(parameter.toLowerCase().startsWith("dlvPassSaleId|")) {
+					    } else if(parameter.toLowerCase().startsWith("dlvpasssaleid|")) {
 					    	String[] values = parameters.get(parameter);
 					        String value = values[0];
 					        if(value != null) {
@@ -84,6 +87,7 @@ public class AutoLateDlvCreditTag extends AbstractControllerTag {
 					        	//Extend dlv PAss
 					        	CustomerCreditModel ccm = CrmManager.getInstance().getOrderForLateCredit(orderId, autoId);
 					        	
+					        	System.out.println("Getting delivery pass for :" + ccm.getDlvPassId());
 					        	DeliveryPassModel dpm = CrmManager.getInstance().getDeliveryPassInfo(ccm.getDlvPassId());		
 					        	
 					        	//check if DP is already extended
@@ -114,10 +118,11 @@ public class AutoLateDlvCreditTag extends AbstractControllerTag {
 					}
 				}
 				//Update rest of the records as not approved by the user
-				CrmManager.getInstance().updateLateCreditsRejected(autoId, agent.getUserId());
+				CrmManager.getInstance().updateLateCreditsRejected(autoId, agent.getUserId());		
+				this.setSuccessPage("/supervisor/auto_late_dlv_credits.jsp");
 			}			
 		} catch(FDResourceException e) {
-			
+			LOGGER.error("Error procesing credits",e);
 		}
 		return true;
 	}

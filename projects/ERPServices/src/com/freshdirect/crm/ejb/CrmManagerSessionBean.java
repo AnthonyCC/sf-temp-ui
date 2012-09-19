@@ -1432,7 +1432,7 @@ public class CrmManagerSessionBean extends SessionBeanSupport {
 			conn = getConnection();
 			pstmt = conn.prepareStatement(DLV_PASS_CHECK);
 			pstmt.setString(1, customerId);
-			pstmt.setString(1, orderId);
+			pstmt.setString(2, orderId);
 			rset = pstmt.executeQuery();
 			if(rset.next()) {
 				return true;

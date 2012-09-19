@@ -6593,7 +6593,10 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			Enumeration eobj = driverlates.keys();
 			while(eobj.hasMoreElements()) {
 				Object saleId = eobj.nextElement();
-				ccmList.add(getSaleDetails((String) saleId));
+				CustomerCreditModel ccm = getSaleDetails((String) saleId);
+				if(ccm != null) {
+					ccmList.add(ccm);
+				}
 			}
 		} catch (SQLException sqle) {
 			throw new FDResourceException(sqle);
@@ -6607,12 +6610,14 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rset = null;
-		CustomerCreditModel ccm = new CustomerCreditModel();
+		CustomerCreditModel ccm = null;
 		try {
 			conn = getConnection();
-			pstmt = conn.prepareStatement(GET_CUST_LATES);
+			pstmt = conn.prepareStatement(GET_SALE_DETAILS);
+			pstmt.setString(1, saleId);
 			rset = pstmt.executeQuery();
 			while(rset.next()) {
+				ccm = new CustomerCreditModel();
 				ccm.setSaleId(rset.getString("ID"));
 				ccm.setRemType(rset.getString("REM_TYPE"));
 				ccm.setCustomerId(rset.getString("CUSTOMER_ID"));
@@ -6644,7 +6649,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			rset = pstmt.executeQuery();
 			Hashtable driverlates = new Hashtable();
 			while(rset.next()) {
-				driverlates.put(rset.getString("ID"), rset.getString("ID"));
+				driverlates.put(rset.getString("WEBORDERNUM"), rset.getString("WEBORDERNUM"));
 			}
 			//Remove the orders that have been scanned on time
 			pstmt = conn.prepareStatement(GET_ON_TIME_ORDERS);
@@ -6659,9 +6664,12 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			Enumeration eobj = driverlates.keys();
 			while(eobj.hasMoreElements()) {
 				Object saleId = eobj.nextElement();
+				System.out.println("Getting scanlate for sale_id = " + saleId);
 				CustomerCreditModel ccm = getSaleDetails((String) saleId);
-				ccm.setNewCode("SCANLATE");
-				ccmList.add(ccm);
+				if(ccm != null) {
+					ccm.setNewCode("SCANLATE");
+					ccmList.add(ccm);
+				}
 			}
 		} catch (SQLException sqle) {
 			throw new FDResourceException(sqle);
@@ -6674,7 +6682,9 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 	public void storeLists(List cmList) throws FDResourceException {
 		Connection conn = null;
 		PreparedStatement pstmt = null;		
-		String autoID = insertAutoDlv();
+		String autoID = "";
+		if(cmList.size() > 0)
+			autoID = insertAutoDlv();
 		final int batchSize = 1000;
 		int count = 0;
 		try {
