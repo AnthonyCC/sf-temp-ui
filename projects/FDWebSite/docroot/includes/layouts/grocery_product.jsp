@@ -235,7 +235,7 @@ int itemsToDisplay = 30;
                 } else if (sessItemsToDisp!=null) {
                         itemsToDisplay = Integer.valueOf(sessItemsToDisp).intValue();
                 }
-                if (itemsToDisplay!=30 && itemsToDisplay!=60 && itemsToDisplay!=totalItems) {
+                if (itemsToDisplay!=30 && itemsToDisplay!=60 && itemsToDisplay!=("".equals(brandValue) ? totalItems : itemsToDisplay)) {
                         itemsToDisplay = 30;
                 }
         } catch (NumberFormatException nfe) {
