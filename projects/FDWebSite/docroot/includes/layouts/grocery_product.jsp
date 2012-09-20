@@ -505,12 +505,6 @@ if(productCode!=null && prodCatId !=null ) {
  	}
  %>
 <tr valign="top"><td width="220">
-
-<% if(FDStoreProperties.isBazaarvoiceEnabled()) { %>
-<%-- Bazaarvoice summary --%>
-<div id="BVRRSummaryContainer"></div>
-<% } %>
-
 <table cellpadding="0" cellspacing="0" border="0"><tr>
 <%
 	if (titleBrandLogo!=null) {
@@ -747,15 +741,6 @@ if(productCode!=null && prodCatId !=null ) {
 %><br>Please check product label for nutrition, ingredients, and allergens.<%
 	}
 %><br>
-<%-- TODO show bazaarvoice reviews popup based on property --%>
-<%
-boolean showReviews = FDStoreProperties.isBazaarvoiceEnabled();
-if (showReviews) {
-%>
-<a href="javascript:pop('/shared/reviews_popup.jsp?productId=<%= ProductDisplayUtil.getRealProduct(productNode).getContentName() %>', 400, 500, 'Reviews')">Reviews</a>
-<%
-}
-%>
 </td>
 <td width=<%= W_GROCERY_PRODUCT_CENTER_PADDING %>>&nbsp;</td><%-- buffer cell --%>
 <td align="center">
@@ -861,16 +846,6 @@ String  viewBrandURL = response.encodeURL("/category.jsp?catId="+groceryCategory
 	}
 %>
 </fd:FDProductInfo>
-
-<%-- Bazaarvoice review download --%>
-<script>
-  (function () {
-    if ($BV) {
-      $BV.ui('rr', 'show_reviews', { productId: '<%= ProductDisplayUtil.getRealProduct(productNode).getContentName() %>'});
-    }
-  }());
-</script>
-
 </fd:ProductGroup>
 <br>
 <%

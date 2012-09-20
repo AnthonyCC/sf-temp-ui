@@ -1,4 +1,3 @@
-<%@page import="com.freshdirect.fdstore.FDStoreProperties"%>
 <%@page import="com.freshdirect.fdstore.FDSkuNotFoundException"%>
 <%@ taglib uri="logic" prefix="logic" %>
 <%
@@ -90,21 +89,6 @@
 					<%=separatorChar%><font class="text12bold"> Ingredients</font>
 				<%
 	  }
-			}
-
-      // TODO property based review display
-      boolean showReviews = FDStoreProperties.isBazaarvoiceEnabled();
-
-			if (fdprd!=null && showReviews) {
-				if(!"".equals(productView) && !"reviews".equalsIgnoreCase(productView)) { 
-				%>
-				 <%=separatorChar%> <a href="product.jsp?productId=<%= request.getParameter("productId")%>&catId=<%=request.getParameter("catId")%>&product_view=reviews<% if (request.getParameter("skuCode")!=null) out.print("&skuCode="+request.getParameter("skuCode")); %>">Reviews</a>
-				<%
-				}else{
-				%>
-					<%=separatorChar%><font class="text12bold"> Reviews</font>
-				<%
-        }
 			}
 			
                      if (!isWineLayout) {
@@ -266,10 +250,6 @@
 				<%@ include file="/includes/product/i_product_ingredients.jspf" %>
 
 			<%
-      } else if ("reviews".equalsIgnoreCase(productView)) {
-      %>
-        <div id="BVRRContainer"></div>
-      <%
 			} else if (showAbout) {
 			
 				FDProduct fdProd = null;

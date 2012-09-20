@@ -101,12 +101,3 @@
 	    	<%
 		}
 	%>
-	
-  <%-- Bazaarvoice --%>
-  
-  <% 
-  if(FDStoreProperties.isBazaarvoiceEnabled()){
-  	String bvapiUrl = FDStoreProperties.getBazaarvoiceBvapiUrl(); %>
-  	<script type="text/javascript" src="<%= bvapiUrl %>"></script>
-  <% } %>
-  

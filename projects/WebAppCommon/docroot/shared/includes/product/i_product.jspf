@@ -207,15 +207,7 @@ if ( skuSize == 0 ) {
 				    boolean hasVariationMatrix = ( defaultSku.getVariationMatrix().size() > 0);
 					boolean displayShortTermUnavailability = defaultProduct.getMaterial().getBlockedDays().isEmpty();    
 				%>
-
-        <% if (FDStoreProperties.isBazaarvoiceEnabled() && isQuickBuy) { %>
-          <%-- TODO: valid rating --%>
-          <%-- <span class="star-rating rating-3"></span> --%>
-        <% } else if(FDStoreProperties.isBazaarvoiceEnabled()){ %>
-          <%-- Bazaarvoice summary --%>
-          <div id="BVRRSummaryContainer"></div>
-        <% } %>
-
+				
 				<%@ include file="/shared/includes/product/i_pricing_script.jspf" %>
 
 			    <script type="text/javascript">

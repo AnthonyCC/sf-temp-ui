@@ -554,13 +554,6 @@ public class FDStoreProperties {
 	private final static String PROP_COREMETRICS_FTP_SFTP_PORT = "fdstore.coremetrics.ftp.sftpport";
 
 	
-	//APPDEV-2446 Bazaarvoice Implementation
-	private final static String PROP_BAZAARVOICE_FTP_URL = "fdstore.bazaarvoice.ftp.url";
-	private final static String PROP_BAZAARVOICE_FTP_USERNAME = "fdstore.bazaarvoice.ftp.username";
-	private final static String PROP_BAZAARVOICE_FTP_PASSWORD = "fdstore.bazaarvoice.ftp.password";
-	private final static String PROP_BAZAARVOICE_BVAPI_URL = "fdstore.bazaarvoice.bvapi.url";
-	private final static String PROP_BAZAARVOICE_ENABLED = "fdstore.bazaarvoice.enabled";
-	
 	private final static String ALLOW_DISCOUNTS_ON_PREMIUM_SLOT = "fdstore.allow.discount.premium.slot";
 	
 	private final static String DLV_PASS_NEW_TC_DATE = "fdstore.dlvpass.newtc.date";
@@ -1116,12 +1109,6 @@ public class FDStoreProperties {
 		defaults.put(PROP_COREMETRICS_FTP_SECURE, "false");
 		defaults.put(PROP_COREMETRICS_FTP_SFTP_PORT, "998");
 		
-		defaults.put(PROP_BAZAARVOICE_FTP_USERNAME, "freshdirect");
-		defaults.put(PROP_BAZAARVOICE_FTP_URL, "ftp-stg.bazaarvoice.com");
-		defaults.put(PROP_BAZAARVOICE_FTP_PASSWORD, "1hOGyoFPLYo");
-		defaults.put(PROP_BAZAARVOICE_BVAPI_URL, "//display-stg.ugc.bazaarvoice.com/static/freshdirect/bvapi.js");
-		defaults.put(PROP_BAZAARVOICE_ENABLED, "true");
-						
 		defaults.put(ALLOW_DISCOUNTS_ON_PREMIUM_SLOT, "false");
 		defaults.put(DLV_PASS_NEW_TC_DATE, "2012-05-09");
 		defaults.put(SAME_DAY_MEDIA_AFTER_CUTOFF, "30");
@@ -2883,26 +2870,6 @@ public class FDStoreProperties {
 
 	public static int getCoremetricsFtpSftpPort() {
 		 return Integer.parseInt(get(PROP_COREMETRICS_FTP_SFTP_PORT));
-	}
-	
-	public static String getBazaarvoiceFtpUsername() {
-	   	return get(PROP_BAZAARVOICE_FTP_USERNAME);
-	}
-	
-	public static String getBazaarvoiceFtpUrl() {
-	   	return get(PROP_BAZAARVOICE_FTP_URL);
-	}
-	
-	public static String getBazaarvoiceFtpPassword() {
-	   	return get(PROP_BAZAARVOICE_FTP_PASSWORD);
-	}
-	
-	public static String getBazaarvoiceBvapiUrl() {
-		return get(PROP_BAZAARVOICE_BVAPI_URL);
-	}
-	
-	public static boolean isBazaarvoiceEnabled() {
-		return (Boolean.valueOf(get(PROP_BAZAARVOICE_ENABLED))).booleanValue();
 	}
 	
 	public static boolean isGiftCardDonationEnabled() {

@@ -306,12 +306,3 @@ final int W_PERISHABLE_PRODUCT_RIGHT = 369;
 		</td>
 	</tr>
 </table>
-
-<%-- Bazaarvoice review download --%>
-<script>
-  (function () {
-    if ($BV) {
-      $BV.ui('rr', 'show_reviews', { productId: '<%= ProductDisplayUtil.getRealProduct(productNode).getContentName() %>'});
-    }
-  }());
-</script>
