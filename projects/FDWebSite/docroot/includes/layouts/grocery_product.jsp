@@ -752,7 +752,7 @@ if(productCode!=null && prodCatId !=null ) {
 boolean showReviews = FDStoreProperties.isBazaarvoiceEnabled();
 if (showReviews) {
 %>
-<a href="javascript:pop('/common/template/reviews_popup.jsp?productId=<%= ProductDisplayUtil.getRealProduct(productNode).getContentName() %>', 400, 500, 'Reviews')">Reviews</a>
+<a href="javascript:pop('/shared/reviews_popup.jsp?productId=<%= ProductDisplayUtil.getRealProduct(productNode).getContentName() %>', 400, 500, 'Reviews')">Reviews</a>
 <%
 }
 %>
