@@ -46,7 +46,7 @@ private static final int W_LEFT_NAV_RIGHT_PADDING = 5;
 
 		if (nl.isBold()) buf.append("<b>");
 		if (nl.showLink()) {
-			buf.append("<a href=\"");
+			buf.append("<a class=\"lNavTableItem\" href=\"");
 			buf.append(nl.getURL());
 			buf.append("\"");
 				if (isUnavailable) {
@@ -69,7 +69,7 @@ private static final int W_LEFT_NAV_RIGHT_PADDING = 5;
 	}
 
 %>
-<oscache:cache key='<%= "sideNav_"+request.getQueryString() %>' time='300'>
+<oscache:cache key='<%= "sideNav_"+request.getQueryString() %>' time='1'>
 <% try { %>
 
 <fd:SideNav catId='<%= request.getParameter("catId") %>' topCategory="topCategory" navList="leftNavItemsList" unavailableList="unavailableNavItems">
@@ -94,7 +94,7 @@ if (aliasNode!=null) {
 }
 Image catImage = topCategory.getCategoryTitle();
 if (catImage!=null) {
-	buf.append("<tr><td><a href=\"");
+	buf.append("<tr><td class=\"lNavTableCatTitleImg\"><a href=\"");
 	buf.append(topCatLink);
 	buf.append("&trk=snav\">");
 
@@ -148,7 +148,7 @@ if (unavailableNavItems.size()>0) {
 
 if (displayedRows > 0) {
 %>
-<table border="0" cellspacing="0" cellpadding="0" align="center" width="<%=W_LEFT_NAV_TOTAL%>">
+<table border="0" cellspacing="0" cellpadding="0" align="center" width="<%=W_LEFT_NAV_TOTAL%>" class="lNavTable">
 <tr><td width="<%=W_LEFT_NAV_LEFT_PADDING%>" rowspan="<%= displayedRows %>"><%-- spacer 1x1 --%>
 </td><td width="<%=W_LEFT_NAV_CENTER%>"><%-- spacer 120x1 --%></td>
 <td width="<%=W_LEFT_NAV_RIGHT_PADDING%>" rowspan="<%= displayedRows %>"><%-- spacer 4x1 --%></td></tr>

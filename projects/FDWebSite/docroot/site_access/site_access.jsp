@@ -46,9 +46,9 @@
 
 	//String moreInfoPage = "site_access_address.jsp?successPage="+ URLEncoder.encode(successPage);
 	/* moreInfo, redirect back to the same page, and pass in the overlayType */
-	String moreInfoPage = "site_access.jsp?successPage="+ URLEncoder.encode(successPage)+"&ol=moreInfo";
+	String moreInfoPage = "site_access.jsp?ol=moreInfo&successPage="+ URLEncoder.encode(successPage);
 	//String failurePage = "delivery.jsp?successPage="+ URLEncoder.encode(successPage)+"&serviceType="+serviceType;	
-	String failurePage = "site_access.jsp?successPage="+ URLEncoder.encode(successPage)+"&ol=na&serviceType="+serviceType;
+	String failurePage = "site_access.jsp?ol=na&serviceType="+serviceType+"&successPage="+ URLEncoder.encode(successPage);
 
 	//check for new serviceType, and if either GC or RH is enabled
 	String gcLanding = FDStoreProperties.getGiftCardLandingUrl();
@@ -187,9 +187,9 @@ request.setAttribute("listPos", "CategoryNote,SiteAccess");
 				<% if ( !"".equals(overlayType) ) { %>
 					<% if ( "moreInfo".equalsIgnoreCase(overlayType) ) { %>
 						<% if ( isCorporate ) { %>
-							_page_options.overlayURL = '<%= "site_access_address.jsp?successPage=" + URLEncoder.encode(successPage) + "&serviceType=CORPORATE" %>';
+							_page_options.overlayURL = '<%= "site_access_address.jsp?serviceType=CORPORATE&successPage=" + URLEncoder.encode(successPage) %>';
 						<% }else{ %>
-							_page_options.overlayURL = '<%= "site_access_address.jsp?successPage=" + URLEncoder.encode(successPage) + "&serviceType=HOME" %>';
+							_page_options.overlayURL = '<%= "site_access_address.jsp?serviceType=HOME&successPage=" + URLEncoder.encode(successPage) %>';
 						<% } %>
 					<% } %>
 					<% if ( "altCorp".equalsIgnoreCase(overlayType) ) { %>
@@ -199,7 +199,7 @@ request.setAttribute("listPos", "CategoryNote,SiteAccess");
 						_page_options.overlayURL = '<%= "/site_access/alt_dlv_home.jsp" %>';
 					<% } %>
 					<% if ( "na".equalsIgnoreCase(overlayType) ) { %>
-						_page_options.overlayURL = '<%= "delivery.jsp?successPage=" + URLEncoder.encode(successPage) + "&serviceType=" + serviceType %>';
+						_page_options.overlayURL = '<%= "delivery.jsp?serviceType=" + serviceType + "&successPage=" + URLEncoder.encode(successPage) %>';
 					<% } %>
 					<% if ( "corpSurvey".equalsIgnoreCase(overlayType) ) { %>
 						_page_options.overlayURL = '<%= "/survey/cos_site_access_survey.jsp?successPage=" + URLEncoder.encode(successPage) %>';

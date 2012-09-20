@@ -193,14 +193,16 @@ public class SiteAccessControllerTag extends com.freshdirect.framework.webapp.Bo
 							}
 							
 							LOGGER.debug("[*****Moreinfopage is coming as*****]"+this.moreInfoPage);
-						
-							if (this.moreInfoPage != null && this.moreInfoPage.indexOf('?') < 0) {
-								this.moreInfoPage += "?serviceType=" + this.serviceType.getName();
-								
-							} else {
-								this.moreInfoPage += "&serviceType=" + this.serviceType.getName();
+							
+							if (this.moreInfoPage != null && this.moreInfoPage.indexOf("serviceType") == -1) {
+								if (this.moreInfoPage.indexOf('?') < 0) {
+									this.moreInfoPage += "?serviceType=" + this.serviceType.getName();
+								} else {
+									String[] moreInfoPageTemp = this.moreInfoPage.split("[?]", 0);
+									this.moreInfoPage = moreInfoPageTemp[0]+"?serviceType=" + this.serviceType.getName() + "&" + moreInfoPageTemp[1];
+								}
 							}
-						
+							
 							if (EnumServiceType.CORPORATE.equals(this.serviceType)) {																					
 								if(EnumDeliveryStatus.DONOT_DELIVER.equals(dlvStatus)){
 									// check home delivry is available
@@ -665,8 +667,13 @@ public class SiteAccessControllerTag extends com.freshdirect.framework.webapp.Bo
 	private void saveEmail(HttpServletRequest request, ActionResult result) throws FDResourceException {
 		HttpSession session = pageContext.getSession();
 		String email = request.getParameter("email");
+		String userEmail = request.getParameter("userEmail");
 		
-
+		if ((email == null && userEmail != null) || !email.equalsIgnoreCase(userEmail)) {
+			/* set email to user-entered email rather than SUL-used email */
+			email = userEmail;
+		}
+		
 		if (email != null)
 			email = email.trim();
 		if ((email != null) && (!"".equals(email)) && (!com.freshdirect.mail.EmailUtil.isValidEmailAddress(email))) {

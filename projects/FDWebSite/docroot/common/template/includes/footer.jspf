@@ -143,5 +143,13 @@ final int W_FOOTER_TOTAL = 970;
 	//add a param to the params sent to the FTL
 	semPixel_PUB.setParam("curPage", request.getRequestURI());
 %><fd:SemPixelIncludeMedia pixelNames="Publicis" />
+<%
+	/* ConvergeTrack Pixel
+		different var in case the original isn't included somewhere (from i_javascripts.jspf)
+	*/
+	SemPixelModel semPixel_CT_footer = FDSemPixelCache.getInstance().getSemPixel("ConvergeTrack");
+	semPixel_CT_footer.setParam("footer", "true");
+
+%><fd:SemPixelIncludeMedia pixelNames="ConvergeTrack" />
 </center>
 <% } %>

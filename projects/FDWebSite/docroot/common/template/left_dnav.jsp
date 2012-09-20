@@ -49,7 +49,7 @@ final int W_LEFT_DNAV_RIGHT = 820;
 </tr>
 
 <tr valign="top">
-	<td bgcolor="#E0E3D0"><%@ include file="/common/template/includes/left_side_nav.jspf" %><BR>
+	<td bgcolor="#E0E3D0" class="lNavTableContTD"><%@ include file="/common/template/includes/left_side_nav.jspf" %><BR>
 		<img src="/media_stat/images/layout/clear.gif" height="1" width="<%=W_LEFT_DNAV_LEFT%>"></td>
 		<td align="right"><img src="/media_stat/images/layout/clear.gif" height="15" width="1"><br>
 		<%-- content lands here --%>

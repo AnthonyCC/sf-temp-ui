@@ -74,7 +74,7 @@ final int W_BOTH_DNAV_RIGHT = 191;
 	<TD WIDTH="<%=W_BOTH_DNAV_TOTAL%>" BGCOLOR="#999966" COLSPAN="5"><IMG src="/media_stat/images/layout/999966.gif" WIDTH="1" HEIGHT="1"></TD>
 </TR>
 <TR VALIGN="TOP">
-	<TD WIDTH="<%=W_BOTH_DNAV_LEFT%>" BGCOLOR="#E0E3D0">
+	<TD WIDTH="<%=W_BOTH_DNAV_LEFT%>" BGCOLOR="#E0E3D0" class="lNavTableContTD">
 		<% try { %><%@ include file="/common/template/includes/left_side_nav.jspf" %><% } catch (Exception ex) {ex.printStackTrace();} %><BR>
 		<img src="/media_stat/images/layout/clear.gif" height="1" width="<%=W_BOTH_DNAV_LEFT%>">
 	</TD>

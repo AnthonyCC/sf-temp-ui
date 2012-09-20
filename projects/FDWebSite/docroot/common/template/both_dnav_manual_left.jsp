@@ -67,7 +67,7 @@ final int W_BDNML_RIGHT = 191;
 				<td width="<%= W_BDNML_TOTAL %>" bgcolor="#999966" colspan="3"><IMG src="/media_stat/images/layout/999966.gif" width="1" height="1" alt="" /></td>
 			</tr>
 			<tr valign="top">
-				<td width="<%= W_BDNML_LEFT %>" bgcolor="#E0E3D0">
+				<td width="<%= W_BDNML_LEFT %>" bgcolor="#E0E3D0" class="lNavTableContTD">
 					<img src="/media_stat/images/layout/clear.gif" height="1" width="<%= W_BDNML_LEFT %>" alt="" />
 					<!-- left nav, manual start -->
 					<tmpl:get name='left_nav_manual'/><br />

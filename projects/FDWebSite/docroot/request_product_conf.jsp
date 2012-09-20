@@ -8,22 +8,22 @@
 <%@ taglib uri='template' prefix='tmpl' %>
 
 <% boolean formSubmit = false; %>
-<script language="JavaScript">
-
-	function linkTo(url){
-		redirectUrl = "http://" + location.host + url;
-		parent.opener.location = redirectUrl;
-	}
-
-	if (parent.opener['shouldClearProdReqSelection']) {
-		parent.opener['shouldClearProdReqSelection'] = true;
-	}
-
-</script>
 
 <tmpl:insert template='/common/template/large_pop.jsp'>
 	<tmpl:put name='title' direct='true'>FreshDirect - Request a Product</tmpl:put>
 	<tmpl:put name='content' direct='true'>
+		<script language="JavaScript" type="text/javascript">
+		
+			function linkTo(url){
+				redirectUrl = "http://" + location.host + url;
+				parent.opener.location = redirectUrl;
+			}
+		
+			if (parent.opener && !(parent.opener['shouldClearProdReqSelection'] == null || parent.opener['shouldClearProdReqSelection'] == 'undefined')) {
+				parent.opener['shouldClearProdReqSelection'] = true;
+			}
+		
+		</script>
 		<table width="520" cellpadding="0" cellspacing="0" border="0">
 			<tr>
 				<td align="center" class="text12">

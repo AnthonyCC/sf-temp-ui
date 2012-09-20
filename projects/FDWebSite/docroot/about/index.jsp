@@ -73,7 +73,7 @@
 <% } %>
 
 	<% if ("true".equalsIgnoreCase(request.getParameter("bloglogout"))) {%>
-		<iframe src="<%=MyFdFeed.getInstance().getBlogUrl()%>/?autologout" width="0" height="0" frameBorder="0"/>
+		<iframe src="<%=MyFdFeed.getInstance().getBlogUrl()%>/?autologout" width="0" height="0" frameBorder="0"></iframe>
 	<%} %>
 </tmpl:put>
 </tmpl:insert>

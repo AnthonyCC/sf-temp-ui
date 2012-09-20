@@ -32,7 +32,7 @@
 	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-	<title>FreshDirect</title>
+	<title>FreshDirect Delivery Check</title><% /* if this title changes, you need to change the media JS as well */ %>
 	<% if("slite".equals(request.getParameter("referrer_page"))) { %>
 		<%@ include file="/common/template/includes/metatags.jspf" %>
 		<%@ include file="/common/template/includes/i_javascripts.jspf" %>
