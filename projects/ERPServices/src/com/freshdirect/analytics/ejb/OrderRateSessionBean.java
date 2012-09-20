@@ -173,7 +173,7 @@ public class OrderRateSessionBean extends SessionBeanSupport {
 				
 			}
 			
-			save(list);
+			save(list, conn);
 			long endtime= System.currentTimeMillis();
 			System.err.println("Total time for execution of order rate job for snapshot: "+timeStamp.toString()+" "+new Double(endtime-starttime));
 		} 
@@ -197,28 +197,9 @@ public class OrderRateSessionBean extends SessionBeanSupport {
 	}
 	
 
-	public void save(List<OrderRateVO> voList)
+	public void save(List<OrderRateVO> voList, Connection conn)
 	{
-		Connection conn = null;
-		
-		try {
-			conn = getConnection();
-			OrderRateDAO.saveOrderRate(conn, voList);
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		finally {
-			try {
-				if (conn != null) {
-					conn.close();
-					conn = null;
-				}
-			} catch (SQLException se) {
-				LOGGER.warn("SQLException while cleaning up", se);
-			}
-		}
-		
+		OrderRateDAO.saveOrderRate(conn, voList);
 	}
 
 }
