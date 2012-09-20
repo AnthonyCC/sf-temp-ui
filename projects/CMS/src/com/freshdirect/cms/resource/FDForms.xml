@@ -1423,6 +1423,7 @@
                         <fields>
                             <CmsField><attribute>ORGANIZATION_NAME</attribute></CmsField>
                             <CmsField><attribute>EMAIL</attribute></CmsField>
+                            <CmsField><attribute>CONTACT_INFO</attribute></CmsField>                            
                         </fields>
                     </CmsSection>
                     <CmsSection>

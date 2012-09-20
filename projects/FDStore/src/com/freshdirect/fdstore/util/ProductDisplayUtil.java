@@ -154,14 +154,16 @@ public class ProductDisplayUtil {
 
     
     
-    public static int getMaxHeight(List<ProductModel> products) {
+    public static int getMaxHeight(List<? extends ContentNodeModel> nodes) {
     	int maxHeight = 0;
-		for (ProductModel productNode : products) {
-			// retrieve product image
-			Image prodImage = productNode.getSourceProduct().getCategoryImage();
-
-			if (prodImage != null)
-				maxHeight = Math.max(maxHeight, prodImage.getHeight());
+		for (ContentNodeModel node : nodes) {
+			if (node instanceof ProductModel) {
+				// retrieve product image
+				Image prodImage = ((ProductModel) node).getSourceProduct().getCategoryImage();
+	
+				if (prodImage != null)
+					maxHeight = Math.max(maxHeight, prodImage.getHeight());
+			}
 		}
 		
 		return maxHeight;

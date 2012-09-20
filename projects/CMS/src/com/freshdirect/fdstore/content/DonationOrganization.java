@@ -27,6 +27,10 @@ public class DonationOrganization extends ContentNodeModelImpl {
 	public String getEmail(){
 		return getAttribute("EMAIL", "");
 	}
+	
+	public String getContactInfo() {
+		return getAttribute("CONTACT_INFO", "");
+	}
 		
 	public List getGiftcardType() {
 		ContentNodeModelUtil.refreshModels(this, "GIFTCARD_TYPE", giftcardTypes, false);

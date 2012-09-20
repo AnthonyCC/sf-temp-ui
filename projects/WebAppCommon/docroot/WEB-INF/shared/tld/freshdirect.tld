@@ -4851,6 +4851,23 @@
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 	</tag>	
+	<!-- APPDEV-2386 start -->
+	<tag>
+		<name>MultiCategoryLayout</name>
+		<tagclass>com.freshdirect.webapp.taglib.fdstore.layout.MultiCategoryLayoutTag</tagclass>
+		<teiclass>com.freshdirect.webapp.taglib.fdstore.layout.MultiCategoryLayoutTag$TagEI</teiclass>
+		<attribute>
+			<name>parentKey</name>
+			<required>true</required>
+	  		<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>sortedCollection</name>
+			<required>true</required>
+	  		<rtexprvalue>true</rtexprvalue>
+		</attribute>
+	</tag>	
+	<!-- APPDEV-2386 end -->
 	<tag>
 		<name>CmShop5</name>
 		<tagclass>com.freshdirect.webapp.taglib.coremetrics.CmShop5Tag</tagclass>

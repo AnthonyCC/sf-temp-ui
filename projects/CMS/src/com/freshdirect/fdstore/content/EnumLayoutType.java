@@ -76,7 +76,11 @@ public enum EnumLayoutType implements Serializable {
     // Wine dept specific layouts
     WINE_DEALS							("Wine Deals", 103),
     WINE_EXPERTS_FAVS					("Wine Expert's Favs", 104),
-    
+
+    // Multi Category Layout variants
+    MULTI_CATEGORY_QUICKBUY				("Multi Category Layout (with Quickbuy)", 111),
+
+
     //promo page layouts
     PRESIDENTS_PICKS					("President's Picks", 200);
 

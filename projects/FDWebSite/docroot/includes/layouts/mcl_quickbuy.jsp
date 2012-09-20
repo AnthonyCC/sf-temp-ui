@@ -1,3 +1,5 @@
+<%@ page import="com.freshdirect.fdstore.util.ProductDisplayUtil"%>
+<%@ page import="com.freshdirect.webapp.util.prodconf.SmartStoreConfigurationStrategy"%>
 <%@ page import="java.text.SimpleDateFormat"%>
 <%@ page import='java.util.*'  %>
 <%@ page import='java.net.URLEncoder'%>
@@ -28,6 +30,7 @@ final int W_MULTI_CATEGORY_NOT_DEPARTMENT = 601;
 	final int maxWidth = isDepartment.booleanValue() ? W_MULTI_CATEGORY_IS_DEPARTMENT : noLeftNav ? W_MULTI_CATEGORY_IS_DEPARTMENT : W_MULTI_CATEGORY_NOT_DEPARTMENT;
 	
 	boolean useAlternate = useAlternateImages.booleanValue();
+
 %><fd:MultiCategoryLayout parentKey="<%= currentFolder.getContentKey() %>" sortedCollection="<%= sortedCollection %>"><%
 	{
 		/*
@@ -56,6 +59,8 @@ final int W_MULTI_CATEGORY_NOT_DEPARTMENT = 601;
 		 * Render nodes
 		 */
 		{
+			final int __c_maxHeight = ProductDisplayUtil.getMaxHeight( mcl_nodes ); 
+			
 			%>
 				<display:HorizontalPattern 
 					id="horizontalPattern" 
@@ -79,16 +84,20 @@ final int W_MULTI_CATEGORY_NOT_DEPARTMENT = 601;
 						%>				
 							<display:PatternRow id="patternRow" itemsToShow="<%= rowList %>">
 							
-								<% if ( currentItem instanceof ProductModel ) {		
-									ProductModel product = (ProductModel)currentItem;
-									String actionUrl = FDURLUtil.getProductURI( product, trackingCode );
+								<% if ( currentItem instanceof ProductModel ) {
+									ProductModel __c_prd = (ProductModel)currentItem;
+									String actionUrl = FDURLUtil.getProductURI( __c_prd, trackingCode );
+
+									
 									%>
-								
-									<td width="<%= cellPercentage %>%" style="padding-bottom: 5px;">										
-										<display:ProductImage product="<%= product %>" showRolloverImage="true" action="<%= actionUrl %>" useAlternateImage="<%= useAlternate %>"/>										
+									<display:GetContentNodeWebId id="webId" product="<%= currentItem %>" clientSafe="<%= true %>">
+									<td id="hotspot-<%= webId %>" width="<%= cellPercentage %>%" style="padding-bottom: 5px;">										
+										<display:ProductImage product="<%= __c_prd %>" showRolloverImage="true" useAlternateImage="false"
+												className="productImage" height="<%= __c_maxHeight %>" enableQuickBuy="true" webId="<%= webId %>"/>
 									</td>
-								
-								<% } else if ( currentItem instanceof CategoryModel ) { // is a category 
+									</display:GetContentNodeWebId>
+									<%
+								} else if ( currentItem instanceof CategoryModel ) { // is a category 
 									CategoryModel category = (CategoryModel)currentItem;
 									String actionUrl = FDURLUtil.getCategoryURI( category, trackingCode );
 									%>
@@ -107,6 +116,7 @@ final int W_MULTI_CATEGORY_NOT_DEPARTMENT = 601;
 							
 								<% if ( currentItem instanceof ProductModel ) {		
 									ProductModel product = (ProductModel)currentItem;
+
 									String actionUrl = FDURLUtil.getProductURI( product, trackingCode );
 									%>
 								

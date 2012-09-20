@@ -52,6 +52,7 @@
 		<AttributeDefs>
 			<AttributeDef type="S" name="ORGANIZATION_NAME" label="Organization Name"/>
 			<AttributeDef type="S" name="EMAIL" label="Recipient Email"/>
+			<AttributeDef type="S" name="CONTACT_INFO" label="Contact Info"/>
 		</AttributeDefs>
 		<RelationshipDefs>
 			<RelationshipDef name="ORGANIZATION_LOGO_SMALL" cardinality="One"  label="Organization logo Small" >
@@ -549,7 +550,10 @@
                 <EnumValue value="100" label="Wine_Category"/><!-- [USQ] new layout -->
                 <EnumValue value="101" label="Transactional_multi_Paired_Items"/><!-- [USQ] new layout -->
                 <EnumValue value="102" label="Template_Layout"/><!-- [USQ] new layout -->
-				<EnumValue value="200" label="President's Picks"/><!-- promo page -->
+
+                <EnumValue value="111" label="Multi Category Layout (with Quickbuy)"/><!-- Multi + QB layout [APPDEV-2386] -->
+
+                <EnumValue value="200" label="President's Picks"/><!-- promo page -->
 			</EnumDef>
 			<EnumDef type="I" name="TEMPLATE_TYPE"  label="Template Type" inheritable="true">
 				<EnumValue value="1" label="Fresh Direct Default Template"/>
