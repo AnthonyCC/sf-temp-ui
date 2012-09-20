@@ -92,7 +92,7 @@ activate()
 
 # Queues
 #
-queues = ['captureQueue', 'mailQueue', 'oasQueue', 'registerQueue', 'releaseQueue', 'routingQueue', 'sapQueue']
+queues = ['captureQueue', 'mailQueue', 'oasQueue', 'registerQueue', 'releaseQueue', 'routingQueue', 'sapQueue', 'logMetricQueue', 'tranMailQueue']
 for qname in queues:
     startEdit()
 
@@ -116,15 +116,15 @@ for qname in queues:
 ##
 sources = [
       {"name": "fddatasource",
-       "url": "jdbc:oracle:thin:@zetor:1521:DBEU02",
+       "url": "jdbc:oracle:thin:@kazan:1521:DBEU02",
        "user": "fdstore_prda",
        "password": "fdstore_prda"},
       {"name": "fdmktdatasource",
-       "url": "jdbc:oracle:thin:@zetor:1521:DBEU02",
+       "url": "jdbc:oracle:thin:@kazan:1521:DBEU02",
        "user": "fdstore_prda",
        "password": "fdstore_prda"},
       {"name": "fdtrndatasource",
-       "url": "jdbc:oracle:thin:@zetor:1521:DBEU02",
+       "url": "jdbc:oracle:thin:@kazan:1521:DBEU02",
        "user": "fdstore_prda",
        "password": "fdstore_prda"},
 ]

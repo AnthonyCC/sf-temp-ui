@@ -21,6 +21,7 @@ print "target="+serverName+',crm@'+vHostName
 #progress=
 
 deploy('DevServer',FD_HOME+'/projects/DevServer',targets=serverName+',crm@'+vHostName, timeout=0, block='true', stageMode='nostage')
+#deploy('DevServer',FD_HOME+'/projects/DevServer',targets=serverName, timeout=0, block='true', stageMode='nostage')
 
 #save()
 #activate(-1)
