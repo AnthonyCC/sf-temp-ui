@@ -311,7 +311,8 @@ public class Plan implements java.io.Serializable, TrnBaseEntityI, IWaveInstance
 		//return false;
 		return this.getZone() != null && this.getZone().getArea() != null 
 								&& "X".equalsIgnoreCase(this.getZone().getArea().getIsDepot())
-								&& !(this.getOriginFacility()!=null && this.getOriginFacility().getTrnFacilityType().getName().equals(EnumTransportationFacilitySrc.DEPOTDELIVERY.getName()));
+								&& !(this.getOriginFacility()!=null && this.getOriginFacility().getTrnFacilityType().getName().equals(EnumTransportationFacilitySrc.DEPOTDELIVERY.getName()))
+								&& !(this.getDestinationFacility()!=null && this.getDestinationFacility().getTrnFacilityType().getName().equals(EnumTransportationFacilitySrc.DEPOTDELIVERY.getName()));
 	}
 
 	@Override
