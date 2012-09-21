@@ -310,7 +310,7 @@ public class ModelUtil {
 		if(zoneRouteList!=null && zoneRouteList.size() > 0) {
 			for (Iterator<Plan> k = zoneRouteList.iterator(); k.hasNext();) {
 				Plan p = k.next();
-				if(p.getOriginFacility().getTrnFacilityType().getName().equals(EnumTransportationFacilitySrc.DEPOTDELIVERY.getName())){
+				if(!"Y".equalsIgnoreCase(p.getIsBullpen()) && p.getOriginFacility()!=null && p.getOriginFacility().getTrnFacilityType().getName().equals(EnumTransportationFacilitySrc.DEPOTDELIVERY.getName())){
 					runnerPlans.add(p);
 					k.remove();
 				}
