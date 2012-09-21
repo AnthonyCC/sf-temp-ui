@@ -1,3 +1,4 @@
+<%@page import="com.freshdirect.webapp.taglib.crm.CrmSession"%>
 <%@ page import="java.util.List"%>
 <%@ page import="java.util.Collection"%>
 <%@ page import="java.util.Collections"%>
@@ -286,6 +287,12 @@ if (timeslots.size() > 0) {
 
 /* START AM SLOT ITERATOR */
 	boolean __isAm = true;
+
+	if (CrmSession.getCurrentAgent(session) != null) {
+%>
+function logChange(timeSlotId){}
+<%
+	} else {
 %>
 	var timeslotChooserFunctions = {
 	<logic:iterate id="slot" indexId="idx" collection="<%= timeslots.getTimeslotsFlat() %>" type="com.freshdirect.fdstore.FDTimeslot">
@@ -296,6 +303,7 @@ if (timeslots.size() > 0) {
 function logChange(timeSlotId){	
 	timeslotChooserFunctions[timeSlotId]();	
 }
+<% } %>
 
 <logic:iterate id="slot" collection="<%= timeslots.getTimeslotsForDayAndShift(day,EnumDayShift.DAY_SHIFT_AM.getName()) %>" type="com.freshdirect.fdstore.FDTimeslot">
 <%@ include file="/shared/includes/delivery/i_delivery_slots_cell.jspf"  %>
