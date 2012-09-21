@@ -355,7 +355,7 @@ public class HandOffAutoDispatchAction extends AbstractHandOffAction {
 		if(zoneRouteList!=null && zoneRouteList.size() > 0) {
 			for (Iterator<IHandOffBatchPlan> k = zoneRouteList.iterator(); k.hasNext();) {
 				IHandOffBatchPlan p = k.next();
-				if(p.getOriginFacility()!=null &&
+				if(!"Y".equalsIgnoreCase(p.getIsBullpen()) && p.getOriginFacility()!=null &&
 						facilityLookUp.get(p.getOriginFacility())!=null &&
 								facilityLookUp.get(p.getOriginFacility()).getTrnFacilityType().getName().equals(EnumTransportationFacilitySrc.DEPOTDELIVERY.getName())){
 					runnerPlans.add(p);
