@@ -102,6 +102,8 @@ public class InvoiceParser extends FlatFileParser implements SAPConstants, Produ
 			FDOrderI order = FDCustomerManager.getOrder(pk);
 			for(Iterator i = order.getCharges().iterator(); i.hasNext(); ){
 				ErpChargeLineModel charge = new ErpChargeLineModel((ErpChargeLineModel)i.next());
+				if(invoice.getTax()==0)
+					charge.setTaxRate(0);
 				chargeAmount += charge.getTotalAmount();
 				charges.add(charge);
 			}
