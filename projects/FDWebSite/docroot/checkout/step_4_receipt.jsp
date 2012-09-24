@@ -309,6 +309,9 @@ doRemoteOverlay('sms_capture.jsp');
 			semPixel_CT.setParam("subtotal", sem_cartSubtotal);
 	
 			%><fd:SemPixelIncludeMedia pixelNames="ConvergeTrack" /><%
+			
+			//kill params
+			semPixel_CT.setParam("receipt", "false");
 		}
 	}
 %>

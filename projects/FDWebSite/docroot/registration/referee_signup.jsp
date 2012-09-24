@@ -90,7 +90,6 @@
 				Put any java-related variables needed by the page into the _page_options object. 
 			--%>
 			<script type="text/javascript">
-			<!--
 				var _page_options = {					
 					enums: {
 						WEB: '<%=EnumServiceType.WEB.getName()%>',
@@ -123,7 +122,7 @@
 				};
 				<% if ( !"WEB".equals(serviceType) ) { %>
 					<% if ( result.hasError("technicalDifficulty") ) { %>
-						_page_options.errMsg = "<%=result.getError("technicalDifficulty").getDescription() %>";
+						_page_options.errMsg = "<%= result.getError("technicalDifficulty").getDescription() %>";
 					<% } else {
 						if ( result.hasError(EnumUserInfoName.DLV_ZIPCODE.getCode()) ) { %>
 							_page_options.errMsg = "<%=result.getError(EnumUserInfoName.DLV_ZIPCODE.getCode()).getDescription() %>";
@@ -174,8 +173,6 @@
 						_page_options.overlayURL = '<%= "/survey/cos_site_access_survey.jsp?successPage=" + URLEncoder.encode(successPage) %>';
 					<% } %>
 				<% } %>
-				
-			//-->
 			</script>
 			
 			<fd:IncludeMedia name="/media/editorial/site_access/referral_site_access.html" />

@@ -42,6 +42,9 @@
 		if(FDReferralManager.isReferreSignUpComplete(email)) {
 			//phew finally complete
 			System.out.println("Did not come here?====================================================================================");
+
+			//set a session attribute so we know registration completed successfully
+			session.setAttribute("regSuccess", true);
 		%>
 			<img src="/media_stat/images/navigation/spinner.gif" class="fleft" />
 			<script language="javascript">
@@ -52,6 +55,7 @@
 			System.out.println("went to else part?====================================================================================\n" +session.getAttribute("REFERRAL_EMAIL") + "\n" + (String)session.getAttribute("RAFREGISTRATION"));
 			
 			if(session.getAttribute("MSG_FOR_LOGIN_PAGE") != null) {
+
 			%>
 				<img src="/media_stat/images/navigation/spinner.gif" class="fleft" />
 				<script language="javascript">
