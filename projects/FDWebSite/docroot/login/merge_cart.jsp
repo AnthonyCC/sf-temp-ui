@@ -14,8 +14,8 @@ final int W_MERGE_CART_PADDING_RIGHT = 10;
 <%! java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyInstance(Locale.US); %>
 
 <fd:MergeCartController successPage='<%= request.getParameter("successPage") %>'>
-<!-- from here on, cartCurrent, cartSaved, cartMerged is set -->
 <%
+// from here on, cartCurrent, cartSaved, cartMerged is set
 String queryString = request.getQueryString();
 String templateToUse= "/common/template/no_nav.jsp";
 int inChkOut = queryString.indexOf("checkout");

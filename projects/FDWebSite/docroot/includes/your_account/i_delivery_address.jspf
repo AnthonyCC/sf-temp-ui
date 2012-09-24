@@ -24,7 +24,7 @@ for(Iterator saItr=shipToAddresses.iterator();saItr.hasNext();) {
 	}
 	%>
 	<TD width="20" valign="top"><img src="/media_stat/images/layout/clear.gif" width="20" height="1" border="0"/></TD>
-  <TD valign="top" width="<%= W_YA_DELIVERY_ADDR_COL %>"><font class="text12bold"><%=shipAddress.getFirstName()%> <%=shipAddress.getLastName()%></FONT><BR>
+  <TD valign="top" width="<%= W_YA_DELIVERY_ADDR_COL %>"><div style="width:<%= W_YA_DELIVERY_ADDR_COL %>px;word-wrap:break-word;overflow:hidden;"><font class="text12bold"><%=shipAddress.getFirstName()%> <%=shipAddress.getLastName()%></FONT><BR>
 		<font class="text13">
 		<%if(showingCorporateAddress){%>
 			<%=shipAddress.getCompanyName()%><br>
@@ -64,6 +64,7 @@ for(Iterator saItr=shipToAddresses.iterator();saItr.hasNext();) {
 			<input type="image" src="/media_stat/images/buttons/delete.gif" WIDTH="51" HEIGHT="16" onClick="return deleteDeliveryAddress(this,'<%=addrPKId%>', <%=standingOrderDependencyIds%>, helpSoInfo);" ALT="DELETE" BORDER="0">
 		<% } %>
 		<IMG src="/media_stat/images/layout/clear.gif" WIDTH="185" HEIGHT="1">
+		</div>
 	</TD>
 
 	<%itemCounter++;
