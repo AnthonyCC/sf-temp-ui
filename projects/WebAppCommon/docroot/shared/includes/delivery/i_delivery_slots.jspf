@@ -287,8 +287,9 @@ if (timeslots.size() > 0) {
 
 /* START AM SLOT ITERATOR */
 	boolean __isAm = true;
-
-	if (CrmSession.getCurrentAgent(session) != null) {
+	
+	//keep in sync with AbstractCmTag.checkContext()
+	if (CrmSession.getCurrentAgent(session) != null || user.getMasqueradeAgent() != null) {
 %>
 function logChange(timeSlotId){}
 <%
