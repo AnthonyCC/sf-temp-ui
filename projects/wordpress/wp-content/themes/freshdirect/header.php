@@ -71,8 +71,8 @@
 	<img src="<?php bloginfo('template_url'); ?>/media_stat/images/layout/clear.gif" height="15" width="733">
 	<br>
 	<div style="padding: 0px 25px; margin-bottom: 30px;" class="main-frame-side-header">
-	<div id="fd-main-header" style="height: 79px;">
-		<a href="<?php echo home_url()?>"><img src="<?php bloginfo('template_url'); ?>/images/thefeed_header.gif"></a>
+	<div id="fd-main-header" style="height: 75px;">
+		<a href="<?php echo home_url()?>"><img src="<?php bloginfo('template_url'); ?>/images/myfd_blog_hdr.jpg"></a>
 		<div class="fd-social-links" style="position: absolute; bottom: 0px; right: 0px;">
 		<div class="text10bold" style="text-align: center; padding-bottom: 3px;">Follow us!</div>
 		<div>
