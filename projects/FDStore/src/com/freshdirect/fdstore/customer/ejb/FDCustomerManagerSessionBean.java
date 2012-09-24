@@ -6830,7 +6830,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 						  "( CUST.SALE.ID=CUST.CASE.SALE_ID  ) " +
 						  "AND  CUST.SALE.ID = CUST.SALESACTION.SALE_ID and CUST.SALE.status<>'CAN' " + 
 						  "AND " +
-						     "CUST.SALESACTION.REQUESTED_DATE BETWEEN sysdate-1 AND sysdate " +
+						     "CUST.SALESACTION.REQUESTED_DATE = trunc(sysdate)-1  " +
 						   "AND " +
 						   "CUST.CASE.CASE_SUBJECT  In  ( 'LDQ-004','LDQ-005','LDQ-006','LDQ-007','LDQ-009','LDQ-010'  ) " +
 						   "AND CUST.CUSTOMER.ID=CUST.CUSTOMERINFO.CUSTOMER_ID " +
