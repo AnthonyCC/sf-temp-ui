@@ -104,7 +104,7 @@
 								<c:if test="${!empty planForm.zoneCode }">
 									<c:set var="hasZone" value="true"/>
 								</c:if>
-											<c:if test="${(planForm.isBullpen eq 'Y') || (planForm.destinationFacility.trnFacilityType.name ne 'SIT')}">
+											<c:if test="${(planForm.isBullpen eq 'Y') || (planForm.destinationFacility.trnFacilityType.name ne 'SIT' and planForm.destinationFacility.trnFacilityType.name ne 'DPT')}">
 												<c:set var="_disableZone" value="true"/>
 								</c:if>
 											<form:select path="zoneCode" disabled="${_disableZone}" onChange="zoneChanged()">
@@ -335,7 +335,7 @@
 				  originRefVar.selectedIndex = 0;
 				  destRefVar.selectedIndex = 0; return;
 			  } else {
-					if( result[1] === 'SIT'){
+					if( result[1] === 'SIT' ||  result[1] === 'DPT'  ){
 						document.getElementById("zoneCode").disabled=false;
 
 						if(document.getElementById("isBullpen1").checked){
