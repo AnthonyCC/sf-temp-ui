@@ -1,0 +1,16 @@
+<%@ page import="com.freshdirect.fdstore.content.util.QueryParameterCollection"%>
+	
+	<% 
+		/* 
+			input parameters:
+				@viewswitcherClass - String - class names for the #viewswitcher div
+				qc - QueryParameterCollection
+				// uri - String - request URI
+		 */ 	
+		// QueryParameterCollection vsqv = qc.clone();
+		String vsuri = request.getRequestURI();
+	%>				
+	<div id="viewswitcher" class="<%= viewswitcherClass %>">Views:<% qc.setParameterValue("view","grid"); %><a id="viewswitcher-grid" href="<%=vsuri %>?<%= qc.getEncoded() %>" class="viewswitcher-sprite"></a><% qc.setParameterValue("view","list"); %><a id="viewswitcher-list" href="<%=vsuri %>?<%= qc.getEncoded() %>" class="viewswitcher-sprite"></a></div>		
+	<% 
+	qc.reset(request.getQueryString());
+	// qv = qv.reset() %>	

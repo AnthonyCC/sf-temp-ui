@@ -19,6 +19,7 @@
 <%@ page import="com.freshdirect.webapp.util.prodconf.DefaultProductConfigurationStrategy"%>
 <%@ page import="com.freshdirect.framework.util.log.LoggerFactory"%>
 <%@ page import="com.freshdirect.fdstore.util.FilteringNavigator"%>
+<%@ page import="com.freshdirect.fdstore.content.util.QueryParameterCollection"%>
 <%@ taglib uri='template' prefix='tmpl'%>
 <%@ taglib uri='bean' prefix='bean'%>
 <%@ taglib uri='logic' prefix='logic'%>
@@ -52,6 +53,13 @@ final int W_INDEX_RIGHT_CENTER = W_INDEX_TOTAL - 228 - W_INDEX_CENTER_PADDING;
 	final int hideAfter = 8;
 	boolean otherFilters=false;
 	
+	// default page size
+	final int defaultPageSize = 16;
+	QueryParameterCollection qc = QueryParameterCollection.decode(request.getQueryString());
+	if ( qc.getParameter("pageSize") == null ) {
+		nav.setPageSize(defaultPageSize);
+	}
+	
 %>
 
 <fd:SimpleSearch id="search" nav="<%= nav %>"/>
@@ -74,7 +82,7 @@ final int W_INDEX_RIGHT_CENTER = W_INDEX_TOTAL - 228 - W_INDEX_CENTER_PADDING;
 	</tmpl:put>
 
 	<tmpl:put name="title" direct="true">FreshDirect - Search - <%= nav.getSearchTerm() %></tmpl:put>
-	<tmpl:put name="activeView"><%= nav.isListView() && !nav.isRecipes() ? "list" : "grid" %></tmpl:put>
+	<tmpl:put name="activeView">grid<% //= nav.isListView() && !nav.isRecipes() ? "list" : "grid" %></tmpl:put>
 	<tmpl:put name="noResult"><%= search.getProducts().isEmpty() && search.getRecipes().isEmpty() ? "noresult" : "hasresults" %></tmpl:put>
 	<tmpl:put name="startPage"><%= nav.getSearchTerm()==null || nav.getSearchTerm().length()==0 ? "startpage" : "resultpage" %></tmpl:put>
 
@@ -91,12 +99,9 @@ final int W_INDEX_RIGHT_CENTER = W_INDEX_TOTAL - 228 - W_INDEX_CENTER_PADDING;
 
 
 	<tmpl:put name="didyoumean"><%@ include file="/includes/search/didyoumean.jspf"%></tmpl:put>
-		
-	<tmpl:put name="productTabLink"><% nav.resetState(); nav.removeAllFilters(); nav.setPageOffset(0); nav.setRecipes(false); %><%= nav.getLink() %></tmpl:put>
-	<tmpl:put name="recipesTabLink"><% nav.resetState(); nav.removeAllFilters(); nav.setPageOffset(0); nav.setRecipes(true);  %><%= nav.getLink() %></tmpl:put>
-
-<% nav.resetState(); %>
-<fd:SearchProductsFilter results="<%= search %>" nav="<%= nav %>" domainsId="menus" itemsId="products" filteredItemCountId="itemCount">
+	
+<fd:ProductsFilter results="<%= search %>" nav="<%= nav %>" domainsId="menus" itemsId="items" filteredItemCountId="itemCount">
+<fd:ProductsGroupingAndPaging items="<%= items %>" itemsId="products" nav="<%= nav %>">
 <tmpl:put name="productTabItemCount"><%= itemCount %></tmpl:put>
 <logic:equal name="activeTabVal" value="products">
 	<% ArrayList selection = new ArrayList();  %>
@@ -111,14 +116,102 @@ final int W_INDEX_RIGHT_CENTER = W_INDEX_TOTAL - 228 - W_INDEX_CENTER_PADDING;
 	</tmpl:put>
 
 	<tmpl:put name="toolbar">
-	<% nav.resetState(); %>
 		<div id="sorter" class="span-10">
 			<span class="label">Sort:</span>
 			<display:SortBar defaultSort="relv" sortItems="<%= new SearchSortType[] {SearchSortType.BY_RELEVANCY,SearchSortType.BY_NAME,SearchSortType.BY_PRICE, SearchSortType.BY_POPULARITY, SearchSortType.BY_SALE} %>">
 				<a href="<%= currentUrl %>" class="sortitem <%= isSelected ? "sortitem-selected" : ""%> <%= currentIndex==1 ? "nodot" : ""%>"><%= currentText%></a>
 			</display:SortBar>					
 		</div>
-		<div id="viewswitcher" class="prepend-10 span-4 last">Views:<% nav.resetState(); nav.setView(nav.VIEW_GRID); %><a id="viewswitcher-grid" href="<%= nav.getLink() %>" class="viewswitcher-sprite"></a><% nav.resetState(); nav.setView(nav.VIEW_LIST); %><a id="viewswitcher-list" href="<%=nav.getLink() %>" class="viewswitcher-sprite"></a></div>		
+	</tmpl:put>
+
+	<tmpl:put name="viewAll">
+<% 	if( itemCount > defaultPageSize) {
+		if(nav.getPageSize() == 0) { 
+			nav.resetState();
+			nav.setPageSize(defaultPageSize);
+%>
+		<a href="<%= nav.getLink() %>" class="button middle white bold view-all">Show <%= defaultPageSize %></a>
+<%		} else {
+			nav.resetState();
+			nav.setPageSize(0);
+%>
+		<a href="<%= nav.getLink() %>" class="button middle white bold view-all">Show all</a>
+<%	} 
+
+		nav.resetState();
+}	%>
+	</tmpl:put>
+	
+	<tmpl:put name="pagerTop">
+		<div class="results">
+			<span>Results: </span>
+			<span class="results-current"><%= ((nav.getPageNumber())*nav.getPageSize())+1  %>-<%= nav.getPageSize()==0 ? 
+						itemCount : Math.min((nav.getPageNumber()+1)*nav.getPageSize(),itemCount)  %></span>
+			<span>of</span>
+			<span class="results-all"><%= itemCount %></span>
+		</div>
+		<div class="pager-content">
+		<% if ( nav.getPageSize() > 0 && itemCount > nav.getPageSize()) { %>
+			<display:Pager productsSize="<%= itemCount %>" nav="<%= nav %>"/>
+		<% } %>
+			<tmpl:get name="viewAll" />
+		</div>
+	</tmpl:put>
+
+	<tmpl:put name="pagerBottom">
+		<div class="pager-content">
+		<% if ( nav.getPageSize() > 0 && itemCount > nav.getPageSize()) { %>
+			<display:Pager productsSize="<%= itemCount %>" nav="<%= nav %>"/>
+		<% } %>
+			<tmpl:get name="viewAll" />
+		</div>
+		<div class="back-to-top"><a href="#content_top">back to top</a></div>
+	</tmpl:put>
+	
+	<tmpl:put name="recommendations-content" direct="true">
+		<fd:ProductGroupRecommender itemCount="16" siteFeature="SRCH" facility="default" id="recommendedProducts">
+		<div class="search-recommender">
+			<h3>
+				<%= recommendedProducts.getVariant().getId().toString().equals("srch_ymal") ? "You Might Also Like" :
+				    recommendedProducts.getVariant().getId().toString().equals("srch_pers") ? "People who bought the same items as you enjoyed" :
+				    recommendedProducts.getVariant().getId().toString().equals("srch_dyf") ?  "Your Favorites" : 
+				    "Customers Like You Also Like"
+				%>
+			</h3>
+			<display:Carousel id="cat1_carousel" carouselId="cat1_carousel" width="816" numItems="4" showCategories="false" itemsToShow="<%= recommendedProducts.getProducts() %>" trackingCode="edt-4mm" maxItems="32">
+				<display:GetContentNodeWebId id="webId" product="<%= currentItem %>" clientSafe="<%= true %>">
+				<% ProductImpression pi = confStrat.configure((ProductModel)currentItem, confContext); %>
+				<div class="grid-item-container"><%@ include file="/includes/product/i_product_box.jspf" %></div>
+				</display:GetContentNodeWebId>
+			</display:Carousel>
+		</div>
+		</fd:ProductGroupRecommender>	
+	</tmpl:put>	
+	<%
+	// RECOMMENDER for "view 20"
+	if ( nav.getPageSize() != 0) { %>
+	<tmpl:put name="recommendations" direct="true">
+		<tmpl:get name="recommendations-content" />
+	</tmpl:put>	
+	<% } %>
+	
+	<tmpl:put name="content" direct="true">
+		<%
+		for (ListIterator<FilteringSortingItem <ProductModel>> it=products.listIterator() ; it.hasNext();) {
+			{
+			ProductImpression pi = confStrat.configure(it.next().getModel(), confContext);
+			%><div class="grid-item-container"><%@ include file="/includes/product/i_product_box.jspf" %></div><%
+			}		
+			// RECOMMENDER for "show all"
+			if ( nav.getPageSize() == 0 && it.nextIndex() == defaultPageSize ) {
+			%>
+			<tmpl:get name="recommendations-content" />
+			<%
+			}
+					
+		} 
+		%>
+		
 	</tmpl:put>
 
 
@@ -327,22 +420,6 @@ final int W_INDEX_RIGHT_CENTER = W_INDEX_TOTAL - 228 - W_INDEX_CENTER_PADDING;
 
 	<tmpl:put name="selection-list" direct="true">		
 	</tmpl:put>
-
-	<tmpl:put name="viewAll">
-<% 	if( itemCount > 20) {
-		if(nav.getPageSize() == 0) { 
-			nav.resetState();
-			nav.setPageSize(20);
-%>
-		<a href="<%= nav.getLink() %>" class="button middle white bold view-all">Show 20</a>
-<%		} else {
-			nav.resetState();
-			nav.setPageSize(0);
-%>
-		<a href="<%= nav.getLink() %>" class="button middle white bold view-all">Show all</a>
-<%	} 
-}	%>
-	</tmpl:put>
 	
 	<tmpl:put name="pagerTop">
 		<% nav.resetState(); %>
@@ -372,7 +449,8 @@ final int W_INDEX_RIGHT_CENTER = W_INDEX_TOTAL - 228 - W_INDEX_CENTER_PADDING;
 %>
 	</tmpl:put>
 </logic:equal>
-</fd:SearchProductsFilter>
+</fd:ProductsGroupingAndPaging>
+</fd:ProductsFilter>
 
 <% nav.resetState();nav.setPageSize(0); %>
 <fd:SearchRecipeFilter results="<%= search %>"  nav="<%= nav %>" domainsId="menus" itemsId="recipes" filteredItemCountId="itemCount">
@@ -421,6 +499,13 @@ final int W_INDEX_RIGHT_CENTER = W_INDEX_TOTAL - 228 - W_INDEX_CENTER_PADDING;
 	</tmpl:put>
 </logic:equal>
 </fd:SearchRecipeFilter>
+
+
+<tmpl:put name="productTabLink"><% nav.resetState(); nav.removeAllFilters(); nav.setPageOffset(0); nav.setRecipes(false); %><%= nav.getLink() %></tmpl:put>
+<tmpl:put name="recipesTabLink"><% nav.resetState(); nav.removeAllFilters(); nav.setPageOffset(0); nav.setRecipes(true);  %><%= nav.getLink() %></tmpl:put>
+<% nav.resetState(); %>
+
+
 </tmpl:insert>
 
 

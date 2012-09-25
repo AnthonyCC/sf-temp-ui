@@ -205,8 +205,6 @@ public class FilteringNavigator {
 			if (sortBy == null)
 				sortBy = SearchSortType.DEFAULT;
 
-			System.err.println("DEBUG: sort = " + sortBy.getLabel());
-
 			/*
 			 * if (sortBy < 0 || sortBy > SORT_BY_SALE) { sortBy = SORT_DEFAULT; }
 			 */
@@ -805,6 +803,11 @@ public class FilteringNavigator {
 
 		if (!isOrderAscending) {
 			buf.append("&amp;order=desc");
+		}
+		
+		/* DEPT */
+		if (filterValues.get(EnumFilteringValue.DEPT) != null && !filterValues.get(EnumFilteringValue.DEPT).isEmpty() ) {
+			buf.append("&amp;deptId=" + filterValues.get(EnumFilteringValue.DEPT).get(0) );
 		}
 
 		if (fromDym)

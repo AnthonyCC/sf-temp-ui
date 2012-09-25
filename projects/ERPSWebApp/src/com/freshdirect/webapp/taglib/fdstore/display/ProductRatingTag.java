@@ -169,55 +169,13 @@ public class ProductRatingTag extends BodyTagSupport {
 				throw new JspException(e);
 			}
 		} else {
-			// [B] STANDARD PRODUCE RATING
 			// [C] SEAFOOD SUSTAINABILITY RATING
+			// [B] STANDARD PRODUCE RATING
 			
 			if (!user.isProduceRatingEnabled() && !FDStoreProperties.isSeafoodSustainEnabled()) {
 				return SKIP_BODY;
 			}
 
-			// [B] STANDARD PRODUCE RATING
-			if (user.isProduceRatingEnabled()) {
-				String rating = JspMethods.getProductRating(product, skuCode);
-	
-				StringBuilder buf = new StringBuilder();
-	
-				if (rating != null && rating.trim().length() > 0) {
-					if (action != null) {
-						buf.append("<a href=\"");
-						buf.append(action);
-						buf.append("\">");
-					}
-	
-					buf.append("<img src=\"/media_stat/images/ratings/"
-							+ (leftAlign ? "left_" : "") + rating + ".gif\"");
-	
-					buf.append(" name=\"" + rating + "\"");
-	
-					buf.append(" width=\"59\"");
-	
-					buf.append(" height=\"11\"");
-	
-					buf.append(" border=\"0\"");
-	
-					buf.append(">");
-	
-					if (action != null) {
-						buf.append("</a>");
-					}
-	
-					if (!noBr)
-						buf.append("<br>");
-				}
-
-				try {
-					pageContext.getOut().println(buf.toString());
-				} catch (IOException e) {
-					throw new JspException(e);
-				}
-			}else{
-				LOGGER.error("user.isProduceRatingEnabled()=false! Skipping ...");
-			}
 			
 			// [C] SEAFOOD SUSTAINABILITY RATING
 			if (FDStoreProperties.isSeafoodSustainEnabled()) {
@@ -263,6 +221,49 @@ public class ProductRatingTag extends BodyTagSupport {
 			
 			}else{
 				LOGGER.error("fdstore.seafoodsustain.enabled=false! Skipping ...");
+			}
+			
+			// [B] STANDARD PRODUCE RATING
+			if (user.isProduceRatingEnabled()) {
+				String rating = JspMethods.getProductRating(product, skuCode);
+	
+				StringBuilder buf = new StringBuilder();
+	
+				if (rating != null && rating.trim().length() > 0) {
+					if (action != null) {
+						buf.append("<a href=\"");
+						buf.append(action);
+						buf.append("\">");
+					}
+	
+					buf.append("<img src=\"/media_stat/images/ratings/"
+							+ (leftAlign ? "left_" : "") + rating + ".gif\"");
+	
+					buf.append(" name=\"" + rating + "\"");
+	
+					buf.append(" width=\"59\"");
+	
+					buf.append(" height=\"11\"");
+	
+					buf.append(" border=\"0\"");
+	
+					buf.append(">");
+	
+					if (action != null) {
+						buf.append("</a>");
+					}
+	
+					if (!noBr)
+						buf.append("<br>");
+				}
+
+				try {
+					pageContext.getOut().println(buf.toString());
+				} catch (IOException e) {
+					throw new JspException(e);
+				}
+			}else{
+				LOGGER.error("user.isProduceRatingEnabled()=false! Skipping ...");
 			}
 		}
 

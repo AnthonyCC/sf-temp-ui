@@ -72,9 +72,9 @@ public class ProductGroupRecommenderTag extends RecommendationsTag {
     	if (hide)
     		return null;
 
-        if (nodeModel==null) {
+        /* if (nodeModel==null) {
             throw new RuntimeException("CurrentNode not set!");
-        }
+        } */
 		HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
         FDUserI user = (FDUserI) request.getSession().getAttribute(SessionName.USER);
 
@@ -82,7 +82,8 @@ public class ProductGroupRecommenderTag extends RecommendationsTag {
         
         SessionInput si = new SessionInput(user);
         initFromSession(si);
-        si.setCurrentNode(nodeModel);
+        if (nodeModel != null)
+        	si.setCurrentNode(nodeModel);
         si.setNoShuffle(noShuffle);
         si.setMaxRecommendations(itemCount);
         if (windowSize > 0)

@@ -105,8 +105,8 @@ Sorry! Unavailable!
 	}
 %>
 </span>
-</div>
 <div class="grid-item-status" id="<%= statusPlaceholderId %>"></div>
+</div>
 <div class="grid-item-separator"></div>
 </div><!--  grid-item -->
 </display:ProductAvailability>

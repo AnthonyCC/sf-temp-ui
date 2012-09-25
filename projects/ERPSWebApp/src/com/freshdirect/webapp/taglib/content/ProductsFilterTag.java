@@ -11,6 +11,7 @@ import org.apache.log4j.Category;
 
 import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.content.EnumFilteringValue;
 import com.freshdirect.fdstore.content.FilteringComparatorUtil;
 import com.freshdirect.fdstore.content.FilteringSortingItem;
@@ -24,6 +25,7 @@ import com.freshdirect.fdstore.content.ProductFilterMenuDecorator;
 import com.freshdirect.fdstore.content.ProductFilterValueDecorator;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.SearchResults;
+import com.freshdirect.fdstore.content.SearchSortType;
 import com.freshdirect.fdstore.content.UrlFilterValueDecoder;
 import com.freshdirect.fdstore.customer.FDAuthenticationException;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
@@ -34,9 +36,9 @@ import com.freshdirect.fdstore.util.FilteringNavigator;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
 
-public class SearchProductsFilterTag extends FilteringFlow<FilteringSortingItem<ProductModel>> {
+public class ProductsFilterTag extends FilteringFlow<FilteringSortingItem<ProductModel>> {
 	
-	private static Category LOGGER = LoggerFactory.getInstance(SearchProductsFilterTag.class);
+	private static Category LOGGER = LoggerFactory.getInstance(ProductsFilterTag.class);
 
 	/**
 	 * 
@@ -44,7 +46,7 @@ public class SearchProductsFilterTag extends FilteringFlow<FilteringSortingItem<
 	private static final long serialVersionUID = -3101346359422968490L;
 	
 	private SearchResults results;
-	protected FilteringNavigator nav;
+	private FilteringNavigator nav;
 	private Set<EnumFilteringValue> filters;
 	{
 		filters=new HashSet<EnumFilteringValue>();
@@ -62,6 +64,8 @@ public class SearchProductsFilterTag extends FilteringFlow<FilteringSortingItem<
 	private boolean mocked = false;
 	private String mockCustomerId;
 	private FDUserI user;
+	
+	protected List<ProductModel> products;
 
 	@Override
 	protected GenericFilterValueDecoder createDecoder() {
@@ -98,29 +102,13 @@ public class SearchProductsFilterTag extends FilteringFlow<FilteringSortingItem<
 		return this.filters;
 	}
 	
-
-	@Override
-	protected int getPageSize() {
-		return nav.getPageSize();
-	}
-
-	@Override
-	protected int getPageOffset() {
-		return nav.getPageOffset();
-	}
-
-	@Override
-	protected int getPageNumber() {
-		return nav.getPageNumber();
-	}
-	
 	@Override
 	protected Comparator<FilteringSortingItem<ProductModel>> createComparator(List<FilteringSortingItem<ProductModel>> products) {
 		String suggestedTerm = results.getSuggestedTerm();
 		if (suggestedTerm == null)
 			suggestedTerm = results.getSearchTerm();
 		
-		return FilteringComparatorUtil.createProductComparator(getItems(), getUserId(), getPricingContext(), suggestedTerm, nav.getSortBy(), nav.isSortOrderingAscending());
+		return FilteringComparatorUtil.createProductComparator(getItems(), getUserId(), getPricingContext(), suggestedTerm, nav, isShowGrouped());
 	}
 	
 	@Override
@@ -175,6 +163,13 @@ public class SearchProductsFilterTag extends FilteringFlow<FilteringSortingItem<
 		if (user != null)
 			return user.getPricingContext();
 		return PricingContext.DEFAULT;
+	}
+	
+	private boolean isShowGrouped() {
+		return nav.getSortBy().equals(SearchSortType.BY_RECENCY) && nav.getFilterValues().get(
+				EnumFilteringValue.BRAND) == null && nav.getFilterValues().get(EnumFilteringValue.DEPT) == null && (nav.getFilterValues().get(
+				EnumFilteringValue.CAT) == null || nav.getFilterValues().get(EnumFilteringValue.CAT).equals(
+				FDStoreProperties.getNewProductsCatId()));
 	}
 
 }

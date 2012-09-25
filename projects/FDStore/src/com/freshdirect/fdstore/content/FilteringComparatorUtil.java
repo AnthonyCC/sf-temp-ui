@@ -5,13 +5,18 @@ import java.util.List;
 
 import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.fdstore.content.util.SmartSearchUtils;
+import com.freshdirect.fdstore.util.FilteringNavigator;
+import com.freshdirect.fdstore.util.NewProductsGrouping;
 import com.freshdirect.smartstore.sorting.ScriptedContentNodeComparator;
 
 public class FilteringComparatorUtil {
 
 	
 	public static Comparator<FilteringSortingItem<ProductModel>> createProductComparator(List<FilteringSortingItem<ProductModel>> products,
-			String userId, PricingContext pricingContext, String suggestedTerm, SearchSortType sortBy, boolean ascending) {
+			String userId, PricingContext pricingContext, String suggestedTerm, FilteringNavigator nav, boolean showGrouped) {
+		
+		SearchSortType sortBy = nav.getSortBy();
+		boolean ascending = nav.isSortOrderingAscending();
 		
 		ComparatorChain<FilteringSortingItem<ProductModel>> comparator;
 		switch (sortBy) {
@@ -57,8 +62,15 @@ public class FilteringComparatorUtil {
 				if (!ascending)
 					comparator = ComparatorChain.reverseOrder(comparator);
 				break;
+			case BY_RECENCY:
 			default:
-				return null;
+				if (showGrouped)
+					comparator = ComparatorChain.create(new NewProductsGrouping(!nav.isSortOrderingAscending()).getTimeRangeComparator()).chain(FilteringSortingItem.wrap(ProductModel.DEPTFULL_COMPARATOR))
+							.chain(FilteringSortingItem.wrap(ProductModel.FULL_NAME_PRODUCT_COMPARATOR));
+				else
+					comparator = ComparatorChain.create(new SortValueComparator<ProductModel>(EnumSortingValue.NEWNESS));
+				if (!ascending)
+					comparator = ComparatorChain.reverseOrder(comparator);
 		}
 		SmartSearchUtils.collectAvailabilityInfo(products, pricingContext);
 		comparator.prepend(new SortValueComparator<ProductModel>(EnumSortingValue.AVAILABILITY));

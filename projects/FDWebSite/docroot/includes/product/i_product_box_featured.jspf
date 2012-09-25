@@ -1,0 +1,15 @@
+<% /* 
+	
+	input parameters:
+		@productModelAdapter - ProductModelPromotionAdapter - product model
+		@pi - ProductImpression - product impression constructed from product model using DefaultProductConfigurationStrategy
+		@trk - String - tracking code
+ */ 
+ 
+			/* simple check for a valid value */
+			ProductModelPromotionAdapter pmPA = (ProductModelPromotionAdapter)productModelAdapter;
+			if (pmPA.getFeaturedHeader().length() == 3) { %>
+				<div class="ddpp_feat_ribbon"><img src="/media/images/ddpp_ribbons/<%= pmPA.getFeaturedHeader() %>.png" alt="" /></div>
+			<% } %>
+			
+			<%@ include file="/includes/product/i_product_box.jspf" %>

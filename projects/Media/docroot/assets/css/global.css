@@ -1220,7 +1220,7 @@ div.control, div.slotRow, div.time {
 		display: inline;
 		font-family: Verdana, Arial, sans-serif;
 	}
-	.ddpp, .ddpp .topText .price {
+	.ddpp .topText .price {
 		font-family: BebasNeueRegular, Helvetica;
 		display: block;
 	}
@@ -1234,14 +1234,17 @@ div.control, div.slotRow, div.time {
 		text-align: center;
 	}
 	.ddpp .ddpp_feat_prod_cont {
-		width: 768px;
+		float: left;
 		height: 338px;
 		background-color: #eee;
-		margin: 14px 202px 0 0;
+		margin: 14px 0 0 0;
 		padding: 0;
 		position: relative;
 		left: 0;
 		text-align: left !important;
+		-moz-border-radius: 4px;
+		-webkit-border-radius: 4px;
+		border-radius: 4px;
 	}
 	
 	.ddpp .ddpp_feat_ribbon {
@@ -1250,6 +1253,9 @@ div.control, div.slotRow, div.time {
 		z-index: 3;
 		top: 0px;
 		left: 0px;
+	}
+	.ie6 .ddpp .ddpp_feat_ribbon {
+		display: none;
 	}
 	.ddpp .ddpp_feat_prod {
 		background-color: #fff;

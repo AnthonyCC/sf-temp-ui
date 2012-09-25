@@ -1,0 +1,406 @@
+<%@ page import='com.freshdirect.webapp.util.*'%>
+<%@ page import="com.freshdirect.fdstore.content.DomainValue"%>
+<%@ page import='com.freshdirect.framework.webapp.*'%>
+<%@ page import='com.freshdirect.webapp.taglib.fdstore.*'%>
+<%@ page import='com.freshdirect.content.attributes.*'%>
+<%@ page import="com.freshdirect.fdstore.util.URLGenerator"%>
+<%@ page import="com.freshdirect.fdstore.util.FilteringNavigator"%>
+<%@ page import="com.freshdirect.fdstore.*"%>
+<%@ page import="com.freshdirect.cms.*"%>
+<%@ page import="com.freshdirect.cms.fdstore.FDContentTypes"%>
+<%@ page import="com.freshdirect.fdstore.content.*"%>
+<%@ page import='com.freshdirect.fdstore.attributes.*'%>
+<%@ page import='com.freshdirect.webapp.taglib.fdstore.SessionName'%>
+<%@ page import="org.apache.commons.lang.StringEscapeUtils"%>
+<%@ page import="java.util.*"%>
+<%@ page import="java.net.URLEncoder"%>
+<%@ page import="java.text.DecimalFormat"%>
+<%@ page import="com.freshdirect.framework.util.NVL"%>
+<%@ page import="com.freshdirect.webapp.util.prodconf.DefaultProductConfigurationStrategy"%>
+<%@ page import="com.freshdirect.framework.util.log.LoggerFactory"%>
+<%@page import="com.freshdirect.fdstore.util.NewProductsNavigator"%>
+<%@ page import="com.freshdirect.fdstore.util.FilteringNavigator"%>
+<%@ page import="com.freshdirect.fdstore.util.NewProductsGrouping"%>
+<%@ page import="com.freshdirect.fdstore.util.TimeRange"%>
+<%@ page import="com.freshdirect.fdstore.content.util.QueryParameterCollection"%>
+<%@ taglib uri='template' prefix='tmpl'%>
+<%@ taglib uri='bean' prefix='bean'%>
+<%@ taglib uri='logic' prefix='logic'%>
+<%@ taglib uri='freshdirect' prefix='fd'%>
+<%@ taglib uri='oscache' prefix='oscache'%>
+<%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %>
+<% //expanded page dimension
+final int W_INDEX_TOTAL = 970;
+final int W_INDEX_CENTER_PADDING = 20;
+final int W_INDEX_RIGHT_CENTER = W_INDEX_TOTAL - 228 - W_INDEX_CENTER_PADDING;
+%>
+
+<fd:CheckLoginStatus guestAllowed='true' pixelNames="TheSearchAgency" id="user" />
+<%  
+
+	// copied from the old search.jsp:
+	
+	final String trk = "srch"; // tracking code
+
+	// OAS AD settings
+	request.setAttribute("sitePage", "www.freshdirect.com/search.jsp");
+	request.setAttribute("listPos", "PPSuperBuy,SystemMessage,LittleRandy,CategoryNote");
+
+	// storing the view settings in the session
+	NewProductsNavigator nav = new NewProductsNavigator(request);
+	FilteringNavigator searchNav = new FilteringNavigator(request);
+
+	ConfigurationContext confContext = new ConfigurationContext();
+	confContext.setFDUser(user);
+	ConfigurationStrategy confStrat = new DefaultProductConfigurationStrategy();
+	
+	
+	// default sort
+	QueryParameterCollection qc = QueryParameterCollection.decode(request.getQueryString());
+	if ( qc.getParameter("sort") == null ) {
+		searchNav.setSortBy(SearchSortType.BY_RECENCY);
+	}
+	
+	final int hideAfter = 8;
+	boolean otherFilters=false;
+%>
+<fd:GetNewProductsSimple id="newProds" nav="<%= searchNav %>" featuredCategory="featuredCat"/>
+<fd:ProductsFilter results="<%= newProds %>" nav="<%= searchNav %>" domainsId="menus" itemsId="items" filteredItemCountId="itemCount">
+<fd:ProductsGroupingAndPaging items="<%= items %>" itemsId="products" nav="<%= searchNav %>" groupingsId="groups">
+<bean:define id="activeTabVal" value='products' />
+
+<tmpl:insert template='/common/template/newproducts_new.jsp'>
+
+	<tmpl:put name="customCss">
+		<fd:css href="/assets/css/common/grid_supplement.css"></fd:css>
+		<fd:css href="/assets/css/common/product_grid.css"></fd:css>
+		<style>
+			.product-grid { width:803px; }
+			.items { width:804px; }
+			.grid-view .grid-item-container { width:201px; }
+		</style>
+		<fd:css href="/assets/css/search.css"></fd:css>
+		<fd:css href="/assets/css/newproducts.css"></fd:css>
+	</tmpl:put>
+	<tmpl:put name="customJs">
+		<fd:javascript src="/assets/javascript/search.js" />
+		<fd:javascript src="/assets/javascript/statusupdate.js" />
+	</tmpl:put>
+
+	<tmpl:put name="title" direct="true">FreshDirect - New products</tmpl:put>
+	<tmpl:put name="activeView">grid</tmpl:put>
+	<tmpl:put name="noResult"><%= itemCount == 0 ? "noresult" : "hasresults" %></tmpl:put>
+	<tmpl:put name="startPage"><%= searchNav.getSearchTerm()==null || searchNav.getSearchTerm().length()==0 ? "startpage" : "resultpage" %></tmpl:put>
+
+	<tmpl:put name="deptnav-header">
+		<% if ( isDFGS ) { %>
+		<%@ include file="/common/template/includes/deptnav.jspf"%>
+		<hr />
+		<% } %>
+	</tmpl:put>
+	<tmpl:put name="content-title">New Products</tmpl:put>
+	<%/*
+	searchNav.getFilterValues().containsKey(EnumFilteringValue.BRAND) ? "in " + searchNav.getFilterValues().get(EnumFilteringValue.BRAND).get(0).toString() :
+	searchNav.getFilterValues().containsKey(EnumFilteringValue.DEPT) ? "in " + searchNav.getFilterValues().get(EnumFilteringValue.DEPT).get(0).toString() :
+	featuredCat != null && !featuredCat.getFullName().equals("New Products") ? "in " + featuredCat.getFullName() :*/ %>
+	<tmpl:put name="content-header">
+	</tmpl:put>
+
+	<tmpl:put name="count-header">
+		<strong><%= newProds.size() %> new product<%= itemCount > 1 ? "s" : "" %></strong> just added!
+	</tmpl:put>
+	
+	
+	<% if ( isDFGS ) { %>
+	<tmpl:put name="dfgs-container-class"> newprod-dfgs</tmpl:put>
+	
+	<tmpl:put name="your-cart">
+		<div id="cart-container">
+			<div id="your-cart-div">
+				<%@ include file="/common/template/includes/your_cart.jspf" %>
+			</div>
+			<div class="text11">
+				<p><strong>Product Request?</strong><br />	
+				<a href="javascript:pop('/request_product.jsp', 400, 585);">Click here.</a></p>
+			</div>
+		</div>
+	</tmpl:put>
+	<% } %>
+
+	<tmpl:put name="content" direct="true">
+	<%	
+	
+	for (Iterator it=groups.keySet().iterator() ; it.hasNext();) {
+		TimeRange groupTime = (TimeRange) it.next();
+		List<ProductModel> groupedList = (List<ProductModel>) groups.get(groupTime);
+		if (groupedList.size() > 0 && searchNav.getSortBy() == SearchSortType.BY_RECENCY && searchNav.getFilterValues().isEmpty()  )  {
+		%>
+		<h3 class="grouping-header"><%= groupTime.getDescription() %></h3>
+		<%
+		}
+		for (Iterator<ProductModel> groupedIt=groupedList.iterator() ; groupedIt.hasNext();) {
+			ProductImpression pi = confStrat.configure(groupedIt.next(), confContext);
+			%><div class="grid-item-container"><%@ include file="/includes/product/i_product_box.jspf" %></div><%
+		}
+	}
+	%>
+	</tmpl:put>
+
+
+<% searchNav.resetState(); %>
+<tmpl:put name="productTabItemCount"><%= itemCount %></tmpl:put>
+	<% ArrayList selection = new ArrayList();  %>
+
+	<tmpl:put name="toolbar">
+	<% searchNav.resetState(); %>
+		<div id="sorter" class="span-10">
+			<span class="label">Sort:</span>
+			<display:SortBar defaultSort="recency" sortItems="<%= new SearchSortType[] {SearchSortType.BY_RECENCY, SearchSortType.BY_NAME, SearchSortType.BY_PRICE, SearchSortType.BY_SALE} %>">
+				<a href="<%= currentUrl %>" class="sortitem <%= isSelected ? "sortitem-selected" : ""%> <%= currentIndex==1 ? "nodot" : ""%>"><%= currentText%></a>
+			</display:SortBar>					
+		</div>
+	</tmpl:put>
+
+<% if (!isDFGS) { %>
+
+	<tmpl:put name='deparmentFilter'>
+	<fd:FilterList domainName="<%= EnumFilteringValue.DEPT %>" filters='<%= menus %>' id="filterItems" hideAfter="<%= hideAfter %>">
+	<% searchNav.resetState(); searchNav.setPageOffset(0); %>
+	<div id="department" class="filterbox sidebar-content">
+		<h3>DEPARTMENT</h3>
+		<ul>
+		<logic:iterate id="menu" collection="<%= filterItems %>" type='FilteringMenuItem'>
+			<% if(menu.isSelected()) { %>
+				<% searchNav.removeFilter(menu.getFilter(), menu.getFilteringUrlValue()); %>
+				<li class="selected"><a href="<%= searchNav.getLink() %>" class="remove-selection"></a><a href="<%= searchNav.getLink() %>"><%= menu.getName() %></a></li>
+			<% } else { %>
+				<% searchNav.setDeptFilter(menu.getFilteringUrlValue()); %>
+				<li class="<%= menu.isHidden() ? "hidden" : "" %>"><a href="<%= searchNav.getLink() %>"><%= menu.getName() %><span class="count">(<%= menu.getCounter() %>)</span></a></li>
+			<% } %>
+		</logic:iterate>
+		</ul>
+		<% if(filterItems.size() > hideAfter) { %>
+			<div class="see more">+ See more</div>
+			<div class="see less">- See less</div>
+		<% } %>
+	</div>
+	</fd:FilterList>
+	</tmpl:put>	
+	
+	<tmpl:put name='categoryFilter'>
+	<fd:FilterList domainName="<%= EnumFilteringValue.CAT %>" filters="<%= menus %>" id="filterItems" hideAfter="<%= hideAfter %>">
+	<% searchNav.resetState(); searchNav.setPageOffset(0); %>
+	<div id="category" class="filterbox sidebar-content">
+		<h3>Category</h3>
+		<ul>
+		<logic:iterate id="menu" collection="<%= filterItems %>" type='FilteringMenuItem'>
+			<% if(menu.isSelected()) { %>
+				<% searchNav.removeFilter(menu.getFilter(), menu.getFilteringUrlValue()); %>
+				<li class="selected"><a href="<%= searchNav.getLink() %>" class="remove-selection"></a><a href="<%= searchNav.getLink() %>"><%= menu.getName() %></a></li>
+			<% } else { %>
+				<% searchNav.setCatFilter(menu.getFilteringUrlValue()); %>
+				<li class="<%= menu.isHidden() ? "hidden" : "" %>"><a href="<%= searchNav.getLink() %>"><%= menu.getName() %><span class="count">(<%= menu.getCounter() %>)</span></a></li>
+			<% } %>
+		</logic:iterate>
+		</ul>
+		<% if(filterItems.size() > hideAfter) { %>
+			<div class="see more">+ See more</div>
+			<div class="see less">- See less</div>
+		<% } %>
+	</div>
+	</fd:FilterList>
+	</tmpl:put>
+ 		
+	<tmpl:put name='subCategoryFilter'>
+	<fd:FilterList domainName="<%= EnumFilteringValue.SUBCAT %>" filters='<%= menus %>' id="filterItems" hideAfter="<%= hideAfter %>">
+	<% searchNav.resetState(); searchNav.setPageOffset(0); %>
+	<div id="subcategory" class="filterbox sidebar-content">
+		<h3>Subcategory</h3>
+		<ul>
+		<logic:iterate id="menu" collection="<%= filterItems %>" type='FilteringMenuItem'>
+			<% if(menu.isSelected()) { %>
+				<% searchNav.removeFilter(menu.getFilter(), menu.getFilteringUrlValue()); %>
+				<li class="selected"><a href="<%= searchNav.getLink() %>" class="remove-selection"></a><a href="<%= searchNav.getLink() %>"><%= menu.getName() %></a></li>
+			<% } else { %>
+				<% searchNav.setSubCatFilter(menu.getFilteringUrlValue()); %>
+				<li class="<%= menu.isHidden() ? "hidden" : "" %>"><a href="<%= searchNav.getLink() %>"><%= menu.getName() %><span class="count">(<%= menu.getCounter() %>)</span></a></li>
+			<% } %>
+		</logic:iterate>
+		</ul>
+	<% if(filterItems.size() > hideAfter) { %>
+		<div class="see more">+ See more</div>
+		<div class="see less">- See less</div>
+	<% } %>
+	</div>
+	</fd:FilterList>
+	</tmpl:put>
+ 		
+	<tmpl:put name='brandFilter'>
+	<fd:FilterList domainName="<%= EnumFilteringValue.BRAND %>" filters='<%= menus %>' id="filterItems" hideAfter="<%= hideAfter %>">
+	<% searchNav.resetState(); searchNav.setPageOffset(0); %>
+	<div id="brands" class="filterbox sidebar-content">
+		<h3>BRAND</h3>
+		<ul>
+		<logic:iterate id="menu" collection="<%= filterItems %>" type='FilteringMenuItem'>
+			<% if(menu.isSelected()) { %>
+				<% searchNav.removeFilter(menu.getFilter(), menu.getFilteringUrlValue()); %>
+				<li class="selected"><a href="<%= searchNav.getLink() %>" class="remove-selection"></a><a href="<%= searchNav.getLink() %>"><%= menu.getName() %></a></li>
+			<% } else { %>
+				<% searchNav.setBrandFilter(menu.getFilteringUrlValue()); %>
+				<li class="<%= menu.isHidden() ? "hidden" : "" %>"><a href="<%= searchNav.getLink() %>"><%= menu.getName() %><span class="count">(<%= menu.getCounter() %>)</span></a></li>
+			<% } %>
+		</logic:iterate>
+		</ul>
+	<% if(filterItems.size() > hideAfter) { %>
+		<div class="see more">+ See more</div>
+		<div class="see less">- See less</div>
+	<% } %>
+	</div>
+	</fd:FilterList>
+	</tmpl:put>
+ 		
+	<tmpl:put name='expertRatingFilter'>
+	<fd:FilterList domainName="<%= EnumFilteringValue.EXPERT_RATING %>" filters='<%= menus %>' id="filterItems">
+	<% searchNav.resetState(); searchNav.setPageOffset(0); %>
+		<div id="expertrating" class="filterbox sidebar-content">
+			<h3>EXPERT RATING</h3>
+			<ul>
+				<logic:iterate id="menu" collection="<%= filterItems %>" type='FilteringMenuItem' indexId="index">
+				<% if(menu==null) { %>
+				<li><span class="expertrating-stars"><span class="expertrating-stars-content expertrating-stars-content-<%= 5-index %>"></span></span><span class="count">(0)</span></li>						
+				<% } else {	%>
+				<% if(menu.isSelected()) { %>
+					<% searchNav.removeFilter(menu.getFilter(), menu.getFilteringUrlValue()); %>
+					<li class="selected"><a href="<%= searchNav.getLink() %>" class="remove-selection"></a><a href="<%= searchNav.getLink() %>"><span class="expertrating-stars"><span class="expertrating-stars-content expertrating-stars-content-<%= 5-index %>"></span></span></a></li>
+				<% } else { %>
+					<% 	searchNav.setExpRatingFilter(menu.getFilteringUrlValue()); %>
+					<li class="<%= menu.isHidden() ? "hidden" : "" %>"><a href="<%= searchNav.getLink() %>"><span class="expertrating-stars"><span class="expertrating-stars-content expertrating-stars-content-<%= 5-index %>"></span></span><span class="count">(<%= menu.getCounter() %>)</span></a></li>
+				<% } %>
+				<% } %>
+				</logic:iterate>				
+			</ul>
+		</div>
+	</fd:FilterList>
+	</tmpl:put>
+	
+	
+	<tmpl:put name="otherKosherFilter">
+	<fd:FilterList domainName="<%= EnumFilteringValue.KOSHER %>" filters='<%= menus %>' id="filterItems">
+	<% searchNav.resetState(); searchNav.setPageOffset(0); %>
+		<logic:iterate id="menu" collection="<%= filterItems %>" type='FilteringMenuItem'>
+			<% if(menu.isSelected()) { %>
+				<% searchNav.removeFilter(menu.getFilter(), menu.getFilteringUrlValue()); %>
+				<li class="selected"><a href="<%= searchNav.getLink() %>" class="remove-selection"></a><a href="<%= searchNav.getLink() %>"><%= menu.getName() %></a></li>
+			<% } else { %>
+				<% searchNav.setKosherFilter(menu.getFilteringUrlValue()); %>
+				<li class="<%= menu.isHidden() ? "hidden" : "" %>"><a href="<%= searchNav.getLink() %>"><%= menu.getName() %><span class="count">(<%= menu.getCounter() %>)</span></a></li>
+			<% } %>
+			<% otherFilters=true; %>
+		</logic:iterate>
+	</fd:FilterList>
+	</tmpl:put>
+
+	<tmpl:put name="otherGlutenFreeFilter">
+	<fd:FilterList domainName="<%= EnumFilteringValue.GLUTEN_FREE %>" filters='<%= menus %>' id="filterItems">
+	<% searchNav.resetState(); searchNav.setPageOffset(0); %>
+		<logic:iterate id="menu" collection="<%= filterItems %>" type='FilteringMenuItem'>
+			<% if(menu.isSelected()) { %>
+				<% searchNav.removeFilter(menu.getFilter(), menu.getFilteringUrlValue()); %>
+				<li class="selected"><a href="<%= searchNav.getLink() %>" class="remove-selection"></a><a href="<%= searchNav.getLink() %>"><%= menu.getName() %></a></li>
+			<% } else { %>
+				<% searchNav.setGlutenFilter(menu.getFilteringUrlValue()); %>
+				<li class="<%= menu.isHidden() ? "hidden" : "" %>"><a href="<%= searchNav.getLink() %>"><%= menu.getName() %><span class="count">(<%= menu.getCounter() %>)</span></a></li>
+			<% } %>
+			<% otherFilters=true; %>
+		</logic:iterate>
+	</fd:FilterList>
+	</tmpl:put>
+
+	
+	<tmpl:put name="otherOnSaleFilter">
+	<fd:FilterList domainName="<%= EnumFilteringValue.ON_SALE %>" filters='<%= menus %>' id="filterItems">
+	<% searchNav.resetState(); searchNav.setPageOffset(0); %>
+		<logic:iterate id="menu" collection="<%= filterItems %>" type='FilteringMenuItem'>
+			<% if(menu.isSelected()) { %>
+				<% searchNav.removeFilter(menu.getFilter(), menu.getFilteringUrlValue()); %>
+				<li class="selected"><a href="<%= searchNav.getLink() %>" class="remove-selection"></a><a href="<%= searchNav.getLink() %>"><%= menu.getName() %></a></li>
+			<% } else { %>
+				<% searchNav.setOnSalelFilter(menu.getFilteringUrlValue()); %>
+				<li class="<%= menu.isHidden() ? "hidden" : "" %>"><a href="<%= searchNav.getLink() %>"><%= menu.getName() %><span class="count">(<%= menu.getCounter() %>)</span></a></li>
+			<% } %>
+			<% otherFilters=true; %>
+		</logic:iterate>
+	</fd:FilterList>
+	</tmpl:put>
+
+	<tmpl:put name="otherFilters">
+	<% if(otherFilters == true) { %>
+   		<div id="other" class="filterbox sidebar-content">
+			<h3>OTHER</h3>
+			<ul>
+				<tmpl:get name='otherKosherFilter'/>
+	    		<tmpl:get name='otherGlutenFreeFilter'/>
+	    		<tmpl:get name='otherOnSaleFilter'/>
+			</ul>
+   		</div>
+	<% } %>
+	</tmpl:put>
+	
+	<tmpl:put name="sidebarOther">
+	<div style="width:150px; margin-top: 15px; overflow: hidden;">
+		<a href="javascript:pop('/request_product.jsp',400,585)"><img src="/media_stat/images/template/search/ken_request_a_product.jpg" border="0" hspace="0" vspace="3" width="150" height="100"></a>
+	</div>
+	</tmpl:put>
+	
+<% } %>
+	
+	<tmpl:put name="selection-header" direct="true">		
+	</tmpl:put>
+
+	<tmpl:put name="selection-list" direct="true">		
+	</tmpl:put>
+
+	<tmpl:put name="viewAll">
+<% 	if( itemCount > 20) {
+		if(searchNav.getPageSize() == 0) { 
+			searchNav.resetState();
+			searchNav.setPageSize(20);
+%>
+		<a href="<%= searchNav.getLink() %>" class="button middle white bold view-all">Show 20</a>
+<%		} else {
+			searchNav.resetState();
+			searchNav.setPageSize(0);
+%>
+		<a href="<%= searchNav.getLink() %>" class="button middle white bold view-all">Show all</a>
+<%	} 
+}	%>
+	</tmpl:put>
+	
+	<tmpl:put name="pagerTop">
+		<% searchNav.resetState(); %>
+		<div class="results">
+			<span>Results: </span>
+			<span class="results-current"><%= ((searchNav.getPageNumber())*searchNav.getPageSize())+1  %>-<%= searchNav.getPageSize()==0 ? 
+						itemCount : Math.min((searchNav.getPageNumber()+1)*searchNav.getPageSize(),itemCount)  %></span>
+			<span>of</span>
+			<span class="results-all"><%= itemCount %></span>
+		</div>
+		<div class="pager-content"><display:Pager productsSize="<%= itemCount %>" nav="<%= searchNav %>"/><tmpl:get name="viewAll" /></div>
+	</tmpl:put>
+
+	<tmpl:put name="pagerBottom">
+		<% searchNav.resetState(); %>
+		<div class="pager-content"><display:Pager productsSize="<%= itemCount %>" nav="<%= searchNav %>"/><tmpl:get name="viewAll" /></div>
+		<div class="back-to-top"><a href="#content_top">back to top</a></div>
+	</tmpl:put>
+	
+	<% if (featuredCat != null && featuredCat.getFeaturedNewProdBrands().size() > 0 ) { %>
+	<tmpl:put name='featured' direct='true'>
+		<h2 class="featured-header">Our favorite new additions</h2>
+		<%@ include file="/includes/i_featured_products_new.jspf"%>
+	</tmpl:put>
+	<% } %>
+
+</tmpl:insert>
+</fd:ProductsGroupingAndPaging>
+</fd:ProductsFilter>

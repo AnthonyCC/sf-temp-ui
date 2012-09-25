@@ -169,7 +169,7 @@ FD_QuickBuy.showPanel = function(deptId, catId, prdId, iatcNamespace, tracking) 
 		YAHOO.util.Dom.addClass( FD_QuickBuy._getCloseButton(ctPanel.body), oStyle.closeButton );
 		
 		ctPanel.hideEvent.subscribe(function(e){
-			YAHOO.util.Dom.get(elementId+'_overbox').style.visibility = "hidden";
+			setTimeout(function() {ctPanel.destroy();}, 0);
 		});
 		
 		document.quickbuyPanel = ctPanel;

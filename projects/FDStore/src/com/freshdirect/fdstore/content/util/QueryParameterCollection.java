@@ -18,7 +18,7 @@ public class QueryParameterCollection implements Serializable, Cloneable {
 
 	public static QueryParameterCollection decode(String encoded) {
 		QueryParameterCollection params = new QueryParameterCollection();
-		if (encoded.length() == 0)
+		if (encoded == null || encoded.length() == 0)
 			return params;
 
 		int i = 0;
@@ -174,5 +174,13 @@ public class QueryParameterCollection implements Serializable, Cloneable {
 				}
 			}
 		return buf.toString();
+	}
+
+	
+	public void reset(String encoded) {
+		parameters.clear();
+		QueryParameterCollection qpc = QueryParameterCollection.decode(encoded);
+		for (Map.Entry<String, List<QueryParameter>> e : qpc.parameters.entrySet())
+			this.addParameters(e.getValue());
 	}
 }

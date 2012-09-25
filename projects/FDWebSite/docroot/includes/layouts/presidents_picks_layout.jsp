@@ -24,8 +24,12 @@
 <%@ taglib uri='logic' prefix='logic' %>
 <%
 
+	// Query string
+	QueryParameterCollection qv = QueryParameterCollection.decode(request.getQueryString()); 
+
 	String isPreviewMode = NVL.apply(request.getParameter("ppPreviewId"), "false");
 	boolean disableLinks = false;
+	
 	if (!"false".equalsIgnoreCase(isPreviewMode)) {
 		/* manipulate layout for preview mode */
 		
@@ -397,7 +401,7 @@
 		};
 		</script>
 		
-		<div class="ddpp">
+		<div class="ddpp clearfix">
 			<div class="socialMedia">
 				<iframe src="http://www.facebook.com/plugins/like.php?href=http%3A%2F%2Fwww.freshdirect.com%2F&amp;send=false&amp;layout=button_count&amp;width=150&amp;show_faces=false&amp;action=like&amp;colorscheme=light&amp;font=tahoma&amp;height=21" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width: 100px; height:21px;" allowTransparency="true"></iframe>
 				<a href="http://twitter.com/share" class="twitter-share-button" data-count="horizontal">Tweet</a><script type="text/javascript" src="http://platform.twitter.com/widgets.js"></script>
@@ -422,7 +426,7 @@
 				</fd:ErrorHandler>
 				<% //END error messaging %>
 				<div style="text-align: left;"><%-- this fixes chrome, don't remove --%>
-					<div class="ddpp_feat_prod_cont" id="ddpp_feat_prod_cont">
+					<div class="ddpp_feat_prod_cont grid-view" id="ddpp_feat_prod_cont">
 				
 					<%
 						int curLeftPos = 0;
@@ -432,16 +436,37 @@
 						<logic:iterate id="contentNode" collection="<%= featProds %>" type="java.lang.Object" indexId="idx">
 							<%
 								seqDDPP = idx; //use a seperate var for include
-								ProductModelPromotionAdapter pm = (ProductModelPromotionAdapter) contentNode;
-								String actionURI = FDURLUtil.getProductURI( pm, trkCode );
-															
-								pi = confStrat.configure((ProductModel) pm, confContext);
-								impressions.add(pi);
-		
-								prodContStyle = "left: "+curLeftPos+"px;";
+								
+								if ( request.getParameter("featurebox") != null && request.getParameter("featurebox").equals("old") ) {
+								
+									ProductModelPromotionAdapter pm = (ProductModelPromotionAdapter) contentNode;
+									String actionURI = FDURLUtil.getProductURI( pm, trkCode );
+																
+									pi = confStrat.configure((ProductModel) pm, confContext);
+									impressions.add(pi);
+			
+									prodContStyle = "left: "+curLeftPos+"px;";
+								
 							%>
+							
 							<%@ include file="/includes/product/i_product_box_ddpp.jspf" %>
 							<% 
+								}
+								else {
+								
+									ProductModelPromotionAdapter productModelAdapter = (ProductModelPromotionAdapter) contentNode;
+									String actionURI = FDURLUtil.getProductURI( productModelAdapter, trkCode );
+																
+									pi = confStrat.configure((ProductModel) productModelAdapter, confContext);
+									impressions.add(pi);
+			
+									%>
+									<div class="grid-item-container featurebox">
+									<%@ include file="/includes/product/i_product_box_featured.jspf" %>
+									</div>
+									<% 
+									
+								}
 								/* break out if we have more than three products in the featured setup */
 								if (seqDDPP == 3) { break; }
 								curLeftPos = curLeftPos + 255; /* take from css, cont width + 14 (gutter) */
@@ -476,8 +501,8 @@
 							<a href="<%= currentUrl %>" class="sortitem <%= isSelected ? "sortitem-selected" : ""%> <%= currentIndex==1 ? "nodot" : ""%>"><%= currentText%></a>
 						</display:SortBar>					
 					</div>
-					<% QueryParameterCollection qvc = QueryParameterCollection.decode(request.getQueryString()); %>				
-					<div id="viewswitcher" class="prepend-10 span-4 last">Views:<% qvc.setParameterValue("view","grid"); %><a id="viewswitcher-grid" href="<%=uri %>?<%= qvc.getEncoded() %>" class="viewswitcher-sprite"></a><% qvc.setParameterValue("view","list"); %><a id="viewswitcher-list" href="<%=uri %>?<%= qvc.getEncoded() %>" class="viewswitcher-sprite"></a></div>
+					<% String viewswitcherClass = "prepend-10 span-4 last"; // class names for the #viewswitcher div %>
+					<%@ include file="/includes/i_viewswitcher.jspf" %>
 				</div>		
 			</div>
 			<div class="product-grid <%= qc.getParameterValue("view","grid")+"-view" %>">

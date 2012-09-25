@@ -38,19 +38,21 @@
 	text-align:center;
 	font-size:13px;
 	background:url('../../../media_stat/images/navigation/globalnav_and_footer/headernav.png') no-repeat; 
+	display: block;
+	
+	text-indent: -9999em;
+	text-align: left;
+	white-space: nowrap;
+	overflow: hidden;
 }
 
-.globalnavitem span {
-	visibility: hidden;
-}
 
-.ie6 .globalnavitem {
-	display:inline-block;
-	height:23px;
-	padding:0px;
-	background:none; 
+.ie6 .globalnavitem,
+.ie6 .globalnav-footer .globalnavitem {
+	background:none;
+	text-indent: 0;
+	text-align: center;
 }
-
 
 a.globalnavitem {
 	color: #ffffff;
@@ -132,10 +134,6 @@ a.globalnavitem:active{
 
 .globalnav-footer .globalnavitem {
 	background:url('../../../media_stat/images/navigation/globalnav_and_footer/footer.png') no-repeat;
-}
-
-.ie6 .globalnav-footer .globalnavitem {
-	background:none;
 }
 
 

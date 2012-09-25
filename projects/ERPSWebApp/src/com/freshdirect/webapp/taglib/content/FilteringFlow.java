@@ -1,6 +1,5 @@
 package com.freshdirect.webapp.taglib.content;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -58,7 +57,7 @@ public abstract class FilteringFlow<N> extends BodyTagSupportEx {
 		if (comparator != null) {
 			Collections.sort(items, comparator);
 		}
-
+		
 		// prepare items for menu building
 		menuValueDecorator = createMenuValueDecorator();
 
@@ -72,36 +71,16 @@ public abstract class FilteringFlow<N> extends BodyTagSupportEx {
 		}else{
 			filterValues=new HashMap<EnumFilteringValue, List<Object>>();
 		}
+		
 		menuBuilder = createMenuBuilder(filterValues);
 		menuBuilder.buildMenu(items);
 
-		pageContext.setAttribute(itemsId, createItemPageWindow());
+		postProcess(items);
+		
+		pageContext.setAttribute(itemsId, items);
 		pageContext.setAttribute(domainsId, menuBuilder.getDomains());
 		pageContext.setAttribute(filteredItemCountId, items.size());
-
 		return EVAL_BODY_INCLUDE;
-	}
-
-	protected List<N> createItemPageWindow() {
-		int pageSize = getPageSize();
-		int pageOffset = getPageOffset();
-
-		List<N> pageProducts = new ArrayList<N>(pageSize <= 0 ? items.size() : pageSize);
-		int noOfPagedProducts = items.size();
-		int pageCount = pageSize == 0 ? 1 : noOfPagedProducts / pageSize;
-		if (pageSize != 0 && noOfPagedProducts % pageSize > 0) {
-			pageCount++;
-
-		}
-		int max = pageSize == 0 ? pageOffset + noOfPagedProducts : pageOffset + pageSize;
-		for (int i = pageOffset; i < max; i++) {
-			if (i >= items.size()) {
-				break;
-			}
-			pageProducts.add(items.get(i));
-		}
-
-		return pageProducts;
 	}
 
 	protected abstract GenericFilterValueDecoder createDecoder();
@@ -123,12 +102,6 @@ public abstract class FilteringFlow<N> extends BodyTagSupportEx {
 	protected abstract void postProcess(List<N> items);
 
 	protected abstract void preProcess(List<N> items);
-
-	protected abstract int getPageSize();
-
-	protected abstract int getPageOffset();
-
-	protected abstract int getPageNumber();
 
 	public void setDomainsId(String domainsId) {
 		this.domainsId = domainsId;

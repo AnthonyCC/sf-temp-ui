@@ -137,7 +137,7 @@ if(user != null) {
 					<td width="5">&nbsp;</td>
 					<td align="left" colspan="2" width="115"><a href="/search.jsp"><img src="/media_stat/images/navigation/global_nav/nav_button_search.gif" width="46" height="11" alt="SEARCH" hspace="4" vspace="1" align="bottom" border="0"></a></td>
 				</tr>
-				<tr valign="bottom">
+				<tr valign="middle">
 					<td width="5">&nbsp;</td>
 					<%
 					{

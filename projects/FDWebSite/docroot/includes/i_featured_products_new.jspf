@@ -1,0 +1,65 @@
+<%@page import="java.util.List"%>
+<%@page import="com.freshdirect.fdstore.content.ContentNodeModel"%>
+<%@page import="com.freshdirect.fdstore.content.ProductModel"%>
+<%@page import="com.freshdirect.webapp.util.JspMethods"%>
+<%@page import="com.freshdirect.webapp.util.DisplayObject"%>
+<%@page import="com.freshdirect.webapp.util.FDURLUtil"%>
+<%@page import="com.freshdirect.fdstore.content.BrandModel"%>
+<%@page import="com.freshdirect.fdstore.content.Image"%>
+<%@page import="com.freshdirect.webapp.util.ProductImpression"%>
+<%@page import="java.util.Iterator"%>
+<%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %>
+<%@ taglib uri='logic' prefix='logic' %>
+<%
+if (featuredCat != null) {
+	final int itemsMinToShow = 1;
+	final int itemsMaxToShow = 2;
+	List<ContentNodeModel> pList = featuredCat.getFeaturedNewProdBrands();
+	for(Iterator<ContentNodeModel> it=pList.iterator(); it.hasNext();){
+		ProductModel pm=(ProductModel)it.next();
+		if(pm.getPriceCalculator().getSkuModel()==null){
+			it.remove();
+		}
+	}
+	String catId = featuredCat.getContentKey().getId();
+	int itemsToShow = Math.min(itemsMaxToShow,pList.size());
+
+	//make sure we have the minimum amount first
+	if (pList.size()>=itemsMinToShow) {
+		
+%>
+	<div class="ddpp clearfix">
+	<div class="ddpp_feat_prod_cont grid-view feat-prod-<%= itemsToShow %>">
+	
+	
+	<logic:iterate id="contentNode" collection="<%= pList.subList(0,itemsToShow) %>" type="java.lang.Object" indexId="idx">
+	<%
+	
+	// from presidents_picks
+	
+	ProductImpression pi = confStrat.configure((ProductModel) contentNode, confContext);
+	ProductModelPromotionAdapter productModelAdapter = new ProductModelPromotionAdapter (pi.getProductModel(), true, "013", pi.getSku().getSkuCode());			
+	// TODO: "013" is the 'new' ribbon, hardcoded here
+	
+	%>
+			<div class="grid-item-container featurebox">
+			<%@ include file="/includes/product/i_product_box_featured.jspf" %>
+			</div>
+	<% 
+	%>
+	
+	</logic:iterate>
+	
+		<div class="PPSuperBuy">
+			<script type="text/javascript">
+					OAS_AD('PPSuperBuy');
+			</script>
+		</div>
+	</div>
+	</div>
+	
+	<%
+	} 
+	}%>
+
+	

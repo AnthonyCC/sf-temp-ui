@@ -1683,6 +1683,26 @@
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
+	</tag>
+	<tag>
+		<name>GetNewProductsSimple</name>
+		<tagclass>com.freshdirect.webapp.taglib.fdstore.GetNewProductSimpleTag</tagclass>
+		<teiclass>com.freshdirect.webapp.taglib.fdstore.GetNewProductSimpleTag$TagEI</teiclass>
+		<attribute>
+			<name>id</name>
+			<required>true</required>
+			<rtexprvalue>false</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>featuredCategory</name>
+			<required>true</required>
+			<rtexprvalue>false</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>nav</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
 	</tag>	
 	<tag>
 		<name>GetGSProducts</name>
@@ -1749,8 +1769,38 @@
 		</attribute>
 	</tag>
 	<tag>
-		<name>SearchProductsFilter</name>
-		<tagclass>com.freshdirect.webapp.taglib.content.SearchProductsFilterTag</tagclass>
+		<name>ProductsGroupingAndPaging</name>
+		<tagclass>com.freshdirect.webapp.taglib.fdstore.ProductsGroupingAndPagingTag</tagclass>
+		<teiclass>com.freshdirect.webapp.taglib.fdstore.ProductsGroupingAndPagingTag$TagEI</teiclass>
+		<attribute>
+			<name>itemsId</name>
+			<required>true</required>
+			<rtexprvalue>false</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>items</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>nav</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>simpleView</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>groupingsId</name>
+			<required>false</required>
+			<rtexprvalue>false</rtexprvalue>
+		</attribute>
+	</tag>
+	<tag>
+		<name>ProductsFilter</name>
+		<tagclass>com.freshdirect.webapp.taglib.content.ProductsFilterTag</tagclass>
 		<teiclass>com.freshdirect.webapp.taglib.content.FilteringFlow$TagEI</teiclass>
 		<bodycontent>JSP</bodycontent>
 		<attribute>
@@ -3617,7 +3667,7 @@
 		</attribute>
 		<attribute>
 			<name>currentNode</name>
-			<required>true</required>
+			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 		<attribute>

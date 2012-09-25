@@ -96,21 +96,6 @@ public class SearchRecipeTag extends FilteringFlow<FilteringSortingItem<Recipe>>
 		
 	}
 
-	@Override
-	protected int getPageSize() {
-		return nav.getPageSize();
-	}
-
-	@Override
-	protected int getPageOffset() {
-		return nav.getPageOffset();
-	}
-
-	@Override
-	protected int getPageNumber() {
-		return nav.getPageNumber();
-	}
-
 	public void setResults(SearchResults results) {
 		this.results = results;
 	}

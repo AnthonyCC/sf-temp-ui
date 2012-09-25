@@ -82,6 +82,7 @@
 }
 
 .yui-panel-container.quickbuy-dialog {
+	width: 454px;
 	padding:0px !important;
 	border-radius: 5px;
 	-moz-border-radius: 5px;

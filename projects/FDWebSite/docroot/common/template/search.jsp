@@ -3,10 +3,7 @@
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ page import='com.freshdirect.fdstore.FDStoreProperties'%>
-<!--[if lt IE 7]><html class="ie ie6"><![endif]-->
-<!--[if IE 7]><html class="ie ie7"> <![endif]-->
-<!--[if IE 8]><html class="ie ie8"> <![endif]-->
-<!--[if gt IE 8]><!--><html lang="en"><!--<![endif]-->
+<html lang="en">
 	<head>
 		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
 		<title><tmpl:get name='title'/></title>
@@ -26,7 +23,12 @@
 		</script>
 	<%@ include file="/shared/template/includes/i_head_end.jspf" %>
 </head>
+<!--[if lt IE 7]><body class="ie ie6 searchpage <tmpl:get name="activeTab"/>-active <tmpl:get name="activeView"/>-view <tmpl:get name="noResult"/> <tmpl:get name="startPage"/>"><![endif]-->
+<!--[if IE 7]><body class="ie ie7 searchpage <tmpl:get name="activeTab"/>-active <tmpl:get name="activeView"/>-view <tmpl:get name="noResult"/> <tmpl:get name="startPage"/>"> <![endif]-->
+<!--[if IE 8]><body class="ie ie8 searchpage <tmpl:get name="activeTab"/>-active <tmpl:get name="activeView"/>-view <tmpl:get name="noResult"/> <tmpl:get name="startPage"/>"> <![endif]-->
+<!--[if gt IE 8]><!-->
 	<body class="searchpage <tmpl:get name="activeTab"/>-active <tmpl:get name="activeView"/>-view <tmpl:get name="noResult"/> <tmpl:get name="startPage"/>">
+<!--<![endif]-->
 <%@ include file="/shared/template/includes/i_body_start.jspf" %>      
 		<%@ include file="/common/template/includes/globalnav.jspf" %> 
     <div id="content_top" class="content-header container"><div class="span-7 orange eagle middle content-header-height result-text">Search Results<span class="result-helper"></span></span></div><tmpl:get name="content-header"/></div>
@@ -62,6 +64,7 @@
     		<div id="pager-top" class="pager"><tmpl:get name='pagerTop'/></div>
     		<div class="items"><tmpl:get name='content'/><div class="clear"></div></div>
     		<div id="pager-bottom" class="pager"><tmpl:get name='pagerBottom'/></div>
+    		<tmpl:get name='recommendations'/>
     	</div>
     </div>
 		<%@ include file="/common/template/includes/footer.jspf" %>
