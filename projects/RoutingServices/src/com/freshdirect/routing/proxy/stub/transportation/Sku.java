@@ -945,37 +945,6 @@
                                }
                             
 
-                        /**
-                        * field for WeightOverride
-                        */
-
-                        
-                                    protected double localWeightOverride =
-                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToDouble("0.000000");
-                                
-
-                           /**
-                           * Auto generated getter method
-                           * @return double
-                           */
-                           public  double getWeightOverride(){
-                               return localWeightOverride;
-                           }
-
-                           
-                        
-                            /**
-                               * Auto generated setter method
-                               * @param param WeightOverride
-                               */
-                               public void setWeightOverride(double param){
-                            
-                                            this.localWeightOverride=param;
-                                    
-
-                               }
-                            
-
      /**
      * isReaderMTOMAware
      * @return true if the reader supports MTOM
@@ -1808,35 +1777,6 @@
                                     
                                    xmlWriter.writeEndElement();
                              }
-                                    namespace = "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService";
-                                    if (! namespace.equals("")) {
-                                        prefix = xmlWriter.getPrefix(namespace);
-
-                                        if (prefix == null) {
-                                            prefix = generatePrefix(namespace);
-
-                                            xmlWriter.writeStartElement(prefix,"weightOverride", namespace);
-                                            xmlWriter.writeNamespace(prefix, namespace);
-                                            xmlWriter.setPrefix(prefix, namespace);
-
-                                        } else {
-                                            xmlWriter.writeStartElement(namespace,"weightOverride");
-                                        }
-
-                                    } else {
-                                        xmlWriter.writeStartElement("weightOverride");
-                                    }
-                                
-                                               if (java.lang.Double.isNaN(localWeightOverride)) {
-                                           
-                                                         throw new org.apache.axis2.databinding.ADBException("weightOverride cannot be null!!");
-                                                      
-                                               } else {
-                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localWeightOverride));
-                                               }
-                                    
-                                   xmlWriter.writeEndElement();
-                             
                     xmlWriter.writeEndElement();
                
 
@@ -2171,12 +2111,6 @@
                                          elementList.add(localHelperTimeSize3==null?null:
                                          org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localHelperTimeSize3));
                                     }
-                                      elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
-                                                                      "weightOverride"));
-                                 
-                                elementList.add(
-                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localWeightOverride));
-                            
 
                 return new org.apache.axis2.databinding.utils.reader.ADBXMLStreamReaderImpl(qName, elementList.toArray(), attribList.toArray());
             
@@ -2711,26 +2645,7 @@
                                     else {
                                         
                                     }
-                                
-                                    
-                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
-                                
-                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","weightOverride").equals(reader.getName())){
-                                
-                                    java.lang.String content = reader.getElementText();
-                                    
-                                              object.setWeightOverride(
-                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToDouble(content));
-                                              
-                                        reader.next();
-                                    
-                              }  // End of if for expected property start element
-                                
-                                else{
-                                    // A start element we are not expecting indicates an invalid parameter was passed
-                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
-                                }
-                              
+                                  
                             while (!reader.isStartElement() && !reader.isEndElement())
                                 reader.next();
                             
