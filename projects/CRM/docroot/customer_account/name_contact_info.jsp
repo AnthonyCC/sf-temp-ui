@@ -3,41 +3,38 @@
 <%@ taglib uri="template" prefix="tmpl" %>
 <%@ taglib uri="crm" prefix="crm" %>
 <%@ taglib uri="freshdirect" prefix="fd" %>
-<script src="/assets/javascript/jquery-1.6.4.js" type="text/javascript" charset="utf-8"></script>
+
+<tmpl:insert template='/template/top_nav_changed_dtd.jsp'>
+
+    <tmpl:put name='title' direct='true'>Account Details > Edit Name & Contact Info</tmpl:put>
+
+	<tmpl:put name='content' direct='true'>
 <script src="/assets/javascript/webpurify.jQuery.js" type="text/javascript" charset="utf-8"></script>
 
 		
 		<script type="text/javascript">
-		jQuery.noConflict();
-		jQuery(document).ready(function() {
-				jQuery.webpurify.init("<%=FDStoreProperties.getProfanityCheckURL()%>","<%=FDStoreProperties.getProfanityCheckPass()%>");
+			$jq(document).ready(function() {
+				$jq.webpurify.init("<%=FDStoreProperties.getProfanityCheckURL()%>","<%=FDStoreProperties.getProfanityCheckPass()%>");
 			});
 			
 			function checkForProfanity(){
-				if(jQuery("#displayName").val().length>0)
+				if($jq("#displayName").val().length>0)
 				{
-					jQuery.webpurify.check( jQuery("#displayName").val(), function(isProfane){
-						if(!isProfane)
+					$jq.webpurify.check( jQuery("#displayName").val(), function(isProfane){
+						if(!isProfane) {
 							document.name_contact_info.submit();
-						else
-							{
-							jQuery("#profaneText").html("That Display Name is invalid. Please enter a different Display Name.");
+						} else {
+							$jq("#profaneText").html("That Display Name is invalid. Please enter a different Display Name.");
 							return false;
-							}
+						}
 					});
 				}
 				else
 				{
 					document.name_contact_info.submit();
 				}
-			}	
+			}
 		</script>
-<tmpl:insert template='/template/top_nav_changed_dtd.jsp'>
-
-    <tmpl:put name='title' direct='true'>Account Details > Edit Name & Contact Info</tmpl:put>
-
-	<tmpl:put name='content' direct='true'>
-
 		<div class="cust_module" style="float: none;">
 		<crm:GetFDUser id="user">
 		<crm:GetErpCustomer id="customer" user="<%=user%>">

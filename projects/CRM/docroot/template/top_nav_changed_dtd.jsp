@@ -24,6 +24,14 @@
     <script type="text/javascript" src="/ccassets/javascript/jscalendar-1.0/calendar.js"></script>
     <script type="text/javascript" src="/ccassets/javascript/jscalendar-1.0/lang/calendar-en.js"></script>
     <script type="text/javascript" src="/ccassets/javascript/jscalendar-1.0/calendar-setup.js"></script>
+    
+    <%-- These overlibs are required for the footer --%>
+	<script type="text/javascript" language="javascript" src="/ccassets/javascript/overlibmws.js"></script>
+	<script type="text/javascript" language="javascript" src="/ccassets/javascript/overlibmws_iframe.js"></script>
+	<script type="text/javascript" language="javascript" src="/ccassets/javascript/overlibmws_overtwo.js"></script>
+	<script type="text/javascript" language="javascript" src="/ccassets/javascript/overlibmws_scroll.js"></script>
+	<script type="text/javascript" language="javascript" src="/ccassets/javascript/overlibmws_shadow.js"></script>
+	<script type="text/javascript" language="javascript" src="/ccassets/javascript/overlibmws_draggable.js"></script>
 
 	<%-- YUI --%>
 	<!-- Sam Skin CSS -->
