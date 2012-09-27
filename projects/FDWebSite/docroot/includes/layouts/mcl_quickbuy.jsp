@@ -92,7 +92,7 @@ final int W_MULTI_CATEGORY_NOT_DEPARTMENT = 601;
 									%>
 									<display:GetContentNodeWebId id="webId" product="<%= currentItem %>" clientSafe="<%= true %>">
 									<td id="hotspot-<%= webId %>" width="<%= cellPercentage %>%" style="padding-bottom: 5px;">										
-										<display:ProductImage product="<%= __c_prd %>" showRolloverImage="true" useAlternateImage="false"
+										<display:ProductImage product="<%= __c_prd %>" showRolloverImage="true" useAlternateImage="false" action="<%= actionUrl %>"
 												className="productImage" height="<%= __c_maxHeight %>" enableQuickBuy="true" webId="<%= webId %>"/>
 									</td>
 									</display:GetContentNodeWebId>
