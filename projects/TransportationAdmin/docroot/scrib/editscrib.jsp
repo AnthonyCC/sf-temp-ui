@@ -111,7 +111,7 @@
 						<tr id="regionRow">
 							<td align="right">Region</td>
 								<td>
-									<c:if test="${scribForm.destinationFacility.trnFacilityType.name eq 'SIT'}">
+									<c:if test="${scribForm.destinationFacility.trnFacilityType.name eq 'SIT' or scribForm.destinationFacility.trnFacilityType.name eq 'DPT'}">
 										<c:set var="_disableRegion" value="true"/>
 									</c:if>
 									<form:select path="region" disabled="${_disableRegion}">
