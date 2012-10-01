@@ -18,6 +18,7 @@ public class DateUtil {
 	public final static long YEAR = 365 * DAY;
 
 	public final static int MORNING_END = 12; // 12:00 PM
+	private static final DateFormat SIMPLE_TIME_FORMATTER = new SimpleDateFormat("HH:mm:ss");
 	private static final DateFormat DATE_YEAR_FORMATTER = new SimpleDateFormat("yyyy-MM-dd");
 	private static final DateFormat MONTH_DATE_YEAR_FORMATTER = new SimpleDateFormat("MM/dd/yyyy");
 	private static final DateFormat MONTH_DATE_YEAR_DAY_FORMATTER = new SimpleDateFormat("MM/dd/yyyy E");
@@ -165,6 +166,7 @@ public class DateUtil {
 	public static Date max(Date d1, Date d2) {
 		return d1.after(d2) ? d1 : d2;
 	}
+	
 
 	public static Date parse(String dateValue) throws ParseException{
 		return DATE_YEAR_FORMATTER.parse(dateValue);
@@ -176,6 +178,10 @@ public class DateUtil {
 	
 	public static Date parseMDY2(String dateValue) throws ParseException{
 		return MON_DATE_YEAR_FORMATTER.parse(dateValue);
+	}
+	
+	public static String formatSimpleTime(Date dateValue){
+		return SIMPLE_TIME_FORMATTER.format(dateValue);
 	}
 	
 	public static String format(Date dateValue) {

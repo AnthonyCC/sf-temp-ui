@@ -55,6 +55,9 @@
 <display:ProductRating product="<%= pm %>" noBr="true"/>
 </display:ProductLink>
 </div>
+<%-- Bazaarvoice customer rating --%>
+<%-- TODO: valid rating --%>
+<span class="star-rating rating-4"></span>
 <div class="grid-item-name">
 <display:ProductLink product="<%= pm %>" trackingCode="<%= trk %>">
 <display:ProductName product="<%= pm %>"/>

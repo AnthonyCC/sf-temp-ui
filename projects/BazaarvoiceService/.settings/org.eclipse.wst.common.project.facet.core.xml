@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<faceted-project>
+  <runtime name="java-6-openjdk"/>
+  <secondary-runtime name="Oracle WebLogic Server 10.3"/>
+  <installed facet="java" version="1.6"/>
+</faceted-project>

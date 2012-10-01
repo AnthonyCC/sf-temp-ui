@@ -20,6 +20,9 @@
      <module>
          <ejb>../CoremetricsService/bin</ejb>
      </module>
+	  <module>
+         <ejb>../BazaarvoiceService/bin</ejb>
+     </module>
      <module>
         <web>
             <web-uri>../FDWebSite/docroot</web-uri>
