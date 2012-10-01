@@ -40,6 +40,7 @@ public class FilteringNavigator {
 	boolean fromDym;
 	boolean refined;
 
+	int defaultPageSize = 16;
 	int pageSize = 0; // 0 means show all in one page
 	int pageNumber = 0;
 
@@ -66,7 +67,7 @@ public class FilteringNavigator {
 
 	private Map<EnumFilteringValue, List<Object>> filterValues;
 
-	public FilteringNavigator(ServletRequest servletRequest) {
+	public FilteringNavigator(ServletRequest servletRequest, int defaultPageSize) {
 		Map<String, String> p = new HashMap<String, String>(servletRequest.getParameterMap().size());
 		for (Enumeration<?> it = servletRequest.getParameterNames(); it.hasMoreElements();) {
 			String key = (String) it.nextElement();
@@ -74,12 +75,15 @@ public class FilteringNavigator {
 			p.put(key, value);
 		}
 
+		this.defaultPageSize = defaultPageSize;
+		
 		init(p);
-
+		
+		
 		originalStatus = new OriginalStatus(searchTerm, view, fromDym, refined, pageSize, pageNumber, sortBy,
 				isOrderAscending, filters, cloneFilterValues(filterValues), recipes);
 	}
-
+	
 	public FilteringNavigator() {
 	}
 
@@ -90,7 +94,7 @@ public class FilteringNavigator {
 		nav.setSearchTerm(searchTerm);
 
 		nav.setFilterValues(cloneFilterValues(filterValues));
-
+		nav.setDefaultPageSize(defaultPageSize);
 		// nav.setFilterValues(new HashMap<EnumFilteringValue, List<Object>>(filterValues));
 		nav.setPageSize(pageSize);
 		nav.setPageNumber(pageNumber);
@@ -164,9 +168,9 @@ public class FilteringNavigator {
 			pageSize = Integer.parseInt(val);
 		} else {
 			if (view == VIEW_LIST) {
-				pageSize = 20;
+				pageSize = defaultPageSize;
 			} else if (view == VIEW_GRID) {
-				pageSize = 20;
+				pageSize = defaultPageSize;
 			} else {
 				pageSize = 0;
 			}
@@ -647,10 +651,10 @@ public class FilteringNavigator {
 		pageNumber = 0;
 		switch (view) {
 			case VIEW_LIST:
-				pageSize = 20;
+				pageSize = defaultPageSize;
 				break;
 			case VIEW_GRID:
-				pageSize = 20;
+				pageSize = defaultPageSize;
 				break;
 			default:
 				pageSize = 0;
@@ -766,7 +770,7 @@ public class FilteringNavigator {
 		/* VIEW */
 		buf.append("&amp;view=" + getViewName());
 
-		if (!(view == VIEW_TEXT || (view == VIEW_LIST && pageSize == 20) || (view == VIEW_GRID && pageSize == 20))) {
+		if (!(view == VIEW_TEXT || (view == VIEW_LIST && pageSize == defaultPageSize) || (view == VIEW_GRID && pageSize == defaultPageSize))) {
 			buf.append("&amp;pageSize=");
 			buf.append(pageSize);
 		}
@@ -963,45 +967,13 @@ public class FilteringNavigator {
 	public String toString() {
 		return getLink();
 	}
-
-	public static class SearchDefaults {
-		public final int smallPageSize;
-		public final int normalPageSize;
-		public final int view;
-		public final boolean isDefaultView;
-
-		public SearchDefaults(int view, int pageSize1, int pageSize2, boolean isDefault) {
-			this.smallPageSize = pageSize1; // smaller size
-			this.normalPageSize = pageSize2; // bigger size
-			this.view = view; // view type - see VIEW_ prefixed constans
-			this.isDefaultView = isDefault;
-		}
+	
+	public int getDefaultPageSize() {
+		return defaultPageSize;
 	}
-
-	// set defaults:
-	// LIST: 15, 20
-	// GRID: 20, 20
-	// @type Map<String,SearchDefaults>
-	public static Map<String, SearchDefaults> DEFAULTS = new HashMap<String, SearchDefaults>();
-
-	static {
-		DEFAULTS.put("list", new SearchDefaults(VIEW_LIST, 15, 20, VIEW_DEFAULT == VIEW_LIST));
-		DEFAULTS.put("grid", new SearchDefaults(VIEW_GRID, 20, 20, VIEW_DEFAULT == VIEW_GRID));
-	}
-
-	public SearchDefaults getDefaults() {
-		return (SearchDefaults) FilteringNavigator.DEFAULTS.get(getViewName());
-	}
-
-	public static SearchDefaults getDefaultForView(int viewType) {
-		switch (viewType) {
-			case VIEW_LIST:
-				return (SearchDefaults) FilteringNavigator.DEFAULTS.get("list");
-			case VIEW_GRID:
-				return (SearchDefaults) FilteringNavigator.DEFAULTS.get("grid");
-			default:
-				return null;
-		}
+	
+	public void setDefaultPageSize(int defaultPageSize) {
+		this.defaultPageSize = defaultPageSize;
 	}
 
 	public Map<EnumFilteringValue, List<Object>> getFilterValues() {

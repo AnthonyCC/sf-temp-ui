@@ -7,13 +7,16 @@
 }
 
 .globalnavcontainer span {
-	background:url('../../../media_stat/images/navigation/globalnav_and_footer/headernav_b.png') no-repeat 0px -1px;
 	padding-left:5px;
 	display:inline-block;
 	float:left;
 }
 
-.ie6 .globalnavcontainer span {
+.globalnavcontainer .dot {
+	background:url('../../../media_stat/images/navigation/globalnav_and_footer/headernav_b.png') no-repeat 0px -1px;
+}
+
+.ie6 .globalnavcontainer .dot {
 	background-image:url('../../../media_stat/images/navigation/globalnav_and_footer/headernav_b.gif');
 }
 

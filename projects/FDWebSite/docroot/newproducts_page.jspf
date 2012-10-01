@@ -47,8 +47,9 @@ final int W_INDEX_RIGHT_CENTER = W_INDEX_TOTAL - 228 - W_INDEX_CENTER_PADDING;
 	request.setAttribute("listPos", "PPSuperBuy,SystemMessage,LittleRandy,CategoryNote");
 
 	// storing the view settings in the session
-	NewProductsNavigator nav = new NewProductsNavigator(request);
-	FilteringNavigator searchNav = new FilteringNavigator(request);
+	FilteringNavigator searchNav = new FilteringNavigator(request,20);
+	
+	final int DEFAULT_PAGE_SIZE = searchNav.getDefaultPageSize();
 
 	ConfigurationContext confContext = new ConfigurationContext();
 	confContext.setFDUser(user);
@@ -60,6 +61,10 @@ final int W_INDEX_RIGHT_CENTER = W_INDEX_TOTAL - 228 - W_INDEX_CENTER_PADDING;
 	if ( qc.getParameter("sort") == null ) {
 		searchNav.setSortBy(SearchSortType.BY_RECENCY);
 	}
+	if ( qc.getParameter("pageSize") == null ) {
+		searchNav.setPageSize(DEFAULT_PAGE_SIZE);
+	}
+	
 	
 	final int hideAfter = 8;
 	boolean otherFilters=false;
@@ -70,7 +75,6 @@ final int W_INDEX_RIGHT_CENTER = W_INDEX_TOTAL - 228 - W_INDEX_CENTER_PADDING;
 <bean:define id="activeTabVal" value='products' />
 
 <tmpl:insert template='/common/template/newproducts_new.jsp'>
-
 	<tmpl:put name="customCss">
 		<fd:css href="/assets/css/common/grid_supplement.css"></fd:css>
 		<fd:css href="/assets/css/common/product_grid.css"></fd:css>
@@ -99,10 +103,7 @@ final int W_INDEX_RIGHT_CENTER = W_INDEX_TOTAL - 228 - W_INDEX_CENTER_PADDING;
 		<% } %>
 	</tmpl:put>
 	<tmpl:put name="content-title">New Products</tmpl:put>
-	<%/*
-	searchNav.getFilterValues().containsKey(EnumFilteringValue.BRAND) ? "in " + searchNav.getFilterValues().get(EnumFilteringValue.BRAND).get(0).toString() :
-	searchNav.getFilterValues().containsKey(EnumFilteringValue.DEPT) ? "in " + searchNav.getFilterValues().get(EnumFilteringValue.DEPT).get(0).toString() :
-	featuredCat != null && !featuredCat.getFullName().equals("New Products") ? "in " + featuredCat.getFullName() :*/ %>
+
 	<tmpl:put name="content-header">
 	</tmpl:put>
 
@@ -361,12 +362,12 @@ final int W_INDEX_RIGHT_CENTER = W_INDEX_TOTAL - 228 - W_INDEX_CENTER_PADDING;
 	</tmpl:put>
 
 	<tmpl:put name="viewAll">
-<% 	if( itemCount > 20) {
+<% 	if( itemCount > DEFAULT_PAGE_SIZE) {
 		if(searchNav.getPageSize() == 0) { 
 			searchNav.resetState();
-			searchNav.setPageSize(20);
+			searchNav.setPageSize(DEFAULT_PAGE_SIZE);
 %>
-		<a href="<%= searchNav.getLink() %>" class="button middle white bold view-all">Show 20</a>
+		<a href="<%= searchNav.getLink() %>" class="button middle white bold view-all">Show <%= DEFAULT_PAGE_SIZE %></a>
 <%		} else {
 			searchNav.resetState();
 			searchNav.setPageSize(0);

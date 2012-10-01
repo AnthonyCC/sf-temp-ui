@@ -28,7 +28,7 @@
 	display: inline-block;
 	position: relative;
 	vertical-align: bottom;
-	overflow: hidden;
+	overflow: visible; /* visible for the bursts */
 	width: 100%;
 }
 
@@ -51,8 +51,8 @@
 	width: 35px;
 	height: 35px;
 	position: absolute;
-	top: 0px;
-	left: 0px;
+	top: -15px;
+	left: -15px;
 	display: block;
 }
 

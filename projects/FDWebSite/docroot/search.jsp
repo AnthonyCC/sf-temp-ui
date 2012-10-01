@@ -44,7 +44,7 @@ final int W_INDEX_RIGHT_CENTER = W_INDEX_TOTAL - 228 - W_INDEX_CENTER_PADDING;
 	request.setAttribute("listPos", "SystemMessage,LittleRandy,CategoryNote");
 
 	// storing the view settings in the session
-	FilteringNavigator nav = new FilteringNavigator(request);
+	FilteringNavigator nav = new FilteringNavigator(request,16);
 
 	ConfigurationContext confContext = new ConfigurationContext();
 	confContext.setFDUser(user);
@@ -54,7 +54,7 @@ final int W_INDEX_RIGHT_CENTER = W_INDEX_TOTAL - 228 - W_INDEX_CENTER_PADDING;
 	boolean otherFilters=false;
 	
 	// default page size
-	final int defaultPageSize = 16;
+	final int defaultPageSize = nav.getDefaultPageSize();
 	QueryParameterCollection qc = QueryParameterCollection.decode(request.getQueryString());
 	if ( qc.getParameter("pageSize") == null ) {
 		nav.setPageSize(defaultPageSize);
@@ -336,17 +336,6 @@ final int W_INDEX_RIGHT_CENTER = W_INDEX_TOTAL - 228 - W_INDEX_CENTER_PADDING;
 	</tmpl:put>
 	
 	<tmpl:put name='customerRatingFilter'>
-  <%-- TODO: bazaarvoice based rating filter --%>
-		<div id="customerrating" class="filterbox sidebar-content">
-			<h3>Customer rating</h3>
-      <ul>
-        <li><a href="#"><span class="star-rating rating-5"></span></a></li>
-        <li><a href="#"><span class="star-rating rating-4"></span></a></li>
-        <li><a href="#"><span class="star-rating rating-3"></span></a></li>
-        <li><a href="#"><span class="star-rating rating-2"></span></a></li>
-        <li><a href="#"><span class="star-rating rating-1"></span></a></li>
-      </ul>
-    </div>
 	</tmpl:put>
 	
 	<tmpl:put name="otherKosherFilter">
