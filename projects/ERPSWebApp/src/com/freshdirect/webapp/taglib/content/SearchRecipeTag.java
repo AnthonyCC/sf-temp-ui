@@ -32,16 +32,10 @@ public class SearchRecipeTag extends FilteringFlow<FilteringSortingItem<Recipe>>
 	private static final long serialVersionUID = 5809709785695385027L;
 	
 	private SearchResults results;
-	protected FilteringNavigator nav;
 	private Set<EnumFilteringValue> filters;
 	{
 		filters=new HashSet<EnumFilteringValue>();
 		filters.add(EnumFilteringValue.RECIPE_CLASSIFICATION);
-	}
-
-	@Override
-	protected GenericFilterValueDecoder createDecoder() {
-		return new UrlFilterValueDecoder(filters);
 	}
 
 	@Override
@@ -52,16 +46,6 @@ public class SearchRecipeTag extends FilteringFlow<FilteringSortingItem<Recipe>>
 	@Override
 	protected GenericFilterDecorator<FilteringSortingItem<Recipe>> createMenuValueDecorator() {
 		return new RecipeFilterMenuDecorator(filters);
-	}
-
-	@Override
-	protected GenericFilter createFilter(Map<EnumFilteringValue, List<Object>> filterValues) {
-		return new FilteringSortingItemFilter(filterValues, filters);
-	}
-
-	@Override
-	protected GenericFilteringMenuBuilder createMenuBuilder(Map<EnumFilteringValue, List<Object>> filterValues) {
-		return new FilteringSortingMenuBuilder(filterValues, filters);
 	}
 
 	@Override
@@ -100,8 +84,9 @@ public class SearchRecipeTag extends FilteringFlow<FilteringSortingItem<Recipe>>
 		this.results = results;
 	}
 
-	public void setNav(FilteringNavigator nav) {
-		this.nav = nav;
+	@Override
+	protected Set<EnumFilteringValue> getFilters() {
+		return filters;
 	}
 
 }

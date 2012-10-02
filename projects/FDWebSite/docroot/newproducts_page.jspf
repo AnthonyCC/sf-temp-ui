@@ -46,8 +46,15 @@ final int W_INDEX_RIGHT_CENTER = W_INDEX_TOTAL - 228 - W_INDEX_CENTER_PADDING;
 	request.setAttribute("sitePage", "www.freshdirect.com/search.jsp");
 	request.setAttribute("listPos", "PPSuperBuy,SystemMessage,LittleRandy,CategoryNote");
 
+	// default sort
+	QueryParameterCollection qc = QueryParameterCollection.decode(request.getQueryString());
+
+
 	// storing the view settings in the session
 	FilteringNavigator searchNav = new FilteringNavigator(request,20);
+	if(isDFGS) {
+		searchNav.setDeptFilter(request.getParameter("deptId"));
+	}
 	
 	final int DEFAULT_PAGE_SIZE = searchNav.getDefaultPageSize();
 
@@ -56,8 +63,6 @@ final int W_INDEX_RIGHT_CENTER = W_INDEX_TOTAL - 228 - W_INDEX_CENTER_PADDING;
 	ConfigurationStrategy confStrat = new DefaultProductConfigurationStrategy();
 	
 	
-	// default sort
-	QueryParameterCollection qc = QueryParameterCollection.decode(request.getQueryString());
 	if ( qc.getParameter("sort") == null ) {
 		searchNav.setSortBy(SearchSortType.BY_RECENCY);
 	}
@@ -68,7 +73,7 @@ final int W_INDEX_RIGHT_CENTER = W_INDEX_TOTAL - 228 - W_INDEX_CENTER_PADDING;
 	
 	final int hideAfter = 8;
 	boolean otherFilters=false;
-%>
+%><%= qc.getParameterValue("deptId") %>
 <fd:GetNewProductsSimple id="newProds" nav="<%= searchNav %>" featuredCategory="featuredCat"/>
 <fd:ProductsFilter results="<%= newProds %>" nav="<%= searchNav %>" domainsId="menus" itemsId="items" filteredItemCountId="itemCount">
 <fd:ProductsGroupingAndPaging items="<%= items %>" itemsId="products" nav="<%= searchNav %>" groupingsId="groups">

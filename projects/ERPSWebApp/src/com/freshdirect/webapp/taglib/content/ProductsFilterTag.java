@@ -46,7 +46,6 @@ public class ProductsFilterTag extends FilteringFlow<FilteringSortingItem<Produc
 	private static final long serialVersionUID = -3101346359422968490L;
 	
 	private SearchResults results;
-	private FilteringNavigator nav;
 	private Set<EnumFilteringValue> filters;
 	{
 		filters=new HashSet<EnumFilteringValue>();
@@ -67,12 +66,6 @@ public class ProductsFilterTag extends FilteringFlow<FilteringSortingItem<Produc
 	
 	protected List<ProductModel> products;
 
-	@Override
-	protected GenericFilterValueDecoder createDecoder() {
-		return new UrlFilterValueDecoder(filters);
-	}
-
-	@Override
 	protected GenericFilterDecorator<FilteringSortingItem<ProductModel>> createFilterValueDecorator() {
 		return new ProductFilterValueDecorator(getPricingContext(), filters);
 	}
@@ -127,10 +120,6 @@ public class ProductsFilterTag extends FilteringFlow<FilteringSortingItem<Produc
 		this.results = results;
 	}
 	
-	public void setNav(FilteringNavigator nav) {
-		this.nav = nav;
-	}
-
 	public FDUserI getFDUser() {
 		if (user == null) {
 			if (mocked) {
@@ -170,6 +159,11 @@ public class ProductsFilterTag extends FilteringFlow<FilteringSortingItem<Produc
 				EnumFilteringValue.BRAND) == null && nav.getFilterValues().get(EnumFilteringValue.DEPT) == null && (nav.getFilterValues().get(
 				EnumFilteringValue.CAT) == null || nav.getFilterValues().get(EnumFilteringValue.CAT).equals(
 				FDStoreProperties.getNewProductsCatId()));
+	}
+
+	@Override
+	protected Set<EnumFilteringValue> getFilters() {
+		return filters;
 	}
 
 }
