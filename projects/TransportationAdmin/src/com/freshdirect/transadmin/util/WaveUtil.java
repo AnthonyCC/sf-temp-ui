@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.freshdirect.routing.constants.EnumTransportationFacilitySrc;
 import com.freshdirect.routing.constants.EnumWaveInstancePublishSrc;
 import com.freshdirect.routing.constants.EnumWaveInstanceStatus;
 import com.freshdirect.transadmin.model.IWaveInstanceSource;
@@ -39,7 +40,9 @@ public class WaveUtil {
 			Iterator _itr = sourceData.iterator();
 			while(_itr.hasNext()) {
 				IWaveInstanceSource instanceSource = (IWaveInstanceSource)_itr.next();
-				if(instanceSource.getZone() != null) { 
+				if(instanceSource.getZone() != null && 
+						(instanceSource.getDestinationFacility()==null || 
+						(instanceSource.getDestinationFacility()!=null && !instanceSource.getDestinationFacility().getTrnFacilityType().getName().equals(EnumTransportationFacilitySrc.DEPOTDELIVERY.getName())))) { 
 					if(instanceSource.needsConsolidation()) {
 						zonesForConsolidation.add(instanceSource.getZone().getZoneCode());
 					}
