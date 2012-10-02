@@ -441,15 +441,6 @@ final int W_INDEX_RIGHT_CENTER = W_INDEX_TOTAL - 228 - W_INDEX_CENTER_PADDING;
 		<div class="back-to-top"><a href="#content_top">back to top</a></div>
 	</tmpl:put>
 
-	<tmpl:put name="content" direct="true">
-<%
-	pageContext.setAttribute("ISONSEARCHPAGE",true);
-	for (Iterator<FilteringSortingItem <ProductModel>> it=products.iterator() ; it.hasNext();) {
-		ProductImpression pi = confStrat.configure(it.next().getModel(), confContext);
-		%><div class="grid-item-container"><%@ include file="/includes/product/i_product_box.jspf" %></div><%
-	}
-%>
-	</tmpl:put>
 </logic:equal>
 </fd:ProductsGroupingAndPaging>
 </fd:ProductsFilter>
