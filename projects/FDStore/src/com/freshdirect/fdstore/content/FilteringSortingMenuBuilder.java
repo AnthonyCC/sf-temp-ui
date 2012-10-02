@@ -120,23 +120,26 @@ public class FilteringSortingMenuBuilder extends GenericFilteringMenuBuilder<Fil
 		Map<String, FilteringMenuItem> domain = domains.get(domainId);
 		Map<String, FilteringMenuItem> narrowedDomain = new HashMap<String, FilteringMenuItem>();
 		
-		if (!multiValue) {
-			for (String menuId : domain.keySet()) {
-				if (menuId.equals(selected)) {
-					narrowedDomain.put(menuId, domain.get(menuId));
-					break;
+		if(domain != null) {
+			if (!multiValue) {
+				for (String menuId : domain.keySet()) {
+					if (menuId.equals(selected)) {
+						narrowedDomain.put(menuId, domain.get(menuId));
+						break;
+					}
+				}
+			} else {		
+				for (String menuId : domain.keySet()) {
+					ContentNodeModel subCatModel = ContentFactory.getInstance().getContentNode(FDContentTypes.CATEGORY, menuId);
+					if(subCatModel != null && parent.equals(subCatModel.getParentNode().getContentKey().getId())){
+						narrowedDomain.put(menuId, domain.get(menuId));
+					}
 				}
 			}
-		} else {		
-			for (String menuId : domain.keySet()) {
-				ContentNodeModel subCatModel = ContentFactory.getInstance().getContentNode(FDContentTypes.CATEGORY, menuId);
-				if(subCatModel != null && parent.equals(subCatModel.getParentNode().getContentKey().getId())){
-					narrowedDomain.put(menuId, domain.get(menuId));
-				}
-			}
-		}
 
-		domains.put(domainId, narrowedDomain);
+			domains.put(domainId, narrowedDomain);
+			
+		}
 	}
 
 	private void checkSelected(Set<FilteringMenuItem> menuItems, List<Object> itemFilteringValues) {

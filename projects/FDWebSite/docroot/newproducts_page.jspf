@@ -73,7 +73,7 @@ final int W_INDEX_RIGHT_CENTER = W_INDEX_TOTAL - 228 - W_INDEX_CENTER_PADDING;
 	
 	final int hideAfter = 8;
 	boolean otherFilters=false;
-%><%= qc.getParameterValue("deptId") %>
+%>
 <fd:GetNewProductsSimple id="newProds" nav="<%= searchNav %>" featuredCategory="featuredCat"/>
 <fd:ProductsFilter results="<%= newProds %>" nav="<%= searchNav %>" domainsId="menus" itemsId="items" filteredItemCountId="itemCount">
 <fd:ProductsGroupingAndPaging items="<%= items %>" itemsId="products" nav="<%= searchNav %>" groupingsId="groups">
@@ -113,7 +113,7 @@ final int W_INDEX_RIGHT_CENTER = W_INDEX_TOTAL - 228 - W_INDEX_CENTER_PADDING;
 	</tmpl:put>
 
 	<tmpl:put name="count-header">
-		<strong><%= newProds.size() %> new product<%= itemCount > 1 ? "s" : "" %></strong> just added!
+		<strong><%= itemCount %> new product<%= itemCount > 1 ? "s" : "" %></strong> just added!
 	</tmpl:put>
 	
 	
@@ -400,7 +400,7 @@ final int W_INDEX_RIGHT_CENTER = W_INDEX_TOTAL - 228 - W_INDEX_CENTER_PADDING;
 		<div class="back-to-top"><a href="#content_top">back to top</a></div>
 	</tmpl:put>
 	
-	<% if (featuredCat != null && featuredCat.getFeaturedNewProdBrands().size() > 0 ) { %>
+	<% if (!isDFGS && featuredCat != null && featuredCat.getFeaturedNewProdBrands().size() > 0 ) { %>
 	<tmpl:put name='featured' direct='true'>
 		<h2 class="featured-header">Our favorite new additions</h2>
 		<%@ include file="/includes/i_featured_products_new.jspf"%>
