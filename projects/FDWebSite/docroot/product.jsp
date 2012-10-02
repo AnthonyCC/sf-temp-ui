@@ -139,7 +139,8 @@ if (EnumTemplateType.WINE.equals( productNode.getTemplateType() )) {
     <%@ include file="/shared/includes/product/i_product_quality_note.jspf" %>
 <%}%>
 
-<% if(leadTime > 0) { %>
+
+<% if(leadTime > 0 && FDStoreProperties.isLeadTimeOasAdTurnedOff()) { %>
 <CENTER><font class="text11"><b>CURRENTLY AVAILABLE - <font class="text11rbold"><%=JspMethods.convertNumToWord(leadTime)%> DAY LEAD TIME</font>.</b><br></CENTER> To assure the highest quality, our chefs prepare this item to order. <br> Please order at least two days in advance<br>(for example, order on Thursday for Saturday delivery).</font><p>
 <% } %>
 
