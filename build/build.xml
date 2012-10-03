@@ -2473,6 +2473,8 @@
 				<include name="httpclient-4.0.1.jar"/>
 				<include name="httpcore-4.0.1.jar"/>
 				<include name="httpmime-4.0.1.jar"/>
+				<include name="jackson-core-lgpl-1.2.0.jar"/>
+				<include name="jackson-mapper-lgpl-1.2.0.jar"/>
 			</lib>
 		</makeEar>
 	</target>
@@ -2506,6 +2508,8 @@
 				<include name="httpclient-4.0.1.jar"/>
 				<include name="httpcore-4.0.1.jar"/>
 				<include name="httpmime-4.0.1.jar"/>
+				<include name="jackson-core-lgpl-1.2.0.jar"/>
+				<include name="jackson-mapper-lgpl-1.2.0.jar"/>
 			</lib>
 		</makeEar>
 	</target>
@@ -2543,7 +2547,8 @@
 				<include name="httpclient-4.0.1.jar"/>
 				<include name="httpcore-4.0.1.jar"/>
 				<include name="httpmime-4.0.1.jar"/>
-
+				<include name="jackson-core-lgpl-1.2.0.jar"/>
+				<include name="jackson-mapper-lgpl-1.2.0.jar"/>
 			</lib>
 		</makeEar>
 	</target>
@@ -2585,6 +2590,8 @@
 				<include name="httpclient-4.0.1.jar"/>
 				<include name="httpcore-4.0.1.jar"/>
 				<include name="httpmime-4.0.1.jar"/>
+				<include name="jackson-core-lgpl-1.2.0.jar"/>
+				<include name="jackson-mapper-lgpl-1.2.0.jar"/>
 			</lib>
 		</makeEar>
 	</target>
@@ -2628,6 +2635,8 @@
 				<include name="lpsolve55j.jar"/>
 				<include name="guava-12.0.jar"/>
 				<include name="ctah-api-client.jar"/>
+				<include name="jackson-core-lgpl-1.2.0.jar"/>
+				<include name="jackson-mapper-lgpl-1.2.0.jar"/>
 			</lib>
 		</makeFDAdminEar>
 	</target>
@@ -2662,6 +2671,8 @@
 				<include name="Zql.jar"/>
 				<include name="xercesImpl.jar"/>
 				<include name="antlr-2.7.5H3.jar"/>
+				<include name="jackson-core-lgpl-1.2.0.jar"/>
+				<include name="jackson-mapper-lgpl-1.2.0.jar"/>
 			</lib>
 		</makeEar>
 	</target>
@@ -2688,6 +2699,8 @@
 				<include name="tapestry-4.0.2.jar"/>
 				<include name="tapestry-contrib-4.0.2.jar"/>
 				<include name="tacos-core-4.0.2-20070420.095420-14.jar"/>
+				<include name="jackson-core-lgpl-1.2.0.jar"/>
+				<include name="jackson-mapper-lgpl-1.2.0.jar"/>
 			</lib>
 		</makeEar>
 	</target>
@@ -2729,7 +2742,8 @@
 				<include name="httpclient-4.0.1.jar"/>
 				<include name="httpcore-4.0.1.jar"/>
 				<include name="httpmime-4.0.1.jar"/>
-
+				<include name="jackson-core-lgpl-1.2.0.jar"/>
+				<include name="jackson-mapper-lgpl-1.2.0.jar"/>
 			</lib>
 			<extra>	 
 				<zipfileset dir="${thirdparty.home}/slide" prefix="APP-INF/lib" includes="*.jar"/>	 
