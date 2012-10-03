@@ -7,8 +7,8 @@
 
 /* Test : Debug Functions ----------------------------------------------------*/
 
-var global_gcDebug = false;
-var global_gcLog = false;
+var global_gcDebug = true;
+var global_gcLog = true;
 var lastEdit = '2011.06.24_04.15.58.PM';
 var lastLog;
 
@@ -315,7 +315,7 @@ function showDialogs() {
 					this.log('\tcheckDisplay final initCardIndex '+initCardIndex);
 				}else{
 					this.log('\tcheckDisplay called with no initialCardIndex. (Setting to 0)');
-					initialcardIndex = 0;
+					initCardIndex = 0;
 				}
 				
 
@@ -492,10 +492,11 @@ function showDialogs() {
 
 					if($(this.dotSelectionContainer)){
 						var gcObject = this.display;
+						var that = this;
 						$(this.dotSelectionContainer).select('img').each(function(e, i) {
-							console.log('\tTestIndex: '+i);
-							console.log('\tTestIndex element: '+e);
-							console.log('\tTestIndex element: '+gcObject[1]);
+							that.log('\tTestIndex: '+i);
+							that.log('\tTestIndex element: '+e);
+							that.log('\tTestIndex element: '+gcObject[1]);
 							if(i === gcObject[1]){
 								$(e).show();
 							} else {
@@ -642,137 +643,61 @@ function showDialogs() {
 
 						break;
 					case 3:
-						
-						var optionArray = new Array;
+						var optionArray = [];
 						for (var i=0;i < this.cards.length;i++) {
-							
 							optionArray[i] = Builder.node( 'div', [
-							                          
-							                           Builder.node( 'div', { className: "dot_selection_controls" }, [ Builder.node( 'img', { src: this.mediaStaticRoot+'landing/dot_img.gif', alt: 'Choose Design', id: 'bullotImg'+i })]),
-							                           Builder.node( 'div', { className: "link_selection_controls" }, [ Builder.node( 'a', { href: '#', onClick: 'window[\''+this.refId+'\'].display[1]='+i+';window[\''+this.refId+'\'].updateDisplay();return false;' }, [ this.cards[i].displayName,  Builder.node( 'br', []) ])])
-							                          
-							                          ]);
-							
+								Builder.node( 'div', { className: "dot_selection_controls" }, [
+									Builder.node( 'img', { src: this.mediaStaticRoot+'landing/dot_img.gif', alt: 'Choose Design', id: 'bullotImg'+i })
+								]),
+								Builder.node( 'div', { className: "link_selection_controls" }, [
+									Builder.node( 'a', { href: '#', onClick: 'window[\''+this.refId+'\'].display[1]='+i+';window[\''+this.refId+'\'].updateDisplay();return false;' }, [
+										this.cards[i].displayName
+									]),
+									Builder.node( 'br', [ ] )
+								])
+	                        ]);
 						}
 						
-						this.displayObj =  Builder.node('table', { className: 'card_options'},
-															[ Builder
-																.node('tr',
-																		[ 
-																		  Builder
-																			.node('td',{width:'20%'},[
-																			            
-																			           Builder.node( 'div', { className: 'card_controls_header' }, [
-																			                                      Builder.node( 'img', { src: this.mediaStaticRoot+'landing/giftcard_options.gif', alt: 'Choose Design', id: 'gcChooseDesign_img' } )
-																			                                    , Builder.node( 'br', []) 
-																			                                    ]),
-																			           Builder.node( 'div', { className: 'card_controls_select', id: this.dotSelectionContainer }, [ optionArray ])
-																			           
-																			     ]),
-																		
-																		  																	  
-																		  Builder
-																			.node('td',{align:'right'},[
-																			            
-																					Builder.node('table', {className: 'card_options_img'}, 
-																							[ Builder
-																									.node(
-																											'tr',
-																											[
-																													Builder
-																															.node(
-																																	'td',
-																																	[
-																					
-																																	Builder
-																																			.node(
-																																					'a',
-																																					{
-																																						href : '#',
-																																						onClick : 'window[\''
-																																								+ this.refId
-																																								+ '\'].rotate(\'RIGHT\'); return false;',
-																																						id : this.refId
-																																								+ 'card_control_left'
-																																					},
-																																					[ Builder
-																																							.node(
-																																									'img',
-																																									{
-																																										src : this.mediaStaticRoot
-																																												+ 'landing/arrow_left_on.gif',
-																																										alt : 'scroll left'
-																																									}) ])
-																					
-																																	])
-																					
-																													,
-																													Builder
-																															.node(
-																																	'td',
-																																	[
-																					
-																																	Builder
-																																			.node(
-																																					'a',
-																																					{
-																																						href : '#',
-																																						onClick : '$(\''
-																																								+ this.partOfForm
-																																								+ '\').submit();return false;'
-																																					},
-																																					[ Builder
-																																							.node(
-																																									'img',
-																																									{
-																																										src : '',
-																																										alt : 'c',
-																																										id : this.center_img_containerId
-																																									}) ])
-																					
-																																	,Builder.node( 'div', { className: 'card_controls_msg' }, [
-																																	                   										'Click arrows to scroll & preview card designs.'
-																																	                										]) 
-																																	
-																																									
-																																									])
-																					
-																													,
-																													Builder
-																															.node(
-																																	'td',
-																																	[
-																					
-																																	Builder
-																																			.node(
-																																					'a',
-																																					{
-																																						href : '#',
-																																						onClick : 'window[\''
-																																								+ this.refId
-																																								+ '\'].rotate(\'LEFT\'); return false;',
-																																						id : this.refId
-																																								+ 'card_control_right'
-																																					},
-																																					[ Builder
-																																							.node(
-																																									'img',
-																																									{
-																																										src : this.mediaStaticRoot
-																																												+ 'landing/arrow_right_on.gif',
-																																										alt : 'scroll right'
-																																									}) ])
-																					
-																																	])
-																					
-																											])
-																					
-																							]),
-																				                               							
-																							Builder.node( 'p', [ ] )									            
-																				])
-																])
-										]);
+						this.displayObj = Builder.node('table', { className: 'card_options' }, [ 
+							Builder.node('tbody', [
+								Builder.node('tr', [ 
+									Builder.node('td',{ width: '20%' }, [
+										Builder.node( 'div', { className: 'card_controls_header' }, [
+											Builder.node( 'img', { src: this.mediaStaticRoot + 'landing/giftcard_options.gif', alt: 'Choose Design', id: 'gcChooseDesign_img' } ),
+											Builder.node( 'br', [ ] )
+										]),
+										Builder.node( 'div', { className: 'card_controls_select', id: this.dotSelectionContainer }, [ optionArray ])
+									]),
+									Builder.node('td',{align:'right'}, [
+										Builder.node('table', { className: 'card_options_img'}, [
+											Builder.node('tbody', [
+												Builder.node('tr', [
+													Builder.node('td', [
+														Builder.node('a', { href : '#',	onClick : 'window[\'' + this.refId + '\'].rotate(\'RIGHT\'); return false;', id : this.refId + 'card_control_left' }, [
+															Builder.node('img', { src : this.mediaStaticRoot + 'landing/arrow_left_on.gif', alt : 'scroll left'	})
+														])
+													]),
+													Builder.node('td', [
+														Builder.node('a', {	href : '#', onClick : '$(\'' + this.partOfForm + '\').submit();return false;' }, [
+															Builder.node('img',	{ src : '', alt : 'c', id : this.center_img_containerId })
+														]),
+														Builder.node('div', { className: 'card_controls_msg' }, [
+															'Click arrows to scroll &amp; preview card designs.'
+														]) 
+													]),
+													Builder.node('td', [
+														Builder.node('a', { href : '#',	onClick : 'window[\'' + this.refId + '\'].rotate(\'LEFT\'); return false;',	id : this.refId	+ 'card_control_right' }, [
+															Builder.node('img',	{ src : this.mediaStaticRoot + 'landing/arrow_right_on.gif', alt : 'scroll right'})
+														])
+													])
+												])
+											])
+										]),
+										Builder.node( 'p', [ ] )
+									])
+								])
+							])
+						]);
 						break;
 						
 					default:
