@@ -68,6 +68,8 @@ import com.freshdirect.giftcard.ErpRecipentModel;
 import com.freshdirect.giftcard.RecipientModel;
 import com.freshdirect.giftcard.ServiceUnavailableException;
 import com.freshdirect.webapp.action.WebActionSupport;
+import com.freshdirect.webapp.taglib.coremetrics.CmConversionEventTag;
+import com.freshdirect.webapp.taglib.coremetrics.CmShop9Tag;
 import com.freshdirect.webapp.taglib.crm.CrmSession;
 import com.freshdirect.webapp.taglib.fdstore.AccountActivityUtil;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
@@ -332,6 +334,10 @@ public class SubmitOrderAction extends WebActionSupport {
 			
 			// Set the order on the session			
 			session.setAttribute(SessionName.RECENT_ORDER_NUMBER, orderNumber);
+			
+			//prepare and store model for Coremetrics report
+			CmShop9Tag.buildPendingModels(session, cart);
+			
 			//Remove the Delivery Pass Session ID If any.
 			session.removeAttribute(DlvPassConstants.DLV_PASS_SESSION_ID);
 		} catch (ErpFraudException ex) {
