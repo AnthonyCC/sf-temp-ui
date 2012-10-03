@@ -39,6 +39,7 @@
 .display .type_INGREDIENT .drugitem .uom {
 	position:relative;
 	background:#FFFEF2;	
+	float:left;
 }
 
 .display .type_INGREDIENT .drugitem .dotted {
@@ -47,6 +48,7 @@
 	border-bottom:2px dotted black;
 	width:100%;
 	left:0px;
+	height:1px;
 }
 
 .display .type_INGREDIENT .important {
@@ -107,6 +109,10 @@
 	display:inline-block;
 	width:50%;
 	vertical-align:top;
+}
+
+.display .type_TABLE .drugitem .value2 {
+	width:49%;
 }
 
 .display .type_TABLE .drugitem .val {
