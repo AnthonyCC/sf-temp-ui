@@ -5,9 +5,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public abstract class GenericFilter<N> {
+public abstract class GenericFilter<T> {
 	
-	//List<GenericFilterValue> filterValues;
 	Map<EnumFilteringValue, List<Object>> filterValues;
 	Set<EnumFilteringValue> filters;
 	
@@ -30,11 +29,11 @@ public abstract class GenericFilter<N> {
 		filterValues.remove(key);
 	}
 	
-	public abstract GenericFilter<N> clone();
+	public abstract GenericFilter<T> clone();
 	
-	public abstract void applyAllFilter(List<N> items);
+	public abstract void applyAllFilter(List<T> items);
 	
-	public abstract void applyFilter(List<N> items, EnumFilteringValue filter);
+	public abstract void applyFilter(List<T> items, EnumFilteringValue filter);
 	
 	public Map<EnumFilteringValue, List<Object>> getFilterValues(){
 		return filterValues;

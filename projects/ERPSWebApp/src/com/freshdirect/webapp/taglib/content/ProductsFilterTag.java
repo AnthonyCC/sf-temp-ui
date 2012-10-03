@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Category;
@@ -15,34 +14,24 @@ import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.content.EnumFilteringValue;
 import com.freshdirect.fdstore.content.FilteringComparatorUtil;
 import com.freshdirect.fdstore.content.FilteringSortingItem;
-import com.freshdirect.fdstore.content.FilteringSortingItemFilter;
-import com.freshdirect.fdstore.content.FilteringSortingMenuBuilder;
-import com.freshdirect.fdstore.content.GenericFilter;
 import com.freshdirect.fdstore.content.GenericFilterDecorator;
-import com.freshdirect.fdstore.content.GenericFilterValueDecoder;
-import com.freshdirect.fdstore.content.GenericFilteringMenuBuilder;
 import com.freshdirect.fdstore.content.ProductFilterMenuDecorator;
 import com.freshdirect.fdstore.content.ProductFilterValueDecorator;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.SearchResults;
 import com.freshdirect.fdstore.content.SearchSortType;
-import com.freshdirect.fdstore.content.UrlFilterValueDecoder;
 import com.freshdirect.fdstore.customer.FDAuthenticationException;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.pricing.ProductPricingFactory;
-import com.freshdirect.fdstore.util.FilteringNavigator;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
 
-public class ProductsFilterTag extends FilteringFlow<FilteringSortingItem<ProductModel>> {
+public class ProductsFilterTag extends FilteringFlow<ProductModel> {
 	
 	private static Category LOGGER = LoggerFactory.getInstance(ProductsFilterTag.class);
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = -3101346359422968490L;
 	
 	private SearchResults results;
@@ -80,16 +69,6 @@ public class ProductsFilterTag extends FilteringFlow<FilteringSortingItem<Produc
 		return new ArrayList<FilteringSortingItem<ProductModel>>(results.getProducts());
 	}
 
-	@Override
-	protected GenericFilter createFilter(Map<EnumFilteringValue, List<Object>> filterValues) {
-		return new FilteringSortingItemFilter(filterValues, filters);
-	}
-
-	@Override
-	protected GenericFilteringMenuBuilder createMenuBuilder(Map<EnumFilteringValue, List<Object>> filterValues) {
-		return new FilteringSortingMenuBuilder(filterValues, filters);
-	}
-	
 	@Override
 	protected Set<EnumFilteringValue> getFilterEnums() {
 		return this.filters;

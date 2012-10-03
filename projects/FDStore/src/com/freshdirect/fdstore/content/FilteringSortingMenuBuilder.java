@@ -10,18 +10,18 @@ import java.util.Set;
 
 import com.freshdirect.cms.fdstore.FDContentTypes;
 
-public class FilteringSortingMenuBuilder extends GenericFilteringMenuBuilder<FilteringSortingItem> {
+public class FilteringSortingMenuBuilder<N extends ContentNodeModel> extends GenericFilteringMenuBuilder<FilteringSortingItem<N>> {
 
 	public FilteringSortingMenuBuilder(Map<EnumFilteringValue, List<Object>> filterValues, Set<EnumFilteringValue> filters) {
 		super(filterValues, filters);
 	}
 
 	@Override
-	public void buildMenu(List<FilteringSortingItem> items) { 
+	public void buildMenu(List<FilteringSortingItem<N>> items) { 
 		for (EnumFilteringValue value : filters) {
 
 			Map<String, FilteringMenuItem> domain = new HashMap<String, FilteringMenuItem>();
-			for (FilteringSortingItem item : items) {
+			for (FilteringSortingItem<N> item : items) {
 
 				Set<FilteringMenuItem> menuItems = item.getMenuValue(value);
 				checkSelected(menuItems, filterValues.get(value));

@@ -7,13 +7,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class FilteringSortingItemFilter extends GenericFilter<FilteringSortingItem> {
+public class FilteringSortingItemFilter<N extends ContentNodeModel> extends GenericFilter<FilteringSortingItem<N>> {
 
 	public FilteringSortingItemFilter(Map<EnumFilteringValue, List<Object>> filterValues, Set<EnumFilteringValue> filters) {
 		super(filterValues, filters);
 	}
 
-	public void applyAllFilter(List<FilteringSortingItem> items) {
+	public void applyAllFilter(List<FilteringSortingItem<N>> items) {
 		for (EnumFilteringValue filter : filters) {
 			if(filterValues.get(filter) != null){
 				applyFilter(items, filter);				
@@ -21,20 +21,20 @@ public class FilteringSortingItemFilter extends GenericFilter<FilteringSortingIt
 		}
 	}
 
-	public void applyFilter(List<FilteringSortingItem> items, EnumFilteringValue filter) {
+	public void applyFilter(List<FilteringSortingItem<N>> items, EnumFilteringValue filter) {
 
-		Iterator<FilteringSortingItem> it = items.iterator();
+		Iterator<FilteringSortingItem<N>> it = items.iterator();
 
 		while (it.hasNext()) {
 
-			FilteringSortingItem item = it.next();
+			FilteringSortingItem<N> item = it.next();
 			Object itemFilteringValue = item.getFilteringValue(filter);
 
 				
 			boolean passed = false;
 			if (itemFilteringValue != null) {
 				if(itemFilteringValue instanceof Set){
-					Set<Object> fvSet=(Set<Object>)itemFilteringValue;
+					Set<?> fvSet=(Set<?>)itemFilteringValue;
 					for (Object filteringValue : filterValues.get(filter)) {
 						if (fvSet.contains(filteringValue)) {
 							passed = true;
@@ -56,8 +56,8 @@ public class FilteringSortingItemFilter extends GenericFilter<FilteringSortingIt
 	}
 
 	@Override
-	public GenericFilter<FilteringSortingItem> clone() {
-		return new FilteringSortingItemFilter(new HashMap<EnumFilteringValue, List<Object>>(this.filterValues), new HashSet<EnumFilteringValue>(this.filters));
+	public GenericFilter<FilteringSortingItem<N>> clone() {
+		return new FilteringSortingItemFilter<N>(new HashMap<EnumFilteringValue, List<Object>>(this.filterValues), new HashSet<EnumFilteringValue>(this.filters));
 	}
 
 }

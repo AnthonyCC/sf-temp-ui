@@ -12,10 +12,10 @@ import javax.servlet.jsp.tagext.TagData;
 import javax.servlet.jsp.tagext.TagExtraInfo;
 import javax.servlet.jsp.tagext.VariableInfo;
 
-import org.apache.openjpa.jdbc.kernel.exps.FilterValue;
-
+import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.EnumFilteringValue;
 import com.freshdirect.fdstore.content.FilteringMenuItem;
+import com.freshdirect.fdstore.content.FilteringSortingItem;
 import com.freshdirect.fdstore.content.FilteringSortingItemFilter;
 import com.freshdirect.fdstore.content.FilteringSortingMenuBuilder;
 import com.freshdirect.fdstore.content.GenericFilter;
@@ -23,11 +23,11 @@ import com.freshdirect.fdstore.content.GenericFilterDecorator;
 import com.freshdirect.fdstore.content.GenericFilterValueDecoder;
 import com.freshdirect.fdstore.content.GenericFilteringMenuBuilder;
 import com.freshdirect.fdstore.content.UrlFilterValueDecoder;
-import com.freshdirect.fdstore.content.util.QueryParameter;
 import com.freshdirect.fdstore.util.FilteringNavigator;
 import com.freshdirect.framework.webapp.BodyTagSupportEx;
 
-public abstract class FilteringFlow<N> extends BodyTagSupportEx {
+public abstract class FilteringFlow<N extends ContentNodeModel> extends BodyTagSupportEx {
+	
 	private static final long serialVersionUID = 3670819169820229610L;
 
 	private String domainsId;
@@ -35,14 +35,14 @@ public abstract class FilteringFlow<N> extends BodyTagSupportEx {
 	private String filteredItemCountId;
 
 	protected GenericFilterValueDecoder decoder;
-	protected GenericFilterDecorator<N> filterValueDecorator;
-	protected GenericFilterDecorator<N> menuValueDecorator;
-	protected GenericFilter<N> filter;
-	protected GenericFilteringMenuBuilder<N> menuBuilder;
-	protected Comparator<N> comparator;
+	protected GenericFilterDecorator<FilteringSortingItem<N>> filterValueDecorator;
+	protected GenericFilterDecorator<FilteringSortingItem<N>> menuValueDecorator;
+	protected GenericFilter<FilteringSortingItem<N>> filter;
+	protected GenericFilteringMenuBuilder<FilteringSortingItem<N>> menuBuilder;
+	protected Comparator<FilteringSortingItem<N>> comparator;
 	protected FilteringNavigator nav;
 
-	List<N> items;
+	List<FilteringSortingItem<N>> items;
 
 	@Override
 	public int doStartTag() throws JspException {
@@ -56,7 +56,7 @@ public abstract class FilteringFlow<N> extends BodyTagSupportEx {
 			if (filterValues != null && filterValues.size() > 0 ) {
 				filter = createFilter(filterValues);
 				filterValueDecorator = createFilterValueDecorator();
-				for (N item : items) {
+				for (FilteringSortingItem<N> item : items) {
 					filterValueDecorator.decorateItem(item);
 				}
 				filter.applyAllFilter(items);
@@ -73,7 +73,7 @@ public abstract class FilteringFlow<N> extends BodyTagSupportEx {
 		// prepare items for menu building
 		menuValueDecorator = createMenuValueDecorator();
 
-		for (N item : items) {
+		for (FilteringSortingItem<N> item : items) {
 			menuValueDecorator.decorateItem(item);
 		}
 		
@@ -93,19 +93,19 @@ public abstract class FilteringFlow<N> extends BodyTagSupportEx {
 	}
 
 
-	protected abstract GenericFilterDecorator<N> createFilterValueDecorator();
+	protected abstract GenericFilterDecorator<FilteringSortingItem<N>> createFilterValueDecorator();
 
-	protected abstract GenericFilterDecorator<N> createMenuValueDecorator();
+	protected abstract GenericFilterDecorator<FilteringSortingItem<N>> createMenuValueDecorator();
 
-	protected abstract Comparator<N> createComparator(List<N> items);
+	protected abstract Comparator<FilteringSortingItem<N>> createComparator(List<FilteringSortingItem<N>> items);
 
-	protected abstract List<N> getItems();
+	protected abstract List<FilteringSortingItem<N>> getItems();
 
 	protected abstract Set<EnumFilteringValue> getFilterEnums();
 
-	protected abstract void postProcess(List<N> items);
+	protected abstract void postProcess(List<FilteringSortingItem<N>> items);
 
-	protected abstract void preProcess(List<N> items);
+	protected abstract void preProcess(List<FilteringSortingItem<N>> items);
 	
 	protected abstract Set<EnumFilteringValue> getFilters();
 
@@ -137,13 +137,13 @@ public abstract class FilteringFlow<N> extends BodyTagSupportEx {
 		this.nav = nav;
 	}
 
-	protected GenericFilteringMenuBuilder createMenuBuilder(Map<EnumFilteringValue, List<Object>> filterValues) {
-		return new FilteringSortingMenuBuilder(filterValues, getFilters());
+	protected GenericFilteringMenuBuilder<FilteringSortingItem<N>> createMenuBuilder(Map<EnumFilteringValue, List<Object>> filterValues) {
+		return new FilteringSortingMenuBuilder<N>(filterValues, getFilters());
 	}
 
 	
-	protected GenericFilter createFilter(Map<EnumFilteringValue, List<Object>> filterValues) {
-		return new FilteringSortingItemFilter(filterValues, getFilters());
+	protected GenericFilter<FilteringSortingItem<N>> createFilter(Map<EnumFilteringValue, List<Object>> filterValues) {
+		return new FilteringSortingItemFilter<N>(filterValues, getFilters());
 	}
 
 	protected GenericFilterValueDecoder createDecoder() {

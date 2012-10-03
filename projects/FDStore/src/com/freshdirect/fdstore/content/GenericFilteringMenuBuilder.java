@@ -6,7 +6,7 @@ import java.util.Map;
 import java.util.Set;
 
 
-public abstract class GenericFilteringMenuBuilder<N> {
+public abstract class GenericFilteringMenuBuilder<I extends FilteringSortingItem<? extends ContentNodeModel>> {
 
 	//left side filtering menu - the key in the map inside is for simplified usage only (it's the same name as the name property in the FilteringMenuItem)
 	protected Map<EnumFilteringValue, Map<String,FilteringMenuItem>> domains=new HashMap<EnumFilteringValue, Map<String,FilteringMenuItem>>();
@@ -20,7 +20,7 @@ public abstract class GenericFilteringMenuBuilder<N> {
 		this.filters = filters;
 	}
 
-	public abstract void buildMenu(List<N> items);
+	public abstract void buildMenu(List<I> items);
 
 	public Map<EnumFilteringValue, Map<String, FilteringMenuItem>> getDomains() {
 		return domains;

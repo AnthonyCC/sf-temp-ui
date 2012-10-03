@@ -4,31 +4,19 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import com.freshdirect.fdstore.content.EnumFilteringValue;
 import com.freshdirect.fdstore.content.FilteringComparatorUtil;
 import com.freshdirect.fdstore.content.FilteringSortingItem;
-import com.freshdirect.fdstore.content.FilteringSortingItemFilter;
-import com.freshdirect.fdstore.content.FilteringSortingMenuBuilder;
-import com.freshdirect.fdstore.content.FilteringValue;
-import com.freshdirect.fdstore.content.GenericFilter;
 import com.freshdirect.fdstore.content.GenericFilterDecorator;
-import com.freshdirect.fdstore.content.GenericFilterValueDecoder;
-import com.freshdirect.fdstore.content.GenericFilteringMenuBuilder;
 import com.freshdirect.fdstore.content.Recipe;
 import com.freshdirect.fdstore.content.RecipeFilterMenuDecorator;
 import com.freshdirect.fdstore.content.RecipeFilterValueDecorator;
 import com.freshdirect.fdstore.content.SearchResults;
-import com.freshdirect.fdstore.content.UrlFilterValueDecoder;
-import com.freshdirect.fdstore.util.FilteringNavigator;
 
-public class SearchRecipeTag extends FilteringFlow<FilteringSortingItem<Recipe>>{
+public class SearchRecipeTag extends FilteringFlow<Recipe>{
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 5809709785695385027L;
 	
 	private SearchResults results;
