@@ -30,6 +30,7 @@ import com.freshdirect.content.attributes.SetAttributesErpVisitor;
 import com.freshdirect.content.attributes.ejb.AttributeFacadeHome;
 import com.freshdirect.content.attributes.ejb.AttributeFacadeSB;
 import com.freshdirect.content.nutrition.ErpNutritionModel;
+import com.freshdirect.content.nutrition.NutritionDrugPanel;
 import com.freshdirect.content.nutrition.ejb.ErpNutritionHome;
 import com.freshdirect.content.nutrition.ejb.ErpNutritionSB;
 import com.freshdirect.erp.ejb.BatchManagerHome;
@@ -652,6 +653,20 @@ public class ErpFactory {
 			throw new FDResourceException(re);
 		}
 	}
+	
+	public NutritionDrugPanel getDrugPanel(String skuCode) throws FDResourceException {
+		if (nutritionHome == null) {
+			lookupNutritionHome();
+		}
+		try {
+			ErpNutritionSB nutrSB = nutritionHome.create();
+			return nutrSB.getDrugPanel(skuCode);
+		} catch (CreateException ce) {
+			throw new FDResourceException(ce);
+		} catch (RemoteException re) {
+			throw new FDResourceException(re);
+		}
+	}
 
 	public void saveNutrition(ErpNutritionModel nutrition, String user) throws FDResourceException {
 		if (nutritionHome == null) {
@@ -660,6 +675,34 @@ public class ErpFactory {
 		try {
 			ErpNutritionSB nutrSB = nutritionHome.create();
 			nutrSB.updateNutrition(nutrition, user);
+		} catch (CreateException ce) {
+			throw new FDResourceException(ce);
+		} catch (RemoteException re) {
+			throw new FDResourceException(re);
+		}
+	}
+	
+	public void saveDrugPanel(NutritionDrugPanel panel) throws FDResourceException {
+		if (nutritionHome == null) {
+			lookupNutritionHome();
+		}
+		try {
+			ErpNutritionSB nutrSB = nutritionHome.create();
+			nutrSB.saveDrugPanel(panel);
+		} catch (CreateException ce) {
+			throw new FDResourceException(ce);
+		} catch (RemoteException re) {
+			throw new FDResourceException(re);
+		}
+	}
+	
+	public void deleteDrugPanel(String skuCode) throws FDResourceException {
+		if (nutritionHome == null) {
+			lookupNutritionHome();
+		}
+		try {
+			ErpNutritionSB nutrSB = nutritionHome.create();
+			nutrSB.deleteDrugPanel(skuCode);
 		} catch (CreateException ce) {
 			throw new FDResourceException(ce);
 		} catch (RemoteException re) {

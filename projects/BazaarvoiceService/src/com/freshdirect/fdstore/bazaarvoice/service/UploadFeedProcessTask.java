@@ -43,6 +43,8 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 public class UploadFeedProcessTask {
 	
 
+	private static final String ID_RESTRICTIONS = "[^A-Za-z0-9_]";
+
 	private static final Logger LOGGER = LoggerFactory.getInstance(UploadFeedProcessTask.class);
 	
 	private List<ProductContainer> categoryStore = new ArrayList<ProductContainer>();
@@ -92,7 +94,7 @@ public class UploadFeedProcessTask {
 		collectAllProductsAndBrands();
 		
 		Element root = decorateDocumentWithRoot(doc);
-		//decorateDocumentWithBrands(doc, root);
+		decorateDocumentWithBrands(doc, root);
 		decorateDocumentWithCategories(doc, root, store);
 		decorateDocumentWithProducts(doc, root);
 		
@@ -166,11 +168,11 @@ public class UploadFeedProcessTask {
 			catExtId.appendChild(doc.createTextNode(product.getPrimaryHome().getContentKey().getId()));
 			productElement.appendChild(catExtId);
 			
-//			if(product.getBrands()!=null && product.getBrands().size()>0){
-//				Element brandExtId = doc.createElement("BrandExternalId");
-//				brandExtId.appendChild(doc.createTextNode(product.getBrands().get(0).getContentKey().getId()));
-//				productElement.appendChild(brandExtId);
-//			}
+			if(product.getBrands()!=null && product.getBrands().size()>0){
+				Element brandExtId = doc.createElement("BrandExternalId");
+				brandExtId.appendChild(doc.createTextNode(product.getBrands().get(0).getContentKey().getId().replaceAll(ID_RESTRICTIONS, "")));
+				productElement.appendChild(brandExtId);
+			}
 			
 			Element name = doc.createElement("Name");
 			name.appendChild(doc.createTextNode(product.getFullName()));
@@ -206,7 +208,7 @@ public class UploadFeedProcessTask {
 			brandRoot.appendChild(brandElement);
 			
 			Element extId = doc.createElement("ExternalId");
-			extId.appendChild(doc.createTextNode(brand.getContentKey().getId()));
+			extId.appendChild(doc.createTextNode(brand.getContentKey().getId().replaceAll(ID_RESTRICTIONS, "")));
 			brandElement.appendChild(extId);
 			
 			Element name = doc.createElement("Name");

@@ -208,10 +208,13 @@ if ( skuSize == 0 ) {
 					boolean displayShortTermUnavailability = defaultProduct.getMaterial().getBlockedDays().isEmpty();    
 				%>
 
+		
+		<fd:BvHelper prod="<%= __prd %>"/>
+		<%Boolean showRev = (Boolean)pageContext.getAttribute("showReviews"); %>
         <% if (FDStoreProperties.isBazaarvoiceEnabled() && isQuickBuy) { %>
           <%-- TODO: valid rating --%>
           <%-- <span class="star-rating rating-3"></span> --%>
-        <% } else if(FDStoreProperties.isBazaarvoiceEnabled()){ %>
+        <% } else if(FDStoreProperties.isBazaarvoiceEnabled() && showRev){ %>
           <%-- Bazaarvoice summary --%>
           <div id="BVRRSummaryContainer"></div>
         <% } %>

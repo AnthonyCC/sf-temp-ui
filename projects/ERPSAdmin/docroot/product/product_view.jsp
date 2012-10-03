@@ -381,6 +381,12 @@
 <%@ include file="i_nutrition_sheet.jspf" %>
                     </td></tr>
                     </table>
+                    <table width="600" cellspacing=2 cellpadding=0>
+                        <tr><td align="left" class="section_title">Drug Nutritional Information</td></tr>
+                    </table>
+                    <table width="600">
+                        <tr><td align="left"><a href="drug_nutrition/drug_nutrition_edit.jsp?skuCode=<%= skuCode %>">Edit Drug Nutritional Information</td></tr>
+                    </table>
                 </fd:Nutrition>
             <%  } %>
                                 

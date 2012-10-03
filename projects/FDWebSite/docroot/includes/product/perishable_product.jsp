@@ -279,7 +279,7 @@ final int W_PERISHABLE_PRODUCT_RIGHT = 369;
 				
 				SkuModel dfltSku = (SkuModel)productNode.getSkus().get( 0 );
 				FDProduct fdprod = dfltSku.getProduct();
-
+				%><h1>cica</h1> <%
 				boolean hasNutriOrIngrd = ( fdprod.hasNutritionFacts() || fdprod.hasIngredients() );
 				%>
 
@@ -309,9 +309,18 @@ final int W_PERISHABLE_PRODUCT_RIGHT = 369;
 
 <%-- Bazaarvoice review download --%>
 <script>
-  (function () {
+  (function ($) {
     if ($BV) {
       $BV.ui('rr', 'show_reviews', { productId: '<%= ProductDisplayUtil.getRealProduct(productNode).getContentName() %>'});
+      
+      $(document.body).delegate("#BVRRSummaryContainer .bv-rating-label, .bv-popup-in .bv-read-review", 'click', function (e) {
+    	  var target = document.createElement('a');
+    	  target.href = window.location.href;
+    	  target.hash = "#BVRRContainer";
+    	  target.search = target.search.replace(/product_view=[\w]+/,"product_view=reviews");
+    	  
+    	  window.location.href = target.href;
+      });
     }
-  }());
+  }(jQuery));
 </script>

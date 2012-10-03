@@ -5178,4 +5178,18 @@
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 	</tag>
+	<tag>
+		<name>BvHelper</name>
+		<tagclass>com.freshdirect.webapp.taglib.fdstore.BvHelperTag</tagclass>
+		<attribute>
+			<name>prod</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+	</tag>
+	<tag>
+		<name>DrugController</name>
+		<tagclass>com.freshdirect.webapp.taglib.content.DrugControllerTag</tagclass>
+		<info></info>
+	</tag>
 </taglib>

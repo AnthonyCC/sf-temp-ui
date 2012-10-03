@@ -10,6 +10,9 @@
 	    <%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
         <fd:javascript src="/assets/javascript/common_javascript.js"/>
 <%@ include file="/shared/template/includes/i_head_end.jspf" %>
+    <link type="text/css" href="/assets/css/common/jquery-ui_base/jquery-ui.css" rel="stylesheet" />
+	<script type="text/javascript" src="/assets/javascript/jquery/1.7.2/jquery.js"></script>
+	<script type="text/javascript" src="/assets/javascript/jquery/ui/1.8.23/jquery-ui.min.js"></script>
 </head>
 <body bgcolor="#FFFFFF" link="#336600" vlink="#336600" alink="#FF9900" text="#333333" onLoad="window.resizeTo(375,335); window.focus();" topmargin="8" marginheight="8">
 <%@ include file="/shared/template/includes/i_body_start.jspf" %>

@@ -39,7 +39,10 @@
 						<br /><br />Please check product label for nutrition, ingredients, and allergens.<br /><br />
 					<%
 				}else{
-					if (fdprd.hasNutritionFacts()) {
+					if(fdprd.getDrugPanel()!=null){%><%@ 
+						include file="/shared/includes/i_drug_nutrition_sheet.jspf" 
+					%><%
+					} else if (fdprd.hasNutritionFacts()) {
 			%>
 						<font class="space4pix"><br></font>
 							<%@ include file="/shared/includes/i_nutrition_sheet.jspf" %><br />

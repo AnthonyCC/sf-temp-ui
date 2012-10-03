@@ -291,4 +291,10 @@
             <rtexprvalue>true</rtexprvalue>
         </attribute>        
     </tag>
+    
+    <tag>
+		<name>DrugController</name>
+		<tagclass>com.freshdirect.webapp.taglib.content.DrugControllerTag</tagclass>
+		<info></info>
+	</tag>
 </taglib>

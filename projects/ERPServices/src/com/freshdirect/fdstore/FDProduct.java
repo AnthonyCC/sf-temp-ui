@@ -15,6 +15,7 @@ import com.freshdirect.content.nutrition.EnumClaimValue;
 import com.freshdirect.content.nutrition.EnumKosherSymbolValue;
 import com.freshdirect.content.nutrition.EnumKosherTypeValue;
 import com.freshdirect.content.nutrition.ErpNutritionInfoType;
+import com.freshdirect.content.nutrition.NutritionDrugPanel;
 import com.freshdirect.erp.EnumAlcoholicContent;
 import com.freshdirect.erp.SkuAvailabilityHistory;
 
@@ -50,6 +51,8 @@ public class FDProduct extends FDSku implements AttributesI {
 
 	/** nutrition. List<FDNutrition> */
 	private final List<FDNutrition> nutrition;
+	
+	private final NutritionDrugPanel drugPanel;
 
 	private FDSalesUnit[] displaySalesUnits;
 
@@ -61,7 +64,8 @@ public class FDProduct extends FDSku implements AttributesI {
 		FDVariation[] variations,
 		FDSalesUnit[] salesUnits,
 		Pricing pricing,
-		List<FDNutrition> nutrition
+		List<FDNutrition> nutrition,
+		NutritionDrugPanel panel
 		) {
 		super(skuCode, version);
 		this.pricingDate = pricingDate;
@@ -71,6 +75,7 @@ public class FDProduct extends FDSku implements AttributesI {
 		this.pricing = pricing;
 		
 		this.nutrition = nutrition;
+		this.drugPanel = panel;
 	
 	}
 	
@@ -83,7 +88,8 @@ public class FDProduct extends FDSku implements AttributesI {
 			FDSalesUnit[] salesUnits,
 			Pricing pricing,
 			List<FDNutrition> nutrition,
-			FDSalesUnit[] displaySalesUnits
+			FDSalesUnit[] displaySalesUnits,
+			NutritionDrugPanel panel
 	) {
 			super(skuCode, version);
 			this.pricingDate = pricingDate;
@@ -93,6 +99,8 @@ public class FDProduct extends FDSku implements AttributesI {
 			this.pricing = pricing;
 			this.nutrition = nutrition;
 			this.displaySalesUnits = displaySalesUnits;
+			
+			this.drugPanel = panel;
 		}
 	/**
 	 * Get effective pricing date.
@@ -345,6 +353,10 @@ public class FDProduct extends FDSku implements AttributesI {
 		return result;
 	}
 
+	public NutritionDrugPanel getDrugPanel() {
+		return drugPanel;
+	}
+
 	public boolean isTaxable() {
 		return this.material.isTaxable();
 	}
@@ -516,7 +528,7 @@ public class FDProduct extends FDSku implements AttributesI {
 	 * @return
 	 */
 	public FDProduct copy(int version) {
-	    return new FDProduct(getSkuCode(), version, new Date(), material, variations, salesUnits, pricing, nutrition, displaySalesUnits);
+	    return new FDProduct(getSkuCode(), version, new Date(), material, variations, salesUnits, pricing, nutrition, displaySalesUnits, drugPanel);
 	}
 
 }

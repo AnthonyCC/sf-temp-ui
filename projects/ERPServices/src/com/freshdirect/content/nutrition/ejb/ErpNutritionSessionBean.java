@@ -1,6 +1,6 @@
 package com.freshdirect.content.nutrition.ejb;
 
-import java.sql.Clob;
+import java.rmi.RemoteException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -20,6 +20,7 @@ import javax.ejb.FinderException;
 
 import org.apache.log4j.Category;
 
+import com.freshdirect.content.nutrition.DrugSectionTypeEnum;
 import com.freshdirect.content.nutrition.EnumAllergenValue;
 import com.freshdirect.content.nutrition.EnumClaimValue;
 import com.freshdirect.content.nutrition.EnumKosherSymbolValue;
@@ -27,9 +28,14 @@ import com.freshdirect.content.nutrition.EnumKosherTypeValue;
 import com.freshdirect.content.nutrition.EnumOrganicValue;
 import com.freshdirect.content.nutrition.ErpNutritionInfoType;
 import com.freshdirect.content.nutrition.ErpNutritionModel;
+import com.freshdirect.content.nutrition.NutritionDrugItem;
+import com.freshdirect.content.nutrition.NutritionDrugPanel;
+import com.freshdirect.content.nutrition.NutritionDrugSection;
 import com.freshdirect.content.nutrition.NutritionInfoAttribute;
 import com.freshdirect.content.nutrition.NutritionValueEnum;
 import com.freshdirect.erp.model.ActivityLog;
+import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.framework.core.SequenceGenerator;
 import com.freshdirect.framework.core.SessionBeanSupport;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
@@ -686,5 +692,301 @@ public class ErpNutritionSessionBean extends SessionBeanSupport {
                     close(conn);
     	}
     }
+    
+    //drugs
+    
+    private static final String LOAD_DRUG_PANELS = "select * from ERPS.DRUG_PANEL where DATE_MODIFIED > ? order by sku_code";
+    
+    public Map<String, NutritionDrugPanel> loadDrugPanels(Date lastModified){
+    	
+    	Connection conn = null;
+    	try{
+    		conn = this.getConnection();    		 
+    		long time = System.currentTimeMillis();    		
+    		PreparedStatement ps = conn.prepareStatement(LOAD_DRUG_PANELS);
+    		ps.setTimestamp(1, new Timestamp(lastModified.getTime()));
+    		ResultSet rs = ps.executeQuery();
+    		Map<String, NutritionDrugPanel> m = new HashMap<String, NutritionDrugPanel>();
+    		
+    		while(rs.next()){
+    			NutritionDrugPanel panel = new NutritionDrugPanel();
+    			panel.setId(rs.getString("ID"));
+    	    	panel.setSkuCode(rs.getString("SKU_CODE"));
+    	    	panel.setLastModifiedDate(rs.getTimestamp("DATE_MODIFIED"));
+    	    	populateDrugPanel(panel, conn, ps, null);
+    			m.put(panel.getSkuCode(), panel);
+    		}
+    		ps.close();
+    		rs.close();
+    		time = (System.currentTimeMillis()-time)/1000;
+   		 LOGGER.info("Time in loadDrugPanels():"+time+" secs");
+   		 return m;
+   	}catch(SQLException e){
+   		throw new EJBException(e);
+   	}finally {
+        close(conn);
+    }
+    		
+    	
+    }
+    
+    
+    private static final String SELECT_DRUG_PANEL = "select * from erps.DRUG_PANEL where SKU_CODE = ?";
+    
+    public NutritionDrugPanel getDrugPanel(String skuCode) throws RemoteException{
+    	
+    	Connection conn = null;
+    	PreparedStatement ps = null;
+    	ResultSet rs = null;
+    	try{
+    		conn = getConnection();
+    		ps = conn.prepareStatement(SELECT_DRUG_PANEL);
+    		ps.setString(1, skuCode);
+    		rs = ps.executeQuery();
+    		
+    		if(!rs.next()){
+    			return null;
+    		}
+    		
+    		NutritionDrugPanel panel = new NutritionDrugPanel();
+    		panel.setId(rs.getString("ID"));
+    		panel.setSkuCode(rs.getString("SKU_CODE"));
+    		panel.setLastModifiedDate(rs.getTimestamp("DATE_MODIFIED"));
+    		
+    		populateDrugPanel(panel, conn, ps, rs);
+    		
+    		return panel;
+    		
+    	} catch(SQLException se) {
+			LOGGER.error("Following SQLException occurred " +se.getMessage());
+			throw new EJBException(se.getMessage());
+		} finally {
+			try {
+				if (ps != null) ps.close();
+				if (rs != null) rs.close();
+			} catch (SQLException sqle2) {
+				LOGGER.warn("Unable to close connection", sqle2);
+			}
+                    close(conn);
+    	}
+
+    }
+    
+    private static final String SELECT_DRUG_SECTION = "select * from erps.DRUG_NUTRITION_SECTION where PANEL_ID = ?";
+
+    private void populateDrugPanel(NutritionDrugPanel panel, Connection conn, PreparedStatement ps, ResultSet rs) throws SQLException{
+    	
+    	ps = conn.prepareStatement(SELECT_DRUG_SECTION);
+    	ps.setString(1, panel.getId());
+    	rs = ps.executeQuery();
+    	
+    	List<NutritionDrugSection> sections = new ArrayList<NutritionDrugSection>();
+    	while(rs.next()){
+    		NutritionDrugSection section = new NutritionDrugSection();
+    		section.setId(rs.getString("ID"));
+    		section.setImportance(rs.getInt("IMPORTANCE"));
+    		section.setPosition(rs.getInt("POSITION"));
+    		section.setTitle(rs.getString("TITLE"));
+    		section.setType(DrugSectionTypeEnum.getTypeByName(rs.getString("TYPE")));
+    		
+    		populateDrugSection(section, conn);
+    		
+    		sections.add(section);
+    	}
+    	
+    	panel.setSections(sections);
+    	
+    	rs.close();
+    	ps.close();
+    }
+    
+    private static final String SELECT_DRUG_ITEM = "select * from erps.DRUG_NUTRITION_ITEM where SECTION_ID = ?";
+
+    private void populateDrugSection(NutritionDrugSection section, Connection conn) throws SQLException{
+    	
+    	PreparedStatement ps = conn.prepareStatement(SELECT_DRUG_ITEM);
+    	ps.setString(1, section.getId());
+    	ResultSet rs = ps.executeQuery();
+    	
+    	List<NutritionDrugItem> items = new ArrayList<NutritionDrugItem>();
+    	while(rs.next()){
+    		NutritionDrugItem item = new NutritionDrugItem();
+    		item.setId(rs.getString("ID"));
+    		item.setBulleted("X".equals(rs.getString("BULLETED")) ? true : false);
+    		item.setImportant("X".equals(rs.getString("IMPORTANT")) ? true : false);
+    		item.setIngredientValue(rs.getDouble("INGREDIENT_VALUE"));
+    		item.setNewline("X".equals(rs.getString("NEWLINE")) ? true : false);
+    		item.setPosition(rs.getInt("POSITION"));
+    		item.setSeparator("X".equals(rs.getString("SEPARATOR")) ? true : false);
+    		item.setUom(rs.getString("UOM"));
+    		item.setValue1(rs.getString("VALUE1"));
+    		item.setValue2(rs.getString("VALUE2"));
+    		items.add(item);
+    	}
+    	
+    	rs.close();
+    	ps.close();
+    	
+    	section.setItems(items);
+    }
+    
+    
+    private static final String SAVE_DRUG_PANEL = "insert into erps.DRUG_PANEL(ID, SKU_CODE, DATE_MODIFIED) values(?,?,?)";
+        
+	public void saveDrugPanel(NutritionDrugPanel panel) throws RemoteException, FDResourceException{
+    	
+		Connection conn = null;
+    	try{
+    		conn = getConnection();
+    		storeDrugPanel(panel, conn);			
+		} catch ( SQLException e ) {
+			//in case of sqlexception the container won't roll back the transaction so we have to take care of consistency
+			this.getSessionContext().setRollbackOnly();
+			throw new FDResourceException( e );
+		} finally {
+			close( conn );
+		}
+		
+	}
+	
+	private void storeDrugPanel(NutritionDrugPanel panel, Connection conn) throws SQLException{
+		
+		PreparedStatement ps = null;
+		
+		deleteDrugPanel(panel.getSkuCode(), conn, ps);
+		
+		Timestamp ts = new Timestamp(new Date().getTime());
+
+		String panelId = SequenceGenerator.getNextId(conn, "ERPS");
+		panel.setId(panelId);
+		
+		ps = conn.prepareStatement(SAVE_DRUG_PANEL);
+		ps.setString(1, panelId);
+		ps.setString(2, panel.getSkuCode());
+		ps.setTimestamp(3, ts);
+		ps.executeUpdate();
+		ps.close();
+		
+		saveDrugSections(panel.getSections(), panelId, conn, ps);
+	}
+	
+	private static final String SAVE_DRUG_SECTION = "insert into erps.DRUG_NUTRITION_SECTION(ID, PANEL_ID, TITLE, TYPE, POSITION, IMPORTANCE) values(?,?,?,?,?,?)";
+	
+	private void saveDrugSections(List<NutritionDrugSection> sections, String panelId, Connection conn, PreparedStatement ps) throws SQLException{
+        
+        //save panel sections
+        ps = conn.prepareStatement(SAVE_DRUG_SECTION);
+        for(NutritionDrugSection section : sections){
+        	String id = getNextId(conn);
+        	section.setId(id);
+        	ps.setString(1, id);
+        	ps.setString(2, panelId);
+        	ps.setString(3, section.getTitle());
+        	ps.setString(4, section.getType().getName());
+        	ps.setInt(5, section.getPosition());
+        	ps.setInt(6, section.getImportance());
+        	ps.addBatch();
+        }
+		
+		ps.executeBatch();
+		ps.close();
+		
+		//save section items
+		saveDrugItems(sections, conn, ps);
+	}
+	
+    private static final String SAVE_DRUG_ITEM = "insert into erps.DRUG_NUTRITION_ITEM(ID, SECTION_ID, VALUE1, VALUE2, INGREDIENT_VALUE, UOM, BULLETED, IMPORTANT, NEWLINE, SEPARATOR, POSITION) values(?,?,?,?,?,?,?,?,?,?,?)";
+	
+	private void saveDrugItems(List<NutritionDrugSection> sections, Connection conn, PreparedStatement ps) throws SQLException{
+		
+		//save items
+		ps = conn.prepareStatement(SAVE_DRUG_ITEM);
+		for(NutritionDrugSection section : sections){
+			for(NutritionDrugItem item : section.getItems()){
+				String id = getNextId(conn);
+				item.setId(id);
+				ps.setString(1, id);
+				ps.setString(2, section.getId());
+				ps.setString(3, item.getValue1());
+				ps.setString(4, item.getValue2());
+				ps.setDouble(5, item.getIngredientValue());
+				ps.setString(6, item.getUom());
+				ps.setString(7, item.isBulleted() ? "X" : "");
+				ps.setString(8, item.isImportant() ? "X" : "");
+				ps.setString(9, item.isNewline() ? "X" : "");
+				ps.setString(10, item.isSeparator() ? "X" : "");
+				ps.setInt(11, item.getPosition());				
+				ps.addBatch();				
+			}
+		}
+		ps.executeBatch();
+		ps.close();
+	}
+	
+	public void deleteDrugPanel(String skuCode) throws RemoteException, FDResourceException {
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			deleteDrugPanel(skuCode, conn, null);
+		} catch (SQLException e) {
+			throw new FDResourceException( e );
+		} finally {
+			close( conn );
+		}
+	}
+	
+	private static final String DELETE_DRUG_PANEL = "delete from erps.DRUG_PANEL where SKU_CODE = ?";
+	  
+	
+	/**
+	 * @param panel
+	 * @param conn
+	 * @param ps
+	 * @throws SQLException
+	 * 
+	 * Cascade foreign keys on sections and items!!
+	 */
+	private void deleteDrugPanel(String skuCode, Connection conn, PreparedStatement ps) throws SQLException{
+		
+		//deleteDrugSections(panel.getSections(), panel.getId(), conn, ps);
+
+		ps = conn.prepareStatement(DELETE_DRUG_PANEL);
+        ps.setString(1, skuCode);
+        ps.executeUpdate();
+        ps.close();
+        
+        
+	}
+	
+	private static final String DELETE_DRUG_SECTION = "delete from erps.DRUG_NUTRITION_SECTION where PANEL_ID = ?";
+
+	private void deleteDrugSections(List<NutritionDrugSection> sections, String panelId, Connection conn, PreparedStatement ps) throws SQLException{
+		
+		deleteDrugItems(sections, conn, ps);
+
+		ps = conn.prepareStatement(DELETE_DRUG_SECTION);
+        ps.setString(1, panelId);
+        ps.executeUpdate();
+        ps.close();
+        
+	}
+
+	
+	private static final String DELETE_DRUG_ITEM = "delete from erps.DRUG_NUTRITION_ITEM where SECTION_ID = ?";
+	
+	private void deleteDrugItems(List<NutritionDrugSection> sections, Connection conn, PreparedStatement ps) throws SQLException{
+		
+		ps = conn.prepareStatement(DELETE_DRUG_ITEM);
+		for(NutritionDrugSection section : sections){
+			ps.setString(1, section.getId());
+			ps.addBatch();
+		}
+		ps.executeBatch();
+		ps.close();
+	}
+	
+	protected String getNextId(Connection conn) throws SQLException {
+		return SequenceGenerator.getNextId(conn, "ERPS");
+	}
     
 }

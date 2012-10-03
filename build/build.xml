@@ -449,6 +449,7 @@
         <delete dir="${basedir}/projects/CRM/docroot/assets"/>
         <delete dir="${basedir}/projects/CRM/docroot/ccassets"/>
         <delete dir="${basedir}/projects/CRM/docroot/media_stat"/>
+		  <delete dir="${basedir}/projects/ERPSAdmin/docroot/assets"/>
 
 
         <copy todir="${basedir}/projects/DlvAdmin/docroot/WEB-INF/shared">
@@ -519,6 +520,9 @@
         </copy>
         <copy todir="${basedir}/projects/CRM/docroot/media_stat">
             <fileset dir="${basedir}/projects/Media/docroot/media_stat"/>
+        </copy>
+		  <copy todir="${basedir}/projects/ERPSAdmin/docroot/assets">
+            <fileset dir="${basedir}/projects/Media/docroot/assets"/>
         </copy>
     </target>
 

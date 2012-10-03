@@ -21,6 +21,7 @@ import javax.ejb.EJBObject;
 import javax.ejb.FinderException;
 
 import com.freshdirect.content.nutrition.ErpNutritionModel;
+import com.freshdirect.content.nutrition.NutritionDrugPanel;
 
 public interface ErpNutritionSB extends EJBObject{
 
@@ -33,5 +34,9 @@ public interface ErpNutritionSB extends EJBObject{
 	 public String getSkuCodeForUpc(String upc) throws FinderException, RemoteException;
 	 public List<Map<String, String>> generateNutritionReport() throws RemoteException;
 	 public List<Map<String, String>> generateClaimsReport() throws RemoteException;
+	 public Map<String, NutritionDrugPanel> loadDrugPanels(Date lastModified) throws RemoteException;
+	 public NutritionDrugPanel getDrugPanel(String skuCode) throws RemoteException;
+	 public void saveDrugPanel(NutritionDrugPanel panel) throws RemoteException;
+	 public void deleteDrugPanel(String skuCode) throws RemoteException;
 
 }
