@@ -54,6 +54,7 @@ final int W_INDEX_RIGHT_CENTER = W_INDEX_TOTAL - 228 - W_INDEX_CENTER_PADDING;
 	FilteringNavigator searchNav = new FilteringNavigator(request,20);
 	if(isDFGS) {
 		searchNav.setDeptFilter(request.getParameter("deptId"));
+		searchNav.saveState();
 	}
 	
 	final int DEFAULT_PAGE_SIZE = searchNav.getDefaultPageSize();
@@ -79,7 +80,7 @@ final int W_INDEX_RIGHT_CENTER = W_INDEX_TOTAL - 228 - W_INDEX_CENTER_PADDING;
 <fd:ProductsGroupingAndPaging items="<%= items %>" itemsId="products" nav="<%= searchNav %>" groupingsId="groups">
 <bean:define id="activeTabVal" value='products' />
 
-<tmpl:insert template='/common/template/newproducts_new.jsp'>
+<tmpl:insert template='/common/template/newproducts.jsp'>
 	<tmpl:put name="customCss">
 		<fd:css href="/assets/css/common/grid_supplement.css"></fd:css>
 		<fd:css href="/assets/css/common/product_grid.css"></fd:css>

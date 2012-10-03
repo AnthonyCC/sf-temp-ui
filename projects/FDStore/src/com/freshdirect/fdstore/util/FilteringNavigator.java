@@ -79,9 +79,7 @@ public class FilteringNavigator {
 		
 		init(p);
 		
-		
-		originalStatus = new OriginalStatus(searchTerm, view, fromDym, refined, pageSize, pageNumber, sortBy,
-				isOrderAscending, filters, cloneFilterValues(filterValues), recipes);
+		saveState();
 	}
 	
 	public FilteringNavigator() {
@@ -95,7 +93,6 @@ public class FilteringNavigator {
 
 		nav.setFilterValues(cloneFilterValues(filterValues));
 		nav.setDefaultPageSize(defaultPageSize);
-		// nav.setFilterValues(new HashMap<EnumFilteringValue, List<Object>>(filterValues));
 		nav.setPageSize(pageSize);
 		nav.setPageNumber(pageNumber);
 		nav.setSortBy(sortBy);
@@ -117,6 +114,11 @@ public class FilteringNavigator {
 
 		return clone;
 	}
+	
+	public void saveState() {
+		originalStatus = new OriginalStatus(searchTerm, view, fromDym, refined, pageSize, pageNumber, sortBy,
+				isOrderAscending, filters, cloneFilterValues(filterValues), recipes);		
+	}
 
 	public void resetState() {
 		searchTerm = originalStatus.getSearchTerm();
@@ -131,7 +133,7 @@ public class FilteringNavigator {
 		refined = originalStatus.isRefined();
 		recipes = originalStatus.isRecipes();
 	}
-
+	
 	/**
 	 * Build navigator from request parameters
 	 * 
