@@ -49,10 +49,10 @@ import com.freshdirect.analytics.TimeslotEventModel;
 import com.freshdirect.common.address.PhoneNumber;
 import com.freshdirect.common.pricing.Discount;
 import com.freshdirect.common.pricing.EnumDiscountType;
+import com.freshdirect.crm.CallLogModel;
 import com.freshdirect.crm.CrmCaseOrigin;
 import com.freshdirect.crm.CrmClick2CallModel;
 import com.freshdirect.crm.CrmClick2CallTimeModel;
-import com.freshdirect.crm.CrmLateIssueModel;
 import com.freshdirect.crm.CrmOrderStatusReportLine;
 import com.freshdirect.crm.CrmSettlementProblemReportLine;
 import com.freshdirect.crm.CrmVSCampaignModel;
@@ -3425,6 +3425,40 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 		} catch (CreateException ce) {
 			throw new FDResourceException(ce);
 		}
+	}
+	
+	public void addNewIVRCallLog(CallLogModel model) throws FDResourceException {
+		
+		Connection conn = null;
+		PreparedStatement ps = null;
+		
+		try {
+			conn = this.getConnection();
+			ps = conn.prepareStatement("INSERT INTO CUST.IVR_CALLLOG(CALLERID,ORDERNUMBER,CALLTIME,CALLDURATION,TALKTIME,PHONE_NUMBER,CALL_OUTCOME,MENU_OPTION)" +
+										" VALUES(?,?,?,?,?,?,?,?)");
+				
+			ps.setString(1, model.getCallerId());
+			ps.setString(2, model.getOrderNumber());
+			ps.setDate(3, new java.sql.Date(model.getStartTime().getTime()));
+			ps.setInt(4, model.getDuration());
+			ps.setInt(5, model.getTalkTime());
+			ps.setString(6, model.getPhoneNumber());
+			ps.setString(7, model.getCallOutcome());
+			ps.setString(8, model.getMenuOption());			
+			ps.execute();
+		} catch (SQLException sqle) {
+			LOGGER.error(sqle.getMessage(), sqle);			
+		} finally {
+			try {
+				if (conn != null) 				
+					conn.close();
+				if(ps != null)
+					ps.close();
+			} catch (SQLException sqle) {
+				LOGGER.debug("Error while cleaning:", sqle);
+			}
+		}
+		
 	}
 	
 }

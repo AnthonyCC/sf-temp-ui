@@ -15,11 +15,10 @@ import java.util.*;
 
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.customer.*;
+import com.freshdirect.crm.CallLogModel;
 import com.freshdirect.crm.CrmClick2CallModel;
 import com.freshdirect.crm.CrmVSCampaignModel;
 import com.freshdirect.customer.*;
-import com.freshdirect.delivery.model.RestrictedAddressModel;
-import com.freshdirect.delivery.restriction.RestrictionI;
 
 import com.freshdirect.fdstore.content.meal.*;
 import com.freshdirect.framework.util.GenericSearchCriteria;
@@ -157,5 +156,7 @@ public interface CallCenterManagerSB extends EJBObject {
 	public List getAutoLateDlvPassOrders(String id) throws FDResourceException, RemoteException;
 	
 	public ErpComplaintReason getReasonByCompCode(String cCode) throws FDResourceException, RemoteException;
+	
+	public void addNewIVRCallLog(CallLogModel callLogModel) throws FDResourceException, RemoteException;
 	
 }
