@@ -1,4 +1,5 @@
 		<div id="drugpanel"></div>
+		<script type="text/javascript" src="/assets/javascript/es5-shim.min.js"></script>
 		<script type="text/javascript" src="/assets/javascript/jquery.mustache.js"></script>
 		<script src="/assets/javascript/drug_nutrition_editor.js"></script>
 		<script>drugPanel(jQuery,'<%= fdprd.getDrugPanel().toJSON() %>', { container:jQuery('#drugpanel') })</script>
