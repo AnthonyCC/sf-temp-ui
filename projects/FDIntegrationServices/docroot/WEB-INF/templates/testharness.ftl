@@ -533,11 +533,16 @@ function loadStuff() {
 	var postdata = '{"groupId": "FD_PIZZA-1", "groupVersion" : "10460"}';
   	$("#payload").val(postdata);
   	$("#result").val("");
-  }  else if (loaddata == "IvrEmail") {
+  } else if (loaddata == "IvrEmail") {
   	$("#url").val("/ext/t001");
   	$("#payload").val("2202928245,applicationdevelopment@freshdirect.com,qa@freshdirect.com");
   	$("#result").val("");
-  }  else if (loaddata == "GetCountries") {
+  } else if (loaddata == "IvrCallLog") {
+  	$("#url").val("/ext/t002");
+	var postdata = '{"callerId": "9174068937","orderNumber": "11540278667", "startTime": "08/02/2012 06:05:31","duration":"2","callOutcome": "CallComplete","talkTime": "51","phoneNumber": "5717305796","menuOption": "delivery access"}';
+  	$("#payload").val(postdata);
+  	$("#result").val("");
+  } else if (loaddata == "GetCountries") {
   	$("#url").val("/lookup/countries/");  
   	$("#payload").val("");	
   	$("#result").val("");
@@ -699,6 +704,7 @@ function doStuff() {
   <option value="DeliveryPassTermsAndConditions">Help - DeliveryPass TermsAndConditions</option>
   <option value=""> ========== External Interface ========== </option>
   <option value="IvrEmail">Send - IVR Delivery Email</option>
+  <option value="IvrCallLog">Lookup - IVR Delivery Call Log</option>
   
   <option value=""> ========== Lookup ========== </option>
   <option value="GetCountries">Lookup - Get Countries</option>

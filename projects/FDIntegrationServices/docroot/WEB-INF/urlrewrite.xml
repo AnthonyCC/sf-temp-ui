@@ -574,7 +574,11 @@
 	<!-- External Interface -->
 	<rule>
 		<from>^/v/([0-9]+)/ext/t001(.*)</from>
-		<to last="true">/fdinterface.do?ver=$1</to>
+		<to last="true">/fdinterface.do?action=sendIVREmail&amp;ver=$1</to>
+	</rule>
+	<rule>
+		<from>^/v/([0-9]+)/ext/t002(.*)</from>
+		<to last="true">/fdinterface.do?action=getIVRCallLog&amp;ver=$1</to>
 	</rule>
 	
 	<!-- Lookup -->
