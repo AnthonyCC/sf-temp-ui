@@ -128,8 +128,8 @@ var drugPanel = function($,data,config){
 		},
 		getChildBox:function(){
 			var childBox =  $('.childBox',this.boundingBox).toArray();
-			if(childBox.length == 1) {
-				return childBox[0];
+			if(childBox.length > 0 ) {
+				return childBox.shift();
 			} else {
 				return this.boundingBox;
 			}
@@ -194,7 +194,8 @@ var drugPanel = function($,data,config){
 		},
 		addSection:{
 			value:function(sectionData){
-				var section = Object.create(DrugSection,{
+				var childBox = this.getChildBox(),
+					section = Object.create(DrugSection,{
 					title:{
 						value: sectionData.title || '',
 						writable:true,
@@ -213,7 +214,7 @@ var drugPanel = function($,data,config){
 				});
 
 				section.init();				
-				section.render(this.getChildBox());
+				section.render(childBox);
 				if(sectionData.items) {
 					sectionData.items.forEach(DrugSection.addItem.bind(section));
 				}
@@ -488,25 +489,25 @@ var drugPanel = function($,data,config){
 			}
 		},
 		value1Change:{
-			value:function(){
+			value:function(event){
 				var target = event.target;
 				this.value1 = target.value;
 			}
 		},
 		value2Change:{
-			value:function(){
+			value:function(event){
 				var target = event.target;
 				this.value2 = target.value;
 			}
 		},
 		ingredientValueChange:{
-			value:function(){
+			value:function(event){
 				var target = event.target;
 				this.ingredientValue = target.value;
 			}
 		},
 		uomChange:{
-			value:function(){
+			value:function(event){
 				var target = event.target;
 				this.uom = target.value;
 			}
