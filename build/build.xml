@@ -2060,6 +2060,8 @@
 			<pathelement location="${work.dir}/DataLoaderEJB-WL.jar"/>
 			<pathelement location="${work.dir}/ERPSWebApp.jar"/>
 			<pathelement location="${thirdparty.home}/struts.jar"/>
+			<pathelement location="${thirdparty.home}/jackson-core-lgpl-1.2.0.jar"/>
+			<pathelement location="${thirdparty.home}/jackson-mapper-lgpl-1.2.0.jar"/>
 		</path>
 		<makeWebProject
 			project="ERPSAdmin"
