@@ -3439,7 +3439,7 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 				
 			ps.setString(1, model.getCallerId());
 			ps.setString(2, model.getOrderNumber());
-			ps.setDate(3, new java.sql.Date(model.getStartTime().getTime()));
+			ps.setTimestamp(3, new Timestamp(model.getStartTime().getTime()));
 			ps.setInt(4, model.getDuration());
 			ps.setInt(5, model.getTalkTime());
 			ps.setString(6, model.getPhoneNumber());

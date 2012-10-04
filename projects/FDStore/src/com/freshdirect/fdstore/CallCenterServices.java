@@ -26,8 +26,8 @@ import javax.naming.NamingException;
 
 import org.apache.log4j.Category;
 
+import com.freshdirect.crm.CallLogModel;
 import com.freshdirect.crm.CrmClick2CallModel;
-import com.freshdirect.crm.CrmLateIssueModel;
 import com.freshdirect.crm.CrmVSCampaignModel;
 import com.freshdirect.customer.CustomerRatingI;
 import com.freshdirect.customer.EnumPaymentResponse;
@@ -42,23 +42,17 @@ import com.freshdirect.customer.ErpSaleModel;
 import com.freshdirect.customer.ErpSaleNotFoundException;
 import com.freshdirect.customer.ErpTransactionException;
 import com.freshdirect.customer.VSReasonCodes;
-import com.freshdirect.delivery.model.RestrictedAddressModel;
-import com.freshdirect.delivery.restriction.RestrictionI;
 import com.freshdirect.fdstore.content.meal.MealModel;
 import com.freshdirect.fdstore.customer.FDActionInfo;
 import com.freshdirect.fdstore.customer.FDAuthInfoSearchCriteria;
 import com.freshdirect.fdstore.customer.FDComplaintReportCriteria;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDIdentity;
-import com.freshdirect.fdstore.customer.FDOrderInfoI;
 import com.freshdirect.fdstore.customer.adapter.FDOrderAdapter;
 import com.freshdirect.fdstore.customer.ejb.CallCenterManagerHome;
 import com.freshdirect.fdstore.customer.ejb.CallCenterManagerSB;
-import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.util.GenericSearchCriteria;
-import com.freshdirect.framework.util.NVL;
 import com.freshdirect.framework.util.log.LoggerFactory;
-import com.freshdirect.framework.webapp.ActionError;
 
 /**
  * Singleton class for accessing functionality in ERP Services.
@@ -1182,6 +1176,22 @@ public class CallCenterServices {
 		try {
 			CallCenterManagerSB sb = callCenterHome.create();
 			return sb.getReasonByCompCode(cCode);
+		} catch (CreateException ce) {
+			callCenterHome = null;
+			throw new FDResourceException(ce, "Error creating session bean");
+		} catch (RemoteException re) {
+			callCenterHome = null;
+			throw new FDResourceException(re, "Error talking to session bean");
+		}
+	}
+	
+	public static void addNewIVRCallLog(CallLogModel callLogModel) throws FDResourceException {
+		if (callCenterHome == null) {
+			lookupManagerHome();
+		}
+		try {
+			CallCenterManagerSB sb = callCenterHome.create();
+			sb.addNewIVRCallLog(callLogModel);
 		} catch (CreateException ce) {
 			callCenterHome = null;
 			throw new FDResourceException(ce, "Error creating session bean");
