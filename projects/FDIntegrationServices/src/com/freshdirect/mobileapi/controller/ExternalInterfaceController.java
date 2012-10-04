@@ -4,30 +4,22 @@ import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Collection;
 
-import javax.naming.Context;
-import javax.naming.NamingException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Category;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.freshdirect.crm.CallLogModel;
+import com.freshdirect.fdstore.CallCenterServices;
 import com.freshdirect.fdstore.FDException;
-import com.freshdirect.fdstore.FDResourceException;
-import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDCustomerInfo;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.FDOrderI;
-import com.freshdirect.fdstore.customer.ejb.CallCenterManagerHome;
-import com.freshdirect.fdstore.customer.ejb.CallCenterManagerSB;
 import com.freshdirect.fdstore.mail.FDEmailFactory;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.mobileapi.controller.data.Message;
-import com.freshdirect.mobileapi.controller.data.PhoneNumber;
-import com.freshdirect.mobileapi.controller.data.request.BrowseQuery;
 import com.freshdirect.mobileapi.exception.JsonException;
 import com.freshdirect.mobileapi.exception.NoSessionException;
 import com.freshdirect.mobileapi.model.SessionUser;
@@ -54,7 +46,14 @@ public class ExternalInterfaceController extends BaseController {
 
     private static final String ACTION_GET_IVR_CALLLOG = "getIVRCallLog";        
  
-  	private static CallCenterManagerHome callCenterHome = null;
+    private static final String PARAM_SALE_ID = "orderNumber";
+    private static final String PARAM_CALLER_ID = "callerId";
+    private static final String PARAM_CALL_STARTTIME = "startTime";
+    private static final String PARAM_CALL_DURATION = "duration";
+    private static final String PARAM_CALL_OUTCOME = "outcome";
+    private static final String PARAM_CALL_TALKTIME = "talkTime";
+    private static final String PARAM_CALL_PHONENUMBER = "phoneNumber";
+    private static final String PARAM_CALL_MENU = "menuOption";
     
     protected boolean validateUser() {
         return false;
@@ -112,32 +111,41 @@ public class ExternalInterfaceController extends BaseController {
     	        	responseMessage.addErrorMessage("T001 Failed.");
     	        }    			
     			
-    		} else if(ACTION_GET_IVR_CALLLOG.equals(action)) {
-    			
-    			CallLogModel requestMessage = null;
-    			// Retrieving any possible payload
-    	        String postData = getPostData(request, response);
-    	        LOGGER.debug("PostData received: [" + postData + "]");
-    	        if (StringUtils.isNotEmpty(postData)) {
-    	            requestMessage = parseRequestObject(request, response, CallLogModel.class);            
-    	        }
-    			
-      	       LOGGER.info("T002: Loading IVR Call log: " + requestMessage.getCallerId()+" ,orderNumber:"+requestMessage.getOrderNumber()+" ,phoneNumber:"+requestMessage.getPhoneNumber());
+    		} else if(ACTION_GET_IVR_CALLLOG.equals(action)) {    			
+    			 			
+    			String callerId = request.getParameter(PARAM_CALLER_ID);
+     	        String callStartTime = request.getParameter(PARAM_CALL_STARTTIME);
+     	        String duration = request.getParameter(PARAM_CALL_DURATION);
+    	        String outcome = request.getParameter(PARAM_CALL_OUTCOME);
+    	        String talkTime = request.getParameter(PARAM_CALL_TALKTIME);
+     	        String phoneNumber = request.getParameter(PARAM_CALL_PHONENUMBER);
+     	        String menuOption = request.getParameter(PARAM_CALL_MENU);
      	        
-     	       lookupManagerHome();
+     	        String saleId = request.getParameter(PARAM_SALE_ID);
+     	      
+     	        LOGGER.info("T002: Loading IVR Call log: " + callerId+" ,orderNumber:"+saleId+" ,phoneNumber:"+phoneNumber);
      	       
      	       try {
+	     	       CallLogModel logModel = new CallLogModel();
+	     	       logModel.setCallerId(callerId);
+	     	       logModel.setOrderNumber(saleId);
+	     	       if(callStartTime != null && !"".equals(callStartTime))
+	     	    	   logModel.setStartTime(new SimpleDateFormat("MM/dd/yyyy hh:mm aaa").parse(callStartTime));
+	     	       logModel.setDuration(Integer.parseInt(duration));
+	     	       logModel.setCallOutcome(outcome);
+	     	       logModel.setPhoneNumber(phoneNumber);
+	     	       logModel.setTalkTime(Integer.parseInt(talkTime));
+	     	       logModel.setMenuOption(menuOption);
 	     	      
-	     	        CallCenterManagerSB sb = callCenterHome.create();
-	     	        sb.addNewIVRCallLog(requestMessage);
-	     	   	    responseMessage = Message.createSuccessMessage("T002 Successfull.");
+	     	       CallCenterServices.addNewIVRCallLog(logModel);
+	     	   	   responseMessage = Message.createSuccessMessage("T002 Successfull.");
 	     	        
      	        } catch(Exception e) {
 	        		e.printStackTrace();
-	        		LOGGER.info("T002_EXP: Unable to save IVR Call log for Order " + requestMessage.getOrderNumber());
+	        		LOGGER.info("T002_EXP: Unable to save IVR Call log for Order " + saleId);
 	        	}
      	        if(responseMessage == null) {
-	  	        	LOGGER.info("T002: Failed IVR call logging " + requestMessage.getOrderNumber());
+	  	        	LOGGER.info("T002: Failed IVR call logging " + saleId);
 	  	        	responseMessage = new Message();
 	  	        	responseMessage.addErrorMessage("T002 Failed.");
 	     	    }   
@@ -147,19 +155,4 @@ public class ExternalInterfaceController extends BaseController {
     	}
         return model;
     }
-    
-    protected static void lookupManagerHome() throws FDResourceException {
-		Context ctx = null;
-		try {
-			ctx = FDStoreProperties.getInitialContext();
-			callCenterHome = (CallCenterManagerHome) ctx.lookup(FDStoreProperties.getCallCenterManagerHome());
-		} catch (NamingException ne) {
-			throw new FDResourceException(ne);
-		} finally {
-			try {
-				ctx.close();
-			} catch (NamingException e) {
-			}
-		}
-	}
 }

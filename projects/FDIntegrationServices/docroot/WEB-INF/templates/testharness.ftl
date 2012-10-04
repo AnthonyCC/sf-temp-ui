@@ -538,8 +538,8 @@ function loadStuff() {
   	$("#payload").val("2202928245,applicationdevelopment@freshdirect.com,qa@freshdirect.com");
   	$("#result").val("");
   } else if (loaddata == "IvrCallLog") {
-  	$("#url").val("/ext/t002");
-	var postdata = '{"callerId": "9174068937","orderNumber": "11540278667", "startTime": "08/02/2012 06:05:31","duration":"2","callOutcome": "CallComplete","talkTime": "51","phoneNumber": "5717305796","menuOption": "delivery access"}';
+  	$("#url").val("/ext/t002/");
+	var postdata = '9174068937,11540278667,10/04/2012 06:05 AM,2,CallComplete,51,571-730-5796,delivery access';
   	$("#payload").val(postdata);
   	$("#result").val("");
   } else if (loaddata == "GetCountries") {
@@ -569,6 +569,32 @@ function doStuff() {
   	 	}
   	 	if(temp.length > 2) {
   	 		postData = postData + "&bcc=" + $.URLEncode(temp[2]);
+  	 	}
+  	 } 
+  } else if($("#loaddata").val() == "IvrCallLog") {
+  	 var temp = payload.split(",");
+  	 if(temp != null && temp.length > 0) {
+  	 	postData = postData + "callerId=" + $.URLEncode(temp[0]);
+  	 	if(temp.length > 1) {
+  	 		postData = postData + "&orderNumber=" + $.URLEncode(temp[1]);
+  	 	}
+  	 	if(temp.length > 2) {
+  	 		postData = postData + "&startTime=" + $.URLEncode(temp[2]);
+  	 	}
+		if(temp.length > 3) {
+  	 		postData = postData + "&duration=" + $.URLEncode(temp[3]);
+  	 	}
+		if(temp.length > 4) {
+  	 		postData = postData + "&outcome=" + $.URLEncode(temp[4]);
+  	 	}
+		if(temp.length > 5) {
+  	 		postData = postData + "&talkTime=" + $.URLEncode(temp[5]);
+  	 	}
+		if(temp.length > 6) {
+  	 		postData = postData + "&phoneNumber=" + $.URLEncode(temp[6]);
+  	 	}
+		if(temp.length > 7) {
+  	 		postData = postData + "&menuOption=" + $.URLEncode(temp[7]);
   	 	}
   	 } 
   } else {
