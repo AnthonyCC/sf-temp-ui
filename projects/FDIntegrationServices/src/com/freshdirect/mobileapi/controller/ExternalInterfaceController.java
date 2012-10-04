@@ -1,6 +1,5 @@
 package com.freshdirect.mobileapi.controller;
 
-import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Collection;
 
@@ -25,6 +24,7 @@ import com.freshdirect.mobileapi.exception.NoSessionException;
 import com.freshdirect.mobileapi.model.SessionUser;
 import com.freshdirect.mobileapi.service.ServiceException;
 import com.freshdirect.mobileapi.util.MobileApiProperties;
+import com.freshdirect.mobileapi.util.DataUtil;
 
 /**
  * @author Rob
@@ -127,6 +127,7 @@ public class ExternalInterfaceController extends BaseController {
         return model;
     }
     
+    private static final String PARAM_CALLER_GUIID = "data";
     private static final String PARAM_CALLER_ID = "callerId";
     private static final String PARAM_SALE_ID = "orderNumber";    
     private static final String PARAM_CALL_STARTTIME = "callStartTime";
@@ -139,13 +140,13 @@ public class ExternalInterfaceController extends BaseController {
     private CallLogModel getCallLogModelFromRequest(HttpServletRequest request) throws Exception {
     	
     	CallLogModel logModel = new CallLogModel();
-    	logModel.setCallerGUIId(request.getParameter(PARAM_ORDER_ID));// Caller GUI ID will be passed in "data" param
+    	logModel.setCallerGUIId(request.getParameter(PARAM_CALLER_GUIID));// Caller GUI ID will be passed in "data" param
     	logModel.setCallerId(request.getParameter(PARAM_CALLER_ID));
     	logModel.setOrderNumber(request.getParameter(PARAM_SALE_ID));
-    	logModel.setStartTime(new SimpleDateFormat("MM/dd/yyyy hh:mm aaa").parse(request.getParameter(PARAM_CALL_STARTTIME)));
-    	logModel.setDuration(Integer.parseInt(request.getParameter(PARAM_CALL_DURATION)));
+    	logModel.setStartTime(DataUtil.getDatewithTime(request.getParameter(PARAM_CALL_STARTTIME)));
+    	logModel.setDuration(DataUtil.getInt(request.getParameter(PARAM_CALL_DURATION)));
     	logModel.setCallOutcome(request.getParameter(PARAM_CALL_OUTCOME));	       
-    	logModel.setTalkTime(Integer.parseInt(request.getParameter(PARAM_CALL_TALKTIME)));
+    	logModel.setTalkTime(DataUtil.getInt(request.getParameter(PARAM_CALL_TALKTIME)));
     	logModel.setPhoneNumber(request.getParameter(PARAM_CALL_PHONENUMBER));
     	logModel.setMenuOption(request.getParameter(PARAM_CALL_MENU));
     	return logModel;  

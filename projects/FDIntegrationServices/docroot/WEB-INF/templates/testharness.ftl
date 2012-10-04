@@ -539,7 +539,7 @@ function loadStuff() {
   	$("#result").val("");
   } else if (loaddata == "IvrCallLog") {
   	$("#url").val("/ext/t002/");
-	var postdata = '9174068937,11540278667,10/04/2012 06:05 AM,2,CallComplete,51,571-730-5796,delivery access';
+	var postdata = '1,9174068937,11540278667,10/04/2012 06:05 AM,2,CallComplete,51,571-730-5796,delivery access';
   	$("#payload").val(postdata);
   	$("#result").val("");
   } else if (loaddata == "GetCountries") {
@@ -574,27 +574,30 @@ function doStuff() {
   } else if($("#loaddata").val() == "IvrCallLog") {
   	 var temp = payload.split(",");
   	 if(temp != null && temp.length > 0) {
-  	 	postData = postData + "callerId=" + $.URLEncode(temp[0]);
+  	 	postData = postData + "data=" + $.URLEncode(temp[0]);
   	 	if(temp.length > 1) {
-  	 		postData = postData + "&orderNumber=" + $.URLEncode(temp[1]);
+  	 		postData = postData + "&callerId=" + $.URLEncode(temp[1]);
   	 	}
-  	 	if(temp.length > 2) {
-  	 		postData = postData + "&startTime=" + $.URLEncode(temp[2]);
+		if(temp.length > 2) {
+  	 		postData = postData + "&orderNumber=" + $.URLEncode(temp[2);
   	 	}
-		if(temp.length > 3) {
-  	 		postData = postData + "&duration=" + $.URLEncode(temp[3]);
+  	 	if(temp.length > 3) {
+  	 		postData = postData + "&startTime=" + $.URLEncode(temp[3]);
   	 	}
 		if(temp.length > 4) {
-  	 		postData = postData + "&outcome=" + $.URLEncode(temp[4]);
+  	 		postData = postData + "&duration=" + $.URLEncode(temp[4]);
   	 	}
 		if(temp.length > 5) {
-  	 		postData = postData + "&talkTime=" + $.URLEncode(temp[5]);
+  	 		postData = postData + "&outcome=" + $.URLEncode(temp[5]);
   	 	}
 		if(temp.length > 6) {
-  	 		postData = postData + "&phoneNumber=" + $.URLEncode(temp[6]);
+  	 		postData = postData + "&talkTime=" + $.URLEncode(temp[6]);
   	 	}
 		if(temp.length > 7) {
-  	 		postData = postData + "&menuOption=" + $.URLEncode(temp[7]);
+  	 		postData = postData + "&phoneNumber=" + $.URLEncode(temp[7]);
+  	 	}
+		if(temp.length > 8) {
+  	 		postData = postData + "&menuOption=" + $.URLEncode(temp[8]);
   	 	}
   	 } 
   } else {
