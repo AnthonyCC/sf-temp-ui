@@ -46,15 +46,7 @@ public class ExternalInterfaceController extends BaseController {
 
     private static final String ACTION_GET_IVR_CALLLOG = "getIVRCallLog";        
  
-    private static final String PARAM_SALE_ID = "orderNumber";
-    private static final String PARAM_CALLER_ID = "callerId";
-    private static final String PARAM_CALL_STARTTIME = "startTime";
-    private static final String PARAM_CALL_DURATION = "duration";
-    private static final String PARAM_CALL_OUTCOME = "outcome";
-    private static final String PARAM_CALL_TALKTIME = "talkTime";
-    private static final String PARAM_CALL_PHONENUMBER = "phoneNumber";
-    private static final String PARAM_CALL_MENU = "menuOption";
-    
+        
     protected boolean validateUser() {
         return false;
     }
@@ -111,41 +103,20 @@ public class ExternalInterfaceController extends BaseController {
     	        	responseMessage.addErrorMessage("T001 Failed.");
     	        }    			
     			
-    		} else if(ACTION_GET_IVR_CALLLOG.equals(action)) {    			
-    			 			
-    			String callerId = request.getParameter(PARAM_CALLER_ID);
-     	        String callStartTime = request.getParameter(PARAM_CALL_STARTTIME);
-     	        String duration = request.getParameter(PARAM_CALL_DURATION);
-    	        String outcome = request.getParameter(PARAM_CALL_OUTCOME);
-    	        String talkTime = request.getParameter(PARAM_CALL_TALKTIME);
-     	        String phoneNumber = request.getParameter(PARAM_CALL_PHONENUMBER);
-     	        String menuOption = request.getParameter(PARAM_CALL_MENU);
-     	        
-     	        String saleId = request.getParameter(PARAM_SALE_ID);
-     	      
-     	        LOGGER.info("T002: Loading IVR Call log: " + callerId+" ,orderNumber:"+saleId+" ,phoneNumber:"+phoneNumber);
+    		} else if(ACTION_GET_IVR_CALLLOG.equals(action)) {
      	       
      	       try {
-	     	       CallLogModel logModel = new CallLogModel();
-	     	       logModel.setCallerId(callerId);
-	     	       logModel.setOrderNumber(saleId);
-	     	       if(callStartTime != null && !"".equals(callStartTime))
-	     	    	   logModel.setStartTime(new SimpleDateFormat("MM/dd/yyyy hh:mm aaa").parse(callStartTime));
-	     	       logModel.setDuration(Integer.parseInt(duration));
-	     	       logModel.setCallOutcome(outcome);
-	     	       logModel.setPhoneNumber(phoneNumber);
-	     	       logModel.setTalkTime(Integer.parseInt(talkTime));
-	     	       logModel.setMenuOption(menuOption);
-	     	      
-	     	       CallCenterServices.addNewIVRCallLog(logModel);
-	     	   	   responseMessage = Message.createSuccessMessage("T002 Successfull.");
+     	    	   CallLogModel logModel = getCallLogModelFromRequest(request);
+     	    	   LOGGER.info("T002: Loading IVR Call log: " + logModel.toString());
+     	    	   CallCenterServices.addNewIVRCallLog(logModel);
+     	    	   responseMessage = Message.createSuccessMessage("T002 Successfull.");
 	     	        
      	        } catch(Exception e) {
 	        		e.printStackTrace();
-	        		LOGGER.info("T002_EXP: Unable to save IVR Call log for Order " + saleId);
+	        		LOGGER.info("T002_EXP: Unable to save IVR Call log for Order ");
 	        	}
      	        if(responseMessage == null) {
-	  	        	LOGGER.info("T002: Failed IVR call logging " + saleId);
+	  	        	LOGGER.info("T002: Failed IVR call logging ");
 	  	        	responseMessage = new Message();
 	  	        	responseMessage.addErrorMessage("T002 Failed.");
 	     	    }   
@@ -154,5 +125,29 @@ public class ExternalInterfaceController extends BaseController {
 	        setResponseMessage(model, responseMessage, user);
     	}
         return model;
+    }
+    
+    private static final String PARAM_CALLER_ID = "callerId";
+    private static final String PARAM_SALE_ID = "orderNumber";    
+    private static final String PARAM_CALL_STARTTIME = "callStartTime";
+    private static final String PARAM_CALL_DURATION = "callDuration";
+    private static final String PARAM_CALL_OUTCOME = "callOutcome";
+    private static final String PARAM_CALL_TALKTIME = "talkTime";
+    private static final String PARAM_CALL_PHONENUMBER = "phoneNumber";
+    private static final String PARAM_CALL_MENU = "menuOption";
+    
+    private CallLogModel getCallLogModelFromRequest(HttpServletRequest request) throws Exception {
+    	
+    	CallLogModel logModel = new CallLogModel();
+    	logModel.setCallerGUIId(request.getParameter(PARAM_ORDER_ID));// Caller GUI ID will be passed in "data" param
+    	logModel.setCallerId(request.getParameter(PARAM_CALLER_ID));
+    	logModel.setOrderNumber(request.getParameter(PARAM_SALE_ID));
+    	logModel.setStartTime(new SimpleDateFormat("MM/dd/yyyy hh:mm aaa").parse(request.getParameter(PARAM_CALL_STARTTIME)));
+    	logModel.setDuration(Integer.parseInt(request.getParameter(PARAM_CALL_DURATION)));
+    	logModel.setCallOutcome(request.getParameter(PARAM_CALL_OUTCOME));	       
+    	logModel.setTalkTime(Integer.parseInt(request.getParameter(PARAM_CALL_TALKTIME)));
+    	logModel.setPhoneNumber(request.getParameter(PARAM_CALL_PHONENUMBER));
+    	logModel.setMenuOption(request.getParameter(PARAM_CALL_MENU));
+    	return logModel;  
     }
 }

@@ -6,6 +6,7 @@ import java.util.Date;
 public class CallLogModel implements Serializable {
 	
 	private String callerId;
+	private String callerGUIId;
 	private String orderNumber;
 	private Date startTime;
 	private int duration;
@@ -18,19 +19,15 @@ public class CallLogModel implements Serializable {
 		super();
 		// TODO Auto-generated constructor stub
 	}
-	public CallLogModel(String callerId, String orderNumber, Date startTime,
-			int duration, String callOutcome, String phoneNumber,
-			String menuOption, int talkTime) {
-		super();
-		this.callerId = callerId;
-		this.orderNumber = orderNumber;
-		this.startTime = startTime;
-		this.duration = duration;
-		this.callOutcome = callOutcome;
-		this.phoneNumber = phoneNumber;
-		this.menuOption = menuOption;
-		this.talkTime = talkTime;
+	
+	public String getCallerGUIId() {
+		return callerGUIId;
 	}
+
+	public void setCallerGUIId(String callerGUIId) {
+		this.callerGUIId = callerGUIId;
+	}
+
 	public String getCallerId() {
 		return callerId;
 	}
@@ -79,4 +76,13 @@ public class CallLogModel implements Serializable {
 	public void setTalkTime(int talkTime) {
 		this.talkTime = talkTime;
 	}
+
+	@Override
+	public String toString() {
+		return "CallLogModel [callerId=" + callerId + ", callerGUIId="
+				+ callerGUIId + ", orderNumber=" + orderNumber
+				+ ", phoneNumber=" + phoneNumber + "]";
+	}
+	
+	
 }
