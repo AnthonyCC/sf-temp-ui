@@ -117,8 +117,6 @@ public class GeoRestrictionFormController extends AbstractFormController {
 						+ (indexSize) + "].startTime");
 				String endTime = request.getParameter("attributeList["
 						+ (indexSize) + "].endTime");
-				String windowTypes = request.getParameter("attributeList["
-						+ (indexSize) + "].windowTypes");
 
 				if (null == dayOfWeek || "".equals(dayOfWeek)) { // tbr
 					break;
@@ -142,7 +140,7 @@ public class GeoRestrictionFormController extends AbstractFormController {
 
 					day = new GeoRestrictionDays(id, EnumLogicalOperator
 							.getEnum(condition), new TimeOfDay(startTime),
-							new TimeOfDay(endTime), windowTypes);
+							new TimeOfDay(endTime));
 					restrictionDaysList.add(day);
 				} finally {
 
