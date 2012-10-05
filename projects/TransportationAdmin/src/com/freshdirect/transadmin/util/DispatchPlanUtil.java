@@ -474,6 +474,17 @@ public class DispatchPlanUtil {
 		return resourceReqs;
 	}
 
+	private static boolean isShuttlePlan(WebPlanInfo model)
+	{
+		return model.getDestinationFacility()!=null &&  model.getDestinationFacility().getTrnFacilityType()!=null &&
+				 model.getDestinationFacility().getTrnFacilityType().getName().equals(EnumTransportationFacilitySrc.DEPOTDELIVERY.getName());
+	}
+	private static boolean isRunnerPlan(WebPlanInfo model)
+	{
+		return model.getOriginFacility()!=null && model.getOriginFacility().getTrnFacilityType()!=null && 
+				model.getOriginFacility().getTrnFacilityType().getName().equals(EnumTransportationFacilitySrc.DEPOTDELIVERY.getName());
+	}
+	
 	private static void setResourceReq(WebPlanInfo model, Zone zone) {
 
 		if(isBullpen(model.getIsBullpen()) || (EnumDispatchType.LIGHTDUTYDISPATCH.getName().equals(model.getDispatchType()))) {
@@ -481,7 +492,18 @@ public class DispatchPlanUtil {
 			setHelperRequirements(model,TransportationAdminProperties.getHelperReqForBullpen(),TransportationAdminProperties.getHelperMaxForBullpen());
 			setRunnerRequirements(model,TransportationAdminProperties.getRunnerReqForBullpen(),TransportationAdminProperties.getRunnerMaxForBullpen());
 
-		} else if(hasResources(zone)) {
+		} 
+		else if(isShuttlePlan(model)){
+			setDriverRequirements(model,TransportationAdminProperties.getDriverReqForShuttle(),TransportationAdminProperties.getDriverMaxForShuttle());
+			setHelperRequirements(model,TransportationAdminProperties.getHelperReqForShuttle(),TransportationAdminProperties.getHelperMaxForShuttle());
+			setRunnerRequirements(model,TransportationAdminProperties.getRunnerReqForShuttle(),TransportationAdminProperties.getRunnerMaxForShuttle());
+		}else if(isRunnerPlan(model)){
+			setDriverRequirements(model,TransportationAdminProperties.getDriverReqForHandTruck(),TransportationAdminProperties.getDriverMaxForHandTruck());
+			setHelperRequirements(model,TransportationAdminProperties.getHelperReqForHandTruck(),TransportationAdminProperties.getHelperMaxForHandTruck());
+			setRunnerRequirements(model,TransportationAdminProperties.getRunnerReqForHandTruck(),TransportationAdminProperties.getRunnerMaxForHandTruck());
+		}
+		
+		else if(hasResources(zone)) {
 
 			Iterator _it=zone.getTrnZoneType().getZonetypeResources().iterator();
 			boolean hasDrivers=false;

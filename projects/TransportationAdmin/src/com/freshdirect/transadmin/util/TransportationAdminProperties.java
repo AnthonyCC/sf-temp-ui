@@ -97,6 +97,23 @@ public class TransportationAdminProperties {
 	private final static String PROP_TRANSPORTATION_TRAILER_RUNNER_REQ = "transportation.trailer.runner.req";
 	private final static String PROP_TRANSPORTATION_TRAILER_RUNNER_MAX = "transportation.trailer.runner.max";
 
+	/* Shuttle resource req */
+	private final static String PROP_TRANSPORTATION_SHUTTLE_DRIVER_REQ = "transportation.shuttle.driver.req";
+	private final static String PROP_TRANSPORTATION_SHUTTLE_DRIVER_MAX = "transportation.shuttle.driver.max";
+	private final static String PROP_TRANSPORTATION_SHUTTLE_HELPER_REQ = "transportation.shuttle.helper.req";
+	private final static String PROP_TRANSPORTATION_SHUTTLE_HELPER_MAX = "transportation.shuttle.helper.max";
+	private final static String PROP_TRANSPORTATION_SHUTTLE_RUNNER_REQ = "transportation.shuttle.runner.req";
+	private final static String PROP_TRANSPORTATION_SHUTTLE_RUNNER_MAX = "transportation.shuttle.runner.max";
+
+	/* handtruck resource req */
+	private final static String PROP_TRANSPORTATION_HANDTRUCK_DRIVER_REQ = "transportation.handtruck.driver.req";
+	private final static String PROP_TRANSPORTATION_HANDTRUCK_DRIVER_MAX = "transportation.handtruck.driver.max";
+	private final static String PROP_TRANSPORTATION_HANDTRUCK_HELPER_REQ = "transportation.handtruck.helper.req";
+	private final static String PROP_TRANSPORTATION_HANDTRUCK_HELPER_MAX = "transportation.handtruck.helper.max";
+	private final static String PROP_TRANSPORTATION_HANDTRUCK_RUNNER_REQ = "transportation.handtruck.runner.req";
+	private final static String PROP_TRANSPORTATION_HANDTRUCK_RUNNER_MAX = "transportation.handtruck.runner.max";
+
+	
 	// remember it is in minutes
 	private static final String PROP_TRANSPORTATION_TRK_CACHE_EXPIRY_TIME="transportation.truck.cache.expiry.time";
 	private static final String PROP_TRANSPORTATION_ROUTE_CACHE_EXPIRY_TIME="transportation.route.cache.expiry.time";
@@ -296,7 +313,22 @@ public class TransportationAdminProperties {
 		defaults.put(PROP_TRANSPORTATION_TRAILER_HELPER_MAX, "5");
 		defaults.put(PROP_TRANSPORTATION_TRAILER_RUNNER_REQ, "0");
 		defaults.put(PROP_TRANSPORTATION_TRAILER_RUNNER_MAX, "5");
-
+		
+		defaults.put(PROP_TRANSPORTATION_SHUTTLE_DRIVER_REQ, "1");
+		defaults.put(PROP_TRANSPORTATION_SHUTTLE_DRIVER_MAX, "1");
+		defaults.put(PROP_TRANSPORTATION_SHUTTLE_HELPER_REQ, "0");
+		defaults.put(PROP_TRANSPORTATION_SHUTTLE_HELPER_MAX, "5");
+		defaults.put(PROP_TRANSPORTATION_SHUTTLE_RUNNER_REQ, "0");
+		defaults.put(PROP_TRANSPORTATION_SHUTTLE_RUNNER_MAX, "5");
+		
+		defaults.put(PROP_TRANSPORTATION_HANDTRUCK_DRIVER_REQ, "0");
+		defaults.put(PROP_TRANSPORTATION_HANDTRUCK_DRIVER_MAX, "0");
+		defaults.put(PROP_TRANSPORTATION_HANDTRUCK_HELPER_REQ, "0");
+		defaults.put(PROP_TRANSPORTATION_HANDTRUCK_HELPER_MAX, "0");
+		defaults.put(PROP_TRANSPORTATION_HANDTRUCK_RUNNER_REQ, "1");
+		defaults.put(PROP_TRANSPORTATION_HANDTRUCK_RUNNER_MAX, "6");
+	
+		
 		defaults.put(PROP_TRANSPORTATION_ZONETYPE_DRIVER_REQ, "0");
 		defaults.put(PROP_TRANSPORTATION_ZONETYPE_DRIVER_MAX, "10");
 		defaults.put(PROP_TRANSPORTATION_ZONETYPE_HELPER_REQ, "0");
@@ -838,7 +870,7 @@ public class TransportationAdminProperties {
 	}
 	public static int getDriverReqForTrailer() {
 		return getIntVal(get(PROP_TRANSPORTATION_TRAILER_DRIVER_REQ));
-}
+	}
 	public static int getDriverMaxForTrailer() {
 		return getIntVal(get(PROP_TRANSPORTATION_TRAILER_DRIVER_MAX));
 	}
@@ -855,6 +887,44 @@ public class TransportationAdminProperties {
 		return getIntVal(get(PROP_TRANSPORTATION_TRAILER_RUNNER_MAX));
 	}
 
+	public static int getDriverReqForShuttle() {
+		return getIntVal(get(PROP_TRANSPORTATION_SHUTTLE_DRIVER_REQ));
+	}
+	public static int getDriverMaxForShuttle() {
+		return getIntVal(get(PROP_TRANSPORTATION_SHUTTLE_DRIVER_MAX));
+	}
+	public static int getHelperReqForShuttle() {
+		return getIntVal(get(PROP_TRANSPORTATION_SHUTTLE_HELPER_REQ));
+	}
+	public static int getHelperMaxForShuttle() {
+		return getIntVal(get(PROP_TRANSPORTATION_SHUTTLE_HELPER_MAX));
+	}
+	public static int getRunnerReqForShuttle() {
+		return getIntVal(get(PROP_TRANSPORTATION_SHUTTLE_RUNNER_REQ));
+	}
+	public static int getRunnerMaxForShuttle() {
+		return getIntVal(get(PROP_TRANSPORTATION_SHUTTLE_RUNNER_MAX));
+	}
+	
+	public static int getDriverReqForHandTruck() {
+		return getIntVal(get(PROP_TRANSPORTATION_HANDTRUCK_DRIVER_REQ));
+	}
+	public static int getDriverMaxForHandTruck() {
+		return getIntVal(get(PROP_TRANSPORTATION_HANDTRUCK_DRIVER_MAX));
+	}
+	public static int getHelperReqForHandTruck() {
+		return getIntVal(get(PROP_TRANSPORTATION_HANDTRUCK_HELPER_REQ));
+	}
+	public static int getHelperMaxForHandTruck() {
+		return getIntVal(get(PROP_TRANSPORTATION_HANDTRUCK_HELPER_MAX));
+	}
+	public static int getRunnerReqForHandTruck() {
+		return getIntVal(get(PROP_TRANSPORTATION_HANDTRUCK_RUNNER_REQ));
+	}
+	public static int getRunnerMaxForHandTruck() {
+		return getIntVal(get(PROP_TRANSPORTATION_HANDTRUCK_RUNNER_MAX));
+	}
+	
 	public static String getFDHeadQuarterKey() {
 		return get(PROP_FDPARKING_HQLOCATION);
 	}

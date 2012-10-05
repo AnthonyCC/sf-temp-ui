@@ -42,7 +42,8 @@ public class WaveUtil {
 				IWaveInstanceSource instanceSource = (IWaveInstanceSource)_itr.next();
 				if(instanceSource.getZone() != null && 
 						(instanceSource.getDestinationFacility()==null || 
-						(instanceSource.getDestinationFacility()!=null && !instanceSource.getDestinationFacility().getTrnFacilityType().getName().equals(EnumTransportationFacilitySrc.DEPOTDELIVERY.getName())))) { 
+						(instanceSource.getDestinationFacility()!=null && instanceSource.getDestinationFacility().getTrnFacilityType()!=null && 
+						!EnumTransportationFacilitySrc.DEPOTDELIVERY.getName().equals(instanceSource.getDestinationFacility().getTrnFacilityType().getName())))) { 
 					if(instanceSource.needsConsolidation()) {
 						zonesForConsolidation.add(instanceSource.getZone().getZoneCode());
 					}

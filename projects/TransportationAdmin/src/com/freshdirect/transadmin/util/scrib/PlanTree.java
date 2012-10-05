@@ -793,18 +793,16 @@ class DepotTimeNode extends PlanTreeNode  {
 					} else {
 						zoneTypeResources = s.getZone().getTrnZoneType().getZonetypeResources();
 						
-						if(EnumTransportationFacilitySrc.DEPOTDELIVERY.getName().equals(s.getDestinationFacility().getTrnFacilityType().getName()))
+						if(s.getDestinationFacility()!=null && s.getDestinationFacility().getTrnFacilityType()!=null && 
+								EnumTransportationFacilitySrc.DEPOTDELIVERY.getName().equals(s.getDestinationFacility().getTrnFacilityType().getName()))
 						{
-							for (Iterator j = zoneTypeResources.iterator(); j.hasNext();) {
-								ZonetypeResource r = (ZonetypeResource) j.next();
 								// Driver
-								if (ScheduleEmployeeInfo.DRIVER.equalsIgnoreCase(r.getId().getRole())) {
-									int min = r.getRequiredNo().intValue();
+								
 									int count = 0;
 									for (Iterator k = resources.iterator(); k.hasNext();) {
 										ScheduleEmployeeDetails se = (ScheduleEmployeeDetails) k.next();
 										if(se.getMembers() == null || se.getMembers().size() == 0) {
-											if (count >= min)
+											if (count >=  TransportationAdminProperties.getDriverReqForShuttle())
 												break;
 											
 											_tmpPlanResource = TreeDataUtil.matchResource(se, ScheduleEmployeeInfo.DRIVER);
@@ -815,16 +813,16 @@ class DepotTimeNode extends PlanTreeNode  {
 											}
 										}
 									}
-								}
+								
 			
 								// Helper
-								if (ScheduleEmployeeInfo.HELPER.equalsIgnoreCase(r.getId().getRole())) {
-									int min = r.getRequiredNo().intValue();
-									int count = 0;
+								
+									
+									count = 0;
 									for (Iterator k = resources.iterator(); k.hasNext();) {
 										ScheduleEmployeeDetails se = (ScheduleEmployeeDetails) k.next();
 										if(se.getMembers() == null || se.getMembers().size() == 0) {
-											if (count >= min)
+											if (count >= TransportationAdminProperties.getHelperReqForShuttle())
 												break;
 											
 											_tmpPlanResource = TreeDataUtil.matchResource(se, ScheduleEmployeeInfo.HELPER);
@@ -835,26 +833,26 @@ class DepotTimeNode extends PlanTreeNode  {
 											}
 										}
 									}
-								}
-							}
 						}
-						else
+						else if(s.getOriginFacility()!=null && 
+								EnumTransportationFacilitySrc.DEPOTDELIVERY.getName().equals(s.getOriginFacility().getTrnFacilityType().getName()))
 						{
-							int count = 0;
-							for (Iterator k = resources.iterator(); k.hasNext();) {
-								ScheduleEmployeeDetails se = (ScheduleEmployeeDetails) k.next();
-								if(se.getMembers() == null || se.getMembers().size() == 0) {
-									if (count >= 1)
-										break;
-									
-									_tmpPlanResource = TreeDataUtil.matchResource(se, ScheduleEmployeeInfo.RUNNER);
-									if(_tmpPlanResource != null) {
-										p.getPlanResources().add(_tmpPlanResource);
-										k.remove();
-										count++;
+							
+								int count = 0;
+								for (Iterator k = resources.iterator(); k.hasNext();) {
+										ScheduleEmployeeDetails se = (ScheduleEmployeeDetails) k.next();
+										if(se.getMembers() == null || se.getMembers().size() == 0) {
+											if (count >= TransportationAdminProperties.getRunnerReqForHandTruck())
+												break;
+											
+											_tmpPlanResource = TreeDataUtil.matchResource(se, ScheduleEmployeeInfo.RUNNER);
+											if(_tmpPlanResource != null) {
+												p.getPlanResources().add(_tmpPlanResource);
+												k.remove();
+												count++;
+											}
+										}
 									}
-								}
-							}
 						}
 					}				
 				}
@@ -1155,6 +1153,18 @@ class TreeDataUtil {
 	
 	private static final Logger logger = Logger.getLogger(TreeDataUtil.class);
 	
+	private static boolean isShuttlePlan(Plan model)
+	{
+		return model.getDestinationFacility()!=null && model.getDestinationFacility().getTrnFacilityType()!=null && 
+				model.getDestinationFacility().getTrnFacilityType().getName().equals(EnumTransportationFacilitySrc.DEPOTDELIVERY.getName());
+	}
+	
+	private static boolean isRunnerPlan(Plan model)
+	{
+		return model.getOriginFacility()!=null && model.getOriginFacility().getTrnFacilityType()!=null && 
+				model.getOriginFacility().getTrnFacilityType().getName().equals(EnumTransportationFacilitySrc.DEPOTDELIVERY.getName());
+	}
+	
 	public static String isOpen(Plan p, Set resources) {
 
 		int driverMin = 0;
@@ -1165,7 +1175,17 @@ class TreeDataUtil {
 		int runners = 0;
 
 		try {
-			if (resources != null){
+			if(isShuttlePlan(p)){
+				 driverMin = TransportationAdminProperties.getDriverReqForShuttle();
+				 helperMin = TransportationAdminProperties.getHelperReqForShuttle();
+				 runnerMin = TransportationAdminProperties.getRunnerReqForShuttle();
+			}else if(isRunnerPlan(p)){
+				 driverMin = TransportationAdminProperties.getDriverReqForHandTruck();
+				 helperMin = TransportationAdminProperties.getHelperReqForHandTruck();
+				 runnerMin = TransportationAdminProperties.getRunnerReqForHandTruck();
+			}
+				
+			else if (resources != null){
 				for (Iterator j = resources.iterator(); j.hasNext();) {
 					ZonetypeResource r = (ZonetypeResource) j.next();
 
