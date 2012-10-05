@@ -1,22 +1,10 @@
 package com.freshdirect.webapp.taglib.fdstore.display;
 
-import com.freshdirect.fdstore.FDResourceException;
-import com.freshdirect.fdstore.FDStoreProperties;
-import com.freshdirect.fdstore.content.EnumBurstType;
-import com.freshdirect.fdstore.content.Image;
-import com.freshdirect.fdstore.content.PriceCalculator;
-import com.freshdirect.fdstore.content.ProductModel;
-import com.freshdirect.fdstore.customer.FDUserI;
-import com.freshdirect.fdstore.util.ProductLabeling;
-
-import com.freshdirect.framework.util.log.LoggerFactory;
-import com.freshdirect.framework.webapp.BodyTagSupport;
-
-import com.freshdirect.webapp.taglib.fdstore.BrowserInfo;
-import com.freshdirect.webapp.taglib.fdstore.SessionName;
-
 import java.io.IOException;
-
+import java.io.UnsupportedEncodingException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URLDecoder;
 import java.util.HashMap;
 import java.util.Set;
 import java.util.StringTokenizer;
@@ -27,7 +15,22 @@ import javax.servlet.jsp.tagext.TagData;
 import javax.servlet.jsp.tagext.TagExtraInfo;
 import javax.servlet.jsp.tagext.VariableInfo;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.log4j.Category;
+
+import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.fdstore.content.EnumBurstType;
+import com.freshdirect.fdstore.content.Image;
+import com.freshdirect.fdstore.content.PriceCalculator;
+import com.freshdirect.fdstore.content.ProductModel;
+import com.freshdirect.fdstore.customer.FDUserI;
+import com.freshdirect.fdstore.util.ProductLabeling;
+import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.framework.webapp.BodyTagSupport;
+import com.freshdirect.webapp.taglib.fdstore.BrowserInfo;
+import com.freshdirect.webapp.taglib.fdstore.SessionName;
+import com.rsa.certj.spi.pki.PKIException;
 
 
 
@@ -346,9 +349,6 @@ public class ProductImageTag extends BodyTagSupport {
         buf.append(prodImg.getPathWithPublishId());
         buf.append("\"");
 
-        //		buf.append(" id=\"prdImg_");
-        //		buf.append(webId);
-        //		buf.append("\"");
         if (getBoundImgWidth(prodImg) > 0) {
             buf.append(" width=\"");
             //buf.append(prodImg.getWidth());
@@ -411,16 +411,26 @@ public class ProductImageTag extends BodyTagSupport {
             final String catId = product.getParentId();
             final String deptId = product.getDepartment().getContentKey().getId();
 
+            TrackingCodes t = new TrackingCodes(action);
+
+            
+            
             buf.append("<img id=\"qb_" + webId +
                 "\" class=\"qbLaunchButton\" src=\"" + quickBuyImage + "\">\n");
-            /* buf.append("<script type=\"text/javascript\">\n" +
-                            "FD_QuickBuy.attach('"+webId+"', '" + deptId + "', '" + catId + "', '" + prdId + "');\n" +
-                            "</script>"); */
+
             buf.append("<script type=\"text/javascript\">\n" +
                 "  FD_QuickBuy.decorate('" + webId + "', ['qb_" + webId +
-                "', 'prdImgAncr_" + webId + "'], {departmentId: '" + deptId +
-                "', categoryId: '" + catId + "', productId: '" + prdId +
-                "'});\n" + "</script>");
+                "', 'prdImgAncr_" + webId + "'], {");
+            buf.append(
+            		  "departmentId: '" + deptId + "', "
+            		+ "categoryId: '" + catId + "', "
+            		+ "productId: '" + prdId + "'");
+            buf.append("}");
+            if (t.isValid()) {
+            	buf.append(", ");
+            	t.appendQuickBuyParamsTo(buf);
+            }
+            buf.append(");\n" + "</script>");
         }
 
         // close outer frame
@@ -642,10 +652,6 @@ public class ProductImageTag extends BodyTagSupport {
             iAlt = "IN CART";
             iStyle = "border: 0;";
 
-            //buf.append("<img alt=\"IN CART\" src=\"");
-            //if (this.prefix != null)
-            //		buf.append(this.prefix);
-            //buf.append("/media_stat/images/bursts/in_cart" + (supportsPNG ? ".png" : ".gif") + "\" width=\"35px\" height=\"35px\" style=\"border:0;\">\n");
         } else if (deal > 0) {
             iSrc = ((this.prefix != null) ? this.prefix : "") +
                 "/media_stat/images/deals/brst_" + iSizeToken + "_" + deal +
@@ -653,11 +659,6 @@ public class ProductImageTag extends BodyTagSupport {
             iAlt = "SAVE";
             iStyle = burstImageStyle;
 
-            //String burstImage = "/media_stat/images/deals/brst_sm_" + deal + (supportsPNG ? ".png" : ".gif");
-            //buf.append("<img alt=\"SAVE " + deal + "\" src=\"");
-            //	if (this.prefix != null)
-            //		buf.append(this.prefix);
-            //buf.append(burstImage+"\" width=\"35px\" height=\"35px\" style=\""+ burstImageStyle +"\">\n");
         } else if (pl.isDisplayFave()) {
             iSrc = ((this.prefix != null) ? this.prefix : "") +
                 "/media_stat/images/bursts/brst_" + iSizeToken + "_fave" +
@@ -665,10 +666,6 @@ public class ProductImageTag extends BodyTagSupport {
             iAlt = "FAVE";
             iStyle = burstImageStyle;
 
-            //buf.append("<img alt=\"FAVE\" src=\"");
-            //	if (this.prefix != null)
-            //		buf.append(this.prefix);
-            //buf.append("/media_stat/images/bursts/brst_sm_fave"+(supportsPNG ? ".png" : ".gif")+"\" width=\"35px\" height=\"35px\" style=\""+ burstImageStyle +"\">\n");
         } else if (pl.isDisplayNew() && !this.isNewProductPage) {
             iSrc = ((this.prefix != null) ? this.prefix : "") +
                 "/media_stat/images/bursts/brst_" + iSizeToken + "_new" +
@@ -676,10 +673,6 @@ public class ProductImageTag extends BodyTagSupport {
             iAlt = "NEW";
             iStyle = burstImageStyle;
 
-            //buf.append("<img alt=\"NEW\" src=\"");
-            //	if (this.prefix != null)
-            //		buf.append(this.prefix);
-            //buf.append("/media_stat/images/bursts/brst_sm_new"+(supportsPNG ? ".png" : ".gif")+"\" width=\"35px\" height=\"35px\" style=\""+ burstImageStyle +"\">\n");
         } else if (pl.isDisplayBackinStock()) {
             iSrc = ((this.prefix != null) ? this.prefix : "") +
                 "/media_stat/images/bursts/brst_" + iSizeToken + "_bis" +
@@ -687,10 +680,6 @@ public class ProductImageTag extends BodyTagSupport {
             iAlt = "BACK";
             iStyle = burstImageStyle;
 
-            //buf.append("<img alt=\"BACK\" src=\"");
-            //	if (this.prefix != null)
-            //		buf.append(this.prefix);
-            //buf.append("/media_stat/images/bursts/brst_sm_bis"+(supportsPNG ? ".png" : ".gif")+"\" width=\"35px\" height=\"35px\" style=\""+ burstImageStyle +"\">\n");
         }
 
         //override values (may or may not be used, depending on the burst that ends up being generated)
@@ -852,4 +841,75 @@ public class ProductImageTag extends BodyTagSupport {
             };
         }
     }
+}
+
+
+
+/**
+ * Utility class that extracts tracking codes from action URI
+ * 
+ * @author segabor
+ */
+class TrackingCodes {
+	String trk;
+	String trkd;
+	String rank;
+	
+	boolean valid = false;
+	
+	public boolean isValid() {
+		return valid;
+	}
+
+	public TrackingCodes(String action) {
+        if (action != null) {
+        	/*
+        	 * Ugly hack to extract tracking codes from product link :/
+        	 */
+        	try {
+				URI i = new URI(action);
+				// split up parameters
+				// final String unescaped = URLDecoder.decode(i.getQuery(), "UTF-8");
+				final String unescaped = StringEscapeUtils.unescapeHtml(i.getQuery());
+				
+				// String[] p =  i.getQuery().split("&amp;");
+				String[] p =  unescaped.split("&");
+
+				for (final String ap : p) {
+					if (ap.startsWith("trk=")) {
+						trk = ap.substring(4);
+					} else if (ap.startsWith("trkd=")) {
+						trkd = ap.substring(5);
+					} else if (ap.startsWith("rank=")) {
+						trkd = ap.substring(5);
+					}
+				}
+
+				if (trk != null)
+					valid = true;
+			} catch (URISyntaxException e) {
+			}
+        }
+	}
+
+	/* 
+	 * Create javascript expression from extracted tracking codes
+	 * and append it as a javascript expression for QuickBuy decorate() function
+	 * 
+	 * Expression:
+	 * "{ trk: '...', trkd: '...', rank: '...'}"
+	 * 
+	 */
+	public void appendQuickBuyParamsTo(Appendable buf) {
+		if (valid) {
+			try {
+				buf.append("{");
+    			buf.append("trk: '").append(this.trk).append("'");
+    			if (this.trkd != null) { buf.append("trkd: '").append(this.trkd).append("'"); }
+    			if (this.rank != null) { buf.append("rank: '").append(this.rank).append("'"); }
+    			buf.append("}");
+			} catch (IOException e) {
+			}
+		}
+	}
 }

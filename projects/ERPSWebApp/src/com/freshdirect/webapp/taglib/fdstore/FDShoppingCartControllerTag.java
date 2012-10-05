@@ -162,8 +162,16 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements Sessi
 			return EnumEventSource.BROWSE;
 		}
 
-		EnumEventSource enumSource = EnumEventSource.getEnum(source);
-		return enumSource == null ? EnumEventSource.BROWSE : enumSource;
+		EnumEventSource enumSource = EnumEventSource.BROWSE;
+		/* Transform String value to type safely */
+		for (EnumEventSource s : EnumEventSource.values()) {
+			if (s.getName().equalsIgnoreCase(source)) {
+				enumSource = s;
+				break;
+			}
+		}
+
+		return enumSource;
 	}
 
 	public void setSuccessPage(String sp) {

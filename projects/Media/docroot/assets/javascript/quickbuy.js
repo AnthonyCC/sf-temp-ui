@@ -79,7 +79,7 @@ FD_QuickBuy._includeTrackingCodes = function(uri, tracking) {
 
 		if (tracking.trk) {
 			uri = f(tracking, uri,
-				['trk', 'rank']);
+				['trk', 'trkd', 'rank']);
 		}
 	}
 
@@ -130,21 +130,19 @@ FD_QuickBuy.showPanel = function(deptId, catId, prdId, iatcNamespace, tracking) 
 
 		var uri = '/quickbuy/product.jsp?catId='+encodeURIComponent(catId)+'&amp;productId='+encodeURIComponent(prdId)+'&amp;fdsc.source=quickbuy&amp;refTitle='+escape(winTitle)+'&amp;referer='+escape(window.location.href)+'&amp;uid='+elementId;
 
-		if (tracking && tracking.source)
-			uri += "&amp;fdsc.source="+encodeURIComponent(tracking.source);
-
 		// store DOM ID
 		uri += '&amp;uid='+encodeURIComponent(elementId);
 
 		// include various codes for tracking purposes
+		if (tracking && tracking.trk) {
+			tracking.trkd = 'qb';
+		}
 		uri = FD_QuickBuy._includeTrackingCodes(uri, tracking);
-		uri += '&amp;trkd=qb';
 		
 		// store master page URL and title for back-reference
 		uri += '&amp;refTitle='+encodeURIComponent(winTitle)+'&amp;referer='+encodeURIComponent(window.location.href);
 
 		var content = "";
-//		var uri = '/quickbuy/product.jsp?catId='+encodeURIComponent(catId)+'&amp;productId='+encodeURIComponent(prdId)+'&amp;fdsc.source=quickbuy&amp;refTitle='+escape(winTitle)+'&amp;referer='+escape(window.location.href)+'&amp;uid='+elementId;
 		if (iatcNamespace)
 			uri += '&amp;iatcNamespace='+escape(iatcNamespace);
 		content += '<div id="'+elementId+'_ctnt">\n';
