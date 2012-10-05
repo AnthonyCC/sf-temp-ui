@@ -283,6 +283,13 @@ public class HandOffAutoDispatchAction extends AbstractHandOffAction {
 		RoutingInfoServiceProxy routeInfoProxy = new RoutingInfoServiceProxy();
 		Map<String, TrnFacility> facilityLookUp = routeInfoProxy.retrieveTrnFacilityLocations();
 		
+		String zoneFacility = null;
+		for(Entry<String, TrnFacility> facility : facilityLookUp.entrySet())
+		{
+			if(facility.getValue()!=null && EnumTransportationFacilitySrc.DELIVERYZONE.getName().equals(facility.getValue().getTrnFacilityType().getName()))
+				zoneFacility = facility.getValue().getFacilityId();
+		}
+		
 		Iterator<IHandOffBatchPlan> planItr = this.batchPlanList.iterator();
 		while(planItr.hasNext()){
 			IHandOffBatchPlan _plan = planItr.next();
@@ -321,10 +328,10 @@ public class HandOffAutoDispatchAction extends AbstractHandOffAction {
 			List<IHandOffBatchRoute> zoneRouteList = batchRouteMap.get(zone);
 			if(zoneRouteList == null) 
 				zoneRouteList = Collections.EMPTY_LIST;
-			constructDispatchModelList(dispatchMapping, (List<IHandOffBatchPlan>)batchPlanMap.get(zone), zoneRouteList, Collections.EMPTY_LIST, false, facilityLookUp);
+			constructDispatchModelList(dispatchMapping, (List<IHandOffBatchPlan>)batchPlanMap.get(zone), zoneRouteList, Collections.EMPTY_LIST, false, facilityLookUp, zoneFacility);
 		}
 		//Bull-pen Plan List
-		constructDispatchModelList(dispatchMapping, bullpens, Collections.EMPTY_LIST, Collections.EMPTY_LIST, false, facilityLookUp);
+		constructDispatchModelList(dispatchMapping, bullpens, Collections.EMPTY_LIST, Collections.EMPTY_LIST, false, facilityLookUp,zoneFacility);
 		
 		//Trailer Plan List
 		Iterator<IHandOffBatchTrailer> trailerItr = trailers.iterator();
@@ -345,8 +352,9 @@ public class HandOffAutoDispatchAction extends AbstractHandOffAction {
 			List<IHandOffBatchTrailer> locTrailerRouteList = batchTrailerMap.get(locRoutingCode);
 			if(locTrailerRouteList == null) 
 				locTrailerRouteList = Collections.EMPTY_LIST;
-			constructDispatchModelList(dispatchMapping, (List<IHandOffBatchPlan>)batchTrailerPlanMap.get(locRoutingCode), Collections.EMPTY_LIST, locTrailerRouteList, true, facilityLookUp);
-		}		
+			constructDispatchModelList(dispatchMapping, (List<IHandOffBatchPlan>)batchTrailerPlanMap.get(locRoutingCode), Collections.EMPTY_LIST, 
+					locTrailerRouteList, true, facilityLookUp, zoneFacility);
+		}	
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -370,7 +378,7 @@ public class HandOffAutoDispatchAction extends AbstractHandOffAction {
 															, List<IHandOffBatchPlan> zonePlanList
 															, List<IHandOffBatchRoute> zoneRouteList
 															, List<IHandOffBatchTrailer> batchTrailers
-															, boolean isTrailer, Map<String, TrnFacility> facilityLookUp) throws ParseException{
+															, boolean isTrailer, Map<String, TrnFacility> facilityLookUp, String zoneFacility) throws ParseException{
 		GeographyServiceProxy geoProxy = new GeographyServiceProxy();
 		Map<String, IZoneModel> zoneLookup = geoProxy.getZoneLookup();
 		
@@ -428,11 +436,19 @@ public class HandOffAutoDispatchAction extends AbstractHandOffAction {
 									(runnerPlan.getLastDeliveryTime().before(_plan.getLastDeliveryTime())) &&
 									runnerPlan.getBatchPlanResources()!=null && runnerPlan.getBatchPlanResources().size()>0)
 							{
-								_dispatch.getBatchDispatchResources().addAll(runnerPlan.getBatchPlanResources());
+								if(_dispatch.getBatchDispatchResources()==null)
+								{
+									_dispatch.setBatchDispatchResources(runnerPlan.getBatchPlanResources());
+								}
+								else
+								{
+									_dispatch.getBatchDispatchResources().addAll(runnerPlan.getBatchPlanResources());
+								}
 								k.remove();
 								runnerCount++;
 							}
 						}
+						if(runnerCount>0) _dispatch.setDestinationFacility(zoneFacility);
 				}
 				route = matchRoute(_plan, zoneRouteList);	
 				
