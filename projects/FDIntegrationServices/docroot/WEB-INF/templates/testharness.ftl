@@ -579,7 +579,7 @@ function doStuff() {
   	 		postData = postData + "&callerId=" + $.URLEncode(temp[1]);
   	 	}
 		if(temp.length > 2) {
-  	 		postData = postData + "&orderNumber=" + $.URLEncode(temp[2);
+  	 		postData = postData + "&orderNumber=" + $.URLEncode(temp[2]);
   	 	}
   	 	if(temp.length > 3) {
   	 		postData = postData + "&startTime=" + $.URLEncode(temp[3]);
