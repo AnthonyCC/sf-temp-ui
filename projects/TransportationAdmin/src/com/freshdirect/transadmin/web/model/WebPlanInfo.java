@@ -42,6 +42,7 @@ public class WebPlanInfo extends BaseCommand implements TrnBaseEntityI  {
     
 	private String supervisorName;
 	private String zoneType;
+	private boolean plan;
 	/*private ResourceList drivers= new ResourceList();
 	private ResourceList helpers=new ResourceList();		      
 	private ResourceList runners=new ResourceList();*/
@@ -136,9 +137,11 @@ public class WebPlanInfo extends BaseCommand implements TrnBaseEntityI  {
 	}
 	public String getOpen()
 	{		
+		if(!isPlan()){
 		if(getResourceSize(drivers)<driverReq||getResourceSize(helpers)<helperReq||getResourceSize(runners)<runnerReq)
 		{
 			return "Y";
+		}
 		}
 		return null;
 	}
@@ -818,6 +821,14 @@ public class WebPlanInfo extends BaseCommand implements TrnBaseEntityI  {
 
 	public void setDispatchType(String dispatchType) {
 		this.dispatchType = dispatchType;
+	}
+
+	public boolean isPlan() {
+		return plan;
+	}
+
+	public void setPlan(boolean plan) {
+		this.plan = plan;
 	}
 	
 }
