@@ -90,4 +90,6 @@ public interface DispatchManagerDaoI extends BaseManagerDaoI {
 	Collection getWaveInstancePublish(Date deliveryDate) throws DataAccessException;
 	
 	void deleteWaveInstance(Date deliveryDate) throws DataAccessException;
+	
+	Collection getTrnFacilitys() throws DataAccessException;
 }

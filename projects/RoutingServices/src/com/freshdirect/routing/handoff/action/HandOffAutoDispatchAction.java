@@ -23,6 +23,7 @@ import lpsolve.LpSolveException;
 
 import org.apache.log4j.Logger;
 
+import com.freshdirect.framework.util.DateRange;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.routing.constants.EnumHandOffBatchActionType;
 import com.freshdirect.routing.constants.EnumHandOffBatchStatus;
@@ -30,7 +31,6 @@ import com.freshdirect.routing.constants.EnumTransportationFacilitySrc;
 import com.freshdirect.routing.constants.EnumTruckPreference;
 import com.freshdirect.routing.model.HandOffBatchRoute;
 import com.freshdirect.routing.model.HandOffDispatch;
-import com.freshdirect.routing.model.IAreaModel;
 import com.freshdirect.routing.model.IHandOffBatch;
 import com.freshdirect.routing.model.IHandOffBatchDispatchResource;
 import com.freshdirect.routing.model.IHandOffBatchPlan;
@@ -383,6 +383,7 @@ public class HandOffAutoDispatchAction extends AbstractHandOffAction {
 		Map<String, IZoneModel> zoneLookup = geoProxy.getZoneLookup();
 		
 		List<IHandOffBatchPlan> runnerPlans = getRunnerPlans(zonePlanList, facilityLookUp);
+		Set<IHandOffBatchPlan> assignedRunners = new HashSet<IHandOffBatchPlan>();
 
 		Iterator<IHandOffBatchPlan> planItr = zonePlanList.iterator();
 		while(planItr.hasNext()){
@@ -427,13 +428,16 @@ public class HandOffAutoDispatchAction extends AbstractHandOffAction {
 								facilityLookUp.get(_plan.getDestinationFacility())!=null &&
 								facilityLookUp.get(_plan.getDestinationFacility()).getTrnFacilityType().getName().equals(EnumTransportationFacilitySrc.DEPOTDELIVERY.getName()))
 				{
+					DateRange planRange = new DateRange(_plan.getFirstDeliveryTime(), _plan.getLastDeliveryTime());
+					
 					int runnerCount = 0;	
 						for (Iterator<IHandOffBatchPlan> k = runnerPlans.iterator(); k.hasNext() && runnerCount<6;) 
 						{
 							IHandOffBatchPlan runnerPlan = k.next();
+							DateRange runnerRange = new DateRange(runnerPlan.getFirstDeliveryTime(), runnerPlan.getLastDeliveryTime());
+							
 							if(runnerPlan.getOriginFacility().equals(_dispatch.getDestinationFacility()) && 
-									(runnerPlan.getFirstDeliveryTime().after(_plan.getFirstDeliveryTime()) || runnerPlan.getFirstDeliveryTime().equals(_plan.getFirstDeliveryTime())) &&  
-									(runnerPlan.getLastDeliveryTime().before(_plan.getLastDeliveryTime())) &&
+									runnerRange.overlaps(planRange) && 
 									runnerPlan.getBatchPlanResources()!=null && runnerPlan.getBatchPlanResources().size()>0)
 							{
 								if(_dispatch.getBatchDispatchResources()==null)
@@ -444,7 +448,7 @@ public class HandOffAutoDispatchAction extends AbstractHandOffAction {
 								{
 									_dispatch.getBatchDispatchResources().addAll(runnerPlan.getBatchPlanResources());
 								}
-								k.remove();
+								assignedRunners.add(runnerPlan);
 								runnerCount++;
 							}
 						}
@@ -468,6 +472,39 @@ public class HandOffAutoDispatchAction extends AbstractHandOffAction {
 			if(!dispatchMapping.containsKey(_dispatch.getDispatchId()))
 				dispatchMapping.put(_dispatch.getDispatchId(), _dispatch);
 		}
+		Set unassignedRunners = new HashSet();
+		for(Iterator<IHandOffBatchPlan> runnerIter = runnerPlans.iterator(); runnerIter.hasNext();)
+		{
+			IHandOffBatchPlan runnerPlan = runnerIter.next();
+			if(!assignedRunners.contains(runnerPlan))
+				unassignedRunners.add(runnerPlan);
+		}
+		planItr = unassignedRunners.iterator();
+		while (planItr.hasNext()) {
+			IHandOffBatchPlan _plan = planItr.next();
+
+			IHandOffDispatch _dispatch = new HandOffDispatch();
+			_dispatch.setDispatchId(_plan.getPlanId());
+			_dispatch.setDispatchDate(_plan.getPlanDate());
+			_dispatch.setPlanId(_plan.getPlanId());
+			_dispatch.setOriginFacility(_plan.getOriginFacility());
+			_dispatch.setDestinationFacility(_plan.getDestinationFacility());
+			_dispatch.setStartTime(_plan.getStartTime());
+			_dispatch.setFirstDeliveryTime(RoutingDateUtil.getServerTime(_plan.getFirstDeliveryTime()) != null ?
+						RoutingDateUtil.getServerTime(RoutingDateUtil.getServerTime(_plan.getFirstDeliveryTime())): null);
+			_dispatch.setSupervisorId(_plan.getSupervisorId());
+			_dispatch.setIsBullpen(_plan.getIsBullpen());
+			_dispatch.setMaxTime(_plan.getMaxTime());
+			_dispatch.setRegion(_plan.getRegion());
+			_dispatch.setZone(_plan.getZoneCode());
+			_dispatch.setCutoffTime(_plan.getCutOffTime());
+			_dispatch.setBatchDispatchResources(_plan.getBatchPlanResources());
+			_dispatch.setDispatchType("RGD");
+			
+			if(!dispatchMapping.containsKey(_dispatch.getDispatchId()))
+				dispatchMapping.put(_dispatch.getDispatchId(), _dispatch);
+		}
+		
 	}
 	
 	private static IHandOffBatchRoute matchRoute(IHandOffBatchPlan p, List<IHandOffBatchRoute> routeList) throws ParseException {

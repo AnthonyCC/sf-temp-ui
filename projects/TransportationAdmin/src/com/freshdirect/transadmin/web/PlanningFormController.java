@@ -180,7 +180,7 @@ public class PlanningFormController extends AbstractFormController {
 		if(plan.getZone()!=null) {
 			zone=domainManagerService.getZone(plan.getZone().getZoneCode());
 		}
-		return DispatchPlanUtil.getWebPlanInfo(plan,zone,employeeManagerService);
+		return DispatchPlanUtil.getWebPlanInfo(plan,zone,employeeManagerService, true);
 	}
 
 	public Object getDefaultBackingObject() {
@@ -261,7 +261,7 @@ public class PlanningFormController extends AbstractFormController {
 		}
 
 		model= DispatchPlanUtil.reconstructWebPlanInfo(model, zone, model.getFirstDeliveryTimeModified()
-															,null, employeeManagerService, zoneManagerService);
+															,null, employeeManagerService, zoneManagerService, true);
 
 		//set userId to command object
 		model.setUserId(getUserId(request));

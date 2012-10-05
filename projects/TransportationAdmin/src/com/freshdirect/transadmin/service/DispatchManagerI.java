@@ -125,4 +125,6 @@ public interface DispatchManagerI extends BaseManagerI {
 	void saveWaveInstances(List<WaveInstance> saveWaveInstances, List<WaveInstance> deleteWaveInstances);
 
 	List<UPSRouteInfo> getUPSRouteInfo(Date deliveryDate);
+	
+	Collection getTrnFacilitys();
 }

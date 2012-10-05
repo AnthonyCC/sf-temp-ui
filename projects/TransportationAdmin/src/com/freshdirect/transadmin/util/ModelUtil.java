@@ -17,6 +17,7 @@ import java.util.Map;
 import java.util.Set;
 
 import com.freshdirect.customer.ErpRouteMasterInfo;
+import com.freshdirect.framework.util.DateRange;
 import com.freshdirect.routing.constants.EnumTransportationFacilitySrc;
 import com.freshdirect.routing.model.BuildingModel;
 import com.freshdirect.routing.model.DeliveryModel;
@@ -44,6 +45,7 @@ import com.freshdirect.transadmin.model.RouteDecorator;
 import com.freshdirect.transadmin.model.RouteInfo;
 import com.freshdirect.transadmin.model.ScheduleEmployeeInfo;
 import com.freshdirect.transadmin.model.TrnAdHocRoute;
+import com.freshdirect.transadmin.model.TrnFacility;
 import com.freshdirect.transadmin.model.Zone;
 import com.freshdirect.transadmin.web.model.WebEmployeeInfo;
 
@@ -242,7 +244,7 @@ public class ModelUtil {
 	}
 	//region wise auto dispatch
 	@SuppressWarnings("unchecked")
-	public static List constructDispatchModel(Collection planList, Collection routeList) {
+	public static List constructDispatchModel(Collection planList, Collection routeList, List<TrnFacility> facilityList) {
 		
 		List<Dispatch> dispatchLst = new ArrayList<Dispatch>();
 		List<Plan> bullpens = new ArrayList<Plan>();
@@ -294,11 +296,11 @@ public class ModelUtil {
 			List<ErpRouteMasterInfo> zoneRouteList = routeMapping.get(zone);
 			if(zoneRouteList == null) 
 				zoneRouteList = Collections.EMPTY_LIST;
-			constructDispatchModelList(dispatchLst, (List<Plan>)planMapping.get(zone), zoneRouteList);
+			constructDispatchModelList(dispatchLst, (List<Plan>)planMapping.get(zone), zoneRouteList,facilityList);
 		}
 				
 		//Bull-pen Plan List
-		constructDispatchModelList(dispatchLst, bullpens, Collections.EMPTY_LIST);
+		constructDispatchModelList(dispatchLst, bullpens, Collections.EMPTY_LIST, facilityList);
 							
 		return dispatchLst;
 	}
@@ -310,7 +312,8 @@ public class ModelUtil {
 		if(zoneRouteList!=null && zoneRouteList.size() > 0) {
 			for (Iterator<Plan> k = zoneRouteList.iterator(); k.hasNext();) {
 				Plan p = k.next();
-				if(!"Y".equalsIgnoreCase(p.getIsBullpen()) && p.getOriginFacility()!=null && p.getOriginFacility().getTrnFacilityType().getName().equals(EnumTransportationFacilitySrc.DEPOTDELIVERY.getName())){
+				if(!"Y".equalsIgnoreCase(p.getIsBullpen()) && p.getOriginFacility()!=null && 
+						p.getOriginFacility().getTrnFacilityType()!=null && p.getOriginFacility().getTrnFacilityType().getName().equals(EnumTransportationFacilitySrc.DEPOTDELIVERY.getName())){
 					runnerPlans.add(p);
 					k.remove();
 				}
@@ -322,12 +325,14 @@ public class ModelUtil {
 	@SuppressWarnings("unchecked")
 	private static void constructDispatchModelList(
 			List<Dispatch> dispatchLst,
-			List<Plan> zonePlanList, List<ErpRouteMasterInfo> zoneRouteList) {
+			List<Plan> zonePlanList, List<ErpRouteMasterInfo> zoneRouteList, List<TrnFacility> facilityList) {
 		
 		ErpRouteMasterInfo r = null;
 		Date firstDlvTime = null;
 		
 		List<Plan> runnerPlans = getRunnerPlans(zonePlanList);
+		
+		Set<Plan> assignedRunners = new HashSet<Plan>();
 
 		Iterator<Plan> planItr = zonePlanList.iterator();
 		while (planItr.hasNext()) {
@@ -354,21 +359,34 @@ public class ModelUtil {
 					p.getDestinationFacility()!=null && p.getDestinationFacility().getTrnFacilityType()!=null &&
 					 p.getDestinationFacility().getTrnFacilityType().getName().equals(EnumTransportationFacilitySrc.DEPOTDELIVERY.getName()))
 			{
+				DateRange planRange = new DateRange(p.getFirstDeliveryTime(), p.getLastDeliveryTime());
 				int runnerCount = 0;
 				for ( Iterator<Plan> k = runnerPlans.iterator(); k.hasNext()&& runnerCount<6;) 
 					{
+					
 						Plan runnerPlan = k.next();
+						DateRange runnerRange = new DateRange(runnerPlan.getFirstDeliveryTime(), runnerPlan.getLastDeliveryTime());
+						
 						if(runnerPlan.getOriginFacility().equals(p.getDestinationFacility()) && 
-								(runnerPlan.getFirstDeliveryTime().after(p.getFirstDeliveryTime()) || runnerPlan.getFirstDeliveryTime().equals(p.getFirstDeliveryTime())) &&  
-								(runnerPlan.getLastDeliveryTime().before(p.getLastDeliveryTime())) && 
-								runnerPlan.getPlanResources()!=null && runnerPlan.getPlanResources().size()>0)
+								runnerRange.overlaps(planRange) &&   
+								 runnerPlan.getPlanResources()!=null && runnerPlan.getPlanResources().size()>0)
 						{
 							
 							d.getDispatchResources().addAll(convertPlnToDispatchResource(runnerPlan.getPlanResources(),d));
-							k.remove();
+							assignedRunners.add(runnerPlan);
 							runnerCount++;
 						}
 					}
+				
+				for(TrnFacility facility : facilityList)
+				{
+					if(facility!=null && EnumTransportationFacilitySrc.DELIVERYZONE.getName().equals(facility.getTrnFacilityType().getName()) && runnerCount>0)
+					{
+						d.setDestinationFacility(facility);
+						break;
+					}
+				}
+				
 			}
 			List routeMatch = matchRoute(p, zoneRouteList, isTrailerPlan);
 			if(routeMatch != null) {
@@ -384,6 +402,33 @@ public class ModelUtil {
 			}
 			dispatchLst.add(d);
 		}
+		Set unassignedRunners = new HashSet();
+		for(Iterator<Plan> runnerIter = runnerPlans.iterator(); runnerIter.hasNext();)
+		{
+			Plan runnerPlan = runnerIter.next();
+			if(!assignedRunners.contains(runnerPlan))
+				unassignedRunners.add(runnerPlan);
+		}
+		planItr = unassignedRunners.iterator();
+		while (planItr.hasNext()) {
+			Plan p = planItr.next();
+
+			Dispatch d = new Dispatch();
+			d.setPlanId(p.getPlanId());
+			d.setDispatchDate(p.getPlanDate());
+			d.setOriginFacility(p.getOriginFacility());
+			d.setDestinationFacility(p.getDestinationFacility());
+			d.setStartTime(p.getStartTime());
+			d.setSupervisorId(p.getSupervisorId());
+			d.setDispatchResources(convertPlnToDispatchResource(p.getPlanResources(),d));
+			d.setFirstDlvTime(p.getFirstDeliveryTime());
+			d.setBullPen(Boolean.TRUE);
+			d.setRegion(p.getRegion());
+			d.setDispatchType(EnumDispatchType.ROUTEDISPATCH.getName());
+			
+			dispatchLst.add(d);
+		}
+		
 	}
 
 	public static List constructDispatchModelOld(Collection planList,Collection routeList){

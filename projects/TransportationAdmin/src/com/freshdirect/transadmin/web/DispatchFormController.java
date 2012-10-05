@@ -315,7 +315,7 @@ public class DispatchFormController extends AbstractFormController {
 			model.setOverrideReasonCode(null);
 		
 		model = (DispatchCommand) DispatchPlanUtil.reconstructWebPlanInfo(
-				model, zone, model.getFirstDeliveryTimeModified(), model.getDispatchDate(), employeeManagerService,	zoneManagerService);
+				model, zone, model.getFirstDeliveryTimeModified(), model.getDispatchDate(), employeeManagerService,	zoneManagerService, false);
 		try {
 			boolean routeChanged = false;
 			Collection assignedRoutes = getDispatchManagerService().getAssignedRoutes(TransStringUtil.getServerDate(model.getDispatchDate()));

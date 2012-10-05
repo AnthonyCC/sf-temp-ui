@@ -28,6 +28,7 @@ import com.freshdirect.transadmin.model.ResourceI;
 import com.freshdirect.transadmin.model.ScheduleEmployee;
 import com.freshdirect.transadmin.model.Scrib;
 import com.freshdirect.transadmin.model.ScribLabel;
+import com.freshdirect.transadmin.model.TrnFacility;
 import com.freshdirect.transadmin.model.UPSRouteInfo;
 import com.freshdirect.transadmin.model.WaveInstance;
 import com.freshdirect.transadmin.model.WaveInstancePublish;
@@ -148,7 +149,7 @@ public class DispatchManagerImpl extends BaseManagerImpl implements DispatchMana
 		Collection planList=getPlanList(date);		
 		Collection routeList=getDomainManagerService().getRoutes(date);
 		
-		Collection dispatchList=ModelUtil.constructDispatchModel(planList,routeList);
+		Collection dispatchList=ModelUtil.constructDispatchModel(planList,routeList, (List<TrnFacility>)getTrnFacilitys());
 		
 		Map childMap=new HashMap();
 		Iterator iterator=dispatchList.iterator();
@@ -194,7 +195,7 @@ public class DispatchManagerImpl extends BaseManagerImpl implements DispatchMana
 
 		Collection planList = getPlanList(dispatchDate);
 		Collection routeList = getDomainManagerService().getRoutes(dispatchDate);
-		Collection dispatchList = ModelUtil.constructDispatchModel(planList, routeList);
+		Collection dispatchList = ModelUtil.constructDispatchModel(planList, routeList,(List<TrnFacility>)getTrnFacilitys());
 		
 		Map childMap = new HashMap();
 		Iterator iterator = dispatchList.iterator();
@@ -714,4 +715,9 @@ public class DispatchManagerImpl extends BaseManagerImpl implements DispatchMana
 	public Collection getDispatchForRoute(Date dispatchDate, String routeNo){
 		return this.getDispatchManagerDao().getDispatchForRoute(dispatchDate, routeNo);
 	}
+	
+	public Collection getTrnFacilitys(){
+		return this.getDispatchManagerDao().getTrnFacilitys();
+	}
+	
 }

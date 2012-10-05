@@ -477,4 +477,12 @@ public class DispatchManagerDaoHibernateImpl extends
 			 }
 		});
 	}
+	
+	public Collection getTrnFacilitys() throws DataAccessException {
+
+		StringBuffer strBuf = new StringBuffer();
+		strBuf.append("from TrnFacility ");
+		return (Collection) getHibernateTemplate().find(strBuf.toString());
+	}
+	
 }

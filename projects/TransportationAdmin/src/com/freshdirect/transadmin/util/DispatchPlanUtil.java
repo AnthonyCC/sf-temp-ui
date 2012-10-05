@@ -70,10 +70,12 @@ public class DispatchPlanUtil {
 
 	}
 
-	public static WebPlanInfo getWebPlanInfo(Plan plan, Zone zone,EmployeeManagerI employeeManagerService) {
+	public static WebPlanInfo getWebPlanInfo(Plan plan, Zone zone,EmployeeManagerI employeeManagerService, boolean isPlan) {
 
 		WebPlanInfo planInfo=new WebPlanInfo();
 		planInfo.setPlanId(plan.getPlanId());
+		planInfo.setPlan(plan.getZone()!=null && isPlan && plan.getZone().getArea()!=null && "X".equals(plan.getZone().getArea().getIsDepot()));
+		
 		planInfo.setPlanDate(plan.getPlanDate());
 		if(plan.getZone()!=null) {
 			planInfo.setZoneCode(plan.getZone().getZoneCode());
@@ -265,7 +267,7 @@ public class DispatchPlanUtil {
 		plan.setIsBullpen(planInfo.getIsBullpen());
 		plan.setSupervisorId(planInfo.getSupervisorCode());
 		plan.setPlanResources(planInfo.getResources());
-		plan.setUserId(planInfo.getUserId());	
+		plan.setUserId(planInfo.getUserId());
 		plan.setOpen(planInfo.getOpen());
 		plan.setIsTeamOverride(planInfo.getIsTeamOverride());
 		plan.setOriginFacility(planInfo.getOriginFacility());
@@ -358,11 +360,11 @@ public class DispatchPlanUtil {
 	}
 
 	public static WebPlanInfo reconstructWebPlanInfo(WebPlanInfo planInfo,Zone zone,String isfirstDlvTimeModified,
-			String dispatchDate,EmployeeManagerI employeeManagerService,ZoneManagerI zoneManagerService) {
+			String dispatchDate,EmployeeManagerI employeeManagerService,ZoneManagerI zoneManagerService, boolean isPlan) {
 
 		setResourceReq(planInfo,zone);
 		boolean isZoneModified=false;
-
+		planInfo.setPlan(zone!=null && zone.getArea()!=null && isPlan && "X".equals(zone.getArea().getIsDepot()));
 		isZoneModified=isZoneModified(zone,planInfo);
 		if(zone!=null && isZoneModified) {
 			planInfo.setZoneName(zone.getName());
@@ -474,17 +476,6 @@ public class DispatchPlanUtil {
 		return resourceReqs;
 	}
 
-	private static boolean isShuttlePlan(WebPlanInfo model)
-	{
-		return model.getDestinationFacility()!=null &&  model.getDestinationFacility().getTrnFacilityType()!=null &&
-				 model.getDestinationFacility().getTrnFacilityType().getName().equals(EnumTransportationFacilitySrc.DEPOTDELIVERY.getName());
-	}
-	private static boolean isRunnerPlan(WebPlanInfo model)
-	{
-		return model.getOriginFacility()!=null && model.getOriginFacility().getTrnFacilityType()!=null && 
-				model.getOriginFacility().getTrnFacilityType().getName().equals(EnumTransportationFacilitySrc.DEPOTDELIVERY.getName());
-	}
-	
 	private static void setResourceReq(WebPlanInfo model, Zone zone) {
 
 		if(isBullpen(model.getIsBullpen()) || (EnumDispatchType.LIGHTDUTYDISPATCH.getName().equals(model.getDispatchType()))) {
@@ -492,49 +483,37 @@ public class DispatchPlanUtil {
 			setHelperRequirements(model,TransportationAdminProperties.getHelperReqForBullpen(),TransportationAdminProperties.getHelperMaxForBullpen());
 			setRunnerRequirements(model,TransportationAdminProperties.getRunnerReqForBullpen(),TransportationAdminProperties.getRunnerMaxForBullpen());
 
-		} 
-		else if(isShuttlePlan(model)){
-			setDriverRequirements(model,TransportationAdminProperties.getDriverReqForShuttle(),TransportationAdminProperties.getDriverMaxForShuttle());
-			setHelperRequirements(model,TransportationAdminProperties.getHelperReqForShuttle(),TransportationAdminProperties.getHelperMaxForShuttle());
-			setRunnerRequirements(model,TransportationAdminProperties.getRunnerReqForShuttle(),TransportationAdminProperties.getRunnerMaxForShuttle());
-		}else if(isRunnerPlan(model)){
-			setDriverRequirements(model,TransportationAdminProperties.getDriverReqForHandTruck(),TransportationAdminProperties.getDriverMaxForHandTruck());
-			setHelperRequirements(model,TransportationAdminProperties.getHelperReqForHandTruck(),TransportationAdminProperties.getHelperMaxForHandTruck());
-			setRunnerRequirements(model,TransportationAdminProperties.getRunnerReqForHandTruck(),TransportationAdminProperties.getRunnerMaxForHandTruck());
-		}
-		
-		else if(hasResources(zone)) {
-
-			Iterator _it=zone.getTrnZoneType().getZonetypeResources().iterator();
-			boolean hasDrivers=false;
-			boolean hasHelpers=false;
-			boolean hasRunners=false;
-			while(_it.hasNext()) {
-
-				ZonetypeResource ztr=(ZonetypeResource)_it.next();
-				int max=ztr.getMaximumNo().intValue();
-				int req=ztr.getRequiredNo().intValue();
-				String role=ztr.getId().getRole();
-				if(EnumResourceType.DRIVER.equals(EnumResourceType.getEnum(role))) {
-					hasDrivers=true;
-					setDriverRequirements(model,req,max);
-				} else if(EnumResourceType.HELPER.equals(EnumResourceType.getEnum(role))) {
-					hasHelpers=true;
-					setHelperRequirements(model,req,max);
-				} else if(EnumResourceType.RUNNER.equals(EnumResourceType.getEnum(role))) {
-					hasRunners=true;
-					setRunnerRequirements(model,req,max);
+		} else if(hasResources(zone)) {
+				Iterator _it=zone.getTrnZoneType().getZonetypeResources().iterator();
+				boolean hasDrivers=false;
+				boolean hasHelpers=false;
+				boolean hasRunners=false;
+				while(_it.hasNext()) {
+	
+					ZonetypeResource ztr=(ZonetypeResource)_it.next();
+					int max=ztr.getMaximumNo().intValue();
+					int req=ztr.getRequiredNo().intValue();
+					String role=ztr.getId().getRole();
+					if(EnumResourceType.DRIVER.equals(EnumResourceType.getEnum(role))) {
+						hasDrivers=true;
+						setDriverRequirements(model,req,max);
+					} else if(EnumResourceType.HELPER.equals(EnumResourceType.getEnum(role))) {
+						hasHelpers=true;
+						setHelperRequirements(model,req,max);
+					} else if(EnumResourceType.RUNNER.equals(EnumResourceType.getEnum(role))) {
+						hasRunners=true;
+						setRunnerRequirements(model,req,max);
+					}
 				}
-			}
-			if(!hasDrivers) {
-				setDriverRequirements(model,0,0);
-			}
-			if(!hasHelpers) {
-				setHelperRequirements(model,0,0);
-			}
-			if(!hasRunners) {
-				setRunnerRequirements(model,0,0);
-			}
+				if(!hasDrivers) {
+					setDriverRequirements(model,0,0);
+				}
+				if(!hasHelpers) {
+					setHelperRequirements(model,0,0);
+				}
+				if(!hasRunners) {
+					setRunnerRequirements(model,0,0);
+				}
 		} else {
 			setDriverRequirements(model,TransportationAdminProperties.getDriverReqForTrailer(),TransportationAdminProperties.getDriverMaxForTrailer());
 			setHelperRequirements(model,TransportationAdminProperties.getHelperReqForTrailer(),TransportationAdminProperties.getHelperMaxForTrailer());

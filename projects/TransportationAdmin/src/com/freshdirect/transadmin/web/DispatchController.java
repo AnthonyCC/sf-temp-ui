@@ -723,7 +723,7 @@ public class DispatchController extends AbstractMultiActionController {
 				}
 			}
 			
-			WebPlanInfo planInfo=DispatchPlanUtil.getWebPlanInfo(plan, zone, employeeManagerService);
+			WebPlanInfo planInfo=DispatchPlanUtil.getWebPlanInfo(plan, zone, employeeManagerService, true);
 			planInfo.setTermintedEmployees(terminatedEmployees);
 			planInfos.add(planInfo);
 		}
