@@ -342,7 +342,7 @@ public class DispatchProviderController extends JsonRpcController implements IDi
 				if(plan.getZone()!=null) {
 					zone = domainManagerService.getZone(plan.getZone().getZoneCode());
 				}
-				WebPlanInfo planInfo = DispatchPlanUtil.getWebPlanInfo(plan, zone, employeeManagerService);
+				WebPlanInfo planInfo = DispatchPlanUtil.getWebPlanInfo(plan, zone, employeeManagerService, true);
 				planInfos.add(planInfo);
 			}
 			
