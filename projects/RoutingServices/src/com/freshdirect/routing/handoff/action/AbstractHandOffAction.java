@@ -240,8 +240,7 @@ public abstract class AbstractHandOffAction {
 														.getDispatchTime()
 														.equals(new RoutingTimeOfDay(
 																routeModel
-																		.getStartTime()))
-																		&& waveInstance.getDestinationFacility().equals(routeModel.getOriginId())) {
+																		.getStartTime()))) {
 											foundWave = true;
 											routeModel
 													.copyWaveProperties(waveInstance);
