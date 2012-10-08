@@ -428,7 +428,7 @@ public class HandOffAutoDispatchAction extends AbstractHandOffAction {
 								facilityLookUp.get(_plan.getDestinationFacility())!=null &&
 								facilityLookUp.get(_plan.getDestinationFacility()).getTrnFacilityType().getName().equals(EnumTransportationFacilitySrc.DEPOTDELIVERY.getName()))
 				{
-					DateRange planRange = new DateRange(_plan.getFirstDeliveryTime(), _plan.getLastDeliveryTime());
+					DateRange planRange = new DateRange(_plan.getFirstDeliveryTime(), _plan.getFirstDeliveryTime());
 					
 					int runnerCount = 0;	
 						for (Iterator<IHandOffBatchPlan> k = runnerPlans.iterator(); k.hasNext() && runnerCount<6;) 

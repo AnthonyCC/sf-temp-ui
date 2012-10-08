@@ -359,7 +359,7 @@ public class ModelUtil {
 					p.getDestinationFacility()!=null && p.getDestinationFacility().getTrnFacilityType()!=null &&
 					 p.getDestinationFacility().getTrnFacilityType().getName().equals(EnumTransportationFacilitySrc.DEPOTDELIVERY.getName()))
 			{
-				DateRange planRange = new DateRange(p.getFirstDeliveryTime(), p.getLastDeliveryTime());
+				DateRange planRange = new DateRange(p.getFirstDeliveryTime(), p.getFirstDeliveryTime());
 				int runnerCount = 0;
 				for ( Iterator<Plan> k = runnerPlans.iterator(); k.hasNext()&& runnerCount<6;) 
 					{
