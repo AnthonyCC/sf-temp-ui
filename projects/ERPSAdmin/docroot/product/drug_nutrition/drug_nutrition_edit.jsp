@@ -13,7 +13,7 @@
 		<div id="drugpanel"></div>
 		<script>drugPanelConfig.container=$('#drugpanel');</script>
 		<script src="/assets/javascript/drug_nutrition_editor.js"></script>
-		<script>drugPanel(jQuery,'<%= pageContext.getAttribute("panel") %>', drugPanelConfig)</script>
+		<script>drugPanel(jQuery,<%= pageContext.getAttribute("panel") %>, drugPanelConfig)</script>
 		<% if(SecurityManager.isUserAdmin(request)) {%>	
 		<button id="deletebutton">Delete panel</button>
 		<form method="post" url="#" id="saveform"><input type="hidden" name="panel"></form>

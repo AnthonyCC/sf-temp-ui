@@ -531,7 +531,7 @@ var drugPanel = function($,data,config){
 	});
 	
 	setCurrentView(currentView);
-	DrugPanel.init(JSON.parse(data),container);
+	DrugPanel.init(data,container);
 	
 	
 	if(config.events) {
