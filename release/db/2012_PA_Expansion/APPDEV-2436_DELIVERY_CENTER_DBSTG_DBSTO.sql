@@ -48,7 +48,7 @@ AS
           returnreason,
           eventid,
           INSERT_TIMESTAMP
-     FROM AIRCLIC_PROD.cartonstatus@AIRCLICRW.NYC.FRESHDIRECT.COM;
+     FROM AIRCLIC_PROD.cartontracking@AIRCLICRW.NYC.FRESHDIRECT.COM;
 
 
 GRANT SELECT ON DLV.CARTONTRACKING TO fdstore_stprd01;
