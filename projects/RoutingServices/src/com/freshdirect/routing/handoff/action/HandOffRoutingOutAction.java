@@ -425,8 +425,8 @@ public class HandOffRoutingOutAction extends AbstractHandOffAction {
 	protected class RouteDispatchComparator implements Comparator<IRouteModel> {		
 		
 		public int compare(IRouteModel obj1, IRouteModel obj2){
-			if(obj1.getDispatchTime() != null &&  obj2.getDispatchTime() != null) {
-				return obj1.getDispatchTime().getAsDate().compareTo(obj2.getDispatchTime().getAsDate());
+			if(obj1.getStartTime() != null &&  obj2.getStartTime() != null) {
+				return obj1.getStartTime().compareTo(obj2.getStartTime());
 			}
 			return 0;
 		}	
