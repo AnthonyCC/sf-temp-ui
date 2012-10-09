@@ -26,6 +26,7 @@ import com.freshdirect.cms.fdstore.FDContentTypes;
 import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.fdstore.FDAttributeCache;
 import com.freshdirect.fdstore.FDCachedFactory;
+import com.freshdirect.fdstore.FDDrugCache;
 import com.freshdirect.fdstore.FDGroup;
 import com.freshdirect.fdstore.FDInventoryCache;
 import com.freshdirect.fdstore.FDNutritionCache;
@@ -93,6 +94,8 @@ public class Warmup {
 		FDAttributeCache.getInstance();
 		// Get instance loads up the Nutrition
 		FDNutritionCache.getInstance();
+		// Get instance loads up the Drug Nutrition
+		FDDrugCache.getInstance();
 
 		LOGGER.info("main warmup in " + (System.currentTimeMillis() - time) + " ms");
 

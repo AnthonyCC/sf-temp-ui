@@ -21,11 +21,6 @@ public class FDDrugCache extends FDAbstractCache {
 	private static Category LOGGER = LoggerFactory.getInstance( FDDrugCache.class );
 	private static FDDrugCache instance;
 
-	public FDDrugCache(long refreshDelay) {
-		super(refreshDelay);
-		// TODO Auto-generated constructor stub
-	}
-
 	private FDDrugCache() {
 		super(DateUtil.MINUTE * FDStoreProperties.getNutritionRefreshPeriod());
 	}
