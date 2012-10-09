@@ -150,11 +150,11 @@ public class ComplaintUtil {
 		else if ( "transportation".equalsIgnoreCase(dept) ) { r = "TRN"; }
         else if ( "extraitem".equalsIgnoreCase(dept) ) { r = "XTR"; }
         else if ( "kosher".equalsIgnoreCase(dept) ) { r = "KOS"; }
-        else if ( "wine".equalsIgnoreCase(dept) || (dept!=null && dept.toLowerCase().startsWith("usq")) ){ r = "WIN"; }
+        else if ( "wine".equalsIgnoreCase(dept) || "wines".equalsIgnoreCase(dept) || (dept!=null && dept.toLowerCase().startsWith("usq")) ){ r = "WIN"; }
         else if ( "Easy Meals".equalsIgnoreCase(dept) ){ r = "EZM"; }
         else if ( "Ready to Cook".equalsIgnoreCase(dept) ){ r = "RTC"; }
         else if ( dept.toLowerCase().indexOf("health") != -1 ) { r = "HBA"; }
-        else if ( "Healthy Living".equalsIgnoreCase(dept) ){ r = "OURPICKS"; }        
+        else if ( "Healthy Living".equalsIgnoreCase(dept) || "Our Picks".equalsIgnoreCase(dept) ){ r = "OURPICKS"; }        
         else if ( "4-Minute Meals".equalsIgnoreCase(dept) ){ r = "FDI"; }
         else if ( "Makegood".equalsIgnoreCase(dept) ){ r = "MGD"; }
 
