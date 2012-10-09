@@ -25,6 +25,8 @@ import com.freshdirect.common.pricing.MaterialPrice;
 import com.freshdirect.customer.ErpDiscountLineModel;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.util.NVL;
+import com.freshdirect.payment.BillingCountryInfo;
+import com.freshdirect.payment.BillingRegionInfo;
 import com.freshdirect.sap.PosexUtil;
 import com.freshdirect.sap.SapChargeLineI;
 import com.freshdirect.sap.SapCustomerI;
@@ -379,6 +381,15 @@ class SalesOrderHelper {
 		if (address == null) {
 			this.bapi.addPartner(partnerRole, partnerNumber);
 		} else {
+			String state=address.getState();
+			if("RE".equals(partnerRole) || "RG".equals(partnerRole)) {
+				BillingCountryInfo bc=BillingCountryInfo.getEnum(address.getCountry());
+				if(bc!=null) {
+					BillingRegionInfo br =bc.getRegion(address.getState());
+					if(br!=null)
+						state=br.getCodeExt();
+				}
+			}
 			this.bapi.addPartner(
 				partnerRole,
 				partnerNumber,
@@ -387,7 +398,7 @@ class SalesOrderHelper {
 				SalesOrderHelper.getSimplifiedStreet(address),
 				address.getCity(),
 				address.getZipCode(),
-				address.getState(),
+				state,
 				address.getCountry(),
 				String.valueOf(address.getPhone()));
 		}

@@ -84,13 +84,13 @@ public class SapOrderAdapter implements SapOrderI {
 
 		ErpAddressModel shipTo = this.erpOrder.getDeliveryInfo().getDeliveryAddress();
 		ErpPaymentMethodI paymentMethod = this.erpOrder.getPaymentMethod();
-		if(paymentMethod!=null) {
+		/*if(paymentMethod!=null) {
 			BillingCountryInfo bc=BillingCountryInfo.getEnum(paymentMethod.getCountry());
 			if(bc!=null) {
 				BillingRegionInfo br =bc.getRegion(paymentMethod.getState());
 				paymentMethod.setState(br.getCodeExt());
 			}
-		}
+		}*/
 		if (paymentMethod != null) {
 			this.customer = new CustomerAdapter(phonePrivate, erpCustomer, shipTo, paymentMethod, this.getAlternateDeliveryAddress());
 		} else {
