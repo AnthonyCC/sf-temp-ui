@@ -108,7 +108,7 @@ function addEntry(date, route, stop, message, msgSrc, userId, orderId,customerId
 			 _data[5] = userId;
 			 _data[6] = orderId;
 			 _data[7] = customerId;
-			 var result=jsonrpcClient.manager.sendMessage(_data);
+			 var result=jsonrpcClient.manager.sendMessage(_data,null);
 			 $('ac_error').update("");
 			 $('ac_info').update(result);
 			 closeDialogue();
