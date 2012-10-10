@@ -246,7 +246,7 @@ public class FDPromotionJSONSerializerTest extends TestCase {
 		klassProps.put(com.freshdirect.fdstore.promotion.management.FDPromoChangeDetailModel.class,
 				new String[]{"changeFieldName", "changeFieldNewValue", "changeFieldOldValue", "changeSectionId", "promoChangeId"});
 		klassProps.put(com.freshdirect.fdstore.promotion.management.FDPromoDlvTimeSlotModel.class,
-				new String[]{"dayId", "dlvTimeEnd", "dlvTimeStart", "promoDlvZoneId"});
+				new String[]{"dayId", "dlvTimeEnd", "dlvTimeStart", "promoDlvZoneId", "radius", "windowTypes"});
 		klassProps.put(com.freshdirect.fdstore.promotion.management.FDPromoDlvZoneStrategyModel.class,
 				new String[]{"dlvDays", "dlvTimeSlots", "dlvZones", "promotionId"});
 		klassProps.put(com.freshdirect.fdstore.promotion.management.FDPromoPaymentStrategyModel.class,
