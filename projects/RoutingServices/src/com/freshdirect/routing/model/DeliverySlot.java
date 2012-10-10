@@ -1,5 +1,6 @@
 package com.freshdirect.routing.model;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 import com.freshdirect.routing.util.RoutingDateUtil;
@@ -19,13 +20,13 @@ public class DeliverySlot extends BaseModel implements IDeliverySlot  {
 	
 	private String referenceId;
 	
-	private int ecoFriendly;
-	private int steeringRadius;
+	private BigDecimal ecoFriendly;
+	private BigDecimal steeringRadius;
 	
-	public int getEcoFriendly() {
+	public BigDecimal getEcoFriendly() {
 		return ecoFriendly;
 	}
-	public void setEcoFriendly(int ecoFriendly) {
+	public void setEcoFriendly(BigDecimal ecoFriendly) {
 		this.ecoFriendly = ecoFriendly;
 	}
 	public String getReferenceId() {
@@ -102,10 +103,10 @@ public class DeliverySlot extends BaseModel implements IDeliverySlot  {
 	public void setWaveCode(String waveCode) {
 		this.waveCode = waveCode;
 	}
-	public int getSteeringRadius() {
+	public BigDecimal getSteeringRadius() {
 		return steeringRadius;
 	}
-	public void setSteeringRadius(int steeringRadius) {
+	public void setSteeringRadius(BigDecimal steeringRadius) {
 		this.steeringRadius = steeringRadius;
 	}
 	

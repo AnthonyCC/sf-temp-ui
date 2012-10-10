@@ -1,5 +1,6 @@
 package com.freshdirect.delivery.model;
 
+import java.math.BigDecimal;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -74,12 +75,12 @@ public class DlvTimeslotModel extends DlvShiftTimeslotModel {
 	private double premiumAmount;
 	
 	public boolean hasSteeringRadius() {
-		if(this.getRoutingSlot() != null && this.getRoutingSlot().getDeliveryCost() != null){
-			if(this.getRoutingSlot().getSteeringRadius() != 0)	{
-				if(this.getRoutingSlot().getDeliveryCost().getAdditionalDistance() <= this.getRoutingSlot().getSteeringRadius())
+		if(this.getRoutingSlot() != null && this.getRoutingSlot().getDeliveryCost() != null && this.getRoutingSlot().getSteeringRadius() != null) {	
+			if(this.getRoutingSlot().getSteeringRadius().doubleValue() != BigDecimal.ZERO.doubleValue())	{
+				if(this.getRoutingSlot().getDeliveryCost().getAdditionalDistance() / 100 <= this.getRoutingSlot().getSteeringRadius().doubleValue())
 						return true;
 			} else {
-				if(this.getRoutingSlot().getDeliveryCost().getAdditionalDistance()== 0) 
+				if(this.getRoutingSlot().getDeliveryCost().getAdditionalDistance() / 100 == 0) 
 					return true;
 			}
 		}
@@ -87,12 +88,12 @@ public class DlvTimeslotModel extends DlvShiftTimeslotModel {
 	}
 	
 	public boolean isEcoFriendly() {		
-		if(this.getRoutingSlot() != null && this.getRoutingSlot().getDeliveryCost() != null){
-			if(this.getRoutingSlot().getEcoFriendly()!= 0)	{
-				if(this.getRoutingSlot().getDeliveryCost().getAdditionalDistance() <= this.getRoutingSlot().getEcoFriendly())
+		if(this.getRoutingSlot() != null && this.getRoutingSlot().getDeliveryCost() != null && this.getRoutingSlot().getEcoFriendly() != null) {
+			if(this.getRoutingSlot().getEcoFriendly().doubleValue() != BigDecimal.ZERO.doubleValue())	{
+				if(this.getRoutingSlot().getDeliveryCost().getAdditionalDistance() / 100 <= this.getRoutingSlot().getEcoFriendly().doubleValue())
 						return true;
 			}else{
-				if(this.getRoutingSlot().getDeliveryCost().getAdditionalDistance()== 0) 
+				if(this.getRoutingSlot().getDeliveryCost().getAdditionalDistance() / 100 == 0) 
 					return true;
 			}
 		}

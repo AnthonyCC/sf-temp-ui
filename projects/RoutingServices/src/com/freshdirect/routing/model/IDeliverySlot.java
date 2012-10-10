@@ -1,5 +1,6 @@
 package com.freshdirect.routing.model;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 public interface IDeliverySlot {
@@ -34,10 +35,10 @@ public interface IDeliverySlot {
 	String getReferenceId();
 	void setReferenceId(String referenceId);
 	
-	int getEcoFriendly();
-	void setEcoFriendly(int ecoFriendly);
+	BigDecimal getEcoFriendly();
+	void setEcoFriendly(BigDecimal ecoFriendly);
 	
-	int getSteeringRadius();
-	void setSteeringRadius(int steeringRadius);
+	BigDecimal getSteeringRadius();
+	void setSteeringRadius(BigDecimal steeringRadius);
 
 }

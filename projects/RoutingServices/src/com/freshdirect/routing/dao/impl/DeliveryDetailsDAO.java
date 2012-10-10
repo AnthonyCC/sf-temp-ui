@@ -191,7 +191,7 @@ public class DeliveryDetailsDAO extends BaseDAO implements IDeliveryDetailsDAO {
 	
 	private static final String TIMESLOT_BY_ID =
 			"select distinct ts.id, ts.base_date, ts.start_time, ts.end_time, ts.cutoff_time, ts.premium_cutoff_time,ts.status, ts.zone_id, ts.capacity, ts.ct_capacity" +
-			", ta.AREA AREA_CODE, ta.STEM_MAX_TIME stemmax, ta.STEM_FROM_TIME stemfrom, ta.STEM_TO_TIME stemto, ta.ZONE_ECOFRIENDLY ecoFriendly, z.NAME ZONE_NAME, " +
+			", ta.AREA AREA_CODE, ta.STEM_MAX_TIME stemmax, ta.STEM_FROM_TIME stemfrom, ta.STEM_TO_TIME stemto, ta.ZONE_ECOFRIENDLY ecoFriendly, ta.STEERING_RADIUS steeringRadius, z.NAME ZONE_NAME, " +
 			"case when ts.premium_cutoff_time is null then TO_CHAR(ts.CUTOFF_TIME, 'HH_MI_PM') else TO_CHAR(ts.premium_cutoff_time, 'HH_MI_PM') end WAVE_CODE, " +
 			"ts.IS_DYNAMIC IS_DYNAMIC, ts.IS_CLOSED IS_CLOSED, tr.IS_DEPOT IS_DEPOT, tr.code REGION_CODE, tr.name REGION_NAME, tr.description REGION_DESCR, a.DELIVERY_RATE AREA_DLV_RATE,"
 				+ "(select count(reservation.TIMESLOT_ID) from dlv.reservation "
@@ -270,7 +270,8 @@ public class DeliveryDetailsDAO extends BaseDAO implements IDeliveryDetailsDAO {
 		         					routingSlot.setDynamicActive("X".equalsIgnoreCase(rs.getString("IS_DYNAMIC")) ? true : false);
 		         					routingSlot.setManuallyClosed("X".equalsIgnoreCase(rs.getString("IS_CLOSED")) ? true : false);
 		         					routingSlot.setZoneCode(zoneCode);
-		         					routingSlot.setEcoFriendly(rs.getInt("ecoFriendly"));
+		         					routingSlot.setEcoFriendly(rs.getBigDecimal("ecoFriendly"));
+		         					routingSlot.setSteeringRadius(rs.getBigDecimal("steeringRadius"));
 		         							
 		         					IRoutingSchedulerIdentity _schId = new RoutingSchedulerIdentity();
 		         					_schId.setDeliveryDate(baseDate);
