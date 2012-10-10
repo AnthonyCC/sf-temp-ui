@@ -582,13 +582,13 @@ function doStuff() {
   	 		postData = postData + "&orderNumber=" + $.URLEncode(temp[2]);
   	 	}
   	 	if(temp.length > 3) {
-  	 		postData = postData + "&startTime=" + $.URLEncode(temp[3]);
+  	 		postData = postData + "&callStartTime=" + $.URLEncode(temp[3]);
   	 	}
 		if(temp.length > 4) {
-  	 		postData = postData + "&duration=" + $.URLEncode(temp[4]);
+  	 		postData = postData + "&callDuration=" + $.URLEncode(temp[4]);
   	 	}
 		if(temp.length > 5) {
-  	 		postData = postData + "&outcome=" + $.URLEncode(temp[5]);
+  	 		postData = postData + "&callOutcome=" + $.URLEncode(temp[5]);
   	 	}
 		if(temp.length > 6) {
   	 		postData = postData + "&talkTime=" + $.URLEncode(temp[6]);
