@@ -113,6 +113,7 @@ public interface SAPConstants {
 	public static final String NUMBER_REGULAR_CARTONS = "Total Number of Regular Cartons";
 	public static final String NUMBER_FREEZER_CARTONS = "Number of Freezer Cartons";
 	public static final String NUMBER_ALCOHOL_CARTONS = "Number of Cartons Containing alcohol";
+	public static final String NUMBER_CASE_CARTONS = "Total Number of Case Cartons";
 	public static final String ACTUAL_DISCOUNT_AMOUNT = "Actual header discount amount";
 
 	//

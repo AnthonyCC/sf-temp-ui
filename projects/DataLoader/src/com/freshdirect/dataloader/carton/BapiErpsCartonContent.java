@@ -97,6 +97,7 @@ public class BapiErpsCartonContent implements BapiFunctionI {
 			String freezer = cartonTable.getString("ZZFREEZER").trim();
 			String beer = cartonTable.getString("ZZBEER").trim();
 			String platter = cartonTable.getString("ZZPLATTER").trim();
+			String casepick = cartonTable.getString("CASEPICK").trim();
 
 			String cartonType = ErpCartonInfo.CARTON_TYPE_REGULAR;
 			if(freezer.equals("X")) {
@@ -108,7 +109,9 @@ public class BapiErpsCartonContent implements BapiFunctionI {
 			if(platter.equals("X")) {
 				cartonType = ErpCartonInfo.CARTON_TYPE_PLATTER;
 			}
-			
+			if(casepick.equals("X")){
+				cartonType = ErpCartonInfo.CARTON_TYPE_CASEPICK;
+			}
 			// Now process data
 			if(!currentOrderNo.equals(webOrderNo)) {
 				cartonInfos = new ArrayList<ErpCartonInfo>();
