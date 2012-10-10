@@ -1012,7 +1012,7 @@ public class AirclicDAO {
 			while(rs.next()) {	
 				String prevStatus = rs.getString("PREVIOUSSTATUS");
 				String currentStatus = rs.getString("CURRENTSTATUS");
-				if(!prevStatus.equals(currentStatus) && (currentStatus.equals("DELIVERED") || currentStatus.equals("REFUSED"))){
+				if(prevStatus != null && !prevStatus.equals(currentStatus) && (currentStatus.equals("DELIVERED") || currentStatus.equals("REFUSED"))){
 					deliveryAttempts++;
 				}				
 			}
