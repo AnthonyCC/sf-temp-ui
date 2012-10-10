@@ -489,9 +489,9 @@ public class ProductModelImpl extends AbstractProductModelImpl {
         	SkuModel sku = li.next();
         	try{
         		FDProduct fdProduct = sku.getProduct();
-        		if(fdProduct!=null && fdProduct.hasNutritionFacts()){
-        			return sku;
-        		}
+				if ( fdProduct != null && ( fdProduct.hasNutritionFacts() || fdProduct.hasDrugNutritionFacts() ) ) {
+					return sku;
+				}
         	} catch(FDSkuNotFoundException e){
         		//ignore
         	} catch (FDResourceException ex) {

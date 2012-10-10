@@ -106,12 +106,13 @@ public class FDProductHelper {
 		// get attributes for material
 		AttributesI attribs = new AttributeCollection(product.getProxiedMaterial().getAttributes());
 		
-		// get nutritional information
+		// get nutrition information
 		ErpNutritionModel nutrModel = FDNutritionCache.getInstance().getNutrition(product.getSkuCode());
 
 		// construct display sales units
 		FDSalesUnit[] displaySalesUnits = this.getSalesUnits(product.getDisplaySalesUnits());
 		
+		// get drug 'nutrition' information
 		NutritionDrugPanel drugPanel = FDDrugCache.getInstance().getDrugPanel(product.getSkuCode());
 
 		// create FDMaterial

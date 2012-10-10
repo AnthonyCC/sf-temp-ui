@@ -343,6 +343,7 @@ public class FDProduct extends FDSku implements AttributesI {
 	public boolean hasNutritionFacts() {
 		if (nutrition.size() == 0)
 			return false;
+		
 		boolean result = false;
 		for (FDNutrition nutr : nutrition) {
 			if (nutr.getName().equals("Ignore"))
@@ -353,6 +354,10 @@ public class FDProduct extends FDSku implements AttributesI {
 		return result;
 	}
 
+	public boolean hasDrugNutritionFacts() {
+		return drugPanel != null;
+	}
+	
 	public NutritionDrugPanel getDrugPanel() {
 		return drugPanel;
 	}
