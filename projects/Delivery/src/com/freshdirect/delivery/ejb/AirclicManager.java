@@ -4,6 +4,10 @@ import java.rmi.RemoteException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -13,15 +17,21 @@ import javax.ejb.CreateException;
 import javax.ejb.EJBException;
 import javax.naming.NamingException;
 
+import com.freshdirect.crm.CallLogModel;
 import com.freshdirect.delivery.DlvResourceException;
+import com.freshdirect.delivery.model.AirclicCartonInfo;
 import com.freshdirect.delivery.model.AirclicMessageVO;
 import com.freshdirect.delivery.model.AirclicNextelVO;
 import com.freshdirect.delivery.model.AirclicTextMessageVO;
+import com.freshdirect.delivery.model.DeliverySummaryModel;
+import com.freshdirect.delivery.model.DeliveryManifestVO;
 import com.freshdirect.delivery.model.DispatchNextTelVO;
+import com.freshdirect.delivery.model.RouteNextelVO;
 import com.freshdirect.delivery.model.SignatureVO;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.core.ServiceLocator;
+import com.freshdirect.framework.util.DateUtil;
 
 public class AirclicManager {
 	private final ServiceLocator serviceLocator;
@@ -92,7 +102,7 @@ public class AirclicManager {
 			return instance;
 		}
 		
-		public String sendMessage(String[] data) throws FDResourceException
+		public String sendMessage(String[] data, String[] nextels) throws FDResourceException
 		{
 			String result="";
 			try {
@@ -101,13 +111,18 @@ public class AirclicManager {
 				
 				int stop = 0;
 				if(data[2]!=null) stop = Integer.parseInt(data[2]);
-				
+								
 			AirclicTextMessageVO textMessage = new AirclicTextMessageVO(deliveryDate, data[1], stop ,
 					data[3], data[4], data[5], data[6], data[7]);
 			
+			List<String> nextelList = null;
+			if(nextels != null){
+				nextelList = new ArrayList<String>(nextels.length);
+				nextelList = Arrays.asList(nextels);
+			}
 			AirclicManagerSB sb = getAirclicManagerHome().create();
 			
-			result = sb.saveMessage(textMessage); 
+			result = sb.saveMessage(textMessage, nextelList); 
 			 
 			}
 			catch (CreateException e) {
@@ -185,19 +200,105 @@ public class AirclicManager {
 			}
 		}
 		
-		public Map<String, String> getNextTelAssets() throws FDResourceException {
-			
-			Map<String, String> result = new HashMap<String, String>();
+		public List<AirclicCartonInfo> lookupCartonScanHistory(String orderId)  throws FDResourceException {
 			try {
 				AirclicManagerSB sb = getAirclicManagerHome().create();
-				result = sb.getNextTelAssets(); 
+				List<AirclicCartonInfo> cartons = sb.lookupCartonScanHistory(orderId);
+				if(cartons != null){
+					Collections.sort(cartons, new CartonComparator());
+				}
+				return cartons;
+			} catch (CreateException e) {
+				throw new FDResourceException(e, "Cannot create SessionBean");
+			} catch (RemoteException e) {
+				throw new FDResourceException(e, "Cannot talk to the SessionBean");
+			} 
+		}
+		
+		public List<AirclicTextMessageVO> lookupAirclicMessages(String orderId) throws FDResourceException {
+			try {
+				AirclicManagerSB sb = getAirclicManagerHome().create();
+				return sb.lookupAirclicMessages(orderId); 
+			} catch (CreateException e) {
+				throw new FDResourceException(e, "Cannot create SessionBean");
+			} catch (RemoteException e) {
+				throw new FDResourceException(e, "Cannot talk to the SessionBean");
+			} catch (DlvResourceException e) {				
+				throw new FDResourceException(e, "Cannot talk to the database");
+			}
+		}
+		
+		public DeliveryManifestVO getDeliveryManifest(String orderId, String date) throws FDResourceException {
+			try {							
+				AirclicManagerSB sb = getAirclicManagerHome().create();
+				return sb.getDeliveryManifest(orderId, DateUtil.parseMDY(date)); 
+			} catch (CreateException e) {
+				throw new FDResourceException(e, "Cannot create SessionBean");
+			} catch (RemoteException e) {
+				throw new FDResourceException(e, "Cannot talk to the SessionBean");
+			} catch (DlvResourceException e) {				
+				throw new FDResourceException(e, "Cannot talk to the database");
+			} catch (ParseException e) {
+				e.printStackTrace();
+				throw new FDResourceException(e, "Cannot parse date");
+			}
+		}
+		
+		public List<RouteNextelVO> lookupNextels(String orderId, String route, String date) throws FDResourceException {
+			
+			try {
+				AirclicTextMessageVO textMessage = new AirclicTextMessageVO(DateUtil.parseMDY(date), route, 0, null, null, null, orderId);				
+				
+				AirclicManagerSB sb = getAirclicManagerHome().create();
+				return sb.lookupNextels(textMessage); 
+			} catch (CreateException e) {
+				throw new FDResourceException(e, "Cannot create SessionBean");
+			} catch (RemoteException e) {
+				throw new FDResourceException(e, "Cannot talk to the SessionBean");
+			} catch (DlvResourceException e) {				
+				throw new FDResourceException(e, "Cannot talk to the database");
+			} catch (ParseException e) {
+				e.printStackTrace();
+				throw new FDResourceException(e, "Cannot parse date");
+			}
+		}
+		
+		public List<CallLogModel> getOrderCallLog(String orderId) throws FDResourceException {
+			try {					
+				AirclicManagerSB sb = getAirclicManagerHome().create();
+				return sb.getOrderCallLog(orderId); 
 			} catch (CreateException e) {
 				throw new FDResourceException(e, "Cannot create SessionBean");
 			} catch (RemoteException e) {
 				throw new FDResourceException(e, "Cannot talk to the SessionBean");
 			} catch (DlvResourceException e) {				
 				e.printStackTrace();
+				throw new FDResourceException(e, "Cannot talk to the database");
+			} 
+		}
+		
+		public DeliverySummaryModel lookUpDeliverySummary(String orderId, String routeNo, String date) throws FDResourceException {
+			try {								
+				AirclicManagerSB sb = getAirclicManagerHome().create();
+				return sb.lookUpDeliverySummary(orderId, routeNo, DateUtil.parseMDY(date)); 
+			} catch (CreateException e) {
+				throw new FDResourceException(e, "Cannot create SessionBean");
+			} catch (RemoteException e) {
+				throw new FDResourceException(e, "Cannot talk to the SessionBean");
+			} catch (DlvResourceException e) {				
+				throw new FDResourceException(e, "Cannot talk to the database");
+			} catch (ParseException e) {				
+				throw new FDResourceException(e, "Cannot talk to the database");
 			}
-			return result;
+		}
+		
+		protected class CartonComparator implements Comparator<AirclicCartonInfo> {		
+			
+			public int compare(AirclicCartonInfo obj1, AirclicCartonInfo obj2){
+				if(obj1.getCartonNumber() != null &&  obj2.getCartonNumber() != null) {
+					return obj2.getCartonNumber().compareTo(obj1.getCartonNumber());
+				}
+				return 0;
+			}	
 		}
 	}

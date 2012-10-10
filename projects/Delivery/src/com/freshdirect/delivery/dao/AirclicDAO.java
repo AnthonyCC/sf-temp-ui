@@ -14,59 +14,70 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.freshdirect.crm.CallLogModel;
 import com.freshdirect.crm.ejb.CriteriaBuilder;
 import com.freshdirect.delivery.DlvResourceException;
+import com.freshdirect.delivery.model.AirclicCartonInfo;
+import com.freshdirect.delivery.model.AirclicCartonScanDetails;
 import com.freshdirect.delivery.model.AirclicMessageVO;
 import com.freshdirect.delivery.model.AirclicNextelVO;
 import com.freshdirect.delivery.model.AirclicTextMessageVO;
+import com.freshdirect.delivery.model.DeliveryManifestVO;
+import com.freshdirect.delivery.model.DeliverySummaryModel;
 import com.freshdirect.delivery.model.DispatchNextTelVO;
+import com.freshdirect.delivery.model.RouteNextelVO;
 import com.freshdirect.delivery.model.SignatureVO;
 import com.freshdirect.framework.util.DateUtil;
+import com.freshdirect.routing.model.BuildingModel;
+import com.freshdirect.routing.model.BuildingOperationDetails;
+import com.freshdirect.routing.model.DeliveryModel;
+import com.freshdirect.routing.model.GeographicLocation;
+import com.freshdirect.routing.model.IBuildingModel;
+import com.freshdirect.routing.model.IBuildingOperationDetails;
+import com.freshdirect.routing.model.IDeliveryModel;
+import com.freshdirect.routing.model.IGeographicLocation;
+import com.freshdirect.routing.model.ILocationModel;
+import com.freshdirect.routing.model.IZoneModel;
+import com.freshdirect.routing.model.LocationModel;
+import com.freshdirect.routing.model.ZoneModel;
 
 
 public class AirclicDAO {
 
 	
-	public static List<AirclicMessageVO> getMessages(Connection conn) throws DlvResourceException
-	{
+	public static List<AirclicMessageVO> getMessages(Connection conn)
+			throws DlvResourceException {
 		List<AirclicMessageVO> messages = new ArrayList<AirclicMessageVO>();
 		PreparedStatement ps = null;
 		ResultSet rs = null;
-	
-		try
-		{
-		ps =
-				conn.prepareStatement("select * FROM DLV.AIRCLIC_MESSAGE");
-			
+
+		try {
+			ps = conn.prepareStatement("select * FROM DLV.AIRCLIC_MESSAGE");
+
 			rs = ps.executeQuery();
 			while (rs.next()) {
-					AirclicMessageVO message = new AirclicMessageVO();
-					message.setMessage(rs.getString("message"));
-					message.setDescription(rs.getString("description"));
-					messages.add(message);
-					
+				AirclicMessageVO message = new AirclicMessageVO();
+				message.setMessage(rs.getString("message"));
+				message.setDescription(rs.getString("description"));
+				messages.add(message);
+
 			}
-		}
-		catch(SQLException e)
-		{
+		} catch (SQLException e) {
 			throw new DlvResourceException(e);
-		}	
-		finally
-		{
+		} finally {
 			try {
-				if(rs!=null)
+				if (rs != null)
 					rs.close();
-				if(ps!=null)
+				if (ps != null)
 					ps.close();
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			
-		}
-			
 
-			return messages;
+		}
+
+		return messages;
 	}
 	
 	private static final String ROUTE_DWLD_QUERY = "select * FROM DLV.routedownload rd where ";
@@ -559,36 +570,7 @@ public class AirclicDAO {
 		}		
 		return result;		
 	}
-	
-	public static Map<String, String> getNextTelAssets(Connection conn) throws DlvResourceException {
 		
-		Map<String, String> result = new HashMap<String, String>();
-		PreparedStatement ps = null;
-		ResultSet rs = null;
-		try{
-			ps = conn.prepareStatement(" select asset_no ASSETNO, asset_description as NEXTELNO from transp.asset a where a.asset_status not in 'O/S' ");
-	
-			rs = ps.executeQuery();
-			while (rs.next()) {				
-				result.put(rs.getString("NEXTELNO") != null ? rs.getString("NEXTELNO").replace("-", "") : null, rs.getString("ASSETNO"));
-			}			
-		} catch (Exception e) {			
-			e.printStackTrace();
-			throw new DlvResourceException(e);
-		} finally {
-			try {
-				if (rs != null)
-					rs.close();
-				if (ps != null)
-					ps.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-		}		
-		return result;		
-	}
-	
-	
 	public static void updateEmployeeNexTelData(Connection conn, List<DispatchNextTelVO> employeeNextTels) throws DlvResourceException {
 		
 		PreparedStatement ps = null;	
@@ -616,137 +598,514 @@ public class AirclicDAO {
 		}
 	}
 	
-/*public static void main(String s[]) throws SQLException, NamingException, IOException, DlvResourceException	{
+	public static List<AirclicCartonInfo> lookupCartonScanHistory(Connection conn, String salePk) throws SQLException {
 		
-		DriverManager.registerDriver(new oracle.jdbc.driver.OracleDriver());
-			
-		getSignatureDataEx();
+		long start = System.currentTimeMillis();
+		/* Carton scanning info */
+		List<AirclicCartonInfo> cartons = new ArrayList<AirclicCartonInfo>();
+		PreparedStatement ps =
+			conn.prepareStatement(
+				"SELECT ci.sale_id, ci.carton_number, ci.carton_type, ct.scandate, ct.action, ct.cartonstatus, ct.employee, ct.route, ct.stop, ct.nextelId, ct.userId, "+
+						" ct.deliveredto, ct.returnreason, decode(ct.cartonstatus,'MOT',E.PERSONFULLNAME,' ') motdrivername "+						
+						" FROM cust.carton_info ci, dlv.cartontracking ct, transp.kronos_employee e "+
+						" WHERE ci.carton_number=ct.cartonId(+) and e.personnum=ct.employee "+
+						" AND ci.sale_id = ? "+
+						" ORDER BY TO_NUMBER(ci.carton_number) asc, ct.scandate desc");
 		
-	}
+		ps.setString(1, salePk);
 
-	
-	public static void getSignatureDataEx() throws DlvResourceException, NamingException 
-	{
-		
-		PreparedStatement ps = null,ps1 = null;
-		ResultSet rs = null;
-		byte[] in = null;
-		Connection devConn = null;
-		Connection conn  = null;
-		
-		try	{
-			
-			conn =DriverManager.getConnection("jdbc:oracle:thin:@(DESCRIPTION=(ADDRESS_LIST=(ADDRESS=(PROTOCOL=TCP)(HOST=db01-VIP.stdb.nyc2.freshdirect.com)(PORT=1521))(ADDRESS=(PROTOCOL=TCP)(HOST=db02-VIP.stdb.nyc2.freshdirect.com)(PORT=1521)) (ADDRESS=(PROTOCOL=TCP)(HOST=db0-VIP.stdb.nyc2.freshdirect.com)(PORT=1521)))(CONNECT_DATA=(FAILOVER_MODE=(TYPE=session)(METHOD=basic)(RETRIES=20))(SERVER=dedicated)(SERVICE_NAME=dbsto_prod)))", "appdev", "readn0wrt");
-				
-			devConn =DriverManager.getConnection("jdbc:oracle:thin:@(DESCRIPTION=(LOAD_BALANCE=yes)(ADDRESS_LIST=(ADDRESS=(PROTOCOL=TCP)(HOST=nyc1dbcl01-vip01.nyc1.freshdirect.com)(PORT=1521))(ADDRESS=(PROTOCOL=TCP)(HOST=nyc1dbcl01-vip02.nyc1.freshdirect.com)(PORT=1521)))(CONNECT_DATA=(FAILOVER_MODE=(TYPE=select)(METHOD=basic)(RETRIES=180)(DELAY=5))(SERVER=dedicated)(SERVICE_NAME=devint)))", "fdstore_prda", "fdstore_prda");
-				
-			
-			//conn = getProdDataSource().getConnection();
-			//devConn = getDataSource().getConnection();
-			
-			
-			ps = conn.prepareStatement("SELECT * FROM CUST.SALE_SIGNATURE WHERE TO_CHAR(SIGNATURE_TIMESTAMP, 'MMDDYYYYHH24') >= '0807201200' " +
-					" and TO_CHAR(SIGNATURE_TIMESTAMP, 'MMDDYYYYHH24') <=  '0807201215' "); 
-			
-			//toTime is required here because we want to know till what time we are getting the signatures. The same to Time
-			
-			rs = ps.executeQuery();
-			
-			ps1 = devConn.prepareStatement("INSERT INTO CUST.SALE_SIGNATURE (SALE_ID, SIGNATURE_TIMESTAMP, DELIVEREDTO, RECIPIENT, CONTAINS_ALCOHOL, SIGNATURE, SIG_SIZE) " +
-					"VALUES (?,?,?,?,?,?,?)");
-		
-			
-			int batchCount = 0;
-			
-			while (rs.next()) {
-				
-				in=rs.getBytes("SIGNATURE");
-				
-				if(in!=null && in.length>0)
-					{
-						ps1.setBytes(6, in);
-					  	ps1.setString(1, rs.getString("SALE_ID"));
-					  	ps1.setTimestamp(2, rs.getTimestamp("SIGNATURE_TIMESTAMP"));
-					  	ps1.setString(3, rs.getString("DELIVEREDTO"));
-					  	ps1.setString(4, rs.getString("RECIPIENT"));
-					  	ps1.setString(5, rs.getString("CONTAINS_ALCOHOL"));
-					  	ps1.setInt(7, in.length);
-					    ps1.addBatch();
-					    batchCount++;
-					}
-				
+		ResultSet rs = ps.executeQuery();
+		String currentCartonNumber = "";
+		AirclicCartonInfo ci = null;
+		List<AirclicCartonScanDetails> cartonDetailList = null;
+		while (rs.next()) {
+			String saleId = rs.getString("SALE_ID");
+			String cartonNumber = rs.getString("CARTON_NUMBER");
+			String cartonType = rs.getString("CARTON_TYPE");
+			Date scanTime = rs.getTimestamp("SCANDATE");
+			String action = rs.getString("ACTION");
+			String cartonStatus = rs.getString("CARTONSTATUS");
+			String employee = rs.getString("EMPLOYEE");
+			String route = rs.getString("ROUTE");
+			String stop = rs.getString("STOP");
+			String nextel = rs.getString("NEXTELID");
+			String userId = rs.getString("USERID");
+			String deliveredTo = rs.getString("DELIVEREDTO");
+			String returnReason = rs.getString("RETURNREASON");
+			String motDriverName = rs.getString("MOTDRIVERNAME");
+
+			if(!cartonNumber.equals(currentCartonNumber)) {
+				ci = new AirclicCartonInfo(saleId, cartonNumber, cartonType);
+				cartonDetailList = new ArrayList<AirclicCartonScanDetails>();
+				ci.setDetails(cartonDetailList);
+				cartons.add(ci);
+				currentCartonNumber = cartonNumber;
 			}
-			if(batchCount>0)
-			ps1.executeBatch();
 			
-			
-		} 
-		catch(SQLException e)
-		{
-			throw new DlvResourceException(e);
+			AirclicCartonScanDetails cd = new AirclicCartonScanDetails(scanTime, action, cartonStatus, employee, route, stop, nextel, userId, deliveredTo, returnReason, motDriverName);
+			cartonDetailList.add(cd);
 		}
-		finally {
+
+		rs.close();
+		ps.close();
+		
+		long end = System.currentTimeMillis();
+		
+		System.out.println("Time spent loading carton scanning history for order # "+ salePk + " is "+(end-start)/(1000)+" sec");
+		
+		return cartons;
+	}
+	
+	public static List<AirclicTextMessageVO> lookupAirclicMessages(Connection conn,  String orderId) throws DlvResourceException {
+		
+		long start = System.currentTimeMillis();
+		ResultSet rs = null;
+		PreparedStatement ps = null;
+		List<AirclicTextMessageVO> voList = new ArrayList<AirclicTextMessageVO>();
+		try
+		{
+			ps = conn.prepareStatement("SELECT * FROM  DLV.AIRCLIC_TXTMESSAGE WHERE ORDERID = ? ");
+			ps.setString(1, orderId);
+			rs = ps.executeQuery();
+			while(rs.next())
+			{
+				AirclicTextMessageVO vo = new AirclicTextMessageVO();
+				vo.setOrderId(rs.getString("orderid"));
+				vo.setRoute(rs.getString("route"));
+				vo.setMessage(rs.getString("message"));
+				vo.setCreateDate(rs.getDate("createDate"));
+				vo.setSender(rs.getString("sender"));
+				vo.setSource(rs.getString("source"));
+				vo.setStop(rs.getInt("stop"));
+				vo.setSentToAirclic(rs.getString("SENT_TO_AIRCLIC"));
+				voList.add(vo);
+			}
+		} catch (SQLException e) {
+			throw new DlvResourceException(e);
+		} finally {
 			try {
 				if (rs != null)
 					rs.close();
 				if (ps != null)
 					ps.close();
-				if (ps1 != null)
-					ps1.close();
-				if (conn != null)
-					conn.close();
-				if (devConn != null)
-					devConn.close();
-
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-		}
-	}
-		
-		public static DataSource getDataSource() throws NamingException {
-		InitialContext initCtx = null;
-		try {
-			initCtx = getInitialContext();
-			return (DataSource) initCtx.lookup("fddatasource");
-		} finally {
-			if (initCtx != null)
-				try {
-					initCtx.close();
-				} catch (NamingException ne) {
-				}
-		}
-	}
 
-		public static DataSource getProdDataSource() throws NamingException {
-			InitialContext initCtx = null;
-			try {
-				initCtx = getProdInitialContext();
-				return (DataSource) initCtx.lookup("fddatasource");
-			} finally {
-				if (initCtx != null)
-					try {
-						initCtx.close();
-					} catch (NamingException ne) {
+		}
+		long end = System.currentTimeMillis();
+		
+		System.out.println("Time spent loading airclic messages for order # "+ orderId + " is "+(end-start)/(1000)+" sec");
+		
+		return voList;
+	}
+	
+	public static DeliveryManifestVO getDeliveryManifest(Connection conn,  String orderId, Date deliveryDate) throws DlvResourceException {
+			
+			long start = System.currentTimeMillis();
+			
+			DeliveryManifestVO result = new DeliveryManifestVO();
+			ResultSet rs = null;
+			PreparedStatement ps = null;
+			try
+			{
+				ps = conn.prepareStatement("select di.last_name,di.first_name, di.delivery_instructions, (select count(*) from cust.carton_info where sale_id=s.id) cartonCnt, "+			            
+						" hb.DELIVERY_DATE, bs.WEBORDER_ID, bs.AREA, bs.DELIVERY_TYPE, " +
+						" bs.WINDOW_STARTTIME ,bs.WINDOW_ENDTIME, bs.LOCATION_ID, bs.STOP_SEQUENCE, bs.STOP_ARRIVALDATETIME, bs.STOP_DEPARTUREDATETIME, bs.SERVICE_ADDR2,  " +
+						" dd.ADDR_TYPE ,dd.COMPANY_NAME ,dd.DIFFICULT_TO_DELIVER ,dd.DIFFICULT_REASON ,dd.ADDITIONAL,  " +
+						" dd.IS_DOORMAN, dd.IS_WALKUP,dd.IS_ELEVATOR ,dd.IS_HOUSE  ,dd.IS_FREIGHT_ELEVATOR, " +
+						" dd.SVC_ENT, dd.SVC_SCRUBBED_STREET, dd.SVC_CITY, dd.SVC_STATE, dd.SVC_ZIP, dd.HAND_TRUCK_ALLOWED, " +
+						" dd.WALK_UP_FLOORS ,dd.CREATED_BY ,dd.MODTIME, dd.SVC_CROSS_STREET, dd.CROSS_STREET ,dd.OTHER, " +
+						" bo.BLDG_START_HOUR, bo.BLDG_END_HOUR, bo.BLDG_COMMENTS, bo.SERVICE_START_HOUR, " +
+						" bo.SERVICE_END_HOUR, bo.SERVICE_COMMENTS, bo.DAY_OF_WEEK, ta.DELIVERYMODEL, " +
+						" b.SCRUBBED_STREET bSCRUBBED_STREET,b.ZIP bzip,b.COUNTRY bCOUNTRY,b.CITY bCITY, b.STATE bSTATE, " +
+						" b.LONGITUDE  BLONG,b.LATITUDE BLAT, l.APARTMENT LOCAPART, (select message from dlv.airclic_txtmessage m where m.createdate = "+ 
+                        " (select max(createdate) from dlv.airclic_txtmessage where orderId = bs.WEBORDER_ID)) as LAST_AIRCLIC_MSG " +
+			            " from cust.sale s, cust.salesaction sa, cust.deliveryinfo di, transp.handoff_batch hb, transp.handoff_batchstop bs, dlv.delivery_building b, dlv.delivery_location l, dlv.delivery_building_detail dd, transp.trn_area ta, "+
+			            " (select distinct xbo.* from transp.HANDOFF_BATCH xhb , transp.HANDOFF_BATCHSTOP xs "+
+			            " ,DLV.DELIVERY_LOCATION xl, dlv.delivery_building xb, DLV.DELIVERY_BUILDING_DETAIL  xdd, DLV.DELIVERY_BUILDING_DETAIL_OPS xbo "+
+			            " where xhb.batch_status in ('CPD','CPD/ADC','CPD/ADF') and xhb.DELIVERY_DATE = ? "+
+			            " and xHB.BATCH_ID = xS.BATCH_ID and xS.LOCATION_ID = xL.ID and xL.BUILDINGID = xB.ID "+
+			            " and xB.ID = xDD.DELIVERY_BUILDING_ID and xB.ID = xBO.DELIVERY_BUILDING_ID  "+
+			            " and to_char(xHB.DELIVERY_DATE ,'D')  = xBO.DAY_OF_WEEK) bo "+
+			            " where s.id=sa.sale_id and sa.id = di.salesaction_id and s.cromod_date=sa.action_date and sa.action_type IN ('CRO', 'MOD') "+
+			            " and s.id=bs.weborder_id and hb.batch_status in ('CPD','CPD/ADC','CPD/ADF') and hb.delivery_date = ? and bs.batch_id=hb.batch_id "+
+			            " and BS.LOCATION_ID = L.ID and L.BUILDINGID = B.ID and B.ID = DD.DELIVERY_BUILDING_ID(+) and B.ID = bo.DELIVERY_BUILDING_ID(+) and bs.area = ta.code(+) "+
+			            " and s.id= ?");
+				
+				ps.setDate(1, new java.sql.Date(deliveryDate.getTime()));
+				ps.setDate(2, new java.sql.Date(deliveryDate.getTime()));
+				ps.setString(3, orderId);
+				
+				rs = ps.executeQuery();
+				
+				while(rs.next()) {
+	
+					result.setFirstName(rs.getString("FIRST_NAME"));
+					result.setLastName(rs.getString("LAST_NAME"));
+					result.setDeliveryInstructions(rs.getString("DELIVERY_INSTRUCTIONS"));
+					result.setCartonCnt(rs.getInt("CARTONCNT"));
+					result.setStopNo(rs.getInt("STOP_SEQUENCE"));
+					result.setStopArrivalTime(rs.getTimestamp("STOP_ARRIVALDATETIME"));
+					result.setStopDepartureTime(rs.getTimestamp("STOP_DEPARTUREDATETIME"));
+					result.setLastAirclicMsg(rs.getString("LAST_AIRCLIC_MSG"));
+					
+					IDeliveryModel deliveryModel = new DeliveryModel();
+					deliveryModel.setDeliveryDate(rs.getDate("DELIVERY_DATE"));
+					deliveryModel.setDeliveryStartTime(rs.getTimestamp("WINDOW_STARTTIME"));
+					deliveryModel.setDeliveryEndTime(rs.getTimestamp("WINDOW_ENDTIME"));
+					deliveryModel.setServiceType(rs.getString("DELIVERY_TYPE"));
+					deliveryModel.setDeliveryModel(rs.getString("DELIVERYMODEL"));
+					
+					IZoneModel zoneModel = new ZoneModel();
+					zoneModel.setZoneNumber(rs.getString("AREA"));
+					deliveryModel.setDeliveryZone(zoneModel);
+					
+					IBuildingModel bmodel = new BuildingModel();		
+					
+					bmodel.setSrubbedStreet(rs.getString("bSCRUBBED_STREET"));
+					bmodel.setStreetAddress1(rs.getString("bSCRUBBED_STREET"));						
+					bmodel.setCity(rs.getString("bCITY"));		
+					bmodel.setState(rs.getString("bSTATE"));					
+					bmodel.setZipCode(rs.getString("bZIP"));
+					bmodel.setCountry(rs.getString("bCOUNTRY"));
+					
+					IGeographicLocation geoLoc = new GeographicLocation();
+					geoLoc.setLatitude(rs.getString("BLAT"));
+					geoLoc.setLongitude(rs.getString("BLONG"));
+																
+					bmodel.setGeographicLocation(geoLoc);
+				
+					bmodel.setAddrType(rs.getString("ADDR_TYPE"));
+					bmodel.setCompanyName(rs.getString("COMPANY_NAME"));
+					bmodel.setSvcScrubbedStreet(rs.getString("SVC_SCRUBBED_STREET"));
+					bmodel.setSvcCrossStreet(rs.getString("SVC_CROSS_STREET"));
+					bmodel.setSvcCity(rs.getString("SVC_CITY"));
+					bmodel.setSvcState(rs.getString("SVC_STATE"));
+					bmodel.setSvcZip(rs.getString("SVC_ZIP"));
+					
+					bmodel.setDoorman(getBoolean(rs.getString("IS_DOORMAN")));
+					bmodel.setWalkup(getBoolean(rs.getString("IS_WALKUP")));
+					bmodel.setElevator(getBoolean(rs.getString("IS_ELEVATOR")));
+					bmodel.setSvcEnt(getBoolean(rs.getString("SVC_ENT")));
+					bmodel.setHouse(getBoolean(rs.getString("IS_HOUSE")));
+					bmodel.setFreightElevator(getBoolean(rs.getString("IS_FREIGHT_ELEVATOR")));
+					bmodel.setHandTruckAllowed(getBoolean(rs.getString("HAND_TRUCK_ALLOWED")));
+					bmodel.setDifficultToDeliver(getBoolean(rs.getString("DIFFICULT_TO_DELIVER")));
+					
+					bmodel.setWalkUpFloors(rs.getInt("WALK_UP_FLOORS"));
+					bmodel.setOther(rs.getString("OTHER"));
+					bmodel.setDifficultReason(rs.getString("DIFFICULT_REASON"));
+					
+					bmodel.setCrossStreet(rs.getString("CROSS_STREET"));
+					if(rs.getString("DAY_OF_WEEK") != null) {
+						IBuildingOperationDetails operationDetail = new BuildingOperationDetails();
+						operationDetail.setDayOfWeek(rs.getString("DAY_OF_WEEK"));
+						operationDetail.setBldgStartHour(rs.getTimestamp("BLDG_START_HOUR"));
+						operationDetail.setBldgEndHour(rs.getTimestamp("BLDG_END_HOUR"));
+						operationDetail.setServiceStartHour(rs.getTimestamp("SERVICE_START_HOUR"));
+						operationDetail.setServiceEndHour(rs.getTimestamp("SERVICE_END_HOUR"));
+						operationDetail.setBldgComments(rs.getString("BLDG_COMMENTS"));
+						operationDetail.setServiceComments(rs.getString("SERVICE_COMMENTS"));
+						
+						Set<IBuildingOperationDetails> operationDetails = new HashSet<IBuildingOperationDetails>();
+						operationDetails.add(operationDetail);
+						bmodel.setOperationDetails(operationDetails);
 					}
+					
+					ILocationModel locationModel = new LocationModel(bmodel);
+					locationModel.setApartmentNumber(rs.getString("LOCAPART"));
+											
+					deliveryModel.setDeliveryLocation(locationModel);
+					
+					result.setDeliveryInfo(deliveryModel);
+					
+				}
+				
+			} catch (SQLException e) {
+				throw new DlvResourceException(e);
+			} finally {
+				try {
+					if (rs != null)
+						rs.close();
+					if (ps != null)
+						ps.close();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+		
+			}
+			
+			long end = System.currentTimeMillis();
+			
+			System.out.println("Time spent loading delivery manifest for order# "+ orderId + " is "+(end-start)/(1000)+" sec");
+						
+			return result;
+	}
+	
+	public static boolean getBoolean(String value) {
+		return (value != null && "1".equalsIgnoreCase(value));
+	}
+	
+	private static final String GET_ROUTE_NEXTELS_QUERY = "select rd.userid, E.PERSONFULLNAME as employeeName, dr.resource_id "+
+			" from dlv.routedownload rd, transp.dispatch d, transp.dispatch_resource dr, transp.kronos_employee e "+
+			" where dr.resource_id=e.personnum and rd.userid=dr.nextel_no and d.dispatch_date=trunc(rd.scandate) and d.route=rd.route "+
+			" and d.dispatch_id=dr.dispatch_id and ";
+	
+	public static List<RouteNextelVO> getRouteNextels(Connection conn, AirclicTextMessageVO textMessage) throws DlvResourceException
+	{
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		List<RouteNextelVO> nextels = new ArrayList<RouteNextelVO>();
+		String[] routes;
+		DateFormat df = new SimpleDateFormat("MM/dd/yyyy");
+		
+		try
+		{
+			CriteriaBuilder builder = new CriteriaBuilder();
+			builder.addSql("to_char(scandate,'MM/dd/yyyy') = ?", new Object[]{df.format(textMessage.getDeliveryDate())} );
+			
+			if(textMessage.getOrderId()!=null)
+				builder.addSql("rd.order_number = ?", new Object[]{textMessage.getOrderId()} );
+			if(textMessage.getRoute()!=null)
+				builder.addSql("rd.route = ?", new Object[]{textMessage.getRoute()} );
+						
+			ps = conn.prepareStatement(GET_ROUTE_NEXTELS_QUERY + builder.getCriteria());
+		
+			Object[] params = builder.getParams();
+			for (int i = 0; i < params.length; i++) {
+				ps.setObject(i + 1, params[i]);
+			}
+			rs = ps.executeQuery();
+			while (rs.next()) {
+				RouteNextelVO model = new RouteNextelVO(rs.getInt("userId"), rs.getString("EMPLOYEENAME"), rs.getString("RESOURCE_ID"));
+				nextels.add(model);
+			}
+		} catch (SQLException e) {
+			throw new DlvResourceException(e);
+		} finally {
+			try {
+				if (rs != null)
+					rs.close();
+				if (ps != null)
+					ps.close();
+			} catch (SQLException e) {			
+				e.printStackTrace();
+			}
+		}
+		return nextels;
+	}
+	
+	private static final String GET_ORDER_CALLLOG_QUERY = "select * from cust.ivr_calllog cl where cl.ordernumber = ? ";
+	
+	public static List<CallLogModel> getOrderCallLog(Connection conn, String orderId) throws DlvResourceException
+	{
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		List<CallLogModel> calllogs = new ArrayList<CallLogModel>();
+		
+		try
+		{
+			ps = conn.prepareStatement(GET_ORDER_CALLLOG_QUERY);
+			ps.setString(1, orderId);
+			rs = ps.executeQuery();
+			while (rs.next()) {
+				CallLogModel model = new CallLogModel();
+				model.setCallerGUIId(rs.getString("ID"));
+				model.setCallerId(rs.getString("CALLERID"));
+				model.setOrderNumber(rs.getString("ORDERNUMBER"));
+				model.setStartTime(rs.getTimestamp("CALLTIME"));
+				model.setDuration(rs.getInt("CALLDURATION"));
+				model.setCallOutcome(rs.getString("CALL_OUTCOME"));
+				model.setPhoneNumber(rs.getString("PHONE_NUMBER"));
+				model.setMenuOption(rs.getString("MENU_OPTION"));
+				model.setTalkTime(rs.getInt("TALKTIME"));
+				
+				calllogs.add(model);
+			}
+		} catch (SQLException e) {
+			throw new DlvResourceException(e);
+		} finally {
+			try {
+				if (rs != null)
+					rs.close();
+				if (ps != null)
+					ps.close();
+			} catch (SQLException e) {			
+				e.printStackTrace();
+			}
+		}
+		return calllogs;
+	}
+	
+	
+	
+	private static String GET_ESTIMATED_DELIVERYTIME_QUERY = "select bs.weborder_id, decode((select max(scandate) from dlv.cartonstatus where cartonstatus='DELIVERED' and webordernum=bs.weborder_id), null, (bs.stop_arrivaldatetime + (bo.scantime - bo.stop_arrivaldatetime)), "+
+		" (select max(scandate) from dlv.cartonstatus where cartonstatus='DELIVERED' and webordernum=bs.weborder_id)) estimatedtime, "+
+		" decode((select max(scandate) from dlv.cartonstatus where cartonstatus='DELIVERED' and webordernum=bs.weborder_id), null, '','X') deliverystatus "+
+		" from transp.handoff_batch b, transp.handoff_batchstop bs, transp.handoff_batchroute r, "+
+		" (select x.* from "+
+		" (select bsx.stop_arrivaldatetime, (select max(scandate) from dlv.cartonstatus where cartonstatus='DELIVERED' and webordernum=bsx.weborder_id) as scantime "+
+		" from transp.handoff_batch bx, transp.handoff_batchstop bsx, transp.handoff_batchroute rx "+
+		" where bx.batch_id = bsx.batch_id and bsx.route_no=rx.route_no and bx.batch_id = rx.batch_id and rx.route_no = ? and bx.delivery_date = ?  and bx.batch_status in ('CPD','CPD/ADC','CPD/ADF') "+
+		" order by scantime desc nulls last "+
+		" ) x where rownum = 1) bo "+
+		" where b.batch_id = bs.batch_id and bs.route_no = r.route_no and b.batch_id = r.batch_id and r.route_no = ? and b.delivery_date = ?  and b.batch_status in ('CPD','CPD/ADC','CPD/ADF') "+
+		" and bs.weborder_id = ? ";
+	
+	
+	private static String GET_CARTONINFO_EXCEPTION = "select cartonid, cartonstatus "+
+		" from dlv.cartonstatus where cartonstatus in ('RETURNED','RTP','WRONG_ITEMS','MISSING','REFUSED','PARTIAL REFUSED','DAMAGED','PARTIAL DAMAGED','PLANT LATE') "+
+		" and webordernum = ? "+
+		" order by cartonid, cartonstatus";
+	
+	private static String GET_DELIVERY_ATTEMPTS = "select webordernum, cartonid, "+
+        " lag(cartonstatus) over (partition by webordernum order by scandate) previousstatus, cartonstatus currentstatus "+
+        " from dlv.cartontracking where cartonstatus in ('IN_TRANSIT', 'DELIVERED','REFUSED') "+
+        " and webordernum = ?";
+	
+	private static String GET_CARTONSCANSTATUS_QUERY = " select cartonstatus, max(scandate) from dlv.cartonstatus where webordernum = ? group by cartonstatus ";
+			
+	public static DeliverySummaryModel lookUpDeliverySummary(Connection conn, String orderId, String routeNo, Date deliveryDate) throws DlvResourceException {
+		
+		DeliverySummaryModel model = new DeliverySummaryModel();
+		
+		long start = System.currentTimeMillis();
+		
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		try{
+			ps = conn.prepareStatement(GET_ESTIMATED_DELIVERYTIME_QUERY);
+			ps.setString(1, routeNo);
+			ps.setDate(2, new java.sql.Date(deliveryDate.getTime()));
+			ps.setString(3, routeNo);
+			ps.setDate(4, new java.sql.Date(deliveryDate.getTime()));
+			ps.setString(5, orderId);
+			
+			rs = ps.executeQuery();
+			
+			while(rs.next()) {									
+				model.setOrderDelivered("X".equals(rs.getString("DELIVERYSTATUS")));
+				model.setEstimatedDlvTime(rs.getTimestamp("ESTIMATEDTIME"));
+			}			
+			
+		} catch (SQLException e) {
+			throw new DlvResourceException(e);
+		} finally {
+			try {
+				if (rs != null)
+					rs.close();
+				if (ps != null)
+					ps.close();
+			} catch (SQLException e) {			
+				e.printStackTrace();
 			}
 		}
 		
-	static public InitialContext getInitialContext() throws NamingException {
-		Hashtable h = new Hashtable();
-		h.put(Context.INITIAL_CONTEXT_FACTORY, "weblogic.jndi.WLInitialContextFactory");
-		h.put(Context.PROVIDER_URL, "t3://localhost:7001");
-		return new InitialContext(h);
-	}
+		try{
+			ps = conn.prepareStatement(GET_DELIVERY_ATTEMPTS);			
+			ps.setString(1, orderId);
+			rs = ps.executeQuery();
+			int deliveryAttempts = 0;
+			while(rs.next()) {	
+				String prevStatus = rs.getString("PREVIOUSSTATUS");
+				String currentStatus = rs.getString("CURRENTSTATUS");
+				if(!prevStatus.equals(currentStatus) && (currentStatus.equals("DELIVERED") || currentStatus.equals("REFUSED"))){
+					deliveryAttempts++;
+				}				
+			}
+			model.setDeliveryAttempts(deliveryAttempts);
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new DlvResourceException(e);
+		} finally {
+			try {
+				if (rs != null)
+					rs.close();
+				if (ps != null)
+					ps.close();
+			} catch (SQLException e) {			
+				e.printStackTrace();
+			}
+		}
 		
-	static public InitialContext getProdInitialContext() throws NamingException {
-		Hashtable h = new Hashtable();
-		h.put(Context.INITIAL_CONTEXT_FACTORY, "weblogic.jndi.WLInitialContextFactory");
-		h.put(Context.PROVIDER_URL, "t3://int02.stprd01.nyc2.freshdirect.com:7001");
-		return new InitialContext(h);
-	}
-	*/
-	   
+		model.setMessages(AirclicDAO.lookupAirclicMessages(conn, orderId));
+		
+		try{
+			ps = conn.prepareStatement(GET_CARTONINFO_EXCEPTION);			
+			ps.setString(1, orderId);
+			rs = ps.executeQuery();
+			Map<String, List<String>> exceptions = new HashMap<String, List<String>>();
+			while(rs.next()) {	
+				String cartonStatus = rs.getString("CARTONSTATUS");
+				String cartonNumber = rs.getString("CARTONID");
+				if(!exceptions.containsKey(cartonStatus)){
+					exceptions.put(cartonStatus, new ArrayList<String>());
+				}
+				exceptions.get(cartonStatus).add(cartonNumber);				
+			}
+			model.setExceptions(exceptions);
+			
+		} catch (SQLException e) {
+			throw new DlvResourceException(e);
+		} finally {
+			try {
+				if (rs != null)
+					rs.close();
+				if (ps != null)
+					ps.close();
+			} catch (SQLException e) {			
+				e.printStackTrace();
+			}
+		}
+		
+		try{
+			ps = conn.prepareStatement(GET_CARTONSCANSTATUS_QUERY);			
+			ps.setString(1, orderId);
+			rs = ps.executeQuery();
+			boolean isDelivered = false;
+			Date maxScanTime = null;
+			String deliveryStatus = "N/A";
+			while(rs.next()) {	
+				String cartonStatus = rs.getString("CARTONSTATUS");
+				Date scanDate = rs.getTimestamp("SCANDATE");
+				
+				if(cartonStatus.equals("DELIVERED")){
+					deliveryStatus = cartonStatus;
+					maxScanTime = scanDate;
+					isDelivered = true;
+					break;
+				}
+				if(!isDelivered && !cartonStatus.equals("DELIVERED") && (maxScanTime == null || (maxScanTime != null && scanDate.after(maxScanTime)))){
+					deliveryStatus = cartonStatus;
+					maxScanTime = scanDate;
+				}
+			}						
+			
+			model.setDeliveryStatus(deliveryStatus + (maxScanTime != null ? "@" + DateUtil.formatTime(maxScanTime) : ""));
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new DlvResourceException(e);
+		} finally {
+			try {
+				if (rs != null)
+					rs.close();
+				if (ps != null)
+					ps.close();
+			} catch (SQLException e) {			
+				e.printStackTrace();
+			}
+		}
+		
+		long end = System.currentTimeMillis();
+		
+		System.out.println("Time spent in looking up delivery summary for order# "+ orderId + " is "+(end-start)/(1000)+" sec");
+		
+		return model;
+	}	   
    
 }

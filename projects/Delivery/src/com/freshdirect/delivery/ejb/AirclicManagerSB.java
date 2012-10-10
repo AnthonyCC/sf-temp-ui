@@ -12,18 +12,24 @@ import java.util.Map;
 
 import javax.ejb.EJBObject;
 
+import com.freshdirect.crm.CallLogModel;
 import com.freshdirect.delivery.DlvResourceException;
+import com.freshdirect.delivery.model.AirclicCartonInfo;
 import com.freshdirect.delivery.model.AirclicMessageVO;
 import com.freshdirect.delivery.model.AirclicNextelVO;
 import com.freshdirect.delivery.model.AirclicTextMessageVO;
+import com.freshdirect.delivery.model.DeliveryManifestVO;
+import com.freshdirect.delivery.model.DeliverySummaryModel;
 import com.freshdirect.delivery.model.DispatchNextTelVO;
+import com.freshdirect.delivery.model.RouteNextelVO;
 import com.freshdirect.delivery.model.SignatureVO;
+import com.freshdirect.fdstore.FDResourceException;
 
 public interface AirclicManagerSB extends EJBObject {
 
 	public List<AirclicMessageVO> getAirclicMessages()  throws DlvResourceException,RemoteException;
 	
-	public String saveMessage(AirclicTextMessageVO textMessage)  throws DlvResourceException,RemoteException;
+	public String saveMessage(AirclicTextMessageVO textMessage, List<String> nextelList)  throws DlvResourceException,RemoteException;
 	
 	public byte[] getSignature(String order) throws RemoteException;
 	
@@ -39,6 +45,15 @@ public interface AirclicManagerSB extends EJBObject {
 	
 	void updateEmployeeNexTelData(List<DispatchNextTelVO> employeeNextTels) throws DlvResourceException,RemoteException;
 	
-	Map<String, String> getNextTelAssets() throws DlvResourceException, RemoteException;
+	public List<AirclicCartonInfo> lookupCartonScanHistory(String orderId)  throws FDResourceException, RemoteException;
 	
+	public List<AirclicTextMessageVO> lookupAirclicMessages(String orderId) throws DlvResourceException, RemoteException;
+	
+	public DeliveryManifestVO getDeliveryManifest(String orderId, Date deliveryDate) throws DlvResourceException, RemoteException;
+	
+	public List<RouteNextelVO> lookupNextels(AirclicTextMessageVO textMessage) throws DlvResourceException, RemoteException;
+	
+	public List<CallLogModel> getOrderCallLog(String orderId) throws DlvResourceException, RemoteException;
+	
+	public DeliverySummaryModel lookUpDeliverySummary(String orderId, String routeNo, Date deliveryDate) throws DlvResourceException, RemoteException;
 }   

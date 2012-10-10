@@ -23,6 +23,7 @@ import java.util.Set;
 import org.apache.log4j.Category;
 
 import com.freshdirect.ErpServicesProperties;
+import com.freshdirect.crm.CallLogModel;
 import com.freshdirect.crm.CrmCaseAction;
 import com.freshdirect.crm.CrmCaseActionType;
 import com.freshdirect.crm.CrmCaseInfo;
@@ -34,10 +35,14 @@ import com.freshdirect.crm.CrmCaseSubject;
 import com.freshdirect.crm.CrmManager;
 import com.freshdirect.delivery.DlvResourceException;
 import com.freshdirect.delivery.dao.AirclicDAO;
+import com.freshdirect.delivery.model.AirclicCartonInfo;
 import com.freshdirect.delivery.model.AirclicMessageVO;
 import com.freshdirect.delivery.model.AirclicNextelVO;
 import com.freshdirect.delivery.model.AirclicTextMessageVO;
+import com.freshdirect.delivery.model.DeliverySummaryModel;
+import com.freshdirect.delivery.model.DeliveryManifestVO;
 import com.freshdirect.delivery.model.DispatchNextTelVO;
+import com.freshdirect.delivery.model.RouteNextelVO;
 import com.freshdirect.delivery.model.SignatureVO;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.core.SessionBeanSupport;
@@ -86,7 +91,7 @@ public class AirclicManagerSessionBean extends SessionBeanSupport {
 		}
 	}
 	
-	public String saveMessage(AirclicTextMessageVO textMessage)  throws DlvResourceException {
+	public String saveMessage(AirclicTextMessageVO textMessage, List<String> nextelList)  throws DlvResourceException {
 			
 			
 			if(ErpServicesProperties.isAirclicBlackhole())
@@ -97,6 +102,14 @@ public class AirclicManagerSessionBean extends SessionBeanSupport {
 			else
 			{
 				Map<String,Set<String>> userIds = getUserId(textMessage);
+				// send message only to selected userId's
+				Iterator<Map.Entry<String, Set<String>>> itr = userIds.entrySet().iterator();
+				while (itr.hasNext()) {
+				    Map.Entry<String,  Set<String>> userEntry = itr.next();
+				    if(!nextelList.contains(userEntry.getKey())){
+				        itr.remove();
+				    }
+				}
 				saveMessageInQueue(textMessage);
 				sendMessage(userIds, textMessage);
 				updateMessage(textMessage);
@@ -375,24 +388,6 @@ public class AirclicManagerSessionBean extends SessionBeanSupport {
 		}
 	}
 	
-	public Map<String, String> getNextTelAssets() throws DlvResourceException, RemoteException {
-		Connection conn = null;
-		try {			
-			conn = getConnection();
-			return AirclicDAO.getNextTelAssets(conn);
-		} catch(Exception e) {
-			throw new DlvResourceException(e);
-		} finally {
-			try {
-				if (conn != null) {
-					conn.close();
-				}
-			} catch (SQLException se) {
-				LOGGER.warn("AirclicManagerSB getNXOutScan: Exception while cleaning: " + se);
-			}
-		}	
-	}
-	
 	private void createCase(AirclicTextMessageVO textMessage)
 	{
 		try
@@ -429,6 +424,114 @@ public class AirclicManagerSessionBean extends SessionBeanSupport {
 			LOGGER.warn("AirclicManagerSB createCase: Exception while creating case: " + e);
 		}
 
+	}
+	
+	public  List<AirclicCartonInfo> lookupCartonScanHistory(String orderId) throws DlvResourceException {
+		Connection conn = null;
+		try	{			
+			conn = getConnection();
+			return AirclicDAO.lookupCartonScanHistory(conn, orderId);			
+		} catch(SQLException e) {
+			throw new DlvResourceException(e);
+		} finally {
+			try {
+				if (conn != null) {
+					conn.close();
+				}
+			} catch (SQLException se) {
+				LOGGER.warn("AirclicManagerSB lookupCartonScanHistory: Exception while cleaning: " + se);
+			}
+		}
+	}
+	
+	public List<AirclicTextMessageVO> lookupAirclicMessages(String orderId) throws DlvResourceException {	
+		Connection conn = null;  
+		try	{			
+			conn = getConnection();
+			return AirclicDAO.lookupAirclicMessages(conn, orderId);			
+		} catch(SQLException e) {
+			throw new DlvResourceException(e);
+		} finally {
+			try {
+				if (conn != null) {
+					conn.close();
+				}
+			} catch (SQLException se) {
+				LOGGER.warn("AirclicManagerSB getAirclicMessages: Exception while cleaning: " + se);
+			}
+		}
+	}
+	
+	public DeliveryManifestVO getDeliveryManifest(String orderId, Date deliveryDate) throws DlvResourceException {
+		Connection conn = null;  
+		try	{			
+			conn = getConnection();
+			return AirclicDAO.getDeliveryManifest(conn, orderId, deliveryDate);			
+		} catch(SQLException e) {
+			throw new DlvResourceException(e);
+		} finally {
+			try {
+				if (conn != null) {
+					conn.close();
+				}
+			} catch (SQLException se) {
+				LOGGER.warn("AirclicManagerSB getDeliveryManifest: Exception while cleaning: " + se);
+			}
+		}
+	}
+	
+	public List<RouteNextelVO> lookupNextels(AirclicTextMessageVO textMessage) throws DlvResourceException {
+		Connection conn = null;  
+		try	{			
+			conn = getConnection();			
+			return AirclicDAO.getRouteNextels(conn, textMessage);			
+		} catch(SQLException e) {
+			throw new DlvResourceException(e);
+		} finally {
+			try {
+				if (conn != null) {
+					conn.close();
+				}
+			} catch (SQLException se) {
+				LOGGER.warn("AirclicManagerSB lookupNextels: Exception while cleaning: " + se);
+			}
+		}
+	}
+	
+	public List<CallLogModel> getOrderCallLog(String orderId) throws DlvResourceException {
+		Connection conn = null;  
+		try	{			
+			conn = getConnection();			
+			return AirclicDAO.getOrderCallLog(conn, orderId);			
+		} catch(SQLException e) {
+			throw new DlvResourceException(e);
+		} finally {
+			try {
+				if (conn != null) {
+					conn.close();
+				}
+			} catch (SQLException se) {
+				LOGGER.warn("AirclicManagerSB getOrderCallLog: Exception while cleaning: " + se);
+			}
+		}
+	}
+	
+	public DeliverySummaryModel lookUpDeliverySummary(String orderId, String routeNo, Date deliveryDate) throws DlvResourceException {
+		Connection conn = null;  
+		try	{			
+			conn = getConnection();			
+			return AirclicDAO.lookUpDeliverySummary(conn, orderId, routeNo, deliveryDate);			
+		} catch(SQLException e) {
+			throw new DlvResourceException(e);
+		} finally {
+			try {
+				if (conn != null) {
+					conn.close();
+				}
+			} catch (SQLException se) {
+				LOGGER.warn("AirclicManagerSB lookUpDeliverySummary: Exception while cleaning: " + se);
+			}
+		}
 	}
 	
 }

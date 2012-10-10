@@ -1,15 +1,15 @@
 package com.freshdirect.delivery.model;
 
 import java.io.Serializable;
+import java.text.ParseException;
 import java.util.Date;
 
-public class AirclicTextMessageVO implements Serializable  {
+import com.freshdirect.framework.util.DateUtil;
 
+public class AirclicTextMessageVO implements Serializable  {
 	
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 5385313761673605986L;
+	
 	public AirclicTextMessageVO(Date deliveryDate,String route,int stop,
 			String message,  String source,  String sender, 
 			 String orderId) {
@@ -45,6 +45,8 @@ public class AirclicTextMessageVO implements Serializable  {
 	private String orderId;
 	private String id;
 	private String customerId;
+	private String sentToAirclic;
+	
 	public Date getCreateDate() {
 		return createDate;
 	}
@@ -103,9 +105,25 @@ public class AirclicTextMessageVO implements Serializable  {
 	public String getCustomerId() {
 		return customerId;
 	}
-
 	public void setCustomerId(String customerId) {
 		this.customerId = customerId;
+	}
+	public String getSentToAirclic() {
+		return sentToAirclic;
+	}
+	public void setSentToAirclic(String sentToAirclic) {
+		this.sentToAirclic = sentToAirclic;
+	}
+	public String getCreateDateStr(){
+		if(this.createDate != null){
+			try {
+				return DateUtil.getDatewithTime(this.createDate);
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		return "";
 	}
 	
 }
