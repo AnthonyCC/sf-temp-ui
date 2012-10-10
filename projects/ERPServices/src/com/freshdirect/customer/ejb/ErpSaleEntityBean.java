@@ -513,6 +513,24 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 		model.setPK(oldPk);
 		
 		super.decorateModel(model);
+		
+		PreparedStatement ps1 = null;
+		ResultSet rs1 = null;
+		Map<String, Integer> cartonMetrics = new HashMap<String, Integer>();
+		try {
+			ps1 = conn.prepareStatement("select CI.CARTON_TYPE, count(*) as CARTON_CNT from CUST.CARTON_INFO ci where ci.sale_id = ? group by CI.CARTON_TYPE");
+			ps1.setString(1, getPK().getId());
+			rs1 = ps1.executeQuery();
+			while(rs1.next()){				
+				if(!cartonMetrics.containsKey(rs1.getString("CARTON_TYPE"))){
+					cartonMetrics.put(rs1.getString("CARTON_TYPE"), rs1.getInt("CARTON_CNT"));
+				}
+			}
+		} catch(Exception e){
+			e.printStackTrace();
+		}
+		
+		model.setCartonMetrics(cartonMetrics);		
 
 		// load client codes
 		loadClientCodes(conn);

@@ -4,8 +4,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Map;
 import java.util.Set;
 
 import com.freshdirect.affiliate.ErpAffiliate;
@@ -52,7 +54,8 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 	private Date createDate;
 	private boolean hasSignature;
 	private String standingOrderId;
-
+	private Map<String, Integer> cartonMetrics = new HashMap<String, Integer>();
+	
 	/**
 	 * @return Returns the deliveryPassId.
 	 */
@@ -1738,4 +1741,14 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 		boolean isEBTOrder = (null !=paymentMethod && EnumPaymentMethodType.EBT.equals(paymentMethod.getPaymentMethodType()));
 		return isEBTOrder;
 	}
+
+	public Map<String, Integer> getCartonMetrics() {
+		return cartonMetrics;
+	}
+
+	public void setCartonMetrics(Map<String, Integer> cartonMetrics) {
+		this.cartonMetrics = cartonMetrics;
+	}
+	
+	
 }

@@ -1,7 +1,9 @@
 package com.freshdirect.crm;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.Date;
+
 
 public class CallLogModel implements Serializable {
 	
@@ -76,6 +78,13 @@ public class CallLogModel implements Serializable {
 	public void setTalkTime(int talkTime) {
 		this.talkTime = talkTime;
 	}
+	
+	public String getScanTime(){
+		if(this.startTime != null){
+			return new SimpleDateFormat("MM/dd/yyyy hh:mm aaa").format(this.startTime);
+		}
+		return "";
+	}
 
 	@Override
 	public String toString() {
@@ -83,6 +92,5 @@ public class CallLogModel implements Serializable {
 				+ callerGUIId + ", orderNumber=" + orderNumber
 				+ ", phoneNumber=" + phoneNumber + "]";
 	}
-	
 	
 }

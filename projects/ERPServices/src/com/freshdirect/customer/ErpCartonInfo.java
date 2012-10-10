@@ -11,6 +11,7 @@ public class ErpCartonInfo implements Serializable {
 	public static String CARTON_TYPE_BEER = "Beer";
 	public static String CARTON_TYPE_FREEZER = "Freezer";
 	public static String CARTON_TYPE_PLATTER = "Platter";
+	public static String CARTON_TYPE_CASEPICK = "Case";
 	
 	/**
 	 * @return Returns the cartonNumber.
