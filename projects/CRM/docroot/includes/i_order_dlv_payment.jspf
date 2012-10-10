@@ -124,72 +124,27 @@ function loadSignature(order)
 	
 <table width="100%" cellpadding="0" cellspacing="0" border="0" class="order_detail" style="padding: 1px;">
 	<tr class="inactive">
-    <% if(displayDeliveryInfo){%>
-		<td width="22%">DELIVERY TIME</td>
-		<td width="38%">DELIVERY ADDRESS</td>
-    <%} else if (order instanceof FDOrderI && EnumSaleType.GIFTCARD.equals(((FDOrderI)order).getOrderType())) {%>
-        <td width="22%">
-		</td> 
-    <% } %>   
 		<td width="40%">PAYMENT INFORMATION</td>
+	    <% if(displayDeliveryInfo){%>
+		<td width="30%">DELIVERY ADDRESS</td>
+		<td width="30%">DELIVERY TIME</td>
+		<!--<td width="25%">DELIVERY SUMMARY</td>-->
+	    <%} else if (order instanceof FDOrderI && EnumSaleType.GIFTCARD.equals(((FDOrderI)order).getOrderType())) {%>
+		<td width="60%"></td>
+	    <% } %>
+		
 	</tr>
 	<tr valign="top">
-        <% if(displayDeliveryInfo){%>
-		<td style="padding-left: 8px;">
-			<%= fmtDlvDate %><br>
-			<%= fmtDlvTime %><br>
-			<div style="padding:5px;"></div>
-			<% if(order instanceof FDOrderI){
-				FDOrderI _order = (FDOrderI)order;
-				ErpShippingInfo shippingInfo = _order.getShippingInfo();
-			%>
-					<b>Web Id</b>: <%=_order.getErpSalesId()%><br>
-					<b>SAP Id</b>: <%=_order.getSapOrderId()%><br>
-					<br>
-				<% if (shippingInfo != null) { %>
-					<b>Wave Number</b>: <%= shippingInfo.getWaveNumber() %><br>
-					<b>Truck Number</b>: <%= shippingInfo.getTruckNumber() %><br>
-					<b>Stop Sequence</b>: <%= shippingInfo.getStopSequence()%><br>
-				<% } %>
-				<% if ( (_order.getCartonContents() != null) &&  (_order.getCartonContents().size() > 0) ){ %>
-					<br>
-					<a href="javascript:pop('/main/carton_contents_view.jsp?orderId=<%= orderId %>&scroll=yes','600','800');">Carton Contents</a>
-					</br>
-				<% } %>
-				<% if (_order.hasInvoice()) {%>
-					<div style="padding:5px;"></div>
-					<i>Components:</i><br>
-					<b>Regular Carton<%=shippingInfo.getRegularCartons() > 1 ? "s" : ""%></b>: <%= shippingInfo.getRegularCartons()%><br>
-					<b>Freezer Carton<%=shippingInfo.getFreezerCartons() > 1 ? "s" : ""%></b>: <%= shippingInfo.getFreezerCartons()%><br>
-					<b>Regular Carton<%=shippingInfo.getAlcoholCartons() > 1 ? "s" : ""%> Containing Alcohol</b>: <%= shippingInfo.getAlcoholCartons()%><br>
-				<%	if (_order.hasRedelivery()) { %>
-						<b>REDELIVERY</b>
-						<br>
-						<%= CCFormatter.formatDeliveryDate(_order.getRedeliveryStartTime())%><br>
-						<%= CCFormatter.formatDeliveryTime(_order.getRedeliveryStartTime()) + " - " + CCFormatter.formatDeliveryTime(_order.getRedeliveryEndTime())%><br>
-				<%	}
-				} 
-			}%>
-		</td>
-		<td>
-			<%@ include file="/includes/i_delivery_address_select.jspf"%>
-		</td>
-		<%} else if (order instanceof FDOrderI && EnumSaleType.GIFTCARD.equals(((FDOrderI)order).getOrderType())) { %>
-        <td style="padding-left: 8px;">
-        <b>Web Id</b>: <%=((FDOrderI)order).getErpSalesId()%><br>
-					<b>SAP Id</b>: <%=((FDOrderI)order).getSapOrderId()%><br>
-		</td>
-        <%}%>
 		<td>
 		
 			<table width="100%" cellpadding="0" cellspacing="0" border="0" class="order_detail" style="padding: 1px;">
 			
 				<tr>
-					<td width="35%">Order Total:</td>
+					<td>Order Total:</td>
 					<%if(order instanceof FDOrderI && ((FDOrderI)order).hasInvoice()){ %>
-					<td width="65%"><%= JspMethods.formatPrice(((FDOrderI)order).getInvoicedTotal()) %>* </td>
+					<td><%= JspMethods.formatPrice(((FDOrderI)order).getInvoicedTotal()) %>* </td>
 					<% }else { %>
-					<td width="65%"><%= JspMethods.formatPrice(order.getTotal()) %>*</td>
+					<td><%= JspMethods.formatPrice(order.getTotal()) %>*</td>
 					<% } %>	
 					
 				</tr>  
@@ -197,17 +152,17 @@ function loadSignature(order)
 	            
 	         	
 					<%if(order instanceof FDOrderI && ((FDOrderI)order).hasInvoice()){ %>
-					<td width="35%"> Gift Card Amount Applied:</td>	
+					<td> Gift Card Amount Applied:</td>	
 					<% }else { %>
-					<td width="35%"> Gift Card Amount to Be Applied:</td>	
+					<td> Gift Card Amount to Be Applied:</td>	
 					<% } %>	           
-	           		<td width="65%"> <%= JspMethods.formatPrice(order.getTotalAppliedGCAmount()+ gcBufferAmount ) %>*</td>
+	           		<td> <%= JspMethods.formatPrice(order.getTotalAppliedGCAmount()+ gcBufferAmount ) %>*</td>
 	           	</tr>
 	            
 	            <%if(order instanceof FDCartModel || (order instanceof FDOrderI && !(((FDOrderI)order).hasInvoice()))){%>
 				<tr>
-					<td width="35%"> Remaining Gift Card Balance:</td>
-	         	 <td width="65%"> 
+					<td> Remaining Gift Card Balance:</td>
+	         	 <td> 
 	            <% if(order instanceof FDCartModel) { %>
 	            
 	            	<%= JspMethods.formatPrice(user.getGiftcardsTotalBalance() - order.getTotalAppliedGCAmount()-gcBufferAmount) %>
@@ -218,16 +173,16 @@ function loadSignature(order)
 	               
         	    <% } %></td></tr><% } %>
         	    <tr>
-					<td width="35%">Payment Method</td>
-					<td width="65%"><%= paymentMethod.getPaymentMethodType() %></td>
+					<td>Payment Method</td>
+					<td><%= paymentMethod.getPaymentMethodType() %></td>
 				</tr> 
-        	   <% if(!EnumPaymentMethodType.GIFTCARD.equals(paymentMethod.getPaymentMethodType())) {
-        	    
-        	    	%> 
+        	    <%
+			if(!EnumPaymentMethodType.GIFTCARD.equals(paymentMethod.getPaymentMethodType())) {
+        	    %>
         	    <% if(order.getTotalAppliedGCAmount()> 0){ %>     
         	    <tr>
-					<td width="35%"> Amount to Be Charged to Your Account:</td>
-	            <td width="65%"> 
+			<td> Amount to Be Charged to Your Account:</td>
+	            <td> 
 	            <% if(order instanceof FDCartModel) { %>
 	            <%= JspMethods.formatPrice(order.getCCPaymentAmount()+ ccBufferAmount) %>*<BR>
 	            <% } else if(order instanceof FDOrderI && ((FDOrderI)order).hasInvoice()){ %>
@@ -336,17 +291,74 @@ function loadSignature(order)
 				<% } %>             
 				
 				
-<%	if (showPaymentButtons) { %>
-				<tr>
-					<td>&nbsp;&nbsp;</td>
-					<td><br><A HREF="/checkout/checkout_select_payment.jsp" class="edit">EDIT</A></td>
-				</tr>
-<%	} %>
+			<% if (showPaymentButtons) { %>
+					<tr>
+						<td>&nbsp;&nbsp;</td>
+						<td><br><A HREF="/checkout/checkout_select_payment.jsp" class="edit">EDIT</A></td>
+					</tr>
+			<% } %>
 			<tr><td colspan="2">&nbsp;</td></tr>
-			<tr><td colspan="2"><b>Note: Under no circumstance should payment method information be read to customer. If customer provides correct information to you it may be confirmed or denied.</b>
-			</td></tr><% } %>
+			<tr><td colspan="2"><b>Note: Under no circumstance should payment method <br/>information be read to customer. If customer provides<br/> correct information to you it may be confirmed or denied.</b>
+			</td></tr>
+			<% } %>
 			</table>
 		</td>
+
+
+        <% if(displayDeliveryInfo){%>
+		<td>
+			<%@ include file="/includes/i_delivery_address_select.jspf"%>
+		</td>
+		<td style="padding: 1px;">
+			<%= fmtDlvDate %><br>
+			<%= fmtDlvTime %><br>
+			<div style="padding:5px;"></div>
+			<% if(order instanceof FDOrderI){
+				FDOrderI _order = (FDOrderI)order;
+				ErpShippingInfo shippingInfo = _order.getShippingInfo();
+			%>
+					<b>Web Id</b>: <%=_order.getErpSalesId()%><br>
+					<b>SAP Id</b>: <%=_order.getSapOrderId()%><br>
+					<br>
+				<% if (shippingInfo != null) { %>
+					<b>Wave Number</b>: <%= shippingInfo.getWaveNumber() %><br>
+					<b>Truck Number</b>: <%= shippingInfo.getTruckNumber() %><br>
+					<b>Stop Sequence</b>: <%= shippingInfo.getStopSequence()%><br>
+				<% } %>
+				<% if ( (_order.getCartonContents() != null) &&  (_order.getCartonContents().size() == 0) ){ %>
+					<br>
+					<a href="javascript:pop('/main/carton_contents_view.jsp?orderId=<%= orderId %>&scroll=yes','600','800');">Carton Contents</a>
+					</br>
+				<% } %>
+				<% if (_order.hasInvoice()) {%>
+					<div style="padding:3px;"></div>
+					<i>Components:</i><br>
+					<b># of Cases</b>: <%= _order.getCartonMetrics().get("Case")%><br>
+					<b># of Cartons</b>: <%= _order.getCartonMetrics().get("Regular")%><br>
+					<b># of Freezer Bags</b>: <%= _order.getCartonMetrics().get("Freezer")%><br>
+					<b># of Alcohol</b>: <%= _order.getCartonMetrics().get("Beer")%><br>
+				<%	if (_order.hasRedelivery()) { %>
+						<b>REDELIVERY</b>
+						<br>
+						<%= CCFormatter.formatDeliveryDate(_order.getRedeliveryStartTime())%><br>
+						<%= CCFormatter.formatDeliveryTime(_order.getRedeliveryStartTime()) + " - " + CCFormatter.formatDeliveryTime(_order.getRedeliveryEndTime())%><br>
+				<%	}
+				} 
+			}%>
+		</td>
+		<!--<% if(FDStoreProperties.isDeliveryCenterEnabled()) { %>
+			<td>
+				<%@ include file="/includes/delivery_summary.jspf" %>
+			</td>
+		<% } %>-->
+		
+	<%} else if (order instanceof FDOrderI && EnumSaleType.GIFTCARD.equals(((FDOrderI)order).getOrderType())) { %>
+		<td style="padding-left: 8px;">
+			<b>Web Id</b>: <%=((FDOrderI)order).getErpSalesId()%><br>
+			<b>SAP Id</b>: <%=((FDOrderI)order).getSapOrderId()%><br>
+		</td>
+        <%}%>
+		
 	</tr>
 </table>
 <%-- ~~~~~~~~~~~~~~~~~~~~~~~ END DELIVERY & PAYMENT INFO SECTION ~~~~~~~~~~~~~~~~~~~~~~~ --%>

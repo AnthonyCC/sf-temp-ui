@@ -93,6 +93,10 @@
         <servlet-name>SignatureServlet</servlet-name>
         <servlet-class>com.freshdirect.webapp.util.SignatureServlet</servlet-class>
    </servlet>
+    <servlet>
+        <servlet-name>SignatureViewServlet</servlet-name>
+        <servlet-class>com.freshdirect.webapp.util.SignatureViewServlet</servlet-class>
+   </servlet>
    
     <servlet>
         <servlet-name>WorkflowImage</servlet-name>
@@ -159,7 +163,11 @@
      <servlet-mapping>
         <servlet-name>SignatureServlet</servlet-name>
         <url-pattern>/api/signature.jsp</url-pattern>
-   </servlet-mapping>	
+   </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>SignatureViewServlet</servlet-name>
+        <url-pattern>/api/viewsignature.jsp</url-pattern>
+   </servlet-mapping>		
    
     <servlet-mapping>
         <servlet-name>WorkflowImage</servlet-name>

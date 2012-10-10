@@ -27,12 +27,12 @@
 					</tr>
 				<%}%>
 				<tr>
-                    <td width="35%">First Name&nbsp;</td>
-                    <td width="65%"><%= dlvAddress.getFirstName() %></td>
+                    <td width="35%">Name&nbsp;</td>
+                    <td width="65%"><%= dlvAddress.getFirstName() %>&nbsp;<%= dlvAddress.getLastName() %></td>
                 </tr>
                 <tr>
-                    <td>Last Name&nbsp;</td>
-                    <td><%= dlvAddress.getLastName() %></td>
+                    <td>Phone Number&nbsp;</td>
+                    <td><%= dlvAddress.getPhone() !=null ? dlvAddress.getPhone().toString() : "" %></td>
                 </tr>
             <%  if (isDepotLocation) {  
                     ErpDepotAddressModel dAddr = (ErpDepotAddressModel) dlvAddress;  %>
@@ -133,12 +133,8 @@
                 </tr>
 <%           if("NEIGHBOR".equalsIgnoreCase(dlvAddress.getAltDelivery().getDeliveryCode())) {%>
                 <tr>
-                    <td align="right">First Name&nbsp;</td>
-                    <td><%=dlvAddress.getAltFirstName()%></td>
-                </tr>
-                <tr>
-                    <td align="right">Last Name&nbsp;</td>
-                    <td><%=dlvAddress.getAltLastName()%></td>
+                    <td align="right">Name&nbsp;</td>
+                    <td><%=dlvAddress.getAltFirstName()%>&nbsp;<%=dlvAddress.getAltLastName()%></td>
                 </tr>
                 <tr>
                     <td align="right">Apartment #&nbsp;</td>

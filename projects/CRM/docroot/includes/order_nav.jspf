@@ -16,6 +16,7 @@
 <%@ page import="com.freshdirect.webapp.util.OrderPermissionsImpl"%>
 <%@ page import="com.freshdirect.customer.EnumSaleType"%>
 <%@ page import='com.freshdirect.webapp.crm.security.*' %>
+<%@ page import="com.freshdirect.fdstore.FDStoreProperties" %>
 
 <%@ taglib uri='crm' prefix='crm' %>
 
@@ -35,6 +36,7 @@ boolean o_approve_credit = pageURI.indexOf("approve_credit") > -1;
 boolean o_payment_exception = pageURI.indexOf("payment_exception") > -1;
 boolean o_charge_order = pageURI.indexOf("charge_order") > -1;
 boolean o_order_cases = pageURI.indexOf("order_cases") > -1;
+boolean o_delivery_center = pageURI.indexOf("delivery_center_details") > -1;
 
 String nav_orderId = request.getParameter("orderId");
 
@@ -52,6 +54,8 @@ boolean isEBTPayment = EnumPaymentMethodType.EBT.equals(nav_order.getPaymentMeth
 OrderPermissionsI orderPermissions = new OrderPermissionsImpl(nav_order.getOrderStatus(), app, makeGood, nav_order.hasCreditIssued());
 
 boolean displayChargeOrderLink = EnumSaleStatus.SETTLEMENT_FAILED.equals(nav_order.getOrderStatus()) || EnumSaleStatus.PAYMENT_PENDING.equals(nav_order.getOrderStatus());
+
+boolean displayDeliveryCenterLink =  !EnumSaleStatus.CANCELED.equals(nav_order.getOrderStatus());
 
 CrmCaseTemplate ordNav_caseTemplate = new CrmCaseTemplate();
 ordNav_caseTemplate.setSalePK(new PrimaryKey(nav_orderId));
@@ -136,6 +140,8 @@ boolean hasCase = false;
 					Charge Order
 				<% } else if (o_order_cases ) { %>
 					Linked Cases
+				<% } else if ( o_delivery_center ) { %>
+					Delivery Center				
 				<% } %>
 				<% } else { %>
 				<% if (o_details) { %>
@@ -145,12 +151,12 @@ boolean hasCase = false;
 				<% } else if (o_charge_order && displayChargeOrderLink) { %>
 					Charge Order
 				<% } else if (o_order_cases ) { %>
-					Linked Cases
+					Linked Cases				
 				<% } %>
 				<% } %>
 				</b></nobr></td>
 			<td width="61%" style="padding: 0px;">
-			<% if(!isDonationOrder){ %>
+		<% if(!isDonationOrder){ %>
 				<% if (!o_details) { %>
 					<div class="cust_sub_nav" style="width: 120px;"><a href="/main/order_details.jsp?orderId=<%= nav_orderId %>" class="cust_sub_nav_text">Order Details</a></div>
 				<% } %>
@@ -213,7 +219,11 @@ boolean hasCase = false;
 				<%if(o_details && isRegularOrder && orderPermissions.allowComplaint()){%>
 				    <div class="cust_sub_nav" style="width: 120px;"><%if(hasCustomerCase){%><a href="/order/quickshop/makegood_from_order.jsp?orderId=<%= nav_orderId %>" class="cust_sub_nav_text"><%}%>MakeGood Order<%if(hasCustomerCase){%></a><%}%></div>
 				<% } %>
-				<% } else { %>
+				<%if(!o_delivery_center && o_details && isRegularOrder && displayDeliveryCenterLink && FDStoreProperties.isDeliveryCenterEnabled()){%>
+				    <div class="cust_sub_nav" style="width: 120px;"><a href="/main/delivery_center_details.jsp?orderId=<%= nav_orderId %>" class="cust_sub_nav_text">Delivery Center</a></div>
+				<% } %>
+			
+			<% } else { %>
 				
 				<% if (!o_details && CrmSecurityManager.hasAccessToPage(agentRole1,"order_details.jsp")) { %>
 					<div class="cust_sub_nav" style="width: 120px;"><a href="/main/order_details.jsp?orderId=<%= nav_orderId %>" class="cust_sub_nav_text">Order Details</a></div>
