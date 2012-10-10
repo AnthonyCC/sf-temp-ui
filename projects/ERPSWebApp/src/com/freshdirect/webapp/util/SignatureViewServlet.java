@@ -19,9 +19,11 @@ public class SignatureViewServlet extends HttpServlet {
 		ServletOutputStream out = response.getOutputStream();
 		try {
 			if(type == null || type.trim().length() == 0) {
-				response.setContentType("image/jpeg");
 				byte[] _image = AirclicManager.getInstance().getSignature(order);
-				out.write(_image);				
+				if(_image != null){
+					response.setContentType("image/jpeg");
+					out.write(_image);
+				}	
 			}					
 			
 		} catch (Exception e) {
