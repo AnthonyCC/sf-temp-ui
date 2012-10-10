@@ -161,9 +161,7 @@ public class DlvManagerDAO {
 		java.util.Date endDate)
 		throws SQLException, InvalidAddressException {
 
-		//if ((address.getLatitude() == 0.0) || (address.getLongitude() == 0.0)) {
-			geocodeAddress(conn, address, false);
-		//}
+		geocodeAddress(conn, address, false);		
 		
 		PreparedStatement ps = conn.prepareStatement(TIMESLOTS);
 		
@@ -175,25 +173,27 @@ public class DlvManagerDAO {
 		ps.setInt(6, EnumReservationStatus.EXPIRED.getCode());
 		ps.setInt(7, EnumReservationStatus.CANCELED.getCode());
 		ps.setInt(8, EnumReservationStatus.EXPIRED.getCode());
+		
 		ps.setString(9, address.getServiceType().getName());
-		//ps.setDouble(6, address.getLongitude());
-		ps.setBigDecimal(10, new java.math.BigDecimal(address.getLongitude()));
-		//ps.setDouble(7, address.getLatitude());
+		
+		ps.setBigDecimal(10, new java.math.BigDecimal(address.getLongitude()));	
 		ps.setBigDecimal(11, new java.math.BigDecimal(address.getLatitude()));
+		
 		ps.setDate(12, new java.sql.Date(startDate.getTime()));
 		ps.setDate(13, new java.sql.Date(endDate.getTime()));
 		ps.setDate(14, new java.sql.Date(startDate.getTime()));
 		ps.setDate(15, new java.sql.Date(endDate.getTime()));
+		
 		Calendar cal = Calendar.getInstance();
 		ps.setTimestamp(16, new java.sql.Timestamp(cal.getTimeInMillis()));
 		cal.add(Calendar.MINUTE, -1*FDStoreProperties.getSameDayMediaAfterCutoffDuration());
 		ps.setTimestamp(17, new java.sql.Timestamp(cal.getTimeInMillis()));
 		
-
 		ResultSet rs = ps.executeQuery();
 		List<DlvTimeslotModel> timeslots = processTimeslotResultSet(rs, true);
 		rs.close();
 		ps.close();
+		
 		return timeslots;
 	}
 	
@@ -244,9 +244,7 @@ public class DlvManagerDAO {
 		ps.setDate(9, new java.sql.Date(startDate.getTime()));
 		ps.setDate(10, new java.sql.Date(endDate.getTime()));
 		ps.setString(11, address.getServiceType().getName());
-		//ps.setDouble(8, address.getLongitude());
 		ps.setBigDecimal(12, new java.math.BigDecimal(address.getLongitude()));
-		//ps.setDouble(9, address.getLatitude());
 		ps.setBigDecimal(13, new java.math.BigDecimal(address.getLatitude()));
 
 		ResultSet rs = ps.executeQuery();
@@ -358,8 +356,8 @@ public class DlvManagerDAO {
 		routingSlot.setDynamicActive("X".equalsIgnoreCase(rs.getString("IS_DYNAMIC")) ? true : false);
 		routingSlot.setManuallyClosed("X".equalsIgnoreCase(rs.getString("IS_CLOSED")) ? true : false);
 		routingSlot.setZoneCode(zoneCode);
-		routingSlot.setEcoFriendly(rs.getInt("ecoFriendly"));
-		routingSlot.setSteeringRadius(rs.getInt("steeringRadius"));
+		routingSlot.setEcoFriendly(rs.getBigDecimal("ecoFriendly"));
+		routingSlot.setSteeringRadius(rs.getBigDecimal("steeringRadius"));
 
 		IRoutingSchedulerIdentity _schId = new RoutingSchedulerIdentity();
 		_schId.setDeliveryDate(baseDate);
