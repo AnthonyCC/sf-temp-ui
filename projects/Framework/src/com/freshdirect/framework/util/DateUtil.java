@@ -34,6 +34,8 @@ public class DateUtil {
 	
 	private static final DateFormat MON_DATE_YEAR_FORMATTER = new SimpleDateFormat("MMddyyyy");
 	
+	private static final DateFormat dateFormatwithTime = new SimpleDateFormat("MM/dd/yyyy hh:mm aaa");
+	
 	private DateUtil() {
 	}
 
@@ -222,6 +224,10 @@ public class DateUtil {
 	
 	public static String formatDay(Date dateValue) {
 		return DAY_INWEEK_FORMATTER.format(dateValue);
+	}
+	
+	public static String getDatewithTime(Date clientDate) throws ParseException {       
+        return dateFormatwithTime.format(clientDate);
 	}
 	
 	
