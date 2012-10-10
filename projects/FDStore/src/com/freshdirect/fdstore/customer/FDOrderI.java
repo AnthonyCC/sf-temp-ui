@@ -12,6 +12,7 @@ package com.freshdirect.fdstore.customer;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import com.freshdirect.affiliate.ErpAffiliate;
 import com.freshdirect.customer.EnumChargeType;
@@ -133,6 +134,8 @@ public interface FDOrderI extends FDCartI {
 	public String getSapOrderId();
 
 	public List getCartonContents();
+	
+	public Map<String, Integer> getCartonMetrics();
 
     public boolean hasChargeInvoice();
 	

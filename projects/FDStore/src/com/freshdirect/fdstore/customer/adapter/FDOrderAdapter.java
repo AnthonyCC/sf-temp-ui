@@ -8,6 +8,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Category;
@@ -101,7 +102,8 @@ public class FDOrderAdapter implements FDOrderI {
 	private List<FDCartLineI> sampleLines;
 	private FDReservation deliveryReservation;
 	protected List<FDCartonInfo> cartonInfo;
-
+	protected Map<String, Integer> cartonMetrics;
+	
 	public FDOrderAdapter() {
 		orderLines = new ArrayList<FDCartLineI>();
 	}
@@ -239,6 +241,9 @@ public class FDOrderAdapter implements FDOrderI {
 				}
 			}
 		}
+		
+		//set the carton metrics
+		cartonMetrics = sale.getCartonMetrics();
 	}
 
 	public boolean isModifiedOrder() {
@@ -1029,8 +1034,12 @@ public class FDOrderAdapter implements FDOrderI {
 		}
 		return retList;
 	}
+	
+	public Map<String, Integer> getCartonMetrics() {
+		return cartonMetrics;
+	}
 
-    public boolean hasChargeInvoice() {
+	public boolean hasChargeInvoice() {
 		return (sale.getChargeInvoice() != null);
     }
 	
