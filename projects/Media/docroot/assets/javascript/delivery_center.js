@@ -182,14 +182,17 @@
 				
 				result += "<tr><td colspan=\"2\"><img height=\"15\" border=\"0\" src=\"/media_stat/images/layout/clear.gif\"></td></tr>";
 
-				result += "<tr><td colspan=\"2\"><b>Delivery Instructions:</b><br/>"+manifestResult.deliveryInstructions+"</td></tr>";
-
+				result += "<tr><td colspan=\"2\"><b>Delivery Instructions:</b><br/>";
+				if(manifestResult.deliveryInstructions != null){
+					result += manifestResult.deliveryInstructions;
+				}
+				result += "</td></tr>";
 				result += "<tr><td colspan=\"2\"><img height=\"15\" border=\"0\" src=\"/media_stat/images/layout/clear.gif\"></td></tr>";
 									
 				result += "<tr><td colspan=\"2\"><b>SIGNATURE</b><br/>By signing I am acknowledging<br/>only that I have received <br/>as listed below.<br/><br/></td></tr>";
 				result += "<tr><td colspan=\"2\"><b>Customer Signature</b><br/>&nbsp;</td></tr>";
 				if(hasSignature){
-					result += "<tr><td colspan=\"2\"><iframe src=\"/api/viewsignature.jsp?orderId=orderNo%>'\" /></td></tr>"
+					result += "<tr><td colspan=\"2\"><iframe src=\"/api/viewsignature.jsp?orderId="+orderNo+"\" /></td></tr>"
 				}
 				
 				$jq('#manifestDetail').html("<table width=\"99%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" class=\"gc_table2footer\">" + result + "</table>");

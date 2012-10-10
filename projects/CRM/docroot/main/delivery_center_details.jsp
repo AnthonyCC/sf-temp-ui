@@ -59,13 +59,13 @@
 			
     %>      
     
-<script>
+<script type="text/javascript" >
 
 	var orderNo = '<%= order.getErpSalesId() %>';
 	var routeNo = '<%= shippingInfo.getTruckNumber() %>';
 	var date =  '<%= CCFormatter.defaultFormatDate(order.getDeliveryReservation().getStartTime()) %>';
-	var hasSignature = '<%= FDStoreProperties.isAirclicEnabled() && order instanceof FDOrderI && !((FDOrderI)order).hasSignature() %>';
-
+	var hasSignature = <%= FDStoreProperties.isAirclicEnabled() && order instanceof FDOrderI && !((FDOrderI)order).hasSignature() %>;
+	
 </script>
 
 <script type="text/javascript" src="/assets/javascript/delivery_center.js"></script>
