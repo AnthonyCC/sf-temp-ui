@@ -8,8 +8,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.freshdirect.delivery.EnumDeliveryMenuOption;
-
 public class DeliverySummaryModel implements Serializable {
 	
 	public static DateFormat serverTimeFormat = new SimpleDateFormat("hh:mm aaa");
