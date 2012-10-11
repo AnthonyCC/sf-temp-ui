@@ -2,7 +2,7 @@
 
 	var jsonrpcClient = new JSONRpcClient("/api/message.jsp");
 
-	var loadingStr = '<div style="position:relative;"><img style="position:absolute;top:50%;left:50%;margin-top:-8px;margin-left:-8px" src="../images/loading.gif" /></div>';
+	var loadingStr = '<div style="position:relative;"><img style="position:absolute;top:50%;left:50%;margin-top:-8px;margin-left:-8px" src="../media_stat/crm/images/loading.gif" /></div>';
 
 	$jq(document).ready(function(){
 
