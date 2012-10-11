@@ -333,10 +333,10 @@ function loadSignature(order)
 				<% if (_order.hasInvoice()) {%>
 					<div style="padding:3px;"></div>
 					<i>Components:</i><br>
-					<b># of Cases</b>: <%= _order.getCartonMetrics().get("Case")%><br>
-					<b># of Cartons</b>: <%= _order.getCartonMetrics().get("Regular")%><br>
-					<b># of Freezer Bags</b>: <%= _order.getCartonMetrics().get("Freezer")%><br>
-					<b># of Alcohol</b>: <%= _order.getCartonMetrics().get("Beer")%><br>
+					Total Cases: <b><%= _order.getCartonMetrics().get("Case")%></b><br>
+					Total Cartons: <b><%= _order.getCartonMetrics().get("Regular")%></b><br>
+					Total Freezer Bags: <b><%= _order.getCartonMetrics().get("Freezer")%></b><br>
+					Total cartons -<br/>containing alcohol: <b><%= _order.getCartonMetrics().get("Beer")%></b><br>
 				<%	if (_order.hasRedelivery()) { %>
 						<b>REDELIVERY</b>
 						<br>
