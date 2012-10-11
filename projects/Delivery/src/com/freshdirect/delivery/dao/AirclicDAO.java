@@ -966,7 +966,7 @@ public class AirclicDAO {
         " from dlv.cartontracking where cartonstatus in ('IN_TRANSIT', 'DELIVERED','REFUSED') "+
         " and webordernum = ?";
 	
-	private static String GET_CARTONSCANSTATUS_QUERY = " select cartonstatus, max(scandate) from dlv.cartonstatus where webordernum = ? group by cartonstatus ";
+	private static String GET_CARTONSCANSTATUS_QUERY = " select cartonstatus, max(scandate) SCANDATE from dlv.cartonstatus where webordernum = ? group by cartonstatus ";
 			
 	public static DeliverySummaryModel lookUpDeliverySummary(Connection conn, String orderId, String routeNo, Date deliveryDate) throws DlvResourceException {
 		
@@ -1085,7 +1085,7 @@ public class AirclicDAO {
 				}
 			}						
 			
-			model.setDeliveryStatus(deliveryStatus + (maxScanTime != null ? "@" + DateUtil.formatTime(maxScanTime) : ""));
+			model.setDeliveryStatus(deliveryStatus + (maxScanTime != null ? " @" + DateUtil.formatTime(maxScanTime) : ""));
 			
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -1106,6 +1106,7 @@ public class AirclicDAO {
 		System.out.println("Time spent in looking up delivery summary for order# "+ orderId + " is "+(end-start)/(1000)+" sec");
 		
 		return model;
-	}	   
+	
+	}
    
 }
