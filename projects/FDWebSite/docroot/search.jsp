@@ -171,13 +171,7 @@ final int W_INDEX_RIGHT_CENTER = W_INDEX_TOTAL - 228 - W_INDEX_CENTER_PADDING;
 	<tmpl:put name="recommendations-content" direct="true">
 		<fd:ProductGroupRecommender itemCount="16" siteFeature="SRCH" facility="default" id="recommendedProducts">
 		<div class="search-recommender">
-			<h3>
-				<%= recommendedProducts.getVariant().getId().toString().equals("srch_ymal") ? "You Might Also Like" :
-				    recommendedProducts.getVariant().getId().toString().equals("srch_pers") ? "People who bought the same items as you enjoyed" :
-				    recommendedProducts.getVariant().getId().toString().equals("srch_dyf") ?  "Your Favorites" : 
-				    "Customers Like You Also Like"
-				%>
-			</h3>
+			<h3><%= recommendedProducts.getVariant().getServiceConfig().getPresentationTitle() %></h3>
 			<display:Carousel id="cat1_carousel" carouselId="cat1_carousel" width="816" numItems="4" showCategories="false" itemsToShow="<%= recommendedProducts.getProducts() %>" trackingCode="edt-4mm" maxItems="32">
 				<display:GetContentNodeWebId id="webId" product="<%= currentItem %>" clientSafe="<%= true %>">
 				<% ProductImpression pi = confStrat.configure((ProductModel)currentItem, confContext); %>
