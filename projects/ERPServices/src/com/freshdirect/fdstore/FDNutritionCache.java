@@ -16,7 +16,7 @@ import com.freshdirect.content.nutrition.ejb.ErpNutritionSB;
 import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
-public class FDNutritionCache extends FDAbstractCache {
+public class FDNutritionCache extends FDAbstractCache<String,ErpNutritionModel> {
 	
 	private static Category LOGGER = LoggerFactory.getInstance( FDNutritionCache.class );
 	private static FDNutritionCache instance;
@@ -32,11 +32,11 @@ public class FDNutritionCache extends FDAbstractCache {
 		return instance;
 	}
 	
-	protected Map loadData(Date since){
+	protected Map<String,ErpNutritionModel> loadData(Date since){
 		try{
 			LOGGER.info("REFRESHING");
 			ErpNutritionSB sb = this.lookupNutritionHome().create();
-			Map data = sb.loadNutrition(since);
+			Map<String,ErpNutritionModel> data = sb.loadNutrition(since);
 			
 			LOGGER.info("REFRESHED: " + data.size());
 			return data;
@@ -57,7 +57,7 @@ public class FDNutritionCache extends FDAbstractCache {
 		return model;
 	}
 	
-	protected Date getModifiedDate(Object item) {
+	protected Date getModifiedDate(ErpNutritionModel item) {
 		if(!(item instanceof ErpNutritionModel)){
 			return null;
 		}

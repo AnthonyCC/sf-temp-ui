@@ -10,14 +10,14 @@ import com.freshdirect.framework.core.ServiceLocator;
 
 import java.util.concurrent.ConcurrentHashMap;
 
-public abstract class FDAbstractCache {
+public abstract class FDAbstractCache<K,V> {
 	
 	protected final ServiceLocator serviceLocator;
 	
 	private final long refreshDelay;
 	private final Thread refresher;
 	
-	private Map cache = new ConcurrentHashMap();
+	private Map<K,V> cache = new ConcurrentHashMap<K,V>();
 	private Date lastMaxModifiedDate;
 	
 	public FDAbstractCache(long refreshDelay) {
@@ -35,10 +35,10 @@ public abstract class FDAbstractCache {
 	
 	private synchronized void refresh() {
 		
-		Map m = loadData(lastMaxModifiedDate);
+		Map<K,V> m = loadData(lastMaxModifiedDate);
 		if (!m.isEmpty()) {
 			long maxDate = lastMaxModifiedDate.getTime();
-			for (Iterator i = m.values().iterator(); i.hasNext(); ) {
+			for (Iterator<V> i = m.values().iterator(); i.hasNext(); ) {
 				Date d = getModifiedDate(i.next());
 				maxDate = Math.max(maxDate, d.getTime());
 			}
@@ -47,15 +47,15 @@ public abstract class FDAbstractCache {
 		}
 	}
 	
-	protected abstract Map loadData(Date since); 
+	protected abstract Map<K,V> loadData(Date since); 
 	
-	protected abstract Date getModifiedDate(Object item);
+	protected abstract Date getModifiedDate(V item);
 	
-	protected Object getCachedItem(Object key) {
+	protected V getCachedItem(K key) {
 		return this.cache.get(key);
 	}
 	
-	protected Map getCache() {
+	protected Map<K,V> getCache() {
 		return this.cache;
 	}
 	

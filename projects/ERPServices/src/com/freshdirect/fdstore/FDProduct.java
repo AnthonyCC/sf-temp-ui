@@ -17,7 +17,6 @@ import com.freshdirect.content.nutrition.EnumKosherTypeValue;
 import com.freshdirect.content.nutrition.ErpNutritionInfoType;
 import com.freshdirect.content.nutrition.NutritionDrugPanel;
 import com.freshdirect.erp.EnumAlcoholicContent;
-import com.freshdirect.erp.SkuAvailabilityHistory;
 
 /**
  * Product class - provides all details about a SKU that is necessary for displaying it on a product page.
