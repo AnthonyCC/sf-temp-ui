@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.JspException;
 
 import org.codehaus.jackson.JsonGenerationException;
@@ -30,6 +31,9 @@ public class DrugControllerTag extends com.freshdirect.framework.webapp.BodyTagS
 	 * 
 	 */
 	private static final long serialVersionUID = -1519469814297740033L;
+	
+	private String redirectUrl;
+	private String skuCode;
 
 	public int doStartTag() throws JspException {
 
@@ -38,10 +42,10 @@ public class DrugControllerTag extends com.freshdirect.framework.webapp.BodyTagS
 		NutritionDrugPanel panel = null;
 
 		try {
+			skuCode = (String) request.getParameter("skuCode");
 
 			if ("GET".equalsIgnoreCase(request.getMethod())) {
 
-				String skuCode = (String) request.getParameter("skuCode");
 
 				if (skuCode != null) {
 
@@ -49,15 +53,18 @@ public class DrugControllerTag extends com.freshdirect.framework.webapp.BodyTagS
 
 					panel = ErpFactory.getInstance().getDrugPanel(skuCode);
 
+					pageContext.setAttribute("protoPanel", false);
 					if (panel == null) {
 						//throw new JspException("No NutritionModel found");
 						panel = createProtoPanel(skuCode);
+						pageContext.setAttribute("protoPanel", true);
 					}
 					
 					writer = new StringWriter();
 					mapper.writeValue(writer, panel);
 
 					pageContext.setAttribute("panel", writer.toString());
+					pageContext.setAttribute("skuCode", skuCode);
 				} else {
 					throw new JspException("No skuCode found");
 				}
@@ -76,6 +83,9 @@ public class DrugControllerTag extends com.freshdirect.framework.webapp.BodyTagS
 					
 					pageContext.setAttribute("panel", panelJson);
 				}
+				
+				((HttpServletResponse) pageContext.getResponse()).sendRedirect(this.redirectUrl + "?skuCode=" + skuCode);
+				
 
 			}
 
@@ -91,6 +101,10 @@ public class DrugControllerTag extends com.freshdirect.framework.webapp.BodyTagS
 
 		return EVAL_BODY_BUFFERED;
 
+	}
+
+	public void setRedirectUrl(String redirectUrl) {
+		this.redirectUrl = redirectUrl;
 	}
 	
 	private NutritionDrugPanel createProtoPanel(String skuCode){
