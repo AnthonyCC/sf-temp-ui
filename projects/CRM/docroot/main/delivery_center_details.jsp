@@ -94,8 +94,8 @@
 								<td class="gc_table_footer" align="right">
 									<table width="99%" cellspacing="0" cellpadding="0" border="0" class="gc_table3footer">
 										<tr>
-											<td width="60%" colspan="3"><b>List of Nextels</b></td><td align="right"><input type="button" style="text-align: center;" onclick="lookupNextels();";" class="button" value="Refresh" name="Refresh Nextels"></td>
-											<td width="40%"><b>Message</b></td>
+											<td width="60%" colspan="4"><b>List of Nextels</b></td><td width="40%" align="right"><input type="button" style="text-align: center;" onclick="lookupNextels();";" class="button" value="Refresh" name="Refresh Nextels"></td>
+										
 										</tr>
 										<tr class="gc_colHeader">
 										    <td width="30">&nbsp;&nbsp;</td>
