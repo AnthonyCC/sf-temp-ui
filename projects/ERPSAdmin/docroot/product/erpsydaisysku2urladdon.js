@@ -1,3 +1,4 @@
+(function(){
 // ==UserScript==
 // @name           ERPSy-Daisy SKU2URL Addon
 // @namespace      freshdirect.com
@@ -620,7 +621,7 @@
 
 /* -- GENERIC functions -- */
 	
-	function sku_urls() {
+	window.sku_urls=function() {
 		window.onload=sku_urls_addon; 
 	}
 	
@@ -716,3 +717,4 @@
 	}
 
 /* -- SETUP -- */
+})();

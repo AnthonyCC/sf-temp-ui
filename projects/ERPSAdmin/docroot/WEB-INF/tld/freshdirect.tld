@@ -295,6 +295,11 @@
     <tag>
 		<name>DrugController</name>
 		<tagclass>com.freshdirect.webapp.taglib.content.DrugControllerTag</tagclass>
+        <attribute>
+            <name>redirectUrl</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>        
 		<info></info>
 	</tag>
 </taglib>

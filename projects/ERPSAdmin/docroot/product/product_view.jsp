@@ -20,6 +20,7 @@
 	<head>
 		<title>Erpsy - ProductView</title>
 		<link rel="shortcut icon" href="/blackbirdjs/favicon.ico" type="image/x-icon" />		
+		<script type="text/javascript" src="/assets/javascript/jquery/1.7.2/jquery.js"></script>
 		<link rel="stylesheet" href="/ERPSAdmin/common/css/erpsadmin.css" type="text/css">	
 		<script type="text/javascript" src="/ERPSAdmin/batch/blackbirdjs/blackbird.js"></script>
 		<link type="text/css" rel="Stylesheet" href="/ERPSAdmin/batch/blackbirdjs/blackbird.css" />
@@ -352,6 +353,10 @@
                         <tr><td align="left" class="section_title">Nutritional Information</td></tr>
                     </table>
                     <table width="600">
+<fd:DrugController redirectUrl="/ERPSAdmin/product/product_view.jsp"/>
+<%
+	if(((Boolean) pageContext.getAttribute("protoPanel")) == true ) {
+%>
 					<% if(SecurityManager.isUserAdmin(request)) {%>
                         <tr><td align="left"><a href="nutrition_edit.jsp">Edit Nutritional Information</td></tr>
 					<% } %>
@@ -380,12 +385,28 @@
 %>
 <%@ include file="i_nutrition_sheet.jspf" %>
                     </td></tr>
+<% }  else { %>
+        <tr><td align="left">This product has a Drug Nutritional Information!</td></tr>
+<% } %>
                     </table>
                     <table width="600" cellspacing=2 cellpadding=0>
                         <tr><td align="left" class="section_title">Drug Nutritional Information</td></tr>
-                    </table>
-                    <table width="600">
-                        <tr><td align="left"><a href="drug_nutrition/drug_nutrition_edit.jsp?skuCode=<%= skuCode %>">Edit Drug Nutritional Information</td></tr>
+<%
+	if(((Boolean) pageContext.getAttribute("protoPanel")) == false ) {
+%>
+        <tr><td align="left"><a href="drug_nutrition/drug_nutrition_edit.jsp?skuCode=<%= skuCode %>">Edit Drug Nutritional Information</a></td></tr>
+        <tr><td align="left">
+		<div id="drugpanel"></div>			
+		<script type="text/javascript" src="/assets/javascript/jquery/ui/1.8.23/jquery-ui.min.js"></script>
+		<script type="text/javascript" src="/assets/javascript/json2.min.js"></script>
+		<script type="text/javascript" src="/assets/javascript/es5-shim.min.js"></script>
+		<script type="text/javascript" src="/assets/javascript/jquery.mustache.js"></script>
+		<script src="/assets/javascript/drug_nutrition_editor.js"></script>
+		<script>drugPanel(jQuery,<%= pageContext.getAttribute("panel") %>, { container:jQuery('#drugpanel') })</script>
+		</td></tr>
+<% }  else { %>
+        <tr><td align="left"><a href="drug_nutrition/drug_nutrition_edit.jsp?skuCode=<%= skuCode %>">Create Drug Nutritional Information</a></td></tr>
+<% } %>
                     </table>
                 </fd:Nutrition>
             <%  } %>

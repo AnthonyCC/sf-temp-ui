@@ -46,7 +46,7 @@ var drugPanel = function($,data,config){
 			},DrugItem:{
 				tagName:'div',
 				templateSeparator:DragHandle+'<hr><span class="itemtoolbar toolbar"><label class="toggle"><input type="checkbox" name="separator" {{#separator}}checked{{/separator}}> Separator</label><button class="deleteItem"><span class="ui-icon ui-icon-trash"></span></button></span>',
-				templateIngredient:DragHandle+'<input name="value1" type="text" value="{{value1}}" placeholder="Ingredient"><input name="ingredientValue" type="text" value="{{ingredientValue}}" placeholder="Ing. value"><input name="uom" value="{{uom}}" placeholder="uom" type="text">...<input name="value2" type="text" value="{{value2}}"  placeholder="Purpose"><span class="itemtoolbar toolbar"><label class="toggle"><input type="checkbox" name="important" {{#important}}checked{{/important}}> Important</label><label class="toggle"><input type="checkbox" name="separator" {{#separator}}checked{{/separator}}> Separator</label><button class="deleteItem"><span class="ui-icon ui-icon-trash"></span></button></span>',
+				templateIngredient:DragHandle+'<input name="value1" type="text" value="{{value1}}" placeholder="Ingredient"><input name="ingredientValue" type="number" value="{{ingredientValue}}" placeholder="Ing. value"><input name="uom" value="{{uom}}" placeholder="uom" type="text">...<input name="value2" type="text" value="{{value2}}"  placeholder="Purpose"><span class="itemtoolbar toolbar"><label class="toggle"><input type="checkbox" name="important" {{#important}}checked{{/important}}> Title</label><label class="toggle"><input type="checkbox" name="separator" {{#separator}}checked{{/separator}}> Separator</label><button class="deleteItem"><span class="ui-icon ui-icon-trash"></span></button></span>',
 				templateTable:DragHandle+'<input name="value1" type="text" value="{{value1}}" placeholder="Left column"> | <input type="text" name="value2" value="{{value2}}" placeholder="Right column"><span class="itemtoolbar toolbar"><label class="toggle"><input type="checkbox" name="important" {{#important}}checked{{/important}}> Important</label><button class="deleteItem"><span class="ui-icon ui-icon-trash"></span></button></span>',
 				templateFreetext:DragHandle+'<input name="value1" type="text" value="{{value1}}"  placeholder="Free text"><span class="itemtoolbar toolbar"><label class="toggle"><input type="checkbox" name="bulleted" {{#bulleted}}checked{{/bulleted}}> Bulleted</label><label class="toggle"><input type="checkbox" name="important" {{#important}}checked{{/important}}> Important</label><label class="toggle"><input type="checkbox" name="newline" {{#newline}}checked{{/newline}}> Newline</label><label class="toggle"><input type="checkbox" name="separator" {{#separator}}checked{{/separator}}> Separator</label><button class="deleteItem"><span class="ui-icon ui-icon-trash"></span></button></span>'
 			}
@@ -552,13 +552,16 @@ var drugPanel = function($,data,config){
 		$(document).delegate('.drugitem .toolbar .deleteItem','click',Widget.eventHandler(Widget.destroy,'.'+DrugItem.widgetClass))
 		$(document).delegate('#savebutton','click',function(){
 			var data = DrugPanel.getData();
+			$('#saveform input[name=skuCode]')[0].value = DrugPanel.skuCode;
 			$('#saveform input[name=panel]')[0].value = JSON.stringify(data);
 			$('#saveform')[0].submit();
 		});
 		$(document).delegate('#deletebutton','click',function(){
 			var data = DrugPanel.skuCode;
-			if(data) {
+			if(data && window.confirm("Are you sure?")) {
+				
 				$('#deleteform input[name=delete]')[0].value = data;
+				$('#deleteform input[name=skuCode]')[0].value = data;
 				$('#deleteform')[0].submit();
 			}
 		});

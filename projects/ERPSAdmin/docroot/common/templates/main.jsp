@@ -5,6 +5,7 @@
     <title><tmpl:get name='title'/></title>
 
 <link rel="stylesheet" href="/ERPSAdmin/common/css/erpsadmin.css" type="text/css">
+	<script type="text/javascript" src="/assets/javascript/jquery/1.7.2/jquery.js"></script>
     
     <script language="Javascript" type="text/javascript">
 		<%@ include file='/common/includes/popcalendar.js'%>
