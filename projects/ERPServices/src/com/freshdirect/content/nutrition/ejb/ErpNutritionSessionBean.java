@@ -693,7 +693,7 @@ public class ErpNutritionSessionBean extends SessionBeanSupport {
     	}
     }
     
-    //drugs
+    // Drug nutrition data
     
     private static final String LOAD_DRUG_PANELS = "select * from ERPS.DRUG_PANEL where DATE_MODIFIED > ? order by sku_code";
     
@@ -923,6 +923,10 @@ public class ErpNutritionSessionBean extends SessionBeanSupport {
 		ps.close();
 	}
 	
+	/**
+	 * Deletes a drug panel, and also all sections and items recursively. 
+	 * @throws SQLException
+	 */
 	public void deleteDrugPanel(String skuCode) throws RemoteException, FDResourceException {
 		Connection conn = null;
 		try {
@@ -935,8 +939,7 @@ public class ErpNutritionSessionBean extends SessionBeanSupport {
 		}
 	}
 	
-	private static final String DELETE_DRUG_PANEL = "delete from erps.DRUG_PANEL where SKU_CODE = ?";
-	  
+	private static final String DELETE_DRUG_PANEL = "delete from erps.DRUG_PANEL where SKU_CODE = ?";	  
 	
 	/**
 	 * @param panel
@@ -948,43 +951,13 @@ public class ErpNutritionSessionBean extends SessionBeanSupport {
 	 */
 	private void deleteDrugPanel(String skuCode, Connection conn, PreparedStatement ps) throws SQLException{
 		
-		//deleteDrugSections(panel.getSections(), panel.getId(), conn, ps);
-
 		ps = conn.prepareStatement(DELETE_DRUG_PANEL);
         ps.setString(1, skuCode);
         ps.executeUpdate();
         ps.close();
         
-        
 	}
-	
-	private static final String DELETE_DRUG_SECTION = "delete from erps.DRUG_NUTRITION_SECTION where PANEL_ID = ?";
-
-	private void deleteDrugSections(List<NutritionDrugSection> sections, String panelId, Connection conn, PreparedStatement ps) throws SQLException{
 		
-		deleteDrugItems(sections, conn, ps);
-
-		ps = conn.prepareStatement(DELETE_DRUG_SECTION);
-        ps.setString(1, panelId);
-        ps.executeUpdate();
-        ps.close();
-        
-	}
-
-	
-	private static final String DELETE_DRUG_ITEM = "delete from erps.DRUG_NUTRITION_ITEM where SECTION_ID = ?";
-	
-	private void deleteDrugItems(List<NutritionDrugSection> sections, Connection conn, PreparedStatement ps) throws SQLException{
-		
-		ps = conn.prepareStatement(DELETE_DRUG_ITEM);
-		for(NutritionDrugSection section : sections){
-			ps.setString(1, section.getId());
-			ps.addBatch();
-		}
-		ps.executeBatch();
-		ps.close();
-	}
-	
 	protected String getNextId(Connection conn) throws SQLException {
 		return SequenceGenerator.getNextId(conn, "ERPS");
 	}
