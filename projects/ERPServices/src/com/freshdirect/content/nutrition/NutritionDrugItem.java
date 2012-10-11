@@ -4,9 +4,6 @@ import java.io.Serializable;
 
 public class NutritionDrugItem  implements Serializable {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = -5072393994059441104L;
 	
 	private String id;

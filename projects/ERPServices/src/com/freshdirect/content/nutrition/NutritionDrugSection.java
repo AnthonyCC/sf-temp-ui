@@ -4,13 +4,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.freshdirect.framework.core.ModelSupport;
-
 public class NutritionDrugSection  implements Serializable{
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = -3328912178220601397L;
 	
 	private String id;

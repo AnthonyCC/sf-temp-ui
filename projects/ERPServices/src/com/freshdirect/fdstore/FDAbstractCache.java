@@ -64,6 +64,7 @@ public abstract class FDAbstractCache<K,V> {
     	            super(name);
                 }
 	        
+		@Override
 		public void run() {
 			try {
 				
@@ -72,7 +73,9 @@ public abstract class FDAbstractCache<K,V> {
 					refresh();
 				}
 
-			} catch (InterruptedException ex) {}
+			} catch (InterruptedException ex) {
+				// do nothing
+			}
 		}
 	}
 

@@ -15,11 +15,8 @@ import org.codehaus.jackson.map.ObjectMapper;
 
 import com.freshdirect.framework.util.log.LoggerFactory;
 
-public class NutritionDrugPanel implements Serializable{
+public class NutritionDrugPanel implements Serializable {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 3485740087893523863L;
 	
 	private static final Logger LOGGER = LoggerFactory.getInstance( NutritionDrugPanel.class ); 
