@@ -52,6 +52,7 @@ public class AutoLateDlvCreditTag extends AbstractControllerTag {
 		HttpSession session = (HttpSession) request.getSession();
 		CrmAgentModel agent = CrmSession.getCurrentAgent(session);		
 		System.out.println("Came to execure AutoLateDlvCreditTag");
+		StringBuffer errorString = new StringBuffer();
 		try {			
 			if("submitted".equals(request.getParameter("action"))) {
 				System.out.println("Action is submitted");
@@ -65,6 +66,7 @@ public class AutoLateDlvCreditTag extends AbstractControllerTag {
 				for(String parameter : parameters.keySet()) {					
 					System.out.println(parameter.toLowerCase());
 					if(parameter.toLowerCase().startsWith("saleid|") || parameter.toLowerCase().startsWith("dlvpasssaleid|")) {
+						boolean creditIssued = false;
 					    if(parameter.toLowerCase().startsWith("saleid|")) {
 					        String[] values = parameters.get(parameter);
 					        String value = values[0];
@@ -74,9 +76,17 @@ public class AutoLateDlvCreditTag extends AbstractControllerTag {
 					        	//Check if the order has been already credited
 					        	boolean isCredited = CrmManager.getInstance().isOrderCreditedForLateDelivery(orderId);
 					        	
+					        	if(isCredited)
+					        		LOGGER.debug("This order is already credited:" + orderId);
+					        	
 					        	if(!isCredited) {
 						        	//Credit the user with delivery fee
-					        		issueLateCredit(orderId, autoId, agent, false);
+					        		creditIssued = issueLateCredit(orderId, autoId, agent, false);
+					        		if(!creditIssued) {
+					        			errorString.append(orderId + ","); 
+					        		}
+					        	} else {
+					        		creditIssued = true;
 					        	}
 					        }
 					    } else if(parameter.toLowerCase().startsWith("dlvpasssaleid|")) {
@@ -99,27 +109,32 @@ public class AutoLateDlvCreditTag extends AbstractControllerTag {
 						        		DeliveryPassModel altDp = CrmManager.getInstance().getActiveDP(ccm.getCustomerId());
 						        		if(altDp == null) {
 						        			//No more DP's for the user. Credit the original amount
-						        			issueLateCredit(orderId, autoId, agent, true);
+						        			creditIssued = issueLateCredit(orderId, autoId, agent, true);
+						        			if(!creditIssued) {
+							        			errorString.append(orderId + ","); 
+							        		}
 						        		} else {
 						        			//extend DP by one week
-						        			extendDP(altDp, agent, orderId, ccm);
+						        			creditIssued = extendDP(altDp, agent, orderId, ccm);
 						        		}
 						        	} else {
 						        		//extend DP by one week
-						        		extendDP(dpm, agent, orderId, ccm);
+						        		creditIssued = extendDP(dpm, agent, orderId, ccm);
 						        	}
 					        	} else {
+					        		creditIssued = true;
 					        		LOGGER.info("Already extended the deliverypass:" + orderId + "-dpId:" + ccm.getDlvPassId());
 					        	}
 					        }
 					    }
 					    //Mark the saleId as approved
-						CrmManager.getInstance().updateAutoLateCredit(autoId, orderId);
+					    if(creditIssued)
+					    	CrmManager.getInstance().updateAutoLateCredit(autoId, orderId);
 					}
 				}
 				//Update rest of the records as not approved by the user
 				CrmManager.getInstance().updateLateCreditsRejected(autoId, agent.getUserId());		
-				this.setSuccessPage("/supervisor/auto_late_dlv_credits.jsp");
+				this.setSuccessPage("/supervisor/auto_late_dlv_credits.jsp?errString="+errorString.toString());
 			}			
 		} catch(FDResourceException e) {
 			LOGGER.error("Error procesing credits",e);
@@ -127,7 +142,7 @@ public class AutoLateDlvCreditTag extends AbstractControllerTag {
 		return true;
 	}
 	
-	private static void extendDP(DeliveryPassModel dpm, CrmAgentModel agent, String orderId, CustomerCreditModel ccm ) throws FDResourceException {
+	private static boolean extendDP(DeliveryPassModel dpm, CrmAgentModel agent, String orderId, CustomerCreditModel ccm ) throws FDResourceException {
 		int numDays = 7;
 		try {			
 			CrmManager.getInstance().incrExpirationPeriod(dpm, agent, numDays, "Late Delivery Extn", ccm.getNewCode(), orderId);
@@ -135,14 +150,15 @@ public class AutoLateDlvCreditTag extends AbstractControllerTag {
 			FDCustomerInfo custInfo = FDCustomerManager.getCustomerInfo(identity);
 			FDCustomerManager.doEmail(FDEmailFactory.getInstance().createDPCreditEmail(custInfo, orderId, 1,EnumDlvPassProfileType.UNLIMITED.getName()));
 		} catch (CrmAuthorizationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			LOGGER.error("Error extending DP:" + orderId,e);
+			return false;
 		}
+		return true;
 	}
 	
-	private static void issueLateCredit(String orderId, String autoId, CrmAgentModel agent, boolean dpCredit) throws FDResourceException {
+	private static boolean issueLateCredit(String orderId, String autoId, CrmAgentModel agent, boolean dpCredit) throws FDResourceException {
 		//Create FDORderI object
-		FDOrderI order = FDCustomerManager.getOrder(orderId);
+		//FDOrderI order = FDCustomerManager.getOrder(orderId);
 		CustomerCreditModel ccm = CrmManager.getInstance().getOrderForLateCredit(orderId, autoId);
 		//Create complaint
 		ErpComplaintModel complaintModel = new ErpComplaintModel();
@@ -191,10 +207,11 @@ public class AutoLateDlvCreditTag extends AbstractControllerTag {
         boolean autoApproveAuthorized = true;
         try {
 			FDCustomerManager.addComplaint(complaintModel, orderId, new FDIdentity(ccm.getCustomerId(), ccm.getFdCustomerId()),autoApproveAuthorized, ccm.getOriginalAmount());
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		} catch (Exception e) {			
+			LOGGER.error("Error giving credit for orderId:" + orderId, e);
+			return false;
 		}
+		return true;
 	}
 
 	

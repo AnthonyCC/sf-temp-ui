@@ -6749,7 +6749,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		"WHERE " +
 		"TO_DATE(TO_CHAR(a.SCANDATE,'HH24:MI:ss'),'HH24:MI:ss') >= TO_DATE(SUBSTR(a.WINDOW,7,8),'HH24:MI:ss') + (1800/86400) " +
 		"AND a.CARTONSTATUS  In  ( 'DELIVERED','REFUSED'  ) " +
-		"AND a.SCANDATE BETWEEN sysdate - 1 AND sysdate " +
+		"AND trunc(a.SCANDATE) = trunc(sysdate) - 1 " +
 		"group by a.webordernum";
 	
 	public static String GET_ON_TIME_ORDERS = 
@@ -6759,7 +6759,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 								  "DLV.CARTONSTATUS a " +
 								"WHERE " +
 								"a.CARTONSTATUS  In ('DELIVERED','REFUSED') " +
-								"AND a.SCANDATE BETWEEN sysdate-1  AND sysdate " +
+								"AND trunc(a.SCANDATE) = trunc(sysdate)-1 " +
 								"AND TO_DATE(TO_CHAR(a.SCANDATE,'HH24:MI'),'HH24:MI') < TO_DATE(SUBSTR(a.WINDOW,7,5),'HH24:MI') " +
 								"group by a.webordernum, a.window";		
 	
@@ -6773,7 +6773,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 													      "CUST.SALE.ID = CUST.SALESACTION.SALE_ID and CUST.SALE.status <> 'CAN' " + 
 													      "and CUST.SALESACTION.ACTION_DATE=CUST.SALE.CROMOD_DATE " +
 													      "and CUST.LATEISSUE_ORDERS.SALE_ID=CUST.SALE.ID " +
-													    "AND CUST.SALESACTION.REQUESTED_DATE BETWEEN sysdate-1 AND sysdate";
+													    "AND CUST.SALESACTION.REQUESTED_DATE = trunc(sysdate)-1";
 			
 	public static String GET_SALE_DETAILS = 
 		"SELECT distinct " +
@@ -6797,7 +6797,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		"WHERE " +
 		   "CUST.SALE.ID= ? " +
 		   "AND  CUST.SALE.ID = CUST.SALESACTION.SALE_ID and CUST.SALE.status<>'CAN' " + 
-		   "AND  CUST.SALESACTION.REQUESTED_DATE BETWEEN sysdate-1 AND sysdate " +
+		   "AND  CUST.SALESACTION.REQUESTED_DATE = trunc(sysdate)-1 " +
 		   "AND CUST.CUSTOMER.ID=CUST.CUSTOMERINFO.CUSTOMER_ID " +
 		   "AND CUST.SALE.CUSTOMER_ID=CUST.CUSTOMER.ID " +
 		   "AND CUST.SALE.CUSTOMER_ID=CUST.SALESACTION.CUSTOMER_ID " + 

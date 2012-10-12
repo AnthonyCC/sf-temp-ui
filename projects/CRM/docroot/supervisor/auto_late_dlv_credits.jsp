@@ -22,6 +22,12 @@
 <span class="sub_nav_title">Auto Late Delivery Credits </span> 
 </div>
 
+<%if(request.getParameter("errString") != null && request.getParameter("errString").length() > 0)  { %>
+<br/>
+<font color="red"><b>These orders have problems approving credits, please contact Appsupport <br/>
+<%= request.getParameter("errString") %>
+</b></font>
+<% } %>
 <div class="content" style="height: 80%;">
 	<div class="list_header">
 <table width="100%" cellpadding="0" cellspacing="2" border="0" class="list_header_text">
