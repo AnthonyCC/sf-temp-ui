@@ -18,6 +18,7 @@ import com.freshdirect.delivery.model.AirclicCartonInfo;
 import com.freshdirect.delivery.model.AirclicMessageVO;
 import com.freshdirect.delivery.model.AirclicNextelVO;
 import com.freshdirect.delivery.model.AirclicTextMessageVO;
+import com.freshdirect.delivery.model.DeliveryExceptionModel;
 import com.freshdirect.delivery.model.DeliveryManifestVO;
 import com.freshdirect.delivery.model.DeliverySummaryModel;
 import com.freshdirect.delivery.model.DispatchNextTelVO;
@@ -56,4 +57,6 @@ public interface AirclicManagerSB extends EJBObject {
 	public List<CallLogModel> getOrderCallLog(String orderId) throws DlvResourceException, RemoteException;
 	
 	public DeliverySummaryModel lookUpDeliverySummary(String orderId, String routeNo, Date deliveryDate) throws DlvResourceException, RemoteException;
+	
+	public Map<String, DeliveryExceptionModel> getCartonScanInfo() throws DlvResourceException, RemoteException;
 }   

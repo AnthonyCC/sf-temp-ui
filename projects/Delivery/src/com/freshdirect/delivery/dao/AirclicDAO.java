@@ -15,6 +15,7 @@ import java.util.Map;
 import java.util.Set;
 
 import com.freshdirect.crm.CallLogModel;
+import com.freshdirect.delivery.constants.EnumDeliveryMenuOption;
 import com.freshdirect.crm.ejb.CriteriaBuilder;
 import com.freshdirect.delivery.DlvResourceException;
 import com.freshdirect.delivery.model.AirclicCartonInfo;
@@ -22,6 +23,7 @@ import com.freshdirect.delivery.model.AirclicCartonScanDetails;
 import com.freshdirect.delivery.model.AirclicMessageVO;
 import com.freshdirect.delivery.model.AirclicNextelVO;
 import com.freshdirect.delivery.model.AirclicTextMessageVO;
+import com.freshdirect.delivery.model.DeliveryExceptionModel;
 import com.freshdirect.delivery.model.DeliveryManifestVO;
 import com.freshdirect.delivery.model.DeliverySummaryModel;
 import com.freshdirect.delivery.model.DispatchNextTelVO;
@@ -920,7 +922,7 @@ public class AirclicDAO {
 				model.setDuration(rs.getInt("CALLDURATION"));
 				model.setCallOutcome(rs.getString("CALL_OUTCOME"));
 				model.setPhoneNumber(rs.getString("PHONE_NUMBER"));
-				model.setMenuOption(rs.getString("MENU_OPTION"));
+				model.setMenuOption(rs.getString("MENU_OPTION") != null ? EnumDeliveryMenuOption.getEnum(rs.getString("MENU_OPTION")).getDesc() : "");
 				model.setTalkTime(rs.getInt("TALKTIME"));
 				
 				calllogs.add(model);
@@ -1106,7 +1108,143 @@ public class AirclicDAO {
 		System.out.println("Time spent in looking up delivery summary for order# "+ orderId + " is "+(end-start)/(1000)+" sec");
 		
 		return model;
+	}
 	
+	public static Map<String, DeliveryExceptionModel>  getCartonScanInfo(Connection conn) throws DlvResourceException	{
+		
+		Map<String, DeliveryExceptionModel> result = new HashMap<String, DeliveryExceptionModel>();
+		
+		PreparedStatement ps = null, ps1 = null;
+		ResultSet rs = null;
+				
+		DateFormat sdf = new SimpleDateFormat("MM/dd/yyyy hh:mm:ss a");
+		Date toTime = null;
+		Date fromTime = null;
+		try	{
+			toTime = new Date();
+			long start = System.currentTimeMillis();
+			
+			ps = conn.prepareStatement("SELECT NVL(MAX(LAST_EXPORT),SYSDATE-1/24) LAST_EXPORT FROM DLV.CREATECASE_EXPORT " +
+					"WHERE SUCCESS= 'Y'");
+			
+			rs = ps.executeQuery();
+			if(rs.next()) {
+				fromTime = new java.util.Date(rs.getTimestamp("LAST_EXPORT").getTime());
+			}
+				
+			ps = conn.prepareStatement("select webordernum, cartonid, insert_timestamp, returnreason, (select max(scandate) from dlv.cartontracking where webordernum = ct.webordernum and cartonstatus = 'REFUSED'" +
+					" and ct.INSERT_TIMESTAMP between to_date(?,'MM/DD/YYYY HH:MI:SS AM') and to_date(?,'MM/DD/YYYY HH:MI:SS AM')) lastrefusedtime "+
+					" from dlv.cartontracking ct where ct.INSERT_TIMESTAMP between to_date(?,'MM/DD/YYYY HH:MI:SS AM') and to_date(?,'MM/DD/YYYY HH:MI:SS AM') and ct.cartonstatus='REFUSED'"
+					);
+			
+			//toTime is required here because we want to know till what time we are creating the cases. The same to Time
+			//will be updated in the last export.
+			ps.setString(1, sdf.format(fromTime));
+			ps.setString(2, sdf.format(toTime));
+			ps.setString(3, sdf.format(fromTime));
+			ps.setString(4, sdf.format(toTime));
+			
+			rs = ps.executeQuery();
+			
+			DeliveryExceptionModel model = null;
+			while(rs.next()){
+				String orderId = rs.getString("WEBORDERNUM");
+				String cartonId = rs.getString("CARTONID");				
+				String returnReason = rs.getString("RETURNREASON");
+				Date lastRefusedTime = rs.getTimestamp("LASTREFUSEDTIME");
+				
+				if(!result.containsKey(orderId)){
+					model = new DeliveryExceptionModel();
+					model.setOrderId(orderId);
+					result.put(orderId, model);
+				}
+				
+				result.get(orderId).setLastRefusedScan(lastRefusedTime);
+				result.get(orderId).setReturnReason(returnReason);
+				
+				if(result.get(orderId).getRefusedCartons().contains(cartonId)){
+					result.get(orderId).getRefusedCartons().add(cartonId);
+				}
+			}
+			
+			ps = conn.prepareStatement(" select cl.ordernumber, cl.call_outcome from cust.ivr_calllog cl where cl.menu_option = 'EDR' " +
+					" and cl.INSERT_TIMESTAMP between to_date(?,'MM/DD/YYYY HH:MI:SS AM') and to_date(?,'MM/DD/YYYY HH:MI:SS AM')"
+					);
+			
+			ps.setString(1, sdf.format(fromTime));
+			ps.setString(2, sdf.format(toTime));
+			
+			rs = ps.executeQuery();
+			while(rs.next()){
+				String orderId = rs.getString("ORDERNUMBER");
+				String callOutcome = rs.getString("CALL_OUTCOME");
+				
+				if(!result.containsKey(orderId)) {
+					model = new DeliveryExceptionModel();
+					model.setOrderId(orderId);
+					result.put(orderId, model);
+				}
+				result.get(orderId).setEarlyDeliveryReq(true);
+				result.get(orderId).setEarlyDlvStatus((!callOutcome.equals("") && !"NoAnswer".equals(callOutcome) && !"ReceiverRejected".equals(callOutcome)) ? "Accepted" : "Rejected");
+				
+			}
+			
+			ps = conn.prepareStatement(" select ci.sale_id WEBORDERNUM, ct.cartonid, ct.insert_timestamp, (select max(scandate) from dlv.cartontracking where cartonid = ct.cartonid and cartonstatus = 'TRNS_DR' "+
+				    " and ct.INSERT_TIMESTAMP between to_date(?,'MM/DD/YYYY HH:MI:SS AM') and to_date(?,'MM/DD/YYYY HH:MI:SS AM') and pd_recipient <> '123457') scantime "+ 
+				    " from dlv.cartontracking ct, cust.carton_info ci "+
+				    " where ci.carton_number=ct.cartonid and ct.INSERT_TIMESTAMP between to_date(?,'MM/DD/YYYY HH:MI:SS AM') and to_date(?,'MM/DD/YYYY HH:MI:SS AM') "+
+				    " and ct.cartonstatus='TRNS_DR' and ct.pd_recipient <> '123457'"
+				    );
+			//toTime is required here because we want to know till what time we are creating the cases. The same to Time
+			//will be updated in the last export.
+			ps.setString(1, sdf.format(fromTime));
+			ps.setString(2, sdf.format(toTime));
+			ps.setString(3, sdf.format(fromTime));
+			ps.setString(4, sdf.format(toTime));
+			
+			rs = ps.executeQuery();
+						
+			while(rs.next()){
+				String orderId = rs.getString("WEBORDERNUM");
+				String cartonId = rs.getString("CARTONID");
+				Date scanTime = rs.getTimestamp("SCANTIME");
+				
+				if(!result.containsKey(orderId)){
+					model = new DeliveryExceptionModel();
+					model.setOrderId(orderId);
+					result.put(orderId, model);
+				}
+				
+				result.get(orderId).setLateBoxScantime(scanTime);
+								
+				if(result.get(orderId).getLateBoxes().contains(cartonId)){
+					result.get(orderId).getLateBoxes().add(cartonId);
+				}
+			}
+				
+			ps1 = conn.prepareStatement("INSERT INTO DLV.CREATECASE_EXPORT(LAST_EXPORT, SUCCESS) VALUES (?,'Y')");
+			ps1.setTimestamp(1, new java.sql.Timestamp(toTime.getTime()));
+			ps1.execute();
+			
+			long end = System.currentTimeMillis();
+			
+			System.out.println("Time spent syncing the signatures "+(end-start)/(1000)+" sec");
+		} catch(SQLException e) {
+			throw new DlvResourceException(e);
+		} finally {
+			try {
+				if (rs != null)
+					rs.close();
+				if (ps != null)
+					ps.close();
+				if (ps1 != null)
+					ps1.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		return result;
 	}
    
 }

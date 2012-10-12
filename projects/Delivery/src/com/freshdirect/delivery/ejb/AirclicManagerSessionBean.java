@@ -39,6 +39,7 @@ import com.freshdirect.delivery.model.AirclicCartonInfo;
 import com.freshdirect.delivery.model.AirclicMessageVO;
 import com.freshdirect.delivery.model.AirclicNextelVO;
 import com.freshdirect.delivery.model.AirclicTextMessageVO;
+import com.freshdirect.delivery.model.DeliveryExceptionModel;
 import com.freshdirect.delivery.model.DeliverySummaryModel;
 import com.freshdirect.delivery.model.DeliveryManifestVO;
 import com.freshdirect.delivery.model.DispatchNextTelVO;
@@ -530,6 +531,24 @@ public class AirclicManagerSessionBean extends SessionBeanSupport {
 				}
 			} catch (SQLException se) {
 				LOGGER.warn("AirclicManagerSB lookUpDeliverySummary: Exception while cleaning: " + se);
+			}
+		}
+	}
+	
+	public Map<String, DeliveryExceptionModel>  getCartonScanInfo() throws DlvResourceException {
+		Connection conn = null;  
+		try	{			
+			conn = getConnection();			
+			return AirclicDAO.getCartonScanInfo(conn);			
+		} catch(SQLException e) {
+			throw new DlvResourceException(e);
+		} finally {
+			try {
+				if (conn != null) {
+					conn.close();
+				}
+			} catch (SQLException se) {
+				LOGGER.warn("AirclicManagerSB getCartonScanInfo: Exception while cleaning: " + se);
 			}
 		}
 	}

@@ -23,6 +23,7 @@ import com.freshdirect.delivery.model.AirclicCartonInfo;
 import com.freshdirect.delivery.model.AirclicMessageVO;
 import com.freshdirect.delivery.model.AirclicNextelVO;
 import com.freshdirect.delivery.model.AirclicTextMessageVO;
+import com.freshdirect.delivery.model.DeliveryExceptionModel;
 import com.freshdirect.delivery.model.DeliverySummaryModel;
 import com.freshdirect.delivery.model.DeliveryManifestVO;
 import com.freshdirect.delivery.model.DispatchNextTelVO;
@@ -247,6 +248,7 @@ public class AirclicManager {
 		public List<RouteNextelVO> lookupNextels(String orderId, String route, String date) throws FDResourceException {
 			
 			try {
+				
 				AirclicTextMessageVO textMessage = new AirclicTextMessageVO(DateUtil.parseMDY(date), route, 0, null, null, null, orderId);				
 				
 				AirclicManagerSB sb = getAirclicManagerHome().create();
@@ -300,5 +302,18 @@ public class AirclicManager {
 				}
 				return 0;
 			}	
+		}
+		
+		public Map<String, DeliveryExceptionModel> getCartonScanInfo() throws FDResourceException  {
+			try {								
+				AirclicManagerSB sb = getAirclicManagerHome().create();
+				return sb.getCartonScanInfo(); 
+			} catch (CreateException e) {
+				throw new FDResourceException(e, "Cannot create SessionBean");
+			} catch (RemoteException e) {
+				throw new FDResourceException(e, "Cannot talk to the SessionBean");
+			} catch (DlvResourceException e) {				
+				throw new FDResourceException(e, "Cannot talk to the database");
+			} 
 		}
 	}
