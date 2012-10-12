@@ -10,6 +10,7 @@ import org.apache.log4j.Category;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.freshdirect.crm.CallLogModel;
+import com.freshdirect.delivery.constants.EnumDeliveryMenuOption;
 import com.freshdirect.fdstore.CallCenterServices;
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.customer.FDCustomerInfo;
@@ -24,7 +25,7 @@ import com.freshdirect.mobileapi.exception.NoSessionException;
 import com.freshdirect.mobileapi.model.SessionUser;
 import com.freshdirect.mobileapi.service.ServiceException;
 import com.freshdirect.mobileapi.util.MobileApiProperties;
-import com.freshdirect.mobileapi.util.DataUtil;
+import com.freshdirect.mobileapi.util.StringUtil;
 
 /**
  * @author Rob
@@ -143,12 +144,13 @@ public class ExternalInterfaceController extends BaseController {
     	logModel.setCallerGUIId(request.getParameter(PARAM_CALLER_GUIID));// Caller GUI ID will be passed in "data" param
     	logModel.setCallerId(request.getParameter(PARAM_CALLER_ID));
     	logModel.setOrderNumber(request.getParameter(PARAM_SALE_ID));
-    	logModel.setStartTime(DataUtil.getDatewithTime(request.getParameter(PARAM_CALL_STARTTIME)));
-    	logModel.setDuration(DataUtil.getInt(request.getParameter(PARAM_CALL_DURATION)));
+    	logModel.setStartTime(StringUtil.getDatewithTime(request.getParameter(PARAM_CALL_STARTTIME)));
+    	logModel.setDuration(StringUtil.getInt(request.getParameter(PARAM_CALL_DURATION)));
     	logModel.setCallOutcome(request.getParameter(PARAM_CALL_OUTCOME));	       
-    	logModel.setTalkTime(DataUtil.getInt(request.getParameter(PARAM_CALL_TALKTIME)));
+    	logModel.setTalkTime(StringUtil.getInt(request.getParameter(PARAM_CALL_TALKTIME)));
     	logModel.setPhoneNumber(request.getParameter(PARAM_CALL_PHONENUMBER));
-    	logModel.setMenuOption(request.getParameter(PARAM_CALL_MENU));
+    	logModel.setMenuOption((request.getParameter(PARAM_CALL_MENU) != null && !"".equals(request.getParameter(PARAM_CALL_MENU))) 
+    								? EnumDeliveryMenuOption.getEnum(request.getParameter(PARAM_CALL_MENU)).getName() : null);    	
     	return logModel;  
     }
 }
