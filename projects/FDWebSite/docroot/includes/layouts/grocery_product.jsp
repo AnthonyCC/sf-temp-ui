@@ -506,7 +506,13 @@ if(productCode!=null && prodCatId !=null ) {
  %>
 <tr valign="top"><td width="220">
 
-<% if(FDStoreProperties.isBazaarvoiceEnabled()) { %>
+<fd:BvHelper prod="<%= productNode %>"/>
+<%
+	Boolean showRev = (Boolean)pageContext.getAttribute("showReviews");
+	boolean showReviews = showRev && FDStoreProperties.isBazaarvoiceEnabled();
+%>
+
+<% if(showReviews) { %>
 <%-- Bazaarvoice summary --%>
 <div id="BVRRSummaryContainer"></div>
 <% } %>
@@ -747,9 +753,7 @@ if(productCode!=null && prodCatId !=null ) {
 %><br>Please check product label for nutrition, ingredients, and allergens.<%
 	}
 %><br>
-<%-- TODO show bazaarvoice reviews popup based on property --%>
 <%
-boolean showReviews = FDStoreProperties.isBazaarvoiceEnabled();
 if (showReviews) {
 %>
 <a href="javascript:pop('/common/template/reviews_popup.jsp?productId=<%= ProductDisplayUtil.getRealProduct(productNode).getContentName() %>', 400, 500, 'Reviews')">Reviews</a>
