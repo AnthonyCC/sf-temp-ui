@@ -64,7 +64,12 @@ public class CrmCaseSubject extends EnumModel implements TerminableI {
 	
 	public static final String CODE_ORDER_ENROUTE_SPL_INSTRUCTION="DSQ-012";
 	
+	public static final String CODE_EARLY_DELIVERY_REQEUST="DSQ-041";
 	
+	public static final String CODE_REFUSED_CARTON="DSQ-055";
+	
+	public static final String CODE_LATE_BOX="DSQ-036";
+		
 	private final boolean obsolete;
 	private final String queueCode;
 	private final String priorityCode;

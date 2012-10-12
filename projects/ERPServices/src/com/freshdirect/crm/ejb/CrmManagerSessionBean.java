@@ -289,18 +289,20 @@ public class CrmManagerSessionBean extends SessionBeanSupport {
 		cm.setSummary(caseInfo.getSummary());
 		cm.setOrigin(caseInfo.getOrigin());
 		cm.setState(caseInfo.getState());
-		cm.setAssignedAgentPK(this.getSystemUser().getPK());
+		cm.setAssignedAgentPK(caseInfo.getLoginAgent() != null ? caseInfo.getLoginAgent().getPK() : this.getSystemUser().getPK());
 		
 		List<CrmCaseAction> caseActions = new ArrayList<CrmCaseAction>();
 		
 		CrmCaseAction caseAction = new CrmCaseAction();
-		caseAction.setAgentPK(this.getSystemUser().getPK());
+		caseAction.setAgentPK(caseInfo.getLoginAgent() != null ? caseInfo.getLoginAgent().getPK() : this.getSystemUser().getPK());
 		caseAction.setType(CrmCaseActionType.getEnum(CrmCaseActionType.CODE_NOTE));
 		caseAction.setNote(caseInfo.getNote() != null ? caseInfo.getNote() : caseInfo.getSummary());
 		caseAction.setTimestamp(new Date());
      
 		caseActions.add(caseAction);
 		cm.setActions(caseActions);
+		
+		cm.setCartonNumbers(caseInfo.getCartonNumbers());
 		return cm;
 	}
     

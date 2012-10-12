@@ -1,6 +1,8 @@
 package com.freshdirect.crm;
 
 import java.io.Serializable;
+import java.util.Collections;
+import java.util.List;
 
 import com.freshdirect.framework.core.PrimaryKey;
 
@@ -15,6 +17,11 @@ public class CrmSystemCaseInfo implements Serializable {
 	private CrmCaseState state;
 	private String note;
 	
+	// holds assigned carton numbers (missing, misloaded, etc)
+    private List cartonNumbers;
+    
+    private CrmAgentModel loginAgent;
+	
 	public CrmSystemCaseInfo(CrmCaseSubject subject, String summary){
 		this(null, null, subject, summary);
 	}
@@ -28,6 +35,19 @@ public class CrmSystemCaseInfo implements Serializable {
 		this.salePK = salePK;
 		this.subject = subject;
 		this.summary = summary;
+		
+		//default values
+		this.origin = CrmCaseOrigin.getEnum(CrmCaseOrigin.CODE_SYS);
+		this.state = CrmCaseState.getEnum(CrmCaseState.CODE_OPEN);
+	}
+	
+	public CrmSystemCaseInfo(PrimaryKey customerPK, PrimaryKey salePK, CrmCaseSubject subject, String summary, List cartonNumbers, CrmAgentModel loginAgent){
+		this.customerPK = customerPK;
+		this.salePK = salePK;
+		this.subject = subject;
+		this.summary = summary;
+		this.cartonNumbers = cartonNumbers;
+		this.loginAgent = loginAgent;
 		
 		//default values
 		this.origin = CrmCaseOrigin.getEnum(CrmCaseOrigin.CODE_SYS);
@@ -77,4 +97,22 @@ public class CrmSystemCaseInfo implements Serializable {
 	public void setNote(String note){
 		this.note = note;
 	}
+	// List<String>
+	public List getCartonNumbers() {
+		return this.cartonNumbers == null ? Collections.EMPTY_LIST : this.cartonNumbers;
+	}
+
+	public void setCartonNumbers(List cartons) {
+		this.cartonNumbers = cartons;
+	}
+
+	public CrmAgentModel getLoginAgent() {
+		return loginAgent;
+	}
+
+	public void setLoginAgent(CrmAgentModel loginAgent) {
+		this.loginAgent = loginAgent;
+	}
+	
+	
 }
