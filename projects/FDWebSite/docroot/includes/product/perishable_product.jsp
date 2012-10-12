@@ -317,7 +317,11 @@ final int W_PERISHABLE_PRODUCT_RIGHT = 369;
     	  var target = document.createElement('a');
     	  target.href = window.location.href;
     	  target.hash = "#BVRRContainer";
-    	  target.search = target.search.replace(/product_view=[\w]+/,"product_view=reviews");
+    	  if(target.search.indexOf("product_view=") === -1) {
+        	  target.search += "&product_view=reviews";
+    	  } else {
+        	  target.search = target.search.replace(/product_view=[\w]+/,"product_view=reviews");
+    	  }
     	  
     	  window.location.href = target.href;
       });

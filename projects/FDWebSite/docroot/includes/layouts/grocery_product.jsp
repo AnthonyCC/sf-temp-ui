@@ -864,11 +864,14 @@ String  viewBrandURL = response.encodeURL("/category.jsp?catId="+groceryCategory
 
 <%-- Bazaarvoice review download --%>
 <script>
-  (function () {
+  (function ($) {
     if ($BV) {
       $BV.ui('rr', 'show_reviews', { productId: '<%= ProductDisplayUtil.getRealProduct(productNode).getContentName() %>'});
+      $(document.body).delegate("#BVRRSummaryContainer .bv-rating-label, .bv-popup-in .bv-read-review", 'click', function (e) {
+          pop('/common/template/reviews_popup.jsp?productId=<%= ProductDisplayUtil.getRealProduct(productNode).getContentName() %>', 400, 500, 'Reviews')
+      });
     }
-  }());
+  }(jQuery));
 </script>
 
 </fd:ProductGroup>
