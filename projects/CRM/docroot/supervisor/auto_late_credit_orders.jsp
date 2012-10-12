@@ -72,9 +72,9 @@
 		count++;
 	
 %>
-	<tr valign="top" <%= count % 2 == 0 ? "class='list_odd_row'" : "" %> style="cursor: pointer;">		
+	<tr valign="top" <%= count % 2 == 0 ? "class='list_odd_row'" : "" %> >		
 		<td width="1%"><% if(!"A".equals(ccm.getStatus())) { %><input type="checkbox" name="saleid|<%=ccm.getSaleId()%>" value="<%=ccm.getSaleId()%>"><% } else {%>&nbsp;<%}%></td>
-		<td width="10%"><a class="key" href="/supervisor/auto_late_credit_orders.jsp?id=<%=ccm.getId()%>"><b><%=ccm.getSaleId()%></b></a></td>
+		<td width="10%"><b><%=ccm.getSaleId()%></b></td>
 		<td width="12%"><%=  ccm.getFirstName() %></td>
 		<td width="12%"><%=ccm.getLastName()%></td>
 		<td width="12%"><%=ccm.getEmail()%></td>
@@ -127,9 +127,9 @@
 		count++;
 	
 %>
-	<tr valign="top" <%= count % 2 == 0 ? "class='list_odd_row'" : "" %> style="cursor: pointer;">		
+	<tr valign="top" <%= count % 2 == 0 ? "class='list_odd_row'" : "" %> >		
 		<td width="1%"><% if(!"A".equals(ccm.getStatus())) { %><input type="checkbox" name="dlvPassSaleId|<%=ccm.getSaleId()%>" value="<%=ccm.getSaleId()%>"><% } else {%>&nbsp;<%}%></td>
-		<td width="10%"><a class="key" href="/supervisor/auto_late_credit_orders.jsp?id=<%=ccm.getId()%>"><b><%=ccm.getSaleId()%></b></a></td>
+		<td width="10%"><b><%=ccm.getSaleId()%></b></td>
 		<td width="12%"><%=  ccm.getFirstName() %></td>
 		<td width="12%"><%=ccm.getLastName()%></td>
 		<td width="12%"><%=ccm.getEmail()%></td>
