@@ -89,6 +89,8 @@ public class ErpServicesProperties {
 	private final static String PROP_CRM_BACKEND 		= "crm.backend";
 	private final static String PROP_CRM_SYSTEM_USER_NAME 	= "crm.system.user.name";
 	private final static String PROP_CRM_SYSTME_USER_PASSWORD = "crm.system.user.password";
+	private final static String PROP_CRM_SYSTEM_DRIVER_USER_NAME 	= "crm.system.driver.user.name";
+	private final static String PROP_CRM_SYSTME_DRIVER_USER_PASSWORD = "crm.system.driver.user.password";
 	private final static String PROP_CRM_CREDIT_BUFFER = "crm.credit.buffer";
 
 	private final static String PROP_CALLCENTER_SUPERVISOR_CODES	= "callcenter.supervisor.codes";
@@ -261,6 +263,8 @@ public class ErpServicesProperties {
 		defaults.put(PROP_CRM_BACKEND, "kana");
 		defaults.put(PROP_CRM_SYSTEM_USER_NAME, "system");
 		defaults.put(PROP_CRM_SYSTME_USER_PASSWORD, "system");
+		defaults.put(PROP_CRM_SYSTEM_DRIVER_USER_NAME, "systemdriver");
+		defaults.put(PROP_CRM_SYSTME_DRIVER_USER_PASSWORD, "systemdriver");
 		
 		defaults.put(PROP_JCO_CLIENT_LISTENENABLED, "false");
 		
@@ -854,5 +858,13 @@ public class ErpServicesProperties {
 	public static boolean isSendTrailerInfo() {
         return Boolean.valueOf(config.getProperty(PROP_HANDOFF_TRAILER_INFO_ENABLED)).booleanValue();
     }
+	public static String getCrmSystemDriverUserName(){
+		return config.getProperty(PROP_CRM_SYSTEM_DRIVER_USER_NAME);
+	}
+	
+	public static String getCrmSystemDriverUserPassword(){
+		return config.getProperty(PROP_CRM_SYSTME_DRIVER_USER_PASSWORD);
+	}
+	
 	
 }
