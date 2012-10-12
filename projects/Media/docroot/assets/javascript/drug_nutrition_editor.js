@@ -34,7 +34,7 @@ var drugPanel = function($,data,config){
 			},DrugItem:{
 				tagName:'span',
 				templateSeparator:'<hr>',
-				templateIngredient:'<span class="dotted"></span><span class="value1">{{value1}}</span><span class="ingredientValue">{{ingredientValue}}</span><span class="uom">{{uom}}</span><span class="value2">{{value2}}</span>',
+				templateIngredient:'<span class="value1">{{value1}}</span>{{#value2}}<span class="ingredientValue">{{ingredientValue}}</span><span class="uom">{{uom}}</span><span class="dotted-wrapper"><span class="value2">{{value2}}</span><span class="dotted"></span></span>{{/value2}}',
 				templateTable:'<span class="value1"><span class="val">{{value1}}</span></span><span class="value2"><span class="val">{{value2}}</span></span><span class="hsep"></span>',
 				templateFreetext:'{{#newline}}<br>{{/newline}}<span class="value1">{{#bulleted}} <span class="bullet"></span>&nbsp;{{/bulleted}}{{value1}}</span>'
 			}
