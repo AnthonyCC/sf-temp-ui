@@ -15,10 +15,10 @@ import com.freshdirect.framework.webapp.ActionError;
 import com.freshdirect.framework.webapp.ActionResult;
 import com.freshdirect.mobileapi.controller.data.request.DeliveryAddressRequest;
 import com.freshdirect.mobileapi.controller.data.request.PaymentMethodRequest;
+import com.freshdirect.mobileapi.model.DeliveryAddress.DeliveryAddressType;
 import com.freshdirect.mobileapi.model.MessageCodes;
 import com.freshdirect.mobileapi.model.ResultBundle;
 import com.freshdirect.mobileapi.model.SessionUser;
-import com.freshdirect.mobileapi.model.DeliveryAddress.DeliveryAddressType;
 import com.freshdirect.mobileapi.util.MobileApiProperties;
 import com.freshdirect.webapp.taglib.fdstore.CheckoutControllerTag;
 import com.freshdirect.webapp.taglib.fdstore.EnumUserInfoName;
@@ -78,7 +78,7 @@ public class CheckoutControllerTagWrapper extends ControllerTagWrapper implement
                 SESSION_PARAM_RECENT_ORDER_NUMBER }, new String[] { SESSION_PARAM_PROCESSING_ORDER, SESSION_PARAM_USER,
                 SESSION_PARAM_SMART_STORE_PREV_RECOMMENDATIONS, SESSION_PARAM_AUTHORIZED_PEOPLE, SESSION_PARAM_PICKUP_AGREEMENT,
                 SESSION_PARAM_RECENT_ORDER_NUMBER, SESSION_PARAM_DLV_PASS_SESSION_ID, SESSION_PARAM_REFERENCED_ORDER,
-                SESSION_PARAM_MAKE_GOOD_ORDER }); //gets,sets
+                SESSION_PARAM_MAKE_GOOD_ORDER, SessionName.PENDING_CONVERSION_ORDER_MODIFIED_MODELS }); //gets,sets
         addExpectedRequestValues(new String[] { SESSION_PARAM_RECENT_ORDER_NUMBER, REQ_PARAM_IGNORE_PROMO_ERRORS }, new String[] { REQ_PARAM_PAYMENT_METHOD_ID,
                 REQ_PARAM_BILLING_REF });//gets,sets
         getWrapTarget().setActionName(ACTION_SUBMIT_ORDER);
