@@ -22,6 +22,7 @@ import javax.ejb.FinderException;
 
 import com.freshdirect.content.nutrition.ErpNutritionModel;
 import com.freshdirect.content.nutrition.NutritionDrugPanel;
+import com.freshdirect.fdstore.FDResourceException;
 
 public interface ErpNutritionSB extends EJBObject{
 
@@ -36,7 +37,7 @@ public interface ErpNutritionSB extends EJBObject{
 	 public List<Map<String, String>> generateClaimsReport() throws RemoteException;
 	 public Map<String, NutritionDrugPanel> loadDrugPanels(Date lastModified) throws RemoteException;
 	 public NutritionDrugPanel getDrugPanel(String skuCode) throws RemoteException;
-	 public void saveDrugPanel(NutritionDrugPanel panel) throws RemoteException;
-	 public void deleteDrugPanel(String skuCode) throws RemoteException;
+	 public void saveDrugPanel(NutritionDrugPanel panel) throws RemoteException, FDResourceException;
+	 public void deleteDrugPanel(String skuCode) throws RemoteException, FDResourceException;
 
 }

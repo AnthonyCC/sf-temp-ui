@@ -32,13 +32,13 @@ public interface AirclicManagerSB extends EJBObject {
 	
 	public String saveMessage(AirclicTextMessageVO textMessage, List<String> nextelList)  throws DlvResourceException,RemoteException;
 	
-	public byte[] getSignature(String order) throws RemoteException;
+	public byte[] getSignature(String order) throws DlvResourceException, RemoteException;
 	
 	public void sendMessages() throws RemoteException, DlvResourceException;
 	
-	public void getSignatureData(Date deliveryDate) throws RemoteException;
+	public void getSignatureData(Date deliveryDate) throws RemoteException,DlvResourceException;
 	
-	SignatureVO getSignatureDetails(String order) throws RemoteException;
+	SignatureVO getSignatureDetails(String order) throws DlvResourceException, RemoteException;
 	
 	Map<String, DispatchNextTelVO> getDispatchResourceNextTel(Date dispatchDate) throws DlvResourceException,RemoteException;;
 	 
@@ -46,7 +46,7 @@ public interface AirclicManagerSB extends EJBObject {
 	
 	void updateEmployeeNexTelData(List<DispatchNextTelVO> employeeNextTels) throws DlvResourceException,RemoteException;
 	
-	public List<AirclicCartonInfo> lookupCartonScanHistory(String orderId)  throws FDResourceException, RemoteException;
+	public List<AirclicCartonInfo> lookupCartonScanHistory(String orderId)  throws DlvResourceException, RemoteException;
 	
 	public List<AirclicTextMessageVO> lookupAirclicMessages(String orderId) throws DlvResourceException, RemoteException;
 	

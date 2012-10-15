@@ -48,6 +48,7 @@ import com.freshdirect.delivery.restriction.GeographyRestriction;
 import com.freshdirect.delivery.restriction.RestrictionI;
 import com.freshdirect.routing.constants.RoutingActivityType;
 import com.freshdirect.fdstore.FDDynamicTimeslotList;
+import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDTimeslot;
 import com.freshdirect.fdstore.StateCounty;
 import com.freshdirect.routing.constants.EnumOrderMetricsSource;
@@ -146,7 +147,7 @@ public interface DlvManagerSB extends EJBObject {
 	
 	public IDeliveryReservation reserveTimeslotEx(DlvReservationModel reservation,ContactAddressModel address , FDTimeslot timeslot, TimeslotEventModel event) throws RemoteException;
 	
-	public void commitReservationEx(DlvReservationModel reservation,ContactAddressModel address, TimeslotEventModel event) throws  RemoteException;
+	public void commitReservationEx(DlvReservationModel reservation,ContactAddressModel address, TimeslotEventModel event) throws  RemoteException,FDResourceException;
 	
 	public void releaseReservationEx(DlvReservationModel reservation,ContactAddressModel address, TimeslotEventModel event) throws  RemoteException;
 	
@@ -223,9 +224,9 @@ public interface DlvManagerSB extends EJBObject {
 	Map<String, TrnFacilityType> retrieveTrnFacilitys() throws RemoteException;
 	
 	public SectorVO getSectorInfo(AddressModel address) throws RemoteException;
-	public List<DlvReservationModel> getUnconfirmedReservations() throws RemoteException;
-	public List<DlvReservationModel> getConfirmedRsvForCancelledOrders() throws RemoteException;
-	public List<DlvReservationModel> getCancelledRsvInUPS() throws RemoteException;
-	public List<DlvReservationModel> getOrdersWithCancelledRsv() throws RemoteException;
+	public List<DlvReservationModel> getUnconfirmedReservations() throws DlvResourceException,RemoteException;
+	public List<DlvReservationModel> getConfirmedRsvForCancelledOrders() throws DlvResourceException,RemoteException;
+	public List<DlvReservationModel> getCancelledRsvInUPS() throws DlvResourceException,RemoteException;
+	public List<DlvReservationModel> getOrdersWithCancelledRsv() throws DlvResourceException,RemoteException;
 	
 }   

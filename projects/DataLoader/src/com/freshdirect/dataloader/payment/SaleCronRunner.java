@@ -200,6 +200,9 @@ public class SaleCronRunner {
 		} catch (CreateException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		} catch (DlvResourceException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		finally {
 			try {

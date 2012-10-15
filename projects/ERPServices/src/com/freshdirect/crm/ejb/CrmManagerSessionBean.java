@@ -1368,9 +1368,14 @@ public class CrmManagerSessionBean extends SessionBeanSupport {
 		return false;
 	}
 	
-	public DeliveryPassModel getDeliveryPassInfoById(String dlvPassId) throws CreateException, RemoteException, FDResourceException {
+	public DeliveryPassModel getDeliveryPassInfoById(String dlvPassId) throws RemoteException, FDResourceException {
+		try{
 		DlvPassManagerSB sb = this.getDlvPassManagerHome().create();		
 		return sb.getDeliveryPassInfo(dlvPassId);
+		}
+		catch (CreateException ce) {
+			throw new FDResourceException(ce);
+		}
 	}
 	
 	public void updateAutoLateCredit(String autoId, String orderId) throws FDResourceException {
@@ -1390,7 +1395,8 @@ public class CrmManagerSessionBean extends SessionBeanSupport {
 		}
 	}
 	
-	public DeliveryPassModel getActiveDP(String custId) throws FDResourceException,RemoteException,CreateException {
+	public DeliveryPassModel getActiveDP(String custId) throws FDResourceException,RemoteException {
+		try{
 		DlvPassManagerSB sb = this.getDlvPassManagerHome().create();		
 		List dps = sb.getDeliveryPasses(custId);
 		Iterator iter = dps.iterator();
@@ -1401,6 +1407,10 @@ public class CrmManagerSessionBean extends SessionBeanSupport {
 			}
 		}
 		return null;
+		}
+		catch (CreateException ce) {
+			throw new FDResourceException(ce);
+		}
 	}
 	
 	public void updateLateCreditsRejected(String autoId, String agent) throws FDResourceException {

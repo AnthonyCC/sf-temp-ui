@@ -67,6 +67,8 @@ public class AirclicManager {
 			} 
 			catch (RemoteException e) {
 				throw new FDResourceException(e, "Cannot talk to the SessionBean");
+			} catch (DlvResourceException e) {
+				throw new FDResourceException(e, "Cannot talk to the SessionBean");
 			} 
 			return signatureVO;
 		}
@@ -83,6 +85,8 @@ public class AirclicManager {
 				throw new FDResourceException(e, "Cannot create SessionBean");
 			} 
 			catch (RemoteException e) {
+				throw new FDResourceException(e, "Cannot talk to the SessionBean");
+			} catch (DlvResourceException e) {
 				throw new FDResourceException(e, "Cannot talk to the SessionBean");
 			} 
 			return _image;
@@ -212,6 +216,8 @@ public class AirclicManager {
 			} catch (CreateException e) {
 				throw new FDResourceException(e, "Cannot create SessionBean");
 			} catch (RemoteException e) {
+				throw new FDResourceException(e, "Cannot talk to the SessionBean");
+			} catch (DlvResourceException e) {
 				throw new FDResourceException(e, "Cannot talk to the SessionBean");
 			} 
 		}

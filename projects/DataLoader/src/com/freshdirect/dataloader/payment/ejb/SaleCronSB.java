@@ -1,10 +1,15 @@
 package com.freshdirect.dataloader.payment.ejb;
 
 import java.rmi.RemoteException;
+import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
 
 import javax.ejb.EJBObject;
+import javax.ejb.FinderException;
+
+import com.freshdirect.customer.ErpTransactionException;
+import com.freshdirect.sap.ejb.SapException;
 
 public interface SaleCronSB extends EJBObject{ 
 
@@ -26,7 +31,7 @@ public interface SaleCronSB extends EJBObject{
 	
 	public void postAuthSales(long timeout) throws RemoteException;
 	
-	public List<Date> queryCutoffReportDeliveryDates() throws RemoteException;
+	public List<Date> queryCutoffReportDeliveryDates() throws SQLException, RemoteException;
 	
 	public void postAuthEBTSales(long timeout) throws RemoteException;
 	
@@ -34,5 +39,5 @@ public interface SaleCronSB extends EJBObject{
 	
 	public void settleEBTSales() throws RemoteException;
 	
-	public void settleEBTSales(List<String> saleIds)throws RemoteException;
+	public void settleEBTSales(List<String> saleIds)throws FinderException, RemoteException, ErpTransactionException, SapException, RemoteException;
 }
