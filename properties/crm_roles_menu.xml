@@ -133,8 +133,7 @@
 			no_alcohol_address.jsp,step_2_verify_age.jsp,step_2_green_popup.jsp,add_config_to_cart.jsp,build_order_browse.jsp,build_order_category.jsp,category.jsp,
 			build_order_recipes.jsp,cancel_modify_order.jsp,cancel_order.jsp,health_warning.jsp,order_modify.jsp,payment_exception.jsp,
 			place_order_batch_search_results.jsp,place_order_recipe_search_results.jsp,place_order_related_items.jsp,product.jsp,product_modify.jsp,
-			recipe.jsp,recipe_cat.jsp,recipe_subcat.jsp,order_transaction_details.jsp,carton_contents_view.jsp,expert_rating_popup.jsp,filter.jsp,recipe_source.jsp,cg_meal_item_detail.jsp,recipe_search.jsp,
-			delivery_center_details.jsp,carton_exceptions_view.jsp
+			recipe.jsp,recipe_cat.jsp,recipe_subcat.jsp,order_transaction_details.jsp,carton_contents_view.jsp,expert_rating_popup.jsp,filter.jsp,recipe_source.jsp,cg_meal_item_detail.jsp,recipe_search.jsp			
 		</links>
 		<links name="quickshop">
 			quickshop_index.jsp,all_lists.jsp,ccl_item_modify.jsp,every_item.jsp,item_modify.jsp,makegood_from_order.jsp,recipes.jsp,
@@ -255,7 +254,7 @@ delivery_available_slots.jsp,delivery_check_slots.jsp,activity_log.jsp,referral_
 			checkout_select_addr_payment.jsp,checkout_select_address.jsp,checkout_select_payment.jsp,checkout_verify_age.jsp,no_alcohol_address.jsp,step_2_verify_age.jsp,
 			step_2_green_popup.jsp,add_config_to_cart.jsp,build_order_browse.jsp,build_order_category.jsp,category.jsp,build_order_recipes.jsp,cancel_modify_order.jsp,
 			cancel_order.jsp,health_warning.jsp,order_modify.jsp,payment_exception.jsp,place_order_batch_search_results.jsp,place_order_recipe_search_results.jsp,
-			place_order_related_items.jsp,product.jsp,product_modify.jsp,recipe.jsp,recipe_cat.jsp,recipe_subcat.jsp,carton_contents_view.jsp,expert_rating_popup.jsp,filter.jsp,recipe_source.jsp,cg_meal_item_detail.jsp,recipe_search.jsp</links>
+			place_order_related_items.jsp,product.jsp,product_modify.jsp,recipe.jsp,recipe_cat.jsp,recipe_subcat.jsp,carton_contents_view.jsp,expert_rating_popup.jsp,filter.jsp,recipe_source.jsp,cg_meal_item_detail.jsp,recipe_search.jsp,delivery_center_details.jsp,carton_exceptions_view.jsp</links>
 		<links name="quickshop">
 			quickshop_index.jsp,all_lists.jsp,ccl_item_modify.jsp,every_item.jsp,item_modify.jsp,recipes.jsp,shop_from_list.jsp,shop_from_order.jsp,makegood_from_order.jsp
 		</links>
