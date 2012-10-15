@@ -1,50 +1,55 @@
 package com.freshdirect.webapp.taglib.fdstore;
 
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.tagext.SimpleTagSupport;
 
-import com.freshdirect.cms.ContentKey;
-import com.freshdirect.fdstore.content.ContentFactory;
+import com.freshdirect.fdstore.content.CategoryModel;
+import com.freshdirect.fdstore.content.DepartmentModel;
 import com.freshdirect.fdstore.content.ProductModel;
 
 public class BvHelperTag extends SimpleTagSupport{
 	
-	private ProductModel prod;
+	private ProductModel product;
 	
+	// Bazaarvoice department exclude list
+	public static final List<String> BV_FREE_DEPTS = Arrays.asList( "veg", "fru", "sea", "mea", "usq" );
+	
+	@Override
 	public void doTag() throws JspException, IOException {
-		PageContext pageContext = (PageContext)getJspContext(); 
 		
-		List<String> bvFreeDepts = new ArrayList<String>();
-		bvFreeDepts.add("veg");
-		bvFreeDepts.add("fru");
-		bvFreeDepts.add("sea");
-		bvFreeDepts.add("mea");
-		bvFreeDepts.add("usq");
-
 		boolean showReviews = true;
-		for(ContentKey key : prod.getParentKeys()){
+		DepartmentModel dept = null;
+		
+		if ( product != null ) {
+			// First check primary home's dept
+			CategoryModel prHome = product.getPrimaryHome();
+			if ( prHome != null )
+				dept = prHome.getDepartment();
 			
-			ProductModel nodeByKey = ContentFactory.getInstance().getProductByName(key.getId(), prod.getContentKey().getId());
-			
-			if(bvFreeDepts.contains(nodeByKey.getDepartment().getContentKey().getId())){
-				showReviews = false;
-				break;
-			}
+			// Fall back to product's dept if there is no primary home set
+			if ( dept == null )
+				dept = product.getDepartment();
 		}
-		pageContext.setAttribute("showReviews", showReviews);
+		
+		if ( dept == null || BV_FREE_DEPTS.contains( dept.getContentKey().getId() ) ) {
+			// Disable if dept is missing or is in the exclude list
+			showReviews = false;
+		}
+		
+		((PageContext)getJspContext()).setAttribute("showReviews", showReviews);
 	}
 
 	public ProductModel getProd() {
-		return prod;
+		return product;
 	}
 
 	public void setProd(ProductModel prod) {
-		this.prod = prod;
+		this.product = prod;
 	}
 
 }
