@@ -77,7 +77,11 @@ insert into CUST.COMPLAINT_CODE (CODE, NAME, SUBJECT_CODE, PRIORITY) Values ('DL
 
 insert into cust.complaint_dept_code select 'DLVLATE', 'GDW', 10, null, cust.system_seq.nextval from dual;
 
-insert into CUST.COMPLAINT_CODE (CODE, NAME, SUBJECT_CODE, PRIORITY) Values ('SCANLATE', 'Scan Lates', 'LDQ-017', 25);
+insert into CUST.COMPLAINT_CODE (CODE, NAME, SUBJECT_CODE, PRIORITY) Values ('DRVRLATE', 'Driver Lates', 'LDQ-017', 25);
+
+insert into cust.complaint_dept_code select 'DRVRLATE', 'GDW', 10, null, cust.system_seq.nextval from dual;
+
+insert into CUST.COMPLAINT_CODE (CODE, NAME, SUBJECT_CODE, PRIORITY) Values ('SCANLATE', 'Scan Lates', 'LDQ-018', 25);
 
 insert into cust.complaint_dept_code select 'SCANLATE', 'GDW', 10, null, cust.system_seq.nextval from dual;
 
