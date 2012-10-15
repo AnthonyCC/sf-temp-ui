@@ -93,7 +93,7 @@
 			}
 
       // TODO property based review display
-      boolean showReviews = FDStoreProperties.isBazaarvoiceEnabled() && pageContext.getAttribute("showReviews")!=null ? (Boolean)pageContext.getAttribute("showReviews") : true;
+      boolean showReviews = FDStoreProperties.isBazaarvoiceEnabled() && pageContext.getAttribute("showReviews")!=null ? (Boolean)pageContext.getAttribute("showReviews") : false;
 			
 			if (fdprd!=null && showReviews) {
 				if(!"".equals(productView) && !"reviews".equalsIgnoreCase(productView)) { 
