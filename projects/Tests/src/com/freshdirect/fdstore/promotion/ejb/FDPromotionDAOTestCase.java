@@ -9,16 +9,14 @@ import java.util.Map;
 
 import com.freshdirect.DbTestCaseSupport;
 import com.freshdirect.fdstore.content.ProductReference;
-import com.freshdirect.fdstore.promotion.ActiveInactiveStrategy;
-import com.freshdirect.fdstore.promotion.CustomerStrategy;
 import com.freshdirect.fdstore.promotion.DateRangeStrategy;
 import com.freshdirect.fdstore.promotion.EnumPromotionType;
 import com.freshdirect.fdstore.promotion.FraudStrategy;
 import com.freshdirect.fdstore.promotion.GeographyStrategy;
 import com.freshdirect.fdstore.promotion.LimitedUseStrategy;
-import com.freshdirect.fdstore.promotion.OrderTypeStrategy;
 import com.freshdirect.fdstore.promotion.Promotion;
 import com.freshdirect.fdstore.promotion.PromotionGeography;
+import com.freshdirect.fdstore.promotion.PromotionI;
 import com.freshdirect.fdstore.promotion.SampleLineApplicator;
 import com.freshdirect.fdstore.promotion.SampleStrategy;
 import com.freshdirect.framework.core.PrimaryKey;
@@ -31,10 +29,12 @@ public class FDPromotionDAOTestCase extends DbTestCaseSupport {
 		super(name);
 	}
 
+	@Override
 	protected String getSchema() {
 		return "CUST";
 	}
 
+	@Override
 	protected String[] getAffectedTables() {
 		return new String[] {
 			"CUST.CAMPAIGN",
@@ -49,9 +49,10 @@ public class FDPromotionDAOTestCase extends DbTestCaseSupport {
 		this.setUpDataSet("FDPromotionDAO-init.xml");
 
 		// execute
-		List l = FDPromotionNewDAO.loadAllAutomaticPromotions(conn);
+		List<PromotionI> l = FDPromotionNewDAO.loadAllAutomaticPromotions(conn);
 
 		Collections.sort(l, new Comparator() {
+			@Override
 			public int compare(Object o1, Object o2) {
 				return ((Promotion)o1).getPK().getId().compareTo(((Promotion)o2).getPK().getId());
 			}
@@ -112,21 +113,21 @@ public class FDPromotionDAOTestCase extends DbTestCaseSupport {
 		this.setUpDataSet("FDPromotionDAO-init.xml");
 
 		// execute
-		Map m = FDPromotionNewDAO.loadGeographyStrategies(conn, null);
+		Map<PrimaryKey,GeographyStrategy> m = FDPromotionNewDAO.loadGeographyStrategies(conn, null);
 
 		// verify
 		assertEquals(1, m.size());
 
-		GeographyStrategy p1strat = (GeographyStrategy) m.get(new PrimaryKey("p1"));
+		GeographyStrategy p1strat = m.get(new PrimaryKey("p1"));
 
-		List p1geos = p1strat.getGeographies();
+		List<PromotionGeography> p1geos = p1strat.getGeographies();
 		assertEquals(2, p1geos.size());
 
-		PromotionGeography p1g1 = (PromotionGeography) p1geos.get(0);
+		PromotionGeography p1g1 = p1geos.get(0);
 		assertEquals(new PrimaryKey("p1g1"), p1g1.getPK());
 		assertEquals(DF.parse("2010-06-11"), p1g1.getStartDate());
 
-		PromotionGeography p1g2 = (PromotionGeography) p1geos.get(1);
+		PromotionGeography p1g2 = p1geos.get(1);
 		assertEquals(new PrimaryKey("p1g2"), p1g2.getPK());
 		assertEquals(DF.parse("2010-06-11"), p1g2.getStartDate());
 
