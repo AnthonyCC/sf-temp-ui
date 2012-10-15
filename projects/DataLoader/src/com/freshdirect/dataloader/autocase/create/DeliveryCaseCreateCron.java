@@ -108,7 +108,7 @@ public class DeliveryCaseCreateCron {
 	private static CrmSystemCaseInfo buildCase(String customerPK, String saleId, CrmCaseSubject subject, String summary, String note, List cartons) {
 
 		PrimaryKey salePK = saleId != null ? new PrimaryKey(saleId) : null;
-		return new CrmSystemCaseInfo(new PrimaryKey(customerPK), salePK, subject, summary, cartons, loginAgent);
+		return new CrmSystemCaseInfo(new PrimaryKey(customerPK), salePK, subject, summary, note, cartons, loginAgent);
 	}
 
 	private static void createCase(String customerID, String saleId, String subject, String summary, String note, List cartons) throws FDResourceException {
