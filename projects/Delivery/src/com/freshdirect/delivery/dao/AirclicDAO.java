@@ -1162,7 +1162,7 @@ public class AirclicDAO {
 				result.get(orderId).setLastRefusedScan(lastRefusedTime);
 				result.get(orderId).setReturnReason(returnReason);
 				
-				if(result.get(orderId).getRefusedCartons().contains(cartonId)){
+				if(!result.get(orderId).getRefusedCartons().contains(cartonId)){
 					result.get(orderId).getRefusedCartons().add(cartonId);
 				}
 			}
@@ -1217,7 +1217,7 @@ public class AirclicDAO {
 				
 				result.get(orderId).setLateBoxScantime(scanTime);
 								
-				if(result.get(orderId).getLateBoxes().contains(cartonId)){
+				if(!result.get(orderId).getLateBoxes().contains(cartonId)){
 					result.get(orderId).getLateBoxes().add(cartonId);
 				}
 			}
