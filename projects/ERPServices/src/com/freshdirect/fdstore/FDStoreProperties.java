@@ -572,7 +572,7 @@ public class FDStoreProperties {
 	private final static String PROP_DLV_PASS_NEW_TC_VIEWLIMIT = "fdstore.dlvpass.newtc.viewlimit";
 	private final static String PROP_AUTO_APPLY_DONATION_GC = "fdstore.auto.apply.donation.gc";
 	
-	private final static String PROP_LEAD_TIME_OASAD_OFF = "fdstore.leadtime.oasad.turnoff";
+	private final static String PROP_LEAD_TIME_OASAD_OFF = "fdstore.leadtime.turnoff";
 	
 	private final static String PROP_ENABLE_DELIVERYCENTER = "fdstore.delivery.center.enabled";
 
