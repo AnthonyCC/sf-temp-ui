@@ -793,8 +793,7 @@ class DepotTimeNode extends PlanTreeNode  {
 					} else {
 						zoneTypeResources = s.getZone().getTrnZoneType().getZonetypeResources();
 						
-						if(EnumTransportationFacilitySrc.DEPOTDELIVERY.getName().equals(s.getDestinationFacility().getTrnFacilityType().getName()))
-						{
+						
 							for (Iterator j = zoneTypeResources.iterator(); j.hasNext();) {
 								ZonetypeResource r = (ZonetypeResource) j.next();
 								// Driver
@@ -837,9 +836,7 @@ class DepotTimeNode extends PlanTreeNode  {
 									}
 								}
 							}
-						}
-						else
-						{
+						
 							int count = 0;
 							for (Iterator k = resources.iterator(); k.hasNext();) {
 								ScheduleEmployeeDetails se = (ScheduleEmployeeDetails) k.next();
@@ -855,7 +852,7 @@ class DepotTimeNode extends PlanTreeNode  {
 									}
 								}
 							}
-						}
+						
 					}				
 				}
 			} else {
