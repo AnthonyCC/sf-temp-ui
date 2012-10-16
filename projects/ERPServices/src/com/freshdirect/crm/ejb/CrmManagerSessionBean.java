@@ -301,7 +301,6 @@ public class CrmManagerSessionBean extends SessionBeanSupport {
      
 		caseActions.add(caseAction);
 		cm.setActions(caseActions);
-		
 		cm.setCartonNumbers(caseInfo.getCartonNumbers());
 		return cm;
 	}

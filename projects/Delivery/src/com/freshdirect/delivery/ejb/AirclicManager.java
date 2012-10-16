@@ -254,7 +254,7 @@ public class AirclicManager {
 		public List<RouteNextelVO> lookupNextels(String orderId, String route, String date) throws FDResourceException {
 			
 			try {
-				
+
 				AirclicTextMessageVO textMessage = new AirclicTextMessageVO(DateUtil.parseMDY(date), route, 0, null, null, null, orderId);				
 				
 				AirclicManagerSB sb = getAirclicManagerHome().create();
@@ -309,9 +309,9 @@ public class AirclicManager {
 				return 0;
 			}	
 		}
-		
+
 		public Map<String, DeliveryExceptionModel> getCartonScanInfo() throws FDResourceException  {
-			try {								
+			try {
 				AirclicManagerSB sb = getAirclicManagerHome().create();
 				return sb.getCartonScanInfo(); 
 			} catch (CreateException e) {

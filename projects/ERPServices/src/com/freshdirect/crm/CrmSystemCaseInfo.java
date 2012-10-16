@@ -41,13 +41,13 @@ public class CrmSystemCaseInfo implements Serializable {
 		this.state = CrmCaseState.getEnum(CrmCaseState.CODE_OPEN);
 	}
 	
-	public CrmSystemCaseInfo(PrimaryKey customerPK, PrimaryKey salePK, CrmCaseSubject subject, String summary, String note, List cartonNumbers,CrmAgentModel loginAgent){
+	public CrmSystemCaseInfo(PrimaryKey customerPK, PrimaryKey salePK, CrmCaseSubject subject, String summary, String note, List cartonNumbers, CrmAgentModel loginAgent){
 		this.customerPK = customerPK;
 		this.salePK = salePK;
 		this.subject = subject;
 		this.summary = summary;
-		this.cartonNumbers = cartonNumbers;
 		this.note = note;
+		this.cartonNumbers = cartonNumbers;
 		this.loginAgent = loginAgent;
 		
 		//default values
@@ -114,6 +114,4 @@ public class CrmSystemCaseInfo implements Serializable {
 	public void setLoginAgent(CrmAgentModel loginAgent) {
 		this.loginAgent = loginAgent;
 	}
-	
-	
 }

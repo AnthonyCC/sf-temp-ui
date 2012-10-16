@@ -1109,14 +1109,14 @@ public class AirclicDAO {
 		
 		return model;
 	}
-	
+
 	public static Map<String, DeliveryExceptionModel>  getCartonScanInfo(Connection conn) throws DlvResourceException	{
 		
 		Map<String, DeliveryExceptionModel> result = new HashMap<String, DeliveryExceptionModel>();
 		
 		PreparedStatement ps = null, ps1 = null;
 		ResultSet rs = null;
-				
+
 		DateFormat sdf = new SimpleDateFormat("MM/dd/yyyy hh:mm:ss a");
 		Date toTime = null;
 		Date fromTime = null;

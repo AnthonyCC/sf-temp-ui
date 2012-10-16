@@ -57,6 +57,6 @@ public interface AirclicManagerSB extends EJBObject {
 	public List<CallLogModel> getOrderCallLog(String orderId) throws DlvResourceException, RemoteException;
 	
 	public DeliverySummaryModel lookUpDeliverySummary(String orderId, String routeNo, Date deliveryDate) throws DlvResourceException, RemoteException;
-	
+
 	public Map<String, DeliveryExceptionModel> getCartonScanInfo() throws DlvResourceException, RemoteException;
 }   
