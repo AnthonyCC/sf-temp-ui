@@ -91,10 +91,10 @@
 								<td width="10"><img width="10" height="5" border="0" src="/media_stat/images/layout/clear.gif"></th>
 							</tr>
 							<tr>
-								<td class="gc_table_footer" align="right">
+								<td class="gc_table_footer">
 									<table width="99%" cellspacing="0" cellpadding="0" border="0" class="gc_table3footer">
 										<tr>
-											<td width="60%" colspan="4"><b>List of Nextels</b></td><td width="40%" align="right"><input type="button" style="text-align: center;" onclick="lookupNextels();";" class="button" value="Refresh" name="Refresh Nextels"></td>
+											<td width="60%" colspan="4"><b>List of Nextels</b></td><td width="40%" align="right"><input type="button" onclick="lookupNextels();";" class="button" value="Refresh" name="Refresh Nextels"></td>
 										
 										</tr>
 										<tr class="gc_colHeader">
@@ -129,10 +129,10 @@
 								<td><img width="1" height="8" border="0" src="/media_stat/images/layout/clear.gif"></td>
 							</tr>
 							<tr>
-								<td class="gc_table_footer" align="right">
+								<td class="gc_table_footer">
 									<table width="99%" cellspacing="0" cellpadding="0" border="0" class="gc_table3footer">
 										<tr>
-											<td colspan="6"><b>Messages</b></td><td align="right"><input type="button" style="text-align: center;" onclick="lookupAirclicMessages();" class="button" value="Refresh" name="Refresh Message"></td>
+											<td colspan="6"><b>Messages</b></td><td align="right"><input type="button" onclick="lookupAirclicMessages();" class="button" value="Refresh" name="Refresh Message"></td>
 										</tr>
 										<tr class="gc_colHeader">
 											<td width="130">Create Date</td>
@@ -153,10 +153,10 @@
 								<td><img width="1" height="8" border="0" src="/media_stat/images/layout/clear.gif"></td>
 							</tr>
 							<tr>
-								<td class="gc_table_footer" align="right">
+								<td class="gc_table_footer">
 									<table width="99%" cellspacing="0" cellpadding="0" border="0" class="gc_table3footer">
 										<tr>
-											<td colspan="8"><b>CARTON SCANNING HISTORY</b></td><td align="right"><input type="button" style="text-align: center;" onclick="lookupCartonScanHistory();" class="button" value="Refresh" name="Refresh Cartons"></td>
+											<td colspan="8"><b>CARTON SCANNING HISTORY</b></td><td align="right"><input type="button" onclick="lookupCartonScanHistory();" class="button" value="Refresh" name="Refresh Cartons"></td>
 										</tr>
 										<tr class="gc_colHeader">
 											<td width="45">Nextel</td>
@@ -181,10 +181,10 @@
 								<td><img width="1" height="8" border="0" src="/media_stat/images/layout/clear.gif"></td>
 							</tr>
 							<tr>
-								<td class="gc_table_footer" align="right">
+								<td class="gc_table_footer">
 									<table width="99%" cellspacing="0" cellpadding="0" border="0" class="gc_table3footer">
 										<tr>
-											<td colspan="6"><b>IVR DETAILS</b></td><td align="right"><input type="button" style="text-align: center;" onclick="lookupOrderCallLog();" class="button" value="Refresh" name="Refresh Calllog"></td>
+											<td colspan="6"><b>IVR DETAILS</b></td><td align="right"><input type="button" onclick="lookupOrderCallLog();" class="button" value="Refresh" name="Refresh Calllog"></td>
 										</tr>
 										<tr class="gc_colHeader">
 											<td>Caller ID</td>
@@ -226,9 +226,9 @@
 								<td width="10"><img width="10" height="5" border="0" src="/media_stat/images/layout/clear.gif"></td>
 							</tr>
 							<tr>
-								<td class="gc_table_footer" align="right">
-									<input type="button" style="text-align: center;" onclick="lookupDeliveryManifest();" class="button" value="Refresh" name="Refresh Manifest">
-									<div id="manifestDetail" style="height:550px;">
+								<td class="gc_table_footer">
+									<div align="right"><input type="button" onclick="lookupDeliveryManifest();" class="button" value="Refresh" name="Refresh Manifest"></div>
+									<div id="manifestDetail" style="height:550px;text-align:left;">
 										<script>
 										
 										</script>
