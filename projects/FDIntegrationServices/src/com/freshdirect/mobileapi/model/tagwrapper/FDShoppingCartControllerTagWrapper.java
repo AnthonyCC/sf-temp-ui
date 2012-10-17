@@ -28,6 +28,7 @@ import com.freshdirect.mobileapi.model.CartEvent;
 import com.freshdirect.mobileapi.model.ResultBundle;
 import com.freshdirect.mobileapi.model.SessionUser;
 import com.freshdirect.webapp.taglib.fdstore.FDShoppingCartControllerTag;
+import com.freshdirect.webapp.taglib.fdstore.SessionName;
 
 public class FDShoppingCartControllerTagWrapper extends CartEventTagWrapper {
 
@@ -53,8 +54,8 @@ public class FDShoppingCartControllerTagWrapper extends CartEventTagWrapper {
         setCartEventLoggingSetsAndGets(cartEvent);
         addExpectedRequestValues(new String[] { REQ_PARAM_YMAL_BOX, REQ_PARAM_YMAL_SET_ID, REQ_PARAM_YMAL_ORIG_PROD_ID,
                 REQ_PARAM_YMAL_ORIG_ORDER_LINE_ID, REQ_PARAM_ATC_SUFFIX, REQ_PARAM_VARIANT, REQ_PARAM_CONSENTED, REQ_PARAM_AGREE_TO_TERMS,
-                REQ_PARAM_RECIPE_ID, REQ_PARAM_CUSTOMER_CREATED_LIST_ID, "remove_from_cart.x", REQ_PARAM_CARTONNUMBER }, new String[] { REQ_PARAM_ATC_SUFFIX,
-                REQ_PARAM_CART_CLEANUP_REMOVED_STUFF_FLAG }); //gets,sets
+                REQ_PARAM_RECIPE_ID, REQ_PARAM_CUSTOMER_CREATED_LIST_ID, "remove_from_cart.x", REQ_PARAM_CARTONNUMBER, SessionName.PARAM_ADDED_FROM_SEARCH }, new String[] { REQ_PARAM_ATC_SUFFIX,
+                REQ_PARAM_CART_CLEANUP_REMOVED_STUFF_FLAG, SessionName.PARAM_ADDED_FROM_SEARCH }); //gets,sets
         addExpectedSessionValues(new String[] { SESSION_PARAM_APPLICATION }, new String[] { SESSION_PARAM_USER, SESSION_PARAM_SKUS_ADDED }); //gets,sets
         addRequestValue(REQ_PARAM_CART_LINE_ID, updateItemInCart.getCartLineId());
 

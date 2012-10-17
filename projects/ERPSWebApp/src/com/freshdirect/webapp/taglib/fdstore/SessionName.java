@@ -58,7 +58,8 @@ public interface SessionName {
 	public static final String PENDING_CONVERSION_ORDER_MODIFIED_MODELS = "pendingCoremetricsOrderModifiedConversionModels";
 	public static final String PENDING_HELP_EMAIL_EVENT = "pendingCoremetricsHelpEmailEvent";
 	public static final String PENDING_SHOP_9_MODELS = "pendingCoremetricsShop9Models";
-	
+	public static String PARAM_ADDED_FROM_SEARCH = "addedfromsearch";
+
 
 	
 }
