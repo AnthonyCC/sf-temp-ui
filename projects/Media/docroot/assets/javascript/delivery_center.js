@@ -83,14 +83,16 @@
 			function cartonScanHistoryCallBack(cartonScanResult){
 				var result = '';
 				var cartons = cartonScanResult.list;
-				for(var i=0;i < cartons.length;i++){
-					var cartonDetails = cartons[i].details.list;
+				var temp = false;
+				for(var i=0;i < cartons.length;i++){					
+					var cartonDetails = cartons[i].details.list;				
 					for(var j=0;j < cartonDetails.length;j++){
-						if( j % 2 != 0){
+						if( temp ){
 							result += "<tr class=\"list_odd_row\">"; 
 						} else {
 							result += "<tr>";
 						}
+						temp = !temp;
 						result += "<td width=\"45\">" + cartonDetails[j].nextel + "</td>";
 						result += "<td width=\"100\">"+ cartonDetails[j].employee + "</td>";
 						result += "<td width=\"100\">"+ cartons[i].cartonNumber + "</td>";
@@ -151,7 +153,7 @@
 				result += "<tr><td width=\"210\">Stop</td><td>"+ manifestResult.stopNo +"</td></tr>";
 				result += "<tr><td>Window Time</td><td>"+ manifestResult.windowTime +"</td></tr>";
 				result += "<tr><td>Boxes</td><td>"+ manifestResult.cartonCnt +"</td></tr>";
-				result += "<tr><td>Order</td><td>"+ manifestResult.stopNo +"</td></tr>";
+				result += "<tr><td>Order No</td><td>"+ orderNo +"</td></tr>";
 				if( manifestResult.lastName !=null && manifestResult.firstName != null ) {
 					result += "<tr><td>Name</td><td>"+ manifestResult.lastName + " " + manifestResult.firstName +"</td></tr>";
 				}

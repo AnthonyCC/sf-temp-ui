@@ -64,7 +64,7 @@
 	var orderNo = '<%= order.getErpSalesId() %>';
 	var routeNo = '<%= shippingInfo.getTruckNumber() %>';
 	var date =  '<%= CCFormatter.defaultFormatDate(order.getDeliveryReservation().getStartTime()) %>';
-	var hasSignature = <%= FDStoreProperties.isAirclicEnabled() && order instanceof FDOrderI && !((FDOrderI)order).hasSignature() %>;
+	var hasSignature = <%= FDStoreProperties.isAirclicEnabled() && order instanceof FDOrderI && ((FDOrderI)order).hasSignature() %>;
 	
 </script>
 
@@ -101,7 +101,7 @@
 										    <td width="30">&nbsp;&nbsp;</td>
 											<td width="115">CN #</td>
 											<td width="205">Employee</td>
-											<td width="117">Role</td>
+											<td width="117">EmployeeId</td>
 											<td style="background-color:#fff" id="ac_info">&nbsp;</td>
 										</tr>
 										<tr>
@@ -117,7 +117,7 @@
 											<input type="hidden" name="customerId" id="customerId" value="<%=order.getCustomerId()%>" />
 											<textarea value="" name="messageDesc" id="messageDesc" style="width: 220px;height:70px;padding"></textarea><br/><br/>
 											
-											<input <%= !sendAirclicMsg ? "" : "disabled=disabled"%> type="button" style="text-align: center;" onclick="addEntry($F('ddate'), $F('route'), $F('stop'), $F('messageDesc'), $F('source'), $F('userId'), $F('orderId'),$F('customerId'));" class="button" value="SEND MESSAGE" name="SEND MESSAGE">
+											<input <%= sendAirclicMsg ? "" : "disabled=disabled"%> type="button" style="text-align: center;" onclick="addEntry($F('ddate'), $F('route'), $F('stop'), $F('messageDesc'), $F('source'), $F('userId'), $F('orderId'),$F('customerId'));" class="button" value="SEND MESSAGE" name="SEND MESSAGE">
 																						
 											
 											</td>

@@ -325,18 +325,18 @@ function loadSignature(order)
 					<b>Truck Number</b>: <%= shippingInfo.getTruckNumber() %><br>
 					<b>Stop Sequence</b>: <%= shippingInfo.getStopSequence()%><br>
 				<% } %>
-				<% if ( (_order.getCartonContents() != null) &&  (_order.getCartonContents().size() == 0) ){ %>
+				<% if ( (_order.getCartonContents() != null) &&  (_order.getCartonContents().size() > 0) ){ %>
 					<br>
 					<a href="javascript:pop('/main/carton_contents_view.jsp?orderId=<%= orderId %>&scroll=yes','600','800');">Carton Contents</a>
 					</br>
 				<% } %>
 				<% if (_order.hasInvoice()) {%>
 					<div style="padding:3px;"></div>
-					<i>Components:</i><br>
+					<b><i>Components:</i></b><br>
 					Total Cases: <b><%= _order.getCartonMetrics().get("Case")%></b><br>
 					Total Cartons: <b><%= _order.getCartonMetrics().get("Regular")%></b><br>
 					Total Freezer Bags: <b><%= _order.getCartonMetrics().get("Freezer")%></b><br>
-					Total cartons -<br/>containing alcohol: <b><%= _order.getCartonMetrics().get("Beer")%></b><br>
+					Total Cartons -<br/>Containing Alcohol: <b><%= _order.getCartonMetrics().get("Beer")%></b><br>
 				<%	if (_order.hasRedelivery()) { %>
 						<b>REDELIVERY</b>
 						<br>
