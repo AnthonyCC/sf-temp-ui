@@ -610,7 +610,7 @@ public class AirclicDAO {
 				"SELECT ci.sale_id, ci.carton_number, ci.carton_type, ct.scandate, ct.action, ct.cartonstatus, ct.employee, ct.route, ct.stop, ct.nextelId, ct.userId, "+
 						" ct.deliveredto, ct.returnreason, decode(ct.cartonstatus,'MOT',E.PERSONFULLNAME,' ') motdrivername "+						
 						" FROM cust.carton_info ci, dlv.cartontracking ct, transp.kronos_employee e "+
-						" WHERE ci.carton_number=ct.cartonId(+) and e.personnum=ct.employee "+
+						" WHERE ci.carton_number=ct.cartonId(+) and e.personnum(+)=ct.employee "+
 						" AND ci.sale_id = ? "+
 						" ORDER BY TO_NUMBER(ci.carton_number) asc, ct.scandate desc");
 		
@@ -851,7 +851,7 @@ public class AirclicDAO {
 		return (value != null && "1".equalsIgnoreCase(value));
 	}
 	
-	private static final String GET_ROUTE_NEXTELS_QUERY = "select rd.userid, E.PERSONFULLNAME as employeeName, dr.resource_id "+
+	private static final String GET_ROUTE_NEXTELS_QUERY = "select distinct rd.userid, E.PERSONFULLNAME as employeeName, dr.resource_id "+
 			" from dlv.routedownload rd, transp.dispatch d, transp.dispatch_resource dr, transp.kronos_employee e "+
 			" where dr.resource_id=e.personnum and rd.userid=dr.nextel_no and d.dispatch_date=trunc(rd.scandate) and d.route=rd.route "+
 			" and d.dispatch_id=dr.dispatch_id and ";
@@ -944,12 +944,12 @@ public class AirclicDAO {
 	
 	
 	
-	private static String GET_ESTIMATED_DELIVERYTIME_QUERY = "select bs.weborder_id, decode((select max(scandate) from dlv.cartonstatus where cartonstatus='DELIVERED' and webordernum=bs.weborder_id), null, (bs.stop_arrivaldatetime + (bo.scantime - bo.stop_arrivaldatetime)), "+
-		" (select max(scandate) from dlv.cartonstatus where cartonstatus='DELIVERED' and webordernum=bs.weborder_id)) estimatedtime, "+
-		" decode((select max(scandate) from dlv.cartonstatus where cartonstatus='DELIVERED' and webordernum=bs.weborder_id), null, '','X') deliverystatus "+
+	private static String GET_ESTIMATED_DELIVERYTIME_QUERY = "select bs.weborder_id, decode((select max(scandate) from dlv.cartonstatus where cartonstatus in ('DELIVERED','REFUSED') and webordernum=bs.weborder_id), null, (bs.stop_arrivaldatetime + (bo.scantime - bo.stop_arrivaldatetime)), "+
+		" (select max(scandate) from dlv.cartonstatus where cartonstatus in ('DELIVERED','REFUSED') and webordernum=bs.weborder_id)) estimatedtime, "+
+		" decode((select max(scandate) from dlv.cartonstatus where cartonstatus in ('DELIVERED','REFUSED') and webordernum=bs.weborder_id), null, '','X') deliverystatus "+
 		" from transp.handoff_batch b, transp.handoff_batchstop bs, transp.handoff_batchroute r, "+
 		" (select x.* from "+
-		" (select bsx.stop_arrivaldatetime, (select max(scandate) from dlv.cartonstatus where cartonstatus='DELIVERED' and webordernum=bsx.weborder_id) as scantime "+
+		" (select bsx.stop_arrivaldatetime, (select max(scandate) from dlv.cartonstatus where cartonstatus in ('DELIVERED','REFUSED') and webordernum=bsx.weborder_id) as scantime "+
 		" from transp.handoff_batch bx, transp.handoff_batchstop bsx, transp.handoff_batchroute rx "+
 		" where bx.batch_id = bsx.batch_id and bsx.route_no=rx.route_no and bx.batch_id = rx.batch_id and rx.route_no = ? and bx.delivery_date = ?  and bx.batch_status in ('CPD','CPD/ADC','CPD/ADF') "+
 		" order by scantime desc nulls last "+
@@ -959,7 +959,7 @@ public class AirclicDAO {
 	
 	
 	private static String GET_CARTONINFO_EXCEPTION = "select cartonid, cartonstatus "+
-		" from dlv.cartonstatus where cartonstatus in ('RETURNED','RTP','WRONG_ITEMS','MISSING','REFUSED','PARTIAL REFUSED','DAMAGED','PARTIAL DAMAGED','PLANT LATE') "+
+		" from dlv.cartonstatus where cartonstatus in ('RETURNED','WRONG_ITEMS','MISSING','REFUSED','PARTIAL REFUSED','DAMAGED','PARTIAL DAMAGED','PLANT LATE','TRNS_DR') "+
 		" and webordernum = ? "+
 		" order by cartonid, cartonstatus";
 	
@@ -1044,6 +1044,9 @@ public class AirclicDAO {
 			while(rs.next()) {	
 				String cartonStatus = rs.getString("CARTONSTATUS");
 				String cartonNumber = rs.getString("CARTONID");
+				if("TRNS_DR".equals(cartonStatus)){
+					cartonStatus = "LATE BOX";
+				}				
 				if(!exceptions.containsKey(cartonStatus)){
 					exceptions.put(cartonStatus, new ArrayList<String>());
 				}

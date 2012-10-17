@@ -119,12 +119,12 @@ public class DeliveryManifestVO implements Serializable{
 		StringBuffer buf = new StringBuffer();
 		if (this.getDeliveryInfo() != null) {
 			buf.append(this.getDeliveryInfo().getDeliveryLocation()
-					.getBuilding().getSrubbedStreet());
+					.getBuilding().getSrubbedStreet() + " ");
 			if (this.getDeliveryInfo().getDeliveryLocation()
 					.getApartmentNumber() != null) {
 				buf.append(" Apt: "
 						+ this.getDeliveryInfo().getDeliveryLocation()
-								.getApartmentNumber()+" ");
+								.getApartmentNumber() + " ");
 			}
 			
 			buf.append(this.getDeliveryInfo().getDeliveryLocation()
