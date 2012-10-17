@@ -49,6 +49,7 @@ public class BapiErpsCartonContent implements BapiFunctionI {
 			new DataStructure("ZZFREEZER", JCO.TYPE_CHAR, 1, 0, "Freezer indicator"),
 			new DataStructure("ZZBEER", JCO.TYPE_CHAR, 1, 0, "Beer indicator"),
 			new DataStructure("ZZPLATTER", JCO.TYPE_CHAR, 1, 0, "Platter indicator"),
+			new DataStructure("CASEPICK", JCO.TYPE_CHAR, 1, 0, "Case indicator"),
 		};
 		smeta = new JCO.MetaData("CARTONDETAILS");
 		for (DataStructure element : sapData) {
