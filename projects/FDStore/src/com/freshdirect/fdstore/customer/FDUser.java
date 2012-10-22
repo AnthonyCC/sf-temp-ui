@@ -2382,6 +2382,7 @@ public class FDUser extends ModelSupport implements FDUserI {
 		try {
 			ErpCustomerInfoModel cm = FDCustomerFactory.getErpCustomerInfo(identity);
 
+			
 			int dpTcViewCount = cm.getDpTcViewCount();
 			Date dpTcAgreeDate = cm.getDpTcAgreeDate();
 			Date dpNewTcStartDate = FDStoreProperties.getDlvPassNewTCDate();
@@ -2396,7 +2397,8 @@ public class FDUser extends ModelSupport implements FDUserI {
 			
 			if (this.isDlvPassActive()) { //exclude users with no pass, and ones that purchased after new terms start
 	    		if (calNow.getTime().after(dpNewTcStartDate)) { //check that new terms should be in effect
-		    		if ( dpTcAgreeDate == null || ( calAgree != null && calAgree.getTime().before(dpNewTcStartDate) ) ) { //either never agreed, or agree before new terms
+		    		if (((this.getDlvPassInfo().getPurchaseDate()!=null && this.getDlvPassInfo().getPurchaseDate().before(calNewTcStart.getTime())) 
+		    				&& calAgree ==null) ||( calAgree != null && calAgree.getTime().before(dpNewTcStartDate))) { //either never agreed, or agree before new terms
 			    		if (dpTcViewCount < FDStoreProperties.getDpTcViewLimit() || Boolean.FALSE.equals(includeViewCount)) { //check view count
 			    			isBlocking = true;
 			    		}
