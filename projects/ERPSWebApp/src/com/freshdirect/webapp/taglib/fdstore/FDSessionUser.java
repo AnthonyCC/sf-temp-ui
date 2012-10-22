@@ -178,7 +178,7 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
     }
 
     public void valueBound(HttpSessionBindingEvent event) {
-        LOGGER.debug("FDUser bound to session " + event.getSession().getId());
+        LOGGER.debug("FDUser bound to session " + event.getSession().getId()+ " user cookie "+this.getCookie()+" username "+this.getUserId());
         this.saveCart();
         this.impressions.clear();
         this.startDate = new Date();
@@ -203,7 +203,7 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
     }
 
     public void valueUnbound(HttpSessionBindingEvent event) {
-        LOGGER.debug("FDUser unbound from session " + event.getSession().getId());
+        LOGGER.debug("FDUser unbound from session " + event.getSession().getId()+ " user cookie "+this.getCookie()+" username "+this.getUserId());
         this.saveCart(true);
         this.saveImpressions();
         if(FDStoreProperties.isSessionLoggingEnabled())
