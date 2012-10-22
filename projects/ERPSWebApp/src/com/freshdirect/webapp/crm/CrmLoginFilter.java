@@ -43,6 +43,7 @@ public class CrmLoginFilter implements Filter {
 		
 
 		String ldapRole = CrmSecurityManager.getUserRole(request);
+		LOGGER.info("LDAP Role:"+ldapRole);
 		CrmAgentRole agentRole = CrmAgentRole.getEnumByLDAPRole(ldapRole);
 		CrmAgentModel agent = CrmSession.getCurrentAgent(request.getSession());
 		FDSessionUser user = (FDSessionUser) request.getSession().getAttribute(SessionName.USER);
@@ -92,7 +93,7 @@ public class CrmLoginFilter implements Filter {
 		}
 		String noAuthPage = this.filterConfig.getInitParameter("noAuthPage");
 		if(null != request.getRemoteUser() && null==ldapRole){
-			LOGGER.info("**** No matching role found for the user:"+request.getRemoteUser()+ "to access:"+request.getRequestURI());			
+			LOGGER.info("**** No matching role found for the user:"+request.getRemoteUser()+ " to access:"+request.getRequestURI());			
 		}		
 		String rootUri =  request.getRequestURI().substring(request.getRequestURI().lastIndexOf("/")+1, request.getRequestURI().length());
 		if(!CrmSecurityManager.hasAccessToPage(request, rootUri) && !CrmSecurityManager.hasAccessToPage(request)){
