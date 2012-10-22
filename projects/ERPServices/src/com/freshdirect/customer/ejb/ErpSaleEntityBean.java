@@ -471,6 +471,8 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 		if(_saleType!=null) {
 			saleType=EnumSaleType.getSaleType(_saleType);
 		}
+		rs.close();
+		ps.close();
 		boolean hasSignature = false;
 		PreparedStatement pstmt =null;ResultSet resultSet =null;
 		try
@@ -528,6 +530,11 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 			}
 		} catch(Exception e){
 			e.printStackTrace();
+		}finally{
+			if(rs1!=null)
+				rs1.close();
+			if(ps1!=null)
+				ps1.close();
 		}
 		
 		model.setCartonMetrics(cartonMetrics);		
