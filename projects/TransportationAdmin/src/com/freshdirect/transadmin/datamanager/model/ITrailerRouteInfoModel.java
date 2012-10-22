@@ -24,10 +24,6 @@ public interface ITrailerRouteInfoModel {
 	void setNoOfStops(int noOfStops);
 	String getRouteId();
 	void setRouteId(String routeId);
-	int getNoOfCartons();
-	void setNoOfCartons(int noOfCartons) ;
-	int getMaxCartonsPerCont();
-	void setMaxCartonsPerCont(int maxCartonsPerCont);
-	int getMaxContPerTrailer();
-	void setMaxContPerTrailer(int maxContPerTrailer);
+	double getNoOfCartons();
+	void setNoOfCartons(double noOfCartons) ;
 }

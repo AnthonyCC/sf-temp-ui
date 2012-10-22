@@ -23,6 +23,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.freshdirect.routing.constants.EnumOrderMetricsSource;
 import com.freshdirect.routing.model.IHandOffBatch;
 import com.freshdirect.routing.model.IHandOffBatchRoute;
 import com.freshdirect.routing.model.IHandOffBatchSession;
@@ -30,12 +31,14 @@ import com.freshdirect.routing.model.IHandOffBatchStop;
 import com.freshdirect.routing.model.IHandOffBatchTrailer;
 import com.freshdirect.routing.model.IPackagingModel;
 import com.freshdirect.routing.model.IServiceTimeScenarioModel;
+import com.freshdirect.routing.model.OrderEstimationResult;
 import com.freshdirect.routing.model.PackagingModel;
 import com.freshdirect.routing.service.exception.RoutingProcessException;
 import com.freshdirect.routing.service.exception.RoutingServiceException;
 import com.freshdirect.routing.service.proxy.HandOffServiceProxy;
 import com.freshdirect.routing.service.proxy.RoutingInfoServiceProxy;
 import com.freshdirect.routing.util.RoutingServicesProperties;
+import com.freshdirect.routing.util.ServiceTimeUtil;
 import com.freshdirect.transadmin.datamanager.IRouteFileManager;
 import com.freshdirect.transadmin.datamanager.RouteFileManager;
 import com.freshdirect.transadmin.datamanager.model.OrderRouteInfoModel;
@@ -339,28 +342,19 @@ public class HandOffController extends AbstractMultiActionController  {
 						}
 					}
 				}
-				int maxCartonsPerCont = 0;
-				int maxContPerTrailer = 0;
-				if(scenarioModel != null && scenarioModel.getDefaultContainerCartonCount() !=0 &&
-						scenarioModel.getDefaultTrailerContainerCount() != 0){
-					 maxCartonsPerCont = scenarioModel.getDefaultContainerCartonCount();
-					 maxContPerTrailer = scenarioModel.getDefaultTrailerContainerCount();
-				}else{
-					maxCartonsPerCont = RoutingServicesProperties.getMaxTrailerCartonSize();
-					maxContPerTrailer = RoutingServicesProperties.getMaxTrailerContainerSize();
-				}
+				
 				for(Map.Entry<String, IHandOffBatchTrailer> trailerEntry : trailerMapping.entrySet()) {
 					IHandOffBatchTrailer _trailer = trailerEntry.getValue();
 					IHandOffBatchRoute _route = null;
-					TrailerRouteInfoModel _trailerModel = null;
+					TrailerRouteInfoModel _trailerRouteModel = null;
 					
 					if(_trailer.getRoutes() != null){
 						Iterator<IHandOffBatchRoute> _iterator = _trailer.getRoutes().iterator();
 						while(_iterator.hasNext()){
 							_route = _iterator.next();
-							_trailerModel = getTrailerRouteInfoModel(_trailer, _route, maxCartonsPerCont, maxContPerTrailer);
-							if(_trailerModel.getTrailerNo() != null){
-								result.putTrailerDetailData(_trailerModel.getTrailerNo(), _trailerModel);
+							_trailerRouteModel = getTrailerRouteInfoModel(_trailer, _route, scenarioModel);
+							if(_trailerRouteModel.getTrailerNo() != null){
+								result.putTrailerDetailData(_trailerRouteModel.getTrailerNo(), _trailerRouteModel);
 							}
 						}
 					}
@@ -388,30 +382,29 @@ public class HandOffController extends AbstractMultiActionController  {
 		return null;
 	}
 
-	private TrailerRouteInfoModel getTrailerRouteInfoModel(IHandOffBatchTrailer _trailer, IHandOffBatchRoute _route, int maxCartonsPerCont, int maxContPerTrailer) throws ParseException{
+	private TrailerRouteInfoModel getTrailerRouteInfoModel(IHandOffBatchTrailer _trailer, IHandOffBatchRoute _route, IServiceTimeScenarioModel scenario) throws ParseException{
 		TrailerRouteInfoModel result = new TrailerRouteInfoModel();
 		
 		result.setRouteId(_route.getRouteId());		
 		result.setTrailerNo(_trailer.getTrailerId());		
 		result.setDispatchTime(_route.getDispatchTime() != null ? _route.getDispatchTime().getAsDate() : null);
 		result.setDispatchSequence(_route.getDispatchSequence());		
-		result.setNoOfStops(_route.getStops().size());
+		result.setNoOfStops(_route.getStops() != null ? _route.getStops().size() : 0);
 		
-		int routeCartonCnt = 0;
+		double routeCartonCnt = 0;
 		if(_route.getStops() != null){
-			Iterator _iterator = _route.getStops().iterator();
+			Iterator<IHandOffBatchStop> _iterator = _route.getStops().iterator();
 			IHandOffBatchStop _stop = null;	
 			while(_iterator.hasNext()) {
-				_stop = (IHandOffBatchStop)_iterator.next();
+				_stop = _iterator.next();
 				if(_stop.getDeliveryInfo() != null && _stop.getDeliveryInfo().getPackagingDetail() != null){
-					routeCartonCnt += (int)_stop.getDeliveryInfo().getPackagingDetail().getNoOfCartons();
+					OrderEstimationResult orderSizeResult = getEstimateOrderSize(scenario, _stop.getDeliveryInfo().getPackagingDetail());					
+					routeCartonCnt += orderSizeResult.getCalculatedOrderSize();
 				}
 			}	
 		}
-		
+			
 		result.setNoOfCartons(routeCartonCnt);
-		result.setMaxCartonsPerCont(maxCartonsPerCont);
-		result.setMaxContPerTrailer(maxContPerTrailer);
 		return result;
 	}
 	
@@ -482,12 +475,13 @@ public class HandOffController extends AbstractMultiActionController  {
 		HandOffServiceProxy proxy = new HandOffServiceProxy();
 		
 		List<IHandOffBatchStop> handOffStops = proxy.getOrderByCutoff(batch.getDeliveryDate(), batch.getCutOffDateTime());
-		Map<String, Integer> orderNoToCartonNo = new HashMap<String, Integer>();
+		Map<String, IPackagingModel> orderNoToPackaging = new HashMap<String, IPackagingModel>();
 
 		if(handOffStops != null) {
 			for(IHandOffBatchStop stop : handOffStops) {
-				if(stop.getDeliveryInfo() != null && stop.getDeliveryInfo().getPackagingDetail() != null)
-					orderNoToCartonNo.put(stop.getOrderNumber(), (int)stop.getDeliveryInfo().getPackagingDetail().getNoOfCartons());
+				if(stop.getDeliveryInfo() != null && stop.getDeliveryInfo().getPackagingDetail() != null){
+					orderNoToPackaging.put(stop.getOrderNumber(), stop.getDeliveryInfo().getPackagingDetail());
+				}					
 			}
 		}
 
@@ -505,14 +499,8 @@ public class HandOffController extends AbstractMultiActionController  {
 			while( itrStop.hasNext()) {
 				IHandOffBatchStop stop = itrStop.next();
 				if(stop.getDeliveryInfo() != null && stop.getDeliveryInfo().getPackagingDetail() == null){
-					IPackagingModel tmpPackageModel = new PackagingModel();
-					tmpPackageModel.setNoOfCartons(orderNoToCartonNo.get(stop.getOrderNumber())!= null 
-																			? orderNoToCartonNo.get(stop.getOrderNumber()) : 0);
-					stop.getDeliveryInfo().setPackagingDetail(tmpPackageModel);
-				} else {
-					stop.getDeliveryInfo().getPackagingDetail().setNoOfCartons(orderNoToCartonNo.get(stop.getOrderNumber())!= null 
-																			? orderNoToCartonNo.get(stop.getOrderNumber()) : 0);
-				}
+					stop.getDeliveryInfo().setPackagingDetail(orderNoToPackaging.get(stop.getOrderNumber()));
+				} 
 				IHandOffBatchRoute route = routeMapping.get(stop.getRouteId());
 				if(route != null) {
 					if(route.getStops() == null) {
@@ -597,7 +585,31 @@ public class HandOffController extends AbstractMultiActionController  {
 			String routeId1 = ((IHandOffBatchRoute) obj1).getRouteId();
 			String routeId2 = ((IHandOffBatchRoute) obj2).getRouteId();			
 			return routeId1.compareTo(routeId2);
-}
+		}
 	}
+	
+	protected OrderEstimationResult getEstimateOrderSize(IServiceTimeScenarioModel scenario, IPackagingModel tmpPackageModel) {
+		OrderEstimationResult result = new OrderEstimationResult();
+		if(scenario != null) {
+			double cartonCount = scenario.getDefaultCartonCount(); 
+			double freezerCount = scenario.getDefaultFreezerCount();
+			double caseCount = scenario.getDefaultCaseCount();
+			boolean isDefault = true;
+			
+			if(tmpPackageModel != null) {
+				cartonCount = tmpPackageModel.getNoOfCartons(); 
+				freezerCount = tmpPackageModel.getNoOfFreezers();
+				caseCount = tmpPackageModel.getNoOfCases();
+			
+				isDefault = (cartonCount == 0 && freezerCount == 0 && caseCount == 0);								
+				tmpPackageModel.setSource(isDefault ? EnumOrderMetricsSource.DEFAULT : EnumOrderMetricsSource.ACTUAL);
+			}
+			result.setPackagingModel(tmpPackageModel);
+			result.setCalculatedOrderSize(ServiceTimeUtil.evaluateExpression(scenario.getOrderSizeFormula()
+																					, ServiceTimeUtil.getServiceTimeFactorParams(tmpPackageModel)));
+		}
+		return result;
+	}
+	
 	
 }

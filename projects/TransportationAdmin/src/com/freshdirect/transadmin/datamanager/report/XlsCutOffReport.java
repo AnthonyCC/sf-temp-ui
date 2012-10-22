@@ -24,9 +24,11 @@ import com.freshdirect.routing.constants.EnumHandOffDispatchStatus;
 import com.freshdirect.routing.model.IHandOffBatch;
 import com.freshdirect.routing.model.IHandOffBatchRoute;
 import com.freshdirect.routing.model.IHandOffBatchTrailer;
+import com.freshdirect.routing.model.IServiceTimeScenarioModel;
 import com.freshdirect.routing.model.IWaveInstance;
 import com.freshdirect.routing.service.proxy.RoutingInfoServiceProxy;
 import com.freshdirect.routing.util.RoutingDateUtil;
+import com.freshdirect.routing.util.RoutingServicesProperties;
 import com.freshdirect.routing.util.RoutingTimeOfDay;
 import com.freshdirect.transadmin.datamanager.RouteFileManager;
 import com.freshdirect.transadmin.datamanager.model.OrderRouteInfoModel;
@@ -706,7 +708,7 @@ public class XlsCutOffReport extends BaseXlsReport implements ICutOffReport  {
         return rownum;
 	}
 	
-	protected DtlTrailerSummaryData getDtlTrailerSummaryData(IHandOffBatchTrailer trailer, List routeLst, IHandOffBatch batch ) throws ParseException {
+	protected DtlTrailerSummaryData getDtlTrailerSummaryData(IHandOffBatchTrailer trailer, List routeLst, IHandOffBatch batch, IServiceTimeScenarioModel scenarioModel ) throws ParseException {
 		
 		DtlTrailerSummaryData result = new DtlTrailerSummaryData();
 		if(routeLst != null) {
@@ -719,17 +721,29 @@ public class XlsCutOffReport extends BaseXlsReport implements ICutOffReport  {
 			
 			result.setTotalTravelTime(TransStringUtil.getTime(TransStringUtil.calcHMS(TransStringUtil.getDiffInSeconds(trailer.getCompletionTime(), trailer.getStartTime()))));
 			
-			int noOfConts = 0;
-			int noOfCartons = 0;
+			int maxCartonsPerPallet = 0;
+			int maxPalletPerTrailer = 0;
+			if(scenarioModel != null && scenarioModel.getDefaultContainerCartonCount() != 0 &&
+					scenarioModel.getDefaultTrailerContainerCount() != 0){
+				 maxCartonsPerPallet = scenarioModel.getDefaultContainerCartonCount();
+				 maxPalletPerTrailer = scenarioModel.getDefaultTrailerContainerCount();
+			} else {
+				maxCartonsPerPallet = RoutingServicesProperties.getMaxTrailerCartonSize();
+				maxPalletPerTrailer = RoutingServicesProperties.getMaxTrailerContainerSize();
+			}		
+			
+			double routePalletCnt = 0.0;			
+			double totalPalletCnt = 0.0;
+					
 			TrailerRouteInfoModel model = null;
 			for(int i=0; i < size; i++){
-				model = (TrailerRouteInfoModel)routeLst.get(i);
-				noOfCartons +=  model.getNoOfCartons();
-			}
-			noOfConts = noOfCartons/model.getMaxCartonsPerCont() > 1 ? noOfCartons/model.getMaxCartonsPerCont() : 1;
-			result.setNoOfConts(noOfConts);
-			if(routeLst.get(0) != null)
-				result.setMaxContainers(((TrailerRouteInfoModel)routeLst.get(0)).getMaxContPerTrailer());
+				model = (TrailerRouteInfoModel)routeLst.get(i);				
+				routePalletCnt = model.getNoOfCartons()/maxCartonsPerPallet;
+				routePalletCnt = Math.ceil(routePalletCnt);
+				totalPalletCnt += routePalletCnt;
+			}	
+			result.setNoOfConts(totalPalletCnt);
+			result.setMaxContainers(maxPalletPerTrailer);	
 		}
 		return result;
 	}
@@ -740,7 +754,7 @@ public class XlsCutOffReport extends BaseXlsReport implements ICutOffReport  {
 		Date dispatchTime;
 		Date travelTime;
 		int noOfRoutes;
-		int noOfConts;
+		double noOfConts;
 		String crossDockId;
 		String trailerType;
 		double totalConts;
@@ -803,10 +817,10 @@ public class XlsCutOffReport extends BaseXlsReport implements ICutOffReport  {
 		public void setTotalTravelTime(Date totalTravelTime) {
 			this.totalTravelTime = totalTravelTime;
 		}
-		public int getNoOfConts() {
+		public double getNoOfConts() {
 			return noOfConts;
 		}
-		public void setNoOfConts(int noOfConts) {
+		public void setNoOfConts(double noOfConts) {
 			this.noOfConts = noOfConts;
 		}
 		public Date getTravelTime() {
@@ -1278,7 +1292,7 @@ public class XlsCutOffReport extends BaseXlsReport implements ICutOffReport  {
 				totalRoutes = _detailData.size();
 				
 				DtlTrailerSummaryData _summaryData = getDtlTrailerSummaryData(reportData.getTrailerMapping().get(_trailerId)
-						, _detailData, reportData.getBatch());
+						, _detailData, reportData.getBatch(), reportData.getScenarioModel());
 				
 		        Iterator _colsRouteItr = _detailData.iterator();
 	       		
@@ -1366,7 +1380,7 @@ public class XlsCutOffReport extends BaseXlsReport implements ICutOffReport  {
 		        hssfCell = row.createCell(cellnum++);		        
 		        hssfCell.setCellStyle((HSSFCellStyle) styles.get("textStyleNoWrap"));
 		        hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
-		        hssfCell.setCellValue(new HSSFRichTextString("Containers"));
+		        hssfCell.setCellValue(new HSSFRichTextString("Total Pallets"));
 		        
 		        hssfCell = row.createCell(cellnum++);		        
 		        hssfCell.setCellStyle((HSSFCellStyle) styles.get("textStyle"));

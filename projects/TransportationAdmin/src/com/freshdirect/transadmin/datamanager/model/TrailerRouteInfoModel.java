@@ -17,9 +17,7 @@ public class TrailerRouteInfoModel implements ITrailerRouteInfoModel {
 	
 	private String routeId;
 	private int noOfStops;
-	private int noOfCartons;
-	private int maxCartonsPerCont;
-	private int maxContPerTrailer;
+	private double noOfCartons;
 	
 	public Date getDeliveryDate() {
 		return deliveryDate;
@@ -81,24 +79,10 @@ public class TrailerRouteInfoModel implements ITrailerRouteInfoModel {
 	public void setNoOfStops(int noOfStops) {
 		this.noOfStops = noOfStops;
 	}
-	public int getNoOfCartons() {
+	public double getNoOfCartons() {
 		return noOfCartons;
 	}
-	public void setNoOfCartons(int noOfCartons) {
+	public void setNoOfCartons(double noOfCartons) {
 		this.noOfCartons = noOfCartons;
 	}
-	public int getMaxCartonsPerCont() {
-		return maxCartonsPerCont;
-	}
-	public void setMaxCartonsPerCont(int maxCartonsPerCont) {
-		this.maxCartonsPerCont = maxCartonsPerCont;
-	}
-	public int getMaxContPerTrailer() {
-		return maxContPerTrailer;
-	}
-	public void setMaxContPerTrailer(int maxContPerTrailer) {
-		this.maxContPerTrailer = maxContPerTrailer;
-	}
-	
-	
 }

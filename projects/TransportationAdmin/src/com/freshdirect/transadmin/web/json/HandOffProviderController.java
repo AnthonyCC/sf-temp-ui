@@ -256,11 +256,9 @@ public class HandOffProviderController extends BaseJsonRpcController  implements
 			List<IHandOffBatchPlan> batchPlans = new ArrayList<IHandOffBatchPlan>();			
 			List<IHandOffBatchDispatchResource> batchPlanResources = new ArrayList<IHandOffBatchDispatchResource>();			
 
-			batchPlans = proxy.getHandOffBatchPlansByDispatchStatus(batch.getBatchId(), batch.getDeliveryDate());
-			batchPlans.addAll(proxy.getHandOffBatchTrailerPlans(batch.getDeliveryDate(), batch.getCutOffDateTime()));
-			batchPlanResources =  proxy.getHandOffBatchPlanResourcesByDispatchStatus(batch.getBatchId(), batch.getDeliveryDate());
-			batchPlanResources.addAll(proxy.getHandOffBatchTrailerPlanResource(batch.getDeliveryDate(), batch.getCutOffDateTime()));
-
+			batchPlans = proxy.getHandOffBatchPlans(batch.getBatchId(), batch.getDeliveryDate(), batch.getCutOffDateTime());			
+			batchPlanResources =  proxy.getHandOffBatchPlanResources(batch.getBatchId(), batch.getDeliveryDate(), batch.getCutOffDateTime());
+			
 			Map<String, Set<IHandOffBatchDispatchResource>> resourceMapping = new HashMap<String, Set<IHandOffBatchDispatchResource>>();
 			Iterator<IHandOffBatchDispatchResource> itr = batchPlanResources.iterator();
 			while(itr.hasNext()){
@@ -278,7 +276,7 @@ public class HandOffProviderController extends BaseJsonRpcController  implements
 			}			
 			
 			HandOffAutoDispatchAction process = new HandOffAutoDispatchAction(batch, userId, batchPlans);
-			LOGGER.info("dispatch action process created and being executed: " + process.getBatch().getBatchId());
+			LOGGER.info("Auto dispatch action process created and being executed: " + process.getBatch().getBatchId());
 			process.execute();
 		} catch (RoutingServiceException e) {			
 			LOGGER.warn("routing service exception", e);

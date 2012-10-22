@@ -327,7 +327,7 @@
         </property>
     </bean>
     
-    <bean id="crisisManagerServiceMng" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+    <bean id="crisisManager" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
 		<property name="transactionManager" ref="transactionManager"/>
 		<property name="target" ref="crisisManagerService"/>
 		<property name="transactionAttributes">

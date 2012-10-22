@@ -684,7 +684,7 @@
 	</bean>
 	
 	<bean id="crisisMngFormController" class="com.freshdirect.transadmin.web.CrisisManagerFormController">
-		<property name="crisisManagerService" ref="crisisManagerService"/>
+		<property name="crisisManagerService" ref="crisisManager"/>
 		<property name="zoneManagerService" ref="zoneManager"/>
 		<property name="domainManagerService" ref="domainManager"/>
 		<property name="sessionForm" value="true"/>
