@@ -40,6 +40,16 @@ public class EnumDeliveryMenuOption  extends Enum {
 	}
 
 	public String toString() {
-		return this.getName();
+		return this.getDesc();
+	}
+	
+	public static EnumDeliveryMenuOption getEnumByDesc(String desc) {
+		
+		for(Object _option :  EnumDeliveryMenuOption.getEnumList()){
+			if(((EnumDeliveryMenuOption) _option).getDesc().equalsIgnoreCase(desc)){
+				return (EnumDeliveryMenuOption) _option;
+			}
+		}
+		return null;
 	}
 }
