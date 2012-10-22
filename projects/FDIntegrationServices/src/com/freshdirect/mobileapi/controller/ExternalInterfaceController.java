@@ -140,6 +140,18 @@ public class ExternalInterfaceController extends BaseController {
     
     private CallLogModel getCallLogModelFromRequest(HttpServletRequest request) throws Exception {
     	
+    	LOGGER.info("T002: Loading IVR Call log for orderId # " + request.getParameter(PARAM_SALE_ID));
+    	LOGGER.info(PARAM_CALLER_GUIID +": "+ request.getParameter(PARAM_CALLER_GUIID));
+    	LOGGER.info(PARAM_CALLER_ID +": "+ request.getParameter(PARAM_CALLER_ID) );
+    	LOGGER.info(PARAM_SALE_ID +": "+ request.getParameter(PARAM_SALE_ID) );
+    	LOGGER.info(PARAM_CALL_STARTTIME +": "+ request.getParameter(PARAM_CALL_STARTTIME) );
+    	LOGGER.info(PARAM_CALL_DURATION +": "+ request.getParameter(PARAM_CALL_DURATION) );
+    	LOGGER.info(PARAM_CALL_OUTCOME +": "+ request.getParameter(PARAM_CALL_OUTCOME) );
+    	LOGGER.info(PARAM_CALL_TALKTIME +": "+ request.getParameter(PARAM_CALL_TALKTIME) );
+    	LOGGER.info(PARAM_CALL_PHONENUMBER +": "+ request.getParameter(PARAM_CALL_PHONENUMBER) );
+    	LOGGER.info(PARAM_CALL_MENU +": "+ request.getParameter(PARAM_CALL_MENU) );	
+    	
+    	
     	CallLogModel logModel = new CallLogModel();
     	logModel.setCallerGUIId(request.getParameter(PARAM_CALLER_GUIID));// Caller GUI ID will be passed in "data" param
     	logModel.setCallerId(request.getParameter(PARAM_CALLER_ID));
@@ -149,8 +161,10 @@ public class ExternalInterfaceController extends BaseController {
     	logModel.setCallOutcome(request.getParameter(PARAM_CALL_OUTCOME));	       
     	logModel.setTalkTime(StringUtil.getInt(request.getParameter(PARAM_CALL_TALKTIME)));
     	logModel.setPhoneNumber(request.getParameter(PARAM_CALL_PHONENUMBER));
-    	logModel.setMenuOption((request.getParameter(PARAM_CALL_MENU) != null && !"".equals(request.getParameter(PARAM_CALL_MENU))) 
-    								? EnumDeliveryMenuOption.getEnum(request.getParameter(PARAM_CALL_MENU)).getName() : null);    	
+    	logModel.setMenuOption((request.getParameter(PARAM_CALL_MENU) != null && !"".equals(request.getParameter(PARAM_CALL_MENU))
+    									&& EnumDeliveryMenuOption.getEnumByDesc(request.getParameter(PARAM_CALL_MENU)) != null) 
+    									? EnumDeliveryMenuOption.getEnumByDesc(request.getParameter(PARAM_CALL_MENU)).getName() : null);    	
     	return logModel;  
-    }
+    }    
+    
 }
