@@ -14,11 +14,15 @@ import org.apache.log4j.Logger;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.routing.constants.EnumHandOffBatchStatus;
 import com.freshdirect.routing.constants.EnumHandOffDispatchStatus;
+import com.freshdirect.routing.constants.EnumOrderMetricsSource;
 import com.freshdirect.routing.model.IAreaModel;
 import com.freshdirect.routing.model.IHandOffBatch;
 import com.freshdirect.routing.model.IHandOffBatchRoute;
+import com.freshdirect.routing.model.IPackagingModel;
+import com.freshdirect.routing.model.IServiceTimeScenarioModel;
 import com.freshdirect.routing.model.ITrailerModel;
 import com.freshdirect.routing.model.IWaveInstance;
+import com.freshdirect.routing.model.OrderEstimationResult;
 import com.freshdirect.routing.service.exception.IIssue;
 import com.freshdirect.routing.service.exception.RoutingProcessException;
 import com.freshdirect.routing.service.exception.RoutingServiceException;
@@ -27,6 +31,7 @@ import com.freshdirect.routing.service.proxy.RoutingInfoServiceProxy;
 import com.freshdirect.routing.util.RoutingDateUtil;
 import com.freshdirect.routing.util.RoutingServicesProperties;
 import com.freshdirect.routing.util.RoutingTimeOfDay;
+import com.freshdirect.routing.util.ServiceTimeUtil;
 
 public abstract class AbstractHandOffAction {
 	private final static Logger LOGGER = LoggerFactory
@@ -402,6 +407,29 @@ public abstract class AbstractHandOffAction {
 		}
 	}
 
+	protected OrderEstimationResult getEstimateOrderSize(IServiceTimeScenarioModel scenario, IPackagingModel tmpPackageModel) {
+		OrderEstimationResult result = new OrderEstimationResult();
+		if(scenario != null) {
+			double cartonCount = scenario.getDefaultCartonCount(); 
+			double freezerCount = scenario.getDefaultFreezerCount();
+			double caseCount = scenario.getDefaultCaseCount();
+			boolean isDefault = true;
+			
+			if(tmpPackageModel != null) {
+				cartonCount = tmpPackageModel.getNoOfCartons(); 
+				freezerCount = tmpPackageModel.getNoOfFreezers();
+				caseCount = tmpPackageModel.getNoOfCases();
+			
+				isDefault = (cartonCount == 0 && freezerCount == 0 && caseCount == 0);								
+				tmpPackageModel.setSource(isDefault ? EnumOrderMetricsSource.DEFAULT : EnumOrderMetricsSource.ACTUAL);
+			}
+			result.setPackagingModel(tmpPackageModel);
+			result.setCalculatedOrderSize(ServiceTimeUtil.evaluateExpression(scenario.getOrderSizeFormula()
+																					, ServiceTimeUtil.getServiceTimeFactorParams(tmpPackageModel)));
+		}
+		return result;
+	}
+	
 	public Object execute() {
 		long startTime = System.currentTimeMillis();
 		try {

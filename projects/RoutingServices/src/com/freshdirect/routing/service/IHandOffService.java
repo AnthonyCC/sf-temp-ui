@@ -76,9 +76,9 @@ public interface IHandOffService {
 	Map<RoutingTimeOfDay, EnumHandOffDispatchStatus> getHandOffBatchDispatchStatus(String batchId) throws RoutingServiceException;
 	Map<RoutingTimeOfDay, Integer> getHandOffBatchDispatchCnt(Date deliveryDate) throws RoutingServiceException;
 	
-	List<IHandOffBatchPlan> getHandOffBatchPlansByDispatchStatus(String handoffBatchId, Date deliveryDate) throws RoutingServiceException;
+	List<IHandOffBatchPlan> getHandOffBatchPlans(String handoffBatchId, Date deliveryDate, Date cutOffDate) throws RoutingServiceException;
 
-	List<IHandOffBatchDispatchResource> getHandOffBatchPlanResourcesByDispatchStatus(String handoffBatchId, Date deliveryDate) throws RoutingServiceException;
+	List<IHandOffBatchDispatchResource> getHandOffBatchPlanResources(String handoffBatchId, Date deliveryDate, Date cutOffDate) throws RoutingServiceException;
 	
 	List<IHandOffBatchRoute> getHandOffBatchDispatchRoutes(String handoffBatchId, Date deliveryDate) throws RoutingServiceException;
 	
@@ -89,10 +89,6 @@ public interface IHandOffService {
 	void clearHandOffBatchAutoDispatches(String handoffBatchId, Date deliveryDate, Date cutOffTime) throws RoutingServiceException;
 	
 	void addNewHandOffBatchAutoDispatches(Collection dataList) throws RoutingServiceException;
-	
-	void addNewHandOffBatchAutoDispatchResources(Collection dataList) throws RoutingServiceException;
-	
-	Set<IHandOffDispatch> getHandOffDispatch(String handoffBatchId, Date deliveryDate) throws RoutingServiceException;
 			
 	String getLastCommittedHandOffBatch(Date deliveryDate) throws RoutingServiceException;
 
@@ -100,9 +96,4 @@ public interface IHandOffService {
 	
 	List<IHandOffBatchTrailer> getHandOffBatchTrailers(String batchId) throws RoutingServiceException;
 	
-	List<IHandOffBatchPlan> getHandOffBatchTrailerPlans(Date deliveryDate, Date cutOffDate) throws RoutingServiceException;
-	
-	List<IHandOffBatchDispatchResource> getHandOffBatchTrailerPlanResource(Date deliveryDate, Date cutoffDate) throws RoutingServiceException;
-
-	Set<IHandOffDispatch> getHandOffTrailerDispatch(Date deliveryDate, Date cutOffDate) throws RoutingServiceException;
 }

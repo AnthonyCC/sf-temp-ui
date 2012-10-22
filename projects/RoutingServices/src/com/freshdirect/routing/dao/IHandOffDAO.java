@@ -87,9 +87,9 @@ public interface IHandOffDAO {
 	
 	Map<RoutingTimeOfDay, Integer> getHandOffBatchDispatchCnt(final Date deliveryDate) throws SQLException;
 	
-	List<IHandOffBatchPlan> getHandOffBatchPlansByDispatchTime(final String handoffBatchId, final Date deliveryDate) throws SQLException;
+	List<IHandOffBatchPlan> getHandOffBatchPlans(final String handoffBatchId, final Date deliveryDate, final Date cutOffDate) throws SQLException;
 	
-	List<IHandOffBatchDispatchResource> getHandOffBatchPlanResourcesByDispatchTime(String handoffBatchId, Date deliveryDate) throws SQLException;
+	List<IHandOffBatchDispatchResource> getHandOffBatchPlanResources(String handoffBatchId, Date deliveryDate, final Date cutOffDate) throws SQLException;
 	
 	List<IHandOffBatchRoute> getHandOffBatchDispatchRoutes(String handoffBatchId, Date deliveryDate) throws SQLException;
 	
@@ -107,10 +107,6 @@ public interface IHandOffDAO {
 
 	void addNewHandOffBatchAutoDispatches(Collection dataList) throws SQLException;
 	
-	void addNewHandOffBatchAutoDispatchResources(Collection dataList) throws SQLException;	
-	
-	Set<IHandOffDispatch> getHandOffDispatch(String handoffBatchId, Date deliveryDate) throws SQLException;
-
 	String getLastCommittedHandOffBatch(Date deliveryDate) throws SQLException;
 
 	void clearHandOffBatchTrailers(String handOffBatchId) throws SQLException;
@@ -122,11 +118,5 @@ public interface IHandOffDAO {
 	Map<String, Integer> getHandOffBatchTrailerCnt(final Date deliveryDate) throws SQLException;
 
 	List<IHandOffBatchTrailer> getHandOffBatchTrailers(final String batchId) throws SQLException;
-
-	List<IHandOffBatchPlan> getHandOffBatchTrailerPlans(final Date deliveryDate, final Date cutOffDate) throws SQLException;
-
-	List<IHandOffBatchDispatchResource> getHandOffBatchTrailerPlanResource(final Date deliveryDate, final Date cutoffDate) throws SQLException;
-
-	Set<IHandOffDispatch> getHandOffTrailerDispatch(final Date deliveryDate, final Date cutOffDate) throws SQLException;
-
+	
 }

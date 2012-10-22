@@ -39,6 +39,8 @@ import com.freshdirect.routing.model.IServiceTimeScenarioModel;
 import com.freshdirect.routing.model.ITrailerModel;
 import com.freshdirect.routing.model.IWaveInstance;
 import com.freshdirect.routing.model.IZoneModel;
+import com.freshdirect.routing.model.OrderEstimationResult;
+import com.freshdirect.routing.model.PackagingModel;
 import com.freshdirect.routing.model.RouteModel;
 import com.freshdirect.routing.model.RoutingSchedulerIdentity;
 import com.freshdirect.routing.model.TrailerModel;
@@ -52,6 +54,7 @@ import com.freshdirect.routing.service.proxy.RoutingInfoServiceProxy;
 import com.freshdirect.routing.util.RoutingDateUtil;
 import com.freshdirect.routing.util.RoutingServicesProperties;
 import com.freshdirect.routing.util.RoutingTimeOfDay;
+import com.freshdirect.routing.util.ServiceTimeUtil;
 
 public class HandOffRoutingOutAction extends AbstractHandOffAction {
 	
@@ -629,12 +632,14 @@ public class HandOffRoutingOutAction extends AbstractHandOffAction {
 		
 		List<IHandOffBatchStop> handOffStops = proxy.getOrderByCutoff(this.getBatch().getDeliveryDate()
 																, this.getBatch().getCutOffDateTime());
-		Map<String, Integer> orderNoToCartonNo = new HashMap<String, Integer>();		
+		Map<String, Double> orderNoToCartonNo = new HashMap<String, Double>();		
 		
 		if(handOffStops != null) {
 			for(IHandOffBatchStop stop : handOffStops) {
-				if(stop.getDeliveryInfo() != null && stop.getDeliveryInfo().getPackagingDetail() != null)
-					orderNoToCartonNo.put(stop.getOrderNumber(), (int)stop.getDeliveryInfo().getPackagingDetail().getNoOfCartons());
+				if(stop.getDeliveryInfo() != null && stop.getDeliveryInfo().getPackagingDetail() != null){
+					OrderEstimationResult orderSizeResult = getEstimateOrderSize(scenarioModel, stop.getDeliveryInfo().getPackagingDetail());
+					orderNoToCartonNo.put(stop.getOrderNumber(), orderSizeResult != null ? orderSizeResult.getCalculatedOrderSize() : 0.0);			
+				}
 			}
 		}
 
@@ -697,14 +702,14 @@ public class HandOffRoutingOutAction extends AbstractHandOffAction {
 				IHandOffBatchRoute route = routeItr.next();
 				
 				if(route.getDispatchTime() != null && route.getDispatchTime().after(new RoutingTimeOfDay(trailer.getCompletionTime()))){
-									double routeCartonCnt = 0;
-									double routePalletCnt = 0;
+									double routeCartonCnt = 0.0;
+									double routePalletCnt = 0.0;
 									Iterator<IRoutingStopModel> _stopItr = route.getStops().iterator();							
 									IRoutingStopModel _order = null;
 									while(_stopItr.hasNext()){
 										_order = _stopItr.next();
 										routeCartonCnt += orderNoToCartonNo.get(_order.getOrderNumber())!= null 
-																			? orderNoToCartonNo.get(_order.getOrderNumber()) : 0;								
+																			? orderNoToCartonNo.get(_order.getOrderNumber()) : 0.0;								
 									}
 									
 									routePalletCnt = routeCartonCnt/maxCartonsPerPallet;

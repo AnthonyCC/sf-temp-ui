@@ -74,7 +74,7 @@ public class RoutingServiceLocator {
 	
 	
 	public IHandOffService getHandOffService() {
-		return (IHandOffService)factory.getBean("handOffService");
+		return (IHandOffService)factory.getBean("handOffServiceMng");
 	}
 
 	public RouteNetWebService getRouteNetService() throws AxisFault {

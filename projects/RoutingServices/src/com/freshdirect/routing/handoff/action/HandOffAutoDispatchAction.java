@@ -140,51 +140,44 @@ public class HandOffAutoDispatchAction extends AbstractHandOffAction {
 							proxy.clearHandOffBatchAutoDispatches(this.getBatch().getBatchId()
 																		, this.getBatch().getDeliveryDate()
 																		, this.getBatch().getCutOffDateTime());
+							//load all active trucks & trailers from Transp Asset tab
 							this.loadTrucks(proxy);
 							this.loadDispatches(dispatchMapping, routeMapping, trailers);
 							this.constructDispatchesToAlgorithm(dispatchMapping);
+							//Now assign trucks to route(s) based on route driver employee truck preference(s)
 							this.assignByPreference(proxy, actionResponse);
 							this.eval();
+							//Now assign trucks to routes randomly for routes with no preference  
 				            this.assignAutomatically();
 				            this.eval();
 				            this.dumpDispatches(dispatchMapping);
+				            
 				            // add new dispatches
 				            proxy.addNewHandOffBatchAutoDispatches(dispatchMapping.values());				            
-				            
-							Set<IHandOffDispatch> batchDispatches = proxy.getHandOffDispatch(this.getBatch().getBatchId(), this.getBatch().getDeliveryDate());
-							batchDispatches.addAll(proxy.getHandOffTrailerDispatch(this.getBatch().getDeliveryDate(), this.getBatch().getCutOffDateTime()));
-							for(IHandOffDispatch dispatch : batchDispatches){
-								IHandOffDispatch d = dispatchMapping.get(dispatch.getPlanId());
+				            	
+							
+							StringBuffer sapResponse = new StringBuffer();
+							List<HandOffRouteTruckIn> routesToTrucksCommit = new ArrayList<HandOffRouteTruckIn>();
+							List<IHandOffBatchRoute> rootRoutesIn = (List<IHandOffBatchRoute>)routes; 
+								 
+							for(IHandOffBatchRoute route : rootRoutesIn) {									
+								IHandOffDispatch d = routeDispatchMapping.get(route.getRouteId());
+								if(d != null)
+									route.setTruckNumber(d.getTruck());
+									routesToTrucksCommit.add(route);									
+							}
+								
+							for(Map.Entry<String, IHandOffBatchTrailer> trailerEntry : trailerMapping.entrySet()) {									
+								IHandOffDispatch d = routeDispatchMapping.get(trailerEntry.getValue().getTrailerId());
 								if(d != null){
-									dispatch.setBatchDispatchResources(d.getBatchDispatchResources());
+									IHandOffBatchRoute _route = new HandOffBatchRoute();
+									_route.setRouteId(trailerEntry.getValue().getTrailerId());
+									_route.setTruckNumber(d.getTruck());
+									routesToTrucksCommit.add(_route);
 								}
 							}
-							// add dispatch resources
-							proxy.addNewHandOffBatchAutoDispatchResources(batchDispatches);
-							
-							
-								StringBuffer sapResponse = new StringBuffer();
-								List<HandOffRouteTruckIn> routesToTrucksCommit = new ArrayList<HandOffRouteTruckIn>();
-								List<IHandOffBatchRoute> rootRoutesIn = (List<IHandOffBatchRoute>)routes; 
-								 
-								for(IHandOffBatchRoute route : rootRoutesIn) {									
-									IHandOffDispatch d = routeDispatchMapping.get(route.getRouteId());
-									if(d != null)
-										route.setTruckNumber(d.getTruck());
-									routesToTrucksCommit.add(route);									
-								}
-								
-								for(Map.Entry<String, IHandOffBatchTrailer> trailerEntry : trailerMapping.entrySet()) {									
-									IHandOffDispatch d = routeDispatchMapping.get(trailerEntry.getValue().getTrailerId());
-									if(d != null){
-										IHandOffBatchRoute _route = new HandOffBatchRoute();
-										_route.setRouteId(trailerEntry.getValue().getTrailerId());
-										_route.setTruckNumber(d.getTruck());
-										routesToTrucksCommit.add(_route);
-									}
-								}
 
-								if(routesToTrucksCommit.size() > 0){
+							if(routesToTrucksCommit.size() > 0){
 																
 								SapSendPhysicalTruckInfo sapHandOffEngine 
 															= new SapSendPhysicalTruckInfo(routesToTrucksCommit
@@ -226,13 +219,13 @@ public class HandOffAutoDispatchAction extends AbstractHandOffAction {
 						}catch(RoutingServiceException re){						
 							re.printStackTrace();
 							isSuccess = false;
-							throw new RoutingServiceException("Batch completed, but Auto-Dispatch failed"
-									, null, IIssue.PROCESS_HANDOFFBATCH_ERROR);
+							LOGGER.error("######################### Auto-DispatchTask FAILED ######################### ", re);
+							throw new RoutingServiceException(re, IIssue.PROCESS_HANDOFFBATCH_ERROR);
 						}catch(Exception e){
 							e.printStackTrace();
 							isSuccess = false;
 							LOGGER.error("######################### Auto-DispatchTask FAILED ######################### ", e);
-							throw new RoutingServiceException(" Auto-DispatchTask FAILED ", e, IIssue.PROCESS_HANDOFFBATCH_ERROR);						
+							throw new RoutingServiceException(e, IIssue.PROCESS_HANDOFFBATCH_ERROR);						
 						}
 				}
 			}
@@ -560,6 +553,7 @@ public class HandOffAutoDispatchAction extends AbstractHandOffAction {
 
 	@SuppressWarnings("unchecked")
 	private void constructDispatchesToAlgorithm(Map<String, IHandOffDispatch> dispatchMapping){
+		LOGGER.error("######################### Construct Dispatches To Algorithm ######################### ");
 		
 		for(Map.Entry<String, IHandOffDispatch> dispatchEntry : dispatchMapping.entrySet()){
 			
