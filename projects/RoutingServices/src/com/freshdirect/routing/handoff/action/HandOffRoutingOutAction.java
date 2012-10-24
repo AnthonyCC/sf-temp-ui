@@ -167,8 +167,9 @@ public class HandOffRoutingOutAction extends AbstractHandOffAction {
 					for(Map.Entry<String, Set<IRouteModel>> areaEntry : sesEntry.getValue().entrySet()) {
 						
 						if(areaEntry.getValue() != null) {
-							Set<IRouteModel> routeEntry = new TreeSet<IRouteModel>(new RouteDispatchComparator());
+							List<IRouteModel> routeEntry = new ArrayList<IRouteModel>();
 							routeEntry.addAll(areaEntry.getValue());
+							Collections.sort(routeEntry, new RouteDispatchComparator());
 						
 							for(IRouteModel route : routeEntry) {
 								_stops = new TreeSet();
