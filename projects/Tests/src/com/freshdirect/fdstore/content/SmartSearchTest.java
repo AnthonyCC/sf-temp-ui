@@ -62,7 +62,8 @@ public class SmartSearchTest extends TestCase {
     MockHttpServletRequest request;
     SmartSearchTag         sst;
 
-    public void setUp() throws Exception {
+    @Override
+	public void setUp() throws Exception {
         AutoComplete.setDisableAutocompleter(true);
 
         Context context = TestUtils.createContext();
@@ -491,8 +492,8 @@ public class SmartSearchTest extends TestCase {
             assertEquals("root nodes", 2, tree.getRoots().size());
             Iterator<TreeElement> iter = tree.getRoots().iterator();
 
-            assertTreeElement("root element 1", "Dairy", 2, 1, (TreeElement) iter.next());
-            assertTreeElement("root element 2", "Organic & All-Natural", 1, 1, (TreeElement) iter.next());
+            assertTreeElement("root element 1", "Dairy", 2, 1, iter.next());
+            assertTreeElement("root element 2", "Organic & All-Natural", 1, 1, iter.next());
             
             assertNotNull("has products", sst.getPageProducts());
 
@@ -515,7 +516,7 @@ public class SmartSearchTest extends TestCase {
         }
     }
 
-    private void assertContentNodeModelKey(String desc, String id, Object object) {
+    private static void assertContentNodeModelKey(String desc, String id, Object object) {
         assertEquals(desc, id, ((ContentNodeModel) object).getContentKey().getId());
     }
 
@@ -543,9 +544,8 @@ public class SmartSearchTest extends TestCase {
         assertContentNodeWithNameInTheCollection("brandset", brandSet, name);
     }
 
-    private void assertContentNodeWithNameInTheCollection(String errorMsg, Collection collection, String fullName) {
-        for (Iterator iter = collection.iterator(); iter.hasNext();) {
-            ContentNodeModel cnm = (ContentNodeModel) iter.next();
+    private static void assertContentNodeWithNameInTheCollection(String errorMsg, Collection<? extends ContentNodeModel> collection, String fullName) {
+        for ( ContentNodeModel cnm  : collection ) {
             if (fullName.equals(cnm.getFullName())) {
                 return;
             }
@@ -557,19 +557,11 @@ public class SmartSearchTest extends TestCase {
         assertEquals(desc, fullName, ((ContentNodeModel) object).getFullName());
     }
 
-    private void assertTreeElement(String name, String modelName, int depthChildCount, int childCount, TreeElement element) {
+    private static void assertTreeElement(String name, String modelName, int depthChildCount, int childCount, TreeElement element) {
         assertNotNull(name + " - element", element);
         assertEquals(name + " - fullname ", modelName, element.getModel().getFullName());
         assertEquals(name + " - depthChildCount ", depthChildCount, element.getChildCount());
         assertEquals(name + " - childCount ", childCount, element.getChildren().size());
-    }
-
-    protected String[] getAffectedTables() {
-        return null;
-    }
-
-    protected String getSchema() {
-        return null;
     }
 
 }

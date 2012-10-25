@@ -1,9 +1,7 @@
-/**
- * 
- */
 package com.freshdirect.fdstore.content;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -37,6 +35,7 @@ public class ContentSearchTest extends FDCustomerManagerTestSupport {
 		super(name);
 	}
 
+	@Override
 	public void setUp() throws Exception {
 		super.setUp();
 
@@ -81,6 +80,7 @@ public class ContentSearchTest extends FDCustomerManagerTestSupport {
 	 * {@link com.freshdirect.fdstore.content.ContentSearch#searchProducts(java.lang.String, com.freshdirect.fdstore.content.SearchQueryStemmer)}
 	 * .
 	 */
+	@SuppressWarnings( "static-method" )
 	public void testSearchProducts() {
 
 		SearchResults sr = ContentSearch.getInstance().searchProducts("milk");
@@ -88,13 +88,11 @@ public class ContentSearchTest extends FDCustomerManagerTestSupport {
 		assertNotNull("searchResults", sr);
 		assertEquals("relevant products length", 4, sr.getProducts().size());
 
-		SmartSearchTest.assertContentNodeModel("filtered product 0", "Organic Valley 2% Milk", sr.getProducts().get(0).getModel());
-		SmartSearchTest.assertContentNodeModel("filtered product 1", "Organic Valley 1% Milk", sr.getProducts().get(1).getModel());
-		SmartSearchTest.assertContentNodeModel("filtered product 2", "Organic Valley Ultra Pasteurized Whole Milk", sr
-				.getProducts().get(2).getModel());
-		SmartSearchTest.assertContentNodeModel("filtered product 3", "Asher's Milk Chocolate Pecan Caramel Pattie", sr
-				.getProducts().get(3).getModel());
-
+		assertNodeWithNameInCollection("filtered product 0", "Organic Valley 2% Milk", sr.getProducts());
+		assertNodeWithNameInCollection("filtered product 1", "Organic Valley 1% Milk", sr.getProducts());
+		assertNodeWithNameInCollection("filtered product 2", "Organic Valley Ultra Pasteurized Whole Milk", sr.getProducts());
+		assertNodeWithNameInCollection("filtered product 3", "Asher's Milk Chocolate Pecan Caramel Pattie", sr.getProducts());
+		
 		sr = ContentSearch.getInstance().searchProducts("milk organic");
 
 		assertNotNull("searchResults", sr);
@@ -129,17 +127,16 @@ public class ContentSearchTest extends FDCustomerManagerTestSupport {
 	/**
 	 * Test method for {@link com.freshdirect.fdstore.content.ContentSearch#searchProducts(java.lang.String)}.
 	 */
+	@SuppressWarnings( "static-method" )
 	public void testSearch() {
 		SearchResults sr = ContentSearch.getInstance().searchProducts("milk");
 		assertNotNull("searchResults", sr);
 		assertEquals("relevant products length", 4, sr.getProducts().size());
 
-		SmartSearchTest.assertContentNodeModel("filtered product 0", "Organic Valley 2% Milk", sr.getProducts().get(0).getModel());
-		SmartSearchTest.assertContentNodeModel("filtered product 1", "Organic Valley 1% Milk", sr.getProducts().get(1).getModel());
-		SmartSearchTest.assertContentNodeModel("filtered product 2", "Organic Valley Ultra Pasteurized Whole Milk", sr
-				.getProducts().get(2).getModel());
-		SmartSearchTest.assertContentNodeModel("filtered product 3", "Asher's Milk Chocolate Pecan Caramel Pattie", sr
-				.getProducts().get(3).getModel());
+		assertNodeWithNameInCollection("filtered product 0", "Organic Valley 2% Milk", sr.getProducts());
+		assertNodeWithNameInCollection("filtered product 1", "Organic Valley 1% Milk", sr.getProducts());
+		assertNodeWithNameInCollection("filtered product 2", "Organic Valley Ultra Pasteurized Whole Milk", sr.getProducts());
+		assertNodeWithNameInCollection("filtered product 3", "Asher's Milk Chocolate Pecan Caramel Pattie", sr.getProducts());
 
 		sr = ContentSearch.getInstance().searchProducts("organic valley");
 		assertNotNull("searchResults", sr);
@@ -184,11 +181,23 @@ public class ContentSearchTest extends FDCustomerManagerTestSupport {
 		List<String> suggestions = new ArrayList<String>(sr.getSpellingSuggestions());
 		assertEquals("spelling suggestion", "organic valley", suggestions.get(0));
 	}
+	
+    private static <T extends ContentNodeModel> void assertNodeWithNameInCollection(String errorMsg, String fullName, Collection<FilteringSortingItem<T>> collection ) {
+        for ( FilteringSortingItem<T> item  : collection ) {
+			if ( fullName.equals( item.getModel().getFullName() ) ) {
+				return;
+			}
+        }
+        fail("Missing:" + fullName + ", error:" + errorMsg);
+    }
 
+
+	@Override
 	protected String[] getAffectedTables() {
 		return null;
 	}
 
+	@Override
 	protected String getSchema() {
 		return null;
 	}
