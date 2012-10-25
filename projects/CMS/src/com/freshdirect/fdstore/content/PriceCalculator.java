@@ -93,6 +93,9 @@ public class PriceCalculator {
         }
     }
     
+    public FDGroup getProductGroup() throws FDResourceException, FDSkuNotFoundException{        
+         return skuModel != null && getProductInfo()!=null ? getProductInfo().getGroup() : null;         
+    }
     
     public double getDefaultPriceValue() {
         try {
@@ -576,8 +579,8 @@ public class PriceCalculator {
 	
 	public double getGroupPrice() {
 		try{
-			if(getProductInfo().getGroup() == null) return 0.0;
-			MaterialPrice grpMatPrice = GroupScaleUtil.getGroupScalePrice(getProductInfo().getGroup(), ctx.getZoneId());
+			if(getProductGroup() == null) return 0.0;
+			MaterialPrice grpMatPrice = GroupScaleUtil.getGroupScalePrice(getProductGroup(), ctx.getZoneId());
 			if(grpMatPrice != null)
 				return grpMatPrice.getPrice();
 			else
@@ -590,8 +593,8 @@ public class PriceCalculator {
 	}
 	public double getGroupQuantity() {
 		try{
-			if(getProductInfo().getGroup() == null) return 0.0;
-			MaterialPrice grpMatPrice = GroupScaleUtil.getGroupScalePrice(getProductInfo().getGroup(), ctx.getZoneId());
+			if(getProductGroup() == null) return 0.0;
+			MaterialPrice grpMatPrice = GroupScaleUtil.getGroupScalePrice(getProductGroup(), ctx.getZoneId());
 			if(grpMatPrice != null)
 				return grpMatPrice.getScaleLowerBound();
 			else
@@ -605,8 +608,8 @@ public class PriceCalculator {
 
 	public String getGroupScaleUnit() {
 		try{
-			if(getProductInfo().getGroup() == null) return null;
-			MaterialPrice grpMatPrice = GroupScaleUtil.getGroupScalePrice(getProductInfo().getGroup(), ctx.getZoneId());
+			if(getProductGroup() == null) return null;
+			MaterialPrice grpMatPrice = GroupScaleUtil.getGroupScalePrice(getProductGroup(), ctx.getZoneId());
 			if(grpMatPrice != null)
 				return grpMatPrice.getScaleUnit();
 			else
@@ -620,8 +623,8 @@ public class PriceCalculator {
 
 	public String getGroupPricingUnit() {
 		try{
-			if(getProductInfo().getGroup() == null) return null;
-			MaterialPrice grpMatPrice = GroupScaleUtil.getGroupScalePrice(getProductInfo().getGroup(), ctx.getZoneId());
+			if(getProductGroup() == null) return null;
+			MaterialPrice grpMatPrice = GroupScaleUtil.getGroupScalePrice(getProductGroup(), ctx.getZoneId());
 			if(grpMatPrice != null)
 				return grpMatPrice.getPricingUnit();
 			else
@@ -636,9 +639,9 @@ public class PriceCalculator {
 
 	public MaterialPrice[] getGroupScalePrices() {
 		try {
-			if (getProductInfo().getGroup() == null)
+			if (getProductGroup() == null)
 				return null;
-			MaterialPrice[] matPrices = GroupScaleUtil.getGroupScalePrices(getProductInfo().getGroup(), ctx.getZoneId());
+			MaterialPrice[] matPrices = GroupScaleUtil.getGroupScalePrices(getProductGroup(), ctx.getZoneId());
 			return matPrices;
 		}  catch (FDSkuNotFoundException e) {
 			throw new FDRuntimeException(e);
@@ -722,9 +725,9 @@ public class PriceCalculator {
 	public GroupPricingInfo initGroupPricingInfo() {
 		
 		try{
-			if(getProductInfo() != null && getProductInfo().getGroup() != null) {//Check if Group Discount is there
-				GroupScalePricing grpPricing = GroupScaleUtil.lookupGroupPricing(getProductInfo().getGroup());
-				MaterialPrice matPrice = GroupScaleUtil.getGroupScalePrice(getProductInfo().getGroup(), ctx.getZoneId());
+			if(getProductInfo() != null && getProductGroup() != null) {//Check if Group Discount is there
+				GroupScalePricing grpPricing = GroupScaleUtil.lookupGroupPricing(getProductGroup());
+				MaterialPrice matPrice = GroupScaleUtil.getGroupScalePrice(getProductGroup(), ctx.getZoneId());
 				if(grpPricing != null && matPrice != null) {
 					double displayPrice = 0.0;
 					boolean isSaleUnitDiff = false;
