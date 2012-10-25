@@ -1188,7 +1188,7 @@ public class AirclicDAO {
 					result.put(orderId, model);
 				}
 				result.get(orderId).setEarlyDeliveryReq(true);
-				result.get(orderId).setEarlyDlvStatus((!callOutcome.equals("") && !"NoAnswer".equals(callOutcome) && !"ReceiverRejected".equals(callOutcome)) ? "Accepted" : "Rejected");
+				result.get(orderId).setEarlyDlvStatus((null != callOutcome && !"".equals(callOutcome) && !"NoAnswer".equals(callOutcome) && !"ReceiverRejected".equals(callOutcome)) ? "Accepted" : "Rejected");
 				
 			}
 			

@@ -107,7 +107,7 @@ public class AirclicManagerSessionBean extends SessionBeanSupport {
 				Iterator<Map.Entry<String, Set<String>>> itr = userIds.entrySet().iterator();
 				while (itr.hasNext()) {
 				    Map.Entry<String,  Set<String>> userEntry = itr.next();
-				    if(!nextelList.contains(userEntry.getKey())){
+				    if(null != nextelList && !nextelList.contains(userEntry.getKey())){
 				        itr.remove();
 				    }
 				}
