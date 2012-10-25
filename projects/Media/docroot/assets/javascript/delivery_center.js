@@ -50,7 +50,7 @@
 							result += "<tr>";
 						}
 						result += "<td width=\"100\">"+ calllog[i].callerId + "</td>";
-						result += "<td width=\"115\">"+ calllog[i].startTime + "</td>";
+						result += "<td width=\"115\">"+ calllog[i].scanTime + "</td>";
 						result += "<td width=\"115\">"+ calllog[i].duration + "</td>";
 						result += "<td width=\"115\">"+ calllog[i].talkTime + "</td>";
 						result += "<td width=\"115\">"+ calllog[i].phoneNumber + "</td>";
