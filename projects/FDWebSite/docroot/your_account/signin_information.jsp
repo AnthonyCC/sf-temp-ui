@@ -223,7 +223,6 @@ if (request.getParameter("employeeId") != null) {
 	}
     */
 %>
-<%= confirmationMsg %>
 <%@ include file="/includes/i_confirmation_messages.jspf"%>
 <%	} %>
 
