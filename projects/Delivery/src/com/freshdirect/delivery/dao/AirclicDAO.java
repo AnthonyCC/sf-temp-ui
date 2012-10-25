@@ -370,7 +370,7 @@ public class AirclicDAO {
 		List<AirclicTextMessageVO> voList = new ArrayList<AirclicTextMessageVO>();
 		try
 		{
-			ps = conn.prepareStatement("SELECT ORDERID ,ROUTE,MESSAGE FROM  DLV.AIRCLIC_TXTMESSAGE WHERE SENT_TO_AIRCLIC = 'N' AND DELIVERYDATE = TRUNC(SYSDATE)");
+			ps = conn.prepareStatement("SELECT ORDERID ,ROUTE,MESSAGE, DELIVERYDATE FROM  DLV.AIRCLIC_TXTMESSAGE WHERE SENT_TO_AIRCLIC = 'N' AND DELIVERYDATE = TRUNC(SYSDATE)");
 			rs = ps.executeQuery();
 			while(rs.next())
 			{
@@ -378,6 +378,7 @@ public class AirclicDAO {
 				vo.setOrderId(rs.getString("orderid"));
 				vo.setRoute(rs.getString("route"));
 				vo.setMessage(rs.getString("message"));
+				vo.setDeliveryDate(rs.getDate("DELIVERYDATE"));
 				voList.add(vo);
 			}
 		}
