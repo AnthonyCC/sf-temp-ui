@@ -279,7 +279,6 @@ final int W_PERISHABLE_PRODUCT_RIGHT = 369;
 				
 				SkuModel dfltSku = (SkuModel)productNode.getSkus().get( 0 );
 				FDProduct fdprod = dfltSku.getProduct();
-				%><h1>cica</h1> <%
 				boolean hasNutriOrIngrd = ( fdprod.hasNutritionFacts() || fdprod.hasDrugNutritionFacts() || fdprod.hasIngredients() );
 				%>
 
