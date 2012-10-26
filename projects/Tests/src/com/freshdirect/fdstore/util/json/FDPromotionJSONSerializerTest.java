@@ -21,6 +21,7 @@ import junit.framework.TestCase;
 import org.json.JSONObject;
 
 import com.freshdirect.common.customer.EnumCardType;
+import com.freshdirect.delivery.EnumComparisionType;
 import com.freshdirect.fdstore.EnumCheckoutMode;
 import com.freshdirect.fdstore.promotion.EnumDCPDContentType;
 import com.freshdirect.fdstore.promotion.EnumPromoChangeType;
@@ -74,7 +75,7 @@ public class FDPromotionJSONSerializerTest extends TestCase {
 				"dpStatus1",
 				aDate, aDate, true, false, false,
 				new EnumCardType[]{EnumCardType.AMEX, EnumCardType.GCP},
-				"tejbetok");
+				"tejbetok",EnumComparisionType.EQUAL);
 
 		// FDPromoPaymentStrategyModel
 		paymentStrategy = new FDPromoPaymentStrategyModel();

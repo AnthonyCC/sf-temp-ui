@@ -53,7 +53,7 @@ public class FDPromotionVisitorTest extends TestCase {
 		promotions.put(p.getPromotionCode(), p);
 
 		p = new Promotion(new PrimaryKey("rc1"), EnumPromotionType.REDEMPTION, "rc1", "rc1", "rc1",new Timestamp(d.getTime()));
-		p.setApplicator(new PercentOffApplicator(40, 0.1));
+		p.setApplicator(new PercentOffApplicator(40, 0.1,50));
 		promotions.put(p.getPromotionCode(), p);
 
 	}
