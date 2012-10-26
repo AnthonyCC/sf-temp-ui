@@ -125,6 +125,9 @@ public final class TEmailsUtil {
   		}
   		model.setEmailStatus(EnumTEmailStatus.NEW);
   		
+  		if(input.get("oasQuery") != null)
+  			model.setOasQueryString((String) input.get("oasQuery"));	
+  		
   		LOGGER.debug("---------------------------model:"+ model.toString());
     	  
     	  return model;

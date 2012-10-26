@@ -31,6 +31,15 @@ public class TransEmailInfoModel extends EmailSupport implements TEmailI {
 	private Date croModDate;
 	private String targetProgId;
 	private boolean productionReady;	
+	private String oasQueryString;
+	
+	public void setOasQueryString(String val) {
+		this.oasQueryString = val;
+	}
+	
+	public String getOasQueryString() {
+		return oasQueryString;
+	}
 	
 	public boolean isProductionReady() {
 		return productionReady;

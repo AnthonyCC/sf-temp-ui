@@ -121,6 +121,7 @@ import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.FDTimeslot;
 import com.freshdirect.fdstore.URLRewriteRule;
 import com.freshdirect.fdstore.Util;
+import com.freshdirect.fdstore.ZonePriceListing;
 import com.freshdirect.fdstore.atp.FDAvailabilityI;
 import com.freshdirect.fdstore.atp.FDAvailabilityInfo;
 import com.freshdirect.fdstore.atp.FDCompositeAvailability;
@@ -168,6 +169,7 @@ import com.freshdirect.fdstore.request.FDProductRequest;
 import com.freshdirect.fdstore.request.FDProductRequestDAO;
 import com.freshdirect.fdstore.survey.FDSurveyResponse;
 import com.freshdirect.fdstore.util.IgnoreCaseString;
+import com.freshdirect.fdstore.zone.FDZoneInfoManager;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.core.SequenceGenerator;
 import com.freshdirect.framework.mail.FTLEmailI;
@@ -176,6 +178,7 @@ import com.freshdirect.framework.util.DateRange;
 import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.GenericSearchCriteria;
 import com.freshdirect.framework.util.MD5Hasher;
+import com.freshdirect.framework.util.QueryStringBuilder;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.giftcard.CardInUseException;
 import com.freshdirect.giftcard.CardOnHoldException;
@@ -315,6 +318,25 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 					//input.put(TEmailConstants.ORDER_INP_KEY, order);
 					input.put(TEmailConstants.CUSTOMER_ID_INP_KEY, emailInfo);
 					input.put(TEmailConstants.EMAIL_TYPE, emailInfo.isHtmlEmail()?EnumEmailType.HTML.getName():EnumEmailType.TEXT.getName());
+					
+					//APPDEV-2451 - fill in OAS parameters here
+			        if (FDStoreProperties.isAdServerEnabled()) {
+			        	String zipCode = "";
+			        	String cohort = "";
+			        	conn = getConnection();
+						java.sql.PreparedStatement ps1 = conn
+								.prepareStatement("select zipcode, cohort_id from cust.fduser where fdcustomer_id=?");
+						ps1.setString(1, fdCustomerEB.getPK().getId());
+						ResultSet rs = ps1.executeQuery();						
+						if (rs.next()) {
+							zipCode = rs.getString("zipcode");
+							cohort = rs.getString("cohort_id");
+						}
+						ps1.close();
+						rs.close();
+			        	String oasQuery = getOASQueryString(serviceType, fdCustomer.getDepotCode(), zipCode, cohort);
+			        	input.put("oasQuery", oasQuery);
+			        }
 					
 					this.doEmail(EnumTranEmailType.CUST_SIGNUP,  input);
 					isUseOtherEmailMode=false;
@@ -728,7 +750,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		FDIdentity identity = user.getIdentity();
 		if (identity != null) {
 			assignedParams = FDPromotionNewDAO.loadAssignedCustomerParams(conn,
-					identity.getErpCustomerPK());
+					identity.getErpCustomerPK(), user.getUserId());
 		} else {
 			assignedParams = new HashMap();
 		}
@@ -6734,6 +6756,81 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		} finally {
 			close(conn);
 		}
+	}
+	
+	public String getOASQueryString(EnumServiceType serviceType, String depotCode, String zipCode, String county) {
+		QueryStringBuilder queryString = new QueryStringBuilder();
+		String metalRating = "";
+		int vip = 0;
+		int chefsTable = 0;
+		String test = "false";
+
+		String type = "";
+		String depotAffil = "";
+		if (EnumServiceType.HOME.equals(serviceType)) {
+			type = "home";
+		} else if (EnumServiceType.DEPOT.equals(serviceType)) {
+			type = "depot";
+			depotAffil = depotCode;
+		} else if (EnumServiceType.PICKUP.equals(serviceType)) {
+			type = "pickup";
+		} else if (EnumServiceType.CORPORATE.equals(serviceType)) {
+			type = "cos";
+		} else if (EnumServiceType.WEB.equals(serviceType)) {
+			type = "web";
+		}
+
+		String pageType = "";
+		queryString
+				.addParam("v", metalRating)
+				.addParam("hv", vip)
+				.addParam("ct", chefsTable)
+				.addParam("test", test)
+				.addParam("zip", zipCode)
+				.addParam("type", type)
+				.addParam("depot", depotAffil)
+				.addParam("nod", "")
+				.addParam("do", 0)
+				.addParam("win", 2);
+
+		queryString.addParam("cart", "");
+		
+
+		queryString.addParam("list", "");
+		
+
+		queryString.addParam("lu", "1")
+			.addParam("pt", pageType).addParam("id", "")
+			.addParam("cohort", county)
+			.addParam("recipe", true);
+
+		queryString.addParam("ecppromo", "");
+		
+		if(FDStoreProperties.isZonePricingAdEnabled()){
+			queryString.addParam("zonelevel","true");
+			String zoneId = "";
+			try {
+				zoneId = FDZoneInfoManager.findZoneId(serviceType.getName(), zipCode);
+			} catch (FDResourceException e) {
+			}
+			if(zoneId.equalsIgnoreCase(ZonePriceListing.MASTER_DEFAULT_ZONE)){
+				queryString.addParam("mzid",zoneId);
+			}else if(zoneId.equalsIgnoreCase(ZonePriceListing.RESIDENTIAL_DEFAULT_ZONE)||zoneId.equalsIgnoreCase(ZonePriceListing.CORPORATE_DEFAULT_ZONE)){
+				queryString.addParam("szid",zoneId);
+				queryString.addParam("mzid",ZonePriceListing.MASTER_DEFAULT_ZONE);				
+			}else{
+				queryString.addParam("zid",zoneId);				
+				try {
+					zoneId = FDZoneInfoManager.findZoneId(serviceType.getName(),null);
+				} catch (FDResourceException e) {					
+				}
+				queryString.addParam("szid",zoneId);
+				queryString.addParam("mzid",ZonePriceListing.MASTER_DEFAULT_ZONE);				
+			}			
+		}
+		
+		return queryString.toString();
+
 	}
 	
 	public static String INSERT_AUTO_CREDIT = "insert into CUST.AUTO_LATE_DELIVERY(ID,ORDER_DATE,STATUS,APPROVED_BY) values (?,trunc(sysdate),null,null)";

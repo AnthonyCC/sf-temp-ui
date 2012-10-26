@@ -31,4 +31,6 @@ public interface TEmailI extends EmailI {
 	
 	public boolean isProductionReady();
 	
+	public String getOasQueryString();
+	
 }

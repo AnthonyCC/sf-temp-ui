@@ -51,7 +51,12 @@ public class CheetahTranMailServiceImpl implements TranMailServiceI{
 		        
 		        //args.put("email", "skanury@freshdirect.com");
 		        args.put("email", emailInfo.getRecipient());
-		        System.out.println("args :"+args);		    
+		        
+		        //APPDEV-2451 - fill in OAS parameters here
+		        if(emailInfo.getOasQueryString() != null)
+		        	args.put("OAS_query", emailInfo.getOasQueryString());
+		        
+		        System.out.println("args :"+args);	
 		        
 		        response=apiClient.callMethodHandler(EBM_SERVICE_NAME, args);		        
 		        Iterator it = emailInfo.getCCList().iterator();
