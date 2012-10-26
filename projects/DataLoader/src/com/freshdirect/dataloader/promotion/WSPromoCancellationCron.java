@@ -108,7 +108,7 @@ public class WSPromoCancellationCron {
 				promoChanges.add(changeModel);
 				promotion.setAuditChanges(promoChanges);
 				
-				FDPromotionNewManager.storePromotionStatus(promotion,EnumPromotionStatus.CANCELLING);
+				FDPromotionNewManager.storePromotionStatus(promotion,EnumPromotionStatus.CANCELLING,false);
 				FDPromotionNewModel promo = FDPromotionNewManager.loadPromotion(promoCode);
 				cancelledPromotions.add(promo);
 			}
