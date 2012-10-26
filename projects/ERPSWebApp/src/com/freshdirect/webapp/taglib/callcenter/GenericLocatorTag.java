@@ -81,7 +81,10 @@ public class GenericLocatorTag extends AbstractControllerTag {
 			}
 			else if(EnumSearchType.ALCOHOL_RESTRICTION_SEARCH.equals(searchType)){
 				searchResults = performAlcoholRestrictedSearch(request);
-			}			
+			}	
+			else if(EnumSearchType.PLATTER_RESTRICTION_SEARCH.equals(searchType)){
+				searchResults = performPlatterRestrictedSearch(request);
+			}
 			else if(EnumSearchType.ADDR_RESTRICTION_SEARCH.equals(searchType)){
 				searchResults = performAddrRestrictedSearch(request);
 			}
@@ -229,7 +232,19 @@ public class GenericLocatorTag extends AbstractControllerTag {
 		return searchResults;
 	}
 
-	
+	private List performPlatterRestrictedSearch(HttpServletRequest request) throws FDResourceException{
+		
+		List searchResults = null;
+		GenericSearchCriteria criteria = buildPlatterRestrictionCriteria(request);
+		searchResults = CallCenterServices.doGenericSearch(criteria);
+		HttpSession session = pageContext.getSession();
+		if(EnumSearchType.PLATTER_RESTRICTION_SEARCH.equals(criteria.getSearchType())){
+			//Cache the search criteria in session.
+			session.setAttribute("PLATTER_RESTRICTION_SEARCH", criteria);
+		}
+		return searchResults;
+	}
+
 	private List performAddrRestrictedSearch(HttpServletRequest request) throws FDResourceException{
 		
 		List searchResults = null;
@@ -332,6 +347,36 @@ public class GenericLocatorTag extends AbstractControllerTag {
 		return criteria;
 	}
 
+	private GenericSearchCriteria buildPlatterRestrictionCriteria(HttpServletRequest request) throws FDResourceException{
+		GenericSearchCriteria criteria = null;
+		try{
+			String sDate = NVL.apply(request.getParameter("startDate"),"").trim();							    				
+			String message = NVL.apply(request.getParameter("message"), "");
+			String reasonCode = NVL.apply(request.getParameter("reason"), "");
+			String restrictedTypeCode = NVL.apply(request.getParameter("restrictedType"), "");
+			String sortColumn = NVL.apply(request.getParameter("sortColumn"), "start_time");
+			String ascending = NVL.apply(request.getParameter("ascending"), "asc");
+			criteria = new GenericSearchCriteria(EnumSearchType.getEnum(searchParam));
+			
+			Date startDate  = dateFormat.parse(sDate);
+			criteria.setCriteriaMap("startDate", startDate);				
+			if(message.length() > 0){
+				criteria.setCriteriaMap("message", message);	
+			}				
+			LOGGER.debug("message :"+message);								
+			EnumDlvRestrictionReason reason=EnumDlvRestrictionReason.getEnum(reasonCode);
+			criteria.setCriteriaMap("reason",reason);				
+			LOGGER.debug("reasonCode :"+reasonCode);								
+			EnumDlvRestrictionType type=EnumDlvRestrictionType.getEnum(restrictedTypeCode);
+			criteria.setCriteriaMap("type",type);				
+			LOGGER.debug("type :"+type);							
+			criteria.setCriteriaMap("sortColumn", sortColumn);			
+			criteria.setCriteriaMap("ascending", ascending);					
+		}catch (Exception pe) {
+			throw new FDResourceException(pe);
+		}
+		return criteria;
+	}
 	private GenericSearchCriteria buildCriteria(HttpServletRequest request) throws FDResourceException{
 		GenericSearchCriteria criteria = new GenericSearchCriteria(EnumSearchType.getEnum(searchParam));
 		try{

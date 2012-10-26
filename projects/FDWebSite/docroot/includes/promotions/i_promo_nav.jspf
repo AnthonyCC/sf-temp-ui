@@ -13,6 +13,7 @@
 <%@ page import="com.freshdirect.fdstore.FDStoreProperties"%>
 <%@ page import="com.freshdirect.deliverypass.EnumDlvPassStatus"%>
 <%@ page import="com.freshdirect.delivery.model.DlvZoneModel"%>
+<%@ page import="com.freshdirect.delivery.EnumComparisionType"%>
 <%@ page import="com.freshdirect.fdstore.FDDeliveryManager"%>
 <%@ page import="com.freshdirect.framework.util.FormatterUtil"%>
 <%@ page import="com.freshdirect.framework.util.NumberUtil"%>
@@ -195,10 +196,14 @@
 	FDPromoCustStrategyModel csm = ( promotion != null && promotion.getCustStrategies() != null && promotion.getCustStrategies().size()>0 ) ? (FDPromoCustStrategyModel)promotion.getCustStrategies().get(0) : null;
 	String eCheckBool = "NO";
 	String eCheckMin = "";
+	EnumComparisionType eCheckMatchType = null;
 	boolean excludeSameDayDlv = false;
 	if (csm != null && csm.getPriorEcheckUse() != null) {
 		if (!"".equals(csm.getPriorEcheckUse())) { eCheckBool = "YES"; }
 		if (!"".equals(csm.getPriorEcheckUse())) { eCheckMin = csm.getPriorEcheckUse(); }
+	}
+	if(csm!=null){
+		eCheckMatchType = csm.getEcheckMatchType();
 	}
 	String cohortsString = "";
 	if (csm != null) {

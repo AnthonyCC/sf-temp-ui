@@ -31,6 +31,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.log4j.Logger;
 
 import com.freshdirect.common.customer.EnumCardType;
+import com.freshdirect.delivery.EnumComparisionType;
 import com.freshdirect.delivery.EnumDeliveryOption;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.promotion.EnumDCPDContentType;
@@ -1151,11 +1152,11 @@ public class FDPromotionManagerNewDAO {
 
 	private static String INSERT_PROMO_CUST_STRATEGY = "INSERT INTO cust.promo_cust_strategy"
 			+ " (id, promotion_id, order_range_start, order_range_end, cohort,dp_types, dp_status, dp_exp_start, dp_exp_end," +
-					"ordertype_home, ordertype_pickup, ordertype_corporate, payment_type, prior_echeck_use,DELIVERY_DAY_TYPE)"
-			+ " VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+					"ordertype_home, ordertype_pickup, ordertype_corporate, payment_type, prior_echeck_use,DELIVERY_DAY_TYPE,echeck_match_type)"
+			+ " VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
 	private static String UPDATE_PROMO_CUST_STRATEGY = "UPDATE cust.promo_cust_strategy"
-			+ " SET order_range_start=?,order_range_end=?, cohort=?,dp_types=?, dp_status=?,dp_exp_start=?,dp_exp_end=?,ordertype_home=?,ordertype_pickup=?,ordertype_corporate=?,payment_type=?,prior_echeck_use=?,DELIVERY_DAY_TYPE=? where promotion_id = ?";
+			+ " SET order_range_start=?,order_range_end=?, cohort=?,dp_types=?, dp_status=?,dp_exp_start=?,dp_exp_end=?,ordertype_home=?,ordertype_pickup=?,ordertype_corporate=?,payment_type=?,prior_echeck_use=?,DELIVERY_DAY_TYPE=?,echeck_match_type=? where promotion_id = ?";
 	
 	private static void storeCustomerStrategy(Connection conn, String promotionId,
 			FDPromotionNewModel promotion) throws SQLException {
@@ -1252,6 +1253,11 @@ public class FDPromotionManagerNewDAO {
 				ps.setString(index++, model.getPriorEcheckUse());
 				if(null !=model.getDeliveryDayType()){
 					ps.setString(index++,model.getDeliveryDayType().getName());
+				}else{
+					ps.setNull(index++, Types.VARCHAR);
+				}
+				if(null !=model.getEcheckMatchType()){
+					ps.setString(index++,model.getEcheckMatchType().getName());
 				}else{
 					ps.setNull(index++, Types.VARCHAR);
 				}
@@ -1497,6 +1503,7 @@ public class FDPromotionManagerNewDAO {
 			}
 			
 			promoCustStrategyModel.setPriorEcheckUse(rs.getString("PRIOR_ECHECK_USE"));
+			promoCustStrategyModel.setEcheckMatchType(EnumComparisionType.getEnum(rs.getString("ECHECK_MATCH_TYPE")));
 			promoCustStrategyModel.setPromotionId(promotionId);
 			list.add(promoCustStrategyModel);
 		}
@@ -1508,7 +1515,7 @@ public class FDPromotionManagerNewDAO {
 	}
 	
 	
-	private final static String LOAD_PROMO_PAYMENT_STRATEGY = "select id, promotion_id, ORDERTYPE_HOME, ORDERTYPE_PICKUP, ORDERTYPE_CORPORATE, PAYMENT_TYPE, PRIOR_ECHECK_USE"
+	private final static String LOAD_PROMO_PAYMENT_STRATEGY = "select id, promotion_id, ORDERTYPE_HOME, ORDERTYPE_PICKUP, ORDERTYPE_CORPORATE, PAYMENT_TYPE, PRIOR_ECHECK_USE,ECHECK_MATCH_TYPE "
 		+ " from cust.PROMO_PAYMENT_STRATEGY pps "
 		+ "where pps.promotion_id = ?";
 
@@ -1536,6 +1543,7 @@ public class FDPromotionManagerNewDAO {
 			}
 			
 			promoPaymentStrategyModel.setPriorEcheckUse(rs.getString("PRIOR_ECHECK_USE"));
+			promoPaymentStrategyModel.setEcheckMatchType(EnumComparisionType.getEnum(rs.getString("ECHECK_MATCH_TYPE")));
 			promoPaymentStrategyModel.setPromotionId(promotionId);
 			list.add(promoPaymentStrategyModel);
 		}
@@ -2523,7 +2531,7 @@ public class FDPromotionManagerNewDAO {
 		storePromotionBasic(conn, model);
 		PreparedStatement ps =
 			conn.prepareStatement(
-				"UPDATE CUST.PROMO_CUST_STRATEGY SET PAYMENT_TYPE = ?, PRIOR_ECHECK_USE = ? WHERE ID = ?");
+				"UPDATE CUST.PROMO_CUST_STRATEGY SET PAYMENT_TYPE = ?, PRIOR_ECHECK_USE = ?, ECHECK_MATCH_TYPE=? WHERE ID = ?");
 		int i = 1;
 		List<FDPromoCustStrategyModel> custStrategies = promotion.getCustStrategies();
 		if(null != custStrategies && !custStrategies.isEmpty()){
@@ -2545,14 +2553,24 @@ public class FDPromotionManagerNewDAO {
 			if(null!=promoCustModel.getId()){
 				ps.setString(i++, paymentType.toString());
 				ps.setString(i++, promoCustModel.getPriorEcheckUse());
+				if(null !=promoCustModel.getEcheckMatchType()){
+					ps.setString(i++,promoCustModel.getEcheckMatchType().getName());
+				}else{
+					ps.setNull(i++, Types.VARCHAR);
+				}
 				ps.setString(i++, promoCustModel.getPK().getId());
 			}
 			else{
-				ps = conn.prepareStatement("INSERT INTO cust.PROMO_CUST_STRATEGY (id, promotion_id, payment_type,prior_echeck_use) VALUES(?,?,?,?)");
+				ps = conn.prepareStatement("INSERT INTO cust.PROMO_CUST_STRATEGY (id, promotion_id, payment_type,prior_echeck_use,ECHECK_MATCH_TYPE) VALUES(?,?,?,?,?)");
 				ps.setString(i++, SequenceGenerator.getNextId(conn,"CUST"));
 				ps.setString(i++, promoCustModel.getPromotionId());
 				ps.setString(i++, paymentType.toString());
 				ps.setString(i++, promoCustModel.getPriorEcheckUse());
+				if(null !=promoCustModel.getEcheckMatchType()){
+					ps.setString(i++,promoCustModel.getEcheckMatchType().getName());
+				}else{
+					ps.setNull(i++, Types.VARCHAR);
+				}
 			}		
 			
 			if (ps.executeUpdate() != 1) {

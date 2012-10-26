@@ -17,6 +17,7 @@ import javax.servlet.jsp.JspException;
 
 import com.freshdirect.common.customer.EnumCardType;
 import com.freshdirect.crm.CrmAgentModel;
+import com.freshdirect.delivery.EnumComparisionType;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDCustomerModel;
@@ -103,6 +104,9 @@ public class PromotionCustReqControllerTag extends AbstractControllerTag {
 				String discover = NVL.apply(request.getParameter("discover"),"").trim();
 				String eCheck = NVL.apply(request.getParameter("eCheck"),"").trim();
 				String minOrders = NVL.apply(request.getParameter("minOrders"),"").trim();
+				String eCheckMatch= NVL.apply(request.getParameter("eCheckMatchType"),"").trim();
+				EnumComparisionType eCheckMatchType=EnumComparisionType.getEnum(eCheckMatch);
+				
 				StringBuffer paymentType = new StringBuffer();
 				boolean isSelected = false;
 				EnumCardType paymentTypes[] = new EnumCardType[]{null,null,null,null,null};
@@ -156,8 +160,13 @@ public class PromotionCustReqControllerTag extends AbstractControllerTag {
 						if(!NumberUtil.isInteger(minOrders)){
 							actionResult.addError(true, "minOrdersNumber", " Prior eCheck use value should be integer.");
 						}
+						model.setEcheckMatchType(eCheckMatchType);
+						if(null ==eCheckMatchType){
+							actionResult.addError(true, "eCheckMatchCondition", " Prior eCheck use, required matching condition should be selected.");
+						}
 					}else{
 						model.setPriorEcheckUse("");
+						model.setEcheckMatchType(null);
 					}
 					HttpSession session = pageContext.getSession();
 					CrmAgentModel agent = CrmSession.getCurrentAgent(session);
@@ -242,6 +251,15 @@ public class PromotionCustReqControllerTag extends AbstractControllerTag {
 					changeDetailModel.setChangeFieldName("Prior Echeck Use");
 					changeDetailModel.setChangeFieldOldValue(NVL.apply(oldCustModel.getPriorEcheckUse()," "));
 					changeDetailModel.setChangeFieldNewValue(model.getPriorEcheckUse());
+					changeDetailModel.setChangeSectionId(EnumPromotionSection.PAYMENT_INFO);
+					promoChangeDetails.add(changeDetailModel);
+				}
+				
+				if(model.getEcheckMatchType()!=oldCustModel.getEcheckMatchType()){
+					FDPromoChangeDetailModel changeDetailModel = new FDPromoChangeDetailModel();
+					changeDetailModel.setChangeFieldName("Prior Echeck Match Type");
+					changeDetailModel.setChangeFieldOldValue(null!=oldCustModel.getEcheckMatchType()?oldCustModel.getEcheckMatchType().getName():null);
+					changeDetailModel.setChangeFieldNewValue(null!=model.getEcheckMatchType()?model.getEcheckMatchType().getName():null);
 					changeDetailModel.setChangeSectionId(EnumPromotionSection.PAYMENT_INFO);
 					promoChangeDetails.add(changeDetailModel);
 				}

@@ -649,13 +649,15 @@ public class FDPromotionNewManager {
 		}
 	}
 	
-	public static void storePromotionStatus(FDPromotionNewModel promotion,EnumPromotionStatus status)throws FDResourceException{
+	public static void storePromotionStatus(FDPromotionNewModel promotion,EnumPromotionStatus status,boolean refresh)throws FDResourceException{
 		lookupManagerHome();
 
 		try {
 			FDPromotionManagerNewSB sb = managerHome.create();
 			sb.storePromotionStatus(promotion,status);
-			FDPromotionNewModelFactory.getInstance().forceRefresh();
+			if(refresh){
+				FDPromotionNewModelFactory.getInstance().forceRefresh();
+			}
 			PromotionFactory.getInstance().forceRefresh(promotion.getPromotionCode());
 		} catch (CreateException ce) {
 			invalidateManagerHome();

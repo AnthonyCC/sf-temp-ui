@@ -31,7 +31,6 @@ import com.freshdirect.fdstore.promotion.EnumDCPDContentType;
 import com.freshdirect.fdstore.promotion.EnumPromoChangeType;
 import com.freshdirect.fdstore.promotion.EnumPromotionSection;
 import com.freshdirect.fdstore.promotion.EnumPromotionStatus;
-import com.freshdirect.fdstore.promotion.FDPromotionNewModelFactory;
 import com.freshdirect.fdstore.promotion.management.FDPromoChangeDetailModel;
 import com.freshdirect.fdstore.promotion.management.FDPromoChangeModel;
 import com.freshdirect.fdstore.promotion.management.FDPromoContentModel;
@@ -233,7 +232,12 @@ public class PromoPublisher {
 			// also log publish event in activity log
 			final Date NOW = new Date();
 			for (String code : goodCodes) {
-				FDPromotionNewModel promotion = FDPromotionNewModelFactory.getInstance().getPromotion(code);
+				FDPromotionNewModel promotion =null;
+				try {
+					promotion = FDPromotionNewManager.loadPromotion(code);//FDPromotionNewModelFactory.getInstance().getPromotion(code);
+				} catch (FDResourceException e1) {
+					LOGGER.error("Failed to get promotion:"+code+", after publish of promotions ", e1);
+				}
 				if (promotion != null) {
 					FDPromoChangeModel changeModel = new FDPromoChangeModel();
 					changeModel.setChangeDetails( new ArrayList<FDPromoChangeDetailModel>() );

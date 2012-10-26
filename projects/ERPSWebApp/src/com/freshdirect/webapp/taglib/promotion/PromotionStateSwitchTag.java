@@ -70,7 +70,7 @@ public class PromotionStateSwitchTag extends AbstractControllerTag {
 						this.promotion.setModifiedBy(agent.getUserId());
 						this.promotion.setModifiedDate(new Date());						
 						populatePromoChangeModel(promotion);
-						FDPromotionNewManager.storePromotionStatus(promotion,status);
+						FDPromotionNewManager.storePromotionStatus(promotion,status,true);
 					}				 
 			} else {
 				LOGGER.error("Invalid status " + status.getName());

@@ -1,9 +1,10 @@
 package com.freshdirect.framework.util;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-public class GenericSearchCriteria {
+public class GenericSearchCriteria implements Serializable{
 	private EnumSearchType searchType;
 	private Map criteriaMap = new HashMap();
 	

@@ -77,7 +77,7 @@ public class GenericSearchDAO {
 		}else if(EnumSearchType.SETTLEMENT_BATCH_SEARCH.equals(criteria.getSearchType())){
 			searchResults = findFailedSettlementBatch(conn);
 		}
-		else if(EnumSearchType.DEL_RESTRICTION_SEARCH.equals(criteria.getSearchType())){
+		else if(EnumSearchType.DEL_RESTRICTION_SEARCH.equals(criteria.getSearchType())||EnumSearchType.PLATTER_RESTRICTION_SEARCH.equals(criteria.getSearchType())){
 			CriteriaBuilder builder = buildSQLFromCriteria(criteria);
 			searchResults = processDeliveryRestriction(conn, criteria, builder);
 		}
@@ -115,7 +115,7 @@ public class GenericSearchDAO {
 			} else if(EnumSearchType.RETURN_ORDER_SEARCH.equals(criteria.getSearchType())){
 				buildOrderSearchForReturns(criteria, builder);
 			}
-			else if(EnumSearchType.DEL_RESTRICTION_SEARCH.equals(criteria.getSearchType())){
+			else if(EnumSearchType.DEL_RESTRICTION_SEARCH.equals(criteria.getSearchType())||(EnumSearchType.PLATTER_RESTRICTION_SEARCH.equals(criteria.getSearchType()))){
 				buildDeliveryRestrictionDays(criteria, builder);
 			}
 			else if(EnumSearchType.ALCOHOL_RESTRICTION_SEARCH.equals(criteria.getSearchType())){

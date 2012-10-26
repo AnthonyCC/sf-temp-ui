@@ -1,6 +1,7 @@
 package com.freshdirect.fdstore.promotion.management;
 
 import com.freshdirect.common.customer.EnumCardType;
+import com.freshdirect.delivery.EnumComparisionType;
 import com.freshdirect.framework.core.ModelSupport;
 
 public class FDPromoPaymentStrategyModel extends ModelSupport {
@@ -12,6 +13,7 @@ public class FDPromoPaymentStrategyModel extends ModelSupport {
 	private boolean orderTypeCorporate;	
 	private EnumCardType[] paymentType;
 	private String priorEcheckUse;
+	private EnumComparisionType echeckMatchType;
 	
 	
 	public FDPromoPaymentStrategyModel() {
@@ -20,7 +22,7 @@ public class FDPromoPaymentStrategyModel extends ModelSupport {
 
 	public FDPromoPaymentStrategyModel(String promotionId,
 			boolean orderTypeHome, boolean orderTypePickup,
-			boolean orderTypeCorporate, EnumCardType[] paymentType, String priorEcheckUse) {
+			boolean orderTypeCorporate, EnumCardType[] paymentType, String priorEcheckUse,EnumComparisionType echeckMatchType) {
 		super();
 		this.promotionId = promotionId;
 		this.orderTypeHome = orderTypeHome;
@@ -28,6 +30,7 @@ public class FDPromoPaymentStrategyModel extends ModelSupport {
 		this.orderTypeCorporate = orderTypeCorporate;		
 		this.paymentType = paymentType;
 		this.priorEcheckUse = priorEcheckUse;
+		this.echeckMatchType=echeckMatchType;
 	}
 
 	public String getPromotionId() {
@@ -76,6 +79,14 @@ public class FDPromoPaymentStrategyModel extends ModelSupport {
 
 	public void setPriorEcheckUse(String priorEcheckUse) {
 		this.priorEcheckUse = priorEcheckUse;
+	}
+
+	public EnumComparisionType getEcheckMatchType() {
+		return echeckMatchType;
+	}
+
+	public void setEcheckMatchType(EnumComparisionType echeckMatchType) {
+		this.echeckMatchType = echeckMatchType;
 	}
 	
 	

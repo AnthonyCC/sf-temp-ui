@@ -7,6 +7,7 @@ import java.util.Set;
 import java.util.StringTokenizer;
 
 import com.freshdirect.common.customer.EnumCardType;
+import com.freshdirect.delivery.EnumComparisionType;
 import com.freshdirect.deliverypass.EnumDlvPassStatus;
 import com.freshdirect.fdstore.customer.FDCartModel;
 
@@ -21,6 +22,7 @@ public class CustomerStrategy implements PromotionStrategyI {
 	private Set<EnumCardType> paymentTypes;
 	private int priorEcheckUse;
 	private Set<EnumOrderType> allowedOrderTypes;
+	private EnumComparisionType eCheckMatchType;
 	
 	public CustomerStrategy() {
 		
@@ -72,9 +74,15 @@ public class CustomerStrategy implements PromotionStrategyI {
 				context.getUser().addPromoErrorCode(promotionCode, PromotionErrorType.NO_ELIGIBLE_PAYMENT_SELECTED.getErrorCode());
 				return DENY;
 			}
-			if(priorEcheckUse > 0 && currentCardType.equals(EnumCardType.ECP)){
+//			if(priorEcheckUse > 0 && currentCardType.equals(EnumCardType.ECP)){
+			if(currentCardType.equals(EnumCardType.ECP)) {
 				int validEcheckOrderCount = context.getSettledECheckOrderCount();
-				if(validEcheckOrderCount  < priorEcheckUse) return DENY;
+				if((EnumComparisionType.EQUAL.equals(eCheckMatchType) && validEcheckOrderCount  != priorEcheckUse)
+						||(EnumComparisionType.GREATER_OR_EQUAL.equals(eCheckMatchType) &&  validEcheckOrderCount  < priorEcheckUse)
+						||(EnumComparisionType.LESS_OR_EQUAL.equals(eCheckMatchType) && validEcheckOrderCount  > priorEcheckUse)){
+					return DENY;
+				}
+//				if(validEcheckOrderCount  < priorEcheckUse) return DENY;
 			}
 		}
 		
@@ -277,6 +285,14 @@ public class CustomerStrategy implements PromotionStrategyI {
 
 	public Set<String> getDpTypes() {
 		return this.dpTypes;
+	}
+
+	public EnumComparisionType getECheckMatchType() {
+		return eCheckMatchType;
+	}
+
+	public void setECheckMatchType(EnumComparisionType checkMatchType) {
+		eCheckMatchType = checkMatchType;
 	}
 
 }

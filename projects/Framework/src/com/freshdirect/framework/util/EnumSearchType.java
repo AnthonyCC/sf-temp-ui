@@ -21,6 +21,8 @@ public class EnumSearchType extends Enum{
 	public static EnumSearchType ORDER_SEARCH_BY_SKUS = new EnumSearchType("ORDER_SEARCH_BY_SKUS");
 	public static EnumSearchType GET_ORDERS_TO_MODIFY = new EnumSearchType("GET_ORDERS_TO_MODIFY");
 	public static EnumSearchType ALCOHOL_RESTRICTION_SEARCH = new EnumSearchType("ALCOHOL_RESTRICTION_SEARCH");
+	public static EnumSearchType PLATTER_RESTRICTION_SEARCH = new EnumSearchType("PLATTER_RESTRICTION_SEARCH");
+	
 	protected EnumSearchType(String name) {
 		super(name);
 	}

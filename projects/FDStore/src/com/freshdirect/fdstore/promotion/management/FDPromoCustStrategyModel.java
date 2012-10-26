@@ -3,6 +3,7 @@ package com.freshdirect.fdstore.promotion.management;
 import java.util.Date;
 
 import com.freshdirect.common.customer.EnumCardType;
+import com.freshdirect.delivery.EnumComparisionType;
 import com.freshdirect.delivery.EnumDeliveryOption;
 import com.freshdirect.framework.core.ModelSupport;
 
@@ -24,6 +25,7 @@ public class FDPromoCustStrategyModel extends ModelSupport {
 	private String priorEcheckUse;
 	private boolean excludeSameDayDlv;
 	private EnumDeliveryOption deliveryDayType;
+	private EnumComparisionType echeckMatchType;
 	
 
 	public FDPromoCustStrategyModel() {
@@ -34,7 +36,7 @@ public class FDPromoCustStrategyModel extends ModelSupport {
 			String[] dpTypes,String dpStatus, Date dpExpStart, Date dpExpEnd,
 			boolean orderTypeHome, boolean orderTypePickup,
 			boolean orderTypeCorporate, EnumCardType[] paymentType,
-			String priorEcheckUse) {
+			String priorEcheckUse,EnumComparisionType echeckMatchType) {
 		super();
 		this.promotionId = promotionId;
 		this.orderRangeStart = orderRangeStart;
@@ -49,6 +51,7 @@ public class FDPromoCustStrategyModel extends ModelSupport {
 		this.paymentType = paymentType;
 		this.priorEcheckUse = priorEcheckUse;
 		this.dpTypes=dpTypes;
+		this.echeckMatchType=echeckMatchType;
 	}
 	/*public FDPromoCustStrategyModel(String promotionId,
 			Integer orderRangeStart, Integer orderRangeEnd, String[] cohorts,
@@ -153,6 +156,12 @@ public class FDPromoCustStrategyModel extends ModelSupport {
 	}
 	public void setDeliveryDayType(EnumDeliveryOption deliveryDayType) {
 		this.deliveryDayType = deliveryDayType;
+	}
+	public EnumComparisionType getEcheckMatchType() {
+		return echeckMatchType;
+	}
+	public void setEcheckMatchType(EnumComparisionType echeckMatchType) {
+		this.echeckMatchType = echeckMatchType;
 	}
 	
 	

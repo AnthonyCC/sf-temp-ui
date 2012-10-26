@@ -8,7 +8,8 @@
 --%>
 <% if (promo_create_edit) { isEmptyPromoPayreq = true; } %>
 
-<table width="100%" class="bordBotLgray">
+
+<%@page import="com.freshdirect.delivery.EnumComparisionType"%><table width="100%" class="bordBotLgray">
 	<tr>
 		<td class="vTop">
 			<span class="brn11ptB">Payment Requirement</span>
@@ -60,7 +61,7 @@
 					<% if (!"0".equals(eCheckMin) && !"".equals(eCheckMin)) { %>
 						<tr>
 							<td class="promo_detail_label">Prior eCheck use:</td>
-							<td class="alignL"><%= (csm != null) ? eCheckBool : "" %><% if(!"".equals(eCheckMin)){ %><span class="gray" > min. </span><%= (csm != null) ? eCheckMin : "" %><span class="gray"> settled orders</span><% } %></td>
+							<td class="alignL"><%= (csm != null) ? eCheckBool : "" %><% if(!"".equals(eCheckMin)){ %><%= (null!= eCheckMatchType)?", "+eCheckMatchType.getComparisionType()+" ":""%><%= (csm != null) ? eCheckMin : "" %><span class="gray"> settled orders</span><% } %></td>
 						</tr>
 					<% } %>
 				<% } %>

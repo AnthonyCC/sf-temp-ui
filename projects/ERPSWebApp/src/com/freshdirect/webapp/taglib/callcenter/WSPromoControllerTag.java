@@ -240,7 +240,7 @@ public class WSPromoControllerTag extends AbstractControllerTag {
 					promoChanges.add(changeModel);
 					promotion.setAuditChanges(promoChanges);
 					
-					FDPromotionNewManager.storePromotionStatus(promotion,EnumPromotionStatus.CANCELLING);
+					FDPromotionNewManager.storePromotionStatus(promotion,EnumPromotionStatus.CANCELLING,true);
 					FDPromotionNewModel promo = FDPromotionNewManager.loadPromotion(promoCode);
 					doPublish(promo, actionResult);
 					if(actionResult.isSuccess()) {

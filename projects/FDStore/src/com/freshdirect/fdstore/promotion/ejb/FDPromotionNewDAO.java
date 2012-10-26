@@ -22,6 +22,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.apache.log4j.Logger;
 
 import com.freshdirect.customer.EnumChargeType;
+import com.freshdirect.delivery.EnumComparisionType;
 import com.freshdirect.delivery.EnumDeliveryOption;
 import com.freshdirect.deliverypass.EnumDlvPassStatus;
 import com.freshdirect.fdstore.FDStoreProperties;
@@ -1125,13 +1126,13 @@ public class FDPromotionNewDAO {
 	
 	/** @return Map of promotionPK -> CustomerStrategy */
 	private final static String GET_CUST_PROMO_STRATEGY = "select cs.promotion_id, cs.cohort,cs.dp_types, cs.dp_exp_end,cs.dp_exp_start, cs.dp_status, cs.order_range_end, " +
-														   "cs.order_range_start,cs.payment_type,cs.prior_echeck_use, ordertype_home, ordertype_pickup, ordertype_corporate " +
+														   "cs.order_range_start,cs.payment_type,cs.prior_echeck_use,cs.echeck_match_type, ordertype_home, ordertype_pickup, ordertype_corporate " +
 														   "from cust.promo_cust_strategy cs, " +
 														   "(SELECT ID FROM CUST.PROMOTION_NEW where status STATUSES and (expiration_date > (sysdate-7) " +
 														   "or expiration_date is null) and redemption_code is null) p where p.ID = cs.PROMOTION_ID";
 
 	private final static String GET_MODIFIED_CUST_PROMO_STRATEGY  =  "select cs.promotion_id, cs.cohort,cs.dp_types, cs.dp_exp_end,cs.dp_exp_start, cs.dp_status, cs.order_range_end, " +
-																	 "cs.order_range_start,cs.payment_type,cs.prior_echeck_use, ordertype_home, ordertype_pickup, ordertype_corporate " +
+																	 "cs.order_range_start,cs.payment_type,cs.prior_echeck_use,cs.echeck_match_type, ordertype_home, ordertype_pickup, ordertype_corporate " +
 																	 "from cust.promo_cust_strategy cs, " +
 																	 "(SELECT ID FROM CUST.PROMOTION_NEW where modify_date > ? ) p where p.ID = cs.PROMOTION_ID";
 	
@@ -1183,6 +1184,8 @@ public class FDPromotionNewDAO {
 			int priorEcheckUse = rs.getInt("prior_echeck_use");
 			strategy.setPriorEcheckUse(priorEcheckUse);
 			Set<EnumOrderType> orderTypes = new HashSet<EnumOrderType>();
+			
+			strategy.setECheckMatchType(EnumComparisionType.getEnum(rs.getString("echeck_match_type")));
 
 			if ("X".equals(NVL.apply(rs.getString("ORDERTYPE_HOME"),""))) {
 				orderTypes.add(EnumOrderType.HOME);
@@ -1207,7 +1210,7 @@ public class FDPromotionNewDAO {
 	protected static PromotionStrategyI loadCustomerStrategy(Connection conn, String promoId) throws SQLException {
 		CustomerStrategy strategy = null;
 		PreparedStatement ps = conn.prepareStatement("select cs.promotion_id, cs.cohort,cs.dp_types, cs.dp_exp_end,cs.dp_exp_start, cs.dp_status, cs.order_range_end, " +
-													 "cs.order_range_start,cs.payment_type,cs.prior_echeck_use, ordertype_home, ordertype_pickup, ordertype_corporate " +
+													 "cs.order_range_start,cs.payment_type,cs.prior_echeck_use,cs.echeck_match_type, ordertype_home, ordertype_pickup, ordertype_corporate " +
 													 "from cust.promo_cust_strategy cs, cust.promotion_new p " +
 													 "where p.ID = cs.PROMOTION_ID and cs.promotion_id = ?");
 		ps.setString(1, promoId);
@@ -1247,6 +1250,8 @@ public class FDPromotionNewDAO {
 			int priorEcheckUse = rs.getInt("prior_echeck_use");
 			strategy.setPriorEcheckUse(priorEcheckUse);
 			Set<EnumOrderType> orderTypes = new HashSet<EnumOrderType>();
+			
+			strategy.setECheckMatchType(EnumComparisionType.getEnum(rs.getString("echeck_match_type")));
 
 			if ("X".equals(rs.getString("ORDERTYPE_HOME"))) {
 				orderTypes.add(EnumOrderType.HOME);
