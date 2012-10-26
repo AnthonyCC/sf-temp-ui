@@ -104,6 +104,18 @@
             <rtexprvalue>true</rtexprvalue>
         </attribute>
     </tag>
+	
+	<tag>
+        <name>BatchUpload</name>
+        <tagclass>com.freshdirect.webapp.taglib.content.BatchUploadTag</tagclass>
+        <teiclass>com.freshdirect.webapp.taglib.erp.BatchUploadTagEI</teiclass>
+        <bodycontent>JSP</bodycontent>
+		<attribute>
+            <name>id</name>
+            <required>true</required>
+            <rtexprvalue>false</rtexprvalue>
+        </attribute>
+    </tag>
 
     <tag>
         <name>Material</name>

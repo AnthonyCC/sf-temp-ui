@@ -311,7 +311,7 @@ var changeLog = ""+
 			var urlGetNBIS = urlMain+'product/product_view.jsp?skuCode=';
 		//post url for NBIS
 			var urlPostNBIS = urlMain+'product/product_view.jsp';
-			var urlRestPost = urlMain+'attribute/material/material_view.jsp';
+			var urlRestPost = urlMain+'attribute/material/batchuploads.jsp'; //'attribute/material/material_view.jsp';
 
 	/* Misc variables */
 		//bool to control sku lookup
@@ -735,7 +735,7 @@ var changeLog = ""+
 			var tempIdsArr = cont.split('\n');
 
 			fdLog.debug('tempIdsArr '+tempIdsArr); 
-
+			
 			//loop through temp array, and add to curData
 			if ( isArray(tempIdsArr) ) {
 				var curLine = 0;
@@ -868,6 +868,8 @@ var changeLog = ""+
 
 			return true;
 		}
+		
+		
 
 	/* count ids */
 		function actionCountIds() {
@@ -957,7 +959,7 @@ var changeLog = ""+
 									curData[item][3] = responseDetails.responseText;
 									$('fetchitem'+item).innerHTML = curData[item][0]+' : '+curData[item][1];
 									doGet = true;
-									fdLog.debug('Fetched '+sapId); 
+									fdLog.debug('Fetched '+sapId);
 								},
 						onError: function(responseDetails) {
 									curData[item][1] = 'error';
@@ -3177,6 +3179,8 @@ var changeLog = ""+
 				}
 			}
 			//apply advance_order_flag changes if any
+			
+			fdLog.debug('^^^^^^^^^^^^^^^^^^Checking advanced order:' + $('advOrder_use').checked);
 			if ( $('advOrder_use').checked ) {
 				//only if description is set to change
 				if (postData[8]) {
@@ -3187,6 +3191,7 @@ var changeLog = ""+
 				}
 
 			}
+			fdLog.debug('^^^^^^^^^^^^^^^^^^^^^^^^^^^2AO flag:' + postData[8]);
 			//set into curData
 			if ($('advOrder_use').checked) {
 					if (doVerify) {
@@ -3205,6 +3210,8 @@ var changeLog = ""+
 					curData[item][7][3] = '{SKIP}';
 				}
 			}
+			
+			fdLog.debug('^^^^^^^^^^^^^^^^^^^^^^^^^^^3AO flag:' + curData[item][7][3]);
 
 			//apply description changes if any
 			if ( $('WD_use').checked ) {
@@ -3394,7 +3401,7 @@ var changeLog = ""+
 				if (elem[i].name.indexOf('description') != -1) { postDataTemp = 5; }
 				if (elem[i].name.indexOf(':selected') != -1) { postDataTemp = 6; }
 				if (elem[i].name.indexOf('taxable') != -1) { postDataTemp = 7; }
-				if (elem[i].name.indexOf('advance_order_flag') != -1) { postDataTemp = 8; }
+				if (elem[i].name.indexOf('advance_order_flag') != -1) { postDataTemp = 8; fdLog.debug('elem:'+elem[i]+'-----------value=' + elem[i].value);}
 				if (elem[i].name.indexOf('kosher_production') != -1) { postDataTemp = 9; }
 				//great naming scheme going on here
 				if (elem[i].name.indexOf('::new_prod_date') != -1) { postDataTemp = 10; }
@@ -3472,6 +3479,8 @@ var changeLog = ""+
 						curData[n][1] = 'parsing';
 						$('fetchitem'+n).innerHTML = curData[n][0]+' : '+curData[n][1];
 						while(!itemParse(n));
+						
+						postData[0] = 'action=rest';
 
 						curData[n][1] = 'changing';
 						$('fetchitem'+n).innerHTML = curData[n][0]+' : '+curData[n][1];
@@ -3806,11 +3815,11 @@ var changeLog = ""+
 				$('fetchitem'+item).innerHTML = curData[item][0]+' : '+curData[item][1];
 				
 				curData[item][1] = 'posting';
-					fdLog.debug("Ajax call for7:"+ urlPost+"?" + curData[item][4]);
+					fdLog.debug("Ajax call for7:"+ urlPost+"?" + curData[item][4] + '&sap_id=' + curData[item][0]);
 					
 					new Ajax.Request(urlPost, {
 						method: 'POST',			
-						parameters: encodeURI(curData[item][4]),
+						parameters: encodeURI(curData[item][4] + '&sap_id=' + curData[item][0]),
 						onComplete: function(retdata) {
 								curData[item][1] = postedStatus;
 								curData[item][5] = retdata.status;

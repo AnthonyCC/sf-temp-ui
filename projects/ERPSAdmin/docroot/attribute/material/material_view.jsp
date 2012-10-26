@@ -79,7 +79,7 @@
                 </td><tr>
             </table>
 			<table cellspacing=2 cellpadding=2>
-                <tr><td class="field_title">Advance Order</td><td><input type='checkbox' name='<%= FormElementNameHelper.getFormElementName(material, EnumAttributeName.ADVANCE_ORDER_FLAG.getName()) %>' <%= (true == material.getAttributeBoolean(EnumAttributeName.ADVANCE_ORDER_FLAG))?"CHECKED":"" %>>
+                <tr><td class="field_title">Advance Order</td><td><input type='checkbox' name='<%= FormElementNameHelper.getFormElementName(material, EnumAttributeName.ADVANCE_ORDER_FLAG.getName()) %>' <%= (true == material.getAttributeBoolean(EnumAttributeName.ADVANCE_ORDER_FLAG))?"CHECKED":"" %> value='<%= (true == material.getAttributeBoolean(EnumAttributeName.ADVANCE_ORDER_FLAG))?"on":"" %>' />
                 product qualifies for 'advance order' timeslots
                 </td><tr>
             </table>
