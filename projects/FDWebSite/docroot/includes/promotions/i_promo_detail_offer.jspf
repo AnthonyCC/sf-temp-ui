@@ -76,6 +76,9 @@
 								) { %>
 								<td class="alignL"><%= (!"".equals(promotion.getPercentOff()))?(NumberUtil.isDouble(promotion.getPercentOff())?Double.valueOf(promotion.getPercentOff()).intValue():promotion.getPercentOff())+" %":"$ "+promotion.getMaxAmount()%></td>
 							<% } %>
+							<% if(!"".equals(promotion.getMaxPercentageDiscount())) { %>
+								<td class="alignL">Max Percentage Discount Amount <span class="gray"> $<%= promotion.getMaxPercentageDiscount() %></span></td>
+							<% } %>
 							<% if ( promotion.getWaiveChargeType() != null && !"".equals(promotion.getWaiveChargeType()) ) { %>
 								<td class="alignL">Free Delivery <span class="grayIta8pt"> <% if(promotion.isFuelSurchargeIncluded())  { %> (incl. fuel surcharge) <% } else { %> (excl. fuel surcharge) <% } %></span></td>
 							<% } %>
@@ -115,6 +118,9 @@
 									( promotion.getMaxAmount() != null && !"".equals(promotion.getMaxAmount()) )
 								) { %>
 								<td class="alignL"><%= (!"".equals(promotion.getPercentOff()))?(NumberUtil.isDouble(promotion.getPercentOff())?Double.valueOf(promotion.getPercentOff()).intValue():promotion.getPercentOff())+" %":"$ "+promotion.getMaxAmount()%></td>
+							<% } %>
+							<% if(!"".equals(promotion.getMaxPercentageDiscount())) { %>
+								<td class="alignL">Max Percentage Discount Amount <span class="gray"> $<%= promotion.getMaxPercentageDiscount() %></span></td>
 							<% } %>
 							</tr>
 						<%-- max items call --%>

@@ -21,6 +21,7 @@ public class Discount implements java.io.Serializable {
 	private final double amount;
 	private String promotionDescription=" ";
 	private int skuLimit=0;
+	private double maxPercentageDiscount=0.0;
 
 	public Discount(String promotionCode, EnumDiscountType promotionType, double amount) {
 		this.promotionCode = promotionCode;
@@ -63,6 +64,14 @@ public class Discount implements java.io.Serializable {
 
 	public int getSkuLimit() {
 		return skuLimit;
+	}
+	
+	public void setMaxPercentageDiscount(double maxDiscount) {
+		this.maxPercentageDiscount = maxDiscount;
+	}
+	
+	public double getMaxPercentageDiscount() {
+		return maxPercentageDiscount;
 	}
 
 }

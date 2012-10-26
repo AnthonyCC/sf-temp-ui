@@ -39,6 +39,19 @@
 								<td><input type="text" id="hd_perc" name="hd_perc" maxlength="3" class="w30px" value=" " /><span class="gray"> % (0-100)</span></td>
 								<% } %>
 							</tr>
+							
+							<tr>
+								<td colspan="2"><img width="1" height="1" src="/media_stat/crm/images/clear.gif" alt="" class="promo_edit_offer-spacer" /></td>
+							</tr>
+							
+							<tr>
+								<td>Max Discount:</td>
+								<% if(EnumPromotionType.HEADER.getName().equalsIgnoreCase(promotion.getPromotionType())){ %>
+								<td>$ <input type="text" id="max_discount" name="max_discount" class="w50px" value="<%=promotion.getMaxPercentageDiscount()%>" /></td>
+								<% } else { %>
+								<td>$ <input type="text" id="max_discount" name="max_discount" class="w50px" value=" " /></td>
+								<% } %>
+							</tr>
 
 							<tr>
 								<td colspan="2" class="bordLgrayDash noBorderTRL">&nbsp;</td>
@@ -119,12 +132,11 @@
 								if(promotion.isCombineOffer()) {
 								hd_allow_offer_checked = "checked";
 								} else {									
-									if( "".equals(promotion.getPercentOff()) &&
-										"".equals(promotion.getMaxAmount()) &&
-										"".equals(promotion.getWaiveChargeType()) &&
-										"".equals(hd_allow_offer_disabled)) {
-											hd_allow_offer_checked = "checked";
+									if (!EnumPromotionType.HEADER.getName().equalsIgnoreCase(promotion.getPromotionType())) {
+										//if header is not chosen, then default the combine offer.
+										hd_allow_offer_checked = "checked";
 									} else {
+										//this promotion already has settings selected. there is nothing to default
 										hd_allow_offer_checked = "";
 									}
 								}
@@ -255,6 +267,19 @@
 								<td class="alignL vTop padL8R16"><input type="text" maxlength="5" id="li_discount" name="li_discount" class="w30px" value=" " /><span class="gray"> % (0-100)</span></td>
 								<% } %>
 							</tr>
+							
+							<tr>
+								<td colspan="2"><img width="1" height="1" src="/media_stat/crm/images/clear.gif" alt="" class="promo_edit_offer-spacer" /></td>
+							</tr>
+							
+							<tr>
+								<td>Max Discount:</td>
+								<% if(EnumPromotionType.LINE_ITEM.getName().equalsIgnoreCase(promotion.getPromotionType())){ %>
+								<td>$ <input type="text" id="li_max_discount" name="li_max_discount" class="w50px" value="<%= promotion.getMaxPercentageDiscount() %>" /></td>
+								<% } else { %>
+								<td>$ <input type="text" id="li_max_discount" name="li_max_discount" class="w50px" value="" /></td>
+								<% } %>
+							</tr>
 
 							<tr>
 								<td colspan="2" class="bordLgrayDash noBorderTRL">&nbsp;</td>
@@ -276,24 +301,13 @@
 					if(EnumPromotionType.LINE_ITEM.getName().equalsIgnoreCase(promotion.getPromotionType()) && promotion.isCombineOffer()) {
 						combined_offer_checked = "checked";
 					} else {
-						if( "".equals(promotion.getPercentOff()) &&
-							"".equals(promotion.getMaxAmount()) &&
-							(promotion.getMaxItemCount() == null || promotion.getMaxItemCount() == 0) &&
-							(promotion.getSkuLimit() == null || promotion.getSkuLimit() == 0) &&
-							"".equals(depts.toString()) &&
-							"".equals(cats.toString()) &&
-							"".equals(rcats.toString()) &&
-							"".equals(recps.toString()) &&
-							"".equals(elgSkus.toString()) &&
-							"".equals(inElgSkus.toString()) &&
-							"".equals(elgBrnds.toString()) &&
-							"".equals(inElgBrnds.toString()) &&
-							!promotion.isFavoritesOnly() &&
-							!promotion.isPerishable()) {
-								combined_offer_checked = "checked";
-							} else {
-								combined_offer_checked = "";
-							}						
+						if(!EnumPromotionType.LINE_ITEM.getName().equalsIgnoreCase(promotion.getPromotionType())) {
+							//line item is not selected, so default the combine offer
+							combined_offer_checked = "checked";
+						} else {
+							//line item is already configured. no defaults needed
+							combined_offer_checked = "";
+						}
 					}
 				%>
 				<tr>

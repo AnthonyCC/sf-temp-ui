@@ -483,6 +483,12 @@ public class FDPromotionManagerNewDAO {
 		promotion.setPublishes(rs.getInt("PUBLISHES"));
 		promotion.setSkuLimit(rs.getInt("SKU_LIMIT"));		
 		promotion.setRadius(rs.getString("RADIUS"));
+		double maxPercentageAmount = rs.getDouble("MAX_PERCENTAGE_DISCOUNT");
+		if (!rs.wasNull()) {
+			promotion.setMaxPercentageDiscount(FormatterUtil.formatToTwoDecimal(maxPercentageAmount));
+		} else {
+			promotion.setMaxPercentageDiscount("");
+		}
 		return promotion;
 	}
 
@@ -2426,6 +2432,7 @@ public class FDPromotionManagerNewDAO {
 				+ " CODE=?, CAMPAIGN_CODE = ?, COMBINE_OFFER = ?, PERISHABLEONLY = ? ,FAVORITES_ONLY = ?, PERCENT_OFF = ?, WAIVE_CHARGE_TYPE = ?," 
 				+ " CATEGORY_NAME=?, PRODUCT_NAME=?, EXTEND_DP_DAYS =?,"
 				+ " MAX_AMOUNT =?, OFFER_TYPE = ?, MAX_ITEM_COUNT =?, MODIFIED_BY =?, MODIFY_DATE =?, INCL_FUEL_SURCHARGE=?, sku_limit=? "
+				+ " ,MAX_PERCENTAGE_DISCOUNT=? "
 				+ " WHERE ID = ?");
 		int i = 1;
 //		i = setupPreparedStatement(ps, promotion, i);
@@ -2481,6 +2488,12 @@ public class FDPromotionManagerNewDAO {
 			ps.setInt(i++, promotion.getSkuLimit().intValue());					
 		} else {
 			ps.setNull(i++, Types.INTEGER);										
+		}
+		
+		if (!"".equals(promotion.getMaxPercentageDiscount())) {
+			ps.setDouble(i++, Double.parseDouble(promotion.getMaxPercentageDiscount()));
+		} else {
+			ps.setNull(i++, Types.DOUBLE);
 		}
 			
 		ps.setString(i++, promotion.getPK().getId());
@@ -3061,7 +3074,7 @@ public class FDPromotionManagerNewDAO {
 		}
 	}
 	
-	static String CUST_RESTRICTION = "select count(*) " + 
+	static String CUST_RESTRICTION = "select * " + 
             "from cust.promotion_new p, cust.promo_customer pc, cust.customer c " + 
             "where p.id=pc.promotion_id and pc.customer_id=c.id " +
             "and pc.promotion_id = ? " +
@@ -3073,21 +3086,31 @@ public class FDPromotionManagerNewDAO {
 		ps.setString(1, promotionId);
 		ps.setString(2, userId);		
 		ResultSet rs = ps.executeQuery();
-		int count = 0;
 
 		try {
-			if (rs.next())
-				count = rs.getInt(1);
-			
-			if(count == 0)
-				return false;
-			
-			return true;
-			
+			if(rs.next()) {
+				return true;
+			} 
 		} finally {
 			rs.close();
 			ps.close();
 		}
+		
+		//check for prospect customer
+		PreparedStatement ps1 = conn.prepareStatement("select * from cust.promo_customer pc where pc.promotion_id =? and pc.customer_email=?");
+		ps1.setString(1, promotionId);
+		ps1.setString(2, userId);		
+		rs = ps1.executeQuery();
+		
+		try {
+			if (rs.next())
+				return true;
+		} finally {
+			rs.close();
+			ps1.close();
+		}
+		
+		return false;
 	}
 	
 	public static void setDOWLimit(Connection conn, int dayofweek, double limit) throws SQLException {

@@ -99,6 +99,7 @@ public class PromotionOfferControllerTag extends AbstractControllerTag {
 			String promotionType = NVL.apply(request.getParameter("discount_type"), "").trim();
 			if(EnumPromotionType.HEADER.getName().equalsIgnoreCase(promotionType)){
 				this.promotion.setMaxAmount("");
+				this.promotion.setMaxPercentageDiscount("");
 				this.promotion.setPercentOff(NVL.apply(request.getParameter("hd_perc"), "").trim());
 				String headerDiscountType = NVL.apply(request.getParameter("header_discount_type"), "").trim();
 				String offerType = NVL.apply(request.getParameter("header_discount_type_all"), "").trim();
@@ -118,6 +119,11 @@ public class PromotionOfferControllerTag extends AbstractControllerTag {
 						actionResult.addError(true, "percentOffNumber", " Discount % value for HEADER should be integer.");
 					}else if(Integer.parseInt(percentOff)>100){
 						actionResult.addError(true, "percentOffNumber", " Discount % value for HEADER should not be > 100.");
+					}
+					String maxDiscount = NVL.apply(request.getParameter("max_discount"), "").trim();
+					this.promotion.setMaxPercentageDiscount(maxDiscount);
+					if(!"".equals(maxDiscount) && !NumberUtil.isDouble(maxDiscount)) {
+						actionResult.addError(true, "percentOffNumber", " Max Discount value for HEADER should be integer.");
 					}
 				}else if("amount".equalsIgnoreCase(headerDiscountType)){
 					String maxAmount = NVL.apply(request.getParameter("hd_amt"), "").trim();
@@ -198,6 +204,7 @@ public class PromotionOfferControllerTag extends AbstractControllerTag {
 				clearLineItemTypeInfo();
 			}else if(EnumPromotionType.LINE_ITEM.getName().equalsIgnoreCase(promotionType)){
 				this.promotion.setMaxAmount("");
+				this.promotion.setMaxPercentageDiscount("");
 				this.promotion.setOfferType(EnumOfferType.LINE_ITEM.getName());
 //				String percentOff = NVL.apply(request.getParameter("li_discount"), "").trim();
 				String liDiscountType = NVL.apply(request.getParameter("li_discount_type"), "").trim();
@@ -211,6 +218,11 @@ public class PromotionOfferControllerTag extends AbstractControllerTag {
 						actionResult.addError(true, "liPercentOffNumber", " Discount % value for LINE ITEM should be a number.");
 					}else if(Double.parseDouble(percentOff)>100){
 						actionResult.addError(true, "liPercentOffNumber", " Discount % value for LINE ITEM should not be > 100.");
+					}
+					String maxDiscount = NVL.apply(request.getParameter("li_max_discount"), "").trim();
+					this.promotion.setMaxPercentageDiscount(maxDiscount);
+					if(!"".equals(maxDiscount) && !NumberUtil.isDouble(maxDiscount)) {
+						actionResult.addError(true, "liPercentOffNumber", " Max Discount value for LINE ITEM should be number.");
 					}
 				}else if("amount".equalsIgnoreCase(liDiscountType)){
 					String maxAmount = NVL.apply(request.getParameter("li_amt"), "").trim();

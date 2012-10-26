@@ -266,7 +266,7 @@ public class PriceCalculator {
     				FDGroup group = productInfo.getGroup();
     				//if(tieredPercentage > 0 && group != null){
     				//APPDEV-2414 - Take group price into account if exists when calculating highest deal percentage
-    				if(priceModel.isItemOnSale() && group != null){
+    				if( (priceModel.isItemOnSale() || tieredPercentage > 0) && group != null){
     					//Check to see current pricing zone has group price defined.
     					if(group != null) {
     						MaterialPrice gsPrice = GroupScaleUtil.getGroupScalePrice(group, ctx.getZoneId());

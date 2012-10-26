@@ -24,6 +24,7 @@ public class LineItemDiscountApplicator implements PromotionApplicatorI {
 	private DlvZoneStrategy zoneStrategy;
 	private HeaderDiscountRule discountRule=null;
 	private int skuLimit = 0;
+	private double maxPercentageDiscount=0.0;
 	
 	/*
 	 * List of line item strategies to determine the eligibility of a line item before
@@ -31,9 +32,10 @@ public class LineItemDiscountApplicator implements PromotionApplicatorI {
 	 */
 	private List lineItemStrategies = new ArrayList();
 	
-	public LineItemDiscountApplicator(double minAmount,double percentoff) { //, int maxItemCount,boolean applyHeaderDiscount){
+	public LineItemDiscountApplicator(double minAmount,double percentoff, double maxPercentageDiscount) { //, int maxItemCount,boolean applyHeaderDiscount){
 		this.minSubTotal=minAmount;
 		this.percentOff=percentoff;
+		this.maxPercentageDiscount = maxPercentageDiscount;
 	}
 	
 	public LineItemDiscountApplicator(double minAmount) { //, int maxItemCount,boolean applyHeaderDiscount){
@@ -248,7 +250,7 @@ public class LineItemDiscountApplicator implements PromotionApplicatorI {
 						if(availableSkuLimit > (int)cartLine.getQuantity()) {
 							availableSkuLimit = (int)cartLine.getQuantity();
 						}
-						boolean applied = context.applyLineItemDiscount(promo, cartLine, percentOff, availableSkuLimit);
+						boolean applied = context.applyLineItemDiscount(promo, cartLine, percentOff, availableSkuLimit, maxPercentageDiscount);
 						if(applied && skuLimit > 0) {
 							if(cartLine.getUnitPrice().indexOf("/lb") != -1) {
 								cart.incrementSkuCount(1);

@@ -104,6 +104,7 @@ public class FDPromotionNewModel extends ModelSupport {
 	private Integer skuLimit;
 	private String tsaPromoCode;
 	private String radius;
+	private String maxPercentageDiscount;
 	/*
 	 * Number of successful publishes
 	 */
@@ -1154,6 +1155,14 @@ public class FDPromotionNewModel extends ModelSupport {
 
 	public void setRadius(String radius) {
 		this.radius = radius;
+	}
+	
+	public String getMaxPercentageDiscount() {
+		return maxPercentageDiscount;
+	}
+
+	public void setMaxPercentageDiscount(String amount) {
+		this.maxPercentageDiscount = amount;
 	}
 
 	public String[] getWSSelectedWindows() {

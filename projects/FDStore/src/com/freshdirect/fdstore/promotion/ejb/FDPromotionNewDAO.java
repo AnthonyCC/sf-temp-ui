@@ -652,12 +652,13 @@ public class FDPromotionNewDAO {
 		// percent-off applicator
 		//
 		wasNull = false;
+		double maxPercentageDiscount = rs.getDouble("MAX_PERCENTAGE_DISCOUNT");
 		double percentOff = rs.getDouble("percent_off");		
 		
 		wasNull |= rs.wasNull();
 		if (!wasNull && "HEADER".equals(rs.getString("CAMPAIGN_CODE"))) {
 			
-			return new PercentOffApplicator(minSubtotal, percentOff);
+			return new PercentOffApplicator(minSubtotal, percentOff, maxPercentageDiscount);
 		}
 		
 		if("LINE_ITEM".equals(rs.getString("CAMPAIGN_CODE"))){
@@ -669,7 +670,7 @@ public class FDPromotionNewDAO {
 				applicator = new LineItemDiscountApplicator(minSubtotal);
 				applicator.setDiscountRule(new HeaderDiscountRule(minSubtotal, maxAmount));
 			}else{
-				applicator = new LineItemDiscountApplicator(minSubtotal, percentOff);
+				applicator = new LineItemDiscountApplicator(minSubtotal, percentOff, maxPercentageDiscount);
 			}
 			if(skulimit > 0) {
 				applicator.setSkuLimit(skulimit);
@@ -1282,12 +1283,13 @@ public class FDPromotionNewDAO {
 	 */
 	private final static String getABPromotionsForCustomer = "select p.code, pc.usage_cnt, pc.expiration_date "
 		+ "from cust.promotion_new p, cust.promo_customer pc "
-		+ "where p.id=pc.promotion_id and (p.expiration_date > (sysdate-7) or p.expiration_date is null) and pc.customer_id = ?";
+		+ "where p.id=pc.promotion_id and (p.expiration_date > (sysdate-7) or p.expiration_date is null) and (pc.customer_id = ? or upper(PC.CUSTOMER_EMAIL) = upper(?))";
 	
 	/** @return Map of promotionPK -> AssignedCustomerStrategy */
-	public static Map<String,AssignedCustomerParam> loadAssignedCustomerParams(Connection conn, String erpCustomerId) throws SQLException {
+	public static Map<String,AssignedCustomerParam> loadAssignedCustomerParams(Connection conn, String erpCustomerId, String email) throws SQLException {
 		PreparedStatement ps = conn.prepareStatement(getABPromotionsForCustomer);
 		ps.setString(1, erpCustomerId);
+		ps.setString(2, email);
 		ResultSet rs = ps.executeQuery();
 		// promotionPK -> FDPromoAudience 
 		Map<String,AssignedCustomerParam> audiencePromoDtls = new ConcurrentHashMap<String,AssignedCustomerParam>();
@@ -1298,7 +1300,7 @@ public class FDPromotionNewDAO {
 			int usageCnt = rs.getInt("USAGE_CNT");
 			AssignedCustomerParam assignedCustParam = new AssignedCustomerParam(new Integer(usageCnt), expirationDate);
 			audiencePromoDtls.put(promoId, assignedCustParam);
-		}
+		}		
 
 		rs.close();
 		ps.close();

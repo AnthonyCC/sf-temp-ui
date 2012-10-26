@@ -71,11 +71,21 @@ public class PricingEngine {
 					double discount_amount = discount_allowed_amount * (1.0 - discount.getAmount()); //10 * (1 - 0.50)=10*0.50=5.0
 					basePrice = remaining_amount + discount_amount;  //5+5=10
 				} else {
-					basePrice = price.getBasePrice() * (1.0 - discount.getAmount());
+					//basePrice = price.getBasePrice() * (1.0 - discount.getAmount());
+					double percentoff = price.getBasePrice() * discount.getAmount();
+					if(percentoff > discount.getMaxPercentageDiscount()) {
+						percentoff = discount.getMaxPercentageDiscount();
+					}
+					basePrice = price.getBasePrice() - percentoff;
 				}
 			} else {
 				// percent off from base price
-				basePrice = price.getBasePrice() * (1.0 - discount.getAmount());
+				//basePrice = price.getBasePrice() * (1.0 - discount.getAmount());
+				double percentoff = price.getBasePrice() * discount.getAmount();
+				if(percentoff > discount.getMaxPercentageDiscount()) {
+					percentoff = discount.getMaxPercentageDiscount();
+				}
+				basePrice = price.getBasePrice() - percentoff;
 			}
             // round to nearest cent
             basePrice = MathUtil.roundDecimal(basePrice);

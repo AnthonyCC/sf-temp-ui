@@ -11,16 +11,18 @@ public class PercentOffApplicator implements PromotionApplicatorI {
 	private final double minSubtotal;
 	private final double percentOff;
 	private DlvZoneStrategy zoneStrategy;
+	private final double maxPercentageDiscount;
 	
 	/**
 	 * @param percentOff between 0 and 1
 	 */
-	public PercentOffApplicator(double minSubtotal, double percentOff) {
+	public PercentOffApplicator(double minSubtotal, double percentOff, double maxPercentageDiscount) {
 		if (percentOff < 0 || percentOff > 1) {
 			throw new IllegalArgumentException("Expected value between 0 and 100");
 		}
 		this.minSubtotal = minSubtotal;
 		this.percentOff = percentOff;
+		this.maxPercentageDiscount = maxPercentageDiscount;
 	}
 
 	public double getMinSubtotal() {
@@ -44,6 +46,12 @@ public class PercentOffApplicator implements PromotionApplicatorI {
 		//[APPDEV-2407]-Change to Percent-Off Promotion Discount Logic (Header Level)
 		//double amount = context.getShoppingCart().getPreDeductionTotal() * this.percentOff;
 		double amount = context.getShoppingCart().getSubTotal() * this.percentOff;
+		//[APPDEV-2433]-Apply max discount if available
+		if(maxPercentageDiscount > 0) {
+			if(amount > maxPercentageDiscount) {
+				amount = maxPercentageDiscount;
+			}
+		}
 		return context.applyHeaderDiscount(promo, amount);
 	}
 	

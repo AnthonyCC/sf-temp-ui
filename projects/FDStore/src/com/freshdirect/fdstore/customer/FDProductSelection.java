@@ -305,11 +305,15 @@ public class FDProductSelection implements FDProductSelectionI {
 			} else if(this.getDiscount().getSkuLimit() > 0 && this.price.getBasePriceUnit().equalsIgnoreCase("lb") && this.getDiscount().getDiscountType().equals(EnumDiscountType.DOLLAR_OFF)) {
 				disAmount=this.price.getBasePrice();
 			} else {
-				try {
-					Price discountP=PricingEngine.applyDiscount(p,1,this.getDiscount(),this.price.getBasePriceUnit());
-					disAmount=discountP.getBasePrice();
-				} catch (PricingException e) {
-					e.printStackTrace();
+				if(this.getDiscount().getMaxPercentageDiscount() > 0) {
+					disAmount = this.orderLine.getPrice()/this.orderLine.getQuantity();
+				} else {
+					try {
+						Price discountP=PricingEngine.applyDiscount(p,1,this.getDiscount(),this.price.getBasePriceUnit());
+						disAmount=discountP.getBasePrice();
+					} catch (PricingException e) {
+						e.printStackTrace();
+					}
 				}
 			}
 		}else{
