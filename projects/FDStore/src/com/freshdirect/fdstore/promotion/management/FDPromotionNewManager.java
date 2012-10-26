@@ -7,6 +7,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.StringTokenizer;
 
 import javax.ejb.CreateException;
 import javax.ejb.FinderException;
@@ -849,6 +850,19 @@ public class FDPromotionNewManager {
 			invalidateManagerHome();
 			throw new FDResourceException(re, "Error talking to session bean");
 		}		
-	}	
+	}
+	
+	public static boolean isHrPromoCode(String redemptionCode) {
+		String hrPromoCode = FDStoreProperties.getHRPromoCodes();
+		StringTokenizer stokens = new StringTokenizer(hrPromoCode, ",");
+		while(stokens.hasMoreTokens()) {
+			String redCode = stokens.nextToken();
+			if(redemptionCode.equalsIgnoreCase(redCode)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 
 }

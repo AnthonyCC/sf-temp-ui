@@ -188,7 +188,13 @@ public class PromotionCustReqControllerTag extends AbstractControllerTag {
 					promotion.setTmpAssignedCustomerUserIds(custIds);
 					FDPromotionNewManager.storeAssignedCustomers(promotion, custIds);
 					promotion.setTmpAssignedCustomerUserIds("");
-					setSuccessPage("/promotion/promo_details.jsp?promoId="+promotion.getPromotionCode()+"&SUCCESSCUST=true");
+					HttpSession session = pageContext.getSession();
+					CrmAgentModel agent = CrmSession.getCurrentAgent(session);
+					if(agent.getRole().getCode().equals("HR")) {
+						setSuccessPage("/promotion/promo_hronly.jsp?promoId="+promotion.getPromotionCode()+"&SUCCESSCUST=true");
+					} else {
+						setSuccessPage("/promotion/promo_details.jsp?promoId="+promotion.getPromotionCode()+"&SUCCESSCUST=true");
+					}
 //					request.setAttribute("SUCCESS", true);
 				}
 			}

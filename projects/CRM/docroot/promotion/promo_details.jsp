@@ -6,6 +6,7 @@
 <%@ page import="com.freshdirect.fdstore.promotion.management.FDPromoDlvZoneStrategyModel"%>
 <%@ page import="com.freshdirect.fdstore.promotion.management.FDPromoDlvTimeSlotModel"%>
 <%@ page import="com.freshdirect.fdstore.promotion.management.FDPromoDlvDateModel"%>
+<%@ page import="com.freshdirect.fdstore.promotion.management.FDPromotionNewManager"%>
 <%@ page import="com.freshdirect.fdstore.promotion.EnumPromotionStatus"%>
 <%@ page import="com.freshdirect.fdstore.FDStoreProperties"%>
 <%@ page import="com.freshdirect.fdstore.promotion.EnumPromotionProfileAttribute"%>
@@ -118,6 +119,7 @@
 			<div class="padLR4">
 				<%@ include file="/includes/promotions/i_promo_detail_offer.jspf" %>
 			</div>
+			<% if(!FDPromotionNewManager.isHrPromoCode(promotion.getRedemptionCode())) { %>
 			<%-- Promotion details, customer requirements--%>
 			<div class="padLR4">
 			
@@ -125,6 +127,7 @@
 				<%@ include file="/includes/promotions/i_promo_detail_custreq.jspf" %>
 			
 			</div>
+			<% } %>
 			<%-- Promotion details, cart requirements--%>
 			<div class="padLR4">
 				<%@ include file="/includes/promotions/i_promo_detail_cartreq.jspf" %>

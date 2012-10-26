@@ -41,6 +41,7 @@ public class CrmAgentRole extends EnumModel {
 	public static final String ERP_CODE = "ERP";
 	public static final String NCS_CODE = "NCS";
 	public static final String TRNSP_CODE="TRNSP";
+	public static final String HR_CODE = "HR";
 	
 	
 
