@@ -282,7 +282,9 @@ public class OracleMarketAdminDAOImpl implements MarketAdminDAOIntf {
 	
 	
 	private static final String GET_PROMO_CUSTOMER="select *   from  ( select a.*, rownum rnum   from  ( "+
-		"select pc.customer_id,pc.promotion_id,pc.usage_cnt,pc.expiration_date,ci.first_name,ci.last_name ,c.user_id from cust.promo_customer pc,cust.customer c,cust.customerinfo ci where c.id=pc.customer_id and ci.customer_id=c.id and pc.promotion_id= ?";
+		"select pc.customer_id,pc.promotion_id,pc.usage_cnt,pc.expiration_date,ci.first_name,ci.last_name ,nvl(c.user_id,pc.customer_email) as user_id " +
+		"from cust.promo_customer pc,cust.customer c,cust.customerinfo ci " +
+		"where pc.customer_id = c.id (+) and c.id = ci.customer_id (+) and pc.promotion_id= ?";
 	
 	public Collection getRestrictedCustomers(String promotionId,String searchKey,long startIndex,long endIndex) throws SQLException{
 		LOGGER.debug("promotionId in getRestrictedCustomers():"+promotionId);
@@ -337,16 +339,28 @@ public class OracleMarketAdminDAOImpl implements MarketAdminDAOIntf {
 	
 	private static String DELETE_PROMO_CUSTOMER="delete from cust.promo_Customer where customer_id=? and promotion_id=?";
 	
+	private static String DELETE_PROSPECT_CUSTOMER="delete from cust.promo_Customer where customer_email=? and promotion_id=?";
+	
 
-	public void deleteRestrictedCustomers(String promotionId, String customerId) throws SQLException {
-		// TODO Auto-generated method stub
-		BatchSqlUpdate batchUpdater=new BatchSqlUpdate(this.jdbcTemplate.getDataSource(),DELETE_PROMO_CUSTOMER);
-		batchUpdater.declareParameter(new SqlParameter(Types.VARCHAR));
-									
-		this.jdbcTemplate.update(DELETE_PROMO_CUSTOMER, 
-					new Object[] {customerId,promotionId});				    				   
-				
-		batchUpdater.flush();
+	public void deleteRestrictedCustomers(String promotionId, String customerId, String email) throws SQLException {
+		if(customerId != null && customerId.length() > 0) {
+			BatchSqlUpdate batchUpdater=new BatchSqlUpdate(this.jdbcTemplate.getDataSource(),DELETE_PROMO_CUSTOMER);
+			batchUpdater.declareParameter(new SqlParameter(Types.VARCHAR));
+										
+			this.jdbcTemplate.update(DELETE_PROMO_CUSTOMER, 
+						new Object[] {customerId,promotionId});				    				   
+					
+			batchUpdater.flush();
+		} else {
+			//delete prospect customer
+			BatchSqlUpdate batchUpdater=new BatchSqlUpdate(this.jdbcTemplate.getDataSource(),DELETE_PROSPECT_CUSTOMER);
+			batchUpdater.declareParameter(new SqlParameter(Types.VARCHAR));
+										
+			this.jdbcTemplate.update(DELETE_PROSPECT_CUSTOMER, 
+						new Object[] {email,promotionId});				    				   
+					
+			batchUpdater.flush();
+		}
 		LOGGER.debug("Data is deleted");
 	}
 
@@ -449,6 +463,14 @@ public class OracleMarketAdminDAOImpl implements MarketAdminDAOIntf {
 									"where promotion_id = ? " +
 									"and customer_id = c.ID)";
 	
+	private static final String INSERT_RESTRICTED_PROSPECT_CUSTOMER=
+		"insert into cust.promo_Customer(PROMOTION_ID,EXPIRATION_DATE,CUSTOMER_EMAIL) " +
+			"select ?,?,? " +
+			"from   dual " +
+			"where  not exists (select 1 from cust.promo_customer " +
+								"where promotion_id = ? " +
+								"and customer_email = ?)";
+	
 	public void newInsertRestrictedCustomers(Collection restCustomerModel) throws SQLException {
 		BatchSqlUpdate batchUpdater=new BatchSqlUpdate(this.jdbcTemplate.getDataSource(),INSERT_RESTRICTED_CUSTOMER);		
 		batchUpdater.declareParameter(new SqlParameter(Types.VARCHAR));
@@ -457,7 +479,16 @@ public class OracleMarketAdminDAOImpl implements MarketAdminDAOIntf {
 		batchUpdater.declareParameter(new SqlParameter(Types.VARCHAR));
 		
 		
-		batchUpdater.compile(); 
+		batchUpdater.compile();
+		
+		BatchSqlUpdate batchUpdater1=new BatchSqlUpdate(this.jdbcTemplate.getDataSource(),INSERT_RESTRICTED_PROSPECT_CUSTOMER);
+		batchUpdater1.declareParameter(new SqlParameter(Types.VARCHAR));
+		batchUpdater1.declareParameter(new SqlParameter(Types.DATE));
+		batchUpdater1.declareParameter(new SqlParameter(Types.VARCHAR));
+		batchUpdater1.declareParameter(new SqlParameter(Types.VARCHAR));
+		batchUpdater1.declareParameter(new SqlParameter(Types.VARCHAR));		
+		
+		batchUpdater1.compile(); 
 		
 		Iterator iterator=restCustomerModel.iterator();
 		List totalList = new ArrayList();
@@ -465,29 +496,49 @@ public class OracleMarketAdminDAOImpl implements MarketAdminDAOIntf {
 			RestrictedPromoCustomerModel model=(RestrictedPromoCustomerModel)iterator.next();
 			LOGGER.debug("customer Id :"+model.getCustomerId()+" promotionId :"+model.getPromotionId());
 			totalList.add(model);
-			batchUpdater.update(
-			new Object[]{ model.getPromotionId(),model.getExpirationDate(), model.getCustomerId(),  model.getPromotionId()}
-			);			
+			if(model.getCustomerId() == null || model.getCustomerId().length() == 0) {
+				batchUpdater1.update(
+						new Object[]{ model.getPromotionId(),model.getExpirationDate(), model.getCustEmailAddress(),  model.getPromotionId(), model.getCustEmailAddress()}
+						);
+			} else {
+				batchUpdater.update(
+				new Object[]{ model.getPromotionId(),model.getExpirationDate(), model.getCustomerId(),  model.getPromotionId()}
+				);
+			}
 		}
 		batchUpdater.flush();
+		batchUpdater1.flush();
 		LOGGER.debug("Data is inserted");
 	}
 
 	private static final String DELETE_RESTRICTION_BATCH_QRY="delete from cust.promo_customer where customer_id=? and promotion_id=?";
+	
+	private static final String DELETE_RESTRICTION_BATCH_QRY1="delete from cust.promo_customer where upper(customer_email)=upper(?) and promotion_id=? and customer_id is null";
 	
 	public void deleteRestrictedCustomers(Collection collection) throws SQLException {
 		BatchSqlUpdate batchUpdater=new BatchSqlUpdate(this.jdbcTemplate.getDataSource(),DELETE_RESTRICTION_BATCH_QRY);
 		batchUpdater.declareParameter(new SqlParameter(Types.VARCHAR));
 		batchUpdater.declareParameter(new SqlParameter(Types.VARCHAR));
 		
+		BatchSqlUpdate batchUpdater1=new BatchSqlUpdate(this.jdbcTemplate.getDataSource(),DELETE_RESTRICTION_BATCH_QRY1);
+		batchUpdater1.declareParameter(new SqlParameter(Types.VARCHAR));
+		batchUpdater1.declareParameter(new SqlParameter(Types.VARCHAR));
+		
 		Iterator iterator=collection.iterator();	
 		while(iterator.hasNext()){
 			RestrictedPromoCustomerModel model=(RestrictedPromoCustomerModel)iterator.next();
-			this.jdbcTemplate.update(DELETE_RESTRICTION_BATCH_QRY, 
-					new Object[] {model.getCustomerId(),model.getPromotionId()});				    				   
+			if(model.getCustomerId() == null || model.getCustomerId().length() == 0) {
+				//prospect customer
+				this.jdbcTemplate.update(DELETE_RESTRICTION_BATCH_QRY1, 
+						new Object[] {model.getCustEmailAddress(),model.getPromotionId()});
+			} else {
+				this.jdbcTemplate.update(DELETE_RESTRICTION_BATCH_QRY, 
+					new Object[] {model.getCustomerId(),model.getPromotionId()});
+			}
 		}
 		
 		batchUpdater.flush();
+		batchUpdater1.flush();
 		
 		LOGGER.debug("Data is deleted1");
 		

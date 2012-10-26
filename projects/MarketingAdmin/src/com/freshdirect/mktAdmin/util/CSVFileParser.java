@@ -161,9 +161,9 @@ public class CSVFileParser implements FileParser {
 		        	   continue;
 		           }
 		           
-		           model.setCustomerId(nextLine[0]);                                              
+		           model.setCustomerId(nextLine[1]);                                              
 		                                                                                                                   
-		           //model.setCustEmailAddress(nextLine[1]);
+		           model.setCustEmailAddress(nextLine[0]);
 		                                                                                                                   
 		           //model.setFirstName(nextLine[2]);
 		                                                                 
@@ -233,9 +233,9 @@ public class CSVFileParser implements FileParser {
 					        	   continue;
 					           }
 					           
-					           model.setCustomerId(nextLine[0]);                                              
+					           model.setCustomerId(nextLine[1]);                                              
 					                                                                                                                   
-					           //model.setCustEmailAddress(nextLine[1]);
+					           model.setCustEmailAddress(nextLine[0]);
 					                                                                                                                   
 					           //model.setFirstName(nextLine[2]);
 					                                                                 
@@ -268,16 +268,16 @@ public class CSVFileParser implements FileParser {
    	 }
         
         System.out.println("nameCell.getStringCellValue()"+columnNames[0]);
-        if(!FILE_COLUMN_HEADER[0].equalsIgnoreCase(columnNames[0])){
+        if(!FILE_COLUMN_HEADER[1].equalsIgnoreCase(columnNames[0])){
        	 throw new MktAdminApplicationException("119",new String[]{"First",FILE_COLUMN_HEADER[0]});
         }
        
-        /*
+        
         System.out.println("nameCell.getStringCellValue()"+columnNames[1]);
-        if(!FILE_COLUMN_HEADER[1].equalsIgnoreCase(columnNames[1])){
+        if(!FILE_COLUMN_HEADER[0].equalsIgnoreCase(columnNames[1])){
        	 throw new MktAdminApplicationException("119",new String[]{"Second",FILE_COLUMN_HEADER[1]});
         }
-        
+        /*
         if(!FILE_COLUMN_HEADER[2].equalsIgnoreCase(columnNames[2])){
        	 throw new MktAdminApplicationException("119",new String[]{"Third",FILE_COLUMN_HEADER[2]});
         }

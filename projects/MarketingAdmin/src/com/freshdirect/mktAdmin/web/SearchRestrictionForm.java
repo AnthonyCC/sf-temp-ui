@@ -51,7 +51,8 @@ public class SearchRestrictionForm extends AbstractMktAdminForm {
 			String actionType=request.getParameter("action_type"); 
 			if(actionType!=null && actionType.trim().length()>0 && actionType.equalsIgnoreCase("DELETE")){
 				String customerId=request.getParameter("customerId");				
-			    getMarketAdminService().removeRestrictedCustomers(promotionCode,customerId);	
+				String email = request.getParameter("email");
+			    getMarketAdminService().removeRestrictedCustomers(promotionCode,customerId, email);	
 			}
 
 			form.setSerachKey("");

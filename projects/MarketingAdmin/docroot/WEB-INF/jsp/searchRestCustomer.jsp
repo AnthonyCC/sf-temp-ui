@@ -76,7 +76,7 @@
 				    <ec:row>				    				    	
 				      <ec:column property="customerId" title="Customer Id"/>
                       <ec:column property="custEmailAddress" title="Email Address"/>				      
-                      <ec:column property="promotionId" title="DELETE" filterable="false" sortable="false"><a href="${pageContext.request.contextPath}/searchRestriction.do?promotionCode=${command.promotion.promotionCode}&customerId=${pageScope.item.customerId}&action_type=DELETE">Delete</a></ec:column>                      
+                      <ec:column property="promotionId" title="DELETE" filterable="false" sortable="false"><a href="${pageContext.request.contextPath}/searchRestriction.do?promotionCode=${command.promotion.promotionCode}&customerId=${pageScope.item.customerId}&action_type=DELETE&email=${pageScope.item.custEmailAddress}">Delete</a></ec:column>                      
 				    </ec:row>
 				  </ec:table>
 			  	

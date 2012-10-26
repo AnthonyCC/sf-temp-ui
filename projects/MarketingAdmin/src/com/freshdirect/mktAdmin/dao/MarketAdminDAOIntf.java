@@ -36,7 +36,7 @@ public interface MarketAdminDAOIntf {
 
 	public Collection getRestrictedCustomers(String promotionCode,String searchKey,long startIndex,long endIndex) throws SQLException;
 	
-	public void deleteRestrictedCustomers(String promotionId,String customerId) throws SQLException;
+	public void deleteRestrictedCustomers(String promotionId,String customerId, String email) throws SQLException;
 		
 	public Collection getRestrictedCustomers(Collection restCustomerModel) throws SQLException;
 	

@@ -717,12 +717,12 @@ public class MarketAdminServiceImpl implements MarketAdminServiceIntf {
 		}
 
 
-		public void removeRestrictedCustomers(String promotionCode, String customerId) throws MktAdminApplicationException {
+		public void removeRestrictedCustomers(String promotionCode, String customerId, String email) throws MktAdminApplicationException {
 			// TODO Auto-generated method stub               			
 			try{				
 				LOGGER.debug("getMktAdminDAOImpl().removeRestrictedCustomers() :"+promotionCode+" customerId :"+customerId);
 				FDPromotionNewModel model=FDPromotionNewModelFactory.getInstance().getPromotion(promotionCode);
-				getMktAdminDAOImpl().deleteRestrictedCustomers(model.getId(),customerId);
+				getMktAdminDAOImpl().deleteRestrictedCustomers(model.getId(),customerId, email);
 			} catch (SQLException e) {	
 				LOGGER.warn("catching the database error");
 				throw new MktAdminSystemException("1002",e);

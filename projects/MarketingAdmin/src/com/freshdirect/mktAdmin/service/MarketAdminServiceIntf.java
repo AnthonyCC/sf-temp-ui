@@ -38,7 +38,7 @@ public interface MarketAdminServiceIntf {
 
 	public Collection getPromotionModel(String[] promotionCodes) throws MktAdminApplicationException;
 	
-	public void removeRestrictedCustomers(String promotionCode,String customerId) throws MktAdminApplicationException;
+	public void removeRestrictedCustomers(String promotionCode,String customerId, String email) throws MktAdminApplicationException;
 	
 	public void appendRestrictedCustomersFromEmailAddress(String[] emailAddress,String promotionCode) throws MktAdminApplicationException;
 	
