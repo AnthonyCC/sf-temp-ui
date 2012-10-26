@@ -138,7 +138,8 @@ public class ComplaintDAO implements java.io.Serializable {
           "cust.complaint_dept_code cdc " + 
         "where cc.code=cdc.comp_code " +
           "and cd.code=cdc.comp_dept " +
-          "and cdc.obsolete is null " +
-          "and cdc.comp_code = ?";
+          //"and cdc.obsolete is null " +
+          "and cdc.comp_code = ? " + 
+          "and cdc.comp_dept = 'GDW'";
 
 }

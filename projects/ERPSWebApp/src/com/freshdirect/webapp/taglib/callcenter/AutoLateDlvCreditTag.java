@@ -176,7 +176,7 @@ public class AutoLateDlvCreditTag extends AbstractControllerTag {
         	line.setAmount(ccm.getRemainingAmount());
         }
         
-        ErpComplaintReason ecr = ComplaintUtil.getReasonByCompCode(ccm.getNewCode());
+        ErpComplaintReason ecr = ComplaintUtil.getReasonByCompCode("LATEDEL");
         if(ecr != null) {
         	line.setReason( ecr );
         } else {

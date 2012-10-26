@@ -575,6 +575,8 @@ public class FDStoreProperties {
 	private final static String PROP_LEAD_TIME_OASAD_OFF = "fdstore.leadtime.turnoff";
 	
 	private final static String PROP_ENABLE_DELIVERYCENTER = "fdstore.delivery.center.enabled";
+	private final static String PROP_HRPROMO_CODES = "promo.hrpromocodes";
+	private final static String PROP_SHOW_AUTO_LATE_CREDIT_BUTTON = "fdstore.crm.show.autolatedelivery.button";
 
     static {
         defaults.put(PROP_ROUTING_PROVIDER_URL, "t3://localhost:7001");
@@ -1137,6 +1139,8 @@ public class FDStoreProperties {
 		defaults.put(PROP_LEAD_TIME_OASAD_OFF, "false");
 		
 		defaults.put(PROP_ENABLE_DELIVERYCENTER, "true");
+		defaults.put(PROP_HRPROMO_CODES, "EMPLOYEE,FDREWARD1,FDREWARD2,FDREWARD3,FDREWARD4");
+		defaults.put(PROP_SHOW_AUTO_LATE_CREDIT_BUTTON, "true");
 		
         refresh();
     }
@@ -2931,6 +2935,14 @@ public class FDStoreProperties {
 	
 	 public static boolean isDeliveryCenterEnabled() {
 	        return (Boolean.valueOf(get(PROP_ENABLE_DELIVERYCENTER))).booleanValue();
-	    }
+	 }
+	 
+	 public static String getHRPromoCodes() {
+		 return get(PROP_HRPROMO_CODES);
+	 }
+	 
+	 public static boolean isAutoLateCreditButtonOn() {
+			return (Boolean.valueOf(get(PROP_SHOW_AUTO_LATE_CREDIT_BUTTON))).booleanValue();
+	 }
 	
 }
