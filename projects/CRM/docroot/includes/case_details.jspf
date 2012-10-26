@@ -129,6 +129,7 @@ boolean isEditAllowed = (autoCaseComplaintId != null) || (
 	*/
 
 	/* enable reason select if not resolved on first contact */
+	/*
 	function CaseDisp_FirstContact(RefId, ToggleId) {
 
 		if (document.getElementById(RefId).value != 'No')
@@ -143,6 +144,7 @@ boolean isEditAllowed = (autoCaseComplaintId != null) || (
 		}
 		verifyCaseDisp();
 	}
+	*/
 	/*
 		called on change of select fields to verify Case Disposition fields
 		if a field is hidden, it doesn't count
@@ -172,28 +174,22 @@ boolean isEditAllowed = (autoCaseComplaintId != null) || (
 			<% if(!isSecuredCase){ %>
 			//check for Media : other
 			if ( field.id == 'media' ) {
-				if ( field.value == 'Other' ) {
+				if ( field.value == 'Other' || field.value == 'Supervisor' || field.value == 'Driver') {
 					//hide other form fields
 					$('MediaIsOther').style.display = 'none';
 						$('morethenone').disabled = true;
-						$('firstContact').disabled = true;
-						$('Resolved').disabled = true;
 						$('NotResolved').disabled = true;
 						$('satisfactoryReason').disabled = true;
-						$('customerTone').disabled = true;
-
+						
 					if ( caseStatus != 'New' ) {
 						$('MediaIsOtherWarn').className = 'casedisp_Err_vis';
 					}
 				} else {
 					$('MediaIsOther').style.display = 'block';
 						$('morethenone').disabled =  false;
-						$('firstContact').disabled = false;
-						$('Resolved').disabled = false;
 						$('NotResolved').disabled = false;
 						$('satisfactoryReason').disabled = false;
-						$('customerTone').disabled = false;
-
+						
 					if ( caseStatus != 'New' ) {
 						$('MediaIsOtherWarn').className = 'casedisp_Err_invis';
 					}
@@ -205,11 +201,9 @@ boolean isEditAllowed = (autoCaseComplaintId != null) || (
 			if ( caseStatus == 'Closed' ) {	
 				$('media').disabled = true;
 				$('morethenone').disabled = true;
-				$('firstContact').disabled = true;
-				$('Resolved').disabled = true;
 				$('NotResolved').disabled = true;
 				$('satisfactoryReason').disabled = true;
-				$('customerTone').disabled = true;
+				
 			}
 			<% } %>
 			if ( caseStatus == 'New' ) {
@@ -503,67 +497,6 @@ boolean isEditAllowed = (autoCaseComplaintId != null) || (
 						</div>
 					</div>
 					<div class="casedisp_line">
-						<div class="casedisp_text">
-							First contact for issue<span class="casedisp_Err_invis" id="firstContactErr">*</span>
-						</div>
-						<div class="casedisp_text2">
-							<a href="javascript:popResizeHelp('<%= FDStoreProperties.getCrmCaseFirstContactHelpLink() %>','715','940','kbit')" style='text-decoration: none;'  onmouseover="return overlib('Click for Help.', AUTOSTATUS, WRAP);" onmouseout="nd();">What's this?</a>
-						</div>
-						<div class="casedisp_select">
-							<select id="firstContact"  name="firstContact" onchange="verifyCaseDisp();">
-								<option value="">-Select One-</option>
-							<%
-								List caseFirstContactList=CrmCaseConstants.getCaseFirstContactForIssueList();
-								for(int i=0;i<caseFirstContactList.size();i++)
-								{
-								 String value=(String)caseFirstContactList.get(i);
-								 String media=thisCase.getFirstContactForIssue();
-								   if(value.equalsIgnoreCase(media))
-								   {
-							%> <option value="<%=value%>" selected="selected"><%=value%></option>
-							<%
-								   }else{
-							 %>
-								<option value="<%=value%>"><%=value%></option>
-							 <%
-								   }
-								}
-							%>							
-							</select>
-						</div>
-					</div>
-					<div class="casedisp_line">
-						<div class="casedisp_text">
-							Resolved on first contact<span class="casedisp_Err_invis" id="ResolvedErr">*</span>
-						</div>
-						<div class="casedisp_text2">
-						<a href="javascript:popResizeHelp('<%= FDStoreProperties.getCrmCaseResolvFirstHelpLink() %>','715','940','kbit')" style='text-decoration: none;'  onmouseover="return overlib('Click for Help.', AUTOSTATUS, WRAP);" onmouseout="nd();" >What's this?</a>
-						</div>
-						<div class="casedisp_select">
-							<select id="Resolved"  name="Resolved" onchange="CaseDisp_FirstContact(this.id, 'NotResolved'); verifyCaseDisp();">
-								<option value="">-Select One-</option>
-							<%
-								List caseResolvedFirstContactList=CrmCaseConstants.getCaseResolvedOnFirstContactList();
-								for(int i=0;i<caseResolvedFirstContactList.size();i++)
-								{
-								 String value=(String)caseResolvedFirstContactList.get(i);
-								 String media=thisCase.getFirstContactResolved();
-								   if(value.equalsIgnoreCase(media))
-								   {
-							%> <option value="<%=value%>" selected="selected"><%=value%></option>
-							<%
-								   }else{
-							 %>
-								<option value="<%=value%>"><%=value%></option>
-							 <%
-								   }
-								}
-							%>							
-
-							</select>
-						</div>
-					</div>
-					<div class="casedisp_line">
 						<div class="casedisp_text" id="NotResolved_text">
 							NOT resolved reason<span class="casedisp_Err_invis" id="NotResolvedErr">*</span>
 						</div>
@@ -623,33 +556,7 @@ boolean isEditAllowed = (autoCaseComplaintId != null) || (
 						</div>
 					</div>
 					<div class="casedisp_line">
-						<div class="casedisp_text">
-							Customer's tone<span class="casedisp_Err_invis" id="customerToneErr">*</span>
-						</div>
-						<div class="casedisp_text2">
-							<a href="javascript:popResizeHelp(URLDecode('<%= URLEncoder.encode(FDStoreProperties.getCrmCaseCustomerToneHelpLink()) %>'),'715','940','kbit')" style='text-decoration: none;' onmouseover="return overlib('Click for Help.', AUTOSTATUS, WRAP);" onmouseout="nd();" >What's this?</a>
-						</div>
-						<div class="casedisp_select">
-							<select name="customerTone" id="customerTone"  onchange="verifyCaseDisp();">
-								<option value="">-Select One-</option>
-							<%
-								List caseToneList=CrmCaseConstants.getCrmCaseCustomerTone();
-								for(int i=0;i<caseToneList.size();i++)
-								{
-								 String value=(String)caseToneList.get(i);
-								 String media=thisCase.getCustomerTone();
-								   if(value.equalsIgnoreCase(media))
-								   {
-							%> <option value="<%=value%>" selected="selected"><%=value%></option>
-							<%
-								   }else{
-							 %>
-								<option value="<%=value%>"><%=value%></option>
-							 <%
-								   }
-								}
-							%>							
-							</select>
+						<div class="casedisp_select">						
 				<fd:ErrorHandler result='<%= result %>' name='caseDisp07' id='errorMsg'><span class="error"><%=errorMsg%></span></fd:ErrorHandler>
 						</div>
 					</div>
@@ -933,14 +840,14 @@ document.body.setAttribute("className", "yui-skin-sam"); // IE
 	/* Call form verify functions - fixes hitting reload on page */
 	
 	/* this causes any hidden fields that should be shown, to show*/
-	CaseDisp_FirstContact('Resolved', 'NotResolved');
+	//CaseDisp_FirstContact('Resolved', 'NotResolved');
 	/* this verifies the form and enables the create button */
 	verifyCaseDisp();
 </script>
 <% } else if(!isSecuredCase){ %>
 <script type="text/javascript">
 	/* this causes any hidden fields that should be shown, to show*/
-	CaseDisp_FirstContact('Resolved', 'NotResolved');
+	//CaseDisp_FirstContact('Resolved', 'NotResolved');
 	/* this verifies the form and enables the create button */
 	verifyCaseDisp();
 </script>

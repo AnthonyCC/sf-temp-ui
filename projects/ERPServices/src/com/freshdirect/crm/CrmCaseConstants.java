@@ -25,9 +25,15 @@ public class CrmCaseConstants {
 		
 		crmCaseMediaList.add("Email");
 		crmCaseMediaList.add("Phone");
-		crmCaseMediaList.add("Chat");
+		crmCaseMediaList.add("CSI");
+		crmCaseMediaList.add("Social Media");
+		crmCaseMediaList.add("Tier 2");
+		crmCaseMediaList.add("Supervisor");
 		crmCaseMediaList.add("Letter");
+		crmCaseMediaList.add("Text");
+		crmCaseMediaList.add("Chat");		
 		crmCaseMediaList.add("Other");
+		//crmCaseMediaList.add("Driver");
 		
 		caseMoreThenOneIssueList.add("Yes");
 		caseMoreThenOneIssueList.add("No");
