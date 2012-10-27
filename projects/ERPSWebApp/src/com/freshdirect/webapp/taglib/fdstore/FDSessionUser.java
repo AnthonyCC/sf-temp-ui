@@ -337,7 +337,8 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 		//
 		// don't save not persistent carts or in modify mode
 		//
-		if (this.getShoppingCart() instanceof FDModifyCartModel) return false;
+		FDCartModel cart = this.getShoppingCart();
+		if (cart instanceof FDModifyCartModel || !cart.isPersistent()) return false;
 		//
 		// save carts automatically for users who are:
 		//  already registered
