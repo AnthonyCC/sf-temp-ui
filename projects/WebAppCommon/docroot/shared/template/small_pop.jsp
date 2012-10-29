@@ -14,14 +14,14 @@
 	<script type="text/javascript" src="/assets/javascript/jquery/1.7.2/jquery.js"></script>
 	<script type="text/javascript" src="/assets/javascript/jquery/ui/1.8.23/jquery-ui.min.js"></script>
 </head>
-<body bgcolor="#FFFFFF" link="#336600" vlink="#336600" alink="#FF9900" text="#333333" onLoad="window.resizeTo(375,335); window.focus();" topmargin="8" marginheight="8">
+<body bgcolor="#FFFFFF" link="#336600" vlink="#336600" alink="#FF9900" text="#333333" onLoad="window.resizeTo(445,335); window.focus();" topmargin="8" marginheight="8">
 <%@ include file="/shared/template/includes/i_body_start.jspf" %>
 <%-- don't resize onLoad, tmpl used for plant tour --%>
 <center>
 <a name="top"></a>
 <table border="0" cellpadding="0" cellspacing="0" width="330">
 <tr>
-<td colspan="2"><a href="javascript:window.close();"><img src="/media_stat/images/layout/pop_up_header_sm.gif" width="330" height="43" border="0" alt="FreshDirect     (close window)"></a></td>
+<td colspan="2"><a href="javascript:window.close();"><img src="/media_stat/images/layout/pop_up_header_sm.gif" width="400" height="43" border="0" alt="FreshDirect     (close window)"></a></td>
 </tr>
 <tr>
 <td><img src="/media_stat/images/layout/clear.gif" width="165" height="8"></td>
