@@ -711,22 +711,34 @@
 	overflow:hidden; 
 }
 
-.search-recommender .yui-carousel-next-button { 
-	background:url('/media_stat/carousel/right_a.png') no-repeat 0 100%; 
+.search-recommender .yui-carousel-button {
+	background:url('/media_stat/carousel/carousel-sprite.png') no-repeat 0 0; 
+	width:34px;
+	height:48px;
+	margin-top:-50px;
+}
+
+.search-recommender .yui-carousel-next-button {
+	background-position:-34px 0; 
 	z-index:3; 
-	right: 0;
+	right: 7px;
 }
 
 .search-recommender .yui-carousel-first-button { 
-	background: url('/media_stat/carousel/left_a.png') no-repeat -1px 0; 
-	z-index: 2; 
+	background-position:0 0; 
+	z-index: 2;
+	left:0; 
 }
 
-.search-recommender .yui-carousel-button { 
-	width:38px; 
-	height:48px; 
-	margin-top:-50px;
+.search-recommender .yui-carousel-button:hover {
+	background-position-y:-48px;
 }
+
+.search-recommender .yui-carousel-first-button-disabled:hover,
+.search-recommender .yui-carousel-button-disabled:hover {
+	background-position-y:0;
+}
+
 
 .search-recommender .yui-carousel-nav ul { 
 	display:none 
