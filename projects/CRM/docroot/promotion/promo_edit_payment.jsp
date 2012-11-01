@@ -3,6 +3,7 @@
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ page import="com.freshdirect.fdstore.promotion.*" %>
 <%@ page import="com.freshdirect.fdstore.promotion.management.*" %>
+<%@ page import="com.freshdirect.delivery.EnumComparisionType" %>
 <tmpl:insert template='/template/top_nav.jsp'>
 <% String promoId = request.getParameter("promoId");%>
 <fd:GetPromotionNew id="promotion" promotionId="<%=promoId%>">
@@ -38,6 +39,9 @@
 			<div class="padLR4">
 				<div class="errContainer">
 					<fd:ErrorHandler result="<%=result%>" name="minOrdersNumber" id="errorMsg">
+						 <%@ include file="/includes/i_error_messages.jspf" %>   
+					</fd:ErrorHandler>
+					<fd:ErrorHandler result="<%=result%>" name="eCheckMatchCondition" id="errorMsg">
 						 <%@ include file="/includes/i_error_messages.jspf" %>   
 					</fd:ErrorHandler>
 				</div>

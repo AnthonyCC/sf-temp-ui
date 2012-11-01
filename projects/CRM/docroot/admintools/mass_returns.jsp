@@ -69,7 +69,7 @@
 	   <%@ include file="/includes/i_error_messages.jspf" %>   
 	</fd:ErrorHandler>
 
-<form name="returnorders" method='POST' onsubmit="javascript:doSearch();">
+<form name="returnorders"  id="returnorders" method='POST' onsubmit="javascript:doSearch();">
 <table class="home_search_module_field" border="0" cellpadding="2" cellspacing="2" width="100%">
 
 	<tr>
@@ -77,7 +77,7 @@
 		<td>Delivery Date : </td>
 		<td>
 			<input type="hidden" name="actionName" id="actionName" value="">
-			<input type="hidden" name="searchFlag" value="">
+			<input type="hidden" name="searchFlag" id="searchFlag" value="">
 			<input type="hidden" name="deliveryDate" id="deliveryDate" value="<%=dlvDate%>">
                         <input type="text" name="newDeliveryDate" id="newDeliveryDate" size="10" value="<%=dlvDate%>" disabled="true" onchange="setDate(this);"> &nbsp;<a href="#" id="trigger_dlvDate" style="font-size: 9px;">>></a>
  		        <script language="javascript">
@@ -247,11 +247,11 @@
 			}
 		%>	
 		&nbsp;&nbsp;
-		<input name="exportResults"  type="button" value="EXPORT RESULTS" class="submit" onclick="javascript:openURL('/reports/final_return_report.xls');">
+		<input name="exportResults" id="exportResults" type="button" value="EXPORT RESULTS" class="submit" onclick="javascript:openURL('/reports/final_return_report.xls');">
 		&nbsp;&nbsp;
-		<input name="exportVS" type="button" value="EXPORT TO VOICESHOT" class="submit" onclick="javascript:openURL('/reports/returnsVSExport');">
+		<input name="exportVS" id="exportVS" type="button" value="EXPORT TO VOICESHOT" class="submit" onclick="javascript:openURL('/reports/returnsVSExport');">
 		&nbsp;&nbsp;
-		<input name="exportSP" type="button" value="EXPORT TO SILVERPOP" class="submit" onclick="javascript:openURL('/reports/returnsSPExport');">
+		<input name="exportSP" id="exportSP" type="button" value="EXPORT TO SILVERPOP" class="submit" onclick="javascript:openURL('/reports/returnsSPExport');">
 		<%
 			String searchFlag = (String)request.getParameter("searchFlag");
 			if(searchFlag != null && searchFlag.equals("true")) {
@@ -299,7 +299,7 @@
 	</tr>	
 	<tr>
 		<td colspan="2">
-			<textarea name="notes" rows="2" wrap="VIRTUAL" style="width: 330px;"><%= notes %></textarea>
+			<textarea name="notes" rows="2" wrap="VIRTUAL" style="width: 330px;" id="notes"><%= notes %></textarea>
 		</td>
 	</tr>	
 

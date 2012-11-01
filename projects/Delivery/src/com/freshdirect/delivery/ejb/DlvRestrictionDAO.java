@@ -478,7 +478,11 @@ public class DlvRestrictionDAO {
 		}else if(restriction instanceof OneTimeRestriction){						
 			OneTimeRestriction otRestriction=(OneTimeRestriction)restriction;
 			ps.setNull(7,Types.INTEGER);
-			ps.setDate(8,new java.sql.Date(otRestriction.getDateRange().getStartDate().getTime()));
+			if(EnumDlvRestrictionReason.PLATTER.equals(restriction.getReason())){
+				ps.setTimestamp(8,new Timestamp(otRestriction.getDateRange().getStartDate().getTime()));
+			}else{
+				ps.setDate(8,new java.sql.Date(otRestriction.getDateRange().getStartDate().getTime()));
+			}
 			ps.setTimestamp(9,new Timestamp(otRestriction.getDateRange().getEndDate().getTime()));
 		}else if(restriction instanceof RecurringRestriction){
 			RecurringRestriction rRestriction=(RecurringRestriction)restriction;

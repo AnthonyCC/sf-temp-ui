@@ -213,7 +213,7 @@ public class AdminToolsControllerTag extends AbstractControllerTag {
 				doDeleteRestriction(request);
 				// if update is successful then show the success message
 				String restrictionId=request.getParameter("restrictionId");
-				request.setAttribute("successMsg"," Restriction: "+restrictionId+"is deleted successfully");
+				request.setAttribute("successMsg"," Restriction: "+restrictionId+" is deleted successfully");
 			}else if("saveAlcoholRestriction".equalsIgnoreCase(actionName)){
 				String restrictionId = request.getParameter("restrictionId");
 				if(restrictionId == null || restrictionId.length() == 0) {
@@ -250,6 +250,11 @@ public class AdminToolsControllerTag extends AbstractControllerTag {
 				doUpdatePlatter(request);
 				// if update is successful then show the success message
 				request.setAttribute("successMsg","record is updated successfully");
+			}else if("addPlatterRestriction".equalsIgnoreCase(actionName)){				
+				doAddPlatterRestriction(request, actionResult);
+				if(actionResult.isSuccess()){
+					request.setAttribute("successMsg","Platter Restriction is created/updated successfully.");
+				}
 			}else if("updateKosher".equalsIgnoreCase(actionName)){
 				//Submit n orders at a time. Default is 100.
 				doUpdateKosher(request);
@@ -600,7 +605,28 @@ public class AdminToolsControllerTag extends AbstractControllerTag {
 		}						
 	}
 	
-	
+	private void doAddPlatterRestriction(HttpServletRequest request,ActionResult result) throws FDResourceException {
+		List restrictedList=DlvRestrictionManager.getDlvRestrictions(EnumDlvRestrictionReason.PLATTER.getName(),EnumDlvRestrictionType.ONE_TIME_RESTRICTION.getName(),EnumDlvRestrictionCriterion.PURCHASE.getName());
+		// now update the time for the list
+		RestrictionI restriction=validateAndConstructRestriction(request,result);
+		if(!result.isFailure()){
+			for(int i=0;i<restrictedList.size();i++){				
+				RestrictionI r=(RestrictionI)restrictedList.get(i);
+				if(r.getDisplayDate().equalsIgnoreCase(restriction.getDisplayDate()) && !r.getId().equalsIgnoreCase(restriction.getId())){
+					result.addError(true,"startDate","A platter restriction already exists for the same date:"+r.getDisplayDate());
+					break;
+				}											
+			}
+						
+		}
+		if(!result.isFailure()){
+			if(null !=restriction.getId()&&!"".equals(restriction.getId())){
+				DlvRestrictionManager.storeDlvRestriction(restriction);
+			}else{
+				DlvRestrictionManager.addDlvRestriction(restriction);
+			}
+		}
+	}
 	private void addBlockedDay(HttpServletRequest request,RestrictionI restriction) throws FDResourceException {
 		//HttpSession session = pageContext.getSession();				
 		DlvRestrictionManager.addDlvRestriction(restriction);				
@@ -861,6 +887,10 @@ public class AdminToolsControllerTag extends AbstractControllerTag {
 				if (reason.isSpecialHoliday()) {
 					restriction=new OneTimeReverseRestriction(id,criterion, reason, name, message, startDate, endDate,path);
 				} else {
+					if(EnumDlvRestrictionReason.PLATTER.equals(reason)){
+						String platterStartTime=request.getParameter("platterStartTime");
+						startDate  = endDateFormat.parse(startTimeStr+" "+platterStartTime);
+					}
 					restriction=new OneTimeRestriction(id,criterion, reason, name, message, startDate, endDate,path);
 				}
 

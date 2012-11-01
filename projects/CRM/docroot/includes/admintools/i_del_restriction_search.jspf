@@ -1,5 +1,7 @@
 <table class="home_search_module_field" border="0" cellpadding="2" cellspacing="2" width="100%">
-	<tr><td colspan="8" align="right"><a href="/admintools/alcohol_restrictions.jsp"><span><b>Manage Alcohol Restrictions<br><br></b></span></a></td></tr>
+<tr><td colspan="2" align="left"><a href="/admintools/platter_restrictions.jsp"><span><b>Manage Platter Restrictions<br><br></b></span></a></td>
+	<td colspan="2" align="left"><a href="/admintools/alcohol_restrictions.jsp"><span><b>Manage Alcohol Restrictions<br><br></b></span></a></td>
+	<td colspan="4" align="right"></tr>
 	<tr>
 		<% 
 			String startDate = 

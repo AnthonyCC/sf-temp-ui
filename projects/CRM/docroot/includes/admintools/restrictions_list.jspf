@@ -91,9 +91,14 @@ function sortRestriction(colName) {
         <td class="border_bottom"><span class="detail_text"><%= rev.getName() %></span></td>
         <td class="border_bottom">&nbsp;</td>
         <td class="border_bottom"><span class="detail_text"><%= rev.getMessage() %></span></td>        
+        <% if(request.getRequestURI().indexOf("platter_restrictions.jsp") > -1){ %>        
+        <td class="border_bottom"><A HREF="/admintools/platterRestrictionForm.jsp?restrictionId=<%= rev.getId() %>&actionType=editRestriction">Edit<a/>&nbsp;|</td>        
+        <td class="border_bottom"><a href="javascript:deleteRestriction('<%= rev.getId() %>')">&nbsp;Delete<a/></td>
+        <% }else{ %>
         <td class="border_bottom"><A HREF="javascript:void(0)" onclick="window.open('/admintools/restrictionForm_save.jsp?restrictionId=<%= rev.getId() %>&actionType=editRestriction','editRestriction','width=350,height=400,menubar=no,status=no')">Detail<a/>&nbsp;|</td>
         <td class="border_bottom"><A HREF="javascript:void(0)" onclick="window.open('/admintools/restrictionForm.jsp?restrictionId=<%= rev.getId() %>&actionType=editRestriction','editRestriction','width=350,height=400,menubar=no,status=no')">Edit<a/>&nbsp;|</td>        
-        <td class="border_bottom"><a href="javascript:deleteRestriction('<%= rev.getId() %>')">&nbsp;Delete<a/></td>                
+        <td class="border_bottom"><a href="javascript:deleteRestriction('<%= rev.getId() %>')">&nbsp;Delete<a/></td>
+        <% } %>                
               <%
                   }else if(restriction instanceof RecurringRestriction){
                   RecurringRestriction rev = (RecurringRestriction) restriction;
