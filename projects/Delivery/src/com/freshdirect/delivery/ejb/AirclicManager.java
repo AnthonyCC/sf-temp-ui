@@ -17,6 +17,7 @@ import javax.ejb.CreateException;
 import javax.ejb.EJBException;
 import javax.naming.NamingException;
 
+import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.crm.CallLogModel;
 import com.freshdirect.delivery.DlvResourceException;
 import com.freshdirect.delivery.model.AirclicCartonInfo;
@@ -208,7 +209,7 @@ public class AirclicManager {
 		public List<AirclicCartonInfo> lookupCartonScanHistory(String orderId)  throws FDResourceException {
 			try {
 				AirclicManagerSB sb = getAirclicManagerHome().create();
-				List<AirclicCartonInfo> cartons = sb.lookupCartonScanHistory(orderId);
+				List<AirclicCartonInfo> cartons = !ErpServicesProperties.isAirclicBlackhole() ? sb.lookupCartonScanHistory(orderId) : new ArrayList<AirclicCartonInfo>();
 				if(cartons != null){
 					Collections.sort(cartons, new CartonComparator());
 				}
@@ -225,7 +226,7 @@ public class AirclicManager {
 		public List<AirclicTextMessageVO> lookupAirclicMessages(String orderId) throws FDResourceException {
 			try {
 				AirclicManagerSB sb = getAirclicManagerHome().create();
-				return sb.lookupAirclicMessages(orderId); 
+				return !ErpServicesProperties.isAirclicBlackhole() ? sb.lookupAirclicMessages(orderId) : new ArrayList<AirclicTextMessageVO>(); 
 			} catch (CreateException e) {
 				throw new FDResourceException(e, "Cannot create SessionBean");
 			} catch (RemoteException e) {
@@ -258,7 +259,7 @@ public class AirclicManager {
 				AirclicTextMessageVO textMessage = new AirclicTextMessageVO(DateUtil.parseMDY(date), route, 0, null, null, null, orderId);				
 				
 				AirclicManagerSB sb = getAirclicManagerHome().create();
-				return sb.lookupNextels(textMessage); 
+				return !ErpServicesProperties.isAirclicBlackhole() ? sb.lookupNextels(textMessage) : new ArrayList<RouteNextelVO>(); 
 			} catch (CreateException e) {
 				throw new FDResourceException(e, "Cannot create SessionBean");
 			} catch (RemoteException e) {
@@ -288,7 +289,7 @@ public class AirclicManager {
 		public DeliverySummaryModel lookUpDeliverySummary(String orderId, String routeNo, String date) throws FDResourceException {
 			try {								
 				AirclicManagerSB sb = getAirclicManagerHome().create();
-				return sb.lookUpDeliverySummary(orderId, routeNo, DateUtil.parseMDY(date)); 
+				return !ErpServicesProperties.isAirclicBlackhole() ? sb.lookUpDeliverySummary(orderId, routeNo, DateUtil.parseMDY(date)) : new DeliverySummaryModel(); 
 			} catch (CreateException e) {
 				throw new FDResourceException(e, "Cannot create SessionBean");
 			} catch (RemoteException e) {
@@ -313,7 +314,7 @@ public class AirclicManager {
 		public Map<String, DeliveryExceptionModel> getCartonScanInfo() throws FDResourceException  {
 			try {
 				AirclicManagerSB sb = getAirclicManagerHome().create();
-				return sb.getCartonScanInfo(); 
+				return !ErpServicesProperties.isAirclicBlackhole() ? sb.getCartonScanInfo() : new HashMap<String, DeliveryExceptionModel>(); 
 			} catch (CreateException e) {
 				throw new FDResourceException(e, "Cannot create SessionBean");
 			} catch (RemoteException e) {
