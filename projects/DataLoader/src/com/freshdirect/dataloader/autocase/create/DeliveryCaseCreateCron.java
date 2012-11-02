@@ -42,6 +42,8 @@ public class DeliveryCaseCreateCron {
 	
 	private static CrmAgentModel loginAgent;
 	
+	private static String crmCaseMedia = "Driver";
+	
 	public static void main(String[] args) {
 		
 		Context ctx = null;
@@ -70,7 +72,9 @@ public class DeliveryCaseCreateCron {
 							}
 						}
 					} catch(Exception ex){
-						ex.printStackTrace();
+						StringWriter sw = new StringWriter();
+						ex.printStackTrace(new PrintWriter(sw));
+						email(Calendar.getInstance().getTime(), sw.getBuffer().toString());
 					}
 				}
 			}
@@ -80,11 +84,13 @@ public class DeliveryCaseCreateCron {
 			ae.printStackTrace(new PrintWriter(sw));			
 			LOGGER.info(new StringBuilder("DeliveryCreateCaseCron failed with Exception...").append(sw.toString()).toString());
 			LOGGER.error(sw.toString());
+			email(Calendar.getInstance().getTime(), sw.getBuffer().toString());	
 		} catch (FDResourceException ex) {
 			StringWriter sw = new StringWriter();
 			ex.printStackTrace(new PrintWriter(sw));			
 			LOGGER.info(new StringBuilder("DeliveryCreateCaseCron failed with Exception...").append(sw.toString()).toString());
 			LOGGER.error(sw.toString());
+			email(Calendar.getInstance().getTime(), sw.getBuffer().toString());	
 		} catch (Exception e) {
 			StringWriter sw = new StringWriter();
 			e.printStackTrace(new PrintWriter(sw));			
@@ -108,7 +114,7 @@ public class DeliveryCaseCreateCron {
 	private static CrmSystemCaseInfo buildCase(String customerPK, String saleId, CrmCaseSubject subject, String summary, String note, List cartons) {
 
 		PrimaryKey salePK = saleId != null ? new PrimaryKey(saleId) : null;
-		return new CrmSystemCaseInfo(new PrimaryKey(customerPK), salePK, subject, summary, note, cartons, loginAgent);
+		return new CrmSystemCaseInfo(new PrimaryKey(customerPK), salePK, subject, summary, note, cartons, loginAgent, crmCaseMedia);
 	}
 
 	private static void createCase(String customerID, String saleId, String subject, String summary, String note, List cartons) throws FDResourceException {
