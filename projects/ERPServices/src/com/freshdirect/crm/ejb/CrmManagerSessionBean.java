@@ -290,6 +290,7 @@ public class CrmManagerSessionBean extends SessionBeanSupport {
 		cm.setOrigin(caseInfo.getOrigin());
 		cm.setState(caseInfo.getState());
 		cm.setAssignedAgentPK(caseInfo.getLoginAgent() != null ? caseInfo.getLoginAgent().getPK() : this.getSystemUser().getPK());
+		cm.setCrmCaseMedia(caseInfo.getCrmCaseMedia());
 		
 		List<CrmCaseAction> caseActions = new ArrayList<CrmCaseAction>();
 		

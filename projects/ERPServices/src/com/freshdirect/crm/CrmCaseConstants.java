@@ -30,10 +30,11 @@ public class CrmCaseConstants {
 		crmCaseMediaList.add("Tier 2");
 		crmCaseMediaList.add("Supervisor");
 		crmCaseMediaList.add("Letter");
+		crmCaseMediaList.add("Driver");
 		crmCaseMediaList.add("Text");
 		crmCaseMediaList.add("Chat");		
+
 		crmCaseMediaList.add("Other");
-		//crmCaseMediaList.add("Driver");
 		
 		caseMoreThenOneIssueList.add("Yes");
 		caseMoreThenOneIssueList.add("No");

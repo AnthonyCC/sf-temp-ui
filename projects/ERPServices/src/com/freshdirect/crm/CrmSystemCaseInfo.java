@@ -16,6 +16,7 @@ public class CrmSystemCaseInfo implements Serializable {
 	private CrmCaseOrigin origin;
 	private CrmCaseState state;
 	private String note;
+	private String crmCaseMedia;
 	
 	// holds assigned carton numbers (missing, misloaded, etc)
     private List cartonNumbers;
@@ -41,7 +42,8 @@ public class CrmSystemCaseInfo implements Serializable {
 		this.state = CrmCaseState.getEnum(CrmCaseState.CODE_OPEN);
 	}
 	
-	public CrmSystemCaseInfo(PrimaryKey customerPK, PrimaryKey salePK, CrmCaseSubject subject, String summary, String note, List cartonNumbers, CrmAgentModel loginAgent){
+	public CrmSystemCaseInfo(PrimaryKey customerPK, PrimaryKey salePK, CrmCaseSubject subject, String summary
+			, String note, List cartonNumbers, CrmAgentModel loginAgent, String crmCaseMedia){
 		this.customerPK = customerPK;
 		this.salePK = salePK;
 		this.subject = subject;
@@ -49,6 +51,7 @@ public class CrmSystemCaseInfo implements Serializable {
 		this.note = note;
 		this.cartonNumbers = cartonNumbers;
 		this.loginAgent = loginAgent;
+		this.crmCaseMedia = crmCaseMedia;
 		
 		//default values
 		this.origin = CrmCaseOrigin.getEnum(CrmCaseOrigin.CODE_SYS);
@@ -114,4 +117,13 @@ public class CrmSystemCaseInfo implements Serializable {
 	public void setLoginAgent(CrmAgentModel loginAgent) {
 		this.loginAgent = loginAgent;
 	}
+
+	public String getCrmCaseMedia() {
+		return crmCaseMedia;
+	}
+
+	public void setCrmCaseMedia(String crmCaseMedia) {
+		this.crmCaseMedia = crmCaseMedia;
+	}
+	
 }
