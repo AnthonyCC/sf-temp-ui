@@ -63,6 +63,5 @@ public class AthenaConfig implements Serializable { // athena-config.xml
 		File source = new File("C:\\trunk\\projects\\Athena\\config\\athena-config.xml");
 
 		AthenaConfig athenaConfig = serializer.read(AthenaConfig.class, source);
-		System.out.println("athenaConfig >"+athenaConfig);
 	}
 }

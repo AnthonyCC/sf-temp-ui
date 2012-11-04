@@ -58,7 +58,7 @@ public class DashboardServlet  extends HttpServlet {
 		result.append("<html>");
 				result.append("<head>");
 				
-				result.append("<script type=\"text/javascript\" src=\"").append("\\")
+				result.append("<script type=\"text/javascript\" src=\"").append("/")
 									.append(AthenaProperties.getDefaultXcelsiusRoot()).append("/js/").append("swfobject.js\"></script>");
 				result.append("<script type=\"text/javascript\" src=\"").append("/")
 									.append(AthenaProperties.getDefaultXcelsiusRoot()).append("/js/").append("swffit.js\"></script>");

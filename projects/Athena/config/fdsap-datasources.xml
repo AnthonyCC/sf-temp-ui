@@ -4,12 +4,12 @@
 				<type>JCO</type>
 				<driver></driver>
 				<name>jco_sap</name>
-				<url><![CDATA[10.40.3.188]]></url>
+				<url><![CDATA[10.40.3.187]]></url>
 				<user>webinterface</user>
 				<password>direct</password>
 				<client>300</client>
-      				<systemno>10</systemno>
-      				<poolsize>10</poolsize>
+      				<systemno>20</systemno>
+      				<poolsize>3</poolsize>
 		</datasource>    
 	</datasources>
 </datasourceconfig>

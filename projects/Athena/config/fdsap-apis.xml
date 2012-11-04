@@ -31,45 +31,25 @@
 						</call>
 		  </api> 
 		  
-		  <api name="shippingstats"> 
-				<datasource>jco_sap</datasource>
-				<endpoint>shippingstats</endpoint>
-						<call><![CDATA[ZBAPI_SHIP_LOAD]]>
-						<parameters>
-							<parameter>
-								<name>delivery_date</name>
-								<type>DATE</type>
-								<default>$SYSDATE</default>								
-							</parameter>
-							<parameter>
-								<name>route</name>
-								<type>STRING</type>
-								<default></default>								
-							</parameter>
-						</parameters>
-						<cache>
-							<maxsize></maxsize>
-							<frequency>300</frequency>
-						</cache>
-						</call>
-		  </api>
-		  <api name="shippingdock"> 
+		
+		 <api name="shippingdock"> 
 				<datasource>jco_sap</datasource>
 				<endpoint>shippingdock</endpoint>
-						<call><![CDATA[ZBAPI_SHIP_LOAD2]]>
+						<call><![CDATA[ZBAPI_SHIP_LOAD]]>
 						<parameters>
 							<parameter>
 								<name>dock_number</name>
 								<type>STRING</type>
-								<default>01</default>								
+								<default>02</default>								
 							</parameter>
 						</parameters>
 						<cache>
 							<maxsize></maxsize>
-							<frequency>300</frequency>
+							<frequency>10</frequency>
 						</cache>
 						</call>
 		  </api>
+
 		  
 	</apis>
 </serviceconfig>

@@ -1,6 +1,6 @@
 <datasourceconfig name="storefront_prod_db">
 	<datasources>
-		  <datasource> 
+		 <datasource> 
 				<type>DB</type>
 				<driver>oracle.jdbc.driver.OracleDriver</driver>
 				<name>db_storefront</name>
@@ -9,7 +9,7 @@
 				<password>readn0wrt</password>
 				<client></client>
       				<systemno></systemno>
-      				<poolsize>10</poolsize>
+      				<poolsize>1</poolsize>
 		</datasource>    
 	</datasources>
 </datasourceconfig>

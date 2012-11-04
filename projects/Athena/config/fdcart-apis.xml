@@ -68,5 +68,28 @@
 			</cache>
 			</call>
 		</api>    
+		<api name="carton_status"> 
+		  		<datasource>carton_status</datasource>
+				<endpoint>carton_status</endpoint>
+						<call><![CDATA[
+		    	SELECT carton_id, carton_type, status, lastupdate, to_char(tcontainer),to_char(color_code) FROM theo.shipping_dashboard_data
+			WHERE lastupdate > (SELECT CASE WHEN sysdate <= trunc(sysdate)+18/24 THEN trunc(sysdate-1)+18/24
+	                ELSE trunc(sysdate)+18/24  END FROM dual ) 
+			AND tcontainer = ?
+		    	ORDER BY lastupdate DESC ]]>
+			<parameters>
+				<parameter>
+					<name>routeid</name>
+					<type>STRING</type>
+					<default>150007</default>		
+				</parameter>
+			</parameters>
+			<cache>
+				<maxsize></maxsize>
+				<frequency></frequency>
+			</cache>
+			</call>
+		</api>		
+
 	</apis>
 </serviceconfig>

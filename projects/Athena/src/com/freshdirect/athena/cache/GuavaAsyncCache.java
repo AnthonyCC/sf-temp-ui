@@ -94,9 +94,6 @@ public abstract class GuavaAsyncCache<K, V> {
 	    							   e.printStackTrace();
 	    							   result =  prevGraph;
 	    						   }
-	    						   	finally{
-	    							   System.out.println("reload IN Finally block");
-	    						   }
 	    						   if(result == null) {
 	    							   LOGGER.info("LOAD DEFAULT "+getCacheIdentifier()+ " "+key);
 	    							   result = loadDefault(key);
