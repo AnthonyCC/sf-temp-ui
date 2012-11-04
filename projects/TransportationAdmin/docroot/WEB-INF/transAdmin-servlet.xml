@@ -140,6 +140,11 @@
                	<prop key="/handoff.do">handOffFormController</prop>
                	<prop key="/handoff.ax">asyncHandOffController</prop>
                	
+               	<prop key="/timesheet.do">domainController</prop>
+               	<prop key="/viewsignature.do">domainController</prop>
+             
+               
+               	
                	<prop key="/cutoffreport.do">handOffController</prop>
                	<prop key="/sapupload.do">handOffController</prop> 
                	<prop key="/communityreport.do">handOffController</prop> 
@@ -365,6 +370,10 @@
 			
 			<prop key="/sector.do">sectorHandler</prop>
 			<prop key="/deletesector.do">deleteSectorZipcode</prop>
+			
+			<prop key="/timesheet.do">timesheetHandler</prop>
+            <prop key="/viewsignature.do">signatureHandler</prop>
+               	
 			</props>
 		</property>
 	</bean>
@@ -638,6 +647,7 @@
         <property name="successView" value="routingHandOff" />
         <property name="formView" value="routingHandOff" />
 	</bean>
+
 	
 	<bean id="assetFormController" class="com.freshdirect.transadmin.web.AssetFormController">
 		<property name="assetManagerService" ref="assetManagerService"/>

@@ -203,4 +203,8 @@ public interface DomainManagerI extends BaseManagerI {
 	Collection getRoutingRegions();
 	
 	TrnRegion getRoutingRegion(String id);
+
+	Collection getEmployees(Date date, String zone, String shift);
+	
+	Set getSignature(Date date, String zone, String shift, String empId);
 }

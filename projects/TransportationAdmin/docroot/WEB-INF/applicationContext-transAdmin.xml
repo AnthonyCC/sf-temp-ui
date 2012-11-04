@@ -195,6 +195,11 @@
 		<property name="dataSource" ref="dataSource"/>
 	</bean>
 	
+	<bean id="airclicManagerDAO" class="com.freshdirect.transadmin.dao.oracle.AirclicManagerDaoOracleImpl">
+		<property name="dataSource" ref="dataSource"/>
+	</bean>
+	
+	
 	<bean id="assetManagerDAO" class="com.freshdirect.transadmin.dao.hibernate.AssetManagerDaoHibernateImpl">
 		<property name="sessionFactory" ref="sessionFactory"/>
 	</bean>
@@ -210,6 +215,7 @@
     <bean id="domainManager" class="com.freshdirect.transadmin.service.impl.DomainManagerImpl">
         <property name="domainManagerDao" ref="domainManagerDAO"/>
         <property name="zoneExpansionDao" ref="zoneExpansionDAO"/>
+        <property name="airclicManagerDao" ref="airclicManagerDAO"/>
     </bean>
 
    <bean id="restrictionManager" class="com.freshdirect.transadmin.service.impl.RestrictionManagerImpl">

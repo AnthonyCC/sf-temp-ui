@@ -23,6 +23,7 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.routing.constants.EnumBalanceBy;
 import com.freshdirect.transadmin.constants.EnumIssueStatus;
 import com.freshdirect.transadmin.constants.EnumServiceStatus;
+import com.freshdirect.transadmin.dao.AirclicManagerDaoI;
 import com.freshdirect.transadmin.dao.BaseManagerDaoI;
 import com.freshdirect.transadmin.dao.DomainManagerDaoI;
 import com.freshdirect.transadmin.dao.ZoneExpansionDaoI;
@@ -62,6 +63,8 @@ public class DomainManagerImpl
 	private DomainManagerDaoI domainManagerDao = null;
 	
 	private ZoneExpansionDaoI zoneExpansionDao = null;		
+	
+	private AirclicManagerDaoI airclicManagerDao = null;		
 	
 	public ZoneExpansionDaoI getZoneExpansionDao() {	
 		return zoneExpansionDao;
@@ -1057,6 +1060,25 @@ public class DomainManagerImpl
 		// TODO Auto-generated method stub
 		return getDomainManagerDao().getRoutingRegions();
 	}
+
+	@Override
+	public Collection getEmployees(Date date, String zone, String shift) {
+		return getAirclicManagerDao().getEmployees(date, zone, shift);
+		
+	}
+
+	public Set getSignature(Date date, String zone, String shift, String empId) {
+		return getAirclicManagerDao().getSignature(date, zone, shift, empId);
+		
+	}
+
 	
+	public AirclicManagerDaoI getAirclicManagerDao() {
+		return airclicManagerDao;
+	}
+
+	public void setAirclicManagerDao(AirclicManagerDaoI airclicManagerDao) {
+		this.airclicManagerDao = airclicManagerDao;
+	}
 }
 

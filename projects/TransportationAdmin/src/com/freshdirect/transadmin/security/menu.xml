@@ -36,6 +36,11 @@
 	     	<access-roles>TrnAdmin,TrnOperations</access-roles>
 	     </menu>
 	     
+	      <menu id="OPR011" title="Timesheet" orientation="LEFT" link="timesheet.do">
+	     	<access-uris>timesheet.do,viewsignature.do</access-uris>
+	     	<access-roles>TrnAdmin,TrnOperations</access-roles>
+	     </menu>
+	     
 	     <menu id="OPR008" title="Truck" orientation="RIGHT" link="truck.do">
 	     	<access-uris>truck.do</access-uris>
 	     	<access-roles>TrnAdmin,TrnOperations</access-roles>

@@ -1025,4 +1025,69 @@ public class DomainController extends AbstractMultiActionController {
 		this.zoneManagerService = zoneManagerService;
 	}
 
+	
+	public ModelAndView timesheetHandler(HttpServletRequest request, HttpServletResponse response) throws ServletException {
+		
+		String selectedDate = request.getParameter("selectedDate");
+		String zone = request.getParameter("zone");
+		ModelAndView mav = new ModelAndView("employeeTimesheetView");
+		Collection employees = null;
+		List<TrnArea> areaLookup = new ArrayList<TrnArea>();
+		
+		try {
+		if(selectedDate != null && zone != null) 
+		{
+			Date rDate = TransStringUtil.getDate(selectedDate);
+			employees = getDomainManagerService().getEmployees(rDate, zone, "AM");	
+		}
+		Collection areas = getDomainManagerService().getAreas();
+		TrnArea tmpArea = null;
+		if(areas != null) {
+			Iterator iterator = areas.iterator();
+			while(iterator.hasNext()) {
+				tmpArea = (TrnArea)iterator.next();				
+				if(tmpArea != null && "X".equalsIgnoreCase(tmpArea.getIsDepot())) {
+					areaLookup.add(tmpArea);
+				}
+			}
+		}
+		} catch (ParseException e) {			
+			e.printStackTrace();
+		}
+		Collection shifts = new ArrayList(); shifts.add("AM");shifts.add("PM");
+		mav.getModel().put("zones", areaLookup);
+		mav.getModel().put("shifts", shifts);
+		mav.getModel().put("employees", employees);
+		mav.getModel().put("zoneS", zone);
+		mav.getModel().put("selectedDate", selectedDate);
+		
+		return mav;
+		
+		
+	}
+	
+	public void signatureHandler(HttpServletRequest request, HttpServletResponse response) throws ServletException {
+		response.setContentType("image/jpeg");
+
+		String selectedDate = request.getParameter("selectedDate");
+		String zone = request.getParameter("zone");
+		String empId = request.getParameter("empId");
+		
+		try
+		{
+			if(selectedDate != null && zone != null && empId!=null) 
+			{
+				Date rDate = TransStringUtil.getDate(selectedDate);
+				Set signature = getDomainManagerService().getSignature(rDate, zone, "AM", empId);
+				if(signature.size()>0)
+				{
+				response.getOutputStream().write((byte[]) signature.toArray()[0]);
+				}
+			}
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+	}
 }
