@@ -18,6 +18,7 @@ import org.apache.log4j.Logger;
 
 import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.content.ProductContainer;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.mail.ErpMailSender;
@@ -59,17 +60,21 @@ public class BazaarvoiceUfServiceCmd {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		try{
-			UploadFeedProcessResult result = processUf(); 
-			if (!result.isSuccess()) {
-				throw new Exception("Process upload feed failed: " + result.getError());
+		if (FDStoreProperties.isBazaarvoiceEnabled()){
+			try{
+				UploadFeedProcessResult result = processUf(); 
+				if (!result.isSuccess()) {
+					throw new Exception("Process upload feed failed: " + result.getError());
+				}
+				
+			} catch (Exception e) {
+				LOGGER.error("BazaarvoiceUfService failed with Exception...",e);
+				sendExceptionMail(Calendar.getInstance().getTime(), e);
 			}
-			
-		} catch (Exception e) {
-			LOGGER.error("BazaarvoiceUfService failed with Exception...",e);
-			sendExceptionMail(Calendar.getInstance().getTime(), e);
+		
+		} else {
+			LOGGER.info("Bazaarvoice is disabled");
 		}
-
 	}
 	
 	private static UploadFeedProcessResult processUf() {
@@ -108,7 +113,7 @@ public class BazaarvoiceUfServiceCmd {
 			String exceptionMsg = sw.getBuffer().toString();
 
 			SimpleDateFormat dateFormatter = new SimpleDateFormat("EEE, MMM d, yyyy");
-			String subject="CoremetricsCdfCron:	"+ (processDate != null ? dateFormatter.format(processDate) : " date error");
+			String subject="BazaarvoiceUfCron:	"+ (processDate != null ? dateFormatter.format(processDate) : " date error");
 
 			StringBuffer buff = new StringBuffer();
 
@@ -126,7 +131,7 @@ public class BazaarvoiceUfServiceCmd {
 					subject, buff.toString(), true, "");
 			
 		}catch (MessagingException e) {
-			LOGGER.error("Error Sending Coremetrics CDf Cron report email: ", e);
+			LOGGER.error("Error Sending Bazaarvoice Uf Cron report email: ", e);
 		}
 	}
 

@@ -246,7 +246,7 @@ public class UploadFeedProcessTask {
 				}
 			}
 		}
-		LOGGER.info("Collected " + categoryStore.size() + " categories.");
+		LOGGER.debug("Collected " + categoryStore.size() + " categories.");
 	}
 	
 	
