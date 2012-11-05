@@ -223,7 +223,7 @@ if (isValidPaymentId) {
 	<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="<%=W_CKT_ACCT_CREDITCARD_FIELDS_TOTAL%>">
 	<tr>	
 		<td width="<%=W_CKT_ACCT_CREDITCARD_FIELDS_TOTAL%>" CLASS="text12">
-			In order to better protect our customer's personal information, we require a $1 authorization to validate credit cards on add and edit. This charge will not be collected and will be returned as soon as permitted by your issuing bank. To learn more about our <font class="text11bold">Customer Agreement</font>, 
+			In order to better protect our customers' personal information, we require a $1 validation authorization each time you add or edit a credit card. This charge may appear as a hold in your account information, but it will not be collected. The $1 charge will be returned as soon as is permitted by your issuing bank. To learn more about our <font class="text11bold">Customer Agreement</font>, 
 			<a href="javascript:popup('/help/terms_of_service.jsp','large')">click here</a>.
 		</td>
 	</tr>
