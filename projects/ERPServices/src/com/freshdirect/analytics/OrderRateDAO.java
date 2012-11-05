@@ -27,19 +27,20 @@ public class OrderRateDAO {
 	
 	
 	
-	private static final String ORDER_RATE_QUERY_BY_TIMESLOT_SNAPSHOT = "select t.base_date , to_date(to_char(t.base_date, 'MM/DD/YYYY')||' '||to_char(T.START_TIME, 'HH:MI:SS AM'),'MM/DD/YYYY HH:MI:SS AM') starttime , t.capacity, " +
-			"to_date(to_char(t.base_date, 'MM/DD/YYYY')||' '||to_char(T.END_TIME, 'HH:MI:SS AM'),'MM/DD/YYYY HH:MI:SS AM') endtime , t.zone_code zone , to_date(to_char(t.base_date-1, 'MM/DD/YYYY')||' '|| to_char(t.cutoff_time, 'HH:MI:SS AM'),'MM/DD/YYYY HH:MI:SS AM') cutofftime, " +
-			" count(a.id) as \"oCount\" from (select t.base_date, t.start_time, t.end_time, t.capacity, t.cutoff_time, z.zone_code  from dlv.timeslot t, dlv.zone z where t.zone_ID = z.ID and " +
-			"t.base_date > SYSDATE ) t  " +
-			"left outer join (SELECT s.ID  , DI.STARTTIME, DI.ENDTIME, DI.CUTOFFTIME, DI.ZONE FROM cust.sale s," +
-			" cust.salesaction sa, cust.deliveryinfo di WHERE s.ID=sa.SALE_ID AND s.CUSTOMER_ID=sa.CUSTOMER_ID" +
-			" AND DI.SALESACTION_ID = SA.ID AND sa.ACTION_TYPE IN ('CRO','MOD')" +
-			" AND sa.REQUESTED_DATE > TRUNC(SYSDATE) AND s.type='REG' and s.status <>'CAN' and S.CROMOD_DATE = SA.ACTION_DATE  AND S.CROMOD_DATE > ? " +
-			" AND S.CROMOD_DATE <= ?) a on to_char(a.STARTTIME, 'MM/DD/YYYY HH:MI:SS AM') = to_char(t.base_date, 'MM/DD/YYYY')||' '||to_char(T.START_TIME, 'HH:MI:SS AM') " +
-			" and  to_char(a.ENDTIME, 'MM/DD/YYYY HH:MI:SS AM') = to_char(t.base_date, 'MM/DD/YYYY')||' '||to_char(T.END_TIME, 'HH:MI:SS AM') " +
-			" and a.zone = t.zone_code group by t.base_date,  to_char(t.base_date, 'MM/DD/YYYY')||' '||to_char(T.START_TIME, 'HH:MI:SS AM') ," +
-			" to_char(t.base_date, 'MM/DD/YYYY')||' '||to_char(T.END_TIME, 'HH:MI:SS AM') , " +
-			"to_char(t.base_date-1, 'MM/DD/YYYY')||' '|| to_char(t.cutoff_time, 'HH:MI:SS AM') ,  t.zone_code, t.capacity";
+	private static final String ORDER_RATE_QUERY_BY_TIMESLOT_SNAPSHOT = "select t.base_date , t.starttime , t.capacity, t.endtime , t.zone_code zone ,t.cutofftime, " +
+			"nvl(a.order_count,0) as order_count from (select t.base_date, to_date(to_char(t.base_date, 'MM/DD/YYYY')||' '||to_char(T.START_TIME, 'HH:MI:SS AM'),'MM/DD/YYYY HH:MI:SS AM') starttime, " +
+			"to_date(to_char(t.base_date, 'MM/DD/YYYY')||' '||to_char(T.END_TIME, 'HH:MI:SS AM'),'MM/DD/YYYY HH:MI:SS AM') endtime " +
+			", t.capacity, to_date(to_char(t.base_date-1, 'MM/DD/YYYY')||' '|| to_char(t.cutoff_time, 'HH:MI:SS AM'),'MM/DD/YYYY HH:MI:SS AM') cutofftime " +
+			", z.zone_code  from dlv.timeslot t, dlv.zone z where t.zone_ID = z.ID and t.base_date > SYSDATE ) t , (select  q1.order_count - nvl(q2.order_count,0) " +
+			"as order_count, q1.starttime, q1.endtime, q1.zone from   ( select count(*) order_count, di.starttime, di.endtime, di.cutofftime, SA.REQUESTED_DATE, di.zone " +
+			"from  cust.sale s, cust.salesaction sa, cust.deliveryinfo di WHERE s.ID=sa.SALE_ID AND s.CUSTOMER_ID=sa.CUSTOMER_ID AND DI.SALESACTION_ID = SA.ID AND " +
+			"sa.ACTION_TYPE IN ('CRO','MOD') AND sa.REQUESTED_DATE > TRUNC(SYSDATE) AND s.type='REG' and s.status <>'CAN' and S.CROMOD_DATE = SA.ACTION_DATE " +
+			"AND S.CROMOD_DATE > sysdate -1/48 AND S.CROMOD_DATE <= sysdate group by di.starttime, di.endtime, di.cutofftime, SA.REQUESTED_DATE, di.zone) q1, " +
+			"( select count(*) order_count, di.starttime, di.endtime, di.cutofftime, SA.REQUESTED_DATE, di.zone from  cust.sale s, cust.salesaction sa, cust.deliveryinfo di " +
+			"WHERE s.ID=sa.SALE_ID AND s.CUSTOMER_ID=sa.CUSTOMER_ID AND DI.SALESACTION_ID = SA.ID AND sa.ACTION_TYPE IN ('CRO','MOD') AND sa.REQUESTED_DATE > TRUNC(SYSDATE) " +
+			"AND s.type='REG' and s.status <>'CAN' and S.CROMOD_DATE = SA.ACTION_DATE  AND S.CROMOD_DATE > sysdate -1/24 AND S.CROMOD_DATE <= sysdate-1/48 group by " +
+			"di.starttime, di.endtime, di.cutofftime, SA.REQUESTED_DATE, di.zone) q2 where q1.starttime = q2.starttime(+) and q1.endtime = q2.endtime(+) and " +
+			"q1.zone = q2.zone(+)) a  where t.starttime  = a.STARTTIME(+) and  t.endtime = a.endtime(+) and t.zone_code = a.zone(+)";
 	
 	private static final String ORDER_RATE_SNAPSHOT_INSERT = "INSERT INTO MIS.ORDER_RATE(CAPACITY, ZONE, CUTOFF, " +
 			"TIMESLOT_START, TIMESLOT_END, ORDER_COUNT,PROJECTED_COUNT, DELIVERY_DATE, SNAPSHOT_TIME, ACTUAL_SO, PROJECT_SO, WEIGHTED_PROJECTED_COUNT, ORDERS_EXPECTED) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)";
@@ -63,14 +64,9 @@ public class OrderRateDAO {
 		PreparedStatement ps =null;ResultSet rs = null;
 		Map returnMap = new HashMap();
 		Set<Date> baseDates = new HashSet<Date>();
-		Calendar cal = Calendar.getInstance();
-		cal.setTime(snapshotTime);
-		cal.add(Calendar.MINUTE, -30);
 		
 		try {
 				ps = conn.prepareStatement(ORDER_RATE_QUERY_BY_TIMESLOT_SNAPSHOT);
-				ps.setTimestamp(1, new java.sql.Timestamp(cal.getTimeInMillis()));
-				ps.setTimestamp(2, new java.sql.Timestamp(snapshotTime.getTime()));
 				
 				rs = ps.executeQuery();
 				
@@ -82,7 +78,7 @@ public class OrderRateDAO {
 					vo.setCutoffTime(new Date(rs.getTimestamp("cutofftime").getTime()));
 					vo.setStartTime(new Date(rs.getTimestamp("starttime").getTime()));
 					vo.setEndTime(new Date(rs.getTimestamp("endtime").getTime()));
-					vo.setOrderCount(rs.getFloat("oCount"));
+					vo.setOrderCount(rs.getFloat("order_count"));
 					vo.setBaseDate(rs.getDate("base_date"));
 					vo.setSnapshotTime(snapshotTime);
 					voList.add(vo);
