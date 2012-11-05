@@ -499,7 +499,7 @@ public class SAPLoaderSessionBean extends SessionBeanSupport {
     private void processProducts(Map<ErpMaterialModel, Map<String, Object>> activeMaterials) throws LoaderException {
         
         Connection conn = null;
-
+        String skuCode = null;
         
         try {
             LOGGER.info("\nStarting to process default Products for batch number " + this.batchNumber + "\n");
@@ -551,7 +551,7 @@ public class SAPLoaderSessionBean extends SessionBeanSupport {
                 }
                 Iterator<String> skuIter = affectedSkus.iterator();
                 while (skuIter.hasNext()) {
-                    String skuCode = skuIter.next();
+                    skuCode = skuIter.next();
 
 					ErpProductModel erpProductModel = new ErpProductModel();
 					erpProductModel.setProxiedMaterial(erpMatlModel);
@@ -778,17 +778,17 @@ public class SAPLoaderSessionBean extends SessionBeanSupport {
             }
             LOGGER.info("\nCompleted processing Products for batch number " + this.batchNumber + "\n");
         } catch (NamingException ne) {
-            throw new LoaderException(ne, "Unable to find home for ErpProduct");
+            throw new LoaderException(ne, "Unable to find home for ErpProduct["+skuCode+"]");
         } catch (CreateException ce) {
-            throw new LoaderException(ce, "Unable to create a new version of an ErpProduct");
+            throw new LoaderException(ce, "Unable to create a new version of an ErpProduct["+skuCode+"]");
         } catch (FinderException fe) {
-            throw new LoaderException(fe, "Unable to locate an ErpProduct");
+            throw new LoaderException(fe, "Unable to locate an ErpProduct["+skuCode+"]");
         } catch (RemoveException re) {
-            throw new LoaderException(re, "Unable to remove an ErpProduct before re-creation");
+            throw new LoaderException(re, "Unable to remove an ErpProduct["+skuCode+"] before re-creation");
         } catch (RemoteException re) {
-            throw new LoaderException(re, "Unexpected system level exception while trying to create an ErpProduct");
+            throw new LoaderException(re, "Unexpected system level exception while trying to create an ErpProduct["+skuCode+"]");
         } catch (SQLException sqle) {
-            throw new LoaderException(sqle, "Unexpected SQL exception while trying to create an ErpProduct");
+            throw new LoaderException(sqle, "Unexpected SQL exception while trying to create an ErpProduct["+skuCode+"]");
         } finally {
             close(conn);
         }
