@@ -58,36 +58,83 @@ if (FDStoreProperties.IsHomePageMediaEnabled() && (!user.isHomePageLetterVisited
 	(request.getParameter("show") != null && request.getParameter("show").indexOf("letter") > -1))) 
 		showAltHome = true;
 %>
- 
-		<div class="holder">
-		
+ 	<div class="holder">
 		<%-- MAIN CONTENT--%>
-
-		
 			<div class="content"> 
-	
 				<% if (showAltHome && !location2Media) {
-			String mediaPath = null;
-	          	if(validOrderCount < 1){
-	            	mediaPath=FDStoreProperties.getHPLetterMediaPathForNewUser();
-	          	} else { 
-	          		mediaPath=FDStoreProperties.getHPLetterMediaPathForOldUser();
-	          	}
-		%>
-			<fd:IncludeMedia name="<%=mediaPath%>" />
-		<%    
-	        	// update user already visited home page letter
-	        	user.setHomePageLetterVisited(true);
-	        	// not sure we need to do this here because saving cart too often is not recomended
+					String mediaPath = null;
+					
+		          	if (validOrderCount < 1){
+		            	mediaPath=FDStoreProperties.getHPLetterMediaPathForNewUser();
+		          	} else { 
+		          		mediaPath=FDStoreProperties.getHPLetterMediaPathForOldUser();
+		          	}
+		          	
+					%><fd:IncludeMedia name="<%=mediaPath%>" /><%
+					
+	        		// update user already visited home page letter
+	        		user.setHomePageLetterVisited(true);
+	        		// not sure we need to do this here because saving cart too often is not recomended
 	          
-	        	if(user instanceof FDSessionUser){                
-	        		FDSessionUser sessionUser=(FDSessionUser)user;
-	                	sessionUser.saveCart(true);          
-	        	}
-	      } else if (!showAltHome && location2Media) {
-	%>      
-			<%@ include file="includes/home/i_intro_hdr.jspf"%>
-				<% if (user.getLevel() >= FDUserI.RECOGNIZED) { %>
+		        	if(user instanceof FDSessionUser){                
+		        		FDSessionUser sessionUser=(FDSessionUser)user;
+		                sessionUser.saveCart(true);          
+		        	}
+				} else if (!showAltHome && location2Media) { %>
+					<%@ include file="includes/home/i_intro_hdr.jspf" %>
+					<% if (user.getLevel() >= FDUserI.RECOGNIZED) { %>
+						<%
+							int pendingOrderCount = 0;
+							List<FDOrderInfoI> validPendingOrders = new ArrayList<FDOrderInfoI>();
+							validPendingOrders.addAll(user.getPendingOrders());
+							//set count (in case this variable is needed elsewhere (and we'll just use it now as well)
+							pendingOrderCount = validPendingOrders.size();
+	
+							if (pendingOrderCount > 0) {
+	
+								FDOrderInfoI orderInfo = (FDOrderInfoI) validPendingOrders.get(0);
+	
+								%>
+								<div class="index_ordMod_cont" id="index_table_ordModify_0">
+				   					<div class="index_ordMod_cont_child">
+				   						<div class="ordModifyInfoCont">
+											<a href="/your_account/order_details.jsp?orderId=<%= orderInfo.getErpSalesId() %>" class="orderNumb"><%= orderInfo.getErpSalesId() %></a>
+											<span style="padding-left: 30px;"><span class="dow"><%= new SimpleDateFormat("EEEEE").format(orderInfo.getRequestedDate()) %></span> <%= new SimpleDateFormat("MM/dd/yyyy").format(orderInfo.getRequestedDate()) %> 
+												<span class="pipeSep">|</span> <%= FDTimeslot.format(orderInfo.getDeliveryStartTime(),orderInfo.getDeliveryEndTime())%></span>
+										</div>
+										<div class="ordModifyButCont">
+											<% if ( new Date().before(orderInfo.getDeliveryCutoffTime())) { %>
+												<table class="butCont fright" style="margin-left: 10px;">
+													<tr>
+														<td class="butOrangeLeft"><!-- --></td>
+														<td class="butOrangeMiddle"><a class="butText" href="/your_account/modify_order.jsp?orderId=<%= orderInfo.getErpSalesId() %>&action=modify">modify order</a></td>
+														<td class="butOrangeRight"><!-- --></td>
+													</tr>
+												</table>
+												<a href="/your_account/order_details.jsp?orderId=<%= orderInfo.getErpSalesId() %>" class="ordModifyViewDetails">view details&nbsp;</a>
+											<% } else { %>
+												&nbsp;
+											<% } %>
+										</div>
+									</div>
+								</div>
+							<% } %>
+					<% }
+			} else if (!showAltHome && !location2Media) { %>
+				<%@ include file="includes/home/i_intro_hdr.jspf" %>
+		   		<% if(user.isEligibleForPreReservation() && user.getReservation() != null) {
+		   			FDReservation rsv = user.getReservation();
+		   		%>
+			   		<img src="/media_stat/images/layout/cccccc.gif" width="100%" height="1" vspace="8" alt="" />
+			   		
+			   		<table width="100%" cellpadding="0" cellspacing="0" border="0">
+			   			<tr>
+			   				<td>
+			   					<font class="text9"><b>You have a delivery slot reserved for:</b></font> <a href="/your_account/reserve_timeslot.jsp"><%=CCFormatter.formatReservationDate(rsv.getStartTime())%> @ <%=FDTimeslot.format(rsv.getStartTime(), rsv.getEndTime())%></a></td>
+			 	  		</tr>
+			 	  	</table>
+		   		<% } %>
+		   		<% if (user.getLevel() >= FDUserI.RECOGNIZED) { %>
 					<%
 						int pendingOrderCount = 0;
 						List<FDOrderInfoI> validPendingOrders = new ArrayList<FDOrderInfoI>();
@@ -96,90 +143,34 @@ if (FDStoreProperties.IsHomePageMediaEnabled() && (!user.isHomePageLetterVisited
 						pendingOrderCount = validPendingOrders.size();
 
 						if (pendingOrderCount > 0) {
-
 							FDOrderInfoI orderInfo = (FDOrderInfoI) validPendingOrders.get(0);
-
-					%>
-						<div class="index_ordMod_cont" id="index_table_ordModify_0">
-		   					<div class="index_ordMod_cont_child">
-		   						<div class="ordModifyInfoCont">
-									<a href="/your_account/order_details.jsp?orderId=<%= orderInfo.getErpSalesId() %>" class="orderNumb"><%= orderInfo.getErpSalesId() %></a>
-									<span style="padding-left: 30px;"><span class="dow"><%= new SimpleDateFormat("EEEEE").format(orderInfo.getRequestedDate()) %></span> <%= new SimpleDateFormat("MM/dd/yyyy").format(orderInfo.getRequestedDate()) %> 
-										<span class="pipeSep">|</span> <%= FDTimeslot.format(orderInfo.getDeliveryStartTime(),orderInfo.getDeliveryEndTime())%></span>
-								</div>
-								<div class="ordModifyButCont">
-									<% if ( new Date().before(orderInfo.getDeliveryCutoffTime())) { %>
-										<table class="butCont fright" style="margin-left: 10px;">
-											<tr>
-												<td class="butOrangeLeft"><!-- --></td>
-												<td class="butOrangeMiddle"><a class="butText" href="/your_account/modify_order.jsp?orderId=<%= orderInfo.getErpSalesId() %>&action=modify">modify order</a></td>
-												<td class="butOrangeRight"><!-- --></td>
-											</tr>
-										</table>
-										<a href="/your_account/order_details.jsp?orderId=<%= orderInfo.getErpSalesId() %>" class="ordModifyViewDetails">view details&nbsp;</a>
-									<% } else { %>
-										&nbsp;
-									<% } %>
+						%>
+							<div class="index_ordMod_cont" id="index_table_ordModify_1">
+			   					<div class="index_ordMod_cont_child">
+			   						<div class="ordModifyInfoCont">
+										<a href="/your_account/order_details.jsp?orderId=<%= orderInfo.getErpSalesId() %>" class="orderNumb"><%= orderInfo.getErpSalesId() %></a>
+										<span style="padding-left: 30px;"><span class="dow"><%= new SimpleDateFormat("EEEEE").format(orderInfo.getRequestedDate()) %></span> <%= new SimpleDateFormat("MM/dd/yyyy").format(orderInfo.getRequestedDate()) %> 
+											<span class="pipeSep">|</span> <%= FDTimeslot.format(orderInfo.getDeliveryStartTime(),orderInfo.getDeliveryEndTime())%></span>
+									</div>
+									<div class="ordModifyButCont">
+										<% if ( new Date().before(orderInfo.getDeliveryCutoffTime())) { %>
+											<table class="butCont fright" style="margin-left: 10px;">
+												<tr>
+													<td class="butOrangeLeft"><!-- --></td>
+													<td class="butOrangeMiddle"><a class="butText" href="/your_account/modify_order.jsp?orderId=<%= orderInfo.getErpSalesId() %>&action=modify">modify order</a></td>
+													<td class="butOrangeRight"><!-- --></td>
+												</tr>
+											</table>
+											<a href="/your_account/order_details.jsp?orderId=<%= orderInfo.getErpSalesId() %>" class="ordModifyViewDetails">view details&nbsp;</a>
+										<% } else { %>
+											&nbsp;
+										<% } %>
+									</div>
 								</div>
 							</div>
-						</div>
-					<% } %>
-			<% }
-	      
-		  } else if(!showAltHome && !location2Media) {
-	     %>
-	   	<%@ include file="includes/home/i_intro_hdr.jspf" %>
-	   		<% if(user.isEligibleForPreReservation() && user.getReservation() != null) {
-	   			FDReservation rsv = user.getReservation();
-	   		%>
-		   		<img src="/media_stat/images/layout/cccccc.gif" width="100%" height="1" vspace="8" alt="" />
-		   		
-		   		<table width="100%" cellpadding="0" cellspacing="0" border="0">
-		   			<tr>
-		   				<td>
-		   					<font class="text9"><b>You have a delivery slot reserved for:</b></font> <a href="/your_account/reserve_timeslot.jsp"><%=CCFormatter.formatReservationDate(rsv.getStartTime())%> @ <%=FDTimeslot.format(rsv.getStartTime(), rsv.getEndTime())%></a></td>
-		 	  		</tr>
-		 	  	</table>
-	   		<% } %>
-	   		<% if (user.getLevel() >= FDUserI.RECOGNIZED) { %>
-					<%
-						int pendingOrderCount = 0;
-						List<FDOrderInfoI> validPendingOrders = new ArrayList<FDOrderInfoI>();
-						validPendingOrders.addAll(user.getPendingOrders());
-						//set count (in case this variable is needed elsewhere (and we'll just use it now as well)
-						pendingOrderCount = validPendingOrders.size();
-
-						if (pendingOrderCount > 0) {
-
-							FDOrderInfoI orderInfo = (FDOrderInfoI) validPendingOrders.get(0);
-
-					%>
-						<div class="index_ordMod_cont" id="index_table_ordModify_1">
-		   					<div class="index_ordMod_cont_child">
-		   						<div class="ordModifyInfoCont">
-									<a href="/your_account/order_details.jsp?orderId=<%= orderInfo.getErpSalesId() %>" class="orderNumb"><%= orderInfo.getErpSalesId() %></a>
-									<span style="padding-left: 30px;"><span class="dow"><%= new SimpleDateFormat("EEEEE").format(orderInfo.getRequestedDate()) %></span> <%= new SimpleDateFormat("MM/dd/yyyy").format(orderInfo.getRequestedDate()) %> 
-										<span class="pipeSep">|</span> <%= FDTimeslot.format(orderInfo.getDeliveryStartTime(),orderInfo.getDeliveryEndTime())%></span>
-								</div>
-								<div class="ordModifyButCont">
-									<% if ( new Date().before(orderInfo.getDeliveryCutoffTime())) { %>
-										<table class="butCont fright" style="margin-left: 10px;">
-											<tr>
-												<td class="butOrangeLeft"><!-- --></td>
-												<td class="butOrangeMiddle"><a class="butText" href="/your_account/modify_order.jsp?orderId=<%= orderInfo.getErpSalesId() %>&action=modify">modify order</a></td>
-												<td class="butOrangeRight"><!-- --></td>
-											</tr>
-										</table>
-										<a href="/your_account/order_details.jsp?orderId=<%= orderInfo.getErpSalesId() %>" class="ordModifyViewDetails">view details&nbsp;</a>
-									<% } else { %>
-										&nbsp;
-									<% } %>
-								</div>
-							</div>
-						</div>
-					<% } %>
-			<% } %>
-	   	<%
+						<% } %>
+				<% } %>
+		   	<%
 	   	}
 	   	
 		if (location2Media) { %>
@@ -205,74 +196,74 @@ if (FDStoreProperties.IsHomePageMediaEnabled() && (!user.isHomePageLetterVisited
 			</table>
 		<% } %>
 
-			<div class="oas_feature_frame" style="padding-top: 10px;">
-				<span>
-					<script type="text/javascript">
-						OAS_AD('HPFeatureTop');
-					</script>
-				</span>
-			</div>			
-
-			<div class="oas_feature_left left">
+		<div class="oas_feature_frame" style="padding-top: 10px;">
+			<span>
 				<script type="text/javascript">
-					OAS_AD('HPFeature');
+					OAS_AD('HPFeatureTop');
 				</script>
-	   		</div>
-	   		<div class="oas_feature_right right">
-	   			<div class="oas_feature_right_tab">
-		   			<script type="text/javascript">
-						OAS_AD('HPTab1');
-					</script>
-				</div>
-	   			<div class="oas_feature_right_tab">
-		   			<script type="text/javascript">
-						OAS_AD('HPTab2');
-					</script>
-				</div>
-	   			<div class="oas_feature_right_tab">
-		   			<script type="text/javascript">
-						OAS_AD('HPTab3');
-					</script>
-				</div>
-	   			<div class="oas_feature_right_tab">
-		   			<script type="text/javascript">
-						OAS_AD('HPTab4');
-					</script>
-				</div>
-	   		</div>
-	   		<div class="clear" style="font-size: 0px;"></div>
+			</span>
+		</div>			
+
+		<div class="oas_feature_left left">
+			<script type="text/javascript">
+				OAS_AD('HPFeature');
+			</script>
+   		</div>
+   		<div class="oas_feature_right right">
+   			<div class="oas_feature_right_tab">
+	   			<script type="text/javascript">
+					OAS_AD('HPTab1');
+				</script>
+			</div>
+   			<div class="oas_feature_right_tab">
+	   			<script type="text/javascript">
+					OAS_AD('HPTab2');
+				</script>
+			</div>
+   			<div class="oas_feature_right_tab">
+	   			<script type="text/javascript">
+					OAS_AD('HPTab3');
+				</script>
+			</div>
+   			<div class="oas_feature_right_tab">
+	   			<script type="text/javascript">
+					OAS_AD('HPTab4');
+				</script>
+			</div>
+   		</div>
+	   	<div class="clear" style="font-size: 0px;"></div>
 	   		
-			<div class="oas_feature_frame">
-				<span>
-		   			<script type="text/javascript">
-						OAS_AD('HPFeatureBottom');
-					</script>
-				</span>
-			</div>			
+		<div class="oas_feature_frame">
+			<span>
+	   			<script type="text/javascript">
+					OAS_AD('HPFeatureBottom');
+				</script>
+			</span>
+		</div>
 	   		
-	   		<%
+	   	<%
 	   		StoreModel store = (StoreModel) ContentFactory.getInstance().getContentNode("Store", "FreshDirect");
 	   		if (store != null) {
 	    		Html edtMed = store.getEditorial();
 				if ( edtMed != null ) { %>
-				<fd:IncludeHtml html="<%= edtMed %>"/>
-			<%
-				} else {
+					<fd:IncludeHtml html="<%= edtMed %>"/>
+				<% } else {
 					String categoryLinks = FDStoreProperties.getHPCategoryLinksFallback();
 					if ( categoryLinks != null ) {
-			%><fd:IncludeMedia name="<%= categoryLinks %>"></fd:IncludeMedia><%
+						%><fd:IncludeMedia name="<%= categoryLinks %>"></fd:IncludeMedia><%
 					}
 				}
-			} %>
-	   <%-- END MAIN CONTENT--%>
+			}
+	   %>
 	   		
 		<div class="oas_home_bottom">
    			<script type="text/javascript">
 				OAS_AD('HPWideBottom');
 			</script>
-		</div>			
-		</div> 
+		</div>
 	</div>
+	<%-- END MAIN CONTENT--%> 
+</div>
 </fd:GetSegmentMessage>
 </tmpl:put>
 </tmpl:insert>
