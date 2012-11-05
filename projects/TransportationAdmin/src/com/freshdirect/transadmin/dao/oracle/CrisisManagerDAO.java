@@ -100,7 +100,7 @@ public class CrisisManagerDAO implements ICrisisManagerDAO   {
 		+ " from cust.customer c, cust.customerinfo ci, cust.sale s, cust.salesaction sa, cust.deliveryinfo di, dlv.reservation rs "
 		+ " where c.id = ci.customer_id and c.id = s.customer_id and s.id = sa.sale_id and sa.action_type IN ('CRO', 'MOD') "
 		+ " and sa.customer_id = s.customer_id and sa.action_date = s.cromod_date and sa.id = di.salesaction_id and rs.id = di.reservation_id "
-		+ " and s.type ='REG' and s.status <> 'CAN'  "		
+		+ " and s.type ='REG' and s.status in ('AUT','AVE','SUB','AUF')  "		
 		+ " and sa.requested_date = ? ";
 	
 	private static String GET_ORDERSTATSBY_DATE_BATCH = "SELECT s.status, count(*) as order_count "+
@@ -113,7 +113,7 @@ public class CrisisManagerDAO implements ICrisisManagerDAO   {
 	    " (select count(*) from CUST.ORDERLINE o where O.SALESACTION_ID=sa.id) SALE_LINEITEMCOUNT, "+        
 	    " (select count(*) from CUST.CUSTOMERLIST_DETAILS x where X.LIST_ID=CL.ID) TEMPLATE_LINEITEMCOUNT "+       
 	    " from cust.customer c, cust.customerinfo ci, cust.sale s, cust.salesaction sa, cust.standing_order so, cust.customerlist cl, cust.deliveryinfo di "+
-	    " where c.id = ci.customer_id and c.id = s.customer_id and s.id = sa.sale_id and sa.action_type IN ('CRO', 'MOD') and s.type='REG' and s.status <> 'CAN' "+
+	    " where c.id = ci.customer_id and c.id = s.customer_id and s.id = sa.sale_id and sa.action_type IN ('CRO', 'MOD') and s.type='REG' and s.status in ('AUT', 'AVE', 'SUB', 'AUF') "+
 	    " and sa.action_date = s.cromod_date and sa.id = di.salesaction_id and s.standingorder_id = so.id and so.customerlist_id = cl.id and sa.requested_date = ? ";
 	
 	private static final String GET_RESERVATION_BYCRITERIA = 
@@ -207,8 +207,8 @@ public class CrisisManagerDAO implements ICrisisManagerDAO   {
 		
 	private static final String GET_CRISISMNGBATCH_STANDINGORDER = " SELECT bc.first_name, bc.last_name, bc.email, bc.home_phone, "+
 		" bc.business_phone, bc.business_ext, bc.cell_phone, bc.company_name, bo.* "+
-		" FROM TRANSP.CRISISMNG_BATCHSTANDINGORDER bo, TRANSP.CRISISMNG_BATCHCUSTOMERINFO BC "+
-		" WHERE bo.BATCH_ID = ? and bo.batch_id = bc.batch_id and bo.customer_id = bc.customer_id ";
+		" FROM transp.CRISISMNG_BATCH b, TRANSP.CRISISMNG_BATCHSTANDINGORDER bo, TRANSP.CRISISMNG_BATCHCUSTOMERINFO BC "+
+		" WHERE bo.BATCH_ID = ? and b.batch_id = bo.batch_id and b.batch_id = bc.batch_id and bo.batch_id = bc.batch_id and bo.customer_id = bc.customer_id ";
 	
 	private static final String UPDATE_CRISISMNGBATCH_SO_PLACEORDEREXCEPTION = "UPDATE TRANSP.CRISISMNG_BATCHSTANDINGORDER SET NOTIFICATION_MSG = ?, PLACEORDER_STATUS = ? " +
 					" where BATCH_ID = ? AND STANDINGORDER_ID = ? and WEBORDER_ID = ? ";
@@ -224,7 +224,7 @@ public class CrisisManagerDAO implements ICrisisManagerDAO   {
 	private static final String GET_ACTIVEORDERS_BYAREA = "SELECT  di.zone AREA, di.starttime, di.endtime, count(di.zone) as ORDERCOUNT "+
         " from cust.customer c, cust.fdcustomer fdc, cust.customerinfo ci, cust.sale s, cust.salesaction sa, cust.deliveryinfo di, dlv.reservation rs "+
         " where c.id = ci.customer_id and c.id = fdc.erp_customer_id and c.id = s.customer_id and s.id = sa.sale_id and sa.action_type IN ('CRO', 'MOD') "+ 
-        " and s.type ='REG' and s.status <> 'CAN' and sa.action_date = s.cromod_date "+         
+        " and s.type ='REG' and s.status in ('AUT', 'AVE', 'SUB', 'AUF') and sa.action_date = s.cromod_date "+         
         " and sa.id = di.salesaction_id and rs.id = di.reservation_id and sa.requested_date = ? ";       
 	
 	private static final String GET_CANCELREGULARORDER_BYAREA = "SELECT "+
@@ -1522,6 +1522,8 @@ public class CrisisManagerDAO implements ICrisisManagerDAO   {
 		updateQ.append(GET_ACTIVEORDERS_BYAREA);
 		if(EnumCrisisMngBatchType.STANDINGORDER.equals(batchType)){
 			updateQ.append(" and s.standingorder_id is not null ");
+		} else {
+			updateQ.append(" and s.standingorder_id is null ");
 		}
 		updateQ.append(" group by di.zone, di.starttime, di.endtime order by  di.zone, di.starttime asc ");
 		Connection connection = null;

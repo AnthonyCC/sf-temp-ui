@@ -28,7 +28,7 @@ public interface ICrisisManagerProcessMessage {
 	
 	String ERROR_MESSAGE_TIMESLOTEXCEPTION = "There are timeslot exceptions. Please map the timeslots or setup if needed. ";	
 	
-	String ERROR_MESSAGE_ORDEREXCEPTION = "There are orders whose status isn't right for order cancelleation. Contact AppSupport!";
+	String ERROR_MESSAGE_ORDEREXCEPTION = "There are orders with status isn't right for cancelleation. Contact AppSupport!";
 	
 	String INFO_MESSAGE_PLACESTANDINGORDERPROGRESS = "Place Standing Order : in progress";
 	

@@ -273,6 +273,7 @@ public class CrisisManagerUtil {
 				}
 			 } catch (IOException e) {
 				 LOGGER.error("Fatal transport error: " + e.getMessage());
+				 lastResult.add(_orderId);
 			 } finally {
 				 method.releaseConnection();
 			 }  

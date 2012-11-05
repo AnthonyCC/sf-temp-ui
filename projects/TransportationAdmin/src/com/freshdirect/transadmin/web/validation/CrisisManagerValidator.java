@@ -26,9 +26,6 @@ public class CrisisManagerValidator extends AbstractValidator {
 		if(model != null && model.getSelectedDate() != null && model.getSelectedDate().before(new Date())) {
 			errors.rejectValue("selectedDate", "app.error.142", new Object[]{"SelectedDate Date"},"can't be past date");
 		}
-		if(model != null && model.getSelectedDate() != null && model.getSelectedDate().equals(new Date())) {
-			errors.rejectValue("selectedDate", "app.error.143", new Object[]{"SelectedDate Date"},"can't be current date");
-		}
 		if(model != null && model.getDestinationDate() != null && model.getSelectedDate()!= null && model.getDestinationDate().before(model.getSelectedDate())) {
 			errors.rejectValue("destinationDate", "app.error.144", new Object[]{"Destination Date"},"can't be before selected date");
 		}

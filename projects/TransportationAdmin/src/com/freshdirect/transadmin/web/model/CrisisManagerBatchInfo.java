@@ -119,7 +119,9 @@ public class CrisisManagerBatchInfo implements java.io.Serializable {
 				
 				strBuf.append(action.getActionBy());
 				strBuf.append("<br/>");
-				
+				if(batch.getActiveOrder() != null){
+					strBuf.append("Active Orders: <b>").append(batch.getActiveOrder().size()).append("</b><br/>");
+				}
 				strBuf.append("Total Orders: <b>").append(batch.getNoOfOrders()).append("</b><br/>");
 				strBuf.append("<a style=\"color:#8B2252;font-size: 10px;\" href='javascript:showOrderInfoTable("+batch.getBatchId()+");'>More Details</a>").append("<br/>");
 				strBuf.append("");

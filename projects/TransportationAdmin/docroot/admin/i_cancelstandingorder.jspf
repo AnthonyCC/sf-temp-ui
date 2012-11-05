@@ -18,7 +18,8 @@
 		addCancelSOSysMessage("", false);
 		_currentBatchId = inputVal;
 		editCancelStandingOrderPanel = new YAHOO.widget.Panel("cancelstandingorder-panel", {
-						  width: "980px",
+						  width: "1060px",
+						  height: "1080px",
 						  fixedcenter: true, 
 						  close: true, 
 						  draggable: false, 
@@ -31,25 +32,26 @@
 		cancelStandingOrderDataSource = new YAHOO.util.DataSource(cancelStandingOrderData.list);
 
 		var cancelStandingOrderColumns =  [ 
-			    {key:"isSel", label:"Select?", formatter:"checkbox", className:'align-center'},
+			    {key:"isSel", label:"", formatter:"checkbox", className:'align-center'},
 			    {key:"customerId", label:"Customer ID",sortable:false, width: 85, className:'align-center'},
 			    {key:"area", label:"Area",sortable:true, width: 35, className:'align-center'}, 
 			    {key:"standingOrderId", label:"Standing OrderNo.",sortable:false, width: 110, className:'align-center'},
 			    {key:"saleId", label:"Order No.",sortable:false, width: 90, className:'align-center'},
 			    {key:"lineItemCount", label:"Order LineItems",sortable:true, width: 90, className:'align-center'},
 			    {key:"tempLineItemCount", label:"Template LineItems", sortable:true, width: 110, className:'align-center'},
-			    {key:"lineItemChangeCount", label:"LineItems Change", sortable:false, width: 130, className:'align-center'},
+			    {key:"lineItemChangeCount", label:"Line Items Change", sortable:false, width: 130, className:'align-center'},
 			    {key:"orderStatus", label:"Status", sortable:false, width: 70, className:'align-center'}
 		 ];
 
 		var cancelSOConfigs = { 
 			paginator : new YAHOO.widget.Paginator({ 
-			       rowsPerPage    : 25,
+			       rowsPerPage    : 100,
 			       template : "{FirstPageLink}{PreviousPageLink}  "+cancelStandingOrderData.list.length+" total records "+" {NextPageLink}{LastPageLink}"
 			})
 		};
 		
-		cancelStandingOrderDataTable = new YAHOO.widget.DataTable("contcancelstandingordertable", cancelStandingOrderColumns, cancelStandingOrderDataSource, cancelSOConfigs);
+		cancelStandingOrderDataTable = new YAHOO.widget.ScrollingDataTable("contcancelstandingordertable", cancelStandingOrderColumns, cancelStandingOrderDataSource
+				,{width:"1020px", height:"960px"});
 
 		setAllChecks( cancelStandingOrderDataTable, true );
 

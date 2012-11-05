@@ -18,7 +18,8 @@
 		addSysMessage("", false);
 		_currentBatchId = inputVal;
 		editStandingOrderPanel = new YAHOO.widget.Panel("standingorder-panel", {
-                          width: "1000px",
+                          width: "1280px",
+                          height: "1280px",
                           fixedcenter: true, 
                           close: true, 
                           draggable: false, 
@@ -40,19 +41,20 @@
 			    {key:"orderStatus", label:"Sale Status",sortable:true, className:'align-center'},
 			    {key:"lineItemCount", label:"Order LineItems",sortable:true, width: 90, className:'align-center'},
 			    {key:"tempLineItemCount", label:"Template LineItems", sortable:true, width: 110, className:'align-center'},
-			    {key:"lineItemChangeCount", label:"LineItems Change", sortable:false, width: 130, className:'align-center'},
+			    {key:"lineItemChangeCount", label:"LineItems Change", sortable:true, width: 130, className:'align-center'},
 			    {key:"status", label:"PlaceOrder Status", sortable:false, width: 90, className:'align-center'},
 			    {key:"errorHeader", label:"Error Detail", sortable:false, width: 150, className:'align-center'}
 		 ];
 	
 		var sMyConfigs = { 
 			paginator : new YAHOO.widget.Paginator({ 
-			       rowsPerPage    : 25,
+			       rowsPerPage : 1000,
 			       template : "{FirstPageLink}{PreviousPageLink}  "+standingOrderData.list.length+" total records "+" {NextPageLink}{LastPageLink}"
 			})
 		};
 		
-		standingOrderDataTable = new YAHOO.widget.DataTable("contstandingordertable", standingOrderColumns, standingOrderDataSource, sMyConfigs);
+		standingOrderDataTable = new YAHOO.widget.ScrollingDataTable("contstandingordertable", standingOrderColumns, standingOrderDataSource
+				,{width:"1250px", height:"1160px"});
 
 		setStandingOrderChecks( standingOrderDataTable, true );
 
