@@ -21,6 +21,13 @@ a2a_config.color_link_text = "336600";
 .addtoany_list a:hover img,.addtoany_list a.addtoany_share_save img{filter:alpha(opacity=100)}
 </style>
 <![endif]-->
+<?php 
+function getAdd2AnyLink(){
+    $the_permalink= apply_filters('the_permalink', get_permalink());
+	return $the_permalink."?fd_social-_-social_share-_-social_share-_-".rawurlencode($the_permalink);
+}
+?> 
+
 <link rel="stylesheet" href="<?php bloginfo('template_url'); ?>/assets/css/modalbox.css" type="text/css" />
 <?php if (strpos($_SERVER['HTTP_USER_AGENT'], 'Mac') !== false) { ?>
 <link rel="stylesheet" href="<?php bloginfo('template_url'); ?>/assets/css/mac_ie.css" type="text/css" />

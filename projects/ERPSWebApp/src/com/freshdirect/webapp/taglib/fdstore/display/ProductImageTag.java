@@ -296,7 +296,7 @@ public class ProductImageTag extends BodyTagSupport {
             webId = GetContentNodeWebIdTag.getWebId(null, product, true);
         }
 
-        buf.append("<div id=\"" + webId + "\" " +
+        buf.append("<div id=\"" + webId + "\" class=\"product-image-container\"" +
             "style=\"padding: 0px; border: 0px; margin: 0px auto; " +
             "width: " + getBoundWidth(prodImg) + "px; " + "height: " +
             getBoundHeight(prodImg) + "px; " + "line-height: " +
@@ -337,7 +337,7 @@ public class ProductImageTag extends BodyTagSupport {
             buf.append(webId);
             buf.append("\" href=\"");
             buf.append(action);
-            buf.append("\" style=\"vertical-align: bottom;\">");
+            buf.append("\" style=\"vertical-align: bottom;\" class=\"product-image-link\">");
         }
 
         buf.append("<img src=\"");
@@ -818,7 +818,7 @@ public class ProductImageTag extends BodyTagSupport {
 
             if (shouldGenerateAction) {
                 buf.append("<a href=\"" + action + "\" style=\"" + aStyle +
-                    "\">");
+                    "\" class=\"product-image-burst-link\">");
             }
 
             buf.append(Image.toHtml(path, w, h, iAlt, iCssClass));

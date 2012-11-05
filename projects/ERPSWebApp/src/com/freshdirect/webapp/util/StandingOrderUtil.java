@@ -4,6 +4,7 @@ package com.freshdirect.webapp.util;
 import java.rmi.RemoteException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -15,6 +16,7 @@ import javax.servlet.jsp.JspException;
 
 import org.apache.log4j.Category;
 
+import com.bea.common.security.jdkutils.WeaverUtil.Collections;
 import com.freshdirect.analytics.TimeslotEventModel;
 import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.customer.EnumServiceType;
@@ -50,6 +52,8 @@ import com.freshdirect.fdstore.atp.FDAvailabilityInfo;
 import com.freshdirect.fdstore.atp.FDCompositeAvailabilityInfo;
 import com.freshdirect.fdstore.atp.FDMuniAvailabilityInfo;
 import com.freshdirect.fdstore.atp.FDStockAvailabilityInfo;
+import com.freshdirect.fdstore.coremetrics.mobileanalytics.CJVFContextHolder;
+import com.freshdirect.fdstore.coremetrics.mobileanalytics.CreateCMRequest;
 import com.freshdirect.fdstore.customer.FDActionInfo;
 import com.freshdirect.fdstore.customer.FDAuthenticationException;
 import com.freshdirect.fdstore.customer.FDCartLineI;
@@ -77,11 +81,11 @@ import com.freshdirect.fdstore.rules.FDRuleContextI;
 import com.freshdirect.fdstore.rules.FDRulesContextImpl;
 import com.freshdirect.fdstore.standingorders.DeliveryInterval;
 import com.freshdirect.fdstore.standingorders.FDStandingOrder;
-import com.freshdirect.fdstore.standingorders.ProcessActionResult;
 import com.freshdirect.fdstore.standingorders.FDStandingOrder.ErrorCode;
 import com.freshdirect.fdstore.standingorders.FDStandingOrdersManager;
-import com.freshdirect.fdstore.standingorders.ProcessActionResult.Reason;
+import com.freshdirect.fdstore.standingorders.ProcessActionResult;
 import com.freshdirect.fdstore.standingorders.SOResult;
+import com.freshdirect.fdstore.standingorders.ejb.FDStandingOrderDAO;
 import com.freshdirect.framework.mail.XMLEmailI;
 import com.freshdirect.framework.util.DateRange;
 import com.freshdirect.framework.util.DateUtil;
@@ -131,6 +135,7 @@ public class StandingOrderUtil {
 					, MailerGatewayHome mailerHome, boolean forceCapacity, boolean createIfSoiExistsForWeek, boolean isSendReminderNotificationEmail) throws FDResourceException {
 		
 		LOGGER.info( "Processing Standing Order : " + so );
+		boolean timeOutOccured = false;
 		
 		// Check for null object here, so we are safe later
 		if ( so == null ) {
@@ -554,7 +559,31 @@ public class StandingOrderUtil {
 			unavCartItems.removeAll(cart.getOrderLines());
 			
 			String orderId = FDCustomerManager.placeOrder( orderActionInfo, cart, null, false, cra, null );
-
+			
+			try {
+				
+				CJVFContextHolder cjvfContextHolder = new CJVFContextHolder(customerUser.getPrimaryKey(), 7);
+				if (FDStandingOrdersManager.getInstance().getCoremetricsUserinfo(customerUser)) {
+					cjvfContextHolder.thisIsRepeatedStandingOrder();
+				} else {
+					FDStandingOrdersManager.getInstance().insertIntoCoremetricsUserinfo(customerUser, 1);
+					cjvfContextHolder.thisIsFirstStandingOrder();
+				}
+				CreateCMRequest cCMR = new CreateCMRequest(customerUser.getPrimaryKey(), cjvfContextHolder);
+				FDOrderI order = FDCustomerManager.getOrder(orderId);
+				List httpResponseCodes =Arrays.asList(cCMR.sendShop9Tags(cart, order, customerUser));
+				int httpResponseCode = cCMR.sendOrderTag(order, customerUser);
+				
+				if (httpResponseCodes.contains("408") || httpResponseCode == 408) {
+					timeOutOccured = true;
+				} else {
+					timeOutOccured = false;
+				}
+			} catch (FDResourceException e) {
+				LOGGER.error("Failed to assign standing order to sale, corresponding order ID="+orderId, e);
+			}
+			
+			
 			try {
 				FDStandingOrdersManager.getInstance().assignStandingOrderToSale(orderId, so);
 			} catch (FDResourceException e) {
@@ -579,7 +608,7 @@ public class StandingOrderUtil {
 			//check possible duplicate order instances in delivery window
 			FDStandingOrdersManager.getInstance().checkForDuplicateSOInstances(customer);
 			
-			return SOResult.createSuccess( so, customer, customerInfo, hasInvalidItems, unavailableItems, orderId, internalMessage );
+			return SOResult.createSuccess( so, customer, customerInfo, hasInvalidItems, unavailableItems, orderId, internalMessage, timeOutOccured );
 			
 		} catch ( DeliveryPassException e ) {
 			LOGGER.info( "DeliveryPassException while placing order.", e );

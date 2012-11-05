@@ -75,10 +75,10 @@
 							<a class="a2a_button_twitter"></a>
 						</span><script type="text/javascript">												
 							a2a_config.linkname="<?php the_title(); ?>";
-							a2a_config.linkurl="<?php the_permalink(); ?>";
+							a2a_config.linkurl="<?php echo getAdd2AnyLink(); ?>";
 //							a2a.init('page'); 
 						</script><script type="text/javascript" src="http://static.addtoany.com/menu/page.js"></script><span class="a2a_kit-fd a2a_default_style-fd">
-							<a class="a2a_button_email" href="mailto:?subject=<?php ; rawurlencode(the_title())?>&amp;body=<?php rawurlencode(the_permalink()); ?>"><span class="a2a_img a2a_img_text a2a_i_email"></span>Email</a>
+							<a class="a2a_button_email" href="mailto:?subject=<?php ; rawurlencode(the_title())?>&amp;body=<?php echo rawurlencode(getAdd2AnyLink()); ?>"><span class="a2a_img a2a_img_text a2a_i_email"></span>Email</a>
 							<a class="a2a_button_print" href="<?php the_permalink(); ?>?print=true" target="myfd_print"><span class="a2a_img a2a_img_text a2a_i_email"></span>Print</a>
 						</span>
 					</span>

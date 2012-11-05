@@ -1,3 +1,5 @@
+<%@ page import="com.freshdirect.webapp.taglib.fdstore.display.GetContentNodeWebIdTag"%>
+<%@ page import="com.freshdirect.webapp.taglib.coremetrics.CmMarketingLinkUtil"%>
 <%@ page import="java.text.SimpleDateFormat"%>
 <%@ page import='java.util.*'  %>
 <%@ page import='java.net.URLEncoder'%>
@@ -175,8 +177,8 @@ if (currentCategory != null) {
 
 	String actionURI = FDURLUtil.getProductURI(productNode, recommendations.getVariant().getId(), "feat", pl.getTrackingCode(), ord, recommendations.getImpressionId(productNode));
 %><%-- display a product --%>
-		<td align="center" width="105" valign="bottom">
-			<display:ProductImage product="<%=productNode%>" action="<%=actionURI%>" hideBursts="<%= recommendations.getVariant().getHideBursts() %>"/>
+		<td align="center" width="105" valign="bottom" class="smartstore-carousel-item-grocery-layout">
+			<display:ProductImage product="<%=productNode%>" action="<%=actionURI%>" hideBursts="<%= recommendations.getVariant().getHideBursts() %>" webId="<%=GetContentNodeWebIdTag.getWebId(null, productNode, true, false)%>"/>
 		</td>
 		<td width="10">
 			<img src="/media/images/layout/clear.gif" width="8" height="1">
@@ -201,13 +203,14 @@ if (currentCategory != null) {
 			}
 	%></fd:FDProductInfo><%
 String actionURI = FDURLUtil.getProductURI(productNode, recommendations.getVariant().getId(), "feat", pl.getTrackingCode(), ord, recommendations.getImpressionId(productNode));
+String linkId = GetContentNodeWebIdTag.getWebId(null, productNode, true, false) + "_product_name";
 %><%-- display a product --%>
 		<td align="center" WIDTH="105">
 			<display:ProductRating product="<%= productNode %>"/>
 <%		if (productNode.isFullyAvailable()) { %>
-			<div><display:ProductName product="<%= productNode %>" action="<%= actionURI %>"/></div>
+			<div><display:ProductName id="<%=linkId%>" product="<%= productNode %>" action="<%= CmMarketingLinkUtil.getSmartStoreLink(actionURI,recommendations) %>"/></div>
 <%		} else { %>
-			<div style="color: #999999;"><display:ProductName product="<%= productNode %>" action="<%= actionURI %>" style="color: #999999;"/></div>
+			<div style="color: #999999;"><display:ProductName id="<%=linkId%>"  product="<%= productNode %>" action="<%= CmMarketingLinkUtil.getSmartStoreLink(actionURI,recommendations) %>" style="color: #999999;"/></div>
 <%		}
 		if (fiIsDeal) {
 %>			<div style="FONT-WEIGHT: bold; FONT-SIZE: 8pt; COLOR: #c00"><%= fiProdPrice %></div>
@@ -563,3 +566,4 @@ String actionURI = FDURLUtil.getProductURI(productNode, recommendations.getVaria
 	<td colspan="4"><img src="/media_stat/images/layout/clear.gif" width="1" height="10" alt="" /></td>
 </tr>
 </table>
+<fd:javascript src="/assets/javascript/fd/modules/coremetrics/carousel_grocery_layout.js"/>

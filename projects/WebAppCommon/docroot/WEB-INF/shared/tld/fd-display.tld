@@ -295,6 +295,10 @@
 			<name>useEllipsis</name>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
+		<attribute>
+			<name>id</name>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
 	</tag>
  <tag>
   <name>CategoryName</name>

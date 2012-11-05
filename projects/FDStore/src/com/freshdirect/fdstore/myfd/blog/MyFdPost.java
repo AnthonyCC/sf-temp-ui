@@ -117,13 +117,18 @@ public class MyFdPost implements Serializable {
 			tagLinks.add(tagLinkNodes.item(i).getTextContent());
 		}
 		
+		this.emailLink = getEmailLink(title, postLink);
+	}
+	
+	public static String getEmailLink(String title, String postLink){
 		try {
-			this.emailLink = "mailto:?subject=" + URLEncoder.encode(this.title, "ISO-8859-1") + "&body=" + URLEncoder.encode(this.postLink, "ISO-8859-1");
-			this.emailLink = this.emailLink.replace("+", "%20");
+			String emailLink = "mailto:?subject=" + URLEncoder.encode(title, "ISO-8859-1") + "&body=" + URLEncoder.encode(postLink, "ISO-8859-1");
+			emailLink = emailLink.replace("+", "%20");
+			return emailLink;
 		} catch (UnsupportedEncodingException e) {
 			// we know this cannot happen
 			throw new RuntimeException(e);
-		}
+		}		
 	}
 	
 	private void parseContent() throws RuntimeException {		

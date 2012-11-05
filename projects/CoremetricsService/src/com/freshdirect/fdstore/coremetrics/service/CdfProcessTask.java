@@ -20,6 +20,8 @@ import com.freshdirect.fdstore.content.DepartmentModel;
 import com.freshdirect.fdstore.content.ProductContainer;
 import com.freshdirect.fdstore.coremetrics.builder.PageViewTagModelBuilder;
 import com.freshdirect.fdstore.coremetrics.builder.PageViewTagModelBuilder.CustomCategory;
+import com.freshdirect.fdstore.util.EnumSiteFeature;
+import com.freshdirect.framework.event.EnumEventSource;
 import com.freshdirect.framework.util.RuntimeServiceUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.jcraft.jsch.ChannelSftp;
@@ -62,6 +64,16 @@ public class CdfProcessTask {
 
 		for (CustomCategory category : PageViewTagModelBuilder.CustomCategory.values()){
 			addCmPageViewTagCategory(category.toString());
+		}
+		
+		//event source used in shop tags as category
+		for (EnumEventSource eventEnum : EnumEventSource.values()){
+			addCmPageViewTagCategory(((EnumEventSource) eventEnum).toString());
+		}
+		
+		//site feature used in shop tags as category
+		for (EnumSiteFeature siteFeatureEnum: EnumSiteFeature.getEnumList()){
+			addCmPageViewTagCategory(siteFeatureEnum.getName());
 		}
 		
 		for (DepartmentModel dept : ContentFactory.getInstance().getStore().getDepartments()) {

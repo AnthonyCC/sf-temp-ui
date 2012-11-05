@@ -35,6 +35,7 @@ import com.freshdirect.fdstore.standingorders.FDStandingOrder;
 import com.freshdirect.fdstore.util.ProductDisplayUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.smartstore.Variant;
+import com.freshdirect.webapp.taglib.coremetrics.CmMarketingLinkUtil;
 import com.freshdirect.webapp.taglib.smartstore.Impression;
 
 
@@ -447,6 +448,17 @@ public class FDURLUtil {
 	    if (params.get(ProductDisplayUtil.IMPRESSION_ID) != null) {
 	        collectedParams.put(ProductDisplayUtil.IMPRESSION_ID, params.get(ProductDisplayUtil.IMPRESSION_ID)[0]);
 	    }
+	    
+	    String[] cmOnsite = params.get(CmMarketingLinkUtil.ONSITE_PARAMETER_NAME); 
+	    if (cmOnsite != null){
+	    	collectedParams.put(CmMarketingLinkUtil.ONSITE_PARAMETER_NAME, cmOnsite[0]);
+	    }
+
+	    String[] cmOffsite = params.get(CmMarketingLinkUtil.OFFSITE_PARAMETER_NAME); 
+	    if (cmOffsite != null){
+	    	collectedParams.put(CmMarketingLinkUtil.OFFSITE_PARAMETER_NAME, cmOffsite[0]);
+	    }
+
 	    return collectedParams;
 	}
 

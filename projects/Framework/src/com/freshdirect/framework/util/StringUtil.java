@@ -1,5 +1,7 @@
 package com.freshdirect.framework.util;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.Iterator;
 import java.util.List;
 
@@ -701,4 +703,35 @@ public class StringUtil {
 	        buffer.append(delimiter).append(String.valueOf(iter.next()));
 	    return buffer.toString();
 	}
+	
+
+	/**
+	 * source http://www.java2s.com/Code/Java/Network-Protocol/AddParametertoURL.htm
+	 */
+	public static String addParameterToUrl(String URL, String name, String value) {
+	    int qpos = URL.indexOf('?');
+	    int hpos = URL.indexOf('#');
+	    char sep = qpos == -1 ? '?' : '&';
+	    
+	    String seg = sep + encodeUrl(name) + '=' + encodeUrl(value);
+	    return hpos == -1 ? URL + seg : URL.substring(0, hpos) + seg + URL.substring(hpos);
+	}
+	
+
+	/**
+	 * The same behaviour as Web.escapeUrl, only without the "funky encoding" of
+	 * the characters ? and ; (uses JDK URLEncoder directly).
+	 * source http://www.java2s.com/Code/Java/Network-Protocol/AddParametertoURL.htm
+	 * 
+	 * @param toencode
+	 *        The string to encode.
+	 * @return <code>toencode</code> fully escaped using URL rules.
+	*/
+	public static String encodeUrl(String url) {
+	    try {
+	    	return URLEncoder.encode(url, "UTF-8");
+	    } catch (UnsupportedEncodingException uee){
+	    	throw new IllegalArgumentException(uee);
+	    }
+	 }
 }

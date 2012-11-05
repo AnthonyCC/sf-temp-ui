@@ -25,6 +25,7 @@ import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.FDOrderHistory;
 import com.freshdirect.fdstore.customer.FDOrderInfoI;
+import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.customer.ejb.FDSessionBeanSupport;
 import com.freshdirect.fdstore.lists.FDCustomerList;
 import com.freshdirect.fdstore.lists.FDStandingOrderList;
@@ -534,6 +535,36 @@ public class FDStandingOrdersSessionBean extends FDSessionBeanSupport {
 			conn = getConnection();
 			FDStandingOrderDAO dao = new FDStandingOrderDAO();			
 			dao.deleteStandingOrderAltDeliveryDate(conn, altDeliveryDate);
+		} catch (SQLException e) {
+			LOGGER.error( "SQL ERROR in deleteStandingOrderAltDeliveryDate() : " + e.getMessage(), e );
+			e.printStackTrace();
+			throw new FDResourceException(e);
+		} finally {
+			close(conn);
+		}
+	}
+	
+	public void insertIntoCoremetricsUserinfo(FDUserI fdUser, int flag) throws FDResourceException {
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			FDStandingOrderDAO dao = new FDStandingOrderDAO();			
+			dao.insertIntoCoremetricsUserinfo(conn, fdUser, flag);
+		} catch (SQLException e) {
+			LOGGER.error( "SQL ERROR in deleteStandingOrderAltDeliveryDate() : " + e.getMessage(), e );
+			e.printStackTrace();
+			throw new FDResourceException(e);
+		} finally {
+			close(conn);
+		}
+	}
+
+	public boolean getCoremetricsUserinfo(FDUserI fdUser) throws FDResourceException {
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			FDStandingOrderDAO dao = new FDStandingOrderDAO();			
+			return dao.getCoremetricsUserinfo(conn, fdUser);
 		} catch (SQLException e) {
 			LOGGER.error( "SQL ERROR in deleteStandingOrderAltDeliveryDate() : " + e.getMessage(), e );
 			e.printStackTrace();

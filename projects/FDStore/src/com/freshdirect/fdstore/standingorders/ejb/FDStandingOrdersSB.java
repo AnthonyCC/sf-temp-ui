@@ -12,6 +12,7 @@ import com.freshdirect.customer.ErpActivityRecord;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.customer.FDActionInfo;
 import com.freshdirect.fdstore.customer.FDIdentity;
+import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.lists.FDCustomerList;
 import com.freshdirect.fdstore.standingorders.FDStandingOrder;
 import com.freshdirect.fdstore.standingorders.FDStandingOrderAltDeliveryDate;
@@ -42,4 +43,6 @@ public interface FDStandingOrdersSB extends EJBObject {
 	public boolean unlock(FDStandingOrder so, String lockId) throws FDResourceException,RemoteException;
 	public String getLockId(String soId) throws FDResourceException,RemoteException;
 	public void checkForDuplicateSOInstances(FDIdentity identity) throws FDResourceException,RemoteException;
+	public void insertIntoCoremetricsUserinfo(FDUserI fdUser, int flag) throws FDResourceException, RemoteException;
+	public boolean getCoremetricsUserinfo(FDUserI fdUser) throws FDResourceException, RemoteException;
 }

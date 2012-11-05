@@ -20,6 +20,8 @@
 <%@ page import="com.freshdirect.framework.util.log.LoggerFactory"%>
 <%@ page import="com.freshdirect.fdstore.util.FilteringNavigator"%>
 <%@ page import="com.freshdirect.fdstore.content.util.QueryParameterCollection"%>
+<%@ page import="com.freshdirect.webapp.taglib.coremetrics.CmMarketingLinkUtil"%>
+<%@ page import="com.freshdirect.webapp.util.FDURLUtil"%>
 <%@ taglib uri='template' prefix='tmpl'%>
 <%@ taglib uri='bean' prefix='bean'%>
 <%@ taglib uri='logic' prefix='logic'%>
@@ -173,10 +175,13 @@ final int W_INDEX_RIGHT_CENTER = W_INDEX_TOTAL - 228 - W_INDEX_CENTER_PADDING;
 		<div class="search-recommender">
 			<h3><%= recommendedProducts.getVariant().getServiceConfig().getPresentationTitle() %></h3>
 			<display:Carousel id="cat1_carousel" carouselId="cat1_carousel" width="816" numItems="4" showCategories="false" itemsToShow="<%= recommendedProducts.getProducts() %>" trackingCode="edt-4mm" maxItems="32">
-				<display:GetContentNodeWebId id="webId" product="<%= currentItem %>" clientSafe="<%= true %>">
-				<% ProductImpression pi = confStrat.configure((ProductModel)currentItem, confContext); %>
-				<div class="grid-item-container"><%@ include file="/includes/product/i_product_box.jspf" %></div>
-				</display:GetContentNodeWebId>
+				<span class="smartstore-carousel-item">
+					<display:GetContentNodeWebId id="webId" product="<%= currentItem %>" clientSafe="<%= true %>">
+					<% ProductImpression pi = confStrat.configure((ProductModel)currentItem, confContext); %>
+					<a href="<%=CmMarketingLinkUtil.getSmartStoreLink(FDURLUtil.getProductURI(pi.getProductModel(), trk), recommendedProducts)%>" hidden style="display: none;" class="product-name-link"></a> <%-- For Coremetrics impression tracking --%>
+					<div class="grid-item-container"><%@ include file="/includes/product/i_product_box.jspf" %></div>
+					</display:GetContentNodeWebId>
+				</span>
 			</display:Carousel>
 		</div>
 		</fd:ProductGroupRecommender>	

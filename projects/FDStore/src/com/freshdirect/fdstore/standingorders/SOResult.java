@@ -91,11 +91,15 @@ public class SOResult implements Serializable {
 	/**
 	 *	Successful Standing Order. 
 	 */
-	public static Result createSuccess( FDStandingOrder so, FDIdentity cust, FDCustomerInfo custInfo, boolean hasInvalidItems, List<String> unavItems, String orderId, String internalMessage ) {
-		return new Result( Status.SUCCESS ).
+	public static Result createSuccess( FDStandingOrder so, FDIdentity cust, FDCustomerInfo custInfo, boolean hasInvalidItems, List<String> unavItems, String orderId, String internalMessage, boolean timeOutOccured ) {
+		Result result = new Result( Status.SUCCESS ).
 				fillSOData( so ).
 				fillCustomerData( cust, custInfo ).
 				fillSuccessData( hasInvalidItems, unavItems, orderId, internalMessage );
+		if (timeOutOccured) {
+			result.setTimeOutOccured();
+		}
+		return result;
 	}
 	
 	
@@ -143,6 +147,9 @@ public class SOResult implements Serializable {
 		
 		// additional internal message for cron report.
 		private String internalMessage;
+		
+		protected boolean timeOutOccured	= false;
+
 		
 		/**
 		 *  private constructor, only for internal use
@@ -316,6 +323,13 @@ public class SOResult implements Serializable {
 		public String toString() {
 			return "SOSRR["+status+", "+errorCode+", "+errorHeader+", "+errorDetail+"]";
 		}
+		
+		public boolean isTimeOutOccured() {
+			return timeOutOccured;
+		}
+		public void setTimeOutOccured() {
+			this.timeOutOccured = true;
+		}
 	}
 	
 	/**
@@ -334,6 +348,7 @@ public class SOResult implements Serializable {
 		protected int failedCount	= 0;
 		protected int successCount	= 0;
 		protected int skippedCount	= 0;
+		protected boolean timeOutOccured	= false;
 		
 		List<Result> results = new ArrayList<Result>();
 		
@@ -363,10 +378,14 @@ public class SOResult implements Serializable {
 		protected void countSkipped() {
 			skippedCount++;
 		}
+		protected void setTimeOutOccured(Result r) {
+			if (r.isTimeOutOccured()) timeOutOccured = true;
+		}
 		
 		public void add( Result r ) {
 			if ( r != null ) {
 				count( r.status );
+				setTimeOutOccured( r );
 				results.add( r );
 			}
 		}
@@ -390,6 +409,9 @@ public class SOResult implements Serializable {
 		@Override
 		public String toString() {
 			return "SOSRC["+successCount+" success, "+failedCount+" failed, "+skippedCount+" skipped, "+getTotalCount()+" total]"; 
+		}
+		public boolean isTimeOutOccured() {
+			return timeOutOccured;
 		}
 	}
 	

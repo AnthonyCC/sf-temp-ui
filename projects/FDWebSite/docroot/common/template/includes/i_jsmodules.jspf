@@ -10,4 +10,5 @@
 <fd:javascript src="/assets/javascript/fd/modules/header/loginbox.js"/>
 <fd:javascript src="/assets/javascript/fd/modules/header/popsubmenu.js"/>
 <fd:javascript src="/assets/javascript/fd/modules/header/pinnedsearchbar.js"/>
+<fd:javascript src="/assets/javascript/fd/modules/coremetrics/carousel.js"/>
 

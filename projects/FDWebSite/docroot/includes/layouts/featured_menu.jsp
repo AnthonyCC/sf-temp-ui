@@ -1,3 +1,4 @@
+<%@ page import="com.freshdirect.webapp.taglib.coremetrics.CmMarketingLinkUtil"%>
 <%@ page import="java.text.SimpleDateFormat"%>
 <%@ page import='java.util.*'  %>
 <%@ page import='java.net.URLEncoder'%>
@@ -108,13 +109,15 @@ if (sortedColl==null) sortedColl = new ArrayList();
 			fiProdPrice = JspMethods.formatPrice(productInfo, user.getPricingContext());
 %></fd:FDProductInfo><%
 			String actionURI = FDURLUtil.getProductURI(productNode, recommendations.getVariant().getId(), "feat", pl.getTrackingCode(), ord, recommendations.getImpressionId(productNode));
-%>			<p style="border: 0px; padding: 0px; margin: 0px;">
-			<display:ProductImage product="<%= productNode %>" action="<%= actionURI %>" hideBursts="<%= recommendations.getVariant().getHideBursts() %>"/></p>
-			<display:ProductRating product="<%= productNode %>" />
-			<display:ProductName product="<%= productNode %>" action="<%= actionURI %>"/><br/>
-			<% if (fiSubtitle.length() > 0) { %><span class="text12"><%= fiSubtitle %></span><br><% } %>
-			<span class="favoritePrice"><%= fiProdPrice %></span><br>
-			<span class="space8pix"><br></span><%
+%>			<span class="smartstore-carousel-item">
+				<p style="border: 0px; padding: 0px; margin: 0px;">
+				<display:ProductImage product="<%= productNode %>" action="<%= actionURI %>" hideBursts="<%= recommendations.getVariant().getHideBursts() %>"/></p>
+				<display:ProductRating product="<%= productNode %>" />
+				<display:ProductName product="<%= productNode %>" action="<%= CmMarketingLinkUtil.getSmartStoreLink(actionURI, recommendations)%>"/><br/>
+				<% if (fiSubtitle.length() > 0) { %><span class="text12"><%= fiSubtitle %></span><br><% } %>
+				<span class="favoritePrice"><%= fiProdPrice %></span><br>
+				<span class="space8pix"><br></span>
+			</span><%
 			++ord;
 %></logic:iterate><%
 	}

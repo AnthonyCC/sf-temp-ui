@@ -55,20 +55,24 @@ public class GetContentNodeWebIdTag extends AbstractGetterTag<String> {
 
 
 	public static String getWebId(String prefix, ContentNodeModel node, boolean javaScriptSafe) {
+		return getWebId(prefix, node, javaScriptSafe, true);
+	}
+
+	public static String getWebId(String prefix, ContentNodeModel node, boolean javaScriptSafe, boolean appendRandom) {
 		StringBuilder key = new StringBuilder();
 		
 		key.append( prefix != null ? prefix : "CTNT" );
 		key.append( "_" );
 		key.append( Integer.toHexString(node.getContentName().hashCode()) );
 		/// key.append( "_" );
-		key.append( Long.toHexString(rnd.nextLong()) );
+		if (appendRandom){
+			key.append( Long.toHexString(rnd.nextLong()) );
+		}
 		
 		final String uid = key.toString();
 
 		return javaScriptSafe ? JspMethods.safeJavaScriptVariable(uid) : uid;
 	}
-
-
 
 	public static class TagEI extends AbstractGetterTag.TagEI {
 		@Override

@@ -9,9 +9,9 @@ import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.ProductReference;
 import com.freshdirect.fdstore.coremetrics.tagmodel.ShopTagModel;
 import com.freshdirect.fdstore.customer.FDCartLineDealHelper;
-import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDCartLineDealHelper.DealType;
 import com.freshdirect.fdstore.customer.FDCartLineI;
+import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.framework.event.EnumEventSource;
 import com.freshdirect.smartstore.service.VariantRegistry;
 
@@ -19,6 +19,7 @@ public abstract class AbstractShopTagModelBuilder {
 	
 	protected List<ShopTagModel> tagModels = new ArrayList<ShopTagModel>();
 	protected FDCartModel cart;
+	protected boolean isStandingOrder = false;
 	
 	public abstract List<ShopTagModel> buildTagModels() throws SkipTagException;
 	
@@ -39,7 +40,9 @@ public abstract class AbstractShopTagModelBuilder {
 		tagModel.setOrderSubtotal(Double.toString(price)); 
 		
 				
-		if (cartLine.isAddedFromSearch()){
+		if (isStandingOrder) {
+			tagModel.setCategoryId("so_template");
+		} else 	if (cartLine.isAddedFromSearch()){
 			tagModel.setCategoryId("search");
 			
 		} else if (variantId == null){
@@ -103,5 +106,13 @@ public abstract class AbstractShopTagModelBuilder {
 
 	public void setTagModels(List<ShopTagModel> tagModels) {
 		this.tagModels = tagModels;
+	}
+
+	public boolean isStandingOrder() {
+		return isStandingOrder;
+	}
+
+	public void setStandingOrder(boolean isStandingOrder) {
+		this.isStandingOrder = isStandingOrder;
 	}
 }

@@ -1,3 +1,4 @@
+<%@page import="com.freshdirect.webapp.taglib.coremetrics.CmMarketingLinkUtil"%>
 <%@page import="com.freshdirect.webapp.util.ProductImpression"%>
 <%@page import="com.freshdirect.fdstore.content.ContentNodeModel"%>
 <%@page import="com.freshdirect.fdstore.DealsHelper"%>
@@ -110,14 +111,16 @@
 					</script>
 					<display:Carousel id="bnd" carouselId="<%=temp_carouselId%>" width="<%=featExtCarWidth%>" numItems="<%=featExtNumItems%>" showCategories="false" itemsToShow="<%= curRowUniqueItems %>" 
 							trackingCode="<%=featExtTrackCode%>" maxItems="<%=featExtMaxItems%>" parentId="<%=temp_tdId%>" eventHandlersObj='<%=handlerObj%>'>
-						<display:GetContentNodeWebId id="webId" product="<%= currentItem %>" clientSafe="<%= true %>">
-							<display:ProductImage product="<%= (ProductModel)currentItem %>" showRolloverImage="true" action="<%= actionUrl %>" className="productImage" enableQuickBuy="<%=featExtUseQuickBuy%>" disabled="<%=featExtDisableLinks%>" />
-							<display:ProductRating product="<%= (ProductModel)currentItem %>" action="<%= actionUrl %>"/>
-							<div class="productname">
-								<display:ProductName product="<%= (ProductModel)currentItem %>" action="<%= actionUrl %>" showBrandName="true" disabled="<%=featExtDisableLinks%>" />
-							</div>
-							<display:ProductPrice impression="<%= new ProductImpression((ProductModel)currentItem) %>" showDescription="false"/>	
-						</display:GetContentNodeWebId>
+						<span class="smartstore-carousel-item">
+							<display:GetContentNodeWebId id="webId" product="<%= currentItem %>" clientSafe="<%= true %>">
+								<display:ProductImage product="<%= (ProductModel)currentItem %>" showRolloverImage="true" action="<%= actionUrl %>" className="productImage" enableQuickBuy="<%=featExtUseQuickBuy%>" disabled="<%=featExtDisableLinks%>" />
+								<display:ProductRating product="<%= (ProductModel)currentItem %>" action="<%= actionUrl %>"/>
+								<div class="productname">
+									<display:ProductName product="<%= (ProductModel)currentItem %>" action="<%= CmMarketingLinkUtil.getSmartStoreLink(actionUrl, brandDealRecommendations) %>" showBrandName="true" disabled="<%=featExtDisableLinks%>" />
+								</div>
+								<display:ProductPrice impression="<%= new ProductImpression((ProductModel)currentItem) %>" showDescription="false"/>	
+							</display:GetContentNodeWebId>
+						</span>
 					</display:Carousel>
 					</center>
 				</td></tr>

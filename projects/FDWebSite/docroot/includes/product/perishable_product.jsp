@@ -10,6 +10,7 @@
 <%@ page import='com.freshdirect.fdstore.promotion.*'%>
 <%@ page import='com.freshdirect.content.nutrition.*'%>
 <%@ page import='com.freshdirect.framework.webapp.*' %>
+<%@ page import="com.freshdirect.webapp.taglib.coremetrics.CmMarketingLinkUtil"%>
 <%@ page import='java.net.URLEncoder' %>
 <%@ page import='java.util.*' %>
 
@@ -218,6 +219,7 @@ final int W_PERISHABLE_PRODUCT_RIGHT = 369;
 							final ProductModel __c_prd = (ProductModel) currentItem;
 							final int __c_maxHeight = ProductDisplayUtil.getMaxHeight(recommendedProducts.getProducts()); 
 						%>
+						<a href="<%=CmMarketingLinkUtil.getSmartStoreLink(actionUrl, recommendedProducts)%>" hidden style="display: none;" class="product-name-link"></a> <%-- For Coremetrics impression tracking --%>
 						<display:GetContentNodeWebId id="webId" product="<%= currentItem %>" clientSafe="<%= true %>">
 						<div id="hotspot-<%= webId %>" style="height: 181px">
 							<display:ProductImage product="<%= __c_prd %>" showRolloverImage="true" useAlternateImage="false"

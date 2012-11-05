@@ -1,3 +1,4 @@
+<%@page import="com.freshdirect.webapp.taglib.coremetrics.CmMarketingLinkUtil"%>
 <%@page import="com.freshdirect.fdstore.content.ContentFactory"%>
 <%@page import="com.freshdirect.fdstore.content.CategoryModel"%>
 <%@page import="java.util.HashSet"%>
@@ -41,15 +42,17 @@ final int W_FAVORITE_PRODUCTS_BND = 683;
 				var your_favourites_events = {"afterScroll":  <fd:CmElement wrapIntoFunction="true" siteFeature="PROD_GRP_YF" elementCategory="carousel"/>} 
 			</script>
 			<display:Carousel id="your_favourites_carousel" carouselId="your_favourites_carousel" width="<%=W_FAVORITE_PRODUCTS_BND%>" numItems="5" showCategories="false" itemsToShow="<%= YFProds %>" trackingCode="yf-4mm" maxItems="12" eventHandlersObj="your_favourites_events">
-				<display:GetContentNodeWebId id="webId" product="<%= currentItem %>" clientSafe="<%= true %>">
-					<display:ProductImage product="<%= (ProductModel)currentItem %>" showRolloverImage="true" action="<%= actionUrl %>"
-							useAlternateImage="true" hideBursts="<%= hideBursts %>" className="productImage" height="90" enableQuickBuy="true" webId="<%= webId %>"/>
-					<display:ProductRating product="<%= (ProductModel)currentItem %>" action="<%= actionUrl %>"/>
-					<div class="productname">
-						<display:ProductName product="<%= (ProductModel)currentItem %>" action="<%= actionUrl %>"/>
-					</div>
-					<display:ProductPrice impression="<%= new ProductImpression((ProductModel)currentItem) %>" showDescription="false"/>
-				</display:GetContentNodeWebId>
+				<span class="smartstore-carousel-item">
+					<display:GetContentNodeWebId id="webId" product="<%= currentItem %>" clientSafe="<%= true %>">
+						<display:ProductImage product="<%= (ProductModel)currentItem %>" showRolloverImage="true" action="<%= actionUrl %>"
+								useAlternateImage="true" hideBursts="<%= hideBursts %>" className="productImage" height="90" enableQuickBuy="true" webId="<%= webId %>"/>
+						<display:ProductRating product="<%= (ProductModel)currentItem %>" action="<%= actionUrl %>"/>
+						<div class="productname">
+							<display:ProductName product="<%= (ProductModel)currentItem %>" action="<%=CmMarketingLinkUtil.getSmartStoreLink(actionUrl, deptYf)%>"/>
+						</div>
+						<display:ProductPrice impression="<%= new ProductImpression((ProductModel)currentItem) %>" showDescription="false"/>
+					</display:GetContentNodeWebId>
+				</span>
 			</display:Carousel>
 		</div>
 	<% } %>

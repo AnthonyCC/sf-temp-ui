@@ -602,4 +602,31 @@ public class FDStandingOrdersManager {
 	return result;
 	}
 
+	public void insertIntoCoremetricsUserinfo(FDUserI fdUser, int flag) throws FDResourceException {
+		lookupManagerHome();
+		try {
+			FDStandingOrdersSB sb = soHome.create();			
+			sb.insertIntoCoremetricsUserinfo(fdUser, flag);
+		} catch (CreateException ce) {
+			invalidateManagerHome();
+			throw new FDResourceException(ce, "Error creating session bean");
+		} catch (RemoteException re) {
+			invalidateManagerHome();
+			throw new FDResourceException(re, "Error talking to session bean");
+		}
+	}
+	
+	public boolean getCoremetricsUserinfo(FDUserI fdUser) throws FDResourceException {
+		lookupManagerHome();
+		try {
+			FDStandingOrdersSB sb = soHome.create();			
+			return sb.getCoremetricsUserinfo(fdUser);
+		} catch (CreateException ce) {
+			invalidateManagerHome();
+			throw new FDResourceException(ce, "Error creating session bean");
+		} catch (RemoteException re) {
+			invalidateManagerHome();
+			throw new FDResourceException(re, "Error talking to session bean");
+		}
+	}
 }

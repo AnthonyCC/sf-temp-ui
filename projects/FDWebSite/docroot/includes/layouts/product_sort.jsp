@@ -1,3 +1,4 @@
+<%@ page import="com.freshdirect.webapp.taglib.coremetrics.CmMarketingLinkUtil"%>
 <%@ page import="java.text.SimpleDateFormat"%>
 <%@ page import='java.util.*'  %>
 <%@ page import='java.net.URLEncoder'%>
@@ -126,16 +127,18 @@ if (sortedStuff==null) sortedStuff = new ArrayList();
 						
 						%>	<%-- display a product --%>
 					<td width="<%= tdwidth %>">
-						<p style="border: 0px; padding: 0px; margin: 0px;">
-							<display:ProductImage product="<%= productNode %>" action="<%= actionURI %>" hideBursts="<%= recommendations.getVariant().getHideBursts() %>"/></p>
-							<display:ProductRating product="<%= productNode %>" />
-			<%			// product name
-					if (productNode.isFullyAvailable()) { %>
-						<div><display:ProductName product="<%= productNode %>" action="<%= actionURI %>"/></div>
-			<%		} else { %>
-						<div style="color: #999999"><display:ProductName product="<%= productNode %>" action="<%= actionURI %>"/></div>
-			<%		} %>
-						<div class="favoritePrice">	<display:ProductPrice impression="<%= new ProductImpression(productNode) %>" showDescription="false"/></div>
+						<span class="smartstore-carousel-item">
+							<p style="border: 0px; padding: 0px; margin: 0px;">
+								<display:ProductImage product="<%= productNode %>" action="<%= actionURI %>" hideBursts="<%= recommendations.getVariant().getHideBursts() %>"/></p>
+								<display:ProductRating product="<%= productNode %>" />
+				<%			// product name
+						if (productNode.isFullyAvailable()) { %>
+							<div><display:ProductName product="<%= productNode %>" action="<%= CmMarketingLinkUtil.getSmartStoreLink(actionURI, recommendations) %>"/></div>
+				<%		} else { %>
+							<div style="color: #999999"><display:ProductName product="<%= productNode %>" action="<%= CmMarketingLinkUtil.getSmartStoreLink(actionURI, recommendations) %>"/></div>
+				<%		} %>
+							<div class="favoritePrice">	<display:ProductPrice impression="<%= new ProductImpression(productNode) %>" showDescription="false"/></div>
+						</span>
 					</td>
 					
 			<%if (ord < recommendations.getProducts().size()) {%>		

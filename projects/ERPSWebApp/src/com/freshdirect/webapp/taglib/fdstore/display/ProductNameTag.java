@@ -41,6 +41,7 @@ public class ProductNameTag extends BodyTagSupport {
     int truncAt = -1; // Truncate name at N characters (-1 means do not truncate)
     boolean useEllipsis = false; // When truncating, finish with " ..."
     Set<EnumBurstType> hideBursts;
+    private String id;
 
     public void setHideBursts(Set<EnumBurstType> hideBursts) {
         this.hideBursts = hideBursts;
@@ -102,7 +103,11 @@ public class ProductNameTag extends BodyTagSupport {
         this.useEllipsis = useEllip;
     }
 
-    public int doStartTag() {
+    public void setId(String id) {
+		this.id = id;
+	}
+
+	public int doStartTag() {
         JspWriter out = pageContext.getOut();
 
         if (calculator == null) {
@@ -141,7 +146,7 @@ public class ProductNameTag extends BodyTagSupport {
 
         // buf.append("<span" + styleStr + ">");
         if (!this.disabled && (action != null)) {
-            buf.append("<a href=\"" + action + "\"" + styleStr + ">");
+            buf.append("<a" + (id==null ? "" : " id=\"" + id + "\"") + " href=\"" + action + "\"" + styleStr + " class=\"product-name-link\">");
         }
 
         if (shortenedProductName != null) {

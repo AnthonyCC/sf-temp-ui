@@ -15,6 +15,7 @@ import org.apache.log4j.Logger;
 
 import com.freshdirect.crm.ejb.CriteriaBuilder;
 import com.freshdirect.fdstore.customer.FDIdentity;
+import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.standingorders.FDStandingOrder;
 import com.freshdirect.fdstore.standingorders.FDStandingOrderAltDeliveryDate;
 import com.freshdirect.fdstore.standingorders.FDStandingOrderFilterCriteria;
@@ -975,4 +976,56 @@ public class FDStandingOrderDAO {
 		}
 	}
 
+	private static final String INSERT_COREMETRICS_USERINFO = "INSERT INTO CUST.COREMETRICS_USERINFO values (?, ?)";
+	
+	public void insertIntoCoremetricsUserinfo(Connection conn, FDUserI fdUser, int flag) throws SQLException {
+		
+		PreparedStatement ps = null;		
+		try {
+			ps = conn.prepareStatement(INSERT_COREMETRICS_USERINFO);
+						
+			ps.setString(1, fdUser.getPrimaryKey());
+			ps.setInt(2, flag);
+			
+			ps.execute();	
+			ps.close();
+		
+		} catch (SQLException exc) {
+			throw exc;
+		} finally {
+			if(ps != null) {
+				ps.close();
+			}
+		}
+	}
+
+	private static final String GET_COREMETRICS_USERINFO = "SELECT id FROM CUST.COREMETRICS_USERINFO WHERE id = ?";
+	
+	public boolean getCoremetricsUserinfo(Connection conn, FDUserI fdUser) throws SQLException {
+		
+		PreparedStatement ps = null;		
+		ResultSet rs = null;
+		try {
+			ps = conn.prepareStatement(GET_COREMETRICS_USERINFO);
+						
+			ps.setString(1, fdUser.getPrimaryKey());
+			
+			rs=ps.executeQuery();
+			
+			while(rs.next()){
+				return true;
+			}
+			
+			rs.close();
+			ps.close();
+		}finally {
+			if(rs != null){
+				rs.close();
+			}
+			if(ps != null) {
+				ps.close();
+			}
+		}
+		return false;
+	}
 }

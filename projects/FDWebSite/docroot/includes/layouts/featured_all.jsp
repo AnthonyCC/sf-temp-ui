@@ -1,3 +1,4 @@
+<%@ page import="com.freshdirect.webapp.taglib.coremetrics.CmMarketingLinkUtil"%>
 <%@ page import="java.text.SimpleDateFormat"%>
 <%@ page import='java.util.*'  %>
 <%@ page import='java.net.URLEncoder'%>
@@ -120,10 +121,10 @@ final int W_FEATURED_PADDING = 14;
 					%><%-- display a product --%>
 					
 					<td width="<%= tdwidth %>">
-						<div>
+						<div class="smartstore-carousel-item">
 							<display:ProductImage product="<%= productNode %>" action="<%= actionURI %>" showRolloverImage="true" hideBursts="<%= recommendations.getVariant().getHideBursts() %>"/>
 							<display:ProductRating product="<%= productNode %>" action="<%= actionURI %>"/>
-							<display:ProductName product="<%= productNode %>" action="<%= actionURI %>"/>
+							<display:ProductName product="<%= productNode %>" action="<%= CmMarketingLinkUtil.getSmartStoreLink(actionURI, recommendations)%>"/>
 							<div class="favoritePrice"><display:ProductPrice impression="<%= new ProductImpression(productNode) %>" showDescription="false"/></div>
 						</div>
 					</td>
