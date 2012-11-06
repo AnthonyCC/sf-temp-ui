@@ -35,10 +35,10 @@ public class OrderRateDAO {
 			"as order_count, q1.starttime, q1.endtime, q1.zone from   ( select count(*) order_count, di.starttime, di.endtime, di.cutofftime, SA.REQUESTED_DATE, di.zone " +
 			"from  cust.sale s, cust.salesaction sa, cust.deliveryinfo di WHERE s.ID=sa.SALE_ID AND s.CUSTOMER_ID=sa.CUSTOMER_ID AND DI.SALESACTION_ID = SA.ID AND " +
 			"sa.ACTION_TYPE IN ('CRO','MOD') AND sa.REQUESTED_DATE > TRUNC(SYSDATE) AND s.type='REG' and s.status <>'CAN' and S.CROMOD_DATE = SA.ACTION_DATE " +
-			"AND S.CROMOD_DATE > sysdate -1/48 AND S.CROMOD_DATE <= sysdate group by di.starttime, di.endtime, di.cutofftime, SA.REQUESTED_DATE, di.zone) q1, " +
+			"AND S.CROMOD_DATE > ? AND S.CROMOD_DATE <= ? group by di.starttime, di.endtime, di.cutofftime, SA.REQUESTED_DATE, di.zone) q1, " +
 			"( select count(*) order_count, di.starttime, di.endtime, di.cutofftime, SA.REQUESTED_DATE, di.zone from  cust.sale s, cust.salesaction sa, cust.deliveryinfo di " +
 			"WHERE s.ID=sa.SALE_ID AND s.CUSTOMER_ID=sa.CUSTOMER_ID AND DI.SALESACTION_ID = SA.ID AND sa.ACTION_TYPE IN ('CRO','MOD') AND sa.REQUESTED_DATE > TRUNC(SYSDATE) " +
-			"AND s.type='REG' and s.status <>'CAN' and S.CROMOD_DATE = SA.ACTION_DATE  AND S.CROMOD_DATE > sysdate -1/24 AND S.CROMOD_DATE <= sysdate-1/48 group by " +
+			"AND s.type='REG' and s.status <>'CAN' and S.CROMOD_DATE = SA.ACTION_DATE  AND S.CROMOD_DATE > ? AND S.CROMOD_DATE <= ? group by " +
 			"di.starttime, di.endtime, di.cutofftime, SA.REQUESTED_DATE, di.zone) q2 where q1.starttime = q2.starttime(+) and q1.endtime = q2.endtime(+) and " +
 			"q1.zone = q2.zone(+)) a  where t.starttime  = a.STARTTIME(+) and  t.endtime = a.endtime(+) and t.zone_code = a.zone(+)";
 	
@@ -64,10 +64,17 @@ public class OrderRateDAO {
 		PreparedStatement ps =null;ResultSet rs = null;
 		Map returnMap = new HashMap();
 		Set<Date> baseDates = new HashSet<Date>();
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(snapshotTime);
+		cal.add(Calendar.MINUTE, -30);
 		
 		try {
 				ps = conn.prepareStatement(ORDER_RATE_QUERY_BY_TIMESLOT_SNAPSHOT);
-				
+				ps.setTimestamp(1, new java.sql.Timestamp(cal.getTimeInMillis()));
+				ps.setTimestamp(4, new java.sql.Timestamp(cal.getTimeInMillis()));
+				ps.setTimestamp(2, new java.sql.Timestamp(snapshotTime.getTime()));
+				cal.add(Calendar.MINUTE, -30);
+				ps.setTimestamp(3, new java.sql.Timestamp(cal.getTimeInMillis()));
 				rs = ps.executeQuery();
 				
 				while(rs.next())
