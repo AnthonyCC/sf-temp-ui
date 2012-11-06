@@ -198,14 +198,17 @@
 					<tr>
 						<td>Web ID:&nbsp;<input type="text" name="sourceId"/>&nbsp;<input type="submit" value="copy" onclick="return copyConfirm(document.forms['copyForm'].sourceId.value)"/></td>
 						<input type=hidden name=action value=copy>
+						<input type=hidden name="sku_code" value="<%= skuCode %>">
+						<input type=hidden name="skuCode" value="<%= skuCode %>">						
 					</tr>
 				</table>
 				</form>
 				
                 <%  if (product.getSkuCode() != null) { %>
                 <form action="product_view.jsp" method="post">
-                <input type=hidden name=action value=save>
-				<input type=hidden name="sku_code" value="<%= skuCode %>">
+                	<input type=hidden name=action value=save>
+					<input type=hidden name="sku_code" value="<%= skuCode %>">
+					<input type=hidden name="skuCode" value="<%= skuCode %>">
                 <table width="600" cellspacing="2" cellpadding="0">
                     <tr><th align="left">Default Pricing Unit Description</th></tr>
                     <tr>                    
@@ -248,7 +251,9 @@
 
                 <%  if (product.getSkuCode() != null) { %>
                 <form action="product_view.jsp" method="post">
-                <input type=hidden name=action value=save>
+                	<input type=hidden name=action value=save>
+                	<input type=hidden name="sku_code" value="<%= skuCode %>">
+                	<input type=hidden name="skuCode" value="<%= skuCode %>">
                 <table width="600" cellspacing="2" cellpadding="0">
                     <tr><th align="left" class="section_title">New / Back-in-Stock Manual Override</th></tr>
                     <tr><td align="left">Date of becoming new <input type=text size=12 name='<%= FormElementNameHelper.getFormElementName(product, EnumAttributeName.NEW_PRODUCT_DATE.getName()) %>' value='<%= product.getAttribute(EnumAttributeName.NEW_PRODUCT_DATE) %>'>
@@ -353,60 +358,62 @@
                         <tr><td align="left" class="section_title">Nutritional Information</td></tr>
                     </table>
                     <table width="600">
-<fd:DrugController redirectUrl="/ERPSAdmin/product/product_view.jsp"/>
-<%
-	if(((Boolean) pageContext.getAttribute("protoPanel")) == true ) {
-%>
-					<% if(SecurityManager.isUserAdmin(request)) {%>
-                        <tr><td align="left"><a href="nutrition_edit.jsp">Edit Nutritional Information</td></tr>
-					<% } %>
-                        <tr><td align="center">
-                            Information source: <%= nutrition.getUomFor(ErpNutritionType.SOURCE) %><br>
-                            <br>
-                            <%  double netCarbs = nutrition.getNetCarbs();
-                                double wwPoints = nutrition.getValueFor(ErpNutritionType.WEIGHT_WATCHERS_POINTS);
-                                if(netCarbs > 0){%>
-                                    Net Carbs: <%=netCarbs%><br>
-                                <%}
-                                if(wwPoints > 0){%>
-                                    WeightWatchers Points: <%=wwPoints%>
-                                <%}%>
-                            <br><br>
-<%                  ArrayList nutritionList = new ArrayList();
-                    for (Iterator nIter = nutrition.getKeyIterator(); nIter.hasNext(); ) {
-                        String key = (String) nIter.next();
-                        if ("IGNORE".equalsIgnoreCase(key)) { %>
-                            <b>This information is currently hidden from the website</b>
-                            <br><br>
-<%                      }
-                        FDNutrition fdn = new FDNutrition(ErpNutritionType.getType(key).getDisplayName(), nutrition.getValueFor(key), nutrition.getUomFor(key));
-                        nutritionList.add(fdn);
-                    }
-%>
-<%@ include file="i_nutrition_sheet.jspf" %>
-                    </td></tr>
-<% }  else { %>
-        <tr><td align="left">This product has a Drug Nutritional Information!</td></tr>
-<% } %>
+						<fd:DrugController redirectUrl="/ERPSAdmin/product/product_view.jsp"/>
+						<%
+							if( ((Boolean) pageContext.getAttribute("protoPanel")) == Boolean.TRUE ) {
+						%>
+							<% if(SecurityManager.isUserAdmin(request)) {%>
+		                        <tr><td align="left"><a href="nutrition_edit.jsp">Edit Nutritional Information</td></tr>
+							<% } %>
+	                        <tr><td align="center">
+	                            Information source: <%= nutrition.getUomFor(ErpNutritionType.SOURCE) %><br>
+	                            <br>
+	                            <%  double netCarbs = nutrition.getNetCarbs();
+	                                double wwPoints = nutrition.getValueFor(ErpNutritionType.WEIGHT_WATCHERS_POINTS);
+	                                if(netCarbs > 0){%>
+	                                    Net Carbs: <%=netCarbs%><br>
+	                                <%}
+	                                if(wwPoints > 0){%>
+	                                    WeightWatchers Points: <%=wwPoints%>
+	                                <%}%>
+	                            <br><br>
+								<%                  
+								ArrayList nutritionList = new ArrayList();
+			                    for (Iterator nIter = nutrition.getKeyIterator(); nIter.hasNext(); ) {
+			                        String key = (String) nIter.next();
+			                        if ("IGNORE".equalsIgnoreCase(key)) { %>
+			                            <b>This information is currently hidden from the website</b>
+			                            <br><br>
+								<%                      
+									}
+			                        FDNutrition fdn = new FDNutrition(ErpNutritionType.getType(key).getDisplayName(), nutrition.getValueFor(key), nutrition.getUomFor(key));
+			                        nutritionList.add(fdn);
+			                    }
+								%>
+								<%@ include file="i_nutrition_sheet.jspf" %>
+		                    </td></tr>
+						<% }  else { %>
+						        <tr><td align="left">This product has a Drug Nutritional Information!</td></tr>
+						<% } %>
                     </table>
                     <table width="600" cellspacing=2 cellpadding=0>
                         <tr><td align="left" class="section_title">Drug Nutritional Information</td></tr>
-<%
-	if(((Boolean) pageContext.getAttribute("protoPanel")) == false ) {
-%>
-        <tr><td align="left"><a href="drug_nutrition/drug_nutrition_edit.jsp?skuCode=<%= skuCode %>">Edit Drug Nutritional Information</a></td></tr>
-        <tr><td align="left">
-		<div id="drugpanel"></div>			
-		<script type="text/javascript" src="/assets/javascript/jquery/ui/1.8.23/jquery-ui.min.js"></script>
-		<script type="text/javascript" src="/assets/javascript/json2.min.js"></script>
-		<script type="text/javascript" src="/assets/javascript/es5-shim.min.js"></script>
-		<script type="text/javascript" src="/assets/javascript/jquery.mustache.js"></script>
-		<script src="/assets/javascript/drug_nutrition_editor.js"></script>
-		<script>drugPanel(jQuery,<%= pageContext.getAttribute("panel") %>, { container:jQuery('#drugpanel') })</script>
-		</td></tr>
-<% }  else { %>
-        <tr><td align="left"><a href="drug_nutrition/drug_nutrition_edit.jsp?skuCode=<%= skuCode %>">Create Drug Nutritional Information</a></td></tr>
-<% } %>
+						<%
+							if(((Boolean) pageContext.getAttribute("protoPanel")) == Boolean.FALSE ) {
+						%>
+						        <tr><td align="left"><a href="drug_nutrition/drug_nutrition_edit.jsp?skuCode=<%= skuCode %>">Edit Drug Nutritional Information</a></td></tr>
+						        <tr><td align="left">
+								<div id="drugpanel"></div>			
+								<script type="text/javascript" src="/assets/javascript/jquery/ui/1.8.23/jquery-ui.min.js"></script>
+								<script type="text/javascript" src="/assets/javascript/json2.min.js"></script>
+								<script type="text/javascript" src="/assets/javascript/es5-shim.min.js"></script>
+								<script type="text/javascript" src="/assets/javascript/jquery.mustache.js"></script>
+								<script src="/assets/javascript/drug_nutrition_editor.js"></script>
+								<script>drugPanel(jQuery,<%= pageContext.getAttribute("panel") %>, { container:jQuery('#drugpanel') })</script>
+								</td></tr>
+						<% }  else { %>
+						        <tr><td align="left"><a href="drug_nutrition/drug_nutrition_edit.jsp?skuCode=<%= skuCode %>">Create Drug Nutritional Information</a></td></tr>
+						<% } %>
                     </table>
                 </fd:Nutrition>
             <%  } %>

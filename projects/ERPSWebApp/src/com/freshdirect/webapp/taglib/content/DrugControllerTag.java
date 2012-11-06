@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.JspException;
 
 import org.codehaus.jackson.JsonGenerationException;
+import org.codehaus.jackson.JsonProcessingException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 
@@ -27,87 +28,96 @@ import com.freshdirect.fdstore.FDResourceException;
 
 public class DrugControllerTag extends com.freshdirect.framework.webapp.BodyTagSupport {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = -1519469814297740033L;
+	
+	private static final ObjectMapper mapper = new ObjectMapper();
 	
 	private String redirectUrl;
 	private String skuCode;
 
+	@Override
 	public int doStartTag() throws JspException {
 
 		HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
-		ObjectMapper mapper = new ObjectMapper();
-		NutritionDrugPanel panel = null;
 
 		try {
-			skuCode = (String) request.getParameter("skuCode");
+			skuCode = request.getParameter("skuCode");
 
-			if ("GET".equalsIgnoreCase(request.getMethod())) {
+			if ( "GET".equalsIgnoreCase( request.getMethod() ) ) {
 
+				doGetInternal();
+				
+			} else if ( "POST".equalsIgnoreCase( request.getMethod() ) ) {
+				
+				String deleteSku = request.getParameter( "delete" );
+				String panelJson = request.getParameter( "panel" );
+				
+				if ( deleteSku != null ) {
 
-				if (skuCode != null) {
+					ErpFactory.getInstance().deleteDrugPanel( deleteSku );
+					((HttpServletResponse) pageContext.getResponse()).sendRedirect(this.redirectUrl + "?skuCode=" + skuCode);
 
-					Writer writer = null;
-
-					panel = ErpFactory.getInstance().getDrugPanel(skuCode);
-
-					pageContext.setAttribute("protoPanel", false);
-					if (panel == null) {
-						//throw new JspException("No NutritionModel found");
-						panel = createProtoPanel(skuCode);
-						pageContext.setAttribute("protoPanel", true);
-					}
+				} else if ( panelJson != null ) {
 					
-					writer = new StringWriter();
-					mapper.writeValue(writer, panel);
+					NutritionDrugPanel panel = mapper.readValue( panelJson, NutritionDrugPanel.class );
+					ErpFactory.getInstance().saveDrugPanel( panel );
 
-					pageContext.setAttribute("panel", writer.toString());
-					pageContext.setAttribute("skuCode", skuCode);
+					pageContext.setAttribute( "panel", panelJson );
+					((HttpServletResponse) pageContext.getResponse()).sendRedirect(this.redirectUrl + "?skuCode=" + skuCode);
+					
 				} else {
-					throw new JspException("No skuCode found");
+					doGetInternal();
 				}
-				
-			} else if ("POST".equalsIgnoreCase(request.getMethod())) {
-				
-				if(request.getParameter("delete")!=null){
-					
-					ErpFactory.getInstance().deleteDrugPanel((String)request.getParameter("delete"));
-					
-				}else{
-					
-					String panelJson = (String) request.getParameter("panel");			
-					panel = mapper.readValue(panelJson, NutritionDrugPanel.class);
-					ErpFactory.getInstance().saveDrugPanel(panel);
-					
-					pageContext.setAttribute("panel", panelJson);
-				}
-				
-				((HttpServletResponse) pageContext.getResponse()).sendRedirect(this.redirectUrl + "?skuCode=" + skuCode);
-				
 
 			}
 
 		} catch (FDResourceException e) {
-			throw new JspException(e.getMessage());
+			throw new JspException(e);
 		} catch (JsonGenerationException e) {
-			throw new JspException(e.getMessage());
+			throw new JspException(e);
 		} catch (JsonMappingException e) {
-			throw new JspException(e.getMessage());
+			throw new JspException(e);
 		} catch (IOException e) {
-			throw new JspException(e.getMessage());
+			throw new JspException(e);
 		}
 
 		return EVAL_BODY_BUFFERED;
 
+	}
+	
+	private void doGetInternal() throws JspException, FDResourceException {
+		if (skuCode == null) {
+			throw new JspException("No skuCode found");
+		}
+
+		Writer writer = null;
+
+		NutritionDrugPanel panel = ErpFactory.getInstance().getDrugPanel(skuCode);
+
+		pageContext.setAttribute("protoPanel", false);
+		if (panel == null) {
+			panel = createProtoPanel();
+			pageContext.setAttribute("protoPanel", true);
+		}
+		
+		writer = new StringWriter();
+		try {
+			mapper.writeValue(writer, panel);
+		} catch (JsonProcessingException e) {
+			throw new JspException(e);
+		} catch ( IOException e ) {
+			throw new JspException(e);
+		}
+
+		pageContext.setAttribute("panel", writer.toString());
+		pageContext.setAttribute("skuCode", skuCode);
 	}
 
 	public void setRedirectUrl(String redirectUrl) {
 		this.redirectUrl = redirectUrl;
 	}
 	
-	private NutritionDrugPanel createProtoPanel(String skuCode){
+	private NutritionDrugPanel createProtoPanel() {
 		
 		NutritionDrugPanel panel = new NutritionDrugPanel();
 		panel.setSkuCode(skuCode);
@@ -164,6 +174,7 @@ public class DrugControllerTag extends com.freshdirect.framework.webapp.BodyTagS
 	
 	class DrugSectionComparator implements Comparator<NutritionDrugSection>{
 		
+		@Override
 		public int compare(NutritionDrugSection o1, NutritionDrugSection o2) {
 			return o1.getPosition() < o2.getPosition() ? -1 : o1.getPosition() == o2.getPosition() ? 0 : 1;
 		}
@@ -172,6 +183,7 @@ public class DrugControllerTag extends com.freshdirect.framework.webapp.BodyTagS
 	
 	class DrugItemComparator implements Comparator<NutritionDrugItem>{
 		
+		@Override
 		public int compare(NutritionDrugItem o1, NutritionDrugItem o2) {
 			return o1.getPosition() < o2.getPosition() ? -1 : o1.getPosition() == o2.getPosition() ? 0 : 1;
 		}
