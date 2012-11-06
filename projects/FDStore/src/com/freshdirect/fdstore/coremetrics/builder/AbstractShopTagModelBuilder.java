@@ -41,9 +41,9 @@ public abstract class AbstractShopTagModelBuilder {
 		
 				
 		if (isStandingOrder) {
-			tagModel.setCategoryId("so_template");
+			tagModel.setCategoryId(PageViewTagModelBuilder.CustomCategory.SO_TEMPLATE.toString());
 		} else 	if (cartLine.isAddedFromSearch()){
-			tagModel.setCategoryId("search");
+			tagModel.setCategoryId(PageViewTagModelBuilder.CustomCategory.SEARCH.toString());
 			
 		} else if (variantId == null){
 			

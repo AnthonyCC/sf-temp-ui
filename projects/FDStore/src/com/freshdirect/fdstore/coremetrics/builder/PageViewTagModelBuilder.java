@@ -14,7 +14,7 @@ public class PageViewTagModelBuilder  {
 	 * enum for all category ids not listed in FDStoreProperties - used in CDF generation too
 	 */
 	public enum CustomCategory {
-		SEARCH
+		SEARCH, SO_TEMPLATE
 	}
 	
 	private static final String PAGE_ID_DELIMITER = ": ";
