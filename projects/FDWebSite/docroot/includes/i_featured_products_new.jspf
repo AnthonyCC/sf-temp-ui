@@ -13,7 +13,7 @@
 <%
 if (featuredCat != null) {
 	final int itemsMinToShow = 1;
-	final int itemsMaxToShow = 2;
+	final int itemsMaxToShow = 3;
 	List<ContentNodeModel> pList = featuredCat.getFeaturedNewProdBrands();
 	for(Iterator<ContentNodeModel> it=pList.iterator(); it.hasNext();){
 		ProductModel pm=(ProductModel)it.next();
