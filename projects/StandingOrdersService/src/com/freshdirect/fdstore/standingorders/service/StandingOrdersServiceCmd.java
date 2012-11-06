@@ -176,9 +176,9 @@ public class StandingOrdersServiceCmd {
 			buffer.append( "  failed  : " ).append( result.getFailedCount() ).append("<br/>");
 			buffer.append( "  skipped : " ).append( result.getSkippedCount() ).append("<br/>");
 			buffer.append( "  total   : " ).append( result.getTotalCount() ).append("<br/>");
-			if (result.isTimeOutOccured()) {
+			if (result.isErrorOccured()) {
 				buffer.append("<br/>");
-				buffer.append( "  <span style=\"color:orange;\">WARNING: Standing Order Coremetrics tracking is temporarily suspended due to 3 consecutive HTTP timeouts.</span> " ).append("<br/>");
+				buffer.append( "  <span style=\"color:orange;\">WARNING: Standing Order Coremetrics tracking is temporarily suspended due to 3 consecutive errors.</span> " ).append("<br/>");
 			}
 
 			if ( resultList != null ) {

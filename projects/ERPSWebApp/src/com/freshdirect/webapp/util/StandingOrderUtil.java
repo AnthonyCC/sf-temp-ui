@@ -135,7 +135,7 @@ public class StandingOrderUtil {
 					, MailerGatewayHome mailerHome, boolean forceCapacity, boolean createIfSoiExistsForWeek, boolean isSendReminderNotificationEmail) throws FDResourceException {
 		
 		LOGGER.info( "Processing Standing Order : " + so );
-		boolean timeOutOccured = false;
+		boolean errorOccured = false;
 		
 		// Check for null object here, so we are safe later
 		if ( so == null ) {
@@ -574,10 +574,10 @@ public class StandingOrderUtil {
 				List httpResponseCodes =Arrays.asList(cCMR.sendShop9Tags(cart, order, customerUser));
 				int httpResponseCode = cCMR.sendOrderTag(order, customerUser);
 				
-				if (httpResponseCodes.contains("408") || httpResponseCode == 408) {
-					timeOutOccured = true;
+				if (httpResponseCodes.contains(CreateCMRequest.GENERAL_ERROR) || httpResponseCode == CreateCMRequest.GENERAL_ERROR) {
+					errorOccured = true;
 				} else {
-					timeOutOccured = false;
+					errorOccured = false;
 				}
 			} catch (FDResourceException e) {
 				LOGGER.error("Failed to assign standing order to sale, corresponding order ID="+orderId, e);
@@ -608,7 +608,7 @@ public class StandingOrderUtil {
 			//check possible duplicate order instances in delivery window
 			FDStandingOrdersManager.getInstance().checkForDuplicateSOInstances(customer);
 			
-			return SOResult.createSuccess( so, customer, customerInfo, hasInvalidItems, unavailableItems, orderId, internalMessage, timeOutOccured );
+			return SOResult.createSuccess( so, customer, customerInfo, hasInvalidItems, unavailableItems, orderId, internalMessage, errorOccured );
 			
 		} catch ( DeliveryPassException e ) {
 			LOGGER.info( "DeliveryPassException while placing order.", e );
