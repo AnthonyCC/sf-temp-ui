@@ -60,7 +60,7 @@ public class CreateCMRequest {
 	private int sendHttpRequest(String customQueryPart) throws UnsupportedEncodingException {
 		
 		HttpURLConnection conn = null;
-		int responseCode = GENERAL_ERROR;
+		int responseCode = 0;
 		try {
 			StringBuilder cmUrlStr = new StringBuilder(constQuery);
 			cmUrlStr.append("&st=").append(URLEncoder.encode(Long.toString(System.currentTimeMillis()), "UTF-8"));
@@ -71,16 +71,17 @@ public class CreateCMRequest {
 				URL cmUrl = new URL(cmUrlStr.toString());
 				
 				conn = (HttpURLConnection) cmUrl.openConnection();
-		        conn.setRequestMethod("GET");
-		        
-		        /* Sending out the first HTTP request means the followings could be only subsequent tag related. */
-		        this.cjvfContextHolder.thisIsSubsequentTag();
-		        
-		        responseCode = conn.getResponseCode();
-		        if (responseCode >= 400) {
-					consecutiveTimeout ++;
-					responseCode = GENERAL_ERROR;
-		        }
+			  conn.setRequestMethod("GET");
+			  
+			  /* Sending out the first HTTP request means the followings could be only subsequent tag related. */
+			  this.cjvfContextHolder.thisIsSubsequentTag();
+			  
+			  responseCode = conn.getResponseCode();
+			  if (responseCode >= 400) {
+			      consecutiveTimeout ++;
+			  }
+			} else {
+			  return GENERAL_ERROR;
 			}
 		} catch (Exception e) {
 			consecutiveTimeout ++;
