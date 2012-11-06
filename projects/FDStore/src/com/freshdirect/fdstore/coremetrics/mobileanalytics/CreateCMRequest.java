@@ -24,7 +24,7 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 public class CreateCMRequest {
 
 	private static final Logger LOGGER = LoggerFactory.getInstance(CreateCMRequest.class);
-	public static final int GENERAL_ERROR = 999;
+	public static final int GENERAL_ERROR = 999; // Error code representing at least three consecutive errors
 	
 	private List<ShopTagModel> tagModels = null;
 	private StringBuilder cmUrlStr = new StringBuilder("");
@@ -60,7 +60,7 @@ public class CreateCMRequest {
 	private int sendHttpRequest(String customQueryPart) throws UnsupportedEncodingException {
 		
 		HttpURLConnection conn = null;
-		int responseCode = 0;
+		int responseCode = 0; // Error code representing Java Exception, not a valid HTTP response code
 		try {
 			StringBuilder cmUrlStr = new StringBuilder(constQuery);
 			cmUrlStr.append("&st=").append(URLEncoder.encode(Long.toString(System.currentTimeMillis()), "UTF-8"));
