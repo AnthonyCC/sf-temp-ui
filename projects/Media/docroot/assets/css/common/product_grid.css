@@ -532,9 +532,14 @@
 }
 
 /* featured items special rules */
-.newprod-dfgs .ddpp .grid-view .grid-item-container,.ddpp .grid-view .grid-item-container
-	{
+.ddpp .grid-view .grid-item-container {
 	width: 256px;
+	border: none;
+	position: relative;
+}
+
+.newprod-featured .grid-view .grid-item-container {
+	width:242px;
 	border: none;
 	position: relative;
 }

@@ -13,7 +13,7 @@
 <%
 if (featuredCat != null) {
 	final int itemsMinToShow = 1;
-	final int itemsMaxToShow = 3;
+	final int itemsMaxToShow = 4;
 	List<ContentNodeModel> pList = featuredCat.getFeaturedNewProdBrands();
 	for(Iterator<ContentNodeModel> it=pList.iterator(); it.hasNext();){
 		ProductModel pm=(ProductModel)it.next();
@@ -50,11 +50,6 @@ if (featuredCat != null) {
 	
 	</logic:iterate>
 	
-		<div class="PPSuperBuy">
-			<script type="text/javascript">
-					OAS_AD('PPSuperBuy');
-			</script>
-		</div>
 	</div>
 	</div>
 	
