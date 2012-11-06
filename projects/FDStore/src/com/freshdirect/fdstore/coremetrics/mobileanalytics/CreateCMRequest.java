@@ -1,10 +1,7 @@
 package com.freshdirect.fdstore.coremetrics.mobileanalytics;
 
-import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.net.ConnectException;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.List;
@@ -27,6 +24,7 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 public class CreateCMRequest {
 
 	private static final Logger LOGGER = LoggerFactory.getInstance(CreateCMRequest.class);
+	public static final int GENERAL_ERROR = 999;
 	
 	private List<ShopTagModel> tagModels = null;
 	private StringBuilder cmUrlStr = new StringBuilder("");
@@ -62,7 +60,7 @@ public class CreateCMRequest {
 	private int sendHttpRequest(String customQueryPart) throws UnsupportedEncodingException {
 		
 		HttpURLConnection conn = null;
-		
+		int responseCode = GENERAL_ERROR;
 		try {
 			StringBuilder cmUrlStr = new StringBuilder(constQuery);
 			cmUrlStr.append("&st=").append(URLEncoder.encode(Long.toString(System.currentTimeMillis()), "UTF-8"));
@@ -78,22 +76,21 @@ public class CreateCMRequest {
 		        /* Sending out the first HTTP request means the followings could be only subsequent tag related. */
 		        this.cjvfContextHolder.thisIsSubsequentTag();
 		        
-		        return conn.getResponseCode();
+		        responseCode = conn.getResponseCode();
+		        if (responseCode >= 400) {
+					consecutiveTimeout ++;
+					responseCode = GENERAL_ERROR;
+		        }
 			}
-			return 408; //HTTP timeout error code
-		} catch (ConnectException e) {
+		} catch (Exception e) {
 			consecutiveTimeout ++;
-			LOGGER.error(e);
-		} catch (MalformedURLException e) {
-			LOGGER.error(e);
-		} catch (IOException e) {
 			LOGGER.error(e);
 		} finally {
 			if (conn != null) {
 				conn.disconnect();
 			}
 		}
-		return 0;
+		return responseCode;
 	}
 	
 
