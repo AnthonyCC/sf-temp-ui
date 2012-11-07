@@ -634,6 +634,12 @@
 	left: 2px;
 }
 
+.newprod-featured .grid-item-container .ddpp_feat_ribbon {
+	display:none;
+}
+
+
+
 .carousel-card {
 	overflow: hidden;
 	margin: auto;
