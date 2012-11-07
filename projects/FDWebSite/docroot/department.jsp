@@ -7,6 +7,7 @@
 <%@ page import='java.util.*'%>
 <%@page import="org.apache.log4j.Logger"%>
 <%@page import="com.freshdirect.framework.util.log.LoggerFactory"%>
+<%@ page import='com.freshdirect.fdstore.FDStoreProperties' %>
 
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
@@ -39,6 +40,37 @@ final Logger LOG = LoggerFactory.getInstance("department.jsp");
 		%><jsp:forward page="/recipe_dept.jsp" /><%
 	}
 
+	FDSessionUser user = (FDSessionUser)session.getAttribute(SessionName.USER);
+	
+	/* APPDEV-2723 stop gap ticket. remove this once cohort feature targetting is availeble. */
+	boolean cohortMatch = false;
+	
+	//check prop for a match and redirect if one is found
+	String cohortMatcher = FDStoreProperties.getCohortMatcher();
+	
+	String[] cMatch1 = new String[0];
+	String[] cMatch2 = new String[0];
+	
+	cMatch1 = cohortMatcher.split(";");
+	for (int n = 0; n < cMatch1.length; n++) {
+		cMatch2 = cMatch1[n].split("=");
+		
+		if ((deptId).equalsIgnoreCase(cMatch2[0]) && cMatch2.length == 2) {
+			for (String curVal : cMatch2[1].split(",")) {
+				if ((user.getCohortName()).equalsIgnoreCase(curVal)) {
+					cohortMatch = true;
+					break;
+				}
+			}
+		}
+	}
+
+	LOG.debug("cohortMatch info:"+cohortMatch+" "+cohortMatcher+" "+user.getCohortName());
+	if (cohortMatch) {
+		LOG.debug("redirecting due to cohort match");
+		%><jsp:forward page="/department_cohort_match.jsp" /><%
+	}
+
 	final ContentNodeModel currentFolder = department;
 	final DepartmentModel departmentModel = (DepartmentModel) department;
 
@@ -64,7 +96,6 @@ final Logger LOG = LoggerFactory.getInstance("department.jsp");
 	//[APPREQ-77] Page uses include media type layout
 	int layouttype = departmentModel.getLayoutType(-1);
 	boolean isIncludeMediaLayout = (layouttype == EnumLayoutType.MEDIA_INCLUDE.getId());
-	FDSessionUser user = (FDSessionUser)session.getAttribute(SessionName.USER);
 %>
 
 <tmpl:insert template='<%= (isIncludeMediaLayout ? "/common/template/no_nav.jsp" : "/common/template/right_nav.jsp") %>'>
@@ -90,6 +121,10 @@ final Logger LOG = LoggerFactory.getInstance("department.jsp");
 		if ( "fdi".equals(deptId) || "usq".equals(deptId) ) {
 			useOsCache = false;
 		}
+	%>
+	<%
+		/* additional keyPrefix change here for cohort control */
+		keyPrefix += user.getCohortName();
 	%>
 	<oscache:cache key='<%= keyPrefix+request.getQueryString() %>' time='<%= useOsCache ? ttl : 0 %>'>
 	

@@ -577,6 +577,9 @@ public class FDStoreProperties {
 	private final static String PROP_ENABLE_DELIVERYCENTER = "fdstore.delivery.center.enabled";
 	private final static String PROP_HRPROMO_CODES = "promo.hrpromocodes";
 	private final static String PROP_SHOW_AUTO_LATE_CREDIT_BUTTON = "fdstore.crm.show.autolatedelivery.button";
+	
+	/* APPDEV-2723 */
+	private final static String PROP_COHORT_MATCHER = "fdstore.cohortmatcher";
 
     static {
         defaults.put(PROP_ROUTING_PROVIDER_URL, "t3://localhost:7001");
@@ -1141,6 +1144,8 @@ public class FDStoreProperties {
 		defaults.put(PROP_ENABLE_DELIVERYCENTER, "true");
 		defaults.put(PROP_HRPROMO_CODES, "EMPLOYEE,FDREWARD1,FDREWARD2,FDREWARD3,FDREWARD4");
 		defaults.put(PROP_SHOW_AUTO_LATE_CREDIT_BUTTON, "true");
+		
+		defaults.put(PROP_COHORT_MATCHER, "");
 		
         refresh();
     }
@@ -2944,5 +2949,9 @@ public class FDStoreProperties {
 	 public static boolean isAutoLateCreditButtonOn() {
 			return (Boolean.valueOf(get(PROP_SHOW_AUTO_LATE_CREDIT_BUTTON))).booleanValue();
 	 }
+
+	public static String getCohortMatcher() {
+		return get(PROP_COHORT_MATCHER);
+    }
 	
 }
