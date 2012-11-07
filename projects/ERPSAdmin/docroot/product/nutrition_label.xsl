@@ -8,6 +8,16 @@
 
     <xsl:template match="/nutrition">
 		
+        <xsl:choose>
+		<xsl:when test="nutrition[name='Weight Watchers Points']">
+			<table BORDER="0" CELLSPACING="0" CELLPADDING="1" WIDTH="220">
+			  <tr>
+				<td class="text9" colspan="2"><b>Weight Watchers Points</b><xsl:text> </xsl:text><xsl:apply-templates select="nutrition[name='Weight Watchers Points']"/></td>
+			  </tr>
+			</table>
+		</xsl:when>
+		</xsl:choose>
+		
         <table BORDER="0" CELLSPACING="0" CELLPADDING="1" WIDTH="220">
           <tr VALIGN="top">
             <td CLASS="title18" align="center">Nutrition Facts</td>
@@ -54,13 +64,6 @@
           <tr>
             <td COLSPAN="2"> <img SRC="media_stat/images/layout/330000.gif" ALT="" WIDTH="220" HEIGHT="4"/></td>
           </tr>
-          <xsl:choose>
-            <xsl:when test="nutrition[name='Weight Watchers Points']">
-              <tr>
-                <td class="text9" colspan="2"><b>Weight Watchers Points</b><xsl:text> </xsl:text><xsl:apply-templates select="nutrition[name='Weight Watchers Points']"/></td>
-              </tr>
-            </xsl:when>
-          </xsl:choose>
         </table>
 
         <table BORDER="0" CELLSPACING="0" CELLPADDING="1" WIDTH="220">
