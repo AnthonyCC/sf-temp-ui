@@ -306,13 +306,15 @@ public interface MessageCodes {
             } else if ("email".equals(key) && desc.contains("An account already exists")) {
                 returnValue = new ErrorMessage(ERR_EMAIL_ALREADY_EXISTS, ERR_EMAIL_ALREADY_EXISTS_MSG);
             } else if ("order_amount_fraud".equals(key)) {
+            	/*
                 if (user != null) {
                     returnValue = new ErrorMessage(ERR_CHECKOUT_AMOUNT_TOO_LARGE, MessageFormat.format(
                             SystemMessageList.MSG_CHECKOUT_AMOUNT_TOO_LARGE, new Object[] { user.getCustomerServiceContact() }));
 
                 } else {
+                */
                     returnValue = new ErrorMessage(ERR_CHECKOUT_AMOUNT_TOO_LARGE, desc);
-                }
+                //}
             } else if ("error_dlv_pass_only".equals(key)) {
                 returnValue = new ErrorMessage(ERR_DLV_PASS_ONLY, desc);
             } else if ("redemption_error".equals(key)) {

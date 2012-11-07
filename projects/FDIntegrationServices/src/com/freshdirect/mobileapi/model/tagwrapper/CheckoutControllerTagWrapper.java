@@ -110,6 +110,12 @@ public class CheckoutControllerTagWrapper extends ControllerTagWrapper implement
             }
             result.setActionResult(actionResult);
         }
+        
+        if(result.getActionResult().getError("order_amount_fraud") != null) {
+        	ActionResult actionResult = new ActionResult();
+        	actionResult.addError(new ActionError("order_amount_fraud", result.getActionResult().getError("order_amount_fraud").getDescription()));
+        	result.setActionResult(actionResult);
+        }
 
         return result;
     }
