@@ -771,7 +771,7 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 	}
 
 	public boolean isDeliveryChargeWaived() {
-		return this.isChargeWaived(EnumChargeType.DELIVERY) && this.isChargeWaived(EnumChargeType.DLVPREMIUM);
+		return this.isChargeWaived(EnumChargeType.DELIVERY) && (this.getCharge(EnumChargeType.DLVPREMIUM)==null || this.isChargeWaived(EnumChargeType.DLVPREMIUM) );
 	}
 	
 	public boolean isDeliverySurChargeWaived() {
