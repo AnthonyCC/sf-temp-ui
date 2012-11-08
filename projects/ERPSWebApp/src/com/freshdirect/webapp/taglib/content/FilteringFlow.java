@@ -12,6 +12,7 @@ import javax.servlet.jsp.tagext.TagData;
 import javax.servlet.jsp.tagext.TagExtraInfo;
 import javax.servlet.jsp.tagext.VariableInfo;
 
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.EnumFilteringValue;
 import com.freshdirect.fdstore.content.FilteringMenuItem;
@@ -22,6 +23,7 @@ import com.freshdirect.fdstore.content.GenericFilter;
 import com.freshdirect.fdstore.content.GenericFilterDecorator;
 import com.freshdirect.fdstore.content.GenericFilterValueDecoder;
 import com.freshdirect.fdstore.content.GenericFilteringMenuBuilder;
+import com.freshdirect.fdstore.content.SearchSortType;
 import com.freshdirect.fdstore.content.UrlFilterValueDecoder;
 import com.freshdirect.fdstore.util.FilteringNavigator;
 import com.freshdirect.framework.webapp.BodyTagSupportEx;
@@ -69,6 +71,9 @@ public abstract class FilteringFlow<N extends ContentNodeModel> extends BodyTagS
 		if (comparator != null) {
 			Collections.sort(items, comparator);
 		}
+		if (FDStoreProperties.isFavouritesTopNumberFilterSwitchedOn() && nav.getSortBy().equals(SearchSortType.BY_RELEVANCY)) {
+			items = reOrganizeFavourites(items);
+		}
 		
 		// prepare items for menu building
 		menuValueDecorator = createMenuValueDecorator();
@@ -98,6 +103,8 @@ public abstract class FilteringFlow<N extends ContentNodeModel> extends BodyTagS
 	protected abstract GenericFilterDecorator<FilteringSortingItem<N>> createMenuValueDecorator();
 
 	protected abstract Comparator<FilteringSortingItem<N>> createComparator(List<FilteringSortingItem<N>> items);
+	
+	protected abstract List<FilteringSortingItem<N>> reOrganizeFavourites(List<FilteringSortingItem<N>> items);
 
 	protected abstract List<FilteringSortingItem<N>> getItems();
 

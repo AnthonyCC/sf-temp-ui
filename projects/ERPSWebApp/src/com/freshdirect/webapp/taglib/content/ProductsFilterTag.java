@@ -1,6 +1,7 @@
 package com.freshdirect.webapp.taglib.content;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
@@ -11,7 +12,9 @@ import org.apache.log4j.Category;
 import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.fdstore.content.ComparatorChain;
 import com.freshdirect.fdstore.content.EnumFilteringValue;
+import com.freshdirect.fdstore.content.EnumSortingValue;
 import com.freshdirect.fdstore.content.FilteringComparatorUtil;
 import com.freshdirect.fdstore.content.FilteringSortingItem;
 import com.freshdirect.fdstore.content.GenericFilterDecorator;
@@ -20,12 +23,18 @@ import com.freshdirect.fdstore.content.ProductFilterValueDecorator;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.SearchResults;
 import com.freshdirect.fdstore.content.SearchSortType;
+import com.freshdirect.fdstore.content.SortIntValueComparator;
+import com.freshdirect.fdstore.content.SortLongValueComparator;
+import com.freshdirect.fdstore.content.SortValueComparator;
+import com.freshdirect.fdstore.content.util.SmartSearchUtils;
 import com.freshdirect.fdstore.customer.FDAuthenticationException;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.pricing.ProductPricingFactory;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.smartstore.fdstore.ScoreProvider;
+import com.freshdirect.smartstore.sorting.ScriptedContentNodeComparator;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
 
 public class ProductsFilterTag extends FilteringFlow<ProductModel> {
@@ -83,6 +92,48 @@ public class ProductsFilterTag extends FilteringFlow<ProductModel> {
 		return FilteringComparatorUtil.createProductComparator(getItems(), getUserId(), getPricingContext(), suggestedTerm, nav, isShowGrouped());
 	}
 	
+	protected List<FilteringSortingItem<ProductModel>> reOrganizeFavourites(List<FilteringSortingItem<ProductModel>> products) {
+		//Collecting favourites
+		ComparatorChain<FilteringSortingItem<ProductModel>> comparator = ComparatorChain.create(FilteringSortingItem.wrap(ScriptedContentNodeComparator.createUserComparator(getUserId(), getPricingContext())));
+		SmartSearchUtils.collectAvailabilityInfo(products, getPricingContext());
+		comparator.prepend(new SortValueComparator<ProductModel>(EnumSortingValue.AVAILABILITY));
+		Collections.sort(products, comparator);
+		List<FilteringSortingItem<ProductModel>> favourites = new ArrayList<FilteringSortingItem<ProductModel>>();
+		for (FilteringSortingItem<ProductModel> product : products) {
+			if (ScoreProvider.getInstance().isUserHasScore(getUserId(), product.getNode().getContentKey())) {
+				favourites.add(product);
+			}
+		}
+
+		//Sorting favourites according to user relevance
+		comparator = ComparatorChain.create(new SortValueComparator<ProductModel>(EnumSortingValue.CATEGORY_RELEVANCY));
+		comparator.chain(new SortLongValueComparator<ProductModel>(EnumSortingValue.TERM_SCORE));
+		SmartSearchUtils.collectAvailabilityInfo(products, getPricingContext());
+		comparator.prepend(new SortValueComparator<ProductModel>(EnumSortingValue.AVAILABILITY));
+		Collections.sort(favourites, comparator);
+
+		//Reordering favourites in the product list
+		for (int index = 0; index < Math.min(FDStoreProperties.getSearchPageTopFavouritesNumber(), favourites.size()); index ++) {
+			products.remove(favourites.get(index));
+		}
+		
+		comparator = ComparatorChain.create(new SortValueComparator<ProductModel>(EnumSortingValue.PHRASE));
+		comparator.chain(new SortIntValueComparator<ProductModel>(EnumSortingValue.ORIGINAL_TERM));
+		comparator.chain(new SortValueComparator<ProductModel>(EnumSortingValue.CATEGORY_RELEVANCY));
+		comparator.chain(new SortLongValueComparator<ProductModel>(EnumSortingValue.TERM_SCORE));
+		comparator.chain(FilteringSortingItem.wrap(ScriptedContentNodeComparator.createGlobalComparator(getUserId(), getPricingContext())));
+		comparator.chain(FilteringSortingItem.wrap(ProductModel.FULL_NAME_PRODUCT_COMPARATOR));
+		SmartSearchUtils.collectAvailabilityInfo(products, getPricingContext());
+		comparator.prepend(new SortValueComparator<ProductModel>(EnumSortingValue.AVAILABILITY));
+
+		Collections.sort(products, comparator);
+		for (int index = Math.min(FDStoreProperties.getSearchPageTopFavouritesNumber(), favourites.size()) - 1; index >= 0 ; index --) {
+			products.add(0,favourites.get(index));
+		}
+		
+		return products;
+	}
+
 	@Override
 	protected void preProcess(List<FilteringSortingItem<ProductModel>> items) {
 		for(FilteringSortingItem<ProductModel> item:items){

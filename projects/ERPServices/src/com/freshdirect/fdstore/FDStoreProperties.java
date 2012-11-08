@@ -577,6 +577,8 @@ public class FDStoreProperties {
 	private final static String PROP_ENABLE_DELIVERYCENTER = "fdstore.delivery.center.enabled";
 	private final static String PROP_HRPROMO_CODES = "promo.hrpromocodes";
 	private final static String PROP_SHOW_AUTO_LATE_CREDIT_BUTTON = "fdstore.crm.show.autolatedelivery.button";
+	private final static String NUMBER_OF_TOP_FAVOURITES = "fdstore.search.favourites.top.number";
+	private final static String FAVOURITES_NUMBER_SWITCH = "fdstore.search.favourites.switch";
 	
 	/* APPDEV-2723 */
 	private final static String PROP_COHORT_MATCHER = "fdstore.cohortmatcher";
@@ -1144,7 +1146,9 @@ public class FDStoreProperties {
 		defaults.put(PROP_ENABLE_DELIVERYCENTER, "true");
 		defaults.put(PROP_HRPROMO_CODES, "EMPLOYEE,FDREWARD1,FDREWARD2,FDREWARD3,FDREWARD4");
 		defaults.put(PROP_SHOW_AUTO_LATE_CREDIT_BUTTON, "true");
-		
+
+		defaults.put(NUMBER_OF_TOP_FAVOURITES, "3");
+		defaults.put(FAVOURITES_NUMBER_SWITCH, "true");
 		defaults.put(PROP_COHORT_MATCHER, "");
 		
         refresh();
@@ -2949,9 +2953,17 @@ public class FDStoreProperties {
 	 public static boolean isAutoLateCreditButtonOn() {
 			return (Boolean.valueOf(get(PROP_SHOW_AUTO_LATE_CREDIT_BUTTON))).booleanValue();
 	 }
-
+	 
 	public static String getCohortMatcher() {
 		return get(PROP_COHORT_MATCHER);
     }
-	
+
+	 public static int getSearchPageTopFavouritesNumber() {
+		 return Integer.parseInt(get(NUMBER_OF_TOP_FAVOURITES));
+	 }
+	 
+	 public static boolean isFavouritesTopNumberFilterSwitchedOn() {
+			return (Boolean.valueOf(get(FAVOURITES_NUMBER_SWITCH))).booleanValue();
+	 }
+	 
 }

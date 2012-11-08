@@ -10,6 +10,7 @@ import com.freshdirect.fdstore.content.EnumFilteringValue;
 import com.freshdirect.fdstore.content.FilteringComparatorUtil;
 import com.freshdirect.fdstore.content.FilteringSortingItem;
 import com.freshdirect.fdstore.content.GenericFilterDecorator;
+import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.Recipe;
 import com.freshdirect.fdstore.content.RecipeFilterMenuDecorator;
 import com.freshdirect.fdstore.content.RecipeFilterValueDecorator;
@@ -43,6 +44,10 @@ public class SearchRecipeTag extends FilteringFlow<Recipe>{
 		}else{
 			return FilteringComparatorUtil.RECIPE_SORT_BY_NAME_DESC;
 		}
+	}
+	
+	protected List<FilteringSortingItem<Recipe>> reOrganizeFavourites(List<FilteringSortingItem<Recipe>> items) {
+		return items;//Nothing to do here, only has product filter relevances
 	}
 
 	@Override
