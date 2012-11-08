@@ -73,6 +73,8 @@ public class DlvTimeslotModel extends DlvShiftTimeslotModel {
 	private double steeringDiscount;
 
 	private double premiumAmount;
+		
+	private int totalConfirmed;
 	
 	public boolean hasSteeringRadius() {
 		if(this.getRoutingSlot() != null && this.getRoutingSlot().getDeliveryCost() != null && this.getRoutingSlot().getSteeringRadius() != null) {	
@@ -152,7 +154,7 @@ public class DlvTimeslotModel extends DlvShiftTimeslotModel {
 			EnumTimeslotStatus status, int capacity, int ctCapacity,
 			int baseAllocation, int ctAllocation, int ctReleaseTime, boolean ctActive,String zoneCode, int premiumCapacity,
 			 int premiumCtCapacity, TimeOfDay premiumCutoffTime, int premiumCtReleaseTime, 
-			 boolean premiumCtActive,int premiumAllocation, int premiumCtAllocation, boolean premiumSlot) {
+			 boolean premiumCtActive,int premiumAllocation, int premiumCtAllocation, boolean premiumSlot, int totalConfirmed) {
 		super();
 		this.setPK(pk);
 		this.setBaseDate(baseDate);
@@ -178,6 +180,7 @@ public class DlvTimeslotModel extends DlvShiftTimeslotModel {
 		this.setPremiumAllocation(premiumAllocation);
 		this.setPremiumCtAllocation(premiumCtAllocation);
 		this.setPremiumSlot(premiumSlot);
+		this.setTotalConfirmed(totalConfirmed);
 	}
 	
 	
@@ -185,6 +188,14 @@ public class DlvTimeslotModel extends DlvShiftTimeslotModel {
 	// basic properties
 	//
 
+
+	public int getTotalConfirmed() {
+		return totalConfirmed;
+	}
+
+	public void setTotalConfirmed(int totalConfirmed) {
+		this.totalConfirmed = totalConfirmed;
+	}
 	
 	public void setPremiumCtAllocation(int premiumCtAllocation) {
 		this.premiumCtAllocation = premiumCtAllocation;

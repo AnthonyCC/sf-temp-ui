@@ -273,4 +273,8 @@ public class FDTimeslot implements Serializable, Comparable<FDTimeslot> {
 	public String getPremiumAmountFmt() {
 		return "ADD&nbsp;$"+premiumAmountFmt.format(dlvTimeslot.getPremiumAmount());
 	}
+	
+	public int getTotalConfirmed() {
+		return dlvTimeslot.getTotalConfirmed();
+	}
 }
