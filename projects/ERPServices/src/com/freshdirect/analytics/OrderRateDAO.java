@@ -7,7 +7,6 @@ import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -28,19 +27,20 @@ public class OrderRateDAO {
 	
 	
 	private static final String ORDER_RATE_QUERY_BY_TIMESLOT_SNAPSHOT = "select t.base_date , t.starttime , t.capacity, t.endtime , t.zone_code zone ,t.cutofftime, " +
-			"nvl(a.order_count,0) as order_count from (select t.base_date, to_date(to_char(t.base_date, 'MM/DD/YYYY')||' '||to_char(T.START_TIME, 'HH:MI:SS AM'),'MM/DD/YYYY HH:MI:SS AM') starttime, " +
-			"to_date(to_char(t.base_date, 'MM/DD/YYYY')||' '||to_char(T.END_TIME, 'HH:MI:SS AM'),'MM/DD/YYYY HH:MI:SS AM') endtime " +
-			", t.capacity, to_date(to_char(t.base_date-1, 'MM/DD/YYYY')||' '|| to_char(t.cutoff_time, 'HH:MI:SS AM'),'MM/DD/YYYY HH:MI:SS AM') cutofftime " +
-			", z.zone_code  from dlv.timeslot t, dlv.zone z where t.zone_ID = z.ID and t.base_date > SYSDATE ) t , (select  q1.order_count - nvl(q2.order_count,0) " +
-			"as order_count, q1.starttime, q1.endtime, q1.zone from   ( select count(*) order_count, di.starttime, di.endtime, di.cutofftime, SA.REQUESTED_DATE, di.zone " +
-			"from  cust.sale s, cust.salesaction sa, cust.deliveryinfo di WHERE s.ID=sa.SALE_ID AND s.CUSTOMER_ID=sa.CUSTOMER_ID AND DI.SALESACTION_ID = SA.ID AND " +
-			"sa.ACTION_TYPE IN ('CRO','MOD') AND sa.REQUESTED_DATE > TRUNC(SYSDATE) AND s.type='REG' and s.status <>'CAN' and S.CROMOD_DATE = SA.ACTION_DATE " +
-			"AND S.CROMOD_DATE > ? AND S.CROMOD_DATE <= ? group by di.starttime, di.endtime, di.cutofftime, SA.REQUESTED_DATE, di.zone) q1, " +
-			"( select count(*) order_count, di.starttime, di.endtime, di.cutofftime, SA.REQUESTED_DATE, di.zone from  cust.sale s, cust.salesaction sa, cust.deliveryinfo di " +
-			"WHERE s.ID=sa.SALE_ID AND s.CUSTOMER_ID=sa.CUSTOMER_ID AND DI.SALESACTION_ID = SA.ID AND sa.ACTION_TYPE IN ('CRO','MOD') AND sa.REQUESTED_DATE > TRUNC(SYSDATE) " +
-			"AND s.type='REG' and s.status <>'CAN' and S.CROMOD_DATE = SA.ACTION_DATE  AND S.CROMOD_DATE > ? AND S.CROMOD_DATE <= ? group by " +
-			"di.starttime, di.endtime, di.cutofftime, SA.REQUESTED_DATE, di.zone) q2 where q1.starttime = q2.starttime(+) and q1.endtime = q2.endtime(+) and " +
-			"q1.zone = q2.zone(+)) a  where t.starttime  = a.STARTTIME(+) and  t.endtime = a.endtime(+) and t.zone_code = a.zone(+)";
+			"t.order_count - nvl(q2.order_count,0)  as order_count from (select nvl(order_count,0) order_count, t.* from  (select t.base_date, " +
+			"to_date(to_char(t.base_date, 'MM/DD/YYYY')||' '||to_char(T.START_TIME, 'HH:MI:SS AM'),'MM/DD/YYYY HH:MI:SS AM') starttime, " +
+			"to_date(to_char(t.base_date, 'MM/DD/YYYY')||' '||to_char(T.END_TIME, 'HH:MI:SS AM'),'MM/DD/YYYY HH:MI:SS AM') endtime, t.capacity, " +
+			"to_date(to_char(t.base_date-1, 'MM/DD/YYYY')||' '|| to_char(t.cutoff_time, 'HH:MI:SS AM'),'MM/DD/YYYY HH:MI:SS AM') cutofftime, z.zone_code " +
+			"from dlv.timeslot t, dlv.zone z where t.zone_ID = z.ID and t.base_date > SYSDATE ) t ,  ( select count(*) order_count, di.starttime, di.endtime, " +
+			"di.cutofftime, SA.REQUESTED_DATE, di.zone from  cust.sale s, cust.salesaction sa, cust.deliveryinfo di WHERE s.ID=sa.SALE_ID AND s.CUSTOMER_ID=sa.CUSTOMER_ID " +
+			"AND DI.SALESACTION_ID = SA.ID AND sa.ACTION_TYPE IN ('CRO','MOD') AND sa.REQUESTED_DATE > TRUNC(SYSDATE) AND s.type='REG' and s.status <>'CAN' " +
+			"and S.CROMOD_DATE = SA.ACTION_DATE AND S.CROMOD_DATE <=?  group by di.starttime, di.endtime, di.cutofftime, SA.REQUESTED_DATE, di.zone) q1 " +
+			"where t.starttime  = q1.STARTTIME(+) and  t.endtime = q1.endtime(+) and t.zone_code = q1.zone(+) ) t, (  select  sum(order_count) order_count, " +
+			"o.timeslot_start, o.timeslot_end, o.cutoff, o.delivery_date, o.zone from mis.order_rate  o where delivery_date > trunc( sysdate) and " +
+			"delivery_date <= ? group by o.timeslot_start, o.timeslot_end, o.cutoff, o.delivery_date, o.zone) q2 where t.starttime = q2.timeslot_start(+) " +
+			"and t.endtime = q2.timeslot_end(+) and t.zone_code = q2.zone(+)";
+	
+	private static final String MAX_DELIVERY_DATE = "select max(delivery_date) from mis.order_rate";
 	
 	private static final String ORDER_RATE_SNAPSHOT_INSERT = "INSERT INTO MIS.ORDER_RATE(CAPACITY, ZONE, CUTOFF, " +
 			"TIMESLOT_START, TIMESLOT_END, ORDER_COUNT,PROJECTED_COUNT, DELIVERY_DATE, SNAPSHOT_TIME, ACTUAL_SO, PROJECT_SO, WEIGHTED_PROJECTED_COUNT, ORDERS_EXPECTED) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)";
@@ -58,23 +58,52 @@ public class OrderRateDAO {
 			"delivery_date, timeslot_start, timeslot_end, zone, snapshot_time from MIS.order_rate where delivery_date in (%s)";
 	
 	
+	private static java.sql.Date getMaxDeliveryDate(Connection conn)
+	{
+		
+		PreparedStatement ps =null;ResultSet rs = null;
+		try {
+			
+		ps = conn.prepareStatement(MAX_DELIVERY_DATE);
+		rs = ps.executeQuery();
+		if(rs.next())
+			{
+				return rs.getDate(1);
+			}
+		}
+		catch(Exception e)
+		{
+			System.out.println("error while getting the max date");
+		}
+		finally{
+			try 
+			{
+				rs.close();
+				ps.close();
+			} 
+			catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+		return null;
+		
+		
+	}
 	public static Map getOrderRates(Connection conn, Date snapshotTime)
 	{
+		
+		
 		List<OrderRateVO> voList = new ArrayList<OrderRateVO>();
 		PreparedStatement ps =null;ResultSet rs = null;
 		Map returnMap = new HashMap();
 		Set<Date> baseDates = new HashSet<Date>();
-		Calendar cal = Calendar.getInstance();
-		cal.setTime(snapshotTime);
-		cal.add(Calendar.MINUTE, -30);
-		
+		java.sql.Date maxDate = getMaxDeliveryDate(conn);
 		try {
 				ps = conn.prepareStatement(ORDER_RATE_QUERY_BY_TIMESLOT_SNAPSHOT);
-				ps.setTimestamp(1, new java.sql.Timestamp(cal.getTimeInMillis()));
-				ps.setTimestamp(4, new java.sql.Timestamp(cal.getTimeInMillis()));
-				ps.setTimestamp(2, new java.sql.Timestamp(snapshotTime.getTime()));
-				cal.add(Calendar.MINUTE, -30);
-				ps.setTimestamp(3, new java.sql.Timestamp(cal.getTimeInMillis()));
+				ps.setTimestamp(1, new java.sql.Timestamp(snapshotTime.getTime()));
+				ps.setDate(2, maxDate);
 				rs = ps.executeQuery();
 				
 				while(rs.next())
@@ -229,7 +258,8 @@ public class OrderRateDAO {
 	public static Map<Date, Float> getAverageOrderRate(Connection conn, Date snapshot7, Date startTime7, Date endTime7,
 			 Date snapshot14, Date startTime14, Date endTime14, OrderRateVO vo)
 	{
-		long starttime = System.currentTimeMillis();
+		
+		
 		Map<Date, Float> map = null;
 		PreparedStatement ps =null;ResultSet rs = null;
 		DateFormat sdf = new SimpleDateFormat("MM/dd/yyyy hh:mm:ss a");
@@ -267,14 +297,14 @@ public class OrderRateDAO {
 				e.printStackTrace();
 			}
 		}
-		long endtime = System.currentTimeMillis();
-		System.out.println(endtime - starttime);
+		
 		return map;
 	}
 	
 	public static Map<DateRangeVO,  Map<String, Integer>> getOrderCount(Connection conn, Set<Date> baseDates)
 	{
-		long starttime = System.currentTimeMillis();
+		
+		
 		Map<DateRangeVO,  Map<String, Integer>> orderCountMap = new HashMap<DateRangeVO,  Map<String, Integer>>();
 		String zone = null;
 		PreparedStatement ps =null;ResultSet rs = null;Integer orderCount = 0;
@@ -321,8 +351,7 @@ public class OrderRateDAO {
 				e.printStackTrace();
 			}
 		}
-		long endtime = System.currentTimeMillis();
-		System.out.println(endtime - starttime);
+		
 		
 		return orderCountMap;
 		

@@ -39,7 +39,7 @@ public class OrderRateSessionBean extends SessionBeanSupport {
 			Set<Date> baseDates =  (Set<Date>) orderRateMap.get("dates");
 			Iterator<Date> dateIterator = baseDates.iterator();
 			Map<Date, Integer> holidayMap = OrderRateDAO.getHolidayMap(conn);
-			List<Date> dates = new ArrayList<Date>();
+			Set<Date> dates = new HashSet<Date>();
 			Map<Date, Date[]> sampleMap = new HashMap<Date, Date[]>();
 			while(dateIterator.hasNext())
 			{
@@ -55,14 +55,14 @@ public class OrderRateSessionBean extends SessionBeanSupport {
 				
 			}
 			List sampleDates = new ArrayList();
-			sampleDates.addAll(baseDates);
 			Iterator<Date> datesIterator = dates.iterator();
 			while(datesIterator.hasNext())
 				sampleDates.add(new java.sql.Date(datesIterator.next().getTime()));
 				
 			Map<DateRangeVO,  Map<String, Map<Date, Integer[]>>> capacityMap = OrderRateDAO.getCapacityMap(conn,sampleDates);
+			System.out.println("[OrderRateDAO.getCapacityMap] " +(System.currentTimeMillis() - starttime)/1000);
 			Map<DateRangeVO, Map<String, Integer>> orderCountMap = OrderRateDAO.getOrderCount(conn,baseDates);
-			
+			System.out.println("[OrderRateDAO.getOrderCount] " +(System.currentTimeMillis() - starttime)/1000);
 			
 			Iterator<OrderRateVO> voIterator = list.iterator();
 			
@@ -190,10 +190,6 @@ public class OrderRateSessionBean extends SessionBeanSupport {
 				LOGGER.warn("SQLException while cleaning up", se);
 			}
 		}
-		
-		LOGGER.info("end: "+METHODNAME);
-		
-		
 	}
 	
 
