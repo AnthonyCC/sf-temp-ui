@@ -34,7 +34,7 @@
 
 		var standingOrderColumns =  [ 
 			    {key:"isSel", label:"Select?", formatter:"checkbox", className:'align-center'},
-			    {key:"customerId", label:"Customer ID",sortable:false, width: 85, className:'align-center'},
+			    {key:"customerId", label:"Customer ID",sortable:true, width: 85, className:'align-center'},
 			    {key:"area", label:"Area",sortable:true, width: 35, className:'align-center'}, 
 			    {key:"standingOrderId", label:"StandingOrder No.",sortable:false, width: 110, className:'align-center'},
 			    {key:"saleId", label:"Order No.",sortable:false, width: 90, className:'align-center'},

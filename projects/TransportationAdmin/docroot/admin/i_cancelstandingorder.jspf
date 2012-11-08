@@ -33,14 +33,14 @@
 
 		var cancelStandingOrderColumns =  [ 
 			    {key:"isSel", label:"", formatter:"checkbox", className:'align-center'},
-			    {key:"customerId", label:"Customer ID",sortable:false, width: 85, className:'align-center'},
+			    {key:"customerId", label:"Customer ID",sortable:true, width: 85, className:'align-center'},
 			    {key:"area", label:"Area",sortable:true, width: 35, className:'align-center'}, 
 			    {key:"standingOrderId", label:"Standing OrderNo.",sortable:false, width: 110, className:'align-center'},
 			    {key:"saleId", label:"Order No.",sortable:false, width: 90, className:'align-center'},
 			    {key:"lineItemCount", label:"Order LineItems",sortable:true, width: 90, className:'align-center'},
 			    {key:"tempLineItemCount", label:"Template LineItems", sortable:true, width: 110, className:'align-center'},
-			    {key:"lineItemChangeCount", label:"Line Items Change", sortable:false, width: 130, className:'align-center'},
-			    {key:"orderStatus", label:"Status", sortable:false, width: 70, className:'align-center'}
+			    {key:"lineItemChangeCount", label:"Line Items Change", sortable:true, width: 130, className:'align-center'},
+			    {key:"orderStatus", label:"Status", sortable:true, width: 70, className:'align-center'}
 		 ];
 
 		var cancelSOConfigs = { 
