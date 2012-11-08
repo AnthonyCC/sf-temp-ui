@@ -518,7 +518,10 @@ public interface FDUserI extends java.io.Serializable {
 	public boolean isDpNewTcBlocking(boolean includeViewCount);
 	
 	public boolean isWaiveDPFuelSurCharge(boolean includeViewCount);
-	
-	
+		
 	public boolean hasEBTAlert() ;
+	
+	public Set<String> getSteeringSlotIds();
+
+	public void setSteeringSlotIds(Set<String> steeringSlotIds);
 }

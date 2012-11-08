@@ -241,6 +241,8 @@ public class FDUser extends ModelSupport implements FDUserI {
 	private EnumGiftCardType giftCardType = null;
 	
 	private boolean ebtAccepted = false;
+	
+	 private Set<String> steeringSlotIds = new HashSet<String>();
 
 	public String getTsaPromoCode() {
 		return tsaPromoCode;
@@ -2432,5 +2434,15 @@ public class FDUser extends ModelSupport implements FDUserI {
 
 		return hasEBTAlert.booleanValue();
 	}
+
+	public Set<String> getSteeringSlotIds() {
+		return steeringSlotIds;
+	}
+
+	public void setSteeringSlotIds(Set<String> steeringSlotIds) {
+		this.steeringSlotIds = steeringSlotIds;
+	}
+	
+	
 	
 }

@@ -1,6 +1,10 @@
 package com.freshdirect.fdstore.promotion;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -10,6 +14,7 @@ import com.freshdirect.delivery.model.DlvTimeslotModel;
 import com.freshdirect.fdstore.FDReservation;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.FDTimeslot;
+import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.TimeOfDay;
 
@@ -81,10 +86,10 @@ public class DlvZoneStrategy implements PromotionStrategyI {
 						boolean e = dlvDays.contains(String.valueOf(day));
 						if(e && null !=dlvTimeSlots && !dlvTimeSlots.isEmpty()){
 							List<PromotionDlvTimeSlot> dlvTimeSlotList = dlvTimeSlots.get(day);
-							if(null != dlvTimeSlotList){
+							if(null != dlvTimeSlotList) {								
 								if((!(dlvReservation.getTimeslot().getDlvTimeslot().isPremiumSlot() && promotionCode.startsWith("WS_"))
 										|| FDStoreProperties.allowDiscountsOnPremiumSlots())
-										&& checkDlvTimeSlots(dlvReservation.getTimeslot().getDlvTimeslot(), dlvTimeSlotList))
+										&& checkDlvTimeSlots(dlvReservation.getTimeslot().getDlvTimeslot(), dlvTimeSlotList, null, context.getUser(), true))
 									return ALLOW;
 								else{
 									context.getUser().addPromoErrorCode(promotionCode, PromotionErrorType.NO_ELIGIBLE_TIMESLOT_SELECTED.getErrorCode());
@@ -109,68 +114,75 @@ public class DlvZoneStrategy implements PromotionStrategyI {
 		context.getUser().addPromoErrorCode(promotionCode, PromotionErrorType.NO_ELIGIBLE_TIMESLOT_SELECTED.getErrorCode());
 		return DENY;
 	}
-
-	private boolean checkDlvTimeSlots(TimeOfDay dlvStartTimeOfDay,
-			TimeOfDay dlvEndTimeOfDay, List<PromotionDlvTimeSlot> dlvTimeSlotList, boolean hasSteeringRadius) {
-		boolean isOK = false;
-		for (Iterator<PromotionDlvTimeSlot> iterator = dlvTimeSlotList.iterator(); iterator.hasNext();) {
-			PromotionDlvTimeSlot promoDlvTimeSlot = iterator.next();
-			String[] windowType = promoDlvTimeSlot.getWindowTypes();
-			double windowDuration = TimeOfDay.getDurationAsMinutes(dlvStartTimeOfDay, dlvEndTimeOfDay);
-			if(windowType != null && windowType.length > 0) {
-				if(hasSteeringRadius){
-					for(int i = 0;i < windowType.length; i++) {
-						if(!"ALL".equalsIgnoreCase(windowType[i].trim())){
-							double d = Double.valueOf(windowType[i].trim()).doubleValue();
-							if(windowDuration == d){
-								isOK = true;
-								break;
-							}
-						} else {
-							isOK = true;
-							break;
-						}
+	
+	private boolean checkTimeSlotRadius(TimeOfDay dlvStartTimeOfDay, TimeOfDay dlvEndTimeOfDay, List<FDTimeslot> tsLst){
+		
+		Map<Integer, List<FDTimeslot>> tsRadiusMap = new HashMap<Integer, List<FDTimeslot>>();		
+		boolean foundSlot = false;		
+		if(tsLst != null) {			
+			Iterator<FDTimeslot> _tsItr = tsLst.iterator();
+			int _rootTSRadius = -1;
+			while(_tsItr.hasNext()) {
+				FDTimeslot _ts = _tsItr.next();
+				if(_ts.getDlvTimeslot().getRoutingSlot() != null && _ts.getDlvTimeslot().getRoutingSlot().getDeliveryCost() != null) {					
+					if(_rootTSRadius != -1 && _ts.getDlvTimeslot().getRoutingSlot().getDeliveryCost().getAdditionalDistance() < _rootTSRadius) {
+						_rootTSRadius = _ts.getDlvTimeslot().getRoutingSlot().getDeliveryCost().getAdditionalDistance();
+					} else if (_rootTSRadius == -1) {
+						_rootTSRadius = _ts.getDlvTimeslot().getRoutingSlot().getDeliveryCost().getAdditionalDistance();
 					}
+					if(!tsRadiusMap.containsKey(_ts.getDlvTimeslot().getRoutingSlot().getDeliveryCost().getAdditionalDistance())){
+						tsRadiusMap.put(_ts.getDlvTimeslot().getRoutingSlot().getDeliveryCost().getAdditionalDistance(), new ArrayList<FDTimeslot>());
+					}
+					tsRadiusMap.get(_ts.getDlvTimeslot().getRoutingSlot().getDeliveryCost().getAdditionalDistance()).add(_ts);
 				}
-			} else {
-				if(promoDlvTimeSlot.getDlvTimeStart() != null && promoDlvTimeSlot.getDlvTimeEnd() != null){
-					TimeOfDay promoDlvSlotStartTime = new TimeOfDay(promoDlvTimeSlot.getDlvTimeStart());									
-					TimeOfDay promoDlvSlotEndTime = new TimeOfDay(promoDlvTimeSlot.getDlvTimeEnd());
-					if((dlvStartTimeOfDay.equals(promoDlvSlotStartTime) || dlvStartTimeOfDay.after(promoDlvSlotStartTime)) && 
-							(dlvEndTimeOfDay.before(promoDlvSlotEndTime) || dlvEndTimeOfDay.equals(promoDlvSlotEndTime))){
-						isOK = true;
+			}
+			
+			List<FDTimeslot> tsRadiusLst = tsRadiusMap.get(_rootTSRadius);
+			if(tsRadiusLst != null){
+				for(FDTimeslot _slot : tsRadiusLst){
+					if(dlvStartTimeOfDay.equals(_slot.getDlvTimeslot().getStartTime()) && dlvEndTimeOfDay.equals(_slot.getDlvTimeslot().getEndTime())){
+						foundSlot = true;
 						break;
 					}
 				}
 			}
 		}
-		return isOK;
+		return foundSlot;		
 	}
 	
-	private boolean checkDlvTimeSlots(DlvTimeslotModel dlvTimeslotModel, List<PromotionDlvTimeSlot> dlvTimeSlotList) {
+	private boolean checkDlvTimeSlots(DlvTimeslotModel dlvTimeslotModel, List<PromotionDlvTimeSlot> dlvTimeSlotList, Map<Double, List<FDTimeslot>> tsWindowMap, FDUserI user, boolean isReservedSlot) {
 		boolean isOK = false;
-		if(null != dlvTimeslotModel){
+		if(null != dlvTimeslotModel) {
 			TimeOfDay dlvStartTimeOfDay = dlvTimeslotModel.getStartTime();
 			TimeOfDay dlvEndTimeOfDay = dlvTimeslotModel.getEndTime();
 			for (Iterator<PromotionDlvTimeSlot> iterator = dlvTimeSlotList.iterator(); iterator.hasNext();) {
 				PromotionDlvTimeSlot promoDlvTimeSlot = iterator.next();
 				String[] windowType = promoDlvTimeSlot.getWindowTypes();
 				double windowDuration = TimeOfDay.getDurationAsMinutes(dlvStartTimeOfDay, dlvEndTimeOfDay);
-				if(windowType != null && windowType.length > 0) {
-					if(dlvTimeslotModel.hasSteeringRadius()){
+				
+				if(windowType != null && windowType.length > 0 
+						&& ((isReservedSlot && user.getSteeringSlotIds().contains(dlvTimeslotModel.getId()))
+								||(dlvTimeslotModel.getTotalConfirmed() > 0 && dlvTimeslotModel.hasSteeringRadius() 
+										&& tsWindowMap != null && checkTimeSlotRadius(dlvStartTimeOfDay, dlvEndTimeOfDay, tsWindowMap.get(windowDuration))))) {					
+						
 						for(int i = 0;i < windowType.length; i++) {
 							if(!"ALL".equalsIgnoreCase(windowType[i].trim())){
 								double d = Double.valueOf(windowType[i].trim()).doubleValue();
 								if(windowDuration == d){
 									isOK = true;
+									if(!user.getSteeringSlotIds().contains(dlvTimeslotModel.getId())){
+										user.getSteeringSlotIds().add(dlvTimeslotModel.getId());
+									}									
 									break;
 								}
 							} else {
 								isOK = true;
+								if(!user.getSteeringSlotIds().contains(dlvTimeslotModel.getId())){
+									user.getSteeringSlotIds().add(dlvTimeslotModel.getId());
+								}
 								break;
 							}
 						}
-					}
 				} else {
 					if(promoDlvTimeSlot.getDlvTimeStart() != null && promoDlvTimeSlot.getDlvTimeEnd() != null){
 						TimeOfDay promoDlvSlotStartTime = new TimeOfDay(promoDlvTimeSlot.getDlvTimeStart());									
@@ -234,7 +246,7 @@ public class DlvZoneStrategy implements PromotionStrategyI {
 		return false;
 	}
 	
-	public boolean isTimeSlotEligible(FDTimeslot ts) {
+	public boolean isTimeSlotEligible(FDTimeslot ts, Map<Double, List<FDTimeslot>> tsWindowMap, FDUserI user) {
 		if(null == dlvDays || dlvDays.isEmpty())return false;
 		int day = ts.getDayOfWeek();
 		boolean e = dlvDays.contains(String.valueOf(day));
@@ -242,11 +254,9 @@ public class DlvZoneStrategy implements PromotionStrategyI {
 			e = checkBaseDateRange(ts.getDlvTimeslot().getBaseDate());
 		}
 		if(e && null !=dlvTimeSlots && !dlvTimeSlots.isEmpty()){
-			TimeOfDay dlvStartTimeOfDay = ts.getDlvTimeslot().getStartTime();
-			TimeOfDay dlvEndTimeOfDay = ts.getDlvTimeslot().getEndTime();
 			List<PromotionDlvTimeSlot> dlvTimeSlotList = dlvTimeSlots.get(day);
 			if(null!= dlvTimeSlotList){
-				return checkDlvTimeSlots(ts.getDlvTimeslot(), dlvTimeSlotList);
+				return checkDlvTimeSlots(ts.getDlvTimeslot(), dlvTimeSlotList, tsWindowMap, user, false);
 			}
 		}
 		return e;
@@ -279,6 +289,19 @@ public class DlvZoneStrategy implements PromotionStrategyI {
 		}
 		return isOK;		
 	}
+	
+	private class TimeSlotComparator implements Comparator<FDTimeslot> {
+
+		public int compare(FDTimeslot ts1, FDTimeslot ts2) {
+			if(ts1.getDlvTimeslot().getRoutingSlot() != null &&  ts2.getDlvTimeslot().getRoutingSlot() != null) {
+				if(ts1.getDlvTimeslot().getRoutingSlot().getDeliveryCost() != null && ts2.getDlvTimeslot().getRoutingSlot().getDeliveryCost() != null){
+					return ts1.getDlvTimeslot().getRoutingSlot().getDeliveryCost().getAdditionalDistance() - ts2.getDlvTimeslot().getRoutingSlot().getDeliveryCost().getAdditionalDistance();
+				}
+			}
+			return 0;
+		}
+	}
+	
 	/*public int evaluateByZoneCode(String zoneCode){
 		if(null != zoneCode && !"".equals(zoneCode.trim())){
 			if(null != dlvZones && dlvZones.size() != 0 && (dlvZones.contains(zoneCode) || dlvZones.contains("ALL"))){

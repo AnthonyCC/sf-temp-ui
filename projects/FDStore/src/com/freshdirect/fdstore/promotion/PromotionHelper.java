@@ -1,26 +1,27 @@
 package com.freshdirect.fdstore.promotion;
 
+import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collection;
 import java.util.GregorianCalendar;
-import java.util.HashSet;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.pricing.Discount;
 import com.freshdirect.common.pricing.EnumDiscountType;
-import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.delivery.DlvZoneInfoModel;
 import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDInvalidAddressException;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDTimeslot;
-import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.customer.adapter.PromotionContextAdapter;
+import com.freshdirect.framework.util.TimeOfDay;
 
 public class PromotionHelper {
 	
@@ -51,7 +52,17 @@ public class PromotionHelper {
 		return discountAmount;
 	}
 	
-	 public static double getDiscount(FDUserI user, FDTimeslot timeSlot) {
+	 public static double getDiscount(FDUserI user, FDTimeslot timeSlot, List<FDTimeslot> dayTimeslots) {
+		 
+		 Map<Double, List<FDTimeslot>> tsWindowMap = new HashMap<Double, List<FDTimeslot>>();
+		 for(FDTimeslot ts : dayTimeslots){
+			 double windowDuration = TimeOfDay.getDurationAsMinutes(ts.getDlvTimeslot().getStartTime(), ts.getDlvTimeslot().getEndTime());
+			 if(!tsWindowMap.containsKey(windowDuration)){
+				 tsWindowMap.put(windowDuration, new ArrayList<FDTimeslot>());
+			 }
+			 tsWindowMap.get(windowDuration).add(ts);
+		 }
+		 
 		 Set<String> eligiblePromoCodes = user.getPromotionEligibility().getEligiblePromotionCodes();
 		 if(null == eligiblePromoCodes || eligiblePromoCodes.isEmpty()) return 0.0;
 		 Discount applied = null;
@@ -62,7 +73,7 @@ public class PromotionHelper {
 					PromotionApplicatorI app = p.getApplicator();
 					DlvZoneStrategy zoneStrategy = app != null ? app.getDlvZoneStrategy() : null;
 					if(zoneStrategy != null && zoneStrategy.isZonePresent(timeSlot.getZoneCode()) 
-							&& zoneStrategy.isTimeSlotEligible(timeSlot)){
+							&& zoneStrategy.isTimeSlotEligible(timeSlot, tsWindowMap, user)){						
 						double promoAmt = p.getHeaderDiscountTotal();
 						if(isMaxDiscountAmount(promoAmt, p.getPriority(), applied)){
 							applied = new Discount(promoId, EnumDiscountType.DOLLAR_OFF, promoAmt);
@@ -142,7 +153,7 @@ public class PromotionHelper {
 							DlvZoneStrategy dlvZoneStrategy = app.getDlvZoneStrategy();
 							if(dlvZoneStrategy != null) {
 								if(dlvZoneStrategy.getDlvTimeSlots() != null && !dlvZoneStrategy.getDlvTimeSlots().isEmpty()){
-									isEligible = dlvZoneStrategy.isTimeSlotEligible(timeSlot);
+									isEligible = dlvZoneStrategy.isTimeSlotEligible(timeSlot, null, user);
 								} else if(dlvZoneStrategy.getDlvDates() != null && !dlvZoneStrategy.getDlvDates().isEmpty()) {
 									isEligible = dlvZoneStrategy.checkDlvDates(timeSlot);
 								}

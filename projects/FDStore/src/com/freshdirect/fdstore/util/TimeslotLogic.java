@@ -3,16 +3,17 @@
  */
 package com.freshdirect.fdstore.util;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.commons.lang.time.DateUtils;
 import org.apache.log4j.Logger;
 
 import com.freshdirect.customer.ErpAddressModel;
@@ -140,6 +141,21 @@ public class TimeslotLogic {
 		final boolean isAlcoholDlv = FDDeliveryManager.getInstance()
 				.checkForAlcoholDelivery(address);
 		stats.setAlcoholDelivery(isAlcoholDlv);
+		
+		Map<Integer, List<FDTimeslot>> timeslotMap = new HashMap<Integer, List<FDTimeslot>>();
+		for (FDTimeslotUtil list : timeslotList) {
+			for (Collection<FDTimeslot> col : list.getTimeslots()) {
+				for (FDTimeslot ts : col) {
+					if(!timeslotMap.containsKey(ts.getDayOfWeek())){
+						timeslotMap.put(ts.getDayOfWeek(), new ArrayList<FDTimeslot>());
+					}
+					timeslotMap.get(ts.getDayOfWeek()).add(ts);
+				}
+			}
+		}
+		
+		user.setSteeringSlotIds(new HashSet<String>());
+		
 		for (FDTimeslotUtil list : timeslotList) {
 			for (Collection<FDTimeslot> col : list.getTimeslots()) {
 				for (FDTimeslot timeslot : col) {
@@ -172,9 +188,8 @@ public class TimeslotLogic {
 						}
 						else if(!_ts.isPremiumSlot() || (_ts.isPremiumSlot() && FDStoreProperties.allowDiscountsOnPremiumSlots()))
 						{
-							steeringDiscount = PromotionHelper.getDiscount(
-								user, timeslot);
-						_ts.setSteeringDiscount(steeringDiscount);
+							steeringDiscount = PromotionHelper.getDiscount(user, timeslot, timeslotMap.get(timeslot.getDayOfWeek()));
+							_ts.setSteeringDiscount(steeringDiscount);
 						}
 					}
 					
