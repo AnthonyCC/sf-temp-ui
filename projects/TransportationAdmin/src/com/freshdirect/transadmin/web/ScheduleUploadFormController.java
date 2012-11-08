@@ -1,9 +1,11 @@
 package com.freshdirect.transadmin.web;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -22,6 +24,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.freshdirect.transadmin.constants.EnumUploadSource;
 import com.freshdirect.transadmin.datamanager.ScheduleUploadDataManager;
+import com.freshdirect.transadmin.model.Region;
 import com.freshdirect.transadmin.model.ScheduleEmployee;
 import com.freshdirect.transadmin.model.Scrib;
 import com.freshdirect.transadmin.model.TrnFacility;
@@ -87,6 +90,13 @@ public class ScheduleUploadFormController extends BaseFormController {
 		try{
 			if(bean.getProcessType() != null) {
 				newSource = EnumUploadSource.getEnum(bean.getProcessType());
+				
+				Collection masterRegions = getDomainManagerService().getRegions();
+				Collection masterZones = getDomainManagerService().getZones();
+				Collection facilityLocs = getLocationManagerService().getTrnFacilitys();
+				Map<String, Zone> zoneMapping = new HashMap<String, Zone>();
+				Map<String, Region> regionMapping = new HashMap<String, Region>();
+			
 				if(newSource != null) {
 					if(newSource.equals(EnumUploadSource.SCRIB)) {
 						
@@ -97,9 +107,7 @@ public class ScheduleUploadFormController extends BaseFormController {
 																			, domainManagerService);
 						if(scribs != null) {
 							Set<Date> scribDates = new TreeSet<Date>();
-							Collection masterZones = getDomainManagerService().getZones();
-							Collection facilityLocs = getLocationManagerService().getTrnFacilitys();
-							Map<String, Zone> zoneMapping = new HashMap<String, Zone>();
+							
 							Map<String, TrnFacility> facilityMapping = new HashMap<String, TrnFacility>();
 							
 							if(masterZones != null && facilityLocs != null) {
@@ -159,13 +167,81 @@ public class ScheduleUploadFormController extends BaseFormController {
 							}
 						}
 					} else {
+						StringBuffer errorMsg = new StringBuffer();
+						Set<String> zoneErrorLst = new HashSet<String>();
+						Set<String> regionErrorLst = new HashSet<String>();
+						
 						List<ScheduleEmployee> schedules = new ScheduleUploadDataManager()
 																		.processUploadSchedules(request
 																			, bytes
 																			, com.freshdirect.transadmin.security.SecurityManager.getUserName(request)
 																			, domainManagerService);
-						getDomainManagerService().saveOrUpdateEmployeeSchedule(schedules);
-						saveMessage(request, getMessage("app.actionmessage.161", new Object[]{newSource.getDescription()}));
+						if(masterZones != null) {
+							Iterator _zoneItr = masterZones.iterator();
+							Zone zone = null;
+							while(_zoneItr.hasNext()) {
+								zone = (Zone)_zoneItr.next();									
+								zoneMapping.put(zone.getZoneCode(), zone);
+							}
+						}
+						
+						if(masterRegions != null) {
+							Iterator _regionItr = masterRegions.iterator();
+							Region region = null;
+							while(_regionItr.hasNext()) {
+								region = (Region)_regionItr.next();									
+								regionMapping.put(region.getCode(), region);
+							}
+						}
+						
+						if(schedules != null) {
+							for(ScheduleEmployee _scheduleEmp : schedules) {
+								if(_scheduleEmp.getDepotZone() != null){
+									int _codelength = _scheduleEmp.getDepotZoneS() != null ? _scheduleEmp.getDepotZoneS().length() : 3;				
+									if(_codelength < 3) {
+										StringBuffer strBuf = new StringBuffer();
+										while(3 - _codelength > 0) {
+											strBuf.append("0");
+											_codelength++;
+										}
+										_scheduleEmp.setDepotZoneS(strBuf.toString() + _scheduleEmp.getDepotZoneS());
+									}
+									Zone _depotZone = zoneMapping.get(_scheduleEmp.getDepotZoneS());
+									if(_depotZone == null){
+										zoneErrorLst.add(_scheduleEmp.getDepotZoneS());
+									}
+							    }
+								if(_scheduleEmp.getRegionS() != null){
+									Region _region = regionMapping.get(_scheduleEmp.getRegionS());									
+									if(_region == null){
+										regionErrorLst.add(_scheduleEmp.getRegionS());
+									}
+								}
+							}							
+						}
+						
+						if((regionErrorLst != null && regionErrorLst.size() > 0) || (zoneErrorLst != null && zoneErrorLst.size() > 0)){
+							StringBuffer uploadErrMsg = new StringBuffer();
+							if(zoneErrorLst.size() > 0) uploadErrMsg.append("Below zone(s) doesn't exist in active zones");
+							for(String _error : zoneErrorLst){
+								uploadErrMsg.append(_error);
+								if(uploadErrMsg.length() > 0) {
+									uploadErrMsg.append(",");
+								}
+							}
+							if(regionErrorLst.size() > 0) uploadErrMsg.append("Below region(s) doesn't exist in active regions");
+							for(String _error : regionErrorLst){
+								uploadErrMsg.append(_error);
+								if(uploadErrMsg.length() > 0) {
+									uploadErrMsg.append(",");
+								}
+							}							
+							saveErrorMessage(request, getMessage("app.error.131", new Object[] {newSource.getDescription()}));
+							saveErrorMessage(request, uploadErrMsg.toString());
+						} else {
+							getDomainManagerService().saveOrUpdateEmployeeSchedule(schedules);
+							saveMessage(request, getMessage("app.actionmessage.161", new Object[]{newSource.getDescription()}));
+						}
 					}					
 				}
 			}					

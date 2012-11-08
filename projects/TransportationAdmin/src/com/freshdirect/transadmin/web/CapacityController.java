@@ -790,22 +790,9 @@ public class CapacityController extends AbstractMultiActionController {
 	private boolean isDiscounted(List<TimeRange> discountSlots, String zoneCode, Date startTime, Date endTime) {		
 		if(discountSlots != null) {			
 			for(TimeRange slot : discountSlots) {
-				TimeOfDay windowStart = new TimeOfDay(startTime);
-				TimeOfDay windowEnd = new TimeOfDay(endTime);
-				double windowDuration = TimeOfDay.getDurationAsMinutes(windowStart, windowEnd);
-				String[] windowType = slot.getWindowType();
-				if(windowType != null && windowType.length > 0){
-					for(int i = 0;i < windowType.length; i++) {
-						if(!"ALL".equalsIgnoreCase(windowType[i].trim())){
-							double d = Double.valueOf(windowType[i].trim()).doubleValue();
-							if(windowDuration == d){
-								return true;
-							}
-						} else {
-							return true;
-						}
-					}
-				} else {
+				if(slot.getStartTime() != null && slot.getEndTime() != null) {
+					TimeOfDay windowStart = new TimeOfDay(startTime);
+					TimeOfDay windowEnd = new TimeOfDay(endTime);
 					if((slot.getStartTime().equals(windowStart) || windowStart.after(slot.getStartTime())) && 
 							(windowEnd.before(slot.getEndTime()) || (slot.getEndTime().equals(windowEnd)))) {
 						return true;
