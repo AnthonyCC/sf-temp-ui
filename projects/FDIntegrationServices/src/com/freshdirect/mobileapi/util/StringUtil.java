@@ -30,10 +30,8 @@ public class StringUtil {
 		
 		public static DateFormat hourInDayFormat1 = new SimpleDateFormat("H.mm");
 		
-		public static DateFormat dateFormatwithTime = new SimpleDateFormat("MM/dd/yyyy hh:mm aaa");
+		public static DateFormat dateFormatwithTime = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
 		
-		public static DateFormat dateFormatwithTime1 = new SimpleDateFormat("MM/dd/yyyy hh:mm aaa");	
-			
 		public static Calendar clientCalendar = Calendar.getInstance();
 		
 		private static String[] daysList = new String[] {"Monday","Tuesday","Wednesday","Thurdsay","Friday","Saturday","Sunday"};

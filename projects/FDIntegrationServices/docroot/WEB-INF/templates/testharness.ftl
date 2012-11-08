@@ -539,7 +539,7 @@ function loadStuff() {
   	$("#result").val("");
   } else if (loaddata == "IvrCallLog") {
   	$("#url").val("/ext/t002/");
-	var postdata = '1,9174068937,11540278667,10/04/2012 06:05 AM,2,CallComplete,51,571-730-5796,delivery access';
+	var postdata = '1,9174068937,11540278667,10/04/2012 06:05:00,2,CallComplete,51,571-730-5796,delivery access';
   	$("#payload").val(postdata);
   	$("#result").val("");
   } else if (loaddata == "GetCountries") {
