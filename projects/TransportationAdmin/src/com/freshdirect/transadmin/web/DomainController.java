@@ -1029,36 +1029,40 @@ public class DomainController extends AbstractMultiActionController {
 	public ModelAndView timesheetHandler(HttpServletRequest request, HttpServletResponse response) throws ServletException {
 		
 		String selectedDate = request.getParameter("selectedDate");
-		String zone = request.getParameter("zone");
+		String zoneS = request.getParameter("zone");
 		ModelAndView mav = new ModelAndView("employeeTimesheetView");
 		Collection employees = null;
-		List<TrnArea> areaLookup = new ArrayList<TrnArea>();
+		List<Zone> zoneLookup = new ArrayList<Zone>();
 		
 		try {
-		if(selectedDate != null && zone != null) 
+		if(selectedDate != null && zoneS != null) 
 		{
 			Date rDate = TransStringUtil.getDate(selectedDate);
-			employees = getDomainManagerService().getEmployees(rDate, zone, "AM");	
+			employees = getDomainManagerService().getEmployees(rDate, zoneS, "AM");	
+			if(employees.size()==0)
+			{
+				List errorList = new ArrayList();
+				errorList.add("No records matching the criteria");
+				saveErrorMessage(request, errorList);
+			}
 		}
-		Collection areas = getDomainManagerService().getAreas();
+		Collection zones = getDomainManagerService().getZones();
 		TrnArea tmpArea = null;
-		if(areas != null) {
-			Iterator iterator = areas.iterator();
+		if(zones != null) {
+			Iterator iterator = zones.iterator();
 			while(iterator.hasNext()) {
-				tmpArea = (TrnArea)iterator.next();				
-				if(tmpArea != null && "X".equalsIgnoreCase(tmpArea.getIsDepot())) {
-					areaLookup.add(tmpArea);
+				Zone zone = (Zone)iterator.next();				
+				if(zone != null && zone.getArea()!=null && "X".equalsIgnoreCase(zone.getArea().getIsDepot())) {
+					zoneLookup.add(zone);
 				}
 			}
 		}
 		} catch (ParseException e) {			
 			e.printStackTrace();
 		}
-		Collection shifts = new ArrayList(); shifts.add("AM");shifts.add("PM");
-		mav.getModel().put("zones", areaLookup);
-		mav.getModel().put("shifts", shifts);
+		mav.getModel().put("zones", zoneLookup);
 		mav.getModel().put("employees", employees);
-		mav.getModel().put("zoneS", zone);
+		mav.getModel().put("zoneS", zoneS);
 		mav.getModel().put("selectedDate", selectedDate);
 		
 		return mav;

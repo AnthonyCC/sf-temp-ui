@@ -31,13 +31,13 @@ table.timesheetTable th {
 	border-width: 2px;
 	border-style: inset;
 	border-color: gray;
-	padding : 15px;
+	padding : 10px;
 }
 table.timesheetTable td {
 	border-width: 2px;
 	border-style: inset;
 	border-color: gray;
-	padding : 15px;
+	padding : 10px;
 }
 
 </style>
@@ -47,12 +47,13 @@ table.timesheetTable td {
     <div align="center">     
      
     <span class="screentitle">Employee Timesheet</span>
-    <c:if test="${not empty messages}">
+   
 		<div class="screenmessages">
 			<jsp:include page='/common/messages.jsp'/>
 		</div>
-	</c:if>
+	
 	<table border="0" align="center" cellspacing="10" cellpadding="5">
+       
 		<tr><td align="left">
     			Select Date:</td><td>&nbsp;&nbsp;</td>
                   	<td><input maxlength="40" name="selectedDate" id="selectedDate" value='<c:out value="${selectedDate}"/>' style="width:90px"/>
@@ -76,20 +77,20 @@ table.timesheetTable td {
            </tr>
            <br/>
            <br/>
-           <tr><td align="left">
+            <tr><td align="left">
               			Select Zone:</td><td>&nbsp;&nbsp;</td>
               			<td>
 							<select id="zone" name="zone">
 								<option value="">--Select Zone</option> 
 					              <c:forEach var="zone" items="${zones}">
-					              <c:out value="${zoneS}"/><c:out value="${zone.code}"/>
+					              <c:out value="${zoneS}"/><c:out value="${zone.zoneCode}"/>
 									  <c:choose>
-											<c:when test="${zoneS == zone.code}" > 
+											<c:when test="${zoneS == zone.zoneCode}" > 
 											
-											  <option selected value="<c:out value="${zone.code}"/>"><c:out value="${zone.code}"/></option>
+											  <option selected value="<c:out value="${zone.zoneCode}"/>"><c:out value="${zone.zoneCode}"/> - <c:out value="${zone.name}"/></option>
 											</c:when>
 											<c:otherwise> 
-											  <option value="<c:out value="${zone.code}"/>"><c:out value="${zone.code}"/></option>
+											  <option value="<c:out value="${zone.zoneCode}"/>"><c:out value="${zone.zoneCode}"/> - <c:out value="${zone.name}"/></option>
 											</c:otherwise> 
 										</c:choose>
 								</c:forEach>   
@@ -119,7 +120,6 @@ table.timesheetTable td {
  		 View Signature</a></td>
  		 </c:forEach>
  		</table>
-	
 	<script>
 	function doClear()
 	{
@@ -141,12 +141,11 @@ table.timesheetTable td {
 	{
 		var selectedDate = document.getElementById('selectedDate').value;
 		var zone = document.getElementById('zone').value;
-		var elem = document.getElementById("signatureLink");
-		var oImg=document.createElement("img");
-		oImg.setAttribute('src', 'viewsignature.do?selectedDate='+selectedDate+'&zone='+zone+'&empId='+empId);
-		oImg.setAttribute('alt', 'signature');
-		elem.replaceChild(oImg, document.getElementById("signAnchor"));
-		
+		var w = window.open('','signature','height=200,width=200,resizable=no,location=no');
+		w.document.writeln("<body bgcolor='#ffffff'>");
+		w.document.writeln("<img src='" + 'viewsignature.do?selectedDate='+selectedDate+'&zone='+zone+'&empId='+empId + "'>");
+		w.document.writeln("<\/body>");
+		w.document.close();
 	}
 	
 	

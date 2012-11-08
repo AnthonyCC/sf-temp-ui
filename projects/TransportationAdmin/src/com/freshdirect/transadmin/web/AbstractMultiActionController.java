@@ -2,6 +2,7 @@ package com.freshdirect.transadmin.web;
 
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
@@ -83,6 +84,19 @@ public class AbstractMultiActionController extends MultiActionController impleme
 			parExp.printStackTrace();
 		}
 		return retDate;
+	}
+	
+	public void saveErrorMessage(HttpServletRequest request, Object msg) {
+		List messages = (List) request.getSession().getAttribute("apperrors");
+		if (messages == null) {
+			messages = new ArrayList();
+		}
+		if(msg instanceof Collection) {
+			messages.addAll((Collection)msg);
+		} else {
+			messages.add(msg);
+		}
+		request.getSession().setAttribute("apperrors", messages);
 	}
 	
 }
