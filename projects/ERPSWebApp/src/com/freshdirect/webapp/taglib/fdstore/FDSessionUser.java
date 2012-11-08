@@ -1402,4 +1402,12 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 	public boolean hasEBTAlert() {
 		return this.user.hasEBTAlert();
 	}
+	
+	public Set<String> getSteeringSlotIds() {
+		return this.user.getSteeringSlotIds();
+	}
+
+	public void setSteeringSlotIds(Set<String> steeringSlotIds) {
+		this.user.setSteeringSlotIds(steeringSlotIds);
+	}
 }
