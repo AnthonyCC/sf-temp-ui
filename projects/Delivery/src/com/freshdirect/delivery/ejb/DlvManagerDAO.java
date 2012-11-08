@@ -134,7 +134,8 @@ public class DlvManagerDAO {
 		+ ", ta.AREA AREA_CODE, ta.STEM_MAX_TIME stemmax, ta.STEM_FROM_TIME stemfrom, ta.STEM_TO_TIME stemto, ta.ZONE_ECOFRIENDLY ecoFriendly, ta.STEERING_RADIUS steeringRadius, z.NAME ZONE_NAME, " 
 		+ "case when t.premium_cutoff_time is null then TO_CHAR(t.CUTOFF_TIME, 'HH_MI_PM') else TO_CHAR(t.premium_cutoff_time, 'HH_MI_PM') end WAVE_CODE, t.IS_DYNAMIC IS_DYNAMIC, t.IS_CLOSED IS_CLOSED, tr.IS_DEPOT IS_DEPOT, tr.code REGION_CODE, tr.name REGION_NAME, tr.description REGION_DESCR, a.DELIVERY_RATE AREA_DLV_RATE, " 
 		+ "(select count(*) from dlv.reservation where timeslot_id=t.id and status_code <> ? and status_code <> ? and chefstable = ' ' and class is null) as base_allocation, " 
-		+ "(select count(*) from dlv.reservation where timeslot_id=t.id and status_code <> ? and status_code <> ? and chefstable = 'X' and class is null) as ct_allocation, " 
+		+ "(select count(*) from dlv.reservation where timeslot_id=t.id and status_code <> ? and status_code <> ? and chefstable = 'X' and class is null) as ct_allocation, "
+		+ "(select count(*) from dlv.reservation where timeslot_id=t.id and status_code = '10' and class is null) as total_confirmed, "
 		+ "(select z.ct_release_time from dlv.zone z where z.id = t.zone_id) as ct_release_time, "
 		+ "(select z.ct_active from dlv.zone z where z.id = t.zone_id) as ct_active, "
 		+ "t.premium_cutoff_time, t.premium_capacity, t.premium_ct_capacity, " 
@@ -204,6 +205,7 @@ public class DlvManagerDAO {
 		+" case when ts.premium_cutoff_time is null then TO_CHAR(ts.CUTOFF_TIME, 'HH_MI_PM') else TO_CHAR(ts.premium_cutoff_time, 'HH_MI_PM') end WAVE_CODE, ts.IS_DYNAMIC IS_DYNAMIC, ts.IS_CLOSED IS_CLOSED, tr.IS_DEPOT IS_DEPOT, tr.code REGION_CODE, tr.name REGION_NAME, tr.description REGION_DESCR, a.DELIVERY_RATE AREA_DLV_RATE,  "
 			+ "(select count(*) from dlv.reservation where timeslot_id=ts.id and status_code <> ? and status_code <> ? and chefstable = ' ' and class is null) as base_allocation, "
 			+ "(select count(*) from dlv.reservation where timeslot_id=ts.id and status_code <> ? and status_code <> ? and chefstable = 'X' and class is null) as ct_allocation, "
+			+ "(select count(*) from dlv.reservation where timeslot_id=ts.id and status_code = '10' and class is null) as total_confirmed, "
 			+ "(select z.ct_release_time from dlv.zone z where z.id = ts.zone_id) as ct_release_time, "
 			+ "(select z.ct_active from dlv.zone z where z.id = ts.zone_id) as ct_active, "
 			+ "ts.premium_cutoff_time, ts.premium_capacity, ts.premium_ct_capacity, "
@@ -328,10 +330,13 @@ public class DlvManagerDAO {
 		int premiumBaseAllocation = rs.getInt("PREMIUM_BASE_ALLOCATION");
 		int premiumCtAllocation = rs.getInt("PREMIUM_CT_ALLOCATION");
 		boolean premiumSlot = false;
+		
+		int totalConfirmed = rs.getInt("TOTAL_CONFIRMED");
+		
 		DlvTimeslotModel _tmpSlot =new DlvTimeslotModel(pk, zoneId, baseDate, startTime, endTime, cutoffTime, status, capacity, 
 				ctCapacity, baseAllocation, ctAllocation, ctReleaseTime,ctActive,zoneCode, premiumCapacity,
 				  premiumCtCapacity, premiumCutoffTime, premiumCtReleaseTime, 
-				  premiumCtActive, premiumBaseAllocation,  premiumCtAllocation, premiumSlot);
+				  premiumCtActive, premiumBaseAllocation,  premiumCtAllocation, premiumSlot, totalConfirmed);
 		
 		if(checkPremium)
 		{
@@ -391,6 +396,7 @@ public class DlvManagerDAO {
 		"case when ts.premium_cutoff_time is null then TO_CHAR(ts.CUTOFF_TIME, 'HH_MI_PM') else TO_CHAR(ts.premium_cutoff_time, 'HH_MI_PM') end WAVE_CODE, ts.IS_DYNAMIC IS_DYNAMIC, ts.IS_CLOSED IS_CLOSED, tr.IS_DEPOT IS_DEPOT, tr.code REGION_CODE, tr.name REGION_NAME, tr.description REGION_DESCR, a.DELIVERY_RATE AREA_DLV_RATE,"
 			+ "(select count(*) from dlv.reservation where timeslot_id=ts.id and status_code <> ? and status_code <> ? and chefstable = ' ' and class is null) as base_allocation, "
 			+ "(select count(*) from dlv.reservation where timeslot_id=ts.id and status_code <> ? and status_code <> ? and chefstable = 'X' and class is null) as ct_allocation, "
+			+ "(select count(*) from dlv.reservation where timeslot_id=ts.id and status_code = '10' and class is null) as total_confirmed, "
 			+ "(select z.ct_release_time from dlv.zone z where z.id = ts.zone_id) as ct_release_time, "
 			+ "(select z.ct_active from dlv.zone z where z.id = ts.zone_id) as ct_active, "
 			+ "ts.premium_cutoff_time, ts.premium_capacity, ts.premium_ct_capacity, "
@@ -453,6 +459,8 @@ public class DlvManagerDAO {
 			+ "where zone_id = ts.zone_id AND ts.ID = reservation.TIMESLOT_ID and status_code <> ? and status_code <> ? and chefstable = ' ' and class is null) as base_allocation, "
 			+ "(select count(reservation.TIMESLOT_ID) from dlv.reservation "
 			+ "where zone_id = ts.zone_id AND ts.ID = reservation.TIMESLOT_ID and status_code <> ? and status_code <> ? and chefstable = 'X' and class is null) as ct_allocation, "
+			+ "(select count(reservation.TIMESLOT_ID) from dlv.reservation "
+			+ "where zone_id = ts.zone_id AND ts.ID = reservation.TIMESLOT_ID and status_code = '10' and class is null) as total_confirmed, "
 			+ "(select z.ct_release_time from dlv.zone z where z.id = ts.zone_id) as ct_release_time, "
 			+ "(select z.ct_active from dlv.zone z where z.id = ts.zone_id) as ct_active, "
 			+ "(select z.zone_code from dlv.zone z where z.id=ts.zone_id ) as zone_code, "
@@ -795,6 +803,7 @@ public class DlvManagerDAO {
 		"case when t.premium_cutoff_time is null then TO_CHAR(t.CUTOFF_TIME, 'HH_MI_PM') else TO_CHAR(t.premium_cutoff_time, 'HH_MI_PM') end WAVE_CODE, t.IS_DYNAMIC IS_DYNAMIC, t.IS_CLOSED IS_CLOSED, tr.IS_DEPOT IS_DEPOT, tr.code REGION_CODE, tr.name REGION_NAME, tr.description REGION_DESCR,  a.DELIVERY_RATE AREA_DLV_RATE," 
 			+ "(select count(*) from dlv.reservation where timeslot_id=t.id and status_code <> ? and status_code <> ? and chefstable = ' ' and class is null) as base_allocation, "
 			+ "(select count(*) from dlv.reservation where timeslot_id=t.id and status_code <> ? and status_code <> ? and chefstable = 'X' and class is null) as ct_allocation, "
+			+ "(select count(*) from dlv.reservation where timeslot_id=t.id and status_code = '10' and class is null) as total_confirmed, "
 			+ "(select z.ct_release_time from dlv.zone z where z.id = t.zone_id) as ct_release_time, "
 			+ "(select z.ct_active from dlv.zone z where z.id = t.zone_id) as ct_active, p.zone_code, "
 			+ "t.premium_cutoff_time, t.premium_capacity, t.premium_ct_capacity, " 
@@ -1471,6 +1480,7 @@ public class DlvManagerDAO {
 		"case when ts.premium_cutoff_time is null then TO_CHAR(ts.CUTOFF_TIME, 'HH_MI_PM') else TO_CHAR(ts.premium_cutoff_time, 'HH_MI_PM') end WAVE_CODE, ts.IS_DYNAMIC IS_DYNAMIC, ts.IS_CLOSED IS_CLOSED, tr.IS_DEPOT IS_DEPOT, tr.code REGION_CODE, tr.name REGION_NAME, tr.description REGION_DESCR, a.DELIVERY_RATE AREA_DLV_RATE, "
 		+ "(select count(*) from dlv.reservation where timeslot_id=ts.id and status_code <> ? and status_code <> ? and chefstable = ' ' and class is null) as base_allocation, "
 		+ "(select count(*) from dlv.reservation where timeslot_id=ts.id and status_code <> ? and status_code <> ? and chefstable = 'X' and class is null) as ct_allocation, "
+		+ "(select count(*) from dlv.reservation where timeslot_id=ts.id and status_code = '10' and class is null) as total_confirmed, "
 		+ "(select count(*) from dlv.reservation where timeslot_id=ts.id and status_code <> ? and status_code <> ? and class = 'P') as premium_base_allocation, "
 		+ "(select count(*) from dlv.reservation where timeslot_id=ts.id and status_code <> ? and status_code <> ? and class = 'PC') as premium_ct_allocation, "
 		+ "(select z.ct_release_time from dlv.zone z where z.id = ts.zone_id) as ct_release_time, "

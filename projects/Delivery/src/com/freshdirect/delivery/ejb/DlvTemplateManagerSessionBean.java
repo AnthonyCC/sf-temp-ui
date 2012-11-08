@@ -101,6 +101,7 @@ public class DlvTemplateManagerSessionBean extends SessionBeanSupport {
         "ts.capacity, ts.ct_capacity, ts.is_dynamic, " +
         "(select count(*) from dlv.reservation where zone_id=z.id and ts.id=timeslot_id and status_code <> ? and status_code <> ? and chefstable = ' ' and class is null) as base_allocation, " + 
         "(select count(*) from dlv.reservation where zone_id=z.id and ts.id=timeslot_id and status_code <> ? and status_code <> ? and chefstable = 'X' and class is null) as ct_allocation, " +
+        "(select count(*) from dlv.reservation where zone_id=z.id and ts.id=timeslot_id and status_code = '10' and class is null) as total_confirmed, "+
         "z.ct_release_time as ct_release_time,  " +
         "z.ct_active as ct_active, " + 
          "ts.premium_cutoff_time, ts.premium_capacity, ts.premium_ct_capacity, z.premium_ct_release_time ," +
@@ -157,12 +158,12 @@ public class DlvTemplateManagerSessionBean extends SessionBeanSupport {
 				
 				boolean ctActive = "X".equals(rs.getString("CT_ACTIVE"));
 				String zoneId = rs.getString("ZONE_ID");
-				
+				int totalConfirmed = rs.getInt("TOTAL_CONFIRMED");
 				 
 				DlvTimeslotModel model = new DlvTimeslotModel(pk, zoneId, baseDate, startTime, endTime, cutoffTime, status, capacity, 
 						chefsTableCapacity, baseAllocation, ctAllocation, ctReleaseTime,ctActive,zoneCode, premiumCapacity,
 						  premiumCtCapacity, premiumCutoffTime,  premiumCtReleaseTime, 
-						  premiumCtActive, premiumAllocation,  premiumCtAllocation,false);
+						  premiumCtActive, premiumAllocation, premiumCtAllocation, false, totalConfirmed);
 				timeslots.add(model);
 			}
             rs.close();
@@ -188,6 +189,7 @@ public class DlvTemplateManagerSessionBean extends SessionBeanSupport {
 		"z.zone_code, ts.capacity, ts.traffic_factor, ts.ct_capacity, ts.is_dynamic, "+
 		"(select count(*) from dlv.reservation where zone_id=z.id and ts.id=timeslot_id and status_code <> ? and status_code <> ? and chefstable = ' ' and class is null) as base_allocation, "+
 		"(select count(*) from dlv.reservation where zone_id=z.id and ts.id=timeslot_id and status_code <> ? and status_code <> ? and chefstable = 'X' and class is null) as ct_allocation, "+
+		"(select count(*) from dlv.reservation where zone_id=z.id and ts.id=timeslot_id and status_code = '10' class is null) as total_confirmed, "+
 		"(select z.ct_release_time from dlv.zone z where z.id = ts.zone_id) as ct_release_time, "+
 		"ts.premium_cutoff_time, ts.premium_capacity, ts.premium_ct_capacity, "+
 	  	"(select count(*) from dlv.reservation where timeslot_id=ts.id and status_code <> ? and status_code <> ? and class= 'P') as premium_allocation, " +
@@ -253,17 +255,17 @@ public class DlvTemplateManagerSessionBean extends SessionBeanSupport {
 				boolean premiumCtActive = "X".equals(rs.getString("PREMIUM_CT_ACTIVE"));
 				int premiumAllocation = rs.getInt("PREMIUM_ALLOCATION");
 				int premiumCtAllocation = rs.getInt("PREMIUM_CT_ALLOCATION");
-				
+				int totalConfirmed = rs.getInt("TOTAL_CONFIRMED");
 				
 				boolean ctActive = "X".equals(rs.getString("CT_ACTIVE"));
 				double trafficFactor = rs.getDouble("TRAFFIC_FACTOR");
 				String zoneId = rs.getString("ZONE_ID");
-		 		
+				
 		 		String zoneCode = rs.getString("ZONE_CODE");
 				DlvTimeslotModel model = new DlvTimeslotModel(pk, zoneId, baseDate, startTime, endTime, cutoffTime, status, capacity, 
 						chefsTableCapacity, baseAllocation, ctAllocation, ctReleaseTime,ctActive,zoneCode, premiumCapacity,
 						  premiumCtCapacity, premiumCutoffTime,   premiumCtReleaseTime, 
-						  premiumCtActive, premiumAllocation,  premiumCtAllocation, false);
+						  premiumCtActive, premiumAllocation,  premiumCtAllocation, false, totalConfirmed);
 				model.setTrafficFactor(trafficFactor);
 				data.addTimeslot(zoneCode, model);
 			}
