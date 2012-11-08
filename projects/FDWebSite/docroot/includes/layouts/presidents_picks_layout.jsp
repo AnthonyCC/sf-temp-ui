@@ -373,14 +373,14 @@
 				});
 
 				var featProdContHeight = 0;
-				$jq('div.ddpp_feat_prod').each(function (index, elem) {
+				$jq('div.featurebox').each(function (index, elem) {
 					var eH = $jq(elem).height();
 					if (eH > featProdContHeight) {
-						featProdContHeight = eH;
+						featProdContHeight = eH+14;
 					}
 				}).each(function (index, elem) {
 					if (featProdContHeight > 0) {
-						$jq(elem).css({ 'height': featProdContHeight+'px' });
+						$jq($jq(elem).find('.grid-item')).css({ 'height': featProdContHeight+'px' });
 						if (index === 0) {
 							$jq('.ddpp_feat_prod_cont').css({ 'height': (featProdContHeight+14)+'px' });
 						}
