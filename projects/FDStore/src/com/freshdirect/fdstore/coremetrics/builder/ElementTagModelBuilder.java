@@ -157,8 +157,12 @@ public class ElementTagModelBuilder {
 				}
 			}
 			
+			if (idBuilder.length()>0){
+				model.setElementId(idBuilder.substring(0, idBuilder.lastIndexOf(ATTR_DELIMITER)));
+			} else {
+				throw new SkipTagException("Filter is empty! Skipping tag.");
+			}
 			
-			model.setElementId(idBuilder.length()>0 ? idBuilder.substring(0, idBuilder.lastIndexOf(ATTR_DELIMITER)) : idBuilder.toString());
 		} else {
 			throw new SkipTagException("No navigator found! Skipping tag.");
 		}
@@ -167,7 +171,7 @@ public class ElementTagModelBuilder {
 	
 	private void processSearchSort() throws SkipTagException{
 		
-		if(searchNavigator!=null){
+		if(searchNavigator!=null && !searchNavigator.isSortByDefault()){
 			//as the compareTo method of Score class is working in a reverse way (when the navigator says asc it will sort desc in order to keep the most popular things on the top of the page by default), 
 			//but the navigator handles asc and desc as excpected, we need to report the opposite order in case of relevancy and popularity order
 			if(searchNavigator.getSortBy() == SearchSortType.BY_POPULARITY || searchNavigator.getSortBy() == SearchSortType.BY_RELEVANCY){
@@ -177,7 +181,7 @@ public class ElementTagModelBuilder {
 			}
 			
 		} else {
-			throw new SkipTagException("No navigator found! Skipping tag.");
+			throw new SkipTagException("No navigator found or sorted by default! Skipping tag.");
 		}
 	}
 	

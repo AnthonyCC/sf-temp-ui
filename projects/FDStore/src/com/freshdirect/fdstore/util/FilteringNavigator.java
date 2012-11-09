@@ -45,6 +45,7 @@ public class FilteringNavigator {
 	int pageNumber = 0;
 
 	SearchSortType sortBy;
+	private boolean isSortByDefault;
 	boolean isOrderAscending;
 
 	private Set<EnumFilteringValue> filters;
@@ -208,8 +209,13 @@ public class FilteringNavigator {
 			sortBy = SearchSortType.findByLabel(val) /*
 													 * SearchNavigator.convertToSort (val)
 													 */;
-			if (sortBy == null)
+			if (sortBy == null){
 				sortBy = SearchSortType.DEFAULT;
+				isSortByDefault = true;
+			} else {
+				isSortByDefault = false;
+			}
+			
 
 			/*
 			 * if (sortBy < 0 || sortBy > SORT_BY_SALE) { sortBy = SORT_DEFAULT; }
@@ -222,6 +228,7 @@ public class FilteringNavigator {
 				// SORT_DEFAULT_NOT_TEXT);
 				sortBy = (view == VIEW_TEXT ? SearchSortType.DEF4TEXT : SearchSortType.DEF4NOTTEXT);
 			}
+			isSortByDefault = true;
 		}
 
 		val = (String) params.get("order");
@@ -988,6 +995,10 @@ public class FilteringNavigator {
 
 	public boolean isSortOrderingAscending() {
 		return isOrderAscending;
+	}
+
+	public boolean isSortByDefault() {
+		return isSortByDefault;
 	}
 
 	private class OriginalStatus {
