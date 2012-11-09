@@ -56,7 +56,7 @@ table.timesheetTable td {
        
 		<tr><td align="left">
     			Select Date:</td><td>&nbsp;&nbsp;</td>
-                  	<td><input maxlength="40" name="selectedDate" id="selectedDate" value='<c:out value="${selectedDate}"/>' style="width:90px"/>
+                  	<td align="left"><input maxlength="40" name="selectedDate" id="selectedDate" value='<c:out value="${selectedDate}"/>' style="width:90px"/>
 						 	<a href="#" id="trigger_selectedDate" style="font-size: 9px;">
                         			<img src="./images/icons/calendar.gif" width="16" height="16" border="0" alt="Select Date" title="Select Date"></a>
                      <script language="javascript">                 
@@ -79,7 +79,7 @@ table.timesheetTable td {
            <br/>
             <tr><td align="left">
               			Select Zone:</td><td>&nbsp;&nbsp;</td>
-              			<td>
+              			<td align="left">
 							<select id="zone" name="zone">
 								<option value="">--Select Zone</option> 
 					              <c:forEach var="zone" items="${zones}">
@@ -116,7 +116,7 @@ table.timesheetTable td {
  		 <c:forEach var="employeeInfo" items="${employees}">
  		 <tr><td><c:out value="${employeeInfo.badgeId}"/><td><c:out value="${employeeInfo.clockIn}"/>
  		 <td><c:out value="${employeeInfo.clockOut}"/><td><c:out value="${employeeInfo.tipAmount}"/>
- 		 <td><c:out value="${employeeInfo.onBreak}"/><td id="signatureLink"><a id="signAnchor" href="javascript:viewsignature('<c:out value="${employeeInfo.badgeId}"/>');">
+ 		 <td><c:out value="${employeeInfo.onBreak}"/><td id="signatureLink"><a id="signAnchor" href="#" onclick ="javascript:viewsignature(event, '<c:out value="${employeeInfo.badgeId}"/>');">
  		 View Signature</a></td>
  		 </c:forEach>
  		</table>
@@ -137,13 +137,25 @@ table.timesheetTable td {
          }
 	}	
 	
-	function viewsignature(empId)
+	function viewsignature(event, empId)
 	{
 		var selectedDate = document.getElementById('selectedDate').value;
 		var zone = document.getElementById('zone').value;
-		var w = window.open('','signature','height=200,width=200,resizable=no,location=no');
+		
+		var e=window.event? event : event
+				if (e.pageX || e.pageY) 	{
+					posx = e.pageX;
+					posy = e.pageY;
+				}
+				else if (e.clientX || e.clientY) 	{
+					posx = e.clientX + document.body.scrollLeft
+						+ document.documentElement.scrollLeft;
+					posy = e.clientY + document.body.scrollTop
+						+ document.documentElement.scrollTop;
+				}
+		var w = window.open('','signature','left='+posx+'px,top='+posy+'px,height=210px,width=250px,resizable=no,location=no');
 		w.document.writeln("<body bgcolor='#ffffff'>");
-		w.document.writeln("<img src='" + 'viewsignature.do?selectedDate='+selectedDate+'&zone='+zone+'&empId='+empId + "'>");
+		w.document.writeln("<img width='200px' height='100px' src='" + 'viewsignature.do?selectedDate='+selectedDate+'&zone='+zone+'&empId='+empId + "'>");
 		w.document.writeln("<\/body>");
 		w.document.close();
 	}
