@@ -54,7 +54,7 @@ public class ContentSearchUtil {
 		for (SearchHit hit : hits) {
 			if (FDContentTypes.PRODUCT.equals(hit.getContentKey().getType())) {
 				ProductModel product = (ProductModel) hit.getNode();
-				if (isDisplayable(product))
+				if ( product != null && isDisplayable(product))
 					ret.add(hit);
 			}
 		}

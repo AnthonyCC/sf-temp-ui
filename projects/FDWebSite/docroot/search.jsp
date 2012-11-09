@@ -317,19 +317,23 @@ final int W_INDEX_RIGHT_CENTER = W_INDEX_TOTAL - 228 - W_INDEX_CENTER_PADDING;
 		<div id="expertrating" class="filterbox sidebar-content">
 			<h3>EXPERT RATING</h3>
 			<ul>
-				<logic:iterate id="menu" collection="<%= filterItems %>" type='FilteringMenuItem' indexId="index">
-				<% if(menu==null) { %>
-				<li><span class="expertrating-stars"><span class="expertrating-stars-content expertrating-stars-content-<%= 5-index %>"></span></span><span class="count">(0)</span></li>						
-				<% } else {	%>
-				<% if(menu.isSelected()) { %>
-					<% nav.removeFilter(menu.getFilter(), menu.getFilteringUrlValue()); %>
-					<li class="selected"><a href="<%= nav.getLink() %>" class="remove-selection"></a><a href="<%= nav.getLink() %>"><span class="expertrating-stars"><span class="expertrating-stars-content expertrating-stars-content-<%= 5-index %>"></span></span></a></li>
+				<% if(hasSelected) { %>
+					<logic:iterate id="menu" collection="<%= filterItems %>" type='FilteringMenuItem' indexId="index">
+						<% if(menu != null && menu.isSelected()) { %>
+							<% nav.removeFilter(menu.getFilter(), menu.getFilteringUrlValue()); %>
+							<li class="selected"><a href="<%= nav.getLink() %>" class="remove-selection"></a><a href="<%= nav.getLink() %>"><span class="expertrating-stars"><span class="expertrating-stars-content expertrating-stars-content-<%= 5-index %>"></span></span></a></li>
+						<% } %>
+					</logic:iterate>				
 				<% } else { %>
-					<% 	nav.setExpRatingFilter(menu.getFilteringUrlValue()); %>
-					<li class="<%= menu.isHidden() ? "hidden" : "" %>"><a href="<%= nav.getLink() %>"><span class="expertrating-stars"><span class="expertrating-stars-content expertrating-stars-content-<%= 5-index %>"></span></span><span class="count">(<%= menu.getCounter() %>)</span></a></li>
+					<logic:iterate id="menu" collection="<%= filterItems %>" type='FilteringMenuItem' indexId="index">
+					<%  if(menu==null) { %>
+						<li><span class="expertrating-stars"><span class="expertrating-stars-content expertrating-stars-content-<%= 5-index %>"></span></span><span class="count">(0)</span></li>						
+					<% } else {	%>
+						<% 	nav.setExpRatingFilter(menu.getFilteringUrlValue()); %>
+						<li class="<%= menu.isHidden() ? "hidden" : "" %>"><a href="<%= nav.getLink() %>"><span class="expertrating-stars"><span class="expertrating-stars-content expertrating-stars-content-<%= 5-index %>"></span></span><span class="count">(<%= menu.getCounter() %>)</span></a></li>
+					<% } %>
+					</logic:iterate>				
 				<% } %>
-				<% } %>
-				</logic:iterate>				
 			</ul>
 		</div>
 	</fd:FilterList>

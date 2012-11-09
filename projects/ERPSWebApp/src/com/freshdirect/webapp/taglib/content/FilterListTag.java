@@ -24,6 +24,7 @@ public class FilterListTag extends BodyTagSupportEx {
 	
 	private static final long serialVersionUID = 8580228895820361277L;
 	private static Logger LOGGER = LoggerFactory.getInstance( FilterListTag.class );
+	private static final String hasSelectedVar = "hasSelected";
 
 	private EnumFilteringValue domainName;
 	private int hideAfter=7;
@@ -50,12 +51,22 @@ public class FilterListTag extends BodyTagSupportEx {
 		}
 		
 		pageContext.setAttribute(id, result);
+		pageContext.setAttribute(hasSelectedVar, hasSelected(result) );
 		
 		if( result == null ) return SKIP_BODY;	
 
 		return EVAL_BODY_INCLUDE;		
 	}
-	
+
+	boolean hasSelected(ArrayList<FilteringMenuItem> items) {
+		if(items == null || items.isEmpty()) return false;
+		
+		for(FilteringMenuItem item : items) {
+			if(item != null && item.isSelected()) return true;
+		}
+		
+		return false;
+	}
 
 	public Map<EnumFilteringValue, Map<String, FilteringMenuItem>> getFilters() {
 		return filters;
@@ -84,10 +95,15 @@ public class FilterListTag extends BodyTagSupportEx {
 	public static class TagEI extends TagExtraInfo {
 		@Override
 		public VariableInfo[] getVariableInfo(TagData data) {
-			return new VariableInfo[] { new VariableInfo(
-					data.getAttributeString("id"),
-						ArrayList.class.getName() + "<"+FilteringMenuItem.class.getName()+">",
-						true, VariableInfo.NESTED) };
+			return new VariableInfo[] { 
+					new VariableInfo(
+							data.getAttributeString("id"),
+							ArrayList.class.getName() + "<"+FilteringMenuItem.class.getName()+">",
+							true, VariableInfo.NESTED),
+					new VariableInfo(
+							hasSelectedVar,
+							"java.lang.Boolean",
+							true, VariableInfo.NESTED) };
 		}
 	}
 
