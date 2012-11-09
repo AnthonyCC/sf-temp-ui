@@ -54,7 +54,7 @@ function selectNoImage(optionCount) {
                 </td></tr>
                 <tr align=center><td colspan="3"><table><tr>
                     <td><input type="submit" value="save kosher information"></td>
-                    <td><input type="button" value="cancel" onClick="window.location.href='product_view.jsp'"></td>
+                    <td><input type="button" value="cancel" onClick="window.location.href='<%= "product_view.jsp?skuCode=" + nutrition.getSkuCode() %>'"></td>
                 </tr></table></td></tr>
              </table>
              </form>
