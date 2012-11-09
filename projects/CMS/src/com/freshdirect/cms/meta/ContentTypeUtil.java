@@ -9,11 +9,10 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import com.freshdirect.cms.AttributeDefI;
-import com.freshdirect.cms.AttributeI;
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentType;
 import com.freshdirect.cms.ContentTypeDefI;
@@ -52,21 +51,33 @@ public class ContentTypeUtil {
 	}
 
 	/**
+	 *	Store already calculated reachability data, because it does not change, but is queried quite frequently
+	 *	This eliminates one of the possible performance hot-spots.
+	 *  [APPDEV-2758] 
+	 */
+	private static final ConcurrentHashMap<ContentType, Set<ContentType>> reachabilityMap = new ConcurrentHashMap<ContentType, Set<ContentType>>();
+	
+	/**
 	 * Recursively get navigable content types.
 	 * 
 	 * @return Set of ContentType
 	 */
 	public static Set<ContentType> getReachableContentTypes(ContentTypeServiceI typeService, ContentTypeDefI definition) {
-		return collectReachableTypes(typeService, definition, new HashSet<ContentType>());
+		Set<ContentType> types = reachabilityMap.get( definition.getType() );
+		if ( types == null ) {		
+			types = collectReachableTypes( typeService, definition, new HashSet<ContentType>() );
+			reachabilityMap.put( definition.getType(), types );
+		}
+		return types;
 	}
 
-	private static Set<ContentType> collectReachableTypes(ContentTypeServiceI typeService, ContentTypeDefI definition, Set<ContentType> typeRefs) {
+	private static Set<ContentType> collectReachableTypes(ContentTypeServiceI typeService, ContentTypeDefI definition, Set<ContentType> typeRefs ) {
 		for (RelationshipDefI rel : getNavigableRelationshipDefs(definition)) {
 			for (ContentType ctr : rel.getContentTypes()) {
 				if (!typeRefs.contains(ctr)) {
 					typeRefs.add(ctr);
 					ContentTypeDef typeDef = (ContentTypeDef) typeService.getContentTypeDefinition(ctr);
-					collectReachableTypes(typeService, typeDef, typeRefs);
+					collectReachableTypes(typeService, typeDef, typeRefs );
 				}
 			}
 		}
@@ -84,9 +95,8 @@ public class ContentTypeUtil {
 		if (value == null) {
 		    if (EnumAttributeType.RELATIONSHIP.equals(type)) {
 		        return ContentKey.NULL_KEY;
-		    } else {
-		        return null;
 		    }
+			return null;
 		}
 		
 		// convert from a string representation
@@ -162,7 +172,7 @@ public class ContentTypeUtil {
 		}
 
 		if (EnumCardinality.ONE.equals(atrDef.getCardinality())) {
-			return coerce(valueType, (String) values.get(0));
+			return coerce(valueType, values.get(0));
 		}
 		// MANY
 		List<Object> newValues = new ArrayList<Object>(values.size());
@@ -172,13 +182,6 @@ public class ContentTypeUtil {
 		return newValues;
 	}
 	
-//	@Deprecated
-//	public static String attributeToString(AttributeI attr) {
-//		AttributeDefI atrDef = attr.getDefinition();
-//		Object value = attr.getValue();
-//		return attributeToString(atrDef, value);
-//	}
-
     /**
      * @param atrDef
      * @param value
