@@ -15,17 +15,17 @@ address.setZipCode(fldZipCode);
 suggestions = FDDeliveryManager.getInstance().findSuggestionsForAmbiguousAddress(address);
 %>
 <script>
-function fillAddress(arg_address, arg_apt){
-	document.forms['address'].<%= EnumUserInfoName.DLV_ADDRESS_1.getCode() %>.value = arg_address;
-}
+	function fillAddress(arg_address, arg_apt){
+		if (document.forms['address']) { document.forms['address'].<%= EnumUserInfoName.DLV_ADDRESS_1.getCode() %>.value = arg_address; }
+		if (document.forms['refaddress']) { document.forms['refaddress'].<%= EnumUserInfoName.DLV_ADDRESS_1.getCode() %>.value = arg_address; }
+	}
 </script>
 
-
-	<TABLE BORDER="0" CELLSPACING="1" CELLPADDING="0">
-	<TR VALIGN="MIDDLE">
-		<TD colspan=4 class="text11rbold">
+<table border="0" cellspacing="1" cellpadding="0">
+	<tr valign="middle">
+		<td colspan="4" class="text11rbold">
 	
-		<%=addressMessage = result.getError(EnumUserInfoName.DLV_ADDRESS_SUGGEST.getCode()).getDescription()%>
+		<%= addressMessage = result.getError(EnumUserInfoName.DLV_ADDRESS_SUGGEST.getCode()).getDescription() %>
 
 		<%  if (suggestions != null) {  %>
 			<table border="0" cellspacing="0" cellpadding="0">
@@ -41,8 +41,7 @@ function fillAddress(arg_address, arg_apt){
 			</table>
 		<%  }   %>
 	
-		</TD>
+		</td>
 	</tr>
-	</table>
-	<br>
-
+</table>
+<br/>

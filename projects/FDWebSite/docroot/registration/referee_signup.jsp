@@ -50,8 +50,8 @@
 	}
 
 	/* moreInfo, redirect back to the same page, and pass in the overlayType */
-	 String moreInfoPage = "/registration/referee_signup.jsp?successPage="+ URLEncoder.encode(successPage)+"&ol=moreInfo";
-        String failurePage =  "/registration/referee_signup.jsp?successPage="+ URLEncoder.encode(successPage)+"&ol=na&serviceType="+serviceType;
+	 String moreInfoPage = "/registration/referee_signup.jsp?ol=moreInfo&successPage="+ URLEncoder.encode(successPage);
+        String failurePage =  "/registration/referee_signup.jsp?ol=na&serviceType="+serviceType+"&successPage="+ URLEncoder.encode(successPage);
     
     //--------OAS Page Variables-----------------------
 	 request.setAttribute("sitePage", "www.freshdirect.com/invite");
