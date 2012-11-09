@@ -1,6 +1,3 @@
-/**
- * 
- */
 package com.freshdirect.fdstore.util;
 
 import java.text.DateFormat;
@@ -21,10 +18,10 @@ import com.freshdirect.framework.util.TimeOfDay;
  */
 public class TimeslotLogicTest extends TestCase {
 
-	private static final DateFormat DF = new SimpleDateFormat(
-			"yyyy-MM-dd HH:mm");
+	private static final DateFormat DF = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 
-	public void testGetAvailableCapacity() throws ParseException {
+	@SuppressWarnings( "static-method" )
+	public void testGetAvailableCapacity() {
 
 		//
 		// before auto-release
@@ -63,13 +60,14 @@ public class TimeslotLogicTest extends TestCase {
 		assertCapacity(5, TimeslotLogic.PAGE_CHEFSTABLE, 30, 10, 20, 5, BEFORE_RELEASE);
 	}
 	
+	@SuppressWarnings( "static-method" )
 	public void testTimingBug() {
-		assertEquals(true, TimeslotLogic
-				.getAvailableCapacity(createTimeslot(FUTURE, 99, 99, 0, 10),
-						PAST, TimeslotLogic.PAGE_CHEFSTABLE, 30));
+		assertTrue(
+			TimeslotLogic.getAvailableCapacity(createTimeslot(FUTURE, 99, 99, 0, 10), 
+			PAST, TimeslotLogic.PAGE_CHEFSTABLE, 30));
 	}	
 	
-	private void assertCapacity(int expectedCapacity, int page,
+	private static void assertCapacity(int expectedCapacity, int page,
 			int totalCapacity, int ctCapacity, int baseAllocation,
 			int ctAllocation, Date currentTime) {
 
@@ -100,12 +98,11 @@ public class TimeslotLogicTest extends TestCase {
 		}
 	}
 
-	private DlvTimeslotModel createTimeslot(Date base, int totalCapacity, int ctCapacity,
-			int baseAllocation, int ctAllocation) {
+	private static DlvTimeslotModel createTimeslot(Date base, int totalCapacity, int ctCapacity, int baseAllocation, int ctAllocation) {
 		return new DlvTimeslotModel(new PrimaryKey(""), "", base,
 				new TimeOfDay("09:00 am"), new TimeOfDay("11:00 am"),
 				new TimeOfDay("09:00 pm"), EnumTimeslotStatus.PREMIUM,
-				totalCapacity, ctCapacity, baseAllocation, ctAllocation, 30, false,"",0,0,new TimeOfDay("10:00 am"),0,false,0,0,false);
+				totalCapacity, ctCapacity, baseAllocation, ctAllocation, 30, false,"",0,0,new TimeOfDay("10:00 am"),0,false,0,0,false,0);
 	}
 
 }
