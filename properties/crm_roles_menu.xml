@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-	<menus roles="CRM_Administrator,CRM_Developer,CRM_Supervisor,CRM_MarketingOperations,CRM_ETS,CRM_Transportation,CRM_OperationsCenter,CRM_SeniorOperationsCenter,CRM_Finance,CRM_Agent,CRM_NewAgent,CRM_SeniorAgent,CRM_Business,CRM_Security,CRM_ERP,CRM_COS,CRM_TransportationSupervisor">
+	<menus roles="CRM_Administrator,CRM_Developer,CRM_Supervisor,CRM_MarketingOperations,CRM_ETS,CRM_Transportation,CRM_OperationsCenter,CRM_SeniorOperationsCenter,CRM_Finance,CRM_Agent,CRM_NewAgent,CRM_SeniorAgent,CRM_Business,CRM_Security,CRM_ERP,CRM_COS,CRM_TransportationSupervisor,CRM_HR">
 	
 	<role name="CRM_Administrator">
 		<links name="main">
@@ -435,6 +435,12 @@ delivery_available_slots.jsp,delivery_check_slots.jsp,activity_log.jsp,referral_
 		<links name="customeraccount">order_cases.jsp,order_details.jsp,order_not_submitted.jsp,resubmit_success.jsp,extend_reservation.jsp,name_contact_info.jsp,reserve_timeslot.jsp</links>		
 		<links name="actions">lateLog,lateRoute,forceorder</links>		
 	</role>	
+	
+	<role name="CRM_HR">
+		<links name="promotions">
+			promo_hronly.jsp
+		</links>		
+	</role>
 	
 
 </menus>
