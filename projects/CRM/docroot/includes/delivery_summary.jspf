@@ -56,8 +56,7 @@
 					
 					result += "<tr>";
 					result += "<td>Customer Contact</td>";
-					result += "<td>";					
-					result += "</td>";
+					result += "<td>"+ summaryResult.customerContactStatus + "</td>";
 					result += "</tr>";
 					
 					result += "<tr>";
