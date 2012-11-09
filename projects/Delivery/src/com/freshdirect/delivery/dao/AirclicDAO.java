@@ -970,7 +970,9 @@ public class AirclicDAO {
         " and webordernum = ?";
 	
 	private static String GET_CARTONSCANSTATUS_QUERY = " select cartonstatus, max(scandate) SCANDATE from dlv.cartonstatus where webordernum = ? group by cartonstatus ";
-			
+
+	private static String GET_DELIVERY_REQ_QUERY = " select menu_option, call_outcome, calltime from cust.ivr_calllog where ordernumber = ? and menu_option in ('EDR','DAR')  ";
+	
 	public static DeliverySummaryModel lookUpDeliverySummary(Connection conn, String orderId, String routeNo, Date deliveryDate) throws DlvResourceException {
 		
 		DeliverySummaryModel model = new DeliverySummaryModel();
@@ -1092,6 +1094,53 @@ public class AirclicDAO {
 			}						
 			
 			model.setDeliveryStatus(deliveryStatus + (maxScanTime != null ? " @" + DateUtil.formatTime(maxScanTime) : ""));
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new DlvResourceException(e);
+		} finally {
+			try {
+				if (rs != null)
+					rs.close();
+				if (ps != null)
+					ps.close();
+			} catch (SQLException e) {			
+				e.printStackTrace();
+			}
+		}
+		
+		try {
+			ps = conn.prepareStatement(GET_DELIVERY_REQ_QUERY);			
+			ps.setString(1, orderId);
+			rs = ps.executeQuery();
+			
+			Date maxDlvAccessCallTime = null;
+			Date maxEarlyDlvCallTime = null;
+			
+			while(rs.next()){
+				String requestType = rs.getString("MENU_OPTION");
+				String callOutcome = rs.getString("CALL_OUTCOME");
+				Date callTime = rs.getTimestamp("CALLTIME");
+				
+				if(EnumDeliveryMenuOption.DELIVERY_ACCESS.getName().equals(requestType) && (maxDlvAccessCallTime == null || (callTime != null && callTime.after(maxDlvAccessCallTime))) ) {
+					model.setDeliveryAccessReq(true);
+					model.setDlvAccessStatus((null != callOutcome && !"".equals(callOutcome) && !"NoAnswer".equals(callOutcome) && !"ReceiverRejected".equals(callOutcome)) ? "Y" : "N");
+				}
+				
+				if(EnumDeliveryMenuOption.EARLY_DELIVERY.getName().equals(requestType) && (maxEarlyDlvCallTime == null || (callTime != null && callTime.after(maxEarlyDlvCallTime))) ) {
+					model.setEarlyDeliveryReq(true);
+					model.setEarlyDlvStatus((null != callOutcome && !"".equals(callOutcome) && !"NoAnswer".equals(callOutcome) && !"ReceiverRejected".equals(callOutcome)) ? "Y" : "N");
+				}				
+			}
+			
+			StringBuffer strBuf = new StringBuffer();
+			if(model.isEarlyDeliveryReq()){
+				strBuf.append("Early ").append("(").append(model.getEarlyDlvStatus()).append(")").append(" / ");
+			}
+			if(model.isDeliveryAccessReq()){
+				strBuf.append("Access ").append("(").append(model.getEarlyDlvStatus()).append(")");
+			}
+			model.setCustomerContactStatus(strBuf.toString());
 			
 		} catch (SQLException e) {
 			e.printStackTrace();

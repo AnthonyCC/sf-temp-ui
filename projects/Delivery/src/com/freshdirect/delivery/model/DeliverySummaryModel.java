@@ -16,11 +16,19 @@ public class DeliverySummaryModel implements Serializable {
 	
 	private String deliveryStatus;
 	
-	private boolean isCustomerContacted;
+	private String customerContactStatus;
 	
 	private boolean isOrderDelivered;
 	
 	private Date estimatedDlvTime;
+	
+	private boolean isEarlyDeliveryReq;
+	
+	private String earlyDlvStatus;
+	
+	private boolean isDeliveryAccessReq;
+	
+	private String dlvAccessStatus;
 	
 	private List<AirclicTextMessageVO> messages = new ArrayList<AirclicTextMessageVO>();
 	
@@ -30,13 +38,13 @@ public class DeliverySummaryModel implements Serializable {
 	
 		
 	public DeliverySummaryModel(int deliveryAttempts, String deliveryStatus,
-			boolean isCustomerContacted, Date estimatedDlvTime,
+			String customerContactStatus, Date estimatedDlvTime,
 			List<AirclicTextMessageVO> messages,
 			Map<String, List<String>> exceptions, List<AirclicCartonInfo> cartonInfo) {
 		super();
 		this.deliveryAttempts = deliveryAttempts;
 		this.deliveryStatus = deliveryStatus;
-		this.isCustomerContacted = isCustomerContacted;
+		this.customerContactStatus = customerContactStatus;
 		this.estimatedDlvTime = estimatedDlvTime;
 		this.messages = messages;
 		this.exceptions = exceptions;
@@ -58,11 +66,12 @@ public class DeliverySummaryModel implements Serializable {
 	public void setDeliveryStatus(String deliveryStatus) {
 		this.deliveryStatus = deliveryStatus;
 	}
-	public boolean isCustomerContacted() {
-		return isCustomerContacted;
+	public String getCustomerContactStatus() {
+		return customerContactStatus;
 	}
-	public void setCustomerContacted(boolean isCustomerContacted) {
-		this.isCustomerContacted = isCustomerContacted;
+
+	public void setCustomerContactStatus(String customerContactStatus) {
+		this.customerContactStatus = customerContactStatus;
 	}
 	public Date getEstimatedDlvTime() {
 		return estimatedDlvTime;
@@ -118,6 +127,37 @@ public class DeliverySummaryModel implements Serializable {
 		
 		return "";
 	}
-	
+
+	public boolean isEarlyDeliveryReq() {
+		return isEarlyDeliveryReq;
+	}
+
+	public void setEarlyDeliveryReq(boolean isEarlyDeliveryReq) {
+		this.isEarlyDeliveryReq = isEarlyDeliveryReq;
+	}
+
+	public String getEarlyDlvStatus() {
+		return earlyDlvStatus;
+	}
+
+	public void setEarlyDlvStatus(String earlyDlvStatus) {
+		this.earlyDlvStatus = earlyDlvStatus;
+	}
+
+	public boolean isDeliveryAccessReq() {
+		return isDeliveryAccessReq;
+	}
+
+	public void setDeliveryAccessReq(boolean isDeliveryAccessReq) {
+		this.isDeliveryAccessReq = isDeliveryAccessReq;
+	}
+
+	public String getDlvAccessStatus() {
+		return dlvAccessStatus;
+	}
+
+	public void setDlvAccessStatus(String dlvAccessStatus) {
+		this.dlvAccessStatus = dlvAccessStatus;
+	}
 	
 }
