@@ -570,20 +570,28 @@ public abstract class AbstractProductModelImpl extends ContentNodeModelImpl impl
 	}
 
 	/**
-	 * Returns the FDGroup that is associated with default sku in that Product.
+	 * Returns the FDGroup that is associated with PRODUCT (any sku)
+	 *    was : default sku in that Product.
 	 * @return
 	 */	
 	public FDGroup getFDGroup() throws FDResourceException {
-		SkuModel sku = getDefaultSku();
-		if(sku != null){
-			try {
-				FDProductInfo pInfo = sku.getProductInfo();
-				return pInfo.getGroup();
-			} catch (FDSkuNotFoundException e) {
-				//ignore
-			}			
+		FDGroup group = null;
+		List<SkuModel> skus = getPrimarySkus();
+		
+		for ( SkuModel sku : skus ) {
+			if(sku != null){
+				try {
+					FDProductInfo pInfo = sku.getProductInfo();
+					group = pInfo.getGroup();
+					if (group != null) {
+						break;
+					}
+				} catch (FDSkuNotFoundException e) {
+					//ignore
+				}			
+			}
 		}
-		return null;
+		return group;
 	}
 	
 	/**
