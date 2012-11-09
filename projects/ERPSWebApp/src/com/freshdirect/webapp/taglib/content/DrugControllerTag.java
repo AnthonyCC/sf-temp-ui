@@ -41,7 +41,10 @@ public class DrugControllerTag extends com.freshdirect.framework.webapp.BodyTagS
 		HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
 
 		try {
-			skuCode = request.getParameter("skuCode");
+			skuCode = request.getParameter("skuCode");			
+			if (skuCode == null) {
+				return SKIP_BODY;
+			}
 
 			if ( "GET".equalsIgnoreCase( request.getMethod() ) ) {
 
