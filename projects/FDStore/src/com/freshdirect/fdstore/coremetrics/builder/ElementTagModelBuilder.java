@@ -30,6 +30,8 @@ public class ElementTagModelBuilder {
 	public static final String CAT_SEARCH_FILTER = "search_filter";
 	public static final String CAT_SEARCH_SORT = "search_sort";
 	public static final String CAT_SEARCH_VIEW = "search_view";
+	public static final String CAT_NEW_PRODUCTS_FILTER = "new_products_filter";
+	public static final String CAT_NEW_PRODUCTS_SORT = "new_products_sort";
 	
 	public static final String CAT_PRESIDENT_SORT = "president_picks_sort";
 	public static final String CAT_PRESIDENT_VIEW = "president_picks_view";
@@ -63,9 +65,9 @@ public class ElementTagModelBuilder {
 			processTimeslot();
 		} else if (CAT_CNTABS.equals(elementCategory)){
 			processCntabs();
-		} else if (CAT_SEARCH_FILTER.equals(elementCategory)){
+		} else if (CAT_SEARCH_FILTER.equals(elementCategory) || CAT_NEW_PRODUCTS_FILTER.equals(elementCategory)){
 			processSearchFilter();
-		} else if (CAT_SEARCH_SORT.equals(elementCategory)){
+		} else if (CAT_SEARCH_SORT.equals(elementCategory) || CAT_NEW_PRODUCTS_SORT.equals(elementCategory)){
 			processSearchSort();
 		} else if (CAT_SEARCH_VIEW.equals(elementCategory)){
 			processSearchView();
