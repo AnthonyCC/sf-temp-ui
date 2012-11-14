@@ -102,7 +102,6 @@ import com.freshdirect.framework.util.NVL;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.giftcard.EnumGiftCardType;
 import com.freshdirect.giftcard.ErpGCDlvInformationHolder;
-import com.freshdirect.rest.client.iplocator.IPLocation;
 import com.freshdirect.smartstore.fdstore.CohortSelector;
 import com.freshdirect.smartstore.fdstore.DatabaseScoreFactorProvider;
 
@@ -987,12 +986,12 @@ public class FDUser extends ModelSupport implements FDUserI {
 
 
 	public boolean isCheckEligible()  {
-		return true;
-		/*if (checkEligible == null) {
+		//return true;
+		if (checkEligible == null) {
 			EligibilityCalculator calc = new EligibilityCalculator("ECHECK");
 			checkEligible = Boolean.valueOf(calc.isEligible(new FDRulesContextImpl(this)));
 		}
-		return checkEligible.booleanValue();*/
+		return checkEligible.booleanValue();
     }
 
 	public Collection<ErpPaymentMethodI> getPaymentMethods() {
@@ -1692,7 +1691,7 @@ public class FDUser extends ModelSupport implements FDUserI {
 	}
 	
 	public double getGiftcardBalance() {
-		/*if(this.getGiftCardList() == null) return 0.0;
+		if(this.getGiftCardList() == null) return 0.0;
 		if(this.getShoppingCart() instanceof FDModifyCartModel) {
 			return this.getGiftCardList().getTotalBalance();
 		} else {
@@ -1702,8 +1701,8 @@ public class FDUser extends ModelSupport implements FDUserI {
 				return this.getGiftCardList().getTotalBalance();
 			}
 			return 0;
-		}*/
-		return 0;
+		}
+		
 	}
 	
 	public FDCartModel getGiftCart() {
@@ -2318,19 +2317,14 @@ public class FDUser extends ModelSupport implements FDUserI {
 		return referralFraud;
 	}
 	
-	public void setIPLocation(IPLocation ipLocation) {
-		this.ipLocation=ipLocation;
-	}
-	public IPLocation getIPLocation() {
-		return ipLocation;
-	}
+	
 	public boolean isEligibleForDDPP() throws FDResourceException {
 		if(null == identity){
 			return false;
 		}
 		return this.getFDCustomer().isEligibleForDDPP();
 	}
-	private IPLocation ipLocation=null;
+	
 	
 	public EnumGiftCardType getGiftCardType() {
 		return giftCardType;
