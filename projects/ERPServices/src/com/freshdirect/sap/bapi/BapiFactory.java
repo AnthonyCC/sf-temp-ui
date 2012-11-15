@@ -61,5 +61,7 @@ public abstract class BapiFactory {
 	public abstract BapiProductPromotionPreviewI getBapiProductPromotionPreviewBuilder();
 	
 	public abstract BapiSendSettlementByCommand getBapiSendEBTSettlementSender();
+	
+	public abstract BapiCartonDetailsForSale getBapiCartonDetailsForSale();
 
 }

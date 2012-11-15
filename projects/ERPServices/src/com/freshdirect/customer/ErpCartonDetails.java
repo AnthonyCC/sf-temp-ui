@@ -1,6 +1,8 @@
 package com.freshdirect.customer;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ErpCartonDetails implements Serializable {
 
@@ -91,7 +93,28 @@ public class ErpCartonDetails implements Serializable {
 	public void setBarcode(String barcode) {
 		this.barcode = barcode;
 	}
+	
+	
 
+	public List<ErpCartonDetails> getComponents() {
+		return components;
+	}
+	public void setComponents(List<ErpCartonDetails> components) {
+		this.components = components;
+	}
+	
+	public String getSkuCode() {
+		return skuCode;
+	}
+	public void setSkuCode(String skuCode) {
+		this.skuCode = skuCode;
+	}	
+	public String getMaterialDesc() {
+		return materialDesc;
+	}
+	public void setMaterialDesc(String materialDesc) {
+		this.materialDesc = materialDesc;
+	}
 	public ErpCartonDetails(
 		ErpCartonInfo cartonInfo,
 		String orderLineNumber,
@@ -108,7 +131,30 @@ public class ErpCartonDetails implements Serializable {
 		this.netWeight = netWeight;
 		this.weightUnit = weightUnit;
 	}
+	
+	public ErpCartonDetails(
+			ErpCartonInfo cartonInfo,
+			String orderLineNumber,
+			String materialNumber,
+			String barcode,
+			double packedQuantity,
+			double netWeight,
+			String weightUnit, String skuCode, String materialDesc) {
+			this.cartonInfo = cartonInfo;
+			this.orderLineNumber = orderLineNumber;
+			this.materialNumber = materialNumber;
+			this.barcode = barcode;
+			this.packedQuantity = packedQuantity;
+			this.netWeight = netWeight;
+			this.weightUnit = weightUnit;
+			this.skuCode = skuCode;
+			this.materialDesc = materialDesc;
+			components = new ArrayList<ErpCartonDetails>();
+	}
 
+	public ErpCartonDetails() {
+		
+	}
 	public String toString() {
 		return "ErpCartonDetails[orderLineNumber: "
 			+ this.orderLineNumber
@@ -131,5 +177,8 @@ public class ErpCartonDetails implements Serializable {
 	private double packedQuantity;
 	private double netWeight;
 	private String weightUnit;
+	private String skuCode;
+	private String materialDesc;
+	private List<ErpCartonDetails> components = new ArrayList<ErpCartonDetails>();
 
 }

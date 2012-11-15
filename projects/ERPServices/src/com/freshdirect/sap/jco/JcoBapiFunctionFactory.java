@@ -9,6 +9,7 @@
 package com.freshdirect.sap.jco;
 
 import com.freshdirect.customer.EnumSaleType;
+import com.freshdirect.sap.bapi.BapiCartonDetailsForSale;
 import com.freshdirect.sap.bapi.BapiCartonInfo;
 import com.freshdirect.sap.bapi.BapiCreateCustomer;
 import com.freshdirect.sap.bapi.BapiFactory;
@@ -21,11 +22,11 @@ import com.freshdirect.sap.bapi.BapiSalesOrderCancel;
 import com.freshdirect.sap.bapi.BapiSalesOrderChange;
 import com.freshdirect.sap.bapi.BapiSalesOrderCreate;
 import com.freshdirect.sap.bapi.BapiSalesOrderSimulate;
-import com.freshdirect.sap.bapi.BapiSendSettlementByCommand;
 import com.freshdirect.sap.bapi.BapiSendEmployeeInfo;
 import com.freshdirect.sap.bapi.BapiSendHandOff;
 import com.freshdirect.sap.bapi.BapiSendPhysicalTruckInfo;
 import com.freshdirect.sap.bapi.BapiSendSettlement;
+import com.freshdirect.sap.bapi.BapiSendSettlementByCommand;
 import com.freshdirect.sap.bapi.BapiTruckMasterInfo;
 
 
@@ -130,6 +131,11 @@ public class JcoBapiFunctionFactory extends BapiFactory {
 	
 	public BapiSendSettlementByCommand getBapiSendEBTSettlementSender() {
 		return new JcoBapiSendSettlementByCommand();
+	}
+
+	@Override
+	public BapiCartonDetailsForSale getBapiCartonDetailsForSale() {
+		return new JcoBapiCartonDetailsForSale();
 	}
 
 }
