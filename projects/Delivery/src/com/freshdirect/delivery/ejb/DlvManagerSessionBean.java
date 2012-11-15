@@ -1359,10 +1359,10 @@ public class DlvManagerSessionBean extends GatewaySessionBeanSupport {
 
 	}
 
-	public boolean releaseReservation(String rsvId) throws FinderException {
+	public boolean releaseReservation(String rsvId, boolean restoreReservation) throws FinderException {
 		DlvReservationModel rsv = getReservation(rsvId);
 		boolean isRestored = false;
-		if (!EnumReservationType.STANDARD_RESERVATION.equals(rsv.getReservationType())) {
+		if (!EnumReservationType.STANDARD_RESERVATION.equals(rsv.getReservationType()) && restoreReservation) {
 			List<DlvReservationModel> reservations = getReservationsForCustomer(rsv.getCustomerId());
 			if (reservations.isEmpty()) {
 				restoreReservation(rsvId);

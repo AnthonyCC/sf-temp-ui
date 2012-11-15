@@ -77,7 +77,7 @@ public interface DlvManagerSB extends EJBObject {
     public DlvAddressVerificationResponse scrubAddress(AddressModel address) throws RemoteException;
     public DlvAddressVerificationResponse scrubAddress(AddressModel address, boolean useApartment) throws RemoteException;
     public void addApartment(AddressModel address) throws RemoteException, InvalidAddressException;
-    public boolean releaseReservation(String rsvId) throws FinderException, RemoteException;
+    public boolean releaseReservation(String rsvId, boolean restoreReservation) throws FinderException, RemoteException;
     public DlvZoneModel findZoneById(String zoneId) throws FinderException, RemoteException;
 	public DlvReservationModel getReservation(String reservationId) throws FinderException, RemoteException;
 	

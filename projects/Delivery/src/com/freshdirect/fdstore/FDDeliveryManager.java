@@ -714,10 +714,10 @@ public class FDDeliveryManager {
 
 	}
 
-	public boolean releaseReservation(String rsvId, ContactAddressModel address, TimeslotEventModel event) throws FDResourceException {
+	public boolean releaseReservation(String rsvId, ContactAddressModel address, TimeslotEventModel event, boolean restoreReservation) throws FDResourceException {
 		try {
 			DlvManagerSB sb = getDlvManagerHome().create();
-			 boolean isRestored=sb.releaseReservation(rsvId);
+			 boolean isRestored=sb.releaseReservation(rsvId, restoreReservation);
 			 DlvReservationModel reservation=sb.getReservation(rsvId);
 			 if(FDStoreProperties.isDynamicRoutingEnabled() && reservation.isDynamic()) {
 				 
