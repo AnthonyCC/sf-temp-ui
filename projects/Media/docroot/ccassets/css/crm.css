@@ -1719,3 +1719,8 @@ div.content_scroll { clear: left; }
 .groupScaleBoxContent {
 	overflow: hidden;
 }
+
+.list_component_row {
+    background-color: lightblue;
+    text-align: center;
+}
