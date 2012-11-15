@@ -113,7 +113,7 @@ public class ChooseTimeslotAction extends WebActionSupport {
 			if (advRsv != null && deliveryTimeSlotId.equals(advRsv.getTimeslotId()) && advRsv.getAddressId().equals(addressId)) {
 				if (dlvRsv != null && !dlvRsv.getPK().equals(advRsv.getPK())) {
 					try {
-						FDDeliveryManager.getInstance().releaseReservation(dlvRsv.getPK().getId(),erpAddress, event);
+						FDDeliveryManager.getInstance().releaseReservation(dlvRsv.getPK().getId(),erpAddress, event, true);
 					} catch (FDResourceException fdre) {
 						LOGGER.warn("Error releasing reservation", fdre);
 					}
@@ -140,7 +140,7 @@ public class ChooseTimeslotAction extends WebActionSupport {
 
 					try {
 						LOGGER.debug("releasing previous reservation of id=" + prevResrvId);
-						FDDeliveryManager.getInstance().releaseReservation(prevResrvId,erpAddress, event);
+						FDDeliveryManager.getInstance().releaseReservation(prevResrvId,erpAddress, event, true);
 					} catch (FDResourceException fdre) {
 						LOGGER.warn("Error releasing reservation", fdre);
 					}

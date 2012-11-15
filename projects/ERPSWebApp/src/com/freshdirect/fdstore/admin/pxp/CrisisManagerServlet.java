@@ -464,7 +464,7 @@ public class CrisisManagerServlet extends HttpServlet {
 				FDActionInfo actionInfo = getActionInfo(agent);
 				// Set it to actionInfo object to write to the activity log.
 				actionInfo.setIdentity(identity);
-				FDCustomerManager.cancelOrder(actionInfo, orderModel.getSaleId(), sendEmail, 0);
+				FDCustomerManager.cancelOrder(actionInfo, orderModel.getSaleId(), sendEmail, 0, false);
 				
 				ErpActivityRecord rec = actionInfo.createActivity(EnumAccountActivityType.CANCEL_ORDER);
 				rec.setNote("Order Cancelled");

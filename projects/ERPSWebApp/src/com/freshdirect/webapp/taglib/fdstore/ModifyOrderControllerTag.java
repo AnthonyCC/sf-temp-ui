@@ -302,7 +302,7 @@ public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.B
 				}
 			}
 
-			FDReservation restoredRsv = FDCustomerManager.cancelOrder(info, orderId, sendEmail, currentDPExtendDays);
+			FDReservation restoredRsv = FDCustomerManager.cancelOrder(info, orderId, sendEmail, currentDPExtendDays, true);
 			if(restoredRsv != null){
 				user.setReservation(restoredRsv);
 			}
