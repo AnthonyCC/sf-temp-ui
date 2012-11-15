@@ -327,7 +327,8 @@ function loadSignature(order)
 				<% } %>
 				<% if ( (_order.getCartonContents() != null) &&  (_order.getCartonContents().size() > 0) ){ %>
 					<br>
-					<a href="javascript:pop('/main/carton_contents_view.jsp?orderId=<%= orderId %>&scroll=yes','600','800');">Carton Contents</a>
+					<a href="javascript:pop('/main/carton_contents_view.jsp?orderId=<%= orderId %>&scroll=yes','600','800');">Carton Contents</a><br/>
+					<a href="javascript:pop('/main/carton_detail_view.jsp?orderId=<%= orderId %>&scroll=yes','600','800');">Carton Details (For Meal Bundle)</a>
 					</br>
 				<% } %>
 				<% if (_order.hasInvoice()) {%>
