@@ -293,13 +293,7 @@ function numbersonly(myfield, e, dec)
 						<td class="promo_page_header_text" colspan="3">Edit&nbsp;Delivery&nbsp;Requirement&nbsp;</td>
 				</tr>
 				<% if(promotion != null && promotion.getPromotionCode() != null) { %>
-				<tr>
-					<td width="3%">&nbsp;</td>
-					<td width="35%" align="right" colspan="2">
-						<input type="button" onclick="javascript:doPublish();" name="publish" value=" PUBLISH " class="submit">
-						<input name="cancel" type="button" value=" CANCEL " class="submit" onclick="location.href('/promotion/promo_ws_view.jsp')" >	
-					</td>				
-				</tr>
+				
 				<tr>
 					<td width="3%">&nbsp;</td>
 					<td><span>Promotion ID: <%= promotion.getPromotionCode() %></span></td>
@@ -447,7 +441,7 @@ function numbersonly(myfield, e, dec)
 				</tr>
 				<tr>
 					<td width="3%">&nbsp;</td>
-					<td><span>Radius&nbsp;&nbsp;<input onclick="toggleRadius()" type="checkbox" id="radius" name="radius" value="<%= (radius == null || "".equalsIgnoreCase(radius))  ? "X" : radius %>" <%= radiusChecked %> disabled="disabled"/></span></td>
+					<td><span>Radius&nbsp;&nbsp;<input onclick="toggleRadius()" type="checkbox" id="radius" name="radius" value="<%= (radius == null || "".equalsIgnoreCase(radius))  ? "X" : radius %>" <%= radiusChecked %> /></span></td>
 					
 					<script language="javascript">
 					
@@ -847,6 +841,11 @@ function numbersonly(myfield, e, dec)
 															
 			</table>			
 		</form>
+		<script>
+			document.observe('dom:loaded', function() {				
+				toggleRadius();
+			});
+		</script>
 		</crm:WSPromoController>
 	</crm:GetCurrentAgent>
 	</tmpl:put>
