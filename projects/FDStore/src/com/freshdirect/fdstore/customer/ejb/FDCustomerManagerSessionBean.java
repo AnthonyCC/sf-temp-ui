@@ -63,6 +63,8 @@ import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpAddressVerificationException;
 import com.freshdirect.customer.ErpAuthorizationException;
 import com.freshdirect.customer.ErpAuthorizationModel;
+import com.freshdirect.customer.ErpCartonDetails;
+import com.freshdirect.customer.ErpCartonInfo;
 import com.freshdirect.customer.ErpClientCodeReport;
 import com.freshdirect.customer.ErpComplaintException;
 import com.freshdirect.customer.ErpComplaintInfoModel;
@@ -136,6 +138,8 @@ import com.freshdirect.fdstore.customer.EnumIPhoneCaptureType;
 import com.freshdirect.fdstore.customer.FDActionInfo;
 import com.freshdirect.fdstore.customer.FDAuthenticationException;
 import com.freshdirect.fdstore.customer.FDCartLineI;
+import com.freshdirect.fdstore.customer.FDCartonDetail;
+import com.freshdirect.fdstore.customer.FDCartonInfo;
 import com.freshdirect.fdstore.customer.FDCustomerCreditHistoryModel;
 import com.freshdirect.fdstore.customer.FDCustomerCreditModel;
 import com.freshdirect.fdstore.customer.FDCustomerFactory;
@@ -168,6 +172,10 @@ import com.freshdirect.fdstore.referral.ejb.FDReferAFriendDAO;
 import com.freshdirect.fdstore.request.FDProductRequest;
 import com.freshdirect.fdstore.request.FDProductRequestDAO;
 import com.freshdirect.fdstore.survey.FDSurveyResponse;
+import com.freshdirect.fdstore.temails.TEmailConstants;
+import com.freshdirect.fdstore.temails.TEmailsUtil;
+import com.freshdirect.fdstore.temails.ejb.TEmailInfoHome;
+import com.freshdirect.fdstore.temails.ejb.TEmailInfoSB;
 import com.freshdirect.fdstore.util.IgnoreCaseString;
 import com.freshdirect.fdstore.zone.FDZoneInfoManager;
 import com.freshdirect.framework.core.PrimaryKey;
@@ -194,18 +202,16 @@ import com.freshdirect.giftcard.ServiceUnavailableException;
 import com.freshdirect.giftcard.ejb.GiftCardManagerSB;
 import com.freshdirect.giftcard.ejb.GiftCardPersistanceDAO;
 import com.freshdirect.mail.EmailUtil;
+import com.freshdirect.mail.EnumEmailType;
+import com.freshdirect.mail.EnumTranEmailType;
 import com.freshdirect.mail.ErpEmailFactory;
 import com.freshdirect.mail.ejb.MailerGatewaySB;
 import com.freshdirect.payment.EnumPaymentMethodType;
 import com.freshdirect.payment.ejb.PaymentManagerSB;
 import com.freshdirect.payment.fraud.PaymentFraudManager;
 import com.freshdirect.payment.fraud.RestrictedPaymentMethodModel;
-import com.freshdirect.fdstore.temails.TEmailConstants;
-import com.freshdirect.fdstore.temails.TEmailsUtil;
-import com.freshdirect.fdstore.temails.ejb.TEmailInfoHome;
-import com.freshdirect.fdstore.temails.ejb.TEmailInfoSB;
-import com.freshdirect.mail.EnumEmailType;
-import com.freshdirect.mail.EnumTranEmailType;
+import com.freshdirect.sap.command.SapCartonInfoForSale;
+import com.freshdirect.sap.ejb.SapException;
 import com.freshdirect.temails.TEmailRuntimeException;
 import com.sun.org.apache.xalan.internal.xsltc.runtime.Hashtable;
 
@@ -1957,7 +1963,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 	}
 
 	public FDReservation cancelOrder(FDActionInfo info, String saleId,
-			boolean sendEmail, int currentDPExtendDays) throws FDResourceException,
+			boolean sendEmail, int currentDPExtendDays, boolean restoreReservation) throws FDResourceException,
 			ErpTransactionException, DeliveryPassException {
 		try {
 			TimeslotEventModel event = new TimeslotEventModel((info.getSource()!=null)?info.getSource().getCode():"", 
@@ -2027,7 +2033,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 
 				isRestored = FDDeliveryManager.getInstance()
 						.releaseReservation(reservationId,
-								order.getDeliveryAddress(), event);
+								order.getDeliveryAddress(), event, restoreReservation);
 			}
 			if (null != order.getAppliedGiftCards()
 					&& order.getAppliedGiftCards().size() > 0) {
@@ -2361,7 +2367,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 
 				// reservation has changed so release old reservation
 				FDDeliveryManager.getInstance().releaseReservation(
-						oldReservationId, fdOrder.getDeliveryAddress(), event);
+						oldReservationId, fdOrder.getDeliveryAddress(), event, true);
 				// now commit the new Reservation
 				// dlvSB.commitReservation(newReservationId,
 				// identity.getErpCustomerPK(), saleId);
@@ -4485,7 +4491,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 				actionInfo.setIdentity(identity);
 				saleId = orderInfo.getSaleId();
 				FDOrderI order = getOrder(saleId);
-				this.cancelOrder(actionInfo, saleId, sendEmail, 0);
+				this.cancelOrder(actionInfo, saleId, sendEmail, 0, false);
 				successOrders.add(orderInfo);
 				ErpActivityRecord rec = actionInfo.createActivity(EnumAccountActivityType.CANCEL_ORDER);
 				rec.setNote("Order Cancelled (w/ " + customerOrders.size() + " others)");
@@ -6938,6 +6944,49 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 						   "AND CUST.CHARGELINE.TYPE = 'DLV' " +
 						   "order by REM_TYPE";
 			 
+	public List<FDCartonInfo> getCartonDetailsForSale(FDOrderI order) throws FDResourceException {
 
+		List<FDCartonInfo> cartonInfo = new ArrayList<FDCartonInfo>();
+
+		SapCartonInfoForSale bapi = new SapCartonInfoForSale("1000", 
+												order.getRequestedDate(),
+												order.getErpSalesId(),
+												order.getSapOrderId(), 
+												order.getShippingInfo().getWaveNumber()) ;		
+		try {
+			bapi.execute();	
+
+			// Get ErpCartonInfo and create our adapters
+			List<ErpCartonInfo> erpCartons = bapi.getCartonInfos();
+
+			for (int i = 0; i < erpCartons.size(); i++) {
+				ErpCartonInfo carton = erpCartons.get(i);
+	
+				List<FDCartonDetail> cartonDetails = new ArrayList<FDCartonDetail>();
+				FDCartonInfo f = new FDCartonInfo(carton, cartonDetails);
+				cartonInfo.add(f);
+				for (int j = 0; j < carton.getDetails().size(); j++) {
+					ErpCartonDetails detail = (ErpCartonDetails) carton.getDetails().get(j);
+
+					FDCartLineI cartLine = null;
+					for (int k = 0; k < order.getOrderLines().size(); k++) {
+						FDCartLineI curCartLine = order.getOrderLines().get(k);
+						if (curCartLine.getOrderLineNumber().equals(detail.getOrderLineNumber())) {
+							cartLine = curCartLine;
+							break;
+						}
+					}
+					if (cartLine != null) {
+						FDCartonDetail fdDetail = new FDCartonDetail(f, detail, cartLine);
+						cartonDetails.add(fdDetail);
+					}
+			   }
+			}
+		} catch (SapException e) {
+			e.printStackTrace();
+			throw new FDResourceException(e);
+		}
+		return cartonInfo;
+	}
 }
 

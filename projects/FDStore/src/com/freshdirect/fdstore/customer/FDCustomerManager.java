@@ -1496,7 +1496,7 @@ public class FDCustomerManager {
 	}
 
 	
-	public static FDReservation cancelOrder(FDActionInfo info, String saleId, boolean sendEmail, int currentDPExtendDays)
+	public static FDReservation cancelOrder(FDActionInfo info, String saleId, boolean sendEmail, int currentDPExtendDays, boolean restoreReservation)
 		throws FDResourceException, ErpTransactionException, DeliveryPassException {
 		if (managerHome == null) {
 			lookupManagerHome();
@@ -1505,7 +1505,7 @@ public class FDCustomerManager {
 		try {
 			if (orderBelongsToUser(info.getIdentity(), saleId)) {
 				FDCustomerManagerSB sb = managerHome.create();
-				return sb.cancelOrder(info, saleId, sendEmail, currentDPExtendDays);
+				return sb.cancelOrder(info, saleId, sendEmail, currentDPExtendDays, restoreReservation);
 			}
 			
 			throw new FDResourceException("Order not found in current user's order history.");
@@ -4041,5 +4041,20 @@ public class FDCustomerManager {
 			invalidateManagerHome();
 			throw new FDResourceException(e, "Error creating session bean");
 		}
+	}
+	
+	public static List<FDCartonInfo> getCartonDetails(FDOrderI order) throws FDResourceException {
+		lookupManagerHome();
+		try {
+			FDCustomerManagerSB sb = managerHome.create();
+			return sb.getCartonDetailsForSale(order);
+		} catch (RemoteException e) {
+			invalidateManagerHome();
+			throw new FDResourceException(e, "Error creating session bean");
+		} catch (CreateException e) {
+			invalidateManagerHome();
+			throw new FDResourceException(e, "Error creating session bean");
+		}	
+		
 	}
 }

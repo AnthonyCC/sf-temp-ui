@@ -68,6 +68,7 @@ import com.freshdirect.fdstore.customer.CustomerCreditModel;
 import com.freshdirect.fdstore.customer.EnumIPhoneCaptureType;
 import com.freshdirect.fdstore.customer.FDActionInfo;
 import com.freshdirect.fdstore.customer.FDAuthenticationException;
+import com.freshdirect.fdstore.customer.FDCartonInfo;
 import com.freshdirect.fdstore.customer.FDCustomerCreditHistoryModel;
 import com.freshdirect.fdstore.customer.FDCustomerInfo;
 import com.freshdirect.fdstore.customer.FDCustomerModel;
@@ -376,7 +377,7 @@ public interface FDCustomerManagerSB extends EJBObject {
      * @param identity the customer's identity reference
      * @throws FDResourceException if an error occured while accessing remote resources
      */
-    public FDReservation cancelOrder(FDActionInfo info, String saleId, boolean sendEmail, int currentDPExtendDays) throws FDResourceException, ErpTransactionException, DeliveryPassException, RemoteException;
+    public FDReservation cancelOrder(FDActionInfo info, String saleId, boolean sendEmail, int currentDPExtendDays, boolean restoreReservation) throws FDResourceException, ErpTransactionException, DeliveryPassException, RemoteException;
     
     /**
      * Modify an order (modify & send msg to SAP).
@@ -802,6 +803,8 @@ public interface FDCustomerManagerSB extends EJBObject {
 	public List<CustomerCreditModel> getScanReportedLates() throws FDResourceException, RemoteException;
 	
 	public void storeLists(List cmList) throws FDResourceException, RemoteException;
+	
+	public List<FDCartonInfo> getCartonDetailsForSale(FDOrderI order) throws FDResourceException, RemoteException;
 	
 }
 
