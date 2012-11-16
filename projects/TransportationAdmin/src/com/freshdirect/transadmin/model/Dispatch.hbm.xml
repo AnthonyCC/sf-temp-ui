@@ -26,7 +26,7 @@
             <column name="ROUTE" length="6" />
         </property>
         <property name="truck" type="string">
-            <column name="TRUCK" length="6" />
+            <column name="TRUCK" length="10" />
         </property>
         <property name="startTime" type="timestamp">
             <column name="START_TIME" length="7" not-null="true" />
@@ -83,7 +83,7 @@
             <column name="ADDITIONAL_NEXTELS" length="50" />
         </property>
         <property name="physicalTruck" type="string">
-            <column name="PHYSICAL_TRUCK" length="6" />
+            <column name="PHYSICAL_TRUCK" length="10" />
         </property>
         <property name="dispatchType" type="string">
             <column name="DISPATCH_TYPE" length="3" />
