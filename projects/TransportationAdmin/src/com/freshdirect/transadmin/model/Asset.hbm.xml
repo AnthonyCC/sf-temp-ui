@@ -14,7 +14,7 @@
             <column name="ASSET_TYPE" length="40" />
         </many-to-one>
         <property name="assetNo" type="string">
-            <column name="ASSET_NO" length="40" />
+            <column name="ASSET_NO" length="12" />
         </property>
         <property name="assetDescription" type="string">
             <column name="ASSET_DESCRIPTION" length="256" />
