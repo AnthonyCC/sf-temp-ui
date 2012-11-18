@@ -35,15 +35,15 @@ public class OrderRateDAOImpl implements IOrderRateDAO {
 
 	private static final Category LOGGER = Logger.getLogger(OrderRateDAOImpl.class);
 		
-	private static String GET_ORDERSBY_DATE_CUTOFF = "select count(*) order_count, di.zone zone ,di. cutofftime cutoff from cust.sale s , cust.salesaction sa," +
+	private static String GET_ORDERSBY_DATE_CUTOFF = "select count(*) order_count, di.zone zone ,di.cutofftime cutoff from cust.sale s , cust.salesaction sa," +
 			" cust.deliveryinfo di where s.id = sa.sale_id and s.cromod_date = sa.action_date and s.type='REG' and s.status <>'CAN' AND S.CROMOD_DATE<sysdate and sa.action_type " +
-			"in ('CRO','MOD') and sa.requested_date = to_date(?,'mm/dd/yyyy') and sa.id = di.salesaction_id   group by zone,cutofftime  " +
-			"order by di.zone,di. cutofftime asc";
+			"in ('CRO','MOD') and sa.requested_date = to_date(?,'mm/dd/yyyy') and sa.id = di.salesaction_id   group by di.zone, di.cutofftime  " +
+			"order by di.zone, di.cutofftime asc";
 	
 	private static String GET_ORDERSBY_ZONE_TIMESLOT = "select count(*) order_count, di.zone zone ,di.starttime timeslot_start, di.cutofftime cutoff from " +
 			"cust.sale s , cust.salesaction sa, cust.deliveryinfo di where s.id = sa.sale_id and s.cromod_date = sa.action_date and s.type='REG' and " +
 			"s.status <>'CAN' AND S.CROMOD_DATE<sysdate and sa.action_type in ('CRO','MOD') and sa.requested_date = to_date(?,'mm/dd/yyyy') and zone = ? and sa.id = di.salesaction_id" +
-			"  group by zone, di.starttime,cutofftime  order by di.zone,di.starttime, di. cutofftime asc";
+			"  group by zone, di.starttime,cutofftime  order by di.zone,di.starttime, di.cutofftime asc";
 	
 	private static String GET_RESOURCES_DATE_CUTOFF = "select sum(resource_count) resource_count, area, cutoff_datetime  " +
 			"from transp.wave_instance w where delivery_date = to_date(?,'mm/dd/yyyy') and status = 'SYN' " +
@@ -53,21 +53,22 @@ public class OrderRateDAOImpl implements IOrderRateDAO {
 	
 	private static String GET_CURRENT_CAPACITY_CUTOFF = "select sum(capacity) capacity,zone,cutoff from mis.order_rate o, (select max(snapshot_time) sh, " +
 			"O.CUTOFF co from mis.order_rate o where o.delivery_date = to_date(?,'mm/dd/yyyy') group by O.CUTOFF) t  where o.delivery_date = " +
-			"to_date(?,'mm/dd/yyyy') AND o.snapshot_time = t.sh and o.cutoff = t.co group by zone, cutoff ";
+			"to_date(?,'mm/dd/yyyy') AND o.snapshot_time = t.sh and o.cutoff = t.co group by zone, cutoff order by zone, cutoff";
 
 	private static String GET_CURRENT_CAPACITY_TIMESLOT = "select sum(capacity) capacity, sum(orders_expected) projected, zone, timeslot_start, cutoff from mis.order_rate o," +
 			"(select max(snapshot_time) sh, O.CUTOFF co from mis.order_rate o where o.delivery_date = to_date(?,'mm/dd/yyyy') and " +
 			"o.zone = ? group by O.CUTOFF) t  where o.delivery_date = to_date(?,'mm/dd/yyyy') and zone =? AND " +
-			"o.snapshot_time = t.sh and o.cutoff = t.co group by zone, timeslot_start, cutoff";
+			"o.snapshot_time = t.sh and o.cutoff = t.co group by zone, timeslot_start, cutoff order by zone, timeslot_start, cutoff";
 	
 	private static String GET_PROJECTED_ORDERS_CUTOFF= "select sum(orders_expected) projected,zone,cutoff from mis.order_rate o, (select max(snapshot_time) sh, " +
 			"O.CUTOFF co from mis.order_rate o where o.delivery_date = to_date(?,'mm/dd/yyyy') group by O.CUTOFF) t  where o.delivery_date = " +
-			"to_date(?,'mm/dd/yyyy')   AND o.snapshot_time = t.sh and o.cutoff = t.co group by zone,cutoff";
+			"to_date(?,'mm/dd/yyyy')   AND o.snapshot_time = t.sh and o.cutoff = t.co group by zone,cutoff order by zone,cutoff";
 	
 	private static final String HOLIDAY_QUERY_EX = "select delivery_date from mis.order_rate_holiday";
 		
 	private static final String CAPACITY_QUERY_FORECAST = "select capacity,order_count, " +
-			"delivery_date, timeslot_start, timeslot_end, zone, snapshot_time from MIS.order_rate where delivery_date in ( ?, ?) and zone = ?";
+			"delivery_date, timeslot_start, timeslot_end, zone, snapshot_time from MIS.order_rate where delivery_date in ( ?, ?) and " +
+			" ((snapshot_time between ? and ?) or (snapshot_time between ? and ?)) and zone = ?";
 	
 	private static final String CAPACITY_QUERY_FORECAST_EX = "select sum(capacity) capacity,sum(order_count) order_count, snapshot_time from MIS.order_rate where delivery_date in" +
 			" (?,?) and  ((snapshot_time between ? and ?) or (snapshot_time between ? and ?)) group by snapshot_time order by snapshot_time asc";
@@ -93,7 +94,7 @@ public class OrderRateDAOImpl implements IOrderRateDAO {
 	private static final String ORDER_COUNT_QRY = "select count(*) oCount, di.zone zone , di.cutofftime cutoff from cust.sale s , cust.salesaction sa, " +
 			"cust.deliveryinfo di where s.id = sa.sale_id and s.cromod_date = sa.action_date and s.type='REG' AND S.CROMOD_DATE<to_date(?,'mm/dd/yyyy') " +
 			"and sa.action_type in ('CRO','MOD') and s.status <>'CAN' and sa.requested_date = to_date(?,'mm/dd/yyyy') and zone = ? and sa.id = di.salesaction_id " +
-			"group by  di.zone,di. cutofftime order by di.zone,di.cutofftime asc";
+			"group by  di.zone,di.cutofftime order by di.zone,di.cutofftime asc";
 	
 	private static final String ORDER_COUNT_QRY_EX = "select count(*) oCount from cust.sale s , cust.salesaction sa, cust.deliveryinfo di where " +
 			"s.id = sa.sale_id and s.cromod_date = sa.action_date and s.type='REG' AND S.CROMOD_DATE<to_date(?,'mm/dd/yyyy') and " +
@@ -368,6 +369,7 @@ public class OrderRateDAOImpl implements IOrderRateDAO {
 	{
 		
 		final Map<DateRangeVO,  Map<String, Map<Date, Integer[]>>> capacityMap = new HashMap<DateRangeVO,  Map<String, Map<Date, Integer[]>>>();
+		final Calendar cal=Calendar.getInstance();
 		
 		 PreparedStatementCreator creator=new PreparedStatementCreator() {
 	            public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
@@ -375,7 +377,15 @@ public class OrderRateDAOImpl implements IOrderRateDAO {
 	                    connection.prepareStatement(CAPACITY_QUERY_FORECAST);
 	                ps.setDate(1, new java.sql.Date(day1.getTime()));
 	    			ps.setDate(2, new java.sql.Date(day2.getTime()));
-	    			ps.setString(3, zone);
+	    			cal.setTimeInMillis(day1.getTime());
+	    			cal.set(Calendar.DATE, -1);
+	    			ps.setDate(3, new java.sql.Date(cal.getTimeInMillis()));
+	    			ps.setDate(4, new java.sql.Date(day1.getTime()));
+	    			cal.setTimeInMillis(day2.getTime());
+	    			cal.set(Calendar.DATE, -1);
+	    			ps.setDate(5, new java.sql.Date(cal.getTimeInMillis()));
+	    			ps.setDate(6, new java.sql.Date(day2.getTime()));
+	    			ps.setString(7, zone);
 	                return ps;
 	            }
 	        };

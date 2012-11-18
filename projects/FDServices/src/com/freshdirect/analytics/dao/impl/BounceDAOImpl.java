@@ -31,7 +31,7 @@ public class BounceDAOImpl implements IBounceDAO  {
 		
 	private static final String BOUNCE_SELECT = "select count(distinct(customer_id)) cnt, createdate, zone, cutoff from mis.bounce_event where status = 'NEW' and " +
 			"type in ('DELIVERYINFO', 'CHECKOUT','RESERVED_SLOT') and to_char(delivery_date, 'mm/dd/yyyy') = ? and zone=? group by  zone, cutoff,createdate " +
-			"order by  createdate  asc";
+			"order by  zone, cutoff,createdate  asc";
 	
 	private static final String BOUNCE_SELECT_BYZONE = "select count(distinct(customer_id)) cnt, zone, cutoff,sector from mis.bounce_event where status = 'NEW' and " +
 			"type in ('DELIVERYINFO', 'CHECKOUT','RESERVED_SLOT') and to_char(delivery_date, 'mm/dd/yyyy') = ? group by  zone, cutoff,sector " +
