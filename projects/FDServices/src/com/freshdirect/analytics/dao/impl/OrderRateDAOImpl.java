@@ -91,14 +91,11 @@ public class OrderRateDAOImpl implements IOrderRateDAO {
 			"o1.snapshot_time >=to_date(?,'mm/dd/yyyy') group by o1.cutoff) t where o.delivery_date = to_date(?,'mm/dd/yyyy') and " +
 			"O.SNAPSHOT_TIME=t.sh and O.CUTOFF=t.co";
 	
-	private static final String ORDER_COUNT_QRY = "select count(*) oCount, di.zone zone , di.cutofftime cutoff from cust.sale s , cust.salesaction sa, " +
-			"cust.deliveryinfo di where s.id = sa.sale_id and s.cromod_date = sa.action_date and s.type='REG' AND S.CROMOD_DATE<to_date(?,'mm/dd/yyyy') " +
-			"and sa.action_type in ('CRO','MOD') and s.status <>'CAN' and sa.requested_date = to_date(?,'mm/dd/yyyy') and zone = ? and sa.id = di.salesaction_id " +
-			"group by  di.zone,di.cutofftime order by di.zone,di.cutofftime asc";
+	private static final String ORDER_COUNT_QRY = "select sum(order_count) oCount, o.zone, o.cutoff from mis.order_rate o where o.snapshot_time " +
+			"<=to_date(?,'mm/dd/yyyy') and o.delivery_date = to_date(?,'mm/dd/yyyy') and o.zone = ? group by  o.zone,o.cutoff order by o.zone,o.cutoff asc";
 	
-	private static final String ORDER_COUNT_QRY_EX = "select count(*) oCount from cust.sale s , cust.salesaction sa, cust.deliveryinfo di where " +
-			"s.id = sa.sale_id and s.cromod_date = sa.action_date and s.type='REG' AND S.CROMOD_DATE<to_date(?,'mm/dd/yyyy') and " +
-			"sa.action_type in ('CRO','MOD') and s.status <>'CAN' and sa.requested_date = to_date(?,'mm/dd/yyyy') and sa.id = di.salesaction_id ";
+	private static final String ORDER_COUNT_QRY_EX = "select sum(order_count) oCount from mis.order_rate o where o.snapshot_time " +
+			"<=to_date(?,'mm/dd/yyyy') and o.delivery_date = to_date(?,'mm/dd/yyyy')";
 
 
 	private JdbcTemplate jdbcTemplate;
