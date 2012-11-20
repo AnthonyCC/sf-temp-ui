@@ -84,11 +84,15 @@
 <%
 		if (pi.isTransactional()) {
 %>
-<form method="get" action="#" name="<%= formName %>" onsubmit="return false;">
+<form method="get" action="#" id="<%= formName %>" name="<%= formName %>" onsubmit="return false;">
 <input type="hidden" name="itemCount" value="1">
 <fd:TxProductControl txNumber="0" namespace="<%= namespaceName %>" impression="<%= (TransactionalProductImpression) pi %>" setMinimumQt="true" />
 <div id="<%= subTotalId %>" class="subtotal">subtotal: <span id="<%= subTotalId %>_value" class="value"></span></div>
-<div><button class="addtocart" onclick="<%= namespaceName %>.instantATC();"></button></div>
+<div><button class="addtocart" id='<%= "instantATC" + formName %>' onclick="<%= namespaceName %>.instantATC();"></button></div>
+<fd:IsAlcoholic skuCode="<%=((TransactionalProductImpression) pi).getSku().getSkuCode()%>">
+	<input type="hidden" name="alcoholic_0" id="alcoholic_0" value="quantity_0"/>
+	<fd:USQLegalWarning id="<%= formName %>" event="onclick" elementId='<%= "instantATC" + formName %>' instant='<%="window.parent." + namespaceName + ".instantATC()" %>'/>
+</fd:IsAlcoholic>
 <input type="hidden" name="<%=FDShoppingCartControllerTag.PARAM_ADDED_FROM_SEARCH%>" value="<%=pageContext.getAttribute("ISONSEARCHPAGE") != null ? "true":"false" %>">
 </form>
 <%

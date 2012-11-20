@@ -1074,7 +1074,11 @@ for(int i = (pageNumber -1) * itemsToDisplay; i < loopEnd && isAnyProdAvailable=
 <table border="0" cellspacing="0" cellpadding="0" width="<%=contentWidth%>"><tr>
 <%
 	if(!bigProdShown && isAnyProdAvailable) {
-%><td><input type="image" name="addMultipleToCart" src="/media_stat/images/buttons/add_selected_to_cart.gif" width="145" height="20" hspace="4" vspace="4" border="0" alt="ADD SELECTED ITEMS TO CART"></td><%
+%><td><input type="image" name="addMultipleToCart" id="addMultipleToCartUpper"  src="/media_stat/images/buttons/add_selected_to_cart.gif" width="145" height="20" hspace="4" vspace="4" border="0" alt="ADD SELECTED ITEMS TO CART">
+	<fd:IsAlcoholic>
+		<fd:USQLegalWarning id="grocery_form" event="onclick" elementId="addMultipleToCartUpper" quantityCheck="true" />
+    </fd:IsAlcoholic>
+</td><%
 	}
 %></tr></table>
 <img src="/media_stat/images/layout/clear.gif" width="1" height="6">
@@ -1173,7 +1177,10 @@ for(int i = (pageNumber -1) * itemsToDisplay; i < loopEnd && isAnyProdAvailable=
 if(isAnyProdAvailable) {
 %>
         <table border="0" cellspacing="0" cellpadding="0" width="<%=contentWidth%>"><tr valign="BOTTOM"><td width="<%=contentWidth%>">
-        <input type="image" name="addMultipleToCart" src="/media_stat/images/buttons/add_selected_to_cart.gif" width="145" height="20" hspace="4" vspace="4" border="0" alt="ADD SELECTED ITEMS TO CART">
+        <input type="image" name="addMultipleToCart" id="addMultipleToCartLower" src="/media_stat/images/buttons/add_selected_to_cart.gif" width="145" height="20" hspace="4" vspace="4" border="0" alt="ADD SELECTED ITEMS TO CART">
+        <fd:IsAlcoholic>
+        	<fd:USQLegalWarning id="grocery_form" event="onclick" elementId="addMultipleToCartLower" quantityCheck="true" />
+        </fd:IsAlcoholic>
         <br>
         <fd:CCLCheck>
             <div style="margin: 7px 4px 0 4px;"><a id="ccl-add-action" href="/unsupported.jsp" onclick="return CCL.save_items('grocery_form',this,'action=CCL:AddMultipleToList&source=ccl_actual_selection','source=ccl_actual_selection')"><img src="/media_stat/ccl/lists_link_selected_with_icon_dfgs.gif" width="151" height="15" style="border: 0; padding-right: 14px"></a></div>

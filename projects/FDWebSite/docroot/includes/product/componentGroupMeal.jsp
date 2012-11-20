@@ -213,6 +213,11 @@ if (pgErrs.size()>0) {
 <% } %>
   <input type="hidden" name="salesUnit<%=suffix%>" value="<%=defaultProduct.getSalesUnits()[0].getName()%>">
   <input type="hidden" name="skuCode<%=suffix%>" value="<%=defaultSku.getSkuCode()%>">
+	<fd:IsAlcoholic skuCode="<%=defaultSku.getSkuCode()%>">
+		<fd:USQLegalWarning id="productForm" />
+		<input type="hidden" name='<%="alcoholic" + suffix %>' id='<%="alcoholic" + suffix %>' value='<%="quantity" + suffix %>'/>
+	</fd:IsAlcoholic>
+
 <%
 int prodCount = 1;
 if (isAvailable ) { 
@@ -437,6 +442,10 @@ if (isAvailable ) {
 					  <input type="hidden" name="skuCode_<%= prodCount %>" value="<%= dfltSku.getSkuCode() %>">
 					  <input type="hidden" name="catId_<%= prodCount %>" value="<%= optProd.getParentNode() %>">
 					  <input type="hidden" name="productId_<%= prodCount %>" value="<%= optProd %>">
+				  	<fd:IsAlcoholic skuCode='<%="skuCode_" + prodCount %>'>
+						<fd:USQLegalWarning id="productForm" tagCounter="<%=prodCount %>"/>
+						<input type="hidden" name='<%="alcoholic_" + prodCount %>' id='<%="alcoholic_" + prodCount %>' value='<%="quantity_" + prodCount %>'/>
+					</fd:IsAlcoholic>
 					  <input name ="quantity_<%=prodCount%>" value="<%=(request.getParameter("quantity_"+prodCount)==null ?"" : request.getParameter("quantity_"+prodCount))%>" type="text" size="3" onChange="chgNamedQty(pricing_<%=prodCount%>,'quantity_<%=prodCount%>',0,<%= optProd.getQuantityMinimum() %>,<%= user.getQuantityMaximum(optProd) %>,true)">
 					</td>
 					<td valign="bottom" align="left">
@@ -482,6 +491,10 @@ if (isAvailable ) {
 				  <input type="hidden" name="catId_<%= prodCount %>" value="<%= optProd.getParentNode() %>">
 				  <input type="hidden" name="productId_<%= prodCount %>" value="<%= optProd %>">
 				  <input name ="quantity_<%=prodCount%>" value="<%=(request.getParameter("quantity_"+prodCount)==null ?"" : request.getParameter("quantity_"+prodCount))%>" type="text" size="3" onChange="chgNamedQty(pricing_<%=prodCount%>,'quantity_<%=prodCount%>',0,<%= optProd.getQuantityMinimum() %>,<%= user.getQuantityMaximum(optProd) %>,true)"></td>
+				  	<fd:IsAlcoholic skuCode='<%="skuCode_" + prodCount %>'>
+						<fd:USQLegalWarning id="productForm" tagCounter="<%=prodCount %>"/>
+						<input type="hidden" name='<%="alcoholic_" + prodCount %>' id='<%="alcoholic_" + prodCount %>' value='<%="quantity_" + prodCount %>'/>
+					</fd:IsAlcoholic>
 				
 				<td width="15"><a HREF="javascript:chgNamedQty(pricing_<%=prodCount%>,'quantity_<%=prodCount%>',<%= optProd.getQuantityIncrement() %>,<%= optProd.getQuantityMinimum() %>,<%= user.getQuantityMaximum(optProd) %>,true);"><img src="/media_stat/images/layout/grn_arrow_up.gif" width="10" height="9" border="0" vspace="1" alt="Increase quantity"></a><br>
 				  <a HREF="javascript:chgNamedQty(pricing_<%=prodCount%>,'quantity_<%=prodCount%>',-<%= optProd.getQuantityIncrement() %>,<%= optProd.getQuantityMinimum() %>,<%= user.getQuantityMaximum(optProd) %>,true);"><img src="/media_stat/images/layout/grn_arrow_down.gif" width="10" height="9" border="0" vspace="1" alt="Decrease quantity"></a></td>
@@ -629,7 +642,7 @@ if (isAvailable ) {
 
 	
 	<% } else {   %>
-		 <input type="image" name="addMultipleToCart" src="/media_stat/images/buttons/add_to_cart.gif" width="93" height="20" hspace="4" vspace="0" border="0" alt="ADD SELECTED ITEMS TO CART">
+		 <input type="image" id="addMultipleToCart" name="addMultipleToCart" src="/media_stat/images/buttons/add_to_cart.gif" width="93" height="20" hspace="4" vspace="0" border="0" alt="ADD SELECTED ITEMS TO CART">
 	<%  } %>
 		</td>
 		</tr>
@@ -744,6 +757,9 @@ if (isAvailable ) {
 	 // -->
 	</script>
 			<input name="itemCount" type="hidden" value="<%=prodCount%>">
+			<fd:IsAlcoholic>
+				<fd:USQLegalWarning id="productForm" event="onclick" elementId="addMultipleToCart" quantityCheck="true" />
+			</fd:IsAlcoholic>
 	</form>
 	<% }
 } else {  %>

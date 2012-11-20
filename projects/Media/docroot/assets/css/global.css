@@ -121,6 +121,8 @@ A.list		    { line-height: 12px; }
 .title11 		 { font-size: 10px; font-weight: bold; font-family: Verdana, Arial, sans-serif; }
 
 .text12 		 { font-size: 11px; font-family: Verdana, Arial, sans-serif; }
+.text12 ul 		 { position: relative; left: 10px; }
+.text12 ol 		 { position: relative; left: 10px; }
 .text12px 		 { font-size: 12px; font-family: Verdana, Arial, sans-serif; }
 .text12bold 	 { font-size: 11px; font-weight: bold; font-family: Verdana, Arial, sans-serif; }
 .text12rbold	 { font-size: 11px; font-weight: bold; color: #CC0000; font-family: Verdana, Arial, sans-serif; }
@@ -1642,4 +1644,76 @@ div.control, div.slotRow, div.time {
 	.ui-widget-overlay {
 		background-color: #fff;
 		opacity: 0.8;
+	}
+	
+	.usq_legal_warning_choice_c {
+		padding: 0px !important;
+		border-radius: 10px !important;
+		-moz-border-radius: 10px !important;
+		-webkit-box-shadow: 4px 4px 10px #999 !important;
+		-moz-box-shadow: 4px 4px 10px #999 !important;
+		background-color: white !important;
+		border: 1px solid #999 !important;
+		overflow:hidden !important;
+	}
+
+	.usq_legal_warning_choice {
+		border-color: transparent !important;
+		background: transparent none !important;
+		border: none !important;
+		overflow:hidden !important;
+		padding: 0px !important;
+	}
+
+	.usq_legal_warning_choice .hd {
+		border: none !important;
+		background-color: transparent !important;
+		font-size: 0px !important;
+		padding: 0px !important;
+		margin: 0px !important;
+	}
+
+	.usq_legal_warning_choice .bd {
+		padding: 0px !important;
+		margin: 0px !important;
+	}
+
+	.usq_legal_warning_choice .usq_legal_warning_choice_content {
+		padding: 0px 0px;
+	}
+	
+	.usq_legal_warning_choice_frame {
+		overflow: hidden !important;
+		padding: 0px 7px;
+		line-height: 12px;
+		font-size: 10px; font-family: Verdana, Arial, sans-serif; 
+	}
+	.usq_legal_warning_choice .container-close {
+		display: block;
+		width: 20px !important;
+		height: 18px !important;
+		background: url(../../media_stat/images/buttons/round_x.gif) no-repeat !important;
+		top: 0px !important;
+		right: 0px !important;
+		_right: 3px !important; 
+	}
+
+	.usq_legal_warning_choice .error-content {
+		padding: 20px 20px 10px !important;
+	}
+
+	.usq_legal_warning_choice .error_title {
+		padding: 10px 0px 15px;
+	}
+
+	.usq_legal_warning_product_image {
+		margin-left:auto; 
+		margin-right:auto;
+		text-align: center;
+	}
+	
+	.usq_legal_warning_simple_product_image {
+		position:relative; 
+		top: -165px; 
+		left: 60px; 
 	}

@@ -1,5 +1,5 @@
 .mask {
-	z-index:99 !important;
+	z-index:99 ;
 }
 
 .qbBody {
@@ -92,7 +92,7 @@
 }
 
 .yui-panel-container {
-	z-index:100 !important;
+	z-index:100;
 }
 
 .yui-panel-container.quickbuy-dialog .yui-panel {

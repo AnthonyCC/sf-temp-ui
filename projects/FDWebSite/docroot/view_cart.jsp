@@ -264,7 +264,7 @@ StringBuffer buffer = new StringBuffer(
 	
 <%-- ~~~~~~~~~~~~~~~~~~~~~~ END BOTTOM MODEULES DISPLAY SECTION ~~~~~~~~~~~~~~~~~~~~~~ --%>
 
-<%if ("updateQuantities".equals(actionName)) {%>">
+<%if ("updateQuantities".equals(actionName)) {%>
 	<fd:CmShop5 wrapIntoScriptTag="true" cart="<%=cart%>"/>	
 <%}%>
 

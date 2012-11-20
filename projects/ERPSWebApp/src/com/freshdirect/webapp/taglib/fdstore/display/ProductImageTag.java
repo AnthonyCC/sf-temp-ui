@@ -19,6 +19,7 @@ import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.log4j.Category;
 
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.content.EnumBurstType;
 import com.freshdirect.fdstore.content.Image;
@@ -396,6 +397,18 @@ public class ProductImageTag extends BodyTagSupport {
         buf.append(rolloverStr);
 
         buf.append(">");
+		try {
+			if ( "USQ".equalsIgnoreCase(product.getDepartment()==null?"":product.getDepartment().toString()) && (product.getSku(0).getProduct() != null && !"".equals(product.getSku(0).getProduct().getMaterial().getAlcoholicContent().getCode())) ) {
+				if ((pageContext.getRequest().getParameter("catId") == null || !pageContext.getRequest().getParameter("catId").startsWith("usq")) && !"usq".equals(pageContext.getRequest().getParameter("deptId")) && !((HttpServletRequest)pageContext.getRequest()).getServletPath().contains("wine")) {
+        			buf.append("<div class=\"usq_legal_warning_product_image\" style=\"position: absolute; top: " + (getBoundImgHeight(prodImg) - 33) + "px; left: " + (getBoundImgWidth(prodImg) - 30) + "px;\">");
+        			buf.append("<img src=\"/media_stat/images/layout/small_usq.png\" alt=\"Small USQ logo\" />");
+        			buf.append("</div>");
+				}
+			}
+		} catch (FDResourceException e1) {
+		} catch (FDSkuNotFoundException e1) {
+		}
+
 
         if (shouldGenerateAction) {
             buf.append("</a>");

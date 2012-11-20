@@ -320,7 +320,7 @@
 		<fd:IncludeMedia name= "/media/editorial/whats_good/whats_good_GRN_above.html"/>
 
 		<% if (isTransactionalRow) { %>
-			<form class="wgForm" name="<%= TX_FORM_NAME %>" method="post" action="<%= base_url %>">
+			<form id="<%= TX_FORM_NAME %>" class="wgForm" name="<%= TX_FORM_NAME %>" method="post" action="<%= base_url %>">
 			<input name="catId" type="hidden" value="<%=catId%>" />
 		<% } %>
 			<table border="0" width="100%">
@@ -372,6 +372,10 @@
 								<display:ProductRating product="<%= pm %>" action="<%= actionURI %>" />
 								<display:ProductName product="<%= pm %>" action="<%= actionURI %>" showNew="true" />
 								<display:ProductPrice impression="<%= (TransactionalProductImpression) impressions.get(idx) %>" showDescription="<%= showDescrips %>" />
+								<fd:IsAlcoholic skuCode="<%=((TransactionalProductImpression) impressions.get(idx)).getSku().getSkuCode()%>">
+									<fd:USQLegalWarning id="<%= TX_FORM_NAME %>" tagCounter="<%= txCount%>"/>
+									<input type="hidden" name='<%="alcoholic_" + txCount %>' id='<%="alcoholic_" + txCount %>' value='<%="quantity_" + txCount %>'/>
+								</fd:IsAlcoholic>
 							<% 
 								txCount++;
 							} else { %>
@@ -392,7 +396,7 @@
 						<tr>
 							<td align="center">
 								<input type="hidden" name="itemCount" value="<%= nConfProd %>">
-								<input type="image" name="addMultipleToCart" src="/media_stat/images/template/quickshop/qs_add_selected_to_cart.gif" width="145" height="17" border="0" alt="ADD SELECTED TO CART">
+								<input type="image" id="addMultipleToCart_np" name="addMultipleToCart" src="/media_stat/images/template/quickshop/qs_add_selected_to_cart.gif" width="145" height="17" border="0" alt="ADD SELECTED TO CART">
 								<input type="hidden" style="width:60px" name="total" value="" size="6" class="text11bold" onChange="" onFocus="blur()" />
 							</td>
 						</tr>
@@ -402,7 +406,11 @@
 			<% } %>
 			</table>
 
-		<% if (isTransactionalRow) { %></form><% } %>
+		<% if (isTransactionalRow) { %>
+			<fd:IsAlcoholic>
+				<fd:USQLegalWarning id="<%= TX_FORM_NAME %>" event="onclick" elementId="addMultipleToCart_np" quantityCheck="true" />
+			</fd:IsAlcoholic>
+			</form><% } %>
 		<% } %>
 <% } %>
 

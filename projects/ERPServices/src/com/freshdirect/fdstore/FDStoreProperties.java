@@ -583,6 +583,8 @@ public class FDStoreProperties {
 	/* APPDEV-2723 */
 	private final static String PROP_COHORT_MATCHER = "fdstore.cohortmatcher";
 
+	private final static String PROP_USQ_LEGAL_WARNING = "fdstore.store.usq_legal_warning";
+
     static {
         defaults.put(PROP_ROUTING_PROVIDER_URL, "t3://localhost:7001");
         defaults.put(PROP_PROVIDER_URL, "t3://localhost:7001");
@@ -1150,7 +1152,7 @@ public class FDStoreProperties {
 		defaults.put(NUMBER_OF_TOP_FAVOURITES, "3");
 		defaults.put(FAVOURITES_NUMBER_SWITCH, "true");
 		defaults.put(PROP_COHORT_MATCHER, "");
-		
+		defaults.put(PROP_USQ_LEGAL_WARNING, "true");		
         refresh();
     }
 
@@ -2966,4 +2968,7 @@ public class FDStoreProperties {
 			return (Boolean.valueOf(get(FAVOURITES_NUMBER_SWITCH))).booleanValue();
 	 }
 	 
+	 public static boolean isUSQLegalWarningSwitchedOn() {
+			return (Boolean.valueOf(get(PROP_USQ_LEGAL_WARNING))).booleanValue();
+	 }
 }

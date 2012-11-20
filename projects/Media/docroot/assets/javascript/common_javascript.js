@@ -911,6 +911,47 @@ function setFrameWidthSL(frameId, wth) {
 	f.style.width = (wth)+"px";
 }
 
+function setFrameHeight(frameId, offset) {
+	var f = window.parent.document.getElementById(frameId);
+
+	var hgt = getFrameHeight(frameId);
+	
+	if (offset == undefined)
+		offset = 0;
+	
+	f.style.height = (hgt+offset)+"px";
+}
+
+
+function getFrameHeight(frameId) {
+	var f = window.parent.document.getElementById(frameId);
+	var innerDoc = (f.contentDocument) ? f.contentDocument : f.contentWindow.document;
+
+	return innerDoc.body.parentNode.scrollHeight;
+}
+
+function getFrameWidth(frameId) {
+	var f = window.parent.document.getElementById(frameId);
+	var innerDoc = (f.contentDocument) ? f.contentDocument : f.contentWindow.document;
+
+	return innerDoc.body.parentNode.scrollWidth;
+}
+function setFrameSize(frameId, offsetX, offsetY) {
+	var f = window.parent.document.getElementById(frameId);
+
+	var wdh = getFrameWidth(frameId);
+	var hgt = getFrameHeight(frameId);
+	
+	if (offsetX == undefined)
+		offsetX = 0;
+
+	if (offsetY == undefined)
+		offsetY = 0;
+	
+	f.style.width = (wdh+offsetY)+"px";
+	f.style.height = (hgt+offsetY)+"px";
+}
+
 /**
  * Extract query string from the form
  * 

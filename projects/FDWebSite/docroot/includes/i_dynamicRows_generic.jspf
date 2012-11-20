@@ -494,7 +494,7 @@
 				<fd:IncludeMedia name="<%= mediaPathTemp %>" parameters="<%=params%>" withErrorReport="true" />
 				
 				<% if (isTransactionalRow) { %>
-					<form class="DYNROW_form <%= TX_FORM_NAME+"_"+catId %>" name="<%= TX_FORM_NAME %>" method="post" action="<%= base_url %>">
+					<form id='<%= "DYNROW_form" + TX_FORM_NAME+"_"+catId %>' class="DYNROW_form <%= TX_FORM_NAME+"_"+catId %>" name="<%= TX_FORM_NAME %>" method="post" action="<%= base_url %>">
 						<input name="catId" type="hidden" value="<%= (showInContextOf == null)?catId:showInContextOf %>" />
 				<% } %>
 				
@@ -644,6 +644,10 @@
 											<display:ProductRating product="<%= piPm %>" action="<%= piActionURI %>" />
 											<display:ProductName product="<%= piPm %>" action="<%= piActionURI %>" showNew="<%= showNewText %>" style="<%= emailStyle %>" />
 											<display:ProductPrice impression="<%= (TransactionalProductImpression) impressions.get(piCnIdx) %>" showDescription="<%= showDescrips %>" />
+											<fd:IsAlcoholic skuCode="<%=((TransactionalProductImpression) impressions.get(piCnIdx)).getSku().getSkuCode()%>">
+												<fd:USQLegalWarning id='<%="DYNROW_form"+ TX_FORM_NAME+"_"+catId %>' tagCounter="<%=txCount %>"/>
+												<input type="hidden" name='<%="alcoholic_" + txCount %>' id='<%="alcoholic_" + txCount %>' value='<%="quantity_" + txCount %>'/>
+											</fd:IsAlcoholic>
 										<% 
 											txCount++;
 										} else { %>
@@ -677,7 +681,7 @@
 							<tr>
 								<td align="center">
 									<input type="hidden" name="itemCount" value="<%= nConfProd %>">
-									<input type="image" name="addMultipleToCart" src="/media_stat/images/template/quickshop/qs_add_selected_to_cart.gif" width="145" height="17" border="0" alt="ADD SELECTED TO CART">
+									<input type="image" id='<%="addMultipleToCart"+ TX_FORM_NAME+"_"+catId %>' name="addMultipleToCart" src="/media_stat/images/template/quickshop/qs_add_selected_to_cart.gif" width="145" height="17" border="0" alt="ADD SELECTED TO CART">
 									<input type="hidden" style="width:60px" name="total" value="" size="6" class="text11bold" onChange="" onFocus="blur()" />
 								</td>
 							</tr>
@@ -687,7 +691,11 @@
 				<% } %>
 				</table>
 				
-				<% if (isTransactionalRow) { %></form><% } %>
+				<% if (isTransactionalRow) { %>
+					<fd:IsAlcoholic>
+						<fd:USQLegalWarning id='<%="DYNROW_form"+ TX_FORM_NAME+"_"+catId %>' event="onclick" elementId='<%="addMultipleToCart"+ TX_FORM_NAME+"_"+catId %>' quantityCheck="true" />
+					</fd:IsAlcoholic>
+					</form><% } %>
 
 				<%
 					mediaPathTemp=mediaPathTempBase+prefix+"_"+catId+"_below.ftl";

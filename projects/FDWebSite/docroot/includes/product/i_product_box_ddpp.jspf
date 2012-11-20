@@ -154,6 +154,10 @@
 							<div class="ctaATC">
 								<input type="image" class="CTAButtonFP" id="CTAButtonFP_<%= seqDDPP %>" name="addSingleToCart_<%= transProdIndex %>" src="/media/images/buttons/add_to_cart_no_icon<%= (cart.getTotalQuantity(pm) > 0) ? "_s": "" %>.png" width="95" height="27" border="0" alt="ADD SELECTED TO CART" />
 							</div>
+							<fd:IsAlcoholic skuCode="<%=((TransactionalProductImpression) pi).getSku().getSkuCode()%>">
+								<input type="hidden" name="alcoholic_0" id="alcoholic_0" value="quantity_0"/>
+								<fd:USQLegalWarning id="<%= TX_FORM_NAMEi %>" event="onclick" elementId='<%= "CTAButtonFP_" + seqDDPP %>'/>
+							</fd:IsAlcoholic>
 							<div class="prodATCStatus" id="<%= prodATCStatusId %>"></div>
 							<% transProdIndex++; %>
 						</form>

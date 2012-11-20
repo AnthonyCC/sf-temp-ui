@@ -86,14 +86,16 @@ if (productNode.getLayout().isGroceryLayout()) {
 
 
 // [redirection] Alcohol alert -> redirect health warning page
-FDSessionUser yser = (FDSessionUser)session.getAttribute(SessionName.USER);
-if( ((CategoryModel)productNode.getParentNode()).isHavingBeer() && !yser.isHealthWarningAcknowledged()){
-    String redirectURL = "/health_warning.jsp?successPage=/product.jsp"+URLEncoder.encode("?"+request.getQueryString());
-    response.sendRedirect(response.encodeRedirectURL(redirectURL));
-    return;
-}
-
-
+FDSessionUser yser = (FDSessionUser)session.getAttribute(SessionName.USER);%>
+<fd:IsAlcoholic noProduct="true">
+	<%
+	if( ((CategoryModel)productNode.getParentNode()).isHavingBeer() /*&& !yser.isHealthWarningAcknowledged()*/){
+	    String redirectURL = "/health_warning.jsp?successPage=/product.jsp"+URLEncoder.encode("?"+request.getQueryString());
+	    response.sendRedirect(response.encodeRedirectURL(redirectURL));
+	    return;
+	}%>
+</fd:IsAlcoholic>
+<%
 
 String tgAction = request.getParameter("action")!=null ? request.getParameter("action") :  "addToCart";
 

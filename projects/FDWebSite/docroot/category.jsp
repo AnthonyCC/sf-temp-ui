@@ -91,12 +91,16 @@ final int W_CATEGORY_NO_LEFT_NAV = 765;
 		}
 	}
 	boolean containsBeer = (categoryModel != null && categoryModel.isHavingBeer()); 
-	FDSessionUser yser = (FDSessionUser)session.getAttribute(SessionName.USER);
-	if(containsBeer && !yser.isHealthWarningAcknowledged()){
-		String redirectURL = "/health_warning.jsp?successPage=/category.jsp"+URLEncoder.encode("?"+request.getQueryString());
-		response.sendRedirect(response.encodeRedirectURL(redirectURL));
-		return;
-	}
+	FDSessionUser yser = (FDSessionUser)session.getAttribute(SessionName.USER);%>
+	<fd:IsAlcoholic noProduct="true">
+		<%
+		if(containsBeer /*&& !yser.isHealthWarningAcknowledged()*/){
+			String redirectURL = "/health_warning.jsp?successPage=/category.jsp"+URLEncoder.encode("?"+request.getQueryString());
+			response.sendRedirect(response.encodeRedirectURL(redirectURL));
+			return;
+		}%>
+	</fd:IsAlcoholic>
+	<%
 	
 	if (productContainer!=null) {
 	    noLeftNav = !productContainer.isShowSideNav();

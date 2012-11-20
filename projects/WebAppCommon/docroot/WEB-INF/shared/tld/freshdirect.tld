@@ -5192,4 +5192,56 @@
 		<tagclass>com.freshdirect.webapp.taglib.content.DrugControllerTag</tagclass>
 		<info></info>
 	</tag>
+    <tag>
+		<name>USQLegalWarning</name>
+		<tagclass>com.freshdirect.webapp.taglib.fdstore.USQLegalWarningTag</tagclass>
+		<bodycontent>empty</bodycontent>
+		<info></info>
+		<attribute>
+			<name>id</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>event</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>elementId</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>instant</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>decorate</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>quantityCheck</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+     </tag>
+    <tag>
+		<name>IsAlcoholic</name>
+		<tagclass>com.freshdirect.webapp.taglib.fdstore.IsAlcoholicTag</tagclass>
+		<bodycontent>JSP</bodycontent>
+		<info></info>
+		<attribute>
+			<name>skuCode</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>noProduct</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+     </tag>
 </taglib>

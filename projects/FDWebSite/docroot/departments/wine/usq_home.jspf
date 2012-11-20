@@ -21,6 +21,7 @@
 <%@page import="com.freshdirect.fdstore.content.WineFilter"%>
 <%@page import="com.freshdirect.webapp.util.FDURLUtil"%>
 <%@page import="com.freshdirect.webapp.util.JSHelper"%>
+<%@page import="javax.servlet.http.Cookie"%>
 <%@page import="java.net.URLEncoder"%>
 <%@taglib uri="template" prefix="tmpl"%>
 <%@taglib uri="logic" prefix="logic"%>
@@ -31,13 +32,16 @@
 final int W_USQ_HOME_TOTAL = 765;
 %>
 
+<fd:IsAlcoholic noProduct="true">
 <%
-	if (!user.isHealthWarningAcknowledged()) {
+	boolean isAlcoholic = true; //always true, since the <fd:IsAlcoholic> tag did the checks
+	if (isAlcoholic) { //dummy if, otherwise unreachable code error will raise, if <fd:IsAlcoholic> tag generates this code piece into the servlet
 		String redirectURL1 = "/health_warning.jsp?successPage=/department.jsp" + URLEncoder.encode("?" + request.getQueryString(), "utf-8");
 		response.sendRedirect(response.encodeRedirectURL(redirectURL1));
 		return;
 	}
 %>
+</fd:IsAlcoholic>
 
 <div style="width: <%=W_USQ_HOME_TOTAL%>px; text-align: center; margin: 0px auto;">
 <%

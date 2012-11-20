@@ -20,12 +20,16 @@ ContentNodeModel currentFolder=ContentFactory.getInstance().getContentNode(catId
 final CategoryModel categoryModel = (currentFolder instanceof CategoryModel) ? (CategoryModel) currentFolder : null;
 
 boolean hasAlcohol=categoryModel != null && categoryModel.isHavingBeer();
-FDSessionUser yser = (FDSessionUser)session.getAttribute(SessionName.USER);
-if(hasAlcohol && !yser.isHealthWarningAcknowledged()){
+FDSessionUser yser = (FDSessionUser)session.getAttribute(SessionName.USER);%>
+<fd:IsAlcoholic noProduct="true">
+<%
+if(hasAlcohol /*&& !yser.isHealthWarningAcknowledged()*/){
     String redirectURL = "/health_warning.jsp?successPage=/wine_region.jsp"+URLEncoder.encode("?"+request.getQueryString());
     response.sendRedirect(response.encodeRedirectURL(redirectURL));
     return;
-}
+}%>
+</fd:IsAlcoholic>
+<%
 List displayList = new ArrayList();
 Domain wcDomain = ContentFactory.getInstance().getDomainById("wine_country");
 List wcValues = new ArrayList();

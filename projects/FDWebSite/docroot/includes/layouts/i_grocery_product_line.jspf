@@ -40,7 +40,7 @@ final int W_GROCERY_PRODUCT_LINE_ICON_COL = 30;
 <TR <%="nutrition".equalsIgnoreCase(sortBy) && skuAvailable && i % 2 ==0 && "false".equalsIgnoreCase(request.getParameter("showThumbnails"))?"bgcolor='#EEEEEE'":""%>>
 <TD WIDTH="40" ALIGN="right"><NOBR>
 	<% if (!skuAvailable) { %><font color="#999999">NA</font><% } %>
-	<INPUT TYPE="<%= skuAvailable ? "text" : "hidden" %>" NAME="<%= qtyFldName %>" SIZE="2" MAXLENGTH="2"  CLASS="text11" style="width: 30px; text-align: right;" value="<%= !skuAvailable ? "" : request.getParameter(qtyFldName) %>"
+	<INPUT TYPE="<%= skuAvailable ? "text" : "hidden" %>" ID="<%=qtyFldName%>" NAME="<%= qtyFldName %>" SIZE="2" MAXLENGTH="2"  CLASS="text11" style="width: 30px; text-align: right;" value="<%= !skuAvailable ? "" : request.getParameter(qtyFldName) %>"
     onChange="javascript:chgQty('<%= qtyFldName %>', 0, <%= displayProduct.getQuantityMinimum() %>, <%= user.getQuantityMaximum(displayProduct) %>); syncQty('<%= itemShownIndex %>', 'big');">
 
 </NOBR></TD>
@@ -213,7 +213,11 @@ final int W_GROCERY_PRODUCT_LINE_ICON_COL = 30;
     <input type="hidden" name="trk_<%= itemShownIndex %>" value="<%= request.getParameter("trk") %>">
     <% } %>
 <%  if(skuAvailable) {  %>
-    <input type="image" name="addSingleToCart_<%= itemShownIndex %>" src="/media_stat/images/buttons/grocery_addtocart.gif" border="0" alt="Add this item to your cart">
+    <input type="image" id="addSingleToCart_<%= itemShownIndex %>" name="addSingleToCart_<%= itemShownIndex %>" src="/media_stat/images/buttons/grocery_addtocart.gif" border="0" alt="Add this item to your cart">
+	<fd:IsAlcoholic skuCode="<%=sku.getSkuCode()%>">
+		<fd:USQLegalWarning id="grocery_form" event="onclick" elementId='<%="addSingleToCart_" + itemShownIndex%>' tagCounter="<%=itemShownIndex %>"/>
+		<input type="hidden" name='<%="alcoholic_" + itemShownIndex %>' id='<%="alcoholic_" + itemShownIndex %>' value='<%="quantity_" + itemShownIndex %>'/>
+	</fd:IsAlcoholic>
 <%  }   %>
 
 </TD>

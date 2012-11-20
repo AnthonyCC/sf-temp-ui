@@ -528,6 +528,11 @@ int prodIdx = 0;
                 
                 <input type="hidden" name="skuCode_<%=prodIdx%>" value="<%= orderLine.getSkuCode() %>">
                 <input type="hidden" name="recipeId_<%=prodIdx%>" value="<%= recipe.getContentName() %>">
+				
+				<fd:IsAlcoholic skuCode="<%=orderLine.getSkuCode()%>">
+					<fd:USQLegalWarning id="recipe_form" tagCounter="<%=prodIdx %>"/>
+					<input type="hidden" name='<%="alcoholic_" + prodIdx %>' id='<%="alcoholic_" + prodIdx %>' value='<%="quantity_" + prodIdx %>'/>
+				</fd:IsAlcoholic>
 
                 <logic:iterate id="entry" collection="<%= orderLine.getConfiguration().getOptions().entrySet() %>" type="java.util.Map.Entry">
                     <input type="hidden" name='<%= entry.getKey() + "_" + prodIdx %>' value="<%= entry.getValue() %>">
