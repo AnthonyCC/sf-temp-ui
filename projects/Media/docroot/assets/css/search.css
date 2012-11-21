@@ -754,13 +754,20 @@
 	left:0; 
 }
 
-.search-recommender .yui-carousel-button:hover {
-	background-position-y:-48px;
+.search-recommender .yui-carousel-first-button:hover { 
+	background-position:0 -48px;
 }
 
-.search-recommender .yui-carousel-first-button-disabled:hover,
+.search-recommender .yui-carousel-next-button:hover {
+	background-position:-34px -48px;
+}
+
+.search-recommender .yui-carousel-first-button-disabled:hover {
+	background-position:0 0;
+}
+
 .search-recommender .yui-carousel-button-disabled:hover {
-	background-position-y:0;
+	background-position:-34px 0;
 }
 
 
