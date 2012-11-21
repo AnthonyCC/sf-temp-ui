@@ -30,7 +30,7 @@ public class CreateCMRequest {
 	private StringBuilder cmUrlStr = new StringBuilder("");
 	private String constQuery = "";
 	private CJVFContextHolder cjvfContextHolder;
-	private int consecutiveTimeout = 0;
+	public static int consecutiveTimeout = 0;
 	
 	public CreateCMRequest(String fdUserId, CJVFContextHolder cjvfContextHolder) throws FDResourceException {
 		this.cjvfContextHolder = cjvfContextHolder;

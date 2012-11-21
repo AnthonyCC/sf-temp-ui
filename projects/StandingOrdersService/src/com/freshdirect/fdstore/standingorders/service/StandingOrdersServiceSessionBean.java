@@ -21,6 +21,7 @@ import com.freshdirect.customer.ErpActivityRecord;
 import com.freshdirect.customer.ejb.ErpLogActivityCommand;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.fdstore.coremetrics.mobileanalytics.CreateCMRequest;
 import com.freshdirect.fdstore.customer.FDActionInfo;
 import com.freshdirect.fdstore.customer.FDCustomerInfo;
 import com.freshdirect.fdstore.mail.FDEmailFactory;
@@ -134,6 +135,7 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 		// Begin processing SO-s, and count the results
 		SOResult.ResultList resultCounter = new SOResult.ResultList();
 		LOGGER.info( "Processing " + soList.size() + " standing orders." );
+		CreateCMRequest.consecutiveTimeout = 0;
 		for ( FDStandingOrder so : soList ) {
 			Result result;
 			try {			
