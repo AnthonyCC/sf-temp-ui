@@ -58,7 +58,7 @@
 							<td class="alignL"><%= (csm != null) ? paymentType : "" %></td>
 						</tr>
 					<% } %>
-					<% if (!"0".equals(eCheckMin) && !"".equals(eCheckMin)) { %>
+					<% if (!"".equals(eCheckMin)) { %>
 						<tr>
 							<td class="promo_detail_label">Prior eCheck use:</td>
 							<td class="alignL"><%= (csm != null) ? eCheckBool : "" %><% if(!"".equals(eCheckMin)){ %><%= (null!= eCheckMatchType)?", "+eCheckMatchType.getComparisionType()+" ":""%><%= (csm != null) ? eCheckMin : "" %><span class="gray"> settled orders</span><% } %></td>

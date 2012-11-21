@@ -35,7 +35,7 @@
 									<input type="radio" id="eCheckMatchLesserEqual" value="<%=EnumComparisionType.LESS_OR_EQUAL.getName() %>" name="eCheckMatchType" <%=EnumComparisionType.LESS_OR_EQUAL.equals(eCheckMatchType)?"checked":"" %>/> <b>&lt=</b>&nbsp;&nbsp;&nbsp;&nbsp;
 									<input type="radio" id="eCheckMatchEqual" value="<%=EnumComparisionType.EQUAL.getName() %>" name="eCheckMatchType" <%=EnumComparisionType.EQUAL.equals(eCheckMatchType)?"checked":"" %>/> <b>=</b>&nbsp;&nbsp;&nbsp;&nbsp;
 									<input type="radio" id="eCheckMatchGreaterEqual" value="<%=EnumComparisionType.GREATER_OR_EQUAL.getName() %>" name="eCheckMatchType" <%=EnumComparisionType.GREATER_OR_EQUAL.equals(eCheckMatchType)?"checked":"" %>/> <b>>=</b> &nbsp;&nbsp;
-									<input type="text" id="minOrders" name="minOrders" class="w30px alignC" value="<%= !"0".equals(eCheckMin)?eCheckMin:"" %>" />
+									<input type="text" id="minOrders" name="minOrders" class="w30px alignC" value="<%= (paymentType.indexOf("ECheck")>-1)?eCheckMin:(!"0".equals(eCheckMin)?eCheckMin:"") %>" />
 									<span class="gray"> settled orders</span>
 								</td>
 							</tr>

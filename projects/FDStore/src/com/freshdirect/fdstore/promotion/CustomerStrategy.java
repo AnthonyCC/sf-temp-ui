@@ -263,12 +263,21 @@ public class CustomerStrategy implements PromotionStrategyI {
 			if(!paymentTypes.contains(cardType)) {
 				isEligible = false;
 			}
-			if(priorEcheckUse > 0 && cardType.equals(EnumCardType.ECP)){
+			else if(cardType.equals(EnumCardType.ECP)) {
+				int validEcheckOrderCount = context.getSettledECheckOrderCount();
+				if((EnumComparisionType.EQUAL.equals(eCheckMatchType) && validEcheckOrderCount  != priorEcheckUse)
+						||(EnumComparisionType.GREATER_OR_EQUAL.equals(eCheckMatchType) &&  validEcheckOrderCount  < priorEcheckUse)
+						||(EnumComparisionType.LESS_OR_EQUAL.equals(eCheckMatchType) && validEcheckOrderCount  > priorEcheckUse)){
+					isEligible = false;
+				}
+//				if(validEcheckOrderCount  < priorEcheckUse) return DENY;
+			}
+			/*if(priorEcheckUse > 0 && cardType.equals(EnumCardType.ECP)){
 				int validEcheckOrderCount = context.getSettledECheckOrderCount();
 				if(validEcheckOrderCount  < priorEcheckUse){
 					isEligible = false;
 				}
-			}
+			}*/
 		}
 		return isEligible;
 	}
