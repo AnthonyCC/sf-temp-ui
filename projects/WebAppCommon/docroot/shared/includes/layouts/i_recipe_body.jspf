@@ -364,12 +364,12 @@ if (!result.getErrors().isEmpty()) {
 	<%
 }
 %>
-
-<table width="<%=W_RECIPE_BODY_TOTAL - 50 %>" cellpadding="0" cellspacing="0" border="0"><%
+<%
 	boolean isCRM = request.getRequestURI().startsWith("/order/");
 	String formAction = FDURLUtil.getRecipePageURI(request, recipe, variant, catIdParam, isCRM);
 %>
 <form action="<%= formAction %>" method="post" name="qs_cart" id="recipe_form">
+<table width="<%=W_RECIPE_BODY_TOTAL - 50 %>" cellpadding="0" cellspacing="0" border="0">
 <input type="hidden" name="actionString" value="addMultipleToCart">
 <%
     if (request.getAttribute("source") != null) {
@@ -530,7 +530,7 @@ int prodIdx = 0;
                 <input type="hidden" name="recipeId_<%=prodIdx%>" value="<%= recipe.getContentName() %>">
 				
 				<fd:IsAlcoholic skuCode="<%=orderLine.getSkuCode()%>">
-					<fd:USQLegalWarning id="recipe_form" tagCounter="<%=prodIdx %>"/>
+					<fd:USQLegalWarning id="recipe_form" tagCounter="<%=prodIdx %>" quantityCheck="true"/>
 					<input type="hidden" name='<%="alcoholic_" + prodIdx %>' id='<%="alcoholic_" + prodIdx %>' value='<%="quantity_" + prodIdx %>'/>
 				</fd:IsAlcoholic>
 
@@ -619,8 +619,8 @@ int prodIdx = 0;
         <td  class="recipe_bottomBorder<%=theme%>"><img src="/media_stat/images/layout/clear.gif" width="<%=W_RECIPE_BODY_TOTAL - 16%>" height="1"></td>
         <td align="right"><img src="/media_stat/recipe/rechm_corn_br<%=theme%>.gif" width="8" height="8"></td>
       </tr>
-	 </form>
     </table>
+	 </form>
 	<% if (recipeCpyrghtMedia!=null) {  %>
 			<div align="center" class="recipe_copyright" style="width: <%=W_RECIPE_BODY_TOTAL%>px; padding-top: 10px;"><fd:IncludeMedia name='<%= recipeCpyrghtMedia.getPath() %>' /></div>
 	<% } %>
