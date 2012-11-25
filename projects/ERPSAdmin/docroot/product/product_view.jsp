@@ -369,12 +369,8 @@
 	                            Information source: <%= nutrition.getUomFor(ErpNutritionType.SOURCE) %><br>
 	                            <br>
 	                            <%  double netCarbs = nutrition.getNetCarbs();
-	                                double wwPoints = nutrition.getValueFor(ErpNutritionType.WEIGHT_WATCHERS_POINTS);
 	                                if(netCarbs > 0){%>
 	                                    Net Carbs: <%=netCarbs%><br>
-	                                <%}
-	                                if(wwPoints > 0){%>
-	                                    WeightWatchers Points: <%=wwPoints%>
 	                                <%}%>
 	                            <br><br>
 								<%                  
