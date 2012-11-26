@@ -195,6 +195,7 @@ public class ScheduleUploadFormController extends BaseFormController {
 						}
 						boolean validDepotZone = false;
 						boolean validDepotRegion = false;
+						boolean validStartTime = false;
 						if(schedules != null) {
 							for(ScheduleEmployee _scheduleEmp : schedules) {
 								if(_scheduleEmp.getDepotZone() != null){
@@ -220,20 +221,26 @@ public class ScheduleUploadFormController extends BaseFormController {
 								}
 								
 								if(_scheduleEmp.getRegionS() != null && _scheduleEmp.getRegionS() == "Depot" &&
-										_scheduleEmp.getDepotZoneS() == null) {
+										(_scheduleEmp.getDepotZoneS() == null || "".equals(_scheduleEmp.getDepotZoneS()))) {
 									validDepotZone = true;
 								}
 								
-								if(_scheduleEmp.getDepotZoneS() != null && _scheduleEmp.getRegionS() == null){
+								if(_scheduleEmp.getDepotZoneS() != null && (_scheduleEmp.getRegionS() == null || "".equals(_scheduleEmp.getRegionS()))){
 									validDepotRegion = true;
 								}
+								
+								if(_scheduleEmp.getRegionS() != null &&	(_scheduleEmp.getTimeS() == null || "".equals(_scheduleEmp.getTimeS()))) {
+									validStartTime = true;
+								}
+								
 							}							
 						}
 						
-						if((regionErrorLst != null && regionErrorLst.size() > 0) || (zoneErrorLst != null && zoneErrorLst.size() > 0) || validDepotZone || validDepotRegion){
+						if((regionErrorLst != null && regionErrorLst.size() > 0) || (zoneErrorLst != null && zoneErrorLst.size() > 0) 
+								|| validDepotZone || validDepotRegion || validStartTime){
 							StringBuffer uploadErrMsg = new StringBuffer();
 							if(zoneErrorLst.size() > 0) 
-								uploadErrMsg.append("zone ");
+								uploadErrMsg.append("Zone ");
 							for(String _error : zoneErrorLst){
 								uploadErrMsg.append(_error);
 								if(uploadErrMsg.length() > 0) {
@@ -244,7 +251,7 @@ public class ScheduleUploadFormController extends BaseFormController {
 								uploadErrMsg.append(" doesn't exist in active zones ");
 							
 							if(regionErrorLst.size() > 0) 
-								uploadErrMsg.append("Region ");
+								uploadErrMsg.append("\n Region ");
 							for(String _error : regionErrorLst){
 								uploadErrMsg.append(_error);
 								if(uploadErrMsg.length() > 0) {
@@ -256,11 +263,15 @@ public class ScheduleUploadFormController extends BaseFormController {
 							}
 							
 							if(validDepotZone) {
-								uploadErrMsg.append(" Zone is empty for one or more entries for Depot region. Please check the file");
+								uploadErrMsg.append("\n Zone is empty for one or more entries for Depot region.");
 							}
 							
 							if(validDepotRegion) {
-								uploadErrMsg.append(" Region is empty for one or more entries for Depot zone(s). Please check the file");
+								uploadErrMsg.append("\n Region is empty for one or more entries for Depot zone(s).");
+							}						
+
+							if(validStartTime) {
+								uploadErrMsg.append("\n Start Time is empty for one or more entries.");
 							}
 							
 							saveErrorMessage(request, getMessage("app.error.131", new Object[] {newSource.getDescription()}));
