@@ -198,8 +198,9 @@ public class ScheduleUploadFormController extends BaseFormController {
 						boolean validStartTime = false;
 						if(schedules != null) {
 							for(ScheduleEmployee _scheduleEmp : schedules) {
+								
 								if(_scheduleEmp.getDepotZone() != null){
-									int _codelength = _scheduleEmp.getDepotZoneS() != null ? _scheduleEmp.getDepotZoneS().length() : 3;				
+									int _codelength = _scheduleEmp.getDepotZone().getZoneCode().length();			
 									if(_codelength < 3) {
 										StringBuffer strBuf = new StringBuffer();
 										while(3 - _codelength > 0) {
@@ -208,6 +209,7 @@ public class ScheduleUploadFormController extends BaseFormController {
 										}
 										_scheduleEmp.setDepotZoneS(strBuf.toString() + _scheduleEmp.getDepotZoneS());
 									}
+									System.out.println(_scheduleEmp.getDepotZoneS());
 									Zone _depotZone = zoneMapping.get(_scheduleEmp.getDepotZoneS());
 									if(_depotZone == null){
 										zoneErrorLst.add(_scheduleEmp.getDepotZoneS());
