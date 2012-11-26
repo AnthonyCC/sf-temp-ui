@@ -319,8 +319,17 @@ public class HandOffAutoDispatchAction extends AbstractHandOffAction {
 		while(finalBatchPlanItr.hasNext()){
 			String zone = finalBatchPlanItr.next();
 			List<IHandOffBatchRoute> zoneRouteList = batchRouteMap.get(zone);
-			if(zoneRouteList == null) 
+			if(zoneRouteList == null) {
 				zoneRouteList = Collections.EMPTY_LIST;
+			}
+			Collections.sort(zoneRouteList, new Comparator<IHandOffBatchRoute>(){
+				
+				public int compare(IHandOffBatchRoute obj1, IHandOffBatchRoute obj2) {
+					int routeId1 = getRouteIndex1(obj1.getRouteId());
+					int routeId2 = getRouteIndex1(obj2.getRouteId());			
+					return routeId1 - routeId2;
+				}
+			});
 			constructDispatchModelList(dispatchMapping, (List<IHandOffBatchPlan>)batchPlanMap.get(zone), zoneRouteList, Collections.EMPTY_LIST, false, facilityLookUp, zoneFacility);
 		}
 		//Bull-pen Plan List
@@ -503,22 +512,14 @@ public class HandOffAutoDispatchAction extends AbstractHandOffAction {
 	private static IHandOffBatchRoute matchRoute(IHandOffBatchPlan p, List<IHandOffBatchRoute> routeList) throws ParseException {
 		IHandOffBatchRoute result = null;
 		if(routeList != null && p != null) {
-			Collections.sort(routeList, new Comparator<IHandOffBatchRoute>(){
-			
-				public int compare(IHandOffBatchRoute obj1, IHandOffBatchRoute obj2) {
-					int routeId1 = getRouteIndex1(obj1.getRouteId());
-					int routeId2 = getRouteIndex1(obj2.getRouteId());			
-					return routeId1 - routeId2;
-				}
-			});
+		
 			Iterator<IHandOffBatchRoute> _routeItr = routeList.iterator();
 			while(_routeItr.hasNext()) {
-				IHandOffBatchRoute route = _routeItr.next();
-						
-				if(route.getFirstDeliveryTime()!= null && p.getFirstDeliveryTime()!= null){
-					String firstDlvTimeFromRoute = RoutingDateUtil.getServerTime(route.getFirstDeliveryTime()) != null ? RoutingDateUtil.getServerTime(route.getFirstDeliveryTime()) : "";
-					String firstDlvTime = RoutingDateUtil.getServerTime(p.getFirstDeliveryTime());					
-					if(firstDlvTime != null && firstDlvTime.length() > 0 && firstDlvTime.equals(firstDlvTimeFromRoute)) {
+				IHandOffBatchRoute route = _routeItr.next();				
+				if(route.getDispatchTime() != null && p.getStartTime()!= null){
+					String routeStartTime = route.getDispatchTime() != null ? RoutingDateUtil.getServerTime(route.getDispatchTime().getNormalDate()) : "";
+					String planStartTime = RoutingDateUtil.getServerTime(p.getStartTime());					
+					if(routeStartTime != null && routeStartTime.length() > 0 && planStartTime.equals(routeStartTime)) {
 						result = route;						
 						_routeItr.remove();
 						break;						
