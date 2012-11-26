@@ -442,29 +442,36 @@ boolean isEditAllowed = (autoCaseComplaintId != null) || (
 						<a href="javascript:popResizeHelp('<%= FDStoreProperties.getCrmCaseMediaHelpLink() %>','715','940','kbit')" style='text-decoration: none;' onmouseover="return overlib('Click for Help.', AUTOSTATUS, WRAP);" onmouseout="nd();">What's this?</a>
 					</div>
 					<div class="casedisp_select">
+					
+						<% if (!isNewCase && "driver".equalsIgnoreCase(thisCase.getCrmCaseMedia())) { %>
+							<input type="text" name="media" value="Driver" size="7" readonly="readonly"/>
+							
+						<% } else { %>
                     
-						<select id="media"  name="media" onchange="verifyCaseDisp();">
-                        <option value="">-Select One-</option>
-                        <%
-                            List caseMediaList=CrmCaseConstants.getCrmCaseMedia();
-                            for(int i=0;i<caseMediaList.size();i++)
-                            {
-                             String value=(String)caseMediaList.get(i);
-                             String media=thisCase.getCrmCaseMedia();
-                               if(value.equalsIgnoreCase(media))
-                               {
-                        %> <option value="<%=value%>" selected="selected"><%=value%></option>
-                        <%
-                               }else{
-                         %>
-                            <option value="<%=value%>"><%=value%></option>
-                         <%
-                               }
-                            }
-                        %>							
-						</select>
+							<select id="media"  name="media" onchange="verifyCaseDisp();">
+							<option value="">-Select One-</option>
+							<%
+								List caseMediaList=CrmCaseConstants.getCrmCaseMedia();
+								for(int i=0;i<caseMediaList.size();i++)
+								{
+								 String value=(String)caseMediaList.get(i);
+								 String media=thisCase.getCrmCaseMedia();
+								   if(value.equalsIgnoreCase(media))
+								   {
+							%> <option value="<%=value%>" selected="selected"><%=value%></option>
+							<%
+								   }else{
+							 %>
+								<option value="<%=value%>"><%=value%></option>
+							 <%
+								   }
+								}
+							%>							
+							</select>
+						<% } %>
 					</div>
 				</div>
+				<% if (!isNewCase && !"driver".equalsIgnoreCase(thisCase.getCrmCaseMedia())) { %>
 				<div id="MediaIsOther">
 					<div class="casedisp_line">
 						<div class="casedisp_text">
@@ -496,6 +503,7 @@ boolean isEditAllowed = (autoCaseComplaintId != null) || (
 							</select>
 						</div>
 					</div>
+					
 					<div class="casedisp_line">
 						<div class="casedisp_text" id="NotResolved_text">
 							NOT resolved reason<span class="casedisp_Err_invis" id="NotResolvedErr">*</span>
@@ -525,6 +533,7 @@ boolean isEditAllowed = (autoCaseComplaintId != null) || (
 							</select>
 						</div>
 					</div>
+					
 					<div class="casedisp_line">
 						<div class="casedisp_text">
 							Resolution satisfactory<span class="casedisp_Err_invis" id="satisfactoryReasonErr">*</span>
@@ -555,6 +564,7 @@ boolean isEditAllowed = (autoCaseComplaintId != null) || (
 							</select>
 						</div>
 					</div>
+					<% } %>
 					<div class="casedisp_line">
 						<div class="casedisp_select">						
 				<fd:ErrorHandler result='<%= result %>' name='caseDisp07' id='errorMsg'><span class="error"><%=errorMsg%></span></fd:ErrorHandler>
