@@ -1479,24 +1479,33 @@ public class DispatchController extends AbstractMultiActionController {
 	throws ServletException, ParseException, DateFilterException {
 		String dispDate = request.getParameter("dispDate");
 		String isSummary = request.getParameter("summary");
-		boolean changed = false;
+		String source = request.getParameter("source");
+		List changeList= null;
 		if(!TransStringUtil.isEmpty(dispDate)) {
-			changed = dispatchManagerService.refreshRoute(TransStringUtil.getDate(dispDate));
+			changeList = dispatchManagerService.refreshRoute(TransStringUtil.getDate(dispDate));
 		} else {
 			//By default get the today's dispatches.
-			changed = dispatchManagerService.refreshRoute(new Date());
+			changeList = dispatchManagerService.refreshRoute(new Date());
 
 		}
-		if(changed){
-			saveMessage(request, getMessage("app.actionmessage.134", null));
+		if(source!=null && "cron".equals(source))
+		{
+			ModelAndView mav =  new ModelAndView("refreshedTrucksView");
+			mav.getModel().put("dispatchList", changeList);
+			return mav;
 		}
-		if(TransStringUtil.isEmpty(isSummary)){
-			return dispatchHandler(request, response);
-		}else{
-			//System.out.println("Inside Summary");
-			return dispatchSummaryHandler(request, response);
+		else
+		{
+			if(changeList!=null && changeList.size()>0){
+				saveMessage(request, getMessage("app.actionmessage.134", null));
+			}
+			if(TransStringUtil.isEmpty(isSummary)){
+				return dispatchHandler(request, response);
+			}else{
+				//System.out.println("Inside Summary");
+				return dispatchSummaryHandler(request, response);
+			}
 		}
-
 	}
 
 	public ModelAndView autoDispatchHandler(HttpServletRequest request, HttpServletResponse response) throws ServletException, ParseException {

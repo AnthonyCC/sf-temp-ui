@@ -24,6 +24,7 @@ import org.springframework.jdbc.object.BatchSqlUpdate;
 
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.transadmin.dao.RouteManagerDaoI;
+import com.freshdirect.transadmin.model.Dispatch;
 import com.freshdirect.transadmin.model.HTOutScanAsset;
 import com.freshdirect.transadmin.model.RouteMappingId;
 import com.freshdirect.transadmin.model.UPSRouteInfo;
@@ -364,4 +365,40 @@ public class RouteManagerDaoOracleImpl implements RouteManagerDaoI  {
 		);
 		return result;
 	}	
+	
+	private static final String UPDATE_TRUCK_INFO = "UPDATE TRANSP.DISPATCH SET TRUCK=? , FIRST_DLV_TIME=? WHERE DISPATCH_ID =?";
+	
+	public void updateTruckInfo(List dispatchList) throws SQLException {
+		
+		Connection connection = null;
+		if(dispatchList != null && dispatchList.size() > 0) {
+			try {			
+				
+				BatchSqlUpdate batchUpdater = new BatchSqlUpdate(this.jdbcTemplate.getDataSource(), UPDATE_TRUCK_INFO);
+
+				batchUpdater.declareParameter(new SqlParameter(Types.VARCHAR));
+				batchUpdater.declareParameter(new SqlParameter(Types.TIMESTAMP));
+				batchUpdater.declareParameter(new SqlParameter(Types.VARCHAR));
+				batchUpdater.compile();
+				
+				connection = this.jdbcTemplate.getDataSource().getConnection();
+				
+				for(Object dispatch : dispatchList){
+					if(dispatch instanceof Dispatch){
+					batchUpdater.update(new Object[]{((Dispatch) dispatch).getTruck(),
+										((Dispatch) dispatch).getFirstDlvTime(),
+										((Dispatch) dispatch).getDispatchId()
+									});
+					}
+					
+				}
+				batchUpdater.flush();		
+			} finally {
+				if(connection!=null) connection.close();
+			}
+		}
+	}
+	
+	
+	
 }

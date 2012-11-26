@@ -140,18 +140,7 @@
 		<url-pattern>favicon.ico</url-pattern>
 		<url-pattern>download.do</url-pattern>
 		<url-pattern>dispatchDashboardScreen.do</url-pattern>
-		<http-method>GET</http-method>
-		</web-resource-collection>
-	</security-constraint>
-	<security-constraint>
-		<web-resource-collection>
-		<web-resource-name>Unrestricted</web-resource-name>
-		<description>All users can view</description>
-		<url-pattern>/images/*</url-pattern>
-		<url-pattern>/js/*</url-pattern>
-		<url-pattern>/css/*</url-pattern>
-		<url-pattern>download.do</url-pattern>
-		<url-pattern>dispatchDashboardView.do</url-pattern>
+		<url-pattern>truckRefresh.do</url-pattern>
 		<http-method>GET</http-method>
 		</web-resource-collection>
 	</security-constraint>

@@ -93,8 +93,6 @@ public class ErpCartonDetails implements Serializable {
 	public void setBarcode(String barcode) {
 		this.barcode = barcode;
 	}
-	
-	
 
 	public List<ErpCartonDetails> getComponents() {
 		return components;
@@ -153,7 +151,6 @@ public class ErpCartonDetails implements Serializable {
 	}
 
 	public ErpCartonDetails() {
-		
 	}
 	public String toString() {
 		return "ErpCartonDetails[orderLineNumber: "

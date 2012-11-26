@@ -1,5 +1,6 @@
 package com.freshdirect.transadmin.dao;
 
+import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -27,4 +28,6 @@ public interface RouteManagerDaoI {
 	List getDispatchTeamResourcesChanged(Date date, String type, String field) throws DataAccessException;
 
 	List<UPSRouteInfo> getUPSRouteInfo(final Date deliveryDate) throws DataAccessException;
+	
+	void updateTruckInfo(List dispatchList) throws SQLException;
 }

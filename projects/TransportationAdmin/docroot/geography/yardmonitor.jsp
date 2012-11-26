@@ -94,7 +94,7 @@
 							<tr class="noBorder">
 								<td class="searchTable">Enter Route / Truck</td>
 								<td>
-									<input id="routeNumber" maxlength="10"/>
+									<input id="routeNumber" maxlength="12"/>
 									<input type="button" id="add" style="margin-top:6px" value="&nbsp;Go&nbsp;" onclick="javascript:getRouteSummary(document.getElementById('routeNumber').value);" />
 									<div id="errRouteSearchContainer"></div>
 								</td>

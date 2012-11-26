@@ -458,6 +458,7 @@ public class FDStoreProperties {
 	private final static String PROP_MKTADMIN_AUTOUPLOAD_REPORT_EMAIL_SUBJECT = "fdstore.mktadmin.auto.upload.report.email.subject";
 	private final static String PROP_MKTADMIN_AUTOUPLOAD_REPORT_EMAIL_CC = "fdstore.mktadmin.auto.upload.report.email.cc";
 	private final static String PROP_MKTADMIN_AUTOUPLOAD_URL = "fdstore.mktadmin.auto.upload.url";
+	private final static String PROP_TRUCK_REFRESH_URL = "fdstore.transapp.truck.refresh.url";
 	private final static String PROP_MKTADMIN_USER_NAME = "fdstore.mktadmin.username";
 	private final static String PROP_MKTADMIN_PASSWORD = "fdstore.mktadmin.password";
     
@@ -1044,6 +1045,7 @@ public class FDStoreProperties {
         defaults.put(PROP_MKTADMIN_AUTOUPLOAD_REPORT_EMAIL_SUBJECT,
             "Auto Upload Customer Restriction List's Status");
         defaults.put(PROP_MKTADMIN_AUTOUPLOAD_URL, "/mktAdmin_autoUpload");
+        defaults.put(PROP_TRUCK_REFRESH_URL, "http://localhost:7001/TrnAdmin/truckRefresh.do");
         defaults.put(PROP_MKTADMIN_USER_NAME, "qaadmin");
         defaults.put(PROP_MKTADMIN_PASSWORD, "password01");
 
@@ -2946,8 +2948,13 @@ public class FDStoreProperties {
 	
 	 public static boolean isDeliveryCenterEnabled() {
 	        return (Boolean.valueOf(get(PROP_ENABLE_DELIVERYCENTER))).booleanValue();
+
 	 }
-	 
+
+	public static String getTruckRefreshUrl() {
+		 return get(PROP_TRUCK_REFRESH_URL);
+	}
+
 	 public static String getHRPromoCodes() {
 		 return get(PROP_HRPROMO_CODES);
 	 }
@@ -2971,4 +2978,5 @@ public class FDStoreProperties {
 	 public static boolean isUSQLegalWarningSwitchedOn() {
 			return (Boolean.valueOf(get(PROP_USQ_LEGAL_WARNING))).booleanValue();
 	 }
+	 
 }

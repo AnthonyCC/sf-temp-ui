@@ -53,6 +53,7 @@
  		 	    <prop key="/dispatchDashboardScreen.do">dispatchController</prop>
  		 	    <prop key="/dispatchDashboardView.do">dispatchController</prop>
  		 	    <prop key="/refreshRoute.do">dispatchController</prop>
+ 		 	    <prop key="/truckRefresh.do">dispatchController</prop>
  		 	    <prop key="/refreshRouteSummary.do">dispatchController</prop>
  		 	    <prop key="/deletedispatch.do">dispatchController</prop>
  		 	    <prop key="/editdispatch.do">dispatchFormController</prop>
@@ -289,6 +290,7 @@
  		 	<prop key="/dispatchDashboardScreen.do">dispatchDashboardScreenHandler</prop>
  		 	<prop key="/dispatchDashboardView.do">dispatchDashboardViewHandler</prop>		 	 		 	
  		 	<prop key="/refreshRoute.do">routeRefreshHandler</prop>
+ 		 	<prop key="/truckRefresh.do">routeRefreshHandler</prop>
  		 	<prop key="/refreshRouteSummary.do">routeRefreshHandler</prop>						      
  		 	<prop key="/deletedispatch.do">dispatchDeleteHandler</prop>
  		 	<prop key="/confirmdispatch.do">dispatchConfirmHandler</prop>

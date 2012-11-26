@@ -44,7 +44,7 @@ public interface DispatchManagerI extends BaseManagerI {
 	//Based on new Dispatch Model
 	Collection getDispatchList(String date, String facilityLocation, String zone, String region);
 	
-	boolean refreshRoute(Date requestedDate);
+	List refreshRoute(Date requestedDate);
 	
 	void saveDispatch(Dispatch dispatch) throws TransAdminApplicationException;
 	

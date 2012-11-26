@@ -227,12 +227,13 @@ public class DispatchManagerImpl extends BaseManagerImpl implements DispatchMana
 		return coll;
 	}
 	
-	public boolean refreshRoute(Date requestedDate) {
+	public List refreshRoute(Date requestedDate) {
+		List changeList = new ArrayList();
 		try{
 			//Get the dispatch list for the day from DB.
 			String dateString = TransStringUtil.getServerDate(requestedDate);
 			Collection coll = getDispatchList(dateString, null, null, null);
-			List changeList = new ArrayList();
+			
 			Iterator iter = coll.iterator();
 			while(iter.hasNext()){
 				boolean changed = false;
@@ -245,26 +246,27 @@ public class DispatchManagerImpl extends BaseManagerImpl implements DispatchMana
 					changed =  true;
 					
 				}
-				String firstDlvTimeFromSAP = routeInfo != null ? routeInfo.getFirstDlvTime() : "";
+				/*String firstDlvTimeFromSAP = routeInfo != null ? routeInfo.getFirstDlvTime() : "";
 				String firstDlvTime = TransStringUtil.getServerTime(dispatchObj.getFirstDlvTime());
 				if(firstDlvTime != null && firstDlvTime.length() > 0 && firstDlvTime.equals(firstDlvTimeFromSAP)) {
 					dispatchObj.setFirstDlvTime(TransStringUtil.getServerTime(firstDlvTimeFromSAP));
 					changed = true;
 					
-				}
+				}*/
 				if(changed)
 					changeList.add(dispatchObj);
 			}
 			if(changeList.size() > 0){
 				//There are changes to dispatches. update dispatch table.
-				saveEntityList(changeList);
-				return true;
+				//saveEntityList(changeList);
+				getRouteManagerDao().updateTruckInfo(changeList);
+				return changeList;
 			}
 		}catch(Exception ex){
 			ex.printStackTrace();
 			throw new RuntimeException("Exception Occurred while refreshing Route information for requested date "+requestedDate);
 		}
-		return false;
+		return changeList;
 	}
 
 	public void saveDispatch(Dispatch dispatch) throws TransAdminApplicationException {
