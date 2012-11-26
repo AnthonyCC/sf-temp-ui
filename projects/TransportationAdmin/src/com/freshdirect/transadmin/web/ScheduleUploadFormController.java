@@ -193,7 +193,8 @@ public class ScheduleUploadFormController extends BaseFormController {
 								regionMapping.put(region.getCode(), region);
 							}
 						}
-						
+						boolean validDepotZone = false;
+						boolean validDepotRegion = false;
 						if(schedules != null) {
 							for(ScheduleEmployee _scheduleEmp : schedules) {
 								if(_scheduleEmp.getDepotZone() != null){
@@ -217,25 +218,51 @@ public class ScheduleUploadFormController extends BaseFormController {
 										regionErrorLst.add(_scheduleEmp.getRegionS());
 									}
 								}
+								
+								if(_scheduleEmp.getRegionS() != null && _scheduleEmp.getRegionS() == "Depot" &&
+										_scheduleEmp.getDepotZoneS() == null) {
+									validDepotZone = true;
+								}
+								
+								if(_scheduleEmp.getDepotZoneS() != null && _scheduleEmp.getRegionS() == null){
+									validDepotRegion = true;
+								}
 							}							
 						}
 						
-						if((regionErrorLst != null && regionErrorLst.size() > 0) || (zoneErrorLst != null && zoneErrorLst.size() > 0)){
+						if((regionErrorLst != null && regionErrorLst.size() > 0) || (zoneErrorLst != null && zoneErrorLst.size() > 0) || validDepotZone || validDepotRegion){
 							StringBuffer uploadErrMsg = new StringBuffer();
-							if(zoneErrorLst.size() > 0) uploadErrMsg.append("Below zone(s) doesn't exist in active zones");
+							if(zoneErrorLst.size() > 0) 
+								uploadErrMsg.append("zone ");
 							for(String _error : zoneErrorLst){
 								uploadErrMsg.append(_error);
 								if(uploadErrMsg.length() > 0) {
 									uploadErrMsg.append(",");
 								}
 							}
-							if(regionErrorLst.size() > 0) uploadErrMsg.append("Below region(s) doesn't exist in active regions");
+							if(zoneErrorLst.size() > 0) 
+								uploadErrMsg.append(" doesn't exist in active zones ");
+							
+							if(regionErrorLst.size() > 0) 
+								uploadErrMsg.append("Region ");
 							for(String _error : regionErrorLst){
 								uploadErrMsg.append(_error);
 								if(uploadErrMsg.length() > 0) {
 									uploadErrMsg.append(",");
 								}
-							}							
+							}
+							if(regionErrorLst.size() > 0) { 
+								uploadErrMsg.append(" doesn't exist in active regions ");
+							}
+							
+							if(validDepotZone) {
+								uploadErrMsg.append(" Zone is empty for one or more entries for Depot region. Please check the file");
+							}
+							
+							if(validDepotRegion) {
+								uploadErrMsg.append(" Region is empty for one or more entries for Depot zone(s). Please check the file");
+							}
+							
 							saveErrorMessage(request, getMessage("app.error.131", new Object[] {newSource.getDescription()}));
 							saveErrorMessage(request, uploadErrMsg.toString());
 						} else {

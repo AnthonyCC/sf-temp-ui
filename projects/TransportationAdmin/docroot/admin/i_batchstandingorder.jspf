@@ -19,7 +19,7 @@
 		_currentBatchId = inputVal;
 		editStandingOrderPanel = new YAHOO.widget.Panel("standingorder-panel", {
                           width: "1280px",
-                          height: "1280px",
+                          height: "750px",
                           fixedcenter: true, 
                           close: true, 
                           draggable: false, 
@@ -54,7 +54,7 @@
 		};
 		
 		standingOrderDataTable = new YAHOO.widget.ScrollingDataTable("contstandingordertable", standingOrderColumns, standingOrderDataSource
-				,{width:"1250px", height:"1160px"});
+				,{width:"1250px", height:"640px"});
 
 		setStandingOrderChecks( standingOrderDataTable, true );
 
