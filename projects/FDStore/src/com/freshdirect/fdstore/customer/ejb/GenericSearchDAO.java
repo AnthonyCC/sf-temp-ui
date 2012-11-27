@@ -847,7 +847,9 @@ public class GenericSearchDAO {
 
 			if (EnumDlvRestrictionType.ONE_TIME_RESTRICTION.equals(type)) {
 
-				endDate = DateUtil.roundUp(endDate);
+				if(!EnumDlvRestrictionReason.PLATTER.equals(reason)){
+					endDate = DateUtil.roundUp(endDate);
+				}
 
 				// FIXME one-time reverse restrictions should have a different EnumDlvRestrictionType 
 				if (reason.isSpecialHoliday()) {

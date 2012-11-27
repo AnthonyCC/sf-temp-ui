@@ -76,8 +76,9 @@ public class DlvRestrictionDAO {
 			}
 
 			if (EnumDlvRestrictionType.ONE_TIME_RESTRICTION.equals(type)) {
-
-				endDate = DateUtil.roundUp(endDate);
+				if(!EnumDlvRestrictionReason.PLATTER.equals(reason)){
+					endDate = DateUtil.roundUp(endDate);
+				}
 
 				// FIXME one-time reverse restrictions should have a different EnumDlvRestrictionType 
 				if (reason.isSpecialHoliday()) {
@@ -350,7 +351,12 @@ public class DlvRestrictionDAO {
 		}else if(restriction instanceof OneTimeRestriction){
 			OneTimeRestriction otRestriction=(OneTimeRestriction)restriction;
 			ps.setNull(7,Types.INTEGER);
-			ps.setDate(8,new java.sql.Date(otRestriction.getDateRange().getStartDate().getTime()));
+			if(EnumDlvRestrictionReason.PLATTER.equals(restriction.getReason())){
+				ps.setTimestamp(8,new Timestamp(otRestriction.getDateRange().getStartDate().getTime()));
+			}else{
+				ps.setDate(8,new java.sql.Date(otRestriction.getDateRange().getStartDate().getTime()));
+			}
+//			ps.setDate(8,new java.sql.Date(otRestriction.getDateRange().getStartDate().getTime()));
 			LOGGER.debug("otRestriction.getDateRange().getEndDate() :"+otRestriction.getDateRange().getEndDate());
 			ps.setTimestamp(9,new Timestamp(otRestriction.getDateRange().getEndDate().getTime()));
 		}else if(restriction instanceof RecurringRestriction){

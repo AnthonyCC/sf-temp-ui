@@ -2,6 +2,8 @@ package com.freshdirect.delivery.restriction;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -17,6 +19,7 @@ public class DlvRestrictionsList implements Serializable {
 
 	public DlvRestrictionsList(List<RestrictionI> restrictions) {
 		this.restrictions = restrictions;
+		Collections.sort(restrictions, new RestrictionTypeComparator());
 	}
 
 	public boolean isRestricted(EnumDlvRestrictionCriterion criterion, EnumDlvRestrictionReason reason, Date date) {
@@ -166,5 +169,18 @@ public class DlvRestrictionsList implements Serializable {
 
 	public int size() {
 		return this.restrictions.size();
+	}
+	
+	class RestrictionTypeComparator implements Comparator<RestrictionI>{
+
+		@Override
+		public int compare(RestrictionI arg0, RestrictionI arg1) {
+			if(null != arg0.getType() && null !=arg1.getType()){
+				return arg0.getType().compareTo(arg1.getType());
+			}else{
+				return 0;
+			}
+		}
+		
 	}
 }

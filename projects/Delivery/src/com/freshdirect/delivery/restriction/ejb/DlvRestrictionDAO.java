@@ -40,7 +40,7 @@ public class DlvRestrictionDAO {
 
 		PreparedStatement ps = conn
 			.prepareStatement("select id,criterion, type, name, message, day_of_week, start_time, end_time, reason, media_path from dlv.restricted_days " +
-					"where reason not in ('WIN','BER','ACL')");
+					"where reason not in ('WIN','BER','ACL') order by type") ;
 		ResultSet rs = ps.executeQuery();
 		List<RestrictionI> restrictions = new ArrayList<RestrictionI>();
 		while (rs.next()) {

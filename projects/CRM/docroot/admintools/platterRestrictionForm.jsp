@@ -34,10 +34,14 @@
 <tmpl:put name='title' direct='true'>Supervisor Resources > Add Platter Restrictions</tmpl:put>
 <tmpl:put name='content' direct='true'>
 <jsp:include page="/includes/admintools_nav.jsp" />
-<%! DateFormat DLV_TIME_FORMATTER = new SimpleDateFormat("hh:mm a"); %>
+<%! DateFormat DLV_TIME_FORMATTER = new SimpleDateFormat("hh:mm a");
+DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm a"); %>
     <% 
       String restrictionId=request.getParameter("restrictionId");
-      Date startDt= null;
+      Date startDt=null;
+      if(null !=request.getParameter("startDate")){
+    	  startDt =dateFormat.parse(request.getParameter("startDate")+" "+request.getParameter("platterStartTime"));
+      }
       String startDate = 
 			NVL.apply(request.getParameter("startDate"), CCFormatter.formatDateYear(Calendar.getInstance().getTime()));
       String endDate = 
