@@ -34,9 +34,8 @@ public class AirclicManagerDaoOracleImpl implements AirclicManagerDaoI{
 	/*private static String EMPLOYEES_BY_ZONE = 
 			"SELECT * FROM AC_STAGETRAIN.RUNNERTRACKING@AIRCLICRW.NYC.FRESHDIRECT.COM RT  WHERE RT.RUNNERBADGEID = '661945' AND ACTION = 'Clock Out'";
 	*/		
-	private static String EMPLOYEES_BY_ZONE = "SELECT * FROM TRANSP.EMP_TIMESHEET ET, TRANSP.SCRIB_BID SB WHERE " +
-			" TO_CHAR(ET.INSERT_TIMESTAMP, 'MM/DD/YYYY') = TO_CHAR(?, 'MM/DD/YYYY') AND SB.EMPLOYEE_ID = ET.RUNNERBADGEID AND " +
-			"SB.DAY = TO_CHAR(?, 'DY') AND SB.WEEK_OF = ? AND SB.DEPOT_ZONE = ? AND SB.REGION='Depot'";
+	private static String EMPLOYEES_BY_ZONE = "SELECT * FROM TRANSP.EMP_TIMESHEET ET WHERE " +
+			" TO_CHAR(ET.INSERT_TIMESTAMP, 'MM/DD/YYYY') = TO_CHAR(?, 'MM/DD/YYYY') AND SUBSTR(ROUTE,2,3) = ?";
 	
 	@Override
 	public Collection getEmployees(final Date date, final String zone, final String shift) {
@@ -47,9 +46,7 @@ public class AirclicManagerDaoOracleImpl implements AirclicManagerDaoI{
 	                PreparedStatement ps =
 	                    connection.prepareStatement(EMPLOYEES_BY_ZONE);
 	                ps.setDate(1, new java.sql.Date(date.getTime()));
-	                ps.setDate(2, new java.sql.Date(date.getTime()));
-	                ps.setDate(3,  new java.sql.Date(TransStringUtil.getWeekOf(date).getTime()));
-	                ps.setString(4, zone);
+	                ps.setString(2, zone);
 	                
 	                
 	                return ps;
