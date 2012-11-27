@@ -73,7 +73,7 @@ public class PricingEngine {
 				} else {
 					//basePrice = price.getBasePrice() * (1.0 - discount.getAmount());
 					double percentoff = price.getBasePrice() * discount.getAmount();
-					if(percentoff > discount.getMaxPercentageDiscount()) {
+					if(discount.getMaxPercentageDiscount() > 0 && percentoff > discount.getMaxPercentageDiscount()) {
 						percentoff = discount.getMaxPercentageDiscount();
 					}
 					basePrice = price.getBasePrice() - percentoff;
@@ -82,7 +82,7 @@ public class PricingEngine {
 				// percent off from base price
 				//basePrice = price.getBasePrice() * (1.0 - discount.getAmount());
 				double percentoff = price.getBasePrice() * discount.getAmount();
-				if(percentoff > discount.getMaxPercentageDiscount()) {
+				if(discount.getMaxPercentageDiscount() > 0 && percentoff > discount.getMaxPercentageDiscount()) {
 					percentoff = discount.getMaxPercentageDiscount();
 				}
 				basePrice = price.getBasePrice() - percentoff;
