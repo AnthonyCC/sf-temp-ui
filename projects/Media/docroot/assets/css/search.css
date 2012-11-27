@@ -262,7 +262,10 @@
 	font-weight:bold;
 }
 
-.sortitem,.sortitem:visited,a.sortitem,a.sortitem:visited  {
+.sortitem,
+.sortitem:visited,
+a.sortitem,
+a.sortitem:visited  {
 	text-decoration:none;
 	color:#336600;
 	padding-left:10px;
@@ -270,10 +273,9 @@
 	margin-left:0.5em;
 }
 
-.sortitem:hover,a.sortitem:hover  {
+.sortitem:hover {
 	text-decoration:underline;
 }
-
 
 .sortitem.nodot {
 	background:none;
@@ -281,8 +283,8 @@
 }
 
 .sortitem-selected,a.sortitem-selected {
+	text-decoration:none;
 	font-weight:bold;
-	text-decoration:underline;
 }
 
 #viewswitcher {
