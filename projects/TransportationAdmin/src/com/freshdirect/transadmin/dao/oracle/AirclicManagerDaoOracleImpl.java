@@ -38,7 +38,7 @@ public class AirclicManagerDaoOracleImpl implements AirclicManagerDaoI{
 			" TO_CHAR(ET.INSERT_TIMESTAMP, 'MM/DD/YYYY') = TO_CHAR(?, 'MM/DD/YYYY') AND SUBSTR(ROUTE,2,3) = ?";
 	
 	@Override
-	public Collection getEmployees(final Date date, final String zone, final String shift) {
+	public Collection getEmployees(final Date date, final String zone) {
 		final Set result=new HashSet();
 		
 		PreparedStatementCreator creator=new PreparedStatementCreator() {
@@ -67,7 +67,7 @@ public class AirclicManagerDaoOracleImpl implements AirclicManagerDaoI{
 	}
 	
 	
-	public Set getSignature(final Date date, final String zone, final String shift, final String empId) {
+	public Set getSignature(final Date date, final String zone, final String empId) {
 		
 		final Set result=new HashSet();
 		final StringBuffer strBuf = new StringBuffer();
@@ -78,10 +78,8 @@ public class AirclicManagerDaoOracleImpl implements AirclicManagerDaoI{
                 PreparedStatement ps =
                     connection.prepareStatement(strBuf.toString());
                 	ps.setDate(1, new java.sql.Date(date.getTime()));
-                	ps.setDate(2, new java.sql.Date(date.getTime()));
-                	ps.setDate(3,  new java.sql.Date(TransStringUtil.getWeekOf(date).getTime()));
-                	ps.setString(4, zone);
-                	ps.setString(5, empId);
+                	ps.setString(2, zone);
+                	ps.setString(3, empId);
                 		
                 return ps;
             }  

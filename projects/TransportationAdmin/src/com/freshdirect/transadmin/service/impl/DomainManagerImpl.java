@@ -1062,13 +1062,13 @@ public class DomainManagerImpl
 	}
 
 	@Override
-	public Collection getEmployees(Date date, String zone, String shift) {
-		return getAirclicManagerDao().getEmployees(date, zone, shift);
+	public Collection getEmployees(Date date, String zone) {
+		return getAirclicManagerDao().getEmployees(date, zone);
 		
 	}
 
-	public Set getSignature(Date date, String zone, String shift, String empId) {
-		return getAirclicManagerDao().getSignature(date, zone, shift, empId);
+	public Set getSignature(Date date, String zone, String empId) {
+		return getAirclicManagerDao().getSignature(date, zone, empId);
 		
 	}
 

@@ -15,9 +15,9 @@ import com.freshdirect.transadmin.web.model.TimeRange;
 
 public interface AirclicManagerDaoI {
 	
-	Collection getEmployees(Date date, String zone, String shift);
+	Collection getEmployees(Date date, String zone);
 	
-	Set getSignature(final Date date, final String zone, final String shift, final String empId);
+	Set getSignature(final Date date, final String zone, final String empId);
 		
 
 }

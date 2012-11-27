@@ -1038,7 +1038,7 @@ public class DomainController extends AbstractMultiActionController {
 		if(selectedDate != null && zoneS != null) 
 		{
 			Date rDate = TransStringUtil.getDate(selectedDate);
-			employees = getDomainManagerService().getEmployees(rDate, zoneS, "AM");	
+			employees = getDomainManagerService().getEmployees(rDate, zoneS);	
 			if(employees.size()==0)
 			{
 				List errorList = new ArrayList();
@@ -1082,7 +1082,7 @@ public class DomainController extends AbstractMultiActionController {
 			if(selectedDate != null && zone != null && empId!=null) 
 			{
 				Date rDate = TransStringUtil.getDate(selectedDate);
-				Set signature = getDomainManagerService().getSignature(rDate, zone, "AM", empId);
+				Set signature = getDomainManagerService().getSignature(rDate, zone, empId);
 				if(signature.size()>0)
 				{
 				response.getOutputStream().write((byte[]) signature.toArray()[0]);
