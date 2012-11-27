@@ -649,8 +649,9 @@ a.sortitem:visited  {
 	text-align:right;
 	padding-right:10px;
 	font-size:12px;
+	color: #336600;
 }
-.pager .back-to-top:hover {
+.pager .back-to-top a:hover {
 	text-decoration:underline;
 }
 
