@@ -12,7 +12,7 @@
 			<xsl:when test="nutrition[name='Weight Watchers Points']">
 				<table BORDER="0" CELLSPACING="0" CELLPADDING="1" WIDTH="369">
 				  <tr>
-					<td class="text9" colspan="2" align="center"><b>Weight Watchers Points</b><xsl:text> </xsl:text><xsl:apply-templates select="nutrition[name='Weight Watchers Points']"/></td>
+					<td class="text9" colspan="2" align="center"><b>Weight Watchers PointsPlus:</b><xsl:text> </xsl:text><xsl:apply-templates select="nutrition[name='Weight Watchers Points']"/></td>
 				  </tr>
 				</table>
 			</xsl:when>

@@ -105,7 +105,7 @@ public class ErpNutritionType {
         nutritionTypes.add(new Type(TOTAL_SUGAR_ALCOHOL_QUANTITY, "Sugar Alcohol quantity", "g", false, nutritionTypes.size(), false, false));
         nutritionTypes.add(new Type(TOTAL_OTHER_CARBOHYDRATE_QUANTITY, "Other Carbohydrates quantity", "g", false, nutritionTypes.size(), false, false));
 		nutritionTypes.add(new Type(NET_CARBOHYDRATES, "Net Carbohydrates", "g", false, nutritionTypes.size(), false, false));
-		nutritionTypes.add(new Type(WEIGHT_WATCHERS_POINTS, "Weight Watchers Points", "pts", false, nutritionTypes.size(), false, true));
+		nutritionTypes.add(new Type(WEIGHT_WATCHERS_POINTS, "Weight Watchers Points", "", false, nutritionTypes.size(), false, true));
         nutritionTypes.add(new Type(TOTAL_PROTEIN_QUANTITY, "Protein quantity", "g", true, nutritionTypes.size(), true, true));
         nutritionTypes.add(new Type(VITAMIN_A, "Vitamin A", "%", true, nutritionTypes.size(), true, true));
         nutritionTypes.add(new Type(VITAMIN_C, "Vitamin C", "%", true, nutritionTypes.size(), true, true));
