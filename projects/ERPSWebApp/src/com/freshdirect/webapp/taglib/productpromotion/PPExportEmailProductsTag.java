@@ -107,9 +107,10 @@ public class PPExportEmailProductsTag extends AbstractGetterTag{
 					ProductModel prodModel = ((SkuModel) ContentFactory.getInstance().getContentNodeByKey(new ContentKey(FDContentTypes.SKU, promotionSkuModel.getSkuCode()))).getProductModel();
 					productModel = new ProductModelPromotionAdapter(prodModel,promotionSkuModel.isFeatured(),promotionSkuModel.getFeaturedHeader(),promotionSkuModel.getSkuCode());
 				} catch (Exception e){
+					LOGGER.info("sku "+promotionSkuModel.getSkuCode() +" missing in CMS "+e.getMessage());	
 					
 				}
-				if(!productModel.isUnavailable()){
+				if(productModel!=null && !productModel.isUnavailable()){
 					String featHeader = promotionSkuModel.getFeaturedHeader();
 					EnumFeaturedHeaderType fhType = null;
 					if(null !=featHeader && !"".equals(featHeader.trim())){
