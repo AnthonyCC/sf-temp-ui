@@ -54,7 +54,11 @@ class ReconciliationCaseBuilder {
 					this.salePk,
 					CrmCaseSubject.getEnum(CrmCaseSubject.CODE_SHORTOUTITEM), // Modified to change OIQ-005(Became Obsolete) to OUT-007
 					"order #" + this.salePk.getId() + " was shortshipped");
-			info.setNote(this.details.toString());
+			
+			if(this.details.length()>4000)
+				info.setNote(this.details.substring(0, 4000));
+			else
+				info.setNote(this.details.toString());
 
 			cases.add(info);
 		}
