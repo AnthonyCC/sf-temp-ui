@@ -806,5 +806,7 @@ public interface FDCustomerManagerSB extends EJBObject {
 	
 	public List<FDCartonInfo> getCartonDetailsForSale(FDOrderI order) throws FDResourceException, RemoteException;
 	
+	public Map getAssignedCustomerParams(FDUser user) throws FDResourceException, RemoteException;
+	
 }
 

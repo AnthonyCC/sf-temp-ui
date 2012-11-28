@@ -210,6 +210,7 @@ public class RegistrationAction extends WebActionSupport {
 					//Set the Default Delivery pass status.
 					FDUserDlvPassInfo dlvpassInfo = new FDUserDlvPassInfo(EnumDlvPassStatus.NONE, null, null, null,0,0,0,false,0,null,0,null);
 					user.getUser().setDlvPassInfo(dlvpassInfo);
+					user.getUser().setAssignedCustomerParams(FDCustomerManager.getAssignedCustomerParams(user.getUser()));
 					session.setAttribute(SessionName.USER, user);
 				} catch (ErpDuplicateUserIdException de) {
 					LOGGER.warn("User registration failed due to duplicate id", de);
@@ -457,6 +458,7 @@ public class RegistrationAction extends WebActionSupport {
 					//Set the Default Delivery pass status.
 					FDUserDlvPassInfo dlvpassInfo = new FDUserDlvPassInfo(EnumDlvPassStatus.NONE, null, null, null,0,0,0,false,0,null,0,null);
 					user.getUser().setDlvPassInfo(dlvpassInfo);
+					user.getUser().setAssignedCustomerParams(FDCustomerManager.getAssignedCustomerParams(user.getUser()));
 					session.setAttribute(SessionName.USER, user);
 					
 				} catch (ErpDuplicateUserIdException de) {

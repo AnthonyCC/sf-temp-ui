@@ -256,7 +256,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			boolean isGiftCardBuyer) throws FDResourceException,
 			ErpDuplicateUserIdException {
 
-		System.out.println("FDCustomerManagerSessionBean: In register");
+		//System.out.println("FDCustomerManagerSessionBean: In register");
 		Connection conn = null;
 		try {
 			//
@@ -267,20 +267,20 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			if (!isGiftCardBuyer) {
 				fraudResults = fraudSB.checkRegistrationFraud(erpCustomer);
 			}
-			System.out.println("FDCustomerManagerSessionBean: Fraud check done");
+			//System.out.println("FDCustomerManagerSessionBean: Fraud check done");
 			erpCustomer.setActive(true);
 			ErpCustomerManagerSB erpCustomerManagerSB = this
 					.getErpCustomerManagerHome().create();
 			LOGGER.debug("Creating customer in ERPS");
-			System.out.println("FDCustomerManagerSessionBean: Creating customer in ERPS");
+			//System.out.println("FDCustomerManagerSessionBean: Creating customer in ERPS");
 			PrimaryKey pk = erpCustomerManagerSB.createCustomer(erpCustomer,
 					isGiftCardBuyer);
 			LOGGER.debug("Created customer in ERPS");
-			System.out.println("FDCustomerManagerSessionBean: Created customer in ERPS");
+			//System.out.println("FDCustomerManagerSessionBean: Created customer in ERPS");
 
 			String erpCustomerId = pk.getId();
 			LOGGER.debug("ERPS customer ID: " + erpCustomerId);
-			System.out.println("FDCustomerManagerSessionBean: ERPS customer ID: " + erpCustomerId);
+			//System.out.println("FDCustomerManagerSessionBean: ERPS customer ID: " + erpCustomerId);
 
 			fdCustomer.setErpCustomerPK(erpCustomerId);
 			fdCustomer.setProfile(new ProfileModel());
@@ -298,7 +298,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			ps.close();
 			ps = null;
 			
-			System.out.println("FDCustomerManagerSessionBean: All set and ready to send email.");
+			//System.out.println("FDCustomerManagerSessionBean: All set and ready to send email.");
 
 			// now send email
 			ErpCustomerInfoModel erpInfo = erpCustomer.getCustomerInfo();
@@ -315,7 +315,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			/*this.doEmail(FDEmailFactory.getInstance().createConfirmSignupEmail(
 					emailInfo));
 			*/
-			System.out.println("-------------------------------------"+TEmailsUtil.isTransEmailEnabled(EnumTranEmailType.CUST_SIGNUP));
+			//System.out.println("-------------------------------------"+TEmailsUtil.isTransEmailEnabled(EnumTranEmailType.CUST_SIGNUP));
 			boolean isUseOtherEmailMode=true;
 			if(TEmailsUtil.isTransEmailEnabled(EnumTranEmailType.CUST_SIGNUP)){
 				LOGGER.debug("-------------------------------------------Doing Transaction email");
@@ -736,6 +736,18 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			user.setDlvPassInfo(getDeliveryPassInfo(user));
 			return user;
 
+		} catch (SQLException sqle) {
+			throw new FDResourceException(sqle);
+		} finally {
+			close(conn);
+		}
+	}
+	
+	public Map getAssignedCustomerParams(FDUser user) throws FDResourceException {
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			return getAssignedCustomerParams(user,conn);
 		} catch (SQLException sqle) {
 			throw new FDResourceException(sqle);
 		} finally {
@@ -2789,10 +2801,10 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			ErpComplaintModel alteredComplaint = sb.getComplaintInfo(saleId,
 					cPk.getId()).getComplaint();
 			
-			System.out.println(alteredComplaint.okToSendEmailOnCreate());
-			System.out.println(alteredComplaint.getStatus());
-			System.out.println(alteredComplaint.okToSendEmailOnCreate());
-			System.out.println(alteredComplaint.okToSendEmailOnApproval());
+			//System.out.println(alteredComplaint.okToSendEmailOnCreate());
+			//System.out.println(alteredComplaint.getStatus());
+			//System.out.println(alteredComplaint.okToSendEmailOnCreate());
+			//System.out.println(alteredComplaint.okToSendEmailOnApproval());
 			
 			if (alteredComplaint.okToSendEmailOnCreate()
 					|| (alteredComplaint.getStatus().equals(
@@ -6505,7 +6517,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 	}
 	
 	public void doEmail(EnumTranEmailType type, Map input ) throws FDResourceException {
-		System.out.println("---------------------------calling doEmail");
+		//System.out.println("---------------------------calling doEmail");
 		try {
 			TEmailInfoHome home= getTMailerHome();
 			TEmailInfoSB remote= home.create();			

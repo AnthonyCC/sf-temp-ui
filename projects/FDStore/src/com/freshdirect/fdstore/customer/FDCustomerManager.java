@@ -4057,4 +4057,20 @@ public class FDCustomerManager {
 		}	
 		
 	}
+	
+	public static Map getAssignedCustomerParams(FDUser user) throws FDResourceException {
+		lookupManagerHome();
+
+		try {
+			FDCustomerManagerSB sb = managerHome.create();
+			return sb.getAssignedCustomerParams(user);
+		} catch (CreateException ce) {
+			invalidateManagerHome();
+			throw new FDResourceException(ce, "Error creating session bean");
+		} catch (RemoteException re) {
+			invalidateManagerHome();
+			throw new FDResourceException(re, "Error talking to session bean");
+		}
+
+	}
 }
