@@ -7,9 +7,9 @@
 
 /* Test : Debug Functions ----------------------------------------------------*/
 
-var global_gcDebug = true;
-var global_gcLog = true;
-var lastEdit = '2011.06.24_04.15.58.PM';
+var global_gcDebug = false;
+var global_gcLog = false;
+var lastEdit = '2012.11.28_12.39.29.PM';
 var lastLog;
 
 gcLog('Last Edit: '+lastEdit);
