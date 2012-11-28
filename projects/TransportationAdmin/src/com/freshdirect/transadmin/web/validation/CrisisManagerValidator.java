@@ -23,7 +23,7 @@ public class CrisisManagerValidator extends AbstractValidator {
 		ValidationUtils.rejectIfEmpty(errors, "destinationDate", "app.error.112", new Object[]{"Destination Date"},"required field");
 		ValidationUtils.rejectIfEmpty(errors, "selectedDate", "app.error.112", new Object[]{"Selected Date"},"required field");
 		
-		if(model != null && model.getSelectedDate() != null && model.getSelectedDate().before(new Date())) {
+		if(model != null && model.getSelectedDate() != null && model.getSelectedDate().before(DateUtil.truncate(new Date()))) {
 			errors.rejectValue("selectedDate", "app.error.142", new Object[]{"SelectedDate Date"},"can't be past date");
 		}
 		if(model != null && model.getDestinationDate() != null && model.getSelectedDate()!= null && model.getDestinationDate().before(model.getSelectedDate())) {
