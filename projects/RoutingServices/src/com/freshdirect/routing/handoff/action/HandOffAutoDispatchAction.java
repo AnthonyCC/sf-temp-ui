@@ -444,11 +444,11 @@ public class HandOffAutoDispatchAction extends AbstractHandOffAction {
 							{
 								if(_dispatch.getBatchDispatchResources()==null)
 								{
-									_dispatch.setBatchDispatchResources(runnerPlan.getBatchPlanResources());
+									_dispatch.setBatchDispatchResources(convertPlnToDispatchResource(runnerPlan.getBatchPlanResources(), _dispatch));
 								}
 								else
 								{
-									_dispatch.getBatchDispatchResources().addAll(runnerPlan.getBatchPlanResources());
+									_dispatch.getBatchDispatchResources().addAll(convertPlnToDispatchResource(runnerPlan.getBatchPlanResources(), _dispatch));
 								}
 								assignedRunners.add(runnerPlan);
 								runnerCount++;
@@ -508,6 +508,23 @@ public class HandOffAutoDispatchAction extends AbstractHandOffAction {
 		}
 		
 	}
+	
+	
+	public static Set convertPlnToDispatchResource(Set planResourceList,IHandOffDispatch dispatch){
+		Set dispatchResourceList=new HashSet();
+		if(planResourceList!=null && planResourceList.size()>0){
+
+			Iterator iterator=planResourceList.iterator();
+			while(iterator.hasNext()){
+				IHandOffBatchDispatchResource resource=(IHandOffBatchDispatchResource)iterator.next();
+				resource.setPlanId(dispatch.getPlanId());
+				dispatchResourceList.add(resource);
+			}
+
+		}
+		return dispatchResourceList;
+	}
+
 	
 	private static IHandOffBatchRoute matchRoute(IHandOffBatchPlan p, List<IHandOffBatchRoute> routeList) throws ParseException {
 		IHandOffBatchRoute result = null;
