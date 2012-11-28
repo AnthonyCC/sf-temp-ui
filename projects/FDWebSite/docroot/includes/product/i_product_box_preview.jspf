@@ -49,7 +49,7 @@
        } catch (Exception fdsnf){
        }
 %>
-<display:SimpleProductImage product="<%= pm %>" size="<%= imageSize %>"/><span class="<%= burstClass %>"></span></a>
+<fd:USQProductBurst product="<%=pm%>"/><display:SimpleProductImage product="<%= pm %>" size="<%= imageSize %>"/><span class="<%= burstClass %>"></span></a>
 </div>
 </display:ProductBurstClass>
 <div class="grid-item-rating">

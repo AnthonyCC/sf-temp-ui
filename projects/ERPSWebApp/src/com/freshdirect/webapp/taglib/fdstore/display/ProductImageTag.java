@@ -400,9 +400,7 @@ public class ProductImageTag extends BodyTagSupport {
 		try {
 			if ( "USQ".equalsIgnoreCase(product.getDepartment()==null?"":product.getDepartment().toString()) && (product.getSku(0).getProduct() != null && !"".equals(product.getSku(0).getProduct().getMaterial().getAlcoholicContent().getCode())) ) {
 				if ((pageContext.getRequest().getParameter("catId") == null || !pageContext.getRequest().getParameter("catId").startsWith("usq")) && !"usq".equals(pageContext.getRequest().getParameter("deptId")) && !((HttpServletRequest)pageContext.getRequest()).getServletPath().contains("wine")) {
-        			buf.append("<div class=\"usq_legal_warning_product_image\" style=\"position: absolute; top: " + (getBoundImgHeight(prodImg) - 33) + "px; left: " + (getBoundImgWidth(prodImg) - 30) + "px;\">");
-        			buf.append("<img src=\"/media_stat/images/layout/small_usq.png\" alt=\"Small USQ logo\" />");
-        			buf.append("</div>");
+					buf.append("<span class=\"burst-usq\"></span>");
 				}
 			}
 		} catch (FDResourceException e1) {

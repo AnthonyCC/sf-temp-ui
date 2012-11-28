@@ -5244,4 +5244,15 @@
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
      </tag>
+    <tag>
+		<name>USQProductBurst</name>
+		<tagclass>com.freshdirect.webapp.taglib.fdstore.USQProductBurstTag</tagclass>
+		<bodycontent>JSP</bodycontent>
+		<info></info>
+		<attribute>
+			<name>product</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+     </tag>
 </taglib>

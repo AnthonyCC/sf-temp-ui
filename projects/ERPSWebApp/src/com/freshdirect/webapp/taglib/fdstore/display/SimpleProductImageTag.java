@@ -52,15 +52,6 @@ public class SimpleProductImageTag extends BodyTagSupportEx {
 		}
 		try {
 			pageContext.getOut().print("<img src=\"" + StringEscapeUtils.escapeHtml(src) + "\">");
-			try {
-				if ( "USQ".equalsIgnoreCase(product.getDepartment()==null?"":product.getDepartment().toString()) && (product.getSku(0).getProduct() != null && !"".equals(product.getSku(0).getProduct().getMaterial().getAlcoholicContent().getCode())) ) {
-					if ((pageContext.getRequest().getParameter("catId") == null || !pageContext.getRequest().getParameter("catId").startsWith("usq")) && !"usq".equals(pageContext.getRequest().getParameter("deptId")) && !((HttpServletRequest)pageContext.getRequest()).getServletPath().contains("wine")) {
-						pageContext.getOut().print("<img class=\"usq_legal_warning_simple_product_image\" src=\"/media_stat/images/layout/small_usq.png\" alt=\"Small USQ logo\" />");
-					}
-				}
-			} catch (FDResourceException e1) {
-			} catch (FDSkuNotFoundException e1) {
-			}
 		} catch (IOException e) {
 			throw new JspException(e);
 		}

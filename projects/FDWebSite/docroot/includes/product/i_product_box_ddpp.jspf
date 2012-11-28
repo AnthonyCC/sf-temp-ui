@@ -72,7 +72,7 @@
 			       } catch (Exception fdsnf){
 			       }
 			%>
-			<display:SimpleProductImage product="<%= pm %>" size="<%= imageSize %>"/></display:ProductLink>
+			<fd:USQProductBurst product="<%=pm%>"/><display:SimpleProductImage product="<%= pm %>" size="<%= imageSize %>"/></display:ProductLink>
 		</div>
 		<div class="prodRating"><display:ProductRating product="<%= pm %>" action="<%= actionURI %>" /></div>
 		<div class="prodName"><display:ProductName product="<%= pm %>" action="<%= actionURI %>" truncAt="80" useEllipsis="true" disabled="<%=disableLinks%>" /></div>
