@@ -39,7 +39,9 @@
 <input type="hidden" name="autoId" value="<%=id%>"/>
 <div class="sub_nav">
 <span class="sub_nav_title">Auto Late Delivery Credit Lates </span> 
+<% if(FDStoreProperties.isAutoLateCreditButtonOn()) { %>
 <input type="submit" value="Approve Selected Credits" class="submit"/>
+<% } %>
 </div>
 
 <div class="content" style="height: 80%;">
