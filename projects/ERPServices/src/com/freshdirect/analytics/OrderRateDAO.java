@@ -409,6 +409,40 @@ public class OrderRateDAO {
 		}
 		
 	}
+	private static final String DELETE_EXCEPTIONS = "DELETE FROM MIS.ORDER_RATE_HOLIDAY";
+	private static final String INSERT_EXCEPTIONS = "INSERT INTO MIS.ORDER_RATE_HOLIDAY(DELIVERY_DATE) VALUES (?)";
+	
+	
+	public static void saveExceptions(Connection conn, Set<Date> dates) {
+		PreparedStatement ps =null;
+		try
+		{
+			ps = conn.prepareStatement(DELETE_EXCEPTIONS);
+			ps.executeUpdate();
+			ps.close();
+			ps = conn.prepareStatement(INSERT_EXCEPTIONS);
+			for(Date date: dates)
+			{
+				ps.setDate(1, new java.sql.Date(date.getTime()));
+				ps.addBatch();
+			}
+			ps.executeBatch();
+		}
+		catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		finally{
+			try 
+			{
+				ps.close();
+			} 
+			catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+	}
 	
 
 

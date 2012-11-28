@@ -39,6 +39,7 @@ public class OrderRateSessionBean extends SessionBeanSupport {
 			Set<Date> baseDates =  (Set<Date>) orderRateMap.get("dates");
 			Iterator<Date> dateIterator = baseDates.iterator();
 			Map<Date, Integer> holidayMap = OrderRateDAO.getHolidayMap(conn);
+			OrderRateDAO.saveExceptions(conn, holidayMap.keySet());
 			Set<Date> dates = new HashSet<Date>();
 			Map<Date, Date[]> sampleMap = new HashMap<Date, Date[]>();
 			while(dateIterator.hasNext())
