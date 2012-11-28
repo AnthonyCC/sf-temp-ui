@@ -21,13 +21,15 @@
 				header:'quickbuy-noheader'
 		};
 		</script>
+		<%@ include file="/shared/template/includes/i_head_end.jspf" %>
 	</head>
-<!--[if lt IE 7]><html class="ie ie6 newproducts <tmpl:get name="noResult"/> <tmpl:get name="startPage"/> <tmpl:get name='dfgs-container-class'/>"><![endif]-->
-<!--[if IE 7]><html class="ie ie7 newproducts <tmpl:get name="noResult"/> <tmpl:get name="startPage"/> <tmpl:get name='dfgs-container-class'/>"> <![endif]-->
-<!--[if IE 8]><html class="ie ie8 newproducts <tmpl:get name="noResult"/> <tmpl:get name="startPage"/> <tmpl:get name='dfgs-container-class'/>"> <![endif]-->
+<!--[if lt IE 7]><body class="ie ie6 newproducts <tmpl:get name="noResult"/> <tmpl:get name="startPage"/> <tmpl:get name='dfgs-container-class'/>"><![endif]-->
+<!--[if IE 7]><body class="ie ie7 newproducts <tmpl:get name="noResult"/> <tmpl:get name="startPage"/> <tmpl:get name='dfgs-container-class'/>"> <![endif]-->
+<!--[if IE 8]><body class="ie ie8 newproducts <tmpl:get name="noResult"/> <tmpl:get name="startPage"/> <tmpl:get name='dfgs-container-class'/>"> <![endif]-->
 <!--[if gt IE 8]><!-->
 	<body class="newproducts <tmpl:get name="noResult"/> <tmpl:get name="startPage"/> <tmpl:get name='dfgs-container-class'/>">
 	<!--<![endif]-->
+		<%@ include file="/shared/template/includes/i_body_start.jspf" %>
 		<%@ include file="/common/template/includes/globalnav.jspf" %> 
 	<div id="deptnav" class="newprod-deptnav container"><tmpl:get name='deptnav-header' /></div>
     <div id="content_top" class="content-header container">
