@@ -51,10 +51,10 @@
 	CrmAgentModel agent = CrmSession.getCurrentAgent(request.getSession());	
 	boolean isPromoAllAccessUser = CrmSecurityManager.isPromoAllAccessUser(agent.getRole().getLdapRoleName());
 %>
-
 <div class="promo_nav">
 <% if(FDStoreProperties.isPromoPublishNodeMaster() && isPromoAllAccessUser) { %>
-	<% if (promo_home || promo_view) { %>
+	<% if(!agent.getRole().getCode().equals("HR")) {
+		if (promo_home || promo_view) { %>
 		<div class="promo_sub_nav_on">
 			View
 		</div>
@@ -62,7 +62,7 @@
 		<div class="promo_sub_nav">
 			<a href="/promotion/promo_view.jsp">View</a>
 		</div>
-	<% } %>
+	<% } } %>
 	<% if (promo_create) { %>
 		<div class="promo_sub_nav_on">
 			Create
@@ -83,7 +83,8 @@
 		</div>
 	<% } %>
 <% } else if(FDStoreProperties.isPromoPublishNodeMaster() && CrmSecurityManager.hasAccessToPage(agent.getRole().getLdapRoleName(),"promo_create.jsp")) { %>
-	<% if (promo_home || promo_view) { %>
+	<% if(!agent.getRole().getCode().equals("HR")) {
+		if (promo_home || promo_view) { %>
 		<div class="promo_sub_nav_on">
 			View
 		</div>
@@ -91,7 +92,7 @@
 		<div class="promo_sub_nav">
 			<a href="/promotion/promo_view.jsp">View</a>
 		</div>
-	<% } %>
+	<% } } %>
 	<% if (promo_create) { %>
 		<div class="promo_sub_nav_on">
 			Create
@@ -102,7 +103,8 @@
 		</div>
 	<% } %>
 <% } else { %>
-	<% if (promo_home || promo_view) { %>
+	<% if(!agent.getRole().getCode().equals("HR")) {
+		if (promo_home || promo_view) { %>
 		<div class="promo_sub_nav_on">
 			View
 		</div>
@@ -110,7 +112,7 @@
 		<div class="promo_sub_nav">
 			<a href="/promotion/promo_view.jsp">View</a>
 		</div>
-	<% } %>
+	<% } } %>
 <% } %>
 <script type="text/javascript">
 	function showImportPanel() {

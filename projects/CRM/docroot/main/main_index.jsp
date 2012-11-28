@@ -31,6 +31,11 @@ session.setAttribute(SessionName.APPLICATION, "CALLCENTER");
 <crm:GetCurrentAgent id='currentAgent'>
 <% 
 CrmAgentRole crmRole = currentAgent.getRole();
+
+if(crmRole.getCode().equals("HR")) {
+	response.sendRedirect("/promotion/promo_hronly.jsp");
+}
+
 boolean showOrderRouteSection = crmRole.getCode().equals(CrmAgentRole.ADM_CODE)
 							|| crmRole.getCode().equals(CrmAgentRole.DEV_CODE)
 							|| crmRole.getCode().equals(CrmAgentRole.QA_CODE)

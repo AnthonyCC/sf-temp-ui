@@ -14,7 +14,9 @@ List linksList = MenuManager.getInstance().getLinksForRole(request);
 <table width="100%"	cellpadding="6"	cellspacing="0"	border="0" class="main_nav">
 	<tr>
 		<td	width="75%"	style="padding-left: 0px;">
+			<% if(!crmRole.getCode().equals("HR")) { %>
 			<a href="/main/clear_session.jsp" class="<%=pageURI.indexOf("/main/main_index.jsp") > -1?"main_nav_on":"main_nav_link"%>">Home</a>
+			<% } %>
 			<%-- if(currentAgent.getRole().equals(CrmAgentRole.getEnum(CrmAgentRole.EXC_CODE))) {	%> 
 				<a href="javascript:javascript:popResize('http://reporting','715','940')" class="main_nav_link">Marketing Reports</a>
 			<% } --%>
