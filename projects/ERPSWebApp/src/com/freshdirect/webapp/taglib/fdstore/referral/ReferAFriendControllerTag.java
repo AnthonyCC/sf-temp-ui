@@ -47,7 +47,7 @@ public class ReferAFriendControllerTag extends com.freshdirect.framework.webapp.
 				valid = false;
 			} else {
 				while(stokens.hasMoreTokens()) {
-					String recipient = stokens.nextToken();
+					String recipient = stokens.nextToken().trim();
 					if(!EmailUtil.isValidEmailAddress(recipient)) {
 						valid = false;
 						break;

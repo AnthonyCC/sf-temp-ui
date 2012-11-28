@@ -1213,7 +1213,7 @@ public class FDReferralManagerSessionBean extends FDSessionBeanSupport {
 			
 			StringTokenizer stokens = new StringTokenizer(recipient_list, ",");			
 			while(stokens.hasMoreTokens()) {
-				String recipient = stokens.nextToken();
+				String recipient = stokens.nextToken().trim();
 				System.out.println("\n\n\n trimmed_recipient:" + recipient);
 				xemail.setRecipient(recipient);
 				mailer.enqueueEmail(xemail);
