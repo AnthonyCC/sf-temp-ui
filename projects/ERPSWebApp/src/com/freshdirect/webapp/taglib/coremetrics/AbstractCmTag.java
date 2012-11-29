@@ -51,6 +51,10 @@ public abstract class AbstractCmTag extends SimpleTagSupport {
 
 		} catch (SkipTagException e) {
 			LOGGER.debug("no tag will be inserted here due to SkipTagException: "+ e.getMessage());
+			if (wrapIntoFunction){
+				//print empty function
+				getJspContext().getOut().println(START_FUNCTION+END_FUNCTION);
+			}
 		} catch (CmContextException e) {
 			LOGGER.debug("CmContextException: " + e.getMessage());
 		}
