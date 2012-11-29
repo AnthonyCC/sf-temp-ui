@@ -1472,8 +1472,8 @@ public class FDPromotionManagerDAO {
 	
 	private final static String assignedCustomerStrategyForPromoQuery1 =
 		"select count(*) "
-			+ "from cust.promotion_new p, cust.promo_customer pc, cust.customer c "
-			+ "where p.id=pc.promotion_id and pc.customer_id=c.id "
+			+ "from cust.promotion_new p, cust.promo_customer pc " //, cust.customer c "
+			+ "where p.id=pc.promotion_id " //and pc.customer_id=c.id "
 			+ "and pc.promotion_id = ?";
 	
 	protected static int loadAssignedCustomerUserIds1(Connection conn, String promotionId) throws SQLException {
