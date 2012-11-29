@@ -108,6 +108,59 @@ public class DlvRestrictionsList implements Serializable {
 		return l;
 	}
 
+	/**
+	 * @return List of all restrictions that contain the specified range  
+	 */
+	public List<RestrictionI> getRestrictionsContainingExcept(DateRange range,EnumDlvRestrictionCriterion criterion,EnumDlvRestrictionReason reason) {
+		List<RestrictionI> l = new ArrayList<RestrictionI>();
+		for ( RestrictionI rest : restrictions ) {
+			if ((criterion.equals(rest.getCriterion())) && reason.equals(rest.getReason())) {
+				continue;
+			}
+			if (rest.contains(range)) {
+				l.add(rest);
+			}
+		}
+		return l;
+	}
+	
+	public List<RestrictionI> getRestrictionsExcept(DateRange range,EnumDlvRestrictionCriterion criterion,EnumDlvRestrictionReason reason) {
+		return this.getRestrictionsExcept( criterion, reason, range);
+	}
+	
+	public List<RestrictionI> getRestrictionsExcept(
+			EnumDlvRestrictionCriterion criterion,
+			EnumDlvRestrictionReason reason,
+			DateRange range) {
+			List<RestrictionI> l = new ArrayList<RestrictionI>();
+			for ( RestrictionI rest : restrictions ) {
+				if ((criterion.equals(rest.getCriterion())) && reason.equals(rest.getReason())) {
+					continue;
+				}
+				if (rest.overlaps(range)) {
+					l.add(rest);
+				}
+			}
+			return l;
+		}
+	
+	public List<RestrictionI> getRestrictionsContaining(
+			EnumDlvRestrictionCriterion criterion,
+			EnumDlvRestrictionReason reason,
+			EnumDlvRestrictionType type,
+			DateRange range) {
+			List<RestrictionI> l = new ArrayList<RestrictionI>();
+			for ( RestrictionI rest : restrictions ) {
+				if (!rest.isMatching(criterion, reason, type)) {
+					continue;
+				}
+				if (rest.contains(range)) {
+					l.add(rest);
+				}
+			}
+			return l;
+		}
+	
 	public List<RestrictionI> getRestrictions(EnumDlvRestrictionReason reason) {
 		return this.getRestrictions(reason, null);
 	}
