@@ -13,6 +13,7 @@ import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.content.CategoryModel;
 import com.freshdirect.fdstore.content.ContentFactory;
+import com.freshdirect.fdstore.content.ContentNodeModelUtil;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.BodyTagSupportEx;
@@ -29,7 +30,7 @@ public class USQProductBurstTag extends BodyTagSupportEx {
 	public int doStartTag() throws JspException {
 		
 		try {
-			if ( "USQ".equalsIgnoreCase(product.getDepartment()==null?"":product.getDepartment().toString()) && (product.getSku(0).getProduct() != null && !"".equals(product.getSku(0).getProduct().getMaterial().getAlcoholicContent().getCode())) ) {
+			if ( ContentNodeModelUtil.hasWineDepartment(product.getContentKey()) && (product.getSku(0).getProduct() != null && !"".equals(product.getSku(0).getProduct().getMaterial().getAlcoholicContent().getCode())) ) {
 				if ((pageContext.getRequest().getParameter("catId") == null || !pageContext.getRequest().getParameter("catId").startsWith("usq")) && !"usq".equals(pageContext.getRequest().getParameter("deptId")) && !((HttpServletRequest)pageContext.getRequest()).getServletPath().contains("wine")) {
 					pageContext.getOut().append("<span class=\"burst-usq\"></span>");
 	    			//pageContext.getOut().append("<div class=\"usq_legal_warning_product_image\" style=\"position: absolute; left: " + (0) + "px;\">");

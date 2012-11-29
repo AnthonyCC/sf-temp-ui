@@ -1,10 +1,8 @@
 package com.freshdirect.webapp.taglib.fdstore.display;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URLDecoder;
 import java.util.HashMap;
 import java.util.Set;
 import java.util.StringTokenizer;
@@ -18,9 +16,11 @@ import javax.servlet.jsp.tagext.VariableInfo;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.log4j.Category;
 
+import com.freshdirect.cms.ContentNodeI;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.fdstore.content.ContentNodeModelUtil;
 import com.freshdirect.fdstore.content.EnumBurstType;
 import com.freshdirect.fdstore.content.Image;
 import com.freshdirect.fdstore.content.PriceCalculator;
@@ -31,7 +31,6 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.BodyTagSupport;
 import com.freshdirect.webapp.taglib.fdstore.BrowserInfo;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
-import com.rsa.certj.spi.pki.PKIException;
 
 
 
@@ -398,7 +397,7 @@ public class ProductImageTag extends BodyTagSupport {
 
         buf.append(">");
 		try {
-			if ( "USQ".equalsIgnoreCase(product.getDepartment()==null?"":product.getDepartment().toString()) && (product.getSku(0).getProduct() != null && !"".equals(product.getSku(0).getProduct().getMaterial().getAlcoholicContent().getCode())) ) {
+			if ( ContentNodeModelUtil.hasWineDepartment(product.getContentKey()) && (product.getSku(0).getProduct() != null && !"".equals(product.getSku(0).getProduct().getMaterial().getAlcoholicContent().getCode())) ) {
 				if ((pageContext.getRequest().getParameter("catId") == null || !pageContext.getRequest().getParameter("catId").startsWith("usq")) && !"usq".equals(pageContext.getRequest().getParameter("deptId")) && !((HttpServletRequest)pageContext.getRequest()).getServletPath().contains("wine")) {
 					buf.append("<span class=\"burst-usq\"></span>");
 				}

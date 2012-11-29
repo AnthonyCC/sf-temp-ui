@@ -130,6 +130,22 @@ public class ContentNodeModelUtil {
 		}
 	}
 
+	public static boolean hasWineDepartment(ContentKey key) {
+		
+		Set<ContentKey> keys = CmsManager.getInstance().getParentKeys(key);
+		for (ContentKey currentKey : keys) {
+			if (FDContentTypes.DEPARTMENT.equals(currentKey.getType()) && "USQ".equalsIgnoreCase(currentKey.getId())) {
+				return true;
+			} else {
+				return hasWineDepartment(currentKey);
+			}
+			
+		}
+
+		return false; 
+		
+	}
+
 	public static ContentNodeModel findDefaultParent(ContentKey key) {
 		if (FDContentTypes.STORE.equals(key.getType())) {
 			return null;

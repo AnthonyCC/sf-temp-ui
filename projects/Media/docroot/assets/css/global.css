@@ -1709,7 +1709,7 @@ div.control, div.slotRow, div.time {
 	.burst-usq  {
 		background: url(/media_stat/images/layout/small_usq.png) no-repeat
 			right bottom;
-		width: 100%;
+		width: 35px;
 		height: 23px;
 		position: absolute;
 		bottom: 10px;

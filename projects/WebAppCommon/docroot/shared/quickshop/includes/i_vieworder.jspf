@@ -352,7 +352,7 @@ String source = ccListIdStr != null && ccListIdStr.length() > 0
 			<tr>
 				<td colspan="3">&nbsp;</td>
 				<td align="left" valign="bottom" colspan="4"><a class="title14" style="color: #969; text-decoration: none; text-transform: uppercase; margin-left: 4px"
-					href="/department.jsp?deptId=<%= deptId %>&trk=qslist"><%= lastDept %></a></td>
+					href="/department.jsp?deptId=<%= deptId %>&trk=qslist"><%= "USQ".equalsIgnoreCase(deptId)?"Union Square Wines":lastDept %></a></td>
 			</tr>
 			<%
 		}
