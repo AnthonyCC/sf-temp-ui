@@ -145,7 +145,7 @@ public class AutoLateDlvCreditTag extends AbstractControllerTag {
 	private static boolean extendDP(DeliveryPassModel dpm, CrmAgentModel agent, String orderId, CustomerCreditModel ccm ) throws FDResourceException {
 		int numDays = 7;
 		try {			
-			CrmManager.getInstance().incrExpirationPeriod(dpm, agent, numDays, "Late Delivery Extn", ccm.getNewCode(), orderId);
+			CrmManager.getInstance().incrExpirationPeriod(dpm, agent, numDays, "Late Delivery Extn", "LATEDEL", orderId);
 			FDIdentity identity = new FDIdentity(ccm.getCustomerId(), ccm.getFdCustomerId());
 			FDCustomerInfo custInfo = FDCustomerManager.getCustomerInfo(identity);
 			FDCustomerManager.doEmail(FDEmailFactory.getInstance().createDPCreditEmail(custInfo, orderId, 1,EnumDlvPassProfileType.UNLIMITED.getName()));
