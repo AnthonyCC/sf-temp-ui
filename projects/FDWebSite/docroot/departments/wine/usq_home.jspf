@@ -194,7 +194,7 @@ YAHOO.util.Event.onDOMReady(function() {
 	<display:UniqueFilter in="<%= deptPopular.getProducts() %>" out="prods" groupId="usq_popular">
 		
 		<script type="text/javascript">
-			var wine_popular_events = {"afterScroll":  <fd:CmElement wrapIntoFunction="true" carouselId="wine-popular" elementCategory="carousel"/>} 
+			var wine_popular_events = {"afterScroll":  <fd:CmElement wrapIntoFunction="true" siteFeature="PROD_GRP_POPULAR" elementCategory="carousel"/>} 
 		</script>
 		<display:Carousel id="carouselTag" carouselId="usq-popular" itemsToShow="<%= prods %>" maxItems="20" useAlternateImage="<%= useAlternateImage %>" 
 				width="<%=W_USQ_HOME_TOTAL-90%>" trackingCode="<%= trk %>" numItems="5" eventHandlersObj="wine_popular_events">
