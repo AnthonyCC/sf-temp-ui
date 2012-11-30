@@ -42,7 +42,6 @@ public class CrisisManagerValidator extends AbstractValidator {
 	
 	private boolean isWithInRange(Date sourceDate) {
 		Calendar begCal = Calendar.getInstance();
-		begCal.add(Calendar.DATE, 1);
 		begCal = DateUtil.truncate(begCal);
 
 		Calendar endCal = Calendar.getInstance();
