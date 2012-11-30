@@ -100,7 +100,7 @@ public class ProductsFilterTag extends FilteringFlow<ProductModel> {
 		Collections.sort(products, comparator);
 		List<FilteringSortingItem<ProductModel>> favourites = new ArrayList<FilteringSortingItem<ProductModel>>();
 		for (FilteringSortingItem<ProductModel> product : products) {
-			if (ScoreProvider.getInstance().isUserHasScore(getUserId(), product.getNode().getContentKey())) {
+			if (ScoreProvider.getInstance().isUserHasScore(getUserId(), product.getNode().getContentKey()) && product.getModel().isFullyAvailable()) {
 				favourites.add(product);
 			}
 		}
