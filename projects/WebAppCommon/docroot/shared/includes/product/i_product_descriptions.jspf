@@ -103,7 +103,7 @@
 				<script>
 				  (function ($) {
 				      $(document.body).delegate(".bazaarvoice-show-reviews-link", 'click', function (e) {
-						<fd:CmElement elementCategory="reviews"/>
+						<fd:CmElement elementCategory="reviews" productId="<%=productNode.getContentKey().getId()%>"/>
 				      });
 				  }(jQuery));
 				</script>

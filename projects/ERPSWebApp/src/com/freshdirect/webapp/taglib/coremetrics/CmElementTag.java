@@ -96,4 +96,8 @@ public class CmElementTag extends AbstractCmTag {
 	public void setQueryParamCollection(QueryParameterCollection queryParamCollection) {
 		tagModelBuilder.setQueryParamCollection(queryParamCollection);
 	}
+	
+	public void setProductId(String productId) {
+		tagModelBuilder.setProductId(productId);
+	}
 }

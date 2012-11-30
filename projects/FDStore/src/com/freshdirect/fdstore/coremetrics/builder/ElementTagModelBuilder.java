@@ -49,6 +49,7 @@ public class ElementTagModelBuilder {
 	private FDUserI user;
 	private FDTimeslot timeSlot;
 	private boolean soType;
+	private String productId;
 
 	private TabRecommendation tabRecommendation;
 	private Integer tabNumber;
@@ -220,6 +221,7 @@ public class ElementTagModelBuilder {
 	
 	private void processReviews(){
 		model.setElementId(ID_REVIEWS_VIEWED);
+		model.getAttributesMaps().put(9, productId);
 	}
 	
 	private void processVideoEvent(){
@@ -274,4 +276,7 @@ public class ElementTagModelBuilder {
 		this.queryParamCollection = queryParamCollection;
 	}
 
+	public void setProductId(String productId) {
+		this.productId = productId;
+	}
 }
