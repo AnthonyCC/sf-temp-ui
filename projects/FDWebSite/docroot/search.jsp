@@ -174,7 +174,10 @@ final int W_INDEX_RIGHT_CENTER = W_INDEX_TOTAL - 228 - W_INDEX_CENTER_PADDING;
 		<fd:ProductGroupRecommender itemCount="16" siteFeature="SRCH" facility="default" id="recommendedProducts">
 		<div class="search-recommender">
 			<h3><%= recommendedProducts.getVariant().getServiceConfig().getPresentationTitle() %></h3>
-			<display:Carousel id="cat1_carousel" carouselId="cat1_carousel" width="816" numItems="4" showCategories="false" itemsToShow="<%= recommendedProducts.getProducts() %>" trackingCode="edt-4mm" maxItems="32">
+			<script type="text/javascript">
+				var search_recommender_events = {"afterScroll":  <fd:CmElement wrapIntoFunction="true" siteFeature="SRCH" elementCategory="carousel"/>} 
+			</script>
+			<display:Carousel id="cat1_carousel" carouselId="cat1_carousel" width="816" numItems="4" showCategories="false" itemsToShow="<%= recommendedProducts.getProducts() %>" trackingCode="<%= trk %>" maxItems="32" eventHandlersObj="search_recommender_events">
 				<span class="smartstore-carousel-item">
 					<display:GetContentNodeWebId id="webId" product="<%= currentItem %>" clientSafe="<%= true %>">
 					<% ProductImpression pi = confStrat.configure((ProductModel)currentItem, confContext); %>
