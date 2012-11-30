@@ -37,6 +37,8 @@ public class ElementTagModelBuilder {
 	public static final String CAT_PRESIDENT_VIEW = "president_picks_view";
 	
 	public static final String CAT_VIDEO = "video";
+	public static final String CAT_REVIEWS = "reviews";
+	private static final String ID_REVIEWS_VIEWED = "viewed";
 	
 	private ElementTagModel model = new ElementTagModel();
 	private String elementId;
@@ -77,6 +79,8 @@ public class ElementTagModelBuilder {
 			processPresPicksSort();
 		} else if (CAT_PRESIDENT_VIEW.equals(elementCategory)){
 			processPresPicksView();
+		} else if (CAT_REVIEWS.equals(elementCategory)) {
+			processReviews();
 		}
 			
 		return model;
@@ -212,6 +216,10 @@ public class ElementTagModelBuilder {
 		} else {
 			throw new SkipTagException("No navigator found! Skipping tag.");
 		}
+	}
+	
+	private void processReviews(){
+		model.setElementId(ID_REVIEWS_VIEWED);
 	}
 	
 	private void processVideoEvent(){
