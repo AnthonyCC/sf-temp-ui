@@ -182,6 +182,7 @@ final int W_INDEX_RIGHT_CENTER = W_INDEX_TOTAL - 228 - W_INDEX_CENTER_PADDING;
 					<display:GetContentNodeWebId id="webId" product="<%= currentItem %>" clientSafe="<%= true %>">
 					<% ProductImpression pi = confStrat.configure((ProductModel)currentItem, confContext); %>
 					<a href="<%=CmMarketingLinkUtil.getSmartStoreLink(FDURLUtil.getProductURI(pi.getProductModel(), trk), recommendedProducts)%>" hidden style="display: none;" class="product-name-link"></a> <%-- For Coremetrics impression tracking --%>
+					<%pageContext.setAttribute("PRODUCT_BOX_VARIANT",recommendedProducts.getVariant().getId());%>
 					<div class="grid-item-container"><%@ include file="/includes/product/i_product_box.jspf" %></div>
 					</display:GetContentNodeWebId>
 				</span>

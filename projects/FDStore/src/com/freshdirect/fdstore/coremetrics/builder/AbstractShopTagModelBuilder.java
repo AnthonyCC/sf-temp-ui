@@ -56,7 +56,11 @@ public abstract class AbstractShopTagModelBuilder {
 			}
 		
 		} else {
-			tagModel.setCategoryId(VariantRegistry.getInstance().getService(variantId).getSiteFeature().getName());
+			try {
+				tagModel.setCategoryId(VariantRegistry.getInstance().getService(variantId).getSiteFeature().getName());
+			} catch (NullPointerException e){
+				throw new SkipTagException("Variant lookup exception", e);
+			}
 		}
 		
 		//set attributes
