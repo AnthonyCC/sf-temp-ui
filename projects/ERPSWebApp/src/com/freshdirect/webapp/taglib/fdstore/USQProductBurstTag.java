@@ -26,16 +26,14 @@ public class USQProductBurstTag extends BodyTagSupportEx {
 	private static final long serialVersionUID = -6698194047077787106L;
 
 	private ProductModel product;
+	private String forceLogo = "false";
 	
 	public int doStartTag() throws JspException {
 		
 		try {
-			if ( ContentNodeModelUtil.hasWineDepartment(product.getContentKey()) && (product.getSku(0).getProduct() != null && !"".equals(product.getSku(0).getProduct().getMaterial().getAlcoholicContent().getCode())) ) {
+			if ( "true".equals(forceLogo) || ContentNodeModelUtil.hasWineDepartment(product.getContentKey()) && (product.getSku(0).getProduct() != null && !"".equals(product.getSku(0).getProduct().getMaterial().getAlcoholicContent().getCode())) ) {
 				if ((pageContext.getRequest().getParameter("catId") == null || !pageContext.getRequest().getParameter("catId").startsWith("usq")) && !"usq".equals(pageContext.getRequest().getParameter("deptId")) && !((HttpServletRequest)pageContext.getRequest()).getServletPath().contains("wine")) {
-					pageContext.getOut().append("<span class=\"burst-usq\"></span>");
-	    			//pageContext.getOut().append("<div class=\"usq_legal_warning_product_image\" style=\"position: absolute; left: " + (0) + "px;\">");
-	    			//pageContext.getOut().append("<img src=\"/media_stat/images/layout/small_usq.png\" alt=\"Small USQ logo\" />");
-	    			//pageContext.getOut().append("</div>");
+					pageContext.getOut().append("<span name=\"burst-usq\" class=\"burst-usq\"></span>");
 				}
 			}
 		} catch (IOException e) {
@@ -56,6 +54,14 @@ public class USQProductBurstTag extends BodyTagSupportEx {
 
 	public void setProduct(ProductModel product) {
 		this.product = product;
+	}
+
+	public String isForceLogo() {
+		return forceLogo;
+	}
+
+	public void setForceLogo(String forceLogo) {
+		this.forceLogo = forceLogo;
 	}
 
 }

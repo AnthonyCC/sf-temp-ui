@@ -10,6 +10,18 @@ function swapImage(imgName,imgURL){
     	}
 }
 
+function swapImageWithBurst(imgName,imgURL, isAlcoholic, burstName){
+	if (imgURL.length>0) {
+    		document.images[imgName].src = imgURL;
+    		if (isAlcoholic=="true" && document.getElementsByName(burstName).length > 0) {
+    			document.getElementsByName(burstName)[0].style.background="url(\"/media_stat/images/layout/small_usq.png\") no-repeat scroll right bottom transparent";
+    		} else {
+    			document.getElementsByName(burstName)[0].style.background="none";
+			}
+    	}
+}
+
+
 //roll-over swap with width check
 function swapImage2(imgName,imgURL, w, h){
 	var noW;

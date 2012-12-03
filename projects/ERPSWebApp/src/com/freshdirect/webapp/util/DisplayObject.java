@@ -1,5 +1,10 @@
 package com.freshdirect.webapp.util;
 
+import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.FDSkuNotFoundException;
+import com.freshdirect.fdstore.content.ContentNodeModelUtil;
+import com.freshdirect.fdstore.content.SkuModel;
+
 /**
  * Used for displaying Categories or products in the jsp's 
  * Methods in JSP methods will return this object populated, to the jsp pages.
@@ -87,5 +92,15 @@ public class DisplayObject {
 		public void setRating(String rating) {
 			this.rating = rating;
 		}
-
+		
+		public String isAlcoholic(SkuModel product) {
+			try {
+				if ( ContentNodeModelUtil.hasWineDepartment(product.getContentKey()) && (product.getProduct() != null && !"".equals(product.getProduct().getMaterial().getAlcoholicContent().getCode())) ) {
+					return "true";
+				}
+			} catch (FDResourceException e) {
+			} catch (FDSkuNotFoundException e) {
+			}
+			return "false";
+		}
 }

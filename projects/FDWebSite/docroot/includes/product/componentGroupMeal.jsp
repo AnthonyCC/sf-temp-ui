@@ -442,7 +442,7 @@ if (isAvailable ) {
 					  <input type="hidden" name="skuCode_<%= prodCount %>" value="<%= dfltSku.getSkuCode() %>">
 					  <input type="hidden" name="catId_<%= prodCount %>" value="<%= optProd.getParentNode() %>">
 					  <input type="hidden" name="productId_<%= prodCount %>" value="<%= optProd %>">
-				  	<fd:IsAlcoholic skuCode='<%="skuCode_" + prodCount %>'>
+				  	<fd:IsAlcoholic skuCode='<%=dfltSku.getSkuCode() %>'>
 						<fd:USQLegalWarning id="productForm" tagCounter="<%=prodCount %>"/>
 						<input type="hidden" name='<%="alcoholic_" + prodCount %>' id='<%="alcoholic_" + prodCount %>' value='<%="quantity_" + prodCount %>'/>
 					</fd:IsAlcoholic>
@@ -473,14 +473,17 @@ if (isAvailable ) {
 	%>
 			<tr valign="top">
 			<td width="115">
-			<img src="<%=dispObj.getImagePath()%>" border="0" name="<%=imgName%>"></td>
+			<span style="display:inline-block;position:relative;">
+			<img src="<%=dispObj.getImagePath()%>" border="0" name="<%=imgName%>">
+			<fd:USQProductBurst product="<%=null%>" forceLogo="true"/></span></td>
+			
 			<td width="<%=W_COMPONENT_GROUP_MEAL_TOTAL-115%>">
 				<table width="<%=W_COMPONENT_GROUP_MEAL_TOTAL-115%>" cellpadding="0" cellspacing="0" border="0" align="center">
 	<% 			} 
 		
 				StringBuffer sbRollover=new StringBuffer();
 				sbRollover.append("onMouseover='");
-				sbRollover.append("swapImage(\""+imgName+"\",\""+dispObj.getImagePath()+"\"");
+				sbRollover.append("swapImageWithBurst(\""+imgName+"\",\""+dispObj.getImagePath()+"\",\""+dispObj.isAlcoholic(dfltSku)+"\",\"burst-usq\"");
 				sbRollover.append(")'");
 				imgRollOver = sbRollover.toString();
 				sbRollover = null;
@@ -491,7 +494,7 @@ if (isAvailable ) {
 				  <input type="hidden" name="catId_<%= prodCount %>" value="<%= optProd.getParentNode() %>">
 				  <input type="hidden" name="productId_<%= prodCount %>" value="<%= optProd %>">
 				  <input name ="quantity_<%=prodCount%>" value="<%=(request.getParameter("quantity_"+prodCount)==null ?"" : request.getParameter("quantity_"+prodCount))%>" type="text" size="3" onChange="chgNamedQty(pricing_<%=prodCount%>,'quantity_<%=prodCount%>',0,<%= optProd.getQuantityMinimum() %>,<%= user.getQuantityMaximum(optProd) %>,true)"></td>
-				  	<fd:IsAlcoholic skuCode='<%="skuCode_" + prodCount %>'>
+				  	<fd:IsAlcoholic skuCode='<%=dfltSku.getSkuCode() %>'>
 						<fd:USQLegalWarning id="productForm" tagCounter="<%=prodCount %>" quantityCheck="true" />
 						<input type="hidden" name='<%="alcoholic_" + prodCount %>' id='<%="alcoholic_" + prodCount %>' value='<%="quantity_" + prodCount %>'/>
 					</fd:IsAlcoholic>
@@ -642,7 +645,7 @@ if (isAvailable ) {
 
 	
 	<% } else {   %>
-		 <input type="image" id="addMultipleToCart" name="addMultipleToCart" src="/media_stat/images/buttons/add_to_cart.gif" width="93" height="20" hspace="4" vspace="0" border="0" alt="ADD SELECTED ITEMS TO CART">
+		<input type="image" id="addMultipleToCart" name="addMultipleToCart" src="/media_stat/images/buttons/add_to_cart.gif" width="93" height="20" hspace="4" vspace="0" border="0" alt="ADD SELECTED ITEMS TO CART">
 	<%  } %>
 		</td>
 		</tr>
