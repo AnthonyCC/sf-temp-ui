@@ -30,6 +30,7 @@
 	vertical-align: bottom;
 	overflow: visible; /* visible for the bursts */
 /*	width: 100%; - USQ related removal*/
+	max-width: 100%;
 }
 
 .grid-item-image img {
