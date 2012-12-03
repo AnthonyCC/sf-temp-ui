@@ -8,15 +8,20 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.StringTokenizer;
 
+import org.apache.log4j.Logger;
+
 import com.cheetahmail.apiclient.APIClient;
 import com.cheetahmail.apiclient.APIClientException;
 import com.freshdirect.framework.mail.TEmailI;
 import com.freshdirect.framework.util.ConfigHelper;
+import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.giftcard.ErpGiftCardUtil;
 import com.freshdirect.mail.EnumEmailType;
 import com.freshdirect.mail.EnumTranEmailType;
 
 public class CheetahTranMailServiceImpl implements TranMailServiceI{
+	
+	private final static Logger LOGGER = LoggerFactory.getInstance(CheetahTranMailServiceImpl.class);
 
 	private static final String EBM_SERVICE_NAME="ebmtrigger1";
 	
@@ -56,7 +61,7 @@ public class CheetahTranMailServiceImpl implements TranMailServiceI{
 		        if(emailInfo.getOasQueryString() != null)
 		        	args.put("OAS_query", emailInfo.getOasQueryString());
 		        
-		        System.out.println("args :"+args);	
+		        LOGGER.info("Cheetah args :"+args);	
 		        
 		        response=apiClient.callMethodHandler(EBM_SERVICE_NAME, args);		        
 		        Iterator it = emailInfo.getCCList().iterator();

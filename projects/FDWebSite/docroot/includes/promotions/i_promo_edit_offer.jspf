@@ -7,7 +7,7 @@
 		<td width="33%"><img width="1" height="0" src="/media_stat/crm/images/clear.gif" alt="" /></td>
 		<td width="34%"><img width="1" height="0" src="/media_stat/crm/images/clear.gif" alt="" /></td>
 		<td width="33%"><img width="1" height="0" src="/media_stat/crm/images/clear.gif" alt="" /></td>
-	</tr>
+	</tr>	
 	<tr>
 		<td><img width="0" height="50" src="/media_stat/crm/images/clear.gif" alt="" /></td>
 		<td class="bordLgrayDash noBorderTL alignC"><input type="radio" id="discount_type_header" name="discount_type" value="<%= EnumPromotionType.HEADER.getName() %>" <%= EnumPromotionType.HEADER.getName().equalsIgnoreCase(promotion.getPromotionType())?"checked":"" %>/> HEADER</td>
@@ -15,7 +15,7 @@
 		<td class="bordLgrayDash noBorderT alignC"><input type="radio" id="discount_type_line_item" name="discount_type" value="<%= EnumPromotionType.LINE_ITEM.getName() %>" <%= EnumPromotionType.LINE_ITEM.getName().equalsIgnoreCase(promotion.getPromotionType())?"checked":"" %>/> LINE ITEM</td>
 		<td class="bordLgrayDash noBorderTR alignC"><input type="radio" id="discount_type_sample" name="discount_type" value="<%= EnumPromotionType.SAMPLE.getName() %>" <%= EnumPromotionType.SAMPLE.getName().equalsIgnoreCase(promotion.getPromotionType())?"checked":"" %>/> SAMPLE</td>
 		<%} %>
-	</tr>
+	</tr>	
 	<tr>
 		<td><img width="0" height="500" src="/media_stat/crm/images/clear.gif" alt="" /></td>
 		<% if(promotion.getPromotionCode().indexOf("WS_")<=-1){ %>
@@ -271,7 +271,7 @@
 							<tr>
 								<td colspan="2"><img width="1" height="1" src="/media_stat/crm/images/clear.gif" alt="" class="promo_edit_offer-spacer" /></td>
 							</tr>
-							
+							<!--
 							<tr>
 								<td>Max Discount:</td>
 								<% if(EnumPromotionType.LINE_ITEM.getName().equalsIgnoreCase(promotion.getPromotionType())){ %>
@@ -280,6 +280,7 @@
 								<td>$ <input type="text" id="li_max_discount" name="li_max_discount" class="w50px" value="" /></td>
 								<% } %>
 							</tr>
+							-->
 
 							<tr>
 								<td colspan="2" class="bordLgrayDash noBorderTRL">&nbsp;</td>
