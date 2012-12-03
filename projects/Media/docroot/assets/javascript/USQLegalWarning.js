@@ -105,9 +105,9 @@ if (typeof FreshDirect == "undefined" || !FreshDirect) {
 	
 			var uri;
 			if (data.instant != "") {
-				uri = '/health_warning_popup.jsp?formId=' + id + '&instant=' + data.instant + '&decorate=' + data.decorate;
+				uri = document.location.protocol + '//' + document.location.host + '/health_warning_popup.jsp?formId=' + id + '&instant=' + data.instant + '&decorate=' + data.decorate;
 			} else {
-				uri = '/health_warning_popup.jsp?formId=' + id + '&decorate=' + data.decorate;
+				uri = document.location.protocol + '//' + document.location.host + '/health_warning_popup.jsp?formId=' + id + '&decorate=' + data.decorate;
 			}
 			if (!data.panel) {
 				data.panel = new YAHOO.widget.Panel('usq_legal_warning_choice_' + id, {
