@@ -103,6 +103,8 @@ public class StandingOrderUtil {
 	
 	private final static Category LOGGER = LoggerFactory.getInstance(StandingOrderUtil.class);
 	
+	private final static long RESERVATION_MILLISECONDS = 45 * 60 * 1000; // 45 minutes
+
 	public static final String INITIATOR_NAME = "Standing Order Service";
 	/**
 	 * Processes a Standing Order.
@@ -380,7 +382,7 @@ public class StandingOrderUtil {
 		}
 		FDReservation reservation = null;
 		FDTimeslot selectedTimeslot = null;
-		
+		ErpAddressModel deliveryAddress = null;
 		//Geo-Restrictions
 		List<GeographyRestriction> geographicRestrictions = new ArrayList<GeographyRestriction>();
 		geographicRestrictions = FDDeliveryManager.getInstance().getGeographicDlvRestrictions(deliveryAddressModel);
@@ -400,16 +402,23 @@ public class StandingOrderUtil {
 			}
 			if ( event == null ) {
 				event = new TimeslotEventModel(EnumTransactionSource.STANDING_ORDER.getCode(), false, 0.00, false, false);
-			}			
+			}	
+			deliveryAddress=FDCustomerManager.getAddress(customer,deliveryAddressId);
 			try { 
 				LOGGER.info( "Trying to make reservation for timeslot: " + timeslot.toString() );
-				reservation = FDCustomerManager.makeReservation( customer, timeslot, EnumReservationType.STANDARD_RESERVATION, deliveryAddressId, reserveActionInfo, false, event, false );
+				reservation = FDDeliveryManager.getInstance().reserveTimeslot(timeslot, customer.getErpCustomerPK(),
+						RESERVATION_MILLISECONDS, EnumReservationType.STANDARD_RESERVATION, deliveryAddress, false,
+						null, false, event);
+				
 				selectedTimeslot = timeslot;
 				LOGGER.info( "Timeslot reserved successfully: " + timeslot.toString() );
 			} catch ( ReservationUnavailableException e ) {
 				if(forceCapacity){
 					try {
-						reservation = FDCustomerManager.makeReservation( customer, timeslot, EnumReservationType.STANDARD_RESERVATION, deliveryAddressId, reserveActionInfo, false, event, forceCapacity);
+						reservation = FDDeliveryManager.getInstance().reserveTimeslot(timeslot, customer.getErpCustomerPK(),
+								RESERVATION_MILLISECONDS, EnumReservationType.STANDARD_RESERVATION, deliveryAddress, false,
+								null, forceCapacity, event);
+						
 					} catch (ReservationException e1) {						
 						e1.printStackTrace();
 					}
@@ -422,7 +431,9 @@ public class StandingOrderUtil {
 			} catch (ReservationException e) {
 				if(forceCapacity){
 					try {
-						reservation = FDCustomerManager.makeReservation( customer, timeslot, EnumReservationType.STANDARD_RESERVATION, deliveryAddressId, reserveActionInfo, false, event, forceCapacity);
+						reservation = FDDeliveryManager.getInstance().reserveTimeslot(timeslot, customer.getErpCustomerPK(),
+								RESERVATION_MILLISECONDS, EnumReservationType.STANDARD_RESERVATION, deliveryAddress, false,
+								null, forceCapacity, event);
 					} catch (ReservationException e1) {						
 						e1.printStackTrace();
 					}
