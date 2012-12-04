@@ -25,5 +25,7 @@ public interface IHandOffProvider {
 	
 	String getServiceTimeScenario(String deliveryDate);
 	
-	boolean doHandOffAutoDispatch(String handOffBatchId, boolean isBullpen);
+	boolean doHandOffAutoDispatch(String handOffBatchId);
+	
+	boolean doHandOffTruckAssignment(String handOffBatchId);
 }

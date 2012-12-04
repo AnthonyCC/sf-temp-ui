@@ -25,13 +25,15 @@ import com.freshdirect.routing.handoff.action.HandOffCommitAction;
 import com.freshdirect.routing.handoff.action.HandOffRoutingInAction;
 import com.freshdirect.routing.handoff.action.HandOffRoutingOutAction;
 import com.freshdirect.routing.handoff.action.HandOffStopAction;
+import com.freshdirect.routing.handoff.action.HandOffTruckAssignmentAction;
 import com.freshdirect.routing.model.HandOffBatchDepotSchedule;
 import com.freshdirect.routing.model.HandOffBatchDepotScheduleEx;
 import com.freshdirect.routing.model.IHandOffBatch;
 import com.freshdirect.routing.model.IHandOffBatchDepotSchedule;
 import com.freshdirect.routing.model.IHandOffBatchDepotScheduleEx;
-import com.freshdirect.routing.model.IHandOffBatchDispatchResource;
 import com.freshdirect.routing.model.IHandOffBatchPlan;
+import com.freshdirect.routing.model.IHandOffBatchPlanResource;
+import com.freshdirect.routing.model.IHandOffDispatch;
 import com.freshdirect.routing.model.IServiceTimeScenarioModel;
 import com.freshdirect.routing.service.exception.RoutingServiceException;
 import com.freshdirect.routing.service.proxy.HandOffServiceProxy;
@@ -243,8 +245,8 @@ public class HandOffProviderController extends BaseJsonRpcController  implements
 		return null;
 	}
 	
-	public boolean doHandOffAutoDispatch(String handOffBatchId, boolean isBullpen) {
-		LOGGER.info("doHandOffAutoDispatch were called, id: " + handOffBatchId);
+	public boolean doHandOffAutoDispatch(String handOffBatchId) {
+		LOGGER.info("doHandOffAutoDispatch was called, id: " + handOffBatchId);
 		String userId = com.freshdirect.transadmin.security.SecurityManager.getUserName(getHttpServletRequest());
 		HandOffServiceProxy proxy = new HandOffServiceProxy();
 		IHandOffBatch batch;
@@ -254,17 +256,17 @@ public class HandOffProviderController extends BaseJsonRpcController  implements
 			batch = proxy.getHandOffBatchById(handOffBatchId);			
 				
 			List<IHandOffBatchPlan> batchPlans = new ArrayList<IHandOffBatchPlan>();			
-			List<IHandOffBatchDispatchResource> batchPlanResources = new ArrayList<IHandOffBatchDispatchResource>();			
+			List<IHandOffBatchPlanResource> batchPlanResources = new ArrayList<IHandOffBatchPlanResource>();			
 
 			batchPlans = proxy.getHandOffBatchPlans(batch.getBatchId(), batch.getDeliveryDate(), batch.getCutOffDateTime());			
 			batchPlanResources =  proxy.getHandOffBatchPlanResources(batch.getBatchId(), batch.getDeliveryDate(), batch.getCutOffDateTime());
 			
-			Map<String, Set<IHandOffBatchDispatchResource>> resourceMapping = new HashMap<String, Set<IHandOffBatchDispatchResource>>();
-			Iterator<IHandOffBatchDispatchResource> itr = batchPlanResources.iterator();
+			Map<String, Set<IHandOffBatchPlanResource>> resourceMapping = new HashMap<String, Set<IHandOffBatchPlanResource>>();
+			Iterator<IHandOffBatchPlanResource> itr = batchPlanResources.iterator();
 			while(itr.hasNext()){
-				IHandOffBatchDispatchResource batchPlanResource = itr.next();
+				IHandOffBatchPlanResource batchPlanResource = itr.next();
 				if(!resourceMapping.containsKey(batchPlanResource.getPlanId())){
-					resourceMapping.put(batchPlanResource.getPlanId(), new HashSet<IHandOffBatchDispatchResource>());
+					resourceMapping.put(batchPlanResource.getPlanId(), new HashSet<IHandOffBatchPlanResource>());
 				}
 				resourceMapping.get(batchPlanResource.getPlanId()).add(batchPlanResource);				
 			}
@@ -277,6 +279,32 @@ public class HandOffProviderController extends BaseJsonRpcController  implements
 			
 			HandOffAutoDispatchAction process = new HandOffAutoDispatchAction(batch, userId, batchPlans);
 			LOGGER.info("Auto dispatch action process created and being executed: " + process.getBatch().getBatchId());
+			process.execute();
+		} catch (RoutingServiceException e) {			
+			LOGGER.warn("routing service exception", e);
+		} catch (Exception e) {
+			e.printStackTrace();
+			LOGGER.warn("generic exception", e);
+		}
+		
+		return true;
+	}
+	
+	public boolean doHandOffTruckAssignment(String handOffBatchId) {
+		LOGGER.info("doHandOffTruckAssignment was called, id: " + handOffBatchId);
+		String userId = com.freshdirect.transadmin.security.SecurityManager.getUserName(getHttpServletRequest());
+		HandOffServiceProxy proxy = new HandOffServiceProxy();
+		IHandOffBatch batch;		
+		try {
+			
+			batch = proxy.getHandOffBatchById(handOffBatchId);			
+				
+			Map<String, IHandOffDispatch> batchDispatchs = new HashMap<String, IHandOffDispatch>();
+			
+			batchDispatchs = proxy.getHandOffBatchDispatchs(batch.getDeliveryDate(), batch.getCutOffDateTime());
+			
+			HandOffTruckAssignmentAction process = new HandOffTruckAssignmentAction(batch, userId, batchDispatchs);
+			LOGGER.info("Truck assignment action process created and being executed: " + process.getBatch().getBatchId());
 			process.execute();
 		} catch (RoutingServiceException e) {			
 			LOGGER.warn("routing service exception", e);
