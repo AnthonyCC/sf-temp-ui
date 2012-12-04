@@ -1686,7 +1686,9 @@ div.control, div.slotRow, div.time {
 		overflow: hidden !important;
 		padding: 0px 7px;
 		line-height: 12px;
-		font-size: 10px; font-family: Verdana, Arial, sans-serif; 
+		font-size: 10px; font-family: Verdana, Arial, sans-serif;
+		width:800px;
+		height:620px; 
 	}
 	.usq_legal_warning_choice .container-close {
 		display: block;

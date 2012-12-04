@@ -1,7 +1,7 @@
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <fd:CheckLoginStatus/>
-<tmpl:insert template='/common/template/blank.jsp'>
+<tmpl:insert template='<%="/common/template/blank.jsp" %>'>
 <tmpl:put name='title' direct='true'>FreshDirect - Alcohol Information</tmpl:put>
 <tmpl:put name='content' direct='true'>
 <% String successPage = request.getParameter("successPage");
@@ -94,11 +94,11 @@
 <script type="text/javascript">
 	YAHOO.util.Event.onDOMReady(function() {
 
-		var f = window.parent.document.getElementById('usq_legal_warning_choice_frame_<%= request.getParameter("formId") %>');
-		var wdh = getFrameWidth('usq_legal_warning_choice_frame_<%= request.getParameter("formId") %>');
-		var hgt = getFrameHeight('usq_legal_warning_choice_frame_<%= request.getParameter("formId") %>');
-		f.style.width = (wdh+20)+"px";
-		f.style.height = (hgt+20)+"px";
+<%-- 		var f = window.parent.document.getElementById('usq_legal_warning_choice_frame_<%= request.getParameter("formId") %>'); --%>
+<%-- 		var wdh = getFrameWidth('usq_legal_warning_choice_frame_<%= request.getParameter("formId") %>'); --%>
+<%-- 		var hgt = getFrameHeight('usq_legal_warning_choice_frame_<%= request.getParameter("formId") %>'); --%>
+// 		f.style.width = (wdh+20)+"px";
+// 		f.style.height = (hgt+20)+"px";
 		window.parent.FreshDirect.USQLegalWarning.refreshPanel(location.search);
 		//resize trick to make the scroll bars disappear
 	});
