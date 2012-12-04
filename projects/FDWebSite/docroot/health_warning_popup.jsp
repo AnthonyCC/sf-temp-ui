@@ -91,18 +91,6 @@
 	</form>
 </table>
 </fd:HealthWarningController>
-<script type="text/javascript">
-	YAHOO.util.Event.onDOMReady(function() {
-
-<%-- 		var f = window.parent.document.getElementById('usq_legal_warning_choice_frame_<%= request.getParameter("formId") %>'); --%>
-<%-- 		var wdh = getFrameWidth('usq_legal_warning_choice_frame_<%= request.getParameter("formId") %>'); --%>
-<%-- 		var hgt = getFrameHeight('usq_legal_warning_choice_frame_<%= request.getParameter("formId") %>'); --%>
-// 		f.style.width = (wdh+20)+"px";
-// 		f.style.height = (hgt+20)+"px";
-		window.parent.FreshDirect.USQLegalWarning.refreshPanel(location.search);
-		//resize trick to make the scroll bars disappear
-	});
-</script>
 </tmpl:put>
 
 </tmpl:insert>
