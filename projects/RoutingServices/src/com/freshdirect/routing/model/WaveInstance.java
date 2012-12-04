@@ -388,6 +388,7 @@ public class WaveInstance  extends BaseModel implements IWaveInstance {
 		this.setOvertimeWage(baseInstance.getOvertimeWage());
 		this.setRushHourModel(baseInstance.getRushHourModel());
 		this.setTimePeriodTravelSpeedsType(baseInstance.getTimePeriodTravelSpeedsType());
+		this.setTODRestrictionModel(baseInstance.getTODRestrictionModel());
 	}
 	
 	public static void consolidateWaveInstance(IWaveInstance _rootWaveInstance, IWaveInstance _srcWaveInst) {
@@ -422,7 +423,7 @@ public class WaveInstance  extends BaseModel implements IWaveInstance {
 	}
 
 	public void setTODRestrictionModel(String tODRestrictionModel) {
-		tODRestrictionModel = tODRestrictionModel;
+		this.tODRestrictionModel = tODRestrictionModel;
 	}
 
 	public String getDestinationFacility() {
