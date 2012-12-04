@@ -173,7 +173,7 @@
 					{key:"systemMessage", label:"System Message", width: 200,sortable:false,className:"forms1"},
 					
 					{key:"action", label:"Action", sortable:false, width: 125, className:"forms1",
-									formatter:"dropdown", dropdownOptions:["","ROUTEIN","ROUTEOUT","COMMIT","AUTODISPATCH","CANCEL"] },
+									formatter:"dropdown", dropdownOptions:["","ROUTEIN","ROUTEOUT","COMMIT","AUTODISPATCH","ASSIGNTRUCK","CANCEL"] },
 
 					{key:"report", label:"Download", sortable:false, width: 150, className:"forms1",
 									formatter:"dropdown", dropdownOptions:["","HandOff Report","Community Report","SAP Upload Files"] }
@@ -246,7 +246,7 @@
 	     'RGF': {ROUTEIN:0,ROUTEOUT:0,CANCEL:0},
 	     'CPF': {ROUTEIN:0,ROUTEOUT:0,COMMIT:0,CANCEL:0}, 
 		 'CAN': {},
-	     'CPD/ADC': {AUTODISPATCH:0},
+	     'CPD/ADC': {ASSIGNTRUCK:0},
 		 'CPD/ADF': {AUTODISPATCH:0},
 		 'CPD': {AUTODISPATCH:0}
       }
@@ -322,7 +322,9 @@
       							}
       						}
       					} else if(actionType == 'AUTODISPATCH') {
-      						jsonrpcClient.AsyncHandOffProvider.doHandOffAutoDispatch(currentBatchId, true);
+      						jsonrpcClient.AsyncHandOffProvider.doHandOffAutoDispatch(currentBatchId);
+      					} else if(actionType == 'ASSIGNTRUCK') {
+      						jsonrpcClient.AsyncHandOffProvider.doHandOffTruckAssignment(currentBatchId);
       					} else {
       						alert("Processing "+actionType+" on BATCH ID:"+currentBatchId);
       					} 
