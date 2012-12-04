@@ -63,4 +63,6 @@ public interface IRoutingEngineService {
 			, String region, String locationType
 			, String orderType);
 	
+	IOrderModel schedulerRetrieveOrder(IOrderModel orderModel) throws RoutingServiceException;
+	
 }

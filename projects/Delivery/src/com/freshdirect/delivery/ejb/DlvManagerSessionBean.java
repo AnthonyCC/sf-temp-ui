@@ -108,6 +108,7 @@ import com.freshdirect.routing.model.IRoutingNotificationModel;
 import com.freshdirect.routing.model.IRoutingSchedulerIdentity;
 import com.freshdirect.routing.model.IWaveInstance;
 import com.freshdirect.routing.model.TrnFacilityType;
+import com.freshdirect.routing.service.exception.IIssue;
 import com.freshdirect.routing.service.exception.RoutingServiceException;
 import com.freshdirect.routing.service.proxy.DeliveryServiceProxy;
 import com.freshdirect.routing.service.proxy.RoutingEngineServiceProxy;
@@ -2588,13 +2589,25 @@ public class DlvManagerSessionBean extends GatewaySessionBeanSupport {
 			}
 
 		} catch (Exception e) {
-			event = buildEvent(null, event, reservation,order,address, EventType.CONFIRM_TIMESLOT,0);
+			
+			try {
+				IOrderModel _tmpOrder = RoutingUtil.schedulerRetrieveOrder(order);
+			} catch (RoutingServiceException rxp) {
+				if(rxp.getIssue() != null && rxp.getIssue().equalsIgnoreCase(IIssue.PROCESS_RETRIEVEORDER_NOTFOUND)) {
+					setUnassignedInfo(reservation.getId(),RoutingActivityType.RESERVE_TIMESLOT);
+					event = buildEvent(null, event, reservation,order,address, EventType.RESERVE_TIMESLOT,0);
+				}else{
+					setUnassignedInfo(reservation.getId(),RoutingActivityType.CONFIRM_TIMESLOT);
+					event = buildEvent(null, event, reservation,order,address, EventType.CONFIRM_TIMESLOT,0);
+				}
+			}
+			catch(Exception exp){
+				setUnassignedInfo(reservation.getId(),RoutingActivityType.CONFIRM_TIMESLOT);
+				event = buildEvent(null, event, reservation,order,address, EventType.CONFIRM_TIMESLOT,0);
+			}
 			if(event!=null && event.getId()!=null)
 				logTimeslots(event);
-			e.printStackTrace();
-			LOGGER.debug("Exception in commitReservationEx():"+order.getOrderNumber()+"-->"+e.toString());
-			LOGGER.debug(reservation);
-			setUnassignedInfo(reservation.getId(),RoutingActivityType.CONFIRM_TIMESLOT);
+			LOGGER.debug("Exception in commitReservationEx():"+order.getOrderNumber()+"-->"+e.toString());	
 		}
 	}
 

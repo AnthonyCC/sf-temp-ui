@@ -733,6 +733,11 @@ public class RoutingUtil {
         return routingService.schedulerUpdateOrderNo(orderModel);        
 	}
 
+	public static IOrderModel schedulerRetrieveOrder(IOrderModel orderModel) throws RoutingServiceException {
+
+		RoutingEngineServiceProxy routingService=new RoutingEngineServiceProxy();        
+        return routingService.schedulerRetrieveOrder(orderModel);        
+	}
 	private static void schedulerCancelOrder(IOrderModel orderModel,DlvReservationModel reservation) throws RoutingServiceException {
 
 
