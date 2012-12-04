@@ -15,15 +15,15 @@ import com.freshdirect.routing.model.IHandOffBatch;
 import com.freshdirect.routing.model.IHandOffBatchDepotSchedule;
 import com.freshdirect.routing.model.IHandOffBatchDepotScheduleEx;
 import com.freshdirect.routing.model.IHandOffBatchPlan;
-import com.freshdirect.routing.model.IHandOffBatchDispatchResource;
+import com.freshdirect.routing.model.IHandOffBatchPlanResource;
 import com.freshdirect.routing.model.IHandOffBatchRoute;
 import com.freshdirect.routing.model.IHandOffBatchStop;
 import com.freshdirect.routing.model.IHandOffBatchTrailer;
 import com.freshdirect.routing.model.IHandOffDispatch;
 import com.freshdirect.routing.model.TruckPreferenceStat;
+import com.freshdirect.routing.truckassignment.Truck;
 import com.freshdirect.routing.util.RoutingTimeOfDay;
 import com.freshdirect.sap.bapi.BapiSendHandOff.HandOffDispatchIn;
-import com.freshdirect.routing.truckassignment.Truck;
 
 
 public interface IHandOffDAO {
@@ -89,22 +89,18 @@ public interface IHandOffDAO {
 	
 	List<IHandOffBatchPlan> getHandOffBatchPlans(final String handoffBatchId, final Date deliveryDate, final Date cutOffDate) throws SQLException;
 	
-	List<IHandOffBatchDispatchResource> getHandOffBatchPlanResources(String handoffBatchId, Date deliveryDate, final Date cutOffDate) throws SQLException;
+	List<IHandOffBatchPlanResource> getHandOffBatchPlanResources(String handoffBatchId, Date deliveryDate, final Date cutOffDate) throws SQLException;
 	
-	List<IHandOffBatchRoute> getHandOffBatchDispatchRoutes(String handoffBatchId, Date deliveryDate) throws SQLException;
+	List<IHandOffBatchRoute> getHandOffBatchDispatchRoutes(String handoffBatchId, Date deliveryDate, Date cutOffDate) throws SQLException;
 	
 	List<Truck> getAvailableTrucksInService(Date deliveryDate) throws SQLException;
 	
 	List<TruckPreferenceStat> getEmployeeTruckPreferences() throws SQLException;
 	
-	void clearHandOffBatchAutoDispatchResources(String handoffBatchId, Date deliveryDate) throws SQLException;
+	void clearHandOffBatchAutoDispatchResources(String handoffBatchId, Date deliveryDate, Date cutOffDate) throws SQLException;
 	
-	void clearHandOffBatchAutoDispatches(String handoffBatchId, Date deliveryDate) throws SQLException;	
+	void clearHandOffBatchAutoDispatches(String handoffBatchId, Date deliveryDate, Date cutOffDate) throws SQLException;	
 	
-	void clearHandOffBatchTrailerAutoDispatches(Date deliveryDate, Date cutOffDate) throws SQLException;
-	
-	void clearHandOffBatchTrailerAutoDispatchResources(Date deliveryDate, Date cutOffDate) throws SQLException;
-
 	void addNewHandOffBatchAutoDispatches(Collection dataList) throws SQLException;
 	
 	String getLastCommittedHandOffBatch(Date deliveryDate) throws SQLException;
@@ -118,5 +114,9 @@ public interface IHandOffDAO {
 	Map<String, Integer> getHandOffBatchTrailerCnt(final Date deliveryDate) throws SQLException;
 
 	List<IHandOffBatchTrailer> getHandOffBatchTrailers(final String batchId) throws SQLException;
+	
+	Map<String, IHandOffDispatch> getHandOffBatchDispatchs(final Date deliveryDate, final Date cutOffDate) throws SQLException;
+	
+	void updateHandOffDispatchTruckInfo(List<IHandOffDispatch> dispatchEntry) throws SQLException;
 	
 }

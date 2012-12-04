@@ -5,7 +5,6 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -19,8 +18,8 @@ import com.freshdirect.routing.manager.IProcessMessage;
 import com.freshdirect.routing.model.IHandOffBatch;
 import com.freshdirect.routing.model.IHandOffBatchDepotSchedule;
 import com.freshdirect.routing.model.IHandOffBatchDepotScheduleEx;
-import com.freshdirect.routing.model.IHandOffBatchDispatchResource;
 import com.freshdirect.routing.model.IHandOffBatchPlan;
+import com.freshdirect.routing.model.IHandOffBatchPlanResource;
 import com.freshdirect.routing.model.IHandOffBatchRoute;
 import com.freshdirect.routing.model.IHandOffBatchStop;
 import com.freshdirect.routing.model.IHandOffBatchTrailer;
@@ -339,8 +338,8 @@ public class HandOffService extends BaseService implements IHandOffService {
 		return plans;
 	}
 	
-	public List<IHandOffBatchDispatchResource> getHandOffBatchPlanResources(String handoffBatchId, Date deliveryDate, final Date cutOffDate) throws RoutingServiceException {
-		List<IHandOffBatchDispatchResource> planResources = new ArrayList<IHandOffBatchDispatchResource>();
+	public List<IHandOffBatchPlanResource> getHandOffBatchPlanResources(String handoffBatchId, Date deliveryDate, final Date cutOffDate) throws RoutingServiceException {
+		List<IHandOffBatchPlanResource> planResources = new ArrayList<IHandOffBatchPlanResource>();
 		try {
 			planResources.addAll(getHandOffDAOImpl().getHandOffBatchPlanResources(handoffBatchId, deliveryDate, cutOffDate));
 			
@@ -350,10 +349,10 @@ public class HandOffService extends BaseService implements IHandOffService {
 		return planResources;
 	}
 	
-	public List<IHandOffBatchRoute> getHandOffBatchDispatchRoutes(String handoffBatchId, Date deliveryDate) throws RoutingServiceException {
+	public List<IHandOffBatchRoute> getHandOffBatchDispatchRoutes(String handoffBatchId, Date deliveryDate, Date cutOffDate) throws RoutingServiceException {
 		List<IHandOffBatchRoute> routes = new ArrayList<IHandOffBatchRoute>();
 		try {
-			routes.addAll(getHandOffDAOImpl().getHandOffBatchDispatchRoutes(handoffBatchId, deliveryDate));			
+			routes.addAll(getHandOffDAOImpl().getHandOffBatchDispatchRoutes(handoffBatchId, deliveryDate, cutOffDate));			
 		} catch (SQLException e) {
 			throw new RoutingServiceException(e, IIssue.PROCESS_HANDOFFBATCH_ERROR);
 		}
@@ -379,10 +378,8 @@ public class HandOffService extends BaseService implements IHandOffService {
 	
 	public void clearHandOffBatchAutoDispatches(String handoffBatchId, Date deliveryDate, Date cutOffTime) throws RoutingServiceException {
 		try {
-			getHandOffDAOImpl().clearHandOffBatchAutoDispatchResources(handoffBatchId, deliveryDate); 
-			getHandOffDAOImpl().clearHandOffBatchAutoDispatches(handoffBatchId, deliveryDate);
-			getHandOffDAOImpl().clearHandOffBatchTrailerAutoDispatchResources(deliveryDate, cutOffTime);
-			getHandOffDAOImpl().clearHandOffBatchTrailerAutoDispatches(deliveryDate, cutOffTime);			
+			getHandOffDAOImpl().clearHandOffBatchAutoDispatchResources(handoffBatchId, deliveryDate, cutOffTime); 
+			getHandOffDAOImpl().clearHandOffBatchAutoDispatches(handoffBatchId, deliveryDate, cutOffTime);
 		} catch (SQLException e) {
 			throw new RoutingServiceException(e, IIssue.PROCESS_HANDOFFBATCH_ERROR);
 		}
@@ -412,9 +409,25 @@ public class HandOffService extends BaseService implements IHandOffService {
 }
 	}
 
-	public List<IHandOffBatchTrailer> getHandOffBatchTrailers(final String batchId) throws RoutingServiceException {
+	public List<IHandOffBatchTrailer> getHandOffBatchTrailers(String batchId) throws RoutingServiceException {
 		try {
 			return getHandOffDAOImpl().getHandOffBatchTrailers(batchId);
+		} catch (SQLException e) {
+			throw new RoutingServiceException(e, IIssue.PROCESS_HANDOFFBATCH_ERROR);
+		}
+	}
+	
+	public Map<String, IHandOffDispatch> getHandOffBatchDispatchs(Date deliveryDate, Date cutOffDate) throws RoutingServiceException {
+		try {
+			return getHandOffDAOImpl().getHandOffBatchDispatchs(deliveryDate, cutOffDate);
+		} catch (SQLException e) {
+			throw new RoutingServiceException(e, IIssue.PROCESS_HANDOFFBATCH_ERROR);
+		}
+	}
+	
+	public void updateHandOffDispatchTruckInfo(List<IHandOffDispatch> dispatchEntry) throws RoutingServiceException {
+		try {
+			getHandOffDAOImpl().updateHandOffDispatchTruckInfo(dispatchEntry);
 		} catch (SQLException e) {
 			throw new RoutingServiceException(e, IIssue.PROCESS_HANDOFFBATCH_ERROR);
 		}

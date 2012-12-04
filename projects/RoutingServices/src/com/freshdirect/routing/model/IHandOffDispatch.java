@@ -46,8 +46,8 @@ public interface IHandOffDispatch {
 	 String getTruck();
 	 void setTruck(String truck);
 
-	 Set getBatchDispatchResources();
-	 void setBatchDispatchResources(Set batchDispatchResources);
+	 Set getDispatchResources();
+	 void setDispatchResources(Set dispatchResources);
 	 
 	 Date getCutoffTime();
 	 void setCutoffTime(Date cutoffTime);	 

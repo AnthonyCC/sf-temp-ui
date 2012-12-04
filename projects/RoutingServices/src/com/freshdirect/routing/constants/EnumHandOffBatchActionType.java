@@ -2,7 +2,7 @@ package com.freshdirect.routing.constants;
 
 public enum EnumHandOffBatchActionType {
 	
-	CREATE, ROUTEIN, ROUTEOUT, COMMIT, STOP, CANCEL, AUTODISPATCH;
+	CREATE, ROUTEIN, ROUTEOUT, COMMIT, STOP, CANCEL, AUTODISPATCH, TRUCKASSIGNMENT;
 	
 	public String value(){
 	    switch(this) {
@@ -11,6 +11,7 @@ public enum EnumHandOffBatchActionType {
 	     case ROUTEOUT: return "ROU";
 	     case COMMIT: return "COM";
 	     case AUTODISPATCH: return "ADP";
+	     case TRUCKASSIGNMENT: return "TAP";
 	     case STOP: return "STP";
 	     case CANCEL: return "CCL";
 	     default: return "";
@@ -31,6 +32,8 @@ public enum EnumHandOffBatchActionType {
 			return COMMIT;
 		} else if(value.equals(AUTODISPATCH.value())) {
 			return AUTODISPATCH;
+		} else if(value.equals(TRUCKASSIGNMENT.value())) {
+			return TRUCKASSIGNMENT;
 		} else if(value.equals(STOP.value())) {
 			return STOP;
 		} else if(value.equals(CANCEL.value())) {

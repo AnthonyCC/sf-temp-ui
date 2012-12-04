@@ -38,6 +38,10 @@ public interface IProcessMessage {
 	
 	String INFO_MESSAGE_AUTODISPATCHPROGRESS = "Auto-Dispatch in process";
 	
+	String INFO_MESSAGE_TRUCKASSIGNMENTPROGRESS = "Truck-Assignment in process";
+	
+	String INFO_MESSAGE_TRUCKASSIGNMENTCOMPLETED = "Batch Truck-Assignment : Completed";
+	
 	String INFO_MESSAGE_ROUTINGINPROGRESS_UPDATE_FAILED = "Routing in progress: cancelled or confirmed reservations failed to update in UPS.";
 	
 }

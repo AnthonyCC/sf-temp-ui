@@ -24,7 +24,7 @@ public class HandOffDispatch implements IHandOffDispatch  {
 	private String destinationFacility;
 	private boolean isTrailer;
 	private String dispatchType;
-	private Set batchDispatchResources = new HashSet(0);
+	private Set dispatchResources = new HashSet(0);
 	
 	public HandOffDispatch() {
 		super();
@@ -35,7 +35,7 @@ public class HandOffDispatch implements IHandOffDispatch  {
 			Date startTime, String isBullpen, String supervisorId,
 			Date maxTime, Date checkInTime, String route, String truck, Date cutoffTime, String originFacility,
 			String destinationFacility,
-			Set batchDispatchResources) {
+			Set dispatchResources) {
 		super();
 		this.dispatchId = dispatchId;
 		this.planId = planId;
@@ -53,7 +53,7 @@ public class HandOffDispatch implements IHandOffDispatch  {
 		this.cutoffTime = cutoffTime;
 		this.originFacility = originFacility;
 		this.destinationFacility = destinationFacility;
-		this.batchDispatchResources = batchDispatchResources;
+		this.dispatchResources = dispatchResources;
 	}
 
 	public String getDispatchId() {
@@ -166,16 +166,15 @@ public class HandOffDispatch implements IHandOffDispatch  {
 
 	public void setCutoffTime(Date cutoffTime) {
 		this.cutoffTime = cutoffTime;
+	}	
+	public Set getDispatchResources() {
+		return dispatchResources;
 	}
 
-	public Set getBatchDispatchResources() {
-		return batchDispatchResources;
+	public void setDispatchResources(Set dispatchResources) {
+		this.dispatchResources = dispatchResources;
 	}
 
-	public void setBatchDispatchResources(Set batchDispatchResources) {
-		this.batchDispatchResources = batchDispatchResources;
-	}
-	
 	public String getOriginFacility() {
 		return originFacility;
 	}

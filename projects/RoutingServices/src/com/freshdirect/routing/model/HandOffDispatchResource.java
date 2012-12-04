@@ -2,29 +2,29 @@ package com.freshdirect.routing.model;
 
 import java.util.Date;
 
-public class HandOffBatchPlanResource implements IHandOffBatchPlanResource  {
+public class HandOffDispatchResource implements IHandOffDispatchResource  {
 	
-	private String planId;
+	private String dispatchId;
 	private String resourceId;
 	private String employeeRoleType;
 	private Date adjustmentTime;
 		
-	public HandOffBatchPlanResource(String planId, String resourceId,
+	public HandOffDispatchResource(String dispatchId, String resourceId,
 			String employeeRoleType, Date adjustmentTime) {
 		super();
-		this.planId = planId;
+		this.dispatchId = dispatchId;
 		this.resourceId = resourceId;
 		this.employeeRoleType = employeeRoleType;
 		this.adjustmentTime = adjustmentTime;
 	}
-	public HandOffBatchPlanResource() {
+	public HandOffDispatchResource() {
 		// TODO Auto-generated constructor stub
 	}
-	public String getPlanId() {
-		return planId;
+	public String getDispatchId() {
+		return dispatchId;
 	}
-	public void setPlanId(String planId) {
-		this.planId = planId;
+	public void setDispatchId(String dispatchId) {
+		this.dispatchId = dispatchId;
 	}
 	public String getResourceId() {
 		return resourceId;
@@ -48,7 +48,7 @@ public class HandOffBatchPlanResource implements IHandOffBatchPlanResource  {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((planId == null) ? 0 : planId.hashCode());
+		result = prime * result + ((dispatchId == null) ? 0 : dispatchId.hashCode());
 		result = prime * result
 				+ ((resourceId == null) ? 0 : resourceId.hashCode());
 		return result;
@@ -61,11 +61,11 @@ public class HandOffBatchPlanResource implements IHandOffBatchPlanResource  {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		HandOffBatchPlanResource other = (HandOffBatchPlanResource) obj;
-		if (planId == null) {
-			if (other.planId != null)
+		HandOffDispatchResource other = (HandOffDispatchResource) obj;
+		if (dispatchId == null) {
+			if (other.dispatchId != null)
 				return false;
-		} else if (!planId.equals(other.planId))
+		} else if (!dispatchId.equals(other.dispatchId))
 			return false;
 		if (resourceId == null) {
 			if (other.resourceId != null)

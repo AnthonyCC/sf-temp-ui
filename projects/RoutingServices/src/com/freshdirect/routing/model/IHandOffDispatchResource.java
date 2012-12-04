@@ -4,10 +4,10 @@ import java.util.Date;
 
 import com.freshdirect.sap.bapi.BapiSendHandOff;
 
-public interface IHandOffBatchDispatchResource {	
+public interface IHandOffDispatchResource {	
 
-	 String getPlanId();
-	 void setPlanId(String planId);
+	 String getDispatchId();
+	 void setDispatchId(String dispatchId);
 	 String getResourceId();
 	 void setResourceId(String resourceId);
 	 String getEmployeeRoleType();
