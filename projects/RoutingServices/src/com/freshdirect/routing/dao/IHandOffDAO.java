@@ -118,5 +118,6 @@ public interface IHandOffDAO {
 	Map<String, IHandOffDispatch> getHandOffBatchDispatchs(final Date deliveryDate, final Date cutOffDate) throws SQLException;
 	
 	void updateHandOffDispatchTruckInfo(List<IHandOffDispatch> dispatchEntry) throws SQLException;
+	int getStopCount(String batchId) throws SQLException;
 	
 }

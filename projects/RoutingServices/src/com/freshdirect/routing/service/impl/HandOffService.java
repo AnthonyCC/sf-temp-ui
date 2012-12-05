@@ -432,4 +432,13 @@ public class HandOffService extends BaseService implements IHandOffService {
 			throw new RoutingServiceException(e, IIssue.PROCESS_HANDOFFBATCH_ERROR);
 		}
 	}
+
+	@Override
+	public int getStopCount(String batchId) throws RoutingServiceException {
+		try {
+			return getHandOffDAOImpl().getStopCount(batchId);
+		} catch (SQLException e) {
+			throw new RoutingServiceException(e, IIssue.PROCESS_HANDOFFBATCH_ERROR);
+		}
+	}
 }

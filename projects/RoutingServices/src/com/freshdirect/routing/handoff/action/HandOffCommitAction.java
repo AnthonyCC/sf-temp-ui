@@ -52,6 +52,12 @@ public class HandOffCommitAction extends AbstractHandOffAction {
 		
 		List<IHandOffBatchStop> handOffStops = proxy.getOrderByCutoff(this.getBatch().getDeliveryDate()
 																, this.getBatch().getCutOffDateTime());
+		
+		int stopCount = proxy.getStopCount(this.getBatch().getBatchId());
+		if(stopCount != handOffStops.size())
+			throw new RoutingServiceException("Order count mismatch between Storefront & RoadNet. Route In again."
+					, null, IIssue.PROCESS_HANDOFFBATCH_ERROR);
+		
 		Map<String, EnumSaleStatus> exceptions = new HashMap<String, EnumSaleStatus>();
 		if(handOffStops != null) {
 			for(IHandOffBatchStop stop : handOffStops) {

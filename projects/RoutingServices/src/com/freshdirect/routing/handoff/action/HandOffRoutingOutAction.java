@@ -87,6 +87,11 @@ public class HandOffRoutingOutAction extends AbstractHandOffAction {
 			rsvToOrderMap.put(_tmpStop.getDeliveryInfo().getReservationId(), _tmpStop.getOrderNumber());
 		}
 		
+		int stopCount = proxy.getStopCount(this.getBatch().getBatchId());
+		if(stopCount != _tmpStops.size())
+			throw new RoutingServiceException("Order count mismatch between Storefront & RoadNet. Route In again."
+					, null, IIssue.PROCESS_HANDOFFBATCH_ERROR);
+		
 		Map<IHandOffBatchSession, Map<String, Set<IRouteModel>>> sessionMapping = new HashMap<IHandOffBatchSession
 																						, Map<String, Set<IRouteModel>>>();
 		

@@ -189,4 +189,8 @@ public class HandOffServiceProxy  extends BaseServiceProxy  {
 		getService().updateHandOffDispatchTruckInfo(dispatchEntry);
 	}
 
+	public int getStopCount(String batchId) throws RoutingServiceException {
+		return getService().getStopCount(batchId);
+	}
+
 }

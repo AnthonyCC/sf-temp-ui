@@ -100,4 +100,6 @@ public interface IHandOffService {
 	
 	void updateHandOffDispatchTruckInfo(List<IHandOffDispatch> dispatchEntry) throws RoutingServiceException;
 	
+	int getStopCount(String batchId) throws RoutingServiceException;
+	
 }

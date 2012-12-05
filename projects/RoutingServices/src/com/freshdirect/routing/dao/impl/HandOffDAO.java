@@ -2035,4 +2035,32 @@ public class HandOffDAO extends BaseDAO implements IHandOffDAO   {
 				connection.close();
 		}
 	}
+
+	private static final String GET_HANDOFFBATCH_STOPCNT = "SELECT COUNT(*) STOPCNT FROM TRANSP.HANDOFF_BATCHSTOP X WHERE X.BATCH_ID = ?";
+			
+	@Override
+	public int getStopCount(final String batchId) throws SQLException {
+		
+		final List<Integer> stopCnt = new ArrayList<Integer>();
+		
+		PreparedStatementCreator creator = new PreparedStatementCreator() {
+			public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {		            	 
+				PreparedStatement ps = null;
+				ps = connection.prepareStatement(GET_HANDOFFBATCH_STOPCNT);
+				ps.setString(1, batchId);
+				return ps;
+			}  
+		};
+
+		jdbcTemplate.query(creator, 
+				new RowCallbackHandler() { 
+				public void processRow(ResultSet rs) throws SQLException {				    	
+					do { 
+						stopCnt.add(rs.getInt("STOPCNT"));
+					} while(rs.next());  		    	
+				}
+		}
+		);
+		return stopCnt.size()>0?stopCnt.get(0):0;
+	}
 }
