@@ -219,6 +219,9 @@ public class DispatchPlanUtil {
 		if(dispatch.getKeysReady() != null )
 			command.setKeysReady(dispatch.getKeysReady().booleanValue());
 		
+		if(dispatch.getKeysIn() != null )
+			command.setKeysIn(dispatch.getKeysIn().booleanValue());
+		
 		if(htInData!=null)command.setHtinDate((Date)htInData.get(dispatch.getRoute()));
 		if(htOutData!=null)command.setHtoutDate((Date)htOutData.get(dispatch.getRoute()));
 		if(dispatch.getIsOverride()!=null)command.setIsOverride(dispatch.getIsOverride());
@@ -323,6 +326,7 @@ public class DispatchPlanUtil {
 		dispatch.setEzpassNumber(command.getEzpassNumber());	
 		dispatch.setPhonesAssigned(Boolean.valueOf(command.isPhoneAssigned()));
 		dispatch.setKeysReady(Boolean.valueOf(command.isKeysReady()));
+		dispatch.setKeysIn(Boolean.valueOf(command.isKeysIn()));
 		dispatch.setIsOverride(command.getIsOverride());
 		dispatch.setOriginFacility(command.getOriginFacility());
 		dispatch.setDestinationFacility(command.getDestinationFacility());
@@ -955,6 +959,13 @@ public class DispatchPlanUtil {
 			//decide the dispatch status after dispatch;
 			if (!TransStringUtil.isEmpty(command.getDispatchTime())) {
 				command.setDispatchStatus(EnumStatus.Dispatched);				
+				
+				//checkedIn status
+				if (command.isKeysIn()) {
+					command.setDispatchStatus(EnumStatus.keysIn);
+				} else {
+					return;
+				}
 				
 				//checkedIn status
 				if (!TransStringUtil.isEmpty(command.getCheckedInTime())) {

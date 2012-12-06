@@ -15,9 +15,9 @@ function loadPopup()
     		  if(childelements[j].type=="checkbox" && childelements[j].checked)
     		  { 
     			  if(routes!=null) 
-    				  routes=routes+","+checkboxList[i].parentNode.parentNode.getElementsByTagName("td")[11].innerHTML;
+    				  routes=routes+","+checkboxList[i].parentNode.parentNode.getElementsByTagName("td")[12].innerHTML;
     			  else
-    				  routes = checkboxList[i].parentNode.parentNode.getElementsByTagName("td")[11].innerHTML;
+    				  routes = checkboxList[i].parentNode.parentNode.getElementsByTagName("td")[12].innerHTML;
     		  dispatched = true;
     		  }
     	  }

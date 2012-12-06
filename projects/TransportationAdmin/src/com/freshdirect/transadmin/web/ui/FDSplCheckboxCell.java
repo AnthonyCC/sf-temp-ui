@@ -64,10 +64,28 @@ public class FDSplCheckboxCell extends FDBaseCell {
 						}
 					}
 				}
+				
+				{
+					if ("keysIn".equalsIgnoreCase(column.getProperty())) {
+						if ((command.getDispatchStatus() == EnumStatus.Dispatched)
+								|| DispatchPlanUtil.isBullpen(command
+										.getIsBullpen())) {
+							enabled = true;
+						}
+						if (DispatchPlanUtil.isBullpen(command.getIsBullpen())
+								&& value) {
+							enabled = false;
+						}
+						if (DispatchPlanUtil.isBullpen(command.getIsBullpen())
+								&& !command.isDispatched()) {
+							enabled = false;
+						}
+					}
+				}
 			
 				{
 					if ("checkedIn".equalsIgnoreCase(column.getProperty())) {
-						if ((command.getDispatchStatus() == EnumStatus.Dispatched)
+						if ((command.getDispatchStatus() == EnumStatus.keysIn)
 								|| DispatchPlanUtil.isBullpen(command
 										.getIsBullpen())) {
 							enabled = true;

@@ -64,6 +64,9 @@
         <property name="keysReady" type="yes_no">
             <column name="KEYS_READY" length="1" />
         </property>
+        <property name="keysIn" type="yes_no">
+            <column name="KEYS_IN" length="1" />
+        </property>
          <property name="isOverride" type="yes_no">
             <column name="ISOVERRIDE" length="1" />
         </property>

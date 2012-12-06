@@ -9,18 +9,20 @@ public class DispatchStatus implements Serializable {
 	private boolean phoneAssigned;
 	private boolean isDispatched;
 	private boolean isCheckedIn;
+	private boolean isKeysIn;
 	
 	public DispatchStatus() {		
 	}
 	
 	public DispatchStatus(String dispatchId, boolean isKeysReady,
-			boolean phoneAssigned, boolean isDispatched, boolean isCheckedIn) {
+			boolean phoneAssigned, boolean isDispatched, boolean isCheckedIn, boolean isKeysIn) {
 		super();
 		this.dispatchId = dispatchId;
 		this.isKeysReady = isKeysReady;
 		this.phoneAssigned = phoneAssigned;
-		this.isDispatched = isDispatched;
+		this.isDispatched = isDispatched;		
 		this.isCheckedIn = isCheckedIn;
+		this.isKeysIn = isKeysIn;
 	}
 	
 	public String getDispatchId() {
@@ -53,4 +55,13 @@ public class DispatchStatus implements Serializable {
 	public void setCheckedIn(boolean isCheckedIn) {
 		this.isCheckedIn = isCheckedIn;
 	}
+
+	public boolean isKeysIn() {
+		return isKeysIn;
+	}
+
+	public void setKeysIn(boolean isKeysIn) {
+		this.isKeysIn = isKeysIn;
+	}
+	
 }

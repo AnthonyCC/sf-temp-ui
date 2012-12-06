@@ -60,6 +60,7 @@ public class DispatchStatusJSONSerializer extends AbstractSerializer {
 				_jsObject.put("phoneAssigned", en.isPhoneAssigned());
 				_jsObject.put("isDispatched", en.isDispatched());
 				_jsObject.put("isCheckedIn", en.isCheckedIn());
+				_jsObject.put("isKeysIn", en.isKeysIn());
 				jsArray.put(_jsObject);
 			}		
 			jsObject.put("dispatch", jsArray);
@@ -88,8 +89,9 @@ public class DispatchStatusJSONSerializer extends AbstractSerializer {
 			result.getDispatchStatus().add(new DispatchStatus(((JSONObject)jsArray.get(i)).getString("dispatchId")
 																	, ((JSONObject)jsArray.get(i)).getBoolean("isKeysReady")
 																	, ((JSONObject)jsArray.get(i)).getBoolean("phoneAssigned")
-																	, ((JSONObject)jsArray.get(i)).getBoolean("isDispatched")
-																	, ((JSONObject)jsArray.get(i)).getBoolean("isCheckedIn")));
+																	, ((JSONObject)jsArray.get(i)).getBoolean("isDispatched")																	
+																	, ((JSONObject)jsArray.get(i)).getBoolean("isCheckedIn")
+																	, ((JSONObject)jsArray.get(i)).getBoolean("isKeysIn")));
 		}
 		return result;
 	}

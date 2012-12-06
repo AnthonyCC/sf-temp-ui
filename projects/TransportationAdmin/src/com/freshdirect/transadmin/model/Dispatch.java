@@ -34,6 +34,7 @@ public class Dispatch implements java.io.Serializable{
 	private Boolean phonesAssigned;
 	private Boolean keysReady;
 	private Date checkedInTime;
+	private Boolean keysIn;
 	
 	private Boolean isOverride;
 	private Boolean isTeamOverride;
@@ -341,4 +342,14 @@ public class Dispatch implements java.io.Serializable{
 	public void setDispatchType(String dispatchType) {
 		this.dispatchType = dispatchType;
 	}
+
+	public Boolean getKeysIn() {
+		return keysIn;
+	}
+
+	public void setKeysIn(Boolean keysIn) {
+		this.keysIn = keysIn;
+	}
+	
+	
 }

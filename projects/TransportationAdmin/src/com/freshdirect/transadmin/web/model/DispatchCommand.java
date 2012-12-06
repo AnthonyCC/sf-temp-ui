@@ -60,6 +60,7 @@ public class DispatchCommand extends WebPlanInfo {
 	private boolean dispatched;
 	private boolean phoneAssigned;
 	private boolean keysReady;
+	private boolean keysIn;
 	private boolean checkedIn;
     private Date htinDate;
     private Date htoutDate;
@@ -450,6 +451,12 @@ public class DispatchCommand extends WebPlanInfo {
 	}
 	public void setKeysReady(boolean keysReady) {
 		this.keysReady = keysReady;
+	}
+	public boolean isKeysIn() {
+		return keysIn;
+	}
+	public void setKeysIn(boolean keysIn) {
+		this.keysIn = keysIn;
 	}
 	public boolean isPhoneAssigned() {
 		return phoneAssigned;

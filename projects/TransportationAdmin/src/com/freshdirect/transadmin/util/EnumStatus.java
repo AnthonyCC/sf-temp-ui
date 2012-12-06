@@ -14,6 +14,7 @@ public final class EnumStatus implements Comparable
 	public static final  EnumStatus HTIn=new EnumStatus(9,"HTIn");
 	public static final  EnumStatus CheckedIn=new EnumStatus(10,"CheckedIn");
 	public static final  EnumStatus OffPremises=new EnumStatus(11,"OffPremises");
+	public static final  EnumStatus keysIn=new EnumStatus(8,"Keys In");
 	
 	private int status;
 	private String display;

@@ -878,9 +878,6 @@ public class DispatchProviderController extends JsonRpcController implements IDi
 				
 				return result;
 			}
-		} catch (DataIntegrityViolationException ex) {
-			ex.printStackTrace();
-			return null;
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -977,6 +974,9 @@ public class DispatchProviderController extends JsonRpcController implements IDi
 						}
 						if(_dispatch.isCheckedIn()){
 							tmpDispatch.setCheckedInTime(TransStringUtil.getServerTime(TransStringUtil.getServerTime(new Date())));
+						}
+						if(_dispatch.isKeysIn()){
+							tmpDispatch.setKeysIn(Boolean.TRUE);
 						}
 						LOGGER.info("Adding dispatch object to save list -> "+ tmpDispatch);
 						dispatchSet.add(tmpDispatch);

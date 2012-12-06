@@ -166,7 +166,8 @@
 		                   						 "isKeysReady" : false,
 		                   						 "phoneAssigned" : false,
 		                   						 "isDispatched" : false,
-		                   						 "isCheckedIn" : false 
+		                   						 "isCheckedIn" : false,
+		                   						 "isKeysIn" : false
 		                   				  		};
 	                           		
                            		   myJSONObject.dispatch[j++] = dispatchObj;  
@@ -179,6 +180,8 @@
                        			dispatchObj.isDispatched = true;
                        		  else if(status=='checkedIn')
                          			dispatchObj.isCheckedIn = true;
+                       		else if(status=='keysIn')
+                     			dispatchObj.isKeysIn = true;
                            }
                     	   prevRow = currentRow;
                        } 
@@ -190,7 +193,7 @@
                        }
                    }
 
-                   function updateStatusCallBack(result, exception) {  
+                   function updateStatusCallBack(result, exception) {                	   
                 	   if(result != null && result) {
                 		   alert('Records updated successfully');   
                 	   } else {
@@ -348,14 +351,14 @@
                   </td>
                   <%} %>
                   <td>
-                    <a href="javascript:directions('ec_table','drivingdirection.do', 11)">
+                    <a href="javascript:directions('ec_table','drivingdirection.do', 12)">
                   		<img src="./images/driving-directions.gif" width="90" height="25" border="0" alt="Driving Directions" title="Driving Directions" />
                   	</a>
                   <td>
                  
                   <!-- 
                   <td>
-                    <a href="javascript:loadGps('ec_table','gpsadmin.do', 11)">
+                    <a href="javascript:loadGps('ec_table','gpsadmin.do', 12)">
                   		<img src="./images/gpsadmin.gif" border="0" alt="Garmin" title="GPS Admin" />
                   	</a>
                   </td>-->
@@ -420,8 +423,9 @@
             <ec:row interceptor="dispatchobsoletemarker"> 
               <ec:column viewsAllowed="fd" title="Row" width="5px"  filterable="false" sortable="false" cell="selectcol"  property="dispatchId" /> 
               <ec:column viewsAllowed="fd" title="Nextel" width="5px"  filterable="false" sortable="false" cell="selectsplcol"  property="phoneAssigned" />
-              <ec:column viewsAllowed="fd" title="Keys" width="5px"  filterable="false" sortable="false" cell="selectsplcol"  property="keysReady" />   
-              <ec:column viewsAllowed="fd" title="Dispatched" width="5px"  filterable="false" sortable="false" cell="selectsplcol"  property="dispatched" />   
+              <ec:column viewsAllowed="fd" title="Keys Out" width="5px"  filterable="false" sortable="false" cell="selectsplcol"  property="keysReady" />   
+              <ec:column viewsAllowed="fd" title="Dispatched" width="5px"  filterable="false" sortable="false" cell="selectsplcol"  property="dispatched" />
+              <ec:column viewsAllowed="fd" title="Keys In" width="5px"  filterable="false" sortable="false" cell="selectsplcol"  property="keysIn" /> 
               <ec:column viewsAllowed="fd" title="ChIn" width="5px"  filterable="false" sortable="false" cell="selectsplcol"  property="checkedIn" />  
               <ec:column alias="trnStatus" property="dispatchStatus"  title="Status"/> 
 			  <ec:column property="facilityInfoEx" sortable="true" title="ORF-DTF"/>
@@ -444,7 +448,7 @@
           </ec:table>
     </div>
     <script>
-      addMultiRowHandlersColumnFilter('ec_table', 'rowMouseOver', 'editdispatch.do','id',0, 4,'dispDate');
+      addMultiRowHandlersColumnFilter('ec_table', 'rowMouseOver', 'editdispatch.do','id',0, 5,'dispDate');
 
       function getFilterTestValue()
       {
