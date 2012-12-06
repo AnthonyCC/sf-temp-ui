@@ -70,7 +70,7 @@ public class DispatchPlanUtil {
 
 	}
 
-	public static WebPlanInfo getWebPlanInfo(Plan plan, Zone zone,EmployeeManagerI employeeManagerService, boolean isPlan) {
+	public static WebPlanInfo getWebPlanInfo(Plan plan, Zone zone,EmployeeManagerI employeeManagerService, boolean isPlan, Map empInfo, Map empRoleMap,Map empStatusMap,Map empTruckPrefMap,Map empTeams) {
 
 		WebPlanInfo planInfo=new WebPlanInfo();
 		planInfo.setPlanId(plan.getPlanId());
@@ -100,7 +100,23 @@ public class DispatchPlanUtil {
 		planInfo.setSupervisorCode(plan.getSupervisorId());
 		planInfo.setOriginFacility(plan.getOriginFacility());
 		planInfo.setDestinationFacility(plan.getDestinationFacility());
-		WebEmployeeInfo webEmp=employeeManagerService.getEmployee(plan.getSupervisorId());
+		
+		WebEmployeeInfo webEmp = null;
+		if(empInfo!=null && empInfo.containsKey(plan.getSupervisorId()))
+		{
+			Object obj = empInfo.get(plan.getSupervisorId());
+			Object roles = (empRoleMap!=null)?empRoleMap.get(plan.getSupervisorId()):null;
+			Object status = (empStatusMap!=null)?empStatusMap.get(plan.getSupervisorId()):null;
+			Object truckPref = (empTruckPrefMap!=null)?empTruckPrefMap.get(plan.getSupervisorId()):null;
+			Object teams = (empTeams!=null)?empTeams.get(plan.getSupervisorId()):null;
+			
+			webEmp = DispatchPlanUtil.buildEmpInfo((obj!=null)?(EmployeeInfo)obj:null,(roles!=null)?(List<EmployeeRole>)roles:null, 
+					(status!=null)?(List<EmployeeStatus>)status:null, (truckPref!=null)?(List<EmployeeTruckPreference>)truckPref:null, 
+							(teams!=null)?(List<EmployeeTeam>)teams:null, employeeManagerService);	
+		}
+		else
+		    webEmp = employeeManagerService.getEmployee(plan.getSupervisorId());
+
 		if(webEmp!=null && webEmp.getEmpInfo()!=null) {
 			planInfo.setSupervisorName(webEmp.getEmpInfo().getName());
 		}
@@ -111,7 +127,8 @@ public class DispatchPlanUtil {
 		Map resourceReqs=getResourceRequirements(zone);
 		Set resources=plan.getPlanResources();
 		planInfo.setResourceRequirements(resourceReqs);
-		planInfo.setResources(employeeManagerService,resources,resourceReqs);
+		planInfo.setResources(employeeManagerService,resources,resourceReqs, empInfo, empRoleMap, empStatusMap,
+				empTruckPrefMap, empTeams);
 		setResourceReq(planInfo,plan.getZone());
 		
 		planInfo.setIsTeamOverride(plan.getIsTeamOverride() != null &&  plan.getIsTeamOverride() ? true : false);
@@ -162,7 +179,7 @@ public class DispatchPlanUtil {
 			Object truckPref = (empTruckPrefMap!=null)?empTruckPrefMap.get(dispatch.getSupervisorId()):null;
 			Object teams = (empTeams!=null)?empTeams.get(dispatch.getSupervisorId()):null;
 			
-			supInfo = command.buildEmpInfo((obj!=null)?(EmployeeInfo)obj:null,(roles!=null)?(List<EmployeeRole>)roles:null, 
+			supInfo = DispatchPlanUtil.buildEmpInfo((obj!=null)?(EmployeeInfo)obj:null,(roles!=null)?(List<EmployeeRole>)roles:null, 
 					(status!=null)?(List<EmployeeStatus>)status:null, (truckPref!=null)?(List<EmployeeTruckPreference>)truckPref:null, 
 							(teams!=null)?(List<EmployeeTeam>)teams:null, employeeManagerService);	
 		}
@@ -1181,4 +1198,31 @@ public class DispatchPlanUtil {
 			return "PM";
 		}
 	}
+	
+	 public static WebEmployeeInfo buildEmpInfo( EmployeeInfo empInfo, List<EmployeeRole> empRoles,List<EmployeeStatus> empStatus,
+	    		List<EmployeeTruckPreference> empTruckPrefs,List<EmployeeTeam> empTeam, EmployeeManagerI employeeManagerService)
+	    {
+	    	Map empTruckPrefMap = new HashMap<String, String>();
+	    	if(empTruckPrefs!=null)
+	    	{
+		    	Iterator truckIterator = empTruckPrefs.iterator();
+		    	while(truckIterator.hasNext())
+		    	{
+		    		EmployeeTruckPreference pref  = (EmployeeTruckPreference) truckIterator.next();
+		    		empTruckPrefMap.put(pref.getId().getPrefKey(), pref.getTruckNumber());
+		    	}
+	    	}
+			WebEmployeeInfo webInfo = new WebEmployeeInfo(empInfo, empRoles, empTruckPrefMap);
+			if (empStatus != null && empStatus.size() > 0) {
+				webInfo.setTrnStatus(""
+						+ ((EmployeeStatus) (empStatus.toArray()[0])).isStatus());
+			}
+			if (empTeam != null && empTeam.size() > 0) {
+				EmployeeTeam _team = (EmployeeTeam)(empTeam.toArray()[0]);
+				EmployeeInfo _leadInfo = TransAdminCacheManager.getInstance().getActiveInactiveEmployeeInfo(_team.getLeadKronosId(), employeeManagerService);
+				webInfo.setLeadInfo(_leadInfo);
+			}
+			return webInfo;
+	    }
+	 
 }

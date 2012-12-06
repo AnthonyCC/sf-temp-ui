@@ -36,7 +36,7 @@ public interface EmployeeManagerI extends BaseManagerI {
 	
 	Collection getTerminatedEmployees();
 	
-	Collection getKronosTerminatedEmployees();
+	Map<String, EmployeeInfo> getKronosTerminatedEmployees();
 	
 	Collection getEmployeesByRole(String roleTypeId, String dispatchType, Date dispatchDate);
 	
@@ -55,7 +55,7 @@ public interface EmployeeManagerI extends BaseManagerI {
 	Collection getKronosActiveInactiveEmployees();
 	void syncEmployess();
 	Collection getEmployeeRole(String empId);
-	Collection getTransAppActiveEmployees();
+	Map getTransAppActiveEmployees();
 	
 	Map<EmployeeInfo, Set<EmployeeInfo>> getTeams();
 	Map<String, String> getTeamMapping();

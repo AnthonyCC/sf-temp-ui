@@ -8,7 +8,9 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.sql.DataSource;
 
@@ -166,11 +168,11 @@ public class EmployeeManagerDaoOracleImpl implements EmployeeManagerDaoI {
 	}
 
 
-	public Collection getTerminatedEmployees() throws DataAccessException {
+	public Map<String, EmployeeInfo> getTerminatedEmployees() throws DataAccessException {
 		// TODO Auto-generated method stub
 	//	System.out.println("EmployeeManagerDaoOracleImpl :getTerminatedEmployees()11 ");
         //final String sql="select *   from  (select a.*, rownum rnum   from  ("+VIEW_ALL_COMPETITOR_LOCATION_QRY+"  order by "+searchCriteria.getSortedByColumn()+") a   where rownum <= ? ) where rnum > ?";
-        final List list = new ArrayList();
+        final Map empMap = new HashMap();
         PreparedStatementCreator creator=new PreparedStatementCreator() {
             public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
                 PreparedStatement ps =
@@ -205,14 +207,14 @@ public class EmployeeManagerDaoOracleImpl implements EmployeeManagerDaoI {
 																supervisorLastName, supervisorShortName,
 																terminationDate);
 
-       		    		list.add(model);
+						empMap.put(employeeId, model);
        		    	   }
        		    	   while(rs.next());
        		      }
        		  }
        	);
-        LOGGER.debug("EmployeeManagerDaoOracleImpl : getTerminatedEmployee list  "+list.size());
-        return list;
+        LOGGER.debug("EmployeeManagerDaoOracleImpl : getTerminatedEmployee list  "+empMap.values().size());
+        return empMap;
 	}
 
 	

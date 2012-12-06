@@ -12,9 +12,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.web.servlet.ModelAndView;
 
-import com.freshdirect.framework.util.StringUtil;
 import com.freshdirect.transadmin.constants.EnumDispatchType;
 import com.freshdirect.transadmin.dao.BaseManagerDaoI;
 import com.freshdirect.transadmin.dao.DomainManagerDaoI;
@@ -75,7 +73,7 @@ public class EmployeeManagerImpl extends BaseManagerImpl implements
 		
 		Collection employees = new ArrayList(employeeIDsByRole.size());
 			
-		Collection activeInactiveEmpList = this.getActiveInactiveEmployees();
+		Map activeInactiveEmpList = this.getActiveInactiveEmployees();
 		Iterator it = employeeIDsByRole.iterator();
 		while (it.hasNext()) {
 			EmployeeRole empRole = (EmployeeRole) it.next();
@@ -110,9 +108,9 @@ public class EmployeeManagerImpl extends BaseManagerImpl implements
 		// then get the role for the kornos data
 		// then construct the viewer model
 		// return the viewer model
-		Collection kronoEmployees = TransAdminCacheManager.getInstance().getActiveInactiveEmployeeInfo(this);
+		Map kronoEmployees = TransAdminCacheManager.getInstance().getActiveInactiveEmployeeInfo(this);
 		Collection employeeRolesList = domainManagerDao.getEmployeeRoles();
-		Collection finalList = ModelUtil.getTrnAdminEmployeeList((List) kronoEmployees, (List) employeeRolesList);
+		Collection finalList = ModelUtil.getTrnAdminEmployeeList(kronoEmployees, (List) employeeRolesList);
 		Collection terminatedEmployees = getTerminatedEmployees();
 		Map<String, String> employeeTeamMapping = ModelUtil.getIdMappedTeam(domainManagerDao.getTeamInfo());
 		
@@ -139,10 +137,10 @@ public class EmployeeManagerImpl extends BaseManagerImpl implements
 		// then get the role for the kornos data
 		// then construct the viewer model
 		// return the viewer model
-		Collection kronoEmployees = TransAdminCacheManager.getInstance()
+		Map<String, EmployeeInfo> kronoEmployees = TransAdminCacheManager.getInstance()
 				.getAllTerminatedEmployeeInfo(this);
 		Collection employeeRolesList = domainManagerDao.getEmployeeRoles();
-		Collection finalList = ModelUtil.getTrnAdminEmployeeList((List) kronoEmployees, (List) employeeRolesList);
+		Collection finalList = ModelUtil.getTrnAdminEmployeeList(kronoEmployees, (List) employeeRolesList);
 		
 		Map<String, String> employeeTeamMapping = ModelUtil.getIdMappedTeam(domainManagerDao.getTeamInfo());
 		
@@ -157,13 +155,14 @@ public class EmployeeManagerImpl extends BaseManagerImpl implements
 		return finalList;
 	}
 
-	public Collection getTransAppActiveEmployees() {
-		Collection kronoEmployees = new ArrayList(TransAdminCacheManager
-				.getInstance().getActiveInactiveEmployeeInfo(this));
-		for (Iterator it = kronoEmployees.iterator(); it.hasNext();) {
+	public Map getTransAppActiveEmployees() {
+		Map kronosEmployees = TransAdminCacheManager
+				.getInstance().getActiveInactiveEmployeeInfo(this);
+		
+		Map empStatuses = getEmployeeStatus();
+		for (Iterator it = kronosEmployees.values().iterator(); it.hasNext();) {
 			EmployeeInfo eInfo = (EmployeeInfo) it.next();
-			Collection empStatus = this.domainManagerDao
-					.getEmployeeStatus(eInfo.getEmployeeId());
+			Collection empStatus = (Collection) empStatuses.get(eInfo.getEmployeeId());
 			if (empStatus != null && empStatus.size() > 0) {
 				EmployeeStatus status = (EmployeeStatus) (empStatus.toArray()[0]);
 				if (!status.isStatus()) {
@@ -175,26 +174,23 @@ public class EmployeeManagerImpl extends BaseManagerImpl implements
 				}
 			}
 		}
-		return kronoEmployees;
+		return kronosEmployees;
 	}
 
-	public EmployeeInfo getTransAppActiveEmployees(Collection activeEmployees,
+	public EmployeeInfo getTransAppActiveEmployees(Map activeEmployees,
 			String empId) {
-		List transpActiveEmployees = (List) activeEmployees;
-		for (int i = 0; i < transpActiveEmployees.size(); i++) {
-			EmployeeInfo info = (EmployeeInfo) transpActiveEmployees.get(i);
-			if (info.getEmployeeId().equalsIgnoreCase(empId))
-				return info;
-		}
+		
+		if(activeEmployees.containsKey(empId))
+			return (EmployeeInfo)activeEmployees.get(empId);
 		return null;
 	}
 
-	public Collection getActiveInactiveEmployees() {
+	public Map getActiveInactiveEmployees() {
 		// first get the kornos data
 		// then get the role for the kornos data
 		// then construct the viewer model
 		// return the viewer model
-		Collection kronoEmployees = TransAdminCacheManager.getInstance().getActiveInactiveEmployeeInfo(this);
+		Map kronoEmployees = TransAdminCacheManager.getInstance().getActiveInactiveEmployeeInfo(this);
 		return kronoEmployees;
 	}
 
@@ -384,7 +380,7 @@ public class EmployeeManagerImpl extends BaseManagerImpl implements
 	}
 
 
-	public Collection getKronosTerminatedEmployees() {
+	public Map<String, EmployeeInfo> getKronosTerminatedEmployees() {
 		return employeeManagerDAO.getTerminatedEmployees();
 	}
 	
@@ -397,7 +393,7 @@ public class EmployeeManagerImpl extends BaseManagerImpl implements
 
 		Collection employeeIDsByRole = domainManagerDao.getEmployeesByRoleType(roleTypeId);
 		Collection employees = new ArrayList(employeeIDsByRole.size());
-		Collection activeEmpl = getTransAppActiveEmployees();
+		Map activeEmpl = getTransAppActiveEmployees();
 		if(dispatchDate != null && dispatchType != null) {
 			List dispatchResources = (List) domainManagerDao.getDispatchResource(dispatchDate, EnumDispatchType.LIGHTDUTYDISPATCH.getName().equals(dispatchType) 
 															? EnumDispatchType.ROUTEDISPATCH.getName(): EnumDispatchType.LIGHTDUTYDISPATCH.getName());			
@@ -426,7 +422,7 @@ public class EmployeeManagerImpl extends BaseManagerImpl implements
 		Collection employeeIDsByRole = domainManagerDao.getEmployeesByRoleTypeAndSubRoleType(roleTypeId
 																								,subRoleTypeId);
 		Collection employees = new ArrayList(employeeIDsByRole.size());
-		Collection activeEmpl = getTransAppActiveEmployees();
+		Map activeEmpl = getTransAppActiveEmployees();
 		Iterator it = employeeIDsByRole.iterator();
 		while (it.hasNext()) {
 			EmployeeRole empRole = (EmployeeRole) it.next();
@@ -464,9 +460,9 @@ public class EmployeeManagerImpl extends BaseManagerImpl implements
 
 	public Collection getScheduleEmployees(Date weekOf) {
 		List result = new ArrayList();
-		Collection employeeInfos = getActiveInactiveEmployees();
+		Map employeeInfos = getActiveInactiveEmployees();
 		
-		for (Iterator it = employeeInfos.iterator(); it.hasNext();) {
+		for (Iterator it = employeeInfos.values().iterator(); it.hasNext();) {
 			EmployeeInfo eInfo = (EmployeeInfo) it.next();
 			Collection schedules = getDomainManagerDao().getScheduleEmployee(eInfo.getEmployeeId(), getParsedDate(weekOf));
 			ScheduleEmployeeInfo sInfo = new ScheduleEmployeeInfo();
@@ -499,9 +495,9 @@ public class EmployeeManagerImpl extends BaseManagerImpl implements
 	
 	public Collection getScheduleEmployees(Date weekOf, String day) {
 		List result = new ArrayList();
-		Collection employeeInfos = getActiveInactiveEmployees();
+		Map employeeInfos = getActiveInactiveEmployees();
 		
-		for (Iterator it = employeeInfos.iterator(); it.hasNext();) {
+		for (Iterator it = employeeInfos.values().iterator(); it.hasNext();) {
 			EmployeeInfo eInfo = (EmployeeInfo) it.next();
 			Collection schedules = getDomainManagerDao().getScheduleEmployee(eInfo.getEmployeeId(), getParsedDate(weekOf),day);
 			ScheduleEmployeeInfo sInfo = new ScheduleEmployeeInfo();
@@ -564,7 +560,7 @@ public class EmployeeManagerImpl extends BaseManagerImpl implements
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
-		Collection activeEmpl = getTransAppActiveEmployees();
+		Map activeEmpl = getTransAppActiveEmployees();
 
 		// logic for active inactive employees eligible for plan also terminated
 		// employees
@@ -847,6 +843,11 @@ public class EmployeeManagerImpl extends BaseManagerImpl implements
 	public Map getEmployeeStatus(Set empIds) {
 		return getDomainManagerDao().getEmployeeStatusByIds(empIds);
 	}
+	
+	public Map getEmployeeStatus() {
+		return getDomainManagerDao().getEmployeeStatus();
+	}
+	
 	
 	public Map getEmployeeTruckPref(Set empIds)
 	{

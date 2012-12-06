@@ -180,7 +180,7 @@ public class PlanningFormController extends AbstractFormController {
 		if(plan.getZone()!=null) {
 			zone=domainManagerService.getZone(plan.getZone().getZoneCode());
 		}
-		return DispatchPlanUtil.getWebPlanInfo(plan,zone,employeeManagerService, true);
+		return DispatchPlanUtil.getWebPlanInfo(plan,zone,employeeManagerService, true,null,null,null,null,null);
 	}
 
 	public Object getDefaultBackingObject() {

@@ -711,19 +711,53 @@ public class DispatchController extends AbstractMultiActionController {
 		Collection planInfos=new ArrayList();
 		Iterator it=plans.iterator();
 		
-		while(it.hasNext()) {
+		Set zones = new HashSet();
+		Set resourceIds = new HashSet();
+		Iterator resourceIterator = null;
+		ResourceI resource = null;
+		while (it.hasNext()) {
 			Plan plan=(Plan)it.next();
-			Zone zone=null;
-			if(plan.getZone()!=null) {
-				if(zoneMap.containsKey(plan.getZone().getZoneCode())) {
-					zone=zoneMap.get(plan.getZone().getZoneCode());
-				} else {
-					zone=domainManagerService.getZone(plan.getZone().getZoneCode());
-					zoneMap.put(plan.getZone().getZoneCode(), zone);
+			if (plan.getZone() != null) {
+				zones.add(plan.getZone().getZoneCode());
+			}
+			if (plan.getSupervisorId() != null)
+				resourceIds.add(plan.getSupervisorId());
+			if (plan.getPlanResources() != null) {
+				resourceIterator = plan.getPlanResources().iterator();
+				while (resourceIterator.hasNext()) {
+					resource = (ResourceI) resourceIterator.next();
+					if (resource.getId() != null
+							&& resource.getId().getResourceId() != null)
+						resourceIds.add(resource.getId().getResourceId());
 				}
 			}
-			
-			WebPlanInfo planInfo=DispatchPlanUtil.getWebPlanInfo(plan, zone, employeeManagerService, true);
+		}
+		Map<String, EmployeeInfo> empInfo = TransAdminCacheManager.getInstance().getActiveInactiveEmployees(employeeManagerService);
+		Map empRoleMap = null, empStatusMap = null, empTruckPrefMap = null, empTeams = null;
+		if (resourceIds != null && resourceIds.size() > 0) {
+			empRoleMap = employeeManagerService
+					.getEmployeeRoles(resourceIds);
+			empStatusMap = employeeManagerService
+					.getEmployeeStatus(resourceIds);
+			empTruckPrefMap = employeeManagerService
+					.getEmployeeTruckPref(resourceIds);
+			empTeams = employeeManagerService
+					.getTeamByEmployees(resourceIds);
+		}
+
+		Map<String, Zone> zonesMap = new HashMap<String, Zone>();
+		if (zones != null && zones.size() > 0) {
+			zonesMap = domainManagerService.getZoneByIDs(zones);
+		}
+		it=plans.iterator();
+		while(it.hasNext()) {
+			Plan plan=(Plan)it.next();
+			Zone zone = null;
+			if (plan.getZone() != null) {
+				zone = zonesMap.get(plan.getZone().getZoneCode());
+			}		
+			WebPlanInfo planInfo=DispatchPlanUtil.getWebPlanInfo(plan, zone, employeeManagerService, true, empInfo, empRoleMap, empStatusMap,
+					empTruckPrefMap, empTeams);
 			planInfo.setTermintedEmployees(terminatedEmployees);
 			planInfos.add(planInfo);
 		}

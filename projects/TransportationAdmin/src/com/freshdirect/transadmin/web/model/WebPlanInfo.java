@@ -10,7 +10,11 @@ import java.util.Map;
 import java.util.Set;
 
 import com.freshdirect.transadmin.model.EmployeeInfo;
+import com.freshdirect.transadmin.model.EmployeeRole;
 import com.freshdirect.transadmin.model.EmployeeRoleType;
+import com.freshdirect.transadmin.model.EmployeeStatus;
+import com.freshdirect.transadmin.model.EmployeeTeam;
+import com.freshdirect.transadmin.model.EmployeeTruckPreference;
 import com.freshdirect.transadmin.model.PlanResource;
 import com.freshdirect.transadmin.model.ResourceI;
 import com.freshdirect.transadmin.model.ResourceId;
@@ -18,6 +22,7 @@ import com.freshdirect.transadmin.model.ResourceInfoI;
 import com.freshdirect.transadmin.model.TrnBaseEntityI;
 import com.freshdirect.transadmin.model.TrnFacility;
 import com.freshdirect.transadmin.service.EmployeeManagerI;
+import com.freshdirect.transadmin.util.DispatchPlanUtil;
 import com.freshdirect.transadmin.util.EnumResourceType;
 import com.freshdirect.transadmin.util.TransStringUtil;
 
@@ -544,7 +549,7 @@ public class WebPlanInfo extends BaseCommand implements TrnBaseEntityI  {
 		}
 	}
 	
-	public void setResources(EmployeeManagerI employeeManagerService,Set resources, Map resourceReqs) {
+	public void setResources(EmployeeManagerI employeeManagerService,Set resources, Map resourceReqs, Map empInfo, Map empRoleMap,Map empStatusMap,Map empTruckPrefMap,Map empTeams) {
 		
 		
 		if(resources == null || resources.isEmpty())
@@ -558,7 +563,30 @@ public class WebPlanInfo extends BaseCommand implements TrnBaseEntityI  {
         	
             ResourceI resource=(ResourceI)_it.next();
             EnumResourceType role=EnumResourceType.getEnum(resource.getEmployeeRoleType().getCode());   
-            WebEmployeeInfo webEmpInfo=employeeManagerService.getEmployee(resource.getId().getResourceId());
+            
+            WebEmployeeInfo webEmpInfo = null;
+            
+			if (empInfo != null	&& empInfo.containsKey(resource.getId().getResourceId())) {
+
+            	Object obj = empInfo.get(resource.getId().getResourceId());
+    			Object roles = (empRoleMap!=null)?empRoleMap.get(resource.getId().getResourceId()):null;
+    			Object status = (empStatusMap!=null)?empStatusMap.get(resource.getId().getResourceId()):null;
+    			Object truckPref = (empTruckPrefMap!=null)?empTruckPrefMap.get(resource.getId().getResourceId()):null;
+    			Object teams = (empTeams!=null)?empTeams.get(resource.getId().getResourceId()):null;
+    			
+				webEmpInfo = DispatchPlanUtil.buildEmpInfo(
+						(obj != null) ? (EmployeeInfo) obj : null,
+						(roles != null) ? (List<EmployeeRole>) roles : null,
+						(status != null) ? (List<EmployeeStatus>) status : null,
+						(truckPref != null) ? (List<EmployeeTruckPreference>) truckPref : null,
+						(teams != null) ? (List<EmployeeTeam>) teams : null, employeeManagerService);
+            }
+            else
+            {
+            	webEmpInfo = employeeManagerService.getEmployee(resource.getId().getResourceId());
+            }
+			
+			
             ResourceInfoI resourceInfo = getResourceInfo(webEmpInfo, resource);
             resourceInfo.setAdjustmentTime(resource.getId().getAdjustmentTime());
             if(resourceReqs.containsKey(role)){

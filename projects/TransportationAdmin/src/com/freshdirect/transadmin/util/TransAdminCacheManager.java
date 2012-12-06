@@ -177,11 +177,11 @@ public class TransAdminCacheManager {
 	/**
 	 * Cache to store all terminated employee data from KRONOS database
 	 */
-	private BaseAsyncCache<String, List> terminatedEmployeeDataHolder = new BaseAsyncCache<String, List>
+	private BaseAsyncCache<String, Map<String, EmployeeInfo>> terminatedEmployeeDataHolder = new BaseAsyncCache<String, Map<String, EmployeeInfo>>
 												(TransportationAdminProperties.getEmployeeCacheExpiryTime() * 60 * 1000
 														, STORE_TERMINATEDEMPLOYEEDATA) {
 
-		protected List loadData(String requestParam) throws AsyncCacheException  {
+		protected Map<String, EmployeeInfo> loadData(String requestParam) throws AsyncCacheException  {
 			try {
 				if(TransportationAdminProperties.isKronosBlackhole()) {
 					throw new AsyncCacheException(AsyncCacheExceptionType.LOAD_BLOCKED);
@@ -194,8 +194,8 @@ public class TransAdminCacheManager {
 			}
 		}
 		
-		protected List loadDefault(String requestParam) {
-			return new ArrayList();
+		protected Map<String, EmployeeInfo> loadDefault(String requestParam) {
+			return new HashMap<String, EmployeeInfo>();
 		}
 	};
 	
@@ -230,8 +230,8 @@ public class TransAdminCacheManager {
 		}
 	};
 
-	public List loadAllTerminatedEmployeeData() throws SapException {
-		return (List) manager.getKronosTerminatedEmployees();
+	public Map<String, EmployeeInfo> loadAllTerminatedEmployeeData() throws SapException {
+		return  manager.getKronosTerminatedEmployees();
 	}
 
 	public List loadAllEmployeeData() throws SapException {
@@ -280,22 +280,22 @@ public class TransAdminCacheManager {
 	}
 	
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public Collection getActiveInactiveEmployeeInfo(EmployeeManagerI mgr) {
+	public Map getActiveInactiveEmployeeInfo(EmployeeManagerI mgr) {
 		this.manager = mgr;
 		if (null != (this.activeInactivedEmployeeDataHolder.get(""))) {
-			return new ArrayList((((Map) this.activeInactivedEmployeeDataHolder.get("")).values()));
+			return (Map) this.activeInactivedEmployeeDataHolder.get("");
 		} else {
-			return new ArrayList();
+			return new HashMap();
 		}
 	}
 	
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public Collection getAllTerminatedEmployeeInfo(EmployeeManagerI mgr) {
+	public Map<String, EmployeeInfo> getAllTerminatedEmployeeInfo(EmployeeManagerI mgr) {
 		this.manager = mgr;
 		if (null != (this.terminatedEmployeeDataHolder.get(""))) {
-			return new ArrayList((List) this.terminatedEmployeeDataHolder.get(""));
+			return  this.terminatedEmployeeDataHolder.get("");
 		} else {
-			return new ArrayList();
+			return new HashMap();
 		}
 	}
 

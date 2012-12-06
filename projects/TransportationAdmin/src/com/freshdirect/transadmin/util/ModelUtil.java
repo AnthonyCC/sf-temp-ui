@@ -128,14 +128,17 @@ public class ModelUtil {
 		return result;
 	}
 
-	public static List getTrnAdminEmployeeList(List kronoList,List roleList){
+	public static List getTrnAdminEmployeeList(Map kronoList,List roleList){
 
 		if(kronoList==null) return new ArrayList();
 
 		List finalList=new ArrayList();
-
-		for(int i=0;i<kronoList.size();i++){
-			EmployeeInfo info=(EmployeeInfo)kronoList.get(i);
+		
+		Iterator it = kronoList.values().iterator();
+		
+		while(it.hasNext())
+		{
+			EmployeeInfo info=(EmployeeInfo)it.next();
 
 			List empRoleList=new ArrayList();
 			if(roleList!=null && roleList.size()>0)

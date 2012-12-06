@@ -89,6 +89,8 @@ public interface DomainManagerDaoI extends BaseManagerDaoI {
 	
 	Collection getEmployeeStatus(String empId)  throws DataAccessException;
 	
+	Map getEmployeeStatus()  throws DataAccessException;
+	
 	Collection getTeamByEmployee(String empId)  throws DataAccessException;
 	
 	Collection getTeamByLead(String leadId) throws DataAccessException;

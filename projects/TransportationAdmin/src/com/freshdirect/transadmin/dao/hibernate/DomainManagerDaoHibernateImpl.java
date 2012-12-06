@@ -524,6 +524,11 @@ public class DomainManagerDaoHibernateImpl
 		strBuf.append("from EmployeeTruckPreference tp where tp.id.kronosId ='").append(empId).append("'");
 		return (Collection) getHibernateTemplate().find(strBuf.toString());		
 	}
+	
+	public Map getEmployeeStatus() throws DataAccessException {
+		List c =  getHibernateTemplate().find("from EmployeeStatus");
+		return convertEmpListToMap(c);
+	}
 
 	public Map findByIDs(Set ids)
 	{
