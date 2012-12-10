@@ -1,4 +1,6 @@
 <%@ page import='com.freshdirect.webapp.taglib.giftcard.GiftCardUtil' %>
+<%@ page import='com.freshdirect.webapp.taglib.fdstore.SystemMessageList' %>
+<%@ page import='com.freshdirect.mail.EmailUtil' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ page import='org.json.JSONObject' %>
 <%@ page import='java.text.*' %>
@@ -55,14 +57,20 @@
             String resendEmailId = request.getParameter("gcRecipEmail");
             String recipName = request.getParameter("gcRecipName");
             String persMessage = request.getParameter("gcMessage");
-
-		boolean success = GiftCardUtil.resendEmail(request, saleId, certNum, resendEmailId, recipName, persMessage);
+            
         JSONObject json = new JSONObject();
+        if(!EmailUtil.isValidEmailAddress(resendEmailId)){
+           	json.put("returnMsg", "<b><span style=\"color: #f00;\">"+SystemMessageList.MSG_EMAIL_FORMAT+"</span></b>");
+        }
+        else{
+		boolean success = GiftCardUtil.resendEmail(request, saleId, certNum, resendEmailId, recipName, persMessage);
+        
         if(success) {
 		    //if we return anything, it will de displayed in the overlay (can be html)
             json.put("returnMsg", "<b><span style=\"color: #f00;\">Gift Card resent successfully.</span></b>");
         } else {
             json.put("returnMsg", "<b><span style=\"color: #f00;\">Unable to process your request. Please contact customer service.</span></b>");
+        }
         }
 		%>  <%=json.toString()%>
 		<%
