@@ -23,6 +23,10 @@
 						<td>Phone</td>
 						<td colspan="4"><input type="text" name="phone" id="cust_qs_phone" title="Phone" value="<%= "null".equalsIgnoreCase(request.getParameter("phone")) ? "" : request.getParameter("phone") %>" class="input_text"></td>
 					</tr>
+					<tr>
+						<td>Customer ID</td>
+						<td colspan="4"><input type="text" name="customerId" id="cust_qs_id" title="Phone" value="<%= "null".equalsIgnoreCase(request.getParameter("customerId")) ? "" : request.getParameter("customerId") %>" class="input_text"></td>
+					</tr>
 					<tr><td colspan="5" align="center"><img src="/media_stat/crm/images/clear.gif" width="1" height="8"><br><input type="reset" value="CLEAR" class="clear"><input type="submit" value="SEARCH CUSTOMER" class="submit"></td></tr>
 				</table>
 				<script type="text/javascript">

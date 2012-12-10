@@ -15,6 +15,7 @@ public class FDSearchCriteria implements Serializable {
 	protected String lastName = null;
 	protected String email = null;
 	protected String phone = null;
+	protected String customerId = null;
 
 	protected String orderNumber = null;
 	protected String depotCode = null;
@@ -41,6 +42,16 @@ public class FDSearchCriteria implements Serializable {
 	public void setFirstName(String firstName) {
 		if (firstName != null && !"".equals(firstName.trim())) {
 			this.firstName = firstName;
+		}
+	}
+	
+	public String getCustomerId() {
+		return this.customerId;
+	}
+
+	public void setCustomerId(String custId) {
+		if (custId != null && !"".equals(custId.trim())) {
+			this.customerId = custId;
 		}
 	}
 
@@ -120,7 +131,8 @@ public class FDSearchCriteria implements Serializable {
 			&& this.orderNumber == null
 			&& this.depotCode == null 
 			&& this.certNumber == null
-			&& this.gcNumber == null;
+			&& this.gcNumber == null
+			&& this.customerId == null;
 		
 	}
 
@@ -150,6 +162,9 @@ public class FDSearchCriteria implements Serializable {
 		}
 		if (this.orderNumber != null && !"".equals(this.orderNumber.trim())) {
 			m.put("Order Number", this.orderNumber);
+		}
+		if (this.customerId != null && !"".equals(customerId.trim())) {
+			m.put("CustomerId", this.customerId);
 		}
 		return m;
 	}

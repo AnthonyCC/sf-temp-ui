@@ -23,6 +23,7 @@
 	sc.setLastName(NVL.apply(request.getParameter("lastName"), "").trim());
 	sc.setEmail(NVL.apply(request.getParameter("email"), "").trim());
 	sc.setPhone(NVL.apply(request.getParameter("phone"), "").trim());
+	sc.setCustomerId(NVL.apply(request.getParameter("customerId"), "").trim());
 	sc.setOrderNumber(NVL.apply(request.getParameter("orderNumber"), "").trim());
     sc.setAddress(NVL.apply(request.getParameter("address"), "").trim());
 	sc.setZipCode(NVL.apply(request.getParameter("zipCode"), "").trim());

@@ -211,6 +211,11 @@ class FDCustomerOrderInfoDAO {
 			builder.addString("c.user_id", value);
 		}
 		
+		value = NVL.apply(criteria.getCustomerId(), "").trim();
+		if(!"".equals(value)) {
+			builder.addString("c.id", value);
+		}
+		
 		value = NVL.apply(criteria.getFirstName(), "").trim();
 		if(!"".equals(value)) {
 			builder.addSql("lower(ci.first_name) like lower(?)", new Object[] { value.replace('*', '%')});
