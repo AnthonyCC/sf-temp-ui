@@ -269,7 +269,7 @@
 		value.append("$0.00");
 	    } else {
 		displayString = "Delivery Charge:";
-		value.append(JspMethods.formatPrice(order.hasInvoice() ? order.getInvoicedDeliveryCharge() : order.getChargeAmountDiscountApplied(EnumChargeType.DELIVERY)));
+		value.append(JspMethods.formatPrice(order.hasInvoice() ? order.getInvoicedDeliveryCharge() : order.getDeliveryCharge()));
 		value.append(order.isDeliveryChargeTaxable() ? "&nbsp;T" : "");
 	    }
 	    
