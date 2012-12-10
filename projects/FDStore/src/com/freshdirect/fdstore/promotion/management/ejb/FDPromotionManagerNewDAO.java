@@ -691,8 +691,8 @@ public class FDPromotionManagerNewDAO {
 								"AUDIENCE_DESC, TERMS, REDEEM_CNT, HASSKUQUANTITY, " +
 								"PERISHABLEONLY, NEEDDRYGOODS, NEEDCUSTOMERLIST, " +
 								"RULE_BASED, FAVORITES_ONLY, COMBINE_OFFER, " +
-								"CREATED_BY, CREATE_DATE, MODIFIED_BY, MODIFY_DATE, DONOT_APPLY_FRAUD, PUBLISHES,OFFER_TYPE, INCL_FUEL_SURCHARGE , SKU_LIMIT, referral_promo, tsa_promo_code, radius)"
-						+ " VALUES(?,?,?,?,?,?,?,?,?,?, ?,?,?,?,?,?,?,?,?,?, ?,?,?,?,?,?,?,?,?,?, ?,?,?,?,?,?,?,?)");
+								"CREATED_BY, CREATE_DATE, MODIFIED_BY, MODIFY_DATE, DONOT_APPLY_FRAUD, PUBLISHES,OFFER_TYPE, INCL_FUEL_SURCHARGE , SKU_LIMIT, referral_promo, tsa_promo_code, MAX_PERCENTAGE_DISCOUNT, radius)"
+						+ " VALUES(?,?,?,?,?,?,?,?,?,?, ?,?,?,?,?,?,?,?,?,?, ?,?,?,?,?,?,?,?,?,?, ?,?,?,?,?,?,?,?,?)");
 
 		int i = 1;
 		ps.setString(i++, id); // 1
@@ -734,6 +734,11 @@ public class FDPromotionManagerNewDAO {
 		ps.setString(i++, promotion.isReferralPromo()?"Y":"N");
 		if (!"".equals(promotion.getTsaPromoCode())) {
 			ps.setString(i++, promotion.getTsaPromoCode());
+		} else {
+			ps.setNull(i++, Types.VARCHAR);
+		}
+		if (!"".equals(promotion.getMaxPercentageDiscount())) {
+			ps.setString(i++, promotion.getMaxPercentageDiscount());
 		} else {
 			ps.setNull(i++, Types.VARCHAR);
 		}
@@ -2945,7 +2950,7 @@ public class FDPromotionManagerNewDAO {
 						+ " ROLLING_EXPIRATION_DAYS=?, STATUS=?, OFFER_DESC=?, AUDIENCE_DESC=?, TERMS=?, REDEEM_CNT=?,"
 						+ " HASSKUQUANTITY=?, PERISHABLEONLY=?, NEEDDRYGOODS=?, NEEDCUSTOMERLIST=?, RULE_BASED=?,"
 						+ " FAVORITES_ONLY=?, COMBINE_OFFER=?, MODIFIED_BY=?, MODIFY_DATE=?,"
-						+ " DONOT_APPLY_FRAUD=?, PUBLISHES=?, INCL_FUEL_SURCHARGE=?, SKU_LIMIT=?, referral_promo=?, tsa_promo_code=?, radius=?"
+						+ " DONOT_APPLY_FRAUD=?, PUBLISHES=?, INCL_FUEL_SURCHARGE=?, SKU_LIMIT=?, referral_promo=?, tsa_promo_code=?, MAX_PERCENTAGE_DISCOUNT=?, radius=?"
 						+ " WHERE ID = ?");
 
 		int i = 1;
@@ -2976,6 +2981,11 @@ public class FDPromotionManagerNewDAO {
 		
 		if (!"".equals(promotion.getTsaPromoCode())) {
 			ps.setString(i++, promotion.getTsaPromoCode());
+		} else {
+			ps.setNull(i++, Types.VARCHAR);
+		}
+		if (!"".equals(promotion.getMaxPercentageDiscount())) {
+			ps.setString(i++, promotion.getMaxPercentageDiscount());
 		} else {
 			ps.setNull(i++, Types.VARCHAR);
 		}
