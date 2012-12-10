@@ -874,6 +874,12 @@
 		document.getElementById("status").value=status;
 		document.getElementById("frmPromoDetails").submit();
 	}
+	function editPromotionStatusForBatch(form,promocode, status){
+		document.getElementById("frmPromoDetails").action ="/promotion/promo_details.jsp?promoId="+promocode;
+		document.getElementById("actionName").value="changeStatusForBatch";
+		document.getElementById("status").value=status;
+		document.getElementById("frmPromoDetails").submit();
+	}
 
 function doPublish(promocode) {
 	document.getElementById("publish").disabled=true;

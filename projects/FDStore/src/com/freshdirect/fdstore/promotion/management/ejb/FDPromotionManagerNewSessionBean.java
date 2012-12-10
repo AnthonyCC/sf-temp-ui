@@ -315,8 +315,11 @@ public class FDPromotionManagerNewSessionBean extends FDSessionBeanSupport {
 		Connection conn = null;
 		try {
 			conn = getConnection();
-
-			FDPromotionManagerNewDAO.storePromotionBasic(conn, promotion);
+			if(promotion.isBatchPromo()) {
+				FDPromotionManagerNewDAO.storePromotionBasicForBatch(conn, promotion);
+			} else {
+				FDPromotionManagerNewDAO.storePromotionBasic(conn, promotion);
+			}
 			/*FDPromoChangeModel changeModel = new FDPromoChangeModel();
 			changeModel.setPromotionId(promotion.getId());
 			changeModel.setActionDate(promotion.getModifiedDate());
@@ -549,7 +552,11 @@ public class FDPromotionManagerNewSessionBean extends FDSessionBeanSupport {
 		try {
 			conn = getConnection();
 
-			FDPromotionManagerNewDAO.storePromotionOfferInfo(conn, promotion);
+			if(promotion.isBatchPromo()) {				
+				FDPromotionManagerNewDAO.storePromotionOfferInfoForBatch(conn, promotion);
+			} else {
+				FDPromotionManagerNewDAO.storePromotionOfferInfo(conn, promotion);
+			}
 			storePromoChangeLog(promotion, conn, promotion.getPK());
 
 		} catch (SQLException sqle) {
@@ -570,7 +577,6 @@ public class FDPromotionManagerNewSessionBean extends FDSessionBeanSupport {
 		
 	}
 	
-	
 	public void storePromotionCartInfo(FDPromotionNewModel promotion)
 	throws FDResourceException, FDDuplicatePromoFieldException,
 	FDPromoTypeNotFoundException, FDPromoCustNotFoundException {
@@ -578,7 +584,11 @@ public class FDPromotionManagerNewSessionBean extends FDSessionBeanSupport {
 		try {
 			conn = getConnection();
 
-			FDPromotionManagerNewDAO.storePromotionCartInfo(conn, promotion);
+			if(promotion.isBatchPromo()) {
+				FDPromotionManagerNewDAO.storePromotionCartInfoForBatch(conn, promotion);
+			} else {
+				FDPromotionManagerNewDAO.storePromotionCartInfo(conn, promotion);
+			}
 			storePromoChangeLog(promotion, conn, promotion.getPK());
 
 		} catch (SQLException sqle) {
@@ -605,7 +615,11 @@ public class FDPromotionManagerNewSessionBean extends FDSessionBeanSupport {
 		try {
 			conn = getConnection();
 
-			FDPromotionManagerNewDAO.storePromotionPaymentInfo(conn, promotion);
+			if(promotion.isBatchPromo()) {
+				FDPromotionManagerNewDAO.storePromotionPaymentInfoForBatch(conn, promotion);
+			} else {
+				FDPromotionManagerNewDAO.storePromotionPaymentInfo(conn, promotion);
+			}
 			storePromoChangeLog(promotion, conn, promotion.getPK());
 
 		} catch (SQLException sqle) {
@@ -632,7 +646,11 @@ public class FDPromotionManagerNewSessionBean extends FDSessionBeanSupport {
 		try {
 			conn = getConnection();
 
-			FDPromotionManagerNewDAO.storePromotionDlvZoneInfo(conn, promotion);
+			if(promotion.isBatchPromo()) {
+				FDPromotionManagerNewDAO.storePromotionDlvZoneInfoForBatch(conn, promotion);
+			} else {
+				FDPromotionManagerNewDAO.storePromotionDlvZoneInfo(conn, promotion);
+			}
 			storePromoChangeLog(promotion, conn, promotion.getPK());
 
 		} catch (SQLException sqle) {
@@ -659,7 +677,11 @@ public class FDPromotionManagerNewSessionBean extends FDSessionBeanSupport {
 		try {
 			conn = getConnection();
 
-			FDPromotionManagerNewDAO.storePromotionCustReqInfo(conn, promotion);
+			if(promotion.isBatchPromo()) {
+				FDPromotionManagerNewDAO.storePromotionCustReqInfoForBatch(conn, promotion);
+			} else {
+				FDPromotionManagerNewDAO.storePromotionCustReqInfo(conn, promotion);
+			}
 			storePromoChangeLog(promotion, conn, promotion.getPK());
 
 		} catch (SQLException sqle) {
@@ -872,7 +894,11 @@ public class FDPromotionManagerNewSessionBean extends FDSessionBeanSupport {
 		try {
 			conn = getConnection();
 
-			FDPromotionManagerNewDAO.storePromotionStatus(conn, status, promotion);
+			if(promotion.isBatchPromo()) {
+				FDPromotionManagerNewDAO.storePromotionStatusForBatch(conn, status, promotion);
+			} else {
+				FDPromotionManagerNewDAO.storePromotionStatus(conn, status, promotion);
+			}
 			storePromoChangeLog(promotion, conn, promotion.getPK());
 
 		} catch (SQLException sqle) {
@@ -1010,5 +1036,31 @@ public class FDPromotionManagerNewSessionBean extends FDSessionBeanSupport {
             close(conn);
 		}	
 	}
+	
+	public String createPromotionBatch(FDPromotionNewModel promotion) throws FDResourceException {
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			String batchId = FDPromotionManagerNewDAO.createPromotionBatch(conn, promotion);
+			//storePromoChangeLog(promotion, conn, pk);
+			return batchId;
+		} catch (SQLException sqle) {
+			throw new FDResourceException(sqle);
+		} finally {
+            close(conn);
+		}
+	}
+	
+	public List<FDPromotionNewModel> getBatchPromotions(String batchId) throws FDResourceException {
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			return FDPromotionManagerNewDAO.getBatchPromotions(conn, batchId);
+		} catch (SQLException sqle) {
+			throw new FDResourceException(sqle);
+		} finally {
+            close(conn);
+		}
+	}	
 
 }

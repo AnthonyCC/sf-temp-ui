@@ -64,7 +64,7 @@ public class PromotionStateSwitchTag extends AbstractControllerTag {
 		if ("changeStatus".equalsIgnoreCase(getActionName())){ 
 			if(graph.getStates().contains(status)) {
 				final FDPromotionNewModel promotion = graph.getPromotion();
-					validatePromotion(request,actionResult);
+					validatePromotion(request,actionResult, this.promotion);
 					if(actionResult.isSuccess()){
 						promotion.setStatus(status);
 						this.promotion.setModifiedBy(agent.getUserId());
@@ -82,6 +82,37 @@ public class PromotionStateSwitchTag extends AbstractControllerTag {
 			this.promotion.setModifiedDate(new Date());				
 			populatePromoChangeModel(promotion);
 			FDPromotionNewManager.storePromotionHoldStatus(promotion);			
+		} else if("changeStatusForBatch".equalsIgnoreCase(getActionName())) {
+			//Test all batch promotions
+			if(graph.getStates().contains(status)) {
+				final FDPromotionNewModel promotion = graph.getPromotion();
+				//get all promotions in the batch
+				List<FDPromotionNewModel> batchPromotions = FDPromotionNewManager.getBatchPromotions(promotion.getBatchId());
+				Iterator iter = batchPromotions.iterator();
+				StringBuffer sb = new StringBuffer();
+				while(iter.hasNext()) {
+					FDPromotionNewModel bpromo = (FDPromotionNewModel) iter.next();
+					if(!validatePromotion(request,actionResult, bpromo)) {
+						sb.append(bpromo.getPromotionCode());
+						sb.append(", ");
+					}
+					
+				}
+				if(sb.length() > 0 && !actionResult.isSuccess()) {
+					actionResult.addError(true, "batchpromoError", "Follwoing promotions in this batch are incomplete. Please complete the setup for these, before testing the entire batch.   " + sb.toString());
+				}
+				if(actionResult.isSuccess()){
+					promotion.setStatus(status);
+					this.promotion.setModifiedBy(agent.getUserId());
+					this.promotion.setModifiedDate(new Date());
+					this.promotion.setBatchPromo(true);
+					populatePromoChangeModel(promotion);					
+					FDPromotionNewManager.storePromotionStatus(promotion,status,true);
+				}				 
+			} else {
+				LOGGER.error("Invalid status " + status.getName());
+				actionResult.addError(true, "promo.store", "Could not switch to '" + status.getDescription()+"' from '"+promotion.getStatus().getDescription()+"'");
+			}
 		}
 		} catch (FDResourceException e) {
 			throw new JspException(e);
@@ -94,7 +125,7 @@ public class PromotionStateSwitchTag extends AbstractControllerTag {
 		List promoChanges = new ArrayList<FDPromoChangeModel>();
 		changeModel.setPromotionId(promotion.getId());
 		changeModel.setActionDate(new Date());
-		if("changeStatus".equalsIgnoreCase(getActionName())){
+		if("changeStatus".equalsIgnoreCase(getActionName()) || "changeStatusForBatch".equalsIgnoreCase(getActionName())) {
 			if(EnumPromotionStatus.PROGRESS.equals(promotion.getStatus()))
 				changeModel.setActionType(EnumPromoChangeType.STATUS_PROGRESS);
 			else if(EnumPromotionStatus.TEST.equals(promotion.getStatus()))
@@ -122,28 +153,35 @@ public class PromotionStateSwitchTag extends AbstractControllerTag {
 	}
 
 
-	private void validatePromotion(HttpServletRequest request,ActionResult result) throws FDResourceException{
-		if(null != promotion && null !=status){ 
+	private boolean validatePromotion(HttpServletRequest request,ActionResult result, FDPromotionNewModel lPromotion) throws FDResourceException{
+		boolean valid = true;
+		if(null != lPromotion && null !=status){ 
 			if(EnumPromotionStatus.TEST.equals(status)){
-				if(null ==promotion.getStartDate()){
+				if(null ==lPromotion.getStartDate()){
 					result.addError(true, "startDateEmpty", "Promotion Start Date can't be empty.");
+					valid = false;
 				}
-				if(null == promotion.getExpirationDate()){
+				if(null == lPromotion.getExpirationDate()){
 					result.addError(true, "endDateEmpty", "Promotion End Date can't be empty.");
+					valid = false;
 				}
-				if("".equals(NVL.apply(promotion.getMaxUsage(),"").trim()) || "0".equals(promotion.getMaxUsage().trim())){
+				if("".equals(NVL.apply(lPromotion.getMaxUsage(),"").trim()) || "0".equals(lPromotion.getMaxUsage().trim())){
 					result.addError(true, "usageCountEmpty", "Promotion Usage Count is required.");
+					valid = false;
 				}
-				if("".equals(NVL.apply(promotion.getPromotionType(),"").trim())){
+				if("".equals(NVL.apply(lPromotion.getPromotionType(),"").trim())){
 					result.addError(true, "offerTypeEmpty", "Promotion Offer Type can't be empty.");
+					valid = false;
 				}
-				else if(EnumPromotionType.LINE_ITEM.getName().equals(promotion.getPromotionType())){
-					if("".equals(NVL.apply(promotion.getPercentOff(),"").trim()) && "".equals(NVL.apply(promotion.getMaxAmount(),"").trim())){
+				else if(EnumPromotionType.LINE_ITEM.getName().equals(lPromotion.getPromotionType())){
+					if("".equals(NVL.apply(lPromotion.getPercentOff(),"").trim()) && "".equals(NVL.apply(lPromotion.getMaxAmount(),"").trim())){
 						result.addError(true, "discountEmpty", "Promotion Discount value is required for LINE ITEM offer.");
+						valid = false;
 					}
-					List<FDPromoContentModel> dcpdData = promotion.getDcpdData();
+					List<FDPromoContentModel> dcpdData = lPromotion.getDcpdData();
 					if(null == dcpdData || dcpdData.isEmpty()){
 						result.addError(true, "dcpdEmpty", "One of the Department/Category/Recipe/SKU/Brand fields must be specified for LINE ITEM offer.");
+						valid = false;
 					}else{
 						boolean isExcluded = false;
 						boolean isDeptCatRecAvailable = false;
@@ -168,48 +206,58 @@ public class PromotionStateSwitchTag extends AbstractControllerTag {
 						}
 						if(isExcluded && !isDeptCatRecAvailable){
 							result.addError(true, "dcrEmpty", "If ineligible SKU or ineligible brand selected, additional department/category/recipe id must be specified for LINE ITEM offer.");
+							valid = false;
 						}
 					}
-				}else if(EnumPromotionType.SAMPLE.getName().equals(promotion.getPromotionType())){
-					if("".equals(NVL.apply(promotion.getProductName(),"").trim())){
+				}else if(EnumPromotionType.SAMPLE.getName().equals(lPromotion.getPromotionType())){
+					if("".equals(NVL.apply(lPromotion.getProductName(),"").trim())){
 				 		result.addError(true, "prodNameEmpty", "Promotion product id is required for SAMPLE offer.");
+				 		valid = false;
 					}
-					if("".equals(NVL.apply(promotion.getCategoryName(),"").trim())){
+					if("".equals(NVL.apply(lPromotion.getCategoryName(),"").trim())){
 						result.addError(true, "catNameEmpty", "Promotion category id is required for SAMPLE offer.");
+						valid = false;
 					}
-				}else if(EnumPromotionType.HEADER.getName().equals(promotion.getPromotionType()) ){
-					if(!"DLV".equalsIgnoreCase(promotion.getWaiveChargeType())){
-						if("".equals(NVL.apply(promotion.getPercentOff(),"").trim()) && "".equals(NVL.apply(promotion.getMaxAmount(),"").trim()) && null== promotion.getExtendDpDays()){
+				}else if(EnumPromotionType.HEADER.getName().equals(lPromotion.getPromotionType()) ){
+					if(!"DLV".equalsIgnoreCase(lPromotion.getWaiveChargeType())){
+						if("".equals(NVL.apply(lPromotion.getPercentOff(),"").trim()) && "".equals(NVL.apply(lPromotion.getMaxAmount(),"").trim()) && null== lPromotion.getExtendDpDays() && lPromotion.getDollarOffList() == null){
 							result.addError(true, "maxAmountEmpty", "Discount value is required");
+							valid = false;
 						}
 					}
-					if(EnumPromotionType.WINDOW_STEERING.getName().equalsIgnoreCase(promotion.getOfferType())){
-						if(!"ZONE".equalsIgnoreCase(promotion.getGeoRestrictionType())){					
+					if(EnumPromotionType.WINDOW_STEERING.getName().equalsIgnoreCase(lPromotion.getOfferType())){
+						if(!"ZONE".equalsIgnoreCase(lPromotion.getGeoRestrictionType())){					
 							result.addError(true, "wsZoneRequired", "For a Window Steering promotion, ZONE type georestriction should be configured.");
+							valid = false;
 						}
-						if(!promotion.isCombineOffer()){
+						if(!lPromotion.isCombineOffer()){
 							result.addError(true, "combineOfferRequired", "For a Window Steering promotion, 'combine offer' should be selected.");
+							valid = false;
 						}
 					}
 				}
-				List<FDPromoCustStrategyModel> custStrategies = promotion.getCustStrategies();
+				List<FDPromoCustStrategyModel> custStrategies = lPromotion.getCustStrategies();
 				if(null!= custStrategies && !custStrategies.isEmpty()){
 					FDPromoCustStrategyModel custModel = (FDPromoCustStrategyModel)custStrategies.get(0);
 					if(!custModel.isOrderTypeHome() && !custModel.isOrderTypeCorporate() && !custModel.isOrderTypePickup()){
 						result.addError(true, "addressTypeEmpty", "Promotion delivery address type must be selected.");
+						valid = false;
 					}
 				}else{
 					result.addError(true, "addressTypeEmpty", "Promotion delivery address type must be selected.");
+					valid = false;
 				}
-				if(null == promotion.getMinSubtotal() || "".equals(promotion.getMinSubtotal())){
+				if(null == lPromotion.getMinSubtotal() || "".equals(lPromotion.getMinSubtotal())){
 					result.addError(true, "minSubTotalEmpty", "Minimum Sub Total is required for the promotion.");
+					valid = false;
 				}
-				if(FDPromotionNewManager.isRedemptionCodeExists(promotion.getRedemptionCode(),promotion.getId())){
-					result.addError(true, "redemptionCodeDuplicate", " An active promotion exists with the same redemption code, please change the redemption code.");				
+				if(FDPromotionNewManager.isRedemptionCodeExists(lPromotion.getRedemptionCode(),lPromotion.getId())){
+					result.addError(true, "redemptionCodeDuplicate", " An active promotion exists with the same redemption code, please change the redemption code.");
+					valid = false;
 				}
-			}
-			
+			}			
 		}
+		return valid;
 	}
 	@Override
 	protected boolean performGetAction(HttpServletRequest request,

@@ -29,6 +29,7 @@ import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.promotion.EnumPromoChangeType;
 import com.freshdirect.fdstore.promotion.EnumPromotionSection;
+import com.freshdirect.fdstore.promotion.EnumPromotionStatus;
 import com.freshdirect.fdstore.promotion.management.FDDuplicatePromoFieldException;
 import com.freshdirect.fdstore.promotion.management.FDPromoChangeDetailModel;
 import com.freshdirect.fdstore.promotion.management.FDPromoChangeModel;
@@ -247,7 +248,14 @@ public class PromotionDlvReqControllerTag extends AbstractControllerTag {
 			promotion.setCustStrategies(custStrategies);
 			validateDlvReq(request,actionResult);
 			
+			if("true".equals(request.getParameter("batch_promo"))) {
+				promotion.setBatchPromo(true);
+			}
+			
 			if(actionResult.isSuccess()){
+				if(promotion.isBatchPromo()) {
+					FDPromotionNewManager.storePromotionStatus(promotion,EnumPromotionStatus.PROGRESS,true);					
+				}
 				HttpSession session = pageContext.getSession();
 				CrmAgentModel agent = CrmSession.getCurrentAgent(session);
 				this.promotion.setModifiedBy(agent.getUserId());

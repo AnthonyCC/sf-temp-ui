@@ -23,6 +23,7 @@ import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDCustomerModel;
 import com.freshdirect.fdstore.promotion.EnumPromoChangeType;
 import com.freshdirect.fdstore.promotion.EnumPromotionSection;
+import com.freshdirect.fdstore.promotion.EnumPromotionStatus;
 import com.freshdirect.fdstore.promotion.management.FDDuplicatePromoFieldException;
 import com.freshdirect.fdstore.promotion.management.FDPromoChangeDetailModel;
 import com.freshdirect.fdstore.promotion.management.FDPromoChangeModel;
@@ -92,7 +93,13 @@ public class PromotionCustReqControllerTag extends AbstractControllerTag {
 				CrmAgentModel agent = CrmSession.getCurrentAgent(session);
 				promotion.setModifiedBy(agent.getUserId());
 				promotion.setModifiedDate(new Date());
+				if("true".equals(request.getParameter("batch_promo"))) {
+					promotion.setBatchPromo(true);
+				}
 				if(actionResult.isSuccess()){
+					if(promotion.isBatchPromo()) {
+						FDPromotionNewManager.storePromotionStatus(promotion,EnumPromotionStatus.PROGRESS,true);					
+					}
 					populatePromoChangeModel(model);
 					FDPromotionNewManager.storePromotionCustReqInfo(promotion);
 				}
@@ -172,10 +179,17 @@ public class PromotionCustReqControllerTag extends AbstractControllerTag {
 					CrmAgentModel agent = CrmSession.getCurrentAgent(session);
 					promotion.setModifiedBy(agent.getUserId());
 					promotion.setModifiedDate(new Date());
+					if("true".equals(request.getParameter("batch_promo"))) {
+						promotion.setBatchPromo(true);
+					}
 					
 					populatePromoChangeModel(model);
-					if(actionResult.isSuccess())
+					if(actionResult.isSuccess()) {
+						if(promotion.isBatchPromo()) {
+							FDPromotionNewManager.storePromotionStatus(promotion,EnumPromotionStatus.PROGRESS,true);					
+						}
 						FDPromotionNewManager.storePromotionPaymentInfo(promotion);
+					}
 					
 //				}
 			}else if("searchCustomerRestriction".equalsIgnoreCase(this.getActionName())){

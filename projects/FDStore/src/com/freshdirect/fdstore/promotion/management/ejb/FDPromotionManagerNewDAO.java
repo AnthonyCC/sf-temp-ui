@@ -38,6 +38,7 @@ import com.freshdirect.fdstore.promotion.EnumDCPDContentType;
 import com.freshdirect.fdstore.promotion.EnumPromoChangeType;
 import com.freshdirect.fdstore.promotion.EnumPromotionSection;
 import com.freshdirect.fdstore.promotion.EnumPromotionStatus;
+import com.freshdirect.fdstore.promotion.Promotion;
 import com.freshdirect.fdstore.promotion.PromotionI;
 import com.freshdirect.fdstore.promotion.management.FDPromoChangeDetailModel;
 import com.freshdirect.fdstore.promotion.management.FDPromoChangeModel;
@@ -489,6 +490,7 @@ public class FDPromotionManagerNewDAO {
 		} else {
 			promotion.setMaxPercentageDiscount("");
 		}
+		promotion.setBatchId(rs.getString("BATCH_ID"));
 		return promotion;
 	}
 
@@ -691,8 +693,8 @@ public class FDPromotionManagerNewDAO {
 								"AUDIENCE_DESC, TERMS, REDEEM_CNT, HASSKUQUANTITY, " +
 								"PERISHABLEONLY, NEEDDRYGOODS, NEEDCUSTOMERLIST, " +
 								"RULE_BASED, FAVORITES_ONLY, COMBINE_OFFER, " +
-								"CREATED_BY, CREATE_DATE, MODIFIED_BY, MODIFY_DATE, DONOT_APPLY_FRAUD, PUBLISHES,OFFER_TYPE, INCL_FUEL_SURCHARGE , SKU_LIMIT, referral_promo, tsa_promo_code, MAX_PERCENTAGE_DISCOUNT, radius)"
-						+ " VALUES(?,?,?,?,?,?,?,?,?,?, ?,?,?,?,?,?,?,?,?,?, ?,?,?,?,?,?,?,?,?,?, ?,?,?,?,?,?,?,?,?)");
+								"CREATED_BY, CREATE_DATE, MODIFIED_BY, MODIFY_DATE, DONOT_APPLY_FRAUD, PUBLISHES,OFFER_TYPE, INCL_FUEL_SURCHARGE , SKU_LIMIT, referral_promo, tsa_promo_code, radius, MAX_PERCENTAGE_DISCOUNT, batch_id)"
+						+ " VALUES(?,?,?,?,?,?,?,?,?,?, ?,?,?,?,?,?,?,?,?,?, ?,?,?,?,?,?,?,?,?,?, ?,?,?,?,?,?,?,?,?,?)");
 
 		int i = 1;
 		ps.setString(i++, id); // 1
@@ -737,13 +739,19 @@ public class FDPromotionManagerNewDAO {
 		} else {
 			ps.setNull(i++, Types.VARCHAR);
 		}
+	    
+		if (!"".equals(promotion.getRadius())) {
+			ps.setString(i++, promotion.getRadius());
+		} else {
+			ps.setNull(i++, Types.VARCHAR);
+		}
 		if (!"".equals(promotion.getMaxPercentageDiscount())) {
 			ps.setString(i++, promotion.getMaxPercentageDiscount());
 		} else {
 			ps.setNull(i++, Types.VARCHAR);
 		}
-		if (!"".equals(promotion.getRadius())) {
-			ps.setString(i++, promotion.getRadius());
+		if (!"".equals(promotion.getBatchId())) {
+			ps.setString(i++, promotion.getBatchId());
 		} else {
 			ps.setNull(i++, Types.VARCHAR);
 		}
@@ -3247,6 +3255,831 @@ public class FDPromotionManagerNewDAO {
 			throw new FDResourceException(se);
 		}
 		return dowSpent;
+	}
+	
+	public static String createPromotionBatch(Connection conn, FDPromotionNewModel promotion) throws SQLException {
+		String id = SequenceGenerator.getNextId(conn, "CUST");
+		PreparedStatement ps = conn
+				.prepareStatement("INSERT INTO CUST.promotion_batch"
+						+ " (batch_id,batch_count,create_date,created_by)"
+						+ " VALUES(?,?,?,?)");
+
+		ps.setString(1, id); 
+		ps.setInt(2, Integer.parseInt(promotion.getBatchNumber()));
+		ps.setString(4, promotion.getCreatedBy()); 
+		if (promotion.getCreatedDate() != null) {
+			ps.setTimestamp(3, new java.sql.Timestamp(promotion
+					.getCreatedDate().getTime())); 
+		} else {
+			ps.setNull(3, Types.DATE);
+		}
+		// Execute update
+		if (ps.executeUpdate() != 1) {
+			ps.close();
+			throw new SQLException("row not created");
+		}
+		ps.close();
+		return id;
+	}
+	
+	public static FDPromotionNewModel storePromotionOfferInfoForBatch(Connection conn,
+			ModelI model) throws SQLException {
+		FDPromotionNewModel promotion = (FDPromotionNewModel) model;
+		PreparedStatement ps =
+			conn.prepareStatement(
+				"UPDATE CUST.PROMOTION_NEW"
+				+ " SET"
+				+ " COMBINE_OFFER = ?, PERISHABLEONLY = ? ,FAVORITES_ONLY = ?, PERCENT_OFF = ?, WAIVE_CHARGE_TYPE = ?," 
+				+ " CATEGORY_NAME=?, PRODUCT_NAME=?, EXTEND_DP_DAYS =?,"
+				+ " MAX_AMOUNT =?, OFFER_TYPE = ?, MAX_ITEM_COUNT =?, MODIFIED_BY =?, MODIFY_DATE =?, INCL_FUEL_SURCHARGE=?, sku_limit=? "
+				+ " ,MAX_PERCENTAGE_DISCOUNT=? "
+				+ " WHERE batch_ID = ?");
+		int i = 1;
+		ps.setString(i++, promotion.isCombineOffer()?"Y":"N");
+		ps.setString(i++, promotion.isPerishable()?"Y":"N");
+		ps.setString(i++, promotion.isFavoritesOnly()?"Y":"N");
+		if (!"".equals(promotion.getPercentOff())) {
+			ps.setDouble(i++,
+					FormatterUtil.formatFourDecimal(Double.parseDouble(promotion.getPercentOff()) / 100));
+		} else {
+			ps.setNull(i++, Types.DOUBLE);
+		}
+		if (!"".equals(promotion.getWaiveChargeType())) {
+			ps.setString(i++, promotion.getWaiveChargeType());
+		} else {
+			ps.setNull(i++, Types.VARCHAR);
+		}
+		ps.setString(i++, promotion.getCategoryName());
+		ps.setString(i++, promotion.getProductName());
+		if (promotion != null && promotion.getExtendDpDays() != null) {
+			ps.setInt(i++, promotion.getExtendDpDays().intValue());					
+		} else {
+			ps.setNull(i++, Types.INTEGER);										
+		}		
+		if (!"".equals(promotion.getMaxAmount())) {
+			ps.setDouble(i++, Double.parseDouble(promotion.getMaxAmount()));
+		} else {
+			ps.setNull(i++, Types.DOUBLE);
+		}
+		if (!"".equals(promotion.getOfferType())) {
+			ps.setString(i++, promotion.getOfferType());
+		} else {
+			ps.setNull(i++, Types.VARCHAR);
+		}
+		if (promotion != null && promotion.getMaxItemCount() != null) {
+			ps.setInt(i++, promotion.getMaxItemCount().intValue());					
+		} else {
+			ps.setNull(i++, Types.INTEGER);										
+		}
+		ps.setString(i++, promotion.getModifiedBy());
+		if (promotion.getModifiedDate() != null) {
+			ps.setTimestamp(i++, new java.sql.Timestamp(promotion
+					.getModifiedDate().getTime()));
+		} else {
+			ps.setNull(i++, Types.DATE);
+		}
+		
+		ps.setString(i++, promotion.isFuelSurchargeIncluded()?"Y":"N");
+		
+		if (promotion != null && promotion.getSkuLimit() != null) {
+			ps.setInt(i++, promotion.getSkuLimit().intValue());					
+		} else {
+			ps.setNull(i++, Types.INTEGER);										
+		}
+		
+		if (!"".equals(promotion.getMaxPercentageDiscount())) {
+			ps.setDouble(i++, Double.parseDouble(promotion.getMaxPercentageDiscount()));
+		} else {
+			ps.setNull(i++, Types.DOUBLE);
+		}
+			
+		ps.setString(i++, promotion.getBatchId());
+		if (ps.executeUpdate() < 1) {
+			ps.close();
+			throw new SQLException("row not created to update Promotion");
+		}
+		ps.close();
+		
+		storeAssignedGroupsForBatch(conn, promotion.getBatchId(), promotion);
+		storeDiscountOffersForBatch(conn, promotion.getBatchId(), promotion);
+		return promotion;
+	}
+	
+	private static String INSERT_PROMO_DCPD_DATA_FOR_BATCH = "INSERT INTO cust.promo_dcpd_data_new" +
+				"(id, promotion_id, content_type, content_id, exclude, child_loop, recommended) " +
+				"select cust.SYSTEM_SEQ.nextval, ID, ?,?,?,?,? from cust.promotion_new where batch_id = ?";
+
+	private static void storeAssignedGroupsForBatch(Connection conn, String batchId,
+			FDPromotionNewModel promotion) throws SQLException {
+		PreparedStatement ps = null;
+	
+		//removeAssignedGroupsForBatch(conn, batchId);
+		try {
+			ps = conn.prepareStatement(INSERT_PROMO_DCPD_DATA_FOR_BATCH);
+			prepareAssignedGroupSaveForBatch(conn, ps, promotion.getDcpdData(), batchId);
+			ps.executeBatch();
+		} finally {
+			if (ps != null)
+				ps.close();
+		}
+	}
+	
+	private static void prepareAssignedGroupSaveForBatch(Connection conn,
+			PreparedStatement ps, List<FDPromoContentModel> dataList, String batchId) throws SQLException {
+	
+		if (dataList != null && !dataList.isEmpty()) {
+			for (FDPromoContentModel promoContentModel : dataList) {
+				ps.setString(1, promoContentModel.getContentType().getName());
+				ps.setString(2, promoContentModel.getContentId());
+				ps.setString(3, promoContentModel.isExcluded()?"Y":"N");
+				ps.setString(4, promoContentModel.isLoopEnabled()?"Y":"N");
+				ps.setString(5, promoContentModel.isRecCategory()?"Y":"N");
+				ps.setString(6, batchId);
+				ps.addBatch();
+				
+			}
+		}
+	}
+	
+	private static String INSERT_PROMO_DISCOUNT_DATA_FOR_BATCH = "INSERT INTO CUST.PROMO_DOLLAR_DISCOUNT " +
+				"(ID, PROMOTION_ID, DATE_ADDED, DOLLAR_OFF, ORDER_TOTAL) "  +
+				"select cust.SYSTEM_SEQ.nextval, ID, sysdate, ?, ? from cust.promotion_new where batch_id = ?";
+
+	
+	private static void storeDiscountOffersForBatch(Connection conn, String batchId, FDPromotionNewModel promotion) throws SQLException {
+		PreparedStatement ps = null;
+		removeDiscountOffersForBatch(conn, batchId);
+		try {
+			ps = conn.prepareStatement(INSERT_PROMO_DISCOUNT_DATA_FOR_BATCH);
+			prepareDiscountOffersSaveForBatch(conn, ps, promotion.getDollarOffList(), batchId);
+			ps.executeBatch();
+		} finally {
+			if (ps != null)
+				ps.close();
+		}
+	}
+
+	private static void prepareDiscountOffersSaveForBatch(Connection conn,
+			PreparedStatement ps, List<FDPromoDollarDiscount> dataList, String batchId) throws SQLException {
+
+		if (dataList != null && !dataList.isEmpty()) {
+			for (FDPromoDollarDiscount promoDFModel : dataList) {
+				ps.setDouble(1, promoDFModel.getDollarOff());
+				ps.setDouble(2, promoDFModel.getOrderSubtotal());
+				ps.setString(3, batchId);
+				ps.addBatch();				
+			}
+		}
+	}
+	
+	public static FDPromotionNewModel storePromotionCustReqInfoForBatch(Connection conn, ModelI model) throws SQLException{
+		FDPromotionNewModel promotion = (FDPromotionNewModel) model;
+		PreparedStatement ps =	conn.prepareStatement("UPDATE CUST.PROMOTION_NEW SET PROFILE_OPERATOR =?, MODIFIED_BY =?, MODIFY_DATE =?  where batch_ID=?");
+		int i=1;
+		if(!"".equals(promotion.getProfileOperator())){
+			ps.setString(i++, promotion.getProfileOperator());
+		}else{
+			ps.setNull(i++, Types.VARCHAR);
+		}
+        ps.setString(i++, promotion.getModifiedBy());
+		if (promotion.getModifiedDate() != null) {
+			ps.setTimestamp(i++, new java.sql.Timestamp(promotion
+					.getModifiedDate().getTime()));
+		} else {
+			ps.setNull(i++, Types.DATE);
+		}			
+		ps.setString(i++, promotion.getBatchId());
+		if (ps.executeUpdate() < 0) {
+			ps.close();
+			throw new SQLException("row not created to update Promotion");
+		}
+		ps.close();
+		storeCustomerStrategyForBatch(conn, promotion.getBatchId(), promotion);
+		storeAttributeListForBatch(conn, promotion.getBatchId(), promotion.getAttributeList());		
+		return promotion;
+	}
+	
+	private static String INSERT_PROMO_CUST_STRATEGY_FOR_BATCH = "INSERT INTO cust.promo_cust_strategy " +
+		"(id, promotion_id, order_range_start, order_range_end, cohort,dp_types, dp_status, dp_exp_start, dp_exp_end," +
+			"ordertype_home, ordertype_pickup, ordertype_corporate, payment_type, prior_echeck_use,DELIVERY_DAY_TYPE,echeck_match_type) " + 
+		"select cust.SYSTEM_SEQ.nextval, id, ?, ?, ?,?, ?, ?, ?, ?, ?, ?, ?, ?,?,? from cust.promotion_new where batch_id = ?";
+	
+	private static void storeCustomerStrategyForBatch(Connection conn, String batchId,
+			FDPromotionNewModel promotion) throws SQLException {
+		// Not required to remove and insert, better to update.
+		removeCustomerStrategyForBatch(conn, batchId);
+		PreparedStatement ps = null;
+		try {
+			
+			List<FDPromoCustStrategyModel> custReqList = promotion.getCustStrategies();
+			if (null!= custReqList && !custReqList.isEmpty()) {
+				FDPromoCustStrategyModel model =(FDPromoCustStrategyModel)custReqList.get(0);
+
+				ps = conn.prepareStatement(INSERT_PROMO_CUST_STRATEGY_FOR_BATCH);
+								
+				if (promotion != null && model.getOrderRangeStart() != null) {
+					ps.setInt(1, model.getOrderRangeStart().intValue());					
+				} else {
+					ps.setNull(1, Types.INTEGER);										
+				}
+				if (promotion != null && model.getOrderRangeEnd() != null) {
+					ps.setInt(2, model.getOrderRangeEnd().intValue());					
+				} else {
+					ps.setNull(2, Types.INTEGER);										
+				}
+				String[] cohorts = model.getCohorts();
+				StringBuffer cohortsString = new StringBuffer();
+				if (null != cohorts && cohorts.length > 0){
+					for (int i = 0; i < cohorts.length-1; i++) {
+						cohortsString.append(cohorts[i]);
+						cohortsString.append(",");
+					}
+					cohortsString.append(cohorts[cohorts.length-1]);
+				}
+				ps.setString(3, cohortsString.toString());
+				
+				String[] dpTypes = model.getDpTypes();
+				StringBuffer dpTypesString = new StringBuffer();
+				if (null != dpTypes && dpTypes.length > 0){
+					for (int i = 0; i < dpTypes.length-1; i++) {
+						dpTypesString.append(dpTypes[i]);
+						dpTypesString.append(",");
+					}
+					dpTypesString.append(dpTypes[dpTypes.length-1]);
+				}
+				ps.setString(4, dpTypesString.toString());
+	
+				ps.setString(5, model.getDpStatus());
+				if (model.getDpExpStart() != null)
+					ps.setTimestamp(6, new java.sql.Timestamp(model
+						.getDpExpStart().getTime()));
+				else
+					ps.setNull(6, Types.TIMESTAMP);
+
+				if (model.getDpExpEnd() != null)
+					ps.setTimestamp(7, new java.sql.Timestamp(model.getDpExpEnd()
+						.getTime()));
+				else
+					ps.setNull(7, Types.TIMESTAMP);
+
+				ps.setString(8, model.isOrderTypeHome() ? "X" : " ");
+				ps.setString(9, model.isOrderTypePickup() ? "X" : " ");
+				ps.setString(10, model.isOrderTypeCorporate() ? "X" : " ");
+				
+				EnumCardType[] paymentTypes = model.getPaymentType();
+				StringBuffer paymentType = new StringBuffer();
+				if (null != paymentTypes && paymentTypes.length > 0){
+					for (int i = 0; i < paymentTypes.length-1; i++) {
+						EnumCardType enumCardType = paymentTypes[i];
+						paymentType.append(enumCardType.getFdName());
+						paymentType.append(",");						
+					}
+					paymentType.append(paymentTypes[paymentTypes.length-1]);						
+				}
+				ps.setString(11,paymentType.toString());
+				ps.setString(12, model.getPriorEcheckUse());
+				if(null !=model.getDeliveryDayType()){
+					ps.setString(13,model.getDeliveryDayType().getName());
+				}else{
+					ps.setNull(13, Types.VARCHAR);
+				}
+				if(null !=model.getEcheckMatchType()){
+					ps.setString(14,model.getEcheckMatchType().getName());
+				}else{
+					ps.setNull(14, Types.VARCHAR);
+				}
+				
+				ps.setString(15, promotion.getBatchId());			
+	
+				ps.execute();
+			}
+		} finally {
+			if (ps != null)
+				ps.close();
+		}
+	}
+	
+	private static String INSERT_PROMO_ATTR_FOR_BATCH = "INSERT INTO cust.promo_attr_new " +
+		"(id, promotion_id, promo_attr_name, attr_value, attr_index) " + 
+        "select cust.SYSTEM_SEQ.nextval, id, ?, ?, ? from cust.promotion_new where batch_id = ?";
+
+	private static void storeAttributeListForBatch(Connection conn, String batchId,
+			List<FDPromotionAttributeParam> attrList) throws SQLException {
+		PreparedStatement ps = null;
+		removeAttributeListForBatch(conn, batchId);
+		try {
+			ps = conn.prepareStatement(INSERT_PROMO_ATTR_FOR_BATCH);
+			if (attrList != null) {
+				int indexAttr = 1;
+				for (FDPromotionAttributeParam tmpParam : attrList) {
+					int index = 1;
+					ps.setString(index++, tmpParam.getAttributeName());
+					ps.setString(index++, tmpParam.getDesiredValue());
+					ps.setInt(index++, indexAttr++);
+					ps.setString(index++, batchId);
+					ps.addBatch();
+				}
+			}
+			ps.executeBatch();
+		} finally {
+			if (ps != null)
+				ps.close();
+		}
+	}
+	
+	public static FDPromotionNewModel storePromotionCartInfoForBatch(Connection conn, ModelI model) throws SQLException{
+		FDPromotionNewModel promotion = (FDPromotionNewModel) model;
+		PreparedStatement ps =
+			conn.prepareStatement(
+				"UPDATE CUST.PROMOTION_NEW"
+				+ " SET"
+				+ " MIN_SUBTOTAL = ?, HASSKUQUANTITY = ?, NEEDDRYGOODS = ?,EXCLUDE_SKU_SUBTOTAL =?, MODIFIED_BY =?, MODIFY_DATE =?"
+				+ " WHERE batch_ID = ?");
+		int i = 1;
+		ps.setString(i++, promotion.getMinSubtotal());
+		ps.setInt(i++, promotion.getSkuQuantity());
+		ps.setString(i++, promotion.isNeedDryGoods()?"X":" ");
+		ps.setString(i++, promotion.getSubTotalExcludeSkus());
+        ps.setString(i++, promotion.getModifiedBy());
+		if (promotion.getModifiedDate() != null) {
+			ps.setTimestamp(i++, new java.sql.Timestamp(promotion
+					.getModifiedDate().getTime()));
+		} else {
+			ps.setNull(i++, Types.DATE);
+		}				
+		ps.setString(i++, promotion.getBatchId());
+		if (ps.executeUpdate() < 0) {
+			ps.close();
+			throw new SQLException("row not created to update Promotion");
+		}
+		ps.close();
+		storeCartStrategyForBatch(conn, promotion.getBatchId(), promotion);
+		return promotion;
+	}
+	
+	public static FDPromotionNewModel storePromotionDlvZoneInfoForBatch(Connection conn, ModelI model) throws SQLException{
+		FDPromotionNewModel promotion = (FDPromotionNewModel) model;
+		PreparedStatement ps =	conn.prepareStatement("UPDATE CUST.PROMOTION_NEW SET GEO_RESTRICTION_TYPE =?, MODIFIED_BY =?, MODIFY_DATE =?  where batch_ID=?");
+		int i=1;
+		if(null != promotion.getGeoRestrictionType() && !"".equals(promotion.getGeoRestrictionType())){
+			ps.setString(i++, promotion.getGeoRestrictionType());
+		}else{
+			ps.setNull(i++, Types.VARCHAR);
+		}
+        ps.setString(i++, promotion.getModifiedBy());
+		if (promotion.getModifiedDate() != null) {
+			ps.setTimestamp(i++, new java.sql.Timestamp(promotion
+					.getModifiedDate().getTime()));
+		} else {
+			ps.setNull(i++, Types.DATE);
+		}	
+		ps.setString(i++, promotion.getBatchId());
+		if (ps.executeUpdate() < 0) {
+			ps.close();
+			throw new SQLException("row not created to update Promotion");
+		}
+		ps.close();
+		storePromotionAddressTypeInfoForBatch(conn,promotion);
+		storePromoDlvDatesForBatch(conn,promotion.getBatchId(),promotion);
+		storePromoDlvZoneStrategyForBatch(conn, promotion.getId(), promotion);
+		storeGeographyForBatch(conn, promotion.getBatchId(), promotion.getZipRestrictions());
+		if("STCO".equals(promotion.getGeoRestrictionType()))
+			storeStateCountyInfoForBatch(conn, promotion.getBatchId(), promotion.getStateCountyList());
+		else
+			removeStateCountyDataForBatch(conn, promotion.getBatchId());
+		return promotion;
+	}
+	
+	private static void storePromotionAddressTypeInfoForBatch(Connection conn, ModelI model) throws SQLException{
+		FDPromotionNewModel promotion = (FDPromotionNewModel) model;
+		int i = 1;
+		List<FDPromoCustStrategyModel> custStrategies = promotion.getCustStrategies();
+		if(null != custStrategies && !custStrategies.isEmpty()){
+			FDPromoCustStrategyModel promoCustModel = (FDPromoCustStrategyModel)custStrategies.get(0);
+			removeCustStrategy(conn, promotion.getBatchId());
+			PreparedStatement ps = conn.prepareStatement("INSERT INTO cust.PROMO_CUST_STRATEGY (id, promotion_id, ORDERTYPE_HOME,ORDERTYPE_CORPORATE,ORDERTYPE_PICKUP,EXCLUDE_SAMEDAY_DELIVERY,DELIVERY_DAY_TYPE)" + 
+														 " select cust.SYSTEM_SEQ.nextval, id, ?,?,?,?,? from cust.promotion_new where batch_id = ?");
+			ps.setString(i++, promoCustModel.isOrderTypeHome()?"X":"");
+			ps.setString(i++, promoCustModel.isOrderTypeCorporate()?"X":"");
+			ps.setString(i++, promoCustModel.isOrderTypePickup()?"X":"");
+			ps.setString(i++, promoCustModel.isExcludeSameDayDlv()?"Y":"N");
+			if(null !=promoCustModel.getDeliveryDayType()){
+				ps.setString(i++,promoCustModel.getDeliveryDayType().getName());
+			}else{
+				ps.setNull(i++, Types.VARCHAR);
+			}
+			ps.setString(i++, promotion.getBatchId());
+				
+			if (ps.executeUpdate() < 0) {
+				ps.close();
+				throw new SQLException("row not created to update Promotion");
+			}
+			ps.close();
+		}
+	}
+	
+	private static String INSERT_PROMO_DLV_DATES_FOR_BATCH = "INSERT INTO cust.PROMO_DELIVERY_DATES"
+		+ " (id, promotion_id,START_DATE,END_DATE)"
+		+ " select cust.SYSTEM_SEQ.nextval, id, ?,? from cust.promotion_new where batch_id = ?";
+	
+	private static void storePromoDlvDatesForBatch(Connection conn,
+			String batchId, FDPromotionNewModel promotion)
+			throws SQLException {
+		removeDlvDatesForBatch(conn,batchId);
+		PreparedStatement ps = null;		
+		int index = 1;
+		try {
+			List<FDPromoDlvDateModel> dlvDates = promotion.getDlvDates();
+			if(null!= dlvDates && !dlvDates.isEmpty()){
+				ps = conn.prepareStatement(INSERT_PROMO_DLV_DATES_FOR_BATCH);
+				
+				for (FDPromoDlvDateModel model : dlvDates) {
+					index = 1;
+					ps.setTimestamp(index++, new java.sql.Timestamp(model.getDlvDateStart().getTime()));
+					ps.setTimestamp(index++, new java.sql.Timestamp(model.getDlvDateEnd().getTime()));
+					ps.setString(index++, batchId);
+					ps.addBatch();
+				}	
+				ps.executeBatch();
+			}
+			
+		} finally {
+			if (ps != null)
+				ps.close();
+			
+		}
+	}	
+	
+	private static String GET_BATCH_PROMOTIONS = "select ID from cust.promotion_new where batch_id = ?";
+	
+	private static void storePromoDlvZoneStrategyForBatch(Connection conn,
+			String promotionId, FDPromotionNewModel promotion)
+			throws SQLException {
+		PreparedStatement ps = null;
+		ResultSet rset = null;
+		try {
+			ps = conn.prepareStatement(GET_BATCH_PROMOTIONS);
+			ps.setString(1, promotion.getBatchId());
+			rset = ps.executeQuery(); 
+			while(rset.next()) {
+				String promotion_id = rset.getString(1);
+				storePromoDlvZoneStrategy(conn, promotion_id, promotion);
+			}
+		} finally {
+			if (ps != null)
+				ps.close();
+			if (rset != null)
+				rset.close();
+		}
+	}
+	
+	protected static void storeGeographyForBatch(Connection conn, String batchId,
+			TreeMap<java.util.Date, FDPromoZipRestriction> zipMap) throws SQLException {
+		PreparedStatement ps = null;
+		ResultSet rset = null;
+		try {
+			ps = conn.prepareStatement(GET_BATCH_PROMOTIONS);
+			ps.setString(1, batchId);
+			rset = ps.executeQuery(); 
+			while(rset.next()) {
+				String promotion_id = rset.getString(1);
+				storeGeography(conn, promotion_id, zipMap);
+			}
+		} finally {
+			if (ps != null)
+				ps.close();
+			if (rset != null)
+				rset.close();
+		}
+	}
+	
+	private final static String STATE_COUNTY_INSERT_FOR_BATCH = "insert into CUST.PROMOTION_STATE_COUNTY( ID, PROMOTION_ID, DATE_ADDED, STATE_OPTION, STATES, COUNTY, COUNTY_OPTION) " + 
+	  " select cust.SYSTEM_SEQ.nextval,id,sysdate,?,?,?,? from cust.promotion_new where batch_id = ? ";
+
+	protected static void storeStateCountyInfoForBatch(Connection conn, String batchId, FDPromoStateCountyRestriction scr) {
+		removeStateCountyDataForBatch(conn, batchId);
+		PreparedStatement ps = null;
+		try {
+			ps = conn.prepareStatement(STATE_COUNTY_INSERT_FOR_BATCH);
+			ps.setString(1, scr.getState_option());
+			ArrayDescriptor states = ArrayDescriptor.createDescriptor("CUST.PROMO_STATE_COUNTY_LIST", conn);
+			ARRAY newArray = new ARRAY(states, conn, null !=scr.getStateArray()?scr.getStateArray():scr.getStates().toArray());
+			ps.setArray(2, newArray);			
+			ARRAY newArray2 = new ARRAY(states, conn, null !=scr.getCountyArray()?scr.getCountyArray():scr.getCounty().toArray());
+			ps.setArray(3, newArray2);
+			ps.setString(4, scr.getCounty_option());
+			ps.setString(5, batchId);
+			ps.execute();
+		} catch(Exception e) {
+			LOGGER.error("Error from storeStateCountyInfo:", e);
+		} finally {
+			try {
+			if (ps != null) {
+				ps.close();
+			}
+			} catch(Exception e1) {}
+		}
+	}
+	
+	protected static void removeStateCountyDataForBatch(Connection conn, String batchId) {
+		PreparedStatement ps = null;		
+		try {
+			ps = conn.prepareStatement("DELETE FROM CUST.PROMOTION_STATE_COUNTY WHERE PROMOTION_ID in (select id from cust.promotion_new where batch_id=?)");
+			ps.setString(1, batchId);
+			ps.executeUpdate();
+		} catch (Exception e) {
+			LOGGER.error("Error from removeStateCountyData:", e);
+		} finally {
+			try {
+				if (ps != null) {
+					ps.close();
+				}
+			} catch(Exception e1) {}
+		}
+	}
+	
+	public static FDPromotionNewModel storePromotionPaymentInfoForBatch(Connection conn, ModelI model) throws SQLException{
+		FDPromotionNewModel promotion = (FDPromotionNewModel) model;
+		storePromotionBasicForBatch(conn, model);
+		PreparedStatement ps =
+			conn.prepareStatement(
+				"UPDATE CUST.PROMO_CUST_STRATEGY SET PAYMENT_TYPE = ?, PRIOR_ECHECK_USE = ?, ECHECK_MATCH_TYPE=? WHERE promotion_id in (select ID from cust.promotion_new where batch_id = ?)");
+		int i = 1;
+		List<FDPromoCustStrategyModel> custStrategies = promotion.getCustStrategies();
+		if(null != custStrategies && !custStrategies.isEmpty()){
+			FDPromoCustStrategyModel promoCustModel = (FDPromoCustStrategyModel)custStrategies.get(0);
+			
+			EnumCardType[] paymentTypes = promoCustModel.getPaymentType();
+			StringBuffer paymentType = new StringBuffer();
+			if(null != paymentTypes && paymentTypes.length > 0){
+				for (int j = 0; j < paymentTypes.length; j++) {
+					EnumCardType enumCardType = paymentTypes[j];
+					if(null!=enumCardType){
+						paymentType.append(enumCardType.getFdName());
+						if(j != paymentTypes.length-1)
+							paymentType.append(",");
+					}
+				}
+//				paymentType.append(null !=paymentTypes[paymentTypes.length-1]?paymentTypes[paymentTypes.length-1].getFdName():"");
+			}
+			if(null!=promoCustModel.getId()){
+				ps.setString(i++, paymentType.toString());
+				ps.setString(i++, promoCustModel.getPriorEcheckUse());
+				if(null !=promoCustModel.getEcheckMatchType()){
+					ps.setString(i++,promoCustModel.getEcheckMatchType().getName());
+				}else{
+					ps.setNull(i++, Types.VARCHAR);
+				}
+				//ps.setString(i++, promoCustModel.getPK().getId());
+				ps.setString(i++, promotion.getBatchId());
+			}
+			else{
+				ps = conn.prepareStatement("INSERT INTO cust.PROMO_CUST_STRATEGY (id, promotion_id, payment_type,prior_echeck_use,ECHECK_MATCH_TYPE) " +
+											"select cust.SYSTEM_SEQ.nextval,ID,?,?,? from cust.promotion_new where batch_id = ?");
+				ps.setString(i++, paymentType.toString());
+				ps.setString(i++, promoCustModel.getPriorEcheckUse());
+				if(null !=promoCustModel.getEcheckMatchType()){
+					ps.setString(i++,promoCustModel.getEcheckMatchType().getName());
+				}else{
+					ps.setNull(i++, Types.VARCHAR);
+				}
+				ps.setString(i++, promotion.getBatchId());
+			}		
+			
+			if (ps.executeUpdate() < 0) {
+				ps.close();
+				throw new SQLException("row not created to update Promotion");
+			}
+			ps.close();
+		}
+		
+		return promotion;
+	}
+	
+	public static FDPromotionNewModel storePromotionBasicForBatch(Connection conn,
+			ModelI model) throws SQLException {
+		FDPromotionNewModel promotion = (FDPromotionNewModel) model;
+		PreparedStatement ps =
+			conn.prepareStatement(
+				"UPDATE CUST.PROMOTION_NEW"
+				+ " SET"
+				+ " MAX_USAGE = ?, START_DATE = ?, EXPIRATION_DATE = ?, "
+				+ " ROLLING_EXPIRATION_DAYS = ?, STATUS = ?, OFFER_DESC = ?, AUDIENCE_DESC = ?, TERMS = ?,REDEEM_CNT = ?, NEEDCUSTOMERLIST =?, "
+				+ " RULE_BASED = ?, MODIFIED_BY =?, MODIFY_DATE =?, DONOT_APPLY_FRAUD=?, referral_promo =? "
+				+ " WHERE batch_id = ?");
+		String maxUsage = !"".equals(promotion.getMaxUsage()) ? promotion
+				.getMaxUsage() : "0";
+		ps.setInt(1, Integer.parseInt(maxUsage)); // 1
+		if (promotion.getStartDate() != null) {
+			ps.setTimestamp(2, new java.sql.Timestamp(promotion.getStartDate()
+					.getTime())); // 2
+		} else {
+			ps.setNull(2, Types.DATE); // 2
+		}
+		if (promotion.getExpirationDate() != null) {
+			ps.setTimestamp(3, new java.sql.Timestamp(promotion
+					.getExpirationDate().getTime())); // 3
+		} else {
+			ps.setNull(3, Types.DATE); // 3
+		}
+
+		if (promotion.getRollingExpirationDays() != null) {
+			ps.setInt(4, promotion.getRollingExpirationDays().intValue()); // 4
+		} else {
+			ps.setNull(4, Types.INTEGER);
+		}
+
+		if (promotion.getStatus() != null) {
+			ps.setString(5, promotion.getStatus().getName()); // 5
+		} else {
+			ps.setNull(5, Types.VARCHAR);
+		}
+
+		if (promotion.getOfferDesc() != null) {
+			ps.setString(6, promotion.getOfferDesc()); // 6
+		} else {
+			ps.setNull(6, Types.VARCHAR);
+		}
+		if (promotion.getAudienceDesc() != null) {
+			ps.setString(7, promotion.getAudienceDesc()); // 7
+		} else {
+			ps.setNull(7, Types.VARCHAR);
+		}
+
+		if (promotion.getTerms() != null) {
+			ps.setString(8, promotion.getTerms()); // 8
+		} else {
+			ps.setNull(8, Types.VARCHAR);
+		}
+
+		if (promotion.getRedeemCount() != null) {
+			ps.setInt(9, promotion.getRedeemCount().intValue()); // 9
+		} else {
+			ps.setNull(9, Types.INTEGER);
+		}
+
+		ps.setString(10, promotion.isNeedCustomerList() ? "Y" : "N"); // 10		
+		ps.setString(11, promotion.isRuleBased() ? "X" : " "); // 11
+		ps.setString(12, promotion.getModifiedBy());
+		if (promotion.getModifiedDate() != null) {
+			ps.setTimestamp(13, new java.sql.Timestamp(promotion
+					.getModifiedDate().getTime()));
+		} else {
+			ps.setNull(13, Types.DATE);
+		}
+		
+		if(!promotion.isApplyFraud()){
+			ps.setString(14, "X");
+		} else {
+			ps.setNull(14, Types.VARCHAR);
+		}
+		
+		ps.setString(15, promotion.isReferralPromo()?"Y":"N");
+		ps.setString(16, promotion.getBatchId());
+		if (ps.executeUpdate() < 0) {
+			ps.close();
+			throw new SQLException("row not created to update Promotion");
+		}
+		ps.close();
+		return promotion;
+	}
+	
+	protected static void removeAssignedGroupsForBatch(Connection conn, String batchId) throws SQLException {
+		PreparedStatement ps = conn
+				.prepareStatement("DELETE CUST.PROMO_DCPD_DATA_NEW WHERE PROMOTION_ID in (select ID from cust.promotion_new where batch_id = ?)");
+		ps.setString(1, batchId);
+		ps.executeUpdate();
+		ps.close();
+	}
+	
+	protected static void removeDiscountOffersForBatch(Connection conn, String batchId) throws SQLException {
+		PreparedStatement ps = conn.prepareStatement("DELETE CUST.PROMO_DOLLAR_DISCOUNT WHERE PROMOTION_ID in (select ID from cust.promotion_new where batch_id = ?)");
+		ps.setString(1, batchId);
+		ps.executeUpdate();
+		ps.close();
+	}
+	
+	protected static void removeCustomerStrategyForBatch(Connection conn, String batchId) throws SQLException {
+		PreparedStatement ps = conn
+				.prepareStatement("DELETE CUST.promo_cust_strategy WHERE PROMOTION_ID in (select id from cust.promotion_new where batch_id = ?)");
+		ps.setString(1, batchId);
+		ps.executeUpdate();
+		ps.close();
+	}
+	
+	protected static void removeAttributeListForBatch(Connection conn, String batchId) throws SQLException {
+		PreparedStatement ps =	conn.prepareStatement("DELETE CUST.PROMO_ATTR_NEW WHERE PROMOTION_ID in (select ID from cust.promotion_new where batch_id=?)");
+		ps.setString(1, batchId);
+		ps.executeUpdate();		
+		ps.close();
+	}
+	
+	private static String INSERT_PROMO_CART_STRATEGY_FOR_BATCH = "INSERT INTO cust.promo_cart_strategy"
+		+ " (id, promotion_id, content_type, content_id)"
+		+ " select cust.SYSTEM_SEQ.nextval, ID, ?, ? from cust.promotion_new where batch_id = ?";
+
+	private static void storeCartStrategyForBatch(Connection conn, String batchId,
+			FDPromotionNewModel promotion) throws SQLException {
+		removeCartStrategyForBatch(conn, batchId);
+		PreparedStatement ps = null;
+		try {
+			ps = conn.prepareStatement(INSERT_PROMO_CART_STRATEGY_FOR_BATCH);
+			List<FDPromoContentModel> cartReqList = promotion.getCartStrategies();			
+			prepareCartStrategyForBatch(conn, batchId, ps, cartReqList);
+			ps.executeBatch();
+		} finally {
+			if (ps != null)
+				ps.close();
+		}
+	}
+	
+	private static void prepareCartStrategyForBatch(Connection conn, String batchId,
+			PreparedStatement ps, List<FDPromoContentModel> cartReqList)
+			throws SQLException {
+		if (cartReqList != null && !cartReqList.isEmpty()) {
+			for (Iterator<FDPromoContentModel> iterator = cartReqList.iterator(); iterator.hasNext();) {
+				FDPromoContentModel object = iterator.next();
+				int index = 1;				
+				ps.setString(index++, object.getContentType().getName());
+				ps.setString(index++, object.getContentId());
+				ps.setString(index++, batchId);
+				ps.addBatch();
+			}			
+		}
+	}
+	
+	protected static void removeCartStrategyForBatch(Connection conn, String batchId) throws SQLException {
+		PreparedStatement ps = conn
+				.prepareStatement("DELETE CUST.promo_cart_strategy WHERE PROMOTION_ID in (select ID from cust.promotion_new where batch_id = ?)");
+		ps.setString(1, batchId);
+		ps.executeUpdate();
+		ps.close();
+	}
+	
+	protected static void removeCustStrategy(Connection conn, String batchId) throws SQLException {
+		PreparedStatement ps = conn
+			.prepareStatement("DELETE cust.PROMO_CUST_STRATEGY WHERE PROMOTION_ID in (select ID from cust.promotion_new where batch_id = ?)");
+		ps.setString(1, batchId);
+		ps.executeUpdate();
+		ps.close();
+	}
+	
+	protected static void removeDlvDatesForBatch(Connection conn, String batchId) throws SQLException {
+		PreparedStatement ps = conn
+				.prepareStatement("DELETE CUST.PROMO_DELIVERY_DATES WHERE PROMOTION_ID in (select ID from cust.promotion_new where batch_id = ?)");
+		ps.setString(1, batchId);
+		ps.executeUpdate();
+		ps.close();
+	}
+	
+	public static void storePromotionStatusForBatch(Connection conn, EnumPromotionStatus status, FDPromotionNewModel promotion) throws SQLException{
+		PreparedStatement ps = null;
+		try {			
+			ps = conn.prepareStatement("Update cust.Promotion_new set Status =? , MODIFIED_BY =?, MODIFY_DATE =? where batch_id=? ");
+			ps.setString(1,status.getName());
+	        ps.setString(2, promotion.getModifiedBy());
+			if (promotion.getModifiedDate() != null) {
+				ps.setTimestamp(3, new java.sql.Timestamp(promotion
+						.getModifiedDate().getTime()));
+			} else {
+				ps.setNull(3, Types.DATE);
+			}			
+			ps.setString(4,promotion.getBatchId());
+			ps.executeUpdate();
+		} finally {
+		if (ps != null) ps.close();			
+		}	
+	}
+	
+	public static List<FDPromotionNewModel> getBatchPromotions(Connection conn, String batchId) throws SQLException {
+		List<FDPromotionNewModel> batchPromotions = new ArrayList<FDPromotionNewModel>();
+		PreparedStatement ps = conn.prepareStatement("SELECT * FROM CUST.PROMOTION_NEW WHERE batch_id = ?");
+		ps.setString(1, batchId);
+		ResultSet rs = ps.executeQuery();			
+		while (rs.next()) {
+			FDPromotionNewModel promotion = null;
+			promotion = loadPromotionResult(rs);
+			promotion.setAssignedCustomerSize(FDPromotionManagerDAO.loadAssignedCustomerUserIds1(conn, promotion.getId()));
+			
+			if (promotion != null) {
+				String id = promotion.getId();			
+				promotion.setDcpdData(loadAssignedGroups(conn, id));
+				promotion.setZipRestrictions(loadZipRestrictions(conn, id));
+				promotion.setCartStrategies(loadPromoCartStrategies(conn, id));
+				promotion.setCustStrategies(loadPromoCustStrategies(conn, id));
+				promotion.setDlvZoneStrategies(loadPromoDlvZoneStrategies(conn, id));
+				promotion.setDlvDates(loadPromoDlvDates(conn, id));
+				promotion.setAttributeList(loadAttributeList(conn, id));
+				promotion.setStateCountyList(loadStateCountyRestrictions(conn, id));
+				promotion.setDollarOffList(loadDollarOffers(conn, id));
+			}
+			batchPromotions.add(promotion);
+		}
+			
+		rs.close();
+		ps.close();
+			
+		return batchPromotions;
 	}
 
 }

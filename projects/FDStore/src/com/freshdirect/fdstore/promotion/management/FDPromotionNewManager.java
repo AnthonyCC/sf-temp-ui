@@ -863,6 +863,36 @@ public class FDPromotionNewManager {
 		}
 		return false;
 	}
+	
+	public static String createPromotionBatch(FDPromotionNewModel promotion) throws FDResourceException {
+		lookupManagerHome();
+
+		try {
+			FDPromotionManagerNewSB sb = managerHome.create();
+			return sb.createPromotionBatch(promotion);
+		} catch (CreateException ce) {
+			invalidateManagerHome();
+			throw new FDResourceException(ce, "Error creating session bean");
+		} catch (RemoteException re) {
+			invalidateManagerHome();
+			throw new FDResourceException(re, "Error talking to session bean");
+		}			
+	}
+	
+	public static List<FDPromotionNewModel> getBatchPromotions(String batchId) throws FDResourceException {
+		lookupManagerHome();
+
+		try {
+			FDPromotionManagerNewSB sb = managerHome.create();
+			return sb.getBatchPromotions(batchId);
+		} catch (CreateException ce) {
+			invalidateManagerHome();
+			throw new FDResourceException(ce, "Error creating session bean");
+		} catch (RemoteException re) {
+			invalidateManagerHome();
+			throw new FDResourceException(re, "Error talking to session bean");
+		}			
+	}
 
 
 }

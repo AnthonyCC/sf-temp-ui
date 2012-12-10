@@ -21,6 +21,7 @@ import com.freshdirect.fdstore.promotion.EnumDCPDContentType;
 import com.freshdirect.fdstore.promotion.EnumOfferType;
 import com.freshdirect.fdstore.promotion.EnumPromoChangeType;
 import com.freshdirect.fdstore.promotion.EnumPromotionSection;
+import com.freshdirect.fdstore.promotion.EnumPromotionStatus;
 import com.freshdirect.fdstore.promotion.EnumPromotionType;
 import com.freshdirect.fdstore.promotion.management.FDDuplicatePromoFieldException;
 import com.freshdirect.fdstore.promotion.management.FDPromoChangeDetailModel;
@@ -58,6 +59,9 @@ public class PromotionOfferControllerTag extends AbstractControllerTag {
 		try {			
 			this.populatePromotionModel(request,actionResult);
 			if(actionResult.isSuccess()){
+				if(promotion.isBatchPromo()) {
+					FDPromotionNewManager.storePromotionStatus(promotion,EnumPromotionStatus.PROGRESS,true);					
+				}
 				populatePromoChangeModel();
 				savePromotion(actionResult);
 				setSuccessPage(getSuccessPage()+promotion.getPromotionCode());
@@ -360,6 +364,11 @@ public class PromotionOfferControllerTag extends AbstractControllerTag {
 		CrmAgentModel agent = CrmSession.getCurrentAgent(session);
 		this.promotion.setModifiedBy(agent.getUserId());
 		this.promotion.setModifiedDate(new Date());
+		
+		/*APPDEV-2385*/
+		if("true".equals(request.getParameter("batch_promo"))) {
+			this.promotion.setBatchPromo(true);
+		}
 		
 	}
 

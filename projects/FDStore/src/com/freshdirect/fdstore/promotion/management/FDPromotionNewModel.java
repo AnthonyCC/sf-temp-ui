@@ -105,6 +105,9 @@ public class FDPromotionNewModel extends ModelSupport {
 	private String tsaPromoCode;
 	private String radius;
 	private String maxPercentageDiscount;
+	private String batchNumber;
+	private String batchId;
+	private boolean batchPromo = false;
 	/*
 	 * Number of successful publishes
 	 */
@@ -1183,6 +1186,30 @@ public class FDPromotionNewModel extends ModelSupport {
 			 }
 		 } 
 		 return windowTypes;
+	}
+
+	public void setBatchNumber(String batchNumber) {
+		this.batchNumber = batchNumber;
+	}
+
+	public String getBatchNumber() {
+		return batchNumber;
+	}
+
+	public void setBatchId(String batchId) {
+		this.batchId = batchId;
+	}
+
+	public String getBatchId() {
+		return batchId;
+	}
+	
+	public boolean isBatchPromo() {
+		return batchPromo;
+	}
+	
+	public void setBatchPromo(boolean batchPromo) {
+		this.batchPromo = batchPromo;
 	}
 	
 }

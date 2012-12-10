@@ -11,6 +11,14 @@
 				<tr class="flatRow">
 					<td colspan="2"><img width="1" height="1" src="/media_stat/crm/images/clear.gif" alt="" class="promo_edit_offer-spacer" /></td>
 				</tr>
+				<% if(promotion.getBatchId() != null) { %>
+				<input type="hidden" name="batch_id" value="<%= promotion.getBatchId() %>"/>
+				<tr><td colspan="2">&nbsp;</td></tr>
+				<tr>
+					<td colspan="2" align="center"><input type="checkbox" name="batch_promo" value="true" <%= (promotion.isBatchPromo())?"checked":"" %> />&nbsp; <b>Apply changes to entire batch</b> (Clicking the checkbox will apply these change to entire batch)</td>
+				</tr>
+				<tr><td colspan="2">&nbsp;</td></tr>
+				<% } %>
 				<tr>
 				<%
 				List<FDPromoCustStrategyModel> custStrategies = promotion.getCustStrategies();

@@ -81,6 +81,18 @@
 			<% } %>
 			<input type="button" value="VIEW ACTIVITY LOG" class="promo_btn_wht fleft noMargLR w135px" onclick="javascript:activityLogSubmit('<%= promoId %>')" />
 		</div>
+		<br/><br/>
+		<%
+					if(EnumPromotionStatus.PROGRESS.equals(promotion.getStatus()) && promotion.getBatchId() != null){ 
+				%>
+				
+						<div class="promo_action promo_btn_dblue fleft" style="width: 180px;"><a href="javascript:{}" onclick="javascript:editPromotionStatusForBatch(this.form,'<%= promoId %>','<%= EnumPromotionStatus.TEST.getName()%>');">TEST ENTIRE BATCH&nbsp;<img src="/media_stat/crm/images/yellow_r_arrow.gif" height="12px" width="12px" alt="" /></a></div>
+				<%
+					} else if(EnumPromotionStatus.TEST.equals(promotion.getStatus()) && promotion.getBatchId() != null){
+				%>
+						<div class="promo_action promo_btn_dblue fleft" style="width: 190px;"><a href="javascript:{}" onclick="javascript:editPromotionStatusForBatch(this.form,'<%= promoId %>','<%= EnumPromotionStatus.APPROVE.getName()%>');">APPROVE ENTIRE BATCH&nbsp;<img src="/media_stat/crm/images/yellow_r_arrow.gif" height="12px" width="12px" alt="" /></a></div>
+				<% } %>
+		
 		<br /><br />
 <% } %>
 	<img width="300" height="0" src="/media_stat/crm/images/clear.gif" alt="" />

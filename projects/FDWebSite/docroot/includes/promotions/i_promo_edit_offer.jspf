@@ -7,7 +7,15 @@
 		<td width="33%"><img width="1" height="0" src="/media_stat/crm/images/clear.gif" alt="" /></td>
 		<td width="34%"><img width="1" height="0" src="/media_stat/crm/images/clear.gif" alt="" /></td>
 		<td width="33%"><img width="1" height="0" src="/media_stat/crm/images/clear.gif" alt="" /></td>
-	</tr>	
+	</tr>
+	<% if(promotion.getBatchId() != null) { %>
+	<input type="hidden" name="batch_id" value="<%= promotion.getBatchId() %>"/>
+	<tr><td colspan="4">&nbsp;</td></tr>
+	<tr>
+		<td colspan="4" align="center"><input type="checkbox" name="batch_promo" value="true" <%= (promotion.isBatchPromo())?"checked":"" %> />&nbsp; <b>Apply changes to entire batch</b> (Clicking the checkbox will apply these change to entire batch)</td>
+	</tr>
+	<tr><td colspan="4">&nbsp;</td></tr>
+	<% } %>
 	<tr>
 		<td><img width="0" height="50" src="/media_stat/crm/images/clear.gif" alt="" /></td>
 		<td class="bordLgrayDash noBorderTL alignC"><input type="radio" id="discount_type_header" name="discount_type" value="<%= EnumPromotionType.HEADER.getName() %>" <%= EnumPromotionType.HEADER.getName().equalsIgnoreCase(promotion.getPromotionType())?"checked":"" %>/> HEADER</td>

@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Random;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -57,15 +58,53 @@ public class PromotionBasicInfoControllerTag extends AbstractControllerTag {
 					if("createBasicPromo".equalsIgnoreCase(getActionName())){//null == promotion.getId()){
 						this.promotion.setStatus(EnumPromotionStatus.DRAFT);		
 						
-						if(EnumOfferType.WINDOW_STEERING.getName().equalsIgnoreCase(promotion.getOfferType())){
-							this.promotion.setPromotionCode("WS_"+new Date().getTime());
-						}else{
-							this.promotion.setPromotionCode("CD_"+new Date().getTime());
+						/*APPDEV-2385*/
+						if(this.promotion.isBatchPromo()) {
+							//Save batch promo
+							int batchCount = Integer.parseInt(this.promotion.getBatchNumber());
+							//Create Batch
+							String batch_id = FDPromotionNewManager.createPromotionBatch(promotion);
+							//set batch number to promotion object
+							this.promotion.setBatchId(batch_id);
+							String promo_redemption = this.promotion.getRedemptionCode();
+							String promo_description = this.promotion.getDescription();
+							String promo_name = this.promotion.getName();
+							String promo_code = "CD_";
+							if(EnumOfferType.WINDOW_STEERING.getName().equalsIgnoreCase(promotion.getOfferType())){
+								promo_code = "WS_";
+							}
+							for(int i=0; i < batchCount; i++) {						
+								//Start Creating promotions
+								String randString = getRandomString();
+								String promoCode = promo_code + randString;						
+								String redemptionCode = promo_redemption + "_" + randString; 
+								String name = promo_name + "_" + randString;
+								String descr = promo_description + "_" + randString;
+								this.promotion.setPromotionCode(promoCode);
+								this.promotion.setRedemptionCode(redemptionCode);
+								this.promotion.setDescription(descr);
+								this.promotion.setName(name);					
+								try {
+									FDPromotionNewManager.createPromotionBasic(this.promotion);
+								} catch (FDDuplicatePromoFieldException e) {
+									reSubmitPromoCreation(this.promotion);
+								} catch (FDPromoTypeNotFoundException e) {
+									e.printStackTrace();
+								} catch (FDPromoCustNotFoundException e) {
+									e.printStackTrace();
+								}
+							}
+						} else {						
+							if(EnumOfferType.WINDOW_STEERING.getName().equalsIgnoreCase(promotion.getOfferType())){
+								this.promotion.setPromotionCode("WS_"+new Date().getTime());
+							}else{
+								this.promotion.setPromotionCode("CD_"+new Date().getTime());
+							}
+							FDPromotionNewManager.createPromotionBasic(promotion);
 						}
-						FDPromotionNewManager.createPromotionBasic(promotion);
 						setSuccessPage(getSuccessPage()+promotion.getPromotionCode()+"&SUCCESS=SUCCESS");
 					}else{
-						FDPromotionNewManager.storePromotionBasic(promotion);
+						FDPromotionNewManager.storePromotionBasic(promotion);						
 					}
 				}
 				
@@ -177,6 +216,17 @@ public class PromotionBasicInfoControllerTag extends AbstractControllerTag {
 			this.promotion.setModifiedDate(date);			
 		}
 		populatePromoChangeModel();
+		
+		/*APPDEV - 2385*/
+		if("true".equals(request.getParameter("batch_promo"))) {
+			//User wants to create batch promotions.. 
+			this.promotion.setBatchPromo(true);
+			this.promotion.setBatchNumber(NVL.apply(request.getParameter("batchnumber"), "").trim());
+			
+			if(request.getParameter("batch_id") != null) {
+				this.promotion.setBatchId(request.getParameter("batch_id"));
+			}
+		}
 		
 	}
 
@@ -371,10 +421,65 @@ public class PromotionBasicInfoControllerTag extends AbstractControllerTag {
 		if(null == promotion.getOfferType() || "".equals(promotion.getOfferType())){
 			result.addError(true, "windowStrgEmpty", " Promotion 'Window Steering'/'Non Window Steering' should be selected.");
 		}
+		
+		/*APPDEV-2385*/
+		if(promotion.isBatchPromo() && (promotion.getBatchId() == null || promotion.getBatchId() == "")) {
+			if(!NumberUtil.isInteger(promotion.getBatchNumber())) {
+				result.addError(true, "batchCount", " No of promotions should be a number.");
+			}
+		}
 	}
 	
 	private boolean isCompleteDate (String day, String month, String year) {		
 		return (!"".equals(day) && !"".equals(month) && !"".equals(year));
+	}
+	
+	private String getRandomString() {
+		StringBuffer sb = new StringBuffer();
+		Random diceRandom = new Random();
+		for(int i=0;i<4;i++) {
+			char ch = (char) (diceRandom.nextInt('z' - 'a' + 1) + 'a');
+			sb.append(Character.toUpperCase(ch));
+		}
+		for(int i=0;i<4;i++) {			
+			sb.append(diceRandom.nextInt(9));
+		}
+		return sb.toString();
+	}
+	
+	private void reSubmitPromoCreation(FDPromotionNewModel step1Promotion) {
+		boolean submitted = false;
+		String promo_redemption = step1Promotion.getRedemptionCode();
+		String promo_description = step1Promotion.getDescription();
+		String promo_name = step1Promotion.getName();
+		String promo_code = "CD_";
+		if(EnumOfferType.WINDOW_STEERING.getName().equalsIgnoreCase(promotion.getOfferType())){
+			promo_code = "WS_";
+		}
+		while(!submitted) {
+			String randString = getRandomString();
+			String promoCode = promo_code + randString;						
+			String redemptionCode = promo_redemption + "_" + randString; 
+			String name = promo_name + "_" + randString;
+			String descr = promo_description + "_" + randString;
+			step1Promotion.setPromotionCode(promoCode);
+			step1Promotion.setRedemptionCode(redemptionCode);
+			step1Promotion.setDescription(descr);
+			step1Promotion.setName(name);	
+			try {
+					FDPromotionNewManager.createPromotionBasic(step1Promotion);				
+			} catch (FDDuplicatePromoFieldException e) {
+				submitted = false;
+			} catch (FDPromoTypeNotFoundException e) {
+				e.printStackTrace();
+			} catch (FDPromoCustNotFoundException e) {
+				e.printStackTrace();
+			} catch (FDResourceException e) {
+				e.printStackTrace();
+			}
+			submitted = true;
+		}
+		
 	}
 	
 	public static class TagEI extends AbstractControllerTag.TagEI {

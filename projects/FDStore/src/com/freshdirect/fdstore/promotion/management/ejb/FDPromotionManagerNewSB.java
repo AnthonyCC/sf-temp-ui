@@ -131,5 +131,10 @@ public interface FDPromotionManagerNewSB extends EJBObject {
 	public boolean isTSAPromoCodeExists(String tsaPromoCode, String promotionId)throws FDResourceException,RemoteException;
 	
 	public String getRedemptionCode(String tsaPromoCode)throws FDResourceException,RemoteException;
+	
+	public String createPromotionBatch(FDPromotionNewModel promotion) throws FDResourceException,RemoteException;
+	
+	public List<FDPromotionNewModel> getBatchPromotions(String batchId) throws FDResourceException , RemoteException;
+
 }
 
