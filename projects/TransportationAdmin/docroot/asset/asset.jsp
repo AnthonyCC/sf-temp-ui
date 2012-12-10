@@ -18,12 +18,12 @@
   <tmpl:put name='content' direct='true'>
 		<div class="MNM001 subsub or_999">
 			<div class="subs_left">	
-				<div class="sub_tableft sub_tabL_MNM001 <% if(request.getParameter("tAssetType")== null) { %>activeL<% } %>">&nbsp;</div>
-				<div class="subtab <%if(request.getParameter("tAssetType")== null) { %>activeT<% } %>">
+				<div class="sub_tableft sub_tabL_MNM001 <% if(request.getParameter("pAssetType")== null) { %>activeL<% } %>">&nbsp;</div>
+				<div class="subtab <%if(request.getParameter("pAssetType")== null) { %>activeT<% } %>">
 					<div class="minwidth"><!-- --></div>
-					<a href="asset.do?pAssetType=TRUCK" class="<% if(request.getParameter("tAssetType")== null) { %>MNM001<% } %>">Asset</a>
+					<a href="asset.do?pAssetType=TRUCK" class="<% if(request.getParameter("pAssetType")== null) { %>MNM001<% } %>">Asset</a>
 				</div>
-				<div class="sub_tabright sub_tabR_MNM001 <% if(request.getParameter("tAssetType")== null) { %>activeR<% } %>">&nbsp;</div>
+				<div class="sub_tabright sub_tabR_MNM001 <% if(request.getParameter("pAssetType")== null) { %>activeR<% } %>">&nbsp;</div>
 		
 				<div class="sub_tableft sub_tabL_MNM001 <% if(request.getParameter("tAssetType")!= null) { %>activeL<% } %>">&nbsp;</div>
 				<div class="subtab <%if(request.getParameter("tAssetType")!= null) { %>activeT<% } %>">
@@ -113,7 +113,7 @@
 		<script>		
 		 	var jsonrpcClient = new JSONRpcClient("asset.ax");
 		 	
-			addMultiRowHandlersColumn('ec_table', 'rowMouseOver', 'editasset.do', 'id', 0, 0, 'assetType');
+			addMultiRowHandlersColumn('ec_table', 'rowMouseOver', 'editasset.do', 'id', 0, 0, 'pAssetType','assetType');
 			
 			function getFilterTestValue() {
 				var filters = getFilterValue(document.getElementById("assetForm"),false);

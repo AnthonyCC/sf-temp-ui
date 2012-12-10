@@ -96,7 +96,7 @@
 		</div>
 	</div>
      <script>
-	  addMultiRowHandlersColumn('ec_table', 'rowMouseOver', 'editassettemplate.do','id',0,0,'assetType');
+	  addMultiRowHandlersColumn('ec_table', 'rowMouseOver', 'editassettemplate.do','id',0,0,'tAssetType','assetType');
       function doCompositeLink() {
     	  location.href = "assettemplate.do?tAssetType="+document.getElementById('assetType').value;
       }

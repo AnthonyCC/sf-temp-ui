@@ -335,7 +335,7 @@ function addMultiRowHandlers(tableId, rowClassName, url, paramName, columnIndex,
 	    }
 	}
 }
-function addMultiRowHandlersColumn(tableId, rowClassName, url, paramName, columnIndex, checkCol, requestParam) {
+function addMultiRowHandlersColumn(tableId, rowClassName, url, paramName, columnIndex, checkCol, requestParam, requestParamVal) {
     var previousClass = null;
     var table = document.getElementById(tableId);
     
@@ -360,7 +360,7 @@ function addMultiRowHandlersColumn(tableId, rowClassName, url, paramName, column
 			      		var cell = this.parentNode.getElementsByTagName("td")[columnIndex];
 			      		var selectBox = this.parentNode.getElementsByTagName("input")[0];			      		
 			      		location.href = url+"?"+ paramName + "=" + selectBox.name+"&"
-			      			+"pAssetType=" +document.getElementById(requestParam).value
+			      			+ requestParam + "=" + document.getElementById(requestParamVal).value
 			      			+"&filter="+getFilterTestValue();
 			    	};
 		    	}
