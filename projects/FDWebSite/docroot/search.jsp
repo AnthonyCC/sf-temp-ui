@@ -344,6 +344,31 @@ final int W_INDEX_RIGHT_CENTER = W_INDEX_TOTAL - 228 - W_INDEX_CENTER_PADDING;
 	</tmpl:put>
 	
 	<tmpl:put name='customerRatingFilter'>
+		<fd:FilterList domainName="<%= EnumFilteringValue.CUSTOMER_RATING %>" filters='<%= menus %>' id="filterItems">
+		<% nav.resetState(); nav.setPageOffset(0); %>
+			<div id="customerrating" class="filterbox sidebar-content">
+				<h3>CUSTOMER RATING</h3>
+				<ul>
+					<% if(hasSelected) { %>
+						<logic:iterate id="menu" collection="<%= filterItems %>" type='FilteringMenuItem' indexId="index">
+							<% if(menu != null && menu.isSelected()) { %>
+								<% nav.removeFilter(menu.getFilter(), menu.getFilteringUrlValue()); %>
+								<li class="selected"><a href="<%= nav.getLink() %>" class="remove-selection"></a><a href="<%= nav.getLink() %>"><span class="bv-customerrating-stars"><span class="bv-customerrating-stars-content bv-customerrating-stars-content-<%= 5-index %>"></span></span></a></li>
+							<% } %>
+						</logic:iterate>				
+					<% } else { %>
+						<logic:iterate id="menu" collection="<%= filterItems %>" type='FilteringMenuItem' indexId="index">
+						<%  if(menu==null) { %>
+							<li><span class="bv-customerrating-stars"><span class="bv-customerrating-stars-content bv-customerrating-stars-content-<%= 5-index %>"></span></span><span class="count">(0)</span></li>						
+						<% } else {	%>
+							<% 	nav.setCustRatingFilter(menu.getFilteringUrlValue()); %>
+							<li class="<%= menu.isHidden() ? "hidden" : "" %>"><a href="<%= nav.getLink() %>"><span class="bv-customerrating-stars"><span class="bv-customerrating-stars-content bv-customerrating-stars-content-<%= 5-index %>"></span></span><span class="count">(<%= menu.getCounter() %>)</span></a></li>
+						<% } %>
+						</logic:iterate>				
+					<% } %>
+				</ul>
+			</div>
+		</fd:FilterList>
 	</tmpl:put>
 	
 	<tmpl:put name="otherKosherFilter">

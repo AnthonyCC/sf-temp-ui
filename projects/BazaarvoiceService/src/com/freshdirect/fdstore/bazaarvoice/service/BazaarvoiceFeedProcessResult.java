@@ -2,7 +2,7 @@ package com.freshdirect.fdstore.bazaarvoice.service;
 
 import java.io.Serializable;
 
-public class UploadFeedProcessResult implements Serializable{
+public class BazaarvoiceFeedProcessResult implements Serializable{
 	
 	/**
 	 * 
@@ -11,7 +11,7 @@ public class UploadFeedProcessResult implements Serializable{
 	private boolean success;
 	private String error;
 	
-	public UploadFeedProcessResult(boolean success, String error) {
+	public BazaarvoiceFeedProcessResult(boolean success, String error) {
 		super();
 		this.success = success;
 		this.error = error;

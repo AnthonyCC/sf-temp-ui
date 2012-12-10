@@ -57,6 +57,7 @@ public class FilteringNavigator {
 		filters.add(EnumFilteringValue.SUBCAT);
 		filters.add(EnumFilteringValue.BRAND);
 		filters.add(EnumFilteringValue.EXPERT_RATING);
+		filters.add(EnumFilteringValue.CUSTOMER_RATING);
 		filters.add(EnumFilteringValue.GLUTEN_FREE);
 		filters.add(EnumFilteringValue.KOSHER);
 		filters.add(EnumFilteringValue.NEW_OR_BACK);
@@ -444,6 +445,35 @@ public class FilteringNavigator {
 
 	public void removeBrandFilter(String value) {
 		List<Object> values = filterValues.get(EnumFilteringValue.BRAND);
+		if (values != null) {
+			for (Iterator<Object> it = values.iterator(); it.hasNext();) {
+				if (value.equals(it.next())) {
+					it.remove();
+				}
+			}
+		}
+	}
+
+	public void setCustRatingFilter(String value) {
+		List<Object> v = new ArrayList<Object>();
+		v.add(value);
+		filterValues.put(EnumFilteringValue.CUSTOMER_RATING, v);
+	}
+
+	public void addCustRatingFilter(String value) {
+		if (filterValues.get(EnumFilteringValue.CUSTOMER_RATING) != null) {
+			filterValues.get(EnumFilteringValue.CUSTOMER_RATING).add(value);
+		} else {
+			setCustRatingFilter(value);
+		}
+	}
+
+	public void removeCustRatingFilters() {
+		filterValues.remove(EnumFilteringValue.CUSTOMER_RATING);
+	}
+
+	public void removeCustRatingFilter(String value) {
+		List<Object> values = filterValues.get(EnumFilteringValue.CUSTOMER_RATING);
 		if (values != null) {
 			for (Iterator<Object> it = values.iterator(); it.hasNext();) {
 				if (value.equals(it.next())) {

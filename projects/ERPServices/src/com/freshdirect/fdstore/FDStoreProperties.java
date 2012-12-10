@@ -561,6 +561,9 @@ public class FDStoreProperties {
 	private final static String PROP_BAZAARVOICE_FTP_PASSWORD = "fdstore.bazaarvoice.ftp.password";
 	private final static String PROP_BAZAARVOICE_BVAPI_URL = "fdstore.bazaarvoice.bvapi.url";
 	private final static String PROP_BAZAARVOICE_ENABLED = "fdstore.bazaarvoice.enabled";
+	private final static String PROP_BAZAARVOICE_DOWNLOAD_FEED_SOURCEPATH = "fdstore.bazaarvoice.download.feed.sourcepath";
+	private final static String PROP_BAZAARVOICE_DOWNLOAD_FEED_FILE = "fdstore.bazaarvoice.download.feed.file";
+	private final static String PROP_BAZAARVOICE_DOWNLOAD_FEED_TARGETPATH = "fdstore.bazaarvoice.download.feed.target.path";
 	
 	private final static String ALLOW_DISCOUNTS_ON_PREMIUM_SLOT = "fdstore.allow.discount.premium.slot";
 	
@@ -1136,6 +1139,9 @@ public class FDStoreProperties {
 		defaults.put(PROP_BAZAARVOICE_FTP_PASSWORD, "1hOGyoFPLYo");
 		defaults.put(PROP_BAZAARVOICE_BVAPI_URL, "//display-stg.ugc.bazaarvoice.com/static/freshdirect/bvapi.js");
 		defaults.put(PROP_BAZAARVOICE_ENABLED, "true");
+		defaults.put(PROP_BAZAARVOICE_DOWNLOAD_FEED_SOURCEPATH, "feeds");
+		defaults.put(PROP_BAZAARVOICE_DOWNLOAD_FEED_FILE, "bv_freshdirect_standard_client_feed.xml.gz");
+		defaults.put(PROP_BAZAARVOICE_DOWNLOAD_FEED_TARGETPATH, "./");
 						
 		defaults.put(ALLOW_DISCOUNTS_ON_PREMIUM_SLOT, "false");
 		defaults.put(DLV_PASS_NEW_TC_DATE, "2012-05-09");
@@ -2928,8 +2934,19 @@ public class FDStoreProperties {
 	public static boolean isBazaarvoiceEnabled() {
 		return (Boolean.valueOf(get(PROP_BAZAARVOICE_ENABLED))).booleanValue();
 	}
+
+	public static String getBazaarvoiceDownloadFeedSourcePath() {
+		return get(PROP_BAZAARVOICE_DOWNLOAD_FEED_SOURCEPATH);
+	}
 	
-	
+	public static String getBazaarvoiceDownloadFeedFile() {
+		return get(PROP_BAZAARVOICE_DOWNLOAD_FEED_FILE);
+	}
+
+	public static String getBazaarvoiceDownloadFeedTargetPath() {
+		return get(PROP_BAZAARVOICE_DOWNLOAD_FEED_TARGETPATH);
+	}
+
 	public static boolean isGiftCardDonationEnabled() {
         return (Boolean.valueOf(get(PROP_GIFTCARD_DONATION_ENABLED))).booleanValue();
     }

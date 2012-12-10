@@ -125,8 +125,20 @@ public class FilterListTag extends BodyTagSupportEx {
 			
 			return expertRating;
 			
+		} else 	if(domainName.equals(EnumFilteringValue.CUSTOMER_RATING)) {
+				ArrayList<FilteringMenuItem> customerRating = new ArrayList<FilteringMenuItem>((Collection) Arrays.asList(null,null,null,null,null));
+				
+				for( ListIterator<FilteringMenuItem> it=filters.listIterator(); it.hasNext() ; ) {
+					FilteringMenuItem current = it.next();
+					int pos = 5-Integer.parseInt(current.getName(),10);
+					customerRating.set(pos, current);
+				}
+				
+				return customerRating;
+				
 		} else {
 			Collections.sort(filters, COUNT_ORDER_REV);
+
 			
 			if(filters.size() > hideAfter ) {
 				for( ListIterator<FilteringMenuItem> it=filters.listIterator(hideAfter); it.hasNext() ; ) {

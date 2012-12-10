@@ -11,6 +11,8 @@ import com.freshdirect.cms.fdstore.FDContentTypes;
 import com.freshdirect.content.nutrition.EnumClaimValue;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
+import com.freshdirect.fdstore.content.customerrating.CustomerRatingsContext;
+import com.freshdirect.fdstore.content.customerrating.CustomerRatingsDTO;
 import com.freshdirect.fdstore.pricing.ProductModelPricingAdapter;
 
 public class ProductFilterMenuDecorator extends GenericFilterDecorator<FilteringSortingItem<ProductModel>> {
@@ -24,7 +26,7 @@ public class ProductFilterMenuDecorator extends GenericFilterDecorator<Filtering
 		ProductModelPricingAdapter node = (ProductModelPricingAdapter) item.getNode();
 
 		List<ProductModel> parents = collectParents(node);
-
+		
 		boolean available = node.isFullyAvailable();
 
 		try {
@@ -121,6 +123,17 @@ public class ProductFilterMenuDecorator extends GenericFilterDecorator<Filtering
 							menus.add(menu);
 							item.putMenuValue(EnumFilteringValue.EXPERT_RATING, menus);
 						}
+					}
+					break;
+				}
+				case CUSTOMER_RATING: {
+					CustomerRatingsDTO customerRatingsDTO = CustomerRatingsContext.getInstance().getCustomerRatingByProductId(node.getContentKey().getId());
+					if (available && customerRatingsDTO != null && (node.getProductRating() == null || node.getProductRatingEnum().getValue() == 0)) {
+						menu.setName(customerRatingsDTO.getRatingValue() + "");
+						menu.setFilteringUrlValue(customerRatingsDTO.getRatingValue() + "");
+						menu.setFilter(filter);
+						menus.add(menu);
+						item.putMenuValue(EnumFilteringValue.CUSTOMER_RATING, menus);
 					}
 					break;
 				}

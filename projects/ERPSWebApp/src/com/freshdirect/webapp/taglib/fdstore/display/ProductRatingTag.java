@@ -1,6 +1,7 @@
 package com.freshdirect.webapp.taglib.fdstore.display;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 
 import javax.servlet.http.HttpSession;
 import javax.servlet.jsp.JspException;
@@ -15,6 +16,7 @@ import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.content.EnumWineRating;
 import com.freshdirect.fdstore.content.ProductModel;
+import com.freshdirect.fdstore.content.customerrating.CustomerRatingsContext;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.BodyTagSupport;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
@@ -37,6 +39,7 @@ public class ProductRatingTag extends BodyTagSupport {
 	boolean noBr;
 	boolean leftAlign;
 	String skuCode;
+	int customerRating;
 
 	public void setProduct(ProductModel prd) {
 		this.product = prd;
@@ -168,6 +171,63 @@ public class ProductRatingTag extends BodyTagSupport {
 			} catch (IOException e) {
 				throw new JspException(e);
 			}
+		} else if (CustomerRatingsContext.getInstance().getCustomerRatingByProductId(product.getContentKey().getId()) != null) {
+			
+			customerRating = CustomerRatingsContext.getInstance().getCustomerRatingByProductId(product.getContentKey().getId()).getRatingValue();
+			// CUSTOMAR RATINGS
+			// steal logic from WineRatingTag
+			boolean small = true;
+			
+			// stolen code starts here >>>>
+
+			int starCount = customerRating;
+
+			if (starCount == 0)
+				return SKIP_BODY;
+
+			StringBuilder buf = new StringBuilder();
+
+
+			if (noBr)
+				buf.append("<span class=\"cust-rating\">");
+			else
+				buf.append("<div class=\"cust-rating\">");
+			
+			String postfix;
+			int width;
+			int halfWidth;
+			int height;
+			if (small) {
+				postfix = "sm";
+				width = 15;
+				halfWidth = 8;
+				height = 12;
+			} else {
+				postfix = "lg";
+				width = 18;
+				halfWidth = 8;
+				height = 15;
+			}
+
+			for (int i = 0; i < starCount; i++) {
+				buf.append("<span class=\"bv-cust-rating-");
+				buf.append(postfix);
+				buf.append("\"></span>");
+			}
+			
+
+			if (noBr)
+				buf.append("</span>");
+			else
+				buf.append("</div>");
+			// <<<<<< stolen code ends here
+
+			try {
+				pageContext.getOut().println(buf.toString());
+			} catch (IOException e) {
+				throw new JspException(e);
+			}		
+			
 		} else {
 			// [C] SEAFOOD SUSTAINABILITY RATING
 			// [B] STANDARD PRODUCE RATING

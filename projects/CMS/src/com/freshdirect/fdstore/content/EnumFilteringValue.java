@@ -11,7 +11,7 @@ public enum EnumFilteringValue implements FilteringValue{
 	NEW_OR_BACK("newORBack",false),
 	KOSHER("kosher",false),
 	GLUTEN_FREE("glutenFree",false),
-	
+	CUSTOMER_RATING("custRating",false),
 	RECIPE_CLASSIFICATION("classification",false);
 	
 	private String name;

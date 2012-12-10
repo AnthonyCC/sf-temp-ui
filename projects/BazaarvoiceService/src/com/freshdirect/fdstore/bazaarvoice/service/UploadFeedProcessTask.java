@@ -59,18 +59,18 @@ public class UploadFeedProcessTask {
 	private final String UPLOAD_FEED_FILE_NAME = "freshDirectData.xml";
 	private String uploadFeedFilePath;
 	
-	public UploadFeedProcessResult process(){
+	public BazaarvoiceFeedProcessResult process(){
 		
 		try {
 			saveUploadFeedFile(createDocument());
 			uploadFile();
 		} catch (FDResourceException e) {
 			LOGGER.error("Bazaarvoice feed creation failed!",e);
-			return new UploadFeedProcessResult(false, e.getMessage());
+			return new BazaarvoiceFeedProcessResult(false, e.getMessage());
 		}
 		
 		LOGGER.info("Feed creation complete.");
-		return new UploadFeedProcessResult(true, null);
+		return new BazaarvoiceFeedProcessResult(true, null);
 	}
 	
 	private Document createDocument() throws FDResourceException{

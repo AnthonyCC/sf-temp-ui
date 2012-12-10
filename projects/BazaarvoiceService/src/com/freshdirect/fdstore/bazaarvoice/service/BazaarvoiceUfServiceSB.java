@@ -6,6 +6,6 @@ import javax.ejb.EJBObject;
 
 public interface BazaarvoiceUfServiceSB extends EJBObject{
 	
-	public UploadFeedProcessResult processFile() throws RemoteException;
-
+	public BazaarvoiceFeedProcessResult processFile() throws RemoteException;
+	public BazaarvoiceFeedProcessResult processRatings() throws RemoteException;
 }

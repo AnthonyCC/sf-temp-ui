@@ -52,6 +52,7 @@ public class ProductsFilterTag extends FilteringFlow<ProductModel> {
 		filters.add(EnumFilteringValue.SUBCAT);
 		filters.add(EnumFilteringValue.BRAND);
 		filters.add(EnumFilteringValue.EXPERT_RATING);
+		filters.add(EnumFilteringValue.CUSTOMER_RATING);
 		filters.add(EnumFilteringValue.GLUTEN_FREE);
 		filters.add(EnumFilteringValue.KOSHER);
 		filters.add(EnumFilteringValue.NEW_OR_BACK);

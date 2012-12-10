@@ -62,7 +62,11 @@ public class BazaarvoiceUfServiceCmd {
 	public static void main(String[] args) {
 		if (FDStoreProperties.isBazaarvoiceEnabled()){
 			try{
-				UploadFeedProcessResult result = processUf(); 
+				String param = "";
+				if (args.length > 0) {
+					param = args[0];
+				}
+				BazaarvoiceFeedProcessResult result = process(param); 
 				if (!result.isSuccess()) {
 					throw new Exception("Process upload feed failed: " + result.getError());
 				}
@@ -77,31 +81,37 @@ public class BazaarvoiceUfServiceCmd {
 		}
 	}
 	
-	private static UploadFeedProcessResult processUf() {
+	private static BazaarvoiceFeedProcessResult process(String param) {
 		try {
 			LOGGER.info( "Starting to process Bazaarvoice upload feed..." );
 			lookupCdfHome();
 
 			BazaarvoiceUfServiceSB sb = ufHome.get().create();
-			UploadFeedProcessResult result = sb.processFile();
-
-			LOGGER.info( "Bazaarvoice upload feed process " + (result.isSuccess() ? "is successful" : "FAILED"));
+			BazaarvoiceFeedProcessResult result = null;
+			if (!"--disableUpload".equals(param)) {
+				result = sb.processFile();
+				LOGGER.info( "Bazaarvoice upload feed process " + (result.isSuccess() ? "is successful" : "FAILED"));
+			}
+			if (!"--disableDownload".equals(param)) {
+				result = sb.processRatings();
+				LOGGER.info( "Bazaarvoice download feed process " + (result.isSuccess() ? "is successful" : "FAILED"));
+			}
 			return result;
 			
 		} catch ( CreateException e ) {
 			invalidateCdfHome();
 			LOGGER.error("CreateException",e);
-			return new UploadFeedProcessResult(false, e.getMessage());
+			return new BazaarvoiceFeedProcessResult(false, e.getMessage());
 		
 		} catch ( RemoteException e ) {
 			invalidateCdfHome();
 			LOGGER.error("RemoteException",e);
-			return new UploadFeedProcessResult(false, e.getMessage());
+			return new BazaarvoiceFeedProcessResult(false, e.getMessage());
 		
 		} catch ( FDResourceException e ) {
 			invalidateCdfHome();
 			LOGGER.error("FDResourceException",e);
-			return new UploadFeedProcessResult(false, e.getMessage());
+			return new BazaarvoiceFeedProcessResult(false, e.getMessage());
 		}
 	}
 	

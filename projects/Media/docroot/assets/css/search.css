@@ -677,6 +677,28 @@ a.sortitem:visited  {
 .expertrating-stars-content-4 { width:72px; }
 .expertrating-stars-content-5 { width:90px; }
 
+.bv-customerrating-stars, .bv-customerrating-stars-content {
+	background:url('/media_stat/images/search/bv-star_8.png') repeat-x;
+	height:16px;
+	display:inline-block;
+}
+
+.bv-customerrating-stars {
+	background-position:0 -16px;
+	width:90px;
+	vertical-align:bottom;
+}
+
+.bv-customerrating-stars-content {
+	background-position:0 0;
+}
+
+.bv-customerrating-stars-content-1 { width:18px; }
+.bv-customerrating-stars-content-2 { width:36px; }
+.bv-customerrating-stars-content-3 { width:54px; }
+.bv-customerrating-stars-content-4 { width:72px; }
+.bv-customerrating-stars-content-5 { width:90px; }
+
 /* recommendation */
 
 .search-recommender { 

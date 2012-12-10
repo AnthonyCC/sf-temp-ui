@@ -725,3 +725,19 @@
 .carousel-card .grid-item-controls button.customize {
 	margin-top: 0px;
 }
+
+.cust-rating {
+	color: #a96d7d;
+	font-weight: bold;
+	text-decoration: none;
+	letter-spacing: normal;
+	font-size: 11pt;
+}
+.bv-cust-rating-sm {
+	display: inline-block;
+	font-size: 0px;
+	width: 15px;
+	height: 12px;
+	background-image: url('/media_stat/images/search/bv-star_8-sm.png');
+	align: bottom;
+}

@@ -141,4 +141,23 @@ public class DataSourceLocator {
 		}
 	}
 
+	public static Connection getConnectionByDatasource(String JNDIName) throws SQLException {
+		try {
+			return DataSourceLocator.getDataSourceByJNDIName(JNDIName).getConnection();
+        } catch (NamingException ne) {
+            throw new SQLException("Unable to find DataSource to get Connection: " + ne.getMessage());
+		}
+	}
+
+	private static DataSource getDataSourceByJNDIName(String JNDIName) throws NamingException {
+    	InitialContext initCtx = null;
+        try {
+            initCtx = new InitialContext();
+            return (DataSource) initCtx.lookup(JNDIName);
+        } finally {
+        	if (initCtx!=null) try {
+        		initCtx.close();
+        	} catch (NamingException ne) {}
+        }
+     }
 }
