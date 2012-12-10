@@ -127,7 +127,7 @@ public interface CallCenterManagerSB extends EJBObject {
 	
 	public String saveVSCampaignInfo(CrmVSCampaignModel model) throws FDResourceException, RemoteException;
 	
-	public List<CrmVSCampaignModel> getVoiceShotLog() throws FDResourceException, RemoteException;
+	public List<CrmVSCampaignModel> getVoiceShotLog(Date date) throws FDResourceException, RemoteException;
 	
 	public List<CrmVSCampaignModel> getVoiceShotCallDetails(String id, String lateId) throws FDResourceException, RemoteException;
 	

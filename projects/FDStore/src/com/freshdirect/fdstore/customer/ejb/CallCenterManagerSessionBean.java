@@ -2512,7 +2512,23 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
     "and    vs.reason_id = vr.reason_id " +
     "order by vs.created_by_date desc";
 	
-	public List<CrmVSCampaignModel> getVoiceShotLog() throws FDResourceException {
+	public static final String GET_VS_LOG_BY_DATE = "select vl.lateissue_id, vl.vs_ID, L.ROUTE, VC.CAMPAIGN_ID, VC.CAMPAIGN_MENU_ID, VC.CAMPAIGN_NAME, L.STOPSTEXT, vs.redial, " + 
+    "vs.created_by_user, vc.sound_file_text, " +
+    "to_char(vs.created_by_date,  'MM/DD/YYYY HH12:MI AM') created_by_Date, VC.SOUND_FILE_NAME, to_char(vs.start_time, 'HH12:MI AM') start_time, " + 
+    "vs.call_id, vs.call_data_pulled, vr.reason, vs.campaign_type " +    		
+    "from CUST.LATEISSUE l, " +
+    "CUST.VOICESHOT_SCHEDULED vs, " + 
+    "CUST.VOICESHOT_CAMPAIGN vc, " +
+    "cust.voiceshot_reasoncodes vr, " +
+    "cust.voiceshot_lateissue vl " +
+    "where L.ID = vl.lateissue_id " +
+    "and    vl.vs_id = vs.vs_id " +
+    "and    vs.campaign_id = VC.CAMPAIGN_ID " + 
+    "and    vs.reason_id = vr.reason_id " +
+    "and    vs.created_by_date > ? " +  
+    "order by vs.created_by_date desc";
+	
+	public List<CrmVSCampaignModel> getVoiceShotLog(Date date) throws FDResourceException {
 		Connection conn = null;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
@@ -2520,7 +2536,12 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 		
 		try{
 			conn = this.getConnection();
-			ps = conn.prepareStatement(GET_VS_LOG);
+			if(date == null)
+				ps = conn.prepareStatement(GET_VS_LOG);
+			else {
+				ps = conn.prepareStatement(GET_VS_LOG_BY_DATE);
+				ps.setDate(1, new java.sql.Date(date.getTime()));
+			}
 			rs = ps.executeQuery();			
 			while(rs.next()) {
 				CrmVSCampaignModel model = new CrmVSCampaignModel();

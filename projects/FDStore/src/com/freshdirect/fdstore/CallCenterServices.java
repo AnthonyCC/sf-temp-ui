@@ -945,13 +945,13 @@ public class CallCenterServices {
 	}
 	
 		
-	public static List<CrmVSCampaignModel> getVoiceShotLog() throws FDResourceException{
+	public static List<CrmVSCampaignModel> getVoiceShotLog(Date date) throws FDResourceException{
 		if (callCenterHome == null) {
 			lookupManagerHome();
 		}
 		try {
 			CallCenterManagerSB sb = callCenterHome.create();
-			return sb.getVoiceShotLog();
+			return sb.getVoiceShotLog(date);
 		} catch (CreateException ce) {
 			callCenterHome = null;
 			throw new FDResourceException(ce, "Error creating bean");
