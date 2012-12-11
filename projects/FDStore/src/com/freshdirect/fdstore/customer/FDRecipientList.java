@@ -2,6 +2,7 @@ package com.freshdirect.fdstore.customer;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 
 import com.freshdirect.framework.core.ModelSupport;
@@ -100,14 +101,14 @@ public class FDRecipientList extends ModelSupport {
 		return models;
 	}
 
-	public void removeRecipients(EnumGiftCardType giftCardType) {	
-		int randomId = 0;
-		for ( RecipientModel model : recipients ) {
+	public void removeRecipients(EnumGiftCardType giftCardType) {
+		Iterator<RecipientModel> it = recipients.iterator();
+		while( it.hasNext() ) {
+			RecipientModel model = it.next();
 			if (giftCardType != null && model.getGiftCardType() != null && model.getGiftCardType().equals(giftCardType)) {
-				randomId = model.getRandomId();
+				it.remove();
 			}
 		}
-		this.removeOrderLineById(randomId);
 	}
 
 	public double getSubtotal(EnumGiftCardType giftCardType) {

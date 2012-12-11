@@ -43,7 +43,6 @@ public class CrmLoginFilter implements Filter {
 		
 
 		String ldapRole = CrmSecurityManager.getUserRole(request);
-		LOGGER.debug("LDAP Role:"+ldapRole);
 		CrmAgentRole agentRole = CrmAgentRole.getEnumByLDAPRole(ldapRole);
 		CrmAgentModel agent = CrmSession.getCurrentAgent(request.getSession());
 		FDSessionUser user = (FDSessionUser) request.getSession().getAttribute(SessionName.USER);
