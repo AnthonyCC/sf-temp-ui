@@ -17,6 +17,7 @@ import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.content.EnumWineRating;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.customerrating.CustomerRatingsContext;
+import com.freshdirect.fdstore.content.customerrating.CustomerRatingsDTO;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.BodyTagSupport;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
@@ -39,7 +40,7 @@ public class ProductRatingTag extends BodyTagSupport {
 	boolean noBr;
 	boolean leftAlign;
 	String skuCode;
-	int customerRating;
+	CustomerRatingsDTO customerRatingsDTO;
 
 	public void setProduct(ProductModel prd) {
 		this.product = prd;
@@ -173,14 +174,16 @@ public class ProductRatingTag extends BodyTagSupport {
 			}
 		} else if (CustomerRatingsContext.getInstance().getCustomerRatingByProductId(product.getContentKey().getId()) != null) {
 			
-			customerRating = CustomerRatingsContext.getInstance().getCustomerRatingByProductId(product.getContentKey().getId()).getRatingValue();
+			customerRatingsDTO = CustomerRatingsContext.getInstance().getCustomerRatingByProductId(product.getContentKey().getId());
 			// CUSTOMAR RATINGS
 			// steal logic from WineRatingTag
 			boolean small = true;
 			
 			// stolen code starts here >>>>
 
-			int starCount = customerRating;
+			int starCount = customerRatingsDTO.getRatingValue();
+			BigDecimal averageRating = customerRatingsDTO.getAverageOverallRating();
+			int reviewCount = customerRatingsDTO.getTotalReviewCount();
 
 			if (starCount == 0)
 				return SKIP_BODY;
@@ -188,10 +191,19 @@ public class ProductRatingTag extends BodyTagSupport {
 			StringBuilder buf = new StringBuilder();
 
 
-			if (noBr)
-				buf.append("<span class=\"cust-rating\">");
-			else
-				buf.append("<div class=\"cust-rating\">");
+			if (noBr) {
+				buf.append("<span class=\"cust-rating\" onmouseover=\"javascript:document.getElementById('" + product.getContentKey().getId() + "_hover').style.display='block';\" onmouseout=\"javascript:document.getElementById('" + product.getContentKey().getId() + "_hover').style.display='none';\">");
+				buf.append("<div id=\"" + product.getContentKey().getId() + "_hover\" class=\"cust-rating-hover\">");
+				buf.append("<b class=\"cust-rating-hover-rating\">" + averageRating + "</b><br>");
+				buf.append("based on <b style=\"font-size:13px;\">" + reviewCount + "</b> customer reviews");
+				buf.append("</div>");
+			} else {
+				buf.append("<div class=\"cust-rating\" onmouseover=\"javascript:document.getElementById('" + product.getContentKey().getId() + "_hover').style.display='block';\" onmouseout=\"javascript:document.getElementById('" + product.getContentKey().getId() + "_hover').style.display='none';\">");
+				buf.append("<div id=\"" + product.getContentKey().getId() + "_hover\" class=\"cust-rating-hover\">");
+				buf.append("<b class=\"cust-rating-hover-rating\">" + averageRating + "</b><br>");
+				buf.append("based on <b style=\"font-size:13px;\">" + reviewCount + "</b> customer reviews");
+				buf.append("</div>");
+			}			
 			
 			String postfix;
 			int width;
