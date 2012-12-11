@@ -512,6 +512,30 @@ public class FilteringNavigator {
 		}
 	}
 
+	public boolean isSetExpRatingFilter(String value) {
+		List<Object> values = filterValues.get(EnumFilteringValue.EXPERT_RATING);
+		if (values != null) {
+			for (Iterator<Object> it = values.iterator(); it.hasNext();) {
+				if (value.equals(it.next())) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	public boolean isSetCustRatingFilter(String value) {
+		List<Object> values = filterValues.get(EnumFilteringValue.CUSTOMER_RATING);
+		if (values != null) {
+			for (Iterator<Object> it = values.iterator(); it.hasNext();) {
+				if (value.equals(it.next())) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+	
 	public void setOnSalelFilter(String value) {
 		List<Object> v = new ArrayList<Object>();
 		v.add(value);

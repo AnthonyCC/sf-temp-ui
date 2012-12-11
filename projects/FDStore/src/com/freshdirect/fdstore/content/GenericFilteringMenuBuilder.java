@@ -20,7 +20,7 @@ public abstract class GenericFilteringMenuBuilder<I extends FilteringSortingItem
 		this.filters = filters;
 	}
 
-	public abstract void buildMenu(List<I> items);
+	public abstract void buildMenu(List<I> items, int[] expertRatings, int[] custRatings);
 
 	public Map<EnumFilteringValue, Map<String, FilteringMenuItem>> getDomains() {
 		return domains;

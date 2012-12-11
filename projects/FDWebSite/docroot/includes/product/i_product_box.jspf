@@ -66,8 +66,10 @@
 <div class="grid-item-price-description"><display:ProductPriceDescription impression="<%= pi %>"/></div>
 <div class="grid-item-price">
 <% if (productAvailability.isFullyAvailable()) { %>
+<span class="prices">
 <display:ProductDefaultPrice product="<%= pm %>" showDescription="true"/>
-<% if (pm.getPriceCalculator().isOnSale()) { %><span class="was-price">(was <display:ProductWasPrice product="<%= pm %>"/>)</span><% } %>
+<% if (pm.getPriceCalculator().isOnSale()) { %><span class="was-price">(<span><display:ProductWasPrice product="<%= pm %>"/></span>)</span><% } %>
+</span>
 <display:ProductAboutPrice product="<%= pm %>" />
 <% } %>
 <display:ProductGroupLink impression="<%= pi %>" trackingCode="<%= trk %>"><display:ProductGroupPricing product="<%= pm %>"/></display:ProductGroupLink>
@@ -116,7 +118,10 @@ Sorry! Unavailable!
 	}
 %>
 </span>
-<div class="grid-item-status" id="<%= statusPlaceholderId %>"></div>
+  <div class="grid-item-status" id="<%= statusPlaceholderId %>">
+    <div class="grid-item-status-in-cart"><fd:ProductCartStatusMessage product="<%= pm %>"/></div>
+    <div class="grid-item-status-added"></div>
+  </div>
 </div>
 <div class="grid-item-separator"></div>
 </div><!--  grid-item -->

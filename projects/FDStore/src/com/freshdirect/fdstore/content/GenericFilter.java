@@ -31,7 +31,8 @@ public abstract class GenericFilter<T> {
 	
 	public abstract GenericFilter<T> clone();
 	
-	public abstract void applyAllFilter(List<T> items);
+	public abstract void applyAllFilterAnd(List<T> items);
+	public abstract void applyAllFilterOr(List<T> items);
 	
 	public abstract void applyFilter(List<T> items, EnumFilteringValue filter);
 	

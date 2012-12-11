@@ -1,5 +1,6 @@
 package com.freshdirect.fdstore.content;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -17,14 +18,33 @@ public class FilteringSortingMenuBuilder<N extends ContentNodeModel> extends Gen
 	}
 
 	@Override
-	public void buildMenu(List<FilteringSortingItem<N>> items) { 
+	public void buildMenu(List<FilteringSortingItem<N>> items, int[] expertRatings, int[] custRatings) { 
 		for (EnumFilteringValue value : filters) {
 
 			Map<String, FilteringMenuItem> domain = new HashMap<String, FilteringMenuItem>();
-			for (FilteringSortingItem<N> item : items) {
+			
+			boolean isExpertRating = value == EnumFilteringValue.EXPERT_RATING;			
+			if ( isExpertRating ) {
+				// Always add all expert ratings				
+				domain.put( "5", new FilteringMenuItem("5", "5", expertRatings[5], EnumFilteringValue.EXPERT_RATING) );
+				domain.put( "4", new FilteringMenuItem("4", "4", expertRatings[4], EnumFilteringValue.EXPERT_RATING) );
+				domain.put( "3", new FilteringMenuItem("3", "3", expertRatings[3], EnumFilteringValue.EXPERT_RATING) );
+				domain.put( "2", new FilteringMenuItem("2", "2", expertRatings[2], EnumFilteringValue.EXPERT_RATING) );
+				domain.put( "1", new FilteringMenuItem("1", "1", expertRatings[1], EnumFilteringValue.EXPERT_RATING) );
+			}			
 
+			boolean isCustRating = value == EnumFilteringValue.CUSTOMER_RATING;			
+			if ( isCustRating ) {
+				// Always add all customer ratings				
+				domain.put( "5", new FilteringMenuItem("5", "5", custRatings[5], EnumFilteringValue.CUSTOMER_RATING) );
+				domain.put( "4", new FilteringMenuItem("4", "4", custRatings[4], EnumFilteringValue.CUSTOMER_RATING) );
+				domain.put( "3", new FilteringMenuItem("3", "3", custRatings[3], EnumFilteringValue.CUSTOMER_RATING) );
+				domain.put( "2", new FilteringMenuItem("2", "2", custRatings[2], EnumFilteringValue.CUSTOMER_RATING) );
+				domain.put( "1", new FilteringMenuItem("1", "1", custRatings[1], EnumFilteringValue.CUSTOMER_RATING) );
+			}			
+
+			for (FilteringSortingItem<N> item : items) {
 				Set<FilteringMenuItem> menuItems = item.getMenuValue(value);
-				checkSelected(menuItems, filterValues.get(value));
 
 				if (menuItems != null) {
 					for (FilteringMenuItem menuItem : menuItems) {
@@ -32,18 +52,20 @@ public class FilteringSortingMenuBuilder<N extends ContentNodeModel> extends Gen
 						String menuName = menuItem.getFilteringUrlValue();
 						FilteringMenuItem mI = domain.get(menuName);
 
-						if (mI == null) {
-							menuItem.setCounter(1);
-							domain.put(menuName, menuItem);
-						} else {
-							mI.setCounter(mI.getCounter() + 1);
-							domain.put(menuName, mI);
+						if ( mI == null ) {
+							mI = menuItem;
 						}
+						
+						if ( !isExpertRating && !isCustRating ) {
+							mI.setCounter(mI.getCounter() + 1);
+						}
+						
+						domain.put(menuName, mI);
 					}
 				}
-
 			}
-
+			
+			checkSelected(domain.values(), filterValues.get(value));
 			domains.put(value, domain);
 		}
 
@@ -142,7 +164,7 @@ public class FilteringSortingMenuBuilder<N extends ContentNodeModel> extends Gen
 		}
 	}
 
-	private void checkSelected(Set<FilteringMenuItem> menuItems, List<Object> itemFilteringValues) {
+	private void checkSelected(Collection<FilteringMenuItem> menuItems, List<Object> itemFilteringValues) {
 		if (itemFilteringValues == null) {
 			return;
 		}

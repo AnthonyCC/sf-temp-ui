@@ -1,10 +1,9 @@
 package com.freshdirect.webapp.taglib.content;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 
@@ -31,17 +30,25 @@ public class FilterListTag extends BodyTagSupportEx {
 	private Map<EnumFilteringValue, Map<String, FilteringMenuItem>> filters;
 	
 	static final Comparator<FilteringMenuItem> COUNT_ORDER_REV = new Comparator<FilteringMenuItem>() {
-
 		@Override
 		public int compare(FilteringMenuItem o1, FilteringMenuItem o2) {
-			return o2.getCounter()-o1.getCounter();
+			return o2.getCounter() - o1.getCounter();
+		}			
+	};	
+	
+	static final Comparator<FilteringMenuItem> RATING_COMP = new Comparator<FilteringMenuItem>() {
+		@Override
+		public int compare(FilteringMenuItem o1, FilteringMenuItem o2) {
+			int a = 0; try { a = Integer.parseInt( o1.getName() ); } catch (NumberFormatException e) { }
+			int b = 0; try { b = Integer.parseInt( o2.getName() ); } catch (NumberFormatException e) { }								
+			return a > b ? -1 : a < b ? +1 : 0;
 		}
-			
 	};
+
 	
 	@Override
 	public int doStartTag() throws JspException {
-		ArrayList<FilteringMenuItem> result;
+		List<FilteringMenuItem> result;
 		
 		try {
 			result = getResult();
@@ -58,7 +65,7 @@ public class FilterListTag extends BodyTagSupportEx {
 		return EVAL_BODY_INCLUDE;		
 	}
 
-	boolean hasSelected(ArrayList<FilteringMenuItem> items) {
+	boolean hasSelected(List<FilteringMenuItem> items) {
 		if(items == null || items.isEmpty()) return false;
 		
 		for(FilteringMenuItem item : items) {
@@ -98,7 +105,7 @@ public class FilterListTag extends BodyTagSupportEx {
 			return new VariableInfo[] { 
 					new VariableInfo(
 							data.getAttributeString("id"),
-							ArrayList.class.getName() + "<"+FilteringMenuItem.class.getName()+">",
+							List.class.getName() + "<"+FilteringMenuItem.class.getName()+">",
 							true, VariableInfo.NESTED),
 					new VariableInfo(
 							hasSelectedVar,
@@ -107,47 +114,31 @@ public class FilterListTag extends BodyTagSupportEx {
 		}
 	}
 
-	protected ArrayList<FilteringMenuItem> getResult() throws Exception {
+	protected List<FilteringMenuItem> getResult() throws Exception {
 		
 		Map<EnumFilteringValue, Map<String, FilteringMenuItem>> menus = this.getFilters();
-		ArrayList<FilteringMenuItem> filters = new ArrayList<FilteringMenuItem>(menus.get(domainName).values());
+		List<FilteringMenuItem> filters = new ArrayList<FilteringMenuItem>(menus.get(domainName).values());
 		
-		if( filters.isEmpty() ) return null; 
+		if( filters.isEmpty() ) return filters; 
 		
 		if(domainName.equals(EnumFilteringValue.EXPERT_RATING)) {
-			ArrayList<FilteringMenuItem> expertRating = new ArrayList<FilteringMenuItem>((Collection) Arrays.asList(null,null,null,null,null));
 			
-			for( ListIterator<FilteringMenuItem> it=filters.listIterator(); it.hasNext() ; ) {
-				FilteringMenuItem current = it.next();
-				int pos = 5-Integer.parseInt(current.getName(),10);
-				expertRating.set(pos, current);
-			}
-			
-			return expertRating;
+			Collections.sort( filters, RATING_COMP );
 			
 		} else 	if(domainName.equals(EnumFilteringValue.CUSTOMER_RATING)) {
-				ArrayList<FilteringMenuItem> customerRating = new ArrayList<FilteringMenuItem>((Collection) Arrays.asList(null,null,null,null,null));
-				
-				for( ListIterator<FilteringMenuItem> it=filters.listIterator(); it.hasNext() ; ) {
-					FilteringMenuItem current = it.next();
-					int pos = 5-Integer.parseInt(current.getName(),10);
-					customerRating.set(pos, current);
-				}
-				
-				return customerRating;
-				
-		} else {
-			Collections.sort(filters, COUNT_ORDER_REV);
-
 			
-			if(filters.size() > hideAfter ) {
-				for( ListIterator<FilteringMenuItem> it=filters.listIterator(hideAfter); it.hasNext() ; ) {
+			Collections.sort( filters, RATING_COMP );
+			
+		} else {
+			
+			Collections.sort( filters, COUNT_ORDER_REV );
+			
+			if( filters.size() > hideAfter ) {
+				for( ListIterator<FilteringMenuItem> it = filters.listIterator(hideAfter); it.hasNext() ; ) {
 					it.next().hide();
 				}			
-			}
-			
-		}
-		
+			}			
+		}		
 		
 		return filters;
 	}

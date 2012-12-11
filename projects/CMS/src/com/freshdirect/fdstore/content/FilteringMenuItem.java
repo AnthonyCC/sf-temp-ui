@@ -94,4 +94,9 @@ public class FilteringMenuItem {
 		return result;
 	}
 	
+	@Override
+	public String toString() {
+		return "[" + filter + "=" + filteringUrlValue + "]=>" + name + "(" + counter + ")";
+	}
+	
 }

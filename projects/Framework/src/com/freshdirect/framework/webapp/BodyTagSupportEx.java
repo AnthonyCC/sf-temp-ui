@@ -30,10 +30,9 @@ public abstract class BodyTagSupportEx extends BodyTagSupport {
 		return new VariableInfo(name, getTypeName(type), true, scope);
 	}
 	
-	@SuppressWarnings("unchecked")
 	public static String getTypeName(Type type) {
 		if (type instanceof Class)
-			return ((Class) type).getName().replace('$', '.');
+			return ((Class<?>) type).getName().replace('$', '.');
 		else if (type instanceof ParameterizedType) {
 			ParameterizedType pType = (ParameterizedType) type;
 			StringBuilder buf = new StringBuilder();

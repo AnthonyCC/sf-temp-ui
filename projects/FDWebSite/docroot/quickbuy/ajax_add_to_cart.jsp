@@ -2,6 +2,9 @@
 %><%@ taglib uri='freshdirect' prefix='fd'
 %><%@page import="com.freshdirect.framework.util.log.LoggerFactory"
 %><%@page import="com.freshdirect.framework.webapp.ActionError"
+%><%@page import="com.freshdirect.fdstore.content.ContentFactory"
+%><%@page import="com.freshdirect.fdstore.content.ContentNodeModel"
+%><%@page import="com.freshdirect.fdstore.content.ProductModel"
 %><%@page import="java.util.List"
 %><%@page import="com.freshdirect.fdstore.customer.FDCartLineI"
 %><%@page import="org.apache.log4j.Logger"
@@ -53,3 +56,9 @@ if (session.getAttribute("fd.user") != null) {
 %><%= getStatusMessage(EnumQuickbuyStatus.NOT_LOGGED_IN) %><%
 }
 %>
+<%
+if (request.getParameter("productId_0") != null) {
+ContentNodeModel pm = ContentFactory.getInstance().getContentNode( "Product", request.getParameter("productId_0") );
+%>
+<span class="in-cart" hidden style="display:none;"><fd:ProductCartStatusMessage product="<%= (ProductModel)pm %>"/></span>
+<% } %>

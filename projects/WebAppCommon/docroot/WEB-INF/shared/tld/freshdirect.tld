@@ -1410,6 +1410,18 @@
 	</tag>
 
 	<tag>
+		<name>ProductCartStatusMessage</name>
+		<tagclass>com.freshdirect.webapp.taglib.fdstore.ProductCartStatusMessageTag</tagclass>
+		<bodycontent>empty</bodycontent>
+		<info></info>
+		<attribute>
+			<name>product</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+	</tag>
+
+	<tag>
 		<name>QuickShopController</name>
 		<tagclass>com.freshdirect.webapp.taglib.fdstore.QuickShopControllerTag</tagclass>
 		<teiclass>com.freshdirect.webapp.taglib.fdstore.QuickShopControllerTag$TagEI</teiclass>

@@ -52,6 +52,7 @@ final int W_INDEX_RIGHT_CENTER = W_INDEX_TOTAL - 228 - W_INDEX_CENTER_PADDING;
 
 	// storing the view settings in the session
 	FilteringNavigator searchNav = new FilteringNavigator(request,20);
+  request.setAttribute("filternav", searchNav);
 	if(isDFGS) {
 		searchNav.setDeptFilter(request.getParameter("deptId"));
 		searchNav.saveState();
@@ -93,8 +94,10 @@ final int W_INDEX_RIGHT_CENTER = W_INDEX_TOTAL - 228 - W_INDEX_CENTER_PADDING;
 		<fd:css href="/assets/css/newproducts.css"></fd:css>
 	</tmpl:put>
 	<tmpl:put name="customJs">
-		<fd:javascript src="/assets/javascript/search.js" />
-		<fd:javascript src="/assets/javascript/statusupdate.js" />
+	</tmpl:put>
+	<tmpl:put name="customJsBottom">
+		<fd:javascript src="/assets/javascript/fd/modules/search/seemore.js" />
+		<fd:javascript src="/assets/javascript/fd/modules/search/statusupdate.js" />
 	</tmpl:put>
 
 	<tmpl:put name="title" direct="true">FreshDirect - New products</tmpl:put>
@@ -171,200 +174,18 @@ final int W_INDEX_RIGHT_CENTER = W_INDEX_TOTAL - 228 - W_INDEX_CENTER_PADDING;
 	</tmpl:put>
 
 <% if (!isDFGS) { %>
+  <% request.setAttribute("filtermenus", menus); %>
+  <tmpl:put name='filterNavigator'>
+    <tmpl:insert template='/common/template/filter_navigator.jsp'>
 
-	<tmpl:put name='deparmentFilter'>
-	<fd:FilterList domainName="<%= EnumFilteringValue.DEPT %>" filters='<%= menus %>' id="filterItems" hideAfter="<%= hideAfter %>">
-	<% searchNav.resetState(); searchNav.setPageOffset(0); %>
-	<div id="department" class="filterbox sidebar-content">
-		<h3>DEPARTMENT</h3>
-		<ul>
-		<logic:iterate id="menu" collection="<%= filterItems %>" type='FilteringMenuItem'>
-			<% if(menu.isSelected()) { %>
-				<% searchNav.removeFilter(menu.getFilter(), menu.getFilteringUrlValue()); %>
-				<li class="selected"><a href="<%= searchNav.getLink() %>" class="remove-selection"></a><a href="<%= searchNav.getLink() %>"><%= menu.getName() %></a></li>
-			<% } else { %>
-				<% searchNav.setDeptFilter(menu.getFilteringUrlValue()); %>
-				<li class="<%= menu.isHidden() ? "hidden" : "" %>"><a href="<%= searchNav.getLink() %>"><%= menu.getName() %><span class="count">(<%= menu.getCounter() %>)</span></a></li>
-			<% } %>
-		</logic:iterate>
-		</ul>
-		<% if(filterItems.size() > hideAfter) { %>
-			<div class="see more">+ See more</div>
-			<div class="see less">- See less</div>
-		<% } %>
-	</div>
-	</fd:FilterList>
-	</tmpl:put>	
-	
-	<tmpl:put name='categoryFilter'>
-	<fd:FilterList domainName="<%= EnumFilteringValue.CAT %>" filters="<%= menus %>" id="filterItems" hideAfter="<%= hideAfter %>">
-	<% searchNav.resetState(); searchNav.setPageOffset(0); %>
-	<div id="category" class="filterbox sidebar-content">
-		<h3>Category</h3>
-		<ul>
-		<logic:iterate id="menu" collection="<%= filterItems %>" type='FilteringMenuItem'>
-			<% if(menu.isSelected()) { %>
-				<% searchNav.removeFilter(menu.getFilter(), menu.getFilteringUrlValue()); %>
-				<li class="selected"><a href="<%= searchNav.getLink() %>" class="remove-selection"></a><a href="<%= searchNav.getLink() %>"><%= menu.getName() %></a></li>
-			<% } else { %>
-				<% searchNav.setCatFilter(menu.getFilteringUrlValue()); %>
-				<li class="<%= menu.isHidden() ? "hidden" : "" %>"><a href="<%= searchNav.getLink() %>"><%= menu.getName() %><span class="count">(<%= menu.getCounter() %>)</span></a></li>
-			<% } %>
-		</logic:iterate>
-		</ul>
-		<% if(filterItems.size() > hideAfter) { %>
-			<div class="see more">+ See more</div>
-			<div class="see less">- See less</div>
-		<% } %>
-	</div>
-	</fd:FilterList>
-	</tmpl:put>
- 		
-	<tmpl:put name='subCategoryFilter'>
-	<fd:FilterList domainName="<%= EnumFilteringValue.SUBCAT %>" filters='<%= menus %>' id="filterItems" hideAfter="<%= hideAfter %>">
-	<% searchNav.resetState(); searchNav.setPageOffset(0); %>
-	<div id="subcategory" class="filterbox sidebar-content">
-		<h3>Subcategory</h3>
-		<ul>
-		<logic:iterate id="menu" collection="<%= filterItems %>" type='FilteringMenuItem'>
-			<% if(menu.isSelected()) { %>
-				<% searchNav.removeFilter(menu.getFilter(), menu.getFilteringUrlValue()); %>
-				<li class="selected"><a href="<%= searchNav.getLink() %>" class="remove-selection"></a><a href="<%= searchNav.getLink() %>"><%= menu.getName() %></a></li>
-			<% } else { %>
-				<% searchNav.setSubCatFilter(menu.getFilteringUrlValue()); %>
-				<li class="<%= menu.isHidden() ? "hidden" : "" %>"><a href="<%= searchNav.getLink() %>"><%= menu.getName() %><span class="count">(<%= menu.getCounter() %>)</span></a></li>
-			<% } %>
-		</logic:iterate>
-		</ul>
-	<% if(filterItems.size() > hideAfter) { %>
-		<div class="see more">+ See more</div>
-		<div class="see less">- See less</div>
-	<% } %>
-	</div>
-	</fd:FilterList>
-	</tmpl:put>
- 		
-	<tmpl:put name='brandFilter'>
-	<fd:FilterList domainName="<%= EnumFilteringValue.BRAND %>" filters='<%= menus %>' id="filterItems" hideAfter="<%= hideAfter %>">
-	<% searchNav.resetState(); searchNav.setPageOffset(0); %>
-	<div id="brands" class="filterbox sidebar-content">
-		<h3>BRAND</h3>
-		<ul>
-		<logic:iterate id="menu" collection="<%= filterItems %>" type='FilteringMenuItem'>
-			<% if(menu.isSelected()) { %>
-				<% searchNav.removeFilter(menu.getFilter(), menu.getFilteringUrlValue()); %>
-				<li class="selected"><a href="<%= searchNav.getLink() %>" class="remove-selection"></a><a href="<%= searchNav.getLink() %>"><%= menu.getName() %></a></li>
-			<% } else { %>
-				<% searchNav.setBrandFilter(menu.getFilteringUrlValue()); %>
-				<li class="<%= menu.isHidden() ? "hidden" : "" %>"><a href="<%= searchNav.getLink() %>"><%= menu.getName() %><span class="count">(<%= menu.getCounter() %>)</span></a></li>
-			<% } %>
-		</logic:iterate>
-		</ul>
-	<% if(filterItems.size() > hideAfter) { %>
-		<div class="see more">+ See more</div>
-		<div class="see less">- See less</div>
-	<% } %>
-	</div>
-	</fd:FilterList>
-	</tmpl:put>
- 		
-	<tmpl:put name='expertRatingFilter'>
-	<fd:FilterList domainName="<%= EnumFilteringValue.EXPERT_RATING %>" filters='<%= menus %>' id="filterItems">
-	<% searchNav.resetState(); searchNav.setPageOffset(0); %>
-		<div id="expertrating" class="filterbox sidebar-content">
-			<h3>EXPERT RATING</h3>
-			<ul>
-				<% if(hasSelected) { %>
-					<logic:iterate id="menu" collection="<%= filterItems %>" type='FilteringMenuItem' indexId="index">
-						<% if(menu != null && menu.isSelected()) { %>
-							<% searchNav.removeFilter(menu.getFilter(), menu.getFilteringUrlValue()); %>
-							<li class="selected"><a href="<%= searchNav.getLink() %>" class="remove-selection"></a><a href="<%= searchNav.getLink() %>"><span class="expertrating-stars"><span class="expertrating-stars-content expertrating-stars-content-<%= 5-index %>"></span></span></a></li>
-						<% } %>
-					</logic:iterate>				
-				<% } else { %>
-					<logic:iterate id="menu" collection="<%= filterItems %>" type='FilteringMenuItem' indexId="index">
-					<%  if(menu==null) { %>
-						<li><span class="expertrating-stars"><span class="expertrating-stars-content expertrating-stars-content-<%= 5-index %>"></span></span><span class="count">(0)</span></li>						
-					<% } else {	%>
-						<% 	searchNav.setExpRatingFilter(menu.getFilteringUrlValue()); %>
-						<li class="<%= menu.isHidden() ? "hidden" : "" %>"><a href="<%= searchNav.getLink() %>"><span class="expertrating-stars"><span class="expertrating-stars-content expertrating-stars-content-<%= 5-index %>"></span></span><span class="count">(<%= menu.getCounter() %>)</span></a></li>
-					<% } %>
-					</logic:iterate>				
-				<% } %>
-			</ul>
-		</div>
-	</fd:FilterList>
-	</tmpl:put>
-	
-	
-	<tmpl:put name="otherKosherFilter">
-	<fd:FilterList domainName="<%= EnumFilteringValue.KOSHER %>" filters='<%= menus %>' id="filterItems">
-	<% searchNav.resetState(); searchNav.setPageOffset(0); %>
-		<logic:iterate id="menu" collection="<%= filterItems %>" type='FilteringMenuItem'>
-			<% if(menu.isSelected()) { %>
-				<% searchNav.removeFilter(menu.getFilter(), menu.getFilteringUrlValue()); %>
-				<li class="selected"><a href="<%= searchNav.getLink() %>" class="remove-selection"></a><a href="<%= searchNav.getLink() %>"><%= menu.getName() %></a></li>
-			<% } else { %>
-				<% searchNav.setKosherFilter(menu.getFilteringUrlValue()); %>
-				<li class="<%= menu.isHidden() ? "hidden" : "" %>"><a href="<%= searchNav.getLink() %>"><%= menu.getName() %><span class="count">(<%= menu.getCounter() %>)</span></a></li>
-			<% } %>
-			<% otherFilters=true; %>
-		</logic:iterate>
-	</fd:FilterList>
-	</tmpl:put>
-
-	<tmpl:put name="otherGlutenFreeFilter">
-	<fd:FilterList domainName="<%= EnumFilteringValue.GLUTEN_FREE %>" filters='<%= menus %>' id="filterItems">
-	<% searchNav.resetState(); searchNav.setPageOffset(0); %>
-		<logic:iterate id="menu" collection="<%= filterItems %>" type='FilteringMenuItem'>
-			<% if(menu.isSelected()) { %>
-				<% searchNav.removeFilter(menu.getFilter(), menu.getFilteringUrlValue()); %>
-				<li class="selected"><a href="<%= searchNav.getLink() %>" class="remove-selection"></a><a href="<%= searchNav.getLink() %>"><%= menu.getName() %></a></li>
-			<% } else { %>
-				<% searchNav.setGlutenFilter(menu.getFilteringUrlValue()); %>
-				<li class="<%= menu.isHidden() ? "hidden" : "" %>"><a href="<%= searchNav.getLink() %>"><%= menu.getName() %><span class="count">(<%= menu.getCounter() %>)</span></a></li>
-			<% } %>
-			<% otherFilters=true; %>
-		</logic:iterate>
-	</fd:FilterList>
-	</tmpl:put>
-
-	
-	<tmpl:put name="otherOnSaleFilter">
-	<fd:FilterList domainName="<%= EnumFilteringValue.ON_SALE %>" filters='<%= menus %>' id="filterItems">
-	<% searchNav.resetState(); searchNav.setPageOffset(0); %>
-		<logic:iterate id="menu" collection="<%= filterItems %>" type='FilteringMenuItem'>
-			<% if(menu.isSelected()) { %>
-				<% searchNav.removeFilter(menu.getFilter(), menu.getFilteringUrlValue()); %>
-				<li class="selected"><a href="<%= searchNav.getLink() %>" class="remove-selection"></a><a href="<%= searchNav.getLink() %>"><%= menu.getName() %></a></li>
-			<% } else { %>
-				<% searchNav.setOnSalelFilter(menu.getFilteringUrlValue()); %>
-				<li class="<%= menu.isHidden() ? "hidden" : "" %>"><a href="<%= searchNav.getLink() %>"><%= menu.getName() %><span class="count">(<%= menu.getCounter() %>)</span></a></li>
-			<% } %>
-			<% otherFilters=true; %>
-		</logic:iterate>
-	</fd:FilterList>
-	</tmpl:put>
-
-	<tmpl:put name="otherFilters">
-	<% if(otherFilters == true) { %>
-   		<div id="other" class="filterbox sidebar-content">
-			<h3>OTHER</h3>
-			<ul>
-				<tmpl:get name='otherKosherFilter'/>
-	    		<tmpl:get name='otherGlutenFreeFilter'/>
-	    		<tmpl:get name='otherOnSaleFilter'/>
-			</ul>
-   		</div>
-	<% } %>
-	</tmpl:put>
-	
-	<tmpl:put name="sidebarOther">
-	<div style="width:150px; margin-top: 15px; overflow: hidden;">
-		<a href="javascript:pop('/request_product.jsp',400,585)"><img src="/media_stat/images/template/search/ken_request_a_product.jpg" border="0" hspace="0" vspace="3" width="150" height="100"></a>
-	</div>
-	</tmpl:put>
-	
+      <tmpl:put name="sidebarOther">
+      <div style="width:150px; margin-top: 15px; overflow: hidden;">
+        <a href="javascript:pop('/request_product.jsp',400,585)"><img src="/media_stat/images/template/search/ken_request_a_product.jpg" border="0" hspace="0" vspace="3" width="150" height="100"></a>
+      </div>
+      </tmpl:put>
+      
+    </tmpl:insert>
+  </tmpl:put>
 <% } %>
 	
 	<tmpl:put name="selection-header" direct="true">		

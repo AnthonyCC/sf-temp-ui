@@ -66,7 +66,7 @@ public class ProductsFilterTag extends FilteringFlow<ProductModel> {
 	protected List<ProductModel> products;
 
 	protected GenericFilterDecorator<FilteringSortingItem<ProductModel>> createFilterValueDecorator() {
-		return new ProductFilterValueDecorator(getPricingContext(), filters);
+		return new ProductFilterValueDecorator(filters);
 	}
 
 	@Override

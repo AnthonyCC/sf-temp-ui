@@ -57,6 +57,10 @@
 	display: block;
 }
 
+.ddpp_feat_prod_cont .grid-item-image .burst-new,.ddpp_feat_prod_cont .grid-item-image .burst-fave,.ddpp_feat_prod_cont .grid-item-image .burst-back {
+  left: 10px;
+}
+
 .grid-item-image .burst-new {
 	background: url(/media_stat/images/bursts/brst_sm_new.png) no-repeat
 		center center;
@@ -162,17 +166,25 @@
 	color: #666666;
 	line-height: 1.4em;
 }
+.grid-item-price .was-price span {
+  text-decoration: line-through;
+}
 
 .grid-item-price .product-group-price-link,.grid-item-price .was-price,.grid-item-price .about-price
 	{
 	font-size: 11px;
 }
 
-.grid-item-price .product-group-price-link {
+.grid-item-price .product-group-price-link,
+.grid-item-price .product-group-price-link:link {
 	color: #c00;
-	text-decoration: underline;
 	font-weight: bold;
 	display: block;
+  text-decoration: none;
+}
+
+.grid-item-price .product-group-price-link:hover {
+	text-decoration: underline;
 }
 
 .grid-item-name {
@@ -193,11 +205,36 @@
 }
 
 .grid-item-status {
-	font-size: 11px;
+  position: relative;
+  height: 15px;
+  line-height: 15px;
+	color: #6baa4e;
 	font-weight: bold;
+}
+
+.grid-item-status .grid-item-status-in-cart {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+	font-size: 9px;
 	height: 15px;
 	line-height: 15px;
-	color: #6baa4e;
+	visibility: visible;
+}
+
+.grid-item-status-visible .grid-item-status-in-cart {
+  visibility: hidden;
+}
+
+.grid-item-status .grid-item-status-added {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+	font-size: 11px;
+	height: 15px;
+	line-height: 15px;
 	visibility: hidden;
 	opacity: 0;
 	-webkit-transition: opacity 0.3s ease-in-out;
@@ -207,7 +244,7 @@
 	transition: opacity 0.3s ease-in-out;
 }
 
-.grid-item-status-visible {
+.grid-item-status-visible .grid-item-status-added {
 	opacity: 1;
 	visibility: visible;
 }
@@ -381,8 +418,7 @@
 	height: 2em;
 }
 
-.grid-view .grid-item-price .normal-price,.grid-view .grid-item-price .save-price,.grid-view .grid-item-price .was-price,.grid-view .grid-item-price .about-price
-	{
+.grid-view .grid-item-price .prices,.grid-view .grid-item-price .about-price {
 	display: block;
 }
 
@@ -576,7 +612,7 @@
 }
 
 .ddpp .grid-item-name {
-	height: 33px;
+	height: 4em;
 }
 .newproducts .ddpp .grid-item-name {
 	height: 5.2em;

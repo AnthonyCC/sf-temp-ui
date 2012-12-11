@@ -412,10 +412,6 @@ a.sortitem:visited  {
 
 
 
-#customerrating.filterbox li {
-  margin-bottom:0;
-}
-
 .filterbox li.selected {
 	background:url('/media_stat/images/search/green_bg.png') repeat-x left top #679a34;
 	border:1px solid #7e9337;

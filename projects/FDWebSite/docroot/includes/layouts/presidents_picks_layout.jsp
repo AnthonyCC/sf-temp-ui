@@ -180,7 +180,6 @@
 		
 		%>
 	<fd:javascript src="/assets/yui-2.9.0/selector/selector-min.js" />
-	<fd:javascript src="/assets/javascript/statusupdate.js" />
 		<script type="text/javascript">
 			<%--
 				Override the QB show panel function to make it look and act like how we want for ddpp
@@ -606,3 +605,5 @@
 		}
 	}
 %>
+<fd:javascript src="/assets/javascript/fd/modules/common/utils.js" />
+<fd:javascript src="/assets/javascript/fd/modules/search/statusupdate.js" />

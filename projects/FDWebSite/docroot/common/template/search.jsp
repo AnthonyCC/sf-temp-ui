@@ -50,16 +50,7 @@
     		<tmpl:get name='selection-header'/>
     		<tmpl:get name='selection-list'/>
     		</div>
-    		<div id="filters">
-    		<tmpl:get name='deparmentFilter'/>
-    		<tmpl:get name='categoryFilter'/>
-    		<tmpl:get name='subCategoryFilter'/>
-    		<tmpl:get name='brandFilter'/>
-    		<tmpl:get name='expertRatingFilter'/>
-    		<tmpl:get name='customerRatingFilter'/>
-    		<tmpl:get name='otherFilters'/>
-    		</div>
-    		<tmpl:get name='recipesFilter'/>
+        <tmpl:get name='filterNavigator'/>
     	</div>
     	<div id="content" class="product-grid">
     		<div id="pager-top" class="pager"><tmpl:get name='pagerTop'/></div>
@@ -70,5 +61,6 @@
     </div>
 		<%@ include file="/common/template/includes/footer.jspf" %>
     <%@ include file="/common/template/includes/i_jsmodules.jspf" %>
+	  <tmpl:get name='customJsBottom'/>
 	</body>
 </html> 
