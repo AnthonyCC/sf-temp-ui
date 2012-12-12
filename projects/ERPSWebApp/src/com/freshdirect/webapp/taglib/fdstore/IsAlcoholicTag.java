@@ -31,26 +31,33 @@ public class IsAlcoholicTag extends BodyTagSupportEx {
 		CategoryModel categoryModel = null;
 
 		try {
-			if (!FDStoreProperties.isUSQLegalWarningSwitchedOn()) {
-				return SKIP_BODY;
-			}
-			if (!skuCode.equals("")) {
-				prodModel = ContentFactory.getInstance().getProduct(skuCode);
-				categoryModel = prodModel.getCategory();
-			}
-			Cookie[] cookies = request.getCookies();
-			for(Cookie cookie : cookies) {
-				if (cookie.getName().equals("freshdirect.healthwarning")) {
-					if (normalizeSessionId(cookie.getValue()).equals("1@" + normalizeSessionId(request.getSession().getId()))) {
-						return SKIP_BODY;
+			if (FDStoreProperties.isUSQLegalWarningSwitchedOn()) {
+				if (!skuCode.equals("")) {
+					prodModel = ContentFactory.getInstance().getProduct(skuCode);
+					categoryModel = prodModel.getCategory();
+				}
+				Cookie[] cookies = request.getCookies();
+				for(Cookie cookie : cookies) {
+					if (cookie.getName().equals("freshdirect.healthwarning")) {
+						if (normalizeSessionId(cookie.getValue()).equals("1@" + normalizeSessionId(request.getSession().getId()))) {
+							return SKIP_BODY;
+						}
 					}
+				}
+				
+				if ((categoryModel == null && prodModel == null && "false".equals(noProduct)) || (categoryModel != null && !categoryModel.isHavingBeer() && prodModel!= null && !prodModel.getSku(skuCode).getProduct().isAlcohol())) {
+					return SKIP_BODY;
+				}
+			} else {
+				FDSessionUser yser = (FDSessionUser)request.getSession().getAttribute(SessionName.USER);
+				if("true".equalsIgnoreCase(noProduct) && yser != null 
+						&& !yser.isHealthWarningAcknowledged()) {
+					return EVAL_BODY_INCLUDE;
+				} else {
+					return SKIP_BODY;
 				}
 			}
 			
-			if ((categoryModel == null && prodModel == null && "false".equals(noProduct)) || (categoryModel != null && !categoryModel.isHavingBeer() && prodModel!= null && !prodModel.getSku(skuCode).getProduct().isAlcohol())) {
-				return SKIP_BODY;
-			}
-		
 		} catch (FDSkuNotFoundException e) {
 			LOGGER.error("Not valid SKU code", e);
 			return EVAL_BODY_INCLUDE;
