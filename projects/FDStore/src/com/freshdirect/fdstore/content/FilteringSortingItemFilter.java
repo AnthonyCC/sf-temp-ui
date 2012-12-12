@@ -13,6 +13,7 @@ public class FilteringSortingItemFilter<N extends ContentNodeModel> extends Gene
 		super(filterValues, filters);
 	}
 
+	@Override
 	public void applyAllFilterAnd( List<FilteringSortingItem<N>> items ) {
 		for ( EnumFilteringValue filter : filters ) {
 			if ( filterValues.get( filter ) != null ) {
@@ -21,7 +22,13 @@ public class FilteringSortingItemFilter<N extends ContentNodeModel> extends Gene
 		}
 	}
 
+	@Override
 	public void applyAllFilterOr(List<FilteringSortingItem<N>> items) {
+		
+		if ( filterValues == null || filterValues.isEmpty() ) {
+			// Nothing to do
+			return;
+		}
 		
 		Iterator<FilteringSortingItem<N>> it = items.iterator();
 		
@@ -60,6 +67,7 @@ public class FilteringSortingItemFilter<N extends ContentNodeModel> extends Gene
 		}
 	}
 	
+	@Override
 	public void applyFilter(List<FilteringSortingItem<N>> items, EnumFilteringValue filter) {
 
 		Iterator<FilteringSortingItem<N>> it = items.iterator();

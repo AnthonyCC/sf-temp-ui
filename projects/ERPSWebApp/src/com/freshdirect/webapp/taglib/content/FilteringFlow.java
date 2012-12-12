@@ -91,8 +91,8 @@ public abstract class FilteringFlow<N extends ContentNodeModel> extends BodyTagS
 		// fetch expert & customer ratings before filtering
 		for ( FilteringSortingItem<N> item : items ) {
 			int expR = 0, custR = 0;
-			try { expR = Integer.parseInt( item.getFilteringValue( EnumFilteringValue.EXPERT_RATING ).toString() ); } catch (Exception e) {}
-			try { custR = Integer.parseInt( item.getFilteringValue( EnumFilteringValue.CUSTOMER_RATING ).toString() ); } catch (Exception e) {}
+			try { expR = Integer.parseInt( item.getFilteringValue( EnumFilteringValue.EXPERT_RATING ).toString() ); } catch (Exception e) {/*ignore*/}
+			try { custR = Integer.parseInt( item.getFilteringValue( EnumFilteringValue.CUSTOMER_RATING ).toString() ); } catch (Exception e) {/*ignore*/}
 			if ( expR >= 0 && expR <= 5 ) expertRatingCounts[expR]++;
 			if ( custR >= 0 && custR <= 5 ) custRatingCounts[custR]++;
 		}

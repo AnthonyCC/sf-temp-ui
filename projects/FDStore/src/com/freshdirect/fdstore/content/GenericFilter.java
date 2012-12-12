@@ -29,6 +29,7 @@ public abstract class GenericFilter<T> {
 		filterValues.remove(key);
 	}
 	
+	@Override
 	public abstract GenericFilter<T> clone();
 	
 	public abstract void applyAllFilterAnd(List<T> items);
