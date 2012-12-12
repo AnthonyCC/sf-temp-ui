@@ -20,7 +20,7 @@
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri='oscache' prefix='oscache' %>
-
+<% System.out.println("HELLO!!!");%>
 <fd:CheckLoginStatus />
 <%!
 	java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyInstance(Locale.US);
@@ -127,9 +127,18 @@ if (EnumTemplateType.WINE.equals( productNode.getTemplateType() )) {
 	<fd:CmPageView wrapIntoScriptTag="true" productModel="<%=productNode%>"/>
 	<fd:CmProductView quickbuy="false" wrapIntoScriptTag="true" productModel="<%=productNode%>"/>
 	<%
-		SkuModel _dfltSku = (SkuModel)productNode.getSkus().get( 0 );
-		FDProduct _fdprod = _dfltSku.getProduct();
-		int leadTime = _fdprod.getMaterial().getLeadTime();
+		SkuModel _dfltSku =null;
+		FDProduct _fdprod =null;
+		int leadTime =0;
+		if(productNode!=null && productNode.getSkus()!=null &&productNode.getSkus().size()>0) {
+			_dfltSku=(SkuModel)productNode.getSkus().get( 0 );
+			try{
+				_fdprod=_dfltSku.getProduct();
+				leadTime=_fdprod.getMaterial().getLeadTime();
+			} catch (FDSkuNotFoundException fdsnf){
+				JspLogger.PRODUCT.warn("Product Page: catching FDSkuNotFoundException and Continuing:\n SkuModel:="+_dfltSku+"\nException message:= "+fdsnf.getMessage());
+			}
+		}
 	%>
 <%if (FDStoreProperties.isAdServerEnabled()) {%>
 
