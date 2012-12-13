@@ -76,7 +76,7 @@ if (typeof FreshDirect == "undefined" || !FreshDirect) {
 		data.panel = null;
 	
 		var showPendingChoice = function() {
-			if (rootWindow.FreshDirect.USQLegalWarning.checkHealthCondition('freshdirect.healthwarning','1')== true) {
+			if (window.FreshDirect.USQLegalWarning.checkHealthCondition('freshdirect.healthwarning','1')== true) {
 				if (data.instant && data.instant != null && data.instant != "") {
 					eval(data.instant)();
 					return;
@@ -126,7 +126,7 @@ if (typeof FreshDirect == "undefined" || !FreshDirect) {
 				
 				data.panel.hideEvent.subscribe(function() {
 					if (data.reload) {
-						rootWindow.FreshDirect.USQLegalWarning.rootWindow.location.reload();
+						window.FreshDirect.USQLegalWarning.rootWindow.location.reload();
 						return;
 					}
 					// during hide we delete iframe to avoid nasty flicker
