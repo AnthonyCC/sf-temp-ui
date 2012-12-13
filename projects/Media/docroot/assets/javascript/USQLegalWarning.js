@@ -126,7 +126,7 @@ if (typeof FreshDirect == "undefined" || !FreshDirect) {
 				
 				data.panel.hideEvent.subscribe(function() {
 					if (data.reload) {
-						FreshDirect.USQLegalWarning.rootWindow.location.reload();
+						rootWindow.FreshDirect.USQLegalWarning.rootWindow.location.reload();
 						return;
 					}
 					// during hide we delete iframe to avoid nasty flicker
