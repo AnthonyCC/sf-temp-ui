@@ -18,9 +18,10 @@ if (typeof FreshDirect == "undefined" || !FreshDirect) {
 	})();
 	
 	var rootWindow = window;
-	while (rootWindow.parent && rootWindow.parent != rootWindow)
-		rootWindow = rootWindow.parent;
-
+	if (document.location.protocol!='https:') {
+		while (rootWindow.parent && rootWindow.parent != rootWindow)
+			rootWindow = rootWindow.parent;
+	};
 	USQLegalWarning.rootWindow = rootWindow;
 
 	// inner method should not be called directly
@@ -75,7 +76,7 @@ if (typeof FreshDirect == "undefined" || !FreshDirect) {
 		data.panel = null;
 	
 		var showPendingChoice = function() {
-			if (window.parent.FreshDirect.USQLegalWarning.checkHealthCondition('freshdirect.healthwarning','1')== true) {
+			if (rootWindow.FreshDirect.USQLegalWarning.checkHealthCondition('freshdirect.healthwarning','1')== true) {
 				if (data.instant && data.instant != null && data.instant != "") {
 					eval(data.instant)();
 					return;

@@ -67,11 +67,11 @@
 					</td>
 				 </tr>
 				 
-	     <tr><td><div style="text-align:center;"><a href="#" onclick="window.parent.FreshDirect.USQLegalWarning.blockSubmit(location.search); return false;"><img name="dont_see_beer_button" src="/media_stat/images/wine/decline.gif" border="0" alt="Click here to decline"></a>
+	     <tr><td><div style="text-align:center;"><a href="#" onclick="window.FreshDirect.USQLegalWarning.blockSubmit(location.search); return false;"><img name="dont_see_beer_button" src="/media_stat/images/wine/decline.gif" border="0" alt="Click here to decline"></a>
 	     <%if (instant != null && !"".equals(instant)) { %>
-		     <a href="#" onclick="if(window.parent.FreshDirect.USQLegalWarning.checkHealthCondition('freshdirect.healthwarning','1')==false) {window.parent.FreshDirect.USQLegalWarning.setCookie('freshdirect.healthwarning','1')};<%=decorate%><%=instant%>;window.parent.FreshDirect.USQLegalWarning.blockSubmit(location.search); return false;"><img name="see_beer_button" src="/media_stat/images/wine/click_here_to_accept.gif" border="0" alt="Click here to accept"></a><br><br><br>
+		     <a href="#" onclick="if(window.FreshDirect.USQLegalWarning.checkHealthCondition('freshdirect.healthwarning','1')==false) {window.FreshDirect.USQLegalWarning.setCookie('freshdirect.healthwarning','1')};<%=decorate%><%=instant%>;window.FreshDirect.USQLegalWarning.blockSubmit(location.search); return false;"><img name="see_beer_button" src="/media_stat/images/wine/click_here_to_accept.gif" border="0" alt="Click here to accept"></a><br><br><br>
 	     <%} else { %>
-		     <a href="#" onclick="if(window.parent.FreshDirect.USQLegalWarning.checkHealthCondition('freshdirect.healthwarning','1')==false) {window.parent.FreshDirect.USQLegalWarning.setCookie('freshdirect.healthwarning','1')};<%=decorate%>window.parent.FreshDirect.USQLegalWarning.doNormalSubmit(location.search); return false;"><img name="see_beer_button" src="/media_stat/images/wine/click_here_to_accept.gif" border="0" alt="Click here to accept"></a><br><br><br>
+		     <a href="#" onclick="if(window.FreshDirect.USQLegalWarning.checkHealthCondition('freshdirect.healthwarning','1')==false) {window.FreshDirect.USQLegalWarning.setCookie('freshdirect.healthwarning','1')};<%=decorate%>window.FreshDirect.USQLegalWarning.doNormalSubmit(location.search); return false;"><img name="see_beer_button" src="/media_stat/images/wine/click_here_to_accept.gif" border="0" alt="Click here to accept"></a><br><br><br>
 	     <%}  %></div>
 	     <font class="text12"><b>GOVERNMENT WARNING: </b></font><br>
 	     ACCORDING TO THE SURGEON GENERAL, WOMEN SHOULD NOT DRINK ALCOHOLIC BEVERAGES DURING PREGNANCY BECAUSE OF THE RISK OF BIRTH DEFECTS.
