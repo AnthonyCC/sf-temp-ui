@@ -137,7 +137,7 @@ public class ContentNodeModelUtil {
 			if (FDContentTypes.DEPARTMENT.equals(currentKey.getType()) && "USQ".equalsIgnoreCase(currentKey.getId())) {
 				return true;
 			} else {
-				return hasWineDepartment(currentKey);
+				if (hasWineDepartment(currentKey)) return true;
 			}
 			
 		}
