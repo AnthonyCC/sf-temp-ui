@@ -176,19 +176,27 @@ boolean isEditAllowed = (autoCaseComplaintId != null) || (
 			if ( field.id == 'media' ) {
 				if ( field.value == 'Other' || field.value == 'Supervisor' || field.value == 'Driver') {
 					//hide other form fields
-					$('MediaIsOther').style.display = 'none';
+					if($('MediaIsOther')) {
+						$('MediaIsOther').style.display = 'none';
 						$('morethenone').disabled = true;
 						$('NotResolved').disabled = true;
 						$('satisfactoryReason').disabled = true;
+					}
 						
 					if ( caseStatus != 'New' ) {
 						$('MediaIsOtherWarn').className = 'casedisp_Err_vis';
 					}
+					
+					if(field.value == 'Driver') { //Damn this code
+						$('MediaIsOtherWarn').className = 'casedisp_Err_invis';
+					}
 				} else {
-					$('MediaIsOther').style.display = 'block';
+					if($('MediaIsOther')) {
+						$('MediaIsOther').style.display = 'block';
 						$('morethenone').disabled =  false;
 						$('NotResolved').disabled = false;
 						$('satisfactoryReason').disabled = false;
+					}
 						
 					if ( caseStatus != 'New' ) {
 						$('MediaIsOtherWarn').className = 'casedisp_Err_invis';
@@ -199,10 +207,10 @@ boolean isEditAllowed = (autoCaseComplaintId != null) || (
 			/* Disable all disp fields on Closed Case*/
 			<% if(!isSecuredCase){ %>
 			if ( caseStatus == 'Closed' ) {	
-				$('media').disabled = true;
-				$('morethenone').disabled = true;
-				$('NotResolved').disabled = true;
-				$('satisfactoryReason').disabled = true;
+				if($('media')) {$('media').disabled = true;}
+				if($('morethenone')) {$('morethenone').disabled = true;}
+				if($('NotResolved')) {$('NotResolved').disabled = true;}
+				if($('satisfactoryReason')) {$('satisfactoryReason').disabled = true;}				
 				
 			}
 			<% } %>
@@ -443,8 +451,8 @@ boolean isEditAllowed = (autoCaseComplaintId != null) || (
 					</div>
 					<div class="casedisp_select">
 					
-						<% if (!isNewCase && "driver".equalsIgnoreCase(thisCase.getCrmCaseMedia())) { %>
-							<input type="text" name="media" value="Driver" size="7" readonly="readonly"/>
+						<% if ("driver".equalsIgnoreCase(thisCase.getCrmCaseMedia())) { %>
+							<input type="text" id="media" name="media" value="Driver" size="7" readonly="readonly"/>
 							
 						<% } else { %>
                     
@@ -471,7 +479,7 @@ boolean isEditAllowed = (autoCaseComplaintId != null) || (
 						<% } %>
 					</div>
 				</div>
-				<% if (!isNewCase && !"driver".equalsIgnoreCase(thisCase.getCrmCaseMedia())) { %>
+				<% if ( !"driver".equalsIgnoreCase(thisCase.getCrmCaseMedia())) { %>
 				<div id="MediaIsOther">
 					<div class="casedisp_line">
 						<div class="casedisp_text">
