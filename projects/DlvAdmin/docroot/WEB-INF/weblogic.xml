@@ -17,13 +17,6 @@
 		<role-name>Marketing</role-name>
 		<externally-defined/>
 	</security-role-assignment>
-	<session-descriptor>
-         <session-param>
-            <param-name>cookie-http-only</param-name>
-            <param-value>false</param-value>
-        </session-param>
-    </session-descriptor>
-    
 	<jsp-descriptor>
 		<jsp-param>
 			<param-name>keepgenerated</param-name>

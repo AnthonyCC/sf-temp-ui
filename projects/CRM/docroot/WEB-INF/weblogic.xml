@@ -90,10 +90,6 @@
             <param-name>PersistentStoreType</param-name>
             <param-value>replicated_if_clustered</param-value>
         </session-param>
-         <session-param>
-            <param-name>cookie-http-only</param-name>
-            <param-value>false</param-value>
-        </session-param>
     </session-descriptor>
     <jsp-descriptor>
 		<jsp-param>
