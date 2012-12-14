@@ -1,4 +1,4 @@
-package com.freshdirect.content.nutrition;
+package com.freshdirect.content.nutrition.panel;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -15,17 +15,27 @@ import org.codehaus.jackson.map.ObjectMapper;
 
 import com.freshdirect.framework.util.log.LoggerFactory;
 
-public class NutritionDrugPanel implements Serializable {
+public class NutritionPanel implements Serializable {
 
 	private static final long serialVersionUID = 3485740087893523863L;
 	
-	private static final Logger LOGGER = LoggerFactory.getInstance( NutritionDrugPanel.class ); 
+	private static final Logger LOGGER = LoggerFactory.getInstance( NutritionPanel.class ); 
 	
 	private String id;
 	private String skuCode;
 	private Date lastModifiedDate;
-	private List<NutritionDrugSection> sections = new ArrayList<NutritionDrugSection>();
+	private List<NutritionSection> sections = new ArrayList<NutritionSection>();
+	private NutritionPanelType type = NutritionPanelType.DRUG; // FIXME: default value?
 	
+	
+	public NutritionPanelType getType() {
+		return type;
+	}
+	
+	public void setType( NutritionPanelType type ) {
+		this.type = type;
+	}
+
 	public String getId() {
 		return id;
 	}
@@ -42,11 +52,11 @@ public class NutritionDrugPanel implements Serializable {
 		this.skuCode = skuCode;
 	}
 	
-	public List<NutritionDrugSection> getSections() {
+	public List<NutritionSection> getSections() {
 		return sections;
 	}
 	
-	public void setSections(List<NutritionDrugSection> sections) {
+	public void setSections(List<NutritionSection> sections) {
 		this.sections = sections;
 	}
 

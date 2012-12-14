@@ -30,9 +30,9 @@ import com.freshdirect.content.attributes.GetRootNodesErpVisitor;
 import com.freshdirect.content.attributes.SetAttributesErpVisitor;
 import com.freshdirect.content.nutrition.ErpNutritionModel;
 import com.freshdirect.content.nutrition.ErpNutritionType;
-import com.freshdirect.content.nutrition.NutritionDrugPanel;
 import com.freshdirect.content.nutrition.ejb.ErpNutritionHome;
 import com.freshdirect.content.nutrition.ejb.ErpNutritionSB;
+import com.freshdirect.content.nutrition.panel.NutritionPanel;
 import com.freshdirect.erp.PricingFactory;
 import com.freshdirect.erp.ejb.ErpCharacteristicValuePriceEB;
 import com.freshdirect.erp.ejb.ErpCharacteristicValuePriceHome;
@@ -51,7 +51,7 @@ import com.freshdirect.fdstore.EnumAvailabilityStatus;
 import com.freshdirect.fdstore.EnumOrderLineRating;
 import com.freshdirect.fdstore.EnumSustainabilityRating;
 import com.freshdirect.fdstore.FDAttributeCache;
-import com.freshdirect.fdstore.FDDrugCache;
+import com.freshdirect.fdstore.FDNutritionPanelCache;
 import com.freshdirect.fdstore.FDGroup;
 import com.freshdirect.fdstore.FDMaterial;
 import com.freshdirect.fdstore.FDNutrition;
@@ -69,10 +69,6 @@ import com.freshdirect.framework.core.VersionedPrimaryKey;
 import com.freshdirect.framework.util.NVL;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
-/**
- *
- *
- */
 public class FDProductHelper {
 
 	private final static Category LOGGER = LoggerFactory.getInstance( FDProductHelper.class );
@@ -112,8 +108,8 @@ public class FDProductHelper {
 		// construct display sales units
 		FDSalesUnit[] displaySalesUnits = this.getSalesUnits(product.getDisplaySalesUnits());
 		
-		// get drug 'nutrition' information
-		NutritionDrugPanel drugPanel = FDDrugCache.getInstance().getDrugPanel(product.getSkuCode());
+		// get nutrition panel information
+		NutritionPanel nutritionPanel = FDNutritionPanelCache.getInstance().getNutritionPanel(product.getSkuCode());
 
 		// create FDMaterial
 		ErpMaterialModel material = product.getProxiedMaterial();
@@ -140,7 +136,7 @@ public class FDProductHelper {
 		}
 
 		// construct FDProduct
-		return new FDProduct(product.getSkuCode(), version, product.getPricingDate(), fdMaterial, variations, salesUnits, pricing, nutrition,displaySalesUnits, drugPanel);
+		return new FDProduct(product.getSkuCode(), version, product.getPricingDate(), fdMaterial, variations, salesUnits, pricing, nutrition,displaySalesUnits, nutritionPanel);
 	}
 	
 	public FDProductInfo getFDProductInfo(ErpProductInfoModel erpProductInfo) throws FDResourceException {

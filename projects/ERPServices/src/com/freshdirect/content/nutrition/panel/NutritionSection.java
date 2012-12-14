@@ -1,10 +1,10 @@
-package com.freshdirect.content.nutrition;
+package com.freshdirect.content.nutrition.panel;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class NutritionDrugSection  implements Serializable{
+public class NutritionSection  implements Serializable{
 
 	private static final long serialVersionUID = -3328912178220601397L;
 	
@@ -12,8 +12,8 @@ public class NutritionDrugSection  implements Serializable{
 	private String title;
 	private int position;
 	private int importance;
-	private DrugSectionTypeEnum type;
-	private List<NutritionDrugItem> items = new ArrayList<NutritionDrugItem>();
+	private NutritionSectionType type;
+	private List<NutritionItem> items = new ArrayList<NutritionItem>();
 	
 	public String getId() {
 		return id;
@@ -47,19 +47,19 @@ public class NutritionDrugSection  implements Serializable{
 		this.importance = importance;
 	}
 	
-	public DrugSectionTypeEnum getType() {
+	public NutritionSectionType getType() {
 		return type;
 	}
 	
-	public void setType(DrugSectionTypeEnum type) {
+	public void setType(NutritionSectionType type) {
 		this.type = type;
 	}
 	
-	public List<NutritionDrugItem> getItems() {
+	public List<NutritionItem> getItems() {
 		return items;
 	}
 	
-	public void setItems(List<NutritionDrugItem> items) {
+	public void setItems(List<NutritionItem> items) {
 		this.items = items;
 	}
 

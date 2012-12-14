@@ -5,6 +5,7 @@
 <fd:javascript src="/assets/javascript/fd/modules/common/placeholder.js"/>
 <fd:javascript src="/assets/javascript/fd/modules/common/tooltip.js"/>
 <fd:javascript src="/assets/javascript/fd/modules/common/clickleavetoggler.js"/>
+<fd:javascript src="/assets/javascript/fd/modules/common/autocomplete.js"/>
 
 <fd:javascript src="/assets/javascript/fd/modules/header/notifications.js"/>
 <fd:javascript src="/assets/javascript/fd/modules/header/loginbox.js"/>

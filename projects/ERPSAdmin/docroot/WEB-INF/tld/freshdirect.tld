@@ -305,13 +305,53 @@
     </tag>
     
     <tag>
-		<name>DrugController</name>
-		<tagclass>com.freshdirect.webapp.taglib.content.DrugControllerTag</tagclass>
+		<name>NutritionPanelController</name>
+		<tagclass>com.freshdirect.webapp.taglib.content.nutrition.NutritionPanelControllerTag</tagclass>
+		<attribute>
+			<name>skuCode</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>type</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
         <attribute>
             <name>redirectUrl</name>
             <required>true</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>        
+        <attribute>
+            <name>sample</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>        
 		<info></info>
+	</tag>
+	<tag>
+		<name>NutritionPanel</name>
+		<tagclass>com.freshdirect.webapp.taglib.content.nutrition.NutritionPanelTag</tagclass>
+		<info></info>
+		<attribute>
+			<name>skuCode</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>nutritionModel</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>showErpsExtra</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>useCache</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
 	</tag>
 </taglib>

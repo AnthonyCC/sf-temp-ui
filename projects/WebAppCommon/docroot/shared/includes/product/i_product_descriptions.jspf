@@ -66,7 +66,7 @@
                 }
 			}
 			
-           if ( fdprd!=null && (fdprd.hasNutritionFacts() || fdprd.hasDrugNutritionFacts()) ) {
+           if ( fdprd!=null && (fdprd.hasNutritionFacts() || fdprd.hasNutritionPanel()) ) {
 				if(!"".equals(productView) && !"nutrition".equalsIgnoreCase(productView)) {
 				%>
 				 <%=separatorChar%> <a href="product.jsp?productId=<%= request.getParameter("productId")%>&catId=<%=request.getParameter("catId")%>&product_view=nutrition<% if (request.getParameter("skuCode")!=null) out.print("&skuCode="+request.getParameter("skuCode")); %>">Nutrition</a>
@@ -212,14 +212,10 @@
                                 </form>
 					<%
 					}
-				}
+				}%>
                           
-				if(fdprd.getDrugPanel()!=null) { %>
-					<%@ include file="/shared/includes/i_drug_nutrition_sheet.jspf" %>
-				<% } else { %>
-                    <%@ include file="/includes/product/i_product_nutrition.jspf" %>
-                <% } %>
-                
+				<fd:NutritionPanel skuCode="<%=fdprd.getSkuCode()%>"/>
+				
 				<%
 			} else if ("ingredients".equalsIgnoreCase(productView)) {
                             if (multiple) {

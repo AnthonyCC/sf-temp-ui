@@ -1,0 +1,39 @@
+#autoCompletePanel {
+  position: absolute;
+  z-index: 1000;
+  max-height: 120px;
+  font: normal 10px/14px Arial, sans-serif;
+  overflow: auto;
+  overflow-y: auto;
+  overflow-x: hidden;
+  whitespace: nowrap;
+  text-overflow: ellipsis;
+  border: 1px solid black;
+  background: white;
+  opacity: 0.9;
+  box-shadow: 2px 2px 2px rgba(0, 0, 0, .5);
+  margin: 0;
+  padding: 0;
+}
+
+#autoCompletePanel ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+
+#autoCompletePanel ul li {
+  display: block;
+  padding: 3px 8px;
+  cursor: pointer;
+}
+
+#autoCompletePanel ul li:hover {
+  font-weight: bold;
+}
+
+#autoCompletePanel ul li.selected {
+  font-weight: bold;
+  color: white;
+  background: #693;
+}

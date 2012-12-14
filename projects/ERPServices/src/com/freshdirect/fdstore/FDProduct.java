@@ -15,7 +15,7 @@ import com.freshdirect.content.nutrition.EnumClaimValue;
 import com.freshdirect.content.nutrition.EnumKosherSymbolValue;
 import com.freshdirect.content.nutrition.EnumKosherTypeValue;
 import com.freshdirect.content.nutrition.ErpNutritionInfoType;
-import com.freshdirect.content.nutrition.NutritionDrugPanel;
+import com.freshdirect.content.nutrition.panel.NutritionPanel;
 import com.freshdirect.erp.EnumAlcoholicContent;
 
 /**
@@ -51,7 +51,7 @@ public class FDProduct extends FDSku implements AttributesI {
 	/** nutrition. List<FDNutrition> */
 	private final List<FDNutrition> nutrition;
 	
-	private final NutritionDrugPanel drugPanel;
+	private final NutritionPanel nutritionPanel;
 
 	private FDSalesUnit[] displaySalesUnits;
 
@@ -64,7 +64,7 @@ public class FDProduct extends FDSku implements AttributesI {
 		FDSalesUnit[] salesUnits,
 		Pricing pricing,
 		List<FDNutrition> nutrition,
-		NutritionDrugPanel panel
+		NutritionPanel panel
 		) {
 		super(skuCode, version);
 		this.pricingDate = pricingDate;
@@ -74,7 +74,7 @@ public class FDProduct extends FDSku implements AttributesI {
 		this.pricing = pricing;
 		
 		this.nutrition = nutrition;
-		this.drugPanel = panel;
+		this.nutritionPanel = panel;
 	
 	}
 	
@@ -88,7 +88,7 @@ public class FDProduct extends FDSku implements AttributesI {
 			Pricing pricing,
 			List<FDNutrition> nutrition,
 			FDSalesUnit[] displaySalesUnits,
-			NutritionDrugPanel panel
+			NutritionPanel panel
 	) {
 			super(skuCode, version);
 			this.pricingDate = pricingDate;
@@ -99,7 +99,7 @@ public class FDProduct extends FDSku implements AttributesI {
 			this.nutrition = nutrition;
 			this.displaySalesUnits = displaySalesUnits;
 			
-			this.drugPanel = panel;
+			this.nutritionPanel = panel;
 		}
 	/**
 	 * Get effective pricing date.
@@ -287,7 +287,7 @@ public class FDProduct extends FDSku implements AttributesI {
 		return FDNutritionCache.getInstance().getNutrition(this.getSkuCode()).getNutritionInfoString(type);
 	}
 
-	public List getNutritionInfoList(ErpNutritionInfoType type) {
+	public List<EnumClaimValue> getNutritionInfoList(ErpNutritionInfoType type) {
 		return FDNutritionCache.getInstance().getNutrition(this.getSkuCode()).getNutritionInfoList(type);
 	}
 	
@@ -353,12 +353,12 @@ public class FDProduct extends FDSku implements AttributesI {
 		return result;
 	}
 
-	public boolean hasDrugNutritionFacts() {
-		return drugPanel != null;
+	public boolean hasNutritionPanel() {
+		return nutritionPanel != null;
 	}
 	
-	public NutritionDrugPanel getDrugPanel() {
-		return drugPanel;
+	public NutritionPanel getNutritionPanel() {
+		return nutritionPanel;
 	}
 
 	public boolean isTaxable() {
@@ -532,7 +532,7 @@ public class FDProduct extends FDSku implements AttributesI {
 	 * @return
 	 */
 	public FDProduct copy(int version) {
-	    return new FDProduct(getSkuCode(), version, new Date(), material, variations, salesUnits, pricing, nutrition, displaySalesUnits, drugPanel);
+	    return new FDProduct(getSkuCode(), version, new Date(), material, variations, salesUnits, pricing, nutrition, displaySalesUnits, nutritionPanel);
 	}
 
 }

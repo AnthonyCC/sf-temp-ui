@@ -1,9 +1,18 @@
+.editorcontainer {
+  display: block;
+  width: 1280px;
+  overflow: hidden;
+}
+
 .editor {
 	width:840px;
+  float: left;
+  margin-left: 8px;
 }
 
 .editor .toolbar {
 	background:lightgray;
+  padding-left: 5px;
 }
 
 .editor .drugpanel {
@@ -72,7 +81,11 @@
 	vertical-align:middle;
 }
 
-.editor .type_FREE_TEXT .drugitem input[type=text] {
+.editor .addItem {
+	float: right;
+}
+
+.editor .type_FREETEXT .drugitem input[type=text] {
 	width:440px;
 }
 

@@ -491,7 +491,7 @@ if(productCode!=null && prodCatId !=null ) {
                     salesUnitDesc = " - "+salesUnits[0].getDescription();
                     firstSalesUnit = salesUnits[0].getName();
             }
-            hasNutrition = product.hasNutritionFacts() || product.hasDrugNutritionFacts();
+            hasNutrition = product.hasNutritionFacts() || product.hasNutritionPanel();
             hasIngredients = product.hasIngredients();
         }
 %>

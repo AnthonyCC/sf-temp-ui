@@ -358,58 +358,65 @@
                         <tr><td align="left" class="section_title">Nutritional Information</td></tr>
                     </table>
                     <table width="600">
-						<fd:DrugController redirectUrl="/ERPSAdmin/product/product_view.jsp"/>
-						<%
-							if( ((Boolean) pageContext.getAttribute("protoPanel")) == Boolean.TRUE ) {
-						%>
-							<% if(SecurityManager.isUserAdmin(request)) {%>
-		                        <tr><td align="left"><a href="nutrition_edit.jsp">Edit Nutritional Information</td></tr>
-							<% } %>
-	                        <tr><td align="center">
-	                            Information source: <%= nutrition.getUomFor(ErpNutritionType.SOURCE) %><br>
-	                            <br>
-	                            <%  double netCarbs = nutrition.getNetCarbs();
-	                                if(netCarbs > 0){%>
-	                                    Net Carbs: <%=netCarbs%><br>
-	                                <%}%>
-	                            <br><br>
-								<%                  
-								ArrayList nutritionList = new ArrayList();
-			                    for (Iterator nIter = nutrition.getKeyIterator(); nIter.hasNext(); ) {
-			                        String key = (String) nIter.next();
-			                        if ("IGNORE".equalsIgnoreCase(key)) { %>
-			                            <b>This information is currently hidden from the website</b>
-			                            <br><br>
-								<%                      
-									}
-			                        FDNutrition fdn = new FDNutrition(ErpNutritionType.getType(key).getDisplayName(), nutrition.getValueFor(key), nutrition.getUomFor(key));
-			                        nutritionList.add(fdn);
-			                    }
-								%>
-								<%@ include file="i_nutrition_sheet.jspf" %>
-		                    </td></tr>
-						<% }  else { %>
-						        <tr><td align="left">This product has a Drug Nutritional Information!</td></tr>
+                    
+						<fd:NutritionPanelController skuCode="<%=skuCode%>" redirectUrl="/ERPSAdmin/product/product_view.jsp"/>
+						
+						<% if(SecurityManager.isUserAdmin(request)) {%>
+							<% if( pageContext.getAttribute("panel") == null ) { %>
+                <tr><td align="left">
+                  Nutritional Information:
+                  <select id="editnutritionselect">
+                    <option value="nutrition_edit.jsp">Edit Classic Nutritional Information</option>
+                    <option value="nutrition_panels/nutrition_panel_edit.jsp?skuCode=<%= skuCode %>&type=DRUG">Create Drug Nutrition Panel</option>
+                    <option value="nutrition_panels/nutrition_panel_edit.jsp?skuCode=<%= skuCode %>&type=PET">Create Pet Nutrition Panel</option>
+                    <option value="nutrition_panels/nutrition_panel_edit.jsp?skuCode=<%= skuCode %>&type=BABY">Create Baby Nutrition Panel</option>
+                  </select>
+                  <label><input id="samplecheckbox" type="checkbox" name="sample" value="true">Include sample data</label> 
+                  <button id="editnutritionbutton">Ok</button>
+                  <script>
+                    (function ($) {
+                      $("#editnutritionbutton").click(function (e) {
+                    	var checked = $("#samplecheckbox").attr('checked'),
+                            url = $("#editnutritionselect").val();
+                    	
+                    	if (url.indexOf("?") > 0) {
+                    	  window.location.href = url + '&sample=' + !!checked;
+                    	} else {
+                    	  window.location.href = url;
+                    	}
+                      });
+                    }(jQuery));
+                  </script>
+                </td></tr>
+							<% } else { %>
+              <tr><td align="left">
+                <form action="nutrition_panels/nutrition_panel_edit.jsp" method="GET">
+                  <input type="hidden" name="skuCode" value="<%= skuCode %>"/>
+                  <input type="submit" value="Edit Nutrition Panel"/>
+                </form>
+                <form id="deletenutritionpanelform" action="nutrition_panels/nutrition_panel_edit.jsp" method="POST">
+                  <input type="hidden" name="skuCode" value="<%= skuCode %>"/>
+                  <input type="hidden" name="delete" value=""/>
+                  <input type="button" name="deletebutton" value="Delete this panel and go back to classic nutrition panel"/>
+                </form>
+                <script>
+                  (function ($) {
+                    $("#deletenutritionpanelform input[name=deletebutton]").click(function () {
+                      var data = $("#deletenutritionpanelform input[name=skuCode]").val();
+                      if(data && window.confirm("Deleting panel. Are you sure?")) {
+                        
+                        $('#deletenutritionpanelform input[name=delete]').val(data);
+                        $('#deletenutritionpanelform').submit();
+                      }
+                    });
+                  }(jQuery));
+                </script>
+              </td></tr>
+						    <% } %>							
 						<% } %>
-                    </table>
-                    <table width="600" cellspacing=2 cellpadding=0>
-                        <tr><td align="left" class="section_title">Drug Nutritional Information</td></tr>
-						<%
-							if(((Boolean) pageContext.getAttribute("protoPanel")) == Boolean.FALSE ) {
-						%>
-						        <tr><td align="left"><a href="drug_nutrition/drug_nutrition_edit.jsp?skuCode=<%= skuCode %>">Edit Drug Nutritional Information</a></td></tr>
-						        <tr><td align="left">
-								<div id="drugpanel"></div>			
-								<script type="text/javascript" src="/assets/javascript/jquery/ui/1.8.23/jquery-ui.min.js"></script>
-								<script type="text/javascript" src="/assets/javascript/json2.min.js"></script>
-								<script type="text/javascript" src="/assets/javascript/es5-shim.min.js"></script>
-								<script type="text/javascript" src="/assets/javascript/jquery.mustache.js"></script>
-								<script src="/assets/javascript/drug_nutrition_editor.js"></script>
-								<script>drugPanel(jQuery,<%= pageContext.getAttribute("panel") %>, { container:jQuery('#drugpanel') })</script>
-								</td></tr>
-						<% }  else { %>
-						        <tr><td align="left"><a href="drug_nutrition/drug_nutrition_edit.jsp?skuCode=<%= skuCode %>">Create Drug Nutritional Information</a></td></tr>
-						<% } %>
+							
+				        <tr><td align="center"><fd:NutritionPanel skuCode="<%=skuCode%>" nutritionModel="<%=nutrition%>" showErpsExtra="true" useCache="false"/></td></tr>
+				        
                     </table>
                 </fd:Nutrition>
             <%  } %>

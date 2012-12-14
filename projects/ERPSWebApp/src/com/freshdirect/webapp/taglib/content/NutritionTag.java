@@ -9,23 +9,29 @@ import com.freshdirect.fdstore.FDResourceException;
 
 public class NutritionTag extends com.freshdirect.framework.webapp.BodyTagSupport {
        
-    private String id;
-    public String getId() {
-        return (this.id);
-    }
-    public void setId(String id) {
-        this.id = id;
-    }
+	private static final long	serialVersionUID	= -4189143777374503486L;
+
+	private String				id;
+
+	public String getId() {
+		return ( this.id );
+	}
+
+	public void setId( String id ) {
+		this.id = id;
+	}
     
-    private String skuCode;
-    public String getSkuCode() {
-        return (this.skuCode);
-    }
-    public void setSkuCode(String skuCode) {
-        this.skuCode = skuCode;
-    }
+	private String	skuCode;
+
+	public String getSkuCode() {
+		return ( this.skuCode );
+	}
+
+	public void setSkuCode( String skuCode ) {
+		this.skuCode = skuCode;
+	}
     
-    private String sessionName = "freshdirect.content.nutrition";
+    public static final String sessionName = "freshdirect.content.nutrition";
     
     private ErpNutritionModel nutrition = null;
     

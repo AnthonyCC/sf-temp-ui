@@ -1,11 +1,3 @@
-/*
- * $Workfile$
- *
- * $Date$
- *
- * Copyright (c) 2003 FreshDirect, Inc.
- *
- */
 package com.freshdirect.erp;
 
 import java.rmi.RemoteException;
@@ -13,6 +5,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import javax.ejb.CreateException;
 import javax.ejb.FinderException;
@@ -30,15 +23,16 @@ import com.freshdirect.content.attributes.SetAttributesErpVisitor;
 import com.freshdirect.content.attributes.ejb.AttributeFacadeHome;
 import com.freshdirect.content.attributes.ejb.AttributeFacadeSB;
 import com.freshdirect.content.nutrition.ErpNutritionModel;
-import com.freshdirect.content.nutrition.NutritionDrugPanel;
 import com.freshdirect.content.nutrition.ejb.ErpNutritionHome;
 import com.freshdirect.content.nutrition.ejb.ErpNutritionSB;
+import com.freshdirect.content.nutrition.panel.NutritionPanel;
 import com.freshdirect.erp.ejb.BatchManagerHome;
 import com.freshdirect.erp.ejb.BatchManagerSB;
 import com.freshdirect.erp.ejb.ErpCharacteristicValuePriceEB;
 import com.freshdirect.erp.ejb.ErpCharacteristicValuePriceHome;
 import com.freshdirect.erp.ejb.ErpClassEB;
 import com.freshdirect.erp.ejb.ErpClassHome;
+import com.freshdirect.erp.ejb.ErpGrpInfoHome;
 import com.freshdirect.erp.ejb.ErpGrpInfoSB;
 import com.freshdirect.erp.ejb.ErpInfoHome;
 import com.freshdirect.erp.ejb.ErpInfoSB;
@@ -53,16 +47,13 @@ import com.freshdirect.erp.model.ErpClassModel;
 import com.freshdirect.erp.model.ErpMaterialModel;
 import com.freshdirect.erp.model.ErpProductInfoModel;
 import com.freshdirect.erp.model.ErpProductModel;
+import com.freshdirect.fdstore.FDGroup;
 import com.freshdirect.fdstore.FDResourceException;
-import com.freshdirect.framework.core.ServiceLocator;
 import com.freshdirect.framework.core.VersionedPrimaryKey;
-import com.freshdirect.erp.ejb.ErpGrpInfoHome;
 
 /**
  * Singleton class for accessing the ERP-layer remote objects.
  *
- * @version $Revision$
- * @author $Author$
  */
 public class ErpFactory {
 
@@ -79,7 +70,7 @@ public class ErpFactory {
 		return factory;
 	}
 
-	private List nutritionReport = null;
+	private List<Map<String, String>> nutritionReport = null;
 
 	private long REFRESH_PERIOD = 1000 * 60 * 15; // 15 minutes
 	private long lastRefresh = 0;
@@ -471,12 +462,12 @@ public class ErpFactory {
 		}
 	}
 
-	public Collection getClasses() throws FDResourceException {
+	public Collection<ErpClassModel> getClasses() throws FDResourceException {
 		if (classHome == null) {
 			lookupClassHome();
 		}
 		try {
-			LinkedList models = new LinkedList();
+			LinkedList<ErpClassModel> models = new LinkedList<ErpClassModel>();
 			Collection classEnts = classHome.findAllClasses();
 			Iterator iter = classEnts.iterator();
 			while (iter.hasNext()) {
@@ -584,12 +575,12 @@ public class ErpFactory {
 		}
 	}
 
-	public List generateNutritionReport() throws FDResourceException {
+	public List<Map<String, String>> generateNutritionReport() throws FDResourceException {
 		this.refreshNutritionReportCache();
 		return this.nutritionReport;
 	}
 
-	public List generateClaimsReport() throws FDResourceException {
+	public List<Map<String, String>> generateClaimsReport() throws FDResourceException {
 		try {
 			if (nutritionHome == null) {
 				lookupNutritionHome();
@@ -654,13 +645,13 @@ public class ErpFactory {
 		}
 	}
 	
-	public NutritionDrugPanel getDrugPanel(String skuCode) throws FDResourceException {
+	public NutritionPanel getNutritionPanel(String skuCode) throws FDResourceException {
 		if (nutritionHome == null) {
 			lookupNutritionHome();
 		}
 		try {
 			ErpNutritionSB nutrSB = nutritionHome.create();
-			return nutrSB.getDrugPanel(skuCode);
+			return nutrSB.getNutritionPanel(skuCode);
 		} catch (CreateException ce) {
 			throw new FDResourceException(ce);
 		} catch (RemoteException re) {
@@ -682,13 +673,13 @@ public class ErpFactory {
 		}
 	}
 	
-	public void saveDrugPanel(NutritionDrugPanel panel) throws FDResourceException {
+	public void saveNutritionPanel(NutritionPanel panel) throws FDResourceException {
 		if (nutritionHome == null) {
 			lookupNutritionHome();
 		}
 		try {
 			ErpNutritionSB nutrSB = nutritionHome.create();
-			nutrSB.saveDrugPanel(panel);
+			nutrSB.saveNutritionPanel(panel);
 		} catch (CreateException ce) {
 			throw new FDResourceException(ce);
 		} catch (RemoteException re) {
@@ -696,13 +687,13 @@ public class ErpFactory {
 		}
 	}
 	
-	public void deleteDrugPanel(String skuCode) throws FDResourceException {
+	public void deleteNutritionPanel(String skuCode) throws FDResourceException {
 		if (nutritionHome == null) {
 			lookupNutritionHome();
 		}
 		try {
 			ErpNutritionSB nutrSB = nutritionHome.create();
-			nutrSB.deleteDrugPanel(skuCode);
+			nutrSB.deleteNutritionPanel(skuCode);
 		} catch (CreateException ce) {
 			throw new FDResourceException(ce);
 		} catch (RemoteException re) {
@@ -727,7 +718,7 @@ public class ErpFactory {
 	
 	private ErpGrpInfoHome erpGrpInfoHome = null;
 
-	public Collection findGrpsForMaterial(String matId) throws FDResourceException {
+	public Collection<FDGroup> findGrpsForMaterial(String matId) throws FDResourceException {
 		if (erpGrpInfoHome == null) {
 			lookupGrpInfoHome();
 		}

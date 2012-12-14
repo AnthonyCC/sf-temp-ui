@@ -20,8 +20,13 @@ atnr.createUser('root', '12345678', 'Default Admin User')
 cd('/SecurityConfiguration/' + domainName + '/Realms/myrealm/RoleMappers/XACMLRoleMapper')
 ## from weblogic.management.security.authentication import RoleEditorMBean
 
+# CMS roles
 cmo.createRole(None, 'cms_admin', 'Usr(root)')
 cmo.createRole(None, 'cms_editor', 'Usr(root)')
 cmo.createRole(None, 'cms_viewer', None)
+
+# ERPSAdmin roles
+cmo.createRole(None, 'ErpsyAdminGrp', 'Usr(root)')
+
 
 disconnect()

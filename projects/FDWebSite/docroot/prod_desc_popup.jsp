@@ -136,7 +136,9 @@ if (prod.isNutritionMultiple()) {
                                 </form>
 						<% 		} 
 							} %>
-                         <%@ include file="/shared/includes/i_nutrition_sheet.jspf" %>
+							
+                         <fd:NutritionPanel skuCode="<%=fdprd.getSkuCode()%>"/>
+                         
                          <img src="/media_stat/images/layout/clear.gif" width="1" height="5"><br>
                          <a href="/shared/product_nutrition_note.jsp">An important note about our nutrition and ingredients information.</a><br>
                     <% } else if( showIngredients ) {

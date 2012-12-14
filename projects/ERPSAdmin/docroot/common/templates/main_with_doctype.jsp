@@ -6,6 +6,7 @@
  	<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
     <title><tmpl:get name='title'/></title>
 	<link rel="stylesheet" href="/ERPSAdmin/common/css/erpsadmin.css" type="text/css" />
+   <tmpl:get name='extracss'/>
 	<%@ include file='/common/jquery.jspf' %>
 </head>
 <body>

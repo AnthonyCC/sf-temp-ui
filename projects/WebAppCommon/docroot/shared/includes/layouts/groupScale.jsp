@@ -468,7 +468,7 @@ final int W_GROUPSCALE_TOTAL = 601;
 							salesUnitDesc = " - "+salesUnits[0].getDescription();
 							firstSalesUnit = salesUnits[0].getName();
 						}
-						hasNutrition = product.hasNutritionFacts() || product.hasDrugNutritionFacts();
+						hasNutrition = product.hasNutritionFacts() || product.hasNutritionPanel();
 						hasIngredients = product.hasIngredients();
 					}
 			%>

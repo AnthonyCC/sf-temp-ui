@@ -71,7 +71,7 @@
                 </logic:iterate>
                 <tr><td colspan="4"><table><tr>
                     <td><input type="submit" value="save nutrition"></td>
-                    <td><input type="button" value="cancel" onClick="window.location.href='product_view.jsp'"></td>
+                    <td><input type="button" value="cancel" onClick="window.location.href='<%= "product_view.jsp?skuCode=" + nutrition.getSkuCode() %>'"></td>
                 </tr></table></td></tr>
              </table>
              </form>

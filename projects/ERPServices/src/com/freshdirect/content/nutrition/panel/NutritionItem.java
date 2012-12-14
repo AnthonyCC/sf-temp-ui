@@ -1,8 +1,8 @@
-package com.freshdirect.content.nutrition;
+package com.freshdirect.content.nutrition.panel;
 
 import java.io.Serializable;
 
-public class NutritionDrugItem  implements Serializable {
+public class NutritionItem  implements Serializable {
 
 	private static final long serialVersionUID = -5072393994059441104L;
 	
@@ -96,5 +96,45 @@ public class NutritionDrugItem  implements Serializable {
 	public void setSeparator(boolean separator) {
 		this.separator = separator;
 	}
+
+	
+	
+	
+	public static final char FLAG_BULLETED 	= 'B';
+	public static final char FLAG_IMPORTANT 	= 'I';
+	public static final char FLAG_NEWLINE 	= 'N';
+	public static final char FLAG_SEPARATOR 	= 'S';
+	
+	/**
+	 * 	Helper method to construct the string representation of style flags for this item
+	 * 
+	 * @return flags string
+	 */
+	public String constructFlags() {
+		StringBuilder sb = new StringBuilder();
+		
+		if ( isBulleted() ) 	sb.append( FLAG_BULLETED );
+		if ( isImportant() ) 	sb.append( FLAG_IMPORTANT );
+		if ( isNewline() ) 		sb.append( FLAG_NEWLINE );
+		if ( isSeparator() ) 	sb.append( FLAG_SEPARATOR );
+		
+		return sb.toString();
+	}
+
+	/**
+	 * 	Helper method to populate this item from the string representation of style flags
+	 * 
+	 * @param flags string
+	 */
+	public void populateFlags( String flags ) {		
+		if ( flags == null ) flags = "";
+		
+		setBulleted		( flags.indexOf( FLAG_BULLETED ) 	>=0 );
+		setImportant	( flags.indexOf( FLAG_IMPORTANT )	>=0 );
+		setNewline		( flags.indexOf( FLAG_NEWLINE ) 	>=0 );
+		setSeparator	( flags.indexOf( FLAG_SEPARATOR )	>=0 );
+		
+	}
+	
 
 }
