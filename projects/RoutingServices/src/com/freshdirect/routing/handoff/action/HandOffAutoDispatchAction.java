@@ -264,7 +264,7 @@ public class HandOffAutoDispatchAction extends AbstractHandOffAction {
 			_dispatch.setFirstDeliveryTime(RoutingDateUtil.getServerTime(_plan.getFirstDeliveryTime()) != null ?
 						RoutingDateUtil.getServerTime(RoutingDateUtil.getServerTime(_plan.getFirstDeliveryTime())): null);
 			_dispatch.setSupervisorId(_plan.getSupervisorId());
-			_dispatch.setIsBullpen(_plan.getIsBullpen());
+			_dispatch.setIsBullpen(_plan.getIsBullpen() == null ? "N" : _plan.getIsBullpen());
 			_dispatch.setMaxTime(_plan.getMaxTime());
 			_dispatch.setRegion(_plan.getRegion());
 			_dispatch.setZone(_plan.getZoneCode());
@@ -358,7 +358,7 @@ public class HandOffAutoDispatchAction extends AbstractHandOffAction {
 			_dispatch.setFirstDeliveryTime(RoutingDateUtil.getServerTime(_plan.getFirstDeliveryTime()) != null ?
 						RoutingDateUtil.getServerTime(RoutingDateUtil.getServerTime(_plan.getFirstDeliveryTime())): null);
 			_dispatch.setSupervisorId(_plan.getSupervisorId());
-			_dispatch.setIsBullpen(_plan.getIsBullpen());
+			_dispatch.setIsBullpen(_plan.getIsBullpen() == null ? "N" : _plan.getIsBullpen());
 			_dispatch.setMaxTime(_plan.getMaxTime());
 			_dispatch.setRegion(_plan.getRegion());
 			_dispatch.setZone(_plan.getZoneCode());
