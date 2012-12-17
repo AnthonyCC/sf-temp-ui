@@ -168,8 +168,11 @@ var drugPanel = function($,data,config){
     currentView = viewName;
     container.addClass(currentView);
     
-    $('head').append('<link id="drugcss_'+viewName+'" href="'+cssUrl+'" rel="stylesheet">');
-
+    if(document.createStyleSheet) {
+        document.createStyleSheet(cssUrl);
+    } else {
+    	$('head').append('<link id="drugcss_'+viewName+'" href="'+cssUrl+'" rel="stylesheet">');
+    }
   };
   
   var refresh = function(data){
