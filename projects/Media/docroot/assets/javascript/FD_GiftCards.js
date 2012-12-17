@@ -682,7 +682,7 @@ function showDialogs() {
 															Builder.node('img',	{ src : '', alt : 'c', id : this.center_img_containerId })
 														]),
 														Builder.node('div', { className: 'card_controls_msg' }, [
-															'Click arrows to scroll &amp; preview card designs.'
+															'Click arrows to scroll & preview card designs.'
 														]) 
 													]),
 													Builder.node('td', [
