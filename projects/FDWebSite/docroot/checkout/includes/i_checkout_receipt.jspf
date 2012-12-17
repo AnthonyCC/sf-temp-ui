@@ -281,7 +281,7 @@ Before releasing your order to you - or your authorized representative - our dis
 </tr>
 <TR VALIGN="TOP">
 	<TD>
-	<img src="/media_stat/images/navigation/cart_details.gif" WIDTH="83" HEIGHT="9" border="0" alt="CART DETAILS"><br>
+	<img src="/media_stat/images/navigation/cart_details.gif" WIDTH="96" HEIGHT="15" border="0" alt="CART DETAILS"><br>
 	<IMG src="/media_stat/images/layout/999966.gif" WIDTH="<%=W_CHECKOUT_RECEIPT_TOTAL%>" HEIGHT="1" BORDER="0" VSPACE="4">
 	</TD>
 </TR>
