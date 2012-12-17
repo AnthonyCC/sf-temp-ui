@@ -1135,7 +1135,7 @@ public class FDStoreProperties {
 		defaults.put(PROP_COREMETRICS_FTP_SFTP_PORT, "998");
 		
 		defaults.put(PROP_BAZAARVOICE_FTP_USERNAME, "freshdirect");
-		defaults.put(PROP_BAZAARVOICE_FTP_URL, "ftp-stg.bazaarvoice.com");
+		defaults.put(PROP_BAZAARVOICE_FTP_URL, "ftp.bazaarvoice.com");
 		defaults.put(PROP_BAZAARVOICE_FTP_PASSWORD, "1hOGyoFPLYo");
 		defaults.put(PROP_BAZAARVOICE_BVAPI_URL, "//display-stg.ugc.bazaarvoice.com/static/freshdirect/bvapi.js");
 		defaults.put(PROP_BAZAARVOICE_ENABLED, "true");
