@@ -299,10 +299,10 @@ public class Product {
                         skuCode = ((SkuModel) i.next()).getSkuCode();
                         fdp = FDCachedFactory.getProduct(FDCachedFactory.getProductInfo(skuCode));
                     } catch (FDResourceException e) {
-                        LOG.error("Error getting product for sku=" + skuCode, e);
+                        LOG.info("Error getting product for sku=" + skuCode, e);
                         continue;
                     } catch (FDSkuNotFoundException e) {
-                        LOG.error("Error getting product for sku=" + skuCode, e);
+                        LOG.info("Error getting product for sku=" + skuCode, e);
                         continue;
                     }
                     this.salesUnitsMatch &= defaultSalesUnit.equals(fdp.getSalesUnits()[0].getName());
