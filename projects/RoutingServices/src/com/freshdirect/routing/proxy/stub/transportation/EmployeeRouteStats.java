@@ -1,6 +1,6 @@
 
 /**
- * Employee.java
+ * EmployeeRouteStats.java
  *
  * This file was auto-generated from WSDL
  * by the Apache Axis2 version: 1.5  Built on : Apr 30, 2009 (06:07:47 EDT)
@@ -10,13 +10,13 @@
             
 
             /**
-            *  Employee bean class
+            *  EmployeeRouteStats bean class
             */
         
-        public  class Employee
+        public  class EmployeeRouteStats
         implements org.apache.axis2.databinding.ADBBean{
         /* This type was generated from the piece of schema that had
-                name = Employee
+                name = EmployeeRouteStats
                 Namespace URI = http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService
                 Namespace Prefix = ns1
                 */
@@ -38,12 +38,6 @@
                         
                                     protected com.freshdirect.routing.proxy.stub.transportation.EmployeeIdentity localEmployeeIdentity ;
                                 
-                           /*  This tracker boolean wil be used to detect whether the user called the set method
-                          *   for this attribute. It will be used to determine whether to include this field
-                           *   in the serialized XML
-                           */
-                           protected boolean localEmployeeIdentityTracker = false ;
-                           
 
                            /**
                            * Auto generated getter method
@@ -61,604 +55,7 @@
                                */
                                public void setEmployeeIdentity(com.freshdirect.routing.proxy.stub.transportation.EmployeeIdentity param){
                             
-                                       if (param != null){
-                                          //update the setting tracker
-                                          localEmployeeIdentityTracker = true;
-                                       } else {
-                                          localEmployeeIdentityTracker = true;
-                                              
-                                       }
-                                   
                                             this.localEmployeeIdentity=param;
-                                    
-
-                               }
-                            
-
-                        /**
-                        * field for EmployeeType
-                        */
-
-                        
-                                    protected java.lang.String localEmployeeType ;
-                                
-
-                           /**
-                           * Auto generated getter method
-                           * @return java.lang.String
-                           */
-                           public  java.lang.String getEmployeeType(){
-                               return localEmployeeType;
-                           }
-
-                           
-                        
-                            /**
-                               * Auto generated setter method
-                               * @param param EmployeeType
-                               */
-                               public void setEmployeeType(java.lang.String param){
-                            
-                                            this.localEmployeeType=param;
-                                    
-
-                               }
-                            
-
-                        /**
-                        * field for Active
-                        */
-
-                        
-                                    protected boolean localActive =
-                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToBoolean("true");
-                                
-
-                           /**
-                           * Auto generated getter method
-                           * @return boolean
-                           */
-                           public  boolean getActive(){
-                               return localActive;
-                           }
-
-                           
-                        
-                            /**
-                               * Auto generated setter method
-                               * @param param Active
-                               */
-                               public void setActive(boolean param){
-                            
-                                            this.localActive=param;
-                                    
-
-                               }
-                            
-
-                        /**
-                        * field for EmployeeStatus
-                        */
-
-                        
-                                    protected java.lang.String localEmployeeStatus ;
-                                
-                           /*  This tracker boolean wil be used to detect whether the user called the set method
-                          *   for this attribute. It will be used to determine whether to include this field
-                           *   in the serialized XML
-                           */
-                           protected boolean localEmployeeStatusTracker = false ;
-                           
-
-                           /**
-                           * Auto generated getter method
-                           * @return java.lang.String
-                           */
-                           public  java.lang.String getEmployeeStatus(){
-                               return localEmployeeStatus;
-                           }
-
-                           
-                        
-                            /**
-                               * Auto generated setter method
-                               * @param param EmployeeStatus
-                               */
-                               public void setEmployeeStatus(java.lang.String param){
-                            
-                                       if (param != null){
-                                          //update the setting tracker
-                                          localEmployeeStatusTracker = true;
-                                       } else {
-                                          localEmployeeStatusTracker = false;
-                                              
-                                       }
-                                   
-                                            this.localEmployeeStatus=param;
-                                    
-
-                               }
-                            
-
-                        /**
-                        * field for LastName
-                        */
-
-                        
-                                    protected java.lang.String localLastName ;
-                                
-                           /*  This tracker boolean wil be used to detect whether the user called the set method
-                          *   for this attribute. It will be used to determine whether to include this field
-                           *   in the serialized XML
-                           */
-                           protected boolean localLastNameTracker = false ;
-                           
-
-                           /**
-                           * Auto generated getter method
-                           * @return java.lang.String
-                           */
-                           public  java.lang.String getLastName(){
-                               return localLastName;
-                           }
-
-                           
-                        
-                            /**
-                               * Auto generated setter method
-                               * @param param LastName
-                               */
-                               public void setLastName(java.lang.String param){
-                            
-                                       if (param != null){
-                                          //update the setting tracker
-                                          localLastNameTracker = true;
-                                       } else {
-                                          localLastNameTracker = false;
-                                              
-                                       }
-                                   
-                                            this.localLastName=param;
-                                    
-
-                               }
-                            
-
-                        /**
-                        * field for FirstName
-                        */
-
-                        
-                                    protected java.lang.String localFirstName ;
-                                
-                           /*  This tracker boolean wil be used to detect whether the user called the set method
-                          *   for this attribute. It will be used to determine whether to include this field
-                           *   in the serialized XML
-                           */
-                           protected boolean localFirstNameTracker = false ;
-                           
-
-                           /**
-                           * Auto generated getter method
-                           * @return java.lang.String
-                           */
-                           public  java.lang.String getFirstName(){
-                               return localFirstName;
-                           }
-
-                           
-                        
-                            /**
-                               * Auto generated setter method
-                               * @param param FirstName
-                               */
-                               public void setFirstName(java.lang.String param){
-                            
-                                       if (param != null){
-                                          //update the setting tracker
-                                          localFirstNameTracker = true;
-                                       } else {
-                                          localFirstNameTracker = false;
-                                              
-                                       }
-                                   
-                                            this.localFirstName=param;
-                                    
-
-                               }
-                            
-
-                        /**
-                        * field for MiddleName
-                        */
-
-                        
-                                    protected java.lang.String localMiddleName ;
-                                
-                           /*  This tracker boolean wil be used to detect whether the user called the set method
-                          *   for this attribute. It will be used to determine whether to include this field
-                           *   in the serialized XML
-                           */
-                           protected boolean localMiddleNameTracker = false ;
-                           
-
-                           /**
-                           * Auto generated getter method
-                           * @return java.lang.String
-                           */
-                           public  java.lang.String getMiddleName(){
-                               return localMiddleName;
-                           }
-
-                           
-                        
-                            /**
-                               * Auto generated setter method
-                               * @param param MiddleName
-                               */
-                               public void setMiddleName(java.lang.String param){
-                            
-                                       if (param != null){
-                                          //update the setting tracker
-                                          localMiddleNameTracker = true;
-                                       } else {
-                                          localMiddleNameTracker = false;
-                                              
-                                       }
-                                   
-                                            this.localMiddleName=param;
-                                    
-
-                               }
-                            
-
-                        /**
-                        * field for HomePhoneNumber
-                        */
-
-                        
-                                    protected java.lang.String localHomePhoneNumber ;
-                                
-                           /*  This tracker boolean wil be used to detect whether the user called the set method
-                          *   for this attribute. It will be used to determine whether to include this field
-                           *   in the serialized XML
-                           */
-                           protected boolean localHomePhoneNumberTracker = false ;
-                           
-
-                           /**
-                           * Auto generated getter method
-                           * @return java.lang.String
-                           */
-                           public  java.lang.String getHomePhoneNumber(){
-                               return localHomePhoneNumber;
-                           }
-
-                           
-                        
-                            /**
-                               * Auto generated setter method
-                               * @param param HomePhoneNumber
-                               */
-                               public void setHomePhoneNumber(java.lang.String param){
-                            
-                                       if (param != null){
-                                          //update the setting tracker
-                                          localHomePhoneNumberTracker = true;
-                                       } else {
-                                          localHomePhoneNumberTracker = false;
-                                              
-                                       }
-                                   
-                                            this.localHomePhoneNumber=param;
-                                    
-
-                               }
-                            
-
-                        /**
-                        * field for WorkPhoneNumber
-                        */
-
-                        
-                                    protected java.lang.String localWorkPhoneNumber ;
-                                
-                           /*  This tracker boolean wil be used to detect whether the user called the set method
-                          *   for this attribute. It will be used to determine whether to include this field
-                           *   in the serialized XML
-                           */
-                           protected boolean localWorkPhoneNumberTracker = false ;
-                           
-
-                           /**
-                           * Auto generated getter method
-                           * @return java.lang.String
-                           */
-                           public  java.lang.String getWorkPhoneNumber(){
-                               return localWorkPhoneNumber;
-                           }
-
-                           
-                        
-                            /**
-                               * Auto generated setter method
-                               * @param param WorkPhoneNumber
-                               */
-                               public void setWorkPhoneNumber(java.lang.String param){
-                            
-                                       if (param != null){
-                                          //update the setting tracker
-                                          localWorkPhoneNumberTracker = true;
-                                       } else {
-                                          localWorkPhoneNumberTracker = false;
-                                              
-                                       }
-                                   
-                                            this.localWorkPhoneNumber=param;
-                                    
-
-                               }
-                            
-
-                        /**
-                        * field for DateOfBirth
-                        */
-
-                        
-                                    protected java.util.Date localDateOfBirth ;
-                                
-                           /*  This tracker boolean wil be used to detect whether the user called the set method
-                          *   for this attribute. It will be used to determine whether to include this field
-                           *   in the serialized XML
-                           */
-                           protected boolean localDateOfBirthTracker = false ;
-                           
-
-                           /**
-                           * Auto generated getter method
-                           * @return java.util.Date
-                           */
-                           public  java.util.Date getDateOfBirth(){
-                               return localDateOfBirth;
-                           }
-
-                           
-                        
-                            /**
-                               * Auto generated setter method
-                               * @param param DateOfBirth
-                               */
-                               public void setDateOfBirth(java.util.Date param){
-                            
-                                       if (param != null){
-                                          //update the setting tracker
-                                          localDateOfBirthTracker = true;
-                                       } else {
-                                          localDateOfBirthTracker = false;
-                                              
-                                       }
-                                   
-                                            this.localDateOfBirth=param;
-                                    
-
-                               }
-                            
-
-                        /**
-                        * field for DateStarted
-                        */
-
-                        
-                                    protected java.util.Date localDateStarted ;
-                                
-                           /*  This tracker boolean wil be used to detect whether the user called the set method
-                          *   for this attribute. It will be used to determine whether to include this field
-                           *   in the serialized XML
-                           */
-                           protected boolean localDateStartedTracker = false ;
-                           
-
-                           /**
-                           * Auto generated getter method
-                           * @return java.util.Date
-                           */
-                           public  java.util.Date getDateStarted(){
-                               return localDateStarted;
-                           }
-
-                           
-                        
-                            /**
-                               * Auto generated setter method
-                               * @param param DateStarted
-                               */
-                               public void setDateStarted(java.util.Date param){
-                            
-                                       if (param != null){
-                                          //update the setting tracker
-                                          localDateStartedTracker = true;
-                                       } else {
-                                          localDateStartedTracker = false;
-                                              
-                                       }
-                                   
-                                            this.localDateStarted=param;
-                                    
-
-                               }
-                            
-
-                        /**
-                        * field for DateTerminated
-                        */
-
-                        
-                                    protected java.util.Date localDateTerminated ;
-                                
-                           /*  This tracker boolean wil be used to detect whether the user called the set method
-                          *   for this attribute. It will be used to determine whether to include this field
-                           *   in the serialized XML
-                           */
-                           protected boolean localDateTerminatedTracker = false ;
-                           
-
-                           /**
-                           * Auto generated getter method
-                           * @return java.util.Date
-                           */
-                           public  java.util.Date getDateTerminated(){
-                               return localDateTerminated;
-                           }
-
-                           
-                        
-                            /**
-                               * Auto generated setter method
-                               * @param param DateTerminated
-                               */
-                               public void setDateTerminated(java.util.Date param){
-                            
-                                       if (param != null){
-                                          //update the setting tracker
-                                          localDateTerminatedTracker = true;
-                                       } else {
-                                          localDateTerminatedTracker = false;
-                                              
-                                       }
-                                   
-                                            this.localDateTerminated=param;
-                                    
-
-                               }
-                            
-
-                        /**
-                        * field for ADPFileNumber
-                        */
-
-                        
-                                    protected java.lang.String localADPFileNumber ;
-                                
-                           /*  This tracker boolean wil be used to detect whether the user called the set method
-                          *   for this attribute. It will be used to determine whether to include this field
-                           *   in the serialized XML
-                           */
-                           protected boolean localADPFileNumberTracker = false ;
-                           
-
-                           /**
-                           * Auto generated getter method
-                           * @return java.lang.String
-                           */
-                           public  java.lang.String getADPFileNumber(){
-                               return localADPFileNumber;
-                           }
-
-                           
-                        
-                            /**
-                               * Auto generated setter method
-                               * @param param ADPFileNumber
-                               */
-                               public void setADPFileNumber(java.lang.String param){
-                            
-                                       if (param != null){
-                                          //update the setting tracker
-                                          localADPFileNumberTracker = true;
-                                       } else {
-                                          localADPFileNumberTracker = false;
-                                              
-                                       }
-                                   
-                                            this.localADPFileNumber=param;
-                                    
-
-                               }
-                            
-
-                        /**
-                        * field for Password
-                        */
-
-                        
-                                    protected java.lang.String localPassword ;
-                                
-                           /*  This tracker boolean wil be used to detect whether the user called the set method
-                          *   for this attribute. It will be used to determine whether to include this field
-                           *   in the serialized XML
-                           */
-                           protected boolean localPasswordTracker = false ;
-                           
-
-                           /**
-                           * Auto generated getter method
-                           * @return java.lang.String
-                           */
-                           public  java.lang.String getPassword(){
-                               return localPassword;
-                           }
-
-                           
-                        
-                            /**
-                               * Auto generated setter method
-                               * @param param Password
-                               */
-                               public void setPassword(java.lang.String param){
-                            
-                                       if (param != null){
-                                          //update the setting tracker
-                                          localPasswordTracker = true;
-                                       } else {
-                                          localPasswordTracker = false;
-                                              
-                                       }
-                                   
-                                            this.localPassword=param;
-                                    
-
-                               }
-                            
-
-                        /**
-                        * field for Address
-                        */
-
-                        
-                                    protected com.freshdirect.routing.proxy.stub.transportation.Address localAddress ;
-                                
-                           /*  This tracker boolean wil be used to detect whether the user called the set method
-                          *   for this attribute. It will be used to determine whether to include this field
-                           *   in the serialized XML
-                           */
-                           protected boolean localAddressTracker = false ;
-                           
-
-                           /**
-                           * Auto generated getter method
-                           * @return com.freshdirect.routing.proxy.stub.transportation.Address
-                           */
-                           public  com.freshdirect.routing.proxy.stub.transportation.Address getAddress(){
-                               return localAddress;
-                           }
-
-                           
-                        
-                            /**
-                               * Auto generated setter method
-                               * @param param Address
-                               */
-                               public void setAddress(com.freshdirect.routing.proxy.stub.transportation.Address param){
-                            
-                                       if (param != null){
-                                          //update the setting tracker
-                                          localAddressTracker = true;
-                                       } else {
-                                          localAddressTracker = true;
-                                              
-                                       }
-                                   
-                                            this.localAddress=param;
                                     
 
                                }
@@ -709,44 +106,448 @@
                             
 
                         /**
-                        * field for CurrentRouteIdentity
+                        * field for LastName
                         */
 
                         
-                                    protected com.freshdirect.routing.proxy.stub.transportation.RouteIdentity localCurrentRouteIdentity ;
+                                    protected java.lang.String localLastName ;
                                 
-                           /*  This tracker boolean wil be used to detect whether the user called the set method
-                          *   for this attribute. It will be used to determine whether to include this field
-                           *   in the serialized XML
-                           */
-                           protected boolean localCurrentRouteIdentityTracker = false ;
-                           
 
                            /**
                            * Auto generated getter method
-                           * @return com.freshdirect.routing.proxy.stub.transportation.RouteIdentity
+                           * @return java.lang.String
                            */
-                           public  com.freshdirect.routing.proxy.stub.transportation.RouteIdentity getCurrentRouteIdentity(){
-                               return localCurrentRouteIdentity;
+                           public  java.lang.String getLastName(){
+                               return localLastName;
                            }
 
                            
                         
                             /**
                                * Auto generated setter method
-                               * @param param CurrentRouteIdentity
+                               * @param param LastName
                                */
-                               public void setCurrentRouteIdentity(com.freshdirect.routing.proxy.stub.transportation.RouteIdentity param){
+                               public void setLastName(java.lang.String param){
+                            
+                                            this.localLastName=param;
+                                    
+
+                               }
+                            
+
+                        /**
+                        * field for FirstName
+                        */
+
+                        
+                                    protected java.lang.String localFirstName ;
+                                
+
+                           /**
+                           * Auto generated getter method
+                           * @return java.lang.String
+                           */
+                           public  java.lang.String getFirstName(){
+                               return localFirstName;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param FirstName
+                               */
+                               public void setFirstName(java.lang.String param){
+                            
+                                            this.localFirstName=param;
+                                    
+
+                               }
+                            
+
+                        /**
+                        * field for MiddleName
+                        */
+
+                        
+                                    protected java.lang.String localMiddleName ;
+                                
+
+                           /**
+                           * Auto generated getter method
+                           * @return java.lang.String
+                           */
+                           public  java.lang.String getMiddleName(){
+                               return localMiddleName;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param MiddleName
+                               */
+                               public void setMiddleName(java.lang.String param){
+                            
+                                            this.localMiddleName=param;
+                                    
+
+                               }
+                            
+
+                        /**
+                        * field for RouteIdentity
+                        */
+
+                        
+                                    protected com.freshdirect.routing.proxy.stub.transportation.RouteIdentity localRouteIdentity ;
+                                
+
+                           /**
+                           * Auto generated getter method
+                           * @return com.freshdirect.routing.proxy.stub.transportation.RouteIdentity
+                           */
+                           public  com.freshdirect.routing.proxy.stub.transportation.RouteIdentity getRouteIdentity(){
+                               return localRouteIdentity;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param RouteIdentity
+                               */
+                               public void setRouteIdentity(com.freshdirect.routing.proxy.stub.transportation.RouteIdentity param){
+                            
+                                            this.localRouteIdentity=param;
+                                    
+
+                               }
+                            
+
+                        /**
+                        * field for StopCount
+                        */
+
+                        
+                                    protected int localStopCount ;
+                                
+
+                           /**
+                           * Auto generated getter method
+                           * @return int
+                           */
+                           public  int getStopCount(){
+                               return localStopCount;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param StopCount
+                               */
+                               public void setStopCount(int param){
+                            
+                                            this.localStopCount=param;
+                                    
+
+                               }
+                            
+
+                        /**
+                        * field for TravelTime
+                        */
+
+                        
+                                    protected int localTravelTime ;
+                                
+
+                           /**
+                           * Auto generated getter method
+                           * @return int
+                           */
+                           public  int getTravelTime(){
+                               return localTravelTime;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param TravelTime
+                               */
+                               public void setTravelTime(int param){
+                            
+                                            this.localTravelTime=param;
+                                    
+
+                               }
+                            
+
+                        /**
+                        * field for TravelTimeNoStem
+                        */
+
+                        
+                                    protected int localTravelTimeNoStem ;
+                                
+
+                           /**
+                           * Auto generated getter method
+                           * @return int
+                           */
+                           public  int getTravelTimeNoStem(){
+                               return localTravelTimeNoStem;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param TravelTimeNoStem
+                               */
+                               public void setTravelTimeNoStem(int param){
+                            
+                                            this.localTravelTimeNoStem=param;
+                                    
+
+                               }
+                            
+
+                        /**
+                        * field for ActualDistance
+                        */
+
+                        
+                                    protected double localActualDistance ;
+                                
+
+                           /**
+                           * Auto generated getter method
+                           * @return double
+                           */
+                           public  double getActualDistance(){
+                               return localActualDistance;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param ActualDistance
+                               */
+                               public void setActualDistance(double param){
+                            
+                                            this.localActualDistance=param;
+                                    
+
+                               }
+                            
+
+                        /**
+                        * field for ActualDistanceNoStem
+                        */
+
+                        
+                                    protected double localActualDistanceNoStem ;
+                                
+
+                           /**
+                           * Auto generated getter method
+                           * @return double
+                           */
+                           public  double getActualDistanceNoStem(){
+                               return localActualDistanceNoStem;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param ActualDistanceNoStem
+                               */
+                               public void setActualDistanceNoStem(double param){
+                            
+                                            this.localActualDistanceNoStem=param;
+                                    
+
+                               }
+                            
+
+                        /**
+                        * field for DriverDistance
+                        */
+
+                        
+                                    protected double localDriverDistance ;
+                                
+
+                           /**
+                           * Auto generated getter method
+                           * @return double
+                           */
+                           public  double getDriverDistance(){
+                               return localDriverDistance;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param DriverDistance
+                               */
+                               public void setDriverDistance(double param){
+                            
+                                            this.localDriverDistance=param;
+                                    
+
+                               }
+                            
+
+                        /**
+                        * field for DriverDistanceNotes
+                        */
+
+                        
+                                    protected java.lang.String localDriverDistanceNotes ;
+                                
+
+                           /**
+                           * Auto generated getter method
+                           * @return java.lang.String
+                           */
+                           public  java.lang.String getDriverDistanceNotes(){
+                               return localDriverDistanceNotes;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param DriverDistanceNotes
+                               */
+                               public void setDriverDistanceNotes(java.lang.String param){
+                            
+                                            this.localDriverDistanceNotes=param;
+                                    
+
+                               }
+                            
+
+                        /**
+                        * field for ActualStart
+                        */
+
+                        
+                                    protected java.util.Calendar localActualStart ;
+                                
+                           /*  This tracker boolean wil be used to detect whether the user called the set method
+                          *   for this attribute. It will be used to determine whether to include this field
+                           *   in the serialized XML
+                           */
+                           protected boolean localActualStartTracker = false ;
+                           
+
+                           /**
+                           * Auto generated getter method
+                           * @return java.util.Calendar
+                           */
+                           public  java.util.Calendar getActualStart(){
+                               return localActualStart;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param ActualStart
+                               */
+                               public void setActualStart(java.util.Calendar param){
                             
                                        if (param != null){
                                           //update the setting tracker
-                                          localCurrentRouteIdentityTracker = true;
+                                          localActualStartTracker = true;
                                        } else {
-                                          localCurrentRouteIdentityTracker = true;
+                                          localActualStartTracker = false;
                                               
                                        }
                                    
-                                            this.localCurrentRouteIdentity=param;
+                                            this.localActualStart=param;
+                                    
+
+                               }
+                            
+
+                        /**
+                        * field for ActualComplete
+                        */
+
+                        
+                                    protected java.util.Calendar localActualComplete ;
+                                
+                           /*  This tracker boolean wil be used to detect whether the user called the set method
+                          *   for this attribute. It will be used to determine whether to include this field
+                           *   in the serialized XML
+                           */
+                           protected boolean localActualCompleteTracker = false ;
+                           
+
+                           /**
+                           * Auto generated getter method
+                           * @return java.util.Calendar
+                           */
+                           public  java.util.Calendar getActualComplete(){
+                               return localActualComplete;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param ActualComplete
+                               */
+                               public void setActualComplete(java.util.Calendar param){
+                            
+                                       if (param != null){
+                                          //update the setting tracker
+                                          localActualCompleteTracker = true;
+                                       } else {
+                                          localActualCompleteTracker = false;
+                                              
+                                       }
+                                   
+                                            this.localActualComplete=param;
+                                    
+
+                               }
+                            
+
+                        /**
+                        * field for IncludesStem
+                        */
+
+                        
+                                    protected boolean localIncludesStem ;
+                                
+
+                           /**
+                           * Auto generated getter method
+                           * @return boolean
+                           */
+                           public  boolean getIncludesStem(){
+                               return localIncludesStem;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param IncludesStem
+                               */
+                               public void setIncludesStem(boolean param){
+                            
+                                            this.localIncludesStem=param;
                                     
 
                                }
@@ -784,7 +585,7 @@
                        new org.apache.axis2.databinding.ADBDataSource(this,parentQName){
 
                  public void serialize(org.apache.axis2.databinding.utils.writer.MTOMAwareXMLStreamWriter xmlWriter) throws javax.xml.stream.XMLStreamException {
-                       Employee.this.serialize(parentQName,factory,xmlWriter);
+                       EmployeeRouteStats.this.serialize(parentQName,factory,xmlWriter);
                  }
                };
                return new org.apache.axiom.om.impl.llom.OMSourcedElementImpl(
@@ -838,18 +639,24 @@
                    java.lang.String namespacePrefix = registerPrefix(xmlWriter,"http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService");
                    if ((namespacePrefix != null) && (namespacePrefix.trim().length() > 0)){
                        writeAttribute("xsi","http://www.w3.org/2001/XMLSchema-instance","type",
-                           namespacePrefix+":Employee",
+                           namespacePrefix+":EmployeeRouteStats",
                            xmlWriter);
                    } else {
                        writeAttribute("xsi","http://www.w3.org/2001/XMLSchema-instance","type",
-                           "Employee",
+                           "EmployeeRouteStats",
                            xmlWriter);
                    }
 
                
                    }
-                if (localEmployeeIdentityTracker){
-                                    if (localEmployeeIdentity==null){
+               
+                                            if (localEmployeeIdentity==null){
+                                                 throw new org.apache.axis2.databinding.ADBException("employeeIdentity cannot be null!!");
+                                            }
+                                           localEmployeeIdentity.serialize(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","employeeIdentity"),
+                                               factory,xmlWriter);
+                                         if (localSupervisorIdentityTracker){
+                                    if (localSupervisorIdentity==null){
 
                                             java.lang.String namespace2 = "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService";
 
@@ -859,16 +666,16 @@
                                             if (prefix2 == null) {
                                                 prefix2 = generatePrefix(namespace2);
 
-                                                xmlWriter.writeStartElement(prefix2,"employeeIdentity", namespace2);
+                                                xmlWriter.writeStartElement(prefix2,"supervisorIdentity", namespace2);
                                                 xmlWriter.writeNamespace(prefix2, namespace2);
                                                 xmlWriter.setPrefix(prefix2, namespace2);
 
                                             } else {
-                                                xmlWriter.writeStartElement(namespace2,"employeeIdentity");
+                                                xmlWriter.writeStartElement(namespace2,"supervisorIdentity");
                                             }
 
                                         } else {
-                                            xmlWriter.writeStartElement("employeeIdentity");
+                                            xmlWriter.writeStartElement("supervisorIdentity");
                                         }
 
 
@@ -876,107 +683,10 @@
                                       writeAttribute("xsi","http://www.w3.org/2001/XMLSchema-instance","nil","1",xmlWriter);
                                       xmlWriter.writeEndElement();
                                     }else{
-                                     localEmployeeIdentity.serialize(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","employeeIdentity"),
+                                     localSupervisorIdentity.serialize(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","supervisorIdentity"),
                                         factory,xmlWriter);
                                     }
                                 }
-                                    namespace = "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService";
-                                    if (! namespace.equals("")) {
-                                        prefix = xmlWriter.getPrefix(namespace);
-
-                                        if (prefix == null) {
-                                            prefix = generatePrefix(namespace);
-
-                                            xmlWriter.writeStartElement(prefix,"employeeType", namespace);
-                                            xmlWriter.writeNamespace(prefix, namespace);
-                                            xmlWriter.setPrefix(prefix, namespace);
-
-                                        } else {
-                                            xmlWriter.writeStartElement(namespace,"employeeType");
-                                        }
-
-                                    } else {
-                                        xmlWriter.writeStartElement("employeeType");
-                                    }
-                                
-
-                                          if (localEmployeeType==null){
-                                              // write the nil attribute
-                                              
-                                                     throw new org.apache.axis2.databinding.ADBException("employeeType cannot be null!!");
-                                                  
-                                          }else{
-
-                                        
-                                                   xmlWriter.writeCharacters(localEmployeeType);
-                                            
-                                          }
-                                    
-                                   xmlWriter.writeEndElement();
-                             
-                                    namespace = "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService";
-                                    if (! namespace.equals("")) {
-                                        prefix = xmlWriter.getPrefix(namespace);
-
-                                        if (prefix == null) {
-                                            prefix = generatePrefix(namespace);
-
-                                            xmlWriter.writeStartElement(prefix,"active", namespace);
-                                            xmlWriter.writeNamespace(prefix, namespace);
-                                            xmlWriter.setPrefix(prefix, namespace);
-
-                                        } else {
-                                            xmlWriter.writeStartElement(namespace,"active");
-                                        }
-
-                                    } else {
-                                        xmlWriter.writeStartElement("active");
-                                    }
-                                
-                                               if (false) {
-                                           
-                                                         throw new org.apache.axis2.databinding.ADBException("active cannot be null!!");
-                                                      
-                                               } else {
-                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localActive));
-                                               }
-                                    
-                                   xmlWriter.writeEndElement();
-                              if (localEmployeeStatusTracker){
-                                    namespace = "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService";
-                                    if (! namespace.equals("")) {
-                                        prefix = xmlWriter.getPrefix(namespace);
-
-                                        if (prefix == null) {
-                                            prefix = generatePrefix(namespace);
-
-                                            xmlWriter.writeStartElement(prefix,"employeeStatus", namespace);
-                                            xmlWriter.writeNamespace(prefix, namespace);
-                                            xmlWriter.setPrefix(prefix, namespace);
-
-                                        } else {
-                                            xmlWriter.writeStartElement(namespace,"employeeStatus");
-                                        }
-
-                                    } else {
-                                        xmlWriter.writeStartElement("employeeStatus");
-                                    }
-                                
-
-                                          if (localEmployeeStatus==null){
-                                              // write the nil attribute
-                                              
-                                                     throw new org.apache.axis2.databinding.ADBException("employeeStatus cannot be null!!");
-                                                  
-                                          }else{
-
-                                        
-                                                   xmlWriter.writeCharacters(localEmployeeStatus);
-                                            
-                                          }
-                                    
-                                   xmlWriter.writeEndElement();
-                             } if (localLastNameTracker){
                                     namespace = "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService";
                                     if (! namespace.equals("")) {
                                         prefix = xmlWriter.getPrefix(namespace);
@@ -1010,7 +720,7 @@
                                           }
                                     
                                    xmlWriter.writeEndElement();
-                             } if (localFirstNameTracker){
+                             
                                     namespace = "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService";
                                     if (! namespace.equals("")) {
                                         prefix = xmlWriter.getPrefix(namespace);
@@ -1044,7 +754,7 @@
                                           }
                                     
                                    xmlWriter.writeEndElement();
-                             } if (localMiddleNameTracker){
+                             
                                     namespace = "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService";
                                     if (! namespace.equals("")) {
                                         prefix = xmlWriter.getPrefix(namespace);
@@ -1078,338 +788,318 @@
                                           }
                                     
                                    xmlWriter.writeEndElement();
-                             } if (localHomePhoneNumberTracker){
-                                    namespace = "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService";
-                                    if (! namespace.equals("")) {
-                                        prefix = xmlWriter.getPrefix(namespace);
-
-                                        if (prefix == null) {
-                                            prefix = generatePrefix(namespace);
-
-                                            xmlWriter.writeStartElement(prefix,"homePhoneNumber", namespace);
-                                            xmlWriter.writeNamespace(prefix, namespace);
-                                            xmlWriter.setPrefix(prefix, namespace);
-
-                                        } else {
-                                            xmlWriter.writeStartElement(namespace,"homePhoneNumber");
-                                        }
-
-                                    } else {
-                                        xmlWriter.writeStartElement("homePhoneNumber");
-                                    }
-                                
-
-                                          if (localHomePhoneNumber==null){
-                                              // write the nil attribute
-                                              
-                                                     throw new org.apache.axis2.databinding.ADBException("homePhoneNumber cannot be null!!");
-                                                  
-                                          }else{
-
-                                        
-                                                   xmlWriter.writeCharacters(localHomePhoneNumber);
-                                            
-                                          }
-                                    
-                                   xmlWriter.writeEndElement();
-                             } if (localWorkPhoneNumberTracker){
-                                    namespace = "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService";
-                                    if (! namespace.equals("")) {
-                                        prefix = xmlWriter.getPrefix(namespace);
-
-                                        if (prefix == null) {
-                                            prefix = generatePrefix(namespace);
-
-                                            xmlWriter.writeStartElement(prefix,"workPhoneNumber", namespace);
-                                            xmlWriter.writeNamespace(prefix, namespace);
-                                            xmlWriter.setPrefix(prefix, namespace);
-
-                                        } else {
-                                            xmlWriter.writeStartElement(namespace,"workPhoneNumber");
-                                        }
-
-                                    } else {
-                                        xmlWriter.writeStartElement("workPhoneNumber");
-                                    }
-                                
-
-                                          if (localWorkPhoneNumber==null){
-                                              // write the nil attribute
-                                              
-                                                     throw new org.apache.axis2.databinding.ADBException("workPhoneNumber cannot be null!!");
-                                                  
-                                          }else{
-
-                                        
-                                                   xmlWriter.writeCharacters(localWorkPhoneNumber);
-                                            
-                                          }
-                                    
-                                   xmlWriter.writeEndElement();
-                             } if (localDateOfBirthTracker){
-                                    namespace = "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService";
-                                    if (! namespace.equals("")) {
-                                        prefix = xmlWriter.getPrefix(namespace);
-
-                                        if (prefix == null) {
-                                            prefix = generatePrefix(namespace);
-
-                                            xmlWriter.writeStartElement(prefix,"dateOfBirth", namespace);
-                                            xmlWriter.writeNamespace(prefix, namespace);
-                                            xmlWriter.setPrefix(prefix, namespace);
-
-                                        } else {
-                                            xmlWriter.writeStartElement(namespace,"dateOfBirth");
-                                        }
-
-                                    } else {
-                                        xmlWriter.writeStartElement("dateOfBirth");
-                                    }
-                                
-
-                                          if (localDateOfBirth==null){
-                                              // write the nil attribute
-                                              
-                                                     throw new org.apache.axis2.databinding.ADBException("dateOfBirth cannot be null!!");
-                                                  
-                                          }else{
-
-                                        
-                                                   xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localDateOfBirth));
-                                            
-                                          }
-                                    
-                                   xmlWriter.writeEndElement();
-                             } if (localDateStartedTracker){
-                                    namespace = "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService";
-                                    if (! namespace.equals("")) {
-                                        prefix = xmlWriter.getPrefix(namespace);
-
-                                        if (prefix == null) {
-                                            prefix = generatePrefix(namespace);
-
-                                            xmlWriter.writeStartElement(prefix,"dateStarted", namespace);
-                                            xmlWriter.writeNamespace(prefix, namespace);
-                                            xmlWriter.setPrefix(prefix, namespace);
-
-                                        } else {
-                                            xmlWriter.writeStartElement(namespace,"dateStarted");
-                                        }
-
-                                    } else {
-                                        xmlWriter.writeStartElement("dateStarted");
-                                    }
-                                
-
-                                          if (localDateStarted==null){
-                                              // write the nil attribute
-                                              
-                                                     throw new org.apache.axis2.databinding.ADBException("dateStarted cannot be null!!");
-                                                  
-                                          }else{
-
-                                        
-                                                   xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localDateStarted));
-                                            
-                                          }
-                                    
-                                   xmlWriter.writeEndElement();
-                             } if (localDateTerminatedTracker){
-                                    namespace = "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService";
-                                    if (! namespace.equals("")) {
-                                        prefix = xmlWriter.getPrefix(namespace);
-
-                                        if (prefix == null) {
-                                            prefix = generatePrefix(namespace);
-
-                                            xmlWriter.writeStartElement(prefix,"dateTerminated", namespace);
-                                            xmlWriter.writeNamespace(prefix, namespace);
-                                            xmlWriter.setPrefix(prefix, namespace);
-
-                                        } else {
-                                            xmlWriter.writeStartElement(namespace,"dateTerminated");
-                                        }
-
-                                    } else {
-                                        xmlWriter.writeStartElement("dateTerminated");
-                                    }
-                                
-
-                                          if (localDateTerminated==null){
-                                              // write the nil attribute
-                                              
-                                                     throw new org.apache.axis2.databinding.ADBException("dateTerminated cannot be null!!");
-                                                  
-                                          }else{
-
-                                        
-                                                   xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localDateTerminated));
-                                            
-                                          }
-                                    
-                                   xmlWriter.writeEndElement();
-                             } if (localADPFileNumberTracker){
-                                    namespace = "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService";
-                                    if (! namespace.equals("")) {
-                                        prefix = xmlWriter.getPrefix(namespace);
-
-                                        if (prefix == null) {
-                                            prefix = generatePrefix(namespace);
-
-                                            xmlWriter.writeStartElement(prefix,"ADPFileNumber", namespace);
-                                            xmlWriter.writeNamespace(prefix, namespace);
-                                            xmlWriter.setPrefix(prefix, namespace);
-
-                                        } else {
-                                            xmlWriter.writeStartElement(namespace,"ADPFileNumber");
-                                        }
-
-                                    } else {
-                                        xmlWriter.writeStartElement("ADPFileNumber");
-                                    }
-                                
-
-                                          if (localADPFileNumber==null){
-                                              // write the nil attribute
-                                              
-                                                     throw new org.apache.axis2.databinding.ADBException("ADPFileNumber cannot be null!!");
-                                                  
-                                          }else{
-
-                                        
-                                                   xmlWriter.writeCharacters(localADPFileNumber);
-                                            
-                                          }
-                                    
-                                   xmlWriter.writeEndElement();
-                             } if (localPasswordTracker){
-                                    namespace = "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService";
-                                    if (! namespace.equals("")) {
-                                        prefix = xmlWriter.getPrefix(namespace);
-
-                                        if (prefix == null) {
-                                            prefix = generatePrefix(namespace);
-
-                                            xmlWriter.writeStartElement(prefix,"password", namespace);
-                                            xmlWriter.writeNamespace(prefix, namespace);
-                                            xmlWriter.setPrefix(prefix, namespace);
-
-                                        } else {
-                                            xmlWriter.writeStartElement(namespace,"password");
-                                        }
-
-                                    } else {
-                                        xmlWriter.writeStartElement("password");
-                                    }
-                                
-
-                                          if (localPassword==null){
-                                              // write the nil attribute
-                                              
-                                                     throw new org.apache.axis2.databinding.ADBException("password cannot be null!!");
-                                                  
-                                          }else{
-
-                                        
-                                                   xmlWriter.writeCharacters(localPassword);
-                                            
-                                          }
-                                    
-                                   xmlWriter.writeEndElement();
-                             } if (localAddressTracker){
-                                    if (localAddress==null){
-
-                                            java.lang.String namespace2 = "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService";
-
-                                        if (! namespace2.equals("")) {
-                                            java.lang.String prefix2 = xmlWriter.getPrefix(namespace2);
-
-                                            if (prefix2 == null) {
-                                                prefix2 = generatePrefix(namespace2);
-
-                                                xmlWriter.writeStartElement(prefix2,"address", namespace2);
-                                                xmlWriter.writeNamespace(prefix2, namespace2);
-                                                xmlWriter.setPrefix(prefix2, namespace2);
-
-                                            } else {
-                                                xmlWriter.writeStartElement(namespace2,"address");
+                             
+                                            if (localRouteIdentity==null){
+                                                 throw new org.apache.axis2.databinding.ADBException("routeIdentity cannot be null!!");
                                             }
+                                           localRouteIdentity.serialize(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","routeIdentity"),
+                                               factory,xmlWriter);
+                                        
+                                    namespace = "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService";
+                                    if (! namespace.equals("")) {
+                                        prefix = xmlWriter.getPrefix(namespace);
+
+                                        if (prefix == null) {
+                                            prefix = generatePrefix(namespace);
+
+                                            xmlWriter.writeStartElement(prefix,"stopCount", namespace);
+                                            xmlWriter.writeNamespace(prefix, namespace);
+                                            xmlWriter.setPrefix(prefix, namespace);
 
                                         } else {
-                                            xmlWriter.writeStartElement("address");
+                                            xmlWriter.writeStartElement(namespace,"stopCount");
                                         }
 
-
-                                       // write the nil attribute
-                                      writeAttribute("xsi","http://www.w3.org/2001/XMLSchema-instance","nil","1",xmlWriter);
-                                      xmlWriter.writeEndElement();
-                                    }else{
-                                     localAddress.serialize(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","address"),
-                                        factory,xmlWriter);
+                                    } else {
+                                        xmlWriter.writeStartElement("stopCount");
                                     }
-                                } if (localSupervisorIdentityTracker){
-                                    if (localSupervisorIdentity==null){
+                                
+                                               if (localStopCount==java.lang.Integer.MIN_VALUE) {
+                                           
+                                                         throw new org.apache.axis2.databinding.ADBException("stopCount cannot be null!!");
+                                                      
+                                               } else {
+                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localStopCount));
+                                               }
+                                    
+                                   xmlWriter.writeEndElement();
+                             
+                                    namespace = "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService";
+                                    if (! namespace.equals("")) {
+                                        prefix = xmlWriter.getPrefix(namespace);
 
-                                            java.lang.String namespace2 = "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService";
+                                        if (prefix == null) {
+                                            prefix = generatePrefix(namespace);
 
-                                        if (! namespace2.equals("")) {
-                                            java.lang.String prefix2 = xmlWriter.getPrefix(namespace2);
-
-                                            if (prefix2 == null) {
-                                                prefix2 = generatePrefix(namespace2);
-
-                                                xmlWriter.writeStartElement(prefix2,"supervisorIdentity", namespace2);
-                                                xmlWriter.writeNamespace(prefix2, namespace2);
-                                                xmlWriter.setPrefix(prefix2, namespace2);
-
-                                            } else {
-                                                xmlWriter.writeStartElement(namespace2,"supervisorIdentity");
-                                            }
+                                            xmlWriter.writeStartElement(prefix,"travelTime", namespace);
+                                            xmlWriter.writeNamespace(prefix, namespace);
+                                            xmlWriter.setPrefix(prefix, namespace);
 
                                         } else {
-                                            xmlWriter.writeStartElement("supervisorIdentity");
+                                            xmlWriter.writeStartElement(namespace,"travelTime");
                                         }
 
-
-                                       // write the nil attribute
-                                      writeAttribute("xsi","http://www.w3.org/2001/XMLSchema-instance","nil","1",xmlWriter);
-                                      xmlWriter.writeEndElement();
-                                    }else{
-                                     localSupervisorIdentity.serialize(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","supervisorIdentity"),
-                                        factory,xmlWriter);
+                                    } else {
+                                        xmlWriter.writeStartElement("travelTime");
                                     }
-                                } if (localCurrentRouteIdentityTracker){
-                                    if (localCurrentRouteIdentity==null){
+                                
+                                               if (localTravelTime==java.lang.Integer.MIN_VALUE) {
+                                           
+                                                         throw new org.apache.axis2.databinding.ADBException("travelTime cannot be null!!");
+                                                      
+                                               } else {
+                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localTravelTime));
+                                               }
+                                    
+                                   xmlWriter.writeEndElement();
+                             
+                                    namespace = "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService";
+                                    if (! namespace.equals("")) {
+                                        prefix = xmlWriter.getPrefix(namespace);
 
-                                            java.lang.String namespace2 = "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService";
+                                        if (prefix == null) {
+                                            prefix = generatePrefix(namespace);
 
-                                        if (! namespace2.equals("")) {
-                                            java.lang.String prefix2 = xmlWriter.getPrefix(namespace2);
-
-                                            if (prefix2 == null) {
-                                                prefix2 = generatePrefix(namespace2);
-
-                                                xmlWriter.writeStartElement(prefix2,"currentRouteIdentity", namespace2);
-                                                xmlWriter.writeNamespace(prefix2, namespace2);
-                                                xmlWriter.setPrefix(prefix2, namespace2);
-
-                                            } else {
-                                                xmlWriter.writeStartElement(namespace2,"currentRouteIdentity");
-                                            }
+                                            xmlWriter.writeStartElement(prefix,"travelTimeNoStem", namespace);
+                                            xmlWriter.writeNamespace(prefix, namespace);
+                                            xmlWriter.setPrefix(prefix, namespace);
 
                                         } else {
-                                            xmlWriter.writeStartElement("currentRouteIdentity");
+                                            xmlWriter.writeStartElement(namespace,"travelTimeNoStem");
                                         }
 
-
-                                       // write the nil attribute
-                                      writeAttribute("xsi","http://www.w3.org/2001/XMLSchema-instance","nil","1",xmlWriter);
-                                      xmlWriter.writeEndElement();
-                                    }else{
-                                     localCurrentRouteIdentity.serialize(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","currentRouteIdentity"),
-                                        factory,xmlWriter);
+                                    } else {
+                                        xmlWriter.writeStartElement("travelTimeNoStem");
                                     }
-                                }
+                                
+                                               if (localTravelTimeNoStem==java.lang.Integer.MIN_VALUE) {
+                                           
+                                                         throw new org.apache.axis2.databinding.ADBException("travelTimeNoStem cannot be null!!");
+                                                      
+                                               } else {
+                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localTravelTimeNoStem));
+                                               }
+                                    
+                                   xmlWriter.writeEndElement();
+                             
+                                    namespace = "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService";
+                                    if (! namespace.equals("")) {
+                                        prefix = xmlWriter.getPrefix(namespace);
+
+                                        if (prefix == null) {
+                                            prefix = generatePrefix(namespace);
+
+                                            xmlWriter.writeStartElement(prefix,"actualDistance", namespace);
+                                            xmlWriter.writeNamespace(prefix, namespace);
+                                            xmlWriter.setPrefix(prefix, namespace);
+
+                                        } else {
+                                            xmlWriter.writeStartElement(namespace,"actualDistance");
+                                        }
+
+                                    } else {
+                                        xmlWriter.writeStartElement("actualDistance");
+                                    }
+                                
+                                               if (java.lang.Double.isNaN(localActualDistance)) {
+                                           
+                                                         throw new org.apache.axis2.databinding.ADBException("actualDistance cannot be null!!");
+                                                      
+                                               } else {
+                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localActualDistance));
+                                               }
+                                    
+                                   xmlWriter.writeEndElement();
+                             
+                                    namespace = "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService";
+                                    if (! namespace.equals("")) {
+                                        prefix = xmlWriter.getPrefix(namespace);
+
+                                        if (prefix == null) {
+                                            prefix = generatePrefix(namespace);
+
+                                            xmlWriter.writeStartElement(prefix,"actualDistanceNoStem", namespace);
+                                            xmlWriter.writeNamespace(prefix, namespace);
+                                            xmlWriter.setPrefix(prefix, namespace);
+
+                                        } else {
+                                            xmlWriter.writeStartElement(namespace,"actualDistanceNoStem");
+                                        }
+
+                                    } else {
+                                        xmlWriter.writeStartElement("actualDistanceNoStem");
+                                    }
+                                
+                                               if (java.lang.Double.isNaN(localActualDistanceNoStem)) {
+                                           
+                                                         throw new org.apache.axis2.databinding.ADBException("actualDistanceNoStem cannot be null!!");
+                                                      
+                                               } else {
+                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localActualDistanceNoStem));
+                                               }
+                                    
+                                   xmlWriter.writeEndElement();
+                             
+                                    namespace = "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService";
+                                    if (! namespace.equals("")) {
+                                        prefix = xmlWriter.getPrefix(namespace);
+
+                                        if (prefix == null) {
+                                            prefix = generatePrefix(namespace);
+
+                                            xmlWriter.writeStartElement(prefix,"driverDistance", namespace);
+                                            xmlWriter.writeNamespace(prefix, namespace);
+                                            xmlWriter.setPrefix(prefix, namespace);
+
+                                        } else {
+                                            xmlWriter.writeStartElement(namespace,"driverDistance");
+                                        }
+
+                                    } else {
+                                        xmlWriter.writeStartElement("driverDistance");
+                                    }
+                                
+                                               if (java.lang.Double.isNaN(localDriverDistance)) {
+                                           
+                                                         throw new org.apache.axis2.databinding.ADBException("driverDistance cannot be null!!");
+                                                      
+                                               } else {
+                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localDriverDistance));
+                                               }
+                                    
+                                   xmlWriter.writeEndElement();
+                             
+                                    namespace = "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService";
+                                    if (! namespace.equals("")) {
+                                        prefix = xmlWriter.getPrefix(namespace);
+
+                                        if (prefix == null) {
+                                            prefix = generatePrefix(namespace);
+
+                                            xmlWriter.writeStartElement(prefix,"driverDistanceNotes", namespace);
+                                            xmlWriter.writeNamespace(prefix, namespace);
+                                            xmlWriter.setPrefix(prefix, namespace);
+
+                                        } else {
+                                            xmlWriter.writeStartElement(namespace,"driverDistanceNotes");
+                                        }
+
+                                    } else {
+                                        xmlWriter.writeStartElement("driverDistanceNotes");
+                                    }
+                                
+
+                                          if (localDriverDistanceNotes==null){
+                                              // write the nil attribute
+                                              
+                                                     throw new org.apache.axis2.databinding.ADBException("driverDistanceNotes cannot be null!!");
+                                                  
+                                          }else{
+
+                                        
+                                                   xmlWriter.writeCharacters(localDriverDistanceNotes);
+                                            
+                                          }
+                                    
+                                   xmlWriter.writeEndElement();
+                              if (localActualStartTracker){
+                                    namespace = "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService";
+                                    if (! namespace.equals("")) {
+                                        prefix = xmlWriter.getPrefix(namespace);
+
+                                        if (prefix == null) {
+                                            prefix = generatePrefix(namespace);
+
+                                            xmlWriter.writeStartElement(prefix,"actualStart", namespace);
+                                            xmlWriter.writeNamespace(prefix, namespace);
+                                            xmlWriter.setPrefix(prefix, namespace);
+
+                                        } else {
+                                            xmlWriter.writeStartElement(namespace,"actualStart");
+                                        }
+
+                                    } else {
+                                        xmlWriter.writeStartElement("actualStart");
+                                    }
+                                
+
+                                          if (localActualStart==null){
+                                              // write the nil attribute
+                                              
+                                                     throw new org.apache.axis2.databinding.ADBException("actualStart cannot be null!!");
+                                                  
+                                          }else{
+
+                                        
+                                                   xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localActualStart));
+                                            
+                                          }
+                                    
+                                   xmlWriter.writeEndElement();
+                             } if (localActualCompleteTracker){
+                                    namespace = "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService";
+                                    if (! namespace.equals("")) {
+                                        prefix = xmlWriter.getPrefix(namespace);
+
+                                        if (prefix == null) {
+                                            prefix = generatePrefix(namespace);
+
+                                            xmlWriter.writeStartElement(prefix,"actualComplete", namespace);
+                                            xmlWriter.writeNamespace(prefix, namespace);
+                                            xmlWriter.setPrefix(prefix, namespace);
+
+                                        } else {
+                                            xmlWriter.writeStartElement(namespace,"actualComplete");
+                                        }
+
+                                    } else {
+                                        xmlWriter.writeStartElement("actualComplete");
+                                    }
+                                
+
+                                          if (localActualComplete==null){
+                                              // write the nil attribute
+                                              
+                                                     throw new org.apache.axis2.databinding.ADBException("actualComplete cannot be null!!");
+                                                  
+                                          }else{
+
+                                        
+                                                   xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localActualComplete));
+                                            
+                                          }
+                                    
+                                   xmlWriter.writeEndElement();
+                             }
+                                    namespace = "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService";
+                                    if (! namespace.equals("")) {
+                                        prefix = xmlWriter.getPrefix(namespace);
+
+                                        if (prefix == null) {
+                                            prefix = generatePrefix(namespace);
+
+                                            xmlWriter.writeStartElement(prefix,"includesStem", namespace);
+                                            xmlWriter.writeNamespace(prefix, namespace);
+                                            xmlWriter.setPrefix(prefix, namespace);
+
+                                        } else {
+                                            xmlWriter.writeStartElement(namespace,"includesStem");
+                                        }
+
+                                    } else {
+                                        xmlWriter.writeStartElement("includesStem");
+                                    }
+                                
+                                               if (false) {
+                                           
+                                                         throw new org.apache.axis2.databinding.ADBException("includesStem cannot be null!!");
+                                                      
+                                               } else {
+                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localIncludesStem));
+                                               }
+                                    
+                                   xmlWriter.writeEndElement();
+                             
                     xmlWriter.writeEndElement();
                
 
@@ -1571,38 +1261,23 @@
                  java.util.ArrayList elementList = new java.util.ArrayList();
                  java.util.ArrayList attribList = new java.util.ArrayList();
 
-                 if (localEmployeeIdentityTracker){
+                
                             elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
                                                                       "employeeIdentity"));
                             
                             
-                                    elementList.add(localEmployeeIdentity==null?null:
-                                    localEmployeeIdentity);
+                                    if (localEmployeeIdentity==null){
+                                         throw new org.apache.axis2.databinding.ADBException("employeeIdentity cannot be null!!");
+                                    }
+                                    elementList.add(localEmployeeIdentity);
+                                 if (localSupervisorIdentityTracker){
+                            elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
+                                                                      "supervisorIdentity"));
+                            
+                            
+                                    elementList.add(localSupervisorIdentity==null?null:
+                                    localSupervisorIdentity);
                                 }
-                                      elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
-                                                                      "employeeType"));
-                                 
-                                        if (localEmployeeType != null){
-                                            elementList.add(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localEmployeeType));
-                                        } else {
-                                           throw new org.apache.axis2.databinding.ADBException("employeeType cannot be null!!");
-                                        }
-                                    
-                                      elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
-                                                                      "active"));
-                                 
-                                elementList.add(
-                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localActive));
-                             if (localEmployeeStatusTracker){
-                                      elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
-                                                                      "employeeStatus"));
-                                 
-                                        if (localEmployeeStatus != null){
-                                            elementList.add(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localEmployeeStatus));
-                                        } else {
-                                           throw new org.apache.axis2.databinding.ADBException("employeeStatus cannot be null!!");
-                                        }
-                                    } if (localLastNameTracker){
                                       elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
                                                                       "lastName"));
                                  
@@ -1611,7 +1286,7 @@
                                         } else {
                                            throw new org.apache.axis2.databinding.ADBException("lastName cannot be null!!");
                                         }
-                                    } if (localFirstNameTracker){
+                                    
                                       elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
                                                                       "firstName"));
                                  
@@ -1620,7 +1295,7 @@
                                         } else {
                                            throw new org.apache.axis2.databinding.ADBException("firstName cannot be null!!");
                                         }
-                                    } if (localMiddleNameTracker){
+                                    
                                       elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
                                                                       "middleName"));
                                  
@@ -1629,91 +1304,85 @@
                                         } else {
                                            throw new org.apache.axis2.databinding.ADBException("middleName cannot be null!!");
                                         }
-                                    } if (localHomePhoneNumberTracker){
-                                      elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
-                                                                      "homePhoneNumber"));
-                                 
-                                        if (localHomePhoneNumber != null){
-                                            elementList.add(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localHomePhoneNumber));
-                                        } else {
-                                           throw new org.apache.axis2.databinding.ADBException("homePhoneNumber cannot be null!!");
-                                        }
-                                    } if (localWorkPhoneNumberTracker){
-                                      elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
-                                                                      "workPhoneNumber"));
-                                 
-                                        if (localWorkPhoneNumber != null){
-                                            elementList.add(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localWorkPhoneNumber));
-                                        } else {
-                                           throw new org.apache.axis2.databinding.ADBException("workPhoneNumber cannot be null!!");
-                                        }
-                                    } if (localDateOfBirthTracker){
-                                      elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
-                                                                      "dateOfBirth"));
-                                 
-                                        if (localDateOfBirth != null){
-                                            elementList.add(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localDateOfBirth));
-                                        } else {
-                                           throw new org.apache.axis2.databinding.ADBException("dateOfBirth cannot be null!!");
-                                        }
-                                    } if (localDateStartedTracker){
-                                      elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
-                                                                      "dateStarted"));
-                                 
-                                        if (localDateStarted != null){
-                                            elementList.add(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localDateStarted));
-                                        } else {
-                                           throw new org.apache.axis2.databinding.ADBException("dateStarted cannot be null!!");
-                                        }
-                                    } if (localDateTerminatedTracker){
-                                      elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
-                                                                      "dateTerminated"));
-                                 
-                                        if (localDateTerminated != null){
-                                            elementList.add(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localDateTerminated));
-                                        } else {
-                                           throw new org.apache.axis2.databinding.ADBException("dateTerminated cannot be null!!");
-                                        }
-                                    } if (localADPFileNumberTracker){
-                                      elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
-                                                                      "ADPFileNumber"));
-                                 
-                                        if (localADPFileNumber != null){
-                                            elementList.add(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localADPFileNumber));
-                                        } else {
-                                           throw new org.apache.axis2.databinding.ADBException("ADPFileNumber cannot be null!!");
-                                        }
-                                    } if (localPasswordTracker){
-                                      elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
-                                                                      "password"));
-                                 
-                                        if (localPassword != null){
-                                            elementList.add(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localPassword));
-                                        } else {
-                                           throw new org.apache.axis2.databinding.ADBException("password cannot be null!!");
-                                        }
-                                    } if (localAddressTracker){
+                                    
                             elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
-                                                                      "address"));
+                                                                      "routeIdentity"));
                             
                             
-                                    elementList.add(localAddress==null?null:
-                                    localAddress);
-                                } if (localSupervisorIdentityTracker){
-                            elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
-                                                                      "supervisorIdentity"));
+                                    if (localRouteIdentity==null){
+                                         throw new org.apache.axis2.databinding.ADBException("routeIdentity cannot be null!!");
+                                    }
+                                    elementList.add(localRouteIdentity);
+                                
+                                      elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
+                                                                      "stopCount"));
+                                 
+                                elementList.add(
+                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localStopCount));
                             
+                                      elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
+                                                                      "travelTime"));
+                                 
+                                elementList.add(
+                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localTravelTime));
                             
-                                    elementList.add(localSupervisorIdentity==null?null:
-                                    localSupervisorIdentity);
-                                } if (localCurrentRouteIdentityTracker){
-                            elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
-                                                                      "currentRouteIdentity"));
+                                      elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
+                                                                      "travelTimeNoStem"));
+                                 
+                                elementList.add(
+                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localTravelTimeNoStem));
                             
+                                      elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
+                                                                      "actualDistance"));
+                                 
+                                elementList.add(
+                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localActualDistance));
                             
-                                    elementList.add(localCurrentRouteIdentity==null?null:
-                                    localCurrentRouteIdentity);
-                                }
+                                      elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
+                                                                      "actualDistanceNoStem"));
+                                 
+                                elementList.add(
+                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localActualDistanceNoStem));
+                            
+                                      elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
+                                                                      "driverDistance"));
+                                 
+                                elementList.add(
+                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localDriverDistance));
+                            
+                                      elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
+                                                                      "driverDistanceNotes"));
+                                 
+                                        if (localDriverDistanceNotes != null){
+                                            elementList.add(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localDriverDistanceNotes));
+                                        } else {
+                                           throw new org.apache.axis2.databinding.ADBException("driverDistanceNotes cannot be null!!");
+                                        }
+                                     if (localActualStartTracker){
+                                      elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
+                                                                      "actualStart"));
+                                 
+                                        if (localActualStart != null){
+                                            elementList.add(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localActualStart));
+                                        } else {
+                                           throw new org.apache.axis2.databinding.ADBException("actualStart cannot be null!!");
+                                        }
+                                    } if (localActualCompleteTracker){
+                                      elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
+                                                                      "actualComplete"));
+                                 
+                                        if (localActualComplete != null){
+                                            elementList.add(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localActualComplete));
+                                        } else {
+                                           throw new org.apache.axis2.databinding.ADBException("actualComplete cannot be null!!");
+                                        }
+                                    }
+                                      elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
+                                                                      "includesStem"));
+                                 
+                                elementList.add(
+                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localIncludesStem));
+                            
 
                 return new org.apache.axis2.databinding.utils.reader.ADBXMLStreamReaderImpl(qName, elementList.toArray(), attribList.toArray());
             
@@ -1738,9 +1407,9 @@
         * Postcondition: If this object is an element, the reader is positioned at its end element
         *                If this object is a complex type, the reader is positioned at the end element of its outer element
         */
-        public static Employee parse(javax.xml.stream.XMLStreamReader reader) throws java.lang.Exception{
-            Employee object =
-                new Employee();
+        public static EmployeeRouteStats parse(javax.xml.stream.XMLStreamReader reader) throws java.lang.Exception{
+            EmployeeRouteStats object =
+                new EmployeeRouteStats();
 
             int event;
             java.lang.String nillableValue = null;
@@ -1764,10 +1433,10 @@
 
                     java.lang.String type = fullTypeName.substring(fullTypeName.indexOf(":")+1);
                     
-                            if (!"Employee".equals(type)){
+                            if (!"EmployeeRouteStats".equals(type)){
                                 //find namespace for the prefix
                                 java.lang.String nsUri = reader.getNamespaceContext().getNamespaceURI(nsPrefix);
-                                return (Employee)com.freshdirect.routing.proxy.stub.transportation.ExtensionMapper.getTypeObject(
+                                return (EmployeeRouteStats)com.freshdirect.routing.proxy.stub.transportation.ExtensionMapper.getTypeObject(
                                      nsUri,type,reader);
                               }
                         
@@ -1794,36 +1463,9 @@
                                 
                                     if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","employeeIdentity").equals(reader.getName())){
                                 
-                                      nillableValue = reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance","nil");
-                                      if ("true".equals(nillableValue) || "1".equals(nillableValue)){
-                                          object.setEmployeeIdentity(null);
-                                          reader.next();
-                                            
-                                            reader.next();
-                                          
-                                      }else{
-                                    
                                                 object.setEmployeeIdentity(com.freshdirect.routing.proxy.stub.transportation.EmployeeIdentity.Factory.parse(reader));
                                               
                                         reader.next();
-                                    }
-                              }  // End of if for expected property start element
-                                
-                                    else {
-                                        
-                                    }
-                                
-                                    
-                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
-                                
-                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","employeeType").equals(reader.getName())){
-                                
-                                    java.lang.String content = reader.getElementText();
-                                    
-                                              object.setEmployeeType(
-                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToString(content));
-                                              
-                                        reader.next();
                                     
                               }  // End of if for expected property start element
                                 
@@ -1832,247 +1474,6 @@
                                     throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
                                 }
                             
-                                    
-                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
-                                
-                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","active").equals(reader.getName())){
-                                
-                                    java.lang.String content = reader.getElementText();
-                                    
-                                              object.setActive(
-                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToBoolean(content));
-                                              
-                                        reader.next();
-                                    
-                              }  // End of if for expected property start element
-                                
-                                else{
-                                    // A start element we are not expecting indicates an invalid parameter was passed
-                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
-                                }
-                            
-                                    
-                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
-                                
-                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","employeeStatus").equals(reader.getName())){
-                                
-                                    java.lang.String content = reader.getElementText();
-                                    
-                                              object.setEmployeeStatus(
-                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToString(content));
-                                              
-                                        reader.next();
-                                    
-                              }  // End of if for expected property start element
-                                
-                                    else {
-                                        
-                                    }
-                                
-                                    
-                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
-                                
-                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","lastName").equals(reader.getName())){
-                                
-                                    java.lang.String content = reader.getElementText();
-                                    
-                                              object.setLastName(
-                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToString(content));
-                                              
-                                        reader.next();
-                                    
-                              }  // End of if for expected property start element
-                                
-                                    else {
-                                        
-                                    }
-                                
-                                    
-                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
-                                
-                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","firstName").equals(reader.getName())){
-                                
-                                    java.lang.String content = reader.getElementText();
-                                    
-                                              object.setFirstName(
-                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToString(content));
-                                              
-                                        reader.next();
-                                    
-                              }  // End of if for expected property start element
-                                
-                                    else {
-                                        
-                                    }
-                                
-                                    
-                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
-                                
-                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","middleName").equals(reader.getName())){
-                                
-                                    java.lang.String content = reader.getElementText();
-                                    
-                                              object.setMiddleName(
-                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToString(content));
-                                              
-                                        reader.next();
-                                    
-                              }  // End of if for expected property start element
-                                
-                                    else {
-                                        
-                                    }
-                                
-                                    
-                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
-                                
-                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","homePhoneNumber").equals(reader.getName())){
-                                
-                                    java.lang.String content = reader.getElementText();
-                                    
-                                              object.setHomePhoneNumber(
-                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToString(content));
-                                              
-                                        reader.next();
-                                    
-                              }  // End of if for expected property start element
-                                
-                                    else {
-                                        
-                                    }
-                                
-                                    
-                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
-                                
-                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","workPhoneNumber").equals(reader.getName())){
-                                
-                                    java.lang.String content = reader.getElementText();
-                                    
-                                              object.setWorkPhoneNumber(
-                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToString(content));
-                                              
-                                        reader.next();
-                                    
-                              }  // End of if for expected property start element
-                                
-                                    else {
-                                        
-                                    }
-                                
-                                    
-                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
-                                
-                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","dateOfBirth").equals(reader.getName())){
-                                
-                                    java.lang.String content = reader.getElementText();
-                                    
-                                              object.setDateOfBirth(
-                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToDate(content));
-                                              
-                                        reader.next();
-                                    
-                              }  // End of if for expected property start element
-                                
-                                    else {
-                                        
-                                    }
-                                
-                                    
-                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
-                                
-                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","dateStarted").equals(reader.getName())){
-                                
-                                    java.lang.String content = reader.getElementText();
-                                    
-                                              object.setDateStarted(
-                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToDate(content));
-                                              
-                                        reader.next();
-                                    
-                              }  // End of if for expected property start element
-                                
-                                    else {
-                                        
-                                    }
-                                
-                                    
-                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
-                                
-                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","dateTerminated").equals(reader.getName())){
-                                
-                                    java.lang.String content = reader.getElementText();
-                                    
-                                              object.setDateTerminated(
-                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToDate(content));
-                                              
-                                        reader.next();
-                                    
-                              }  // End of if for expected property start element
-                                
-                                    else {
-                                        
-                                    }
-                                
-                                    
-                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
-                                
-                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","ADPFileNumber").equals(reader.getName())){
-                                
-                                    java.lang.String content = reader.getElementText();
-                                    
-                                              object.setADPFileNumber(
-                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToString(content));
-                                              
-                                        reader.next();
-                                    
-                              }  // End of if for expected property start element
-                                
-                                    else {
-                                        
-                                    }
-                                
-                                    
-                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
-                                
-                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","password").equals(reader.getName())){
-                                
-                                    java.lang.String content = reader.getElementText();
-                                    
-                                              object.setPassword(
-                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToString(content));
-                                              
-                                        reader.next();
-                                    
-                              }  // End of if for expected property start element
-                                
-                                    else {
-                                        
-                                    }
-                                
-                                    
-                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
-                                
-                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","address").equals(reader.getName())){
-                                
-                                      nillableValue = reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance","nil");
-                                      if ("true".equals(nillableValue) || "1".equals(nillableValue)){
-                                          object.setAddress(null);
-                                          reader.next();
-                                            
-                                            reader.next();
-                                          
-                                      }else{
-                                    
-                                                object.setAddress(com.freshdirect.routing.proxy.stub.transportation.Address.Factory.parse(reader));
-                                              
-                                        reader.next();
-                                    }
-                              }  // End of if for expected property start element
-                                
-                                    else {
-                                        
-                                    }
-                                
                                     
                                     while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
                                 
@@ -2100,27 +1501,264 @@
                                     
                                     while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
                                 
-                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","currentRouteIdentity").equals(reader.getName())){
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","lastName").equals(reader.getName())){
                                 
-                                      nillableValue = reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance","nil");
-                                      if ("true".equals(nillableValue) || "1".equals(nillableValue)){
-                                          object.setCurrentRouteIdentity(null);
-                                          reader.next();
-                                            
-                                            reader.next();
-                                          
-                                      }else{
+                                    java.lang.String content = reader.getElementText();
                                     
-                                                object.setCurrentRouteIdentity(com.freshdirect.routing.proxy.stub.transportation.RouteIdentity.Factory.parse(reader));
+                                              object.setLastName(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToString(content));
                                               
                                         reader.next();
-                                    }
+                                    
+                              }  // End of if for expected property start element
+                                
+                                else{
+                                    // A start element we are not expecting indicates an invalid parameter was passed
+                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
+                                }
+                            
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","firstName").equals(reader.getName())){
+                                
+                                    java.lang.String content = reader.getElementText();
+                                    
+                                              object.setFirstName(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToString(content));
+                                              
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                else{
+                                    // A start element we are not expecting indicates an invalid parameter was passed
+                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
+                                }
+                            
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","middleName").equals(reader.getName())){
+                                
+                                    java.lang.String content = reader.getElementText();
+                                    
+                                              object.setMiddleName(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToString(content));
+                                              
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                else{
+                                    // A start element we are not expecting indicates an invalid parameter was passed
+                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
+                                }
+                            
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","routeIdentity").equals(reader.getName())){
+                                
+                                                object.setRouteIdentity(com.freshdirect.routing.proxy.stub.transportation.RouteIdentity.Factory.parse(reader));
+                                              
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                else{
+                                    // A start element we are not expecting indicates an invalid parameter was passed
+                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
+                                }
+                            
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","stopCount").equals(reader.getName())){
+                                
+                                    java.lang.String content = reader.getElementText();
+                                    
+                                              object.setStopCount(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToInt(content));
+                                              
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                else{
+                                    // A start element we are not expecting indicates an invalid parameter was passed
+                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
+                                }
+                            
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","travelTime").equals(reader.getName())){
+                                
+                                    java.lang.String content = reader.getElementText();
+                                    
+                                              object.setTravelTime(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToInt(content));
+                                              
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                else{
+                                    // A start element we are not expecting indicates an invalid parameter was passed
+                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
+                                }
+                            
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","travelTimeNoStem").equals(reader.getName())){
+                                
+                                    java.lang.String content = reader.getElementText();
+                                    
+                                              object.setTravelTimeNoStem(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToInt(content));
+                                              
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                else{
+                                    // A start element we are not expecting indicates an invalid parameter was passed
+                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
+                                }
+                            
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","actualDistance").equals(reader.getName())){
+                                
+                                    java.lang.String content = reader.getElementText();
+                                    
+                                              object.setActualDistance(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToDouble(content));
+                                              
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                else{
+                                    // A start element we are not expecting indicates an invalid parameter was passed
+                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
+                                }
+                            
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","actualDistanceNoStem").equals(reader.getName())){
+                                
+                                    java.lang.String content = reader.getElementText();
+                                    
+                                              object.setActualDistanceNoStem(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToDouble(content));
+                                              
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                else{
+                                    // A start element we are not expecting indicates an invalid parameter was passed
+                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
+                                }
+                            
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","driverDistance").equals(reader.getName())){
+                                
+                                    java.lang.String content = reader.getElementText();
+                                    
+                                              object.setDriverDistance(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToDouble(content));
+                                              
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                else{
+                                    // A start element we are not expecting indicates an invalid parameter was passed
+                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
+                                }
+                            
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","driverDistanceNotes").equals(reader.getName())){
+                                
+                                    java.lang.String content = reader.getElementText();
+                                    
+                                              object.setDriverDistanceNotes(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToString(content));
+                                              
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                else{
+                                    // A start element we are not expecting indicates an invalid parameter was passed
+                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
+                                }
+                            
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","actualStart").equals(reader.getName())){
+                                
+                                    java.lang.String content = reader.getElementText();
+                                    
+                                              object.setActualStart(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToDateTime(content));
+                                              
+                                        reader.next();
+                                    
                               }  // End of if for expected property start element
                                 
                                     else {
                                         
                                     }
-                                  
+                                
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","actualComplete").equals(reader.getName())){
+                                
+                                    java.lang.String content = reader.getElementText();
+                                    
+                                              object.setActualComplete(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToDateTime(content));
+                                              
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                    else {
+                                        
+                                    }
+                                
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","includesStem").equals(reader.getName())){
+                                
+                                    java.lang.String content = reader.getElementText();
+                                    
+                                              object.setIncludesStem(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToBoolean(content));
+                                              
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                else{
+                                    // A start element we are not expecting indicates an invalid parameter was passed
+                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
+                                }
+                              
                             while (!reader.isStartElement() && !reader.isEndElement())
                                 reader.next();
                             

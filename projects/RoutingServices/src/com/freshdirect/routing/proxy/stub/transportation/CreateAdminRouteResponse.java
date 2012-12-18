@@ -1,6 +1,6 @@
 
 /**
- * LocationRejectCode.java
+ * CreateAdminRouteResponse.java
  *
  * This file was auto-generated from WSDL
  * by the Apache Axis2 version: 1.5  Built on : Apr 30, 2009 (06:07:47 EDT)
@@ -10,15 +10,15 @@
             
 
             /**
-            *  LocationRejectCode bean class
+            *  CreateAdminRouteResponse bean class
             */
         
-        public  class LocationRejectCode
+        public  class CreateAdminRouteResponse
         implements org.apache.axis2.databinding.ADBBean{
         
                 public static final javax.xml.namespace.QName MY_QNAME = new javax.xml.namespace.QName(
                 "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
-                "LocationRejectCode",
+                "CreateAdminRouteResponse",
                 "ns1");
 
             
@@ -33,87 +33,48 @@
         
 
                         /**
-                        * field for LocationRejectCode
+                        * field for RouteIdentity
                         */
 
                         
-                                    protected java.lang.String localLocationRejectCode ;
+                                    protected com.freshdirect.routing.proxy.stub.transportation.RouteIdentity localRouteIdentity ;
                                 
-                            private static java.util.HashMap _table_ = new java.util.HashMap();
+                           /*  This tracker boolean wil be used to detect whether the user called the set method
+                          *   for this attribute. It will be used to determine whether to include this field
+                           *   in the serialized XML
+                           */
+                           protected boolean localRouteIdentityTracker = false ;
+                           
 
-                            // Constructor
-                            
-                                protected LocationRejectCode(java.lang.String value, boolean isRegisterValue) {
-                                    localLocationRejectCode = value;
-                                    if (isRegisterValue){
-                                        
-                                               _table_.put(localLocationRejectCode, this);
-                                           
-                                    }
+                           /**
+                           * Auto generated getter method
+                           * @return com.freshdirect.routing.proxy.stub.transportation.RouteIdentity
+                           */
+                           public  com.freshdirect.routing.proxy.stub.transportation.RouteIdentity getRouteIdentity(){
+                               return localRouteIdentity;
+                           }
 
-                                }
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param RouteIdentity
+                               */
+                               public void setRouteIdentity(com.freshdirect.routing.proxy.stub.transportation.RouteIdentity param){
                             
-                                    public static final java.lang.String _lrcDatabaseError =
-                                        org.apache.axis2.databinding.utils.ConverterUtil.convertToString("lrcDatabaseError");
-                                
-                                    public static final java.lang.String _lrcInvalidLocationID =
-                                        org.apache.axis2.databinding.utils.ConverterUtil.convertToString("lrcInvalidLocationID");
-                                
-                                    public static final java.lang.String _lrcInvalidLocationType =
-                                        org.apache.axis2.databinding.utils.ConverterUtil.convertToString("lrcInvalidLocationType");
-                                
-                                    public static final java.lang.String _lrcInvalidServiceTimeType =
-                                        org.apache.axis2.databinding.utils.ConverterUtil.convertToString("lrcInvalidServiceTimeType");
-                                
-                                    public static final java.lang.String _lrcInvalidTimeWindowType =
-                                        org.apache.axis2.databinding.utils.ConverterUtil.convertToString("lrcInvalidTimeWindowType");
-                                
-                                    public static final java.lang.String _lrcInvalidRegionID =
-                                        org.apache.axis2.databinding.utils.ConverterUtil.convertToString("lrcInvalidRegionID");
-                                
-                                    public static final java.lang.String _lrcCantDeleteInUse =
-                                        org.apache.axis2.databinding.utils.ConverterUtil.convertToString("lrcCantDeleteInUse");
-                                
-                                    public static final java.lang.String _lrcCantDeleteDoesNotExist =
-                                        org.apache.axis2.databinding.utils.ConverterUtil.convertToString("lrcCantDeleteDoesNotExist");
-                                
-                                public static final LocationRejectCode lrcDatabaseError =
-                                    new LocationRejectCode(_lrcDatabaseError,true);
-                            
-                                public static final LocationRejectCode lrcInvalidLocationID =
-                                    new LocationRejectCode(_lrcInvalidLocationID,true);
-                            
-                                public static final LocationRejectCode lrcInvalidLocationType =
-                                    new LocationRejectCode(_lrcInvalidLocationType,true);
-                            
-                                public static final LocationRejectCode lrcInvalidServiceTimeType =
-                                    new LocationRejectCode(_lrcInvalidServiceTimeType,true);
-                            
-                                public static final LocationRejectCode lrcInvalidTimeWindowType =
-                                    new LocationRejectCode(_lrcInvalidTimeWindowType,true);
-                            
-                                public static final LocationRejectCode lrcInvalidRegionID =
-                                    new LocationRejectCode(_lrcInvalidRegionID,true);
-                            
-                                public static final LocationRejectCode lrcCantDeleteInUse =
-                                    new LocationRejectCode(_lrcCantDeleteInUse,true);
-                            
-                                public static final LocationRejectCode lrcCantDeleteDoesNotExist =
-                                    new LocationRejectCode(_lrcCantDeleteDoesNotExist,true);
-                            
-
-                                public java.lang.String getValue() { return localLocationRejectCode;}
-
-                                public boolean equals(java.lang.Object obj) {return (obj == this);}
-                                public int hashCode() { return toString().hashCode();}
-                                public java.lang.String toString() {
-                                
-                                        return localLocationRejectCode.toString();
+                                       if (param != null){
+                                          //update the setting tracker
+                                          localRouteIdentityTracker = true;
+                                       } else {
+                                          localRouteIdentityTracker = true;
+                                              
+                                       }
+                                   
+                                            this.localRouteIdentity=param;
                                     
 
-                                }
-
-                        
+                               }
+                            
 
      /**
      * isReaderMTOMAware
@@ -147,7 +108,7 @@
                        new org.apache.axis2.databinding.ADBDataSource(this,MY_QNAME){
 
                  public void serialize(org.apache.axis2.databinding.utils.writer.MTOMAwareXMLStreamWriter xmlWriter) throws javax.xml.stream.XMLStreamException {
-                       LocationRejectCode.this.serialize(MY_QNAME,factory,xmlWriter);
+                       CreateAdminRouteResponse.this.serialize(MY_QNAME,factory,xmlWriter);
                  }
                };
                return new org.apache.axiom.om.impl.llom.OMSourcedElementImpl(
@@ -169,56 +130,82 @@
             throws javax.xml.stream.XMLStreamException, org.apache.axis2.databinding.ADBException{
             
                 
-                //We can safely assume an element has only one type associated with it
+
+
+                java.lang.String prefix = null;
+                java.lang.String namespace = null;
                 
-                            java.lang.String namespace = parentQName.getNamespaceURI();
-                            java.lang.String localName = parentQName.getLocalPart();
-                        
-                            if (! namespace.equals("")) {
-                                java.lang.String prefix = xmlWriter.getPrefix(namespace);
 
-                                if (prefix == null) {
-                                    prefix = generatePrefix(namespace);
+                    prefix = parentQName.getPrefix();
+                    namespace = parentQName.getNamespaceURI();
 
-                                    xmlWriter.writeStartElement(prefix, localName, namespace);
-                                    xmlWriter.writeNamespace(prefix, namespace);
-                                    xmlWriter.setPrefix(prefix, namespace);
-
-                                } else {
-                                    xmlWriter.writeStartElement(namespace, localName);
-                                }
-
-                            } else {
-                                xmlWriter.writeStartElement(localName);
+                    if ((namespace != null) && (namespace.trim().length() > 0)) {
+                        java.lang.String writerPrefix = xmlWriter.getPrefix(namespace);
+                        if (writerPrefix != null) {
+                            xmlWriter.writeStartElement(namespace, parentQName.getLocalPart());
+                        } else {
+                            if (prefix == null) {
+                                prefix = generatePrefix(namespace);
                             }
 
-                            // add the type details if this is used in a simple type
-                               if (serializeType){
-                                   java.lang.String namespacePrefix = registerPrefix(xmlWriter,"http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService");
-                                   if ((namespacePrefix != null) && (namespacePrefix.trim().length() > 0)){
-                                       writeAttribute("xsi","http://www.w3.org/2001/XMLSchema-instance","type",
-                                           namespacePrefix+":LocationRejectCode",
-                                           xmlWriter);
-                                   } else {
-                                       writeAttribute("xsi","http://www.w3.org/2001/XMLSchema-instance","type",
-                                           "LocationRejectCode",
-                                           xmlWriter);
-                                   }
-                               }
-                            
-                                          if (localLocationRejectCode==null){
-                                            
-                                                     throw new org.apache.axis2.databinding.ADBException("Value cannot be null !!");
-                                                
-                                         }else{
-                                        
-                                                       xmlWriter.writeCharacters(localLocationRejectCode);
-                                            
-                                         }
-                                    
-                            xmlWriter.writeEndElement();
+                            xmlWriter.writeStartElement(prefix, parentQName.getLocalPart(), namespace);
+                            xmlWriter.writeNamespace(prefix, namespace);
+                            xmlWriter.setPrefix(prefix, namespace);
+                        }
+                    } else {
+                        xmlWriter.writeStartElement(parentQName.getLocalPart());
+                    }
+                
+                  if (serializeType){
+               
 
-                    
+                   java.lang.String namespacePrefix = registerPrefix(xmlWriter,"http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService");
+                   if ((namespacePrefix != null) && (namespacePrefix.trim().length() > 0)){
+                       writeAttribute("xsi","http://www.w3.org/2001/XMLSchema-instance","type",
+                           namespacePrefix+":CreateAdminRouteResponse",
+                           xmlWriter);
+                   } else {
+                       writeAttribute("xsi","http://www.w3.org/2001/XMLSchema-instance","type",
+                           "CreateAdminRouteResponse",
+                           xmlWriter);
+                   }
+
+               
+                   }
+                if (localRouteIdentityTracker){
+                                    if (localRouteIdentity==null){
+
+                                            java.lang.String namespace2 = "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService";
+
+                                        if (! namespace2.equals("")) {
+                                            java.lang.String prefix2 = xmlWriter.getPrefix(namespace2);
+
+                                            if (prefix2 == null) {
+                                                prefix2 = generatePrefix(namespace2);
+
+                                                xmlWriter.writeStartElement(prefix2,"routeIdentity", namespace2);
+                                                xmlWriter.writeNamespace(prefix2, namespace2);
+                                                xmlWriter.setPrefix(prefix2, namespace2);
+
+                                            } else {
+                                                xmlWriter.writeStartElement(namespace2,"routeIdentity");
+                                            }
+
+                                        } else {
+                                            xmlWriter.writeStartElement("routeIdentity");
+                                        }
+
+
+                                       // write the nil attribute
+                                      writeAttribute("xsi","http://www.w3.org/2001/XMLSchema-instance","nil","1",xmlWriter);
+                                      xmlWriter.writeEndElement();
+                                    }else{
+                                     localRouteIdentity.serialize(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","routeIdentity"),
+                                        factory,xmlWriter);
+                                    }
+                                }
+                    xmlWriter.writeEndElement();
+               
 
         }
 
@@ -375,14 +362,21 @@
 
 
         
-                
-                //We can safely assume an element has only one type associated with it
-                 return new org.apache.axis2.databinding.utils.reader.ADBXMLStreamReaderImpl(MY_QNAME,
-                            new java.lang.Object[]{
-                            org.apache.axis2.databinding.utils.reader.ADBXMLStreamReader.ELEMENT_TEXT,
-                            org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localLocationRejectCode)
-                            },
-                            null);
+                 java.util.ArrayList elementList = new java.util.ArrayList();
+                 java.util.ArrayList attribList = new java.util.ArrayList();
+
+                 if (localRouteIdentityTracker){
+                            elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
+                                                                      "routeIdentity"));
+                            
+                            
+                                    elementList.add(localRouteIdentity==null?null:
+                                    localRouteIdentity);
+                                }
+
+                return new org.apache.axis2.databinding.utils.reader.ADBXMLStreamReaderImpl(qName, elementList.toArray(), attribList.toArray());
+            
+            
 
         }
 
@@ -395,39 +389,6 @@
 
         
         
-                public static LocationRejectCode fromValue(java.lang.String value)
-                      throws java.lang.IllegalArgumentException {
-                    LocationRejectCode enumeration = (LocationRejectCode)
-                       
-                               _table_.get(value);
-                           
-
-                    if (enumeration==null) throw new java.lang.IllegalArgumentException();
-                    return enumeration;
-                }
-                public static LocationRejectCode fromString(java.lang.String value,java.lang.String namespaceURI)
-                      throws java.lang.IllegalArgumentException {
-                    try {
-                       
-                                       return fromValue(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(value));
-                                   
-
-                    } catch (java.lang.Exception e) {
-                        throw new java.lang.IllegalArgumentException();
-                    }
-                }
-
-                public static LocationRejectCode fromString(javax.xml.stream.XMLStreamReader xmlStreamReader,
-                                                                    java.lang.String content) {
-                    if (content.indexOf(":") > -1){
-                        java.lang.String prefix = content.substring(0,content.indexOf(":"));
-                        java.lang.String namespaceUri = xmlStreamReader.getNamespaceContext().getNamespaceURI(prefix);
-                        return LocationRejectCode.Factory.fromString(content,namespaceUri);
-                    } else {
-                       return LocationRejectCode.Factory.fromString(content,"");
-                    }
-                }
-            
 
         /**
         * static method to create the object
@@ -436,12 +397,9 @@
         * Postcondition: If this object is an element, the reader is positioned at its end element
         *                If this object is a complex type, the reader is positioned at the end element of its outer element
         */
-        public static LocationRejectCode parse(javax.xml.stream.XMLStreamReader reader) throws java.lang.Exception{
-            LocationRejectCode object = null;
-                // initialize a hash map to keep values
-                java.util.Map attributeMap = new java.util.HashMap();
-                java.util.List extraAttributeList = new java.util.ArrayList();
-            
+        public static CreateAdminRouteResponse parse(javax.xml.stream.XMLStreamReader reader) throws java.lang.Exception{
+            CreateAdminRouteResponse object =
+                new CreateAdminRouteResponse();
 
             int event;
             java.lang.String nillableValue = null;
@@ -453,6 +411,32 @@
                     reader.next();
 
                 
+                if (reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance","type")!=null){
+                  java.lang.String fullTypeName = reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance",
+                        "type");
+                  if (fullTypeName!=null){
+                    java.lang.String nsPrefix = null;
+                    if (fullTypeName.indexOf(":") > -1){
+                        nsPrefix = fullTypeName.substring(0,fullTypeName.indexOf(":"));
+                    }
+                    nsPrefix = nsPrefix==null?"":nsPrefix;
+
+                    java.lang.String type = fullTypeName.substring(fullTypeName.indexOf(":")+1);
+                    
+                            if (!"CreateAdminRouteResponse".equals(type)){
+                                //find namespace for the prefix
+                                java.lang.String nsUri = reader.getNamespaceContext().getNamespaceURI(nsPrefix);
+                                return (CreateAdminRouteResponse)com.freshdirect.routing.proxy.stub.transportation.ExtensionMapper.getTypeObject(
+                                     nsUri,type,reader);
+                              }
+                        
+
+                  }
+                
+
+                }
+
+                
 
                 
                 // Note all attributes that were handled. Used to differ normal attributes
@@ -460,29 +444,41 @@
                 java.util.Vector handledAttributes = new java.util.Vector();
                 
 
+                 
                     
-                while(!reader.isEndElement()) {
-                    if (reader.isStartElement()  || reader.hasText()){
+                    reader.next();
                 
-                                    java.lang.String content = reader.getElementText();
                                     
-                                        if (content.indexOf(":") > 0) {
-                                            // this seems to be a Qname so find the namespace and send
-                                            prefix = content.substring(0, content.indexOf(":"));
-                                            namespaceuri = reader.getNamespaceURI(prefix);
-                                            object = LocationRejectCode.Factory.fromString(content,namespaceuri);
-                                        } else {
-                                            // this seems to be not a qname send and empty namespace incase of it is
-                                            // check is done in fromString method
-                                            object = LocationRejectCode.Factory.fromString(content,"");
-                                        }
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","routeIdentity").equals(reader.getName())){
+                                
+                                      nillableValue = reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance","nil");
+                                      if ("true".equals(nillableValue) || "1".equals(nillableValue)){
+                                          object.setRouteIdentity(null);
+                                          reader.next();
+                                            
+                                            reader.next();
+                                          
+                                      }else{
+                                    
+                                                object.setRouteIdentity(com.freshdirect.routing.proxy.stub.transportation.RouteIdentity.Factory.parse(reader));
+                                              
+                                        reader.next();
+                                    }
+                              }  // End of if for expected property start element
+                                
+                                    else {
                                         
-                                        
-                             } else {
+                                    }
+                                  
+                            while (!reader.isStartElement() && !reader.isEndElement())
                                 reader.next();
-                             }  
-                           }  // end of while loop
-                        
+                            
+                                if (reader.isStartElement())
+                                // A start element we are not expecting indicates a trailing invalid property
+                                throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
+                            
 
 
 

@@ -1454,6 +1454,22 @@
             }
                 
            /**
+            * auto generated Axis2 call back method for retrieveEmployeeRouteStatsByCriteria method
+            * override this method for handling normal response from retrieveEmployeeRouteStatsByCriteria operation
+            */
+           public void receiveResultretrieveEmployeeRouteStatsByCriteria(
+                    com.freshdirect.routing.proxy.stub.transportation.EmployeeRouteStats[] result
+                        ) {
+           }
+
+          /**
+           * auto generated Axis2 Error handler
+           * override this method for handling error response from retrieveEmployeeRouteStatsByCriteria operation
+           */
+            public void receiveErrorretrieveEmployeeRouteStatsByCriteria(java.lang.Exception e) {
+            }
+                
+           /**
             * auto generated Axis2 call back method for retrieveSurveyDetails method
             * override this method for handling normal response from retrieveSurveyDetails operation
             */
@@ -1546,6 +1562,21 @@
            * override this method for handling error response from retrieveAssignedEquipment operation
            */
             public void receiveErrorretrieveAssignedEquipment(java.lang.Exception e) {
+            }
+                
+           /**
+            * auto generated Axis2 call back method for saveRouteReportedDistances method
+            * override this method for handling normal response from saveRouteReportedDistances operation
+            */
+           public void receiveResultsaveRouteReportedDistances(
+                    ) {
+           }
+
+          /**
+           * auto generated Axis2 Error handler
+           * override this method for handling error response from saveRouteReportedDistances operation
+           */
+            public void receiveErrorsaveRouteReportedDistances(java.lang.Exception e) {
             }
                 
            /**
@@ -2460,6 +2491,22 @@
             }
                 
            /**
+            * auto generated Axis2 call back method for createAdminRoute method
+            * override this method for handling normal response from createAdminRoute operation
+            */
+           public void receiveResultcreateAdminRoute(
+                    com.freshdirect.routing.proxy.stub.transportation.RouteIdentity result
+                        ) {
+           }
+
+          /**
+           * auto generated Axis2 Error handler
+           * override this method for handling error response from createAdminRoute operation
+           */
+            public void receiveErrorcreateAdminRoute(java.lang.Exception e) {
+            }
+                
+           /**
             * auto generated Axis2 call back method for retrieveRoutingImportOrdersByCriteria method
             * override this method for handling normal response from retrieveRoutingImportOrdersByCriteria operation
             */
@@ -2504,6 +2551,22 @@
            * override this method for handling error response from startRoute operation
            */
             public void receiveErrorstartRoute(java.lang.Exception e) {
+            }
+                
+           /**
+            * auto generated Axis2 call back method for retrieveAccountTypesByCriteria method
+            * override this method for handling normal response from retrieveAccountTypesByCriteria operation
+            */
+           public void receiveResultretrieveAccountTypesByCriteria(
+                    com.freshdirect.routing.proxy.stub.transportation.AccountType[] result
+                        ) {
+           }
+
+          /**
+           * auto generated Axis2 Error handler
+           * override this method for handling error response from retrieveAccountTypesByCriteria operation
+           */
+            public void receiveErrorretrieveAccountTypesByCriteria(java.lang.Exception e) {
             }
                 
            /**
@@ -2833,6 +2896,22 @@
            * override this method for handling error response from deleteUserDefinedData operation
            */
             public void receiveErrordeleteUserDefinedData(java.lang.Exception e) {
+            }
+                
+           /**
+            * auto generated Axis2 call back method for retrieveLocationServiceStatsByCriteria method
+            * override this method for handling normal response from retrieveLocationServiceStatsByCriteria operation
+            */
+           public void receiveResultretrieveLocationServiceStatsByCriteria(
+                    com.freshdirect.routing.proxy.stub.transportation.LocationServiceStats[] result
+                        ) {
+           }
+
+          /**
+           * auto generated Axis2 Error handler
+           * override this method for handling error response from retrieveLocationServiceStatsByCriteria operation
+           */
+            public void receiveErrorretrieveLocationServiceStatsByCriteria(java.lang.Exception e) {
             }
                 
            /**

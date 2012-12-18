@@ -32,36 +32,6 @@
         
 
                         /**
-                        * field for Type
-                        */
-
-                        
-                                    protected com.freshdirect.routing.proxy.stub.transportation.SchedulerDeliveryWindowMetricsType localType ;
-                                
-
-                           /**
-                           * Auto generated getter method
-                           * @return com.freshdirect.routing.proxy.stub.transportation.SchedulerDeliveryWindowMetricsType
-                           */
-                           public  com.freshdirect.routing.proxy.stub.transportation.SchedulerDeliveryWindowMetricsType getType(){
-                               return localType;
-                           }
-
-                           
-                        
-                            /**
-                               * Auto generated setter method
-                               * @param param Type
-                               */
-                               public void setType(com.freshdirect.routing.proxy.stub.transportation.SchedulerDeliveryWindowMetricsType param){
-                            
-                                            this.localType=param;
-                                    
-
-                               }
-                            
-
-                        /**
                         * field for DeliveryWindows
                         * This was an Array!
                         */
@@ -375,13 +345,7 @@
 
                
                    }
-               
-                                            if (localType==null){
-                                                 throw new org.apache.axis2.databinding.ADBException("type cannot be null!!");
-                                            }
-                                           localType.serialize(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","type"),
-                                               factory,xmlWriter);
-                                         if (localDeliveryWindowsTracker){
+                if (localDeliveryWindowsTracker){
                                        if (localDeliveryWindows!=null){
                                             for (int i = 0;i < localDeliveryWindows.length;i++){
                                                 if (localDeliveryWindows[i] != null){
@@ -700,16 +664,7 @@
                  java.util.ArrayList elementList = new java.util.ArrayList();
                  java.util.ArrayList attribList = new java.util.ArrayList();
 
-                
-                            elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
-                                                                      "type"));
-                            
-                            
-                                    if (localType==null){
-                                         throw new org.apache.axis2.databinding.ADBException("type cannot be null!!");
-                                    }
-                                    elementList.add(localType);
-                                 if (localDeliveryWindowsTracker){
+                 if (localDeliveryWindowsTracker){
                              if (localDeliveryWindows!=null) {
                                  for (int i = 0;i < localDeliveryWindows.length;i++){
 
@@ -838,24 +793,8 @@
                     
                     reader.next();
                 
-                        java.util.ArrayList list2 = new java.util.ArrayList();
+                        java.util.ArrayList list1 = new java.util.ArrayList();
                     
-                                    
-                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
-                                
-                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","type").equals(reader.getName())){
-                                
-                                                object.setType(com.freshdirect.routing.proxy.stub.transportation.SchedulerDeliveryWindowMetricsType.Factory.parse(reader));
-                                              
-                                        reader.next();
-                                    
-                              }  // End of if for expected property start element
-                                
-                                else{
-                                    // A start element we are not expecting indicates an invalid parameter was passed
-                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
-                                }
-                            
                                     
                                     while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
                                 
@@ -867,14 +806,14 @@
                                     
                                                           nillableValue = reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance","nil");
                                                           if ("true".equals(nillableValue) || "1".equals(nillableValue)){
-                                                              list2.add(null);
+                                                              list1.add(null);
                                                               reader.next();
                                                           } else {
-                                                        list2.add(com.freshdirect.routing.proxy.stub.transportation.SchedulerDeliveryWindowBase.Factory.parse(reader));
+                                                        list1.add(com.freshdirect.routing.proxy.stub.transportation.SchedulerDeliveryWindowBase.Factory.parse(reader));
                                                                 }
                                                         //loop until we find a start element that is not part of this array
-                                                        boolean loopDone2 = false;
-                                                        while(!loopDone2){
+                                                        boolean loopDone1 = false;
+                                                        while(!loopDone1){
                                                             // We should be at the end element, but make sure
                                                             while (!reader.isEndElement())
                                                                 reader.next();
@@ -885,19 +824,19 @@
                                                                 reader.next();
                                                             if (reader.isEndElement()){
                                                                 //two continuous end elements means we are exiting the xml structure
-                                                                loopDone2 = true;
+                                                                loopDone1 = true;
                                                             } else {
                                                                 if (new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","deliveryWindows").equals(reader.getName())){
                                                                     
                                                                       nillableValue = reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance","nil");
                                                                       if ("true".equals(nillableValue) || "1".equals(nillableValue)){
-                                                                          list2.add(null);
+                                                                          list1.add(null);
                                                                           reader.next();
                                                                       } else {
-                                                                    list2.add(com.freshdirect.routing.proxy.stub.transportation.SchedulerDeliveryWindowBase.Factory.parse(reader));
+                                                                    list1.add(com.freshdirect.routing.proxy.stub.transportation.SchedulerDeliveryWindowBase.Factory.parse(reader));
                                                                         }
                                                                 }else{
-                                                                    loopDone2 = true;
+                                                                    loopDone1 = true;
                                                                 }
                                                             }
                                                         }
@@ -906,7 +845,7 @@
                                                         object.setDeliveryWindows((com.freshdirect.routing.proxy.stub.transportation.SchedulerDeliveryWindowBase[])
                                                             org.apache.axis2.databinding.utils.ConverterUtil.convertToArray(
                                                                 com.freshdirect.routing.proxy.stub.transportation.SchedulerDeliveryWindowBase.class,
-                                                                list2));
+                                                                list1));
                                                             
                               }  // End of if for expected property start element
                                 
