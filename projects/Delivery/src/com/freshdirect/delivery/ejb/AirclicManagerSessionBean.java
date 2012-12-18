@@ -94,7 +94,6 @@ public class AirclicManagerSessionBean extends SessionBeanSupport {
 	
 	public String saveMessage(AirclicTextMessageVO textMessage, List<String> nextelList)  throws DlvResourceException {
 			
-			
 			if(ErpServicesProperties.isAirclicBlackhole())
 			{
 				saveMessageInQueue(textMessage);
@@ -112,12 +111,16 @@ public class AirclicManagerSessionBean extends SessionBeanSupport {
 				    }
 				}
 				saveMessageInQueue(textMessage);
+				try{
 				sendMessage(userIds, textMessage);
+				}catch(DlvResourceException e){
+					updateMessage(textMessage);
+					throw e;
+				}
 				updateMessage(textMessage);
 				createCase(textMessage);
 				return "Message Sent to Airclic";
 			}
-	
 	}
 
 	public SignatureVO getSignatureDetails(String order) throws DlvResourceException
@@ -203,9 +206,11 @@ public class AirclicManagerSessionBean extends SessionBeanSupport {
 		{
 			conn = getConnection();
 			AirclicDAO.sendMessage(conn, userIds, textMessage);
+			textMessage.setSentToAirclic("Y");
 		}
 		catch(SQLException e)
 		{
+			textMessage.setSentToAirclic("X");
 			throw new DlvResourceException(e);
 		}
 		finally {

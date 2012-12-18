@@ -147,7 +147,7 @@ public class AirclicDAO {
 			return userIds;
 	}
 	
-	public static void sendMessage(Connection conn, Map<String,Set<String>> userIds, AirclicTextMessageVO message) throws DlvResourceException
+	public static void sendMessage(Connection conn, Map<String,Set<String>> userIds, AirclicTextMessageVO message) throws SQLException
 	{
 		//airclic table
 
@@ -204,14 +204,11 @@ public class AirclicDAO {
 					ps.setString(1, message.getMessage());
 					ps.setString(2, message.getOrderId());
 					if(ps.executeUpdate()==0)
-						throw new DlvResourceException("order is not found in airclic: "+message.getOrderId());
+						throw new SQLException("Order is not in airclic.");
 			
 			}
 		}
-		catch(SQLException e)
-		{
-			throw new DlvResourceException(e);
-		}
+		
 		finally
 		{
 			try {
@@ -343,8 +340,9 @@ public class AirclicDAO {
 	
 		try
 		{
-			ps = conn.prepareStatement("UPDATE DLV.AIRCLIC_TXTMESSAGE SET SENT_TO_AIRCLIC = 'Y' WHERE ID = ?");
-			ps.setString(1,message.getId());
+			ps = conn.prepareStatement("UPDATE DLV.AIRCLIC_TXTMESSAGE SET SENT_TO_AIRCLIC = ? WHERE ID = ?");
+			ps.setString(1,message.getSentToAirclic());
+			ps.setString(2,message.getId());
 			ps.execute();
 		}
 		catch(SQLException e)

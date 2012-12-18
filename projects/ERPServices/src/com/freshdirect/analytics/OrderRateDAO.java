@@ -35,10 +35,11 @@ public class OrderRateDAO {
 			"di.cutofftime, SA.REQUESTED_DATE, di.zone from  cust.sale s, cust.salesaction sa, cust.deliveryinfo di WHERE s.ID=sa.SALE_ID AND s.CUSTOMER_ID=sa.CUSTOMER_ID " +
 			"AND DI.SALESACTION_ID = SA.ID AND sa.ACTION_TYPE IN ('CRO','MOD') AND sa.REQUESTED_DATE > TRUNC(SYSDATE) AND s.type='REG' and s.status <>'CAN' " +
 			"and S.CROMOD_DATE = SA.ACTION_DATE AND S.CROMOD_DATE <=?  group by di.starttime, di.endtime, di.cutofftime, SA.REQUESTED_DATE, di.zone) q1 " +
-			"where t.starttime  = q1.STARTTIME(+) and  t.endtime = q1.endtime(+) and t.zone_code = q1.zone(+) ) t, (  select  sum(order_count) order_count, " +
+			"where t.starttime  = q1.STARTTIME(+) and  t.endtime = q1.endtime(+) and t.zone_code = q1.zone(+) and t.cutofftime = q1.cutofftime(+) ) t, " +
+			"( select  sum(order_count) order_count, " +
 			"o.timeslot_start, o.timeslot_end, o.cutoff, o.delivery_date, o.zone from mis.order_rate  o where delivery_date > trunc( sysdate) and " +
 			"delivery_date <= ? group by o.timeslot_start, o.timeslot_end, o.cutoff, o.delivery_date, o.zone) q2 where t.starttime = q2.timeslot_start(+) " +
-			"and t.endtime = q2.timeslot_end(+) and t.zone_code = q2.zone(+)";
+			"and t.endtime = q2.timeslot_end(+) and t.zone_code = q2.zone(+) and t.cutofftime = q2.cutoff(+)";
 	
 	private static final String MAX_DELIVERY_DATE = "select max(delivery_date) from mis.order_rate";
 	
