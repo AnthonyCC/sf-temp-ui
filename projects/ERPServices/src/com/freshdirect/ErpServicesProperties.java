@@ -204,11 +204,15 @@ public class ErpServicesProperties {
 	private final static String PROP_AIRCLIC_BLACKHOLE		= "airclic.blackhole";
 	private final static String PROP_HANDOFF_ADDRESS_LINE2		= "send.handoff.addressline2";
 	private final static String PROP_HANDOFF_TRAILER_INFO_ENABLED = "send.handoff.trailerinfo.enabled";
+	
+	private final static String PROP_AUTO_LATE_CREDIT_FAILURE_MAIL_TO = "autolatecredit.mail.to";
+	private final static String PROP_AUTO_LATE_CREDIT_FAILURE_MAIL_CC = "autolatecredit.mail.cc";
+	private final static String PROP_AUTO_LATE_CREDIT_FAILURE_MAIL_FROM = "autolatecredit.mail.from";
 
 	static {
 		Properties defaults = new Properties();
 
-		defaults.put(PROP_PROVIDER_URL, 	"t3://127.0.0.1:7001");
+		defaults.put(PROP_PROVIDER_URL, 	"t3://127.0.0.1:80");
 		defaults.put(PROP_INIT_CTX_FACTORY,	"weblogic.jndi.WLInitialContextFactory");
 
         defaults.put(PROP_PRODUCTTREE_HOME,	"freshdirect.erp.ProductTree");
@@ -366,6 +370,10 @@ public class ErpServicesProperties {
 		defaults.put(PROP_AIRCLIC_BLACKHOLE, "false");
 		defaults.put(PROP_HANDOFF_ADDRESS_LINE2, "true");
 		defaults.put(PROP_HANDOFF_TRAILER_INFO_ENABLED, "true");
+		
+		defaults.put(PROP_AUTO_LATE_CREDIT_FAILURE_MAIL_TO, "applicationdevelopment@freshdirect.com");
+		defaults.put(PROP_AUTO_LATE_CREDIT_FAILURE_MAIL_CC, "applicationdevelopment@freshdirect.com");
+		defaults.put(PROP_AUTO_LATE_CREDIT_FAILURE_MAIL_FROM, "applicationdevelopment@freshdirect.com");
 		
 		config = ConfigHelper.getPropertiesFromClassLoader("erpservices.properties", defaults);
 		LOGGER.info("Loaded configuration: "+config);
@@ -864,6 +872,18 @@ public class ErpServicesProperties {
 	
 	public static String getCrmSystemDriverUserPassword(){
 		return config.getProperty(PROP_CRM_SYSTME_DRIVER_USER_PASSWORD);
+	}
+	
+	public static String getAutoLateCreditFailureMailTo() {
+		return config.getProperty(PROP_AUTO_LATE_CREDIT_FAILURE_MAIL_TO);
+	}
+	
+	public static String getAutoLateCreditFailureMailCC() {
+		return config.getProperty(PROP_AUTO_LATE_CREDIT_FAILURE_MAIL_CC);
+	}
+	
+	public static String getAutoLateCreditFailureMailFrom() {
+		return config.getProperty(PROP_AUTO_LATE_CREDIT_FAILURE_MAIL_FROM);
 	}
 	
 	

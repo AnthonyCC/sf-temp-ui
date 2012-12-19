@@ -26,7 +26,6 @@ import com.freshdirect.customer.ErpComplaintModel;
 import com.freshdirect.customer.ErpComplaintReason;
 import com.freshdirect.customer.ErpCustomerEmailModel;
 import com.freshdirect.deliverypass.DeliveryPassModel;
-import com.freshdirect.deliverypass.EnumDlvPassExtendReason;
 import com.freshdirect.deliverypass.EnumDlvPassProfileType;
 import com.freshdirect.fdstore.CallCenterServices;
 import com.freshdirect.fdstore.FDResourceException;
@@ -34,7 +33,6 @@ import com.freshdirect.customer.CustomerCreditModel;
 import com.freshdirect.fdstore.customer.FDCustomerInfo;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDIdentity;
-import com.freshdirect.fdstore.customer.FDOrderI;
 import com.freshdirect.fdstore.mail.FDEmailFactory;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionResult;
@@ -51,12 +49,12 @@ public class AutoLateDlvCreditTag extends AbstractControllerTag {
 	protected boolean performAction(HttpServletRequest request, ActionResult actionResult) throws JspException {		
 		HttpSession session = (HttpSession) request.getSession();
 		CrmAgentModel agent = CrmSession.getCurrentAgent(session);		
-		System.out.println("Came to execure AutoLateDlvCreditTag");
+		LOGGER.debug("Came to execure AutoLateDlvCreditTag");
 		StringBuffer errorString = new StringBuffer();
 		try {			
 			if("submitted".equals(request.getParameter("action"))) {
-				System.out.println("Action is submitted");
-				System.out.println("Adding session attribute");
+				LOGGER.debug("Action is submitted");
+				LOGGER.debug("Adding session attribute");
 				session.setAttribute("LATE_CREDITS", "done");
 				//Process credits
 				String autoId = request.getParameter("autoId");
@@ -64,7 +62,7 @@ public class AutoLateDlvCreditTag extends AbstractControllerTag {
 				//Get all the selected sale Id's and start credit processing
 				Map<String, String[]> parameters = request.getParameterMap();
 				for(String parameter : parameters.keySet()) {					
-					System.out.println(parameter.toLowerCase());
+					LOGGER.debug(parameter.toLowerCase());
 					if(parameter.toLowerCase().startsWith("saleid|") || parameter.toLowerCase().startsWith("dlvpasssaleid|")) {
 						boolean creditIssued = false;
 					    if(parameter.toLowerCase().startsWith("saleid|")) {
@@ -97,7 +95,7 @@ public class AutoLateDlvCreditTag extends AbstractControllerTag {
 					        	//Extend dlv PAss
 					        	CustomerCreditModel ccm = CrmManager.getInstance().getOrderForLateCredit(orderId, autoId);
 					        	
-					        	System.out.println("Getting delivery pass for :" + ccm.getDlvPassId());
+					        	LOGGER.debug("Getting delivery pass for :" + ccm.getDlvPassId());
 					        	DeliveryPassModel dpm = CrmManager.getInstance().getDeliveryPassInfo(ccm.getDlvPassId());		
 					        	
 					        	//check if DP is already extended
@@ -201,7 +199,7 @@ public class AutoLateDlvCreditTag extends AbstractControllerTag {
         complaintModel.setEmailOption(EnumSendCreditEmail.SEND_ON_COMPLAINT_CREATION);
         complaintModel.setCustomerEmail(new ErpCustomerEmailModel());
         
-        System.out.println("Almost done with complaint:"+ (complaintModel.describe()));
+        LOGGER.debug("Almost done with complaint:"+ (complaintModel.describe()));
         
         //addcomplaint
         boolean autoApproveAuthorized = true;
