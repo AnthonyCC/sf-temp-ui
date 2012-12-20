@@ -31,7 +31,7 @@ public class StoreFeedTask {
 	private static final Logger LOGGER = LoggerFactory.getInstance(StoreFeedTask.class);
 
 	private static final String FEED_FILE = FDStoreProperties.getBazaarvoiceDownloadFeedFile();
-	private static final String DOWNLOAD_PATH = "/home/csaszi/Downloads/"; //FDStoreProperties.getBazaarvoiceDownloadFeedTargetPath();
+	private static final String DOWNLOAD_PATH = FDStoreProperties.getBazaarvoiceDownloadFeedTargetPath();
 
 	private List<CustomerRatingsDTO> ratedProducts = new ArrayList<CustomerRatingsDTO>();
 	
