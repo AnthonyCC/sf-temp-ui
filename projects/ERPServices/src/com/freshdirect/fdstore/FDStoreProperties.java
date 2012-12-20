@@ -1141,7 +1141,7 @@ public class FDStoreProperties {
 		defaults.put(PROP_BAZAARVOICE_ENABLED, "true");
 		defaults.put(PROP_BAZAARVOICE_DOWNLOAD_FEED_SOURCEPATH, "feeds");
 		defaults.put(PROP_BAZAARVOICE_DOWNLOAD_FEED_FILE, "bv_freshdirect_standard_client_feed.xml.gz");
-		defaults.put(PROP_BAZAARVOICE_DOWNLOAD_FEED_TARGETPATH, "opt/fdlog/bv_feed");
+		defaults.put(PROP_BAZAARVOICE_DOWNLOAD_FEED_TARGETPATH, "/opt/fdlog/bv_feed");
 						
 		defaults.put(ALLOW_DISCOUNTS_ON_PREMIUM_SLOT, "false");
 		defaults.put(DLV_PASS_NEW_TC_DATE, "2012-05-09");
