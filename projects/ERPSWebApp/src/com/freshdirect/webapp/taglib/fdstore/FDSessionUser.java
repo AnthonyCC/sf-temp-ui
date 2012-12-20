@@ -1435,4 +1435,9 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 	public boolean getExternalCampaignTC() {
 		return this.user.getExternalCampaignTC();
 	}
+
+	@Override
+	public void setExternalPromoCampaigns(Set<String> externalCampaigns) {
+		this.user.setExternalPromoCampaigns(externalCampaigns);
+	}
 }

@@ -534,4 +534,6 @@ public interface FDUserI extends java.io.Serializable {
 	public void setExternalCampaignTC(boolean tcAccepted);
 	
 	public boolean getExternalCampaignTC();
+
+	public void setExternalPromoCampaigns(Set<String> externalCampaigns);
 }

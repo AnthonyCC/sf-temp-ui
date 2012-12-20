@@ -646,14 +646,20 @@ public class FDUserDAO {
 			ps.setString(3, user.getExternalCampaignTC()?"X":"");
 			ps.setTimestamp(4, new java.sql.Timestamp(d.getTimeInMillis()));
 			if(ps.executeUpdate()==1)
-				user.getExternalPromoCampaigns().add(user.getExternalCampaign());
+			{
+				Set<String> externalCampaigns = user.getExternalPromoCampaigns();
+				externalCampaigns.add(user.getExternalCampaign());
+				user.setExternalPromoCampaigns(externalCampaigns);
+			}
 		} catch (Exception e) {
 			LOGGER.error("Error saving external campaign", e);
 		} finally {
 			try {
 				if(ps != null)
 					ps.close();
-			} catch (Exception e1) {}
+			} catch (Exception e1) {
+				LOGGER.error("Error closing preparedstatement for external campaign", e1);
+			}
 		}
 	}
 	
