@@ -465,14 +465,7 @@ public class DispatchController extends AbstractMultiActionController {
 			List<Plan> resPlans = null;
 			resPlans=getResourcePlansForShift(p.getPlanDate(), r,  s,getPlansForDate(p.getPlanDate(),plansForDateMap));
 			Collections.sort(resPlans,new PlanFirstDeliveryTimeComparator());
-			if("003".equalsIgnoreCase(r.getEmployeeRoleType().getCode()))
-			{
-				s.setStartTime(new Date(resPlans.get(0).getFirstDeliveryTime().getTime()-30*60*1000));
-			}
-			else {
-				
-				s.setStartTime(resPlans.get(0).getStartTime());
-			}
+			s.setStartTime(resPlans.get(0).getStartTime());
 		}
 	}
 
