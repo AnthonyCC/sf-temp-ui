@@ -50,10 +50,29 @@
 %><fd:SmartSavingsUpdate justCheckSavingVariantId="true"></fd:SmartSavingsUpdate><%	    
 		
 		FDUserI user = (FDUserI) session.getAttribute(SessionName.USER);
-
+		Set<String> externalPromoCampaigns = null;
+		
 		QueryStringBuilder queryString = new QueryStringBuilder();
 		if (user != null) {
-
+			externalPromoCampaigns = user.getExternalPromoCampaigns();
+			
+			 %> 
+		    <script>
+		    var campaignsArray = new Array();  
+		    <%  int ecIndex =0;
+		    if(externalPromoCampaigns!=null){
+		  	for(String externalCampaign:externalPromoCampaigns) { 
+		    %>  
+		    campaignsArray[<%= ecIndex %>] = '<%= externalCampaign %>';  
+		    
+		    <%  
+		    ecIndex++;
+		    } 
+		    }
+		    %>  
+		    </script>  
+		    <% 
+		    
 			ResourceInfoServiceI resourceService = (ResourceInfoServiceI) FDRegistry
 					.getInstance().getService(
 							ResourceInfoServiceI.class);
@@ -412,6 +431,77 @@
 
 <!-- OAS SETUP begin -->
 <script type="text/javascript">
+function showExtCampaignButtons()
+{
+	  var userlevel = <%= (user!=null)?user.getLevel():-1 %>
+	  var elem = document.getElementById("officialrules");
+	  var campaignId = document.getElementById("campaignId").value;
+	    
+	    if(userlevel == <%= FDUserI.SIGNED_IN%>)
+		{
+	    	showHide(document.getElementById("currentcustomer"),'hidden');
+	    	showHide(document.getElementById("newcustomer"),'hidden');
+	    	showHide(document.getElementById("enternow"),'visible');
+		}
+	    else if(userlevel == <%= FDUserI.RECOGNIZED%>)
+		{
+	    	showHide(document.getElementById("currentcustomer"),'visible');
+	    	showHide(document.getElementById("newcustomer"),'hidden');
+	    	showHide(document.getElementById("enternow"),'hidden');
+	    	elem.innerHTML = elem.innerHTML.replace("<input id=\"terms\" name=\"terms\" type=\"checkbox\"> I accept","Read");
+		}
+	    else
+	    {
+	    	showHide(document.getElementById("currentcustomer"),'visible');
+	    	showHide(document.getElementById("newcustomer"),'visible');
+	    	showHide(document.getElementById("enternow"),'hidden');
+	    	
+		    elem.innerHTML = elem.innerHTML.replace("<input id=\"terms\" name=\"terms\" type=\"checkbox\"> I accept","Read");
+	    }
+	   
+	    if(contains(campaignsArray, campaignId))
+	    {
+	    	elem.innerHTML = elem.innerHTML.replace("<input id=\"terms\" name=\"terms\" type=\"checkbox\"> I accept","Read");
+	    	
+	    	showHide(document.getElementById("entered"),'visible');
+	    	showHide(document.getElementById("currentcustomer"),'hidden');
+	    	showHide(document.getElementById("newcustomer"),'hidden');
+	    	showHide(document.getElementById("enternow"),'hidden');
+	    }
+	
+}
+
+function validateECForm(form)
+{
+   if (form.terms.checked==true)
+   {
+      return true;
+   }
+   else
+      {
+    	document.getElementById("checkofficialrules").style.visibility='visible'; 
+		document.getElementById("checkofficialrules").style.display='block'; 
+		document.getElementById("checkofficialrules").style.color='red'; 
+	    return false;
+      }
+}
+
+function showHide(elem , visiblity)
+{
+	if(elem!=null)
+		elem.style.visibility = visiblity;
+}
+function contains(a, obj) {
+	
+    for (var i = 0; i < a.length; i++) {
+        if (a[i] === obj) {
+            return true;
+        }
+    }
+    return false;
+}
+
+
 protocol = 'http://';
 if(document.location.href.substring(0,5) == 'https'){
 	protocol = 'https://';

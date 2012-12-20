@@ -1410,4 +1410,29 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 	public void setSteeringSlotIds(Set<String> steeringSlotIds) {
 		this.user.setSteeringSlotIds(steeringSlotIds);
 	}
+
+	@Override
+	public Set<String> getExternalPromoCampaigns() {
+		return this.user.getExternalPromoCampaigns();
+	}
+
+	@Override
+	public void setExternalCampaign(String campaign) {
+		this.user.setExternalCampaign(campaign);
+	}
+
+	@Override
+	public String getExternalCampaign() {
+		return this.user.getExternalCampaign();
+	}
+
+	@Override
+	public void setExternalCampaignTC(boolean tcAccepted) {
+		 this.user.setExternalCampaignTC(tcAccepted);
+	}
+
+	@Override
+	public boolean getExternalCampaignTC() {
+		return this.user.getExternalCampaignTC();
+	}
 }

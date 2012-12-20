@@ -8,7 +8,10 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.sql.Types;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.log4j.Category;
 
@@ -27,6 +30,7 @@ import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.FDInvalidConfigurationException;
 import com.freshdirect.fdstore.customer.FDRecipientList;
 import com.freshdirect.fdstore.customer.FDUser;
+import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.customer.SavedRecipientModel;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.core.SequenceGenerator;
@@ -202,6 +206,8 @@ public class FDUserDAO {
 			user.setRecipientList(repList);
 		}
 		user.setEbtAccepted(checkEbtPaymentAccepted(conn,user.getZipCode()));
+		user.setExternalPromoCampaigns(loadExternalCampaigns(conn, user.getIdentity().getErpCustomerPK()));
+		
 		rs.close();
 		ps.close();
 
@@ -230,13 +236,29 @@ public class FDUserDAO {
 			user.setShoppingCart(cart);
 		}
 		user.setEbtAccepted(checkEbtPaymentAccepted(conn,user.getZipCode()));
+		user.setExternalPromoCampaigns(loadExternalCampaigns(conn, user.getIdentity().getErpCustomerPK()));
 		rs.close();
 		ps.close();
 
 		return user;
 	}
 	
+	private final static String EXTERNAL_CAMPAIGN_Query = "select campaign_id from cust.ext_campaign where customer_id = ?";
 	
+	private static Set<String> loadExternalCampaigns(Connection conn, String customer_id) throws SQLException {
+		Set<String> externalCampaigns = new HashSet<String>();
+		PreparedStatement ps = conn.prepareStatement(EXTERNAL_CAMPAIGN_Query);
+		ps.setString(1, customer_id);
+		ResultSet rs = ps.executeQuery();
+
+		while (rs.next()) {
+			externalCampaigns.add(rs.getString("campaign_id"));
+		}
+		rs.close();
+		ps.close();
+
+		return externalCampaigns;
+	}
 
 	private static final String LOAD_FROM_COOKIE_QUERY =
 		"SELECT fdu.ID as fduser_id, fdu.COOKIE, fdu.ADDRESS1, fdu.APARTMENT, fdu.ZIPCODE, fdu.DEPOT_CODE, fdu.SERVICE_TYPE, fdu.HPLETTER_VISITED, fdu.CAMPAIGN_VIEWED, fdc.id as fdcust_id, erpc.id as erpcust_id, fdu.ref_tracking_code, " +
@@ -266,6 +288,8 @@ public class FDUserDAO {
 			user.setRecipientList(repList);
 		}
 		user.setEbtAccepted(checkEbtPaymentAccepted(conn,user.getZipCode()));
+		user.setExternalPromoCampaigns(loadExternalCampaigns(conn, user.getIdentity().getErpCustomerPK()));
+		
 		rs.close();
 		ps.close();
 
@@ -604,6 +628,27 @@ public class FDUserDAO {
 			ps.execute();
 		} catch (Exception e) {
 			LOGGER.error("Error updating DP_TC_AGREE_DATE date", e);
+		} finally {
+			try {
+				if(ps != null)
+					ps.close();
+			} catch (Exception e1) {}
+		}
+	}
+
+	public static void saveExternalCampaign(Connection conn, FDUserI user) {
+		PreparedStatement ps = null;
+		try {
+			Calendar d = Calendar.getInstance();
+			ps = conn.prepareStatement("INSERT INTO CUST.EXT_CAMPAIGN(customer_id, campaign_id, terms_accepted, entered_date) VALUES (?,?,?,?)");	
+			ps.setString(1, user.getIdentity().getErpCustomerPK());
+			ps.setString(2, user.getExternalCampaign());
+			ps.setString(3, user.getExternalCampaignTC()?"X":"");
+			ps.setTimestamp(4, new java.sql.Timestamp(d.getTimeInMillis()));
+			if(ps.executeUpdate()==1)
+				user.getExternalPromoCampaigns().add(user.getExternalCampaign());
+		} catch (Exception e) {
+			LOGGER.error("Error saving external campaign", e);
 		} finally {
 			try {
 				if(ps != null)

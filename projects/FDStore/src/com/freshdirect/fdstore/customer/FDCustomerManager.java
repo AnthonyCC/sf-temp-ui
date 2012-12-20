@@ -4073,4 +4073,20 @@ public class FDCustomerManager {
 		}
 
 	}
+
+	public static void saveExternalCampaign(FDUserI user) throws FDResourceException {
+		lookupManagerHome();
+
+		try {
+			FDCustomerManagerSB sb = managerHome.create();
+			sb.saveExternalCampaign(user);
+		} catch (CreateException ce) {
+			invalidateManagerHome();
+			throw new FDResourceException(ce, "Error creating session bean");
+		} catch (RemoteException re) {
+			invalidateManagerHome();
+			throw new FDResourceException(re, "Error talking to session bean");
+		}
+
+	}
 }

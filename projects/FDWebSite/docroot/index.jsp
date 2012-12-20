@@ -200,6 +200,7 @@ if (FDStoreProperties.IsHomePageMediaEnabled() && (!user.isHomePageLetterVisited
 			<span>
 				<script type="text/javascript">
 					OAS_AD('HPFeatureTop');
+					showExtCampaignButtons();
 				</script>
 			</span>
 		</div>			

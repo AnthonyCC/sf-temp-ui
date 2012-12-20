@@ -242,8 +242,14 @@ public class FDUser extends ModelSupport implements FDUserI {
 	
 	private boolean ebtAccepted = false;
 	
-	 private Set<String> steeringSlotIds = new HashSet<String>();
+	private Set<String> steeringSlotIds = new HashSet<String>();
+	
+	private Set<String> externalPromoCampaigns = new HashSet<String>();
 
+	private String externalCampaign;
+
+	private boolean externalCampaignTCAccepted;
+	 
 	public String getTsaPromoCode() {
 		return tsaPromoCode;
 	}
@@ -2448,6 +2454,35 @@ public class FDUser extends ModelSupport implements FDUserI {
 
 	public void setSteeringSlotIds(Set<String> steeringSlotIds) {
 		this.steeringSlotIds = steeringSlotIds;
+	}
+
+	public Set<String> getExternalPromoCampaigns() {
+		return externalPromoCampaigns;
+	}
+
+	public void setExternalPromoCampaigns(Set<String> externalPromoCampaigns) {
+		this.externalPromoCampaigns = externalPromoCampaigns;
+	}
+
+	@Override
+	public void setExternalCampaign(String externalCampaign) {
+		this.externalCampaign = externalCampaign;
+	}
+
+	@Override
+	public String getExternalCampaign() {
+		// TODO Auto-generated method stub
+		return externalCampaign;
+	}
+
+	@Override
+	public void setExternalCampaignTC(boolean externalCampaignTCAccepted) {
+		this.externalCampaignTCAccepted = externalCampaignTCAccepted;
+	}
+
+	@Override
+	public boolean getExternalCampaignTC() {
+		return externalCampaignTCAccepted;
 	}
 	
 	
