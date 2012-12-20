@@ -462,11 +462,18 @@ function showExtCampaignButtons()
 	    if(contains(campaignsArray, campaignId))
 	    {
 	    	elem.innerHTML = elem.innerHTML.replace("<input id=\"terms\" name=\"terms\" type=\"checkbox\"> I accept","Read");
-	    	
+	    	var ec_div = document.getElementById("ss_background");
+	        var currentClass = ec_div.className;
+	    	if (currentClass == "bg966x102") { 
+	    		ec_div.className = "bg966x51";   
+	    	}
 	    	showHide(document.getElementById("entered"),'visible');
 	    	showHide(document.getElementById("currentcustomer"),'hidden');
+	    	displayDiv(document.getElementById("currentcustomer"),'none');
 	    	showHide(document.getElementById("newcustomer"),'hidden');
+	    	displayDiv(document.getElementById("newcustomer"),'none');
 	    	showHide(document.getElementById("enternow"),'hidden');
+	    	displayDiv(document.getElementById("enternow"),'none');
 	    }
 	
 }
@@ -490,6 +497,11 @@ function showHide(elem , visiblity)
 {
 	if(elem!=null)
 		elem.style.visibility = visiblity;
+}
+function displayDiv(elem , visiblity)
+{
+	if(elem!=null)
+		elem.style.display = visiblity;
 }
 function contains(a, obj) {
 	
