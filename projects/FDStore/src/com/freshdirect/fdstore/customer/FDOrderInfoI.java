@@ -85,4 +85,6 @@ public interface FDOrderInfoI extends Serializable {
 			return o1.getRequestedDate().compareTo( o2.getRequestedDate() );
 		}
 	};
+	
+	public boolean isMakeGood();
 }

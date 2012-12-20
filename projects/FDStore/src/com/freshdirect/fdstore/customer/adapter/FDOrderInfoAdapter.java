@@ -121,6 +121,7 @@ public class FDOrderInfoAdapter implements FDOrderInfoI {
     
 	@Override
 	public EnumPaymentMethodType getPaymentMethodType() {
+	
 		return this.saleInfo.getPaymentMethodType();
 	}
 	
@@ -163,10 +164,15 @@ public class FDOrderInfoAdapter implements FDOrderInfoI {
 
 	@Override
 	public boolean isModifiable() {
+		if(saleInfo.isMakeGood()) return false;
+		
 		final EnumSaleStatus status = saleInfo.getStatus();
 		return (EnumSaleStatus.SUBMITTED.equals(status) ||
 				EnumSaleStatus.AUTHORIZED.equals(status) ||
-				EnumSaleStatus.AVS_EXCEPTION.equals(status)) &&
+				EnumSaleStatus.AVS_EXCEPTION.equals(status) ||
+				(EnumSaleStatus.AUTHORIZATION_FAILED.equals(status)&&
+				 EnumSaleType.REGULAR.equals(saleInfo.getSaleType())
+			     )) &&
 				!saleInfo.getSaleType().equals(EnumSaleType.DONATION);
 	}
 
@@ -175,5 +181,10 @@ public class FDOrderInfoAdapter implements FDOrderInfoI {
 		return	!isPending() &&
 				!this.getSaleType().equals(EnumSaleType.GIFTCARD) &&
 				!this.getSaleType().equals(EnumSaleType.DONATION);
+	}
+
+	@Override
+	public boolean isMakeGood() {
+		return saleInfo.isMakeGood();
 	}
 }

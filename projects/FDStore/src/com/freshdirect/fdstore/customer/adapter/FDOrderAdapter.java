@@ -19,6 +19,7 @@ import com.freshdirect.common.pricing.Discount;
 import com.freshdirect.customer.EnumChargeType;
 import com.freshdirect.customer.EnumComplaintStatus;
 import com.freshdirect.customer.EnumDeliveryType;
+import com.freshdirect.customer.EnumPaymentType;
 import com.freshdirect.customer.EnumSaleStatus;
 import com.freshdirect.customer.EnumSaleType;
 import com.freshdirect.customer.EnumTransactionSource;
@@ -1398,6 +1399,11 @@ public class FDOrderAdapter implements FDOrderI {
 			result = (getInvoicedTotal() <= getTotal()) ? getInvoicedTotal(): getTotal();
 		}
 		return result;
+	}
+
+	@Override
+	public boolean isMakeGood() {
+		return EnumPaymentType.MAKE_GOOD.equals(getPaymentMethod().getPaymentType());
 	}
 
 }

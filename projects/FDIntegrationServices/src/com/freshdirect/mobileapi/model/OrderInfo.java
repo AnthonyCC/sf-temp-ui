@@ -6,6 +6,7 @@ import java.util.List;
 
 import com.freshdirect.common.pricing.PricingException;
 import com.freshdirect.customer.EnumDeliveryType;
+import com.freshdirect.customer.EnumPaymentType;
 import com.freshdirect.customer.EnumSaleStatus;
 import com.freshdirect.customer.EnumSaleType;
 import com.freshdirect.fdstore.customer.FDOrderInfoI;
@@ -93,6 +94,7 @@ public class OrderInfo {
         boolean isPendingDeliveryOrder = false;
 
         String ordDeliveryType = target.getDeliveryType().toString();
+        
 
         if (target.isPending() && target.getOrderStatus() != EnumSaleStatus.REFUSED_ORDER
                 && (!GC_CODE_PERSONAL.equals(ordDeliveryType) && !GC_CODE_CORPORATE.equals(ordDeliveryType))
@@ -103,7 +105,9 @@ public class OrderInfo {
         return isPendingDeliveryOrder;
     }
 
-    public static boolean isModifiable(Date deliveryCutoffTime, EnumSaleStatus orderStatus, EnumSaleType saleType) {
+    public static boolean isModifiable(Date deliveryCutoffTime, EnumSaleStatus orderStatus, EnumSaleType saleType, boolean isMakeGood) {
+    	
+    	if(isMakeGood) return false;
         Date now = new Date(); // now
         boolean beforeCutoffTime = now.before(deliveryCutoffTime);
 
@@ -113,7 +117,8 @@ public class OrderInfo {
     }
 
     public boolean isModifiable() {
-        return isModifiable(getDeliveryCutoffTime(), target.getOrderStatus(), target.getSaleType());
+    	if(target.isMakeGood()) return false;
+        return isModifiable(getDeliveryCutoffTime(), target.getOrderStatus(), target.getSaleType(), target.isMakeGood()) ;
     }
 
     public boolean isShoppable() {

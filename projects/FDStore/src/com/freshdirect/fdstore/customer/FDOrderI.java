@@ -199,4 +199,5 @@ public interface FDOrderI extends FDCartI {
 	public double getInvoicedDeliveryPremium();
 	
 	Double getEbtPurchaseAmount();
+	public boolean isMakeGood();
 }
