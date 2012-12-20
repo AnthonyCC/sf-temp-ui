@@ -509,5 +509,41 @@ public class DeliveryPassDAO {
 		}	
 
 	}
+	
+	 private static String GET_OPEN_CASES_FOR_MISSING_PAYMENTS=
+	" SELECT  INITCAP(CI.LAST_NAME) ||\',\'||INITCAP(CI.FIRST_NAME) as \"Customer Name\", "+
+    " C.USER_ID AS \"User Id\", case.summary AS \"DP Renewal failure reason\" , CASE.CREATE_DATE as \"Failed On\", "+
+    " FROM cust.case case, cust.customer c, cust.customerinfo ci "+
+    " WHERE c.id=case.customer_id AND case_subject='DPQ-009' and  case_state<>'CLSD' "+  
+    " AND create_date BETWEEN TRUNC(SYSDATE-30) and SYSDATE "+
+    " AND c.id=CI.CUSTOMER_ID "+
+    " ORDER BY TRUNC(CASE.CREATE_DATE) DESC , INITCAP(CI.LAST_NAME) ||','||INITCAP(CI.FIRST_NAME) ASC";
+	public static List<List<String>> getDPCustomersWithMissingPayments(Connection conn) throws SQLException {
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		List<List<String>> customers=new ArrayList<List<String>>(50);
+		List<String> custInfo=new ArrayList<String>(4);
+		try{
+			ps = conn.prepareStatement(GET_OPEN_CASES_FOR_MISSING_PAYMENTS);
+			rs = ps.executeQuery();
+			while(rs.next()) {
+				custInfo.add(rs.getString(1));
+				custInfo.add(rs.getString(2));
+				custInfo.add(rs.getString(3));
+				custInfo.add(rs.getString(4));
+				customers.add(custInfo);
+				custInfo=new ArrayList<String>(4);
+			}
+			return customers;
+		}catch(SQLException exp){
+			throw exp;
+		}
+		finally{
+			if(rs != null)
+				rs.close();
+			if(ps != null)
+				ps.close();
+		}		
+	}
 
 }

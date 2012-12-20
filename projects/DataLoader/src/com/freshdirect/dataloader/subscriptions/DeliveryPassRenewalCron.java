@@ -3,8 +3,10 @@ package com.freshdirect.dataloader.subscriptions;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.rmi.RemoteException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -12,6 +14,7 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.ejb.CreateException;
 import javax.mail.MessagingException;
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -29,9 +32,13 @@ import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpFraudException;
 import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.customer.ErpSaleNotFoundException;
+import com.freshdirect.delivery.DlvResourceException;
 import com.freshdirect.delivery.DlvZoneInfoModel;
 import com.freshdirect.delivery.EnumReservationType;
 import com.freshdirect.delivery.EnumZipCheckResponses;
+import com.freshdirect.delivery.ejb.DlvManagerHome;
+import com.freshdirect.delivery.ejb.DlvManagerSB;
+import com.freshdirect.delivery.model.UnassignedDlvReservationModel;
 import com.freshdirect.deliverypass.DeliveryPassException;
 import com.freshdirect.deliverypass.DlvPassConstants;
 import com.freshdirect.fdstore.FDCachedFactory;
@@ -150,11 +157,25 @@ public class DeliveryPassRenewalCron {
 		return orderID;
 	}
 
+	private static ErpPaymentMethodI getMatchedPaymentMethod(ErpPaymentMethodI pymtMethod, Collection<ErpPaymentMethodI> pymtMethods) {
+		if(pymtMethods==null ||pymtMethods.isEmpty())
+			return null;
+		Iterator<ErpPaymentMethodI> it=pymtMethods.iterator();
+		ErpPaymentMethodI _pymtMethod=null;
+		boolean exists=false;
+		while (it.hasNext()&& !exists) {
+			_pymtMethod=(ErpPaymentMethodI)it.next();
+			if( pymtMethod.getAccountNumber().equals(_pymtMethod.getAccountNumber())) {
+				exists=true;
+			}
+		}
+		return exists?_pymtMethod:null;	
+	}
 	private static String placeOrder(String erpCustomerID, String arSKU) throws FDResourceException {
 
 		FDIdentity identity=null;
 		FDActionInfo actionInfo=null;
-		Collection pymtMethods=null;
+		ErpPaymentMethodI pymtMethod=null;
 		FDOrderI lastOrder=null;
 		FDUser user=null;
 		CustomerRatingAdaptor cra=null;
@@ -162,16 +183,16 @@ public class DeliveryPassRenewalCron {
 		String orderID="";
 		if(lastOrder!=null) {
 			identity=getFDIdentity(erpCustomerID);
-			pymtMethods=getPaymentMethods(identity);
-			if(pymtMethods!=null) {
-				if(isExpiredCC(lastOrder.getPaymentMethod())) {
-					LOGGER.warn("Unable to find payment method for autoRenewal order for customer :"+erpCustomerID);
+			pymtMethod=getMatchedPaymentMethod(lastOrder.getPaymentMethod(),getPaymentMethods(identity));
+			if(pymtMethod!=null) {
+				if(isExpiredCC(pymtMethod)) {
+					LOGGER.warn("Autorenewal order payment method is expired for customer :"+erpCustomerID);
 					createCase(erpCustomerID,CrmCaseSubject.CODE_AUTO_BILL_PAYMENT_MISSING,DlvPassConstants.AUTORENEW_PYMT_METHOD_CC_EXPIRED);
 					FDCustomerInfo customerInfo=FDCustomerManager.getCustomerInfo(identity);
 					XMLEmailI email =FDEmailFactory.getInstance().createAutoRenewDPCCExpiredEmail(customerInfo);
 					 		
 					FDCustomerManager.sendEmail(email);
-				} else if(exists(lastOrder.getPaymentMethod(),pymtMethods)) {
+				} else {
 					try {
 						user=FDCustomerManager.getFDUser(identity);
 						actionInfo=getFDActionInfo(identity);
@@ -192,10 +213,10 @@ public class DeliveryPassRenewalCron {
 						email(erpCustomerID,sw.getBuffer().toString());
 					}
 				}
-				else {
-					LOGGER.warn("Unable to find payment method for autoRenewal order for customer :"+erpCustomerID);
-					createCase(erpCustomerID,CrmCaseSubject.CODE_AUTO_BILL_PAYMENT_MISSING,DlvPassConstants.AUTORENEW_PYMT_METHOD_UNKNOWN);
-				}
+				
+			} else {
+				LOGGER.warn("Unable to find payment method for autoRenewal order for customer :"+erpCustomerID);
+				createCase(erpCustomerID,CrmCaseSubject.CODE_AUTO_BILL_PAYMENT_MISSING,DlvPassConstants.AUTORENEW_PYMT_METHOD_UNKNOWN);
 			}
 		}
 		return orderID;
@@ -302,10 +323,10 @@ public class DeliveryPassRenewalCron {
 		return zInfo;
 	}
 
-	private static boolean exists(ErpPaymentMethodI pymtMethod, Collection pymtMethods) {
+	private static boolean exists(ErpPaymentMethodI pymtMethod, Collection<ErpPaymentMethodI> pymtMethods) {
 		if(pymtMethods==null ||pymtMethods.isEmpty())
 			return false;
-		Iterator it=pymtMethods.iterator();
+		Iterator<ErpPaymentMethodI> it=pymtMethods.iterator();
 		ErpPaymentMethodI _pymtMethod=null;
 		boolean exists=false;
 		while (it.hasNext()&& !exists) {
@@ -325,6 +346,8 @@ public class DeliveryPassRenewalCron {
 		}
 		return exists;
 	}
+	
+	
 
 	private static Object[] getAutoRenewalInfo() {
 
@@ -368,7 +391,7 @@ public class DeliveryPassRenewalCron {
 		}
 	}
 
-	private static Collection getPaymentMethods(FDIdentity identity) throws FDResourceException {
+	private static Collection<ErpPaymentMethodI> getPaymentMethods(FDIdentity identity) throws FDResourceException {
 
 		try {
 			return FDCustomerManager.getPaymentMethods(identity);
@@ -422,6 +445,79 @@ public class DeliveryPassRenewalCron {
 		if(paymentMethod.getExpirationDate().before(java.util.Calendar.getInstance().getTime()))
 			return true;
 		return false;
+		
+	}
+	
+	private static void emailUnassigned()
+	{
+		Context ctx = null;
+		try
+		{
+			
+			ctx = getInitialContext();
+			Calendar cal = Calendar.getInstance();
+			cal.add(Calendar.DATE, 1);
+			
+			DlvManagerSB dlvManager = null;
+			DlvManagerHome dlh =(DlvManagerHome) ctx.lookup("freshdirect.delivery.DeliveryManager");
+			dlvManager = dlh.create();
+			List<UnassignedDlvReservationModel> _unassignedReservations = dlvManager.getUnassignedReservations(cal.getTime(),true);
+			/*if(_unassignedReservations.size()>0)
+				email(_unassignedReservations, cal.getTime());*/
+		}
+		catch(NamingException e)
+		{
+			e.printStackTrace();
+		} catch (DlvResourceException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (RemoteException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (CreateException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		finally {
+			try {
+				if (ctx != null) {
+					ctx.close();
+					ctx = null;
+				}
+			} catch (NamingException ne) {
+
+				// TODO Auto-generated catch block
+				ne.printStackTrace();
+			
+			}
+		}
+	}
+	
+	private static void email(Date processDate, String msg) {
+		// TODO Auto-generated method stub
+		try {
+			SimpleDateFormat dateFormatter = new SimpleDateFormat("EEE, MMM d, yyyy");
+			String subject="DeliveryPass Report	for"+ (processDate != null ? dateFormatter.format(Calendar.getInstance()) : " date error");
+
+			StringBuffer buff = new StringBuffer();
+
+			buff.append("<html>").append("<body>");			
+			
+			if(msg != null) {
+				buff.append(msg);
+			} else {
+				buff.append("<B> Not data returned</B>");
+			}
+			buff.append("</body>").append("</html>");
+
+			ErpMailSender mailer = new ErpMailSender();
+			mailer.sendMail(ErpServicesProperties.getCronFailureMailFrom(),
+					ErpServicesProperties.getCronFailureMailTo(),ErpServicesProperties.getCronFailureMailCC(),
+					subject, buff.toString(), true, "");
+			
+		}catch (MessagingException e) {
+			LOGGER.warn("Error Sending Sale Cron report email: ", e);
+		}
 		
 	}
 }
