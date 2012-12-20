@@ -87,8 +87,8 @@ public class AutoLateDeliveryCredit {
 			buff.append("</body>").append("</html>");
 
 			ErpMailSender mailer = new ErpMailSender();
-			mailer.sendMail(ErpServicesProperties.getAutoLateCreditFailureMailFrom(),
-					ErpServicesProperties.getAutoLateCreditFailureMailTo(),ErpServicesProperties.getAutoLateCreditFailureMailCC(),
+			mailer.sendMail(ErpServicesProperties.getCronFailureMailFrom(),
+					ErpServicesProperties.getCronFailureMailTo(),ErpServicesProperties.getCronFailureMailCC(),
 					subject, buff.toString(), true, "");
 			
 		}catch (MessagingException e) {
