@@ -189,7 +189,7 @@ public class DlvTemplateManagerSessionBean extends SessionBeanSupport {
 		"z.zone_code, ts.capacity, ts.traffic_factor, ts.ct_capacity, ts.is_dynamic, "+
 		"(select count(*) from dlv.reservation where zone_id=z.id and ts.id=timeslot_id and status_code <> ? and status_code <> ? and chefstable = ' ' and class is null) as base_allocation, "+
 		"(select count(*) from dlv.reservation where zone_id=z.id and ts.id=timeslot_id and status_code <> ? and status_code <> ? and chefstable = 'X' and class is null) as ct_allocation, "+
-		"(select count(*) from dlv.reservation where zone_id=z.id and ts.id=timeslot_id and status_code = '10' class is null) as total_confirmed, "+
+		"(select count(*) from dlv.reservation where zone_id=z.id and ts.id=timeslot_id and status_code = '10' and class is null) as total_confirmed, "+
 		"(select z.ct_release_time from dlv.zone z where z.id = ts.zone_id) as ct_release_time, "+
 		"ts.premium_cutoff_time, ts.premium_capacity, ts.premium_ct_capacity, "+
 	  	"(select count(*) from dlv.reservation where timeslot_id=ts.id and status_code <> ? and status_code <> ? and class= 'P') as premium_allocation, " +
