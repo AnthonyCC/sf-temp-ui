@@ -30,12 +30,15 @@ public class StoreFeedTask {
 
 	private static final Logger LOGGER = LoggerFactory.getInstance(StoreFeedTask.class);
 
-	private static final String FEED_FILE = FDStoreProperties.getBazaarvoiceDownloadFeedFile();
-	private static final String DOWNLOAD_PATH = FDStoreProperties.getBazaarvoiceDownloadFeedTargetPath();
+	private String FEED_FILE = "";
+	private String DOWNLOAD_PATH = "";
 
 	private List<CustomerRatingsDTO> ratedProducts = new ArrayList<CustomerRatingsDTO>();
 	
 	public BazaarvoiceFeedProcessResult process(){
+		
+		FEED_FILE = FDStoreProperties.getBazaarvoiceDownloadFeedFile();
+		DOWNLOAD_PATH = FDStoreProperties.getBazaarvoiceDownloadFeedTargetPath();
 		
 		try {
 			parseFeedFileContent();

@@ -26,14 +26,21 @@ public class DownloadFeedProcessTask {
 	
 	private static final Logger LOGGER = LoggerFactory.getInstance(DownloadFeedProcessTask.class);
 	
-	private static final String FTP_URL = FDStoreProperties.getBazaarvoiceFtpUrl();
-	private static final String FEED_FILE = FDStoreProperties.getBazaarvoiceDownloadFeedFile();
-	private static final String FTP_SOURCEPATH = FDStoreProperties.getBazaarvoiceDownloadFeedSourcePath();
-	private static final String FTP_USER = FDStoreProperties.getBazaarvoiceFtpUsername();
-	private static final String FTP_PASSWORD = FDStoreProperties.getBazaarvoiceFtpPassword();
-	private static final String DOWNLOAD_PATH = FDStoreProperties.getBazaarvoiceDownloadFeedTargetPath();
+	private String FTP_URL = "";
+	private String FEED_FILE = "";
+	private String FTP_SOURCEPATH = "";
+	private String FTP_USER = "";
+	private String FTP_PASSWORD = "";
+	private String DOWNLOAD_PATH = "";
 
 	public BazaarvoiceFeedProcessResult process(){
+		
+		FTP_URL = FDStoreProperties.getBazaarvoiceFtpUrl();
+		FEED_FILE = FDStoreProperties.getBazaarvoiceDownloadFeedFile();
+		FTP_SOURCEPATH = FDStoreProperties.getBazaarvoiceDownloadFeedSourcePath();
+		FTP_USER = FDStoreProperties.getBazaarvoiceFtpUsername();
+		FTP_PASSWORD = FDStoreProperties.getBazaarvoiceFtpPassword();
+		DOWNLOAD_PATH = FDStoreProperties.getBazaarvoiceDownloadFeedTargetPath();
 		
 		try {
 			downloadFeedFile();
