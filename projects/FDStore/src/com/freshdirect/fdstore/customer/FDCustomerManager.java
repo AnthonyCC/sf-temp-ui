@@ -4074,12 +4074,12 @@ public class FDCustomerManager {
 
 	}
 
-	public static void saveExternalCampaign(FDUserI user) throws FDResourceException {
+	public static FDUserI saveExternalCampaign(FDUserI user) throws FDResourceException {
 		lookupManagerHome();
 
 		try {
 			FDCustomerManagerSB sb = managerHome.create();
-			sb.saveExternalCampaign(user);
+			return sb.saveExternalCampaign(user);
 		} catch (CreateException ce) {
 			invalidateManagerHome();
 			throw new FDResourceException(ce, "Error creating session bean");

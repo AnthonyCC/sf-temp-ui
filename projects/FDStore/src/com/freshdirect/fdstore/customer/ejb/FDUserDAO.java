@@ -636,7 +636,7 @@ public class FDUserDAO {
 		}
 	}
 
-	public static void saveExternalCampaign(Connection conn, FDUserI user) {
+	public static FDUserI saveExternalCampaign(Connection conn, FDUserI user) {
 		PreparedStatement ps = null;
 		try {
 			Calendar d = Calendar.getInstance();
@@ -661,6 +661,7 @@ public class FDUserDAO {
 				LOGGER.error("Error closing preparedstatement for external campaign", e1);
 			}
 		}
+		return user;
 	}
 	
 }

@@ -7001,12 +7001,11 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		return cartonInfo;
 	}
 	
-	/* APPDEV-2475 DP T&C */
-	public void saveExternalCampaign(FDUserI user) throws FDResourceException {
+	public FDUserI saveExternalCampaign(FDUserI user) throws FDResourceException {
 		Connection conn = null;
 		try {
 			conn = getConnection();
-			FDUserDAO.saveExternalCampaign(conn, user);
+			return FDUserDAO.saveExternalCampaign(conn, user);
 		} catch (SQLException sqle) {
 			throw new FDResourceException(sqle);
 		} finally {
@@ -7014,6 +7013,6 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		}
 	}
 	
-	
+		
 }
 

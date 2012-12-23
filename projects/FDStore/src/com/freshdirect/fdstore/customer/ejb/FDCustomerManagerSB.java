@@ -808,7 +808,7 @@ public interface FDCustomerManagerSB extends EJBObject {
 	
 	public Map getAssignedCustomerParams(FDUser user) throws FDResourceException, RemoteException;
 
-	public void saveExternalCampaign(FDUserI user) throws FDResourceException, RemoteException;
+	public FDUserI saveExternalCampaign(FDUserI user) throws FDResourceException, RemoteException;
 	
 }
 

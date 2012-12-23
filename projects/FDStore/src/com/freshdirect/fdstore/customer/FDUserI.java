@@ -524,7 +524,7 @@ public interface FDUserI extends java.io.Serializable {
 	public Set<String> getSteeringSlotIds();
 
 	public void setSteeringSlotIds(Set<String> steeringSlotIds);
-	
+
 	public Set<String> getExternalPromoCampaigns();
 	
 	public void setExternalCampaign(String campaign);
