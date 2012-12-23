@@ -11,23 +11,16 @@ import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.freshdirect.giftcard.EnumGCDeliveryMode;
-import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.customer.EnumTransactionType;
-import com.freshdirect.customer.ErpAuthorizationModel;
-import com.freshdirect.giftcard.EnumGiftCardType;
-import com.freshdirect.giftcard.ErpEmailGiftCardModel;
-import com.freshdirect.giftcard.ErpGCDlvInformationHolder;
-import com.freshdirect.giftcard.ErpGiftCardDlvConfirmModel;
-import com.freshdirect.giftcard.ErpGiftCardTransactionModel;
-import com.freshdirect.giftcard.ErpGiftCardUtil;
-import com.freshdirect.giftcard.ErpRecipentModel;
-import com.freshdirect.giftcard.ErpRegisterGiftCardModel;
 import com.freshdirect.framework.core.ModelI;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.core.SequenceGenerator;
-import com.freshdirect.payment.EnumGiftCardTransactionStatus;
-import com.freshdirect.payment.EnumGiftCardTransactionType;
+import com.freshdirect.giftcard.EnumGCDeliveryMode;
+import com.freshdirect.giftcard.EnumGiftCardType;
+import com.freshdirect.giftcard.ErpGCDlvInformationHolder;
+import com.freshdirect.giftcard.ErpGiftCardDlvConfirmModel;
+import com.freshdirect.giftcard.ErpGiftCardUtil;
+import com.freshdirect.giftcard.ErpRecipentModel;
 
 public class ErpGiftCardDlvConfirmPersistentBean extends ErpGiftCardPersistentBean{
 

@@ -163,9 +163,6 @@ public class GiftCardManagerSessionBean extends ERPSessionBeanSupport {
 								
 				if(isGCTransactionSuccess)
 				{
-				
-					//ErpEmailGiftCardModel emailModel=(ErpEmailGiftCardModel)createGiftCardTransModel(amount,saleId,EnumTransactionType.EMAIL_GIFTCARD);
-					//emailModel.setRecepientsTranactionList(recipentList);
 					saleEB.emailPending();															
 					// now send the email
 					// send email

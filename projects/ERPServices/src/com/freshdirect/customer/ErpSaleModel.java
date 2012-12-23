@@ -15,7 +15,6 @@ import com.freshdirect.crm.CrmSystemCaseInfo;
 import com.freshdirect.framework.core.ModelSupport;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.util.MathUtil;
-import com.freshdirect.giftcard.ErpEmailGiftCardModel;
 import com.freshdirect.giftcard.ErpGiftCardAuthModel;
 import com.freshdirect.giftcard.ErpGiftCardDlvConfirmModel;
 import com.freshdirect.giftcard.ErpGiftCardTransModel;
@@ -1036,20 +1035,23 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 
 	public ErpGiftCardDlvConfirmModel getGCDeliveryConfirmation(){
 		for ( ErpTransactionModel m : transactions ) {
-			if ( m instanceof ErpGiftCardDlvConfirmModel ) {
+			if ( m instanceof ErpGiftCardDlvConfirmModel && EnumTransactionType.GIFTCARD_DLV_CONFIRM.equals(m.getTransactionType())) {
 				return (ErpGiftCardDlvConfirmModel)m;
 			}
 		}
 		return null;		
 	}
 
-	public List<ErpEmailGiftCardModel> getGCResendEmailTransaction(){
-		List<ErpEmailGiftCardModel> resendTransactions = new ArrayList<ErpEmailGiftCardModel>();
+	public List<ErpGiftCardDlvConfirmModel> getGCResendEmailTransaction(){
+		List<ErpGiftCardDlvConfirmModel> resendTransactions = new ArrayList<ErpGiftCardDlvConfirmModel>();
+		
 		for ( ErpTransactionModel m : transactions ) {
-			if ( m instanceof ErpEmailGiftCardModel ) {
-				resendTransactions.add( (ErpEmailGiftCardModel)m );
+			if ( m instanceof ErpGiftCardDlvConfirmModel && EnumTransactionType.EMAIL_GIFTCARD.equals(m.getTransactionType())) {
+				resendTransactions.add( (ErpGiftCardDlvConfirmModel)m );
 			}
 		}
+		Collections.sort(resendTransactions, ErpTransactionI.TX_DATE_COMPARATOR);
+		Collections.reverse(resendTransactions);
 		return Collections.unmodifiableList(resendTransactions);
 		
 	}

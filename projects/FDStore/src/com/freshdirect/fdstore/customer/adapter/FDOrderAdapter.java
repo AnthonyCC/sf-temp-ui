@@ -79,7 +79,6 @@ import com.freshdirect.framework.util.MathUtil;
 import com.freshdirect.framework.util.TimeOfDay;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.giftcard.ErpAppliedGiftCardModel;
-import com.freshdirect.giftcard.ErpEmailGiftCardModel;
 import com.freshdirect.giftcard.ErpGCDlvInformationHolder;
 import com.freshdirect.giftcard.ErpGiftCardDlvConfirmModel;
 import com.freshdirect.giftcard.ErpGiftCardModel;
@@ -1207,10 +1206,10 @@ public class FDOrderAdapter implements FDOrderI {
 	}
 	
 	public ErpRecipentModel getGCResendInfoFor( String giftCardId ) {
-		List<ErpEmailGiftCardModel> resendTransactions = sale.getGCResendEmailTransaction();
+		List<ErpGiftCardDlvConfirmModel> resendTransactions = sale.getGCResendEmailTransaction();
 		if ( resendTransactions != null ) {
-			for ( ErpEmailGiftCardModel model : resendTransactions ) {
-				for ( ErpGCDlvInformationHolder holder : model.getRecipientsTransactionList() ) {
+			for ( ErpGiftCardDlvConfirmModel model : resendTransactions ) {
+				for ( ErpGCDlvInformationHolder holder : model.getDlvInfoTranactionList()) {
 					if ( holder.getGiftCardId().equals( giftCardId ) ) {
 						return holder.getRecepientModel();
 					}

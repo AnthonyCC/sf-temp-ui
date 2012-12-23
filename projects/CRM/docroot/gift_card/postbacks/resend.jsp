@@ -1,4 +1,6 @@
 <%@ page import='com.freshdirect.webapp.taglib.giftcard.GiftCardUtil' %>
+<%@ page import='com.freshdirect.webapp.taglib.fdstore.SystemMessageList' %>
+<%@ page import='com.freshdirect.mail.EmailUtil' %>
 <%@ page import='com.freshdirect.webapp.util.JspMethods' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ page import='org.json.JSONObject' %>
@@ -63,7 +65,11 @@
             boolean toPurchaser = "true".equals((String)request.getParameter("gcIsPurchaser"))?true:false;
             boolean toLastRecipient = "true".equals((String)request.getParameter("gcIsLastRecip"))?true:false;            
             JSONObject json = new JSONObject();
-            if(!toPurchaser && !toLastRecipient){
+            if(!EmailUtil.isValidEmailAddress(resendEmailId)){
+               	json.put("returnMsg", "<b><span style=\"color: #f00;\">"+SystemMessageList.MSG_EMAIL_FORMAT+"</span></b>");
+                json.put("opStatus","error");
+            }
+            else if(!toPurchaser && !toLastRecipient){
             	json.put("returnMsg", "<b<span style=\"color: #f00;\">Please select atleast one to send gift card email.</span></b>");
             	
             }else{
