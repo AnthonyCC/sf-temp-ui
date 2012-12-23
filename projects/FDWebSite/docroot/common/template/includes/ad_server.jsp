@@ -434,38 +434,50 @@
 function showExtCampaignButtons()
 {
 	  var userlevel = <%= (user!=null)?user.getLevel():-1 %>
-	  var elem = document.getElementById("officialrules");
-	  var campaignId = document.getElementById("campaignId").value;
+	  var campaignId = '';
+	  if(document.getElementById("campaignId")!=null)
+		  campaignId = document.getElementById("campaignId").value;
 	    
 	    if(userlevel == <%= FDUserI.SIGNED_IN%>)
 		{
 	    	showHide(document.getElementById("currentcustomer"),'hidden');
 	    	showHide(document.getElementById("newcustomer"),'hidden');
 	    	showHide(document.getElementById("enternow"),'visible');
+	    	showHide(document.getElementById("accept"),'visible');
+	    	showHide(document.getElementById("readterms"),'hidden');
+	    	displayDiv(document.getElementById("readterms"),'none');
 		}
 	    else if(userlevel == <%= FDUserI.RECOGNIZED%>)
 		{
 	    	showHide(document.getElementById("currentcustomer"),'visible');
 	    	showHide(document.getElementById("newcustomer"),'hidden');
 	    	showHide(document.getElementById("enternow"),'hidden');
-	    	elem.innerHTML = elem.innerHTML.replace("<input id=\"terms\" name=\"terms\" type=\"checkbox\"> I accept","Read");
+	    	showHide(document.getElementById("terms"),'hidden');
+	    	showHide(document.getElementById("accept"),'hidden');
+	    	showHide(document.getElementById("readterms"),'visible');
 		}
 	    else
 	    {
 	    	showHide(document.getElementById("currentcustomer"),'visible');
 	    	showHide(document.getElementById("newcustomer"),'visible');
 	    	showHide(document.getElementById("enternow"),'hidden');
-	    	
-		    elem.innerHTML = elem.innerHTML.replace("<input id=\"terms\" name=\"terms\" type=\"checkbox\"> I accept","Read");
+	    	showHide(document.getElementById("terms"),'hidden');
+	    	showHide(document.getElementById("accept"),'hidden');
+	    	showHide(document.getElementById("readterms"),'visible');
 	    }
 	   
 	    if(contains(campaignsArray, campaignId))
 	    {
-	    	elem.innerHTML = elem.innerHTML.replace("<input id=\"terms\" name=\"terms\" type=\"checkbox\"> I accept","Read");
+	    	showHide(document.getElementById("terms"),'hidden');
+	    	showHide(document.getElementById("accept"),'hidden');
+	    	showHide(document.getElementById("readterms"),'visible');
+	    	displayDiv(document.getElementById("readterms"),'');
 	    	var ec_div = document.getElementById("ss_background");
+	    	if(ec_div!=null){
 	        var currentClass = ec_div.className;
 	    	if (currentClass == "bg966x102") { 
 	    		ec_div.className = "bg966x51";   
+	    	}
 	    	}
 	    	showHide(document.getElementById("entered"),'visible');
 	    	showHide(document.getElementById("currentcustomer"),'hidden');
