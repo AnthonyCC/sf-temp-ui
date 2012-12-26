@@ -68,6 +68,14 @@ public interface SystemMessageList {
 	public final static String MSG_DUPLICATE_ACCOUNT_NUMBER 	= "This is a duplicate account. Please double check and make any changes or enter a different account.";
 	public final static String MSG_NOCC_ACCOUNT_NUMBER 	= "You must have a valid credit card on your FreshDirect account to pay for your order from a checking account. To proceed with Checkout, please review and revise your credit card information as necessary.";
 	public final static String MSG_CC_EXPIRED_ACT_NUMBER 	= "There must be a valid credit card attached to your account to pay by check, but your card on file has expired. Please update it or select another payment option to continue.";
+	public final static String MSG_AUTH_FAIL_WARNING_1="Your current payment method cannot be processed. Please choose a different payment method and re-submit your order.";
+	public final static String MSG_AUTH_FAIL_WARNING_2="Your current payment method cannot be processed. Please verify the information you entered and re-submit your order.";
+	public final static String MSG_AUTH_FAIL_WARNING_3="Your current payment method was declined. You can contact your card issuer for clarification. In the meantime, please select a different payment method and re-submit your order. ";
+	public final static String MSG_AUTH_FAIL_WARNING_4="Your payment method appears to be expired or inactive. Please select a different payment method and re-submit your order.";
+	public final static String MSG_AUTH_FAIL_ERR_1="This payment method cannot be processed. Please choose a different payment method for this order.";
+	public final static String MSG_AUTH_FAIL_ERR_2="Your payment method cannot be processed. Please verify the information you entered below and try again.";
+	public final static String MSG_AUTH_FAIL_ERR_3="Your payment method was declined. Please select a different payment method for this order and contact your card issuer for clarification.";
+	public final static String MSG_AUTH_FAIL_ERR_4="Your payment method appears to be expired or inactive. Please select a different payment method for this order.";
 	// eCheck
 	public final static String MSG_INVALID_ABA_ROUTE_NUMBER 	= "This ABA route number is invalid.";
 	public final static String MSG_INVALID_BANK_ACCOUNT_TYPE 	= "This bank account type is invalid.";

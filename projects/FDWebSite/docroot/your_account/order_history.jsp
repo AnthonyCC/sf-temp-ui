@@ -165,7 +165,11 @@ for (FDOrderInfoI orderInfo : orderHistoryInfo) {
 	} else {
 		status = orderInfo.getOrderStatus().getDisplayName();
 	}
-%>		<td><%= status %></td>
+      if( EnumSaleStatus.AUTHORIZATION_FAILED.equals(orderInfo.getOrderStatus())) {%>
+<td><font color="#FF0000"><%= status %></font></td>
+   <%} else {%>
+<td><%= status %></td>
+   <%}%>
 		<td>
 			<a href="<%= orderDetailsUrl %>"><%= orderInfo.isModifiable() ? "View/Modify" : "View" %></a>
             <% if (orderInfo.isShopFromThisOrder()) { %>

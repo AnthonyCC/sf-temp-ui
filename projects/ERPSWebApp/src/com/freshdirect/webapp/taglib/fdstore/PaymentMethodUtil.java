@@ -850,4 +850,32 @@ public class PaymentMethodUtil implements PaymentMethodName { //AddressName,
         paymentMethod.setCountry("US");
     	return paymentMethod;
     }
+    
+    public static String getAuthFailWarningMessage(String authFailMsg ) {
+    	String msg=SystemMessageList.MSG_AUTH_FAIL_WARNING_3;
+    	String code=authFailMsg.substring(0,3);
+    	int val=0;
+    	try {val=Integer.parseInt(code);}catch(Exception e) {}
+    	switch(val) {
+    	case 606 :case 261 :case 267 :case 610:msg=SystemMessageList.MSG_AUTH_FAIL_WARNING_1;break;
+    	case 201 :case 591 :case 825 :case 304 :case 813:msg=SystemMessageList.MSG_AUTH_FAIL_WARNING_2;break;
+    	case 522 :case 595 :case 603 :case 605 :case 754 :case 903 :case 904:msg=SystemMessageList.MSG_AUTH_FAIL_WARNING_4;break;
+    	
+    	}
+    	return msg;
+    	
+    }
+    public static String getAuthFailErrorMessage(String authFailMsg ) {
+    	String msg=SystemMessageList.MSG_AUTH_FAIL_ERR_3;
+    	String code=authFailMsg.substring(0,3);
+    	int val=0;
+    	try {val=Integer.parseInt(code);}catch(Exception e) {}
+    	switch(val) {
+	    	case 606 :case 261 :case 267 :case 610:msg=SystemMessageList.MSG_AUTH_FAIL_ERR_1;break;
+	    	case 201 :case 591 :case 825 :case 304 :case 813:msg=SystemMessageList.MSG_AUTH_FAIL_ERR_2;break;
+	    	case 522 :case 595 :case 603 :case 605 :case 754 :case 903 :case 904:msg=SystemMessageList.MSG_AUTH_FAIL_ERR_4;break;
+    	}
+    	return msg;
+    	
+    }
 }

@@ -25,7 +25,6 @@
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
-
 <% //expanded page dimensions
 final int W_CHECKOUT_STEP_3_CHOOSE_TOTAL = 970;
 %>
@@ -48,7 +47,9 @@ final int W_CHECKOUT_STEP_3_CHOOSE_TOTAL = 970;
 		padding: 0px;
 	}
 </style>
+
 <%
+	String _errorMsg="";
 	String actionName = request.getParameter("actionName");
 	if (actionName==null)
 		actionName = "noAction";
@@ -98,11 +99,19 @@ final int W_CHECKOUT_STEP_3_CHOOSE_TOTAL = 970;
 {
 	// redirect to Duplicate Order warning page if has another order for the same day
 	String ignoreSaleId = null;
+	
 	if (cart instanceof FDModifyCartModel) {
 		ignoreSaleId = ((FDModifyCartModel) cart).getOriginalOrder().getErpSalesId();
+		if(EnumSaleStatus.AUTHORIZATION_FAILED.equals(((FDModifyCartModel) cart).getOriginalOrder().getOrderStatus())) {
+		   _errorMsg= PaymentMethodUtil.getAuthFailErrorMessage(((FDModifyCartModel) cart).getOriginalOrder().getAuthFailDescription());
+		   System.out.println("_errorMsg"+_errorMsg);
+		}
 	}
-
-	Date currentDlvStart = DateUtil.truncate(cart.getDeliveryReservation().getStartTime());
+	
+	
+	Date currentDlvStart = null;
+	if(cart.getDeliveryReservation()!=null)
+		currentDlvStart=DateUtil.truncate(cart.getDeliveryReservation().getStartTime());
 	Calendar now = Calendar.getInstance();
 	if(!user.isAddressVerificationError()) {
     
@@ -192,7 +201,7 @@ final int W_CHECKOUT_STEP_3_CHOOSE_TOTAL = 970;
 								<%}%>
 							</td>
 						</tr>
-							<%if (cart.getTotalDiscountValue() > 0) {
+							<%  if (cart.getTotalDiscountValue() > 0) {
 								List discounts = cart.getDiscounts();
 									for (Iterator iter = discounts.iterator(); iter.hasNext();) {
 										ErpDiscountLineModel discountLine = (ErpDiscountLineModel) iter.next();
@@ -313,10 +322,12 @@ if(isPaymentRequired) {
 		}
 
 	%>
-
+<%
+	JspMethods.dumpErrors(result);
+	%>
 	<%@ include file="/includes/i_modifyorder.jspf" %>
 	
-	<fd:ErrorHandler result='<%=result%>' name="payment_method" id='errorMsg'>
+	<fd:ErrorHandler result='<%=result%>' name='payment_method' id='errorMsg'>
 			<%@ include file="/includes/i_error_messages.jspf" %>	
 	</fd:ErrorHandler>	
 	
@@ -452,10 +463,10 @@ if(isPaymentRequired) {
 	<%
 	JspMethods.dumpErrors(result);
 	%>
-		<% String[] checkPaymentForm = {"system", "order_minimum", "payment_inadequate", "technical_difficulty", "paymentMethodList", "payment", "declinedCCD", "matching_addresses", "expiration","bil_apartment","bil_address1","cardNum","ebtPaymentNotAllowed"}; %>
+	<% String[] checkPaymentForm = {"system", "order_minimum", "payment_inadequate", "payment_method","technical_difficulty", "paymentMethodList", "payment", "declinedCCD", "matching_addresses", "expiration","bil_apartment","bil_address1","cardNum","ebtPaymentNotAllowed"}; %>
 		<fd:ErrorHandler result='<%=result%>' field='<%=checkPaymentForm%>' id='errorMsg'>
 			<%@ include file="/includes/i_error_messages.jspf" %>	
-		</fd:ErrorHandler>	
+		</fd:ErrorHandler>		
 
 
 	<%
@@ -524,11 +535,14 @@ if(isPaymentRequired) {
 		<br>
 		<% } %>
 	<%
+	System.out.println("user.getFailedAuthorizations():"+user.getFailedAuthorizations());
 		if (user.getFailedAuthorizations() > 0) { 
 			errorMsg = "<span class=\"text12\">There was a problem with the credit card you selected.<br>Please choose or add a new payment method.<br><br>If you have tried this and are still experiencing problems, please do not attempt to submit your information again but contact us as soon as possible at" + user.getCustomerServiceContact() + ". A customer service representative will help you to complete your order.</span>";
+			errorMsg=_errorMsg;
 		%>
 			<%@ include file="/includes/i_error_messages.jspf" %>
 	<% } %>
+		
 		<BR>
 
 

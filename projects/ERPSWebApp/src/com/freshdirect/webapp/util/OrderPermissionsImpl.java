@@ -22,11 +22,12 @@ public class OrderPermissionsImpl implements OrderPermissionsI {
 		
 		if ( EnumSaleStatus.SUBMITTED.equals(status) || EnumSaleStatus.AVS_EXCEPTION.equals(status) 
 			|| EnumSaleStatus.AUTHORIZED.equals(status)  
-			|| EnumSaleStatus.PENDING.equals(status) ) {
+			|| EnumSaleStatus.PENDING.equals(status)
+			|| EnumSaleStatus.AUTHORIZATION_FAILED.equals(status)) {
 			 return true;
 		}
 		
-        if ( (EnumSaleStatus.NOT_SUBMITTED.equals(status) || EnumSaleStatus.AUTHORIZATION_FAILED.equals(status) ) 
+        if ( (EnumSaleStatus.NOT_SUBMITTED.equals(status) ) 
         	&& "CALLCENTER".equalsIgnoreCase(application) ) {
 			return true;
 		}
@@ -55,10 +56,11 @@ public class OrderPermissionsImpl implements OrderPermissionsI {
 	public boolean allowModifyOrder(){
 		if(!this.makeGoodOrder){
 			if ( EnumSaleStatus.SUBMITTED.equals(status) || EnumSaleStatus.AUTHORIZED.equals(status) 
-					|| EnumSaleStatus.AVS_EXCEPTION.equals(status)) {
+					|| EnumSaleStatus.AVS_EXCEPTION.equals(status)
+					|| EnumSaleStatus.AUTHORIZATION_FAILED.equals(status)) {
 				return true;
 			}
-			if ( (EnumSaleStatus.NOT_SUBMITTED.equals(status) || EnumSaleStatus.AUTHORIZATION_FAILED.equals(status) ) 
+			if ( (EnumSaleStatus.NOT_SUBMITTED.equals(status)  ) 
 					&& "CALLCENTER".equalsIgnoreCase(application) ) {
 				return true;
 			}

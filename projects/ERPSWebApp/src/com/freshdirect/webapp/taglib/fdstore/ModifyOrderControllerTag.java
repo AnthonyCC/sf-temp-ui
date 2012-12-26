@@ -318,7 +318,7 @@ public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.B
 			user.clearAllAppliedPromos();
 
 			//if it's make good order, reject complaints 
-			if(EnumPaymentType.MAKE_GOOD.equals(origOrder.getPaymentMethod().getPaymentType())){
+			if(/*EnumPaymentType.MAKE_GOOD.equals(origOrder.getPaymentMethod().getPaymentType())*/ origOrder.isMakeGood()){
 				CallCenterServices.rejectMakegoodComplaint(orderId);
 			}
 

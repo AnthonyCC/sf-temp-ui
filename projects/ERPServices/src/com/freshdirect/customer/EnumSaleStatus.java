@@ -43,7 +43,7 @@ public class EnumSaleStatus implements java.io.Serializable {
 
 	public final static EnumSaleStatus					AUTHORIZED					= new EnumSaleStatus( "AUT", "Authorized", "Submitted", true );
 
-	public final static EnumSaleStatus					AUTHORIZATION_FAILED		= new EnumSaleStatus( "AUF", "Authorization Failed", "Contact Customer Service", true );
+	public final static EnumSaleStatus					AUTHORIZATION_FAILED		= new EnumSaleStatus( "AUF", "Authorization Failed", "Pending Cancellation", true );
 
 	public final static EnumSaleStatus					NOT_SUBMITTED				= new EnumSaleStatus( "NSM", "Not Submitted", "Processing", true );
 	public final static EnumSaleStatus					PAYMENT_PENDING				= new EnumSaleStatus( "PPG", "Payment pending", "Delivered", false );

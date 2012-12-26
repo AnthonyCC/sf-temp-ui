@@ -85,7 +85,7 @@ public class PaymentManagerSessionBean extends SessionBeanSupport {
 	
 	private boolean isAuthorizationRequired(Date deliveryTime){
 		
-		if (!"true".equalsIgnoreCase(ErpServicesProperties.getAuthorize())) {
+		if (!"true".equalsIgnoreCase(ErpServicesProperties.getAuthorize())) {//temp test
 			return false;
 		}
 		
@@ -98,8 +98,8 @@ public class PaymentManagerSessionBean extends SessionBeanSupport {
 		if (difference > AUTH_HOURS) {
 			return false;
 		}
-
 		return true;
+		
 	}
 	
 	public List<ErpAuthorizationModel> authorizeSaleRealtime(String saleId) throws ErpAuthorizationException, ErpAddressVerificationException {
@@ -147,7 +147,8 @@ public class PaymentManagerSessionBean extends SessionBeanSupport {
 			List<ErpAuthorizationModel> auths = cmd.getAuthorizations();						
 			
 			
-			for ( ErpAuthorizationModel auth : auths ) {							
+			for ( ErpAuthorizationModel auth : auths ) {	
+				//auth.setResponseCode(EnumPaymentResponse.CALL);
 				if (auth.isApproved() && auth.hasAvsMatched()) {
 					if(payment.isBypassAVSCheck()){						
 							    payment.setAvsCkeckFailed(false);
@@ -159,7 +160,7 @@ public class PaymentManagerSessionBean extends SessionBeanSupport {
 				    logAuthorizationActivity(saleEB.getCustomerPk().getId(), auth, false);
 				    SessionContext ctx = getSessionContext();
 				    ctx.setRollbackOnly();
-				    throw new ErpAuthorizationException("There was a problem with the given payment method");
+				    throw new ErpAuthorizationException(auth.getDescription());
 				  
 			    }else{	
 			    	

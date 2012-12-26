@@ -5,7 +5,7 @@
 <fd:CheckLoginStatus id="user" /> 
 <html>
 <head>
-    <title>FreshDirect - Talent</title>
+    <title>FreshDirect - Account problem</title>
 
 	<%@ include file="/common/template/includes/metatags.jspf" %>
 	<%@ include file="/common/template/includes/i_javascripts.jspf" %>

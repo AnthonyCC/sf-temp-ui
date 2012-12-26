@@ -311,6 +311,34 @@ public class FDOrderAdapter implements FDOrderI {
 		}
 		return messages.isEmpty() ? Collections.<String>emptyList() : messages;
 	}
+	public String getAuthFailDescription() {
+		if (!EnumSaleStatus.AUTHORIZATION_FAILED.equals(getOrderStatus())) {
+			
+			return "";
+		}
+		//
+		// SORT TRANSACTIONS BY DATE
+		//
+		List<ErpTransactionModel> txList = new ArrayList<ErpTransactionModel>(sale.getTransactions());
+		Collections.sort(txList, ErpTransactionI.TX_DATE_COMPARATOR);
+		Collections.reverse(txList);
+		//
+		// FIND ALL SUBMIT FAILED MODELS
+		//
+		String desc="";
+		ErpAuthorizationModel authModel = null;
+		for ( ErpTransactionModel m : txList ) {
+			if (m instanceof ErpAuthorizationModel) {
+				authModel = (ErpAuthorizationModel) m;
+				if(!authModel.isApproved()) {
+					desc=authModel.getDescription();
+					break;
+				}
+				
+			}
+		}
+		return desc;
+	}
 
 	public Date getPricingDate() {
 		return erpOrder.getPricingDate();

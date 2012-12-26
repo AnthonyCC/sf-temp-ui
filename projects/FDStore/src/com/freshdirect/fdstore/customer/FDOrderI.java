@@ -200,4 +200,5 @@ public interface FDOrderI extends FDCartI {
 	
 	Double getEbtPurchaseAmount();
 	public boolean isMakeGood();
+	public String getAuthFailDescription();
 }

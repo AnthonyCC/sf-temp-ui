@@ -72,12 +72,17 @@ final int W_YA_ORDER_DETAILS_3C_COLUMN = 268;
         //
         // get order line info
         //
-        boolean isSubmitted = cart.getOrderStatus().equals(EnumSaleStatus.SUBMITTED) || cart.getOrderStatus().equals(EnumSaleStatus.AUTHORIZED);
+        boolean isSubmitted = cart.getOrderStatus().equals(EnumSaleStatus.SUBMITTED) || cart.getOrderStatus().equals(EnumSaleStatus.AUTHORIZED) ||cart.getOrderStatus().equals(EnumSaleStatus.AUTHORIZATION_FAILED);
 %>
 <!-- error message handling here -->
 
-<% if (cart.getOrderStatus() == EnumSaleStatus.REFUSED_ORDER) {
-        String errorMsg= "Pending Order: Please contact us at "+user.getCustomerServiceContact()+" as soon as possible to reschedule delivery.";
+<% 
+    String errorMsg="";
+     if (cart.getOrderStatus() == EnumSaleStatus.REFUSED_ORDER) {
+        errorMsg= "Pending Order: Please contact us at "+user.getCustomerServiceContact()+" as soon as possible to reschedule delivery.";
+%>
+<% } else if (EnumSaleStatus.AUTHORIZATION_FAILED.equals(cart.getOrderStatus())) {
+        errorMsg= PaymentMethodUtil.getAuthFailErrorMessage(cart.getAuthFailDescription());
 %>
 <%@ include file="/includes/i_error_messages.jspf" %>
 <% } %>
@@ -122,7 +127,13 @@ final int W_YA_ORDER_DETAILS_3C_COLUMN = 268;
 <table width="<%= W_YA_ORDER_DETAILS_TOTAL %>" align="center" border="0" cellpadding="0" cellspacing="0">
 <tr>
     <td class="text11">
-        <font class="title18">Order # <%= orderId %> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Status: <%=cart.getOrderStatus().getDisplayName()%></font> &nbsp;&nbsp;&nbsp;<br>
+       <font class="title18" >Order # <%= orderId %> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Status: 
+       <% if( EnumSaleStatus.AUTHORIZATION_FAILED.equals(cart.getOrderStatus())) {%>
+       <font color="#FF0000"><%=cart.getOrderStatus().getDisplayName()%></font>
+       <%} else {%><%=cart.getOrderStatus().getDisplayName()%>
+       <%}%>
+       
+       </font> &nbsp;&nbsp;&nbsp;<br>
         <%-- Having trouble, send an e-mail to <A HREF="mailto:accounthelp@freshdirect.com">accounthelp@freshdirect.com</A> or call 1-866-2UFRESH.--%>
     </td>
     <%

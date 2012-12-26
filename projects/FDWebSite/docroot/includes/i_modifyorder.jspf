@@ -6,6 +6,7 @@
 <%@ page import="com.freshdirect.fdstore.customer.FDModifyCartModel"%>
 <%@ page import="com.freshdirect.webapp.taglib.fdstore.SessionName"%>
 <%@ page import="com.freshdirect.fdstore.standingorders.FDStandingOrder"%>
+<%@ page import="com.freshdirect.customer.EnumSaleStatus"%>
 <%!
 	public String printDate(Date date){
 		return new SimpleDateFormat("h:mm a 'on' EEEE, MM/d/yy").format(date);
@@ -43,7 +44,7 @@
 					<b><span style="color: #336699; font-size: 13px;">You are changing order # <%= modCart.getOriginalOrder().getErpSalesId() %></span></b>
 					<a href="/your_account/cancel_modify_order.jsp">Click here to cancel all changes</a><br/>
 					<img src="/media_stat/images/layout/clear.gif" width="1" height="4"><br/>
-					<b>Complete checkout by <%= printDate(modCart.getOriginalOrder().getDeliveryReservation().getCutoffTime()) %></b> or this order <b>will be delivered as is</b>.
+					<b>Complete checkout by <%= printDate(modCart.getOriginalOrder().getDeliveryReservation().getCutoffTime()) %></b> or this order <%if( EnumSaleStatus.AUTHORIZATION_FAILED.equals(modCart.getOriginalOrder().getOrderStatus())) {%> <b>will be cancelled</b>.<%} else {%><b>will be delivered as is</b>.<%}%>
 					<% if (isInDelivery) { %><br/>
 						If your new delivery date is on or after <%= printDateOnly(weekFromOrderDate) %>, all of your items will be updated to reflect today's prices.
 					<% } %><br/>

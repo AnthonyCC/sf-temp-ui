@@ -2417,7 +2417,11 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			PaymentManagerSB paymentManager = this.getPaymentManagerHome()
 					.create();
 			if(EnumSaleStatus.AUTHORIZATION_FAILED.equals(fdOrder.getOrderStatus())) {
-				paymentManager.authorizeSale(saleId, true);
+				
+				if(EnumTransactionSource.WEBSITE.equals(order.getTransactionSource()))
+					paymentManager.authorizeSaleRealtime(saleId);
+				else 
+					paymentManager.authorizeSale(saleId, true);
 			} else {
 				paymentManager.authorizeSaleRealtime(saleId);
 			}
@@ -3075,8 +3079,9 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 					+ "   rsrvID: "
 					+ saleModel.getRecentOrderTransaction().getDeliveryInfo()
 							.getDeliveryReservationId()));
-
+			
 			return new FDOrderAdapter(saleModel);
+			
 
 		} catch (CreateException ce) {
 			throw new FDResourceException(ce);
