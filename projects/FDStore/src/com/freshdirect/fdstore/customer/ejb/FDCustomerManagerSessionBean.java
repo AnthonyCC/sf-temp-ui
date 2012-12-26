@@ -3736,7 +3736,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		}
 
 		ErpAddressModel address=getAddress(identity,addressId);
-		FDReservation rsv=FDDeliveryManager.getInstance().reserveTimeslot(timeslot, identity.getErpCustomerPK(), duration, rsvType, address, chefsTable, null, isForced, event);
+		FDReservation rsv=FDDeliveryManager.getInstance().reserveTimeslot(timeslot, identity.getErpCustomerPK(), duration, rsvType, address, chefsTable, null, isForced, event, false);
 
 		if (EnumReservationType.RECURRING_RESERVATION.equals(rsvType)) {
 			this.updateRecurringReservation(identity,

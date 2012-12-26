@@ -61,7 +61,7 @@ public class DeliveryTimeValidator {
 			String custId = user.getIdentity().getErpCustomerPK();
 			FDReservation reservation = FDDeliveryManager.getInstance().reserveTimeslot(deliverySlot, custId,
 					RESERVATION_MILLISECONDS, EnumReservationType.STANDARD_RESERVATION, deliveryAddress, chefsTable,
-					ctDeliveryProfile, false, event);
+					ctDeliveryProfile, false, event, false);
 
 			return reservation;
 

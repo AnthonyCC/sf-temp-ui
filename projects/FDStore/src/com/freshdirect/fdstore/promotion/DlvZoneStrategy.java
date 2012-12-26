@@ -150,7 +150,16 @@ public class DlvZoneStrategy implements PromotionStrategyI {
 		return foundSlot;		
 	}
 	
-	private boolean checkDlvTimeSlots(DlvTimeslotModel dlvTimeslotModel, List<PromotionDlvTimeSlot> dlvTimeSlotList, Map<Double, List<FDTimeslot>> tsWindowMap, FDUserI user, boolean isReservedSlot) {
+	private boolean checkSteeringDiscountFlag(FDUserI user, DlvTimeslotModel dlvTimeslotModel) {
+		if(user.getShoppingCart() != null && user.getShoppingCart().getDeliveryReservation() != null){
+			if(dlvTimeslotModel.getId().equals(user.getShoppingCart().getDeliveryReservation().getTimeslotId())) {
+				return user.getShoppingCart().getDeliveryReservation().hasSteeringDiscount();
+			}
+		}
+		return true;
+	}
+	
+	private boolean checkDlvTimeSlots(DlvTimeslotModel dlvTimeslotModel, List<PromotionDlvTimeSlot> dlvTimeSlotList, Map<Double, List<FDTimeslot>> tsWindowMap, FDUserI user, boolean radiusEvaluated) {
 		boolean isOK = false;
 		if(null != dlvTimeslotModel) {
 			TimeOfDay dlvStartTimeOfDay = dlvTimeslotModel.getStartTime();
@@ -161,8 +170,8 @@ public class DlvZoneStrategy implements PromotionStrategyI {
 				double windowDuration = TimeOfDay.getDurationAsMinutes(dlvStartTimeOfDay, dlvEndTimeOfDay);
 				
 				if(windowType != null && windowType.length > 0 
-						&& ((isReservedSlot && user.getSteeringSlotIds().contains(dlvTimeslotModel.getId()))
-								||(dlvTimeslotModel.getTotalConfirmed() > 0 && dlvTimeslotModel.hasSteeringRadius() 
+						&& ((radiusEvaluated && checkSteeringDiscountFlag(user, dlvTimeslotModel))
+								||(dlvTimeslotModel.hasSteeringRadius() 
 										&& tsWindowMap != null && checkTimeSlotRadius(dlvStartTimeOfDay, dlvEndTimeOfDay, tsWindowMap.get(windowDuration))))) {					
 						
 						for(int i = 0;i < windowType.length; i++) {

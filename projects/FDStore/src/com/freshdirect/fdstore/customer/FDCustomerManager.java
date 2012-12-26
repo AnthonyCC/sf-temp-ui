@@ -932,7 +932,7 @@ public class FDCustomerManager {
 					reservation.getReservationType(),
 					address,
 					reservation.isChefsTable(),
-					null, false, event);
+					null, false, event, false);
 			}
 			
 			return null;
