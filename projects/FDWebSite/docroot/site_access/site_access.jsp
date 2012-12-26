@@ -11,6 +11,7 @@
 <%@ page import='com.freshdirect.fdstore.sempixel.SemPixelModel' %>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri="freshdirect" prefix="fd" %>
+<%@ page buffer="16kb" %>
 <%
 	response.addHeader("Pragma", "no-cache");
 	boolean isBestCellars = request.getServerName().toLowerCase().indexOf("bestcellars") > -1;
