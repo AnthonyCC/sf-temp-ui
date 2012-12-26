@@ -408,7 +408,7 @@ public class StandingOrderUtil {
 				LOGGER.info( "Trying to make reservation for timeslot: " + timeslot.toString() );
 				reservation = FDDeliveryManager.getInstance().reserveTimeslot(timeslot, customer.getErpCustomerPK(),
 						RESERVATION_MILLISECONDS, EnumReservationType.STANDARD_RESERVATION, deliveryAddress, false,
-						null, false, event);
+						null, false, event, false);
 				
 				selectedTimeslot = timeslot;
 				LOGGER.info( "Timeslot reserved successfully: " + timeslot.toString() );
@@ -417,7 +417,7 @@ public class StandingOrderUtil {
 					try {
 						reservation = FDDeliveryManager.getInstance().reserveTimeslot(timeslot, customer.getErpCustomerPK(),
 								RESERVATION_MILLISECONDS, EnumReservationType.STANDARD_RESERVATION, deliveryAddress, false,
-								null, forceCapacity, event);
+								null, forceCapacity, event, false);
 						
 					} catch (ReservationException e1) {						
 						e1.printStackTrace();
@@ -433,7 +433,7 @@ public class StandingOrderUtil {
 					try {
 						reservation = FDDeliveryManager.getInstance().reserveTimeslot(timeslot, customer.getErpCustomerPK(),
 								RESERVATION_MILLISECONDS, EnumReservationType.STANDARD_RESERVATION, deliveryAddress, false,
-								null, forceCapacity, event);
+								null, forceCapacity, event, false);
 					} catch (ReservationException e1) {						
 						e1.printStackTrace();
 					}

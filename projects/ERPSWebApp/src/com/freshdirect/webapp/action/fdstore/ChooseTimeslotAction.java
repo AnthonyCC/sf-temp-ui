@@ -145,6 +145,11 @@ public class ChooseTimeslotAction extends WebActionSupport {
 						LOGGER.warn("Error releasing reservation", fdre);
 					}
 				}
+				
+				boolean hasSteeringDiscount = false;
+				if(user.getSteeringSlotIds().contains(timeSlot.getTimeslotId())){
+					hasSteeringDiscount = true;
+				}
 
 				// reserve the new slot
 				LOGGER.debug("Attempting to reserve timeslot, with CT = " + chefsTable);
@@ -157,7 +162,7 @@ public class ChooseTimeslotAction extends WebActionSupport {
 						EnumReservationType.STANDARD_RESERVATION,
 						erpAddress,
 						chefsTable,
-						ctDeliveryProfile, isForced,event);
+						ctDeliveryProfile, isForced,event, hasSteeringDiscount);
 
 				if (EnumCheckoutMode.NORMAL == user.getCheckoutMode()) {
 					setDeliveryTimeslot(session, timeSlotResrv);
