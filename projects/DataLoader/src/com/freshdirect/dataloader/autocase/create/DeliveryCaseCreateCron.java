@@ -56,19 +56,21 @@ public class DeliveryCaseCreateCron {
 					DeliveryExceptionModel model = orderEntry.getValue();
 					LOGGER.debug("Creatng case for order # " + model.getOrderId());
 					try {
-						FDOrderI order = FDCustomerManager.getOrder(model.getOrderId());
-						if(order != null){
-							if(model.isEarlyDeliveryReq()){
-								createCase(order.getCustomerId(), order.getErpSalesId(), CrmCaseSubject.CODE_EARLY_DELIVERY_REQEUST,
-									"[Route/Stop] request for Early delivery - "+ model.getEarlyDlvStatus(), "Drivers attempted early delivery using the customer call feature", null);
-							}
-							if(model.getRefusedCartons() != null && model.getRefusedCartons().size() > 0){
-								createCase(order.getCustomerId(), order.getErpSalesId(), CrmCaseSubject.CODE_REFUSED_CARTON,
-									"Last refused at - "+ DateUtil.formatTime(model.getLastRefusedScan()), "Driver Scanned - "+ model.getReturnReason(), model.getRefusedCartons());
-							}
-							if(model.getLateBoxes() != null && model.getLateBoxes().size() > 0){
-								createCase(order.getCustomerId(), order.getErpSalesId(), CrmCaseSubject.CODE_LATE_BOX,
-									"Driver scanned at - "+ DateUtil.formatTime(model.getLateBoxScantime()), "Carton has left ProFoods",  model.getLateBoxes());
+						if(model.getOrderId() != null) {
+							FDOrderI order = FDCustomerManager.getOrder(model.getOrderId());
+							if(order != null){
+								if(model.isEarlyDeliveryReq()){
+									createCase(order.getCustomerId(), order.getErpSalesId(), CrmCaseSubject.CODE_EARLY_DELIVERY_REQEUST,
+										"[Route/Stop] request for Early delivery - "+ model.getEarlyDlvStatus(), "Drivers attempted early delivery using the customer call feature", null);
+								}
+								if(model.getRefusedCartons() != null && model.getRefusedCartons().size() > 0){
+									createCase(order.getCustomerId(), order.getErpSalesId(), CrmCaseSubject.CODE_REFUSED_CARTON,
+										"Last refused at - "+ DateUtil.formatTime(model.getLastRefusedScan()), "Driver Scanned - "+ model.getReturnReason(), model.getRefusedCartons());
+								}
+								if(model.getLateBoxes() != null && model.getLateBoxes().size() > 0){
+									createCase(order.getCustomerId(), order.getErpSalesId(), CrmCaseSubject.CODE_LATE_BOX,
+										"Driver scanned at - "+ DateUtil.formatTime(model.getLateBoxScantime()), "Carton has left ProFoods",  model.getLateBoxes());
+								}
 							}
 						}
 					} catch(Exception ex){
