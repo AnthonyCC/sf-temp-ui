@@ -72,7 +72,7 @@ public interface DlvManagerSB extends EJBObject {
 
 	public List<DlvTimeslotCapacityInfo> getTimeslotCapacityInfo(java.util.Date date) throws RemoteException;
 
-	public DlvReservationModel reserveTimeslot(DlvTimeslotModel dlvTimeslot, String customerId, long holdTime, EnumReservationType type, ContactAddressModel addressId, boolean chefsTable,String ctDeliveryProfile,boolean isForced, TimeslotEventModel event) throws ReservationException, RemoteException;
+	public DlvReservationModel reserveTimeslot(DlvTimeslotModel dlvTimeslot, String customerId, long holdTime, EnumReservationType type, ContactAddressModel addressId, boolean chefsTable,String ctDeliveryProfile,boolean isForced, TimeslotEventModel event, boolean hasSteeringDiscount) throws ReservationException, RemoteException;
     public void commitReservation(String rsvId, String customerId, String orderId,boolean pr1) throws ReservationException, RemoteException;
     public DlvAddressVerificationResponse scrubAddress(AddressModel address) throws RemoteException;
     public DlvAddressVerificationResponse scrubAddress(AddressModel address, boolean useApartment) throws RemoteException;

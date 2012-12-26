@@ -29,6 +29,7 @@ public class FDReservation extends ModelSupport {
 	private final RoutingActivityType unassignedActivityType;
 	private final int statusCode;
 	private final EnumReservationClass rsvClass;
+	private boolean hasSteeringDiscount;
 
 	public FDReservation(
 		PrimaryKey pk,
@@ -56,6 +57,34 @@ public class FDReservation extends ModelSupport {
 		this.unassignedActivityType=unassignedActivityType;
 		this.statusCode=statusCode;
 		this.rsvClass=rsvClass;
+	}
+	public FDReservation(
+		PrimaryKey pk,
+		FDTimeslot timeslot,
+		Date expirationDateTime,
+		EnumReservationType type,
+		String customerId,
+		String addressId,
+		boolean chefsTable,
+		boolean isUnassigned,
+		String orderId,
+		boolean isInUPS,
+		RoutingActivityType unassignedActivityType,
+		int statusCode, EnumReservationClass rsvClass, boolean hasSteeringDiscount) {
+		this.setPK(pk);
+		this.timeslot = timeslot;
+		this.expirationDateTime = expirationDateTime;
+		this.type = type;
+		this.customerId = customerId;
+		this.addressId = addressId;
+		this.chefsTable = chefsTable;
+		this.isUnassigned=isUnassigned;
+		this.orderId = orderId;
+		this.isInUPS=isInUPS;
+		this.unassignedActivityType=unassignedActivityType;
+		this.statusCode=statusCode;
+		this.rsvClass=rsvClass;
+		this.hasSteeringDiscount = hasSteeringDiscount;
 	}
 	public EnumReservationType getType() {
 		return type;
@@ -125,6 +154,7 @@ public class FDReservation extends ModelSupport {
 	public boolean isInUPS() {
 		return isInUPS;
 	}
+	
 	public String toString() {
 		return ToStringBuilder.reflectionToString(this, ToStringStyle.MULTI_LINE_STYLE);
 	}
@@ -135,5 +165,12 @@ public class FDReservation extends ModelSupport {
 	public boolean isPremium(){
 		return EnumReservationClass.PREMIUM.equals(this.getRsvClass())||EnumReservationClass.PREMIUMCT.equals(this.getRsvClass());
 	}
+	public boolean hasSteeringDiscount() {
+		return hasSteeringDiscount;
+	}
+	public void setHasSteeringDiscount(boolean hasSteeringDiscount) {
+		this.hasSteeringDiscount = hasSteeringDiscount;
+	}
+	
 
 }

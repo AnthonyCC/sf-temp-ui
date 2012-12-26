@@ -545,7 +545,7 @@ public class FDDeliveryManager {
 		ContactAddressModel address,
 		boolean chefsTable,
 		String ctDeliveryProfile,
-		boolean isForced, TimeslotEventModel event) throws FDResourceException, ReservationException {
+		boolean isForced, TimeslotEventModel event, boolean hasSteeringDiscount) throws FDResourceException, ReservationException {
 
 		try {
 
@@ -556,7 +556,7 @@ public class FDDeliveryManager {
 				event.setSector(neighbourhoodInfo.getName());
 			}
 			DlvReservationModel dlvReservation = sb
-				.reserveTimeslot(timeslot.getDlvTimeslot(), customerId, holdTime, type, address, chefsTable,ctDeliveryProfile,isForced, event);
+				.reserveTimeslot(timeslot.getDlvTimeslot(), customerId, holdTime, type, address, chefsTable,ctDeliveryProfile,isForced, event, hasSteeringDiscount);
 
 			FDReservation reservation = new FDReservation(
 				dlvReservation.getPK(),
@@ -567,7 +567,7 @@ public class FDDeliveryManager {
 				address.getId(),
 				dlvReservation.isChefsTable(),dlvReservation.getUnassignedActivityType()!=null, dlvReservation.getOrderId(),dlvReservation.isInUPS(),
 				dlvReservation.getUnassignedActivityType(),
-				dlvReservation.getStatusCode(),dlvReservation.getRsvClass());
+				dlvReservation.getStatusCode(),dlvReservation.getRsvClass(), dlvReservation.hasSteeringDiscount());
 			if(FDStoreProperties.isDynamicRoutingEnabled() && (timeslot.getDlvTimeslot() != null && timeslot.getDlvTimeslot().getRoutingSlot() != null 
 					&& timeslot.getDlvTimeslot().getRoutingSlot().isDynamicActive())) {
 				boolean isSent=RoutingUtil.getInstance().sendTimeslotReservationRequest(dlvReservation, address, timeslot, event);
@@ -673,7 +673,8 @@ public class FDDeliveryManager {
 					dlvRsv.isChefsTable(),
 					dlvRsv.isUnassigned(), dlvRsv.getOrderId(),dlvRsv.isInUPS(),
 					dlvRsv.getUnassignedActivityType(),
-					dlvRsv.getStatusCode(),dlvRsv.getRsvClass()));
+					dlvRsv.getStatusCode(),dlvRsv.getRsvClass(),
+					dlvRsv.hasSteeringDiscount()));
 			}
 			return rsvLst;
 
@@ -769,7 +770,7 @@ public class FDDeliveryManager {
 			FDReservation fdRes = new FDReservation(dlvRsv.getPK(), timeslot, dlvRsv.getExpirationDateTime(), dlvRsv
 				.getReservationType(), dlvRsv.getCustomerId(), dlvRsv.getAddressId(), dlvRsv.isChefsTable(),dlvRsv.isUnassigned()
 				, dlvRsv.getOrderId(),dlvRsv.isInUPS(),dlvRsv.getUnassignedActivityType(),
-				dlvRsv.getStatusCode(),dlvRsv.getRsvClass());
+				dlvRsv.getStatusCode(),dlvRsv.getRsvClass(), dlvRsv.hasSteeringDiscount());
 
 			return fdRes;
 		} catch (ObjectNotFoundException ex) {

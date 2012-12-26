@@ -274,7 +274,7 @@ public class DlvManagerSessionBean extends GatewaySessionBeanSupport {
 		String customerId,
 		long holdTime,
 		EnumReservationType type,
-		ContactAddressModel address, boolean chefsTable, String profileName, boolean isForced, TimeslotEventModel event) throws ReservationException {
+		ContactAddressModel address, boolean chefsTable, String profileName, boolean isForced, TimeslotEventModel event, boolean hasSteeringDiscount) throws ReservationException {
 
 		// Get the Timeslot object
 		/*DlvTimeslotModel timeslotModel;
@@ -381,7 +381,7 @@ public class DlvManagerSessionBean extends GatewaySessionBeanSupport {
 			SectorVO sectorInfo = DlvManagerDAO.getSectorInfo(con, address);
 			ps = con
 				.prepareStatement("INSERT INTO dlv.reservation(ID, TIMESLOT_ID, ZONE_ID, ORDER_ID, CUSTOMER_ID, STATUS_CODE" +
-						", EXPIRATION_DATETIME, TYPE, ADDRESS_ID, CHEFSTABLE, MODIFIED_DTTM,CT_DELIVERY_PROFILE,IS_FORCED, SECTOR, CLASS) values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?,SYSDATE,?,?,?,?)");
+						", EXPIRATION_DATETIME, TYPE, ADDRESS_ID, CHEFSTABLE, MODIFIED_DTTM,CT_DELIVERY_PROFILE,IS_FORCED, SECTOR, CLASS, IS_STEERING_DISCOUNT) values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?,SYSDATE,?,?,?,?,?)");
 			String newId = this.getNextId(con, "DLV");
 			ps.setString(1, newId);
 			ps.setString(2, timeslotModel.getId());
@@ -397,6 +397,7 @@ public class DlvManagerSessionBean extends GatewaySessionBeanSupport {
 			ps.setString(12, isForced  ? "X" : null );
 			ps.setString(13, sectorInfo != null  ? sectorInfo.getName() : null );
 			ps.setString(14, (timeslotModel.isPremiumSlot() && chefsTable ? EnumReservationClass.PREMIUMCT.getName(): (timeslotModel.isPremiumSlot() && !chefsTable)?EnumReservationClass.PREMIUM.getName():""));
+			ps.setString(15, hasSteeringDiscount ? "X" : null);
 
 			ps.executeUpdate();
 			EnumReservationClass rsvClass = (timeslotModel.isPremiumSlot() && chefsTable) ? EnumReservationClass.PREMIUMCT: (timeslotModel.isPremiumSlot() && !chefsTable)?EnumReservationClass.PREMIUM:null;
@@ -413,6 +414,7 @@ public class DlvManagerSessionBean extends GatewaySessionBeanSupport {
 				address.getId(),
 				timeslotModel.getBaseDate(),
 				timeslotModel.getZoneCode(),null,false,null, null, null, null, null, null, null, rsvClass, null, null);
+			rsv.setHasSteeringDiscount(hasSteeringDiscount);
 			return rsv;
 		} catch (SQLException se) {
 			this.getSessionContext().setRollbackOnly();
@@ -579,6 +581,7 @@ public class DlvManagerSessionBean extends GatewaySessionBeanSupport {
 			, EnumRoutingUpdateStatus.getEnum(rs.getString("UPDATE_STATUS"))
 			, EnumOrderMetricsSource.getEnum(rs.getString("METRICS_SOURCE")));
 		rsv.setDynamic("X".equalsIgnoreCase(rs.getString("IS_DYNAMIC"))?true:false);
+		rsv.setHasSteeringDiscount("X".equalsIgnoreCase(rs.getString("IS_STEERING_DISCOUNT")) ? true : false);
 		rs.close();
 		ps.close();
 
@@ -827,7 +830,7 @@ public class DlvManagerSessionBean extends GatewaySessionBeanSupport {
 				customerId,
 				duration,
 				EnumReservationType.RECURRING_RESERVATION,
-				address, chefstable,null, false, event);
+				address, chefstable,null, false, event, false);
 
 			logActivity(EnumTransactionSource.SYSTEM, EnumAccountActivityType.MAKE_PRE_RESERVATION,"SYSTEM", customerId,
 								"Made recurring reservation");
