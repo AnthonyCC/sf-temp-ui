@@ -58,6 +58,8 @@ public class DlvReservationModel extends ModelSupport {
 		
 	private boolean dynamic;
 	
+	private boolean hasSteeringDiscount;
+	
 	public EnumOrderMetricsSource getMetricsSource() {
 		return metricsSource;
 	}
@@ -325,6 +327,14 @@ public class DlvReservationModel extends ModelSupport {
 
 	public void setDynamic(boolean dynamic) {
 		this.dynamic = dynamic;
+	}
+	
+	public boolean hasSteeringDiscount() {
+		return hasSteeringDiscount;
+	}
+	
+	public void setHasSteeringDiscount(boolean hasSteeringDiscount) {
+		this.hasSteeringDiscount = hasSteeringDiscount;
 	}
 
 }
