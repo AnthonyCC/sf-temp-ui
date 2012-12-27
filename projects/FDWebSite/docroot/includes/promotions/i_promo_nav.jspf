@@ -38,7 +38,6 @@
 	boolean promo_options = snav_pageURI.indexOf("/promo_options.jsp") > -1;
 	boolean promo_search = snav_pageURI.indexOf("/promo_search.jsp") > -1;
 	boolean promo_view = snav_pageURI.indexOf("/promo_view.jsp") > -1;
-	boolean promo_batch = snav_pageURI.indexOf("/promo_create_batch.jsp") > -1;
 
 	boolean promo_create_edit = snav_pageURI.indexOf("/promo_create_edit.jsp") > -1;
 
@@ -83,15 +82,6 @@
 			<a href="/promotion/promo_publish.jsp">Publish</a>
 		</div>
 	<% } %>
-	<% if (promo_batch) { %>
-		<div class="promo_sub_nav_on" style="width:175px;">
-			Create Batch Promos
-		</div>
-	<% }else{ %>
-		<div class="promo_sub_nav" style="width:175px;">
-			<a href="/promotion/promo_create_batch.jsp">Create Batch Promos</a>
-		</div>
-	<% } %>
 <% } else if(FDStoreProperties.isPromoPublishNodeMaster() && CrmSecurityManager.hasAccessToPage(agent.getRole().getLdapRoleName(),"promo_create.jsp")) { %>
 	<% if(!agent.getRole().getCode().equals("HR")) {
 		if (promo_home || promo_view) { %>
@@ -110,15 +100,6 @@
 	<% }else{ %>
 		<div class="promo_sub_nav">
 			<a href="/promotion/promo_create.jsp">Create</a>
-		</div>
-	<% } %>
-	<% if (promo_batch) { %>
-		<div class="promo_sub_nav_on" style="width:175px;">
-			Create Batch Promos
-		</div>
-	<% }else{ %>
-		<div class="promo_sub_nav" style="width:175px;">
-			<a href="/promotion/promo_create_batch.jsp">Create Batch Promos</a>
 		</div>
 	<% } %>
 <% } else { %>
