@@ -67,7 +67,6 @@ public class PromotionBasicInfoControllerTag extends AbstractControllerTag {
 							//set batch number to promotion object
 							this.promotion.setBatchId(batch_id);
 							String promo_redemption = this.promotion.getRedemptionCode();
-							String promo_description = this.promotion.getDescription();
 							String promo_name = this.promotion.getName();
 							String promo_code = "CD_";
 							if(EnumOfferType.WINDOW_STEERING.getName().equalsIgnoreCase(promotion.getOfferType())){
@@ -77,12 +76,10 @@ public class PromotionBasicInfoControllerTag extends AbstractControllerTag {
 								//Start Creating promotions
 								String randString = getRandomString();
 								String promoCode = promo_code + randString;						
-								String redemptionCode = promo_redemption + "_" + randString; 
+								String redemptionCode = promo_redemption + randString; 
 								String name = promo_name + "_" + randString;
-								String descr = promo_description + "_" + randString;
 								this.promotion.setPromotionCode(promoCode);
 								this.promotion.setRedemptionCode(redemptionCode);
-								this.promotion.setDescription(descr);
 								this.promotion.setName(name);					
 								try {
 									FDPromotionNewManager.createPromotionBasic(this.promotion);
