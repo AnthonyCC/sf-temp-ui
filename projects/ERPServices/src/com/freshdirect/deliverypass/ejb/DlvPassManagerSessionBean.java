@@ -1046,16 +1046,16 @@ public class DlvPassManagerSessionBean extends SessionBeanSupport {
 			}
 	    }
 
-	    public void sendRenewalReport() {
+	    public List<List<String>> getPendingPasses() {
 	    	
 	    	Connection conn = null;
 			try {
 				conn = getConnection();
-				 DeliveryPassDAO.getDPCustomersWithMissingPayments(conn);
+				 return DeliveryPassDAO.getPendingPasses(conn);
 				 
 				 
 			} catch (Exception e) {
-				LOGGER.warn("Exception during getAutoRenewalInfo()",e);
+				LOGGER.warn("Exception during getPendingPasses()",e);
 				throw new EJBException(e);
 			} 
 			finally {
@@ -1064,41 +1064,11 @@ public class DlvPassManagerSessionBean extends SessionBeanSupport {
 						conn.close();
 					}
 				} catch (SQLException e) {
-					LOGGER.warn("SQLException while closing conn in cleanup", e);
+					LOGGER.warn("SQLException while closing conn in cleanup during getPendingPasses() call", e);
 				}
 				
 			}
 	    }
 	   
-	    private String getDataAsString(List<List<String>> customers) {
-	    	
-	    	StringBuffer buf=new StringBuffer(1000);
-	    	buf.append("<table border=\"1\" valign=\"top\" align=\"left\" cellpadding=\"0\" cellspacing=\"0\">");
-			buf.append("<tr>").append(buildSimpleTag("th","Customer Name"))
-							  .append(buildSimpleTag("th","User Id"))
-							  .append(buildSimpleTag("th","DP Renewal failure reason"))
-							  .append(buildSimpleTag("th","Failed On"))
-							  .append("</tr>");
-			String cutoff=null;
-			List<String> customerInfo=null;
-			for(Iterator<List<String>> i = customers.iterator(); i.hasNext();){
-				customerInfo  =  i.next();
-					buf.append("<tr>");
-					for(Iterator<String> j = customerInfo.iterator(); j.hasNext();) {
-						buf.append(buildSimpleTag("td",j.next()));
-					}
-					buf.append("</tr>");
-			}
-			buf.append("</table>");
-			return "";
-	    }
-	   
-	    private String buildSimpleTag( String tagName,String input) {
-	    	return new StringBuilder().append("<")
-	    	                          .append(tagName)
-	    	                          .append(">").append(input)
-	    	                          .append("</")
-	    	                          .append(tagName)
-	    	                          .append(">").toString();
-	    }
+	    
 }

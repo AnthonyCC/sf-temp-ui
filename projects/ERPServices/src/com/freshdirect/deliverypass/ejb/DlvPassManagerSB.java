@@ -57,6 +57,7 @@ public interface DlvPassManagerSB extends EJBObject {
 	public int getDaysSinceDPExpiry(String customerID) throws RemoteException;
 
 	public int getDaysToDPExpiry(String customerID, String activeDPID)throws RemoteException;
+	public List<List<String>> getPendingPasses()throws RemoteException;
 
 }
 

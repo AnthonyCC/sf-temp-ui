@@ -32,15 +32,13 @@ import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpFraudException;
 import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.customer.ErpSaleNotFoundException;
-import com.freshdirect.delivery.DlvResourceException;
 import com.freshdirect.delivery.DlvZoneInfoModel;
 import com.freshdirect.delivery.EnumReservationType;
 import com.freshdirect.delivery.EnumZipCheckResponses;
-import com.freshdirect.delivery.ejb.DlvManagerHome;
-import com.freshdirect.delivery.ejb.DlvManagerSB;
-import com.freshdirect.delivery.model.UnassignedDlvReservationModel;
 import com.freshdirect.deliverypass.DeliveryPassException;
 import com.freshdirect.deliverypass.DlvPassConstants;
+import com.freshdirect.deliverypass.ejb.DlvPassManagerHome;
+import com.freshdirect.deliverypass.ejb.DlvPassManagerSB;
 import com.freshdirect.fdstore.FDCachedFactory;
 import com.freshdirect.fdstore.FDConfiguration;
 import com.freshdirect.fdstore.FDInvalidAddressException;
@@ -92,6 +90,7 @@ public class DeliveryPassRenewalCron {
 		Context ctx=null;
 		try {
 			ctx = getInitialContext();
+			
 			autoRenewInfo=getAutoRenewalInfo();
 			if(autoRenewInfo!=null) {
 				arCustomers=(List)autoRenewInfo[0];
@@ -123,6 +122,7 @@ public class DeliveryPassRenewalCron {
 			LOGGER.error("Error running DeliveryPassRenewalCron :",e);
 			email("ALL",e.toString());
 		}  finally {
+			//emailPendingPassReport();
 			try {
 				if (ctx != null) {
 					ctx.close();
@@ -448,35 +448,33 @@ public class DeliveryPassRenewalCron {
 		
 	}
 	
-	private static void emailUnassigned()
+	private static void emailPendingPassReport()
 	{
+		Calendar cal = Calendar.getInstance();
+		//cal.add(Calendar.DATE, 1);
 		Context ctx = null;
+		List<List<String>> pendingPasses =null;
 		try
 		{
 			
 			ctx = getInitialContext();
-			Calendar cal = Calendar.getInstance();
-			cal.add(Calendar.DATE, 1);
+			DlvPassManagerSB dlvPassManagerSB = null;
+			DlvPassManagerHome dph =(DlvPassManagerHome) ctx.lookup("freshdirect.erp.DlvPassManager");
+			dlvPassManagerSB = dph.create();
+			pendingPasses =dlvPassManagerSB.getPendingPasses();
 			
-			DlvManagerSB dlvManager = null;
-			DlvManagerHome dlh =(DlvManagerHome) ctx.lookup("freshdirect.delivery.DeliveryManager");
-			dlvManager = dlh.create();
-			List<UnassignedDlvReservationModel> _unassignedReservations = dlvManager.getUnassignedReservations(cal.getTime(),true);
-			/*if(_unassignedReservations.size()>0)
-				email(_unassignedReservations, cal.getTime());*/
+			if(pendingPasses.size()>0)
+				email( cal.getTime(),pendingPasses);
 		}
 		catch(NamingException e)
-		{
-			e.printStackTrace();
-		} catch (DlvResourceException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (RemoteException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		{   
+			email(cal.getTime(),e);
+		}  catch (RemoteException e) {
+			
+			email(cal.getTime(),e);
 		} catch (CreateException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			
+			email(cal.getTime(),e);
 		}
 		finally {
 			try {
@@ -493,21 +491,20 @@ public class DeliveryPassRenewalCron {
 		}
 	}
 	
-	private static void email(Date processDate, String msg) {
+	private static void email(Date processDate, Exception e) {
 		// TODO Auto-generated method stub
 		try {
 			SimpleDateFormat dateFormatter = new SimpleDateFormat("EEE, MMM d, yyyy");
-			String subject="DeliveryPass Report	for"+ (processDate != null ? dateFormatter.format(Calendar.getInstance()) : " date error");
+			String subject="Pending DeliveryPass Report	for "+ (processDate != null ? dateFormatter.format(Calendar.getInstance()) : " date error");
 
 			StringBuffer buff = new StringBuffer();
 
 			buff.append("<html>").append("<body>");			
 			
-			if(msg != null) {
-				buff.append(msg);
-			} else {
-				buff.append("<B> Not data returned</B>");
-			}
+			
+				buff.append("<B> Error running report</B>");
+				buff.append(e.toString());
+			
 			buff.append("</body>").append("</html>");
 
 			ErpMailSender mailer = new ErpMailSender();
@@ -515,9 +512,72 @@ public class DeliveryPassRenewalCron {
 					ErpServicesProperties.getCronFailureMailTo(),ErpServicesProperties.getCronFailureMailCC(),
 					subject, buff.toString(), true, "");
 			
+		}catch (MessagingException _e) {
+			LOGGER.warn("Error Sending DeliveryPass report email: ", _e);
+		}
+		
+	}
+	private static void email(Date processDate, List<List<String>> info) {
+		// TODO Auto-generated method stub
+		try {
+			SimpleDateFormat dateFormatter = new SimpleDateFormat("EEE, MMM d, yyyy");
+			String subject="Pending DeliveryPass Report	for"+ (processDate != null ? dateFormatter.format(processDate) : " date error");
+
+			StringBuffer buff = new StringBuffer();
+
+			buff.append("<html>").append("<body>");			
+			
+			if(info != null && info.size()>0) {
+				buff.append(getDataAsString(info));
+			} else if (info==null) {
+				buff.append("<B> Error running report</B>");
+			}
+			else {
+				buff.append("<B> Not data returned</B>");
+			}
+			buff.append("</body>").append("</html>");
+
+			ErpMailSender mailer = new ErpMailSender();
+			mailer.sendMail(ErpServicesProperties.getDPReportMailFrom(),
+					ErpServicesProperties.getDPReportMailTo(),ErpServicesProperties.getDPReportMailCC(),
+					subject, buff.toString(), true, "");
+			
 		}catch (MessagingException e) {
 			LOGGER.warn("Error Sending Sale Cron report email: ", e);
 		}
 		
 	}
+	private static String getDataAsString(List<List<String>> customers) {
+    	
+    	StringBuffer buf=new StringBuffer(1000);
+    	buf.append("<b> Total pending delivery-passes on past orders :"+customers.size()+"</b>");
+    	buf.append("<br><br><table border=\"1\" valign=\"top\" align=\"left\" cellpadding=\"0\" cellspacing=\"0\">");
+		buf.append("<tr>").append(buildSimpleTag("th","Customer Name"))
+						  .append(buildSimpleTag("th","User Id"))
+						  .append(buildSimpleTag("th","Order #"))
+						  .append(buildSimpleTag("th","Order Type"))
+						  .append(buildSimpleTag("th","Order Status"))
+						  .append(buildSimpleTag("th","Delivery Date"))
+						  .append("</tr>");
+		List<String> customerInfo=null;
+		for(Iterator<List<String>> i = customers.iterator(); i.hasNext();){
+			customerInfo  =  i.next();
+				buf.append("<tr>");
+				for(Iterator<String> j = customerInfo.iterator(); j.hasNext();) {
+					buf.append(buildSimpleTag("td",j.next()));
+				}
+				buf.append("</tr>");
+		}
+		buf.append("</table>");
+		return buf.toString();
+    }
+   
+    private static String buildSimpleTag( String tagName,String input) {
+    	return new StringBuilder().append("<")
+    	                          .append(tagName)
+    	                          .append(">").append(input)
+    	                          .append("</")
+    	                          .append(tagName)
+    	                          .append(">").toString();
+    }
 }

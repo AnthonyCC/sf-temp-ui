@@ -205,6 +205,9 @@ public class ErpServicesProperties {
 	private final static String PROP_HANDOFF_ADDRESS_LINE2		= "send.handoff.addressline2";
 	private final static String PROP_HANDOFF_TRAILER_INFO_ENABLED = "send.handoff.trailerinfo.enabled";
 
+	private final static String PROP_DP_REPORT_MAIL_TO = "dpReport.mail.to";
+	private final static String PROP_DP_REPORT_MAIL_CC = "dpReport.mail.cc";
+	private final static String PROP_DP_REPORT_MAIL_FROM = "dpReport.mail.from";
 	static {
 		Properties defaults = new Properties();
 
@@ -238,7 +241,7 @@ public class ErpServicesProperties {
 		defaults.put(PROP_LOST_PASSWORD_PAGE, "http://www.freshdirect.com/login/retrieve_password.jsp");
 
 		defaults.put(PROP_SEND_EMAIL, "true");
-		defaults.put(PROP_MAILER_HOST, "ns2.nyc2.freshdirect.com");
+		defaults.put(PROP_MAILER_HOST, "storesmtp.nyc2.freshdirect.com");
 		defaults.put(PROP_MAILER_PROTOCOL, "smtp");
 		defaults.put(PROP_MAILER_FROM, "orders@freshdirect.com");
 		defaults.put(PROP_FD_EMAIL, "customerservice@freshdirect.com");
@@ -366,6 +369,10 @@ public class ErpServicesProperties {
 		defaults.put(PROP_AIRCLIC_BLACKHOLE, "false");
 		defaults.put(PROP_HANDOFF_ADDRESS_LINE2, "true");
 		defaults.put(PROP_HANDOFF_TRAILER_INFO_ENABLED, "true");
+		
+		defaults.put(PROP_DP_REPORT_MAIL_TO, "applicationdevelopment@freshdirect.com");
+		defaults.put(PROP_DP_REPORT_MAIL_CC, "applicationdevelopment@freshdirect.com");
+		defaults.put(PROP_DP_REPORT_MAIL_FROM, "applicationdevelopment@freshdirect.com");
 		
 		config = ConfigHelper.getPropertiesFromClassLoader("erpservices.properties", defaults);
 		LOGGER.info("Loaded configuration: "+config);
@@ -865,6 +872,16 @@ public class ErpServicesProperties {
 	public static String getCrmSystemDriverUserPassword(){
 		return config.getProperty(PROP_CRM_SYSTME_DRIVER_USER_PASSWORD);
 	}
+	public static String getDPReportMailFrom() {
+		return config.getProperty(PROP_DP_REPORT_MAIL_FROM);
+	}
 	
+	public static String getDPReportMailTo() {
+		return config.getProperty(PROP_DP_REPORT_MAIL_TO);
+	}
+	
+	public static String getDPReportMailCC() {
+		return config.getProperty(PROP_DP_REPORT_MAIL_CC);
+	}
 	
 }

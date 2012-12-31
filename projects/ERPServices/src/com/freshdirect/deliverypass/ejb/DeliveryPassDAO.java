@@ -545,5 +545,45 @@ public class DeliveryPassDAO {
 				ps.close();
 		}		
 	}
+	private static String GET_PENDING_DP="select INITCAP(CI.LAST_NAME) ||','||INITCAP(CI.FIRST_NAME) as \"Customer Name\", C.USER_ID AS \"User Id\",s.id as \"Order #\","+
+    " case s.type when 'REG' then 'Regular' when 'SUB' then 'DP Renewal' else s.type end as \"Order Type\", "+
+	" case s.status when 'ENR' then 'Enroute'  when 'STF' then 'Settlement Failed' when 'STL' then 'Settled'  "+
+	" when 'AUF' then 'Auth Fail' when 'CPG' then 'Capture Pending' "+
+	" else s.status end"+
+	" as \"Order Status\", to_char(sa.requested_date,'MM-DD-YYYY') as \"Delivery Date\""+
+	"             from cust.customer c, cust.customerinfo ci, CUST.DELIVERY_PASS dp, cust.sale s, cust.salesaction sa where DP.STATUS='PEN'"+
+	" and s.id=DP.PURCHASE_ORDER_ID and s.customer_id=DP.CUSTOMER_ID and c.id=CI.CUSTOMER_ID and s.customer_id=c.id"+
+	" and s.cromod_date=sa.action_date and sa.action_type in ('CRO','MOD') and s.id=sa.sale_id "+
+	" and SA.REQUESTED_DATE<trunc(sysdate) order by SA.REQUESTED_DATE, INITCAP(CI.LAST_NAME) ||','||INITCAP(CI.FIRST_NAME)";
+	
+	public static List<List<String>> getPendingPasses(Connection conn) throws SQLException {
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		List<List<String>> customers=new ArrayList<List<String>>(50);
+		List<String> custInfo=new ArrayList<String>(4);
+		try{
+			ps = conn.prepareStatement(GET_PENDING_DP);
+			rs = ps.executeQuery();
+			while(rs.next()) {
+				custInfo.add(rs.getString(1));
+				custInfo.add(rs.getString(2));
+				custInfo.add(rs.getString(3));
+				custInfo.add(rs.getString(4));
+				custInfo.add(rs.getString(5));
+				custInfo.add(rs.getString(6));
+				customers.add(custInfo);
+				custInfo=new ArrayList<String>(4);
+			}
+			return customers;
+		}catch(SQLException exp){
+			throw exp;
+		}
+		finally{
+			if(rs != null)
+				rs.close();
+			if(ps != null)
+				ps.close();
+		}		
+	}
 
 }
