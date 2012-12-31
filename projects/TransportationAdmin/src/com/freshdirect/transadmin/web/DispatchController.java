@@ -1542,7 +1542,8 @@ public class DispatchController extends AbstractMultiActionController {
 		// if there is a dispatch record for the same date then check what user role
 		// if not admin send an error message
 		// if admin delete the existing record and run the autodispatch crap
-
+		long start = System.currentTimeMillis();
+		
 		String dispatchDate = request.getParameter("daterange");
 			try {
 				if (!TransStringUtil.isEmpty(dispatchDate)) {
@@ -1578,6 +1579,8 @@ public class DispatchController extends AbstractMultiActionController {
 			}
 		   dispatchManagerService.processAutoDispatch(dispatchDate);
 		   saveMessage(request, getMessage("app.actionmessage.143", null));
+		   long end = System.currentTimeMillis();
+		   System.err.println("autoDispatchHandler in (sec) "+(end-start)/1000);
 		   return planHandler(request,response);
 	}
 
