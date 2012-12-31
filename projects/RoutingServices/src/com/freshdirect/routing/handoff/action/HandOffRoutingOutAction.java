@@ -4,6 +4,7 @@ import static com.freshdirect.routing.manager.IProcessMessage.INFO_MESSAGE_ROUTI
 import static com.freshdirect.routing.manager.IProcessMessage.INFO_MESSAGE_ROUTINGOUTPROGRESS;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -16,6 +17,7 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 
 import com.freshdirect.customer.EnumSaleStatus;
+import com.freshdirect.framework.util.TimeOfDay;
 import com.freshdirect.routing.constants.EnumHandOffBatchActionType;
 import com.freshdirect.routing.constants.EnumHandOffBatchStatus;
 import com.freshdirect.routing.constants.EnumHandOffDispatchStatus;
@@ -88,9 +90,16 @@ public class HandOffRoutingOutAction extends AbstractHandOffAction {
 		}
 		
 		int stopCount = proxy.getStopCount(this.getBatch().getBatchId());
-		if(stopCount != _tmpStops.size())
+		Calendar cal = Calendar.getInstance();
+		TimeOfDay cutoffTime = new TimeOfDay(this.getBatch().getCutOffDateTime());
+		Calendar cutoffCal = cutoffTime.getAsCalendar(this.getBatch().getDeliveryDate());
+		cutoffCal.add(Calendar.DATE, -1);
+		
+		if(cal.getTime().after(cutoffCal.getTime()) && stopCount != _tmpStops.size())
+		{
 			throw new RoutingServiceException("Order count mismatch between Storefront & RoadNet. Route In again."
 					, null, IIssue.PROCESS_HANDOFFBATCH_ERROR);
+		}
 		
 		Map<IHandOffBatchSession, Map<String, Set<IRouteModel>>> sessionMapping = new HashMap<IHandOffBatchSession
 																						, Map<String, Set<IRouteModel>>>();
