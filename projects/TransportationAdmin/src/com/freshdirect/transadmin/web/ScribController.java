@@ -103,6 +103,7 @@ public class ScribController extends AbstractMultiActionController
 	
 	public ModelAndView scribHandler(HttpServletRequest request, HttpServletResponse response) throws ServletException 
 	{
+		long start = System.currentTimeMillis();
 		try {
 			String daterange = request.getParameter("daterange");
 			if(daterange==null)daterange=TransStringUtil.getCurrentDate();
@@ -160,6 +161,8 @@ public class ScribController extends AbstractMultiActionController
 			}
 			request.setAttribute("weekDate", getClientDate(_weekDate));
 			request.setAttribute("scribDay", day);
+			long end = System.currentTimeMillis();
+			System.err.println("scribHandler (in sec)"+(end-start)/1000);
 			return mav;
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -219,7 +222,7 @@ public class ScribController extends AbstractMultiActionController
 	}
 	public void createPlan(HttpServletRequest request) throws Exception 
 	{	
-		
+		long start = System.currentTimeMillis();
 		String[] regions = StringUtil.decodeStrings(request.getParameter("dlvregion_selected"));
 		String[] dates = StringUtil.decodeStrings(request.getParameter("dlvdates_selected"));
 					
@@ -282,6 +285,8 @@ public class ScribController extends AbstractMultiActionController
 				}
 			}//end dates loop	
 		}
+		long end = System.currentTimeMillis();
+		System.err.println("createPlan (in sec) "+(end-start)/1000);
 	}
 	
 	public ModelAndView deleteScribHandler(HttpServletRequest request, HttpServletResponse response) throws ServletException 

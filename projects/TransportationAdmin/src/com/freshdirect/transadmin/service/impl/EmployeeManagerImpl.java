@@ -154,6 +154,23 @@ public class EmployeeManagerImpl extends BaseManagerImpl implements
 		}
 		return finalList;
 	}
+	
+	public List<String> getTerminatedEmployeesEx() {
+		Map<String, EmployeeInfo> kronoEmployees = TransAdminCacheManager.getInstance()
+				.getAllTerminatedEmployeeInfo(this);
+		
+		List<String> finalList=new ArrayList<String>();
+		
+		Iterator<EmployeeInfo> it = kronoEmployees.values().iterator();
+		
+		while(it.hasNext())
+		{
+			EmployeeInfo info=(EmployeeInfo)it.next();
+			finalList.add(info.getEmployeeId());
+		}
+		return finalList;
+	}
+	
 
 	public Map getTransAppActiveEmployees() {
 		Map kronosEmployees = TransAdminCacheManager
@@ -553,6 +570,8 @@ public class EmployeeManagerImpl extends BaseManagerImpl implements
 	public Collection getScheduledEmployees(String day, String date) {
 		List result = new ArrayList();
 		Collection c = null;
+		long start = System.currentTimeMillis();
+		
 		try {
 			c = getDomainManagerDao().getScheduleEmployees(
 					TransStringUtil.getServerDate(TransStringUtil
@@ -564,6 +583,7 @@ public class EmployeeManagerImpl extends BaseManagerImpl implements
 
 		// logic for active inactive employees eligible for plan also terminated
 		// employees
+		Set<String> resourceIds = new HashSet<String>();
 		if(c != null) {
 			for (Iterator it = c.iterator(); it.hasNext();) {
 				ScheduleEmployee se = (ScheduleEmployee) it.next();
@@ -574,6 +594,8 @@ public class EmployeeManagerImpl extends BaseManagerImpl implements
 				if (info == null) {
 					it.remove();
 					continue;
+				}else{
+					resourceIds.add(se.getEmployeeId());
 				}
 				/*
 				 * Collection
@@ -585,6 +607,10 @@ public class EmployeeManagerImpl extends BaseManagerImpl implements
 				 * if(!DispatchPlanUtil.isEligibleForPlan(info.getStatus(),
 				 * trnStatus)) { it.remove(); }
 				 */
+			}
+			Map empRoleMap = null;
+			if (resourceIds != null && resourceIds.size() > 0) {
+				empRoleMap = getEmployeeRoles(resourceIds);
 			}
 			Collection off = getPunchInfoPayCode(date);
 			for (Iterator it = c.iterator(); it.hasNext();) {
@@ -600,8 +626,7 @@ public class EmployeeManagerImpl extends BaseManagerImpl implements
 					continue;
 				ScheduleEmployeeDetails detail = new ScheduleEmployeeDetails();
 				detail.setSchedule(se);
-				detail.setEmpRoles(this.domainManagerDao.getEmployeeRole(se
-						.getEmployeeId()));
+				detail.setEmpRoles((empRoleMap.get(se.getEmployeeId())!=null)?(List<EmployeeRole>)empRoleMap.get(se.getEmployeeId()):null);
 				detail.setInfo(getTransAppActiveEmployees(activeEmpl, se
 						.getEmployeeId()));
 				if (detail.getEmpRoles() != null && detail.getEmpRoles().size() > 0
@@ -615,6 +640,9 @@ public class EmployeeManagerImpl extends BaseManagerImpl implements
 					}
 				}
 			}
+			long end = System.currentTimeMillis();
+			System.err.println("getScheduledEmployees in (sec) "+(end-start)/1000);
+				
 		}
 
 		

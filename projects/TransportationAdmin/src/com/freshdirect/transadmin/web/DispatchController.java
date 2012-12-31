@@ -186,7 +186,7 @@ public class DispatchController extends AbstractMultiActionController {
 	public ModelAndView planHandler(HttpServletRequest request, HttpServletResponse response) throws ServletException {
 		
 		try{
-			
+			long start = System.currentTimeMillis();
 			String weekdaterange = request.getParameter("weekdate");
 			String daterange = request.getParameter("daterange");
 
@@ -253,6 +253,8 @@ public class DispatchController extends AbstractMultiActionController {
 			}
 			request.setAttribute("weekDate", getClientDate(_weekDate));
 			request.setAttribute("dateRange", daterange);
+			long end = System.currentTimeMillis();
+			System.err.println("planHandler "+(end-start)/1000);
 			return mav;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -1833,17 +1835,7 @@ public class DispatchController extends AbstractMultiActionController {
 	}
 		
 	private List getTermintedEmployeeIds() {
-		Collection termintedList = employeeManagerService.getTerminatedEmployees();
-		List result = new ArrayList();
-		if(termintedList != null) {
-			Iterator iterator = termintedList.iterator();
-			WebEmployeeInfo info = null;
-			while(iterator.hasNext()) {
-				info = (WebEmployeeInfo)iterator.next();
-				result.add(info.getEmployeeId());
-			}
-		}
-		return result;
+		return employeeManagerService.getTerminatedEmployeesEx();
 	}
 	
 	public ModelAndView unassignedPunchedInEmployeeHandler(HttpServletRequest request, HttpServletResponse response) throws ServletException {

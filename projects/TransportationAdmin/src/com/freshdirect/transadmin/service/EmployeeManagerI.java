@@ -2,6 +2,7 @@ package com.freshdirect.transadmin.service;
 
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -35,6 +36,7 @@ public interface EmployeeManagerI extends BaseManagerI {
 	void storeEmployees(WebEmployeeInfo employees);
 	
 	Collection getTerminatedEmployees();
+	List getTerminatedEmployeesEx();
 	
 	Map<String, EmployeeInfo> getKronosTerminatedEmployees();
 	
