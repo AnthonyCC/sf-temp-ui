@@ -128,6 +128,7 @@ function numbersonly(myfield, e, dec)
 				deliveryDayType = dlvOption.getName(); 
 			}
 		}
+		System.out.println("Promotion Profile Operator>>>>" + promotion.getProfileOperator());
 	}
 	Date defaultDate = DateUtil.addDays(today, 1); //Today + 1
 	f_effectiveDate = (f_effectiveDate != null) ? f_effectiveDate : CCFormatter.formatDateYear(defaultDate);
@@ -626,20 +627,7 @@ function numbersonly(myfield, e, dec)
 							</tr>							
 						</table>
 					</td>
-				</tr>										
-				
-				
-				<tr>
-					<td width="3%">&nbsp;</td>
-					<td width="35%">
-						<input type="button" onclick="javascript:doPublish();" name="publish" value=" PUBLISH " class="submit">
-					</td>
-					<td>
-						<input name="cancel" type="button" value=" CANCEL " class="submit" onclick="location.href='/promotion/promo_ws_view.jsp'" >	
-					</td>
-					
 				</tr>
-
 				
 				<tr>
 						<td class="promo_page_header_text">Edit&nbsp;Customer&nbsp;Requirement&nbsp;</td>
@@ -837,7 +825,18 @@ function numbersonly(myfield, e, dec)
 							</script>
 					</td>
 				</tr>
+				
+				<tr>
+					<td width="3%">&nbsp;</td>
+					<td width="35%">
+						<input type="button" onclick="javascript:doPublish();" name="publish" value=" PUBLISH " class="submit">
+					</td>
+					<td>
+						<input name="cancel" type="button" value=" CANCEL " class="submit" onclick="location.href='/promotion/promo_ws_view.jsp'" >	
+					</td>
+					
 				</tr>
+				
 															
 			</table>			
 		</form>
