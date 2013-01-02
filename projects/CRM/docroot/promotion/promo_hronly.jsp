@@ -54,7 +54,7 @@
 					String promoCode = FDPromotionNewManager.getRedemptionPromotionId(redemptionCode);
 					if(promoCode != null) {
 			%>			
-						<option value="<%=promoCode%>"><%=redemptionCode%></option>
+						<option value="<%=promoCode%>" <%=promoCode.equals(promoId)?"selected=\"true\"":""%>><%=redemptionCode%></option>
 			<%
 					}
 				}
