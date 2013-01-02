@@ -476,7 +476,7 @@ function numbersonly(myfield, e, dec)
 									<table class="tableCollapse">							
 										<tr>
 											<td>									
-												<input type="text" id="window_type" name="window_type" class="w200px" /> in Min(s) &nbsp;							
+												<input type="text" id="window_type" name="window_type" class="w200px" onKeyPress="return numbersonly(this, event)" /> in Min(s) &nbsp;							
 												<input type="button" value="ADD/UPDATE" onclick="javascript:addWindowType('timePick');" class="promo_btn_gry" />
 											</td>
 										</tr>
@@ -635,7 +635,7 @@ function numbersonly(myfield, e, dec)
 						<input type="button" onclick="javascript:doPublish();" name="publish" value=" PUBLISH " class="submit">
 					</td>
 					<td>
-						<input name="cancel" type="button" value=" CANCEL " class="submit" onclick="location.href('/promotion/promo_ws_view.jsp')" >	
+						<input name="cancel" type="button" value=" CANCEL " class="submit" onclick="location.href='/promotion/promo_ws_view.jsp'" >	
 					</td>
 					
 				</tr>
