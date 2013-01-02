@@ -136,7 +136,7 @@
 		for( var i in shortcuts ) {
 			//if ($(i)) {
 				if(!$(i)) { continue; }
-				if($(i).checked) {
+				if($(i).checked && i != 'all') {
 					addProfileRow(tmpConditionValue, shortcuts[i].name, shortcuts[i].attribute, shortcuts[i].value, toFormId);
 					$(i).checked = false;
 				}
