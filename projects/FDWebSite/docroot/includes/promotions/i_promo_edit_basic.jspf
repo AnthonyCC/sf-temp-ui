@@ -45,11 +45,11 @@
 				</tr>
 				<tr>
 					<td class="promo_detail_label"><span <fd:ErrorHandler result="<%=result%>" name="descriptionEmpty" id="errorMsg">class="error"</fd:ErrorHandler>>* Description:</span></td>
-					<td class="alignL"><input type="text" id="promo_description" name="promo_description" class="w450px" value="<%= promotion.getDescription() %>" maxLength="255" /><span id="hidethis2" style="<%=(promotion.isBatchPromo())?"display:;color:green;":"display:none;color:green;" %>"><br/>(Description will be append with random String, eg:Description_%random generated string%, Description_WEF1234)</span></td>
+					<td class="alignL"><input type="text" id="promo_description" name="promo_description" class="w450px" value="<%= promotion.getDescription() %>" maxLength="255" /><span id="hidethis2" style="<%=(promotion.isBatchPromo())?"display:;color:green;":"display:none;color:green;" %>"></span></td>
 				</tr>
 				<tr>
 					<td class="promo_detail_label">Redemption code:</td>
-					<td class="alignL"><input type="text" id="redemption_code" name="redemption_code" class="w150px" value="<%= promotion.getRedemptionCode() %>" maxlength="16" /> <span class="grayIta8pt">Blank/None = automatic application</span><span id="hidethis3" style="<%=(promotion.isBatchPromo())?"display:;color:green;":"display:none;color:green;" %>"><br/>(RedeemCode will be append with random String, eg:RedeemCode_%random generated string%, RedeemCode_WEF1234)</span></td>
+					<td class="alignL"><input type="text" id="redemption_code" name="redemption_code" class="w150px" value="<%= promotion.getRedemptionCode() %>" maxlength="16" /> <span class="grayIta8pt">Blank/None = automatic application</span><span id="hidethis3" style="<%=(promotion.isBatchPromo())?"display:;color:green;":"display:none;color:green;" %>"><br/>(RedeemCode will be append with random String, eg:RedeemCode%random generated string%, RedeemCodeWEF1234)</span></td>
 				</tr>
 				<tr>
 					<td class="promo_detail_label">Auto-apply (apc) code:</td>
