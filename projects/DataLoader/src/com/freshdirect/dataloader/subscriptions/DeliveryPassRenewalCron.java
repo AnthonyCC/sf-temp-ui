@@ -122,7 +122,7 @@ public class DeliveryPassRenewalCron {
 			LOGGER.error("Error running DeliveryPassRenewalCron :",e);
 			email("ALL",e.toString());
 		}  finally {
-			//emailPendingPassReport();
+			emailPendingPassReport();
 			try {
 				if (ctx != null) {
 					ctx.close();
