@@ -424,6 +424,16 @@ public class PromotionBasicInfoControllerTag extends AbstractControllerTag {
 			if(!NumberUtil.isInteger(promotion.getBatchNumber())) {
 				result.addError(true, "batchCount", " No of promotions should be a number.");
 			}
+			if(null != promotion.getRedemptionCode() && !"".equals(promotion.getRedemptionCode())) {
+				if(promotion.getRedemptionCode().length() > 8) {
+					result.addError(true, "redemptionCodeDuplicate", " Redemption code length for batch promotions should be only 8 characters in length, as they are appended with an additional random String.");
+				}
+			}
+			if(null != promotion.getTsaPromoCode() && !"".equals(promotion.getTsaPromoCode())) {
+				if(promotion.getTsaPromoCode().length() > 7) {
+					result.addError(true, "tsaCodeDuplicate", " APC Code length for batch promotions should be only 7 characters in length, as they are appended with an additional random String.");
+				}
+			}
 		}
 	}
 	
