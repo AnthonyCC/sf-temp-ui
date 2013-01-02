@@ -51,12 +51,12 @@ public class ScribValidator extends AbstractValidator {
 		
 		if(model.getFirstDeliveryTime() != null && model.getLastDeliveryTime() != null
 				&& model.getLastDeliveryTime().before(model.getFirstDeliveryTime())) {
-			errors.rejectValue("lastDeliveryTime", "app.error.152", "Invalid Time");
+			errors.rejectValue("endDlvTimeS", "app.error.152", "Invalid Time");
 		}
 		
 		if(model.getFirstDeliveryTime() != null && model.getLastDeliveryTime() != null
 				&& model.getFirstDeliveryTime().after(model.getLastDeliveryTime())) {
-			errors.rejectValue("firstDeliveryTime", "app.error.151", "Invalid Time");
+			errors.rejectValue("firstDlvTimeS", "app.error.151", "Invalid Time");
 		}
 	}
 	
