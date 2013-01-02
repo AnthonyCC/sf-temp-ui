@@ -57,7 +57,12 @@ public class DeliveryCaseCreateCron {
 					LOGGER.debug("Creatng case for order # " + model.getOrderId());
 					try {
 						if(model.getOrderId() != null) {
-							FDOrderI order = FDCustomerManager.getOrder(model.getOrderId());
+							FDOrderI order = null;
+							try {
+								order = FDCustomerManager.getOrder(model.getOrderId());
+							} catch (FDResourceException e){
+								// do nothing if no order exists
+							}
 							if(order != null){
 								if(model.isEarlyDeliveryReq()){
 									createCase(order.getCustomerId(), order.getErpSalesId(), CrmCaseSubject.CODE_EARLY_DELIVERY_REQEUST,
