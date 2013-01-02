@@ -105,6 +105,8 @@ public class WSPromoControllerTag extends AbstractControllerTag {
 						//set to all window types
 						windowTypes = new String[]{"ALL"};
 					}
+					String profileOperator = NVL.apply(request.getParameter("custreq_profileAndOr"),"").trim();
+					
 					if(promoCode.length() == 0 ){
 						//Validate if the given effecttive_date/zone/timeslot or window type combination already exists.
 						WSPromotionInfo pInfo = FDPromotionNewManager.getWSPromotionInfo(zone, startTime, endTime, startDate, windowTypes);
@@ -134,7 +136,7 @@ public class WSPromoControllerTag extends AbstractControllerTag {
 							return true;
 						}
 						//Create a new WS Promotion.
-						FDPromotionNewModel promotion = constructPromotion(effectiveDate, startDateStr, endDateStr, zone, startTime, endTime, discount, redeemLimit, cohorts, deliveryDayType, radius, windowTypes, attrParamList);
+						FDPromotionNewModel promotion = constructPromotion(effectiveDate, startDateStr, endDateStr, zone, startTime, endTime, discount, redeemLimit, cohorts, deliveryDayType, radius, windowTypes, attrParamList, profileOperator);
 						postValidate(promotion, actionResult);
 						
 
@@ -195,7 +197,7 @@ public class WSPromoControllerTag extends AbstractControllerTag {
 						promotion.setModifiedBy(agent.getUserId());
 						promotion.setModifiedDate(new Date());
 
-						updatePromotion(promotion, effectiveDate, startDateStr, endDateStr, zone, startTime, endTime, discount, redeemLimit, deliveryDayType, radius, windowTypes);
+						updatePromotion(promotion, effectiveDate, startDateStr, endDateStr, zone, startTime, endTime, discount, redeemLimit, deliveryDayType, radius, windowTypes, attrParamList, profileOperator);
 
 						postValidate(promotion, actionResult);
 						/*APPDEV-2004*/
@@ -400,7 +402,7 @@ public class WSPromoControllerTag extends AbstractControllerTag {
 	}
 	@SuppressWarnings("unchecked")
 	private FDPromotionNewModel constructPromotion(String effectiveDate, String startDateStr, String endDateStr, String zone, String startTime,
-			String endTime, String discount, String redeemLimit, String[] cohorts, String deliveryDayType, String radius, String[] windowTypes, List attrParamList) throws FDResourceException {
+			String endTime, String discount, String redeemLimit, String[] cohorts, String deliveryDayType, String radius, String[] windowTypes, List attrParamList, String profileOperator) throws FDResourceException {
 
 		try {
 			Date startDate = dateFormat.parse(startDateStr);
@@ -483,6 +485,7 @@ public class WSPromoControllerTag extends AbstractControllerTag {
 			promotion.setStatus(EnumPromotionStatus.DRAFT);
 			populatePromoChangeModelOnCreate(promotion);
 			promotion.setAttributeList(attrParamList);
+			promotion.setProfileOperator(profileOperator);
 			return promotion;
 		}catch(ParseException pe){
 			throw new IllegalArgumentException("Invalid Date Format");
@@ -490,7 +493,7 @@ public class WSPromoControllerTag extends AbstractControllerTag {
 	}
 
 	private void updatePromotion(FDPromotionNewModel promotion, String effectiveDate, String startDateStr, String endDateStr, String zone, String startTime, 
-			String endTime, String discount, String redeemLimit, String deliveryDayType, String radius, String[] windowTypes) throws FDResourceException{
+			String endTime, String discount, String redeemLimit, String deliveryDayType, String radius, String[] windowTypes, List attrParamList, String profileOperator) throws FDResourceException{
 		try {
 			Date startDate = dateFormat.parse(startDateStr);
 			Date expDate = endDateFormat.parse(endDateStr+" "+JUST_BEFORE_MIDNIGHT);
@@ -560,6 +563,8 @@ public class WSPromoControllerTag extends AbstractControllerTag {
 			promotion.setStatus(EnumPromotionStatus.PROGRESS);
 			populatePromoChangeModelOnModify(promotion, dlvZoneModel);
 			promotion.setRadius(radius);
+			promotion.setAttributeList(attrParamList);
+			promotion.setProfileOperator(profileOperator);
 		}catch(ParseException pe){
 			throw new IllegalArgumentException("Invalid Date Format");
 		}
