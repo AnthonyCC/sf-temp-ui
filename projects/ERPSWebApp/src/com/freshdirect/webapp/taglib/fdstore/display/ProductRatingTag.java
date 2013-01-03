@@ -192,13 +192,13 @@ public class ProductRatingTag extends BodyTagSupport {
 
 
 			if (noBr) {
-				buf.append("<span class=\"cust-rating\" onmouseover=\"javascript:document.getElementById('" + product.getContentKey().getId() + "_hover').style.display='block';\" onmouseout=\"javascript:document.getElementById('" + product.getContentKey().getId() + "_hover').style.display='none';\">");
+				buf.append("<span class=\"cust-rating\" >");
 				buf.append("<div id=\"" + product.getContentKey().getId() + "_hover\" class=\"cust-rating-hover\">");
 				buf.append("<b class=\"cust-rating-hover-rating\">" + averageRating + "</b><br>");
 				buf.append("based on <b style=\"font-size:13px;\">" + reviewCount + "</b> customer reviews");
-				buf.append("</div>");
+				buf.append("</span>");
 			} else {
-				buf.append("<div class=\"cust-rating\" onmouseover=\"javascript:document.getElementById('" + product.getContentKey().getId() + "_hover').style.display='block';\" onmouseout=\"javascript:document.getElementById('" + product.getContentKey().getId() + "_hover').style.display='none';\">");
+				buf.append("<div class=\"cust-rating\" >");
 				buf.append("<div id=\"" + product.getContentKey().getId() + "_hover\" class=\"cust-rating-hover\">");
 				buf.append("<b class=\"cust-rating-hover-rating\">" + averageRating + "</b><br>");
 				buf.append("based on <b style=\"font-size:13px;\">" + reviewCount + "</b> customer reviews");

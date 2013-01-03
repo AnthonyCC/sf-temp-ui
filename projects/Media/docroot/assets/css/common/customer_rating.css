@@ -1,0 +1,80 @@
+.cust-rating {
+	color: #a96d7d;
+	font-weight: bold;
+	text-decoration: none;
+	letter-spacing: normal;
+	font-size: 11pt;
+	position:relative;
+	display:inline-block;
+}
+
+.cust-rating-hover {
+	color: #323232;
+	border: 1px solid #d4d4d4;
+	padding: 10px;
+	font-weight: normal;
+	text-decoration: none;
+	text-align: left;
+	letter-spacing: normal;
+	font-size: 11px;
+	position:absolute; 
+	top: -15px; 
+	left: 100%; 
+	display: none;
+	width: 170px;
+	z-index:100;
+	line-height:14px;
+	-moz-border-radius: 2px;
+	-webkit-border-radius: 2px;
+	border-radius: 2px;
+	margin-left:16px;
+	background:#f5f5f5;
+	-webkit-box-shadow: -1px 1px 1px rgba(50, 50, 50, 0.75);
+	-moz-box-shadow:    -1px 1px 1px rgba(50, 50, 50, 0.75);
+	box-shadow:         -1px 1px 1px rgba(50, 50, 50, 0.75);
+}
+
+.cust-rating-hover::before {
+content: "";
+position: absolute;
+border-width: 20px 20px 0;
+border-style: solid;
+display: block;
+width: 0;
+top: 10px;
+bottom: auto;
+left: -16px;
+border-width: 15px 15px 15px 0;
+border-color: transparent #7f7f7f;
+}
+
+.cust-rating-hover::after {
+content: "";
+position: absolute;
+border-style: solid;
+display: block;
+width: 0;	
+top: 11px;
+bottom: auto;
+left: -14px;
+border-width: 14px 14px 14px 0;
+border-color: transparent #f5f5f5;
+
+}
+
+.cust-rating:hover .cust-rating-hover {
+	display:block;
+}
+
+.cust-rating-hover-rating {
+	font-size:15px; 
+	color:#000000;
+}
+.bv-cust-rating-sm {
+	display: inline-block;
+	font-size: 0px;
+	width: 15px;
+	height: 12px;
+	background-image: url('/media_stat/images/search/bv-star_8-sm.png');
+	align: bottom;
+}
