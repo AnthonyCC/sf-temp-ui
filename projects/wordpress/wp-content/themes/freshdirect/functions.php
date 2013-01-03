@@ -42,7 +42,7 @@ add_action( 'admin_head', 'fd_admin_head' );
 show_admin_bar( false ); 
 
 function fd_admin_head() {
-	if ( ! current_user_can('manage_options') ) {	
+	if ( ! current_user_can('edit_posts') ) {	
 		wp_redirect(get_option('siteurl'),302);
 	}
 }
