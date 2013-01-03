@@ -47,6 +47,7 @@ FDCartLineI __tempLine = templateLine;
 // True value means this file is included in /quickbuy/product.jsp
 //
 final boolean isQuickBuy = request.getAttribute("i_product_inner") != null;
+final String __uid = request.getParameter("uid");
 
 // "THE BIG IF" :)
 if ( skuSize == 0 ) {
@@ -102,6 +103,7 @@ if ( skuSize == 0 ) {
 
     StringBuffer formAction = new StringBuffer(request.getRequestURI()).append('?');
     
+    
     if ( CartName.QUICKSHOP.equals(__cartMode) || CartName.ADD_TO_CART.equals(__cartMode) ) {
         formAction
 	    	.append("catId=").append(__prd.getParentNode())
@@ -124,6 +126,9 @@ if ( skuSize == 0 ) {
 		formAction.append("&qcType=" + request.getAttribute("qcType"));
     } else {
 		formAction.append(request.getQueryString());
+    }
+    if (__uid != null && !"".equals(__uid)) {
+    	formAction.append("&uid=").append(__uid);
     }
 %>
 
