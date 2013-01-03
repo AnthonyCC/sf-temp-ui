@@ -85,7 +85,7 @@ var drugPanel = function($,data,config){
         },DrugItem:{
           tagName:'div',
           templateSeparator:DragHandle+'<hr><span class="itemtoolbar toolbar"><label class="toggle"><input type="checkbox" name="separator" {{#separator}}checked{{/separator}}> Separator</label><button class="deleteItem"><span class="ui-icon ui-icon-trash"></span></button></span>',
-          templateIngredient:DragHandle+'<input name="value1" class="autocomplete" type="text" value="{{value1}}" placeholder="Ingredient"><input name="ingredientValue" type="number" value="{{ingredientValue}}" placeholder="Ing. value"><input class="autocomplete" name="uom" value="{{uom}}" placeholder="uom" type="text">...<input name="value2" type="text" value="{{value2}}"  placeholder="Purpose"><span class="itemtoolbar toolbar"><label class="toggle"><input type="checkbox" name="important" {{#important}}checked{{/important}}> Title</label><label class="toggle"><input type="checkbox" name="separator" {{#separator}}checked{{/separator}}> Separator</label><button class="deleteItem"><span class="ui-icon ui-icon-trash"></span></button></span>',
+          templateIngredient:DragHandle+'<input name="value1" class="autocomplete" type="text" value="{{value1}}" placeholder="Ingredient"><input name="ingredientValue" maxlength="8" type="number" max="99999999.99" value="{{ingredientValue}}" placeholder="Ing. value"><input class="autocomplete" name="uom" value="{{uom}}" placeholder="uom" type="text">...<input name="value2" type="text" value="{{value2}}"  placeholder="Purpose"><span class="itemtoolbar toolbar"><label class="toggle"><input type="checkbox" name="important" {{#important}}checked{{/important}}> Title</label><label class="toggle"><input type="checkbox" name="separator" {{#separator}}checked{{/separator}}> Separator</label><button class="deleteItem"><span class="ui-icon ui-icon-trash"></span></button></span>',
           templateTable:DragHandle+'<input name="value1" type="text" value="{{value1}}" placeholder="Left column"> | <input type="text" name="value2" value="{{value2}}" placeholder="Right column"><span class="itemtoolbar toolbar"><label class="toggle"><input type="checkbox" name="important" {{#important}}checked{{/important}}> Important</label><button class="deleteItem"><span class="ui-icon ui-icon-trash"></span></button></span>',
           templateFreetext:DragHandle+'<input name="value1" type="text" value="{{value1}}"  placeholder="Free text"><span class="itemtoolbar toolbar"><label class="toggle"><input type="checkbox" name="bulleted" {{#bulleted}}checked{{/bulleted}}> Bulleted</label><label class="toggle"><input type="checkbox" name="important" {{#important}}checked{{/important}}> Important</label><label class="toggle"><input type="checkbox" name="newline" {{#newline}}checked{{/newline}}> Newline</label><label class="toggle"><input type="checkbox" name="separator" {{#separator}}checked{{/separator}}> Separator</label><button class="deleteItem"><span class="ui-icon ui-icon-trash"></span></button></span>'
         }
@@ -94,7 +94,7 @@ var drugPanel = function($,data,config){
         DrugItem:{
           tagName:'div',
           templateSeparator:DragHandle+'<hr><span class="itemtoolbar toolbar"><label class="toggle"><input type="checkbox" name="separator" {{#separator}}checked{{/separator}}> Separator</label><button class="deleteItem"><span class="ui-icon ui-icon-trash"></span></button></span>',
-          templateIngredient:DragHandle+'<input name="value1" class="autocomplete" type="text" value="{{value1}}" placeholder="Ingredient">...<input name="value2" type="text" value="{{value2}}" placeholder="Min/Max"><input name="ingredientValue" type="number" value="{{ingredientValue}}" placeholder="Ing. value"><input class="autocomplete" name="uom" value="{{uom}}" placeholder="uom" type="text"><span class="itemtoolbar toolbar"><label class="toggle"><input type="checkbox" name="important" {{#important}}checked{{/important}}> Title</label><label class="toggle"><input type="checkbox" name="separator" {{#separator}}checked{{/separator}}> Separator</label><button class="deleteItem"><span class="ui-icon ui-icon-trash"></span></button></span>',
+          templateIngredient:DragHandle+'<input name="value1" class="autocomplete" type="text" value="{{value1}}" placeholder="Ingredient">...<input name="value2" type="text" value="{{value2}}" placeholder="Min/Max"><input name="ingredientValue" max="99999999.99" maxlength="8" type="number" value="{{ingredientValue}}" placeholder="Ing. value"><input class="autocomplete" name="uom" value="{{uom}}" placeholder="uom" type="text"><span class="itemtoolbar toolbar"><label class="toggle"><input type="checkbox" name="important" {{#important}}checked{{/important}}> Title</label><label class="toggle"><input type="checkbox" name="separator" {{#separator}}checked{{/separator}}> Separator</label><button class="deleteItem"><span class="ui-icon ui-icon-trash"></span></button></span>',
           templateTable:DragHandle+'<input name="value1" type="text" value="{{value1}}" placeholder="Left column"> | <input type="text" name="value2" value="{{value2}}" placeholder="Right column"><span class="itemtoolbar toolbar"><label class="toggle"><input type="checkbox" name="important" {{#important}}checked{{/important}}> Important</label><button class="deleteItem"><span class="ui-icon ui-icon-trash"></span></button></span>',
           templateFreetext:DragHandle+'<input name="value1" type="text" value="{{value1}}"  placeholder="Free text"><span class="itemtoolbar toolbar"><label class="toggle"><input type="checkbox" name="bulleted" {{#bulleted}}checked{{/bulleted}}> Bulleted</label><label class="toggle"><input type="checkbox" name="important" {{#important}}checked{{/important}}> Important</label><label class="toggle"><input type="checkbox" name="newline" {{#newline}}checked{{/newline}}> Newline</label><label class="toggle"><input type="checkbox" name="separator" {{#separator}}checked{{/separator}}> Separator</label><button class="deleteItem"><span class="ui-icon ui-icon-trash"></span></button></span>'
         }
@@ -103,7 +103,7 @@ var drugPanel = function($,data,config){
         DrugItem:{
           tagName:'div',
           templateSeparator:DragHandle+'<hr><span class="itemtoolbar toolbar"><label class="toggle"><input type="checkbox" name="separator" {{#separator}}checked{{/separator}}> Separator</label><button class="deleteItem"><span class="ui-icon ui-icon-trash"></span></button></span>',
-          templateIngredient:DragHandle+'<input name="value1" class="autocomplete" type="text" value="{{value1}}" placeholder="Ingredient">...<input name="ingredientValue" type="number" value="{{ingredientValue}}" placeholder="Ing. value"><input class="autocomplete" name="uom" value="{{uom}}" placeholder="uom" type="text"><span class="itemtoolbar toolbar"><label class="toggle"><input type="checkbox" name="important" {{#important}}checked{{/important}}> Title</label><label class="toggle"><input type="checkbox" name="separator" {{#separator}}checked{{/separator}}> Separator</label><button class="deleteItem"><span class="ui-icon ui-icon-trash"></span></button></span>',
+          templateIngredient:DragHandle+'<input name="value1" class="autocomplete" type="text" value="{{value1}}" placeholder="Ingredient">...<input name="ingredientValue" max="99999999.99" type="number" maxlength="8" value="{{ingredientValue}}" placeholder="Ing. value"><input class="autocomplete" name="uom" value="{{uom}}" placeholder="uom" type="text"><span class="itemtoolbar toolbar"><label class="toggle"><input type="checkbox" name="important" {{#important}}checked{{/important}}> Title</label><label class="toggle"><input type="checkbox" name="separator" {{#separator}}checked{{/separator}}> Separator</label><button class="deleteItem"><span class="ui-icon ui-icon-trash"></span></button></span>',
           templateTable:DragHandle+'<input name="value1" type="text" value="{{value1}}" placeholder="Left column"> | <input type="text" name="value2" value="{{value2}}" placeholder="Right column"><span class="itemtoolbar toolbar"><label class="toggle"><input type="checkbox" name="important" {{#important}}checked{{/important}}> Important</label><button class="deleteItem"><span class="ui-icon ui-icon-trash"></span></button></span>',
           templateFreetext:DragHandle+'<input name="value1" type="text" value="{{value1}}"  placeholder="Free text"><span class="itemtoolbar toolbar"><label class="toggle"><input type="checkbox" name="bulleted" {{#bulleted}}checked{{/bulleted}}> Bulleted</label><label class="toggle"><input type="checkbox" name="important" {{#important}}checked{{/important}}> Important</label><label class="toggle"><input type="checkbox" name="newline" {{#newline}}checked{{/newline}}> Newline</label><label class="toggle"><input type="checkbox" name="separator" {{#separator}}checked{{/separator}}> Separator</label><button class="deleteItem"><span class="ui-icon ui-icon-trash"></span></button></span>'
         }
@@ -167,12 +167,8 @@ var drugPanel = function($,data,config){
     container.removeClass('display editor');
     currentView = viewName;
     container.addClass(currentView);
-    
-    if(document.createStyleSheet) {
-        document.createStyleSheet(cssUrl);
-    } else {
-    	$('head').append('<link id="drugcss_'+viewName+'" href="'+cssUrl+'" rel="stylesheet">');
-    }
+    $('<link rel="stylesheet" type="text/css" id="drugcss_'+viewName+'" href="'+cssUrl+'">').appendTo('head');
+
   };
   
   var refresh = function(data){
@@ -187,6 +183,24 @@ var drugPanel = function($,data,config){
     if (config.refreshCallback) {
       config.refreshCallback(data);
     }
+  };
+  
+  var setDirty = function(dirty){
+	  var $saveButton = $('#savebutton');
+	  window.drogPanelWarning = dirty;
+	  
+	  if(dirty) {
+		  $saveButton.html('Save panel');
+		  $saveButton.removeAttr('disabled');
+	  } else {
+		  $saveButton.html('Saved');
+		  $saveButton.attr('disabled','disabled');
+	  }
+	  
+  };
+  
+  var dirtySaveButton = function(){
+	  setDirty(true);
   };
   
   
@@ -279,6 +293,7 @@ var drugPanel = function($,data,config){
         id = this.id;
       parent.removeChild(this.boundingBox);
       delete Widget.register[id];
+      setDirty(true);
     }
   };
 
@@ -357,14 +372,13 @@ var drugPanel = function($,data,config){
       value:function(event) {
         var target = event.target;
         this.addSection({});
+        setDirty(true);
       }
     },
     changeType:{
       value:function(event) {
         this.type = $(event.target).val().toUpperCase();
         this.updatePanelTypes();
-        console.log(this.type);
-        console.log(this.panelTypes);
         refresh(); // TODO make this a method
       }
     },
@@ -494,6 +508,7 @@ var drugPanel = function($,data,config){
       value:function(event) {
         var target = event.target;
         this.addItem({});
+        setDirty(true);
       }
     },
     getItems:{
@@ -633,7 +648,7 @@ var drugPanel = function($,data,config){
     separatorChange:{ value: function(event){
         var target = event.target;
         this.separator = target.checked;
-        this.syncUI();
+        this.syncUI();        
       }
     },
     value1Change:{
@@ -702,12 +717,33 @@ var drugPanel = function($,data,config){
     container.delegate('.drugitem .toolbar input[name="newline"]','change',Widget.eventHandler(DrugItem.newlineChange,'.'+DrugItem.widgetClass));
     container.delegate('.drugitem .toolbar input[name="separator"]','change',Widget.eventHandler(DrugItem.separatorChange,'.'+DrugItem.widgetClass));
     container.delegate('.drugitem .toolbar .deleteItem','click',Widget.eventHandler(Widget.destroy,'.'+DrugItem.widgetClass));
+    container.delegate('.drugpanel input[type="text"]','keyup',dirtySaveButton);
+    container.delegate('.drugpanel input[type="number"]','keyup',dirtySaveButton);
+    container.delegate('.drugpanel select','change',dirtySaveButton);
+    container.delegate('.drugpanel input[type="checkbox"]','change',dirtySaveButton);
+    container.delegate('.drugpanel input[type="number"]','change',dirtySaveButton);
     $(document).delegate('#savebutton','click',function(){
-      var data = DrugPanel.getData();
-      $('#saveform input[name=skuCode]')[0].value = DrugPanel.skuCode;
-      $('#saveform input[name=panel]')[0].value = JSON.stringify(data);
-      window.drogPanelWarning = false;
-      $('#saveform')[0].submit();
+      var data = DrugPanel.getData(),
+      	  $this = $('#savebutton'),
+      	  oldText = $this.html();
+
+      $this.html('Saving ...');
+      $this.attr('disabled','disabled');
+      $.ajax({
+    	  url:window.location+'&redirect=false',
+    	  type:"POST",
+    	  data:{
+    	  	skuCode:DrugPanel.skuCode,
+    	  	panel:JSON.stringify(data)
+      	  },
+      	  success:function(){
+      		  setDirty(false);
+      	  },
+      	  error:function(){
+      		  setDirty(true);
+      	  }
+      });
+      
     });
     $(document).delegate('#deletebutton','click',function(){
       var data = DrugPanel.skuCode;
@@ -715,7 +751,7 @@ var drugPanel = function($,data,config){
         
         $('#deleteform input[name=delete]')[0].value = data;
         $('#deleteform input[name=skuCode]')[0].value = data;
-        window.drogPanelWarning = false;
+        setDirty(false);
         $('#deleteform')[0].submit();
       }
     });
@@ -735,7 +771,7 @@ var drugPanel = function($,data,config){
     });
     
     // warn if the page was not saved
-    window.drogPanelWarning = true;
+    setDirty(false);
     window.onbeforeunload = function (e) {
       var message = "Panel has not been saved yet, are you sure to leave this page?";
 

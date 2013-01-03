@@ -112,6 +112,10 @@
 	min-width:40%;
 }
 
+.display .type_FREETEXT .drugitem hr {
+	margin:2px 0s;
+}
+
 .display .type_TABLE .drugitem {
 	border-bottom:2px solid #000;
 	margin-left:10px;

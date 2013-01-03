@@ -65,6 +65,7 @@ public class NutritionPanelControllerTag extends com.freshdirect.framework.webap
 				
 				String deleteSku = request.getParameter( "delete" );
 				String panelJson = request.getParameter( "panel" );
+				String redirect = request.getParameter("redirect");
 				
 				if ( deleteSku != null ) {
 
@@ -85,8 +86,9 @@ public class NutritionPanelControllerTag extends com.freshdirect.framework.webap
 						pageContext.setAttribute( "panel", panelJson );
 					}
 					
-					((HttpServletResponse) pageContext.getResponse()).sendRedirect(this.redirectUrl + "?skuCode=" + skuCode);
-					
+					if(redirect == null || (redirect != null && Boolean.parseBoolean(redirect)) ) {
+						((HttpServletResponse) pageContext.getResponse()).sendRedirect(this.redirectUrl + "?skuCode=" + skuCode);						
+					}
 				} else {
 					doGetInternal();
 				}

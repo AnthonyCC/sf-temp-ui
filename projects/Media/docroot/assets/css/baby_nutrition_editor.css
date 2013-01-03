@@ -11,7 +11,7 @@
 }
 
 .editor .toolbar {
-	background:lightgray;
+  background:lightgray;
   padding-left: 5px;
 }
 
@@ -28,6 +28,11 @@
 
 .editor .drugitem {
 	overflow:hidden;
+}
+
+.editor .toolbar button {
+	line-height:16px;
+	vertical-align:bottom;
 }
 
 .editor .drugsection>.toolbar {
@@ -56,6 +61,8 @@
 .editor input[type="text"],
 .editor input[type="number"] {
 		border:1px solid #999;
+		margin:2px;
+		padding:1px;
 }
 
 .editor input,
