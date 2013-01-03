@@ -78,3 +78,15 @@ border-color: transparent #f5f5f5;
 	background-image: url('/media_stat/images/search/bv-star_8-sm.png');
 	align: bottom;
 }
+
+
+/*
+	temporarily turn off the customer rating, but enabling on the grid-view pages
+*/
+.cust-rating {
+	display:none;
+}
+
+.grid-view .cust-rating {
+	display:inline-block;
+}

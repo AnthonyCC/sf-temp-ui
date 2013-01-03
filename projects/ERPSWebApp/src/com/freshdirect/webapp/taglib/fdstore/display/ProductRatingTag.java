@@ -196,7 +196,7 @@ public class ProductRatingTag extends BodyTagSupport {
 				buf.append("<div id=\"" + product.getContentKey().getId() + "_hover\" class=\"cust-rating-hover\">");
 				buf.append("<b class=\"cust-rating-hover-rating\">" + averageRating + "</b><br>");
 				buf.append("based on <b style=\"font-size:13px;\">" + reviewCount + "</b> customer reviews");
-				buf.append("</span>");
+				buf.append("</div>");
 			} else {
 				buf.append("<div class=\"cust-rating\" >");
 				buf.append("<div id=\"" + product.getContentKey().getId() + "_hover\" class=\"cust-rating-hover\">");
