@@ -192,17 +192,9 @@ public class ProductRatingTag extends BodyTagSupport {
 
 
 			if (noBr) {
-				buf.append("<span class=\"cust-rating\" >");
-				buf.append("<div id=\"" + product.getContentKey().getId() + "_hover\" class=\"cust-rating-hover\">");
-				buf.append("<b class=\"cust-rating-hover-rating\">" + averageRating + "</b><br>");
-				buf.append("based on <b style=\"font-size:13px;\">" + reviewCount + "</b> customer reviews");
-				buf.append("</div>");
+				buf.append("<span class=\"cust-rating hastooltip\" >");
 			} else {
-				buf.append("<div class=\"cust-rating\" >");
-				buf.append("<div id=\"" + product.getContentKey().getId() + "_hover\" class=\"cust-rating-hover\">");
-				buf.append("<b class=\"cust-rating-hover-rating\">" + averageRating + "</b><br>");
-				buf.append("based on <b style=\"font-size:13px;\">" + reviewCount + "</b> customer reviews");
-				buf.append("</div>");
+				buf.append("<div class=\"cust-rating hastooltip\" >");
 			}			
 			
 			String postfix;
@@ -232,6 +224,11 @@ public class ProductRatingTag extends BodyTagSupport {
 				buf.append("</span>");
 			else
 				buf.append("</div>");
+
+			buf.append("<div id=\"" + product.getContentKey().getId() + "_hover\" class=\"cust-rating-hover tooltipcontent\">");
+			buf.append("<b class=\"cust-rating-hover-rating\">" + averageRating + "</b><br>");
+			buf.append("based on <b style=\"font-size:13px;\">" + reviewCount + "</b> customer reviews");
+			buf.append("</div>");
 			// <<<<<< stolen code ends here
 
 			try {
