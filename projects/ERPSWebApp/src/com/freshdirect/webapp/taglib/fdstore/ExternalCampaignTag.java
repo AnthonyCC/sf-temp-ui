@@ -5,6 +5,7 @@ import javax.servlet.http.HttpSession;
 import javax.servlet.jsp.JspException;
 
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.customer.ExternalCampaign;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.framework.webapp.ActionResult;
@@ -27,16 +28,16 @@ public class ExternalCampaignTag extends AbstractControllerTag {
 	        if (user == null || (user!=null && user.getLevel() != FDUserI.SIGNED_IN)) {
 	        	return true;
 	        }
-	        user.setExternalCampaign(request.getParameter("campaignId"));
-	        user.setExternalCampaignTC("on".equals(request.getParameter("terms")));
+	        ExternalCampaign extCampaign = new ExternalCampaign();
+	        extCampaign.setCampaignId(request.getParameter("campaignId"));
+	        extCampaign.setTermsAccepted("on".equals(request.getParameter("terms")));
+	        extCampaign.setEntered(false);
+	        user.setExternalCampaign(extCampaign);
 	        user = FDCustomerManager.saveExternalCampaign(user);
 	        session.setAttribute(SessionName.USER, user);
 	       
 		} catch (FDResourceException e) {
-           /* if (e.getMessage().indexOf("unique constraint") > -1) {
-            	actionResult.addError(new ActionError("mainError", "Duplicate entry exists, record not saved"));
-            } */
-			// ignore the exception
+			e.printStackTrace();
 		}
 		return true;
 	}
