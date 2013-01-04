@@ -1,3 +1,4 @@
+<%@ page import="com.freshdirect.fdstore.customer.ExternalCampaign"%>
 <%@ page import='com.freshdirect.framework.util.NVL'
 %><%@ page import='org.apache.commons.lang.StringUtils'
 %><%@ page import='java.util.*'
@@ -50,7 +51,7 @@
 %><fd:SmartSavingsUpdate justCheckSavingVariantId="true"></fd:SmartSavingsUpdate><%	    
 		
 		FDUserI user = (FDUserI) session.getAttribute(SessionName.USER);
-		Set<String> externalPromoCampaigns = null;
+		Set<ExternalCampaign> externalPromoCampaigns = null;
 		
 		QueryStringBuilder queryString = new QueryStringBuilder();
 		if (user != null) {
@@ -61,9 +62,9 @@
 		    var campaignsArray = new Array();  
 		    <%  int ecIndex =0;
 		    if(externalPromoCampaigns!=null){
-		  	for(String externalCampaign:externalPromoCampaigns) { 
+		  	for(ExternalCampaign externalCampaign:externalPromoCampaigns) { 
 		    %>  
-		    campaignsArray[<%= ecIndex %>] = '<%= externalCampaign %>';  
+		    campaignsArray[<%= ecIndex %>] = '<%= externalCampaign.getCampaignId() %>';  
 		    
 		    <%  
 		    ecIndex++;
@@ -419,8 +420,32 @@
 			queryString.addParam("apc", request.getParameter("apc"));
 		}
 		//APPDEV-2500 - add subtotal to oas query string
+		StringBuilder campgnString=new StringBuilder(); String tmpCampgnStr ="";
 		if(user != null) {
 			queryString.addParam("sub", user.getShoppingCart().getSubTotal() + "");
+			
+			if(user.getExternalPromoCampaigns()!=null && user.getExternalPromoCampaigns().size()>0 )
+			{
+				for(ExternalCampaign extCampgn: user.getExternalPromoCampaigns())
+				{
+					if(extCampgn.isEntered())
+					{
+						if(campgnString.length()==0){
+							campgnString.append(extCampgn.getCampaignId());
+						}
+						else 
+						{
+							tmpCampgnStr = campgnString.toString()+","+extCampgn.getCampaignId(); 
+							if(queryString.toString().length()+tmpCampgnStr.length()>2048)
+								break;
+							else
+								campgnString.append(",").append(extCampgn.getCampaignId());
+						}
+					}
+				}
+				queryString.addParam("enteredCampn", campgnString.toString());	
+			}
+			
 		}
 		String sitePage = request.getAttribute("sitePage") == null ? "www.freshdirect.com"
 				: (String) request.getAttribute("sitePage");
@@ -524,7 +549,11 @@ function contains(a, obj) {
     }
     return false;
 }
-
+function showHideMessage(element)
+{
+	if(element!=null && element.checked==true)
+		document.getElementById('checkofficialrules').style.visibility = 'hidden';
+}
 
 protocol = 'http://';
 if(document.location.href.substring(0,5) == 'https'){

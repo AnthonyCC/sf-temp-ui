@@ -23,6 +23,7 @@ import com.freshdirect.delivery.ejb.GeographyDAO;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDRuntimeException;
 import com.freshdirect.fdstore.StateCounty;
+import com.freshdirect.fdstore.customer.ExternalCampaign;
 import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDCartLineModel;
 import com.freshdirect.fdstore.customer.FDCartModel;
@@ -204,9 +205,9 @@ public class FDUserDAO {
 			List<SavedRecipientModel> recipients = SavedRecipientDAO.loadSavedRecipients(conn, user.getPK().getId());
 			FDRecipientList repList = new FDRecipientList(recipients);
 			user.setRecipientList(repList);
+			user.setExternalPromoCampaigns(loadExternalCampaigns(conn, identity.getErpCustomerPK()));
 		}
 		user.setEbtAccepted(checkEbtPaymentAccepted(conn,user.getZipCode()));
-		user.setExternalPromoCampaigns(loadExternalCampaigns(conn, user.getIdentity().getErpCustomerPK()));
 		
 		rs.close();
 		ps.close();
@@ -234,25 +235,30 @@ public class FDUserDAO {
 			FDCartModel cart = new FDCartModel();
 			cart.addOrderLines(convertToCartLines(FDCartLineDAO.loadCartLines(conn, user.getPK())));
 			user.setShoppingCart(cart);
+			if(user.getIdentity()!=null)
+				user.setExternalPromoCampaigns(loadExternalCampaigns(conn, user.getIdentity().getErpCustomerPK()));
+			
 		}
 		user.setEbtAccepted(checkEbtPaymentAccepted(conn,user.getZipCode()));
-		user.setExternalPromoCampaigns(loadExternalCampaigns(conn, user.getIdentity().getErpCustomerPK()));
 		rs.close();
 		ps.close();
 
 		return user;
 	}
 	
-	private final static String EXTERNAL_CAMPAIGN_Query = "select campaign_id from cust.ext_campaign where customer_id = ?";
+	private final static String EXTERNAL_CAMPAIGN_Query = "select * from (select campaign_id from cust.ext_campaign where customer_id = ? order by entered_date desc) where rownum<=2";
 	
-	private static Set<String> loadExternalCampaigns(Connection conn, String customer_id) throws SQLException {
-		Set<String> externalCampaigns = new HashSet<String>();
+	private static Set<ExternalCampaign> loadExternalCampaigns(Connection conn, String customer_id) throws SQLException {
+		Set<ExternalCampaign> externalCampaigns = new HashSet<ExternalCampaign>();
 		PreparedStatement ps = conn.prepareStatement(EXTERNAL_CAMPAIGN_Query);
 		ps.setString(1, customer_id);
 		ResultSet rs = ps.executeQuery();
 
 		while (rs.next()) {
-			externalCampaigns.add(rs.getString("campaign_id"));
+			ExternalCampaign extCampaign = new ExternalCampaign();
+			extCampaign.setCampaignId(rs.getString("campaign_id"));
+			extCampaign.setEntered(true);
+			externalCampaigns.add(extCampaign);
 		}
 		rs.close();
 		ps.close();
@@ -286,9 +292,11 @@ public class FDUserDAO {
 			List<SavedRecipientModel> recipients = SavedRecipientDAO.loadSavedRecipients(conn, user.getPK().getId());
 			FDRecipientList repList = new FDRecipientList(recipients);
 			user.setRecipientList(repList);
+			
+			if(user.getIdentity()!=null)
+				user.setExternalPromoCampaigns(loadExternalCampaigns(conn, user.getIdentity().getErpCustomerPK()));
 		}
 		user.setEbtAccepted(checkEbtPaymentAccepted(conn,user.getZipCode()));
-		user.setExternalPromoCampaigns(loadExternalCampaigns(conn, user.getIdentity().getErpCustomerPK()));
 		
 		rs.close();
 		ps.close();
@@ -642,12 +650,12 @@ public class FDUserDAO {
 			Calendar d = Calendar.getInstance();
 			ps = conn.prepareStatement("INSERT INTO CUST.EXT_CAMPAIGN(customer_id, campaign_id, terms_accepted, entered_date) VALUES (?,?,?,?)");	
 			ps.setString(1, user.getIdentity().getErpCustomerPK());
-			ps.setString(2, user.getExternalCampaign());
-			ps.setString(3, user.getExternalCampaignTC()?"X":"");
+			ps.setString(2, user.getExternalCampaign().getCampaignId());
+			ps.setString(3, user.getExternalCampaign().isTermsAccepted()?"X":"");
 			ps.setTimestamp(4, new java.sql.Timestamp(d.getTimeInMillis()));
 			if(ps.executeUpdate()==1)
 			{
-				Set<String> externalCampaigns = user.getExternalPromoCampaigns();
+				Set<ExternalCampaign> externalCampaigns = user.getExternalPromoCampaigns();
 				externalCampaigns.add(user.getExternalCampaign());
 				user.setExternalPromoCampaigns(externalCampaigns);
 			}

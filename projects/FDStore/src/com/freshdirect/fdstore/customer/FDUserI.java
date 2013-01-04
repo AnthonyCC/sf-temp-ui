@@ -525,15 +525,11 @@ public interface FDUserI extends java.io.Serializable {
 
 	public void setSteeringSlotIds(Set<String> steeringSlotIds);
 
-	public Set<String> getExternalPromoCampaigns();
+	public Set<ExternalCampaign> getExternalPromoCampaigns();
 	
-	public void setExternalCampaign(String campaign);
+	public void setExternalCampaign(ExternalCampaign campaign);
 	
-	public String getExternalCampaign();
-	
-	public void setExternalCampaignTC(boolean tcAccepted);
-	
-	public boolean getExternalCampaignTC();
+	public ExternalCampaign getExternalCampaign();
 
-	public void setExternalPromoCampaigns(Set<String> externalCampaigns);
+	public void setExternalPromoCampaigns(Set<ExternalCampaign> externalCampaigns);
 }

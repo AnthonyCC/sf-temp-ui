@@ -244,12 +244,10 @@ public class FDUser extends ModelSupport implements FDUserI {
 	
 	private Set<String> steeringSlotIds = new HashSet<String>();
 	
-	private Set<String> externalPromoCampaigns = new HashSet<String>();
+	private Set<ExternalCampaign> externalPromoCampaigns = new HashSet<ExternalCampaign>();
 
-	private String externalCampaign;
+	private ExternalCampaign externalCampaign;
 
-	private boolean externalCampaignTCAccepted;
-	 
 	public String getTsaPromoCode() {
 		return tsaPromoCode;
 	}
@@ -2456,35 +2454,22 @@ public class FDUser extends ModelSupport implements FDUserI {
 		this.steeringSlotIds = steeringSlotIds;
 	}
 
-	public Set<String> getExternalPromoCampaigns() {
+	public Set<ExternalCampaign> getExternalPromoCampaigns() {
 		return externalPromoCampaigns;
 	}
 
-	public void setExternalPromoCampaigns(Set<String> externalPromoCampaigns) {
+	public void setExternalPromoCampaigns(Set<ExternalCampaign> externalPromoCampaigns) {
 		this.externalPromoCampaigns = externalPromoCampaigns;
 	}
 
 	@Override
-	public void setExternalCampaign(String externalCampaign) {
+	public void setExternalCampaign(ExternalCampaign externalCampaign) {
 		this.externalCampaign = externalCampaign;
 	}
 
 	@Override
-	public String getExternalCampaign() {
+	public ExternalCampaign getExternalCampaign() {
 		// TODO Auto-generated method stub
 		return externalCampaign;
 	}
-
-	@Override
-	public void setExternalCampaignTC(boolean externalCampaignTCAccepted) {
-		this.externalCampaignTCAccepted = externalCampaignTCAccepted;
-	}
-
-	@Override
-	public boolean getExternalCampaignTC() {
-		return externalCampaignTCAccepted;
-	}
-	
-	
-	
 }
