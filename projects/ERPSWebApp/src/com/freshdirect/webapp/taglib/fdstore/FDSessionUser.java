@@ -35,6 +35,7 @@ import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.content.EnumWinePrice;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.customer.DCPDPromoProductCache;
+import com.freshdirect.fdstore.customer.ExternalCampaign;
 import com.freshdirect.fdstore.customer.FDActionInfo;
 import com.freshdirect.fdstore.customer.FDBulkRecipientList;
 import com.freshdirect.fdstore.customer.FDCartModel;
@@ -1412,32 +1413,22 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 	}
 
 	@Override
-	public Set<String> getExternalPromoCampaigns() {
+	public Set<ExternalCampaign> getExternalPromoCampaigns() {
 		return this.user.getExternalPromoCampaigns();
 	}
 
 	@Override
-	public void setExternalCampaign(String campaign) {
+	public void setExternalCampaign(ExternalCampaign campaign) {
 		this.user.setExternalCampaign(campaign);
 	}
 
 	@Override
-	public String getExternalCampaign() {
+	public ExternalCampaign getExternalCampaign() {
 		return this.user.getExternalCampaign();
 	}
 
 	@Override
-	public void setExternalCampaignTC(boolean tcAccepted) {
-		 this.user.setExternalCampaignTC(tcAccepted);
-	}
-
-	@Override
-	public boolean getExternalCampaignTC() {
-		return this.user.getExternalCampaignTC();
-	}
-
-	@Override
-	public void setExternalPromoCampaigns(Set<String> externalCampaigns) {
+	public void setExternalPromoCampaigns(Set<ExternalCampaign> externalCampaigns) {
 		this.user.setExternalPromoCampaigns(externalCampaigns);
 	}
 }
