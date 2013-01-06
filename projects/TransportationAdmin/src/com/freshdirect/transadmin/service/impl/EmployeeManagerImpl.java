@@ -45,6 +45,7 @@ import com.freshdirect.transadmin.util.scrib.ScheduleEmployeeDetails;
 import com.freshdirect.transadmin.web.model.WebEmployeeInfo;
 import com.freshdirect.transadmin.web.model.WebPlanResource;
 import com.freshdirect.transadmin.web.model.WebSchedule;
+import com.google.common.collect.Lists;
 
 public class EmployeeManagerImpl extends BaseManagerImpl implements
 		EmployeeManagerI {
@@ -866,10 +867,10 @@ public class EmployeeManagerImpl extends BaseManagerImpl implements
 	}
 	
 	public Map getEmployeeRoles(Set empIds){
-		return getDomainManagerDao().getEmpRolesByIds(empIds);
-	}
+		return processList(empIds, 0);
+		}
 	public Map getEmployeeStatus(Set empIds) {
-		return getDomainManagerDao().getEmployeeStatusByIds(empIds);
+		return processList(empIds, 1);
 	}
 	
 	public Map getEmployeeStatus() {
@@ -879,13 +880,35 @@ public class EmployeeManagerImpl extends BaseManagerImpl implements
 	
 	public Map getEmployeeTruckPref(Set empIds)
 	{
-		return getDomainManagerDao().getEmployeeTruckPreferenceByIds(empIds);
-		
+		return processList(empIds, 2);
 	}
 	public Map getTeamByEmployees(Set empIds)
 	{
-		return getDomainManagerDao().getTeamByEmployees(empIds);
-		
+		return processList(empIds, 3);
 	}
 	
+	public Map processList(Set empIds, int type)
+	{
+		List<String> empIdList = setToList(empIds);
+		Map map = new HashMap();
+		for (List part : Lists.partition(empIdList, 800))
+		{
+			switch(type)
+			{
+			case 0:map.putAll(getDomainManagerDao().getEmpRolesByIds(listToSet(part)));break;
+			case 1:map.putAll(getDomainManagerDao().getEmployeeStatusByIds(listToSet(part)));break;
+			case 2:map.putAll(getDomainManagerDao().getEmployeeTruckPreferenceByIds(listToSet(part)));break;
+			case 3:map.putAll(getDomainManagerDao().getTeamByEmployees(listToSet(part))); break;
+			default:break;
+			}
+		}
+		return map;
+	
+	}
+	public List setToList(Set set) {
+	    return new ArrayList(set);
+	}
+	public Set listToSet(List list) {
+	    return new HashSet(list);
+	}
 }
