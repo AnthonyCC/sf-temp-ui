@@ -414,11 +414,10 @@ public class WSPromoControllerTag extends AbstractControllerTag {
 			FDPromotionNewModel promotion = new FDPromotionNewModel();
 			Date today = new Date();
 			promotion.setPromotionCode("WS_"+today.getTime());
-			long E4 = Math.round(Math.random()*1000); //Unique counter
 			
-//			String section1 = "X".equalsIgnoreCase(radius)?"RADIUS":"STATIC";
-//			promotion.setName("WS_"+effectiveDate+"_Zone"+zone+"_"+section1+"_"+E4+"_$"+discount);
-			promotion.setName("WS_"+effectiveDate+"_Zone"+zone+"_"+E4+"_$"+discount);
+			long E4 = Math.round(Math.random()*1000); //Unique counter
+			String section1 = "X".equalsIgnoreCase(radius) ? "RADIUS" : "STATIC";
+			promotion.setName("WS_"+effectiveDate+"_Zone"+zone+"_"+section1+"_"+E4+"_$"+discount);
 			
 			promotion.setPromotionType(EnumPromotionType.HEADER.getName());
 			promotion.setOfferType(EnumOfferType.WINDOW_STEERING.getName());
@@ -768,7 +767,7 @@ public class WSPromoControllerTag extends AbstractControllerTag {
 		    }
 	}
 	
-	private List<String> getWindowTypeParamList(HttpServletRequest request) {
+	public static List<String> getWindowTypeParamList(HttpServletRequest request) {
 		
 		Enumeration paramNames = request.getParameterNames();
 		
@@ -840,7 +839,7 @@ public class WSPromoControllerTag extends AbstractControllerTag {
 		return tmpParam;
 	}
 
-	private String getWindowTypeParam(HttpServletRequest request, String index) {
+	private static String getWindowTypeParam(HttpServletRequest request, String index) {
 	
 		String key = "windowTypeList["+index+"].";
 		String atrValue = request.getParameter(key+"desiredValue").trim();		
