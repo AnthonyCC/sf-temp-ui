@@ -22,8 +22,5 @@
     <module>
       <ejb>CoremetricsService.jar</ejb>
     </module>
-    <module>
-      <ejb>BazaarvoiceService.jar</ejb>
-    </module>
-    
+
 </application>
