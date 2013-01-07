@@ -2251,9 +2251,9 @@
 			<pathelement location="${work.dir}/ERPSWebApp.jar"/>
 		</path>
 
-		<makeEjbProject
+		<!--makeEjbProject
 			project="BazaarvoiceService"
-			classpathref="BazaarvoiceService.classpath"/>
+			classpathref="BazaarvoiceService.classpath"/-->
 	</target>
 
 	
