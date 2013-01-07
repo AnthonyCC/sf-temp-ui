@@ -1,4 +1,4 @@
-package com.freshdirect.fdstore.bazaarvoice.service;
+package com.freshdirect.fdstore.content.customerrating;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -20,9 +20,6 @@ import org.xml.sax.SAXException;
 
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
-import com.freshdirect.fdstore.content.customerrating.CustomerRatingsDAO;
-import com.freshdirect.fdstore.content.customerrating.CustomerRatingsDTO;
-import com.freshdirect.fdstore.content.customerrating.CustomerReviewsDTO;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
 

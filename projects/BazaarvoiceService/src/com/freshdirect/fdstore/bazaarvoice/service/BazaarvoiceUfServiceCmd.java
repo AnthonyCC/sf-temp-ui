@@ -20,6 +20,9 @@ import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.content.ProductContainer;
+import com.freshdirect.fdstore.content.customerrating.BazaarvoiceFeedProcessResult;
+import com.freshdirect.fdstore.content.customerrating.BazaarvoiceUfServiceHome;
+import com.freshdirect.fdstore.content.customerrating.BazaarvoiceUfServiceSB;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.mail.ErpMailSender;
 

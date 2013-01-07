@@ -1,4 +1,4 @@
-package com.freshdirect.fdstore.bazaarvoice.service;
+package com.freshdirect.fdstore.content.customerrating;
 
 import com.freshdirect.framework.core.SessionBeanSupport;
 
