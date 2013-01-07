@@ -462,6 +462,20 @@
 				<res-auth>Container</res-auth>
 			</resource-ref>
 		</session>
+		
+		<session>
+			<ejb-name>BazaarvoiceUfService</ejb-name>
+			<home>com.freshdirect.fdstore.content.customerrating.BazaarvoiceUfServiceHome</home>
+			<remote>com.freshdirect.fdstore.content.customerrating.BazaarvoiceUfServiceSB</remote>
+			<ejb-class>com.freshdirect.fdstore.content.customerrating.BazaarvoiceUfServiceSessionBean</ejb-class>
+			<session-type>Stateless</session-type>
+			<transaction-type>Container</transaction-type>
+			<resource-ref>
+				<res-ref-name>jdbc/dbpool</res-ref-name>
+				<res-type>javax.sql.DataSource</res-type>
+				<res-auth>Container</res-auth>
+			</resource-ref>
+		</session>
 
 
 	</enterprise-beans>
