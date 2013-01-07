@@ -45,7 +45,7 @@ public class FDEmailFactoryTest extends TestCase implements MailName {
 		Date endDate = new Date(stDate.getTime() + 600000);
 		
 		// get email template 
-		XMLEmailI email = FDEmailFactoryHack.getInstance().createAuthorizationFailedEmail(custInfo, "123456", stDate, endDate, endDate);
+		XMLEmailI email = FDEmailFactoryHack.getInstance().createAuthorizationFailedEmail(custInfo, "123456", stDate, endDate, endDate, 1);  //Instant bugfix because of broken trunk
 
 		// compile mail template to string content
 		String mailBody = new XSLTransformer().transform(email.getXML(), email.getXslPath());
@@ -75,7 +75,7 @@ public class FDEmailFactoryTest extends TestCase implements MailName {
 		Date endDate = new Date(stDate.getTime() + 600000);
 		
 		// get email template 
-		XMLEmailI email = FDEmailFactoryHack.getInstance().createAuthorizationFailedEmail(custInfo, "123456", stDate, endDate, endDate);
+		XMLEmailI email = FDEmailFactoryHack.getInstance().createAuthorizationFailedEmail(custInfo, "123456", stDate, endDate, endDate, 1);  //Instant bugfix because of broken trunk
 
 		// compile mail template to string content
 		String mailBody = new XSLTransformer().transform(email.getXML(), email.getXslPath());
