@@ -71,7 +71,7 @@
 			}
 
 			if (foundInclude && !foundExclude) {
-				if (children[i].scrollWidth == 0) {
+				if (children[i].style.display == 'none') {
 					if (clickInvisElems) {
 						clickLink(children[i]);
 					}

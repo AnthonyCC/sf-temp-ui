@@ -94,6 +94,7 @@ function numbersonly(myfield, e, dec)
 	String discount = request.getParameter("discount");
 	String redeemLimit = request.getParameter("redeemlimit");
 	String radius = request.getParameter("radius");
+	String profileOperator = NVL.apply(request.getParameter("custreq_profileAndOr"),"").trim();
 	
 	Enumeration paramNames = request.getParameterNames();
 	
@@ -103,6 +104,11 @@ function numbersonly(myfield, e, dec)
 	String deliveryDayType = request.getParameter("deliveryDayType");
 	EnumDeliveryOption dlvOption = EnumDeliveryOption.getEnum(deliveryDayType);
 	
+	List windowTypeList = new ArrayList();
+	windowTypeList = WSPromoControllerTag.getWindowTypeParamList(request);
+	
+	List cohortList = new ArrayList();
+	cohortList = request.getParameterValues("cohorts") != null ? Arrays.asList(request.getParameterValues("cohorts")) : new ArrayList() ;		
 	if(promotion != null && promotion.getPromotionCode() != null) {
 		if(f_effectiveDate == null)
 			f_effectiveDate =  CCFormatter.formatDateYear(promotion.getWSSelectedDlvDate());
@@ -128,7 +134,31 @@ function numbersonly(myfield, e, dec)
 				deliveryDayType = dlvOption.getName(); 
 			}
 		}
-		System.out.println("Promotion Profile Operator>>>>" + promotion.getProfileOperator());
+		if(profileOperator == null || "".equals(profileOperator)) {
+			profileOperator = promotion.getProfileOperator();
+		}
+		if(windowTypeList.isEmpty()) {
+			List<FDPromoDlvZoneStrategyModel> zsms = promotion.getDlvZoneStrategies();
+			if(zsms != null && zsms.size() > 0) {
+				FDPromoDlvZoneStrategyModel zsm = (FDPromoDlvZoneStrategyModel) zsms.get(0);
+				if(zsm != null && zsm.getDlvTimeSlots() != null) {
+					FDPromoDlvTimeSlotModel tm = (FDPromoDlvTimeSlotModel) zsm.getDlvTimeSlots().get(0);
+					if(tm.getWindowTypes() != null && tm.getWindowTypes().length != 0){
+						windowTypeList = Arrays.asList(tm.getWindowTypes());
+					}
+				}								
+			}
+		}
+		
+		if(cohortList.isEmpty()) {
+			List<FDPromoCustStrategyModel> csms = promotion.getCustStrategies();
+			if(csms != null && csms.size() > 0) {
+				FDPromoCustStrategyModel csm = (FDPromoCustStrategyModel) csms.get(0);
+				if(csm != null && csm.getCohorts() != null) {
+					cohortList = Arrays.asList(csm.getCohorts());
+				}								
+			}
+		}
 	}
 	Date defaultDate = DateUtil.addDays(today, 1); //Today + 1
 	f_effectiveDate = (f_effectiveDate != null) ? f_effectiveDate : CCFormatter.formatDateYear(defaultDate);
@@ -144,7 +174,7 @@ function numbersonly(myfield, e, dec)
 	boolean isToday = f_today.equals(f_displayDate);
 	String radiusChecked = (radius != null && !"".equalsIgnoreCase(radius)) ? "checked" : "";
 	attrList = !attrList.isEmpty()?attrList:((promotion.getAttributeList() != null && promotion.getAttributeList().size()>0) ? promotion.getAttributeList() : new ArrayList());
-
+	
 %>
 
 <tmpl:put name='title' direct='true'>Create Windows Steering Promotion</tmpl:put>
@@ -504,23 +534,8 @@ function numbersonly(myfield, e, dec)
 								</tr>
 							</thead>
 							<tbody>
-							<%
-							
-										List windowTypeList = new ArrayList();
-										if(promotion != null) {
-											List<FDPromoDlvZoneStrategyModel> zsms = promotion.getDlvZoneStrategies();
-											if(zsms != null && zsms.size() > 0) {
-												FDPromoDlvZoneStrategyModel zsm = (FDPromoDlvZoneStrategyModel) zsms.get(0);
-												if(zsm != null && zsm.getDlvTimeSlots() != null) {
-													FDPromoDlvTimeSlotModel tm = (FDPromoDlvTimeSlotModel) zsm.getDlvTimeSlots().get(0);
-													if(tm.getWindowTypes() != null && tm.getWindowTypes().length != 0){
-														windowTypeList = Arrays.asList(tm.getWindowTypes());
-													}
-												}								
-											}
-										}
-							
-							
+							<%						
+										
 										for (int n = 0; n < windowTypeList.size(); n++) {
 											String tempAttr = (String) windowTypeList.get(n);
 											if (tempAttr != null) {
@@ -636,16 +651,7 @@ function numbersonly(myfield, e, dec)
 					<td class="promo_detail_label"><div style="text-align: left;" class="fright">Smart Store cohort:<br />(match any)</div></td>
 					<td class="alignL vTop padL8R16">
 					<%
-					List cohortList = new ArrayList();
-					if(promotion != null) {
-						List<FDPromoCustStrategyModel> csms = promotion.getCustStrategies();
-						if(csms != null && csms.size() > 0) {
-							FDPromoCustStrategyModel csm = (FDPromoCustStrategyModel) csms.get(0);
-							if(csm != null && csm.getCohorts() != null) {
-								cohortList = Arrays.asList(csm.getCohorts());
-							}								
-						}
-					}
+					
 					VariantSelection vs = VariantSelection.getInstance();
 					List<String> cohorts = vs.getCohortNames();
 					if(null != cohorts && !cohorts.isEmpty()){
@@ -794,7 +800,7 @@ function numbersonly(myfield, e, dec)
 												if (n == 0) {
 													%><td class="padL8R16">&nbsp;</td><%
 												}else{
-													%><td class="bordLgrayDash padL8R16"><%= null!=promotion.getProfileOperator()?promotion.getProfileOperator():"" %></td><%
+													%><td class="bordLgrayDash padL8R16"><%= null != profileOperator ? profileOperator : "" %></td><%
 												}
 												%>
 													<td class="bordLgrayDash padL8R16"><%= ( "".equals(EnumPromotionProfileAttribute.getName(tempAttr.getAttributeName(),tempAttr.getDesiredValue())) ? tempAttr.getAttributeName() : EnumPromotionProfileAttribute.getName(tempAttr.getAttributeName(),tempAttr.getDesiredValue()) )%></td>
