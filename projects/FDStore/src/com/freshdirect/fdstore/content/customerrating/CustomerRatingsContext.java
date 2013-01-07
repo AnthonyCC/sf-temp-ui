@@ -33,8 +33,6 @@ public class CustomerRatingsContext extends BalkingExpiringReference<List<Custom
 
 	public static long LAST_REFRESH = 0;
 	
-	private static CustomerRatingsDAO customerRatingsDAO = new CustomerRatingsDAO();
-	
 	public List<CustomerRatingsDTO> getCustomerRatings() {
 		
 		return get();
@@ -54,8 +52,9 @@ public class CustomerRatingsContext extends BalkingExpiringReference<List<Custom
 	
 	protected List<CustomerRatingsDTO> load() {
 		try {
-			LAST_REFRESH = customerRatingsDAO.getTimestamp();
-			return customerRatingsDAO.getCustomerRatings();
+			BazaarvoiceUfServiceManager man = BazaarvoiceUfServiceManager.getInstance();
+			LAST_REFRESH = man.getLastRefresh();
+			return man.getCustomerRatings();
 		} catch (FDResourceException e) {
 			LOGGER.error("Refreshing customer ratings failed!",e);
 			return referent;
@@ -64,7 +63,8 @@ public class CustomerRatingsContext extends BalkingExpiringReference<List<Custom
 	
 	protected boolean isExpired() {
 		try {
-			return customerRatingsDAO.getTimestamp() - LAST_REFRESH > 0;
+			BazaarvoiceUfServiceManager man = BazaarvoiceUfServiceManager.getInstance();
+			return man.getLastRefresh() - LAST_REFRESH > 0;
 		} catch (FDResourceException e) {
 			LOGGER.error("Refreshing customer ratings failed!",e);
 			return true;
