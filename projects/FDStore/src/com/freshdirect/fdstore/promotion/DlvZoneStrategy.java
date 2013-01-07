@@ -156,7 +156,7 @@ public class DlvZoneStrategy implements PromotionStrategyI {
 				return user.getShoppingCart().getDeliveryReservation().hasSteeringDiscount();
 			}
 		}
-		return true;
+		return false;
 	}
 	
 	private boolean checkDlvTimeSlots(DlvTimeslotModel dlvTimeslotModel, List<PromotionDlvTimeSlot> dlvTimeSlotList, Map<Double, List<FDTimeslot>> tsWindowMap, FDUserI user, boolean radiusEvaluated) {
