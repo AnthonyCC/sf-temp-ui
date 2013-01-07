@@ -76,7 +76,7 @@ public class FDGiftCardEmailFactory extends FDEmailFactory{
 	/* (non-Javadoc)
 	 * @see com.freshdirect.fdstore.mail.FDEmailFactory#createAuthorizationFailedEmail(com.freshdirect.fdstore.customer.FDCustomerInfo, java.lang.String, java.util.Date, java.util.Date, java.util.Date)
 	 */
-	@Override
+	
 	public XMLEmailI createAuthorizationFailedEmail(FDCustomerInfo customer,
 			String orderNumber, Date startTime, Date endTime, Date cutoffTime) {
 		FDAuthorizationFailedEmail email = new FDAuthorizationFailedEmail(customer, orderNumber, startTime, endTime, cutoffTime,FDCSContactHoursUtil.getFDCSHours());

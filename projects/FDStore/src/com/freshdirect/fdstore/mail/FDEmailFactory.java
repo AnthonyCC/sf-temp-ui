@@ -193,9 +193,12 @@ public class FDEmailFactory {
 		return email;
 	}
 	
-	public XMLEmailI createAuthorizationFailedEmail(FDCustomerInfo customer, String orderNumber, Date startTime, Date endTime, Date cutoffTime){
+	public XMLEmailI createAuthorizationFailedEmail(FDCustomerInfo customer, String orderNumber, Date startTime, Date endTime, Date cutoffTime, int authFailType){
+		authFailType=1;
 		FDAuthorizationFailedEmail email = new FDAuthorizationFailedEmail(customer, orderNumber, startTime, endTime, cutoffTime,FDCSContactHoursUtil.getFDCSHours());
-		email.setXslPath("h_authorization_failure.xsl", "x_authorization_failure.xsl");
+		//email.setXslPath("h_authorization_failure_V"+authFailType+".xsl", "h_authorization_failure_V"+authFailType+".xsl");
+		email.setXslPath("x_authorization_failure_V"+authFailType+".xsl", "x_authorization_failure_V"+authFailType+".xsl");
+		//email.setXslPath("h_authorization_failure.xsl", "h_authorization_failure.xsl");
 		email.setFromAddress(new EmailAddress(GENERAL_LABEL, getFromAddress(customer.getDepotCode())));
 		email.setSubject("Credit Card Authorization Failure");
 		

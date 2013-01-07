@@ -73,6 +73,7 @@ import com.freshdirect.webapp.taglib.coremetrics.CmShop9Tag;
 import com.freshdirect.webapp.taglib.crm.CrmSession;
 import com.freshdirect.webapp.taglib.fdstore.AccountActivityUtil;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
+import com.freshdirect.webapp.taglib.fdstore.PaymentMethodUtil;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
 import com.freshdirect.webapp.taglib.fdstore.SystemMessageList;
 import com.freshdirect.webapp.taglib.fdstore.UserUtil;
@@ -742,11 +743,16 @@ public class SubmitOrderAction extends WebActionSupport {
 				if(user.getFailedAuthorizations() >= 8){
 					response.sendRedirect(this.authCutoffPage);
 				}else{
-					response.sendRedirect(this.ccdProblemPage);
+					getWebActionContext().getSession().setAttribute("authFailMessage", PaymentMethodUtil.getAuthFailErrorMessage(ae.getMessage()));
+					response.sendRedirect(this.ccdProblemPage+"?duplicateCheck=skip");
+					
+					
 				}
+				
 				return NONE;
 			} catch(IOException ie) {
 				throw new FDResourceException(ie.getMessage());
+				
 			}
 				
 		}
@@ -1091,6 +1097,7 @@ public class SubmitOrderAction extends WebActionSupport {
 				}else{
 					//response.sendRedirect(this.ccdProblemPage);
 					this.addError("payment_auth_failed", ae.getMessage());
+					
 				}
 				//return NONE;
 			} catch(IOException ie) {

@@ -535,13 +535,13 @@ if(isPaymentRequired) {
 		<br>
 		<% } %>
 	<%
-	System.out.println("user.getFailedAuthorizations():"+user.getFailedAuthorizations());
-		if (user.getFailedAuthorizations() > 0) { 
+	
+		if (session.getAttribute("authFailMessage")!=null) { 
 			errorMsg = "<span class=\"text12\">There was a problem with the credit card you selected.<br>Please choose or add a new payment method.<br><br>If you have tried this and are still experiencing problems, please do not attempt to submit your information again but contact us as soon as possible at" + user.getCustomerServiceContact() + ". A customer service representative will help you to complete your order.</span>";
-			errorMsg=_errorMsg;
+			errorMsg=(String) session.getAttribute("authFailMessage");;
 		%>
 			<%@ include file="/includes/i_error_messages.jspf" %>
-	<% } %>
+	<% session.removeAttribute("authFailMessage");} %>
 		
 		<BR>
 

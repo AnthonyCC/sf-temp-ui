@@ -213,6 +213,7 @@ import com.freshdirect.payment.fraud.RestrictedPaymentMethodModel;
 import com.freshdirect.sap.command.SapCartonInfoForSale;
 import com.freshdirect.sap.ejb.SapException;
 import com.freshdirect.temails.TEmailRuntimeException;
+
 import com.sun.org.apache.xalan.internal.xsltc.runtime.Hashtable;
 
 /**
@@ -3646,6 +3647,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 
 		try {
 			FDOrderI order = this.getOrder(saleID);
+			int authFailType=getAuthFailEmailTemplate(order.getAuthFailDescription());
 			FDCustomerEB fdCustomer = getFdCustomerHome().findByErpCustomerId(
 					order.getCustomerId());
 			FDIdentity identity = new FDIdentity(order.getCustomerId(),
@@ -3656,7 +3658,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 					.createAuthorizationFailedEmail(custInfo, saleID,
 							order.getDeliveryReservation().getStartTime(),
 							order.getDeliveryReservation().getEndTime(),
-							cal.getTime()));
+							cal.getTime(),authFailType));
 		} catch (FinderException e) {
 			throw new FDResourceException(e);
 		} catch (RemoteException e) {
@@ -7018,6 +7020,19 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		}
 	}
 	
+	private static int getAuthFailEmailTemplate(String authFailMsg ) {
+    	int template=4;
+    	String code=authFailMsg.substring(0,3);
+    	int val=0;
+    	try {val=Integer.parseInt(code);}catch(Exception e) {}
+    	switch(val) {
+	    	case 606 :case 261 :case 267 :case 610:template=1;break;
+	    	case 201 :case 591 :case 825 :case 304 :case 813:template=2;break;
+	    	case 522 :case 595 :case 603 :case 605 :case 754 :case 903 :case 904:template=2;break;
+    	}
+    	return template;
+    	
+    }
 		
 }
 
