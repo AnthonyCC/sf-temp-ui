@@ -1,10 +1,11 @@
 package com.freshdirect.fdstore.content.customerrating;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CustomerRatingsDTO {
+public class CustomerRatingsDTO implements Serializable {
 
 	private String id;
 	private String productId;

@@ -1,8 +1,9 @@
 package com.freshdirect.fdstore.content.customerrating;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 
-public class CustomerReviewsDTO {
+public class CustomerReviewsDTO implements Serializable {
 
 	private String id;
 	private String BVReviewId;
