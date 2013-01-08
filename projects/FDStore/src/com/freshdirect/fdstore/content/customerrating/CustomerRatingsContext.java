@@ -64,6 +64,7 @@ public class CustomerRatingsContext extends BalkingExpiringReference<List<Custom
 	protected boolean isExpired() {
 		try {
 			BazaarvoiceUfServiceManager man = BazaarvoiceUfServiceManager.getInstance();
+			if (LAST_REFRESH == 0) return true;
 			return man.getLastRefresh() - LAST_REFRESH > 0;
 		} catch (FDResourceException e) {
 			LOGGER.error("Refreshing customer ratings failed!",e);
