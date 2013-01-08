@@ -611,13 +611,6 @@
 	max-height: 134px;
 }
 
-.ddpp .grid-item-name {
-	height: 4em;
-}
-.newproducts .ddpp .grid-item-name {
-	height: 5.2em;
-}
-
 .ddpp .grid-item-price,.ddpp .grid-item-price-description {
 	height: auto;
 }
