@@ -15,11 +15,14 @@ import javax.servlet.jsp.tagext.TagData;
 import javax.servlet.jsp.tagext.TagExtraInfo;
 import javax.servlet.jsp.tagext.VariableInfo;
 
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.content.ComparatorChain;
 import com.freshdirect.fdstore.content.ContentSearch;
+import com.freshdirect.fdstore.content.ContentSearchUtil;
 import com.freshdirect.fdstore.content.Domain;
 import com.freshdirect.fdstore.content.DomainValue;
 import com.freshdirect.fdstore.content.EnumSortingValue;
+import com.freshdirect.fdstore.content.FilteringComparatorUtil;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.Recipe;
 import com.freshdirect.fdstore.content.RecipeSearchPage;
@@ -141,6 +144,13 @@ public class SmartSearchTag extends AbstractProductPagerTag {
 	
 	@Override
 	protected void postProcess(SearchResults results) {
+
+		if (FDStoreProperties.isFavouritesTopNumberFilterSwitchedOn() && nav.getSortBy().equals(SearchSortType.BY_RELEVANCY)) {
+			List<FilteringSortingItem<ProductModel>> products = FilteringComparatorUtil.reOrganizeFavourites(results.getProducts(), getUserId(), getPricingContext());
+			results = new SearchResults(products, results.getRecipes(), results.getCategories(), searchTerm, ContentSearchUtil.isQuoted(searchTerm));
+		}
+
+		
 		if (nav.isFromDym())
 			results.setSpellingSuggestions(Collections.<String>emptyList());
 
