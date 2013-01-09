@@ -88,7 +88,7 @@ public class ProductServiceImpl implements ProductService {
             LOG.debug("Total Products before iphone filter: " + search.getNoOfProductsBeforeProductFilters());
             LOG.debug("Total Products after iphone filter: " + search.getNoOfProducts());
 
-            productModels = search.getPageProducts();
+            productModels = search.getProducts(); // changed from search.getPageProducts(); due to APPDEV-2797
             recentSearchTotalCount = search.getNoOfBrandFilteredProducts();
             Collection<String>spellingSuggestions = search.getSpellingSuggestions();
             if (!spellingSuggestions.isEmpty())
