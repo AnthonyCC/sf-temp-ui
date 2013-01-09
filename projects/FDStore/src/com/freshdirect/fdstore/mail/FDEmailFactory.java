@@ -197,7 +197,7 @@ public class FDEmailFactory {
 		authFailType=1;
 		FDAuthorizationFailedEmail email = new FDAuthorizationFailedEmail(customer, orderNumber, startTime, endTime, cutoffTime,FDCSContactHoursUtil.getFDCSHours());
 		//email.setXslPath("h_authorization_failure_V"+authFailType+".xsl", "h_authorization_failure_V"+authFailType+".xsl");
-		email.setXslPath("x_authorization_failure_V"+authFailType+".xsl", "x_authorization_failure_V"+authFailType+".xsl");
+		email.setXslPath("h_authorization_failure_V"+authFailType+".xsl", "x_authorization_failure_V"+authFailType+".xsl");
 		//email.setXslPath("h_authorization_failure.xsl", "h_authorization_failure.xsl");
 		email.setFromAddress(new EmailAddress(GENERAL_LABEL, getFromAddress(customer.getDepotCode())));
 		email.setSubject("Credit Card Authorization Failure");
@@ -1133,20 +1133,7 @@ public class FDEmailFactory {
 
 	}
 	
-	/*protected List<FDCSContactHours> getFDCSHours(){
-		String days=FDStoreProperties.getCSContactDays();
-		String hours=FDStoreProperties.getCSContactHours();
-		List<FDCSContactHours> list = new ArrayList<FDCSContactHours>();
-		if(null != days & null != hours){
-			String[] daysArr =days.split(",");
-			String[] hoursArr =hours.split(",");
-			for (int i = 0; i < hoursArr.length; i++) {
-				FDCSContactHours contactHrs = new FDCSContactHours(" "+daysArr[i]+" ",hoursArr[i]);
-				list.add(contactHrs);
-			}
-		}
-		return list;
-	}*/
+	
 	
 	public XMLEmailI createAutoRenewDPCCExpiredEmail(FDCustomerInfo customer) {
 		FDInfoEmail email = new FDInfoEmail(customer);
@@ -1159,6 +1146,5 @@ public class FDEmailFactory {
 
 		return email;
 	}
-	
 	
 }

@@ -852,8 +852,9 @@ public class PaymentMethodUtil implements PaymentMethodName { //AddressName,
     }
     
     public static String getAuthFailWarningMessage(String authFailMsg ) {
+    	if(StringUtil.isEmpty(authFailMsg)) return "";
     	String msg=SystemMessageList.MSG_AUTH_FAIL_WARNING_3;
-    	String code=authFailMsg.substring(0,3);
+    	String code=authFailMsg.length()>=3?authFailMsg.substring(0,3):authFailMsg;
     	int val=0;
     	try {val=Integer.parseInt(code);}catch(Exception e) {}
     	switch(val) {
@@ -866,8 +867,11 @@ public class PaymentMethodUtil implements PaymentMethodName { //AddressName,
     	
     }
     public static String getAuthFailErrorMessage(String authFailMsg ) {
+    	
+    	if(StringUtil.isEmpty(authFailMsg)) return "";
+    	
     	String msg=SystemMessageList.MSG_AUTH_FAIL_ERR_3;
-    	String code=authFailMsg.substring(0,3);
+    	String code=authFailMsg.length()>=3?authFailMsg.substring(0,3):authFailMsg;
     	int val=0;
     	try {val=Integer.parseInt(code);}catch(Exception e) {}
     	switch(val) {
