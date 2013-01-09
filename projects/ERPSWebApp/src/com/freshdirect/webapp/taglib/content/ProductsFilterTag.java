@@ -94,45 +94,9 @@ public class ProductsFilterTag extends FilteringFlow<ProductModel> {
 	}
 	
 	protected List<FilteringSortingItem<ProductModel>> reOrganizeFavourites(List<FilteringSortingItem<ProductModel>> products) {
-		//Collecting favourites
-		ComparatorChain<FilteringSortingItem<ProductModel>> comparator = ComparatorChain.create(FilteringSortingItem.wrap(ScriptedContentNodeComparator.createUserComparator(getUserId(), getPricingContext())));
-		SmartSearchUtils.collectAvailabilityInfo(products, getPricingContext());
-		comparator.prepend(new SortValueComparator<ProductModel>(EnumSortingValue.AVAILABILITY));
-		Collections.sort(products, comparator);
-		List<FilteringSortingItem<ProductModel>> favourites = new ArrayList<FilteringSortingItem<ProductModel>>();
-		for (FilteringSortingItem<ProductModel> product : products) {
-			if (ScoreProvider.getInstance().isUserHasScore(getUserId(), product.getNode().getContentKey()) && product.getModel().isFullyAvailable()) {
-				favourites.add(product);
-			}
-		}
-
-		//Sorting favourites according to user relevance
-		comparator = ComparatorChain.create(new SortValueComparator<ProductModel>(EnumSortingValue.CATEGORY_RELEVANCY));
-		comparator.chain(new SortLongValueComparator<ProductModel>(EnumSortingValue.TERM_SCORE));
-		SmartSearchUtils.collectAvailabilityInfo(products, getPricingContext());
-		comparator.prepend(new SortValueComparator<ProductModel>(EnumSortingValue.AVAILABILITY));
-		Collections.sort(favourites, comparator);
-
-		//Reordering favourites in the product list
-		for (int index = 0; index < Math.min(FDStoreProperties.getSearchPageTopFavouritesNumber(), favourites.size()); index ++) {
-			products.remove(favourites.get(index));
-		}
 		
-		comparator = ComparatorChain.create(new SortValueComparator<ProductModel>(EnumSortingValue.PHRASE));
-		comparator.chain(new SortIntValueComparator<ProductModel>(EnumSortingValue.ORIGINAL_TERM));
-		comparator.chain(new SortValueComparator<ProductModel>(EnumSortingValue.CATEGORY_RELEVANCY));
-		comparator.chain(new SortLongValueComparator<ProductModel>(EnumSortingValue.TERM_SCORE));
-		comparator.chain(FilteringSortingItem.wrap(ScriptedContentNodeComparator.createGlobalComparator(getUserId(), getPricingContext())));
-		comparator.chain(FilteringSortingItem.wrap(ProductModel.FULL_NAME_PRODUCT_COMPARATOR));
-		SmartSearchUtils.collectAvailabilityInfo(products, getPricingContext());
-		comparator.prepend(new SortValueComparator<ProductModel>(EnumSortingValue.AVAILABILITY));
+		return FilteringComparatorUtil.reOrganizeFavourites(products, getUserId(), getPricingContext());
 
-		Collections.sort(products, comparator);
-		for (int index = Math.min(FDStoreProperties.getSearchPageTopFavouritesNumber(), favourites.size()) - 1; index >= 0 ; index --) {
-			products.add(0,favourites.get(index));
-		}
-		
-		return products;
 	}
 
 	@Override
