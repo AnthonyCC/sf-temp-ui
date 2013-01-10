@@ -1,6 +1,8 @@
 package com.freshdirect.webapp.taglib.fdstore;
 
 import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.JspException;
 
 import org.apache.log4j.Logger;
@@ -36,13 +38,23 @@ public class IsAlcoholicTag extends BodyTagSupportEx {
 					prodModel = ContentFactory.getInstance().getProduct(skuCode);
 					categoryModel = prodModel.getCategory();
 				}
+				HttpServletResponse response = (HttpServletResponse) pageContext.getResponse();
+				Cookie sessionCookie = null;
 				Cookie[] cookies = request.getCookies();
 				for(Cookie cookie : cookies) {
+					if (cookie.getName().equals("freshdirect.usq")) {
+						sessionCookie = cookie;
+					}
 					if (cookie.getName().equals("freshdirect.healthwarning")) {
 						if (normalizeSessionId(cookie.getValue()).equals("1@" + normalizeSessionId(request.getSession().getId()))) {
 							return SKIP_BODY;
 						}
 					}
+				}
+				if (sessionCookie == null) {
+					sessionCookie = new Cookie("freshdirect.usq", request.getSession().getId());
+					sessionCookie.setPath("/");
+					response.addCookie(sessionCookie);
 				}
 				
 				if ((categoryModel == null && prodModel == null && "false".equals(noProduct)) || (categoryModel != null && !categoryModel.isHavingBeer() && prodModel!= null && !prodModel.getSku(skuCode).getProduct().isAlcohol())) {
