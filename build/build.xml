@@ -2652,6 +2652,7 @@
 				<include name="jackson-core-lgpl-1.2.0.jar"/>
 				<include name="jackson-mapper-lgpl-1.2.0.jar"/>
 				<include name="freemarker-2.3.15.jar"/>
+				<include name="urlrewrite-2.6.0.jar"/>
 				
 			</lib>
 		</makeFDAdminEar>
