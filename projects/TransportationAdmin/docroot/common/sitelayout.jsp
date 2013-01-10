@@ -14,7 +14,7 @@
 	<link rel="stylesheet" href="css/transportation.css" type="text/css" />		
 	<link rel="stylesheet" href="css/extremecomponents.css" type="text/css" />
 	<link rel="stylesheet" href="css/jscalendar-1.0/calendar-system.css" type="text/css" />
-	<script src="js/jquery.js" language="javascript" type="text/javascript"></script>
+
 	<script src="js/RowHandlers.js" language="javascript" type="text/javascript"></script>
 	<script src="js/action.js" language="javascript" type="text/javascript"></script>
 		
@@ -23,6 +23,7 @@
     <script type="text/javascript" language="javascript" src="js/jscalendar-1.0/calendar-setup.js"></script>
     <script type="text/javascript" language="javascript" src="js/filter.js"></script>
 	<script language="javascript" src="js/time.js"></script>
+	
 	<script type="text/javascript">
 		/* allow lower resolutions to display */
 		if (screen.height < 768 && screen.width <= 1024) {
@@ -37,17 +38,60 @@
 			headID.appendChild(newCSS);
 		}
 	</script>
+	
+	<script src="js/jsonrpc.js" language="javascript" type="text/javascript"></script>
+	<script src="js/SelectionHandlers.js" language="javascript" type="text/javascript"></script>
+	
+	
+	<!-- jQuery Scripts & StyleSheets -->
+	
+	<link rel="stylesheet" href="jquery/css/jquery-theme/smoothness/jquery-ui-1.8.16.custom.css" type="text/css"/>
+	<link rel="stylesheet" href="jquery/plugins/simplemodel/css/simplemodel-basic.css" type="text/css"/>
+	<link rel="stylesheet" href="jquery/css/form-overlay.css" type="text/css"/>
+	<link rel="stylesheet" href="jqgrid/css/ui.jqgrid.css" type="text/css"/>
+	
+	
+	
+	<script type="text/javascript" src="jquery/firebugx.js"></script>
+
+	<script type="text/javascript" src="jquery/jquery-1.7.min.js"></script>
+	<script type="text/javascript" src="jquery/jquery-ui-1.8.16.custom.min.js"></script>
+	<script type="text/javascript" src="jquery/jquery.event.drag-2.0.min.js"></script>
+	<script type="text/javascript" src="jquery/urlEncode.js"></script>
+	<script type="text/javascript" src="jquery/jquery.tools.min.js"></script>
+	<script type="text/javascript" src="jquery/util/jquery.loadJSON.js"></script>
+	<script type="text/javascript" src="jquery/plugins/simplemodel/jquery.simplemodal.js"></script>
+	<script type="text/javascript" src="jquery/util/date.js"></script> 
+	<script type="text/javascript" src="jquery/util/dateFormator.js"></script> 
+	<script type="text/javascript" src="jquery/linq.js"></script> 
+	<script type="text/javascript" src="jquery/jquery.linq.js"></script> 
+	<script type="text/javascript" src="jquery/util/jquery.util.js"></script>
+	 
+	<script type="text/javascript" src="jquery/util/jquery.datetime.js"></script>
+	
+	<script type="text/javascript" src="jquery/util/form2json.js"></script>
+	<script type="text/javascript" src="jquery/util/jquery.toObject.js"></script>
+	<script type="text/javascript" src="jquery/util/json2.js"></script>
+	<script type="text/javascript" src="jquery/util/json2form.js"></script>
+	
+	<script type="text/javascript" src="jqgrid/grid.locale-en.js"></script>
+	<script type="text/javascript" src="jqgrid/jquery.jqGrid.min.js"></script>
+	
 	<tmpl:get name='yui-lib'/>
 	<tmpl:get name='gmap-lib'/>
+	<tmpl:get name='slickgrid-lib'/>
 
 </head>
 
 <body id="body1" class="" marginwidth="0" marginheight="0" border="0">
 	
 	<script>
-    var s='<tmpl:get name='yui-skin'/>';   
-    if(s=='') s="yui-skin-sam";
-    document.getElementById("body1").className=s;          
+   
+		var s = '<tmpl:get name='yui-skin'/>';
+		if (s == '')
+			s = "yui-skin-sam";
+			document.getElementById("body1").className = s;
+		
 	</script>
 			<%
 				try {

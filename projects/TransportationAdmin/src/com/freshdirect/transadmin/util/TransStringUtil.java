@@ -5,11 +5,14 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -68,6 +71,8 @@ public class TransStringUtil {
 	public static String MASTER_WEEKOF = "01/01/1900";
 	public static String MASTER_DATE = "01/01/1970";
 	
+	private static final String DEFAULT_SEPARATOR = ",";
+
 	static {
 			for(int intCount=0;intCount<daysList.length;intCount++) {
 				daysMap.put(daysList[intCount], new Integer(intCount));
@@ -783,5 +788,79 @@ public class TransStringUtil {
 			e.printStackTrace();
 		}
 		return requestedDate.getTime();
+	}
+	
+	public static String[] decodeStrings(String stringVal) {	
+		return StringUtils.split(stringVal, DEFAULT_SEPARATOR);
+	}
+
+	public static String encodeString(String strArray[]) {
+		return StringUtils.join(strArray, DEFAULT_SEPARATOR);
+	}
+
+	public static String encodeString(List<? extends Object> list) {
+				
+		if (list != null && list.size() > 0) {
+			return StringUtils.join(list.toArray(), DEFAULT_SEPARATOR);
+		}
+		return null;
+	}
+	
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public static List getSequence(String str){
+		List result = new ArrayList();
+		if(str == "" || (str != null && str.length() == 0)){
+			return null;
+		}
+		
+		int k = 0;
+		String[] strArray  = TransStringUtil.decodeStrings(str);
+		String[] tempArray = null;
+		for(int i = 0;i < strArray.length; i++){			
+			if(strArray[i] != null && strArray[i] != "") {
+				tempArray = StringUtils.split(strArray[i], "-");
+			}
+			
+			if(tempArray != null && StringUtils.isNumeric(tempArray[0])) {
+				if(tempArray.length > 1){
+					k = Integer.parseInt(tempArray[0]);
+					while(k <= Integer.parseInt(tempArray[1])){
+						result.add(k);
+						k++;
+					}
+				} else {
+					result.add(Integer.parseInt(tempArray[0]));
+				}
+			}
+		}
+		
+		
+		return result;
+	}
+	
+	public static String join(List<String> list, String delim) {
+
+	    StringBuilder sb = new StringBuilder();
+	    String loopDelim = "";
+
+	    for(String s : list) {
+	        sb.append(loopDelim);
+	        sb.append(s);     
+	        loopDelim = delim;
+	    }
+	    return sb.toString();
+	}
+	
+	public static String join(Set<String> list, String delim) {
+
+	    StringBuilder sb = new StringBuilder();
+	    String loopDelim = "";
+
+	    for(String s : list) {
+	        sb.append(loopDelim);
+	        sb.append(s);     
+	        loopDelim = delim;
+	    }
+	    return sb.toString();
 	}
  }

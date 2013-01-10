@@ -74,18 +74,23 @@
             return csv;
         }
         
-      	/*
-      	 *	sort option
-      	 */
-      	function sortByText(sortId) {
-      			var specId = sortId || '';
-      				
+        /*
+        *     sort option
+        *            pass a second param as boolean to sort as Integers (false by default)
+        *            
+        *            Note: passing true to sort by numbers on mixed (String/Int) options, will NOT sort properly
+        */
+         function sortByText(sortId, asIntVar, selElement) {
+                var specId = '#'+sortId || '';
+                var asInt = asIntVar || false;
+                var selElemId = selElement || '';
+			
       			//alphabetize
       			var selectArr = new Array();
 
       			if (specId!='') {
-      				selectArr[0] = $(specId); 
-      			}else{
+      				selectArr[0] = $(specId);
+      			} else {
       				selectArr = document.getElementsByTagName('select'); 
       			}
 
@@ -104,8 +109,13 @@
       						}
       					}
       				} 
-      				// Sort the array of options for this select 
-      				oArr.sort();
+                    // Sort the array of options for this select
+                    if (asInt) {
+                       oArr.sort(function(a,b){return a-b});
+	                } else {
+	                   oArr.sort();
+	                }
+
       					
 
       				// Remove all options from the select
@@ -113,11 +123,44 @@
       				
       				// Rebuild the select using our sorted array
       				for (var j = 0; j < oArr.length; j++) {
+      					if(oArr[j].option.value == selElemId){
+      						oArr[j].option.selected = true;
+      					}
       					selectArr[i].options[j] = oArr[j].option;
       				}
-      				selectArr[i].selectedIndex = 0;
+      				if(selElemId === ''){
+      					selectArr[i].selectedIndex = 0;
+      				}
       			}
 
       			return true;
-
       	}
+         
+        	function remOpt1(remFromId, addBackToId) {
+          		var remFromId = remFromId || null;
+          		var addBackToId = addBackToId || null;
+          		var remFrom = document.getElementById(remFromId);
+          		var addBackTo = document.getElementById(addBackToId);
+
+          		if ((remFromId == null || '') || (remFrom == null)) { return false; }
+
+          		addOpt(addBackTo.id, remFrom.value, remFrom.value);        		
+          		remFrom.value = '';
+          		return true;
+          	}
+        	
+        	function remOpt2(remFromId) {
+          		var remFromId = remFromId || null;          		
+          		var remFrom = document.getElementById(remFromId);          		
+
+          		if ((remFromId == null || '') || (remFrom == null)) { return false; }
+
+
+          		for (var i = remFrom.length - 1; i>=0; i--) {
+          			if (remFrom.options[i].selected) {
+          				remFrom.remove(i);
+          			}
+          		}
+
+          		return true;
+          	}

@@ -21,7 +21,7 @@
 
 	<tmpl:put name='content' direct='true'>
 
-	<div class="MNM001 subsub or_999">
+	<div class="MNM001 subsub>
 		<div class="subs_left">	
 			<div class="sub_tableft sub_tabL_MNM001 ">&nbsp;</div>
 			<div class="subtab ">

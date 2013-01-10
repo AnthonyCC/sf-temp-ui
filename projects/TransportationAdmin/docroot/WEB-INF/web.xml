@@ -43,6 +43,19 @@
   		<filter-name>eXtremeExport</filter-name>
   		<url-pattern>/*</url-pattern>
 	</filter-mapping>
+	
+	<filter>
+		<filter-name>UrlRewriteFilter</filter-name>
+		<filter-class>org.tuckey.web.filters.urlrewrite.UrlRewriteFilter</filter-class>
+		<init-param>
+			<param-name>logLevel</param-name>
+			<param-value>WARN</param-value>
+		</init-param>
+	</filter>
+	<filter-mapping>
+		<filter-name>UrlRewriteFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
 
 	<listener>
 		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
@@ -62,7 +75,17 @@
 		<servlet-class>com.freshdirect.transadmin.web.FDDispatcherServlet</servlet-class>
 		<load-on-startup>2</load-on-startup>
 	</servlet>
-
+	
+	<servlet>
+		<servlet-name>trnapi</servlet-name>
+		<servlet-class>com.freshdirect.transadmin.api.controller.TransApiDispatcherServlet</servlet-class>
+		<init-param>
+        	<param-name>contextConfigLocation</param-name>
+        	<param-value>/WEB-INF/transapi-servlet.xml</param-value>
+    	</init-param>
+		<load-on-startup>2</load-on-startup>
+	</servlet>
+	
 	  <servlet>
 	        <servlet-name>JSONRPCServlet</servlet-name>
 	        <servlet-class>com.metaparadigm.jsonrpc.JSONRPCServlet</servlet-class>
@@ -80,6 +103,11 @@
 	<servlet-mapping>
 		<servlet-name>transAdmin</servlet-name>
 		<url-pattern>*.ax</url-pattern>
+	</servlet-mapping>
+	
+	<servlet-mapping>
+		<servlet-name>trnapi</servlet-name>
+		<url-pattern>*.jx</url-pattern>
 	</servlet-mapping>
 	
 	<servlet-mapping>
@@ -141,7 +169,17 @@
 		<url-pattern>download.do</url-pattern>
 		<url-pattern>dispatchDashboardScreen.do</url-pattern>
 		<url-pattern>truckRefresh.do</url-pattern>
+		<url-pattern>/v/*</url-pattern>
 		<http-method>GET</http-method>
+		</web-resource-collection>
+	</security-constraint>
+	
+	<security-constraint>
+		<web-resource-collection>
+		<web-resource-name>Unrestricted</web-resource-name>
+		<description>All users can view</description>		
+		<url-pattern>/v/*</url-pattern>
+		<http-method>POST</http-method>
 		</web-resource-collection>
 	</security-constraint>
 	

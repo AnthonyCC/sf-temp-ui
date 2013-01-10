@@ -184,6 +184,9 @@
 				<prop key="/sector.do">geographyController</prop>
 				<prop key="/editsector.do">sectorFormController</prop>
 				<prop key="/deletesector.do">geographyController</prop>
+				
+				<prop key="/eventlog.do">eventLogController</prop>
+				
 			</props>
 		</property>
 	</bean>
@@ -261,6 +264,10 @@
 	<bean id="yardController" class="com.freshdirect.transadmin.web.YardController">
 		<property name="yardManagerService" ref="yardManagerService"/>
 		<property name="methodNameResolver" ref="transAdminControllerResolver"/>
+	</bean>
+	
+	<bean id="eventLogController" class="com.freshdirect.transadmin.web.EventLogController">
+		<property name="methodNameResolver" ref="transAdminControllerResolver"/>		
 	</bean>
 
 	<!--
@@ -375,6 +382,8 @@
 			
 			<prop key="/timesheet.do">timesheetHandler</prop>
             <prop key="/viewsignature.do">signatureHandler</prop>
+            
+            <prop key="/eventlog.do">eventLogHandler</prop>			
                	
 			</props>
 		</property>

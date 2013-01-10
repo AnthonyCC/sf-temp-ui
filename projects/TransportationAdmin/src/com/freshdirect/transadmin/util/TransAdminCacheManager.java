@@ -1,11 +1,14 @@
 package com.freshdirect.transadmin.util;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 
 import org.apache.log4j.Category;
 
@@ -20,13 +23,21 @@ import com.freshdirect.transadmin.cache.AsyncCacheException;
 import com.freshdirect.transadmin.cache.AsyncCacheExceptionType;
 import com.freshdirect.transadmin.cache.BaseAsyncCache;
 import com.freshdirect.transadmin.model.EmployeeInfo;
+import com.freshdirect.transadmin.model.EventLogRouteModel;
+import com.freshdirect.transadmin.service.DomainManagerI;
 import com.freshdirect.transadmin.service.EmployeeManagerI;
+import com.freshdirect.transadmin.service.IEventLogManagerService;
+import com.freshdirect.transadmin.service.exception.TransAdminServiceException;
 
 public class TransAdminCacheManager {
 	
 	private static TransAdminCacheManager instance = null;
 
 	private EmployeeManagerI manager = null;
+	
+	private IEventLogManagerService eventLogMngService = null;
+	
+	private DomainManagerI domainMngService = null;
 
 	private static Category LOGGER = LoggerFactory.getInstance(TransAdminCacheManager.class);
 	
@@ -42,6 +53,12 @@ public class TransAdminCacheManager {
 	
 	protected static final String STORE_ACTINACTEMPLOYEEDATA = "TRANSAPP_CACHE_ACTINACT_EMPLOYEEDATA.ser";
 	
+	/* Event log data holder */
+	protected static final String STORE_HANDOFF_ROUTEINFODATA = "TRANSAPP_CACHE_HANDOFFROUTEINFODATA.ser";
+	
+	/* AdHoc Route data holder */
+	protected static final String STORE_ADHOCROUTEINFODATA = "TRANSAPP_CACHE_ADHOCROUTEINFODATA.ser";
+		
 	private TransAdminCacheManager() {
 	}
 
@@ -373,6 +390,119 @@ public class TransAdminCacheManager {
 	public Collection getPunchInfo(String requestedDate, EmployeeManagerI mgr) {		
 		this.manager = mgr;
 		return (Collection) this.punchInfoDataHolder.get(requestedDate);
+	}
+	
+	
+	/**
+	 * Cache to Route information from database (Handoff tables) 
+	 */
+	private BaseAsyncCache<String, Map<String, EventLogRouteModel>> eventLogRouteDataHolder = new BaseAsyncCache<String, Map<String, EventLogRouteModel>>(
+			TransportationAdminProperties.getRouteCacheExpiryTime() * 60 * 1000, STORE_HANDOFF_ROUTEINFODATA) {
+
+		protected Map<String, EventLogRouteModel> loadData(String requestParam)  throws AsyncCacheException {
+			try {
+				return lookUpRouteInfo(requestParam);
+			} catch (Exception e) {
+				LOGGER.error("Could not load Route data from database: ", e);
+				throw new AsyncCacheException(e, AsyncCacheExceptionType.LOAD_FAILED);
+			}
+		}
+		
+		protected Map<String, EventLogRouteModel> loadDefault(String requestParam) {
+			return new HashMap<String, EventLogRouteModel>();
+		}
+	};
+	
+	public Map<String, EventLogRouteModel> lookUpRouteInfo(Object requestParam) {
+		Map<String, EventLogRouteModel> routeMapping = null;
+		try {
+			routeMapping = eventLogMngService.lookUpRoutes(TransStringUtil.getDate((String) requestParam));					
+		} catch (TransAdminServiceException e) {
+			LOGGER.error("lookUpRouteInfo# Delivery date: "+ (String) requestParam + " failed to populate route windows ", e);
+		} catch (ParseException pe) {			
+			LOGGER.error("lookUpRouteInfo# Unable to parse the date", pe);
+		}
+		return routeMapping; 
+	}
+	
+	public Map<String, EventLogRouteModel> lookUpDeliveryRoutes(String deliveryDate, IEventLogManagerService eventLogService) {
+		
+		this.eventLogMngService = eventLogService;		
+		
+		Map<String, EventLogRouteModel> routeMapping = eventLogRouteDataHolder.get(deliveryDate);
+		
+		return routeMapping;
+	}
+	
+	public Set<String> lookUpRoutes(String deliveryDate, IEventLogManagerService eventLogService) {
+		
+		this.eventLogMngService = eventLogService;		
+		Set<String> routes = new TreeSet<String>();
+		Map<String, EventLogRouteModel> routeMapping = eventLogRouteDataHolder.get(deliveryDate);
+		routes.addAll(routeMapping.keySet());
+		
+		return routes;
+	}
+	
+	public Set<String> lookUpRouteWindows(String deliveryDate, String routeNo, IEventLogManagerService eventLogService) { 
+		this.eventLogMngService = eventLogService;		
+		Set<String> routeWindows = new TreeSet<String>();
+		Map<String, EventLogRouteModel> routeMapping = eventLogRouteDataHolder.get(deliveryDate);		
+		if(routeMapping.get(routeNo) != null) {
+			routeWindows.addAll(routeMapping.get(routeNo).getWindows());	
+		}
+		return routeWindows;
+	}
+	
+	public Set<String> lookUpRouteStops(String deliveryDate, String routeNo, IEventLogManagerService eventLogService) {
+		
+		this.eventLogMngService = eventLogService;		
+		Set<String> routeStops = new TreeSet<String>();
+		Map<String, EventLogRouteModel> routeMapping = eventLogRouteDataHolder.get(deliveryDate);		
+		if(routeMapping.get(routeNo) != null) {
+			routeStops.addAll(routeMapping.get(routeNo).getStops());	
+		}
+		return routeStops;
+	}
+	
+
+	/**
+	 * Cache to addHocRoute information from database
+	 */
+	private BaseAsyncCache<String, List> addHocRouteDataHolder = new BaseAsyncCache<String, List>(
+																TransportationAdminProperties.getEmployeeCacheExpiryTime() * 60 * 1000, STORE_ADHOCROUTEINFODATA) {
+
+		protected List loadData(String requestParam) throws AsyncCacheException {
+			try {
+				if (TransportationAdminProperties.isKronosBlackhole()) {
+					throw new AsyncCacheException(
+							AsyncCacheExceptionType.LOAD_BLOCKED);
+				} else {
+					return loadAddHocRouteInfo();
+				}
+			} catch (Exception e) {
+				LOGGER.error("Could not load Employee Data due to: ", e);
+				throw new AsyncCacheException(e,
+						AsyncCacheExceptionType.LOAD_FAILED);
+			}
+		}
+
+		protected List loadDefault(String requestParam) {
+			return new ArrayList();
+		}
+	};
+
+	
+	public List loadAddHocRouteInfo() {		
+		return (List) domainMngService.getAdHocRoutes();	
+	}
+	
+	public List lookUpAddHocRoute(DomainManagerI domainMngService) {
+		
+		this.domainMngService = domainMngService;		
+		
+		return addHocRouteDataHolder.get("");
+		
 	}
 	
 }

@@ -130,13 +130,29 @@
 	
     <bean id="punchInfoDAO" class="com.freshdirect.transadmin.dao.sqlserver.PunchInfoDaoImpl">
 		<property name="dataSource" ref="dataSource"/>
+	</bean>
+	
+	<bean id="eventLogManagerDAO" class="com.freshdirect.transadmin.dao.oracle.EventLogDAO">
+		<property name="dataSource" ref="dataSource"/>
 	</bean>	
     
 	<bean id="zoneManagerService" class="com.freshdirect.transadmin.service.impl.ZoneManagerImpl">
         <property name="zoneManagerDAO" ref="zoneManagerDAO"/>        
     </bean>
     
-   	
+    <bean id="eventLogManagerService" class="com.freshdirect.transadmin.service.impl.EventLogManagerService">
+        <property name="eventLogDAO" ref="eventLogManagerDAO"/>        
+    </bean>
+    
+   	<bean id="eventLogManager" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+		<property name="transactionManager" ref="transactionManager"/>
+		<property name="target" ref="eventLogManagerService"/>
+		<property name="transactionAttributes">
+			<props>
+			    <prop key="log*,update*">PROPAGATION_REQUIRED,readOnly</prop>
+			</props>
+		</property>
+	</bean>
    
 	<bean id="zoneManager" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
 		<property name="transactionManager" ref="transactionManager"/>

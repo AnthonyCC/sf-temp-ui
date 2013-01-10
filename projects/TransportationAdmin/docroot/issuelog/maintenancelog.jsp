@@ -36,37 +36,37 @@
 		<script src="js/jsonrpc.js" language="javascript" type="text/javascript"></script>
 		<script src="js/maintenancelog.js" language="javascript" type="text/javascript"></script>
 
-		<div class="MNM001 subsub or_999">
+		<div class="MNM002 subsub or_999">
 			<div class="subs_left">
-				<div class="sub_tableft sub_tabL_MNM001 <% if(!"M".equalsIgnoreCase(request.getParameter("issueLog"))&&!"I".equalsIgnoreCase(request.getParameter("issueLog"))
+				<div class="sub_tableft sub_tabL_MNM002 <% if(!"M".equalsIgnoreCase(request.getParameter("issueLog"))&&!"I".equalsIgnoreCase(request.getParameter("issueLog"))
 				&&!"S".equalsIgnoreCase(request.getParameter("issueLog"))) { %>activeL<% } %>">&nbsp;</div>
 				
 				<div class="subtab <% if(!"M".equalsIgnoreCase(request.getParameter("issueLog"))&&!"I".equalsIgnoreCase(request.getParameter("issueLog")) &&!"I".equalsIgnoreCase(request.getParameter("issueLog"))) { %>activeT<% } %>">
 					<div class="minwidth"><!-- --></div>
-					<a href="virrecordlog.do" class="<% if(!"M".equalsIgnoreCase(request.getParameter("issueLog"))&&!"I".equalsIgnoreCase(request.getParameter("issueLog")) &&!"I".equalsIgnoreCase(request.getParameter("issueLog"))) { %>MNM001<% } %>">VIR Record</a>
+					<a href="virrecordlog.do" class="<% if(!"M".equalsIgnoreCase(request.getParameter("issueLog"))&&!"I".equalsIgnoreCase(request.getParameter("issueLog")) &&!"I".equalsIgnoreCase(request.getParameter("issueLog"))) { %>MNM002<% } %>">VIR Record</a>
 				</div>
-				<div class="sub_tabright sub_tabR_MNM001 <% if(!"M".equalsIgnoreCase(request.getParameter("issueLog"))&&!"I".equalsIgnoreCase(request.getParameter("issueLog")) &&!"I".equalsIgnoreCase(request.getParameter("issueLog"))) { %>activeR<% } %>">&nbsp;</div>		
+				<div class="sub_tabright sub_tabR_MNM002 <% if(!"M".equalsIgnoreCase(request.getParameter("issueLog"))&&!"I".equalsIgnoreCase(request.getParameter("issueLog")) &&!"I".equalsIgnoreCase(request.getParameter("issueLog"))) { %>activeR<% } %>">&nbsp;</div>		
 			
 				<div class="sub_tableft sub_tabL_MNM001 <% if("M".equalsIgnoreCase(request.getParameter("issueLog"))) { %>activeL<% } %>">&nbsp;</div>
 				<div class="subtab <% if("M".equalsIgnoreCase(request.getParameter("issueLog"))) { %>activeT<% } %>">
 					<div class="minwidth"><!-- --></div>
-					<a href="maintenancelog.do?issueLog=M" class="<% if("M".equalsIgnoreCase(request.getParameter("issueLog"))) { %>MNM001<% } %>">Maintenance Record</a>
+					<a href="maintenancelog.do?issueLog=M" class="<% if("M".equalsIgnoreCase(request.getParameter("issueLog"))) { %>MNM002<% } %>">Maintenance Record</a>
 				</div>
-				<div class="sub_tabright sub_tabR_MNM001 <% if("M".equalsIgnoreCase(request.getParameter("issueLog"))) { %>activeR<% } %>">&nbsp;</div>
+				<div class="sub_tabright sub_tabR_MNM002 <% if("M".equalsIgnoreCase(request.getParameter("issueLog"))) { %>activeR<% } %>">&nbsp;</div>
 				
-				<div class="sub_tableft sub_tabL_MNM001 <% if("I".equalsIgnoreCase(request.getParameter("issueLog"))) { %>activeL<% } %>">&nbsp;</div>
+				<div class="sub_tableft sub_tabL_MNM002 <% if("I".equalsIgnoreCase(request.getParameter("issueLog"))) { %>activeL<% } %>">&nbsp;</div>
 				<div class="subtab <% if("I".equalsIgnoreCase(request.getParameter("issueLog"))) { %>activeT<% } %>">
 					<div class="minwidth"><!-- --></div>
-					<a href="virrecordlog.do?issueLog=I" class="<% if("I".equalsIgnoreCase(request.getParameter("issueLog"))) { %>MNM001<% } %>">Issue Type</a>
+					<a href="virrecordlog.do?issueLog=I" class="<% if("I".equalsIgnoreCase(request.getParameter("issueLog"))) { %>MNM002<% } %>">Issue Type</a>
 				</div>
-				<div class="sub_tabright sub_tabR_MNM001 <% if("I".equalsIgnoreCase(request.getParameter("issueLog"))) { %>activeR<% } %>">&nbsp;</div>
+				<div class="sub_tabright sub_tabR_MNM002 <% if("I".equalsIgnoreCase(request.getParameter("issueLog"))) { %>activeR<% } %>">&nbsp;</div>
 
-				<div class="sub_tableft sub_tabL_MNM001 <% if("S".equalsIgnoreCase(request.getParameter("issueLog"))) { %>activeL<% } %>">&nbsp;</div>
+				<div class="sub_tableft sub_tabL_MNM002 <% if("S".equalsIgnoreCase(request.getParameter("issueLog"))) { %>activeL<% } %>">&nbsp;</div>
 				<div class="subtab <% if("S".equalsIgnoreCase(request.getParameter("issueLog"))) { %>activeT<% } %>">
 					<div class="minwidth"><!-- --></div>
-					<a href="virrecordlog.do?issueLog=S" class="<% if("S".equalsIgnoreCase(request.getParameter("issueLog"))) { %>MNM001<% } %>">Issue SubType</a>
+					<a href="virrecordlog.do?issueLog=S" class="<% if("S".equalsIgnoreCase(request.getParameter("issueLog"))) { %>MNM002<% } %>">Issue SubType</a>
 				</div>
-				<div class="sub_tabright sub_tabR_MNM001 <% if("S".equalsIgnoreCase(request.getParameter("issueLog"))) { %>activeR<% } %>">&nbsp;</div>		
+				<div class="sub_tabright sub_tabR_MNM002 <% if("S".equalsIgnoreCase(request.getParameter("issueLog"))) { %>activeR<% } %>">&nbsp;</div>		
 			</div>
 		</div>
 	<div class="cont_row_bottomline"><!--  --></div>

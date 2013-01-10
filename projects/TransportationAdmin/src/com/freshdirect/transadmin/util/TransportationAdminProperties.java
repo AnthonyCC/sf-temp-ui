@@ -243,6 +243,12 @@ public class TransportationAdminProperties {
 	private static final String PROP_TRANSPORTATION_EMPLOYEE_PUNCHINFO_CACHE_EXPIRY_TIME = "transportation.employee.punchinfo.cache.expiry.time";
 	private final static String PROP_TXTMESSAGE_ACCESSKEY	= "routingservices.txtmessage.accesskey";
 	
+	private final static String PROP_SHIFTEVENTLOG_TYPE	= "transportation.shifteventlog.type";
+	private final static String PROP_EVENTLOG_MAILFROM		= "transportation.eventlog.mailfrom";	
+	private final static String PROP_EVENTLOG_MAILTO		= "transportation.eventlog.mailto";	
+	private final static String PROP_EVENTLOG_MAILCC		= "transportation.eventlog.mailcc";
+	private final static String PROP_EVENTLOG_MAILSUBJECT = "transportation.eventlog.mailsubject";
+	
 	static {
 
 
@@ -444,6 +450,11 @@ public class TransportationAdminProperties {
 		
 		
 		defaults.put(PROP_TXTMESSAGE_ACCESSKEY, "e79c258648510d3050f7756aabed5154");
+		defaults.put(PROP_SHIFTEVENTLOG_TYPE, "End of Shift Scanner Log");
+		defaults.put(PROP_EVENTLOG_MAILFROM, "applicationdevelopment@freshdirect.com");
+		defaults.put(PROP_EVENTLOG_MAILTO, "applicationdevelopment@freshdirect.com");
+		defaults.put(PROP_EVENTLOG_MAILCC, "applicationdevelopment@freshdirect.com");
+		defaults.put(PROP_EVENTLOG_MAILSUBJECT, "Eventlog Notification");
 
 		refresh();
 	}
@@ -949,6 +960,24 @@ public class TransportationAdminProperties {
 	
 	public static String getAccessKey() {
 		return get(PROP_TXTMESSAGE_ACCESSKEY);
+	}
+	public static String getShiftEventLogType() {
+    	return get(PROP_SHIFTEVENTLOG_TYPE);
+    }
+	public static String getEventLogMailFrom() {
+		return get(PROP_EVENTLOG_MAILFROM);
+	}
+	
+	public static String getEventLogMailTo() {
+		return get(PROP_EVENTLOG_MAILTO);
+	}
+	
+	public static String getEventLogMailCC() {
+		return get(PROP_EVENTLOG_MAILCC);
+	}
+	
+	public static String getEventLogMailSubject() {
+		return get(PROP_EVENTLOG_MAILSUBJECT);
 	}
 	
 }
