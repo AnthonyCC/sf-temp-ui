@@ -3,7 +3,7 @@
 <%@page import="java.util.Date"%>
 <html><head><title>Sales Forecast</title>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<!-- <meta http-equiv="refresh" content="60">-->
+<meta http-equiv="refresh" content="60">
 
 <style>
 
@@ -184,7 +184,7 @@ $(document).ready(function(){
 	// 5 - AOS total day/zone
 	$.ajax({
 		type: "GET",
-		url: "http://localhost:8080/athena/api/salesforecast",
+		url: "<%=request.getContextPath()%>/api/salesforecast",
 		dataType: "xml",
 		success: function(xml) {
 		$(xml).find('row').each(function(){
@@ -294,7 +294,7 @@ $(document).ready(function(){
 		});
 		$.ajax({
 			type: "GET",
-			url: "http://localhost:8080/athena/api/forecast",
+			url: "<%=request.getContextPath()%>/api/forecast",
 			dataType: "xml",
 			success: function(xml) {
 			$(xml).find('row').each(function(){
