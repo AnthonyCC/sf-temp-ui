@@ -116,11 +116,11 @@ public class FDPromotionNewManager {
 		}
 	}
 	
-	public static List<WSPromotionInfo> getWSPromotionInfos() throws FDResourceException {
+	public static List<WSPromotionInfo> getWSPromotionInfos(Date fromDate, Date toDate,String status) throws FDResourceException {
 		lookupManagerHome();
 		try {
 			FDPromotionManagerNewSB sb = managerHome.create();
-			return sb.getWSPromotionInfos();
+			return sb.getWSPromotionInfos(fromDate, toDate,status);
 		} catch (CreateException ce) {
 			invalidateManagerHome();
 			throw new FDResourceException(ce, "Error creating session bean");

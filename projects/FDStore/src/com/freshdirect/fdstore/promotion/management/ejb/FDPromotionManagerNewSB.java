@@ -109,7 +109,7 @@ public interface FDPromotionManagerNewSB extends EJBObject {
 	
 	public List<FDPromotionNewModel> getModifiedOnlyPromotions(Date lastModified) throws FDResourceException, RemoteException;
 	
-	public List<WSPromotionInfo> getWSPromotionInfos() throws FDResourceException,RemoteException;
+	public List<WSPromotionInfo> getWSPromotionInfos(Date fromDate, Date toDate,String status) throws FDResourceException,RemoteException;
 	
 	public WSPromotionInfo getWSPromotionInfo(String zoneCode, String startTime, 
 			String endTime, Date effectiveDate, String[] windowTypes) throws FDResourceException, RemoteException;

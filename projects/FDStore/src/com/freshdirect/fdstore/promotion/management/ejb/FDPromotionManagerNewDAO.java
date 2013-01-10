@@ -238,12 +238,28 @@ public class FDPromotionManagerNewDAO {
 		+ "and (select count(*) from cust.promo_dlv_zone_strategy , table(cust. PROMO_DLV_ZONE_STRATEGY.DLV_ZONE) x where id = z.id) = 1 "
 		+ "and (select count(ID) from cust.promo_dlv_timeslot where PROMO_DLV_ZONE_ID = z.id) <= 1 "
 		+ "and P.OFFER_TYPE = 'WINDOW_STEERING' "
-		+ "and P.CAMPAIGN_CODE = 'HEADER' ORDER BY P.START_DATE DESC";
-	public static List<WSPromotionInfo> getWSPromotionInfos(Connection conn) throws SQLException {
+		+ "and P.CAMPAIGN_CODE = 'HEADER'";
+	public static List<WSPromotionInfo> getWSPromotionInfos(Connection conn, java.util.Date fromDate, java.util.Date toDate,String status) throws SQLException {
 		List<WSPromotionInfo> infos = new ArrayList<WSPromotionInfo>();
 		
-		PreparedStatement ps = conn.prepareStatement(GET_WS_PROMOTION_INFOS);
-
+		StringBuffer buf = new StringBuffer();
+		buf.append(GET_WS_PROMOTION_INFOS);
+		if(fromDate != null && toDate != null) {
+			buf.append(" AND P.START_DATE >=? AND P.START_DATE <=?");
+		}
+		if(status!=null && !"ALL".equals(status))
+			buf.append(" AND P.STATUS = ?");
+		buf.append(" ORDER BY P.START_DATE DESC");
+		PreparedStatement ps = conn.prepareStatement(buf.toString());
+		if(fromDate != null && toDate != null) {
+			ps.setDate(1, new java.sql.Date(fromDate.getTime()));
+			ps.setDate(2, new java.sql.Date(toDate.getTime()));
+			if(status!=null && !"ALL".equals(status))
+				ps.setString(3, status);
+		}
+		else if((fromDate == null ||toDate == null) && status!=null && !"ALL".equals(status)){
+			ps.setString(1, status);
+		}
 		ResultSet rs = ps.executeQuery();
 
 

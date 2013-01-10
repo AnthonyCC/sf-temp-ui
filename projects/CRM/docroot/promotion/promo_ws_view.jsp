@@ -6,6 +6,8 @@
 <%@ page import="com.freshdirect.fdstore.promotion.*" %>
 <%@ page import="com.freshdirect.fdstore.promotion.management.*" %>
 <%@ page import="com.freshdirect.delivery.model.*" %>
+<%@ page import="com.freshdirect.webapp.taglib.promotion.WSPromoFilterCriteria" %>
+<%@ page import="com.freshdirect.fdstore.promotion.EnumPromotionStatus"%>
 
 <%@page import="com.freshdirect.framework.util.NVL"%><tmpl:insert template='/template/top_nav.jsp'>
 
@@ -13,9 +15,84 @@
 	
 	<tmpl:put name='content' direct='true'>
 	<crm:GetCurrentAgent id='currentAgent'>
-		
+		<%	WSPromoFilterCriteria  wsFilter =  (WSPromoFilterCriteria)request.getSession().getAttribute("wsFilter"); 
+		String fromDateStr = null;
+		String toDateStr = null;
+		String status = null;
+		if(null == wsFilter || wsFilter.isEmpty()){
+			Calendar cal = Calendar.getInstance();
+			
+			wsFilter = new WSPromoFilterCriteria();
+			wsFilter.setFromDate(cal.getTime());
+			cal.add(Calendar.DATE, -90);
+			wsFilter.setToDate(cal.getTime());
+		}
+		if(null !=request.getParameter("ws_filter_submit")){
+			fromDateStr = request.getParameter("wsFromDate");
+			toDateStr = request.getParameter("wsToDate");
+			status = request.getParameter("promoStatus");
+			
+			wsFilter = new WSPromoFilterCriteria();
+			wsFilter.setFromDateStr(fromDateStr);
+			wsFilter.setToDateStr(toDateStr);
+			wsFilter.setStatus(status);
+		}else if(null != wsFilter && !wsFilter.isEmpty()){
+			fromDateStr = wsFilter.getFromDateStr();
+			toDateStr = wsFilter.getToDateStr();
+			status = wsFilter.getStatus();
+		}	
+	%>
 		<%@ include file="/includes/promotions/i_promo_trn_nav.jspf" %>
-		<fd:GetWSPromotions id="promotions">
+		<form method='POST' name="frmWSpromo" id="frmWSPromo"  action="/promotion/promo_ws_view.jsp">
+			<div class="BG_live">
+		
+			<table class="BG_live" width="60%" style="border-bottom:2px solid #000000;border-top:1px solid #000000;">
+			
+				
+			
+			<tr>
+					
+			
+					<td>Dates From:
+					<input type="text" id="wsFromDate" value="<%= fromDateStr %>" name="wsFromDate" size="10" maxlength="10" /> 
+					<a href="#" onclick="return false;" class="promo_ico_cont" id="wsFromDate_trigger" name="wsFromDate_trigger">
+					<img src="/media_stat/crm/images/calendar.gif" width="16" height="16" alt="" /></a></td>
+					<td>To:<input type="text" id="wsToDate" value="<%= toDateStr %>" name="wsToDate" size="10" maxlength="10" /> 
+					<a href="#" onclick="return false;" class="promo_ico_cont" id="wsToDate_trigger" name="wsToDate_trigger">
+					<img src="/media_stat/crm/images/calendar.gif" width="16" height="16" alt="" /></a></td>
+					<td>&nbsp;</td>
+					<td>Status:
+						<select id="promoStatus" name="promoStatus" class="promo_filter">
+						<option value="ALL">ALL</option>
+						<% for (Object promoStatusObj : EnumPromotionStatus.getEnumList()) { 
+						if(promoStatusObj instanceof EnumPromotionStatus){
+							EnumPromotionStatus promoStatus = (EnumPromotionStatus)promoStatusObj;
+							System.out.println();
+						%> 
+						<option value="<%= promoStatus.getName() %>" 
+						<%= (status!=null && status.equals(promoStatus.getName()))?"selected":""%>>
+						<%= promoStatus.getDescription()%></option>
+								<% } } %>							
+						</select>
+					</td>					
+					<td>&nbsp;</td>
+					<td><input type="submit" value="FILTER" onclick="" id="ws_filter_submit" name="ws_filter_submit" class="promo_btn_grn" /></td>
+			</tr>	
+				<% if(null !=pageContext.getAttribute("endDateBeforeErr")) {%>
+				<tr >
+				<td colspan='7'>&nbsp;</td>
+				<td colspan='3' class="case_content_red_field"><%= pageContext.getAttribute("endDateBeforeErr") %></td>
+				</tr>
+				<%} else { %>
+				<tr >
+				<td colspan='10'>&nbsp;</td>
+				</tr>
+				<% } %>
+			</table>
+			</div>
+		</form>
+		<fd:GetWSPromotions id="promotions" filter="<%= wsFilter %>">
+			
 		<crm:WSPromoController result="result">
 		<form method='POST' name="frmPromoWSView" id="frmPromoWSView">
 			<div class="errContainer">
@@ -83,3 +160,25 @@
 	</crm:GetCurrentAgent>
 	</tmpl:put>
 </tmpl:insert>
+<script language="javascript">
+Calendar.setup(
+		{
+			showsTime : false,
+			electric : false,
+			inputField : "wsFromDate",
+			ifFormat : "%m/%d/%Y",
+			singleClick: true,
+			button : "wsFromDate_trigger"
+		}
+	);
+Calendar.setup(
+		{
+			showsTime : false,
+			electric : false,
+			inputField : "wsToDate",
+			ifFormat : "%m/%d/%Y",
+			singleClick: true,
+			button : "wsToDate_trigger"
+		}
+	);
+</script>

@@ -88,11 +88,11 @@ public class FDPromotionManagerNewSessionBean extends FDSessionBeanSupport {
 		}
 	}
 
-	public List<WSPromotionInfo> getWSPromotionInfos() throws FDResourceException {
+	public List<WSPromotionInfo> getWSPromotionInfos(Date fromDate, Date toDate,String status) throws FDResourceException {
 		Connection conn = null;
 		try {
 			conn = getConnection();
-			return FDPromotionManagerNewDAO.getWSPromotionInfos(conn);
+			return FDPromotionManagerNewDAO.getWSPromotionInfos(conn, fromDate, toDate,status);
 
 		} catch (SQLException sqle) {
 			throw new FDResourceException(sqle);
