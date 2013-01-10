@@ -2155,12 +2155,12 @@
 				</tstamp>
 				<echo message="Started Compiling Transportation Admin at:${compileStart}"/>
 				<javac
-			srcdir="${projects.dir}/TransportationAdmin/src"
-			destdir="${work.dir}/TransportationAdmin/WEB-INF/classes"
-  			deprecation="${javac.deprecation}"
-			optimize="${javac.optimize}"
-			debug="${javac.debug}"
-  			source="${javac.source}">
+						srcdir="${projects.dir}/TransportationAdmin/src"
+						destdir="${work.dir}/TransportationAdmin/WEB-INF/classes"
+			  			deprecation="${javac.deprecation}"
+						optimize="${javac.optimize}"
+						debug="${javac.debug}"
+			  			source="${javac.source}">
 					<classpath>
 						<path refid="admin.classpath"/>
 					</classpath>
@@ -2651,6 +2651,8 @@
 				<include name="ctah-api-client.jar"/>
 				<include name="jackson-core-lgpl-1.2.0.jar"/>
 				<include name="jackson-mapper-lgpl-1.2.0.jar"/>
+				<include name="freemarker-2.3.15.jar"/>
+				
 			</lib>
 		</makeFDAdminEar>
 	</target>
