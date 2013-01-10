@@ -4,123 +4,7 @@
 <html><head><title>Sales Forecast</title>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <meta http-equiv="refresh" content="60">
-
-<style>
-
-html, body {
-	padding:0;
-	margin:0 0 0 50;
-
-}
-
-#outerdiv {
-   min-height:100%;
-   position:relative;
-   width:100%;
-}
-
-
-#header{
-   position:absolute;
-   top:0;
-   width:80%;
-   min-height:15px;   
-   background-color:rgb(0,150,33);
-
-}
-
-
-#footer {
-   position:fixed;
-   bottom:0;
-   width:75%;
-   min-height:15px;   
-   background-color:rgb(0,150,33);
-
-}
-
-.tabs li {
-	list-style:none;
-	display:inline;
-}
-
-.tabs a {
-	padding:5px 10px;
-	display:inline-block;
-	background:#666;
-	color:#fff;
-	text-decoration:none;
-}
-
-.tabs a.active {
-	background:#fff;
-	color:#000;
-	border-bottom:none;
-}
-div.float-left 
-{ 
-   	float:left;
- 	top:0;
- 	left:0;
- 	width:50%;
-}
-div.float-right 
-{ 
-	 float:left;
-	 top:0;
-	 right:0;
-	 width:50%;
-}
-ul.tabs{
-  width:600px;
- margin: 0;
-padding: 0;
-list-style-type: none;
-border-bottom: 1px solid #778;
-}
-
-
-tr.actual
-{
-color:red;
-}
-.left
-{
-text-align:left;
-}
-.right
-{
-text-align:right;
-}
-table.tbl
-{
-border:0;
-border-collapse: collapse;
-width:100%;
-}
-td, th
-{
-    padding: 10px; 
-    font-family:verdana;
-    font-size:12px;
-}
-
-#refresh{
-	padding: 30 0 10 0;
-	width:80%;   
-	font-family:verdana;
-    font-size:12px;
-}
-
-#tab1, #tab2, #tab3 {min-height:900px; width:80%}
-
-table#zoneT,table#zoneTm,table#zoneTx,table#zoneTmx {border-collapse: collapse; width:100%}
-table#zoneT tr:nth-last-child(2) td { border-bottom: solid 1px black;  }
-table#zoneTm tr:nth-last-child(2) td { border-bottom: solid 1px black; }
-
-</style>
-
-
+<link rel="stylesheet" type="text/css" href="../css/sales.css">
 
 <script src="../js/jquery-1.7.1.js" type="text/javascript"></script>
 <script src="../js/date.js" type="text/javascript"></script>
@@ -416,7 +300,7 @@ for(key in arr)
    
     <table id="zoneTm">
     <tr><th class="left">By Zone</th><th class="left">Last Wk (<%=DateFormatUtils.format(DateUtils.addDays(new Date(), -6), "MM/dd") %>)</th><th class="left">
-    Today (<%=DateFormatUtils.format(DateUtils.addDays(new Date(),1), "MM/dd") %>)</th>
+    Tomorrow (<%=DateFormatUtils.format(DateUtils.addDays(new Date(),1), "MM/dd") %>)</th>
    	</table>
     </div>
     
@@ -427,28 +311,28 @@ for(key in arr)
     <table width="80%">
     <tr><th class="left">Yesterday (<%=DateFormatUtils.format(DateUtils.addDays(new Date(), -1), "MM/dd/yyyy") %>)</th><th class="right">AOS Sub Total</th><th class="right">AOS</th>
 	<tr class="actual"><td>Actual<td id="actualYS" class="right"><td id="actualY" class="right">
-	<tr><td class="left">Forecast<td id="forecastYS" class="right"><td id="forecastY">
+	<tr><td class="left"><td id="forecastYS" class="right"><td id="forecastY">
 	<tr><td class="left">Last Week<td id="lwYS" class="right"><td id="lwY" class="right">
 	
 	<br><br>
 	
     <tr><th class="left">Today (<%=DateFormatUtils.format(new Date(), "MM/dd/yyyy") %>)</th>
 	<tr class="actual"><td>Actual<td id="actualTS" class="right"><td id="actualT" class="right">
-	<tr><td class="left">Forecast<td id="forecastTS" class="right"><td id="forecastT">
+	<tr><td class="left"><td id="forecastTS" class="right"><td id="forecastT">
 	<tr><td class="left">Last Week<td id="lwTS" class="right"><td id="lwT" class="right">
 	
 	<br><br>
 	
     <tr><th class="left">Tomorrow (<%=DateFormatUtils.format(DateUtils.addDays(new Date(), 1), "MM/dd/yyyy") %>)</th>
 	<tr class="actual"><td>Actual<td id="actualTmS" class="right"><td id="actualTm" class="right">
-	<tr><td class="left">Forecast<td id="forecastTmS" class="right"><td id="forecastTm">
+	<tr><td class="left"><td id="forecastTmS" class="right"><td id="forecastTm">
 	<tr><td class="left">Last Week<td id="lwTmS" class="right"><td id="lwTm" class="right">
 	
 	<br><br>
 	
     <tr><th class="left"><%=DateFormatUtils.format(DateUtils.addDays(new Date(), 2), "MM/dd/yyyy") %></th>
 	<tr class="actual"><td>Actual<td id="actual2S" class="right"><td id="actual2" class="right">
-	<tr><td class="left">Forecast<td id="forecast2S" class="right"><td id="forecast2">
+	<tr><td class="left"><td id="forecast2S" class="right"><td id="forecast2">
 	<tr><td class="left">Last Week<td id="lw2S" class="right"><td id="lw2" class="right">
 	</table>
 	</div>
@@ -464,7 +348,7 @@ for(key in arr)
    
     <table id="zoneTmx">
     <tr><th class="left">By Zone</th><th class="left">Last Wk (<%=DateFormatUtils.format(DateUtils.addDays(new Date(), -6), "MM/dd") %>)</th><th class="left">
-    Today (<%=DateFormatUtils.format(DateUtils.addDays(new Date(),1), "MM/dd") %>)</th>
+    Tomorrow (<%=DateFormatUtils.format(DateUtils.addDays(new Date(),1), "MM/dd") %>)</th>
    	</table>
     </div>
     
@@ -475,28 +359,28 @@ for(key in arr)
     <table width="80%">
     <tr><th class="left">Yesterday (<%=DateFormatUtils.format(DateUtils.addDays(new Date(), -1), "MM/dd/yyyy") %>)</th><th class="right">Sales</th>
 	<tr class="actual"><td>Actual<td id="actualY" class="right">
-	<tr><td class="left">Forecast<td id="forecastY">
+	<tr><td class="left"><td id="forecastY">
 	<tr><td class="left">Last Week<td id="lwY" class="right">
 	
 	<br><br>
 	
     <tr><th class="left">Today (<%=DateFormatUtils.format(new Date(), "MM/dd/yyyy") %>)</th>
 	<tr class="actual"><td>Actual<td id="actualT" class="right">
-	<tr><td class="left">Forecast<td id="forecastT">
+	<tr><td class="left"><td id="forecastT">
 	<tr><td class="left">Last Week<td id="lwT" class="right">
 	
 	<br><br>
 	
     <tr><th class="left">Tomorrow (<%=DateFormatUtils.format(DateUtils.addDays(new Date(), 1), "MM/dd/yyyy") %>)</th>
 	<tr class="actual"><td>Actual<td id="actualTm" class="right">
-	<tr><td class="left">Forecast<td id="forecastTm">
+	<tr><td class="left"><td id="forecastTm">
 	<tr><td class="left">Last Week<td id="lwTm" class="right">
 	
 	<br><br>
 	
     <tr><th class="left"><%=DateFormatUtils.format(DateUtils.addDays(new Date(), 2), "MM/dd/yyyy") %></th>
 	<tr class="actual"><td>Actual<td id="actual2" class="right">
-	<tr><td class="left">Forecast<td id="forecast2">
+	<tr><td class="left"><td id="forecast2">
 	<tr><td class="left">Last Week<td id="lw2" class="right">
 	</table>
 	</div>
@@ -512,7 +396,7 @@ for(key in arr)
    
     <table id="zoneTm">
     <tr><th class="left">By Zone</th><th class="left">Last Wk (<%=DateFormatUtils.format(DateUtils.addDays(new Date(), -6), "MM/dd") %>)</th><th class="left">
-    Today (<%=DateFormatUtils.format(DateUtils.addDays(new Date(),1), "MM/dd") %>)</th>
+    Tomorrow (<%=DateFormatUtils.format(DateUtils.addDays(new Date(),1), "MM/dd") %>)</th>
    	</table>
     </div>
    
