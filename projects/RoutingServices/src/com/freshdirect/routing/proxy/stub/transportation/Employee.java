@@ -665,50 +665,6 @@
                             
 
                         /**
-                        * field for SupervisorIdentity
-                        */
-
-                        
-                                    protected com.freshdirect.routing.proxy.stub.transportation.EmployeeIdentity localSupervisorIdentity ;
-                                
-                           /*  This tracker boolean wil be used to detect whether the user called the set method
-                          *   for this attribute. It will be used to determine whether to include this field
-                           *   in the serialized XML
-                           */
-                           protected boolean localSupervisorIdentityTracker = false ;
-                           
-
-                           /**
-                           * Auto generated getter method
-                           * @return com.freshdirect.routing.proxy.stub.transportation.EmployeeIdentity
-                           */
-                           public  com.freshdirect.routing.proxy.stub.transportation.EmployeeIdentity getSupervisorIdentity(){
-                               return localSupervisorIdentity;
-                           }
-
-                           
-                        
-                            /**
-                               * Auto generated setter method
-                               * @param param SupervisorIdentity
-                               */
-                               public void setSupervisorIdentity(com.freshdirect.routing.proxy.stub.transportation.EmployeeIdentity param){
-                            
-                                       if (param != null){
-                                          //update the setting tracker
-                                          localSupervisorIdentityTracker = true;
-                                       } else {
-                                          localSupervisorIdentityTracker = true;
-                                              
-                                       }
-                                   
-                                            this.localSupervisorIdentity=param;
-                                    
-
-                               }
-                            
-
-                        /**
                         * field for CurrentRouteIdentity
                         */
 
@@ -1347,37 +1303,6 @@
                                      localAddress.serialize(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","address"),
                                         factory,xmlWriter);
                                     }
-                                } if (localSupervisorIdentityTracker){
-                                    if (localSupervisorIdentity==null){
-
-                                            java.lang.String namespace2 = "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService";
-
-                                        if (! namespace2.equals("")) {
-                                            java.lang.String prefix2 = xmlWriter.getPrefix(namespace2);
-
-                                            if (prefix2 == null) {
-                                                prefix2 = generatePrefix(namespace2);
-
-                                                xmlWriter.writeStartElement(prefix2,"supervisorIdentity", namespace2);
-                                                xmlWriter.writeNamespace(prefix2, namespace2);
-                                                xmlWriter.setPrefix(prefix2, namespace2);
-
-                                            } else {
-                                                xmlWriter.writeStartElement(namespace2,"supervisorIdentity");
-                                            }
-
-                                        } else {
-                                            xmlWriter.writeStartElement("supervisorIdentity");
-                                        }
-
-
-                                       // write the nil attribute
-                                      writeAttribute("xsi","http://www.w3.org/2001/XMLSchema-instance","nil","1",xmlWriter);
-                                      xmlWriter.writeEndElement();
-                                    }else{
-                                     localSupervisorIdentity.serialize(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","supervisorIdentity"),
-                                        factory,xmlWriter);
-                                    }
                                 } if (localCurrentRouteIdentityTracker){
                                     if (localCurrentRouteIdentity==null){
 
@@ -1699,13 +1624,6 @@
                             
                                     elementList.add(localAddress==null?null:
                                     localAddress);
-                                } if (localSupervisorIdentityTracker){
-                            elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
-                                                                      "supervisorIdentity"));
-                            
-                            
-                                    elementList.add(localSupervisorIdentity==null?null:
-                                    localSupervisorIdentity);
                                 } if (localCurrentRouteIdentityTracker){
                             elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
                                                                       "currentRouteIdentity"));
@@ -2064,30 +1982,6 @@
                                       }else{
                                     
                                                 object.setAddress(com.freshdirect.routing.proxy.stub.transportation.Address.Factory.parse(reader));
-                                              
-                                        reader.next();
-                                    }
-                              }  // End of if for expected property start element
-                                
-                                    else {
-                                        
-                                    }
-                                
-                                    
-                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
-                                
-                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","supervisorIdentity").equals(reader.getName())){
-                                
-                                      nillableValue = reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance","nil");
-                                      if ("true".equals(nillableValue) || "1".equals(nillableValue)){
-                                          object.setSupervisorIdentity(null);
-                                          reader.next();
-                                            
-                                            reader.next();
-                                          
-                                      }else{
-                                    
-                                                object.setSupervisorIdentity(com.freshdirect.routing.proxy.stub.transportation.EmployeeIdentity.Factory.parse(reader));
                                               
                                         reader.next();
                                     }

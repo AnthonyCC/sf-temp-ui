@@ -1244,36 +1244,6 @@
                             
 
                         /**
-                        * field for PassiveMode
-                        */
-
-                        
-                                    protected boolean localPassiveMode ;
-                                
-
-                           /**
-                           * Auto generated getter method
-                           * @return boolean
-                           */
-                           public  boolean getPassiveMode(){
-                               return localPassiveMode;
-                           }
-
-                           
-                        
-                            /**
-                               * Auto generated setter method
-                               * @param param PassiveMode
-                               */
-                               public void setPassiveMode(boolean param){
-                            
-                                            this.localPassiveMode=param;
-                                    
-
-                               }
-                            
-
-                        /**
                         * field for CostQuantityReference
                         */
 
@@ -2462,35 +2432,6 @@
                                     
                                    xmlWriter.writeEndElement();
                              
-                                    namespace = "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService";
-                                    if (! namespace.equals("")) {
-                                        prefix = xmlWriter.getPrefix(namespace);
-
-                                        if (prefix == null) {
-                                            prefix = generatePrefix(namespace);
-
-                                            xmlWriter.writeStartElement(prefix,"passiveMode", namespace);
-                                            xmlWriter.writeNamespace(prefix, namespace);
-                                            xmlWriter.setPrefix(prefix, namespace);
-
-                                        } else {
-                                            xmlWriter.writeStartElement(namespace,"passiveMode");
-                                        }
-
-                                    } else {
-                                        xmlWriter.writeStartElement("passiveMode");
-                                    }
-                                
-                                               if (false) {
-                                           
-                                                         throw new org.apache.axis2.databinding.ADBException("passiveMode cannot be null!!");
-                                                      
-                                               } else {
-                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localPassiveMode));
-                                               }
-                                    
-                                   xmlWriter.writeEndElement();
-                             
                                             if (localCostQuantityReference==null){
                                                  throw new org.apache.axis2.databinding.ADBException("costQuantityReference cannot be null!!");
                                             }
@@ -2951,12 +2892,6 @@
                                  
                                 elementList.add(
                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localDamagedReasonCodeRequired));
-                            
-                                      elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
-                                                                      "passiveMode"));
-                                 
-                                elementList.add(
-                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localPassiveMode));
                             
                             elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
                                                                       "costQuantityReference"));
@@ -3639,25 +3574,6 @@
                                     java.lang.String content = reader.getElementText();
                                     
                                               object.setDamagedReasonCodeRequired(
-                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToBoolean(content));
-                                              
-                                        reader.next();
-                                    
-                              }  // End of if for expected property start element
-                                
-                                else{
-                                    // A start element we are not expecting indicates an invalid parameter was passed
-                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
-                                }
-                            
-                                    
-                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
-                                
-                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","passiveMode").equals(reader.getName())){
-                                
-                                    java.lang.String content = reader.getElementText();
-                                    
-                                              object.setPassiveMode(
                                                     org.apache.axis2.databinding.utils.ConverterUtil.convertToBoolean(content));
                                               
                                         reader.next();
