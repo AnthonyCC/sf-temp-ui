@@ -44,7 +44,7 @@ public class EventLogDAO implements IEventLogDAO   {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
     }
 		
-	private static final String GET_EVENTLOG = " SELECT * from transp.eventlog_book el, transp.eventlog_stop els where el.event_id = els.eventlog_id(+) and el.event_date = ? ";
+	private static final String GET_EVENTLOG = " SELECT * from transp.eventlog_book el, transp.eventlog_stop els where el.event_id = els.eventlog_id(+) and el.event_date = ?  order by cromod_date desc";
 	
 	private static final String GET_EVENTLOG_BY_ID = "SELECT * from transp.eventlog_book el, transp.eventlog_stop els where el.event_id = els.eventlog_id(+) and el.event_id = ?";
 	
@@ -95,7 +95,7 @@ public class EventLogDAO implements IEventLogDAO   {
 	
 	private static final String GET_MOTEVENTLOGNEXTSEQ_QRY = "SELECT TRANSP.MOTEVENTLOGSEQ.nextval FROM DUAL";
 	
-	private static final String GET_MOTEVENTLOG_QRY = " SELECT * from transp.moteventlog_book el, transp.moteventlog_stop els where el.event_id = els.eventlog_id(+) and el.event_date = ? ";
+	private static final String GET_MOTEVENTLOG_QRY = " SELECT * from transp.moteventlog_book el, transp.moteventlog_stop els where el.event_id = els.eventlog_id(+) and el.event_date = ? order by cromod_date desc ";
 	
 	private static final String GET_MOTEVENTLOG_BY_ID = " SELECT * from transp.moteventlog_book el, transp.moteventlog_stop els where el.event_id = els.eventlog_id(+) and el.event_id = ? ";
 	
@@ -571,7 +571,8 @@ public class EventLogDAO implements IEventLogDAO   {
 						if(subTypeName != null && subTypeDesc != null
 								&& !"".equals(subTypeName) && !"".equals(subTypeDesc)) {
 							EventLogSubType subType = new EventLogSubType();							
-							subType.setMsgGroup(new EventLogMessageGroup(groupName, email));
+							if(groupName != null)
+								subType.setMsgGroup(new EventLogMessageGroup(groupName, email));
 							subType.setName(subTypeName);
 							subType.setDescription(subTypeDesc);
 							subType.setEventTypeId(typeName);
@@ -1061,8 +1062,8 @@ public class EventLogDAO implements IEventLogDAO   {
 						String email = rs.getString("EMAIL");
 						
 						MotEventType eventType = new MotEventType(typeName, typeDesc);
-						
-						eventType.setMsgGroup(new EventLogMessageGroup(groupName, email));
+						if(groupName != null && !"".equals(groupName))
+							eventType.setMsgGroup(new EventLogMessageGroup(groupName, email));
 						eventType.setTransactionDate(rs.getTimestamp("CROMOD_DATE"));
 						eventType.setUserId(rs.getString("CREATED_BY"));
 						

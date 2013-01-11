@@ -143,8 +143,18 @@
           		var addBackTo = document.getElementById(addBackToId);
 
           		if ((remFromId == null || '') || (remFrom == null)) { return false; }
-
-          		addOpt(addBackTo.id, remFrom.value, remFrom.value);        		
+          		
+          		var inputText = remFrom.value;
+          		if (inputText.indexOf('-') > 0) {
+          			var rangeVals = inputText.split('-');
+              		if (rangeVals.length > 1) {
+              		  for (var i = rangeVals[0]; i <= rangeVals[1]; i++) {
+              			addOpt(addBackTo.id, i, i);          		   
+              		  }
+              		}
+          		} else {
+          			addOpt(addBackTo.id, remFrom.value, remFrom.value);  
+          		}    		
           		remFrom.value = '';
           		return true;
           	}

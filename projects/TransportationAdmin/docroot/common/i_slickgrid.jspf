@@ -1,4 +1,4 @@
-<link rel="stylesheet" href="slickgrid/slick.grid.css" type="text/css"/>
+<link rel="stylesheet" href="slickgrid/css/slick.grid.css" type="text/css"/>
 <link rel="stylesheet" href="slickgrid/css/slick.grid.common.css" type="text/css"/>
 <link rel="stylesheet" href="slickgrid/css/slick.grid.css" type="text/css"/>
 <link rel="stylesheet" href="slickgrid/controls/slick.pager.css" type="text/css"/>

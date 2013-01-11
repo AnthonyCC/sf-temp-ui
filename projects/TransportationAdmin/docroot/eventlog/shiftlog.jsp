@@ -261,7 +261,7 @@ function showEventForm () {
 							var timeInt = 0;
 							timeInt = timeInt + (new Date($('#eventDate').val()).getTimezoneOffset() * 60 * 1000);
 							
-							var newEventdate = new Date(timeInt);
+							var newEventdate = new Date($('#eventDate').val());
 							$('#eventDate').val(newEventdate.toJSON());							
 							
 							
@@ -401,7 +401,7 @@ function lookUpRouteInfo(formatedDate, selRoute) {
 
 function showGrid() {
 	var postData = "";
-	postData = postData + 'daterange='+ $.URLEncode(formatedDate);
+	postData = postData + 'daterange='+ $.URLEncode($('#daterange').val());
 	
 	$.ajax({
 		url : url,

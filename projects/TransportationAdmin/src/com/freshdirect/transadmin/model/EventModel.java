@@ -108,16 +108,15 @@ public class EventModel extends BaseCommand implements Serializable {
 		this.stops = stops;
 	}
 	public String getWindowTime() {
-		
-		String windowTime = null;
+				
 		try {
 			if(this.getWindowStartTime() != null && this.getWindowEndTime() != null) {
-				windowTime = TransStringUtil.getServerTime(this.getWindowStartTime()) + " - " + TransStringUtil.getServerTime(this.getWindowEndTime());
+				return TransStringUtil.getServerTime(this.getWindowStartTime()) + " - " + TransStringUtil.getServerTime(this.getWindowEndTime());
 			}
 		} catch (ParseException e) {
 			// Do Nothing
 		}		
-		return windowTime;
+		return this.windowTime;
 	}
 	public void setWindowTime(String windowTime) {
 		this.windowTime = windowTime;

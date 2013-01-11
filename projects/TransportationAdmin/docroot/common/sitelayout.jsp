@@ -48,8 +48,7 @@
 	<link rel="stylesheet" href="jquery/css/jquery-theme/smoothness/jquery-ui-1.8.16.custom.css" type="text/css"/>
 	<link rel="stylesheet" href="jquery/plugins/simplemodel/css/simplemodel-basic.css" type="text/css"/>
 	<link rel="stylesheet" href="jquery/css/form-overlay.css" type="text/css"/>
-	<link rel="stylesheet" href="jqgrid/css/ui.jqgrid.css" type="text/css"/>
-	
+
 	
 	
 	<script type="text/javascript" src="jquery/firebugx.js"></script>
@@ -73,9 +72,6 @@
 	<script type="text/javascript" src="jquery/util/jquery.toObject.js"></script>
 	<script type="text/javascript" src="jquery/util/json2.js"></script>
 	<script type="text/javascript" src="jquery/util/json2form.js"></script>
-	
-	<script type="text/javascript" src="jqgrid/grid.locale-en.js"></script>
-	<script type="text/javascript" src="jqgrid/jquery.jqGrid.min.js"></script>
 	
 	<tmpl:get name='yui-lib'/>
 	<tmpl:get name='gmap-lib'/>

@@ -488,11 +488,8 @@ function showEventForm () {
 						height: '80px'
 					}, function () {
 						$('#form-container .form-loading').fadeIn(200, function () {
-							alert($('#eventDate').val());
-							var timeInt = 0;
-							timeInt = timeInt + (new Date($('#eventDate').val()).getTimezoneOffset() * 60 * 1000);
-							
-							var newEventdate = new Date(timeInt);
+					
+							var newEventdate = new Date($('#eventDate').val());
 							$('#eventDate').val(newEventdate.toJSON());							
 							$("#stops *").attr("selected","selected");
 							
@@ -636,7 +633,7 @@ function lookUpWindows(routeId, selWindow) {
 					.OrderByDescending(function (window) { return window.caption })
 					.ToArray();  
 	$('#windowTime').loadSelect( queryResult, false, true );
-	$('#windowTime').val(selWindow, false, true);
+	$('#windowTime').val(selWindow);
 }
 
 

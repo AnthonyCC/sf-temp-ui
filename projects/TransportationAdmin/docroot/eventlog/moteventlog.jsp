@@ -422,18 +422,10 @@ $(document).ready(function () {
 																					'#form-container .form-loading')
 																					.fadeIn(
 																							200,
-																							function() {
-
-																								var timeInt = 0;
-																								timeInt = timeInt
-																										+ (new Date(
-																												$(
-																														'#eventDate')
-																														.val())
-																												.getTimezoneOffset() * 60 * 1000);
+																							function() {																								
 
 																								var newEventdate = new Date(
-																										timeInt);
+																										$('#eventDate').val());
 																								$(
 																										'#eventDate')
 																										.val(
