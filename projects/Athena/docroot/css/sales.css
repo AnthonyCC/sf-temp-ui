@@ -80,7 +80,7 @@ color:red;
 {
 text-align:left;
 }
-.right
+.right,.rightL
 {
 text-align:right;
 }
@@ -106,6 +106,5 @@ td, th
 
 #tab1, #tab2, #tab3 {min-height:900px; width:80%}
 
-table#zoneT,table#zoneTm,table#zoneTx,table#zoneTmx {border-collapse: collapse; width:100%}
-table#zoneT tr:nth-last-child(2) td { border-bottom: solid 1px black;  }
-table#zoneTm tr:nth-last-child(2) td { border-bottom: solid 1px black; }
+table#zoneT,table#zoneTm,table#zoneT2,table#zoneTm2,table#zoneT3,table#zoneTm3 {border-collapse: collapse; width:100%}
+
