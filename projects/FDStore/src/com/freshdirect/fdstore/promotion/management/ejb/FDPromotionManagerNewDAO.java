@@ -1915,6 +1915,8 @@ public class FDPromotionManagerNewDAO {
 		List<FDPromoChangeModel> auditChanges= new ArrayList<FDPromoChangeModel>();
 		PreparedStatement ps = null;
 		ResultSet rs = null;
+		
+		/*
 		ResultSet rs1 = null;
 		PreparedStatement ps1 =null; 
 		
@@ -1947,7 +1949,7 @@ public class FDPromotionManagerNewDAO {
 				promoChangeModel.setChangeDetails(auditChangeDetails);
 				auditChanges.add(promoChangeModel);
 			}
-
+			
 			
 		} finally {
 			if (rs != null)
@@ -1959,6 +1961,68 @@ public class FDPromotionManagerNewDAO {
 			if (ps1!= null){
 				ps1.close();
 			}
+		}
+		*/
+		
+		/* This change is made to avoid "ORA-01000: maximum open cursors exceeded" error. When the changes on the promotion exceed 300 rows or so, we run into this exception
+		 * This is existing from a long time. 
+		 */
+		
+		try {
+			ps = conn.prepareStatement("select pc.ID, pc.promotion_id, pc.user_id, pc.action_Date, pc.action_type, pcd.ID as ID_1, pcd.change_id, pcd.section_id, PCD.CHANGE_FIELD, PCD.OLD_VALUE, PCD.NEW_VALUE from cust.promo_change pc, cust.promo_change_detail pcd where pc.promotion_id = ? and pc.ID = pcd.change_id(+) order by to_number(pc.ID)");
+			ps.setString(1, promotionId);
+			rs = ps.executeQuery();
+			String prevID = null;
+			List<FDPromoChangeDetailModel> auditChangeDetails = null;
+			FDPromoChangeModel promoChangeModel = null;
+			while (rs.next()) {
+				String currID = rs.getString("ID");
+				if(prevID == null) {
+					//firstrow, so create new promoChangeModel
+					promoChangeModel = new FDPromoChangeModel();
+					promoChangeModel.setId(currID);
+					promoChangeModel.setPromotionId(promotionId);
+					promoChangeModel.setActionType(EnumPromoChangeType.getEnum(rs.getString("ACTION_TYPE")));
+					promoChangeModel.setActionDate(rs.getTimestamp("ACTION_DATE"));
+					promoChangeModel.setUserId(rs.getString("USER_ID"));
+					auditChangeDetails= new ArrayList<FDPromoChangeDetailModel>();
+					prevID = currID;
+				} else {
+					//not the first row.
+					if(prevID.equals(currID)) {
+						//row belongs to previous row. so add auditchangeDetails
+						FDPromoChangeDetailModel changeDetailModel = new FDPromoChangeDetailModel();
+						changeDetailModel.setId(rs.getString("ID_1"));
+						changeDetailModel.setPromoChangeId(rs.getString("CHANGE_ID"));
+						changeDetailModel.setChangeFieldName(rs.getString("CHANGE_FIELD"));
+						changeDetailModel.setChangeSectionId(EnumPromotionSection.getEnum(rs.getString("SECTION_ID")));
+						changeDetailModel.setChangeFieldNewValue(rs.getString("NEW_VALUE"));
+						changeDetailModel.setChangeFieldOldValue(rs.getString("OLD_VALUE"));
+						auditChangeDetails.add(changeDetailModel);
+						prevID = currID;
+					} else {
+						//new row
+						promoChangeModel.setChangeDetails(auditChangeDetails);
+						auditChanges.add(promoChangeModel);
+						
+						promoChangeModel = new FDPromoChangeModel();
+						promoChangeModel.setId(currID);
+						promoChangeModel.setPromotionId(promotionId);
+						promoChangeModel.setActionType(EnumPromoChangeType.getEnum(rs.getString("ACTION_TYPE")));
+						promoChangeModel.setActionDate(rs.getTimestamp("ACTION_DATE"));
+						promoChangeModel.setUserId(rs.getString("USER_ID"));
+						auditChangeDetails= new ArrayList<FDPromoChangeDetailModel>();
+						prevID = currID;
+					}
+				}
+			}
+			promoChangeModel.setChangeDetails(auditChangeDetails);
+			auditChanges.add(promoChangeModel);
+		} finally {
+			if (rs != null)
+				rs.close();
+			if (ps != null)
+				ps.close();
 		}
 		
 		
@@ -3305,12 +3369,14 @@ public class FDPromotionManagerNewDAO {
 			conn.prepareStatement(
 				"UPDATE CUST.PROMOTION_NEW"
 				+ " SET"
-				+ " COMBINE_OFFER = ?, PERISHABLEONLY = ? ,FAVORITES_ONLY = ?, PERCENT_OFF = ?, WAIVE_CHARGE_TYPE = ?," 
+				+ " CAMPAIGN_CODE = ?, COMBINE_OFFER = ?, PERISHABLEONLY = ? ,FAVORITES_ONLY = ?, PERCENT_OFF = ?, WAIVE_CHARGE_TYPE = ?," 
 				+ " CATEGORY_NAME=?, PRODUCT_NAME=?, EXTEND_DP_DAYS =?,"
 				+ " MAX_AMOUNT =?, OFFER_TYPE = ?, MAX_ITEM_COUNT =?, MODIFIED_BY =?, MODIFY_DATE =?, INCL_FUEL_SURCHARGE=?, sku_limit=? "
 				+ " ,MAX_PERCENTAGE_DISCOUNT=? "
-				+ " WHERE batch_ID = ?");
+				+ " WHERE BATCH_ID = ?");
 		int i = 1;
+//		i = setupPreparedStatement(ps, promotion, i);
+		ps.setString(i++, promotion.getPromotionType());
 		ps.setString(i++, promotion.isCombineOffer()?"Y":"N");
 		ps.setString(i++, promotion.isPerishable()?"Y":"N");
 		ps.setString(i++, promotion.isFavoritesOnly()?"Y":"N");
