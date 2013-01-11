@@ -2,6 +2,7 @@ package com.freshdirect.framework.util;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.net.UnknownHostException;
 import java.util.Iterator;
 import java.util.List;
 
@@ -734,4 +735,24 @@ public class StringUtil {
 	    	throw new IllegalArgumentException(uee);
 	    }
 	 }
+	
+	public static String getHostInfo() {
+    	StringBuilder sb=new StringBuilder(25);
+    	
+			sb.append( "ip: " );
+			try {
+				sb.append( java.net.InetAddress.getLocalHost().getHostAddress() );
+			} catch (UnknownHostException e) {
+				sb.append( "UNKNOWN" );
+			
+			}
+			sb.append( " host: " );
+			try {
+				sb.append( java.net.InetAddress.getLocalHost().getCanonicalHostName() );
+			} catch (UnknownHostException e) {
+				sb.append( "UNKNOWN" );
+			}
+		
+		return sb.toString();
+    }
 }

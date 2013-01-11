@@ -52,6 +52,7 @@ import com.freshdirect.framework.util.MathUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionError;
 import com.freshdirect.framework.webapp.ActionResult;
+import com.freshdirect.sap.PosexUtil;
 import com.freshdirect.webapp.taglib.crm.CrmSession;
 import com.freshdirect.webapp.taglib.fdstore.CallcenterUser;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
@@ -315,7 +316,7 @@ public class ComplaintCreatorTag extends com.freshdirect.framework.webapp.BodyTa
             //
             line.setType(EnumComplaintLineType.ORDER_LINE);
 			line.setOrderLineId(oID);
-            line.setComplaintLineNumber(""+i);
+            line.setComplaintLineNumber(""+PosexUtil.getIndexFromPosex(orderline.getOrderLineNumber()));
             //line.setDepartment( orderLineDept[i] );
 
 

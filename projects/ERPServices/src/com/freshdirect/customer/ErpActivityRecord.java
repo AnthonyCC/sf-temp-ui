@@ -7,6 +7,7 @@ import java.util.Date;
 import java.util.Comparator;
 
 import com.freshdirect.framework.util.DateUtil;
+import com.freshdirect.framework.util.StringUtil;
 
 public class ErpActivityRecord implements java.io.Serializable {
 	
@@ -30,7 +31,19 @@ public class ErpActivityRecord implements java.io.Serializable {
 	private String fromDateStr;
 	private Date toDate;
 	private String toDateStr;
-
+	private String sourceInfo;
+    
+	public ErpActivityRecord() {
+		setSourceInfo();
+	}
+    private void setSourceInfo() {
+    	
+		sourceInfo= StringUtil.getHostInfo();
+    }
+    
+    public String getSourceInfo() {
+    	return sourceInfo;
+    }
 	public Date getFromDate() {
 		return getFormattedDate(fromDateStr, "00:00 AM");
 	}
@@ -102,7 +115,10 @@ public class ErpActivityRecord implements java.io.Serializable {
 	}
 
 	public String getNote() {
-		return this.note != null && this.note.length() != 0 ? this.note : this.type.getName();
+		
+		return this.note != null && this.note.length() != 0 ? 
+			 new StringBuilder().append(this.note).append(". [").append(sourceInfo).append("]").toString()
+			:new StringBuilder().append(this.type.getName()).append(". [").append(sourceInfo).append("]").toString();
 	}
 
 	
