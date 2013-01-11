@@ -181,8 +181,8 @@ public class ProductRatingTag extends BodyTagSupport {
 			
 			// stolen code starts here >>>>
 
-			int starCount = customerRatingsDTO.getRatingValue();
 			BigDecimal averageRating = customerRatingsDTO.getAverageOverallRating();
+			int starCount = (int)Math.ceil(averageRating.doubleValue());
 			int reviewCount = customerRatingsDTO.getTotalReviewCount();
 
 			if (starCount == 0)
