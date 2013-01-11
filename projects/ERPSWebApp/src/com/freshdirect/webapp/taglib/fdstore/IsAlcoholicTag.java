@@ -43,6 +43,8 @@ public class IsAlcoholicTag extends BodyTagSupportEx {
 				Cookie[] cookies = request.getCookies();
 				for(Cookie cookie : cookies) {
 					if (cookie.getName().equals("freshdirect.usq")) {
+						cookie.setValue(request.getSession().getId());
+						response.addCookie(cookie);
 						sessionCookie = cookie;
 					}
 					if (cookie.getName().equals("freshdirect.healthwarning")) {
@@ -51,7 +53,7 @@ public class IsAlcoholicTag extends BodyTagSupportEx {
 						}
 					}
 				}
-				if (sessionCookie == null) {
+				if (sessionCookie == null || !sessionCookie.getValue().equals(request.getSession().getId())) {
 					sessionCookie = new Cookie("freshdirect.usq", request.getSession().getId());
 					sessionCookie.setPath("/");
 					response.addCookie(sessionCookie);
