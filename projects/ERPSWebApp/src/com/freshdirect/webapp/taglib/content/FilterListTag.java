@@ -117,7 +117,14 @@ public class FilterListTag extends BodyTagSupportEx {
 	protected List<FilteringMenuItem> getResult() throws Exception {
 		
 		Map<EnumFilteringValue, Map<String, FilteringMenuItem>> menus = this.getFilters();
-		List<FilteringMenuItem> filters = new ArrayList<FilteringMenuItem>(menus.get(domainName).values());
+		
+		// Additional safety check, return empty list if domainName not found
+		Map<String, FilteringMenuItem> domainFilters = menus.get(domainName);		
+		if ( domainFilters == null ) {
+			return new ArrayList<FilteringMenuItem>();
+		}
+		
+		List<FilteringMenuItem> filters = new ArrayList<FilteringMenuItem>(domainFilters.values());
 		
 		if( filters.isEmpty() ) return filters; 
 		

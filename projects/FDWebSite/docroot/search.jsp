@@ -223,7 +223,10 @@ final int W_INDEX_RIGHT_CENTER = W_INDEX_TOTAL - 228 - W_INDEX_CENTER_PADDING;
 	</tmpl:put>
 
   <tmpl:put name='filterNavigator'>
-    <% request.setAttribute("filtermenus", menus); %>
+    <% 
+    	request.setAttribute("filtermenus", menus);
+		request.setAttribute("activeTabVal", activeTabVal);    
+    %>
     <tmpl:insert template='/common/template/filter_navigator.jsp'>
     </tmpl:insert>
   </tmpl:put>
@@ -301,6 +304,17 @@ final int W_INDEX_RIGHT_CENTER = W_INDEX_TOTAL - 228 - W_INDEX_CENTER_PADDING;
 			<div class="grid-item-container"><%@ include file="/includes/product/i_recipe_box.jspf" %></div>
 		</logic:iterate>	
 	</tmpl:put>
+	
+  <tmpl:put name='filterNavigator'>
+    <% 
+    	request.setAttribute("filtermenus", menus);
+		request.setAttribute("activeTabVal", activeTabVal);    
+    %>
+    <tmpl:insert template='/common/template/filter_navigator.jsp'>
+    </tmpl:insert>
+  </tmpl:put>
+
+	
 </logic:equal>
 </fd:SearchRecipeFilter>
 

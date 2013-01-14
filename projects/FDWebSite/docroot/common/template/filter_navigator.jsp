@@ -5,6 +5,10 @@
 <%@ taglib uri='logic' prefix='logic'%>
 <%@ taglib uri='freshdirect' prefix='fd'%>
 <%
+String activeTabVal = (String)request.getAttribute("activeTabVal");
+if ( activeTabVal == null ) {
+	activeTabVal = "products";
+}
 FilteringNavigator nav = (FilteringNavigator)request.getAttribute("filternav");
 Map<EnumFilteringValue, Map<String, FilteringMenuItem>> menus = (Map<EnumFilteringValue, Map<String, FilteringMenuItem>>)request.getAttribute("filtermenus");
 final int hideAfter = 8;
@@ -13,6 +17,7 @@ if (menus != null && nav != null) {
 %>
 <tmpl:insert template="/common/template/filter_navigator_template.jsp">
 
+<% if ( "products".equals( activeTabVal ) ) { // ====================================================== PRODUCTS ============================================================ %>
 <tmpl:put name='deparmentFilter'>
 <fd:FilterList domainName="<%= EnumFilteringValue.DEPT %>" filters='<%= menus %>' id="filterItems" hideAfter="<%= hideAfter %>">
 <% nav.resetState(); nav.setPageOffset(0); %>
@@ -237,6 +242,31 @@ if (menus != null && nav != null) {
     </div>
 <% } %>
 </tmpl:put>
+
+<% } else if ( "recipes".equals( activeTabVal ) ) { // ====================================================== RECIPES ============================================================ %>
+	<tmpl:put name='recipesFilter'>
+		<div id="recipesfilter" class="filterbox sidebar-content">
+			<h3>Recipes</h3>
+			<ul>
+				<% nav.resetState();nav.setRecipes(true); nav.removeAllFilters(); nav.setPageOffset(0); %>
+				<li><a href="<%= nav.getLink() %>">All</a></li>
+<fd:FilterList domainName="<%= EnumFilteringValue.RECIPE_CLASSIFICATION %>" filters='<%= menus %>' id="filterItems">
+	<% nav.resetState(); %>
+	<logic:iterate id="menu" collection="<%= filterItems %>" type='FilteringMenuItem'>
+			<% if(menu.isSelected()) { %>
+				<% nav.removeFilter(menu.getFilter(), menu.getFilteringUrlValue()); %>
+				<li class="selected"><a href="<%= nav.getLink() %>" class="remove-selection"></a><a href="<%= nav.getLink() %>"><%= menu.getName() %></a></li>
+			<% } else { %>
+				<% nav.setRecipeFilter(menu.getFilteringUrlValue()); nav.setRecipes(true); nav.setPageOffset(0); %>
+				<li><a href="<%= nav.getLink() %>"><%= menu.getName() %><span class="count">(<%= menu.getCounter() %>)</span></a></li>
+			<% } %>
+	</logic:iterate>
+</fd:FilterList>
+			</ul>
+		</div>
+	</tmpl:put>
+
+<% } %>
 
 </tmpl:insert>
 <% } %>
