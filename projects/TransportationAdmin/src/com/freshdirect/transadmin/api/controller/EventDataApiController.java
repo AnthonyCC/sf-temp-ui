@@ -248,7 +248,10 @@ public class EventDataApiController extends BaseApiController {
 			    			}
 			    			
 			    		}
-						emailEventLog(event, _tmpSubType);
+			    		if(_tmpSubType.getMsgGroup() != null && !"".equals(_tmpSubType.getMsgGroup().getEmail())
+								&& _tmpSubType.getMsgGroup().getEmail() != null) {
+			    			emailEventLog(event, _tmpSubType);
+			    		}
 					}
 					
 				} catch (ParseException e) {
@@ -279,7 +282,10 @@ public class EventDataApiController extends BaseApiController {
 				responseMessage = Message.createSuccessMessage("Event added successfully.");
 				try {
 					List<MotEventType> eventType = eventLogService.lookUpMotEventTypes(event.getEventType());
-					emailMotEventLog(event, eventType.get(0));
+					if(eventType.get(0).getMsgGroup() != null && !"".equals(eventType.get(0).getMsgGroup().getEmail())
+							&& eventType.get(0).getMsgGroup().getEmail() != null) {
+						emailMotEventLog(event, eventType.get(0));
+					}
 				} catch (ParseException e) {
 					LOGGER.error("Parse event date failed with exception", e) ;
 				}
@@ -355,7 +361,10 @@ public class EventDataApiController extends BaseApiController {
 			    				}
 			    			}			    			
 			    		}
-						emailEventLog(event, _tmpSubType);
+						if(_tmpSubType.getMsgGroup() != null && !"".equals(_tmpSubType.getMsgGroup().getEmail())
+								&& _tmpSubType.getMsgGroup().getEmail() != null) {
+							emailEventLog(event, _tmpSubType);
+						}
 					}
 					
 				} catch (ParseException e) {
@@ -561,7 +570,7 @@ public class EventDataApiController extends BaseApiController {
 								, TransportationAdminProperties.getEventLogMailCC(), TransportationAdminProperties.getEventLogMailSubject(), buff.toString(), true, "");
 			
 		} catch (MessagingException e) {
-			LOGGER.warn("Error Sending CaptureCron report email: ", e);
+			LOGGER.warn("Error Sending EventLog notification: ", e);
 		}
     }
     
@@ -656,7 +665,7 @@ public class EventDataApiController extends BaseApiController {
 								, TransportationAdminProperties.getEventLogMailCC(), TransportationAdminProperties.getEventLogMailSubject(), buff.toString(), true, "");
 			
 		} catch (MessagingException e) {
-			LOGGER.warn("Error Sending CaptureCron report email: ", e);
+			LOGGER.warn("Error Sending MotEvent log notification email: ", e);
 		}
     }
 }
