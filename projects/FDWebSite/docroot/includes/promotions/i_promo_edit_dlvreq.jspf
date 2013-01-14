@@ -15,7 +15,7 @@
 				<input type="hidden" name="batch_id" value="<%= promotion.getBatchId() %>"/>
 				<tr><td colspan="2">&nbsp;</td></tr>
 				<tr>
-					<td colspan="2" align="center"><input type="checkbox" name="batch_promo" value="true" <%= (promotion.isBatchPromo())?"checked":"" %> />&nbsp; <b>Apply changes to entire batch</b> (Clicking the checkbox will apply these change to entire batch)</td>
+					<td colspan="2" align="center"><input type="checkbox" id="batch_promo" name="batch_promo" value="true" <%= (promotion.isBatchPromo())?"checked":"" %> />&nbsp; <b>Apply changes to entire batch</b> (Clicking the checkbox will apply these change to entire batch)</td>
 				</tr>
 				<tr><td colspan="2">&nbsp;</td></tr>
 				<% } %>

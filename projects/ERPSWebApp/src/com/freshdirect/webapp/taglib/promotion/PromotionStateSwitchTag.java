@@ -90,17 +90,38 @@ public class PromotionStateSwitchTag extends AbstractControllerTag {
 				List<FDPromotionNewModel> batchPromotions = FDPromotionNewManager.getBatchPromotions(promotion.getBatchId());
 				Iterator iter = batchPromotions.iterator();
 				StringBuffer sb = new StringBuffer();
-				while(iter.hasNext()) {
-					FDPromotionNewModel bpromo = (FDPromotionNewModel) iter.next();
-					if(!validatePromotion(request,actionResult, bpromo)) {
-						sb.append(bpromo.getPromotionCode());
-						sb.append(", ");
+				
+				//For approving the batch promotions, check if any promotion is in Inprogress status
+				if(status.equals(EnumPromotionStatus.APPROVE)) {
+					while(iter.hasNext()) {
+						FDPromotionNewModel bpromo = (FDPromotionNewModel) iter.next();
+						if(bpromo.getStatus().equals(EnumPromotionStatus.PROGRESS)) {
+							sb.append(bpromo.getPromotionCode());
+						}
+					}
+				}
+				
+				if(sb.length() > 0) {
+					actionResult.addError(true, "batchpromoError", "Follwoing promotions in this batch are InProgress status. Please complete the Test for these, before approving the entire batch.   " + sb.toString());
+				}
+				
+				if(actionResult.isSuccess()) {
+					sb = new StringBuffer();
+					iter = batchPromotions.iterator();
+					while(iter.hasNext()) {
+						FDPromotionNewModel bpromo = (FDPromotionNewModel) iter.next();
+						if(!validatePromotion(request,actionResult, bpromo)) {
+							sb.append(bpromo.getPromotionCode());
+							sb.append(", ");
+						}
+						
 					}
 					
+					if(sb.length() > 0 && !actionResult.isSuccess()) {
+						actionResult.addError(true, "batchpromoError", "Follwoing promotions in this batch are incomplete. Please complete the setup for these, before testing the entire batch.   " + sb.toString());
+					}
 				}
-				if(sb.length() > 0 && !actionResult.isSuccess()) {
-					actionResult.addError(true, "batchpromoError", "Follwoing promotions in this batch are incomplete. Please complete the setup for these, before testing the entire batch.   " + sb.toString());
-				}
+				
 				if(actionResult.isSuccess()){
 					promotion.setStatus(status);
 					this.promotion.setModifiedBy(agent.getUserId());

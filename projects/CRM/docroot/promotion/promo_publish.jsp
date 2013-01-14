@@ -10,6 +10,15 @@
 <tmpl:insert template='/template/top_nav.jsp'>
 	<tmpl:put name='title' direct='true'>Publish Promotions</tmpl:put>
 	<tmpl:put name='content' direct='true'>
+	<script>
+		checked = false;
+		function checkedAll () {
+			if (checked == false){checked = true}else{checked = false}
+			for (var i = 0; i < document.getElementById('promo-publish').elements.length; i++) {
+				document.getElementById('promo-publish').elements[i].checked = checked;
+			}
+		}
+	</script>
 	<crm:GetCurrentAgent id='currentAgent'>
 		<fd:GetPublishablePromotions id="promoRows">
 		<%
@@ -67,7 +76,7 @@
 						<input type="hidden" name="action" value="publish" />
 						<table>
 							<tr class="publish-rows-hdr">
-								<td>&nbsp;</td>
+								<th><a href="#" onclick="checkedAll()" style="text-decoration:none;color:#ffffff;font-size:10pt;font-weight:bold;">Select All</a></th>
 								<th>Name</th>
 								<th>Code</th>
 								<th>Redemption Code</th>

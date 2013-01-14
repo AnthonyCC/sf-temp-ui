@@ -13,7 +13,7 @@
 						<td class="promo_detail_label">Status:</td>
 						<td class="alignL">
 									New &nbsp;&nbsp&nbsp;&nbsp&nbsp;&nbsp&nbsp;&nbsp&nbsp;&nbsp&nbsp;&nbsp&nbsp;&nbsp&nbsp;&nbsp&nbsp;&nbsp 								
-									<input type="checkbox" name="batch_promo" value="true" <%= (promotion.isBatchPromo())?"checked":"" %> onclick="switchBatch();"/>&nbsp; <b>Create Batch Promotions</b> (Click the checkbox to start batch promo creation)
+									<input type="checkbox" id="batch_promo" name="batch_promo" value="true" <%= (promotion.isBatchPromo())?"checked":"" %> onclick="switchBatch();"/>&nbsp; <b>Create Batch Promotions</b> (Click the checkbox to start batch promo creation)
 						</td>
 					</tr>
 				<% } %>
@@ -26,7 +26,7 @@
 						<td class="alignL">
 							<%= promotion.getStatus().getDescription() %>
 							&nbsp;&nbsp&nbsp;&nbsp&nbsp;&nbsp&nbsp;&nbsp&nbsp;&nbsp&nbsp;&nbsp&nbsp;&nbsp&nbsp;&nbsp&nbsp;&nbsp 								
-									<input type="checkbox" name="batch_promo" value="true" <%= (promotion.isBatchPromo())?"checked":"" %> onclick="enable_text(this.checked)"/>&nbsp; <b>Apply changes to entire batch</b> (Click the checkbox to start batch promo creation)
+									<input type="checkbox" id="batch_promo" name="batch_promo" value="true" <%= (promotion.isBatchPromo())?"checked":"" %> onclick="enable_text(this.checked)"/>&nbsp; <b>Apply changes to entire batch</b> (Click the checkbox to start batch promo creation)
 						</td>
 					</tr>
 				<% } %>
