@@ -205,7 +205,7 @@ $(document).ready(function () {
 					, {id : "employeeId", name : "Employee",	field : "employeeId", sortable : true}
 					, {id : "stops", name : "Stop(s)",	field : "stops", sortable : true}
 					, {id : "totalStopCnt",	name : "Total Stops",	field : "totalStopCnt", sortable : true, cssClass: "slick-cell-aligncenter"}
-					, {id : "totalStopCnt",	name : "",	field : "totalStopCnt", cssClass: "slick-cell-aligncenter", sortable : true, formatter: function myFormatter(row, cell, value, columnDef, dataContext) {
+					, {id : "addEvent",	name : "",	field : "addEvent", cssClass: "slick-cell-aligncenter", sortable : true, formatter: function myFormatter(row, cell, value, columnDef, dataContext) {
 																											  				return "<a href='javascript:addEvent("+row+")'><img src='./images/icons/add_ON.gif'/><span>&nbsp;Add To</span></a>";
 																														}
 					  }
