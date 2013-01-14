@@ -69,7 +69,7 @@
 				<div class="cont_Ritem">
 				   				   
 					<div align="right">
-						<span>&nbsp;<input id="btnAddNewEvent" type="button" value="Add Event" class="btn" onclick="javascript:showEventForm();" />&nbsp;</span>
+						<span>&nbsp;<input id="btnAddNewEvent" type="button" value="Add Event" class="btn" onclick="javascript:showEventForm(true);" />&nbsp;</span>
 											
 					</div><br/>
 					
@@ -140,6 +140,12 @@ $(document).ready(function () {
 			$('#eventType').loadSelect(aoTypes, false, true);
 			$("#eventType").val('<%=TransportationAdminProperties.getShiftEventLogType()%>');
 			$("#eventType").attr("disabled", "disabled");
+						
+			var queryResult = $.Enumerable.From(aoSubTypes)
+						        	.Where(function (subType) { return subType.eventTypeId == $("#eventType").val() })
+						        	.OrderByDescending(function (subType) { return subType.caption })
+						    		.ToArray(); 
+			$('#eventSubType').loadSelect( queryResult, false, true );
 		},
 		error : function(msg) {
 			var errorText = eval('(' + msg.responseText+ ')');
@@ -183,7 +189,7 @@ function toggleFilterRow() {
 	  grid.setTopPanelVisibility(!grid.getOptions().showTopPanel);
 }
 
-function showEventForm () {
+function showEventForm (setTypeVal) {
 	
 	$('div#editShiftForm').modal({
 		closeHTML: "<a href='#' title='Close' class='modal-close'>x</a>",
@@ -205,6 +211,16 @@ function showEventForm () {
 					$('#form-container .form-input').css({
 						'font-size': '.9em'
 					});
+				}
+				
+				$("#eventType").val('<%=TransportationAdminProperties.getShiftEventLogType()%>');
+				if(setTypeVal) {				
+					var id = $('#eventType').val();
+			        var queryResult = $.Enumerable.From(aoSubTypes)
+			                        	.Where(function (subType) { return subType.eventTypeId == id })
+			                        	.OrderByDescending(function (subType) { return subType.caption })
+			                    		.ToArray();
+			        $('#eventSubType').loadSelect( queryResult, false, true );
 				}
 				
 			var title = $('#form-container .form-title').html();
@@ -263,7 +279,7 @@ function showEventForm () {
 							
 							var newEventdate = new Date($('#eventDate').val());
 							$('#eventDate').val(newEventdate.toJSON());							
-							
+							$("#eventType").removeAttr('disabled');
 							
 							var formData = JSON.stringify(form2js(document.getElementById('shiftForm')));
 							$.ajax({
@@ -275,7 +291,7 @@ function showEventForm () {
 								success : function(json) {
 									$('#form-container .form-loading').fadeOut(200, function () {
 										$('#form-container .form-title').html('Event added sucessfully!');
-										msg.html(json).fadeIn(200);
+										//msg.html(json).fadeIn(200);
 									});
 								},
 								error : function(msg) {
@@ -495,7 +511,7 @@ function showGrid() {
 			lookUpRouteInfo(formatedDate, dataX.route);
 		}
 									
-		showEventForm();
+		showEventForm(false);
 		
 	});
 	
