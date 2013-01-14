@@ -174,7 +174,10 @@ final int W_INDEX_RIGHT_CENTER = W_INDEX_TOTAL - 228 - W_INDEX_CENTER_PADDING;
 	</tmpl:put>
 
 <% if (!isDFGS) { %>
-  <% request.setAttribute("filtermenus", menus); %>
+  <% 
+  	request.setAttribute("filtermenus", menus); 
+	request.setAttribute("newprodpage", true); 
+  %>
   <tmpl:put name='filterNavigator'>
     <tmpl:insert template='/common/template/filter_navigator.jsp'>
 

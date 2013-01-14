@@ -9,10 +9,18 @@ String activeTabVal = (String)request.getAttribute("activeTabVal");
 if ( activeTabVal == null ) {
 	activeTabVal = "products";
 }
+
+Boolean isNewProdPage = (Boolean)request.getAttribute("newprodpage");
+if ( isNewProdPage == null ) {
+	isNewProdPage = Boolean.FALSE;
+}
+
 FilteringNavigator nav = (FilteringNavigator)request.getAttribute("filternav");
 Map<EnumFilteringValue, Map<String, FilteringMenuItem>> menus = (Map<EnumFilteringValue, Map<String, FilteringMenuItem>>)request.getAttribute("filtermenus");
+
 final int hideAfter = 8;
 boolean otherFilters = false;
+
 if (menus != null && nav != null) {
 %>
 <tmpl:insert template="/common/template/filter_navigator_template.jsp">
@@ -233,11 +241,19 @@ if (menus != null && nav != null) {
 <% if(otherFilters == true) { %>
     <div id="other" class="filterbox sidebar-content">
     <h3>OTHER</h3>
-    <ul>
-      <tmpl:get name='otherKosherFilter'/>
-      <tmpl:get name='otherNewFilter'/>
-      <tmpl:get name='otherGlutenFreeFilter'/>
-      <tmpl:get name='otherOnSaleFilter'/>
+    <ul>    
+    
+    <% if ( isNewProdPage ) { %>
+		<tmpl:get name='otherKosherFilter'/>
+		<tmpl:get name='otherGlutenFreeFilter'/>
+		<tmpl:get name='otherOnSaleFilter'/>
+    <% } else { %>
+		<tmpl:get name='otherKosherFilter'/>
+		<tmpl:get name='otherNewFilter'/>
+		<tmpl:get name='otherGlutenFreeFilter'/>
+		<tmpl:get name='otherOnSaleFilter'/>
+    <% } %>
+    
     </ul>
     </div>
 <% } %>
