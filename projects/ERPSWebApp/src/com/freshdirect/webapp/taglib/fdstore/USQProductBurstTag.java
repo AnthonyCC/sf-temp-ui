@@ -41,7 +41,7 @@ public class USQProductBurstTag extends BodyTagSupportEx {
 		} catch (FDResourceException e) {
 			throw new JspException(e);
 		} catch (FDSkuNotFoundException e) {
-			throw new JspException(e);
+		  return SKIP_BODY;
 		}
 
 		
