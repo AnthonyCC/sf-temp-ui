@@ -415,6 +415,10 @@ function lookUpRouteInfo(formatedDate, selRoute) {
 	});
 }
 
+function viewEvents() {	
+	showGrid();
+}
+
 function showGrid() {
 	var postData = "";
 	postData = postData + 'daterange='+ $.URLEncode($('#daterange').val());

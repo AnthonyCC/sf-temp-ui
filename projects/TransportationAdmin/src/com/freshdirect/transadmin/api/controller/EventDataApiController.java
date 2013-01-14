@@ -293,7 +293,7 @@ public class EventDataApiController extends BaseApiController {
 				eventLogService.updateMotEventLog(event);
 				responseMessage = Message.createSuccessMessage("Event updated successfully.");
 			}
-		} catch (ServiceException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 			responseMessage = Message.createFailureMessage("Logging event failed.");
 		}
@@ -374,7 +374,7 @@ public class EventDataApiController extends BaseApiController {
 				eventLogService.updateEventLog(event);
 				responseMessage = Message.createSuccessMessage("Event updated successfully.");
 			}
-		} catch (ServiceException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 			responseMessage = Message.createFailureMessage("Updating event failed.");
 		}
@@ -418,7 +418,7 @@ public class EventDataApiController extends BaseApiController {
 				eventLogService.logEventLogInfo(eventInfo.getEventType(), eventInfo.getEventSubType(), eventInfo.getEventMessageGroup());			
 			responseMessage = Message.createSuccessMessage("Event data updated successfully.");
 			
-		} catch (ServiceException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 			responseMessage = Message.createFailureMessage("Updating event data failed.");
 		}		
@@ -454,7 +454,7 @@ public class EventDataApiController extends BaseApiController {
 			eventLogService.logMotEventLogInfo(eventInfo.getMotEventType(), eventInfo.getEventMessageGroup());			
 			responseMessage = Message.createSuccessMessage("Event datat updated successfully.");
 			
-		} catch (ServiceException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 			responseMessage = Message.createFailureMessage("Updating event data failed.");
 		}		
