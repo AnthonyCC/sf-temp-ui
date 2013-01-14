@@ -325,7 +325,7 @@ function showEventForm (setTypeVal) {
 		onClose: function (dialog) {						
 			$('#form-container form').clearForm();			
 			$('#form-container .form-message').fadeOut();
-			$('#form-container .form-title').html('Goodbye...');
+			//$('#form-container .form-title').html('Goodbye...');
 			$('#form-container form').fadeOut(200);
 			$('#form-container .form-content').animate({
 				height: 40
@@ -360,10 +360,7 @@ var form = {
 			}
 			if (!$('#eventSubType').val()) {
 				form.message += 'EventSubType is required. ';
-			}
-			if (!$('#description').val()) {
-				form.message += 'Comment is required. ';
-			}
+			}			
 			if (form.message.length > 0) {
 				return false;
 			} else {
