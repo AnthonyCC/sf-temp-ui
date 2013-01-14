@@ -287,7 +287,7 @@ public class SaleCronRunner {
 
 			
 			buf.append("</table>").append("</body>").append("</html>");
-			System.out.println(buf.toString());
+			//System.out.println(buf.toString());
 			ErpMailSender mailer = new ErpMailSender();
 			mailer.sendMail(ErpServicesProperties.getCronFailureMailFrom(),
 					ErpServicesProperties.getCronFailureMailTo(),"",
