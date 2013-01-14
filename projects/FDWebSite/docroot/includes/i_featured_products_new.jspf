@@ -1,3 +1,4 @@
+<%@page import="com.freshdirect.fdstore.pricing.ProductModelPricingAdapter"%>
 <%@page import="java.util.List"%>
 <%@page import="com.freshdirect.fdstore.content.ContentNodeModel"%>
 <%@page import="com.freshdirect.fdstore.content.ProductModel"%>
@@ -16,9 +17,14 @@ if (featuredCat != null) {
 	final int itemsMaxToShow = 4;
 	List<ContentNodeModel> pList = featuredCat.getFeaturedNewProdBrands();
 	for(Iterator<ContentNodeModel> it=pList.iterator(); it.hasNext();){
-		ProductModel pm=(ProductModel)it.next();
-		if(pm.getPriceCalculator().getSkuModel()==null){
+		ContentNodeModel node = it.next();
+		if ( node == null || ! (node instanceof ProductModel) ) {
 			it.remove();
+		} else {
+			ProductModel pm = (ProductModel)node;
+			if(pm.getPriceCalculator().getSkuModel()==null){
+				it.remove();
+			}
 		}
 	}
 	String catId = featuredCat.getContentKey().getId();
@@ -34,13 +40,14 @@ if (featuredCat != null) {
 	
 	<logic:iterate id="contentNode" collection="<%= pList.subList(0,itemsToShow) %>" type="java.lang.Object" indexId="idx">
 	<%
-	
-	// from presidents_picks
-	
-	ProductImpression pi = confStrat.configure((ProductModel) contentNode, confContext);
-	ProductModelPromotionAdapter productModelAdapter = new ProductModelPromotionAdapter (pi.getProductModel(), true, "013", pi.getSku().getSkuCode());			
-	// TODO: "013" is the 'new' ribbon, hardcoded here
-	
+	ProductImpression pi = null;
+	ProductModelPromotionAdapter productModelAdapter = null;
+	if ( contentNode instanceof ProductModel ) {
+		ProductModel pricedProdModel = new ProductModelPricingAdapter( (ProductModel)contentNode, user.getPricingContext() );
+		pi = confStrat.configure(pricedProdModel, confContext);
+		// TODO: "013" is the 'new' ribbon, hardcoded here
+		productModelAdapter = new ProductModelPromotionAdapter (pi.getProductModel(), true, "013", pi.getSku().getSkuCode());			
+	}
 	%>
 			<div class="grid-item-container featurebox">
 			<%@ include file="/includes/product/i_product_box_featured.jspf" %>
