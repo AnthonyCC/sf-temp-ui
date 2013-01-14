@@ -540,7 +540,7 @@ if(isPaymentRequired) {
 			errorMsg = "<span class=\"text12\">There was a problem with the credit card you selected.<br>Please choose or add a new payment method.<br><br>If you have tried this and are still experiencing problems, please do not attempt to submit your information again but contact us as soon as possible at" + user.getCustomerServiceContact() + ". A customer service representative will help you to complete your order.</span>";
 			errorMsg=(String) session.getAttribute("authFailMessage");;
 		%>
-			<%@ include file="/includes/i_error_messages.jspf" %>
+			<%@ include file="/includes/i_pymt_error_messages.jspf" %>
 	<% session.removeAttribute("authFailMessage");} %>
 		
 		<BR>
@@ -548,41 +548,10 @@ if(isPaymentRequired) {
 
 <%
 if(user.isAddressVerificationError()) {
+       errorMsg=user.getAddressVerficationMsg();
        
 %>    
-<table width="100%" cellspacing="0" cellpadding="0" border="0">
-<tr>
-    <td rowspan="5" width="20"><img src="/media_stat/images/layout/clear.gif" width="20" height="1" alt="" border="0"></td>
-    <td rowspan="2"><img src="/media_stat/images/template/system_msgs/CC3300_tp_lft_crnr.gif" width="18" height="5" border="0"></td>
-    <td colspan="2" bgcolor="#CC3300"><img src="/media_stat/images/layout/cc3300.gif" width="1" height="1"></td>
-    <td rowspan="2" colspan="2"><img src="/media_stat/images/template/system_msgs/CC3300_tp_rt_crnr.gif" width="6" height="5" border="0"></td>
-    <td rowspan="5"><img src="/media_stat/images/layout/clear.gif" width="20" height="1" alt="" border="0"></td>
-</tr>
-<tr>
-    <td rowspan="3" bgcolor="#FFFFFF"><img src="/media_stat/images/layout/clear.gif" width="10" height="1" alt="" border="0"></td>
-    <td bgcolor="#FFFFFF"><img src="/media_stat/images/layout/clear.gif" width="1" height="4" alt="" border="0"></td>
-</tr>
-<tr>
-    <td width="18" bgcolor="#CC3300"><img src="/media_stat/images/template/system_msgs/exclaim_CC3300.gif" width="18" height="22" border="0" alt="!"></td>
-    <td class="text11rbold" width="100%" bgcolor="#FFFFFF">
-			<img src="/media_stat/images/layout/clear.gif" width="1" height="3" alt="" border="0"><br>				
-                <%= user.getAddressVerficationMsg() %>
-                
-                
-			<img src="/media_stat/images/layout/clear.gif" width="1" height="3" alt="" border="0"><br>
-	</td>
-    <td bgcolor="#FFFFFF"><img src="/media_stat/images/layout/clear.gif" width="5" height="1" alt="" border="0"></td>
-    <td bgcolor="#CC3300"><img src="/media_stat/images/layout/cc3300.gif" width="1" height="1"></td>
-</tr>
-<tr>
-    <td rowspan="2"><img src="/media_stat/images/template/system_msgs/CC3300_bt_lft_crnr.gif" width="18" height="5" border="0"></td>
-    <td bgcolor="#FFFFFF"><img src="/media_stat/images/layout/clear.gif" width="1" height="4" alt="" border="0"></td>
-    <td rowspan="2" colspan="2"><img src="/media_stat/images/template/system_msgs/CC3300_bt_rt_crnr.gif" width="6" height="5" border="0"></td>
-</tr>
-<tr>
-    <td colspan="2" bgcolor="#CC3300"><img src="/media_stat/images/layout/cc3300.gif" width="1" height="1"></td>
-</tr>
-</table>
+<%@ include file="/includes/i_pymt_error_messages.jspf" %>
 <br>
 <% 
 //clear info from session.

@@ -82,9 +82,9 @@ final int W_YA_ORDER_DETAILS_3C_COLUMN = 268;
         errorMsg= "Pending Order: Please contact us at "+user.getCustomerServiceContact()+" as soon as possible to reschedule delivery.";
 %>
 <% } else if (EnumSaleStatus.AUTHORIZATION_FAILED.equals(cart.getOrderStatus())) {
-        errorMsg= PaymentMethodUtil.getAuthFailErrorMessage(cart.getAuthFailDescription());
+        errorMsg= PaymentMethodUtil.getAuthFailWarningMessage(cart.getAuthFailDescription());
 %>
-<%@ include file="/includes/i_error_messages.jspf" %>
+<%@ include file="/includes/i_pymt_warning_messages.jspf" %>
 <% } %>
 
 <form name="viewcart" method="post" action="/view_cart.jsp" style="margin:0px ! important" id="viewcart">
