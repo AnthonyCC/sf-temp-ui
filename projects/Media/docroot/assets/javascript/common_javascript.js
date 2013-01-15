@@ -895,20 +895,14 @@ function maxLen(elem, len) {
 function setFrameHeight(frameId, offset) {
 	var f = window.parent.document.getElementById(frameId);
 
+  f.style.height = null;
+
 	var hgt = getFrameHeight(frameId);
 	
 	if (offset == undefined)
 		offset = 0;
 	
 	f.style.height = (hgt+offset)+"px";
-}
-
-
-function getFrameHeight(frameId) {
-	var f = window.parent.document.getElementById(frameId);
-	var innerDoc = (f.contentDocument) ? f.contentDocument : f.contentWindow.document;
-
-	return innerDoc.body.parentNode.scrollHeight;
 }
 
 function setFrameHeightSL(frameId, hgt) {
@@ -922,18 +916,6 @@ function setFrameWidthSL(frameId, wth) {
 
 	f.style.width = (wth)+"px";
 }
-
-function setFrameHeight(frameId, offset) {
-	var f = window.parent.document.getElementById(frameId);
-
-	var hgt = getFrameHeight(frameId);
-	
-	if (offset == undefined)
-		offset = 0;
-	
-	f.style.height = (hgt+offset)+"px";
-}
-
 
 function getFrameHeight(frameId) {
 	var f = window.parent.document.getElementById(frameId);
