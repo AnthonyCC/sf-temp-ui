@@ -102,7 +102,7 @@ public class PromotionStateSwitchTag extends AbstractControllerTag {
 				}
 				
 				if(sb.length() > 0) {
-					actionResult.addError(true, "batchpromoError", "Follwoing promotions in this batch are InProgress status. Please complete the Test for these, before approving the entire batch.   " + sb.toString());
+					actionResult.addError(true, "batchpromoError", "Following promotions in this batch are InProgress status. Please complete the Test for these, before approving the entire batch.   " + sb.toString());
 				}
 				
 				if(actionResult.isSuccess()) {
@@ -118,7 +118,7 @@ public class PromotionStateSwitchTag extends AbstractControllerTag {
 					}
 					
 					if(sb.length() > 0 && !actionResult.isSuccess()) {
-						actionResult.addError(true, "batchpromoError", "Follwoing promotions in this batch are incomplete. Please complete the setup for these, before testing the entire batch.   " + sb.toString());
+						actionResult.addError(true, "batchpromoError", "Following promotions in this batch are incomplete. Please complete the setup for these, before testing the entire batch.   " + sb.toString());
 					}
 				}
 				
