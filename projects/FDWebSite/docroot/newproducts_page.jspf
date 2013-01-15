@@ -85,13 +85,13 @@ final int W_INDEX_RIGHT_CENTER = W_INDEX_TOTAL - 228 - W_INDEX_CENTER_PADDING;
 	<tmpl:put name="customCss">
 		<fd:css href="/assets/css/common/grid_supplement.css"></fd:css>
 		<fd:css href="/assets/css/common/product_grid.css"></fd:css>
-		<style>
+		<fd:css href="/assets/css/search.css"></fd:css>
+		<fd:css href="/assets/css/newproducts.css"></fd:css>
+		<style type="text/css">
 			.product-grid { width:803px; }
 			.items { width:804px; }
 			.grid-view .grid-item-container { width:201px; }
 		</style>
-		<fd:css href="/assets/css/search.css"></fd:css>
-		<fd:css href="/assets/css/newproducts.css"></fd:css>
 	</tmpl:put>
 	<tmpl:put name="customJs">
 	</tmpl:put>

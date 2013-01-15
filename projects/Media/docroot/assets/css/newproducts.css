@@ -61,6 +61,18 @@
 	float: left;
 }
 
+.newproducts .product-grid {
+  width:803px;
+}
+
+.newproducts .items {
+  width:804px;
+}
+
+.newproducts .grid-view .grid-item-container {
+  width:201px;
+}
+
 .newprod-dfgs .toolbar {
 	width: auto;
 }
