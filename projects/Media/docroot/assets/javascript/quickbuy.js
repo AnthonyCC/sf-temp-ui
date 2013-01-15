@@ -109,6 +109,7 @@ FD_QuickBuy.showPanel = function(deptId, catId, prdId, iatcNamespace, tracking) 
 			close: true, 
 			visible: false,
 			modal: true,
+      zIndex: 10,
 			draggable: false}
 		);
 		var isWineDept = ("usq" == deptId);
