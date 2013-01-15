@@ -61,15 +61,15 @@
 	float: left;
 }
 
-.newproducts .product-grid {
+.newprod-grid .product-grid {
   width:803px;
 }
 
-.newproducts .items {
+.newprod-grid .items {
   width:804px;
 }
 
-.newproducts .grid-view .grid-item-container {
+.newprod-grid .grid-view .grid-item-container {
   width:201px;
 }
 
