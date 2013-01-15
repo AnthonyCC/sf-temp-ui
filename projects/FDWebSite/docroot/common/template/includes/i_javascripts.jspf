@@ -16,9 +16,13 @@
 	<fd:javascript src="/assets/javascript/USQLegalWarning.js"/>
 	
 	<script type="text/javascript" language="javascript">
+
+		var FreshDirect = FreshDirect || {};
+		var USQLegalWarning = FreshDirect.USQLegalWarning || {};
+		USQLegalWarning.sessionStore = '<%=session.getId()%>';
+
 		var $jq;
 		var jqInit = false; 
-
 		function initJQuery() {
 			if (typeof(jQuery) == 'undefined') {
 				if (!jqInit) {

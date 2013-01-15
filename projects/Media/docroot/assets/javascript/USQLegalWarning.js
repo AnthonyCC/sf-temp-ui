@@ -266,8 +266,7 @@ if (typeof FreshDirect == "undefined" || !FreshDirect) {
 	
 	USQLegalWarning.getJSessionId = function(name)
 	{
-		var jSessionId = unescape(rootWindow.FreshDirect.USQLegalWarning.getCookie('freshdirect.usq'));
-		return jSessionId;
+		return rootWindow.USQLegalWarning.sessionStore;
 	};
 
 	USQLegalWarning.getQueryParameterByName = function(name)

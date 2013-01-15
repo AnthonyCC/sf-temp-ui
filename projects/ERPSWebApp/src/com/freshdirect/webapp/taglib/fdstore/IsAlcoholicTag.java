@@ -38,25 +38,14 @@ public class IsAlcoholicTag extends BodyTagSupportEx {
 					prodModel = ContentFactory.getInstance().getProduct(skuCode);
 					categoryModel = prodModel.getCategory();
 				}
-				HttpServletResponse response = (HttpServletResponse) pageContext.getResponse();
-				Cookie sessionCookie = null;
+
 				Cookie[] cookies = request.getCookies();
 				for(Cookie cookie : cookies) {
-					if (cookie.getName().equals("freshdirect.usq")) {
-						cookie.setValue(request.getSession().getId());
-						response.addCookie(cookie);
-						sessionCookie = cookie;
-					}
 					if (cookie.getName().equals("freshdirect.healthwarning")) {
 						if (normalizeSessionId(cookie.getValue()).equals("1@" + normalizeSessionId(request.getSession().getId()))) {
 							return SKIP_BODY;
 						}
 					}
-				}
-				if (sessionCookie == null || !sessionCookie.getValue().equals(request.getSession().getId())) {
-					sessionCookie = new Cookie("freshdirect.usq", request.getSession().getId());
-					sessionCookie.setPath("/");
-					response.addCookie(sessionCookie);
 				}
 				
 				if ((categoryModel == null && prodModel == null && "false".equals(noProduct)) || (categoryModel != null && !categoryModel.isHavingBeer() && prodModel!= null && !prodModel.getSku(skuCode).getProduct().isAlcohol())) {
