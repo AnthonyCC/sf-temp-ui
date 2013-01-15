@@ -37,7 +37,7 @@
 					<td valign="top">
 						<p>Unfortunately, the credit or debit card you selected for your upcoming FreshDirect order, <b>(#<xsl:value-of select="orderNumber"/>)</b>, cannot be processed through our payment system. Without a valid payment method, we will not be able to deliver your order.</p>
 						
-						<p>Please modify your pending order at www.freshdirect.com, and select a valid payment method. At Step 3 of the checkout process, you can either select a different payment method that is already on your account or add a new one to update this order</p>
+						<p>Please modify your pending order at www.freshdirect.com, and select a valid payment method. At Step 3 of the checkout process, you can either select a different payment method that is already on your account or add a new one.<xsl:element name = "a"><xsl:attribute name = "href">http://www.freshdirect.com/your_account/order_details.jsp?orderId=<xsl:value-of select="orderNumber"/></xsl:attribute> Update this order.</xsl:element></p>
 						
 						<p>Be sure to re-submit your order with a new payment type before <b><xsl:call-template name="format-delivery-start"><xsl:with-param name="dateTime" select="cutoffTime"/></xsl:call-template></b> on <b><xsl:call-template name="format-delivery-date"><xsl:with-param name="dateTime" select="cutoffTime"/></xsl:call-template></b> to avoid cancellation.
 						</p>

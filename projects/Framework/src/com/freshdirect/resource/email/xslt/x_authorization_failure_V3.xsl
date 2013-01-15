@@ -21,7 +21,7 @@ Be sure to re-submit your order with a new payment type before  <xsl:call-templa
 
 We accept Visa, MasterCard, American Express, Discover and online check payments.
 
-If you need assistance with this process, please call our Customer Service Team now at <xsl:for-each select="contactHours/contactHours"><xsl:value-of select="daysDisplay"/><xsl:value-of select="hoursDisplay"/>;</xsl:for-each>.
+If you need assistance with this process, please call our Customer Service Team now at  <xsl:value-of select="customer/customerServiceContact"/>, <xsl:for-each select="contactHours/contactHours"><xsl:value-of select="daysDisplay"/><xsl:value-of select="hoursDisplay"/>;</xsl:for-each>
 
 We appreciate your attention to this matter and thank you for shopping at FreshDirect.
 

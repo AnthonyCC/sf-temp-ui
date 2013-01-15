@@ -25,7 +25,7 @@ Be sure to re-submit your order with a new payment type before <xsl:call-templat
 
 We accept Visa, MasterCard, American Express, Discover and online check payments.
 
-If you need assistance with this process, please call our Customer Service Team now at <xsl:call-template name="format-delivery-start"><xsl:with-param name="dateTime" select="cutoffTime"/></xsl:call-template> on <xsl:call-template name="format-delivery-date"><xsl:with-param name="dateTime" select="cutoffTime"/></xsl:call-template>. If you need further assistance, we're here: <xsl:for-each select="contactHours/contactHours"><xsl:value-of select="daysDisplay"/><xsl:value-of select="hoursDisplay"/>;</xsl:for-each>.
+If you need assistance with this process, please call our Customer Service Team now at  <xsl:value-of select="customer/customerServiceContact"/>, <xsl:for-each select="contactHours/contactHours"><xsl:value-of select="daysDisplay"/><xsl:value-of select="hoursDisplay"/>;</xsl:for-each>
 
 
 Sincerely,

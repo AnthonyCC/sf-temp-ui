@@ -41,7 +41,7 @@
 							 Correct the current credit or debit card number
 							 Select a different payment method that's already on your account
 							 Add a new payment method</p>
-						
+						<p>.<xsl:element name = "a"><xsl:attribute name = "href">http://www.freshdirect.com/your_account/order_details.jsp?orderId=<xsl:value-of select="orderNumber"/></xsl:attribute> Update this order.</xsl:element></p>
 						<p>Be sure to re-submit your order with a new payment type before <xsl:call-template name="format-delivery-start"><xsl:with-param name="dateTime" select="cutoffTime"/></xsl:call-template> on <b><xsl:call-template name="format-delivery-date"><xsl:with-param name="dateTime" select="cutoffTime"/></xsl:call-template></b> to avoid cancellation.
 						</p>
 						<p>We accept Visa, MasterCard, American Express, Discover and online check payments.</p>
