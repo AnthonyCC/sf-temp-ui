@@ -675,45 +675,6 @@ $(document).ready(function () {
 			grid.invalidateRows(args.rows);
 			grid.render();
 		});
-
-		grid.onDblClick.subscribe(function(e, args) {
-			var rowData = grid.getData().getItem(args.row);
-
-			e.preventDefault();
-
-			var formData = JSON.stringify(rowData);
-
-			var dataX = JSON.parse(JSON.stringify(rowData));
-
-			js2form(document.getElementById('eventForm'), dataX);
-
-			if ($('#eventDate').val() != 'undefined'
-					|| $('#eventDate').val() != '') {
-				var eDate = $('#eventDate').val();
-				var formatedDate = $('#eventDate').formatDate(Number(eDate));
-				$('#eventDate').val(formatedDate);
-
-				lookUpRouteInfo(formatedDate, dataX.route);
-			}
-
-			var aoStops = [];
-			if (dataX.stops != null) {
-				for ( var k = 0; k < dataX.stops.length; k++) {
-					if (dataX.stops[k] != null) {
-						aoStops.push({
-							"value" : dataX.stops[k],
-							"caption" : dataX.stops[k]
-						});
-					}
-				}
-			}
-
-			$('#stops').loadSelect(aoStops, false, false);
-
-			showEventForm();
-
-		});
-
 	}
 
 	function comparer(a, b) {

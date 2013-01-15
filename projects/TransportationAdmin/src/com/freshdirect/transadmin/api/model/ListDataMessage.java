@@ -14,9 +14,5 @@ public class ListDataMessage extends Message {
 	@SuppressWarnings("rawtypes")
 	public void setRows(Collection rows) {
 		this.rows = rows;
-		
-		if(this.rows  != null) {
-			
-		}
 	}
 }

@@ -482,40 +482,6 @@ function showGrid() {
 		grid.invalidateRows(args.rows);
 		grid.render();
 	});
-	
-	//grid.onSelectedRowsChanged.subscribe(function() { alert(grid.getSelectedRows()); });
-	grid.onDblClick.subscribe(function(e, args) {
-		var rowData = grid.getData().getItem(args.row);
-		
-		e.preventDefault();
-		
-		var dataX = JSON.parse(JSON.stringify(rowData));		
-
-		js2form(document.getElementById('shiftForm'), dataX);
-
-		
-		$("#eventType").val('<%=TransportationAdminProperties.getShiftEventLogType()%>');
-		if($('#eventType')) {
-			var id = $('#eventType').val();				
-	        var queryResult = $.Enumerable.From(aoSubTypes)
-	                        	.Where(function (subType) { return subType.eventTypeId == id })
-	                        	.OrderByDescending(function (subType) { return subType.caption })
-	                    		.ToArray();			       
-	        $('#eventSubType').loadSelect( queryResult, false, true );
-	        $('#eventSubType').val(dataX.eventSubType);
-		}
-					
-		if($('#eventDate').val() != 'undefined' || $('#eventDate').val() != '') {
-			var eDate = $('#eventDate').val();
-			var formatedDate = $('#eventDate').formatDate(Number(eDate));
-			 $('#eventDate').val(formatedDate);
-			lookUpRouteInfo(formatedDate, dataX.route);
-		}
-									
-		showEventForm(false);
-		
-	});
-	
 }
 
 function comparer(a, b) {

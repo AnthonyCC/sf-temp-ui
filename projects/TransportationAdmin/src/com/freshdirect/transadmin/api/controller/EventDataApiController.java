@@ -3,6 +3,8 @@ package com.freshdirect.transadmin.api.controller;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -114,6 +116,9 @@ public class EventDataApiController extends BaseApiController {
 		
 			List<EventModel> events = dataFlag ? getEventLogService().lookUpEvents(eventDate) 
 															: getEventLogService().lookUpEventForDateRange(eventDate);
+			if(events != null) {
+				Collections.sort(events, new EventLogComparator());
+			}
 			result.setRows(events);
 			setResponseMessage(model, result);
 			
@@ -144,6 +149,9 @@ public class EventDataApiController extends BaseApiController {
 			ListDataMessage result = new ListDataMessage();							
 			List<MotEventModel> events = dataFlag ? getEventLogService().lookUpMotEvents(eventDate)
 															:  getEventLogService().lookUpMotEventForDateRange(eventDate);			
+			if(events != null) {
+				Collections.sort(events, new MotEventLogComparator());
+			}
 			result.setRows(events);
 			setResponseMessage(model, result);
 			
@@ -169,7 +177,8 @@ public class EventDataApiController extends BaseApiController {
 					if(TransportationAdminProperties.getShiftEventLogType().equals(_event.getEventType())) { 
 						shiftEvents.add(_event);
 					}
-				}
+				}				
+				Collections.sort(shiftEvents, new EventLogComparator());
 			}
 			result.setRows(shiftEvents);
 			setResponseMessage(model, result);
@@ -668,4 +677,18 @@ public class EventDataApiController extends BaseApiController {
 			LOGGER.warn("Error Sending MotEvent log notification email: ", e);
 		}
     }
+    
+    private class EventLogComparator implements Comparator<EventModel> {		
+		
+		public int compare(EventModel obj1, EventModel obj2){						
+			return obj2.getTransactionDate().compareTo(obj1.getTransactionDate());
+		}		
+	}
+
+    private class MotEventLogComparator implements Comparator<MotEventModel> {
+    	
+		public int compare(MotEventModel obj1, MotEventModel obj2){
+			return obj2.getTransactionDate().compareTo(obj1.getTransactionDate());
+		}		
+	}
 }

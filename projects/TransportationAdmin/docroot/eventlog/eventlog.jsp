@@ -298,7 +298,7 @@ function showGrid() {
 	});
 	
 	//grid.onSelectedRowsChanged.subscribe(function() { alert(grid.getSelectedRows()); });
-	grid.onDblClick.subscribe(function(e, args) {
+	/* grid.onDblClick.subscribe(function(e, args) {
 		var rowData = grid.getData().getItem(args.row);
 		
 		e.preventDefault();
@@ -336,7 +336,7 @@ function showGrid() {
 											
 		showEventForm();
 		
-	});
+	});*/
 	
 }
 
