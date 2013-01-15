@@ -1258,3 +1258,12 @@ function doOverlayWindow(olURL) {
 			dialogWindowResizeTimer = setTimeout(dialogWindowResizeFunc, 100);
 		});
 	}
+
+function checkBatch() {
+	if(document.getElementById("batch_promo").checked) {
+		//the box is checked so display an alert box
+		if(confirm("Do you want to Apply these changes to entire batch?"))
+			return true;
+		return false;
+	}
+}
