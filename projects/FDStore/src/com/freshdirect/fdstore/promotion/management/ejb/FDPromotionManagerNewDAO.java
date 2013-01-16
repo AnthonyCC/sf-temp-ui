@@ -3794,44 +3794,168 @@ public class FDPromotionManagerNewDAO {
 	
 	private static String GET_BATCH_PROMOTIONS = "select ID from cust.promotion_new where batch_id = ?";
 	
-	private static void storePromoDlvZoneStrategyForBatch(Connection conn,
-			String promotionId, FDPromotionNewModel promotion)
-			throws SQLException {
+	private static String INSERT_PROMO_DLV_ZONE_STRATEGY_FOR_BATCH = 
+			"INSERT INTO cust.promo_dlv_zone_strategy  (id, promotion_id,dlv_days,dlv_zone) " +
+			"select cust.SYSTEM_SEQ.nextval, ID, ?, ? from cust.promotion_new where batch_id = ?";
+	
+	private static String INSERT_PROMO_DLV_TIMESLOT_FOR_BATCH = 
+			"INSERT INTO cust.PROMO_DLV_TIMESLOT(id, PROMO_DLV_ZONE_ID,DAY_ID,START_TIME,END_TIME,DLV_WINDOWTYPE) " +
+			"select cust.SYSTEM_SEQ.nextval, ID , ?, ?, ?,? from cust.promo_dlv_zone_strategy where promotion_id " +
+			"in (select ID from cust.promotion_new where batch_id = ?)";
+	
+	private static void storePromoDlvZoneStrategyForBatch(Connection conn, String promotionId, FDPromotionNewModel promotion) throws SQLException {
+		removePromoDlvTimeSlotsForBatch(conn, promotion.getBatchId());
 		PreparedStatement ps = null;
-		ResultSet rset = null;
+		PreparedStatement ps1 = null;
 		try {
-			ps = conn.prepareStatement(GET_BATCH_PROMOTIONS);
-			ps.setString(1, promotion.getBatchId());
-			rset = ps.executeQuery(); 
-			while(rset.next()) {
-				String promotion_id = rset.getString(1);
-				storePromoDlvZoneStrategy(conn, promotion_id, promotion);
+			List<FDPromoDlvZoneStrategyModel> dlvZoneStrategies = promotion.getDlvZoneStrategies();
+			if(null!= dlvZoneStrategies && !dlvZoneStrategies.isEmpty()){
+				ps = conn.prepareStatement(INSERT_PROMO_DLV_ZONE_STRATEGY_FOR_BATCH);
+				for (FDPromoDlvZoneStrategyModel model : dlvZoneStrategies) {
+					ps.setString(1, model.getDlvDays());	
+					ArrayDescriptor desc = ArrayDescriptor.createDescriptor("CUST.PROMO_DLV_ZONECODES", conn);
+					ARRAY newArray = new ARRAY(desc, conn, model.getDlvZones());
+					ps.setArray(2, newArray);
+					ps.setString(3, promotion.getBatchId());
+					ps.addBatch();
+				}	
+				ps.executeBatch();				
 			}
+			
+			//insert timeslots
+			if(null!= dlvZoneStrategies && !dlvZoneStrategies.isEmpty()){
+				ps1= conn.prepareStatement(INSERT_PROMO_DLV_TIMESLOT_FOR_BATCH);
+				for (FDPromoDlvZoneStrategyModel model : dlvZoneStrategies) {
+					List<FDPromoDlvTimeSlotModel>timeSlotModel = model.getDlvTimeSlots();
+					if(null != timeSlotModel && !timeSlotModel.isEmpty()){
+						for (FDPromoDlvTimeSlotModel promoDlvTimeSlotModel : timeSlotModel) {							
+							ps1.setInt(1, promoDlvTimeSlotModel.getDayId());
+							ps1.setString(2, promoDlvTimeSlotModel.getDlvTimeStart());
+							ps1.setString(3, promoDlvTimeSlotModel.getDlvTimeEnd());
+							ArrayDescriptor windowDesc = ArrayDescriptor.createDescriptor("CUST.PROMO_DLV_WINDOWTYPES", conn);
+							ARRAY newWindowArray = new ARRAY(windowDesc, conn, promoDlvTimeSlotModel.getWindowTypes());
+							ps1.setArray(4, newWindowArray);
+							ps1.setString(5, promotion.getBatchId());
+							ps1.addBatch();
+						}						
+					}
+				}	
+				ps1.executeBatch();
+			}
+			
 		} finally {
 			if (ps != null)
 				ps.close();
-			if (rset != null)
-				rset.close();
+			if (ps1 != null)
+				ps1.close();
 		}
 	}
 	
+	protected static void removePromoDlvTimeSlotsForBatch(Connection conn,
+			String promotionId) throws SQLException {
+		PreparedStatement ps = conn
+				.prepareStatement("DELETE CUST.promo_dlv_timeslot WHERE PROMO_DLV_ZONE_ID in (select id from CUST.promo_dlv_zone_strategy WHERE PROMOTION_ID  in (select ID from cust.promotion_new where batch_id = ?))");
+		ps.setString(1, promotionId);
+		ps.executeUpdate();
+		ps.close();
+		PreparedStatement ps1 = conn.prepareStatement("DELETE CUST.promo_dlv_zone_strategy WHERE PROMOTION_ID  in (select ID from cust.promotion_new where batch_id = ?)");
+		ps1.setString(1, promotionId);
+		ps1.executeUpdate();
+		ps1.close();
+	}
+	
+	private final static String GEOGRAPHY_INSERT_FOR_BATCH = 
+		"INSERT INTO CUST.PROMO_GEOGRAPHY_NEW (ID, PROMOTION_ID, START_DATE) " + 
+		"select cust.SYSTEM_SEQ.nextval, ID, ? from cust.promotion_new where batch_id = ?";
+	
+	private final static String GEOGRAPHY_DATA_INSERT_FOR_BATCH = 
+		"INSERT INTO CUST.PROMO_GEOGRAPHY_DATA_NEW (GEOGRAPHY_ID, TYPE, CODE, SIGN) " + 
+		"select ID, ?, ?, ? from CUST.PROMO_GEOGRAPHY_NEW where promotion_id in (select ID from cust.promotion_new where batch_id = ?)";
+	
 	protected static void storeGeographyForBatch(Connection conn, String batchId,
 			TreeMap<java.util.Date, FDPromoZipRestriction> zipMap) throws SQLException {
+		removeGeographyDataForBatch(conn, batchId);
 		PreparedStatement ps = null;
-		ResultSet rset = null;
+		PreparedStatement ps1 = null;
 		try {
-			ps = conn.prepareStatement(GET_BATCH_PROMOTIONS);
-			ps.setString(1, batchId);
-			rset = ps.executeQuery(); 
-			while(rset.next()) {
-				String promotion_id = rset.getString(1);
-				storeGeography(conn, promotion_id, zipMap);
+			if(null != zipMap && !zipMap.isEmpty()){
+				for (Iterator<Entry<java.util.Date, FDPromoZipRestriction>> i = zipMap.entrySet().iterator(); i.hasNext();) {
+					Map.Entry<java.util.Date, FDPromoZipRestriction> e = (Entry<java.util.Date, FDPromoZipRestriction>) i.next();
+					java.util.Date d = (java.util.Date) e.getKey();
+					ps1 = conn.prepareStatement(GEOGRAPHY_INSERT_FOR_BATCH);
+					ps1.setDate(1, new Date(d.getTime()));
+					ps1.setString(2, batchId);
+					ps1.addBatch();
+				}
 			}
+			ps1.executeBatch();
+			
+			//insert geo data			
+			if(null != zipMap && !zipMap.isEmpty()){
+				for (Iterator<Entry<java.util.Date, FDPromoZipRestriction>> i = zipMap.entrySet().iterator(); i.hasNext();) {
+					Map.Entry<java.util.Date, FDPromoZipRestriction> e = (Entry<java.util.Date, FDPromoZipRestriction>) i.next();
+					java.util.Date d = (java.util.Date) e.getKey();						
+					FDPromoZipRestriction zipRestriction = ((FDPromoZipRestriction) e.getValue());
+					
+					String finalZipSign = "";
+					String finalDepotSign = "";
+					ps = conn.prepareStatement(GEOGRAPHY_DATA_INSERT_FOR_BATCH);
+					String[] zipList = (NVL.apply(zipRestriction.getZipCodes(), "")).split("\\,");
+					for (int x = 0; x < zipList.length; x++) {
+						String[] a = getZipRestrictionSign(zipRestriction.getType(),zipRestriction.getZipCodes(), zipList[x]);
+						ps.setString(1, "Z");
+						ps.setString(2, a[0]);
+						ps.setString(3, a[1]);
+						ps.setString(4, batchId);
+						ps.addBatch();
+						finalZipSign = a[2];
+						finalDepotSign = a[3];
+					}
+					if (finalZipSign != "") {
+						ps.setString(1, "Z");
+						ps.setString(2, "ALL");
+						ps.setString(3, finalZipSign);
+						ps.setString(4, batchId);
+						ps.addBatch();
+					}
+					if (finalDepotSign != "") {
+						ps.setString(1, "D");
+						ps.setString(2, "ALL");
+						ps.setString(3, finalDepotSign);
+						ps.setString(4, batchId);
+						ps.addBatch();
+					}
+				}
+				ps.executeBatch();
+			}
+						
 		} finally {
-			if (ps != null)
+			if (ps != null) {
 				ps.close();
-			if (rset != null)
-				rset.close();
+			}
+			if(ps1 != null) {
+				ps1.close();
+			}
+		}
+	}
+	
+	protected static void removeGeographyDataForBatch(Connection conn,
+			String batchId) throws SQLException {
+		PreparedStatement ps = null;
+		try {
+			ps = conn
+					.prepareStatement("DELETE FROM CUST.PROMO_GEOGRAPHY_DATA_NEW WHERE GEOGRAPHY_ID IN (SELECT ID FROM CUST.PROMO_GEOGRAPHY_NEW WHERE PROMOTION_ID in (select ID from cust.promotion_new where batch_id = ?))");
+			ps.setString(1, batchId);
+			ps.executeUpdate();
+			ps = null;
+			ps = conn
+					.prepareStatement("DELETE FROM CUST.PROMO_GEOGRAPHY_NEW WHERE PROMOTION_ID  in (select ID from cust.promotion_new where batch_id = ?)");
+			ps.setString(1, batchId);
+			ps.executeUpdate();
+		} finally {
+			if (ps != null) {
+				ps.close();
+			}
 		}
 	}
 	
