@@ -304,6 +304,11 @@ $(document).ready(function () {
 										'font-size' : '.9em'
 									});
 								}
+								
+								$('#eventForm').clearForm();
+								var formatedDate = $('#eventDate').formatDate(0);
+								$('#eventDate').val(formatedDate);
+								lookUpRouteInfo(formatedDate);
 
 								var title = $('#form-container .form-title')
 										.html();

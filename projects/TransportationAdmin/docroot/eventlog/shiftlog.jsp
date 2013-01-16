@@ -69,7 +69,7 @@
 				<div class="cont_Ritem">
 				   				   
 					<div align="right">
-						<span>&nbsp;<input id="btnAddNewEvent" type="button" value="Add Event" class="btn" onclick="javascript:showEventForm(true);" />&nbsp;</span>
+						<span>&nbsp;<input id="btnAddNewEvent" type="button" value="Add Event" class="btn" onclick="javascript:showEventForm();" />&nbsp;</span>
 											
 					</div><br/>
 					
@@ -189,7 +189,7 @@ function toggleFilterRow() {
 	  grid.setTopPanelVisibility(!grid.getOptions().showTopPanel);
 }
 
-function showEventForm (setTypeVal) {
+function showEventForm () {
 	
 	$('div#editShiftForm').modal({
 		closeHTML: "<a href='#' title='Close' class='modal-close'>x</a>",
@@ -214,14 +214,19 @@ function showEventForm (setTypeVal) {
 				}
 				
 				$("#eventType").val('<%=TransportationAdminProperties.getShiftEventLogType()%>');
-				if(setTypeVal) {				
-					var id = $('#eventType').val();
-			        var queryResult = $.Enumerable.From(aoSubTypes)
+							
+				var id = $('#eventType').val();
+			    var queryResult = $.Enumerable.From(aoSubTypes)
 			                        	.Where(function (subType) { return subType.eventTypeId == id })
 			                        	.OrderByDescending(function (subType) { return subType.caption })
 			                    		.ToArray();
-			        $('#eventSubType').loadSelect( queryResult, false, true );
-				}
+			    $('#eventSubType').loadSelect( queryResult, false, true );
+			        
+			    $('#eventForm').clearForm();
+				var formatedDate = $('#eventDate').formatDate(0);
+				$('#eventDate').val(formatedDate);
+				lookUpRouteInfo(formatedDate);
+				
 				
 			var title = $('#form-container .form-title').html();
 			$('#form-container .form-title').html('Loading...');

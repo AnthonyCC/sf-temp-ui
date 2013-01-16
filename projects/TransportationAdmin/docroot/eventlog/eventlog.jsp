@@ -72,7 +72,7 @@
 				<div class="cont_Ritem">
 				   				   
 					<div align="right">
-						<span>&nbsp;<input id="btnAddNewEvent" type="button" style="font-size:11px" type = "button" height="18" value="Add Event"  onclick="javascript:showEventForm();" />&nbsp;</span>
+						<span>&nbsp;<input id="btnAddNewEvent" type="button" style="font-size:11px" type = "button" height="18" value="Add Event"  onclick="javascript:showEventForm(true);" />&nbsp;</span>
 						<span>&nbsp;<input id="btnEventType" type="button" style="font-size:11px" type = "button" height="18" value="View Event Metadata"  onclick="javascript:showEventLogInfoTable('kkanuganti');" />&nbsp;</span>
 						</div><br/>
 					
@@ -131,7 +131,7 @@ $(document).ready(function () {
 			
 			for(var i=0;i < json.rows.length;i++) {
 				for(var j=0;j < json.rows[i].eventType.length;j++) {
-					aoTypes.push({"value" : json.rows[i].eventType[j].name, "caption" : json.rows[i].eventType[j].name, "customerReq" : json.rows[i].eventType[j].custumerReq, "employeeReq" : json.rows[i].eventType[j].employeeReq});
+					aoTypes.push({"value" : json.rows[i].eventType[j].name, "caption" : json.rows[i].eventType[j].name, "customerReq" : json.rows[i].eventType[j].customerReq, "employeeReq" : json.rows[i].eventType[j].employeeReq});
 				}
 				for(var k=0;k < json.rows[i].eventSubType.length;k++) {
 					aoSubTypes.push({"value" : json.rows[i].eventSubType[k].name, "caption" : json.rows[i].eventSubType[k].name, "eventTypeId" : json.rows[i].eventSubType[k].eventTypeId });
@@ -158,27 +158,28 @@ $(document).ready(function () {
                         	.OrderByDescending(function (subType) { return subType.caption })
                     		.ToArray(); 
         $('#eventSubType').loadSelect( queryResult, false, true );
-        
-        var queryResult1 = $.Enumerable.From(aoTypes)
-						    	.Where(function (type) { return type.caption == id }).OrderByDescending(function (type) { return type.caption })
-	                    		.ToArray();
-        
-        if(queryResult1 != null) {
-    		if(queryResult1.customerReq != 'X'){
-    			$("#crossStreet").val("");
-    			$("#crossStreet").attr("disabled", "disabled");
-    			$('#crossStreet').css({
-					'backgroung-color': '#FFDEAD'
-				});
-    		}
-    		if(queryResult1.employeeReq != 'X'){
-    			$("#employeeId").val("");
-    			$("#employeeId").attr("disabled", "disabled");
-    			$('#employeeId').css({
-    				'backgroung-color': '#FFDEAD'
-				});
-    		}
-    	}
+               
+        for(var i=0;i < aoTypes.length;i++) {
+        	        	
+        	if(aoTypes[i].value === id){        		
+        		if(aoTypes[i].customerReq === 'X'){
+        			$('#crossStreet').removeAttr('disabled');
+        			$('#crossStreet').css({'background-color': '#FFFFFF'});
+        		} else {
+        			$("#crossStreet").val("");
+        			$("#crossStreet").attr("disabled", "disabled");
+        			$('#crossStreet').css({'background-color': '#FFDEAD'});        			
+        		}
+        		if(aoTypes[i].employeeReq === 'X'){
+        			$('#employeeId').removeAttr('disabled');
+        			$('#crossStreet').css({'background-color': '#FFFFFF'});
+        		} else {
+        			$("#employeeId").val("");
+        			$("#employeeId").attr("disabled", "disabled");
+        			$('#employeeId').css({'background-color': '#FFDEAD'});
+        		}
+        	}
+        }
     }); 
 	
 	$('#route').change(function() {
@@ -224,6 +225,10 @@ $(document).ready(function () {
 					
 	showGrid();
 });
+
+function isEmpty(str) {
+    return (!str || 0 === str.length);
+}
 
 function toggleFilterRow() {
 	  grid.setTopPanelVisibility(!grid.getOptions().showTopPanel);
@@ -374,6 +379,7 @@ function viewEvents() {
 
 function addEvent(row) {
 	
+	
 	var rowData = grid.getData().getItem(row);
 	
 	var dataX = JSON.parse(JSON.stringify(rowData));
@@ -386,12 +392,12 @@ function addEvent(row) {
                         	.Where(function (subType) { return subType.eventTypeId == id })
                         	.OrderByDescending(function (subType) { return subType.caption })
                     		.ToArray();
-        $('#eventSubType').loadSelect( queryResult );
+        $('#eventSubType').loadSelect( queryResult, false, true );
         $('#eventSubType').val(rowData.eventSubType);
 	}
-		
-	if($('#eventDate').val() != 'undefined' || $('#eventDate').val() != '') {
-		var eDate = $('#eventDate').val();
+	
+	if(!isEmpty($('#eventDate').val())) {
+		var eDate = $('#eventDate').val();		
 		var formatedDate = $('#eventDate').formatDate(Number(eDate));
 		$('#eventDate').val(formatedDate);
 		lookUpRouteInfo(formatedDate, dataX.route, dataX.windowTime);
@@ -410,10 +416,10 @@ function addEvent(row) {
 	$('#eventRefId').val(dataX.id);
 	$('#id').val(null);
 								
-	showEventForm();
+	showEventForm(false);
 }
 
-function showEventForm () {
+function showEventForm (showCurrDate) {
 	
 	$('div#editEventForm').modal({
 		closeHTML: "<a href='#' title='Close' class='modal-close'>x</a>",
@@ -435,6 +441,13 @@ function showEventForm () {
 					$('#form-container .form-input').css({
 						'font-size': '.9em'
 					});
+				}
+				
+				if(showCurrDate){
+					$('#eventForm').clearForm();
+					var formatedDate = $('#eventDate').formatDate(0);
+					$('#eventDate').val(formatedDate);
+					lookUpRouteInfo(formatedDate);
 				}
 				
 				
@@ -535,11 +548,11 @@ function showEventForm () {
 			});
 		},
 		onClose: function (dialog) {
-			$('#form-container form').clearForm();
-			$('#form-container .form-message').fadeOut();
-			//$('#form-container .form-title').html('Goodbye...');
+			$('#eventForm').clearForm();			
+			$('#eventDate').val('');
+			$('#form-container .form-message').fadeOut();			
 			$('#form-container form').fadeOut(200);
-			$('#form-container .form-content').animate({
+			 $('#form-container .form-content').animate({
 				height: 40
 			}, function () {
 				dialog.data.fadeOut(200, function () {
@@ -549,7 +562,7 @@ function showEventForm () {
 						});
 					});
 				});
-			});
+			}); 
 			
 		}
 	});
@@ -633,11 +646,10 @@ function lookUpWindows(routeId, selWindow) {
 	$('#windowTime').val(selWindow);
 }
 
-
 					
 </script>
 				
-<div id="editEventForm" style="display:none;">
+<div id="editEventForm" style='display:none'>
 	<div class='form-top'></div>
 	<div class='form-content'>
 		<h1 class='form-title'>Add/Edit Event</h1>
