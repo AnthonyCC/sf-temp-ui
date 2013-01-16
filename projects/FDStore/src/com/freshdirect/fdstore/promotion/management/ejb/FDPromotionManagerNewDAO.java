@@ -3887,8 +3887,9 @@ public class FDPromotionManagerNewDAO {
 					ps1.setString(2, batchId);
 					ps1.addBatch();
 				}
+				ps1.executeBatch();
 			}
-			ps1.executeBatch();
+			
 			
 			//insert geo data			
 			if(null != zipMap && !zipMap.isEmpty()){
