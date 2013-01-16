@@ -15,9 +15,10 @@ was declined. Please contact your credit or debit card provider for more informa
 To avoid order cancellation, please go to www.freshdirect.com now to edit your upcoming order and select a valid payment method.
 
 Please modify your pending order at www.freshdirect.com, and select a valid payment method. At step 3 of the checkout process, 
-you can either select a different payment method that is already on your account or add a new one. Update this order
+you can either select a different payment method that is already on your account or add a new one.
+Update this order at http://www.freshdirect.com/your_account/order_details.jsp?orderId=<xsl:value-of select="orderNumber"/>
 
-Be sure to re-submit your order with a new payment type before  <xsl:call-template name="format-delivery-start"><xsl:with-param name="dateTime" select="cutoffTime"/></xsl:call-template> on <xsl:call-template name="format-delivery-date"><xsl:with-param name="dateTime" select="cutoffTime"/></xsl:call-template>, to avoid cancellation..
+Be sure to re-submit your order with a new payment type before  <xsl:call-template name="format-delivery-start"><xsl:with-param name="dateTime" select="cutoffTime"/></xsl:call-template> on <xsl:call-template name="format-delivery-date"><xsl:with-param name="dateTime" select="cutoffTime"/></xsl:call-template>, to avoid cancellation.
 
 We accept Visa, MasterCard, American Express, Discover and online check payments.
 
@@ -25,12 +26,12 @@ If you need assistance with this process, please call our Customer Service Team 
 
 We appreciate your attention to this matter and thank you for shopping at FreshDirect.
 
-	Sincerely,
+Sincerely,
 
-	FreshDirect Customer Service
-	www.freshdirect.com
+Your FreshDirect Customer Service Team
+www.freshdirect.com
 
-		<xsl:call-template name="x_footer_v1"/>
+<xsl:call-template name="x_footer_v1"/>
 </xsl:template>
 
 </xsl:stylesheet>

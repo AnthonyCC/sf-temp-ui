@@ -37,12 +37,13 @@
 					<td valign="top">
 						<p>Unfortunately, the credit or debit card you selected for your upcoming FreshDirect order, <b>(#<xsl:value-of select="orderNumber"/>)</b>, cannot be processed through our payment system. Without a valid payment method, we will not be able to deliver your order.</p>
 						
-						<p>Please modify your pending order at www.freshdirect.com, and select a valid payment method. At Step 3 of the checkout process, you can either select a different payment method that is already on your account or add a new one.<xsl:element name = "a"><xsl:attribute name = "href">http://www.freshdirect.com/your_account/order_details.jsp?orderId=<xsl:value-of select="orderNumber"/></xsl:attribute> Update this order.</xsl:element></p>
+						<p>Please modify your pending order at www.freshdirect.com, and select a valid payment method. At Step 3 of the checkout process, you can either select a different payment method that is already on your account or add a new one. <xsl:element name = "a"><xsl:attribute name = "href">http://www.freshdirect.com/your_account/order_details.jsp?orderId=<xsl:value-of select="orderNumber"/></xsl:attribute>Update this order.</xsl:element></p>
 						
-						<p>Be sure to re-submit your order with a new payment type before <b><xsl:call-template name="format-delivery-start"><xsl:with-param name="dateTime" select="cutoffTime"/></xsl:call-template></b> on <b><xsl:call-template name="format-delivery-date"><xsl:with-param name="dateTime" select="cutoffTime"/></xsl:call-template></b> to avoid cancellation.
+						<p>Be sure to re-submit your order with a new payment type before <b><xsl:call-template name="format-delivery-start"><xsl:with-param name="dateTime" select="cutoffTime"/></xsl:call-template></b> on <b><xsl:call-template name="format-delivery-date"><xsl:with-param name="dateTime" select="cutoffTime"/></xsl:call-template></b> to avoid order cancellation.
 						</p>
 						<p>We accept Visa, MasterCard, American Express, Discover and online check payments.</p>
-						<p>If you need further assistance, Please call our Customer Service Team  at  <b><xsl:value-of select="customer/customerServiceContact"/></b>.</p>
+						<p>If you need further assistance, please call our Customer Service Team  now at  <b><xsl:value-of select="customer/customerServiceContact"/></b>.</p>
+						<p>We appreciate your attention to this matter and thank you for shopping at FreshDirect.</p>
 					</td>
 					<td width="200px" valign="top" style="border: 1px solid #666; background-color: #eee; padding: 5px;">
 						<table align="center" cellspacing="0" width="200px">
@@ -69,7 +70,7 @@
 					<td colspan="2">
 							<p>Sincerely,
 							<br/>
-							FreshDirect Customer Service<br/>
+							Your FreshDirect Customer Service Team<br/>
 							www.freshdirect.com</p>
 				<p><xsl:call-template name="h_footer_v1"/></p>
 				</td></tr>

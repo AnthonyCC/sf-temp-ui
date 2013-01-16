@@ -25,10 +25,10 @@ We appreciate your attention to this matter and thank you for shopping at FreshD
 
 Sincerely,
 
-FreshDirect Customer Service
+Your FreshDirect Customer Service Team
 www.freshdirect.com
 
-		<xsl:call-template name="x_footer_v1"/>
+<xsl:call-template name="x_footer_v1"/>
 </xsl:template>
 
 </xsl:stylesheet>

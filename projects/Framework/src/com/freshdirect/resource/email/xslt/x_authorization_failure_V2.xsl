@@ -15,11 +15,11 @@ appears to be incorrect, and we are not able to process your payment. Without a 
 To avoid order cancellation, go to www.freshdirect.com now to correct your payment information or select a different payment method.
 
 Please modify your pending order at www.freshdirect.com. At Step 3 of the checkout process, you will have a few options:
-� Correct the current credit or debit card number
-�Select a different payment method that is already on your account
-� Add a new payment method
+Correct the current credit or debit card number
+Select a different payment method that is already on your account
+Add a new payment method
 
-Update this order
+Update this order at http://www.freshdirect.com/your_account/order_details.jsp?orderId=<xsl:value-of select="orderNumber"/>
 
 Be sure to re-submit your order with a new payment type before <xsl:call-template name="format-delivery-start"><xsl:with-param name="dateTime" select="cutoffTime"/></xsl:call-template> on <xsl:call-template name="format-delivery-date"><xsl:with-param name="dateTime" select="cutoffTime"/></xsl:call-template>, to avoid cancellation.
 
@@ -30,10 +30,10 @@ If you need assistance with this process, please call our Customer Service Team 
 
 Sincerely,
 
-FreshDirect Customer Service
+Your FreshDirect Customer Service Team
 www.freshdirect.com
 
-		<xsl:call-template name="x_footer_v1"/>
+<xsl:call-template name="x_footer_v1"/>
 </xsl:template>
 
 </xsl:stylesheet>
