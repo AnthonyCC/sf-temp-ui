@@ -274,7 +274,7 @@ if (menus != null && nav != null) {
 				<li class="selected"><a href="<%= nav.getLink() %>" class="remove-selection"></a><a href="<%= nav.getLink() %>"><%= menu.getName() %></a></li>
 			<% } else { %>
 				<% nav.setRecipeFilter(menu.getFilteringUrlValue()); nav.setRecipes(true); nav.setPageOffset(0); %>
-				<li><a href="<%= nav.getLink() %>"><%= menu.getName() %><span class="count">(<%= menu.getCounter() %>)</span></a></li>
+        <li><a href="<%= nav.getLink() %>"><%= menu.getName() %></a><span class="count">(<%= menu.getCounter() %>)</span></li>
 			<% } %>
 	</logic:iterate>
 </fd:FilterList>
