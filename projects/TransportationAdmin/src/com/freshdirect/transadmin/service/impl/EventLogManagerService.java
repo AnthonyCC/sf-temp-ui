@@ -116,8 +116,8 @@ public class EventLogManagerService implements IEventLogManagerService {
 			getEventLogDAO().clearEventLogType();
 			getEventLogDAO().clearEventLogMessageGroup();
 			getEventLogDAO().logEventTypeInfo(eventType);
-			getEventLogDAO().logEventSubTypeInfo(subType);
 			getEventLogDAO().logEventMessageGroupInfo(msgGroup);
+			getEventLogDAO().logEventSubTypeInfo(subType);
 		} catch (SQLException e) {
 			throw new TransAdminServiceException(e, IIssue.PROCESS_EVENTLOG_ERROR);
 		}
@@ -199,10 +199,10 @@ public class EventLogManagerService implements IEventLogManagerService {
 	
 	public void logMotEventLogInfo(List<MotEventType> eventType, List<EventLogMessageGroup> msgGroup) throws TransAdminServiceException {
 		try {			
-			getEventLogDAO().clearMotEventLogType();
 			getEventLogDAO().clearMotEventLogMessageGroup();
-			getEventLogDAO().logMotEventTypeInfo(eventType);;
+			getEventLogDAO().clearMotEventLogType();
 			getEventLogDAO().logMotEventMessageGroupInfo(msgGroup);
+			getEventLogDAO().logMotEventTypeInfo(eventType);
 		} catch (SQLException e) {
 			throw new TransAdminServiceException(e, IIssue.PROCESS_EVENTLOG_ERROR);
 		}
