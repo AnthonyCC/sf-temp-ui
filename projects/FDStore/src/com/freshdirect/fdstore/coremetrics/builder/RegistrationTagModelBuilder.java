@@ -6,6 +6,7 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 
 import com.freshdirect.common.address.AddressModel;
+import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpCustomerModel;
 import com.freshdirect.fdstore.FDResourceException;
@@ -79,6 +80,11 @@ public class RegistrationTagModelBuilder  {
 	
 	public void identifyAttributes() throws SkipTagException{
 		Map<Integer, String> attributesMap = tagModel.getAttributesMaps();
+
+		EnumServiceType serviceType = user.getSelectedServiceType();
+		if (serviceType != null){
+			attributesMap.put(1, serviceType.toString());
+		}
 		
 		if (location != null){
 			attributesMap.put(2, location);
