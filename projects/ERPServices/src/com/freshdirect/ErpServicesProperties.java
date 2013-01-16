@@ -76,8 +76,6 @@ public class ErpServicesProperties {
 	public final static String PROP_INVOICES_FTP_PASSWD 	= "invoices.ftp.passwd";
 	public final static String PROP_INVOICES_FTP_WORKDIR	= "invoices.ftp.workdir";
 
-	private final static String PROP_DEPOT_FORCE_START	= "depot.force.start";
-	private final static String PROP_DEPOT_FORCE_END		= "depot.force.end";
 	private final static String PROP_PHONE_DISPATCH = "phone.dispatch";
 	
 	
@@ -257,9 +255,6 @@ public class ErpServicesProperties {
 		defaults.put(PROP_FEE_RESTOCK_RATE, ".25");
 		defaults.put(PROP_CRM_CREDIT_BUFFER, ".25");
 
-		defaults.put(PROP_DEPOT_FORCE_START, "13");
-		defaults.put(PROP_DEPOT_FORCE_END, "16");
-		
 		defaults.put(PROP_PHONE_DISPATCH, "7189281555");
 
 		defaults.put(PROP_CALLCENTER_SUPERVISOR_CODES, "b4g0n6,8psg4d3n,p8ntbl4k,b2bw1ld,dc0in4no");
@@ -549,14 +544,6 @@ public class ErpServicesProperties {
 		return config.getProperty(name);
 	}
 
-	public static int getDepotForceStart() {
-		return Integer.parseInt(config.getProperty(PROP_DEPOT_FORCE_START));
-	}
-
-	public static int getDepotForceEnd() {
-		return Integer.parseInt(config.getProperty(PROP_DEPOT_FORCE_END));
-	}
-	
 	public static PhoneNumber getPhoneDispatch() {
 		return new PhoneNumber(config.getProperty(PROP_PHONE_DISPATCH));
 	}

@@ -182,35 +182,13 @@ public class SapOrderAdapter implements SapOrderI {
 		return this.getDeliveryType().getDeliveryModel();
 	}
 
-	private final static int DEPOT_DLV_FORCE_START = ErpServicesProperties.getDepotForceStart();
-	private final static int DEPOT_DLV_FORCE_END = ErpServicesProperties.getDepotForceEnd();
-
-	private Date forceHour(Date baseDate, int hourOfDay) {
-		Calendar c = Calendar.getInstance();
-		c.setTime(baseDate);
-		c = DateUtil.truncate(c);
-		c.set(Calendar.HOUR_OF_DAY, hourOfDay);
-		return c.getTime();
-	}
-
 	public Date getDeliveryStartTime() {
 		Date startTime = this.erpOrder.getDeliveryInfo().getDeliveryStartTime();
-
-		if (EnumDeliveryType.DEPOT.equals(this.getDeliveryType()) || EnumDeliveryType.PICKUP.equals(this.getDeliveryType())) {
-			// force start time for depots & pickup
-			return forceHour(startTime, DEPOT_DLV_FORCE_START);
-		}
-
 		return startTime;
 	}
 
 	public Date getDeliveryEndTime() {
 		Date endTime = this.erpOrder.getDeliveryInfo().getDeliveryEndTime();
-
-		if (EnumDeliveryType.DEPOT.equals(this.getDeliveryType()) || EnumDeliveryType.PICKUP.equals(this.getDeliveryType())) {
-			// force start time for depots & pickup
-			return forceHour(endTime, DEPOT_DLV_FORCE_END);
-		}
 		return endTime;
 	}
 
