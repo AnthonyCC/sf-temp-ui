@@ -69,6 +69,7 @@ public class PromotionBasicInfoControllerTag extends AbstractControllerTag {
 							String promo_redemption = this.promotion.getRedemptionCode();
 							String promo_name = this.promotion.getName();
 							String promo_code = "CD_";
+							String tsa_code = this.promotion.getTsaPromoCode();
 							if(EnumOfferType.WINDOW_STEERING.getName().equalsIgnoreCase(promotion.getOfferType())){
 								promo_code = "WS_";
 							}
@@ -78,6 +79,10 @@ public class PromotionBasicInfoControllerTag extends AbstractControllerTag {
 								String promoCode = promo_code + randString;						
 								String redemptionCode = promo_redemption + randString; 
 								String name = promo_name + "_" + randString;
+								if(tsa_code != null && tsa_code.length() > 0) {
+									String tsa = tsa_code + randString;
+									this.promotion.setTsaPromoCode(tsa);
+								}
 								this.promotion.setPromotionCode(promoCode);
 								this.promotion.setRedemptionCode(redemptionCode);
 								this.promotion.setName(name);					
@@ -459,6 +464,7 @@ public class PromotionBasicInfoControllerTag extends AbstractControllerTag {
 		String promo_redemption = step1Promotion.getRedemptionCode();
 		String promo_description = step1Promotion.getDescription();
 		String promo_name = step1Promotion.getName();
+		String tsa_code = step1Promotion.getTsaPromoCode();
 		String promo_code = "CD_";
 		if(EnumOfferType.WINDOW_STEERING.getName().equalsIgnoreCase(promotion.getOfferType())){
 			promo_code = "WS_";
@@ -469,6 +475,10 @@ public class PromotionBasicInfoControllerTag extends AbstractControllerTag {
 			String redemptionCode = promo_redemption + "_" + randString; 
 			String name = promo_name + "_" + randString;
 			String descr = promo_description + "_" + randString;
+			if(tsa_code != null && tsa_code.length() > 0) {
+				String tsa = tsa_code + randString;
+				step1Promotion.setTsaPromoCode(tsa);
+			}
 			step1Promotion.setPromotionCode(promoCode);
 			step1Promotion.setRedemptionCode(redemptionCode);
 			step1Promotion.setDescription(descr);
