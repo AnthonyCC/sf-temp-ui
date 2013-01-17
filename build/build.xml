@@ -3218,6 +3218,9 @@
 				<include name="antlr-2.7.5H3.jar"/>
 
 				<include name="urlrewrite-2.6.0.jar"/>
+				
+				<include name="jackson-core-lgpl-1.2.0.jar"/>
+				<include name="jackson-mapper-lgpl-1.2.0.jar"/>
 			</lib>
 		
 		</makeFDAdminEar>
