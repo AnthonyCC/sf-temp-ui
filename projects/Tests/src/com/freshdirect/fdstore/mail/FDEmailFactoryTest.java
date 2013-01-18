@@ -22,7 +22,7 @@ public class FDEmailFactoryTest extends TestCase implements MailName {
 		FDCustomerInfo custInfo = new FDCustomerInfo("Ubul", "Vajas");
 
 		custInfo.setHtmlEmail(isHtmlEmail);
-		custInfo.setEmailAddress("ubul@vajas.com");
+		custInfo.setEmailAddress("uvajas@freshdirect.com");
 		custInfo.setDepotCode("123456");
 		custInfo.setChefsTable(isChefsTable);
 		custInfo.setCustomerServiceContact(isChefsTable ? "1-866-511-1240" : "1-212-796-8002");
@@ -50,14 +50,14 @@ public class FDEmailFactoryTest extends TestCase implements MailName {
 		// compile mail template to string content
 		String mailBody = new XSLTransformer().transform(email.getXML(), email.getXslPath());
 		
-		/// debug System.out.println(mailBody);
+		//System.out.println(mailBody);
 		
 		// check customer name
 		p = Pattern.compile("\\<b\\>Dear " + custInfo.getFirstName() + "\\</b\\>,");
 		assertTrue(p.matcher(mailBody).find());
 
 		// check customer service contact number in email
-		p = Pattern.compile("please\\scall\\scustomer\\sservice\\sat\\s" + custInfo.getCustomerServiceContact() + "\\.");
+		p = Pattern.compile("please\\scall\\sour\\sCustomer\\sService\\sTeam\\s\\snow\\sat\\s\\s\\<b\\>" + custInfo.getCustomerServiceContact());
 		assertTrue(p.matcher(mailBody).find());
 	}
 
@@ -80,15 +80,20 @@ public class FDEmailFactoryTest extends TestCase implements MailName {
 		// compile mail template to string content
 		String mailBody = new XSLTransformer().transform(email.getXML(), email.getXslPath());
 		
-		/// debug System.out.println(mailBody);
+		//System.out.println(mailBody);
 		
 		// check customer name
 		p = Pattern.compile("Dear " + custInfo.getFirstName() + ",");
 		assertTrue(p.matcher(mailBody).find());
 		
 		// check customer service contact number in email
-		p = Pattern.compile("please\\scall\\scustomer\\sservice\\sat\\s" + custInfo.getCustomerServiceContact() + "\\.");
+		p = Pattern.compile("please\\scall\\sour\\sCustomer\\sService\\sTeam\\snow\\sat\\s" + custInfo.getCustomerServiceContact());
 		assertTrue(p.matcher(mailBody).find());
+	}
+	public static void main(String[] a) throws TransformerException {
+		FDEmailFactoryTest t= new FDEmailFactoryTest();
+		t.testAuthorizationFailedHtml();
+		t.testAuthorizationFailedPlain();
 	}
 }
 
