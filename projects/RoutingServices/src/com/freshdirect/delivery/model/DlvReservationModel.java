@@ -297,10 +297,7 @@ public class DlvReservationModel extends ModelSupport {
 	public void setChefsTable(boolean chefsTable) {
 		this.chefsTable = chefsTable;
 	}
-	public String toString() {
-		return ToStringBuilder.reflectionToString(this, ToStringStyle.MULTI_LINE_STYLE);
-	}
-
+	
 	public String getProfileName() {
 		return profileName;
 	}

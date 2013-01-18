@@ -155,9 +155,6 @@ public class FDReservation extends ModelSupport {
 		return isInUPS;
 	}
 	
-	public String toString() {
-		return ToStringBuilder.reflectionToString(this, ToStringStyle.MULTI_LINE_STYLE);
-	}
 	public EnumReservationClass getRsvClass() {
 		return rsvClass;
 	}
