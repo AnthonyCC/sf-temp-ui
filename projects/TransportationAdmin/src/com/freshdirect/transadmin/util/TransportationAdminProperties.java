@@ -450,7 +450,7 @@ public class TransportationAdminProperties {
 		
 		
 		defaults.put(PROP_TXTMESSAGE_ACCESSKEY, "e79c258648510d3050f7756aabed5154");
-		defaults.put(PROP_SHIFTEVENTLOG_TYPE, "End of Shift Scanner Log");
+		defaults.put(PROP_SHIFTEVENTLOG_TYPE, "51");
 		defaults.put(PROP_EVENTLOG_MAILFROM, "applicationdevelopment@freshdirect.com");
 		defaults.put(PROP_EVENTLOG_MAILTO, "applicationdevelopment@freshdirect.com");
 		defaults.put(PROP_EVENTLOG_MAILCC, "applicationdevelopment@freshdirect.com");

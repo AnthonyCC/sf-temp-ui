@@ -115,7 +115,7 @@ var crudurl = "v/1/moteventlog/add/";
 
 $(document).ready(function () {	
 	
-	$("#eventDate" ).datepicker();
+	$("#daterange" ).datepicker();
 	
 	$.ajax({
 		url : "v/1/list/moteventmetadata/",
@@ -128,7 +128,7 @@ $(document).ready(function () {
 
 			for(var i=0;i < json.rows.length;i++) {
 				for(var j=0;j < json.rows[i].motEventType.length;j++) {
-					aoTypes.push({"value" : json.rows[i].motEventType[j].name, "caption" : json.rows[i].motEventType[j].name});
+					aoTypes.push({"value" : json.rows[i].motEventType[j].id, "caption" : json.rows[i].motEventType[j].name});
 				}
 				for(var l=0;l < json.rows[i].eventMessageGroup.length;l++) {
 					aoGroups.push({"value" : json.rows[i].eventMessageGroup[l].groupName, "caption" : json.rows[i].eventMessageGroup[l].groupName});
@@ -275,6 +275,10 @@ $(document).ready(function () {
 						showGrid();
 });
 
+	function viewEvents() {	
+		showGrid();
+	}
+
 	function toggleFilterRow() {
 		grid.setTopPanelVisibility(!grid.getOptions().showTopPanel);
 	}
@@ -305,6 +309,7 @@ $(document).ready(function () {
 									});
 								}
 								
+								$("#eventDate" ).datepicker();								
 								$('#eventForm').clearForm();
 								var formatedDate = $('#eventDate').formatDate(0);
 								$('#eventDate').val(formatedDate);
@@ -447,7 +452,7 @@ $(document).ready(function () {
 																												.getElementById('eventForm')));
 																								$
 																										.ajax({
-																											url : "v/1/eventlog/add/",
+																											url : "v/1/moteventlog/add/",
 																											type : "POST",
 																											data : "data="
 																													+ $
@@ -465,11 +470,7 @@ $(document).ready(function () {
 																																			'#form-container .form-title')
 																																			.html(
 																																					'Event added sucessfully!');
-																																	msg
-																																			.html(
-																																					json)
-																																			.fadeIn(
-																																					200);
+																																	
 																																});
 																											},
 																											error : function(
@@ -561,9 +562,6 @@ $(document).ready(function () {
 			}
 			if (!$('#eventType').val()) {
 				form.message += 'EventType is required. ';
-			}
-			if (!$('#eventSubType').val()) {
-				form.message += 'EventSubType is required. ';
 			}			
 			if (form.message.length > 0) {
 				return false;

@@ -8,17 +8,25 @@ import com.freshdirect.transadmin.web.model.BaseCommand;
 
 public class MotEventType extends BaseCommand implements Serializable  {
 	
+	private String id;
 	private String name;
 	private String description;
 
 	private EventLogMessageGroup msgGroup;
 	
-	public MotEventType(String name, String description) {
+	public MotEventType(String id, String name, String description) {
 		super();
+		this.id = id;
 		this.name = name;
 		this.description = description;
 	}
 	
+	public String getId() {
+		return id;
+	}
+	public void setId(String id) {
+		this.id = id;
+	}
 	public String getName() {
 		return name;
 	}
@@ -44,7 +52,7 @@ public class MotEventType extends BaseCommand implements Serializable  {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((name == null) ? 0 : name.hashCode());
+		result = prime * result + ((id == null) ? 0 : id.hashCode());
 		return result;
 	}
 
@@ -57,10 +65,10 @@ public class MotEventType extends BaseCommand implements Serializable  {
 		if (getClass() != obj.getClass())
 			return false;
 		MotEventType other = (MotEventType) obj;
-		if (name == null) {
-			if (other.name != null)
+		if (id == null) {
+			if (other.id != null)
 				return false;
-		} else if (!name.equals(other.name))
+		} else if (!id.equals(other.id))
 			return false;
 		return true;
 	}

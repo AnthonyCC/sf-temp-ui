@@ -116,8 +116,6 @@ var crudurl = "v/1/eventlog/add/";
 
 $(document).ready(function () {	
 	
-	$("#eventDate" ).datepicker();
-	
 	$("#daterange" ).datepicker();
 	
 	$.ajax({
@@ -131,10 +129,10 @@ $(document).ready(function () {
 			
 			for(var i=0;i < json.rows.length;i++) {
 				for(var j=0;j < json.rows[i].eventType.length;j++) {
-					aoTypes.push({"value" : json.rows[i].eventType[j].name, "caption" : json.rows[i].eventType[j].name, "customerReq" : json.rows[i].eventType[j].customerReq, "employeeReq" : json.rows[i].eventType[j].employeeReq});
+					aoTypes.push({"value" : json.rows[i].eventType[j].id, "caption" : json.rows[i].eventType[j].name, "customerReq" : json.rows[i].eventType[j].customerReq, "employeeReq" : json.rows[i].eventType[j].employeeReq});
 				}
 				for(var k=0;k < json.rows[i].eventSubType.length;k++) {
-					aoSubTypes.push({"value" : json.rows[i].eventSubType[k].name, "caption" : json.rows[i].eventSubType[k].name, "eventTypeId" : json.rows[i].eventSubType[k].eventTypeId });
+					aoSubTypes.push({"value" : json.rows[i].eventSubType[k].id, "caption" : json.rows[i].eventSubType[k].name, "eventTypeId" : json.rows[i].eventSubType[k].eventTypeId });
 				}
 				for(var l=0;l < json.rows[i].eventMessageGroup.length;l++) {
 					aoGroups.push({"value" : json.rows[i].eventMessageGroup[l].groupName, "caption" : json.rows[i].eventMessageGroup[l].groupName});
@@ -378,22 +376,32 @@ function viewEvents() {
 }
 
 function addEvent(row) {
-	
-	
+	$("#eventDate" ).datepicker();	
 	var rowData = grid.getData().getItem(row);
 	
 	var dataX = JSON.parse(JSON.stringify(rowData));
 	
 	js2form(document.getElementById('eventForm'), dataX);
-	
+
 	if($('#eventType')) {
-		var id = $('#eventType').val();
+		var id = rowData.eventType;
+		
+		for(var i=0;i < aoTypes.length;i++) {        	
+        	if(aoTypes[i].caption === id){
+        		$('#eventType').val(aoTypes[i].value);
+        	}
+        }
+		
         var queryResult = $.Enumerable.From(aoSubTypes)
-                        	.Where(function (subType) { return subType.eventTypeId == id })
+                        	.Where(function (subType) { return subType.eventTypeId === $('#eventType').val() })	
                         	.OrderByDescending(function (subType) { return subType.caption })
                     		.ToArray();
         $('#eventSubType').loadSelect( queryResult, false, true );
-        $('#eventSubType').val(rowData.eventSubType);
+        for(var i=0;i < aoSubTypes.length;i++) {        	
+        	if(aoSubTypes[i].caption === rowData.eventSubType){
+        		$('#eventSubType').val(aoSubTypes[i].value);
+        	}
+        }        
 	}
 	
 	if(!isEmpty($('#eventDate').val())) {
@@ -444,6 +452,7 @@ function showEventForm (showCurrDate) {
 				}
 				
 				if(showCurrDate){
+					$("#eventDate" ).datepicker();
 					$('#eventForm').clearForm();
 					var formatedDate = $('#eventDate').formatDate(0);
 					$('#eventDate').val(formatedDate);

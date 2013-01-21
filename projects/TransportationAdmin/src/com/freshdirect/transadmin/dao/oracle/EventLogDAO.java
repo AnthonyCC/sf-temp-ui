@@ -44,28 +44,31 @@ public class EventLogDAO implements IEventLogDAO   {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
     }
 		
-	private static final String GET_EVENTLOG = " SELECT * from transp.eventlog_book el, transp.eventlog_stop els where el.event_id = els.eventlog_id(+) and el.event_date = ?  order by cromod_date desc";
+	private static final String GET_EVENTLOG = " SELECT el.*, els.*, et.eventtypename, est.eventsubtypename from transp.eventlogbook el, transp.eventstopnumberbreakdown els, transp.eventtype et, transp.eventsubtype est "+
+													" where el.id = els.eventlogid(+) and el.eventsubtype = est.id(+) and el.eventtype = et.id(+) and el.eventdate = ?  ";
 	
-	private static final String GET_EVENTLOG_BY_ID = "SELECT * from transp.eventlog_book el, transp.eventlog_stop els where el.event_id = els.eventlog_id(+) and el.event_id = ?";
+	private static final String GET_EVENTLOG_BY_ID = " SELECT el.*, els.*, et.eventtypename, est.eventsubtypename from transp.eventlogbook el, transp.eventstopnumberbreakdown els, transp.eventtype et, transp.eventsubtype est "+
+													" where el.id = els.eventlogid(+) and el.eventsubtype = est.id(+) and el.eventtype = et.id(+) and el.id = ?  ";
 	
-	private static final String GET_EVENTLOG_DATERANGE_QRY = " SELECT * from transp.eventlog_book el, transp.eventlog_stop els where el.event_id = els.eventlog_id(+) and el.event_date >= ? ";
+	private static final String GET_EVENTLOG_DATERANGE_QRY = " SELECT el.*, els.*, et.eventtypename, est.eventsubtypename from transp.eventlogbook el, transp.eventstopnumberbreakdown els, transp.eventtype et, transp.eventsubtype est "+
+													" where el.id = els.eventlogid(+) and el.eventsubtype = est.id(+) and el.eventtype = et.id(+) and el.eventdate >= ?  ";;
 	
 	private static final String GET_EVENTLOGNEXTSEQ_QRY = "SELECT TRANSP.EVENTLOGSEQ.nextval FROM DUAL";
 	
-	private static final String INSERT_EVENT_LOG = "INSERT INTO TRANSP.EVENTLOG_BOOK(EVENT_ID, EVENT_DATE, ROUTE, TRUCK, WINDOW_STARTTIME, WINDOW_ENDTIME, EVENT_TYPE, EVENT_SUBTYPE, DESCRIPTION, CROSSSTREET, EMPLOYEE_ID, SCANNER_NUMBER, CROMOD_DATE, CREATED_BY, EVENT_REFID )" +
+	private static final String INSERT_EVENT_LOG = "INSERT INTO TRANSP.EVENTLOGBOOK(ID, EVENTDATE, ROUTENUMBER, TRUCKNUMBER, ROUTEWINDOWSTARTTIME, ROUTEWINDOWENDTIME, EVENTTYPE, EVENTSUBTYPE, EVENTDESCRIPTION, CROSSSTREETS, EMPLOYEENUMBER, SCANNERNUMBER, DATECREATED, CREATEDBY, REFERENCETICKETID )" +
 															" VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 	
-	private static final String INSERT_EVENTLOG_STOP = "INSERT INTO TRANSP.EVENTLOG_STOP (EVENTLOG_ID, STOP_NUMBER) VALUES (?,?) ";
+	private static final String INSERT_EVENTLOG_STOP = "INSERT INTO TRANSP.EVENTSTOPNUMBERBREAKDOWN (EVENTLOGID, STOPNUMBER) VALUES (?,?) ";
 	
-	private static final String CLEAR_EVENTLOG_EVENTS = "DELETE from transp.eventlog_book where id in ";
+	private static final String CLEAR_EVENTLOG_EVENTS = "DELETE from transp.eventlogbook where id in ";
 	
-	private static final String CLEAR_EVENTLOG_STOP = "DELETE from transp.eventlog_stop where eventlog_id in ";
+	private static final String CLEAR_EVENTLOG_STOP = "DELETE from transp.eventstopnumberbreakdown where eventlogid in ";
 	
-	private static final String UPDATE_EVENTLOG_QRY = "UPDATE TRANSP.EVENTLOG_BOOK SET EVENT_DATE=?, ROUTE=?, TRUCK=?, WINDOW_STARTTIME=?, WINDOW_ENDTIME=?, EVENT_TYPE=?, EVENT_SUBTYPE=?, DESCRIPTION=?, CROSSSTREET=?, EMPLOYEE_ID=?, SCANNER_NUMBER=?, CROMOD_DATE=?, CREATED_BY=? where EVENT_ID = ? ";
+	private static final String UPDATE_EVENTLOG_QRY = "UPDATE TRANSP.EVENTLOGBOOK SET EVENTDATE=?, ROUTENUMBER=?, TRUCKNUMBER=?, ROUTEWINDOWSTARTTIME=?, ROUETWINDOWENDTIME=?, EVENTTYPE=?, EVENTSUBTYPE=?, EVENTDESCRIPTION=?, CROSSSTREETS=?, EMPLOYEENUMBER=?, SCANNERNUMBER=?, DATECREATED=?, CREATEDBY=? where ID = ? ";
 	
-	private static final String GET_EVENTLOGTYPE_QRY = " SELECT lt.*, st.eventsubtype_name subtype_name, st.description subtype_desc, mg.group_name, mg.email "+
-				" from transp.eventlog_type lt, transp.eventlog_subtype st, transp.eventlog_messagegroup mg "+
-				" where lt.eventtype_name=st.eventtype_id(+) and st.msggroup_id=mg.group_name(+) ";
+	private static final String GET_EVENTLOGTYPE_QRY = " SELECT lt.*, st.id subtype_id, st.eventsubtypename subtype_name, st.eventsubtypedescription subtype_desc, st.isactive isSubTypeActive, mg.group_name, mg.email "+ 
+            " from transp.eventtype lt, transp.eventsubtype st, transp.eventlog_messagegroup mg "+ 
+            " where lt.id=st.eventtypeid(+) and st.msggroup_id=mg.group_name(+) ";
 	
 	private static final String GET_ROUTE_WINDOWS = "select "+ 
 			" bs.ROUTE_NO, bs.WINDOW_STARTTIME, bs.WINDOW_ENDTIME, BS.STOP_SEQUENCE  " + 
@@ -80,13 +83,13 @@ public class EventLogDAO implements IEventLogDAO   {
 	
 	private static final String GET_EVENTMESSAGEGROUP_QRY = " select * from transp.eventlog_messagegroup ";
 	
-	private static final String CLEAR_EVENTLOG_TYPE = "DELETE from transp.eventlog_type ";
+	private static final String CLEAR_EVENTLOG_TYPE = "DELETE from transp.eventtype ";
 	
 	private static final String CLEAR_EVENTLOG_MSGGROUP = "DELETE from transp.eventlog_messagegroup ";
 	
-	private static final String INSERT_EVENTLOG_TYPE = " INSERT INTO TRANSP.EVENTLOG_TYPE (EVENTTYPE_NAME, EVENTTYPE_DESCRIPTION, CUSTOMER_REQ, EMPLOYEE_REQ, CREATEDBY, CROMOD_DATE) VALUES (?,?,?,?,?,?) ";
+	private static final String INSERT_EVENTLOG_TYPE = " INSERT INTO TRANSP.EVENTTYPE (EVENTTYPENAME, EVENTTYPEDESCRIPTION, CUSTOMER_REQ, EMPLOYEE_REQ, CREATEDBY, DATECREATED) VALUES (?,?,?,?,?,?) ";
 	
-	private static final String INSERT_EVENTLOG_SUBTYPE = " INSERT INTO TRANSP.EVENTLOG_SUBTYPE (EVENTSUBTYPE_NAME,DESCRIPTION,EVENTTYPE_ID, MSGGROUP_ID, CREATEDBY, CROMOD_DATE) VALUES (?,?,?,?,?,?) ";
+	private static final String INSERT_EVENTLOG_SUBTYPE = " INSERT INTO TRANSP.EVENTSUBTYPE (EVENTSUBTYPENAME,DESCRIPTION,EVENTTYPEID, MSGGROUP_ID, CREATEDBY, DATECREATED) VALUES (?,?,?,?,?,?) ";
 	
 	private static final String INSERT_EVENTLOG_MSGGROUP = " INSERT INTO TRANSP.EVENTLOG_MESSAGEGROUP (GROUP_NAME, EMAIL, CREATEDBY, CROMOD_DATE) VALUES (?,?,?,?) ";
 	
@@ -95,24 +98,27 @@ public class EventLogDAO implements IEventLogDAO   {
 	
 	private static final String GET_MOTEVENTLOGNEXTSEQ_QRY = "SELECT TRANSP.MOTEVENTLOGSEQ.nextval FROM DUAL";
 	
-	private static final String GET_MOTEVENTLOG_QRY = " SELECT * from transp.moteventlog_book el, transp.moteventlog_stop els where el.event_id = els.eventlog_id(+) and el.event_date = ? order by cromod_date desc ";
+	private static final String GET_MOTEVENTLOG_QRY = " SELECT el.*, els.*, et.moteventtypename from transp.moteventlogbook el, transp.motstopnumberbreakdown els, transp.moteventtype et "+ 
+                  													" where el.id = els.moteventlogid(+) and el.eventtypeid = et.id(+) and el.eventdate = ? ";
 	
-	private static final String GET_MOTEVENTLOG_BY_ID = " SELECT * from transp.moteventlog_book el, transp.moteventlog_stop els where el.event_id = els.eventlog_id(+) and el.event_id = ? ";
+	private static final String GET_MOTEVENTLOG_BY_ID = " SELECT el.*, els.*, et.moteventtypename from transp.moteventlogbook el, transp.motstopnumberbreakdown els, transp.moteventtype et "+ 
+            	  													" where el.id = els.moteventlogid(+) and el.eventtypeid = et.id(+) and el.id = ? ";
 	
-	private static final String GET_MOTEVENTLOG_DATERANGE_QRY = " SELECT * from transp.moteventlog_book el, transp.moteventlog_stop els where el.event_id = els.eventlog_id(+) and el.event_date >= ? ";
+	private static final String GET_MOTEVENTLOG_DATERANGE_QRY = " SELECT el.*, els.*, et.moteventtypename from transp.moteventlogbook el, transp.motstopnumberbreakdown els, transp.moteventtype et "+ 
+                  													" where el.id = els.moteventlogid(+) and el.eventtypeid = et.id(+) and el.eventdate >= ? ";
 	
-	private static final String INSERT_MOTEVENT_LOG = "INSERT INTO TRANSP.MOTEVENTLOG_BOOK(EVENT_ID, EVENT_DATE, ROUTE, MOTTRUCK, NEXTEL, EVENT_TYPE, DESCRIPTION, TICKET_NUMBER, DATE_VERIFIED, VERIFIED_BY, CROMOD_DATE, CREATED_BY )" +
-			" VALUES(?,?,?,?,?,?,?,?,?,?,?,?)";
+	private static final String INSERT_MOTEVENT_LOG = "INSERT INTO TRANSP.MOTEVENTLOGBOOK(ID, EVENTDATE, ROUTENUMBER, MOTROUTENUMBER, NEXTELNUMBER, EVENTTYPEID, EVENTDESCRIPTION, TICKETNUMBER, DATE_VERIFIED, VERIFIED_BY, DATECREATED, CREATEDBY )" +
+													  " VALUES(?,?,?,?,?,?,?,?,?,?,?,?)";
 	
-	private static final String UPDATE_MOTEVENTLOG_QRY = "UPDATE TRANSP.MOTEVENTLOG_BOOK SET EVENT_DATE=?, ROUTE=?, MOTTRUCK=?, NEXTEL=?, EVENT_TYPE=?, DESCRIPTION=?, TICKET_NUMBER=?, DATE_VERIFIED=?, VERIFIED_BY=?, CROMOD_DATE=?, CREATED_BY=? where EVENT_ID = ? ";
+	private static final String UPDATE_MOTEVENTLOG_QRY = "UPDATE TRANSP.MOTEVENTLOGBOOK SET EVENTDATE=?, ROUTENUMBER=?, MOTROUTENUMBER=?, NEXTELNUMBER=?, EVENTTYPEID=?, EVENTDESCRIPTION=?, TICKETNUMBER=?, DATE_VERIFIED=?, VERIFIED_BY=?, DATECREATED=?, CREATEDBY=? where ID = ? ";
 	
-	private static final String INSERT_MOTEVENTLOG_STOP = "INSERT INTO TRANSP.MOTEVENTLOG_STOP (EVENTLOG_ID, STOP_NUMBER) VALUES (?,?) ";
+	private static final String INSERT_MOTEVENTLOG_STOP = "INSERT INTO TRANSP.MOTSTOPNUMBERBREAKDOWN (MOTEVENTLOGID, MOTSTOPNUMBER) VALUES (?,?) ";
 	
-	private static final String CLEAR_MOTEVENTLOG_STOP = "DELETE from transp.moteventlog_stop where eventlog_id in ";
+	private static final String CLEAR_MOTEVENTLOG_STOP = "DELETE from TRANSP.MOTSTOPNUMBERBREAKDOWN where moteventlogid in ";
 	
 	private static final String GET_MOTEVENTLOGTYPE_QRY = " SELECT lt.*, mg.group_name, mg.email "+
-			" from transp.moteventlog_type lt, transp.moteventlog_messagegroup mg "+
-			" where lt.msggroup_id = mg.group_name(+) ";
+															" from transp.moteventtype lt, transp.moteventlog_messagegroup mg "+
+															" where lt.msggroup_id = mg.group_name(+) ";
 	
 	private static final String GET_MOTEVENTMESSAGEGROUP_QRY = " select * from transp.moteventlog_messagegroup ";
 	
@@ -120,11 +126,11 @@ public class EventLogDAO implements IEventLogDAO   {
 		
 	private static final String CLEAR_MOTEVENTLOG_MSGGROUP = "DELETE from transp.moteventlog_messagegroup ";
 	
-	private static final String UPDATE_MOTEVENT_STATUS = "UPDATE TRANSP.MOTEVENTLOG_BOOK SET DATE_VERIFIED=?, VERIFIED_BY=? WHERE EVENT_ID = ? ";
+	private static final String UPDATE_MOTEVENT_STATUS = "UPDATE TRANSP.MOTEVENTLOGBOOK SET DATE_VERIFIED=?, VERIFIED_BY=? WHERE ID = ? ";
 	
-	private static final String INSERT_MOTEVENTLOG_TYPE = "INSERT INTO TRANSP.MOTEVENTLOG_TYPE (NAME,DESCRIPTION,MSGGROUP_ID,CREATED_BY,CROMOD_DATE) VALUES (?,?,?,?,?) ";
+	private static final String INSERT_MOTEVENTLOG_TYPE = "INSERT INTO TRANSP.MOTEVENTTYPE (MOTEVENTTYPENAME,MOTEVENTTYPEDESCRIPTION,MSGGROUP_ID,CREATEDBY,DATECREATED) VALUES (?,?,?,?,?) ";
 	
-	private static final String CLEAR_MOTEVENTLOG_TYPE = "DELETE from transp.moteventlog_type ";
+	private static final String CLEAR_MOTEVENTLOG_TYPE = "DELETE from transp.moteventtype ";
 	
 	public void clearEventLogType() throws SQLException {
 		Connection connection = null;		
@@ -269,40 +275,46 @@ public class EventLogDAO implements IEventLogDAO   {
 			};
 			jdbcTemplate.query(creator, new RowCallbackHandler() {
 				public void processRow(ResultSet rs) throws SQLException {
-					do {
-						String eventId = rs.getString("EVENT_ID");
-						String stopNumber = rs.getString("STOP_NUMBER");
-						
-						if(!eventMapping.containsKey(eventId)) {
-							
-							EventModel event = new EventModel();
-							
-							event.setId(eventId);
-							event.setEventDate(rs.getTimestamp("EVENT_DATE"));
-							event.setRoute(rs.getString("ROUTE"));
-							event.setTruck(rs.getString("TRUCK"));
-							event.setWindowStartTime(rs.getTimestamp("WINDOW_STARTTIME"));
-							event.setWindowEndTime(rs.getTimestamp("WINDOW_ENDTIME"));
-							event.setEventType(rs.getString("EVENT_TYPE"));
-							event.setEventSubType(rs.getString("EVENT_SUBTYPE"));
-							event.setDescription(rs.getString("DESCRIPTION"));
-							event.setCrossStreet(rs.getString("CROSSSTREET"));
-							event.setEmployeeId(rs.getString("EMPLOYEE_ID"));
-							event.setScannerNumber(rs.getString("SCANNER_NUMBER"));
-							event.setTransactionDate(rs.getTimestamp("CROMOD_DATE"));
-							event.setUserId(rs.getString("CREATED_BY"));
-							
-							event.setStops(new HashSet<String>());
-							eventMapping.put(eventId, event);
-						}
-						eventMapping.get(eventId).getStops().add(stopNumber);		
-					} while (rs.next());
+					getEventLogResultSet(eventMapping, rs);
 				}
 			});
 			return eventMapping.get(eventID);			
 		} finally {
 			if (connection != null)	connection.close();
 		}	
+	}
+	
+	private void getEventLogResultSet(
+			final Map<String, EventModel> eventMapping, ResultSet rs)
+			throws SQLException {
+		do {
+			String eventId = rs.getString("ID");
+			String stopNumber = rs.getString("STOPNUMBER");
+			
+			if(!eventMapping.containsKey(eventId)) {
+				
+				EventModel event = new EventModel();
+				
+				event.setId(eventId);
+				event.setEventDate(rs.getTimestamp("EVENTDATE"));
+				event.setRoute(rs.getString("ROUTENUMBER"));
+				event.setTruck(rs.getString("TRUCKNUMBER"));
+				event.setWindowStartTime(rs.getTimestamp("ROUTEWINDOWSTARTTIME"));
+				event.setWindowEndTime(rs.getTimestamp("ROUTEWINDOWENDTIME"));
+				event.setEventType(rs.getString("EVENTTYPENAME"));
+				event.setEventSubType(rs.getString("EVENTSUBTYPENAME"));
+				event.setDescription(rs.getString("EVENTDESCRIPTION"));
+				event.setCrossStreet(rs.getString("CROSSSTREETS"));
+				event.setEmployeeId(rs.getString("EMPLOYEENUMBER"));
+				event.setScannerNumber(rs.getString("SCANNERNUMBER"));
+				event.setTransactionDate(rs.getTimestamp("DATECREATED"));
+				event.setUserId(rs.getString("CREATEDBY"));
+				
+				event.setStops(new HashSet<String>());
+				eventMapping.put(eventId, event);
+			}
+			eventMapping.get(eventId).getStops().add(stopNumber);		
+		} while (rs.next());
 	}
 	
 	
@@ -324,35 +336,8 @@ public class EventLogDAO implements IEventLogDAO   {
 			};
 			jdbcTemplate.query(creator, new RowCallbackHandler() {
 				public void processRow(ResultSet rs) throws SQLException {
-					do {
-						String eventId = rs.getString("EVENT_ID");
-						String stopNumber = rs.getString("STOP_NUMBER");
-						
-						if(!eventMapping.containsKey(eventId)) {
-							
-							EventModel event = new EventModel();
-							
-							event.setId(eventId);
-							event.setEventDate(rs.getTimestamp("EVENT_DATE"));
-							event.setRoute(rs.getString("ROUTE"));
-							event.setTruck(rs.getString("TRUCK"));
-							event.setWindowStartTime(rs.getTimestamp("WINDOW_STARTTIME"));
-							event.setWindowEndTime(rs.getTimestamp("WINDOW_ENDTIME"));
-							event.setEventType(rs.getString("EVENT_TYPE"));
-							event.setEventSubType(rs.getString("EVENT_SUBTYPE"));
-							event.setDescription(rs.getString("DESCRIPTION"));
-							event.setCrossStreet(rs.getString("CROSSSTREET"));
-							event.setEmployeeId(rs.getString("EMPLOYEE_ID"));
-							event.setScannerNumber(rs.getString("SCANNER_NUMBER"));
-							event.setTransactionDate(rs.getTimestamp("CROMOD_DATE"));
-							event.setUserId(rs.getString("CREATED_BY"));
-							
-							event.setStops(new HashSet<String>());
-							eventMapping.put(eventId, event);
-						}
-						eventMapping.get(eventId).getStops().add(stopNumber);		
-					} while (rs.next());
-				}
+					getEventLogResultSet(eventMapping, rs);
+				}				
 			});
 			result.addAll(eventMapping.values());
 			return result;
@@ -379,34 +364,7 @@ public class EventLogDAO implements IEventLogDAO   {
 			};
 			jdbcTemplate.query(creator, new RowCallbackHandler() {
 				public void processRow(ResultSet rs) throws SQLException {
-					do {
-						String eventId = rs.getString("EVENT_ID");
-						String stopNumber = rs.getString("STOP_NUMBER");
-						
-						if(!eventMapping.containsKey(eventId)) {
-							
-							EventModel event = new EventModel();
-							
-							event.setId(eventId);
-							event.setEventDate(rs.getTimestamp("EVENT_DATE"));
-							event.setRoute(rs.getString("ROUTE"));
-							event.setTruck(rs.getString("TRUCK"));
-							event.setWindowStartTime(rs.getTimestamp("WINDOW_STARTTIME"));
-							event.setWindowEndTime(rs.getTimestamp("WINDOW_ENDTIME"));
-							event.setEventType(rs.getString("EVENT_TYPE"));
-							event.setEventSubType(rs.getString("EVENT_SUBTYPE"));
-							event.setDescription(rs.getString("DESCRIPTION"));
-							event.setCrossStreet(rs.getString("CROSSSTREET"));
-							event.setEmployeeId(rs.getString("EMPLOYEE_ID"));
-							event.setScannerNumber(rs.getString("SCANNER_NUMBER"));
-							event.setTransactionDate(rs.getTimestamp("CROMOD_DATE"));
-							event.setUserId(rs.getString("CREATED_BY"));
-							
-							event.setStops(new HashSet<String>());
-							eventMapping.put(eventId, event);
-						}
-						eventMapping.get(eventId).getStops().add(stopNumber);		
-					} while (rs.next());
+					getEventLogResultSet(eventMapping, rs);
 				}
 			});
 			result.addAll(eventMapping.values());
@@ -533,9 +491,9 @@ public class EventLogDAO implements IEventLogDAO   {
 		final StringBuffer updateQ = new StringBuffer();
 		updateQ.append(GET_EVENTLOGTYPE_QRY);
 		if(eventType != null && !TransStringUtil.isEmpty(eventType)){
-			updateQ.append(" and lt.eventtype_name = ? ");
+			updateQ.append(" and lt.id = ? ");
 		}
-		updateQ.append(" ORDER BY lt.eventtype_name ");
+		updateQ.append(" ORDER BY lt.id ");
 		Connection connection = null;
 		try {
 			PreparedStatementCreator creator = new PreparedStatementCreator() {
@@ -551,33 +509,42 @@ public class EventLogDAO implements IEventLogDAO   {
 			};
 			jdbcTemplate.query(creator, new RowCallbackHandler() {
 				public void processRow(ResultSet rs) throws SQLException {
-					do {						
-						String typeName = rs.getString("EVENTTYPE_NAME");
-						String typeDesc = rs.getString("EVENTTYPE_DESCRIPTION");
+					do {
+						String typeId = rs.getString("ID");
+						String typeName = rs.getString("EVENTTYPENAME");
+						String typeDesc = rs.getString("EVENTTYPEDESCRIPTION");
+						String isTypeActive = rs.getString("ISACTIVE");
+						
+						String subTypeId = rs.getString("SUBTYPE_ID");
 						String subTypeName = rs.getString("SUBTYPE_NAME");
 						String subTypeDesc = rs.getString("SUBTYPE_DESC");						
+						String isSubTypeActive = rs.getString("ISSUBTYPEACTIVE");
+						
 						String groupName = rs.getString("GROUP_NAME");
 						String email = rs.getString("EMAIL");
-						if(!eventTypeMapping.containsKey(typeName)){
-							EventLogType eventType = new EventLogType(typeName, typeDesc);
-							eventType.setTransactionDate(rs.getTimestamp("CROMOD_DATE"));
+						if(!eventTypeMapping.containsKey(typeId)
+								&& "X".equals(isTypeActive)){
+							EventLogType eventType = new EventLogType(typeId, typeName, typeDesc);
+							eventType.setTransactionDate(rs.getTimestamp("DATECREATED"));
 							eventType.setUserId(rs.getString("CREATEDBY"));
-							eventType.setCustomerReq(rs.getString("CUSTOMER_REQ"));
-							eventType.setEmployeeReq(rs.getString("EMPLOYEE_REQ"));
+							eventType.setCustomerReq(rs.getString("ISCUSTOMERREQUIRED"));
+							eventType.setEmployeeReq(rs.getString("ISEMPLOYEEREQUIRED"));
 							
-							eventTypeMapping.put(typeName, eventType);
+							eventTypeMapping.put(typeId, eventType);
 						}
 						
-						if(subTypeName != null && subTypeDesc != null
+						if("X".equals(isTypeActive)
+								&& "X".equals(isSubTypeActive) && subTypeId != null && subTypeName != null && subTypeDesc != null
 								&& !"".equals(subTypeName) && !"".equals(subTypeDesc)) {
 							EventLogSubType subType = new EventLogSubType();							
 							if(groupName != null)
 								subType.setMsgGroup(new EventLogMessageGroup(groupName, email));
+							subType.setId(subTypeId);
 							subType.setName(subTypeName);
 							subType.setDescription(subTypeDesc);
-							subType.setEventTypeId(typeName);
+							subType.setEventTypeId(typeId);
 							
-							eventTypeMapping.get(typeName).getSubTypes().add(subType);
+							eventTypeMapping.get(typeId).getSubTypes().add(subType);
 						}
 					} while (rs.next());			
 				}
@@ -781,33 +748,7 @@ public class EventLogDAO implements IEventLogDAO   {
 			};
 			jdbcTemplate.query(creator, new RowCallbackHandler() {
 				public void processRow(ResultSet rs) throws SQLException {
-					do {
-						String eventId = rs.getString("EVENT_ID");
-						String stopNumber = rs.getString("STOP_NUMBER");
-						
-						if(!eventMapping.containsKey(eventId)) {
-							
-							MotEventModel event = new MotEventModel();
-							
-							event.setId(eventId);
-							event.setEventDate(rs.getTimestamp("EVENT_DATE"));
-							event.setRoute(rs.getString("ROUTE"));
-							event.setAddHocRoute(rs.getString("MOTTRUCK"));
-							event.setEventType(rs.getString("EVENT_TYPE"));							
-							event.setDescription(rs.getString("DESCRIPTION"));
-							event.setNextel(rs.getString("NEXTEL"));
-							event.setTicketNumber(rs.getString("TICKET_NUMBER"));							
-							event.setTransactionDate(rs.getTimestamp("CROMOD_DATE"));
-							event.setUserId(rs.getString("CREATED_BY"));
-							event.setVerifiedBy(rs.getString("VERIFIED_BY"));
-							event.setVerifiedDate(rs.getTimestamp("DATE_VERIFIED"));
-							event.setVerified(event.getVerifiedDate() != null ? true : false);
-							
-							event.setStops(new HashSet<String>());
-							eventMapping.put(eventId, event);
-						}
-						eventMapping.get(eventId).getStops().add(stopNumber);		
-					} while (rs.next());
+					getMotEventLogResultSet(eventMapping, rs);
 				}
 			});			
 			return eventMapping.get(eventID);
@@ -836,33 +777,7 @@ public class EventLogDAO implements IEventLogDAO   {
 			};
 			jdbcTemplate.query(creator, new RowCallbackHandler() {
 				public void processRow(ResultSet rs) throws SQLException {
-					do {
-						String eventId = rs.getString("EVENT_ID");
-						String stopNumber = rs.getString("STOP_NUMBER");
-						
-						if(!eventMapping.containsKey(eventId)) {
-							
-							MotEventModel event = new MotEventModel();
-							
-							event.setId(eventId);
-							event.setEventDate(rs.getTimestamp("EVENT_DATE"));
-							event.setRoute(rs.getString("ROUTE"));
-							event.setAddHocRoute(rs.getString("MOTTRUCK"));
-							event.setEventType(rs.getString("EVENT_TYPE"));							
-							event.setDescription(rs.getString("DESCRIPTION"));
-							event.setNextel(rs.getString("NEXTEL"));
-							event.setTicketNumber(rs.getString("TICKET_NUMBER"));							
-							event.setTransactionDate(rs.getTimestamp("CROMOD_DATE"));
-							event.setUserId(rs.getString("CREATED_BY"));
-							event.setVerifiedBy(rs.getString("VERIFIED_BY"));
-							event.setVerifiedDate(rs.getTimestamp("DATE_VERIFIED"));
-							event.setVerified(event.getVerifiedDate() != null ? true : false);
-							
-							event.setStops(new HashSet<String>());
-							eventMapping.put(eventId, event);
-						}
-						eventMapping.get(eventId).getStops().add(stopNumber);		
-					} while (rs.next());
+					getMotEventLogResultSet(eventMapping, rs);
 				}
 			});
 			result.addAll(eventMapping.values());
@@ -891,33 +806,7 @@ public class EventLogDAO implements IEventLogDAO   {
 			};
 			jdbcTemplate.query(creator, new RowCallbackHandler() {
 				public void processRow(ResultSet rs) throws SQLException {
-					do {
-						String eventId = rs.getString("EVENT_ID");
-						String stopNumber = rs.getString("STOP_NUMBER");
-						
-						if(!eventMapping.containsKey(eventId)) {
-							
-							MotEventModel event = new MotEventModel();
-							
-							event.setId(eventId);
-							event.setEventDate(rs.getTimestamp("EVENT_DATE"));
-							event.setRoute(rs.getString("ROUTE"));
-							event.setAddHocRoute(rs.getString("MOTTRUCK"));
-							event.setEventType(rs.getString("EVENT_TYPE"));							
-							event.setDescription(rs.getString("DESCRIPTION"));
-							event.setNextel(rs.getString("NEXTEL"));
-							event.setTicketNumber(rs.getString("TICKET_NUMBER"));							
-							event.setTransactionDate(rs.getTimestamp("CROMOD_DATE"));
-							event.setUserId(rs.getString("CREATED_BY"));
-							event.setVerifiedBy(rs.getString("VERIFIED_BY"));
-							event.setVerifiedDate(rs.getTimestamp("DATE_VERIFIED"));
-							event.setVerified(event.getVerifiedDate() != null ? true : false);
-							
-							event.setStops(new HashSet<String>());
-							eventMapping.put(eventId, event);
-						}
-						eventMapping.get(eventId).getStops().add(stopNumber);		
-					} while (rs.next());
+					getMotEventLogResultSet(eventMapping, rs);
 				}
 			});
 			result.addAll(eventMapping.values());
@@ -925,6 +814,38 @@ public class EventLogDAO implements IEventLogDAO   {
 		} finally {
 			if (connection != null)	connection.close();
 		}	
+	}
+	
+	private void getMotEventLogResultSet(
+			final Map<String, MotEventModel> eventMapping,
+			ResultSet rs) throws SQLException {
+		do {
+			String eventId = rs.getString("ID");
+			String stopNumber = rs.getString("MOTSTOPNUMBER");
+			
+			if(!eventMapping.containsKey(eventId)) {
+				
+				MotEventModel event = new MotEventModel();
+				
+				event.setId(eventId);
+				event.setEventDate(rs.getTimestamp("EVENTDATE"));
+				event.setRoute(rs.getString("ROUTENUMBER"));
+				event.setAddHocRoute(rs.getString("MOTROUTENUMBER"));
+				event.setEventType(rs.getString("MOTEVENTTYPENAME"));							
+				event.setDescription(rs.getString("EVENTDESCRIPTION"));
+				event.setNextel(rs.getString("NEXTELNUMBER"));
+				event.setTicketNumber(rs.getString("TICKETNUMBER"));							
+				event.setTransactionDate(rs.getTimestamp("DATECREATED"));
+				event.setUserId(rs.getString("CREATEDBY"));
+				event.setVerifiedBy(rs.getString("VERIFIED_BY"));
+				event.setVerifiedDate(rs.getTimestamp("DATE_VERIFIED"));
+				event.setVerified(event.getVerifiedDate() != null ? true : false);
+				
+				event.setStops(new HashSet<String>());
+				eventMapping.put(eventId, event);
+			}
+			eventMapping.get(eventId).getStops().add(stopNumber);		
+		} while (rs.next());
 	}
 	
 	public String getNewMotEventLogId() throws SQLException {
@@ -1037,9 +958,9 @@ public class EventLogDAO implements IEventLogDAO   {
 		final StringBuffer updateQ = new StringBuffer();
 		updateQ.append(GET_MOTEVENTLOGTYPE_QRY);
 		if(eventType != null && !TransStringUtil.isEmpty(eventType)){
-			updateQ.append(" and lt.name = ? ");
+			updateQ.append(" and lt.id = ? ");
 		}
-		updateQ.append(" ORDER BY lt.name ");
+		updateQ.append(" ORDER BY lt.id ");
 		Connection connection = null;
 		try {
 			PreparedStatementCreator creator = new PreparedStatementCreator() {
@@ -1056,16 +977,17 @@ public class EventLogDAO implements IEventLogDAO   {
 			jdbcTemplate.query(creator, new RowCallbackHandler() {
 				public void processRow(ResultSet rs) throws SQLException {
 					do {
-						String typeName = rs.getString("NAME");
-						String typeDesc = rs.getString("DESCRIPTION");
+						String typeId = rs.getString("ID");
+						String typeName = rs.getString("MOTEVENTTYPENAME");
+						String typeDesc = rs.getString("MOTEVENTTYPEDESCRIPTION");
 						String groupName = rs.getString("GROUP_NAME");
 						String email = rs.getString("EMAIL");
 						
-						MotEventType eventType = new MotEventType(typeName, typeDesc);
+						MotEventType eventType = new MotEventType(typeId, typeName, typeDesc);
 						if(groupName != null && !"".equals(groupName))
 							eventType.setMsgGroup(new EventLogMessageGroup(groupName, email));
-						eventType.setTransactionDate(rs.getTimestamp("CROMOD_DATE"));
-						eventType.setUserId(rs.getString("CREATED_BY"));
+						eventType.setTransactionDate(rs.getTimestamp("DATECREATED"));
+						eventType.setUserId(rs.getString("CREATEDBY"));
 						
 						result.add(eventType);
 					} while (rs.next());			

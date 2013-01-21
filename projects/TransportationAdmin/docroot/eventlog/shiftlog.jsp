@@ -111,9 +111,7 @@ var options = {};
 var url = "v/1/list/shiftlogs/";
 var crudurl = "v/1/shifteventlog/add/";
 
-$(document).ready(function () {	
-	
-	$("#eventDate" ).datepicker();
+$(document).ready(function () {		
 	
 	$("#daterange" ).datepicker();
 	
@@ -128,10 +126,10 @@ $(document).ready(function () {
 			
 			for(var i=0;i < json.rows.length;i++) {
 				for(var j=0;j < json.rows[i].eventType.length;j++) {
-					aoTypes.push({"value" : json.rows[i].eventType[j].name, "caption" : json.rows[i].eventType[j].name, "custumerReq" : json.rows[i].eventType[j].custumerReq, "employeeReq" : json.rows[i].eventType[j].employeeReq});
+					aoTypes.push({"value" : json.rows[i].eventType[j].id, "caption" : json.rows[i].eventType[j].name, "custumerReq" : json.rows[i].eventType[j].custumerReq, "employeeReq" : json.rows[i].eventType[j].employeeReq});
 				}
 				for(var k=0;k < json.rows[i].eventSubType.length;k++) {
-					aoSubTypes.push({"value" : json.rows[i].eventSubType[k].name, "caption" : json.rows[i].eventSubType[k].name, "eventTypeId" : json.rows[i].eventSubType[k].eventTypeId });
+					aoSubTypes.push({"value" : json.rows[i].eventSubType[k].id, "caption" : json.rows[i].eventSubType[k].name, "eventTypeId" : json.rows[i].eventSubType[k].eventTypeId });
 				}
 				for(var l=0;l < json.rows[i].eventMessageGroup.length;l++) {
 					aoGroups.push({"value" : json.rows[i].eventMessageGroup[l].groupName, "caption" : json.rows[i].eventMessageGroup[l].groupName});
@@ -212,6 +210,8 @@ function showEventForm () {
 						'font-size': '.9em'
 					});
 				}
+				
+				$("#eventDate" ).datepicker();
 				
 				$("#eventType").val('<%=TransportationAdminProperties.getShiftEventLogType()%>');
 							

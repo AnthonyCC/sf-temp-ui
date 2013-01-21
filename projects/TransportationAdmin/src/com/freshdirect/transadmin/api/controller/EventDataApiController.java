@@ -249,15 +249,16 @@ public class EventDataApiController extends BaseApiController {
 					if(event.getEventType() != null) {
 						EventLogSubType _tmpSubType = null;
 						List<EventLogType> eventTypes = eventLogService.lookUpEventTypes(event.getEventType());
-			    		if(eventTypes != null) {
+			    		if(eventTypes != null && eventTypes.size() > 0) {
 			    			for(EventLogSubType _subType : eventTypes.get(0).getSubTypes()) {
-			    				if(_subType.getName().equals(event.getEventSubType())){
-			    					_tmpSubType = _subType; 
+			    				if(_subType.getId().equals(event.getEventSubType())){
+			    					_tmpSubType = _subType;
+			    					break;
 			    				}
 			    			}
 			    			
 			    		}
-			    		if(_tmpSubType.getMsgGroup() != null && !"".equals(_tmpSubType.getMsgGroup().getEmail())
+			    		if(_tmpSubType.getMsgGroup().getEmail() != null && !"".equals(_tmpSubType.getMsgGroup().getEmail())
 								&& _tmpSubType.getMsgGroup().getEmail() != null) {
 			    			emailEventLog(event, _tmpSubType);
 			    		}
@@ -365,8 +366,9 @@ public class EventDataApiController extends BaseApiController {
 						List<EventLogType> eventTypes = eventLogService.lookUpEventTypes(event.getEventType());
 			    		if(eventTypes != null) {
 			    			for(EventLogSubType _subType : eventTypes.get(0).getSubTypes()) {
-			    				if(_subType.getName().equals(event.getEventSubType())){
-			    					_tmpSubType = _subType; 
+			    				if(_subType.getId().equals(event.getEventSubType())){
+			    					_tmpSubType = _subType;
+			    					break;
 			    				}
 			    			}			    			
 			    		}
@@ -474,8 +476,7 @@ public class EventDataApiController extends BaseApiController {
 		
 		try {
 			SimpleDateFormat dateFormatter = new SimpleDateFormat("EEE, MMM d, yyyy");
-			String subject="Event Log:	"+ dateFormatter.format(new Date());
-
+			
 			StringBuffer buff = new StringBuffer();
 
 			buff.append("<html>").append("\n").append("<body>").append("\n");

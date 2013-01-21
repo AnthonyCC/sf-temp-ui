@@ -481,7 +481,7 @@ public class TransAdminCacheManager {
 					return loadAddHocRouteInfo();
 				}
 			} catch (Exception e) {
-				LOGGER.error("Could not load Employee Data due to: ", e);
+				LOGGER.error("Could not load Addhoc route data due to: ", e);
 				throw new AsyncCacheException(e,
 						AsyncCacheExceptionType.LOAD_FAILED);
 			}

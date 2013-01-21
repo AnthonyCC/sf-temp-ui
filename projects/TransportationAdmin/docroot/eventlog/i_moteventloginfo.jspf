@@ -46,22 +46,12 @@
     			var eventTypeColumns =  [
     					    {key:"name", label:"Type Name",sortable:true, className:"forms1"},
     					    {key:"description", label:"Type Description", sortable:true, className:"forms1"},
-    					    {key:"msgGroup.groupName", label:"Message Group", sortable:true, className:"forms1"},
-    					    {key:'deleteBtn',label:' ',formatter:function(elCell) {
-    														elCell.innerHTML = '<img src="images/icons/delete.gif" title="delete row" />';
-    														elCell.style.cursor = 'pointer';
-    													}
-    					    }
+    					    {key:"msgGroup.groupName", label:"Message Group", sortable:true, className:"forms1"}
     				 ];
 	
     			var messageGroupColumns =  [
     					    {key:"groupName", label:"Group Name",sortable:true, className:"forms1"},
-    					    {key:"email", label:"Email",sortable:true, className:"forms1"},			    
-    					    {key:'deleteBtn',label:' ',formatter:function(elCell) {
-    																elCell.innerHTML = '<img src="images/icons/delete.gif" title="delete row" />';
-    																elCell.style.cursor = 'pointer';
-    															}
-    					    }
+    					    {key:"email", label:"Email",sortable:true, className:"forms1"}
     				 ];
 
     			var eventTypeMyConfigs = { 
@@ -268,9 +258,6 @@
 		            </table><br/>				
 							
 					<div id="conteventtypetable"></div>
-					<div align="center">
-		                  <input type="button" value="Add/Update" onclick="javascript:submitEventTypeTable()" /> 
-		         </div>
 				</div>				
 				<div id="parentcontmsggrouptable">
 					<table class="forms1" cellpadding="0" cellspacing="0">
@@ -287,9 +274,9 @@
 		               </tr>
 		            </table><br/>
 					<div id="contmessagegrouptable"></div>
-					<div align="center">
+					<!-- <div align="center">
 		                  <input type="button" value="Add/Update" onclick="javascript:submitEventMsgGroupTable()" /> 
-		         </div>
+		         </div> -->
 				</div>
 			</div>
 	      </div>
