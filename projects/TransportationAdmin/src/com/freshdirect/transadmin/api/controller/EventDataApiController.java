@@ -258,7 +258,7 @@ public class EventDataApiController extends BaseApiController {
 			    			}
 			    			
 			    		}
-			    		if(_tmpSubType.getMsgGroup().getEmail() != null && !"".equals(_tmpSubType.getMsgGroup().getEmail())
+			    		if(_tmpSubType.getMsgGroup() != null && _tmpSubType.getMsgGroup().getEmail() != null && !"".equals(_tmpSubType.getMsgGroup().getEmail())
 								&& _tmpSubType.getMsgGroup().getEmail() != null) {
 			    			emailEventLog(event, _tmpSubType);
 			    		}
