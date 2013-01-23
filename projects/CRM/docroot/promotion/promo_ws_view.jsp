@@ -15,18 +15,11 @@
 	
 	<tmpl:put name='content' direct='true'>
 	<crm:GetCurrentAgent id='currentAgent'>
-		<%	WSPromoFilterCriteria  wsFilter =  (WSPromoFilterCriteria)request.getSession().getAttribute("wsFilter"); 
+	<%	WSPromoFilterCriteria  wsFilter =  (WSPromoFilterCriteria)request.getSession().getAttribute("wsFilter"); 
+		DateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
 		String fromDateStr = null;
 		String toDateStr = null;
 		String status = null;
-		if(null == wsFilter || wsFilter.isEmpty()){
-			Calendar cal = Calendar.getInstance();
-			
-			wsFilter = new WSPromoFilterCriteria();
-			wsFilter.setFromDate(cal.getTime());
-			cal.add(Calendar.DATE, -90);
-			wsFilter.setToDate(cal.getTime());
-		}
 		if(null !=request.getParameter("ws_filter_submit")){
 			fromDateStr = request.getParameter("wsFromDate");
 			toDateStr = request.getParameter("wsToDate");
@@ -36,12 +29,26 @@
 			wsFilter.setFromDateStr(fromDateStr);
 			wsFilter.setToDateStr(toDateStr);
 			wsFilter.setStatus(status);
-		}else if(null != wsFilter && !wsFilter.isEmpty()){
+		}
+		else if(null == wsFilter || wsFilter.isEmpty()){
+			Calendar cal = Calendar.getInstance();
+			
+			
+			wsFilter = new WSPromoFilterCriteria();
+			wsFilter.setToDate(cal.getTime());
+			wsFilter.setToDateStr(sdf.format(cal.getTime()));
+			cal.add(Calendar.DATE, -90);
+			wsFilter.setFromDate(cal.getTime());
+			wsFilter.setFromDateStr(sdf.format(cal.getTime()));
+		}
+		
+		if(null != wsFilter && !wsFilter.isEmpty()){
 			fromDateStr = wsFilter.getFromDateStr();
 			toDateStr = wsFilter.getToDateStr();
 			status = wsFilter.getStatus();
 		}	
 	%>
+	
 		<%@ include file="/includes/promotions/i_promo_trn_nav.jspf" %>
 		<form method='POST' name="frmWSpromo" id="frmWSPromo"  action="/promotion/promo_ws_view.jsp">
 			<div class="BG_live">
@@ -67,7 +74,6 @@
 						<% for (Object promoStatusObj : EnumPromotionStatus.getEnumList()) { 
 						if(promoStatusObj instanceof EnumPromotionStatus){
 							EnumPromotionStatus promoStatus = (EnumPromotionStatus)promoStatusObj;
-							System.out.println();
 						%> 
 						<option value="<%= promoStatus.getName() %>" 
 						<%= (status!=null && status.equals(promoStatus.getName()))?"selected":""%>>
