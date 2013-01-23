@@ -167,9 +167,9 @@ public abstract class BaseController extends AbstractController implements Messa
 
     public String getPostData(HttpServletRequest request, HttpServletResponse response) {
         String data = request.getParameter("data");
-        if (LOGGER.isDebugEnabled()) {
+      /*  if (LOGGER.isDebugEnabled()) {
             LOGGER.debug(data);
-        }
+        }*/
         return data;
     }
 
