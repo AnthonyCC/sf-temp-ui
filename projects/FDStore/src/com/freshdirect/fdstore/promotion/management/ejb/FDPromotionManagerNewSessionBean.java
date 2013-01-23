@@ -92,8 +92,8 @@ public class FDPromotionManagerNewSessionBean extends FDSessionBeanSupport {
 		Connection conn = null;
 		try {
 			conn = getConnection();
-			return FDPromotionManagerNewDAO.getWSPromotionInfos(conn, fromDate, toDate,status);
-
+			List<WSPromotionInfo> promotions = FDPromotionManagerNewDAO.getWSPromotionInfos(conn, fromDate, toDate,status);
+			return promotions;
 		} catch (SQLException sqle) {
 			throw new FDResourceException(sqle);
 		} finally {

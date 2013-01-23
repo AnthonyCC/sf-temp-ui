@@ -27,12 +27,13 @@ public class GetWSPromotionTag extends AbstractGetterTag {
 	protected Object getResult() throws Exception {
 		HttpServletRequest request = (HttpServletRequest)pageContext.getRequest();
 		List<WSPromotionInfo> infos = new ArrayList<WSPromotionInfo>();
+		if(filter == null || (filter!=null && (null == filter.getFromDate() || null == filter.getToDate())) )
+			pageContext.setAttribute("dateErr", "Please specify the date range for filtering.");
 		if(null != filter &&(null != filter.getFromDate() && null != filter.getToDate() && filter.getToDate().before(filter.getFromDate()))){
-			pageContext.setAttribute("endDateBeforeErr", " 'To' date should not be before 'From' date for filtering.");
-		}else if(filter!=null){
+			pageContext.setAttribute("dateErr", " 'To' date should not be before 'From' date for filtering.");
+		}else if(filter!=null && filter.getFromDate()!=null && filter.getToDate()!=null){
 			 infos = FDPromotionNewManager.getWSPromotionInfos(filter.getFromDate(), filter.getToDate(),filter.getStatus());
-		}else
-			 infos = FDPromotionNewManager.getWSPromotionInfos(null, null,null);
+		}
 		
 		request.getSession().setAttribute("wsFilter", filter);
 		return infos;

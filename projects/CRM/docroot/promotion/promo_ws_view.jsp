@@ -50,12 +50,15 @@
 	%>
 	
 		<%@ include file="/includes/promotions/i_promo_trn_nav.jspf" %>
+		<fd:GetWSPromotions id="promotions" filter="<%= wsFilter %>">
 		<form method='POST' name="frmWSpromo" id="frmWSPromo"  action="/promotion/promo_ws_view.jsp">
 			<div class="BG_live">
 		
 			<table class="BG_live" width="60%" style="border-bottom:2px solid #000000;border-top:1px solid #000000;">
 			
-				
+				<% if(pageContext.getAttribute("dateErr")!=null) {%>
+		<tr><td><span class="error"><%= pageContext.getAttribute("dateErr")%></span>
+				<%	}	%>
 			
 			<tr>
 					
@@ -84,21 +87,9 @@
 					<td>&nbsp;</td>
 					<td><input type="submit" value="FILTER" onclick="" id="ws_filter_submit" name="ws_filter_submit" class="promo_btn_grn" /></td>
 			</tr>	
-				<% if(null !=pageContext.getAttribute("endDateBeforeErr")) {%>
-				<tr >
-				<td colspan='7'>&nbsp;</td>
-				<td colspan='3' class="case_content_red_field"><%= pageContext.getAttribute("endDateBeforeErr") %></td>
-				</tr>
-				<%} else { %>
-				<tr >
-				<td colspan='10'>&nbsp;</td>
-				</tr>
-				<% } %>
 			</table>
 			</div>
-		</form>
-		<fd:GetWSPromotions id="promotions" filter="<%= wsFilter %>">
-			
+		</form>	
 		<crm:WSPromoController result="result">
 		<form method='POST' name="frmPromoWSView" id="frmPromoWSView">
 			<div class="errContainer">

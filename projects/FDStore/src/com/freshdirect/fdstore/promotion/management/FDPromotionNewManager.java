@@ -120,7 +120,8 @@ public class FDPromotionNewManager {
 		lookupManagerHome();
 		try {
 			FDPromotionManagerNewSB sb = managerHome.create();
-			return sb.getWSPromotionInfos(fromDate, toDate,status);
+			List<WSPromotionInfo> promotions =  sb.getWSPromotionInfos(fromDate, toDate,status);
+			return promotions;
 		} catch (CreateException ce) {
 			invalidateManagerHome();
 			throw new FDResourceException(ce, "Error creating session bean");
