@@ -6,6 +6,7 @@ import java.util.List;
 import org.apache.log4j.Logger;
 
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.util.BalkingExpiringReference;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
@@ -14,7 +15,7 @@ public class CustomerRatingsContext extends BalkingExpiringReference<List<Custom
 	private static CustomerRatingsContext instance = null;
 	
 	public static CustomerRatingsContext getInstance() {
-		return getInstance(12 * 60 * 60 * 1000);
+		return getInstance(FDStoreProperties.getProductRatingRefreshInterval() * 60 * 60 * 1000);
 	}
 
 	public static CustomerRatingsContext getInstance(long refreshPeriod) {
@@ -42,9 +43,11 @@ public class CustomerRatingsContext extends BalkingExpiringReference<List<Custom
 		
 		
 		List<CustomerRatingsDTO> ratedProducts = getCustomerRatings();
-		for (CustomerRatingsDTO ratedProduct : ratedProducts) {
-			if (ratedProduct.getProductId().equals(productId)) {
-				return ratedProduct;
+		if(ratedProducts!=null){
+			for (CustomerRatingsDTO ratedProduct : ratedProducts) {
+				if (ratedProduct.getProductId().equals(productId)) {
+					return ratedProduct;
+				}
 			}
 		}
 		return null;
@@ -52,8 +55,11 @@ public class CustomerRatingsContext extends BalkingExpiringReference<List<Custom
 	
 	protected List<CustomerRatingsDTO> load() {
 		try {
+			if(!FDStoreProperties.isProductRatingReload()){
+				return referent;
+			}
 			BazaarvoiceUfServiceManager man = BazaarvoiceUfServiceManager.getInstance();
-			LAST_REFRESH = man.getLastRefresh();
+			//LAST_REFRESH = man.getLastRefresh();
 			return man.getCustomerRatings();
 		} catch (FDResourceException e) {
 			LOGGER.error("Refreshing customer ratings failed!",e);
@@ -61,8 +67,11 @@ public class CustomerRatingsContext extends BalkingExpiringReference<List<Custom
 		}
 	}
 	
-	protected boolean isExpired() {
+	/*protected boolean isExpired() {
 		try {
+			if(!FDStoreProperties.isProductRatingReload()){
+				return false;
+			}
 			BazaarvoiceUfServiceManager man = BazaarvoiceUfServiceManager.getInstance();
 			if (LAST_REFRESH == 0) return true;
 			return man.getLastRefresh() - LAST_REFRESH > 0;
@@ -70,7 +79,7 @@ public class CustomerRatingsContext extends BalkingExpiringReference<List<Custom
 			LOGGER.error("Refreshing customer ratings failed!",e);
 			return true;
 		}
-	}
+	}*/
 
 	
 }

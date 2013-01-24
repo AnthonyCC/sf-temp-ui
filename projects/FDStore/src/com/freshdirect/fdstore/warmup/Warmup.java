@@ -41,6 +41,7 @@ import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.ContentSearch;
 import com.freshdirect.fdstore.content.WineFilterPriceIndex;
 import com.freshdirect.fdstore.content.WineFilterRatingIndex;
+import com.freshdirect.fdstore.content.customerrating.CustomerRatingsContext;
 import com.freshdirect.fdstore.grp.FDGrpInfoManager;
 import com.freshdirect.fdstore.oauth.provider.OAuthProvider;
 import com.freshdirect.fdstore.zone.FDZoneInfoManager;
@@ -96,6 +97,8 @@ public class Warmup {
 		FDNutritionCache.getInstance();
 		// Get instance loads up the Drug Nutrition
 		FDNutritionPanelCache.getInstance();
+		// load the customer ratings
+		CustomerRatingsContext.getInstance();
 
 		LOGGER.info("main warmup in " + (System.currentTimeMillis() - time) + " ms");
 

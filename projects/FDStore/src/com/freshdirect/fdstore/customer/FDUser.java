@@ -1856,7 +1856,7 @@ public class FDUser extends ModelSupport implements FDUserI {
 			
 			// System.err.println("order info: " + h.getFDOrderInfos().size() + " == total " + h.getTotalOrderCount());
 			for (FDOrderInfoAdapter i : h.getFDOrderInfos()) {
-				LOGGER.debug("Sale ID=" + i.getErpSalesId() + "; DLV TYPE=" + i.getDeliveryType() + "; SO ID=" + i.getStandingOrderId());
+				//LOGGER.debug("Sale ID=" + i.getErpSalesId() + "; DLV TYPE=" + i.getDeliveryType() + "; SO ID=" + i.getStandingOrderId());
 				if (EnumDeliveryType.CORPORATE.equals( i.getDeliveryType() ) || i.getStandingOrderId() != null ) {
 					return Boolean.TRUE;
 				}
@@ -2185,13 +2185,13 @@ public class FDUser extends ModelSupport implements FDUserI {
 		
 		List<FDOrderInfoI> validPendingOrders = new ArrayList<FDOrderInfoI> ();
 
-		LOGGER.debug("getPendingOrders(incGiftCardOrds:"+incGiftCardOrds+", incDonationOrds:"+incDonationOrds+", sorted:"+sorted+")");
+		//LOGGER.debug("getPendingOrders(incGiftCardOrds:"+incGiftCardOrds+", incDonationOrds:"+incDonationOrds+", sorted:"+sorted+")");
 		for (Iterator<FDOrderInfoI> hIter = orderHistoryInfo.iterator(); hIter.hasNext(); ) {
 			FDOrderInfoI orderInfo = hIter.next();
 			
 
-			LOGGER.debug("SaleId:"+orderInfo.getErpSalesId()+", getOrderStatus:"+orderInfo.getOrderStatus().toString()
-					+", isModifiable:"+orderInfo.isModifiable()+", getDeliveryCutoffTime:"+orderInfo.getDeliveryCutoffTime());
+			//LOGGER.debug("SaleId:"+orderInfo.getErpSalesId()+", getOrderStatus:"+orderInfo.getOrderStatus().toString()
+					//+", isModifiable:"+orderInfo.isModifiable()+", getDeliveryCutoffTime:"+orderInfo.getDeliveryCutoffTime());
             
 			if (orderInfo.isModifiable()) {
 				

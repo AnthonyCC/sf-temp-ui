@@ -588,6 +588,10 @@ public class FDStoreProperties {
 	private final static String PROP_COHORT_MATCHER = "fdstore.cohortmatcher";
 
 	private final static String PROP_USQ_LEGAL_WARNING = "fdstore.store.usq_legal_warning";
+	
+	public final static String PRODUCT_RATING_REFRESH_PERIOD = "fdstore.productrating.refreshperiod";
+	
+	public final static String PRODUCT_RATING_RELOAD = "fdstore.productrating.reload";
 
     static {
         defaults.put(PROP_ROUTING_PROVIDER_URL, "t3://localhost:7001");
@@ -1161,6 +1165,8 @@ public class FDStoreProperties {
 		defaults.put(FAVOURITES_NUMBER_SWITCH, "true");
 		defaults.put(PROP_COHORT_MATCHER, "");
 		defaults.put(PROP_USQ_LEGAL_WARNING, "true");		
+		defaults.put(PRODUCT_RATING_REFRESH_PERIOD, "12");
+		defaults.put(PRODUCT_RATING_RELOAD, "true");		
         refresh();
     }
 
@@ -2994,6 +3000,12 @@ public class FDStoreProperties {
 	 
 	 public static boolean isUSQLegalWarningSwitchedOn() {
 			return (Boolean.valueOf(get(PROP_USQ_LEGAL_WARNING))).booleanValue();
+	 }
+	 public static int getProductRatingRefreshInterval() {
+	        return Integer.parseInt(get(PRODUCT_RATING_REFRESH_PERIOD));
+	   }  
+	 public static boolean isProductRatingReload() {
+			return (Boolean.valueOf(get(PRODUCT_RATING_RELOAD))).booleanValue();
 	 }
 	 
 }
