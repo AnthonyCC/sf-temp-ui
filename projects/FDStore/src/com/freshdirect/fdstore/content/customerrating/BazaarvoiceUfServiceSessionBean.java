@@ -1,10 +1,8 @@
 package com.freshdirect.fdstore.content.customerrating;
 
-import java.util.List;
+import java.util.Map;
 
 import com.freshdirect.fdstore.FDResourceException;
-import com.freshdirect.fdstore.content.customerrating.CustomerRatingsDAO;
-import com.freshdirect.fdstore.content.customerrating.CustomerRatingsDTO;
 import com.freshdirect.framework.core.SessionBeanSupport;
 
 public class BazaarvoiceUfServiceSessionBean extends SessionBeanSupport {
@@ -32,7 +30,7 @@ public class BazaarvoiceUfServiceSessionBean extends SessionBeanSupport {
 		return customerRatingsDAO.getTimestamp();
 	}
 	
-	public List<CustomerRatingsDTO> getCustomerRatings() throws FDResourceException{
+	public Map<String,CustomerRatingsDTO> getCustomerRatings() throws FDResourceException{
 		return customerRatingsDAO.getCustomerRatings();
 	}
 }

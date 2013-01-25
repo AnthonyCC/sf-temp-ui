@@ -4,10 +4,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 
@@ -21,7 +20,7 @@ public class CustomerRatingsDAO {
 	private static final Logger LOGGER = LoggerFactory.getInstance(CustomerRatingsDAO.class);
 	
 	private String getNextId(Connection conn) throws SQLException {
-		return SequenceGenerator.getNextId(conn, "CUST");
+		return SequenceGenerator.getNextId(conn, "MIS");
 	}
 	
 	public void purgeFeedFileContentStorage() throws FDResourceException {
@@ -171,7 +170,7 @@ public class CustomerRatingsDAO {
 					ps.setString(33, customerReview.getUserEmailAddress());
 					ps.setBoolean(34, customerReview.isPublishedEmailAlert());
 					ps.setBoolean(35, customerReview.isCommentedEmailAlert());
-					ps.setInt(36, customerReview.getOriginatingDisplayCode());
+					ps.setString(36, customerReview.getOriginatingDisplayCode());
 					ps.setString(37, customerReview.getContentCodes());
 					ps.setTimestamp(38, new java.sql.Timestamp(customerReview.getFirstPublishTime()));
 					ps.setTimestamp(39, new java.sql.Timestamp(customerReview.getLastPublishTime()));
@@ -204,12 +203,12 @@ public class CustomerRatingsDAO {
 		
 	}
 	
-	public List<CustomerRatingsDTO> getCustomerRatings() throws FDResourceException {
+	public Map<String,CustomerRatingsDTO> getCustomerRatings() throws FDResourceException {
 		String sql = "select * from MIS.BV_PRODUCT_RATINGS";
 		Connection connection = null;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
-		List<CustomerRatingsDTO> ratedProducts = new ArrayList<CustomerRatingsDTO>();
+		Map<String,CustomerRatingsDTO> ratedProducts = new HashMap<String,CustomerRatingsDTO>();
 		
 		try {
 			connection = getConnection();
@@ -219,14 +218,17 @@ public class CustomerRatingsDAO {
 			while (rs.next()) {
 				
 				CustomerRatingsDTO ratedProduct = new CustomerRatingsDTO();
-				
 				ratedProduct.setId(rs.getString("id"));
-				ratedProduct.setProductId(rs.getString("product_id"));
+				String productId = rs.getString("product_id");
+				ratedProduct.setProductId(productId);
 				ratedProduct.setAverageOverallRating(rs.getBigDecimal("average_overall_rating"));
 				ratedProduct.setTotalReviewCount(rs.getInt("total_review_count"));
 				ratedProduct.setRatingValue(rs.getInt("rating_value"));
 			    
-				ratedProducts.add(ratedProduct);
+				if (productId!=null){
+					ratedProducts.put(productId, ratedProduct);
+				}
+				
 			}
 		} catch (SQLException e) { 
 			LOGGER.error("Getting rated products failed!",e);

@@ -40,7 +40,7 @@ public class CustomerReviewsDTO implements Serializable {
 	private String userEmailAddress;
 	private boolean publishedEmailAlert;
 	private boolean commentedEmailAlert;
-	private int originatingDisplayCode;
+	private String originatingDisplayCode;
 	private String contentCodes;
 	private long firstPublishTime;
 	private long lastPublishTime;
@@ -237,10 +237,10 @@ public class CustomerReviewsDTO implements Serializable {
 	public void setCommentedEmailAlert(boolean commentedEmailAlert) {
 		this.commentedEmailAlert = commentedEmailAlert;
 	}
-	public int getOriginatingDisplayCode() {
+	public String getOriginatingDisplayCode() {
 		return originatingDisplayCode;
 	}
-	public void setOriginatingDisplayCode(int originatingDisplayCode) {
+	public void setOriginatingDisplayCode(String originatingDisplayCode) {
 		this.originatingDisplayCode = originatingDisplayCode;
 	}
 	public void setFirstPublishTime(long firstPublishTime) {

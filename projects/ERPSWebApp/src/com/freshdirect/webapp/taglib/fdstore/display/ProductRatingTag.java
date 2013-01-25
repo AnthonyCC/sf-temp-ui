@@ -172,9 +172,8 @@ public class ProductRatingTag extends BodyTagSupport {
 			} catch (IOException e) {
 				throw new JspException(e);
 			}
-		} else if (CustomerRatingsContext.getInstance().getCustomerRatingByProductId(product.getContentKey().getId()) != null) {
+		} else if ((customerRatingsDTO =  CustomerRatingsContext.getInstance().getCustomerRatingByProductId(product.getContentKey().getId())) != null) {
 			
-			customerRatingsDTO = CustomerRatingsContext.getInstance().getCustomerRatingByProductId(product.getContentKey().getId());
 			// CUSTOMAR RATINGS
 			// steal logic from WineRatingTag
 			boolean small = true;

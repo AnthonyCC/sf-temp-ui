@@ -1,7 +1,7 @@
 package com.freshdirect.fdstore.content.customerrating;
 
 import java.rmi.RemoteException;
-import java.util.List;
+import java.util.Map;
 
 import javax.ejb.CreateException;
 import javax.naming.Context;
@@ -69,7 +69,7 @@ public class BazaarvoiceUfServiceManager {
 		}
 	}
 	
-	public List<CustomerRatingsDTO> getCustomerRatings() throws FDResourceException{
+	public Map<String,CustomerRatingsDTO> getCustomerRatings() throws FDResourceException{
 		lookupServiceHome();
 		try {
 			BazaarvoiceUfServiceSB sb = soHome.create();			

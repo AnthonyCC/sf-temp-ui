@@ -1,7 +1,7 @@
 package com.freshdirect.fdstore.content.customerrating;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 
@@ -10,15 +10,15 @@ import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.util.BalkingExpiringReference;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
-public class CustomerRatingsContext extends BalkingExpiringReference<List<CustomerRatingsDTO>> {
+public class CustomerRatingsContext extends BalkingExpiringReference<Map<String,CustomerRatingsDTO>> {
 
 	private static CustomerRatingsContext instance = null;
 	
-	public static CustomerRatingsContext getInstance() {
+	public static synchronized CustomerRatingsContext getInstance() {
 		return getInstance(FDStoreProperties.getProductRatingRefreshInterval() * 60 * 60 * 1000);
 	}
 
-	public static CustomerRatingsContext getInstance(long refreshPeriod) {
+	public static synchronized CustomerRatingsContext getInstance(long refreshPeriod) {
 		if (instance == null) {
 			instance = new CustomerRatingsContext(refreshPeriod);
 		}
@@ -27,33 +27,32 @@ public class CustomerRatingsContext extends BalkingExpiringReference<List<Custom
 	
 	private CustomerRatingsContext(long refreshPeriod) {
 		super(refreshPeriod);
-		this.referent = new ArrayList<CustomerRatingsDTO>();
+		this.referent = new HashMap<String,CustomerRatingsDTO>();
 	}
 
 	private static final Logger LOGGER = LoggerFactory.getInstance( CustomerRatingsContext.class );
 
 	public static long LAST_REFRESH = 0;
 	
-	public List<CustomerRatingsDTO> getCustomerRatings() {
-		
-		return get();
+	public Map<String,CustomerRatingsDTO> getCustomerRatings() {
+		if (FDStoreProperties.isBazaarvoiceEnabled()) {
+			return get();
+		} else {
+			return new HashMap<String,CustomerRatingsDTO>();
+		}
 	}
 	
 	public CustomerRatingsDTO getCustomerRatingByProductId(String productId) {
 		
 		
-		List<CustomerRatingsDTO> ratedProducts = getCustomerRatings();
+		Map<String,CustomerRatingsDTO> ratedProducts = getCustomerRatings();
 		if(ratedProducts!=null){
-			for (CustomerRatingsDTO ratedProduct : ratedProducts) {
-				if (ratedProduct.getProductId().equals(productId)) {
-					return ratedProduct;
-				}
-			}
+			return ratedProducts.get(productId);
 		}
 		return null;
 	}
 	
-	protected List<CustomerRatingsDTO> load() {
+	protected Map<String,CustomerRatingsDTO> load() {
 		try {
 			if(!FDStoreProperties.isProductRatingReload()){
 				return referent;

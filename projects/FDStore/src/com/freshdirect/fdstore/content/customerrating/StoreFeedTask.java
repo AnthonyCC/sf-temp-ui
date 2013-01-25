@@ -193,7 +193,7 @@ public class StoreFeedTask {
 							customerReview.setUserEmailAddress(review.getElementsByTagName("UserEmailAddress").item(0).getTextContent());
 							customerReview.setPublishedEmailAlert(Boolean.parseBoolean(review.getElementsByTagName("SendEmailAlertWhenPublished").item(0).getTextContent()));
 							customerReview.setCommentedEmailAlert(Boolean.parseBoolean(review.getElementsByTagName("SendEmailAlertWhenCommented").item(0).getTextContent()));
-							customerReview.setOriginatingDisplayCode(Integer.parseInt(review.getElementsByTagName("OriginatingDisplayCode").item(0).getTextContent()));
+							customerReview.setOriginatingDisplayCode(review.getElementsByTagName("OriginatingDisplayCode").item(0).getTextContent());
 							customerReview.setContentCodes((String)getValue(String.class, review, "ContentCodes"));
 							customerReview.setFirstPublishTime(sdf.parse(review.getElementsByTagName("FirstPublishTime").item(0).getTextContent().substring(0,23)).getTime());
 							customerReview.setLastPublishTime(sdf.parse(review.getElementsByTagName("LastPublishTime").item(0).getTextContent().substring(0,23)).getTime());

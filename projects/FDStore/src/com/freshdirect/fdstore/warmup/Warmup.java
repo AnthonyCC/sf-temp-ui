@@ -98,7 +98,7 @@ public class Warmup {
 		// Get instance loads up the Drug Nutrition
 		FDNutritionPanelCache.getInstance();
 		// load the customer ratings
-		CustomerRatingsContext.getInstance();
+		CustomerRatingsContext.getInstance().getCustomerRatings();
 
 		LOGGER.info("main warmup in " + (System.currentTimeMillis() - time) + " ms");
 
