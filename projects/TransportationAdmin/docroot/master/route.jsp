@@ -35,23 +35,23 @@
 			<jsp:include page='/common/messages.jsp'/>
 		</div>
 	</c:if> 
-	<div class="MNM001 subsub or_999">
+	<div class="MNM002 subsub or_999">
 
 		<div class="subs_left">	
 		
-			<div class="sub_tableft sub_tabL_MNM001 <% if("R".equalsIgnoreCase(request.getParameter("routetype"))) { %>activeL<% } %>">&nbsp;</div>
+			<div class="sub_tableft sub_tabL_MNM002 <% if("R".equalsIgnoreCase(request.getParameter("routetype"))) { %>activeL<% } %>">&nbsp;</div>
 			<div class="subtab <% if("R".equalsIgnoreCase(request.getParameter("routetype"))) { %>activeT<% } %>">
 				<div class="minwidth"><!-- --></div>
-				<a href="route.do?routetype=R" class="<% if("R".equalsIgnoreCase(request.getParameter("routetype"))) { %>MNM001<% } %>">Active Routes</a>
+				<a href="route.do?routetype=R" class="<% if("R".equalsIgnoreCase(request.getParameter("routetype"))) { %>MNM002<% } %>">Active Routes</a>
 			</div>
-			<div class="sub_tabright sub_tabR_MNM001 <% if("R".equalsIgnoreCase(request.getParameter("routetype"))) { %>activeR<% } %>">&nbsp;</div>
+			<div class="sub_tabright sub_tabR_MNM002 <% if("R".equalsIgnoreCase(request.getParameter("routetype"))) { %>activeR<% } %>">&nbsp;</div>
             
-            <div class="sub_tableft sub_tabL_MNM001 <% if(!"R".equalsIgnoreCase(request.getParameter("routetype"))) { %>activeL<% } %>">&nbsp;</div>
+            <div class="sub_tableft sub_tabL_MNM002 <% if(!"R".equalsIgnoreCase(request.getParameter("routetype"))) { %>activeL<% } %>">&nbsp;</div>
 			<div class="subtab <% if(!"R".equalsIgnoreCase(request.getParameter("routetype"))) { %>activeT<% } %>">
 				<div class="minwidth"><!-- --></div>
-				<a href="route.do" class="<% if(!"R".equalsIgnoreCase(request.getParameter("routetype"))) { %>MNM001<% } %>">Ad Hoc Routes</a>
+				<a href="route.do" class="<% if(!"R".equalsIgnoreCase(request.getParameter("routetype"))) { %>MNM002<% } %>">Ad Hoc Routes</a>
 			</div>
-			<div class="sub_tabright sub_tabR_MNM001 <% if(!"R".equalsIgnoreCase(request.getParameter("routetype"))) { %>activeR<% } %>">&nbsp;</div>		
+			<div class="sub_tabright sub_tabR_MNM002 <% if(!"R".equalsIgnoreCase(request.getParameter("routetype"))) { %>activeR<% } %>">&nbsp;</div>		
 
 		</div>
 	</div>

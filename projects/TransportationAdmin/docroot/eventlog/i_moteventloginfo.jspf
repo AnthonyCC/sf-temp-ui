@@ -238,7 +238,7 @@
 		    </ul>
 		    <div class="yui-content">
 				<div id="parentconteventtypetable">
-					<table class="forms1" cellpadding="0" cellspacing="0">
+					<!-- <table class="forms1" cellpadding="0" cellspacing="0">
 				    	<tr>                            
 		                   <td>                 
 			                   Name&nbsp;&nbsp;</td>
@@ -255,12 +255,12 @@
 					          </select>
                    		    </td>
 			             </tr>
-		            </table><br/>				
+		            </table><br/> -->				
 							
 					<div id="conteventtypetable"></div>
 				</div>				
 				<div id="parentcontmsggrouptable">
-					<table class="forms1" cellpadding="0" cellspacing="0">
+					<!-- <table class="forms1" cellpadding="0" cellspacing="0">
 				    	<tr>                            
 		                   <td align="right">                 
 			                   Group Name&nbsp;<input size="50" id="fgroupname"  /> 
@@ -272,7 +272,7 @@
 			                   <input type="button" id="add" value="&nbsp;ADD&nbsp;" onclick="javascript:addMessageGroup();" /> 
 			               </td>
 		               </tr>
-		            </table><br/>
+		            </table><br/> -->
 					<div id="contmessagegrouptable"></div>
 					<!-- <div align="center">
 		                  <input type="button" value="Add/Update" onclick="javascript:submitEventMsgGroupTable()" /> 

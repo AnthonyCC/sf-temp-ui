@@ -69,14 +69,14 @@
 				<div class="cont_Ritem">
 				   				   
 					<div align="right">
-						<span>&nbsp;<input id="btnAddNewEvent" type="button" value="Add Event" class="btn" onclick="javascript:showEventForm();" />&nbsp;</span>
+						<span>&nbsp;<input id="btnAddNewEvent" type="button" value="Add ShiftEventLog" class="btn" onclick="javascript:showEventForm();" />&nbsp;</span>
 											
 					</div><br/>
 					
 					<div style="width:99%">
 						<div class="grid-header" style="width:100%">
 				      		<label>End of Shift Scanner Log</label>
-				     	 	<span style="float:right" class="ui-icon ui-icon-search" title="Toggle search panel"
+				     	 	<span style="float:right;display:none;" class="ui-icon ui-icon-search" title="Toggle search panel"
 				           	 onclick="toggleFilterRow()"></span>
     					</div>
 						<div id="myGrid" style="width: 100%; height: 625px;"></div>
@@ -530,7 +530,7 @@ function restoreGrid(dataX) {
 					<td valign="top">
 						<label for='form-date'>Event Date:</label>
 						<input type='text' id='eventDate' class='form-input' name='eventDate' tabindex='1' />
-						<label for='form-route'>Rotue</label>
+						<label for='form-route'>Route</label>
 						<select class='form-select' id="route" name="route" tabindex='2'></select>												
 						
 						<label for='form-scannerNumber'>Scanner Number</label>

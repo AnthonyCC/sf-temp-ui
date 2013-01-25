@@ -16,10 +16,6 @@
 	<tmpl:put name='slickgrid-lib'>
 		<%@ include file='/common/i_slickgrid.jspf'%>
 	</tmpl:put>
-	
-	<tmpl:put name='yui-lib'>
-		<%@ include file='/common/i_yui.jspf'%>
-	</tmpl:put>
   
 	<div class="MNM002 subsub or_999">
 		<div class="subs_left">	
@@ -73,14 +69,14 @@
 				<div class="cont_Ritem">
 				   				   
 					<div align="right">
-						<span>&nbsp;<input id="btnAddNewEvent" type="button" style="font-size:11px" type = "button" height="18" value="Add Event"  onclick="javascript:showEventForm();" />&nbsp;</span>
+						<span>&nbsp;<input id="btnAddNewEvent" type="button" style="font-size:11px" type = "button" height="18" value="Add MotEventLog"  onclick="javascript:showEventForm();" />&nbsp;</span>
 						<span>&nbsp;<input id="btnEventType" type="button" style="font-size:11px" type = "button" height="18" value="View Event Metadata"  onclick="javascript:showEventLogInfoTable();" />&nbsp;</span>
 					</div><br/>
 					
 					<div style="width:99%">
 						<div class="grid-header" style="width:100%">
 				      		<label>Event Log</label>
-				     	 	<span style="float:right" class="ui-icon ui-icon-search" title="Toggle search panel"
+				     	 	<span style="float:right;display:none;" class="ui-icon ui-icon-search" title="Toggle search panel"
 				           	 onclick="toggleFilterRow()"></span>
     					</div>
 						<div id="myGrid" style="width: 100%; height: 625px;"></div>
@@ -721,7 +717,7 @@ $(document).ready(function () {
 					<td valign="top">
 						<label for='form-date'>Event Date:</label>
 						<input type='text' id='eventDate' class='form-input' name='eventDate' tabindex='1' />
-						<label for='form-route'>Rotue</label>
+						<label for='form-route'>Route</label>
 						<select class='form-select' id="route" name="route" tabindex='2'></select>
 												
 						<label for='form-addHocRoute'>Mot Route</label>
