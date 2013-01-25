@@ -99,7 +99,7 @@ public class EventDataApiController extends BaseApiController {
 		String eventID = request.getParameter("eventID");
 		String deliveryDate = request.getParameter("deliveryDate");
 
-		Date eventDate = TransStringUtil.addDays(new Date(), -30);
+		Date eventDate = TransStringUtil.addDays(new Date(), TransportationAdminProperties.getEventLogDataLookUpDays());
 		boolean dataFlag = false;
 		if (daterange != null && !"".equals(daterange)) {
 			try {
@@ -174,7 +174,7 @@ public class EventDataApiController extends BaseApiController {
 			List<EventModel> events = dataFlag ? getEventLogService().lookUpEvents(eventDate) : getEventLogService().lookUpEventForDateRange(eventDate);
 			if(events != null) {
 				for(EventModel _event : events) {
-					if(TransportationAdminProperties.getShiftEventLogType().equals(_event.getEventType())) { 
+					if("51".equals(_event.getEventType())) { 
 						shiftEvents.add(_event);
 					}
 				}				

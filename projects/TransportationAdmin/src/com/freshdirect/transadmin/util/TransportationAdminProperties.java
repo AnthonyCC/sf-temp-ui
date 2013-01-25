@@ -248,6 +248,7 @@ public class TransportationAdminProperties {
 	private final static String PROP_EVENTLOG_MAILTO		= "transportation.eventlog.mailto";	
 	private final static String PROP_EVENTLOG_MAILCC		= "transportation.eventlog.mailcc";
 	private final static String PROP_EVENTLOG_MAILSUBJECT = "transportation.eventlog.mailsubject";
+	private final static String PROP_EVENTLOG_DATALOOKUP = "transportation.eventlog.lookup.days";
 	
 	static {
 
@@ -455,6 +456,7 @@ public class TransportationAdminProperties {
 		defaults.put(PROP_EVENTLOG_MAILTO, "applicationdevelopment@freshdirect.com");
 		defaults.put(PROP_EVENTLOG_MAILCC, "applicationdevelopment@freshdirect.com");
 		defaults.put(PROP_EVENTLOG_MAILSUBJECT, "Eventlog Notification");
+		defaults.put(PROP_EVENTLOG_DATALOOKUP, "-30");		
 
 		refresh();
 	}
@@ -978,6 +980,11 @@ public class TransportationAdminProperties {
 	
 	public static String getEventLogMailSubject() {
 		return get(PROP_EVENTLOG_MAILSUBJECT);
+	}
+	
+	public static int getEventLogDataLookUpDays() {
+		return getIntVal(get(PROP_EVENTLOG_DATALOOKUP));
+
 	}
 	
 }
