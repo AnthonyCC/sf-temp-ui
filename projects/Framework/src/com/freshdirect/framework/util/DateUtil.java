@@ -36,6 +36,10 @@ public class DateUtil {
 	
 	private static final DateFormat dateFormatwithTime = new SimpleDateFormat("MM/dd/yyyy hh:mm aaa");
 	
+	public static final DateFormat DAY_OF_WK_FORMATTER = new SimpleDateFormat("EEE");
+	
+	public static DateFormat serverTimeFormat = new SimpleDateFormat("hh:mm aaa");
+	
 	private DateUtil() {
 	}
 
@@ -206,6 +210,10 @@ public class DateUtil {
 		return DAY_OF_WEEK_FORMATTER.format(dateValue);
 	}
 	
+	public static String formatDayOfWk(Date dateValue) {
+		return DAY_OF_WK_FORMATTER.format(dateValue);
+	}
+	
 	public static String formatCmTimeslot(Date dateValue){
 		return CM_TIMESLOT_FORMATTER.format(dateValue);
 	}
@@ -357,4 +365,19 @@ public class DateUtil {
 		formatter.setTimeZone(gmt);
 		return formatter.format(date);
 	}
+	
+
+	public static Date getServerTime(Date clientDate) {
+		try
+		{
+			if(clientDate != null) {
+				return (Date)serverTimeFormat.parse(serverTimeFormat.format(clientDate));
+			} 
+		}catch(ParseException pe){
+			
+		}
+		return null;
+	}
+	
+	
 } 
