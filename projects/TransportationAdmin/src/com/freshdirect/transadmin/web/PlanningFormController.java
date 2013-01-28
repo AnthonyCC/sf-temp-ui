@@ -12,6 +12,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.ServletRequestDataBinder;
 
 import com.freshdirect.routing.constants.EnumTransportationFacilitySrc;
@@ -32,6 +33,7 @@ import com.freshdirect.transadmin.util.EnumResourceType;
 import com.freshdirect.transadmin.util.TransStringUtil;
 import com.freshdirect.transadmin.util.WaveUtil;
 import com.freshdirect.transadmin.web.editor.TrnFacilityPropertyEditor;
+import com.freshdirect.transadmin.web.model.ResourceList;
 import com.freshdirect.transadmin.web.model.WebPlanInfo;
 
 public class PlanningFormController extends AbstractFormController {
@@ -102,7 +104,7 @@ public class PlanningFormController extends AbstractFormController {
 				}
 		}
 	}
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	protected Map referenceData(HttpServletRequest request) throws ServletException {
 		
 		Collection zones=getDomainManagerService().getZones();
@@ -117,8 +119,7 @@ public class PlanningFormController extends AbstractFormController {
     			}
     		}
     	}
-		
-		//printRequestParameters(request);
+				
 		Map refData = new HashMap();
 		refData.put("days", domainManagerService.getDays());
 		refData.put("zones", zones);
@@ -130,8 +131,11 @@ public class PlanningFormController extends AbstractFormController {
 
 		WebPlanInfo model = null;
 		String id = request.getParameter("id");
+		if(TransStringUtil.isEmpty(id)) {
+			id=request.getParameter("planRefId");
+		}
 		if(id != null)
-			model = (WebPlanInfo)this.getBackingObject(request.getParameter("id"));
+			model = (WebPlanInfo) this.getBackingObject(id, request);
 
 		String destFacility = request.getParameter("destinationFacility");
 		TrnFacility deliveryFacility = locationManagerService.getTrnFacility(destFacility == null ? (model != null &&  model.getDestinationFacility() != null ?
@@ -169,9 +173,40 @@ public class PlanningFormController extends AbstractFormController {
 		}
 
 	}
-	public Object getBackingObject(String id) {
-		WebPlanInfo planInfo=getCommand(getDispatchManagerService().getPlan(id));
+	
+	protected Object formBackingObject(HttpServletRequest request)
+			throws Exception {
+		String id = getIdFromRequest(request);
+
+		if (StringUtils.hasText(id)) {
+			Object  tmp = getBackingObject(id, request);
+			return tmp;
+		} else {
+			return getDefaultBackingObject();
+		}
+	}
+	
+	public Object getBackingObject(String id, HttpServletRequest request) {
+		WebPlanInfo planInfo = getCommand(getDispatchManagerService().getPlan(id));
+		
+		String planRefId = request.getParameter("planRefId");
+		if(!TransStringUtil.isEmpty(planRefId)) {
+			planInfo.setPlanId(null);
+			planInfo.setSequence(0);
+			
+			planInfo.setDrivers(new ResourceList());
+			planInfo.setHelpers(new ResourceList());
+			planInfo.setRunners(new ResourceList());
+			
+			DispatchPlanUtil.setResourceInfo(planInfo, false, employeeManagerService);
+		}
 		return planInfo;
+	}
+	
+	@Override
+	public Object getBackingObject(String id) {
+		// Replaced by getBackingObject(String id, request)
+		return null;
 	}
 
 	private WebPlanInfo getCommand(Plan plan) {
@@ -297,6 +332,9 @@ public class PlanningFormController extends AbstractFormController {
 		String id = request.getParameter("id");
 		if(TransStringUtil.isEmpty(id)) {
 			id=request.getParameter("planId");
+		} 
+		if(TransStringUtil.isEmpty(id)) {
+			id=request.getParameter("planRefId");
 		}
 		return id;
 	}

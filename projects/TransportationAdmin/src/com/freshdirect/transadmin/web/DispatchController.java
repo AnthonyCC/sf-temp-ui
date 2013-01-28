@@ -794,6 +794,43 @@ public class DispatchController extends AbstractMultiActionController {
 		saveMessage(request, getMessage("app.actionmessage.103", null));
 
 		return planHandler(request, response);
+	}	
+	
+	public ModelAndView convertPlanToBullpenHandler(HttpServletRequest request, HttpServletResponse response) throws ServletException {
+
+		Set<Plan> planSet = new HashSet<Plan>();
+		String arrEntityList[] = getParamList(request);
+		Map<Date, Set<String>> deliveryMapping = new HashMap<Date, Set<String>>();
+		
+		if (arrEntityList != null) {
+			int arrLength = arrEntityList.length;
+			for (int intCount = 0; intCount < arrLength; intCount++) {
+				Plan p = dispatchManagerService.getPlan(arrEntityList[intCount]);
+				p.setUserId(SecurityManager.getUserName(request));
+				p.setIsBullpen("Y");
+				p.setZoneCode(null);				
+				p.setOriginFacility(null);
+				p.setDestinationFacility(null);
+				
+				planSet.add(p);
+				
+				if (p != null && p.getZone() != null) {
+					if (!deliveryMapping.containsKey(p.getDeliveryDate())) {
+						deliveryMapping.put(p.getPlanDate(), new HashSet<String>());
+					}
+					deliveryMapping.get(p.getPlanDate()).add(p.getZone().getZoneCode());
+				}
+			}
+		}
+		dispatchManagerService.saveEntityList(planSet);
+		if(RoutingServicesProperties.getRoutingDynaSyncEnabled()) {
+			WaveUtil.recalculateWave(this.getDispatchManagerService(), deliveryMapping
+										,  com.freshdirect.transadmin.security.SecurityManager.getUserName(request)
+											, EnumWaveInstancePublishSrc.PLAN);
+		}
+		saveMessage(request, getMessage("app.actionmessage.162", null));
+
+		return planHandler(request, response);
 	}
 
 	/**

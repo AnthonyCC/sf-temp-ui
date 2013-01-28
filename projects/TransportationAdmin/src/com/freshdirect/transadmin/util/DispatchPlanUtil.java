@@ -585,7 +585,7 @@ public class DispatchPlanUtil {
 		return true;
 	}
 
-	private static WebPlanInfo setResourceInfo(WebPlanInfo model, boolean isZoneModified,EmployeeManagerI employeeManagerService) {
+	public static WebPlanInfo setResourceInfo(WebPlanInfo model, boolean isZoneModified,EmployeeManagerI employeeManagerService) {
 
 		model.setResourceInfo(model.getDrivers(),isZoneModified,EnumResourceType.DRIVER,employeeManagerService,model.getDriverMax());
 		model.setResourceInfo(model.getHelpers(),isZoneModified,EnumResourceType.HELPER,employeeManagerService,model.getHelperMax());

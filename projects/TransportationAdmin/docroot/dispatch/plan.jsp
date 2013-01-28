@@ -7,7 +7,9 @@
 <%@ page import='com.freshdirect.transadmin.util.TransportationAdminProperties' %>
 
 <%  
-	pageContext.setAttribute("HAS_COPYBUTTON", "true");  
+	pageContext.setAttribute("HAS_COPYBUTTON", "true");
+	pageContext.setAttribute("HAS_CLONEBUTTON", "true");	
+	pageContext.setAttribute("HAS_BULLPENBUTTON", "true");	
 	String zoneVal = request.getParameter("zone") != null ? request.getParameter("zone") : "";
 %>
 <% 
@@ -182,7 +184,55 @@
 		    } else {
 		    	alert('Please Select a Row!');
 		    }
-		}
+	  }
+      
+      function doBullpen(tableId, url) 
+      {    
+		    var paramValues = getParamList(tableId, url);
+		    if (paramValues != null) {
+		    	var hasConfirmed = confirm ("Do you want to convert selected truck(s) to bullpen?")
+		    	if (hasConfirmed) 
+				{
+		    		var param1 = document.getElementById("weekdate").value;
+		     		var param2 = document.getElementById("daterange").value;
+		     		var param3 = document.getElementById("zone").value;
+		            var filters="&weekdate="+param1+"&daterange="+param2+"&zone="+param3+"&"+getFilterValue(document.getElementById("planListForm"),false)
+				  	location.href = url+"?id="+ paramValues+filters;
+				} 
+		    } else {
+		    	alert('Please select atleast one Row!');
+		    }
+	  }
+      
+      function doClone(tableId, url) 
+      {  
+    	    var table = document.getElementById(tableId);
+    	    var checkboxList = table.getElementsByTagName("input");    
+    	    var rowSelCnt = 0;
+    	    for (i = 0; i < checkboxList.length; i++) {
+    	    	if (checkboxList[i].type=="checkbox" && checkboxList[i].checked) {
+    	    		rowSelCnt++;  	    		
+    	    	}
+    	    }
+    	    
+    	    if(rowSelCnt === 0) {
+    	    	alert('Please select a Row!');
+    	    } else if(rowSelCnt > 1){
+    	    	alert('Please select only one Row!');
+    	    } else {
+    	    	var paramValues = getParamList(tableId, url);
+    		    if (paramValues != null) {
+    		    	var hasConfirmed = confirm ("You are about to clone the selected plan entry. Do you want to continue?")
+    		    	if (hasConfirmed) {
+    		    		var param1 = document.getElementById("weekdate").value;
+    		     		var param2 = document.getElementById("daterange").value;
+    		     		var param3 = document.getElementById("zone").value;
+    		            var filters="&weekdate="+param1+"&daterange="+param2+"&zone="+param3+"&"+getFilterValue(document.getElementById("planListForm"),false)
+    				  	location.href = url+"?planRefId="+ paramValues+filters;
+    				} 
+    		    }	
+    	    }
+	  }
 		
 	  function doUnavailable(url,id1,id2,param3)
 	  {

@@ -45,7 +45,9 @@
  		 	    <prop key="/deleteregion.do">domainController</prop>
  		 	    <prop key="/plan.do">dispatchController</prop>
  		 	    <prop key="/deleteplan.do">dispatchController</prop>
- 		 	    <prop key="/editplan.do">planningFormController</prop> 		 	    
+ 		 	    <prop key="/bullpenplan.do">dispatchController</prop>
+ 		 	    <prop key="/editplan.do">planningFormController</prop>
+ 		 	    <prop key="/cloneplan.do">planningFormController</prop> 		 	    
  		 	    <prop key="/plansummary.do">dispatchController</prop>
  		 	    <prop key="/dispatch.do">dispatchController</prop>
  		 	    <prop key="/dispatchSummary.do">dispatchController</prop>
@@ -291,6 +293,7 @@
  		 	<prop key="/plan.do">planHandler</prop>
  		 	<prop key="/plansummary.do">planSummaryHandler</prop>			      
  		 	<prop key="/deleteplan.do">planDeleteHandler</prop>
+ 		 	<prop key="/bullpenplan.do">convertPlanToBullpenHandler</prop>
  		 	<prop key="/dispatch.do">dispatchHandler</prop>
  		 	<prop key="/dispatchSummary.do">dispatchSummaryHandler</prop>
  		 	<prop key="/dispatchDashboard.do">dispatchDashboardHandler</prop> 	 

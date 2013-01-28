@@ -66,6 +66,10 @@ public class FDStatusBar extends DefaultStatusBar {
         
         String hasSend = (String)model.getContext().getPageAttribute("HAS_SENDBUTTON");
         
+        String hasClone = (String)model.getContext().getPageAttribute("HAS_CLONEBUTTON");
+        
+        String hasBullpen = (String)model.getContext().getPageAttribute("HAS_BULLPENBUTTON");
+        
         if(hasAdd == null || TransStringUtil.isEmpty(hasAdd)
         	|| hasAdd.equalsIgnoreCase("TRUE")) {
 
@@ -107,6 +111,20 @@ public class FDStatusBar extends DefaultStatusBar {
     	    toolbarBuilder.sendItemAsImage();
     	     
     	    html.nbsp();
+        }
+        
+        if(hasClone != null && hasClone.equalsIgnoreCase("TRUE")) {
+
+    	        toolbarBuilder.cloneItemAsImage();
+    	        
+    	        html.nbsp();
+        }
+        
+        if(hasBullpen != null && hasBullpen.equalsIgnoreCase("TRUE")) {
+
+    	        toolbarBuilder.bullpenItemAsImage();
+    	        
+    	        html.nbsp();
         }
         
         if(!"FALSE".equalsIgnoreCase(hasDelete)) {

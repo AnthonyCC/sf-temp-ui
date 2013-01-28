@@ -16,10 +16,12 @@ public class FDStatusBarBuilder extends ToolbarBuilder {
 	private final static String TOOLBAR_DELETE_IMAGE = "delete";
 	private final static String TOOLBAR_CONFIRM_IMAGE = "confirm-unconfirm";
 	private final static String TOOLBAR_COPY_IMAGE = "copy";
+	private final static String TOOLBAR_CLONE_IMAGE = "clone";
 	
 	private final static String TOOLBAR_GEOCODE_IMAGE = "geocode";	
 	private final static String TOOLBAR_UPDATE_IMAGE = "update";
 	private final static String TOOLBAR_SEND_IMAGE = "send";
+	private final static String TOOLBAR_BULLPEN_IMAGE = "bullpen";
 	
 	public FDStatusBarBuilder(TableModel model) {
         super(model);
@@ -63,6 +65,16 @@ public class FDStatusBarBuilder extends ToolbarBuilder {
     public void sendItemAsImage() {
     	ImageItem item = itemAsImage(TOOLBAR_SEND_IMAGE, "Send");
         buildSend(getHtmlBuilder(), getTableModel(), item);
+    }
+    
+    public void cloneItemAsImage() {
+    	ImageItem item = itemAsImage(TOOLBAR_CLONE_IMAGE, "Clone");
+        buildClone(getHtmlBuilder(), getTableModel(), item);
+    }
+    
+    public void bullpenItemAsImage() {
+    	ImageItem item = itemAsImage(TOOLBAR_BULLPEN_IMAGE, "Bullpen");
+        buildBullpen(getHtmlBuilder(), getTableModel(), item);
     }
     
     private ImageItem itemAsImage(String image, String altText) {
@@ -110,13 +122,18 @@ public class FDStatusBarBuilder extends ToolbarBuilder {
         item.enabled(html, model);
     }
     
+    public void buildClone(HtmlBuilder html, TableModel model, ToolbarItem item) {
+        item.setAction(getCloneAction("edit",model));
+        item.enabled(html, model);
+    }
+    
+    public void buildBullpen(HtmlBuilder html, TableModel model, ToolbarItem item) {
+        item.setAction(getBullpenAction("bullpen",model));
+        item.enabled(html, model);
+    }
+    
     public String getAddAction(String key, TableModel model) {
-       /*StringBuffer result = new StringBuffer("javascript:");
-
-        String action = model.getTableHandler().getTable().getAction();
-        result.append("location.href = ").append("'").append(formatAction(action,key)).append("'");                       
-        return result.toString();*/    	
-    	
+     	
     	StringBuffer result = new StringBuffer("javascript:");
 
         String action = model.getTableHandler().getTable().getAction();
@@ -231,6 +248,25 @@ public class FDStatusBarBuilder extends ToolbarBuilder {
         this.getHtmlBuilder().newline();
         this.getHtmlBuilder().tabs(4);
         this.getHtmlBuilder().selectEnd();
+    }
+    
+    public String getBullpenAction(String key, TableModel model) {
+    	StringBuffer result = new StringBuffer("javascript:");
+
+    	String action = model.getTableHandler().getTable().getAction();
+        result.append("doBullpen('").append(model.getTableHandler().getTable().getTableId())
+        				.append("_table','").append(formatAction(action,key)).append("')");                       
+        return result.toString();
+    }
+    
+    public String getCloneAction(String key, TableModel model) {
+     	
+    	StringBuffer result = new StringBuffer("javascript:");
+
+        String action = model.getTableHandler().getTable().getAction();
+        result.append("doClone('").append(model.getTableHandler().getTable().getTableId())
+								.append("_table','").append(formatAction(action,key)).append("')");                              
+        return result.toString();
     }
 
 
