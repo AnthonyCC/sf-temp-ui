@@ -141,6 +141,8 @@ public class DataSourceLocator {
 		}
 	}
 
+	/** generally this method should not be used as datasource references are injected into the ejbs */
+	@Deprecated
 	public static Connection getConnectionByDatasource(String JNDIName) throws SQLException {
 		try {
 			return DataSourceLocator.getDataSourceByJNDIName(JNDIName).getConnection();
@@ -149,6 +151,8 @@ public class DataSourceLocator {
 		}
 	}
 
+	/** generally this method should not be used as datasource references are injected into the ejbs */
+	@Deprecated
 	private static DataSource getDataSourceByJNDIName(String JNDIName) throws NamingException {
     	InitialContext initCtx = null;
         try {
