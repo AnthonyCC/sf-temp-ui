@@ -176,6 +176,21 @@
                 <resource-env-ref-type>javax.jms.Queue</resource-env-ref-type>
             </resource-env-ref>
         </session>
+        
+       <session>
+			<ejb-name>DispatchVolume</ejb-name>
+			<home>com.freshdirect.analytics.ejb.DispatchVolumeHome</home>
+			<remote>com.freshdirect.analytics.ejb.DispatchVolumeSB</remote>
+			<ejb-class>com.freshdirect.analytics.ejb.DispatchVolumeSessionBean</ejb-class>
+			<session-type>Stateless</session-type>
+			<transaction-type>Container</transaction-type>
+			<resource-ref>
+				<res-ref-name>jdbc/dbpool</res-ref-name>
+				<res-type>javax.sql.DataSource</res-type>
+				<res-auth>Container</res-auth>
+			</resource-ref>
+	</session>   
+	
        
          <message-driven>
             <ejb-name>RoutingLoadListener</ejb-name>

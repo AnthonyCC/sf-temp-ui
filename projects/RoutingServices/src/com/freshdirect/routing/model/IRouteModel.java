@@ -64,5 +64,8 @@ public interface IRouteModel {
 	
 	void appendRoadNetRouteId(String roadNetRouteId);
 	
+	String getWaveId();
+	void setWaveId(String waveId);
+	
 	
 }

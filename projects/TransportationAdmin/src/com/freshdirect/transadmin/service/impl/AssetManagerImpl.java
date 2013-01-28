@@ -4,11 +4,17 @@ package com.freshdirect.transadmin.service.impl;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.log4j.Category;
 
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.routing.model.EquipmentType;
+import com.freshdirect.routing.model.IRegionModel;
+import com.freshdirect.routing.service.proxy.RoutingEngineServiceProxy;
+import com.freshdirect.routing.service.proxy.RoutingInfoServiceProxy;
 import com.freshdirect.transadmin.dao.AssetManagerDaoI;
 import com.freshdirect.transadmin.dao.BaseManagerDaoI;
 import com.freshdirect.transadmin.model.Asset;
@@ -17,6 +23,7 @@ import com.freshdirect.transadmin.model.AssetType;
 import com.freshdirect.transadmin.model.TrnAdHocRoute;
 import com.freshdirect.transadmin.model.comparator.AlphaNumericComparator;
 import com.freshdirect.transadmin.service.AssetManagerI;
+import com.freshdirect.transadmin.util.TransAdminCacheManager;
 
 public class AssetManagerImpl  
 		extends BaseManagerImpl implements AssetManagerI {
@@ -173,5 +180,25 @@ public class AssetManagerImpl
 			}
 			return objStrlength1 - objStrlength2;
 	    } 
+	}
+	
+	@Override
+	public Map<String, List<EquipmentType>> loadEquipmentTypes() {
+		
+		RoutingEngineServiceProxy proxy = new RoutingEngineServiceProxy();
+		List<IRegionModel> regions = new RoutingInfoServiceProxy().getRegions();
+		Map<String, List<EquipmentType>> equipmentTypes = new HashMap<String, List<EquipmentType>>();
+		for(IRegionModel region : regions)
+		{
+			List<EquipmentType> e = proxy.getEquipmentTypes(region.getName());
+			equipmentTypes.put(region.getName(), e);
+		}
+		return equipmentTypes;
+	}
+
+	@Override
+	public List<EquipmentType> getEquipmentTypes(String region) {
+		return  TransAdminCacheManager.getInstance().getEquipmentTypes(this, region);
+		
 	}
 }

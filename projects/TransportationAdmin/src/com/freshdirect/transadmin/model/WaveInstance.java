@@ -31,6 +31,7 @@ public class WaveInstance implements java.io.Serializable, TrnBaseEntityI  {
 	private Boolean forceSynchronize;
 	private TrnFacility originFacility;
 	private TrnFacility destinationFacility;	
+	private String equipmentType;
 
 	
 	public TrnFacility getOriginFacility() {
@@ -146,6 +147,14 @@ public class WaveInstance implements java.io.Serializable, TrnBaseEntityI  {
 
 	public void setDestinationFacility(TrnFacility destinationFacility) {
 		this.destinationFacility = destinationFacility;
+	}
+
+	public String getEquipmentType() {
+		return equipmentType;
+	}
+
+	public void setEquipmentType(String equipmentType) {
+		this.equipmentType = equipmentType;
 	}
 
 }

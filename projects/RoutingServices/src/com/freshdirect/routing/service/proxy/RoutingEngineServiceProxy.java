@@ -4,10 +4,12 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
+import com.freshdirect.routing.model.EquipmentType;
 import com.freshdirect.routing.model.IDeliveryReservation;
 import com.freshdirect.routing.model.IDeliverySlot;
 import com.freshdirect.routing.model.IDeliveryWindowMetrics;
 import com.freshdirect.routing.model.IOrderModel;
+import com.freshdirect.routing.model.IRouteModel;
 import com.freshdirect.routing.model.IRoutingNotificationModel;
 import com.freshdirect.routing.model.IRoutingSchedulerIdentity;
 import com.freshdirect.routing.proxy.stub.transportation.DeliveryAreaOrder;
@@ -115,4 +117,14 @@ public class RoutingEngineServiceProxy extends BaseServiceProxy {
 	public IRoutingEngineService getService() {
 		return RoutingServiceLocator.getInstance().getRoutingEngineService();
 	}
+	public List<EquipmentType> getEquipmentTypes(String region) {
+		return getService().getEquipmentTypes(region);
+	}
+	
+	public List<IRouteModel> getRoutesByCriteria(IRoutingSchedulerIdentity schedulerId, String waveCode) throws RoutingServiceException{
+		return getService().getRoutesByCriteria(schedulerId, waveCode);
+	}
+	
+	
+	
 }

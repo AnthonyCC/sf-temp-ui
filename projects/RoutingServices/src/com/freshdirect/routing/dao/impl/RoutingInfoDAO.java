@@ -25,11 +25,13 @@ import com.freshdirect.routing.dao.IRoutingInfoDAO;
 import com.freshdirect.routing.model.AreaModel;
 import com.freshdirect.routing.model.IAreaModel;
 import com.freshdirect.routing.model.IRegionModel;
+import com.freshdirect.routing.model.IRoutingEquipmentType;
 import com.freshdirect.routing.model.IServiceTimeScenarioModel;
 import com.freshdirect.routing.model.IServiceTimeTypeModel;
 import com.freshdirect.routing.model.IWaveInstance;
 import com.freshdirect.routing.model.IZoneScenarioModel;
 import com.freshdirect.routing.model.RegionModel;
+import com.freshdirect.routing.model.RoutingEquipmentType;
 import com.freshdirect.routing.model.ServiceTimeScenario;
 import com.freshdirect.routing.model.ServiceTimeTypeModel;
 import com.freshdirect.routing.model.TrnFacility;
@@ -276,25 +278,25 @@ public class RoutingInfoDAO extends BaseDAO implements IRoutingInfoDAO   {
 	
 	private static final String GET_WAVEINSTANCE_BYSTATUS_QRY = "select P.DELIVERY_DATE DISPATCH_DATE, F.FACILITY_CODE ORIGIN_FACILITY, P.AREA ZONE, P.CUTOFF_DATETIME CUT_OFF " +
 	", P.DISPATCH_TIME DISPATCH_TIME, P.FIRST_DLV_TIME, P.LAST_DLV_TIME, P.RESOURCE_COUNT, P.FORCE_SYNCHRONIZE, P.REFERENCE_ID, P.WAVEINSTANCE_ID, P.SOURCE, P.STATUS, P.NOTIFICATION_MSG " +
-	", Z.STEM_TO_TIME TO_ZONETIME, Z.STEM_FROM_TIME FROM_ZONETIME, Z.LOADING_PRIORITY, TR.IS_DEPOT IS_DEPOT " +
+	", Z.STEM_TO_TIME TO_ZONETIME, Z.STEM_FROM_TIME FROM_ZONETIME, Z.LOADING_PRIORITY, TR.IS_DEPOT IS_DEPOT, P.EQUIPMENT_TYPE, TR.CODE REGION  " +
 	"from transp.WAVE_INSTANCE p, transp.zone z, transp.trn_area a, TRANSP.TRN_REGION TR, transp.trn_facility f where P.DELIVERY_DATE = ?  and P.AREA = Z.ZONE_CODE and z.AREA = a.CODE AND TR.CODE = A.REGION_CODE and f.ID = P.ORIGIN_FACILITY and STATUS = ? " +
 	"order by P.DELIVERY_DATE, P.AREA, P.CUTOFF_DATETIME, P.FIRST_DLV_TIME";
 	
 	private static final String GET_WAVEINSTANCE_QRY = "select P.DELIVERY_DATE DISPATCH_DATE, F.FACILITY_CODE ORIGIN_FACILITY, P.AREA ZONE, P.CUTOFF_DATETIME CUT_OFF " +
 	", P.DISPATCH_TIME DISPATCH_TIME, P.FIRST_DLV_TIME, P.LAST_DLV_TIME, P.RESOURCE_COUNT, P.FORCE_SYNCHRONIZE, P.REFERENCE_ID, P.WAVEINSTANCE_ID, P.SOURCE, P.STATUS, P.NOTIFICATION_MSG " +
-	", Z.STEM_TO_TIME TO_ZONETIME, Z.STEM_FROM_TIME FROM_ZONETIME, Z.LOADING_PRIORITY, TR.IS_DEPOT IS_DEPOT " +
+	", Z.STEM_TO_TIME TO_ZONETIME, Z.STEM_FROM_TIME FROM_ZONETIME, Z.LOADING_PRIORITY, TR.IS_DEPOT IS_DEPOT, P.EQUIPMENT_TYPE, TR.CODE REGION " +
 	"from transp.WAVE_INSTANCE p, transp.zone z, transp.trn_area a,  TRANSP.TRN_REGION TR, transp.trn_facility f where P.DELIVERY_DATE = ?  and P.AREA = Z.ZONE_CODE and z.AREA = a.CODE AND TR.CODE = A.REGION_CODE and f.ID = P.ORIGIN_FACILITY " +
 	"order by P.DELIVERY_DATE, P.AREA, P.CUTOFF_DATETIME, P.FIRST_DLV_TIME";
 	
 	private static final String GET_FUTURE_WAVEINSTANCE_QRY = "select P.DELIVERY_DATE DISPATCH_DATE, F.FACILITY_CODE ORIGIN_FACILITY, P.AREA ZONE, P.CUTOFF_DATETIME CUT_OFF " +
 	", P.DISPATCH_TIME DISPATCH_TIME, P.FIRST_DLV_TIME, P.LAST_DLV_TIME, P.RESOURCE_COUNT, P.FORCE_SYNCHRONIZE, P.REFERENCE_ID, P.WAVEINSTANCE_ID, P.SOURCE, P.STATUS, P.NOTIFICATION_MSG " +
-	", Z.STEM_TO_TIME TO_ZONETIME, Z.STEM_FROM_TIME FROM_ZONETIME, Z.LOADING_PRIORITY, TR.IS_DEPOT IS_DEPOT " +
+	", Z.STEM_TO_TIME TO_ZONETIME, Z.STEM_FROM_TIME FROM_ZONETIME, Z.LOADING_PRIORITY, TR.IS_DEPOT IS_DEPOT, P.EQUIPMENT_TYPE, TR.CODE REGION  " +
 	" from transp.WAVE_INSTANCE p, transp.zone z, transp.trn_area a, TRANSP.TRN_REGION TR, transp.trn_facility f where P.DELIVERY_DATE > sysdate  and P.AREA = Z.ZONE_CODE and z.AREA = a.CODE AND TR.CODE = A.REGION_CODE and f.ID = P.ORIGIN_FACILITY " +
 	"order by P.DELIVERY_DATE, P.AREA, P.CUTOFF_DATETIME, P.FIRST_DLV_TIME";
 	
 	private static final String GET_FUTURE_WAVEINSTANCE_BYSTATUS_QRY = "select P.DELIVERY_DATE DISPATCH_DATE, F.FACILITY_CODE ORIGIN_FACILITY, P.AREA ZONE, P.CUTOFF_DATETIME CUT_OFF " +
 	", P.DISPATCH_TIME DISPATCH_TIME, P.FIRST_DLV_TIME, P.LAST_DLV_TIME, P.RESOURCE_COUNT, P.FORCE_SYNCHRONIZE, P.REFERENCE_ID, P.WAVEINSTANCE_ID, P.SOURCE, P.STATUS, P.NOTIFICATION_MSG " +
-	", Z.STEM_TO_TIME TO_ZONETIME, Z.STEM_FROM_TIME FROM_ZONETIME, Z.LOADING_PRIORITY, TR.IS_DEPOT IS_DEPOT " +
+	", Z.STEM_TO_TIME TO_ZONETIME, Z.STEM_FROM_TIME FROM_ZONETIME, Z.LOADING_PRIORITY, TR.IS_DEPOT IS_DEPOT, P.EQUIPMENT_TYPE, TR.CODE REGION  " +
 	" from transp.WAVE_INSTANCE p, transp.zone z, transp.trn_area a,TRANSP.TRN_REGION TR, transp.trn_facility f where P.DELIVERY_DATE > sysdate  and P.AREA = Z.ZONE_CODE and z.AREA = a.CODE AND TR.CODE = A.REGION_CODE  and f.ID = P.ORIGIN_FACILITY and STATUS = ? " +
 	"order by P.DELIVERY_DATE, P.AREA, P.CUTOFF_DATETIME, P.FIRST_DLV_TIME";
 	
@@ -353,6 +355,11 @@ public class RoutingInfoDAO extends BaseDAO implements IRoutingInfoDAO   {
 					EnumWaveInstancePublishSrc source = EnumWaveInstancePublishSrc.getEnum(rs.getString("SOURCE"));
 					String originFacility = rs.getString("ORIGIN_FACILITY");
 					
+					IRoutingEquipmentType equipmentType = new RoutingEquipmentType();
+					equipmentType.setEquipmentTypeID(rs.getString("EQUIPMENT_TYPE"));
+					equipmentType.setRegionID(rs.getString("REGION"));
+					 
+					
 					if(_firstDeliveryTime != null && _lastDeliveryTime != null 
 							&& _startTime != null && _cutOffTime != null && _zoneCode != null) {
 
@@ -384,6 +391,7 @@ public class RoutingInfoDAO extends BaseDAO implements IRoutingInfoDAO   {
 						waveInstance.setSource(source);
 						waveInstance.setOriginFacility(originFacility);
 						
+						waveInstance.setEquipmentType(equipmentType);
 						IAreaModel area = new AreaModel();
 						area.setAreaCode(_zoneCode);
 						waveInstance.setArea(area);
@@ -897,5 +905,99 @@ public class RoutingInfoDAO extends BaseDAO implements IRoutingInfoDAO   {
 			
 			return result;
 		}
-	
+		
+		private static final String GET_WAVEINSTANCE_DISPATCHTIME_QRY = "select p.*, a.delivery_rate,TR.CODE REGION, TR.IS_DEPOT from transp.WAVE_INSTANCE p , transp.zone z, transp.trn_area a " +
+				", TRANSP.TRN_REGION TR WHERE  P.DELIVERY_DATE = ? and P.REFERENCE_ID IS NOT NULL and P.AREA = Z.ZONE_CODE and z.AREA = a.CODE and TR.CODE = A.REGION_CODE AND A.ACTIVE ='X' order by p.dispatch_time, p.area asc";
+				
+				public Map<String, IWaveInstance> getWavesByDispatchTime(final Date deliveryDate)  throws SQLException {
+					final Map<String, IWaveInstance> result = new HashMap<String, IWaveInstance>();
+					
+					PreparedStatementCreator creator = new PreparedStatementCreator() {
+						public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
+						
+							PreparedStatement ps =	connection.prepareStatement(GET_WAVEINSTANCE_DISPATCHTIME_QRY);	
+							ps.setDate(1, new java.sql.Date(deliveryDate.getTime()));
+							return ps;
+						}
+					};
+					
+					
+					jdbcTemplate.query(creator, 
+							new RowCallbackHandler() { 
+						public void processRow(ResultSet rs) throws SQLException {				    	
+							do {
+								Date _firstDeliveryTime = rs.getTimestamp("FIRST_DLV_TIME");
+								Date _lastDeliveryTime = rs.getTimestamp("LAST_DLV_TIME");
+								Date _startTime = rs.getTimestamp("DISPATCH_TIME");
+								RoutingTimeOfDay _cutOffTime = new RoutingTimeOfDay(rs.getTimestamp("CUTOFF_DATETIME"));
+
+								String _zoneCode = rs.getString("AREA");
+								String _routingWaveInstanceId = rs.getString("REFERENCE_ID");
+								String _waveInstanceId = rs.getString("WAVEINSTANCE_ID"); 
+								int noOfResources = rs.getInt("RESOURCE_COUNT");
+								Date _deliveryDate = rs.getDate("DELIVERY_DATE");
+								
+								if(_firstDeliveryTime != null && _lastDeliveryTime != null 
+										&& _startTime != null && _cutOffTime != null && _zoneCode != null) {
+
+									RoutingTimeOfDay _dispatchTime = new RoutingTimeOfDay(_startTime);
+									int runTime = RoutingDateUtil.getDiffInSeconds(_lastDeliveryTime, _firstDeliveryTime);
+
+									IWaveInstance waveInstance = new WaveInstance();
+									waveInstance.setCutOffTime(_cutOffTime);
+									waveInstance.setDispatchTime(_dispatchTime);
+									waveInstance.setMaxRunTime(runTime);
+									waveInstance.setPreferredRunTime(runTime);
+									waveInstance.setNoOfResources(noOfResources);
+									waveInstance.setRoutingWaveInstanceId(_routingWaveInstanceId);
+									waveInstance.setWaveInstanceId(_waveInstanceId);
+									waveInstance.setDeliveryDate(_deliveryDate);
+									IAreaModel area = new AreaModel();
+									area.setAreaCode(_zoneCode);
+									area.setDeliveryRate(rs.getBigDecimal("DELIVERY_RATE").doubleValue());
+									IRegionModel region = new RegionModel();
+									region.setDepot("X".equalsIgnoreCase(rs.getString("IS_DEPOT")) ? true : false);
+									region.setRegionCode(rs.getString("REGION"));
+									area.setRegion(region);
+									waveInstance.setArea(area);
+									result.put(_routingWaveInstanceId, waveInstance);
+									
+								}
+									
+							} while(rs.next());		        		    	
+						}
+					}
+					);
+					return result;
+				}
+				
+				private static final String GET_PLANTCAPACITY_QRY = "select p.* from transp.PLANTCAPACITY p where p.DISPATCH_DATE = ?";
+				
+				public Map<RoutingTimeOfDay, Integer> getPlantCapacityByDispatchTime(final Date deliveryDate)  throws SQLException {
+					final Map<RoutingTimeOfDay, Integer> result = new HashMap<RoutingTimeOfDay, Integer>();
+					
+					PreparedStatementCreator creator = new PreparedStatementCreator() {
+						public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
+						
+							PreparedStatement ps =	connection.prepareStatement(GET_PLANTCAPACITY_QRY);	
+							ps.setDate(1, new java.sql.Date(deliveryDate.getTime()));
+							return ps;
+						}
+					};
+					
+					jdbcTemplate.query(creator, 
+							new RowCallbackHandler() { 
+						public void processRow(ResultSet rs) throws SQLException {				    	
+							do {
+								Date dispatchTime = rs.getTimestamp("DISPATCH_TIME");
+								int capacity = rs.getInt("CAPACITY");
+								RoutingTimeOfDay _dispatchTime = new RoutingTimeOfDay(dispatchTime);
+								result.put(_dispatchTime, capacity);
+							} while(rs.next());		        		    	
+						}
+					}
+					);
+					return result;
+				}
+		
 }

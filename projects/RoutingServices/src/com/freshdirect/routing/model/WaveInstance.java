@@ -380,7 +380,8 @@ public class WaveInstance  extends BaseModel implements IWaveInstance {
 		this.setCapacityCheck2(baseInstance.isCapacityCheck2());
 		this.setCapacityCheck3(baseInstance.isCapacityCheck3());
 		//this.setDepotId(baseInstance.getDepotId());
-		this.setEquipmentType(baseInstance.getEquipmentType());
+		if(this.getEquipmentType()==null || (this.getEquipmentType()!=null && this.getEquipmentType().getEquipmentTypeID()==null)) 
+			this.setEquipmentType(baseInstance.getEquipmentType());
 		this.setHourlyWage(baseInstance.getHourlyWage());
 		this.setHourlyWageDuration(baseInstance.getHourlyWageDuration());
 		this.setInboundStemTimeAdjustmentSeconds(baseInstance.getInboundStemTimeAdjustmentSeconds());

@@ -10,14 +10,15 @@ import java.util.List;
 import org.apache.axis2.AxisFault;
 
 import com.freshdirect.routing.constants.IRoutingConstants;
+import com.freshdirect.routing.model.EquipmentType;
 import com.freshdirect.routing.model.IDeliveryReservation;
 import com.freshdirect.routing.model.IDeliverySlot;
 import com.freshdirect.routing.model.IDeliveryWindowMetrics;
 import com.freshdirect.routing.model.IOrderModel;
+import com.freshdirect.routing.model.IRouteModel;
 import com.freshdirect.routing.model.IRoutingNotificationModel;
 import com.freshdirect.routing.model.IRoutingSchedulerIdentity;
 import com.freshdirect.routing.proxy.stub.transportation.DeliveryAreaOrder;
-import com.freshdirect.routing.proxy.stub.transportation.DeliveryAreaRoute;
 import com.freshdirect.routing.proxy.stub.transportation.Location;
 import com.freshdirect.routing.proxy.stub.transportation.RoutingImportOrder;
 import com.freshdirect.routing.proxy.stub.transportation.RoutingSession;
@@ -437,5 +438,36 @@ public class RoutingEngineService extends BaseService implements IRoutingEngineS
 			, String orderType) {
 		return RoutingDataEncoder.encodeBulkOrder(schedulerId, orderModel, locationType, orderType, true);
 	}
+	public List<EquipmentType> getEquipmentTypes(String region)  throws RoutingServiceException {
+		
+		try {
+			TransportationWebService port = getTransportationSuiteService(null);
+						
+			return RoutingDataDecoder.decodeEquipmentTypes(
+					port.retrieveEquipmentTypeByCriteria(RoutingDataEncoder.encodeEquipmentTypeCriteria(region), 
+							RoutingDataEncoder.encodeTimeZoneOptions()));
+			
+			
+		} catch (RemoteException exp) {
+			throw new RoutingServiceException(exp, IIssue.PROCESS_DELETENOTIFICATION_UNSUCCESSFUL);
+		}
+	}
 	
+	public List<IRouteModel> getRoutesByCriteria(IRoutingSchedulerIdentity schedulerId, String waveCode)  throws RoutingServiceException {
+		
+		try {
+			TransportationWebService port = getTransportationSuiteService(schedulerId);
+			List<IRouteModel> routes = RoutingDataDecoder.decodeDeliveryAreaRoutes
+					(port.schedulerRetrieveRoutesByCriteria(RoutingDataEncoder.encodeDeliveryAreaRouteCriteria(schedulerId, waveCode), 
+			 RoutingDataEncoder.encodeDeliveryAreaRouteRetrieveOptions()));
+	
+			return routes;
+			
+		} catch (RemoteException exp) {
+			throw new RoutingServiceException(exp, IIssue.PROCESS_DELETENOTIFICATION_UNSUCCESSFUL);
+		}
+		
+		
+	}
+
 }

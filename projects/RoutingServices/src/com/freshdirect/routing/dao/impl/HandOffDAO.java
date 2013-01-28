@@ -29,6 +29,7 @@ import org.springframework.jdbc.core.SqlParameter;
 import org.springframework.jdbc.object.BatchSqlUpdate;
 
 import com.freshdirect.customer.EnumSaleStatus;
+import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.routing.constants.EnumHandOffBatchActionType;
 import com.freshdirect.routing.constants.EnumHandOffBatchStatus;
 import com.freshdirect.routing.constants.EnumHandOffDispatchStatus;
@@ -277,6 +278,8 @@ public class HandOffDAO extends BaseDAO implements IHandOffDAO   {
 
 	private static final String GET_HANDOFFBATCH_DEPOTSCHEDULE_EX = "SELECT * FROM TRANSP.HANDOFF_BATCHDEPOTSCHEDULE_EX X WHERE X.DAY_OF_WEEK = ? and CUTOFF_DATETIME = ?";
 		
+	private static final String GET_HANDOFFBATCH_DEPOTSCHEDULE_DAYOFWEEK = "SELECT * FROM TRANSP.HANDOFF_BATCHDEPOTSCHEDULE_EX X WHERE upper(X.DAY_OF_WEEK) = upper(?)";
+	
 	private static final String GET_HANDOFFBATCH_LASTCOMMITEDBATCH = "select b.BATCH_ID from TRANSP.HANDOFF_BATCH b " +
 			"where b.DELIVERY_DATE = ? and b.BATCH_STATUS IN ('CPD/ADC','CPD','CPD/ADF') order by CUTOFF_DATETIME desc";
 
@@ -1464,6 +1467,53 @@ public class HandOffDAO extends BaseDAO implements IHandOffDAO   {
 						depotSchedule.setTruckDepartureTime(rs.getTimestamp("TRUCKDEPARTURETIME"));
 						depotSchedule.setOriginId(rs.getString("ORIGIN_ID"));
 						result.add(depotSchedule);
+					} while(rs.next());		        		    	
+				}
+		}
+		);
+		
+		return result;
+	}
+	
+	public Map<String, Map<RoutingTimeOfDay, Set<IHandOffBatchDepotScheduleEx>>> getHandOffBatchDepotSchedulesEx(final String dayOfWeek) throws SQLException {
+
+		final Map<String, Map<RoutingTimeOfDay, Set<IHandOffBatchDepotScheduleEx>>> result = new HashMap<String, Map<RoutingTimeOfDay, Set<IHandOffBatchDepotScheduleEx>>>();
+		PreparedStatementCreator creator = new PreparedStatementCreator() {
+			public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {		            	 
+				PreparedStatement ps = null;
+				ps = connection.prepareStatement(GET_HANDOFFBATCH_DEPOTSCHEDULE_DAYOFWEEK);
+				ps.setString(1, dayOfWeek);
+							
+				return ps;
+			}  
+		};
+
+		jdbcTemplate.query(creator, 
+				new RowCallbackHandler() { 
+				public void processRow(ResultSet rs) throws SQLException {				    	
+					do { 
+						IHandOffBatchDepotScheduleEx depotSchedule = new HandOffBatchDepotScheduleEx();
+						depotSchedule.setDayOfWeek(rs.getString("DAY_OF_WEEK"));
+						depotSchedule.setCutOffDateTime(rs.getTimestamp("CUTOFF_DATETIME"));
+						depotSchedule.setArea(rs.getString("AREA"));
+						depotSchedule.setDepotArrivalTime(rs.getTimestamp("DEPOTARRIVALTIME"));
+						depotSchedule.setTruckDepartureTime(rs.getTimestamp("TRUCKDEPARTURETIME"));
+						depotSchedule.setOriginId(rs.getString("ORIGIN_ID"));
+						
+						depotSchedule.setDepotArrivalTime(DateUtil.getServerTime(depotSchedule.getDepotArrivalTime()));
+						depotSchedule.setTruckDepartureTime(DateUtil.getServerTime(depotSchedule.getTruckDepartureTime()));
+						
+						RoutingTimeOfDay _cutoffTime = new RoutingTimeOfDay(depotSchedule.getCutOffDateTime());
+						if(!result.containsKey(depotSchedule.getArea()))
+						{
+							result.put(depotSchedule.getArea(), new HashMap<RoutingTimeOfDay, Set<IHandOffBatchDepotScheduleEx>>());
+						}
+						if(!result.get(depotSchedule.getArea()).containsKey(_cutoffTime))
+						{
+							result.get(depotSchedule.getArea()).put(_cutoffTime, new HashSet<IHandOffBatchDepotScheduleEx>());
+						}
+						result.get(depotSchedule.getArea()).get(_cutoffTime).add(depotSchedule);
+						
 					} while(rs.next());		        		    	
 				}
 		}

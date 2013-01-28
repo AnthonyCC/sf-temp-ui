@@ -55,4 +55,8 @@ public interface IRoutingInfoDAO {
 
 	List<IRegionModel> getRegions()  throws SQLException;
 	
+	Map<String, IWaveInstance> getWavesByDispatchTime(Date deliveryDate) throws SQLException;
+	
+	Map<RoutingTimeOfDay, Integer> getPlantCapacityByDispatchTime(Date deliveryDate)  throws SQLException;
+		
 }

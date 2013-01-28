@@ -327,6 +327,14 @@ public class HandOffService extends BaseService implements IHandOffService {
 		}
 	}
 	
+	public Map<String, Map<RoutingTimeOfDay, Set<IHandOffBatchDepotScheduleEx>>> getHandOffBatchDepotSchedulesEx(String dayOfWeek) throws RoutingServiceException {
+		try {
+			return getHandOffDAOImpl().getHandOffBatchDepotSchedulesEx(dayOfWeek);
+		} catch (SQLException e) {
+			throw new RoutingServiceException(e, IIssue.PROCESS_HANDOFFBATCH_ERROR);
+		}
+	}
+	
 	public List<IHandOffBatchPlan> getHandOffBatchPlans(String handoffBatchId, Date deliveryDate, Date cutOffDate) throws RoutingServiceException {
 		List<IHandOffBatchPlan> plans = new ArrayList<IHandOffBatchPlan>();
 		try {			

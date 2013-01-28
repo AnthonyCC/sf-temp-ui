@@ -419,6 +419,7 @@ class TimeNode extends PlanTreeNode  {
 			p.setPlanDate(s.getScribDate());
 			p.setOriginFacility(s.getOriginFacility());
 			p.setDestinationFacility(s.getDestinationFacility());
+			p.setEquipmentTypeS(s.getEquipmentTypeS());
 			p.setZone(s.getZone());
 			p.setRegion(s.getRegion());
 			p.setStartTime(s.getStartTime());
@@ -764,6 +765,7 @@ class DepotTimeNode extends PlanTreeNode  {
 			p.setPlanDate(s.getScribDate());
 			p.setOriginFacility(s.getOriginFacility());
 			p.setDestinationFacility(s.getDestinationFacility());
+			p.setEquipmentTypeS(s.getEquipmentTypeS());
 			p.setZone(s.getZone());
 			p.setRegion(s.getRegion());
 			p.setStartTime(s.getStartTime());

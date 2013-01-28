@@ -124,6 +124,8 @@ public class TransportationAdminProperties {
 	private static final String PROP_TRANSPORTATION_TRK_CACHE_MIN_EXPIRY_TIME="transportation.employee.cache.min.expiry.time";
 	private static final String PROP_TRANSPORTATION_ROUTE_CACHE_MIN_EXPIRY_TIME="transportation.route.cache.min.expiry.time";
 	
+	private static final String PROP_TRANSPORTATION_EQT_CACHE_EXPIRY_TIME="transportation.equipmentType.cache.expiry.time";
+	
 	private static long lastRefresh = 0;
 	private final static long REFRESH_PERIOD = 5 * 60 * 1000;
 
@@ -353,6 +355,7 @@ public class TransportationAdminProperties {
 		defaults.put(PROP_TRANSPORTATION_TRK_CACHE_MIN_EXPIRY_TIME, "60000");
 		defaults.put(PROP_TRANSPORTATION_EMPLOYEE_CACHE_MIN_EXPIRY_TIME, "60000");
 		defaults.put(PROP_TRANSPORTATION_ROUTE_CACHE_MIN_EXPIRY_TIME, "60000");
+		defaults.put(PROP_TRANSPORTATION_EQT_CACHE_EXPIRY_TIME, "60");
 		
 		
 		defaults.put(PROP_TRANSPORTATION_DEPOT_DEPARTTIMEDIFF, "0");
@@ -980,6 +983,10 @@ public class TransportationAdminProperties {
 	
 	public static String getEventLogMailSubject() {
 		return get(PROP_EVENTLOG_MAILSUBJECT);
+	}
+
+	public static int getEquipmentTypeCacheExpiryTime() {
+		return getIntVal(get(PROP_TRANSPORTATION_EQT_CACHE_EXPIRY_TIME));
 	}
 	
 	public static int getEventLogDataLookUpDays() {

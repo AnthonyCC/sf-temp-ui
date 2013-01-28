@@ -18,7 +18,7 @@ public class BaseService {
 		try {
 			
 			if(schedulerId != null &&  schedulerId.getArea() != null && schedulerId.getArea().getAreaCode() != null) {		
-				return RoutingServiceLocator.getInstance().getTransportationSuiteService(schedulerId.getArea().getAreaCode());
+				return RoutingServiceLocator.getInstance().getTransportationSuiteService(schedulerId);
 			} else {
 				return RoutingServiceLocator.getInstance().getTransportationSuiteService();
 			}

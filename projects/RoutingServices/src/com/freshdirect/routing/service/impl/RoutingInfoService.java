@@ -191,7 +191,23 @@ public class RoutingInfoService extends BaseService implements IRoutingInfoServi
 			throw new RoutingServiceException(e, IIssue.PROCESS_RETRIEVEWAVEINSTANCE_UNSUCCESSFUL);
 		}
 	}
-	
+
+	public  Map<String, IWaveInstance> getWavesByDispatchTime(Date deliveryDate) throws RoutingServiceException {
+		try {
+			return routingInfoDAOImpl.getWavesByDispatchTime(deliveryDate);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			throw new RoutingServiceException(e, IIssue.PROCESS_RETRIEVEWAVEINSTANCE_UNSUCCESSFUL);
+		}
+	}
+	public  Map<RoutingTimeOfDay, Integer> getPlantCapacityByDispatchTime(Date deliveryDate) throws RoutingServiceException {
+		try {
+			return routingInfoDAOImpl.getPlantCapacityByDispatchTime(deliveryDate);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			throw new RoutingServiceException(e, IIssue.PROCESS_RETRIEVEWAVEINSTANCE_UNSUCCESSFUL);
+		}
+	}
 	
 	
 }

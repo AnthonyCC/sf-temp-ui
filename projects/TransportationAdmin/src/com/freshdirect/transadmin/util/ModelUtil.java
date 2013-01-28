@@ -47,6 +47,7 @@ import com.freshdirect.transadmin.model.ScheduleEmployeeInfo;
 import com.freshdirect.transadmin.model.TrnAdHocRoute;
 import com.freshdirect.transadmin.model.TrnFacility;
 import com.freshdirect.transadmin.model.Zone;
+import com.freshdirect.transadmin.model.ZonetypeResource;
 import com.freshdirect.transadmin.web.model.WebEmployeeInfo;
 
 public class ModelUtil {
@@ -336,7 +337,7 @@ public class ModelUtil {
 		List<Plan> runnerPlans = getRunnerPlans(zonePlanList);
 		
 		Set<Plan> assignedRunners = new HashSet<Plan>();
-
+		
 		Iterator<Plan> planItr = zonePlanList.iterator();
 		while (planItr.hasNext()) {
 			boolean isTrailerPlan = false;
@@ -364,7 +365,7 @@ public class ModelUtil {
 			{
 				DateRange planRange = new DateRange(p.getFirstDeliveryTime(), p.getFirstDeliveryTime());
 				int runnerCount = 0;
-				for ( Iterator<Plan> k = runnerPlans.iterator(); k.hasNext()&& runnerCount<6;) 
+				for ( Iterator<Plan> k = runnerPlans.iterator(); k.hasNext()&& runnerCount<getRunnerMax(p);) 
 					{
 					
 						Plan runnerPlan = k.next();
@@ -432,6 +433,17 @@ public class ModelUtil {
 			dispatchLst.add(d);
 		}
 		
+	}
+
+	private static int getRunnerMax(Plan p) {
+		Set zoneTypeResources =  p.getZone().getTrnZoneType().getZonetypeResources();
+		for (Iterator j = zoneTypeResources.iterator(); j.hasNext();) {
+			ZonetypeResource zonetypeResource = (ZonetypeResource) j.next();
+			if (ScheduleEmployeeInfo.RUNNER.equalsIgnoreCase(zonetypeResource.getId().getRole())) {
+				return zonetypeResource.getMaximumNo().intValue();
+			}
+		}
+		return 0;
 	}
 
 	public static List constructDispatchModelOld(Collection planList,Collection routeList){

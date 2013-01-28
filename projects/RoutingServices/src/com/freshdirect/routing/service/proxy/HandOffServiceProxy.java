@@ -129,6 +129,10 @@ public class HandOffServiceProxy  extends BaseServiceProxy  {
 		return getService().getHandOffBatchDepotSchedulesEx(dayOfWeek, cutOffTime);
 	}
 	
+	public Map<String, Map<RoutingTimeOfDay, Set<IHandOffBatchDepotScheduleEx>>> getHandOffBatchDepotSchedulesEx(String dayOfWeek) throws RoutingServiceException {
+		return getService().getHandOffBatchDepotSchedulesEx(dayOfWeek);
+	}
+	
 	public List<HandOffDispatchIn> getHandOffBatchDispatches(String batchId) throws RoutingServiceException {
 		return getService().getHandOffBatchDispatches(batchId);
 	}

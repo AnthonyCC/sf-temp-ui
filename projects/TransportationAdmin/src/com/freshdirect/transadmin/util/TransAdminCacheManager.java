@@ -15,6 +15,7 @@ import org.apache.log4j.Category;
 import com.freshdirect.customer.ErpRouteMasterInfo;
 import com.freshdirect.customer.ErpTruckMasterInfo;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.routing.model.EquipmentType;
 import com.freshdirect.sap.SapProperties;
 import com.freshdirect.sap.command.SapRouteMasterInfo;
 import com.freshdirect.sap.command.SapTruckMasterInfo;
@@ -23,8 +24,12 @@ import com.freshdirect.transadmin.cache.AsyncCacheException;
 import com.freshdirect.transadmin.cache.AsyncCacheExceptionType;
 import com.freshdirect.transadmin.cache.BaseAsyncCache;
 import com.freshdirect.transadmin.model.EmployeeInfo;
+
+import com.freshdirect.transadmin.service.AssetManagerI;
+
 import com.freshdirect.transadmin.model.EventLogRouteModel;
 import com.freshdirect.transadmin.service.DomainManagerI;
+
 import com.freshdirect.transadmin.service.EmployeeManagerI;
 import com.freshdirect.transadmin.service.IEventLogManagerService;
 import com.freshdirect.transadmin.service.exception.TransAdminServiceException;
@@ -34,10 +39,13 @@ public class TransAdminCacheManager {
 	private static TransAdminCacheManager instance = null;
 
 	private EmployeeManagerI manager = null;
-	
+
+	private AssetManagerI assetMgr = null;
 	private IEventLogManagerService eventLogMngService = null;
 	
 	private DomainManagerI domainMngService = null;
+
+
 
 	private static Category LOGGER = LoggerFactory.getInstance(TransAdminCacheManager.class);
 	
@@ -53,12 +61,15 @@ public class TransAdminCacheManager {
 	
 	protected static final String STORE_ACTINACTEMPLOYEEDATA = "TRANSAPP_CACHE_ACTINACT_EMPLOYEEDATA.ser";
 	
+	protected static final String STORE_EQUIPMENTDATA = "TRANSAPP_CACHE_EQUIPMENTTYPES.ser";
+	
+
 	/* Event log data holder */
 	protected static final String STORE_HANDOFF_ROUTEINFODATA = "TRANSAPP_CACHE_HANDOFFROUTEINFODATA.ser";
 	
 	/* AdHoc Route data holder */
 	protected static final String STORE_ADHOCROUTEINFODATA = "TRANSAPP_CACHE_ADHOCROUTEINFODATA.ser";
-		
+
 	private TransAdminCacheManager() {
 	}
 
@@ -217,6 +228,32 @@ public class TransAdminCacheManager {
 	};
 	
 	/**
+	 * Cache to store equipment types
+	 */
+	private BaseAsyncCache<String, Map<String, List<EquipmentType>>> equipmentTypeDataHolder = new BaseAsyncCache<String, Map<String, List<EquipmentType>>>
+												(TransportationAdminProperties.getEquipmentTypeCacheExpiryTime() * 60 * 1000
+														, STORE_EQUIPMENTDATA) {
+
+		protected Map<String, List<EquipmentType>> loadData(String requestParam) throws AsyncCacheException  {
+			try {
+				if(TransportationAdminProperties.isKronosBlackhole()) {
+					throw new AsyncCacheException(AsyncCacheExceptionType.LOAD_BLOCKED);
+				} else {
+					return loadEquipmentTypes();					
+				}				
+			} catch (Exception e) {
+				LOGGER.error("Could not load equipment type data due to: ", e);
+				throw new AsyncCacheException(e, AsyncCacheExceptionType.LOAD_FAILED);
+			}
+		}
+		
+		protected Map<String, List<EquipmentType>> loadDefault(String requestParam) {
+			return new HashMap<String, List<EquipmentType>>();
+		}
+	};
+	
+	
+	/**
 	 * Cache to store all terminated employee data from KRONOS database
 	 */
 	private BaseAsyncCache<String, Map<String, EmployeeInfo>> activeInactivedEmployeeDataHolder = new BaseAsyncCache<String, Map<String, EmployeeInfo>>
@@ -251,6 +288,19 @@ public class TransAdminCacheManager {
 		return  manager.getKronosTerminatedEmployees();
 	}
 
+	public Map<String, List<EquipmentType>> loadEquipmentTypes(){
+		return  assetMgr.loadEquipmentTypes();
+	}
+
+	public List<EquipmentType> getEquipmentTypes(AssetManagerI mgr, String region) {
+		this.assetMgr = mgr;
+		if (null != (this.equipmentTypeDataHolder.get(""))) {
+			return  this.equipmentTypeDataHolder.get("").get(region);
+		} else {
+			return new ArrayList<EquipmentType>();
+		}
+	}
+	
 	public List loadAllEmployeeData() throws SapException {
 		return (List) manager.getKronosEmployees();
 	}

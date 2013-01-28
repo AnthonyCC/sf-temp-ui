@@ -17,6 +17,9 @@ public interface IWaveInstanceSource {
 	boolean isValidSource();
 	boolean needsConsolidation();
 	
+	public String getEquipmentTypeS();
+	public void setEquipmentTypeS(String equipmentTypeS);
+
 	void setOriginFacility(TrnFacility originFacility);
 	void setDestinationFacility(TrnFacility destinationFacility);
 	void setStartTime(Date value);

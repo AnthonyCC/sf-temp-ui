@@ -89,6 +89,7 @@
               <ec:column cell="date" property="planDate" sortable="true" title="Date"/>
               <ec:column property="planDay" sortable="true" title="Day"/>
 			  <ec:column property="facilityInfoEx" sortable="true" title="ORF-DTF"/>
+			  <ec:column property="equipmentTypeS" sortable="true" title="Equipment Type"/> 
               <ec:column  cell="tooltip" alias="zoneCode" property="zoneNameEx" title="Zone"/>
               <ec:column alias="region" property="regionCode" title="Region"/>
               <ec:column property="supervisorEx"   title="Sup" cell="tooltip"  />

@@ -177,6 +177,7 @@
 				              <ec:column property="routingWaveInstanceId"  title="REF ID"/>
 				              <ec:column property="deliveryDate" title="Delivery" />             
   			                  <ec:column property="originFacility" title="Origin Facility"/>
+  			                   <ec:column property="equipmentType.equipmentTypeID" title="Equipment Type"/>
 				              <ec:column property="area.areaCode" title="Zone" />
 				              <ec:column property="dispatchTime" title="Dispatch" />
 				              <ec:column property="waveStartTime" title="Start" />

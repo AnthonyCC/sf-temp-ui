@@ -5,9 +5,11 @@ package com.freshdirect.transadmin.model;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
 import com.freshdirect.routing.constants.EnumTransportationFacilitySrc;
+import com.freshdirect.routing.model.EquipmentType;
 import com.freshdirect.transadmin.util.EnumResourceType;
 
 /**
@@ -37,6 +39,10 @@ public class Plan implements java.io.Serializable, TrnBaseEntityI, IWaveInstance
 	private TrnFacility originFacility;
 	private TrnFacility destinationFacility;
 	private Set waveResources = new HashSet(0);
+	
+	private String equipmentTypeS;
+	private List<EquipmentType> equipmentTypes;
+	
 	
 	public Set getWaveResources() {
 		return waveResources;
@@ -327,4 +333,21 @@ public class Plan implements java.io.Serializable, TrnBaseEntityI, IWaveInstance
 		}
 	}
 
+
+
+	public String getEquipmentTypeS() {
+		return equipmentTypeS;
+	}
+
+	public void setEquipmentTypeS(String equipmentTypeS) {
+		this.equipmentTypeS = equipmentTypeS;
+	}
+
+	public List<EquipmentType> getEquipmentTypes() {
+		return equipmentTypes;
+	}
+
+	public void setEquipmentTypes(List<EquipmentType> equipmentTypes) {
+		this.equipmentTypes = equipmentTypes;
+	}
 }

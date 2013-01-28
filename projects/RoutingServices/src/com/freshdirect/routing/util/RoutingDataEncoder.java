@@ -29,9 +29,13 @@ import com.freshdirect.routing.proxy.stub.transportation.DeliveryAreaOrder;
 import com.freshdirect.routing.proxy.stub.transportation.DeliveryAreaOrderCriteria;
 import com.freshdirect.routing.proxy.stub.transportation.DeliveryAreaOrderIdentity;
 import com.freshdirect.routing.proxy.stub.transportation.DeliveryAreaOrderRetrieveOptions;
+import com.freshdirect.routing.proxy.stub.transportation.DeliveryAreaRouteCriteria;
+import com.freshdirect.routing.proxy.stub.transportation.DeliveryAreaRouteRetrieveOptions;
 import com.freshdirect.routing.proxy.stub.transportation.DeliveryWaveAttributes;
 import com.freshdirect.routing.proxy.stub.transportation.DeliveryWaveInstanceIdentity;
 import com.freshdirect.routing.proxy.stub.transportation.DeliveryWindow;
+import com.freshdirect.routing.proxy.stub.transportation.DetailLevel;
+import com.freshdirect.routing.proxy.stub.transportation.EquipmentTypeCriteria;
 import com.freshdirect.routing.proxy.stub.transportation.EquipmentTypeIdentity;
 import com.freshdirect.routing.proxy.stub.transportation.Location;
 import com.freshdirect.routing.proxy.stub.transportation.LocationIdentity;
@@ -40,7 +44,9 @@ import com.freshdirect.routing.proxy.stub.transportation.NotificationIdentity;
 import com.freshdirect.routing.proxy.stub.transportation.NotificationRetrieveOptions;
 import com.freshdirect.routing.proxy.stub.transportation.Quantities;
 import com.freshdirect.routing.proxy.stub.transportation.RecipientIdentity;
+import com.freshdirect.routing.proxy.stub.transportation.RouteCriteria;
 import com.freshdirect.routing.proxy.stub.transportation.RouteIdentity;
+import com.freshdirect.routing.proxy.stub.transportation.RouteInfoRetrieveOptions;
 import com.freshdirect.routing.proxy.stub.transportation.RoutingDetailLevel;
 import com.freshdirect.routing.proxy.stub.transportation.RoutingImportOrder;
 import com.freshdirect.routing.proxy.stub.transportation.RoutingRouteCriteria;
@@ -521,12 +527,30 @@ public class RoutingDataEncoder {
 		return criteria;
 	}
 	
+	public static RouteCriteria encodeRouteCriteriaEx(Date routeDate, String internalSessionID, String routeID, String regionId) {
+		//param1 regionIdentity;
+		//param2 dateStart;
+		//param3 dateEnd;
+		//param4 scenario;
+		//param5 description;
+		RouteCriteria criteria = new RouteCriteria();
+		
+		//criteria.setRouteDate(routeDate);
+		criteria.setRegionID(regionId);
+		return criteria;
+	}
 	
 	
 	public static RoutingRouteInfoRetrieveOptions encodeRouteInfoRetrieveOptionsEx() {
 		return routeInfoRetrieveOptions(RoutingDetailLevel.rdlStop);
 		
 	}	
+	
+	public static RouteInfoRetrieveOptions encodeRouteInfoRetrieveOptionsEx1() {
+		return routeInfoRetrieveOptionsEx();
+		
+	}	
+	
 	
 	public static RoutingRouteInfoRetrieveOptions encodeRouteInfoRetrieveFullOptions() {
 		return routeInfoRetrieveOptions(RoutingDetailLevel.rdlOrder);
@@ -551,6 +575,15 @@ public class RoutingDataEncoder {
 		routingRetrieveOptions.setRetrieveActive(RoutingServicesProperties.getRoutingParamRetrieveActive());
 		routingRetrieveOptions.setRetrieveBuilt(RoutingServicesProperties.getRoutingParamRetrieveBuilt());
 		routingRetrieveOptions.setRetrievePublished(RoutingServicesProperties.getRoutingParamRetrievePublished());
+		routingRetrieveOptions.setTimeZoneOptions(encodeTimeZoneOptions());
+		return routingRetrieveOptions;
+	}
+	
+	private static RouteInfoRetrieveOptions routeInfoRetrieveOptionsEx() {
+		
+		RouteInfoRetrieveOptions routingRetrieveOptions = new RouteInfoRetrieveOptions();
+		routingRetrieveOptions.setLevel(DetailLevel.dlRoute);
+		//routingRetrieveOptions.setRetrieveActivities(RoutingServicesProperties.getRoutingParamRetrieveActivities());
 		routingRetrieveOptions.setTimeZoneOptions(encodeTimeZoneOptions());
 		return routingRetrieveOptions;
 	}
@@ -865,6 +898,30 @@ public class RoutingDataEncoder {
 		
 		ArrayList tmp = new ArrayList();
 		Collections.min(tmp);
+	}
+
+	public static EquipmentTypeCriteria encodeEquipmentTypeCriteria(String region) {
+		EquipmentTypeCriteria criteria = new EquipmentTypeCriteria();
+		criteria.setRegionID(region);
+		return criteria;
+	}
+
+	public static DeliveryAreaRouteCriteria encodeDeliveryAreaRouteCriteria(IRoutingSchedulerIdentity schedulerId, String waveCode) {
+		
+		DeliveryAreaRouteCriteria criteria = new DeliveryAreaRouteCriteria();
+		criteria.setArea(schedulerId.getArea().getAreaCode());
+		criteria.setRegionId(schedulerId.getArea().getRegion().getRegionCode());
+		criteria.setDeliveryDate(schedulerId.getDeliveryDate());
+		if(waveCode!=null)
+			criteria.setWaveCode(waveCode);
+		return criteria;
+	}
+
+	public static DeliveryAreaRouteRetrieveOptions encodeDeliveryAreaRouteRetrieveOptions() {
+		DeliveryAreaRouteRetrieveOptions options = new DeliveryAreaRouteRetrieveOptions();
+		options.setRetrieveDeliveryAreaOrders(true);
+		options.setTimeZoneOptions(encodeTimeZoneOptions());
+		return options;
 	}
 	
 }

@@ -32,6 +32,8 @@ public class WaveInstanceCommand extends WaveInstance {
 		this.setIsInSync(EnumWaveInstanceStatus.SYNCHRONIZED.equals(instance.getStatus()));
 		this.setSource(instance.getSource());
 		this.setOriginFacility(instance.getOriginFacility());
+		this.setEquipmentType(instance.getEquipmentType());
+		
 	}
 
 	public Boolean getIsInSync() {

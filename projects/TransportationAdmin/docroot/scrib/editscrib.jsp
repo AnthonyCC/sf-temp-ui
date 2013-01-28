@@ -174,6 +174,17 @@
 							<td><form:errors path="resources" />&nbsp;</td>                 
 						</tr>
 						<tr> 
+						<tr>
+							<td align="right">Equipment Type</td>
+							<td>
+								<form:select path="equipmentTypeS" disabled="${_disableZone}">
+									<form:option value="null" label="--Please Select Equipment Type"/>
+									<form:options items="${scribForm.equipmentTypes}" itemLabel="id" itemValue="id" />
+								</form:select>
+							</td>
+							<td><form:errors path="equipmentTypeS" />&nbsp;</td>
+						</tr>
+						
 						<td align="right">Supervisor</td>
 							<td> 
 								<form:select path="supervisorCode">

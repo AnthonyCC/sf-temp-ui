@@ -31,5 +31,15 @@
     <property name="rollDAO" ref="rollDAO"/>
     <property name="orderRateDAO" ref="orderRateDAO"/>
   </bean>
+  
+  <bean id="plantDispatchDAO" class="com.freshdirect.analytics.dao.impl.PlantDispatchDAOImpl">
+		<property name="dataSource" ref="dataSource"/>
+	</bean>	
+	
+	
+  <bean id="plantDispatchService" class="com.freshdirect.webservices.PlantDispatchServiceImpl">
+    <property name="plantDispatchDAO" ref="plantDispatchDAO" />
+  </bean>
+  
 
 </beans>

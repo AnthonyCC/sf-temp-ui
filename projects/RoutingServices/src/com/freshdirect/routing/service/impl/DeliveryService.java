@@ -432,7 +432,6 @@ public class DeliveryService extends BaseService implements IDeliveryService {
 				logTimeslots(event);*/
 			e.printStackTrace();
 			LOGGER.debug("Exception in commitReservationEx():"+order.getOrderNumber()+"-->"+e.toString());
-			LOGGER.debug(reservation);
 			setUnassignedInfo(reservation.getId(),RoutingActivityType.CONFIRM_TIMESLOT);
 		}
 	}
@@ -497,7 +496,6 @@ public class DeliveryService extends BaseService implements IDeliveryService {
 				logTimeslots(event);*/
 			e.printStackTrace();
 			LOGGER.debug("Exception in reserveTimeslotEx():"+e.toString());
-			LOGGER.debug(reservation);
 			setUnassignedInfo(reservation.getId(),RoutingActivityType.RESERVE_TIMESLOT);			
 		}
 		setRoutingIndicator(reservation.getId(), order.getOrderNumber());
@@ -582,8 +580,7 @@ public class DeliveryService extends BaseService implements IDeliveryService {
 			if(event!=null && event.getId()!=null)
 				logTimeslots(event);*/
 			e.printStackTrace();
-			LOGGER.debug("Exception in releaseReservationEx():"+e.toString());
-			LOGGER.debug(reservation);
+			LOGGER.debug("Exception in releaseReservationEx() reservationId="+reservation.getId()+":"+e.toString());
 			setUnassignedInfo(reservation.getId(),RoutingActivityType.CANCEL_TIMESLOT);
 		}
 

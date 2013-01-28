@@ -98,6 +98,19 @@
 										</td>
 										<td><form:errors path="destinationFacility" />&nbsp;</td>
 									</tr>
+									
+									<tr>
+							<td align="right">Equipment Type</td>
+							<td>
+								<form:select path="equipmentTypeS" disabled="${_disableZone}">
+									<form:option value="null" label="--Please Select Equipment Type"/>
+									<form:options items="${planForm.equipmentTypes}" itemLabel="id" itemValue="id" />
+								</form:select>
+							</td>
+							<td><form:errors path="equipmentTypeS" />&nbsp;</td>
+						</tr>
+						
+						
 									<tr>
 							<td>Zone</td>
 							<td> 

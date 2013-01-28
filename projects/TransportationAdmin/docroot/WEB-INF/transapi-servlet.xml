@@ -21,12 +21,18 @@
 		<property name="mappings">
 			<props>   				
  					<prop key="/event.jx">jsonEventDataController</prop>
+ 					<prop key="/dashboard.jx">jsonDashboardDataController</prop>
 			</props>
 		</property>
 	</bean>
 
 	<bean name="jsonEventDataController" class="com.freshdirect.transadmin.api.controller.EventDataApiController">
 		<property name="eventLogService" ref="eventLogManager"/>		
+	</bean>
+	
+	
+	<bean name="jsonDashboardDataController" class="com.freshdirect.transadmin.api.controller.DashboardDataApiController">
+		<property name="dashboardManagerService" ref="dashboardManager"/>		
 	</bean>
 	
 	<bean id="freeMarkerViewResolver"

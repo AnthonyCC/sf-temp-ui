@@ -101,11 +101,7 @@
 				<prop key="/cutoff.do">domainController</prop>
 				<prop key="/deletecutoff.do">domainController</prop>					                
 				<prop key="/editcutoff.do">cutOffFormController</prop>
-			<!--	
-				<prop key="/plantcapacity.do">domainController</prop>
-				<prop key="/deleteplantcapacity.do">domainController</prop>					                
-				<prop key="/editplantcapacity.do">plantCapacityFormController</prop>
-				-->
+			
 				<prop key="/viewfile.do">genericBeanFormController</prop> 
 				<prop key="/accessdenied.do">domainController</prop>
 
@@ -188,7 +184,7 @@
 				<prop key="/deletesector.do">geographyController</prop>
 				
 				<prop key="/eventlog.do">eventLogController</prop>
-				
+				<prop key="/dashboard.do">dashboardController</prop>
 			</props>
 		</property>
 	</bean>
@@ -272,6 +268,10 @@
 		<property name="methodNameResolver" ref="transAdminControllerResolver"/>		
 	</bean>
 
+	
+	<bean id="dashboardController" class="com.freshdirect.transadmin.web.DashboardController">
+		<property name="methodNameResolver" ref="transAdminControllerResolver"/>		
+	</bean>
 	<!--
 	  - This bean is a MethodNameResolver definition for a MultiActionController.
 	  -->
@@ -331,10 +331,7 @@
  		 	<prop key="/deletedlvservicetimescenario.do">dlvServiceTimeScenarioDeleteHandler</prop>	
  		 	<prop key="/cutoff.do">cutOffHandler</prop>					                
  		 	<prop key="/deletecutoff.do">cutOffDeleteHandler</prop>
- 		 	<!--
- 		 	<prop key="/plantcapacity.do">plantCapacityHandler</prop>					                
- 		 	<prop key="/deleteplantcapacity.do">plantCapacityDeleteHandler</prop>
- 		 	-->
+ 		 	
  		 	<prop key="/accessdenied.do">accessDeniedHandler</prop>
 
 		 	<prop key="/georestriction.do">geoRestrictionHandler</prop>					                
@@ -387,7 +384,8 @@
             <prop key="/viewsignature.do">signatureHandler</prop>
             
             <prop key="/eventlog.do">eventLogHandler</prop>			
-               	
+            <prop key="/dashboard.do">dashboardHandler</prop>			
+           
 			</props>
 		</property>
 	</bean>
@@ -434,7 +432,7 @@
         <property name="successView" value="regionEdit" />
         <property name="formView" value="regionEdit" />
 	</bean>
-		
+	
 	<bean id="zoneTypeFormController" class="com.freshdirect.transadmin.web.ZoneTypeFormController">
 		<property name="domainManagerService" ref="domainManager"/>
 		<property name="employeeManagerService" ref="employeeManager"/>
@@ -475,16 +473,6 @@
         <property name="formView" value="cutOffEdit" />
 	</bean>
 	
-	<!--<bean id="plantCapacityFormController" class="com.freshdirect.transadmin.web.PlantCapacityFormController">
-		<property name="domainManagerService" ref="domainManager"/>
-		<property name="sessionForm" value="true"/>
-        <property name="commandName" value="plantCapacityForm"/>
-        <property name="commandClass" value="com.freshdirect.transadmin.model.TrnPlantCapacity"/>
-        <property name="validator" ref="plantCapacityValidator"/>
-        <property name="successView" value="plantCapacityEdit" />
-        <property name="formView" value="plantCapacityEdit" />
-	</bean>-->
-	
 	<bean id="routeFormController" class="com.freshdirect.transadmin.web.RouteFormController">
 		<property name="domainManagerService" ref="domainManager"/>
 		<property name="sessionForm" value="true"/>
@@ -501,6 +489,7 @@
         <property name="employeeManagerService" ref="employeeManager"/>
         <property name="zoneManagerService" ref="zoneManager"/>
         <property name="locationManagerService" ref="locationManager"/>
+        <property name="assetManagerService" ref="assetManagerService"/>
 		<property name="sessionForm" value="true"/>
         <property name="commandName" value="planForm"/>
         <property name="commandClass" value="com.freshdirect.transadmin.web.model.WebPlanInfo"/>
@@ -821,6 +810,7 @@
 		<property name="dispatchManagerService" ref="dispatchManager"/>
 		<property name="zoneManagerService" ref="zoneManager"/>
 		<property name="locationManagerService" ref="locationManager"/>
+		<property name="assetManagerService" ref="assetManagerService"/>
         <property name="sessionForm" value="true"/>
         <property name="commandName" value="scribForm"/>
         <property name="commandClass" value="com.freshdirect.transadmin.model.Scrib"/>
@@ -899,8 +889,7 @@
 	<bean id="routingOutValidator" class="com.freshdirect.transadmin.web.validation.RoutingOutValidator"/>
 	<bean id="routingMergeValidator" class="com.freshdirect.transadmin.web.validation.RoutingMergeValidator"/>
 	<bean id="cutOffValidator" class="com.freshdirect.transadmin.web.validation.CutOffValidator"/>
-	<!--<bean id="plantCapacityValidator" class="com.freshdirect.transadmin.web.validation.PlantCapacityValidator"/>-->
-	
+
 	
 	<bean id="geoRestrictionValidator" class="com.freshdirect.transadmin.web.validation.GeoRestrictionValidator"/>
 	<bean id="scribValidator" class="com.freshdirect.transadmin.web.validation.ScribValidator"/>

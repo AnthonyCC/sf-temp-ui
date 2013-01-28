@@ -22,6 +22,7 @@ import com.freshdirect.transadmin.model.EmployeeInfo;
 import com.freshdirect.transadmin.model.Plan;
 import com.freshdirect.transadmin.model.TrnFacility;
 import com.freshdirect.transadmin.model.Zone;
+import com.freshdirect.transadmin.service.AssetManagerI;
 import com.freshdirect.transadmin.service.DispatchManagerI;
 import com.freshdirect.transadmin.service.DomainManagerI;
 import com.freshdirect.transadmin.service.EmployeeManagerI;
@@ -47,6 +48,8 @@ public class PlanningFormController extends AbstractFormController {
 	private ZoneManagerI zoneManagerService;
 	
 	private LocationManagerI locationManagerService;
+	private AssetManagerI assetManagerService;
+	
 	
 	public LocationManagerI getLocationManagerService() {
 		return locationManagerService;
@@ -295,6 +298,11 @@ public class PlanningFormController extends AbstractFormController {
 			zone = domainManagerService.getZone(model.getZoneCode());
 		}
 
+
+		if( "true".equalsIgnoreCase(model.getZoneModified()))
+		{
+			model.setEquipmentTypes(assetManagerService.getEquipmentTypes(zone.getArea().getRegion()));
+		}
 		model= DispatchPlanUtil.reconstructWebPlanInfo(model, zone, model.getFirstDeliveryTimeModified()
 															,null, employeeManagerService, zoneManagerService, true);
 
@@ -342,6 +350,14 @@ public class PlanningFormController extends AbstractFormController {
 	public void initBinder(HttpServletRequest request, ServletRequestDataBinder binder) throws Exception {
 		super.initBinder(request,binder);
 		binder.registerCustomEditor(TrnFacility.class, new TrnFacilityPropertyEditor());
+	}
+
+	public AssetManagerI getAssetManagerService() {
+		return assetManagerService;
+	}
+
+	public void setAssetManagerService(AssetManagerI assetManagerService) {
+		this.assetManagerService = assetManagerService;
 	}
 
 	}

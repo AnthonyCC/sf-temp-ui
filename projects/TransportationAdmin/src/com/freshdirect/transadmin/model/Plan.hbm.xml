@@ -61,5 +61,8 @@
             </key>
             <one-to-many class="com.freshdirect.transadmin.model.PlanResource" />
         </set>
+         <property name="equipmentTypeS" type="string">
+            <column name="equipment_type" length="100" />
+        </property>
     </class>
 </hibernate-mapping>

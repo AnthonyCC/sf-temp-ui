@@ -7,6 +7,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.routing.model.IRoutingSchedulerIdentity;
 import com.freshdirect.routing.proxy.stub.roadnet.RouteNetWebService;
 import com.freshdirect.routing.proxy.stub.roadnet.RouteNetWebServiceStub;
 import com.freshdirect.routing.proxy.stub.transportation.TransportationWebService;
@@ -106,6 +107,33 @@ public class RoutingServiceLocator {
 		return stub;
 	}
 
+	public TransportationWebService getTransportationSuiteService(IRoutingSchedulerIdentity schedulerId) throws AxisFault {
+		String url = null;
+		String deliveryType = schedulerId.getArea().getAreaCode();
+		if(RoutingServicesProperties.isProxyEnabled()) {
+			url = RoutingServicesProperties.getTransportationSuiteProxyURL();
+		} else {
+			url = RoutingServicesProperties.getTransportationSuiteProviderURL(deliveryType);
+		}
+		
+		if(url == null) {
+			LOGGER.debug("getTransportationSuiteService Server not found :"+ deliveryType +":"+ url);
+			deliveryType = schedulerId.getRegionId();
+			url = RoutingServicesProperties.getTransportationSuiteProviderURL(deliveryType);
+		} 
+		
+		if(url == null) {
+			url = RoutingServicesProperties.getTransportationSuiteProviderURL();
+			LOGGER.debug("getTransportationSuiteService Server not found :"+ deliveryType +":"+ url);
+		} else {
+			LOGGER.debug("getTransportationSuiteService:"+ deliveryType +":"+ url);
+		}
+
+		TransportationWebServiceStub stub = new TransportationWebServiceStub(url);
+		initStub(stub);
+		return stub;
+	}
+
 	public TransportationWebService getTransportationSuiteService(String deliveryType) throws AxisFault {
 		String url = null;
 		if(RoutingServicesProperties.isProxyEnabled()) {
@@ -126,7 +154,7 @@ public class RoutingServiceLocator {
 		initStub(stub);
 		return stub;
 	}
-
+	
 	public TransportationWebService getTransportationSuiteBatchProviderService(String deliveryType) throws AxisFault {
 		String url = null;
 		if(RoutingServicesProperties.isProxyEnabled()) {

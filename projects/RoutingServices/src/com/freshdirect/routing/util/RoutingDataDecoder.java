@@ -14,6 +14,7 @@ import com.freshdirect.routing.model.DeliverySlotCost;
 import com.freshdirect.routing.model.DeliveryWindowMetrics;
 import com.freshdirect.routing.model.DrivingDirection;
 import com.freshdirect.routing.model.DrivingDirectionArc;
+import com.freshdirect.routing.model.EquipmentType;
 import com.freshdirect.routing.model.GeographicLocation;
 import com.freshdirect.routing.model.IAreaModel;
 import com.freshdirect.routing.model.IBuildingModel;
@@ -52,6 +53,7 @@ import com.freshdirect.routing.model.ZoneModel;
 import com.freshdirect.routing.proxy.stub.transportation.ChangedOrderIdentity;
 import com.freshdirect.routing.proxy.stub.transportation.DeliveryAreaOrder;
 import com.freshdirect.routing.proxy.stub.transportation.DeliveryAreaOrderIdentity;
+import com.freshdirect.routing.proxy.stub.transportation.DeliveryAreaRoute;
 import com.freshdirect.routing.proxy.stub.transportation.DeliveryCost;
 import com.freshdirect.routing.proxy.stub.transportation.DeliveryWaveInstance;
 import com.freshdirect.routing.proxy.stub.transportation.DeliveryWindow;
@@ -538,5 +540,89 @@ public class RoutingDataDecoder {
 		depot.setRegionID(id.getRegionID());
 		return depot;
 	}
+
+	public static List<EquipmentType> decodeEquipmentTypes(com.freshdirect.routing.proxy.stub.transportation.EquipmentType[] types){
+			List<EquipmentType> equipmentTypes = new ArrayList<EquipmentType>();
+			if(types!=null)
+			{
+				for(int i=0;i<types.length;i++)
+				{
+					equipmentTypes.add(decodeEquipmentType(types[i]));
+				}
+			}
+			return equipmentTypes;
+			
+	}
+
+	private static EquipmentType decodeEquipmentType(
+			com.freshdirect.routing.proxy.stub.transportation.EquipmentType type) {
+		EquipmentType equipmentType = new EquipmentType();
+		equipmentType.setId(type.getEquipmentTypeIdentity().getEquipmentTypeID());
+		equipmentType.setDescription(type.getDescription());
+		equipmentType.setFuelConsumption(type.getFuelConsumption());
+		equipmentType.setHeight(type.getHeight());
+		equipmentType.setWeight(type.getWeight());
+		equipmentType.setRushHourRestrictions(type.getRushHourRestrictions());
+		equipmentType.setTravelRestrictions(type.getTravelRestrictions());
+		return equipmentType;
+	}
 	
+	public static List<IRouteModel> decodeDeliveryAreaRoutes(DeliveryAreaRoute[] routes){
+		List<IRouteModel> result = null;
+		if(routes != null) {
+			result = new ArrayList<IRouteModel>();
+			
+			for(int intCount=0; intCount < routes.length; intCount++) {
+				result.add(decodeDeliveryAreaRoute(routes[intCount]));
+			}
+		}
+		return result;
+	}
+	
+	public static IRouteModel decodeDeliveryAreaRoute(DeliveryAreaRoute route) {
+		
+		IRouteModel result = null;
+		
+		if(route != null) {
+			
+			result = new RouteModel();
+			
+			result.setStartTime(route.getStartTime() != null ? route.getStartTime().getAsCalendar().getTime() : null);
+			result.setOriginId(route.getDepotLocationId());
+			result.setRouteId(Integer.toString(route.getIdentity().getRouteId()));
+			result.setStops(new TreeSet());
+			System.out.println(route.getWaveId()+ " "+route.getStartTime().getAsCalendar().getTime()+" "+route.getDepartureTime().getTime()+ " "+route.getReturnTime().getTime());
+			IRoutingStopModel _stop = null;
+			IDeliveryModel deliveryInfo = null;
+			result.setWaveId(""+route.getWaveId());
+			
+			DeliveryAreaOrder _refStop = null;
+			int lastSequence = 0;
+			
+			if(route.getOrders() != null) {
+				for(int intCount=0;intCount<route.getOrders().length ;intCount++) {
+					_refStop = route.getOrders()[intCount];
+					
+					if(_refStop.getSequenceNumber() >= 0 && _refStop.getConfirmed()) {
+						_stop = new RoutingStopModel(_refStop.getSequenceNumber() >= 0 ? _refStop.getSequenceNumber() : lastSequence);
+						lastSequence =  _refStop.getSequenceNumber();
+						deliveryInfo = new DeliveryModel();
+						if(_refStop.getDeliveryWindowStart() != null && _refStop.getDeliveryWindowStart().getAsCalendar()!=null)
+								deliveryInfo.setDeliveryStartTime(_refStop.getDeliveryWindowStart().getAsCalendar().getTime());
+						if(_refStop.getDeliveryWindowEnd() != null && _refStop.getDeliveryWindowEnd().getAsCalendar()!=null)
+								deliveryInfo.setDeliveryEndTime(_refStop.getDeliveryWindowEnd().getAsCalendar().getTime());
+					
+						
+						_stop.setDeliveryInfo(deliveryInfo);
+						_stop.setStopArrivalTime(_refStop.getPlannedArrivalTime().getTime());
+						_stop.setOrderNumber(_refStop.getReferenceNumber());
+						_stop.setServiceTime(_refStop.getServiceTime());
+						
+						result.getStops().add(_stop);
+					}
+				}
+			}
+		}
+		return result;
+	}	
 }

@@ -77,6 +77,8 @@ public interface IHandOffDAO {
 	void addNewHandOffBatchDepotSchedulesEx(Set<IHandOffBatchDepotScheduleEx> dataList) throws SQLException;
 	Set<IHandOffBatchDepotScheduleEx> getHandOffBatchDepotSchedulesEx(String dayOfWeek, Date cutOffTime) throws SQLException;
 	
+	Map<String, Map<RoutingTimeOfDay, Set<IHandOffBatchDepotScheduleEx>>> getHandOffBatchDepotSchedulesEx(String dayOfWeek) throws SQLException;
+	
 	void clearHandOffBatchDispatches(String handOffBatchId) throws SQLException;
 	
 	void addNewHandOffBatchDispatches(String handOffBatchId, Map<RoutingTimeOfDay, EnumHandOffDispatchStatus> dispatchStatus) throws SQLException;

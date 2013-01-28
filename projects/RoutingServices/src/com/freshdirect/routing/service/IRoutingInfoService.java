@@ -45,7 +45,7 @@ public interface IRoutingInfoService {
 
 	Map<String, Map<RoutingTimeOfDay, Map<RoutingTimeOfDay, List<IWaveInstance>>>> getPlannedTrailerDispatchTree(Date deliveryDate, Date cutOff)  throws RoutingServiceException;
 
-	Map<String, TrnFacilityType> retrieveTrnFacilitys()throws RoutingServiceException;
+	Map<String, TrnFacilityType> retrieveTrnFacilitys() throws RoutingServiceException;
 
 	Map<String, TrnFacility> retrieveTrnFacilityLocations() throws RoutingServiceException;
 
@@ -53,5 +53,9 @@ public interface IRoutingInfoService {
 
 	Map<RoutingTimeOfDay, Integer>  getCutoffSequence() throws RoutingServiceException;
 
-	List<IRegionModel> getRegions();
+	List<IRegionModel> getRegions() throws RoutingServiceException;
+
+	Map<String, IWaveInstance> getWavesByDispatchTime(Date deliveryDate) throws RoutingServiceException; 
+	
+	Map<RoutingTimeOfDay, Integer> getPlantCapacityByDispatchTime(Date deliveryDate) throws RoutingServiceException; 
 }

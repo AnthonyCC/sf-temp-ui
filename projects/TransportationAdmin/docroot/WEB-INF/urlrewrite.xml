@@ -65,5 +65,15 @@
 		<to last="true">/event.jx?action=addShiftEvent&amp;ver=$1</to>
 	</rule>
 	
+	<rule>		
+		<from>^/v/([0-9]+)/list/plantcapacity/</from>
+		<to last="true">/dashboard.jx?action=getPlantCapacity&amp;ver=$1</to>
+	</rule>
+	
+	<rule>		
+		<from>^/v/([0-9]+)/save/plantcapacity/</from>
+		<to last="true">/dashboard.jx?action=savePlantCapacity&amp;ver=$1</to>
+	</rule>
+	
 </urlrewrite>
 

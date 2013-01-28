@@ -1,7 +1,10 @@
 package com.freshdirect.transadmin.service;
 
 import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 
+import com.freshdirect.routing.model.EquipmentType;
 import com.freshdirect.transadmin.model.Asset;
 import com.freshdirect.transadmin.model.AssetTemplate;
 import com.freshdirect.transadmin.model.AssetType;
@@ -34,5 +37,9 @@ public interface AssetManagerI extends BaseManagerI {
 	Asset getAssetByAssetNumber(String assetNo);
 
 	Collection getAsset(String assetNumber, String assetType);
+	
+	List<EquipmentType> getEquipmentTypes(String region);
+
+	Map<String, List<EquipmentType>> loadEquipmentTypes();
 
 }

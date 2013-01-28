@@ -56,6 +56,9 @@
         </property>
         <many-to-one name="originFacility" class="com.freshdirect.transadmin.model.TrnFacility" fetch="select" lazy="false">
             <column name="ORIGIN_FACILITY" length="16" not-null="true"/>
-        </many-to-one>
+        </many-to-one>  
+        <property name="equipmentType" type="string">
+            <column name="equipment_type" length="100" />
+        </property>
     </class>
 </hibernate-mapping>

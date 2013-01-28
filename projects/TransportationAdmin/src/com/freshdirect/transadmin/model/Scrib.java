@@ -3,10 +3,11 @@ package com.freshdirect.transadmin.model;
 import java.text.ParseException;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Iterator;
+import java.util.List;
 import java.util.TimeZone;
 
 import com.freshdirect.routing.constants.EnumTransportationFacilitySrc;
+import com.freshdirect.routing.model.EquipmentType;
 import com.freshdirect.transadmin.util.TransStringUtil;
 
 public class Scrib implements java.io.Serializable, IWaveInstanceSource {
@@ -34,7 +35,8 @@ public class Scrib implements java.io.Serializable, IWaveInstanceSource {
 	private Date cutOffTime;
 	private TrnFacility originFacility;
 	private TrnFacility destinationFacility;
-	
+	private String equipmentTypeS;
+	private List<EquipmentType> equipmentTypes;
 	public TrnFacility getOriginFacility() {
 		return originFacility;
 	}
@@ -462,6 +464,24 @@ public class Scrib implements java.io.Serializable, IWaveInstanceSource {
 			originFacility = null;
 			destinationFacility = null;
 		}
+	}
+
+	
+
+	public String getEquipmentTypeS() {
+		return equipmentTypeS;
+	}
+
+	public void setEquipmentTypeS(String equipmentTypeS) {
+		this.equipmentTypeS = equipmentTypeS;
+	}
+
+	public List<EquipmentType> getEquipmentTypes() {
+		return equipmentTypes;
+	}
+
+	public void setEquipmentTypes(List<EquipmentType> equipmentTypes) {
+		this.equipmentTypes = equipmentTypes;
 	}
 	
 }

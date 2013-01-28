@@ -6,8 +6,10 @@ public class PlantDispatchData {
 	private String dispatchTime;
 	private int plantCapacity;
 	private int plannedCapacity;
+	private int cumlplannedCapacity;
 	private int totalOrders;
 	private int trucks;
+	private int orders;
 	public String getDispatchTime() {
 		return dispatchTime;
 	}
@@ -37,6 +39,18 @@ public class PlantDispatchData {
 	}
 	public void setTrucks(int trucks) {
 		this.trucks = trucks;
+	}
+	public int getOrders() {
+		return orders;
+	}
+	public void setOrders(int orders) {
+		this.orders = orders;
+	}
+	public int getCumlplannedCapacity() {
+		return cumlplannedCapacity;
+	}
+	public void setCumlplannedCapacity(int cumlplannedCapacity) {
+		this.cumlplannedCapacity = cumlplannedCapacity;
 	}
 
 	

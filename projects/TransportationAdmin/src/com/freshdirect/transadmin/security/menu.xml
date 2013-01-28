@@ -242,6 +242,12 @@
 	     	<access-uris>crisismanage.do</access-uris>
 	     	<access-roles>TrnAdmin</access-roles>
 	     </menu>
+	     
+	      <menu id="ADO011" title="Dashboard" orientation="LEFT" link="dashboard.do">
+	     	<access-uris>dashboard.do</access-uris>
+	     	<access-roles>TrnAdmin</access-roles>
+	     </menu>
+	     
 
 	</menu>
 </menus>

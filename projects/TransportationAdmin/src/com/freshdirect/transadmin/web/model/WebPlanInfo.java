@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.freshdirect.routing.model.EquipmentType;
 import com.freshdirect.transadmin.model.EmployeeInfo;
 import com.freshdirect.transadmin.model.EmployeeRole;
 import com.freshdirect.transadmin.model.EmployeeRoleType;
@@ -82,7 +83,8 @@ public class WebPlanInfo extends BaseCommand implements TrnBaseEntityI  {
 	private TrnFacility originFacility;
 	private TrnFacility destinationFacility;
 	private String dispatchType;
-	
+	private String equipmentTypeS;
+	private List<EquipmentType> equipmentTypes;
 	public TrnFacility getOriginFacility() {
 		return originFacility;
 	}
@@ -858,5 +860,23 @@ public class WebPlanInfo extends BaseCommand implements TrnBaseEntityI  {
 	public void setPlan(boolean plan) {
 		this.plan = plan;
 	}
+
+
+	public String getEquipmentTypeS() {
+		return equipmentTypeS;
+	}
+
+	public void setEquipmentTypeS(String equipmentTypeS) {
+		this.equipmentTypeS = equipmentTypeS;
+	}
+
+	public List<EquipmentType> getEquipmentTypes() {
+		return equipmentTypes;
+	}
+
+	public void setEquipmentTypes(List<EquipmentType> equipmentTypes) {
+		this.equipmentTypes = equipmentTypes;
+	}
+	
 	
 }

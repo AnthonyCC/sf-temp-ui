@@ -22,6 +22,7 @@ import com.freshdirect.transadmin.model.Region;
 import com.freshdirect.transadmin.model.Scrib;
 import com.freshdirect.transadmin.model.TrnFacility;
 import com.freshdirect.transadmin.model.Zone;
+import com.freshdirect.transadmin.service.AssetManagerI;
 import com.freshdirect.transadmin.service.DispatchManagerI;
 import com.freshdirect.transadmin.service.EmployeeManagerI;
 import com.freshdirect.transadmin.service.LocationManagerI;
@@ -40,6 +41,7 @@ public class ScribFormController extends AbstractDomainFormController {
 	private EmployeeManagerI employeeManagerService;
 	private ZoneManagerI zoneManagerService;
 	private LocationManagerI locationManagerService;
+	private AssetManagerI assetManagerService;
 	
 	public LocationManagerI getLocationManagerService() {
 		return locationManagerService;
@@ -59,7 +61,6 @@ public class ScribFormController extends AbstractDomainFormController {
 
 	@SuppressWarnings("unchecked")
 	protected Map referenceData(HttpServletRequest request) throws ServletException {
-
 		Collection zones=getDomainManagerService().getZones();
 		Collection activeZoneCodes = zoneManagerService.getActiveZoneCodes();
     	if(zones != null && activeZoneCodes != null) {
@@ -79,11 +80,16 @@ public class ScribFormController extends AbstractDomainFormController {
 		refData.put("routeTypes", EnumRouteType.getEnumList());
 		refData.put("trnFacilitys", locationManagerService.getTrnFacilitys());
 		refData.put("regions", getDomainManagerService().getRegions());
+		
 		return refData;
 	}
 
 	public Object getBackingObject(String id) {
-		return getDispatchManagerService().getScrib(id);
+		Scrib scrib = getDispatchManagerService().getScrib(id);
+		if(scrib!=null && scrib.getZone()!=null && scrib.getZone().getArea()!=null 
+				&& scrib.getZone().getArea().getRegion()!=null)
+		scrib.setEquipmentTypes(assetManagerService.getEquipmentTypes(scrib.getZone().getArea().getRegion()));
+		return scrib;
 	}
 
 	public Object getDefaultBackingObject() {
@@ -118,7 +124,7 @@ public class ScribFormController extends AbstractDomainFormController {
 			model.setZone(null);
 		}
 		model= ScribUtil.reconstructWebPlanInfo(model,zone,model.getFirstDeliveryTimeModified(),
-				employeeManagerService,zoneManagerService);		
+				employeeManagerService,zoneManagerService, assetManagerService);		
 	}
 
 	
@@ -199,5 +205,13 @@ public class ScribFormController extends AbstractDomainFormController {
 		binder.registerCustomEditor(Region.class, new RegionPropertyEditor());
 		binder.registerCustomEditor(TrnFacility.class, new TrnFacilityPropertyEditor());
     }
+
+	public AssetManagerI getAssetManagerService() {
+		return assetManagerService;
+	}
+
+	public void setAssetManagerService(AssetManagerI assetManagerService) {
+		this.assetManagerService = assetManagerService;
+	}
 
 }
