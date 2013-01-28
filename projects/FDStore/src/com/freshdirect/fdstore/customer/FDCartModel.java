@@ -184,22 +184,31 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 	
 	private ExtendDPDiscountModel dlvPassExtn;
 	
-	private int skuCount = 0;
+	private Map<String,Integer> skuCount = new HashMap<String,Integer>();
 	private boolean csrWaivedDeliveryPremium = false;
 	
 	private List<FDCartLineI> ebtIneligibleOrderLines = new ArrayList<FDCartLineI>();
 	
-	public void incrementSkuCount(int quantity) {
-		skuCount += quantity;
+	public void incrementSkuCount(String promoCode, int quantity) {
+		Integer count =skuCount.get(promoCode);
+		if(null== count){
+			count=new Integer(0);
+		}
+		count += quantity;
+		skuCount.put(promoCode, count);
 	}
 	
-	public int getSkuCount() {
+	public Map<String,Integer> getSkuCount() {
 		return skuCount;		
 	}
 	
-	public void setSkuCount(int skuCount) {
-		this.skuCount = skuCount;
+	public void clearSkuCount(){
+		skuCount.clear();
 	}
+	
+	/*public void setSkuCount(int skuCount) {
+		this.skuCount = skuCount;
+	}*/
 	
 	public boolean isDlvPassApplied() {
 		return dlvPassApplied;

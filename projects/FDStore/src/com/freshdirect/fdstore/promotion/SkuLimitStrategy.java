@@ -1,5 +1,7 @@
 package com.freshdirect.fdstore.promotion;
 
+import java.util.Map;
+
 import com.freshdirect.fdstore.customer.FDCartLineI;
 
 public class SkuLimitStrategy implements LineItemStrategyI {
@@ -17,9 +19,10 @@ public class SkuLimitStrategy implements LineItemStrategyI {
 	}
 	
 	public int evaluate(FDCartLineI lineItem, String promotionCode, PromotionContextI context) {
-		int skuCount = context.getShoppingCart().getSkuCount();
+		Map<String,Integer> skuCountMap = context.getShoppingCart().getSkuCount();
+		Integer skuCount = skuCountMap.get(promotionCode);
 		System.out.println("=============Evaluating the SkuLimitStrategy, skuCount= " + skuCount + "|skuLimit=" + skuLimit);
-		if(skuCount < skuLimit){
+		if(null==skuCount || skuCount < skuLimit){
 			return ALLOW;
 		}		
 		return DENY;

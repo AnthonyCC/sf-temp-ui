@@ -457,7 +457,7 @@ public class FDUser extends ModelSupport implements FDUserI {
 
 		this.getShoppingCart().clearSampleLines();
 		this.getShoppingCart().setDiscounts(new ArrayList<ErpDiscountLineModel>());
-		this.getShoppingCart().setSkuCount(0);
+		this.getShoppingCart().clearSkuCount();
 		this.getShoppingCart().clearLineItemDiscounts();
 		this.clearPromoErrorCodes();
 		this.getShoppingCart().setDlvPassExtn(null);

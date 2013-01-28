@@ -117,7 +117,12 @@ public class LineItemDiscountApplicator implements PromotionApplicatorI {
 						  " - " +  cartLine.getOrderLineId() + " - " + cartLine.getOrderLineNumber() + "-" + cartLine.getCartlineId()) ;
 			}
 			*/
-			
+			Map<String,Integer>skuCountMap =cart.getSkuCount();
+			Integer skuCount = skuCountMap.get(promo.getPromotionCode());
+			if(null !=skuCount){
+				skuCount= new Integer(0);
+			}
+			skuCountMap.put(promo.getPromotionCode(),skuCount);
 			if(null != discountRule){
 				/*
 				System.out.println("Processing order lines with a discountRule:" + discountRule.toString());
@@ -157,23 +162,22 @@ public class LineItemDiscountApplicator implements PromotionApplicatorI {
 							
 					  }
 				}
-				*/
-				
+				*/				
 				
 				for(int i=newOrderLines.size() - 1;i>=0;i--) {
 					  FDCartLineI cartLine=(FDCartLineI)newOrderLines.get(i);
 					  boolean e = evaluate(cartLine, promotionCode, context);
 					  if(e) {
-						int availableSkuLimit = skuLimit - cart.getSkuCount();
+						int availableSkuLimit = skuLimit - skuCount;
 						if(availableSkuLimit > (int)cartLine.getQuantity()) {
 							availableSkuLimit = (int)cartLine.getQuantity();
 						}
 						boolean applied = context.applyLineItemDollarOffDiscount(promo, cartLine, discountRule.getMaxAmount(), availableSkuLimit);
 						if(applied && skuLimit > 0) {
 							if(cartLine.getUnitPrice().indexOf("/lb") != -1) {
-								cart.incrementSkuCount(1);
+								cart.incrementSkuCount(promo.getPromotionCode(), 1);
 							} else {
-								cart.incrementSkuCount((int)cartLine.getQuantity());
+								cart.incrementSkuCount(promo.getPromotionCode(), (int)cartLine.getQuantity());
 							}
 						}
 						if(favoritesOnly){
@@ -246,16 +250,16 @@ public class LineItemDiscountApplicator implements PromotionApplicatorI {
 					FDCartLineI cartLine=(FDCartLineI)newOrderLines.get(i);
 					boolean e = evaluate(cartLine, promotionCode, context);
 					if(e) {
-						int availableSkuLimit = skuLimit - cart.getSkuCount();
+						int availableSkuLimit = skuLimit - skuCount;
 						if(availableSkuLimit > (int)cartLine.getQuantity()) {
 							availableSkuLimit = (int)cartLine.getQuantity();
 						}
 						boolean applied = context.applyLineItemDiscount(promo, cartLine, percentOff, availableSkuLimit, maxPercentageDiscount);
-						if(applied && skuLimit > 0) {
+						if(applied && skuLimit > 0) {							
 							if(cartLine.getUnitPrice().indexOf("/lb") != -1) {
-								cart.incrementSkuCount(1);
+								cart.incrementSkuCount(promo.getPromotionCode(), 1);
 							} else {
-								cart.incrementSkuCount((int)cartLine.getQuantity());
+								cart.incrementSkuCount(promo.getPromotionCode(), (int)cartLine.getQuantity());
 							}
 						}
 						if(favoritesOnly){
