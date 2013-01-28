@@ -403,19 +403,17 @@ public class EventLogDAO implements IEventLogDAO   {
 															});
 			
 			connection = this.jdbcTemplate.getDataSource().getConnection();
-
-			BatchSqlUpdate batchUpdater = new BatchSqlUpdate(this.jdbcTemplate.getDataSource(), INSERT_EVENTLOG_STOP);
-			batchUpdater.declareParameter(new SqlParameter(Types.VARCHAR));
-			batchUpdater.declareParameter(new SqlParameter(Types.VARCHAR));
-			batchUpdater.compile();
-			
-			connection = this.jdbcTemplate.getDataSource().getConnection();			
-			
-			for(String stop : event.getStops()) {
-				batchUpdater.update(new Object[]{ eventLogId, stop });
-			}			
-			batchUpdater.flush();
-			
+			if(event.getStops().size() > 0) {
+				BatchSqlUpdate batchUpdater = new BatchSqlUpdate(this.jdbcTemplate.getDataSource(), INSERT_EVENTLOG_STOP);
+				batchUpdater.declareParameter(new SqlParameter(Types.VARCHAR));
+				batchUpdater.declareParameter(new SqlParameter(Types.VARCHAR));
+				batchUpdater.compile();
+							
+				for(String stop : event.getStops()) {
+					batchUpdater.update(new Object[]{ eventLogId, stop });
+				}			
+				batchUpdater.flush();
+			}
 		} finally {
 			if(connection!=null) connection.close();
 		}
@@ -874,18 +872,17 @@ public class EventLogDAO implements IEventLogDAO   {
 			
 			connection = this.jdbcTemplate.getDataSource().getConnection();
 
-			BatchSqlUpdate batchUpdater = new BatchSqlUpdate(this.jdbcTemplate.getDataSource(), INSERT_MOTEVENTLOG_STOP);
-			batchUpdater.declareParameter(new SqlParameter(Types.VARCHAR));
-			batchUpdater.declareParameter(new SqlParameter(Types.VARCHAR));
-			batchUpdater.compile();
-			
-			connection = this.jdbcTemplate.getDataSource().getConnection();			
-			
-			for(String stop : event.getStops()) {
-				batchUpdater.update(new Object[]{ eventLogId, stop });
+			if(event.getStops().size() > 0){
+				BatchSqlUpdate batchUpdater = new BatchSqlUpdate(this.jdbcTemplate.getDataSource(), INSERT_MOTEVENTLOG_STOP);
+				batchUpdater.declareParameter(new SqlParameter(Types.VARCHAR));
+				batchUpdater.declareParameter(new SqlParameter(Types.VARCHAR));
+				batchUpdater.compile();
+							
+				for(String stop : event.getStops()) {
+					batchUpdater.update(new Object[]{ eventLogId, stop });
+				}			
+				batchUpdater.flush();
 			}			
-			batchUpdater.flush();
-			
 		} finally {
 			if(connection!=null) connection.close();
 		}

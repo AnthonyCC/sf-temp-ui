@@ -115,6 +115,7 @@ $(document).ready(function () {
 		
 	$("#daterange" ).datepicker();
 	
+	
 	$.ajax({
 		url : "v/1/list/eventmetadata/",
 		type : "GET",
@@ -192,7 +193,7 @@ $(document).ready(function () {
 					, {id : "route",	name : "Route",	field : "route", width: 65, resizable: false, sortable : true}									
 					, {id : "windowStartTime",	name : "Start Window",	field : "windowStartTime", sortable : true, resizable: false, formatter: Slick.Formatters.Time}
 					, {id : "windowEndTime",	name : "End Window",	field : "windowEndTime", sortable : true, resizable: false, formatter: Slick.Formatters.Time}
-					, {id : "truck",	name : "Truck",	field : "truck",  width: 65, sortable : true, resizable: false,}									
+					, {id : "truck",	name : "Truck",	field : "truck",  width: 65, sortable : true, resizable: false}									
 					, {id : "scannerNumber",	name : "Scanner",	field : "scannerNumber", sortable : true}
 					, {id : "eventType",	name : "Type",	field : "eventType", sortable : true}
 					, {id : "eventSubType",	name : "Sub-Type",	field : "eventSubType", sortable : true}
@@ -352,8 +353,17 @@ function filterX(item) {
 	for (var columnId in columnFilters) {
 	    if (columnId !== undefined && columnFilters[columnId] !== "") {
 	        var c = grid.getColumns()[grid.getColumnIndex(columnId)];
-	        if (item[c.field] != columnFilters[columnId] && item[c.field].indexOf(columnFilters[columnId]) == -1) {
-	            return false;
+	        console.log(item[c.field] + "->" + columnFilters[columnId])
+	        if (item[c.field] != null) {
+	        	if(item[c.field].indexOf) {
+	        		if(item[c.field].indexOf(columnFilters[columnId]) == -1) {
+	        			return false;
+	        		}
+	        	} else if(item[c.field] != columnFilters[columnId]) {
+	        		return false;
+	        	}	            
+	        } else {
+	        	return false;
 	        }
 	    }
 	}
@@ -375,7 +385,7 @@ function viewEvents() {
 }
 
 function addEvent(row) {
-	$("#eventDate" ).datepicker();	
+	$("#eventDate" ).datepicker({ minDate: +0 });	
 	var rowData = grid.getData().getItem(row);
 	
 	var dataX = JSON.parse(JSON.stringify(rowData));
@@ -451,7 +461,7 @@ function showEventForm (showCurrDate) {
 				}
 				
 				if(showCurrDate){
-					$("#eventDate" ).datepicker();
+					$("#eventDate" ).datepicker({ minDate: +0 });
 					$('#eventForm').clearForm();
 					var formatedDate = $('#eventDate').formatDate(0);
 					$('#eventDate').val(formatedDate);
@@ -576,8 +586,6 @@ function showEventForm (showCurrDate) {
 	});
 }
 
-
-
 var form = {
 		message: null,
 		validate: function () {
@@ -689,7 +697,7 @@ function lookUpWindows(routeId, selWindow) {
 						</select>
 						
 						<label for='form-description'>Comment</label>
-						<textarea id='description' class='form-input' name='description' cols='40' rows='3' tabindex='8'></textarea>
+						<textarea id='description' class='form-input' name='description' cols='40' rows='3' tabindex='8' style="resize:none; width: 206px; height: 96px;"></textarea>
 						
 						<label for='form-crossStreet'>Cross Street</label>
 						<input type='text' id='crossStreet' class='form-input' name='crossStreet' />

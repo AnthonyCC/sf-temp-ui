@@ -170,7 +170,7 @@ $(document).ready(function () {
 					, {id : "route",	name : "Route",	field : "route", width: 65, resizable: false, sortable : true}									
 					, {id : "zone",	name : "Zone",	field : "zone", sortable : true, resizable: false}
 					, {id : "addHocRoute",	name : "Mot Route",	field : "addHocRoute", sortable : true, resizable: false}
-					, {id : "nextel",	name : "Nextel",	field : "nextel",  width: 65, sortable : true, resizable: false,}									
+					, {id : "nextel",	name : "Nextel",	field : "nextel",  width: 65, sortable : true, resizable: false}									
 					, {id : "ticketNumber",	name : "Ticket Number",	field : "ticketNumber", sortable : true}
 					, {id : "stops", name : "Stop(s)",	field : "stops", sortable : true}
 					, {id : "totalStopCnt",	name : "Total Stops",	field : "totalStopCnt", sortable : true, cssClass: "slick-cell-aligncenter"}				
@@ -305,7 +305,7 @@ $(document).ready(function () {
 									});
 								}
 								
-								$("#eventDate" ).datepicker();								
+								$("#eventDate" ).datepicker({ minDate: +0 });								
 								$('#eventForm').clearForm();
 								var formatedDate = $('#eventDate').formatDate(0);
 								$('#eventDate').val(formatedDate);
@@ -468,6 +468,7 @@ $(document).ready(function () {
 																																					'Event added sucessfully!');
 																																	
 																																});
+																												showGrid();
 																											},
 																											error : function(
 																													msg) {
@@ -682,15 +683,23 @@ $(document).ready(function () {
 	}
 
 	function filterX(item) {
-
-		for ( var columnId in columnFilters) {
-			if (columnId !== undefined && columnFilters[columnId] !== "") {
-				var c = grid.getColumns()[grid.getColumnIndex(columnId)];
-				if (item[c.field] != columnFilters[columnId]
-						&& item[c.field].indexOf(columnFilters[columnId]) == -1) {
-					return false;
-				}
-			}
+		
+		for (var columnId in columnFilters) {
+		    if (columnId !== undefined && columnFilters[columnId] !== "") {
+		        var c = grid.getColumns()[grid.getColumnIndex(columnId)];
+		        console.log(item[c.field] + "->" + columnFilters[columnId])
+		        if (item[c.field] != null) {
+		        	if(item[c.field].indexOf) {
+		        		if(item[c.field].indexOf(columnFilters[columnId]) == -1) {
+		        			return false;
+		        		}
+		        	} else if(item[c.field] != columnFilters[columnId]) {
+		        		return false;
+		        	}	            
+		        } else {
+		        	return false;
+		        }
+		    }
 		}
 		return true;
 	}
@@ -731,7 +740,7 @@ $(document).ready(function () {
 						
 						
 						<label for='form-description'>Comment</label>
-						<textarea id='description' class='form-input' name='description' cols='40' rows='3' tabindex='8'></textarea>
+						<textarea id='description' class='form-input' name='description' cols='40' rows='3' tabindex='8' style="resize:none; width: 206px; height: 96px;"></textarea>
 						
 						<label for='form-ticketNumber'>Ticket Number</label>
 						<input type='text' id='ticketNumber' class='form-input' name='ticketNumber' />

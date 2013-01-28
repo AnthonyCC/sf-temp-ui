@@ -69,8 +69,7 @@
 				<div class="cont_Ritem">
 				   				   
 					<div align="right">
-						<span>&nbsp;<input id="btnAddNewEvent" type="button" value="Add ShiftEventLog" class="btn" onclick="javascript:showEventForm();" />&nbsp;</span>
-											
+						<span>&nbsp;<input id="btnAddNewEvent" type="button" style="font-size:11px" type = "button" height="18" value="Add ShiftEventLog"  onclick="javascript:showEventForm();" />&nbsp;</span>											
 					</div><br/>
 					
 					<div style="width:99%">
@@ -211,7 +210,7 @@ function showEventForm () {
 					});
 				}
 				
-				$("#eventDate" ).datepicker();
+				$("#eventDate" ).datepicker({ minDate: +0 });
 				
 				$("#eventType").val('<%=TransportationAdminProperties.getShiftEventLogType()%>');
 							
@@ -298,6 +297,7 @@ function showEventForm () {
 										$('#form-container .form-title').html('Event added sucessfully!');
 										//msg.html(json).fadeIn(200);
 									});
+									showGrid();
 								},
 								error : function(msg) {
 									var errorText = eval('(' + msg.responseText + ')');
@@ -499,8 +499,16 @@ function filterX(item) {
 	for (var columnId in columnFilters) {
 	    if (columnId !== undefined && columnFilters[columnId] !== "") {
 	        var c = grid.getColumns()[grid.getColumnIndex(columnId)];
-	        if (item[c.field] != columnFilters[columnId] && item[c.field].indexOf(columnFilters[columnId]) == -1) {
-	            return false;
+	        if (item[c.field] != null) {
+	        	if(item[c.field].indexOf) {
+	        		if(item[c.field].indexOf(columnFilters[columnId]) == -1) {
+	        			return false;
+	        		}
+	        	} else if(item[c.field] != columnFilters[columnId]) {
+	        		return false;
+	        	}	            
+	        } else {
+	        	return false;
 	        }
 	    }
 	}
@@ -548,7 +556,7 @@ function restoreGrid(dataX) {
 						</select>
 						
 						<label for='form-description'>Comment</label>
-						<textarea id='description' class='form-input' name='description' cols='40' rows='3' tabindex='8'></textarea>
+						<textarea id='description' class='form-input' name='description' cols='40' rows='3' tabindex='8' style="resize:none; width: 206px; height: 96px;"></textarea>
 						
 						<br/>
 					</td>

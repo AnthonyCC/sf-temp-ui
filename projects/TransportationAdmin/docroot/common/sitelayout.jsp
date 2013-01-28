@@ -57,7 +57,7 @@
 	<script type="text/javascript" src="jquery/jquery-ui-1.8.16.custom.min.js"></script>
 	<script type="text/javascript" src="jquery/jquery.event.drag-2.0.min.js"></script>
 	<script type="text/javascript" src="jquery/urlEncode.js"></script>
-	<script type="text/javascript" src="jquery/jquery.tools.min.js"></script>
+	<!-- <script type="text/javascript" src="jquery/jquery.tools.min.js"></script> -->
 	<script type="text/javascript" src="jquery/util/jquery.loadJSON.js"></script>
 	<script type="text/javascript" src="jquery/plugins/simplemodel/jquery.simplemodal.js"></script>
 	<script type="text/javascript" src="jquery/util/date.js"></script> 
