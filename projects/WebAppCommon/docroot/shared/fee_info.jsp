@@ -1,6 +1,6 @@
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
-<jsp:include page="/common/template/includes/ad_server.jsp" flush="false"/>
+
 <%
 		String type = request.getParameter("type");
 		boolean bottleDeposit = "bottle".equalsIgnoreCase(type);
