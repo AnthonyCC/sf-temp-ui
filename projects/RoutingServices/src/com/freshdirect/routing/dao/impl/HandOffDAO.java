@@ -329,7 +329,8 @@ public class HandOffDAO extends BaseDAO implements IHandOffDAO   {
 			            " and cx.sequenceno < (select cz.sequenceno from TRANSP.HANDOFF_BATCH bz, TRANSP.TRN_CUTOFF cz where cz.cutoff_time = bz.cutoff_datetime and bz.batch_id = ? ) "+
 			            " and dx.status = 'CPD' and bx.BATCH_STATUS IN ('CPD/ADC','CPD','CPD/ADF')))";
 	
-	private static final String GET_HANDOFFBATCH_PLANS = " select x.* from "+
+	private static final String GET_HANDOFFBATCH_PLANS = "select x.*, (select maximum_no from transp.zone z, TRANSP.ZONETYPE_RESOURCE zr " +
+			"where Z.ZONE_TYPE = ZR.ZONETYPE_ID and ZR.ROLE = '003' and x.ZONE = Z.ZONE_CODE) RESOURCE_COUNT from "+
              " ( "+
                 	" select p.* from transp.plan p where p.plan_date = ? and to_char(p.cutoff_datetime, 'HH:MI AM') = to_char(?, 'HH:MI AM') "+
                 " UNION "+
@@ -1660,6 +1661,7 @@ public class HandOffDAO extends BaseDAO implements IHandOffDAO   {
 						planModel.setIsTeamOverride("Y".equalsIgnoreCase(rs.getString("ISTEAMOVERRIDE")) ? true : false);
 						planModel.setLastDeliveryTime(rs.getTimestamp("LAST_DLV_TIME"));
 						planModel.setCutOffTime(rs.getTimestamp("CUTOFF_DATETIME"));
+						planModel.setRunnerMax(rs.getInt("RESOURCE_COUNT"));
 	
 					} while (rs.next());		        		    	
 				}

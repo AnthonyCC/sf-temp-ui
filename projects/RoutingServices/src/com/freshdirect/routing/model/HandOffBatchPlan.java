@@ -25,6 +25,7 @@ public class HandOffBatchPlan implements IHandOffBatchPlan  {
 	private Date cutOffTime;
 	private String originFacility;
 	private String destinationFacility;
+	private int runnerMax;
 	
 	public HandOffBatchPlan() {
 		super();
@@ -199,6 +200,14 @@ public class HandOffBatchPlan implements IHandOffBatchPlan  {
 
 	public void setDestinationFacility(String destinationFacility) {
 		this.destinationFacility = destinationFacility;
+	}
+
+	public int getRunnerMax() {
+		return runnerMax;
+	}
+
+	public void setRunnerMax(int runnerMax) {
+		this.runnerMax = runnerMax;
 	}
 
 }

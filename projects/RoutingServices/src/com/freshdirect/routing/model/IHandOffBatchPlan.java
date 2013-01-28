@@ -78,5 +78,8 @@ public interface IHandOffBatchPlan {
 	String getDestinationFacility();
 
 	void setDestinationFacility(String destinationFacility);
+	
+	public int getRunnerMax();
+	public void setRunnerMax(int runnerMax);
 
 }

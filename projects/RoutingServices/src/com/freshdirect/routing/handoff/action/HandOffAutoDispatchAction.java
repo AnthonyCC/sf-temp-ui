@@ -296,7 +296,7 @@ public class HandOffAutoDispatchAction extends AbstractHandOffAction {
 					DateRange planRange = new DateRange(_plan.getFirstDeliveryTime(), _plan.getFirstDeliveryTime());
 					
 					int runnerCount = 0;	
-						for (Iterator<IHandOffBatchPlan> k = runnerPlans.iterator(); k.hasNext() && runnerCount<6;) 
+						for (Iterator<IHandOffBatchPlan> k = runnerPlans.iterator(); k.hasNext() && runnerCount< _plan.getRunnerMax();) 
 						{
 							IHandOffBatchPlan runnerPlan = k.next();
 							DateRange runnerRange = new DateRange(runnerPlan.getFirstDeliveryTime(), runnerPlan.getLastDeliveryTime());
