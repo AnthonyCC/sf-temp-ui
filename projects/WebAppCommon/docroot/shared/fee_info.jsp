@@ -2,6 +2,8 @@
 <%@ taglib uri='freshdirect' prefix='fd' %>
 
 <%
+		request.setAttribute("sitePage", "www.freshdirect.com/shared/fee_info.jsp");
+		
 		String type = request.getParameter("type");
 		boolean bottleDeposit = "bottle".equalsIgnoreCase(type);
 		boolean fuelSurcharge = "fuel".equalsIgnoreCase(type);
