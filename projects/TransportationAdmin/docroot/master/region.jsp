@@ -32,10 +32,10 @@
 		<div class="cont_topright">
 			<div class="cont_row">
 				<div class="cont_Ritem">
-					<form id="routeListForm" action="" method="post"> 
+					<form id="regionListForm" action="" method="post"> 
 					<ec:table items="regions"   action="${pageContext.request.contextPath}/region.do"
 						imagePath="${pageContext.request.contextPath}/images/table/*.gif"   title=""
-						width="98%"  view="fd" form="routeListForm" autoIncludeParameters="false" rowsDisplayed="25"  >
+						width="98%"  view="fd" form="regionListForm" autoIncludeParameters="false" rowsDisplayed="25"  >
 						
 						<ec:exportPdf fileName="transportationroutes.pdf" tooltip="Export PDF" 
 								  headerTitle="Transportation Routes" />
@@ -59,6 +59,11 @@
      </div>
      <script>
       addRowHandlers('ec_table', 'rowMouseOver', 'editregion.do','id',0, 0);
+      
+      function getFilterTestValue() {
+          var filters = getFilterValue(document.getElementById("regionListForm"), false);          
+          return escape(filters);
+    }
     </script>   
   </tmpl:put>
 </tmpl:insert>

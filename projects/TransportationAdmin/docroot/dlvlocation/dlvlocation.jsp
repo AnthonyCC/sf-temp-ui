@@ -8,6 +8,7 @@
   pageContext.setAttribute("HAS_UPDATEBUTTON", "true");
   pageContext.setAttribute("HAS_ADDBUTTON", "false");
   pageContext.setAttribute("HAS_SENDBUTTON", "true");
+  
 %>
 
 <tmpl:insert template='/common/sitelayout.jsp'>
@@ -34,22 +35,29 @@
                   <td> 
                                 
                     <input maxlength="50" size="20" name="srubbedAddress"
-                      id="srubbedAddress" value="" />                    
+                      id="srubbedAddress" value='<c:out value="${srubbedAddress}"/>' />                    
                  </td>
                 
                 <td>ZipCode</td>
                   <td> 
                                 
                     <input maxlength="20" size="20" name="zipCode"
-                      id="zipCode" value="" />                    
+                      id="zipCode" value='<c:out value="${zipCode}"/>'  />                    
                   </td>
                   
                   <td>Select Confidence</td>
                   <td>
-                    <select name='confidence' id='confidence'>
+                    <select name='confidence' id='confidence'>                      
                       <option value="">--Please Select Geo Confidence</option> 
-                        <c:forEach var="confidenceTypeRow" items="${confidencetypes}">                                                        
-                              <option value='<c:out value="${confidenceTypeRow.name}"/>'><c:out value="${confidenceTypeRow.description}"/></option>
+                        <c:forEach var="confidenceTypeRow" items="${confidencetypes}">
+                        	<c:choose>                          	
+		                            <c:when test="${confidence == confidenceTypeRow.name}" > 
+		                             <option selected value='<c:out value="${confidenceTypeRow.name}" />' ><c:out value="${confidenceTypeRow.description}"/></option>
+		                            </c:when>
+		                            <c:otherwise> 
+		                              <option value='<c:out value="${confidenceTypeRow.name}" />' ><c:out value="${confidenceTypeRow.description}"/></option>
+		                            </c:otherwise> 
+                         	</c:choose>
                         </c:forEach>   
                       </select>
                 </td>
@@ -59,8 +67,15 @@
                       <select name='quality' id='quality'>
                        <option value="">--Please Select Geo Quality</option> 
                         <c:forEach var="qualityTypeRow" items="${qualitytypes}">                                                        
-                              <option value='<c:out value="${qualityTypeRow.name}"/>'><c:out value="${qualityTypeRow.description}"/></option>
-                        </c:forEach>   
+                        	<c:choose>                          	
+		                            <c:when test="${quality == qualityTypeRow.name}" > 
+		                             <option selected value='<c:out value="${qualityTypeRow.name}" />' ><c:out value="${qualityTypeRow.description}"/></option>
+		                            </c:when>
+		                            <c:otherwise> 
+		                              <option value='<c:out value="${qualityTypeRow.name}" />' ><c:out value="${qualityTypeRow.description}"/></option>
+		                            </c:otherwise> 
+                         	</c:choose>
+                        </c:forEach>
                       </select>
                 </td>
                                      
@@ -83,14 +98,27 @@
         var param4 = document.getElementById(compId4).value;
         location.href = url+"?"+compId1+"="+ param1+"&"+compId2+"="+param2+"&"+compId3+"="+param3+"&"+compId4+"="+param4;
       } 
+       
+       function getFilterTestValue() {
+           var filters = getFilterValue(document.getElementById("deliveryLocationForm"), false); 
+           var param1 = document.getElementById("srubbedAddress").value;
+   		   var param2 = document.getElementById("zipCode").value;
+   		   var param3 = document.getElementById("confidence").value;
+   		   var param4 = document.getElementById("quality").value;
+           filters+="&srubbedAddress="+param1;
+           filters+="&zipCode="+param2;
+           filters+="&confidence="+param3;
+           filters+="&quality="+param4;          
+           return escape(filters);
+      }
       </script>  
      </div> 
     <div align="center">
       <form id="deliveryLocationForm" action="" method="post">  
         <ec:table items="dlvlocations"   action="${pageContext.request.contextPath}/dlvlocation.do"
             imagePath="${pageContext.request.contextPath}/images/table/*.gif"   title="&nbsp;"
-            width="98%"  view="fd" form="deliveryLocationForm" autoIncludeParameters="true" rowsDisplayed="25"  >
-            
+            width="98%"  view="fd" form="deliveryLocationForm" autoIncludeParameters="false" rowsDisplayed="25"  >            	
+				
             <ec:exportPdf fileName="transportationdlvlocations.pdf" tooltip="Export PDF" 
                       headerTitle="Delivery Locations" />
               <ec:exportXls fileName="transportationdlvlocations.xls" tooltip="Export PDF" />

@@ -22,21 +22,21 @@
 <tmpl:put name='title' direct='true'>Operations : Zones : Active : <%=pageTitle%></tmpl:put>
   <tmpl:put name='content' direct='true'>
 
-<div class="MNM003 subsub or_3c3">
+<div class="MNM004 subsub or_3c3">
 		<div class="subs_left">	
-			<div class="sub_tableft sub_tabL_MNM003 activeL">&nbsp;</div>
+			<div class="sub_tableft sub_tabL_MNM004 activeL">&nbsp;</div>
 			<div class="subtab activeT">
 				<div class="minwidth"><!-- --></div>
-				<a href="zone.do?zoneType=Active" class="MNM003">Active</a>
+				<a href="zone.do?zoneType=Active" class="MNM004">Active</a>
 			</div>
-			<div class="sub_tabright sub_tabR_MNM003 activeR">&nbsp;</div>
+			<div class="sub_tabright sub_tabR_MNM004 activeR">&nbsp;</div>
 
-			<div class="sub_tableft sub_tabL_MNM003">&nbsp;</div>
+			<div class="sub_tableft sub_tabL_MNM004">&nbsp;</div>
 			<div class="subtab">
 				<div class="minwidth"><!-- --></div>
 				<a href="zone.do" class="">All</a>
 			</div>
-			<div class="sub_tabright sub_tabR_MNM003">&nbsp;</div>		
+			<div class="sub_tabright sub_tabR_MNM004">&nbsp;</div>		
 		
 		</div>
 	</div>
@@ -201,6 +201,7 @@
               <tr><td colspan="3">&nbsp;</td></tr>
               <tr>
                   <td colspan="3" align="center">
+                   <input type = "button" value="&nbsp;Back&nbsp;" onclick="javascript:doBack('zone');" /> &nbsp;&nbsp;
                    <input type = "submit" value="&nbsp;Save&nbsp;"  />
 				   <input type = "button" value="&nbsp;Default Supervisor&nbsp;" onclick="javascript:showZoneSupervisorTable(document.getElementById('zoneCode').value);"/>
                 </td>     
@@ -215,6 +216,7 @@
      </div>
      </div>
      </div>
-     <%@ include file='i_zonesupervisorinfo.jspf'%>   
+     <%@ include file='i_zonesupervisorinfo.jspf'%>    
+	<form name="zone" action="zone.do?zoneType=Active" method="post">  </form>
   </tmpl:put>
 </tmpl:insert>

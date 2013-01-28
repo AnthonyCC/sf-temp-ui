@@ -67,6 +67,7 @@ public class LocationController extends AbstractMultiActionController  {
 	 * @param response current HTTP response
 	 * @return a ModelAndView to render the response
 	 */
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public ModelAndView dlvLocationHandler(HttpServletRequest request, HttpServletResponse response) throws ServletException {	
 				
 		String srubbedAddress = scrubStreet(request.getParameter("srubbedAddress"));
@@ -74,6 +75,11 @@ public class LocationController extends AbstractMultiActionController  {
 		String confidenceLevel = request.getParameter("confidence");
 		String qualityLevel = request.getParameter("quality");
 		ModelAndView mav = new ModelAndView("deliveryLocationView");
+		
+		mav.getModel().put("srubbedAddress", srubbedAddress);
+		mav.getModel().put("zipCode", zipCode);
+		mav.getModel().put("confidence", confidenceLevel);
+		mav.getModel().put("quality", qualityLevel);
 		mav.getModel().put("confidencetypes",locationManagerService.getConfidenceTypes());
 		mav.getModel().put("qualitytypes",locationManagerService.getQualityTypes());
 		
@@ -200,6 +206,7 @@ public class LocationController extends AbstractMultiActionController  {
 	 * @param response current HTTP response
 	 * @return a ModelAndView to render the response
 	 */
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public ModelAndView dlvBuildingHandler(HttpServletRequest request, HttpServletResponse response) throws ServletException {	
 		
 		String srubbedAddress = scrubStreet(request.getParameter("srubbedAddress"));
@@ -210,6 +217,8 @@ public class LocationController extends AbstractMultiActionController  {
 		
 		ModelAndView mav = new ModelAndView("deliveryBuildingView");
 		
+		mav.getModel().put("srubbedAddress", srubbedAddress);
+		mav.getModel().put("zipCode", zipCode);
 		mav.getModel().put("confidence", confidenceLevel);
 		mav.getModel().put("quality", qualityLevel);
 		mav.getModel().put("group", group);

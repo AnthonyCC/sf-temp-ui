@@ -68,6 +68,11 @@
 	</div>
      <script>
       addRowHandlers('ec_table', 'rowMouseOver', 'editarea.do','id',0, 0);
+      
+      function getFilterTestValue() {
+          var filters = getFilterValue(document.getElementById("areaForm"), false);                                                             
+          return escape(filters);
+    }
     </script>   
   </tmpl:put>
 </tmpl:insert>

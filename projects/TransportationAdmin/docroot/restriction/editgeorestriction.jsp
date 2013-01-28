@@ -598,6 +598,7 @@ return true;
 				</br>								
  				<tr>
 				    <td  align="center">
+				       <input type = "button" value="&nbsp;Back&nbsp;" onclick="javascript:doBack('georestriction');" /> &nbsp;
 					   <input type = "submit" value="&nbsp;Save&nbsp;"  />
 					</td>			
 				</tr>
@@ -609,6 +610,6 @@ return true;
       
       </form:form>
      </div>
-     
+     <form name="georestriction" action="georestriction.do" method="post">  </form>
   </tmpl:put>
 </tmpl:insert>

@@ -48,7 +48,7 @@
                       var cell = this.parentNode.getElementsByTagName("td")[columnIndex];
                       var selectBox = this.parentNode.getElementsByTagName("input")[0];
                       
-                      location.href = url+"?"+ paramName + "=" + selectBox.name;                
+                      location.href = url+"?"+ paramName + "=" + selectBox.name+"&filter="+getFilterTestValue();                
                   };
                 }
               }
@@ -89,8 +89,14 @@
           </ec:table>
        </form>  
      </div>
+     </div> 
      <script>
-      addCustomRowHandlers('ec_table', 'rowMouseOver', 'editgeorestriction.do','id',0, 0, true);
+     addCustomRowHandlers('ec_table', 'rowMouseOver', 'editgeorestriction.do','id',0, 0, true);
+     
+     function getFilterTestValue() {
+          var filters = getFilterValue(document.getElementById("geoRestrictionForm"), false);          
+          return escape(filters);
+     }
     </script>   
   </tmpl:put>
 </tmpl:insert>

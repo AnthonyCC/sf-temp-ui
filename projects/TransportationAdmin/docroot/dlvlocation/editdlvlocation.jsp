@@ -162,6 +162,7 @@
               <tr><td colspan="3">&nbsp;</td></tr>
               <tr>
                   <td colspan="3" align="center">
+                  <input type = "button" value="&nbsp;Back&nbsp;" onclick="javascript:doBack('dlvlocation');" /> &nbsp;
                    <input type = "submit" value="&nbsp;Save&nbsp;"  />
                 </td>     
               </tr>
@@ -174,5 +175,6 @@
        </form:form>
      </div>
      
+     <form name="dlvlocation" action="dlvlocation.do" method="post">  </form>
   </tmpl:put>
 </tmpl:insert>

@@ -6,22 +6,8 @@
 
 <tmpl:insert template='/common/sitelayout.jsp'>
 
-    <tmpl:put name='title' direct='true'> Geography : Area : Add/Edit Area</tmpl:put>
-  <script>
-    function loadBalanceEvent() {
-      
-      var loadBalanceFld = document.getElementById('needsLoadBalance1');
-      if(loadBalanceFld.checked) {        
-        document.getElementById('balanceBy').disabled = false;
-        document.getElementById('loadBalanceFactor').disabled = false;
-      } else {
-        document.getElementById('balanceBy').disabled = true;
-        document.getElementById('loadBalanceFactor').disabled = true;
-        //document.getElementById('balanceBy').value = 'null';
-        //document.getElementById('loadBalanceFactor').value = '';
-      }
-    }
-  </script>
+  <tmpl:put name='title' direct='true'> Geography : Area : Add/Edit Area</tmpl:put>
+
   <tmpl:put name='content' direct='true'>
     <br/> 
     <div align="center">
@@ -170,6 +156,7 @@
               <tr><td colspan="3">&nbsp;</td></tr>
               <tr>
                   <td colspan="3" align="center">
+                   <input type = "button" value="&nbsp;Back&nbsp;" onclick="javascript:doBack('area');" /> &nbsp;
                    <input type = "submit" value="&nbsp;Save&nbsp;"  />
                 </td>     
               </tr>
@@ -181,6 +168,20 @@
       
       </form:form>
      </div>
-     <script>loadBalanceEvent();</script>
+     <script>loadBalanceEvent();
+     
+     	function loadBalanceEvent() {
+         
+         var loadBalanceFld = document.getElementById('needsLoadBalance1');
+         if(loadBalanceFld.checked) {        
+           document.getElementById('balanceBy').disabled = false;
+           document.getElementById('loadBalanceFactor').disabled = false;
+         } else {
+           document.getElementById('balanceBy').disabled = true;
+           document.getElementById('loadBalanceFactor').disabled = true;
+         }
+       }
+     </script>
+     <form name="area" action="area.do" method="post">  </form> 
   </tmpl:put>
 </tmpl:insert>

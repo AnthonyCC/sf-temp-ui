@@ -149,7 +149,22 @@
         var param4 = document.getElementById(compId4).value;
 	    var param5 = document.getElementById(compId5).value;
         location.href = url+"?"+compId1+"="+ param1+"&"+compId2+"="+param2+"&"+compId3+"="+param3+"&"+compId4+"="+param4+"&"+compId5+"="+param5;
-      } 
+      }
+       
+       function getFilterTestValue() {
+           var filters = getFilterValue(document.getElementById("deliveryBuildingForm"), false); 
+           var param1 = document.getElementById("srubbedAddress").value;
+   		   var param2 = document.getElementById("zipCode").value;
+   		   var param3 = document.getElementById("confidence").value;
+   		   var param4 = document.getElementById("quality").value;
+   			var param5 = document.getElementById("group").value;
+           filters+="&srubbedAddress="+param1;
+           filters+="&zipCode="+param2;
+           filters+="&confidence="+param3;
+           filters+="&quality="+param4;
+           filters+="&group="+param5;        
+           return escape(filters);
+      }
       
       function addCustomRowHandlers(tableId, rowClassName, url, paramName, columnIndex, checkCol, needKeyPress) {
   
@@ -173,12 +188,12 @@
                   };
               
                   if(checkCol == -1 || checkCol != j ) {
-              if(!(needKeyPress && (j > (cells.length-4)))) {             
+              if(!(needKeyPress && (j == (cells.length-4)))) {             
                   cells[j].onclick = function () {              
                       var cell = this.parentNode.getElementsByTagName("td")[columnIndex];
                       var selectBox = this.parentNode.getElementsByTagName("input")[0];
                       
-                      location.href = url+"?"+ paramName + "=" + selectBox.name;                
+                      location.href = url+"?"+ paramName + "=" + selectBox.name+"&filter="+getFilterTestValue();                
                   };
                 }
               }
@@ -188,6 +203,7 @@
           }
       }
     }
+      
       </script>  
  
     <div align="center">
@@ -226,6 +242,7 @@
      </div>
      <script>
       addCustomRowHandlers('ec_table', 'rowMouseOver', 'editdlvbuilding.do','id',0, 0, true);
+     
     </script>
 	  <%@ include file='i_dlvgroupinfo.jspf'%>
 	  <%@ include file='i_addtosnapshot.jspf'%>  

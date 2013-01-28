@@ -26,21 +26,21 @@
 
   <tmpl:put name='content' direct='true'>
   
-	<div class="MNM003 subsub or_3c3">
+	<div class="MNM004 subsub or_3c3">
 		<div class="subs_left">	
-			<div class="sub_tableft sub_tabL_MNM003 <% if("Active".equalsIgnoreCase(request.getParameter("zoneType"))) { %>activeL<% } %>">&nbsp;</div>
+			<div class="sub_tableft sub_tabL_MNM004 <% if("Active".equalsIgnoreCase(request.getParameter("zoneType"))) { %>activeL<% } %>">&nbsp;</div>
 			<div class="subtab <% if("Active".equalsIgnoreCase(request.getParameter("zoneType"))) { %>activeT<% } %>">
 				<div class="minwidth"><!-- --></div>
-				<a href="zone.do?zoneType=Active" class="<% if("Active".equalsIgnoreCase(request.getParameter("zoneType"))) { %>MNM003<% } %>">Active</a>
+				<a href="zone.do?zoneType=Active" class="<% if("Active".equalsIgnoreCase(request.getParameter("zoneType"))) { %>MNM004<% } %>">Active</a>
 			</div>
-			<div class="sub_tabright sub_tabR_MNM003 <% if("Active".equalsIgnoreCase(request.getParameter("zoneType"))) { %>activeR<% } %>">&nbsp;</div>
+			<div class="sub_tabright sub_tabR_MNM004 <% if("Active".equalsIgnoreCase(request.getParameter("zoneType"))) { %>activeR<% } %>">&nbsp;</div>
 
-			<div class="sub_tableft sub_tabL_MNM003 <% if(!"Active".equalsIgnoreCase(request.getParameter("zoneType"))) { %>activeL<% } %>">&nbsp;</div>
+			<div class="sub_tableft sub_tabL_MNM004 <% if(!"Active".equalsIgnoreCase(request.getParameter("zoneType"))) { %>activeL<% } %>">&nbsp;</div>
 			<div class="subtab <% if(!"Active".equalsIgnoreCase(request.getParameter("zoneType"))) { %>activeT<% } %>">
 				<div class="minwidth"><!-- --></div>
-				<a href="zone.do" class="<% if(!"Active".equalsIgnoreCase(request.getParameter("zoneType"))) { %>MNM003<% } %>">All</a>
+				<a href="zone.do" class="<% if(!"Active".equalsIgnoreCase(request.getParameter("zoneType"))) { %>MNM004<% } %>">All</a>
 			</div>
-			<div class="sub_tabright sub_tabR_MNM003 <% if(!"Active".equalsIgnoreCase(request.getParameter("zoneType"))) { %>activeR<% } %>">&nbsp;</div>		
+			<div class="sub_tabright sub_tabR_MNM004 <% if(!"Active".equalsIgnoreCase(request.getParameter("zoneType"))) { %>activeR<% } %>">&nbsp;</div>		
 		
 		</div>
 	</div>
@@ -123,42 +123,13 @@
 	</div>
 	<% if("Active".equalsIgnoreCase(request.getParameter("zoneType"))) { %>
 		<script>
-			function addZoneHandlers(tableId, rowClassName, url, paramName, columnIndex, checkCol, needKeyPress) {
-	
-				var previousClass = null;
-			    var table = document.getElementById(tableId);
-			    
-			    if(table != null) {
-				    var rows = table.tBodies[0].getElementsByTagName("tr");	 	       
-				    for (i = 0; i < rows.length; i++) {	    	
-				        var cells = rows[i].getElementsByTagName("td");
-				        
-				        for (j = 1; j < cells.length; j++) {
-				        	
-				            cells[j].onmouseover = function () {
-				            	previousClass = this.parentNode.className;
-				            	this.parentNode.className = this.parentNode.className + " " + rowClassName ;
-				            };
-				        
-				            cells[j].onmouseout = function () {
-				              	this.parentNode.className = previousClass;
-				            };
-				        
-				            if(checkCol == -1 || checkCol != j ) {
-								if(!(needKeyPress && (j == (cells.length-1)))) {	            
-							    	cells[j].onclick = function () {			    		
-							      		var cell = this.parentNode.getElementsByTagName("td")[columnIndex];							      		
-							      		location.href = url+"?"+ paramName + "=" + cell.innerHTML;			      		
-							    	};
-							    }
-					    	}
-					    	
-					    		    	
-				        }
-				    }
-				}
-			}
+			
 			addZoneHandlers('ec_table', 'rowMouseOver', 'editzone.do','id',0, 0);
+			
+			function getFilterTestValue() {
+	             var filters = getFilterValue(document.getElementById("zoneListForm"), false);	                                                                       
+	             return escape(filters);
+	       }
 		</script>
 	<% } %>
   </tmpl:put>
