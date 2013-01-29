@@ -197,7 +197,7 @@ public class ErpSaleInfoDAO {
 	"             sa.customer_id = s.customer_id         and    "+
 	"             sa.action_date = (select max(action_date)   from   cust.salesaction  where  action_type in ('CRO', 'MOD','INV')  "+
 	"                                              and  customer_id = s.customer_id   and    sale_id = s.id)  "+
-	"             and    s.customer_id =  ? "+
+	"             and    s.customer_id =  ? and rownum > 0"+
 	"     ) sac,  "+
 	"      "+
 	"      "+
