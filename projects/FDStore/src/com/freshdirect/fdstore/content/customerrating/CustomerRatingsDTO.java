@@ -7,48 +7,52 @@ import java.util.List;
 
 public class CustomerRatingsDTO implements Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -1068945251536494464L;
 	private String id;
 	private String productId;
 	private String productPageURL;
 	private String productReviewsURL;
 	private String imageURL;
-	private int numNativeQuestions;
-	private int numQuestions;
-	private int numNativeAnswers;
-	private int numAnswers;
-	private int numReviews;
-	private int numStories;
+	private Integer numNativeQuestions;
+	private Integer numQuestions;
+	private Integer numNativeAnswers;
+	private Integer numAnswers;
+	private Integer numReviews;
+	private Integer numStories;
 	private BigDecimal averageOverallRating;
-	private int overallRatingRange;
-	private int totalReviewCount;
-	private int ratingsOnlyReviewCount;
-	private int recommendedCount;
-	private int notRecommendedCount;
+	private Integer overallRatingRange;
+	private Integer totalReviewCount;
+	private Integer ratingsOnlyReviewCount;
+	private Integer recommendedCount;
+	private Integer notRecommendedCount;
 	private BigDecimal averageRatingValuesQuality;
-	private int averageRatingValuesQualityRange;
+	private Integer averageRatingValuesQualityRange;
 	private BigDecimal averageRatingValuesValue;
-	private int averageRatingValuesValueRange;
-	private int ratingValue;
-	private int count;
+	private Integer averageRatingValuesValueRange;
+	private Integer ratingValue;
+	private Integer count;
 	private BigDecimal natAverageOverallRating;
-	private int natOverallRatingRange;
-	private int natTotalReviewCount;
-	private int natRatingsOnlyReviewCount;
-	private int natRecommendedCount;
-	private int natNotRecommendedCount;
+	private Integer natOverallRatingRange;
+	private Integer natTotalReviewCount;
+	private Integer natRatingsOnlyReviewCount;
+	private Integer natRecommendedCount;
+	private Integer natNotRecommendedCount;
 	private BigDecimal natAverageRatingValuesQuality;
-	private int natAverageRatingValuesQualityRange;
+	private Integer natAverageRatingValuesQualityRange;
 	private BigDecimal natAverageRatingValuesValue;
-	private int natAverageRatingValuesValueRange;
+	private Integer natAverageRatingValuesValueRange;
 	private BigDecimal natAverageRatingValues;
-	private int natRatingValue;
-	private int natCount;
-	private long extractDate;
+	private Integer natRatingValue;
+	private Integer natCount;
+	private Long extractDate;
 	private List<CustomerReviewsDTO> reviews = new ArrayList<CustomerReviewsDTO>();
 	
 //	public CustomerRatingsDTO() {};
 	
-//	public CustomerRatingsDTO(String id, String productId, BigDecimal averageOverallRating, int totalReviewCount, int ratingValue) {
+//	public CustomerRatingsDTO(String id, String productId, BigDecimal averageOverallRating, Integer totalReviewCount, Integer ratingValue) {
 //		
 //		this.id = id;
 //		this.productId = productId;
@@ -73,19 +77,19 @@ public class CustomerRatingsDTO implements Serializable {
 		this.averageOverallRating = averageOverallRating;
 	}
 
-	public int getTotalReviewCount() {
+	public Integer getTotalReviewCount() {
 		return totalReviewCount;
 	}
 
-	public void setTotalReviewCount(int totalReviewCount) {
+	public void setTotalReviewCount(Integer totalReviewCount) {
 		this.totalReviewCount = totalReviewCount;
 	}
 
-	public int getRatingValue() {
+	public Integer getRatingValue() {
 		return ratingValue;
 	}
 
-	public void setRatingValue(int ratingValue) {
+	public void setRatingValue(Integer ratingValue) {
 		this.ratingValue = ratingValue;
 	}
 
@@ -121,43 +125,43 @@ public class CustomerRatingsDTO implements Serializable {
 		this.imageURL = imageURL;
 	}
 
-	public int getOverallRatingRange() {
+	public Integer getOverallRatingRange() {
 		return overallRatingRange;
 	}
 
-	public void setOverallRatingRange(int overallRatingRange) {
+	public void setOverallRatingRange(Integer overallRatingRange) {
 		this.overallRatingRange = overallRatingRange;
 	}
 
-	public int getRatingsOnlyReviewCount() {
+	public Integer getRatingsOnlyReviewCount() {
 		return ratingsOnlyReviewCount;
 	}
 
-	public void setRatingsOnlyReviewCount(int ratingsOnlyReviewCount) {
+	public void setRatingsOnlyReviewCount(Integer ratingsOnlyReviewCount) {
 		this.ratingsOnlyReviewCount = ratingsOnlyReviewCount;
 	}
 
-	public int getRecommendedCount() {
+	public Integer getRecommendedCount() {
 		return recommendedCount;
 	}
 
-	public void setRecommendedCount(int recommendedCount) {
+	public void setRecommendedCount(Integer recommendedCount) {
 		this.recommendedCount = recommendedCount;
 	}
 
-	public int getNotRecommendedCount() {
+	public Integer getNotRecommendedCount() {
 		return notRecommendedCount;
 	}
 
-	public void setNotRecommendedCount(int notRecommendedCount) {
+	public void setNotRecommendedCount(Integer notRecommendedCount) {
 		this.notRecommendedCount = notRecommendedCount;
 	}
 
-	public int getCount() {
+	public Integer getCount() {
 		return count;
 	}
 
-	public void setCount(int count) {
+	public void setCount(Integer count) {
 		this.count = count;
 	}
 
@@ -169,43 +173,43 @@ public class CustomerRatingsDTO implements Serializable {
 		this.natAverageOverallRating = natAverageOverallRating;
 	}
 
-	public int getNatOverallRatingRange() {
+	public Integer getNatOverallRatingRange() {
 		return natOverallRatingRange;
 	}
 
-	public void setNatOverallRatingRange(int natOverallRatingRange) {
+	public void setNatOverallRatingRange(Integer natOverallRatingRange) {
 		this.natOverallRatingRange = natOverallRatingRange;
 	}
 
-	public int getNatTotalReviewCount() {
+	public Integer getNatTotalReviewCount() {
 		return natTotalReviewCount;
 	}
 
-	public void setNatTotalReviewCount(int natTotalReviewCount) {
+	public void setNatTotalReviewCount(Integer natTotalReviewCount) {
 		this.natTotalReviewCount = natTotalReviewCount;
 	}
 
-	public int getNatRatingsOnlyReviewCount() {
+	public Integer getNatRatingsOnlyReviewCount() {
 		return natRatingsOnlyReviewCount;
 	}
 
-	public void setNatRatingsOnlyReviewCount(int natRatingsOnlyReviewCount) {
+	public void setNatRatingsOnlyReviewCount(Integer natRatingsOnlyReviewCount) {
 		this.natRatingsOnlyReviewCount = natRatingsOnlyReviewCount;
 	}
 
-	public int getNatRecommendedCount() {
+	public Integer getNatRecommendedCount() {
 		return natRecommendedCount;
 	}
 
-	public void setNatRecommendedCount(int natRecommendedCount) {
+	public void setNatRecommendedCount(Integer natRecommendedCount) {
 		this.natRecommendedCount = natRecommendedCount;
 	}
 
-	public int getNatNotRecommendedCount() {
+	public Integer getNatNotRecommendedCount() {
 		return natNotRecommendedCount;
 	}
 
-	public void setNatNotRecommendedCount(int natNotRecommendedCount) {
+	public void setNatNotRecommendedCount(Integer natNotRecommendedCount) {
 		this.natNotRecommendedCount = natNotRecommendedCount;
 	}
 
@@ -217,27 +221,27 @@ public class CustomerRatingsDTO implements Serializable {
 		this.natAverageRatingValues = natAverageRatingValues;
 	}
 
-	public int getNatRatingValue() {
+	public Integer getNatRatingValue() {
 		return natRatingValue;
 	}
 
-	public void setNatRatingValue(int natRatingValue) {
+	public void setNatRatingValue(Integer natRatingValue) {
 		this.natRatingValue = natRatingValue;
 	}
 
-	public int getNatCount() {
+	public Integer getNatCount() {
 		return natCount;
 	}
 
-	public void setNatCount(int natCount) {
+	public void setNatCount(Integer natCount) {
 		this.natCount = natCount;
 	}
 
-	public long getExtractDate() {
+	public Long getExtractDate() {
 		return extractDate;
 	}
 
-	public void setExtractDate(long extractDate) {
+	public void setExtractDate(Long extractDate) {
 		this.extractDate = extractDate;
 	}
 
@@ -253,51 +257,51 @@ public class CustomerRatingsDTO implements Serializable {
 		this.reviews.add(review);
 	}
 
-	public int getNumNativeQuestions() {
+	public Integer getNumNativeQuestions() {
 		return numNativeQuestions;
 	}
 
-	public void setNumNativeQuestions(int numNativeQuestions) {
+	public void setNumNativeQuestions(Integer numNativeQuestions) {
 		this.numNativeQuestions = numNativeQuestions;
 	}
 
-	public int getNumQuestions() {
+	public Integer getNumQuestions() {
 		return numQuestions;
 	}
 
-	public void setNumQuestions(int numQuestions) {
+	public void setNumQuestions(Integer numQuestions) {
 		this.numQuestions = numQuestions;
 	}
 
-	public int getNumNativeAnswers() {
+	public Integer getNumNativeAnswers() {
 		return numNativeAnswers;
 	}
 
-	public void setNumNativeAnswers(int numNativeAnswers) {
+	public void setNumNativeAnswers(Integer numNativeAnswers) {
 		this.numNativeAnswers = numNativeAnswers;
 	}
 
-	public int getNumAnswers() {
+	public Integer getNumAnswers() {
 		return numAnswers;
 	}
 
-	public void setNumAnswers(int numAnswers) {
+	public void setNumAnswers(Integer numAnswers) {
 		this.numAnswers = numAnswers;
 	}
 
-	public int getNumReviews() {
+	public Integer getNumReviews() {
 		return numReviews;
 	}
 
-	public void setNumReviews(int numReviews) {
+	public void setNumReviews(Integer numReviews) {
 		this.numReviews = numReviews;
 	}
 
-	public int getNumStories() {
+	public Integer getNumStories() {
 		return numStories;
 	}
 
-	public void setNumStories(int numStories) {
+	public void setNumStories(Integer numStories) {
 		this.numStories = numStories;
 	}
 
@@ -309,12 +313,12 @@ public class CustomerRatingsDTO implements Serializable {
 		this.averageRatingValuesQuality = averageRatingValuesQuality;
 	}
 
-	public int getAverageRatingValuesQualityRange() {
+	public Integer getAverageRatingValuesQualityRange() {
 		return averageRatingValuesQualityRange;
 	}
 
 	public void setAverageRatingValuesQualityRange(
-			int averageRatingValuesQualityRange) {
+			Integer averageRatingValuesQualityRange) {
 		this.averageRatingValuesQualityRange = averageRatingValuesQualityRange;
 	}
 
@@ -326,11 +330,11 @@ public class CustomerRatingsDTO implements Serializable {
 		this.averageRatingValuesValue = averageRatingValuesValue;
 	}
 
-	public int getAverageRatingValuesValueRange() {
+	public Integer getAverageRatingValuesValueRange() {
 		return averageRatingValuesValueRange;
 	}
 
-	public void setAverageRatingValuesValueRange(int averageRatingValuesValueRange) {
+	public void setAverageRatingValuesValueRange(Integer averageRatingValuesValueRange) {
 		this.averageRatingValuesValueRange = averageRatingValuesValueRange;
 	}
 
@@ -343,12 +347,12 @@ public class CustomerRatingsDTO implements Serializable {
 		this.natAverageRatingValuesQuality = natAverageRatingValuesQuality;
 	}
 
-	public int getNatAverageRatingValuesQualityRange() {
+	public Integer getNatAverageRatingValuesQualityRange() {
 		return natAverageRatingValuesQualityRange;
 	}
 
 	public void setNatAverageRatingValuesQualityRange(
-			int natAverageRatingValuesQualityRange) {
+			Integer natAverageRatingValuesQualityRange) {
 		this.natAverageRatingValuesQualityRange = natAverageRatingValuesQualityRange;
 	}
 
@@ -361,12 +365,12 @@ public class CustomerRatingsDTO implements Serializable {
 		this.natAverageRatingValuesValue = natAverageRatingValuesValue;
 	}
 
-	public int getNatAverageRatingValuesValueRange() {
+	public Integer getNatAverageRatingValuesValueRange() {
 		return natAverageRatingValuesValueRange;
 	}
 
 	public void setNatAverageRatingValuesValueRange(
-			int natAverageRatingValuesValueRange) {
+			Integer natAverageRatingValuesValueRange) {
 		this.natAverageRatingValuesValueRange = natAverageRatingValuesValueRange;
 	}
 }

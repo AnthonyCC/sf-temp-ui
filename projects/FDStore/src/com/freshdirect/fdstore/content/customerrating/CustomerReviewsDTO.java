@@ -5,45 +5,49 @@ import java.math.BigDecimal;
 
 public class CustomerReviewsDTO implements Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 872601294245505330L;
 	private String id;
 	private String BVReviewId;
 	private String productId;
 	private String moderationStatus;
-	private long lastModificationTime;
+	private Long lastModificationTime;
 	private String externalId;
 	private String displayName;
-	private boolean anonymous;
-	private boolean hyperlinkingEnabled;
-	private boolean ratingsOnly;
+	private Boolean anonymous;
+	private Boolean hyperlinkingEnabled;
+	private Boolean ratingsOnly;
 	private String title;
 	private String reviewText;
-	private int numComments;
+	private Integer numComments;
 	private String campaignId;
 	private BigDecimal rating;
-	private int ratingRange;
-	private boolean recommended;
-	private int numFeedbacks;
-	private int numPositiveFeedbacks;
-	private int numNegativeFeedbacks;
+	private Integer ratingRange;
+	private Boolean recommended;
+	private Integer numFeedbacks;
+	private Integer numPositiveFeedbacks;
+	private Integer numNegativeFeedbacks;
 	private String reviewerLocation;
 	private String ipAddress;
 	private String displayLocale;
-	private long submissionTime;
+	private Long submissionTime;
 	private String badgeName;
 	private String badgeContentType;
 	private String productReviewsURL;
 	private String productReviewsDLURL;
-	private boolean featured;
+	private Boolean featured;
 	private BigDecimal netPromoterScore;
 	private String netPromoterComment;
 	private String authenticationType;
 	private String userEmailAddress;
-	private boolean publishedEmailAlert;
-	private boolean commentedEmailAlert;
+	private Boolean publishedEmailAlert;
+	private Boolean commentedEmailAlert;
 	private String originatingDisplayCode;
 	private String contentCodes;
-	private long firstPublishTime;
-	private long lastPublishTime;
+	private Long firstPublishTime;
+	private Long lastPublishTime;
 	
 	public String getId() {
 		return id;
@@ -63,10 +67,10 @@ public class CustomerReviewsDTO implements Serializable {
 	public void setModerationStatus(String moderationStatus) {
 		this.moderationStatus = moderationStatus;
 	}
-	public long getLastModificationTime() {
+	public Long getLastModificationTime() {
 		return lastModificationTime;
 	}
-	public void setLastModificationTime(long lastModificationTime) {
+	public void setLastModificationTime(Long lastModificationTime) {
 		this.lastModificationTime = lastModificationTime;
 	}
 	public String getExternalId() {
@@ -81,22 +85,22 @@ public class CustomerReviewsDTO implements Serializable {
 	public void setDisplayName(String displayName) {
 		this.displayName = displayName;
 	}
-	public boolean isAnonymous() {
+	public Boolean isAnonymous() {
 		return anonymous;
 	}
-	public void setAnonymous(boolean anonymous) {
+	public void setAnonymous(Boolean anonymous) {
 		this.anonymous = anonymous;
 	}
-	public boolean isHyperlinkingEnabled() {
+	public Boolean isHyperlinkingEnabled() {
 		return hyperlinkingEnabled;
 	}
-	public void setHyperlinkingEnabled(boolean hyperlinkingEnabled) {
+	public void setHyperlinkingEnabled(Boolean hyperlinkingEnabled) {
 		this.hyperlinkingEnabled = hyperlinkingEnabled;
 	}
-	public boolean isRatingsOnly() {
+	public Boolean isRatingsOnly() {
 		return ratingsOnly;
 	}
-	public void setRatingsOnly(boolean ratingsOnly) {
+	public void setRatingsOnly(Boolean ratingsOnly) {
 		this.ratingsOnly = ratingsOnly;
 	}
 	public String getTitle() {
@@ -111,10 +115,10 @@ public class CustomerReviewsDTO implements Serializable {
 	public void setReviewText(String reviewText) {
 		this.reviewText = reviewText;
 	}
-	public int getNumComments() {
+	public Integer getNumComments() {
 		return numComments;
 	}
-	public void setNumComments(int numComments) {
+	public void setNumComments(Integer numComments) {
 		this.numComments = numComments;
 	}
 	public String getCampaignId() {
@@ -129,34 +133,34 @@ public class CustomerReviewsDTO implements Serializable {
 	public void setRating(BigDecimal rating) {
 		this.rating = rating;
 	}
-	public int getRatingRange() {
+	public Integer getRatingRange() {
 		return ratingRange;
 	}
-	public void setRatingRange(int ratingRange) {
+	public void setRatingRange(Integer ratingRange) {
 		this.ratingRange = ratingRange;
 	}
-	public boolean isRecommended() {
+	public Boolean isRecommended() {
 		return recommended;
 	}
-	public void setRecommended(boolean recommended) {
+	public void setRecommended(Boolean recommended) {
 		this.recommended = recommended;
 	}
-	public int getNumFeedbacks() {
+	public Integer getNumFeedbacks() {
 		return numFeedbacks;
 	}
-	public void setNumFeedbacks(int numFeedbacks) {
+	public void setNumFeedbacks(Integer numFeedbacks) {
 		this.numFeedbacks = numFeedbacks;
 	}
-	public int getNumPositiveFeedbacks() {
+	public Integer getNumPositiveFeedbacks() {
 		return numPositiveFeedbacks;
 	}
-	public void setNumPositiveFeedbacks(int numPositiveFeedbacks) {
+	public void setNumPositiveFeedbacks(Integer numPositiveFeedbacks) {
 		this.numPositiveFeedbacks = numPositiveFeedbacks;
 	}
-	public int getNumNegativeFeedbacks() {
+	public Integer getNumNegativeFeedbacks() {
 		return numNegativeFeedbacks;
 	}
-	public void setNumNegativeFeedbacks(int numNegativeFeedbacks) {
+	public void setNumNegativeFeedbacks(Integer numNegativeFeedbacks) {
 		this.numNegativeFeedbacks = numNegativeFeedbacks;
 	}
 	public String getReviewerLocation() {
@@ -177,10 +181,10 @@ public class CustomerReviewsDTO implements Serializable {
 	public void setDisplayLocale(String displayLocale) {
 		this.displayLocale = displayLocale;
 	}
-	public long getSubmissionTime() {
+	public Long getSubmissionTime() {
 		return submissionTime;
 	}
-	public void setSubmissionTime(long submissionTime) {
+	public void setSubmissionTime(Long submissionTime) {
 		this.submissionTime = submissionTime;
 	}
 	public String getBadgeName() {
@@ -207,10 +211,10 @@ public class CustomerReviewsDTO implements Serializable {
 	public void setProductReviewsDLURL(String productReviewsDLURL) {
 		this.productReviewsDLURL = productReviewsDLURL;
 	}
-	public boolean isFeatured() {
+	public Boolean isFeatured() {
 		return featured;
 	}
-	public void setFeatured(boolean featured) {
+	public void setFeatured(Boolean featured) {
 		this.featured = featured;
 	}
 	public String getAuthenticationType() {
@@ -225,16 +229,16 @@ public class CustomerReviewsDTO implements Serializable {
 	public void setUserEmailAddress(String userEmailAddress) {
 		this.userEmailAddress = userEmailAddress;
 	}
-	public boolean isPublishedEmailAlert() {
+	public Boolean isPublishedEmailAlert() {
 		return publishedEmailAlert;
 	}
-	public void setPublishedEmailAlert(boolean publishedEmailAlert) {
+	public void setPublishedEmailAlert(Boolean publishedEmailAlert) {
 		this.publishedEmailAlert = publishedEmailAlert;
 	}
-	public boolean isCommentedEmailAlert() {
+	public Boolean isCommentedEmailAlert() {
 		return commentedEmailAlert;
 	}
-	public void setCommentedEmailAlert(boolean commentedEmailAlert) {
+	public void setCommentedEmailAlert(Boolean commentedEmailAlert) {
 		this.commentedEmailAlert = commentedEmailAlert;
 	}
 	public String getOriginatingDisplayCode() {
@@ -243,10 +247,10 @@ public class CustomerReviewsDTO implements Serializable {
 	public void setOriginatingDisplayCode(String originatingDisplayCode) {
 		this.originatingDisplayCode = originatingDisplayCode;
 	}
-	public void setFirstPublishTime(long firstPublishTime) {
+	public void setFirstPublishTime(Long firstPublishTime) {
 		this.firstPublishTime = firstPublishTime;
 	}
-	public void setLastPublishTime(long lastPublishTime) {
+	public void setLastPublishTime(Long lastPublishTime) {
 		this.lastPublishTime = lastPublishTime;
 	}
 	public String getBVReviewId() {
@@ -273,10 +277,10 @@ public class CustomerReviewsDTO implements Serializable {
 	public void setContentCodes(String contentCodes) {
 		this.contentCodes = contentCodes;
 	}
-	public long getFirstPublishTime() {
+	public Long getFirstPublishTime() {
 		return firstPublishTime;
 	}
-	public long getLastPublishTime() {
+	public Long getLastPublishTime() {
 		return lastPublishTime;
 	}
 	

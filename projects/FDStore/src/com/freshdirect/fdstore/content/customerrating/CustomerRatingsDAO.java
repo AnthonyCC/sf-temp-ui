@@ -13,7 +13,9 @@ import org.apache.log4j.Logger;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.framework.core.DataSourceLocator;
 import com.freshdirect.framework.core.SequenceGenerator;
+import com.freshdirect.framework.util.SqlUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
+
 
 public class CustomerRatingsDAO {
 
@@ -78,47 +80,52 @@ public class CustomerRatingsDAO {
 			connection = getConnection();
 			ps = connection.prepareStatement(ratingsSql);
 			 
-			final int batchSize = 1000;
+			final int batchSize = 500; 
+			//WARNING
+			//"java.sql.SQLException: executeBatch, Exception = -32373" in case of 1000 (maybe 36*1000 values are to much for the old 16bit driver)
+			//works with 500, but fails after setting to 1000 and back to 500 during debug
+			//more info at http://www-01.ibm.com/support/docview.wss?uid=swg21432290 fixed by Oracle in BUG-6396242
+			
 			int count = 0;
 			 
 			for (CustomerRatingsDTO ratedProduct: ratedProducts) {
-			 
+				
 				ps.setString(1, getNextId(connection));
-				ps.setString(2, ratedProduct.getProductId());
-				ps.setString(3, ratedProduct.getProductPageURL());
-				ps.setString(4, ratedProduct.getProductReviewsURL());
-				ps.setString(5, ratedProduct.getImageURL());
-				ps.setInt(6, ratedProduct.getNumNativeQuestions());
-				ps.setInt(7, ratedProduct.getNumQuestions());
-				ps.setInt(8, ratedProduct.getNumNativeAnswers());
-				ps.setInt(9, ratedProduct.getNumAnswers());
-				ps.setInt(10, ratedProduct.getNumReviews());
-				ps.setInt(11, ratedProduct.getNumStories());
-				ps.setBigDecimal(12, ratedProduct.getAverageOverallRating());
-				ps.setInt(13, ratedProduct.getOverallRatingRange());
-				ps.setInt(14, ratedProduct.getTotalReviewCount());
-				ps.setInt(15, ratedProduct.getRatingsOnlyReviewCount());
-				ps.setInt(16, ratedProduct.getRecommendedCount());
-				ps.setInt(17, ratedProduct.getNotRecommendedCount());
-				ps.setBigDecimal(18, ratedProduct.getAverageRatingValuesQuality());
-				ps.setInt(19, ratedProduct.getAverageRatingValuesQualityRange());
-				ps.setBigDecimal(20, ratedProduct.getAverageRatingValuesValue());
-				ps.setInt(21, ratedProduct.getAverageRatingValuesValueRange());
-				ps.setInt(22, ratedProduct.getRatingValue());
-				ps.setInt(23, ratedProduct.getCount());
-				ps.setBigDecimal(24, ratedProduct.getNatAverageOverallRating());
-				ps.setInt(25, ratedProduct.getNatOverallRatingRange());
-				ps.setInt(26, ratedProduct.getNatTotalReviewCount());
-				ps.setInt(27, ratedProduct.getNatRatingsOnlyReviewCount());
-				ps.setInt(28, ratedProduct.getNatRecommendedCount());
-				ps.setInt(29, ratedProduct.getNatNotRecommendedCount());
-				ps.setBigDecimal(30, ratedProduct.getNatAverageRatingValuesQuality());
-				ps.setInt(31, ratedProduct.getNatAverageRatingValuesQualityRange());
-				ps.setBigDecimal(32, ratedProduct.getNatAverageRatingValuesValue());
-				ps.setInt(33, ratedProduct.getNatAverageRatingValuesValueRange());
-				ps.setInt(34, ratedProduct.getNatRatingValue());
-				ps.setInt(35, ratedProduct.getNatCount());
-				ps.setTimestamp(36, new java.sql.Timestamp(ratedProduct.getExtractDate()));
+				SqlUtil.setString(ps, 2, ratedProduct.getProductId());
+				SqlUtil.setString(ps, 3, ratedProduct.getProductPageURL());
+				SqlUtil.setString(ps, 4, ratedProduct.getProductReviewsURL());
+				SqlUtil.setString(ps, 5, ratedProduct.getImageURL());
+				SqlUtil.setInt(ps, 6, ratedProduct.getNumNativeQuestions());
+				SqlUtil.setInt(ps, 7, ratedProduct.getNumQuestions());
+				SqlUtil.setInt(ps, 8, ratedProduct.getNumNativeAnswers());
+				SqlUtil.setInt(ps, 9, ratedProduct.getNumAnswers());
+				SqlUtil.setInt(ps, 10, ratedProduct.getNumReviews());
+				SqlUtil.setInt(ps, 11, ratedProduct.getNumStories());
+				SqlUtil.setBigDecimal(ps, 12, ratedProduct.getAverageOverallRating());
+				SqlUtil.setInt(ps, 13, ratedProduct.getOverallRatingRange());
+				SqlUtil.setInt(ps, 14, ratedProduct.getTotalReviewCount());
+				SqlUtil.setInt(ps, 15, ratedProduct.getRatingsOnlyReviewCount());
+				SqlUtil.setInt(ps, 16, ratedProduct.getRecommendedCount());
+				SqlUtil.setInt(ps, 17, ratedProduct.getNotRecommendedCount());
+				SqlUtil.setBigDecimal(ps, 18, ratedProduct.getAverageRatingValuesQuality());
+				SqlUtil.setInt(ps, 19, ratedProduct.getAverageRatingValuesQualityRange());
+				SqlUtil.setBigDecimal(ps, 20, ratedProduct.getAverageRatingValuesValue());
+				SqlUtil.setInt(ps, 21, ratedProduct.getAverageRatingValuesValueRange());
+				SqlUtil.setInt(ps, 22, ratedProduct.getRatingValue());
+				SqlUtil.setInt(ps, 23, ratedProduct.getCount());
+				SqlUtil.setBigDecimal(ps, 24, ratedProduct.getNatAverageOverallRating());
+				SqlUtil.setInt(ps, 25, ratedProduct.getNatOverallRatingRange());
+				SqlUtil.setInt(ps, 26, ratedProduct.getNatTotalReviewCount());
+				SqlUtil.setInt(ps, 27, ratedProduct.getNatRatingsOnlyReviewCount());
+				SqlUtil.setInt(ps, 28, ratedProduct.getNatRecommendedCount());
+				SqlUtil.setInt(ps, 29, ratedProduct.getNatNotRecommendedCount());
+				SqlUtil.setBigDecimal(ps, 30, ratedProduct.getNatAverageRatingValuesQuality());
+				SqlUtil.setInt(ps, 31, ratedProduct.getNatAverageRatingValuesQualityRange());
+				SqlUtil.setBigDecimal(ps, 32, ratedProduct.getNatAverageRatingValuesValue());
+				SqlUtil.setInt(ps, 33, ratedProduct.getNatAverageRatingValuesValueRange());
+				SqlUtil.setInt(ps, 34, ratedProduct.getNatRatingValue());
+				SqlUtil.setInt(ps, 35, ratedProduct.getNatCount());
+				SqlUtil.setTimestamp(ps, 36, ratedProduct.getExtractDate());
 
 			    ps.addBatch();
 			     
@@ -136,52 +143,55 @@ public class CustomerRatingsDAO {
 				for (CustomerReviewsDTO customerReview: ratedProduct.getReviews()) {
 			 
 					ps.setString(1, getNextId(connection));
-					ps.setString(2, ratedProduct.getProductId());
-					ps.setString(3, customerReview.getBVReviewId());
-					ps.setString(4, customerReview.getModerationStatus());
-					ps.setTimestamp(5, new java.sql.Timestamp(customerReview.getLastModificationTime()));
-					ps.setString(6, customerReview.getExternalId());
-					ps.setString(7, customerReview.getDisplayName());
-					ps.setBoolean(8, customerReview.isAnonymous());
-					ps.setBoolean(9, customerReview.isHyperlinkingEnabled());
-					ps.setBoolean(10, customerReview.isRatingsOnly());
-					ps.setString(11, customerReview.getTitle());
-					ps.setString(12, customerReview.getReviewText());
-					ps.setInt(13, customerReview.getNumComments());
-					ps.setString(14, customerReview.getCampaignId());
-					ps.setBigDecimal(15, customerReview.getRating());
-					ps.setInt(16, customerReview.getRatingRange());
-					ps.setBoolean(17, customerReview.isRecommended());
-					ps.setInt(18, customerReview.getNumFeedbacks());
-					ps.setInt(19, customerReview.getNumPositiveFeedbacks());
-					ps.setInt(20, customerReview.getNumNegativeFeedbacks());
-					ps.setString(21, customerReview.getReviewerLocation());
-					ps.setString(22, customerReview.getIpAddress());
-					ps.setString(23, customerReview.getDisplayLocale());
-					ps.setTimestamp(24, new java.sql.Timestamp(customerReview.getSubmissionTime()));
-					ps.setString(25, customerReview.getBadgeName());
-					ps.setString(26, customerReview.getBadgeContentType());
-					ps.setString(27, customerReview.getProductReviewsURL());
-					ps.setString(28, customerReview.getProductReviewsDLURL());
-					ps.setBoolean(29, customerReview.isFeatured());
-					ps.setBigDecimal(30, customerReview.getNetPromoterScore());
-					ps.setString(31, customerReview.getNetPromoterComment());
-					ps.setString(32, customerReview.getAuthenticationType());
-					ps.setString(33, customerReview.getUserEmailAddress());
-					ps.setBoolean(34, customerReview.isPublishedEmailAlert());
-					ps.setBoolean(35, customerReview.isCommentedEmailAlert());
-					ps.setString(36, customerReview.getOriginatingDisplayCode());
-					ps.setString(37, customerReview.getContentCodes());
-					ps.setTimestamp(38, new java.sql.Timestamp(customerReview.getFirstPublishTime()));
-					ps.setTimestamp(39, new java.sql.Timestamp(customerReview.getLastPublishTime()));
+					SqlUtil.setString(ps, 2, ratedProduct.getProductId());
+					SqlUtil.setString(ps, 3, customerReview.getBVReviewId());
+					SqlUtil.setString(ps, 4, customerReview.getModerationStatus());
+					SqlUtil.setTimestamp(ps, 5, customerReview.getLastModificationTime());
+					SqlUtil.setString(ps, 6, customerReview.getExternalId());
+					SqlUtil.setString(ps, 7, customerReview.getDisplayName());
+					SqlUtil.setBoolean(ps, 8, customerReview.isAnonymous());
+					SqlUtil.setBoolean(ps, 9, customerReview.isHyperlinkingEnabled());
+					SqlUtil.setBoolean(ps, 10, customerReview.isRatingsOnly());
+					SqlUtil.setString(ps, 11, customerReview.getTitle());
+					SqlUtil.setString(ps, 12, customerReview.getReviewText());
+					SqlUtil.setInt(ps, 13, customerReview.getNumComments());
+					SqlUtil.setString(ps, 14, customerReview.getCampaignId());
+					SqlUtil.setBigDecimal(ps, 15, customerReview.getRating());
+					SqlUtil.setInt(ps, 16, customerReview.getRatingRange());
+					SqlUtil.setBoolean(ps, 17, customerReview.isRecommended());
+					SqlUtil.setInt(ps, 18, customerReview.getNumFeedbacks());
+					SqlUtil.setInt(ps, 19, customerReview.getNumPositiveFeedbacks());
+					SqlUtil.setInt(ps, 20, customerReview.getNumNegativeFeedbacks());
+					SqlUtil.setString(ps, 21, customerReview.getReviewerLocation());
+					SqlUtil.setString(ps, 22, customerReview.getIpAddress());
+					SqlUtil.setString(ps, 23, customerReview.getDisplayLocale());
+					SqlUtil.setTimestamp(ps, 24, customerReview.getSubmissionTime());
+					SqlUtil.setString(ps, 25, customerReview.getBadgeName());
+					SqlUtil.setString(ps, 26, customerReview.getBadgeContentType());
+					SqlUtil.setString(ps, 27, customerReview.getProductReviewsURL());
+					SqlUtil.setString(ps, 28, customerReview.getProductReviewsDLURL());
+					SqlUtil.setBoolean(ps, 29, customerReview.isFeatured());
+					SqlUtil.setBigDecimal(ps, 30, customerReview.getNetPromoterScore());
+					SqlUtil.setString(ps, 31, customerReview.getNetPromoterComment());
+					SqlUtil.setString(ps, 32, customerReview.getAuthenticationType());
+					SqlUtil.setString(ps, 33, customerReview.getUserEmailAddress());
+					SqlUtil.setBoolean(ps, 34, customerReview.isPublishedEmailAlert());
+					SqlUtil.setBoolean(ps, 35, customerReview.isCommentedEmailAlert());
+					SqlUtil.setString(ps, 36, customerReview.getOriginatingDisplayCode());
+					SqlUtil.setString(ps, 37, customerReview.getContentCodes());
+					SqlUtil.setTimestamp(ps, 38, customerReview.getFirstPublishTime());
+					SqlUtil.setTimestamp(ps, 39, customerReview.getLastPublishTime());
 	
 					ps.addBatch();
 				     
 				    if(++count % batchSize == 0) {
-				        ps.executeBatch();
+				    	LOGGER.debug("count:"+ count);
+				    	ps.executeBatch();
 				    }
+				     
 				}
 			}
+			LOGGER.debug("count:"+ count);
 			ps.executeBatch();
 
 		} catch (SQLException e) { 
