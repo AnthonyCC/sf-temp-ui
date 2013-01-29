@@ -43,6 +43,7 @@ public class ReferralFormValidator implements Validator {
 			ValidationUtils.rejectIfEmpty(errors, "referralCreditEmailSubject", "fields.referralCreditEmailSubject","Subject line is required.");
 			ValidationUtils.rejectIfEmpty(errors, "referralCreditEmailText", "fields.referralCreditEmailText","Email Text is required.");
 			ValidationUtils.rejectIfEmpty(errors, "fbFile", "fields.fbFile","Image file path is required.");
+			ValidationUtils.rejectIfEmpty(errors, "siteAccessImageFile", "fields.siteAccessImageFile","Site Access Image file path is required.");
 			
 			//check promotion
 			if(model.getPromotionId().equals("-1")) {

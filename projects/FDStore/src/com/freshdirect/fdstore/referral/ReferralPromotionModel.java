@@ -47,6 +47,7 @@ public class ReferralPromotionModel extends ModelSupport {
 	private String referralCreditEmailSubject;
 	private String referralCreditEmailText;
 	private String userListFileHolder;
+	private String siteAccessImageFile;
 	
 	public String getFbFile() {
 		return fbFile;
@@ -245,6 +246,12 @@ public class ReferralPromotionModel extends ModelSupport {
 	}
 	public String getFDCustomerId() {
 		return FDCustomerId;
+	}
+	public void setSiteAccessImageFile(String siteAccessImageFile) {
+		this.siteAccessImageFile = siteAccessImageFile;
+	}
+	public String getSiteAccessImageFile() {
+		return siteAccessImageFile;
 	}
 	
 	

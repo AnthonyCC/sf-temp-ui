@@ -935,6 +935,22 @@ public class FDReferralManager {
 
 	  }
 	  
+	  public static ReferralPromotionModel getReferralPromotionDetailsByRefName(String referral) throws FDResourceException{
+		  lookupManagerHome();
+
+			try {
+				FDReferralManagerSB sb = managerHome.create();
+				return sb.getReferralPromotionDetailsByRefName(referral);
+			} catch (CreateException ce) {
+				invalidateManagerHome();
+				throw new FDResourceException(ce, "Error creating session bean");
+			} catch (RemoteException re) {
+				invalidateManagerHome();
+				throw new FDResourceException(re, "Error talking to session bean");
+			}		
+
+	  }
+	  
 	  public static void sendMails(String recipient_list, String mail_message, FDUser user, String rpid, String serverName) throws FDResourceException{
 		  lookupManagerHome();
 

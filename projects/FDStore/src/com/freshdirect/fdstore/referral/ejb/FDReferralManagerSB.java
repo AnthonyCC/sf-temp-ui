@@ -143,6 +143,8 @@ public interface FDReferralManagerSB extends EJBObject {
 	 
 	 public abstract ReferralPromotionModel getReferralPromotionDetails(String userId)throws FDResourceException, RemoteException;
 	 
+	 public abstract ReferralPromotionModel getReferralPromotionDetailsByRefName(String referral)throws FDResourceException, RemoteException;
+	 
 	 public abstract void sendMails(String recipient_list, String mail_message, FDUser identity, String rpid, String serverName) throws FDResourceException, RemoteException;
 	 
 	 public abstract List<ManageInvitesModel> getManageInvites(String customerId)throws FDResourceException, RemoteException;

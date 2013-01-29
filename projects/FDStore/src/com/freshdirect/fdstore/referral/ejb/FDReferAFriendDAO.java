@@ -36,7 +36,7 @@ public class FDReferAFriendDAO {
 	public static final String GET_REFRRAL_PROMO = "select RP.ID, RP.GIVE_TEXT, RP.GET_TEXT, RP.REFERRAL_FEE, P.AUDIENCE_DESC, "
 		    + "RP.SHARE_HEADER, RP.SHARE_TEXT, RP.GIVE_HEADER, RP.GET_HEADER, "
 		    + "rp.FB_IMAGE_PATH, rp.FB_HEADLINE, rp.FB_TEXT, rp.TWITTER_TEXT, rp.RL_PAGE_TEXT, rp.RL_PAGE_LEGAL, rp.INV_EMAIL_SUBJECT, "   
-            + "rp.INV_EMAIL_TEXT, rp.INV_EMAIL_LEGAL, rp.REF_CRE_EMAIL_SUB, rp.REF_CRE_EMAIL_TEXT " 
+            + "rp.INV_EMAIL_TEXT, rp.INV_EMAIL_LEGAL, rp.REF_CRE_EMAIL_SUB, rp.REF_CRE_EMAIL_TEXT, rp.sa_image_path " 
 			+ "from CUST.REFERRAL_PRGM rp, "
 			+ "CUST.REFERRAL_CUSTOMER_LIST rcl, "
 			+ "CUST.PROMOTION_NEW p "
@@ -51,7 +51,7 @@ public class FDReferAFriendDAO {
 	private static final String GET_DEFAULT_REFERRAL_PROMO = "select RP.ID, RP.GIVE_TEXT, RP.GET_TEXT, RP.REFERRAL_FEE, P.AUDIENCE_DESC, "
 			+ "RP.SHARE_HEADER, RP.SHARE_TEXT, RP.GIVE_HEADER, RP.GET_HEADER, "
 			+ "rp.FB_IMAGE_PATH, rp.FB_HEADLINE, rp.FB_TEXT, rp.TWITTER_TEXT, rp.RL_PAGE_TEXT, rp.RL_PAGE_LEGAL, rp.INV_EMAIL_SUBJECT, "   
-            + "rp.INV_EMAIL_TEXT, rp.INV_EMAIL_LEGAL, rp.REF_CRE_EMAIL_SUB, rp.REF_CRE_EMAIL_TEXT "
+            + "rp.INV_EMAIL_TEXT, rp.INV_EMAIL_LEGAL, rp.REF_CRE_EMAIL_SUB, rp.REF_CRE_EMAIL_TEXT, rp.sa_image_path "
 			+ "from CUST.REFERRAL_PRGM rp, "
 			+ "CUST.PROMOTION_NEW p "
 			+ "where trunc(RP.EXPIRATION_DATE) > trunc(sysdate) "
@@ -137,6 +137,7 @@ public class FDReferAFriendDAO {
 		rpm.setInviteEmailLegal(rs.getString("INV_EMAIL_LEGAL"));
 		rpm.setReferralCreditEmailSubject(rs.getString("REF_CRE_EMAIL_SUB"));
 		rpm.setReferralCreditEmailText(rs.getString("REF_CRE_EMAIL_TEXT"));
+		rpm.setSiteAccessImageFile(rs.getString("sa_image_path"));
 		return rpm;
 	}
 	
@@ -930,5 +931,22 @@ public class FDReferAFriendDAO {
 				ps.close();
 		}
 		return false;	
+	}
+	
+	public static String getCustomerId(Connection conn, String referralId) throws SQLException {
+		PreparedStatement ps = null;
+		ResultSet rset = null;
+		String refName = null;
+		try {
+			ps = conn.prepareStatement("select customer_id from CUST.REFERRAL_LINK where referral_link = ?");
+			ps.setString(1, referralId);
+			rset = ps.executeQuery();
+			if(rset.next())
+				return rset.getString(1);
+		} finally {
+			if (ps != null)
+				ps.close();
+		}
+		return null;	
 	}
 }

@@ -113,6 +113,18 @@
 				<tr><td>Subject Line:</td><td><%=model.getReferralCreditEmailSubject()%></td></tr>
 				<tr><td>Default Text for Email:</td><td><%=model.getReferralCreditEmailText()%></td></tr>
 				
+				<tr><td colspan="2" align="center">
+				<hr style="color: #FFF; background-color: #FFF; border: 1px dotted #000000; border-style: none none dotted;" />
+				</td></tr>
+					
+				<!----------------Media for the RAF siteaccess page---------------------------------------->
+				<tr><td colspan="2"><b>RAF SiteAccess Page</b></td></tr>
+				<tr><td>Image Upload:</td><td><%=model.getSiteAccessImageFile()%></td></tr>
+				
+				<tr>
+					<td colspan="2" align="center">&nbsp;</td>					
+				</tr>
+				
 				<tr>
 				<td colspan="2" align="center"><INPUT type = "submit" value="Modify"  name="modifybutton"/>&nbsp;&nbsp;&nbsp;
 				<INPUT type = "submit" value="Approve"  /></td>					
@@ -426,6 +438,23 @@
 					<tr><td valign="top">Default text for website:</td>
 					<td>
 					<spring1:bind path="command.referralCreditEmailText"><textarea name="referralCreditEmailText" cols="50" rows="3"><c1:out value='${status.value}'/></textarea>
+					<c1:if test="${not empty status.errorMessage}" >
+						<br/>
+						<span style="color:red;font-weight:bold;font-size:12px;"><c1:out value="${status.errorMessage}" /></span>
+					</c1:if>
+					</spring1:bind></td>
+					</tr>
+					
+					<tr><td colspan="2" align="center">
+					<hr style="color: #FFF; background-color: #FFF; border: 1px dotted #000000; border-style: none none dotted;" />
+					</td></tr>
+					<!----------------Media for the RAF siteaccess page---------------------------------------->
+					<tr><td colspan="2"><b>RAF SiteAccess Page</b></td></tr>
+					
+					<tr>
+					<td valign="top">Image Upload:</td>
+					<td>
+					<spring1:bind path="command.siteAccessImageFile"><input type="text" name="siteAccessImageFile" value="<c1:out value='${status.value}'/>" size="50"/>
 					<c1:if test="${not empty status.errorMessage}" >
 						<br/>
 						<span style="color:red;font-weight:bold;font-size:12px;"><c1:out value="${status.errorMessage}" /></span>

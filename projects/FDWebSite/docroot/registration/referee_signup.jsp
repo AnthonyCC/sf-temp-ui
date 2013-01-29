@@ -9,6 +9,7 @@
 <%@ page import='com.freshdirect.fdstore.sempixel.FDSemPixelCache' %>
 <%@ page import='com.freshdirect.fdstore.sempixel.SemPixelModel' %>
 <%@ page import="com.freshdirect.fdstore.referral.FDReferralManager"%>
+<%@ page import="com.freshdirect.fdstore.referral.ReferralPromotionModel"%>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri="freshdirect" prefix="fd" %>
 <%
@@ -53,12 +54,7 @@
 	 String moreInfoPage = "/registration/referee_signup.jsp?ol=moreInfo&successPage="+ URLEncoder.encode(successPage);
         String failurePage =  "/registration/referee_signup.jsp?ol=na&serviceType="+serviceType+"&successPage="+ URLEncoder.encode(successPage);
     
-    //--------OAS Page Variables-----------------------
-	 request.setAttribute("sitePage", "www.freshdirect.com/invite");
-     request.setAttribute("listPos", "RAFSiteAccess");
-
-    
-	String actionURI = request.getRequestURI()+"?siteAccessPage="+siteAccessPage+"&successPage="+successPage;
+    String actionURI = request.getRequestURI()+"?siteAccessPage="+siteAccessPage+"&successPage="+successPage;
 	String url = request.getRequestURI();
 	System.out.println("[******moreInfoPage*****]" + moreInfoPage);
 
@@ -86,6 +82,10 @@
 		<jsp:include page="/common/template/includes/ad_server.jsp" flush="false"/>
 		
 		<% if(refname != null) { %>
+			<%
+				ReferralPromotionModel rpModel = FDReferralManager.getReferralPromotionDetailsByRefName(referral);
+			%>
+		
 		<fd:SiteAccessController action='checkByZipCode' successPage='<%= successPage %>' moreInfoPage='<%= moreInfoPage %>' failureHomePage='<%= failurePage %>' result='result'>
 			<%--
 				Put any java-related variables needed by the page into the _page_options object. 
@@ -119,7 +119,9 @@
 					serviceType: {
 						serviceType: '',
 						corpServiceType: ''
-					}
+					},
+					rafTerms: '<%= rpModel.getReferralPageLegal() %>',
+					rafImage: '<%= rpModel.getSiteAccessImageFile() %>'
 				};
 				<% if ( !"WEB".equals(serviceType) ) { %>
 					<% if ( result.hasError("technicalDifficulty") ) { %>

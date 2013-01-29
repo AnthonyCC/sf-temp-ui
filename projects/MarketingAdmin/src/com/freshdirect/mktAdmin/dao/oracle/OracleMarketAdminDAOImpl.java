@@ -944,8 +944,8 @@ public class OracleMarketAdminDAOImpl implements MarketAdminDAOIntf {
 	private static final String INSERT_REFPROMO = "insert into  CUST.REFERRAL_PRGM (ID, EXPIRATION_DATE, GIVE_TEXT, GET_TEXT, DESCRIPTION, "
 			+ "PROMOTION_ID, REFERRAL_FEE, DEFAULT_PROMO, SHARE_HEADER, SHARE_TEXT, GIVE_HEADER, GET_HEADER, NOTES, "
 			+ "FB_IMAGE_PATH, FB_HEADLINE, FB_TEXT, TWITTER_TEXT, RL_PAGE_TEXT, RL_PAGE_LEGAL, INV_EMAIL_SUBJECT, " 
-			+ "INV_EMAIL_TEXT, INV_EMAIL_LEGAL, REF_CRE_EMAIL_SUB, REF_CRE_EMAIL_TEXT, add_by_date, add_by_user) "
-			+ "values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, sysdate, ?)";
+			+ "INV_EMAIL_TEXT, INV_EMAIL_LEGAL, REF_CRE_EMAIL_SUB, REF_CRE_EMAIL_TEXT, add_by_date, add_by_user, sa_image_path) "
+			+ "values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, sysdate, ?, ?)";
 
 	public String createRefPromo(ReferralAdminModel rModel) throws SQLException {
 		Connection conn = null;
@@ -990,6 +990,7 @@ public class OracleMarketAdminDAOImpl implements MarketAdminDAOIntf {
 			pstmt.setString(23, rModel.getReferralCreditEmailSubject());
 			pstmt.setString(24, rcet);
 			pstmt.setString(25, rModel.getAddByUser());
+			pstmt.setString(26, rModel.getSiteAccessImageFile());
 			pstmt.execute();
 			return id;
 		} catch (Exception e) {
@@ -1161,7 +1162,7 @@ public class OracleMarketAdminDAOImpl implements MarketAdminDAOIntf {
 
 	private static final String GET_REF_PROMOTION = "select  rp.DESCRIPTION, P.CODE , SHARE_HEADER, SHARE_TEXT, GET_HEADER, GET_TEXT, GIVE_HEADER, GIVE_TEXT, " +
 			"REFERRAL_FEE,rp.EXPIRATION_DATE, DEFAULT_PROMO, NOTES,  rp.ID, PROMOTION_ID, rp.FB_IMAGE_PATH, rp.FB_HEADLINE, rp.FB_TEXT, rp.TWITTER_TEXT, " + 
-			"rp.RL_PAGE_TEXT, rp.RL_PAGE_LEGAL, rp.INV_EMAIL_SUBJECT, rp.INV_EMAIL_TEXT, rp.INV_EMAIL_LEGAL, rp.REF_CRE_EMAIL_SUB, rp.REF_CRE_EMAIL_TEXT " +
+			"rp.RL_PAGE_TEXT, rp.RL_PAGE_LEGAL, rp.INV_EMAIL_SUBJECT, rp.INV_EMAIL_TEXT, rp.INV_EMAIL_LEGAL, rp.REF_CRE_EMAIL_SUB, rp.REF_CRE_EMAIL_TEXT, rp.sa_image_path " +
 			"from CUST.REFERRAL_PRGM rp, " +
 				  "cust.promotion_new p " +
 			"where rp.id = ? " + 
@@ -1207,6 +1208,7 @@ public class OracleMarketAdminDAOImpl implements MarketAdminDAOIntf {
 				rAdm.setReferralCreditEmailSubject(rset.getString("REF_CRE_EMAIL_SUB"));
 				String rcet = rset.getString("REF_CRE_EMAIL_TEXT");
 				rAdm.setReferralCreditEmailText(rcet);
+				rAdm.setSiteAccessImageFile(rset.getString("sa_image_path"));
 				return rAdm;
 			}
 		} catch (Exception e) {
@@ -1262,7 +1264,7 @@ public class OracleMarketAdminDAOImpl implements MarketAdminDAOIntf {
 			+ "DESCRIPTION=?, PROMOTION_ID=?, REFERRAL_FEE=?, DEFAULT_PROMO=?, SHARE_HEADER=?, SHARE_TEXT=?, GIVE_HEADER=?, "
 			+ "GET_HEADER=?, NOTES=?, FB_IMAGE_PATH=?, FB_HEADLINE=?, FB_TEXT=?, TWITTER_TEXT=?, RL_PAGE_TEXT=?, RL_PAGE_LEGAL=?, " 
 			+ "INV_EMAIL_SUBJECT=?, INV_EMAIL_TEXT=?, INV_EMAIL_LEGAL=?, REF_CRE_EMAIL_SUB=?, REF_CRE_EMAIL_TEXT=?, "
-			+ "change_by_date = sysdate, change_by_user=? "
+			+ "change_by_date = sysdate, change_by_user=?, sa_image_path=? "
 			+ "where ID=?";
 
 	public void editRefPromo(ReferralAdminModel rModel) throws SQLException {
@@ -1306,7 +1308,8 @@ public class OracleMarketAdminDAOImpl implements MarketAdminDAOIntf {
 			pstmt.setString(22, rModel.getReferralCreditEmailSubject());
 			pstmt.setString(23, rcet);
 			pstmt.setString(24, rModel.getAddByUser());
-			pstmt.setString(25, rModel.getReferralId());
+			pstmt.setString(25, rModel.getSiteAccessImageFile());
+			pstmt.setString(26, rModel.getReferralId());
 			pstmt.executeUpdate();
 		} catch (Exception e) {
 			LOGGER.error("Failed with insert into CUST.REFERRAL_PRGM", e);

@@ -41,6 +41,7 @@ public class ReferralAdminModel implements Serializable{
 	private Collection<String> userCollection;
 	private String addByUser;
 	private String deleteFlag;
+	private String siteAccessImageFile;
 	
 	public void setUserCollection(Collection<String> userCollection) {
 		this.userCollection = userCollection;
@@ -282,6 +283,12 @@ public class ReferralAdminModel implements Serializable{
 	}
 	public String getDeleteFlag() {
 		return deleteFlag;
+	}
+	public void setSiteAccessImageFile(String siteAccessImageFile) {
+		this.siteAccessImageFile = siteAccessImageFile;
+	}
+	public String getSiteAccessImageFile() {
+		return siteAccessImageFile;
 	}
 	
 		

@@ -1192,6 +1192,21 @@ public class FDReferralManagerSessionBean extends FDSessionBeanSupport {
 		}
 
 	}
+	
+	public ReferralPromotionModel getReferralPromotionDetailsByRefName(String referral)
+		throws FDResourceException, RemoteException {
+		Connection conn = null;
+		try {
+			conn = this.getConnection();
+			String userId = FDReferAFriendDAO.getCustomerId(conn, referral);
+			return FDReferAFriendDAO.getReferralPromotionDetails(conn, userId);
+		} catch (SQLException e) {
+			this.getSessionContext().setRollbackOnly();
+			throw new FDResourceException(e);
+		} finally {
+			close(conn);
+		}	
+	}
 
 	public void sendMails(String recipient_list, String mail_message, FDUser user, String rpid, String serverName) throws FDResourceException, RemoteException {
 		Connection conn = null;
