@@ -208,7 +208,7 @@
 			<td width="35%">
 				<table width="100%" cellspacing="0" cellpadding="0" border="0" class="gc_table2">
 					<tbody>
-							<tr>
+							<%-- <tr>
 								<th style="text-align:center;">DELIVERY SUMMARY</th>
 							</tr>
 							<tr>
@@ -218,7 +218,7 @@
 								<td>
 									<%@ include file="/includes/delivery_summary.jspf" %>
 								</td>
-							</tr>
+							</tr> --%>
 							<tr>
 								<th style="text-align:center;">MANIFEST DETAILS</th>
 							</tr>
