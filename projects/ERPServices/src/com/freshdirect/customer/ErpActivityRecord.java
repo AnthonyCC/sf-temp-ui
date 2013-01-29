@@ -36,6 +36,7 @@ public class ErpActivityRecord implements java.io.Serializable {
 	public ErpActivityRecord() {
 		setSourceInfo();
 	}
+	
     private void setSourceInfo() {
     	
 		sourceInfo= StringUtil.getHostInfo();
@@ -116,9 +117,7 @@ public class ErpActivityRecord implements java.io.Serializable {
 
 	public String getNote() {
 		
-		return this.note != null && this.note.length() != 0 ? 
-			 new StringBuilder().append(this.note).append(". [").append(sourceInfo).append("]").toString()
-			:new StringBuilder().append(this.type.getName()).append(". [").append(sourceInfo).append("]").toString();
+		return this.note != null && this.note.length() != 0 ? this.note : this.type.getName();
 	}
 
 	

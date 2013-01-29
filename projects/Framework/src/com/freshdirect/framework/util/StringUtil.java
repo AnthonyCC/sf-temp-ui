@@ -739,7 +739,7 @@ public class StringUtil {
 	public static String getHostInfo() {
     	StringBuilder sb=new StringBuilder(25);
     	
-			sb.append( "ip: " );
+			sb.append( "[ ip: " );
 			try {
 				sb.append( java.net.InetAddress.getLocalHost().getHostAddress() );
 			} catch (UnknownHostException e) {
@@ -748,9 +748,10 @@ public class StringUtil {
 			}
 			sb.append( " host: " );
 			try {
-				sb.append( java.net.InetAddress.getLocalHost().getCanonicalHostName() );
+				sb.append( java.net.InetAddress.getLocalHost().getCanonicalHostName() )
+				  .append(" ]");
 			} catch (UnknownHostException e) {
-				sb.append( "UNKNOWN" );
+				sb.append( "UNKNOWN ]" );
 			}
 		
 		return sb.toString();
