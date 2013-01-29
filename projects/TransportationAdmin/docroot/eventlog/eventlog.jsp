@@ -222,14 +222,6 @@ $(document).ready(function () {
 	showGrid();
 });
 
-function isEmpty(str) {
-    return (!str || 0 === str.length);
-}
-
-function toggleFilterRow() {
-	  grid.setTopPanelVisibility(!grid.getOptions().showTopPanel);
-}
-
 function showGrid() {
 	var postData = '';
 	postData = postData + 'daterange='+ $.URLEncode($('#daterange').val());
@@ -300,92 +292,14 @@ function showGrid() {
 		grid.render();
 	});
 	
-	//grid.onSelectedRowsChanged.subscribe(function() { alert(grid.getSelectedRows()); });
-	/* grid.onDblClick.subscribe(function(e, args) {
-		var rowData = grid.getData().getItem(args.row);
-		
-		e.preventDefault();
-					
-		var dataX = JSON.parse(JSON.stringify(rowData));
-				
-		js2form(document.getElementById('eventForm'), dataX);
-		
-		if($('#eventType')) {
-			var id = $('#eventType').val();
-	        var queryResult = $.Enumerable.From(aoSubTypes)
-	                        	.Where(function (subType) { return subType.eventTypeId == id })
-	                        	.OrderByDescending(function (subType) { return subType.caption })
-	                    		.ToArray();
-	        $('#eventSubType').loadSelect( queryResult, false, true );
-	        $('#eventSubType').val(rowData.eventSubType);
-		}
-			
-		if($('#eventDate').val() != 'undefined' || $('#eventDate').val() != '') {
-			var eDate = $('#eventDate').val();
-			var formatedDate = $('#eventDate').formatDate(Number(eDate));
-			$('#eventDate').val(formatedDate);
-			lookUpRouteInfo(formatedDate, dataX.route, dataX.windowTime);
-		}
-		var aoStops = [];
-		if(dataX.stops != null) {
-			for(var k=0;k < dataX.stops.length;k++) {
-				if(dataX.stops[k] != null){
-					aoStops.push({"value" : dataX.stops[k], "caption" : dataX.stops[k] });
-				}
-			}
-		}
-		 
-		$('#stops').loadSelect( aoStops, false, false );
-											
-		showEventForm();
-		
-	});*/
-	
 }
-
-function comparer(a, b) {
-	var x = a[sortcol], y = b[sortcol];
-	return (x == y ? 0 : (x > y ? 1 : -1));
-}
-
-function filterX(item) {
-	
-	for (var columnId in columnFilters) {
-	    if (columnId !== undefined && columnFilters[columnId] !== "") {
-	        var c = grid.getColumns()[grid.getColumnIndex(columnId)];
-	        console.log(item[c.field] + "->" + columnFilters[columnId])
-	        if (item[c.field] != null) {
-	        	if(item[c.field].indexOf) {
-	        		if(item[c.field].indexOf(columnFilters[columnId]) == -1) {
-	        			return false;
-	        		}
-	        	} else if(item[c.field] != columnFilters[columnId]) {
-	        		return false;
-	        	}	            
-	        } else {
-	        	return false;
-	        }
-	    }
-	}
-	return true;
-}
-
-function restoreGrid(dataX) {
-	grid.init();
-	dataView.beginUpdate();
-	dataView.setItems(dataX);
-	dataView.setFilter(filterX);
-	dataView.endUpdate();
-}
-
-
 
 function viewEvents() {	
 	showGrid();
 }
 
 function addEvent(row) {
-	$("#eventDate" ).datepicker({ minDate: +0 });	
+	
 	var rowData = grid.getData().getItem(row);
 	
 	var dataX = JSON.parse(JSON.stringify(rowData));
@@ -460,8 +374,10 @@ function showEventForm (showCurrDate) {
 					});
 				}
 				
+				$("#eventDate" ).datepicker({ minDate: +0 });
+				
 				if(showCurrDate){
-					$("#eventDate" ).datepicker({ minDate: +0 });
+					
 					$('#eventForm').clearForm();
 					var formatedDate = $('#eventDate').formatDate(0);
 					$('#eventDate').val(formatedDate);

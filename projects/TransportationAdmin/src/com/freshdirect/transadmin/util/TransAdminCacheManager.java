@@ -524,12 +524,7 @@ public class TransAdminCacheManager {
 
 		protected List loadData(String requestParam) throws AsyncCacheException {
 			try {
-				if (TransportationAdminProperties.isKronosBlackhole()) {
-					throw new AsyncCacheException(
-							AsyncCacheExceptionType.LOAD_BLOCKED);
-				} else {
-					return loadAddHocRouteInfo();
-				}
+				return loadAddHocRouteInfo();
 			} catch (Exception e) {
 				LOGGER.error("Could not load Addhoc route data due to: ", e);
 				throw new AsyncCacheException(e,

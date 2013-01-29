@@ -182,10 +182,6 @@ $(document).ready(function () {
 	showGrid();
 });
 
-function toggleFilterRow() {
-	  grid.setTopPanelVisibility(!grid.getOptions().showTopPanel);
-}
-
 function showEventForm () {
 	
 	$('div#editShiftForm').modal({
@@ -487,41 +483,6 @@ function showGrid() {
 		grid.invalidateRows(args.rows);
 		grid.render();
 	});
-}
-
-function comparer(a, b) {
-	var x = a[sortcol], y = b[sortcol];
-	return (x == y ? 0 : (x > y ? 1 : -1));
-}
-
-function filterX(item) {
-	
-	for (var columnId in columnFilters) {
-	    if (columnId !== undefined && columnFilters[columnId] !== "") {
-	        var c = grid.getColumns()[grid.getColumnIndex(columnId)];
-	        if (item[c.field] != null) {
-	        	if(item[c.field].indexOf) {
-	        		if(item[c.field].indexOf(columnFilters[columnId]) == -1) {
-	        			return false;
-	        		}
-	        	} else if(item[c.field] != columnFilters[columnId]) {
-	        		return false;
-	        	}	            
-	        } else {
-	        	return false;
-	        }
-	    }
-	}
-	return true;
-}
-
-function restoreGrid(dataX) {
-	grid.init();
-
-	dataView.beginUpdate();
-	dataView.setItems(dataX);
-	dataView.setFilter(filterX);
-	dataView.endUpdate();
 }
 			
 </script>

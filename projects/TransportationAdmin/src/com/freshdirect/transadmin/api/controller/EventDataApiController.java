@@ -174,7 +174,7 @@ public class EventDataApiController extends BaseApiController {
 			List<EventModel> events = dataFlag ? getEventLogService().lookUpEvents(eventDate) : getEventLogService().lookUpEventForDateRange(eventDate);
 			if(events != null) {
 				for(EventModel _event : events) {
-					if("51".equals(_event.getEventType())) { 
+					if("End of Shift Scanner Log".equals(_event.getEventType())) { 
 						shiftEvents.add(_event);
 					}
 				}				

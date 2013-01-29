@@ -174,3 +174,54 @@
 
           		return true;
           	}
+        	
+        	
+        	
+        	
+/* === SlickGrid functions ======================= */
+
+
+        	function isEmpty(str) {
+        	    return (!str || 0 === str.length);
+        	}
+        	
+        	function comparer(a, b) {
+        		var x = a[sortcol], y = b[sortcol];
+        		return (x == y ? 0 : (x > y ? 1 : -1));
+        	}
+
+        	function toggleFilterRow() {
+        		grid.setTopPanelVisibility(!grid.getOptions().showTopPanel);
+        	}
+        	
+        	function filterX(item) {
+        		
+        		for (var columnId in columnFilters) {
+        		    if (columnId !== undefined && columnFilters[columnId] !== "") {
+        		        var c = grid.getColumns()[grid.getColumnIndex(columnId)];
+        		        console.log(item[c.field] + "->" + columnFilters[columnId])
+        		        if (item[c.field] != null) {
+        		        	if(item[c.field].indexOf) {
+        		        		if(item[c.field].indexOf(columnFilters[columnId]) == -1) {
+        		        			return false;
+        		        		}
+        		        	} else if(item[c.field] != columnFilters[columnId]) {
+        		        		return false;
+        		        	}	            
+        		        } else {
+        		        	return false;
+        		        }
+        		    }
+        		}
+        		return true;
+        	}
+
+        	function restoreGrid(dataX) {
+        		grid.init();
+        		dataView.beginUpdate();
+        		dataView.setItems(dataX);
+        		dataView.setFilter(filterX);
+        		dataView.endUpdate();
+        	}        	
+        	
+        	

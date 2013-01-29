@@ -174,90 +174,20 @@ $(document).ready(function () {
 					, {id : "ticketNumber",	name : "Ticket Number",	field : "ticketNumber", sortable : true}
 					, {id : "stops", name : "Stop(s)",	field : "stops", sortable : true}
 					, {id : "totalStopCnt",	name : "Total Stops",	field : "totalStopCnt", sortable : true, cssClass: "slick-cell-aligncenter"}				
-					, {id : "description", name : "Description",	field : "description", sortable : true}
+					, {id : "description", name : "Description",	field : "description", sortable : true}					
 					, {id : "verified", name: "isVerified", width: 80, cssClass: "slick-cell-aligncenter", field: "verified", 
 											formatter:  function CheckmarkFormatter(row, cell, value, columnDef, dataContext) {
 															if(value) {
 																return "<img align='center' src='./images/tick.png'>";
+															} else {
+																return "<a style='color:blue;font-size:12px;' href='javascript:verifyEvent("+row+")'>&nbsp;Verify</a>";
 															}
-														}, 
-					  						editor:   
-														function CheckboxEditor(args) {
-																var $select;
-																var defaultValue;
-																var scope = this;
-						
-																this.init = function() {
-																	$select = $("<INPUT type=checkbox value='true' class='editor-checkbox' hideFocus>");
-																	$select.appendTo(args.container);
-																	$select.focus();
-																};
-						
-																this.destroy = function() {
-																	$select.remove();
-																};
-						
-																this.focus = function() {
-																	$select.focus();
-																};
-						
-																this.loadValue = function(item) {
-																	defaultValue = item[args.column.field];
-																	if (defaultValue) {
-																		$select.attr("checked",
-																				"checked");
-																	} else {
-																		$select.removeAttr("checked");
-																	}
-																};
-						
-																this.serializeValue = function() {
-																	return $select.attr("checked");
-																};
-						
-																this.applyValue = function(item, state) {
-																	item[args.column.field] = state;
-																	if (args.item.id != null) {
-																		
-																				$.ajax({
-																					url : "v/1/verifymotevent/",
-																					type : "POST",
-																					data : "data=''"
-																							+ "&eventID="
-																							+ $.URLEncode(args.item.id),
-																					dataType : "html",
-																					async : false,
-																					success : function(json) {
-																						return "<img align='center' src='./images/tick.png'>";
-																					},
-																					error : function(msg) {
-																						var errorText = eval('('+ msg.responseText + ')');
-																						alert('Error : \n--------\n' + errorText.Message);
-																						return "";
-																					}
-																				});
-																	}
-																};
-						
-																this.isValueChanged = function() {
-																	return ($select.attr("checked") != defaultValue);
-																};
-						
-																this.validate = function() {
-																	return {
-																		valid : true,
-																		msg : null
-																	};
-																};
-						
-																this.init();
-															},
-															cannotTriggerInsert : true,
-															sortable : true
 														}
+					  }
+					
 					];
 
-						options = {
+	options = {
 							editable : true,
 							enableCellNavigation : true,
 							asyncEditorLoading : true,
@@ -274,11 +204,35 @@ $(document).ready(function () {
 	function viewEvents() {	
 		showGrid();
 	}
-
-	function toggleFilterRow() {
-		grid.setTopPanelVisibility(!grid.getOptions().showTopPanel);
+	
+	function verifyEvent(row) {
+		if(confirm('You are about to verify MOT event. Do you want to continue?'))  {
+		  if (row != null) {
+			var rowData = grid.getData().getItem(row);  
+			  
+			$.ajax({
+				url : "v/1/verifymotevent/",
+				type : "POST",
+				data : "data=''"
+						+ "&eventID="
+						+ $.URLEncode(rowData.id),
+				dataType : "html",
+				async : false,
+				success : function(json) {
+					showGrid();
+				},
+				error : function(msg) {
+					var errorText = eval('('+ msg.responseText + ')');
+					alert('Error : \n--------\n' + errorText.Message);
+					return "";
+				}
+			});
+			
+			
+		  }
+		}
 	}
-
+	
 	function showEventForm() {
 
 		$('div#editEventForm')
@@ -311,89 +265,40 @@ $(document).ready(function () {
 								$('#eventDate').val(formatedDate);
 								lookUpRouteInfo(formatedDate);
 
-								var title = $('#form-container .form-title')
-										.html();
-								$('#form-container .form-title').html(
-										'Loading...');
-								dialog.overlay
-										.fadeIn(
-												200,
-												function() {
-													dialog.container
-															.fadeIn(
-																	200,
-																	function() {
-																		dialog.data
-																				.fadeIn(
-																						200,
-																						function() {
-																							$(
-																									'#form-container .form-content')
-																									.animate(
-																											{
-																												height : 'auto'
-																											},
-																											function() {
-																												$(
-																														'#form-container .form-title')
-																														.html(
-																																title);
-																												$(
-																														'#form-container form')
-																														.fadeIn(
-																																200,
-																																function() {
-																																	$(
-																																			'#form-container #form-name')
-																																			.focus();
-
-																																	$(
-																																			'#form-container .form-cc')
-																																			.click(
-																																					function() {
-																																						var cc = $('#form-form #form-cc');
-																																						cc
-																																								.is(':checked') ? cc
-																																								.attr(
-																																										'checked',
-																																										'')
-																																								: cc
-																																										.attr(
-																																												'checked',
-																																												'checked');
-																																					});
-
-																																	// fix png's for IE 6
-																																	if ($.browser.msie
-																																			&& $.browser.version < 7) {
-																																		$(
-																																				'#form-container .form-button')
-																																				.each(
-																																						function() {
-																																							if ($(
-																																									this)
-																																									.css(
-																																											'backgroundImage')
-																																									.match(
-																																											/^url[("']+(.*\.png)[)"']+$/i)) {
-																																								var src = RegExp.$1;
-																																								$(
-																																										this)
-																																										.css(
-																																												{
-																																													backgroundImage : 'none',
-																																													filter : 'progid:DXImageTransform.Microsoft.AlphaImageLoader(src="'
-																																															+ src
-																																															+ '", sizingMethod="crop")'
-																																												});
-																																							}
-																																						});
-																																	}
-																																});
-																											});
-																						});
-																	});
+								var title = $('#form-container .form-title').html();
+								$('#form-container .form-title').html('Loading...');								
+								dialog.overlay.fadeIn(200, function () {
+									dialog.container.fadeIn(200, function () {
+										dialog.data.fadeIn(200, function () {
+											$('#form-container .form-content').animate({
+												height: 'auto'
+											}, function () {
+												$('#form-container .form-title').html(title);
+												$('#form-container form').fadeIn(200, function () {
+													$('#form-container #form-name').focus();
+					
+													$('#form-container .form-cc').click(function () {
+														var cc = $('#form-form #form-cc');
+														cc.is(':checked') ? cc.attr('checked', '') : cc.attr('checked', 'checked');
+													});
+					
+													// fix png's for IE 6
+													if ($.browser.msie && $.browser.version < 7) {
+														$('#form-container .form-button').each(function () {
+															if ($(this).css('backgroundImage').match(/^url[("']+(.*\.png)[)"']+$/i)) {
+																var src = RegExp.$1;
+																$(this).css({
+																	backgroundImage: 'none',
+																	filter: 'progid:DXImageTransform.Microsoft.AlphaImageLoader(src="' +  src + '", sizingMethod="crop")'
+																});
+															}
+														});
+													}
 												});
+											});
+										});
+									});
+								});
 							},
 							onShow : function(dialog) {
 								$('#form-container .form-send')
@@ -403,24 +308,12 @@ $(document).ready(function () {
 													// validate form
 													if (form.validate()) {
 														var msg = $('#form-container .form-message');
-														msg
-																.fadeOut(function() {
-																	msg
-																			.removeClass(
-																					'form-error')
-																			.empty();
+																msg.fadeOut(function() {
+																	msg.removeClass('form-error').empty();
 																});
-														$(
-																'#form-container .form-title')
-																.html(
-																		'Sending...');
-														$(
-																'#form-container form')
-																.fadeOut(200);
-														$(
-																'#form-container .form-content')
-																.animate(
-																		{
+														$('#form-container .form-title').html('Sending...');
+														$('#form-container form').fadeOut(200);
+														$('#form-container .form-content').animate(																	{
 																			height : '80px'
 																		},
 																		function() {
@@ -455,61 +348,36 @@ $(document).ready(function () {
 																															.URLEncode(formData),
 																											dataType : "html",
 																											async : false,
-																											success : function(
-																													json) {
-																												$(
-																														'#form-container .form-loading')
-																														.fadeOut(
-																																200,
-																																function() {
-																																	$(
-																																			'#form-container .form-title')
-																																			.html(
-																																					'Event added sucessfully!');
-																																	
-																																});
+																											success : function(json) {
+																												$('#form-container .form-loading')
+																														.fadeOut(200, function() {$('#form-container .form-title')
+																																			.html('Event added sucessfully!');
+																														});
 																												showGrid();
 																											},
-																											error : function(
-																													msg) {
+																											error : function(msg) {
 																												var errorText = eval('('
 																														+ msg.responseText
 																														+ ')');
-																												//alert('Error : \n--------\n'+ errorText.Message);
-																												msg
-																														.html(
-																																json)
-																														.fadeIn(
-																																200);
+																												
+																												msg.html(json).fadeIn(200);
 																											}
 																										});
-
 																							});
 																		});
 													} else {
 														if ($('#form-container .form-message:visible').length > 0) {
 															var msg = $('#form-container .form-message div');
-															msg
-																	.fadeOut(
-																			200,
-																			function() {
-																				msg
-																						.empty();
-																				form
-																						.showError();
-																				msg
-																						.fadeIn(200);
-																			});
+															msg.fadeOut(200, function () {
+																msg.empty();
+																form.showError();
+																msg.fadeIn(200);
+															});
 														} else {
-															$(
-																	'#form-container .form-message')
-																	.animate(
-																			{
-																				height : '30px'
-																			},
-																			form.showError);
+															$('#form-container .form-message').animate({
+																height: '30px'
+															}, form.showError);
 														}
-
 													}
 												});
 							},
@@ -675,42 +543,6 @@ $(document).ready(function () {
 			grid.invalidateRows(args.rows);
 			grid.render();
 		});
-	}
-
-	function comparer(a, b) {
-		var x = a[sortcol], y = b[sortcol];
-		return (x == y ? 0 : (x > y ? 1 : -1));
-	}
-
-	function filterX(item) {
-		
-		for (var columnId in columnFilters) {
-		    if (columnId !== undefined && columnFilters[columnId] !== "") {
-		        var c = grid.getColumns()[grid.getColumnIndex(columnId)];
-		        console.log(item[c.field] + "->" + columnFilters[columnId])
-		        if (item[c.field] != null) {
-		        	if(item[c.field].indexOf) {
-		        		if(item[c.field].indexOf(columnFilters[columnId]) == -1) {
-		        			return false;
-		        		}
-		        	} else if(item[c.field] != columnFilters[columnId]) {
-		        		return false;
-		        	}	            
-		        } else {
-		        	return false;
-		        }
-		    }
-		}
-		return true;
-	}
-
-	function restoreGrid(dataX) {
-		grid.init();
-
-		dataView.beginUpdate();
-		dataView.setItems(dataX);
-		dataView.setFilter(filterX);
-		dataView.endUpdate();
 	}
 </script>
 				

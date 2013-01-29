@@ -977,16 +977,20 @@ public class EventLogDAO implements IEventLogDAO   {
 						String typeId = rs.getString("ID");
 						String typeName = rs.getString("MOTEVENTTYPENAME");
 						String typeDesc = rs.getString("MOTEVENTTYPEDESCRIPTION");
+						String isTypeActive = rs.getString("ISACTIVE");
 						String groupName = rs.getString("GROUP_NAME");
 						String email = rs.getString("EMAIL");
-						
-						MotEventType eventType = new MotEventType(typeId, typeName, typeDesc);
-						if(groupName != null && !"".equals(groupName))
-							eventType.setMsgGroup(new EventLogMessageGroup(groupName, email));
-						eventType.setTransactionDate(rs.getTimestamp("DATECREATED"));
-						eventType.setUserId(rs.getString("CREATEDBY"));
-						
-						result.add(eventType);
+												
+						MotEventType eventType = null;
+						if("X".equals(isTypeActive)) {
+							eventType = new MotEventType(typeId, typeName, typeDesc);
+							if(groupName != null && !"".equals(groupName))
+								eventType.setMsgGroup(new EventLogMessageGroup(groupName, email));
+							eventType.setTransactionDate(rs.getTimestamp("DATECREATED"));
+							eventType.setUserId(rs.getString("CREATEDBY"));
+							
+							result.add(eventType);
+						}
 					} while (rs.next());			
 				}
 			});
