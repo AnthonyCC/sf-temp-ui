@@ -283,8 +283,13 @@ public class ProductImageTag extends BodyTagSupport {
         // not disabled, has action and not in cart (savings) -> add link
         final boolean shouldGenerateAction = !this.disabled &&
             (this.action != null) && !this.isInCart;
-        final boolean displayBurst = (savingsPercentage > 0) ||
-            pl.isDisplayAny();
+        boolean displayBurst = false;
+		try {
+			displayBurst = savingsPercentage > 0 || pl.isDisplayAny() || (this.product.getFDGroup() != null);
+		} catch (FDResourceException e2) {
+			// TODO Auto-generated catch block
+			e2.printStackTrace();
+		}
 
         String imageStyle = "border: 0; vertical-align: bottom; -moz-force-broken-image-icon: 1; ";
 
@@ -412,7 +417,10 @@ public class ProductImageTag extends BodyTagSupport {
         }
 
         if (displayBurst) {
-            appendBurst(buf, pl, supportsPNG, shouldGenerateAction);
+            try {
+				appendBurst(buf, pl, supportsPNG, shouldGenerateAction);
+			} catch (FDResourceException e) {
+			}
         }
 
         // [APPDEV-672] QUICK BUY button
@@ -601,9 +609,10 @@ public class ProductImageTag extends BodyTagSupport {
      * @param pl Product Labeling
      * @param supportsPNG Is PNG supported?
      * @param shouldGenerateAction Should add link to image
+     * @throws FDResourceException 
      */
     private void appendBurst(StringBuilder buf, ProductLabeling pl,
-        final boolean supportsPNG, final boolean shouldGenerateAction) {
+        final boolean supportsPNG, final boolean shouldGenerateAction) throws FDResourceException {
         // burst image
         String burstImageStyle = "border: 0;";
 
@@ -646,11 +655,19 @@ public class ProductImageTag extends BodyTagSupport {
 			} catch (FDResourceException e) {
 				LOGGER.error("FDResourceException",e);
 			}
+        } else {
+        	try {
+				if(product.getFDGroup() != null) {
+					deal = calculator.getGroupDealPercentage();
+				}
+			} catch (FDResourceException e) {
+				LOGGER.error("FDResourceException",e);
+			}
         }
 
         if ((deal < FDStoreProperties.getBurstsLowerLimit()) ||
                 (deal > FDStoreProperties.getBurstUpperLimit())) {
-            deal = 0;
+        	deal = 0;
         }
 
         if (this.isInCart) {

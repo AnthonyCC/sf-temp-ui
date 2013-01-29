@@ -291,6 +291,32 @@ public class PriceCalculator {
         }
         return 0;
     }
+    
+    public int getGroupDealPercentage() {
+        if (skuModel != null) {
+            try {
+                //return getZonePriceInfoModel().getHighestDealPercentage();
+    			ZonePriceInfoModel priceModel = getZonePriceInfoModel();
+    			if(priceModel != null) {
+    				FDGroup group = productInfo.getGroup();
+   					if(group != null) {
+   						MaterialPrice gsPrice = GroupScaleUtil.getGroupScalePrice(group, ctx.getZoneId());
+   						if(gsPrice != null) {
+   							double sellingPrice = priceModel.getSellingPrice();
+   							int val = (int) ((sellingPrice - gsPrice.getPrice()) * 100.0 / sellingPrice + 0.2);
+   							if( ((val%5)==0)||((val%2)==0)) {
+   								return val;
+   							}
+   							return val-1;
+   						}
+   					}
+   				}
+            } catch (FDSkuNotFoundException ex) {
+            } catch (FDResourceException e) {
+            }
+        }
+        return 0;
+    }
 
     public String getTieredPrice(double savingsPercentage) {
     	return getTieredPrice(savingsPercentage, null);

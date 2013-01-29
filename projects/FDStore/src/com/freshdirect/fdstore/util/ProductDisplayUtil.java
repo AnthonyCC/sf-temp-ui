@@ -148,7 +148,13 @@ public class ProductDisplayUtil {
         }
         */
         // At this point there is no gs price defined for default sku.
-        return calculator.getHighestDealPercentage();
+    	int tieredPercentage = calculator.getTieredDealPercentage();
+    	if (tieredPercentage > 0) {
+    		return calculator.getHighestDealPercentage();
+    	} else if(calculator.getFDGroup() != null) {
+    		return calculator.getGroupDealPercentage();
+    	}
+    	return 0;
     }
 
 
