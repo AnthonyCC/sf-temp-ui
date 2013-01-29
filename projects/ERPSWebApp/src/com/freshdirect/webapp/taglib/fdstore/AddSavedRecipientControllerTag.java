@@ -268,7 +268,7 @@ public class AddSavedRecipientControllerTag extends com.freshdirect.framework.we
         	
         }
         if(isCartChanged){
-        	fs_user.saveCart();
+        	fs_user.saveCart( true );
         }
         //
         // place the result as a scripting variable in the page
