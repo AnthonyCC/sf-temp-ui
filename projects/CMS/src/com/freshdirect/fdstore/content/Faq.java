@@ -1,5 +1,8 @@
 package com.freshdirect.fdstore.content;
 
+import java.util.Arrays;
+import java.util.List;
+
 import com.freshdirect.cms.ContentKey;
 
 /**
@@ -26,8 +29,36 @@ public class Faq extends ContentNodeModelImpl {
 		return getAttribute("KEYWORDS", "");
 	}
 	
+	public String getFaqPriorityList() {
+		return getAttribute("PRIORITY_LIST", "");
+	}
+	
 	public String getDescription() {
 		return getFullName();
+	}
+	
+	public Integer calculatePriority(String word){
+		int p = -1;
+		
+		String tagSource = getFaqPriorityList();
+		for(String tag : tagSource.split(",")){
+			
+			tag = tag.trim();
+			String[] elements = tag.split(":");
+			
+			if(elements.length!=2){
+				continue;
+			}
+			
+			elements[0] = elements[0].trim();
+			elements[1] = elements[1].trim();
+			
+			if(elements[0].equals(word)){
+				return Integer.parseInt(elements[1]);
+			}			
+		}
+		
+		return p;
 	}
 	
 

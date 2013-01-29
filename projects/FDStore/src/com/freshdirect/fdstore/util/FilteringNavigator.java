@@ -34,6 +34,7 @@ public class FilteringNavigator {
 
 	private String searchTerm = "";
 	private boolean recipes = false;
+	private boolean faq = false;
 
 	int view = VIEW_DEFAULT;
 
@@ -103,6 +104,7 @@ public class FilteringNavigator {
 		nav.setRefined(refined);
 		nav.setRecipes(recipes);
 		nav.setView(view);
+		nav.setFaq(faq);
 
 		return nav;
 	}
@@ -250,6 +252,13 @@ public class FilteringNavigator {
 		/* recipes tab */
 
 		recipes = params.containsKey("recipes");
+		
+		if(params.containsKey("searchFAQ")){
+			this.searchTerm = params.get("searchFAQ");
+		}
+		if(params.containsKey("searchFAQ2")){
+			this.searchTerm = params.get("searchFAQ2");
+		}
 	}
 
 	public SortDisplay[] getSortBar() {
@@ -642,6 +651,14 @@ public class FilteringNavigator {
 		return refined;
 	}
 
+	public boolean isFaq() {
+		return faq;
+	}
+
+	public void setFaq(boolean faq) {
+		this.faq = faq;
+	}
+
 	public void switchView(String viewName) {
 		if (viewName != null && viewName.length() > 0) {
 			if ("list".equalsIgnoreCase(viewName)) {
@@ -823,6 +840,8 @@ public class FilteringNavigator {
 		// buf.append( (this.searchAction != null ? this.searchAction :
 		// "/search.jsp") + "?");
 		buf.append("?"); // generate relative url
+		
+		if(!faq){
 
 		// search terms
 		buf.append("searchParams=");
@@ -884,6 +903,17 @@ public class FilteringNavigator {
 			buf.append("&amp;recipes");
 
 		buf.append("&amp;refinement=1");
+		
+		} else {
+			buf.append("searchFAQ=");
+			buf.append(searchTerm);
+			
+			/* PAGE */
+			if (pageSize > 0 && pageNumber > 0) {
+				buf.append("&amp;start=");
+				buf.append(pageSize * pageNumber);
+			}
+		}
 
 		return buf.toString();
 	}
@@ -1129,5 +1159,7 @@ public class FilteringNavigator {
 		public boolean isRecipes() {
 			return recipes;
 		}
+		
+		
 	}
 }

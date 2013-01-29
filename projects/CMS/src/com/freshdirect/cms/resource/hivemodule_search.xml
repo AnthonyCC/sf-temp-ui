@@ -62,6 +62,7 @@ Symbols:
 		<AttributeIndex contentType="FAQ" attributeName="ANSWER" text="true"/>
 		<AttributeIndex contentType="FAQ" attributeName="FULL_NAME"/>
 		<AttributeIndex contentType="FAQ" attributeName="KEYWORDS" text="true"/>
+		<AttributeIndex contentType="FAQ" attributeName="PRIORITY_LIST" text="true"/>
 		<!--
 		<AttributeIndex contentType="Html" attributeName="path"/>
 		<AttributeIndex contentType="Image" attributeName="path"/>

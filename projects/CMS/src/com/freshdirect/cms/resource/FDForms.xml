@@ -1298,6 +1298,7 @@
                             <CmsField><attribute>QUESTION</attribute></CmsField>
                             <CmsField><attribute>ANSWER</attribute></CmsField>
                             <CmsField><attribute>KEYWORDS</attribute></CmsField>
+                            <CmsField><attribute>PRIORITY_LIST</attribute></CmsField>
                         </fields>
                     </CmsSection>
                 </sections>

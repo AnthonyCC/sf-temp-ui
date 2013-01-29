@@ -111,7 +111,7 @@ public class ContentSearchUtil {
 		for (SearchHit hit : hits) {
 			if (FDContentTypes.FAQ.equals(hit.getContentKey().getType())) {
 				Faq faq = (Faq) hit.getNode();
-				if (!faq.isOrphan() && !faq.isHidden() && faq.isSearchable())
+				if (faq!=null && !faq.isOrphan() && !faq.isHidden() && faq.isSearchable())
 					ret.add(hit);
 			}
 		}
