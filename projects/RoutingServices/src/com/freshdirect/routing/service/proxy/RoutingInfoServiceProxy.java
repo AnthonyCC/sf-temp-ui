@@ -102,4 +102,7 @@ public class RoutingInfoServiceProxy  extends BaseServiceProxy  {
 	public Map<RoutingTimeOfDay, Integer> getPlantCapacityByDispatchTime(Date deliveryDate) throws RoutingServiceException{
 		return getService().getPlantCapacityByDispatchTime(deliveryDate);
 	} 
+	public Map<RoutingTimeOfDay, RoutingTimeOfDay> getPlantDispatchMapping() throws RoutingServiceException{
+		return getService().getPlantDispatchMapping();
+	} 
 }

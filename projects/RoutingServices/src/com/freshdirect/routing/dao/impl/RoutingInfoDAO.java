@@ -18,6 +18,7 @@ import java.util.TreeMap;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.RowCallbackHandler;
 
+import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.routing.constants.EnumArithmeticOperator;
 import com.freshdirect.routing.constants.EnumWaveInstancePublishSrc;
 import com.freshdirect.routing.constants.EnumWaveInstanceStatus;
@@ -971,7 +972,7 @@ public class RoutingInfoDAO extends BaseDAO implements IRoutingInfoDAO   {
 					return result;
 				}
 				
-				private static final String GET_PLANTCAPACITY_QRY = "select p.* from transp.PLANTCAPACITY p where p.DISPATCH_DATE = ?";
+				private static final String GET_PLANTCAPACITY_QRY = "select p.* from transp.PLANT_CAPACITY p where p.day_of_week = ?";
 				
 				public Map<RoutingTimeOfDay, Integer> getPlantCapacityByDispatchTime(final Date deliveryDate)  throws SQLException {
 					final Map<RoutingTimeOfDay, Integer> result = new HashMap<RoutingTimeOfDay, Integer>();
@@ -980,7 +981,7 @@ public class RoutingInfoDAO extends BaseDAO implements IRoutingInfoDAO   {
 						public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
 						
 							PreparedStatement ps =	connection.prepareStatement(GET_PLANTCAPACITY_QRY);	
-							ps.setDate(1, new java.sql.Date(deliveryDate.getTime()));
+							ps.setString(1, DateUtil.formatDayOfWk(deliveryDate));
 							return ps;
 						}
 					};
@@ -999,5 +1000,36 @@ public class RoutingInfoDAO extends BaseDAO implements IRoutingInfoDAO   {
 					);
 					return result;
 				}
+				
+				private static final String GET_PLANTDISPATCH_MAPPING = "select * from transp.DISPATCH_MAPPING";
+				
+				public Map<RoutingTimeOfDay, RoutingTimeOfDay> getPlantDispatchMapping()  throws SQLException {
+					final Map<RoutingTimeOfDay, RoutingTimeOfDay> result = new HashMap<RoutingTimeOfDay, RoutingTimeOfDay>();
+					
+					PreparedStatementCreator creator = new PreparedStatementCreator() {
+						public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
+						
+							PreparedStatement ps =	connection.prepareStatement(GET_PLANTDISPATCH_MAPPING);	
+							return ps;
+						}
+					};
+					
+					jdbcTemplate.query(creator, 
+							new RowCallbackHandler() { 
+						public void processRow(ResultSet rs) throws SQLException {				    	
+							do {
+								Date dispatchTime = rs.getTimestamp("DISPATCH_TIME");
+								Date plantDispatch= rs.getTimestamp("PLANT_DISPATCH");
+								RoutingTimeOfDay _dispatchTime = new RoutingTimeOfDay(dispatchTime);
+								RoutingTimeOfDay _plantDispatch = new RoutingTimeOfDay(plantDispatch);
+								result.put(_dispatchTime, _plantDispatch);
+							} while(rs.next());		        		    	
+						}
+					}
+					);
+					return result;
+				}
+		
+				
 		
 }

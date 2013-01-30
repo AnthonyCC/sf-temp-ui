@@ -208,6 +208,14 @@ public class RoutingInfoService extends BaseService implements IRoutingInfoServi
 			throw new RoutingServiceException(e, IIssue.PROCESS_RETRIEVEWAVEINSTANCE_UNSUCCESSFUL);
 		}
 	}
+	public  Map<RoutingTimeOfDay, RoutingTimeOfDay> getPlantDispatchMapping() throws RoutingServiceException {
+		try {
+			return routingInfoDAOImpl.getPlantDispatchMapping();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			throw new RoutingServiceException(e, IIssue.PROCESS_RETRIEVEWAVEINSTANCE_UNSUCCESSFUL);
+		}
+	}
 	
 	
 }

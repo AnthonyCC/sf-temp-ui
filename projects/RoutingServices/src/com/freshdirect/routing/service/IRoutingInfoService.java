@@ -58,4 +58,6 @@ public interface IRoutingInfoService {
 	Map<String, IWaveInstance> getWavesByDispatchTime(Date deliveryDate) throws RoutingServiceException; 
 	
 	Map<RoutingTimeOfDay, Integer> getPlantCapacityByDispatchTime(Date deliveryDate) throws RoutingServiceException; 
+	
+	Map<RoutingTimeOfDay, RoutingTimeOfDay> getPlantDispatchMapping() throws RoutingServiceException; 
 }
