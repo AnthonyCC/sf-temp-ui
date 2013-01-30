@@ -8,7 +8,7 @@
 		boolean bottleDeposit = "bottle".equalsIgnoreCase(type);
 		boolean fuelSurcharge = "fuel".equalsIgnoreCase(type);
 		String template = "/shared/template/large_pop.jsp";
-		String filePath = "/media/editorial/fee/fuel_surcharge.html";
+		String filePath = "/media/editorial/fee/fuel_surcharge_oas.html";
 		String title = "Fuel Surcharge";
 		
 		if (bottleDeposit) {
