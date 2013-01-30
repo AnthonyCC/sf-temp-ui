@@ -112,7 +112,7 @@
                     fdLog.debug('new url:' + urllookup);
                 }
             }else if (locaV.indexOf('stg') > -1 || locaV.indexOf('stage') > -1) {
-                urllookup = 'http://web01.ststg01.nyc2.freshdirect.com:7001';
+                urllookup = 'http://web01.web.ststg02.nyc2.freshdirect.com:7001';
                 urlMain = 'http://stagepreview.freshdirect.com';
             }
             return true;
