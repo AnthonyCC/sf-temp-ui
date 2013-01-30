@@ -33,6 +33,11 @@ img {
   font: inherit; 
 }
 
+/* don't use the <u> tag plz */
+u {
+  text-decoration: none;
+}
+
 /* This helps to make newer HTML5 elements behave like DIVs in older browers */ 
 article, aside, details, figcaption, figure, dialog, 
 footer, header, hgroup, menu, nav, section {
