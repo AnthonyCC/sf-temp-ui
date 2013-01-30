@@ -110,7 +110,16 @@ if (catId != null){
 if(!thisDept.equals("") && !thisDept.equalsIgnoreCase("about") && !thisDept.equalsIgnoreCase("cmty")){
 	navigation = thisDept;
 }
-%><%@ include file="/common/template/includes/globalnav_table.jspf" %>
+/* move global nav to media
+ *	this may need code support from time to time (when new items are added)
+ */
+	Map<String, String> params = new HashMap<String, String>();
+	params.put("curNav", navigation);
+	
+%><fd:IncludeMedia name="/media/layout/nav/top_nav.ftl" parameters="<%= params %>">
+	<%-- no media, include code version --%>
+	<%@ include file="/common/template/includes/globalnav_table.jspf" %>
+</fd:IncludeMedia>
 </td></tr><tr><td class="threePxTall"><img src="/media_stat/images/layout/clear.gif" width="1" height="3" alt="" /></td></tr></table>
 <% } catch (Exception ex) {
 		ex.printStackTrace();

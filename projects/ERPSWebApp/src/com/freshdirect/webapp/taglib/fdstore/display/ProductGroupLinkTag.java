@@ -19,29 +19,56 @@ public class ProductGroupLinkTag extends BodyTagSupportEx {
 
 	@Override
 	public int doStartTag() throws JspException {
-		ProductAvailabilityTag availability = (ProductAvailabilityTag) findAncestorWithClass(this, ProductAvailabilityTag.class);
-		if (availability == null || availability.isFullyAvailable())
-			url = FDURLUtil.getProductGroupURI(impression, trackingCode);
-
-		if (url != null)
+		String urlHtml = getContentStart();
+		
+		if (!"".equals(urlHtml)) {
 			try {
-				pageContext.getOut().print("<a class=\"product-group-price-link\" href=\"" + url + "\">");
+				pageContext.getOut().print(urlHtml);
 			} catch (IOException e) {
 				throw new JspException(e);
 			}
+		}
 
 		return EVAL_BODY_INCLUDE;
+	}
+	
+	public String getContentStart() {
+		String urlHtml = "";
+		
+		ProductAvailabilityTag availability = (ProductAvailabilityTag) findAncestorWithClass(this, ProductAvailabilityTag.class);
+		if (availability == null || availability.isFullyAvailable()) {
+			url = FDURLUtil.getProductGroupURI(impression, trackingCode);
+		}
+		
+		if (url != null) {
+			urlHtml = "<a class=\"product-group-price-link\" href=\"" + url + "\">";
+		}
+		
+		return urlHtml;
 	}
 
 	@Override
 	public int doEndTag() throws JspException {
-		if (url != null)
+		String urlHtml = getContentEnd();
+		
+		if (!"".equals(urlHtml)) {
 			try {
-				pageContext.getOut().print("</a>");
+				pageContext.getOut().print("urlHtml");
 			} catch (IOException e) {
 				throw new JspException(e);
 			}
+		}
 		return super.doEndTag();
+	}
+	
+	public String getContentEnd() {
+		String urlHtml = "";
+		
+		if (url != null) {
+			urlHtml = "</a>";
+		}
+		
+		return urlHtml;
 	}
 
 	public ProductImpression getImpression() {

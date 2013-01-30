@@ -148,6 +148,10 @@ public class DepartmentModel extends ProductContainer {
 	public String getTemplatePath() {
 		return getAttribute("DEPARTMENT_TEMPLATE_PATH", "");
 	}
+	
+	public String getAltTemplatePath() {
+		return getAttribute("DEPARTMENT_ALT_TEMPLATE_PATH", "");
+	}
 
 	public List<TileList> getTileList() {
 		ContentNodeModelUtil.refreshModels(this, "tile_list", tileList, false);

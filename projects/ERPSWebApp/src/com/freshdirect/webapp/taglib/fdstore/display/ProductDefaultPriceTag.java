@@ -22,6 +22,22 @@ public class ProductDefaultPriceTag extends BodyTagSupportEx {
 		if (availability != null && !availability.isFullyAvailable())
 			return SKIP_BODY;
 
+		JspWriter out = pageContext.getOut();
+		try {
+			out.append(getContent());
+		} catch (IOException e) {
+			throw new JspException(e);
+		}
+
+		return SKIP_BODY;
+	};
+	
+	public String getContent() {
+
+		ProductAvailabilityTag availability = (ProductAvailabilityTag) findAncestorWithClass(this, ProductAvailabilityTag.class);
+		if (availability != null && !availability.isFullyAvailable())
+			return "";
+
 		if (price == null) {
 	            if (product == null) {
 	                throw new RuntimeException("'priceCalculator' or 'product' is mandatory!");
@@ -39,15 +55,8 @@ public class ProductDefaultPriceTag extends BodyTagSupportEx {
 		buf.append(price.getPriceFormatted(0));
 		buf.append("</span>");
 
-		JspWriter out = pageContext.getOut();
-		try {
-			out.append(buf);
-		} catch (IOException e) {
-			throw new JspException(e);
-		}
-
-		return SKIP_BODY;
-	};
+		return buf.toString();
+	}
 
 	public ProductModel getProduct() {
 		return product;

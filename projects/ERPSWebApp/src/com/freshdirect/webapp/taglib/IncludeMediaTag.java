@@ -2,6 +2,7 @@ package com.freshdirect.webapp.taglib;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.jsp.JspException;
@@ -16,6 +17,7 @@ import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.framework.template.TemplateException;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.BodyTagSupport;
+import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
 import com.freshdirect.webapp.util.MediaUtils;
 
@@ -66,6 +68,13 @@ public class IncludeMediaTag extends BodyTagSupport {
 		    } 
 			FDUserI user = (FDUserI) pageContext.getSession().getAttribute(SessionName.USER);
 			//Pass the pricing context to the template context
+			if (this.parameters == null) {
+				this.parameters = new HashMap();
+			}
+			/* pass user/sessionUser by default, so it doesn't need to be added every place this tag is used. */
+			this.parameters.put("user", (FDUserI)user);
+			this.parameters.put("sessionUser", (FDSessionUser)user);
+			
 			MediaUtils.render(this.name, this.pageContext.getOut(), this.parameters, this.withErrorReport, 
 					user != null && user.getPricingContext() != null ? user.getPricingContext() : PricingContext.DEFAULT);
 				

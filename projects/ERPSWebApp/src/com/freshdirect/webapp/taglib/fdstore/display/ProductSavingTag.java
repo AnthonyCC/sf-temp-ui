@@ -86,10 +86,26 @@ public class ProductSavingTag extends BodyTagSupportEx {
 	}
 
 	public int doStartTag() throws javax.servlet.jsp.JspException {
+		ProductAvailabilityTag availability = (ProductAvailabilityTag) findAncestorWithClass(this, ProductAvailabilityTag.class);
+		if (availability != null && !availability.isFullyAvailable())
+			return SKIP_BODY;
+		
+		JspWriter out = pageContext.getOut();
+		try {
+			out.append(getContent());
+		} catch (IOException e) {
+			throw new JspException(e);
+		}
+
+		return SKIP_BODY;
+
+	}
+	
+	public String getContent() throws javax.servlet.jsp.JspException {
 		try {
 			ProductAvailabilityTag availability = (ProductAvailabilityTag) findAncestorWithClass(this, ProductAvailabilityTag.class);
 			if (availability != null && !availability.isFullyAvailable())
-				return SKIP_BODY;
+				return "";
 
 			PriceCalculator price = product.getPriceCalculator();
 
@@ -162,16 +178,8 @@ public class ProductSavingTag extends BodyTagSupportEx {
 			if (state == 2) {
 				buf.append("</b>");
 			}
-
-			JspWriter out = pageContext.getOut();
-			try {
-				out.append(buf);
-			} catch (IOException e) {
-				throw new JspException(e);
-			}
-
-			return SKIP_BODY;
-
+			
+			return buf.toString();
 		} catch (FDResourceException e) {
 			throw new JspException(e);
 		}

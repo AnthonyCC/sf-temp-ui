@@ -33,6 +33,14 @@ public class ProductBurstClassTag extends AbstractGetterTag<String> {
 
 	@Override
 	protected String getResult() throws Exception {
+		return getContent((FDUserI) pageContext.getSession().getAttribute(SessionName.USER));
+	}
+
+	public String getContent(FDUserI user) throws Exception {
+		if (user == null) {
+			return "";
+		}
+
 		ProductAvailabilityTag availability = (ProductAvailabilityTag) findAncestorWithClass(this, ProductAvailabilityTag.class);
 		if (availability != null && !availability.isFullyAvailable())
 			return "";
@@ -49,7 +57,6 @@ public class ProductBurstClassTag extends AbstractGetterTag<String> {
 
 		String className = null;
 
-		FDUserI user = (FDUserI) pageContext.getSession().getAttribute(SessionName.USER);
 		if (!hideFave && DYFUtil.isFavorite(product, user)) {
 			className = "burst-fave";
 		} else {

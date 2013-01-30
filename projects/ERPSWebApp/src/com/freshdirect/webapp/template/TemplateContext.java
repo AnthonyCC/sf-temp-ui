@@ -1,9 +1,11 @@
 package com.freshdirect.webapp.template;
 
+import java.lang.reflect.Method;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -21,12 +23,10 @@ import com.freshdirect.cms.fdstore.PreviewLinkProvider;
 import com.freshdirect.common.pricing.MaterialPrice;
 import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.common.pricing.util.GroupScaleUtil;
-import com.freshdirect.fdstore.FDCachedFactory;
 import com.freshdirect.fdstore.FDGroup;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.GroupScalePricing;
-import com.freshdirect.fdstore.GrpZonePriceModel;
 import com.freshdirect.fdstore.content.CategoryModel;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ContentNodeModel;
@@ -37,15 +37,32 @@ import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.Recipe;
 import com.freshdirect.fdstore.content.RecipeCategory;
 import com.freshdirect.fdstore.content.RecipeSubcategory;
+import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.pricing.ProductModelPricingAdapter;
 import com.freshdirect.fdstore.pricing.ProductPricingFactory;
 import com.freshdirect.fdstore.zone.FDZoneInfoManager;
 import com.freshdirect.framework.content.BaseTemplateContext;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
+import com.freshdirect.webapp.taglib.fdstore.ProductCartStatusMessageTag;
+import com.freshdirect.webapp.taglib.fdstore.TxProductControlTag;
+import com.freshdirect.webapp.taglib.fdstore.TxSingleProductPricingSupportTag;
 import com.freshdirect.webapp.taglib.fdstore.display.GetContentNodeWebIdTag;
+import com.freshdirect.webapp.taglib.fdstore.display.ProductAboutPriceTag;
+import com.freshdirect.webapp.taglib.fdstore.display.ProductBurstClassTag;
+import com.freshdirect.webapp.taglib.fdstore.display.ProductDefaultPriceTag;
+import com.freshdirect.webapp.taglib.fdstore.display.ProductGroupLinkTag;
+import com.freshdirect.webapp.taglib.fdstore.display.ProductGroupPricingTag;
+import com.freshdirect.webapp.taglib.fdstore.display.ProductPriceDescriptionTag;
+import com.freshdirect.webapp.taglib.fdstore.display.ProductSavingTag;
+import com.freshdirect.webapp.taglib.fdstore.display.ProductWasPriceTag;
+import com.freshdirect.webapp.util.ConfigurationContext;
+import com.freshdirect.webapp.util.ConfigurationStrategy;
 import com.freshdirect.webapp.util.FDURLUtil;
 import com.freshdirect.webapp.util.JspMethods;
 import com.freshdirect.webapp.util.ProductImpression;
+import com.freshdirect.webapp.util.TransactionalProductImpression;
+import com.freshdirect.webapp.util.prodconf.DefaultProductConfigurationStrategy;
 
 /**
  * Collection of helper methods made available to templates.
@@ -58,8 +75,7 @@ public class TemplateContext extends BaseTemplateContext{
 	private final static Image IMAGE_BLANK = new Image("/media_stat/images/layout/clear.gif", 1, 1);
 
 	private final static Logger LOGGER = LoggerFactory.getInstance(TemplateContext.class);
-
-	
+			
 	/**
 	 * Create a template context with no rendering parameters.
 	 */
@@ -111,11 +127,23 @@ public class TemplateContext extends BaseTemplateContext{
 	 * @return relative URL string, or null if no link is available.
 	 */
 	public String getHref(ContentNodeModel node, String trackingCode) {
-		String link;
+		Map<String, String[]> reqParams = new HashMap<String, String[]>();
+		return getHref(node, trackingCode, false, reqParams);
+	}
+	
+	public String getHref(ContentNodeModel node, String trackingCode, boolean appendWineParams, Map<String, String[]> reqParams) {
+		String link = null;
 		if (node instanceof ProductModel) {
 			// link to product in its category			
 			/// link = "/product.jsp?catId=" + node.getParentNode().getContentName() + "&productId=" + node.getContentName();
-			return FDURLUtil.getProductURI( (ProductModel)node, trackingCode);
+
+			String url;
+			if (appendWineParams) {
+				url = FDURLUtil.getWineProductURI((ProductModel)node, trackingCode, (Map<String, String[]>) reqParams);
+			} else {
+				url = FDURLUtil.getProductURI((ProductModel)node, trackingCode);
+			}
+			return url;
 		} else {
 			link = PreviewLinkProvider.getLink(node.getContentKey());
 		}
@@ -170,6 +198,304 @@ public class TemplateContext extends BaseTemplateContext{
 			//...not product model, do normal decode
 			return ContentFactory.getInstance().getContentNodeByKey(ContentKey.decode(id));
 		}
+	}
+	
+	/* returns a configured product impression (required for several other display tags) */
+	public ProductImpression getConfProdImpression(String id, FDSessionUser user) {
+		ContentNodeModel node = getNode(id);
+		if (node!= null && node.getContentType().equals(ContentNodeModel.TYPE_PRODUCT)) {
+			ProductModel pm = (ProductModel) node;
+
+			ConfigurationContext confContext = new ConfigurationContext();
+			confContext.setFDUser((FDUserI) user);
+			ConfigurationStrategy confStrat = new DefaultProductConfigurationStrategy();
+			
+			return confStrat.configure(pm, confContext);
+		}
+		return null;
+	}
+	
+	//this does TxSingleProductPricingSupportTag
+	public String getTxSingleProductPricingSupportFromTag(String id, FDSessionUser user, String formName, String namespace, String statusPlaceholder, String subTotalPlaceholderId, ProductImpression imp) throws JspException {
+		String content = null;
+		
+		if (id != null && user != null) { //these are required
+			ProductImpression impression = null;
+			
+			if (imp != null) {
+				impression = imp;
+			} else {
+				impression = getConfProdImpression(id, user);
+			}
+			
+			if (impression != null) {
+				TxSingleProductPricingSupportTag singleProdPricing = new TxSingleProductPricingSupportTag();
+				singleProdPricing.setCustomer((FDUserI) user);
+				singleProdPricing.setImpression(impression);
+				singleProdPricing.setFormName(formName);
+				singleProdPricing.setNamespace(namespace);
+				singleProdPricing.setStatusPlaceholder(statusPlaceholder);
+				singleProdPricing.setSubTotalPlaceholderId(subTotalPlaceholderId);
+				
+				content = singleProdPricing.getContent();
+			}
+		}
+		
+		if (content != null) {
+			try {
+				return content;
+			} catch (Exception e) {
+				LOGGER.error("Error Occurred while getting TxSingleProductPricingSupportTag (Freemarker) "+e.getMessage());
+			}
+		}
+		
+		return "";
+	}
+	
+	//this does TxProductControlTag
+	public String getTxProductControlFromTag(String id, FDSessionUser user, String inputNamePostfix, int txNumber, String namespace, boolean disabled, boolean setMinimumQt, TransactionalProductImpression imp) {
+		if (id != null) {
+			TransactionalProductImpression impression = null;
+			
+			if (imp != null) {
+				impression = imp;
+			} else {
+				impression = (TransactionalProductImpression) getConfProdImpression(id, user);
+			}
+			
+			if (impression != null) {
+				return TxProductControlTag.getHTMLFragment(impression, inputNamePostfix, txNumber, namespace, disabled, setMinimumQt);
+			}
+		}
+		
+		return "";
+	}
+	
+	//ProductWasPriceTag
+	public String getProductWasPriceFromTag(String id) throws JspException {
+		if (id != null) {
+			ContentNodeModel node = getNode(id);
+			if (node.getContentType().equals(ContentNodeModel.TYPE_PRODUCT)) {
+				ProductModel pm = (ProductModel) node;
+				
+				ProductWasPriceTag prodWasPriceTag = new ProductWasPriceTag();
+				prodWasPriceTag.setProduct(pm);
+
+				try {
+					return prodWasPriceTag.getContent().toString();
+				} catch (Exception e) {
+					LOGGER.error("Error Occurred while getting ProductWasPriceTag (Freemarker) "+e.getMessage());
+				}
+			}
+		}
+		
+		return "";
+	}
+	
+	//ProductAboutPriceTag
+	public String getProductAboutPriceFromTag(String id) throws JspException {
+
+		if (id != null) {
+			ContentNodeModel node = getNode(id);
+			if (node.getContentType().equals(ContentNodeModel.TYPE_PRODUCT)) {
+				ProductModel pm = (ProductModel) node;
+				
+				ProductAboutPriceTag prodAboutPriceTag = new ProductAboutPriceTag();
+				prodAboutPriceTag.setProduct(pm);
+
+				try {
+					return prodAboutPriceTag.getContent().toString();
+				} catch (Exception e) {
+					LOGGER.error("Error Occurred while getting ProductAboutPriceTag (Freemarker) "+e.getMessage());
+				}
+			}
+		}
+		
+		return "";
+	}
+	
+	//this does ProductPriceDescriptionTag
+	public String getProductPriceDescriptionFromTag(String id, FDSessionUser user, ProductImpression imp) {
+		if (id != null && user != null) { //these are required
+			ProductImpression impression = null;
+			
+			if (imp != null) {
+				impression = imp;
+			} else {
+				impression = getConfProdImpression(id, user);
+			}
+			
+			if (impression != null) {
+				ProductPriceDescriptionTag prodPriceDescrip = new ProductPriceDescriptionTag();
+				prodPriceDescrip.setImpression(impression);
+				
+				return prodPriceDescrip.getContent().toString();
+			}
+			
+		}
+		
+		return "";
+	}
+	
+	//this does ProductGroupLinkTag
+	public String getProductGroupLinkFromTag(String id, FDSessionUser user, String trackingCode, ProductImpression imp) {
+		StringBuilder linkHtml = new StringBuilder();
+		if (id != null && user != null) { //these are required
+			ProductImpression impression = null;
+			
+			if (imp != null) {
+				impression = imp;
+			} else {
+				impression = getConfProdImpression(id, user);
+			}
+			
+			if (impression != null) {
+				ProductGroupLinkTag prodGroupLinkTag = new ProductGroupLinkTag();
+				prodGroupLinkTag.setImpression(impression);
+				prodGroupLinkTag.setTrackingCode(trackingCode);
+				
+				linkHtml.append(prodGroupLinkTag.getContentStart());
+					//get price info
+					linkHtml.append(getProductGroupPricingFromTag(id));
+				linkHtml.append(prodGroupLinkTag.getContentEnd());
+			}
+			
+		}
+
+		return linkHtml.toString();
+	}
+	
+	//this does ProductGroupPricingTag
+	public String getProductGroupPricingFromTag(String id) {
+		if (id != null) { //this is required
+			ContentNodeModel node = getNode(id);
+			if (node.getContentType().equals(ContentNodeModel.TYPE_PRODUCT)) {
+				ProductModel pm = (ProductModel) node;
+				
+				ProductGroupPricingTag prodGroupPricingTag = new ProductGroupPricingTag();
+				prodGroupPricingTag.setProduct(pm);
+
+				try {
+					return prodGroupPricingTag.getContent();
+				} catch (Exception e) {
+					LOGGER.error("Error Occurred while getting ProductGroupPricingTag (Freemarker) "+e.getMessage());
+				}
+				
+			}
+		}
+		return "";
+	}
+	
+	//this does ProductSavingTag
+	public String getProductSavingFromTag(String id) {
+		if (id != null) { //this is required
+			ContentNodeModel node = getNode(id);
+			if (node.getContentType().equals(ContentNodeModel.TYPE_PRODUCT)) {
+				ProductModel pm = (ProductModel) node;
+				
+				ProductSavingTag prodSavingTag = new ProductSavingTag();
+				prodSavingTag.setProduct(pm);
+
+				try {
+					return prodSavingTag.getContent();
+				} catch (Exception e) {
+					LOGGER.error("Error Occurred while getting ProductSavingTag (Freemarker) "+e.getMessage());
+				}
+				
+			}
+		}
+		return "";
+	}
+	
+	//this does ProductDefaultPriceTag
+	public String getProductDefaultPriceFromTag(String id, boolean showDesc) {
+		if (id != null) { //this is required
+			ContentNodeModel node = getNode(id);
+			if (node.getContentType().equals(ContentNodeModel.TYPE_PRODUCT)) {
+				ProductModel pm = (ProductModel) node;
+				
+				ProductDefaultPriceTag prodDefaultPriceTag = new ProductDefaultPriceTag();
+				prodDefaultPriceTag.setProduct(pm);
+				prodDefaultPriceTag.setShowDescription(showDesc);
+
+				try {
+					return prodDefaultPriceTag.getContent();
+				} catch (Exception e) {
+					LOGGER.error("Error Occurred while getting ProductDefaultPriceTag (Freemarker) "+e.getMessage());
+				}
+				
+			}
+		}
+		return "";		
+	}
+
+	//this does ProductBurstClassTag
+	public String getProductBurstClassFromTag(String id, FDSessionUser user, boolean hideFave, boolean hideDeal, boolean hideNewAndBack, boolean useRegularDealOnly) {
+		if (id != null && user != null) { //these are required
+			ContentNodeModel node = getNode(id);
+			if (node.getContentType().equals(ContentNodeModel.TYPE_PRODUCT)) {
+				ProductModel pm = (ProductModel) node;
+				
+				ProductBurstClassTag prodBurstClassTag = new ProductBurstClassTag();
+				prodBurstClassTag.setProduct(pm);
+				if (hideFave) {
+					prodBurstClassTag.setHideFave(hideFave);
+				}
+				if (hideDeal) {
+					prodBurstClassTag.setHideFave(hideDeal);
+				}
+				if (hideNewAndBack) {
+					prodBurstClassTag.setHideFave(hideNewAndBack);					
+				}
+				if (useRegularDealOnly) {
+					prodBurstClassTag.setHideFave(useRegularDealOnly);	
+				}
+
+				try {
+					return prodBurstClassTag.getContent(user);
+				} catch (Exception e) {
+					LOGGER.error("Error Occurred while getting ProductBurstClassTag (Freemarker) "+e.getMessage());
+				}
+				
+			}
+		}
+		return "";		
+	}
+	
+	public String getProductBurstClassFromTag(String id, FDSessionUser user) {
+		return getProductBurstClassFromTag(id, user, false, false, false, false);
+	}
+	
+	
+	public String getProductDefaultPriceFromTag(String id) {
+		return getProductDefaultPriceFromTag(id, true);
+	}
+	
+	//this does ProductCartStatusMessageTag
+	public String getProductCartStatusMessageFromTag(String id, FDSessionUser user) {
+		String content = null;
+		if (id != null && user != null) { //these are required
+			ContentNodeModel node = getNode(id);
+			if (node.getContentType().equals(ContentNodeModel.TYPE_PRODUCT)) {
+				
+				ProductCartStatusMessageTag prodCartStatusMessage = new ProductCartStatusMessageTag();
+				prodCartStatusMessage.setFDUser(user);
+				prodCartStatusMessage.setProduct((ProductModel) node);
+				
+				content = prodCartStatusMessage.getContent();
+			}
+		}
+		
+		if (content != null) {
+			try {
+				return content;
+			} catch (Exception e) {
+				LOGGER.error("Error Occurred while getting ProductCartStatusMessagetag (Freemarker) "+e.getMessage());
+			}
+		}
+		
+		return "";
+	
 	}
 	
 	public ContentNodeModel getNode(String id,PricingContext pricingContext) {
@@ -321,9 +647,9 @@ public class TemplateContext extends BaseTemplateContext{
 					price = calc.getSellingPriceOnly();	
 				}
 			}catch(FDResourceException fe){
-				LOGGER.error("Error Occurred while getting base price "+fe.getMessage());
+				LOGGER.error("Error Occurred while getting base price (Freemarker) "+fe.getMessage());
 			}catch(FDSkuNotFoundException fse){
-				LOGGER.error("Error Occurred while getting base price "+fse.getMessage());
+				LOGGER.error("Error Occurred while getting base price (Freemarker) "+fse.getMessage());
 			}
 			
 			
@@ -503,7 +829,7 @@ public class TemplateContext extends BaseTemplateContext{
 
 		if (node == null) {
 			// fall back to primary home
-			LOGGER.warn("No Category '"+catId+"' for Product '"+prodId+"'");
+			LOGGER.warn("No Category '"+catId+"' for Product '"+prodId+"' (Freemarker)");
 			node = (ProductModel) ContentFactory.getInstance().getContentNodeByKey(new ContentKey(ContentType.get("Product"), prodId));
 		}
 		
@@ -723,5 +1049,40 @@ public class TemplateContext extends BaseTemplateContext{
 			scaleDisplay = priceCalculator.getTieredPrice(0);
 		}
 		return scaleDisplay != null ? scaleDisplay : "";
+	}
+	public ArrayList<String> getMethodsFromClass(Class classObj) {
+		ArrayList<String> methodList = new ArrayList<String>();
+		Method[] methods = classObj.getDeclaredMethods();
+		for (Method method : methods) {
+			String methodString = "Name: " + method.getName();
+			String returnString = "Return Type: " + method.getReturnType().getName();
+			String parameterString = "Parameter Types: ";
+			Class[] parameterTypes = method.getParameterTypes();
+			for (Class paramType : parameterTypes) {
+				parameterString += paramType.getName()+" ";
+			}
+			if (parameterTypes.length == 0) {
+				parameterString = "";
+			}
+			//methodList.add(methodString + " " + returnString + " " + parameterString + " " + method.toGenericString());
+			methodList.add(method.toGenericString());
+        	}
+		
+		methods = classObj.getMethods();
+		for (Method method : methods) {
+			String methodString = "Name: " + method.getName();
+			String returnString = "Return Type: " + method.getReturnType().getName();
+			String parameterString = "Parameter Types: ";
+			Class[] parameterTypes = method.getParameterTypes();
+			for (Class paramType : parameterTypes) {
+				parameterString += paramType.getName()+" ";
+			}
+			if (parameterTypes.length == 0) {
+				parameterString = "";
+			}
+			//methodList.add(methodString + " " + returnString + " " + parameterString);
+		}
+		
+		return methodList;
 	}
 }

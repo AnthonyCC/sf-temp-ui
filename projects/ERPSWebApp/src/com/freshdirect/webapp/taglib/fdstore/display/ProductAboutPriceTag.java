@@ -20,8 +20,28 @@ public class ProductAboutPriceTag extends BodyTagSupportEx {
 		ProductAvailabilityTag availability = (ProductAvailabilityTag) findAncestorWithClass(this, ProductAvailabilityTag.class);
         String aboutPriceString = "";
 
-        if (availability != null && !availability.isFullyAvailable())
+        if (availability != null && !availability.isFullyAvailable()) {
 			return SKIP_BODY;
+        }
+        
+		JspWriter out = pageContext.getOut();
+		try {
+			out.append(getContent());
+		} catch (IOException e) {
+			throw new JspException(e);
+		}
+
+		return SKIP_BODY;
+	}
+	
+	public StringBuilder getContent() {
+		StringBuilder buf = new StringBuilder();
+
+		ProductAvailabilityTag availability = (ProductAvailabilityTag) findAncestorWithClass(this, ProductAvailabilityTag.class);
+        	String aboutPriceString = "";
+
+        if (availability != null && !availability.isFullyAvailable())
+			return buf;
 
 		if (price == null) {
 			if (product == null) {
@@ -31,23 +51,15 @@ public class ProductAboutPriceTag extends BodyTagSupportEx {
 		}
 
         aboutPriceString = price.getAboutPriceFormatted(0);
-		StringBuilder buf = new StringBuilder();
 
         if ((null != aboutPriceString) && !"".equals(aboutPriceString)) {
-            buf.append("<span class=\"about-price\">");
-            buf.append(aboutPriceString);
-            buf.append("</span>");
-        }
-
-		JspWriter out = pageContext.getOut();
-		try {
-			out.append(buf);
-		} catch (IOException e) {
-			throw new JspException(e);
+	            buf.append("<span class=\"about-price\">");
+	            buf.append(aboutPriceString);
+	            buf.append("</span>");
 		}
-
-		return SKIP_BODY;
-	};
+	
+		return buf;
+	}
 
 	public void setPriceCalculator(PriceCalculator priceCalculator) {
 		this.price = priceCalculator;

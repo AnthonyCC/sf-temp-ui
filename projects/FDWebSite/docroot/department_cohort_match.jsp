@@ -104,9 +104,9 @@
 	<oscache:cache key='<%= keyPrefix+request.getQueryString() %>' time='<%= useOsCache ? ttl : 0 %>'>
 	
 	<% try { %>
-		<% if (departmentModel.getTemplatePath() != null && departmentModel.getTemplatePath().trim().length() > 0) { 
-			LOG.debug("including template path: "+departmentModel.getTemplatePath().trim());
-			%><fd:IncludeMedia name="<%= departmentModel.getTemplatePath().trim() %>" parameters="<%= params %>" /><%
+		<% if (departmentModel.getAltTemplatePath() != null && departmentModel.getAltTemplatePath().trim().length() > 0) { 
+			LOG.debug("including template path: "+departmentModel.getAltTemplatePath().trim());
+			%><fd:IncludeMedia name="<%= departmentModel.getAltTemplatePath().trim() %>" parameters="<%= params %>" /><%
 		} else {
 			LOG.debug("template path was NULL or zero length for "+deptId);
 		}

@@ -450,51 +450,86 @@ function updateYourCartPanel() {
 	}
 /*
  *	sort option
+ *		pass a second param as boolean to sort as Integers (false by default)
+ *		
+ *		Note: When using sort by Int, mixed (Str/Int) options will sort numbers first.
+ *		      Sets containing Strings that LOOK like Ints (like "5ive") will treat those as Ints.
  */
-	function sortByText(sortId) {
+	function sortByText(sortId, asIntVar) {
 		var specId = sortId || '';
+		var asInt = asIntVar || false;
 			
 		//alphabetize
-		var selectArr = new Array();
+		var selectArr = [];
 
 		if (specId!='') {
-			selectArr[0] = $(specId); 
+			selectArr[0] = document.getElementById(specId); 
 		}else{
 			selectArr = document.getElementsByTagName('select'); 
 		}
 
-		for (var i = 0; i < selectArr.length; i++) { 
-			var oArr = new Array();
+		for (var i = 0; i < selectArr.length; i++) {
+			var strArr = [];
+			if (asInt) {
+				var intArr = [];
+			}
+			var strArr = [];
 			// Get the options for the select element 
 			for (var j = 0; j < selectArr[i].options.length; j++) { 
 				// Store this as an object that has an option object member, and a toString function (which will be used for sorting) 
 				if (selectArr[i].options[j].text != "") { //ignore blanks
-					oArr[oArr.length] = { 
-						option : selectArr[i].options[j], 
-						toString : function() { 
-							// Return the text of the option, not the value 
-							return this.option.text; 
+					if (asInt && !isNaN(parseInt(selectArr[i].options[j].text)) && !(selectArr[i].options[j].text).match(/[\D]/g)) {
+						console.log('added to intArr: ', selectArr[i].options[j].text);
+						intArr[intArr.length] = { 
+							option : selectArr[i].options[j], 
+							toString : function() { 
+								// Return the text of the option, not the value 
+								return this.option.text;
+							}
+						}
+					} else {
+						strArr[strArr.length] = { 
+							option : selectArr[i].options[j], 
+							toString : function() { 
+								// Return the text of the option, not the value 
+								return this.option.text;
+							}
 						}
 					}
 				}
 			} 
-			// Sort the array of options for this select 
-			oArr.sort();
+			// Sort the array(s) of options
+			if (asInt && intArr.length > 1) {
+				intArr.sort(function(a,b){return a-b});
+			}
+			if (strArr.length > 1) {
+				strArr.sort();
+			}
 				
 
 			// Remove all options from the select
 			selectArr[i].options.length = 0;
 			
 			// Rebuild the select using our sorted array
-			for (var j = 0; j < oArr.length; j++) {
-				selectArr[i].options[j] = oArr[j].option;
+			var j = 0;
+			var n = 0;
+			if (asInt) {
+				for (j = 0; j < intArr.length; j++) {
+					selectArr[i].options[n] = intArr[j].option;
+					n++;
+				}
 			}
+			for (j = 0; j < strArr.length; j++) {
+				selectArr[i].options[n] = strArr[j].option;
+				n++;
+			}
+
 			selectArr[i].selectedIndex = 0;
 		}
 
 		return true;
-
 	}
+
 	/*
 	 *	takes the select values from sortId, assumes they are days of the week,
 	 *	and sorts them by day instead of alphabetically
@@ -1160,7 +1195,7 @@ function doOverlayWindow(olURL) {
 		}
 	})(); 
 
-	function doOverlayDialog(olURL) {
+	function doOverlayDialog(olURL, olData) {
 		var overlayDialog = $jq('<div id="uimodal-output"></div>');
 
 		$jq("body").append(overlayDialog);
@@ -1182,23 +1217,31 @@ function doOverlayWindow(olURL) {
 			draggable: false,
 			open: function() {
 				$jq('html').css({ 'overflow': 'hidden' });
-				//$jq('body').css({ 'overflow': 'hidden' });
 				
 				overlayDialog.dialog('option', 'maxClientHeight', 0.95);
 				overlayDialog.dialog('option', 'maxClientWidth', 0.95);
 				overlayDialog.dialog('option', 'maxHeight', Math.round(document.documentElement.clientHeight * overlayDialog.dialog('option', 'maxClientHeight')));
 				overlayDialog.dialog('option', 'maxWidth',  Math.round(document.documentElement.clientWidth * overlayDialog.dialog('option', 'maxClientWidth')));
 
-				//dialogWindowResizeTimer = setTimeout(dialogWindowResizeFunc, 100);
 				if (overlayDialog.height() > overlayDialog.dialog('option', 'maxHeight')) { 
 					setTimeout(function(){ overlayDialog.dialog('option', 'height', overlayDialog.dialog('option', 'maxHeight')); }, 100);
 				} else {
-					overlayDialog.dialog('option', 'openHeight', $jq('#uimodal-output').height());
+					if ($jq('#uimodal-output').height() == 0) { //this is 0 in IE, which causes issues
+						overlayDialog.dialog('option', 'openHeight', '500px');
+					} else {
+						overlayDialog.dialog('option', 'openHeight', $jq('#uimodal-output').height());
+					}
 				}
+
+
 				if (overlayDialog.width() > overlayDialog.dialog('option', 'maxWidth')) {
 					setTimeout(function(){ overlayDialog.dialog('option', 'width', overlayDialog.dialog('option', 'maxWidth')); }, 100);
 				} else {
-					overlayDialog.dialog('option', 'openWidth', $jq('#uimodal-output').width());
+					if ($jq('#uimodal-output').width() == 0) { //this is 0 in IE, which causes issues
+						overlayDialog.dialog('option', 'openWidth', '500px');
+					} else {
+						overlayDialog.dialog('option', 'openWidth', $jq('#uimodal-output').width());
+					}
 				}
 
 				//allow off-click to close
@@ -1207,13 +1250,16 @@ function doOverlayWindow(olURL) {
 
 			},
 			close: function () {
-				
 				$jq('html').css({ 'overflow': 'auto' });
-				//$jq('body').css({ 'overflow': 'auto' });
 			}
 		});
 		
-		overlayDialog.load(olURL, function() { overlayDialog.dialog('open'); });
+		if (olData != 'undefined' && (typeof olData).toLowerCase() == 'object') {
+			//if data is passed in, POST it
+			overlayDialog.load(olURL, olData, function() { overlayDialog.dialog('open'); });
+		} else {
+			overlayDialog.load(olURL, function() { overlayDialog.dialog('open'); });
+		}
 
 	}
 
@@ -1252,10 +1298,12 @@ function doOverlayWindow(olURL) {
 	};
 
 	var dialogWindowResizeTimer;
+	var dialogDocReady = false;
 	if (window['$jq']) { //make sure jQuery is available
+		$jq(document).ready(function () { dialogDocReady = true });
 		$jq(window).resize(function() {
 			clearTimeout(dialogWindowResizeTimer);
-			dialogWindowResizeTimer = setTimeout(dialogWindowResizeFunc, 100);
+			if (dialogDocReady) { dialogWindowResizeTimer = setTimeout(dialogWindowResizeFunc, 100); }
 		});
 	}
 

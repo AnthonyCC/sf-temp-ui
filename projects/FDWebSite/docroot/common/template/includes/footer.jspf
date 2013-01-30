@@ -4,6 +4,8 @@
 <%@page import="com.freshdirect.fdstore.content.MyFD"%>
 <%@ page import='com.freshdirect.fdstore.sempixel.FDSemPixelCache' %>
 <%@ page import='com.freshdirect.fdstore.sempixel.SemPixelModel' %>
+<%@ page import='java.util.*' %>
+<%@ taglib uri='freshdirect' prefix='fd' %>
 
 <% if (com.freshdirect.fdstore.FDStoreProperties.isNewGlobalNav()) { /* new globalnav, please change when we no longer need the old one */ %>
   <%@ include file="/common/template/includes/footer_grid24.jspf" %>
@@ -56,8 +58,21 @@ final int W_FOOTER_TOTAL = 970;
                 boolean gcUrlHasOtherQueryVals = FDStoreProperties.getGiftCardLandingUrl().indexOf("?") > -1;
                 String giftPath = FDStoreProperties.getGiftCardLandingUrl() + (gcUrlHasOtherQueryVals?"&":"?")+"trk=bnav";
 
-                %>
-            <%@ include file="/common/template/includes/footer_table.jspf" %>
+
+                /* move footer nav to media
+                 *	this may need code support from time to time (when new items are added)
+                 */
+                Map<String, String> params = new HashMap<String, String>();
+                
+            	params.put("botNav", botNav);
+            	params.put("hasMyFD", Boolean.toString(hasMyFD));
+            	params.put("careerLink", FDStoreProperties.getCareerLink());
+            	params.put("giftPath", giftPath);
+            	
+			%><fd:IncludeMedia name="/media/layout/nav/bottom_nav.ftl" parameters="<%= params %>">
+				<%-- no media, include code version --%>
+            	<%@ include file="/common/template/includes/footer_table.jspf" %>
+			</fd:IncludeMedia>
 	</td>
 	</tr>
 	<tr>
@@ -112,6 +127,7 @@ final int W_FOOTER_TOTAL = 970;
 		<td align="center" class="text11bold">
 			<div style="width:100%; height:1px" class="dotted_separator_h"></div>
 		</td>
+	</tr>
 	<tr>
 		<td align="center" class="text11" style="padding-top: 10px">
 			<%@ include file="/shared/template/includes/copyright.jspf" %>

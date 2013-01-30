@@ -85,6 +85,7 @@
 							<CmsField><attribute>BOTTOM_RIGHT_DISPLAY</attribute></CmsField>
 							<CmsField><attribute>DEPARTMENT_BOTTOM</attribute></CmsField>
 							<CmsField><attribute>DEPARTMENT_TEMPLATE_PATH</attribute></CmsField>
+							<CmsField><attribute>DEPARTMENT_ALT_TEMPLATE_PATH</attribute></CmsField>
 							<CmsField><attribute>DEPT_MGR</attribute></CmsField>
 							<CmsField><attribute>DEPT_MGR_NONAME</attribute></CmsField>
 							<CmsField><attribute>DEPT_MGR_BIO</attribute></CmsField>
@@ -507,7 +508,7 @@
 							<CmsField><attribute>HIDE_URL</attribute></CmsField>
 							<CmsField><attribute>REDIRECT_URL</attribute></CmsField>
 							<CmsField><attribute>HIDE_IPHONE</attribute></CmsField>
-<!--							<CmsField><attribute>EXCLUDED_EBT_PAYMENT</attribute></CmsField>-->
+							<!-- <CmsField><attribute>EXCLUDED_EBT_PAYMENT</attribute></CmsField>-->
 						</fields>
 					</CmsSection>
 					<CmsSection>
@@ -632,6 +633,7 @@
 			</CmsPage>                               
 		</pages>
 	</CmsEditor>    
+
 	<CmsEditor id="domain">
 		<contentType>Domain</contentType>
 		<pages>
@@ -666,8 +668,7 @@
 			</CmsPage>
 		</pages>
 	</CmsEditor>
-	
-	
+		
 	<CmsPage id="category_setup">
 		<title>Category Setup</title>
 		<sections>
@@ -701,8 +702,7 @@
 			</CmsSection>
 		</sections>
 	</CmsPage>
-	
-	
+		
 	<CmsPage id="product_setup">
 		<title>Product Setup</title>
 		<sections>
@@ -756,8 +756,7 @@
 			<CmsSection ref="scarabRecommender"/>
 		</sections>
 	</CmsPage>
-	
-	
+		
 	<CmsEditor id="configured_product">
 		<contentType>ConfiguredProduct</contentType>
 		<pages>
@@ -821,7 +820,6 @@
 		</pages>
 	</CmsEditor>
 	
-
 	<CmsEditor id="fdFolder">
 		<contentType>FDFolder</contentType>
 		<pages>
@@ -839,7 +837,6 @@
 			</CmsPage>
 		</pages>
 	</CmsEditor>
-	
 	
 	<CmsEditor id="recipe">
 		<contentType>Recipe</contentType>
@@ -1033,7 +1030,6 @@
 		</pages>
 	</CmsEditor>
 	
-	
 	<CmsEditor id="recipeCategory">
 		<contentType>RecipeCategory</contentType>
 		<pages>
@@ -1076,7 +1072,6 @@
 			</CmsPage>
 		</pages>
 	</CmsEditor>
-	
 	
 	<CmsEditor id="recipeSubcategory">
 		<contentType>RecipeSubcategory</contentType>
@@ -1207,23 +1202,24 @@
 			</CmsPage>
 		</pages>
 	</CmsEditor>
+
 	<!--
-	<CmsEditor id="template">
-		<contentType>Template</contentType>
-		<pages>
-			<CmsPage>
-				<title>Page</title>
-				<sections>
-					<CmsSection>
-						<title>Section</title>
-						<fields>
-							<CmsField><attribute>attribute</attribute></CmsField>
-						</fields>
-					</CmsSection>
-				</sections>
-			</CmsPage>
-		</pages>
-	</CmsEditor>
+		<CmsEditor id="template">
+			<contentType>Template</contentType>
+			<pages>
+				<CmsPage>
+					<title>Page</title>
+					<sections>
+						<CmsSection>
+							<title>Section</title>
+							<fields>
+								<CmsField><attribute>attribute</attribute></CmsField>
+							</fields>
+						</CmsSection>
+					</sections>
+				</CmsPage>
+			</pages>
+		</CmsEditor>
 	-->
 	
 	<CmsSection id="workflow">

@@ -17,10 +17,29 @@ public class ProductGroupPricingTag extends BodyTagSupportEx {
 	private ProductModel product;
 
 	public int doStartTag() throws javax.servlet.jsp.JspException {
+		ProductAvailabilityTag availability = (ProductAvailabilityTag) findAncestorWithClass(this, ProductAvailabilityTag.class);
+		if (availability != null && !availability.isFullyAvailable())
+			return SKIP_BODY;
+
+		String label = getContent();
+		
+		if (!"".equals(label)) {
+			JspWriter out = pageContext.getOut();
+			try {
+				out.append(label);
+			} catch (IOException e) {
+				throw new JspException(e);
+			}
+		}
+
+		return SKIP_BODY;
+	}
+	
+	public String getContent() throws javax.servlet.jsp.JspException {
 		try {
 			ProductAvailabilityTag availability = (ProductAvailabilityTag) findAncestorWithClass(this, ProductAvailabilityTag.class);
 			if (availability != null && !availability.isFullyAvailable())
-				return SKIP_BODY;
+				return "";
 
 			PriceCalculator price = product.getPriceCalculator();
 
@@ -31,15 +50,10 @@ public class ProductGroupPricingTag extends BodyTagSupportEx {
 				label = ProductSavingTag.getGroupPrice(group, price.getPricingContext().getZoneId());
 
 			if (label != null && !label.isEmpty()) {
-				JspWriter out = pageContext.getOut();
-				try {
-					out.append(label);
-				} catch (IOException e) {
-					throw new JspException(e);
-				}
+				return label;
 			}
 
-			return SKIP_BODY;
+			return "";
 
 		} catch (FDResourceException e) {
 			throw new JspException(e);

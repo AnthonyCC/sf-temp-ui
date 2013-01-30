@@ -104,6 +104,19 @@ public class TxSingleProductPricingSupportTag extends BodyTagSupport {
 
 		return EVAL_BODY_INCLUDE;
 	}
+	
+	public String getContent() throws JspException {
+		String content = doIncludePricing();
+		
+		if (content != null) {
+			try {
+				return content;
+			} catch (Exception e) {
+			}
+		}
+		
+		return "";
+	}
 
 	private String doIncludePricing() throws JspException {
 		StringBuffer buf = new StringBuffer();

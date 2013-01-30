@@ -22,6 +22,24 @@ public class ProductWasPriceTag extends BodyTagSupportEx {
 		if (availability != null && !availability.isFullyAvailable())
 			return SKIP_BODY;
 
+			JspWriter out = pageContext.getOut();
+			try {
+				out.append(getContent());
+			} catch (IOException e) {
+				throw new JspException(e);
+			}
+
+		return SKIP_BODY;
+	};
+	
+	public StringBuilder getContent() throws javax.servlet.jsp.JspException {
+
+		StringBuilder buf = new StringBuilder();
+		
+		ProductAvailabilityTag availability = (ProductAvailabilityTag) findAncestorWithClass(this, ProductAvailabilityTag.class);
+		if (availability != null && !availability.isFullyAvailable())
+			return buf;
+
 		if (price == null) {
 			if (product == null) {
 				throw new RuntimeException("'priceCalculator' or 'product' is mandatory!");
@@ -30,21 +48,13 @@ public class ProductWasPriceTag extends BodyTagSupportEx {
 		}
 
 		NumberFormat format = NumberFormat.getCurrencyInstance();
-
+		
 		if (price.isOnSale()) {
-			StringBuilder buf = new StringBuilder();
 			buf.append(format.format(price.getWasPrice()));
-
-			JspWriter out = pageContext.getOut();
-			try {
-				out.append(buf);
-			} catch (IOException e) {
-				throw new JspException(e);
-			}
 		}
 
-		return SKIP_BODY;
-	};
+		return buf;
+	}
 
 	public void setPriceCalculator(PriceCalculator priceCalculator) {
 		this.price = priceCalculator;

@@ -18,11 +18,30 @@ public class ProductPriceDescriptionTag extends BodyTagSupportEx {
 	private ProductImpression impression;
 	
 	public int doStartTag() throws javax.servlet.jsp.JspException {
-        String confDescription = null;
 		ProductAvailabilityTag availability = (ProductAvailabilityTag) findAncestorWithClass(this, ProductAvailabilityTag.class);
 
 		if (availability != null && !availability.isFullyAvailable())
 			return SKIP_BODY;
+		
+		JspWriter out = pageContext.getOut();
+		try {
+			out.append(getContent());
+		} catch (IOException e) {
+			throw new JspException(e);
+		}        	
+
+		return SKIP_BODY;
+	};
+	
+	public StringBuilder getContent() {
+
+		StringBuilder buf = new StringBuilder();
+
+        String confDescription = null;
+		ProductAvailabilityTag availability = (ProductAvailabilityTag) findAncestorWithClass(this, ProductAvailabilityTag.class);
+
+		if (availability != null && !availability.isFullyAvailable())
+			return buf;
 
         PriceCalculator priceCalculator = impression.getCalculator();
 
@@ -38,7 +57,6 @@ public class ProductPriceDescriptionTag extends BodyTagSupportEx {
             }
         }
 		
-		StringBuilder buf = new StringBuilder();
 		buf.append("<span class=\"price-description\">");
 		
         if(confDescription != null) {
@@ -46,16 +64,8 @@ public class ProductPriceDescriptionTag extends BodyTagSupportEx {
         }
 		buf.append("</span>");
 
-		JspWriter out = pageContext.getOut();
-		try {
-			out.append(buf);
-		} catch (IOException e) {
-			throw new JspException(e);
-		}        	
-
-
-		return SKIP_BODY;
-	};
+		return buf;
+	}
 
 	public void setImpression(ProductImpression impression) {
 		this.impression = impression;

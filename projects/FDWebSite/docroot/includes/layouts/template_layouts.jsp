@@ -32,8 +32,12 @@ if (deptId != null) {
 Map params = new HashMap();
 params.put("baseUrl", "");
 
-String templatePath = (currentFolder instanceof CategoryModel) ? ((CategoryModel)currentFolder).getContentTemplatePath() : null;
-if (templatePath!=null) {
-    %><fd:IncludeMedia name='<%= templatePath %>' parameters="<%=params%>" /><%
+if (currentFolder != null) {
+	String templatePath = null;
+	if (currentFolder instanceof CategoryModel) { templatePath = ((CategoryModel)currentFolder).getContentTemplatePath(); }
+	if (currentFolder instanceof DepartmentModel) { templatePath = ((DepartmentModel)currentFolder).getTemplatePath(); }
+	if (templatePath!=null) {
+	    %><fd:IncludeMedia name='<%= templatePath %>' parameters="<%=params%>" /><%
+	}
 }
 %>
