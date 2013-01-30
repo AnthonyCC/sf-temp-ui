@@ -661,4 +661,67 @@ public class TemplateContext extends BaseTemplateContext{
 		}
 		return rating;
 	}
+	
+	public static String getScaleDisplay(ProductModel productNode,String zoneId){
+		String scaleDisplay = "";
+		ProductImpression impression = new ProductImpression(productNode);
+		FDGroup group = impression.getFDGroup(); //Returns if group is associated with any sku linked to this product.
+		MaterialPrice matPrice = null;
+		if(null !=group){
+			try {
+				matPrice = GroupScaleUtil.getGroupScalePrice(group, zoneId);
+			} catch (FDResourceException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		if(matPrice !=null) {
+			try {
+//				MaterialPrice matPrice = GroupScaleUtil.getGroupScalePrice(group, impression.getPricingZoneId());
+//				if(matPrice != null) {
+						double displayPrice = 0.0;
+						boolean isSaleUnitDiff = false;
+						if(matPrice.getPricingUnit().equals(matPrice.getScaleUnit()))
+							displayPrice = matPrice.getPrice() * matPrice.getScaleLowerBound();
+						else {
+							displayPrice = matPrice.getPrice();
+							isSaleUnitDiff = true;
+						}
+						GroupScalePricing grpPricing = GroupScaleUtil.lookupGroupPricing(group);
+						StringBuffer buf1 = new StringBuffer();
+						if(matPrice.getScaleUnit().equals("LB")) {//Other than eaches append the /pricing unit for clarity.
+							
+							buf1.append( quantityFormatter.format( matPrice.getScaleLowerBound() ) );
+							buf1.append(matPrice.getScaleUnit().toLowerCase()).append("s");
+							buf1.append( " " );							
+							buf1.append( " for " );
+							buf1.append( currencyFormatter.format( displayPrice) );
+							buf1.append("/").append(matPrice.getPricingUnit().toLowerCase());
+							
+
+						} else {
+							buf1.append( quantityFormatter.format( matPrice.getScaleLowerBound() ) );
+							buf1.append( " " );
+							buf1.append( " for " );
+							buf1.append( currencyFormatter.format( displayPrice) );
+							if(isSaleUnitDiff)
+								buf1.append("/").append(matPrice.getPricingUnit().toLowerCase());
+
+						}
+						scaleDisplay= buf1.toString();
+//				}
+			} catch (FDResourceException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				//no group, do the normal scale string fetch
+				PriceCalculator priceCalculator = impression.getProductModel().getPriceCalculator();
+				scaleDisplay = priceCalculator.getTieredPrice(0);
+			}
+		}else{
+			//no group, do the normal scale string fetch
+			PriceCalculator priceCalculator = impression.getProductModel().getPriceCalculator();
+			scaleDisplay = priceCalculator.getTieredPrice(0);
+		}
+		return scaleDisplay != null ? scaleDisplay : "";
+	}
 }

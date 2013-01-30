@@ -22,6 +22,7 @@ import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.SkuModel;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.webapp.taglib.AbstractGetterTag;
+import com.freshdirect.webapp.template.TemplateContext;
 
 /**
  * 
@@ -120,7 +121,7 @@ public class PPExportEmailProductsTag extends AbstractGetterTag{
 					
 					appendData(isExport,buffer,D_P+i+ATTR_FEAT);appendData(isExport,buffer,zoneId);appendData(isExport,buffer,null !=fhType?fhType.getDescription():"");appendNewLine(isExport,buffer);
 					if(i<10 && isExport){
-						appendData(isExport,buffer,D_P+i+ATTR_IMG);appendTab(isExport,buffer);appendData(isExport,buffer,zoneId);appendData(isExport,buffer,productModel.getDetailImage().getPath()/*getHtml()*/);appendNewLine(isExport,buffer);
+						appendData(isExport,buffer,D_P+i+ATTR_IMG);/*appendTab(isExport,buffer);*/appendData(isExport,buffer,zoneId);appendData(isExport,buffer,productModel.getDetailImage().getPath()/*getHtml()*/);appendNewLine(isExport,buffer);
 					}else{
 						appendData(isExport,buffer,D_P+i+ATTR_IMG);appendData(isExport,buffer,zoneId);appendData(isExport,buffer,productModel.getDetailImage().getPath()/*getHtml()*/);appendNewLine(isExport,buffer);
 					}
@@ -135,11 +136,12 @@ public class PPExportEmailProductsTag extends AbstractGetterTag{
 						ratingUrl ="<img src=\"http://www.freshdirect.com/media_stat/images/ratings/"+rating+".gif\" width=\"59\" height=\"11\" border=\"0\">";
 					}
 					appendData(isExport,buffer,D_P+i+ATTR_RATING);appendData(isExport,buffer,zoneId);appendData(isExport,buffer,ratingUrl);appendNewLine(isExport,buffer);
-					appendData(isExport,buffer,D_P+i+ATTR_SAVE);appendData(isExport,buffer,zoneId);appendData(isExport,buffer,(productModel.getPriceCalculator().getHighestDealPercentage() > 0)?"SAVE "+(productModel.getPriceCalculator(promotionSkuModel.getSkuCode()).getHighestDealPercentage()+ "%"):"");appendNewLine(isExport,buffer);
+					String scaleDisplay=TemplateContext.getScaleDisplay(productModel,zoneId);
+					appendData(isExport,buffer,D_P+i+ATTR_SAVE);appendData(isExport,buffer,zoneId);appendData(isExport,buffer,(null!=scaleDisplay&&!"".equals(scaleDisplay))?"SAVE! "+scaleDisplay:((productModel.getPriceCalculator().getHighestDealPercentage() > 0)?"SAVE "+(productModel.getPriceCalculator(promotionSkuModel.getSkuCode()).getHighestDealPercentage()+ "%"):""));appendNewLine(isExport,buffer);
 					StringBuilder bufSS = new StringBuilder();
 					String ratingSS = productModel.getSustainabilityRating(promotionSkuModel.getSkuCode());
 					if (ratingSS != null && ratingSS.trim().length() > 0) {
-						bufSS.append("<img src=\"/media_stat/images/ratings/"
+						bufSS.append("<img src=\"http://www.freshdirect.com/media_stat/images/ratings/"
 								+ "fish_" + ratingSS + ".gif\"");	
 						bufSS.append(" name=\"ss_rating_" + ratingSS + "\"");	
 						bufSS.append(" width=\"35\"");	

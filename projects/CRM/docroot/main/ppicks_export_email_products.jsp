@@ -1,4 +1,3 @@
-<%@ taglib uri='freshdirect' prefix='fd' %><fd:PPExportEmail id="zoneSkusMap">
-<%=zoneSkusMap %>
+<%@ taglib uri='freshdirect' prefix='fd' %><fd:PPExportEmail id="zoneSkusMap"><%=zoneSkusMap %>
 </fd:PPExportEmail>
 	
