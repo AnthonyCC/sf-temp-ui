@@ -21,6 +21,7 @@ import org.springframework.jdbc.object.BatchSqlUpdate;
 import com.freshdirect.routing.util.RoutingTimeOfDay;
 import com.freshdirect.transadmin.dao.IDashboardDataDAO;
 import com.freshdirect.transadmin.model.PlantCapacity;
+import com.freshdirect.transadmin.model.PlantDispatch;
 
 public class DashboardDataDAOImpl implements IDashboardDataDAO   {
 	
@@ -30,7 +31,13 @@ public class DashboardDataDAOImpl implements IDashboardDataDAO   {
 
 	private static final String DELETE_PLANT_CAPACITIY = "DELETE FROM TRANSP.PLANT_CAPACITY WHERE DAY_OF_WEEK = ?";
 
-	private static final String SAVE_PLANT_CAPACITIY = "INSERT INTO TRANSP.PLANT_CAPACITY(DISPATCH_TIME, CAPACITY, DAY_OF_WEEK) VALUES (TRANSP.PLANTCAPACITYSEQ.nextval,?,?,?)";
+	private static final String SAVE_PLANT_CAPACITIY = "INSERT INTO TRANSP.PLANT_CAPACITY(DISPATCH_TIME, CAPACITY, DAY_OF_WEEK) VALUES (?,?,?)";
+
+	private static final String GET_PLANT_DISPATCH = "SELECT * FROM TRANSP.DISPATCH_MAPPING";
+
+	private static final String DELETE_PLANT_DISPATCH = "DELETE FROM TRANSP.DISPATCH_MAPPING";
+
+	private static final String SAVE_PLANT_DISPATCH = "INSERT INTO TRANSP.DISPATCH_MAPPING(DISPATCH_TIME, PLANT_DISPATCH) VALUES (?,?)";
 
 	public void setDataSource(DataSource dataSource) {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
@@ -82,7 +89,7 @@ public class DashboardDataDAOImpl implements IDashboardDataDAO   {
 		}
 	}
 	
-	public void savePlantCapacity(List<PlantCapacity> capacities) throws SQLException {
+	public void savePlantCapacity(final String dayOfWeek, List<PlantCapacity> capacities) throws SQLException {
 		Connection connection = null;
 		try {
 			BatchSqlUpdate sqlUpdater = new BatchSqlUpdate(this.jdbcTemplate.getDataSource(), SAVE_PLANT_CAPACITIY);
@@ -99,7 +106,80 @@ public class DashboardDataDAOImpl implements IDashboardDataDAO   {
 				sqlUpdater.update(new Object[] { 
 						_capacity.getDispatchTime().getAsDate()
 						, _capacity.getCapacity()											
-						, _capacity.getDayOfWeek()
+						, dayOfWeek
+							});
+			}			
+			sqlUpdater.flush();
+			
+		} finally {
+			if(connection!=null) connection.close();
+		}
+	}
+
+	@Override
+	public Collection getPlantDispatch() throws SQLException {
+		
+		final List<PlantDispatch> result = new ArrayList<PlantDispatch>();
+			
+		Connection connection = null;
+		try {
+			PreparedStatementCreator creator = new PreparedStatementCreator() {
+				public PreparedStatement createPreparedStatement(
+						Connection connection) throws SQLException {
+					
+					PreparedStatement ps = connection.prepareStatement(GET_PLANT_DISPATCH);
+					return ps;
+				}
+			};
+			jdbcTemplate.query(creator, new RowCallbackHandler() {
+				public void processRow(ResultSet rs) throws SQLException {
+					PlantDispatch dispatch = new PlantDispatch();
+					
+					
+					dispatch.setDispatchTime(new RoutingTimeOfDay(rs.getTimestamp("DISPATCH_TIME")));
+					dispatch.setPlantDispatch(new RoutingTimeOfDay(rs.getTimestamp("PLANT_DISPATCH")));
+					result.add(dispatch);
+				}				
+			});
+			
+			return result;
+		} finally {
+			if (connection != null)	connection.close();
+		}	
+	}
+
+	@Override
+	public void purgePlantDispatch() throws SQLException {
+		Connection connection = null;		
+		try {
+			
+			this.jdbcTemplate.update(DELETE_PLANT_DISPATCH, new Object[] {});
+			
+			connection=this.jdbcTemplate.getDataSource().getConnection();	
+			
+		} finally {
+			if(connection!=null) connection.close();
+		}
+	}
+
+	@Override
+	public void savePlantCapacity(List<PlantDispatch> dispatch)
+			throws SQLException {
+		Connection connection = null;
+		try {
+			BatchSqlUpdate sqlUpdater = new BatchSqlUpdate(this.jdbcTemplate.getDataSource(), SAVE_PLANT_DISPATCH);
+			sqlUpdater.declareParameter(new SqlParameter(Types.TIMESTAMP));
+			sqlUpdater.declareParameter(new SqlParameter(Types.TIMESTAMP));
+			
+			sqlUpdater.compile();
+					
+			connection = this.jdbcTemplate.getDataSource().getConnection();
+			
+			for(PlantDispatch _dispatch : dispatch) {
+				
+				sqlUpdater.update(new Object[] { 
+						_dispatch.getDispatchTime().getAsDate()
+						, _dispatch.getPlantDispatch().getAsDate()											
 							});
 			}			
 			sqlUpdater.flush();

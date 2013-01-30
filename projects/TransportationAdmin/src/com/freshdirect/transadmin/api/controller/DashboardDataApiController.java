@@ -1,10 +1,9 @@
 package com.freshdirect.transadmin.api.controller;
 
 import java.text.ParseException;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
-import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -12,9 +11,12 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.log4j.Logger;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.freshdirect.framework.service.ServiceException;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.transadmin.api.model.ListDataMessage;
+import com.freshdirect.transadmin.api.model.Message;
 import com.freshdirect.transadmin.model.PlantCapacity;
+import com.freshdirect.transadmin.model.PlantDispatch;
 import com.freshdirect.transadmin.service.IDashboardManager;
 import com.freshdirect.transadmin.util.TransStringUtil;
 
@@ -24,7 +26,12 @@ public class DashboardDataApiController extends BaseApiController {
 
 	private static final String ACTION_GET_PLANTCAPACITY = "getPlantCapacity";
 	
-	private static final String SAVE_PLANTCAPACITY = "savePlantCapacity";
+	private static final String ACTION_SAVE_PLANTCAPACITY = "savePlantCapacity";
+	
+	private static final String ACTION_GET_PLANTDISPATCH = "getPlantDispatch";
+	
+	private static final String ACTION_SAVE_PLANTDISPATCH = "savePlantDispatch";
+	
 	
 	private IDashboardManager dashboardManagerService;
 
@@ -52,33 +59,65 @@ public class DashboardDataApiController extends BaseApiController {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-		
-			
 			setResponseMessage(model, result);
 			
 		}
-		else if(SAVE_PLANTCAPACITY.equals(action)) {
+		else if(ACTION_SAVE_PLANTCAPACITY.equals(action)) {
 
-			ListDataMessage result = new ListDataMessage();
-			Collection rows = result.getRows();
-			String dayofweek = "";
-			try {
+			try{
+	
+			PlantCapacity[] capacities  =  parseRequestObject(request, response, PlantCapacity[].class);
+			String dispatchDate = request.getParameter("dispatchDate");
+			String dayofweek = null;
+			try{
+			if(dispatchDate!=null){
+				dayofweek = TransStringUtil.getServerDay(TransStringUtil.getDate(dispatchDate));
+			}else{
 				dayofweek = TransStringUtil.getServerDay(new Date());
-			} catch (ParseException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
 			}
-			List<PlantCapacity> capacities = new ArrayList<PlantCapacity>();
-			for(Object row: rows){
-				PlantCapacity plantCapacity = new PlantCapacity();
-				//plantCapacity.setDayOfWeek(();
-				//plantCapacity.setDispatchTime(dispatchTime);
-				//plantCapacity.setCapacity(capacity);	
-				capacities.add(plantCapacity);
-			}
+			}catch (ParseException e) {
+				try {
+					dayofweek = TransStringUtil.getServerDay(new Date());
+				} catch (ParseException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			} 
 			
-		
-			getDashboardManagerService().savePlantCapacity(dayofweek, capacities);
+			if(capacities.length>0)
+			getDashboardManagerService().savePlantCapacity(dayofweek, Arrays.asList(capacities));
+			setResponseMessage(model, Message.createSuccessMessage("Save Plant Capacity successful."));
+			}
+			catch (ServiceException e) {
+				e.printStackTrace();
+				setResponseMessage(model, Message.createFailureMessage("Save Plant Capacity failed."));
+			}catch (Exception e) {
+				e.printStackTrace();
+				setResponseMessage(model, Message.createFailureMessage("Save Plant Capacity failed."));
+			}
+		}else if(ACTION_GET_PLANTDISPATCH.equals(action)) {
+
+			try{
+				ListDataMessage result = new ListDataMessage();
+				Collection dispatches = getDashboardManagerService().getPlantDispatch();
+				result.setRows(dispatches);
+				setResponseMessage(model, result);
+			} 
+			catch (Exception e) {
+				e.printStackTrace();
+				setResponseMessage(model, Message.createFailureMessage("Get Plant Dispatch failed."));
+			}
+		}else if(ACTION_SAVE_PLANTDISPATCH.equals(action)) {
+
+			try{
+				PlantDispatch[] dispatches  =  parseRequestObject(request, response, PlantDispatch[].class);
+				if(dispatches.length>0)
+				getDashboardManagerService().savePlantDispatch(Arrays.asList(dispatches));
+			}
+			catch (ServiceException e) {
+				e.printStackTrace();
+				setResponseMessage(model, Message.createFailureMessage("Save Plant Dispatch failed."));
+			}
 		}
 		return model;
 	}

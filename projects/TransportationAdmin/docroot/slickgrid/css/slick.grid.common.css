@@ -36,6 +36,11 @@ li {
   border: 1px solid gray;
 }
 
+#pdGrid {
+  background: white;
+  outline: 0;
+  border: 1px solid gray;
+}
 .grid-header {
   border: 1px solid gray;
   border-bottom: 0;

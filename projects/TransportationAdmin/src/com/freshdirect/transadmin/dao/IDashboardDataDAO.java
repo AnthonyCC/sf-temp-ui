@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.List;
 
 import com.freshdirect.transadmin.model.PlantCapacity;
+import com.freshdirect.transadmin.model.PlantDispatch;
 
 public interface IDashboardDataDAO {
 	
@@ -12,5 +13,11 @@ public interface IDashboardDataDAO {
 
 	public void purgePlantCapacity(final String dayOfWeek) throws SQLException;
 	
-	public void savePlantCapacity(List<PlantCapacity> capacities) throws SQLException;
+	public void savePlantCapacity(String dayOfWeek, List<PlantCapacity> capacities) throws SQLException;
+
+	Collection getPlantDispatch() throws SQLException;
+
+	void purgePlantDispatch() throws SQLException;
+
+	void savePlantCapacity(List<PlantDispatch> dispatch) throws SQLException;
 }

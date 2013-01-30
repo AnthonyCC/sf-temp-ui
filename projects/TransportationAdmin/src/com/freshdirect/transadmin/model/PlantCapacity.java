@@ -2,21 +2,16 @@ package com.freshdirect.transadmin.model;
 
 import com.freshdirect.framework.util.TimeOfDay;
 
-public class PlantCapacity implements java.io.Serializable, TrnBaseEntityI {
+public class PlantCapacity implements java.io.Serializable {
 	
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -3233908587133309841L;
-	private String id;
 	private String dayOfWeek;
 	private int capacity;
 	
 	private TimeOfDay dispatchTime;
-	
-	public boolean isObsoleteEntity() {
-		return false;
-	}
 
 	public TimeOfDay getDispatchTime() {
 		return dispatchTime;
@@ -40,13 +35,5 @@ public class PlantCapacity implements java.io.Serializable, TrnBaseEntityI {
 
 	public void setCapacity(int capacity) {
 		this.capacity = capacity;
-	}
-
-	public String getId() {
-		return id;
-	}
-
-	public void setId(String id) {
-		this.id = id;
 	}
 }

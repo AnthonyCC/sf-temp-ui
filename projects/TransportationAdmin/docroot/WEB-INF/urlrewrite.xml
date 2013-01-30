@@ -66,14 +66,23 @@
 	</rule>
 	
 	<rule>		
-		<from>^/v/([0-9]+)/list/plantcapacity/</from>
-		<to last="true">/dashboard.jx?action=getPlantCapacity&amp;ver=$1</to>
+		<from>^/v/([0-9]+)/list/plantcapacity/(.*)</from>
+		<to last="true">/dashboard.jx?action=getPlantCapacity&amp;dispatchDate=$2&amp;ver=$1</to>
 	</rule>
 	
 	<rule>		
-		<from>^/v/([0-9]+)/save/plantcapacity/</from>
-		<to last="true">/dashboard.jx?action=savePlantCapacity&amp;ver=$1</to>
+		<from>^/v/([0-9]+)/save/plantcapacity/(.*)</from>
+		<to last="true">/dashboard.jx?action=savePlantCapacity&amp;dispatchDate=$2&amp;ver=$1</to>
 	</rule>
 	
+	<rule>		
+		<from>^/v/([0-9]+)/list/plantdispatch/</from>
+		<to last="true">/dashboard.jx?action=getPlantDispatch&amp;ver=$1</to>
+	</rule>
+	
+	<rule>		
+		<from>^/v/([0-9]+)/save/plantdispatch/</from>
+		<to last="true">/dashboard.jx?action=savePlantDispatch&amp;ver=$1</to>
+	</rule>
 </urlrewrite>
 

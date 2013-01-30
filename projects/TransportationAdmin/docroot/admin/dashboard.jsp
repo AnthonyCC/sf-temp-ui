@@ -39,34 +39,39 @@
 			</div>
 		</div> 
 		
-		<br/><br/><br/>
+		<br>&nbsp;<br><br>
 		
-		<div class="cont_topright">
-			<div class="cont_row">
-				<div class="cont_Ritem">
-				   		<br><br>		   
-					<div style="width:50%">
+			   	
+				<div style="width:45%;float:left;margin-left:10px">
+						<br><br><div id="pc_message"></div><br>
 						<div class="grid-header" style="width:50%">
 				      		<label>Plant Capacity</label>
     					</div>
-						<div id="myGrid" style="width: 50%; height: 425px;"></div>
-						<div id="pager" style="width: 50%; height: 100px;"></div>
-					</div>
-					
-					
+						<div id="myGrid" style="width: 50%; height: 350px;"></div>
+						<br>
+						<form id="plantCapacityForm" action="" method="POST">
+  							<input type="submit" value="Save">
+						</form>
+						
 				</div>
-			</div>
-		</div>
-		<form id="plantCapacityForm" action="" method="POST">
-  			<input type="submit" value="Save">
-		</form>
-  </div> 
-  
+				
+				<div style="width:45%;float:left;">
+						<br><br><div id="pd_message"></div><br>
+						<div class="grid-header" style="width:50%">
+				      		<label>Plant Dispatch</label>
+    					</div>
+						<div id="pdGrid" style="width: 50%; height: 350px;"></div>
+						<br>
+						<form id="plantDispatchForm" action="" method="POST">
+  							<input type="submit" value="Save">
+						</form>
+						
+				</div>
+			
+	</div>
+	
   <script>
   
-  function getCapacityData(){
-	  
-  }
   function requiredFieldValidator(value) {
 	    if (value == null || value == undefined || !value.length) {
 	      return {valid: false, msg: "This is a required field"};
@@ -75,13 +80,18 @@
 	    }
 	  }
 
-	  var grid;
+	  var grid, pd_grid;
 	  var data = [];
-	  var columns = [
-	    {id: "dispatchTime", name: "dispatchTime", field: "dispatchTime", minWidth: 100, editor: Slick.Editors.Text},
-	    {id: "capacity", name: "capacity", field: "capacity", width: 100, editor: Slick.Editors.Integer},
-	   
+	  var pd_data = [];
+	  var pc_columns = [
+	    {id: "dispatchTime", name: "Plant Dispatch", field: "dispatchTime", minWidth: 125,editor: TimeEditor },
+	    {id: "capacity", name: "Cumulative Capacity", field: "capacity", width: 150, editor: Slick.Editors.Integer, validator: requiredFieldValidator}	   
 	    ];
+	  var pd_columns = [
+	            	    {id: "dispatchTime", name: "TransApp Dispatch", field: "dispatchTime", minWidth: 125,editor: TimeEditor  },
+	            	    {id: "plantDispatch", name: "Plant Dispatch", field: "plantDispatch", width: 150,editor: TimeEditor }
+	            	    ];
+	  
 	  var options = {
 	    editable: true,
 	    enableAddRow: true,
@@ -90,12 +100,86 @@
 	    autoEdit: false,
 	  };
 
+	  function TimeEditor(args) {
+		  var $input;
+		  var scope = this;
+		  var defaultValue;
+		  this.init = function () {
+			  $input = $("<INPUT type=text class='editor-text' onblur='this.value=time(this.value);' />")
+		          .appendTo(args.container)
+		          .bind("keydown", scope.handleKeyDown)
+				  .focus()
+				  .select();
+		    };
+		    
+		    this.handleKeyDown = function (e) {
+			      if (e.keyCode === $.ui.keyCode.LEFT || e.keyCode === $.ui.keyCode.RIGHT) {
+			        e.stopImmediatePropagation();
+			      } if (e.keyCode === $.ui.keyCode.TAB) {
+			    	  $input.val(time($input.val()));
+			      }
+			    };
+			    this.destroy = function () {
+			        $input.remove();
+			      };
+
+			      this.focus = function () {
+			        $input.focus();
+			      };
+
+			      this.getValue = function () {
+			        return $input.val();
+			      };
+
+			      this.setValue = function (val) {
+			        $input.val(val);
+			      };
+
+			
+			      this.loadValue = function (item) {
+			          defaultValue = item[args.column.field] || "";
+			          $input.val(defaultValue);
+			          $input[0].defaultValue = defaultValue;
+			          $input.select();
+			        };
+
+			        this.serializeValue = function () {
+			          return $input.val();
+			        };
+
+			        this.applyValue = function (item, state) {
+			          item[args.column.field] = state;
+			        };
+
+			        this.isValueChanged = function () {
+			          return (!($input.val() == "" && defaultValue == null)) && ($input.val() != defaultValue);
+			        };
+
+			        this.validate = function () {
+			            if (args.column.validator) {
+			              var validationResults = args.column.validator($input.val());
+			              if (!validationResults.valid) {
+			                return validationResults;
+			              }
+			            }
+
+			            return {
+			              valid: true,
+			              msg: null
+			            };
+			          };
+			          
+					this.init();
+			    
+		  }
+	  
+		 
 
 	$(document).ready(function () {
 			
 		$("#dispatchDate" ).datepicker();
 		$.ajax({
-			url : "v/1/list/plantcapacity/",
+			url : "v/1/list/plantcapacity/"+$("#dispatchDate").val(),
 			type : "GET",
 			contentType : "application/json",
 			dataType : "json",
@@ -108,8 +192,10 @@
 				      d["dispatchTime"] = json.rows[i].dispatchTime.timeString;
 				      d["capacity"] = json.rows[i].capacity;
 				}
-				grid = new Slick.Grid("#myGrid", data, columns, options);
+				grid = new Slick.Grid("#myGrid", data, pc_columns, options);
 				grid.setSelectionModel(new Slick.RowSelectionModel());
+				
+				
 				$('#myGrid').show();
 				
 				grid.onAddNewRow.subscribe(function (e, args) {
@@ -120,48 +206,103 @@
 				      grid.updateRowCount();
 				      grid.render();
 				    });
+				   
+			},
+			error : function(msg) {
+				$('#pc_message').css('color','#ff0000');
+				$('#pc_message').html('Fetch Plant Capacity Failed.');
+			}
+		});
+		
+		$.ajax({
+			url : "v/1/list/plantdispatch/",
+			type : "GET",
+			contentType : "application/json",
+			dataType : "json",
+			async : true,
+			success : function(json) {
+				
+				for(var i=0;i < json.rows.length;i++) {
+					var d = (pd_data[i] = {});
+
+				      d["dispatchTime"] = json.rows[i].dispatchTime.timeString;
+				      d["plantDispatch"] = json.rows[i].plantDispatch.timeString;
+				}
+				pd_grid = new Slick.Grid("#pdGrid", pd_data, pd_columns, options);
+				pd_grid.setSelectionModel(new Slick.RowSelectionModel());
+				$('#pdGrid').show();
+				
+				pd_grid.onAddNewRow.subscribe(function (e, args) {
+					 console.log(args); 
+				      var item = args.item;
+				      pd_grid.invalidateRow(pd_data.length);
+				      pd_data.push(item);
+				      pd_grid.updateRowCount();
+				      pd_grid.render();
+				    });
 				    
-				  //  grid.onSelectedRowsChanged.subscribe(
-				    	//	function() { console.log(grid.getSelectedRows()); });
+				 
+				 pd_grid.onValidationError.subscribe(function (e, args) {
+				      alert(args.validationResults.msg);
+				    });
 				  
-					//var editedRows = {}
-					//	grid.onAddNewRow.subscribe(function(e, args) {
-			         //   var item = args.item;
-			         //   editedRows[item.id] = item;
-			       // });
-				    
-				    grid.onCellChange.subscribe(function (e,args) { 
-			          console.log(args); 
-			      });
-				    
 				
 			},
 			error : function(msg) {
-				var errorText = eval('(' + msg.responseText+ ')');
-				alert('Error : \n--------\n'+ errorText.Message);
+				$('#pd_message').css('color','#ff0000');
+				$('#pd_message').html('Fetch Plant Dispatch Failed.');
 			}
 		});
+		
+		
 	  });
 	
 	 $(function() {
-		    $("form").submit(
+		    $("form#plantDispatchForm").submit(
 		    		
 		      function(e) {
 		    	  e.preventDefault();
-		    	  alert(JSON.stringify(data));
 		    	  $.ajax({
-					url : "v/1/save/plantcapacity/",
+					url : "v/1/save/plantdispatch/",
+					type : "POST",
+					data : "data=" + JSON.stringify(pd_data),
+					dataType : "html",
+					async : false,
+					success : function(json) {
+						$('#pd_message').html('Save Plant Dispatch Successful.');
+					},
+					error : function(msg) {
+						$('#pd_message').css('color','#ff0000');
+						$('#pd_message').html('Save Plant Dispatch Failed.');
+					}
+				});
+				
+		        
+		        
+		      }
+		    );
+		  });
+	 
+	 $(function() {
+		    $("form#plantCapacityForm").submit(
+		    		
+		      function(e) {
+		    	  e.preventDefault();
+		    	  $.ajax({
+					url : "v/1/save/plantcapacity/"+$("#dispatchDate").val(),
 					type : "POST",
 					data : "data=" + JSON.stringify(data),
 					dataType : "html",
 					async : false,
 					success : function(json) {
-						console.log("success");
+						$('#pc_message').html('Save Plant Capacity Successful.');
 					},
 					error : function(msg) {
-						console.log("failure");
+						$('#pc_message').css('color','#ff0000');
+						$('#pc_message').html('Save Plant Capacity Failed.');
 					}
-				})
+					
+				});
 				
 		        
 		        
