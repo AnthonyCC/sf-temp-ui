@@ -677,16 +677,16 @@ if(productCode!=null && prodCatId !=null ) {
 
 <%@include file="/includes/product/i_price_taxdeposit.jspf"%>
 <br>
-        <table border="0" cellspacing="0" cellpadding="1" width="215">
-        <tr valign="MIDDLE">
-        <td width="25" CLASS="text11bold">Quantity&nbsp;</td>
-        <td width="30" ALIGN="CENTER"><INPUT TYPE="text" NAME="quantity_big" SIZE="2" MAXLENGTH="2" CLASS="text11" value="<%=Math.round(productNode.getQuantityMinimum())%>" onChange="chgQty('quantity_big',0,<%=productNode.getQuantityMinimum()%>,<%=user.getQuantityMaximum(productNode)%>);"></td>
-        <td width="10"><A HREF="javascript:chgQty('quantity_big',<%=productNode.getQuantityIncrement()%>,<%=productNode.getQuantityMinimum()%>,<%=user.getQuantityMaximum(productNode)%>);"><img src="/media_stat/images/layout/grn_arrow_up.gif" width="10" height="9" border="0" vspace="2" alt="greater quantity"></A><br>
-        <A HREF="javascript:chgQty('quantity_big',-<%=productNode.getQuantityIncrement()%>,<%=productNode.getQuantityMinimum()%>,<%=user.getQuantityMaximum(productNode)%>);"><img src="/media_stat/images/layout/grn_arrow_down.gif" width="10" height="9" border="0" vspace="2" alt="lesser quantity"></A></td>
-        <td width="50" CLASS="text11bold" ALIGN="RIGHT">Price&nbsp;</td>
-        <td width="100"><INPUT class="text11bold" TYPE="text" NAME="PRICE" SIZE="7" onFocus="blur()" value=""></td>
-        </tr>
-        </table>
+        <div class="qtyinput">
+          <span class="qtymessage">Quantity </span>
+          <a href="javascript:chgQty('quantity_big',-<%=productNode.getQuantityIncrement()%>,<%=productNode.getQuantityMinimum()%>,<%=user.getQuantityMaximum(productNode)%>);" class="quantity_minus"><span>Increase quantity</span></a>
+          <input class="qty" type="text" size="4" name="quantity_big" maxlength="2" value="<%=Math.round(productNode.getQuantityMinimum())%>" onChange="chgQty('quantity_big',0,<%=productNode.getQuantityMinimum()%>,<%=user.getQuantityMaximum(productNode)%>);"/>
+          <a href="javascript:chgQty('quantity_big',<%=productNode.getQuantityIncrement()%>,<%=productNode.getQuantityMinimum()%>,<%=user.getQuantityMaximum(productNode)%>);" class="quantity_plus"><span>Decrease quantity</span></a>
+        </div>
+        <div class="qtyinput">
+          <span class="qtyprice">Price </span>
+          <input class="qtypriceinput" type="text" name="PRICE" size="6" onChange="" onFocus="blur()" value=""/>
+        </div>
 <%@ include file="/shared/includes/product/i_minmax_note.jspf" %>
 
 <br>

@@ -156,11 +156,11 @@ public class TxProductControlTag extends BodyTagSupport {
 					Map.Entry<String,String>   entry = (Map.Entry<String,String>) it_opts.next();
 					buf.append("      <input type=\"hidden\" name=\""+entry.getKey()+txPostfix+"\" value=\""+entry.getValue()+"\">\n");
 				}
-				buf.append("      <input type=\"text\" id=\"quantity"+txPostfix+"\" name=\"quantity"+txPostfix+"\" value=\""+(setMinimumQt ? defaultQuantity: "")+"\" style=\"width: 36px\" size=\"3\" maxlength=\"4\" class=\"text10\" onChange=\""+ jsNamespace +".pricings["+ seqNum +"].changeQty(0);\" onBlur=\""+ jsNamespace +".pricings["+ seqNum +"].setQuantity(this.value);\">\n");
-				buf.append("    </td>\n");
-				buf.append("    <td style=\"height: 28px; margin: 0px; padding: 0px;\">\n");
-				buf.append("      <img onclick=\""+jsNamespace+".pricings["+ seqNum +"].changeQty("+ product.getQuantityIncrement() + ");\" src=\"/media_stat/images/template/quickshop/grn_arrow_up.gif\" style=\"width: 10px; height: 9px; border: 0;  margin-bottom: 1px; margin-top: 1px; cursor: pointer;\" alt=\"Increase quantity\"><br/>\n");
-				buf.append("      <img onclick=\""+jsNamespace+".pricings["+ seqNum +"].changeQty("+ (-product.getQuantityIncrement()) + ");\" src=\"/media_stat/images/template/quickshop/grn_arrow.gif\" style=\"width: 10px; height: 9px; border: 0;  margin-bottom: 1px; margin-top: 1px; cursor: pointer;\" alt=\"Decrease quantity\">\n");
+				buf.append("      <div class=\"qtyinput\">");
+				buf.append("        <span class=\"quantity_minus\" onclick=\""+jsNamespace+".pricings["+ seqNum +"].changeQty("+ (-product.getQuantityIncrement()) + ");\"><span>Decrease quantity</span></span>\n");
+				buf.append("        <input class=\"qty\" type=\"text\" id=\"quantity"+txPostfix+"\" name=\"quantity"+txPostfix+"\" value=\""+(setMinimumQt ? defaultQuantity: "")+"\" size=\"3\" maxlength=\"4\" class=\"text10\" onChange=\""+ jsNamespace +".pricings["+ seqNum +"].changeQty(0);\" onBlur=\""+ jsNamespace +".pricings["+ seqNum +"].setQuantity(this.value);\">\n");
+				buf.append("        <span class=\"quantity_plus\" onclick=\""+jsNamespace+".pricings["+ seqNum +"].changeQty("+ product.getQuantityIncrement() + ");\"><span>Increase quantity</span></span>\n");
+				buf.append("      </div>");
 				buf.append("    </td>\n");
 			}
 	

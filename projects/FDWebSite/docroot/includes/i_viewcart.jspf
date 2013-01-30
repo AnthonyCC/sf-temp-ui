@@ -200,7 +200,7 @@ FDIdentity identity = user.getIdentity();
 					String deptId = null !=prodMdl?prodMdl.getDepartment().getContentName():"";
 					%>
 					<tr>
-						<td width="40">&nbsp;</td><td width="16">&nbsp;</td><td width="22">&nbsp;</td>
+						<td width="84">&nbsp;</td><td width="16">&nbsp;</td><td width="22">&nbsp;</td>
 						<td colspan="7"><br><a href="/department.jsp?deptId=<%= deptId %>&trk=cart"><img src="/media_stat/images/layout/department_headers/<%=lastDeptImgName%>" alt="<%= lastDept.toUpperCase() %>" border="0"></a><br><img src="/media_stat/images/layout/clear.gif" width="1" height="5"></td>
 					</tr>
 					<%
@@ -241,7 +241,7 @@ FDIdentity identity = user.getIdentity();
 			<%  
 		} else {
 			%>
-			<td align="right" width="40">
+			<td width="100" colspan="2">
 				<script>
 				function chgQty<%=idx%>(delta) {
 					val = document.viewcart.quantity_<%=idx%>.value;
@@ -272,10 +272,13 @@ FDIdentity identity = user.getIdentity();
 				}
 				FreshDirect.ClientCodes.saveQty(<%= idx %>, <%= cartLine.getQuantity() %>);
 				</script>
-				<input id="quantity_<%=idx%>" name="quantity_<%=idx%>" type="text" size="5" MAXLENGTH="5" CLASS="text10 clicode_quantity" autocomplete="off" VALUE="<%= quantityFormatter.format(cartLine.getQuantity()) %>" onBlur="chgQty<%=idx%>(0);">
+        <div class="qtyinput">
+          <a href="javascript:chgQty<%=idx%>(<%= -productNode.getQuantityIncrement() %>);" class="quantity_minus"><span>Increase quantity</span></a>
+          <input class="qty" type="text" size="4" id="quantity_<%=idx%>" name="quantity_<%=idx%>" maxlength="5" value="<%= quantityFormatter.format(cartLine.getQuantity()) %>" onChange="chgQty<%=idx%>(0);" onBlur=""/>
+          <a href="javascript:chgQty<%=idx%>(<%= productNode.getQuantityIncrement() %>);" class="quantity_plus"><span>Decrease quantity</span></a>
+        </div>
 				<input name="rnd_<%=idx%>" type="hidden" value="<%= cartLine.getRandomId() %>">
 			</td>
-			<td width="16"><a href="javascript:chgQty<%=idx%>(<%= productNode.getQuantityIncrement() %>);"><img src="/media_stat/images/layout/grn_arrow_up.gif" width="10" height="9" border="0" style="margin: 1px 0;" alt="Increase quantity"></a><br><a href="javascript:chgQty<%=idx%>(<%= -productNode.getQuantityIncrement() %>);"><img src="/media_stat/images/layout/grn_arrow_down.gif" width="10" height="9" border="0"  style="margin: 1px 0;" alt="Decrease quantity"></a></td>
 			<td width="22">&nbsp;<%=cartLine.getLabel()%></td>
 			<% 
 		}

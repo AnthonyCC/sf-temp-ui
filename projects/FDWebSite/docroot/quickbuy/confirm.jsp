@@ -23,6 +23,8 @@
 <body class="qbBody">
 <%@ include file="/shared/template/includes/i_body_start.jspf" %>
 <%
+	String iatcNamespace = request.getParameter("iatcNamespace");
+
 	if (cart.getRecentOrderLines().size() > 0) {
 		FDCartLineI orderLine = cart.getRecentOrderLines().get(0);
 		ProductModel productNode = orderLine.getProductRef().lookupProductModel();
@@ -66,23 +68,21 @@
 	%>
 </div>
 <img src="/media_stat/images/quickbuy/close.gif" style="position: absolute; bottom: 1em; left: 1em; color: grey; cursor: pointer;" onclick="window.parent.document.quickbuyPanel.hide();">
+<script>
+YAHOO.util.Event.onDOMReady(function(e) {
+	window.parent.updateYourCartPanel();
+	<% if (iatcNamespace != null) { %>
+	window.parent.<%= iatcNamespace %>.updateStatus('<span class="ok"><%= EnumQuickbuyStatus.ADDED_TO_CART.getMessage() %></span><span class="in-cart" hidden style="display:none;"><fd:ProductCartStatusMessage product="<%= (ProductModel)productNode %>"/></span>');
+	<% } %>
+});
+</script>
 <%
 	} else {
 %>
 ERROR!
 <%
 	}
-
-	String iatcNamespace = request.getParameter("iatcNamespace");
 %>
-<script>
-YAHOO.util.Event.onDOMReady(function(e) {
-	window.parent.updateYourCartPanel();
-	<% if (iatcNamespace != null) { %>
-	window.parent.<%= iatcNamespace %>.updateStatus('<span class="ok"><%= EnumQuickbuyStatus.ADDED_TO_CART.getMessage() %></span>');
-	<% } %>
-});
-</script>
 </body>
 </html>
 </fd:FDShoppingCart>

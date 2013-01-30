@@ -180,11 +180,6 @@
 	color: #c00;
 	font-weight: bold;
 	display: block;
-  text-decoration: none;
-}
-
-.grid-item-price .product-group-price-link:hover {
-	text-decoration: underline;
 }
 
 .grid-item-name {
@@ -195,13 +190,8 @@
 	overflow: hidden;
 }
 
-.grid-item-name a {
-	text-decoration: none;
-}
-
 .grid-item-name a:hover {
 	color: #360;
-	text-decoration: underline;
 }
 
 .grid-item-status {

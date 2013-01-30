@@ -237,9 +237,17 @@ for (int itemIndex=0; itemIndex < sortedList.size();itemIndex++) {
         }
 %>
            
-                         <td width="30"><img src="/media_stat/images/layout/clear.gif" width="1" height="2"><br><% if (prodUnavailable) {%><div align="center"><font color="#999999">NA</font></div><%} else {%><input type="text" name="<%= qtyFldName %>" size="2" maxlength="2" class="text11" value="<%= prodUnavailable ? "" : request.getParameter(qtyFldName) %>" onChange="javascript:chgQty(<%=idx%>,'<%= qtyFldName %>', 0, <%= product.getQuantityMinimum() %>, <%= user.getQuantityMaximum(product) %>);"><%}%></td>
-	                    <td width="10"><% if (!prodUnavailable) {%><A HREF="javascript:chgQty(<%=idx%>,'<%= qtyFldName %>',<%= product.getQuantityIncrement() %>,<%= product.getQuantityMinimum() %>,<%= user.getQuantityMaximum(product) %>);"><img src="/media_stat/images/layout/grn_arrow_up.gif" width="10" height="9" border="0" vspace="2" alt="Increase quantity"></A><br>
-	                    <A HREF="javascript:chgQty(<%=idx%>,'<%= qtyFldName %>',-<%= product.getQuantityIncrement()%>,<%= product.getQuantityMinimum() %>,<%= user.getQuantityMaximum(product) %>);"><img src="/media_stat/images/layout/grn_arrow_down.gif" width="10" height="9" border="0" vspace="2" alt="Decrease quantity"></A><%} else {%><img src="/media_stat/images/layout/clear.gif" width="10" height="1"><%}%></td>
+                        <td width="30" colspan="2">
+                          <% if (prodUnavailable) {%>
+                            <div align="center"><font color="#999999">NA</font></div>
+                          <%} else {%>
+                            <div class="qtyinput qtyinput_fixedwidth">
+                              <a href="javascript:chgQty(<%=idx%>,'<%= qtyFldName %>',-<%= product.getQuantityIncrement()%>,<%= product.getQuantityMinimum() %>,<%= user.getQuantityMaximum(product) %>);" class="quantity_minus"><span>Increase quantity</span></a>
+                              <input class="qty" type="text" name="<%= qtyFldName %>" size="2" maxlength="2" value="<%= prodUnavailable ? "" : request.getParameter(qtyFldName) %>" onChange="javascript:chgQty(<%=idx%>,'<%= qtyFldName %>', 0, <%= product.getQuantityMinimum() %>, <%= user.getQuantityMaximum(product) %>);">
+                              <a href="javascript:chgQty(<%=idx%>,'<%= qtyFldName %>',<%= product.getQuantityIncrement() %>,<%= product.getQuantityMinimum() %>,<%= user.getQuantityMaximum(product) %>);" class="quantity_plus"><span>Decrease quantity</span></a>
+                            </div>
+                          <%}%>
+                         </td>
                          <td width="50%" valign="top">
                          <a href="javascript:popup('prod_desc_popup.jsp?catId=<%=(product.getParentNode()).getContentName()%>&prodId=<%=product.getContentName()%>','small');" onMouseover="swapImage('<%=cat%>_prodImg','<%= displayObj.getImagePath()%>')"><font class="<%=itemNameFont%>">
                          <% if (prodUnavailable) {%><font color="#999999"><%}%><%=displayObj.getItemName()%><% if (product.isUnavailable()) {%></font><%}%></font></a><%=salesUnitDescription%>

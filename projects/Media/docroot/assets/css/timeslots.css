@@ -153,7 +153,6 @@ div.tsDayNameE {
 .tsContentC a, .tsContainerE a {
 	height: 100%;
 	width: 100%;
-	text-decoration: none;
 	color: #333;
 	cursor: default;
 }
@@ -262,11 +261,6 @@ a.tsHiperlink {
 	color:#669933;
 	font-size: 10px;
 	font-family: Verdana, Arial, sans-serif;
-	text-decoration:none;
-}
-
-a:hover.tsHiperlink {
-	text-decoration:underline;
 }
 
 div.content_fixed td{
@@ -276,12 +270,10 @@ div.content_fixed td{
 
 a.tsCTBenefits {
 	color: #77A642;
-	text-decoration: underline;
 }
 
 a.tsNCBenefits {
 	color: #006400;
-	text-decoration: underline;
 }
 div.learnMoreTimeslot {
 	display:none;
@@ -297,7 +289,6 @@ div.holidayContent {
 a.holidayLearnMore {
 	color:#77A642;
 	cursor:pointer;
-	text-decoration:none;
 }
 div#MB_caption {
 	font: bold 12px "Lucida Grande",Arial,sans-serif;
@@ -738,10 +729,6 @@ td.noTopBorder {
 	color:#669933;
 	cursor:pointer;
 	text-decoration:none;
-}
-
-#legendCheckout a:hover {
-	text-decoration: underline;
 }
 
 .ecofriendlyImage {

@@ -588,35 +588,35 @@ div.clear,p.clear,span.clear { clear: both; display: none; }
 
 
 a.gLink			{ font-size: 9pt; }
-a.gLink:link	{ color: #5EBB64; text-decoration: underline; }
-a.gLink:visited	{ color: #000000; text-decoration: underline; }
-a.gLink:active	{ color: #0066FF; text-decoration: underline; }
-a.gLink:hover	{ color: #009900; text-decoration: overline underline; }
+a.gLink:link	{ color: #5EBB64;}
+a.gLink:visited	{ color: #000000;}
+a.gLink:active	{ color: #0066FF;}
+a.gLink:hover	{ color: #009900;}
 a.rLink			{ font-size: 9pt; }
-a.rLink:link	{ color: #900; text-decoration: underline; }
-a.rLink:visited	{ color: #000000; text-decoration: underline; }
-a.rLink:active	{ color: #0066FF; text-decoration: underline; }
-a.rLink:hover	{ color: #009900; text-decoration: overline underline; }
+a.rLink:link	{ color: #900;}
+a.rLink:visited	{ color: #000000;}
+a.rLink:active	{ color: #0066FF;}
+a.rLink:hover	{ color: #009900;}
 a.bLink			{ font-size: 9pt; }
-a.bLink:link	{ color: #009; text-decoration: underline; }
-a.bLink:visited	{ color: #000000; text-decoration: underline; }
-a.bLink:active	{ color: #0066FF; text-decoration: underline; }
-a.bLink:hover	{ color: #009900; text-decoration: overline underline; }
+a.bLink:link	{ color: #009;}
+a.bLink:visited	{ color: #000000;}
+a.bLink:active	{ color: #0066FF;}
+a.bLink:hover	{ color: #009900;}
 a.resendLink			{ font-size: 9pt; }
-a.resendLink:link		{ color: #639; text-decoration: underline; }
-a.resendLink:visited	{ color: #639; text-decoration: underline; }
-a.resendLink:active		{ color: #0066FF; text-decoration: underline; }
-a.resendLink:hover		{ color: #009900; text-decoration: overline underline; }
+a.resendLink:link		{ color: #639;}
+a.resendLink:visited	{ color: #639;}
+a.resendLink:active		{ color: #0066FF;}
+a.resendLink:hover		{ color: #009900;}
 a.resendCancelLink				{ font-size: 9pt; }
-a.resendCancelLink:link			{ color: #9F1010; text-decoration: underline; }
-a.resendCancelLink:visited		{ color: #9F1010; text-decoration: underline; }
-a.resendCancelLink:active		{ color: #0066FF; text-decoration: underline; }
-a.resendCancelLink:hover		{ color: #009900; text-decoration: overline underline; }
+a.resendCancelLink:link			{ color: #9F1010;}
+a.resendCancelLink:visited		{ color: #9F1010;}
+a.resendCancelLink:active		{ color: #0066FF;}
+a.resendCancelLink:hover		{ color: #009900;}
 a.statusLink			{ font-size: 9pt; }
-a.statusLink:link		{ color: #33c; text-decoration: underline; }
-a.statusLink:visited	{ color: #33c; text-decoration: underline; }
-a.statusLink:active		{ color: #0066FF; text-decoration: underline; }
-a.statusLink:hover		{ color: #009900; text-decoration: overline underline; }
+a.statusLink:link		{ color: #33c;}
+a.statusLink:visited	{ color: #33c;}
+a.statusLink:active		{ color: #0066FF;}
+a.statusLink:hover		{ color: #009900;}
 
 span.gcCheckAddressBoxMsg { font-weight: bold; }
 div.gcCheckAddressBoxGoodMsg {
@@ -742,10 +742,10 @@ span.gcCheckAddressBoxOrange { color: #f90; }
 }
 
 
-a.cust_gc_sub_nav_on:link      { color: #000000; text-decoration: none; }
-a.cust_gc_sub_nav_on:visited   { color: #000000; text-decoration: none; }
-a.cust_gc_sub_nav_on:active    { color: #000000; text-decoration: none; }
-a.cust_gc_sub_nav_on:hover     { color: #000000; text-decoration: none; }
+a.cust_gc_sub_nav_on:link      { color: #000000;}
+a.cust_gc_sub_nav_on:visited   { color: #000000;}
+a.cust_gc_sub_nav_on:active    { color: #000000;}
+a.cust_gc_sub_nav_on:hover     { color: #000000;}
 
 a.gcIcon:link img, a.gcIcon:visited img, a.gcIcon:active img, a.gcIcon:hover img {
 	border: 0px;
@@ -774,10 +774,10 @@ a.gcIcon:link img, a.gcIcon:visited img, a.gcIcon:active img, a.gcIcon:hover img
 		background-color: #f93;
 		cursor: pointer;
 	}
-	a.gc_CO_titleLink:link      { color: #fff; text-decoration: none; }
-	a.gc_CO_titleLink:visited   { color: #000000; text-decoration: none; }
-	a.gc_CO_titleLink:active    { color: #000000; text-decoration: none; }
-	a.gc_CO_titleLink:hover     { color: #ccc; text-decoration: none; }
+	a.gc_CO_titleLink:link      { color: #fff;}
+	a.gc_CO_titleLink:visited   { color: #000000;}
+	a.gc_CO_titleLink:active    { color: #000000;}
+	a.gc_CO_titleLink:hover     { color: #ccc;}
 
 	.gc_CO_usersCards {
 		float: left;

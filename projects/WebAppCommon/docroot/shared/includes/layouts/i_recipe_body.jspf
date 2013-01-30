@@ -387,10 +387,10 @@ if (!result.getErrors().isEmpty()) {
 </tr>
 <tr>
 	<td class="recipe_topLine<%=theme%>"><img src="/media_stat/images/layout/clear.gif" width="4" height="4"></td>
-	<td class="recipe_topLine<%=theme%>"><img src="/media_stat/images/layout/clear.gif" width="36" height="4"></td>
+	<td class="recipe_topLine<%=theme%>"><img src="/media_stat/images/layout/clear.gif" width="86" height="4"></td>
 	<td class="recipe_topLine<%=theme%>"><img src="/media_stat/images/layout/clear.gif" width="10" height="4"></td>
 	<td class="recipe_topLine<%=theme%>"><img src="/media_stat/images/layout/clear.gif" width="20" height="4"></td>
-	<td class="recipe_topLine<%=theme%>"><img src="/media_stat/images/layout/clear.gif" width="<%=W_RECIPE_BODY_TOTAL - 220%>" height="4"></td>
+	<td class="recipe_topLine<%=theme%>"><img src="/media_stat/images/layout/clear.gif" width="<%=W_RECIPE_BODY_TOTAL - 270%>" height="4"></td>
 	<td class="recipe_topLine<%=theme%>"><img src="/media_stat/images/layout/clear.gif" width="66" height="4"></td>
 	<td class="recipe_topLine<%=theme%>"><img src="/media_stat/images/layout/clear.gif" width="18" height="4"></td>
 	<td class="recipe_topLine<%=theme%>"><img src="/media_stat/images/layout/clear.gif" width="12" height="4"></td>
@@ -487,11 +487,14 @@ int prodIdx = 0;
                 } else {
                     %>
                     <input type="hidden" name="salesUnit_<%=prodIdx%>" value="<%= orderLine.getSalesUnit() %>">
-                    <td colspan="2">
-                        <% String quant = quantityFormatter.format(orderLine.getQuantity()); %>	
-                        <input type="text" name="quantity_<%=prodIdx%>" value="<%= !"0".equals(quant)?quant:"" %>" style="width: 36px" size="3" maxlength="4" class="text10" onChange="chgQty<%=prodIdx%>(0);" onBlur="pricing<%=prodIdx%>.setQuantity(this.value);">
+                    <td colspan="3">
+                      <% String quant = quantityFormatter.format(orderLine.getQuantity()); %>	
+                      <div class="qtyinput">
+                        <a href="javascript:chgQty<%=prodIdx%>(<%= -_productNode.getQuantityIncrement() %>);" class="quantity_minus"><span>Increase quantity</span></a>
+                        <input class="qty" type="text" size="4" name="quantity_<%=prodIdx%>" maxlength="2" value="<%= !"0".equals(quant)?quant:"" %>" onChange="chgQty<%=prodIdx%>(0);" onBlur="pricing<%=prodIdx%>.setQuantity(this.value);"/>
+                        <a href="javascript:chgQty<%=prodIdx%>(<%= _productNode.getQuantityIncrement() %>);" class="quantity_plus"><span>Decrease quantity</span></a>
+                      </div>
                     </td>
-                    <td><a href="javascript:chgQty<%=prodIdx%>(<%= _productNode.getQuantityIncrement() %>);"><img src="/media_stat/images/template/quickshop/grn_arrow_up.gif" width="10" height="9" border="0" vspace="1" alt="Increase quantity"></a><br><a href="javascript:chgQty<%=prodIdx%>(<%= -_productNode.getQuantityIncrement() %>);"><img src="/media_stat/images/template/quickshop/grn_arrow.gif" width="10" height="9" border="0" vspace="1" alt="Decrease quantity"></a></td>
 
                     <td><%if (!"".equals(orderLine.getLabel())){%><img src="/media_stat/images/layout/clear.gif" width="1" height="4"><br><img src="/media_stat/images/layout/clear.gif" width="2" height="1"><%=orderLine.getLabel()%><% } else { %>&nbsp;<% } %></td>
                     <%

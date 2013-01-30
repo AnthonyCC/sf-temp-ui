@@ -20,5 +20,5 @@
 		countStr = "_"+countStr;		
 %>
 
-<div class="seeall"><a href="<%= FourMinuteMealsHelper.allPageBaseUrl %>" style="text-decoration:none"><img src="/media_stat/images/4mm/see_all_btns/dpt_4mm_seeall_btn<%=countStr%>.gif" border="0" alt="see all <%=totalCount%> meals" /><br/>
-<span  style="text-decoration:underline">click here</span></a></div>
+<div class="seeall"><a href="<%= FourMinuteMealsHelper.allPageBaseUrl %>"><img src="/media_stat/images/4mm/see_all_btns/dpt_4mm_seeall_btn<%=countStr%>.gif" border="0" alt="see all <%=totalCount%> meals" /><br/>
+<span>click here</span></a></div>

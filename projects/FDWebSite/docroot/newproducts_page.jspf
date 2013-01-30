@@ -182,8 +182,8 @@ final int W_INDEX_RIGHT_CENTER = W_INDEX_TOTAL - 228 - W_INDEX_CENTER_PADDING;
     <tmpl:insert template='/common/template/filter_navigator.jsp'>
 
       <tmpl:put name="sidebarOther">
-      <div style="width:150px; margin-top: 15px; overflow: hidden;">
-        <a href="javascript:pop('/request_product.jsp',400,585)"><img src="/media_stat/images/template/search/ken_request_a_product.jpg" border="0" hspace="0" vspace="3" width="150" height="100"></a>
+      <div class="new_product_request_button">
+        <a href="javascript:pop('/request_product.jsp',400,585)"><img src="/media_stat/images/template/search/prodrequest.png" width="156" height="135"></a>
       </div>
       </tmpl:put>
       

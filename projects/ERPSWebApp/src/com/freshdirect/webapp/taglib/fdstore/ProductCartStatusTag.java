@@ -69,8 +69,7 @@ public class ProductCartStatusTag extends BodyTagSupport implements SessionName 
 					continue;
 				
 				if (orderLine.isSoldBySalesUnits()) {
-					quantity = -1;
-					break;
+					quantity++;
 				} else {
 					quantity += orderLine.getQuantity();
 				}

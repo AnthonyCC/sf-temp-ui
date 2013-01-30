@@ -285,4 +285,6 @@ if (menus != null && nav != null) {
 <% } %>
 
 </tmpl:insert>
+
 <% } %>
+<tmpl:get name="sidebarOther"/>

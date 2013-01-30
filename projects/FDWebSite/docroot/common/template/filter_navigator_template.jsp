@@ -7,7 +7,6 @@
 <tmpl:get name='expertRatingFilter'/>
 <tmpl:get name='customerRatingFilter'/>
 <tmpl:get name='otherFilters'/>
-<tmpl:get name='sidebarOther'/>
 </div>
 <tmpl:get name='recipesFilter'/>
 

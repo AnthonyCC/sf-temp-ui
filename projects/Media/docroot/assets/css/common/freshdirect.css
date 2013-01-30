@@ -79,3 +79,65 @@ h2.centerline span {
 .prod-descr-box {
 	height: 110px;
 }
+
+/* {{{ plus/minus buttons */
+.quantity_plus,
+.quantity_minus {
+  background-image: url(/media_stat/images/sprites/plusminus.png);
+  background-repeat: none;
+  display: inline-block;
+  vertical-align: top;
+  width: 27px;
+  height: 27px;
+  cursor: pointer;
+}
+
+.quantity_plus span,
+.quantity_minus span {
+  display: none;
+}
+
+.quantity_plus {
+  background-position: 0 0;
+}
+
+.quantity_plus:hover {
+  background-position: 0 -27px;
+}
+
+.quantity_minus {
+  background-position: -27px 0;
+}
+
+.quantity_minus:hover {
+  background-position: -27px -27px;
+}
+
+.qtyinput {
+  line-height: 27px;
+  vertical-align: middle;
+}
+
+.qtyinput input.qty {
+  font-size: 12px;
+  padding: 4px 2px;
+  width: 2em;
+}
+
+.qtyinput_fixedwidth {
+  width: 100px;
+}
+
+.qtyinput .qtyprice {
+  font-weight: bold;
+}
+
+.qtyinput input.qtypriceinput {
+  font-size: 11px;
+  font-weight: bold;
+}
+
+.qtyinput .qtymessage {
+  font-weight: bold;
+}
+/* }}} */

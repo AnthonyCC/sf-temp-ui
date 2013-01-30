@@ -20,9 +20,25 @@ td {
 	font-family: Verdana, Arial, sans-serif;
 }
 
-a:link { color : #336600; }
-a:visited { color : #336600; }
-a:active { color : #FF9900; }
+a {
+  text-decoration: none;
+  color : #336600;
+}
+a:link {
+  text-decoration: none;
+  color : #336600;
+}
+a:visited {
+  text-decoration: none;
+  color : #336600;
+}
+a:active {
+  text-decoration: none;
+  color : #FF9900;
+}
+a:hover {
+  text-decoration: underline;
+}
 
 img { border:none }
 
@@ -189,15 +205,15 @@ A.list		    { line-height: 12px; }
 	font-variant: small-caps;
 }
 
-a.recipe_category:link {color: #f93; text-decoration: none; }
-a.recipe_category:visited {color: #f93; text-decoration: none; }
-a.recipe_category:active {color: #f93; text-decoration: none; }
-a.recipe_category:hover {color: #f93; text-decoration: underline; }
+a.recipe_category:link {color: #f93;}
+a.recipe_category:visited {color: #f93;}
+a.recipe_category:active {color: #f93;}
+a.recipe_category:hover {color: #f93;}
 
-a.recipe_header:link {color: #f93; text-decoration: none; }
-a.recipe_header:visited {color: #f93; text-decoration: none; }
-a.recipe_header:active {color: #f93; text-decoration: none; }
-a.recipe_header:hover {color: #f93; text-decoration: underline; }
+a.recipe_header:link {color: #f93;}
+a.recipe_header:visited {color: #f93;}
+a.recipe_header:active {color: #f93;}
+a.recipe_header:hover {color: #f93;}
 
 .recipe_author { 
 	font-size: 9px; 
@@ -232,9 +248,9 @@ a.recipe_header:hover {color: #f93; text-decoration: underline; }
 	text-transform:uppercase;
 }
 
-a.recipe_tab:link {color: #FF9900; text-decoration: none; }
-a.recipe_tab:visited {color: #FF9900; text-decoration: none; }
-a.recipe_tab:active {color: #FF9900; text-decoration: none; }
+a.recipe_tab:link {color: #FF9900;}
+a.recipe_tab:visited {color: #FF9900;}
+a.recipe_tab:active {color: #FF9900;}
 a.recipe_tab:hover {color: #FF9900; text-decoration: none; }
 
 /* RECIPE THEME */
@@ -406,10 +422,10 @@ table.smartstore .body1 {
 		border-bottom: 1px solid #D5C6A7;
 	}
 	
-a.usq_left_nav_menu:link {color: #665544; text-decoration: none; }
-a.usq_left_nav_menu:visited {color: #665544; text-decoration: none; }
-a.usq_left_nav_menu:active {color: #98012E; text-decoration: none; }
-a.usq_left_nav_menu:hover {background-color: #665544; color: #FBF1D3; cursor: pointer; text-decoration: none; }	
+a.usq_left_nav_menu:link {color: #665544;}
+a.usq_left_nav_menu:visited {color: #665544;}
+a.usq_left_nav_menu:active {color: #98012E;}
+a.usq_left_nav_menu:hover {background-color: #665544; color: #FBF1D3; cursor: pointer;}	
 
 /* for IE hack */
 .usq_left_nav_menu_td
@@ -425,10 +441,10 @@ a.usq_left_nav_menu:hover {background-color: #665544; color: #FBF1D3; cursor: po
 		display: block;
 	}
 	
-a.usq_left_nav_menu_td:link {color: #665544; text-decoration: none; }
-a.usq_left_nav_menu_td:visited {color: #665544; text-decoration: none; }
-a.usq_left_nav_menu_td:active {color: #98012E; text-decoration: none; }
-a.usq_left_nav_menu_td:hover {background-color: #665544; color: #FBF1D3; cursor: pointer; text-decoration: none; }	
+a.usq_left_nav_menu_td:link {color: #665544;}
+a.usq_left_nav_menu_td:visited {color: #665544;}
+a.usq_left_nav_menu_td:active {color: #98012E;}
+a.usq_left_nav_menu_td:hover {background-color: #665544; color: #FBF1D3; cursor: pointer;}	
 	
 .usq_left_nav_menu_divider
 	{
@@ -450,10 +466,10 @@ a.usq_left_nav_menu_td:hover {background-color: #665544; color: #FBF1D3; cursor:
 		border-bottom: 1px solid #D5C6A7;
 	}	
 
-a.usq_left_nav_menu_on:link {color: #FBF1D3; text-decoration: none; }
-a.usq_left_nav_menu_on:visited {color: #FBF1D3; text-decoration: none; }
-a.usq_left_nav_menu_on:active {color: #98012E; text-decoration: none; }
-a.usq_left_nav_menu_on:hover {color: #FBF1D3; cursor: pointer; text-decoration: none; }	
+a.usq_left_nav_menu_on:link {color: #FBF1D3;}
+a.usq_left_nav_menu_on:visited {color: #FBF1D3;}
+a.usq_left_nav_menu_on:active {color: #98012E;}
+a.usq_left_nav_menu_on:hover {color: #FBF1D3; cursor: pointer;}	
 
 .usq_left_nav_submenu
 	{
@@ -863,12 +879,10 @@ div.control, div.slotRow, div.time {
 
 	.index_ordMod_cont a, .index_ordMod_cont a:active, .index_ordMod_cont a:link, .index_ordMod_cont a:visited {
 		font-family: Verdana, Arial, sans-serif;
-		text-decoration: none;
 		font-weight: bold;
 	}
 	
 	.index_ordMod_cont a:hover {
-		text-decoration: underline;
 		font-weight: bold;
 	}
 
@@ -922,7 +936,6 @@ div.control, div.slotRow, div.time {
 			font-family: Verdana, Arial, sans-serif;
 			font-size: 13px;
 			border: 0;
-			text-decoration: none;
 		}
 	/* generic, 18px font */
 		.butCont .butTextTitle18, .butCont .butTextTitle18:active, .butCont .butTextTitle18:link, .butCont .butTextTitle18:visited {
@@ -933,7 +946,6 @@ div.control, div.slotRow, div.time {
 			font-family: Verdana, Arial, sans-serif;
 			font-size: 18px;
 			border: 0;
-			text-decoration: none;
 		}
 	/* green text color */
 		.butCont .butTextGreen, .butCont .butTextGreen:active, .butCont .butTextGreen:link, .butCont .butTextGreen:visited {
@@ -1127,10 +1139,6 @@ div.control, div.slotRow, div.time {
 	.receipt_rightColumn .orderDetails a {
 		font-size: 12px;
 		font-weight: bold;
-		text-decoration: none;
-	}
-	.receipt_rightColumn .orderDetails a:hover {
-		text-decoration: underline;
 	}
 	.receipt_rightColumn div {
 		clear: both;
@@ -1371,15 +1379,12 @@ div.control, div.slotRow, div.time {
 	}
 	.ddpp .prodName a, .ddpp .prodName a:visited {
 		color: #333;
-		text-decoration: none;
 	}
 	.ddpp .prodName a:hover {
 		color: #360;
-		text-decoration: underline;
 	}
 	.ddpp .prodName a:active {
 		color: #f90;
-		text-decoration: underline;
 	}
 
 	.ddpp .price .styleAboutOnly {
@@ -1461,12 +1466,6 @@ div.control, div.slotRow, div.time {
 		text-align: left;
 		clear: both;
 		padding: 5px 3px;
-	}
-	.ddpp .sortSep a {
-		text-decoration: none;
-	}
-	.ddpp .sortSep a:active, .ddpp .sortSep a:hover {
-		text-decoration: underline;
 	}
 	.ddpp .ddpp_normal_prod_list {
 		width: 100%;
@@ -1579,7 +1578,6 @@ div.control, div.slotRow, div.time {
 	.ddpp_viewAllDiv a {
 		font-size: 13px;
 		line-height: 20px;
-		text-decoration: none;
 		font-weight: bold;
 		padding: 0 5px;
 	}

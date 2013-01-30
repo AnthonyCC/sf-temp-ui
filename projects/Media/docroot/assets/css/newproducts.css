@@ -116,3 +116,12 @@
 .newprod-grid .burst-new {
 	display: none;
 }
+
+.new_product_request_button {
+  margin-top: 10px;
+}
+
+.new_product_request_button img {
+  display: block;
+  margin: 0 auto;
+}

@@ -299,33 +299,29 @@ if (prodsAvailable > 0 && !oneNotAvailable) {
 			%>
 			<td style="padding-right:2px;">
 		<%
-			String displayQuantity="";
-			if (prodUnAvailable) {
-				qtyFldName = "hidnqty_"+itemIndex;
-				displayQuantity="";
-		%>
-				<font color="#999999">NA</font><INPUT TYPE="hidden" 
-			<%  } else {
-					itemShownIndex++;
-					skus.add( sku );
-					qtyFldName = "quantity_"+itemShownIndex;
-					displayQuantity=request.getParameter(qtyFldName);
-					if (displayQuantity==null)
-					{
-						//displayQuantity = quantityFormatter.format(displayProduct.getQuantityMinimum());
-						displayQuantity="";
-					}
-					prices.add(new Double(displayProduct.getQuantityMinimum()));
-			%>
-				<INPUT TYPE="text"
-			<%  }   %>
-				NAME="<%= qtyFldName %>" SIZE="2" MAXLENGTH="2"  CLASS="text11" value="<%= displayQuantity %>"
-				onChange="javascript:chgQty<%=catIndex%>(<%=itemShownIndex%>,'<%= qtyFldName %>', 0, <%= displayProduct.getQuantityMinimum() %>, <%= user.getQuantityMaximum(displayProduct) %>);">
-		
-			</td>
-			<td width="10"><%  if (prodUnAvailable) { %>&nbsp;<%  } else {    %>
-			<A HREF="javascript:chgQty<%=catIndex%>(<%=itemShownIndex%>,'<%= qtyFldName %>', <%= displayProduct.getQuantityIncrement() %>, <%= displayProduct.getQuantityMinimum() %>, <%= user.getQuantityMaximum(displayProduct) %>);"><img SRC="/media_stat/images/layout/grn_arrow_up.gif" width="10" height="9" border="0" style="margin: 1px 0;" alt="Increase quantity"></A><BR><A HREF="javascript:chgQty<%=catIndex%>(<%=itemShownIndex%>,'<%= qtyFldName %>', -<%= displayProduct.getQuantityIncrement() %>, <%= displayProduct.getQuantityMinimum() %>, <%= user.getQuantityMaximum(displayProduct) %>);"><img SRC="/media_stat/images/layout/grn_arrow_down.gif" width="10" height="9" border="0" style="margin: 1px 0;" alt="Decrease quantity"></A>        
-			<%  }   %></td>
+    String displayQuantity="";
+    if (prodUnAvailable) {
+        qtyFldName = "hidnqty_"+itemIndex;
+        displayQuantity="";
+%>
+        <font color="#999999">NA</font><INPUT TYPE="hidden" NAME="<%= qtyFldName %>" SIZE="2" MAXLENGTH="2"  CLASS="text11" value="<%= displayQuantity %>" onChange="javascript:chgQty(<%=itemShownIndex%>,'<%= qtyFldName %>', 0, <%= displayProduct.getQuantityMinimum() %>, <%= user.getQuantityMaximum(displayProduct) %>);">
+    <%  } else {
+            itemShownIndex++;
+            skus.add( sku );
+            qtyFldName = "quantity_"+itemShownIndex;
+            displayQuantity=request.getParameter(qtyFldName);
+            if (displayQuantity==null) displayQuantity = "";
+            prices.add(new Double(displayProduct.getQuantityMinimum()));
+    %>
+        <div class="qtyinput qtyinput_fixedwidth">
+          <a href="javascript:chgQty<%=catIndex%>(<%=itemShownIndex%>,'<%= qtyFldName %>', -<%= displayProduct.getQuantityIncrement() %>, <%= displayProduct.getQuantityMinimum() %>, <%= user.getQuantityMaximum(displayProduct) %>);" class="quantity_minus"><span>Increase quantity</span></a>
+          <INPUT TYPE="text" NAME="<%= qtyFldName %>" SIZE="2" MAXLENGTH="2"  CLASS="qty" value="<%= displayQuantity %>" onChange="javascript:chgQty<%=catIndex%>(<%=itemShownIndex%>,'<%= qtyFldName %>', 0, <%= displayProduct.getQuantityMinimum() %>, <%= user.getQuantityMaximum(displayProduct) %>);">
+          <a href="javascript:chgQty<%=catIndex%>(<%=itemShownIndex%>,'<%= qtyFldName %>', <%= displayProduct.getQuantityIncrement() %>, <%= displayProduct.getQuantityMinimum() %>, <%= user.getQuantityMaximum(displayProduct) %>);" class="quantity_plus"><span>Decrease quantity</span></a>
+        </div>
+    <%  }   %>
+
+    </NOBR></td>
+
 			<td style="padding-left:8px;">
 			<%
 				String unAvailableFontStart = "";

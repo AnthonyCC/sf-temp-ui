@@ -489,20 +489,23 @@ if (isAvailable ) {
 				sbRollover = null;
 	%>
 			<tr valign="top">
-				<td><input type="hidden" name="salesUnit_<%= prodCount %>" value="<%= salesUnitName %>">
+				<td colspan="2"><input type="hidden" name="salesUnit_<%= prodCount %>" value="<%= salesUnitName %>">
 				  <input type="hidden" name="skuCode_<%= prodCount %>" value="<%= dfltSku.getSkuCode() %>">
 				  <input type="hidden" name="catId_<%= prodCount %>" value="<%= optProd.getParentNode() %>">
 				  <input type="hidden" name="productId_<%= prodCount %>" value="<%= optProd %>">
-				  <input name ="quantity_<%=prodCount%>" value="<%=(request.getParameter("quantity_"+prodCount)==null ?"" : request.getParameter("quantity_"+prodCount))%>" type="text" size="3" onChange="chgNamedQty(pricing_<%=prodCount%>,'quantity_<%=prodCount%>',0,<%= optProd.getQuantityMinimum() %>,<%= user.getQuantityMaximum(optProd) %>,true)"></td>
 				  	<fd:IsAlcoholic skuCode='<%=dfltSku.getSkuCode() %>'>
 						<fd:USQLegalWarning id="productForm" tagCounter="<%=prodCount %>" quantityCheck="true" />
 						<input type="hidden" name='<%="alcoholic_" + prodCount %>' id='<%="alcoholic_" + prodCount %>' value='<%="quantity_" + prodCount %>'/>
 					</fd:IsAlcoholic>
+
+          <div class="qtyinput">
+            <a href="javascript:chgNamedQty(pricing_<%=prodCount%>,'quantity_<%=prodCount%>',-<%= optProd.getQuantityIncrement() %>,<%= optProd.getQuantityMinimum() %>,<%= user.getQuantityMaximum(optProd) %>,true);" class="quantity_minus"><span>Increase quantity</span></a>
+            <input class="qty" name ="quantity_<%=prodCount%>" value="<%=(request.getParameter("quantity_"+prodCount)==null ?"" : request.getParameter("quantity_"+prodCount))%>" type="text" size="3" onChange="chgNamedQty(pricing_<%=prodCount%>,'quantity_<%=prodCount%>',0,<%= optProd.getQuantityMinimum() %>,<%= user.getQuantityMaximum(optProd) %>,true)">
+            <a href="javascript:chgNamedQty(pricing_<%=prodCount%>,'quantity_<%=prodCount%>',<%= optProd.getQuantityIncrement() %>,<%= optProd.getQuantityMinimum() %>,<%= user.getQuantityMaximum(optProd) %>,true);" class="quantity_plus"><span>Decrease quantity</span></a>
+          </div>
+        </td>
 				
-				<td width="15"><a HREF="javascript:chgNamedQty(pricing_<%=prodCount%>,'quantity_<%=prodCount%>',<%= optProd.getQuantityIncrement() %>,<%= optProd.getQuantityMinimum() %>,<%= user.getQuantityMaximum(optProd) %>,true);"><img src="/media_stat/images/layout/grn_arrow_up.gif" width="10" height="9" border="0" vspace="1" alt="Increase quantity"></a><br>
-				  <a HREF="javascript:chgNamedQty(pricing_<%=prodCount%>,'quantity_<%=prodCount%>',-<%= optProd.getQuantityIncrement() %>,<%= optProd.getQuantityMinimum() %>,<%= user.getQuantityMaximum(optProd) %>,true);"><img src="/media_stat/images/layout/grn_arrow_down.gif" width="10" height="9" border="0" vspace="1" alt="Decrease quantity"></a></td>
-				
-				<td width="<%=W_COMPONENT_GROUP_MEAL_TOTAL-120%>"><a href="javascript:popup('prod_desc_popup.jsp?catId=<%=optProd.getParentNode()%>&prodId=<%=optProd%>','small')" <%=imgRollOver%>><%=dispObj.getItemNameWithoutBreaks()%></a><nobr> <%=(!"".equals(dispObj.getSalesUnitDescription()) ? dispObj.getSalesUnitDescription()+" - " : "")%><%=dispObj.getPrice()%></nobr>
+				<td width="<%=W_COMPONENT_GROUP_MEAL_TOTAL-215%>"><a href="javascript:popup('prod_desc_popup.jsp?catId=<%=optProd.getParentNode()%>&prodId=<%=optProd%>','small')" <%=imgRollOver%>><%=dispObj.getItemNameWithoutBreaks()%></a><nobr> <%=(!"".equals(dispObj.getSalesUnitDescription()) ? dispObj.getSalesUnitDescription()+" - " : "")%><%=dispObj.getPrice()%></nobr>
 				   <br><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
 			</tr>
 			<tr><td colspan="3"><span class="space4pix"><br><br></span></td></tr>
@@ -570,14 +573,16 @@ if (isAvailable ) {
     
 	<table width="<%=W_COMPONENT_GROUP_MEAL_TOTAL%>" cellpadding="0" cellspacing="0" border="0" align="center">
 		<tr valign="top">
-		  <td width="93">
-			<b>Quantity</b>&nbsp;<input type="text" CLASS="text11" size="3" name="quantity<%=suffix%>" value="<%= quantityFormatter.format(defaultQuantity) %>" onChange="chgNamedQty(pricing,'quantity<%=suffix%>',0,<%= productNode.getQuantityIncrement() %>,<%= productNode.getQuantityMinimum() %>,<%= user.getQuantityMaximum(productNode) %>);" onChange="pricing.setQuantity(this.value);">
-		  </td>
-		  <td align="left" WIDTH="14">
-			  <a HREF="javascript:chgNamedQty(pricing,'quantity<%=suffix%>',<%= productNode.getQuantityIncrement() %>,<%= productNode.getQuantityMinimum() %>,<%= user.getQuantityMaximum(productNode) %>);"><img src="/media_stat/images/layout/grn_arrow_up.gif" width="10" height="9" border="0" vspace="1" alt="Increase quantity"></a><br>
-			  <a HREF="javascript:chgNamedQty(pricing,'quantity<%=suffix%>',-<%=productNode.getQuantityIncrement() %>,<%= productNode.getQuantityMinimum() %>,<%= user.getQuantityMaximum(productNode) %>);"><img src="/media_stat/images/layout/grn_arrow_down.gif" width="10" height="9" border="0" vspace="1" alt="Decrease quantity"></a>
-		  </td>
-		  <td width="150">&nbsp;&nbsp;<b>Price</b>&nbsp;<INPUT class="text11bold" TYPE="text" NAME="price" SIZE="6" onChange="" onFocus="blur()" value=""></td>
+		  <td>
+        <div class="qtyinput">
+          <span class="qtymessage">Quantity</span>
+          <a href="javascript:chgNamedQty(pricing,'quantity<%=suffix%>',-<%=productNode.getQuantityIncrement() %>,<%= productNode.getQuantityMinimum() %>,<%= user.getQuantityMaximum(productNode) %>);" class="quantity_minus"><span>Increase quantity</span></a>
+          <input type="text" CLASS="qty" size="3" name="quantity<%=suffix%>" value="<%= quantityFormatter.format(defaultQuantity) %>" onChange="chgNamedQty(pricing,'quantity<%=suffix%>',0,<%= productNode.getQuantityIncrement() %>,<%= productNode.getQuantityMinimum() %>,<%= user.getQuantityMaximum(productNode) %>);" onChange="pricing.setQuantity(this.value);"/>
+          <a href="javascript:chgNamedQty(pricing,'quantity<%=suffix%>',<%= productNode.getQuantityIncrement() %>,<%= productNode.getQuantityMinimum() %>,<%= user.getQuantityMaximum(productNode) %>);" class="quantity_plus"><span>Decrease quantity</span></a>
+          <span class="qtyprice">Price</span>
+          <input class="qtypriceinput" type="text" name="price" size="6" onChange="" onFocus="blur()" value=""/>
+        </div>
+      </td>
 
                    <td width="<%=W_COMPONENT_GROUP_MEAL_TOTAL-257%>" align="right">
 	<% if(CartName.MODIFY_CART.equals(cartMode) ) {

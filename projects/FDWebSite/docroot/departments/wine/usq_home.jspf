@@ -74,8 +74,8 @@ FreshDirect.Wine.addTabItem("top-rated", "<%="tab_price_" + price.name().toLower
 			<table width="100%" cellpadding="0" cellspacing="0" border="0">
 				<tr>
 					<td align="left" nowrap="nowrap"><div class="title19 wine-narrow" style="padding: 0.4em 5px 0.25em;">Our Expert's Top Rated Wines</div></td>
-					<td align="right" nowrap="nowrap" class="text15" style="vertical-align: middle; text-decoration: underline; padding-right: 5px;">
-						<span style="cursor: pointer;" onclick="return FreshDirect.Wine.showExpertRatingPopup();">How USQ Expert Ratings work...</span>
+					<td align="right" nowrap="nowrap" class="text15" style="vertical-align: middle; padding-right: 5px;">
+						<span style="cursor: pointer;" class="clickable" onclick="return FreshDirect.Wine.showExpertRatingPopup();">How USQ Expert Ratings work...</span>
 					</td>
 				</tr>
 			</table>

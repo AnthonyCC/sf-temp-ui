@@ -730,18 +730,14 @@ if ( skuSize == 0 ) {
 			   						<%
 			   						if ( isQuickBuy ) {
 			   						%>
-									<table cellpadding="0" cellspacing="2" border="0" style="<%= alignRight ? "float: right; margin-right: 0px; margin-left: auto;" : "" %>"> 									
-										<%-- Nested Table 4 Quantity box with increment/decrement arrows AND price --%>
-										<tr>
-											<td style="padding-right:4px;" class="text11bold"><%= __prd.getQuantityText() %></td>
-											<td class="text11"><% if (__prd.getQuantityMinimum() != 1) { out.println(" *"); } %> <input type="text" class="text11" size="4" name="quantity" value="<%= quantityFormatter.format(defaultQuantity) %>" onChange="chgQty(0);" onBlur="pricing.setQuantity(this.value);" maxlength="2"></td>
-											<td width="12" align="right"><a href="javascript:chgQty(<%= __prd.getQuantityIncrement() %>);"><img src="/media_stat/images/layout/grn_arrow_up.gif" width="10" height="9" border="0" vspace="1" alt="Increase quantity"></a><br><a href="javascript:chgQty(<%= -__prd.getQuantityIncrement() %>);"><img src="/media_stat/images/layout/grn_arrow_down.gif" width="10" height="9" border="0" vspace="1" alt="Decrease quantity"></a></td>
-										</tr>
-										<tr>
-											<td colspan="3"><%@ include file="/shared/includes/product/i_minmax_note.jspf" %></td>
-										</tr>
-									</table>
-									<div style="clear: both; font-size: 0px;"></div>
+									<%-- Quantity box with plus/minus signs by each, price below --%>
+                  <div class="qtyinput" style="<%= alignRight ? "float: right;" : "" %>">
+                    <span class="qtymessage"><%= __prd.getQuantityText() %><% if (__prd.getQuantityMinimum() != 1) { out.println(" *"); } %></span>
+                    <a href="javascript:chgQty(<%= -__prd.getQuantityIncrement() %>);" class="quantity_minus"><span>Increase quantity</span></a>
+                    <input class="qty" type="text" size="4" name="quantity" maxlength="2" value="<%= quantityFormatter.format(defaultQuantity) %>" onChange="chgQty(0);" onBlur="pricing.setQuantity(this.value);"/>
+                    <a href="javascript:chgQty(<%= __prd.getQuantityIncrement() %>);" class="quantity_plus"><span>Decrease quantity</span></a>
+                  </div>
+                  <div><%@ include file="/shared/includes/product/i_minmax_note.jspf" %></div>
 									<table cellpadding="0" cellspacing="2" border="0" style="<%= alignRight ? "float: right; margin-right: 0px; margin-left: auto;" : "" %>"> 									
 										<tr>
 											<td style="padding-left:6px;" class="text11bold">Price</td>
@@ -752,20 +748,16 @@ if ( skuSize == 0 ) {
 			   						<%
 			   						} else {
 			   						%>
-									<table cellpadding="0" cellspacing="0" border="0" style="<%= alignRight ? "float: right; margin-right: 0px; margin-left: auto;" : "" %>"> 									
-										<%-- Nested Table 4 Quantity box with increment/decrement arrows AND price --%>
-										<tr>
-											<td style="padding-right:4px;" class="text11bold"><%= __prd.getQuantityText() %></td>
-											<td class="text11"><% if (__prd.getQuantityMinimum() != 1) { out.println(" *"); } %> <input type="text" class="text11" size="4" name="quantity" value="<%= quantityFormatter.format(defaultQuantity) %>" onChange="chgQty(0);" onBlur="pricing.setQuantity(this.value);" maxlength="2"></td>
-											<td width="12" align="right"><a href="javascript:chgQty(<%= __prd.getQuantityIncrement() %>);"><img src="/media_stat/images/layout/grn_arrow_up.gif" width="10" height="9" border="0" vspace="1" alt="Increase quantity"></a><br><a href="javascript:chgQty(<%= -__prd.getQuantityIncrement() %>);"><img src="/media_stat/images/layout/grn_arrow_down.gif" width="10" height="9" border="0" vspace="1" alt="Decrease quantity"></a></td>
-											<td style="padding-left:6px;" class="text11bold">Price</td>
-											<td style="padding-left:4px;"><input class="text11bold" type="text" name="PRICE" size="6" onChange="" onFocus="blur()" value=""></td>
-										</tr>
-										<tr>
-											<td colspan="5"><%@ include file="/shared/includes/product/i_minmax_note.jspf" %></td>
-										</tr>
-									</table>
-									<div style="clear: both; font-size: 0px;"></div>
+									<%-- Quantity box with plus/minus signs by each, price next --%>
+                  <div class="qtyinput" style="<%= alignRight ? "float: right;" : "" %>">
+                    <span class="qtymessage"><%= __prd.getQuantityText() %><% if (__prd.getQuantityMinimum() != 1) { out.println(" *"); } %></span>
+                    <a href="javascript:chgQty(<%= -__prd.getQuantityIncrement() %>);" class="quantity_minus"><span>Increase quantity</span></a>
+                    <input class="qty" type="text" size="4" name="quantity" maxlength="2" value="<%= quantityFormatter.format(defaultQuantity) %>" onChange="chgQty(0);" onBlur="pricing.setQuantity(this.value);"/>
+                    <a href="javascript:chgQty(<%= __prd.getQuantityIncrement() %>);" class="quantity_plus"><span>Decrease quantity</span></a>
+                    <span class="qtyprice">Price</span>
+                    <input class="qtypriceinput" type="text" name="PRICE" size="6" onChange="" onFocus="blur()" value=""/>
+                  </div>
+                  <div><%@ include file="/shared/includes/product/i_minmax_note.jspf" %></div>
 									<%
 									}
 									%>
@@ -776,18 +768,13 @@ if ( skuSize == 0 ) {
 
                 			<tr>
 								<td style="<%= CSSTableStyle %>">
-									<%-- Nested Table 5 Quantity box with increment/decrement arrows by each, price below --%>
-									<table cellpadding="0" cellspacing="0" border="0" style="<%= alignRight ? "float: right; margin-right: 0px; margin-left: auto;" : "" %>"> 
-										<tr>
-											<td style="padding-right:4px;" class="text11bold"><%= __prd.getQuantityText() %><% if (__prd.getQuantityMinimum() != 1) { out.println(" *"); } %></td>
-			                				<td class="text11"><input type="text" class="text11" size="4" name="quantity" value="<%= quantityFormatter.format(defaultQuantity) %>" onChange="chgQty(0);" onBlur="pricing.setQuantity(this.value);"></td>
-											<td width="12" align="right"><a href="javascript:chgQty(<%= __prd.getQuantityIncrement() %>);"><img src="/media_stat/images/layout/grn_arrow_up.gif" width="10" height="9" border="0" vspace="1" alt="Increase quantity"></a><br><a href="javascript:chgQty(<%= -__prd.getQuantityIncrement() %>);"><img src="/media_stat/images/layout/grn_arrow_down.gif" width="10" height="9" border="0" vspace="1" alt="Decrease quantity"></a></td>
-			                			</tr>
-										<tr>
-											<td colspan="3"><%@ include file="/shared/includes/product/i_minmax_note.jspf" %></td>
-										</tr>
-									</table>
-									<div style="clear: both; font-size: 0px;"></div>
+									<%-- Quantity box with plus/minus signs by each --%>
+                  <div class="qtyinput" style="<%= alignRight ? "float: right;" : "" %>">
+                    <span class="qtymessage"><%= __prd.getQuantityText() %><% if (__prd.getQuantityMinimum() != 1) { out.println(" *"); } %></span>
+                    <a href="javascript:chgQty(<%= -__prd.getQuantityIncrement() %>);" class="quantity_minus"><span>Increase quantity</span></a>
+                    <input class="qty" type="text" size="4" name="quantity" maxlength="2" value="<%= quantityFormatter.format(defaultQuantity) %>" onChange="chgQty(0);" onBlur="pricing.setQuantity(this.value);"/>
+                    <a href="javascript:chgQty(<%= __prd.getQuantityIncrement() %>);" class="quantity_plus"><span>Decrease quantity</span></a>
+                  </div>
 								</td>
 							</tr>	
 						<% }

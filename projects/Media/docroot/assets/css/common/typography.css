@@ -16,9 +16,9 @@ body {
 }
 
 /* Link colors */
-a, a:link { color: #360; text-decoration: underline; }
-a:visited { color: #360; }
-a:active { color: #f90; }
+a, a:link { color: #360;}
+a:visited { color: #360;}
+a:active { color: #f90;}
 
 /* Headings
 -------------------------------------------------------------- */

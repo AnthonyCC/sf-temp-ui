@@ -90,8 +90,6 @@ ProductModel firstProduct = null;
 FDProduct firstFDProduct=null;
 List<SkuModel> prodSkus = null;
 List<SkuModel> skus = new ArrayList<SkuModel>();
-String IMAGE_GREEN_ARROW_DOWN = "/media/images/layout/grn_arrow_down.gif";
-String IMAGE_GREEN_ARROW_UP = "/media/images/layout/grn_arrow_up.gif";
 String IMAGE_CLEAR = "/media/images/layout/clear.gif";
 float prodMinQuantity =1;
 float prodMaxQuantity=1;
@@ -416,9 +414,14 @@ String prodDescPath = null;
 <TD COLSPAN="4" WIDTH="<%=W_BULK_MEAT_PRODUCT_TOTAL%>"><IMG SRC="<%= IMAGE_CLEAR %>" WIDTH="1" HEIGHT="4"></TD>
 </TR>
 <TR VALIGN="TOP">
-<TD ALIGN="RIGHT"><FONT CLASS="text10bold"><%= quantityText %></FONT> <INPUT TYPE="text" class="text10" NAME="quantity" SIZE="3" MAXLENGTH="4" value="<%=selectedQty!=null?selectedQty:prodMinQuantity+""%>" onChange="chgQty(0,<%= prodMinQuantity%>,<%= prodMaxQuantity%>);"></TD>
-<TD WIDTH="15"><A HREF="javascript:chgQty(<%= prodIncrement%>,<%= prodMinQuantity%>,<%= prodMaxQuantity%>);"><img SRC="<%= IMAGE_GREEN_ARROW_UP %>" width="10" height="9" border="0" style="margin: 1px 0;" alt="greater quantity"></A><BR>
-<A HREF="javascript:chgQty(<%= -prodIncrement%>,<%= prodMinQuantity%>,<%= prodMaxQuantity%>);"><img SRC="<%= IMAGE_GREEN_ARROW_DOWN %>" width="10" height="9" border="0" style="margin: 1px 0;" alt="lesser quantity"></A></TD>
+  <TD colspan="2" ALIGN="RIGHT">
+    <div class="qtyinput" style="float: right;">
+      <span class="qtymessage"><%= quantityText %></span>
+      <a href="javascript:chgQty(<%= -prodIncrement%>,<%= prodMinQuantity%>,<%= prodMaxQuantity%>);" class="quantity_minus"><span>Increase quantity</span></a>
+      <input class="qty" type="text" size="4" name="quantity" maxlength="4" value="<%=selectedQty!=null?selectedQty:prodMinQuantity+""%>" onChange="chgQty(0,<%= prodMinQuantity%>,<%= prodMaxQuantity%>);"/>
+      <a href="javascript:chgQty(<%= prodIncrement%>,<%= prodMinQuantity%>,<%= prodMaxQuantity%>);" class="quantity_plus"><span>Decrease quantity</span></a>
+    </div>
+  </TD>
 <TD colspan="2" ALIGN="RIGHT"><FONT CLASS="text10bold"><%
 if (isOnePricedByLb) { %>
 <A HREF="javascript:popup('/help/estimated_price.jsp','small')">Est. Price:</a>

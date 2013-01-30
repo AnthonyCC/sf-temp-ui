@@ -69,8 +69,7 @@ public class ProductCartStatusMessageTag extends BodyTagSupport implements Sessi
 					continue;
 				
 				if (orderLine.isSoldBySalesUnits()) {
-					quantity = -1;
-					break;
+					quantity++;
 				} else {
 					quantity += orderLine.getQuantity();
 				}
