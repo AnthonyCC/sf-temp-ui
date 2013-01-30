@@ -119,7 +119,7 @@ public class LineItemDiscountApplicator implements PromotionApplicatorI {
 			*/
 			Map<String,Integer>skuCountMap =cart.getSkuCount();
 			Integer skuCount = skuCountMap.get(promo.getPromotionCode());
-			if(null !=skuCount){
+			if(null ==skuCount){
 				skuCount= new Integer(0);
 			}
 			skuCountMap.put(promo.getPromotionCode(),skuCount);
