@@ -88,17 +88,10 @@ IS
               ) Y,
               ( 
                   select bsx.ROUTE_NO, bsx.stop_sequence
-                      from transp.handoff_batch bx, transp.handoff_batchstop bsx, transp.eventlogbook el, transp.eventstopnumberbreakdown els
+                      from transp.handoff_batch bx, transp.handoff_batchstop bsx, transp.eventlogbook el, transp.eventstopnumberbreakdown els, transp.eventtype et
                       where bx.batch_id = bsx.batch_id and bx.delivery_date = trunc(sysdate)  and bx.batch_status in ('CPD','CPD/ADC','CPD/ADF')  
-                      and el.ID = els.EVENTLOGID and  bx.delivery_date = el.eventdate
-                      and el.ROUTENUMBER = bsx.route_no                  
-                      and els.STOPNUMBER = bsx.stop_sequence
-                      GROUP BY BSX.ROUTE_NO, bsx.stop_sequence
-                  UNION
-                        select bsx.ROUTE_NO, bsx.stop_sequence
-                      from transp.handoff_batch bx, transp.handoff_batchstop bsx, transp.moteventlogbook el, transp.motstopnumberbreakdown els
-                      where bx.batch_id = bsx.batch_id and bx.delivery_date = trunc(sysdate)  and bx.batch_status in ('CPD','CPD/ADC','CPD/ADF')  
-                      and el.ID = els.EVENTLOGID and  bx.delivery_date = el.eventdate
+                      and el.ID = els.EVENTLOGID and  bx.delivery_date = el.eventdate and el.eventtype = et.id
+                      and et.id = '24'
                       and el.ROUTENUMBER = bsx.route_no                  
                       and els.STOPNUMBER = bsx.stop_sequence
                       GROUP BY BSX.ROUTE_NO, bsx.stop_sequence
