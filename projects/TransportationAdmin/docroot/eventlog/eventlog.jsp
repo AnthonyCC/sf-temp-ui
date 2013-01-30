@@ -452,6 +452,21 @@ function showEventForm (showCurrDate) {
 										$('#form-container .form-title').html('Event added sucessfully!');										
 									});
 									showGrid();
+									$('#eventForm').clearForm();			
+									$('#eventDate').val('');
+									$('#form-container .form-message').fadeOut();			
+									$('#form-container form').fadeOut(200);
+									 $('#form-container .form-content').animate({
+										height: 40
+									}, function () {
+										dialog.data.fadeOut(200, function () {
+											dialog.container.fadeOut(200, function () {
+												dialog.overlay.fadeOut(200, function () {
+													$.modal.close();
+												});
+											});
+										});
+									});
 								},
 								error : function(msg) {
 									var errorText = eval('(' + msg.responseText + ')');
@@ -613,7 +628,7 @@ function lookUpWindows(routeId, selWindow) {
 						</select>
 						
 						<label for='form-description'>Comment</label>
-						<textarea id='description' class='form-input' name='description' cols='40' rows='3' tabindex='8' style="resize:none; width: 206px; height: 96px;"></textarea>
+						<textarea id='description' class='form-input' name='description' cols='40' rows='3' onKeyPress="return ( this.value.length < 250 );" tabindex='8' style="resize:none; width: 206px; height: 96px;"></textarea>
 						
 						<label for='form-crossStreet'>Cross Street</label>
 						<input type='text' id='crossStreet' class='form-input' name='crossStreet' />

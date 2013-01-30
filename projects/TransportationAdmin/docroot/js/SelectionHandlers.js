@@ -142,7 +142,7 @@
           		var remFrom = document.getElementById(remFromId);
           		var addBackTo = document.getElementById(addBackToId);
 
-          		if (remFromId == null || remFromId == '' || remFrom == null || remFrom == '') { return false; }
+          		if (remFromId == null || remFromId == '' || remFrom == null || remFrom.value === "" || (remFrom.value != null && remFrom.value == " " )) { return false; }
           		
           		var inputText = remFrom.value;
           		if (inputText.indexOf('-') > 0) {

@@ -459,7 +459,7 @@ public class TransportationAdminProperties {
 		defaults.put(PROP_EVENTLOG_MAILTO, "applicationdevelopment@freshdirect.com");
 		defaults.put(PROP_EVENTLOG_MAILCC, "applicationdevelopment@freshdirect.com");
 		defaults.put(PROP_EVENTLOG_MAILSUBJECT, "Eventlog Notification");
-		defaults.put(PROP_EVENTLOG_DATALOOKUP, "-30");		
+		defaults.put(PROP_EVENTLOG_DATALOOKUP, "-2");		
 
 		refresh();
 	}
