@@ -1,5 +1,7 @@
 package com.freshdirect.dataloader.payment;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -49,9 +51,13 @@ public class EBTSettlementCronRunner {
 			sb.settleEBTSales();
 			LOGGER.info("EBTSettlementCron finished");
 		} catch (Exception e) {
-			LOGGER.error(e);
-			LOGGER.info(new StringBuilder("EBTSettlementCron failed with Exception...").append(e.toString()).toString());
-			email(Calendar.getInstance().getTime(), e.toString());
+			StringWriter sw = new StringWriter();
+			e.printStackTrace(new PrintWriter(sw));
+			String _msg=sw.getBuffer().toString();
+			LOGGER.info(new StringBuilder("EBTSettlementCron failed with Exception...").append(_msg).toString());
+			LOGGER.error(_msg);
+			if(_msg!=null && _msg.indexOf("timed out while waiting to get an instance from the free pool")==-1)
+				email(Calendar.getInstance().getTime(), _msg);			
 		} finally {
 			try {
 				if (ctx != null) {
