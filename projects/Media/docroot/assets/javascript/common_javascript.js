@@ -1193,9 +1193,13 @@ function doOverlayWindow(olURL) {
 		return {
 			trackAddToCartEvent: trackAddToCartEvent
 		}
-	})(); 
+	})();
+	
+	/* setup dialog
+	 * returns reference to dialog
+	 */
+	function setupOverlayDialog() {
 
-	function doOverlayDialog(olURL, olData) {
 		var overlayDialog = $jq('<div id="uimodal-output"></div>');
 
 		$jq("body").append(overlayDialog);
@@ -1254,6 +1258,13 @@ function doOverlayWindow(olURL) {
 			}
 		});
 		
+		return overlayDialog;
+	}
+
+	/* use dialog by url */
+	function doOverlayDialog(olURL, olData) {
+		var overlayDialog = setupOverlayDialog();
+		
 		if (olData != 'undefined' && (typeof olData).toLowerCase() == 'object') {
 			//if data is passed in, POST it
 			overlayDialog.load(olURL, olData, function() { overlayDialog.dialog('open'); });
@@ -1261,6 +1272,27 @@ function doOverlayWindow(olURL) {
 			overlayDialog.load(olURL, function() { overlayDialog.dialog('open'); });
 		}
 
+		return overlayDialog;
+	}
+	
+	/* use dialog by css selector */
+	function doOverlayDialogBySelector(olSelector) {
+		var overlayDialog = setupOverlayDialog();
+		
+		overlayDialog.html($jq(olSelector).html());
+		overlayDialog.dialog('open');
+		
+		return overlayDialog;
+	}
+	
+	/* use dialog by html */
+	function doOverlayDialogByHtml(olHtml) {
+		var overlayDialog = setupOverlayDialog();
+		
+		overlayDialog.html(olHtml);
+		overlayDialog.dialog('open');
+
+		return overlayDialog;
 	}
 
 	function dialogWindowResizeFunc() {
@@ -1295,7 +1327,7 @@ function doOverlayWindow(olURL) {
 		}
 
 		overlayDialog.dialog('option', 'position', overlayDialog.dialog('option', 'position'));
-	};
+	}
 
 	var dialogWindowResizeTimer;
 	var dialogDocReady = false;
