@@ -710,13 +710,17 @@ public class ErpNutritionSessionBean extends SessionBeanSupport {
 			Map<String, NutritionPanel> m = new HashMap<String, NutritionPanel>();
 
 			while ( rs.next() ) {
-				NutritionPanel panel = new NutritionPanel();
-				panel.setId( rs.getString( "ID" ) );
-				panel.setSkuCode( rs.getString( "SKU_CODE" ) );
-				panel.setType( NutritionPanelType.valueOf( rs.getString( "TYPE" ) ) );
-				panel.setLastModifiedDate( rs.getTimestamp( "DATE_MODIFIED" ) );
-				populateNutritionPanel( panel, conn, ps, null );
-				m.put( panel.getSkuCode(), panel );
+				try {
+					NutritionPanel panel = new NutritionPanel();
+					panel.setId( rs.getString( "ID" ) );
+					panel.setSkuCode( rs.getString( "SKU_CODE" ) );
+					panel.setType( NutritionPanelType.valueOf( rs.getString( "TYPE" ) ) );
+					panel.setLastModifiedDate( rs.getTimestamp( "DATE_MODIFIED" ) );
+					populateNutritionPanel( panel, conn, ps, null );
+					m.put( panel.getSkuCode(), panel );
+				} catch (Exception e) {
+					LOGGER.warn( "Failed to load a nutrition panel, skipping", e );
+				}
 			}
 			ps.close();
 			rs.close();
@@ -752,12 +756,17 @@ public class ErpNutritionSessionBean extends SessionBeanSupport {
 			}
 
 			NutritionPanel panel = new NutritionPanel();
-			panel.setId( rs.getString( "ID" ) );
-			panel.setSkuCode( rs.getString( "SKU_CODE" ) );
-			panel.setType( NutritionPanelType.valueOf( rs.getString( "TYPE" ) ) );
-			panel.setLastModifiedDate( rs.getTimestamp( "DATE_MODIFIED" ) );
-
-			populateNutritionPanel( panel, conn, ps, rs );
+			try {
+				panel.setId( rs.getString( "ID" ) );
+				panel.setSkuCode( rs.getString( "SKU_CODE" ) );
+				panel.setType( NutritionPanelType.valueOf( rs.getString( "TYPE" ) ) );
+				panel.setLastModifiedDate( rs.getTimestamp( "DATE_MODIFIED" ) );
+	
+				populateNutritionPanel( panel, conn, ps, rs );
+			} catch (Exception e) {
+				LOGGER.warn( "Failed to load nutrition panel for "+skuCode, e );
+				return null;
+			}
 
 			return panel;
 
