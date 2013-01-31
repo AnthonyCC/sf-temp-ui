@@ -2,6 +2,7 @@ package com.freshdirect.transadmin.api.controller;
 
 import java.text.ParseException;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 
@@ -12,6 +13,7 @@ import org.apache.log4j.Logger;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.freshdirect.framework.service.ServiceException;
+import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.transadmin.api.model.ListDataMessage;
 import com.freshdirect.transadmin.api.model.Message;
@@ -50,15 +52,27 @@ public class DashboardDataApiController extends BaseApiController {
 		if (ACTION_GET_PLANTCAPACITY.equals(action)) {
 
 			ListDataMessage result = new ListDataMessage();
-			String dayofweek;
-			try {
-				dayofweek = TransStringUtil.getServerDay(new Date());
+			String dayofweek = null;
+			String dispatchDate = request.getParameter("dispatchDate");
+			Calendar baseDate = DateUtil.truncate(Calendar.getInstance());					
+			baseDate.add(Calendar.DATE, 1);
+			try{
+				if(dispatchDate!=null){
+					dayofweek = TransStringUtil.getServerDay(TransStringUtil.getDate(dispatchDate));
+				}else{
+					dayofweek = TransStringUtil.getServerDay(baseDate.getTime());
+				}
+				}catch (ParseException e) {
+					try {
+						dayofweek = TransStringUtil.getServerDay(baseDate.getTime());
+					} catch (ParseException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+				} 
 				Collection capacities = getDashboardManagerService().getPlantCapacity(dayofweek);
 				result.setRows(capacities);
-			} catch (ParseException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			 
 			setResponseMessage(model, result);
 			
 		}

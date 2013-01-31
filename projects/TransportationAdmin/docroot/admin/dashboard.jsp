@@ -80,26 +80,56 @@
 	    }
 	  }
 
+  function removeRow1(current_row) {
+	  var dd = grid.getData();
+	  dd.splice(current_row,1);
+	  var r = current_row;
+	  while (r<dd.length){
+	    grid.invalidateRow(r);
+	    r++;
+	  }
+	  grid.updateRowCount();
+	  grid.render();
+	  grid.scrollRowIntoView(current_row-1);
+	  }
+  function removeRow2(current_row) {
+	  var dd = pd_grid.getData();
+	  dd.splice(current_row,1);
+	  var r = current_row;
+	  while (r<dd.length){
+		  pd_grid.invalidateRow(r);
+	    r++;
+	  }
+	  pd_grid.updateRowCount();
+	  pd_grid.render();
+	  pd_grid.scrollRowIntoView(current_row-1);
+	  }
+  
 	  var grid, pd_grid;
 	  var data = [];
 	  var pd_data = [];
 	  var pc_columns = [
-	    {id: "dispatchTime", name: "Plant Dispatch", field: "dispatchTime", minWidth: 125,editor: TimeEditor },
-	    {id: "capacity", name: "Cumulative Capacity", field: "capacity", width: 150, editor: Slick.Editors.Integer, validator: requiredFieldValidator}	   
+	    {id: "dispatchTime", name: "Plant Dispatch", field: "dispatchTime", minWidth: 140,editor: TimeEditor, validator: requiredFieldValidator },
+	    {id: "capacity", name: "Cumulative Capacity", field: "capacity", width: 130, editor: Slick.Editors.Integer, validator: requiredFieldValidator },
+	    {id: 'id', name: '', field: 'dispatchTime',  width: 15, formatter: function (r, c, id, def, datactx) { 
+	           return '<a href="#" onclick="removeRow1(' + r + ')">X</a>'; }
+	      }
 	    ];
 	  var pd_columns = [
-	            	    {id: "dispatchTime", name: "TransApp Dispatch", field: "dispatchTime", minWidth: 125,editor: TimeEditor  },
-	            	    {id: "plantDispatch", name: "Plant Dispatch", field: "plantDispatch", width: 150,editor: TimeEditor }
+	            	    {id: "dispatchTime", name: "TransApp Dispatch", field: "dispatchTime", minWidth: 125,editor: TimeEditor, validator: requiredFieldValidator  },
+	            	    {id: "plantDispatch", name: "Plant Dispatch", field: "plantDispatch", width: 125,editor: TimeEditor, validator: requiredFieldValidator },
+	            	    {id: 'id', name: '', field: 'dispatchTime',  width: 15, formatter: function (r, c, id, def, datactx) { 
+	         	           return '<a href="#" onclick="removeRow2(' + r + ')">X</a>'; }
+	         	      }
 	            	    ];
 	  
 	  var options = {
 	    editable: true,
 	    enableAddRow: true,
-	    enableCellNavigation: true,
 	    asyncEditorLoading: false,
 	    autoEdit: false,
 	  };
-
+	  
 	  function TimeEditor(args) {
 		  var $input;
 		  var scope = this;
@@ -174,11 +204,8 @@
 		  }
 	  
 		 
-
-	$(document).ready(function () {
-			
-		$("#dispatchDate" ).datepicker();
-		$.ajax({
+	  function getCapacityData() {
+	  $.ajax({
 			url : "v/1/list/plantcapacity/"+$("#dispatchDate").val(),
 			type : "GET",
 			contentType : "application/json",
@@ -199,13 +226,15 @@
 				$('#myGrid').show();
 				
 				grid.onAddNewRow.subscribe(function (e, args) {
-					 console.log(args); 
+					
 				      var item = args.item;
 				      grid.invalidateRow(data.length);
 				      data.push(item);
 				      grid.updateRowCount();
 				      grid.render();
 				    });
+				
+				 grid.onKeyDown.subscribe(activateEdit);
 				   
 			},
 			error : function(msg) {
@@ -213,48 +242,67 @@
 				$('#pc_message').html('Fetch Plant Capacity Failed.');
 			}
 		});
-		
-		$.ajax({
-			url : "v/1/list/plantdispatch/",
-			type : "GET",
-			contentType : "application/json",
-			dataType : "json",
-			async : true,
-			success : function(json) {
-				
-				for(var i=0;i < json.rows.length;i++) {
-					var d = (pd_data[i] = {});
+	  }	
+	  
+	  
+	  function activateEdit(e, args) {
+		  var keyCode = $.ui.keyCode,
+		      col,
+		      activeCell = this.getActiveCell();
 
-				      d["dispatchTime"] = json.rows[i].dispatchTime.timeString;
-				      d["plantDispatch"] = json.rows[i].plantDispatch.timeString;
+		  /////////////////////////////////////////////////////////////////////
+		  // Allow instant editing like MS Excel (without presisng enter first
+		  // to go into edit mode)
+		  if (activeCell) {
+		    col = activeCell.cell;
+
+		    // Only for editable fields and not if edit is already in progress
+		    if (this.getColumns()[col].editor && !this.getCellEditor()) {
+		      // Ignore keys that should not activate edit mode
+		      if ($.inArray(e.keyCode, [keyCode.LEFT, keyCode.RIGHT, keyCode.UP,
+		                               keyCode.DOWN, keyCode.PAGE_UP, keyCode.PAGE_DOWN,
+		                               keyCode.SHIFT, keyCode.CONTROL, keyCode.CAPS_LOCK,
+		                               keyCode.HOME, keyCode.END, keyCode.INSERT,
+		                               keyCode.ENTER]) === -1) {
+		        this.editActiveCell();
+		      }
+		    }
+		  }
+		}
+	  
+	  function getDispatchMapData(){
+		  
+		  $.ajax({
+				url : "v/1/list/plantdispatch/",
+				type : "GET",
+				contentType : "application/json",
+				dataType : "json",
+				async : true,
+				success : function(json) {
+					
+					for(var i=0;i < json.rows.length;i++) {
+						var d = (pd_data[i] = {});
+
+					      d["dispatchTime"] = json.rows[i].dispatchTime.timeString;
+					      d["plantDispatch"] = json.rows[i].plantDispatch.timeString;
+					}
+					pd_grid = new Slick.Grid("#pdGrid", pd_data, pd_columns, options);
+					pd_grid.setSelectionModel(new Slick.RowSelectionModel());
+					$('#pdGrid').show();
+					pd_grid.onKeyDown.subscribe(activateEdit);
+					
+				},
+				error : function(msg) {
+					$('#pd_message').css('color','#ff0000');
+					$('#pd_message').html('Fetch Plant Dispatch Failed.');
 				}
-				pd_grid = new Slick.Grid("#pdGrid", pd_data, pd_columns, options);
-				pd_grid.setSelectionModel(new Slick.RowSelectionModel());
-				$('#pdGrid').show();
-				
-				pd_grid.onAddNewRow.subscribe(function (e, args) {
-					 console.log(args); 
-				      var item = args.item;
-				      pd_grid.invalidateRow(pd_data.length);
-				      pd_data.push(item);
-				      pd_grid.updateRowCount();
-				      pd_grid.render();
-				    });
-				    
-				 
-				 pd_grid.onValidationError.subscribe(function (e, args) {
-				      alert(args.validationResults.msg);
-				    });
-				  
-				
-			},
-			error : function(msg) {
-				$('#pd_message').css('color','#ff0000');
-				$('#pd_message').html('Fetch Plant Dispatch Failed.');
-			}
-		});
-		
-		
+			});
+	  }
+	  
+	$(document).ready(function () {
+		$("#dispatchDate" ).datepicker();
+		getCapacityData();
+		getDispatchMapData();
 	  });
 	
 	 $(function() {
@@ -276,9 +324,6 @@
 						$('#pd_message').html('Save Plant Dispatch Failed.');
 					}
 				});
-				
-		        
-		        
 		      }
 		    );
 		  });
@@ -303,9 +348,6 @@
 					}
 					
 				});
-				
-		        
-		        
 		      }
 		    );
 		  });

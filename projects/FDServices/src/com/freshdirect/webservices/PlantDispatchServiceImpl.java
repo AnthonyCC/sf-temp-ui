@@ -48,7 +48,6 @@ public class PlantDispatchServiceImpl implements PlantDispatchService {
 			{
 				data.setCumlplannedCapacity(data.getPlannedCapacity()+cumlPlannedCapacity);
 				data.setTotalOrders(data.getOrders()+cumlOrders);
-				System.out.println(cumlPlannedCapacity+ " "+cumlOrders+ " "+data.getPlannedCapacity()+" ");
 				cumlPlannedCapacity  += data.getPlannedCapacity();
 				cumlOrders += data.getOrders();
 			}

@@ -25,7 +25,7 @@ public class DashboardController extends AbstractMultiActionController {
 	public ModelAndView dashboardHandler(HttpServletRequest request, HttpServletResponse response) {
 
 		ModelAndView mav =  new ModelAndView("dashboardDataView");
-		mav.getModel().put("dispatchDate", TransStringUtil.getCurrentDate());
+		mav.getModel().put("dispatchDate", TransStringUtil.getNextDate());
 		return mav;
 	}
 	
