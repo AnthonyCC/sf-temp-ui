@@ -9,7 +9,8 @@ var drugPanel = function($,data,config){
       FREETEXT = "FREETEXT",
       T_DRUG = "DRUG",
       T_PET = "PET",
-      T_BABY = "BABY";
+      T_BABY = "BABY",
+      T_SUPPL = "SUPPL";
   
   var DrugSectionType = {
       ingredient : INGREDIENT,
@@ -20,7 +21,8 @@ var drugPanel = function($,data,config){
   var PanelTypes = [
     { name: 'drug', value: T_DRUG },
     { name: 'pet', value: T_PET },
-    { name: 'baby', value: T_BABY }
+    { name: 'baby', value: T_BABY },
+    { name: 'supplement', value: T_SUPPL }
   ];
 
   // TODO autocomplete list
@@ -72,6 +74,15 @@ var drugPanel = function($,data,config){
           tagName:'span',
           templateSeparator:'<hr>',
           templateIngredient:'<span class="value1">{{value1}}</span>{{#showValues}}<span class="dotted-wrapper"><span class="ingredientValue">{{ingredientValue}} {{uom}}</span><span class="dotted"></span></span>{{/showValues}}',
+          templateTable:'<span class="value1"><span class="val">{{value1}}</span></span><span class="value2"><span class="val">{{value2}}</span></span><span class="hsep"></span>',
+          templateFreetext:'{{#newline}}<div class="linebreak"></div>{{/newline}}<span class="value1">{{#bulleted}} <span class="bullet"></span>&nbsp;{{/bulleted}}{{value1}}</span>'
+        }
+      },
+      suppl: {
+        DrugItem:{
+          tagName:'span',
+          templateSeparator:'<hr>',
+          templateIngredient:'<span class="value1">{{value1}}</span>{{#showValues}}<span class="ingredientValue">{{ingredientValue}} {{uom}}</span>{{/showValues}} <span class="value2">{{value2}}</span>',
           templateTable:'<span class="value1"><span class="val">{{value1}}</span></span><span class="value2"><span class="val">{{value2}}</span></span><span class="hsep"></span>',
           templateFreetext:'{{#newline}}<div class="linebreak"></div>{{/newline}}<span class="value1">{{#bulleted}} <span class="bullet"></span>&nbsp;{{/bulleted}}{{value1}}</span>'
         }
@@ -186,21 +197,21 @@ var drugPanel = function($,data,config){
   };
   
   var setDirty = function(dirty){
-	  var $saveButton = $('#savebutton');
-	  window.drogPanelWarning = dirty;
-	  
-	  if(dirty) {
-		  $saveButton.html('Save panel');
-		  $saveButton.removeAttr('disabled');
-	  } else {
-		  $saveButton.html('Saved');
-		  $saveButton.attr('disabled','disabled');
-	  }
-	  
+    var $saveButton = $('#savebutton');
+    window.drogPanelWarning = dirty;
+    
+    if(dirty) {
+      $saveButton.html('Save panel');
+      $saveButton.removeAttr('disabled');
+    } else {
+      $saveButton.html('Saved');
+      $saveButton.attr('disabled','disabled');
+    }
+    
   };
   
   var dirtySaveButton = function(){
-	  setDirty(true);
+    setDirty(true);
   };
   
   
@@ -724,24 +735,24 @@ var drugPanel = function($,data,config){
     container.delegate('.drugpanel input[type="number"]','change',dirtySaveButton);
     $(document).delegate('#savebutton','click',function(){
       var data = DrugPanel.getData(),
-      	  $this = $('#savebutton'),
-      	  oldText = $this.html();
+          $this = $('#savebutton'),
+          oldText = $this.html();
 
       $this.html('Saving ...');
       $this.attr('disabled','disabled');
       $.ajax({
-    	  url:window.location+'&redirect=false',
-    	  type:"POST",
-    	  data:{
-    	  	skuCode:DrugPanel.skuCode,
-    	  	panel:JSON.stringify(data)
-      	  },
-      	  success:function(){
-      		  setDirty(false);
-      	  },
-      	  error:function(){
-      		  setDirty(true);
-      	  }
+        url:window.location+'&redirect=false',
+        type:"POST",
+        data:{
+          skuCode:DrugPanel.skuCode,
+          panel:JSON.stringify(data)
+          },
+          success:function(){
+            setDirty(false);
+          },
+          error:function(){
+            setDirty(true);
+          }
       });
       
     });

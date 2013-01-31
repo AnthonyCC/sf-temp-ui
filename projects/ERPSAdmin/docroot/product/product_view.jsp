@@ -370,6 +370,7 @@
                     <option value="nutrition_panels/nutrition_panel_edit.jsp?skuCode=<%= skuCode %>&type=DRUG">Create Drug Nutrition Panel</option>
                     <option value="nutrition_panels/nutrition_panel_edit.jsp?skuCode=<%= skuCode %>&type=PET">Create Pet Nutrition Panel</option>
                     <option value="nutrition_panels/nutrition_panel_edit.jsp?skuCode=<%= skuCode %>&type=BABY">Create Baby Nutrition Panel</option>
+                    <option value="nutrition_panels/nutrition_panel_edit.jsp?skuCode=<%= skuCode %>&type=SUPPL">Create Supplement Nutrition Panel</option>
                   </select>
                   <label><input id="samplecheckbox" type="checkbox" name="sample" value="true">Include sample data</label> 
                   <button id="editnutritionbutton">Ok</button>

@@ -100,10 +100,10 @@ public class NutritionItem  implements Serializable {
 	
 	
 	
-	public static final char FLAG_BULLETED 	= 'B';
-	public static final char FLAG_IMPORTANT 	= 'I';
-	public static final char FLAG_NEWLINE 	= 'N';
-	public static final char FLAG_SEPARATOR 	= 'S';
+	public static final char FLAG_BULLETED 	= 'B';	// Add a 'bullet' character 
+	public static final char FLAG_IMPORTANT 	= 'I';	// Important item or title row
+	public static final char FLAG_NEWLINE 	= 'N';	// Start item on new line
+	public static final char FLAG_SEPARATOR 	= 'S';	// Item is a separator line
 	
 	/**
 	 * 	Helper method to construct the string representation of style flags for this item

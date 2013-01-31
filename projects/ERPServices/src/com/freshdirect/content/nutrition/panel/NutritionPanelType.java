@@ -14,7 +14,8 @@ public enum NutritionPanelType {
 	CLASSIC ( "Classic nutrition panel",	""), 
 	DRUG	( "Drug nutrition panel", 		"drug"),
 	PET		( "Pet food nutrition panel", 	"pet"),
-	BABY	( "Baby food nutrition panel", 	"baby"); 
+	BABY	( "Baby food nutrition panel", 	"baby"),
+	SUPPL	( "Supplement nutrition panel",	"suppl"); 
 	
 	
 	private String name;

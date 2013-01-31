@@ -16,6 +16,8 @@ public final class ProtoPanel {
 				return sample ? createSamplePet() : createProtoPet();
 			case BABY:
 				return sample ? createSampleBaby() : createProtoBaby();
+			case SUPPL:
+				return sample ? createSampleSupplement() : createProtoSupplement();
 			default:
 				return new NutritionPanel();
 		}
@@ -196,5 +198,43 @@ public final class ProtoPanel {
 		build();
 	}
 
+	
+	private static NutritionPanel createProtoSupplement() {
+		return new PanelBuilder( NutritionPanelType.SUPPL ).
+		addSection( NutritionSectionType.FREETEXT, "Supplement Facts ", 4 ).
+			addItem( "N" ).setItemValue( "Serving Size " ).
+		addSection( NutritionSectionType.INGREDIENT, "", 0 ).		
+			addItem( "I", "Amount Per Serving", "% Daily Value" ).			
+			addSeparator().			
+			addItem( "N" ).setItemNutrition( 0.0, "" ).setItemValues( "", "" ).
+		addSection( NutritionSectionType.FREETEXT, "Other ingredients: ", 0 ).
+			addItem( "", "" ).
+		build();
+	}
+	
+	private static NutritionPanel createSampleSupplement() {
+		return new PanelBuilder( NutritionPanelType.SUPPL ).
+		addSection( NutritionSectionType.FREETEXT, "Supplement Facts SAMPLE", 4 ).
+			addItem( "N" ).setItemValue( "Serving Size 1 Tablet" ).
+		addSection( NutritionSectionType.INGREDIENT, "", 0 ).		
+			addItem( "I", "Amount Per Serving", "% Daily Value" ).			
+			addSeparator().			
+			addItem( "N" ).setItemNutrition( 5000.0, "IU" ).setItemValues( "Vitamin A (as retinyl acetate and 50% as beta-carotene)", "100%" ).
+			addItem( "N" ).setItemNutrition( 60.0, "mg" ).setItemValues( "Vitamin C (as ascorbic acid)", "100%" ).
+			addItem( "N" ).setItemNutrition( 400.0, "IU" ).setItemValues( "Vitamin D (as cholecalciferol)", "100%" ).
+			addItem( "N" ).setItemNutrition( 30.0, "IU" ).setItemValues( "Vitamin E (as dl-alpha tocopheryl acetate)", "100%" ).
+			addItem( "N" ).setItemNutrition( 1.5, "mg" ).setItemValues( "Thiamin (as thiamin mononitrate)", "100%" ).
+			addItem( "N" ).setItemNutrition( 1.7, "mg" ).setItemValues( "Riboflavin", "100%" ).
+			addItem( "N" ).setItemNutrition( 20.0, "mg" ).setItemValues( "Niacin (as niacinamide)", "100%" ).			
+			addItem( "N" ).setItemNutrition( 2.0, "mg" ).setItemValues( "Vitamin B6 (as pyridoxine hydrochloride)", "100%" ).			
+			addItem( "N" ).setItemNutrition( 400.0, "mcg" ).setItemValues( "Folate (as folic acid)", "100%" ).
+			addItem( "N" ).setItemNutrition( 6.0, "mcg" ).setItemValues( "Vitamin B12 (as cyanocobalamin)", "100%" ).
+			addItem( "N" ).setItemNutrition( 30.0, "mcg" ).setItemValues( "Biotin", "10%" ).
+			addItem( "N" ).setItemNutrition( 10.0, "mg" ).setItemValues( "Pantothenic Acid (as calcium pantothenate)", "100%" ).
+		addSection( NutritionSectionType.FREETEXT, "Other ingredients: ", 0 ).
+			addItem( "", "Gelatin, lactose, magnesium stearate, microcrystalline cellulose, FD&C Yellow No. 6, propylene glycol, propylparaben, and sodium benzoate." ).
+		build();
+	}
+	
 	
 }
