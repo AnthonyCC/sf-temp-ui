@@ -197,7 +197,7 @@ public class DeliveryPassRenewalCron {
 						user=FDCustomerManager.getFDUser(identity);
 						actionInfo=getFDActionInfo(identity);
 						cra=new CustomerRatingAdaptor(user.getFDCustomer().getProfile(),user.isCorporateUser(),user.getAdjustedValidOrderCount());
-						orderID=placeOrder(actionInfo,cra,arSKU,lastOrder.getPaymentMethod(),lastOrder.getDeliveryAddress());
+						orderID=placeOrder(actionInfo,cra,arSKU,pymtMethod,lastOrder.getDeliveryAddress());
 
 					}
 					catch(FDResourceException fe) {
