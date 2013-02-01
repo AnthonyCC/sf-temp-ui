@@ -59,41 +59,51 @@ public class DispatchVolumeSessionBean extends SessionBeanSupport {
 			Calendar cal = Calendar.getInstance();
 			cal = DateUtil.truncate(cal);
 			cal.add(Calendar.DATE, 1);
+			Date deliveryDate = cal.getTime();
 			IRoutingSchedulerIdentity schedulerId = new RoutingSchedulerIdentity();
-			String dayOfWeek = DateUtil.formatDayOfWk(cal.getTime());
+			String dayOfWeek = DateUtil.formatDayOfWk(deliveryDate);
 			Map<String, Map<RoutingTimeOfDay, Set<IHandOffBatchDepotScheduleEx>>> depotScheduleEx = 
 					handoffProxy.getHandOffBatchDepotSchedulesEx(dayOfWeek);
-			Map<String, IWaveInstance> wavesByDispatchTime = routingInfoProxy.getWavesByDispatchTime(cal.getTime());
-			Map<RoutingTimeOfDay, Integer> plantCapacity = routingInfoProxy.getPlantCapacityByDispatchTime(cal.getTime());
+			Map<String, IWaveInstance> wavesByDispatchTime = routingInfoProxy.getWavesByDispatchTime(deliveryDate);
+			Map<RoutingTimeOfDay, Integer> plantCapacity = routingInfoProxy.getPlantCapacityByDispatchTime(deliveryDate);
 			Map<RoutingTimeOfDay, RoutingTimeOfDay> dispatchMapping = routingInfoProxy.getPlantDispatchMapping();
 			
 			Set<IAreaModel> areas = getAreas(wavesByDispatchTime);
 			Map<String, Set<RoutingTimeOfDay>> dptCutoff = getDptCutoff(wavesByDispatchTime);
 			
-			for(IAreaModel area: areas)
-			{
+			for(IAreaModel area: areas){
 				schedulerId.setArea(area);
-				schedulerId.setDeliveryDate(cal.getTime());
-				if(area.isDepot())
-				{
-					if(dptCutoff.get(area.getAreaCode())!=null)
-					{
+				schedulerId.setDeliveryDate(deliveryDate);
+				if(area.isDepot()){
+					if(dptCutoff.get(area.getAreaCode())!=null){
 						List<IRouteModel> tmpRoutes = new ArrayList<IRouteModel>();
-						for(RoutingTimeOfDay cutoff: dptCutoff.get(area.getAreaCode()))
-						{
-							if(depotScheduleEx.get(area.getAreaCode())!=null && depotScheduleEx.get(area.getAreaCode()).get(cutoff)!=null)
-							{
+						for(RoutingTimeOfDay cutoff: dptCutoff.get(area.getAreaCode())){
+							if(depotScheduleEx.get(area.getAreaCode())!=null && depotScheduleEx.get(area.getAreaCode()).get(cutoff)!=null){
 								routes = proxy.getRoutesByCriteria(schedulerId, RoutingDateUtil.getWaveCode(cutoff.getAsDate()));
 								routes = convertDptToRegOrders(area.getAreaCode(), routes, depotScheduleEx.get(area.getAreaCode()).get(cutoff));
 								if(routes!=null)
 								tmpRoutes.addAll(routes);
+							}else{
+								LOGGER.info("Depot-"+area.getAreaCode()+" cutoff ->"+cutoff+" for deliveryDate "+deliveryDate+" is missing in the depot schedule.");
 							}
 						}
 						routes = tmpRoutes;
+						if(routes!=null)
+							for(IRouteModel route:routes)
+							{
+								LOGGER.info("DPT " +schedulerId.getArea().getAreaCode()+" "+ route.getStops().size());
+							}
+					}else{
+						LOGGER.info("Depot-"+area.getAreaCode()+" is missing active waves for delivery date ->"+deliveryDate);
 					}
 				}
 				else{ 
 					routes = proxy.getRoutesByCriteria(schedulerId, null);
+					if(routes!=null)
+						for(IRouteModel route:routes)
+						{
+							LOGGER.info(schedulerId.getArea().getAreaCode()+" "+ route.getStops().size());
+						}
 				}
 				
 				if(routes!=null && routes.size()>0)
@@ -104,7 +114,7 @@ public class DispatchVolumeSessionBean extends SessionBeanSupport {
 			assignDispatchTime(map, wavesByDispatchTime);
 			
 			Map<RoutingTimeOfDay, DispatchVolumeModel> dispatchMap = 
-					groupbyDispatch(map, wavesByDispatchTime,plantCapacity,snapshotTime,cal.getTime(),dispatchMapping);
+					groupbyDispatch(map, wavesByDispatchTime,plantCapacity,snapshotTime,deliveryDate,dispatchMapping);
 			
 			printDispatch(dispatchMap);
 			saveDispatch(dispatchMap);
@@ -161,7 +171,7 @@ public class DispatchVolumeSessionBean extends SessionBeanSupport {
 		
 		for(Entry<RoutingTimeOfDay, DispatchVolumeModel> dispatchEntry: dispatchMap.entrySet())
 		{
-			System.out.println(dispatchEntry.getKey()+ " "+dispatchEntry.getValue());
+			LOGGER.info(dispatchEntry.getKey()+ " "+dispatchEntry.getValue());
 		}
 	}
 	
@@ -190,7 +200,15 @@ public class DispatchVolumeSessionBean extends SessionBeanSupport {
 		{
 			for(IRouteModel route: routes)
 			{
-				if(wavesByDispatchTime.get(route.getWaveId())!=null) route.setDispatchTime(wavesByDispatchTime.get(route.getWaveId()).getDispatchTime());
+				if(wavesByDispatchTime.get(route.getWaveId())!=null) 
+					route.setDispatchTime(wavesByDispatchTime.get(route.getWaveId()).getDispatchTime());
+				else{
+					route.setDispatchTime(null);
+					LOGGER.info("wave is missing in transapp reference id->"+route.getWaveId());
+					if(route.getStops()!=null)
+						LOGGER.info("Stop Cnt: "+route.getStops().size());
+				}
+					
 			}
 		}
 	}
@@ -199,13 +217,10 @@ public class DispatchVolumeSessionBean extends SessionBeanSupport {
 			IWaveInstance> wavesByDispatchTime,Map<RoutingTimeOfDay, Integer> plantCapacity, Date snapshotTime, Date deliveryDate, Map<RoutingTimeOfDay, RoutingTimeOfDay> plantDispatchMap){
 		Map<RoutingTimeOfDay, DispatchVolumeModel> dispatchMap = new HashMap<RoutingTimeOfDay, DispatchVolumeModel>();
 		RoutingTimeOfDay plantDispatch = null;
-		for(List<IRouteModel> routes: map.values())
-		{
-			for(IRouteModel route: routes)
-			{
+		for(List<IRouteModel> routes: map.values()){
+			for(IRouteModel route: routes){
 				plantDispatch = getPlantDispatch(plantDispatchMap, route.getDispatchTime());
-				if(plantDispatch!=null)
-				{
+				if(plantDispatch!=null){
 					if(!dispatchMap.containsKey(plantDispatch)){ dispatchMap.put(plantDispatch, new DispatchVolumeModel()); }
 					dispatchMap.get(plantDispatch).setOrderCount(dispatchMap.get(plantDispatch).getOrderCount()+route.getStops().size());
 					dispatchMap.get(plantDispatch).setDispatchTime(plantDispatch);
@@ -269,8 +284,7 @@ public class DispatchVolumeSessionBean extends SessionBeanSupport {
 		}
 		
 		public String toString() {
-			//return orders.toString()+","+super.toString()+"\n";
-			return super.toString()+"\n";
+			return this.getDepotArrivalTime()+ " "+this.getOriginId();
 		}
 	}
 		
@@ -340,12 +354,10 @@ public class DispatchVolumeSessionBean extends SessionBeanSupport {
 																, groupSchedule
 																, route.getOriginId());
 								if(_matchSchedule != null) {
-									_order.setRoutingRouteId(routeID); //_order.setRouteStartTime(_matchSchedule.getTruckDepartureTime());
+									_order.setRoutingRouteId(routeID);
 									_matchSchedule.addOrder(_order);
 								} else {
-									//throw new RoutingServiceException("Invalid Depot Truck Schedule File : SAP Order No:" + _order.getOrderNumber()
-											//, null, IIssue.PROCESS_HANDOFFBATCH_ERROR);
-									
+									LOGGER.info("Invalid Depot Truck Schedule File : Order No:" + _order.getOrderNumber()+ " Stop D-Time->"+_order.getStopDepartureTime()+ " Schedule-> "+groupSchedule);
 								}
 							}
 						}
