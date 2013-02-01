@@ -1170,8 +1170,9 @@ public class EventLogDAO implements IEventLogDAO   {
 						user = new AuthUser();
 						userMapping.put(userName, user);
 					}
-					if(privilege != null)
-						user.getPrivilages().add(Privilege.valueOf(privilege));	
+					if(privilege != null) {
+						userMapping.get(userName).getPrivilages().add(Privilege.valueOf(privilege));	
+					}
 				}
 			});						
 		} finally {
