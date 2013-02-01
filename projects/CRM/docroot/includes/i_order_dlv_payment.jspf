@@ -335,7 +335,16 @@ function loadSignature(order)
 					<div style="padding:3px;"></div>
 					<b><i>Components:</i></b><br>
 					Total Cases: <b><%= _order.getCartonMetrics().get("Case")%></b><br>
-					Total Cartons: <b><%= _order.getCartonMetrics().get("Regular") + _order.getCartonMetrics().get("Platter") %></b><br>
+					<% 
+						int totalCartons = 0;
+						if(null != _order.getCartonMetrics().get("Regular")){
+							totalCartons = totalCartons + _order.getCartonMetrics().get("Regular");
+						}
+						if(null != _order.getCartonMetrics().get("Platter")){
+							totalCartons = totalCartons + _order.getCartonMetrics().get("Platter");
+						}
+					%>
+					Total Cartons: <b><%= totalCartons %></b><br>
 					Total Freezer Bags: <b><%= _order.getCartonMetrics().get("Freezer")%></b><br>
 					Total Cartons -<br/>Containing Alcohol: <b><%= _order.getCartonMetrics().get("Beer")%></b><br>
 				<%	if (_order.hasRedelivery()) { %>
