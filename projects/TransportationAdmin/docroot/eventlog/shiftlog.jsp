@@ -5,13 +5,15 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core" %>
 <%@ page import= 'com.freshdirect.transadmin.util.TransStringUtil' %>
 <%@ page import= 'com.freshdirect.transadmin.util.TransportationAdminProperties' %>
+<%@ page import= 'com.freshdirect.transadmin.security.AuthUser.Privilege' %>
 
 
 <tmpl:insert template='/common/sitelayout.jsp'>
 
 <tmpl:put name='title' direct='true'> Operations : Event Log</tmpl:put>
-	
-	 
+<% 
+  boolean hasPrivilege = com.freshdirect.transadmin.security.SecurityManager.hasPrivilege(request, Privilege.SHIFTLOG_ADD );
+%>
   <tmpl:put name='content' direct='true'> 
    		
 	<tmpl:put name='slickgrid-lib'>
@@ -67,11 +69,12 @@
 		<div class="cont_topright">
 			<div class="cont_row">
 				<div class="cont_Ritem">
-				   				   
-					<div align="right">
-						<span>&nbsp;<input id="btnAddNewEvent" type="button" style="font-size:11px" type = "button" height="18" value="Add ShiftEventLog"  onclick="javascript:showEventForm();" />&nbsp;</span>											
-					</div><br/>
-					
+				   	<div align="right">
+				   	<% if (hasPrivilege) { %>
+							<span>&nbsp;<input id="btnAddNewEvent" type="button" style="font-size:11px" type = "button" height="18" value="Add ShiftEventLog"  onclick="javascript:showEventForm();" />&nbsp;</span>											
+					<% } %>&nbsp;
+					</div>
+					<br/>
 					<div style="width:99%">
 						<div class="grid-header" style="width:100%">
 				      		<label>End of Shift Scanner Log</label>
@@ -95,6 +98,7 @@ input.btn {   color:#050;   font: bold small 'trebuchet ms',helvetica,sans-serif
 </style>
 
 <script>
+var hasPrivilege = '<%= hasPrivilege %>';
 var aoTypes = [];
 var aoSubTypes = [];
 var aoRoutes = [];

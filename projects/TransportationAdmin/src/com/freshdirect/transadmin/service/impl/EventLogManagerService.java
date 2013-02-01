@@ -14,6 +14,7 @@ import com.freshdirect.transadmin.model.EventLogType;
 import com.freshdirect.transadmin.model.EventModel;
 import com.freshdirect.transadmin.model.MotEventModel;
 import com.freshdirect.transadmin.model.MotEventType;
+import com.freshdirect.transadmin.security.AuthUser;
 import com.freshdirect.transadmin.service.IEventLogManagerService;
 import com.freshdirect.transadmin.service.exception.IIssue;
 import com.freshdirect.transadmin.service.exception.TransAdminServiceException;
@@ -203,6 +204,14 @@ public class EventLogManagerService implements IEventLogManagerService {
 			getEventLogDAO().clearMotEventLogType();
 			getEventLogDAO().logMotEventMessageGroupInfo(msgGroup);
 			getEventLogDAO().logMotEventTypeInfo(eventType);
+		} catch (SQLException e) {
+			throw new TransAdminServiceException(e, IIssue.PROCESS_EVENTLOG_ERROR);
+		}
+	}
+	
+	public Map<String, AuthUser> getAuthUserPrivileges() throws TransAdminServiceException {
+		try {
+			return getEventLogDAO().getAuthUserPrivileges();
 		} catch (SQLException e) {
 			throw new TransAdminServiceException(e, IIssue.PROCESS_EVENTLOG_ERROR);
 		}

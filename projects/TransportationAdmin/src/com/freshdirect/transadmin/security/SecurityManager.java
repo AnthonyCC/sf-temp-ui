@@ -8,6 +8,9 @@ import java.util.Set;
 import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 
+import com.freshdirect.transadmin.security.AuthUser.Privilege;
+import com.freshdirect.transadmin.util.TransAdminCacheManager;
+
 public class SecurityManager {
 	
 	private static List<String> UNSECURED_URL = new ArrayList<String>();
@@ -79,5 +82,16 @@ public class SecurityManager {
 		}
 		return MenuManager.getInstance().hasAccess(request, uri);
 	}
-
+	
+	public static boolean hasPrivilege(ServletRequest request, Privilege p) {
+		if(p != null) {
+			AuthUser user = TransAdminCacheManager.getInstance().lookUpAuthUserPrivileges(getUserName(request)
+																, UserManager.getInstance().getEventLogService());
+			if(null != user) {
+				return user.hasPrivilege(p);
+			}
+		}
+		return false;
+	}
 }
+

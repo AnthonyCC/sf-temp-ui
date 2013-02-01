@@ -11,7 +11,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -24,8 +23,6 @@ import org.springframework.jdbc.core.RowCallbackHandler;
 import org.springframework.jdbc.core.SqlParameter;
 import org.springframework.jdbc.object.BatchSqlUpdate;
 
-import com.freshdirect.routing.model.IHandOffBatchTrailer;
-import com.freshdirect.routing.model.IRouteModel;
 import com.freshdirect.transadmin.dao.IEventLogDAO;
 import com.freshdirect.transadmin.model.EventLogMessageGroup;
 import com.freshdirect.transadmin.model.EventLogRouteModel;
@@ -34,6 +31,8 @@ import com.freshdirect.transadmin.model.EventLogType;
 import com.freshdirect.transadmin.model.EventModel;
 import com.freshdirect.transadmin.model.MotEventModel;
 import com.freshdirect.transadmin.model.MotEventType;
+import com.freshdirect.transadmin.security.AuthUser;
+import com.freshdirect.transadmin.security.AuthUser.Privilege;
 import com.freshdirect.transadmin.util.TransStringUtil;
 
 public class EventLogDAO implements IEventLogDAO   {
@@ -126,11 +125,13 @@ public class EventLogDAO implements IEventLogDAO   {
 		
 	private static final String CLEAR_MOTEVENTLOG_MSGGROUP = "DELETE from transp.moteventlog_messagegroup ";
 	
-	private static final String UPDATE_MOTEVENT_STATUS = "UPDATE TRANSP.MOTEVENTLOGBOOK SET DATE_VERIFIED=?, VERIFIED_BY=? WHERE ID = ? ";
+	private static final String UPDATE_MOTEVENT_STATUS = "UPDATE TRANSP.MOTEVENTLOGBOOK SET DATEVERIFIED=?, VERIFIEDBY=? WHERE ID = ? ";
 	
 	private static final String INSERT_MOTEVENTLOG_TYPE = "INSERT INTO TRANSP.MOTEVENTTYPE (MOTEVENTTYPENAME,MOTEVENTTYPEDESCRIPTION,MSGGROUP_ID,CREATEDBY,DATECREATED) VALUES (?,?,?,?,?) ";
 	
 	private static final String CLEAR_MOTEVENTLOG_TYPE = "DELETE from transp.moteventtype ";
+		
+	private static final String GET_AUTHUSER_PRIVILEGES = "select u.username, up.privilege_name from TRANSP.AUTHUSERS u, TRANSP.AUTHUSER_PRIVILEGE up where u.username=up.username(+) ";
 	
 	public void clearEventLogType() throws SQLException {
 		Connection connection = null;		
@@ -525,7 +526,7 @@ public class EventLogDAO implements IEventLogDAO   {
 							EventLogType eventType = new EventLogType(typeId, typeName, typeDesc);
 							eventType.setTransactionDate(rs.getTimestamp("DATECREATED"));
 							eventType.setUserId(rs.getString("CREATEDBY"));
-							eventType.setCustomerReq(rs.getString("ISCUSTOMERREQUIRED"));
+							eventType.setCustomerReq(rs.getString("ISLOCATIONREQUIRED"));
 							eventType.setEmployeeReq(rs.getString("ISEMPLOYEEREQUIRED"));
 							
 							eventTypeMapping.put(typeId, eventType);
@@ -541,6 +542,7 @@ public class EventLogDAO implements IEventLogDAO   {
 							subType.setName(subTypeName);
 							subType.setDescription(subTypeDesc);
 							subType.setEventTypeId(typeId);
+							subType.setEventTypeName(typeName);
 							
 							eventTypeMapping.get(typeId).getSubTypes().add(subType);
 						}
@@ -1143,5 +1145,40 @@ public class EventLogDAO implements IEventLogDAO   {
 		} finally {
 			if(connection!=null) connection.close();
 		}
+	}
+	
+	public Map<String, AuthUser> getAuthUserPrivileges() throws SQLException {
+		final Map<String, AuthUser> userMapping = new HashMap<String, AuthUser>();
+		
+		Connection connection = null;
+		try {
+			PreparedStatementCreator creator = new PreparedStatementCreator() {
+				public PreparedStatement createPreparedStatement(
+						Connection connection) throws SQLException {
+					
+					PreparedStatement ps = connection.prepareStatement(GET_AUTHUSER_PRIVILEGES);				
+					return ps;
+				}
+			};
+			jdbcTemplate.query(creator, new RowCallbackHandler() {
+				public void processRow(ResultSet rs) throws SQLException {
+					String userName = rs.getString("USERNAME");
+					String privilege = rs.getString("PRIVILEGE_NAME");
+					
+					AuthUser user = null;
+					if(!userMapping.containsKey(userName)) {
+						user = new AuthUser();
+						userMapping.put(userName, user);
+					}
+					if(privilege != null)
+						user.getPrivilages().add(Privilege.valueOf(privilege));	
+				}
+			});						
+		} finally {
+			if (connection != null)	connection.close();
+		}	
+		
+		return userMapping;
+		
 	}
 }

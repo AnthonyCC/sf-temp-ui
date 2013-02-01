@@ -13,6 +13,7 @@ import com.freshdirect.transadmin.model.EventLogType;
 import com.freshdirect.transadmin.model.EventModel;
 import com.freshdirect.transadmin.model.MotEventModel;
 import com.freshdirect.transadmin.model.MotEventType;
+import com.freshdirect.transadmin.security.AuthUser;
 
 public interface IEventLogDAO {
 	
@@ -69,5 +70,7 @@ public interface IEventLogDAO {
 	void logMotEventMessageGroupInfo(List<EventLogMessageGroup> messageGroup) throws SQLException;
 	
 	void clearMotEventLogMessageGroup() throws SQLException;
+
+	Map<String, AuthUser> getAuthUserPrivileges() throws SQLException;
 			
 }

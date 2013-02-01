@@ -12,6 +12,7 @@ import com.freshdirect.transadmin.model.EventLogType;
 import com.freshdirect.transadmin.model.EventModel;
 import com.freshdirect.transadmin.model.MotEventModel;
 import com.freshdirect.transadmin.model.MotEventType;
+import com.freshdirect.transadmin.security.AuthUser;
 import com.freshdirect.transadmin.service.exception.TransAdminServiceException;
 
 public interface IEventLogManagerService {
@@ -57,6 +58,7 @@ public interface IEventLogManagerService {
 	List<EventLogMessageGroup> lookUpMotEventMessageGroup(String messageGroup) throws TransAdminServiceException;
 	
 	void logMotEventLogInfo(List<MotEventType> eventType, List<EventLogMessageGroup> msgGroup) throws TransAdminServiceException;
-	
+
+	Map<String, AuthUser> getAuthUserPrivileges() throws TransAdminServiceException;
 	
 }

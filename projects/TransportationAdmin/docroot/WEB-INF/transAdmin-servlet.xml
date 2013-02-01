@@ -868,6 +868,9 @@
         <property name="successView" value="sectorEdit" />
         <property name="formView" value="sectorEdit" />
 	</bean>
+	<bean id="userManager" class="com.freshdirect.transadmin.security.UserManager" factory-method="getInstance">
+         <property name="eventLogService" ref="eventLogManager"/>       
+    </bean>	
 	    
 	<bean id="employeeValidator" class="com.freshdirect.transadmin.web.validation.EmployeeValidator"/>
 	<bean id="truckPreferenceValidator" class="com.freshdirect.transadmin.web.validation.TruckPreferenceValidator"/>

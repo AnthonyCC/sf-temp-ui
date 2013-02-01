@@ -9,6 +9,7 @@ public class EventLogSubType extends BaseCommand implements Serializable {
 	private String name;
 	private String description;
 	private String eventTypeId;
+	private String eventTypeName;
 	
 	private EventLogMessageGroup msgGroup;
 		
@@ -44,6 +45,13 @@ public class EventLogSubType extends BaseCommand implements Serializable {
 	}
 	public void setId(String id) {
 		this.id = id;
+	}
+	
+	public String getEventTypeName() {
+		return eventTypeName;
+	}
+	public void setEventTypeName(String eventTypeName) {
+		this.eventTypeName = eventTypeName;
 	}
 	@Override
 	public int hashCode() {

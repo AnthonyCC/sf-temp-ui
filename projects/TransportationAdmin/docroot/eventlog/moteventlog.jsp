@@ -4,12 +4,15 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core" %>
 <%@ page import= 'com.freshdirect.transadmin.util.TransStringUtil' %>
+<%@ page import= 'com.freshdirect.transadmin.security.AuthUser.Privilege' %>
 
 
 <tmpl:insert template='/common/sitelayout.jsp'>
 
 <tmpl:put name='title' direct='true'> Operations : Event Log</tmpl:put>
-	
+<% 
+  boolean hasPrivilege = com.freshdirect.transadmin.security.SecurityManager.hasPrivilege(request, Privilege.MOTEVENTLOG_ADD );
+%>
 	 
   <tmpl:put name='content' direct='true'> 
    		
@@ -69,7 +72,9 @@
 				<div class="cont_Ritem">
 				   				   
 					<div align="right">
-						<span>&nbsp;<input id="btnAddNewEvent" type="button" style="font-size:11px" type = "button" height="18" value="Add MotEventLog"  onclick="javascript:showEventForm();" />&nbsp;</span>
+						<% if (hasPrivilege) { %>
+							<span>&nbsp;<input id="btnAddNewEvent" type="button" style="font-size:11px" type = "button" height="18" value="Add MotEventLog"  onclick="javascript:showEventForm();" />&nbsp;</span>
+						<% } %>
 						<span>&nbsp;<input id="btnEventType" type="button" style="font-size:11px" type = "button" height="18" value="View Event Metadata"  onclick="javascript:showEventLogInfoTable();" />&nbsp;</span>
 					</div><br/>
 					
@@ -94,6 +99,7 @@
        
 
 <script>
+var hasPrivilege = '<%= (com.freshdirect.transadmin.security.SecurityManager.hasPrivilege(request, Privilege.MOTEVENTLOG_VERIFY)) %>';
 var aoTypes = [];
 var aoRoutes = [];
 var aoAddHocRoutes = [];
@@ -148,7 +154,7 @@ $(document).ready(function () {
 		async : true,
 		success : function(json) {
 			for(var i=0;i < json.rows.length;i++) {
-				aoAddHocRoutes.push({"value" : json.rows[i].name, "caption" : json.rows[i].name });
+				aoAddHocRoutes.push({"value" : json.rows[i].routeNumber, "caption" : json.rows[i].routeNumber });
 			}
 			$('#addHocRoute').loadSelect(aoAddHocRoutes, false, true);
 		},
@@ -174,12 +180,12 @@ $(document).ready(function () {
 					, {id : "ticketNumber",	name : "Ticket Number",	field : "ticketNumber", sortable : true}
 					, {id : "stops", name : "Stop(s)",	field : "stops", sortable : true}
 					, {id : "totalStopCnt",	name : "Total Stops",	field : "totalStopCnt", sortable : true, cssClass: "slick-cell-aligncenter"}				
-					, {id : "description", name : "Description",	field : "description", sortable : true}					
+					, {id : "description", name : "Description",	field : "description", sortable : true}
 					, {id : "verified", name: "isVerified", width: 80, cssClass: "slick-cell-aligncenter", field: "verified", 
 											formatter:  function CheckmarkFormatter(row, cell, value, columnDef, dataContext) {
 															if(value) {
 																return "<img align='center' src='./images/tick.png'>";
-															} else {
+															} else if(hasPrivilege === 'true') {
 																return "<a style='color:blue;font-size:12px;' href='javascript:verifyEvent("+row+")'>&nbsp;Verify</a>";
 															}
 														}

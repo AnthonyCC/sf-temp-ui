@@ -4,12 +4,15 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core" %>
 <%@ page import= 'com.freshdirect.transadmin.util.TransStringUtil' %>
+<%@ page import= 'com.freshdirect.transadmin.security.AuthUser.Privilege' %>
 
 
 <tmpl:insert template='/common/sitelayout.jsp'>
 
 <tmpl:put name='title' direct='true'> Operations : Event Log</tmpl:put>
-	
+<% 
+  boolean hasPrivilege = com.freshdirect.transadmin.security.SecurityManager.hasPrivilege(request, Privilege.MOTEVENTLOG_ADD );
+%>
 	 
   <tmpl:put name='content' direct='true'> 
    		
@@ -69,8 +72,10 @@
 				<div class="cont_Ritem">
 				   				   
 					<div align="right">
+						<% if (hasPrivilege) { %>
 						<span>&nbsp;<input id="btnAddNewEvent" type="button" style="font-size:11px" type = "button" height="18" value="Add EventLog"  onclick="javascript:showEventForm(true);" />&nbsp;</span>
-						<span>&nbsp;<input id="btnEventType" type="button" style="font-size:11px" type = "button" height="18" value="View Event Metadata"  onclick="javascript:showEventLogInfoTable('kkanuganti');" />&nbsp;</span>
+						<% } %>
+						<span>&nbsp;<input id="btnEventType" type="button" style="font-size:11px" type = "button" height="18" value="View Event Metadata"  onclick="javascript:showEventLogInfoTable();" />&nbsp;</span>
 						</div><br/>
 					
 					<div style="width:99%">
@@ -96,6 +101,8 @@
 </style>
 
 <script>
+
+var hasPrivilege = '<%= hasPrivilege %>';
 var aoTypes = [];
 var aoSubTypes = [];
 var aoRoutes = [];
@@ -114,7 +121,6 @@ var crudurl = "v/1/eventlog/add/";
 $(document).ready(function () {
 		
 	$("#daterange" ).datepicker();
-	
 	
 	$.ajax({
 		url : "v/1/list/eventmetadata/",
@@ -203,9 +209,14 @@ $(document).ready(function () {
 					, {id : "stops", name : "Stop(s)",	field : "stops", sortable : true}
 					, {id : "totalStopCnt",	name : "Total Stops",	field : "totalStopCnt", sortable : true, cssClass: "slick-cell-aligncenter"}
 					, {id : "addEvent",	name : "",	field : "addEvent", cssClass: "slick-cell-aligncenter", sortable : true, formatter: function myFormatter(row, cell, value, columnDef, dataContext) {
-																											  				return "<a href='javascript:addEvent("+row+")'><img src='./images/icons/add_ON.gif'/><span>&nbsp;Add To</span></a>";
-																														}
-					  }
+																																if(hasPrivilege === 'true') {
+																												  					return "<a href='javascript:addEvent("+row+")'><img src='./images/icons/add_ON.gif'/><span>&nbsp;Add To</span></a>";
+																																} else {
+																																	return;
+																																}
+																															}
+					}
+					
 			];
 
 	options = {

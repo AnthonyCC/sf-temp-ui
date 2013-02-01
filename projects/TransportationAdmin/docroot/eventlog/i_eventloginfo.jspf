@@ -5,15 +5,15 @@
     var eventTypeDataTable;
     var eventSubTypeDataTable;
     var messageGroupDataTable;
-    var userId;
+    
     var result;
        
     var typeResult = new Array();;
 	var subTypeResult = new Array();;
 	var msgGroupResult = new Array();;
 
- function showEventLogInfoTable(inputVal) {
-    	userId = inputVal;
+ function showEventLogInfoTable() {
+    	
     	editEventLogPanel = new YAHOO.widget.Panel("eventlog-panel", {
                           width: "1000px",
                           height: "600px",
@@ -37,7 +37,7 @@
     				for(var j=0;j < json.rows[i].eventType.length;j++) {
     					typeResult.push(json.rows[i].eventType[j]);
     				}
-					for(var k=0;k < json.rows[i].eventSubType.length;k++) {
+					for(var k=0;k < json.rows[i].eventSubType.length;k++) {						
 						subTypeResult.push(json.rows[i].eventSubType[k]);
     				}
 					for(var l=0;l < json.rows[i].eventMessageGroup.length;l++) {
@@ -52,7 +52,7 @@
     			var eventTypeColumns =  [
     					    {key:"name", label:"Type Name",sortable:true, className:"forms1"},
     					    {key:"description", label:"Type Description", sortable:true, className:"forms1"},
-    					    {key:"customerReq", label:"Customer Req", sortable:true, className:"forms1"},
+    					    {key:"customerReq", label:"Location Req", sortable:true, className:"forms1"},
     					    {key:"employeeReq", label:"Employee Req", sortable:true, className:"forms1"}
     					    
     				 ];
@@ -60,7 +60,7 @@
     			var eventSubTypeColumns =  [
     						{key:"name", label:"Sub Type",sortable:true, className:"forms1"},
     						{key:"description", label:"SubType Desc", sortable:true, className:"forms1"},
-    		   			    {key:"eventTypeId", label:"Event Type", sortable:true, className:"forms1"},
+    		   			    {key:"eventTypeName", label:"Event Type", sortable:true, className:"forms1"},
     					    {key:"msgGroup.groupName", label:"Message Group", sortable:false, className:"forms1"},			    
     					   
     				 ];

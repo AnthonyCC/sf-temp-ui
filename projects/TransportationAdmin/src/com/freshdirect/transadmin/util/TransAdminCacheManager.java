@@ -25,6 +25,7 @@ import com.freshdirect.transadmin.cache.AsyncCacheExceptionType;
 import com.freshdirect.transadmin.cache.BaseAsyncCache;
 import com.freshdirect.transadmin.model.EmployeeInfo;
 
+import com.freshdirect.transadmin.security.AuthUser;
 import com.freshdirect.transadmin.service.AssetManagerI;
 
 import com.freshdirect.transadmin.model.EventLogRouteModel;
@@ -69,6 +70,9 @@ public class TransAdminCacheManager {
 	
 	/* AdHoc Route data holder */
 	protected static final String STORE_ADHOCROUTEINFODATA = "TRANSAPP_CACHE_ADHOCROUTEINFODATA.ser";
+	
+	/* AdHoc Route data holder */
+	protected static final String STORE_AUTHUSERDATA = "TRANSAPP_CACHE_AUTHUSERINFODATA.ser";
 
 	private TransAdminCacheManager() {
 	}
@@ -548,6 +552,43 @@ public class TransAdminCacheManager {
 		
 		return addHocRouteDataHolder.get("");
 		
+	}
+	
+	/**
+	 * Cache to AuthUser privilages information from database
+	 */
+	private BaseAsyncCache<String, Map<String, AuthUser>> authUserDataHolder = new BaseAsyncCache<String, Map<String, AuthUser>>(
+			TransportationAdminProperties.getRouteCacheExpiryTime() * 60 * 1000, STORE_AUTHUSERDATA) {
+
+		protected Map<String, AuthUser> loadData(String requestParam) throws AsyncCacheException {
+			try {
+				return loadAuthUserPrivileges();
+			} catch (Exception e) {
+				LOGGER.error("Could not load Auth User data due to: ", e);
+				throw new AsyncCacheException(e,
+						AsyncCacheExceptionType.LOAD_FAILED);
+			}
+		}
+
+		protected Map<String, AuthUser> loadDefault(String requestParam) {
+			return new HashMap<String, AuthUser>();
+		}
+	};
+	
+	public Map<String, AuthUser> loadAuthUserPrivileges() {		
+		
+		return  this.eventLogMngService.getAuthUserPrivileges();	
+	}
+	
+	public AuthUser lookUpAuthUserPrivileges(String userName, IEventLogManagerService eventLogService) {
+		this.eventLogMngService = eventLogService;
+		Map<String, AuthUser> userMapping = authUserDataHolder.get("");
+		for(Map.Entry<String, AuthUser> userEntry : userMapping.entrySet()){
+			if(userEntry.getKey().equals(userName)){
+				return userEntry.getValue();
+			}
+		}
+		return new AuthUser();
 	}
 	
 }
