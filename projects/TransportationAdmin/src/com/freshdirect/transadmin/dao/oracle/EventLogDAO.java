@@ -106,10 +106,10 @@ public class EventLogDAO implements IEventLogDAO   {
 	private static final String GET_MOTEVENTLOG_DATERANGE_QRY = " SELECT el.*, els.*, et.moteventtypename from transp.moteventlogbook el, transp.motstopnumberbreakdown els, transp.moteventtype et "+ 
                   													" where el.id = els.moteventlogid(+) and el.eventtypeid = et.id(+) and el.eventdate >= ? ";
 	
-	private static final String INSERT_MOTEVENT_LOG = "INSERT INTO TRANSP.MOTEVENTLOGBOOK(ID, EVENTDATE, ROUTENUMBER, MOTROUTENUMBER, NEXTELNUMBER, EVENTTYPEID, EVENTDESCRIPTION, TICKETNUMBER, DATE_VERIFIED, VERIFIED_BY, DATECREATED, CREATEDBY )" +
+	private static final String INSERT_MOTEVENT_LOG = "INSERT INTO TRANSP.MOTEVENTLOGBOOK(ID, EVENTDATE, ROUTENUMBER, MOTROUTENUMBER, NEXTELNUMBER, EVENTTYPEID, EVENTDESCRIPTION, TICKETNUMBER, DATEVERIFIED, VERIFIEDBY, DATECREATED, CREATEDBY )" +
 													  " VALUES(?,?,?,?,?,?,?,?,?,?,?,?)";
 	
-	private static final String UPDATE_MOTEVENTLOG_QRY = "UPDATE TRANSP.MOTEVENTLOGBOOK SET EVENTDATE=?, ROUTENUMBER=?, MOTROUTENUMBER=?, NEXTELNUMBER=?, EVENTTYPEID=?, EVENTDESCRIPTION=?, TICKETNUMBER=?, DATE_VERIFIED=?, VERIFIED_BY=?, DATECREATED=?, CREATEDBY=? where ID = ? ";
+	private static final String UPDATE_MOTEVENTLOG_QRY = "UPDATE TRANSP.MOTEVENTLOGBOOK SET EVENTDATE=?, ROUTENUMBER=?, MOTROUTENUMBER=?, NEXTELNUMBER=?, EVENTTYPEID=?, EVENTDESCRIPTION=?, TICKETNUMBER=?, DATEVERIFIED=?, VERIFIEDBY=?, DATECREATED=?, CREATEDBY=? where ID = ? ";
 	
 	private static final String INSERT_MOTEVENTLOG_STOP = "INSERT INTO TRANSP.MOTSTOPNUMBERBREAKDOWN (MOTEVENTLOGID, MOTSTOPNUMBER) VALUES (?,?) ";
 	
@@ -837,8 +837,8 @@ public class EventLogDAO implements IEventLogDAO   {
 				event.setTicketNumber(rs.getString("TICKETNUMBER"));							
 				event.setTransactionDate(rs.getTimestamp("DATECREATED"));
 				event.setUserId(rs.getString("CREATEDBY"));
-				event.setVerifiedBy(rs.getString("VERIFIED_BY"));
-				event.setVerifiedDate(rs.getTimestamp("DATE_VERIFIED"));
+				event.setVerifiedBy(rs.getString("VERIFIEDBY"));
+				event.setVerifiedDate(rs.getTimestamp("DATEVERIFIED"));
 				event.setVerified(event.getVerifiedDate() != null ? true : false);
 				
 				event.setStops(new HashSet<String>());
