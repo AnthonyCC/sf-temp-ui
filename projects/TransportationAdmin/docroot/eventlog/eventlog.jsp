@@ -357,6 +357,10 @@ function addEvent(row) {
 										
 	$('#eventRefId').val(dataX.id);
 	$('#id').val(null);
+	$('#truck').val(dataX.truck == null ? '' : dataX.truck);
+	$('#scannerNumber').val(dataX.scannerNumber == null ? '' : dataX.scannerNumber);
+	$('#crossStreet').val(dataX.crossStreet == null ? '' : dataX.crossStreet);
+	$('#employeeId').val(dataX.employeeId == null ? '' : dataX.employeeId);
 								
 	showEventForm(false);
 }
