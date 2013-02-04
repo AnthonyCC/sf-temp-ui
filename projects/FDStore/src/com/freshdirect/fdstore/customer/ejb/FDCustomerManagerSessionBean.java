@@ -6640,7 +6640,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			Enumeration eobj = driverlates.keys();
 			while(eobj.hasMoreElements()) {
 				Object saleId = eobj.nextElement();
-				CustomerCreditModel ccm = getSaleDetails((String) saleId);
+				CustomerCreditModel ccm = getSaleDetails(conn, (String) saleId);
 				if(ccm != null) {
 					ccmList.add(ccm);
 				}
@@ -6653,8 +6653,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		return ccmList;
 	}
 	
-	public CustomerCreditModel getSaleDetails(String saleId) throws FDResourceException {
-		Connection conn = null;
+	public CustomerCreditModel getSaleDetails(Connection conn, String saleId) throws FDResourceException {
 		PreparedStatement pstmt = null;
 		ResultSet rset = null;
 		CustomerCreditModel ccm = null;
@@ -6680,7 +6679,10 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		} catch (SQLException sqle) {
 			throw new FDResourceException(sqle);
 		} finally {
-			close(conn);
+			if(pstmt != null)
+				try {
+					pstmt.close();
+				} catch(Exception e) {}
 		}
 		return ccm;
 	}
@@ -6712,7 +6714,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			while(eobj.hasMoreElements()) {
 				Object saleId = eobj.nextElement();
 				System.out.println("Getting scanlate for sale_id = " + saleId);
-				CustomerCreditModel ccm = getSaleDetails((String) saleId);
+				CustomerCreditModel ccm = getSaleDetails(conn, (String) saleId);
 				if(ccm != null) {
 					ccm.setNewCode("SCANLATE");
 					ccmList.add(ccm);
@@ -6740,21 +6742,30 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			Iterator iter = cmList.iterator();
 			while(iter.hasNext()) {
 				CustomerCreditModel ccm = (CustomerCreditModel) iter.next();
-				pstmt.setString(1, autoID);
-				pstmt.setString(2, ccm.getSaleId());
-				pstmt.setString(3, ccm.getCustomerId());
-				pstmt.setDouble(4, ccm.getRemainingAmount());
-				pstmt.setString(5, ccm.getRemType());
-				pstmt.setDouble(6, ccm.getOriginalAmount());
-				pstmt.setDouble(7, ccm.getTaxAmount());
-				pstmt.setDouble(8, ccm.getTaxRate());
-				pstmt.setString(9, ccm.getDlvPassId());
-				pstmt.setString(10, ccm.getNewCode());
-				pstmt.addBatch();
-				
-				if(++count % batchSize == 0) {
-			        pstmt.executeBatch();
-			    }				
+				try {
+					pstmt.setString(1, autoID);
+					pstmt.setString(2, ccm.getSaleId());
+					pstmt.setString(3, ccm.getCustomerId());
+					pstmt.setDouble(4, ccm.getRemainingAmount());
+					pstmt.setString(5, ccm.getRemType());
+					pstmt.setDouble(6, ccm.getOriginalAmount());
+					pstmt.setDouble(7, ccm.getTaxAmount());
+					pstmt.setDouble(8, ccm.getTaxRate());
+					pstmt.setString(9, ccm.getDlvPassId());
+					pstmt.setString(10, ccm.getNewCode());
+					pstmt.addBatch();
+					
+					if(++count % batchSize == 0) {
+				        pstmt.executeBatch();
+				    }
+				} catch(Exception e) {
+					if(e.getMessage().indexOf("unique constraint") != -1) {
+						//ignore
+						LOGGER.debug("Found dupe order ID:" + ccm.getSaleId() + "--in--"+ ccm.getNewCode());
+					} else {
+						throw new FDResourceException(e);
+					}
+				}
 			}
 			pstmt.executeBatch(); // insert remaining records
 			pstmt.close();
