@@ -11,14 +11,12 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 
 public class CmInitTag extends AbstractCmTag {
 	private static final Logger LOGGER = LoggerFactory.getInstance(CmInitTag.class);
-	private static final String INCLUDE_CM_TAG_MANAGER = "<script type=\"text/javascript\">var $cm_client_id = %s;</script>";
 	private static final String INCLUDE_CM_JS = "<script type=\"text/javascript\" src=\"//libs.coremetrics.com/eluminate.js\"></script>";
 	private static final String SET_CLIENT_ID_FS = "cmSetClientID(%s,%s,%s,%s);";
 	
 	
 	public void doCmTag() throws JspException, IOException {
 		JspWriter out = getJspContext().getOut();
-		out.println(String.format(INCLUDE_CM_TAG_MANAGER, toJsVar(FDStoreProperties.getCoremetricsClientId())));
 		out.println(INCLUDE_CM_JS);
 		out.println(wrapIntoScriptTag(getSetClientIdScript()));
 	}
