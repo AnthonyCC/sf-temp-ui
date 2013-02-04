@@ -84,6 +84,7 @@ public interface ContentNodeModel extends PrioritizedI {
     String TYPE_RECOMMENDER = "RDR";
     String TYPE_RECOMMENDER_STRATEGY = "RDS";    
     String TYPE_FAQ="FAQ";
+    String TYPE_PAGE="PAGE";
 
     public ContentKey getContentKey();
 

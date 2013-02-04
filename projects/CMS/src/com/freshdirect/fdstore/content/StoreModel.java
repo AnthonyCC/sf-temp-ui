@@ -15,6 +15,7 @@ public class StoreModel extends ContentNodeModelImpl {
 	private List<BrandModel> brands;
 	private List<Domain> domains;
 	private List<MyFD> myfds = new ArrayList<MyFD>();
+	private List<PageModel> pages = new ArrayList<PageModel>();
 
 	public StoreModel(com.freshdirect.cms.ContentKey cKey) {
 		super(cKey);
@@ -67,4 +68,10 @@ public class StoreModel extends ContentNodeModelImpl {
 	public Html getEditorial(){
 		return FDAttributeFactory.constructHtml(this, "EDITORIAL");
 	}
+	
+	public List<PageModel> getPages() {
+		ContentNodeModelUtil.refreshModels(this, "pages", pages, true);
+		return new ArrayList<PageModel>( pages );
+	}
+	
 }

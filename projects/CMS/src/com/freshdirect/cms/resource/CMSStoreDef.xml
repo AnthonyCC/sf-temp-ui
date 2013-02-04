@@ -122,6 +122,9 @@
 			<RelationshipDef name="EDITORIAL" cardinality="One"  label="Editorial" >
 				<DestinationDef contentType="Html" />
 			</RelationshipDef>
+			<RelationshipDef name="pages" label="Media pages" navigable="true" cardinality="Many">
+				<DestinationDef contentType="Page" />
+			</RelationshipDef>
 		</RelationshipDefs>
 	</ContentTypeDef>
 	<!--
@@ -1808,5 +1811,23 @@
 			</RelationshipDef>
 		</RelationshipDefs>
 	</ContentTypeDef>
+	
+	<ContentTypeDef name="Page">
+	
+		<AttributeDefs>
+			<AttributeDef type="S" name="title" label="Page title"/>
+			<AttributeDef type="B" name="showSideNav" label="Show Left Side Nav Bar" inheritable="true"/>
+		</AttributeDefs>		
+		
+		<RelationshipDefs>		
+			<RelationshipDef name="media" label="Media list" navigable="false" cardinality="Many" >
+				<DestinationDef contentType="Html" />
+			</RelationshipDef>			
+			<RelationshipDef name="subPages" label="Subpages" navigable="true" cardinality="Many">
+				<DestinationDef contentType="Page" />
+			</RelationshipDef>			
+		</RelationshipDefs>
+		
+	</ContentTypeDef>	
 
 </CMSDef>

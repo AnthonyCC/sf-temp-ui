@@ -60,6 +60,7 @@ public class ContentNodeModelUtil {
 		CONTENT_TO_TYPE_MAP.put("Recommender", ContentNodeModel.TYPE_RECOMMENDER);
 		CONTENT_TO_TYPE_MAP.put("RecommenderStrategy", ContentNodeModel.TYPE_RECOMMENDER_STRATEGY);
 		CONTENT_TO_TYPE_MAP.put("FAQ", ContentNodeModel.TYPE_FAQ);
+		CONTENT_TO_TYPE_MAP.put("Page", ContentNodeModel.TYPE_PAGE);
 	}
 
 	public static LinkedHashMap<String,Class<?>> TYPE_MODEL_MAP = new LinkedHashMap<String,Class<?>>();
@@ -105,6 +106,7 @@ public class ContentNodeModelUtil {
         TYPE_MODEL_MAP.put("GlobalMenuSection", GlobalMenuSectionModel.class);
         TYPE_MODEL_MAP.put("DonationOrganization", DonationOrganization.class);
         TYPE_MODEL_MAP.put("YoutubeVideo", YoutubeVideoModel.class);
+        TYPE_MODEL_MAP.put("Page", PageModel.class);
 	}
 
 	/**

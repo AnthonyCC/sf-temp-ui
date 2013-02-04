@@ -1469,5 +1469,30 @@
 			</CmsPage>
 		</pages>
 	</CmsEditor>
+
+	<CmsEditor id="pageForm">
+		<contentType>Page</contentType>
+		<pages>
+			<CmsPage>
+				<title>Attributes</title>
+				<sections>
+					<CmsSection>
+						<title>Content</title>
+						<fields>
+							<CmsField><attribute>title</attribute></CmsField>
+							<CmsField><attribute>subPages</attribute></CmsField>
+							<CmsField><attribute>media</attribute></CmsField>
+						</fields>
+					</CmsSection>
+					<CmsSection>
+						<title>Settings</title>
+						<fields>
+							<CmsField><attribute>showSideNav</attribute></CmsField>
+						</fields>
+					</CmsSection>
+				</sections>
+			</CmsPage>
+		</pages>
+	</CmsEditor>
 	
 </Content>
