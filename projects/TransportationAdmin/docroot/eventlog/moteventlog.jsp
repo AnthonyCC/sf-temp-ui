@@ -580,9 +580,12 @@ $(document).ready(function () {
 						
 						
 						<label for='form-description'>Comment</label>
-						<textarea id='description' class='form-input' name='description' cols='40' rows='3' onKeyPress="return ( this.value.length < 250 );" tabindex='8' style="resize:none; width: 206px; height: 96px;"></textarea>
+						<textarea id='description' class='form-input' name='description' cols='40' rows='3' 
+						onKeyDown="limitText(this.form.description,this.form.countdown,250);" 
+						onKeyUp="limitText(this.form.description,this.form.countdown,250);" style="resize:none; width: 206px; height: 96px;"></textarea>						
+						<br/><font size="1">You have <input readonly type="text" name="countdown" size="3" value="250"> characters left.</font>
 						
-						<label for='form-ticketNumber'>Ticket Number</label>
+						<label for='form-ticketNumber'><br/>Ticket Number</label>
 						<input type='text' id='ticketNumber' class='form-input' name='ticketNumber' />
 						
 						<br/>
