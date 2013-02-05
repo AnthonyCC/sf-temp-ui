@@ -1029,6 +1029,34 @@ public class RoutingInfoDAO extends BaseDAO implements IRoutingInfoDAO   {
 					);
 					return result;
 				}
+				
+				private static final String GET_FUTURE_WAVEINSTANCE_DATES = "select distinct delivery_date from transp.WAVE_INSTANCE WHERE delivery_date > sysdate and reference_id is not null";
+				
+				public List<Date> getDeliveryDates()  throws SQLException {
+					final List<Date> result = new ArrayList<Date>();
+					
+					PreparedStatementCreator creator = new PreparedStatementCreator() {
+						public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
+						
+							PreparedStatement ps =	connection.prepareStatement(GET_FUTURE_WAVEINSTANCE_DATES);	
+							return ps;
+						}
+					};
+					
+					jdbcTemplate.query(creator, 
+							new RowCallbackHandler() { 
+						public void processRow(ResultSet rs) throws SQLException {				    	
+							do {
+								Date delivery_date = rs.getDate("delivery_date");
+								result.add(delivery_date);
+							} while(rs.next());		        		    	
+						}
+					}
+					);
+					return result;
+				}
+		
+				
 		
 				
 		

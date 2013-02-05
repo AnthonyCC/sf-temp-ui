@@ -71,6 +71,7 @@ import com.freshdirect.routing.proxy.stub.transportation.RoutingStop;
 import com.freshdirect.routing.proxy.stub.transportation.SchedulerDeliveryWindowMetrics;
 import com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity;
 import com.freshdirect.routing.proxy.stub.transportation.SchedulerOrdersCanceledNotification;
+import com.freshdirect.routing.proxy.stub.transportation.StopType;
 import com.freshdirect.routing.proxy.stub.transportation.TimePeriodBasedTravelSpeedsType;
 
 public class RoutingDataDecoder {
@@ -189,11 +190,12 @@ public class RoutingDataDecoder {
 			int lastSequence = 0;
 			
 			if(route.getStops() != null) {
-				//System.out.println(route.getRouteID()+"->"+route.getStops().length+retrieveBlankStops);
+				//System.out.println(route.getRouteID()+"->"+route.getStops().length+retrieveBlankStops+ " ");
 				for(int intCount=0;intCount<route.getStops().length ;intCount++) {
 					_refStop = route.getStops()[intCount];
 					
-					if(_refStop.getSequenceNumber() >= 0 || retrieveBlankStops) {
+					if(_refStop.getSequenceNumber() >= 0 || (retrieveBlankStops && _refStop.getStopType()!=null && StopType._stpDepot.equals(_refStop.getStopType().getValue()))) {
+						System.out.println("\t"+_refStop.getSequenceNumber()+" "+_refStop.getLocationIdentity().getLocationID()+" "+_refStop.getOrders()+" "+_refStop.getStopType());
 										
 						_stop = new RoutingStopModel(_refStop.getSequenceNumber() >= 0 ? _refStop.getSequenceNumber() : lastSequence);
 						lastSequence =  _refStop.getSequenceNumber();
@@ -591,7 +593,6 @@ public class RoutingDataDecoder {
 			result.setOriginId(route.getDepotLocationId());
 			result.setRouteId(Integer.toString(route.getIdentity().getRouteId()));
 			result.setStops(new TreeSet());
-			System.out.println(route.getWaveId()+ " "+route.getStartTime().getAsCalendar().getTime()+" "+route.getDepartureTime().getTime()+ " "+route.getReturnTime().getTime());
 			IRoutingStopModel _stop = null;
 			IDeliveryModel deliveryInfo = null;
 			result.setWaveId(""+route.getWaveId());

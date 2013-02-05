@@ -60,5 +60,7 @@ public interface IRoutingInfoDAO {
 	Map<RoutingTimeOfDay, Integer> getPlantCapacityByDispatchTime(Date deliveryDate)  throws SQLException;
 	
 	Map<RoutingTimeOfDay, RoutingTimeOfDay> getPlantDispatchMapping()  throws SQLException;
+	
+	List<Date> getDeliveryDates()  throws SQLException;
 		
 }

@@ -13,7 +13,6 @@ import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -23,14 +22,12 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.RowCallbackHandler;
 
-import com.freshdirect.analytics.dao.IBounceDAO;
 import com.freshdirect.analytics.dao.IPlantDispatchDAO;
-import com.freshdirect.analytics.model.BounceData;
 import com.freshdirect.analytics.model.PlantDispatchData;
 
 public class PlantDispatchDAOImpl implements IPlantDispatchDAO  {
 
-	private static final String PLANTDISPATCH_VOLUME = "SELECT * FROM MIS.DISPATCH_VOLUME  DV WHERE DISPATCH_DATE = TRUNC(SYSDATE)+1 AND SNAPSHOT_TIME = " +
+	private static final String PLANTDISPATCH_VOLUME = "SELECT * FROM MIS.DISPATCH_VOLUME  DV WHERE DISPATCH_DATE = ? AND SNAPSHOT_TIME = " +
 			"(SELECT MAX(SNAPSHOT_TIME) FROM MIS.DISPATCH_VOLUME WHERE DISPATCH_DATE = DV.DISPATCH_DATE )  AND PLANT_CAPACITY > 0 ORDER BY DV.DISPATCH_TIME ASC";
        
 	private JdbcTemplate jdbcTemplate;
@@ -39,7 +36,7 @@ public class PlantDispatchDAOImpl implements IPlantDispatchDAO  {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
     }
 
-	public List<PlantDispatchData> getData() 
+	public List<PlantDispatchData> getData(final Date deliveryDate) 
 	{
 		final List<PlantDispatchData> dataList = new ArrayList<PlantDispatchData>();
 		final DateFormat df = new SimpleDateFormat("hh:mm a");
@@ -47,6 +44,7 @@ public class PlantDispatchDAOImpl implements IPlantDispatchDAO  {
 	            public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
 	                PreparedStatement ps =
 	                    connection.prepareStatement(PLANTDISPATCH_VOLUME);
+	                ps.setDate(1, new java.sql.Date(deliveryDate.getTime()));
 	                return ps;
 	            }
 	        };

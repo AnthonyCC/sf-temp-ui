@@ -60,4 +60,6 @@ public interface IRoutingInfoService {
 	Map<RoutingTimeOfDay, Integer> getPlantCapacityByDispatchTime(Date deliveryDate) throws RoutingServiceException; 
 	
 	Map<RoutingTimeOfDay, RoutingTimeOfDay> getPlantDispatchMapping() throws RoutingServiceException; 
+	
+	List<Date> getDeliveryDates() throws RoutingServiceException;
 }

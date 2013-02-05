@@ -3,7 +3,6 @@ package com.freshdirect.analytics.ejb;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -54,12 +53,10 @@ public class DispatchVolumeSessionBean extends SessionBeanSupport {
 			RoutingInfoServiceProxy routingInfoProxy = new RoutingInfoServiceProxy();
 			RoutingEngineServiceProxy proxy = new RoutingEngineServiceProxy();
 			HandOffServiceProxy handoffProxy = new HandOffServiceProxy();
+			List<Date> deliveryDates = routingInfoProxy.getDeliveryDates();
+			for(Date deliveryDate : deliveryDates){
 			Map<IAreaModel, List<IRouteModel>> map = new HashMap<IAreaModel, List<IRouteModel>>();
 			List<IRouteModel> routes = null;
-			Calendar cal = Calendar.getInstance();
-			cal = DateUtil.truncate(cal);
-			cal.add(Calendar.DATE, 1);
-			Date deliveryDate = cal.getTime();
 			IRoutingSchedulerIdentity schedulerId = new RoutingSchedulerIdentity();
 			String dayOfWeek = DateUtil.formatDayOfWk(deliveryDate);
 			Map<String, Map<RoutingTimeOfDay, Set<IHandOffBatchDepotScheduleEx>>> depotScheduleEx = 
@@ -118,6 +115,7 @@ public class DispatchVolumeSessionBean extends SessionBeanSupport {
 			
 			printDispatch(dispatchMap);
 			saveDispatch(dispatchMap);
+			}
 		}
 		catch (Exception e) {
 				e.printStackTrace();

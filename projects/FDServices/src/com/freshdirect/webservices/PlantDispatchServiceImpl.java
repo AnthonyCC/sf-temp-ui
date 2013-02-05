@@ -36,10 +36,15 @@ public class PlantDispatchServiceImpl implements PlantDispatchService {
 	public String getResourceCacheKey(){
 		return "com.freshdirect.webservices.PlantDispatchService";
 	}
-	public List<PlantDispatchData> getDispatchVolume()
+	public List<PlantDispatchData> getDispatchVolume(String deliveryDateStr)
 	{
+		DateFormat df = new SimpleDateFormat("MM/dd/yyyy");
 		List<PlantDispatchData> dataList = null;
-		dataList = plantDispatchDAO.getData();
+		try{
+		Date deliveryDate = df.parse(deliveryDateStr);
+		LOGGER.info("deliveryDate "+deliveryDate);
+		dataList = plantDispatchDAO.getData(deliveryDate);
+		LOGGER.info("dataList"+dataList);
 		int cumlPlannedCapacity=0, cumlOrders=0;
 		
 		if(dataList!=null)
@@ -51,6 +56,9 @@ public class PlantDispatchServiceImpl implements PlantDispatchService {
 				cumlPlannedCapacity  += data.getPlannedCapacity();
 				cumlOrders += data.getOrders();
 			}
+		}
+		}catch(Exception e){
+			LOGGER.info(e.getMessage());e.printStackTrace();
 		}
 		return dataList;
 	}
