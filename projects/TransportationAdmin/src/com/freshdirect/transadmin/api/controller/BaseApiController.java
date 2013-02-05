@@ -2,7 +2,6 @@ package com.freshdirect.transadmin.api.controller;
 
 import java.io.IOException;
 import java.io.StringWriter;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -42,9 +41,6 @@ public abstract class BaseApiController extends AbstractController {
     
     public String getPostData(HttpServletRequest request, HttpServletResponse response) {
         String data = request.getParameter("data");
-        //if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug(data);
-        //}
         return data;
     }
 
@@ -153,5 +149,4 @@ public abstract class BaseApiController extends AbstractController {
         getMapper().writeValue(writer, obj);
         return writer.toString();
     }
-
 }

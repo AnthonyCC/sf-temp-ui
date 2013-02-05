@@ -80,7 +80,7 @@
 					
 					<div style="width:99%">
 						<div class="grid-header" style="width:100%">
-				      		<label>Event Log</label>
+				      		<label>Mot Event Log</label>
 				     	 	<span style="float:right;display:none;" class="ui-icon ui-icon-search" title="Toggle search panel"
 				           	 onclick="toggleFilterRow()"></span>
     					</div>
