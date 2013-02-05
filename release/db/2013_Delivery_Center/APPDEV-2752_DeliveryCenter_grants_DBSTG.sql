@@ -1,8 +1,3 @@
-/*Grants*/
-GRANT delete, insert, select, update ON MIS.ORDER_DELIVERY_METRIC TO fdtrn_ststg01;
-GRANT delete, insert, select, update ON MIS.ORDER_DELIVERY_METRIC TO fdstore_ststg01;
-GRANT select ON MIS.ORDER_DELIVERY_METRIC TO appdev;
-
 GRANT DELETE, INSERT, SELECT, UPDATE ON TRANSP.EVENTLOGBOOK TO fdstore_ststg01;
 GRANT DELETE, INSERT, SELECT, UPDATE ON TRANSP.EVENTLOGBOOK TO fdtrn_ststg01;
 GRANT SELECT ON TRANSP.EVENTLOGBOOK TO appdev;
@@ -50,5 +45,12 @@ GRANT SELECT ON TRANSP.MOTEVENTLOGSEQ TO appdev;
 
 GRANT SELECT ON TRANSP.HANDOFF_BATCH TO mis;
 GRANT SELECT ON TRANSP.HANDOFF_BATCHSTOP TO mis;
+
+
 GRANT SELECT ON cust.lateissue_orders TO mis;
 GRANT SELECT ON dlv.cartontracking TO mis;
+
+/*Grants*/
+GRANT delete, insert, select, update ON MIS.ORDER_DELIVERY_METRIC TO fdtrn_ststg01;
+GRANT delete, insert, select, update ON MIS.ORDER_DELIVERY_METRIC TO fdstore_ststg01;
+GRANT select ON MIS.ORDER_DELIVERY_METRIC TO appdev;
