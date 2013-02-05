@@ -75,6 +75,8 @@ public class FDContentTypes {
 	public final static ContentType YOUTUBE_VIDEO = ContentType.get("YoutubeVideo");
 	public final static ContentType DONATION_ORGANIZATION = ContentType.get("DonationOrganization");
 
+	public final static ContentType PAGE = ContentType.get("Page");
+	
 	private FDContentTypes() {
 	}
 

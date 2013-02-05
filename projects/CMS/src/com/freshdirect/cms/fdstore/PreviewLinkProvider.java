@@ -63,6 +63,8 @@ public class PreviewLinkProvider {
 			}
 		} else if(FDContentTypes.YMAL_SET.equals(type)){
 			return "/test/content/ymal_set_preview.jsp?ymalSetId=" + id;
+		} else if (FDContentTypes.PAGE.equals(type)) {
+			return "/page.jsp?pageId=" + id;
 		}
 
 		return null;

@@ -19,14 +19,12 @@ public class PageModel extends ContentNodeModelImpl {
 		return getAttribute("showSideNav", false);
 	}
 	
-    @SuppressWarnings("unchecked")
-	public List<MediaI> getMediaList() {
-        return (List<MediaI>) FDAttributeFactory.constructWrapperList(this, "media");
+    public List<MediaI> getMediaList() {
+        return FDAttributeFactory.constructWrapperList(this, "media");
     }
 
-    @SuppressWarnings("unchecked")
-	public List<PageModel> getSubPages() {
-        return (List<PageModel>) FDAttributeFactory.constructWrapperList(this, "subPages");
+    public List<PageModel> getSubPages() {
+        return FDAttributeFactory.constructWrapperList(this, "subPages");
     }
     
     public String getLink() {
