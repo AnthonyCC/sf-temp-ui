@@ -72,7 +72,7 @@ public class EventLogDAO implements IEventLogDAO   {
 	private static final String GET_ROUTE_WINDOWS = "select "+ 
 			" bs.ROUTE_NO, bs.WINDOW_STARTTIME, bs.WINDOW_ENDTIME, BS.STOP_SEQUENCE  " + 
 			" from " +
-			" transp.handoff_batch@DBSTO.NYC.FRESHDIRECT.COM b, transp.handoff_batchstop@DBSTO.NYC.FRESHDIRECT.COM bs " +
+			" transp.handoff_batch b, transp.handoff_batchstop bs " +
 			" where " +
 			" b.batch_id = bs.batch_id and b.delivery_date = ?  and b.batch_status in ('CPD','CPD/ADC','CPD/ADF') " + 
 			" GROUP BY " +
