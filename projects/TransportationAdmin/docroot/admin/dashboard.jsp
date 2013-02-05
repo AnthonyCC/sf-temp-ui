@@ -44,10 +44,10 @@
 			   	
 				<div style="width:45%;float:left;margin-left:10px">
 						<br><br><div id="pc_message"></div><br>
-						<div class="grid-header" style="width:50%">
+						<div class="grid-header" style="width: 300px;">
 				      		<label>Plant Capacity</label>
     					</div>
-						<div id="myGrid" style="width: 50%; height: 350px;"></div>
+						<div id="myGrid" style="width: 300px; height: 300px;"></div>
 						<br>
 						<form id="plantCapacityForm" action="" method="POST">
   							<input type="submit" value="Save">
@@ -57,10 +57,10 @@
 				
 				<div style="width:45%;float:left;">
 						<br><br><div id="pd_message"></div><br>
-						<div class="grid-header" style="width:50%">
+						<div class="grid-header" style="width: 300px;">
 				      		<label>Plant Dispatch</label>
     					</div>
-						<div id="pdGrid" style="width: 50%; height: 350px;"></div>
+						<div id="pdGrid" style="width: 300px; height: 300px;"></div>
 						<br>
 						<form id="plantDispatchForm" action="" method="POST">
   							<input type="submit" value="Save">
