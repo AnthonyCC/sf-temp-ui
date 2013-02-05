@@ -34,7 +34,8 @@ public class ActivityDAO implements java.io.Serializable {
 		
 		ps.setString( 1, rec.getActivityType().getCode() );
 		ps.setString( 2, rec.getCustomerId() );
-		ps.setString( 3, rec.getNote()+rec.getSource() );
+		String _note=rec.getNote()+rec.getSourceInfo();
+		ps.setString( 3,_note.substring( 0, Math.min(1000, _note.length()))  );
 		ps.setTimestamp( 4, new java.sql.Timestamp( new java.util.Date().getTime() ) );
 		ps.setString( 5, rec.getSource().getCode() );
 		ps.setString( 6, rec.getInitiator() );
