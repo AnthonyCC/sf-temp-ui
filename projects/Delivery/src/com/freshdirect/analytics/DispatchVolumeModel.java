@@ -8,7 +8,7 @@ public class DispatchVolumeModel {
 	private RoutingTimeOfDay dispatchTime;
 	private Date snapshotTime;
 	private Date dispatchDate;
-	private int plannedCapacity;
+	private double plannedCapacity;
 	private int plantCapacity;
 	private int orderCount;
 	private int noOftrucks;
@@ -18,10 +18,10 @@ public class DispatchVolumeModel {
 	public void setDispatchTime(RoutingTimeOfDay dispatchTime) {
 		this.dispatchTime = dispatchTime;
 	}
-	public int getPlannedCapacity() {
+	public double getPlannedCapacity() {
 		return plannedCapacity;
 	}
-	public void setPlannedCapacity(int plannedCapacity) {
+	public void setPlannedCapacity(double plannedCapacity) {
 		this.plannedCapacity = plannedCapacity;
 	}
 	public int getPlantCapacity() {

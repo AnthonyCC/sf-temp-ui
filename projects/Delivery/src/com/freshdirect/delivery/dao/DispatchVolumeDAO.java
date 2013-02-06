@@ -1,5 +1,6 @@
 package com.freshdirect.delivery.dao;
 
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -62,7 +63,7 @@ public class DispatchVolumeDAO implements IDispatchVolumeDAO{
 				ps.setTimestamp(1, new java.sql.Timestamp(dispatchEntry.getValue().getSnapshotTime().getTime()));
 				ps.setDate(2, new java.sql.Date(dispatchEntry.getValue().getDispatchDate().getTime()));
 				ps.setTimestamp(3, new java.sql.Timestamp(dispatchEntry.getKey().getAsDate().getTime()));
-				ps.setInt(4, dispatchEntry.getValue().getPlannedCapacity());
+				ps.setInt(4, new BigDecimal(dispatchEntry.getValue().getPlannedCapacity()).intValue());
 				ps.setInt(5, dispatchEntry.getValue().getPlantCapacity());
 				ps.setInt(6, dispatchEntry.getValue().getOrderCount());
 				ps.setInt(7, dispatchEntry.getValue().getNoOftrucks());

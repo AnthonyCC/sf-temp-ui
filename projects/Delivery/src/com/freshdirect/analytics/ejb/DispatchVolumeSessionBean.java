@@ -255,8 +255,8 @@ public class DispatchVolumeSessionBean extends SessionBeanSupport {
 		else
 			return dispatchTime;
 	}
-	private int calculatePlannedCapacity(IWaveInstance waveInstance){
-		int capacity = (int) Math.round(((double)waveInstance.getMaxRunTime()/3600) * waveInstance.getNoOfResources() * waveInstance.getArea().getDeliveryRate());
+	private double calculatePlannedCapacity(IWaveInstance waveInstance){
+		double capacity = ((double)waveInstance.getMaxRunTime()/3600) * waveInstance.getNoOfResources() * waveInstance.getArea().getDeliveryRate();
 		return capacity;
 	}
 	private class CustomTruckScheduleInfo extends HandOffBatchDepotScheduleEx {
