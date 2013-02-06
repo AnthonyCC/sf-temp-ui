@@ -55,7 +55,7 @@ public interface IRoutingInfoService {
 
 	List<IRegionModel> getRegions() throws RoutingServiceException;
 
-	Map<String, IWaveInstance> getWavesByDispatchTime(Date deliveryDate) throws RoutingServiceException; 
+	List<IWaveInstance> getWavesByDispatchTime(Date deliveryDate) throws RoutingServiceException; 
 	
 	Map<RoutingTimeOfDay, Integer> getPlantCapacityByDispatchTime(Date deliveryDate) throws RoutingServiceException; 
 	

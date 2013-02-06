@@ -192,7 +192,7 @@ public class RoutingInfoService extends BaseService implements IRoutingInfoServi
 		}
 	}
 
-	public  Map<String, IWaveInstance> getWavesByDispatchTime(Date deliveryDate) throws RoutingServiceException {
+	public List<IWaveInstance> getWavesByDispatchTime(Date deliveryDate) throws RoutingServiceException {
 		try {
 			return routingInfoDAOImpl.getWavesByDispatchTime(deliveryDate);
 		} catch (SQLException e) {

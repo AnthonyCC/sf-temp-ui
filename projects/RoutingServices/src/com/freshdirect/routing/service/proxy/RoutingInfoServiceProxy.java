@@ -95,7 +95,7 @@ public class RoutingInfoServiceProxy  extends BaseServiceProxy  {
 	public List<IRegionModel> getRegions(){
 		return getService().getRegions();
 	}
-	public Map<String, IWaveInstance> getWavesByDispatchTime(Date deliveryDate) throws RoutingServiceException{
+	public List<IWaveInstance> getWavesByDispatchTime(Date deliveryDate) throws RoutingServiceException{
 		return getService().getWavesByDispatchTime(deliveryDate);
 	} 
 	

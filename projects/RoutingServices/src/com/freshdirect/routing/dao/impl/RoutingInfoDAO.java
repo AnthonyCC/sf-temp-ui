@@ -908,10 +908,10 @@ public class RoutingInfoDAO extends BaseDAO implements IRoutingInfoDAO   {
 		}
 		
 		private static final String GET_WAVEINSTANCE_DISPATCHTIME_QRY = "select p.*, a.delivery_rate,TR.CODE REGION, TR.IS_DEPOT from transp.WAVE_INSTANCE p , transp.zone z, transp.trn_area a " +
-				", TRANSP.TRN_REGION TR WHERE  P.DELIVERY_DATE = ? and P.REFERENCE_ID IS NOT NULL and P.AREA = Z.ZONE_CODE and z.AREA = a.CODE and TR.CODE = A.REGION_CODE AND A.ACTIVE ='X' order by p.dispatch_time, p.area asc";
+				", TRANSP.TRN_REGION TR WHERE  P.DELIVERY_DATE = ? and P.AREA = Z.ZONE_CODE and z.AREA = a.CODE and TR.CODE = A.REGION_CODE AND A.ACTIVE ='X' order by p.dispatch_time, p.area asc";
 				
-				public Map<String, IWaveInstance> getWavesByDispatchTime(final Date deliveryDate)  throws SQLException {
-					final Map<String, IWaveInstance> result = new HashMap<String, IWaveInstance>();
+				public List<IWaveInstance> getWavesByDispatchTime(final Date deliveryDate)  throws SQLException {
+					final List<IWaveInstance> result = new ArrayList<IWaveInstance>();
 					
 					PreparedStatementCreator creator = new PreparedStatementCreator() {
 						public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
@@ -961,7 +961,7 @@ public class RoutingInfoDAO extends BaseDAO implements IRoutingInfoDAO   {
 									region.setRegionCode(rs.getString("REGION"));
 									area.setRegion(region);
 									waveInstance.setArea(area);
-									result.put(_routingWaveInstanceId, waveInstance);
+									result.add(waveInstance);
 									
 								}
 									
