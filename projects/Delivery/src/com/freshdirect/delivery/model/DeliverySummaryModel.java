@@ -18,7 +18,7 @@ public class DeliverySummaryModel implements Serializable {
 	
 	private String customerContactStatus;
 	
-	private boolean isOrderDelivered;
+	private boolean orderDelivered;
 	
 	private Date estimatedDlvTime;
 	
@@ -97,15 +97,15 @@ public class DeliverySummaryModel implements Serializable {
 	public void setCartonInfo(List<AirclicCartonInfo> cartonInfo) {
 		this.cartonInfo = cartonInfo;
 	}
-
-	public boolean isOrderDelivered() {
-		return isOrderDelivered;
-	}
-
-	public void setOrderDelivered(boolean isOrderDelivered) {
-		this.isOrderDelivered = isOrderDelivered;
-	}
 	
+	public boolean isOrderDelivered() {
+		return orderDelivered;
+	}
+
+	public void setOrderDelivered(boolean orderDelivered) {
+		this.orderDelivered = orderDelivered;
+	}
+
 	public String getContainsExceptions() {
 		if(exceptions != null && exceptions.size() > 0){
 			return "Yes";
