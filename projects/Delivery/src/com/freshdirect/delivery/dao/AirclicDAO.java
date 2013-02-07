@@ -30,6 +30,7 @@ import com.freshdirect.delivery.model.DispatchNextTelVO;
 import com.freshdirect.delivery.model.RouteNextelVO;
 import com.freshdirect.delivery.model.SignatureVO;
 import com.freshdirect.framework.util.DateUtil;
+import com.freshdirect.framework.util.StringUtil;
 import com.freshdirect.routing.model.BuildingModel;
 import com.freshdirect.routing.model.BuildingOperationDetails;
 import com.freshdirect.routing.model.DeliveryModel;
@@ -943,7 +944,7 @@ public class AirclicDAO {
 	
 	
 	
-	private static String GET_ESTIMATED_DELIVERYTIME_QUERY = "select bs.weborder_id, decode((select max(scandate) from dlv.cartonstatus where cartonstatus in ('DELIVERED','REFUSED') and webordernum=bs.weborder_id), null, (bs.stop_arrivaldatetime + (bo.scantime - bo.stop_arrivaldatetime)), "+
+	/*private static String GET_ESTIMATED_DELIVERYTIME_QUERY = "select bs.weborder_id, decode((select max(scandate) from dlv.cartonstatus where cartonstatus in ('DELIVERED','REFUSED') and webordernum=bs.weborder_id), null, (bs.stop_arrivaldatetime + (bo.scantime - bo.stop_arrivaldatetime)), "+
 		" (select max(scandate) from dlv.cartonstatus where cartonstatus in ('DELIVERED','REFUSED') and webordernum=bs.weborder_id)) estimatedtime, "+
 		" decode((select max(scandate) from dlv.cartonstatus where cartonstatus in ('DELIVERED','REFUSED') and webordernum=bs.weborder_id), null, '','X') deliverystatus "+
 		" from transp.handoff_batch b, transp.handoff_batchstop bs, transp.handoff_batchroute r, "+
@@ -955,6 +956,62 @@ public class AirclicDAO {
 		" ) x where rownum = 1) bo "+
 		" where b.batch_id = bs.batch_id and bs.route_no = r.route_no and b.batch_id = r.batch_id and r.route_no = ? and b.delivery_date = ?  and b.batch_status in ('CPD','CPD/ADC','CPD/ADF') "+
 		" and bs.weborder_id = ? ";
+	
+	private static String GET_ESTIMATED_DELIVERYTIME_QUERY = 
+	
+		" select bs.weborder_id, "+
+			" bs.ROUTING_ROUTE_NO, "+
+			" bs.stop_sequence, "+
+			" DECODE(x.ATTEMPTED_TIME, NULL, 'F','T') AS ATTEMPTED_FLAG, "+
+			" x.LATEISSUE_FLAG AS LATEISSUE_FLAG, "+
+			" x.ORDER_MAX_TIME AS ORDER_MAXSCANTIME, "+
+			" DECODE(y.ROUTE_MAXSCANTIME, null, bs.window_starttime, y.ROUTE_MAXSCANTIME) ROUTE_MAXSCANTIME, "+
+			" DECODE(x.ATTEMPTED_TIME, null, (sysdate - (bs.servicetime+bs.traveltime)/86400), null) EMBARK_NEXTTIME, "+
+			" ROUND((bs.servicetime + bs.traveltime)/60) work_time, "+
+			" CASE WHEN X.ATTEMPTED_TIME IS NULL  "+
+			" THEN "+
+			" 	SUM(ROUND((BS.SERVICETIME + BS.TRAVELTIME)/60)) OVER (PARTITION BY BS.ROUTING_ROUTE_NO, DECODE(X.ATTEMPTED_TIME, NULL, 'F','T')  ORDER BY BS.STOP_SEQUENCE) "+  
+			" ELSE 0  "+
+			" END AS MIN_UNTIL_DELIVERY, "+
+			" CASE WHEN X.ATTEMPTED_TIME IS NULL "+ 
+			" THEN "+
+			" 	GREATEST(DECODE(y.ROUTE_MAXSCANTIME, null, bs.window_starttime, y.ROUTE_MAXSCANTIME) + "+
+			" 		SUM((BS.SERVICETIME + BS.TRAVELTIME)/86400) OVER (PARTITION BY BS.ROUTING_ROUTE_NO, DECODE(X.ATTEMPTED_TIME, NULL, 'F','T')  ORDER BY BS.STOP_SEQUENCE) "+
+			" 		, DECODE(x.ATTEMPTED_TIME, null, (sysdate - (bs.servicetime+bs.traveltime)/86400), null) + "+
+			" 		SUM((BS.SERVICETIME + BS.TRAVELTIME)/86400) OVER (PARTITION BY BS.ROUTING_ROUTE_NO, DECODE(X.ATTEMPTED_TIME, NULL, 'F','T')  ORDER BY BS.STOP_SEQUENCE) "+
+			" 	) "+
+			" ELSE NULL END as ESTIMATED_DLV_TIME "+
+			" from transp.handoff_batch b, transp.handoff_batchstop bs, transp.handoff_batchroute r, "+
+			" ( "+
+			"      select distinct webordernum, routing_route_no, "+
+			"      MAX(CASE WHEN CT.CARTONSTATUS IN  ('DELIVERED','REFUSED') THEN SCANDATE ELSE NULL END) OVER (PARTITION BY WEBORDERNUM) ATTEMPTED_TIME, "+
+			"      MAX(SCANDATE) OVER (PARTITION BY WEBORDERNUM) ORDER_MAX_TIME, "+
+			"      CASE WHEN LO.STOP_NUMBER IS NULL THEN 'F' ELSE 'T' END as LATEISSUE_FLAG "+            
+			"      from transp.handoff_batch bx, transp.handoff_batchstop bsx, dlv.cartontracking ct, cust.lateissue_orders LO "+ 
+			"      where bx.batch_id = bsx.batch_id  and BSx.route_no = ? and bx.delivery_date = ? and bx.batch_status in ('CPD','CPD/ADC','CPD/ADF') "+ 
+			"      and bsx.weborder_id = ct.webordernum(+) "+
+			"      and bsx.weborder_id = lo.stop_number(+) "+
+			"      and ct.cartonstatus in ('DELIVERED','REFUSED','IN_TRANSIT') "+
+			"  ) X, "+
+			"  ( "+
+			"      select bsx.ROUTING_ROUTE_NO, max(ct.scandate) AS  ROUTE_MAXSCANTIME "+ 
+			"      from transp.handoff_batch bx, transp.handoff_batchstop bsx, dlv.cartontracking ct "+ 
+			"      where bx.batch_id = bsx.batch_id and bsx.route_no = ? and bx.delivery_date = ? and bx.batch_status in ('CPD','CPD/ADC','CPD/ADF') "+ 
+			"      and bsx.weborder_id=ct.webordernum(+) "+
+			"      and ct.cartonstatus in ('DELIVERED','REFUSED','IN_TRANSIT') "+
+			"      GROUP BY BSX.ROUTING_ROUTE_NO "+
+			"  ) Y "+                                 
+			" where b.batch_id = bs.batch_id "+ 
+			" and bs.route_no = r.route_no and b.batch_id = r.batch_id "+ 
+			" and r.route_no = ? and b.delivery_date = ?  and b.batch_status in ('CPD','CPD/ADC','CPD/ADF') "+
+			" and x.webordernum(+) = bs.weborder_id "+
+			" and y.ROUTING_ROUTE_NO(+) = bs.ROUTING_ROUTE_NO "+
+			" and bs.weborder_id = ? ";
+	
+	*/
+	
+	private static String GET_ESTIMATED_DELIVERYTIME_QUERY = "select dlm.dlv_attempted_flag, dlm.eventlog_flag, estimated_dlv_time " +
+			"  from mis.order_delivery_metric dlm where dlm.weborder_id = ? ";
 	
 	
 	private static String GET_CARTONINFO_EXCEPTION = "select cartonid, cartonstatus "+
@@ -981,17 +1038,13 @@ public class AirclicDAO {
 		ResultSet rs = null;
 		try{
 			ps = conn.prepareStatement(GET_ESTIMATED_DELIVERYTIME_QUERY);
-			ps.setString(1, routeNo);
-			ps.setDate(2, new java.sql.Date(deliveryDate.getTime()));
-			ps.setString(3, routeNo);
-			ps.setDate(4, new java.sql.Date(deliveryDate.getTime()));
-			ps.setString(5, orderId);
+			ps.setString(1, orderId);
 			
 			rs = ps.executeQuery();
 			
 			while(rs.next()) {									
-				model.setOrderDelivered("X".equals(rs.getString("DELIVERYSTATUS")));
-				model.setEstimatedDlvTime(rs.getTimestamp("ESTIMATEDTIME"));
+				model.setOrderDelivered("T".equals(rs.getString("DLV_ATTEMPTED_FLAG")) || "T".equals(rs.getString("EVENTLOG_FLAG")));
+				model.setEstimatedDlvTime(rs.getTimestamp("ESTIMATED_DLV_TIME"));
 			}			
 			
 		} catch (SQLException e) {
@@ -1204,7 +1257,7 @@ public class AirclicDAO {
 				String returnReason = rs.getString("RETURNREASON");
 				Date lastRefusedTime = rs.getTimestamp("LASTREFUSEDTIME");
 				
-				if(!result.containsKey(orderId)){
+				if(!result.containsKey(orderId) && !StringUtil.isEmpty(orderId)){
 					model = new DeliveryExceptionModel();
 					model.setOrderId(orderId);
 					result.put(orderId, model);
@@ -1230,7 +1283,7 @@ public class AirclicDAO {
 				String orderId = rs.getString("ORDERNUMBER");
 				String callOutcome = rs.getString("CALL_OUTCOME");
 				
-				if(!result.containsKey(orderId)) {
+				if(!result.containsKey(orderId) && !StringUtil.isEmpty(orderId)) {
 					model = new DeliveryExceptionModel();
 					model.setOrderId(orderId);
 					result.put(orderId, model);
@@ -1260,7 +1313,7 @@ public class AirclicDAO {
 				String cartonId = rs.getString("CARTONID");
 				Date scanTime = rs.getTimestamp("SCANTIME");
 				
-				if(!result.containsKey(orderId)){
+				if(!result.containsKey(orderId) && !StringUtil.isEmpty(orderId)){
 					model = new DeliveryExceptionModel();
 					model.setOrderId(orderId);
 					result.put(orderId, model);
