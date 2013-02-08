@@ -537,9 +537,9 @@ function showGrid() {
 						
 						<label for='form-description'>Comment</label>
 						<textarea id='description' class='form-input' name='description' cols='40' rows='3' 
-						onKeyDown="limitText(this.form.description,this.form.countdown,250);" 
-						onKeyUp="limitText(this.form.description,this.form.countdown,250);" style="resize:none; width: 206px; height: 96px;"></textarea>						
-						<br/><label for='form-desc'>&nbsp;</label><font size="1">You have <input readonly type="text" name="countdown" size="3" value="250"> characters left.</font>						
+						onKeyDown="limitText(this.form.description,this.form.countdown,4000);" 
+						onKeyUp="limitText(this.form.description,this.form.countdown,4000);" style="resize:none; width: 206px; height: 96px;"></textarea>						
+						<br/><label for='form-desc'>&nbsp;</label><font size="1">You have <input readonly type="text" name="countdown" size="3" value="4000"> characters left.</font>						
 					</td>
 				</tr>
 				<tr>

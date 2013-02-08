@@ -67,7 +67,7 @@ public class EventLogDAO implements IEventLogDAO   {
 	
 	private static final String GET_EVENTLOGTYPE_QRY = " SELECT lt.*, st.id subtype_id, st.eventsubtypename subtype_name, st.eventsubtypedescription subtype_desc, st.isactive isSubTypeActive, mg.group_name, mg.email "+ 
             " from transp.eventtype lt, transp.eventsubtype st, transp.eventlog_messagegroup mg "+ 
-            " where lt.id=st.eventtypeid(+) and st.msggroup_id=mg.group_name(+) ";
+            " where lt.id=st.eventtypeid(+) and st.msggroup_id=mg.id(+) ";
 	
 	private static final String GET_ROUTE_WINDOWS = "select "+ 
 			" bs.ROUTE_NO, bs.WINDOW_STARTTIME, bs.WINDOW_ENDTIME, BS.STOP_SEQUENCE  " + 
@@ -117,7 +117,7 @@ public class EventLogDAO implements IEventLogDAO   {
 	
 	private static final String GET_MOTEVENTLOGTYPE_QRY = " SELECT lt.*, mg.group_name, mg.email "+
 															" from transp.moteventtype lt, transp.moteventlog_messagegroup mg "+
-															" where lt.msggroup_id = mg.group_name(+) ";
+															" where lt.msggroup_id = mg.id(+) ";
 	
 	private static final String GET_MOTEVENTMESSAGEGROUP_QRY = " select * from transp.moteventlog_messagegroup ";
 	
