@@ -285,6 +285,7 @@ public class PlanningFormController extends AbstractFormController {
 				EnumTransportationFacilitySrc.CROSSDOCK.getName().equalsIgnoreCase(deliveryFacility.getTrnFacilityType().getName())){
 			model.setZoneCode("");
 			model.setZoneName("");
+			model.setEquipmentTypeS("");
 		}
 		model.setDestinationFacility(deliveryFacility);
 		if(!TransStringUtil.isEmpty(model.getIsBullpen()) && "Y".equalsIgnoreCase(model.getIsBullpen())) {
@@ -292,6 +293,7 @@ public class PlanningFormController extends AbstractFormController {
 			model.setZoneName("");
 			model.setOriginFacility(null);
 			model.setDestinationFacility(null);
+			model.setEquipmentTypeS("");
 		}
 
 		if(!TransStringUtil.isEmpty(model.getZoneCode())) {

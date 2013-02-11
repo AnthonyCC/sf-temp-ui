@@ -122,6 +122,7 @@ public class ScribFormController extends AbstractDomainFormController {
 		if(deliveryFacility != null && 
 				EnumTransportationFacilitySrc.CROSSDOCK.getName().equalsIgnoreCase(deliveryFacility.getTrnFacilityType().getName())){
 			model.setZone(null);
+			model.setEquipmentTypeS("");
 		}
 		model= ScribUtil.reconstructWebPlanInfo(model,zone,model.getFirstDeliveryTimeModified(),
 				employeeManagerService,zoneManagerService, assetManagerService);		

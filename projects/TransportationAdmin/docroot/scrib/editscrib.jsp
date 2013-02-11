@@ -178,7 +178,7 @@
 							<td align="right">Equipment Type</td>
 							<td>
 								<form:select path="equipmentTypeS" disabled="${_disableZone}">
-									<form:option value="null" label="--Please Select Equipment Type"/>
+									<form:option value="" label="--Please Select Equipment Type"/>
 									<form:options items="${scribForm.equipmentTypes}" itemLabel="id" itemValue="id" />
 								</form:select>
 							</td>

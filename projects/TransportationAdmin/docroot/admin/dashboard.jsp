@@ -42,7 +42,7 @@
 		<br>&nbsp;<br><br>
 		
 			   	
-				<div style="width:45%;float:left;margin-left:10px">
+				<div style="width: 300px;margin-left:10px;float:left;">
 						<br><br><div id="pc_message"></div><br>
 						<div class="grid-header" style="width: 300px;">
 				      		<label>Plant Capacity</label>
@@ -55,7 +55,7 @@
 						
 				</div>
 				
-				<div style="width:45%;float:left;">
+				<div style="width: 300px;padding:0px 50px;float:left;">
 						<br><br><div id="pd_message"></div><br>
 						<div class="grid-header" style="width: 300px;">
 				      		<label>Plant Dispatch</label>
@@ -69,7 +69,18 @@
 				</div>
 			
 	</div>
+	<style type="text/css">
 	
+	div#loadingImage {
+   position: absolute;
+   display: inline-block;
+   top: 50%;
+   left: 50%;
+   margin-top: -150px; /* Half the height */
+   margin-left: -150px; /* Half the width */
+}
+
+	</style>
   <script>
   
   function requiredFieldValidator(value) {
@@ -211,6 +222,9 @@
 			contentType : "application/json",
 			dataType : "json",
 			async : true,
+			beforeSend: function() {
+			    $('#myGrid').html("<div id='loadingImage'><img src='images/loading.gif' /></div>");
+			  },
 			success : function(json) {
 				
 				for(var i=0;i < json.rows.length;i++) {
@@ -221,12 +235,13 @@
 				}
 				grid = new Slick.Grid("#myGrid", data, pc_columns, options);
 				grid.setSelectionModel(new Slick.RowSelectionModel());
+				grid.setSortColumn("dispatchTime",true);
 				
 				
 				$('#myGrid').show();
 				
 				grid.onAddNewRow.subscribe(function (e, args) {
-					
+					  $('#pc_message').html("");
 				      var item = args.item;
 				      grid.invalidateRow(data.length);
 				      data.push(item);
@@ -288,8 +303,20 @@
 					}
 					pd_grid = new Slick.Grid("#pdGrid", pd_data, pd_columns, options);
 					pd_grid.setSelectionModel(new Slick.RowSelectionModel());
+					pd_grid.setSortColumn("plantDispatch",true);
+					
 					$('#pdGrid').show();
 					pd_grid.onKeyDown.subscribe(activateEdit);
+					
+					pd_grid.onAddNewRow.subscribe(function (e, args) {
+						  $('#pd_message').html("");
+					      var item = args.item;
+					      pd_grid.invalidateRow(pd_data.length);
+					      pd_data.push(item);
+					      pd_grid.updateRowCount();
+					      pd_grid.render();
+					    });
+					
 					
 				},
 				error : function(msg) {
