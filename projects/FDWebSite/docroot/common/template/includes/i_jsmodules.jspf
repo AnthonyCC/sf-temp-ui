@@ -3,6 +3,7 @@
 <%-- this file will be included just before the closing </body> tag --%>
 <fd:javascript src="/assets/javascript/fd/modules/common/utils.js"/>
 <fd:javascript src="/assets/javascript/fd/modules/common/placeholder.js"/>
+<fd:javascript src="/assets/javascript/fd/modules/common/unselectable.js"/>
 <fd:javascript src="/assets/javascript/fd/modules/common/tooltip.js"/>
 <fd:javascript src="/assets/javascript/fd/modules/common/clickleavetoggler.js"/>
 <fd:javascript src="/assets/javascript/fd/modules/common/autocomplete.js"/>

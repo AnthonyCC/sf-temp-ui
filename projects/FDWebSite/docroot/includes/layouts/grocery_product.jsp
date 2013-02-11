@@ -679,9 +679,9 @@ if(productCode!=null && prodCatId !=null ) {
 <br>
         <div class="qtyinput">
           <span class="qtymessage">Quantity </span>
-          <a href="javascript:chgQty('quantity_big',-<%=productNode.getQuantityIncrement()%>,<%=productNode.getQuantityMinimum()%>,<%=user.getQuantityMaximum(productNode)%>);" class="quantity_minus"><span>Increase quantity</span></a>
+          <a href="javascript:chgQty('quantity_big',-<%=productNode.getQuantityIncrement()%>,<%=productNode.getQuantityMinimum()%>,<%=user.getQuantityMaximum(productNode)%>);return false;" class="quantity_minus"><span>Increase quantity</span></a>
           <input class="qty" type="text" size="4" name="quantity_big" maxlength="2" value="<%=Math.round(productNode.getQuantityMinimum())%>" onChange="chgQty('quantity_big',0,<%=productNode.getQuantityMinimum()%>,<%=user.getQuantityMaximum(productNode)%>);"/>
-          <a href="javascript:chgQty('quantity_big',<%=productNode.getQuantityIncrement()%>,<%=productNode.getQuantityMinimum()%>,<%=user.getQuantityMaximum(productNode)%>);" class="quantity_plus"><span>Decrease quantity</span></a>
+          <a href="javascript:chgQty('quantity_big',<%=productNode.getQuantityIncrement()%>,<%=productNode.getQuantityMinimum()%>,<%=user.getQuantityMaximum(productNode)%>);return false;" class="quantity_plus"><span>Decrease quantity</span></a>
         </div>
         <div class="qtyinput">
           <span class="qtyprice">Price </span>

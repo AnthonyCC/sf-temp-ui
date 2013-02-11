@@ -269,13 +269,14 @@ FDIdentity identity = user.getIdentity();
 					document.viewcart.quantity_<%=idx%>.value = qty;
 
 					FreshDirect.ClientCodes.updateQty(<%= idx %>);
+          return false;
 				}
 				FreshDirect.ClientCodes.saveQty(<%= idx %>, <%= cartLine.getQuantity() %>);
 				</script>
         <div class="qtyinput">
-          <a href="javascript:chgQty<%=idx%>(<%= -productNode.getQuantityIncrement() %>);" class="quantity_minus"><span>Increase quantity</span></a>
+          <a href="javascript:chgQty<%=idx%>(<%= -productNode.getQuantityIncrement() %>);return false;" class="quantity_minus"><span>Increase quantity</span></a>
           <input class="qty" type="text" size="4" id="quantity_<%=idx%>" name="quantity_<%=idx%>" maxlength="5" value="<%= quantityFormatter.format(cartLine.getQuantity()) %>" onChange="chgQty<%=idx%>(0);" onBlur=""/>
-          <a href="javascript:chgQty<%=idx%>(<%= productNode.getQuantityIncrement() %>);" class="quantity_plus"><span>Decrease quantity</span></a>
+          <a href="javascript:chgQty<%=idx%>(<%= productNode.getQuantityIncrement() %>);return false;" class="quantity_plus"><span>Decrease quantity</span></a>
         </div>
 				<input name="rnd_<%=idx%>" type="hidden" value="<%= cartLine.getRandomId() %>">
 			</td>

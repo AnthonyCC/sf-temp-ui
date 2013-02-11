@@ -462,7 +462,7 @@ int prodIdx = 0;
                     pricing<%=prodIdx%>.setOption("<%= entry.getKey() %>", "<%= entry.getValue() %>");
                     </logic:iterate>
                     
-                    function chgQty<%=prodIdx%>(delta) { chgQuickShopQty(<%=prodIdx%>, delta, <%= _productNode.getQuantityMinimum() %>, <%= user.getQuantityMaximum(_productNode) %>, <%=_productNode.getQuantityIncrement()%>); }
+                    function chgQty<%=prodIdx%>(delta) { chgQuickShopQty(<%=prodIdx%>, delta, <%= _productNode.getQuantityMinimum() %>, <%= user.getQuantityMaximum(_productNode) %>, <%=_productNode.getQuantityIncrement()%>); return false; }
                 </script>
 
 			<%
@@ -490,9 +490,9 @@ int prodIdx = 0;
                     <td colspan="3">
                       <% String quant = quantityFormatter.format(orderLine.getQuantity()); %>	
                       <div class="qtyinput">
-                        <a href="javascript:chgQty<%=prodIdx%>(<%= -_productNode.getQuantityIncrement() %>);" class="quantity_minus"><span>Increase quantity</span></a>
+                        <a href="javascript:chgQty<%=prodIdx%>(<%= -_productNode.getQuantityIncrement() %>); return false;" class="quantity_minus"><span>Increase quantity</span></a>
                         <input class="qty" type="text" size="4" name="quantity_<%=prodIdx%>" maxlength="2" value="<%= !"0".equals(quant)?quant:"" %>" onChange="chgQty<%=prodIdx%>(0);" onBlur="pricing<%=prodIdx%>.setQuantity(this.value);"/>
-                        <a href="javascript:chgQty<%=prodIdx%>(<%= _productNode.getQuantityIncrement() %>);" class="quantity_plus"><span>Decrease quantity</span></a>
+                        <a href="javascript:chgQty<%=prodIdx%>(<%= _productNode.getQuantityIncrement() %>); return false;" class="quantity_plus"><span>Decrease quantity</span></a>
                       </div>
                     </td>
 

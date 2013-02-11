@@ -534,7 +534,7 @@ if (showRecent && showThis &&  skusAdded!=null && skusAdded.contains("skuCode_"+
                 pricing<%=idx%>.setOption("<%= entry.getKey() %>", "<%= entry.getValue() %>");
             </logic:iterate>
             
-            function chgQty<%=idx%>(delta) { chgQuickShopQty(<%=idx%>, delta, <%= productNode.getQuantityMinimum() %>, <%= user.getQuantityMaximum(productNode) %>, <%=productNode.getQuantityIncrement()%>); }
+            function chgQty<%=idx%>(delta) { chgQuickShopQty(<%=idx%>, delta, <%= productNode.getQuantityMinimum() %>, <%= user.getQuantityMaximum(productNode) %>, <%=productNode.getQuantityIncrement()%>); return false; }
             </script>
 
     <% if (productNode.hasTerms()) { %> <input type="hidden" name="consented_<%=idx%>" value="true"> <% } %>
@@ -565,9 +565,9 @@ if (showRecent && showThis &&  skusAdded!=null && skusAdded.contains("skuCode_"+
 			<td colspan="3" width="100">
 				<input type="hidden" name="salesUnit_<%=idx%>" value="<%= orderLine.getSalesUnit() %>">
         <div class="qtyinput">
-          <a href="javascript:chgQty<%=idx%>(<%= -productNode.getQuantityIncrement() %>);" class="quantity_minus"><span>Increase quantity</span></a>
+          <a href="javascript:chgQty<%=idx%>(<%= -productNode.getQuantityIncrement() %>); return false;" class="quantity_minus"><span>Increase quantity</span></a>
           <input class="qty" type="text" size="4" name="quantity_<%=idx%>" maxlength="2" value="<%= !"0".equals(quant)?quant:"" %>" onChange="chgQty<%=idx%>(0);" onBlur="pricing<%=idx%>.setQuantity(this.value);"/>
-          <a href="javascript:chgQty<%=idx%>(<%= productNode.getQuantityIncrement() %>);" class="quantity_plus"><span>Decrease quantity</span></a>
+          <a href="javascript:chgQty<%=idx%>(<%= productNode.getQuantityIncrement() %>); return false;" class="quantity_plus"><span>Decrease quantity</span></a>
         </div>
 			</td>
 		<% } %>
