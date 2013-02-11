@@ -17,6 +17,7 @@
 <%@ page import="com.freshdirect.webapp.taglib.fdstore.PaymentMethodUtil"%>
 <%@page import="com.freshdirect.framework.util.log.LoggerFactory"%>
 <%@page import="com.freshdirect.webapp.util.JspMethods"%>
+<%@page import="com.freshdirect.sap.PosexUtil"%>
 <% 
 String thisPageURI = request.getRequestURI();
 String bgcolor = "#CCFFCC"; 
@@ -116,7 +117,7 @@ ErpPaymentMethodI __paymentMethod	= (ErpPaymentMethodI) paymentMethod;
 	        // APPROVED complaints
 	        for (Iterator it = __complaintLs.iterator(); it.hasNext(); ) {
 	            ErpComplaintLineModel line = (ErpComplaintLineModel) it.next();
-	            if (i == Integer.parseInt( line.getComplaintLineNumber() ) ) {
+	            if (PosexUtil.getIndexFromPosex(orderLine.getOrderLineNumber()) == Integer.parseInt( line.getComplaintLineNumber() ) ) {
 	                retQty += line.getQuantity();
 	                retAmount += line.getAmount();
 	            }
@@ -133,7 +134,7 @@ ErpPaymentMethodI __paymentMethod	= (ErpPaymentMethodI) paymentMethod;
 		            if (anObj instanceof ErpComplaintLineModel) {
 			            // ErpComplaintLineModel pendingLine = (ErpComplaintLineModel) it.next();
 			            ErpComplaintLineModel pendingLine = (ErpComplaintLineModel) anObj;
-			            if (i == Integer.parseInt( pendingLine.getComplaintLineNumber() ) ) {
+			            if (PosexUtil.getIndexFromPosex(orderLine.getOrderLineNumber()) == Integer.parseInt( pendingLine.getComplaintLineNumber() ) ) {
 			                pendingQty += pendingLine.getQuantity();
 			                pendingAmount += pendingLine.getAmount();
 			                pendingReason = pendingLine.getReason().getReason();
