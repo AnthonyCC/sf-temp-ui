@@ -398,7 +398,12 @@ public class CrisisManagerServlet extends HttpServlet {
 				reservation = FDCustomerManager.makeReservation(identity, 
 						timeslot, EnumReservationType.ONETIME_RESERVATION, rsvModel.getAddressId(), info, user.isChefsTable(), event, true);				
 			
-			} 
+			} catch (ReservationException e){
+				// no more capacity in this timeslot
+				LOGGER.info( "No more capacity in timeslot: " + timeslot.toString(), null );
+				reservation = FDCustomerManager.makeReservation(identity, 
+						timeslot, EnumReservationType.ONETIME_RESERVATION, rsvModel.getAddressId(), info, user.isChefsTable(), event, true);
+			}
 			return reservation != null ? reservation.getId().toString() : null;
 			
 		} catch (FDResourceException fe) {
