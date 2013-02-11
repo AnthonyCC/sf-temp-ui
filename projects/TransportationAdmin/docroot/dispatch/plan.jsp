@@ -176,11 +176,7 @@
 		    	var hasConfirmed = confirm ("Do you want to delete the selected records?")
 		    	if (hasConfirmed) 
 				{
-		    		var param1 = document.getElementById("weekdate").value;
-		     		var param2 = document.getElementById("daterange").value;
-		     		var param3 = document.getElementById("zone").value;
-		            var filters="&weekdate="+param1+"&daterange="+param2+"&zone="+param3+"&"+getFilterValue(document.getElementById("planListForm"),false)
-				  	location.href = url+"?id="+ paramValues+filters;
+		    		location.href = url+"?id="+ paramValues+"&filter="+getFilterTestValue();
 				} 
 		    } else {
 		    	alert('Please Select a Row!');
@@ -194,11 +190,7 @@
 		    	var hasConfirmed = confirm ("Do you want to convert selected truck(s) to bullpen?")
 		    	if (hasConfirmed) 
 				{
-		    		var param1 = document.getElementById("weekdate").value;
-		     		var param2 = document.getElementById("daterange").value;
-		     		var param3 = document.getElementById("zone").value;
-		            var filters="&weekdate="+param1+"&daterange="+param2+"&zone="+param3+"&"+getFilterValue(document.getElementById("planListForm"),false)
-				  	location.href = url+"?id="+ paramValues+filters;
+		    		location.href = url+"?id="+ paramValues+"&filter="+getFilterTestValue();
 				} 
 		    } else {
 		    	alert('Please select atleast one Row!');
@@ -225,11 +217,7 @@
     		    if (paramValues != null) {
     		    	var hasConfirmed = confirm ("You are about to clone the selected plan entry. Do you want to continue?")
     		    	if (hasConfirmed) {
-    		    		var param1 = document.getElementById("weekdate").value;
-    		     		var param2 = document.getElementById("daterange").value;
-    		     		var param3 = document.getElementById("zone").value;
-    		            var filters="&weekdate="+param1+"&daterange="+param2+"&zone="+param3+"&"+getFilterValue(document.getElementById("planListForm"),false)
-    				  	location.href = url+"?planRefId="+ paramValues+filters;
+    		    		location.href = url+"?planRefId="+ paramValues+"&filter="+getFilterTestValue();
     				} 
     		    }	
     	    }

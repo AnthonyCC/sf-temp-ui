@@ -301,7 +301,7 @@ public class PlanningFormController extends AbstractFormController {
 		}
 
 
-		if( "true".equalsIgnoreCase(model.getZoneModified()))
+		if( "true".equalsIgnoreCase(model.getZoneModified()) && zone != null && zone.getArea() != null)
 		{
 			model.setEquipmentTypes(assetManagerService.getEquipmentTypes(zone.getArea().getRegion()));
 		}

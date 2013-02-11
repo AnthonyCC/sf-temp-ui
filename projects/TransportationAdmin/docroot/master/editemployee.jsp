@@ -14,7 +14,7 @@
 
 	<tmpl:put name='content' direct='true'>
 
-	<div class="MNM001 subsub or_999">
+	<div class="MNM001 subsub ">
 		<div class="subs_left">	
 			<div class="sub_tableft sub_tabL_MNM001 <% if(!"T".equalsIgnoreCase(request.getParameter("empstatus"))) { %>activeL<% } %>">&nbsp;</div>
 			<div class="subtab <% if(!"T".equalsIgnoreCase(request.getParameter("empstatus"))) { %>activeT<% } %>">
@@ -150,6 +150,7 @@
 							<tr><td colspan="3">&nbsp;</td></tr>
 							<tr>
 							<td colspan="3" align="center">
+								 <input type = "button" value="&nbsp;Back&nbsp;" onclick="javascript:back('employee');" />
 								 <input type = "submit" value="&nbsp;Save Changes&nbsp;"  />
 							 <%if(com.freshdirect.transadmin.security.SecurityManager.isUserAdmin(request)){%>
 							
@@ -170,7 +171,7 @@
 			
 		 </div>
 		 </div>
-		 
+		 <form name="employee" action="employee.do" method="post">  </form>
 	</tmpl:put>
 </tmpl:insert>
 <script>

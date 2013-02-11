@@ -75,7 +75,8 @@ public class ScribUtil
 						}
 					}
 				}
-				if("true".equalsIgnoreCase(scribInfo.getZoneModified())){
+				if("true".equalsIgnoreCase(scribInfo.getZoneModified())
+						&& zone.getArea() != null){
 					scribInfo.setEquipmentTypes(assetManagerService.getEquipmentTypes(zone.getArea().getRegion()));
 				}
 			} catch (ParseException e) {				
