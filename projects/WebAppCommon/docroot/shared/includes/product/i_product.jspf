@@ -733,9 +733,9 @@ if ( skuSize == 0 ) {
 									<%-- Quantity box with plus/minus signs by each, price below --%>
                   <div class="qtyinput" style="<%= alignRight ? "float: right;" : "" %>">
                     <span class="qtymessage"><%= __prd.getQuantityText() %><% if (__prd.getQuantityMinimum() != 1) { out.println(" *"); } %></span>
-                    <a href="javascript:chgQty(<%= -__prd.getQuantityIncrement() %>);return false;" class="quantity_minus"><span>Increase quantity</span></a>
+                    <a href="javascript:chgQty(<%= -__prd.getQuantityIncrement() %>);" class="quantity_minus"><span>Increase quantity</span></a>
                     <input class="qty" type="text" size="4" name="quantity" maxlength="2" value="<%= quantityFormatter.format(defaultQuantity) %>" onChange="chgQty(0);" onBlur="pricing.setQuantity(this.value);"/>
-                    <a href="javascript:chgQty(<%= __prd.getQuantityIncrement() %>);return false;" class="quantity_plus"><span>Decrease quantity</span></a>
+                    <a href="javascript:chgQty(<%= __prd.getQuantityIncrement() %>);" class="quantity_plus"><span>Decrease quantity</span></a>
                   </div>
                   <div><%@ include file="/shared/includes/product/i_minmax_note.jspf" %></div>
 									<table cellpadding="0" cellspacing="2" border="0" style="<%= alignRight ? "float: right; margin-right: 0px; margin-left: auto;" : "" %>"> 									
@@ -751,9 +751,9 @@ if ( skuSize == 0 ) {
 									<%-- Quantity box with plus/minus signs by each, price next --%>
                   <div class="qtyinput" style="<%= alignRight ? "float: right;" : "" %>">
                     <span class="qtymessage"><%= __prd.getQuantityText() %><% if (__prd.getQuantityMinimum() != 1) { out.println(" *"); } %></span>
-                    <a href="javascript:chgQty(<%= -__prd.getQuantityIncrement() %>); return false;" class="quantity_minus"><span>Increase quantity</span></a>
+                    <a href="javascript:chgQty(<%= -__prd.getQuantityIncrement() %>);" class="quantity_minus"><span>Increase quantity</span></a>
                     <input class="qty" type="text" size="4" name="quantity" maxlength="2" value="<%= quantityFormatter.format(defaultQuantity) %>" onChange="chgQty(0);" onBlur="pricing.setQuantity(this.value);"/>
-                    <a href="javascript:chgQty(<%= __prd.getQuantityIncrement() %>); return false;" class="quantity_plus"><span>Decrease quantity</span></a>
+                    <a href="javascript:chgQty(<%= __prd.getQuantityIncrement() %>);" class="quantity_plus"><span>Decrease quantity</span></a>
                     <span class="qtyprice">Price</span>
                     <input class="qtypriceinput" type="text" name="PRICE" size="6" onChange="" onFocus="blur()" value=""/>
                   </div>
@@ -771,9 +771,9 @@ if ( skuSize == 0 ) {
 									<%-- Quantity box with plus/minus signs by each --%>
                   <div class="qtyinput" style="<%= alignRight ? "float: right;" : "" %>">
                     <span class="qtymessage"><%= __prd.getQuantityText() %><% if (__prd.getQuantityMinimum() != 1) { out.println(" *"); } %></span>
-                    <a href="javascript:chgQty(<%= -__prd.getQuantityIncrement() %>); return false;" class="quantity_minus"><span>Increase quantity</span></a>
+                    <a href="javascript:chgQty(<%= -__prd.getQuantityIncrement() %>);" class="quantity_minus"><span>Increase quantity</span></a>
                     <input class="qty" type="text" size="4" name="quantity" maxlength="2" value="<%= quantityFormatter.format(defaultQuantity) %>" onChange="chgQty(0);" onBlur="pricing.setQuantity(this.value);"/>
-                    <a href="javascript:chgQty(<%= __prd.getQuantityIncrement() %>); return false;" class="quantity_plus"><span>Decrease quantity</span></a>
+                    <a href="javascript:chgQty(<%= __prd.getQuantityIncrement() %>);" class="quantity_plus"><span>Decrease quantity</span></a>
                   </div>
 								</td>
 							</tr>	

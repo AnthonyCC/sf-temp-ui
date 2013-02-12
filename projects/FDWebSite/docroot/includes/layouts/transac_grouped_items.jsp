@@ -222,9 +222,9 @@ if (prodsAvailable>0) {
             prices.add(new Double(displayProduct.getQuantityMinimum()));
     %>
         <div class="qtyinput qtyinput_fixedwidth">
-          <a href="javascript:chgQty(<%=itemShownIndex%>,'<%= qtyFldName %>', -<%= displayProduct.getQuantityIncrement() %>, <%= displayProduct.getQuantityMinimum() %>, <%= user.getQuantityMaximum(displayProduct) %>);return false;" class="quantity_minus"><span>Increase quantity</span></a>
+          <a href="javascript:chgQty(<%=itemShownIndex%>,'<%= qtyFldName %>', -<%= displayProduct.getQuantityIncrement() %>, <%= displayProduct.getQuantityMinimum() %>, <%= user.getQuantityMaximum(displayProduct) %>);" class="quantity_minus"><span>Increase quantity</span></a>
           <INPUT TYPE="text" NAME="<%= qtyFldName %>" SIZE="2" MAXLENGTH="2"  CLASS="qty" value="<%= displayQuantity %>" onChange="javascript:chgQty(<%=itemShownIndex%>,'<%= qtyFldName %>', 0, <%= displayProduct.getQuantityMinimum() %>, <%= user.getQuantityMaximum(displayProduct) %>);">
-          <a href="javascript:chgQty(<%=itemShownIndex%>,'<%= qtyFldName %>', <%= displayProduct.getQuantityIncrement() %>, <%= displayProduct.getQuantityMinimum() %>, <%= user.getQuantityMaximum(displayProduct) %>);return false;" class="quantity_plus"><span>Decrease quantity</span></a>
+          <a href="javascript:chgQty(<%=itemShownIndex%>,'<%= qtyFldName %>', <%= displayProduct.getQuantityIncrement() %>, <%= displayProduct.getQuantityMinimum() %>, <%= user.getQuantityMaximum(displayProduct) %>);" class="quantity_plus"><span>Decrease quantity</span></a>
         </div>
     <%  }   %>
 
