@@ -217,6 +217,7 @@ public class PlanningFormController extends AbstractFormController {
 		Zone zone=null;
 		if(plan.getZone()!=null) {
 			zone=domainManagerService.getZone(plan.getZone().getZoneCode());
+			plan.setEquipmentTypes(assetManagerService.getEquipmentTypes(plan.getZone().getArea().getRegion()));
 		}
 		return DispatchPlanUtil.getWebPlanInfo(plan,zone,employeeManagerService, true,null,null,null,null,null);
 	}

@@ -82,6 +82,8 @@ public class DispatchPlanUtil {
 			planInfo.setZoneName(plan.getZone().getName());
 			if(plan.getZone().getTrnZoneType()!=null)
 				planInfo.setZoneType(plan.getZone().getTrnZoneType().getName());
+			planInfo.setEquipmentTypes(plan.getEquipmentTypes());
+			planInfo.setEquipmentTypeS(plan.getEquipmentTypeS());
 		}
 		planInfo.setRegionCode(plan.getRegion().getCode());
 		planInfo.setRegionName(plan.getRegion().getName());
@@ -265,6 +267,7 @@ public class DispatchPlanUtil {
 			if(planInfo.getZoneCode() != null && !"".equalsIgnoreCase(planInfo.getZoneCode())){
 				zone = new Zone();
 			zone.setZoneCode(planInfo.getZoneCode());
+			plan.setEquipmentTypeS(planInfo.getEquipmentTypeS());
 			}
 			plan.setZone(zone);
 		}
@@ -390,7 +393,7 @@ public class DispatchPlanUtil {
 		if(zone!=null && isZoneModified) {
 			planInfo.setZoneName(zone.getName());
 			planInfo.setRegionCode(zone.getRegion().getCode());
-			planInfo.setRegionName(zone.getRegion().getName());						
+			planInfo.setRegionName(zone.getRegion().getName());	
 		}
 		if(zone!=null && planInfo.getFirstDeliveryTime()!=null 
 				&& ("true".equalsIgnoreCase(isfirstDlvTimeModified)|| "true".equalsIgnoreCase(planInfo.getZoneModified()))) {
