@@ -117,7 +117,10 @@ ErpPaymentMethodI __paymentMethod	= (ErpPaymentMethodI) paymentMethod;
 	        // APPROVED complaints
 	        for (Iterator it = __complaintLs.iterator(); it.hasNext(); ) {
 	            ErpComplaintLineModel line = (ErpComplaintLineModel) it.next();
-	            if (PosexUtil.getIndexFromPosex(orderLine.getOrderLineNumber()) == Integer.parseInt( line.getComplaintLineNumber() ) ) {
+
+		    if (PosexUtil.getIndexFromPosex(orderLine.getOrderLineNumber()) == Integer.parseInt( line.getComplaintLineNumber())
+				        &&((olit.isCartonized() &&  olit.getLastCartonNumber().equals(line.getCartonNumber())) || !olit.isCartonized())				
+                                       ) {
 	                retQty += line.getQuantity();
 	                retAmount += line.getAmount();
 	            }
@@ -134,7 +137,9 @@ ErpPaymentMethodI __paymentMethod	= (ErpPaymentMethodI) paymentMethod;
 		            if (anObj instanceof ErpComplaintLineModel) {
 			            // ErpComplaintLineModel pendingLine = (ErpComplaintLineModel) it.next();
 			            ErpComplaintLineModel pendingLine = (ErpComplaintLineModel) anObj;
-			            if (PosexUtil.getIndexFromPosex(orderLine.getOrderLineNumber()) == Integer.parseInt( pendingLine.getComplaintLineNumber() ) ) {
+			            if (PosexUtil.getIndexFromPosex(orderLine.getOrderLineNumber()) == Integer.parseInt( pendingLine.getComplaintLineNumber())
+				        &&((olit.isCartonized() &&  olit.getLastCartonNumber().equals(pendingLine.getCartonNumber())) || !olit.isCartonized())				
+                                       ) {
 			                pendingQty += pendingLine.getQuantity();
 			                pendingAmount += pendingLine.getAmount();
 			                pendingReason = pendingLine.getReason().getReason();
