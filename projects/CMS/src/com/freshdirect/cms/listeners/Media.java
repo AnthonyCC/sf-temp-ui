@@ -8,8 +8,6 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.Serializable;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.Date;
 
 import javax.imageio.ImageIO;
@@ -17,11 +15,13 @@ import javax.imageio.ImageIO;
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentType;
 import com.freshdirect.cms.fdstore.FDContentTypes;
-import com.freshdirect.framework.content.TemplateRenderer;
 import com.freshdirect.framework.core.ModelSupport;
 import com.freshdirect.framework.core.PrimaryKey;
 
 public class Media extends ModelSupport implements Serializable {
+
+	private static final long serialVersionUID = -5332515202047947728L;
+
 	private String uri;
 
 	private Integer height;
@@ -98,14 +98,6 @@ public class Media extends ModelSupport implements Serializable {
 			return FDContentTypes.IMAGE;
 		}
 		
-		try {
-			URL url = new URL("file://" + uri);
-			if (TemplateRenderer.getInstance().isTemplate(url)) {
-				return FDContentTypes.TEMPLATE;
-			}
-		} catch (MalformedURLException e) {
-		}
-
 		return FDContentTypes.HTML;
 	}
 

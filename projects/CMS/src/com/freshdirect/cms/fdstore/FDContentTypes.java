@@ -14,7 +14,6 @@ public class FDContentTypes {
 	public final static ContentType CONFIGURED_PRODUCT = ContentType.get("ConfiguredProduct");
 	public final static ContentType CONFIGURED_PRODUCT_GROUP = ContentType.get("ConfiguredProductGroup");
 	public final static ContentType HTML = ContentType.get("Html");
-	public final static ContentType TEMPLATE = ContentType.get("Template");
 	public final static ContentType MEDIAFOLDER = ContentType.get("MediaFolder");
 	public final static ContentType BRAND = ContentType.get("Brand");
 	public final static ContentType SKU = ContentType.get("Sku");

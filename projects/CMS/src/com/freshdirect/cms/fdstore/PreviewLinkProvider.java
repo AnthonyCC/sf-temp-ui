@@ -46,9 +46,9 @@ public class PreviewLinkProvider {
 			return "/recipe_cat.jsp?catId=" + id;
 			
 		} else if (FDContentTypes.RECIPE_SUBCATEGORY.equals(type)) {
-			Set parentKeys=CmsManager.getInstance().getParentKeys(key);
+			Set<ContentKey> parentKeys=CmsManager.getInstance().getParentKeys(key);
 			if (parentKeys.size() > 0 ) {
-				ContentKey parentKey = (ContentKey)parentKeys.iterator().next();
+				ContentKey parentKey = parentKeys.iterator().next();
 				return "/recipe_subcat.jsp?catId="+parentKey.getId()+"&subCatId=" + id;
 			}
 		} else if (FDContentTypes.RECIPE_DEPARTMENT.equals(type)) {
@@ -56,10 +56,10 @@ public class PreviewLinkProvider {
 			
 		} else if (FDContentTypes.RECIPE_SEARCH_PAGE.equals(type)) {
 			return "/recipe_search.jsp?deptId=" + id;
-		} else if(FDContentTypes.TEMPLATE.equals(type)){
+		} else if(FDContentTypes.HTML.equals(type)){
 			ContentNodeI node = key.getContentNode(); 
 			if (node != null) {
-				return "/test/content/preview.jsp?template="+node.getAttribute("path");
+				return "/test/content/preview.jsp?template="+node.getAttributeValue("path");
 			}
 		} else if(FDContentTypes.YMAL_SET.equals(type)){
 			return "/test/content/ymal_set_preview.jsp?ymalSetId=" + id;
