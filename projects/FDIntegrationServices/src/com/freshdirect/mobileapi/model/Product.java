@@ -1587,6 +1587,11 @@ public class Product {
         if (!product.getProductModel().isUnavailable()) {
             //result = product.getProductInfo().getHighestDealPercentage();
             result = defaultPriceCalculator.getHighestDealPercentage();
+            if(result == 0) {
+            	if(this.product.getFDGroup() != null) {
+            		result = defaultPriceCalculator.getGroupDealPercentage();                	
+                }
+            }
         }
         return result;
     }
@@ -1688,13 +1693,13 @@ public class Product {
         
         //LOG.debug("product is :"+product.getProductModel().getClass());
 
-        if ( productLabeling.isDisplayDeal()) {                   	
+        if ( productLabeling.isDisplayDeal() || this.product.getFDGroup() != null) {                   	
             image = new Image("/media_stat/images/deals/brst_sm_" + getHighestDealPercentage() + ".png", 35, 35);
         } else if (productLabeling.isDisplayFave()) {
             image = new Image("/media_stat/images/bursts/brst_sm_fave.png", 35, 35);
         } else if (productLabeling.isDisplayNew()) {
             image = new Image("/media_stat/images/bursts/brst_sm_new.png", 35, 35);
-        }
+        } 
         return image;
 
     }
