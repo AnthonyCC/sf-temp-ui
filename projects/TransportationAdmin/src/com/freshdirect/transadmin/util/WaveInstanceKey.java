@@ -13,7 +13,8 @@ public class WaveInstanceKey implements java.io.Serializable {
 	private Date cutOffTime;
 	private String zone;
 	private TrnFacility originFacility;	
-	private TrnFacility destinationFacility;	
+	private TrnFacility destinationFacility;
+	private String equipmentType;
 
 	public TrnFacility getOriginFacility() {
 		return originFacility;
@@ -74,6 +75,8 @@ public class WaveInstanceKey implements java.io.Serializable {
 						.hashCode());
 		result = prime * result
 				+ ((dispatchTime == null) ? 0 : dispatchTime.hashCode());
+		result = prime * result
+				+ ((equipmentType == null) ? 0 : equipmentType.hashCode());
 		result = prime
 				* result
 				+ ((firstDeliveryTime == null) ? 0 : firstDeliveryTime
@@ -115,6 +118,11 @@ public class WaveInstanceKey implements java.io.Serializable {
 				return false;
 		} else if (!dispatchTime.equals(other.dispatchTime))
 			return false;
+		if (equipmentType == null) {
+			if (other.equipmentType != null)
+				return false;
+		} else if (!equipmentType.equals(other.equipmentType))
+			return false;
 		if (firstDeliveryTime == null) {
 			if (other.firstDeliveryTime != null)
 				return false;
@@ -144,6 +152,14 @@ public class WaveInstanceKey implements java.io.Serializable {
 
 	public void setDestinationFacility(TrnFacility destinationFacility) {
 		this.destinationFacility = destinationFacility;
+	}
+
+	public String getEquipmentType() {
+		return equipmentType;
+	}
+
+	public void setEquipmentType(String equipmentType) {
+		this.equipmentType = equipmentType;
 	}
 	
 	
