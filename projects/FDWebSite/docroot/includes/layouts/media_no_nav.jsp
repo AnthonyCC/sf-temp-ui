@@ -33,5 +33,16 @@ Html mediaContent = (currentFolder instanceof ProductContainer) ? ((ProductConta
 if (mediaContent!=null) {
 	String contentPath = mediaContent.getPath();
     %><fd:IncludeMedia name='<%= contentPath %>' /><%
+} else {
+	if (isDepartment) {
+		String templatePath = null;
+		if (currentFolder instanceof DepartmentModel) { templatePath = ((DepartmentModel)currentFolder).getTemplatePath(); }
+		if (templatePath!=null) {
+			Map params = new HashMap();
+			params.put("baseUrl", "");
+			params.put("deptId", deptId);
+		    %><fd:IncludeMedia name='<%= templatePath %>' parameters="<%=params%>" /><%
+		}
+	}
 }
 %>
