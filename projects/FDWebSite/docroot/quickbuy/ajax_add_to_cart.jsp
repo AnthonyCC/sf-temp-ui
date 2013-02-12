@@ -9,6 +9,9 @@
 %><%@page import="com.freshdirect.fdstore.customer.FDCartLineI"
 %><%@page import="org.apache.log4j.Logger"
 %><%@page import="com.freshdirect.fdstore.customer.EnumQuickbuyStatus"
+%><%
+// add cache-control header to workaround IOS6 bug
+response.setHeader("Cache-control", "no-cache");
 %><fd:CheckLoginStatus noRedirect="true"/><%!
 final Logger LOGGER = LoggerFactory.getInstance("/quickbuy/ajax_add_to_cart.jsp");
 
