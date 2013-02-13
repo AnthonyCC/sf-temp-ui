@@ -356,12 +356,12 @@
                   	</a>
                   <td>
                  
-                  <!-- 
+                  
                   <td>
                     <a href="javascript:loadGps('ec_table','gpsadmin.do', 12)">
                   		<img src="./images/gpsadmin.gif" border="0" alt="Garmin" title="GPS Admin" />
                   	</a>
-                  </td>-->
+                  </td>
                 <!--  
                 This functionality is not required for Copilot as the driving directions will be available from Airclic
                   <td>

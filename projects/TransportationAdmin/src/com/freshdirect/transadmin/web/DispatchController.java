@@ -1726,17 +1726,11 @@ public class DispatchController extends AbstractMultiActionController {
         }
 	}
 
-	
-	/**
-	 * Custom handler for welcome
-	 * @param request current HTTP request
-	 * @param response current HTTP response
-	 * @return a ModelAndView to render the response
-	 */
-	public ModelAndView drivingDirectionsHandler(HttpServletRequest request, HttpServletResponse response) throws ServletException {
-
+	private Map<String, IHandOffBatchRoute> getRoutes(HttpServletRequest request){
+		
 		List routingRouteIds = Arrays.asList(StringUtil.decodeStrings(request.getParameter("routeId")));
 		String routeDate = request.getParameter("rdate");
+		Map<String, IHandOffBatchRoute> directionsReportData= new HashMap<String, IHandOffBatchRoute>();
 		long startTime = System.currentTimeMillis();
 		try {
 			if(routingRouteIds != null) {
@@ -1762,27 +1756,112 @@ public class DispatchController extends AbstractMultiActionController {
 						directionRoutes.put(routingRouteId, _tmpRoute);
 					}
 				}
-				DrivingDirectionsReport reportEngine = new DrivingDirectionsReport();
 				if(directionRoutes != null && directionRoutes.size() > 0) {
-					Map directionsReportData = this.getRouteDirections(routeDate, directionRoutes);
-					reportEngine.generateDrivingDirectionsReport(response.getOutputStream(), directionsReportData);
-					
-				} else {
-					reportEngine.generateError(response.getOutputStream(), "There are no valid routes to build Driving Direction. Please select a valid route or contact routing team for more information.");
-				}
+					 directionsReportData = this.getRouteDirections(routeDate, directionRoutes);
+				} 
 			}
 		
 		} catch (Exception e) {
 			e.printStackTrace();
 			saveMessage(request, getMessage("app.actionmessage.123", null));
 		}
-		long endTime = System.currentTimeMillis();
-		System.out.println("Driving Directions Response Time in sec "+(endTime- startTime) /1000);
 		
+		return directionsReportData;
+	}
+	
+	/**
+	 * Custom handler for welcome
+	 * @param request current HTTP request
+	 * @param response current HTTP response
+	 * @return a ModelAndView to render the response
+	 */
+	public ModelAndView drivingDirectionsHandler(HttpServletRequest request, HttpServletResponse response) throws ServletException {
+			try {
+				Map directionsReportData = getRoutes(request);
+				DrivingDirectionsReport reportEngine = new DrivingDirectionsReport();
+				if(directionsReportData != null && directionsReportData.size() > 0) {
+					reportEngine.generateDrivingDirectionsReport(response.getOutputStream(), directionsReportData);
+				} else {
+					reportEngine.generateError(response.getOutputStream(), "There are no valid routes to build Driving Direction. Please select a valid route or contact routing team for more information.");
+				}
+			}catch (Exception e) {
+			e.printStackTrace();
+			saveMessage(request, getMessage("app.actionmessage.123", null));
+		}
 		response.setContentType("application/pdf");
 		return null;
 	}
 	
+
+	/**
+	 * Custom handler for welcome
+	 * @param request current HTTP request
+	 * @param response current HTTP response
+	 * @return a ModelAndView to render the response
+	 */
+	public ModelAndView gpsDrivingDirectionsHandler(HttpServletRequest request, HttpServletResponse response) throws ServletException {
+
+		ModelAndView mav = new ModelAndView("gpsAdminView");
+		String routeDate = request.getParameter("rdate");
+		mav.getModel().put("gpsgpxxml","------ NO DIRECTIONS AVAILABLE --------");
+		try {
+		Map<String, IHandOffBatchRoute> routes = getRoutes(request);
+			if(routes!=null && routes.size()>0) {
+				IHandOffBatchRoute route = (IHandOffBatchRoute) ((routes.values()!=null)?routes.values().toArray()[0]:null);
+					if(route!=null && route.getStops() != null && route.getStops().size() > 0) {
+							Object[] _stops = route.getStops().toArray();								
+								IRoutingStopModel _nextStop = null;
+
+								StringBuffer strBuf = new StringBuffer();
+								strBuf.append("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\" ?>");
+								strBuf.append("<gpx xmlns=\"http://www.topografix.com/GPX/1/1\" xmlns:gpxx=\"http://www.garmin.com/xmlschemas/GpxExtensions/v3\" xmlns:gpxtpx=\"http://www.garmin.com/xmlschemas/TrackPointExtension/v1\" creator=\"navi 265W\" version=\"1.1\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd http://www.garmin.com/xmlschemas/GpxExtensions/v3 http://www.garmin.com/xmlschemas/GpxExtensionsv3.xsd\">");
+								strBuf.append("<metadata><link href=\"http://www.freshdirect.com\">");
+								strBuf.append("<text>FD DELIVERY ROUTES BY DATE</text></link><time>2010-02-11T16:19:07Z</time>");
+								strBuf.append("</metadata>");
+
+								strBuf.append("<rte>");
+								strBuf.append("<name>").append("FD Route ").append(TransStringUtil.getServerDate(routeDate)).append("</name>");
+								String strStopNo = "";
+								String zipCode = "";
+								String addLocation = "";
+								if(_stops != null) {
+									for(int intCount=0; intCount<_stops.length; intCount++) {
+										_nextStop = (IRoutingStopModel)_stops[intCount];
+										strBuf.append("<rtept lat=\"").append(_nextStop.getDeliveryInfo().getDeliveryLocation().getBuilding().getGeographicLocation().getLatitude())
+										.append("\" lon=\"").append(_nextStop.getDeliveryInfo().getDeliveryLocation().getBuilding().getGeographicLocation().getLongitude()).append("\">");
+
+										if(_nextStop.getDeliveryInfo().getDeliveryLocation().getBuilding().getGeographicLocation().getLatitude() != null 
+												&& _nextStop.getDeliveryInfo().getDeliveryLocation().getBuilding().getGeographicLocation().getLatitude().equalsIgnoreCase("40740250")) {
+											strStopNo = "";
+											zipCode = "";
+											addLocation = "FreshDirect";
+										} else{
+											strStopNo = "["+_nextStop.getStopNo()+"]";
+											zipCode = ","+_nextStop.getDeliveryInfo().getDeliveryLocation().getBuilding().getZipCode();
+											addLocation = "-"+_nextStop.getDeliveryInfo().getDeliveryLocation().getBuilding().getStreetAddress1();
+										}
+										strBuf.append("<name>").append(strStopNo).append(addLocation)						        						
+										.append(zipCode)
+										.append("</name>");
+
+										strBuf.append("</rtept>");
+
+									}
+								}
+								strBuf.append("</rte>");
+								strBuf.append("</gpx>");
+								mav.getModel().put("gpsgpxxml",strBuf.toString());
+
+							}
+						} 
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			saveMessage(request, getMessage("app.actionmessage.123", null));
+		}
+
+		return mav;
+	}
 	
 	private Map getRouteDirections(String routeDate, Map routes) throws ReportGenerationException {
 		Map result = new TreeMap();
