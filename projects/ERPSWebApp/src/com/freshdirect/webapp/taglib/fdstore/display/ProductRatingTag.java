@@ -165,7 +165,6 @@ public class ProductRatingTag extends BodyTagSupport {
 				else
 					buf.append("</div>");
 			}
-			// <<<<<< stolen code ends here
 
 			try {
 				pageContext.getOut().println(buf.toString());
@@ -174,17 +173,31 @@ public class ProductRatingTag extends BodyTagSupport {
 			}
 		} else if ((customerRatingsDTO =  CustomerRatingsContext.getInstance().getCustomerRatingByProductId(product.getContentKey().getId())) != null) {
 			
-			// CUSTOMAR RATINGS
-			// steal logic from WineRatingTag
+			// CUSTOMER RATINGS
 			boolean small = true;
-			
-			// stolen code starts here >>>>
 
 			BigDecimal averageRating = customerRatingsDTO.getAverageOverallRating();
-			int starCount = (int)Math.ceil(averageRating.doubleValue());
+			long starValue = Math.round(averageRating.doubleValue()*10);
+			
+			//round value to 10,15,20 ... 50
+			if(starValue<10){
+				starValue = 10;
+			}else{
+				long mod = starValue % 5;
+				if(mod > 2){
+					starValue = starValue + (5 - mod);
+				} else {
+					starValue = starValue - mod;
+				}				
+			}
+			
+			if(starValue > 50){
+				starValue = 50;
+			}
+
 			int reviewCount = customerRatingsDTO.getTotalReviewCount();
 
-			if (starCount == 0)
+			if (starValue == 0)
 				return SKIP_BODY;
 
 			StringBuilder buf = new StringBuilder();
@@ -196,28 +209,12 @@ public class ProductRatingTag extends BodyTagSupport {
 				buf.append("<div class=\"cust-rating hastooltip\" >");
 			}			
 			
-			String postfix;
-			int width;
-			int halfWidth;
-			int height;
-			if (small) {
-				postfix = "sm";
-				width = 15;
-				halfWidth = 8;
-				height = 12;
-			} else {
-				postfix = "lg";
-				width = 18;
-				halfWidth = 8;
-				height = 15;
+			if(small){
+				buf.append("<span class=\"bv-stars-small bv-stars-small-" + starValue + "\"></span>");				
+			}else{
+				buf.append("<span class=\"bv-stars-big bv-stars-big-" + starValue + "\"></span>");	
 			}
-
-			for (int i = 0; i < starCount; i++) {
-				buf.append("<span class=\"bv-cust-rating-");
-				buf.append(postfix);
-				buf.append("\"></span>");
-			}
-			
+				
 
 			if (noBr)
 				buf.append("</span>");
@@ -228,7 +225,6 @@ public class ProductRatingTag extends BodyTagSupport {
 			buf.append("<b class=\"cust-rating-hover-rating\">" + averageRating + "</b><br>");
 			buf.append("based on <b style=\"font-size:13px;\">" + reviewCount + "</b> customer reviews");
 			buf.append("</div>");
-			// <<<<<< stolen code ends here
 
 			try {
 				pageContext.getOut().println(buf.toString());

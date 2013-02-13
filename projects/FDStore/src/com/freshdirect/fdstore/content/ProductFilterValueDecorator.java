@@ -1,5 +1,6 @@
 package com.freshdirect.fdstore.content;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -104,7 +105,11 @@ public class ProductFilterValueDecorator extends GenericFilterDecorator<Filterin
 						if (available) {
 							CustomerRatingsDTO customerRatingsDTO = CustomerRatingsContext.getInstance().getCustomerRatingByProductId(node.getContentKey().getId());
 							if (customerRatingsDTO != null && (node.getProductRating() == null || node.getProductRatingEnum().getValue() == 0)) {
-								item.putFilteringValue(EnumFilteringValue.CUSTOMER_RATING,customerRatingsDTO.getRatingValue() + "");
+								
+								BigDecimal averageRating = customerRatingsDTO.getAverageOverallRating();
+								int starValue = (int) Math.ceil(averageRating.doubleValue());
+								
+								item.putFilteringValue(EnumFilteringValue.CUSTOMER_RATING,starValue + "");
 							}
 						}
 						break;
