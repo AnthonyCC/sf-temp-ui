@@ -103,7 +103,7 @@ public class SapResultListener extends MessageDrivenBeanSupport {
 	}
 	
 	public void onMessage(Message message) {
-
+			
 		if (!(message instanceof ObjectMessage)) {
 			LOGGER.warn("Internal error: Message " + message + " not an instance of ObjectMessage");
 			return;
@@ -128,15 +128,20 @@ public class SapResultListener extends MessageDrivenBeanSupport {
 		}
 
 		SapResult result = (SapResult) o;
-
+				
 		LOGGER.debug("processResult");
 
 		this.processResult(result);
 	}
 	
 	private void processResult(SapResult result) {
-
+		String webOrderNumber = null;
 		SapCommandI command = result.getCommand();
+		
+		if(command != null && command instanceof SapOrderCommand) {
+			webOrderNumber = ((SapOrderCommand)command).getWebOrderNumber();				
+		}
+		LOGGER.info("processResult for order : "+webOrderNumber);
 		if (command instanceof SapCreateCustomer) {
 			this.processCreateCustomer((SapCreateCustomer) command);
 		
@@ -178,7 +183,7 @@ public class SapResultListener extends MessageDrivenBeanSupport {
 
 			ErpSaleEB saleEB = this.getErpSaleHome().findByPrimaryKey(new PrimaryKey(saleId));
 
-			LOGGER.debug("Found sale " + saleId);
+			LOGGER.info("Found sale " + saleId);
 
 			if (!result.isSuccessful()) {
 

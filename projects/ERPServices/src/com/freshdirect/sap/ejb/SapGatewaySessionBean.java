@@ -56,7 +56,7 @@ public class SapGatewaySessionBean extends GatewaySessionBeanSupport {
 	}
 
 	public void sendCreateSalesOrder(SapOrderI order,EnumSaleType saleType) {
-		LOGGER.debug("Sending sales order create request " + order);
+		LOGGER.info("Sending sales order create request " + (order != null ? order.getWebOrderNumber() : "NULL"));
 		if (SapProperties.isBlackhole()) {
 			LOGGER.debug("Message blackholed.");
 			return;
@@ -65,7 +65,7 @@ public class SapGatewaySessionBean extends GatewaySessionBeanSupport {
 	}
 
 	public void sendCreateCustomer(String erpCustomerNumber, SapCustomerI customer) {
-		LOGGER.debug("Sending customer order create request " + customer);
+		LOGGER.info("Sending customer order create request " + erpCustomerNumber);
 		if (SapProperties.isBlackhole()) {
 			LOGGER.debug("Message blackholed.");
 			return;
@@ -74,7 +74,7 @@ public class SapGatewaySessionBean extends GatewaySessionBeanSupport {
 	}
 
 	public void sendCancelSalesOrder(String webOrderNumber, String sapOrderNumber) {
-		LOGGER.debug("Sending cancel sales order request " + webOrderNumber + " (" + sapOrderNumber + ")");
+		LOGGER.info("Sending cancel sales order request " + webOrderNumber + " (" + sapOrderNumber + ")");
 		if (SapProperties.isBlackhole()) {
 			LOGGER.debug("Message blackholed.");
 			return;
@@ -83,7 +83,7 @@ public class SapGatewaySessionBean extends GatewaySessionBeanSupport {
 	}
 
 	public void sendChangeSalesOrder(String webOrderNumber, String sapOrderNumber, SapOrderI order) {
-		LOGGER.debug("Sending change sales order request " + webOrderNumber + " (" + sapOrderNumber + ") " + order);
+		LOGGER.info("Sending change sales order request " + webOrderNumber + " (" + sapOrderNumber + ") ");
 		if (SapProperties.isBlackhole()) {
 			LOGGER.debug("Message blackholed.");
 			return;
@@ -92,7 +92,7 @@ public class SapGatewaySessionBean extends GatewaySessionBeanSupport {
 	}
 
 	public void sendReturnInvoice(SapPostReturnCommand command) {
-		LOGGER.debug("Sending Return Invoice for Invoice# " + command.getInvoiceNumber());
+		LOGGER.info("Sending Return Invoice for Invoice# " + command.getInvoiceNumber());
 		if (SapProperties.isBlackhole()) {
 			LOGGER.debug("Message blackholed.");
 			return;

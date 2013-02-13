@@ -27,6 +27,7 @@ import com.freshdirect.framework.core.MessageDrivenBeanSupport;
 import com.freshdirect.framework.util.jms.JMSQueueFactory;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.sap.command.SapCommandI;
+import com.freshdirect.sap.command.SapOrderCommand;
 
 /**
  *
@@ -70,6 +71,8 @@ public class SapCommandListener extends MessageDrivenBeanSupport {
 	public void onMessage(Message msg) {
 		String msgId = "";
 		SapCommandI sapCommand = null;
+		String webOrderNumber = null;
+		
 		try {
 			msgId = msg.getJMSMessageID();
 
@@ -89,9 +92,14 @@ public class SapCommandListener extends MessageDrivenBeanSupport {
 			}
 
 			sapCommand = (SapCommandI) ox;
+			if(ox instanceof SapOrderCommand) {
+				webOrderNumber = ((SapOrderCommand)ox).getWebOrderNumber();				
+			}
+			
+			LOGGER.info("Message received. Order to be sent to SAP: " + webOrderNumber);
 
 		} catch (JMSException ex) {
-			LOGGER.error("JMSException occured while reading command, throwing RuntimeException", ex);
+			LOGGER.error("JMSException occured while reading command, throwing RuntimeException"+ webOrderNumber, ex);
 			throw new RuntimeException("JMSException occured while reading command: " + ex.getMessage());
 		}
 
@@ -100,11 +108,11 @@ public class SapCommandListener extends MessageDrivenBeanSupport {
 		SapResult result;
 		try {
 			sapCommand.execute();
-			LOGGER.info("SapCommand executed");
+			LOGGER.info("SapCommand executed: "+ webOrderNumber);
 			result = new SapResult(sapCommand);
 
 		} catch (SapException ex) {
-			LOGGER.warn("SapException occured while processing message", ex);
+			LOGGER.warn("SapException occured while processing message :"+ webOrderNumber, ex);
 			result = new SapResult(sapCommand, ex);
 		}
 
@@ -115,7 +123,7 @@ public class SapCommandListener extends MessageDrivenBeanSupport {
 			sendSapResult(msgId, result);
 
 		} catch (JMSException ex) {
-			LOGGER.warn("Failed to enqueue response, throwing RuntimeException", ex);
+			LOGGER.warn("Failed to enqueue response, throwing RuntimeException :"+ webOrderNumber, ex);
 			throw new RuntimeException("JMSException on enqueue response: " + ex.getMessage());
 		}
 
