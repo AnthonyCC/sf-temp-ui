@@ -181,7 +181,7 @@ public class ProductRatingTag extends BodyTagSupport {
 			
 			//round value to 10,15,20 ... 50
 			if(starValue<10){
-				starValue = 10;
+				starValue = 0;
 			}else{
 				long mod = starValue % 5;
 				if(mod > 2){
