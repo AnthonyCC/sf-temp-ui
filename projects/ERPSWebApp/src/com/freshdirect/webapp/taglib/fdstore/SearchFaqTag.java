@@ -77,6 +77,14 @@ public class SearchFaqTag extends AbstractGetterTag {
 				}
 			}
 			
+			if ( faqsList.isEmpty() ) {
+				for (Iterator it = result.keySet().iterator(); it.hasNext();) {
+					ContentKey key = (ContentKey) it.next();
+					Faq faq = (Faq) cf.getContentNode(key.getId());
+					faqsList.add(faq);									
+				}
+			}
+			
 			Collections.sort(faqsList, new FaqPriorityComparator(faqKeyword));
 			
 			//grouping result
