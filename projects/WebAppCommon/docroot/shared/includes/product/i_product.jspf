@@ -819,7 +819,6 @@ if ( skuSize == 0 ) {
 						        qty = Math.floor( (qty-<%= __prd.getQuantityMinimum() %>)/<%=__prd.getQuantityIncrement()%> )*<%=__prd.getQuantityIncrement()%>  + <%= __prd.getQuantityMinimum() %>;
 						        pricing.setQuantity(qty);
 						        document.productForm.quantity.value = qty;
-                    return false;
 						    }
 						    function updatePriceField() {
 						        document.productForm.PRICE.value = pricing.getPrice();

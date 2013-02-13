@@ -737,7 +737,6 @@ if (isAvailable ) {
 							document.productForm[qtyFldName].value = qty;
 					}
 					pObject.setQuantity(qty);
-          return false;
 			}
 
 	<%-- Set up the pricing callback, now that the field exists on the page --%>

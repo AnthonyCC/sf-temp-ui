@@ -270,7 +270,6 @@ FDIdentity identity = user.getIdentity();
 					document.viewcart.quantity_<%=idx%>.value = qty;
 
 					FreshDirect.ClientCodes.updateQty(<%= idx %>);
-          return false;
 				}
 				FreshDirect.ClientCodes.saveQty(<%= idx %>, <%= cartLine.getQuantity() %>);
 				</script>

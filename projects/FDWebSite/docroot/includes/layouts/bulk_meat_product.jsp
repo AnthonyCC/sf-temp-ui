@@ -532,7 +532,6 @@ function chgQty(delta,minQ, maxQ) {
     quantity = Math.floor( (quantity-minQ)/absDelta)*absDelta  + minQ;
     document.bulk_meat_product.quantity.value = quantity;
     pricing.setQuantity(quantity);
-    return false;
 }
 
 pricing.setCallbackFunction( updatePriceField );
