@@ -737,7 +737,7 @@ if ( skuSize == 0 ) {
                     <input class="qty" type="text" size="4" name="quantity" maxlength="2" value="<%= quantityFormatter.format(defaultQuantity) %>" onChange="chgQty(0);" onBlur="pricing.setQuantity(this.value);"/>
                     <a href="javascript:chgQty(<%= __prd.getQuantityIncrement() %>);" class="quantity_plus"><span>Decrease quantity</span></a>
                   </div>
-                  <div><%@ include file="/shared/includes/product/i_minmax_note.jspf" %></div>
+                  <div class="clear"><%@ include file="/shared/includes/product/i_minmax_note.jspf" %></div>
 									<table cellpadding="0" cellspacing="2" border="0" style="<%= alignRight ? "float: right; margin-right: 0px; margin-left: auto;" : "" %>"> 									
 										<tr>
 											<td style="padding-left:6px;" class="text11bold">Price</td>
@@ -757,7 +757,7 @@ if ( skuSize == 0 ) {
                     <span class="qtyprice">Price</span>
                     <input class="qtypriceinput" type="text" name="PRICE" size="6" onChange="" onFocus="blur()" value=""/>
                   </div>
-                  <div><%@ include file="/shared/includes/product/i_minmax_note.jspf" %></div>
+                  <div class="clear"><%@ include file="/shared/includes/product/i_minmax_note.jspf" %></div>
 									<%
 									}
 									%>
@@ -775,6 +775,7 @@ if ( skuSize == 0 ) {
                     <input class="qty" type="text" size="4" name="quantity" maxlength="2" value="<%= quantityFormatter.format(defaultQuantity) %>" onChange="chgQty(0);" onBlur="pricing.setQuantity(this.value);"/>
                     <a href="javascript:chgQty(<%= __prd.getQuantityIncrement() %>);" class="quantity_plus"><span>Decrease quantity</span></a>
                   </div>
+                  <div class="clear"><%@ include file="/shared/includes/product/i_minmax_note.jspf" %></div>
 								</td>
 							</tr>	
 						<% }

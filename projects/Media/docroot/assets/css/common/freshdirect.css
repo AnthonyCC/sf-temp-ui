@@ -118,9 +118,13 @@ h2.centerline span {
   vertical-align: middle;
 }
 
+#i_viewcart .viewcartselect,
 .qtyinput input.qty {
   font-size: 12px;
   padding: 4px 2px;
+}
+
+.qtyinput input.qty {
   width: 2em;
 }
 
