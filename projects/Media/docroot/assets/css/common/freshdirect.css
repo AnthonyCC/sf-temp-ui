@@ -118,6 +118,10 @@ h2.centerline span {
   vertical-align: middle;
 }
 
+.qtyinput_grocery {
+  margin-bottom: 15px;
+}
+
 #i_viewcart .viewcartselect,
 .qtyinput input.qty {
   font-size: 12px;
