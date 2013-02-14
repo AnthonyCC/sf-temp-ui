@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.TreeSet;
 
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.RowCallbackHandler;
@@ -26,19 +27,24 @@ import com.freshdirect.routing.dao.IRoutingInfoDAO;
 import com.freshdirect.routing.model.AreaModel;
 import com.freshdirect.routing.model.IAreaModel;
 import com.freshdirect.routing.model.IRegionModel;
+import com.freshdirect.routing.model.IRouteModel;
 import com.freshdirect.routing.model.IRoutingEquipmentType;
+import com.freshdirect.routing.model.IRoutingStopModel;
 import com.freshdirect.routing.model.IServiceTimeScenarioModel;
 import com.freshdirect.routing.model.IServiceTimeTypeModel;
 import com.freshdirect.routing.model.IWaveInstance;
 import com.freshdirect.routing.model.IZoneScenarioModel;
 import com.freshdirect.routing.model.RegionModel;
+import com.freshdirect.routing.model.RouteModel;
 import com.freshdirect.routing.model.RoutingEquipmentType;
+import com.freshdirect.routing.model.RoutingStopModel;
 import com.freshdirect.routing.model.ServiceTimeScenario;
 import com.freshdirect.routing.model.ServiceTimeTypeModel;
 import com.freshdirect.routing.model.TrnFacility;
 import com.freshdirect.routing.model.TrnFacilityType;
 import com.freshdirect.routing.model.WaveInstance;
 import com.freshdirect.routing.model.ZoneScenarioModel;
+import com.freshdirect.routing.proxy.stub.transportation.RoutingStop;
 import com.freshdirect.routing.util.RoutingDateUtil;
 import com.freshdirect.routing.util.RoutingTimeOfDay;
 
@@ -1056,7 +1062,51 @@ public class RoutingInfoDAO extends BaseDAO implements IRoutingInfoDAO   {
 					return result;
 				}
 		
+				private static final String GET_STATIC_ROUTES_BY_AREA = 
+						"SELECT TA.CODE, T.CUTOFF_TIME, R.ORDER_ID, T.START_TIME FROM DLV.RESERVATION R, DLV.TIMESLOT T, DLV.ZONE Z , TRANSP.ZONE TZ, TRANSP.TRN_AREA TA " +
+						"WHERE R.TIMESLOT_ID = T.ID AND R.STATUS_CODE = '10' AND T.ZONE_ID = Z.ID AND T.BASE_DATE = ? AND Z.ZONE_CODE = TZ.ZONE_CODE " +
+						"AND TZ.AREA = TA.CODE AND R.IN_UPS IS NULL";
 				
+				public Map<String, Map<RoutingTimeOfDay, List<IRouteModel>>> getStaticRoutesByArea(final Date deliveryDate) throws SQLException {
+					final Map<String, Map<RoutingTimeOfDay, List<IRouteModel>>> result = new HashMap<String, Map<RoutingTimeOfDay, List<IRouteModel>>>();
+					
+					PreparedStatementCreator creator = new PreparedStatementCreator() {
+						public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
+						
+							PreparedStatement ps =	connection.prepareStatement(GET_STATIC_ROUTES_BY_AREA);	
+							ps.setDate(1, new java.sql.Date(deliveryDate.getTime()));
+							return ps;
+						}
+					};
+					
+					jdbcTemplate.query(creator, 
+							new RowCallbackHandler() { 
+						public void processRow(ResultSet rs) throws SQLException {				    	
+							do {
+								String areaCode  = rs.getString("CODE");
+								RoutingTimeOfDay cutoff = new RoutingTimeOfDay(rs.getTimestamp("CUTOFF_TIME"));
+								Date departureTime = rs.getTimestamp("START_TIME");
+								
+								IRoutingStopModel stop = new RoutingStopModel();
+								stop.setOrderNumber(rs.getString("ORDER_ID"));
+								stop.setStopDepartureTime(departureTime);
+								
+								if(!result.containsKey(areaCode))
+									result.put(areaCode, new HashMap<RoutingTimeOfDay, List<IRouteModel>>());
+								if(!result.get(areaCode).containsKey(cutoff)){
+									result.get(areaCode).put(cutoff,new ArrayList<IRouteModel>());
+									IRouteModel routeModel = new RouteModel();
+									routeModel.setStops(new TreeSet());
+									result.get(areaCode).get(cutoff).add(routeModel);
+								}
+								result.get(areaCode).get(cutoff).get(0).getStops().add(stop);
+							} while(rs.next());		        		    	
+						}
+					}
+					);
+					return result;
+				}
+
 		
 				
 		

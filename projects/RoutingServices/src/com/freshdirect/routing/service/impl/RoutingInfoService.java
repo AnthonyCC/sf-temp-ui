@@ -10,6 +10,7 @@ import java.util.Set;
 import com.freshdirect.routing.constants.EnumWaveInstanceStatus;
 import com.freshdirect.routing.dao.IRoutingInfoDAO;
 import com.freshdirect.routing.model.IRegionModel;
+import com.freshdirect.routing.model.IRouteModel;
 import com.freshdirect.routing.model.IServiceTimeScenarioModel;
 import com.freshdirect.routing.model.IServiceTimeTypeModel;
 import com.freshdirect.routing.model.IWaveInstance;
@@ -219,6 +220,17 @@ public class RoutingInfoService extends BaseService implements IRoutingInfoServi
 	public  List<Date> getDeliveryDates() throws RoutingServiceException {
 		try {
 			return routingInfoDAOImpl.getDeliveryDates();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			throw new RoutingServiceException(e, IIssue.PROCESS_RETRIEVEWAVEINSTANCE_UNSUCCESSFUL);
+		}
+	}
+
+	@Override
+	public Map<String, Map<RoutingTimeOfDay, List<IRouteModel>>> getStaticRoutesByArea(
+			Date deliveryDate) throws RoutingServiceException {
+		try {
+			return routingInfoDAOImpl.getStaticRoutesByArea(deliveryDate);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			throw new RoutingServiceException(e, IIssue.PROCESS_RETRIEVEWAVEINSTANCE_UNSUCCESSFUL);

@@ -54,6 +54,7 @@ public class DispatchVolumeSessionBean extends SessionBeanSupport {
 			RoutingEngineServiceProxy proxy = new RoutingEngineServiceProxy();
 			HandOffServiceProxy handoffProxy = new HandOffServiceProxy();
 			List<Date> deliveryDates = routingInfoProxy.getDeliveryDates();
+			
 			for(Date deliveryDate : deliveryDates){
 			Map<IAreaModel, List<IRouteModel>> map = new HashMap<IAreaModel, List<IRouteModel>>();
 			List<IRouteModel> routes = null;
@@ -61,30 +62,43 @@ public class DispatchVolumeSessionBean extends SessionBeanSupport {
 			String dayOfWeek = DateUtil.formatDayOfWk(deliveryDate);
 			Map<String, Map<RoutingTimeOfDay, Set<IHandOffBatchDepotScheduleEx>>> depotScheduleEx = 
 					handoffProxy.getHandOffBatchDepotSchedulesEx(dayOfWeek);
-			List<IWaveInstance> wavesByDispatchTime = routingInfoProxy.getWavesByDispatchTime(deliveryDate);
+			List<IWaveInstance> wavesByDeliveryDate = routingInfoProxy.getWavesByDispatchTime(deliveryDate);
 			
 			Map<String , IWaveInstance> wavesById = new HashMap<String, IWaveInstance>();
-			for(IWaveInstance _waveInstance: wavesByDispatchTime){
+			for(IWaveInstance _waveInstance: wavesByDeliveryDate){
 				wavesById.put(_waveInstance.getRoutingWaveInstanceId(), _waveInstance);
 			}
 			Map<RoutingTimeOfDay, Integer> plantCapacity = routingInfoProxy.getPlantCapacityByDispatchTime(deliveryDate);
 			Map<RoutingTimeOfDay, RoutingTimeOfDay> dispatchMapping = routingInfoProxy.getPlantDispatchMapping();
 			
-			Set<IAreaModel> areas = getAreas(wavesById);
-			Map<String, Set<RoutingTimeOfDay>> dptCutoff = getDptCutoff(wavesById);
+			Set<IAreaModel> areas = getAreas(wavesByDeliveryDate);
+			Map<String, Set<RoutingTimeOfDay>> cutoffByArea = getCutoffsByArea(wavesByDeliveryDate);
+			Map<String, Map<RoutingTimeOfDay, List<IRouteModel>>> staticRoutes = routingInfoProxy.getStaticRoutesByArea(deliveryDate);
 			
 			for(IAreaModel area: areas){
 				schedulerId.setArea(area);
 				schedulerId.setDeliveryDate(deliveryDate);
 				if(area.isDepot()){
-					if(dptCutoff.get(area.getAreaCode())!=null){
+					if(cutoffByArea.get(area.getAreaCode())!=null){
 						List<IRouteModel> tmpRoutes = new ArrayList<IRouteModel>();
-						for(RoutingTimeOfDay cutoff: dptCutoff.get(area.getAreaCode())){
+						for(RoutingTimeOfDay cutoff: cutoffByArea.get(area.getAreaCode())){
 							if(depotScheduleEx.get(area.getAreaCode())!=null && depotScheduleEx.get(area.getAreaCode()).get(cutoff)!=null){
-								routes = proxy.getRoutesByCriteria(schedulerId, RoutingDateUtil.getWaveCode(cutoff.getAsDate()));
-								routes = convertDptToRegOrders(area.getAreaCode(), routes, depotScheduleEx.get(area.getAreaCode()).get(cutoff));
+								
+								if(staticRoutes.containsKey(area.getAreaCode())){
+									if(staticRoutes.get(area.getAreaCode()).containsKey(cutoff)){
+										routes = staticRoutes.get(area.getAreaCode()).get(cutoff);
+										routes = convertDptToRegOrders(area.getAreaCode(), routes, depotScheduleEx.get(area.getAreaCode()).get(cutoff), false);
+										
+									}
+								}else{		
+									routes = proxy.getRoutesByCriteria(schedulerId, RoutingDateUtil.getWaveCode(cutoff.getAsDate()));
+									routes = convertDptToRegOrders(area.getAreaCode(), routes, depotScheduleEx.get(area.getAreaCode()).get(cutoff), true);
+									
+								}
 								if(routes!=null)
 								tmpRoutes.addAll(routes);
+								
+								
 							}else{
 								LOGGER.info("Depot-"+area.getAreaCode()+" cutoff ->"+cutoff+" for deliveryDate "+deliveryDate+" is missing in the depot schedule.");
 							}
@@ -116,7 +130,7 @@ public class DispatchVolumeSessionBean extends SessionBeanSupport {
 			assignDispatchTime(map, wavesById);
 			
 			Map<RoutingTimeOfDay, DispatchVolumeModel> dispatchMap = 
-					groupbyDispatch(map, wavesByDispatchTime,plantCapacity,snapshotTime,deliveryDate,dispatchMapping);
+					groupbyDispatch(map, wavesByDeliveryDate,plantCapacity,snapshotTime,deliveryDate,dispatchMapping);
 			
 			printDispatch(dispatchMap);
 			saveDispatch(dispatchMap);
@@ -138,12 +152,12 @@ public class DispatchVolumeSessionBean extends SessionBeanSupport {
 			
 	}
 
-	private Map<String, Set<RoutingTimeOfDay>> getDptCutoff(
-			Map<String, IWaveInstance> wavesByDispatchTime) {
+	private Map<String, Set<RoutingTimeOfDay>> getCutoffsByArea(
+			List<IWaveInstance> wavesByDeliveryDate) {
 		Map<String, Set<RoutingTimeOfDay>> cutoffs = new HashMap<String, Set<RoutingTimeOfDay>>();
-		if(wavesByDispatchTime!=null && wavesByDispatchTime.values()!=null)
+		if(wavesByDeliveryDate!=null)
 		{
-			for(IWaveInstance waveInstance : wavesByDispatchTime.values())
+			for(IWaveInstance waveInstance : wavesByDeliveryDate)
 			{
 				if(waveInstance.getArea().isDepot())
 				{
@@ -157,11 +171,11 @@ public class DispatchVolumeSessionBean extends SessionBeanSupport {
 	}
 
 	private Set<IAreaModel> getAreas(
-			Map<String, IWaveInstance> wavesByDispatchTime) {
+			List<IWaveInstance> wavesByDeliveryDate) {
 		Set<IAreaModel> areas = new HashSet<IAreaModel>();
-		if(wavesByDispatchTime!=null && wavesByDispatchTime.values()!=null)
+		if(wavesByDeliveryDate!=null)
 		{
-			for(IWaveInstance waveInstance : wavesByDispatchTime.values())
+			for(IWaveInstance waveInstance : wavesByDeliveryDate)
 			{
 				areas.add(waveInstance.getArea());
 			}
@@ -300,73 +314,101 @@ public class DispatchVolumeSessionBean extends SessionBeanSupport {
 		}		
 	}
 	private List<IRouteModel> convertDptToRegOrders(String area, List<IRouteModel> dptRoutes, 
-			Set<IHandOffBatchDepotScheduleEx> depotScheduleEx) {
+			Set<IHandOffBatchDepotScheduleEx> depotScheduleEx, boolean isDynamic) {
 		
-		int allowedDepartTimeDiff = RoutingServicesProperties.getDepotDepartTimeDiff();
 		List<CustomTruckScheduleInfo> groupSchedule = new ArrayList<CustomTruckScheduleInfo>();
 		
 		if(dptRoutes != null && depotScheduleEx != null) 
 		{
 			List<IRouteModel> newRoutes = new ArrayList<IRouteModel>();
 			
-					for(IHandOffBatchDepotScheduleEx _schInfo : depotScheduleEx) 
-					{
-						groupSchedule.add(new CustomTruckScheduleInfo(new ArrayList(),_schInfo));
-					}
-					Collections.sort(groupSchedule, new TruckScheduleComparator());
+			for(IHandOffBatchDepotScheduleEx _schInfo : depotScheduleEx){
+				groupSchedule.add(new CustomTruckScheduleInfo(new ArrayList(),_schInfo));
+			}
+			Collections.sort(groupSchedule, new TruckScheduleComparator());
 					
-					Date currDepotDeparture = null;
-					String currRouteId = null;
-						for(IRouteModel route : dptRoutes) {
-							Iterator itr = route.getStops().iterator();
-							IRoutingStopModel _order = null;
-							String routeID = route.getRouteId();
-							CustomTruckScheduleInfo _matchSchedule = null;
-							
-							while(itr.hasNext()) {
-								_order = (IRoutingStopModel)itr.next();
-								
-								if(currRouteId == null) {
-									currRouteId = routeID;
-								}
-							
-								if(_order.getOrderNumber() == null || _order.getOrderNumber().trim().length() == 0
-										//|| IRoutingStopModel.DEPOT_STOPNO.equalsIgnoreCase(_order.getOrderNumber())) {
-										|| _order.getOrderNumber().startsWith(IRoutingStopModel.DEPOT_STOPNO)) {
-									currDepotDeparture = _order.getStopArrivalTime();
-									continue;
-								} else if(currRouteId != null && !currRouteId.equalsIgnoreCase(routeID)) {
-									currDepotDeparture = null;
-									currRouteId = routeID;
-								}
-								if(currDepotDeparture == null) {
-									if(allowedDepartTimeDiff != 0 
-												&& RoutingDateUtil.getDiffInHours(_order.getDeliveryInfo().getDeliveryStartTime()
-																						, route.getStartTime())
-												> allowedDepartTimeDiff) {
-										_order.setStopDepartureTime(_order.getDeliveryInfo().getDeliveryStartTime());
-									} else {
-										_order.setStopDepartureTime(route.getStartTime());
-									}
-								} else {
-									_order.setStopDepartureTime(currDepotDeparture);
-								}
-								_matchSchedule = matchSchedule(_order
-																, groupSchedule
-																, route.getOriginId());
-								if(_matchSchedule != null) {
-									_order.setRoutingRouteId(routeID);
-									_matchSchedule.addOrder(_order);
-									
-								} else {
-									LOGGER.info("Invalid Depot Truck Schedule File : Order No:" + _order.getOrderNumber()+ " Stop D-Time->"+_order.getStopDepartureTime()+ " Schedule-> "+groupSchedule);
-								}
-							}
-						}
-						return updateDptRouteStop(area, groupSchedule);
+			if(isDynamic){
+				doDynamicRouteAssignment(area, dptRoutes,groupSchedule);
+			}
+			else{
+				doStaticRouteAssignement(area, dptRoutes,groupSchedule);
+			}
+		return updateDptRouteStop(area, groupSchedule);
 			
 		}
 		return null;
+		}
+		
+	private void doStaticRouteAssignement(String area, List<IRouteModel> dptRoutes, List<CustomTruckScheduleInfo> groupSchedule){
+		for(IRouteModel route : dptRoutes) {
+			Iterator itr = route.getStops().iterator();
+			IRoutingStopModel _order = null;
+			CustomTruckScheduleInfo _matchSchedule = null;
+			
+			while(itr.hasNext()) {
+				_order = (IRoutingStopModel)itr.next();
+				_matchSchedule = matchSchedule(_order
+										, groupSchedule);
+				if(_matchSchedule != null) {
+				_matchSchedule.addOrder(_order);
+				} else {
+				LOGGER.info("Invalid Depot Truck Schedule File : Order No:" + _order.getOrderNumber()+ " Stop D-Time->"+_order.getStopDepartureTime()+ " Schedule-> "+groupSchedule);
+				}
+			}
+		}
+	}
+	private void doDynamicRouteAssignment(String area, List<IRouteModel> dptRoutes, List<CustomTruckScheduleInfo> groupSchedule){
+			int allowedDepartTimeDiff = RoutingServicesProperties.getDepotDepartTimeDiff();
+			Date currDepotDeparture = null;
+			String currRouteId = null;
+			
+			for(IRouteModel route : dptRoutes) {
+				Iterator itr = route.getStops().iterator();
+				IRoutingStopModel _order = null;
+				String routeID = route.getRouteId();
+				CustomTruckScheduleInfo _matchSchedule = null;
+				
+				while(itr.hasNext()) {
+					_order = (IRoutingStopModel)itr.next();
+					
+					if(currRouteId == null) {
+						currRouteId = routeID;
+					}
+				
+					if(_order.getOrderNumber() == null || _order.getOrderNumber().trim().length() == 0
+							//|| IRoutingStopModel.DEPOT_STOPNO.equalsIgnoreCase(_order.getOrderNumber())) {
+							|| _order.getOrderNumber().startsWith(IRoutingStopModel.DEPOT_STOPNO)) {
+						currDepotDeparture = _order.getStopArrivalTime();
+						continue;
+					} else if(currRouteId != null && !currRouteId.equalsIgnoreCase(routeID)) {
+						currDepotDeparture = null;
+						currRouteId = routeID;
+					}
+					if(currDepotDeparture == null) {
+						if(allowedDepartTimeDiff != 0 
+									&& RoutingDateUtil.getDiffInHours(_order.getDeliveryInfo().getDeliveryStartTime()
+																			, route.getStartTime())
+									> allowedDepartTimeDiff) {
+							_order.setStopDepartureTime(_order.getDeliveryInfo().getDeliveryStartTime());
+						} else {
+							_order.setStopDepartureTime(route.getStartTime());
+						}
+					} else {
+						_order.setStopDepartureTime(currDepotDeparture);
+					}
+					_matchSchedule = matchSchedule(_order
+													, groupSchedule
+													, route.getOriginId());
+					if(_matchSchedule != null) {
+						_order.setRoutingRouteId(routeID);
+						_matchSchedule.addOrder(_order);
+						
+					} else {
+						LOGGER.info("Invalid Depot Truck Schedule File : Order No:" + _order.getOrderNumber()+ " Stop D-Time->"+_order.getStopDepartureTime()+ " Schedule-> "+groupSchedule);
+					}
+				}
+			}
+		
 		}
 		private List<IRouteModel> updateDptRouteStop(String area, List<CustomTruckScheduleInfo> groupSchedule) {
 			
@@ -430,6 +472,25 @@ public class DispatchVolumeSessionBean extends SessionBeanSupport {
 			}
 			return _preSchInfo;
 		}
-	
+		private CustomTruckScheduleInfo matchSchedule(IRoutingStopModel order, List scheduleLst) {
+			
+			CustomTruckScheduleInfo _schInfo = null;
+			CustomTruckScheduleInfo _preSchInfo = null;
+			
+			if(scheduleLst != null) {
+				
+				Iterator _itrSchedule = scheduleLst.iterator();
+										
+				while(_itrSchedule.hasNext()) {
+					_schInfo = (CustomTruckScheduleInfo)_itrSchedule.next();
+						if(_schInfo.getDepotArrivalTime().after(order.getStopDepartureTime())) {
+							break;
+						} else {
+							_preSchInfo = _schInfo;
+						}
+				}
+			}
+			return _preSchInfo;
+		}
 
 }

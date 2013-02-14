@@ -85,7 +85,7 @@ public class DispatchVolumeCronRunner {
 					subject, buff.toString(), true, "");
 			
 		}catch (MessagingException e) {
-			LOGGER.warn("Error Sending OrderRate Cron report email: ", e);
+			LOGGER.warn("Error Sending DispatchVolume Cron report email: ", e);
 		}
 		
 	}

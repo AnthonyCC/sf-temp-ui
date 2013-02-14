@@ -8,6 +8,7 @@ import java.util.Set;
 
 import com.freshdirect.routing.constants.EnumWaveInstanceStatus;
 import com.freshdirect.routing.model.IRegionModel;
+import com.freshdirect.routing.model.IRouteModel;
 import com.freshdirect.routing.model.IServiceTimeScenarioModel;
 import com.freshdirect.routing.model.IServiceTimeTypeModel;
 import com.freshdirect.routing.model.IWaveInstance;
@@ -108,5 +109,10 @@ public class RoutingInfoServiceProxy  extends BaseServiceProxy  {
 	
 	public List<Date> getDeliveryDates() throws RoutingServiceException{
 		return getService().getDeliveryDates();
+	}
+
+	public Map<String, Map<RoutingTimeOfDay, List<IRouteModel>>> getStaticRoutesByArea(
+			Date deliveryDate) {
+		return getService().getStaticRoutesByArea(deliveryDate);
 	} 
 }
