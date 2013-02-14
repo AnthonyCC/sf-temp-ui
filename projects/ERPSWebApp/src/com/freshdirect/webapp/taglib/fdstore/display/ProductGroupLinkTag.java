@@ -53,7 +53,7 @@ public class ProductGroupLinkTag extends BodyTagSupportEx {
 		
 		if (!"".equals(urlHtml)) {
 			try {
-				pageContext.getOut().print("urlHtml");
+				pageContext.getOut().print(urlHtml);
 			} catch (IOException e) {
 				throw new JspException(e);
 			}

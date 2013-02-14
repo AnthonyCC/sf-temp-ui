@@ -534,7 +534,7 @@ if (showRecent && showThis &&  skusAdded!=null && skusAdded.contains("skuCode_"+
                 pricing<%=idx%>.setOption("<%= entry.getKey() %>", "<%= entry.getValue() %>");
             </logic:iterate>
             
-            function chgQty<%=idx%>(delta) { chgQuickShopQty(<%=idx%>, delta, <%= productNode.getQuantityMinimum() %>, <%= user.getQuantityMaximum(productNode) %>, <%=productNode.getQuantityIncrement()%>); return false; }
+            function chgQty<%=idx%>(delta) { chgQuickShopQty(<%=idx%>, delta, <%= productNode.getQuantityMinimum() %>, <%= user.getQuantityMaximum(productNode) %>, <%=productNode.getQuantityIncrement()%>);}
             </script>
 
     <% if (productNode.hasTerms()) { %> <input type="hidden" name="consented_<%=idx%>" value="true"> <% } %>
