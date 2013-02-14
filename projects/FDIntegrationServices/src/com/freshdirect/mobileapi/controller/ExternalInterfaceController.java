@@ -109,9 +109,10 @@ public class ExternalInterfaceController extends BaseController {
      	       try {
      	    	   CallLogModel logModel = getCallLogModelFromRequest(request);
      	    	   LOGGER.info("T002: Loading IVR Call log: " + logModel.toString());
-     	    	   CallCenterServices.addNewIVRCallLog(logModel);
-     	    	   responseMessage = Message.createSuccessMessage("T002 Successfull.");
-	     	        
+     	    	   if(!StringUtil.isEmpty(logModel.getOrderNumber())){
+     	    		   CallCenterServices.addNewIVRCallLog(logModel);
+     	    		   responseMessage = Message.createSuccessMessage("T002 Successfull.");
+     	    	   } 
      	        } catch(Exception e) {
 	        		e.printStackTrace();
 	        		LOGGER.info("T002_EXP: Unable to save IVR Call log for Order ");
