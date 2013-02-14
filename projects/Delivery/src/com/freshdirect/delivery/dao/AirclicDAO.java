@@ -1283,14 +1283,15 @@ public class AirclicDAO {
 				String orderId = rs.getString("ORDERNUMBER");
 				String callOutcome = rs.getString("CALL_OUTCOME");
 				
-				if(!result.containsKey(orderId) && !StringUtil.isEmpty(orderId)) {
-					model = new DeliveryExceptionModel();
-					model.setOrderId(orderId);
-					result.put(orderId, model);
-				}
-				result.get(orderId).setEarlyDeliveryReq(true);
-				result.get(orderId).setEarlyDlvStatus((null != callOutcome && !"".equals(callOutcome) && !"NoAnswer".equals(callOutcome) && !"ReceiverRejected".equals(callOutcome)) ? "Accepted" : "Rejected");
-				
+				if(!StringUtil.isEmpty(orderId)) {
+					if(!result.containsKey(orderId) ) {
+						model = new DeliveryExceptionModel();
+						model.setOrderId(orderId);
+						result.put(orderId, model);
+					}
+					result.get(orderId).setEarlyDeliveryReq(true);
+					result.get(orderId).setEarlyDlvStatus((null != callOutcome && !"".equals(callOutcome) && !"NoAnswer".equals(callOutcome) && !"ReceiverRejected".equals(callOutcome)) ? "Accepted" : "Rejected");
+				}				
 			}
 			
 			ps = conn.prepareStatement(" select ci.sale_id WEBORDERNUM, ct.cartonid, ct.insert_timestamp, (select max(scandate) from dlv.cartontracking where cartonid = ct.cartonid and cartonstatus = 'TRNS_DR' "+
