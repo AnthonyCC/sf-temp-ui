@@ -150,7 +150,7 @@
 							<tr><td colspan="3">&nbsp;</td></tr>
 							<tr>
 							<td colspan="3" align="center">
-								 <input type = "button" value="&nbsp;Back&nbsp;" onclick="javascript:back('employee');" />
+								 <input type = "button" value="&nbsp;Back&nbsp;" onclick="javascript:doBack('employee');" />
 								 <input type = "submit" value="&nbsp;Save Changes&nbsp;"  />
 							 <%if(com.freshdirect.transadmin.security.SecurityManager.isUserAdmin(request)){%>
 							

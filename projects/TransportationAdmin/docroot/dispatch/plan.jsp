@@ -176,7 +176,11 @@
 		    	var hasConfirmed = confirm ("Do you want to delete the selected records?")
 		    	if (hasConfirmed) 
 				{
-		    		location.href = url+"?id="+ paramValues+"&filter="+getFilterTestValue();
+		    		var param1 = document.getElementById("weekdate").value;
+		     		var param2 = document.getElementById("daterange").value;
+		     		var param3 = document.getElementById("zone").value;
+		            var filters="&weekdate="+param1+"&daterange="+param2+"&zone="+param3+"&"+getFilterValue(document.getElementById("planListForm"),false);				  	
+		    		location.href = url+"?id="+ paramValues+filters;
 				} 
 		    } else {
 		    	alert('Please Select a Row!');
@@ -185,16 +189,32 @@
       
       function doBullpen(tableId, url) 
       {    
-		    var paramValues = getParamList(tableId, url);
-		    if (paramValues != null) {
-		    	var hasConfirmed = confirm ("Do you want to convert selected truck(s) to bullpen?")
-		    	if (hasConfirmed) 
-				{
-		    		location.href = url+"?id="+ paramValues+"&filter="+getFilterTestValue();
-				} 
-		    } else {
-		    	alert('Please select atleast one Row!');
-		    }
+    	    var table = document.getElementById(tableId);
+	  	    var checkboxList = table.getElementsByTagName("input");    
+	  	    var rowSelCnt = 0;
+	  	    for (i = 0; i < checkboxList.length; i++) {
+	  	    	if (checkboxList[i].type=="checkbox" && checkboxList[i].checked) {
+	  	    		rowSelCnt++;  	    		
+	  	    	}
+	  	    }
+	  	    
+	  	    if(rowSelCnt === 0) {
+	  	    	alert('Please select a Row!');
+	  	    } else if(rowSelCnt > 1){
+	  	    	alert('Please select only one Row!');
+	  	    } else {
+	    	  	var paramValues = getParamList(tableId, url);
+			    if (paramValues != null) {
+			    	var hasConfirmed = confirm ("Do you want to convert selected truck to bullpen?")
+			    	if (hasConfirmed) {
+			    		var param1 = document.getElementById("weekdate").value;
+			     		var param2 = document.getElementById("daterange").value;
+			     		var param3 = document.getElementById("zone").value;
+			            var filters="&weekdate="+param1+"&daterange="+param2+"&zone="+param3+"&"+getFilterValue(document.getElementById("planListForm"),false);
+			    		location.href = url+"?id="+ paramValues+filters;
+					} 
+			    } 
+			 }
 	  }
       
       function doClone(tableId, url) 
@@ -217,7 +237,12 @@
     		    if (paramValues != null) {
     		    	var hasConfirmed = confirm ("You are about to clone the selected plan entry. Do you want to continue?")
     		    	if (hasConfirmed) {
-    		    		location.href = url+"?planRefId="+ paramValues+"&filter="+getFilterTestValue();
+    		    		var param1 = document.getElementById("weekdate").value;
+    		     		var param2 = document.getElementById("daterange").value;
+    		     		var param3 = document.getElementById("zone").value;
+    		            var filters="&weekdate="+param1+"&daterange="+param2+"&zone="+param3+"&"+getFilterValue(document.getElementById("planListForm"),false);
+    				  	
+    		    		location.href = url+"?planRefId="+ paramValues+filters;
     				} 
     		    }	
     	    }

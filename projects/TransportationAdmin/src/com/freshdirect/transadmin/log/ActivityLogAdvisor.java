@@ -255,7 +255,7 @@ abstract class LogComparator implements Comparator
 			result++;
 			return new Object[] { id, name, field1, field2 };
 		}
-		if (!field1.equals(field2)) {
+		if (!field1.equals(field2) && field1 != null && field2 != null) {
 			if (field1 instanceof Comparable) {
 				result += ((Comparable) field1).compareTo(field2);
 			}

@@ -32,7 +32,7 @@ function addRangeHandlers(tableId, rowClassName, url, paramName, columnIndex, ch
 				      		var cell = this.parentNode.getElementsByTagName("td")[columnIndex];
 				      		var selectBox = this.parentNode.getElementsByTagName("input")[0];
 				      		
-				      		location.href = url+"?"+ paramName + "=" + selectBox.name;			      		
+				      		location.href = url+"?"+ paramName + "=" + selectBox.name+"&filter="+getFilterTestValue();			      		
 				    	};
 				    }
 		    	}
