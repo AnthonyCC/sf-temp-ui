@@ -118,6 +118,11 @@ h2.centerline span {
   vertical-align: middle;
 }
 
+.qtyinput .qtyinputholder {
+  white-space: nowrap;
+  display: inline-block;
+}
+
 .qtyinput_grocery {
   margin-bottom: 15px;
 }
