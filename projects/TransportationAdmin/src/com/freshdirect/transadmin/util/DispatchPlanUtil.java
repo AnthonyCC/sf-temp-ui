@@ -444,13 +444,18 @@ public class DispatchPlanUtil {
 			day = TransStringUtil.getDayOfWeek(TransStringUtil.getDate(dispatchDate));
 		else
 			day = TransStringUtil.getDayOfWeek(planInfo.getPlanDate());
-		double hourOfDay = Double.parseDouble(TransStringUtil.formatTimeFromDate(TransStringUtil.getServerTime(planInfo.getFirstDeliveryTime())));
-		if (hourOfDay < 12 && day != 7) {
-			return "AM";
-		} else if (hourOfDay < 10 && day == 7) {
-			return "AM";
-		} else
-			return "PM";		
+				
+		double hourOfDay = 0.0;
+		if (planInfo.getFirstDeliveryTime() != null) {
+			hourOfDay = Double.parseDouble(TransStringUtil.formatTimeFromDate(TransStringUtil.getServerTime(planInfo.getFirstDeliveryTime())));
+			if (hourOfDay < 12 && day != 7) {
+				return "AM";
+			} else if (hourOfDay < 10 && day == 7) {
+				return "AM";
+			} else
+				return "PM";
+		}	
+		return "";
 	}
 
 	public static boolean isBullpen(String bullpen) {
