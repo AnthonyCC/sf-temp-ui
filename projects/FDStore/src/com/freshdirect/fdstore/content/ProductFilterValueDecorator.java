@@ -177,7 +177,7 @@ public class ProductFilterValueDecorator extends GenericFilterDecorator<Filterin
 				ProductModel nodeByKey = ContentFactory.getInstance().getProductByName(
 						parentKey.getId(),
 						node.getContentKey().getId());
-				if (nodeByKey.isDisplayableBasedOnCms() && nodeByKey.isSearchable()) {
+				if (nodeByKey != null && nodeByKey.isDisplayableBasedOnCms() && nodeByKey.isSearchable()) {
 					parentNodes.add(nodeByKey);
 				}
 			}
