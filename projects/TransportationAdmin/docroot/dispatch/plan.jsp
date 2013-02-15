@@ -192,25 +192,17 @@
     	    var table = document.getElementById(tableId);
 	  	    var checkboxList = table.getElementsByTagName("input");    
 	  	    var rowSelCnt = 0;
-	  	    var bullpenColIndex = '6';
-	  	  	var isBullpen = false;
 	  	    for (i = 0; i < checkboxList.length; i++) {
 	  	    	if (checkboxList[i].type=="checkbox" && checkboxList[i].checked) {
-	  	    		rowSelCnt++;
-	  	    		var bullpen = checkboxList[i].parentNode.parentNode.getElementsByTagName("td")[6].textContent;
-	  	    		if(bullpen != null && bullpen.length > 0 && bullpen === 'Bullpen') {                    
-	  	    			isBullpen = true;	                    
-	                } 	    		
+	  	    		rowSelCnt++;  	    		
 	  	    	}
 	  	    }
-	  	  	  	    
+	  	    
 	  	    if(rowSelCnt === 0) {
 	  	    	alert('Please select a Row!');
 	  	    } else if(rowSelCnt > 1){
 	  	    	alert('Please select only one Row!');
-	  	    } else if(isBullpen){
-	  	    	alert('You selected a Bullpen. Please select a truck to convert to bullpen!');
-	  	    } else {	  	    
+	  	    } else {
 	    	  	var paramValues = getParamList(tableId, url);
 			    if (paramValues != null) {
 			    	var hasConfirmed = confirm ("Do you want to convert selected truck to bullpen?")

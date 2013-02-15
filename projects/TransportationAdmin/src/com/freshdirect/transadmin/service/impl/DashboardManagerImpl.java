@@ -38,7 +38,7 @@ public class DashboardManagerImpl implements IDashboardManager {
 			getDashboardDataDAO().purgePlantCapacity(dayOfWeek);
 			getDashboardDataDAO().savePlantCapacity(dayOfWeek, capacity);
 		} catch (SQLException e) {
-			throw new ServiceException(e);
+			throw new RuntimeException(e);
 		}
 	}
 
@@ -57,7 +57,7 @@ public class DashboardManagerImpl implements IDashboardManager {
 			getDashboardDataDAO().purgePlantDispatch();
 			getDashboardDataDAO().savePlantCapacity(dispatch);
 		} catch (SQLException e) {
-			throw new ServiceException(e);
+			throw new RuntimeException(e);
 		}
 	}
 	

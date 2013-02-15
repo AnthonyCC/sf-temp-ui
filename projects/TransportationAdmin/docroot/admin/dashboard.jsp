@@ -412,7 +412,11 @@
 					dataType : "html",
 					async : false,
 					success : function(json) {
-						$('#pd_message').html('Save Plant Dispatch Successful.').css('color','#0000ff');
+						jsonRsp = JSON.parse(json);
+						if(jsonRsp.status=='FAILED')
+							$('#pd_message').html('Save Plant Dispatch Failed.').css('color','#ff0000');
+						else
+							$('#pd_message').html('Save Plant Dispatch Successful.').css('color','#0000ff');
 						var gridId = $('#pdGrid').attr("class");
 					     gridId = '#'+gridId.replace(" ui-widget","")+'plantDispatch';
 					     console.log(gridId);
@@ -439,7 +443,11 @@
 					dataType : "html",
 					async : false,
 					success : function(json) {
-						$('#pc_message').html('Save Plant Capacity Successful.').css('color','#0000ff');
+						jsonRsp = JSON.parse(json);
+						if(jsonRsp.status=='FAILED')
+							$('#pc_message').html('Save Plant Capacity Failed.').css('color','#ff0000');
+						else	
+							$('#pc_message').html('Save Plant Capacity Successful.').css('color','#0000ff');
 						var gridId = $('#myGrid').attr("class");
 					     gridId = '#'+gridId.replace(" ui-widget","")+'dispatchTime';
 					     console.log(gridId);

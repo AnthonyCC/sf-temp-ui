@@ -240,11 +240,7 @@ public class TransAdminCacheManager {
 
 		protected Map<String, List<EquipmentType>> loadData(String requestParam) throws AsyncCacheException  {
 			try {
-				if(TransportationAdminProperties.isKronosBlackhole()) {
-					throw new AsyncCacheException(AsyncCacheExceptionType.LOAD_BLOCKED);
-				} else {
-					return loadEquipmentTypes();					
-				}				
+					return loadEquipmentTypes();
 			} catch (Exception e) {
 				LOGGER.error("Could not load equipment type data due to: ", e);
 				throw new AsyncCacheException(e, AsyncCacheExceptionType.LOAD_FAILED);
