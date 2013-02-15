@@ -116,9 +116,11 @@ h2.centerline span {
 .qtyinput {
   line-height: 27px;
   vertical-align: middle;
+  font-size:0;
 }
 
-.qtyinput .qtyinputholder {
+.qtyinput .qtyinputholder,
+#i_viewcart .qtyinput {
   white-space: nowrap;
   display: inline-block;
 }
@@ -127,10 +129,23 @@ h2.centerline span {
   margin-bottom: 15px;
 }
 
+#i_viewcart .quantity_col {
+	text-align:center;
+	font-size:0;
+	width:100px;
+}
+
+
 #i_viewcart .viewcartselect,
 .qtyinput input.qty {
   font-size: 12px;
-  padding: 4px 2px;
+  text-align:center;
+  padding:2px;
+  line-height:17px;
+  vertical-align:middle;
+  height:17px;
+  top:0;
+  margin:1px 0;
 }
 
 .qtyinput input.qty {
@@ -152,5 +167,13 @@ h2.centerline span {
 
 .qtyinput .qtymessage {
   font-weight: bold;
+}
+
+#i_viewcart .viewcartselect {
+	min-width:8em;
+	padding:0;
+	height:23px;
+	line-height:23px;
+	margin:2px 0;
 }
 /* }}} */

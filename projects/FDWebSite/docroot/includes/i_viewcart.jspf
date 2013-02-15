@@ -221,7 +221,8 @@ FDIdentity identity = user.getIdentity();
 		<%
 		if (cartLine.isSoldBySalesUnits()) {
 			%>
-			<td colspan="2" width="100" align="center">
+			<td colspan="2" width="100">
+				<div class="quantity_col">
 				<select id="salesUnit_<%=idx%>" name="salesUnit_<%=idx%>" CLASS="viewcartselect">
 				<option value="">0
 				<logic:iterate id="salesUnit" collection="<%= fdProduct.getSalesUnits() %>" type="com.freshdirect.fdstore.FDSalesUnit">
@@ -237,12 +238,14 @@ FDIdentity identity = user.getIdentity();
 				</logic:iterate>
 				</select>
 				<input name="rnd_<%=idx%>" type="hidden" value="<%= cartLine.getRandomId() %>">
+				</div>
 			</td>
 			<td width="22">&nbsp;</td>
 			<%  
 		} else {
 			%>
-			<td width="100" colspan="2" align="center">
+			<td width="100" colspan="2">
+				<div class="quantity_col">
 				<script>
 				function chgQty<%=idx%>(delta) {
 					val = document.viewcart.quantity_<%=idx%>.value;
@@ -279,6 +282,7 @@ FDIdentity identity = user.getIdentity();
           <a href="javascript:chgQty<%=idx%>(<%= productNode.getQuantityIncrement() %>);" class="quantity_plus"><span>Decrease quantity</span></a>
         </div>
 				<input name="rnd_<%=idx%>" type="hidden" value="<%= cartLine.getRandomId() %>">
+				</div>
 			</td>
 			<td width="22">&nbsp;<%=cartLine.getLabel()%></td>
 			<% 
@@ -523,9 +527,8 @@ FDIdentity identity = user.getIdentity();
 		%>
 	</logic:iterate>
 
-	<tr><td colspan="10">
-		<div class="orderViewSeparator"></div>
-	</td></tr>
+	<tr><td width="84">&nbsp;</td><td width="16">&nbsp;</td><td width="22">&nbsp;</td><td colspan="7">&nbsp;</td></tr>
+	<tr><td colspan="10"><div class="orderViewSeparator"></div></td></tr>
 	<tr class="orderViewSummary">
 		<td colspan="6" align="right"><%= view.getDescription() %><% if (view.isEstimatedPrice()) { %> Estimated<% } %> Subtotal:</td>
 		<td colspan="1" align="right"><b><%=JspMethods.formatPrice(view.getSubtotal())%></b></td>
