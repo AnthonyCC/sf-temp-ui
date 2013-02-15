@@ -62,17 +62,22 @@ public class DashboardDataApiController extends BaseApiController {
 				}else{
 					dayofweek = TransStringUtil.getServerDay(baseDate.getTime());
 				}
-				}catch (ParseException e) {
+				Collection capacities = getDashboardManagerService().getPlantCapacity(dayofweek);
+				result.setRows(capacities);
+			}catch (ParseException e) {
 					try {
 						dayofweek = TransStringUtil.getServerDay(baseDate.getTime());
 					} catch (ParseException e1) {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
 					}
-				} 
-				Collection capacities = getDashboardManagerService().getPlantCapacity(dayofweek);
-				result.setRows(capacities);
-			 
+			}catch (ServiceException e) {
+				e.printStackTrace();
+				setResponseMessage(model, Message.createFailureMessage("Get Plant Capacity failed."));
+			}catch (Exception e) {
+				e.printStackTrace();
+				setResponseMessage(model, Message.createFailureMessage("Get Plant Capacity failed."));
+			}
 			setResponseMessage(model, result);
 			
 		}
@@ -117,7 +122,10 @@ public class DashboardDataApiController extends BaseApiController {
 				result.setRows(dispatches);
 				setResponseMessage(model, result);
 			} 
-			catch (Exception e) {
+			catch (ServiceException e) {
+				e.printStackTrace();
+				setResponseMessage(model, Message.createFailureMessage("Get Plant Dispatch failed."));
+			}catch (Exception e) {
 				e.printStackTrace();
 				setResponseMessage(model, Message.createFailureMessage("Get Plant Dispatch failed."));
 			}
@@ -129,6 +137,9 @@ public class DashboardDataApiController extends BaseApiController {
 				getDashboardManagerService().savePlantDispatch(Arrays.asList(dispatches));
 			}
 			catch (ServiceException e) {
+				e.printStackTrace();
+				setResponseMessage(model, Message.createFailureMessage("Save Plant Dispatch failed."));
+			}catch (Exception e) {
 				e.printStackTrace();
 				setResponseMessage(model, Message.createFailureMessage("Save Plant Dispatch failed."));
 			}

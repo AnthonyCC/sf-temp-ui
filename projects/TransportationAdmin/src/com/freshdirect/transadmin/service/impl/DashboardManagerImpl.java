@@ -4,6 +4,7 @@ import java.sql.SQLException;
 import java.util.Collection;
 import java.util.List;
 
+import com.freshdirect.framework.service.ServiceException;
 import com.freshdirect.transadmin.dao.IDashboardDataDAO;
 import com.freshdirect.transadmin.model.PlantCapacity;
 import com.freshdirect.transadmin.model.PlantDispatch;
@@ -23,44 +24,40 @@ public class DashboardManagerImpl implements IDashboardManager {
 
 
 	@Override
-	public Collection getPlantCapacity(String dayOfWeek) {
+	public Collection getPlantCapacity(String dayOfWeek) throws ServiceException{
 		try {
 			return getDashboardDataDAO().getPlantCapacity(dayOfWeek);
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw new ServiceException(e);
 		}
-		return null;
 	}
 
 	@Override
-	public void savePlantCapacity(String dayOfWeek, List<PlantCapacity> capacity) {
+	public void savePlantCapacity(String dayOfWeek, List<PlantCapacity> capacity) throws ServiceException{
 		try {
 			getDashboardDataDAO().purgePlantCapacity(dayOfWeek);
 			getDashboardDataDAO().savePlantCapacity(dayOfWeek, capacity);
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new ServiceException(e);
 		}
 	}
 
 	@Override
-	public Collection getPlantDispatch() {
+	public Collection getPlantDispatch() throws ServiceException {
 		try {
 			return getDashboardDataDAO().getPlantDispatch();
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw new ServiceException(e);
 		}
-		return null;
 	}
 
 	@Override
-	public void savePlantDispatch(List<PlantDispatch> dispatch) {
+	public void savePlantDispatch(List<PlantDispatch> dispatch) throws ServiceException{
 		try {
 			getDashboardDataDAO().purgePlantDispatch();
 			getDashboardDataDAO().savePlantCapacity(dispatch);
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new ServiceException(e);
 		}
 	}
 	

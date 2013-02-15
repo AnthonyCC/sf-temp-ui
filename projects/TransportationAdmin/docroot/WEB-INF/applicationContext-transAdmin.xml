@@ -169,7 +169,7 @@
 		<property name="target" ref="dashboardManagerService"/>
 		<property name="transactionAttributes">
 			<props>
-			    <prop key="log*,update*">PROPAGATION_REQUIRED,readOnly</prop>
+			    <prop key="save*">PROPAGATION_REQUIRED,readOnly</prop>
 			</props>
 		</property>
 	</bean>

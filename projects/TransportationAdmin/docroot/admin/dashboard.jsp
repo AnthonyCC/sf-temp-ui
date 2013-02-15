@@ -44,10 +44,10 @@
 			   	
 				<div style="width: 300px;margin-left:10px;float:left;">
 						<br><br><div id="pc_message"></div><br>
-						<div class="grid-header" style="width: 300px;">
+						<div class="grid-header" style="width: 305px;">
 				      		<label>Plant Capacity</label>
     					</div>
-						<div id="myGrid" style="width: 300px; height: 300px;"></div>
+						<div id="myGrid" style="width: 305px; height: 300px;"></div>
 						<br>
 						<form id="plantCapacityForm" action="" method="POST">
   							<input type="submit" value="Save">
@@ -120,15 +120,15 @@
 	  var data = [];
 	  var pd_data = [];
 	  var pc_columns = [
-	    {id: "dispatchTime", name: "Plant Dispatch", field: "dispatchTime", minWidth: 140,editor: TimeEditor, validator: requiredFieldValidator },
-	    {id: "capacity", name: "Cumulative Capacity", field: "capacity", width: 130, editor: Slick.Editors.Integer, validator: requiredFieldValidator },
+	    {id: "dispatchTime", name: "Plant Dispatch", field: "dispatchTime", minWidth: 140,editor: TimeEditor, sortable:true, validator: requiredFieldValidator },
+	    {id: "capacity", name: "Cumulative Capacity", field: "capacity", width: 130, editor: Slick.Editors.Integer },
 	    {id: 'id', name: '', field: 'dispatchTime',  width: 15, formatter: function (r, c, id, def, datactx) { 
 	           return '<a href="#" onclick="removeRow1(' + r + ')">X</a>'; }
 	      }
 	    ];
 	  var pd_columns = [
-	            	    {id: "dispatchTime", name: "TransApp Dispatch", field: "dispatchTime", minWidth: 125,editor: TimeEditor, validator: requiredFieldValidator  },
-	            	    {id: "plantDispatch", name: "Plant Dispatch", field: "plantDispatch", width: 125,editor: TimeEditor, validator: requiredFieldValidator },
+						{id: "plantDispatch", name: "Plant Dispatch", field: "plantDispatch", width: 125,editor: TimeEditor, sortable:true, validator: requiredFieldValidator  },
+	            	    {id: "dispatchTime", name: "TransApp Dispatch", field: "dispatchTime", minWidth: 125,editor: TimeEditor, validator: requiredFieldValidator },
 	            	    {id: 'id', name: '', field: 'dispatchTime',  width: 15, formatter: function (r, c, id, def, datactx) { 
 	         	           return '<a href="#" onclick="removeRow2(' + r + ')">X</a>'; }
 	         	      }
@@ -140,6 +140,9 @@
 	    asyncEditorLoading: false,
 	    autoEdit: false,
 	  };
+	  dataView = new Slick.Data.DataView();
+	  pd_dataView = new Slick.Data.DataView();
+		
 	  
 	  function TimeEditor(args) {
 		  var $input;
@@ -233,18 +236,46 @@
 				      d["dispatchTime"] = json.rows[i].dispatchTime.timeString;
 				      d["capacity"] = json.rows[i].capacity;
 				}
-				grid = new Slick.Grid("#myGrid", data, pc_columns, options);
+				
+				grid = new Slick.Grid("#myGrid", dataView, pc_columns, options);
 				grid.setSelectionModel(new Slick.RowSelectionModel());
-				grid.setSortColumn("dispatchTime",true);
+				grid.setSortColumn("dispatchTime",false);
 				
+				// wire up model events to drive the grid
+				dataView.onRowCountChanged.subscribe(function (e, args) {
+				  grid.updateRowCount();
+				  grid.render();
+				});
+
+				dataView.onRowsChanged.subscribe(function (e, args) {
+				  grid.invalidateRows(args.rows);
+				  grid.render();
+				});
+
 				
+				dataView.beginUpdate();
+			    dataView.setItems(data,"dispatchTime");
+			    dataView.endUpdate();
+			    grid.render();
 				$('#myGrid').show();
 				
+				
+				grid.onSort.subscribe(function (e, args) {
+					console.log(args.sortCol.field);
+					  sortcol = args.sortCol.field;  // Maybe args.sortcol.field ???
+					  dataView.sort(comparer, args.sortAsc);
+					});
+
+					function comparer(a, b) {
+					  var x = a[sortcol], y = b[sortcol];
+					  return (x == y ? 0 : (x > y ? 1 : -1));
+					}
+					
 				grid.onAddNewRow.subscribe(function (e, args) {
 					  $('#pc_message').html("");
 				      var item = args.item;
 				      grid.invalidateRow(data.length);
-				      data.push(item);
+				      dataView.addItem(item);
 				      grid.updateRowCount();
 				      grid.render();
 				    });
@@ -258,6 +289,13 @@
 			}
 		});
 	  }	
+	  
+	  function setItems(data, objectIdProperty) {
+		     if (objectIdProperty !== undefined) idProperty = objectIdProperty;
+		     items = data;
+		     refreshIdxById();
+		     refresh();
+		}
 	  
 	  
 	  function activateEdit(e, args) {
@@ -301,18 +339,46 @@
 					      d["dispatchTime"] = json.rows[i].dispatchTime.timeString;
 					      d["plantDispatch"] = json.rows[i].plantDispatch.timeString;
 					}
-					pd_grid = new Slick.Grid("#pdGrid", pd_data, pd_columns, options);
+					pd_grid = new Slick.Grid("#pdGrid", pd_dataView, pd_columns, options);
 					pd_grid.setSelectionModel(new Slick.RowSelectionModel());
-					pd_grid.setSortColumn("plantDispatch",true);
+					pd_grid.setSortColumn("plantDispatch",false);
 					
+					// wire up model events to drive the grid
+					pd_dataView.onRowCountChanged.subscribe(function (e, args) {
+						pd_grid.updateRowCount();
+						pd_grid.render();
+					});
+
+					pd_dataView.onRowsChanged.subscribe(function (e, args) {
+						pd_grid.invalidateRows(args.rows);
+						pd_grid.render();
+					});
+					
+					pd_dataView.beginUpdate();
+					pd_dataView.setItems(pd_data,"dispatchTime");
+					pd_dataView.endUpdate();
+					pd_grid.render();
 					$('#pdGrid').show();
+					
 					pd_grid.onKeyDown.subscribe(activateEdit);
+					
+					
+					pd_grid.onSort.subscribe(function (e, args) {
+						console.log(args.sortCol.field);
+						  sortcol = args.sortCol.field;  // Maybe args.sortcol.field ???
+						  pd_dataView.sort(comparer, args.sortAsc);
+						});
+
+						function comparer(a, b) {
+						  var x = a[sortcol], y = b[sortcol];
+						  return (x == y ? 0 : (x > y ? 1 : -1));
+						}
 					
 					pd_grid.onAddNewRow.subscribe(function (e, args) {
 						  $('#pd_message').html("");
 					      var item = args.item;
 					      pd_grid.invalidateRow(pd_data.length);
-					      pd_data.push(item);
+					      pd_dataView.addItem(item);
 					      pd_grid.updateRowCount();
 					      pd_grid.render();
 					    });
@@ -344,11 +410,15 @@
 					dataType : "html",
 					async : false,
 					success : function(json) {
-						$('#pd_message').html('Save Plant Dispatch Successful.');
+						$('#pd_message').html('Save Plant Dispatch Successful.').css('color','#0000ff');
+						var gridId = $('#pdGrid').attr("class");
+					     gridId = '#'+gridId.replace(" ui-widget","")+'plantDispatch';
+					     console.log(gridId);
+					     $(gridId).click();
+					      
 					},
 					error : function(msg) {
-						$('#pd_message').css('color','#ff0000');
-						$('#pd_message').html('Save Plant Dispatch Failed.');
+						$('#pd_message').html('Save Plant Dispatch Failed.').css('color','#ff0000');
 					}
 				});
 		      }
@@ -367,11 +437,16 @@
 					dataType : "html",
 					async : false,
 					success : function(json) {
-						$('#pc_message').html('Save Plant Capacity Successful.');
+						$('#pc_message').html('Save Plant Capacity Successful.').css('color','#0000ff');
+						var gridId = $('#myGrid').attr("class");
+					     gridId = '#'+gridId.replace(" ui-widget","")+'dispatchTime';
+					     console.log(gridId);
+					     $(gridId).click();
+						
 					},
 					error : function(msg) {
 						$('#pc_message').css('color','#ff0000');
-						$('#pc_message').html('Save Plant Capacity Failed.');
+						$('#pc_message').html('Save Plant Capacity Failed.').css('color','#ff0000');
 					}
 					
 				});
