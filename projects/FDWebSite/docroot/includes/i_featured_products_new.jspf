@@ -8,6 +8,7 @@
 <%@page import="com.freshdirect.fdstore.content.BrandModel"%>
 <%@page import="com.freshdirect.fdstore.content.Image"%>
 <%@page import="com.freshdirect.webapp.util.ProductImpression"%>
+<%@page import="com.freshdirect.fdstore.content.ContentUtil"%>
 <%@page import="java.util.Iterator"%>
 <%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %>
 <%@ taglib uri='logic' prefix='logic' %>
@@ -22,7 +23,8 @@ if (featuredCat != null) {
 			it.remove();
 		} else {
 			ProductModel pm = (ProductModel)node;
-			if(pm.getPriceCalculator().getSkuModel()==null){
+			//Origin : [APPDEV-2857] Blocking Alcohol for customers outside of Alcohol Delivery Area
+			if(pm.getPriceCalculator().getSkuModel()==null || !ContentUtil.isAvailableByContext(pm)){
 				it.remove();
 			}
 		}

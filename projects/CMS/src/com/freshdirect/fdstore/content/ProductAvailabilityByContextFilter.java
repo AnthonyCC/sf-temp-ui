@@ -19,16 +19,18 @@ public class ProductAvailabilityByContextFilter extends AbstractProductFilter {
     
     //Return true if product is available(not filtered)
     public boolean applyTest(ProductModel product) throws FDResourceException {
-    	return !isAlcoholRestrictedByContextAndSku(product); // FOr now only this later on plant and other factor will play
+    	return !isAlcoholRestrictedByContextAndSku(product); // For now only this later on plant and other factor will play
     }
 
     public static boolean isAlcoholRestrictedByContextAndSku(ProductModel product) throws FDResourceException  {
-		try {
+		try {			
+			//Figuring out if product contains alcohol is like finding life in mars...
 			return ( ContentFactory.getInstance().getCurrentPricingContext() != null 
 						&& ContentFactory.getInstance().getCurrentPricingContext().getUserContext() != null
 						&& ContentFactory.getInstance().getCurrentPricingContext().getUserContext().isAlcoholRestricted()
 						&& product.getCategory() != null 
-						&& product.getCategory().isHavingBeer() 
+						&& (product.getCategory().isHavingBeer() 
+									|| (product.getPrimaryHome() != null && product.getPrimaryHome().isHavingBeer()))   
 						&& product.getSkus() != null && product.getSkus().size() > 0 
 						&& product.getSku(0).getProduct().isAlcohol());
 		} catch (FDResourceException e) {
