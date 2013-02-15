@@ -71,7 +71,6 @@ import com.freshdirect.routing.proxy.stub.transportation.RoutingStop;
 import com.freshdirect.routing.proxy.stub.transportation.SchedulerDeliveryWindowMetrics;
 import com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity;
 import com.freshdirect.routing.proxy.stub.transportation.SchedulerOrdersCanceledNotification;
-import com.freshdirect.routing.proxy.stub.transportation.StopType;
 import com.freshdirect.routing.proxy.stub.transportation.TimePeriodBasedTravelSpeedsType;
 
 public class RoutingDataDecoder {
@@ -190,12 +189,11 @@ public class RoutingDataDecoder {
 			int lastSequence = 0;
 			
 			if(route.getStops() != null) {
-				//System.out.println(route.getRouteID()+"->"+route.getStops().length+retrieveBlankStops+ " ");
+				//System.out.println(route.getRouteID()+"->"+route.getStops().length+retrieveBlankStops);
 				for(int intCount=0;intCount<route.getStops().length ;intCount++) {
 					_refStop = route.getStops()[intCount];
 					
-					if(_refStop.getSequenceNumber() >= 0 || (retrieveBlankStops && _refStop.getStopType()!=null && StopType._stpDepot.equals(_refStop.getStopType().getValue()))) {
-						System.out.println("\t"+_refStop.getSequenceNumber()+" "+_refStop.getLocationIdentity().getLocationID()+" "+_refStop.getOrders()+" "+_refStop.getStopType());
+					if(_refStop.getSequenceNumber() >= 0 || retrieveBlankStops) {
 										
 						_stop = new RoutingStopModel(_refStop.getSequenceNumber() >= 0 ? _refStop.getSequenceNumber() : lastSequence);
 						lastSequence =  _refStop.getSequenceNumber();

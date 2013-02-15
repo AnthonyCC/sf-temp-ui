@@ -44,10 +44,10 @@
 			   	
 				<div style="width: 300px;margin-left:10px;float:left;">
 						<br><br><div id="pc_message"></div><br>
-						<div class="grid-header" style="width: 305px;">
+						<div class="grid-header" style="width: 300px;">
 				      		<label>Plant Capacity</label>
     					</div>
-						<div id="myGrid" style="width: 305px; height: 300px;"></div>
+						<div id="myGrid" style="width: 300px; height: 300px;"></div>
 						<br>
 						<form id="plantCapacityForm" action="" method="POST">
   							<input type="submit" value="Save">
@@ -92,25 +92,27 @@
 	  }
 
   function removeRow1(current_row) {
-	  var dd = grid.getData();
+	  var dd = dataView.getItems();
 	  dd.splice(current_row,1);
 	  var r = current_row;
 	  while (r<dd.length){
 	    grid.invalidateRow(r);
 	    r++;
 	  }
+	  dataView.setItems(dd);
 	  grid.updateRowCount();
 	  grid.render();
 	  grid.scrollRowIntoView(current_row-1);
 	  }
   function removeRow2(current_row) {
-	  var dd = pd_grid.getData();
+	  var dd = pd_dataView.getItems();
 	  dd.splice(current_row,1);
 	  var r = current_row;
 	  while (r<dd.length){
 		  pd_grid.invalidateRow(r);
 	    r++;
 	  }
+	  pd_dataView.setItems(dd);
 	  pd_grid.updateRowCount();
 	  pd_grid.render();
 	  pd_grid.scrollRowIntoView(current_row-1);
@@ -120,8 +122,8 @@
 	  var data = [];
 	  var pd_data = [];
 	  var pc_columns = [
-	    {id: "dispatchTime", name: "Plant Dispatch", field: "dispatchTime", minWidth: 140,editor: TimeEditor, sortable:true, validator: requiredFieldValidator },
-	    {id: "capacity", name: "Cumulative Capacity", field: "capacity", width: 130, editor: Slick.Editors.Integer },
+	    {id: "dispatchTime", name: "Plant Dispatch", field: "dispatchTime", minWidth: 125,editor: TimeEditor, sortable:true, validator: requiredFieldValidator },
+	    {id: "capacity", name: "Cumulative Capacity", field: "capacity", width: 125, editor: Slick.Editors.Integer },
 	    {id: 'id', name: '', field: 'dispatchTime',  width: 15, formatter: function (r, c, id, def, datactx) { 
 	           return '<a href="#" onclick="removeRow1(' + r + ')">X</a>'; }
 	      }
