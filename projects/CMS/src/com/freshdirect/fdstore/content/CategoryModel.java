@@ -35,7 +35,6 @@ import com.freshdirect.fdstore.attributes.FDAttributeFactory;
 import com.freshdirect.framework.conf.FDRegistry;
 import com.freshdirect.framework.util.BalkingExpiringReference;
 import com.freshdirect.framework.util.log.LoggerFactory;
-import com.freshdirect.sap.SapProperties;
 
 public class CategoryModel extends ProductContainer {
 	

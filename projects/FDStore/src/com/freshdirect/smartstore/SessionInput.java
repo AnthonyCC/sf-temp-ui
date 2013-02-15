@@ -447,7 +447,11 @@ public class SessionInput implements Cloneable {
 
 
 	public boolean isExcludeAlcoholicContent() {
-		return excludeAlcoholicContent;
+
+    	//Modified to Include Alcohol Restricted from User Origin : [APPDEV-2857] Blocking Alcohol for customers outside of Alcohol Delivery Area
+		return excludeAlcoholicContent || (this.getPricingContext() != null 
+												&& this.getPricingContext().getUserContext() != null
+													&& this.getPricingContext().getUserContext().isAlcoholRestricted());
 	}
 
 

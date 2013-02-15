@@ -21,4 +21,9 @@ public abstract class AbstractProductFilter implements ProductFilterI {
 		}
 		return rtnProds;
 	}
+	
+	//Origin : [APPDEV-2857] Blocking Alcohol for customers outside of Alcohol Delivery Area
+	public boolean apply(ProductModel productModel)  throws FDResourceException {
+		return applyTest(productModel);
+	}
 }

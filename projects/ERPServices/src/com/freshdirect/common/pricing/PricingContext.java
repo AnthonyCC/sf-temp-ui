@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 import org.apache.log4j.Category;
 
+import com.freshdirect.common.context.UserContext;
 import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.fdstore.ZonePriceListing;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -16,11 +17,10 @@ public class PricingContext implements Serializable {
 	
 
 	private final String pZoneId;
-	public double  getGrpDiscountScale() {
-		return discountScale;
-	}
-		
-	private double discountScale;
+	
+	//Unfortunately this should be the root and pricing context should be inside it
+	//[APPDEV-2857] Blocking Alcohol for customers outside of Alcohol Delivery Area
+	private UserContext userContext;
 	
 	public static final PricingContext DEFAULT = new PricingContext(ZonePriceListing.MASTER_DEFAULT_ZONE);
 
@@ -31,13 +31,26 @@ public class PricingContext implements Serializable {
 	    	pZoneId = ZonePriceListing.MASTER_DEFAULT_ZONE;
 	    }
 	    this.pZoneId = pZoneId;
-	}
-
-	public PricingContext(String pZoneId,double discountScale) {
-		this.discountScale = discountScale;
-		this.pZoneId = pZoneId;		
+	    userContext = new UserContext(false);
 	}
 	
+	public PricingContext(String pZoneId, UserContext userContext) {
+	    this(pZoneId);
+	    if(userContext != null) {
+	    	this.userContext = userContext;
+	    } else { // Donot allow null context please
+	    	userContext = new UserContext(false);
+	    }
+	}
+		
+	public UserContext getUserContext() {
+		return userContext;
+	}
+
+	public void setUserContext(UserContext userContext) {
+		this.userContext = userContext;
+	}
+
 	public String getZoneId() {
 		return this.pZoneId;
 	}

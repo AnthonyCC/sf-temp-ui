@@ -236,7 +236,15 @@ public class FDDeliveryManager {
 			throw new FDResourceException(ce);
 		}
 	}
-
+	
+	public boolean checkForAlcoholDelivery(String state, String county, String zipCode) throws FDResourceException {
+		MunicipalityInfo muni = this.getMunicipalityInfos().getMunicipalityInfo(state, county, null);
+		if(muni != null && muni.isAlcoholRestricted()){
+			return true;
+		} 
+		return false;
+	}
+	
 	public boolean checkForAlcoholDelivery(AddressModel address) throws FDResourceException {
 		try {
 			MunicipalityInfo muni = this.getMunicipalityInfos().getMunicipalityInfo(address.getState(), getCounty(address), address.getCity());
@@ -1201,6 +1209,6 @@ public class FDDeliveryManager {
 		} catch (CreateException ce) {
 			throw new FDResourceException(ce);
 		}
-	}
+	}	
 
 }

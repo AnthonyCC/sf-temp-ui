@@ -23,6 +23,8 @@ public class ProductFilterFactory {
 	private static Map prodFilterMap = new HashMap();
 
 	private static ProductFilterFactory instance = new ProductFilterFactory();
+	
+    private final static ProductFilterI AVAILABLE_ITEMS_CONTEXTFILTER = new ProductAvailabilityByContextFilter();
 
 	public static ProductFilterFactory getInstance() {
 		return instance;
@@ -56,7 +58,11 @@ public class ProductFilterFactory {
         }
 
         return prodFilters;
-
     }
-
+    
+    public List<ProductFilterI> getDefaultFilters() {
+    	List<ProductFilterI> prodFilters = new ArrayList<ProductFilterI>();
+    	prodFilters.add(AVAILABLE_ITEMS_CONTEXTFILTER);
+    	return prodFilters;
+    }
 }

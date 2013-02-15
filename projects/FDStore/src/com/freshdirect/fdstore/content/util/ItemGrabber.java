@@ -15,6 +15,7 @@ import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.content.CategoryModel;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ContentNodeModel;
+import com.freshdirect.fdstore.content.ContentUtil;
 import com.freshdirect.fdstore.content.DepartmentModel;
 import com.freshdirect.fdstore.content.EnumShowChildrenType;
 import com.freshdirect.fdstore.content.ProductModel;
@@ -135,8 +136,15 @@ public class ItemGrabber {
 			for ( ProductModel product : products) {  // get prods from current folder
 
 				// are we returning invisible products 
-				if (!returnInvisibleProducts && product.isInvisible()) continue;
-
+				if (!returnInvisibleProducts && product.isInvisible()) {
+					continue;
+				}
+				
+				//isFiltered Origin : [APPDEV-2857] Blocking Alcohol for customers outside of Alcohol Delivery Area
+				if(!ContentUtil.isAvailableByContext(product)) {
+					continue;
+				}
+					
 				if ( (!ignoreDuplicateProducts && this.noDupeProds.add(product.getContentName())==false) || product.isHidden()) {
 					rtnValue = true;
 					continue;  

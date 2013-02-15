@@ -393,19 +393,22 @@ public class ContentFactory {
 		return prods;
 	}
 
-    private ProductModel filterProduct(String skuCode) {
-        try {
-            ProductModel prod = this.getProduct(skuCode);
+	private ProductModel filterProduct(String skuCode) {
+		try {
+			ProductModel prod = this.getProduct(skuCode);
+			return filterProduct(prod);
 
-            if (prod.isHidden() || !prod.isSearchable() || prod.isUnavailable()) {
-                return null;
-            }
-
-            return prod;
-        } catch (FDSkuNotFoundException fdsnfe) {
-            LOGGER.info("No matching product node for sku " + skuCode);
+		} catch (FDSkuNotFoundException fdsnfe) {
+			LOGGER.info("No matching product node for sku " + skuCode);
+			return null;
+		}
+	}
+    
+    private ProductModel filterProduct(ProductModel prod) {
+    	if (prod.isHidden() || !prod.isSearchable() || prod.isUnavailable()) {
             return null;
         }
+        return prod;
     }
 
 	public void preLoad() {
@@ -627,7 +630,8 @@ public class ContentFactory {
 						try {
 							if (sku != null && sku.getProductModel() != null && sku.getProductInfo() != null && !sku.isUnavailable()) {
 								ProductModel p = this.filterProduct(sku.getContentName());
-								if (p != null) {
+								//Origin : [APPDEV-2857] Blocking Alcohol for customers outside of Alcohol Delivery Area
+								if (p != null && ContentUtil.isAvailableByContext(p)) {
 									Date prev = newCache.get(p);
 									if (prev == null || entry.getValue().after(prev))
 										newCache.put(p, entry.getValue());
@@ -718,7 +722,8 @@ public class ContentFactory {
 						try {
 							if (sku != null && sku.getProductModel() != null && sku.getProductInfo() != null && !sku.isUnavailable()) {
 								ProductModel p = this.filterProduct(sku.getContentName());
-								if (p != null) {
+								//Origin : [APPDEV-2857] Blocking Alcohol for customers outside of Alcohol Delivery Area
+								if (p != null && ContentUtil.isAvailableByContext(p)) {
 									Date prev = newCache.get(p);
 									if (prev == null || entry.getValue().after(prev))
 										newCache.put(p, entry.getValue());

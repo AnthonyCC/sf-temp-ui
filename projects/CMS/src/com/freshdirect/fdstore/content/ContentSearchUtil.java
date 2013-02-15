@@ -14,9 +14,9 @@ import com.freshdirect.cms.search.SearchHit;
 public class ContentSearchUtil {
 	public static boolean isDisplayable(ProductModel product) {
 		return !product.isOrphan() && !product.isHidden() && product.getPrimaryHome() != null && product.isSearchable()
-				&& !product.isDiscontinued();
+				&& !product.isDiscontinued() && ContentUtil.isAvailableByContext(product); //[APPDEV-2857] Blocking Alcohol for customers outside of Alcohol Delivery Area
 	}
-
+		
 	public static boolean isDisplayable(Recipe recipe) {
 		return !recipe.isOrphan() && !recipe.isHidden() && recipe.isSearchable() && recipe.isAvailable() && recipe.isActive();
 	}

@@ -6,5 +6,6 @@ import java.util.List;
 import com.freshdirect.fdstore.FDResourceException;
 
 public interface ProductFilterI {
-	public List<ProductModel> apply(Collection<ProductModel> nodes) throws FDResourceException;
+	List<ProductModel> apply(Collection<ProductModel> nodes) throws FDResourceException;
+	boolean apply(ProductModel prod) throws FDResourceException;
 }

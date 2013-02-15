@@ -27,6 +27,7 @@ import org.apache.log4j.Category;
 
 import com.freshdirect.analytics.SessionEvent;
 import com.freshdirect.common.address.AddressModel;
+import com.freshdirect.common.context.UserContext;
 import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.customer.ActivityLog;
@@ -81,7 +82,6 @@ import com.freshdirect.fdstore.promotion.PromotionFactory;
 import com.freshdirect.fdstore.promotion.PromotionI;
 import com.freshdirect.fdstore.promotion.SignupDiscountRule;
 import com.freshdirect.fdstore.promotion.WaiveDeliveryCharge;
-/*APPDEV-1888*/
 import com.freshdirect.fdstore.promotion.management.FDPromotionNewManager;
 import com.freshdirect.fdstore.referral.FDReferralManager;
 import com.freshdirect.fdstore.rules.EligibilityCalculator;
@@ -1888,17 +1888,25 @@ public class FDUser extends ModelSupport implements FDUserI {
 		return EnumCheckoutMode.NORMAL;
 	}
 	 
-	 public String getPricingZoneId(){
+	public String getPricingZoneId(){
 		 return this.getPricingContext().getZoneId();
-	 }
-
+	}
+	
 	public PricingContext getPricingContext() {
 		try {
 			if(this.pricingContext == null){
 				if(this.isZonePricingEnabled()) {
 					//Pricing context is yet to be set. Resolve it now.
 					String zoneId=FDZoneInfoManager.findZoneId(getZPServiceType().getName(), getZipCode());
-					this.pricingContext = new PricingContext(zoneId);					
+					//[APPDEV-2857] Blocking Alcohol for customers outside of Alcohol Delivery Area
+					boolean alcoholRestrictedByContext=false;
+					if(this.getZipCode() != null) {
+						String county = FDDeliveryManager.getInstance().lookupCountyByZip(this.getZipCode());
+						String state = FDDeliveryManager.getInstance().lookupStateByZip(this.getZipCode());
+						alcoholRestrictedByContext = FDDeliveryManager.getInstance().checkForAlcoholDelivery(state, county, this.getZipCode());							
+					}
+					
+					this.pricingContext = new PricingContext(zoneId, new UserContext(alcoholRestrictedByContext));					
 				}else {
 					//Set it to Master default zone
 					this.pricingContext = PricingContext.DEFAULT;

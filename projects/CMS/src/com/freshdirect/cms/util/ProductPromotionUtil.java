@@ -26,6 +26,7 @@ import com.freshdirect.fdstore.ProductModelPromotionAdapter;
 import com.freshdirect.fdstore.ZonePriceInfoListing;
 import com.freshdirect.fdstore.ZonePriceListing;
 import com.freshdirect.fdstore.content.ContentFactory;
+import com.freshdirect.fdstore.content.ContentUtil;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.ProductPromotionData;
 import com.freshdirect.fdstore.content.SkuModel;
@@ -101,7 +102,7 @@ public class ProductPromotionUtil {
 			int i=0;
 			for (Iterator iterator = products.iterator(); iterator.hasNext();) {
 				ProductModel productModel = (ProductModel) iterator.next();
-				if(isPreview ||(!isPreview &&!productModel.isUnavailable()))
+				if(isPreview ||(!isPreview && !isUnavailable(productModel)))
 				if (productModel instanceof ProductModelPromotionAdapter) {
 					if(((ProductModelPromotionAdapter)productModel).isFeatured() ){
 						featProducts.add(productModel);
@@ -125,13 +126,8 @@ public class ProductPromotionUtil {
 			int i=0;
 			for (Iterator iterator = products.iterator(); iterator.hasNext();) {
 				ProductModel productModel = (ProductModel) iterator.next();
-				if(isPreview ||(!isPreview &&!productModel.isUnavailable())){
-					if (productModel instanceof ProductModelPromotionAdapter) {
-//						if(i<=2 &&((ProductModelPromotionAdapter)productModel).isFeatured() ){
-//							i++;//To skip the first 3 featured products.
-//						}else{
-//							nonFeatProducts.add(productModel);
-//						}		
+				if(isPreview ||(!isPreview && !isUnavailable(productModel))){
+					if (productModel instanceof ProductModelPromotionAdapter) {	
 						nonFeatProducts.add(productModel);
 					}				
 				}
@@ -140,7 +136,7 @@ public class ProductPromotionUtil {
 		}
 		return nonFeatProducts;
 	}
-	
+		
 	public static List<ProductModel> getNonFeaturedProducts(List<ProductModel> products, String sortByType,boolean isPreview){
 		List<ProductModel> nonFeatProducts =  getNonFeaturedProducts(products, isPreview);
 		if(null != sortByType){
@@ -224,5 +220,10 @@ public class ProductPromotionUtil {
 			}
 		}
 		return productPromotionPreviewInfoMap;
+	}
+	
+	//Origin : [APPDEV-2857] Blocking Alcohol for customers outside of Alcohol Delivery Area
+	private static boolean isUnavailable(ProductModel productModel) {
+		return productModel.isUnavailable() || !ContentUtil.isAvailableByContext(productModel);
 	}
 }
