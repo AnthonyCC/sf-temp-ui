@@ -155,6 +155,33 @@ public class RoutingServiceLocator {
 		return stub;
 	}
 	
+	public TransportationWebService getTransportationSuiteBatchProviderService(IRoutingSchedulerIdentity schedulerId) throws AxisFault {
+		String url = null;
+		String deliveryType = schedulerId.getArea().getAreaCode();
+		if(RoutingServicesProperties.isProxyEnabled()) {
+			url = RoutingServicesProperties.getTransportationSuiteBatchProxyURL();
+		} else {
+			url = RoutingServicesProperties.getTransportationSuiteBatchProviderURL(deliveryType);
+		}
+		
+		if(url == null) {
+			LOGGER.debug("getTransportationBatchSuiteService Server not found :"+ deliveryType +":"+ url);
+			deliveryType = schedulerId.getRegionId();
+			url = RoutingServicesProperties.getTransportationSuiteBatchProviderURL(deliveryType);
+		} 
+		
+		if(url == null) {
+			url = RoutingServicesProperties.getTransportationSuiteBatchProviderURL();
+			LOGGER.debug("getTransportationBatchSuiteService Server not found :"+ deliveryType +":"+ url);
+		} else {
+			LOGGER.debug("getTransportationBatchSuiteService:"+ deliveryType +":"+ url);
+		}
+
+		TransportationWebServiceStub stub = new TransportationWebServiceStub(url);
+		initStub(stub);
+		return stub;
+	}
+	
 	public TransportationWebService getTransportationSuiteBatchProviderService(String deliveryType) throws AxisFault {
 		String url = null;
 		if(RoutingServicesProperties.isProxyEnabled()) {
@@ -175,6 +202,7 @@ public class RoutingServiceLocator {
 		initStub(stub);
 		return stub;
 	}
+	
 	
 	public TransportationWebService getTransportationSuiteBatchProviderService() throws AxisFault {
 		TransportationWebServiceStub stub = null;
