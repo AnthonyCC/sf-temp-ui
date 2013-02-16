@@ -428,7 +428,7 @@
 			queryString.addParam("baf", (user.getPricingContext() != null 
 											&& user.getPricingContext().getUserContext() != null
 											&& user.getPricingContext().getUserContext().isAlcoholRestricted()
-												? "1" : "0");
+												? "1" : "0"));
 			
 			if(user.getExternalPromoCampaigns()!=null && user.getExternalPromoCampaigns().size()>0 )
 			{
