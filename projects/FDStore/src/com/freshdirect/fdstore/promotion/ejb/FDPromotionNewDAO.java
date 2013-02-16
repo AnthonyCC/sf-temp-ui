@@ -247,8 +247,11 @@ public class FDPromotionNewDAO {
 				promo.addStrategy(scStrategy);				
 			}
 			
-			PromotionApplicatorI applicator = loadApplicator(rs, conn);	
+			//PromotionApplicatorI applicator = loadApplicator(rs, conn, promo);
 			PromotionStrategyI dlvZoneStrategyI = dlvZoneStrategies.get(pk.getId());
+			DCPDLineItemStrategy dcpdStrategy = dcpdData.get(pk);
+			loadApplicator(rs, conn, promo, dlvZoneStrategyI, dcpdStrategy);
+			/*
 			//Set the zone strategy if applicable.
 			if(null != applicator && null != dlvZoneStrategyI){
 				DlvZoneStrategy dlvZoneStrategy = (DlvZoneStrategy)dlvZoneStrategyI;
@@ -256,11 +259,14 @@ public class FDPromotionNewDAO {
 					applicator.setZoneStrategy(dlvZoneStrategy);
 				}
 			}
-			if(null != applicator && applicator instanceof LineItemDiscountApplicator){
+			*/
+			/*
+			if(null != applicator && applicator instanceof LineItemDiscountApplicator){*/
 				/*
 				 * If the promotion is a Line item Discount Promotion, add the corresponding 
 				 * DCPD line item strategy if present.
 				 */
+			/*
 				DCPDLineItemStrategy strategy = dcpdData.get(pk);
 				if(strategy != null) {
 					((LineItemDiscountApplicator) applicator).addLineItemStrategy(strategy);
@@ -269,7 +275,7 @@ public class FDPromotionNewDAO {
 
 			if (applicator != null) {
 				promo.setApplicator(applicator);
-			}
+			}*/
 
 			promos.add(promo);
 		}
@@ -504,9 +510,12 @@ public class FDPromotionNewDAO {
 			promo.addStrategy(cartStrategy);				
 		}
 		
-		PromotionApplicatorI applicator = loadApplicator(rs, conn);	
+		//PromotionApplicatorI applicator = loadApplicator(rs, conn, promo);		
 		//Set the zone strategy if applicable.
 		PromotionStrategyI dlvZoneStrategyI = loadDlvZoneStrategy(conn, promoId);
+		DCPDLineItemStrategy strategy = loadDCPDData(conn, promoId);
+		loadApplicator(rs, conn, promo, dlvZoneStrategyI, strategy);
+		/*
 		if(applicator != null && null != dlvZoneStrategyI){
 			DlvZoneStrategy dlvZoneStrategy = (DlvZoneStrategy)dlvZoneStrategyI;
 			if(dlvZoneStrategy.getDlvDayType()!=null || (null !=dlvZoneStrategy.getDlvDates() && !dlvZoneStrategy.getDlvDates().isEmpty()) || null != dlvZoneStrategy.getDlvZoneId()){			
@@ -519,6 +528,7 @@ public class FDPromotionNewDAO {
 			 * If the promotion is a Line item Discount Promotion, add the corresponding 
 			 * DCPD line item strategy if present.
 			 */
+		/*
 			DCPDLineItemStrategy strategy = loadDCPDData(conn, promoId);
 			if(strategy != null) {
 				((LineItemDiscountApplicator) applicator).addLineItemStrategy(strategy);
@@ -527,7 +537,7 @@ public class FDPromotionNewDAO {
 		if (applicator != null) {
 			promo.setApplicator(applicator);
 		}
-		
+		*/
 
 		return promo;
 	}
@@ -620,56 +630,74 @@ public class FDPromotionNewDAO {
 		return strings;
 	}
 
-	private static PromotionApplicatorI loadApplicator(ResultSet rs, Connection conn) throws SQLException {
+	private static void loadApplicator(ResultSet rs, Connection conn, Promotion promo, PromotionStrategyI dlvZoneStrategyI, DCPDLineItemStrategy dcpdStrategy) throws SQLException {
 
 		//
 		// header discount applicator
 		//
 		
-		/*APPDEV-1792 - Changes to support Streatchable dollar discount*/
-		List<FDPromoDollarDiscount> dollarList = FDPromotionManagerNewDAO.loadDollarOffers(conn, rs.getString("ID"));
-		if(dollarList != null && dollarList.size() > 0) {
-			return new HeaderDiscountApplicator(new HeaderDiscountRule(dollarList));
-		}
-		
 		boolean wasNull = false;
 
 		double minSubtotal = rs.getDouble("min_subtotal");
 		wasNull |= rs.wasNull();
-
-		double maxAmount = rs.getDouble("max_amount");
-		wasNull |= rs.wasNull();		
-
-
-
 		
-		if (!wasNull && "HEADER".equals(rs.getString("CAMPAIGN_CODE"))) {
-			return new HeaderDiscountApplicator(new HeaderDiscountRule(minSubtotal, maxAmount));
-		}
-
-		
-		//
-		// percent-off applicator
-		//
-		wasNull = false;
-		double maxPercentageDiscount = rs.getDouble("MAX_PERCENTAGE_DISCOUNT");
-		double percentOff = rs.getDouble("percent_off");		
-		
-		wasNull |= rs.wasNull();
-		if (!wasNull && "HEADER".equals(rs.getString("CAMPAIGN_CODE"))) {
+		if("HEADER".equals(rs.getString("CAMPAIGN_CODE"))) {
+			/*APPDEV-1792 - Changes to support Streatchable dollar discount*/
+			List<FDPromoDollarDiscount> dollarList = FDPromotionManagerNewDAO.loadDollarOffers(conn, rs.getString("ID"));
 			
-			return new PercentOffApplicator(minSubtotal, percentOff, maxPercentageDiscount);
+			double maxAmount = rs.getDouble("max_amount");
+			wasNull |= rs.wasNull();		
+
+
+			if(dollarList != null && dollarList.size() > 0) {
+				//Header discount can be a discount list offer
+				promo.addApplicator(new HeaderDiscountApplicator(new HeaderDiscountRule(dollarList)));
+				//return new HeaderDiscountApplicator(new HeaderDiscountRule(dollarList));
+			} else if (!wasNull && "HEADER".equals(rs.getString("CAMPAIGN_CODE"))) {
+				//The discount is a dollar off discount
+				promo.addApplicator(new HeaderDiscountApplicator(new HeaderDiscountRule(minSubtotal, maxAmount)));
+				//return new HeaderDiscountApplicator(new HeaderDiscountRule(minSubtotal, maxAmount));
+			} else {
+				//
+				// percent-off discount applicator
+				//
+				wasNull = false;
+				double maxPercentageDiscount = rs.getDouble("MAX_PERCENTAGE_DISCOUNT");
+				double percentOff = rs.getDouble("percent_off");		
+				
+				wasNull |= rs.wasNull();
+				if (!wasNull && "HEADER".equals(rs.getString("CAMPAIGN_CODE"))) {
+					
+					promo.addApplicator(new PercentOffApplicator(minSubtotal, percentOff, maxPercentageDiscount));
+				} else {
+					//
+					// Extend delivery pass applicator
+					//
+					wasNull = false;
+					int extendDPDays = rs.getInt("extend_dp_days");
+					wasNull |= rs.wasNull();
+					if (!wasNull) {
+						promo.addApplicator( new ExtendDeliveryPassApplicator(extendDPDays, minSubtotal));
+					}
+				}
+			}
+			
+			
 		}
 		
-		if("LINE_ITEM".equals(rs.getString("CAMPAIGN_CODE"))){
+		if("LINE_ITEM".equals(rs.getString("CAMPAIGN_CODE"))){			
 			LineItemDiscountApplicator applicator = null;
 			int skulimit = rs.getInt("SKU_LIMIT");
-			maxAmount = rs.getDouble("max_amount");
+			double maxPercentageDiscount = rs.getDouble("MAX_PERCENTAGE_DISCOUNT");
+			double percentOff = rs.getDouble("percent_off");
+			double maxAmount = rs.getDouble("max_amount");
 			wasNull = rs.wasNull();
 			if (!wasNull) {
+				//dollar off discount applicator
 				applicator = new LineItemDiscountApplicator(minSubtotal);
 				applicator.setDiscountRule(new HeaderDiscountRule(minSubtotal, maxAmount));
 			}else{
+				//percent-off discount applicator
 				applicator = new LineItemDiscountApplicator(minSubtotal, percentOff, maxPercentageDiscount);
 			}
 			if(skulimit > 0) {
@@ -689,7 +717,18 @@ public class FDPromotionNewDAO {
 			if(perishableOnly){
 				applicator.addLineItemStrategy(new PerishableLineItemStrategy());
 			}
-			return applicator;
+			
+			if(null != applicator && applicator instanceof LineItemDiscountApplicator){
+				/*
+				 * If the promotion is a Line item Discount Promotion, add the corresponding 
+				 * DCPD line item strategy if present.
+				 */
+				if(dcpdStrategy != null) {
+					((LineItemDiscountApplicator) applicator).addLineItemStrategy(dcpdStrategy);
+				}
+			} 
+			
+			promo.addApplicator(applicator);
 		}
 
 		//
@@ -700,7 +739,7 @@ public class FDPromotionNewDAO {
 		wasNull |= rs.wasNull();
 		if (!wasNull) {
 			boolean fuelSurcharge = "Y".equals(rs.getString("INCL_FUEL_SURCHARGE"));
-			return new WaiveChargeApplicator(minSubtotal, EnumChargeType.getEnum(waiveChargeType), fuelSurcharge);
+			promo.addApplicator( new WaiveChargeApplicator(minSubtotal, EnumChargeType.getEnum(waiveChargeType), fuelSurcharge));
 		}
 
 		//	
@@ -712,20 +751,19 @@ public class FDPromotionNewDAO {
 		String productName = rs.getString("product_name");
 		wasNull |= rs.wasNull();
 		if (!wasNull) {
-			return new SampleLineApplicator(new ProductReference(categoryName, productName), minSubtotal);
+			promo.addApplicator( new SampleLineApplicator(new ProductReference(categoryName, productName), minSubtotal));
 		}
-
-
-		//
-		// Extend delivery pass applicator
-		//
-		wasNull = false;
-		int extendDPDays = rs.getInt("extend_dp_days");
-		wasNull |= rs.wasNull();
-		if (!wasNull) {
-			return new ExtendDeliveryPassApplicator(extendDPDays, minSubtotal);
+		
+		//Set the zone strategy if applicable.
+		if((promo.getApplicatorList() != null && promo.getApplicatorList().size() > 0) && null != dlvZoneStrategyI){
+			DlvZoneStrategy dlvZoneStrategy = (DlvZoneStrategy)dlvZoneStrategyI;
+			if(dlvZoneStrategy.getDlvDayType()!=null || (null !=dlvZoneStrategy.getDlvDates() && !dlvZoneStrategy.getDlvDates().isEmpty()) || null != dlvZoneStrategy.getDlvZoneId()){			
+				for (Iterator<PromotionApplicatorI> i = promo.getApplicatorList().iterator(); i.hasNext();) {
+					PromotionApplicatorI _applicator = i.next();
+					_applicator.setZoneStrategy(dlvZoneStrategy);
+				}
+			}
 		}
-		return null;
 	}
 
 	/** @return Map of promotionPK -> GeographyStrategy */

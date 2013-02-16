@@ -74,9 +74,11 @@ import com.freshdirect.fdstore.promotion.EnumOfferType;
 import com.freshdirect.fdstore.promotion.EnumPromotionType;
 import com.freshdirect.fdstore.promotion.ExtendDeliveryPassApplicator;
 import com.freshdirect.fdstore.promotion.Promotion;
+import com.freshdirect.fdstore.promotion.PromotionApplicatorI;
 import com.freshdirect.fdstore.promotion.PromotionFactory;
 import com.freshdirect.fdstore.promotion.PromotionI;
 import com.freshdirect.fdstore.promotion.RedemptionCodeStrategy;
+import com.freshdirect.fdstore.promotion.WaiveChargeApplicator;
 import com.freshdirect.fdstore.standingorders.FDStandingOrder;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.util.NVL;
@@ -296,10 +298,23 @@ public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.B
 			Set<String> usedPromoCodes = origOrder.getSale().getUsedPromotionCodes();
 			for(Iterator<String> it = usedPromoCodes.iterator(); it.hasNext();){
 				PromotionI promo  = PromotionFactory.getInstance().getPromotion(it.next());
+				//APPDEV-2850 - combinable offers
+				if(promo != null) {
+					for (Iterator<PromotionApplicatorI> i = ((Promotion)promo).getApplicatorList().iterator(); i.hasNext();) {
+						PromotionApplicatorI _applicator = i.next();
+						if (_applicator instanceof ExtendDeliveryPassApplicator) {
+							ExtendDeliveryPassApplicator app = (ExtendDeliveryPassApplicator) _applicator;
+							currentDPExtendDays = app.getExtendDays();
+						}
+					}
+				}
+				
+				/*
 				if (promo != null && promo.isExtendDeliveryPass()){
 					ExtendDeliveryPassApplicator app = (ExtendDeliveryPassApplicator)((Promotion)promo).getApplicator();
 					currentDPExtendDays = app.getExtendDays();
 				}
+				*/
 			}
 
 			FDReservation restoredRsv = FDCustomerManager.cancelOrder(info, orderId, sendEmail, currentDPExtendDays, true);
@@ -372,9 +387,24 @@ public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.B
 		for(Iterator<String> it = usedPromoCodes.iterator(); it.hasNext();){
 			PromotionI promo  = PromotionFactory.getInstance().getPromotion(it.next());
 			if(promo != null && promo.getOfferType() != null && promo.getOfferType().equals(EnumOfferType.DP_EXTN)){
+				//APPDEV-2850 - combinable offers
+				ExtendDeliveryPassApplicator app = null;
+				for (Iterator<PromotionApplicatorI> i = ((Promotion)promo).getApplicatorList().iterator(); i.hasNext();) {
+					PromotionApplicatorI _applicator = i.next();
+					if (_applicator instanceof ExtendDeliveryPassApplicator) {
+						app = (ExtendDeliveryPassApplicator)_applicator;						
+					}
+				}
+				
+				if(app != null) {
+					cart.setCurrentDlvPassExtendDays(app.getExtendDays());
+					break;
+				}
+				/*
 				ExtendDeliveryPassApplicator app = (ExtendDeliveryPassApplicator)((Promotion)promo).getApplicator();
 				cart.setCurrentDlvPassExtendDays(app.getExtendDays());
 				break;
+				*/
 			}
 		}
 		

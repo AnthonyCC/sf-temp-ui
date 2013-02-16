@@ -192,13 +192,16 @@ public class FDPromotionDAO {
 				 * discount applicator object.
 				 */
 				applicator = (PromotionApplicatorI) dcpdDiscApplicators.get(pk);
+				promo.addApplicator(applicator);
 			} else {
-				 applicator = loadApplicator(rs);				
+				loadApplicator(rs, promo);				
 			}
 
+			/*
 			if (applicator != null) {
 				promo.setApplicator(applicator);
 			}
+			*/
 			promos.add(promo);
 		}
 		return promos;
@@ -457,12 +460,15 @@ public class FDPromotionDAO {
 			 * discount applicator object.
 			 */
 			applicator = loadDCPDiscountApplicator(conn, promoId);
+			promo.addApplicator(applicator);
 		} else {
-			 applicator = loadApplicator(rs);				
+			 loadApplicator(rs, promo);				
 		}
+		/*
 		if (applicator != null) {
 			promo.setApplicator(applicator);
 		}
+		*/
 		return promo;
 	}
 	
@@ -571,7 +577,7 @@ public class FDPromotionDAO {
 		return strings;
 	}
 
-	private static PromotionApplicatorI loadApplicator(ResultSet rs) throws SQLException {
+	private static void loadApplicator(ResultSet rs, Promotion promo) throws SQLException {
 
 		//
 		// header discount applicator
@@ -601,23 +607,24 @@ public class FDPromotionDAO {
 //			return new MaxLineItemCountApplicator(maxItemCount,dis);
 //			 
 //		}
-		
-		if (!wasNull) {
-			return new HeaderDiscountApplicator(new HeaderDiscountRule(minSubtotal, maxAmount));
-		}
-
-		
-		//
-		// percent-off applicator
-		//
-		wasNull = false;
 		double maxPercentageDiscount = rs.getDouble("MAX_PERCENTAGE_DISCOUNT");
-		double percentOff = rs.getDouble("percent_off");		
+		double percentOff = rs.getDouble("percent_off");
 		
-		wasNull |= rs.wasNull();
-		if (!wasNull && "REDEMPTION".equals(rs.getString("CAMPAIGN_CODE"))) {
-			
-			return new PercentOffApplicator(minSubtotal, percentOff, maxPercentageDiscount);
+		if("HEADER".equals(rs.getString("CAMPAIGN_CODE"))) {
+			if (!wasNull) {
+				promo.addApplicator(new HeaderDiscountApplicator(new HeaderDiscountRule(minSubtotal, maxAmount)));
+				//return new HeaderDiscountApplicator(new HeaderDiscountRule(minSubtotal, maxAmount));
+			} else {
+				//
+				// percent-off applicator
+				//
+				wasNull = false;
+				wasNull |= rs.wasNull();
+				if (!wasNull && "REDEMPTION".equals(rs.getString("CAMPAIGN_CODE"))) {
+					
+					promo.addApplicator( new PercentOffApplicator(minSubtotal, percentOff, maxPercentageDiscount));
+				}
+			}
 		}
 		
 		if("LINE_ITEM".equals(rs.getString("CAMPAIGN_CODE"))){
@@ -630,7 +637,7 @@ public class FDPromotionDAO {
 			if(!rs.wasNull() && maxItemCount > 0){
 				applicator.addLineItemStrategy(new MaxLineItemCountStrategy(maxItemCount));
 			}
-			return applicator;
+			promo.addApplicator( applicator);
 		}
 
 		//
@@ -641,7 +648,7 @@ public class FDPromotionDAO {
 		wasNull |= rs.wasNull();
 		if (!wasNull) {
 			boolean fuelSurcharge = "Y".equals(rs.getString("INCL_FUEL_SURCHARGE"));
-			return new WaiveChargeApplicator(minSubtotal, EnumChargeType.getEnum(waiveChargeType), fuelSurcharge);
+			promo.addApplicator( new WaiveChargeApplicator(minSubtotal, EnumChargeType.getEnum(waiveChargeType), fuelSurcharge));
 		}
 
 		//	
@@ -653,10 +660,10 @@ public class FDPromotionDAO {
 		String productName = rs.getString("product_name");
 		wasNull |= rs.wasNull();
 		if (!wasNull) {
-			return new SampleLineApplicator(new ProductReference(categoryName, productName), minSubtotal);
+			promo.addApplicator( new SampleLineApplicator(new ProductReference(categoryName, productName), minSubtotal));
 		}
 
-		return null;
+		
 	}
 
 	/** @return Map of promotionPK -> GeographyStrategy */
