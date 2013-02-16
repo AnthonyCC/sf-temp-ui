@@ -423,6 +423,12 @@
 		StringBuilder campgnString=new StringBuilder(); String tmpCampgnStr ="";
 		if(user != null) {
 			queryString.addParam("sub", user.getShoppingCart().getSubTotal() + "");
+			//Origin : [APPDEV-2857] Blocking Alcohol for customers outside of Alcohol Delivery Area
+			// "baf" means block alcohol flag. "1" if alochol is blocked for the user or "0" otherwise
+			queryString.addParam("baf", (user.getPricingContext() != null 
+											&& user.getPricingContext().getUserContext() != null
+											&& user.getPricingContext().getUserContext().isAlcoholRestricted()
+												? "1" : "0");
 			
 			if(user.getExternalPromoCampaigns()!=null && user.getExternalPromoCampaigns().size()>0 )
 			{
