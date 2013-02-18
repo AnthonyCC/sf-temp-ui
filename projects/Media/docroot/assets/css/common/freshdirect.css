@@ -135,7 +135,8 @@ h2.centerline span {
 	width:100px;
 }
 
-
+#vieworder_table select,
+#recipe_form select,
 #i_viewcart .viewcartselect,
 .qtyinput input.qty {
   font-size: 12px;
@@ -169,6 +170,8 @@ h2.centerline span {
   font-weight: bold;
 }
 
+#vieworder_table select,
+#recipe_form select,
 #i_viewcart .viewcartselect {
 	min-width:8em;
 	padding:0;
