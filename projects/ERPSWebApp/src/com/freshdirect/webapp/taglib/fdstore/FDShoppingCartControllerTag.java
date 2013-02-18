@@ -507,8 +507,12 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements Sessi
 				 * Construct the success page's URL, removing the delete action's query strings,
 				 * and redirect to that URL.
 				 */
-				String succPage = request.getRequestURI() +"?"+ 
-								  RequestUtil.getFilteredQueryString(request, new String[] {"remove", "cartLine"});
+				String requestParams = RequestUtil.getFilteredQueryString(request, new String[] {"remove", "cartLine"});
+				String succPage = request.getRequestURI();
+				if ( requestParams != null && requestParams.trim().length() > 0 ) {
+					succPage += "?" + requestParams;
+				}
+				
 				try {
 					response.sendRedirect(response.encodeRedirectURL(succPage));
 				} catch (IOException e) {

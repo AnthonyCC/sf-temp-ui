@@ -98,7 +98,7 @@
             	
     	final String qry = request.getQueryString();
                     
-        if (qry != null) {
+        if (qry != null && qry.trim().length() > 0) {
         	
         	for (String param : qry.split("&")) {	 
             	String pair[] = param.split("=");	 
@@ -231,9 +231,9 @@ if (optionalParams.size() > 0) {
 	final boolean cnt_showLastBtn = multiplePages && !recommendations.isLastPage();
 	final int selTab = ((Integer)session.getAttribute(SessionName.SS_SELECTED_TAB)).intValue();
 %>
-				<form id="id_<%= tx_pricing_FormName %>" name="<%= tx_pricing_FormName %>" method="post" action="<%= (formQueryParams != null ? formUri+"?"+formQueryParams : formUri) %>#cartRec" style="margin:0px">
+				<form id="id_<%= tx_pricing_FormName %>" name="<%= tx_pricing_FormName %>" method="post" action="<%= (formQueryParams != null && formQueryParams.trim().length() > 0 ? formUri+"?"+formQueryParams : formUri) %>#cartRec" style="margin:0px">
 					<input type="hidden" name="fdsc.action" value="addMultipleToCart"/>
-					 <input type="hidden" name="fdsc.succpage" value="<%= formUri %>?confirm=1<%= (formQueryParams != null ? "&"+formQueryParams : "") %>#cartRec">
+					 <input type="hidden" name="fdsc.succpage" value="<%= formUri %>?confirm=1<%= (formQueryParams != null && formQueryParams.trim().length() > 0 ? "&"+formQueryParams : "") %>#cartRec">
 					<input type="hidden" name="fdsc.source"  value="SS">
 
 					<display:StoreRecommendation recommendations="<%= recommendations %>"/>
