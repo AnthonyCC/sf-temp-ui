@@ -116,13 +116,13 @@ h2.centerline span {
 .qtyinput {
   line-height: 27px;
   vertical-align: middle;
-  font-size:0;
 }
 
 .qtyinput .qtyinputholder,
 #i_viewcart .qtyinput {
   white-space: nowrap;
   display: inline-block;
+  font-size:0;
 }
 
 .qtyinput_grocery {
