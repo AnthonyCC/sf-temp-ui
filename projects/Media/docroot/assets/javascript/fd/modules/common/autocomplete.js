@@ -86,7 +86,7 @@ var FreshDirect = FreshDirect || {};
     $acpanel.css({
       top: (toff.top+h)+'px',
       left: toff.left+'px',
-      width: w+'px',
+      width: w+'px'
     }).show();
     autocomplete.$OVERLAY.show();
 
