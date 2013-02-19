@@ -68,6 +68,7 @@ import com.freshdirect.giftcard.CardInUseException;
 import com.freshdirect.giftcard.CardOnHoldException;
 import com.freshdirect.giftcard.EnumGCDeliveryMode;
 import com.freshdirect.giftcard.EnumGiftCardStatus;
+import com.freshdirect.giftcard.EnumGiftCardType;
 import com.freshdirect.giftcard.ErpGCDlvInformationHolder;
 import com.freshdirect.giftcard.ErpGiftCardModel;
 import com.freshdirect.giftcard.ErpRecipentModel;
@@ -354,10 +355,12 @@ public class GiftCardControllerTag extends com.freshdirect.framework.webapp.Body
                     	model.setRecipientName(user.getFirstName());
                     	model.setTemplateId("giftcard_system_default");
                     	model.setPersonalMessage("New 0$ GiftCard is created by "+agent.getFirstName()+" "+agent.getLastName());
+                    	model.setGiftCardType(EnumGiftCardType.REGULAR_GIFTCARD);
                     	
                     	FDRecipientList list=new FDRecipientList();
                     	list.addRecipient(model);
                     	user.setRecipientList(list);
+                    	user.setGiftCardType(EnumGiftCardType.REGULAR_GIFTCARD);
                     	UserUtil.initializeGiftCart(user);
                     	
                     	
