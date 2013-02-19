@@ -243,12 +243,7 @@
     		    if (paramValues != null) {
     		    	var hasConfirmed = confirm ("You are about to clone the selected plan entry. Do you want to continue?")
     		    	if (hasConfirmed) {
-    		    		var param1 = document.getElementById("weekdate").value;
-    		     		var param2 = document.getElementById("daterange").value;
-    		     		var param3 = document.getElementById("zone").value;
-    		            var filters="&weekdate="+param1+"&daterange="+param2+"&zone="+param3+"&"+getFilterValue(document.getElementById("planListForm"),false);
-    				  	
-    		    		location.href = url+"?planRefId="+ paramValues+filters;
+    		    		location.href = url+"?planRefId="+ paramValues+"&filter="+getFilterTestValue();
     				} 
     		    }	
     	    }
