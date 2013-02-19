@@ -23,7 +23,7 @@
 							!EnumDeliveryType.DONATION_INDIVIDUAL.toString().equalsIgnoreCase(orderInfo.getDeliveryType().toString()) &&
 							!EnumDeliveryType.DONATION_BUSINESS.toString().equalsIgnoreCase(orderInfo.getDeliveryType().toString())
 						) {
-						if (!orderInfo.isPending()) {
+//						if (!orderInfo.isPending()) {
 							++count;
 							if (hasSelected) {
 								isSelected = selectedOrder.equals(orderInfo.getErpSalesId());
@@ -66,7 +66,7 @@
 							if ( hasSelected && selectedOrder.equals(orderInfo.getErpSalesId())) {
 								currentOrder = nav_dateFormatter.format(orderInfo.getRequestedDate());
 							}
-						}
+//						}
 					}
 				if (count >= 15 && request.getRequestURI().indexOf("/quickshop/previous_orders.jsp") < 0) {
 					orderNav.append("<tr><td class=\"" + style + "\"");
