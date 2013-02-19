@@ -321,9 +321,6 @@ var drugPanel = function($,data,config){
         this.render(container);
         json.sections.forEach(this.addSection.bind(this));
 
-        // if id is null then it's a proto panel
-        setDirty(json.id === null);
-
         // setup autocomplete
         if (json.autocomplete && json.autocomplete[json.type]) {
           window.FreshDirect.autocomplete = json.autocomplete[json.type];
@@ -729,6 +726,9 @@ var drugPanel = function($,data,config){
   setCurrentView(currentView, type);
   DrugPanel.init(data,container);
   
+  // if id is null then it's a proto panel
+  setDirty(data.id === null);
+
   
   if(config.events) {
     container.delegate('.drugpanel .toolbar .changeType','change',Widget.eventHandler(DrugPanel.changeType,'.'+DrugPanel.widgetClass));
