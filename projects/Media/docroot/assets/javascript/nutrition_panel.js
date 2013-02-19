@@ -321,6 +321,9 @@ var drugPanel = function($,data,config){
         this.render(container);
         json.sections.forEach(this.addSection.bind(this));
 
+        // if id is null then it's a proto panel
+        setDirty(json.id === null);
+
         // setup autocomplete
         if (json.autocomplete && json.autocomplete[json.type]) {
           window.FreshDirect.autocomplete = json.autocomplete[json.type];
@@ -332,7 +335,15 @@ var drugPanel = function($,data,config){
         var childBox;
         Widget.syncUI.call(this);
         childBox = $(this.getChildBox()); 
-        childBox.sortable({ handle:'.draghandle' });
+        childBox.sortable({
+          handle:'.draghandle',
+          stop: function (e, ui) {
+            setDirty(true);
+            if (config.refreshCallback && DrugPanel) {
+              config.refreshCallback(DrugPanel.getData());
+            }
+          }
+        });
       }
     },
     updatePanelTypes:{
@@ -432,7 +443,15 @@ var drugPanel = function($,data,config){
         var childBox;
         Widget.syncUI.call(this);
         childBox = $(this.getChildBox()); 
-        childBox.sortable({ handle:'.draghandle' });
+        childBox.sortable({
+          handle:'.draghandle',
+          stop: function (e, ui) {
+            setDirty(true);
+            if (config.refreshCallback && DrugPanel) {
+              config.refreshCallback(DrugPanel.getData());
+            }
+          }
+        });
       }
     },
     importantSelector:{
@@ -782,7 +801,6 @@ var drugPanel = function($,data,config){
     });
     
     // warn if the page was not saved
-    setDirty(false);
     window.onbeforeunload = function (e) {
       var message = "Panel has not been saved yet, are you sure to leave this page?";
 
