@@ -160,7 +160,7 @@ public class SearchFaqTag extends AbstractGetterTag {
 
 		@Override
         public int compare(Faq o1, Faq o2) {
-            return o2.calculatePriority(word).compareTo(o1.calculatePriority(word));
+            return o1.calculatePriority(word).compareTo(o2.calculatePriority(word));
         }
     }
 	
