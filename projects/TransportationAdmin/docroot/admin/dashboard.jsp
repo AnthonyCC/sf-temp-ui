@@ -25,7 +25,7 @@
   <div class="contentroot">
   		<div class="cont_topleft">
 			<div class="cont_row">
-				<div class="cont_Litem" id="page_Event Log">
+				<div class="cont_Litem">
 					<div style="float:left;">
 						<div style="margin-top:4px;float:left;font-weight:bold;">Date:&nbsp;</div>
 						<div style="float:left;">
@@ -219,6 +219,28 @@
 			    
 		  }
 	  
+	  
+		function compareTimes(a, b) { 
+		    if(daterize(convert12to24(a[sortcol])) > daterize(convert12to24(b[sortcol]))) return 1;
+		    if(daterize(convert12to24(a[sortcol])) < daterize(convert12to24(b[sortcol]))) return -1;
+		    return 0;
+		}
+		function convert12to24(timeStr){
+		    var meridian = timeStr.substr(timeStr.length-2).toLowerCase();
+		    var hours =  timeStr.substr(0, timeStr.indexOf(':'));
+		    var minutes = timeStr.substring(timeStr.indexOf(':')+1, timeStr.indexOf(' '));
+		    if (meridian=='pm'){
+		    	if(hours!=12)
+		       		hours=hours*1+12;
+		    }
+		    return hours+':'+minutes+":00";
+		}
+
+		function daterize(time) {
+			console.log(time);
+		    return Date.parse("Thu, 01 Jan 1970 " + time + " GMT");
+		}
+		
 		 
 	  function getCapacityData() {
 	  $.ajax({
@@ -263,16 +285,11 @@
 				
 				
 				grid.onSort.subscribe(function (e, args) {
-					console.log(args.sortCol.field);
 					  sortcol = args.sortCol.field;  // Maybe args.sortcol.field ???
-					  dataView.sort(comparer, args.sortAsc);
+					  dataView.sort(compareTimes, args.sortAsc);
 					});
 
-					function comparer(a, b) {
-					  var x = a[sortcol], y = b[sortcol];
-					  return (x == y ? 0 : (x > y ? 1 : -1));
-					}
-					
+
 				grid.onAddNewRow.subscribe(function (e, args) {
 					  $('#pc_message').html("");
 				      var item = args.item;
@@ -366,16 +383,11 @@
 					
 					
 					pd_grid.onSort.subscribe(function (e, args) {
-						console.log(args.sortCol.field);
 						  sortcol = args.sortCol.field;  // Maybe args.sortcol.field ???
-						  pd_dataView.sort(comparer, args.sortAsc);
+						  pd_dataView.sort(compareTimes, args.sortAsc);
 						});
 
-						function comparer(a, b) {
-						  var x = a[sortcol], y = b[sortcol];
-						  return (x == y ? 0 : (x > y ? 1 : -1));
-						}
-					
+						
 					pd_grid.onAddNewRow.subscribe(function (e, args) {
 						  $('#pd_message').html("");
 					      var item = args.item;
@@ -419,7 +431,6 @@
 							$('#pd_message').html('Save Plant Dispatch Successful.').css('color','#0000ff');
 						var gridId = $('#pdGrid').attr("class");
 					     gridId = '#'+gridId.replace(" ui-widget","")+'plantDispatch';
-					     console.log(gridId);
 					     $(gridId).click();
 					      
 					},
@@ -450,7 +461,6 @@
 							$('#pc_message').html('Save Plant Capacity Successful.').css('color','#0000ff');
 						var gridId = $('#myGrid').attr("class");
 					     gridId = '#'+gridId.replace(" ui-widget","")+'dispatchTime';
-					     console.log(gridId);
 					     $(gridId).click();
 						
 					},
