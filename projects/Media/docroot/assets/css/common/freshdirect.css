@@ -123,6 +123,7 @@ h2.centerline span {
   white-space: nowrap;
   display: inline-block;
   font-size:0;
+	vertical-align:middle;
 }
 
 .qtyinput_grocery {
@@ -168,6 +169,7 @@ h2.centerline span {
 
 .qtyinput .qtymessage {
   font-weight: bold;
+	vertical-align:middle;
 }
 
 #vieworder_table select,
