@@ -6657,34 +6657,105 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		PreparedStatement pstmt = null;
 		ResultSet rset = null;
 		CustomerCreditModel ccm = null;
+		//APPDEV-2893-if order is already credited, no need to get sale details
+		if(!isOrderCreditedForLateDelivery(conn, saleId)) {
+			try {			
+				pstmt = conn.prepareStatement(GET_SALE_DETAILS);
+				pstmt.setString(1, saleId);
+				rset = pstmt.executeQuery();
+				while(rset.next()) {
+					boolean proceed = true;
+					if(rset.getString("DLV_PASS_ID") != null) {
+						//APPDEV-2893- check if dlv pass is already extended
+						if(isDlvPassAlreadyExtended(conn, saleId, rset.getString("CUSTOMER_ID"))) {
+							proceed = false;
+						}
+					}
+					if(proceed) {
+						ccm = new CustomerCreditModel();
+						ccm.setSaleId(rset.getString("ID"));
+						ccm.setRemType(rset.getString("REM_TYPE"));
+						ccm.setCustomerId(rset.getString("CUSTOMER_ID"));
+						ccm.setFirstName(rset.getString("FIRST_NAME"));
+						ccm.setLastName(rset.getString("LAST_NAME"));
+						ccm.setEmail(rset.getString("USER_ID"));
+						ccm.setRemainingAmout(rset.getDouble("REM_AMT"));
+						ccm.setOriginalAmount(rset.getDouble("AMOUNT"));
+						ccm.setTaxRate(rset.getDouble("TAX_RATE"));
+						ccm.setDlvPassId(rset.getString("DLV_PASS_ID"));
+						ccm.setNewCode(rset.getString("NEW_COMP_CODE"));
+					}
+				}
+			} catch (SQLException sqle) {
+				throw new FDResourceException(sqle);
+			} finally {
+				if(pstmt != null)
+					try {
+						pstmt.close();
+					} catch(Exception e) {}
+			}
+		}
+		return ccm;
+	}
+	
+	public boolean isOrderCreditedForLateDelivery(Connection conn, String saleId) throws FDResourceException {
+		PreparedStatement pstmt = null;
+		ResultSet rset = null;
 		try {
-			conn = getConnection();
-			pstmt = conn.prepareStatement(GET_SALE_DETAILS);
+			pstmt = conn.prepareStatement("select comp_code from cust.complaint_dept_code where id in " + 
+			        "(select complaint_dept_code_id from cust.complaintline where complaint_id in " + 
+		            "(select id from cust.complaint where sale_id=? " +
+		                "and STATUS in ('PEN','APP')) " +
+		        ") and comp_code in (select comp_code from CUST.LATE_DLV_COMPLAINT_CODES)");
 			pstmt.setString(1, saleId);
 			rset = pstmt.executeQuery();
-			while(rset.next()) {
-				ccm = new CustomerCreditModel();
-				ccm.setSaleId(rset.getString("ID"));
-				ccm.setRemType(rset.getString("REM_TYPE"));
-				ccm.setCustomerId(rset.getString("CUSTOMER_ID"));
-				ccm.setFirstName(rset.getString("FIRST_NAME"));
-				ccm.setLastName(rset.getString("LAST_NAME"));
-				ccm.setEmail(rset.getString("USER_ID"));
-				ccm.setRemainingAmout(rset.getDouble("REM_AMT"));
-				ccm.setOriginalAmount(rset.getDouble("AMOUNT"));
-				ccm.setTaxRate(rset.getDouble("TAX_RATE"));
-				ccm.setDlvPassId(rset.getString("DLV_PASS_ID"));
-				ccm.setNewCode(rset.getString("NEW_COMP_CODE"));
+			if(rset.next()) {
+				return true;
 			}
 		} catch (SQLException sqle) {
 			throw new FDResourceException(sqle);
 		} finally {
-			if(pstmt != null)
+			if(pstmt != null) {
 				try {
 					pstmt.close();
 				} catch(Exception e) {}
+			}
+			if(rset != null) {
+				try {
+					rset.close();
+				} catch(Exception e) {}
+			}
 		}
-		return ccm;
+		return false;
+	}	
+	
+	public boolean isDlvPassAlreadyExtended(Connection conn, String orderId, String customerId) throws FDResourceException {
+		PreparedStatement pstmt = null;
+		ResultSet rset = null;
+		try {
+			pstmt = conn.prepareStatement("SELECT reason FROM CUST.ACTIVITY_LOG where customer_id=? and sale_id=? and reason in (select comp_code from CUST.LATE_DLV_COMPLAINT_CODES)");
+			pstmt.setString(1, customerId);
+			pstmt.setString(2, orderId);
+			rset = pstmt.executeQuery();
+			if(rset.next()) {
+				return true;
+			}			
+		} catch (SQLException sqle) {
+			//sqle.printStackTrace();
+			throw new FDResourceException(sqle);
+		} finally {
+			if(pstmt != null) {
+				try {
+					pstmt.close();
+				} catch(Exception e) {}
+			}
+			if(rset != null) {
+				try {
+					rset.close();
+				} catch(Exception e) {}
+			}
+		}
+		return false;
 	}
 	
 	public List<CustomerCreditModel> getScanReportedLates() throws FDResourceException {
@@ -6876,14 +6947,14 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 	
 	public static String GET_SCAN_REPORTED_LATES = 
 		"SELECT " +
-		  "a.WEBORDERNUM, min(a.scandate) " +
+		  "a.WEBORDERNUM, a.WINDOW, min(a.scandate) " +
 		"FROM " +
 		  "DLV.CARTONSTATUS a " +
 		"WHERE " +
 		"TO_DATE(TO_CHAR(a.SCANDATE,'HH24:MI:ss'),'HH24:MI:ss') >= TO_DATE(SUBSTR(a.WINDOW,7,8),'HH24:MI:ss') + (1800/86400) " +
 		"AND a.CARTONSTATUS  In  ( 'DELIVERED','REFUSED'  ) " +
 		"AND trunc(a.SCANDATE) = trunc(sysdate) - 1 " +
-		"group by a.webordernum";
+		"group by a.webordernum, a.WINDOW";
 	
 	public static String GET_ON_TIME_ORDERS = 
 								"SELECT " +
@@ -6908,6 +6979,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 													      "and CUST.LATEISSUE_ORDERS.SALE_ID=CUST.SALE.ID " +
 													    "AND CUST.SALESACTION.REQUESTED_DATE = trunc(sysdate)-1";
 			
+	/*APPDEV-2893 - Do not get details for pickup orders*/
 	public static String GET_SALE_DETAILS = 
 		"SELECT distinct " +
 		  "CUST.SALE.ID, " +
@@ -6926,7 +6998,8 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		  "CUST.SALESACTION, " +
 		  "CUST.CUSTOMER, " +
 		  "CUST.CUSTOMERINFO, " +
-		  "CUST.CHARGELINE " +
+		  "CUST.CHARGELINE, " +
+		  "CUST.DELIVERYINFO " +
 		"WHERE " +
 		   "CUST.SALE.ID= ? " +
 		   "AND  CUST.SALE.ID = CUST.SALESACTION.SALE_ID and CUST.SALE.status<>'CAN' " + 
@@ -6937,6 +7010,8 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		   "AND CUST.SALESACTION.ACTION_DATE=CUST.SALE.CROMOD_DATE " +
 		   "AND CUST.SALESACTION.ID=CUST.CHARGELINE.SALESACTION_ID " +
 		   "AND CUST.CHARGELINE.TYPE = 'DLV' " +
+		   "and CUST.DELIVERYINFO.salesaction_id = cust.salesaction.id " +
+           "and CUST.DELIVERYINFO.delivery_type != 'P' " +
 		   "order by REM_TYPE";
 
 	
