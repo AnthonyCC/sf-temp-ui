@@ -12,6 +12,8 @@
 <%@ page import="com.freshdirect.fdstore.referral.ReferralPromotionModel"%>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri="freshdirect" prefix="fd" %>
+<%@ page buffer="16kb" %>
+
 <%
 	System.out.println("*********************"+request.getRequestURI());
 	String referralurl = request.getRequestURI();
