@@ -44,7 +44,6 @@ import com.freshdirect.routing.model.TrnFacility;
 import com.freshdirect.routing.model.TrnFacilityType;
 import com.freshdirect.routing.model.WaveInstance;
 import com.freshdirect.routing.model.ZoneScenarioModel;
-import com.freshdirect.routing.proxy.stub.transportation.RoutingStop;
 import com.freshdirect.routing.util.RoutingDateUtil;
 import com.freshdirect.routing.util.RoutingTimeOfDay;
 

@@ -41,7 +41,7 @@ public class WaveInstance  extends BaseModel implements IWaveInstance {
 	private int outboundStemTimeAdjustmentSeconds;
 	private int overtimeWage;
 	private String rushHourModel;
-	private String timePeriodTravelSpeedsType;
+	private TimePeriodBasedTravelSpeedsType timePeriodTravelSpeedsType;
 	private IAreaModel area;
 	
 	private EnumWaveInstancePublishSrc source;
@@ -410,12 +410,12 @@ public class WaveInstance  extends BaseModel implements IWaveInstance {
 		}
 	}
 
-	public String getTimePeriodTravelSpeedsType() {
+	public TimePeriodBasedTravelSpeedsType getTimePeriodTravelSpeedsType() {
 		return timePeriodTravelSpeedsType;
 	}
 
 	public void setTimePeriodTravelSpeedsType(
-			String timePeriodTravelSpeedsType) {
+			TimePeriodBasedTravelSpeedsType timePeriodTravelSpeedsType) {
 		this.timePeriodTravelSpeedsType = timePeriodTravelSpeedsType;
 	}
 

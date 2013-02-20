@@ -827,7 +827,7 @@ public class RoutingDataEncoder {
 		attributes.setOutboundStemTimeAdjustmentSeconds(waveInstance.getOutboundStemTimeAdjustmentSeconds());
 		attributes.setOvertimeWage(waveInstance.getOvertimeWage());
 		attributes.setRushHourModel(waveInstance.getRushHourModel());
-		attributes.setTimePeriodTravelSpeedsType(encodeTimePeriodTravelSpeedsType(waveInstance.getTimePeriodTravelSpeedsType()));
+		attributes.setTimePeriodTravelSpeedsType(waveInstance.getTimePeriodTravelSpeedsType());
 		attributes.setTODRestrictionModel(waveInstance.getTODRestrictionModel());	
 		
 		return attributes;

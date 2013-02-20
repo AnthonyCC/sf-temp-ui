@@ -514,7 +514,7 @@ public class RoutingDataDecoder {
 			result.setOutboundStemTimeAdjustmentSeconds(waveInstance.getOutboundStemTimeAdjustmentSeconds());
 			result.setOvertimeWage(waveInstance.getOvertimeWage());
 			result.setRushHourModel(waveInstance.getRushHourModel());			
-			result.setTimePeriodTravelSpeedsType(decodeTimePeriodTravelSpeedsType(waveInstance.getTimePeriodTravelSpeedsType()));
+			result.setTimePeriodTravelSpeedsType(waveInstance.getTimePeriodTravelSpeedsType());
 			result.setTODRestrictionModel(waveInstance.getTODRestrictionModel());
 			
 		}
