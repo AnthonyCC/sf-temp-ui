@@ -78,11 +78,12 @@ public class DlvTimeslotModel extends DlvShiftTimeslotModel {
 	
 	public boolean hasSteeringRadius() {
 		if(this.getRoutingSlot() != null && this.getRoutingSlot().getDeliveryCost() != null && this.getRoutingSlot().getSteeringRadius() != null) {	
+			double additionalDistance = (double) this.getRoutingSlot().getDeliveryCost().getAdditionalDistance();
 			if(this.getRoutingSlot().getSteeringRadius().doubleValue() != BigDecimal.ZERO.doubleValue())	{
-				if(this.getRoutingSlot().getDeliveryCost().getAdditionalDistance() / 100 <= this.getRoutingSlot().getSteeringRadius().doubleValue())
+				if(additionalDistance / 100 <= this.getRoutingSlot().getSteeringRadius().doubleValue())
 						return true;
 			} else {
-				if(this.getRoutingSlot().getDeliveryCost().getAdditionalDistance() / 100 == 0) 
+				if(additionalDistance / 100 == 0) 
 					return true;
 			}
 		}
@@ -90,12 +91,14 @@ public class DlvTimeslotModel extends DlvShiftTimeslotModel {
 	}
 	
 	public boolean isEcoFriendly() {		
+		
 		if(this.getRoutingSlot() != null && this.getRoutingSlot().getDeliveryCost() != null && this.getRoutingSlot().getEcoFriendly() != null) {
-			if(this.getRoutingSlot().getEcoFriendly().doubleValue() != BigDecimal.ZERO.doubleValue())	{
-				if(this.getRoutingSlot().getDeliveryCost().getAdditionalDistance() / 100 <= this.getRoutingSlot().getEcoFriendly().doubleValue())
+			double additionalDistance = (double) this.getRoutingSlot().getDeliveryCost().getAdditionalDistance();
+			if(this.getRoutingSlot().getEcoFriendly().doubleValue() != BigDecimal.ZERO.doubleValue())	{		
+				if(additionalDistance / 100 <= this.getRoutingSlot().getEcoFriendly().doubleValue())
 						return true;
 			}else{
-				if(this.getRoutingSlot().getDeliveryCost().getAdditionalDistance() / 100 == 0) 
+				if(additionalDistance / 100 == 0) 
 					return true;
 			}
 		}
