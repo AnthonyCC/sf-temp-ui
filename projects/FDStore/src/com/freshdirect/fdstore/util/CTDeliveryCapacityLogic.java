@@ -16,6 +16,7 @@ import java.util.TreeSet;
 
 import org.apache.log4j.Category;
 
+import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.FDTimeslot;
 import com.freshdirect.fdstore.customer.FDUserI;
@@ -62,6 +63,7 @@ public class CTDeliveryCapacityLogic
 			xstream.alias("code", String.class);
 			xstream.alias("condition", String.class);
 			xstream.alias("value", String.class);
+			xstream.alias("serviceType", String.class);
 			
 			InputStream is=null;
 			ObjectInputStream in=null;
@@ -136,17 +138,15 @@ public class CTDeliveryCapacityLogic
 			try {
 			String zone=timeSlot.getZoneCode();
 			loadCTConfig(1);		
-			int totalOrder=user.getOrderHistory().getSettledOrderCount();			
+			int totalOrder=user.getOrderHistory().getSettledOrderCount();
+			EnumServiceType serviceType = (user.getSelectedServiceType()!=null)?user.getSelectedServiceType():user.getUserServiceType();
 			for(CTProfileConfig config:CT_CONFIG)
 			{ 
 				long currentTime=System.currentTimeMillis();
 				if(config.getStartDate()!=null&&config.getEndDate()!=null&&config.getStartDate().getTime()<=currentTime&&currentTime<=config.getEndDate().getTime())
-				if(config.getMin()<=totalOrder && totalOrder<=config.getMax())
-				{
-					
+				if(config.getMin()<=totalOrder && totalOrder<=config.getMax() && serviceType.getName().equals(config.getServiceType())){
 					//check zone validation
-					if((config.getZones()!=null&&config.getZones().size()>0)||(config.getAllZoneCondition()!=null))
-					{
+					if((config.getZones()!=null&&config.getZones().size()>0)||(config.getAllZoneCondition()!=null)){
 						Zone z=null;
 						if(config.getZones()!=null&&config.getZones().size()>0)
 						{
@@ -184,7 +184,6 @@ public class CTDeliveryCapacityLogic
 			            else if (condition.equals(EnumLogicalOperator.GREATER_THAN_OR_EQUAL.toString())&&!(matchingValue>=value)) {                
 			            	continue;
 			            }
-						
 					}
 					
 					//this is for first time users.
@@ -237,15 +236,13 @@ public class CTDeliveryCapacityLogic
 			try 
 			{
 			String zone=timeSlot.getZoneCode();
-			loadCTConfig(2);		
+			loadCTConfig(2);	
+			EnumServiceType serviceType = (user.getSelectedServiceType()!=null)?user.getSelectedServiceType():user.getUserServiceType();
 			int totalOrder=user.getOrderHistory().getSettledOrderCount();			
-			for(CTProfileConfig config:PR1_CONFIG)
-			{ 
+			for(CTProfileConfig config:PR1_CONFIG){ 
 				long currentTime=System.currentTimeMillis();
 				if(config.getStartDate()!=null&&config.getEndDate()!=null&&config.getStartDate().getTime()<=currentTime&&currentTime<=config.getEndDate().getTime())
-				if(config.getMin()<=totalOrder && totalOrder<=config.getMax())
-				{
-					
+				if(config.getMin()<=totalOrder && totalOrder<=config.getMax() && serviceType.getName().equals(config.getServiceType())){
 					//check zone validation
 					if((config.getZones()!=null&&config.getZones().size()>0)||(config.getAllZoneCondition()!=null))
 					{
@@ -352,6 +349,7 @@ class CTProfileConfig implements Comparable
 	//after loading do config
 	private Date startDateConfig;
 	private Date endDateConfig;
+	private String serviceType;
 	
 	public void config()
 	{
@@ -474,6 +472,12 @@ class CTProfileConfig implements Comparable
 	public void setAllZonevalue(int allZonevalue) {
 		this.defaultZoneCapacityValue = allZonevalue;
 	}
+	public String getServiceType() {
+		return serviceType;
+	}
+	public void setServiceType(String serviceType) {
+		this.serviceType = serviceType;
+	}	
 	
 	public String toString()
 	{
