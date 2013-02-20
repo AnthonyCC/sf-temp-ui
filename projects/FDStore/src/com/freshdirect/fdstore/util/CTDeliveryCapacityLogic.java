@@ -237,12 +237,11 @@ public class CTDeliveryCapacityLogic
 			{
 			String zone=timeSlot.getZoneCode();
 			loadCTConfig(2);	
-			EnumServiceType serviceType = (user.getSelectedServiceType()!=null)?user.getSelectedServiceType():user.getUserServiceType();
 			int totalOrder=user.getOrderHistory().getSettledOrderCount();			
 			for(CTProfileConfig config:PR1_CONFIG){ 
 				long currentTime=System.currentTimeMillis();
 				if(config.getStartDate()!=null&&config.getEndDate()!=null&&config.getStartDate().getTime()<=currentTime&&currentTime<=config.getEndDate().getTime())
-				if(config.getMin()<=totalOrder && totalOrder<=config.getMax() && serviceType.getName().equals(config.getServiceType())){
+				if(config.getMin()<=totalOrder && totalOrder<=config.getMax()){
 					//check zone validation
 					if((config.getZones()!=null&&config.getZones().size()>0)||(config.getAllZoneCondition()!=null))
 					{
