@@ -13,11 +13,11 @@
 }
 
 .globalnavcontainer .dot {
-	background:url('../../../media_stat/images/navigation/globalnav_and_footer/headernav_b.png') no-repeat 0px -1px;
+	background:url(/media_stat/images/navigation/globalnav_and_footer/headernav_b.png) no-repeat 0px -1px;
 }
 
 .ie6 .globalnavcontainer .dot {
-	background-image:url('../../../media_stat/images/navigation/globalnav_and_footer/headernav_b.gif');
+	background-image:url(/media_stat/images/navigation/globalnav_and_footer/headernav_b.gif);
 }
 
 
@@ -40,7 +40,7 @@
 	line-height:23px;
 	text-align:center;
 	font-size:13px;
-	background:url('../../../media_stat/images/navigation/globalnav_and_footer/headernav.png') no-repeat; 
+	background:url(/media_stat/images/navigation/globalnav_and_footer/headernav.png) no-repeat; 
 	display: block;
 	
 	text-indent: -9999em;
@@ -136,7 +136,7 @@ a.globalnavitem:active{
 }
 
 .globalnav-footer .globalnavitem {
-	background:url('../../../media_stat/images/navigation/globalnav_and_footer/footer.png') no-repeat;
+	background:url(/media_stat/images/navigation/globalnav_and_footer/footer.png) no-repeat;
 }
 
 

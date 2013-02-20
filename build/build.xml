@@ -107,6 +107,7 @@
 		<pathelement location="${thirdparty.home}/ctah-api-client.jar"/>
 		<pathelement location="${thirdparty.home}/jackson-core-lgpl-1.2.0.jar"/>
 		<pathelement location="${thirdparty.home}/jackson-mapper-lgpl-1.2.0.jar"/>
+		<pathelement location="${thirdparty.home}/jawr-3.3.3.jar"/>
 	</path>
 
 	<path id="testing.classpath">
@@ -1317,6 +1318,8 @@
 					<include name="freemarker-2.3.15.jar"/>
 					<include name="jsonrpc-1.0.jar"/>
 					<include name="bsh-2.0b4.jar"/>
+					<include name="jawr-3.3.3.jar"/>
+
 
                     <include name="jasypt-1.5.jar"/>
                     <include name="core-renderer.jar"/>
@@ -1441,6 +1444,7 @@
 					<include name="cglib-2.1.jar"/>
 					<include name="jug-lgpl-2.0.0.jar"/>
 					<include name="jsonrpc-1.0.jar"/>
+					<include name="jawr-3.3.3.jar"/>
 					<!-- additional -->
                     
                     <include name="lucene-core-${lucene.version}.jar"/>
@@ -2849,6 +2853,7 @@
 			<zipfileset src="${thirdparty.home}/hivemind-lib-1.1.1.jar" excludes="META-INF/*"/>
 			<zipfileset src="${thirdparty.home}/javassist-3.4.jar" excludes="META-INF/*"/>
             <zipfileset src="${thirdparty.home}/jsonrpc-1.0.jar" excludes="META-INF/*"/>
+			<zipfileset src="${thirdparty.home}/jawr-3.3.3.jar" excludes="META-INF/*"/>
 
 			<!-- FD classes -->
 			<zipfileset src="${work.dir}/Framework.jar"/>

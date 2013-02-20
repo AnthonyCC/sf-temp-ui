@@ -88,7 +88,48 @@
 		<jsp-file>/registration/referee_signup.jsp</jsp-file>
 	</servlet>
 
-   
+  <servlet>
+    <servlet-name>JavascriptServlet</servlet-name>
+    <servlet-class>net.jawr.web.servlet.JawrServlet</servlet-class>
+    <init-param>
+      <param-name>configLocation</param-name>
+      <param-value>/com/freshdirect/webapp/config/jawr.properties</param-value>
+    </init-param>
+    <init-param>
+      <param-name>mapping</param-name>
+      <param-value>/jawr/js/</param-value>
+    </init-param>
+    <load-on-startup>1</load-on-startup>
+  </servlet>
+
+  <servlet>
+    <servlet-name>CssServlet</servlet-name>
+    <servlet-class>net.jawr.web.servlet.JawrServlet</servlet-class>
+    <init-param>
+      <param-name>configLocation</param-name>
+      <param-value>/com/freshdirect/webapp/config/jawr.properties</param-value>
+    </init-param>
+    <init-param>
+      <param-name>mapping</param-name>
+      <param-value>/jawr/css/</param-value>
+    </init-param>
+    <init-param>
+      <param-name>type</param-name>
+      <param-value>css</param-value>
+    </init-param>
+    <load-on-startup>1</load-on-startup>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>JavascriptServlet</servlet-name>
+    <url-pattern>/jawr/js/*</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>CssServlet</servlet-name>
+    <url-pattern>/jawr/css/*</url-pattern>
+  </servlet-mapping>    
+
    <servlet-mapping>
      <servlet-name>com.freshdirect.webapp.util.json.FDJSONRPCServlet</servlet-name>
      <url-pattern>/api/json-rpc.jsp</url-pattern>
@@ -136,6 +177,10 @@
         <error-code>500</error-code>
         <location>/error.jsp</location>
     </error-page>
+    <taglib>
+        <taglib-uri>http://jawr.net/tags</taglib-uri>
+        <taglib-location>/WEB-INF/shared/tld/jawr.tld</taglib-location>
+    </taglib>
     <taglib>
         <taglib-uri>freshdirect</taglib-uri>
         <taglib-location>/WEB-INF/shared/tld/freshdirect.tld</taglib-location>

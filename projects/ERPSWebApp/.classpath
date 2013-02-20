@@ -9,5 +9,6 @@
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/DataLoader"/>
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/jackson-core-lgpl-1.2.0.jar"/>
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/jackson-mapper-lgpl-1.2.0.jar"/>
+	<classpathentry exported="true" kind="var" path="FD_LIBS/thirdparty/jawr-3.3.3.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
