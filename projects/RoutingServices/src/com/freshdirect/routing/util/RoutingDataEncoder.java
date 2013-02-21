@@ -827,7 +827,7 @@ public class RoutingDataEncoder {
 		attributes.setOutboundStemTimeAdjustmentSeconds(waveInstance.getOutboundStemTimeAdjustmentSeconds());
 		attributes.setOvertimeWage(waveInstance.getOvertimeWage());
 		attributes.setRushHourModel(waveInstance.getRushHourModel());
-		attributes.setTimePeriodTravelSpeedsType(waveInstance.getTimePeriodTravelSpeedsType());
+		attributes.setTimePeriodTravelSpeedsType(encodeTimePeriodTravelSpeedsType(waveInstance.getTimePeriodTravelSpeedsType()));
 		attributes.setTODRestrictionModel(waveInstance.getTODRestrictionModel());	
 		
 		return attributes;
@@ -842,8 +842,13 @@ public class RoutingDataEncoder {
 	}
 	
 	public static TimePeriodBasedTravelSpeedsType encodeTimePeriodTravelSpeedsType(String type) {
-		
-		return TimePeriodBasedTravelSpeedsType.tpbUseRushHourModel; //defaulting to use rush hour model based on discussion with Roderic.
+		if(TimePeriodBasedTravelSpeedsType._tpbNoRushHour.equals(type))
+			return TimePeriodBasedTravelSpeedsType.tpbNoRushHour; 
+		else if(TimePeriodBasedTravelSpeedsType._tpbUseRushHourModel.equals(type))
+			return TimePeriodBasedTravelSpeedsType.tpbUseRushHourModel;
+		else if(TimePeriodBasedTravelSpeedsType._tpbHistoricalTravelSpeeds.equals(type))
+			return TimePeriodBasedTravelSpeedsType.tpbHistoricalTravelSpeeds;
+		return TimePeriodBasedTravelSpeedsType.tpbUseRushHourModel;
 	}
 
 	public static LocationIdentity encodeRoutingDepotId(IRoutingDepotId id) {

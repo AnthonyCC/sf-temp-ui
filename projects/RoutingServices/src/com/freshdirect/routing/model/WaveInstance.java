@@ -4,7 +4,6 @@ import java.util.Date;
 
 import com.freshdirect.routing.constants.EnumWaveInstancePublishSrc;
 import com.freshdirect.routing.constants.EnumWaveInstanceStatus;
-import com.freshdirect.routing.proxy.stub.transportation.TimePeriodBasedTravelSpeedsType;
 import com.freshdirect.routing.util.RoutingTimeOfDay;
 
 public class WaveInstance  extends BaseModel implements IWaveInstance {
@@ -41,7 +40,7 @@ public class WaveInstance  extends BaseModel implements IWaveInstance {
 	private int outboundStemTimeAdjustmentSeconds;
 	private int overtimeWage;
 	private String rushHourModel;
-	private TimePeriodBasedTravelSpeedsType timePeriodTravelSpeedsType;
+	private String timePeriodTravelSpeedsType;
 	private IAreaModel area;
 	
 	private EnumWaveInstancePublishSrc source;
@@ -410,12 +409,12 @@ public class WaveInstance  extends BaseModel implements IWaveInstance {
 		}
 	}
 
-	public TimePeriodBasedTravelSpeedsType getTimePeriodTravelSpeedsType() {
+	public String getTimePeriodTravelSpeedsType() {
 		return timePeriodTravelSpeedsType;
 	}
 
 	public void setTimePeriodTravelSpeedsType(
-			TimePeriodBasedTravelSpeedsType timePeriodTravelSpeedsType) {
+			String timePeriodTravelSpeedsType) {
 		this.timePeriodTravelSpeedsType = timePeriodTravelSpeedsType;
 	}
 

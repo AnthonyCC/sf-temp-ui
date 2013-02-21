@@ -4,7 +4,6 @@ import java.util.Date;
 
 import com.freshdirect.routing.constants.EnumWaveInstancePublishSrc;
 import com.freshdirect.routing.constants.EnumWaveInstanceStatus;
-import com.freshdirect.routing.proxy.stub.transportation.TimePeriodBasedTravelSpeedsType;
 import com.freshdirect.routing.util.RoutingTimeOfDay;
 
 public interface IWaveInstance {
@@ -105,9 +104,9 @@ public interface IWaveInstance {
 	String getRoutingCode();
 	void setRoutingCode(String routingCode);
 	
-	TimePeriodBasedTravelSpeedsType getTimePeriodTravelSpeedsType();
+	String getTimePeriodTravelSpeedsType();
 
-	void setTimePeriodTravelSpeedsType(TimePeriodBasedTravelSpeedsType timePeriodTravelSpeedsType);
+	void setTimePeriodTravelSpeedsType(String timePeriodTravelSpeedsType);
 	
 	String getTODRestrictionModel();
 
