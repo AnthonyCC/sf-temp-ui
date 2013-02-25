@@ -40,10 +40,12 @@ public class IsAlcoholicTag extends BodyTagSupportEx {
 				}
 
 				Cookie[] cookies = request.getCookies();
-				for(Cookie cookie : cookies) {
-					if (cookie.getName().equals("freshdirect.healthwarning")) {
-						if (normalizeSessionId(cookie.getValue()).equals("1@" + normalizeSessionId(request.getSession().getId()))) {
-							return SKIP_BODY;
+				if (cookies != null) {
+					for(Cookie cookie : cookies) {
+						if (cookie.getName().equals("freshdirect.healthwarning")) {
+							if (normalizeSessionId(cookie.getValue()).equals("1@" + normalizeSessionId(request.getSession().getId()))) {
+								return SKIP_BODY;
+							}
 						}
 					}
 				}

@@ -646,7 +646,7 @@
 											<display:ProductPrice impression="<%= (TransactionalProductImpression) impressions.get(piCnIdx) %>" showDescription="<%= showDescrips %>" />
 											<fd:IsAlcoholic skuCode="<%=((TransactionalProductImpression) impressions.get(piCnIdx)).getSku().getSkuCode()%>">
 												<fd:USQLegalWarning id='<%="DYNROW_form"+ TX_FORM_NAME+"_"+catId %>' tagCounter="<%=txCount %>" quantityCheck="true"/>
-												<input type="hidden" name='<%="alcoholic_" + txCount %>' id='<%="alcoholic_" + txCount %>' value='<%="quantity_" + txCount %>'/>
+												<%--input type="hidden" name='<%="alcoholic_" + txCount %>' id='<%="alcoholic_" + txCount %>' value='<%="quantity_" + txCount %>'/ --%>
 											</fd:IsAlcoholic>
 										<% 
 											txCount++;

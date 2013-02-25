@@ -213,7 +213,7 @@ final int W_YMAL_BOX_INNER = 540;
 											<fd:TxProductControl txNumber="<%= txProdCount %>" namespace="<%= TX_JS_NAMESPACE %>" impression="<%= (TransactionalProductImpression) pi %>"/>
 										<fd:IsAlcoholic skuCode="<%=((TransactionalProductImpression) pi).getSku().getSkuCode()%>"> 
 											<fd:USQLegalWarning id="<%= TX_FORM_NAME %>" tagCounter="<%=txProdCount %>" quantityCheck="true"/>
-											<input type="hidden" name='<%="alcoholic_" + txProdCount %>' id='<%="alcoholic_" + txProdCount %>' value='<%="quantity_" + txProdCount %>'/>
+											<%--input type="hidden" name='<%="alcoholic_" + txProdCount %>' id='<%="alcoholic_" + txProdCount %>' value='<%="quantity_" + txProdCount %>'/ --%>
 										</fd:IsAlcoholic>
 										</td>
 									</tr>

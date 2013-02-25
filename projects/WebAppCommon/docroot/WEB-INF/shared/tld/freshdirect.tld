@@ -5307,7 +5307,17 @@
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
-     </tag>
+		<attribute>
+			<name>skuCode</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>inputTagPostFix</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+    </tag>
     <tag>
 		<name>IsAlcoholic</name>
 		<tagclass>com.freshdirect.webapp.taglib.fdstore.IsAlcoholicTag</tagclass>

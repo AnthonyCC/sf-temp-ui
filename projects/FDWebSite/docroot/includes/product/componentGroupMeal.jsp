@@ -444,7 +444,7 @@ if (isAvailable ) {
 					  <input type="hidden" name="productId_<%= prodCount %>" value="<%= optProd %>">
 				  	<fd:IsAlcoholic skuCode='<%=dfltSku.getSkuCode() %>'>
 						<fd:USQLegalWarning id="productForm" tagCounter="<%=prodCount %>"/>
-						<input type="hidden" name='<%="alcoholic_" + prodCount %>' id='<%="alcoholic_" + prodCount %>' value='<%="quantity_" + prodCount %>'/>
+						<%--input type="hidden" name='<%="alcoholic_" + prodCount %>' id='<%="alcoholic_" + prodCount %>' value='<%="quantity_" + prodCount %>'/ --%>
 					</fd:IsAlcoholic>
 					  <input name ="quantity_<%=prodCount%>" value="<%=(request.getParameter("quantity_"+prodCount)==null ?"" : request.getParameter("quantity_"+prodCount))%>" type="text" size="3" onChange="chgNamedQty(pricing_<%=prodCount%>,'quantity_<%=prodCount%>',0,<%= optProd.getQuantityMinimum() %>,<%= user.getQuantityMaximum(optProd) %>,true)">
 					</td>
@@ -495,7 +495,7 @@ if (isAvailable ) {
 				  <input type="hidden" name="productId_<%= prodCount %>" value="<%= optProd %>">
 				  	<fd:IsAlcoholic skuCode='<%=dfltSku.getSkuCode() %>'>
 						<fd:USQLegalWarning id="productForm" tagCounter="<%=prodCount %>" quantityCheck="true" />
-						<input type="hidden" name='<%="alcoholic_" + prodCount %>' id='<%="alcoholic_" + prodCount %>' value='<%="quantity_" + prodCount %>'/>
+						<%--input type="hidden" name='<%="alcoholic_" + prodCount %>' id='<%="alcoholic_" + prodCount %>' value='<%="quantity_" + prodCount %>'/ --%>
 					</fd:IsAlcoholic>
 
           <div class="qtyinput">

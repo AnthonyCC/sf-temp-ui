@@ -534,7 +534,7 @@ int prodIdx = 0;
 				
 				<fd:IsAlcoholic skuCode="<%=orderLine.getSkuCode()%>">
 					<fd:USQLegalWarning id="recipe_form" tagCounter="<%=prodIdx %>" quantityCheck="true"/>
-					<input type="hidden" name='<%="alcoholic_" + prodIdx %>' id='<%="alcoholic_" + prodIdx %>' value='<%="quantity_" + prodIdx %>'/>
+					<%--input type="hidden" name='<%="alcoholic_" + prodIdx %>' id='<%="alcoholic_" + prodIdx %>' value='<%="quantity_" + prodIdx %>'/ --%>
 				</fd:IsAlcoholic>
 
                 <logic:iterate id="entry" collection="<%= orderLine.getConfiguration().getOptions().entrySet() %>" type="java.util.Map.Entry">

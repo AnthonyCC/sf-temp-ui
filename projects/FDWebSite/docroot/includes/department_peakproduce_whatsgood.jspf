@@ -374,7 +374,7 @@
 								<display:ProductPrice impression="<%= (TransactionalProductImpression) impressions.get(idx) %>" showDescription="<%= showDescrips %>" />
 								<fd:IsAlcoholic skuCode="<%=((TransactionalProductImpression) impressions.get(idx)).getSku().getSkuCode()%>">
 									<fd:USQLegalWarning id="<%= TX_FORM_NAME %>" tagCounter="<%= txCount%>"/>
-									<input type="hidden" name='<%="alcoholic_" + txCount %>' id='<%="alcoholic_" + txCount %>' value='<%="quantity_" + txCount %>'/>
+									<%--input type="hidden" name='<%="alcoholic_" + txCount %>' id='<%="alcoholic_" + txCount %>' value='<%="quantity_" + txCount %>'/ --%>
 								</fd:IsAlcoholic>
 							<% 
 								txCount++;

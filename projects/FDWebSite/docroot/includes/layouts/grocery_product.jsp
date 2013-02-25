@@ -1075,7 +1075,7 @@ for(int i = (pageNumber -1) * itemsToDisplay; i < loopEnd && isAnyProdAvailable=
 <%
 	if(!bigProdShown && isAnyProdAvailable) {
 %><td><input type="image" name="addMultipleToCart" id="addMultipleToCartUpper"  src="/media_stat/images/buttons/add_selected_to_cart.gif" width="145" height="20" hspace="4" vspace="4" border="0" alt="ADD SELECTED ITEMS TO CART">
-	<fd:IsAlcoholic>
+	<fd:IsAlcoholic noProduct="true">
 		<fd:USQLegalWarning id="grocery_form" event="onclick" elementId="addMultipleToCartUpper" quantityCheck="true" />
     </fd:IsAlcoholic>
 </td><%

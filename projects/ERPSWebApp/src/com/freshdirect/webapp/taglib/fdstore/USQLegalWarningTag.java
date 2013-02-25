@@ -2,10 +2,17 @@ package com.freshdirect.webapp.taglib.fdstore;
 
 import java.io.IOException;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpSession;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
 
+import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.FDSkuNotFoundException;
+import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.fdstore.content.CategoryModel;
+import com.freshdirect.fdstore.content.ContentFactory;
+import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.framework.webapp.BodyTagSupportEx;
 
@@ -25,8 +32,12 @@ public class USQLegalWarningTag extends BodyTagSupportEx {
 	private String decorate = "";
 	private String quantityCheck = "";
 	private int tagCounter = 100;
+	private String skuCode = "";
+	private String inputTagPostFix = "";
+	boolean isAlcoholic = true;
 
 	public int doStartTag() throws JspException {
+		isAlcoholic = isAlcoholic();
 		StringBuffer buf = new StringBuffer();
 		if (!isCallcenterApplication(pageContext.getSession())) {
 			beginJavaScriptFrame(buf);
@@ -55,8 +66,9 @@ public class USQLegalWarningTag extends BodyTagSupportEx {
 		buf.append(", document.getElementById('" + elementId + "')");
 		buf.append(", '" + instant + "'");
 		buf.append(", '" + quantityCheck + "'");
-		buf.append(", '" + tagCounter + "'");
+		buf.append(", " + tagCounter);
 		buf.append(", '" + decorate + "'");
+		buf.append(isAlcoholic?", 'true'":", 'false'");
 		buf.append(");\r\n");
 		buf.append("    }\r\n");
 	}
@@ -75,6 +87,44 @@ public class USQLegalWarningTag extends BodyTagSupportEx {
 		buf.append("    }\r\n");
 		buf.append("});\r\n");
 		buf.append("</script>\r\n");
+		if (isAlcoholic) {
+			buf.append("<input type='hidden' name='alcoholic_" + tagCounter + "' id='alcoholic_" + tagCounter + "' value='quantity_" + ("".equals(inputTagPostFix)?"":(inputTagPostFix + "_")) + tagCounter + "'/>");
+		}
+	}
+	//temporary solution, soon to be merged ModifyBrd will refactor this class
+	private boolean isAlcoholic() {
+		
+		ProductModel prodModel = null;
+		CategoryModel categoryModel = null;
+
+		try {
+			if (!skuCode.equals("")) {
+				prodModel = ContentFactory.getInstance().getProduct(skuCode);
+				categoryModel = prodModel.getCategory();
+			}
+
+			Cookie[] cookies = request.getCookies();
+			if (cookies != null) {
+				for(Cookie cookie : cookies) {
+					if (cookie.getName().equals("freshdirect.healthwarning")) {
+						if (normalizeSessionId(cookie.getValue()).equals("1@" + normalizeSessionId(request.getSession().getId()))) {
+							return false;
+						}
+					}
+				}
+			}
+			
+			if (categoryModel != null && !categoryModel.isHavingBeer() && prodModel!= null && !prodModel.getSku(skuCode).getProduct().isAlcohol()) {
+				return false;
+			}
+			
+		} catch (FDSkuNotFoundException e) {
+			return false;
+		} catch (FDResourceException e) {
+			return false;
+		}
+		
+		return true;
 	}
 
 	public FDUserI getFDUser() {
@@ -131,4 +181,27 @@ public class USQLegalWarningTag extends BodyTagSupportEx {
 	public void setDecorate(String decorate) {
 		this.decorate = decorate;
 	}
+
+	public String getSkuCode() {
+		return skuCode;
+	}
+
+	public void setSkuCode(String skuCode) {
+		this.skuCode = skuCode;
+	}
+	
+	private String normalizeSessionId(String sessionId) {
+		int pos = sessionId.indexOf("!");//Removing WebLogic specific JVM id(s) from session id
+		if (pos > 0) sessionId = sessionId.substring(0, pos);
+		return sessionId;
+	}
+
+	public String getInputTagPostFix() {
+		return inputTagPostFix;
+	}
+
+	public void setInputTagPostFix(String inputTagPostFix) {
+		this.inputTagPostFix = inputTagPostFix;
+	}
+	
 }

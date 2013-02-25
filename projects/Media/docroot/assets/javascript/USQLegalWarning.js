@@ -25,7 +25,7 @@ if (typeof FreshDirect == "undefined" || !FreshDirect) {
 
 	// inner method should not be called directly
 	// the non-inner counterpart will find the root window and perform operations in its context
-	USQLegalWarning.attachFormInner = function(form, href, event, elementId, instant, quantityCheck, tagCounter, decorate) {
+	USQLegalWarning.attachFormInner = function(form, href, event, elementId, instant, quantityCheck, tagCounter, decorate, isAlcoholic) {
 		// we must have the form
 		if (form && href && event) {
 			var data = {};
@@ -36,6 +36,7 @@ if (typeof FreshDirect == "undefined" || !FreshDirect) {
 			data.elementId = elementId;
 			data.instant = instant;
 			data.decorate = decorate;
+			data.isAlcoholic = isAlcoholic;
 			data.quantityCheck = quantityCheck;
 			if (tagCounter > maxTagCounter) {
 				maxTagCounter = tagCounter;
@@ -60,8 +61,8 @@ if (typeof FreshDirect == "undefined" || !FreshDirect) {
 		data.panel = null;
 	};
 
-	USQLegalWarning.attachForm = function(form, href, event, elementId, instant, quantityCheck, tagCounter, decorate) {
-		return rootWindow.FreshDirect.USQLegalWarning.attachFormInner(form, href, event, elementId, instant, quantityCheck, tagCounter, decorate);
+	USQLegalWarning.attachForm = function(form, href, event, elementId, instant, quantityCheck, tagCounter, decorate, isAlcoholic) {
+		return rootWindow.FreshDirect.USQLegalWarning.attachFormInner(form, href, event, elementId, instant, quantityCheck, tagCounter, decorate, isAlcoholic);
 	};
 
 	var normalSubmit = function(data) {
@@ -75,6 +76,12 @@ if (typeof FreshDirect == "undefined" || !FreshDirect) {
 		data.panel = null;
 	
 		var showPendingChoice = function() {
+			
+			if ('false' == data.isAlcoholic) {
+				normalSubmit(data);
+				return;
+			};
+			
 			if (window.parent.FreshDirect.USQLegalWarning.checkHealthCondition('freshdirect.healthwarning','1')== true) {
 				if (data.instant && data.instant != null && data.instant != "") {
 					eval(data.instant)();
