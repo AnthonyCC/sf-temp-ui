@@ -1178,7 +1178,7 @@ if(isAnyProdAvailable) {
 %>
         <table border="0" cellspacing="0" cellpadding="0" width="<%=contentWidth%>"><tr valign="BOTTOM"><td width="<%=contentWidth%>">
         <input type="image" name="addMultipleToCart" id="addMultipleToCartLower" src="/media_stat/images/buttons/add_selected_to_cart.gif" width="145" height="20" hspace="4" vspace="4" border="0" alt="ADD SELECTED ITEMS TO CART">
-        <fd:IsAlcoholic>
+        <fd:IsAlcoholic noProduct="true">
         	<fd:USQLegalWarning id="grocery_form" event="onclick" elementId="addMultipleToCartLower" quantityCheck="true" />
         </fd:IsAlcoholic>
         <br>
