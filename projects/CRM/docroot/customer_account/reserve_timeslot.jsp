@@ -121,10 +121,7 @@
 								<span class="text12">
 									<b>Reserve this day and time for me every week</b>
 								</span><br/>
-								Select this option to make this a standing, weekly reservation.
-								Please note that reservations not used for two weeks will be
-								cleared. At any time you can return to re-place or update your
-								reservation.
+								Select this option to make this a standing weekly reservation. Please note that reservations not used will be released for good. You will have to return to this page to reset your reservation settings.
 							</td>
 						</tr>
 
