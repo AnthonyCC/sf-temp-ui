@@ -128,10 +128,9 @@
 	           return '<a href="#" onclick="removeRow1(' + r + ')">X</a>'; }
 	      }
 	    ];
-	  var pd_columns = [
+	  var pd_columns = [{id: "dispatchTime", name: "TransApp Dispatch", field: "dispatchTime", minWidth: 125,editor: TimeEditor, validator: requiredFieldValidator },
 						{id: "plantDispatch", name: "Plant Dispatch", field: "plantDispatch", width: 125,editor: TimeEditor, sortable:true, validator: requiredFieldValidator  },
-	            	    {id: "dispatchTime", name: "TransApp Dispatch", field: "dispatchTime", minWidth: 125,editor: TimeEditor, validator: requiredFieldValidator },
-	            	    {id: 'id', name: '', field: 'dispatchTime',  width: 15, formatter: function (r, c, id, def, datactx) { 
+	            	     {id: 'id', name: '', field: 'dispatchTime',  width: 15, formatter: function (r, c, id, def, datactx) { 
 	         	           return '<a href="#" onclick="removeRow2(' + r + ')">X</a>'; }
 	         	      }
 	            	    ];
@@ -237,7 +236,6 @@
 		}
 
 		function daterize(time) {
-			console.log(time);
 		    return Date.parse("Thu, 01 Jan 1970 " + time + " GMT");
 		}
 		
@@ -372,7 +370,6 @@
 						pd_grid.invalidateRows(args.rows);
 						pd_grid.render();
 					});
-					
 					pd_dataView.beginUpdate();
 					pd_dataView.setItems(pd_data,"dispatchTime");
 					pd_dataView.endUpdate();

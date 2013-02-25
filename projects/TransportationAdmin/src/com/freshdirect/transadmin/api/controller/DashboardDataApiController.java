@@ -135,6 +135,7 @@ public class DashboardDataApiController extends BaseApiController {
 				PlantDispatch[] dispatches  =  parseRequestObject(request, response, PlantDispatch[].class);
 				if(dispatches.length>0)
 				getDashboardManagerService().savePlantDispatch(Arrays.asList(dispatches));
+				setResponseMessage(model, Message.createSuccessMessage("Save Plant Dispatch successful."));
 			}
 			catch (ServiceException e) {
 				e.printStackTrace();
