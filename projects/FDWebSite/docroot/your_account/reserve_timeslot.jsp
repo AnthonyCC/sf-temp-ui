@@ -97,7 +97,7 @@ String actionName = request.getParameter("actionName");
 				<td colspan="6">
 					<img src="/media_stat/images/layout/clear.gif" width="1" height="3"><br>
 					<span class="text12"><b>Reserve this day and time for me every week</b></span><br>
-					Select this option to make this a standing weekly reservation. Please note that reservations not used will be released. At any time you can return to this page to update your reservation.
+					Select this option to make this a standing weekly reservation. Please note that reservations not used will be released for good. You will have to return to this page to reset your reservation settings.
 				</td>
 			</tr>
 			<tr>
