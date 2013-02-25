@@ -26,10 +26,10 @@ import com.freshdirect.cms.fdstore.FDContentTypes;
 import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.fdstore.FDAttributeCache;
 import com.freshdirect.fdstore.FDCachedFactory;
+import com.freshdirect.fdstore.FDNutritionPanelCache;
 import com.freshdirect.fdstore.FDGroup;
 import com.freshdirect.fdstore.FDInventoryCache;
 import com.freshdirect.fdstore.FDNutritionCache;
-import com.freshdirect.fdstore.FDNutritionPanelCache;
 import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSku;
@@ -172,8 +172,7 @@ public class Warmup {
 		@SuppressWarnings("unchecked")
 		final List<FDProductInfo> prodInfos = new ArrayList(FDCachedFactory.getProductInfos((String[]) this.skuCodes.toArray(new String[0])));
 		// Filter discontinued Products
-		filterDiscontinuedProducts(prodInfos);		// Get instance loads up the Drug Nutrition
-
+		filterDiscontinuedProducts(prodInfos);
 
 		LOGGER.info("Loading heavyweight product data in " + MAX_THREADS + " threads");
 
