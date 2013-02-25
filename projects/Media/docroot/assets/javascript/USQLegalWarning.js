@@ -2,7 +2,7 @@ if (typeof FreshDirect == "undefined" || !FreshDirect) {
     var FreshDirect = {};
 }
 
-(function () {
+(function ($) {
 	var USQLegalWarning = {};
 	
 	FreshDirect.USQLegalWarning = USQLegalWarning;
@@ -90,21 +90,28 @@ if (typeof FreshDirect == "undefined" || !FreshDirect) {
 			}
 			var counter = 0;
 			var alcoholicFlag = null;
-			while (counter <= maxTagCounter) {
-				alcoholicFlag = USQLegalWarning.containsElement(form, 'alcoholic_' + counter);
-				if ( alcoholicFlag != null) {
-					var quantity = USQLegalWarning.containsElement(form, alcoholicFlag.value);
-					if ('true' == data.quantityCheck) {
-						if (quantity != null && quantity.value != null && quantity.value != "" &&  quantity.value > 0) {
-							break;
-						};
-					} else {
-						break;
-					}
+			
+		    $( ".usq_quantity" ).each(function( index, quantityElement ) {
+		        
+			
+//			while (counter <= maxTagCounter) {
+				alcoholicFlag = quantityElement;
+//				if ( alcoholicFlag != null) {
+				var quantity = USQLegalWarning.containsElement(form, alcoholicFlag.value);
+				if ('true' == data.quantityCheck) {
+					if (quantity != null && quantity.value != null && quantity.value != "" &&  quantity.value > 0) {
+					//	break;
+						return false;
+					};
+				} else {
+				//	break;
+					return false;
 				}
+	//			}
 				alcoholicFlag = null;
-				counter ++;
-			};
+//				counter ++;
+	        });
+	//		};
 			if (!alcoholicFlag) {
 				normalSubmit(data);
 				return;
@@ -302,4 +309,4 @@ if (typeof FreshDirect == "undefined" || !FreshDirect) {
 			   
 		return null;	
 	};
-})();
+})(jQuery);

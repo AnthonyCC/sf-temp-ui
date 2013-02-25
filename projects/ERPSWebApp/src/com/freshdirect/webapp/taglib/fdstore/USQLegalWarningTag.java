@@ -88,7 +88,7 @@ public class USQLegalWarningTag extends BodyTagSupportEx {
 		buf.append("});\r\n");
 		buf.append("</script>\r\n");
 		if (isAlcoholic) {
-			buf.append("<input type='hidden' name='alcoholic_" + tagCounter + "' id='alcoholic_" + tagCounter + "' value='quantity_" + ("".equals(inputTagPostFix)?"":(inputTagPostFix + "_")) + tagCounter + "'/>");
+			buf.append("<input type='hidden'class='usq_quantity' name='alcoholic_" + tagCounter + "' id='alcoholic_" + tagCounter + "' value='quantity_" + ("".equals(inputTagPostFix)?"":(inputTagPostFix + "_")) + tagCounter + "'/>");
 		}
 	}
 	//temporary solution, soon to be merged ModifyBrd will refactor this class
