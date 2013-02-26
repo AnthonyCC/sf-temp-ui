@@ -114,11 +114,10 @@ public class HandOffFormController extends BaseFormController {
 			boolean hasRunningbatch = false;
 			
 			for(IHandOffBatch batch : batches) {
-				if(batch != null && !(batch.getStatus().equals(EnumHandOffBatchStatus.CANCELLED)
-										|| batch.getStatus().equals(EnumHandOffBatchStatus.COMPLETED)
+				if(batch != null && !(batch.getStatus().equals(EnumHandOffBatchStatus.CANCELLED)									
 										|| batch.getStatus().equals(EnumHandOffBatchStatus.AUTODISPATCHCOMPLETED))) {
 					hasRunningbatch = true;
-					saveErrorMessage(request, "There is already a batch running please complete or cancel the existing batch\n");
+					saveErrorMessage(request, "There is already a batch running please complete and autodispatch or cancel the existing batch\n");
 					break;
 				}
 			}

@@ -3,13 +3,20 @@ package com.freshdirect.transadmin.notification;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.ServletRequest;
 
+import com.freshdirect.routing.constants.EnumHandOffBatchStatus;
 import com.freshdirect.routing.constants.EnumWaveInstanceStatus;
+import com.freshdirect.routing.model.IHandOffBatch;
 import com.freshdirect.routing.model.IWaveInstance;
 import com.freshdirect.routing.service.exception.RoutingServiceException;
+import com.freshdirect.routing.service.proxy.HandOffServiceProxy;
 import com.freshdirect.routing.service.proxy.RoutingInfoServiceProxy;
+import com.freshdirect.routing.util.RoutingDateUtil;
+import com.freshdirect.transadmin.util.TransStringUtil;
+import com.freshdirect.transadmin.web.model.HandOffCommand;
 
 public class NotificationManager {
 	
@@ -54,4 +61,30 @@ public class NotificationManager {
 		}
 		return  null;
     }
+	
+	public String getHandoffNotification(ServletRequest request) {
+		
+		HandOffServiceProxy proxy = new HandOffServiceProxy();
+		
+		HandOffCommand bean = new HandOffCommand();
+		String currentTime = TransStringUtil.getCurrentTime();
+		Date routingDate = null;
+		if(currentTime != null && currentTime.endsWith("AM")) {
+			routingDate = RoutingDateUtil.getCurrentDate();
+		} else {
+			routingDate = RoutingDateUtil.getNextDate();
+		}
+		bean.setDeliveryDate(routingDate);
+		try {
+			Set<IHandOffBatch> batches = proxy.getHandOffBatch(bean.getDeliveryDate());			
+			for(IHandOffBatch batch : batches) {
+				if(batch != null && batch.getStatus().equals(EnumHandOffBatchStatus.COMPLETED)) {
+					return "Handoff committed - No Auto-Dispatch";
+				}
+			}
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
 }

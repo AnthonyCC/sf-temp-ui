@@ -131,6 +131,15 @@
 						<% } else { %>
 							 &nbsp;
 						<% } %>
+						<% 
+						 String handoffNotification = NotificationManager.getInstance().getHandoffNotification(request);						 
+						 if(handoffNotification != null) { %>
+							<div style="border:2px solid blue;padding:3px;background-color:#00FF00;font-size: 12px;font-style: italic;text-align:center;font-weight: bold;text-decoration: blink;">
+								<%= handoffNotification %> 
+							</div>
+						<% } else { %>
+							 &nbsp;
+						<% } %>
 					</div>
 														
 					<div class="<%= currentRootMenuId %>">
