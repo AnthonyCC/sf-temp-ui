@@ -510,7 +510,7 @@ var drugPanel = function($,data,config){
             enumerable:true
           },
           newline:{
-            value: itemData.newline || true,
+            value: !(itemData.newline === false),
             writable:true,
             enumerable:true
           },
