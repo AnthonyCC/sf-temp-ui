@@ -116,10 +116,7 @@ function doSend(tableId, url) {
 		var form = document.forms[formSelId];
 
 		for ( var i = 0; i < params.length; i++) {
-			var param = params[i].split("=");
-			if(param[0] != 'ec_f_a' && i === 0){
-				param[0] = 'ec_f_a';
-			}
+			var param = params[i].split("=");			
 			add_input(form, "hidden", param[0], param[1]);
 		}
 		form.submit();
