@@ -9,7 +9,13 @@
 	int layoutTypeCSS = (request.getAttribute("layoutType") == null) ? -1 : Integer.parseInt(request.getAttribute("layoutType").toString());
 %><% if (FDStoreProperties.isFlushOscache()) { %><oscache:flush /><% } %>
   <%-- global css files, header, footer, etc. --%>
-  <jwr:style src="/global.css"/>
+  <%-- jwr:style src="/global.css"/ --%>
+  
+  <fd:css href="/assets/css/common/globalnav.css" />
+  <fd:css href="/assets/css/common/footer.css" />
+  <fd:css href="/assets/css/common/freshdirect.css" />
+  <fd:css href="/assets/css/common/globalnav_and_footer.css"/>
+  <fd:css href="/assets/css/common/star_rating.css"/>
 
   <%-- IE + IE6 fixes --%>
   <!--[if IE]>
@@ -20,7 +26,20 @@
   <![endif]-->
 
   <%-- old css files --%>
-  <jwr:style src="/oldglobal.css"/>
+  <%-- jwr:style src="/oldglobal.css"/ --%>
+
+  	<fd:css href="/assets/css/common/jquery-ui_base/jquery-ui.css" /><%-- jQuery UI base, override in global.css --%>
+  	<fd:css href="/assets/css/modalbox.css" />
+	<fd:css href="/assets/css/global.css" />
+
+	<fd:css href="/assets/css/autocomplete.css" />	
+	<fd:css href="/assets/css/common/autocomplete.css" />	
+	<fd:css href="/assets/css/carousel.css" />	
+
+	<fd:css href="/assets/css/4mm.css" />
+	<fd:css href="/assets/css/quickbuy.css" />
+
+	<fd:css href="/assets/css/common/customer_rating.css" />
 
 	<%
 	if (request.getHeader("User-Agent").indexOf("Mac") > -1) {
