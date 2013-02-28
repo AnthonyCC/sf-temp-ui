@@ -500,7 +500,6 @@
 						</display:SortBar>					
 					</div>
 					<% String viewswitcherClass = "prepend-10 span-4 last"; // class names for the #viewswitcher div %>
-					<%@ include file="/includes/i_viewswitcher.jspf" %>
 				</div>		
 			</div>
 			<div class="product-grid <%= qc.getParameterValue("view","grid")+"-view" %>">
