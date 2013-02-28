@@ -43,6 +43,7 @@ public abstract class GuavaAsyncCache<K, V> {
 	private void initCache(int maxSize, int refreshFrequencyMilliSecond) {
 		
 		cache = CacheBuilder.newBuilder()
+			.weakKeys()
 	       .maximumSize(maxSize)
 	       .refreshAfterWrite(refreshFrequencyMilliSecond, TimeUnit.MILLISECONDS)
 	       .build(
