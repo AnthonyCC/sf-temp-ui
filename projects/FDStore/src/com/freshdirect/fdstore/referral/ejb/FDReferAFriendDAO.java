@@ -91,7 +91,7 @@ public class FDReferAFriendDAO {
 	private static final String GET_REFERRAL_PROMO_BY_ID = "select RP.ID, RP.GIVE_TEXT, RP.GET_TEXT, RP.REFERRAL_FEE, ' ' as AUDIENCE_DESC, " + 
             "RP.SHARE_HEADER, RP.SHARE_TEXT, RP.GIVE_HEADER, RP.GET_HEADER, " + 
             "rp.FB_IMAGE_PATH, rp.FB_HEADLINE, rp.FB_TEXT, rp.TWITTER_TEXT, rp.RL_PAGE_TEXT, rp.RL_PAGE_LEGAL, rp.INV_EMAIL_SUBJECT, " +    
-            "rp.INV_EMAIL_TEXT, rp.INV_EMAIL_LEGAL, rp.REF_CRE_EMAIL_SUB, rp.REF_CRE_EMAIL_TEXT " +
+            "rp.INV_EMAIL_TEXT, rp.INV_EMAIL_LEGAL, rp.REF_CRE_EMAIL_SUB, rp.REF_CRE_EMAIL_TEXT, rp.sa_image_path " +
             "from CUST.REFERRAL_PRGM rp " +
             "where RP.ID =  ?";
 	
