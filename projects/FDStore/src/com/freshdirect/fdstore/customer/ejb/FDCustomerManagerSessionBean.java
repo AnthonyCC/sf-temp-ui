@@ -6953,7 +6953,8 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		"WHERE " +
 		"TO_DATE(TO_CHAR(a.SCANDATE,'HH24:MI:ss'),'HH24:MI:ss') >= TO_DATE(SUBSTR(a.WINDOW,7,8),'HH24:MI:ss') + (1800/86400) " +
 		"AND a.CARTONSTATUS  In  ( 'DELIVERED','REFUSED'  ) " +
-		"AND trunc(a.SCANDATE) = trunc(sysdate) - 1 " +
+		"AND a.SCANDATE BETWEEN TRUNC(SYSDATE - 1) AND TRUNC(SYSDATE) - 1/86400  " +
+		"AND  a.WEBORDERNUM is not null and LENGTH(TRIM(TRANSLATE(a.WEBORDERNUM, '0123456789',' '))) is null  " +
 		"group by a.webordernum, a.WINDOW";
 	
 	public static String GET_ON_TIME_ORDERS = 
@@ -6963,7 +6964,8 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 								  "DLV.CARTONSTATUS a " +
 								"WHERE " +
 								"a.CARTONSTATUS  In ('DELIVERED','REFUSED') " +
-								"AND trunc(a.SCANDATE) = trunc(sysdate)-1 " +
+								"AND a.SCANDATE BETWEEN TRUNC(SYSDATE - 1) AND TRUNC(SYSDATE) - 1/86400 " +
+								"AND  a.WEBORDERNUM is not null and LENGTH(TRIM(TRANSLATE(a.WEBORDERNUM, '0123456789',' '))) is null  " +
 								"AND TO_DATE(TO_CHAR(a.SCANDATE,'HH24:MI'),'HH24:MI') < TO_DATE(SUBSTR(a.WINDOW,7,5),'HH24:MI') " +
 								"group by a.webordernum, a.window";		
 	
