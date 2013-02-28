@@ -67,12 +67,12 @@
 	
 	<rule>		
 		<from>^/v/([0-9]+)/list/plantcapacity/(.*)</from>
-		<to last="true">/dashboard.jx?action=getPlantCapacity&amp;dispatchDate=$2&amp;ver=$1</to>
+		<to last="true">/dashboard.jx?action=getPlantCapacity&amp;dayOfWeek=$2&amp;ver=$1</to>
 	</rule>
 	
 	<rule>		
 		<from>^/v/([0-9]+)/save/plantcapacity/(.*)</from>
-		<to last="true">/dashboard.jx?action=savePlantCapacity&amp;dispatchDate=$2&amp;ver=$1</to>
+		<to last="true">/dashboard.jx?action=savePlantCapacity&amp;dayOfWeek=$2&amp;ver=$1</to>
 	</rule>
 	
 	<rule>		

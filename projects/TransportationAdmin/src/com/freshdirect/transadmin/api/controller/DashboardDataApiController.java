@@ -52,25 +52,10 @@ public class DashboardDataApiController extends BaseApiController {
 		if (ACTION_GET_PLANTCAPACITY.equals(action)) {
 
 			ListDataMessage result = new ListDataMessage();
-			String dayofweek = null;
-			String dispatchDate = request.getParameter("dispatchDate");
-			Calendar baseDate = DateUtil.truncate(Calendar.getInstance());					
-			baseDate.add(Calendar.DATE, 1);
+			String dayofweek = request.getParameter("dayOfWeek");
 			try{
-				if(dispatchDate!=null){
-					dayofweek = TransStringUtil.getServerDay(TransStringUtil.getDate(dispatchDate));
-				}else{
-					dayofweek = TransStringUtil.getServerDay(baseDate.getTime());
-				}
 				Collection capacities = getDashboardManagerService().getPlantCapacity(dayofweek);
 				result.setRows(capacities);
-			}catch (ParseException e) {
-					try {
-						dayofweek = TransStringUtil.getServerDay(baseDate.getTime());
-					} catch (ParseException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
-					}
 			}catch (ServiceException e) {
 				e.printStackTrace();
 				setResponseMessage(model, Message.createFailureMessage("Get Plant Capacity failed."));
@@ -86,23 +71,7 @@ public class DashboardDataApiController extends BaseApiController {
 			try{
 	
 			PlantCapacity[] capacities  =  parseRequestObject(request, response, PlantCapacity[].class);
-			String dispatchDate = request.getParameter("dispatchDate");
-			String dayofweek = null;
-			try{
-			if(dispatchDate!=null){
-				dayofweek = TransStringUtil.getServerDay(TransStringUtil.getDate(dispatchDate));
-			}else{
-				dayofweek = TransStringUtil.getServerDay(new Date());
-			}
-			}catch (ParseException e) {
-				try {
-					dayofweek = TransStringUtil.getServerDay(new Date());
-				} catch (ParseException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-			} 
-			
+			String dayofweek = request.getParameter("dayOfWeek");
 			if(capacities.length>0)
 			getDashboardManagerService().savePlantCapacity(dayofweek, Arrays.asList(capacities));
 			setResponseMessage(model, Message.createSuccessMessage("Save Plant Capacity successful."));

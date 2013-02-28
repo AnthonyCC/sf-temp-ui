@@ -27,12 +27,17 @@
 			<div class="cont_row">
 				<div class="cont_Litem">
 					<div style="float:left;">
-						<div style="margin-top:4px;float:left;font-weight:bold;">Date:&nbsp;</div>
+						<div style="margin-top:4px;float:left;font-weight:bold;">Day of Week:&nbsp;</div>
 						<div style="float:left;">
-							<input style="width:85px;" maxlength="40" name="dispatchDate" id="dispatchDate" value='<c:out value="${dispatchDate}"/>' />
-								                    			
-							<span><input id="view_button" type="image" alt="View" src="./images/icons/view.gif"  onclick="javascript:getCapacityData();" onmousedown="this.src='./images/icons/view_ON.gif'" /></span>
-				
+							<select	class='form-select' id="dayOfWeek" name="dayOfWeek" onchange="javascript:getCapacityData();">
+							<option value="Mon">Monday</option>
+							<option value="Tue">Tuesday</option>
+							<option value="Wed">Wednesday</option>
+							<option value="Thu">Thursday</option>
+							<option value="Fri">Friday</option>
+							<option value="Sat">Saturday</option>
+							<option value="Sun">Sunday</option>
+						</select>
 						</div>
 					</div>			
 				</div>
@@ -242,7 +247,7 @@
 		 
 	  function getCapacityData() {
 	  $.ajax({
-			url : "v/1/list/plantcapacity/"+$("#dispatchDate").val(),
+			url : "v/1/list/plantcapacity/"+$("#dayOfWeek").val(),
 			type : "GET",
 			contentType : "application/json",
 			dataType : "json",
@@ -261,7 +266,7 @@
 				
 				grid = new Slick.Grid("#myGrid", dataView, pc_columns, options);
 				grid.setSelectionModel(new Slick.RowSelectionModel());
-				grid.setSortColumn("dispatchTime",false);
+				grid.setSortColumn("dispatchTime",true);
 				
 				// wire up model events to drive the grid
 				dataView.onRowCountChanged.subscribe(function (e, args) {
@@ -358,7 +363,7 @@
 					}
 					pd_grid = new Slick.Grid("#pdGrid", pd_dataView, pd_columns, options);
 					pd_grid.setSelectionModel(new Slick.RowSelectionModel());
-					pd_grid.setSortColumn("plantDispatch",false);
+					pd_grid.setSortColumn("plantDispatch",true);
 					
 					// wire up model events to drive the grid
 					pd_dataView.onRowCountChanged.subscribe(function (e, args) {
@@ -404,7 +409,6 @@
 	  }
 	  
 	$(document).ready(function () {
-		$("#dispatchDate" ).datepicker();
 		getCapacityData();
 		getDispatchMapData();
 	  });
@@ -445,7 +449,7 @@
 		      function(e) {
 		    	  e.preventDefault();
 		    	  $.ajax({
-					url : "v/1/save/plantcapacity/"+$("#dispatchDate").val(),
+					url : "v/1/save/plantcapacity/"+$("#dayOfWeek").val(),
 					type : "POST",
 					data : "data=" + JSON.stringify(dataView.getItems()),
 					dataType : "html",
