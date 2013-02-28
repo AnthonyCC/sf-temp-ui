@@ -417,7 +417,7 @@
 		    	  $.ajax({
 					url : "v/1/save/plantdispatch/",
 					type : "POST",
-					data : "data=" + JSON.stringify(pd_data),
+					data : "data=" + JSON.stringify(pd_dataView.getItems()),
 					dataType : "html",
 					async : false,
 					success : function(json) {
@@ -447,7 +447,7 @@
 		    	  $.ajax({
 					url : "v/1/save/plantcapacity/"+$("#dispatchDate").val(),
 					type : "POST",
-					data : "data=" + JSON.stringify(data),
+					data : "data=" + JSON.stringify(dataView.getItems()),
 					dataType : "html",
 					async : false,
 					success : function(json) {
