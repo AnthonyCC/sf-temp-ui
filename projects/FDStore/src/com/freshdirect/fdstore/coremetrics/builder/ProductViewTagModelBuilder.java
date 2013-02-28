@@ -19,6 +19,10 @@ public class ProductViewTagModelBuilder {
 		this.quickbuy = quickbuy;
 	}
 
+	public void setVirtualCategoryId(String virtualCategoryId) {
+		model.setVirtualCategoryId(virtualCategoryId);
+	}
+
 	public ProductViewTagModel buildTagModel()  throws SkipTagException {
 		
 		if (productModel == null) {

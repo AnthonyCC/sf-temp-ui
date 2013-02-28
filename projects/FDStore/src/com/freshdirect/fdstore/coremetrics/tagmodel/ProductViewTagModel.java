@@ -5,6 +5,7 @@ public class ProductViewTagModel extends AbstractTagModel  {
 	private String productId; 
 	private String productName; 
 	private String categoryId;
+	private String virtualCategoryId;
 	
 	public String getProductId() {
 		return productId;
@@ -28,5 +29,13 @@ public class ProductViewTagModel extends AbstractTagModel  {
 	
 	public void setCategoryId(String categoryId) {
 		this.categoryId = categoryId;
+	}
+
+	public String getVirtualCategoryId() {
+		return virtualCategoryId;
+	}
+
+	public void setVirtualCategoryId(String virtualCategoryId) {
+		this.virtualCategoryId = virtualCategoryId;
 	} 
 }
