@@ -63,8 +63,6 @@
 							boolean prevSelected = ( selectedTab == k-1 );
 							String varId = tab.get(k).getId();
 							
-							%><fd:CmElement wrapIntoScriptTag="true" elementId="tab_show" elementCategory="cntabs" tabRecommendation="<%=tab%>" tabNumber="<%=k%>"/><%
-							
 							if ( k == 0 ) { // first tab %>				
 								<td height="25px" width="8px" class="tab">
 									<img id="img_<%= varId %>" alt="" src="/media_stat/images/carttab_corners/carttab_first_left_<%= selected?"on":"off" %>.gif" class="tab">
