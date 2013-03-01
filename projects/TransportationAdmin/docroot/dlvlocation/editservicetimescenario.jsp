@@ -213,6 +213,7 @@
     
               <tr>
                   <td colspan="3" align="center">
+                  	<input type = "button" value="&nbsp;Back&nbsp;" onclick="javascript:back('scenario');" />
                    	<input type = "submit" value="&nbsp;Save&nbsp;"  />
                    	<input type = "button" value="Scenario Zones"  onclick="javascript:showScenarioZonesTable(document.getElementById('code').value);"/>
                   </td>                        
@@ -256,5 +257,6 @@
       <%@ include file='i_scenariodaymapping.jspf'%>
       <%@ include file='i_scenariozoneinfo.jspf'%>
      <script>loadBalanceEvent();</script>
+     <form name="scenario" action="dlvservicetimescenario.do" method="post">  </form>
   </tmpl:put>
 </tmpl:insert>

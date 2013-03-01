@@ -129,6 +129,15 @@
 	</div> 
 	 <script>
 	 rowHandlers('ec_table', 'rowMouseOver', 'editdlvservicetimescenario.do','id',0, 0,false,3);
+	 
+	 function getFilterTestValue() {
+         var filters = getFilterValue(document.getElementById("dlvServiceTimeScenarioForm"),false);
+         var param1 = document.getElementById("fromdaterange").value;
+ 		 var param2 = document.getElementById("todaterange").value;
+         filters+="&fromdaterange="+param1;
+         filters+="&todaterange="+param2;      
+         return escape(filters);
+     } 
       
       function deleteScenarioHandlers() {
     		

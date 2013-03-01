@@ -106,7 +106,7 @@ function rowHandlers(tableId, rowClassName, url, paramName, columnIndex, checkCo
 				    	cells[j].onclick = function () {			    		
 				    		var cell = this.parentNode.getElementsByTagName("td")[columnIndex];
 				      		var x= this.parentNode.getElementsByTagName("td")[paramCellIndex];    					      		
-				      		location.href = url+"?"+ paramName + "=" + x.innerHTML;			      	      		
+				      		location.href = url+"?"+ paramName + "=" + x.innerHTML+"&filter="+getFilterTestValue();			      	      		
 				    	};
 				    }
 		    	}

@@ -152,8 +152,15 @@
 	
 	<% if(!"T".equalsIgnoreCase(request.getParameter("empstatus"))) { %>
 		<script>
-			addRangeHandlers('ec_table', 'rowMouseOver', 'editemployee.do','id',0, 0, 8, false);			
+			addRangeHandlers('ec_table', 'rowMouseOver', 'editemployee.do','id',0, 0, 8, false);
 		</script>
 	<% } %>
+	
+	<script>
+		function getFilterTestValue() {
+	        var filters = getFilterValue(document.getElementById("employeeListForm"),false);
+	        return escape(filters);
+	  	}
+	</script>
   </tmpl:put>
 </tmpl:insert>

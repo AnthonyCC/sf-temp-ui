@@ -42,6 +42,8 @@ public class OrderRouteInfoModel  implements IOrderRouteInfo {
 	private Date dispatchTime;
 	private int dispatchSequence;
 	
+	private int orderSize;
+	
 	public boolean isDepot() {
 		return isDepot;
 	}
@@ -246,5 +248,10 @@ public class OrderRouteInfoModel  implements IOrderRouteInfo {
 	public void setDispatchSequence(int dispatchSequence) {
 		this.dispatchSequence = dispatchSequence;
 	}
-
+	public int getOrderSize() {
+		return orderSize;
+	}
+	public void setOrderSize(int orderSize) {
+		this.orderSize = orderSize;
+	}
 }

@@ -25,6 +25,8 @@ public interface ICutOffReport {
 	String CUTOFFREPORT_CONTAINERSTITLE = "Max Containers";
 
 	String CUTOFFREPORT_CARTONSTITLE = "Max Cartons";
+	
+	String CUTOFFREPORT_ROUTESIZETITLE = "Total Route Size";
 
 	void generateCutOffReport(String file, CutOffReportData reportData ) 
 												throws ReportGenerationException, ParseException;
