@@ -16,6 +16,8 @@ public class RoutingStopModel extends OrderModel implements IRoutingStopModel, C
 	private double travelTime;
 	private double serviceTime;
 	
+	private double orderSize;
+	
 	public RoutingStopModel() {
 		super();	
 	}
@@ -137,5 +139,12 @@ public class RoutingStopModel extends OrderModel implements IRoutingStopModel, C
 		
 		return buf.toString();
 	}
-	
+
+	public double getOrderSize() {
+		return orderSize;
+	}
+
+	public void setOrderSize(double orderSize) {
+		this.orderSize = orderSize;
+	}	
 }

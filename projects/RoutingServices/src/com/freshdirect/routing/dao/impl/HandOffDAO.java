@@ -100,8 +100,8 @@ public class HandOffDAO extends BaseDAO implements IHandOffDAO   {
 																	"WEBORDER_ID, ERPORDER_ID, " +
 																	"AREA, DELIVERY_TYPE, WINDOW_STARTTIME, WINDOW_ENDTIME, LOCATION_ID, " +
 																	"SESSION_NAME, ROUTE_NO, ROUTING_ROUTE_NO, " +
-																	"STOP_ARRIVALDATETIME,  STOP_DEPARTUREDATETIME, TRAVELTIME , SERVICETIME, SERVICE_ADDR2) " +
-																	"VALUES ( ?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+																	"STOP_ARRIVALDATETIME,  STOP_DEPARTUREDATETIME, TRAVELTIME , SERVICETIME, SERVICE_ADDR2, ORDERSIZE_SF ) " +
+																	"VALUES ( ?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,? )";
 	
 	private static final String GET_HANDOFFBATCHNEXTSEQ_QRY = "SELECT TRANSP.HANDOFFBATCHSEQ.nextval FROM DUAL";
 	
@@ -213,7 +213,7 @@ public class HandOffDAO extends BaseDAO implements IHandOffDAO   {
 			"ROUTING_ROUTE_NO ,AREA ,STARTTIME,COMPLETETIME ,DISTANCE, TRAVELTIME, SERVICETIME, DISPATCHTIME, DISPATCHSEQUENCE,RN_ROUTE_ID ) VALUES ( ?,?,?,?,?,?,?,?,?,?,?,?,?)";
 	
 	private static final String UPDATE_HANDOFFBATCH_STOP = "UPDATE TRANSP.HANDOFF_BATCHSTOP X set X.ROUTE_NO = ?,X.ROUTING_ROUTE_NO = ?, " +
-			"X.SESSION_NAME = ?, X.STOP_SEQUENCE = ?,  X.STOP_ARRIVALDATETIME = ? ,  X.STOP_DEPARTUREDATETIME = ?, X.TRAVELTIME = ? , X.SERVICETIME = ? " +
+			"X.SESSION_NAME = ?, X.STOP_SEQUENCE = ?,  X.STOP_ARRIVALDATETIME = ? ,  X.STOP_DEPARTUREDATETIME = ?, X.TRAVELTIME = ? , X.SERVICETIME = ?, X.ORDERSIZE_RT = ? " +
 			"WHERE X.BATCH_ID = ? and X.WEBORDER_ID = ?";
 			
 	private static final String CLEAR_HANDOFFBATCH_STOPROUTE = "UPDATE TRANSP.HANDOFF_BATCHSTOP X set X.ROUTE_NO = null,X.ROUTING_ROUTE_NO = null, " +
@@ -222,7 +222,7 @@ public class HandOffDAO extends BaseDAO implements IHandOffDAO   {
 	
 	private static final String GET_HANDOFFBATCH_STOPS = "select hb.DELIVERY_DATE, s.BATCH_ID , s.WEBORDER_ID , s.ERPORDER_ID , s.AREA, s.DELIVERY_TYPE " +
 			", s.WINDOW_STARTTIME ,s.WINDOW_ENDTIME  ,s.LOCATION_ID , s.SESSION_NAME " +
-			",s.ROUTE_NO ,s.ROUTING_ROUTE_NO ,s.STOP_SEQUENCE ,s.STOP_ARRIVALDATETIME ,s.STOP_DEPARTUREDATETIME, s.IS_EXCEPTION, s.SERVICE_ADDR2  " +
+			",s.ROUTE_NO ,s.ROUTING_ROUTE_NO ,s.STOP_SEQUENCE ,s.STOP_ARRIVALDATETIME ,s.STOP_DEPARTUREDATETIME, s.IS_EXCEPTION, s.SERVICE_ADDR2, s.ORDERSIZE_SF  " +
 			",dd.ADDR_TYPE ,dd.COMPANY_NAME ,dd.DIFFICULT_TO_DELIVER ,dd.DIFFICULT_REASON ,dd.ADDITIONAL  " +
 			",dd.IS_DOORMAN  ,dd.IS_WALKUP  ,dd.IS_ELEVATOR ,dd.IS_HOUSE  ,dd.IS_FREIGHT_ELEVATOR " +
 			",dd.SVC_ENT  ,dd.SVC_SCRUBBED_STREET  ,dd.SVC_CITY ,dd.SVC_STATE ,dd.SVC_ZIP ,dd.HAND_TRUCK_ALLOWED " +
@@ -450,6 +450,7 @@ public class HandOffDAO extends BaseDAO implements IHandOffDAO   {
 						deliveryModel.setDeliveryEndTime(rs.getTimestamp("WINDOW_ENDTIME"));
 						deliveryModel.setServiceType(rs.getString("DELIVERY_TYPE"));
 						deliveryModel.setDeliveryModel(rs.getString("DELIVERYMODEL"));
+						deliveryModel.setCalculatedOrderSize(rs.getDouble("ORDERSIZE_SF"));						
 						
 						IZoneModel zoneModel = new ZoneModel();
 						zoneModel.setZoneNumber(rs.getString("AREA"));
@@ -668,6 +669,7 @@ public class HandOffDAO extends BaseDAO implements IHandOffDAO   {
 			
 			batchUpdater.declareParameter(new SqlParameter(Types.NUMERIC));
 			batchUpdater.declareParameter(new SqlParameter(Types.NUMERIC));
+			batchUpdater.declareParameter(new SqlParameter(Types.NUMERIC));
 			
 			batchUpdater.declareParameter(new SqlParameter(Types.VARCHAR));
 			batchUpdater.declareParameter(new SqlParameter(Types.VARCHAR));
@@ -685,6 +687,7 @@ public class HandOffDAO extends BaseDAO implements IHandOffDAO   {
 											, model.getStopDepartureTime()
 											, model.getTravelTime()
 											, model.getServiceTime()
+											, model.getOrderSize()
 											, model.getBatchId()
 											, model.getOrderNumber()
 									});
@@ -1073,6 +1076,7 @@ public class HandOffDAO extends BaseDAO implements IHandOffDAO   {
 				batchUpdater.declareParameter(new SqlParameter(Types.NUMERIC));
 				batchUpdater.declareParameter(new SqlParameter(Types.NUMERIC));
 				batchUpdater.declareParameter(new SqlParameter(Types.VARCHAR));
+				batchUpdater.declareParameter(new SqlParameter(Types.NUMERIC));
 				batchUpdater.compile();
 	
 				
@@ -1095,6 +1099,7 @@ public class HandOffDAO extends BaseDAO implements IHandOffDAO   {
 												, model.getTravelTime()
 												, model.getServiceTime()
 												, model.getDeliveryInfo().getDeliveryLocation().getBuilding().getStreetAddress2()
+												, model.getDeliveryInfo().getCalculatedOrderSize()
 										});
 				}			
 				batchUpdater.flush();

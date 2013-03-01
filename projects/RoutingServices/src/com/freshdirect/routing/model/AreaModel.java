@@ -141,7 +141,7 @@ public class AreaModel extends BaseModel implements IAreaModel  {
 	}
 
 	public boolean isDepot() {
-		return region.isDepot();
+		return region != null ? region.isDepot() : false;
 	}
 	
 	public String toString() {

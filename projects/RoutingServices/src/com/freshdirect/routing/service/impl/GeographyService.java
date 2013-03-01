@@ -408,6 +408,8 @@ public class GeographyService extends BaseService implements IGeographyService {
 			address.setLine1(tmpInputModel.getBuilding().getStreetAddress1());
 			address.setPostalCode(tmpInputModel.getBuilding().getZipCode());
 			address.setCountry(tmpInputModel.getBuilding().getCountry());
+			address.setRegion1(tmpInputModel.getBuilding().getCity());
+			address.setRegion3(tmpInputModel.getBuilding().getState());
 			addressLst[intCount++] = address;
 		}
 

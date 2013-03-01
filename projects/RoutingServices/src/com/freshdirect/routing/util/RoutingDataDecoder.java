@@ -243,6 +243,8 @@ public class RoutingDataDecoder {
 						_stop.setTravelTime(_refStop.getTravelTime());
 						_stop.setServiceTime(_refStop.getServiceTime());
 						
+						_stop.setOrderSize(_refStop.getDeliveryQuantity() != null ? _refStop.getDeliveryQuantity().getSize1() : 0);
+						
 						result.getStops().add(_stop);
 					}
 				}
