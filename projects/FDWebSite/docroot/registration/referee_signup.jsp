@@ -81,6 +81,9 @@
 	<%@ include file="/shared/template/includes/i_body_start.jspf" %>
 			
 		<jsp:include page="/shared/template/includes/server_info.jsp" flush="false"/>
+		<%
+			request.setAttribute("listPos", "SystemMessage,DeliveryFees");
+		%>
 		<jsp:include page="/common/template/includes/ad_server.jsp" flush="false"/>
 		
 		<% if(refname != null) { %>

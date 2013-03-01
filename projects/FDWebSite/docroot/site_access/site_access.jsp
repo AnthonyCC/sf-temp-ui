@@ -90,7 +90,7 @@
     
     //--------OAS Page Variables-----------------------
 request.setAttribute("sitePage", "www.freshdirect.com/site_access/site_access.jsp");
-request.setAttribute("listPos", "CategoryNote,SiteAccess");
+request.setAttribute("listPos", "CategoryNote,SiteAccess,DeliveryFees");
     
 	//String actionURI = "/site_access/site_access.jsp";
 	String actionURI = request.getRequestURI()+"?siteAccessPage="+siteAccessPage+"&successPage="+successPage;

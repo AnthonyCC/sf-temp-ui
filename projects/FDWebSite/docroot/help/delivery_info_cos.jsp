@@ -39,6 +39,8 @@ if (user != null) {
 
 request.setAttribute("survey_source","deliveryInfo Page");
 
+request.setAttribute("listPos", "SystemMessage,DeliveryFees");
+
 %>
 <tmpl:insert template='/common/template/delivery_info_nav.jsp'>
 	<tmpl:put name='title' direct='true'>Delivery Information</tmpl:put>

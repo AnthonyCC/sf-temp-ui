@@ -35,6 +35,9 @@ String faqSections = FDStoreProperties.getFaqSections();
 </head>
 <BODY BGCOLOR="#FFFFFF" LINK="#336600" VLINK="#336600" ALINK="#FF9900" TEXT="#333333">
 <%@ include file="/shared/template/includes/i_body_start.jspf" %>
+<%
+	request.setAttribute("listPos", "SystemMessage,DeliveryFees");
+%>
 <%@ include file="/common/template/includes/globalnav.jspf" %> 
 <CENTER CLASS="text10">
 <TABLE WIDTH="<%=W_FAQ_HELP_TOTAL%>" BORDER="0" CELLPADDING="0" CELLSPACING="0">
