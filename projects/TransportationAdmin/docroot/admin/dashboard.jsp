@@ -21,7 +21,7 @@
 		<%@ include file='/common/i_yui.jspf'%>
 	</tmpl:put>
 	
-	
+	<script type="text/javascript" src="js/dashboard.js"></script>
   <div class="contentroot">
   		<div class="cont_topleft">
 			<div class="cont_row">
@@ -104,8 +104,12 @@
 	    grid.invalidateRow(r);
 	    r++;
 	  }
+	  dataView.beginUpdate();
 	  dataView.setItems(dd);
+	  dataView.endUpdate();
+	  dataView.refresh();
 	  grid.updateRowCount();
+	  grid.invalidate();
 	  grid.render();
 	  grid.scrollRowIntoView(current_row-1);
 	  }
@@ -117,8 +121,12 @@
 		  pd_grid.invalidateRow(r);
 	    r++;
 	  }
+	  pd_dataView.beginUpdate();
 	  pd_dataView.setItems(dd);
+	  pd_dataView.endUpdate();
+	  pd_dataView.refresh();
 	  pd_grid.updateRowCount();
+	  pd_grid.invalidate();
 	  pd_grid.render();
 	  pd_grid.scrollRowIntoView(current_row-1);
 	  }
@@ -150,102 +158,11 @@
 	  pd_dataView = new Slick.Data.DataView();
 		
 	  
-	  function TimeEditor(args) {
-		  var $input;
-		  var scope = this;
-		  var defaultValue;
-		  this.init = function () {
-			  $input = $("<INPUT type=text class='editor-text' onblur='this.value=time(this.value);' />")
-		          .appendTo(args.container)
-		          .bind("keydown", scope.handleKeyDown)
-				  .focus()
-				  .select();
-		    };
-		    
-		    this.handleKeyDown = function (e) {
-			      if (e.keyCode === $.ui.keyCode.LEFT || e.keyCode === $.ui.keyCode.RIGHT) {
-			        e.stopImmediatePropagation();
-			      } if (e.keyCode === $.ui.keyCode.TAB) {
-			    	  $input.val(time($input.val()));
-			      }
-			    };
-			    this.destroy = function () {
-			        $input.remove();
-			      };
-
-			      this.focus = function () {
-			        $input.focus();
-			      };
-
-			      this.getValue = function () {
-			        return $input.val();
-			      };
-
-			      this.setValue = function (val) {
-			        $input.val(val);
-			      };
-
-			
-			      this.loadValue = function (item) {
-			          defaultValue = item[args.column.field] || "";
-			          $input.val(defaultValue);
-			          $input[0].defaultValue = defaultValue;
-			          $input.select();
-			        };
-
-			        this.serializeValue = function () {
-			          return $input.val();
-			        };
-
-			        this.applyValue = function (item, state) {
-			          item[args.column.field] = state;
-			        };
-
-			        this.isValueChanged = function () {
-			          return (!($input.val() == "" && defaultValue == null)) && ($input.val() != defaultValue);
-			        };
-
-			        this.validate = function () {
-			            if (args.column.validator) {
-			              var validationResults = args.column.validator($input.val());
-			              if (!validationResults.valid) {
-			                return validationResults;
-			              }
-			            }
-
-			            return {
-			              valid: true,
-			              msg: null
-			            };
-			          };
-			          
-					this.init();
-			    
-		  }
 	  
-	  
-		function compareTimes(a, b) { 
-		    if(daterize(convert12to24(a[sortcol])) > daterize(convert12to24(b[sortcol]))) return 1;
-		    if(daterize(convert12to24(a[sortcol])) < daterize(convert12to24(b[sortcol]))) return -1;
-		    return 0;
-		}
-		function convert12to24(timeStr){
-		    var meridian = timeStr.substr(timeStr.length-2).toLowerCase();
-		    var hours =  timeStr.substr(0, timeStr.indexOf(':'));
-		    var minutes = timeStr.substring(timeStr.indexOf(':')+1, timeStr.indexOf(' '));
-		    if (meridian=='pm'){
-		    	if(hours!=12)
-		       		hours=hours*1+12;
-		    }
-		    return hours+':'+minutes+":00";
-		}
-
-		function daterize(time) {
-		    return Date.parse("Thu, 01 Jan 1970 " + time + " GMT");
-		}
-		
-		 
 	  function getCapacityData() {
+	  $('#pc_message').html("");
+	  data = [];
+		  
 	  $.ajax({
 			url : "v/1/list/plantcapacity/"+$("#dayOfWeek").val(),
 			type : "GET",
@@ -283,6 +200,8 @@
 				dataView.beginUpdate();
 			    dataView.setItems(data,"dispatchTime");
 			    dataView.endUpdate();
+			    dataView.refresh();
+			    grid.invalidate();
 			    grid.render();
 				$('#myGrid').show();
 				
@@ -298,6 +217,7 @@
 				      var item = args.item;
 				      grid.invalidateRow(data.length);
 				      dataView.addItem(item);
+				      dataView.refresh();
 				      grid.updateRowCount();
 				      grid.render();
 				    });
@@ -346,7 +266,7 @@
 		}
 	  
 	  function getDispatchMapData(){
-		  
+		  $('#pd_message').html("");
 		  $.ajax({
 				url : "v/1/list/plantdispatch/",
 				type : "GET",
@@ -378,6 +298,8 @@
 					pd_dataView.beginUpdate();
 					pd_dataView.setItems(pd_data,"dispatchTime");
 					pd_dataView.endUpdate();
+					pd_dataView.refresh();
+					pd_grid.invalidate();
 					pd_grid.render();
 					$('#pdGrid').show();
 					
@@ -395,6 +317,7 @@
 					      var item = args.item;
 					      pd_grid.invalidateRow(pd_data.length);
 					      pd_dataView.addItem(item);
+					      pd_dataView.refresh();
 					      pd_grid.updateRowCount();
 					      pd_grid.render();
 					    });

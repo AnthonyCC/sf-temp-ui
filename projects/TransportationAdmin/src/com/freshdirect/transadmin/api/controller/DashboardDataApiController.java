@@ -72,7 +72,6 @@ public class DashboardDataApiController extends BaseApiController {
 	
 			PlantCapacity[] capacities  =  parseRequestObject(request, response, PlantCapacity[].class);
 			String dayofweek = request.getParameter("dayOfWeek");
-			if(capacities.length>0)
 			getDashboardManagerService().savePlantCapacity(dayofweek, Arrays.asList(capacities));
 			setResponseMessage(model, Message.createSuccessMessage("Save Plant Capacity successful."));
 			}
@@ -102,7 +101,6 @@ public class DashboardDataApiController extends BaseApiController {
 
 			try{
 				PlantDispatch[] dispatches  =  parseRequestObject(request, response, PlantDispatch[].class);
-				if(dispatches.length>0)
 				getDashboardManagerService().savePlantDispatch(Arrays.asList(dispatches));
 				setResponseMessage(model, Message.createSuccessMessage("Save Plant Dispatch successful."));
 			}
