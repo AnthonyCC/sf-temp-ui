@@ -168,6 +168,7 @@ FD_QuickBuy.showPanel = function(deptId, catId, prdId, iatcNamespace, tracking) 
 		YAHOO.util.Dom.addClass( FD_QuickBuy._getCloseButton(ctPanel.body), oStyle.closeButton );
 		
 		ctPanel.hideEvent.subscribe(function(e){
+			ctPanel.setBody(" ");
 			setTimeout(function() {ctPanel.destroy();}, 0);
 		});
 		
