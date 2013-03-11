@@ -217,7 +217,7 @@ public class DispatchVolumeSessionBean extends SessionBeanSupport {
 		{
 			for(IRouteModel route: routes)
 			{
-				if(wavesByDispatchTime.get(route.getWaveId())!=null) 
+				if(route.getWaveId()!=null && wavesByDispatchTime.get(route.getWaveId())!=null)
 					route.setDispatchTime(wavesByDispatchTime.get(route.getWaveId()).getDispatchTime());
 				else{
 					LOGGER.info("wave is missing in transapp reference id->"+route.getWaveId()+" routeNo->"+route.getRouteId()+" start time->"+route.getStartTime());
@@ -232,11 +232,13 @@ public class DispatchVolumeSessionBean extends SessionBeanSupport {
 	private Map<RoutingTimeOfDay, DispatchVolumeModel> groupbyDispatch(Map<IAreaModel, List<IRouteModel>> map, List<IWaveInstance> wavesByDispatchTime,Map<RoutingTimeOfDay, Integer> plantCapacity, Date snapshotTime, Date deliveryDate, Map<RoutingTimeOfDay, RoutingTimeOfDay> plantDispatchMap){
 		Map<RoutingTimeOfDay, DispatchVolumeModel> dispatchMap = new HashMap<RoutingTimeOfDay, DispatchVolumeModel>();
 		RoutingTimeOfDay plantDispatch = null;
-		for(List<IRouteModel> routes: map.values()){
-			for(IRouteModel route: routes){
+		for(Map.Entry<IAreaModel, List<IRouteModel>> entry: map.entrySet()){
+			for(IRouteModel route: entry.getValue()){
 				plantDispatch = getPlantDispatch(plantDispatchMap, route.getDispatchTime());
 				if(plantDispatch!=null){
 					if(!dispatchMap.containsKey(plantDispatch)){ dispatchMap.put(plantDispatch, new DispatchVolumeModel()); }
+					if(entry.getKey()!=null && entry.getKey().isDepot())
+						dispatchMap.get(plantDispatch).setNoOftrucks(dispatchMap.get(plantDispatch).getNoOftrucks()+1);
 					dispatchMap.get(plantDispatch).setOrderCount(dispatchMap.get(plantDispatch).getOrderCount()+route.getStops().size());
 					dispatchMap.get(plantDispatch).setDispatchTime(plantDispatch);
 					dispatchMap.get(plantDispatch).setDispatchDate(deliveryDate);
@@ -250,8 +252,8 @@ public class DispatchVolumeSessionBean extends SessionBeanSupport {
 			plantDispatch = getPlantDispatch(plantDispatchMap, waveInstance.getDispatchTime());
 			
 			if(!dispatchMap.containsKey(plantDispatch)){ dispatchMap.put(plantDispatch, new DispatchVolumeModel()); }
-			
-			dispatchMap.get(plantDispatch).setNoOftrucks(dispatchMap.get(plantDispatch).getNoOftrucks()+waveInstance.getNoOfResources());
+			if(!waveInstance.getArea().isDepot())
+				dispatchMap.get(plantDispatch).setNoOftrucks(dispatchMap.get(plantDispatch).getNoOftrucks()+waveInstance.getNoOfResources());
 			dispatchMap.get(plantDispatch).setPlantCapacity((plantCapacity!=null && plantCapacity.get(plantDispatch)!=null)?plantCapacity.get(plantDispatch):0);
 			dispatchMap.get(plantDispatch).setPlannedCapacity(dispatchMap.get(plantDispatch).getPlannedCapacity()+calculatePlannedCapacity(waveInstance));
 			dispatchMap.get(plantDispatch).setDispatchTime(plantDispatch);
