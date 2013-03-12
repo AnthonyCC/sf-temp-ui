@@ -117,7 +117,7 @@
       <form id="deliveryLocationForm" action="" method="post">  
         <ec:table items="dlvlocations"   action="${pageContext.request.contextPath}/dlvlocation.do"
             imagePath="${pageContext.request.contextPath}/images/table/*.gif"   title="&nbsp;"
-            width="98%"  view="fd" form="deliveryLocationForm" autoIncludeParameters="false" rowsDisplayed="25"  >            	
+            width="98%"  view="fd" form="deliveryLocationForm" autoIncludeParameters="true" rowsDisplayed="25"  >            	
 				
             <ec:exportPdf fileName="transportationdlvlocations.pdf" tooltip="Export PDF" 
                       headerTitle="Delivery Locations" />
