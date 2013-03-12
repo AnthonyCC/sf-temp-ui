@@ -1900,7 +1900,7 @@ public class FDUser extends ModelSupport implements FDUserI {
 					String zoneId=FDZoneInfoManager.findZoneId(getZPServiceType().getName(), getZipCode());
 					//[APPDEV-2857] Blocking Alcohol for customers outside of Alcohol Delivery Area
 					boolean alcoholRestrictedByContext=false;
-					if(this.getZipCode() != null) {
+					if(this.getZipCode() != null && FDStoreProperties.isAlcoholRestrictionByContextEnabled()) {
 						String county = FDDeliveryManager.getInstance().lookupCountyByZip(this.getZipCode());
 						String state = FDDeliveryManager.getInstance().lookupStateByZip(this.getZipCode());
 						alcoholRestrictedByContext = FDDeliveryManager.getInstance().checkForAlcoholDelivery(state, county, this.getZipCode());							

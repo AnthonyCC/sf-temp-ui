@@ -592,6 +592,8 @@ public class FDStoreProperties {
 	public final static String PRODUCT_RATING_REFRESH_PERIOD = "fdstore.productrating.refreshperiod";
 	
 	public final static String PRODUCT_RATING_RELOAD = "fdstore.productrating.reload";
+	
+	private final static String PROP_ALCOHOLFILTERING_ENABLED = "fdstore.alcoholfiltering.enabled";
 
     static {
         defaults.put(PROP_ROUTING_PROVIDER_URL, "t3://localhost:7001");
@@ -1166,7 +1168,8 @@ public class FDStoreProperties {
 		defaults.put(PROP_COHORT_MATCHER, "");
 		defaults.put(PROP_USQ_LEGAL_WARNING, "true");		
 		defaults.put(PRODUCT_RATING_REFRESH_PERIOD, "12");
-		defaults.put(PRODUCT_RATING_RELOAD, "true");		
+		defaults.put(PRODUCT_RATING_RELOAD, "true");
+		defaults.put(PROP_ALCOHOLFILTERING_ENABLED, "true");
         refresh();
     }
 
@@ -3003,9 +3006,14 @@ public class FDStoreProperties {
 	 }
 	 public static int getProductRatingRefreshInterval() {
 	        return Integer.parseInt(get(PRODUCT_RATING_REFRESH_PERIOD));
-	   }  
+	 }
+	 
 	 public static boolean isProductRatingReload() {
 			return (Boolean.valueOf(get(PRODUCT_RATING_RELOAD))).booleanValue();
+	 }
+	 
+	 public static boolean isAlcoholRestrictionByContextEnabled() {
+			return (Boolean.valueOf(get(PROP_ALCOHOLFILTERING_ENABLED))).booleanValue();
 	 }
 	 
 }

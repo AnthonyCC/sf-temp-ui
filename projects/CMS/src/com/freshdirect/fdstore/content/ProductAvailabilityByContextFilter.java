@@ -29,10 +29,10 @@ public class ProductAvailabilityByContextFilter extends AbstractProductFilter {
 						&& ContentFactory.getInstance().getCurrentPricingContext().getUserContext() != null
 						&& ContentFactory.getInstance().getCurrentPricingContext().getUserContext().isAlcoholRestricted()
 						&& product.getCategory() != null 
-						&& (product.getCategory().isHavingBeer() 
-									|| (product.getPrimaryHome() != null && product.getPrimaryHome().isHavingBeer()))   
-						&& product.getSkus() != null && product.getSkus().size() > 0 
-						&& product.getSku(0).getProduct().isAlcohol());
+						&& (((product.getCategory().isHavingBeer() 
+									|| (product.getPrimaryHome() != null && product.getPrimaryHome().isHavingBeer())))   
+						|| (product.getSkus() != null && product.getSkus().size() > 0 
+						&& product.getSku(0).getProduct().isAlcohol())));
 		} catch (FDResourceException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
