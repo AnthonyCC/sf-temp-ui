@@ -86,20 +86,20 @@ public class GeographyService extends BaseService implements IGeographyService {
 	}
 
 	public IGeocodeResult getGeocode(ILocationModel model) throws RoutingServiceException {
-		return getGeocode(null, model.getBuilding().getStreetAddress1(), model.getBuilding().getZipCode(), model.getBuilding().getCountry());
+		return getGeocode(null, model.getBuilding().getStreetAddress1(), model.getBuilding().getZipCode(), model.getBuilding().getCountry(), model.getBuilding().getCity(), model.getBuilding().getState());
 
 	}
 
 	public IGeocodeResult getGeocode(String street, String zipCode, String country) throws RoutingServiceException  {
 		
-		return getGeocode( null, street, zipCode, country);
+		return getGeocode( null, street, zipCode, country, null, null);
 	}
 	
-	private IGeocodeResult getGeocode(IGeocodeEngine geocodeEngine, String street, String zipCode, String country) throws RoutingServiceException  {
+	private IGeocodeResult getGeocode(IGeocodeEngine geocodeEngine, String street, String zipCode, String country, String city, String state) throws RoutingServiceException  {
 		if(geocodeEngine != null) {
-			return geocodeEngine.getGeocode( street, zipCode, country);
+			return geocodeEngine.getGeocode( street, zipCode, country, city, state);
 		} else {
-			return baseGeocodeEngine.getGeocode( street, zipCode, country);
+			return baseGeocodeEngine.getGeocode( street, zipCode, country, city, state);
 		}
 	}
 	
@@ -339,7 +339,9 @@ public class GeographyService extends BaseService implements IGeographyService {
 		IGeocodeResult geocodeResult = getGeocode(geocodeEngine
 													, baseModel.getBuilding().getStreetAddress1()
 														, baseModel.getBuilding().getZipCode()
-															, baseModel.getBuilding().getCountry());
+															, baseModel.getBuilding().getCountry()
+																, baseModel.getBuilding().getCity()
+																	, baseModel.getBuilding().getState());
 		IGeographicLocation geoLocation = geocodeResult.getGeographicLocation();					
 		
 		if(!RoutingUtil.isGeocodeAcceptable(geoLocation.getConfidence(), geoLocation.getQuality())) {

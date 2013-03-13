@@ -19,7 +19,7 @@ import com.freshdirect.routing.util.RoutingUtil;
 
 public class BaseGeocodeEngine extends BaseService implements IGeocodeEngine {
 	
-	public IGeocodeResult getGeocode(String street, String zipCode, String country) throws RoutingServiceException {
+	public IGeocodeResult getGeocode(String street, String zipCode, String country, String city, String state) throws RoutingServiceException {
 		
 		IGeocodeResult geocodeResult = new GeocodeResult();
 		IGeographicLocation result = new GeographicLocation();
@@ -28,7 +28,7 @@ public class BaseGeocodeEngine extends BaseService implements IGeocodeEngine {
 
 			RouteNetWebService port = getRouteNetBatchService();
 			
-			Address address = RoutingDataEncoder.encodeAddress(street, zipCode, country); 
+			Address address = RoutingDataEncoder.encodeAddress(street, zipCode, country, city, state); 
 						
 			//GeocodeOptions options = new GeocodeOptions();
 			//options.setReturnCandidates(true);

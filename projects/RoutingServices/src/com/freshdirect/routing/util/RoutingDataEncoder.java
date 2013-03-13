@@ -771,12 +771,14 @@ public class RoutingDataEncoder {
 		return identity;
 	}
 	
-	public static com.freshdirect.routing.proxy.stub.roadnet.Address encodeAddress(String street, String zipCode, String country) {
+	public static com.freshdirect.routing.proxy.stub.roadnet.Address encodeAddress(String street, String zipCode, String country, String city, String state) {
 		
 		com.freshdirect.routing.proxy.stub.roadnet.Address address = new com.freshdirect.routing.proxy.stub.roadnet.Address();
 		address.setLine1(street);
 		address.setPostalCode(zipCode);
 		address.setCountry(country);
+		address.setRegion1(city);
+		address.setRegion3(state);
 		return address;
 	}
 	
