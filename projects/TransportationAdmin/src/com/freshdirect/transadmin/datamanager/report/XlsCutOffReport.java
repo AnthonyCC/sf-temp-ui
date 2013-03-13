@@ -429,9 +429,9 @@ public class XlsCutOffReport extends BaseXlsReport implements ICutOffReport  {
 						int orderSizeCnt = 0;
 						List stopLst = (List) reportData.getReportData().get(tmpKey);
 						if (stopLst != null) {
-							Iterator _stopItr = routeIds.iterator();
+							Iterator _stopItr = stopLst.iterator();
 							while(_stopItr.hasNext()){
-								 OrderRouteInfoModel _stop = (OrderRouteInfoModel) _stopItr;
+								 OrderRouteInfoModel _stop = (OrderRouteInfoModel) _stopItr.next();
 								 orderSizeCnt = orderSizeCnt + _stop.getOrderSize();
 							}
 						}
