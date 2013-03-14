@@ -564,6 +564,7 @@ public class FDStoreProperties {
 	private final static String PROP_BAZAARVOICE_DOWNLOAD_FEED_SOURCEPATH = "fdstore.bazaarvoice.download.feed.sourcepath";
 	private final static String PROP_BAZAARVOICE_DOWNLOAD_FEED_FILE = "fdstore.bazaarvoice.download.feed.file";
 	private final static String PROP_BAZAARVOICE_DOWNLOAD_FEED_TARGETPATH = "fdstore.bazaarvoice.download.feed.target.path";
+	private final static String PROP_BAZAARVOICE_EXCLUDED_DEPTS = "fdstore.bazaarvoice.excluded.depts";
 	
 	private final static String ALLOW_DISCOUNTS_ON_PREMIUM_SLOT = "fdstore.allow.discount.premium.slot";
 	
@@ -1148,6 +1149,7 @@ public class FDStoreProperties {
 		defaults.put(PROP_BAZAARVOICE_DOWNLOAD_FEED_SOURCEPATH, "feeds");
 		defaults.put(PROP_BAZAARVOICE_DOWNLOAD_FEED_FILE, "bv_freshdirect_standard_client_feed.xml.gz");
 		defaults.put(PROP_BAZAARVOICE_DOWNLOAD_FEED_TARGETPATH, "/opt/fdlog/bv_feed/");
+		defaults.put(PROP_BAZAARVOICE_EXCLUDED_DEPTS, "veg,fru,sea,mea,usq");
 						
 		defaults.put(ALLOW_DISCOUNTS_ON_PREMIUM_SLOT, "false");
 		defaults.put(DLV_PASS_NEW_TC_DATE, "2012-05-09");
@@ -2954,6 +2956,17 @@ public class FDStoreProperties {
 
 	public static String getBazaarvoiceDownloadFeedTargetPath() {
 		return get(PROP_BAZAARVOICE_DOWNLOAD_FEED_TARGETPATH);
+	}
+	
+	public static List<String> getBazaarvoiceExcludedDepts(){
+		String[] source = get(PROP_BAZAARVOICE_EXCLUDED_DEPTS).split(",");
+		
+		List<String> theList = new ArrayList<String>();
+		for(String dept: source){
+			theList.add(dept.trim());
+		}
+		
+		return theList;
 	}
 
 	public static boolean isGiftCardDonationEnabled() {

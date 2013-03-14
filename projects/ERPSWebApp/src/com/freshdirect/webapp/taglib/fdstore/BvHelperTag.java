@@ -8,6 +8,7 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.tagext.SimpleTagSupport;
 
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.content.CategoryModel;
 import com.freshdirect.fdstore.content.DepartmentModel;
 import com.freshdirect.fdstore.content.ProductModel;
@@ -17,10 +18,12 @@ public class BvHelperTag extends SimpleTagSupport{
 	private ProductModel product;
 	
 	// Bazaarvoice department exclude list
-	public static final List<String> BV_FREE_DEPTS = Arrays.asList( "veg", "fru", "sea", "mea", "usq" );
+	public static List<String> BV_FREE_DEPTS;// = Arrays.asList( "veg", "fru", "sea", "mea", "usq" );
 	
 	@Override
 	public void doTag() throws JspException, IOException {
+		
+		BV_FREE_DEPTS = FDStoreProperties.getBazaarvoiceExcludedDepts();
 		
 		boolean showReviews = true;
 		DepartmentModel dept = null;
