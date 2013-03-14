@@ -29,6 +29,7 @@ public class HandOffBatchStop extends RoutingStopModel implements IHandOffBatchS
 		this.setRoutingRouteId(refModel.getRoutingRouteId());
 		this.setTravelTime(refModel.getTravelTime());
 		this.setServiceTime(refModel.getServiceTime());
+		this.setOrderSize(refModel.getOrderSize());
 	}
 	
 	public HandOffBatchStop() {
