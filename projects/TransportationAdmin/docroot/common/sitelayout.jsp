@@ -122,24 +122,26 @@
 				<div>
 					<div class="t_tab_hspacer" style="padding:0 450px;">
 						<div style="display:none;position:absolute;top:400px;left:600px" id="ajaxBusy"><img src="./images/ajaxload.gif"></div>
+						<div style="position:absolute;top:6px;text-align:center;">
 						<% 
 						 String waveNotification = NotificationManager.getInstance().getWaveNotification(request);						 
 						 if(waveNotification != null && RoutingServicesProperties.getRoutingDynaSyncEnabled()) { %>
-							<div style="border:2px solid red;padding:3px;background-color:#b0c4de;font-size: 12px;font-style: italic;text-align:center;font-weight: bold;text-decoration: blink;">
+							<span style="border:2px dotted red;padding:3px;background-color:#F2F2F2;font-size: 12px;font-style: italic;text-align:center;font-weight: bold;text-decoration: blink;margin-right:3px;">
 								<%= waveNotification %> 
-							</div>
+							</span>
 						<% } else { %>
 							 &nbsp;
 						<% } %>
 						<% 
 						 String handoffNotification = NotificationManager.getInstance().getHandoffNotification(request);						 
 						 if(handoffNotification != null) { %>
-							<div style="border:2px solid blue;padding:3px;background-color:#00FF00;font-size: 12px;font-style: italic;text-align:center;font-weight: bold;text-decoration: blink;">
+							<span style="border:2px dotted blue;padding:3px;background-color:#F2F2F2;font-size: 12px;font-style: italic;text-align:center;font-weight: bold;text-decoration: blink;">
 								<%= handoffNotification %> 
-							</div>
+							</span>
 						<% } else { %>
 							 &nbsp;
 						<% } %>
+						</div>
 					</div>
 														
 					<div class="<%= currentRootMenuId %>">

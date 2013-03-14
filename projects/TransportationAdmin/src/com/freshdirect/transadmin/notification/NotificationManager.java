@@ -79,7 +79,7 @@ public class NotificationManager {
 			Set<IHandOffBatch> batches = proxy.getHandOffBatch(bean.getDeliveryDate());			
 			for(IHandOffBatch batch : batches) {
 				if(batch != null && batch.getStatus().equals(EnumHandOffBatchStatus.COMPLETED)) {
-					return "Handoff committed - No Auto-Dispatch";
+					return "Handoff committed - No Auto dispatch";
 				}
 			}
 		} catch(Exception e) {
