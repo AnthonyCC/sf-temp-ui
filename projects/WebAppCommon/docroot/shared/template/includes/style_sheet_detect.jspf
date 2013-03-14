@@ -9,13 +9,7 @@
 	int layoutTypeCSS = (request.getAttribute("layoutType") == null) ? -1 : Integer.parseInt(request.getAttribute("layoutType").toString());
 %><% if (FDStoreProperties.isFlushOscache()) { %><oscache:flush /><% } %>
   <%-- global css files, header, footer, etc. --%>
-  <%-- jwr:style src="/global.css"/ --%>
-  
-  <fd:css href="/assets/css/common/globalnav.css" />
-  <fd:css href="/assets/css/common/footer.css" />
-  <fd:css href="/assets/css/common/freshdirect.css" />
-  <fd:css href="/assets/css/common/globalnav_and_footer.css"/>
-  <fd:css href="/assets/css/common/star_rating.css"/>
+  <jwr:style src="/global.css"/>
 
   <%-- IE + IE6 fixes --%>
   <!--[if IE]>
@@ -26,24 +20,13 @@
   <![endif]-->
 
   <%-- old css files --%>
-  <%-- jwr:style src="/oldglobal.css"/ --%>
-
-  	<fd:css href="/assets/css/common/jquery-ui_base/jquery-ui.css" /><%-- jQuery UI base, override in global.css --%>
-  	<fd:css href="/assets/css/modalbox.css" />
-	<fd:css href="/assets/css/global.css" />
+  <jwr:style src="/oldglobal.css"/>
 
 	<%
 	if (request.getHeader("User-Agent").indexOf("Mac") > -1) {
 		%><fd:css href="/assets/css/mac_ie.css" /><%
-	} else {
-		%><fd:css href="/assets/css/pc_ie.css" /><%
 	}
 	%>
-	
-	<fd:css href="/assets/css/autocomplete.css" />	
-	<fd:css href="/assets/css/common/autocomplete.css" />	
-	<fd:css href="/assets/css/carousel.css" />	
-
 	<!--[if lte IE 6]>
 	<fd:css href="/assets/css/pngfix_ie6.css" />
 	<![endif]--> 
@@ -52,17 +35,12 @@
 	<fd:css href="/assets/css/wine-ie.css" />
 	<![endif]-->
 	
-	<fd:css href="/assets/css/4mm.css" />
-	<fd:css href="/assets/css/quickbuy.css" />
-
 	<% if (layoutTypeCSS == EnumLayoutType.PRESIDENTS_PICKS.getId()) { %>
     <%-- TODO: create a jawr bundle, don't use if --%>
 		<fd:css href="/assets/css/common/grid_supplement.css" />
  		<fd:css href="/assets/css/common/product_grid.css" />
 		<fd:css href="/assets/css/search.css" />
  	<% } %>
-	
-	<fd:css href="/assets/css/common/customer_rating.css" />
 	
 	<%-- Keep the media include last, so it can always override any css auto-loaded --%>
 	<fd:IncludeMedia name="/media/editorial/site_pages/stylesheet.html" />

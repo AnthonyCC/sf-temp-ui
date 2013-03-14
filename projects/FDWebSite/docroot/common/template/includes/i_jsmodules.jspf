@@ -1,17 +1,5 @@
 <%@ taglib uri="http://jawr.net/tags" prefix="jwr" %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%-- this file will be included just before the closing </body> tag --%>
-<%-- jwr:script src="/fdmodules.js" / --%>
+<jwr:script src="/fdmodules.js" />
 
-<fd:javascript src="/assets/javascript/fd/common/utils.js"/>
-<fd:javascript src="/assets/javascript/fd/common/placeholder.js"/>	 
-<fd:javascript src="/assets/javascript/fd/common/unselectable.js"/>	 
-<fd:javascript src="/assets/javascript/fd/common/tooltip.js"/>	 
-<fd:javascript src="/assets/javascript/fd/common/clickleavetoggler.js"/>	 
-<fd:javascript src="/assets/javascript/fd/common/autocomplete.js"/>	 
-
-<fd:javascript src="/assets/javascript/fd/modules/header/notifications.js"/>	 
-<fd:javascript src="/assets/javascript/fd/modules/header/loginbox.js"/>	 
-<fd:javascript src="/assets/javascript/fd/modules/header/popsubmenu.js"/>	 
-<fd:javascript src="/assets/javascript/fd/modules/header/pinnedsearchbar.js"/>	 
-<fd:javascript src="/assets/javascript/fd/modules/coremetrics/carousel.js"/>	 
