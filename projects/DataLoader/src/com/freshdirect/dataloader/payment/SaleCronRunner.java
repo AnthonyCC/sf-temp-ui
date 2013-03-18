@@ -50,7 +50,7 @@ public class SaleCronRunner {
 		long authTimeout;
 
 		if (args.length >= 1) {
-			int minutes = 15;
+			int minutes = 7;
 			try {
 				// first parameter is for authTimeout
 				minutes = Integer.parseInt(args[0]);
@@ -61,7 +61,7 @@ public class SaleCronRunner {
 			authTimeout = minutes * 60 * 1000;
 		}else{
 			LOGGER.warn("NO timeout was passed for Authorizations defaulting to 15 mins");
-			authTimeout = 15 * 60 * 1000;
+			authTimeout = 7 * 60 * 1000;
 		}
 
 		Context ctx = null;
