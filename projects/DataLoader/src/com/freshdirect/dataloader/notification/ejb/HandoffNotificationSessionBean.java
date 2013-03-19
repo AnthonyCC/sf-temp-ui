@@ -21,7 +21,7 @@ public class HandoffNotificationSessionBean extends SessionBeanSupport{
 	private static final String GET_HANDOFF_COMPLETED = "select b.batch_id, b.delivery_date, b.cutoff_datetime, ba.action_datetime "+
 				" from transp.handoff_batch b, transp.handoff_batchaction ba "+
 				" where b.batch_id = ba.batch_id and b.delivery_date between trunc(sysdate) and trunc(sysdate+1) "+
-				" and ba.action_type = 'COM' and b.batch_status = 'CPD/ADC' "+
+				" and ba.action_type = 'COM' and b.batch_status = 'CPD' "+
 				" order by b.cutoff_datetime"; 
 	
 	
