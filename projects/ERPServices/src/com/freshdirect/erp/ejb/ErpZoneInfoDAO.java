@@ -208,7 +208,7 @@ public class ErpZoneInfoDAO {
 	             if(rs.next()) {
 	            	 String regionId=rs.getString("REGION_ID");
 	            	 ErpZoneRegionInfo regionInfo=getZoneRegionInfoDetails(conn,regionId);
-	            	 List zoneZipList=getZoneInfoZipDetails(conn,regionInfo);
+	            	 //List zoneZipList=getZoneInfoZipDetails(conn,regionInfo);
 	            	 String sapId=rs.getString("SAP_ID");
 	            	 int version=rs.getInt("VERSION");
 	            	 String desc=rs.getString("DESCRIPTION");
@@ -243,7 +243,7 @@ public class ErpZoneInfoDAO {
 	             while(rs.next()) {
 	            	 String regionId=rs.getString("REGION_ID");
 	            	 ErpZoneRegionInfo regionInfo=getZoneRegionInfoDetails(conn,regionId);
-	            	 List zoneZipList=getZoneInfoZipDetails(conn,regionInfo);
+	            	 //List zoneZipList=getZoneInfoZipDetails(conn,regionInfo);
 	            	 String sapId=rs.getString("SAP_ID");
 	            	 int version=rs.getInt("VERSION");
 	            	 String desc=rs.getString("DESCRIPTION");
