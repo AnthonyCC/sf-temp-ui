@@ -100,6 +100,7 @@ public class Promotion extends ModelSupport implements PromotionI {
 	
 	public void addApplicator(PromotionApplicatorI applicator) {
 		this.applicators.add(applicator);
+		setPriority();
 	}
 	
 	public List getApplicatorList() {
@@ -176,11 +177,11 @@ public class Promotion extends ModelSupport implements PromotionI {
 	public void setPriority() {
 		if(this.isWaiveCharge() && this.isSampleItem()) {
 			//Sample && Dlv promo
-			setPriority(20);
-		} else if(this.isSampleItem())
+			setPriority(25);
+		} else if(this.isSampleItem() && !(this.isLineItemDiscount()||this.isHeaderDiscount()))
 			//Sample Promo
 			setPriority(10);
-		else if(this.isWaiveCharge())
+		else if(this.isWaiveCharge() && !(this.isLineItemDiscount()||this.isHeaderDiscount()))
 			//Delivery Promo
 			setPriority(20);	
 		else if(this.isExtendDeliveryPass())
