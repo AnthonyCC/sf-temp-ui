@@ -10,6 +10,8 @@ INSERT INTO CUST.SS_VARIANTS(ID, FEATURE, TYPE, CONFIG_ID, ALIAS_ID, ARCHIVED)
   VALUES('srch_pers_promo', 'SRCH', 'alias', NULL, 'sc_personal', 'N');
 INSERT INTO CUST.SS_VARIANT_PARAMS(ID, KEY, VALUE)
   VALUES('srch_pers_promo', 'prez_title', 'Other Customers Enjoyed...');
+INSERT INTO CUST.SS_VARIANT_PARAMS(ID, KEY, VALUE)
+  VALUES('srch_pers_promo', 'srch_promoted', 'true');
 
 
 INSERT INTO CUST.SS_VARIANT_ASSIGNMENT (COHORT_ID, "DATE", VARIANT_ID) VALUES ('C1',  SYSDATE, 'srch_pers');
