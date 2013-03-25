@@ -204,7 +204,7 @@ final int W_INDEX_RIGHT_CENTER = W_INDEX_TOTAL - 228 - W_INDEX_CENTER_PADDING;
 				<div class="search-recommender">
 			<h3><%= r.getVariant().getServiceConfig().getPresentationTitle() %></h3>
 			<script type="text/javascript">
-				var search_recommender_events = {"afterScroll":  <fd:CmElement wrapIntoFunction="true" siteFeature="SRCH" elementCategory="carousel"/>} 
+				var search_recommender_events = {"afterScroll":  <fd:CmElement wrapIntoFunction="true" siteFeature="<%= r.getVariant().getSiteFeature().getName() %>" elementCategory="carousel"/>} 
 			</script>
 			<display:Carousel id="cat1_carousel" carouselId="cat1_carousel" width="816" numItems="4" showCategories="false" itemsToShow="<%= r.getProducts() %>" trackingCode="<%= trk %>" maxItems="32" eventHandlersObj="search_recommender_events">
 				<span class="smartstore-carousel-item">
