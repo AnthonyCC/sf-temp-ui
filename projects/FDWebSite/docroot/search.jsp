@@ -178,51 +178,62 @@ final int W_INDEX_RIGHT_CENTER = W_INDEX_TOTAL - 228 - W_INDEX_CENTER_PADDING;
 		</div>
 		<div class="back-to-top"><a href="#content_top">back to top</a></div>
 	</tmpl:put>
-	<%
+<%
 	/*
 	 * First try to get personal recommendations
 	 */
-	Recommendations r = null;
+	Recommendations rec = null;
+	boolean promote_recommendation_row = false;
 	boolean fallBack = true;
 	%><fd:ProductGroupRecommender itemCount="16" siteFeature="SRCH" facility="default" id="recommendedProducts">
 	<%
 		fallBack = false;
-		r = recommendedProducts;
+		rec = recommendedProducts;  // <-- round #1, personal recommendations, no fall back
+		promote_recommendation_row =
+			Boolean.parseBoolean( rec.getVariant().getServiceConfig().get("srch_promoted") );
 	%>
 	</fd:ProductGroupRecommender>
 	<% if (fallBack) {
 		ProductModel firstProduct = ((ListIterator<FilteringSortingItem <ProductModel>>)products.listIterator()).next().getModel();
 	%><fd:ProductGroupRecommender itemCount="16" siteFeature="SRCH_RLTD" facility="default" currentNode="<%= firstProduct %>" id="relatedProducts" excludeAlcoholicContent="<%= true %>">
 	<%
-	r = relatedProducts;
+		rec = relatedProducts; // <-- round #2, related items
 	%>
 	</fd:ProductGroupRecommender><%
 	}
-	/* Recommendation end */
+
+
+	/*
+	 * Recommendation end
+	 */
+
+	// System.err.println("## rec: " + rec);
+	// System.err.println("## promote_recommendation_row: " + promote_recommendation_row);
 	%>
 	<tmpl:put name="recommendations-content" direct="true">
+	<% if (rec != null) { %>
 				<div class="search-recommender">
-			<h3><%= r.getVariant().getServiceConfig().getPresentationTitle() %></h3>
+			<h3><%= rec.getVariant().getServiceConfig().getPresentationTitle() %></h3>
 			<script type="text/javascript">
-				var search_recommender_events = {"afterScroll":  <fd:CmElement wrapIntoFunction="true" siteFeature="<%= r.getVariant().getSiteFeature().getName() %>" elementCategory="carousel"/>} 
+				var search_recommender_events = {"afterScroll":  <fd:CmElement wrapIntoFunction="true" siteFeature="<%= rec.getVariant().getSiteFeature().getName() %>" elementCategory="carousel"/>} 
 			</script>
-			<display:Carousel id="cat1_carousel" carouselId="cat1_carousel" width="816" numItems="4" showCategories="false" itemsToShow="<%= r.getProducts() %>" trackingCode="<%= trk %>" maxItems="32" eventHandlersObj="search_recommender_events">
+			<display:Carousel id="cat1_carousel" carouselId="cat1_carousel" width="816" numItems="4" showCategories="false" itemsToShow="<%= rec.getProducts() %>" trackingCode="<%= trk %>" maxItems="32" eventHandlersObj="search_recommender_events">
 				<span class="smartstore-carousel-item">
 					<display:GetContentNodeWebId id="webId" product="<%= currentItem %>" clientSafe="<%= true %>">
 					<% ProductImpression pi = confStrat.configure((ProductModel)currentItem, confContext); %>
-					<a href="<%=CmMarketingLinkUtil.getSmartStoreLink(FDURLUtil.getProductURI(pi.getProductModel(), trk), r)%>" hidden style="display: none;" class="product-name-link"></a> <%-- For Coremetrics impression tracking --%>
-					<% pageContext.setAttribute("PRODUCT_BOX_VARIANT", r.getVariant().getId()); %>
+					<a href="<%=CmMarketingLinkUtil.getSmartStoreLink(FDURLUtil.getProductURI(pi.getProductModel(), trk), rec)%>" hidden style="display: none;" class="product-name-link"></a> <%-- For Coremetrics impression tracking --%>
+					<% pageContext.setAttribute("PRODUCT_BOX_VARIANT", rec.getVariant().getId()); %>
 					<div class="grid-item-container"><%@ include file="/includes/product/i_product_box.jspf" %></div>
 					</display:GetContentNodeWebId>
 				</span>
 			</display:Carousel>
 		</div>
-	</tmpl:put>	
+	<% } %>	
+	</tmpl:put>
 	<%
 	// ##                                                ##
 	// ## Look if customer gets promoted search position ##
 	// ##                                                ##
-	boolean promote_recommendation_row = ( Boolean.parseBoolean(r.getVariant().getServiceConfig().get("srch_promoted")) == true);	
 	if (promote_recommendation_row) {
 		%>
 		
