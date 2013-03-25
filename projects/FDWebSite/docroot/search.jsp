@@ -1,3 +1,8 @@
+<%@page import="com.freshdirect.smartstore.fdstore.Recommendations"%>
+<%@page import="com.freshdirect.smartstore.fdstore.VariantSelectorFactory"%>
+<%@page import="com.freshdirect.fdstore.util.EnumSiteFeature"%>
+<%@page import="com.freshdirect.smartstore.Variant"%>
+<%@page import="com.freshdirect.smartstore.fdstore.OverriddenVariantsHelper"%>
 <%@ page import='com.freshdirect.webapp.util.*'%>
 <%@ page import="com.freshdirect.fdstore.content.DomainValue"%>
 <%@ page import='com.freshdirect.framework.webapp.*'%>
@@ -173,28 +178,76 @@ final int W_INDEX_RIGHT_CENTER = W_INDEX_TOTAL - 228 - W_INDEX_CENTER_PADDING;
 		</div>
 		<div class="back-to-top"><a href="#content_top">back to top</a></div>
 	</tmpl:put>
-	
+	<%
+	/*
+	 * First try to get personal recommendations
+	 */
+	Recommendations r = null;
+	boolean fallBack = true;
+	%><fd:ProductGroupRecommender itemCount="16" siteFeature="SRCH" facility="default" id="recommendedProducts">
+	<%
+		fallBack = false;
+		r = recommendedProducts;
+	%>
+	</fd:ProductGroupRecommender>
+	<% if (fallBack) {
+		ProductModel firstProduct = ((ListIterator<FilteringSortingItem <ProductModel>>)products.listIterator()).next().getModel();
+	%><fd:ProductGroupRecommender itemCount="16" siteFeature="SRCH_RLTD" facility="default" currentNode="<%= firstProduct %>" id="relatedProducts" excludeAlcoholicContent="<%= true %>">
+	<%
+	r = relatedProducts;
+	%>
+	</fd:ProductGroupRecommender><%
+	}
+	/* Recommendation end */
+	%>
 	<tmpl:put name="recommendations-content" direct="true">
-		<fd:ProductGroupRecommender itemCount="16" siteFeature="SRCH" facility="default" id="recommendedProducts">
-		<div class="search-recommender">
-			<h3><%= recommendedProducts.getVariant().getServiceConfig().getPresentationTitle() %></h3>
+				<div class="search-recommender">
+			<h3><%= r.getVariant().getServiceConfig().getPresentationTitle() %></h3>
 			<script type="text/javascript">
 				var search_recommender_events = {"afterScroll":  <fd:CmElement wrapIntoFunction="true" siteFeature="SRCH" elementCategory="carousel"/>} 
 			</script>
-			<display:Carousel id="cat1_carousel" carouselId="cat1_carousel" width="816" numItems="4" showCategories="false" itemsToShow="<%= recommendedProducts.getProducts() %>" trackingCode="<%= trk %>" maxItems="32" eventHandlersObj="search_recommender_events">
+			<display:Carousel id="cat1_carousel" carouselId="cat1_carousel" width="816" numItems="4" showCategories="false" itemsToShow="<%= r.getProducts() %>" trackingCode="<%= trk %>" maxItems="32" eventHandlersObj="search_recommender_events">
 				<span class="smartstore-carousel-item">
 					<display:GetContentNodeWebId id="webId" product="<%= currentItem %>" clientSafe="<%= true %>">
 					<% ProductImpression pi = confStrat.configure((ProductModel)currentItem, confContext); %>
-					<a href="<%=CmMarketingLinkUtil.getSmartStoreLink(FDURLUtil.getProductURI(pi.getProductModel(), trk), recommendedProducts)%>" hidden style="display: none;" class="product-name-link"></a> <%-- For Coremetrics impression tracking --%>
-					<%pageContext.setAttribute("PRODUCT_BOX_VARIANT",recommendedProducts.getVariant().getId());%>
+					<a href="<%=CmMarketingLinkUtil.getSmartStoreLink(FDURLUtil.getProductURI(pi.getProductModel(), trk), r)%>" hidden style="display: none;" class="product-name-link"></a> <%-- For Coremetrics impression tracking --%>
+					<% pageContext.setAttribute("PRODUCT_BOX_VARIANT", r.getVariant().getId()); %>
 					<div class="grid-item-container"><%@ include file="/includes/product/i_product_box.jspf" %></div>
 					</display:GetContentNodeWebId>
 				</span>
 			</display:Carousel>
 		</div>
-		</fd:ProductGroupRecommender>	
 	</tmpl:put>	
 	<%
+	// ##                                                ##
+	// ## Look if customer gets promoted search position ##
+	// ##                                                ##
+	boolean promote_recommendation_row = ( Boolean.parseBoolean(r.getVariant().getServiceConfig().get("srch_promoted")) == true);	
+	if (promote_recommendation_row) {
+		%>
+		
+		<tmpl:put name="content" direct="true">
+			<%
+			pageContext.setAttribute("ISONSEARCHPAGE",true);
+			for (ListIterator<FilteringSortingItem <ProductModel>> it=products.listIterator() ; it.hasNext();) {
+				{
+				ProductImpression pi = confStrat.configure(it.next().getModel(), confContext);
+				%><div class="grid-item-container"><%@ include file="/includes/product/i_product_box.jspf" %></div><%
+				}		
+				// RECOMMENDER for "show all"
+				if ( it.nextIndex() == 12 ) {
+				%>
+				<tmpl:get name="recommendations-content" />
+				<%
+				}
+						
+			} 
+			%>
+			
+		</tmpl:put>
+		<%		
+	} else {
+		
 	// RECOMMENDER for "view 20"
 	if ( nav.getPageSize() != 0) { %>
 	<tmpl:put name="recommendations" direct="true">
@@ -221,7 +274,7 @@ final int W_INDEX_RIGHT_CENTER = W_INDEX_TOTAL - 228 - W_INDEX_CENTER_PADDING;
 		%>
 		
 	</tmpl:put>
-
+	<% }%>
   <tmpl:put name='filterNavigator'>
     <% 
     	request.setAttribute("filtermenus", menus);
