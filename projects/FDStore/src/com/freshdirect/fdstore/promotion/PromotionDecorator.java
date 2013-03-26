@@ -144,8 +144,7 @@ public class PromotionDecorator {
 
 		PromotionApplicatorI applicator = this.getApplicator(promotion.getPromotionCode());
 		if (applicator != null) {
-			//((Promotion)promotion).setApplicator(applicator);
-			((Promotion)promotion).addApplicator(applicator);
+			((Promotion)promotion).setApplicator(applicator);
 		}
 
 	}

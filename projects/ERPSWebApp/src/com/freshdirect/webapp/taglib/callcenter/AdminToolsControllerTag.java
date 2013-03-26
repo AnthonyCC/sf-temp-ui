@@ -87,7 +87,6 @@ import com.freshdirect.fdstore.customer.FDPaymentInadequateException;
 import com.freshdirect.fdstore.customer.adapter.FDOrderAdapter;
 import com.freshdirect.fdstore.promotion.ExtendDeliveryPassApplicator;
 import com.freshdirect.fdstore.promotion.Promotion;
-import com.freshdirect.fdstore.promotion.PromotionApplicatorI;
 import com.freshdirect.fdstore.promotion.PromotionFactory;
 import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.GenericSearchCriteria;
@@ -1195,25 +1194,11 @@ public class AdminToolsControllerTag extends AbstractControllerTag {
 	        			modCart.setDlvPromotionApplied(true);
 	        			break;
 	        		}
-	        		//APPDEV-2850 - combinable offers
-					ExtendDeliveryPassApplicator app = null;
-					for (Iterator<PromotionApplicatorI> i = promotion.getApplicatorList().iterator(); i.hasNext();) {
-						PromotionApplicatorI _applicator = i.next();
-						if (_applicator instanceof ExtendDeliveryPassApplicator) {
-							app = (ExtendDeliveryPassApplicator)_applicator;						
-						}
-					}
-					if(app != null) {
-	        			modCart.setDlvPassExtn(new ExtendDPDiscountModel(promotion.getPromotionCode(), app.getExtendDays()));
-	        			break;
-					}
-					/*
 	        		if(promotion.isExtendDeliveryPass()) {
 	        			ExtendDeliveryPassApplicator app = (ExtendDeliveryPassApplicator)promotion.getApplicator();
 	        			modCart.setDlvPassExtn(new ExtendDPDiscountModel(promotion.getPromotionCode(), app.getExtendDays()));
 	        			break;
 	        		}
-	        		*/
 	        	}
 	        	//Set Delivery Region Info
 	        	FDTimeslot selectedTimeslot = modCart.getDeliveryReservation().getTimeslot();

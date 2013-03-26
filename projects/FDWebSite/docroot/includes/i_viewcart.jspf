@@ -691,7 +691,6 @@ FDIdentity identity = user.getIdentity();
 	PromotionI redemptionPromo = user.getRedeemedPromotion();
     String promoCode = redemptionPromo != null ? redemptionPromo.getPromotionCode() : "";
     boolean isRedemptionApplied = (redemptionPromo != null && user.getPromotionEligibility().isApplied(redemptionPromo.getPromotionCode()));
-	boolean removeLinkDisplayed = false;
 
 
     List discounts = cart.getDiscounts();
@@ -707,7 +706,6 @@ FDIdentity identity = user.getIdentity();
 			</tr>	   
 			<%
 		} else if (isRedemptionApplied && promoCode.equalsIgnoreCase(discount.getPromotionCode())) { 
-			removeLinkDisplayed = true;
 			%>
 			<tr valign="top" class="orderSummary">
 				<td colspan="3" align="right"><b><a href="javascript:popup('/shared/promotion_popup.jsp?promoCode=<%= promoCode%>','small')"><%= redemptionPromo.getDescription()%></a></b>:</td>
@@ -733,7 +731,7 @@ FDIdentity identity = user.getIdentity();
     		}
 	}
     
-	if (isRedemptionApplied ) {
+	if (isRedemptionApplied) {
 	    if (redemptionPromo.isSampleItem()) {
     	%>
         <tr valign="top" class="orderSummary">
@@ -743,7 +741,7 @@ FDIdentity identity = user.getIdentity();
             <td colspan="1">&nbsp;<a href="<%= request.getRequestURI() %>?action=removeCode" class="note">Remove</a></td>
         </tr>
         <%
-	    } else if (redemptionPromo.isWaiveCharge() && !removeLinkDisplayed) {
+	    } else if (redemptionPromo.isWaiveCharge()) {
         %>
             <tr valign="top" class="orderSummary">
                 <td colspan="3" align="right"><b><a href="javascript:popup('/shared/promotion_popup.jsp?promoCode=<%= promoCode%>','small')"><%= redemptionPromo.getDescription()%></a></b>:</td>

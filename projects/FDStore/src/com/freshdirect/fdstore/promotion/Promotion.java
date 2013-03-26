@@ -38,8 +38,6 @@ public class Promotion extends ModelSupport implements PromotionI {
 	private final List<PromotionStrategyI> strategies = new ArrayList<PromotionStrategyI>();
 	
 	//private final List lineItemStrategies= new ArrayList();
-	
-	private final List<PromotionApplicatorI> applicators = new ArrayList<PromotionApplicatorI>();
 
 	private PromotionApplicatorI applicator;
 	
@@ -65,7 +63,7 @@ public class Promotion extends ModelSupport implements PromotionI {
 			return p1 - p2;
 		}
 	};
-	
+
 	public Promotion(PrimaryKey pk, EnumPromotionType promotionType,
 			String promotionCode, String name, String description,
 			Timestamp lastModified) {
@@ -97,22 +95,13 @@ public class Promotion extends ModelSupport implements PromotionI {
 		this.strategies.add(strategy);
 		Collections.sort(this.strategies, PRECEDENCE_COMPARATOR);
 	}
-	
-	public void addApplicator(PromotionApplicatorI applicator) {
-		this.applicators.add(applicator);
-		setPriority();
-	}
-	
-	public List getApplicatorList() {
-		return this.applicators;
-	}
 /*	
 	public void addLineItemStrategy(PromotionStrategyI strategy) {
 		this.lineItemStrategies.add(strategy);
 		Collections.sort(this.lineItemStrategies, PRECEDENCE_COMPARATOR);
 	}
 */	
-/*
+
 	public void setApplicator(PromotionApplicatorI applicator) {
 		this.applicator = applicator;
 		if(this.isSampleItem())
@@ -148,7 +137,6 @@ public class Promotion extends ModelSupport implements PromotionI {
 	public PromotionApplicatorI getApplicator() {
 		return this.applicator;
 	}
-	*/
 
 	public EnumPromotionType getPromotionType() {
 		return this.promotionType;
@@ -174,48 +162,11 @@ public class Promotion extends ModelSupport implements PromotionI {
 		this.priority = priority;
 	}
 	
-	public void setPriority() {
-		if(this.isWaiveCharge() && this.isSampleItem()) {
-			//Sample && Dlv promo
-			setPriority(25);
-		} else if(this.isSampleItem() && !(this.isLineItemDiscount()||this.isHeaderDiscount()))
-			//Sample Promo
-			setPriority(10);
-		else if(this.isWaiveCharge() && !(this.isLineItemDiscount()||this.isHeaderDiscount()))
-			//Delivery Promo
-			setPriority(20);	
-		else if(this.isExtendDeliveryPass())
-			//Extend Delivery Pass Promo
-			setPriority(30);	
-		else if(this.isLineItemDiscount() && this.isCombineOffer())
-			//Combine offer promotions are guaranteed to apply. 
-			setPriority(35);
-		else if(this.isHeaderDiscount() && this.isCombineOffer())
-			//Combine offer promotions are guaranteed to apply. 
-			setPriority(37);
-		else if(this.isSignupDiscount())
-			//Signup promo
-			setPriority(40);
-		else if(this.isRedemption())
-			//Redemption promo
-			setPriority(50);
-		else if(this.isLineItemDiscount())
-			//DCPD promotion
-			setPriority(60);
-		else{
-			//Any other automatic percent off or dollar off.
-			setPriority(70);
-		}
-	}
-	
 	/**
 	 * @return true if the Promotion is configured properly.
 	 */
 	public boolean isValid() {
-		//return this.applicator != null ;
-		if (this.applicators == null || this.applicators.size() == 0)
-			return false;
-		return true;
+		return this.applicator != null ;
 	}
 
 	public boolean evaluate(PromotionContextI context) {
@@ -248,13 +199,7 @@ public class Promotion extends ModelSupport implements PromotionI {
 	}
 
 	public boolean apply(PromotionContextI context) {
-		boolean applied = false;
-		for (Iterator<PromotionApplicatorI> i = this.applicators.iterator(); i.hasNext();) {
-			PromotionApplicatorI _applicator = i.next();
-			applied = _applicator.apply(this.promotionCode, context);
-		}
-		//return this.applicator.apply(this.promotionCode, context);
-		return applied;
+		return this.applicator.apply(this.promotionCode, context);
 	}
 	/*
 	public boolean applyLineItem(PromotionContextI context) {
@@ -289,22 +234,12 @@ public class Promotion extends ModelSupport implements PromotionI {
 	//FIXME List of what? Types are mixed up here (HeaderDiscountRule <--> DCPDiscountRule <--> SignupDiscountRule), 
 	// this will cause ClassCastException-s ( getHeaderDiscountTotal() will try to cast to HeaderDiscountRule for example)
 	public List getHeaderDiscountRules() {
-		for (Iterator<PromotionApplicatorI> i = this.applicators.iterator(); i.hasNext();) {
-			PromotionApplicatorI _applicator = i.next();
-			if (_applicator instanceof SignupDiscountApplicator) {
-				return ((SignupDiscountApplicator) _applicator).getDiscountRules();
-			} else if (_applicator instanceof HeaderDiscountApplicator) {
-				HeaderDiscountRule rule = ((HeaderDiscountApplicator) _applicator).getDiscountRule();
-				return Arrays.asList(new HeaderDiscountRule[] { rule });
-			}
-		}		
-		/*
 		if (this.applicator instanceof SignupDiscountApplicator) {
 			return ((SignupDiscountApplicator) this.applicator).getDiscountRules();
 		} else if (this.applicator instanceof HeaderDiscountApplicator) {
 			HeaderDiscountRule rule = ((HeaderDiscountApplicator) this.applicator).getDiscountRule();
 			return Arrays.asList(new HeaderDiscountRule[] { rule });
-		}*//* else if (this.applicator instanceof DCPDiscountApplicator) {
+		}/* else if (this.applicator instanceof DCPDiscountApplicator) {
 			DCPDiscountRule rule = ((DCPDiscountApplicator) this.applicator).getDiscountRule();
 			return Arrays.asList(new DCPDiscountRule[] { rule });
 		}*/
@@ -325,65 +260,28 @@ public class Promotion extends ModelSupport implements PromotionI {
 	}
 
 	public double getLineItemDiscountPercentage() {
-		for (Iterator<PromotionApplicatorI> i = this.applicators.iterator(); i.hasNext();) {
-			PromotionApplicatorI _applicator = i.next();
-			if(_applicator instanceof LineItemDiscountApplicator){
-				return ((LineItemDiscountApplicator)_applicator).getPercentOff();
-			}
-		}
-		/*
 		if(applicator instanceof LineItemDiscountApplicator){
 			return ((LineItemDiscountApplicator)applicator).getPercentOff();
 		}
-		*/
+
 		return 0.0;
 	}
 	
 	public boolean isSampleItem() {
-		for (Iterator<PromotionApplicatorI> i = this.applicators.iterator(); i.hasNext();) {
-			PromotionApplicatorI _applicator = i.next();
-			if(_applicator instanceof SampleLineApplicator){
-				return true;
-			}
-		}
-		return false;
-		//return this.applicator instanceof SampleLineApplicator;
+		return this.applicator instanceof SampleLineApplicator;
 	}
 
 	public boolean isWaiveCharge() {
-		for (Iterator<PromotionApplicatorI> i = this.applicators.iterator(); i.hasNext();) {
-			PromotionApplicatorI _applicator = i.next();
-			if(_applicator instanceof WaiveChargeApplicator){
-				return true;
-			}
-		}
-		return false;
-		//return this.applicator instanceof WaiveChargeApplicator;
+		return this.applicator instanceof WaiveChargeApplicator;
 	}
 	
 	public boolean isExtendDeliveryPass() {
-		for (Iterator<PromotionApplicatorI> i = this.applicators.iterator(); i.hasNext();) {
-			PromotionApplicatorI _applicator = i.next();
-			if(_applicator instanceof ExtendDeliveryPassApplicator){
-				return true;
-			}
-		}
-		return false;
-		//return this.applicator instanceof ExtendDeliveryPassApplicator;
+		return this.applicator instanceof ExtendDeliveryPassApplicator;
 	}
 	
 	public boolean isHeaderDiscount() {
-		for (Iterator<PromotionApplicatorI> i = this.applicators.iterator(); i.hasNext();) {
-			PromotionApplicatorI _applicator = i.next();
-			if(_applicator instanceof HeaderDiscountApplicator || 
-					_applicator instanceof PercentOffApplicator){
-				return true;
-			}
-		}
-		return false;
-		
-		//return (this.applicator instanceof HeaderDiscountApplicator || 
-				//this.applicator instanceof PercentOffApplicator); 
+		return (this.applicator instanceof HeaderDiscountApplicator || 
+				this.applicator instanceof PercentOffApplicator); 
 		
 	}
 	
@@ -393,33 +291,10 @@ public class Promotion extends ModelSupport implements PromotionI {
 	
 	
 	public boolean isSignupDiscount() {
-		for (Iterator<PromotionApplicatorI> i = this.applicators.iterator(); i.hasNext();) {
-			PromotionApplicatorI _applicator = i.next();
-			if(_applicator instanceof SignupDiscountApplicator){
-				return true;
-			}
-		}
-		return false;
-		//return this.applicator instanceof SignupDiscountApplicator;
+		return this.applicator instanceof SignupDiscountApplicator;
 	}
 	
 	public double getMinSubtotal() {
-		for (Iterator<PromotionApplicatorI> i = this.applicators.iterator(); i.hasNext();) {
-			PromotionApplicatorI _applicator = i.next();
-			if (_applicator instanceof SampleLineApplicator) {
-				return ((SampleLineApplicator) _applicator).getMinSubtotal();
-			}
-			if (_applicator instanceof PercentOffApplicator) {
-				return ((PercentOffApplicator) _applicator).getMinSubtotal();
-			}
-			if (_applicator instanceof WaiveChargeApplicator) {
-				return ((WaiveChargeApplicator) _applicator).getMinSubtotal();
-			}
-			if (_applicator instanceof LineItemDiscountApplicator) {
-				return ((LineItemDiscountApplicator) _applicator).getMinSubtotal();
-			}
-		}
-		/*
 		if (this.applicator instanceof SampleLineApplicator) {
 			return ((SampleLineApplicator) this.applicator).getMinSubtotal();
 		}
@@ -432,7 +307,7 @@ public class Promotion extends ModelSupport implements PromotionI {
 		if (this.applicator instanceof LineItemDiscountApplicator) {
 			return ((LineItemDiscountApplicator) this.applicator).getMinSubtotal();
 		}
-		*/
+
 		List discountRules = this.getHeaderDiscountRules();
 		if (discountRules == null) {
 			return 0;
@@ -494,12 +369,7 @@ public class Promotion extends ModelSupport implements PromotionI {
 			sb.append("\n\t\t");
 			sb.append(i.next());
 		}
-		sb.append("\n\t], Applicator=");
-		for (Iterator<PromotionApplicatorI> i = this.applicators.iterator(); i.hasNext();) {
-			PromotionApplicatorI _applicator = i.next();
-			sb.append("\n\t\t");
-			sb.append(_applicator);
-		}
+		sb.append("\n\t], Applicator=").append(this.applicator).append("\n]");
 		return sb.toString();
 	}
 /*
@@ -535,14 +405,7 @@ public class Promotion extends ModelSupport implements PromotionI {
 
 	public boolean isLineItemDiscount() {
 		// TODO Auto-generated method stub
-		for (Iterator<PromotionApplicatorI> i = this.applicators.iterator(); i.hasNext();) {
-			PromotionApplicatorI _applicator = i.next();
-			if(_applicator instanceof LineItemDiscountApplicator) {
-				return true;
-			}
-		}
-		return false;
-		//return this.applicator instanceof LineItemDiscountApplicator;
+		return this.applicator instanceof LineItemDiscountApplicator;
 	}
 	
 	
@@ -563,36 +426,20 @@ public class Promotion extends ModelSupport implements PromotionI {
 		this.recommendedItemsOnly = recommendedItemsOnly;
 	}
 	 public boolean isFavoritesOnly(){
-		 for (Iterator<PromotionApplicatorI> i = this.applicators.iterator(); i.hasNext();) {
-			PromotionApplicatorI _applicator = i.next();
-			if(_applicator instanceof LineItemDiscountApplicator){
-				 LineItemDiscountApplicator app = (LineItemDiscountApplicator) _applicator;
-				 return app.isFavoritesOnly();
-			 }
-		 }
-		 /*
 		 if(applicator instanceof LineItemDiscountApplicator){
 			 LineItemDiscountApplicator app = (LineItemDiscountApplicator) applicator;
 			 return app.isFavoritesOnly();
-		 }*/
+		 }
 		 return false;
 	 }
 
 	 
 	 public double getLineItemDiscountPercentOff(){
 		 double percentOff=0;
-		 for (Iterator<PromotionApplicatorI> i = this.applicators.iterator(); i.hasNext();) {
-			PromotionApplicatorI _applicator = i.next();
-			if(_applicator instanceof LineItemDiscountApplicator) {
-				LineItemDiscountApplicator app=(LineItemDiscountApplicator)applicator;
-				 percentOff=app.getPercentOff();
-			}
-		 }
-		 /*
 		 if(isLineItemDiscount()){
 			 LineItemDiscountApplicator app=(LineItemDiscountApplicator)applicator;
 			 percentOff=app.getPercentOff();
-		 }*/
+		 }
 		 return percentOff;
 	 }
 	 
