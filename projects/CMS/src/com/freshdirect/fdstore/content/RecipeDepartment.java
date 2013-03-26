@@ -113,5 +113,9 @@ public class RecipeDepartment extends ContentNodeModelImpl implements HasRedirec
     public Html getRecipeEditorial() {
         return FDAttributeFactory.constructHtml(this, "editorial");
     }
+    
+	public String getFullName() {
+		return getName();
+	}
 	
 }

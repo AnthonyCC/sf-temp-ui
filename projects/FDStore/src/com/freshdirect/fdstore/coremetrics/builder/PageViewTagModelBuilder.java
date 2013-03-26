@@ -10,14 +10,15 @@ import com.freshdirect.fdstore.coremetrics.tagmodel.PageViewTagModel;
 
 public class PageViewTagModelBuilder  {
 	
-	/**
-	 * enum for all category ids not listed in FDStoreProperties - used in CDF generation too
-	 */
+	/** enum for all category ids not listed in FDStoreProperties - used in CDF generation too */
 	public enum CustomCategory {
-		SEARCH, SO_TEMPLATE
+		SEARCH, SO_TEMPLATE, ACCOUNT, BUYING_GUIDES, CART, ERROR, HOMEPAGE, INVITE, POPUPS, RECIPE, NEW_PRODUCTS_DEPARTMENT
 	}
 	
 	private static final String PAGE_ID_DELIMITER = ": ";
+	private static final String INDEX_FILE = "index.jsp";
+	private static final int INDEX_FILE_SUFFIX_LENGTH = INDEX_FILE.length();
+	
 
 	private HttpServletRequest request;
 	private Integer searchResultsSize;
@@ -26,6 +27,7 @@ public class PageViewTagModelBuilder  {
 	private Integer recipeSearchResultsSize;
 	private ProductModel productModel;
 	private ContentNodeModel currentFolder;
+	private String recipeSource;
 	private PageViewTagModel tagModel = new PageViewTagModel();
 	
 	public PageViewTagModel buildTagModel() throws SkipTagException{
@@ -67,7 +69,88 @@ public class PageViewTagModelBuilder  {
 			}
 		} 
 		
-		//could not identify category from uri
+		//could not identify category from uri yet, try custom categorization rules 
+		if (tagModel.getCategoryId()==null) {
+			if (uriAfterSlash.contains("popup.jsp") || uriAfterSlash.contains("pop.jsp")){
+				tagModel.setCategoryId(CustomCategory.POPUPS.toString());
+
+			//recipe begin
+			} else if (uriAfterSlash.contains("recipe.jsp")){
+				tagModel.setCategoryId(CustomCategory.RECIPE.toString());
+
+			} else if (uriAfterSlash.contains("recipe_print.jsp")){
+				tagModel.setCategoryId(CustomCategory.RECIPE.toString());
+				tagModel.setPageId("PRINT");
+
+			} else if (uriAfterSlash.contains("recipe_search.jsp")){
+				processSearchAttributes();
+				tagModel.setCategoryId(CustomCategory.RECIPE.toString());
+				tagModel.setPageId("SEARCH");
+			
+			} else if (uriAfterSlash.contains("recipe_dept.jsp") || uriAfterSlash.contains("recipe_cat.jsp") || uriAfterSlash.contains("recipe_subcat.jsp")){
+				if (currentFolder==null) {
+					throw new SkipTagException("currentFolder is null");
+				} else {				
+					tagModel.setCategoryId(CustomCategory.RECIPE.toString());
+					tagModel.setPageId(currentFolder.getFullName());
+				}
+
+			} else if (uriAfterSlash.contains("recipe_source.jsp")){
+				if (recipeSource==null) {
+					throw new SkipTagException("recipeSource is null");
+				} else {
+					tagModel.setCategoryId(CustomCategory.RECIPE.toString());
+					tagModel.setPageId(recipeSource);
+				}
+			//recipe end	
+				
+			} else if (uriAfterSlash.contains("invite")){
+				tagModel.setCategoryId(CustomCategory.INVITE.toString());
+				tagModel.setPageId("PERSONAL");
+
+			} else if (uriAfterSlash.contains(INDEX_FILE)){
+				tagModel.setCategoryId(CustomCategory.HOMEPAGE.toString());
+
+				int uriPathLen = uriAfterSlash.length() - INDEX_FILE_SUFFIX_LENGTH - 1; //remove slash as well
+				if (uriPathLen > 0){
+					tagModel.setPageId(uriAfterSlash.substring(0, uriPathLen)); //use path without file name as page name
+				}
+
+			} else if (uriAfterSlash.contains("error.jsp") || uriAfterSlash.contains("unsupported.jsp")){
+				tagModel.setCategoryId(CustomCategory.ERROR.toString());
+			
+			} else if (uriAfterSlash.contains("cart.jsp") || uriAfterSlash.contains("confirm.jsp") || uriAfterSlash.contains("quickbuy")
+					|| uriAfterSlash.contains("shop5.jsp") || uriAfterSlash.contains("product_modify.jsp")){
+				tagModel.setCategoryId(CustomCategory.CART.toString());
+				
+			} else if (uriAfterSlash.contains("cheese/101_") || uriAfterSlash.contains("coffee/coffee_")
+					|| uriAfterSlash.contains("producers_map.jsp") || uriAfterSlash.contains("peakproduce.jsp")
+					|| uriAfterSlash.contains("rating_ranking.jsp") || uriAfterSlash.contains("seasonal_guide.jsp")
+					|| uriAfterSlash.contains("nutrition_info.jsp")){
+				tagModel.setCategoryId(CustomCategory.BUYING_GUIDES.toString());
+				
+			//account begin
+			} else if (uriAfterSlash.contains("main/account_details.jsp")){
+				tagModel.setCategoryId(CustomCategory.ACCOUNT.toString());
+				tagModel.setPageId("MAIN");
+
+			} else if (uriAfterSlash.contains("logout.jsp")){
+				tagModel.setCategoryId(CustomCategory.ACCOUNT.toString());
+				tagModel.setPageId("LOG OUT");
+			//account end
+				
+			} else if (uriAfterSlash.contains("newproducts.jsp")){
+				tagModel.setCategoryId(CustomCategory.NEW_PRODUCTS_DEPARTMENT.toString());
+				tagModel.setPageId("");
+			}
+			
+			//fill page id if still empty
+			if (tagModel.getPageId()==null){
+				tagModel.setPageId(uriAfterSlash);
+			}
+		}		
+		
+		//could not identify category from uri, fallback to other category
 		if (tagModel.getCategoryId()==null) {
 			tagModel.setCategoryId(FDStoreProperties.getCoremetricsCatIdOtherPage());
 			tagModel.setPageId(uriAfterSlash);
@@ -177,4 +260,9 @@ public class PageViewTagModelBuilder  {
 	public void setCurrentFolder(ContentNodeModel currentFolder) {
 		this.currentFolder = currentFolder;
 	}
+	
+	public void setRecipeSource(String recipeSource) {
+		this.recipeSource = recipeSource;
+	}
+
 }

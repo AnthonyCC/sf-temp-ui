@@ -68,4 +68,9 @@ public class CmPageViewTag extends AbstractCmTag {
 	protected boolean insertTagInCaseOfCrmContext(){
 		return forceTagEffect;
 	}
+	
+	public void setRecipeSource(String recipeSource) {
+		tagModelBuilder.setRecipeSource(recipeSource);
+	}
+
 }

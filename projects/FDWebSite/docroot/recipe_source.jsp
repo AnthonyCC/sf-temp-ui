@@ -45,6 +45,7 @@ StringBuffer authorNames = new StringBuffer("");
 <tmpl:insert template='/common/template/large_long_pop.jsp'>
     <tmpl:put name='title' direct='true'>FreshDirect - <%=title%></tmpl:put>
     <tmpl:put name='content' direct='true'>
+    	<fd:CmPageView wrapIntoScriptTag="true" recipeSource="<%=sourceName%>"/>
 		<table width="520">
 			<tr valign="top">
 				<td width="5%" style="padding-right:10px;"><% if (leftContent != null) { %><fd:IncludeMedia name='<%= leftContent.getPath() %>' /><% } %></td>
