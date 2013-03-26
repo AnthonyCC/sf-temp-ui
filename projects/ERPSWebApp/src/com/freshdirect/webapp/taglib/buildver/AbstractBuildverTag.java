@@ -16,7 +16,7 @@ public abstract class AbstractBuildverTag extends BodyTagSupportEx {
 	@Override
 	public final int doStartTag() throws JspException {
 		try {
-			StringBuilder uri = new StringBuilder(preProcessUri(getUri()));
+			StringBuilder uri = new StringBuilder(getUri());
 			if (FDStoreProperties.isBuildverEnabled()) {
 				if (uri.indexOf("?") != -1)
 					uri.append("&buildver=");
@@ -29,34 +29,6 @@ public abstract class AbstractBuildverTag extends BodyTagSupportEx {
 			throw new FDRuntimeException(e, "cannot render tag");
 		}
 		return SKIP_BODY;
-	}
-
-	public static String preProcessUri(String uri) {
-		String path = uri;
-		String query = null;
-		if (uri.indexOf('?') != -1) {
-			path = uri.substring(0, uri.indexOf('?'));
-			query = uri.substring(uri.indexOf('?') + 1);
-		}
-		String suffix = null;
-		if (path.endsWith(".css"))
-			suffix = ".css";
-		if (path.endsWith(".js"))
-			suffix = ".js";
-		if (suffix == null)
-			return uri;
-		path = path.substring(0, path.length() - suffix.length());
-		if (Buildver.getInstance().useMinified()) {
-			if (!path.endsWith("-min"))
-				path += "-min";
-		} else {
-			if (path.endsWith("-min"))
-				path = path.substring(0, path.length() - "-min".length());
-		}
-		path += suffix;
-		if (query != null)
-			path += "?" + query;
-		return path;
 	}
 
 	@Override

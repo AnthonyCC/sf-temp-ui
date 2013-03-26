@@ -478,7 +478,6 @@ public class FDStoreProperties {
 	
 	// APPDEV-1850 build versioning of JavaScript/CSS files
     private static final String BUILDVER_ENABLE = "fdstore.buildver.enable";
-    private static final String BUILDVER_MINIFY = "fdstore.buildver.minify";
 	private static final String EVENTLOGGING_ENABLED = "fdstore.eventlogging.enabled";
 	
 	//APPDEV-1920 Remove the "new feature" alert on quickbuy
@@ -2671,16 +2670,6 @@ public class FDStoreProperties {
 
     public static boolean isBuildverEnabled() {
         return Boolean.valueOf(get(BUILDVER_ENABLE));
-    }
-
-    public static Boolean isBuildverMinify() {
-        String minify = get(BUILDVER_MINIFY);
-
-        if (minify != null) {
-            return Boolean.valueOf(minify);
-        } else {
-            return null;
-        }
     }
 
     public static boolean isQBNewAlertEnabled() {

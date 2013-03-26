@@ -158,11 +158,4 @@ public class Buildver {
 		return developerMode;
 	}
 
-	public boolean useMinified() {
-		Boolean override = FDStoreProperties.isBuildverMinify();
-		if (override == null)
-			return !isDeveloperMode();
-		else
-			return override;
-	}
 }
