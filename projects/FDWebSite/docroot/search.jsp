@@ -195,7 +195,7 @@ final int W_INDEX_RIGHT_CENTER = W_INDEX_TOTAL - 228 - W_INDEX_CENTER_PADDING;
 	</fd:ProductGroupRecommender>
 	<% if (fallBack) {
 		ProductModel firstProduct = ((ListIterator<FilteringSortingItem <ProductModel>>)products.listIterator()).next().getModel();
-	%><fd:ProductGroupRecommender itemCount="16" siteFeature="SRCH_RLTD" facility="default" currentNode="<%= firstProduct %>" id="relatedProducts" excludeAlcoholicContent="<%= true %>">
+	%><fd:ProductGroupRecommender itemCount="16" siteFeature="SRCH_RLTD" facility="default" currentNode="<%= firstProduct %>" id="relatedProducts">
 	<%
 		rec = relatedProducts; // <-- round #2, related items
 	%>
@@ -206,9 +206,6 @@ final int W_INDEX_RIGHT_CENTER = W_INDEX_TOTAL - 228 - W_INDEX_CENTER_PADDING;
 	/*
 	 * Recommendation end
 	 */
-
-	// System.err.println("## rec: " + rec);
-	// System.err.println("## promote_recommendation_row: " + promote_recommendation_row);
 	%>
 	<tmpl:put name="recommendations-content" direct="true">
 	<% if (rec != null) { %>
