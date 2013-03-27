@@ -148,12 +148,15 @@ public class PageViewTagModelBuilder  {
 			if (tagModel.getPageId()==null){
 				tagModel.setPageId(uriAfterSlash);
 			}
+			
+			decoratePageIdWithCatId();
 		}		
 		
 		//could not identify category from uri, fallback to other category
 		if (tagModel.getCategoryId()==null) {
 			tagModel.setCategoryId(FDStoreProperties.getCoremetricsCatIdOtherPage());
 			tagModel.setPageId(uriAfterSlash);
+			decoratePageIdWithCatId();
 		} 
 	}
 	
