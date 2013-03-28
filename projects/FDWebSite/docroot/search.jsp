@@ -194,14 +194,17 @@ final int W_INDEX_RIGHT_CENTER = W_INDEX_TOTAL - 228 - W_INDEX_CENTER_PADDING;
 	%>
 	</fd:ProductGroupRecommender>
 	<% if (fallBack) {
-		ProductModel firstProduct = ((ListIterator<FilteringSortingItem <ProductModel>>)products.listIterator()).next().getModel();
-	%><fd:ProductGroupRecommender itemCount="16" siteFeature="SRCH_RLTD" facility="default" currentNode="<%= firstProduct %>" id="relatedProducts">
-	<%
-		rec = relatedProducts; // <-- round #2, related items
-	%>
-	</fd:ProductGroupRecommender><%
+		ProductModel firstProduct = null;		
+		if ( products != null && products.size() > 0 ) {
+			FilteringSortingItem <ProductModel> firstItem = (FilteringSortingItem <ProductModel>)products.get( 0 );
+			if ( firstItem != null ) {
+				firstProduct = firstItem.getModel();
+			}
+		}
+		%><fd:ProductGroupRecommender itemCount="16" siteFeature="SRCH_RLTD" facility="default" currentNode="<%= firstProduct %>" id="relatedProducts"><%
+			rec = relatedProducts; // <-- round #2, related items
+		%></fd:ProductGroupRecommender><%
 	}
-
 
 	/*
 	 * Recommendation end
