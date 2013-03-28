@@ -137,8 +137,27 @@ public class CustomerCreditModel extends ModelSupport {
 				+ ", saleId=" + saleId + ", taxAmount=" + taxAmount
 				+ ", taxRate=" + taxRate + "]";
 	}
-	
-	
-
-
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + ((saleId == null) ? 0 : saleId.hashCode());
+		return result;
+	}
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (!super.equals(obj))
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		CustomerCreditModel other = (CustomerCreditModel) obj;
+		if (saleId == null) {
+			if (other.saleId != null)
+				return false;
+		} else if (!saleId.equals(other.saleId))
+			return false;
+		return true;
+	}
 }

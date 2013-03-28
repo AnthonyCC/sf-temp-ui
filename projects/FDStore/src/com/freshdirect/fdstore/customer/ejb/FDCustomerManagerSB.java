@@ -802,7 +802,7 @@ public interface FDCustomerManagerSB extends EJBObject {
 	
 	public List<CustomerCreditModel> getScanReportedLates() throws FDResourceException, RemoteException;
 	
-	public void storeLists(List cmList) throws FDResourceException, RemoteException;
+	public void storeLists(Set cmList) throws FDResourceException, RemoteException;
 	
 	public List<FDCartonInfo> getCartonDetailsForSale(FDOrderI order) throws FDResourceException, RemoteException;
 	

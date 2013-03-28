@@ -6799,7 +6799,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		return ccmList;
 	}
 	
-	public void storeLists(List cmList) throws FDResourceException {
+	public void storeLists(Set cmList) throws FDResourceException {
 		Connection conn = null;
 		PreparedStatement pstmt = null;		
 		String autoID = "";
@@ -6829,13 +6829,8 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 					if(++count % batchSize == 0) {
 				        pstmt.executeBatch();
 				    }
-				} catch(Exception e) {
-					if(e.getMessage().indexOf("unique constraint") != -1) {
-						//ignore
-						LOGGER.debug("Found dupe order ID:" + ccm.getSaleId() + "--in--"+ ccm.getNewCode());
-					} else {
-						throw new FDResourceException(e);
-					}
+				} catch(Exception e) {					
+					throw new FDResourceException(e);
 				}
 			}
 			pstmt.executeBatch(); // insert remaining records
