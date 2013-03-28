@@ -4,11 +4,12 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.rmi.RemoteException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.Set;
 
 import javax.ejb.CreateException;
 import javax.mail.MessagingException;
@@ -36,14 +37,14 @@ public class AutoLateDeliveryCredit {
 		
 		FDCustomerManagerHome home = (FDCustomerManagerHome) ctx.lookup("freshdirect.fdstore.CustomerManager");
 		FDCustomerManagerSB sb = home.create();
-		List<CustomerCreditModel> ccmList;
+		Set<CustomerCreditModel> ccmList;
 		try {			
 			//1. Get customers who reported lates
 			/*APPDEV-2893 REmove customer reported lates from the list
 			ccmList = sb.getCustomerReprotedLates();
 			LOGGER.info("CUSTLATES:" + ccmList.size());
-			*/
-			ccmList = new ArrayList<CustomerCreditModel>();
+			*/			
+			ccmList = new HashSet<CustomerCreditModel>();
 			//2. Get driver reported lates
 			List<CustomerCreditModel> dlList = sb.getDriverReportedLates();
 			LOGGER.info("DRIVERLATES:" + dlList.size());
