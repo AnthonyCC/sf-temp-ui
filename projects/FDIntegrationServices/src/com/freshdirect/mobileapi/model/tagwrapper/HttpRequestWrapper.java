@@ -313,11 +313,16 @@ public class HttpRequestWrapper implements HttpServletRequest {
     public String[] getParameterValues(String arg0) {
         //To simulate real method, we only return the ones w/ non-null values.
         ArrayList<String> filteredNonNullValues = new ArrayList<String>();
-        for (Object value : backingMap.values()) {
+        // START : APPDEV-3005 Problems with registration survey
+        if(backingMap.containsKey(arg0) && backingMap.get(arg0) != null) {
+        	filteredNonNullValues.add((String) backingMap.get(arg0));
+        }
+        /*for (Object value : backingMap.values()) {
             if (value != null) {
                 filteredNonNullValues.add((String) value);
             }
-        }
+        }*/
+        // END : APPDEV-3005 Problems with registration survey
         return filteredNonNullValues.toArray(new String[filteredNonNullValues.size()]);
     }
 
