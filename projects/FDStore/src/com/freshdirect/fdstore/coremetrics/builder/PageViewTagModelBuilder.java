@@ -144,12 +144,15 @@ public class PageViewTagModelBuilder  {
 				tagModel.setPageId("");
 			}
 			
-			//fill page id if still empty
-			if (tagModel.getPageId()==null){
-				tagModel.setPageId(uriAfterSlash);
+			//if found category based on rules defined above
+			if (tagModel.getCategoryId()!=null) {
+				//fill page id if still empty
+				if (tagModel.getPageId()==null){
+					tagModel.setPageId(uriAfterSlash);
+				}
+				
+				decoratePageIdWithCatId();
 			}
-			
-			decoratePageIdWithCatId();
 		}		
 		
 		//could not identify category from uri, fallback to other category
