@@ -247,7 +247,7 @@ if (FDStoreProperties.IsHomePageMediaEnabled() && (!user.isHomePageLetterVisited
 	   		if (store != null) {
 	    		Html edtMed = store.getEditorial();
 				if ( edtMed != null ) { %>
-					<fd:IncludeMedia name="<%= edtMed %>"></fd:IncludeMedia>
+					<fd:IncludeMedia name="" media="<%= edtMed %>"></fd:IncludeMedia>
 				<% } else {
 					String categoryLinks = FDStoreProperties.getHPCategoryLinksFallback();
 					if ( categoryLinks != null ) {
