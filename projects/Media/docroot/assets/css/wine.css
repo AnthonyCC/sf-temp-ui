@@ -392,6 +392,11 @@ td.center_qty_table {
 	float: right;
 }
 
+.fclear {
+	clear: both;
+	font-size: 0px;
+}
+
 .wauto {
 	width: auto;
 }
@@ -624,6 +629,10 @@ div.nav_sub {
 
 .yui-calcontainer .yui-cal-nav .yui-cal-nav-btn.yui-default {
 	background: #669933 !important;
+}
+
+.clicode_head td {
+	height: auto !important;
 }
 
 td.clicode_quantity {

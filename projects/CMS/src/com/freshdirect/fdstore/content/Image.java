@@ -76,4 +76,23 @@ public class Image extends MediaModel {
 			return getPath();
 		}
 	}
+
+    /* calculate correct height to fit a container */
+    public int getFittedHeight(int fitToWidth, int fitToHeight) {
+    	float scale = getScale(fitToWidth, fitToHeight);
+    	return (int) (scale * (float) getHeight()); // int cast will truncate (floor)
+    }
+
+    /* calculate correct width to fit a container */
+    public int getFittedWidth(int fitToWidth, int fitToHeight) {
+    	float scale = getScale(fitToWidth, fitToHeight);
+    	return (int) (scale * (float) getWidth()); // int cast will truncate (floor)
+    }
+
+	private float getScale(int fitToWidth, int fitToHeight) {
+		float widthScale = (float) fitToWidth / (float) getWidth();
+    	float heightScale = (float) fitToHeight / (float) getHeight();
+    	float scale = Math.min(widthScale, heightScale);
+		return scale;
+	}
 }

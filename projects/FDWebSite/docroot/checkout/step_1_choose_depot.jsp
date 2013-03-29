@@ -35,54 +35,26 @@ final int W_CHECKOUT_STEP_1_CHOOSE_DEPOT_TOTAL = 970;
 	FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
 	double cartTotal = user.getShoppingCart().getTotal();
 %>
-
-<%@ include file="/includes/i_modifyorder.jspf" %>
-
-
-<FORM method="post">
-	<table border="0" cellspacing="0" cellpadding="0" width="<%=W_CHECKOUT_STEP_1_CHOOSE_DEPOT_TOTAL%>">
-	    <tr valign="top"> 
-			<td CLASS="text11" WIDTH="395" VALIGN="bottom">
-				<img src="/media_stat/images/navigation/delivery_address_top.gif" WIDTH="143" HEIGHT="16" border="0" alt="DELIVERY ADDRESS">
-			</td>
-			<TD WIDTH="<%=W_CHECKOUT_STEP_1_CHOOSE_DEPOT_TOTAL-430%>" ALIGN="RIGHT" VALIGN="MIDDLE" CLASS="text10">
-				  <FONT CLASS="space2pix"><BR></FONT>
-					<table>
-						<tr>
-							<td align="left"  style="color:#666666;font-weight:bold;">Delivery Charge:</td>
-							<td align="right"  style="color:#666666;font-weight:bold;">
-								<%	
-									FDCartModel cart = user.getShoppingCart();
-									String dlvCharge = JspMethods.formatPrice( cart.getDeliverySurcharge() );
-									if(cart.isDlvPassApplied()) {
-								%>
-									<%= cart.getDeliveryCharge()>0?JspMethods.formatPrice(cart.getDeliveryCharge()):DeliveryPassUtil.getDlvPassAppliedMessage(user) %>
-									
-								<%	} else if (cart.isDeliveryChargeWaived()) {
-										if((int)cart.getDeliverySurcharge() == 0){
-								%>     
-										Free! 
-										<% }else{ %> Free!(<%= dlvCharge %> waived)<% } %>
-												
-								<%  } else {%>
-										<%= (int)cart.getDeliverySurcharge() == 0 ? "Free!" :  JspMethods.formatPrice( cart.getDeliveryCharge()) %>
-								<%}%>
-						</td>
-						</tr>
-						<tr>
-							<td align="left"  style="color:#666666;font-weight:bold;"><A HREF="javascript:popup('/help/estimated_price.jsp','small')">Estimated</A> Total:</td>
-							<td align="right"  style="color:#666666;font-weight:bold;"><%= currencyFormatter.format(cart.getTotal()) %></td>
-						</tr>
-					</table>
-			</TD>
-			<td width="35" align="right" valign="middle">
-				<font class="space2pix"><br/></font>
-	            <input type="image" name="form_action_name" src="/media_stat/images/buttons/checkout_right.gif" border="0" alt="CONTINUE CHECKOUT" vspace="2">
-	        </td>
-	    </tr>
-	</table>
-
-<img src="/media_stat/images/layout/clear.gif" width="1" height="16" border="0"><br/>
+<%	
+	FDCartModel cart = user.getShoppingCart();
+	//button include count
+	int incNextButtonCount = 0;
+%>
+<FORM method="post" name="step1Form" id="step1Form">
+	<%-- Start Header --%>
+<%@ include file="/includes/i_modifyorder.jspf"  %>
+<tmpl:insert template='<%= ((modifyOrderMode) ? "/includes/checkout_header_modify.jsp" : "/includes/checkout_header.jsp") %>'>
+<% if(modifyOrderMode) { %>
+	<tmpl:put name="ordnumb"><%= modifiedOrderNumber %></tmpl:put>
+	<tmpl:put name="note"><%= modifyNote %></tmpl:put>
+<% } %>
+	<tmpl:put name="title">DELIVERY ADDRESS</tmpl:put>
+	<tmpl:put name="delivery-fee">
+		<span class="checkout-delivery-fee"><% if (FDStoreProperties.isNewFDTimeslotGridEnabled()) { %><fd:IncludeMedia name="/media/editorial/timeslots/msg_timeslots_learnmore.html"/><% } %></span>
+		<%@ include file="/includes/i_cart_delivery_fee.jspf" %>
+	</tmpl:put>
+	<tmpl:put name="next-button"><%@ include file="/includes/i_cart_next_step_button.jspf" %></tmpl:put>
+</tmpl:insert>
 <!-- PROFILE HEADER -->
 <%@ include file="/shared/includes/i_loyalty_bar.jspf" %>
 <IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="16" BORDER="0"><BR>
@@ -147,28 +119,20 @@ final int W_CHECKOUT_STEP_1_CHOOSE_DEPOT_TOTAL = 970;
 	<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
 	<IMG src="/media_stat/images/layout/dotted_line_w.gif" WIDTH="<%=W_CHECKOUT_STEP_1_CHOOSE_DEPOT_TOTAL%>" HEIGHT="1" BORDER="0"><BR>
 	<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
-	<table border="0" cellspacing="0" cellpadding="0" width="<%=W_CHECKOUT_STEP_1_CHOOSE_DEPOT_TOTAL%>">
-	    <tr valign="top">
-			<td width="35">
+	<div style="margin-bottom: 10px;">
+	    <div style="float: left;">
 					<a href="<%=response.encodeURL("/checkout/view_cart.jsp?trk=chkplc ")%>" onclick="ntptEventTag('ev=button_event&ni_btn=cancel_checkout');var d=new Date();var cD;do{cD=new Date();}while((cD.getTime()-d.getTime())<500);" id="previousX">
 					<img src="/media_stat/images/buttons/checkout_left.gif" width="26" height="26" border="0" alt="PREVIOUS STEP"></a>
-			</td>
-		    <td width="340">
+		</div>
+		<div style="float: left; margin-left: 5px; text-align: left;">
 				<a href="<%=response.encodeURL("/checkout/view_cart.jsp?trk=chkplc ")%>" onclick="ntptEventTag('ev=button_event&ni_btn=cancel_checkout');var d=new Date();var cD;do{cD=new Date();}while((cD.getTime()-d.getTime())<500);" id="cancelText">
-				<img src="/media_stat/images/buttons/previous_step.gif" WIDTH="66" HEIGHT="11" border="0" alt="PREVIOUS STEP"></a><br/>
-				View Cart<br/>
-				<img src="/media_stat/images/layout/clear.gif" width="340" height="1" border="0">
-			</td>
-			<td width="<%=W_CHECKOUT_STEP_1_CHOOSE_DEPOT_TOTAL-410%>" align="right" valign="middle">
-				<font class="space2pix"><br/></font>
-				<input type="image" name="checkout_delivery_address_select" src="/media_stat/images/buttons/continue_checkout.gif" width="91" height="11" border="0" alt="CONTINUE CHECKOUT" vspace="0"><br/>Delivery Time<br/>
-			</td>
-			<td width="35" align="right" valign="middle">
-				<font class="space2pix"><br/></font>
-				<input type="image" name="checkout_delivery_address_select" src="/media_stat/images/buttons/checkout_right.gif" width="26" height="26" border="0" alt="CONTINUE CHECKOUT" vspace="0">
-			</td>
-	    </tr>
-	</table>
+				<img src="/media_stat/images/buttons/previous_step.gif" WIDTH="66" HEIGHT="11" border="0" alt="PREVIOUS STEP"></a><br/>Your Cart
+		</div>
+		<div style="float: right">
+				<%@ include file="/includes/i_cart_next_step_button.jspf" %>
+		</div>
+		<div style="clear: both;"></div>
+	</div>
 	
 	<%@ include file="/checkout/includes/i_footer_text.jspf" %>
 

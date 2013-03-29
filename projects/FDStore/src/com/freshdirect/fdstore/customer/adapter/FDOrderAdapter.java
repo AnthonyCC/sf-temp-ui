@@ -993,11 +993,11 @@ public class FDOrderAdapter implements FDOrderI {
 	}
 
 	public WebOrderViewI getOrderView(ErpAffiliate affiliate) {
-		return WebOrderViewFactory.getOrderView(orderLines, affiliate);
+		return WebOrderViewFactory.getOrderView(orderLines, affiliate, false);
 	}
 
 	public List<WebOrderViewI> getOrderViews() {
-		return WebOrderViewFactory.getOrderViews(orderLines);
+		return WebOrderViewFactory.getOrderViews(orderLines, false);
 	}
 	
 	public WebOrderViewI getInvoicedOrderView(ErpAffiliate affiliate) {

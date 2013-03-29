@@ -495,6 +495,7 @@
 				
 				<% if (isTransactionalRow) { %>
 					<form id='<%= "DYNROW_form" + TX_FORM_NAME+"_"+catId %>' class="DYNROW_form <%= TX_FORM_NAME+"_"+catId %>" name="<%= TX_FORM_NAME %>" method="post" action="<%= base_url %>">
+						<fd:AddToCartPending id='<%= "DYNROW_form" + TX_FORM_NAME+"_"+catId %>'/>
 						<input name="catId" type="hidden" value="<%= (showInContextOf == null)?catId:showInContextOf %>" />
 				<% } %>
 				
@@ -644,10 +645,10 @@
 											<display:ProductRating product="<%= piPm %>" action="<%= piActionURI %>" />
 											<display:ProductName product="<%= piPm %>" action="<%= piActionURI %>" showNew="<%= showNewText %>" style="<%= emailStyle %>" />
 											<display:ProductPrice impression="<%= (TransactionalProductImpression) impressions.get(piCnIdx) %>" showDescription="<%= showDescrips %>" />
-											<fd:IsAlcoholic skuCode="<%=((TransactionalProductImpression) impressions.get(piCnIdx)).getSku().getSkuCode()%>">
-												<fd:USQLegalWarning id='<%="DYNROW_form"+ TX_FORM_NAME+"_"+catId %>' tagCounter="<%=txCount %>" quantityCheck="true"/>
+											<!-- fd:IsAlcoholic skuCode="%=((TransactionalProductImpression) impressions.get(piCnIdx)).getSku().getSkuCode()%>" -->
+												<fd:PopupHandler id='<%="DYNROW_form"+ TX_FORM_NAME+"_"+catId %>' tagCounter="<%=txCount %>" quantityCheck="true" skuCode="<%=((TransactionalProductImpression) impressions.get(piCnIdx)).getSku().getSkuCode()%>"/>
 												<%--input type="hidden" name='<%="alcoholic_" + txCount %>' id='<%="alcoholic_" + txCount %>' value='<%="quantity_" + txCount %>'/ --%>
-											</fd:IsAlcoholic>
+											<!-- /fd:IsAlcoholic -->
 										<% 
 											txCount++;
 										} else { %>
@@ -692,9 +693,9 @@
 				</table>
 				
 				<% if (isTransactionalRow) { %>
-					<fd:IsAlcoholic>
-						<fd:USQLegalWarning id='<%="DYNROW_form"+ TX_FORM_NAME+"_"+catId %>' event="onclick" elementId='<%="addMultipleToCart"+ TX_FORM_NAME+"_"+catId %>' quantityCheck="true" />
-					</fd:IsAlcoholic>
+					<!-- fd:IsAlcoholic -->
+						<fd:PopupHandler id='<%="DYNROW_form"+ TX_FORM_NAME+"_"+catId %>' event="onclick" elementId='<%="addMultipleToCart"+ TX_FORM_NAME+"_"+catId %>' quantityCheck="true" />
+					<!-- /fd:IsAlcoholic -->
 					</form><% } %>
 
 				<%

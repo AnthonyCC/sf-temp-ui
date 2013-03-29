@@ -11,12 +11,14 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.SortedSet;
+import java.util.Stack;
 import java.util.TreeSet;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.servlet.jsp.JspException;
+import javax.servlet.jsp.PageContext;
 
 import org.apache.log4j.Category;
 import org.json.JSONObject;
@@ -44,6 +46,7 @@ import com.freshdirect.fdstore.FDInvalidAddressException;
 import com.freshdirect.fdstore.FDProduct;
 import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.FDRuntimeException;
 import com.freshdirect.fdstore.FDSalesUnit;
 import com.freshdirect.fdstore.FDSku;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
@@ -62,6 +65,7 @@ import com.freshdirect.fdstore.customer.FDInvalidConfigurationException;
 import com.freshdirect.fdstore.customer.FDModifyCartLineI;
 import com.freshdirect.fdstore.customer.FDProductSelectionI;
 import com.freshdirect.fdstore.customer.FDTransientCartModel;
+import com.freshdirect.fdstore.customer.FDUser;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.customer.OrderLineUtil;
 import com.freshdirect.fdstore.customer.QuickCart;
@@ -98,7 +102,57 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements Sessi
 	private static final long serialVersionUID = -7350790143456750035L;
 
 	private static Category LOGGER = LoggerFactory.getInstance(FDShoppingCartControllerTag.class);
+	
+	public final static String FD_SHOPPING_CART_ACTION_STACK_ID = "__FDShoppingCart_Action_Stack";
 
+	@SuppressWarnings("unchecked")
+	private static Stack<String> getActionStack(PageContext pageContext) {
+		return (Stack<String>) pageContext.getAttribute(FD_SHOPPING_CART_ACTION_STACK_ID, PageContext.REQUEST_SCOPE);
+	}
+
+	private static void putActionStack(PageContext pageContext, Stack<String> stack) {
+		pageContext.setAttribute(FD_SHOPPING_CART_ACTION_STACK_ID, stack, PageContext.REQUEST_SCOPE);
+	}
+
+	/**
+	 * If an AddToCartPending tag is embedded in an FDShoppingCartController tag then
+	 * it should be able to figure out the current shopping cart 'action'
+	 * This stack is used to handle this embedded relationship
+	 * 
+	 * We need a stack because theoretically there's a little chance of
+	 * recursive embedding
+	 * 
+	 * @see AddToCartPendingTag
+	 */
+	public static void pushAction(PageContext pageContext, String action) {
+		Stack<String> stack = getActionStack(pageContext);
+		if (stack == null) {
+			stack = new Stack<String>();
+			putActionStack(pageContext, stack);
+		}
+		stack.push(action);
+	}
+
+	public static String popAction(PageContext pageContext) {
+		Stack<String> stack = getActionStack(pageContext);
+		if (stack != null) {
+			String action = stack.pop();
+			if (stack.isEmpty())
+				putActionStack(pageContext, null);
+			return action;
+		} else {
+			throw new FDRuntimeException("pop from non-existing stack");
+		}
+	}
+
+	public static String peekAction(PageContext pageContext) {
+		Stack<String> stack = getActionStack(pageContext);
+		if (stack != null && !stack.isEmpty())
+			return stack.peek();
+		else
+			return null;
+	}
+	
 	private String id;
 
 	private String action;
@@ -120,6 +174,8 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements Sessi
 	private ActionResult result;
 
 	private FDCartModel cart;
+	
+	private boolean pending;
 
 	/**
 	 * Cartlines already processed, BUT not yet added to the cart.
@@ -144,6 +200,10 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements Sessi
 
 	public void setAction(String a) {
 		this.action = a;
+	}
+	
+	public String getAction() {
+		return action;
 	}
 
 	public void setSource(String source) {
@@ -190,6 +250,14 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements Sessi
 		this.cleanupCart = cleanup;
 	}
 
+	public void setPending(boolean pending) {
+		this.pending = pending;
+	}
+
+	public boolean isPending() {
+		return pending;
+	}
+
 	// all CCL requests shall start with the "CCL:" prefix
 	private boolean isCCLRequest() {
 		// see if source was set as CCL
@@ -206,11 +274,24 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements Sessi
 
 	@Override
 	public int doStartTag() throws JspException {
+		pushAction(pageContext, action);
 		HttpSession session = pageContext.getSession();
 
 		FDSessionUser user = (FDSessionUser) session.getAttribute(USER);
 		//user.updateUserState();
-		this.cart = user.getShoppingCart();
+		boolean suppressSuspendPendingOvarlay = false;
+		
+		if (pending) {
+			// check if has pending order otherwise throw exception
+			// the exception will be handled by the calling atc_pending.jsp AJAX service
+			if (!user.isPopUpPendingOrderOverlay()){
+				throw new JspException("User has not pending order");
+			}
+			this.cart = user.getMergePendCart();
+			this.cart.clearOrderLines();
+		} else {
+			this.cart = user.getShoppingCart();
+		}
 		if (cart == null) {
 			// user doesn't have a cart, this is a bug, as login or site_access
 			// should put it there
@@ -232,7 +313,9 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements Sessi
 			//
 			// an action was request, decide which one
 			//
-			if ("CCL:AddToList".equalsIgnoreCase(action)) {
+			if (pending && !isAddToCartRequest()) {
+				// do nothing because we do not accept such combination
+			} else if ("CCL:AddToList".equalsIgnoreCase(action)) {
 				// find suffix from request, strict check, do not use product
 				// minimum, do not skip zeros
 				ItemSelectionCheckResult checkResult = new ItemSelectionCheckResult();
@@ -439,6 +522,7 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements Sessi
 			} else if ("changeOrderLine".equalsIgnoreCase(action)) {
 				affectedLines = changeOrderLine() ? 1 : 0;
 			} else if ("updateQuantities".equalsIgnoreCase(action)) {
+				suppressSuspendPendingOvarlay = true;
 				affectedLines = updateQuantities() ? 1 : 0;
 				if (!inCallCenter && successPage != null && successPage.indexOf("checkout/step") > -1)
 					try {
@@ -524,92 +608,103 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements Sessi
 			affectedLines = this.removeRecipe();
 		}
 		
-		
-		// Handle delivery pass (if any) in the cart.
-		cart.handleDeliveryPass();
-
-		if (user.getSelectedServiceType() == EnumServiceType.HOME) {
-			/*
-			 * If home address perform delivery pass status check on the user
-			 * object. Otherwise delivery pass doesn't apply.
-			 */
-			try {
-				user.performDlvPassStatusCheck();
-			} catch (FDResourceException ex) {
-				LOGGER.warn("FDResourceException during user.performDlvPassStatusCheck()",ex);
-				throw new JspException(ex);
-			}
-		} else {
-			// If corporate or pickup do not apply the pass.
-			// If corporate or pickup do not apply the pass.
-			if (cart.isDlvPassApplied()) { // This if condition was added for
-				// Bug fix MNT-12
-				// If corporate or pickup do not apply the pass.
-				cart.setDlvPassApplied(false);
-				cart.setChargeWaived(EnumChargeType.DELIVERY, false, DlvPassConstants.PROMO_CODE);
-			}
-		}
-
-		if (affectedLines > 0) {
+		if(pending){
 			try {
 				cart.refreshAll(true);
 			} catch (FDException e) {
 				LOGGER.warn("Error refreshing cart", e);
 				throw new JspException(e.getMessage());
 			}
-			// This method retains all product keys that are in the cart in the
-			// dcpd promo product info.
-			user.getDCPDPromoProductCache().retainAll(cart.getProductKeysForLineItems());
-
-			user.updateUserState();
-
-			cart.sortOrderLines();
-		}
-
-		// Check for expired or cancelled passes if already used.
-		checkForExpOrCanPasses(user);
-
-		//
-		// sort and save the cart in session
-		// if anything in the cart was changed
-		//
-		if (result.isSuccess() && affectedLines > 0) {
-			//
-			// save cart if it hasn't been saved in a while
-			//
-			user.saveCart();
-			session.setAttribute(USER, user);
-			session.setAttribute("SkusAdded", frmSkuIds);
-		}
-
-		//
-		// redirect to success page if an action was successfully performed
-		// and a success page was defined
-		//
-		if ("POST".equalsIgnoreCase(request.getMethod()) && (action != null) && (successPage != null) && result.isSuccess()) {
-			String redir = (affectedLines > 1 && this.multiSuccessPage != null) ? this.multiSuccessPage : successPage;
-			HttpServletResponse response = (HttpServletResponse) pageContext.getResponse();
-			try {
-				response.sendRedirect(response.encodeRedirectURL(redir));
-				return SKIP_BODY;
-			} catch (IOException ioe) {
-				// if there was a problem redirecting, well.. fuck it.. :)
-				throw new JspException("Error redirecting " + ioe.getMessage());
+		} else {
+			// Handle delivery pass (if any) in the cart.
+			cart.handleDeliveryPass();
+	
+			if (user.getSelectedServiceType() == EnumServiceType.HOME) {
+				/*
+				 * If home address perform delivery pass status check on the user
+				 * object. Otherwise delivery pass doesn't apply.
+				 */
+				try {
+					user.performDlvPassStatusCheck();
+				} catch (FDResourceException ex) {
+					LOGGER.warn("FDResourceException during user.performDlvPassStatusCheck()",ex);
+					throw new JspException(ex);
+				}
+			} else {
+				// If corporate or pickup do not apply the pass.
+				// If corporate or pickup do not apply the pass.
+				if (cart.isDlvPassApplied()) { // This if condition was added for
+					// Bug fix MNT-12
+					// If corporate or pickup do not apply the pass.
+					cart.setDlvPassApplied(false);
+					cart.setChargeWaived(EnumChargeType.DELIVERY, false, DlvPassConstants.PROMO_CODE);
+				}
 			}
-		}
+	
+			if (affectedLines > 0) {
+				// once we change the cart in a normal flow we no longer pop up the overlay
+				if (!user.isSupendShowPendingOrderOverlay() && !suppressSuspendPendingOvarlay)
+					user.setShowPendingOrderOverlay(false);
 
-		if (this.cleanupCart) {
-			try {
-				this.doCartCleanup();
-			} catch (FDResourceException ex) {
-				LOGGER.warn("FDResourceException during cleanup", ex);
-				throw new JspException(ex);
+				try {
+					cart.refreshAll(true);
+				} catch (FDException e) {
+					LOGGER.warn("Error refreshing cart", e);
+					throw new JspException(e.getMessage());
+				}
+				// This method retains all product keys that are in the cart in the
+				// dcpd promo product info.
+				user.getDCPDPromoProductCache().retainAll(cart.getProductKeysForLineItems());
+	
+				user.updateUserState();
+	
+				cart.sortOrderLines();
 			}
-			// !!! refactor to doEndTag
-			this.finishCartCleanup();
+	
+			// Check for expired or cancelled passes if already used.
+			checkForExpOrCanPasses(user);
+	
+			//
+			// sort and save the cart in session
+			// if anything in the cart was changed
+			//
+			if (result.isSuccess() && affectedLines > 0) {
+				//
+				// save cart if it hasn't been saved in a while
+				//
+				user.saveCart();
+				session.setAttribute(USER, user);
+				session.setAttribute("SkusAdded", frmSkuIds);
+			}
+	
+			//
+			// redirect to success page if an action was successfully performed
+			// and a success page was defined
+			//
+			if ("POST".equalsIgnoreCase(request.getMethod()) && (action != null) && (successPage != null) && result.isSuccess()) {
+				String redir = (affectedLines > 1 && this.multiSuccessPage != null) ? this.multiSuccessPage : successPage;
+				HttpServletResponse response = (HttpServletResponse) pageContext.getResponse();
+				try {
+					response.sendRedirect(response.encodeRedirectURL(redir));
+					return SKIP_BODY;
+				} catch (IOException ioe) {
+					// if there was a problem redirecting, well.. fuck it.. :)
+					throw new JspException("Error redirecting " + ioe.getMessage());
+				}
+			}
+	
+			if (this.cleanupCart) {
+				try {
+					this.doCartCleanup();
+				} catch (FDResourceException ex) {
+					LOGGER.warn("FDResourceException during cleanup", ex);
+					throw new JspException(ex);
+				}
+				// !!! refactor to doEndTag
+				this.finishCartCleanup();
+			}
+			pageContext.setAttribute("cartCleanupRemovedSomeStuff", Boolean.valueOf(!(this.removeIds == null || this.removeIds.size() == 0)));
 		}
-		pageContext.setAttribute("cartCleanupRemovedSomeStuff", Boolean.valueOf(!(this.removeIds == null || this.removeIds.size() == 0)));
-
 		//
 		// place the cart as a scripting variable in the page
 		//
@@ -619,6 +714,12 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements Sessi
 		return EVAL_BODY_BUFFERED;
 	}
 
+	@Override
+	public int doEndTag() throws JspException {
+		popAction(pageContext);
+		return super.doEndTag();
+	}
+	
 	private void checkForExpOrCanPasses(FDSessionUser user) {
 		/*
 		 * if(user.getDlvPassInfo() != null &&
@@ -906,7 +1007,8 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements Sessi
 			cart.addOrderLine(cartLine);
 			// Log that an item has been added.
 			cartLine.setSource(getEventSource());
-			FDEventUtil.logAddToCartEvent(cartLine, request);
+			if (!pending)
+				FDEventUtil.logAddToCartEvent(cartLine, request);
 			return true;
 		}
 		return false;
@@ -969,7 +1071,8 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements Sessi
 				 * Logs a AddToCartEvent whenever the user adds a single item
 				 * from Product detail page.
 				 */
-				FDEventUtil.logAddToCartEvent(cartLine, request);
+				if (!pending)
+					FDEventUtil.logAddToCartEvent(cartLine, request);
 				return 1;
 			}
 			return 0;
@@ -1006,7 +1109,8 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements Sessi
 				}
 				cartLine.setSource(getEventSource());
 				cartLine.setAddedFromSearch(Boolean.parseBoolean(request.getParameter(PARAM_ADDED_FROM_SEARCH)));
-				FDEventUtil.logAddToCartEvent(cartLine, request);
+				if (!pending)
+					FDEventUtil.logAddToCartEvent(cartLine, request);
 				addedLines++;
 				frmSkuIds.add("skuCode_" + i);
 			}
@@ -1400,7 +1504,7 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements Sessi
 			if (getCartlinesQuantity(prodNode)
 					+ cart.getTotalQuantity(prodNode) + quantity
 					- adjustmentQuantity > user.getQuantityMaximum(prodNode)) {
-				return "Please note: there is a limit of " + formatter.format( prodNode.getQuantityMaximum() ) + 
+				return "Please note: there is a limit of " + formatter.format( user.getQuantityMaximum(prodNode) ) + 
 					   " per order of " + prodNode.getFullName();				
 			}
 		}

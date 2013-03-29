@@ -133,6 +133,7 @@ if ( skuSize == 0 ) {
 %>
 
 <form id='product_form' method='post' name="productForm" action="<%= formAction %>">
+	<fd:AddToCartPending id="product_form"/>
 <%  if (request.getParameter("iatcNamespace") != null) { %>
 	<input type="hidden" name="iatcNamespace" value="<%= request.getParameter("iatcNamespace") %>">
 <%  } %>
@@ -873,9 +874,9 @@ if ( skuSize == 0 ) {
 	        							document.getElementById('product_form').submit();
 			    					};
         						</script>
-								<fd:USQLegalWarning id="product_form" event="onclick" elementId="save_changes" tagCounter="0" decorate="window.parent.save_changes();"/>
-								<input type="hidden" name="alcoholic_0" id="alcoholic_0" value="quantity_0"/>
 							</fd:IsAlcoholic>
+							<fd:PopupHandler id="product_form" event="onclick" elementId="save_changes" tagCounter="0" decorate="window.parent.save_changes();" skuCode="<%=__prd.getSku(0).getSkuCode()%>"/>
+							<%--input type="hidden" name="alcoholic_0" id="alcoholic_0" value="quantity_0"/ --%>
        						<%
    							// CCL
    							
@@ -923,10 +924,10 @@ if ( skuSize == 0 ) {
         					<% 
         				} else {
         					%><input type="image" id="add_to_cart" name="add_to_cart" src="/media_stat/images/buttons/add_to_cart.gif" width="93" height="20" border="0" style="<%= alignRight ? "margin-right: 0px; margin-left: auto; " : "" %>padding:5px 2px 3px; display: block;">
-	        					<fd:IsAlcoholic skuCode="<%=__prd.getSku(0).getSkuCode()%>">
-									<fd:USQLegalWarning id="product_form" event="onclick" elementId="add_to_cart" tagCounter="0"/>
-									<input type="hidden" name="alcoholic_0" id="alcoholic_0" value="quantity_0"/>
-								</fd:IsAlcoholic>
+	        					<!-- fd:IsAlcoholic skuCode="%=__prd.getSku(0).getSkuCode()%>" -->
+									<fd:PopupHandler id="product_form" event="onclick" elementId="add_to_cart" tagCounter="0" skuCode="<%=__prd.getSku(0).getSkuCode()%>"/>
+									<%-- input type="hidden" name="alcoholic_0" id="alcoholic_0" value="quantity_0"/--%>
+								<!-- /fd:IsAlcoholic -->
         					<%
 								}
 

@@ -87,6 +87,7 @@ if (FDStoreProperties.IsHomePageMediaEnabled() && (!user.isHomePageLetterVisited
 							int pendingOrderCount = 0;
 							List<FDOrderInfoI> validPendingOrders = new ArrayList<FDOrderInfoI>();
 							validPendingOrders.addAll(user.getPendingOrders());
+							Collections.reverse(validPendingOrders);
 							//set count (in case this variable is needed elsewhere (and we'll just use it now as well)
 							pendingOrderCount = validPendingOrders.size();
 	
@@ -104,14 +105,8 @@ if (FDStoreProperties.IsHomePageMediaEnabled() && (!user.isHomePageLetterVisited
 										</div>
 										<div class="ordModifyButCont">
 											<% if ( new Date().before(orderInfo.getDeliveryCutoffTime())) { %>
-												<table class="butCont fright" style="margin-left: 10px;">
-													<tr>
-														<td class="butOrangeLeft"><!-- --></td>
-														<td class="butOrangeMiddle"><a class="butText" href="/your_account/modify_order.jsp?orderId=<%= orderInfo.getErpSalesId() %>&action=modify">modify order</a></td>
-														<td class="butOrangeRight"><!-- --></td>
-													</tr>
-												</table>
 												<a href="/your_account/order_details.jsp?orderId=<%= orderInfo.getErpSalesId() %>" class="ordModifyViewDetails">view details&nbsp;</a>
+												<a class="imgButtonOrange" style="margin-left: 10px;" href="/your_account/modify_order.jsp?orderId=<%= orderInfo.getErpSalesId() %>&action=modify">modify order</a>
 											<% } else { %>
 												&nbsp;
 											<% } %>
@@ -139,6 +134,7 @@ if (FDStoreProperties.IsHomePageMediaEnabled() && (!user.isHomePageLetterVisited
 						int pendingOrderCount = 0;
 						List<FDOrderInfoI> validPendingOrders = new ArrayList<FDOrderInfoI>();
 						validPendingOrders.addAll(user.getPendingOrders());
+						Collections.reverse(validPendingOrders);
 						//set count (in case this variable is needed elsewhere (and we'll just use it now as well)
 						pendingOrderCount = validPendingOrders.size();
 
@@ -154,14 +150,8 @@ if (FDStoreProperties.IsHomePageMediaEnabled() && (!user.isHomePageLetterVisited
 									</div>
 									<div class="ordModifyButCont">
 										<% if ( new Date().before(orderInfo.getDeliveryCutoffTime())) { %>
-											<table class="butCont fright" style="margin-left: 10px;">
-												<tr>
-													<td class="butOrangeLeft"><!-- --></td>
-													<td class="butOrangeMiddle"><a class="butText" href="/your_account/modify_order.jsp?orderId=<%= orderInfo.getErpSalesId() %>&action=modify">modify order</a></td>
-													<td class="butOrangeRight"><!-- --></td>
-												</tr>
-											</table>
 											<a href="/your_account/order_details.jsp?orderId=<%= orderInfo.getErpSalesId() %>" class="ordModifyViewDetails">view details&nbsp;</a>
+											<a class="imgButtonOrange" style="margin-left: 10px;" href="/your_account/modify_order.jsp?orderId=<%= orderInfo.getErpSalesId() %>&action=modify">modify order</a>
 										<% } else { %>
 											&nbsp;
 										<% } %>

@@ -39,6 +39,8 @@
 		else
 			totalWidth = 601; // QS inner pages
 	}
+	
+	boolean atcPendingAjax = false;
 %>
 <fd:javascript src="/assets/javascript/cartntabs.js"/>
 <fd:PIPTab id="tab" maxTabs="3" maxRecommendations="5" facility="<%= smartStoreFacility %>"><div class="cartntabs">

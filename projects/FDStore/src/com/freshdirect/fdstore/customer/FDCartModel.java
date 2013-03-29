@@ -95,6 +95,24 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 		}
 	}
 	
+	/** Order cartlines by cartline description, configuration desc, quantity */
+	public final static Comparator<FDCartLineI> NAME_COMPARATOR = new Comparator<FDCartLineI>() {
+		public int compare(FDCartLineI cartLine1, FDCartLineI cartLine2) {
+			int retValue = 0;
+			retValue = cartLine1.getDescription().compareTo(cartLine2.getDescription());
+			if (retValue == 0) {
+				retValue = cartLine1.getConfigurationDesc().compareTo(cartLine2.getConfigurationDesc());
+				if (retValue == 0) { // dept * desc * configDesc matches, check quantity
+					if (cartLine1.getQuantity() <= cartLine2.getQuantity()) {
+						retValue = -1;
+					} else {
+						retValue = 1;
+					}
+				}
+			}
+			return retValue;
+		}
+	};
 
 	/** Order cartlines by department desc, description, configuration desc, quantity */
 	public final static Comparator<FDCartLineI> LINE_COMPARATOR = new Comparator<FDCartLineI>() {
@@ -127,7 +145,7 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 	 * @clientCardinality 1
 	 * @supplierCardinality 0..*
 	 */
-	private final List<FDCartLineI> orderLines = new ArrayList<FDCartLineI>();
+	protected final List<FDCartLineI> orderLines = new ArrayList<FDCartLineI>();
 
 	private final List<FDCartLineI> sampleLines = new ArrayList<FDCartLineI>();
 
@@ -1208,11 +1226,11 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 	//
 	
 	public WebOrderViewI getOrderView(ErpAffiliate affiliate) {
-		return WebOrderViewFactory.getOrderView(orderLines, affiliate);
+		return WebOrderViewFactory.getOrderView(orderLines, affiliate, false);
 	}
 
 	public List<WebOrderViewI> getOrderViews() {
-		return WebOrderViewFactory.getOrderViews(orderLines);
+		return WebOrderViewFactory.getOrderViews(orderLines, false);
 	}
 	
 	public void recalculateTaxAndBottleDeposit(String zipcode) throws FDResourceException{

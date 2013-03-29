@@ -238,6 +238,10 @@ public class DateUtil {
         return dateFormatwithTime.format(clientDate);
 	}
 	
+	public static String getReceiptCutoffDate(Date date){
+		return new SimpleDateFormat("EEEEE, MM/dd/yyyy, h:mm a").format(date);
+	}
+	
 	
 	
 	/** Report relative time difference as english text. 

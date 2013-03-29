@@ -529,7 +529,9 @@ public class FDStoreProperties {
 	
 	private final static String CLOUD_SPONGE_DOMAIN_KEY = "cloudsponge.domain.key";
 	private final static String CLOUD_SPONGE_ADDRESS_IMPORTS = "cloudsponge.usage";
-	
+
+	private final static String PENDING_ORDER_POPUP_ENABLED = "fdstore.pendingOrderPopup.enabled";
+	private final static String PENDING_ORDER_POPUP_MOCKED = "fdstore.pendingOrderPopup.mocked";
 	private final static String PROP_DDPP_ENABLED="fdstore.ddpp.enabled";
 	
 	private static final String PROP_TRANS_EMAIL_ENABLED="fdstore.trans.email.enabled";
@@ -1123,6 +1125,8 @@ public class FDStoreProperties {
 				"GC_CREDIT_CONFIRM,RH_ORDER_CONFIRM,GC_RECIPENT_ORDER,SMART_STORE_DYF");			
 		
 		defaults.put(PROP_MODIFY_ORDER_TOTAL_MAX, "1500");
+		defaults.put(PENDING_ORDER_POPUP_ENABLED, "true");
+		defaults.put(PENDING_ORDER_POPUP_MOCKED, "false");
 		
 		defaults.put(PROP_LIGHT_SIGNUP_ENABLED, "true");
 		
@@ -1141,7 +1145,7 @@ public class FDStoreProperties {
 		defaults.put(PROP_COREMETRICS_FTP_SFTP_PORT, "998");
 		
 		defaults.put(PROP_BAZAARVOICE_FTP_USERNAME, "freshdirect");
-		defaults.put(PROP_BAZAARVOICE_FTP_URL, "ftp-stg.bazaarvoice.com");
+		defaults.put(PROP_BAZAARVOICE_FTP_URL, "ftp.bazaarvoice.com");
 		defaults.put(PROP_BAZAARVOICE_FTP_PASSWORD, "1hOGyoFPLYo");
 		defaults.put(PROP_BAZAARVOICE_BVAPI_URL, "//display-stg.ugc.bazaarvoice.com/static/freshdirect/bvapi.js");
 		defaults.put(PROP_BAZAARVOICE_ENABLED, "true");
@@ -2798,6 +2802,14 @@ public class FDStoreProperties {
     
     public static String getCouldSpongeAddressImports() {
         return  config.getProperty(CLOUD_SPONGE_ADDRESS_IMPORTS);
+    }
+    
+    public static boolean isPendingOrderPopupEnabled() {
+    	return Boolean.valueOf(get(PENDING_ORDER_POPUP_ENABLED));
+    }
+
+    public static boolean isPendingOrderPopupMocked() {
+    	return Boolean.valueOf(get(PENDING_ORDER_POPUP_MOCKED));
     }
     
     public static boolean isDDPPEnabled() {

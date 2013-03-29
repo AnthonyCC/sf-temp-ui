@@ -10,9 +10,11 @@ package com.freshdirect.fdstore.customer;
 
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.freshdirect.affiliate.ErpAffiliate;
 import com.freshdirect.common.pricing.Discount;
 import com.freshdirect.common.pricing.MaterialPrice;
 import com.freshdirect.common.pricing.util.GroupScaleUtil;
@@ -168,5 +170,19 @@ public class FDModifyCartModel extends FDCartModel {
 				}
 			}
 		}
+	}
+
+	public WebOrderViewI getOrderView(ErpAffiliate affiliate) {
+		// return WebOrderViewFactory.getOrderView(orderLines, affiliate, true);
+		// APPDEV-2031 we implemented separate new items feature but due to
+		// recipe grouping discrepancy we switched off this feature
+		return WebOrderViewFactory.getOrderView(orderLines, affiliate, false);
+	}
+
+	public List<WebOrderViewI> getOrderViews() {
+		// return WebOrderViewFactory.getOrderViews(orderLines, true);
+		// APPDEV-2031 we implemented separate new items feature but due to
+		// recipe grouping discrepancy we switched off this feature
+		return WebOrderViewFactory.getOrderViews(orderLines, false);
 	}
 }

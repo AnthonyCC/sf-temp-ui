@@ -37,6 +37,7 @@
        } // if
     } // local block
 %>
+<tmpl:get name="extraHead" />
 <%@ include file="/shared/template/includes/i_head_end.jspf" %>
 </head>
 <body bgcolor="#ffffff" link="#336600" vlink="#336600" alink="#ff9900" text="#333333" class="text10">

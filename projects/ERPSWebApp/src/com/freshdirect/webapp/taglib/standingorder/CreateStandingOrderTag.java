@@ -106,7 +106,9 @@ public class CreateStandingOrderTag extends BodyTagSupport {
 				// note that this object is not yet complete
 				u.setCurrentStandingOrder(so);
 				u.setCheckoutMode( EnumCheckoutMode.CREATE_SO );
-				
+
+				u.setSuspendShowPendingOrderOverlay(true);
+
 				try {
 					// redirect to main page
 					response.sendRedirect(response.encodeRedirectURL("/department.jsp?deptId=COS"));

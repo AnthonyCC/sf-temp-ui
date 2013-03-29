@@ -206,6 +206,7 @@ if (pgErrs.size()>0) {
   </table>
 
 <form id="productForm" name="productForm" method="POST" action="<%=formAction%>">
+	<fd:AddToCartPending id="productForm"/>
 	<input type="hidden" name="productId<%=suffix%>" value='<%= templateLine.getProductName() %>'>
 	<input type="hidden" name="catId<%=suffix%>" value='<%= templateLine.getCategoryName() %>'>
 <% if (cartMode.equals(CartName.MODIFY_CART)) { %>
@@ -213,10 +214,10 @@ if (pgErrs.size()>0) {
 <% } %>
   <input type="hidden" name="salesUnit<%=suffix%>" value="<%=defaultProduct.getSalesUnits()[0].getName()%>">
   <input type="hidden" name="skuCode<%=suffix%>" value="<%=defaultSku.getSkuCode()%>">
-	<fd:IsAlcoholic skuCode="<%=defaultSku.getSkuCode()%>">
-		<fd:USQLegalWarning id="productForm" />
+	<!-- fd:IsAlcoholic skuCode="%=defaultSku.getSkuCode()%>"-->
+		<fd:PopupHandler id="productForm" skuCode="<%=defaultSku.getSkuCode()%>"/>
 		<input type="hidden" name='<%="alcoholic" + suffix %>' id='<%="alcoholic" + suffix %>' value='<%="quantity" + suffix %>'/>
-	</fd:IsAlcoholic>
+	<!--/fd:IsAlcoholic-->
 
 <%
 int prodCount = 1;
@@ -442,10 +443,10 @@ if (isAvailable ) {
 					  <input type="hidden" name="skuCode_<%= prodCount %>" value="<%= dfltSku.getSkuCode() %>">
 					  <input type="hidden" name="catId_<%= prodCount %>" value="<%= optProd.getParentNode() %>">
 					  <input type="hidden" name="productId_<%= prodCount %>" value="<%= optProd %>">
-				  	<fd:IsAlcoholic skuCode='<%=dfltSku.getSkuCode() %>'>
-						<fd:USQLegalWarning id="productForm" tagCounter="<%=prodCount %>"/>
+				  	<!-- fd:IsAlcoholic skuCode='<%=dfltSku.getSkuCode() %>' -->
+						<fd:PopupHandler id="productForm" tagCounter="<%=prodCount %>" skuCode="<%=dfltSku.getSkuCode() %>"/>
 						<%--input type="hidden" name='<%="alcoholic_" + prodCount %>' id='<%="alcoholic_" + prodCount %>' value='<%="quantity_" + prodCount %>'/ --%>
-					</fd:IsAlcoholic>
+					<!-- /fd:IsAlcoholic> -->
 					  <input name ="quantity_<%=prodCount%>" value="<%=(request.getParameter("quantity_"+prodCount)==null ?"" : request.getParameter("quantity_"+prodCount))%>" type="text" size="3" onChange="chgNamedQty(pricing_<%=prodCount%>,'quantity_<%=prodCount%>',0,<%= optProd.getQuantityMinimum() %>,<%= user.getQuantityMaximum(optProd) %>,true)">
 					</td>
 					<td valign="bottom" align="left">
@@ -476,7 +477,9 @@ if (isAvailable ) {
 			<span style="display:inline-block;position:relative;">
 			<img src="<%=dispObj.getImagePath()%>" border="0" name="<%=imgName%>">
 			<fd:USQProductBurst product="<%=null%>" forceLogo="true"/></span></td>
-			
+			<script type="text/javascript">
+				<%="swapImageWithBurst(\""+imgName+"\",\""+dispObj.getImagePath()+"\",\""+dispObj.isAlcoholic(dfltSku)+"\",\"burst-usq\")"%>
+			</script>
 			<td width="<%=W_COMPONENT_GROUP_MEAL_TOTAL-115%>">
 				<table width="<%=W_COMPONENT_GROUP_MEAL_TOTAL-115%>" cellpadding="0" cellspacing="0" border="0" align="center">
 	<% 			} 
@@ -493,11 +496,10 @@ if (isAvailable ) {
 				  <input type="hidden" name="skuCode_<%= prodCount %>" value="<%= dfltSku.getSkuCode() %>">
 				  <input type="hidden" name="catId_<%= prodCount %>" value="<%= optProd.getParentNode() %>">
 				  <input type="hidden" name="productId_<%= prodCount %>" value="<%= optProd %>">
-				  	<fd:IsAlcoholic skuCode='<%=dfltSku.getSkuCode() %>'>
-						<fd:USQLegalWarning id="productForm" tagCounter="<%=prodCount %>" quantityCheck="true" />
+				  	<!-- fd:IsAlcoholic skuCode='<%=dfltSku.getSkuCode() %>' -->
+						<fd:PopupHandler id="productForm" tagCounter="<%=prodCount %>" quantityCheck="true" skuCode="<%=dfltSku.getSkuCode() %>"/>
 						<%--input type="hidden" name='<%="alcoholic_" + prodCount %>' id='<%="alcoholic_" + prodCount %>' value='<%="quantity_" + prodCount %>'/ --%>
-					</fd:IsAlcoholic>
-
+					<!-- /fd:IsAlcoholic -->
           <div class="qtyinput">
             <a href="javascript:chgNamedQty(pricing_<%=prodCount%>,'quantity_<%=prodCount%>',-<%= optProd.getQuantityIncrement() %>,<%= optProd.getQuantityMinimum() %>,<%= user.getQuantityMaximum(optProd) %>,true);" class="quantity_minus"><span>Increase quantity</span></a>
             <input class="qty" name ="quantity_<%=prodCount%>" value="<%=(request.getParameter("quantity_"+prodCount)==null ?"" : request.getParameter("quantity_"+prodCount))%>" type="text" size="3" onChange="chgNamedQty(pricing_<%=prodCount%>,'quantity_<%=prodCount%>',0,<%= optProd.getQuantityMinimum() %>,<%= user.getQuantityMaximum(optProd) %>,true)">
@@ -765,9 +767,9 @@ if (isAvailable ) {
 	 // -->
 	</script>
 			<input name="itemCount" type="hidden" value="<%=prodCount%>">
-			<fd:IsAlcoholic>
-				<fd:USQLegalWarning id="productForm" event="onclick" elementId="addMultipleToCart" quantityCheck="true" />
-			</fd:IsAlcoholic>
+			<!-- fd:IsAlcoholic -->
+				<fd:PopupHandler id="productForm" event="onclick" elementId="addMultipleToCart" quantityCheck="true" />
+			<!-- /fd:IsAlcoholic-->
 	</form>
 	<% }
 } else {  %>

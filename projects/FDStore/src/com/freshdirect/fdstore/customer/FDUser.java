@@ -226,6 +226,7 @@ public class FDUser extends ModelSupport implements FDUserI {
 
 	//mergePendingOrder (APPDEV-2031)
 	private boolean showPendingOrderOverlay = true;
+	private boolean suspendShowPendingOrderOverlay = false;
 	private FDCartModel mergePendCart = new FDCartModel();
 
 	/*Appdev-1888 */
@@ -2150,11 +2151,22 @@ public class FDUser extends ModelSupport implements FDUserI {
 	//mergePendingOrder (APPDEV-2031)
 	
 	public boolean getShowPendingOrderOverlay() {
-		return this.showPendingOrderOverlay;
+		return FDStoreProperties.isPendingOrderPopupEnabled()
+				&& (FDStoreProperties.isPendingOrderPopupMocked() || (this.showPendingOrderOverlay && !this.suspendShowPendingOrderOverlay));
 	}
 
 	public void setShowPendingOrderOverlay(boolean showPendingOrderOverlay) {
 		this.showPendingOrderOverlay = showPendingOrderOverlay;
+	}
+	
+	@Override
+	public void setSuspendShowPendingOrderOverlay(boolean suspendShowPendingOrderOverlay) {
+		this.suspendShowPendingOrderOverlay = suspendShowPendingOrderOverlay;
+	}
+	
+	@Override
+	public boolean isSupendShowPendingOrderOverlay() {
+		return this.suspendShowPendingOrderOverlay;
 	}
 	
 	/* check if user has a valid (regular) pending order (so exclude all other types) */
@@ -2250,7 +2262,7 @@ public class FDUser extends ModelSupport implements FDUserI {
 	};
 	
 	public FDCartModel getMergePendCart() {
-		return (this.mergePendCart == null) ? new FDCartModel() : this.mergePendCart;
+		return (this.mergePendCart == null) ? this.mergePendCart = new FDCartModel() : this.mergePendCart;
 	}
 	
 	public void setMergePendCart(FDCartModel mergePendCart) {
@@ -2336,6 +2348,18 @@ public class FDUser extends ModelSupport implements FDUserI {
 		}
 		return this.getFDCustomer().isEligibleForDDPP();
 	}
+	
+		@Override
+	public boolean isPopUpPendingOrderOverlay() {
+		try {
+			return getShowPendingOrderOverlay() && getLevel() >= RECOGNIZED
+					&& (hasPendingOrder() || FDStoreProperties.isPendingOrderPopupMocked());
+		} catch (FDResourceException e) {
+			LOGGER.debug("a really unexpected and really unnecessarily delegated exception", e);
+			return false;
+		}
+	}
+	
 	
 	
 	public EnumGiftCardType getGiftCardType() {

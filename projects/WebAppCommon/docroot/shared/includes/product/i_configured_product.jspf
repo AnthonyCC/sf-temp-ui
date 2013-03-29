@@ -143,7 +143,9 @@ if (skus.size() != 0 && ! productNode.isUnavailable() ) {
 
     %>
     
-<%@page import="com.freshdirect.webapp.taglib.fdstore.display.AnnotatedProductNameTag"%><form method='post' name="productForm" action="<%= formAction %>">
+<%@page import="com.freshdirect.webapp.taglib.fdstore.display.AnnotatedProductNameTag"%>
+	<form method='post' name="productForm" id="productForm" action="<%= formAction %>">
+	<fd:AddToCartPending id="productForm"/>
 
         <% if (cartMode.equals(CartName.MODIFY_CART)) { %>
             <input type="hidden" name="cartLine" value="<%= templateLine.getRandomId() %>">

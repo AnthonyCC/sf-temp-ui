@@ -794,6 +794,11 @@
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
+		<attribute>
+			<name>pending</name>
+			<required>false</required>
+			<rtexprvalue>false</rtexprvalue>
+		</attribute>
 	</tag>
 
 	<tag>
@@ -4877,7 +4882,44 @@
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 	</tag>
-	
+	<tag>
+		<name>AddToCartPending</name>
+		<tagclass>com.freshdirect.webapp.taglib.fdstore.AddToCartPendingTag</tagclass>
+		<bodycontent>empty</bodycontent>
+		<info></info>
+		<attribute>
+			<name>id</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>action</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>ajax</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>rebindSubmit</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+	</tag>
+	<tag>
+		<name>MergePendingOrderRequest</name>
+		<tagclass>com.freshdirect.webapp.taglib.fdstore.MergePendingOrderRequestTag</tagclass>
+		<bodycontent>empty</bodycontent>
+		<info></info>
+	</tag>
+	<tag>
+		<name>CheckOrderStatus</name>
+		<tagclass>com.freshdirect.webapp.taglib.fdstore.CheckOrderStatusTag</tagclass>
+		<bodycontent>empty</bodycontent>
+		<info></info>
+	</tag>
 	<tag>
 		<name>CmInit</name>
 		<tagclass>com.freshdirect.webapp.taglib.coremetrics.CmInitTag</tagclass>
@@ -5230,6 +5272,7 @@
 	<tag>
 		<name>NutritionPanelController</name>
 		<tagclass>com.freshdirect.webapp.taglib.content.nutrition.NutritionPanelControllerTag</tagclass>
+		<info></info>
 		<attribute>
 			<name>skuCode</name>
 			<required>true</required>
@@ -5250,7 +5293,6 @@
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>        
-		<info></info>
 	</tag>
 	<tag>
 		<name>NutritionPanel</name>
@@ -5278,9 +5320,9 @@
 		</attribute>
 	</tag>
     <tag>
-		<name>USQLegalWarning</name>
-		<tagclass>com.freshdirect.webapp.taglib.fdstore.USQLegalWarningTag</tagclass>
-		<bodycontent>empty</bodycontent>
+		<name>PopupHandler</name>
+		<tagclass>com.freshdirect.webapp.taglib.fdstore.PopupHandlerTag</tagclass>
+		<bodycontent>JSP</bodycontent>
 		<info></info>
 		<attribute>
 			<name>id</name>
@@ -5318,11 +5360,36 @@
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 		<attribute>
+			<name>noProduct</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>action</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>ajax</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>rebindSubmit</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
 			<name>inputTagPostFix</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
-    </tag>
+		<attribute>
+			<name>multiForm</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+     </tag>
     <tag>
 		<name>IsAlcoholic</name>
 		<tagclass>com.freshdirect.webapp.taglib.fdstore.IsAlcoholicTag</tagclass>

@@ -142,6 +142,7 @@ catIndex++;
 <table>
 <form name="wine_perfect_form_<%=catIndex%>" id="wine_perfect_form_<%=catIndex%>" method="POST">
 </table>
+<% { String _form_id = "wine_perfect_form_" + catIndex; %><fd:AddToCartPending id="<%= _form_id %>"/><% } %>
 
 <%
 //**************************************************

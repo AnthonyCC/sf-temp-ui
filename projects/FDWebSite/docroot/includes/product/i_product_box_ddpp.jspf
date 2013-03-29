@@ -148,16 +148,17 @@
 							};
 						</script>
 						<form method="get" action="#" id="<%= TX_FORM_NAMEi %>" name="<%= TX_FORM_NAMEi %>" onsubmit="return <%= TX_JS_NAMESPACEi %>.formSubmit();">
+							<fd:AddToCartPending id="<%= TX_FORM_NAMEi %>" action="addMultipleToCart" rebindSubmit="true"/>
 							<input type="hidden" name="itemCount" value="1" />
 							<fd:TxProductControl txNumber="0" namespace="<%= TX_JS_NAMESPACEi %>" impression="<%= (TransactionalProductImpression) pi %>" setMinimumQt="true" />
 							<div class="subtotalInfo"><span id="FPsubtotalEstPrefix_<%= seqDDPP %>" style="display: none;">est. </span>subtotal: <span id="FPsubtotalEst_<%= seqDDPP %>"></span><span class="subtotalInfoPrice" id="FPsubtotal_<%= seqDDPP %>"></span></div>
 							<div class="ctaATC">
 								<input type="image" class="CTAButtonFP" id="CTAButtonFP_<%= seqDDPP %>" name="addSingleToCart_<%= transProdIndex %>" src="/media/images/buttons/add_to_cart_no_icon<%= (cart.getTotalQuantity(pm) > 0) ? "_s": "" %>.png" width="95" height="27" border="0" alt="ADD SELECTED TO CART" />
 							</div>
-							<fd:IsAlcoholic skuCode="<%=((TransactionalProductImpression) pi).getSku().getSkuCode()%>">
-								<input type="hidden" name="alcoholic_0" id="alcoholic_0" value="quantity_0"/>
-								<fd:USQLegalWarning id="<%= TX_FORM_NAMEi %>" event="onclick" elementId='<%= "CTAButtonFP_" + seqDDPP %>'/>
-							</fd:IsAlcoholic>
+							<!-- fd:IsAlcoholic skuCode="%=((TransactionalProductImpression) pi).getSku().getSkuCode()%>" -->
+								<%--input type="hidden" name="alcoholic_0" id="alcoholic_0" value="quantity_0"/ --%>
+								<fd:PopupHandler id="<%= TX_FORM_NAMEi %>" event="onclick" elementId='<%= "CTAButtonFP_" + seqDDPP %>' skuCode="<%=((TransactionalProductImpression) pi).getSku().getSkuCode()%>" action="addMultipleToCart" rebindSubmit="true"/>
+							<!-- /fd:IsAlcoholic -->
 							<div class="prodATCStatus" id="<%= prodATCStatusId %>"></div>
 							<% transProdIndex++; %>
 						</form>

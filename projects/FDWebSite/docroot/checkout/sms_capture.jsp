@@ -92,13 +92,7 @@
 		<tr><td colspan="2">&nbsp;</td></tr>
 		<tr>
 			<td align="center" colspan="2">
-				<table class="butCont">
-					<tr>
-						<td class="butOrangeLeft"><!-- --></td>
-						<td class="butOrangeMiddle"><a class="butText" style="text-shadow:none;font-weight:bold;padding:0 70px;vertical-align:middle;" href="#" onclick="Modalbox.hide(); return false;">&nbsp;&nbsp;Close&nbsp;&nbsp;</a></td>
-						<td class="butOrangeRight"><!-- --></td>
-					</tr>
-				</table>
+				<a class="imgButtonOrange" href="#" onclick="Modalbox.hide(); return false;">&nbsp;&nbsp;Close&nbsp;&nbsp;</a>
 			</td>
 		</tr>
 		<tr><td colspan="2">&nbsp;</td></tr>
@@ -189,27 +183,12 @@
 		<tr>
 			<td>
 				<table width="100%" border="0"><tr>
-				<td align="left" class="trpad">
-					<table class="butCont">
-						<tr>
-							<td class="butWhiteLeft"><!-- --></td>
-							<td class="butWhiteMiddle" valign="middle"><a class="butText" style="color:#000000;text-shadow:none;font-weight:bold;vertical-align:middle;" href="#" onclick="doRemoteOverlay1('sms_capture.jsp?submitbutton=nothanks'); return false;">&nbsp;&nbsp;No, Thanks&nbsp;&nbsp;</a></td>
-							<td class="butWhiteRight"><!-- --></td>
-						</tr>
-					</table>
+				<td align="left" class="trpad" style="text-align: left; padding-left: 20px;">
+					<button class="imgButtonWhite" onclick="doRemoteOverlay1('sms_capture.jsp?submitbutton=nothanks'); return false;">&nbsp;&nbsp;No, Thanks&nbsp;&nbsp;</button>
 				</td>
 				<td align="right" style="padding-right:20px;">
-					<table class="butCont fright" style="margin-left: 15px;">
-						<tr>
-							<td class="butBrownLeft"><!-- --></td>
-							<td class="butBrownMiddle"><a class="butText" style="color:#000000;text-shadow:none;font-weight:bold;text-shadow:none;vertical-align:middle;" href="#" onclick="Modalbox.hide(); return false;">&nbsp;&nbsp;Remind Me Later&nbsp;&nbsp;</a></td>
-							<td class="butBrownRight"><!-- --></td>
-							<td>&nbsp;&nbsp;</td>
-							<td class="butOrangeLeft"><!-- --></td>
-							<td class="butOrangeMiddle"><a class="butText" style="font-weight:bold;text-shadow:none;vertical-align:middle;" href="#" onclick="doRemoteOverlay1('sms_capture.jsp?submitbutton=update'); return false;">Update Preferences</a></td>
-							<td class="butOrangeRight"><!-- --></td>
-						</tr>
-					</table>
+					<button class="imgButtonBrown" style="margin-left: 15px;" onclick="Modalbox.hide(); return false;">&nbsp;&nbsp;Remind Me Later&nbsp;&nbsp;</button>
+					<button class="imgButtonOrange" style="margin-left: 10px;" onclick="doRemoteOverlay1('sms_capture.jsp?submitbutton=update'); return false;">&nbsp;Update Preferences&nbsp;</button>
 				</td>
 				</tr></table>
 			</td>

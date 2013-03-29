@@ -104,7 +104,7 @@ FDUserI _user = (FDUserI)session.getAttribute(SessionName.USER);
        
     %>
     <% if(EnumSurveyType.POST_ORDER_SURVEY.equals(EnumSurveyType.getEnum(_survey_Name))) {%>
-        <div class="container1">
+        <div style="width: 680px;">
     <% } else {%>
         <div class="container">
     <%}%>

@@ -18,7 +18,11 @@ final int W_YA_ORDER_DETAILS_3C_GAP = 41;
 final int W_YA_ORDER_DETAILS_3C_COLUMN = 268;
 %>
 <fd:CheckLoginStatus guestAllowed="false" recognizedAllowed="false" />
-<%  String orderId = request.getParameter("orderId"); %>
+<%  String orderId = request.getParameter("orderId");
+if(orderId==null){
+	orderId = (String)session.getAttribute(SessionName.RECENT_ORDER_NUMBER);
+}
+%>
 <fd:ModifyOrderController orderId="<%= orderId %>" result="result" successPage='<%= "/your_account/order_details.jsp?orderId=" + orderId %>'>
 <tmpl:insert template='/common/template/dnav.jsp'>
     <tmpl:put name='title' direct='true'>FreshDirect - Your Account - Order Details</tmpl:put>
@@ -73,22 +77,28 @@ final int W_YA_ORDER_DETAILS_3C_COLUMN = 268;
         // get order line info
         //
         boolean isSubmitted = cart.getOrderStatus().equals(EnumSaleStatus.SUBMITTED) || cart.getOrderStatus().equals(EnumSaleStatus.AUTHORIZED) ||cart.getOrderStatus().equals(EnumSaleStatus.AUTHORIZATION_FAILED);
-%>
-<!-- error message handling here -->
+	%>
+	<!-- error message handling here -->
 
-<% 
-    String errorMsg="";
-     if (cart.getOrderStatus() == EnumSaleStatus.REFUSED_ORDER) {
-        errorMsg= "Pending Order: Please contact us at "+user.getCustomerServiceContact()+" as soon as possible to reschedule delivery.";
-%>
-<% } else if (EnumSaleStatus.AUTHORIZATION_FAILED.equals(cart.getOrderStatus())) {
-        errorMsg= PaymentMethodUtil.getAuthFailWarningMessage(cart.getAuthFailDescription());
-%>
-<%@ include file="/includes/i_pymt_warning_messages.jspf" %>
-<% } %>
+	<% 
+	    String errorMsg="";
+	     if (cart.getOrderStatus() == EnumSaleStatus.REFUSED_ORDER) {
+	        errorMsg= "Pending Order: Please contact us at "+user.getCustomerServiceContact()+" as soon as possible to reschedule delivery.";
+	%>
+	<% } else if (EnumSaleStatus.AUTHORIZATION_FAILED.equals(cart.getOrderStatus())) {
+	        errorMsg= PaymentMethodUtil.getAuthFailErrorMessage(cart.getAuthFailDescription());
+	%>
+		<%@ include file="/includes/i_error_messages.jspf" %>
+	<% } %>
 
-<form name="viewcart" method="post" action="/view_cart.jsp" style="margin:0px ! important" id="viewcart">
-<div class="groupScaleBox" style="display:none"><!--  -->
+	<%
+		/*
+		 *	Why is this form tag here? ... And no end form tag.
+		 *
+		 *	<form name="viewcart" method="post" action="/view_cart.jsp" style="margin:0px ! important" id="viewcart">
+		 */
+	%>
+	<div class="groupScaleBox" style="display:none"><!--  -->
 		<table cellpadding="0" cellspacing="0" border="0" style="border-collapse: collapse;" class="groupScaleBoxContent" id="groupScaleBox" >
 			<tr>
 				<td colspan="2"><img src="/media_stat/images/layout/top_left_curve_8A6637_filled.gif" width="6" height="6" alt="" /></td>
@@ -122,90 +132,88 @@ final int W_YA_ORDER_DETAILS_3C_COLUMN = 268;
 			</tr>
 		</table>
 	</div>
-
-
-<table width="<%= W_YA_ORDER_DETAILS_TOTAL %>" align="center" border="0" cellpadding="0" cellspacing="0">
-<tr>
-    <td class="text11">
-       <font class="title18" >Order # <%= orderId %> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Status: 
-       <% if( EnumSaleStatus.AUTHORIZATION_FAILED.equals(cart.getOrderStatus())) {%>
-       <font color="#FF0000"><%=cart.getOrderStatus().getDisplayName()%></font>
-       <%} else {%><%=cart.getOrderStatus().getDisplayName()%>
-       <%}%>
-       
-       </font> &nbsp;&nbsp;&nbsp;<br>
-        <%-- Having trouble, send an e-mail to <A HREF="mailto:accounthelp@freshdirect.com">accounthelp@freshdirect.com</A> or call 1-866-2UFRESH.--%>
-    </td>
-    <%
-    boolean hasCredit = false;
-    Collection comp = cart.getComplaints();
-    if (comp != null) {
-            ErpComplaintModel c = null;
-            for (Iterator i=comp.iterator(); i.hasNext(); ) {
-                c = (ErpComplaintModel)i.next();
-
-                if (c != null && EnumComplaintStatus.APPROVED.equals(c.getStatus())){
-                    hasCredit = true;
-                }
-            }
-        }
-    if (hasCredit) { %>
-    <td align="right" class="text11"><i>Credit was issued for this order.</i></td>
-    <% } %>
-    <% if (user.isEligibleForClientCodes() && cart.hasClientCodes()) { %>
-    <td class="text11" style="text-align: right; vertical-align: middle;">
-    	<a href="/api/clientCodeReport.jsp?sale=<%= orderId %>" style="text-decoration: none; outline: none;"><img src="/media_stat/images/buttons/export_client_codes.gif" width="167" height="17" style="border: none;"></a>
-    </td>
-    <% } %>
-</tr>
-</table>
-<IMG src="/media_stat/images/layout/clear.gif" width="1" HEIGHT="8" border="0"><br>
-<IMG src="/media_stat/images/layout/ff9933.gif" width="<%= W_YA_ORDER_DETAILS_TOTAL %>" HEIGHT="1" border="0"><br>
-<IMG src="/media_stat/images/layout/clear.gif" width="1" HEIGHT="15" border="0"><br>
-<%@ include file="/includes/your_account/i_order_detail_delivery_payment.jspf" %><br>
-<IMG src="/media_stat/images/layout/ff9933.gif" width="<%= W_YA_ORDER_DETAILS_TOTAL %>" HEIGHT="1" border="0"><br>
-<IMG src="/media_stat/images/layout/clear.gif" width="1" HEIGHT="4" border="0"><br><FONT CLASS="space4pix"><br></FONT>
-<table cellpadding="0" cellspacing="0" border="0" style="padding-bottom: 20px; margin: 0px auto;">
-<tr valign="top">
-
-	<%  if (!cart.isPending()) { %>
-    <td>
-        <A HREF="/quickshop/shop_from_order.jsp?orderId=<%= orderId %>"><IMG src="/media_stat/images/buttons/shop_from_order.gif" width="144" HEIGHT="16" border="0" ALT="SHOP FROM THIS ORDER"></A><br>
-        <FONT CLASS="space4pix"><br></FONT>
-        Click here to reorder items from this order in Quickshop.<br>
-    </td>
-    <td width="<%= W_YA_ORDER_DETAILS_3C_GAP %>"><br></td>
-    <%  } %>
-    
-    <% if (allowModifyOrder.booleanValue()) { %>
-    <td>
-        <a href="/your_account/modify_order.jsp?orderId=<%=orderId%>"><img src="/media_stat/images/buttons/change_this_order.gif" border="0" ALT="CHANGE THIS ORDER"></a>
-
-        <FONT CLASS="space4pix"><br></FONT>
-        Click here to:<br>
-        - add, remove, or change items<br>
-        - change delivery address<br>
-        - change delivery time slot<br>
-        - change payment information<br>
-
-    </td>
-    <td width="<%= W_YA_ORDER_DETAILS_3C_GAP %>"><br></td>
-    <% } %>
-    
-    <% if (allowCancelOrder.booleanValue()) { %>
-    <td>
-        <a href="/your_account/cancel_order.jsp?orderId=<%=orderId%>"><img src="/media_stat/images/buttons/cancel_this_order_mrn.gif" width="112" HEIGHT="16" border="0" ALT="CANCEL THIS ORDER"></a>
-        <FONT CLASS="space4pix"><br></FONT>
-        Click here to cancel this order.
-        
-    </td>
-    <td width="<%= W_YA_ORDER_DETAILS_3C_GAP %>"><br></td>
-   <% } %>
-</tr>
-</table>
-<%@ include file="/includes/your_account/i_order_detail_cart_details.jspf" %><br>
+	<%-- order details/CTA row (under top nav bar) --%>
+	<%
+		boolean hasCredit = false;
+	    Collection comp = cart.getComplaints();
+	    if (comp != null) {
+			ErpComplaintModel c = null;
+	        for (Iterator i=comp.iterator(); i.hasNext(); ) {
+	        	c = (ErpComplaintModel)i.next();
+	
+				if (c != null && EnumComplaintStatus.APPROVED.equals(c.getStatus())){
+	            	hasCredit = true;
+				}
+			}
+		}
+	    boolean hasClientCodes = (user.isEligibleForClientCodes() && cart.hasClientCodes());
+	    boolean hasModify = allowModifyOrder.booleanValue();
+	    boolean hasCancel = allowCancelOrder.booleanValue();
+	%>
+	<table width="<%= W_YA_ORDER_DETAILS_TOTAL %>" align="center" border="0" cellpadding="0" cellspacing="0">
+		<tr>
+		    <td class="text11">
+		       <font class="title18" >Order # <%= orderId %> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Status: 
+		       <% if( EnumSaleStatus.AUTHORIZATION_FAILED.equals(cart.getOrderStatus())) {%>
+		       <font color="#FF0000"><%=cart.getOrderStatus().getDisplayName()%></font>
+		       <%} else {%><%=cart.getOrderStatus().getDisplayName()%>
+		       <%}%>
+		       
+		       </font> &nbsp;&nbsp;&nbsp;<br>
+		        <%-- Having trouble, send an e-mail to <A HREF="mailto:accounthelp@freshdirect.com">accounthelp@freshdirect.com</A> or call 1-866-2UFRESH.--%>
+		    </td>
+		    <td width="<%= W_YA_ORDER_DETAILS_TOTAL/2 %>" border="0" cellpadding="0" cellspacing="0" style="text-align: right;">
+		    	<% if (hasCredit || hasClientCodes || hasModify || hasCancel) { %>
+		    		<% if (hasModify || hasCancel || hasClientCodes || hasCredit) { %>
+			    		<table class="fright">
+				    		<tr>
+					    		<% if (hasCredit) { %>
+									<td align="right" valign="middle" class="text11"><i>Credit was issued for this order.</i></td>
+					    		<% } %>
+							    <% if (hasClientCodes) { %>
+							    	<td nowrap="nowrap">
+										<a class="butCont butBlue fright" href="/api/clientCodeReport.jsp?sale=<%= orderId %>" style="margin-left: 10px;">
+											<span class="butLeft"><!-- --></span><span class="butMiddle butText">export&nbsp;client&nbsp;codes</span><span class="butRight"><!-- --></span>
+										</a>
+									</td>
+							    <% } %>
+				    			<% if (hasModify) { %>
+								    <td nowrap="nowrap">
+										<a class="imgButtonOrange fright" style="margin-left: 10px;" href="/your_account/modify_order.jsp?orderId=<%= orderId %>&action=modify">modify order</a>
+								    </td>
+				    			<% } %>
+				    			<% if (hasCancel) { %>
+								    <td nowrap="nowrap">
+										<a class="imgButtonRed fright" style="margin-left: 10px;" href="/your_account/cancel_order.jsp?orderId=<%=orderId%>">cancel order</a>
+								    </td>
+							   <% } %>
+				    		</tr>
+				    	</table>
+		    		<% } %>
+		    	<% } else { %>
+		    		&nbsp;
+		    	<% } %>
+				<%  if (!cart.isPending()) { %>
+					<table class="fright">
+						<tr>
+						    <td>
+								<a class="imgButtonBlue fright" href="/quickshop/shop_from_order.jsp?orderId=<%= orderId %>" title="Click here to reorder items from this order in Quickshop">shop from this order</a>
+							</td>
+						</tr>
+					</table>
+				<% } %>
+		    </td>
+		</tr>
+	</table>
+	<img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0" alt="" /><br />
+	<img src="/media_stat/images/layout/ff9933.gif" width="<%= W_YA_ORDER_DETAILS_TOTAL %>" height="1" border="0" alt="" /><br />
+	<img src="/media_stat/images/layout/clear.gif" width="1" height="15" border="0" alt="" /><br />
+	<%@ include file="/includes/your_account/i_order_detail_delivery_payment.jspf" %><br />
+	<img src="/media_stat/images/layout/ff9933.gif" width="<%= W_YA_ORDER_DETAILS_TOTAL %>" height="1" border="0" alt="" /><br />
+	<img src="/media_stat/images/layout/clear.gif" width="1" height="4" border="0"><br /><span class="space4pix"><br /></span>
+	<%@ include file="/includes/your_account/i_order_detail_cart_details.jspf" %><br />
 <%  } %>
-<br>
+<br />
 <%
     double totalCredit = 0.0;
     int orderLine = 0;
@@ -265,31 +273,31 @@ final int W_YA_ORDER_DETAILS_3C_COLUMN = 268;
 %>
 <table width="<%= W_YA_ORDER_DETAILS_TOTAL %>" cellpadding="0" cellspacing="0" border="0" align="center">
     <tr>
-    <td><img src="/media_stat/images/layout/clear.gif" width="40" height="1"></td>
-    <td><img src="/media_stat/images/layout/clear.gif" width="40" height="1"></td>
-    <td><img src="/media_stat/images/layout/clear.gif" width="357" height="1"></td>
-    <td><img src="/media_stat/images/layout/clear.gif" width="75" height="1"></td>
-    <td><img src="/media_stat/images/layout/clear.gif" width="85" height="1"></td>
-    <td><img src="/media_stat/images/layout/clear.gif" width="60" height="1"></td>
-    <td><img src="/media_stat/images/layout/clear.gif" width="30" height="1"></td>
+	    <td><img src="/media_stat/images/layout/clear.gif" width="40" height="1" alt="" /></td>
+	    <td><img src="/media_stat/images/layout/clear.gif" width="40" height="1" alt="" /></td>
+	    <td><img src="/media_stat/images/layout/clear.gif" width="357" height="1" alt="" /></td>
+	    <td><img src="/media_stat/images/layout/clear.gif" width="75" height="1" alt="" /></td>
+	    <td><img src="/media_stat/images/layout/clear.gif" width="85" height="1" alt="" /></td>
+	    <td><img src="/media_stat/images/layout/clear.gif" width="60" height="1" alt="" /></td>
+	    <td><img src="/media_stat/images/layout/clear.gif" width="30" height="1" alt="" /></td>
     </tr>
     <tr>
-    <td colspan="3"><b>Credit issued for...</b></td>
-    <td><b>Date</b></td>
-    <td><b>Type</b></td>
-    <td align="right"><b>Amount</b></td>
-    <td>&nbsp;</td>
+	    <td colspan="3"><b>Credit issued for...</b></td>
+	    <td><b>Date</b></td>
+	    <td><b>Type</b></td>
+	    <td align="right"><b>Amount</b></td>
+	    <td>&nbsp;</td>
     </tr>
     <tr><td colspan="7"><img src="/media_stat/images/layout/clear.gif" width="1" height="4"></td></tr>
     <%=creditRow%>
     <tr><td colspan="7" bgcolor="#CCCCCC"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td></tr>
     <tr><td colspan="7"><img src="/media_stat/images/layout/clear.gif" width="1" height="4"></td></tr>
     <tr>
-    <td colspan="5" align="right"><b>Total credit issued for this order:</b>&nbsp;&nbsp;</td>
-    <td align="right"><font class="text10bold"><%=currencyFormatter.format(totalCredit)%></font></td>
-    <td>&nbsp;</td>
+	    <td colspan="5" align="right"><b>Total credit issued for this order:</b>&nbsp;&nbsp;</td>
+	    <td align="right"><font class="text10bold"><%=currencyFormatter.format(totalCredit)%></font></td>
+	    <td>&nbsp;</td>
     </tr>
-    <tr><td colspan="7"><br><br></td></tr>
+    <tr><td colspan="7"><br /><br /></td></tr>
 </table>
 <%  } %>
 
@@ -298,7 +306,6 @@ final int W_YA_ORDER_DETAILS_3C_COLUMN = 268;
 </tmpl:put>
 </tmpl:insert>
 </fd:ModifyOrderController>
-
 
 <%!
     private String getTimeslotString(Calendar startTimeCal, Calendar endTimeCal){

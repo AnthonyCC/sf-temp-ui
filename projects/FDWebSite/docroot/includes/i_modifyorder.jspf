@@ -6,23 +6,27 @@
 <%@ page import="com.freshdirect.fdstore.customer.FDModifyCartModel"%>
 <%@ page import="com.freshdirect.webapp.taglib.fdstore.SessionName"%>
 <%@ page import="com.freshdirect.fdstore.standingorders.FDStandingOrder"%>
-<%@ page import="com.freshdirect.customer.EnumSaleStatus"%>
+<%@ page import="com.freshdirect.common.pricing.Discount" %>
 <%!
 	public String printDate(Date date){
-		return new SimpleDateFormat("h:mm a 'on' EEEE, MM/d/yy").format(date);
+		return new SimpleDateFormat("h:mm a '</b>on<b>' EEEEE, MM/dd/yyyy").format(date);
 	} 
 	
 	public String printDateOnly(Date date){
-		return new SimpleDateFormat("EEEE, MM/d").format(date);
+		return new SimpleDateFormat("EEEEE, MM/dd").format(date);
 	}
 %>
 <%
 	String uri = request.getRequestURI();
-	final boolean isInDelivery = (uri.indexOf("step_2_select") > -1);	
+	final boolean isInDelivery = (uri.indexOf("step_2_select") > -1);
+	boolean isInReview = uri.indexOf("step_4_submit") != -1;
 	boolean modifyOrderMode = false;
 
 	FDUserI mUser = (FDUserI) session.getAttribute( SessionName.USER );
 	FDCartModel mCart = mUser.getShoppingCart();
+	
+	String modifiedOrderNumber="";
+	String modifyNote="";
 	
 	if (mUser.getCurrentStandingOrder() != null) {
 		%><%@include file="i_so_header.jspf" %><%
@@ -38,24 +42,14 @@
 		cal.setTime( modCart.getOriginalOrder().getDatePlaced() );
 		cal.add(Calendar.DAY_OF_MONTH, 8);
 		Date weekFromOrderDate = cal.getTime();
-%>		<table width="100%" cellspacing="0" cellpadding="0" border="0">
-			<tr>
-				<td align="center">
-					<b><span style="color: #336699; font-size: 13px;">You are changing order # <%= modCart.getOriginalOrder().getErpSalesId() %></span></b>
-					<a href="/your_account/cancel_modify_order.jsp">Click here to cancel all changes</a><br/>
-					<img src="/media_stat/images/layout/clear.gif" width="1" height="4"><br/>
-					<b>Complete checkout by <%= printDate(modCart.getOriginalOrder().getDeliveryReservation().getCutoffTime()) %></b> or this order <%if( EnumSaleStatus.AUTHORIZATION_FAILED.equals(modCart.getOriginalOrder().getOrderStatus())) {%> <b>will be cancelled</b>.<%} else {%><b>will be delivered as is</b>.<%}%>
-					<% if (isInDelivery) { %><br/>
-						If your new delivery date is on or after <%= printDateOnly(weekFromOrderDate) %>, all of your items will be updated to reflect today's prices.
-					<% } %><br/>
-					<img src="/media_stat/images/layout/clear.gif" width="1" height="10">
-				</td>
-			</tr>
-			<tr>
-				<td bgcolor="#6699CC"><img src="/media_stat/images/layout/clear.gif" width="1" height="4"></td>
-			</tr>
-		</table>
-		<br/>
-<%
+		modifiedOrderNumber = modCart.getOriginalOrder().getErpSalesId();
+		
+		if (isInReview) modifyNote+="The price and availability of some items may change.";
+		modifyNote+="You must complete any modifications by <b>"+printDate(modCart.getOriginalOrder().getDeliveryReservation().getCutoffTime());
+		modifyNote+="</b> <a href='/help/faq_search.jsp?searchFAQ=cutoff' target='_blank' class='dialog'>Learn More</a>";
+		if (isInDelivery) { 
+			modifyNote+="<br>If your new delivery date is on or after <b>"+printDate(weekFromOrderDate);
+			modifyNote+="</b>, all of your items will be updated to reflect today's prices.";
+		}		
 	} 
 %>

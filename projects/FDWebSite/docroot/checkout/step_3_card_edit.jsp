@@ -92,7 +92,7 @@ final int W_CHECKOUT_STEP_3_CARD_EDIT_TOTAL = 970;
 					<a href="<%=response.encodeURL("/checkout/step_2_select.jsp ")%>" id="previousX">
 					<img src="/media_stat/images/buttons/checkout_left.gif" width="26" height="26" border="0" alt="PREVIOUS STEP"></a>
 			</td>
-		    <td width="<%=W_CHECKOUT_STEP_3_CARD_EDIT_TOTAL-35%>">
+		    <td width="<%=W_CHECKOUT_STEP_3_CARD_EDIT_TOTAL-35%>" style="text-align: left;">
 				<a href="<%=response.encodeURL("/checkout/step_2_select.jsp  ")%>" id="previousX">
 				<img src="/media_stat/images/buttons/previous_step.gif" WIDTH="66" HEIGHT="11" border="0" alt="PREVIOUS STEP"></a><br/>
 				Delivery Time<br/>

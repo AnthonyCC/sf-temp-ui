@@ -126,7 +126,7 @@ int page_type = TimeslotLogic.PAGE_NORMAL;
 		response.sendRedirect(response.encodeRedirectURL("/checkout/view_cart.jsp?trk=chkplc"));
 		return;
 	}
-	boolean hasCapacity = deliveryModel.hasCapacity();;
+	boolean hasCapacity = deliveryModel.hasCapacity();
 	request.setAttribute("listPos", "SystemMessage,CategoryNote");
 	//get zone promotion amount
     double zonePromoAmount = deliveryModel.getZonePromoAmount();
@@ -154,8 +154,10 @@ zonePromoEnabled=true;
 <%} %>
 </script>
 
-<%@ include file="/includes/i_modifyorder.jspf" %>
-
+<%
+	//button include count
+	int incNextButtonCount = 0;
+%>
 <FORM id="step2Form" method="post" name="step2Form" onSubmit="return checkPromoEligibilityByTimeSlot('<%= null==user.getRedeemedPromotion()?"null":"not null" %>');" x-action="/checkout/step_2_select.jsp">
 <div class="gcResendBox" style="display:none"><!--  -->
 		<table cellpadding="0" cellspacing="0" border="0" style="border-collapse: collapse;" class="gcResendBoxContent" id="gcResendBox">
@@ -193,88 +195,21 @@ zonePromoEnabled=true;
 		</table>
 	</div>
 
-<!--START TIMESLOT PAGE HEADER-->
-<table border="0" cellspacing="0" cellpadding="0" width="<%=W_CHECKOUT_STEP_2_SELECT_TOTAL%>">
-	<TR VALIGN="TOP">
-		<TD CLASS="text11" WIDTH="395" VALIGN="bottom">
-			<table>
-				<tr>
-					<td>
-						<FONT CLASS="title18">CHOOSE TIME</FONT>
-						<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="1" BORDER="0">
-					</td>
-					<%if(FDStoreProperties.isNewFDTimeslotGridEnabled()){%>
-					<td>
-						<fd:IncludeMedia name="/media/editorial/timeslots/msg_timeslots_learnmore.html"/>
-					</td>
-					<%}%>
-				</tr>
-			</table>
-		</TD>
-		
-	<%if(hasCapacity){ %>
-
-			<TD WIDTH="<%=W_CHECKOUT_STEP_2_SELECT_TOTAL-430%>" ALIGN="RIGHT" VALIGN="MIDDLE" CLASS="text10">
-		      <FONT CLASS="space2pix"><BR></FONT>
-				<table>
-					<tr>
-						<td align="left"  style="color:#666666;font-weight:bold;"><%= (isDepotAddress && depotAddress.isPickup())?"Service":"Delivery" %> Charge:</td>
-						<td align="right" style="color:#666666;font-weight:bold;">
-<%	
-	String dlvCharge = JspMethods.formatPrice( cart.getDeliverySurcharge() );
-	if(cart.isDlvPassApplied()) {
-%>
-	<%= cart.getDeliveryCharge()>0?JspMethods.formatPrice(cart.getDeliveryCharge()):DeliveryPassUtil.getDlvPassAppliedMessage(user) %>
-								
-	<%} else if (cart.isDeliveryChargeWaived()) {
-        if((int)cart.getDeliverySurcharge() == 0){
-%>     
-									Free! 
-									<% }else{ %> Free!(<%= dlvCharge %> waived)<% } %>
-                
-	<%}else {%>
-		<%= (int)cart.getDeliverySurcharge() == 0 ? "Free!" : JspMethods.formatPrice(cart.getDeliveryCharge()) %>
-							<%}%>
-					</td>
-					</tr>
-					<%if (cart.getTotalDiscountValue() > 0) {
-								List discounts = cart.getDiscounts();
-									for (Iterator iter = discounts.iterator(); iter.hasNext();) {
-										ErpDiscountLineModel discountLine = (ErpDiscountLineModel) iter.next();
-										Discount discount = discountLine.getDiscount();
-										PromotionI promotion = PromotionFactory.getInstance().getPromotion(discount.getPromotionCode());
-										String desc = EnumPromotionType.SIGNUP.equals(promotion.getPromotionType()) ? "Free Food" : promotion.getDescription();
-										%>
-										<tr>
-											<td align="left" style="color:#669933;font-weight:bold;">Promotion Discount:</td>
-											<td align="right" style="color:#669933;font-weight:bold;">-<%= JspMethods.formatPrice(discount.getAmount()) %></td>
-										</tr>
-							<%}	}%>
-					<tr>
-						<td align="left"  style="color:#666666;font-weight:bold;"><A HREF="javascript:popup('/help/estimated_price.jsp','small')"></A>Estimated Total:</td>
-						<td align="right"  style="color:#666666;font-weight:bold;"><%= currencyFormatter.format(cart.getTotal()) %></td>
-					</tr>
-				</table>
-			</TD>		
-		<TD WIDTH="35" ALIGN="RIGHT" VALIGN="MIDDLE"><FONT CLASS="space2pix"><BR></FONT>
-					<input type="image" name="form_action_name" src="/media_stat/images/buttons/checkout_right.gif"
-					BORDER="0" alt="CONTINUE CHECKOUT" VSPACE="2">
-				</TD>
-	<%}else{%>
-				<td width="265" align="right" valign="middle" class="text10bold">&nbsp;</td>
-		<td width="35" align="right" valign="middle">&nbsp;</td>
-	<%}%>
-		
-	</TR>
-</table>
-<!--END TIMESLOT PAGE HEADER-->	
-	
-	<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
-<IMG src="/media_stat/images/layout/dotted_line_w.gif" WIDTH="<%=W_CHECKOUT_STEP_2_SELECT_TOTAL%>" HEIGHT="3" BORDER="0"><BR>
-	<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
-	
-
-
+	<%-- Start Header --%>
+<%@ include file="/includes/i_modifyorder.jspf"  %>
+<tmpl:insert template='<%= ((modifyOrderMode) ? "/includes/checkout_header_modify.jsp" : "/includes/checkout_header.jsp") %>'>
+<% if(modifyOrderMode) { %>
+	<tmpl:put name="ordnumb"><%= modifiedOrderNumber %></tmpl:put>
+	<tmpl:put name="note"><%= modifyNote %></tmpl:put>
+<% } %>
+	<tmpl:put name="title">CHOOSE TIME</tmpl:put>
+	<tmpl:put name="delivery-fee">
+		<span class="checkout-delivery-fee"><% if (FDStoreProperties.isNewFDTimeslotGridEnabled()) { %><fd:IncludeMedia name="/media/editorial/timeslots/msg_timeslots_learnmore.html"/><% } %></span>
+		<%@ include file="/includes/i_cart_delivery_fee.jspf" %>
+	</tmpl:put>
+	<tmpl:put name="next-button"><%@ include file="/includes/i_cart_next_step_button.jspf" %></tmpl:put>
+</tmpl:insert>
+<!-- PROFILE HEADER -->
 <TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="<%=W_CHECKOUT_STEP_2_SELECT_TOTAL%>" ALIGN="center">
 	<TR>
 		<td colspan="2">
@@ -623,32 +558,23 @@ if (errorMsg!=null) {%>
 <IMG src="/media_stat/images/layout/dotted_line_w.gif" WIDTH="<%=W_CHECKOUT_STEP_2_SELECT_TOTAL%>" HEIGHT="3" BORDER="0"><BR>
 <IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
 
-<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="<%=W_CHECKOUT_STEP_2_SELECT_TOTAL%>">
-<TR VALIGN="TOP">
-			<TD width="35">
-					<a href="<%=response.encodeURL("/checkout/step_1_choose.jsp")%>" onclick="ntptEventTag('ev=button_event&ni_btn=cancel_checkout');var d=new Date();var cD;do{cD=new Date();}while((cD.getTime()-d.getTime())<500);" id="previousX">
-					<img src="/media_stat/images/buttons/checkout_left.gif" width="26" height="26" border="0" alt="PREVIOUS STEP"></a>
-			</TD>
-		    <TD width="340">
-				<a href="<%=response.encodeURL("/checkout/step_1_choose.jsp")%>" onclick="ntptEventTag('ev=button_event&ni_btn=cancel_checkout');var d=new Date();var cD;do{cD=new Date();}while((cD.getTime()-d.getTime())<500);" id="cancelText">
-				<img src="/media_stat/images/buttons/previous_step.gif" WIDTH="66" HEIGHT="11" border="0" alt="PREVIOUS STEP"></a><br/>
-				Delivery Address<br/>
-				<img src="/media_stat/images/layout/clear.gif" width="340" height="1" border="0">
-			</TD>
-	<%if(hasCapacity){%>
-			<TD WIDTH="<%=W_CHECKOUT_STEP_2_SELECT_TOTAL-410%>" ALIGN="RIGHT" VALIGN="MIDDLE">
-				<input type="image" name="checkout_delivery_timeslot_select"  src="/media_stat/images/buttons/continue_checkout.gif" WIDTH="91" HEIGHT="11" border="0" alt="CONTINUE CHECKOUT" VSPACE="0"><BR>
-				Payment Method<BR>
-			</TD>
-			<TD WIDTH="35" ALIGN="RIGHT" VALIGN="MIDDLE">
-				<FONT CLASS="space2pix"><BR></FONT>
-				<input type="image" name="checkout_delivery_timeslot_select" src="/media_stat/images/buttons/checkout_right.gif" WIDTH="26" HEIGHT="26" border="0" alt="CONTINUE CHECKOUT" VSPACE="0"></TD>
-	<%}else{%>
-		<td width="265" align="right" valign="middle">&nbsp;</td>
-		<td width="35" align="right" valign="middle">&nbsp;</td>
-	<%}%>
-</TR>
-</TABLE>
+<div style="margin-bottom: 10px;">
+	<div style="float: left;">
+			<a href="<%=response.encodeURL("/checkout/step_1_choose.jsp")%>" onclick="ntptEventTag('ev=button_event&ni_btn=cancel_checkout');var d=new Date();var cD;do{cD=new Date();}while((cD.getTime()-d.getTime())<500);" id="previousX">
+			<img src="/media_stat/images/buttons/checkout_left.gif" width="26" height="26" border="0" alt="PREVIOUS STEP" /></a>
+	</div>
+	<div style="float: left; margin-left: 5px; text-align: left;">
+			<a href="<%=response.encodeURL("/checkout/step_1_choose.jsp")%>" onclick="ntptEventTag('ev=button_event&ni_btn=cancel_checkout');var d=new Date();var cD;do{cD=new Date();}while((cD.getTime()-d.getTime())<500);" id="cancelText">
+			<img src="/media_stat/images/buttons/previous_step.gif" width="66" height="11" border="0" alt="PREVIOUS STEP" /></a><br />
+			Delivery Address
+	</div>
+	<% if (hasCapacity) { %>
+	<div style="float: right;">
+		<%@ include file="/includes/i_cart_next_step_button.jspf" %>
+	</div>
+	<% } %>
+	<div style="clear: both;"></div>
+</div>
 
 <IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
 <IMG src="/media_stat/images/layout/dotted_line_w.gif" WIDTH="<%=W_CHECKOUT_STEP_2_SELECT_TOTAL%>" HEIGHT="3" BORDER="0"><BR>

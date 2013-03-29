@@ -45,7 +45,7 @@ double currentTime = h1+m1;
 		</td>
 		<td width="15" rowspan="2"><img height="1" border="0" width="15" src="/media_stat/images/layout/clear.gif"></td>
 		
-		<td width='<%= W_BOTTOM_MODULES_C %>' rowspan="2">
+		<td width='<%= W_BOTTOM_MODULES_C %>' rowspan="2" class="origspacing_tables">
 			<%if(user.isChefsTable()){
 				if(user.getPercSlotsSold() == 100 && currentTime >= 21){
 			%>

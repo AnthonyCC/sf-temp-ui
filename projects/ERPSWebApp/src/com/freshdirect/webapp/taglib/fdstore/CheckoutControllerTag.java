@@ -214,6 +214,8 @@ public class CheckoutControllerTag extends AbstractControllerTag {
 					session.removeAttribute( "makeGoodOrder" );
 					session.removeAttribute( "referencedOrder" );
 				}
+				currentUser.setSuspendShowPendingOrderOverlay(false);
+				currentUser.setShowPendingOrderOverlay(true);
 				
 				//prepare and store model for Coremetrics report
 				CmConversionEventTag.buildPendingOrderModifiedModels(session, cart);
@@ -361,6 +363,11 @@ public class CheckoutControllerTag extends AbstractControllerTag {
 				// checkpoint: force a save cart
 				//
 				currentUser.saveCart( true );
+			}
+
+			/* reset user to see mergePending overlay again */
+			if ( "true".equals( session.getAttribute( "makeGoodOrder" ) ) ) {
+				currentUser.setShowPendingOrderOverlay(true);
 			}
 		}
 

@@ -1,0 +1,64 @@
+<%
+	/*
+	 	incNextButtonCount is defined in each jsp (using: int incNextButtonCount = 0;)
+	 		adding one on each usage of the include allows for a different "top" and "bottom" button, so start at 0
+	 */
+	 
+	String uriNextButton = request.getRequestURI();
+			/* determine button for page */
+			if (uriNextButton.indexOf("view_cart") > -1) {
+				%>
+				<button class="imgButtonOrange" type="submit" name="nextStep" value="true">choose delivery address <img src="/media_stat/images/buttons/button_orange_arrow.gif" alt="" /></button>
+				<%									
+			} else if (uriNextButton.indexOf("step_1") > -1) {
+				%>
+				<button class="imgButtonOrange" type="submit">choose time <img src="/media_stat/images/buttons/button_orange_arrow.gif" alt="" /></button>
+				<%									
+			} else if (uriNextButton.indexOf("step_2") > -1) {
+				if (uriNextButton.indexOf("step_2_duplicate") > -1) { %>
+				<a class="imgButtonOrange" href="/checkout/step_3_choose.jsp?duplicateCheck=skip">choose payment <img src="/media_stat/images/buttons/button_orange_arrow.gif" alt="" /></a>
+				<% } else if (uriNextButton.indexOf("step_2_unavail") > -1) { %>
+				<a class="imgButtonOrange" href="/checkout/step_2_adjust.jsp?successPage=<%=request.getParameter("successPage")%>">choose payment <img src="/media_stat/images/buttons/button_orange_arrow.gif" alt="" /></a>
+				<% } else { %>
+				<button class="imgButtonOrange" type="submit">choose payment <img src="/media_stat/images/buttons/button_orange_arrow.gif" alt="" /></button>
+				<% }							
+			} else if (uriNextButton.indexOf("step_3") > -1) {
+				%>
+				<button class="imgButtonOrange" type="submit" onclick="setActionName(this.form,'setPaymentMethod'); return true;">review order <img src="/media_stat/images/buttons/button_orange_arrow.gif" alt="" /></button>
+				<%
+			} else if (uriNextButton.indexOf("step_4") > -1) {
+				/* step 4 is the only step with a different button on order modify (and also needs nettracker tracking) */
+				%>
+				<% /* Unfortunately, this function needs to live in this page since it needs java parsing... */ %>
+				<script type="text/javascript" style="display:none">
+					function orderSubmitValidator(formId, loc) {
+						if (!$(formId)) { return false; }
+						<% /* first, check that the promo is valid */ %>
+						if (checkPromoEligibilityByMaxRedemptions('<%= null==user.getRedeemedPromotion()?"null":"not null" %>')) {
+							<% /* set loc value (button position) */ %>
+							var locName = '';
+							if (loc == 0) {
+								locName = 'Top';
+							} else if (locName == 1) {
+								locName = 'Bottom';
+							}
+							
+							<% /* and now, nettracker. why would this ever return false? */ %>
+							if (ntptSubmitTag(document.order_submit, 'ev=button_event&ni_btn=submit_order&ni_btnpos='+locName)) {
+								$(formId).submit();
+							}
+						}
+
+						return false;
+					}
+				</script>
+			
+				<% if (cart instanceof FDModifyCartModel) { %>
+				<button class="imgButtonOrange submitOrder" onclick="orderSubmitValidator('order_submit', <%= incNextButtonCount %>); return false;">Submit Change</button>
+				<% } else { %>
+				<button class="imgButtonOrange submitOrder" onclick="orderSubmitValidator('order_submit', <%= incNextButtonCount %>); return false;">SUBMIT YOUR ORDER</button>
+				<% } %>
+				<%
+			}
+	incNextButtonCount++;
+%>

@@ -321,6 +321,7 @@
 
 		<% if (isTransactionalRow) { %>
 			<form id="<%= TX_FORM_NAME %>" class="wgForm" name="<%= TX_FORM_NAME %>" method="post" action="<%= base_url %>">
+			<fd:AddToCartPending id="<%= TX_FORM_NAME %>"/>
 			<input name="catId" type="hidden" value="<%=catId%>" />
 		<% } %>
 			<table border="0" width="100%">
@@ -372,10 +373,10 @@
 								<display:ProductRating product="<%= pm %>" action="<%= actionURI %>" />
 								<display:ProductName product="<%= pm %>" action="<%= actionURI %>" showNew="true" />
 								<display:ProductPrice impression="<%= (TransactionalProductImpression) impressions.get(idx) %>" showDescription="<%= showDescrips %>" />
-								<fd:IsAlcoholic skuCode="<%=((TransactionalProductImpression) impressions.get(idx)).getSku().getSkuCode()%>">
-									<fd:USQLegalWarning id="<%= TX_FORM_NAME %>" tagCounter="<%= txCount%>"/>
+								<!-- fd:IsAlcoholic skuCode="%=((TransactionalProductImpression) impressions.get(idx)).getSku().getSkuCode()%>" -->
+									<fd:PopupHandler id="<%= TX_FORM_NAME %>" tagCounter="<%= txCount%>" skuCode="<%=((TransactionalProductImpression) impressions.get(idx)).getSku().getSkuCode()%>"/>
 									<%--input type="hidden" name='<%="alcoholic_" + txCount %>' id='<%="alcoholic_" + txCount %>' value='<%="quantity_" + txCount %>'/ --%>
-								</fd:IsAlcoholic>
+								<!-- /fd:IsAlcoholic -->
 							<% 
 								txCount++;
 							} else { %>
@@ -407,9 +408,9 @@
 			</table>
 
 		<% if (isTransactionalRow) { %>
-			<fd:IsAlcoholic>
-				<fd:USQLegalWarning id="<%= TX_FORM_NAME %>" event="onclick" elementId="addMultipleToCart_np" quantityCheck="true" />
-			</fd:IsAlcoholic>
+			<!-- fd:IsAlcoholic -->
+				<fd:PopupHandler id="<%= TX_FORM_NAME %>" event="onclick" elementId="addMultipleToCart_np" quantityCheck="true" />
+			<!-- /fd:IsAlcoholic -->
 			</form><% } %>
 		<% } %>
 <% } %>

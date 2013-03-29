@@ -369,6 +369,7 @@ if (!result.getErrors().isEmpty()) {
 	String formAction = FDURLUtil.getRecipePageURI(request, recipe, variant, catIdParam, isCRM);
 %>
 <form action="<%= formAction %>" method="post" name="qs_cart" id="recipe_form">
+<fd:AddToCartPending id="recipe_form" action="addMultipleToCart"/>
 <table width="<%=W_RECIPE_BODY_TOTAL - 50 %>" cellpadding="0" cellspacing="0" border="0">
 <input type="hidden" name="actionString" value="addMultipleToCart">
 <%
@@ -532,10 +533,10 @@ int prodIdx = 0;
                 <input type="hidden" name="skuCode_<%=prodIdx%>" value="<%= orderLine.getSkuCode() %>">
                 <input type="hidden" name="recipeId_<%=prodIdx%>" value="<%= recipe.getContentName() %>">
 				
-				<fd:IsAlcoholic skuCode="<%=orderLine.getSkuCode()%>">
-					<fd:USQLegalWarning id="recipe_form" tagCounter="<%=prodIdx %>" quantityCheck="true"/>
+				<!-- fd:IsAlcoholic skuCode="%=orderLine.getSkuCode()%>" -->
+					<fd:PopupHandler id="recipe_form" tagCounter="<%=prodIdx %>" quantityCheck="true" skuCode="<%=orderLine.getSkuCode()%>"  action="addMultipleToCart"/>
 					<%--input type="hidden" name='<%="alcoholic_" + prodIdx %>' id='<%="alcoholic_" + prodIdx %>' value='<%="quantity_" + prodIdx %>'/ --%>
-				</fd:IsAlcoholic>
+				<!-- /fd:IsAlcoholic -->
 
                 <logic:iterate id="entry" collection="<%= orderLine.getConfiguration().getOptions().entrySet() %>" type="java.util.Map.Entry">
                     <input type="hidden" name='<%= entry.getKey() + "_" + prodIdx %>' value="<%= entry.getValue() %>">

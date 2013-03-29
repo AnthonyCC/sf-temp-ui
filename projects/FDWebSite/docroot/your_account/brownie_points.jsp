@@ -284,11 +284,9 @@ String browserType=(String)request.getHeader("User-Agent");
 															<div id="orangebutton" style="padding:10px;">
 																<center>
 																
-																<table><tr>
-																	<td class="butOrangeLeft"><!-- --></td>
-																	<td class="butOrangeMiddle"><a class="butText" style="font-weight:bold;text-shadow:none;vertical-align:middle;text-decoration:none;color:white;padding:60px;font-size:14px;" href="#" onclick="document.sendmails.submit();">send email</a></td>
-																	<td class="butOrangeRight"><!-- --></td>
-																</tr></table>
+																<a class="butCont butOrange" style="margin-right: 10px;" href="#" onclick="document.sendmails.submit();">
+																	<span class="butLeft"><!-- --></span><span class="butMiddle butText" style="font-weight:bold;padding:0 60px;font-size:14px;">send email</span><span class="butRight"><!-- --></span>
+																</a>
 																<span class="greytext_normal"><br /><a href="/your_account/manage_invites.jsp">view sent invites</a></span>
 																</center>
 															</div>
@@ -403,9 +401,9 @@ String browserType=(String)request.getHeader("User-Agent");
 													});
 												}
 
-												var	post_on_wall_but = '<div class="fright"><table class="butCont">' +
-												'<tr><td class="butBlueMiddle20" valign="middle"><a	href="#" onclick="postToFeed();	return false;" class="previewbut"><img src="/media_stat/images/buttons/post_on_wall.jpg" /></a></td></tr>' +
-												'</table></div>';
+												var	post_on_wall_but = '<div class="fright">' +
+												'<a	href="#" onclick="postToFeed();	return false;" class="previewbut"><img src="/media_stat/images/buttons/post_on_wall.jpg" />' +
+												'</a></div>';
 												/*var	preview_but	= '<div	class="fright"><table class="butCont">'	+
 														'<tr><td class="butBlueMiddle20" valign="middle"><a	href="#fbarea" onclick="callFBUI();	return false;" class="previewbut"><img src="/media_stat/images/buttons/send_message.jpg" /></a></td></tr>' +
 														'</table></div>';*/

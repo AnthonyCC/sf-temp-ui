@@ -67,8 +67,8 @@ final int W_YA_CANCEL_ORDER = 970;
 	</tr>
 	<tr><td><img src="/media_stat/images/layout/clear.gif" width="10" height="6"></td><td><img src="/media_stat/images/layout/clear.gif" width="<%= W_YA_CANCEL_ORDER - 210 %>" height="6"></td><td><img src="/media_stat/images/layout/clear.gif" width="200" height="6"></td></tr>
 	<tr bgcolor="#FF9933">
-		<td class="text10w" colspan="2" height="16">&nbsp;&nbsp;<img src="/media_stat/images/template/youraccount/currently_scheduled.gif" width="124" height="8" border="0" alt="CURRENTLY SCHEDULED" vspace="2" align="absbottom">&nbsp;&nbsp;<%=fmtDlvDateTime%>@<%=sStartHour%>-<%=sEndHour%></td>
-		<td align="right" class="text11wbold">Estimated Total: <%= currencyFormatter.format(cartOrOrder.getTotal()) %>&nbsp;&nbsp;</td>
+		<td class="text10w" colspan="2" height="16" valign="middle">&nbsp;&nbsp;<img src="/media_stat/images/template/youraccount/currently_scheduled.gif" width="124" height="8" border="0" alt="CURRENTLY SCHEDULED" vspace="2" align="absbottom">&nbsp;&nbsp;<%=fmtDlvDateTime%>@<%=sStartHour%>-<%=sEndHour%></td>
+		<td align="right" class="text11wbold" valign="middle">Estimated Total: <%= currencyFormatter.format(cartOrOrder.getTotal()) %>&nbsp;&nbsp;</td>
 	</tr>
 	<tr>
 		<td>&nbsp;</td>
@@ -77,7 +77,7 @@ final int W_YA_CANCEL_ORDER = 970;
 			<form name="cancel_order" method="POST" action="/your_account/cancel_order.jsp">
 			<input type="hidden" name="action" value="cancel">
 			<input type="hidden" name="orderId" value="<%= orderId %>">
-			<input type="image" src="/media_stat/images/buttons/cancel_this_order_now.gif" width="142" height="16" border="0" alt="CANCEL ORDER">
+			<input type="image" src="/media_stat/images/buttons/cancel_this_order_mrn.gif" width="112" height="16" border="0" alt="CANCEL ORDER">
 			</form></div><img src="/media_stat/images/layout/clear.gif" width="1" height="10"></td></tr>
 <tr><td bgcolor="#CCCCCC" colspan="3"><img src="/media_stat/images/layout/clear.gif" width="<%= W_YA_CANCEL_ORDER %>" height="1" border="0"></td></tr>
 <tr><td colspan="3"><img src="/media_stat/images/layout/clear.gif" width="1" height="8"><br><table cellspacing="0" cellpadding="0" border="0">

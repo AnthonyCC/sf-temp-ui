@@ -1055,6 +1055,7 @@ public class StandingOrderUtil {
 		FDStandingOrder so = user.getCurrentStandingOrder();
 		
 		user.setCurrentStandingOrder(null);
+		user.setSuspendShowPendingOrderOverlay(false);
 		if ( !EnumCheckoutMode.NORMAL.equals( origMode ) ) {
 			
 			// RESET

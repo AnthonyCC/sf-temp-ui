@@ -20,7 +20,6 @@ final int W_CHECKOUT_STEP_4_CART_DETAILS_TOTAL = 970;
 
 <%
 	boolean isSmaller = request.getRequestURI().indexOf("step_4_receipt") > -1; 
-	
 	if (cart instanceof FDOrderI) {    	
     	isEBTPayment = (null !=((FDOrderI)cart).getPaymentMethod() &&EnumPaymentMethodType.EBT.equals(((FDOrderI)cart).getPaymentMethod().getPaymentMethodType()));
     } else {    	
@@ -62,7 +61,11 @@ int idx = 0;
 		%>
 	</td></tr>
 	<%
-	List orderLines = view.getOrderLines();
+		boolean newItems = true; // whether we are in the new items section
+		boolean hasNewItems = false; // flag if we have new items
+	%>
+	<logic:iterate id="orderLines" collection="<%= view.getNewOrderLinesSeparated() %>" type="java.util.List">
+	<%
 	String lastDept = null;
 	boolean firstRecipe = true;
 	%>
@@ -105,11 +108,21 @@ int idx = 0;
 		
 		FDCartLineI nextLine = viewIndex.intValue() + 1 == orderLines.size() ? null : (FDCartLineI)orderLines.get(viewIndex.intValue() + 1);
 		boolean lastItemInDept = nextLine==null || !nextLine.getDepartmentDesc().equals(cartLine.getDepartmentDesc());
-	
-		if (lastDept==null || !lastDept.equalsIgnoreCase(cartLine.getDepartmentDesc())) {
+
+		System.err.println(lastDept + " " + newItems + " " + viewIndex);
+		if (newItems && viewIndex == 0) {
+			lastDept = cartLine.getDepartmentDesc();
+			hasNewItems = true;
+			%>
+			<tr>
+				<td colspan="3"></td>
+				<td colspan="8" class="text11orbold fd-red-text"><br>New Items in Cart</td>
+			</tr>
+			<%
+		} else if (!newItems && (lastDept==null || !lastDept.equalsIgnoreCase(cartLine.getDepartmentDesc()))) {
 			lastDept = cartLine.getDepartmentDesc() ;
 			
-			if (view.isDisplayDepartment()) {
+			if (view.isDisplayDepartment() || hasNewItems) {
 				if (lastDept.startsWith("Recipe: ")) {
 					if (firstRecipe) {
 						%>
@@ -213,9 +226,9 @@ int idx = 0;
 		idx++;
 		%>
 	</logic:iterate>
-
+	<% if (!newItems) { %>
 	<tr><td colspan="11">
-		<div class="orderViewSeparator" />
+		<div class="orderViewSeparator"></div>
 	</td></tr>
 	<tr class="orderViewSummary">
 		<td colspan="6" align="right"><%= view.getDescription() %><% if (view.isEstimatedPrice()) { %> Estimated<% } %> Subtotal:</td>
@@ -243,7 +256,11 @@ int idx = 0;
 		<% 
 	}
 	%>
-		
+	<% } // !newItems %>
+	<%
+		newItems = false;
+	%>
+	</logic:iterate>
 </logic:iterate>
 	<tr><td colspan="11">
 		<div class="orderSeparator" />

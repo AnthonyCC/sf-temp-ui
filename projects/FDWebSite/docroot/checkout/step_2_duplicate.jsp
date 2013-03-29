@@ -1,4 +1,4 @@
-<%@ page import='com.freshdirect.fdstore.*' %>
+ <%@ page import='com.freshdirect.fdstore.*' %>
 <%@ page import='com.freshdirect.customer.*'%>
 <%@ page import='com.freshdirect.customer.ErpAddressModel'%>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
@@ -12,6 +12,7 @@
 <%@ page import='com.freshdirect.fdstore.util.ClickToCallUtil'%>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
+<%@ taglib uri='logic' prefix='logic' %>
 
 <% //expanded page dimensions
 final int W_CHECKOUT_STEP_2_DUPLICATE_TOTAL = 970;
@@ -52,7 +53,10 @@ for (Iterator hIter = orderHistoryInfo.iterator(); hIter.hasNext(); ) {
 if (sameDayPendingOrderCount == 1) {
 	modifyLink = "/your_account/order_details.jsp?orderId=" + orderId;
 }
-	
+
+//button include count
+int incNextButtonCount = 0;
+
 %>
 
 <table width="<%=W_CHECKOUT_STEP_2_DUPLICATE_TOTAL%>" cellpadding="0" cellspacing="0" border="0">
@@ -80,34 +84,26 @@ if (sameDayPendingOrderCount == 1) {
 		<img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0"><br>
 		<img src="/media_stat/images/layout/dotted_line_w.gif" width="<%=W_CHECKOUT_STEP_2_DUPLICATE_TOTAL%>" height="1" border="0"><br>
 		<img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0"><br>
-		<table border="0" cellspacing="0" cellpadding="0">
-		    <tr valign="top">
-				<TD width="35">
-					<a href="<%=response.encodeURL("/checkout/step_1_choose.jsp")%>" id="previousX">
-					<img src="/media_stat/images/buttons/checkout_left.gif" width="26" height="26" border="0" alt="PREVIOUS STEP"></a>
-				</TD>
-				<TD width="350">
-					<a href="<%=response.encodeURL("/checkout/step_1_choose.jsp")%>" id="cancelText">
-					<img src="/media_stat/images/buttons/previous_step.gif" WIDTH="66" HEIGHT="11" border="0" alt="PREVIOUS STEP"></a><br/>
-					Delivery Address<br/>
-					<img src="/media_stat/images/layout/clear.gif" width="340" height="1" border="0">
-				</TD>
-				<TD align="right" valign="middle" WIDTH="<%=W_CHECKOUT_STEP_2_DUPLICATE_TOTAL-420%>">
-					<a href="/checkout/step_3_choose.jsp?duplicateCheck=skip">
-					<img src="/media_stat/images/buttons/continue_checkout.gif" width="91" height="11" border="0" alt="CONTINUE CHECKOUT"></a><BR>Payment Method<BR>
-				</TD>
-				<TD width="35" align="right" VALIGN="MIDDLE">
-					<a href="/checkout/step_3_choose.jsp?duplicateCheck=skip">
-					<img src="/media_stat/images/buttons/checkout_arrow.gif" width="26" height="26" border="0" alt="CONTINUE CHECKOUT"></a>
-				</TD>
-		    </tr>
-		</table>
+		<div style="margin-bottom: 10px;">
+		    <div style="float: left;">
+				<a href="<%=response.encodeURL("/checkout/step_1_choose.jsp")%>" id="previousX">
+				<img src="/media_stat/images/buttons/checkout_left.gif" width="26" height="26" border="0" alt="PREVIOUS STEP"></a>
+			</div>
+			<div style="float: left; margin-left: 5px; text-align: left;">
+				<a href="<%=response.encodeURL("/checkout/step_1_choose.jsp")%>" id="cancelText">
+				<img src="/media_stat/images/buttons/previous_step.gif" WIDTH="66" HEIGHT="11" border="0" alt="PREVIOUS STEP"></a><br/>
+				Delivery Address<br/>
+				<img src="/media_stat/images/layout/clear.gif" width="340" height="1" border="0">
+			</div>
+			<div style="float: right">
+				<%@ include file="/includes/i_cart_next_step_button.jspf" %>
+			</div>
+		</div>
 	</td></tr>
 	<tr><td><br>
 
 	<%@ include file="/checkout/includes/i_footer_text.jspf" %></td></tr>
 </table>
-	<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="16" BORDER="0"><BR>
 	<img src="/media_stat/images/layout/dotted_line_w.gif" width="<%=W_CHECKOUT_STEP_2_DUPLICATE_TOTAL%>" height="1" border="0"><br/>
 	<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
 

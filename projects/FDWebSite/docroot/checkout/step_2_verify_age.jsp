@@ -33,7 +33,7 @@ By law, purchasers of alcoholic beverages must be at least 21 years of age. You 
 If your order contains alcoholic beverages, the person receiving your delivery must have identification proving they are over the age of 21 and will be asked for their signature. If no one over the age of 21 can sign for delivery, the driver will remove alcoholic beverages from the order and you will be charged a 50% restocking fee.<br><br><br>
 		</td>
 	</tr>
-<form method="POST">
+<form method="POST" name="step2Form" id="step2Form">
 	<tr valign="top">
 		<td>
 			<img src="/media_stat/images/layout/clear.gif" width="50" height="1">
@@ -73,19 +73,14 @@ If your order contains alcoholic beverages, the person receiving your delivery m
 					<a href="<%=response.encodeURL("/checkout/step_1_choose.jsp")%>" onclick="ntptEventTag('ev=button_event&ni_btn=cancel_checkout');var d=new Date();var cD;do{cD=new Date();}while((cD.getTime()-d.getTime())<500);" id="previousX">
 					<img src="/media_stat/images/buttons/checkout_left.gif" width="26" height="26" border="0" alt="PREVIOUS STEP"></a>
 		</TD>
-	    <TD width="340">
+	    <TD width="340" style="text-align: left;">
 			<a href="<%=response.encodeURL("/checkout/step_1_choose.jsp")%>" onclick="ntptEventTag('ev=button_event&ni_btn=cancel_checkout');var d=new Date();var cD;do{cD=new Date();}while((cD.getTime()-d.getTime())<500);" id="cancelText">
 				<img src="/media_stat/images/buttons/previous_step.gif" WIDTH="66" HEIGHT="11" border="0" alt="PREVIOUS STEP"></a><br/>
 				Delivery Address<br/>
 				<img src="/media_stat/images/layout/clear.gif" width="340" height="1" border="0">
 		</TD>
-		<TD WIDTH="<%=W_CHECKOUT_STEP_2_VERIFY_AGE_TOTAL-410%>" ALIGN="RIGHT" VALIGN="MIDDLE">
-				<input type="image" name="checkout_delivery_timeslot_select"  src="/media_stat/images/buttons/continue_checkout.gif" WIDTH="91" HEIGHT="11" border="0" alt="CONTINUE CHECKOUT" VSPACE="0"><BR>
-				Delivery Time<BR>
-		</TD>
-		<TD WIDTH="35" ALIGN="RIGHT" VALIGN="MIDDLE">
-				<FONT CLASS="space2pix"><BR></FONT>
-				<input type="image" name="checkout_delivery_timeslot_select" src="/media_stat/images/buttons/checkout_right.gif" WIDTH="26" HEIGHT="26" border="0" alt="CONTINUE CHECKOUT" VSPACE="0">
+		<TD ALIGN="RIGHT" VALIGN="MIDDLE">
+			<button class="imgButtonOrange" type="submit">choose time <img src="/media_stat/images/buttons/button_orange_arrow.gif" alt="" /></button>
 		</TD>
 </TR>
 <tr>

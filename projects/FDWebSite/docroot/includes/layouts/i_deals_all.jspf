@@ -336,6 +336,7 @@ if(((pageNumber -1) * itemsToDisplay) > skuCount) {
 %>
 <table border="0" cellspacing="0" cellpadding="0" width="<%= W_DEALS_TOTAL %>">
 <form name="groceryForm" id='grocery_form' method="POST">
+<fd:AddToCartPending id="grocery_form"/>
 <%
 //If there is a specific product selected then show it above the listings here
 //lets get the product with the product cod in the section, display this product, then the rest of the products
@@ -565,9 +566,7 @@ if(productCode!=null && prodCatId !=null ) {
 
 <br>
 <input type="image" id="addSingleToCart_big" name="addSingleToCart_big" src="/media_stat/images/buttons/add_to_cart.gif"  ALT="ADD THIS ITEM TO YOUR CART" width="93" height="20" style="margin: 2px;" border="0"><br>
-	<fd:IsAlcoholic noProduct="true">
-		<fd:USQLegalWarning id="grocery_form" event="onclick" elementId="addSingleToCart_big" skuCode="<%=minSku.getSkuCode()%>"/>
-    </fd:IsAlcoholic>
+		<fd:PopupHandler id="grocery_form" event="onclick" elementId="addSingleToCart_big" skuCode="<%=minSku.getSkuCode()%>" noProduct="true" multiForm="true"/>
 
 	<fd:CCLCheck>
 		<div>       

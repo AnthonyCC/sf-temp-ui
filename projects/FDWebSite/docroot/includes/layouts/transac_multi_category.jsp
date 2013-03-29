@@ -97,7 +97,8 @@ int itemsToDisplay = sortedList.size();
 
 
 <fd:FDShoppingCart id='cart' action='addMultipleToCart' result='result' successPage='<%= "/grocery_cart_confirm.jsp?catId="+request.getParameter("catId") %>'>
-<form name="transac_multi_cat" method="POST">
+<form name="transac_multi_cat" id="transac_multi_cat" method="POST">
+<fd:AddToCartPending id="transac_multi_cat"/>
 <%
 	//*** if we got this far..then we need to remove the sucess page attribute from the request.
 	request.removeAttribute("successPage");

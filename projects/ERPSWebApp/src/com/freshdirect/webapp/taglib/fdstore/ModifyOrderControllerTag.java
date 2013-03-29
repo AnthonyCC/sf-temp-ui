@@ -31,9 +31,8 @@ import org.apache.log4j.Category;
 import com.freshdirect.customer.EnumChargeType;
 import com.freshdirect.customer.EnumPaymentResponse;
 import com.freshdirect.customer.EnumPaymentType;
-import com.freshdirect.customer.EnumSaleStatus;
-import com.freshdirect.customer.EnumSaleType;
 import com.freshdirect.customer.EnumTransactionSource;
+import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpAddressVerificationException;
 import com.freshdirect.customer.ErpAuthorizationException;
 import com.freshdirect.customer.ErpChargeLineModel;
@@ -53,25 +52,24 @@ import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.FDReservation;
 import com.freshdirect.fdstore.FDResourceException;
-import com.freshdirect.fdstore.FDRuntimeException;
 import com.freshdirect.fdstore.FDTimeslot;
-import com.freshdirect.fdstore.customer.FDPaymentInadequateException;
+import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.customer.FDActionInfo;
 import com.freshdirect.fdstore.customer.FDAuthenticationException;
+import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDCustomerFactory;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDInvalidConfigurationException;
 import com.freshdirect.fdstore.customer.FDModifyCartModel;
 import com.freshdirect.fdstore.customer.FDOrderI;
+import com.freshdirect.fdstore.customer.FDPaymentInadequateException;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.customer.adapter.CustomerRatingAdaptor;
 import com.freshdirect.fdstore.customer.adapter.FDOrderAdapter;
 import com.freshdirect.fdstore.giftcard.FDGiftCardI;
 import com.freshdirect.fdstore.giftcard.FDGiftCardInfoList;
-import com.freshdirect.fdstore.giftcard.FDGiftCardModel;
 import com.freshdirect.fdstore.promotion.EnumOfferType;
-import com.freshdirect.fdstore.promotion.EnumPromotionType;
 import com.freshdirect.fdstore.promotion.ExtendDeliveryPassApplicator;
 import com.freshdirect.fdstore.promotion.Promotion;
 import com.freshdirect.fdstore.promotion.PromotionFactory;
@@ -79,18 +77,17 @@ import com.freshdirect.fdstore.promotion.PromotionI;
 import com.freshdirect.fdstore.promotion.RedemptionCodeStrategy;
 import com.freshdirect.fdstore.standingorders.FDStandingOrder;
 import com.freshdirect.framework.core.PrimaryKey;
+import com.freshdirect.framework.event.EnumEventSource;
 import com.freshdirect.framework.util.NVL;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionError;
 import com.freshdirect.framework.webapp.ActionResult;
 import com.freshdirect.giftcard.ErpAppliedGiftCardModel;
-import com.freshdirect.giftcard.ErpGiftCardModel;
 import com.freshdirect.webapp.taglib.crm.CrmSession;
+import com.freshdirect.webapp.util.FDEventUtil;
 import com.freshdirect.webapp.util.OrderPermissionsI;
 import com.freshdirect.webapp.util.OrderPermissionsImpl;
 import com.freshdirect.webapp.util.ShoppingCartUtil;
-import com.freshdirect.customer.ErpSaleNotFoundException;
-import com.freshdirect.customer.ErpAddressModel;
 /**
  *
  * @version $Revision$
@@ -139,13 +136,14 @@ public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.B
 
 		boolean actionPerformed = false;
 
+		if (this.action==null) {
+			this.action = request.getParameter("action");
+		}
+
 		LOGGER.debug("Action in doStartTag: "+this.action);
 
 		if ( "POST".equalsIgnoreCase( request.getMethod() ) ) {
 
-			if (this.action==null) {
-				this.action = request.getParameter("action");
-			}
 			//
 			// Check action attribute
 			//
@@ -199,13 +197,16 @@ public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.B
 
 
 
-		} else if (this.action!=null && this.action.equalsIgnoreCase(CANCEL_MODIFY_ACTION)) {
-
-			LOGGER.debug("GET + cancelModify");
-			// we got a GET, not a POST, but that's fine.. :)
-			this.cancelModifyOrder(request, results);
-			actionPerformed = true;
-
+		} else { 
+			if ( CANCEL_MODIFY_ACTION.equalsIgnoreCase(this.action) ) {
+				LOGGER.debug("GET + cancelModify");
+				// we got a GET, not a POST, but that's fine.. :)
+				this.cancelModifyOrder(request, results);
+				actionPerformed = true;
+			} else if ( MODIFY_ACTION.equalsIgnoreCase(this.action) ) {
+				this.modifyOrder(request, results);
+				actionPerformed = true;
+			}
 		}
 
 		//
@@ -345,6 +346,9 @@ public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.B
 
 	protected void modifyOrder(HttpServletRequest request, ActionResult results) throws JspException {
 		HttpSession session = request.getSession();
+		
+		String mergePendingStr = request.getParameter("mergePending");
+		boolean mergePernding = mergePendingStr != null && mergePendingStr.equals("1");
 
 		FDSessionUser currentUser = (FDSessionUser) session.getAttribute(SessionName.USER);
 		if (currentUser.getLevel() < FDUserI.SIGNED_IN) {
@@ -354,18 +358,66 @@ public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.B
 		// Modify order: load the shopping cart with the old items
 		//
 		try {
-			modifyOrder(currentUser, orderId, session, null, EnumCheckoutMode.NORMAL);
+			modifyOrder(request, currentUser, orderId, session, null, EnumCheckoutMode.NORMAL, mergePernding);
+
+			//set user as having seen the overlay and used it (in case of login step)
+			currentUser.setSuspendShowPendingOrderOverlay(true);
 		} catch (FDException ex) {
 			LOGGER.warn("Unable to create modify cart", ex);
 			throw new JspException(ex.getMessage());
 		}
 	}
 
-	public FDModifyCartModel modifyOrder(FDSessionUser currentUser, String orderId, HttpSession session, FDStandingOrder currentStandingOrder, EnumCheckoutMode checkOutMode) throws FDResourceException, FDInvalidConfigurationException{
+	public static FDModifyCartModel modifyOrder(HttpServletRequest request, FDSessionUser currentUser, String orderId, HttpSession session,
+			FDStandingOrder currentStandingOrder, EnumCheckoutMode checkOutMode, boolean mergePending)
+					throws FDResourceException, FDInvalidConfigurationException{
 
 		FDOrderAdapter order = (FDOrderAdapter) FDCustomerManager.getOrder( currentUser.getIdentity(), orderId );
 		FDCustomerManager.storeUser(currentUser.getUser());
 		FDModifyCartModel cart = new FDModifyCartModel(order);
+		
+		if (mergePending) {
+			FDCartModel tempMergePendCart = currentUser.getMergePendCart();
+			
+			if (tempMergePendCart.getOrderLines().size() > 0) {
+				tempMergePendCart = removeOverflowingLines(cart, tempMergePendCart, currentUser); // check maximum quantity limits
+//Reasons/intentions remain to be unknown. Commenting out, checking out the results. 				
+//				List<FDCartLineI> tmpOrderLines = tempMergePendCart.getOrderLines();
+//				for (FDCartLineI tmpOrderLine : tmpOrderLines)
+//					tmpOrderLine.setRecipeSourceId(null);
+
+				// merge into order's cart
+				cart.mergeCart(tempMergePendCart);
+
+				cart.refreshAll(true);
+				
+				currentUser.updateUserState();
+
+				cart.sortOrderLines();
+				
+				// TODO we may want to distinguish between this kind of
+				// add and regular one
+				int n = tempMergePendCart.getOrderLines().size();
+				for (int i = 0; i < n; i++) {
+					FDCartLineI orderLine = tempMergePendCart.getOrderLine(i);
+					orderLine.setSource(EnumEventSource.BROWSE);
+					FDEventUtil.logAddToCartEvent(orderLine, request);
+				}
+				
+				// TODO set latest SKUs 
+				// I'm not sure if this needs to be added here
+				// session.setAttribute("SkusAdded", frmSkuIds);
+				
+						
+				//remove temp cart from session
+				currentUser.setMergePendCart(null);
+				
+				// save previous cart before moving on
+				currentUser.saveCart();
+			} else {
+				throw new FDResourceException("session timed out");
+			}
+		}
 		
 		// Check if this order has a extend delivery pass promotion. If so get the no. of extended days.
 		Set<String> usedPromoCodes = order.getSale().getUsedPromotionCodes();
@@ -411,6 +463,20 @@ public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.B
         return cart;
 	}
 	
+	private static FDCartModel removeOverflowingLines(FDCartModel currentCart, FDCartModel tempCart, FDUserI user) {
+		FDCartModel newCart = new FDCartModel();
+		int n = tempCart.getOrderLines().size();
+		for (int i = 0; i < n; i++) {
+			FDCartLineI orderLine = tempCart.getOrderLine(i);
+			ProductModel product = orderLine.getProductRef().lookupProductModel();
+			if (newCart.getTotalQuantity(product) + currentCart.getTotalQuantity(product) + orderLine.getQuantity() <=
+				user.getQuantityMaximum(product))
+				newCart.addOrderLine(orderLine);
+			else
+				LOGGER.warn("SKIPPING: pending merge order line with product '" + product.getContentKey().getId() + "' due to quantity limit");
+		}
+		return newCart;
+	}
 	private static void loadGiftCardsIntoCart(FDUserI user, FDOrderI originalOrder) {
 		FDGiftCardInfoList gcList = user.getGiftCardList();
 		//Clear any hold amounts.
@@ -467,6 +533,9 @@ public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.B
     		FDGiftCardInfoList gcList = currentUser.getGiftCardList();
     		//Clear any hold amounts.
     		gcList.clearAllHoldAmount();
+            
+    		//reset user to see pendingOrder overlay again since they didn't check out
+    		currentUser.setSuspendShowPendingOrderOverlay(false);
             
 		} catch (FDResourceException ex) {
 			LOGGER.warn("Error accessing resources", ex);

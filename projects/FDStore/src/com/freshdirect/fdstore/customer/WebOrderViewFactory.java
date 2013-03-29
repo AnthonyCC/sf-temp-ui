@@ -16,13 +16,14 @@ public class WebOrderViewFactory {
 	private WebOrderViewFactory() {
 	}
 
-	public static WebOrderViewI getOrderView(List<FDCartLineI> cartLines, ErpAffiliate affiliate) {
+	// APPDEV-2031 we introduced separate grouping of new items (items recently added to cart being modified)
+	public static WebOrderViewI getOrderView(List<FDCartLineI> cartLines, ErpAffiliate affiliate, boolean modified) {
 		if (!affiliate.isPrimary() && !hasItemsForAffiliate(cartLines, affiliate)) {
 			return null;
 		}
 
 		return new OrderView(affiliate, getOrderLinesForAffiliate(cartLines, affiliate), affiliate.isPrimary()
-			&& !hasItemsForSecondaryAffiliates(cartLines));
+			&& !hasItemsForSecondaryAffiliates(cartLines), modified);
 	}
 
 	public static WebOrderViewI getInvoicedOrderView(List<FDCartLineI> cartLines, List<FDCartLineI> sampleLines, ErpAffiliate affiliate) {
@@ -49,10 +50,10 @@ public class WebOrderViewFactory {
 		return ov;
 	}
 
-	public static List<WebOrderViewI> getOrderViews(List<FDCartLineI> cartLines) {
+	public static List<WebOrderViewI> getOrderViews(List<FDCartLineI> cartLines, boolean modified) {
 		ArrayList<WebOrderViewI> views = new ArrayList<WebOrderViewI>();
 		for (Iterator<ErpAffiliate> i = getShownAffiliates(cartLines).iterator(); i.hasNext();) {
-			WebOrderViewI view = getOrderView(cartLines, i.next());
+			WebOrderViewI view = getOrderView(cartLines, i.next(), modified);
 			if (view != null) {
 				views.add(view);
 			}
@@ -116,6 +117,8 @@ public class WebOrderViewFactory {
 
 		private final ErpAffiliate affiliate;
 		private final List<FDCartLineI> lines;
+		private final List<FDCartLineI> newLines;
+		private final List<FDCartLineI> oldLines;
 		private final boolean hideDescription;
 		private List<FDCartLineI> sampleLines = Collections.emptyList();
 
@@ -123,10 +126,23 @@ public class WebOrderViewFactory {
 		protected double subtotal;
 		protected double depositValue;
 
-		public AbstractOrderView(ErpAffiliate affiliate, List<FDCartLineI> lines, boolean hideDescription) {
+		public AbstractOrderView(ErpAffiliate affiliate, List<FDCartLineI> lines, boolean hideDescription, boolean modified) {
 			this.affiliate = affiliate;
 			this.lines = lines;
 			this.hideDescription = hideDescription;
+			this.newLines = new ArrayList<FDCartLineI>(lines.size());
+			if (modified) {
+				this.oldLines = new ArrayList<FDCartLineI>(lines.size());
+				for (FDCartLineI line : lines)
+					if (line instanceof FDModifyCartLineI)
+						oldLines.add(line);
+					else
+						newLines.add(line);
+				
+				Collections.sort(newLines, FDCartModel.NAME_COMPARATOR);
+			} else {
+				this.oldLines = lines; 
+			}
 		}
 
 		@Override
@@ -137,6 +153,14 @@ public class WebOrderViewFactory {
 		@Override
 		public List<FDCartLineI> getOrderLines() {
 			return this.lines;
+		}
+		
+		@Override
+		public List<List<FDCartLineI>> getNewOrderLinesSeparated() {
+			List<List<FDCartLineI>> a = new ArrayList<List<FDCartLineI>>(2);
+			a.add(newLines);
+			a.add(oldLines);
+			return a;
 		}
 
 		@Override
@@ -188,8 +212,8 @@ public class WebOrderViewFactory {
 
 	public static class OrderView extends AbstractOrderView {
 
-		public OrderView(ErpAffiliate affiliate, List<FDCartLineI> lines, boolean hideDescription) {
-			super(affiliate, lines, hideDescription);
+		public OrderView(ErpAffiliate affiliate, List<FDCartLineI> lines, boolean hideDescription, boolean modified) {
+			super(affiliate, lines, hideDescription, modified);
 
 			for (Iterator<FDCartLineI> i = lines.iterator(); i.hasNext();) {
 				FDCartLineI line = i.next();
@@ -204,7 +228,7 @@ public class WebOrderViewFactory {
 	public static class InvoicedOrderView extends AbstractOrderView {
 
 		public InvoicedOrderView(ErpAffiliate affiliate, List<FDCartLineI> lines, boolean hideDescription) {
-			super(affiliate, lines, hideDescription);
+			super(affiliate, lines, hideDescription, false);
 
 			for (Iterator<FDCartLineI> i = lines.iterator(); i.hasNext();) {
 				FDCartLineI line = i.next();

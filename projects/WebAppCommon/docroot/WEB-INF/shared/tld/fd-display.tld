@@ -509,6 +509,11 @@
    <name>leftAlign</name>
    <rtexprvalue>true</rtexprvalue>
   </attribute>
+  <attribute>
+   <name>showOnly</name>
+   <rtexprvalue>true</rtexprvalue>
+   <required>false</required>
+  </attribute>
  </tag>
  <tag>
   <name>WineRating</name>

@@ -135,6 +135,7 @@ if (prodsAvailable>0) {
     </table>
 <fd:FDShoppingCart id='cart' action='addMultipleToCart' result='result' successPage='<%= succPage %>'>
     <table><form name="transac_grouped_items" id="transac_grouped_items" method="POST"></table>
+    <fd:AddToCartPending id="transac_grouped_items"/>
     <%
 
     //*** if we got this far..then we need to remove the sucess page attribute from the request.

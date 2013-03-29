@@ -198,7 +198,7 @@ final int W_CHECKOUT_STEP_1_EDIT_TOTAL = 970;
 					<a href="<%=response.encodeURL("/checkout/view_cart.jsp?trk=chkplc ")%>" onclick="ntptEventTag('ev=button_event&ni_btn=cancel_checkout');var d=new Date();var cD;do{cD=new Date();}while((cD.getTime()-d.getTime())<500);" id="previousX">
 					<img src="/media_stat/images/buttons/checkout_left.gif" width="26" height="26" border="0" alt="PREVIOUS STEP"></a>
 			</td>
-		    <td width="340">
+		    <td width="340" style="text-align: left;">
 				<a href="<%=response.encodeURL("/checkout/view_cart.jsp?trk=chkplc ")%>" onclick="ntptEventTag('ev=button_event&ni_btn=cancel_checkout');var d=new Date();var cD;do{cD=new Date();}while((cD.getTime()-d.getTime())<500);" id="cancelText">
 				<img src="/media_stat/images/buttons/previous_step.gif" WIDTH="66" HEIGHT="11" border="0" alt="PREVIOUS STEP"></a><br/>
 				View Cart<br/>
@@ -223,11 +223,11 @@ final int W_CHECKOUT_STEP_1_EDIT_TOTAL = 970;
 
 	<table border="0" cellspacing="0" cellpadding="0" width="<%=W_CHECKOUT_STEP_1_EDIT_TOTAL%>">
 	    <tr valign="top">
-			<td width="35">
+			<td width="35" style="text-align: left;">
 					<a href="<%=response.encodeURL("/checkout/view_cart.jsp?trk=chkplc ")%>" onclick="ntptEventTag('ev=button_event&ni_btn=cancel_checkout');var d=new Date();var cD;do{cD=new Date();}while((cD.getTime()-d.getTime())<500);" id="previousX">
 					<img src="/media_stat/images/buttons/checkout_left.gif" width="26" height="26" border="0" alt="PREVIOUS STEP"></a>
 			</td>
-		    <td width="<%=W_CHECKOUT_STEP_1_EDIT_TOTAL-35%>">
+		    <td width="<%=W_CHECKOUT_STEP_1_EDIT_TOTAL-35%>" style="text-align: left;">
 				<a href="<%=response.encodeURL("/checkout/view_cart.jsp?trk=chkplc ")%>" onclick="ntptEventTag('ev=button_event&ni_btn=cancel_checkout');var d=new Date();var cD;do{cD=new Date();}while((cD.getTime()-d.getTime())<500);" id="cancelText">
 				<img src="/media_stat/images/buttons/previous_step.gif" WIDTH="66" HEIGHT="11" border="0" alt="PREVIOUS STEP"></a><br/>
 				Your Cart<br/>

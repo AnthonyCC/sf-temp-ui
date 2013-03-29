@@ -1277,6 +1277,14 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 		this.user.setShowPendingOrderOverlay(showPendingOrderOverlay);
 	}
 
+	public boolean isSupendShowPendingOrderOverlay() {
+		return user.isSupendShowPendingOrderOverlay();
+	}
+
+	public void setSuspendShowPendingOrderOverlay(boolean suspendShowPendingOrderOverlay) {
+		user.setSuspendShowPendingOrderOverlay(suspendShowPendingOrderOverlay);
+	}
+
 	public boolean hasPendingOrder() throws FDResourceException {
 		return this.user.hasPendingOrder();
 	}
@@ -1365,6 +1373,10 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 		this.user.setTsaPromoCode(tsaPromoCode);
 	}
 
+	public boolean isPopUpPendingOrderOverlay() {
+		return user.isPopUpPendingOrderOverlay();
+	}
+	
 	public EnumGiftCardType getGiftCardType() {
 		return this.user.getGiftCardType();
 	}

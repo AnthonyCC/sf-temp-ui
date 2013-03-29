@@ -470,6 +470,10 @@ public interface FDUserI extends java.io.Serializable {
 	//mergePendingOrder (APPDEV-2031)
 	public boolean getShowPendingOrderOverlay();
 	public void setShowPendingOrderOverlay(boolean showPendingOrderOverlay);
+	// suspend showing pending order overlay
+	public boolean isSupendShowPendingOrderOverlay();
+	public void setSuspendShowPendingOrderOverlay(boolean suspendShowPendingOrderOverlay);
+	
 	public boolean hasPendingOrder() throws FDResourceException;
 	public boolean hasPendingOrder(boolean incGiftCardOrds, boolean incDonationOrds) throws FDResourceException;
 	public List<FDOrderInfoI> getPendingOrders() throws FDResourceException;
@@ -505,6 +509,8 @@ public interface FDUserI extends java.io.Serializable {
 
 	public void setTsaPromoCode(String tsaPromoCode);
 	
+	public boolean isPopUpPendingOrderOverlay();
+		
 	public EnumGiftCardType getGiftCardType();
 
 	public void setGiftCardType(EnumGiftCardType giftCardType);

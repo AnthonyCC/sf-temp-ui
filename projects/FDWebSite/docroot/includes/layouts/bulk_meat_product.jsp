@@ -265,7 +265,8 @@ int selectedSUIndex = 0;
 <br>
 Learn more about <a href="javascript:popup('/departments/meat/info_buying_bulk_meat.jsp','small');">buying bulk meat</a>.
 </TD></TR></TABLE>
-<form  name="bulk_meat_product" method="post">
+<form  name="bulk_meat_product" id="bulk_meat_product" method="post">
+<fd:AddToCartPending id="bulk_meat_product"/>
 <TABLE CELLSPACING="2" CELLPADDING="0" BORDER="0" WIDTH="<%=W_BULK_MEAT_PRODUCT_TOTAL%>">
 <TR VALIGN="TOP">
 <TD WIDTH="<%=W_BULK_MEAT_PRODUCT_TOTAL%>" COLSPAN="3">&nbsp;<br>

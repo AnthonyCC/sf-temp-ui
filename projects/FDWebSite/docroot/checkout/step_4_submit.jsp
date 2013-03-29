@@ -8,6 +8,7 @@
 <%@ page import='com.freshdirect.fdstore.promotion.*'%>
 <%@ page import='com.freshdirect.fdstore.util.ClickToCallUtil'%>
 <%@ page import="com.freshdirect.dataloader.autoorder.create.util.DateUtil" %>
+<%@ page import='com.freshdirect.payment.EnumPaymentMethodType'%>
 <%@ page import="java.util.Locale"%>  
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
@@ -19,6 +20,7 @@ final int W_CHECKOUT_STEP_4_SUBMIT_TOTAL = 970;
 
 <%!
 // final java.text.DecimalFormat quantityFormatter = new java.text.DecimalFormat("0.##");
+java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyInstance(Locale.US);
 %>
 
 <fd:CheckLoginStatus id="user" guestAllowed="false" recognizedAllowed="false" redirectPage='/checkout/view_cart.jsp' />
@@ -27,6 +29,7 @@ final int W_CHECKOUT_STEP_4_SUBMIT_TOTAL = 970;
 	final boolean abstractTimeslots = EnumCheckoutMode.MODIFY_SO_TMPL == user.getCheckoutMode();
 
 	final String actionName = abstractTimeslots ? "modifyStandingOrderTemplate" : "submitOrder";
+	boolean isEBTPayment = false;
 	
 %>
 <tmpl:insert template='/common/template/checkout_nav.jsp'>
@@ -65,8 +68,10 @@ final int W_CHECKOUT_STEP_4_SUBMIT_TOTAL = 970;
 		//for Google Analytics (used in shared include i_step_4_cart_details.jspf)
 		String sem_orderNumber = "0";
 %>
-<% if (!abstractTimeslots) { %><fd:SmartSavingsUpdate promoConflictMode="true"/><% } %>
-
+<% if (!abstractTimeslots) { %><fd:SmartSavingsUpdate promoConflictMode="true"/><% } 
+		//button include count
+		int incNextButtonCount = 0;
+%>
 
 <%@ include file="/includes/i_modifyorder.jspf" %>
 
@@ -145,29 +150,29 @@ final int W_CHECKOUT_STEP_4_SUBMIT_TOTAL = 970;
 		</table>
 	</div>
 
-<table BORDER="0" CELLSPACING="0" CELLPADDING="0" width="<%=W_CHECKOUT_STEP_4_SUBMIT_TOTAL%>">
-	<tr VALIGN="TOP">
-			<td CLASS="text11" WIDTH="395" VALIGN="bottom">
-				<FONT CLASS="title18">REVIEW & SUBMIT</FONT><BR>
-			    <IMG src="/media_stat/images/layout/clear.gif" WIDTH="395" HEIGHT="1" BORDER="0">
-			</td>
-			<td width="<%=W_CHECKOUT_STEP_4_SUBMIT_TOTAL-430%>" align="right" valign="middle">
-				<font class="space2pix"><br/></font><% if (__noErr) { %>
-				<input type="image" name="checkout_submit_order" src="/media_stat/images/buttons/submit_order.gif" width="84" height="12" border="0" alt="CONTINUE CHECKOUT" vspace="0" onclick="return checkPromoEligibilityByMaxRedemptions('<%= null==user.getRedeemedPromotion()?"null":"not null" %>');return ntptSubmitTag(document.order_submit, 'ev=button_event&ni_btn=submit_order&ni_btnpos=Bottom');" id="checkout_submit_order_bottomText"><br/>
-				<input type="image" name="checkout_submit_order" src="/media_stat/images/buttons/click_to_place_order.gif" width="85" height="10" border="0" alt="CONTINUE CHECKOUT" vspace="0" onclick="return checkPromoEligibilityByMaxRedemptions('<%= null==user.getRedeemedPromotion()?"null":"not null" %>');return ntptSubmitTag(document.order_submit, 'ev=button_event&ni_btn=submit_order&ni_btnpos=Bottom');" id="checkout_submit_order_bottomText"><% } %><br/>
-			</td>
-			<td width="35" align="right" valign="middle">
-				<font class="space2pix"><br/></font>
-				<% if (__noErr ) {%>
-					<input type="image" name="form_action_name" src="/media_stat/images/buttons/checkout_right.gif" width="26" height="26" border="0" alt="CONTINUE CHECKOUT" VSPACE="2" onclick="return checkPromoEligibilityByMaxRedemptions('<%= null==user.getRedeemedPromotion()?"null":"not null" %>');return ntptSubmitTag(document.order_submit, 'ev=button_event&ni_btn=submit_order&ni_btnpos=Bottom');" id="checkout_submit_order_bottomArrow">
-				<% } %>
-			</td>
-	</tr>
-	</table>
-
 	<div>
-	<div style="font-size: 0px; padding-top: 16px;"></div>
-	<!-- PROFILE HEADER -->
+	<%-- Start Header --%>
+<tmpl:insert template='<%= ((modifyOrderMode) ? "/includes/checkout_header_modify.jsp" : "/includes/checkout_header_submit.jsp") %>'>
+<% if(modifyOrderMode) { %>
+	<tmpl:put name="ordnumb"><%= modifiedOrderNumber %></tmpl:put>
+	<tmpl:put name="note"><%= modifyNote %></tmpl:put>
+<% } %>
+	<tmpl:put name="title">Review Your Order</tmpl:put>
+	<tmpl:put name="delivery-fee">
+		<span class="checkout-delivery-fee"><% if (FDStoreProperties.isNewFDTimeslotGridEnabled()) { %><fd:IncludeMedia name="/media/editorial/timeslots/msg_timeslots_learnmore.html"/><% } %></span>
+		<%@ include file="/includes/i_cart_delivery_fee.jspf" %>
+	</tmpl:put>
+	<tmpl:put name="next-button">
+		<% if (__noErr) { %>
+			<% if (abstractTimeslots) { %>
+				<button class="imgButtonOrange" type="submit">Click here to save your standing order</button>
+			<% } else { %>
+				<%@ include file="/includes/i_cart_next_step_button.jspf" %>
+			<% } %>
+		<% } %>
+	</tmpl:put>
+</tmpl:insert>
+<!-- PROFILE HEADER -->
 	<div>
 	<%@ include file="/shared/includes/i_loyalty_bar.jspf" %>
 	<div style="clear: both;"></div>
@@ -177,8 +182,6 @@ final int W_CHECKOUT_STEP_4_SUBMIT_TOTAL = 970;
 		<div style="padding: 16px 0 16px 0">
 		<% if (abstractTimeslots) { %>
 			<button style="width: 439px; height: 35px; border-radius: 5px; -moz-border-radius: 5px; border: 0; background-color: #ff9933; font-size: 17px; font-weight: bold; color: white; font-family: Verdana, Arial, sans-serif">Click here to save your standing order.</button>
-		<% } else { %>
-			<input type="image" name="checkout_submit_order" src="/media_stat/images/template/checkout/order_not_placed.gif" width="439" height="35" border="0" alt="Continue Checkout" onclick="return checkPromoEligibilityByMaxRedemptions('<%= null==user.getRedeemedPromotion()?"null":"not null" %>');return ntptSubmitTag(document.order_submit, 'ev=button_event&ni_btn=submit_order&ni_btnpos=Banner');" id="checkout_submit_order_banner"><br><IMG src="/media_stat/images/layout/clear.gif" width="1" height="14" BORDER="0"><br>
 		<% } %>
 		</div>
 	<% } %>
@@ -340,32 +343,30 @@ if (!abstractTimeslots && user.isPromoConflictResolutionApplied()) {
 <IMG src="/media_stat/images/layout/dotted_line_w.gif" width="<%=W_CHECKOUT_STEP_4_SUBMIT_TOTAL%>" height="1" BORDER="0"><BR>
 <IMG src="/media_stat/images/layout/clear.gif" width="1" height="8" BORDER="0"><BR>
 
-<table BORDER="0" CELLSPACING="0" CELLPADDING="0" width="<%=W_CHECKOUT_STEP_4_SUBMIT_TOTAL%>">
-	<tr VALIGN="TOP">
-		
-			<td width="35">
+<div style="margin-bottom: 15px; margin-top: 5px; position: relative; text-align: <%= (cart instanceof FDModifyCartModel && user.getCheckoutMode() == EnumCheckoutMode.NORMAL) ? " right" : "center" %>; min-height: 26px;">
+		<div style="position: absolute; top: 0px; left: 0px; width: 150px; height: 26px; text-align: left;">
+			<span style="display: inline-block;">
 				<a href="<%=response.encodeURL("/checkout/step_3_choose.jsp")%>" id="previousX">
 				<img src="/media_stat/images/buttons/checkout_left.gif" width="26" height="26" border="0" alt="PREVIOUS STEP"></a>
-			</td>
-		    <td width="340">
+			</span>
+			<span style="display: inline-block; vertical-align: top; text-align: center; margin-left: 5px; text-align: left;">
 				<a href="<%=response.encodeURL("/checkout/step_3_choose.jsp")%>" id="previousX">
 				<img src="/media_stat/images/buttons/previous_step.gif" WIDTH="66" HEIGHT="11" border="0" alt="PREVIOUS STEP"></a><br/>
 				Payment Method<br/>
-				<img src="/media_stat/images/layout/clear.gif" width="340" height="1" border="0">
-			</td>
-			<td width="<%=W_CHECKOUT_STEP_4_SUBMIT_TOTAL-410%>" align="right" valign="middle">
-				<font class="space2pix"><br/></font><% if (__noErr) { %>
-				<input type="image" name="checkout_submit_order" src="/media_stat/images/buttons/submit_order.gif" width="84" height="12" border="0" alt="CONTINUE CHECKOUT" vspace="0" onclick="return checkPromoEligibilityByMaxRedemptions('<%= null==user.getRedeemedPromotion()?"null":"not null" %>');return ntptSubmitTag(document.order_submit, 'ev=button_event&ni_btn=submit_order&ni_btnpos=Bottom');" id="checkout_submit_order_bottomText"><br/>
-				<input type="image" name="checkout_submit_order" src="/media_stat/images/buttons/click_to_place_order.gif" width="85" height="10" border="0" alt="CONTINUE CHECKOUT" vspace="0" onclick="return checkPromoEligibilityByMaxRedemptions('<%= null==user.getRedeemedPromotion()?"null":"not null" %>');return ntptSubmitTag(document.order_submit, 'ev=button_event&ni_btn=submit_order&ni_btnpos=Bottom');" id="checkout_submit_order_bottomText"><% } %><br/>
-			</td>
-			<td width="35" align="right" valign="middle">
-				<font class="space2pix"><br/></font>
-				<% if (__noErr ) {%>
-					<input type="image" name="form_action_name" src="/media_stat/images/buttons/checkout_right.gif" width="26" height="26" border="0" alt="CONTINUE CHECKOUT" VSPACE="2" onclick="return checkPromoEligibilityByMaxRedemptions('<%= null==user.getRedeemedPromotion()?"null":"not null" %>');return ntptSubmitTag(document.order_submit, 'ev=button_event&ni_btn=submit_order&ni_btnpos=Bottom');" id="checkout_submit_order_bottomArrow">
-				<% } %>
-			</td>
-	</tr>
-</table>
+			</span>
+		</div>
+
+<% if (__noErr) { %>
+	<% if (abstractTimeslots) { %>
+		<button class="butCont butOrange" type="submit">
+			<span class="butLeft"><!-- --></span><span class="butMiddle butTextTitle18">Click here to save your standing order</span><span class="butRight"><!-- --></span>
+		</button>
+	<% } else { %>
+		 <%@ include file="/includes/i_cart_next_step_button.jspf" %>
+	<% } %>
+	<% if (cart instanceof FDModifyCartModel) { %><div style="clear: both;"></div><% } %>
+<% } %>
+</div>
 <%@ include file="/checkout/includes/i_footer_text.jspf" %>
 
 </FORM>

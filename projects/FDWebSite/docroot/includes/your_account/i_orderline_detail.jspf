@@ -131,7 +131,8 @@ if (cart.hasInvoice()) {
 <tr align="right">
 	<td colspan="5"><%= view.getDescription() %> <% if (view.isEstimatedPrice()) { %>Estimated <% } %>Subtotal:</td>
 	<td><% if (cart.hasInvoice() && invoiceView != null) { %><%= currencyFormatter.format( invoiceView.getSubtotal() ) %><% } else { %><%= currencyFormatter.format(view.getSubtotal()) %><% } %></td>
-	<td colspan="3" align="left"><%=(view.isEstimatedPrice() || cart.hasSettledReturn())?"*":""%></td>
+	<td align="center"><%=(view.isEstimatedPrice() || cart.hasSettledReturn())?"*":""%></td>
+	<td colspan="2"></td>
 </tr>
 
 <%

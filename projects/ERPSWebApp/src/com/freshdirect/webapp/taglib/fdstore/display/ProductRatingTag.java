@@ -31,6 +31,16 @@ import com.freshdirect.webapp.util.JspMethods;
  * 
  */
 public class ProductRatingTag extends BodyTagSupport {
+	
+	public static enum RatingEnum {
+		WINE,
+		CUSTOMER,
+		SUSTAINABILITY,
+		EXPERT,
+		ALL
+	}
+	
+	
 	private static final Logger LOGGER = LoggerFactory.getInstance( ProductRatingTag.class );
 
 	private static final long serialVersionUID = -5168098436665976237L;
@@ -41,6 +51,9 @@ public class ProductRatingTag extends BodyTagSupport {
 	boolean leftAlign;
 	String skuCode;
 	CustomerRatingsDTO customerRatingsDTO;
+	
+	RatingEnum showOnly = RatingEnum.ALL;
+	
 
 	public void setProduct(ProductModel prd) {
 		this.product = prd;
@@ -61,6 +74,15 @@ public class ProductRatingTag extends BodyTagSupport {
 	public void setSkuCode(String skuCode) {
 		this.skuCode = skuCode;
 	}
+	
+	public void setShowOnly(RatingEnum showOnly) {
+		this.showOnly = showOnly;
+	}
+	
+	public RatingEnum getShowOnly() {
+		return showOnly;
+	}
+	
 
 	@Override
 	public int doStartTag() throws JspException {
@@ -91,146 +113,127 @@ public class ProductRatingTag extends BodyTagSupport {
 
 		if ("usq".equalsIgnoreCase(deptName)) {
 			// [A] WINE RATINGS
-			if (!product.isShowWineRatings()) {
-				return SKIP_BODY;
-			}
 
-			// steal logic from WineRatingTag
-			boolean small = true;
+			if(showOnly == RatingEnum.ALL || showOnly == RatingEnum.WINE) {
+				if (!product.isShowWineRatings()) {
+					return SKIP_BODY;
+				}
+
+				// steal logic from WineRatingTag
+				boolean small = true;
+				
+				// stolen code starts here >>>>
+				EnumWineRating rating;
+				boolean half = false;
+				try {
+					EnumOrderLineRating origRating = product.getProductRatingEnum();
+					rating = EnumWineRating.getEnumByRating(origRating);
+					if (origRating.getValue() % 2 == 1)
+						half = true;
+				} catch (FDResourceException e) {
+					rating = EnumWineRating.NOT_RATED;
+				}
+
+				int starCount = rating.getStarCount();
+
+				if (starCount == 0)
+					return SKIP_BODY;
+
+				StringBuilder buf = new StringBuilder();
+
+				if (action != null) {
+					buf.append("<a href=\"");
+					buf.append(action);
+					buf.append("\" class=\"wine-rating\"");
+					buf.append(">");
+				} else {
+					if (noBr)
+						buf.append("<span class=\"wine-rating\">");
+					else
+						buf.append("<div class=\"wine-rating\">");
+				}
+				
+				String postfix = (small) ? "sm" : "lg";
+
+				for (int i = 0; i < starCount; i++) {
+					buf.append("<span class=\"usq-rating-");
+					buf.append(postfix);
+					buf.append("\"></span>");
+				}
+				
+				if (half) {
+					buf.append("<span class=\"usq-rating-half-");
+					buf.append(postfix);
+					buf.append("\"></span>");
+				}
+
+				if (action != null) {
+					buf.append("</a>");
+				} else {
+					if (noBr)
+						buf.append("</span>");
+					else
+						buf.append("</div>");
+				}
+				// <<<<<< stolen code ends here
+
+				try {
+					pageContext.getOut().println(buf.toString());
+				} catch (IOException e) {
+					throw new JspException(e);
+				}				
+			}
+		} else if ((customerRatingsDTO =  CustomerRatingsContext.getInstance().getCustomerRatingByProductId(product.getContentKey().getId())) != null) {
 			
-			// stolen code starts here >>>>
-			EnumWineRating rating;
-			boolean half = false;
-			try {
-				EnumOrderLineRating origRating = product.getProductRatingEnum();
-				rating = EnumWineRating.getEnumByRating(origRating);
-				if (origRating.getValue() % 2 == 1)
-					half = true;
-			} catch (FDResourceException e) {
-				rating = EnumWineRating.NOT_RATED;
-			}
+			if(showOnly == RatingEnum.ALL || showOnly == RatingEnum.CUSTOMER ) {
+				// CUSTOMAR RATINGS
+				// steal logic from WineRatingTag
+				boolean small = true;
+				
+				// stolen code starts here >>>>
 
-			int starCount = rating.getStarCount();
+				BigDecimal averageRating = customerRatingsDTO.getAverageOverallRating();
+				int starCount = (int)Math.ceil(averageRating.doubleValue());
+				int reviewCount = customerRatingsDTO.getTotalReviewCount();
 
-			if (starCount == 0)
-				return SKIP_BODY;
+				if (starCount == 0)
+					return SKIP_BODY;
 
-			StringBuilder buf = new StringBuilder();
+				StringBuilder buf = new StringBuilder();
 
-			if (action != null) {
-				buf.append("<a href=\"");
-				buf.append(action);
-				buf.append("\" class=\"wine-rating\"");
-				buf.append(">");
-			} else {
-				if (noBr)
-					buf.append("<span class=\"wine-rating\">");
-				else
-					buf.append("<div class=\"wine-rating\">");
-			}
-			
-			String postfix;
-			int width;
-			int halfWidth;
-			int height;
-			if (small) {
-				postfix = "sm";
-				width = 15;
-				halfWidth = 8;
-				height = 12;
-			} else {
-				postfix = "lg";
-				width = 18;
-				halfWidth = 8;
-				height = 15;
-			}
 
-			for (int i = 0; i < starCount; i++) {
-				buf.append("<span class=\"usq-rating-");
-				buf.append(postfix);
-				buf.append("\"></span>");
-			}
-			
-			if (half) {
-				buf.append("<span class=\"usq-rating-half-");
-				buf.append(postfix);
-				buf.append("\"></span>");
-			}
+				if (noBr) {
+					buf.append("<span class=\"cust-rating hastooltip\" >");
+				} else {
+					buf.append("<div class=\"cust-rating hastooltip\" >");
+				}			
+				
 
-			if (action != null) {
-				buf.append("</a>");
-			} else {
+				for (int i = 0; i < starCount; i++) {
+					buf.append("<span class=\"bv-cust-rating-");
+					buf.append((small) ? "sm" : "lg");
+					buf.append("\"></span>");
+				}
+				
+
 				if (noBr)
 					buf.append("</span>");
 				else
 					buf.append("</div>");
-			}
 
-			try {
-				pageContext.getOut().println(buf.toString());
-			} catch (IOException e) {
-				throw new JspException(e);
-			}
-		} else if ((customerRatingsDTO =  CustomerRatingsContext.getInstance().getCustomerRatingByProductId(product.getContentKey().getId())) != null) {
-			
-			// CUSTOMER RATINGS
-			boolean small = true;
-
-			BigDecimal averageRating = customerRatingsDTO.getAverageOverallRating();
-			long starValue = Math.round(averageRating.doubleValue()*10);
-			
-			//round value to 10,15,20 ... 50
-			if(starValue<10){
-				starValue = 0;
-			}else{
-				long mod = starValue % 5;
-				if(mod > 2){
-					starValue = starValue + (5 - mod);
-				} else {
-					starValue = starValue - mod;
-				}				
-			}
-			
-			if(starValue > 50){
-				starValue = 50;
-			}
-
-			int reviewCount = customerRatingsDTO.getTotalReviewCount();
-
-			if (starValue == 0)
-				return SKIP_BODY;
-
-			StringBuilder buf = new StringBuilder();
-
-
-			if (noBr) {
-				buf.append("<span class=\"cust-rating hastooltip\" >");
-			} else {
-				buf.append("<div class=\"cust-rating hastooltip\" >");
-			}			
-			
-			if(small){
-				buf.append("<span class=\"bv-stars-small bv-stars-small-" + starValue + "\"></span>");				
-			}else{
-				buf.append("<span class=\"bv-stars-big bv-stars-big-" + starValue + "\"></span>");	
-			}
-				
-
-			if (noBr)
-				buf.append("</span>");
-			else
+				buf.append("<div id=\"" + product.getContentKey().getId() + "_hover\" class=\"cust-rating-hover tooltipcontent\">");
+				buf.append("<b class=\"cust-rating-hover-rating\">" + averageRating + "</b><br>");
+				buf.append("based on <b style=\"font-size:13px;\">" + reviewCount + "</b> customer reviews");
 				buf.append("</div>");
+				// <<<<<< stolen code ends here
 
-			buf.append("<div id=\"" + product.getContentKey().getId() + "_hover\" class=\"cust-rating-hover tooltipcontent\">");
-			buf.append("<b class=\"cust-rating-hover-rating\">" + averageRating + "</b><br>");
-			buf.append("based on <b style=\"font-size:13px;\">" + reviewCount + "</b> customer reviews");
-			buf.append("</div>");
-
-			try {
-				pageContext.getOut().println(buf.toString());
-			} catch (IOException e) {
-				throw new JspException(e);
-			}		
+				try {
+					pageContext.getOut().println(buf.toString());
+				} catch (IOException e) {
+					throw new JspException(e);
+				}		
+				
+			}
 			
 		} else {
 			// [C] SEAFOOD SUSTAINABILITY RATING
@@ -242,92 +245,97 @@ public class ProductRatingTag extends BodyTagSupport {
 
 			
 			// [C] SEAFOOD SUSTAINABILITY RATING
-			if (FDStoreProperties.isSeafoodSustainEnabled()) {
-				String ratingSS = JspMethods.getSustainabilityRating(product, skuCode);
+			if(showOnly == RatingEnum.ALL || showOnly == RatingEnum.SUSTAINABILITY) {
+				if (FDStoreProperties.isSeafoodSustainEnabled()) {
+					String ratingSS = JspMethods.getSustainabilityRating(product, skuCode);
 
-				StringBuilder bufSS = new StringBuilder();
+					StringBuilder bufSS = new StringBuilder();
 
-				if (ratingSS != null && ratingSS.trim().length() > 0) {
-					if (action != null) {
-						bufSS.append("<a href=\"");
-						bufSS.append(action);
-						bufSS.append("\">");
+					if (ratingSS != null && ratingSS.trim().length() > 0) {
+						if (action != null) {
+							bufSS.append("<a href=\"");
+							bufSS.append(action);
+							bufSS.append("\">");
+						}
+		
+						bufSS.append("<img src=\"/media_stat/images/ratings/"
+								+ "fish_" + ratingSS + ".gif\"");
+		
+						bufSS.append(" name=\"ss_rating_" + ratingSS + "\"");
+
+						bufSS.append(" width=\"35\"");
+
+						bufSS.append(" height=\"15\"");
+
+						bufSS.append(" border=\"0\"");
+						
+						bufSS.append(" alt=\"ss_rating_" + ratingSS + "\"");
+
+						bufSS.append(" />");
+		
+						if (action != null) {
+							bufSS.append("</a>");
+						}
+		
+						if (!noBr)
+							bufSS.append("<br>");
 					}
-	
-					bufSS.append("<img src=\"/media_stat/images/ratings/"
-							+ "fish_" + ratingSS + ".gif\"");
-	
-					bufSS.append(" name=\"ss_rating_" + ratingSS + "\"");
-
-					bufSS.append(" width=\"35\"");
-
-					bufSS.append(" height=\"15\"");
-
-					bufSS.append(" border=\"0\"");
-					
-					bufSS.append(" alt=\"ss_rating_" + ratingSS + "\"");
-
-					bufSS.append(" />");
-	
-					if (action != null) {
-						bufSS.append("</a>");
+		
+					try {
+						pageContext.getOut().println(bufSS.toString());
+					} catch (IOException e) {
+						throw new JspException(e);
 					}
-	
-					if (!noBr)
-						bufSS.append("<br>");
+				
+				}else{
+					LOGGER.error("fdstore.seafoodsustain.enabled=false! Skipping ...");
 				}
-	
-				try {
-					pageContext.getOut().println(bufSS.toString());
-				} catch (IOException e) {
-					throw new JspException(e);
-				}
-			
-			}else{
-				LOGGER.error("fdstore.seafoodsustain.enabled=false! Skipping ...");
+				
 			}
 			
 			// [B] STANDARD PRODUCE RATING
-			if (user.isProduceRatingEnabled()) {
-				String rating = JspMethods.getProductRating(product, skuCode);
-	
-				StringBuilder buf = new StringBuilder();
-	
-				if (rating != null && rating.trim().length() > 0) {
-					if (action != null) {
-						buf.append("<a href=\"");
-						buf.append(action);
-						buf.append("\">");
+			if(showOnly == RatingEnum.ALL || showOnly == RatingEnum.EXPERT) {
+				if (user.isProduceRatingEnabled()) {
+					String rating = JspMethods.getProductRating(product, skuCode);
+		
+					StringBuilder buf = new StringBuilder();
+		
+					if (rating != null && rating.trim().length() > 0) {
+						if (action != null) {
+							buf.append("<a href=\"");
+							buf.append(action);
+							buf.append("\">");
+						}
+		
+						buf.append("<img src=\"/media_stat/images/ratings/"
+								+ (leftAlign ? "left_" : "") + rating + ".gif\"");
+		
+						buf.append(" name=\"" + rating + "\"");
+		
+						buf.append(" width=\"59\"");
+		
+						buf.append(" height=\"11\"");
+		
+						buf.append(" border=\"0\"");
+		
+						buf.append(">");
+		
+						if (action != null) {
+							buf.append("</a>");
+						}
+		
+						if (!noBr)
+							buf.append("<br>");
 					}
-	
-					buf.append("<img src=\"/media_stat/images/ratings/"
-							+ (leftAlign ? "left_" : "") + rating + ".gif\"");
-	
-					buf.append(" name=\"" + rating + "\"");
-	
-					buf.append(" width=\"59\"");
-	
-					buf.append(" height=\"11\"");
-	
-					buf.append(" border=\"0\"");
-	
-					buf.append(">");
-	
-					if (action != null) {
-						buf.append("</a>");
-					}
-	
-					if (!noBr)
-						buf.append("<br>");
-				}
 
-				try {
-					pageContext.getOut().println(buf.toString());
-				} catch (IOException e) {
-					throw new JspException(e);
-				}
-			}else{
-				LOGGER.error("user.isProduceRatingEnabled()=false! Skipping ...");
+					try {
+						pageContext.getOut().println(buf.toString());
+					} catch (IOException e) {
+						throw new JspException(e);
+					}
+				}else{
+					LOGGER.error("user.isProduceRatingEnabled()=false! Skipping ...");
+				}				
 			}
 		}
 

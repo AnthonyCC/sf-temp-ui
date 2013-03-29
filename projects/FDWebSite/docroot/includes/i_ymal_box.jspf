@@ -211,10 +211,10 @@ final int W_YMAL_BOX_INNER = 540;
 											<% if (pl.getTrackingCode() != null) { %><input type="hidden" name="trkd_<%= txProdCount %>" value="<%= pl.getTrackingCode() %>"/><% } %>
 			
 											<fd:TxProductControl txNumber="<%= txProdCount %>" namespace="<%= TX_JS_NAMESPACE %>" impression="<%= (TransactionalProductImpression) pi %>"/>
-										<fd:IsAlcoholic skuCode="<%=((TransactionalProductImpression) pi).getSku().getSkuCode()%>"> 
-											<fd:USQLegalWarning id="<%= TX_FORM_NAME %>" tagCounter="<%=txProdCount %>" quantityCheck="true"/>
+										<!-- fd:IsAlcoholic skuCode="%=((TransactionalProductImpression) pi).getSku().getSkuCode()%>" --> 
+											<fd:PopupHandler id="<%= TX_FORM_NAME %>" tagCounter="<%=txProdCount %>" quantityCheck="true" skuCode="<%=((TransactionalProductImpression) pi).getSku().getSkuCode()%>"/>
 											<%--input type="hidden" name='<%="alcoholic_" + txProdCount %>' id='<%="alcoholic_" + txProdCount %>' value='<%="quantity_" + txProdCount %>'/ --%>
-										</fd:IsAlcoholic>
+										<!-- /fd:IsAlcoholic -->
 										</td>
 									</tr>
 <%				// Count transactional products only
@@ -253,12 +253,12 @@ final int W_YMAL_BOX_INNER = 540;
 							<td class="ymal_addtocart" colspan="<%= rsize %>" class="text11bold">
 								<table width="100%">
 									<tr>
-										<td width="33%"/>
+										<td width="33%"></td>
 										<td align="center" width="34%">
 											<input type="hidden" name="itemCount" value="<%= nConfProd %>">
 											<input type="image" id="addMultipleToCart" name="addMultipleToCart" src="/media_stat/images/template/quickshop/qs_add_selected_to_cart.gif" width="145" height="17" border="0" alt="ADD SELECTED TO CART">
 											<%--<fd:IsAlcoholic>
-												<fd:USQLegalWarning id="<%= TX_FORM_NAME %>" event="onclick" elementId="addMultipleToCart" quantityCheck="true" event="onclick"/>
+												<fd:PopupHandler id="<%= TX_FORM_NAME %>" event="onclick" elementId="addMultipleToCart" quantityCheck="true" event="onclick"/>
 											</fd:IsAlcoholic>--%>
 										</td>
 										<td align="right" width="33%">

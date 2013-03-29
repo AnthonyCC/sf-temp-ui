@@ -15,6 +15,7 @@ public interface WebOrderViewI {
 	public ErpAffiliate getAffiliate();
 	
 	public List<FDCartLineI> getOrderLines();
+	public List<List<FDCartLineI>> getNewOrderLinesSeparated();
 	public List<FDCartLineI> getSampleLines();
 
 	public boolean isEstimatedPrice();

@@ -173,7 +173,8 @@ public class ManageStandingOrdersTag extends AbstractGetterTag {
 				user.setShoppingCart(cart);
 			
 			} else {
-				cart = new ModifyOrderControllerTag().modifyOrder(user, orderId, request.getSession(), so, EnumCheckoutMode.MODIFY_SO_MSOI);
+				cart = ModifyOrderControllerTag.modifyOrder((HttpServletRequest) pageContext.getRequest(), user, orderId,
+						request.getSession(), so, EnumCheckoutMode.MODIFY_SO_MSOI, false);
 				cart.clearOrderLines();
 			}	
 
@@ -189,6 +190,8 @@ public class ManageStandingOrdersTag extends AbstractGetterTag {
 					((FDModifyCartModel)cart).addOriginalOrderLine(cartLine);
 				}
 			}
+			
+			user.setSuspendShowPendingOrderOverlay(true);
 			
 			cart.refreshAll(true);
 			throw new RedirectToPage( "/checkout/view_cart.jsp" );

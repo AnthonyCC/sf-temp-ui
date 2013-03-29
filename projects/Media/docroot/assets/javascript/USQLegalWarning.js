@@ -7,205 +7,133 @@ if (typeof FreshDirect == "undefined" || !FreshDirect) {
 	
 	FreshDirect.USQLegalWarning = USQLegalWarning;
 	
-	var forms = {};
-	var maxTagCounter = 0;
-	
-	var getUniqueId = (function() {
-		var id = 12; // DO NOT SET THIS TO ZERO otherwise it will be FALSE if tested
-		return function() {
-			return id++;
-		};
-	})();
-	
 	var rootWindow = window;
 	while (rootWindow.parent && rootWindow.parent != rootWindow)
 		rootWindow = rootWindow.parent;
 
 	USQLegalWarning.rootWindow = rootWindow;
 
-	// inner method should not be called directly
-	// the non-inner counterpart will find the root window and perform operations in its context
-	USQLegalWarning.attachFormInner = function(form, href, event, elementId, instant, quantityCheck, tagCounter, decorate, isAlcoholic) {
-		// we must have the form
-		if (form && href && event) {
-			var data = {};
-			data.form = form;
-			data.reload = false;
-			data.action = form.action;
-			data.event = event;
-			data.elementId = elementId;
-			data.instant = instant;
-			data.decorate = decorate;
-			data.isAlcoholic = isAlcoholic;
-			data.quantityCheck = quantityCheck;
-			if (tagCounter > maxTagCounter) {
-				maxTagCounter = tagCounter;
-			};
-			if (!data.action) {
-				data.action = href;
-			}
-			if (data.action) {
-				var id = getUniqueId();
-				data.id = id;
-				forms[id] = data;
-				bindSubmit(data, event);
-			}
-		}
-	};
-	
-	var destroy = function(data) {
-		data.form = null;
-		data.action = null;
-		if (data.panel)
-			data.panel.destroy();
-		data.panel = null;
-	};
-
-	USQLegalWarning.attachForm = function(form, href, event, elementId, instant, quantityCheck, tagCounter, decorate, isAlcoholic) {
-		return rootWindow.FreshDirect.USQLegalWarning.attachFormInner(form, href, event, elementId, instant, quantityCheck, tagCounter, decorate, isAlcoholic);
-	};
-
 	var normalSubmit = function(data) {
 		data.form.onsubmit = null;
 		data.form.submit();
 	};
 	
-	var bindSubmit = function(data) {
+	var isAlcoholicProductAdded = function(data) {
 		var form = data.form;
-		var id = data.id;
-		data.panel = null;
+		var alcoholicFlag = false;
+		if ('true' == data.quantityCheck) {
+			$( "#" + form.id +" .usq_quantity" ).each(function( index, quantityElement ) {
+				var quantity = USQLegalWarning.containsElement(form, quantityElement.value);
+				if (quantity != null && quantity.value != null && quantity.value != "" &&  quantity.value > 0) {
+					alcoholicFlag = true;
+					return false;
+				};
+		    });
+		} else {
+			return true;
+		}		
+		return alcoholicFlag;
+	};
 	
-		var showPendingChoice = function() {
+	USQLegalWarning.showPendingChoice = function(data) {
+		var id = data.id;
+		
+		if (data.instant && data.instant != null && data.instant != '') {
 			
-			if ('false' == data.isAlcoholic) {
-				normalSubmit(data);
+			if (window.parent.FreshDirect.USQLegalWarning.checkHealthCondition('freshdirect.healthwarning','1')== true || data.usq == 'false') { //AJAX add to cart (search page, ddpp pages)
+				if (data.atc == 'true') {
+					USQLegalWarning.submitWithAtc(data);
+				} else {
+					eval(data.instant)();
+				}
+				return;
+			}
+
+		} else if (data.multiForm && data.multiForm == 'true') { //multi form ~ whole form submit combined with row level submits (grocery pages)
+			
+			if (data.usq == 'false' || data.containsAlcoholic == 'false') {
+				if (data.atc == 'true') {
+					USQLegalWarning.submitWithAtc(data);
+				} else {
+					normalSubmit(data);
+				}
 				return;
 			};
+
+		} else { //normal add to cart(quickbuy, (view cart) ymal, cart confirm recommender), recipie pages
+		
+			var alcoholicFlag = isAlcoholicProductAdded(data);
+	
+			if (!alcoholicFlag || data.usq == 'false') {
+				if (data.atc == 'true') {
+					USQLegalWarning.submitWithAtc(data);
+				} else {
+					normalSubmit(data);
+				}
+				return;
+			};
+		}
+
+		var uri = document.location.protocol + '//' + document.location.host + '/overlays/health_warning_popup.jsp?formId=' + id + '&decorate=' + data.decorate;
+		if (data.instant != "") {
+			uri += '&instant=' + data.instant;
+		} 
+		if (data.atc == "true") {
+			uri += '&atc=true';
+		} 
+		if (!data.panel) {
+			data.panel = new YAHOO.widget.Panel('usq_legal_warning_choice_' + id, {
+				fixedcenter: true, 
+				constraintoviewport: true, 
+				underlay: "matte", 
+				close: true, 
+				visible: true,
+				modal: true,
+				zIndex: 250,
+				draggable: false}
+			);
 			
-			if (window.parent.FreshDirect.USQLegalWarning.checkHealthCondition('freshdirect.healthwarning','1')== true) {
-				if (data.instant && data.instant != null && data.instant != "") {
-					eval(data.instant)();
+			data.panel.setHeader( "&nbsp;" );
+			
+			data.panel.hideEvent.subscribe(function() {
+				if (data.reload) {
+					FreshDirect.USQLegalWarning.rootWindow.location.reload();
 					return;
 				}
-			}
-			var counter = 0;
-			var alcoholicFlag = null;
-			
-		    $( ".usq_quantity" ).each(function( index, quantityElement ) {
-		        
-			
-//			while (counter <= maxTagCounter) {
-				alcoholicFlag = quantityElement;
-//				if ( alcoholicFlag != null) {
-				var quantity = USQLegalWarning.containsElement(form, alcoholicFlag.value);
-				if ('true' == data.quantityCheck) {
-					if (quantity != null && quantity.value != null && quantity.value != "" &&  quantity.value > 0) {
-					//	break;
-						return false;
-					};
-				} else {
-				//	break;
-					return false;
-				}
-	//			}
-				alcoholicFlag = null;
-//				counter ++;
-	        });
-	//		};
-			if (!alcoholicFlag) {
-				normalSubmit(data);
-				return;
-			};
-	
-			var uri;
-			if (data.instant != "") {
-				uri = document.location.protocol + '//' + document.location.host + '/overlays/health_warning_popup.jsp?formId=' + id + '&instant=' + data.instant + '&decorate=' + data.decorate;
-			} else {
-				uri = document.location.protocol + '//' + document.location.host + '/overlays/health_warning_popup.jsp?formId=' + id + '&decorate=' + data.decorate;
-			}
-			if (!data.panel) {
-				data.panel = new YAHOO.widget.Panel('usq_legal_warning_choice_' + id, {
-					fixedcenter: true, 
-					constraintoviewport: true, 
-					underlay: "matte", 
-					close: true, 
-					visible: true,
-					modal: true,
-					zIndex: 250,
-					draggable: false}
-				);
-				
-				data.panel.setHeader( "&nbsp;" );
-				
-				data.panel.hideEvent.subscribe(function() {
-					if (data.reload) {
-						FreshDirect.USQLegalWarning.rootWindow.location.reload();
-						return;
-					}
-					// during hide we delete iframe to avoid nasty flicker
-					data.panel.setBody('');
-				});
-	
-				// we always stick the modal overlay to the root window
-				var body = rootWindow.document.body;
-				data.panel.render(body);
-	
-				YAHOO.util.Dom.addClass('usq_legal_warning_choice_' + id + '_c', 'usq_legal_warning_choice_c');
-				YAHOO.util.Dom.addClass('usq_legal_warning_choice_' + id, 'usq_legal_warning_choice');
-			}
+				// during hide we delete iframe to avoid nasty flicker
+				data.panel.setBody('');
+			});
 
-			var content = "";
-			content += '<div id="usq_legal_warning_choice_content_' + id + '" class="usq_legal_warning_choice_content">\n';
-			content += '<div id="usq_legal_warning_choice_progress_' + id + '" class="usq_legal_warning_choice_progress">\n';
-			content += 'Please wait... <img src="/media_stat/images/navigation/spinner.gif" width="50" height="50">\n';
-			content += '</div>\n';
-			content += '  <iframe id="usq_legal_warning_choice_frame_' + id + '" class="usq_legal_warning_choice_frame" style="z-index:150" frameborder="0" src="' + uri + '"></iframe>';
-			content += '</div>\n';
-			
-			data.panel.setBody(content);
-			
-			data.panel.center();
-			data.panel.show();	
+			// we always stick the modal overlay to the root window
+			var body = rootWindow.document.body;
+			data.panel.render(body);
 
-		};	
-		
-		if (data.event == 'onsubmit') {
-			data.onsubmit = function(){
-				showPendingChoice();
-				return false;
-			};
-		} else if (data.event == 'onclick' && data.elementId != "") {
-			data.elementId[data.event] = function() {
-				showPendingChoice();
-			};
-			data.onsubmit = function(){
-				return false;
-			};
-		};
-
-		form.onsubmit = data.onsubmit;
-	};
-	
-	var getFormId = function(query) {
-		if (query && query.length > 0 && query.charAt(0) == '?') {
-			query = query.substring(1); // remove question mark
-			var params = query.split('&');
-			for (var i = 0; i < params.length; i++) {
-				var param = params[i].split('=');
-				if (param[0] == 'formId')
-					return parseInt(unescape(param[1]), 10);
-			}
+			YAHOO.util.Dom.addClass('usq_legal_warning_choice_' + id + '_c', 'usq_legal_warning_choice_c');
+			YAHOO.util.Dom.addClass('usq_legal_warning_choice_' + id, 'usq_legal_warning_choice');
 		}
-		return null;
-	};
+
+		var content = "";
+		content += '<div id="usq_legal_warning_choice_content_' + id + '" class="usq_legal_warning_choice_content">\n';
+		content += '<div id="usq_legal_warning_choice_progress_' + id + '" class="usq_legal_warning_choice_progress">\n';
+		content += 'Please wait... <img src="/media_stat/images/navigation/spinner.gif" width="50" height="50">\n';
+		content += '</div>\n';
+		content += '  <iframe id="usq_legal_warning_choice_frame_' + id + '" class="usq_legal_warning_choice_frame" style="z-index:150" frameborder="0" src="' + uri + '"></iframe>';
+		content += '</div>\n';
+		
+		data.panel.setBody(content);
+		
+		data.panel.center();
+		data.panel.show();	
+
+	};	
 	
 	USQLegalWarning.refreshPanelInner = function(query) {
-		var id = getFormId(query);
-		if (id && forms[id] && forms[id].panel) {
+		var id = FreshDirect.PopupDispatcher.getFormId(query);
+		if (id && FreshDirect.PopupDispatcher.forms[id] && FreshDirect.PopupDispatcher.forms[id].panel) {
 			var progress = rootWindow.document.getElementById('usq_legal_warning_choice_progress_' + id);
 			if (progress)
 				progress.style.display = 'none';
-			forms[id].panel.center();
+			FreshDirect.PopupDispatcher.forms[id].panel.center();
 		}
 	};
 
@@ -213,37 +141,52 @@ if (typeof FreshDirect == "undefined" || !FreshDirect) {
 		return rootWindow.FreshDirect.USQLegalWarning.refreshPanelInner(query);
 	};
 	
-	USQLegalWarning.doNormalSubmitInner = function(query) {
-		var id = getFormId(query);
-		if (id && forms[id]) {
-			if (forms[id].panel) {
-				forms[id].panel.hide();
-				forms[id].panel.destroy();
+	USQLegalWarning.submitWithAtc = function(data) {
+		data.panel = null;
+		FreshDirect.ATC_Pending.onSubmitBind(data);
+	};
+		
+	USQLegalWarning.doNormalSubmitInner = function(query, atc) {
+		var id = FreshDirect.PopupDispatcher.getFormId(query);
+		if (id && FreshDirect.PopupDispatcher.forms[id]) {
+			if (FreshDirect.PopupDispatcher.forms[id].panel) {
+				FreshDirect.PopupDispatcher.forms[id].panel.hide();
+//				FreshDirect.PopupDispatcher.forms[id].panel.destroy();
 			}
-			normalSubmit(forms[id]);
+			if (atc == 'true') {
+				FreshDirect.PopupDispatcher.forms[id].panel = null;
+				FreshDirect.ATC_Pending.onSubmitBind(FreshDirect.PopupDispatcher.forms[id]);
+			} else {
+				normalSubmit(FreshDirect.PopupDispatcher.forms[id]);
+			}
 		}
 	};
 	
-	USQLegalWarning.doNormalSubmit = function(query) {
-		return rootWindow.FreshDirect.USQLegalWarning.doNormalSubmitInner(query);
+	USQLegalWarning.doNormalSubmit = function(query, atc) {
+		return rootWindow.FreshDirect.USQLegalWarning.doNormalSubmitInner(query, atc);
 	};	
 
-	USQLegalWarning.blockSubmitInner = function(query) {
-		var id = getFormId(query);
-		if (id && forms[id]) {
-			if (forms[id].panel){
-				forms[id].panel.hide();
+	USQLegalWarning.blockSubmitInner = function(query, atc) {
+		var id = FreshDirect.PopupDispatcher.getFormId(query);
+		if (id && FreshDirect.PopupDispatcher.forms[id]) {
+			if (FreshDirect.PopupDispatcher.forms[id].panel){
+				FreshDirect.PopupDispatcher.forms[id].panel.hide();
+//				FreshDirect.PopupDispatcher.forms[id].panel.destroy();
 			}
+		}
+		if (atc == 'true') {
+			FreshDirect.PopupDispatcher.forms[id].panel = null;
+			FreshDirect.ATC_Pending.onSubmitBind(FreshDirect.PopupDispatcher.forms[id]);
 		}
 	};
 	
-	USQLegalWarning.blockSubmit = function(query) {
-		return rootWindow.FreshDirect.USQLegalWarning.blockSubmitInner(query);
+	USQLegalWarning.blockSubmit = function(query, atc) {
+		return rootWindow.FreshDirect.USQLegalWarning.blockSubmitInner(query, atc);
 	};	
 
 	USQLegalWarning.hidePanelByIdInner = function(id) {
-		if (id && forms[id] && forms[id].panel)
-			forms[id].panel.hide();
+		if (id && FreshDirect.PopupDispatcher.forms[id] && FreshDirect.PopupDispatcher.forms[id].panel)
+			FreshDirect.PopupDispatcher.forms[id].panel.hide();
 	};
 
 	USQLegalWarning.hidePanelById = function(id) {

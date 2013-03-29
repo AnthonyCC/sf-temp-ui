@@ -95,6 +95,8 @@ List<ErpAddressModel> dlvAddresses = FDCustomerFactory.getErpCustomer(user.getId
 String actionName = "setDeliveryAddress";
 String successPage = "/checkout/step_2_select.jsp";
 
+//button include count
+int incNextButtonCount = 0;
 Enumeration<String> e = request.getParameterNames();
 while (e.hasMoreElements()) {
     String name = e.nextElement();
@@ -127,105 +129,64 @@ while (e.hasMoreElements()) {
 	    %>
 	    <%@ include file="/includes/i_error_messages.jspf" %> 
 	   <br/>
-	<% } %>
-
-	<%@ include file="/includes/i_modifyorder.jspf" %>
+	<% }
+	
+	FDCartModel cart = user.getShoppingCart(); /* cart required for i_cart_delivery_fee.jspf include */
+	
+	%>
  
-	<form method="POST" name="step1Form" onSubmit="return checkPromoEligibilityByAddress('<%= null==user.getRedeemedPromotion()?"null":"not null" %>');">
+	<form method="POST" name="step1Form" id="step1Form" onSubmit="return checkPromoEligibilityByAddress('<%= null==user.getRedeemedPromotion()?"null":"not null" %>');">
+		<div class="gcResendBox" style="display:none"><!--  -->
+			<table cellpadding="0" cellspacing="0" border="0" style="border-collapse: collapse;" class="gcResendBoxContent" id="gcResendBox">
+				<tr>
+					<td colspan="2"><img src="/media_stat/images/layout/top_left_curve_8A6637_filled.gif" width="6" height="6" alt="" /></td>
+					<td rowspan="2" style="background-color: #8A6637; color: #fff; font-size: 14px; line-height: 14px; font-weight: bold; padding: 3px;">IMPORTANT MESSAGE &nbsp;&nbsp;<a href="#" onclick="Modalbox.hide(); return false;" style="text-decoration: none;border: 1px solid #5A3815; background-color: #BE973A; font-size: 10px;	"><img src="/media_stat/images/layout/clear.gif" width="10" height="10" border="0" alt="" /></a></td>
+					<td colspan="2"><img src="/media_stat/images/layout/top_right_curve_8A6637_filled.gif" width="6" height="6" alt="" /></td>
+				</tr>
+				<tr>
+					<td colspan="2" style="background-color: #8A6637;"><img src="/media_stat/images/layout/clear.gif" width="1" height="15" alt="" /></td>
+					<td colspan="2" style="background-color: #8A6637;"><img src="/media_stat/images/layout/clear.gif" width="1" height="15" alt="" /></td>
+				</tr>
+				<tr>
+					<td style="background-color: #8A6637;"><img src="/media_stat/images/layout/clear.gif" width="1" height="1" alt="" /></td>
+					<td><img src="/media_stat/images/layout/clear.gif" width="5" height="1" alt="" /></td>
+					<td><div style="height: auto; width: 200px; text-align: center; font-weight: bold;">
+						<%-- all your content goes in this div, it controls the height/width --%>
+						The promotion code you entered <div id="promoCode"></div> is not valid for the address you selected. <a href="#" onclick="javascript:$('more_info').toggle()">More Info</a><br /><br />
+						<div id="more_info" style="display:none">This is the more info hidden div.<br /><br /></div>
+						<a href="#" onclick="Modalbox.hide(); return false;">CHOOSE ANOTHER</a><br />
+						<a href="#" onclick="javascript:document.forms['step1Form'].submit();"><b>CONTINUE</b></a><br />
+						(promotion code will be removed)
+					</div></td>
+					<td><img src="/media_stat/images/layout/clear.gif" width="5" height="1" alt="" /></td>
+					<td style="background-color: #8A6637;"><img src="/media_stat/images/layout/clear.gif" width="1" height="1" alt="" /></td>
+				</tr>
+				<tr>
+					<td rowspan="2" colspan="2" style="background-color: #8A6637"><img src="/media_stat/images/layout/bottom_left_curve_8A6637.gif" width="6" height="6" alt="" /></td>
+					<td><img src="/media_stat/images/layout/clear.gif" width="1" height="5" alt="" /></td>
+					<td rowspan="2" colspan="2" style="background-color: #8A6637"><img src="/media_stat/images/layout/bottom_right_curve_8A6637.gif" width="6" height="6" alt="" /></td>
+				</tr>
+				<tr>
+					<td style="background-color: #8A6637;"><img src="/media_stat/images/layout/clear.gif" width="1" height="1" alt="" /></td>
+				</tr>
+			</table>
+		</div>
 	
-	<div class="gcResendBox" style="display:none"><!--  -->
-		<table cellpadding="0" cellspacing="0" border="0" style="border-collapse: collapse;" class="gcResendBoxContent" id="gcResendBox">
-			<tr>
-				<td colspan="2"><img src="/media_stat/images/layout/top_left_curve_8A6637_filled.gif" width="6" height="6" alt="" /></td>
-				<td rowspan="2" style="background-color: #8A6637; color: #fff; font-size: 14px; line-height: 14px; font-weight: bold; padding: 3px;">IMPORTANT MESSAGE &nbsp;&nbsp;<a href="#" onclick="Modalbox.hide(); return false;" style="text-decoration: none;border: 1px solid #5A3815; background-color: #BE973A; font-size: 10px;	"><img src="/media_stat/images/layout/clear.gif" width="10" height="10" border="0" alt="" /></a></td>
-				<td colspan="2"><img src="/media_stat/images/layout/top_right_curve_8A6637_filled.gif" width="6" height="6" alt="" /></td>
-			</tr>
-			<tr>
-				<td colspan="2" style="background-color: #8A6637;"><img src="/media_stat/images/layout/clear.gif" width="1" height="15" alt="" /></td>
-				<td colspan="2" style="background-color: #8A6637;"><img src="/media_stat/images/layout/clear.gif" width="1" height="15" alt="" /></td>
-			</tr>
-			<tr>
-				<td style="background-color: #8A6637;"><img src="/media_stat/images/layout/clear.gif" width="1" height="1" alt="" /></td>
-				<td><img src="/media_stat/images/layout/clear.gif" width="5" height="1" alt="" /></td>
-				<td><div style="height: auto; width: 200px; text-align: center; font-weight: bold;">
-					<%-- all your content goes in this div, it controls the height/width --%>
-					The promotion code you entered <div id="promoCode"></div> is not valid for the address you selected. <a href="#" onclick="javascript:$('more_info').toggle()">More Info</a><br /><br />
-					<div id="more_info" style="display:none">This is the more info hidden div.<br /><br /></div>
-					<a href="#" onclick="Modalbox.hide(); return false;">CHOOSE ANOTHER</a><br />
-					<a href="#" onclick="javascript:document.forms['step1Form'].submit();"><b>CONTINUE</b></a><br />
-					(promotion code will be removed)
-				</div></td>
-				<td><img src="/media_stat/images/layout/clear.gif" width="5" height="1" alt="" /></td>
-				<td style="background-color: #8A6637;"><img src="/media_stat/images/layout/clear.gif" width="1" height="1" alt="" /></td>
-			</tr>
-			<tr>
-				<td rowspan="2" colspan="2" style="background-color: #8A6637"><img src="/media_stat/images/layout/bottom_left_curve_8A6637.gif" width="6" height="6" alt="" /></td>
-				<td><img src="/media_stat/images/layout/clear.gif" width="1" height="5" alt="" /></td>
-				<td rowspan="2" colspan="2" style="background-color: #8A6637"><img src="/media_stat/images/layout/bottom_right_curve_8A6637.gif" width="6" height="6" alt="" /></td>
-			</tr>
-			<tr>
-				<td style="background-color: #8A6637;"><img src="/media_stat/images/layout/clear.gif" width="1" height="1" alt="" /></td>
-			</tr>
-		</table>
-	</div>
-
-		<table border="0" cellspacing="0" cellpadding="0" width="<%=W_CHECKOUT_STEP_1_CHOOSE_TOTAL%>">
-	    <tr valign="top"> 
-			<td CLASS="text11" WIDTH="<%=W_CHECKOUT_STEP_1_CHOOSE_TOTAL-310%>" VALIGN="bottom">
-				<FONT CLASS="title18">DELIVERY ADDRESS</FONT>
-				<IMG src="/media_stat/images/layout/clear.gif" WIDTH="375" HEIGHT="1" BORDER="0">
-			</td>
-			<TD WIDTH="275" ALIGN="RIGHT" VALIGN="MIDDLE" CLASS="text10">
-				  <FONT CLASS="space2pix"><BR></FONT>
-					<table>
-						<tr>
-							<td align="left"  style="color:#666666;font-weight:bold;">Delivery Charge:</td>
-							<td align="right"  style="color:#666666;font-weight:bold;">
-								<%	
-									FDCartModel cart = user.getShoppingCart();
-									String dlvCharge = JspMethods.formatPrice( cart.getDeliverySurcharge() );
-									if(cart.isDlvPassApplied()) {
-								%>
-									<%= cart.getDeliveryCharge()>0?JspMethods.formatPrice(cart.getDeliveryCharge()):DeliveryPassUtil.getDlvPassAppliedMessage(user) %>
-									<% } else if (cart.isDeliveryChargeWaived()) {
-										if((int)cart.getDeliverySurcharge() == 0){
-								%>     
-										Free! 
-										<% }else{ %> Free!(<%= dlvCharge %> waived)<% } %>
-												
-								<%  } else if((int)cart.getDeliverySurcharge() == 0) {%>
-										check&nbsp;<A HREF="javascript:popup('/help/delivery_info.jsp','large')">delivery fee</A>
-								<%} else { %>
-										<%=  JspMethods.formatPrice(cart.getDeliveryCharge()) %>
-								<%} %>
-						</td>
-						</tr>
-						<%if (cart.getTotalDiscountValue() > 0) {
-								List discounts = cart.getDiscounts();
-									for (Iterator iter = discounts.iterator(); iter.hasNext();) {
-										ErpDiscountLineModel discountLine = (ErpDiscountLineModel) iter.next();
-										Discount discount = discountLine.getDiscount();
-									%>
-							<tr>
-								<td align="left" style="color:#669933;font-weight:bold;">Promotion Discount:</td>
-								<td align="right" style="color:#669933;font-weight:bold;">-<%= JspMethods.formatPrice(discount.getAmount()) %></td>
-							</tr>
-						<%}	}%>
-						<tr>
-							<td align="left"  style="color:#666666;font-weight:bold;"><A HREF="javascript:popup('/help/estimated_price.jsp','small')"></A>Estimated Total:</td>
-							<td align="right"  style="color:#666666;font-weight:bold;"><%= currencyFormatter.format(cart.getTotal()) %></td>
-						</tr>
-					</table>
-			</TD>
-			<td width="35" align="right" valign="middle">
-				<font class="space2pix"><br/></font>
-	            <input type="image" name="form_action_name" src="/media_stat/images/buttons/checkout_right.gif" border="0" alt="CONTINUE CHECKOUT" vspace="2">
-	        </td>
-	    </tr>
-	</table>
-	
-	<img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0"><br/>
-	<!-- PROFILE HEADER -->
+	<%-- Start Header --%>
+<%@ include file="/includes/i_modifyorder.jspf"  %>
+<tmpl:insert template='<%= ((modifyOrderMode) ? "/includes/checkout_header_modify.jsp" : "/includes/checkout_header.jsp") %>'>
+<% if(modifyOrderMode) { %>
+	<tmpl:put name="ordnumb"><%= modifiedOrderNumber %></tmpl:put>
+	<tmpl:put name="note"><%= modifyNote %></tmpl:put>
+<% } %>
+	<tmpl:put name="title">DELIVERY ADDRESS</tmpl:put>
+	<tmpl:put name="delivery-fee">
+		<span class="checkout-delivery-fee"><% if (FDStoreProperties.isNewFDTimeslotGridEnabled()) { %><fd:IncludeMedia name="/media/editorial/timeslots/msg_timeslots_learnmore.html"/><% } %></span>
+		<%@ include file="/includes/i_cart_delivery_fee.jspf" %>
+	</tmpl:put>
+	<tmpl:put name="next-button"><%@ include file="/includes/i_cart_next_step_button.jspf" %></tmpl:put>
+</tmpl:insert>
+<!-- PROFILE HEADER -->
 	<%@ include file="/shared/includes/i_loyalty_bar.jspf" %>
 	<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="16" BORDER="0"><BR>
 
@@ -281,28 +242,20 @@ while (e.hasMoreElements()) {
 	<img src="/media_stat/images/layout/dotted_line_w.gif" width="<%=W_CHECKOUT_STEP_1_CHOOSE_TOTAL%>" height="1" border="0"><br/>
 	<img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0"><br/>
 	
-	<table border="0" cellspacing="0" cellpadding="0" width="<%=W_CHECKOUT_STEP_1_CHOOSE_TOTAL%>">
-	    <tr valign="top">
-			<td width="35">
+	<div style="margin-bottom: 10px;">
+	    <div style="float: left;">
 					<a href="<%=response.encodeURL("/checkout/view_cart.jsp?trk=chkplc ")%>" onclick="ntptEventTag('ev=button_event&ni_btn=cancel_checkout');var d=new Date();var cD;do{cD=new Date();}while((cD.getTime()-d.getTime())<500);" id="previousX">
 					<img src="/media_stat/images/buttons/checkout_left.gif" width="26" height="26" border="0" alt="PREVIOUS STEP"></a>
-			</td>
-		    <td width="340">
+		</div>
+		<div style="float: left; margin-left: 5px; text-align: left;">
 				<a href="<%=response.encodeURL("/checkout/view_cart.jsp?trk=chkplc ")%>" onclick="ntptEventTag('ev=button_event&ni_btn=cancel_checkout');var d=new Date();var cD;do{cD=new Date();}while((cD.getTime()-d.getTime())<500);" id="cancelText">
-				<img src="/media_stat/images/buttons/previous_step.gif" WIDTH="66" HEIGHT="11" border="0" alt="PREVIOUS STEP"></a><br/>
-				Your Cart<br/>
-				<img src="/media_stat/images/layout/clear.gif" width="340" height="1" border="0">
-			</td>
-			<td width="<%=W_CHECKOUT_STEP_1_CHOOSE_TOTAL-400%>" align="right" valign="middle">
-				<font class="space2pix"><br/></font>
-				<input type="image" name="checkout_delivery_address_select" src="/media_stat/images/buttons/continue_checkout.gif" width="91" height="11" border="0" alt="CONTINUE CHECKOUT" vspace="0"><br/>Delivery Time<br/>
-			</td>
-			<td width="35" align="right" valign="middle">
-				<font class="space2pix"><br/></font>
-				<input type="image" name="checkout_delivery_address_select" src="/media_stat/images/buttons/checkout_right.gif" width="26" height="26" border="0" alt="CONTINUE CHECKOUT" vspace="0">
-			</td>
-	    </tr>
-	</table>
+				<img src="/media_stat/images/buttons/previous_step.gif" WIDTH="66" HEIGHT="11" border="0" alt="PREVIOUS STEP"></a><br/>Your Cart
+		</div>
+		<div style="float: right">
+				<%@ include file="/includes/i_cart_next_step_button.jspf" %>
+		</div>
+		<div style="clear: both;"></div>
+	</div>
 	
 	<%
 	if(ClickToCallUtil.evaluateClick2CallInfoDisplay(user,null)) {

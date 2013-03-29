@@ -381,6 +381,7 @@ if(((pageNumber -1) * itemsToDisplay) > skuCount) {
 <% } %>
 <% /* where is the END tag for this "form"? */ %>
 <form name="groceryForm" id='grocery_form' method="POST">
+<fd:AddToCartPending id="grocery_form"/>
 <table border="0" cellspacing="0" cellpadding="0" width="<%=contentWidth%>">
 <%
 //If there is a specific product selected then show it above the listings here
@@ -677,7 +678,7 @@ if(productCode!=null && prodCatId !=null ) {
 
 <%@include file="/includes/product/i_price_taxdeposit.jspf"%>
 <br>
-        <div class="qtyinput qtyinput_grocery">
+        <div class="qtyinput">
           <span class="qtymessage">Quantity </span>
           <a href="javascript:chgQty('quantity_big',-<%=productNode.getQuantityIncrement()%>,<%=productNode.getQuantityMinimum()%>,<%=user.getQuantityMaximum(productNode)%>);" class="quantity_minus"><span>Increase quantity</span></a>
           <input class="qty" type="text" size="4" name="quantity_big" maxlength="2" value="<%=Math.round(productNode.getQuantityMinimum())%>" onChange="chgQty('quantity_big',0,<%=productNode.getQuantityMinimum()%>,<%=user.getQuantityMaximum(productNode)%>);"/>
@@ -691,9 +692,7 @@ if(productCode!=null && prodCatId !=null ) {
 
 <br>
 <input type="image" id="addSingleToCart_big" name="addSingleToCart_big" src="/media_stat/images/buttons/add_to_cart.gif"  ALT="ADD THIS ITEM TO YOUR CART" width="93" height="20" style="margin: 2px 2px;" border="0"><br>
-	<fd:IsAlcoholic noProduct="true">
-		<fd:USQLegalWarning id="grocery_form" event="onclick" elementId="addSingleToCart_big" skuCode="<%=minSku.getSkuCode()%>"/>
-    </fd:IsAlcoholic>
+		<fd:PopupHandler id="grocery_form" event="onclick" elementId="addSingleToCart_big" skuCode="<%=minSku.getSkuCode()%>" noProduct="true" multiForm="true"/>
 <%=FDURLUtil.getHiddenCommonParameters(request.getParameterMap(), "_big")%>
 
 	<fd:CCLCheck>
@@ -1078,9 +1077,9 @@ for(int i = (pageNumber -1) * itemsToDisplay; i < loopEnd && isAnyProdAvailable=
 <%
 	if(!bigProdShown && isAnyProdAvailable) {
 %><td><input type="image" name="addMultipleToCart" id="addMultipleToCartUpper"  src="/media_stat/images/buttons/add_selected_to_cart.gif" width="145" height="20" hspace="4" vspace="4" border="0" alt="ADD SELECTED ITEMS TO CART">
-	<fd:IsAlcoholic noProduct="true">
-		<fd:USQLegalWarning id="grocery_form" event="onclick" elementId="addMultipleToCartUpper" quantityCheck="true" />
-    </fd:IsAlcoholic>
+	<!-- fd:IsAlcoholic -->
+		<fd:PopupHandler id="grocery_form" event="onclick" elementId="addMultipleToCartUpper" quantityCheck="true" noProduct="true"/>
+    <!-- /fd:IsAlcoholic -->
 </td><%
 	}
 %></tr></table>
@@ -1181,9 +1180,9 @@ if(isAnyProdAvailable) {
 %>
         <table border="0" cellspacing="0" cellpadding="0" width="<%=contentWidth%>"><tr valign="BOTTOM"><td width="<%=contentWidth%>">
         <input type="image" name="addMultipleToCart" id="addMultipleToCartLower" src="/media_stat/images/buttons/add_selected_to_cart.gif" width="145" height="20" hspace="4" vspace="4" border="0" alt="ADD SELECTED ITEMS TO CART">
-        <fd:IsAlcoholic noProduct="true">
-        	<fd:USQLegalWarning id="grocery_form" event="onclick" elementId="addMultipleToCartLower" quantityCheck="true" />
-        </fd:IsAlcoholic>
+        <!-- fd:IsAlcoholic -->
+        	<fd:PopupHandler id="grocery_form" event="onclick" elementId="addMultipleToCartLower" quantityCheck="true" noProduct="true"/>
+        <!-- /fd:IsAlcoholic -->
         <br>
         <fd:CCLCheck>
             <div style="margin: 7px 4px 0 4px;"><a id="ccl-add-action" href="/unsupported.jsp" onclick="return CCL.save_items('grocery_form',this,'action=CCL:AddMultipleToList&source=ccl_actual_selection','source=ccl_actual_selection')"><img src="/media_stat/ccl/lists_link_selected_with_icon_dfgs.gif" width="151" height="15" style="border: 0; padding-right: 14px"></a></div>

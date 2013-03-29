@@ -450,86 +450,51 @@ function updateYourCartPanel() {
 	}
 /*
  *	sort option
- *		pass a second param as boolean to sort as Integers (false by default)
- *		
- *		Note: When using sort by Int, mixed (Str/Int) options will sort numbers first.
- *		      Sets containing Strings that LOOK like Ints (like "5ive") will treat those as Ints.
  */
-	function sortByText(sortId, asIntVar) {
+	function sortByText(sortId) {
 		var specId = sortId || '';
-		var asInt = asIntVar || false;
 			
 		//alphabetize
-		var selectArr = [];
+		var selectArr = new Array();
 
 		if (specId!='') {
-			selectArr[0] = document.getElementById(specId); 
+			selectArr[0] = $(specId); 
 		}else{
 			selectArr = document.getElementsByTagName('select'); 
 		}
 
-		for (var i = 0; i < selectArr.length; i++) {
-			var strArr = [];
-			if (asInt) {
-				var intArr = [];
-			}
-			var strArr = [];
+		for (var i = 0; i < selectArr.length; i++) { 
+			var oArr = new Array();
 			// Get the options for the select element 
 			for (var j = 0; j < selectArr[i].options.length; j++) { 
 				// Store this as an object that has an option object member, and a toString function (which will be used for sorting) 
 				if (selectArr[i].options[j].text != "") { //ignore blanks
-					if (asInt && !isNaN(parseInt(selectArr[i].options[j].text)) && !(selectArr[i].options[j].text).match(/[\D]/g)) {
-						console.log('added to intArr: ', selectArr[i].options[j].text);
-						intArr[intArr.length] = { 
-							option : selectArr[i].options[j], 
-							toString : function() { 
-								// Return the text of the option, not the value 
-								return this.option.text;
-							}
-						}
-					} else {
-						strArr[strArr.length] = { 
-							option : selectArr[i].options[j], 
-							toString : function() { 
-								// Return the text of the option, not the value 
-								return this.option.text;
-							}
+					oArr[oArr.length] = { 
+						option : selectArr[i].options[j], 
+						toString : function() { 
+							// Return the text of the option, not the value 
+							return this.option.text; 
 						}
 					}
 				}
 			} 
-			// Sort the array(s) of options
-			if (asInt && intArr.length > 1) {
-				intArr.sort(function(a,b){return a-b});
-			}
-			if (strArr.length > 1) {
-				strArr.sort();
-			}
+			// Sort the array of options for this select 
+			oArr.sort();
 				
 
 			// Remove all options from the select
 			selectArr[i].options.length = 0;
 			
 			// Rebuild the select using our sorted array
-			var j = 0;
-			var n = 0;
-			if (asInt) {
-				for (j = 0; j < intArr.length; j++) {
-					selectArr[i].options[n] = intArr[j].option;
-					n++;
-				}
+			for (var j = 0; j < oArr.length; j++) {
+				selectArr[i].options[j] = oArr[j].option;
 			}
-			for (j = 0; j < strArr.length; j++) {
-				selectArr[i].options[n] = strArr[j].option;
-				n++;
-			}
-
 			selectArr[i].selectedIndex = 0;
 		}
 
 		return true;
-	}
 
+	}
 	/*
 	 *	takes the select values from sortId, assumes they are days of the week,
 	 *	and sorts them by day instead of alphabetically
@@ -930,14 +895,20 @@ function maxLen(elem, len) {
 function setFrameHeight(frameId, offset) {
 	var f = window.parent.document.getElementById(frameId);
 
-  f.style.height = null;
-
 	var hgt = getFrameHeight(frameId);
 	
 	if (offset == undefined)
 		offset = 0;
 	
 	f.style.height = (hgt+offset)+"px";
+}
+
+
+function getFrameHeight(frameId) {
+	var f = window.parent.document.getElementById(frameId);
+	var innerDoc = (f.contentDocument) ? f.contentDocument : f.contentWindow.document;
+
+	return innerDoc.body.parentNode.scrollHeight;
 }
 
 function setFrameHeightSL(frameId, hgt) {
@@ -951,6 +922,18 @@ function setFrameWidthSL(frameId, wth) {
 
 	f.style.width = (wth)+"px";
 }
+
+function setFrameHeight(frameId, offset) {
+	var f = window.parent.document.getElementById(frameId);
+
+	var hgt = getFrameHeight(frameId);
+	
+	if (offset == undefined)
+		offset = 0;
+	
+	f.style.height = (hgt+offset)+"px";
+}
+
 
 function getFrameHeight(frameId) {
 	var f = window.parent.document.getElementById(frameId);
@@ -1193,13 +1176,9 @@ function doOverlayWindow(olURL) {
 		return {
 			trackAddToCartEvent: trackAddToCartEvent
 		}
-	})();
-	
-	/* setup dialog
-	 * returns reference to dialog
-	 */
-	function setupOverlayDialog() {
+	})(); 
 
+	function doOverlayDialog(olURL) {
 		var overlayDialog = $jq('<div id="uimodal-output"></div>');
 
 		$jq("body").append(overlayDialog);
@@ -1221,31 +1200,23 @@ function doOverlayWindow(olURL) {
 			draggable: false,
 			open: function() {
 				$jq('html').css({ 'overflow': 'hidden' });
+				//$jq('body').css({ 'overflow': 'hidden' });
 				
 				overlayDialog.dialog('option', 'maxClientHeight', 0.95);
 				overlayDialog.dialog('option', 'maxClientWidth', 0.95);
 				overlayDialog.dialog('option', 'maxHeight', Math.round(document.documentElement.clientHeight * overlayDialog.dialog('option', 'maxClientHeight')));
 				overlayDialog.dialog('option', 'maxWidth',  Math.round(document.documentElement.clientWidth * overlayDialog.dialog('option', 'maxClientWidth')));
 
+				//dialogWindowResizeTimer = setTimeout(dialogWindowResizeFunc, 100);
 				if (overlayDialog.height() > overlayDialog.dialog('option', 'maxHeight')) { 
 					setTimeout(function(){ overlayDialog.dialog('option', 'height', overlayDialog.dialog('option', 'maxHeight')); }, 100);
 				} else {
-					if ($jq('#uimodal-output').height() == 0) { //this is 0 in IE, which causes issues
-						overlayDialog.dialog('option', 'openHeight', '500px');
-					} else {
-						overlayDialog.dialog('option', 'openHeight', $jq('#uimodal-output').height());
-					}
+					overlayDialog.dialog('option', 'openHeight', $jq('#uimodal-output').height());
 				}
-
-
 				if (overlayDialog.width() > overlayDialog.dialog('option', 'maxWidth')) {
 					setTimeout(function(){ overlayDialog.dialog('option', 'width', overlayDialog.dialog('option', 'maxWidth')); }, 100);
 				} else {
-					if ($jq('#uimodal-output').width() == 0) { //this is 0 in IE, which causes issues
-						overlayDialog.dialog('option', 'openWidth', '500px');
-					} else {
-						overlayDialog.dialog('option', 'openWidth', $jq('#uimodal-output').width());
-					}
+					overlayDialog.dialog('option', 'openWidth', $jq('#uimodal-output').width());
 				}
 
 				//allow off-click to close
@@ -1254,45 +1225,14 @@ function doOverlayWindow(olURL) {
 
 			},
 			close: function () {
+				
 				$jq('html').css({ 'overflow': 'auto' });
+				//$jq('body').css({ 'overflow': 'auto' });
 			}
 		});
 		
-		return overlayDialog;
-	}
+		overlayDialog.load(olURL, function() { overlayDialog.dialog('open'); });
 
-	/* use dialog by url */
-	function doOverlayDialog(olURL, olData) {
-		var overlayDialog = setupOverlayDialog();
-		
-		if (olData != 'undefined' && (typeof olData).toLowerCase() == 'object') {
-			//if data is passed in, POST it
-			overlayDialog.load(olURL, olData, function() { overlayDialog.dialog('open'); });
-		} else {
-			overlayDialog.load(olURL, function() { overlayDialog.dialog('open'); });
-		}
-
-		return overlayDialog;
-	}
-	
-	/* use dialog by css selector */
-	function doOverlayDialogBySelector(olSelector) {
-		var overlayDialog = setupOverlayDialog();
-		
-		overlayDialog.html($jq(olSelector).html());
-		overlayDialog.dialog('open');
-		
-		return overlayDialog;
-	}
-	
-	/* use dialog by html */
-	function doOverlayDialogByHtml(olHtml) {
-		var overlayDialog = setupOverlayDialog();
-		
-		overlayDialog.html(olHtml);
-		overlayDialog.dialog('open');
-
-		return overlayDialog;
 	}
 
 	function dialogWindowResizeFunc() {
@@ -1327,23 +1267,12 @@ function doOverlayWindow(olURL) {
 		}
 
 		overlayDialog.dialog('option', 'position', overlayDialog.dialog('option', 'position'));
-	}
+	};
 
 	var dialogWindowResizeTimer;
-	var dialogDocReady = false;
 	if (window['$jq']) { //make sure jQuery is available
-		$jq(document).ready(function () { dialogDocReady = true });
 		$jq(window).resize(function() {
 			clearTimeout(dialogWindowResizeTimer);
-			if (dialogDocReady) { dialogWindowResizeTimer = setTimeout(dialogWindowResizeFunc, 100); }
+			dialogWindowResizeTimer = setTimeout(dialogWindowResizeFunc, 100);
 		});
 	}
-
-function checkBatch() {
-	if(document.getElementById("batch_promo").checked) {
-		//the box is checked so display an alert box
-		if(confirm("Do you want to Apply these changes to entire batch?"))
-			return true;
-		return false;
-	}
-}
