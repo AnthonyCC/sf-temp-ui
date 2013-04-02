@@ -121,12 +121,12 @@
             <TD WIDTH="<%=(W_CHECKOUT_STEP_4_DELIVERY_PAYMENT_TOTAL-40)/2-10%>">
             <font class="space4pix"><br></font>
             <FONT CLASS="text12"><%-- seeing all these nbsp's make me die a little inside --%>
-<b>Time:</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<% if (showModify) {%><A HREF="/checkout/step_2_select.jsp">Modify</A><%}%><BR>
+<b>Time:</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<% if (showModify) {%><A HREF="/checkout/step_2_select.jsp" class="modifybutton">Modify</A><%}%><BR>
             <font class="space4pix"><br></font>
             <%=__fmtDlvDateTime%><br>
             <%=__deliveryTime%><br>
             <br>
-<b>Address:</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<% if (showModify) {%><A HREF="/checkout/step_1_choose.jsp">Modify</A><%}%><font class="space4pix"><br><br></font>
+<b>Address:</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<% if (showModify) {%><A HREF="/checkout/step_1_choose.jsp" class="modifybutton">Modify</A><%}%><font class="space4pix"><br><br></font>
             <%= dlvAddress.getFirstName() %> <%= dlvAddress.getLastName() %><br>
             <%if(depotName != null || depotName.length() > 1){%><%=depotName%><br><%}%>         
             <%= dlvAddress.getAddress1() %><% if(dlvAddress.getApartment()!=null && dlvAddress.getApartment().trim().length()>0) { %>, <% if(EnumServiceType.CORPORATE.equals(user.getSelectedServiceType())){ %>Floor/Suite <% }else{ %>Apt. <% } %><%=dlvAddress.getApartment()%><% } %><BR>
@@ -235,7 +235,7 @@
 	            <% } %>
             <% } %>     
             <BR>  
-			<b><%=paymentMethod.getPaymentMethodType().getDescription()%>:</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<% if (showModify) {%><A HREF="/checkout/step_3_choose.jsp">Modify</A><%}%><BR>
+			<b><%=paymentMethod.getPaymentMethodType().getDescription()%>:</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<% if (showModify) {%><A HREF="/checkout/step_3_choose.jsp" class="modifybutton">Modify</A><%}%><BR>
             <font class="space4pix"><br></font>
             <%= paymentMethod.getName()%><BR>
             <%= paymentMethod.getCardType() %> - <%= paymentMethod.getMaskedAccountNumber() %><br>

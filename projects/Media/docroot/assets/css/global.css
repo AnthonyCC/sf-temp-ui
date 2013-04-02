@@ -1965,6 +1965,7 @@ div.control, div.slotRow, div.time {
 .checkout-header.modify .submitOrder {
 	padding-left:2em;
 	padding-right:2em;
+	font-size:16px;
 }
 
 .checkout-header.submit {
@@ -2060,6 +2061,15 @@ div.control, div.slotRow, div.time {
 	margin-left: 60px;
 	font-style: normal;
 	margin-right: 10px;
+}
+
+.modifybutton {
+    background:url(/media_stat/images/buttons/modify-button.png) no-repeat center center;
+    text-indent:46px;
+    display:inline-block;
+    overflow:hidden;
+    width:46px;
+    height:16px;    
 }
 
 .receipt_details .receipt_body {
