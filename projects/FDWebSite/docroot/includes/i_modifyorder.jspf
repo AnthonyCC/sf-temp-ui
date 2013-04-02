@@ -44,7 +44,7 @@
 		Date weekFromOrderDate = cal.getTime();
 		modifiedOrderNumber = modCart.getOriginalOrder().getErpSalesId();
 		
-		if (isInReview) modifyNote+="The price and availability of some items may change.";
+		modifyNote+="The price and availability of some items may change.<br>";
 		modifyNote+="You must complete any modifications by <b>"+printDate(modCart.getOriginalOrder().getDeliveryReservation().getCutoffTime());
 		modifyNote+="</b> <a href='/help/faq_search.jsp?searchFAQ=cutoff' target='_blank' class='dialog'>Learn More</a>";
 		if (isInDelivery) { 
