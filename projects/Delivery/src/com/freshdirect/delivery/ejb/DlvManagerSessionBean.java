@@ -459,14 +459,16 @@ public class DlvManagerSessionBean extends GatewaySessionBeanSupport {
 		
 			if(!(eventType==EventType.GET_TIMESLOT || eventType==EventType.CHECK_TIMESLOT ) && responseTime>0)
 			{
-				IDeliverySlot slot =  RoutingUtil.getDeliverySlot(getTimeslotById(reservation.getTimeslotId(), reservation.isPremium()));
+				DlvTimeslotModel dlvSlot = getTimeslotById(reservation.getTimeslotId(), reservation.isPremium());
+				IDeliverySlot slot =  RoutingUtil.getDeliverySlot(dlvSlot);
 				TimeslotEventDetailModel eventD = new TimeslotEventDetailModel();
 				List<TimeslotEventDetailModel> eventDL = new ArrayList<TimeslotEventDetailModel>();
 				
 				/** Get the first delivery slot as it will have only one */
 	
-				eventD.setStartTime(slot.getStartTime());
-				eventD.setStopTime(slot.getStopTime());
+				eventD.setStartTime(dlvSlot.getRoutingSlot().getStartTime());
+				eventD.setStopTime(dlvSlot.getRoutingSlot().getStopTime());
+				eventD.setCutOff(dlvSlot.getCutoffTimeAsDate());
 				eventD.setZoneCode(slot.getZoneCode());
 				eventD.setDeliveryDate(slot.getSchedulerId().getDeliveryDate());
 				eventDL.add(eventD);
