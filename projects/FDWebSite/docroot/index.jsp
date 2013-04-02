@@ -100,7 +100,7 @@ if (FDStoreProperties.IsHomePageMediaEnabled() && (!user.isHomePageLetterVisited
 				   					<div class="index_ordMod_cont_child">
 				   						<div class="ordModifyInfoCont">
 											<a href="/your_account/order_details.jsp?orderId=<%= orderInfo.getErpSalesId() %>" class="orderNumb"><%= orderInfo.getErpSalesId() %></a>
-											<span style="padding-left: 30px;"><span class="dow"><%= new SimpleDateFormat("EEEEE").format(orderInfo.getRequestedDate()) %></span> <%= new SimpleDateFormat("MM/dd/yyyy").format(orderInfo.getRequestedDate()) %> 
+											<span style="padding-left: 30px;"><span class="dow"><%= new SimpleDateFormat("EEEEE").format(orderInfo.getRequestedDate()) %>,</span> <%= new SimpleDateFormat("MM/dd/yyyy").format(orderInfo.getRequestedDate()) %> 
 												<span class="pipeSep">|</span> <%= FDTimeslot.format(orderInfo.getDeliveryStartTime(),orderInfo.getDeliveryEndTime())%></span>
 										</div>
 										<div class="ordModifyButCont">
@@ -145,7 +145,7 @@ if (FDStoreProperties.IsHomePageMediaEnabled() && (!user.isHomePageLetterVisited
 			   					<div class="index_ordMod_cont_child">
 			   						<div class="ordModifyInfoCont">
 										<a href="/your_account/order_details.jsp?orderId=<%= orderInfo.getErpSalesId() %>" class="orderNumb"><%= orderInfo.getErpSalesId() %></a>
-										<span style="padding-left: 30px;"><span class="dow"><%= new SimpleDateFormat("EEEEE").format(orderInfo.getRequestedDate()) %></span> <%= new SimpleDateFormat("MM/dd/yyyy").format(orderInfo.getRequestedDate()) %> 
+										<span style="padding-left: 30px;"><span class="dow"><%= new SimpleDateFormat("EEEEE").format(orderInfo.getRequestedDate()) %>,</span> <%= new SimpleDateFormat("MM/dd/yyyy").format(orderInfo.getRequestedDate()) %> 
 											<span class="pipeSep">|</span> <%= FDTimeslot.format(orderInfo.getDeliveryStartTime(),orderInfo.getDeliveryEndTime())%></span>
 									</div>
 									<div class="ordModifyButCont">
