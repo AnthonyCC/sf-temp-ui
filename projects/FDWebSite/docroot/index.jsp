@@ -1,3 +1,4 @@
+<%@page import="com.freshdirect.fdstore.content.util.DeliveryDateComparator"%>
 <%@ page import='com.freshdirect.fdstore.customer.*' %>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*'%>
 <%@ page import='com.freshdirect.fdstore.attributes.*' %>
@@ -87,7 +88,11 @@ if (FDStoreProperties.IsHomePageMediaEnabled() && (!user.isHomePageLetterVisited
 							int pendingOrderCount = 0;
 							List<FDOrderInfoI> validPendingOrders = new ArrayList<FDOrderInfoI>();
 							validPendingOrders.addAll(user.getPendingOrders());
-							Collections.reverse(validPendingOrders);
+							//Collections.reverse(validPendingOrders);
+							
+							//sort pending orders based on delivery date (the closer date goes first)
+							Collections.sort(validPendingOrders, new DeliveryDateComparator());
+							
 							//set count (in case this variable is needed elsewhere (and we'll just use it now as well)
 							pendingOrderCount = validPendingOrders.size();
 	
@@ -134,7 +139,11 @@ if (FDStoreProperties.IsHomePageMediaEnabled() && (!user.isHomePageLetterVisited
 						int pendingOrderCount = 0;
 						List<FDOrderInfoI> validPendingOrders = new ArrayList<FDOrderInfoI>();
 						validPendingOrders.addAll(user.getPendingOrders());
-						Collections.reverse(validPendingOrders);
+						//Collections.reverse(validPendingOrders);
+						
+						//sort pending orders based on delivery date (the closer date goes first)
+						Collections.sort(validPendingOrders, new DeliveryDateComparator());
+						
 						//set count (in case this variable is needed elsewhere (and we'll just use it now as well)
 						pendingOrderCount = validPendingOrders.size();
 

@@ -23,6 +23,8 @@ import javax.servlet.jsp.PageContext;
 import org.apache.log4j.Category;
 import org.json.JSONObject;
 
+import weblogic.servlet.jsp.PageContextImpl;
+
 import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.crm.CrmAgentModel;
@@ -107,11 +109,16 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements Sessi
 
 	@SuppressWarnings("unchecked")
 	private static Stack<String> getActionStack(PageContext pageContext) {
-		return (Stack<String>) pageContext.getAttribute(FD_SHOPPING_CART_ACTION_STACK_ID, PageContext.REQUEST_SCOPE);
+		if(pageContext instanceof PageContextImpl){
+			return (Stack<String>) pageContext.getAttribute(FD_SHOPPING_CART_ACTION_STACK_ID, PageContext.REQUEST_SCOPE);
+		}		
+		return null;
 	}
 
 	private static void putActionStack(PageContext pageContext, Stack<String> stack) {
-		pageContext.setAttribute(FD_SHOPPING_CART_ACTION_STACK_ID, stack, PageContext.REQUEST_SCOPE);
+		if(pageContext instanceof PageContextImpl){
+			pageContext.setAttribute(FD_SHOPPING_CART_ACTION_STACK_ID, stack, PageContext.REQUEST_SCOPE);			
+		}
 	}
 
 	/**
