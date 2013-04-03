@@ -2289,5 +2289,99 @@ a.imgButtonWhite:active,
 	margin-left:0.5em;
 }
 
+.so_header {
+    list-style-type:none;
+    position:relative;
+    text-align:center;
+    margin:0 auto 15px auto;
+    padding:0;
+    font-size:0;
+}
+
+.so_header .freq,
+.so_header .freq .ctrl {
+    width:200px;
+    border-left:0;
+    margin-left:0;
+    padding-left:0;
+}
+
+.so_header .add_items,
+.so_header .add_items .ctrl {
+    width:195px;
+}
+
+.so_header .dlv_payment,
+.so_header .dlv_payment .ctrl {
+    width:235px;
+}
+
+.so_header .cancel,
+.so_header .cancel .ctrl {
+    width:185px;
+}
+
+
+.so_header .freq,
+.so_header .add_items,
+.so_header .dlv_payment,
+.so_header .cancel  {
+  display:inline-block;
+  vertical-align:top;
+  margin:0;
+	padding-bottom: 22px;
+	margin-left:10px;
+	padding-left:10px;
+}
+
+
+
+.so_header p {
+    margin:0 0 1em 0;
+    font-size:9px;    
+}
+
+.so_header small {
+    display:block;
+    font-size:8px;    
+}
+
+.so_header h4 {
+    margin:0;
+    font-weight:bold;    
+    font-size:12px;
+}
+
+.so_header .ctrl {
+    position:absolute;
+    top:5px;
+    bottom:0;   
+    text-align:center;
+    padding:0;
+    margin:0;
+    border-left:1px solid black;
+		margin-left:-10px;
+		padding-left:10px;
+}
+
+.lt-ie8 .so_header .ctrl {
+	position:static;
+} 
+
+.so_header .ctrl:before {
+	display:inline-block;
+	content:' ';
+	height:100%;
+	vertical-align:bottom;
+}
+
+.so_header .ctrl img {
+    margin:0;
+    padding:0;
+}
+
+.so_header .first .ctrl {
+	border:none;
+}
 
 

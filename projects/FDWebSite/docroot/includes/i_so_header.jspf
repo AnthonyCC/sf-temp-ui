@@ -90,40 +90,20 @@
 						<%}%>
 						<% if (__err) { %><div style="margin-top: 1em; color: #CC3300; font-size:13px;">IMPORTANT NOTE: We were not able to schedule a delivery for <%= __soNextDlvDate %><br/><%= __so.getErrorHeader() %></div><% } %>
 					</div>
-					<table style="margin-bottom:10px;">
-						<tr>
-							<td align="center" valign="top">
-								<div style="font-size: 12px; font-weight: bold; margin-top: 4px;">Delivery Frequency</div>
-								<div style="font-size: 9px;">Confirmed in the next Checkout step.</div>
-								<div style="margin-top:15px;"><%@include file="i_so_chgfrq.jspf" %></div>
-							</td>
-							<td valign="middle">
-								<hr style="margin: 1em 10px 1em 10px; width: 1px; height: 62px; line-width: 1px; background-color: #333333; color: #333333; border: none;"/>
-							</td>
-							<td align="center" valign="top">
-								<div style="font-size: 12px; font-weight: bold; margin-top: 4px;">Need to Add Items?</div>
-								<div style="font-size: 9px;">Simply shop now and return to checkout.</div>
-								<div style="font-size: 8px;">(To remove items, use Your Cart below.)</div>
-								<div style="margin-top:5px;"><a href="/department.jsp?deptId=COS"><img src="/media_stat/images/template/quickshop/shop_for_more.png" width="125" height="22" /></a></div>
-							</td>
-							<td valign="middle">
-								<hr style="margin: 1em 10px 1em 10px; width: 1px; height: 62px; line-width: 1px; background-color: #333333; color: #333333; border: none;"/>
-							</td>
-							<td align="center" valign="top">
-								<div style="font-size: 12px; font-weight: bold; margin-top: 4px;">Delivery & Payment Options</div>
-								<div style="font-size: 9px;">You must complete checkout to confirm changes.</div>
-								<div style="margin-top:16px;"><a href="#" onclick="document.getElementById('checkoutImage').click();return false;"><img src="/media_stat/images/template/quickshop/continue_checkout.png" width="167" height="22" /></a></div>
-							</td>
-							<td valign="middle">
-								<hr style="margin: 1em 10px 1em 10px; width: 1px; height: 62px; line-width: 1px; background-color: #333333; color: #333333; border: none;"/>
-							</td>
-							<td align="center" valign="top">
-								<div style="font-size: 12px; font-weight: bold; margin-top: 4px;">Cancel Changes.</div>
-								<div style="font-size: 9px;">Items already in Your Cart will remain.</div>
-								<div style="margin-top:16px;"><a href="/quickshop/cancel_so_checkout.jsp"><img src="/media_stat/images/template/quickshop/so_no_changes.png" width="104" height="22" /></a></div>
-							</td>
-						</tr>
-					</table>
+					<div class="so_header">
+						<span class="freq"><h4>Delivery Frequency</h4>
+								<p>Confirmed in the next Checkout step.</p>
+								<div class="ctrl"><%@include file="i_so_chgfrq.jspf" %></div></span>
+						<span class="add_items"><h4>Need to Add Items?</h4>
+								<p>Simply shop now and return to checkout.<small>(To remove items, use Your Cart below.)</small></p>
+								<div class="ctrl"><a href="/department.jsp?deptId=COS"><img src="/media_stat/images/template/quickshop/shop_for_more.png" width="125" height="22" /></a></div></span>
+						<span class="dlv_payment"><h4>Delivery & Payment Options</h4>
+								<p>You must complete checkout to confirm changes.</p>
+								<div class="ctrl"><button type="submit" name="nextStep" value="true" style="background:none;border:0;margin:0;padding:0;cursor:pointer"><img src="/media_stat/images/template/quickshop/continue_checkout.png" width="167" height="22" /></button></div></span>
+						<span class="cancel"><h4>Cancel Changes.</h4>
+								<p>Items already in Your Cart will remain.</p>
+								<div class="ctrl"><a href="/quickshop/cancel_so_checkout.jsp"><img src="/media_stat/images/template/quickshop/so_no_changes.png" width="104" height="22" /></a></div></span>
+					</div>
 <%
 			} else if (isFinalPage) {
 %>					<div style="font-size: 13px; font-weight: bold;">
