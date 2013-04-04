@@ -121,8 +121,8 @@ public class CheckoutControllerTagWrapper extends ControllerTagWrapper implement
     }
 
     public ResultBundle setPaymentMethod(String paymentMethodId, String billingReference) throws FDException {
-        addExpectedSessionValues(new String[] { SESSION_PARAM_APPLICATION, SESSION_PARAM_CUSTOMER_SERVICE_REP, SESSION_PARAM_CRM_AGENT,SESSION_PARAM_PYMT_VERIFYFLD },
-                new String[] { SESSION_PARAM_USER, SESSION_PARAM_PYMT_VERIFYFLD }); //gets,sets
+        addExpectedSessionValues(new String[] { SESSION_PARAM_APPLICATION, SESSION_PARAM_CUSTOMER_SERVICE_REP, SESSION_PARAM_CRM_AGENT,SESSION_PARAM_PYMT_VERIFYFLD, SESSION_PARAM_MAKE_GOOD_ORDER },
+                new String[] { SESSION_PARAM_USER, SESSION_PARAM_PYMT_VERIFYFLD, SESSION_PARAM_MAKE_GOOD_ORDER }); //gets,sets
         addExpectedRequestValues(new String[] { REQ_PARAM_CHEF_TABLE, REQ_PARAM_PAYMENT_METHOD_ID, REQ_PARAM_BILLING_REF,
                 REQ_PARAM_GIFT_CARD, REQ_PARAM_DONATION, REQ_PARAM_BYPASS_ACCOUNT_CHECK }, new String[] { REQ_PARAM_PAYMENT_METHOD_ID,
                 REQ_PARAM_BILLING_REF });//gets,sets
@@ -135,8 +135,8 @@ public class CheckoutControllerTagWrapper extends ControllerTagWrapper implement
     }
 
     public ResultBundle addAndSetDeliveryAddress(DeliveryAddressRequest deliveryAddress) throws FDException {
-        addExpectedSessionValues(new String[] { SESSION_PARAM_APPLICATION, SESSION_PARAM_CUSTOMER_SERVICE_REP, SESSION_PARAM_CRM_AGENT },
-                new String[] { SESSION_PARAM_USER, SessionName.SIGNUP_WARNING }); //gets,sets
+        addExpectedSessionValues(new String[] { SESSION_PARAM_APPLICATION, SESSION_PARAM_CUSTOMER_SERVICE_REP, SESSION_PARAM_CRM_AGENT, SESSION_PARAM_MAKE_GOOD_ORDER },
+                new String[] { SESSION_PARAM_USER, SessionName.SIGNUP_WARNING, SESSION_PARAM_MAKE_GOOD_ORDER }); //gets,sets
         addExpectedRequestValues(new String[] {EnumUserInfoName.DLV_FIRST_NAME.getCode(),EnumUserInfoName.DLV_LAST_NAME.getCode(),EnumUserInfoName.DLV_HOME_PHONE.getCode(),EnumUserInfoName.DLV_HOME_PHONE_EXT.getCode(),
         		EnumUserInfoName.DLV_ADDRESS_1.getCode(),EnumUserInfoName.DLV_ADDRESS_2.getCode(),EnumUserInfoName.DLV_APARTMENT.getCode(),EnumUserInfoName.DLV_CITY.getCode(),EnumUserInfoName.DLV_STATE.getCode(),EnumUserInfoName.DLV_ZIPCODE.getCode(),
         		EnumUserInfoName.DLV_COUNTRY.getCode(),EnumUserInfoName.DLV_DELIVERY_INSTRUCTIONS.getCode(),EnumUserInfoName.DLV_ALTERNATE_DELIVERY.getCode(),EnumUserInfoName.DLV_ALT_FIRSTNAME.getCode(),
@@ -204,8 +204,8 @@ public class CheckoutControllerTagWrapper extends ControllerTagWrapper implement
     }
 
     public ResultBundle addPaymentMethod(PaymentMethodRequest paymentMethod) throws FDException {
-        addExpectedSessionValues(new String[] { SESSION_PARAM_APPLICATION, SESSION_PARAM_CUSTOMER_SERVICE_REP, SESSION_PARAM_CRM_AGENT, SESSION_PARAM_PYMT_VERIFYFLD },
-                new String[] { SESSION_PARAM_USER, SESSION_PARAM_PYMT_VERIFYFLD }); //gets,sets
+        addExpectedSessionValues(new String[] { SESSION_PARAM_APPLICATION, SESSION_PARAM_CUSTOMER_SERVICE_REP, SESSION_PARAM_CRM_AGENT, SESSION_PARAM_PYMT_VERIFYFLD, SESSION_PARAM_MAKE_GOOD_ORDER },
+                new String[] { SESSION_PARAM_USER, SESSION_PARAM_PYMT_VERIFYFLD, SESSION_PARAM_MAKE_GOOD_ORDER }); //gets,sets
         addExpectedRequestValues(new String[] { REQ_PARAM_CARD_EXP_MONTH, REQ_PARAM_CARD_EXP_YEAR, REQ_PARAM_CARD_BRAND,
         		REQ_PARAM_ACCOUNT_NUMBER, REQ_PARAM_ABA_ROUTE_NUMBER, REQ_PARAM_BANK_NAME, REQ_PARAM_BYPASS_BAD_ACCOUNT_CHECK, REQ_PARAM_TERMS,
         		REQ_PARAM_ACCOUNT_NUMBER_VERIFY,REQ_PARAM_BANK_ACCOUNT_TYPE,REQ_PARAM_ACCOUNT_HOLDER,REQ_PARAM_BIL_ADDRESS_1,
@@ -243,8 +243,8 @@ public class CheckoutControllerTagWrapper extends ControllerTagWrapper implement
     }
 
     public ResultBundle addAndSetPaymentMethod(PaymentMethodRequest paymentMethod) throws FDException {
-        addExpectedSessionValues(new String[] { SESSION_PARAM_APPLICATION, SESSION_PARAM_CUSTOMER_SERVICE_REP, SESSION_PARAM_CRM_AGENT, SESSION_PARAM_PYMT_VERIFYFLD },
-                new String[] { SESSION_PARAM_USER, SESSION_PARAM_PYMT_VERIFYFLD }); //gets,sets
+        addExpectedSessionValues(new String[] { SESSION_PARAM_APPLICATION, SESSION_PARAM_CUSTOMER_SERVICE_REP, SESSION_PARAM_CRM_AGENT, SESSION_PARAM_PYMT_VERIFYFLD, SESSION_PARAM_MAKE_GOOD_ORDER },
+                new String[] { SESSION_PARAM_USER, SESSION_PARAM_PYMT_VERIFYFLD, SESSION_PARAM_MAKE_GOOD_ORDER }); //gets,sets
         addExpectedRequestValues(new String[] { REQ_PARAM_CARD_EXP_MONTH, REQ_PARAM_CARD_EXP_YEAR, REQ_PARAM_CARD_BRAND,
         		REQ_PARAM_ACCOUNT_NUMBER, REQ_PARAM_ABA_ROUTE_NUMBER, REQ_PARAM_BANK_NAME, REQ_PARAM_BYPASS_BAD_ACCOUNT_CHECK, REQ_PARAM_TERMS,
         		REQ_PARAM_ACCOUNT_NUMBER_VERIFY,REQ_PARAM_BANK_ACCOUNT_TYPE,REQ_PARAM_ACCOUNT_HOLDER,REQ_PARAM_BIL_ADDRESS_1,
@@ -282,8 +282,8 @@ public class CheckoutControllerTagWrapper extends ControllerTagWrapper implement
     }
 
     public ResultBundle editPaymentMethod(PaymentMethodRequest paymentMethod) throws FDException {
-        addExpectedSessionValues(new String[] { SESSION_PARAM_APPLICATION, SESSION_PARAM_CUSTOMER_SERVICE_REP, SESSION_PARAM_CRM_AGENT, SESSION_PARAM_PYMT_VERIFYFLD },
-                new String[] { SESSION_PARAM_USER, SESSION_PARAM_PYMT_VERIFYFLD }); //gets,sets
+        addExpectedSessionValues(new String[] { SESSION_PARAM_APPLICATION, SESSION_PARAM_CUSTOMER_SERVICE_REP, SESSION_PARAM_CRM_AGENT, SESSION_PARAM_PYMT_VERIFYFLD, SESSION_PARAM_MAKE_GOOD_ORDER },
+                new String[] { SESSION_PARAM_USER, SESSION_PARAM_PYMT_VERIFYFLD, SESSION_PARAM_MAKE_GOOD_ORDER }); //gets,sets
         addExpectedRequestValues(new String[] { REQ_PARAM_CARD_EXP_MONTH, REQ_PARAM_CARD_EXP_YEAR, REQ_PARAM_CARD_BRAND,
         		REQ_PARAM_ACCOUNT_NUMBER, REQ_PARAM_ABA_ROUTE_NUMBER, REQ_PARAM_BANK_NAME, REQ_PARAM_BYPASS_BAD_ACCOUNT_CHECK, REQ_PARAM_TERMS,
         		REQ_PARAM_ACCOUNT_NUMBER_VERIFY,REQ_PARAM_BANK_ACCOUNT_TYPE,REQ_PARAM_ACCOUNT_HOLDER,REQ_PARAM_BIL_ADDRESS_1,
@@ -318,8 +318,8 @@ public class CheckoutControllerTagWrapper extends ControllerTagWrapper implement
     }
 
     public ResultBundle deletePaymentMethod(String paymentMethodId) throws FDException {
-        addExpectedSessionValues(new String[] { SESSION_PARAM_APPLICATION, SESSION_PARAM_CUSTOMER_SERVICE_REP, SESSION_PARAM_CRM_AGENT },
-                new String[] { SESSION_PARAM_USER }); //gets,sets
+        addExpectedSessionValues(new String[] { SESSION_PARAM_APPLICATION, SESSION_PARAM_CUSTOMER_SERVICE_REP, SESSION_PARAM_CRM_AGENT, SESSION_PARAM_MAKE_GOOD_ORDER },
+                new String[] { SESSION_PARAM_USER, SESSION_PARAM_MAKE_GOOD_ORDER }); //gets,sets
         addExpectedRequestValues(new String[] { REQ_PARAM_DELETE_PAYMENT_ID}, new String[] {});//gets,sets
         addRequestValue(REQ_PARAM_DELETE_PAYMENT_ID, paymentMethodId);
         getWrapTarget().setActionName(ACTION_DELETE_PAYMENT_METHOD);
@@ -346,8 +346,8 @@ public class CheckoutControllerTagWrapper extends ControllerTagWrapper implement
      * WHAT: constant in tag class that defines URL for page verification.
      */
     public ResultBundle setCheckoutDeliveryAddress(SessionUser user, String selectAddressId, DeliveryAddressType type) throws FDException {
-        addExpectedSessionValues(new String[] { SESSION_PARAM_APPLICATION, SESSION_PARAM_CUSTOMER_SERVICE_REP, SESSION_PARAM_CRM_AGENT },
-                new String[] { SESSION_PARAM_USER, SessionName.SIGNUP_WARNING }); //gets,sets
+        addExpectedSessionValues(new String[] { SESSION_PARAM_APPLICATION, SESSION_PARAM_CUSTOMER_SERVICE_REP, SESSION_PARAM_CRM_AGENT, SESSION_PARAM_MAKE_GOOD_ORDER },
+                new String[] { SESSION_PARAM_USER, SessionName.SIGNUP_WARNING, SESSION_PARAM_MAKE_GOOD_ORDER }); //gets,sets
         LOGGER.debug("setCheckoutDeliveryAddress[START] :"+ selectAddressId + ","+type);
         addExpectedRequestValues(new String[] { REQ_PARAM_CHEF_TABLE, REQ_PARAM_PAYMENT_METHOD_ID, REQ_PARAM_BILLING_REF }, new String[] {
                 REQ_PARAM_PAYMENT_METHOD_ID, REQ_PARAM_BILLING_REF });//gets,sets

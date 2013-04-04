@@ -883,7 +883,7 @@ div.control, div.slotRow, div.time {
 	}
 
 	.index_ordMod_cont a.orderNumb {
-		font-size: 12px;
+		font-size: 11px;
 	}
 	.index_ordMod_cont span.dow {
 		font-weight: bold;		
@@ -1193,7 +1193,7 @@ div.control, div.slotRow, div.time {
 		vertical-align:top;
 	}
 	.receipt_rightColumn .orderDetails a {
-		font-size: 12px;
+		font-size: 11px;
 		text-decoration: none;
 		line-height: 25px;
 		text-align: left;

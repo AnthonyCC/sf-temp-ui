@@ -5,7 +5,8 @@ if (typeof FreshDirect == "undefined" || !FreshDirect) {
 (function () {
 	PopupDispatcher = {
 			maxTagCounter : 0,
-			forms : {}
+			forms : {},
+			alcInfo : {}
 	};
 	
 	FreshDirect.PopupDispatcher = PopupDispatcher;
@@ -42,6 +43,10 @@ if (typeof FreshDirect == "undefined" || !FreshDirect) {
 //				}
 //			}
 
+			if(isAlcoholic == 'true'){
+				PopupDispatcher.alcInfo[form.id] = true;				
+			}
+
 			var data = {};
 			data.form = form;
 			data.redo = false;
@@ -59,6 +64,7 @@ if (typeof FreshDirect == "undefined" || !FreshDirect) {
 			data.multiForm = multiForm;
 			data.containsAlcoholic = isAlcoholic;
 			data.quantityCheck = quantityCheck;
+			
 			if (tagCounter > PopupDispatcher.maxTagCounter) {
 				PopupDispatcher.maxTagCounter = tagCounter;
 			};
@@ -91,6 +97,8 @@ if (typeof FreshDirect == "undefined" || !FreshDirect) {
 	PopupDispatcher.bindSubmit = function(data) {
 
 		data.panel = null;
+		var alcoholicForm = PopupDispatcher.alcInfo[data.form.id];
+		var submitSet = false;
 
 		if (data.usq=='true') {
 			if (data.event == 'onsubmit') {
@@ -98,6 +106,7 @@ if (typeof FreshDirect == "undefined" || !FreshDirect) {
 					FreshDirect.USQLegalWarning.showPendingChoice(data);
 					return false;
 				};
+				submitSet = true;
 			} else if (data.event == 'onclick' && data.elementId != "") {
 				data.elementId[data.event] = function() {
 					FreshDirect.USQLegalWarning.showPendingChoice(data);
@@ -105,27 +114,33 @@ if (typeof FreshDirect == "undefined" || !FreshDirect) {
 				data.onsubmit = function(){
 					return false;
 				};
+				submitSet = true;
 			};
 		} else if (data.atc=='true') {
-			if (data.event == 'onsubmit') {
+			if (data.event == 'onsubmit' && !alcoholicForm) {
 				data.onsubmit = function(){
 					FreshDirect.ATC_Pending.onSubmitBind(data);
 					return false;
 				};
-			} else if (data.event == 'onclick' && data.elementId != "") {
+				submitSet = true;
+			} else if (data.event == 'onclick' && data.elementId != "" && !alcoholicForm) {
 				data.elementId[data.event] = function() {
 					FreshDirect.ATC_Pending.onSubmitBind(data);
 				};
 				data.onsubmit = function(){
 					return false;
 				};
+				submitSet = true;
 			};
 
-			if (data.rebindSubmit)
+			if (data.rebindSubmit){
 				data.oldOnsubmit = form.onsubmit;	
+			}
 		}
 
-		data.form.onsubmit = data.onsubmit;
+		if(submitSet){
+			data.form.onsubmit = data.onsubmit;			
+		}
 	};
 	
 	PopupDispatcher.getFormId = function(query) {
