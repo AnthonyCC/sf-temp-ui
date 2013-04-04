@@ -1,8 +1,8 @@
 package com.freshdirect.fdstore.customer;
 
-import com.freshdirect.framework.core.ModelSupport;
+import java.io.Serializable;
 
-public class CustomerCreditModel extends ModelSupport {
+public class CustomerCreditModel implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 	String saleId;
@@ -128,19 +128,11 @@ public class CustomerCreditModel extends ModelSupport {
 	public void setDlvPassId(String dlvPassId) {
 		this.dlvPassId = dlvPassId;
 	}
-	@Override
-	public String toString() {
-		return "CustomerCreditModel [customerId=" + customerId + ", email="
-				+ email + ", firstName=" + firstName + ", lastName=" + lastName
-				+ ", newCode=" + newCode + ", originalAmount=" + originalAmount
-				+ ", remType=" + remType + ", remainingAmout=" + remainingAmout
-				+ ", saleId=" + saleId + ", taxAmount=" + taxAmount
-				+ ", taxRate=" + taxRate + "]";
-	}
+	
 	@Override
 	public int hashCode() {
 		final int prime = 31;
-		int result = super.hashCode();
+		int result = 1;
 		result = prime * result + ((saleId == null) ? 0 : saleId.hashCode());
 		return result;
 	}
@@ -148,7 +140,7 @@ public class CustomerCreditModel extends ModelSupport {
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
-		if (!super.equals(obj))
+		if (obj == null)
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
