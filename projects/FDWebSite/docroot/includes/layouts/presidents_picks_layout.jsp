@@ -24,38 +24,22 @@
 <%@ taglib uri='logic' prefix='logic' %>
 <%
 
-	// Query string
-	QueryParameterCollection qv = QueryParameterCollection.decode(request.getQueryString()); 
+// Query string
+QueryParameterCollection qv = QueryParameterCollection.decode(request.getQueryString()); 
 
-	String isPreviewMode = NVL.apply(request.getParameter("ppPreviewId"), "false");
-	boolean disableLinks = false;
+String isPreviewMode = NVL.apply(request.getParameter("ppPreviewId"), "false");
+boolean disableLinks = false;
+
+if (!"false".equalsIgnoreCase(isPreviewMode)) {
+	/* manipulate layout for preview mode */
 	
-	if (!"false".equalsIgnoreCase(isPreviewMode)) {
-		/* manipulate layout for preview mode */
-		
-		//disable linking
-		disableLinks = true;
-		
-	%>
-<fd:CheckLoginStatus/><% } else { %>
-	<fd:CheckLoginStatus   />
-	<% }
-	
-	if (FDStoreProperties.isCclAjaxDebugClient()) { 
-		// debug JS libs
-		%>
-		<script type="text/javascript" src="/assets/javascript/rounded_corners.inc.js"></script>
-		<%
-		} else {
-			// production JS libs
-		%>
-		<script type="text/javascript" src="/assets/javascript/rounded_corners-min.js"></script>
-		<%
-		}
-%>
+	//disable linking
+	disableLinks = true;		
+} %>	
+<fd:CheckLoginStatus/>	
+<fd:javascript src="/assets/javascript/rounded_corners.inc.js" />
 <display:InitLayout/>
 <%
-
 	//needed for transactional
 	List<ProductImpression> impressions = new ArrayList<ProductImpression>();
 	ProductImpression pi = null;
@@ -603,5 +587,3 @@
 		}
 	}
 %>
-<fd:javascript src="/assets/javascript/fd/modules/common/utils.js" />
-<fd:javascript src="/assets/javascript/fd/modules/search/statusupdate.js" />
