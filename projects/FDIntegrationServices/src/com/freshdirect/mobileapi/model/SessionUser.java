@@ -559,4 +559,8 @@ public class SessionUser {
     public boolean isEbtAccepted() {
 		return sessionUser.isEbtAccepted();
 	}
+    
+    public String getPrimaryKey() {
+		return sessionUser.getPrimaryKey();
+	}
 }

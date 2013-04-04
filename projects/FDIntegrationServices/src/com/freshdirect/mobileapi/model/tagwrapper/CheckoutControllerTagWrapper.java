@@ -329,7 +329,7 @@ public class CheckoutControllerTagWrapper extends ControllerTagWrapper implement
 
     
     public ResultBundle reserveDeliveryTimeslot(String deliveryTimeslotId) throws FDException {
-        addExpectedSessionValues(new String[] { SESSION_PARAM_APPLICATION }, new String[] { SESSION_PARAM_USER }); //gets,sets
+        addExpectedSessionValues(new String[] { SESSION_PARAM_APPLICATION, SESSION_PARAM_MAKE_GOOD_ORDER }, new String[] { SESSION_PARAM_USER, SESSION_PARAM_MAKE_GOOD_ORDER }); //gets,sets
         addExpectedRequestValues(new String[] { REQ_PARAM_CHEF_TABLE, REQ_PARAM_SLOT_ID }, new String[] { REQ_PARAM_SLOT_ID });//gets,sets
         addRequestValue(REQ_PARAM_SLOT_ID, deliveryTimeslotId);
         getWrapTarget().setActionName(ACTION_RESERVE_DELIVERY_TIMESLOT);
@@ -390,8 +390,8 @@ public class CheckoutControllerTagWrapper extends ControllerTagWrapper implement
 
 
     public ResultBundle deleteDeliveryAddress(String deleteShipToAddressId) throws FDException {
-        addExpectedSessionValues(new String[] { SESSION_PARAM_APPLICATION, SESSION_PARAM_CUSTOMER_SERVICE_REP, SESSION_PARAM_CRM_AGENT },
-                new String[] { SESSION_PARAM_USER }); //gets,sets
+        addExpectedSessionValues(new String[] { SESSION_PARAM_APPLICATION, SESSION_PARAM_CUSTOMER_SERVICE_REP, SESSION_PARAM_CRM_AGENT, SESSION_PARAM_MAKE_GOOD_ORDER },
+                new String[] { SESSION_PARAM_USER, SESSION_PARAM_MAKE_GOOD_ORDER }); //gets,sets
         addExpectedRequestValues(new String[] { REQ_PARAM_DELETE_SHIP_ADDRESS_ID}, new String[] {});//gets,sets
         addRequestValue(REQ_PARAM_DELETE_SHIP_ADDRESS_ID, deleteShipToAddressId);
         getWrapTarget().setActionName(ACTION_DELETE_DELIVERY_ADDRESS);

@@ -446,6 +446,7 @@ public class Cart {
         if ((null != reservation) && (null != reservation.getStartTime())) {
             checkoutDetail.setReservationDateTime(reservation.getStartTime());
             checkoutDetail.setReservationTimeRange(FDTimeslot.format(reservation.getStartTime(), reservation.getEndTime()));
+            checkoutDetail.setDeliveryZone(reservation.getZoneCode());
         }
 
         //Delivery Address
@@ -488,7 +489,7 @@ public class Cart {
                         + paymentMethod.getPaymentMethodType());
             }
         }
-
+        
         //Cart detail here...
         checkoutDetail.setCartDetail(getCartDetail(user));
         return checkoutDetail;

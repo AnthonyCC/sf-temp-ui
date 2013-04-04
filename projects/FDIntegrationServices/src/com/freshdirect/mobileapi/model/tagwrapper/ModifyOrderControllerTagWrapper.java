@@ -57,9 +57,9 @@ public class ModifyOrderControllerTagWrapper extends NonStandardControllerTagWra
     public ResultBundle loadOrderToCartForUpdate(String orderId) throws FDException {
         addExpectedSessionValues(new String[] { SESSION_PARAM_CUSTOMER_SERVICE_REP, SESSION_PARAM_CRM_AGENT, SESSION_PARAM_APPLICATION },
                 new String[] { SESSION_PARAM_DLV_PASS_SESSION_ID, SESSION_PARAM_SMART_STORE_PREV_RECOMMENDATIONS }); //gets,sets
-        addExpectedRequestValues(new String[] { REQ_PARAM_CANCEL_REASON, REQ_PARAM_CANCEL_NOTES }, new String[] {
+        addExpectedRequestValues(new String[] { REQ_PARAM_CANCEL_REASON, REQ_PARAM_CANCEL_NOTES, REQ_PARAM_MERGE_PENDING }, new String[] {
                 REQ_PARAM_ALLOW_MODIFY_ORDER, REQ_PARAM_ALLOW_RETURN_ORDER, REQ_PARAM_IS_REFUSED_ORDER, REQ_PARAM_ALLOW_CANCEL_ORDER,
-                REQ_PARAM_ALLOW_COMPLAINT, REQ_PARAM_ALLOW_NEW_CHARGES, REQ_PARAM_HAS_PAYMENT_EXCEPTION, REQ_PARAM_ALLOW_RESUBMIT_ORDER });//gets,sets
+                REQ_PARAM_ALLOW_COMPLAINT, REQ_PARAM_ALLOW_NEW_CHARGES, REQ_PARAM_HAS_PAYMENT_EXCEPTION, REQ_PARAM_ALLOW_RESUBMIT_ORDER, REQ_PARAM_MERGE_PENDING });//gets,sets
 
         addRequestValue(REQ_PARAM_ACTION, ACTION_MODIFY_ORDER);
         ((ModifyOrderControllerTag) wrapTarget).setOrderId(orderId);
@@ -70,9 +70,9 @@ public class ModifyOrderControllerTagWrapper extends NonStandardControllerTagWra
     public ResultBundle cancelModify(String orderId) throws FDException {
         addExpectedSessionValues(new String[] { SESSION_PARAM_CUSTOMER_SERVICE_REP, SESSION_PARAM_CRM_AGENT, SESSION_PARAM_APPLICATION },
                 new String[] { SESSION_PARAM_DLV_PASS_SESSION_ID, SESSION_PARAM_SMART_STORE_PREV_RECOMMENDATIONS }); //gets,sets
-        addExpectedRequestValues(new String[] { REQ_PARAM_CANCEL_REASON, REQ_PARAM_CANCEL_NOTES }, new String[] {
+        addExpectedRequestValues(new String[] { REQ_PARAM_CANCEL_REASON, REQ_PARAM_CANCEL_NOTES, REQ_PARAM_MERGE_PENDING }, new String[] {
                 REQ_PARAM_ALLOW_MODIFY_ORDER, REQ_PARAM_ALLOW_RETURN_ORDER, REQ_PARAM_IS_REFUSED_ORDER, REQ_PARAM_ALLOW_CANCEL_ORDER,
-                REQ_PARAM_ALLOW_COMPLAINT, REQ_PARAM_ALLOW_NEW_CHARGES, REQ_PARAM_HAS_PAYMENT_EXCEPTION, REQ_PARAM_ALLOW_RESUBMIT_ORDER });//gets,sets
+                REQ_PARAM_ALLOW_COMPLAINT, REQ_PARAM_ALLOW_NEW_CHARGES, REQ_PARAM_HAS_PAYMENT_EXCEPTION, REQ_PARAM_ALLOW_RESUBMIT_ORDER, REQ_PARAM_MERGE_PENDING });//gets,sets
 
         //Need to set 'action' slightly differently since tag is doing it differently for get.
         ((ModifyOrderControllerTag) wrapTarget).setAction(ACTION_CANCEL_ORDER_MODIFY);

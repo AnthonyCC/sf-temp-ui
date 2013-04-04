@@ -17,7 +17,17 @@ public class Order extends Message {
 
     private Date modificationCutoffTime;
     
-    public boolean isModifiable() {
+    private String deliveryZone;
+        
+    public String getDeliveryZone() {
+		return deliveryZone;
+	}
+
+	public void setDeliveryZone(String deliveryZone) {
+		this.deliveryZone = deliveryZone;
+	}
+
+	public boolean isModifiable() {
         return modifiable;
     }
 

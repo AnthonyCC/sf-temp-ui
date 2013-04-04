@@ -29,8 +29,18 @@ public class LoggedIn extends Message {
     private boolean isBrowseEnabled;
     
     private int orderCount;
+    
+    private String fdUserId;
+    
+    public String getFdUserId() {
+		return fdUserId;
+	}
 
-    public int getOrderCount() {
+	public void setFdUserId(String fdUserId) {
+		this.fdUserId = fdUserId;
+	}
+
+	public int getOrderCount() {
 		return orderCount;
 	}
 

@@ -280,4 +280,6 @@ public interface RequestParamName {
     
     public static final String REQ_PARAM_CUSTOMER_EBT = "ebt";
     
+    public static final String  REQ_PARAM_MERGE_PENDING="mergePending";
+    
 }
