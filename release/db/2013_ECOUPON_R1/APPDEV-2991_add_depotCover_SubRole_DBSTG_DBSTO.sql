@@ -1,0 +1,1 @@
+insert into TRANSP.EMPLOYEE_ROLE_SUB_TYPE (CODE, NAME, TCODE, DESCRIPTION) values ('016','Depot Cover','001','Depot Cover'); 
