@@ -26,6 +26,7 @@ public class USQProductBurstTag extends BodyTagSupportEx {
 	private static final long serialVersionUID = -6698194047077787106L;
 
 	private ProductModel product;
+	private String suffix = "";
 	private String forceLogo = "false";
 	
 	public int doStartTag() throws JspException {
@@ -33,7 +34,7 @@ public class USQProductBurstTag extends BodyTagSupportEx {
 		try {
 			if ( "true".equals(forceLogo) || ContentNodeModelUtil.hasWineDepartment(product.getContentKey()) && (product.getSku(0).getProduct() != null && !"".equals(product.getSku(0).getProduct().getMaterial().getAlcoholicContent().getCode())) ) {
 				if ((pageContext.getRequest().getParameter("catId") == null || !pageContext.getRequest().getParameter("catId").startsWith("usq")) && !"usq".equals(pageContext.getRequest().getParameter("deptId")) && !((HttpServletRequest)pageContext.getRequest()).getServletPath().contains("wine")) {
-					pageContext.getOut().append("<span name=\"burst-usq\" class=\"burst-usq\"></span>");
+					pageContext.getOut().append("<span id=\"burst-usq-" + suffix + "\" name=\"burst-usq\" class=\"burst-usq\"></span>");
 				}
 			}
 		} catch (IOException e) {
@@ -62,6 +63,14 @@ public class USQProductBurstTag extends BodyTagSupportEx {
 
 	public void setForceLogo(String forceLogo) {
 		this.forceLogo = forceLogo;
+	}
+
+	public String getSuffix() {
+		return suffix;
+	}
+
+	public void setSuffix(String suffix) {
+		this.suffix = suffix;
 	}
 
 }

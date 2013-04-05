@@ -476,9 +476,9 @@ if (isAvailable ) {
 			<td width="115">
 			<span style="display:inline-block;position:relative;">
 			<img src="<%=dispObj.getImagePath()%>" border="0" name="<%=imgName%>">
-			<fd:USQProductBurst product="<%=null%>" forceLogo="true"/></span></td>
+			<fd:USQProductBurst product="<%=null%>" suffix="swap" forceLogo="true"/></span></td>
 			<script type="text/javascript">
-				<%="swapImageWithBurst(\""+imgName+"\",\""+dispObj.getImagePath()+"\",\""+dispObj.isAlcoholic(dfltSku)+"\",\"burst-usq\")"%>
+				<%="swapImageWithBurst(\""+imgName+"\",\""+dispObj.getImagePath()+"\",\""+dispObj.isAlcoholic(dfltSku)+"\",\"burst-usq-swap\")"%>
 			</script>
 			<td width="<%=W_COMPONENT_GROUP_MEAL_TOTAL-115%>">
 				<table width="<%=W_COMPONENT_GROUP_MEAL_TOTAL-115%>" cellpadding="0" cellspacing="0" border="0" align="center">
@@ -486,7 +486,7 @@ if (isAvailable ) {
 		
 				StringBuffer sbRollover=new StringBuffer();
 				sbRollover.append("onMouseover='");
-				sbRollover.append("swapImageWithBurst(\""+imgName+"\",\""+dispObj.getImagePath()+"\",\""+dispObj.isAlcoholic(dfltSku)+"\",\"burst-usq\"");
+				sbRollover.append("swapImageWithBurst(\""+imgName+"\",\""+dispObj.getImagePath()+"\",\""+dispObj.isAlcoholic(dfltSku)+"\",\"burst-usq-swap\"");
 				sbRollover.append(")'");
 				imgRollOver = sbRollover.toString();
 				sbRollover = null;

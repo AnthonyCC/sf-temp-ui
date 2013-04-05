@@ -10,13 +10,14 @@ function swapImage(imgName,imgURL){
     	}
 }
 
-function swapImageWithBurst(imgName,imgURL, isAlcoholic, burstName){
+function swapImageWithBurst(imgName,imgURL, isAlcoholic, burstId){
 	if (imgURL.length>0) {
     		document.images[imgName].src = imgURL;
-    		if (isAlcoholic=="true" && document.getElementsByName(burstName).length > 0) {
-    			document.getElementsByName(burstName)[0].style.background="url(\"/media_stat/images/layout/small_usq.png\") no-repeat scroll right bottom transparent";
+    		if (isAlcoholic=="true" && document.getElementById(burstId)) {
+    			//document.getElementsByName(burstName)[0].style.background="url(\"/media_stat/images/layout/small_usq.png\") no-repeat scroll right bottom transparent";
+    			document.getElementById(burstId).className = "burst-usq";
     		} else {
-    			document.getElementsByName(burstName)[0].style.background="none";
+    			document.getElementById(burstId).className = "burst-usq.without-background";
 			}
     	}
 }

@@ -1805,14 +1805,17 @@ div.control, div.slotRow, div.time {
 	}
 
 	.burst-usq  {
-		background: url(/media_stat/images/layout/small_usq.png) no-repeat
-			right bottom;
+		background: url(/media_stat/images/layout/small_usq.png) no-repeat right bottom;
 		width: 35px;
 		height: 23px;
 		position: absolute;
 		bottom: 10px;
 		right: -5px;
 		display: block;
+	}
+	
+	.burst-usq .without-background {
+		background: none;
 	}
 	 
 .pending_choice_c {
