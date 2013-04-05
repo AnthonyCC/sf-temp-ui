@@ -88,8 +88,6 @@ final int W_INDEX_RIGHT_CENTER = W_INDEX_TOTAL - 228 - W_INDEX_CENTER_PADDING;
 	<tmpl:put name="customJs">
 	</tmpl:put>
 	<tmpl:put name="customJsBottom">
-		<fd:javascript src="/assets/javascript/fd/modules/search/seemore.js" />
-		<fd:javascript src="/assets/javascript/fd/modules/search/statusupdate.js" />
 	</tmpl:put>
 
 	<tmpl:put name="title" direct="true">FreshDirect - Search - <%= nav.getSearchTerm() %></tmpl:put>
