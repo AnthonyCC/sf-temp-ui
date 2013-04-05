@@ -196,12 +196,19 @@
 					font-size:10px;		
 					display:inline-block;						
 					white-space:normal;		
+					max-width:190px;
 				}
 
 				.close {
 					position:absolute;
 					top:0;
 					right:0;
+					background:url(/media_stat/images/buttons/modifylite_closewindow_f1.png) transparent center center no-repeat;
+					border:none;
+					width:20px;
+					height:20px;
+					overflow:hidden;
+					text-indent:20px;
 				}
 								
 				body.step2 #step1 { z-index:1; visibility:hidden; }
@@ -251,7 +258,7 @@
 					pendingOrderCount = validPendingOrders.size();
 				%>
 			<div id="step1" class="step">
-				<button class="close">{X}</button>
+				<button class="close">close</button>
 				<h1>I would like to...</h1>				
 				<div class="buttons">
 						<button class="imgButtonBrown" onclick="<%= cancelclick %>">Create a New Order</button>
@@ -259,7 +266,7 @@
 				</div>
 			</div>
 			<div id="step2" class="step">
-			<button class="close">{X}</button>
+			<button class="close">close</button>
 			<h1>You are modifying a pending order.</h1>				
 			<form id="pending_items_form">
 					<h2><%
