@@ -6627,15 +6627,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			while(rset.next()) {
 				driverlates.put(rset.getString("ID"), rset.getString("ID"));
 			}
-			//Remove the orders that have been scanned on time
-			pstmt = conn.prepareStatement(GET_ON_TIME_ORDERS);
-			rset = pstmt.executeQuery();
-			while(rset.next()) {
-				String orderId = rset.getString("WEBORDERNUM");
-				if(driverlates.containsKey(orderId)) {					
-					driverlates.remove(orderId);
-				}
-			}
+			
 			//get details for the remaining orderids
 			Enumeration eobj = driverlates.keys();
 			while(eobj.hasMoreElements()) {
@@ -6771,15 +6763,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			while(rset.next()) {
 				driverlates.put(rset.getString("WEBORDERNUM"), rset.getString("WEBORDERNUM"));
 			}
-			//Remove the orders that have been scanned on time
-			pstmt = conn.prepareStatement(GET_ON_TIME_ORDERS);
-			rset = pstmt.executeQuery();
-			while(rset.next()) {
-				String orderId = rset.getString("WEBORDERNUM");
-				if(driverlates.containsKey(orderId)) {					
-					driverlates.remove(orderId);
-				}
-			}
+			
 			//get details for the remaining orderids
 			Enumeration eobj = driverlates.keys();
 			while(eobj.hasMoreElements()) {
@@ -6939,43 +6923,39 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 	
 	public static String INSERT_ORDERS = "insert into CUST.AUTO_LATE_DELIVERY_ORDERS(AUTO_LATE_DELIVERY_ID,SALE_ID,CUSTOMER_ID,REM_AMOUNT,REM_TYPE,ORIGINAL_AMOUNT, " +
 											"TAX_AMOUNT,TAX_RATE,DLV_PASS_ID,complaint_code) values (?,?,?,?,?,?, ?,?,?,?)";
+		
+	public static String GET_SCAN_REPORTED_LATES =
 	
-	public static String GET_SCAN_REPORTED_LATES = 
-		"SELECT " +
-		  "a.WEBORDERNUM, a.WINDOW, min(a.scandate) " +
-		"FROM " +
-		  "DLV.CARTONSTATUS a " +
-		"WHERE " +
-		"TO_DATE(TO_CHAR(a.SCANDATE,'HH24:MI:ss'),'HH24:MI:ss') >= TO_DATE(SUBSTR(a.WINDOW,7,8),'HH24:MI:ss') + (1800/86400) " +
-		"AND a.CARTONSTATUS  In  ( 'DELIVERED','REFUSED'  ) " +
-		"AND a.SCANDATE BETWEEN TRUNC(SYSDATE - 1) AND TRUNC(SYSDATE) - 1/86400  " +
-		"AND  a.WEBORDERNUM is not null and LENGTH(TRIM(TRANSLATE(a.WEBORDERNUM, '0123456789',' '))) is null  " +
-		"group by a.webordernum, a.WINDOW";
+		" select a.WEBORDERNUM, a.WINDOW,scandate from "+
+			" (" +
+			   " SELECT a.WEBORDERNUM, a.WINDOW, min(a.scandate) scandate FROM DLV.CARTONSTATUS a "+ 
+		       " WHERE TO_DATE(TO_CHAR(a.SCANDATE,'HH24:MI:ss'),'HH24:MI:ss') >= TO_DATE(SUBSTR(a.WINDOW,7,8),'HH24:MI:ss') + (1800/86400) "+ 
+		       " AND a.CARTONSTATUS in ( 'DELIVERED','REFUSED'  ) "+
+		       " AND a.SCANDATE BETWEEN TRUNC(SYSDATE - 1) AND TRUNC(SYSDATE) - 1/86400 "+  
+		       " AND a.WEBORDERNUM is not null and LENGTH(TRIM(TRANSLATE(a.WEBORDERNUM, '0123456789',' '))) is null "+
+		       " group by a.webordernum, a.WINDOW "+
+		    " ) a "+
+		" WHERE "+
+		" not exists "+ 
+		" ( "+
+			" 	select 1 FROM DLV.CARTONTRACKING t "+ 
+			"	WHERE t.CARTONSTATUS in ('DELIVERED','REFUSED') and T.WEBORDERNUM = a.WEBORDERNUM "+ 
+			"   and TO_DATE(TO_CHAR(t.SCANDATE,'HH24:MI'),'HH24:MI') < TO_DATE(SUBSTR(a.WINDOW,7,5),'HH24:MI') "+
+	    " ) ";
 	
-	public static String GET_ON_TIME_ORDERS = 
-								"SELECT " +
-								  "a.WEBORDERNUM, a.window, min(a.SCANDATE) " +
-								"FROM " +
-								  "DLV.CARTONSTATUS a " +
-								"WHERE " +
-								"a.CARTONSTATUS  In ('DELIVERED','REFUSED') " +
-								"AND a.SCANDATE BETWEEN TRUNC(SYSDATE - 1) AND TRUNC(SYSDATE) - 1/86400 " +
-								"AND  a.WEBORDERNUM is not null and LENGTH(TRIM(TRANSLATE(a.WEBORDERNUM, '0123456789',' '))) is null  " +
-								"AND TO_DATE(TO_CHAR(a.SCANDATE,'HH24:MI'),'HH24:MI') < TO_DATE(SUBSTR(a.WINDOW,7,5),'HH24:MI') " +
-								"group by a.webordernum, a.window";		
+	public static String GET_DRIVER_REPORTED_LATES = 
+			" SELECT CUST.SALE.ID "+
+			" FROM CUST.SALE, CUST.SALESACTION, CUST.LATEISSUE_ORDERS, cust.deliveryinfo di "+ 
+			" WHERE CUST.SALE.ID = CUST.SALESACTION.SALE_ID and CUST.SALE.status <> 'CAN' "+
+            " and CUST.SALESACTION.id = di.salesaction_id and CUST.SALESACTION.ACTION_DATE=CUST.SALE.CROMOD_DATE "+ 
+            " and CUST.LATEISSUE_ORDERS.SALE_ID = CUST.SALE.ID "+
+            " AND CUST.SALESACTION.REQUESTED_DATE = trunc(sysdate)-1 "+
+            " and not exists "+ 
+            " ( "+
+            " 	select 1 FROM DLV.CARTONTRACKING t "+ 
+            " 	WHERE  t.CARTONSTATUS  In ('DELIVERED','REFUSED') and T.WEBORDERNUM = CUST.SALE.ID and T.SCANDATE < DI.ENDTIME "+
+            " ) ";
 	
-	public static String GET_DRIVER_REPORTED_LATES = "SELECT " +
-													        "CUST.SALE.ID " +
-													"FROM " +
-													      "CUST.SALE, " +
-													      "CUST.SALESACTION, " +
-													      "CUST.LATEISSUE_ORDERS " +
-													"WHERE " +
-													      "CUST.SALE.ID = CUST.SALESACTION.SALE_ID and CUST.SALE.status <> 'CAN' " + 
-													      "and CUST.SALESACTION.ACTION_DATE=CUST.SALE.CROMOD_DATE " +
-													      "and CUST.LATEISSUE_ORDERS.SALE_ID=CUST.SALE.ID " +
-													    "AND CUST.SALESACTION.REQUESTED_DATE = trunc(sysdate)-1";
-			
 	/*APPDEV-2893 - Do not get details for pickup orders*/
 	public static String GET_SALE_DETAILS = 
 		"SELECT distinct " +
