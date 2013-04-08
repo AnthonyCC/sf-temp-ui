@@ -49,6 +49,7 @@
 
 --%>
 <fd:javascript src="/assets/javascript/pricing.js"/>
+<fd:PendingOrderChecker/>
 <%
 {
 	// mandatory parameter
@@ -318,7 +319,7 @@ if (optionalParams.size() > 0) {
 															<display:ProductImage priceCalculator="<%= recommendations_row.getCalculator() %>" action="<%= actionURI %>" hideBursts="<%= recommendations.getVariant().getHideBursts() %>" browserInfo="<%= bi %>" showRolloverImage="true"/>
 														<% } %>
 														<!-- fd:IsAlcoholic skuCode="%=((ProductImpression) recommendations_row).getSku().getSkuCode()%>" -->
-															<fd:PopupHandler id='<%="id_" + tx_pricing_FormName %>' tagCounter="<%=txProdCount %>" quantityCheck="true" event="onsubmit" elementId='<%= "addMultipleToCart" + tx_pricing_JSNameSpace %>' skuCode="<%=((ProductImpression) recommendations_row).getSku().getSkuCode()%>" action="addMultipleToCart" ajax="<%= isAjax %>" inputTagPostFix='<%=tx_input_postfix%>'/>
+															<fd:PopupHandler id='<%="id_" + tx_pricing_FormName %>' tagCounter="<%=txProdCount %>" quantityCheck="true" event="onsubmit" elementId='<%= "addMultipleToCart" + tx_pricing_JSNameSpace %>' skuCode="<%=((ProductImpression) recommendations_row).getSku().getSkuCode()%>" action="addMultipleToCart" ajax="<%= isAjax %>" inputTagPostFix='<%=tx_input_postfix%>' hasPendingOrder='<%= (Boolean)pageContext.getAttribute("hasPendingOrder")%>'/>
 															<%--input type="hidden" name='<%="alcoholic_" + txProdCount %>' id='<%="alcoholic_" + txProdCount %>' value='<%="quantity_" + tx_input_postfix + "_"+ txProdCount %>'/ --%>
 														<!-- /fd:IsAlcoholic -->
 													</td>

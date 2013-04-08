@@ -5244,6 +5244,11 @@
 		<info></info>
 	</tag>
 	<tag>
+		<name>PendingOrderChecker</name>
+		<tagclass>com.freshdirect.webapp.taglib.fdstore.PendingOrderCheckerTag</tagclass>
+		<info></info>
+	</tag>
+	<tag>
 		<name>NextDeliveryDateChooser</name>
 		<tagclass>com.freshdirect.webapp.taglib.standingorder.NextDeliveryDateChooserTag</tagclass>
 		<teiclass>com.freshdirect.webapp.taglib.standingorder.NextDeliveryDateChooserTag$TagEI</teiclass>
@@ -5386,6 +5391,11 @@
 		</attribute>
 		<attribute>
 			<name>multiForm</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>hasPendingOrder</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>

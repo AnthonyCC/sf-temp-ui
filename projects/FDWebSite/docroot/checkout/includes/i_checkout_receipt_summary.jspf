@@ -137,7 +137,7 @@ final int W_YA_ORDER_DETAILS_TOTAL = 970;
 							Order Number:
 						</td>
 						<td class="aleft text12 rightPad gbold" colspan="2">
-							<%= orderNumber %>
+							<a href="/your_account/order_details.jsp?orderId=<%= orderNumber %>" class="orderNumb"><%= orderNumber %></a>
 						</td>
 					</tr>
 					<tr>

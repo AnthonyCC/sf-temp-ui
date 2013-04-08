@@ -254,6 +254,7 @@ try {
 String successPage = FDURLUtil.getCartConfirmPageURI(request);
 request.setAttribute("successPage", successPage);
 %>
+<fd:PendingOrderChecker/>
 <fd:FDShoppingCart id='cart' action='addMultipleToCart' result='result' successPage='<%= "/grocery_cart_confirm.jsp?catId="+catId %>' source='<%= request.getParameter("fdsc.source")%>'>
 <%
 //*** if we got this far..then we need to remove the sucess page attribute from the request.
@@ -692,7 +693,7 @@ if(productCode!=null && prodCatId !=null ) {
 
 <br>
 <input type="image" id="addSingleToCart_big" name="addSingleToCart_big" src="/media_stat/images/buttons/add_to_cart.gif"  ALT="ADD THIS ITEM TO YOUR CART" width="93" height="20" style="margin: 2px 2px;" border="0"><br>
-		<fd:PopupHandler id="grocery_form" event="onclick" elementId="addSingleToCart_big" skuCode="<%=minSku.getSkuCode()%>" noProduct="true" multiForm="true"/>
+		<fd:PopupHandler id="grocery_form" event="onclick" elementId="addSingleToCart_big" skuCode="<%=minSku.getSkuCode()%>" noProduct="true" multiForm="true" hasPendingOrder='<%= (Boolean)pageContext.getAttribute("hasPendingOrder")%>'/>
 <%=FDURLUtil.getHiddenCommonParameters(request.getParameterMap(), "_big")%>
 
 	<fd:CCLCheck>
@@ -1078,7 +1079,7 @@ for(int i = (pageNumber -1) * itemsToDisplay; i < loopEnd && isAnyProdAvailable=
 	if(!bigProdShown && isAnyProdAvailable) {
 %><td><input type="image" name="addMultipleToCart" id="addMultipleToCartUpper"  src="/media_stat/images/buttons/add_selected_to_cart.gif" width="145" height="20" hspace="4" vspace="4" border="0" alt="ADD SELECTED ITEMS TO CART">
 	<!-- fd:IsAlcoholic -->
-		<fd:PopupHandler id="grocery_form" event="onclick" elementId="addMultipleToCartUpper" quantityCheck="true" noProduct="true"/>
+		<fd:PopupHandler id="grocery_form" event="onclick" elementId="addMultipleToCartUpper" quantityCheck="true" noProduct="true" hasPendingOrder='<%= (Boolean)pageContext.getAttribute("hasPendingOrder")%>'/>
     <!-- /fd:IsAlcoholic -->
 </td><%
 	}
@@ -1181,7 +1182,7 @@ if(isAnyProdAvailable) {
         <table border="0" cellspacing="0" cellpadding="0" width="<%=contentWidth%>"><tr valign="BOTTOM"><td width="<%=contentWidth%>">
         <input type="image" name="addMultipleToCart" id="addMultipleToCartLower" src="/media_stat/images/buttons/add_selected_to_cart.gif" width="145" height="20" hspace="4" vspace="4" border="0" alt="ADD SELECTED ITEMS TO CART">
         <!-- fd:IsAlcoholic -->
-        	<fd:PopupHandler id="grocery_form" event="onclick" elementId="addMultipleToCartLower" quantityCheck="true" noProduct="true"/>
+        	<fd:PopupHandler id="grocery_form" event="onclick" elementId="addMultipleToCartLower" quantityCheck="true" noProduct="true" hasPendingOrder='<%= (Boolean)pageContext.getAttribute("hasPendingOrder")%>'/>
         <!-- /fd:IsAlcoholic -->
         <br>
         <fd:CCLCheck>

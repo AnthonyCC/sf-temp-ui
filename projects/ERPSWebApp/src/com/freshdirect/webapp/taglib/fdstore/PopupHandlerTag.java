@@ -43,29 +43,34 @@ public class PopupHandlerTag extends BodyTagSupportEx {
 	private boolean ajax;
 	private boolean rebindSubmit;
 	private String inputTagPostFix = "";
+	private Boolean hasPendingOrder;
 
 	public int doStartTag() throws JspException {
 		boolean usq = false, atc = false;
+		
+		if(hasPendingOrder==null){
+			hasPendingOrder=hasPendingModifiableOrder();
+		}
 
-		if (FDStoreProperties.isUSQLegalWarningSwitchedOn() && hasPendingModifiableOrder()) {
+		if (FDStoreProperties.isUSQLegalWarningSwitchedOn() && hasPendingOrder) {
 			
 			atc = true;
 			if (isAlcoholic(true)) {
 				usq = true;
 			}
 			
-		} else if (!FDStoreProperties.isUSQLegalWarningSwitchedOn() && hasPendingModifiableOrder()) {
+		} else if (!FDStoreProperties.isUSQLegalWarningSwitchedOn() && hasPendingOrder) {
 
 			atc = true;
 			
-		} else if (FDStoreProperties.isUSQLegalWarningSwitchedOn() && !hasPendingModifiableOrder()) {
+		} else if (FDStoreProperties.isUSQLegalWarningSwitchedOn() && !hasPendingOrder) {
 			
 			if (!isAlcoholic(true)) {
 				return SKIP_BODY;
 			}
 			usq = true;
 			
-		} else if (!FDStoreProperties.isUSQLegalWarningSwitchedOn() && !hasPendingModifiableOrder()) {
+		} else if (!FDStoreProperties.isUSQLegalWarningSwitchedOn() && !hasPendingOrder) {
 			FDSessionUser yser = (FDSessionUser)request.getSession().getAttribute(SessionName.USER);
 			if("true".equalsIgnoreCase(noProduct) && yser != null
 					&& !yser.isHealthWarningAcknowledged()) {
@@ -321,4 +326,9 @@ public class PopupHandlerTag extends BodyTagSupportEx {
 	public void setMultiForm(String multiForm) {
 		this.multiForm = multiForm;
 	}
+
+	public void setHasPendingOrder(Boolean hasPendingOrder) {
+		this.hasPendingOrder = hasPendingOrder;
+	}
+	
 }

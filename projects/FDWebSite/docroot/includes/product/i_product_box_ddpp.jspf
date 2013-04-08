@@ -38,6 +38,7 @@
 	
  --%>
  <%
+ 	
 	ProductModelPromotionAdapter pmPA = (ProductModelPromotionAdapter)pm;
  	
  	//change image to use if it's a wine product
@@ -50,6 +51,7 @@
 		String prodATCId = "#prodATC_FP_"+(seqDDPP+1);
 		String prodATCStatusId = "prodATCStatus_FP_"+(seqDDPP+1);
 	%>
+	<fd:PendingOrderChecker/>
 	<div class="ddpp_feat_prod" id="<%=prodATCId.replaceFirst("#","")%>" style="<%= prodContStyle %>">
 		<%
 			/* simple check for a valid value */
@@ -157,7 +159,7 @@
 							</div>
 							<!-- fd:IsAlcoholic skuCode="%=((TransactionalProductImpression) pi).getSku().getSkuCode()%>" -->
 								<%--input type="hidden" name="alcoholic_0" id="alcoholic_0" value="quantity_0"/ --%>
-								<fd:PopupHandler id="<%= TX_FORM_NAMEi %>" event="onclick" elementId='<%= "CTAButtonFP_" + seqDDPP %>' skuCode="<%=((TransactionalProductImpression) pi).getSku().getSkuCode()%>" action="addMultipleToCart" rebindSubmit="true"/>
+								<fd:PopupHandler id="<%= TX_FORM_NAMEi %>" event="onclick" elementId='<%= "CTAButtonFP_" + seqDDPP %>' skuCode="<%=((TransactionalProductImpression) pi).getSku().getSkuCode()%>" action="addMultipleToCart" rebindSubmit="true" hasPendingOrder='<%= (Boolean)pageContext.getAttribute("hasPendingOrder")%>'/>
 							<!-- /fd:IsAlcoholic -->
 							<div class="prodATCStatus" id="<%= prodATCStatusId %>"></div>
 							<% transProdIndex++; %>

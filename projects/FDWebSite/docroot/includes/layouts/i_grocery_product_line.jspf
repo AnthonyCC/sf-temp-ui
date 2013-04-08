@@ -213,7 +213,7 @@ final int W_GROCERY_PRODUCT_LINE_ICON_COL = 30;
 <%  if(skuAvailable) {  %>
     <input type="image" id="addSingleToCart_<%= itemShownIndex %>" name="addSingleToCart_<%= itemShownIndex %>" src="/media_stat/images/buttons/grocery_addtocart.gif" border="0" alt="Add this item to your cart">
 	<!-- fd:IsAlcoholic skuCode="%=sku.getSkuCode()%>" -->
-		<fd:PopupHandler id="grocery_form" event="onclick" elementId='<%="addSingleToCart_" + itemShownIndex%>' tagCounter="<%=itemShownIndex %>" skuCode="<%=sku.getSkuCode()%>" noProduct="true" multiForm="true"/>
+		<fd:PopupHandler id="grocery_form" event="onclick" elementId='<%="addSingleToCart_" + itemShownIndex%>' tagCounter="<%=itemShownIndex %>" skuCode="<%=sku.getSkuCode()%>" noProduct="true" multiForm="true" hasPendingOrder='<%= (Boolean)pageContext.getAttribute("hasPendingOrder")%>'/>
 			<%--input type="hidden" name='<%="alcoholic_" + itemShownIndex %>' id='<%="alcoholic_" + itemShownIndex %>' value='<%="quantity_" + itemShownIndex %>'/ --%>
 	<!-- /fd:IsAlcoholic -->
 <%  }   %>

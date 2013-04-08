@@ -40,6 +40,7 @@ final int W_INDEX_RIGHT_CENTER = W_INDEX_TOTAL - 228 - W_INDEX_CENTER_PADDING;
 %>
 
 <fd:CheckLoginStatus guestAllowed='true' pixelNames="TheSearchAgency" id="user" />
+<fd:PendingOrderChecker/>
 <%  
 
 	// copied from the old search.jsp:

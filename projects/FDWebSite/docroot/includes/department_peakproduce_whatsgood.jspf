@@ -67,6 +67,7 @@
 
 	List tmpList=new ArrayList();
 %>
+	<fd:PendingOrderChecker/>
 	<fd:ItemGrabber
 		category='<%=currentFolder %>' 
 		id='rtnColl' 
@@ -374,7 +375,7 @@
 								<display:ProductName product="<%= pm %>" action="<%= actionURI %>" showNew="true" />
 								<display:ProductPrice impression="<%= (TransactionalProductImpression) impressions.get(idx) %>" showDescription="<%= showDescrips %>" />
 								<!-- fd:IsAlcoholic skuCode="%=((TransactionalProductImpression) impressions.get(idx)).getSku().getSkuCode()%>" -->
-									<fd:PopupHandler id="<%= TX_FORM_NAME %>" tagCounter="<%= txCount%>" skuCode="<%=((TransactionalProductImpression) impressions.get(idx)).getSku().getSkuCode()%>"/>
+									<fd:PopupHandler id="<%= TX_FORM_NAME %>" tagCounter="<%= txCount%>" skuCode="<%=((TransactionalProductImpression) impressions.get(idx)).getSku().getSkuCode()%>" hasPendingOrder='<%= (Boolean)pageContext.getAttribute("hasPendingOrder")%>'/>
 									<%--input type="hidden" name='<%="alcoholic_" + txCount %>' id='<%="alcoholic_" + txCount %>' value='<%="quantity_" + txCount %>'/ --%>
 								<!-- /fd:IsAlcoholic -->
 							<% 
@@ -409,7 +410,7 @@
 
 		<% if (isTransactionalRow) { %>
 			<!-- fd:IsAlcoholic -->
-				<fd:PopupHandler id="<%= TX_FORM_NAME %>" event="onclick" elementId="addMultipleToCart_np" quantityCheck="true" />
+				<fd:PopupHandler id="<%= TX_FORM_NAME %>" event="onclick" elementId="addMultipleToCart_np" quantityCheck="true" hasPendingOrder='<%= (Boolean)pageContext.getAttribute("hasPendingOrder")%>'/>
 			<!-- /fd:IsAlcoholic -->
 			</form><% } %>
 		<% } %>

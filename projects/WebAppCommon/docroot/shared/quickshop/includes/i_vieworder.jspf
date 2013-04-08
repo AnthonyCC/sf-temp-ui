@@ -47,7 +47,9 @@
 		return (ppos>-1) ? salesUnitDescr.substring(0, ppos).trim() : salesUnitDescr;
 	}
 %>
+<fd:PendingOrderChecker/>
 <%
+
 String itemModifyWarning = "If you view an item, you will lose any changes you have made to quantities on this page.";
 
 String servletPath = request.getServletPath();
@@ -673,7 +675,7 @@ if (showRecent && showThis &&  skusAdded!=null && skusAdded.contains("skuCode_"+
 		}
 		%>
 		<!-- fd:IsAlcoholic skuCode="%=orderLine.getSkuCode()%>" -->
-			<fd:PopupHandler id="qs_cart" tagCounter="<%=idx %>" quantityCheck="true" skuCode="<%=orderLine.getSkuCode()%>" action="addMultipleToCart"/>
+			<fd:PopupHandler id="qs_cart" tagCounter="<%=idx %>" quantityCheck="true" skuCode="<%=orderLine.getSkuCode()%>" action="addMultipleToCart" hasPendingOrder='<%= (Boolean)pageContext.getAttribute("hasPendingOrder")%>'/>
 			<%--input type="hidden" name='<%="alcoholic_" + idx %>' id='<%="alcoholic_" + idx %>' value='<%="quantity_" + idx %>'/ --%>
 		<!-- /fd:IsAlcoholic -->
 

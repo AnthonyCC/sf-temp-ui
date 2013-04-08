@@ -1,6 +1,8 @@
 <%@ page import='java.util.*' %>
 <%@ page import='com.freshdirect.fdstore.content.*' %>
 <%@ page import='com.freshdirect.fdstore.util.*' %>
+
+<fd:PendingOrderChecker/>
 <%
 	int tempCounter=0;
 	rowColl = new ArrayList();
@@ -646,7 +648,7 @@
 											<display:ProductName product="<%= piPm %>" action="<%= piActionURI %>" showNew="<%= showNewText %>" style="<%= emailStyle %>" />
 											<display:ProductPrice impression="<%= (TransactionalProductImpression) impressions.get(piCnIdx) %>" showDescription="<%= showDescrips %>" />
 											<!-- fd:IsAlcoholic skuCode="%=((TransactionalProductImpression) impressions.get(piCnIdx)).getSku().getSkuCode()%>" -->
-												<fd:PopupHandler id='<%="DYNROW_form"+ TX_FORM_NAME+"_"+catId %>' tagCounter="<%=txCount %>" quantityCheck="true" skuCode="<%=((TransactionalProductImpression) impressions.get(piCnIdx)).getSku().getSkuCode()%>"/>
+												<fd:PopupHandler id='<%="DYNROW_form"+ TX_FORM_NAME+"_"+catId %>' tagCounter="<%=txCount %>" quantityCheck="true" skuCode="<%=((TransactionalProductImpression) impressions.get(piCnIdx)).getSku().getSkuCode()%>" hasPendingOrder='<%= (Boolean)pageContext.getAttribute("hasPendingOrder")%>'/>
 												<%--input type="hidden" name='<%="alcoholic_" + txCount %>' id='<%="alcoholic_" + txCount %>' value='<%="quantity_" + txCount %>'/ --%>
 											<!-- /fd:IsAlcoholic -->
 										<% 
@@ -694,7 +696,7 @@
 				
 				<% if (isTransactionalRow) { %>
 					<!-- fd:IsAlcoholic -->
-						<fd:PopupHandler id='<%="DYNROW_form"+ TX_FORM_NAME+"_"+catId %>' event="onclick" elementId='<%="addMultipleToCart"+ TX_FORM_NAME+"_"+catId %>' quantityCheck="true" />
+						<fd:PopupHandler id='<%="DYNROW_form"+ TX_FORM_NAME+"_"+catId %>' event="onclick" elementId='<%="addMultipleToCart"+ TX_FORM_NAME+"_"+catId %>' quantityCheck="true" hasPendingOrder='<%= (Boolean)pageContext.getAttribute("hasPendingOrder")%>' />
 					<!-- /fd:IsAlcoholic -->
 					</form><% } %>
 

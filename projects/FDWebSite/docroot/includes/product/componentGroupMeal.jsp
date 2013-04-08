@@ -22,12 +22,14 @@ final int W_COMPONENT_GROUP_MEAL_TOTAL = 601;
 %>
 
 <fd:CheckLoginStatus />
+<fd:PendingOrderChecker/>
 <%!
 	java.text.DecimalFormat quantityFormatter = new java.text.DecimalFormat("0.##");
 %>
 <%
 //*** get needed vars from request attributes, they must exist or else we throw jsp error ***/
 FDUserI user = (FDUserI) request.getAttribute("user");
+
 ProductModel productNode=(ProductModel)request.getAttribute("productNode");
 String cartMode = (String) request.getAttribute("cartMode");
 FDCartLineI templateLine = (FDCartLineI) request.getAttribute("templateLine");
@@ -215,7 +217,7 @@ if (pgErrs.size()>0) {
   <input type="hidden" name="salesUnit<%=suffix%>" value="<%=defaultProduct.getSalesUnits()[0].getName()%>">
   <input type="hidden" name="skuCode<%=suffix%>" value="<%=defaultSku.getSkuCode()%>">
 	<!-- fd:IsAlcoholic skuCode="%=defaultSku.getSkuCode()%>"-->
-		<fd:PopupHandler id="productForm" skuCode="<%=defaultSku.getSkuCode()%>"/>
+		<fd:PopupHandler id="productForm" skuCode="<%=defaultSku.getSkuCode()%>" hasPendingOrder='<%= (Boolean)pageContext.getAttribute("hasPendingOrder")%>'/>
 		<input type="hidden" name='<%="alcoholic" + suffix %>' id='<%="alcoholic" + suffix %>' value='<%="quantity" + suffix %>'/>
 	<!--/fd:IsAlcoholic-->
 
@@ -444,7 +446,7 @@ if (isAvailable ) {
 					  <input type="hidden" name="catId_<%= prodCount %>" value="<%= optProd.getParentNode() %>">
 					  <input type="hidden" name="productId_<%= prodCount %>" value="<%= optProd %>">
 				  	<!-- fd:IsAlcoholic skuCode='<%=dfltSku.getSkuCode() %>' -->
-						<fd:PopupHandler id="productForm" tagCounter="<%=prodCount %>" skuCode="<%=dfltSku.getSkuCode() %>"/>
+						<fd:PopupHandler id="productForm" tagCounter="<%=prodCount %>" skuCode="<%=dfltSku.getSkuCode() %>" hasPendingOrder='<%= (Boolean)pageContext.getAttribute("hasPendingOrder")%>'/>
 						<%--input type="hidden" name='<%="alcoholic_" + prodCount %>' id='<%="alcoholic_" + prodCount %>' value='<%="quantity_" + prodCount %>'/ --%>
 					<!-- /fd:IsAlcoholic> -->
 					  <input name ="quantity_<%=prodCount%>" value="<%=(request.getParameter("quantity_"+prodCount)==null ?"" : request.getParameter("quantity_"+prodCount))%>" type="text" size="3" onChange="chgNamedQty(pricing_<%=prodCount%>,'quantity_<%=prodCount%>',0,<%= optProd.getQuantityMinimum() %>,<%= user.getQuantityMaximum(optProd) %>,true)">
@@ -497,7 +499,7 @@ if (isAvailable ) {
 				  <input type="hidden" name="catId_<%= prodCount %>" value="<%= optProd.getParentNode() %>">
 				  <input type="hidden" name="productId_<%= prodCount %>" value="<%= optProd %>">
 				  	<!-- fd:IsAlcoholic skuCode='<%=dfltSku.getSkuCode() %>' -->
-						<fd:PopupHandler id="productForm" tagCounter="<%=prodCount %>" quantityCheck="true" skuCode="<%=dfltSku.getSkuCode() %>"/>
+						<fd:PopupHandler id="productForm" tagCounter="<%=prodCount %>" quantityCheck="true" skuCode="<%=dfltSku.getSkuCode() %>" hasPendingOrder='<%= (Boolean)pageContext.getAttribute("hasPendingOrder")%>'/>
 						<%--input type="hidden" name='<%="alcoholic_" + prodCount %>' id='<%="alcoholic_" + prodCount %>' value='<%="quantity_" + prodCount %>'/ --%>
 					<!-- /fd:IsAlcoholic -->
           <div class="qtyinput">
@@ -768,7 +770,7 @@ if (isAvailable ) {
 	</script>
 			<input name="itemCount" type="hidden" value="<%=prodCount%>">
 			<!-- fd:IsAlcoholic -->
-				<fd:PopupHandler id="productForm" event="onclick" elementId="addMultipleToCart" quantityCheck="true" />
+				<fd:PopupHandler id="productForm" event="onclick" elementId="addMultipleToCart" quantityCheck="true" hasPendingOrder='<%= (Boolean)pageContext.getAttribute("hasPendingOrder")%>'/>
 			<!-- /fd:IsAlcoholic-->
 	</form>
 	<% }

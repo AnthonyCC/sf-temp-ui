@@ -143,7 +143,7 @@ if (FDStoreProperties.IsHomePageMediaEnabled() && (!user.isHomePageLetterVisited
 						
 						//sort pending orders based on delivery date (the closer date goes first)
 						Collections.sort(validPendingOrders, new DeliveryDateComparator());
-						
+
 						//set count (in case this variable is needed elsewhere (and we'll just use it now as well)
 						pendingOrderCount = validPendingOrders.size();
 

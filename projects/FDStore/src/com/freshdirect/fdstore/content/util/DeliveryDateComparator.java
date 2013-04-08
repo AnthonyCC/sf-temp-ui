@@ -8,7 +8,7 @@ public class DeliveryDateComparator implements Comparator<FDOrderInfoI>{
 
 	@Override
 	public int compare(FDOrderInfoI arg0, FDOrderInfoI arg1) {
-		return arg0.getRequestedDate().compareTo(arg1.getRequestedDate());
+		return arg0.getDeliveryStartTime().compareTo(arg1.getDeliveryStartTime());
 	}
 
 }

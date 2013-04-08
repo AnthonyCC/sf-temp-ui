@@ -212,7 +212,7 @@ final int W_YMAL_BOX_INNER = 540;
 			
 											<fd:TxProductControl txNumber="<%= txProdCount %>" namespace="<%= TX_JS_NAMESPACE %>" impression="<%= (TransactionalProductImpression) pi %>"/>
 										<!-- fd:IsAlcoholic skuCode="%=((TransactionalProductImpression) pi).getSku().getSkuCode()%>" --> 
-											<fd:PopupHandler id="<%= TX_FORM_NAME %>" tagCounter="<%=txProdCount %>" quantityCheck="true" skuCode="<%=((TransactionalProductImpression) pi).getSku().getSkuCode()%>"/>
+											<fd:PopupHandler id="<%= TX_FORM_NAME %>" tagCounter="<%=txProdCount %>" quantityCheck="true" skuCode="<%=((TransactionalProductImpression) pi).getSku().getSkuCode()%>" hasPendingOrder='<%= (Boolean)pageContext.getAttribute("hasPendingOrder")%>'/>
 											<%--input type="hidden" name='<%="alcoholic_" + txProdCount %>' id='<%="alcoholic_" + txProdCount %>' value='<%="quantity_" + txProdCount %>'/ --%>
 										<!-- /fd:IsAlcoholic -->
 										</td>
