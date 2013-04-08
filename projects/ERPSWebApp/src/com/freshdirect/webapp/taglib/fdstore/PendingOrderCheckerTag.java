@@ -17,6 +17,10 @@ public class PendingOrderCheckerTag extends SimpleTagSupport {
 		
 		PageContext ctx = (PageContext) getJspContext();
 		
+		if(ctx.getAttribute("hasPendingOrder")!=null){
+			return;
+		}
+		
 		FDUserI user = getFDUser();
 		if (user == null){
 			ctx.setAttribute("hasPendingOrder", false);			
