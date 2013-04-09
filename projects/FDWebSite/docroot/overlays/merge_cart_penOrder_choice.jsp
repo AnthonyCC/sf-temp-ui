@@ -98,7 +98,7 @@
 				#cartlines {
 					font-size:0;
 					overflow:auto;
-					max-height:100px;
+					max-height:125px;
 				}
 				
 				#cartlines .cartline {
