@@ -160,6 +160,7 @@
 					overflow:auto;
 					border-collapse:collapse;
 					border:1px solid lightgray;
+					padding:4px 0;
 				}
 				
 				#cartitems table {
