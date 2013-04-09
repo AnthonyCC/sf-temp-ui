@@ -77,7 +77,7 @@ final int W_YA_CANCEL_ORDER = 970;
 			<form name="cancel_order" method="POST" action="/your_account/cancel_order.jsp">
 			<input type="hidden" name="action" value="cancel">
 			<input type="hidden" name="orderId" value="<%= orderId %>">
-			<input type="image" src="/media_stat/images/buttons/cancel_this_order_mrn.gif" width="112" height="16" border="0" alt="CANCEL ORDER">
+			<button type="submit" class="imgButtonRed">cancel order</button>
 			</form></div><img src="/media_stat/images/layout/clear.gif" width="1" height="10"></td></tr>
 <tr><td bgcolor="#CCCCCC" colspan="3"><img src="/media_stat/images/layout/clear.gif" width="<%= W_YA_CANCEL_ORDER %>" height="1" border="0"></td></tr>
 <tr><td colspan="3"><img src="/media_stat/images/layout/clear.gif" width="1" height="8"><br><table cellspacing="0" cellpadding="0" border="0">
