@@ -346,9 +346,6 @@ final int W_YA_ORDER_DETAILS_TOTAL = 970;
 					Your order has been placed.
 				<% } %>
 			</div>			
-			<script type="text/javascript">
-				FreshDirect.ATC_Pending.checkOrderStatus('<%= orderNumber %>', 'modifyOrderButton');
-			</script>
 			
 			<div>
 				<script type="text/javascript">
@@ -383,14 +380,20 @@ final int W_YA_ORDER_DETAILS_TOTAL = 970;
 				<font class="space8px"><br /></font>
 			</div>
 			
-			<div class="hline" id="" style="margin-top:20px; margin-bottom: 3px;"><!-- --></div>
-			<div class="hline" id="" style="margin-bottom:10px;"><!-- --></div>
-			<div class="fleft text14bold">Forget something?</div>
-			<div class="fright"><a class="imgButtonOrange" style="margin-left: 10px;" href="/your_account/modify_order.jsp?orderId=<%= orderNumber %>&amp;action=modify">modify order</a></div>
-			<div style="clear: both;"></div>
-			<div class="text12" style="margin-top: 10px;">Add items to your order as often as you want, for no extra delivery fee, until <b><%= DateUtil.getReceiptCutoffDate(cart.getDeliveryReservation().getCutoffTime()) %>.</b></div>			
-			<div class="hline" id="" style="margin-top:10px; margin-bottom: 3px;"><!-- --></div>
-			<div class="hline" id="" style="margin-bottom:20px;"><!-- --></div>
+			<div id="modifyOrderSection" style="display:none;">
+				<div class="hline" id="" style="margin-top:20px; margin-bottom: 3px;"><!-- --></div>
+				<div class="hline" id="" style="margin-bottom:10px;"><!-- --></div>
+				<div class="fleft text14bold">Forget something?</div>
+				<div class="fright"><a class="imgButtonOrange" style="margin-left: 10px;" href="/your_account/modify_order.jsp?orderId=<%= orderNumber %>&amp;action=modify">modify order</a></div>
+				<div style="clear: both;"></div>
+				<div class="text12" style="margin-top: 10px;">Add items to your order as often as you want, for no extra delivery fee, until <b><%= DateUtil.getReceiptCutoffDate(cart.getDeliveryReservation().getCutoffTime()) %>.</b></div>			
+				<div class="hline" id="" style="margin-top:10px; margin-bottom: 3px;"><!-- --></div>
+				<div class="hline" id="" style="margin-bottom:20px;"><!-- --></div>
+			</div>
+			
+			<script type="text/javascript">
+				FreshDirect.ATC_Pending.checkOrderStatus('<%= orderNumber %>', 'modifyOrderSection');
+			</script>
 			
 			<div class="text12"><%-- unattended message --%>
 				<% if (EnumUnattendedDeliveryFlag.OPT_IN.equals(dlvAddress.getUnattendedDeliveryFlag())) { %>
