@@ -570,7 +570,7 @@ if (errorMsg!=null) {%>
 	</div>
 	<% if (hasCapacity) { %>
 	<div style="float: right;">
-		<%@ include file="/includes/i_cart_next_step_button.jspf" %>
+		<% if(modifyOrderMode) { %><a class="imgButtonWhite" href="/your_account/cancel_modify_order.jsp">cancel updates</a><% } %><%@ include file="/includes/i_cart_next_step_button.jspf" %>
 	</div>
 	<% } %>
 	<div style="clear: both;"></div>

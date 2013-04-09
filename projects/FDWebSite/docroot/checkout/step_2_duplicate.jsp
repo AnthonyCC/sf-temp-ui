@@ -96,7 +96,7 @@ int incNextButtonCount = 0;
 				<img src="/media_stat/images/layout/clear.gif" width="340" height="1" border="0">
 			</div>
 			<div style="float: right">
-				<%@ include file="/includes/i_cart_next_step_button.jspf" %>
+				<% if(modifyOrderMode) { %><a class="imgButtonWhite" href="/your_account/cancel_modify_order.jsp">cancel updates</a><% } %><%@ include file="/includes/i_cart_next_step_button.jspf" %>
 			</div>
 		</div>
 	</td></tr>

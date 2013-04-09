@@ -362,7 +362,7 @@ if (!abstractTimeslots && user.isPromoConflictResolutionApplied()) {
 			<span class="butLeft"><!-- --></span><span class="butMiddle butTextTitle18">Click here to save your standing order</span><span class="butRight"><!-- --></span>
 		</button>
 	<% } else { %>
-		 <%@ include file="/includes/i_cart_next_step_button.jspf" %>
+		 <% if(modifyOrderMode) { %><a class="imgButtonWhite" href="/your_account/cancel_modify_order.jsp">cancel updates</a><% } %><%@ include file="/includes/i_cart_next_step_button.jspf" %>
 	<% } %>
 	<% if (cart instanceof FDModifyCartModel) { %><div style="clear: both;"></div><% } %>
 <% } %>
