@@ -1205,7 +1205,7 @@ div.control, div.slotRow, div.time {
 	
 	.receipt_rightColumn #printable_version {
 		float: left;
-		background: url(/media_stat/images/navigation/global_nav/print_page_receipt_body.gif) no-repeat left center;
+		background: url(/media_stat/images/navigation/global_nav/print.png) no-repeat left center;
 		height: 26px;
 		padding-left: 30px;
 	}
