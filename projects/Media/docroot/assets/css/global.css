@@ -1965,7 +1965,8 @@ div.control, div.slotRow, div.time {
     padding-bottom:0;
 }
 
-.checkout-header.modify .submitOrder {
+
+button.submitOrder {
 	padding-left:2em;
 	padding-right:2em;
 	font-size:16px;
@@ -1989,10 +1990,6 @@ div.control, div.slotRow, div.time {
   display:block;
 }
 
-.checkout-header.submit .submitOrder {
-	padding:0 4em;
-	font-size:20px;
-}
 
 .checkout-alcohol-warning {
 	border-radius:6px;

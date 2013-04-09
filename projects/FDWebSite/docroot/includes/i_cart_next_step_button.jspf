@@ -53,11 +53,7 @@
 					}
 				</script>
 			
-				<% if (cart instanceof FDModifyCartModel) { %>
 				<button class="imgButtonOrange submitOrder" onclick="orderSubmitValidator('order_submit', <%= incNextButtonCount %>); return false;">SUBMIT ORDER</button>
-				<% } else { %>
-				<button class="imgButtonOrange submitOrder" onclick="orderSubmitValidator('order_submit', <%= incNextButtonCount %>); return false;">SUBMIT YOUR ORDER</button>
-				<% } %>
 				<%
 			}
 	incNextButtonCount++;
