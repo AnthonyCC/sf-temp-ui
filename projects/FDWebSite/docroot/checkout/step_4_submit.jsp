@@ -343,7 +343,7 @@ if (!abstractTimeslots && user.isPromoConflictResolutionApplied()) {
 <IMG src="/media_stat/images/layout/dotted_line_w.gif" width="<%=W_CHECKOUT_STEP_4_SUBMIT_TOTAL%>" height="1" BORDER="0"><BR>
 <IMG src="/media_stat/images/layout/clear.gif" width="1" height="8" BORDER="0"><BR>
 
-<div style="margin-bottom: 15px; margin-top: 5px; position: relative; text-align: <%= (cart instanceof FDModifyCartModel && user.getCheckoutMode() == EnumCheckoutMode.NORMAL) ? " right" : "center" %>; min-height: 26px;">
+<div style="margin-bottom: 15px; margin-top: 5px; position: relative; text-align: right; min-height: 26px;">
 		<div style="position: absolute; top: 0px; left: 0px; width: 150px; height: 26px; text-align: left;">
 			<span style="display: inline-block;">
 				<a href="<%=response.encodeURL("/checkout/step_3_choose.jsp")%>" id="previousX">

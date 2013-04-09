@@ -1984,10 +1984,9 @@ div.control, div.slotRow, div.time {
 }
 
 .checkout-header.submit .rightcell {
-	width:770px;
-	text-align:center;
-    display:block;
-    text-align: center;
+	width:auto;
+	text-align:right;
+  display:block;
 }
 
 .checkout-header.submit .submitOrder {
