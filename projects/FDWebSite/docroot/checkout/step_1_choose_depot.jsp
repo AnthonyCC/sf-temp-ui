@@ -129,7 +129,7 @@ final int W_CHECKOUT_STEP_1_CHOOSE_DEPOT_TOTAL = 970;
 				<img src="/media_stat/images/buttons/previous_step.gif" WIDTH="66" HEIGHT="11" border="0" alt="PREVIOUS STEP"></a><br/>Your Cart
 		</div>
 		<div style="float: right">
-				<% if(modifyOrderMode) { %><a class="imgButtonWhite" href="/your_account/cancel_modify_order.jsp">cancel updates</a><% } %><%@ include file="/includes/i_cart_next_step_button.jspf" %>
+				<% if(modifyOrderMode) { %><a class="imgButtonWhite cancel_updates" href="/your_account/cancel_modify_order.jsp">cancel updates</a><% } %><%@ include file="/includes/i_cart_next_step_button.jspf" %>
 		</div>
 		<div style="clear: both;"></div>
 	</div>

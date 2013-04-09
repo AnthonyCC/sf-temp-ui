@@ -2133,14 +2133,15 @@ div.control, div.slotRow, div.time {
 	cursor: pointer;
 	white-space: nowrap;
 	text-shadow: 1px 1px #666;
-    color:white;
-    overflow:visible;
-    margin:0 8px;
-    background-image: url(/media_stat/images/buttons/buttons.png);
-    background-repeat: no-repeat;
-    background-position-x: center;
-    padding:0 8px;
-    display:inline-block;
+	font-family:Verdana,Arial,sans-serif;
+	color:white;
+	overflow:visible;
+	margin:0 8px;
+	background-image: url(/media_stat/images/buttons/buttons.png);
+	background-repeat: no-repeat;
+	background-position-x: center;
+	padding:0 8px;
+	display:inline-block;
 }
 
 a.imgButtonOrange,
@@ -2175,9 +2176,17 @@ a.imgButtonPurple:active {
 a.imgButtonWhite,
 a.imgButtonWhite:visited,
 a.imgButtonWhite:active,
-.imgButtonWhite {
+a.imgButtonWhite:hover,
+.imgButtonWhite,
+.imgButtonWhite:visited,
+.imgButtonWhite:active,
+.imgButtonWhite:hover {
 	color:#336600;
 	text-shadow:none;
+}
+
+.imgButtonWhite.cancel_updates {
+	font-size:11px;
 }
 
 .imgButtonOrange:before,
