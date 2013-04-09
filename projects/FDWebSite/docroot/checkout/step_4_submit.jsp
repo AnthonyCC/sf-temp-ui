@@ -177,14 +177,6 @@ java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyIns
 	<%@ include file="/shared/includes/i_loyalty_bar.jspf" %>
 	<div style="clear: both;"></div>
 	</div>
-
-	<% if (__noErr) { %>
-		<div style="padding: 16px 0 16px 0">
-		<% if (abstractTimeslots) { %>
-			<button style="width: 439px; height: 35px; border-radius: 5px; -moz-border-radius: 5px; border: 0; background-color: #ff9933; font-size: 17px; font-weight: bold; color: white; font-family: Verdana, Arial, sans-serif">Click here to save your standing order.</button>
-		<% } %>
-		</div>
-	<% } %>
 	</div>
    
     <%-- error system messages happen here --%>
@@ -269,7 +261,7 @@ if (!abstractTimeslots && user.isPromoConflictResolutionApplied()) {
 <IMG src="/media_stat/images/layout/dotted_line_w.gif" width="<%=W_CHECKOUT_STEP_4_SUBMIT_TOTAL%>" height="1"><br>
 <IMG src="/media_stat/images/layout/clear.gif" width="1" height="20"><br>
 
-<table width="<%=W_CHECKOUT_STEP_4_SUBMIT_TOTAL%>" cellpadding="0" cellspacing="0" border="0">
+<table width="<%=W_CHECKOUT_STEP_4_SUBMIT_TOTAL%>" cellpadding="0" cellspacing="0" border="0" style="margin-top:1em">
 	<tr VALIGN="TOP">
 		<td width="<%=W_CHECKOUT_STEP_4_SUBMIT_TOTAL%>"><img src="/media_stat/images/navigation/cart_details.gif" width="96" height="15" border="0" alt="CART DETAILS">&nbsp;&nbsp;&nbsp;
 <% if (request.getRequestURI().toLowerCase().indexOf("your_account/") != 1){ %>
@@ -358,9 +350,7 @@ if (!abstractTimeslots && user.isPromoConflictResolutionApplied()) {
 
 <% if (__noErr) { %>
 	<% if (abstractTimeslots) { %>
-		<button class="butCont butOrange" type="submit">
-			<span class="butLeft"><!-- --></span><span class="butMiddle butTextTitle18">Click here to save your standing order</span><span class="butRight"><!-- --></span>
-		</button>
+		<button class="imgButtonOrange" type="submit">Click here to save your standing order</button>
 	<% } else { %>
 		 <% if(modifyOrderMode) { %><a class="imgButtonWhite" href="/your_account/cancel_modify_order.jsp">cancel updates</a><% } %><%@ include file="/includes/i_cart_next_step_button.jspf" %>
 	<% } %>
