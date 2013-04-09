@@ -42,10 +42,16 @@ if (typeof FreshDirect == "undefined" || !FreshDirect) {
 							&& o.responseText.charAt(0) == '1') {
 						ATC_Pending.showPendingChoice(data);
 					} else {
-						if (data.redo)
+						if (data.redo) {
 							showError(data, "You have no more pending order.");
-						else
-							normalSubmit(data);
+						} else {
+							if (data.instant && data.instant != null && data.instant != '') {
+								eval(data.instant)();
+								return false;
+							} else {
+								normalSubmit(data);
+							}
+						}
 					}
 				},
 			failure: function(o) {
@@ -329,7 +335,7 @@ if (typeof FreshDirect == "undefined" || !FreshDirect) {
 		if (id && FreshDirect.PopupDispatcher.forms[id]) {
 			if (FreshDirect.PopupDispatcher.forms[id].panel){
 				FreshDirect.PopupDispatcher.forms[id].panel.hide();
-				FreshDirect.PopupDispatcher.forms[id].panel.destroy();
+				//FreshDirect.PopupDispatcher.forms[id].panel.destroy();
 			}
 		}
 	};
