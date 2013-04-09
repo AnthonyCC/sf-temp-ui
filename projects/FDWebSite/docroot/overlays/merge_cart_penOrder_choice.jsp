@@ -203,7 +203,7 @@
 					position:absolute;
 					top:0;
 					right:0;
-					background:url(/media_stat/images/buttons/modifylite_closewindow_f1.png) transparent center center no-repeat;
+					background:url(/media_stat/images/buttons/round_x.png) transparent center center no-repeat;
 					border:none;
 					width:20px;
 					height:20px;
