@@ -356,7 +356,7 @@ final int W_YA_ORDER_DETAILS_TOTAL = 970;
 				</script>
 			</div>
 			<div class="text12">
-				Thank you for shopping with us! Your order is complete. To check your order status anytime, just visit the "<a href="/your_account/order_history.jsp">Your Orders</a>" section of Your Account.
+				Thank you for shopping with us! Your order is complete. To check your order status anytime, just visit the <br>"<a href="/your_account/order_history.jsp">Your Orders</a>" section of Your Account.
 				<br /><br />
 				Your estimated receipt is below. On the day of delivery, once we've assembled and weighed your goods, we'll e-mail your final receipt<%= !customerModel.isGoGreen()?" and include a printed copy with your order":"" %>.
 				
