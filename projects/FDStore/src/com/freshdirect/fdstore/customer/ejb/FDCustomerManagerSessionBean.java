@@ -6926,25 +6926,17 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		
 	public static String GET_SCAN_REPORTED_LATES =
 	
-		" select a.WEBORDERNUM, a.WINDOW,scandate from "+
-			" (" +
-			   " SELECT a.WEBORDERNUM, a.WINDOW, min(a.scandate) scandate FROM DLV.CARTONSTATUS a "+ 
-		       " WHERE TO_DATE(TO_CHAR(a.SCANDATE,'HH24:MI:ss'),'HH24:MI:ss') >= TO_DATE(SUBSTR(a.WINDOW,7,8),'HH24:MI:ss') + (1800/86400) "+ 
-		       " AND a.CARTONSTATUS in ( 'DELIVERED','REFUSED'  ) "+
-		       " AND a.SCANDATE BETWEEN TRUNC(SYSDATE - 1) AND TRUNC(SYSDATE) - 1/86400 "+  
-		       " AND a.WEBORDERNUM is not null and LENGTH(TRIM(TRANSLATE(a.WEBORDERNUM, '0123456789',' '))) is null "+
-		       " group by a.webordernum, a.WINDOW "+
-		    " ) a "+
-		" WHERE "+
-		" not exists "+ 
-		" ( "+
-			" 	select 1 FROM DLV.CARTONTRACKING t "+ 
-			"	WHERE t.CARTONSTATUS in ('DELIVERED','REFUSED') and T.WEBORDERNUM = a.WEBORDERNUM "+ 
-			"   and TO_DATE(TO_CHAR(t.SCANDATE,'HH24:MI'),'HH24:MI') < TO_DATE(SUBSTR(a.WINDOW,7,5),'HH24:MI') "+
-	    " ) ";
-	
+		" select t.webordernum, t.window, min(T.SCANDATE) "+ 
+		    " from DLV.CARTONTRACKING t "+ 
+		    " where T.SCANDATE BETWEEN TRUNC(SYSDATE - 1) AND TRUNC(SYSDATE) - 1/86400 "+ 
+		    " and  t.WEBORDERNUM is not null and LENGTH(TRIM(TRANSLATE(t.WEBORDERNUM, '0123456789',' '))) is null "+
+		    " and t.CARTONSTATUS in ('DELIVERED','REFUSED') "+
+			" GROUP BY t.webordernum, t.window "+
+		    " HAVING TO_DATE(TO_CHAR(min(t.SCANDATE),'HH24:MI'),'HH24:MI') > (TO_DATE(SUBSTR(t.WINDOW,7,5),'HH24:MI') + (1800/86400)) ";
+			
 	public static String GET_DRIVER_REPORTED_LATES = 
-			" SELECT CUST.SALE.ID "+
+
+		" SELECT CUST.SALE.ID "+
 			" FROM CUST.SALE, CUST.SALESACTION, CUST.LATEISSUE_ORDERS, cust.deliveryinfo di "+ 
 			" WHERE CUST.SALE.ID = CUST.SALESACTION.SALE_ID and CUST.SALE.status <> 'CAN' "+
             " and CUST.SALESACTION.id = di.salesaction_id and CUST.SALESACTION.ACTION_DATE=CUST.SALE.CROMOD_DATE "+ 
@@ -6953,7 +6945,8 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
             " and not exists "+ 
             " ( "+
             " 	select 1 FROM DLV.CARTONTRACKING t "+ 
-            " 	WHERE  t.CARTONSTATUS  In ('DELIVERED','REFUSED') and T.WEBORDERNUM = CUST.SALE.ID and T.SCANDATE < DI.ENDTIME "+
+            " 	WHERE  t.CARTONSTATUS in ('DELIVERED','REFUSED') and T.WEBORDERNUM = CUST.SALE.ID " +
+            "	and T.SCANDATE < (DI.ENDTIME + 1/1440) "+
             " ) ";
 	
 	/*APPDEV-2893 - Do not get details for pickup orders*/
@@ -6979,8 +6972,8 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		  "CUST.DELIVERYINFO " +
 		"WHERE " +
 		   "CUST.SALE.ID= ? " +
-		   "AND  CUST.SALE.ID = CUST.SALESACTION.SALE_ID and CUST.SALE.status<>'CAN' " + 
-		   "AND  CUST.SALESACTION.REQUESTED_DATE = trunc(sysdate)-1 " +
+		   "AND CUST.SALE.ID = CUST.SALESACTION.SALE_ID and CUST.SALE.status<>'CAN' " + 
+		   "AND CUST.SALESACTION.REQUESTED_DATE = trunc(sysdate)-1 " +
 		   "AND CUST.CUSTOMER.ID=CUST.CUSTOMERINFO.CUSTOMER_ID " +
 		   "AND CUST.SALE.CUSTOMER_ID=CUST.CUSTOMER.ID " +
 		   "AND CUST.SALE.CUSTOMER_ID=CUST.SALESACTION.CUSTOMER_ID " + 
