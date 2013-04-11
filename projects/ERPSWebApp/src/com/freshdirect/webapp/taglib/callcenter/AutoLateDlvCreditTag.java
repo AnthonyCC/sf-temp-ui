@@ -65,66 +65,70 @@ public class AutoLateDlvCreditTag extends AbstractControllerTag {
 					LOGGER.debug(parameter.toLowerCase());
 					if(parameter.toLowerCase().startsWith("saleid|") || parameter.toLowerCase().startsWith("dlvpasssaleid|")) {
 						boolean creditIssued = false;
-					    if(parameter.toLowerCase().startsWith("saleid|")) {
-					        String[] values = parameters.get(parameter);
-					        String value = values[0];
-					        if(value != null) {
-					        	orderId = value;				 
-					        	
-					        	//Check if the order has been already credited
-					        	boolean isCredited = CrmManager.getInstance().isOrderCreditedForLateDelivery(orderId);
-					        	
-					        	if(isCredited)
-					        		LOGGER.debug("This order is already credited:" + orderId);
-					        	
-					        	if(!isCredited) {
-						        	//Credit the user with delivery fee
-					        		creditIssued = issueLateCredit(orderId, autoId, agent, false);
-					        		if(!creditIssued) {
-					        			errorString.append(orderId + ","); 
-					        		}
-					        	} else {
-					        		creditIssued = true;
-					        	}
-					        }
-					    } else if(parameter.toLowerCase().startsWith("dlvpasssaleid|")) {
-					    	String[] values = parameters.get(parameter);
-					        String value = values[0];
-					        if(value != null) {
-					        	orderId = value;
-					        	//Extend dlv PAss
-					        	CustomerCreditModel ccm = CrmManager.getInstance().getOrderForLateCredit(orderId, autoId);
-					        	
-					        	LOGGER.debug("Getting delivery pass for :" + ccm.getDlvPassId());
-					        	DeliveryPassModel dpm = CrmManager.getInstance().getDeliveryPassInfo(ccm.getDlvPassId());		
-					        	
-					        	//check if DP is already extended
-					        	if(!CrmManager.getInstance().isDlvPassAlreadyExtended(orderId, ccm.getCustomerId())) {
-					        	
-						        	//Check if the DP is expired.
-						        	if(dpm.getExpirationDate().before(new java.util.Date())) {
-						        		//DP is expired, see if there is any active DP to renew
-						        		DeliveryPassModel altDp = CrmManager.getInstance().getActiveDP(ccm.getCustomerId());
-						        		if(altDp == null) {
-						        			//No more DP's for the user. Credit the original amount
-						        			creditIssued = issueLateCredit(orderId, autoId, agent, true);
-						        			if(!creditIssued) {
-							        			errorString.append(orderId + ","); 
-							        		}
-						        		} else {
-						        			//extend DP by one week
-						        			creditIssued = extendDP(altDp, agent, orderId, ccm);
-						        		}
-						        	} else {
-						        		//extend DP by one week
-						        		creditIssued = extendDP(dpm, agent, orderId, ccm);
-						        	}
-					        	} else {
-					        		creditIssued = true;
-					        		LOGGER.info("Already extended the deliverypass:" + orderId + "-dpId:" + ccm.getDlvPassId());
-					        	}
-					        }
-					    }
+						String[] values = parameters.get(parameter);
+				        String value = values[0];
+				        if(value != null) {
+				        	orderId = value;
+				        	
+				        	//Check if the case has been already created for order with case subject ('DSQ-011', 'OAQ-009')
+			        		boolean isCaseCreated = CrmManager.getInstance().isCaseCreatedForOrderLateDelivery(orderId);
+			        		if(isCaseCreated) {
+			        			LOGGER.debug("This case with case subject ('DSQ-011', 'OAQ-009') is created for order:" + orderId);
+			        			creditIssued = true;
+			        		}
+
+				        	if(!creditIssued && parameter.toLowerCase().startsWith("saleid|")) {
+
+				        		//Check if the order has been already credited
+				        		boolean isCredited = CrmManager.getInstance().isOrderCreditedForLateDelivery(orderId);
+
+				        		if(isCredited)
+				        			LOGGER.debug("This order is already credited:" + orderId);
+
+				        		if(!isCredited) {
+				        			//Credit the user with delivery fee
+				        			creditIssued = issueLateCredit(orderId, autoId, agent, false);
+				        			if(!creditIssued) {
+				        				errorString.append(orderId + ","); 
+				        			}
+				        		} else {
+				        			creditIssued = true;
+				        		}
+				        	} else if(!creditIssued && parameter.toLowerCase().startsWith("dlvpasssaleid|")) {
+
+				        		//Extend dlv PAss
+				        		CustomerCreditModel ccm = CrmManager.getInstance().getOrderForLateCredit(orderId, autoId);
+
+				        		LOGGER.debug("Getting delivery pass for :" + ccm.getDlvPassId());
+				        		DeliveryPassModel dpm = CrmManager.getInstance().getDeliveryPassInfo(ccm.getDlvPassId());		
+
+				        		//check if DP is already extended
+				        		if(!CrmManager.getInstance().isDlvPassAlreadyExtended(orderId, ccm.getCustomerId())) {
+
+				        			//Check if the DP is expired.
+				        			if(dpm.getExpirationDate().before(new java.util.Date())) {
+				        				//DP is expired, see if there is any active DP to renew
+				        				DeliveryPassModel altDp = CrmManager.getInstance().getActiveDP(ccm.getCustomerId());
+				        				if(altDp == null) {
+				        					//No more DP's for the user. Credit the original amount
+				        					creditIssued = issueLateCredit(orderId, autoId, agent, true);
+				        					if(!creditIssued) {
+				        						errorString.append(orderId + ","); 
+				        					}
+				        				} else {
+				        					//extend DP by one week
+				        					creditIssued = extendDP(altDp, agent, orderId, ccm);
+				        				}
+				        			} else {
+				        				//extend DP by one week
+				        				creditIssued = extendDP(dpm, agent, orderId, ccm);
+				        			}
+				        		} else {
+				        			creditIssued = true;
+				        			LOGGER.info("Already extended the deliverypass:" + orderId + "-dpId:" + ccm.getDlvPassId());
+				        		}
+				        	}
+				        }
 					    //Mark the saleId as approved
 					    if(creditIssued)
 					    	CrmManager.getInstance().updateAutoLateCredit(autoId, orderId);
