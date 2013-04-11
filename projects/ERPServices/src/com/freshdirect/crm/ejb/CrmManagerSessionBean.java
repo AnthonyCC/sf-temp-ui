@@ -1348,6 +1348,26 @@ public class CrmManagerSessionBean extends SessionBeanSupport {
 		return ccm;
 	}
 	
+	public boolean isCaseCreatedForOrderLateDelivery(String saleId) throws FDResourceException {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rset = null;
+		try {
+			conn = getConnection();
+			pstmt = conn.prepareStatement(GET_CASE_CREATED);
+			pstmt.setString(1, saleId);
+			rset = pstmt.executeQuery();
+			if(rset.next()) {
+				return true;
+			}
+		} catch (SQLException sqle) {
+			throw new FDResourceException(sqle);
+		} finally {
+			close(conn);
+		}
+		return false;
+	}
+	
 	public boolean isOrderCreditedForLateDelivery(String saleId) throws FDResourceException {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
@@ -1465,6 +1485,8 @@ public class CrmManagerSessionBean extends SessionBeanSupport {
 	public static String UPDATE_STATUS_FLAG = "update CUST.AUTO_LATE_DELIVERY_ORDERS set status = 'A' where AUTO_LATE_DELIVERY_ID=? and SALE_ID=?";
 	
 	public static String UPDATE_STATUS = "update cust.AUTO_LATE_DELIVERY set STATUS='A', APPROVED_BY=? where ID = ?";
+	
+	public static String GET_CASE_CREATED =  "select * from cust.CASE where case_subject in ('DSQ-011', 'OAQ-009') and sale_id = ? " ;
 	
 	public static String GET_COMPLAINT_CODE =  
 		"select comp_code from cust.complaint_dept_code where id in " + 

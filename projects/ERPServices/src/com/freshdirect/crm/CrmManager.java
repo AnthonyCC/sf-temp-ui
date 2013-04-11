@@ -570,6 +570,14 @@ public class CrmManager {
 		}
 	}
 	
+	public boolean isCaseCreatedForOrderLateDelivery(String saleId) throws FDResourceException {
+		try {
+			return this.getCrmManagerSB().isCaseCreatedForOrderLateDelivery(saleId);
+		} catch (RemoteException e) {
+			throw new FDResourceException(e, "Error in CrmManagerSB while getting isOrderCreditedForLateDelivery.");
+		}
+	}
+	
 	public boolean isOrderCreditedForLateDelivery(String saleId) throws FDResourceException {
 		try {
 			return this.getCrmManagerSB().isOrderCreditedForLateDelivery(saleId);

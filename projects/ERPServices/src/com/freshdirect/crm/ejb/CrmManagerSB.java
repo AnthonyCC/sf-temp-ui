@@ -150,6 +150,8 @@ public interface CrmManagerSB extends EJBObject {
 	
 	public CustomerCreditModel getOrderForLateCredit(String saleId, String autoId) throws FDResourceException, RemoteException;
 	
+	public boolean isCaseCreatedForOrderLateDelivery(String saleId) throws FDResourceException, RemoteException;
+	
 	public boolean isOrderCreditedForLateDelivery(String saleId) throws FDResourceException, RemoteException;
 	
 	public DeliveryPassModel getDeliveryPassInfoById(String dlvPassId) throws FDResourceException, RemoteException;
