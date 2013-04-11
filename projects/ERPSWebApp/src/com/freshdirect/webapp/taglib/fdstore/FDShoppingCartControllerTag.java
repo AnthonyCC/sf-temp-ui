@@ -529,7 +529,7 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements Sessi
 			} else if ("changeOrderLine".equalsIgnoreCase(action)) {
 				affectedLines = changeOrderLine() ? 1 : 0;
 			} else if ("updateQuantities".equalsIgnoreCase(action)) {
-				suppressSuspendPendingOvarlay = true;
+				//suppressSuspendPendingOvarlay = true;
 				affectedLines = updateQuantities() ? 1 : 0;
 				if (!inCallCenter && successPage != null && successPage.indexOf("checkout/step") > -1)
 					try {
