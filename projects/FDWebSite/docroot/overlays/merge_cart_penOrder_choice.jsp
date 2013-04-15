@@ -64,7 +64,7 @@
 				#step2 {
 					width:950px;
 					z-index:1;
-					visibility:hidden;
+					display:none;
 				}
 				
 				#step2 .content {
@@ -212,8 +212,8 @@
 					text-indent:20px;
 				}
 								
-				body.step2 #step1 { z-index:1; visibility:hidden; }
-				body.step2 #step2 { z-index:2; visibility:visible; }
+				body.step2 #step1 { z-index:1; display:none; }
+				body.step2 #step2 { z-index:2; display:block; }
 				body {
 					overflow:hidden;
 				}
