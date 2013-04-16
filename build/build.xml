@@ -1138,11 +1138,12 @@
 			<trycatch>
 				<try>
 					<record name="${work.dir}/logs/log.txt" action="start" append="yes" loglevel="debug"/>
+					<!-- weblogic.jspc is deprecated, in case of larger change use appc instead
+					     see http://docs.oracle.com/cd/E23943_01/web.1111/e13712/reference.htm#autoId35 -->
 					<java classname="weblogic.jspc" fork="yes" maxmemory="1024m" failonerror="yes">
 						<arg value="-verbose"/>
 						<arg value="-lineNumbers"/>
 						<arg value="-compileAll"/>
-						<arg value="-k"/>
 						<arg value="-compilerclass"/>
 						<arg value="com.sun.tools.javac.Main"/>
 						<arg value="-webapp"/>
