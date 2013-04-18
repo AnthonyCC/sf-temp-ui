@@ -69,7 +69,7 @@
      	</menu>
      	<menu id="OPR008" title="Event Log" orientation="RIGHT" link="eventlog.do">
 	     	<access-uris>eventlog.do</access-uris>
-	     	<access-roles>TrnAdmin,TrnOperations,TrnPlanning</access-roles>
+	     	<access-roles>TrnAdmin,TrnOperations,TrnPlanning,TrnDispatch</access-roles>
      	</menu>
 		<menu id="OPR009" title="Asset" orientation="RIGHT" link="asset.do?pAssetType=TRUCK">
 	     	<access-uris>asset.do,editasset.do,assettemplate.do,editassettemplate.do,deleteasset.do</access-uris>
