@@ -191,7 +191,7 @@ public class CrisisManagerServlet extends HttpServlet {
 			sendTechnicalMail("Empty standingOrderId passed.");
 			return null;
 		}
-		TimeslotEventModel event = new TimeslotEventModel(EnumTransactionSource.SYSTEM.getCode(), false, 0.00, false, false);		
+		TimeslotEventModel event = new TimeslotEventModel(EnumTransactionSource.SYSTEM.getCode(), false, 0.00, false, false, null);		
 		
 			
 		LOGGER.info( "Processing " + standingOrderId + " standing orders." );
@@ -378,7 +378,7 @@ public class CrisisManagerServlet extends HttpServlet {
 				zoneId = cart.getZoneInfo().getZoneId();
 			
 			TimeslotEventModel event = new TimeslotEventModel(EnumTransactionSource.SYSTEM.getCode(), (cart != null) ? cart.isDlvPassApplied() : false, (cart != null) ? cart.getDeliverySurcharge() : 0.00,
-					(cart != null) ? cart.isDeliveryChargeWaived() : false, Util.isZoneCtActive(zoneId));
+					(cart != null) ? cart.isDeliveryChargeWaived() : false, Util.isZoneCtActive(zoneId), user.getPrimaryKey());
 		
 			FDTimeslot timeslot = FDDeliveryManager.getInstance().getTimeslotsById(rsvModel.getTimeSlotId(), true);
 			
@@ -443,7 +443,7 @@ public class CrisisManagerServlet extends HttpServlet {
 		EnumTransactionSource src = EnumTransactionSource.SYSTEM;
 		CrmAgentModel crmAgent = new CrmAgentModel();
 		crmAgent.setLdapId(agent);
-		FDActionInfo info = new FDActionInfo(src, null, agent, null, crmAgent);
+		FDActionInfo info = new FDActionInfo(src, null, agent, null, crmAgent, null);
 		
 		return info;
 	}

@@ -118,7 +118,7 @@ public class CustomerConsumer implements IConsumer  {
         try {
             
             FDUser user = FDCustomerManager.createNewUser(shipTo, EnumServiceType.getEnum(orderBean.getServiceType()));
-			FDActionInfo actionInfo = new FDActionInfo(EnumTransactionSource.SYSTEM, user.getIdentity(), "AutoOrder", "",IConstants.AGENT);
+			FDActionInfo actionInfo = new FDActionInfo(EnumTransactionSource.SYSTEM, user.getIdentity(), "AutoOrder", "",IConstants.AGENT, user.getPrimaryKey());
             FDCustomerManager.register(actionInfo, erpCust, fdCust, user.getCookie(), false, true, null,EnumServiceType.getEnum(orderBean.getServiceType()));
             
         } catch (FDResourceException fdre) {

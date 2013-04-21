@@ -103,7 +103,7 @@ public class OrderConsumer implements IConsumer {
 		CustomerRatingI rating = new CustomerRatingAdaptor(new ProfileModel(), false, 10);
 
 		try {
-			FDActionInfo actionInfo = new FDActionInfo(EnumTransactionSource.SYSTEM, identity, "AutoOrder", "",IConstants.AGENT);			
+			FDActionInfo actionInfo = new FDActionInfo(EnumTransactionSource.SYSTEM, identity, "AutoOrder", "",IConstants.AGENT, null);			
 			FDCustomerManager.placeOrder(actionInfo, cart,new HashSet<String>(), false, rating, EnumDlvPassStatus.NONE);
 			// Huhh... this is a bit strange ...
 		} catch (FDResourceException fdre) {
@@ -194,7 +194,7 @@ public class OrderConsumer implements IConsumer {
 			System.out.println("zone id is : " + zInfo.getZoneId());
 
 			TimeslotEventModel event = new TimeslotEventModel(EnumTransactionSource.SYSTEM.getCode(), 
-					false, 0.00, false, Util.isZoneCtActive(zInfo.getZoneId()));
+					false, 0.00, false, Util.isZoneCtActive(zInfo.getZoneId()), null);
 
 			
 			FDReservation reservation = FDDeliveryManager.getInstance()

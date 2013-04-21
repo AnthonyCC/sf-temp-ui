@@ -708,7 +708,7 @@ public class SaleCronSessionBean extends SessionBeanSupport {
 				String saleId = i.next();
 				FDIdentity identity = saleIds.get(saleId);
 				FDActionInfo info =
-					new FDActionInfo(EnumTransactionSource.SYSTEM, identity, "SYSTEM", "Could not get AUTHORIZATION", null);
+					new FDActionInfo(EnumTransactionSource.SYSTEM, identity, "SYSTEM", "Could not get AUTHORIZATION", null, null);
 
 				LOGGER.debug("cancel sale-start: " + saleId);
 				sb.cancelOrder(info, saleId, false, 0, true);

@@ -854,7 +854,8 @@ public class FDCustomerManager {
 		Date startTime,
 		Date endTime,
 		String addressId,
-		String initiator)
+		String initiator,
+		String fdUserId)
 		throws FDResourceException {
 
 		ErpCustomerInfoModel custInfo = FDCustomerFactory.getErpCustomerInfo(identity);
@@ -864,7 +865,7 @@ public class FDCustomerManager {
 		custInfo.setRsvEndTime(endTime);
 		custInfo.setRsvAddressId(addressId);
 
-		FDActionInfo aInfo = new FDActionInfo(EnumTransactionSource.WEBSITE, identity, initiator, "Updated Recurring Reservation", null);
+		FDActionInfo aInfo = new FDActionInfo(EnumTransactionSource.WEBSITE, identity, initiator, "Updated Recurring Reservation", null,fdUserId);
 
 		updateCustomerInfo(aInfo, custInfo);
 
@@ -876,7 +877,7 @@ public class FDCustomerManager {
 		if (address == null) {
 			FDDeliveryManager.getInstance().removeReservation(reservation.getPK().getId(),address, event);
 			if (EnumReservationType.RECURRING_RESERVATION.equals(reservation.getReservationType())) {
-				updateRecurringReservation(user.getIdentity(), null, null, null, "CUSTOMER");
+				updateRecurringReservation(user.getIdentity(), null, null, null, "CUSTOMER",user.getPrimaryKey());
 			}
 			return null;
 		}
@@ -921,7 +922,7 @@ public class FDCustomerManager {
 			}
 			FDDeliveryManager.getInstance().removeReservation(reservation.getPK().getId(),address, event);
 			if (EnumReservationType.RECURRING_RESERVATION.equals(reservation.getReservationType())) {
-				updateRecurringReservation(user.getIdentity(), null, null, null, "CUSTOMER");
+				updateRecurringReservation(user.getIdentity(), null, null, null, "CUSTOMER", user.getPrimaryKey());
 			}
 			if (matchingTimeslot != null) {
 				long duration = Math.abs(System.currentTimeMillis() - reservation.getCutoffTime().getTime());

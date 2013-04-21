@@ -183,7 +183,7 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 			// if there was any change (not skipped), then save the SO and log the activity
 			if ( result.getStatus() != Status.SKIPPED ) {
 				try {
-					FDActionInfo info = new FDActionInfo(EnumTransactionSource.STANDING_ORDER, so.getCustomerIdentity(), INITIATOR_NAME, "Updating Standing Order Status", null);
+					FDActionInfo info = new FDActionInfo(EnumTransactionSource.STANDING_ORDER, so.getCustomerIdentity(), INITIATOR_NAME, "Updating Standing Order Status", null, null);
 					LOGGER.info( "Saving SO " + so.getId() );
 					soManager.save( info, so );
 				} catch (FDResourceException re) {

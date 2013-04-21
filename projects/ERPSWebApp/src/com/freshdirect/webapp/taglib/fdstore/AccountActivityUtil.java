@@ -52,7 +52,7 @@ public class AccountActivityUtil implements SessionName {
 
 		FDIdentity identity = currentUser == null ? null : currentUser.getIdentity();
 		
-		FDActionInfo info = new FDActionInfo(src, identity, initiator, note, agent);
+		FDActionInfo info = new FDActionInfo(src, identity, initiator, note, agent, (currentUser!=null)?currentUser.getPrimaryKey():null);
 
 		return info;
 	}

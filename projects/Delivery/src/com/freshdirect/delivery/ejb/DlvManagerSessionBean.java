@@ -452,6 +452,7 @@ public class DlvManagerSessionBean extends GatewaySessionBeanSupport {
 			event.setEventDate(new Date());
 			event.setLatitude(address.getLatitude());
 			event.setLongitude(address.getLongitude());
+			event.setServiceType((address.getServiceType()!=null)?address.getServiceType().getName():"");
 			
 	
 			List<TimeslotEventDetailModel> slots = new ArrayList<TimeslotEventDetailModel>();

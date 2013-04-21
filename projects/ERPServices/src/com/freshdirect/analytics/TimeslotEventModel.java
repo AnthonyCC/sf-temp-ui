@@ -33,8 +33,9 @@ public class TimeslotEventModel extends EventModel {
 	private double longitude;
 	private String serviceType;
 	private String sameDay;
+	private String fdUserId;
 	private List<TimeslotEventDetailModel> detail;
-	public TimeslotEventModel(String transactionSource, boolean dlvPassApplied, double deliveryCharge, boolean deliveryChargeWaived, boolean zoneCtActive)
+	public TimeslotEventModel(String transactionSource, boolean dlvPassApplied, double deliveryCharge, boolean deliveryChargeWaived, boolean zoneCtActive, String fdUserId)
 	{
 		super();
 		this.transactionSource = transactionSource;
@@ -43,6 +44,7 @@ public class TimeslotEventModel extends EventModel {
 		this.deliveryChargeWaived = deliveryChargeWaived;
 		this.zoneCtActive = zoneCtActive;
 		this.filter = false;
+		this.fdUserId= fdUserId; 
 	}
 
 	public TimeslotEventModel() {
@@ -201,5 +203,13 @@ public class TimeslotEventModel extends EventModel {
 
 	public void setSameDay(String sameDay) {
 		this.sameDay = sameDay;
+	}
+
+	public String getFdUserId() {
+		return fdUserId;
+	}
+
+	public void setFdUserId(String fdUserId) {
+		this.fdUserId = fdUserId;
 	}
 }

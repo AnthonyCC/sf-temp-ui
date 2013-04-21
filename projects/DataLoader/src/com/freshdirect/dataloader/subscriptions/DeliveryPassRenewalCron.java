@@ -288,7 +288,7 @@ public class DeliveryPassRenewalCron {
 	}
 
 	private static FDActionInfo getFDActionInfo(FDIdentity identity) {
-		return new FDActionInfo(EnumTransactionSource.SYSTEM,identity,CLASS_NAME,"",null );
+		return new FDActionInfo(EnumTransactionSource.SYSTEM,identity,CLASS_NAME,"",null ,null);
 	}
 
 	private static FDIdentity getFDIdentity(String erpCustomerID) {

@@ -364,7 +364,7 @@ public class GiftCardControllerTag extends com.freshdirect.framework.webapp.Body
                     	UserUtil.initializeGiftCart(user);
                     	
                     	
-                    	FDActionInfo actionInfo = new FDActionInfo(EnumTransactionSource.CUSTOMER_REP, user.getIdentity(), "GenerateNewGiftCard", "",IConstants.AGENT);
+                    	FDActionInfo actionInfo = new FDActionInfo(EnumTransactionSource.CUSTOMER_REP, user.getIdentity(), "GenerateNewGiftCard", "",IConstants.AGENT, user.getPrimaryKey());
                     	CustomerRatingI rating = new CustomerRatingAdaptor(new ProfileModel(), false, 10);                    	            			                    	
                     	Collection ccards = FDCustomerManager.getPaymentMethods(user.getIdentity());
             			Iterator iterator= ccards.iterator();

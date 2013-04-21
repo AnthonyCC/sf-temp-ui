@@ -165,7 +165,7 @@ public class StandingOrderUtil {
 				try {
 					if ( info == null ) {
 						info = new FDActionInfo( EnumTransactionSource.STANDING_ORDER, so.getCustomerIdentity(), 
-								INITIATOR_NAME, "Resetting Standing Order Error Status", null );
+								INITIATOR_NAME, "Resetting Standing Order Error Status", null, null);
 					} else {
 						info.setNote( "Resetting Standing Order Error Status" );
 					}
@@ -376,7 +376,7 @@ public class StandingOrderUtil {
 		// making a reservation ...
 		FDActionInfo reserveActionInfo = info;
 		if(reserveActionInfo == null) {
-			reserveActionInfo = new FDActionInfo( EnumTransactionSource.STANDING_ORDER, customer, INITIATOR_NAME, "Reserving timeslot for Standing Order", null );
+			reserveActionInfo = new FDActionInfo( EnumTransactionSource.STANDING_ORDER, customer, INITIATOR_NAME, "Reserving timeslot for Standing Order", null,null);
 		} else {
 			reserveActionInfo.setNote("Reserving timeslot for Standing Order");
 		}
@@ -401,7 +401,7 @@ public class StandingOrderUtil {
 				continue;
 			}
 			if ( event == null ) {
-				event = new TimeslotEventModel(EnumTransactionSource.STANDING_ORDER.getCode(), false, 0.00, false, false);
+				event = new TimeslotEventModel(EnumTransactionSource.STANDING_ORDER.getCode(), false, 0.00, false, false,(customerUser!=null)?customerUser.getPrimaryKey():null);
 			}	
 			deliveryAddress=FDCustomerManager.getAddress(customer,deliveryAddressId);
 			try { 
@@ -560,9 +560,10 @@ public class StandingOrderUtil {
 			
 			FDActionInfo orderActionInfo = info; 
 			if (orderActionInfo == null){
-				orderActionInfo = new FDActionInfo( EnumTransactionSource.STANDING_ORDER, customer, INITIATOR_NAME, "Placing order for Standing Order", null );
+				orderActionInfo = new FDActionInfo( EnumTransactionSource.STANDING_ORDER, customer, INITIATOR_NAME, "Placing order for Standing Order", null,customerUser.getUserId());
 			} else{
 				orderActionInfo.setNote("Placing order for Standing Order");
+				orderActionInfo.setFdUserId(customerUser.getUserId());
 			}
 			CustomerRatingI cra = new CustomerRatingAdaptor( customerUser.getFDCustomer().getProfile(), customerUser.isCorporateUser(), customerUser.getAdjustedValidOrderCount() );
 

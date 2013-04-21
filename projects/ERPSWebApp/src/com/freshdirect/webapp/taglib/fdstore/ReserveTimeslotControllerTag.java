@@ -44,7 +44,7 @@ public class ReserveTimeslotControllerTag extends AbstractControllerTag {
 			zoneId = cart.getZoneInfo().getZoneId();
 		TimeslotEventModel event = new TimeslotEventModel((user.getApplication()!=null)?user.getApplication().getCode():"",
 				(cart!=null)?cart.isDlvPassApplied():false, (cart!=null)?cart.getDeliverySurcharge():0.00,
-						(cart!=null)?cart.isDeliveryChargeWaived():false, Util.isZoneCtActive(zoneId));
+						(cart!=null)?cart.isDeliveryChargeWaived():false, Util.isZoneCtActive(zoneId), (user!=null)?user.getPrimaryKey():null);
 	
 
 		try {
@@ -111,7 +111,7 @@ public class ReserveTimeslotControllerTag extends AbstractControllerTag {
 	}
 	
 	private void changeReservation(FDUserI user, FDReservation reservation, FDTimeslot timeslot, TimeslotEventModel event) throws FDResourceException, ReservationException {
-		FDActionInfo aInfo = new FDActionInfo(EnumTransactionSource.SYSTEM, user.getIdentity(), "SYSTEM", "Changed Pre-Reservation", null);
+		FDActionInfo aInfo = new FDActionInfo(EnumTransactionSource.SYSTEM, user.getIdentity(), "SYSTEM", "Changed Pre-Reservation", null, user.getPrimaryKey());
 		FDReservation rsv = FDCustomerManager.changeReservation(user.getIdentity(), reservation, timeslot, this.rsvType, this.addressId, aInfo, chefstable, event);
 		user.setReservation(rsv);
 	}

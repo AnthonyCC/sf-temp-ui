@@ -138,7 +138,7 @@ public static IOrderModel getOrderModel(ILocationModel location, String orderNum
 			
 			DlvManagerSB dlvSB = FDDeliveryManager.getInstance().getDlvManagerHome().create();
 			IOrderModel order = null;
-			TimeslotEventModel event = new TimeslotEventModel(EnumTransactionSource.SYSTEM.getCode(),false,0.00, false, false);
+			TimeslotEventModel event = new TimeslotEventModel(EnumTransactionSource.SYSTEM.getCode(),false,0.00, false, false, null);
 			int locationsProcessedCnt = 0;
 				
 			for(ILocationModel location : locations) {

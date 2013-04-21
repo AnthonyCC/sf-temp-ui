@@ -140,7 +140,7 @@ public class CheckoutControllerTag extends AbstractControllerTag {
 		
 		TimeslotEventModel event = new TimeslotEventModel((currentUser.getApplication()!=null)?currentUser.getApplication().getCode():"",
 				(cart!=null)?cart.isDlvPassApplied():false, (cart!=null)?cart.getDeliverySurcharge():0.00,
-						(cart!=null)?cart.isDeliveryChargeWaived():false, Util.isZoneCtActive(zoneId));
+						(cart!=null)?cart.isDeliveryChargeWaived():false, Util.isZoneCtActive(zoneId), currentUser.getPrimaryKey());
 		try {
 			if ( "setDeliveryAddress".equalsIgnoreCase( action ) ) {
 				try {

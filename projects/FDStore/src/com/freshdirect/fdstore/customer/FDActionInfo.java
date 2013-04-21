@@ -19,13 +19,14 @@ public class FDActionInfo implements Serializable {
 	private CrmAgentModel agent;
     private boolean isPR1;
     private String masqueradeAgent;
+    private String fdUserId;
     
     
-	public FDActionInfo( EnumTransactionSource source, FDIdentity identity, String initiator, String note, CrmAgentModel agent) {
-		this( source, identity, initiator, note, agent, null );
+	public FDActionInfo( EnumTransactionSource source, FDIdentity identity, String initiator, String note, CrmAgentModel agent, String fdUserId) {
+		this( source, identity, initiator, note, agent, null,fdUserId );
 	}
 	
-	public FDActionInfo( EnumTransactionSource source, FDIdentity identity, String initiator, String note, CrmAgentModel agent, EnumAccountActivityType type) {
+	public FDActionInfo( EnumTransactionSource source, FDIdentity identity, String initiator, String note, CrmAgentModel agent, EnumAccountActivityType type, String fdUserId) {
 		this.identity = identity;
 		this.source = source;
 		this.initiator = initiator;
@@ -33,6 +34,7 @@ public class FDActionInfo implements Serializable {
 		this.type = type;
 		this.agent = agent;		
 		this.masqueradeAgent = masqueradeAgentTL.get();
+		this.fdUserId = fdUserId;
 	}
 	
 	
@@ -137,6 +139,14 @@ public class FDActionInfo implements Serializable {
 
 	public void setPR1(boolean isPR1) {
 		this.isPR1 = isPR1;
+	}
+
+	public String getFdUserId() {
+		return fdUserId;
+	}
+
+	public void setFdUserId(String fdUserId) {
+		this.fdUserId = fdUserId;
 	}
 
 }

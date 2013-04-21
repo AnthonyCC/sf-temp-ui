@@ -205,7 +205,7 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag<Result> {
 			
 		TimeslotEventModel event = new TimeslotEventModel((user.getApplication()!=null)?user.getApplication().getCode():"",
 				cart.isDlvPassApplied(),cart.getDeliverySurcharge(), cart.isDeliveryChargeWaived(),
-				Util.isZoneCtActive(zoneId));
+				Util.isZoneCtActive(zoneId), user.getPrimaryKey());
 		
 		List<DateRange> dateRanges = new ArrayList<DateRange>();
 		dateRanges.add(baseRange);
