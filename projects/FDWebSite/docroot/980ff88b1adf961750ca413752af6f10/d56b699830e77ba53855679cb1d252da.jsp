@@ -68,9 +68,10 @@
 	if ( erp_id == null || cust_id == null || identity == null ) {
 		out.print("Customer not found.");	
 	}
+	FDUser loginUser =null;
 	try {
 		
-		FDUser loginUser = FDCustomerManager.recognize( identity );
+		loginUser = FDCustomerManager.recognize( identity );
     	// masquerade
     	loginUser.setMasqueradeAgent(agentId);
 
@@ -89,7 +90,7 @@
 	LOGGER.info("customer ID: " + customerId);
 	
 	try {
-		FDActionInfo ai = new FDActionInfo( EnumTransactionSource.WEBSITE, identity, "Masquerade login", agentId + " logged in as " + customerId, null, EnumAccountActivityType.MASQUERADE_LOGIN );
+		FDActionInfo ai = new FDActionInfo( EnumTransactionSource.WEBSITE, identity, "Masquerade login", agentId + " logged in as " + customerId, null, EnumAccountActivityType.MASQUERADE_LOGIN, loginUser.getPrimaryKey());
 		ActivityLog.getInstance().logActivity( ai.createActivity() );
 	} catch ( FDResourceException ex ) {
 		ex.printStackTrace();
