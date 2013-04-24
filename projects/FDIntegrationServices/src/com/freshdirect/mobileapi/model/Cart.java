@@ -723,24 +723,26 @@ public class Cart {
         boolean isEBTPayment = (null!=paymentMethod && EnumPaymentMethodType.EBT.equals(paymentMethod.getPaymentMethodType()));
         if(!isEBTPayment){
 	        //Delivery Charge 
-	        if (cartDetail.isDlvPassApplied()) {
-	        	if(cart.getDeliveryCharge()==0)
-	        		cartDetail.addSummaryLineCharge(new SummaryLineCharge(0, false, false, false, "Delivery Charge", false, DeliveryPassUtil.getDlvPassAppliedMessage(user.getFDSessionUser())));
-	        	else
-	        		cartDetail.addSummaryLineCharge(new SummaryLineCharge(cart.getDeliveryCharge(), cart.isDeliveryChargeTaxable(), cart
-	                        .isDeliveryChargeWaived(), false, "Delivery Charge"));
-	        } else {
-	            double deliveyCharge = cart.getDeliverySurcharge();
-	            if (cart.isDeliveryChargeWaived()) {
-	                deliveyCharge = 0;
-	            }
-	            else{
-	            	 deliveyCharge = cart.getDeliveryCharge();
-	            }
-	            	
-	            cartDetail.addSummaryLineCharge(new SummaryLineCharge(deliveyCharge, cart.isDeliveryChargeTaxable(), cart
-	                    .isDeliveryChargeWaived(), false, "Delivery Charge"));
-	        }
+            if (cartDetail.isDlvPassApplied()) {
+
+                cartDetail.addSummaryLineCharge(new SummaryLineCharge(0, false, false, false, "Delivery Charge", false, DeliveryPassUtil
+                        .getDlvPassAppliedMessage(user.getFDSessionUser())));
+            } else {
+                double deliveyCharge = cart.getChargeAmount(EnumChargeType.DELIVERY);
+                if (cart.isChargeWaived(EnumChargeType.DELIVERY)) {
+                    deliveyCharge = 0;
+                }
+                cartDetail.addSummaryLineCharge(new SummaryLineCharge(deliveyCharge, cart.isChargeTaxable(EnumChargeType.DELIVERY), 
+                		cart.isChargeWaived(EnumChargeType.DELIVERY), false, "Delivery Charge"));
+            }
+            if((int)cart.getChargeAmount(EnumChargeType.DLVPREMIUM) > 0){
+                double deliveyPremium = cart.getChargeAmount(EnumChargeType.DLVPREMIUM);
+                if (cart.isChargeWaived(EnumChargeType.DLVPREMIUM)) {
+                	deliveyPremium = 0;
+                }
+                cartDetail.addSummaryLineCharge(new SummaryLineCharge(deliveyPremium, cart.isChargeTaxable(EnumChargeType.DLVPREMIUM), 
+                		cart.isChargeWaived(EnumChargeType.DLVPREMIUM), false, "Delivery Premium (Hamptons)"));
+            }
 	
 	        //Misc Charge
 	        //        if (cart.isMiscellaneousChargeWaived()) {

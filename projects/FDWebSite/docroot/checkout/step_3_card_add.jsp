@@ -64,22 +64,40 @@ double cartTotal = user.getShoppingCart().getTotal();
 							<td align="left">Delivery Charge:</td>
 							<td align="right">
 								<%	
-									String dlvCharge = JspMethods.formatPrice( cart.getDeliverySurcharge() );
+									String dlvCharge = JspMethods.formatPrice(cart.getChargeAmount(EnumChargeType.DELIVERY));
 									if(cart.isDlvPassApplied()) {
 								%>
-									<%= cart.getDeliveryCharge()>0?JspMethods.formatPrice(cart.getDeliveryCharge()):DeliveryPassUtil.getDlvPassAppliedMessage(user) %>
-									
-								<%	} else if (cart.isDeliveryChargeWaived()) {
-										if((int)cart.getDeliverySurcharge() == 0){
+									<%= DeliveryPassUtil.getDlvPassAppliedMessage(user) %>
+								<%	} else if (cart.isChargeWaived(EnumChargeType.DELIVERY)) {
+										if((int)cart.getChargeAmount(EnumChargeType.DELIVERY)== 0){
 								%>     
 										Free! 
 										<% }else{ %> Free!(<%= dlvCharge %> waived)<% } %>
 												
 <%	} else { %>
-										<%= (int)cart.getDeliverySurcharge() == 0 ? "Free!" : JspMethods.formatPrice(cart.getDeliveryCharge()) %>
+										<%= (int)cart.getChargeAmount(EnumChargeType.DELIVERY) == 0 ? "Free!" : dlvCharge %>
 <%	} %>
 						</td>
 </tr>
+<%if (cart.getChargeAmount(EnumChargeType.DLVPREMIUM) > 0) {  %>
+<tr>
+							<td align="left">Delivery Premium (Hamptons):</td>
+							<td align="right">
+								<%	
+									String dlvPremium = JspMethods.formatPrice( cart.getChargeAmount(EnumChargeType.DLVPREMIUM));
+									if (cart.isChargeWaived(EnumChargeType.DLVPREMIUM)) {
+										if((int)cart.getChargeAmount(EnumChargeType.DLVPREMIUM) == 0){
+								%>     
+										Free! 
+										<% }else{ %> Free!(<%= dlvPremium %> waived)<% } %>
+												
+								<%  } else { %>
+										<%= (int)cart.getChargeAmount(EnumChargeType.DLVPREMIUM) == 0 ? "Free!" : dlvPremium %>
+								<%}%>
+						</td>
+</tr>
+<% } %>
+						
 						<%if (cart.getTotalDiscountValue() > 0) {
 								List discounts = cart.getDiscounts();
 									for (Iterator iter = discounts.iterator(); iter.hasNext();) {

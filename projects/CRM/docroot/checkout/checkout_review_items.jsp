@@ -643,15 +643,13 @@
 				}if (cart.getChargeAmount(EnumChargeType.DLVPREMIUM) > 0) {
 			%>
 					<tr valign="top" class="orderSummary">
-						<td colspan="3" align="right">Delivery Premium<%if(cart.isChargeWaived(EnumChargeType.DLVPREMIUM)){%> (waived)<%}%>:</td>
-						<td colspan="1" align="right"><%= (cart.isChargeWaived(EnumChargeType.DLVPREMIUM))?0.0:JspMethods.formatPrice(cart.getChargeAmountDiscountApplied(EnumChargeType.DLVPREMIUM)) %></td>
+						<td colspan="3" align="right">Delivery Premium (Hamptons)<%if(cart.isChargeWaived(EnumChargeType.DLVPREMIUM)){%> (waived)<%}%>:</td>
+						<td colspan="1" align="right"><%= (cart.isChargeWaived(EnumChargeType.DLVPREMIUM))?"$0.0":JspMethods.formatPrice(cart.getChargeAmountDiscountApplied(EnumChargeType.DLVPREMIUM)) %></td>
 						<td><%= cart.isChargeTaxable(EnumChargeType.DLVPREMIUM) && !cart.isChargeWaived(EnumChargeType.DLVPREMIUM) ? "&nbsp;<strong>T</strong>":""%></td>
 						<td colspan="2"></td>
 					</tr>
 			<%
-				}
-
-				if (cart.getMiscellaneousCharge() > 0.0) {%>
+				}if (cart.getMiscellaneousCharge() > 0.0) {%>
 					<tr valign="top" class="orderSummary">
 						<td colspan="3" align="right"><a href="javascript:popup('/shared/fee_info.jsp?type=fuel','large');">Fuel Surcharge</a><%if(cart.isMiscellaneousChargeWaived()){%> (waived)<%}%>:</td>
 						<td align="right"><%if(cart.isMiscellaneousChargeWaived()){%>$0.00<%}else{%><%= JspMethods.formatPrice(cart.getMiscellaneousCharge()) %><%}%></td>

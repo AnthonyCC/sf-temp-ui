@@ -59,23 +59,40 @@ double cartTotal = ((FDUserI)session.getAttribute(SessionName.USER)).getShopping
 							<td align="right" style="color:#666666;font-weight:bold;">
 								<%	
 									FDCartModel cart = user.getShoppingCart();
-									String dlvCharge = JspMethods.formatPrice( cart.getDeliverySurcharge() );
+									String dlvCharge = JspMethods.formatPrice(cart.getChargeAmount(EnumChargeType.DELIVERY));
 									if(cart.isDlvPassApplied()) {
 								%>
-									<%= cart.getDeliveryCharge()>0?JspMethods.formatPrice(cart.getDeliveryCharge()):DeliveryPassUtil.getDlvPassAppliedMessage(user) %>
+									<%= DeliveryPassUtil.getDlvPassAppliedMessage(user) %>
 									
-									
-								<%	} else if (cart.isDeliveryChargeWaived()) {
-										if((int)cart.getDeliverySurcharge() == 0){
+								<%	} else if (cart.isChargeWaived(EnumChargeType.DELIVERY)) {
+										if((int)cart.getChargeAmount(EnumChargeType.DELIVERY) == 0){
 								%>     
 										Free! 
 										<% }else{ %> Free!(<%= dlvCharge %> waived)<% } %>
 												
 <%	} else { %>
-										<%= (int)cart.getDeliverySurcharge() == 0 ? "Free!" : JspMethods.formatPrice(cart.getDeliveryCharge()) %>
+										<%= (int)cart.getChargeAmount(EnumChargeType.DELIVERY) == 0 ? "Free!" : dlvCharge %>
 <%	} %>
 						</td>
 </tr>
+<%if (cart.getChargeAmount(EnumChargeType.DLVPREMIUM) > 0) {  %>
+<tr>
+							<td align="left" style="color:#666666;font-weight:bold;">Delivery Premium (Hamptons):</td>
+							<td align="right" style="color:#666666;font-weight:bold;">
+								<%	
+									String dlvPremium = JspMethods.formatPrice( cart.getChargeAmount(EnumChargeType.DLVPREMIUM));
+									if (cart.isChargeWaived(EnumChargeType.DLVPREMIUM)) {
+										if((int)cart.getChargeAmount(EnumChargeType.DLVPREMIUM) == 0){
+								%>     
+										Free! 
+										<% }else{ %> Free!(<%= dlvPremium %> waived)<% } %>
+												
+								<%  } else { %>
+										<%= (int)cart.getChargeAmount(EnumChargeType.DLVPREMIUM) == 0 ? "Free!" : dlvPremium %>
+								<%}%>
+						</td>
+</tr>
+<% } %>
 						<tr>
 							<td align="left" style="color:#666666;font-weight:bold;"><A HREF="javascript:popup('/help/estimated_price.jsp','small')">Estimated </A>Total:</td>
 							<td align="right" style="color:#666666;font-weight:bold;"><%= currencyFormatter.format(cart.getTotal()) %></td>

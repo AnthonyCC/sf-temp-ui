@@ -96,10 +96,10 @@ if(cart.hasInvoice()) {
 	%>
 
 		<td colspan="3" align="right">Delivery Charge:</td>
-		<td align="right"><%= cart.getDeliveryCharge()>0?JspMethods.formatPrice(cart.getDeliveryCharge()):DeliveryPassUtil.getDlvPassAppliedMessage(user) %></td>
+		<td align="right"><%= DeliveryPassUtil.getDlvPassAppliedMessage(user) %></td>
 	<%
 	}
-	else if (cart.isDeliveryChargeWaived()) {
+	else if (cart.isChargeWaived(EnumChargeType.DELIVERY)) {
 		%>
 		<td colspan="3" align="right">Delivery Charge (waived):</td>
 		<td align="right">$0.00</td>
@@ -107,11 +107,29 @@ if(cart.hasInvoice()) {
 	} else {
 		%>
 		<td colspan="3" align="right">Delivery Charge:</td>
-		<td><%= currencyFormatter.format(cart.hasInvoice() ? cart.getInvoicedDeliveryCharge() : cart.getDeliveryCharge()) %></td>
+		<td><%= currencyFormatter.format(cart.hasInvoice() ? cart.getInvoicedDeliverySurcharge() : cart.getChargeAmount(EnumChargeType.DELIVERY)) %></td>
 	<%}%>
-	<td align="center"><b><%=cart.isDeliveryChargeTaxable() && !cart.isDeliveryChargeWaived() ? "&nbsp;T" : "" %></b></td>
+	<td align="center"><b><%=cart.isChargeTaxable(EnumChargeType.DELIVERY) && !cart.isChargeWaived(EnumChargeType.DELIVERY) ? "&nbsp;T" : "" %></b></td>
 	<td colspan="2"></td>
 </tr>
+
+<% if(cart.getChargeAmount(EnumChargeType.DLVPREMIUM) > 0){ %>
+<tr align="right" class="orderSummary">
+<%
+	if (cart.isChargeWaived(EnumChargeType.DLVPREMIUM)) {
+		%>
+		<td colspan="3" align="right">Delivery Premium (waived):</td>
+		<td align="right">$0.00</td>
+		<%
+	} else {
+		%>
+		<td colspan="3" align="right">Delivery Premium (Hamptons):</td>
+		<td><%= currencyFormatter.format(cart.hasInvoice() ? cart.getInvoicedDeliveryPremium() : cart.getChargeAmount(EnumChargeType.DLVPREMIUM)) %></td>
+	<%}%>
+	<td align="center"><b><%=cart.isChargeTaxable(EnumChargeType.DLVPREMIUM) && !cart.isChargeWaived(EnumChargeType.DLVPREMIUM) ? "&nbsp;T" : "" %></b></td>
+	<td colspan="2"></td>
+</tr>
+<%} %>
 
 <% if (cart.getMiscellaneousCharge() > 0.0) {%>
 		<tr valign="top" class="orderSummary" align="right">

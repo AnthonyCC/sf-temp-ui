@@ -307,7 +307,7 @@
 			<td colspan="2">Delivery Premium (waived): </td>
 			<td align="right">$0.00</td>
 		<%}else{%>
-			<td colspan="2">Delivery Premium: &nbsp;&nbsp; 
+			<td colspan="2">Delivery Premium (Hamptons): &nbsp;&nbsp; 
 			<%if (isSubmitOrderStep ) {%>
             	Force Waive <input type="checkbox" value="true" <%=((FDCartModel)order).isCsrWaivedDeliveryPremium()?"checked":"" %> name="waive_delivery_premium_fee">
 			<%}%>

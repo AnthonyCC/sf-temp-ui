@@ -152,14 +152,19 @@ final int W_YA_ORDER_DETAILS_TOTAL = 970;
 							<div class="fclear"></div>
 						</td>
 					</tr>
-					<% } else if (cart.getDeliverySurcharge() > 0) { %>
+					<% } else if (cart.getChargeAmount(EnumChargeType.DELIVERY) > 0) { %>
 					<tr>
-						<td class="aleft text12 label leftPad">Delivery Charge<% if (cart.isDeliveryChargeWaived()) { %> (waived)<% } %>:</td>
-						<td class="aright text12"><% if (cart.isDeliveryChargeWaived()) { %>$0.00<% }else{ %><%= JspMethods.formatPrice(cart.getDeliverySurcharge()) %><% } %></td>
-						<td class="aleft text12 rightPad"><%= cart.isDeliveryChargeTaxable() && !cart.isDeliveryChargeWaived() ? "&nbsp;T" : "" %></td>
+						<td class="aleft text12 label leftPad">Delivery Charge<% if (cart.isChargeWaived(EnumChargeType.DELIVERY)) { %> (waived)<% } %>:</td>
+						<td class="aright text12"><% if (cart.isChargeWaived(EnumChargeType.DELIVERY)) { %>$0.00<% }else{ %><%= JspMethods.formatPrice(cart.getChargeAmount(EnumChargeType.DELIVERY)) %><% } %></td>
+						<td class="aleft text12 rightPad"><%= cart.isChargeTaxable(EnumChargeType.DELIVERY) && !cart.isChargeWaived(EnumChargeType.DELIVERY) ? "&nbsp;T" : "" %></td>
 					</tr>
-					<% } %>
-					<% if (cart.getMiscellaneousCharge() > 0.0) { %>
+					<% } if (cart.getChargeAmount(EnumChargeType.DLVPREMIUM) > 0) { %>
+					<tr>
+					<td class="aleft text12 label leftPad">Delivery Premium (Hamptons)<% if (cart.isChargeWaived(EnumChargeType.DLVPREMIUM)) { %> (waived)<% } %>:</td>
+					<td class="aright text12"><% if (cart.isChargeWaived(EnumChargeType.DLVPREMIUM)) { %>$0.00<% }else{ %><%= JspMethods.formatPrice(cart.getChargeAmount(EnumChargeType.DLVPREMIUM)) %><% } %></td>
+					<td class="aleft text12 rightPad"><%= cart.isChargeTaxable(EnumChargeType.DLVPREMIUM) && !cart.isChargeWaived(EnumChargeType.DLVPREMIUM) ? "&nbsp;T" : "" %></td>
+				</tr>
+				<% }if (cart.getMiscellaneousCharge() > 0.0) { %>
 					<tr>
 						<td class="aleft text12 label leftPad"><a href="javascript:popup('/shared/fee_info.jsp?type=fuel','large');">Fuel Surcharge</a><%if (cart.isMiscellaneousChargeWaived()) {%> (waived)<% } %>:</td>
 						<td class="aright text12"><%if(cart.isMiscellaneousChargeWaived()){%>$0.00<% }else{ %><%= JspMethods.formatPrice(cart.getMiscellaneousCharge()) %><% } %></td>

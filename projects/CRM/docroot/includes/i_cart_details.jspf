@@ -306,7 +306,7 @@
 		displayString = "Delivery Premium (waived):";
 		value.append("$0.00");
 	    } else {
-		displayString = "Delivery Premium:";
+		displayString = "Delivery Premium (Hamptons):";
 		value.append(JspMethods.formatPrice(order.hasInvoice() ? order.getInvoicedDeliveryPremium() : order.getChargeAmountDiscountApplied(EnumChargeType.DLVPREMIUM)));
 		value.append(order.isChargeTaxable(EnumChargeType.DLVPREMIUM) ? "&nbsp;T" : "");
 	    }
