@@ -630,7 +630,7 @@ FDIdentity identity = user.getIdentity();
         <%} if ((int)cart.getChargeAmount(EnumChargeType.DLVPREMIUM) > 0) {
 		%>
 		<tr valign="top" class="orderSummary">
-			<td colspan="3" align="right">Delivery Premium<% if(cart.isChargeWaived(EnumChargeType.DLVPREMIUM)){%> (waived)<%}%>:</td>
+			<td colspan="3" align="right">Delivery Premium (Hamptons)<% if(cart.isChargeWaived(EnumChargeType.DLVPREMIUM)){%> (waived)<%}%>:</td>
 			<td colspan="1" align="right"><%if(cart.isChargeWaived(EnumChargeType.DLVPREMIUM)){%>$0.00<%}else{%><%=JspMethods.formatPrice(cart.getChargeAmount(EnumChargeType.DLVPREMIUM))%><%}%></td>
 			<td><b><%=cart.isChargeTaxable(EnumChargeType.DLVPREMIUM) && !cart.isChargeWaived(EnumChargeType.DLVPREMIUM) ? "&nbsp;T" : "" %></b></td>
 			<td></td>

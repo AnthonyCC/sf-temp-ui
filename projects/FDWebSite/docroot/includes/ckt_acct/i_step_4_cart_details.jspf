@@ -302,7 +302,7 @@ int idx = 0;
 	}if (cart.getChargeAmount(EnumChargeType.DLVPREMIUM) > 0) {
 			%>
 		<tr valign="top" class="orderSummary">
-			<td colspan="3" align="right">Delivery Premium<%if(cart.isChargeWaived(EnumChargeType.DLVPREMIUM)){%> (waived)<%}%>:</td>
+			<td colspan="3" align="right">Delivery Premium (Hamptons)<%if(cart.isChargeWaived(EnumChargeType.DLVPREMIUM)){%> (waived)<%}%>:</td>
 			<td align="right"><%= (cart.isChargeWaived(EnumChargeType.DLVPREMIUM))?"$0.0":JspMethods.formatPrice(cart.getChargeAmount(EnumChargeType.DLVPREMIUM)) %></td>
 			<td></td>
 			<td colspan="6"><%= cart.isChargeTaxable(EnumChargeType.DLVPREMIUM) && !cart.isChargeWaived(EnumChargeType.DLVPREMIUM) ? "&nbsp;T":""%></td>
