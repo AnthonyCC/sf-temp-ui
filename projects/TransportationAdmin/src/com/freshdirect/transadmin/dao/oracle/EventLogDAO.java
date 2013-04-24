@@ -90,7 +90,7 @@ public class EventLogDAO implements IEventLogDAO   {
 	
 	private static final String INSERT_EVENTLOG_SUBTYPE = " INSERT INTO TRANSP.EVENTSUBTYPE (EVENTSUBTYPENAME,DESCRIPTION,EVENTTYPEID, MSGGROUP_ID, CREATEDBY, DATECREATED) VALUES (?,?,?,?,?,?) ";
 	
-	private static final String INSERT_EVENTLOG_MSGGROUP = " INSERT INTO TRANSP.EVENTLOG_MESSAGEGROUP (GROUP_NAME, EMAIL, CREATEDBY, CROMOD_DATE) VALUES (?,?,?,?) ";
+	private static final String INSERT_EVENTLOG_MSGGROUP = " INSERT INTO TRANSP.EVENTLOG_MESSAGEGROUP (GROUP_NAME, EMAIL, CREATEDBY, DATECREATED) VALUES (?,?,?,?) ";
 	
 	
 	/*Mot Event Log*/
@@ -121,7 +121,7 @@ public class EventLogDAO implements IEventLogDAO   {
 	
 	private static final String GET_MOTEVENTMESSAGEGROUP_QRY = " select * from transp.moteventlog_messagegroup ";
 	
-	private static final String INSERT_MOTEVENTLOG_MSGGROUP = " INSERT INTO TRANSP.MOTEVENTLOG_MESSAGEGROUP (GROUP_NAME, EMAIL, CREATEDBY, CROMOD_DATE) VALUES (?,?,?,?) ";
+	private static final String INSERT_MOTEVENTLOG_MSGGROUP = " INSERT INTO TRANSP.MOTEVENTLOG_MESSAGEGROUP (GROUP_NAME, EMAIL, CREATEDBY, DATECREATED) VALUES (?,?,?,?) ";
 		
 	private static final String CLEAR_MOTEVENTLOG_MSGGROUP = "DELETE from transp.moteventlog_messagegroup ";
 	

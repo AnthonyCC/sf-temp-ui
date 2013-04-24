@@ -28,7 +28,7 @@ public class Zone implements java.io.Serializable {
     private BigInteger stemFromTime;
     private BigInteger stemToTime;
     //private BigInteger maxstemTime;
-    
+    private BigDecimal svcAdjReductionFactor;
 	private DlvServiceTimeType defaultServiceTimeType;
 	
 	private List amZoneSupervisors = new ResourceList();
@@ -241,6 +241,14 @@ public class Zone implements java.io.Serializable {
 
 	public void setSteeringRadius(BigDecimal steeringRadius) {
 		this.steeringRadius = steeringRadius;
+	}
+
+	public BigDecimal getSvcAdjReductionFactor() {
+		return svcAdjReductionFactor;
+	}
+
+	public void setSvcAdjReductionFactor(BigDecimal svcAdjReductionFactor) {
+		this.svcAdjReductionFactor = svcAdjReductionFactor;
 	}
 	
 

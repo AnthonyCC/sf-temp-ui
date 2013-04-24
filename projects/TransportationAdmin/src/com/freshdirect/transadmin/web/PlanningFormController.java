@@ -292,7 +292,6 @@ public class PlanningFormController extends AbstractFormController {
 		if(!TransStringUtil.isEmpty(model.getIsBullpen()) && "Y".equalsIgnoreCase(model.getIsBullpen())) {
 			model.setZoneCode("");
 			model.setZoneName("");
-			model.setOriginFacility(null);
 			model.setDestinationFacility(null);
 			model.setEquipmentTypeS("");
 		}

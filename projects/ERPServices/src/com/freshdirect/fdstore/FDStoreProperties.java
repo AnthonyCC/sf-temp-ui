@@ -255,8 +255,8 @@ public class FDStoreProperties {
     private static final String MAX_FEATURED_DEALS_PER_LINE = "fdstore.deals.maxFeaturedDealsPerLine";
     private static final String MIN_FEATURED_DEALS_FOR_PAGE = "fdstore.deals.minFeaturedDeals";
     private static final String TEMP_DIR = "tmpdir";
-    private static final String PROP_GEOCODE_USELOCATIONDB = "fdstore.geocode.useLocationDB";
-    private static final String PROP_ROUTING_SENDADDRESS = "fdstore.routing.sendAddress";
+    
+    private static final String PROP_UPS_BLACKHOLE_ENABLED = "fdstore.ups.blackhole.enabled";
 
     // Smart Search
     /**
@@ -847,9 +847,8 @@ public class FDStoreProperties {
         defaults.put(MIN_FEATURED_DEALS_FOR_PAGE, "3");
 
         defaults.put(TEMP_DIR, "/tmp");
-
-        defaults.put(PROP_GEOCODE_USELOCATIONDB, "true");
-        defaults.put(PROP_ROUTING_SENDADDRESS, "false");
+        
+        defaults.put(PROP_UPS_BLACKHOLE_ENABLED, "false");
 
         defaults.put(SMART_SEARCH_ENABLED, "false");
         defaults.put(DID_YOU_MEAN_RATIO, "5.0");
@@ -1905,17 +1904,13 @@ public class FDStoreProperties {
         return Integer.parseInt(get(MIN_FEATURED_DEALS_FOR_PAGE));
     }
 
-    public static boolean canUseLocationDB() {
-    	 return (Boolean.valueOf(get(PROP_GEOCODE_USELOCATIONDB))).booleanValue();
-    }
-
-    public static boolean canSendRoutingAddress() {
-    	return (Boolean.valueOf(get(PROP_ROUTING_SENDADDRESS))).booleanValue();
+    public static boolean isUPSBlackholeEnabled() {
+    	return (Boolean.valueOf(get(PROP_UPS_BLACKHOLE_ENABLED))).booleanValue();
     }
 
     public static boolean isCmsReadonlyOptimization() {
         return Boolean.valueOf(get(PROP_CMS_MOSTLY_READONLY)).booleanValue();
-    }
+    }	
 
     /**
      * Is Smart Search feature enabled?

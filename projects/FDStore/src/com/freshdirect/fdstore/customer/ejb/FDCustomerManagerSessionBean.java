@@ -101,7 +101,9 @@ import com.freshdirect.customer.ejb.ErpFraudPreventionSB;
 import com.freshdirect.customer.ejb.ErpLogActivityCommand;
 import com.freshdirect.customer.ejb.ErpSaleEB;
 import com.freshdirect.delivery.EnumReservationType;
+import com.freshdirect.delivery.InvalidAddressException;
 import com.freshdirect.delivery.ReservationException;
+import com.freshdirect.delivery.ejb.DlvManagerDAO;
 import com.freshdirect.delivery.ejb.DlvManagerSB;
 import com.freshdirect.deliverypass.DeliveryPassException;
 import com.freshdirect.deliverypass.DeliveryPassModel;
@@ -3719,21 +3721,25 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 	}
 
 	public FDReservation changeReservation(FDIdentity identity,
-			FDReservation oldReservation, FDTimeslot timeslot,
+			FDReservation oldReservation, String timeslotId,
 			EnumReservationType rsvType, String addressId, FDActionInfo aInfo, boolean chefstable, TimeslotEventModel event)
 			throws FDResourceException, ReservationException {
 		this.cancelReservation(identity, oldReservation, rsvType, aInfo, event);
 		aInfo.setNote("Make Pre-Reservation");
 		
-		return this.makeReservation(identity, timeslot, rsvType, addressId,
+		return this.makeReservation(identity, timeslotId, rsvType, addressId,
 				aInfo, chefstable, event, false);
 	}
 
 	public FDReservation makeReservation(FDIdentity identity,
-			FDTimeslot timeslot, EnumReservationType rsvType, String addressId,
+			String timeslotId, EnumReservationType rsvType, String addressId,
 			FDActionInfo aInfo, boolean chefsTable, TimeslotEventModel event, boolean isForced) throws FDResourceException,
 			ReservationException {
-
+		
+		ErpAddressModel address=getAddress(identity,addressId);
+		geocodeAddress(address);
+		FDTimeslot timeslot = FDDeliveryManager.getInstance().getTimeslotsById(timeslotId, address.getBuildingId(), false);
+		
 		long duration = timeslot.getCutoffDateTime().getTime()
 				- System.currentTimeMillis()
 				- (FDStoreProperties.getPreReserveHours() * DateUtil.HOUR);
@@ -3742,7 +3748,6 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 					- System.currentTimeMillis(), DateUtil.HOUR);
 		}
 
-		ErpAddressModel address=getAddress(identity,addressId);
 		FDReservation rsv=FDDeliveryManager.getInstance().reserveTimeslot(timeslot, identity.getErpCustomerPK(), duration, rsvType, address, chefsTable, null, isForced, event, false);
 
 		if (EnumReservationType.RECURRING_RESERVATION.equals(rsvType)) {
@@ -3756,10 +3761,26 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 				.getExpirationDateTime(), rsv.getReservationType(), rsv
 				.getCustomerId(), addressId, rsv.isChefsTable(), rsv
 				.isUnassigned(), rsv.getOrderId(), rsv.isInUPS(), rsv
-				.getUnassignedActivityType(), rsv.getStatusCode(),rsv.getRsvClass());
+				.getUnassignedActivityType(), rsv.getStatusCode(),rsv.getRsvClass(), rsv.getBuildingId(), rsv.getLocationId(), rsv.getReservedOrdersAtBuilding());
 
 	}
 
+	
+	public void geocodeAddress(ErpAddressModel address) throws FDResourceException {
+		Connection conn = null;
+		try {
+			conn = this.getConnection();
+			DlvManagerDAO.geocodeAddress(conn, address, false);
+		} catch (InvalidAddressException ie) {
+			LOGGER.warn("invalid address exception", ie);
+		} catch (SQLException se) {
+			LOGGER.warn("sql error", se);
+		} finally {
+			close(conn);
+		}
+	}
+
+	
 	
 	/**
 	 * @return ErpAddressModel for the specified user and addressId, null if the address is not found.

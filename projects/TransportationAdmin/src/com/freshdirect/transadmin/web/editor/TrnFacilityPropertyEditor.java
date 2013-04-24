@@ -22,10 +22,6 @@ public class TrnFacilityPropertyEditor extends PropertyEditorSupport {
 			try {
 				TrnFacility view = new TrnFacility();
 				view.setFacilityId(text);
-				if (view == null) {
-					throw new IllegalArgumentException(
-							"Invalid argument for TrnFacility: " + text);
-				}
 				setValue(view);
 			} catch (NumberFormatException ex) {
 				throw new IllegalArgumentException(

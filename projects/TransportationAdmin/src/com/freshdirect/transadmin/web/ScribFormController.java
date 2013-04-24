@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.ServletRequestDataBinder;
 
 import com.freshdirect.routing.constants.EnumTransportationFacilitySrc;
@@ -85,10 +86,24 @@ public class ScribFormController extends AbstractDomainFormController {
 	}
 
 	public Object getBackingObject(String id) {
+		// override by getBackingObject(String id, request)
+		return null;
+	}
+	
+	public Object getBackingObject(String id, HttpServletRequest request) {
 		Scrib scrib = getDispatchManagerService().getScrib(id);
-		if(scrib!=null && scrib.getZone()!=null && scrib.getZone().getArea()!=null 
-				&& scrib.getZone().getArea().getRegion()!=null)
-		scrib.setEquipmentTypes(assetManagerService.getEquipmentTypes(scrib.getZone().getArea().getRegion()));
+		if (scrib != null && scrib.getZone() != null
+				&& scrib.getZone().getArea() != null
+					&& scrib.getZone().getArea().getRegion() != null) {
+			scrib.setEquipmentTypes(assetManagerService.getEquipmentTypes(scrib.getZone().getArea().getRegion()));
+		}
+		
+		String scribRefId = request.getParameter("scribRefId");
+		if(!TransStringUtil.isEmpty(scribRefId)) {
+			scrib.setScribId(null);
+			scrib.setNoOfResources(0);
+			scrib.setCount(0);
+		}
 		return scrib;
 	}
 
@@ -104,9 +119,7 @@ public class ScribFormController extends AbstractDomainFormController {
 	public String getDomainObjectName() {
 		return "Scrib";
 	}
-
-
-
+	
 	protected void onBind(HttpServletRequest request, Object command) {
 
 		Scrib model = (Scrib) command;
@@ -133,7 +146,8 @@ public class ScribFormController extends AbstractDomainFormController {
 	protected boolean isFormChangeRequest(HttpServletRequest request, Object command) {
 
 		Scrib _command = (Scrib) command;
-		if("true".equalsIgnoreCase(_command.getZoneModified())|| "true".equalsIgnoreCase(_command.getFirstDeliveryTimeModified())) {
+		if("true".equalsIgnoreCase(_command.getZoneModified()) 
+				|| "true".equalsIgnoreCase(_command.getFirstDeliveryTimeModified())) {
 			return true;
 		}
 		else
@@ -192,9 +206,24 @@ public class ScribFormController extends AbstractDomainFormController {
 		return errorList;
 	}
 	
+	protected Object formBackingObject(HttpServletRequest request)
+			throws Exception {
+		String id = getIdFromRequest(request);
+
+		if (StringUtils.hasText(id)) {
+			Object  tmp = getBackingObject(id, request);
+			return tmp;
+		} else {
+			return getDefaultBackingObject();
+		}
+	}
 	
 	protected String getIdFromRequest(HttpServletRequest request){
-		return request.getParameter("scribId");
+		String id = request.getParameter("scribId");
+		if(TransStringUtil.isEmpty(id)) {
+			id = request.getParameter("scribRefId");
+		}
+		return id;
 	}
 
 	public void setZoneManagerService(ZoneManagerI zoneManagerService) {

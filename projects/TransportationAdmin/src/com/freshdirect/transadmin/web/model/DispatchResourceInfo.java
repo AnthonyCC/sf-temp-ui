@@ -8,6 +8,10 @@ import com.freshdirect.transadmin.model.EmployeeInfo;
 import com.freshdirect.transadmin.model.PunchInfoI;
 import com.freshdirect.transadmin.model.ResourceInfoI;
 
+/**
+ * @author kkanuganti
+ *
+ */
 public class DispatchResourceInfo extends BaseCommand implements ResourceInfoI { 
 	private String nextelNo;
 	private static final String SEPERATOR = " ";
@@ -15,6 +19,7 @@ public class DispatchResourceInfo extends BaseCommand implements ResourceInfoI {
 	private String firstName;
 	private String employeeId;
 	private PunchInfoI punchInfo;
+	private List<AssetScanInfo> scannedAssets;
 
 
 	public String getName() {
@@ -116,5 +121,14 @@ public class DispatchResourceInfo extends BaseCommand implements ResourceInfoI {
 	public void setAdjustmentTime(Date adjustmentTime) {
 		// TODO Auto-generated method stub
 		
-	}	
+	}
+
+	public List<AssetScanInfo> getScannedAssets() {
+		return scannedAssets;
+	}
+
+	public void setScannedAssets(List<AssetScanInfo> scannedAssets) {
+		this.scannedAssets = scannedAssets;
+	}
+	
 }

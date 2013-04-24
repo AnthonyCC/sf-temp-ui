@@ -30,7 +30,7 @@ public interface DispatchManagerDaoI extends BaseManagerDaoI {
 
 	Collection getPlan() throws DataAccessException;
 	
-	Collection getPlan(String dateRange, String zoneLst) throws DataAccessException;
+	Collection getPlanEntry(String dateRange, String zoneLst, String facilityLocation) throws DataAccessException;
 	
 	Collection getPlan(Date planDate, Date startTime, boolean isBullPen) throws DataAccessException;
 

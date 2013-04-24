@@ -1,10 +1,7 @@
 package com.freshdirect.transadmin.api.controller;
 
-import java.text.ParseException;
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.Collection;
-import java.util.Date;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -13,14 +10,13 @@ import org.apache.log4j.Logger;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.freshdirect.framework.service.ServiceException;
-import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.transadmin.api.model.ListDataMessage;
 import com.freshdirect.transadmin.api.model.Message;
+import com.freshdirect.transadmin.model.OrderRateException;
 import com.freshdirect.transadmin.model.PlantCapacity;
 import com.freshdirect.transadmin.model.PlantDispatch;
 import com.freshdirect.transadmin.service.IDashboardManager;
-import com.freshdirect.transadmin.util.TransStringUtil;
 
 public class DashboardDataApiController extends BaseApiController {
 	
@@ -34,6 +30,9 @@ public class DashboardDataApiController extends BaseApiController {
 	
 	private static final String ACTION_SAVE_PLANTDISPATCH = "savePlantDispatch";
 	
+	private static final String ACTION_GET_ORDERRATE_EXCEPTIONS = "getOrderRateExceptions";
+	
+	private static final String ACTION_SAVE_ORDERRATE_EXCEPTIONS = "saveOrderRateExceptions";
 	
 	private IDashboardManager dashboardManagerService;
 
@@ -110,6 +109,35 @@ public class DashboardDataApiController extends BaseApiController {
 			}catch (Exception e) {
 				e.printStackTrace();
 				setResponseMessage(model, Message.createFailureMessage("Save Plant Dispatch failed."));
+			}
+		}else if(ACTION_GET_ORDERRATE_EXCEPTIONS.equals(action)) {
+
+			try{
+				ListDataMessage result = new ListDataMessage();
+				Collection exceptions = getDashboardManagerService().getOrderRateExceptions();
+				result.setRows(exceptions);
+				setResponseMessage(model, result);
+			} 
+			catch (ServiceException e) {
+				e.printStackTrace();
+				setResponseMessage(model, Message.createFailureMessage("Get Order Rate Exceptions failed."));
+			}catch (Exception e) {
+				e.printStackTrace();
+				setResponseMessage(model, Message.createFailureMessage("Get Order Rate Exceptions failed."));
+			}
+		}else if(ACTION_SAVE_ORDERRATE_EXCEPTIONS.equals(action)) {
+
+			try{
+				OrderRateException[] exceptions  =  parseRequestObject(request, response, OrderRateException[].class);
+				getDashboardManagerService().saveOrderRateExceptions(Arrays.asList(exceptions));
+				setResponseMessage(model, Message.createSuccessMessage("Save Order Rate Exceptions successful."));
+			}
+			catch (ServiceException e) {
+				e.printStackTrace();
+				setResponseMessage(model, Message.createFailureMessage("Save Order Rate Exceptions failed."));
+			}catch (Exception e) {
+				e.printStackTrace();
+				setResponseMessage(model, Message.createFailureMessage("Save Order Rate Exceptions failed."));
 			}
 		}
 		return model;

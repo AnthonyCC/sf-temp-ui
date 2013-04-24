@@ -91,5 +91,28 @@ function TimeEditor(args) {
 		function daterize(time) {
 		    return Date.parse("Thu, 01 Jan 1970 " + time + " GMT");
 		}
-		
-		 
+
+function activateEdit(e, args) {
+ var keyCode = $.ui.keyCode,
+     col,
+     activeCell = this.getActiveCell();
+
+ /////////////////////////////////////////////////////////////////////
+ // Allow instant editing like MS Excel (without presisng enter first
+ // to go into edit mode)
+ if (activeCell) {
+   col = activeCell.cell;
+
+   // Only for editable fields and not if edit is already in progress
+   if (this.getColumns()[col].editor && !this.getCellEditor()) {
+     // Ignore keys that should not activate edit mode
+     if ($.inArray(e.keyCode, [keyCode.LEFT, keyCode.RIGHT, keyCode.UP,
+                              keyCode.DOWN, keyCode.PAGE_UP, keyCode.PAGE_DOWN,
+                              keyCode.SHIFT, keyCode.CONTROL, keyCode.CAPS_LOCK,
+                              keyCode.HOME, keyCode.END, keyCode.INSERT,
+                              keyCode.ENTER]) === -1) {
+       this.editActiveCell();
+     }
+   }
+ }
+}

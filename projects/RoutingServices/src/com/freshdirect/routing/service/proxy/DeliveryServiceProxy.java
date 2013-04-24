@@ -13,6 +13,7 @@ import com.freshdirect.delivery.model.DlvTimeslotModel;
 import com.freshdirect.fdstore.FDTimeslot;
 import com.freshdirect.delivery.model.UnassignedDlvReservationModel;
 import com.freshdirect.framework.util.EnumLogicalOperator;
+import com.freshdirect.routing.constants.RoutingActivityType;
 import com.freshdirect.routing.model.IDeliveryModel;
 import com.freshdirect.routing.model.IDeliveryReservation;
 import com.freshdirect.routing.model.IDeliverySlot;
@@ -47,8 +48,8 @@ public class DeliveryServiceProxy extends BaseServiceProxy {
 		return RoutingServiceLocator.getInstance().getDeliveryService();
 	}
 	
-	public double getServiceTime(IOrderModel orderModel, IServiceTimeScenarioModel scenario) throws RoutingServiceException {
-		return getService().getServiceTime(orderModel, scenario);	
+	public double getServiceTime(IOrderModel orderModel, IServiceTimeScenarioModel scenario, RoutingActivityType routingType) throws RoutingServiceException {
+		return getService().getServiceTime(orderModel, scenario, routingType);	
 	}
 	
 	public Map getDeliveryZoneDetails()  throws RoutingServiceException {

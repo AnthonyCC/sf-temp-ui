@@ -1,7 +1,7 @@
 package com.freshdirect.transadmin.dao;
 
 import java.util.Collection;
-import java.util.List;
+import java.util.Date;
 
 import org.springframework.dao.DataAccessException;
 
@@ -37,5 +37,9 @@ public interface AssetManagerDaoI extends BaseManagerDaoI {
 	Asset getAssetByAssetNumber(String assetNumber) throws DataAccessException;
 	
 	Collection getAsset(String assetNumber, String assetType) throws DataAccessException;
+	
+	Asset getAssetByBarcode(String barcode) throws DataAccessException;
+	
+	Collection getScannedAssets(Date assetScanDate) throws DataAccessException;
 	
 }

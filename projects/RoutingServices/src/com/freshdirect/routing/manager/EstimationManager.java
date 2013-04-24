@@ -4,6 +4,7 @@ import java.util.Map;
 
 import com.freshdirect.routing.constants.EnumProcessInfoType;
 import com.freshdirect.routing.constants.EnumProcessType;
+import com.freshdirect.routing.constants.RoutingActivityType;
 import com.freshdirect.routing.model.IServiceTimeScenarioModel;
 import com.freshdirect.routing.model.IServiceTimeTypeModel;
 import com.freshdirect.routing.service.exception.RoutingProcessException;
@@ -45,7 +46,7 @@ public class EstimationManager extends BaseProcessManager {
 					request.getOrderInfo().getDeliveryInfo().getDeliveryLocation().getBuilding().setServiceTimeType(null);
 				}
 			}
-			serviceTime = proxy.getServiceTime(request.getOrderInfo(), scenario);
+			serviceTime = proxy.getServiceTime(request.getOrderInfo(), scenario, RoutingActivityType.RESERVE_TIMESLOT);
 		} catch(Exception e) {
 			ProcessInfo  processInfo = new ProcessInfo();
 			processInfo.setProcessType(EnumProcessType.LOAD_SERVICETIME);

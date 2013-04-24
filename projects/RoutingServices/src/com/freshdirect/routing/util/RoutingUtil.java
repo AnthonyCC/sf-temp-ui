@@ -17,6 +17,7 @@ import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.FDTimeslot;
 import com.freshdirect.framework.util.StringUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.routing.constants.RoutingActivityType;
 import com.freshdirect.routing.model.BuildingModel;
 import com.freshdirect.routing.model.DeliveryModel;
 import com.freshdirect.routing.model.DeliverySlot;
@@ -337,8 +338,9 @@ public class RoutingUtil {
 		} else {
 			order.getDeliveryInfo().getDeliveryLocation().getBuilding().setServiceTimeType(null);
 		}
+		order.getDeliveryInfo().setReservedOrdersAtBuilding(reservation.getReservedOrdersAtBuilding());
 		
-		order.getDeliveryInfo().setCalculatedServiceTime(dlvService.getServiceTime(order,srvScenario));
+		order.getDeliveryInfo().setCalculatedServiceTime(dlvService.getServiceTime(order,srvScenario, RoutingActivityType.RESERVE_TIMESLOT));
 				
 		reservedSlot = getDeliverySlot(timeslot.getDlvTimeslot());
 		
@@ -414,8 +416,9 @@ public static IOrderModel calculateReservationSize(DlvReservationModel reservati
 	} else {
 		order.getDeliveryInfo().getDeliveryLocation().getBuilding().setServiceTimeType(null);
 	}
+	order.getDeliveryInfo().setReservedOrdersAtBuilding(reservation.getReservedOrdersAtBuilding());
 	
-	order.getDeliveryInfo().setCalculatedServiceTime(dlvService.getServiceTime(order,srvScenario));
+	order.getDeliveryInfo().setCalculatedServiceTime(dlvService.getServiceTime(order,srvScenario, RoutingActivityType.UPDATE_TIMESLOT));
 		
 	return order;
 }

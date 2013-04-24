@@ -16,6 +16,11 @@ public class VIRRecord extends BaseCommand {
 	private String createdBy;
 	private EmployeeInfo reportingDriver;
 	private String driver;
+	
+	private String socStart;
+	private String socEnd;
+	private String socReeferStart;
+	private String socReeferEnd;
 		
 	private Set virRecordIssues = new HashSet(0);
 	
@@ -102,6 +107,48 @@ public class VIRRecord extends BaseCommand {
 		this.id = id;
 	}	
 	
+	public String getSocStart() {
+		return socStart;
+	}
+
+	public void setSocStart(String socStart) {
+		this.socStart = socStart;
+	}
+
+	public String getSocEnd() {
+		return socEnd;
+	}
+
+	public void setSocEnd(String socEnd) {
+		this.socEnd = socEnd;
+	}
+
+	public String getSocReeferStart() {
+		return socReeferStart;
+	}
+
+	public void setSocReeferStart(String socReeferStart) {
+		this.socReeferStart = socReeferStart;
+	}
+
+	public String getSocReeferEnd() {
+		return socReeferEnd;
+	}
+
+	public void setSocReeferEnd(String socReeferEnd) {
+		this.socReeferEnd = socReeferEnd;
+	}
+	
+	public String getElectricSOCInfo() {
+		return this.socStart + " / " + this.socEnd;
+	}
+	
+	public String getReeferInfo() {
+		if(this.socReeferStart != null && this.socReeferEnd != null)
+			return this.socReeferStart + " / " + this.socReeferEnd;
+		
+		return null;
+	}
 	public String getCreatedDate(){
 		String date = "";
 		if(this.getCreateDate()!=null){

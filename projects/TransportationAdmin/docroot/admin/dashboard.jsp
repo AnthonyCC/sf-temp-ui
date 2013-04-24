@@ -60,7 +60,7 @@
 						
 				</div>
 				
-				<div style="width: 300px;padding:0px 50px;float:left;">
+				<div style="width: 300px;padding:0 0 0 50px;float:left;">
 						<br><br><div id="pd_message"></div><br>
 						<div class="grid-header" style="width: 300px;">
 				      		<label>Plant Dispatch</label>
@@ -72,6 +72,8 @@
 						</form>
 						
 				</div>
+				
+				<%@include file="dashboard/orderrateexceptions.jspf"%>
 			
 	</div>
 	<style type="text/css">
@@ -83,6 +85,12 @@
    left: 50%;
    margin-top: -150px; /* Half the height */
    margin-left: -150px; /* Half the width */
+}
+ 
+  #pdGrid, #edGrid {
+  background: white;
+  outline: 0;
+  border: 1px solid gray;
 }
 
 	</style>
@@ -110,7 +118,6 @@
 	  dataView.refresh();
 	  grid.updateRowCount();
 	  grid.invalidate();
-	  grid.render();
 	  grid.scrollRowIntoView(current_row-1);
 	  }
   function removeRow2(current_row) {
@@ -127,7 +134,6 @@
 	  pd_dataView.refresh();
 	  pd_grid.updateRowCount();
 	  pd_grid.invalidate();
-	  pd_grid.render();
 	  pd_grid.scrollRowIntoView(current_row-1);
 	  }
   
@@ -157,8 +163,6 @@
 	  dataView = new Slick.Data.DataView();
 	  pd_dataView = new Slick.Data.DataView();
 		
-	  
-	  
 	  function getCapacityData() {
 	  $('#pc_message').html("");
 	  data = [];
@@ -196,15 +200,12 @@
 				  grid.render();
 				});
 
-				
 				dataView.beginUpdate();
 			    dataView.setItems(data,"dispatchTime");
 			    dataView.endUpdate();
 			    dataView.refresh();
 			    grid.invalidate();
-			    grid.render();
 				$('#myGrid').show();
-				
 				
 				grid.onSort.subscribe(function (e, args) {
 					  sortcol = args.sortCol.field;  // Maybe args.sortcol.field ???
@@ -237,34 +238,7 @@
 		     items = data;
 		     refreshIdxById();
 		     refresh();
-		}
-	  
-	  
-	  function activateEdit(e, args) {
-		  var keyCode = $.ui.keyCode,
-		      col,
-		      activeCell = this.getActiveCell();
-
-		  /////////////////////////////////////////////////////////////////////
-		  // Allow instant editing like MS Excel (without presisng enter first
-		  // to go into edit mode)
-		  if (activeCell) {
-		    col = activeCell.cell;
-
-		    // Only for editable fields and not if edit is already in progress
-		    if (this.getColumns()[col].editor && !this.getCellEditor()) {
-		      // Ignore keys that should not activate edit mode
-		      if ($.inArray(e.keyCode, [keyCode.LEFT, keyCode.RIGHT, keyCode.UP,
-		                               keyCode.DOWN, keyCode.PAGE_UP, keyCode.PAGE_DOWN,
-		                               keyCode.SHIFT, keyCode.CONTROL, keyCode.CAPS_LOCK,
-		                               keyCode.HOME, keyCode.END, keyCode.INSERT,
-		                               keyCode.ENTER]) === -1) {
-		        this.editActiveCell();
-		      }
-		    }
-		  }
-		}
-	  
+		}  
 	  function getDispatchMapData(){
 		  $('#pd_message').html("");
 		  $.ajax({
@@ -295,12 +269,12 @@
 						pd_grid.invalidateRows(args.rows);
 						pd_grid.render();
 					});
+					
 					pd_dataView.beginUpdate();
 					pd_dataView.setItems(pd_data,"dispatchTime");
 					pd_dataView.endUpdate();
 					pd_dataView.refresh();
 					pd_grid.invalidate();
-					pd_grid.render();
 					$('#pdGrid').show();
 					
 					pd_grid.onKeyDown.subscribe(activateEdit);
@@ -332,8 +306,11 @@
 	  }
 	  
 	$(document).ready(function () {
+		$("#exceptionDate" ).datepicker();
 		getCapacityData();
 		getDispatchMapData();
+		getExceptions();
+		
 	  });
 	
 	 $(function() {

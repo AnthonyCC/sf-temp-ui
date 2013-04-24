@@ -35,6 +35,7 @@ import com.freshdirect.transadmin.model.DlvBuilding;
 import com.freshdirect.transadmin.model.DlvLocation;
 import com.freshdirect.transadmin.model.EmployeeInfo;
 import com.freshdirect.transadmin.model.EmployeeRole;
+import com.freshdirect.transadmin.model.EmployeeSupervisor;
 import com.freshdirect.transadmin.model.EmployeeTeam;
 import com.freshdirect.transadmin.model.EmployeeTruckPreference;
 import com.freshdirect.transadmin.model.Plan;
@@ -129,38 +130,45 @@ public class ModelUtil {
 		return result;
 	}
 
-	public static List getTrnAdminEmployeeList(Map kronoList,List roleList){
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public static List getTrnAdminEmployeeList(Map kronoList, List roleList, List supervisorList) {
 
-		if(kronoList==null) return new ArrayList();
+		if (kronoList == null)
+			return new ArrayList();
 
-		List finalList=new ArrayList();
-		
-		Iterator it = kronoList.values().iterator();
-		
-		while(it.hasNext())
-		{
-			EmployeeInfo info=(EmployeeInfo)it.next();
+		List finalList = new ArrayList();
 
-			List empRoleList=new ArrayList();
-			if(roleList!=null && roleList.size()>0)
-			{
-				 for(int j=0;j<roleList.size();j++){
-					EmployeeRole tmpRole=(EmployeeRole)roleList.get(j);
-					if(tmpRole.getId().getKronosId().equals(info.getEmployeeId())){
-//						System.out.println("tmpRole:"+tmpRole.getEmployeeRoleType());
+		Iterator it = kronoList.values().iterator();		
+		while (it.hasNext()) {
+			EmployeeInfo info = (EmployeeInfo) it.next();
+			List empRoleList = new ArrayList();
+			if (roleList != null && roleList.size() > 0) {
+				for (int j = 0; j < roleList.size(); j++) {
+					EmployeeRole tmpRole = (EmployeeRole) roleList.get(j);
+					if (tmpRole.getId().getKronosId().equals(info.getEmployeeId())) {
 						tmpRole.migrate();
 						empRoleList.add(tmpRole);
 					}
-				 }
-
+				}
 			}
-			WebEmployeeInfo webInfo=new WebEmployeeInfo(info,empRoleList);
+			EmployeeSupervisor _supervisor = null;
+			if (supervisorList != null && supervisorList.size() > 0) {
+				for (int k = 0; k < supervisorList.size(); k++) {
+					EmployeeSupervisor tmpSup = (EmployeeSupervisor) supervisorList.get(k);
+					if (tmpSup.getId().getKronosId().equals(info.getEmployeeId())) {						
+						_supervisor = tmpSup;
+						EmployeeInfo supervisorInfo = (EmployeeInfo) kronoList.get(_supervisor.getId().getSupervisorId());
+						if(supervisorInfo != null) {
+							_supervisor.getId().setSupervisorName(supervisorInfo.getLastName()+", "+supervisorInfo.getFirstName());
+						}
+					}
+				}
+			}
+			
+			WebEmployeeInfo webInfo = new WebEmployeeInfo(info, empRoleList, _supervisor);
 
 			finalList.add(webInfo);
-
-
 		}
-
 		return finalList;
 	}
 	

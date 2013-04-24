@@ -74,6 +74,10 @@ public interface DomainManagerDaoI extends BaseManagerDaoI {
 
 	Region getRegion(String code) throws DataAccessException;
 	
+	Collection getEmployeeSupervisor(String empId) throws DataAccessException;
+	
+	Collection getEmployeeSupervisors() throws DataAccessException;
+	
     Collection getEmployeeRoles() throws DataAccessException;
 	
 	Collection getEmployeeRoleTypes() throws DataAccessException;

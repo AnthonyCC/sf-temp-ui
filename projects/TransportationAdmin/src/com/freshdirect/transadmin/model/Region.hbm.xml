@@ -19,7 +19,10 @@
         </property>
          <property name="needsDispValidation" type="string">
             <column name="DISPVALIDATION_ENABLED" length="1" />
-        </property>                
+        </property>
+        <many-to-one name="originFacility" class="com.freshdirect.transadmin.model.TrnFacility" fetch="select" lazy="false">
+            <column name="ORIGIN_FACILITY" length="16" not-null="true"/>
+        </many-to-one>                
          <set name="zones" inverse="true" lazy="false">
             <key>
                 <column name="REGION" length="16" />

@@ -68,7 +68,7 @@ public class ChooseTimeslotAction extends WebActionSupport {
 		}
 		boolean chefsTable = user.isChefsTable() || "true".equals(request.getParameter("chefstable"));
 
-		FDTimeslot timeSlot = FDDeliveryManager.getInstance().getTimeslotsById(deliveryTimeSlotId, true);
+		FDTimeslot timeSlot = FDDeliveryManager.getInstance().getTimeslotsById(deliveryTimeSlotId, cart.getDeliveryAddress().getBuildingId(), true);
 		
 
 		ErpCustomerInfoModel cm = FDCustomerFactory.getErpCustomerInfo(user.getUser().getIdentity());

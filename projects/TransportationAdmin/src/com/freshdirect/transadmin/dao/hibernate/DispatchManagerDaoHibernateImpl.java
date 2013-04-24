@@ -32,24 +32,35 @@ public class DispatchManagerDaoHibernateImpl extends
 		return getDataList("TrnDispatchPlan Order By  PLAN_DATE");
 	}
 
-	public Collection getPlan(String planDate, String zoneLst)
+	public Collection getPlanEntry(String planDate, String zoneLst, String facilityLocation)
 			throws DataAccessException {
 
 		StringBuffer strBuf = new StringBuffer();
 		strBuf.append("Plan p ");
 		boolean hasDate = false;
+		boolean hasZone = false;
 		if (planDate != null) {
 			strBuf.append(" where p.planDate ").append(planDate);
 			hasDate = true;
 		}
 
 		if (zoneLst != null) {
+			hasZone = true;
 			if (!hasDate) {
 				strBuf.append("where ");
 			} else {
 				strBuf.append(" and ");
 			}
 			strBuf.append("p.zone.zoneCode ").append(zoneLst);
+		}
+		
+		if(facilityLocation != null) {
+			if (!hasDate || !hasZone) {
+				strBuf.append("where ");
+			} else {
+				strBuf.append(" and ");
+			}
+			strBuf.append("p.originFacility.facilityLocation.code ").append(facilityLocation);
 		}
 
 		strBuf

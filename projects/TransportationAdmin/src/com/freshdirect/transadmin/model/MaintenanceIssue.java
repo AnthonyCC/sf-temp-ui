@@ -10,6 +10,10 @@ import com.freshdirect.transadmin.constants.EnumServiceStatus;
 import com.freshdirect.transadmin.util.TransStringUtil;
 import com.freshdirect.transadmin.web.model.BaseCommand;
 
+/**
+ * @author kkanuganti
+ *
+ */
 public class MaintenanceIssue extends BaseCommand {
 	private String id;
 	private String issueId;
@@ -33,6 +37,8 @@ public class MaintenanceIssue extends BaseCommand {
 	private String repairedBy;	
 	private String subTypeId;
 	private boolean isReVerified;
+	
+	private String truckLocation;
 	
 	public boolean isReVerified() {
 		return isReVerified;
@@ -237,40 +243,16 @@ public class MaintenanceIssue extends BaseCommand {
 			return true;
 		else
 			return false;
-	}
+	}	
 	
-/*	public String getIssueTypeId() {
-		if(getIssueType() == null)
-			return null;
-		return getIssueType().getIssueTypeId();
+	public String getTruckLocation() {
+		return truckLocation;
 	}
 
-	public void setIssueTypeId(String issueTypeId) {
-		if("".equals(issueTypeId)){
-			setIssueType(null);
-		}else{
-			IssueType sType = new IssueType();
-			sType.setIssueTypeId(issueTypeId);
-			setIssueType(sType);
-		}
+	public void setTruckLocation(String truckLocation) {
+		this.truckLocation = truckLocation;
 	}
 
-	public String getIssueSubTypeId() {
-		if(getIssueSubType() == null)
-			return null;
-		return getIssueSubType().getIssueSubTypeId();		
-	}
-
-	public void setIssueSubTypeId(String issueSubTypeId) {
-		if("".equals(issueSubTypeId)){
-			setIssueSubType(null);
-		}else{
-			IssueSubType subType = new IssueSubType();
-			subType.setIssueSubTypeId(issueSubTypeId);
-			setIssueSubType(subType);
-		}
-	}*/
-	
 	public String getCreatedDate(){
 		String date = "";
 		if(this.getCreateDate()!=null){

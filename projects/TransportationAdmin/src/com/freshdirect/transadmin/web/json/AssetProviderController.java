@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -11,8 +12,10 @@ import java.util.Set;
 
 import org.springframework.dao.DataIntegrityViolationException;
 
+import com.freshdirect.transadmin.constants.EnumAssetScanStatus;
 import com.freshdirect.transadmin.constants.EnumAssetStatus;
 import com.freshdirect.transadmin.model.Asset;
+import com.freshdirect.transadmin.model.AssetActivity;
 import com.freshdirect.transadmin.model.AssetAttribute;
 import com.freshdirect.transadmin.model.AssetAttributeId;
 import com.freshdirect.transadmin.model.AssetAttributeType;
@@ -21,11 +24,17 @@ import com.freshdirect.transadmin.model.AssetTemplate;
 import com.freshdirect.transadmin.model.AssetTemplateAttribute;
 import com.freshdirect.transadmin.model.AssetTemplateAttributeId;
 import com.freshdirect.transadmin.model.AssetType;
+import com.freshdirect.transadmin.model.EmployeeInfo;
 import com.freshdirect.transadmin.service.AssetManagerI;
+import com.freshdirect.transadmin.service.EmployeeManagerI;
+import com.freshdirect.transadmin.util.TransAdminCacheManager;
+import com.freshdirect.transadmin.web.model.AssetScanInfo;
 
 public class AssetProviderController extends BaseJsonRpcController  implements IAssetProvider {
 		
 	private AssetManagerI assetManagerService;
+	
+	private EmployeeManagerI employeeManagerService;
 	
 	public AssetManagerI getAssetManagerService() {
 		return assetManagerService;
@@ -34,18 +43,28 @@ public class AssetProviderController extends BaseJsonRpcController  implements I
 	public void setAssetManagerService(AssetManagerI assetManagerService) {
 		this.assetManagerService = assetManagerService;
 	}
+	
+	public EmployeeManagerI getEmployeeManagerService() {
+		return employeeManagerService;
+	}
+
+	public void setEmployeeManagerService(EmployeeManagerI employeeManagerService) {
+		this.employeeManagerService = employeeManagerService;
+	}
 
 	public String saveAsset(String assetId, String assetType
 								, String assetNo, String description
 								, String status
 								, String assetTemplateId
-								, String[][] assetAttributes) {
+								, String[][] assetAttributes
+								, String barcode) {
 		Asset asset = new Asset();
 		asset.setAssetId(assetId);
 		asset.setAssetNo(assetNo);
 		asset.setAssetDescription(description);
 		asset.setAssetStatus(EnumAssetStatus.getEnum(status));
 		asset.setAssetType(new AssetType(assetType, null));
+		asset.setBarcode(barcode);
 		AssetTemplate assetTemplate = null;
 		if (assetTemplateId != null)
 			assetTemplate = getAssetManagerService().getAssetTemplate(
@@ -263,5 +282,50 @@ public class AssetProviderController extends BaseJsonRpcController  implements I
 			return 2;
 		}
 		return 0;
+	}
+	
+	public AssetScanInfo getAssetInfo(String assetBarcode, String employeeId, String status) {
+		AssetScanInfo assetInfo = new AssetScanInfo();
+		if(assetBarcode != null) {
+			Asset asset = assetManagerService.getAssetByBarcode(assetBarcode);
+			assetInfo.setAssetNo(asset != null ? asset.getAssetNo() : null);
+			if(employeeId != null && asset != null) {			
+				EmployeeInfo empInfo = TransAdminCacheManager.getInstance().getEmployeeInfo(employeeId, employeeManagerService);
+				assetInfo.setEmployeeId(empInfo != null ? empInfo.getEmployeeId() : null);
+				assetInfo.setEmployeeName(empInfo != null ? empInfo.getLastName() + ", " + empInfo.getFirstName() + " " + empInfo.getMiddleInitial() : null);
+				assetInfo.setStatus(EnumAssetScanStatus.getEnum(status).getDescription());
+				return assetInfo;
+			}
+		}
+		return null;
+	}
+	
+	public boolean logScannedAssets(String[][] assets) {
+		
+		List<AssetActivity> scannedAssets = new ArrayList<AssetActivity>();
+		if (assets != null
+				&& assets.length > 0) {
+			try {
+				for (int intCount = 0; intCount < assets.length; intCount++) {
+					AssetActivity assetScanInfo = new AssetActivity();
+					scannedAssets.add(assetScanInfo);
+					assetScanInfo.setAssetNo(assets[intCount][1]);
+					assetScanInfo.setEmployeeId(assets[intCount][0]);
+					assetScanInfo.setStatus(EnumAssetScanStatus.getEnumByDesc(assets[intCount][2]).getName());
+					assetScanInfo.setScannedBy(com.freshdirect.transadmin.security.SecurityManager.getUserName(getHttpServletRequest()));
+					assetScanInfo.setScannedTime(new Date());
+					assetScanInfo.setDeliveryDate(new Date());
+				}
+				if(scannedAssets.size() > 0) {
+					assetManagerService.saveEntityList(scannedAssets);
+				}
+			} catch (Exception e){
+				e.printStackTrace();
+				return false;
+			}
+		}
+		
+		return true;
+		
 	}
 }

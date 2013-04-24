@@ -12,7 +12,8 @@ public class AddressInfo implements Serializable {
 	private EnumAddressType addressType;
 	private String county;
 	private boolean isGeocodeException;
-	
+	private String buildingId;
+	private String locationId;
 	
 	public boolean isGeocodeException() {
 		return isGeocodeException;
@@ -90,6 +91,22 @@ public class AddressInfo implements Serializable {
 			+ ", county "
 			+ county
 			+ "]";
+	}
+
+	public String getBuildingId() {
+		return buildingId;
+	}
+
+	public void setBuildingId(String buildingId) {
+		this.buildingId = buildingId;
+	}
+
+	public String getLocationId() {
+		return locationId;
+	}
+
+	public void setLocationId(String locationId) {
+		this.locationId = locationId;
 	}
 
 }

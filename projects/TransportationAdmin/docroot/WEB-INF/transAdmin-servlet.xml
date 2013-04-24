@@ -392,6 +392,7 @@
        	
 	<bean id="employeeFormController" class="com.freshdirect.transadmin.web.EmployeeFormController">
 		<property name="employeeManagerService" ref="employeeManagerService"/>
+		<property name="domainManagerService" ref="domainManager"/>		
 		<property name="sessionForm" value="true"/>
         <property name="commandName" value="employeeForm"/>
         <property name="commandClass" value="com.freshdirect.transadmin.web.model.WebEmployeeInfo"/>
@@ -425,6 +426,7 @@
 	
 	<bean id="regionFormController" class="com.freshdirect.transadmin.web.RegionFormController">
 		<property name="domainManagerService" ref="domainManager"/>
+		<property name="locationManagerService" ref="locationManager"/>
 		<property name="sessionForm" value="true"/>
         <property name="commandName" value="regionForm"/>
         <property name="commandClass" value="com.freshdirect.transadmin.model.Region"/>
@@ -763,7 +765,8 @@
 	</bean>
 	
 	<bean name="asyncAssetController" class="com.freshdirect.transadmin.web.json.AssetProviderController">	
-		<property name="assetManagerService" ref="assetManagerService"/>	
+		<property name="assetManagerService" ref="assetManagerService"/>
+		<property name="employeeManagerService" ref="employeeManager"/>	
 		<property name="ajaxServices">
 			<map>
 				<entry key="AsyncAssetProvider" value="com.freshdirect.transadmin.web.json.IAssetProvider" />				
@@ -870,7 +873,7 @@
 	</bean>
 	<bean id="userManager" class="com.freshdirect.transadmin.security.UserManager" factory-method="getInstance">
          <property name="eventLogService" ref="eventLogManager"/>       
-    </bean>	
+    </bean> 
 	    
 	<bean id="employeeValidator" class="com.freshdirect.transadmin.web.validation.EmployeeValidator"/>
 	<bean id="truckPreferenceValidator" class="com.freshdirect.transadmin.web.validation.TruckPreferenceValidator"/>

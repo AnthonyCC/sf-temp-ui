@@ -2,6 +2,7 @@ package com.freshdirect.webservices;
 
 import java.text.ParseException;
 import java.util.List;
+import java.util.Set;
 
 import com.freshdirect.analytics.model.*;
 
@@ -38,8 +39,10 @@ public interface EventService {
 	public List<PlantDispatchData> getPlantDispatchData(String deliveryDate);
 
 	public String getRefreshTime();
+	
+	public Set<String> getBaseDates(String deliveryDate) throws ParseException;
 
 	public List<OrderRateVO> getForecast(String deliveryDate, String zone,
 			String prevDay1, String prevDay2) throws ParseException;
-	 public String getConnection() throws Exception;
+	String getConnection() throws Exception;
 }

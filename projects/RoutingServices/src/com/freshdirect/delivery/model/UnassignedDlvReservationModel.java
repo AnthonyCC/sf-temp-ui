@@ -24,12 +24,13 @@ public class UnassignedDlvReservationModel extends DlvReservationModel {
 			Double overrideOrderSize, Double overrideServiceTime,
 			Double reservedOrderSize, Double reservedServiceTime,
 			Long noOfCartons, Long noOfCases, Long noOfFreezers, EnumReservationClass rsvClass, 
-			EnumRoutingUpdateStatus status, EnumOrderMetricsSource metricsSource) {
+			EnumRoutingUpdateStatus status, EnumOrderMetricsSource metricsSource,
+			String buildingId, String locationId, int reservedOrdersAtBuilding) {
 		super(pk, orderId, customerId, statusCode, expirationDateTime, timeslotId,
 				zoneId, type, address!=null?address.getId():null, deliveryDate, zoneCode,
 				unassignedActivityType, inUPS, overrideOrderSize, overrideServiceTime,
 				reservedOrderSize, reservedServiceTime, noOfCartons, noOfCases,
-				noOfFreezers, rsvClass, status, metricsSource);
+				noOfFreezers, rsvClass, status, metricsSource,buildingId, locationId, reservedOrdersAtBuilding);
 		this.address=address;
 		this.cutoff = cutoff;
 		this.setStartTime(stime);

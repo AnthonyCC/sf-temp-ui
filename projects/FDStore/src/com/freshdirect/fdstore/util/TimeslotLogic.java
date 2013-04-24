@@ -173,28 +173,8 @@ public class TimeslotLogic {
 					final DlvTimeslotModel _ts = timeslot.getDlvTimeslot();
 					boolean _remove = false;
 					
-
-					double steeringDiscount = 0;
-					if (!genericTimeslots) {
-						// Calculate steering discount and apply to the current timeslot
-						if(_ts.isPremiumSlot())
-						{
-							if(user.getShoppingCart()!=null && user.getShoppingCart().getDeliveryPremium()>0)
-									_ts.setPremiumAmount(0);
-							else
-									_ts.setPremiumAmount(premiumFee);
-							stats.setSameDayCutoffUTC(DateUtil.getUTCDate(_ts.getCutoffTimeAsDate()));
-							stats.setSameDayCutoff(_ts.getCutoffTimeAsDate());
-						}
-						else if(!_ts.isPremiumSlot() || (_ts.isPremiumSlot() && FDStoreProperties.allowDiscountsOnPremiumSlots()))
-						{
-							steeringDiscount = PromotionHelper.getDiscount(user, timeslot, timeslotMap.get(timeslot.getDayOfWeek()));
-							_ts.setSteeringDiscount(steeringDiscount);
-						}
-					}
-					
 					// Apply geo restrictions and
-					//   mark timeslot for removal if restricted
+					// mark timeslot for removal if restricted
 					{
 						boolean geoRestricted = GeographyRestriction
 								.isTimeSlotGeoRestricted(
@@ -219,7 +199,24 @@ public class TimeslotLogic {
 						_remove = true;
 					}
 					
-
+					double steeringDiscount = 0;
+					if (!genericTimeslots) {
+						// Calculate steering discount and apply to the current timeslot
+						if(_ts.isPremiumSlot())
+						{
+							if(user.getShoppingCart()!=null && user.getShoppingCart().getDeliveryPremium()>0)
+									_ts.setPremiumAmount(0);
+							else
+									_ts.setPremiumAmount(premiumFee);
+							stats.setSameDayCutoffUTC(DateUtil.getUTCDate(_ts.getCutoffTimeAsDate()));
+							stats.setSameDayCutoff(_ts.getCutoffTimeAsDate());
+						}
+						else if(!_ts.isPremiumSlot() || (_ts.isPremiumSlot() && FDStoreProperties.allowDiscountsOnPremiumSlots()))
+						{
+							steeringDiscount = PromotionHelper.getDiscount(user, timeslot, timeslotMap.get(timeslot.getDayOfWeek()), deliveryModel, forceorder);
+							_ts.setSteeringDiscount(steeringDiscount);
+						}
+					}
 
 					// Build zone map
 					{
@@ -453,5 +450,28 @@ public class TimeslotLogic {
 	public static boolean hasPremiumSlot(FDTimeslot fdT)
 	{
 		return fdT.getDlvTimeslot().isPremiumSlot();
+	}
+	
+	public static boolean isTimeslotPurged(FDTimeslot ts) {
+		if (ts.isTimeslotRemoved() || ts.isHolidayRestricted()){
+			return true;
+		}
+		return false;
+	}
+	
+	public static boolean isTimeslotSoldout(FDTimeslot ts, FDDeliveryTimeslotModel deliveryModel, boolean isForce) {
+		
+		if ( !ts.hasAvailCTCapacity() && !(ts.getTimeslotId().equals(deliveryModel.getTimeSlotId()) || (ts.getTimeslotId().equals(deliveryModel.getPreReserveSlotId()) && deliveryModel.isPreReserved())) 
+				&& (
+						!isForce || 
+						(
+								ts.getDlvTimeslot() != null && ts.getDlvTimeslot().getRoutingSlot() != null 
+								&& (ts.getDlvTimeslot().getRoutingSlot().isManuallyClosed() || !ts.getDlvTimeslot().getRoutingSlot().isDynamicActive())
+						)
+					)
+			) {
+				return true;
+			}
+		return false;
 	}
 }

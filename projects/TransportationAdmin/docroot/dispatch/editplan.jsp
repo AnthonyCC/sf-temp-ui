@@ -382,30 +382,35 @@
 			document.getElementById("planForm").submit();
 		}
 		function bullpen() {
-			var destRef = document.getElementById('destinationFacility').value || '';
-
-			var result = jsonrpcClient.AsyncDispatchProvider.getFacilityInfo(sendFormCallback, null, destRef); 
-
-			function sendFormCallback(result, exception) {
-				if(exception) {
-					alert('Unable to connect to host system. Please contact system administrator!');               
-					return;
-				}
+			
 			if(document.getElementById("isBullpen1").checked) {
-				document.getElementById("zoneCode").disabled=true;
-				document.getElementById("regionCode").disabled=false;
-				document.getElementById('destinationFacility').selectedIndex=0;
-				document.getElementById('originFacility').selectedIndex=0;
-			} else {
-				document.getElementById("zoneCode").disabled=false;
-				document.getElementById("regionCode").disabled=true;
-			}
-			document.getElementById("zoneModified").value = "true";
-			document.getElementById("ignoreErrors").value = "true";
-			document.getElementById("planForm").submit();
+				$('#zoneCode').attr('disabled', true);
+				$('#regionCode').attr('disabled', false);
+				$('#destinationFacility')[0].selectedIndex = 0;
+				$('#originFacility')[0].selectedIndex = 0;
 				
+				var regionCode = $('#regionCode').val() || '';
+				jsonrpcClient.AsyncDispatchProvider.getRegionFacility(regionFacilityCallback, regionCode);
+				
+			} else {
+				$('#zoneCode').attr('disabled', false);
+				$('#regionCode').attr('disabled', true);
+			}
 		}
+		
+		function regionFacilityCallback(result, exception) {
+			if(exception) {
+				alert('Unable to connect to host system. Please contact system administrator!');               
+				return;
+			}			
+			
+			$("#originFacility").val( result ).prop('selected',true);
+			
+			$('#zoneModified').val('true');
+			$('#ignoreErrors').val('true');
+			$('#planForm').submit();
 		}
+		
 		function back()
 	    {
 	      	var filters=unescape(getParameter("filter"));      	
@@ -464,7 +469,7 @@
 				}
 			}			
 		}
-		 disableAdjustmentTime();
+		disableAdjustmentTime();
 	</script>
   </tmpl:put>
 </tmpl:insert>

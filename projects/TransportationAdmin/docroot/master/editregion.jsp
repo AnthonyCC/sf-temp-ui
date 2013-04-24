@@ -76,6 +76,16 @@
                   &nbsp;<form:errors path="needsDispValidation" />
                 </td>
                </tr>
+               <tr>
+					<td>Origin Facility</td>
+					<td> 
+						<form:select path="originFacility" >
+							<form:option value="" label="--Please Select Origin Facility"/>
+							<form:options items="${trnFacilitys}" itemLabel="name" itemValue="facilityId" />
+						</form:select> 
+					</td>
+					<td><form:errors path="originFacility" />&nbsp;</td>
+				</tr>
                                            
               <tr><td colspan="3">&nbsp;</td></tr>
               <tr>

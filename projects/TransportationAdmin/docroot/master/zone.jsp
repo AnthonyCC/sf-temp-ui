@@ -88,6 +88,7 @@
 							  <ec:column alias="loadingPriority" property="loadingPriority" title="Loading Priority"/>
 							  <ec:column property="ecoFriendly" title="Eco Friendly Radius"/>
 							  <ec:column property="steeringRadius" title="Steering Radius"/>
+							  <ec:column property="svcAdjReductionFactor" title="Service Adjustment Reduction Factor"/>
 							</ec:row>
 						  </ec:table>
 		<% }else{ %>
@@ -113,6 +114,7 @@
 							  <ec:column alias="loadingPriority" property="loadingPriority" title="Loading Priority"/>
 							  <ec:column property="ecoFriendly" title="Eco Friendly Radius"/>
 							  <ec:column property="steeringRadius" title="Steering Radius"/>
+							  <ec:column property="svcAdjReductionFactor" title="Service Adjustment Reduction Factor"/>
 							</ec:row>
 						  </ec:table>
 		<% } %>

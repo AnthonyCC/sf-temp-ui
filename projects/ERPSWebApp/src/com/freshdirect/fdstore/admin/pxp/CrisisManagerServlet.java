@@ -379,8 +379,6 @@ public class CrisisManagerServlet extends HttpServlet {
 			
 			TimeslotEventModel event = new TimeslotEventModel(EnumTransactionSource.SYSTEM.getCode(), (cart != null) ? cart.isDlvPassApplied() : false, (cart != null) ? cart.getDeliverySurcharge() : 0.00,
 					(cart != null) ? cart.isDeliveryChargeWaived() : false, Util.isZoneCtActive(zoneId), user.getPrimaryKey());
-		
-			FDTimeslot timeslot = FDDeliveryManager.getInstance().getTimeslotsById(rsvModel.getTimeSlotId(), true);
 			
 			if(userReservation != null){
 				ErpAddressModel address = getAddress(user.getIdentity(),userReservation.getAddressId());
@@ -391,18 +389,18 @@ public class CrisisManagerServlet extends HttpServlet {
 			FDReservation reservation = null;
 			try{
 				reservation = FDCustomerManager.makeReservation(identity, 
-						timeslot, EnumReservationType.ONETIME_RESERVATION, rsvModel.getAddressId(), info, user.isChefsTable(), event, false);				
+						rsvModel.getTimeSlotId(), EnumReservationType.ONETIME_RESERVATION, rsvModel.getAddressId(), info, user.isChefsTable(), event, false);				
 			} catch (ReservationUnavailableException re ) {
 				// no more capacity in this timeslot
-				LOGGER.info( "No more capacity in timeslot: " + timeslot.toString(), null );
+				LOGGER.info( "No more capacity in timeslot: " + rsvModel.getTimeSlotId(), null );
 				reservation = FDCustomerManager.makeReservation(identity, 
-						timeslot, EnumReservationType.ONETIME_RESERVATION, rsvModel.getAddressId(), info, user.isChefsTable(), event, true);				
+						rsvModel.getTimeSlotId(), EnumReservationType.ONETIME_RESERVATION, rsvModel.getAddressId(), info, user.isChefsTable(), event, true);				
 			
 			} catch (ReservationException e){
 				// no more capacity in this timeslot
-				LOGGER.info( "No more capacity in timeslot: " + timeslot.toString(), null );
+				LOGGER.info( "No more capacity in timeslot: " + rsvModel.getTimeSlotId(), null );
 				reservation = FDCustomerManager.makeReservation(identity, 
-						timeslot, EnumReservationType.ONETIME_RESERVATION, rsvModel.getAddressId(), info, user.isChefsTable(), event, true);
+						rsvModel.getTimeSlotId(), EnumReservationType.ONETIME_RESERVATION, rsvModel.getAddressId(), info, user.isChefsTable(), event, true);
 			}
 			return reservation != null ? reservation.getId().toString() : null;
 			

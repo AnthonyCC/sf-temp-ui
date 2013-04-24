@@ -35,7 +35,7 @@ public class PlanValidator extends AbstractValidator {
 		checkDate("startTime", model.getStartTime(), model.getFirstDeliveryTime(),errors);
 		checkDate("firstDeliveryTime", model.getFirstDeliveryTime(), model.getLastDeliveryTime(),errors);
 		
-		if(model != null && model.getOriginFacility() == null && !"Y".equalsIgnoreCase(model.getIsBullpen())) {
+		if(model != null && model.getOriginFacility() == null) {
 			errors.rejectValue("originFacility", "app.error.112", new Object[]{"Origin Facility"},"required field");
 		}
 		if(model != null && model.getDestinationFacility() == null && !"Y".equalsIgnoreCase(model.getIsBullpen())) {

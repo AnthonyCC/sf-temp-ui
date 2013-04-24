@@ -149,6 +149,13 @@ public class AddressModel extends ModelSupport implements AddressI {
 		return (this.addressInfo != null) ? addressInfo.getAddressType() : null;
 	}
 
+	public String getBuildingId() {
+		return (this.addressInfo != null) ? addressInfo.getBuildingId() : "";
+	}
+	public String getLocationId() {
+		return (this.addressInfo != null) ? addressInfo.getLocationId() : "";
+	}
+	
 	/**
 	 * Check match on address1, address2, apt, city, state, zipcode.
 	 */

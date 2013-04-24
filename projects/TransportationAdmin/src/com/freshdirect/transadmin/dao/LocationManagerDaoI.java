@@ -13,6 +13,7 @@ import com.freshdirect.transadmin.model.DlvScenarioDay;
 import com.freshdirect.transadmin.model.DlvServiceTimeScenario;
 import com.freshdirect.transadmin.model.DlvServiceTimeType;
 import com.freshdirect.transadmin.model.TrnFacility;
+import com.freshdirect.transadmin.model.TrnFacilityLocation;
 import com.freshdirect.transadmin.model.TrnFacilityType;
 
 public interface LocationManagerDaoI extends BaseManagerDaoI {
@@ -76,4 +77,8 @@ public interface LocationManagerDaoI extends BaseManagerDaoI {
 	TrnFacility getTrnFacility(String id) throws DataAccessException;
 
 	TrnFacilityType getTrnFacilityType(String id) throws DataAccessException;
+	
+	Collection getTrnFacilityLocations() throws DataAccessException;
+	
+	TrnFacilityLocation getTrnFacilityLocation(String id) throws DataAccessException;
 }

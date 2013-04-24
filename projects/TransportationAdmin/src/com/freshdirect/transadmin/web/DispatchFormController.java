@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -67,6 +68,30 @@ public class DispatchFormController extends AbstractFormController {
 	public void setAssetManagerService(AssetManagerI assetManagerService) {
 		this.assetManagerService = assetManagerService;
 	}
+	
+	public DomainManagerI getDomainManagerService() {
+		return domainManagerService;
+	}
+
+	public void setDomainManagerService(DomainManagerI domainManagerService) {
+		this.domainManagerService = domainManagerService;
+	}
+
+	public EmployeeManagerI getEmployeeManagerService() {
+		return employeeManagerService;
+	}
+
+	public void setEmployeeManagerService(EmployeeManagerI employeeManagerService) {
+		this.employeeManagerService = employeeManagerService;
+	}
+
+	public ZoneManagerI getZoneManagerService() {
+		return zoneManagerService;
+	}
+
+	public void setZoneManagerService(ZoneManagerI zoneManagerService) {
+		this.zoneManagerService = zoneManagerService;
+	}
 
 	@Override
 	protected Map referenceData(HttpServletRequest request, Object command,
@@ -88,7 +113,7 @@ public class DispatchFormController extends AbstractFormController {
 		binder.registerCustomEditor(TrnFacility.class, new TrnFacilityPropertyEditor());
 	}
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	protected Map referenceData(HttpServletRequest request) throws ServletException {
 		
 		Collection zones=getDomainManagerService().getZones();
@@ -108,7 +133,6 @@ public class DispatchFormController extends AbstractFormController {
 		Map refData = new HashMap();
 
 		String dispDate = request.getParameter("dispDate");
-		String destFacility = request.getParameter("destinationFacility");
 
 		if (StringUtils.hasText(dispDate)) {
 			refData.put("routes", domainManagerService
@@ -182,26 +206,27 @@ public class DispatchFormController extends AbstractFormController {
 		return refData;
 	}
 
+	@SuppressWarnings("rawtypes")
 	private DispatchCommand getCommand(Dispatch dispatch) throws Exception{
 		Zone zone = null;
 		if(dispatch.getZone() != null) {
 			zone = domainManagerService.getZone(dispatch.getZone().getZoneCode());
 		}
+		
 		boolean isToday = TransStringUtil.isToday(dispatch.getDispatchDate());
-		Collection punchInfo=null;
-		if(isToday&&TransWebUtil.isPunch(getDispatchManagerService()))
-			punchInfo = TransAdminCacheManager.getInstance().getPunchInfo(
-					TransStringUtil.getServerDate(dispatch.getDispatchDate()), employeeManagerService);
+		Collection punchInfo = null;
+		if (isToday && TransWebUtil.isPunch(getDispatchManagerService())) {
+			punchInfo = TransAdminCacheManager.getInstance().getPunchInfo(TransStringUtil.getServerDate(dispatch.getDispatchDate()), employeeManagerService);
+		}
 		
 		DispatchCommand dispatchCommand = DispatchPlanUtil.getDispatchCommand(
 				dispatch, zone, employeeManagerService, punchInfo, null, null,
-				null, null, null, null, null);
+				null, null, null, null, null,null);
 		if (isToday && TransWebUtil.isPunch(getDispatchManagerService()))
 			DispatchPlanUtil.setDispatchStatus(dispatchCommand);
+		
 		return dispatchCommand;
 	}
-
-
 
 	private Dispatch getDispatch(DispatchCommand command) throws Exception {
 		return DispatchPlanUtil.getDispatch(command, domainManagerService);
@@ -221,15 +246,57 @@ public class DispatchFormController extends AbstractFormController {
 		return command;
 	}
 
-	public Object getBackingObject(String id) {
+	@SuppressWarnings("rawtypes")
+	public Object getBackingObject(String id, HttpServletRequest request) {
 		try{
 			DispatchCommand command = getCommand(getDispatchManagerService().getDispatch(id));
+			
+			String dispatchRefId = request.getParameter("dispatchRefId");
+			if(!TransStringUtil.isEmpty(dispatchRefId)) {
+				command.setDispatchId(null);
+				command.setPlanId(null);
+				
+				Collection punchInfo = null;
+				if (TransStringUtil.isToday(command.getDispatchDate()) && TransWebUtil.isPunch(getDispatchManagerService())) {
+					punchInfo = TransAdminCacheManager.getInstance().getPunchInfo(TransStringUtil.getServerDate(command.getDispatchDate()), employeeManagerService);
+				}
+				
+				Zone zone = null;
+				if(command.getZoneCode() != null) {
+					zone = domainManagerService.getZone(command.getZoneCode());
+				}
+				command.setResources(employeeManagerService, new HashSet(),
+										DispatchPlanUtil.getResourceRequirements(zone),
+										punchInfo, null, null, null, null, null, null);
+
+				command.setRoute(null);
+				command.setPhysicalTruck(null);
+				command.setTruck(null);
+				
+				command.setComments(null);
+				command.setGpsNumber(null);
+				command.setEzpassNumber(null);
+				command.setMotKitNumber(null);
+				command.setAdditionalNextels(null);
+				command.setStatus(null);
+				
+				command.setConfirmed(false);
+				command.setIsOverride(false);
+				command.setOverrideReasonCode(null);
+				command.setOverrideUser(null);
+			}
+			
 			return command;
 		} catch(Exception ex){
 			ex.printStackTrace();
-			throw new RuntimeException("An Error Ocuurred when trying construct command object "+ex.getMessage());
+			throw new RuntimeException("An Error Ocuurred when trying to construct command object "+ex.getMessage());
 		}
-
+	}
+	
+	@Override
+	public Object getBackingObject(String id) {
+		// Replaced by getBackingObject(String id, request)
+		return null;
 	}
 
 	public boolean isNew(Object command) {
@@ -237,39 +304,36 @@ public class DispatchFormController extends AbstractFormController {
 		return (TransStringUtil.isEmpty(modelIn.getDispatchId()));
 	}
 
-
 	public String getDomainObjectName() {
 		return "DispatchCommand";
 	}
 
-
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private List saveDispatch(DispatchCommand command) {
 		List errorList = null;
-		try {
-
-			boolean isNew = isNew(command);
-			Dispatch domainObject=getDispatch(command);
-			
+		try {			
+			Dispatch domainObject = getDispatch(command);
 			Dispatch previousModel = getDispatchManagerService().getDispatch(domainObject.getDispatchId());
-			if(previousModel!=null)
-			{
-				if(previousModel.getDispatchTime()!=null && domainObject.getDispatchTime()!=null)
+			if (previousModel != null) {
+				if (previousModel.getDispatchTime() != null
+						&& domainObject.getDispatchTime() != null) {
 					domainObject.setDispatchTime(previousModel.getDispatchTime());
-				if(previousModel.getCheckedInTime()!=null && domainObject.getCheckedInTime()!=null)
+				}
+				if (previousModel.getCheckedInTime() != null
+						&& domainObject.getCheckedInTime() != null) {
 					domainObject.setCheckedInTime(previousModel.getCheckedInTime());
+				}
 			}
 			getDispatchManagerService().saveDispatch(domainObject, command.getReferenceContextId());
 			command.setDispatchId(domainObject.getDispatchId());
 			command.setReferenceContextId(null);
-			boolean isToday = TransStringUtil.isToday(command.getDispatchDate());			
-			if(isToday) {
+			
+			if(TransStringUtil.isToday(command.getDispatchDate())) {
 				DispatchPlanUtil.setDispatchStatus(command);
 			}
 		} catch (TransAdminApplicationException objExp) {
 			errorList = new ArrayList();
 			errorList.add(objExp.getMessage());
-
 		} catch (Exception objExp) {
 		    objExp.printStackTrace();
 			errorList = new ArrayList();
@@ -348,8 +412,8 @@ public class DispatchFormController extends AbstractFormController {
 			return isFormChangeRequest(request);
 	}
 
-	protected void onFormChange(HttpServletRequest request, HttpServletResponse response, Object command)
-	throws Exception {
+	protected void onFormChange(HttpServletRequest request,
+			HttpServletResponse response, Object command) throws Exception {
 
 		DispatchCommand _command=(DispatchCommand)command;		
 		_command.setFirstDeliveryTimeModified("false");
@@ -358,6 +422,7 @@ public class DispatchFormController extends AbstractFormController {
 	}
 
 
+	@SuppressWarnings("unchecked")
 	protected String getIdFromRequest(HttpServletRequest request)
 	{
 		TransWebUtil.httpRequest.set(request);
@@ -365,31 +430,10 @@ public class DispatchFormController extends AbstractFormController {
 		if(TransStringUtil.isEmpty(id)) {
 			id=request.getParameter("dispatchId");
 		}
+		if(TransStringUtil.isEmpty(id)) {
+			id=request.getParameter("dispatchRefId");
+		}
 		return id;
-	}
-
-	public DomainManagerI getDomainManagerService() {
-		return domainManagerService;
-	}
-
-	public void setDomainManagerService(DomainManagerI domainManagerService) {
-		this.domainManagerService = domainManagerService;
-	}
-
-	public EmployeeManagerI getEmployeeManagerService() {
-		return employeeManagerService;
-	}
-
-	public void setEmployeeManagerService(EmployeeManagerI employeeManagerService) {
-		this.employeeManagerService = employeeManagerService;
-	}
-
-	public ZoneManagerI getZoneManagerService() {
-		return zoneManagerService;
-	}
-
-	public void setZoneManagerService(ZoneManagerI zoneManagerService) {
-		this.zoneManagerService = zoneManagerService;
-	}
+	}	
 
 }

@@ -1,6 +1,9 @@
 package com.freshdirect.transadmin.model;
 
 import java.util.Date;
+import java.util.List;
+
+import com.freshdirect.transadmin.web.model.AssetScanInfo;
 
 public interface ResourceInfoI {
 
@@ -52,5 +55,6 @@ public interface ResourceInfoI {
 	
 	public Date getAdjustmentTime();
 	public void setAdjustmentTime(Date adjustmentTime);
-	
+	public List<AssetScanInfo> getScannedAssets();
+	public void setScannedAssets(List<AssetScanInfo> scannedAssets);
 }

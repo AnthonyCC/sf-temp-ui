@@ -46,6 +46,21 @@
 						 	<a href="#" id="trigger_planDate" style="font-size: 9px;">
                         			<img src="./images/icons/calendar.gif" width="16" height="16" border="0" alt="Select Date" title="Select Date"></a>
 						</div>&nbsp;
+						<div style="float:left;text-align:center;font-weight:bold">Facility Location<br>&nbsp;
+		                  <select id="facilityLocation" name="facilityLocation">
+		                      <option value="">--Facility Location</option> 
+		                      <c:forEach var="facilityLoc" items="${facilityLocations}">                             
+		                          <c:choose>
+		                            <c:when test="${facilityLocation == facilityLoc.code}" > 
+		                              <option selected value="<c:out value="${facilityLoc.code}"/>"><c:out value="${facilityLoc.description}"/></option>
+		                            </c:when>
+		                            <c:otherwise> 
+		                              <option value="<c:out value="${facilityLoc.code}"/>"><c:out value="${facilityLoc.description}"/></option>
+		                            </c:otherwise> 
+		                          </c:choose>      
+		                        </c:forEach>   
+		                   </select>
+						</div>&nbsp;
 						<div style="float:left;text-align:center;font-weight:bold">Zone<br>&nbsp;
 							<input maxlength="40" size="20" name="zone" id="zone" value="<%= zoneVal %>" style="width:100px" />
 						</div>	&nbsp;					

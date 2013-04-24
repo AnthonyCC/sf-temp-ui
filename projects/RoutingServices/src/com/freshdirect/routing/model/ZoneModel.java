@@ -17,6 +17,8 @@ public class ZoneModel extends BaseModel implements IZoneModel {
 	private IServiceTimeTypeModel serviceTimeType;
 	
 	private int loadingPriority;
+	
+	private double svcAdjReductionFactor; 
 
 	public IAreaModel getArea() {
 		return area;
@@ -85,5 +87,13 @@ public class ZoneModel extends BaseModel implements IZoneModel {
 
 	public String toString() {
 		return zoneId+"|"+zoneNumber+"|"+area;
+	}
+
+	public double getSvcAdjReductionFactor() {
+		return svcAdjReductionFactor;
+	}
+
+	public void setSvcAdjReductionFactor(double svcAdjReductionFactor) {
+		this.svcAdjReductionFactor = svcAdjReductionFactor;
 	}
 }

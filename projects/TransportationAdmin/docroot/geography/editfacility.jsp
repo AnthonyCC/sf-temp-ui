@@ -47,7 +47,7 @@
 								<td> 
 									<form:select path="trnFacilityType" onChange="showRoutingSelection(this);">
 										<form:option value="" label="--Please Select Facility Type"/>
-										<form:options items="${trnFacilityTypes}" itemLabel="name" itemValue="name" />
+										<form:options items="${facilityTypes}" itemLabel="name" itemValue="name" />
 									</form:select> 
 								</td>
 								<td><form:errors path="trnFacilityType" />&nbsp;</td>
@@ -60,6 +60,16 @@
 							 	<td>
 							 		&nbsp;<form:errors path="routingCode" />
 							 	</td>
+							 </tr>
+							 <tr>
+								<td>Facility Location</td>
+								<td> 
+									<form:select path="facilityLocation" >
+										<form:option value="" label="--Please Select Facility Location"/>
+										<form:options items="${facilityLocations}" itemLabel="code" itemValue="code" />
+									</form:select> 
+								</td>
+								<td><form:errors path="facilityLocation" />&nbsp;</td>
 							 </tr> 
 							  <tr>
 							    <td>Prefix</td>

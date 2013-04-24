@@ -30,7 +30,10 @@ public class FDReservation extends ModelSupport {
 	private final int statusCode;
 	private final EnumReservationClass rsvClass;
 	private boolean hasSteeringDiscount;
-
+	private String buildingId;
+	private String locationId;
+	private int reservedOrdersAtBuilding;
+	
 	public FDReservation(
 		PrimaryKey pk,
 		FDTimeslot timeslot,
@@ -43,7 +46,8 @@ public class FDReservation extends ModelSupport {
 		String orderId,
 		boolean isInUPS,
 		RoutingActivityType unassignedActivityType,
-		int statusCode, EnumReservationClass rsvClass) {
+		int statusCode, EnumReservationClass rsvClass,
+		String buildingId, String locationId, int reservedOrdersAtBuilding) {
 		this.setPK(pk);
 		this.timeslot = timeslot;
 		this.expirationDateTime = expirationDateTime;
@@ -57,6 +61,9 @@ public class FDReservation extends ModelSupport {
 		this.unassignedActivityType=unassignedActivityType;
 		this.statusCode=statusCode;
 		this.rsvClass=rsvClass;
+		this.buildingId = buildingId;
+		this.locationId = locationId;
+		this.reservedOrdersAtBuilding = reservedOrdersAtBuilding;
 	}
 	public FDReservation(
 		PrimaryKey pk,
@@ -70,7 +77,8 @@ public class FDReservation extends ModelSupport {
 		String orderId,
 		boolean isInUPS,
 		RoutingActivityType unassignedActivityType,
-		int statusCode, EnumReservationClass rsvClass, boolean hasSteeringDiscount) {
+		int statusCode, EnumReservationClass rsvClass, boolean hasSteeringDiscount,
+		String buildingId, String locationId, int reservedOrdersAtBuilding) {
 		this.setPK(pk);
 		this.timeslot = timeslot;
 		this.expirationDateTime = expirationDateTime;
@@ -85,6 +93,11 @@ public class FDReservation extends ModelSupport {
 		this.statusCode=statusCode;
 		this.rsvClass=rsvClass;
 		this.hasSteeringDiscount = hasSteeringDiscount;
+		this.buildingId = buildingId;
+		this.locationId = locationId;
+		this.reservedOrdersAtBuilding = reservedOrdersAtBuilding;
+		
+		
 	}
 	public EnumReservationType getType() {
 		return type;
@@ -169,5 +182,27 @@ public class FDReservation extends ModelSupport {
 		this.hasSteeringDiscount = hasSteeringDiscount;
 	}
 	
+	public String getBuildingId() {
+		return buildingId;
+	}
 
+	public void setBuildingId(String buildingId) {
+		this.buildingId = buildingId;
+	}
+
+	public String getLocationId() {
+		return locationId;
+	}
+
+	public void setLocationId(String locationId) {
+		this.locationId = locationId;
+	}
+
+	public int getReservedOrdersAtBuilding() {
+		return reservedOrdersAtBuilding;
+	}
+
+	public void setReservedOrdersAtBuilding(int reservedOrdersAtBuilding) {
+		this.reservedOrdersAtBuilding = reservedOrdersAtBuilding;
+	}
 }

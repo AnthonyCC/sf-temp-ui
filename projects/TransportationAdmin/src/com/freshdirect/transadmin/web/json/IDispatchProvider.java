@@ -2,6 +2,7 @@ package com.freshdirect.transadmin.web.json;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 import com.freshdirect.transadmin.web.model.DispatchCommand;
 import com.freshdirect.transadmin.web.model.DispatchStatusList;
@@ -49,11 +50,13 @@ public interface IDispatchProvider {
 	boolean addIssueSubType(String date, String createdBy, String name,String desc, String isActive, String issueType);
 	List<IssueSubTypeCommand> getIssueSubTypes(String issueTypeId);
 	String saveVIRRecord(String createDate, String truckNumber, String vendor
-			, String driver, String createdBy
+			, String driver, String createdBy, String socStart, String socEnd, String socReeferStart, String socReeferEnd
 			, String[][] recordIssues);
 	boolean doRejectMaintenanceIssue(String id, String userId);
 	String getTruckVendorInfo(String truckNumber);
+	Map getElectricFleetMetrics(String truckNumber);
 	String[] getFacilityInfo(String orgFacilityId, String destFacilityId);
 	boolean updateDispatchStatus(DispatchStatusList dispatches, String userId);
 	boolean validateAccessCode(String accessCode);
+	String getRegionFacility(String regionCode);
 }

@@ -506,10 +506,10 @@ public class FDDeliveryManager {
 		}
 	}
 
-	public FDTimeslot getTimeslotsById(String timeslotId, boolean checkPremium) throws FDResourceException {
+	public FDTimeslot getTimeslotsById(String timeslotId,String buildingId, boolean checkPremium) throws FDResourceException {
 		try {
 			DlvManagerSB sb = getDlvManagerHome().create();
-			DlvTimeslotModel model = sb.getTimeslotById(timeslotId, checkPremium);
+			DlvTimeslotModel model = sb.getTimeslotById(timeslotId, buildingId, checkPremium);
 			return new FDTimeslot(model);
 		} catch (RemoteException re) {
 			throw new FDResourceException(re);
@@ -575,7 +575,7 @@ public class FDDeliveryManager {
 				address.getId(),
 				dlvReservation.isChefsTable(),dlvReservation.getUnassignedActivityType()!=null, dlvReservation.getOrderId(),dlvReservation.isInUPS(),
 				dlvReservation.getUnassignedActivityType(),
-				dlvReservation.getStatusCode(),dlvReservation.getRsvClass(), dlvReservation.hasSteeringDiscount());
+				dlvReservation.getStatusCode(),dlvReservation.getRsvClass(), dlvReservation.hasSteeringDiscount(),dlvReservation.getBuildingId(), dlvReservation.getLocationId(), dlvReservation.getReservedOrdersAtBuilding());
 			if(FDStoreProperties.isDynamicRoutingEnabled() && (timeslot.getDlvTimeslot() != null && timeslot.getDlvTimeslot().getRoutingSlot() != null 
 					&& timeslot.getDlvTimeslot().getRoutingSlot().isDynamicActive())) {
 				boolean isSent=RoutingUtil.getInstance().sendTimeslotReservationRequest(dlvReservation, address, timeslot, event);
@@ -613,7 +613,7 @@ public class FDDeliveryManager {
 				,reservation.isUnassigned()
 				, reservation.getOrderId(),reservation.isInUPS(),
 				 reservation.getUnassignedActivityType(),
-				 reservation.getStatusCode(),reservation.getRsvClass());
+				 reservation.getStatusCode(),reservation.getRsvClass(), reservation.getBuildingId(), reservation.getLocationId(), reservation.getReservedOrdersAtBuilding());
 
 		} catch (RemoteException re) {
 			throw new FDResourceException(re);
@@ -670,7 +670,7 @@ public class FDDeliveryManager {
 
 			List<FDReservation> rsvLst = new ArrayList<FDReservation>();
 			for ( DlvReservationModel dlvRsv : reservations ) {
-				FDTimeslot timeslot = this.getTimeslotsById(dlvRsv.getTimeslotId(), dlvRsv.isPremium());
+				FDTimeslot timeslot = this.getTimeslotsById(dlvRsv.getTimeslotId(), null, dlvRsv.isPremium());
 				rsvLst.add(new FDReservation(
 					dlvRsv.getPK(),
 					timeslot,
@@ -682,7 +682,7 @@ public class FDDeliveryManager {
 					dlvRsv.isUnassigned(), dlvRsv.getOrderId(),dlvRsv.isInUPS(),
 					dlvRsv.getUnassignedActivityType(),
 					dlvRsv.getStatusCode(),dlvRsv.getRsvClass(),
-					dlvRsv.hasSteeringDiscount()));
+					dlvRsv.hasSteeringDiscount(),dlvRsv.getBuildingId(), dlvRsv.getLocationId(), dlvRsv.getReservedOrdersAtBuilding()));
 			}
 			return rsvLst;
 
@@ -773,12 +773,12 @@ public class FDDeliveryManager {
 		try {
 			DlvManagerSB sb = getDlvManagerHome().create();
 			DlvReservationModel dlvRsv = sb.getReservation(rsvId);
-			FDTimeslot timeslot = this.getTimeslotsById(dlvRsv.getTimeslotId(), dlvRsv.isPremium());
+			FDTimeslot timeslot = this.getTimeslotsById(dlvRsv.getTimeslotId(), null, dlvRsv.isPremium());
 
 			FDReservation fdRes = new FDReservation(dlvRsv.getPK(), timeslot, dlvRsv.getExpirationDateTime(), dlvRsv
 				.getReservationType(), dlvRsv.getCustomerId(), dlvRsv.getAddressId(), dlvRsv.isChefsTable(),dlvRsv.isUnassigned()
 				, dlvRsv.getOrderId(),dlvRsv.isInUPS(),dlvRsv.getUnassignedActivityType(),
-				dlvRsv.getStatusCode(),dlvRsv.getRsvClass(), dlvRsv.hasSteeringDiscount());
+				dlvRsv.getStatusCode(),dlvRsv.getRsvClass(), dlvRsv.hasSteeringDiscount(),dlvRsv.getBuildingId(),dlvRsv.getLocationId(), dlvRsv.getReservedOrdersAtBuilding());
 
 			return fdRes;
 		} catch (ObjectNotFoundException ex) {

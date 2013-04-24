@@ -7,7 +7,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -280,6 +282,16 @@ public class EventServiceImpl implements EventService {
 		return df.format(new Date());
 	}
 	
+	public Set<String> getBaseDates(String deliveryDate) throws ParseException{
+		Set<Date> exceptions = orderRateDAO.getExceptions();
+		Set<String> baseDates = new HashSet<String>(2);
+		Calendar cal = Calendar.getInstance();
+		DateFormat df = new SimpleDateFormat("MM/dd/yyyy");
+		cal.setTime(df.parse(deliveryDate));
+		baseDates.add(df.format(OrderRateUtil.getSample(cal,exceptions)));
+		baseDates.add(df.format(OrderRateUtil.getSample(cal,exceptions)));
+		return baseDates;
+	}
 	
 	public List<OrderRateVO> getForecast(String deliveryDate, String zone, String prevDay1, String prevDay2) throws ParseException
 	{
@@ -300,11 +312,11 @@ public class EventServiceImpl implements EventService {
 		
 		cal.setTime(df.parse(deliveryDate));
 		
-		List<Date> holidays = orderRateDAO.getHolidays();
+		Set<Date> exceptions = orderRateDAO.getExceptions();
 		if(prevDay1 == null || prevDay2 == null || "".equals(prevDay2) || "".equals(prevDay1))
 		{
-				date1 = OrderRateUtil.getSample(cal,holidays);
-				date2 = OrderRateUtil.getSample(cal,holidays);
+				date1 = OrderRateUtil.getSample(cal,exceptions);
+				date2 = OrderRateUtil.getSample(cal,exceptions);
 		}
 		else
 		{

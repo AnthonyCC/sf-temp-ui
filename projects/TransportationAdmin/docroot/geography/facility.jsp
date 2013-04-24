@@ -44,9 +44,9 @@
       </div>
 	   <table>
     <tr>    
-	  <td style="vertical-align: top;" width="60%">
+	  <td style="vertical-align: top;" width="65%">
 	       <form id="facilityListForm" action="" method="post">  
-	      <ec:table items="trnFacilitys"  action="${pageContext.request.contextPath}/facility.do"
+	      <ec:table items="facilitys"  action="${pageContext.request.contextPath}/facility.do"
 	            imagePath="${pageContext.request.contextPath}/images/table/*.gif"  title="Facility"
 	            width="100%" showPagination="false" form="facilityListForm" rowsDisplayed="100" view="fd" tableId="facility">
 	            
@@ -63,6 +63,7 @@
 				  <ec:column property="description" title="Facility Description" />
 				  <ec:column property="trnFacilityType" title="Facility Type" width="10"/>
 				  <ec:column property="routingCode" title="Routing Code"/>
+				  <ec:column property="facilityLocation" title="Facility Location" width="10"/>
 				  <ec:column property="prefix" title="Prefix" width="10"/>
 				  <ec:column property="latitude" title="Latitude" width="10"/>
               	  <ec:column property="longitude" title="Longitude" width="10"/>
@@ -73,15 +74,26 @@
 	           </form>  
 	    </td>
 	    <td>&nbsp;&nbsp;&nbsp;</td>
-	    <td style="vertical-align: top;"  width="40%">
-	      <ec:table items="trnFacilityTypes"  action="${pageContext.request.contextPath}/facility.do"
+	    <td style="vertical-align: top;"  width="35%">
+	      <ec:table items="facilityTypes"  action="${pageContext.request.contextPath}/facility.do"
 	            imagePath="${pageContext.request.contextPath}/images/table/*.gif"   title="Facility Type"
 	            width="100%" showPagination="false" sortable="false" 
 	            tableId="facilitytype" rowsDisplayed="100" view="fd" >
 			            
-	            <ec:row interceptor="obsoletemarker">	               
-				  <ec:column property="name"  title="Facility Type Code"/>
-				  <ec:column property="description" title="Facility Type Description" />
+	            <ec:row>	               
+				  <ec:column property="name"  title="Type Code"/>
+				  <ec:column property="description" title="Type Description" />
+	            </ec:row>
+	       </ec:table>
+	       <br/>
+	       <ec:table items="facilityLocations"  action="${pageContext.request.contextPath}/facility.do"
+	            imagePath="${pageContext.request.contextPath}/images/table/*.gif"   title="Facility Location"
+	            width="100%" showPagination="false" sortable="false" 
+	            tableId="facilitylocation" rowsDisplayed="100" view="fd" >
+			            
+	            <ec:row>	               
+				  <ec:column property="code"  title="Location Code"/>
+				  <ec:column property="description" title="Description" />
 	            </ec:row>
 	       </ec:table>
 	  	</td> 

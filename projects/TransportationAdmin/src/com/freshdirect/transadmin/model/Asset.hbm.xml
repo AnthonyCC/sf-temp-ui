@@ -19,6 +19,9 @@
         <property name="assetDescription" type="string">
             <column name="ASSET_DESCRIPTION" length="256" />
         </property>
+        <property name="barcode" type="string">
+            <column name="BARCODE" length="256" />
+        </property>
         <property name="assetStatus" column="ASSET_STATUS" type="com.freshdirect.transadmin.constants.EnumAssetStatusDataType" />
         <many-to-one name="assetTemplate" class="com.freshdirect.transadmin.model.AssetTemplate" fetch="select" lazy="false">
             <column name="ASSET_TEMPLATE" length="40" />

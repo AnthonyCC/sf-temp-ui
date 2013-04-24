@@ -167,7 +167,7 @@ public interface DomainManagerI extends BaseManagerI {
 	VIRRecord getVIRRecord(String id);
 	
 	String saveVIRRecord(String createDate, String truckNumber, String vendor
-			, String driver, String createdBy
+			, String driver, String createdBy, String socStart, String socEnd, String socReeferStart, String socReeferEnd
 			, String[][] recordIssues);
 	
 	Collection getMaintenanceIssue(String truckNumber, String issueType, String issueSubType);

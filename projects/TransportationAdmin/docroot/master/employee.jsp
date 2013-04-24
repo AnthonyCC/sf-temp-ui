@@ -104,9 +104,11 @@
 								<ec:column property="firstName" title="First Name"/>
 								<ec:column property="lastName" title="Last Name"/>
 								<ec:column alias="kronosId" property="employeeId" title="KronosID"/>
-								<ec:column property="hireDate" title="Seniourity RankDate"/>
+								<ec:column property="hireDate" title="Seniourity Rank Date"/>
 								<ec:column property="jobType" title="JobType"/>
-								<ec:column property="supervisorFirstName" title="Supervisor"/>
+								<ec:column property="empSupervisor.id.supervisorName" title="Supervisor"/>
+								<ec:column property="empSupervisor.homeRegion" title="Home Region"/>
+								<ec:column property="empSupervisor.homeShift" title="Home Shift"/>
 								<ec:column property="employeeRoleType" title="Sub-Role"/>
                                 <ec:column property="terminationDate" title="Terminated"/>
                                 <ec:column property="leadInfoEx.name" title="Lead"/>
@@ -135,9 +137,11 @@
 								<ec:column property="firstName" title="First Name"/>
 								<ec:column property="lastName" title="Last Name"/>
 								<ec:column alias="kronosId" property="employeeId" title="KronosID" width="5px"/>                                  
-								<ec:column property="hireDate" title="Seniourity RankDate"/>
+								<ec:column property="hireDate" title="Seniourity Rank Date"/>
 								<ec:column property="jobType" title="JobType"/>              
-								<ec:column property="supervisorFirstName" title="supervisor"/>
+								<ec:column property="empSupervisor.id.supervisorName" title="Supervisor"/>
+								<ec:column property="empSupervisor.homeRegion" title="Home Region"/>
+								<ec:column property="empSupervisor.homeShift" title="Home Shift"/>
 								<ec:column property="employeeRoleType" title="Sub-Role"/>
                            		<ec:column property="leadInfoEx.name" title="Lead"/>
 							</ec:row>

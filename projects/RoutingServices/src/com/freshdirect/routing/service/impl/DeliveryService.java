@@ -40,6 +40,7 @@ import com.freshdirect.routing.model.IServiceTimeTypeModel;
 import com.freshdirect.routing.model.IUnassignedModel;
 import com.freshdirect.routing.model.IZoneModel;
 import com.freshdirect.routing.model.IZoneScenarioModel;
+import com.freshdirect.routing.model.ZoneModel;
 import com.freshdirect.routing.proxy.stub.transportation.DirectionData;
 import com.freshdirect.routing.proxy.stub.transportation.RoutingRoute;
 import com.freshdirect.routing.proxy.stub.transportation.RoutingSession;
@@ -68,7 +69,7 @@ public class DeliveryService extends BaseService implements IDeliveryService {
 	}
 
 	
-	public double getServiceTime(IOrderModel orderModel, IServiceTimeScenarioModel scenario) throws RoutingServiceException {
+	public double getServiceTime(IOrderModel orderModel, IServiceTimeScenarioModel scenario, RoutingActivityType routingType) throws RoutingServiceException {
 		
 		IZoneModel zone = orderModel.getDeliveryInfo().getDeliveryZone();
 		ILocationModel location = orderModel.getDeliveryInfo().getDeliveryLocation();
@@ -131,10 +132,18 @@ public class DeliveryService extends BaseService implements IDeliveryService {
 			adjustmentPriority = 1;
 			adjustmentOperator = zoneScenario.getAdjustmentOperator();
 			serviceTimeAdjustment = zoneScenario.getServiceTimeAdjustment();
+			
 		} 
+		
+		
 		if(adjustmentOperator != null && adjustmentPriority > stPriority) {
 			if(adjustmentOperator.equals(EnumArithmeticOperator.SUB)) {
 				serviceTimeAdjustment = -serviceTimeAdjustment;
+			}
+			
+			if(!RoutingActivityType.GET_TIMESLOT.equals(routingType)){
+				if(orderModel.getDeliveryInfo().getReservedOrdersAtBuilding()!=0 && zone.getSvcAdjReductionFactor()>0)
+					serviceTimeAdjustment = serviceTimeAdjustment * zone.getSvcAdjReductionFactor();
 			}
 			if((valY + serviceTimeAdjustment) > 0) {
 				valY = valY + serviceTimeAdjustment;

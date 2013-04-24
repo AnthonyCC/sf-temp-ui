@@ -11,9 +11,11 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.sql.DataSource;
 
@@ -64,7 +66,7 @@ public class OrderRateDAOImpl implements IOrderRateDAO {
 			"O.CUTOFF co from mis.order_rate o where o.delivery_date = to_date(?,'mm/dd/yyyy') group by O.CUTOFF) t  where o.delivery_date = " +
 			"to_date(?,'mm/dd/yyyy')   AND o.snapshot_time = t.sh and o.cutoff = t.co group by zone,cutoff order by zone,cutoff";
 	
-	private static final String HOLIDAY_QUERY_EX = "select delivery_date from mis.order_rate_holiday";
+	private static final String EXCEPTION_QUERY = "select delivery_date from MIS.ORDER_RATE_EXCEPTIONS";
 		
 	private static final String CAPACITY_QUERY_FORECAST = "select capacity,order_count, " +
 			"delivery_date, timeslot_start, timeslot_end, zone, snapshot_time from MIS.order_rate where delivery_date in ( ?, ?) and " +
@@ -482,34 +484,27 @@ public class OrderRateDAOImpl implements IOrderRateDAO {
 		return capacityMap;
 	}
 	
-	public List<Date>  getHolidays()
-	{
-		final List<Date> holidays = new ArrayList<Date>();
+	public Set<Date>  getExceptions(){
+		final Set<Date> exceptions = new HashSet<Date>();
 		
 		 PreparedStatementCreator creator=new PreparedStatementCreator() {
 	            public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
 	                PreparedStatement ps =
-	                    connection.prepareStatement(HOLIDAY_QUERY_EX);
+	                    connection.prepareStatement(EXCEPTION_QUERY);
 	               
 	                return ps;
 	            }
 	        };
 	        jdbcTemplate.query(creator,
-		       		  new RowCallbackHandler() 
-		        		{
-		       		      public void processRow(ResultSet rs) throws SQLException 
-		       		      {
-
-		       		    	do 
-		       		    	{
-		       					holidays.add(new Date(rs.getDate("delivery_date").getTime()));
-		       				}
-		       		    	   while(rs.next());
-		    		
+		       		  new RowCallbackHandler() {
+		       		      public void processRow(ResultSet rs) throws SQLException{
+		       		    	do{
+		       		    		exceptions.add(new Date(rs.getDate("delivery_date").getTime()));
+		       				} while(rs.next());
 		       		      }
 		        		}
 		 );		
-		return holidays;
+		return exceptions;
 	}
 	
 
@@ -688,29 +683,26 @@ public class OrderRateDAOImpl implements IOrderRateDAO {
 	        };
 			
 	        jdbcTemplate.query(creator,
-		       		  new RowCallbackHandler() 
-		        		{
-		       		      public void processRow(ResultSet rs) throws SQLException 
-		       		      {
-
-		       		    	do 
-		       		    	{
+		       		  new RowCallbackHandler(){
+		       		      public void processRow(ResultSet rs) throws SQLException{
+		       		    	do {
+		       		    		if(rs.getTimestamp("snapshot_time")!=null){
 		       					OrderRateVO vo = new OrderRateVO();
 		       					vo.setBaseDate(baseDate);
-		   
 		       					vo.setSnapshotTime(new Date(rs.getTimestamp("snapshot_time").getTime()));
 		       					vo.setSnapshotTimeFmt(sdf.format(new Date(rs.getTimestamp("snapshot_time").getTime())));
 		       					vo.setCapacity(rs.getInt("capacity"));
 		       					inputList.add(vo);
-		       					
+		       		    		}
 		       				}
-		       		    	   while(rs.next());
-		    		
+		       		    	while(rs.next());
 		       		      }
 		        		}
 		 );		
 			
-			Map<Date, Integer[]> forecastMap = getFDTotalForecastCapacityMap(day1, day2);
+			Map<Date, Integer[]> forecastMap = null;
+			
+			if(inputList.size()>0) forecastMap = getFDTotalForecastCapacityMap(day1, day2);
 			
 			Iterator<OrderRateVO> voIterator = inputList.iterator();
 			

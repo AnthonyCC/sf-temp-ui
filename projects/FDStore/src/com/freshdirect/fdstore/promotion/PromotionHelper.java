@@ -18,9 +18,11 @@ import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDInvalidAddressException;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDTimeslot;
+import com.freshdirect.fdstore.customer.FDDeliveryTimeslotModel;
 import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.customer.adapter.PromotionContextAdapter;
+import com.freshdirect.fdstore.util.TimeslotLogic;
 import com.freshdirect.framework.util.TimeOfDay;
 
 public class PromotionHelper {
@@ -52,7 +54,7 @@ public class PromotionHelper {
 		return discountAmount;
 	}
 	
-	 public static double getDiscount(FDUserI user, FDTimeslot timeSlot, List<FDTimeslot> dayTimeslots) {
+	 public static double getDiscount(FDUserI user, FDTimeslot timeSlot, List<FDTimeslot> dayTimeslots, FDDeliveryTimeslotModel deliveryModel, boolean forceorder) {
 		 
 		 Map<Double, List<FDTimeslot>> tsWindowMap = new HashMap<Double, List<FDTimeslot>>();
 		 for(FDTimeslot ts : dayTimeslots){
@@ -60,7 +62,10 @@ public class PromotionHelper {
 			 if(!tsWindowMap.containsKey(windowDuration)){
 				 tsWindowMap.put(windowDuration, new ArrayList<FDTimeslot>());
 			 }
-			 tsWindowMap.get(windowDuration).add(ts);
+			 if (!TimeslotLogic.isTimeslotPurged(ts)
+					 && !TimeslotLogic.isTimeslotSoldout(ts, deliveryModel, forceorder)) {
+				 tsWindowMap.get(windowDuration).add(ts);
+			 }
 		 }
 		 
 		 Set<String> eligiblePromoCodes = user.getPromotionEligibility().getEligiblePromotionCodes();
@@ -146,7 +151,7 @@ public class PromotionHelper {
 					if(timeSlotId.startsWith("f_")) {
 						timeSlotId = timeSlotId.replaceAll("f_", "");
 					}
-					FDTimeslot timeSlot = FDDeliveryManager.getInstance().getTimeslotsById(timeSlotId, true);
+					FDTimeslot timeSlot = FDDeliveryManager.getInstance().getTimeslotsById(timeSlotId, null, true);
 					if(null != timeSlot){
 						PromotionApplicatorI app = promotion.getApplicator();
 						if (app != null) {

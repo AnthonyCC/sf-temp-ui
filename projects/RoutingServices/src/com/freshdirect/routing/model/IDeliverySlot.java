@@ -41,4 +41,6 @@ public interface IDeliverySlot {
 	BigDecimal getSteeringRadius();
 	void setSteeringRadius(BigDecimal steeringRadius);
 
+	int getReservedOrdersAtBuilding();
+	void setReservedOrdersAtBuilding(int reservedOrdersAtBuilding);
 }

@@ -223,6 +223,8 @@ public class TransportationAdminProperties {
 	//Maintenance Log
 	private final static String PROP_VENDOR_DETAILS		= "transportation.issuelog.vendors";
 	private final static String PROP_TRUCK_DAMAGE_LOCATIONS = "transportation.issuelog.truckdamagelocations";
+	private final static String PROP_TRUCK_LOCATIONS = "transportation.maintenancelog.trucklocations";
+	
 	private final static String PROP_AUTODISPATCH_ENABLED = "transportation.autodispatch.enabled";
 
 	/* Crisis Manager */
@@ -432,7 +434,8 @@ public class TransportationAdminProperties {
 		defaults.put(PROP_TRANSPORTATION_FORMAT_EMPPLOYEESCHEDULE_UPLOAD, 	"com/freshdirect/transadmin/datamanager/employeeschedule_in.xml");
 		defaults.put(PROP_TRANSPORTATION_FORMAT_SCRIB_UPLOAD, 	"com/freshdirect/transadmin/datamanager/scrib_in.xml");
 		defaults.put(PROP_VENDOR_DETAILS,"HUB,MILEA,PUBLIC SERVICE,RYDER,UTF");
-		defaults.put(PROP_TRUCK_DAMAGE_LOCATIONS,"Front,Back");	
+		defaults.put(PROP_TRUCK_DAMAGE_LOCATIONS,"Front,Back");
+		defaults.put(PROP_TRUCK_LOCATIONS,"FreshDirect,Hub-Maspeth,Hub-Vernon,Hub-Dealer,Ryder,Ryder-Dealer,Milea-Queens,Milea-Bronx,Public Service,Public Service-Dealer,Body Shop,Rental Facility,Thermo King-Vernon,Thermo King-LI");	
 		
 		defaults.put(PROP_AUTODISPATCH_ENABLED,"true");
 
@@ -853,6 +856,10 @@ public class TransportationAdminProperties {
 	
 	public static String getTruckDamageLocations() {
 		return get(PROP_TRUCK_DAMAGE_LOCATIONS);
+    }
+	
+	public static String getTruckLocations() {
+		return get(PROP_TRUCK_LOCATIONS);
     }
 	
 	public static boolean isAutoDispatchEnabled() {

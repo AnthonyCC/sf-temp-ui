@@ -20,6 +20,7 @@ import org.springframework.jdbc.object.BatchSqlUpdate;
 
 import com.freshdirect.routing.util.RoutingTimeOfDay;
 import com.freshdirect.transadmin.dao.IDashboardDataDAO;
+import com.freshdirect.transadmin.model.OrderRateException;
 import com.freshdirect.transadmin.model.PlantCapacity;
 import com.freshdirect.transadmin.model.PlantDispatch;
 
@@ -38,6 +39,12 @@ public class DashboardDataDAOImpl implements IDashboardDataDAO   {
 	private static final String DELETE_PLANT_DISPATCH = "DELETE FROM TRANSP.DISPATCH_MAPPING";
 
 	private static final String SAVE_PLANT_DISPATCH = "INSERT INTO TRANSP.DISPATCH_MAPPING(DISPATCH_TIME, PLANT_DISPATCH) VALUES (?,?)";
+
+	private static final String GET_ORDER_RATE_EXCEPTIONS = "SELECT * FROM MIS.ORDER_RATE_EXCEPTIONS ORDER BY DELIVERY_DATE ASC";
+
+	private static final String DELETE_ORDER_RATE_EXCEPTIONS = "DELETE FROM MIS.ORDER_RATE_EXCEPTIONS";
+
+	private static final String SAVE_ORDER_RATE_EXCEPTIONS = "INSERT INTO MIS.ORDER_RATE_EXCEPTIONS(DELIVERY_DATE) VALUES (?)";
 
 	public void setDataSource(DataSource dataSource) {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
@@ -134,8 +141,6 @@ public class DashboardDataDAOImpl implements IDashboardDataDAO   {
 			jdbcTemplate.query(creator, new RowCallbackHandler() {
 				public void processRow(ResultSet rs) throws SQLException {
 					PlantDispatch dispatch = new PlantDispatch();
-					
-					
 					dispatch.setDispatchTime(new RoutingTimeOfDay(rs.getTimestamp("DISPATCH_TIME")));
 					dispatch.setPlantDispatch(new RoutingTimeOfDay(rs.getTimestamp("PLANT_DISPATCH")));
 					result.add(dispatch);
@@ -181,6 +186,73 @@ public class DashboardDataDAOImpl implements IDashboardDataDAO   {
 						_dispatch.getDispatchTime().getAsDate()
 						, _dispatch.getPlantDispatch().getAsDate()											
 							});
+			}			
+			sqlUpdater.flush();
+			
+		} finally {
+			if(connection!=null) connection.close();
+		}
+	}
+
+	@Override
+	public Collection getOrderRateExceptions() throws SQLException {
+		
+		final List<OrderRateException> result = new ArrayList<OrderRateException>();
+			
+		Connection connection = null;
+		try {
+			PreparedStatementCreator creator = new PreparedStatementCreator() {
+				public PreparedStatement createPreparedStatement(
+						Connection connection) throws SQLException {
+					
+					PreparedStatement ps = connection.prepareStatement(GET_ORDER_RATE_EXCEPTIONS);
+					return ps;
+				}
+			};
+			jdbcTemplate.query(creator, new RowCallbackHandler() {
+				public void processRow(ResultSet rs) throws SQLException {
+					OrderRateException _exception = new OrderRateException();
+					_exception.setExceptionDate(rs.getDate("DELIVERY_DATE"));
+					result.add(_exception);
+				}				
+			});
+			
+			return result;
+		} finally {
+			if (connection != null)	connection.close();
+		}	
+	}
+
+	@Override
+	public void purgeOrderRateExceptions() throws SQLException {
+		Connection connection = null;		
+		try {
+			
+			this.jdbcTemplate.update(DELETE_ORDER_RATE_EXCEPTIONS, new Object[] {});
+			
+			connection=this.jdbcTemplate.getDataSource().getConnection();	
+			
+		} finally {
+			if(connection!=null) connection.close();
+		}
+	}
+	
+	@Override
+	public void saveOrderRateExceptions(List<OrderRateException> exceptions)
+			throws SQLException {
+		Connection connection = null;
+		try {
+			BatchSqlUpdate sqlUpdater = new BatchSqlUpdate(this.jdbcTemplate.getDataSource(), SAVE_ORDER_RATE_EXCEPTIONS);
+			sqlUpdater.declareParameter(new SqlParameter(Types.DATE));
+			
+			sqlUpdater.compile();
+					
+			connection = this.jdbcTemplate.getDataSource().getConnection();
+			
+			for(OrderRateException _exception : exceptions) {
+				
+				sqlUpdater.update(new Object[] { 
+						_exception.getExceptionDate()});
 			}			
 			sqlUpdater.flush();
 			

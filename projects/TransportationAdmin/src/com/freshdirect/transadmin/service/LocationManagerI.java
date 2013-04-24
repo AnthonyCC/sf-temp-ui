@@ -1,13 +1,8 @@
 package com.freshdirect.transadmin.service;
 
 import java.util.Collection;
-import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
-import org.springframework.dao.DataAccessException;
-
-import com.freshdirect.routing.model.IDeliverySlot;
 import com.freshdirect.transadmin.model.DeliveryGroup;
 import com.freshdirect.transadmin.model.DlvBuilding;
 import com.freshdirect.transadmin.model.DlvBuildingDetail;
@@ -16,6 +11,7 @@ import com.freshdirect.transadmin.model.DlvScenarioDay;
 import com.freshdirect.transadmin.model.DlvServiceTimeScenario;
 import com.freshdirect.transadmin.model.DlvServiceTimeType;
 import com.freshdirect.transadmin.model.TrnFacility;
+import com.freshdirect.transadmin.model.TrnFacilityLocation;
 import com.freshdirect.transadmin.model.TrnFacilityType;
 
 public interface LocationManagerI  extends BaseManagerI {
@@ -82,4 +78,7 @@ public interface LocationManagerI  extends BaseManagerI {
    	Collection getTrnFacilitys();
    	TrnFacility getTrnFacility(String id);
    	TrnFacilityType getTrnFacilityType(String id);
+
+	Collection getTrnFacilityLocations();
+	TrnFacilityLocation getTrnFacilityLocation(String id);
 }

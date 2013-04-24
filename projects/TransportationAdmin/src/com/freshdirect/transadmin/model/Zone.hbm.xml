@@ -54,6 +54,9 @@
          <property name="steeringRadius" type="big_decimal">
             <column name="STEERING_RADIUS" precision="22" scale="0"/>
         </property>
+        <property name="svcAdjReductionFactor" type="big_decimal">
+            <column name="SVC_ADJ_REDUCTION_FACTOR" precision="22" scale="0"/>
+        </property>
         <many-to-one name="defaultServiceTimeType" class="com.freshdirect.transadmin.model.DlvServiceTimeType" fetch="select" lazy="false">
             <column name="SERVICETIME_TYPE" length="8" />
         </many-to-one>

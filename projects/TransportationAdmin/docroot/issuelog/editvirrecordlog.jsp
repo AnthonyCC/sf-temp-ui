@@ -31,37 +31,37 @@
 		<script src="js/jsonrpc.js" language="javascript" type="text/javascript"></script>
 		<script src="js/maintenancelog.js" language="javascript" type="text/javascript"></script>
 
-	<div class="MNM001 subsub or_999">
+	<div class="MNM002 subsub or_999">
 		<div class="subs_left">	
-			<div class="sub_tableft sub_tabL_MNM001 <% if(!"M".equalsIgnoreCase(request.getParameter("issueLog"))&&!"I".equalsIgnoreCase(request.getParameter("issueLog"))
+			<div class="sub_tableft sub_tabL_MNM002 <% if(!"M".equalsIgnoreCase(request.getParameter("issueLog"))&&!"I".equalsIgnoreCase(request.getParameter("issueLog"))
 			&&!"S".equalsIgnoreCase(request.getParameter("issueLog"))) { %>activeL<% } %>">&nbsp;</div>
 			
 			<div class="subtab <% if(!"M".equalsIgnoreCase(request.getParameter("issueLog"))&&!"I".equalsIgnoreCase(request.getParameter("issueLog")) &&!"S".equalsIgnoreCase(request.getParameter("issueLog"))) { %>activeT<% } %>">
 				<div class="minwidth"><!-- --></div>
-				<a href="virrecordlog.do" class="<% if(!"M".equalsIgnoreCase(request.getParameter("issueLog"))&&!"I".equalsIgnoreCase(request.getParameter("issueLog")) &&!"S".equalsIgnoreCase(request.getParameter("issueLog"))) { %>MNM001<% } %>">VIR Record</a>
+				<a href="virrecordlog.do" class="<% if(!"M".equalsIgnoreCase(request.getParameter("issueLog"))&&!"I".equalsIgnoreCase(request.getParameter("issueLog")) &&!"S".equalsIgnoreCase(request.getParameter("issueLog"))) { %>MNM002<% } %>">VIR Record</a>
 			</div>
-			<div class="sub_tabright sub_tabR_MNM001 <% if(!"M".equalsIgnoreCase(request.getParameter("issueLog"))&&!"I".equalsIgnoreCase(request.getParameter("issueLog")) &&!"S".equalsIgnoreCase(request.getParameter("issueLog"))) { %>activeR<% } %>">&nbsp;</div>		
+			<div class="sub_tabright sub_tabR_MNM002 <% if(!"M".equalsIgnoreCase(request.getParameter("issueLog"))&&!"I".equalsIgnoreCase(request.getParameter("issueLog")) &&!"S".equalsIgnoreCase(request.getParameter("issueLog"))) { %>activeR<% } %>">&nbsp;</div>		
 		
-			<div class="sub_tableft sub_tabL_MNM001 <% if("M".equalsIgnoreCase(request.getParameter("issueLog"))) { %>activeL<% } %>">&nbsp;</div>
+			<div class="sub_tableft sub_tabL_MNM002 <% if("M".equalsIgnoreCase(request.getParameter("issueLog"))) { %>activeL<% } %>">&nbsp;</div>
 			<div class="subtab <% if("M".equalsIgnoreCase(request.getParameter("issueLog"))) { %>activeT<% } %>">
 				<div class="minwidth"><!-- --></div>
-				<a href="maintenancelog.do?issueLog=M" class="<% if("M".equalsIgnoreCase(request.getParameter("issueLog"))) { %>MNM001<% } %>">Maintenance Record</a>
+				<a href="maintenancelog.do?issueLog=M" class="<% if("M".equalsIgnoreCase(request.getParameter("issueLog"))) { %>MNM002<% } %>">Maintenance Record</a>
 			</div>
-			<div class="sub_tabright sub_tabR_MNM001 <% if("M".equalsIgnoreCase(request.getParameter("issueLog"))) { %>activeR<% } %>">&nbsp;</div>
+			<div class="sub_tabright sub_tabR_MNM002 <% if("M".equalsIgnoreCase(request.getParameter("issueLog"))) { %>activeR<% } %>">&nbsp;</div>
 			
-			<div class="sub_tableft sub_tabL_MNM001 <% if("I".equalsIgnoreCase(request.getParameter("issueLog"))) { %>activeL<% } %>">&nbsp;</div>
+			<div class="sub_tableft sub_tabL_MNM002 <% if("I".equalsIgnoreCase(request.getParameter("issueLog"))) { %>activeL<% } %>">&nbsp;</div>
 			<div class="subtab <% if("I".equalsIgnoreCase(request.getParameter("issueLog"))) { %>activeT<% } %>">
 				<div class="minwidth"><!-- --></div>
-				<a href="virrecordlog.do?issueLog=I" class="<% if("I".equalsIgnoreCase(request.getParameter("issueLog"))) { %>MNM001<% } %>">Issue Type</a>
+				<a href="virrecordlog.do?issueLog=I" class="<% if("I".equalsIgnoreCase(request.getParameter("issueLog"))) { %>MNM002<% } %>">Issue Type</a>
 			</div>
-			<div class="sub_tabright sub_tabR_MNM001 <% if("I".equalsIgnoreCase(request.getParameter("issueLog"))) { %>activeR<% } %>">&nbsp;</div>
+			<div class="sub_tabright sub_tabR_MNM002 <% if("I".equalsIgnoreCase(request.getParameter("issueLog"))) { %>activeR<% } %>">&nbsp;</div>
 
-			<div class="sub_tableft sub_tabL_MNM001 <% if("S".equalsIgnoreCase(request.getParameter("issueLog"))) { %>activeL<% } %>">&nbsp;</div>
+			<div class="sub_tableft sub_tabL_MNM002 <% if("S".equalsIgnoreCase(request.getParameter("issueLog"))) { %>activeL<% } %>">&nbsp;</div>
 			<div class="subtab <% if("S".equalsIgnoreCase(request.getParameter("issueLog"))) { %>activeT<% } %>">
 				<div class="minwidth"><!-- --></div>
-				<a href="virrecordlog.do?issueLog=S" class="<% if("S".equalsIgnoreCase(request.getParameter("issueLog"))) { %>MNM001<% } %>">Issue SubType</a>
+				<a href="virrecordlog.do?issueLog=S" class="<% if("S".equalsIgnoreCase(request.getParameter("issueLog"))) { %>MNM002<% } %>">Issue SubType</a>
 			</div>
-			<div class="sub_tabright sub_tabR_MNM001 <% if("S".equalsIgnoreCase(request.getParameter("issueLog"))) { %>activeR<% } %>">&nbsp;</div>		
+			<div class="sub_tabright sub_tabR_MNM002 <% if("S".equalsIgnoreCase(request.getParameter("issueLog"))) { %>activeR<% } %>">&nbsp;</div>		
 		</div>
 	</div>
 	<div class="cont_row_bottomline"><!--  --></div>
@@ -135,6 +135,60 @@
 								</td>
 							</tr>
 						  </table>
+						  <table id="electricDrive" class="forms1" style='display:none;width:347px;'>
+								<tr>
+									<td>SOC Start&nbsp;&nbsp;&nbsp;&nbsp;</td>
+									<td>
+										&nbsp;&nbsp;&nbsp;&nbsp;<input maxlength="2" size="28" id="socStart" name="socStart" onkeypress="return restrictInput(this, event, digitsOnly);" />
+									</td>
+									<td>&nbsp;</td>
+								</tr>
+								<tr>
+									<td>SOC End&nbsp;&nbsp;&nbsp;&nbsp;</td>
+									<td>
+										&nbsp;&nbsp;&nbsp;&nbsp;<input type="text" maxlength="2" size="28" id="socEnd" name="socEnd" onkeypress="return restrictInput(this, event, digitsOnly);">
+									</td>
+									<td>&nbsp;</td>
+								</tr>
+							</table>
+							<table id="electricReeferTextDiv" class="forms1" style='display:none;width:347px;'>
+								<tr>
+									<td>SOC Reefer Start</td>
+									<td>
+										<input maxlength="2" size="28" id="socReeferStart" name="socReeferStart" onkeypress="return restrictInput(this, event, digitsOnly);" />
+									</td>
+									<td>&nbsp;</td>
+								</tr>
+								<tr>
+									<td>SOC Reefer End</td>
+									<td>
+										<input type="text" maxlength="2" size="28" id="socReeferEnd" name="socReeferEnd" onkeypress="return restrictInput(this, event, digitsOnly);">
+									</td>
+									<td>&nbsp;</td>
+								</tr>
+							</table>
+							<table id="electricReeferDropdownDiv" class="forms1" style='display:none;width:347px;'>
+								<tr>
+									<td>SOC Reefer Start</td>
+									<td>
+										<select id="socReeferStart1" name="socReeferStart1" >
+			                          		<option value="N/A">--Please select</option>
+			                      			<option value="Green">Green</option><option value="Red">Red</option><option value="Yellow">Yellow</option>
+			                    	 	</select>
+			                     	</td>
+			                     	<td>&nbsp;</td>
+			                    </tr>
+	                    	 	<tr>
+									<td>SOC Reefer End</td>
+									<td>
+			                    	 	<select id="socReeferEnd1" name="socReeferEnd1" >
+			                          		<option value="N/A">--Please select</option>
+			                      			<option value="Green">Green</option><option value="Red">Red</option><option value="Yellow">Yellow</option>
+			                    	 	</select>
+			                    	 </td>
+			                    	 <td>&nbsp;</td>
+			                    </tr>
+							</table>
 					</td>
 				    <td class="screencontent" style="align:center;">
 							<div id="errContainer"></div>
@@ -328,15 +382,28 @@
 				_data[i][4] = records[i].getData('comments');
       	  	}
       	  }
-      	  try { 
+      	  try {
+      		     		
           	if(document.getElementById('truckNumber').value == null || document.getElementById('truckNumber').value.length == 0) {
           		addSysMessage("VIRRecord Truck Number is required field", true);
-          	} else { 
-	     	 	var result = jsonrpcClient.AsyncDispatchProvider.saveVIRRecord(document.getElementById('createDate').value
-	     													, document.getElementById('truckNumber').value
-	     													, document.getElementById('vendor').value
-	     													, document.getElementById('reportingDriver').value
-	     													, document.getElementById('createdBy').value
+          	} else {
+          		var socReeferStart, socReeferEnd;
+          		if($("#socReeferStart").val() === '') {
+          			socReeferStart = $("#socReeferStart1").val()
+          		}
+          		if($("#socReeferEnd").val() === '') { 
+          			socReeferEnd = $("#socReeferEnd1").val()
+          		}        			
+          		
+	     	 	var result = jsonrpcClient.AsyncDispatchProvider.saveVIRRecord($('#createDate').val()
+	     													, $('#truckNumber').val()
+	     													, $('#vendor').val()
+	     													, $('#reportingDriver').val()
+	     													, $('#createdBy').val()
+	     													, $("#socStart").val()
+	     													, $("#socEnd").val()
+	     													, socReeferStart
+	     													, socReeferEnd
 	     	     	 										, _data);
 	     	 	document.getElementById('id').value = result;
 	     	 	if(result != null) {

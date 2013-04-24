@@ -189,6 +189,7 @@ public class DispatchController extends AbstractMultiActionController {
 			long start = System.currentTimeMillis();
 			String weekdaterange = request.getParameter("weekdate");
 			String daterange = request.getParameter("daterange");
+			String facilityLocation = request.getParameter("facilityLocation");
 
 			if (weekdaterange == null || "".equals(weekdaterange))
 				weekdaterange = TransStringUtil.getCurrentDate();
@@ -217,10 +218,11 @@ public class DispatchController extends AbstractMultiActionController {
 			Map<String,Zone> zoneMap = new HashMap <String,Zone>();
 			List terminatedEmployees = getTermintedEmployeeIds();
 			
-			if((!TransStringUtil.isEmpty(weekdaterange)&& !TransStringUtil.isEmpty(day)) || !TransStringUtil.isEmpty(zoneLst)||!TransStringUtil.isEmpty(daterange)) {
+			if((!TransStringUtil.isEmpty(weekdaterange)&& !TransStringUtil.isEmpty(day)) || !TransStringUtil.isEmpty(zoneLst)||!TransStringUtil.isEmpty(daterange)
+					|| !TransStringUtil.isEmpty(facilityLocation)) {
 				try 
 				{				
-					getPlanListForDateRange(request, daterange, zoneLst, dates,
+					getPlanListForDateRange(request, daterange, zoneLst, facilityLocation, dates,
 							dataList, plans, zoneMap, terminatedEmployees);
 					
 					if("y".equalsIgnoreCase(request.getParameter("unavailable")))
@@ -253,6 +255,7 @@ public class DispatchController extends AbstractMultiActionController {
 			}
 			request.setAttribute("weekDate", getClientDate(_weekDate));
 			request.setAttribute("dateRange", daterange);
+			request.setAttribute("facilityLocations", locationManagerService.getTrnFacilityLocations());
 			long end = System.currentTimeMillis();
 			System.err.println("planHandler "+(end-start)/1000);
 			return mav;
@@ -264,8 +267,9 @@ public class DispatchController extends AbstractMultiActionController {
 		
 	}
 
+	@SuppressWarnings("rawtypes")
 	private void getPlanListForDateRange(HttpServletRequest request,
-			String daterange, String zoneLst, String[] dates,
+			String daterange, String zoneLst, String facilityLocation, String[] dates,
 			Collection dataList, List<Plan> plans, Map<String, Zone> zoneMap,
 			List terminatedEmployees) throws DateFilterException,ParseException {
 		
@@ -278,15 +282,15 @@ public class DispatchController extends AbstractMultiActionController {
 				Collection tempList= new ArrayList();
 				Collection tempPlans= new ArrayList();
 				if(dateQryStr != null || zoneQryStr != null) {
-					tempList = getPlanInfo(dateQryStr,zoneQryStr,zoneMap,terminatedEmployees);
+					tempList = getPlanInfo(dateQryStr,zoneQryStr, facilityLocation, zoneMap,terminatedEmployees);
 					if("y".equalsIgnoreCase(request.getParameter("unavailable")))
 					{
-						tempPlans=dispatchManagerService.getPlan(dateQryStr, zoneQryStr);
+						tempPlans=dispatchManagerService.getPlanEntry(dateQryStr, zoneQryStr, facilityLocation);
 						tempPlans=employeeManagerService.getUnAvailableEmployees(tempPlans, TransStringUtil.getServerDate(dates[i]));
 					}
 					if("y".equalsIgnoreCase(request.getParameter("kronos")))
 					{									
-						tempPlans=dispatchManagerService.getPlan(dateQryStr, zoneQryStr);									
+						tempPlans=dispatchManagerService.getPlanEntry(dateQryStr, zoneQryStr, facilityLocation);									
 					}					
 				}
 				plans.addAll(tempPlans);
@@ -299,15 +303,15 @@ public class DispatchController extends AbstractMultiActionController {
 			Collection tempList= new ArrayList();
 			Collection tempPlans= new ArrayList();
 			if(dateQryStr != null || zoneQryStr != null) {
-				tempList = getPlanInfo(dateQryStr,zoneQryStr,zoneMap,terminatedEmployees);
+				tempList = getPlanInfo(dateQryStr,zoneQryStr, facilityLocation, zoneMap,terminatedEmployees);
 				if("y".equalsIgnoreCase(request.getParameter("unavailable")))
 				{
-					tempPlans=dispatchManagerService.getPlan(dateQryStr, zoneQryStr);
+					tempPlans=dispatchManagerService.getPlanEntry(dateQryStr, zoneQryStr, facilityLocation);
 					tempPlans=employeeManagerService.getUnAvailableEmployees(tempPlans, TransStringUtil.getServerDate(daterange));
 				}
 				if("y".equalsIgnoreCase(request.getParameter("kronos")))
 				{									
-					tempPlans=dispatchManagerService.getPlan(dateQryStr, zoneQryStr);									
+					tempPlans=dispatchManagerService.getPlanEntry(dateQryStr, zoneQryStr, facilityLocation);									
 				}						
 			}							
 			plans.addAll(tempPlans);
@@ -699,9 +703,9 @@ public class DispatchController extends AbstractMultiActionController {
 		zipout.close();
 	}
 				
-	private Collection<Plan> getPlanInfo(String dateQryStr, String zoneQryStr,Map<String,Zone> zoneMap, List terminatedEmployees) {
+	private Collection<Plan> getPlanInfo(String dateQryStr, String zoneQryStr, String facilityLocation, Map<String,Zone> zoneMap, List terminatedEmployees) {
 
-		Collection plans=dispatchManagerService.getPlan(dateQryStr, zoneQryStr);
+		Collection plans=dispatchManagerService.getPlanEntry(dateQryStr, zoneQryStr, facilityLocation);
 		
 		Collection planInfos=new ArrayList();
 		Iterator it=plans.iterator();
@@ -854,6 +858,13 @@ public class DispatchController extends AbstractMultiActionController {
 		mav.getModel().put(DispatchPlanUtil.ASSETTYPE_EZPASS, DispatchPlanUtil.getAssetMapping(assetManagerService.getActiveAssets(DispatchPlanUtil.ASSETTYPE_EZPASS)));
 		mav.getModel().put(DispatchPlanUtil.ASSETTYPE_MOTKIT, DispatchPlanUtil.getAssetMapping(assetManagerService.getActiveAssets(DispatchPlanUtil.ASSETTYPE_MOTKIT)));
 		
+		try {
+			mav.getModel().put(DispatchPlanUtil.SCANNED_ASSETS
+					, assetManagerService.getScannedAssets(dispDate != null ? TransStringUtil.getServerDateString1(dispDate) : TransStringUtil.getServerDateString1(TransStringUtil.getCurrentDate())));
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		
 		if(!TransStringUtil.isEmpty(dispDate)) {			
 			//boolean punchInfo=getServerDate(dispDate).equals(TransStringUtil.getCurrentServerDate())?true:false;			
 			Collection c = getDispatchInfos(getServerDate(dispDate), null, zone, region
@@ -884,6 +895,7 @@ public class DispatchController extends AbstractMultiActionController {
 	 * @param response current HTTP response
 	 * @return a ModelAndView to render the response
 	 */
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public ModelAndView dispatchSummaryHandler(HttpServletRequest request, HttpServletResponse response) throws ServletException, DateFilterException {
 
 		ModelAndView mav = new ModelAndView("dispatchSummaryView");
@@ -900,7 +912,7 @@ public class DispatchController extends AbstractMultiActionController {
 		Collection unAssignedEmps =	this.getDispatchManagerService().getUnassignedActiveEmployees();
 		
 		List<Plan> plans= new ArrayList<Plan>();		
-		plans =(List<Plan>)dispatchManagerService.getPlan(TransStringUtil.formatDateSearch(TransStringUtil.getCurrentDate()), null);		
+		plans =(List<Plan>)dispatchManagerService.getPlanEntry(TransStringUtil.formatDateSearch(TransStringUtil.getCurrentDate()), null, null);		
 			
 
 		try {
@@ -926,6 +938,7 @@ public class DispatchController extends AbstractMultiActionController {
 		return mav;
 	}
 	
+	@SuppressWarnings("unchecked")
 	private void getDispatchUnAssignedEmployees(HttpServletRequest request, HttpServletResponse response, List<Plan> tempPlans) throws Exception 
 	{
 		List<WebPlanResource> unempList= new ArrayList<WebPlanResource>();
@@ -1235,11 +1248,10 @@ public class DispatchController extends AbstractMultiActionController {
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	private Collection getDispatchInfos(String dispDate
-											, String facilityLocation
-												, String zoneStr
-											, String region, boolean isSummary
-												, boolean needsPunchInfo, boolean needsAirClick, Map modelMap){
+	private Collection getDispatchInfos(String dispDate,
+			String facilityLocation, String zoneStr, String region,
+			boolean isSummary, boolean needsPunchInfo, boolean needsAirClick,
+			Map modelMap) {
 
 		Collection dispatchInfos = new ArrayList();
 		List termintedEmployees = getTermintedEmployeeIds();
@@ -1305,6 +1317,8 @@ public class DispatchController extends AbstractMultiActionController {
 				empTeams = employeeManagerService
 						.getTeamByEmployees(resourceIds);
 			}
+			
+			Map<String, Map<String, List<String>>> scannedAssetMapping = assetManagerService.getScannedAssets(TransStringUtil.serverDateFormat.parse(dispDate));
 
 			dispatchItr = dispatchList.iterator();
 			while (dispatchItr.hasNext()) {
@@ -1316,7 +1330,7 @@ public class DispatchController extends AbstractMultiActionController {
 				DispatchCommand command = DispatchPlanUtil.getDispatchCommand(
 						dispatch, zone, employeeManagerService, punchInfo,
 						htInData, htOutData, empInfo, empRoleMap, empStatusMap,
-						empTruckPrefMap, empTeams);
+						empTruckPrefMap, empTeams, scannedAssetMapping);
 				command.setTermintedEmployees(termintedEmployees);
 				if (isSummary) {
 					// Load Route/Stop Info

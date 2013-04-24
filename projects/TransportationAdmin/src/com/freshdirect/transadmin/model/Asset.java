@@ -19,6 +19,8 @@ public class Asset implements java.io.Serializable{
 	private EnumAssetStatus assetStatus;
 	private AssetTemplate assetTemplate;
 	
+	private String barcode;
+	
 	private Set assetAttributes = new HashSet(0);
 		
 	public Asset() {
@@ -105,6 +107,14 @@ public class Asset implements java.io.Serializable{
 
 	public void setAssetTemplate(AssetTemplate assetTemplate) {
 		this.assetTemplate = assetTemplate;
+	}	
+
+	public String getBarcode() {
+		return barcode;
+	}
+
+	public void setBarcode(String barcode) {
+		this.barcode = barcode;
 	}
 
 	@Override

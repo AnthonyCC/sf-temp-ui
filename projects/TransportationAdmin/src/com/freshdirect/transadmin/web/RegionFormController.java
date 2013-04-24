@@ -6,9 +6,11 @@ import java.util.Map;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 
+import org.springframework.web.bind.ServletRequestDataBinder;
+
 import com.freshdirect.transadmin.model.Region;
-import com.freshdirect.transadmin.model.TrnAdHocRoute;
-import com.freshdirect.transadmin.util.TransStringUtil;
+import com.freshdirect.transadmin.model.TrnFacility;
+import com.freshdirect.transadmin.web.editor.TrnFacilityPropertyEditor;
 
 public class RegionFormController extends AbstractDomainFormController {
 
@@ -21,11 +23,10 @@ public class RegionFormController extends AbstractDomainFormController {
 		setSessionForm(true);
 	}
 
+	@SuppressWarnings("unchecked")
 	protected Map referenceData(HttpServletRequest request) throws ServletException {
 		Map refData = new HashMap();
-		//refData.put("supervisors", getDomainManagerService().getSupervisors());
-		//refData.put("zones", getDomainManagerService().getZones());
-		//refData.put("timings", getDomainManagerService().getTimings());
+		refData.put("trnFacilitys", getLocationManagerService().getTrnFacilitys());
 		return refData;
 	}
 
@@ -48,9 +49,19 @@ public class RegionFormController extends AbstractDomainFormController {
 
 	protected void preProcessDomainObject(Object domainObject) {
 		Region modelIn = (Region)domainObject;
-		//if(TransStringUtil.isEmpty(modelIn.getRouteId()) ) {
-///			modelIn.setRouteId(modelIn.getRouteId());
-	//	}
 	}
+	
+	protected void onBind(HttpServletRequest request, Object command) {
+		Region model = (Region) command;	
+		String originFacility = request.getParameter("originFacility");
+		TrnFacility deliveryFacility = getLocationManagerService().getTrnFacility(originFacility);
+		model.setOriginFacility(deliveryFacility);				
+	}
+
+	
+	public void initBinder(HttpServletRequest request, ServletRequestDataBinder binder) throws Exception {
+		super.initBinder(request,binder);		
+		binder.registerCustomEditor(TrnFacility.class, new TrnFacilityPropertyEditor());
+    }
 
 }

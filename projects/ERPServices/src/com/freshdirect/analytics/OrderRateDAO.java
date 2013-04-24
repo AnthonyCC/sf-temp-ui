@@ -53,7 +53,7 @@ public class OrderRateDAO {
 	private static final String CURRENT_ORDER_COUNT = "select sum(o.order_count) oCount, o.timeslot_start, o.timeslot_end, o.zone  " +
 		"from MIS.order_rate o where delivery_date >= ? and delivery_date <= ? group by o.timeslot_start, o.timeslot_end, o.zone";
     
-	private static final String HOLIDAY_QUERY = "select sum(order_count) as oCount, delivery_date from MIS.order_rate group by delivery_date having sum(order_count) = 0";
+	private static final String EXCEPTION_QUERY = "select delivery_date from MIS.ORDER_RATE_EXCEPTIONS";
 	
 	private static final String CAPACITY_QUERY = "select capacity,order_count, " +
 			"delivery_date, timeslot_start, timeslot_end, zone, snapshot_time from MIS.order_rate where delivery_date in (%s)";
@@ -223,18 +223,18 @@ public class OrderRateDAO {
 	}
 	
 	
-	public static Map<Date, Integer>  getHolidayMap(Connection conn)
+	public static Set<Date>  getExceptions(Connection conn)
 	{
 		PreparedStatement ps =null;ResultSet rs = null;
-		Map<Date, Integer> holidayMap = new HashMap<Date, Integer>();
+		Set<Date> exceptions = new HashSet<Date>();
 		
 		try
 		{
-			ps = conn.prepareStatement(HOLIDAY_QUERY); 
+			ps = conn.prepareStatement(EXCEPTION_QUERY); 
 			rs = ps.executeQuery();
 			while(rs.next())
 			{
-				holidayMap.put(new Date(rs.getDate("delivery_date").getTime()), rs.getInt("oCount"));	
+				exceptions.add(new Date(rs.getDate("delivery_date").getTime()));	
 			}
 		}
 		catch (Exception e) {
@@ -252,7 +252,7 @@ public class OrderRateDAO {
 				e.printStackTrace();
 			}
 		}
-		return holidayMap;
+		return exceptions;
 	}
 	
 	
@@ -410,42 +410,7 @@ public class OrderRateDAO {
 		}
 		
 	}
-	private static final String DELETE_EXCEPTIONS = "DELETE FROM MIS.ORDER_RATE_HOLIDAY";
-	private static final String INSERT_EXCEPTIONS = "INSERT INTO MIS.ORDER_RATE_HOLIDAY(DELIVERY_DATE) VALUES (?)";
 	
-	
-	public static void saveExceptions(Connection conn, Set<Date> dates) {
-		PreparedStatement ps =null;
-		try
-		{
-			ps = conn.prepareStatement(DELETE_EXCEPTIONS);
-			ps.executeUpdate();
-			ps.close();
-			ps = conn.prepareStatement(INSERT_EXCEPTIONS);
-			for(Date date: dates)
-			{
-				ps.setDate(1, new java.sql.Date(date.getTime()));
-				ps.addBatch();
-			}
-			ps.executeBatch();
-		}
-		catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		finally{
-			try 
-			{
-				ps.close();
-			} 
-			catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-	}
-	
-
 
 	/*public static void main(String s[]) throws SQLException, NamingException, IOException
 	{

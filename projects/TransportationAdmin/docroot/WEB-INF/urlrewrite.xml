@@ -84,5 +84,15 @@
 		<from>^/v/([0-9]+)/save/plantdispatch/</from>
 		<to last="true">/dashboard.jx?action=savePlantDispatch&amp;ver=$1</to>
 	</rule>
+	
+	<rule>		
+		<from>^/v/([0-9]+)/list/orderrate/exception</from>
+		<to last="true">/dashboard.jx?action=getOrderRateExceptions&amp;ver=$1</to>
+	</rule>
+	
+	<rule>		
+		<from>^/v/([0-9]+)/save/orderrate/exception</from>
+		<to last="true">/dashboard.jx?action=saveOrderRateExceptions&amp;ver=$1</to>
+	</rule>
 </urlrewrite>
 

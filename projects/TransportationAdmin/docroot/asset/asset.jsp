@@ -15,6 +15,7 @@
 	<tmpl:put name='yui-lib'>
 		<%@ include file='/common/i_yui.jspf'%>
 	</tmpl:put>
+	
   <tmpl:put name='content' direct='true'>
 		<div class="MNM002 subsub or_999">
 			<div class="subs_left">	
@@ -74,7 +75,8 @@
 	                   </div>
 	                   <div style="float:left;font-size:11px;"><br/>
 						&nbsp;&nbsp;<input id="attribute_button" type="button" value="Attribute Type" onclick="javascript:showAssetAttributeForm();" />
-						&nbsp;<input id="assettype_button" type="button" value="Asset Type" onclick="javascript:showAssetTypeForm();" />						
+						&nbsp;<input id="assettype_button" type="button" value="Asset Type" onclick="javascript:showAssetTypeForm();" />
+						&nbsp;<input id="assetscanbutton" type="button" value="Scan Asset" onclick="javascript:showAssetScanForm();" />						
 						</div>
 	               </div>
 			</div>
@@ -99,7 +101,8 @@
 									property="assetId" />
 							           
 							  <ec:column property="assetNo" title="Asset No"/>
-							  <ec:column property="assetDescription" title="Description"/>	
+							  <ec:column property="assetDescription" title="Description"/>
+							  <ec:column property="barcode" title="Barcode"/>		
 							  <ec:column property="assetType.code" title="Asset Type"/>
 							  <ec:column property="assetStatus.description" title="Status" />
 							  <ec:column property="assetTemplate.assetTemplateName" title="Asset Template" />
@@ -192,5 +195,6 @@
 		</script>
 		<%@ include file="i_addassetattribute.jspf"%>
 		<%@ include file="i_addassettype.jspf"%>
+		<%@ include file="i_scanasset.jspf"%>
 	</tmpl:put>
 </tmpl:insert>

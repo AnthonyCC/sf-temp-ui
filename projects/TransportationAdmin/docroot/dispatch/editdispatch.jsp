@@ -708,13 +708,24 @@
 			function bullpen(chxbox) {
 				var hasConfirmed = confirm("Are you sure you want to flag/unflag it as a BullPen? You may loose your exisitng dispatch information.");
 				if (hasConfirmed) {
-					document.getElementById('destinationFacility').selectedIndex = 0;
-					document.getElementById('originFacility').selectedIndex = 0;
-					dispatchForm.submit();
+					$('#destinationFacility')[0].selectedIndex = 0;
+					$('#originFacility')[0].selectedIndex = 0;
+					var regionCode = $('#regionCode').val() || '';
+					jsonrpcClient.AsyncDispatchProvider.getRegionFacility(regionFacilityCallback, regionCode);					
 				} else {
 					chxbox.checked = !(chxbox.checked);
 				}
 			}
+			
+			function regionFacilityCallback(result, exception) {
+				if(exception) {
+					alert('Unable to connect to host system. Please contact system administrator!');               
+					return;
+				}				
+				$("#originFacility").val( result ).prop('selected',true);
+				dispatchForm.submit();
+			}
+			
 			function checkRouteInfo() {
 				if (!dispatchForm.confirmed.checked)
 					getRouteInfo();

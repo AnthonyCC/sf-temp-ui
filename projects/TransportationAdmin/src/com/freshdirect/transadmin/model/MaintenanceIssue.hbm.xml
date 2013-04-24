@@ -61,6 +61,8 @@
          <property name="repairedBy" type="string">
             <column name="REPAIREDBY" />
         </property> 
-        
+        <property name="truckLocation" type="string">
+            <column name="TRUCKLOCATION" />
+        </property>
     </class>
 </hibernate-mapping>

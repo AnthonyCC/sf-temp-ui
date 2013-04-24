@@ -21,7 +21,8 @@ public final class EnumResourceSubType extends Enum {
     public static final EnumResourceSubType TRAILER_DRIVER = new EnumResourceSubType("013","Trailer Driver");
     public static final EnumResourceSubType TRAILER_HELPER = new EnumResourceSubType("014","Trailer Helper");
     public static final EnumResourceSubType TRAILER_RUNNER = new EnumResourceSubType("015","Trailer Runner");
-  
+    public static final EnumResourceSubType DEPOT_COVER = new EnumResourceSubType("016","Depot Cover");
+    
     private final String desc;
     private EnumResourceSubType(String id,String desc) {
         super(id);

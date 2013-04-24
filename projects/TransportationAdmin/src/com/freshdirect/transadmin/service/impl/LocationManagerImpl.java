@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.List;
 
 import org.springframework.dao.DataAccessException;
+
 import com.freshdirect.routing.constants.EnumGeocodeConfidenceType;
 import com.freshdirect.routing.constants.EnumGeocodeQualityType;
 import com.freshdirect.transadmin.dao.BaseManagerDaoI;
@@ -17,6 +18,7 @@ import com.freshdirect.transadmin.model.DlvScenarioDay;
 import com.freshdirect.transadmin.model.DlvServiceTimeScenario;
 import com.freshdirect.transadmin.model.DlvServiceTimeType;
 import com.freshdirect.transadmin.model.TrnFacility;
+import com.freshdirect.transadmin.model.TrnFacilityLocation;
 import com.freshdirect.transadmin.model.TrnFacilityType;
 import com.freshdirect.transadmin.service.LocationManagerI;
 
@@ -173,7 +175,7 @@ public class LocationManagerImpl extends BaseManagerImpl  implements LocationMan
     
     public Collection getTrnFacilityTypes() {
     	return getLocationManagerDao().getTrnFacilityTypes();
-}
+    }
     
     public 	Collection getTrnFacilitys(){
     	return getLocationManagerDao().getTrnFacilitys();   
@@ -185,5 +187,13 @@ public class LocationManagerImpl extends BaseManagerImpl  implements LocationMan
     
     public TrnFacilityType getTrnFacilityType(String id) {
     	return getLocationManagerDao().getTrnFacilityType(id);
+    }
+    
+    public Collection getTrnFacilityLocations() {
+    	return getLocationManagerDao().getTrnFacilityLocations();
+    }
+    
+    public TrnFacilityLocation getTrnFacilityLocation(String id) {
+    	return getLocationManagerDao().getTrnFacilityLocation(id);
     }
 }

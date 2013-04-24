@@ -24,6 +24,7 @@ import com.freshdirect.transadmin.model.EmployeeRole;
 import com.freshdirect.transadmin.model.EmployeeRoleType;
 import com.freshdirect.transadmin.model.EmployeeStatus;
 import com.freshdirect.transadmin.model.EmployeeSubRoleType;
+import com.freshdirect.transadmin.model.EmployeeSupervisor;
 import com.freshdirect.transadmin.model.EmployeeTeam;
 import com.freshdirect.transadmin.model.EmployeeTruckPreference;
 import com.freshdirect.transadmin.model.EmployeeTruckPreferenceId;
@@ -104,15 +105,18 @@ public class EmployeeManagerImpl extends BaseManagerImpl implements
 		return finalEmployeeList;
 		
 	}
+	@SuppressWarnings("rawtypes")
 	public Collection getEmployees() {
 		// first get the kornos data
 		// then get the role for the kornos data
+		// then get the empSupervisors for the kornos data
 		// then construct the viewer model
 		// return the viewer model
 		Map kronoEmployees = TransAdminCacheManager.getInstance().getActiveInactiveEmployeeInfo(this);
 		Collection employeeRolesList = domainManagerDao.getEmployeeRoles();
-		Collection finalList = ModelUtil.getTrnAdminEmployeeList(kronoEmployees, (List) employeeRolesList);
-		Collection terminatedEmployees = getTerminatedEmployees();
+		Collection employeeSupervisorList = domainManagerDao.getEmployeeSupervisors();
+		Collection finalList = ModelUtil.getTrnAdminEmployeeList(kronoEmployees, (List) employeeRolesList, (List) employeeSupervisorList);
+		
 		Map<String, String> employeeTeamMapping = ModelUtil.getIdMappedTeam(domainManagerDao.getTeamInfo());
 		
 		for (Iterator iterator = finalList.iterator(); iterator.hasNext();) {
@@ -141,7 +145,8 @@ public class EmployeeManagerImpl extends BaseManagerImpl implements
 		Map<String, EmployeeInfo> kronoEmployees = TransAdminCacheManager.getInstance()
 				.getAllTerminatedEmployeeInfo(this);
 		Collection employeeRolesList = domainManagerDao.getEmployeeRoles();
-		Collection finalList = ModelUtil.getTrnAdminEmployeeList(kronoEmployees, (List) employeeRolesList);
+		Collection employeeSupervisorsList = domainManagerDao.getEmployeeSupervisors();
+		Collection finalList = ModelUtil.getTrnAdminEmployeeList(kronoEmployees, (List) employeeRolesList, (List) employeeSupervisorsList);
 		
 		Map<String, String> employeeTeamMapping = ModelUtil.getIdMappedTeam(domainManagerDao.getTeamInfo());
 		
@@ -240,6 +245,7 @@ public class EmployeeManagerImpl extends BaseManagerImpl implements
 
 		EmployeeInfo info = TransAdminCacheManager.getInstance().getActiveInactiveEmployeeInfo(id, this);
 		Collection empRoles = this.domainManagerDao.getEmployeeRole(id);
+		Collection empSupervisor = this.domainManagerDao.getEmployeeSupervisor(id);
 		Collection empStatus = this.domainManagerDao.getEmployeeStatus(id);
 		Collection empTeam = this.domainManagerDao.getTeamByEmployee(id);
 		Collection empTruckPrefs = this.domainManagerDao.getEmployeeTruckPreference(id);
@@ -260,6 +266,10 @@ public class EmployeeManagerImpl extends BaseManagerImpl implements
 			EmployeeTeam _team = (EmployeeTeam)(empTeam.toArray()[0]);
 			EmployeeInfo _leadInfo = TransAdminCacheManager.getInstance().getActiveInactiveEmployeeInfo(_team.getLeadKronosId(), this);
 			webInfo.setLeadInfo(_leadInfo);
+		}
+		if(empSupervisor != null && empSupervisor.size() > 0) {
+			webInfo.setEmpSupervisor( (EmployeeSupervisor) ((List)empSupervisor).get(0));
+			webInfo.setHomeSupervisorId(webInfo.getEmpSupervisor().getId().getSupervisorId());
 		}
 		return webInfo;
 	}
@@ -333,6 +343,10 @@ public class EmployeeManagerImpl extends BaseManagerImpl implements
 			List l = new ArrayList();
 			l.add(status);
 			removeEntity(l);
+		}
+		
+		if(employeeInfo.getEmpSupervisor().getId().getKronosId() != null) {
+			saveEntity(employeeInfo.getEmpSupervisor());
 		}
 		
 		Collection<EmployeeTeam> _teamForLead = getDomainManagerDao().getTeamByLead(employeeInfo.getEmployeeId());

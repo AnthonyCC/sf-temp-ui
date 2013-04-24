@@ -105,8 +105,9 @@ public class RoutingAnalyzerCommand implements Serializable, Runnable {
 					order.getDeliveryInfo().getDeliveryLocation().getBuilding().setServiceTimeType(null);
 				}
 				
+				order.getDeliveryInfo().setReservedOrdersAtBuilding(routingTimeSlots.get(0).getReservedOrdersAtBuilding());
 				
-				order.getDeliveryInfo().setCalculatedServiceTime(dlvService.getServiceTime(order, srvScenario));
+				order.getDeliveryInfo().setCalculatedServiceTime(dlvService.getServiceTime(order, srvScenario, context.getRoutingType()));
 				
 				List<IDeliverySlot> slots = schedulerAnalyzeOrder(order, deliveryDate,1, this.getRoutingTimeSlots());
 				

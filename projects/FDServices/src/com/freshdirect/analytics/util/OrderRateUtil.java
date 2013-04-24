@@ -5,6 +5,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.log4j.Category;
 import org.apache.log4j.Logger;
@@ -44,23 +45,13 @@ public class OrderRateUtil {
 		return val;
 	}
 	
-	public static Date getSample(Calendar cal, Map holidayMap)
+	public static Date getSample(Calendar cal, Set exceptions)
 	{
 		cal.add(Calendar.DATE, -7);
-		while(holidayMap!= null && holidayMap.get(cal.getTime()) != null)
+		while(exceptions!= null && exceptions.contains(cal.getTime()))
 		{
 			cal.add(Calendar.DATE, -7);
 		}
-		return cal.getTime();
-		
-	}
-	public static Date getSample(Calendar cal,  List<Date> holidays)
-	{
-		cal.add(Calendar.DATE, -7);
-		while(holidays.indexOf(cal.getTime())!=-1)
-		{
-			cal.add(Calendar.DATE, -7);
-		}	
 		return cal.getTime();
 	}
 	

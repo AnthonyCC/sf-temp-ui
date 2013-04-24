@@ -28,6 +28,7 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.routing.constants.EnumArithmeticOperator;
 import com.freshdirect.routing.constants.EnumWaveInstancePublishSrc;
 import com.freshdirect.routing.service.IDeliveryService;
+import com.freshdirect.transadmin.constants.EnumAssetElectricFleetMetric;
 import com.freshdirect.transadmin.constants.EnumIssueStatus;
 import com.freshdirect.transadmin.constants.EnumServiceStatus;
 import com.freshdirect.transadmin.model.Asset;
@@ -41,6 +42,7 @@ import com.freshdirect.transadmin.model.IssueSubType;
 import com.freshdirect.transadmin.model.IssueType;
 import com.freshdirect.transadmin.model.MaintenanceIssue;
 import com.freshdirect.transadmin.model.Plan;
+import com.freshdirect.transadmin.model.Region;
 import com.freshdirect.transadmin.model.ScenarioZonesId;
 import com.freshdirect.transadmin.model.Scrib;
 import com.freshdirect.transadmin.model.ScribLabel;
@@ -381,7 +383,7 @@ public class DispatchProviderController extends JsonRpcController implements IDi
 				if(dispatch.getZone()!=null) {
 					zone = domainManagerService.getZone(dispatch.getZone().getZoneCode());
 				}
-				DispatchCommand command = DispatchPlanUtil.getDispatchCommand(dispatch, zone, employeeManagerService,null,null,null,null,null,null,null,null);
+				DispatchCommand command = DispatchPlanUtil.getDispatchCommand(dispatch, zone, employeeManagerService,null,null,null,null,null,null,null,null,null);
 				dispatchInfos.add(command);
 			}
 			
@@ -885,10 +887,10 @@ public class DispatchProviderController extends JsonRpcController implements IDi
 	}
 	
 	public String saveVIRRecord(String createDate, String truckNumber, String vendor
-			, String driver, String createdBy
+			, String driver, String createdBy, String socStart, String socEnd, String socReeferStart, String socReeferEnd
 			, String[][] recordIssues) {
 		
-		return domainManagerService.saveVIRRecord(createDate, truckNumber, vendor, driver, createdBy, recordIssues);
+		return domainManagerService.saveVIRRecord(createDate, truckNumber, vendor, driver, createdBy, socStart, socEnd, socReeferStart, socReeferEnd, recordIssues);
 	}
 	
 	public boolean doRejectMaintenanceIssue(String id, String userId){
@@ -1003,6 +1005,44 @@ public class DispatchProviderController extends JsonRpcController implements IDi
 	public String generateCommunityReport(String routeDate, String cutOff) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+		
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public Map getElectricFleetMetrics(String truckNumber) {
+		Map electricFleetMapping = new HashMap();
+		try {
+			Collection asset = getAssetManagerService().getAsset(truckNumber, "TRUCK");
+			if (asset != null) {
+				Set assetAttributes = ((Asset) asset.iterator().next()).getAssetAttributes();
+				if (assetAttributes != null && assetAttributes.size() > 0) {
+					Iterator<AssetAttribute> itr = assetAttributes.iterator();
+					while (itr.hasNext()) {
+						AssetAttribute attribute = itr.next();
+						if (EnumAssetElectricFleetMetric.ELECTRIC_DRIVE.getDesc().equalsIgnoreCase(attribute.getId().getAttributeType())) {
+							electricFleetMapping.put(EnumAssetElectricFleetMetric.ELECTRIC_DRIVE.getName(), attribute.getAttributeValue());
+						} else if (EnumAssetElectricFleetMetric.ELECTRIC_REEFER.getDesc().equalsIgnoreCase(attribute.getId().getAttributeType())) {
+							electricFleetMapping.put(EnumAssetElectricFleetMetric.ELECTRIC_REEFER.getName(), attribute.getAttributeValue());
+						}
+					}
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return electricFleetMapping;
+	}
+	
+	public String getRegionFacility(String regionCode){
+		String regionFacilityId = null;
+		Region region = null;
+		
+		if(regionCode != null && !"".equals(regionCode)) {
+			region = domainManagerService.getRegion(regionCode);
+			if(region != null && region.getOriginFacility() != null) {
+				regionFacilityId = region.getOriginFacility().getFacilityId();
+			}			
+		}
+		return regionFacilityId;
 	}
 
 }

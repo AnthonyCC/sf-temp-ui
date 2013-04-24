@@ -22,7 +22,8 @@ public class DeliverySlot extends BaseModel implements IDeliverySlot  {
 	
 	private BigDecimal ecoFriendly;
 	private BigDecimal steeringRadius;
-	
+	// confirmed orders for the building /window
+	private int reservedOrdersAtBuilding;
 	public BigDecimal getEcoFriendly() {
 		return ecoFriendly;
 	}
@@ -108,6 +109,12 @@ public class DeliverySlot extends BaseModel implements IDeliverySlot  {
 	}
 	public void setSteeringRadius(BigDecimal steeringRadius) {
 		this.steeringRadius = steeringRadius;
+	}
+	public int getReservedOrdersAtBuilding() {
+		return reservedOrdersAtBuilding;
+	}
+	public void setReservedOrdersAtBuilding(int reservedOrdersAtBuilding) {
+		this.reservedOrdersAtBuilding = reservedOrdersAtBuilding;
 	}
 	
 }

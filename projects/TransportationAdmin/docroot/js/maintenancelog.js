@@ -119,7 +119,8 @@
           if(vendorResult === '') {
 			  addSysMessage("Vendor Information not mapped to TRUCK selected",true);
 		  }else if(vendorResult != null && vendorResult !== '') {
-			 document.getElementById("vendor").value = vendorResult; 
+			 document.getElementById("vendor").value = vendorResult;
+			 getElectricFleetMetrics();
 		  }else {
           	  addSysMessage("Populating vendor info failed for TRUCK selected",true);
           }
@@ -136,3 +137,88 @@
 	      	}
 	      	maintenanceRecordForm.submit();
 	    }
+		
+		
+
+// Restrict user input in a text field
+// create as many regular expressions here as you need:
+var digitsOnly = /[1234567890]/g;
+var integerOnly = /[0-9\.]/g;
+var alphaOnly = /[A-Za-z]/g;
+var usernameOnly = /[0-9A-Za-z\._-]/g;
+
+function restrictInput(myfield, e, restrictionType, checkdot) {
+	if (!e)
+		var e = window.event
+	if (e.keyCode)
+		code = e.keyCode;
+	else if (e.which)
+		code = e.which;
+	var character = String.fromCharCode(code);
+
+	// if user pressed esc... remove focus from field...
+	if (code == 27) {
+		this.blur();
+		return false;
+	}
+
+	// ignore if the user presses other keys
+	// strange because code: 39 is the down key AND ' key...
+	// and DEL also equals .
+	if (!e.ctrlKey && code != 9 && code != 8 && code != 36 && code != 37
+			&& code != 38 && (code != 39 || (code == 39 && character == "'"))
+			&& code != 40) {
+		if (character.match(restrictionType)) {
+			if (checkdot == "checkdot") {
+				return !isNaN(myfield.value.toString() + character);
+			} else {
+				return true;
+			}
+		} else {
+			return false;
+		}
+	}
+}
+		
+
+function getElectricFleetMetrics() {
+	addSysMessage("", false);
+	$("#socStart").val('');
+	$("#socEnd").val('');
+	$("#socReeferStart").val('');
+	$("#socReeferEnd").val('');
+	var truckNumber = document.getElementById("truckNumber");
+	var truckNumber = truckNumber.options[truckNumber.selectedIndex].value;
+	if (truckNumber.length != 0) {
+		jsonrpcClient.AsyncDispatchProvider.getElectricFleetMetrics(
+				sendElectricFleetCallback, truckNumber);
+	}
+}
+		
+
+function sendElectricFleetCallback(result, exception) {
+	if (exception) {
+		alert('Unable to connect to host system. Please contact system administrator!');
+		return;
+	}
+	var socDriveFlag;
+	var socReeferFlag;
+	$("#electricDrive").hide();
+	$("#electricReeferTextDiv").hide();
+	$("#electricReeferDropdownDiv").hide();
+	if (result !== null) {
+		socDriveFlag = result.map.EDF;
+		socReeferFlag = result.map.ERF;
+		if (socDriveFlag === 'Y') {
+			$("#electricDrive").show();
+		}
+		if (socDriveFlag === 'Y' && socReeferFlag === 'Y') {
+			$("#electricReeferTextDiv").show();
+		} else if (socDriveFlag === 'N' && socReeferFlag === 'Y') {
+			$("#electricReeferDropdownDiv").show();
+		}
+
+	} else {
+		addSysMessage("Populating vendor info failed for TRUCK selected", true);
+	}
+}

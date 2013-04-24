@@ -71,6 +71,7 @@ public class DispatchCommand extends WebPlanInfo {
 	private String extras;
 	private boolean isActualTruckAssigned;
 	private String dispatchTypeModified;
+	private String assetStatus;
 	
     public int getResourceSize(List resources)
 	{
@@ -156,6 +157,15 @@ public class DispatchCommand extends WebPlanInfo {
 		return dispatchResources;
 	}
 	
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public List getDispatchResources() {
+		List dispatchResources = new ArrayList();
+		dispatchResources.addAll(this.getDrivers());
+		dispatchResources.addAll(this.getHelpers());
+		dispatchResources.addAll(this.getRunners());
+		return dispatchResources;
+	}
+	
 	public ResourceInfoI constructResourceInfo(){
 		return new DispatchResourceInfo();
 	}
@@ -195,8 +205,9 @@ public class DispatchCommand extends WebPlanInfo {
 		this.noOfStops = noOfStops;
 	}
 	
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public void setResources(EmployeeManagerI employeeManagerService,Set resources, Map resourceReqs, Collection punchInfos , Map empInfo,Map empRoleMap,
-			Map empStatusMap,Map empTruckPrefMap,Map empTeams) {
+			Map empStatusMap,Map empTruckPrefMap,Map empTeams, Map<String, Map<String, List<String>>> scannedAssetMapping) {
 		
 		boolean hasPunchInfo=(punchInfos==null)?false:punchInfos.isEmpty()?false:true;
 		if(resources == null || resources.isEmpty())
@@ -280,8 +291,30 @@ public class DispatchCommand extends WebPlanInfo {
                       runnerCount++;
                   }
                   
-              }
+            }            
+            if(scannedAssetMapping != null && scannedAssetMapping.size() > 0) {
+            	setResourceAssetScanInfo(resourceInfo, scannedAssetMapping.get(resourceInfo.getEmployeeId()));
+            }
         }
+	}
+
+	private List<AssetScanInfo> setResourceAssetScanInfo(ResourceInfoI resourceInfo,
+			Map<String, List<String>> assetMapping) {
+		
+		List<AssetScanInfo> result = new ArrayList<AssetScanInfo>();
+		resourceInfo.setScannedAssets(result);
+		for(Map.Entry<String, List<String>> asseyEntry: assetMapping.entrySet()) {
+			if(asseyEntry.getValue() != null) {
+				for(String s : asseyEntry.getValue()) {
+					AssetScanInfo _asset = new AssetScanInfo();
+					result.add(_asset);					
+					_asset.setAssetNo(s);
+					_asset.setEmployeeId(resourceInfo.getEmployeeId());
+					_asset.setStatus(asseyEntry.getKey());
+				}
+			}
+		}
+		return null;
 	}
 
 	private void setStatus(PunchInfoI punchInfo)
@@ -590,4 +623,9 @@ public class DispatchCommand extends WebPlanInfo {
 	public void setDispatchTypeModified(String dispatchTypeModified) {
 		this.dispatchTypeModified = dispatchTypeModified;
 	}
+
+	public void setAssetStatus(String assetStatus) {
+		this.assetStatus = assetStatus;
+	}
+	
 }

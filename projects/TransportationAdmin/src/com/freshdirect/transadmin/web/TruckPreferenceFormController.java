@@ -62,7 +62,7 @@ public class TruckPreferenceFormController extends AbstractFormController {
 	}
 
 	public Object getDefaultBackingObject() {
-		return new WebEmployeeInfo(null,null,null);
+		return new WebEmployeeInfo(null,null);
 	}
 
 	public boolean isNew(Object command) {

@@ -1376,3 +1376,10 @@ div.eXor_Active, div.eXor_AdHoc { margin-left: 10px; width: 98%; }
 	background-color: #677F5F;
 }
 
+.asset_checkin {
+	background-color: #3C691B;
+}
+.asset_checkout {
+	background-color: #FF0000;
+}
+

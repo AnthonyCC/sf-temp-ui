@@ -27,9 +27,6 @@ public class BaseFormController extends SimpleFormController {
 		CustomDateEditor editor = new CustomDateEditor(TransStringUtil.dateFormat, true);
 		dataBinder.registerCustomEditor(Date.class, editor);	
 		dataBinder.registerCustomEditor(TimeOfDay.class, new TimeOfDayPropertyEditor());
-            
-		dataBinder.registerCustomEditor(TimeOfDay.class, new TimeOfDayPropertyEditor());
-           
 	}
 
 	public void saveMessage(HttpServletRequest request, Object msg) {

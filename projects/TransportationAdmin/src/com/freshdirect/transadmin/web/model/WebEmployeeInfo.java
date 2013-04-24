@@ -12,9 +12,9 @@ import java.util.Map;
 import com.freshdirect.routing.constants.EnumTruckPreference;
 import com.freshdirect.transadmin.model.EmployeeInfo;
 import com.freshdirect.transadmin.model.EmployeeRole;
+import com.freshdirect.transadmin.model.EmployeeSupervisor;
 
-public class WebEmployeeInfo implements Serializable,
-		Comparable<WebEmployeeInfo> {
+public class WebEmployeeInfo implements Serializable, Comparable<WebEmployeeInfo> {
 
 	private String employeeId;
 	private String firstName;
@@ -33,6 +33,9 @@ public class WebEmployeeInfo implements Serializable,
 	private String truckPref04;
 	private String truckPref05;
 	private Map<String, String> empTruckPreferences = new HashMap<String, String>();
+	
+	private EmployeeSupervisor empSupervisor;
+	private String homeSupervisorId;
 	
 	public String getTruckPref01() {
 		if(this.empTruckPreferences != null && empTruckPreferences.size() > 0)
@@ -106,10 +109,16 @@ public class WebEmployeeInfo implements Serializable,
 	public void setEmpTruckPreferences(Map<String, String> empTruckPreferences) {
 		this.empTruckPreferences = empTruckPreferences;
 	}
-
+	
 	public WebEmployeeInfo(EmployeeInfo eInfo, Collection eRole) {
 		this.empInfo = eInfo;
 		this.empRole = eRole;
+	}
+
+	public WebEmployeeInfo(EmployeeInfo eInfo, Collection eRole, EmployeeSupervisor eSupervisor) {
+		this.empInfo = eInfo;
+		this.empRole = eRole;
+		this.empSupervisor = eSupervisor;
 	}
 
 	public WebEmployeeInfo(EmployeeInfo eInfo, Collection eRole,
@@ -296,6 +305,24 @@ public class WebEmployeeInfo implements Serializable,
 		if (empInfo.getTerminationDate() == null)
 			return null;
 		return empInfo.getTerminationDate();		
+	}
+	
+	public EmployeeSupervisor getEmpSupervisor() {
+		if(empSupervisor == null)
+			empSupervisor = new EmployeeSupervisor(); 
+		return empSupervisor;
+	}
+
+	public void setEmpSupervisor(EmployeeSupervisor empSupervisor) {
+		this.empSupervisor = empSupervisor;
+	}
+	
+	public String getHomeSupervisorId() {
+		return homeSupervisorId;
+	}
+
+	public void setHomeSupervisorId(String homeSupervisorId) {
+		this.homeSupervisorId = homeSupervisorId;
 	}
 
 	public boolean isBullpen() {

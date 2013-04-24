@@ -98,7 +98,37 @@
 							 	<td>
 							 		&nbsp;<form:errors path="lastName" />
 							 	</td>
-							 </tr>				                                                            
+							 </tr>
+							 <tr>
+							 	<td>Home Supervisor</td>
+								<td> 
+									<form:select path="homeSupervisorId">
+										<form:option value="" label="--Please Select Supervisor"/>
+										<form:options items="${supervisors}" itemLabel="name" itemValue="employeeId" />
+									</form:select>
+								</td>
+								<td><form:errors path="homeSupervisorId" />&nbsp;</td>   
+							</tr>
+							<tr>
+								<td>Home Region</td>
+								<td> 
+									<form:select path="empSupervisor.homeRegion">
+										<form:option value="null" label="--Please Select Region"/>
+										<form:options items="${regions}" itemLabel="code" itemValue="code" />
+									</form:select>
+								</td>
+								<td><form:errors path="empSupervisor.homeRegion" />&nbsp;</td>   
+							</tr>
+							<tr>
+								<td>Home Shift</td>
+								<td> 
+									<form:select path="empSupervisor.homeShift">
+										<form:option value="" label="--Please Select Shift"/>
+										<form:options items="${shifts}" itemLabel="name" itemValue="name" />
+									</form:select>
+								</td>
+								<td><form:errors path="empSupervisor.homeShift" />&nbsp;</td>   
+							</tr>				                                                            
                              <tr>
 							    <td>Sub-Role</td>
 							    <td> 	

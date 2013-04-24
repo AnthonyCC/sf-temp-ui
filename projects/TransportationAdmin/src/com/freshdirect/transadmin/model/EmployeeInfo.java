@@ -2,8 +2,10 @@ package com.freshdirect.transadmin.model;
 
 import java.text.ParseException;
 import java.util.Date;
+import java.util.List;
 
 import com.freshdirect.transadmin.util.TransStringUtil;
+import com.freshdirect.transadmin.web.model.AssetScanInfo;
 
 public class EmployeeInfo implements java.io.Serializable, TrnBaseEntityI, ResourceInfoI {
 
@@ -14,14 +16,10 @@ public class EmployeeInfo implements java.io.Serializable, TrnBaseEntityI, Resou
 	private String firstName;
 	
 	private String lastName;
-	
 		
 	private String middleInitial;
 	
 	private String shortName;
-	
-	
-	
 	
 	private String jobType;
 	
@@ -44,6 +42,8 @@ public class EmployeeInfo implements java.io.Serializable, TrnBaseEntityI, Resou
 	private PunchInfoI punchInfo=null;
 	
 	private Date adjustmentTime;
+	
+	private List<AssetScanInfo> scannedAssets;
 	
 	public EmployeeInfo() {
 	}
@@ -276,6 +276,10 @@ public class EmployeeInfo implements java.io.Serializable, TrnBaseEntityI, Resou
 			return false;
 		return true;
 	}
-	
-
+	public List<AssetScanInfo> getScannedAssets() {
+		return scannedAssets;
+	}
+	public void setScannedAssets(List<AssetScanInfo> scannedAssets) {
+		this.scannedAssets = scannedAssets;
+	}
 }

@@ -156,6 +156,7 @@
 					  <ec:column property="verifiedBy" title="Verified By" />
 					  <ec:column property="repairedBy" title="Repaired By" />
 					  <ec:column property="truckNumber" title="Truck" />
+					  <ec:column property="truckLocation" title="Truck Loc" />
  					  <ec:column property="vendor" title="Vendor" />
   					  <ec:column property="issueType" title="Issue Type" />
    					  <ec:column property="issueSubType" title="Issue SubType" />

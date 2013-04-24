@@ -1,6 +1,7 @@
 package com.freshdirect.transadmin.dao.hibernate;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.Set;
 
@@ -66,6 +67,11 @@ public class AssetManagerDaoHibernateImpl
 			strBuf.append(" and a.assetType.code ='"+assetType+"'");
 		
 		return (Collection) getDataList(strBuf.toString());
+	}
+	
+	public Asset getAssetByBarcode(String barcode) throws DataAccessException {
+
+		return (Asset) getEntityById("Asset", "barcode", barcode);
 	}
 
 	public void saveAsset(Asset asset) throws DataAccessException {
@@ -134,6 +140,13 @@ public class AssetManagerDaoHibernateImpl
 			strBuf.append(" a.id.assetType='"+assetType+"'");
 		
 		return (Collection) getDataList(strBuf.toString());		
+	}
+	
+	public Collection getScannedAssets(Date deliveryDate) throws DataAccessException {
+		StringBuffer strBuf = new StringBuffer();
+		strBuf.append("from AssetActivity where deliveryDate = ? ");
+		strBuf.append(" order by deliveryDate, scannedTime");	
+		return (Collection) getHibernateTemplate().find(strBuf.toString(),	new Object[] { deliveryDate });
 	}
 	
 }

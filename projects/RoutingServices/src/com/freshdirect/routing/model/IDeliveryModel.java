@@ -37,5 +37,8 @@ public interface IDeliveryModel  {
 	void setReservationId(String reservationId);
 	
 	String getServiceType();
-	void setServiceType(String serviceType);	
+	void setServiceType(String serviceType);
+	
+	int getReservedOrdersAtBuilding();
+	void setReservedOrdersAtBuilding(int reservedOrdersAtBuilding);	
 }

@@ -1,0 +1,197 @@
+<style>
+	.yui-skin-sam .yui-dt-body { cursor:pointer; } 
+	#single { margin-top:2em; }
+	
+</style>
+<script>
+
+      var assetScanDataTable;
+      var editAssetScanPanel;      
+      var errColor = "#FF0000";
+	  var msgColor = "#00FF00";
+	  
+	  $(document).ready(function () {
+	    	 $('#scanNewEmployeeBtn').addClass('disabled').attr('disabled', true);
+	  });
+
+	  function showAssetScanForm() {
+      	 	
+         editAssetScanPanel = new YAHOO.widget.Panel("assetscanpanel", {       
+                          width: "800px", 
+                          height: "500px",
+                          fixedcenter: true, 
+                          close: true, 
+                          draggable: false, 
+                          zindex:4,
+                          modal: true,
+                          visible: false,
+                          effect:{effect:YAHOO.widget.ContainerEffect.SLIDE,duration:0.25}});
+         
+                  
+        assetScanDataSource = new YAHOO.util.DataSource();                           
+                             		  
+ 		var assetScanColumns =  [
+ 			    {key:"employeeId", label:"Employee ID",sortable:false, width: 150, className:"forms1"},
+ 			    {key:"employeeName", label:"Employee Name",sortable:false, width: 225, className:"forms1"},
+ 			    {key:"asset", label:"Asset",sortable:false, width: 200, className:"forms1"},
+ 			    {key:"assetStatus", label:"Status",sortable:false, width: 80, className:"forms1"}, 			    
+ 			    {key:'deleteBtn',label:' ',formatter:function(elCell) {
+         										elCell.innerHTML = '<img src="images/icons/delete.gif" title="delete row" />';
+         										elCell.style.cursor = 'pointer';
+     			}}			    
+ 		 ];
+ 				 	 
+ 		assetScanDataTable = new YAHOO.widget.DataTable("contassettable", assetScanColumns, assetScanDataSource, { selectionMode:"single" });
+   		
+ 		assetScanDataTable.subscribe('cellClickEvent',function(ev) {
+     	var target = YAHOO.util.Event.getTarget(ev);
+     	var column = assetScanDataTable.getColumn(target);
+     		if (column.key == 'deleteBtn') {
+     			assetScanDataTable.deleteRow(target);
+     		} 
+ 		}); 
+        
+       	editAssetScanPanel.render(document.body);
+        editAssetScanPanel.show();
+     }
+      
+     function addSysMessage(msg, isError) {
+    		var errContObj = YAHOO.util.Dom.get("errContainer");
+		    if(isError) {
+		    	errContObj.style.color = errColor;
+	      	} else {
+	      		errContObj.style.color = msgColor;
+	      	}
+	      	errContObj.style.fontWeight="bold";
+    		YAHOO.util.Dom.get("errContainer").innerHTML = msg;
+     }
+    
+     
+     function addScannedAsset() {
+     	var _employee = YAHOO.util.Dom.get("employee").value;
+     	var _asset = YAHOO.util.Dom.get("asset").value;
+     	var _status = YAHOO.util.Dom.get("status").value;
+     		
+     	if(_employee.trim().length > 0 && _asset.trim().length > 0 
+     				&& _status.trim().length > 0 ) {
+     		addSysMessage("", false);
+     		jsonrpcClient.AsyncAssetProvider.getAssetInfo(assetScanCallback, _asset, _employee, _status);
+     		
+     	} else {
+     		addSysMessage("Please scan the employee and asset(s)!", true);
+     	}
+     }
+     
+     function scanNewEmployee() {
+    	 $('#employee').val('');
+    	 $("#employee").focus();
+     } 
+     
+     function assetScanCallback(result) {
+    	 if(result != null) {
+    		 var hasError = false;
+    		 if(assetScanDataTable.getRecordSet() != null 
+      	  			&& assetScanDataTable.getRecordSet().getRecords()) {
+       	  		var records = assetScanDataTable.getRecordSet().getRecords();
+       	  		for(i=0; i < records.length; i++) {
+       	  			if(records[i].getData('employeeId') === result.employeeId 
+       	  					&& records[i].getData('asset') === result.assetNo
+       	  						&& records[i].getData('assetStatus') === result.status) {
+       	  			 	addSysMessage("The scanned asset already exists in the below table. Please scan other assets or save the scanned asset(s). ", true);
+       	  			 	hasError = true;
+       	  			}
+       	  		}
+    		 }
+    		 if(!hasError) {
+	    		 assetScanDataTable.addRow({employeeId:result.employeeId, employeeName:result.employeeName, asset:result.assetNo
+	 				, assetStatus:result.status, deleteBtn:''});    		 
+	    		 $('#asset').val(''); 
+	    		 $("#asset").focus();
+	    		 $('#scanNewEmployeeBtn').removeClass('disabled').attr('disabled', false);
+    	     }
+    	 } else {
+    		 addSysMessage("There is no matching asset with scanned barcode. Please check the master data from Asset tab", true);
+    	 }
+     }
+         
+     function submitAssetScanTable() { 
+     	  var _data = new Array();
+     	  if(assetScanDataTable.getRecordSet() != null 
+     	  			&& assetScanDataTable.getRecordSet().getRecords()) {
+      	  	var records = assetScanDataTable.getRecordSet().getRecords();
+      	  	for(i=0; i < records.length; i++) {
+      	  		_data[i] = new Array();
+      	  		_data[i][0] = records[i].getData('employeeId');
+      	  		_data[i][1] = records[i].getData('asset');
+      	  		_data[i][2] = records[i].getData('assetStatus');
+      	  	}
+      	  }     	  
+     	  addSysMessage("", false);
+     	  jsonrpcClient.AsyncAssetProvider.logScannedAssets(sendAssetScanTableCallback, _data);
+      	  
+     }
+     
+     function sendAssetScanTableCallback(result, exception) {
+     	  
+         if(exception) {               
+             alert('Unable to connect to host system. Please contact system administrator!');               
+             return;
+         }
+         if(result) {
+         	addSysMessage("Activity for assets added successfully", false);
+         	editAssetScanPanel.hide();
+         	location.href = location.href;
+         } else {
+         	addSysMessage("Adding asset activity failed", true);          	
+         }                           
+     }
+     
+     function clearForm() {
+    	 $('#employee').val('');
+    	 $('#asset').val('');
+    	 $("#employee").focus();
+     }
+     
+     
+ </script>
+       
+   <div style='display:none;height:0px;width:0px;'>
+      <div id="assetscanpanel">
+      <div class="hd"><img src="images/icons/edit_ON.gif" width="16" height="16" border="0" align="absmiddle" />&nbsp;&nbsp;&nbsp;Scan Asset</div>
+      <div class="bd">
+      	<div id="errContainer"></div>
+      	<div id="assetScanForm" style="background-color:#F2F2F2">
+	      	<table class="forms1">
+			 	<tr>
+		                  <td>Scan Employee Badge</td>
+		                  <td><input type="text" size="30" id="employee" autofocus/></td> 
+		        </tr>
+			 	<tr>
+		                  <td>Scan Asset Barcode</td>
+		                  <td><input type="text" size="30" id="asset" value=""/></td>
+		         </tr>
+		         <tr>
+		                  <td>Status</td>
+		                  <td>
+		                  	<select id="status" name="status" >		                  		  
+							 	<c:forEach var="astatus" items="${statuses}">
+							 		<option value="<c:out value="${astatus.name}"/>"><c:out value="${astatus.description}"/></option>
+			        			</c:forEach>   				
+							</select>
+							 <input style="font-size:10px" type = "button" height="16" id="addScannedAssetBtn" value="&nbsp;Add&nbsp;" onclick="javascript:addScannedAsset();" />
+							 <input style="font-size:10px" type = "button" height="16" id="clearBtn" value="&nbsp;Clear&nbsp;" onclick="javascript:clearForm();" />
+							 <input style="font-size:10px" type = "button" height="16" id="scanNewEmployeeBtn" value="&nbsp;Scan New Employee&nbsp;" onclick="javascript:scanNewEmployee();" />                 	
+                    	 </td>
+		         </tr>	
+		        </table>  
+	      </div><br/><br/>
+	      <div id="parentcontassettable" style="height:275px;overflow-y:auto;background-color:#F2F2F2;border:1px solid #000;">
+	      	 	<div id="contassettable"></div> 
+	      </div>
+	       <div align="center">
+	      	 	<input type="button" id="route_out" value="&nbsp;Save&nbsp;" onclick="javascript:submitAssetScanTable();" />
+	      	 </div>
+	     	       
+        </div>
+    </div>
+    </div>

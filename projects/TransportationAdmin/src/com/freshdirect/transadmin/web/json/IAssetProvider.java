@@ -3,6 +3,7 @@ package com.freshdirect.transadmin.web.json;
 import java.util.List;
 
 import com.freshdirect.transadmin.model.Asset;
+import com.freshdirect.transadmin.web.model.AssetScanInfo;
 
 public interface IAssetProvider {
 	
@@ -10,7 +11,8 @@ public interface IAssetProvider {
 			, String assetNo, String description
 			, String status
 			, String assetTemplate
-			, String[][] assetAttributes);
+			, String[][] assetAttributes
+			, String barcode);
 	
 	String saveAssetTemplate(String assetTemplateId, String assetType
 			, String assetTemplateName
@@ -26,4 +28,8 @@ public interface IAssetProvider {
 	List getAttributeType(String assetType);
 	
 	int addAssetType(String name, String desc);
+	
+	AssetScanInfo getAssetInfo(String assetBarcode, String employeeId, String status);
+	
+	public boolean logScannedAssets(String[][] assets);
 }

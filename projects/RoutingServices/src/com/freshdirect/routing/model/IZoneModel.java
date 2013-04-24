@@ -33,4 +33,8 @@ package com.freshdirect.routing.model;
      
  	 int getLoadingPriority();
  	 void setLoadingPriority(int loadingPriority);
+ 	 
+ 	double getSvcAdjReductionFactor();
+
+	void setSvcAdjReductionFactor(double svcAdjReductionFactor);
 }

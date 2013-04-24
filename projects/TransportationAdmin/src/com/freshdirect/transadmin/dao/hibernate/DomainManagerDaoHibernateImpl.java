@@ -258,7 +258,16 @@ public class DomainManagerDaoHibernateImpl
 		strBuf.append("from EmployeeTeam te where  te.leadKronosId ='").append(leadId).append("'");
 		return (Collection) getHibernateTemplate().find(strBuf.toString());		
 	}
-
+	
+	public Collection getEmployeeSupervisors() throws DataAccessException {	
+		return getDataList("EmployeeSupervisor");
+	}
+	
+	public Collection getEmployeeSupervisor(String empId) throws DataAccessException {
+		StringBuffer strBuf = new StringBuffer();
+		strBuf.append("from EmployeeSupervisor es where es.id.kronosId ='").append(empId).append("'");
+		return (Collection) getHibernateTemplate().find(strBuf.toString());
+	}
 
 	public Collection getEmployeeRoles() throws DataAccessException {
 		// TODO Auto-generated method stub

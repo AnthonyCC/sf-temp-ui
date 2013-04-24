@@ -94,7 +94,7 @@ public class RedeliveryControllerTag extends AbstractControllerTag implements Se
 			
 			FDOrderI order = FDCustomerManager.getOrder(saleId);
 			FDReservation reservation = order.getDeliveryReservation();
-			FDTimeslot timeslot = FDDeliveryManager.getInstance().getTimeslotsById(this.timeslotId,reservation.isPremium());
+			FDTimeslot timeslot = FDDeliveryManager.getInstance().getTimeslotsById(this.timeslotId, null, reservation.isPremium());
 			
 			ErpDeliveryInfoModel deliveryInfo = new ErpDeliveryInfoModel();
 			deliveryInfo.setDeliveryAddress(order.getDeliveryAddress());

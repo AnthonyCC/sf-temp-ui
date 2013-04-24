@@ -15,6 +15,8 @@ public class Region implements java.io.Serializable,Comparable, TrnBaseEntityI {
 	private String obsolete;
 	private String needsDispValidation;
 	private Set zones;
+	
+	private TrnFacility originFacility;
 		
 	@Override
 	public int hashCode() {
@@ -94,6 +96,14 @@ public class Region implements java.io.Serializable,Comparable, TrnBaseEntityI {
 
 	public void setNeedsDispValidation(String needsDispValidation) {
 		this.needsDispValidation = needsDispValidation;
+	}
+	
+	public TrnFacility getOriginFacility() {
+		return originFacility;
+	}
+
+	public void setOriginFacility(TrnFacility originFacility) {
+		this.originFacility = originFacility;
 	}
 
 	public String toString()

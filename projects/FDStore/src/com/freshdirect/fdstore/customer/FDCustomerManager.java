@@ -791,7 +791,7 @@ public class FDCustomerManager {
 
 	public static FDReservation makeReservation(
 		FDIdentity identity,
-		FDTimeslot timeslot,
+		String timeslotId,
 		EnumReservationType rsvType,
 		String addressId,
 		FDActionInfo aInfo, boolean chefsTable, TimeslotEventModel event,boolean isForced)
@@ -800,7 +800,7 @@ public class FDCustomerManager {
 		try {
 			FDCustomerManagerSB sb = managerHome.create();
 
-			return sb.makeReservation(identity, timeslot, rsvType, addressId, aInfo, chefsTable, event, isForced);
+			return sb.makeReservation(identity, timeslotId, rsvType, addressId, aInfo, chefsTable, event, isForced);
 		} catch (RemoteException e) {
 			invalidateManagerHome();
 			throw new FDResourceException(e, "Error talking to session bean");
@@ -827,7 +827,7 @@ public class FDCustomerManager {
 	public static FDReservation changeReservation(
 		FDIdentity identity,
 		FDReservation oldReservation,
-		FDTimeslot timeslot,
+		String timeslotId,
 		EnumReservationType rsvType,
 		String addressId,
 		FDActionInfo aInfo,
@@ -838,7 +838,7 @@ public class FDCustomerManager {
 		try {
 			FDCustomerManagerSB sb = managerHome.create();
 
-			return sb.changeReservation(identity, oldReservation, timeslot, rsvType, addressId, aInfo, chefstable,event);
+			return sb.changeReservation(identity, oldReservation, timeslotId, rsvType, addressId, aInfo, chefstable,event);
 		} catch (RemoteException e) {
 			invalidateManagerHome();
 			throw new FDResourceException(e, "Error talking to session bean");
@@ -1032,8 +1032,6 @@ public class FDCustomerManager {
 			FDCustomerManagerSB sb = managerHome.create();
 			boolean result =   sb.addShipToAddress(info, checkUniqueness, address);
 
-			sendShippingAddress(address);
-
 			return result;
 		} catch (CreateException ce) {
 			invalidateManagerHome();
@@ -1075,7 +1073,7 @@ public class FDCustomerManager {
 
 	private static void sendShippingAddress(AddressI address) throws FDResourceException {
 
-		if(FDStoreProperties.canSendRoutingAddress()) {
+		if(!FDStoreProperties.isUPSBlackholeEnabled()) {
 			lookupRoutingGatewayHome();
 
 			try {

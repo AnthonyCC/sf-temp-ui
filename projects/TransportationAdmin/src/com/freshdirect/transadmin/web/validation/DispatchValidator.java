@@ -47,7 +47,7 @@ public class DispatchValidator extends AbstractValidator {
 			}
 			
 	
-			if(model != null && model.getOriginFacility() == null && !"true".equalsIgnoreCase(model.getIsBullpen())) {
+			if(model != null && model.getOriginFacility() == null) {
 				errors.rejectValue("originFacility", "app.error.112", new Object[]{"Origin Facility"},"required field");
 			}
 	

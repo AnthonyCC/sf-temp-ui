@@ -14,11 +14,13 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.web.bind.ServletRequestDataBinder;
 
 import com.freshdirect.transadmin.model.TrnFacility;
+import com.freshdirect.transadmin.model.TrnFacilityLocation;
 import com.freshdirect.transadmin.model.TrnFacilityType;
 import com.freshdirect.transadmin.model.Zone;
 import com.freshdirect.transadmin.service.DomainManagerI;
 import com.freshdirect.transadmin.service.LocationManagerI;
 import com.freshdirect.transadmin.service.ZoneManagerI;
+import com.freshdirect.transadmin.web.editor.TrnFacilityLocationPropertyEditor;
 import com.freshdirect.transadmin.web.editor.TrnFacilityTypePropertyEditor;
 
 public class FacilityFormController extends AbstractFormController {
@@ -56,7 +58,8 @@ public class FacilityFormController extends AbstractFormController {
 	@SuppressWarnings("unchecked")
 	protected Map referenceData(HttpServletRequest request) throws ServletException {
 		Map refData = new HashMap();
-		refData.put("trnFacilityTypes", getLocationManagerService().getTrnFacilityTypes());
+		refData.put("facilityTypes", getLocationManagerService().getTrnFacilityTypes());
+		refData.put("facilityLocations", getLocationManagerService().getTrnFacilityLocations());
 		return refData;
 	}
 	
@@ -80,9 +83,13 @@ public class FacilityFormController extends AbstractFormController {
 	protected void onBind(HttpServletRequest request, Object command) {
 		TrnFacility model = (TrnFacility)command;
 		String trnFacilityType = request.getParameter("trnFacilityType");
+		String trnFacilityLoc = request.getParameter("facilityLocation");
 		
 		TrnFacilityType facilityType = getLocationManagerService().getTrnFacilityType(trnFacilityType);
 		model.setTrnFacilityType(facilityType);
+		
+		TrnFacilityLocation facilityLocation = getLocationManagerService().getTrnFacilityLocation(trnFacilityLoc);
+		model.setFacilityLocation(facilityLocation);
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -125,7 +132,10 @@ public class FacilityFormController extends AbstractFormController {
 	
 	public void initBinder(HttpServletRequest request, ServletRequestDataBinder binder) throws Exception {
 		super.initBinder(request,binder);
-		binder.registerCustomEditor(TrnFacilityType.class, new TrnFacilityTypePropertyEditor());		
+		binder.registerCustomEditor(TrnFacilityType.class, new TrnFacilityTypePropertyEditor());
+		binder.registerCustomEditor(TrnFacilityLocation.class, new TrnFacilityLocationPropertyEditor());
     }
+	
+	
 
 }

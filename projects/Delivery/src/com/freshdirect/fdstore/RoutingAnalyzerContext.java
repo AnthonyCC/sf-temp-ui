@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
+import com.freshdirect.routing.constants.RoutingActivityType;
 import com.freshdirect.routing.model.IPackagingModel;
 import com.freshdirect.routing.model.IServiceTimeTypeModel;
 
@@ -14,6 +15,8 @@ public class RoutingAnalyzerContext implements Serializable {
 	private IPackagingModel historyPackageInfo;
 	
 	private Map<String, IServiceTimeTypeModel>	serviceTimeTypes;
+	
+	private RoutingActivityType routingType;
 		
 	public Map<String, IServiceTimeTypeModel> getServiceTimeTypes() {
 		return serviceTimeTypes;
@@ -38,6 +41,14 @@ public class RoutingAnalyzerContext implements Serializable {
 
 	public void setDlvTimeSlots(List<FDTimeslot> dlvTimeSlots) {
 		this.dlvTimeSlots = dlvTimeSlots;
+	}
+
+	public RoutingActivityType getRoutingType() {
+		return routingType;
+	}
+
+	public void setRoutingType(RoutingActivityType routingType) {
+		this.routingType = routingType;
 	}
 	
 	

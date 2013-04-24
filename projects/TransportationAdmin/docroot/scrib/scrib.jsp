@@ -6,7 +6,8 @@
 <%@ page import= 'com.freshdirect.transadmin.util.TransStringUtil' %>
 
 <%
-  pageContext.setAttribute("HAS_COPYBUTTON", "true");	 
+  pageContext.setAttribute("HAS_COPYBUTTON", "true");	
+  pageContext.setAttribute("HAS_CLONEBUTTON", "true");	
   String dateRangeVal = request.getParameter("daterange") != null ? request.getParameter("daterange") : "";
   String zoneVal = request.getParameter("zone") != null ? request.getParameter("zone") : "";
   if(dateRangeVal == null || dateRangeVal.length() == 0) dateRangeVal = TransStringUtil.getCurrentDate();
@@ -198,6 +199,32 @@
   		    	alert('Please Select a Row!');
   		    }
   		}
+        
+        function doClone(tableId, url) 
+        {  
+      	    var table = document.getElementById(tableId);
+      	    var checkboxList = table.getElementsByTagName("input");    
+      	    var rowSelCnt = 0;
+      	    for (i = 0; i < checkboxList.length; i++) {
+      	    	if (checkboxList[i].type=="checkbox" && checkboxList[i].checked) {
+      	    		rowSelCnt++;  	    		
+      	    	}
+      	    }
+      	    
+      	    if(rowSelCnt === 0) {
+      	    	alert('Please select a Row!');
+      	    } else if(rowSelCnt > 1){
+      	    	alert('Please select only one Row!');
+      	    } else {
+      	    	var paramValues = getParamList(tableId, url);
+      		    if (paramValues != null) {
+      		    	var hasConfirmed = confirm ("You are about to clone the selected scrib entry. Do you want to continue?")
+      		    	if (hasConfirmed) {
+      		    		location.href = url+"?scribRefId="+ paramValues+"&filter="+getFilterTestValue();
+      				} 
+      		    }	
+      	    }
+  	  }
     </script>
      <%@ include file='i_generateplan.jspf'%>
      <%@ include file='i_addlabel.jspf'%>            

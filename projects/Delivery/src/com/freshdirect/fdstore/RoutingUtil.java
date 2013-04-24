@@ -30,6 +30,7 @@ import com.freshdirect.delivery.routing.ejb.RoutingGatewayHome;
 import com.freshdirect.delivery.routing.ejb.RoutingGatewaySB;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.routing.constants.EnumWaveInstanceStatus;
+import com.freshdirect.routing.constants.RoutingActivityType;
 import com.freshdirect.routing.model.BuildingModel;
 import com.freshdirect.routing.model.DeliveryModel;
 import com.freshdirect.routing.model.DeliverySlot;
@@ -197,8 +198,8 @@ public class RoutingUtil {
 		} else {
 			order.getDeliveryInfo().getDeliveryLocation().getBuilding().setServiceTimeType(null);
 		}
-		
-		order.getDeliveryInfo().setCalculatedServiceTime(dlvService.getServiceTime(order,srvScenario));
+		order.getDeliveryInfo().setReservedOrdersAtBuilding(reservation.getReservedOrdersAtBuilding());
+		order.getDeliveryInfo().setCalculatedServiceTime(dlvService.getServiceTime(order,srvScenario,RoutingActivityType.UPDATE_TIMESLOT));
 			
 		return order;
 	}
@@ -259,8 +260,9 @@ public class RoutingUtil {
 		} else {
 			order.getDeliveryInfo().getDeliveryLocation().getBuilding().setServiceTimeType(null);
 		}
+		order.getDeliveryInfo().setReservedOrdersAtBuilding(reservation.getReservedOrdersAtBuilding());
 		
-		order.getDeliveryInfo().setCalculatedServiceTime(dlvService.getServiceTime(order,srvScenario));
+		order.getDeliveryInfo().setCalculatedServiceTime(dlvService.getServiceTime(order,srvScenario, RoutingActivityType.RESERVE_TIMESLOT));
 				
 		reservedSlot = getDeliverySlot(timeslot.getDlvTimeslot());
 		
@@ -374,7 +376,7 @@ public class RoutingUtil {
 
 
 	public static List<FDTimeslot> getTimeslotForDateRangeAndZone(List<FDTimeslot> _timeSlots
-																	, ContactAddressModel address) throws RoutingServiceException {
+																	, ContactAddressModel address, RoutingActivityType routingType) throws RoutingServiceException {
 		
 		if(_timeSlots==null || _timeSlots.isEmpty() || address==null)
 			return _timeSlots;
@@ -387,7 +389,7 @@ public class RoutingUtil {
 		RoutingAnalyzerContext context = new RoutingAnalyzerContext();
 		context.setDlvTimeSlots(_timeSlots);
 		context.setServiceTimeTypes(routingInfoproxy.getRoutingServiceTimeTypes());
-		
+		context.setRoutingType(routingType);
 		ILocationModel locModel = locateOrder(order);
 		
 		IPackagingModel historyPackageInfo = getHistoricOrderSize(order);	
@@ -482,7 +484,7 @@ public class RoutingUtil {
 		
 		try {
 				DlvManagerSB sb = getDlvManagerHome().create();
-				return sb.getTimeslotForDateRangeAndZoneEx(timeSlots, event,address);
+				return sb.getTimeslotForDateRangeAndZoneEx(timeSlots, event,address,RoutingActivityType.GET_TIMESLOT);
 
 			} catch (Exception ce) {
 				dlvHome = null;
@@ -779,7 +781,7 @@ public class RoutingUtil {
 		building.setCountry(address.getCountry());
 		building.setState(address.getState());
 		building.setZipCode(address.getZipCode());
-		
+		building.setBuildingId(address.getBuildingId());
 		ILocationModel loc= new LocationModel(building);
 		loc.setApartmentNumber(address.getApartment());
 		return loc;

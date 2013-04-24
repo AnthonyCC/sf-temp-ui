@@ -19,7 +19,8 @@ public class DeliveryModel extends BaseModel implements IDeliveryModel {
 	private ILocationModel deliveryLocation;
 	
 	private String reservationId;
-		
+	// confirmed orders for the building /window
+	private int reservedOrdersAtBuilding;
 	public String getReservationId() {
 		return reservationId;
 	}
@@ -95,5 +96,10 @@ public class DeliveryModel extends BaseModel implements IDeliveryModel {
 	public String toString() {
 		return deliveryDate+"|"+deliveryZone+"|"+deliveryStartTime+"|"+deliveryEndTime;
 	}
-	
+	public int getReservedOrdersAtBuilding() {
+		return reservedOrdersAtBuilding;
+	}
+	public void setReservedOrdersAtBuilding(int reservedOrdersAtBuilding) {
+		this.reservedOrdersAtBuilding = reservedOrdersAtBuilding;
+	}
 }

@@ -402,7 +402,7 @@ public class CheckoutControllerTag extends AbstractControllerTag {
 
 		if (so != null && EnumCheckoutMode.MODIFY_SO_TMPL.equals(mode)) {
 			final String tsId = request.getParameter("deliveryTimeslotId");
-			final FDTimeslot ts = FDDeliveryManager.getInstance().getTimeslotsById(tsId, false);
+			final FDTimeslot ts = FDDeliveryManager.getInstance().getTimeslotsById(tsId, null, false);
 			if (ts != null) {
 
 				

@@ -1,10 +1,13 @@
 package com.freshdirect.transadmin.service.impl;
 
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -18,10 +21,9 @@ import com.freshdirect.routing.service.proxy.RoutingInfoServiceProxy;
 import com.freshdirect.transadmin.dao.AssetManagerDaoI;
 import com.freshdirect.transadmin.dao.BaseManagerDaoI;
 import com.freshdirect.transadmin.model.Asset;
+import com.freshdirect.transadmin.model.AssetActivity;
 import com.freshdirect.transadmin.model.AssetTemplate;
 import com.freshdirect.transadmin.model.AssetType;
-import com.freshdirect.transadmin.model.TrnAdHocRoute;
-import com.freshdirect.transadmin.model.comparator.AlphaNumericComparator;
 import com.freshdirect.transadmin.service.AssetManagerI;
 import com.freshdirect.transadmin.util.TransAdminCacheManager;
 
@@ -200,5 +202,33 @@ public class AssetManagerImpl
 	public List<EquipmentType> getEquipmentTypes(String region) {
 		return  TransAdminCacheManager.getInstance().getEquipmentTypes(this, region);
 		
+	}
+	
+	public Asset getAssetByBarcode(String barcode) {
+		return getAssetManagerDao().getAssetByBarcode(barcode);
+	}
+	
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public Map<String, Map<String, List<String>>> getScannedAssets(Date assetScanDate) {
+		
+		Map<String, Map<String, List<String>>> assetMapping = new HashMap<String, Map<String,List<String>>>();
+		
+		Collection assets = getAssetManagerDao().getScannedAssets(assetScanDate);
+		
+		if(assets != null) {
+			Iterator<AssetActivity> assetItr = assets.iterator();
+			while(assetItr.hasNext()) {
+				AssetActivity asset = assetItr.next();
+				if(!assetMapping.containsKey(asset.getEmployeeId())){
+					assetMapping.put(asset.getEmployeeId(), new HashMap<String, List<String>>());
+				}
+				if(!assetMapping.get(asset.getEmployeeId()).containsKey(asset.getStatus())){
+					assetMapping.get(asset.getEmployeeId()).put(asset.getStatus(), new ArrayList<String>());
+				}
+				assetMapping.get(asset.getEmployeeId()).get(asset.getStatus()).add(asset.getAssetNo());
+			}
+		}
+		
+		return assetMapping;
 	}
 }

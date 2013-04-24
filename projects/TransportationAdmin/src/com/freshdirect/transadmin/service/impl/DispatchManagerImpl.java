@@ -80,8 +80,8 @@ public class DispatchManagerImpl extends BaseManagerImpl implements DispatchMana
 		return getDispatchManagerDao().getPlan();
 	}
 	
-	public Collection getPlan(String dateRange, String zoneLst) {
-		return getDispatchManagerDao().getPlan(dateRange, zoneLst);
+	public Collection getPlanEntry(String dateRange, String zoneLst, String facilityLocation) {
+		return getDispatchManagerDao().getPlanEntry(dateRange, zoneLst, facilityLocation);
 	}
 	
 	public Collection<Plan> getPlanList(String date) {

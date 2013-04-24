@@ -1,6 +1,7 @@
 package com.freshdirect.transadmin.service;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -41,5 +42,9 @@ public interface AssetManagerI extends BaseManagerI {
 	List<EquipmentType> getEquipmentTypes(String region);
 
 	Map<String, List<EquipmentType>> loadEquipmentTypes();
-
+	
+	Asset getAssetByBarcode(String barcode);
+	
+	Map<String, Map<String, List<String>>> getScannedAssets(Date assetScanDate);
+	
 }

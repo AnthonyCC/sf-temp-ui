@@ -4,10 +4,13 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core" %>
 <%@ page import= 'com.freshdirect.transadmin.util.TransStringUtil' %>
-<%  pageContext.setAttribute("HAS_ADDBUTTON", "true"); 
-  pageContext.setAttribute("HAS_CONFIRMBUTTON_NEW", "true"); 
-   String dateRangeVal = request.getParameter("dispDate") != null ? request.getParameter("dispDate") : "";
-   if(dateRangeVal == null || dateRangeVal.length() == 0) dateRangeVal = TransStringUtil.getCurrentDate();
+
+<%  
+	pageContext.setAttribute("HAS_ADDBUTTON", "true"); 
+  	pageContext.setAttribute("HAS_CONFIRMBUTTON_NEW", "true");
+  	pageContext.setAttribute("HAS_CLONEBUTTON", "true");
+   	String dateRangeVal = request.getParameter("dispDate") != null ? request.getParameter("dispDate") : "";
+   	if(dateRangeVal == null || dateRangeVal.length() == 0) dateRangeVal = TransStringUtil.getCurrentDate();
   %>
   
   <link rel="stylesheet" href="css/transportation.css" type="text/css" />		
@@ -431,23 +434,51 @@
 			  <ec:column property="facilityInfoEx" sortable="true" title="ORF-DTF"/>
               <ec:column alias="trnZoneRegion" property="regionZone" title="Region - Zone" />             
               <ec:column property="supervisorEx"   title="Sup" cell="tooltip"  />
-              <ec:column  alias="trnTimeslotslotName" cell="date" format="hh:mm aaa" property="startTimeEx" title="Start Time"/> 
-              <ec:column  alias="trnTimeEndslotslotName" cell="date" format="hh:mm aaa" property="firstDeliveryTimeEx" title="First Dlv."/>
+              <ec:column alias="trnTimeslotslotName" cell="date" format="hh:mm aaa" property="startTimeEx" title="Start Time"/> 
+              <ec:column alias="trnTimeEndslotslotName" cell="date" format="hh:mm aaa" property="firstDeliveryTimeEx" title="First Dlv."/>
               <ec:column alias="trnRouterouteNumber" property="route"  width="10" title="Route"/>
               <ec:column alias="trnTrucktruckNumber" property="truck" width="10"  title="Truck"/>
               <ec:column alias="trnTruckLocation" property="location" width="10"  title="Location"/>
               <ec:column property="drivers"  cell="dispatchResCell" title="Driver"  filterable="true" alias="drivers"/>
               <ec:column property="helpers"  cell="dispatchResCell" title="Helper"  filterable="true" alias="helpers"/>
               <ec:column property="runners"  cell="dispatchResCell" title="Runner"  filterable="true" alias="runners"/>
-               <ec:column cell="dispatchExtCell" property="extras" width="10"  title="Extras"/>
-              <ec:column  alias="dispatchTime"  property="dispatchTimeEx" title="Dispatch Time"  cell="date" format="hh:mm aaa"/>
+              <ec:column cell="dispatchExtCell" property="extras" width="10"  title="Extras"/>
+              <ec:column cell="dispatchAssetScanCell" property="scanAssets" width="10"  title="Asset Status"/>
+              <ec:column alias="dispatchTime"  property="dispatchTimeEx" title="Dispatch Time"  cell="date" format="hh:mm aaa"/>
               <ec:column property="override"  title="Override Dispatch"/>
-               <ec:column alias="trnComments" filterable="false" property="comments"  title="Comments"/> 
+              <ec:column alias="trnComments" filterable="false" property="comments"  title="Comments"/> 
               
             </ec:row>
           </ec:table>
     </div>
     <script>
+    
+    function doClone(tableId, url) 
+    {  
+  	    var table = document.getElementById(tableId);
+  	    var checkboxList = table.getElementsByTagName("input");    
+  	    var rowSelCnt = 0;
+  	    for (i = 0; i < checkboxList.length; i++) {
+  	    	if (checkboxList[i].type=="checkbox" && checkboxList[i].checked) {
+  	    		rowSelCnt++;  	    		
+  	    	}
+  	    }
+  	    
+  	    if(rowSelCnt === 0) {
+  	    	alert('Please select a Row!');
+  	    } else if(rowSelCnt > 1){
+  	    	alert('Please select only one Row!');
+  	    } else {
+  	    	var paramValues = getParamList(tableId, url);
+  		    if (paramValues != null) {
+  		    	var hasConfirmed = confirm ("You are about to clone the selected dispatch entry. Do you want to continue?")
+  		    	if (hasConfirmed) {
+  		    		location.href = url+"?dispatchRefId="+ paramValues+"&filter="+getFilterTestValue();
+  				} 
+  		    }	
+  	    }
+	  }    
+    
       addMultiRowHandlersColumnFilter('ec_table', 'rowMouseOver', 'editdispatch.do','id',0, 5,'dispDate');
 
       function getFilterTestValue()

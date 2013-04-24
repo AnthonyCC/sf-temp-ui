@@ -22,6 +22,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.freshdirect.framework.util.EnumLogicalOperator;
 import com.freshdirect.framework.util.TimeOfDay;
 import com.freshdirect.routing.constants.EnumWaveInstanceStatus;
+import com.freshdirect.routing.constants.RoutingActivityType;
 import com.freshdirect.routing.model.BuildingModel;
 import com.freshdirect.routing.model.DeliveryModel;
 import com.freshdirect.routing.model.GeographicLocation;
@@ -239,7 +240,7 @@ public class CapacityController extends AbstractMultiActionController {
 							}
 							
 							
-							order.getDeliveryInfo().setCalculatedServiceTime(dlvProxy.getServiceTime(order, srvScenario));
+							order.getDeliveryInfo().setCalculatedServiceTime(dlvProxy.getServiceTime(order, srvScenario,RoutingActivityType.GET_TIMESLOT));
 							
 							routingSlots = routingEngine.schedulerAnalyzeOrder(order, 
 																RoutingServicesProperties.getDefaultLocationType(), 

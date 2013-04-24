@@ -4,6 +4,7 @@ import java.sql.SQLException;
 import java.util.Collection;
 import java.util.List;
 
+import com.freshdirect.transadmin.model.OrderRateException;
 import com.freshdirect.transadmin.model.PlantCapacity;
 import com.freshdirect.transadmin.model.PlantDispatch;
 
@@ -20,4 +21,10 @@ public interface IDashboardDataDAO {
 	void purgePlantDispatch() throws SQLException;
 
 	void savePlantCapacity(List<PlantDispatch> dispatch) throws SQLException;
+
+	Collection getOrderRateExceptions() throws SQLException;
+
+	void saveOrderRateExceptions(List<OrderRateException> exceptions) throws SQLException;
+
+	void purgeOrderRateExceptions() throws SQLException;
 }

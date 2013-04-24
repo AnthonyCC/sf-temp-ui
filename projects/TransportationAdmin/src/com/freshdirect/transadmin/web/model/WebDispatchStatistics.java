@@ -251,7 +251,7 @@ public class WebDispatchStatistics  implements Serializable
 					if(dispatch.getZone()!=null) {
 						zone = domainManagerService.getZone(dispatch.getZone().getZoneCode());
 					}
-					DispatchCommand command = DispatchPlanUtil.getDispatchCommand(dispatch, zone, employeeManagerService,null,null,null,null,null,null,null,null);
+					DispatchCommand command = DispatchPlanUtil.getDispatchCommand(dispatch, zone, employeeManagerService,null,null,null,null,null,null,null,null,null);
 							
 					if("AM".equalsIgnoreCase(getShiftForDispatch(command, command.getDispatchDate())))
 						amCount++;

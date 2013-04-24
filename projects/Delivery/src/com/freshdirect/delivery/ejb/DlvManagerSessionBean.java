@@ -316,7 +316,7 @@ public class DlvManagerSessionBean extends GatewaySessionBeanSupport {
 				routingTimeslots.add(new FDTimeslot(timeslotModel));
 				
 				event.setEventType(EventType.CHECK_TIMESLOT);
-				FDDynamicTimeslotList dynamicTimeslots = this.getTimeslotForDateRangeAndZoneEx(routingTimeslots,event, address);
+				FDDynamicTimeslotList dynamicTimeslots = this.getTimeslotForDateRangeAndZoneEx(routingTimeslots,event, address, RoutingActivityType.CHECK_TIMESLOT);
 				
 				if(routingTimeslots != null) {
 					dynamicTimeslots.getTimeslots();
@@ -381,7 +381,7 @@ public class DlvManagerSessionBean extends GatewaySessionBeanSupport {
 			SectorVO sectorInfo = DlvManagerDAO.getSectorInfo(con, address);
 			ps = con
 				.prepareStatement("INSERT INTO dlv.reservation(ID, TIMESLOT_ID, ZONE_ID, ORDER_ID, CUSTOMER_ID, STATUS_CODE" +
-						", EXPIRATION_DATETIME, TYPE, ADDRESS_ID, CHEFSTABLE, MODIFIED_DTTM,CT_DELIVERY_PROFILE,IS_FORCED, SECTOR, CLASS, IS_STEERING_DISCOUNT) values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?,SYSDATE,?,?,?,?,?)");
+						", EXPIRATION_DATETIME, TYPE, ADDRESS_ID, CHEFSTABLE, MODIFIED_DTTM,CT_DELIVERY_PROFILE,IS_FORCED, SECTOR, CLASS, IS_STEERING_DISCOUNT, BUILDINGID, LOCATIONID, PREV_BLDG_RSV_CNT, INSERT_TIMESTAMP) values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?,SYSDATE,?,?,?,?,?,?,?,?,SYSDATE)");
 			String newId = this.getNextId(con, "DLV");
 			ps.setString(1, newId);
 			ps.setString(2, timeslotModel.getId());
@@ -398,7 +398,9 @@ public class DlvManagerSessionBean extends GatewaySessionBeanSupport {
 			ps.setString(13, sectorInfo != null  ? sectorInfo.getName() : null );
 			ps.setString(14, (timeslotModel.isPremiumSlot() && chefsTable ? EnumReservationClass.PREMIUMCT.getName(): (timeslotModel.isPremiumSlot() && !chefsTable)?EnumReservationClass.PREMIUM.getName():""));
 			ps.setString(15, hasSteeringDiscount ? "X" : null);
-
+			ps.setString(16, address.getBuildingId());
+			ps.setString(17, address.getLocationId());
+			ps.setInt(18, timeslotModel.getRoutingSlot().getReservedOrdersAtBuilding());
 			ps.executeUpdate();
 			EnumReservationClass rsvClass = (timeslotModel.isPremiumSlot() && chefsTable) ? EnumReservationClass.PREMIUMCT: (timeslotModel.isPremiumSlot() && !chefsTable)?EnumReservationClass.PREMIUM:null;
 			
@@ -413,7 +415,8 @@ public class DlvManagerSessionBean extends GatewaySessionBeanSupport {
 				type,
 				address.getId(),
 				timeslotModel.getBaseDate(),
-				timeslotModel.getZoneCode(),null,false,null, null, null, null, null, null, null, rsvClass, null, null);
+				timeslotModel.getZoneCode(),null,false,null, null, null, null, null, null, null, rsvClass, null, null,
+				address.getBuildingId(), address.getLocationId(), timeslotModel.getRoutingSlot().getReservedOrdersAtBuilding());
 			rsv.setHasSteeringDiscount(hasSteeringDiscount);
 			return rsv;
 		} catch (SQLException se) {
@@ -460,7 +463,7 @@ public class DlvManagerSessionBean extends GatewaySessionBeanSupport {
 		
 			if(!(eventType==EventType.GET_TIMESLOT || eventType==EventType.CHECK_TIMESLOT ) && responseTime>0)
 			{
-				DlvTimeslotModel dlvSlot = getTimeslotById(reservation.getTimeslotId(), reservation.isPremium());
+				DlvTimeslotModel dlvSlot = getTimeslotById(reservation.getTimeslotId(), address.getBuildingId(), reservation.isPremium());
 				IDeliverySlot slot =  RoutingUtil.getDeliverySlot(dlvSlot);
 				TimeslotEventDetailModel eventD = new TimeslotEventDetailModel();
 				List<TimeslotEventDetailModel> eventDL = new ArrayList<TimeslotEventDetailModel>();
@@ -554,7 +557,8 @@ public class DlvManagerSessionBean extends GatewaySessionBeanSupport {
 	private static final String RESERVATION_BY_ID="SELECT R.ID, R.ORDER_ID, R.CUSTOMER_ID, R.STATUS_CODE, R.TIMESLOT_ID, R.ZONE_ID" +
 			", R.EXPIRATION_DATETIME, R.TYPE, R.ADDRESS_ID,T.BASE_DATE, Z.ZONE_CODE,R.UNASSIGNED_DATETIME, R.UNASSIGNED_ACTION" +
 			", R.IN_UPS, R.ORDER_SIZE, R.SERVICE_TIME, R.RESERVED_ORDER_SIZE, R.RESERVED_SERVICE_TIME" +
-			", R.UPDATE_STATUS, R.METRICS_SOURCE, R.NUM_CARTONS , R.NUM_FREEZERS , R.NUM_CASES, R.CLASS, R.IS_STEERING_DISCOUNT, T.IS_DYNAMIC  FROM DLV.RESERVATION R, "+
+			", R.UPDATE_STATUS, R.METRICS_SOURCE, R.NUM_CARTONS , R.NUM_FREEZERS , R.NUM_CASES, R.CLASS, R.IS_STEERING_DISCOUNT, T.IS_DYNAMIC, " +
+			"R.BUILDINGID, R.LOCATIONID, R.PREV_BLDG_RSV_CNT  FROM DLV.RESERVATION R, "+
             " DLV.TIMESLOT T, DLV.ZONE Z WHERE R.TIMESLOT_ID=T.ID AND R.ZONE_ID=Z.ID AND R.ID=?";
 
 	private DlvReservationModel getReservation(Connection con, String rsvId) throws SQLException {
@@ -582,7 +586,8 @@ public class DlvManagerSessionBean extends GatewaySessionBeanSupport {
 			, rs.getBigDecimal("NUM_FREEZERS") != null ? new Long(rs.getLong("NUM_FREEZERS")) : null
 			, EnumReservationClass.getEnum(rs.getString("CLASS"))
 			, EnumRoutingUpdateStatus.getEnum(rs.getString("UPDATE_STATUS"))
-			, EnumOrderMetricsSource.getEnum(rs.getString("METRICS_SOURCE")));
+			, EnumOrderMetricsSource.getEnum(rs.getString("METRICS_SOURCE"))
+			,rs.getString("BUILDINGID"),rs.getString("LOCATIONID"),rs.getInt("PREV_BLDG_RSV_CNT"));
 		rsv.setDynamic("X".equalsIgnoreCase(rs.getString("IS_DYNAMIC"))?true:false);
 		rsv.setHasSteeringDiscount("X".equalsIgnoreCase(rs.getString("IS_STEERING_DISCOUNT")) ? true : false);
 		rs.close();
@@ -922,12 +927,12 @@ public class DlvManagerSessionBean extends GatewaySessionBeanSupport {
 
 	}
 
-	public DlvTimeslotModel getTimeslotById(String timeslotId, boolean checkPremium) throws FinderException {
+	public DlvTimeslotModel getTimeslotById(String timeslotId, String buildingId, boolean checkPremium) throws FinderException {
 
 		Connection conn = null;
 		try {
 			conn = getConnection();
-			return DlvManagerDAO.getTimeslotById(conn, timeslotId, checkPremium);
+			return DlvManagerDAO.getTimeslotById(conn, timeslotId, buildingId, checkPremium);
 		} catch (SQLException e) {
 			throw new EJBException(e);
 		} finally {
@@ -1851,14 +1856,14 @@ public class DlvManagerSessionBean extends GatewaySessionBeanSupport {
 		}
 	}
 
-	public FDDynamicTimeslotList getTimeslotForDateRangeAndZoneEx(List<FDTimeslot> _timeSlots, TimeslotEventModel event, ContactAddressModel address) {
+	public FDDynamicTimeslotList getTimeslotForDateRangeAndZoneEx(List<FDTimeslot> _timeSlots, TimeslotEventModel event, ContactAddressModel address, RoutingActivityType routingType) {
 
 		long startTime = System.currentTimeMillis();
 		List<FDTimeslot> timeSlots = _timeSlots;
 		FDDynamicTimeslotList result = new FDDynamicTimeslotList();
 		if(RoutingUtil.hasAnyDynamicEnabled(_timeSlots)) {
 			try {
-				timeSlots = RoutingUtil.getTimeslotForDateRangeAndZone(_timeSlots, address);
+				timeSlots = RoutingUtil.getTimeslotForDateRangeAndZone(_timeSlots, address, routingType);
 				long endTime = System.currentTimeMillis();	
 				result.setResponseTime((int)(endTime-startTime));
 				if(event!=null && !event.isFilter())
@@ -1945,7 +1950,7 @@ public class DlvManagerSessionBean extends GatewaySessionBeanSupport {
 		// Put the CONFIRM_TIMESLOT payload back in the queue to be retried after the redelivery interval configured in application server.
 		if(reservation.isDynamic() && !reservation.isInUPS() && reservation.getStatusCode() == 10)
 		{
-			throw new RuntimeException("Reserve is not in UPS yet. putting it back in queue.");
+			throw new RuntimeException("Reserve is not in UPS yet. putting it back in queue."+reservation.getId());
 		}
 
 		if (RoutingActivityType.CONFIRM_TIMESLOT.equals(reservation.getUnassignedActivityType())) {

@@ -2,6 +2,7 @@ package com.freshdirect.transadmin.dao.hibernate;
 
 import java.util.Collection;
 import java.util.List;
+
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Expression;
 import org.springframework.dao.DataAccessException;
@@ -15,6 +16,7 @@ import com.freshdirect.transadmin.model.DlvScenarioDay;
 import com.freshdirect.transadmin.model.DlvServiceTimeScenario;
 import com.freshdirect.transadmin.model.DlvServiceTimeType;
 import com.freshdirect.transadmin.model.TrnFacility;
+import com.freshdirect.transadmin.model.TrnFacilityLocation;
 import com.freshdirect.transadmin.model.TrnFacilityType;
 import com.freshdirect.transadmin.model.Zone;
 import com.freshdirect.transadmin.util.TransStringUtil;
@@ -232,5 +234,16 @@ public class LocationManagerDaoHibernateImpl extends BaseManagerDaoHibernateImpl
 	
 	public TrnFacilityType getTrnFacilityType(String id) throws DataAccessException {
 		return (TrnFacilityType)getEntityById("TrnFacilityType","id",id);
+	}
+	
+	@SuppressWarnings("rawtypes")
+	public Collection getTrnFacilityLocations() throws DataAccessException {
+		StringBuffer strBuf = new StringBuffer();
+		strBuf.append("from TrnFacilityLocation ");
+		return (Collection) getHibernateTemplate().find(strBuf.toString());
+	}
+	
+	public TrnFacilityLocation getTrnFacilityLocation(String id) throws DataAccessException {
+		return (TrnFacilityLocation)getEntityById("TrnFacilityLocation","id",id);
 	}
 }

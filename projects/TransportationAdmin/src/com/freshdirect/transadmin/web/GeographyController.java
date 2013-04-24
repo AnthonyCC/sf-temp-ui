@@ -187,10 +187,12 @@ public class GeographyController extends AbstractMultiActionController {
 	 * @param response current HTTP response
 	 * @return a ModelAndView to render the response
 	 */
+	@SuppressWarnings("unchecked")
 	public ModelAndView facilityHandler(HttpServletRequest request, HttpServletResponse response) throws ServletException {
 		ModelAndView mav = new ModelAndView("facilityView");
-		mav.getModel().put("trnFacilitys", getLocationManagerService().getTrnFacilitys());
-		mav.getModel().put("trnFacilityTypes", getLocationManagerService().getTrnFacilityTypes());
+		mav.getModel().put("facilitys", getLocationManagerService().getTrnFacilitys());
+		mav.getModel().put("facilityTypes", getLocationManagerService().getTrnFacilityTypes());
+		mav.getModel().put("facilityLocations", getLocationManagerService().getTrnFacilityLocations());
 	
 		return mav;
 }

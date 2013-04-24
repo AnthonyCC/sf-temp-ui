@@ -18,21 +18,21 @@
     <tmpl:put name='title' direct='true'> Admin : Asset : Add/Edit Asset (<%= request.getParameter("pAssetType") %>)</tmpl:put>
   
   <tmpl:put name='content' direct='true'>
-		<div class="subs MNM001">
+		<div class="subs MNM002">
 			<div class="subs_left">	
-				<div class="sub_tableft sub_tabL_MNM001 <% if(request.getParameter("tAssetType")== null) { %>activeL<% } %>">&nbsp;</div>
+				<div class="sub_tableft sub_tabL_MNM002 <% if(request.getParameter("tAssetType")== null) { %>activeL<% } %>">&nbsp;</div>
 				<div class="subtab <%if(request.getParameter("tAssetType")== null) { %>activeT<% } %>">
 					<div class="minwidth"><!-- --></div>
-					<a href="asset.do?pAssetType=TRUCK" class="<% if(request.getParameter("tAssetType")== null) { %>MNM001<% } %>">Asset</a>
+					<a href="asset.do?pAssetType=TRUCK" class="<% if(request.getParameter("tAssetType")== null) { %>MNM002<% } %>">Asset</a>
 				</div>
-				<div class="sub_tabright sub_tabR_MNM001 <% if(request.getParameter("tAssetType")== null) { %>activeR<% } %>">&nbsp;</div>
+				<div class="sub_tabright sub_tabR_MNM002 <% if(request.getParameter("tAssetType")== null) { %>activeR<% } %>">&nbsp;</div>
 		
-				<div class="sub_tableft sub_tabL_MNM001 <% if(request.getParameter("tAssetType")!= null) { %>activeL<% } %>">&nbsp;</div>
+				<div class="sub_tableft sub_tabL_MNM002 <% if(request.getParameter("tAssetType")!= null) { %>activeL<% } %>">&nbsp;</div>
 				<div class="subtab <%if(request.getParameter("tAssetType")!= null) { %>activeT<% } %>">
 					<div class="minwidth"><!-- --></div>
-					<a href="assettemplate.do?tAssetType=TRUCK" class="<% if(request.getParameter("tAssetType")!= null) { %>MNM001<% } %>">Asset Template</a>
+					<a href="assettemplate.do?tAssetType=TRUCK" class="<% if(request.getParameter("tAssetType")!= null) { %>MNM002<% } %>">Asset Template</a>
 				</div>
-				<div class="sub_tabright sub_tabR_MNM001 <% if(request.getParameter("tAssetType")!= null) { %>activeR<% } %>">&nbsp;</div>
+				<div class="sub_tabright sub_tabR_MNM002 <% if(request.getParameter("tAssetType")!= null) { %>activeR<% } %>">&nbsp;</div>
 			</div>
 		</div>
     <br/><br/><br/><br/>
@@ -81,6 +81,13 @@
 												<td><form:input maxlength="40" size="40"
 														path="assetDescription" /></td>
 												<td>&nbsp;<form:errors path="assetDescription" />
+												</td>
+											</tr>
+											<tr>
+												<td>Barcode</td>
+												<td><form:input maxlength="256" size="40"
+														path="barcode" /></td>
+												<td>&nbsp;<form:errors path="barcode" />
 												</td>
 											</tr>
 
@@ -350,6 +357,8 @@
               	addSysMessage("Asset no is a required field", true);
           	} else if(document.getElementById('assetNo').value == null || document.getElementById('assetDescription').value.length == 0) {
           		addSysMessage("Asset Description is a required field", true);
+          	} else if(document.getElementById('barcode').value == null || document.getElementById('barcode').value.length == 0) {
+          		addSysMessage("Asset barcode is a required field", true);
           	} else if(document.getElementById('assetStatus').value == null 
                   	|| document.getElementById('assetStatus').value.length == 0
                   		|| document.getElementById('assetStatus').value == 'null') {
@@ -360,8 +369,9 @@
 	     													, document.getElementById('assetNo').value
 	     													, document.getElementById('assetDescription').value
 	     													, document.getElementById('assetStatus').value
-															, document.getElementById('assetTemplate').value
-	     	     	 										, _data);
+															, document.getElementById('assetTemplate').value															
+	     	     	 										, _data
+	     	     	 										, document.getElementById('barcode').value);
 	     	 	document.getElementById('assetId').value = result;
 	     	 	if(result != null) {
 	     	 		addSysMessage("Asset saved successfully", false);

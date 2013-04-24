@@ -940,7 +940,7 @@ public class DomainManagerImpl
 	}
 	
 	public String saveVIRRecord(String createDate, String truckNumber, String vendor
-			, String driver, String createdBy
+			, String driver, String createdBy, String socStart, String socEnd, String socReeferStart, String socReeferEnd
 			, String[][] recordIssues){
 		String recordId = null;
 		try{
@@ -950,6 +950,10 @@ public class DomainManagerImpl
 			virRecord.setCreateDate(new Timestamp(System.currentTimeMillis()));
 			virRecord.setCreatedBy(createdBy);
 			virRecord.setVendor(vendor);
+			virRecord.setSocStart(socStart);
+			virRecord.setSocEnd(socEnd);
+			virRecord.setSocReeferStart(socReeferStart);
+			virRecord.setSocReeferEnd(socReeferEnd);
 			
 			Set<IssueLog> issueLogList = new HashSet<IssueLog>();
 			

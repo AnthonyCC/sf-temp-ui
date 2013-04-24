@@ -81,7 +81,7 @@ public interface DlvManagerSB extends EJBObject {
     public DlvZoneModel findZoneById(String zoneId) throws FinderException, RemoteException;
 	public DlvReservationModel getReservation(String reservationId) throws FinderException, RemoteException;
 	
-    public DlvTimeslotModel getTimeslotById(String timeslotId, boolean checkPremium) throws FinderException, RemoteException;
+    public DlvTimeslotModel getTimeslotById(String timeslotId, String buildingId, boolean checkPremium) throws FinderException, RemoteException;
 	public List<DlvZoneModel> getAllZonesByRegion(String regionId)throws RemoteException;
 	public DlvZoneInfoModel getZoneInfo(AddressModel address, Date date) throws InvalidAddressException, RemoteException;
 	public List<DlvZoneCutoffInfo> getCutoffInfo(String zoneCode, Date day) throws RemoteException;
@@ -143,7 +143,7 @@ public interface DlvManagerSB extends EJBObject {
 
 	public List<Date> getCutoffTimesByDate(Date day) throws RemoteException;
 	
-	public FDDynamicTimeslotList getTimeslotForDateRangeAndZoneEx(List<FDTimeslot> timeSlots,TimeslotEventModel event, ContactAddressModel address) throws RemoteException;
+	FDDynamicTimeslotList getTimeslotForDateRangeAndZoneEx(List<FDTimeslot> timeSlots,TimeslotEventModel event, ContactAddressModel address, RoutingActivityType routingType) throws RemoteException;
 	
 	public IDeliveryReservation reserveTimeslotEx(DlvReservationModel reservation,ContactAddressModel address , FDTimeslot timeslot, TimeslotEventModel event) throws RemoteException;
 	

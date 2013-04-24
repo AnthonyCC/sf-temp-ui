@@ -26,6 +26,11 @@ import com.freshdirect.fdstore.StateCounty;
 import com.freshdirect.framework.core.SequenceGenerator;
 import com.freshdirect.framework.util.StringUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.routing.model.BuildingModel;
+import com.freshdirect.routing.model.IBuildingModel;
+import com.freshdirect.routing.model.ILocationModel;
+import com.freshdirect.routing.model.LocationModel;
+import com.freshdirect.routing.service.proxy.GeographyServiceProxy;
 
 /**
  *
@@ -462,23 +467,23 @@ public class GeographyDAO {
 	// by guessing where a '-' might be in the building number
 	//
 	public String geocode(AddressModel address, boolean munge, Connection conn) throws SQLException, InvalidAddressException {
-		return geocodeAddress(address, munge, FDStoreProperties.canUseLocationDB(), conn);
+		return geocodeAddress(address, munge, conn);
 	}
 	
-	public String geocodeAddress(AddressModel address, boolean munge, boolean useLocationDB, Connection conn) throws SQLException, InvalidAddressException  {
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public String geocodeAddress(AddressModel address, boolean munge, Connection conn) throws SQLException, InvalidAddressException  {
 		
 //		LOGGER.debug("--------- START GEOCODE BASE---------------------\n"+address);
 		//
 		// failed, check exceptions table
 		//
 		String result = null;
-		if(useLocationDB) {
-			result =checkLocationDatabase(address, conn);
-			if (GEOCODE_OK.equals(result)) {
-				//LOGGER.debug(address+"\n--------- END GEOCODE BASE2---------------------\n");
-				return result;
-			}
-			
+		
+		result = checkLocationDatabase(address, conn);
+		if (GEOCODE_OK.equals(result)) {
+			return result;
+		} else if(!FDStoreProperties.isUPSBlackholeEnabled()) {
+			return processAddress(address);
 		}
 		
 		result = checkGeocodeExceptions(address, conn);
@@ -526,6 +531,53 @@ public class GeographyDAO {
 		}
 		//LOGGER.debug(address+"\n--------- END GEOCODE BASE4---------------------\n");
 		return result;
+	}
+
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	private String processAddress(AddressModel address) {
+			
+			GeographyServiceProxy proxy = new GeographyServiceProxy();
+			List saveLocationLst = new ArrayList();
+			List saveBuildingLst = new ArrayList();
+			
+			IBuildingModel building = new BuildingModel();
+			
+			building.setStreetAddress1(proxy.standardizeStreetAddress(address.getAddress1(), address.getAddress2()));
+			building.setStreetAddress2(address.getAddress2());
+			
+			building.setCity(address.getCity());
+			building.setState(address.getState());
+			building.setZipCode(address.getZipCode());
+			building.setCountry(address.getCountry());
+			
+			ILocationModel baseModel = new LocationModel(building);
+			baseModel.setApartmentNumber(address.getApartment());
+			
+			ILocationModel locationModel = proxy.getLocation(baseModel);			
+						
+			if(locationModel == null) {
+				IBuildingModel buildingModel = proxy.getBuildingLocation(baseModel);			
+				baseModel.setLocationId(proxy.getLocationId());
+				if(buildingModel != null && buildingModel.getBuildingId() != null) {
+					baseModel.setBuilding(buildingModel);
+					saveLocationLst.add(baseModel);
+				} else {				
+					buildingModel = proxy.getNewBuilding(null, baseModel);						
+					if(buildingModel != null) {
+						baseModel.setBuilding(buildingModel);	
+						saveLocationLst.add(baseModel);
+						saveBuildingLst.add(buildingModel);
+					}
+				}						
+			}
+			
+			if(saveBuildingLst != null && saveBuildingLst.size() > 0) {
+				proxy.insertBuildings(saveBuildingLst);
+			}		
+			if(saveLocationLst != null && saveLocationLst.size() > 0) {
+				proxy.insertLocations(saveLocationLst);
+			}
+			return GEOCODE_OK;
 	}
 
 	public String geocode(AddressModel address, Connection conn) throws SQLException, InvalidAddressException {		
@@ -1217,8 +1269,9 @@ public class GeographyDAO {
 		return result;
 	}
 	
-	private final static String LOCATION_DATABASE = "select db.LONGITUDE LONGITUDE, db.LATITUDE LATITUDE, db.GEO_CONFIDENCE GEO_CONFIDENCE, db.GEO_QUALITY GEO_QUALITY from dlv.DELIVERY_BUILDING db "+
-													"where db.SCRUBBED_STREET = ? and db.ZIP ";
+	private final static String LOCATION_DATABASE = "select DL.ID LOC_ID , db.ID, db.LONGITUDE LONGITUDE, db.LATITUDE LATITUDE, db.GEO_CONFIDENCE GEO_CONFIDENCE, " +
+				"db.GEO_QUALITY GEO_QUALITY from dlv.DELIVERY_BUILDING db , DLV.DELIVERY_LOCATION dl where db.SCRUBBED_STREET = ? " +
+				"and DL.BUILDINGID(+) = DB.ID and DL.APARTMENT(+) = ? and db.ZIP ";
 
 	private String checkLocationDatabase(AddressModel address, Connection conn) throws SQLException, InvalidAddressException {
 		String streetAddress = AddressScrubber.standardizeForGeocode(address.getAddress1());
@@ -1230,7 +1283,7 @@ public class GeographyDAO {
 		PreparedStatement ps = conn.prepareStatement(strBuf.toString());
 				
 		ps.setString(1, streetAddress);
-		//ps.setString(2, address.getZipCode());
+		ps.setString(2, address.getApartment());
 		
 		ResultSet rs = ps.executeQuery();		
 		if (rs.next()) {
@@ -1238,7 +1291,9 @@ public class GeographyDAO {
 			if(quality != null /*&& "gcHigh".equalsIgnoreCase(quality) Commented for APPDEV-2132 */) {
 				AddressInfo info = address.getAddressInfo() == null ? new AddressInfo() : address.getAddressInfo();
 				info.setLatitude(Double.parseDouble((rs.getBigDecimal("LATITUDE")!=null)?rs.getBigDecimal("LATITUDE").toString():"0"));
-				info.setLongitude(Double.parseDouble((rs.getBigDecimal("LONGITUDE")!=null)?rs.getBigDecimal("LONGITUDE").toString():"0"));				
+				info.setLongitude(Double.parseDouble((rs.getBigDecimal("LONGITUDE")!=null)?rs.getBigDecimal("LONGITUDE").toString():"0"));	
+				info.setBuildingId(rs.getString("ID"));
+				info.setLocationId(rs.getString("LOC_ID"));
 				address.setAddressInfo(info);
 				result = GEOCODE_OK;
 			}

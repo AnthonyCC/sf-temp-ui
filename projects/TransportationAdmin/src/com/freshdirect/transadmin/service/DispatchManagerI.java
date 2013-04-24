@@ -30,7 +30,7 @@ public interface DispatchManagerI extends BaseManagerI {
 	
 	Dispatch getDispatch(String dispatchId);
 	
-	Collection getPlan(String dateRange, String zoneLst);
+	Collection getPlanEntry(String dateRange, String zoneLst, String facilityLocation);
 	
 	Collection getPlan();
 	

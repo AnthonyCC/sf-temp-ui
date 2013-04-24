@@ -23,8 +23,7 @@
 				<value>com/freshdirect/transadmin/model/DlvServiceTimeScenario.hbm.xml</value> 
 				<value>com/freshdirect/transadmin/model/TrnArea.hbm.xml</value>
 				<value>com/freshdirect/transadmin/model/TrnRegion.hbm.xml</value>
-				<value>com/freshdirect/transadmin/model/TrnCutOff.hbm.xml</value>  
-			<!--<value>com/freshdirect/transadmin/model/TrnPlantCapacity.hbm.xml</value> --> 
+				<value>com/freshdirect/transadmin/model/TrnCutOff.hbm.xml</value>
 				<value>com/freshdirect/transadmin/model/TrnDeliveryModel.hbm.xml</value>
 				<value>com/freshdirect/transadmin/model/Dispatch.hbm.xml</value>
 				<value>com/freshdirect/transadmin/model/DispatchReason.hbm.xml</value>  	  				
@@ -32,7 +31,8 @@
 				<value>com/freshdirect/transadmin/model/Employeerole.hbm.xml</value>  				
 				<value>com/freshdirect/transadmin/model/EmployeeRoleType.hbm.xml</value> 
 				<value>com/freshdirect/transadmin/model/EmployeeSubRoleType.hbm.xml</value>
-				<value>com/freshdirect/transadmin/model/EmployeeTruckPreference.hbm.xml</value> 				
+				<value>com/freshdirect/transadmin/model/EmployeeTruckPreference.hbm.xml</value>
+				<value>com/freshdirect/transadmin/model/EmployeeSupervisor.hbm.xml</value> 				
 				<value>com/freshdirect/transadmin/model/Plan.hbm.xml</value>  				
 				<value>com/freshdirect/transadmin/model/PlanResource.hbm.xml</value>  				
 				<value>com/freshdirect/transadmin/model/Region.hbm.xml</value>  				
@@ -71,6 +71,7 @@
 				<value>com/freshdirect/transadmin/model/AssetAttribute.hbm.xml</value>
 				<value>com/freshdirect/transadmin/model/AssetTemplate.hbm.xml</value>
 				<value>com/freshdirect/transadmin/model/AssetTemplateAttribute.hbm.xml</value>
+				<value>com/freshdirect/transadmin/model/AssetActivity.hbm.xml</value>
 				<value>com/freshdirect/transadmin/model/WaveInstance.hbm.xml</value>
 				<value>com/freshdirect/transadmin/model/WaveInstancePublish.hbm.xml</value>
 				<value>com/freshdirect/transadmin/model/DeliveryGroup.hbm.xml</value>
@@ -81,6 +82,7 @@
 				<value>com/freshdirect/transadmin/model/MaintenanceIssue.hbm.xml</value>
 				<value>com/freshdirect/transadmin/model/TrnFacility.hbm.xml</value>
 				<value>com/freshdirect/transadmin/model/TrnFacilityType.hbm.xml</value>
+				<value>com/freshdirect/transadmin/model/TrnFacilityLocation.hbm.xml</value>
 
 				<value>com/freshdirect/transadmin/model/Sector.hbm.xml</value>
 				<value>com/freshdirect/transadmin/model/SectorZipcode.hbm.xml</value>
@@ -139,7 +141,7 @@
     <bean id="dashboardDataDAO" class="com.freshdirect.transadmin.dao.oracle.DashboardDataDAOImpl">
 		<property name="dataSource" ref="dataSource"/>
 	</bean>	
-    
+	    
     
 	<bean id="zoneManagerService" class="com.freshdirect.transadmin.service.impl.ZoneManagerImpl">
         <property name="zoneManagerDAO" ref="zoneManagerDAO"/>        
@@ -158,8 +160,7 @@
 			</props>
 		</property>
 	</bean>
-   
-     
+	     
     <bean id="dashboardManagerService" class="com.freshdirect.transadmin.service.impl.DashboardManagerImpl">
         <property name="dashboardDataDAO" ref="dashboardDataDAO"/>        
     </bean>
@@ -174,9 +175,7 @@
 			</props>
 		</property>
 	</bean>
-	
-   
-   
+	  
 	<bean id="zoneManager" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
 		<property name="transactionManager" ref="transactionManager"/>
 		<property name="target" ref="zoneManagerService"/>

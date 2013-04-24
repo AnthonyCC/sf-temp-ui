@@ -837,11 +837,14 @@ public class WebPlanInfo extends BaseCommand implements TrnBaseEntityI  {
 	}
 	
 	public String getFacilityInfoEx() {
-		if (originFacility == null || destinationFacility == null)
+		if (originFacility == null)
 			return null;
 	
 		StringBuffer buf = new StringBuffer();
-		buf.append(originFacility.getName()+" - "+destinationFacility.getName());
+		buf.append(originFacility.getName());
+		if(this.destinationFacility != null) {
+			buf.append(" - " + destinationFacility.getName());
+		}
 
 		return buf.toString();
 	}

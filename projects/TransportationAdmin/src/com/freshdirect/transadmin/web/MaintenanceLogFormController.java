@@ -3,6 +3,7 @@ package com.freshdirect.transadmin.web;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -61,6 +62,7 @@ public class MaintenanceLogFormController extends AbstractFormController {
 		this.employeeManagerService = employeeManagerService;
 	}
 
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	protected Map referenceData(HttpServletRequest request) throws ServletException {
 		
 		Map refData = new HashMap();
@@ -77,28 +79,21 @@ public class MaintenanceLogFormController extends AbstractFormController {
 		refData.put("drivers",drivers);
 		
 		//get the predefined vendors
-		String preVendors= TransportationAdminProperties.getTransportationVendors();
-		String[] vendorArray = StringUtil.decodeStrings(preVendors);
-		List vendors = new ArrayList();
-		for(String vendor: vendorArray){
-			vendors.add(vendor);
-		}
-		refData.put("vendors", vendors);
+		String vendors= TransportationAdminProperties.getTransportationVendors();		
+		refData.put("vendors", Arrays.asList(StringUtil.decodeStrings(vendors)));
 		
 		refData.put("issueTypes", getDomainManagerService().getIssueTypes());
 		
 		//get the predefined vendors
-		String preTruckLocations= TransportationAdminProperties.getTruckDamageLocations();
-		String[] damageLocationsArray = StringUtil.decodeStrings(preTruckLocations);
-		List damageLocations = new ArrayList();
-		for(String _loc: damageLocationsArray){
-			damageLocations.add(_loc);
-		}
-		refData.put("damageLocations", damageLocations);
+		String truckDamageLocations= TransportationAdminProperties.getTruckDamageLocations();		
+		refData.put("damageLocations", Arrays.asList(StringUtil.decodeStrings(truckDamageLocations)));
 		
 		List issueSides = new ArrayList();
 		issueSides.add("Driver");issueSides.add("Passenger");
 		refData.put("issueSides", issueSides);
+		
+		String truckLocations = TransportationAdminProperties.getTruckLocations();
+		refData.put("truckLocations", Arrays.asList(StringUtil.decodeStrings(truckLocations)));
 				
 		refData.put("serviceStatuses", EnumServiceStatus.getEnumList());
 		

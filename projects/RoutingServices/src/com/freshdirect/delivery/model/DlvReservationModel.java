@@ -13,9 +13,6 @@ package com.freshdirect.delivery.model;
  */
 import java.util.Date;
 
-import org.apache.commons.lang.builder.ToStringBuilder;
-import org.apache.commons.lang.builder.ToStringStyle;
-
 import com.freshdirect.delivery.EnumReservationType;
 import com.freshdirect.framework.core.ModelSupport;
 import com.freshdirect.framework.core.PrimaryKey;
@@ -59,6 +56,10 @@ public class DlvReservationModel extends ModelSupport {
 	private boolean dynamic;
 	
 	private boolean hasSteeringDiscount;
+	
+	private String buildingId;
+	private String locationId;
+	private int reservedOrdersAtBuilding;
 	
 	public EnumOrderMetricsSource getMetricsSource() {
 		return metricsSource;
@@ -169,7 +170,8 @@ public class DlvReservationModel extends ModelSupport {
 		String zoneId,
 		EnumReservationType type, String addressId, Date deliveryDate, String zoneCode, RoutingActivityType unassignedActivityType,boolean inUPS,
 		Double overrideOrderSize, Double overrideServiceTime, Double reservedOrderSize, Double reservedServiceTime, 
-		Long noOfCartons, Long noOfCases, Long noOfFreezers,EnumReservationClass rsvClass,  EnumRoutingUpdateStatus status, EnumOrderMetricsSource metricsSource) {
+		Long noOfCartons, Long noOfCases, Long noOfFreezers,EnumReservationClass rsvClass,  EnumRoutingUpdateStatus status, EnumOrderMetricsSource metricsSource,
+		String buildingId, String locationId, int reservedOrdersAtBuilding) {
 			
 		this.orderId = orderId;
 		this.customerId = customerId;
@@ -196,6 +198,10 @@ public class DlvReservationModel extends ModelSupport {
 		this.rsvClass = rsvClass;
 		this.updateStatus = status;
 		
+		this.buildingId = buildingId;
+		this.locationId = locationId;
+		this.reservedOrdersAtBuilding = reservedOrdersAtBuilding;
+		
 	}
 
 	public DlvReservationModel(
@@ -206,16 +212,31 @@ public class DlvReservationModel extends ModelSupport {
 		Date expirationDateTime,
 		String timeslotId,
 		String zoneId,
-		com.freshdirect.delivery.EnumReservationType type2, String addressId, Date deliveryDate, String zoneCode/*,Date unassignedDateTime*/,RoutingActivityType unassignedActivityType,boolean inUPS, 
+		com.freshdirect.delivery.EnumReservationType type2, String addressId, Date deliveryDate, String zoneCode,RoutingActivityType unassignedActivityType,boolean inUPS, 
 		Double overrideOrderSize, Double overrideServiceTime, Double reservedOrderSize, Double reservedServiceTime,
-		Long noOfCartons, Long noOfCases, Long noOfFreezers, EnumReservationClass rsvClass, EnumRoutingUpdateStatus status, EnumOrderMetricsSource metricsSource) {
+		Long noOfCartons, Long noOfCases, Long noOfFreezers, EnumReservationClass rsvClass, EnumRoutingUpdateStatus status, EnumOrderMetricsSource metricsSource,
+		String buildingId, String locationId, int reservedOrdersAtBuilding) {
 			
 		this(orderId, customerId, statusCode, expirationDateTime, timeslotId, zoneId, type2, addressId,deliveryDate
-						,zoneCode/*,unassignedDateTime*/,unassignedActivityType,inUPS
+						,zoneCode,unassignedActivityType,inUPS
 						, overrideOrderSize, overrideServiceTime, reservedOrderSize, reservedServiceTime,
-						noOfCartons, noOfCases, noOfFreezers, rsvClass, status, metricsSource);
+						noOfCartons, noOfCases, noOfFreezers, rsvClass, status, metricsSource,buildingId, locationId, reservedOrdersAtBuilding);
 		this.setPK(pk);
 
+	}
+
+	public DlvReservationModel(PrimaryKey pk, String orderId, int statusCode,
+			Date expirationDateTime, EnumReservationType type, Date deliveryDate,
+			String zoneCode, RoutingActivityType unassignedActivityType) {
+		
+		this.orderId = orderId;
+		this.statusCode = statusCode;
+		this.expirationDateTime = expirationDateTime;
+		this.type = type;
+		this.deliveryDate=deliveryDate;
+		this.zoneCode=zoneCode;
+		this.unassignedActivityType=unassignedActivityType;
+		this.setPK(pk);
 	}
 
 	public String getCustomerId() {
@@ -332,6 +353,30 @@ public class DlvReservationModel extends ModelSupport {
 	
 	public void setHasSteeringDiscount(boolean hasSteeringDiscount) {
 		this.hasSteeringDiscount = hasSteeringDiscount;
+	}
+
+	public String getBuildingId() {
+		return buildingId;
+	}
+
+	public void setBuildingId(String buildingId) {
+		this.buildingId = buildingId;
+	}
+
+	public String getLocationId() {
+		return locationId;
+	}
+
+	public void setLocationId(String locationId) {
+		this.locationId = locationId;
+	}
+
+	public int getReservedOrdersAtBuilding() {
+		return reservedOrdersAtBuilding;
+	}
+
+	public void setReservedOrdersAtBuilding(int reservedOrdersAtBuilding) {
+		this.reservedOrdersAtBuilding = reservedOrdersAtBuilding;
 	}
 
 }

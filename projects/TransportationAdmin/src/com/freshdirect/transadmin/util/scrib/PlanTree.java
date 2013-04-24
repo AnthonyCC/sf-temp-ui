@@ -585,6 +585,7 @@ class TimeNode extends PlanTreeNode  {
 					Plan p = new Plan();
 					plans.add(p);
 					p.setPlanDate(_currResource.getDate());
+					p.setOriginFacility(_currResource.getSchedule().getRegion().getOriginFacility());
 					p.setRegion(_currResource.getSchedule().getRegion());
 					p.setStartTime(_currResource.getSchedule().getTime());
 					p.setFirstDeliveryTime(_currResource.getSchedule().getTime());
@@ -616,6 +617,7 @@ class TimeNode extends PlanTreeNode  {
 			plans.add(p);
 			
 			p.setPlanDate(s.getDate());
+			p.setOriginFacility(s.getSchedule().getRegion().getOriginFacility());
 			p.setRegion(s.getSchedule().getRegion());
 			p.setStartTime(s.getSchedule().getTime());
 			p.setFirstDeliveryTime(s.getSchedule().getTime());
@@ -664,6 +666,7 @@ class TimeNode extends PlanTreeNode  {
 			plans.add(p);
 
 			p.setPlanDate(s.getDate());
+			p.setOriginFacility(s.getSchedule().getRegion().getOriginFacility());
 			p.setRegion(s.getSchedule().getRegion());
 			p.setStartTime(s.getSchedule().getTime());
 			p.setFirstDeliveryTime(s.getSchedule().getTime());
@@ -916,6 +919,7 @@ class DepotTimeNode extends PlanTreeNode  {
 					Plan p = new Plan();
 					plans.add(p);
 					p.setPlanDate(_currResource.getDate());
+					p.setOriginFacility(_currResource.getSchedule().getRegion().getOriginFacility());
 					p.setRegion(_currResource.getSchedule().getRegion());
 					p.setStartTime(_currResource.getSchedule().getTime());
 					p.setFirstDeliveryTime(_currResource.getSchedule().getTime());
@@ -949,6 +953,7 @@ class DepotTimeNode extends PlanTreeNode  {
 			plans.add(p);
 			
 			p.setPlanDate(s.getDate());
+			p.setOriginFacility(s.getSchedule().getRegion().getOriginFacility());
 			p.setRegion(s.getSchedule().getRegion());
 			p.setStartTime(s.getSchedule().getTime());
 			p.setFirstDeliveryTime(s.getSchedule().getTime());
@@ -998,6 +1003,7 @@ class DepotTimeNode extends PlanTreeNode  {
 			plans.add(p);
 	
 			p.setPlanDate(s.getDate());
+			p.setOriginFacility(s.getSchedule().getRegion().getOriginFacility());
 			p.setRegion(s.getSchedule().getRegion());
 			p.setStartTime(s.getSchedule().getTime());
 			p.setFirstDeliveryTime(s.getSchedule().getTime());

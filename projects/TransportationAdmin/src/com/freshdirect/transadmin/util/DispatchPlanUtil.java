@@ -48,6 +48,8 @@ public class DispatchPlanUtil {
 	public static final String ASSETTYPE_MOTKIT = "MOTKIT";
 	public static final String ASSETTYPE_TRUCK = "TRUCK";
 	public static final String ASSETTYPE_TRAILER = "TRAILER";
+	public static final String SCANNED_ASSETS = "SCANNEDASSETS";
+	
 	private static class EmployeeComparator implements Comparator{
 
 
@@ -137,8 +139,9 @@ public class DispatchPlanUtil {
 		return planInfo;
 	}
 
+	@SuppressWarnings("unchecked")
 	public static DispatchCommand getDispatchCommand(Dispatch dispatch, Zone zone,EmployeeManagerI employeeManagerService, Collection punchInfos,
-			Map htInData,Map htOutData, Map empInfo, Map empRoleMap,Map empStatusMap,Map empTruckPrefMap,Map empTeams) {
+			Map htInData,Map htOutData, Map empInfo, Map empRoleMap,Map empStatusMap,Map empTruckPrefMap,Map empTeams, Map<String, Map<String, List<String>>> scannedAssetMapping) {
 		DispatchCommand command = new DispatchCommand();
 		command.setDispatchId(dispatch.getDispatchId());
 		try{
@@ -181,19 +184,22 @@ public class DispatchPlanUtil {
 			Object truckPref = (empTruckPrefMap!=null)?empTruckPrefMap.get(dispatch.getSupervisorId()):null;
 			Object teams = (empTeams!=null)?empTeams.get(dispatch.getSupervisorId()):null;
 			
-			supInfo = DispatchPlanUtil.buildEmpInfo((obj!=null)?(EmployeeInfo)obj:null,(roles!=null)?(List<EmployeeRole>)roles:null, 
-					(status!=null)?(List<EmployeeStatus>)status:null, (truckPref!=null)?(List<EmployeeTruckPreference>)truckPref:null, 
-							(teams!=null)?(List<EmployeeTeam>)teams:null, employeeManagerService);	
-		}
-		else
+			supInfo = DispatchPlanUtil
+										.buildEmpInfo(
+														(obj != null) ? (EmployeeInfo) obj : null,
+																(roles != null) ? (List<EmployeeRole>) roles : null,
+																		(status != null) ? (List<EmployeeStatus>) status : null,
+																				(truckPref != null) ? (List<EmployeeTruckPreference>) truckPref	: null,
+																						(teams != null) ? (List<EmployeeTeam>) teams : null,
+																								employeeManagerService
+													 );
+		} else {
 		    supInfo = employeeManagerService.getEmployee(dispatch.getSupervisorId());
-
-		
+		}		
 		
     	if(supInfo!=null && supInfo.getEmpInfo()!=null) {
 	    	command.setSupervisorCode(supInfo.getEmpInfo().getEmployeeId());
 	    	command.setSupervisorName(supInfo.getEmpInfo().getName());
-
     	}
 		command.setRoute(dispatch.getRoute());
 		if(dispatch.getTruck() != null){
@@ -226,7 +232,7 @@ public class DispatchPlanUtil {
 		command.setResourceRequirements(resourceReqs);
 		//Comment code for black hole testing
 		//if(punchInfos!=null && !punchInfos.isEmpty())
-			command.setResources(employeeManagerService,resources,resourceReqs,punchInfos,  empInfo,  empRoleMap, empStatusMap, empTruckPrefMap, empTeams);
+			command.setResources(employeeManagerService,resources,resourceReqs,punchInfos,  empInfo,  empRoleMap, empStatusMap, empTruckPrefMap, empTeams, scannedAssetMapping);
 		/*else
 			command.setResources(employeeManagerService,resources,resourceReqs);*/
 		//command.setResources(employeeManagerService,resources,resourceReqs,resourceSchedule);
@@ -601,20 +607,23 @@ public class DispatchPlanUtil {
 		return model;
 
 	}
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public static Collection getsortedDispatch(Collection unsorted,int page)
 	{
-		Collection result=new ArrayList();
-		List tempResult=(List)getsortedDispatch(unsorted);
-		if(page==-1)return tempResult;
-		int startingIndex=(page-1)*25;
-		int endingIndex=page*25;
-		if(startingIndex>=tempResult.size()) return result;
-		if(endingIndex>tempResult.size())endingIndex=tempResult.size();
-		for(int i=startingIndex;i<endingIndex;i++)
-		{
+		Collection result = new ArrayList();
+		List tempResult = (List) getsortedDispatch(unsorted);
+		if (page == -1)
+			return tempResult;
+		int startingIndex = (page - 1) * 25;
+		int endingIndex = page * 25;
+		if (startingIndex >= tempResult.size())
+			return result;
+		if (endingIndex > tempResult.size())
+			endingIndex = tempResult.size();
+		for (int i = startingIndex; i < endingIndex; i++) {
 			result.add(tempResult.get(i));
 		}
-		
+
 		return result;
 	}
 	public static Collection getsortedDispatchView(Collection unsorted,int mode)
@@ -1195,12 +1204,15 @@ public class DispatchPlanUtil {
 		return assetMapping;
 	}
 	
+	/* 
+	 * APPDEV-2994
+	 * Shift is 'AM' if the hour part of the first delivery time is less than 14. Shift is 'PM' otherwise.
+	 * 
+	 * */	
 	public static String getShift(Date deliveryDate, Date firstDeliveryTime) throws ParseException {		
 		int day = TransStringUtil.getDayOfWeek(deliveryDate);
 		double hourOfDay = Double.parseDouble(TransStringUtil.formatTimeFromDate(firstDeliveryTime));
-		if (hourOfDay < 12 && day != 7) {
-			return "AM";
-		} else if (hourOfDay < 10 && day == 7) {
+		if (hourOfDay < 14) {
 			return "AM";
 		} else {
 			return "PM";

@@ -1,9 +1,6 @@
 package com.freshdirect.transadmin.web;
 
-import java.util.Date;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 import javax.servlet.ServletException;
@@ -12,12 +9,10 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.web.servlet.ModelAndView;
 
-import com.freshdirect.routing.constants.EnumWaveInstancePublishSrc;
-import com.freshdirect.routing.util.RoutingServicesProperties;
+import com.freshdirect.transadmin.constants.EnumAssetScanStatus;
 import com.freshdirect.transadmin.model.Asset;
 import com.freshdirect.transadmin.service.AssetManagerI;
 import com.freshdirect.transadmin.util.TransStringUtil;
-import com.freshdirect.transadmin.util.WaveUtil;
 
 /**
  * <code>MultiActionController</code> that handles all non-form URL's.
@@ -42,6 +37,7 @@ public class AssetController extends AbstractMultiActionController {
 	 * @param response current HTTP response
 	 * @return a ModelAndView to render the response
 	 */
+	@SuppressWarnings("unchecked")
 	public ModelAndView assetHandler(HttpServletRequest request, HttpServletResponse response) throws ServletException {
 		
 		String assetType = request.getParameter("pAssetType");
@@ -54,6 +50,7 @@ public class AssetController extends AbstractMultiActionController {
 		mav.getModel().put("assetTypes",getAssetManagerService().getAssetTypes());
         mav.getModel().put("pAssetType",assetType);
         mav.getModel().put("assets", getAssetManagerService().getAssets(assetType, atrType, atrValue));
+        mav.getModel().put("statuses", EnumAssetScanStatus.getEnumList());
         
 		return mav;
 	}

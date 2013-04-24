@@ -13,6 +13,7 @@ import com.freshdirect.delivery.model.DlvTimeslotModel;
 import com.freshdirect.delivery.model.UnassignedDlvReservationModel;
 import com.freshdirect.fdstore.FDTimeslot;
 import com.freshdirect.framework.util.EnumLogicalOperator;
+import com.freshdirect.routing.constants.RoutingActivityType;
 import com.freshdirect.routing.model.IDeliveryModel;
 import com.freshdirect.routing.model.IDeliveryReservation;
 import com.freshdirect.routing.model.IDeliverySlot;
@@ -36,7 +37,7 @@ public interface IDeliveryService {
 	
 	String getDeliveryZoneType(String zoneCode) throws RoutingServiceException;	
 	
-	double getServiceTime(IOrderModel orderModel, IServiceTimeScenarioModel scenario) throws RoutingServiceException;
+	double getServiceTime(IOrderModel orderModel, IServiceTimeScenarioModel scenario, RoutingActivityType routingType) throws RoutingServiceException;
 	
 	Map getDeliveryZoneDetails()  throws RoutingServiceException;
 	

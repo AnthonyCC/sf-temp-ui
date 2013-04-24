@@ -24,6 +24,18 @@
         <property name="createdBy" type="string">
             <column name="CREATEDBY" not-null="true" />
         </property>
+        <property name="socStart" type="string">
+            <column name="SOC_START" />
+        </property>
+        <property name="socEnd" type="string">
+            <column name="SOC_END" />
+        </property>
+        <property name="socReeferStart" type="string">
+            <column name="SOC_REEFER_START" />
+        </property>
+        <property name="socReeferEnd" type="string">
+            <column name="SOC_REEFER_END" />
+        </property>
         <set name="virRecordIssues" inverse="true" lazy="false" cascade="all,delete-orphan">
             <key>
                 <column name="VIRRECORD_ID" length="30" not-null="true" />

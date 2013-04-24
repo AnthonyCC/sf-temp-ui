@@ -1,23 +1,12 @@
 package com.freshdirect.routing.constants;
 
-/*public class IRoutingMessageType {
-	public static final String GET_TIMESLOT = "GET_TIMESLOT";
-	public static final String RESERVE_TIMESLOT = "RESERVE_TIMESLOT";
-	public static final String CONFIRM_TIMESLOT = "CONFIRM_TIMESLOT";
-	public static final String CANCEL_TIMESLOT = "CANCEL_TIMESLOT";
-	public static final String PROCESS_ADDRESS="ROUTINGADDRESS/process";
-	
-	
-	
-
-}*/
-
 public enum RoutingActivityType {
-	GET_TIMESLOT,RESERVE_TIMESLOT,CONFIRM_TIMESLOT,CANCEL_TIMESLOT,PROCESS_ADDRESS,UPDATE_TIMESLOT;
+	GET_TIMESLOT,CHECK_TIMESLOT,RESERVE_TIMESLOT,CONFIRM_TIMESLOT,CANCEL_TIMESLOT,PROCESS_ADDRESS,UPDATE_TIMESLOT;
 	
 	public String value(){
 	    switch(this) {
 	     case GET_TIMESLOT: return "GET_TIMESLOT";
+	     case CHECK_TIMESLOT: return "CHECK_TIMESLOT";
 	     case RESERVE_TIMESLOT: return "RESERVE_TIMESLOT";
 	     case UPDATE_TIMESLOT: return "UPDATE_TIMESLOT";
 	     case CONFIRM_TIMESLOT: return "CONFIRM_TIMESLOT";
@@ -33,6 +22,8 @@ public enum RoutingActivityType {
 			return null;
 		} else if(value.equals(GET_TIMESLOT.value())) {
 			return GET_TIMESLOT;
+		} else if(value.equals(CHECK_TIMESLOT.value())) {
+			return CHECK_TIMESLOT;
 		} else if(value.equals(RESERVE_TIMESLOT.value())) {
 			return RESERVE_TIMESLOT;
 		} else if(value.equals(CONFIRM_TIMESLOT.value())) {

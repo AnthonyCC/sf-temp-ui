@@ -84,7 +84,7 @@ public class DeliveryDetailsDAO extends BaseDAO implements IDeliveryDetailsDAO {
 	
 	private static final String GET_DELIVERYZONETYPE_QRY = "select z.ZONE_TYPE SERVICE_TYPE from transp.trn_zone z where z.zone_number = ? ";
 	
-	private static final String GET_DELIVERYZONEDETAILS_QRY = "select z.SERVICETIME_TYPE SERVICETIME_TYPE, z.ZONE_CODE ZONE_NUMBER, z.ZONE_TYPE ZONE_TYPE, a.CODE AREACODE, a.ACTIVE ACTIVE, " +
+	private static final String GET_DELIVERYZONEDETAILS_QRY = "select z.SERVICETIME_TYPE SERVICETIME_TYPE, z.ZONE_CODE ZONE_NUMBER, z.ZONE_TYPE ZONE_TYPE, z.SVC_ADJ_REDUCTION_FACTOR, a.CODE AREACODE, a.ACTIVE ACTIVE, " +
 			"tr.IS_DEPOT IS_DEPOT, tr.code REGION_CODE, tr.name REGION_NAME, tr.description REGION_DESCR, a.BALANCE_BY BALANCE_BY, a.LOADBALANCE_FACTOR LOADBALANCE_FACTOR, a.NEEDS_LOADBALANCE NEEDS_LOADBALANCE from transp.zone z, transp.trn_area a, transp.trn_region tr " +
 			" where z.area = a.code  and a.region_code = tr.code  and (z.OBSOLETE <> 'X' or z.OBSOLETE IS NULL)";
 	
@@ -394,7 +394,7 @@ public class DeliveryDetailsDAO extends BaseDAO implements IDeliveryDetailsDAO {
 				    		tmpModel.setZoneNumber(zoneCode);
 				    						    		
 				    		tmpModel.setZoneType(rs.getString("ZONE_TYPE"));
-				    		
+				    		tmpModel.setSvcAdjReductionFactor(rs.getDouble("SVC_ADJ_REDUCTION_FACTOR"));
 				    		IAreaModel tmpAreaModel = new AreaModel();
 				    		tmpAreaModel.setAreaCode(rs.getString("AREACODE"));
 				    		tmpAreaModel.setBalanceBy(rs.getString("BALANCE_BY"));
@@ -895,7 +895,7 @@ public class DeliveryDetailsDAO extends BaseDAO implements IDeliveryDetailsDAO {
 	private static String FETCH_UNASSIGNED_RESERVATIONS_QUERY="SELECT  R.ID, R.ORDER_ID, R.CUSTOMER_ID, R.STATUS_CODE, R.TIMESLOT_ID, R.ZONE_ID, R.EXPIRATION_DATETIME, R.TYPE, R.ADDRESS_ID, "+
 	" T.BASE_DATE,to_char(T.CUTOFF_TIME, 'HH:MI AM') CUTOFF_TIME,T.START_TIME STIME, T.END_TIME ETIME, Z.ZONE_CODE,R.UNASSIGNED_DATETIME, R.UNASSIGNED_ACTION, R.IN_UPS, R.ORDER_SIZE, R.SERVICE_TIME, R.RESERVED_ORDER_SIZE" +
 	", R.RESERVED_SERVICE_TIME, R.UPDATE_STATUS, R.METRICS_SOURCE " +
-	", R.NUM_CARTONS , R.NUM_FREEZERS , R.NUM_CASES, R.CLASS, " +
+	", R.NUM_CARTONS , R.NUM_FREEZERS , R.NUM_CASES, R.CLASS,R.BUILDINGID, R.LOCATIONID, R.PREV_BLDG_RSV_CNT, " +
 	" A.ID as ADDRESS, A.FIRST_NAME,A.LAST_NAME,A.ADDRESS1,A.ADDRESS2,A.APARTMENT,A.CITY,A.STATE,A.ZIP,A.COUNTRY, "+
 	" A.PHONE,A.PHONE_EXT,A.DELIVERY_INSTRUCTIONS,A.SCRUBBED_ADDRESS,A.ALT_DEST,A.ALT_FIRST_NAME, "+
 	" A.ALT_LAST_NAME,A.ALT_APARTMENT,A.ALT_PHONE,A.ALT_PHONE_EXT,A.LONGITUDE,A.LATITUDE,A.SERVICE_TYPE, "+
@@ -949,7 +949,8 @@ public class DeliveryDetailsDAO extends BaseDAO implements IDeliveryDetailsDAO {
 							, rs.getBigDecimal("NUM_FREEZERS") != null ? new Long(rs.getLong("NUM_FREEZERS")) : null
 							, EnumReservationClass.getEnum(rs.getString("CLASS"))
 							, EnumRoutingUpdateStatus.getEnum(rs.getString("UPDATE_STATUS"))
-							, EnumOrderMetricsSource.getEnum(rs.getString("METRICS_SOURCE")));
+							, EnumOrderMetricsSource.getEnum(rs.getString("METRICS_SOURCE"))
+							, rs.getString("BUILDINGID"),rs.getString("LOCATIONID"),rs.getInt("PREV_BLDG_RSV_CNT"));
 							
 					reservations.add(reservation);
 				}while(rs.next());
@@ -963,7 +964,7 @@ public class DeliveryDetailsDAO extends BaseDAO implements IDeliveryDetailsDAO {
 	private static String FETCH_UNASSIGNED_RESERVATIONS_QUERY_EX="SELECT  R.ID, R.ORDER_ID, R.CUSTOMER_ID, R.STATUS_CODE, R.TIMESLOT_ID, R.ZONE_ID, R.EXPIRATION_DATETIME, R.TYPE, R.ADDRESS_ID, "+
 	" T.BASE_DATE,to_char(T.CUTOFF_TIME, 'HH:MI AM') CUTOFF_TIME,T.START_TIME STIME, T.END_TIME ETIME, Z.ZONE_CODE,R.UNASSIGNED_DATETIME, R.UNASSIGNED_ACTION, R.IN_UPS, R.ORDER_SIZE, R.SERVICE_TIME, R.RESERVED_ORDER_SIZE" +
 	", R.RESERVED_SERVICE_TIME, R.UPDATE_STATUS, R.METRICS_SOURCE " +
-	", R.NUM_CARTONS , R.NUM_FREEZERS , R.NUM_CASES,  R.CLASS, " +
+	", R.NUM_CARTONS , R.NUM_FREEZERS , R.NUM_CASES,  R.CLASS,R.BUILDINGID, R.LOCATIONID, R.PREV_BLDG_RSV_CNT, " +
 	" A.ID as ADDRESS, A.FIRST_NAME,A.LAST_NAME,A.ADDRESS1,A.ADDRESS2,A.APARTMENT,A.CITY,A.STATE,A.ZIP,A.COUNTRY, "+
 	" A.PHONE,A.PHONE_EXT,A.DELIVERY_INSTRUCTIONS,A.SCRUBBED_ADDRESS,A.ALT_DEST,A.ALT_FIRST_NAME, "+
 	" A.ALT_LAST_NAME,A.ALT_APARTMENT,A.ALT_PHONE,A.ALT_PHONE_EXT,A.LONGITUDE,A.LATITUDE,A.SERVICE_TYPE, "+
@@ -1017,7 +1018,8 @@ public class DeliveryDetailsDAO extends BaseDAO implements IDeliveryDetailsDAO {
 							, rs.getBigDecimal("NUM_FREEZERS") != null ? new Long(rs.getLong("NUM_FREEZERS")) : null
 							, EnumReservationClass.getEnum(rs.getString("CLASS"))
 							, EnumRoutingUpdateStatus.getEnum(rs.getString("UPDATE_STATUS"))
-							, EnumOrderMetricsSource.getEnum(rs.getString("METRICS_SOURCE")));
+							, EnumOrderMetricsSource.getEnum(rs.getString("METRICS_SOURCE"))
+							, rs.getString("BUILDINGID"),rs.getString("LOCATIONID"),rs.getInt("PREV_BLDG_RSV_CNT"));
 							
 					reservations.add(reservation);
 				}while(rs.next());
