@@ -6,7 +6,9 @@ import java.io.InputStream;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -32,7 +34,7 @@ import com.freshdirect.routing.model.IHandOffBatchTrailer;
 import com.freshdirect.routing.model.IPackagingModel;
 import com.freshdirect.routing.model.IServiceTimeScenarioModel;
 import com.freshdirect.routing.model.OrderEstimationResult;
-import com.freshdirect.routing.model.PackagingModel;
+import com.freshdirect.routing.service.exception.IIssue;
 import com.freshdirect.routing.service.exception.RoutingProcessException;
 import com.freshdirect.routing.service.exception.RoutingServiceException;
 import com.freshdirect.routing.service.proxy.HandOffServiceProxy;
@@ -51,7 +53,6 @@ import com.freshdirect.transadmin.datamanager.report.model.CutOffReportKey;
 import com.freshdirect.transadmin.model.TrnArea;
 import com.freshdirect.transadmin.service.DispatchManagerI;
 import com.freshdirect.transadmin.service.DomainManagerI;
-import com.freshdirect.routing.service.exception.IIssue;
 import com.freshdirect.transadmin.util.TransStringUtil;
 import com.freshdirect.transadmin.util.TransportationAdminProperties;
 import com.freshdirect.transadmin.web.model.SpatialBoundary;
@@ -214,7 +215,7 @@ public class HandOffController extends AbstractMultiActionController  {
 						Iterator _iterator = _route.getStops().iterator();
 						while(_iterator.hasNext()) {
 							_stop = (IHandOffBatchStop)_iterator.next();
-							_model = getOrderRouteInfoModel(_route, _stop);
+							_model = getOrderRouteInfoModel(_route, _stop, new HashMap<String, Map<Date, Integer>>());
 							orders.add(_model);
 						}
 					}
@@ -320,10 +321,12 @@ public class HandOffController extends AbstractMultiActionController  {
 					
 					boolean isDepot = depotSessions.contains(_route.getSessionName());
 					if(_route.getStops() != null) {
+						
+						Map<String, Map<Date, Integer>> tripMapping = getRouteTripDetails(_route);
 						Iterator _iterator = _route.getStops().iterator();
 						while(_iterator.hasNext()) {
 							_stop = (IHandOffBatchStop)_iterator.next();
-							_model = getOrderRouteInfoModel(_route, _stop);
+							_model = getOrderRouteInfoModel(_route, _stop, tripMapping);
 							if(_model.getDeliveryDate() != null &&
 									_model.getTimeWindowStart() != null &&  
 									_model.getTimeWindowStop() != null &&
@@ -408,7 +411,7 @@ public class HandOffController extends AbstractMultiActionController  {
 		return result;
 	}
 	
-	private OrderRouteInfoModel getOrderRouteInfoModel(IHandOffBatchRoute _route, IHandOffBatchStop _stop)
+	private OrderRouteInfoModel getOrderRouteInfoModel(IHandOffBatchRoute _route, IHandOffBatchStop _stop, Map<String, Map<Date, Integer>> tripMapping)
 			throws ParseException {
 		
 		OrderRouteInfoModel result = new OrderRouteInfoModel();
@@ -462,7 +465,8 @@ public class HandOffController extends AbstractMultiActionController  {
 				&& _stop.getDeliveryInfo().getDeliveryLocation().getBuilding() != null 
 				? _stop.getDeliveryInfo().getDeliveryLocation().getBuilding().getZipCode() : null);
 		result.setStopDepartureTime(_stop.getStopDepartureTime());
-		result.setTripId(_stop.getRoutingRouteId());
+		result.setTripId(getTripId(_route, _stop.getStopDepartureTime(), _stop.getRoutingRouteId()));
+		result.setTripNo(tripMapping != null ? tripMapping.get(_stop.getRoutingRouteId()).get(_stop.getStopDepartureTime()) : 0);
 		result.setOrderSize(_stop.getDeliveryInfo() != null ? (int) _stop.getDeliveryInfo().getCalculatedOrderSize() : 0);
 		
 		result.setDispatchTime(_route.getDispatchTime() != null ? _route.getDispatchTime().getAsDate() : null);
@@ -470,6 +474,57 @@ public class HandOffController extends AbstractMultiActionController  {
 		return result;
 	}
 	
+	private Map<String, Map<Date, Integer>> getRouteTripDetails(IHandOffBatchRoute _route) {
+		
+		Map<String, Map<Date, Integer>> tripMapping = new HashMap<String, Map<Date,Integer>>();
+		IHandOffBatchStop _stop = null;
+		int tripCnt = 0;
+		if(_route != null) {
+			if(_route.getStops() != null) {
+				Iterator _iterator = _route.getStops().iterator();
+				while(_iterator.hasNext()) {
+					_stop = (IHandOffBatchStop)_iterator.next();
+					if(!tripMapping.containsKey(_stop.getRoutingRouteId())){
+						tripMapping.put(_stop.getRoutingRouteId(), new HashMap<Date, Integer>());
+					}
+					if(!tripMapping.get(_stop.getRoutingRouteId()).containsKey(_stop.getStopDepartureTime())) {
+						tripMapping.get(_stop.getRoutingRouteId()).put(_stop.getStopDepartureTime(), ++tripCnt);
+					}
+				}
+			}
+		}
+		
+		return tripMapping;
+	}
+	
+	
+	@SuppressWarnings("rawtypes")
+	private String getTripId(IHandOffBatchRoute _route, Date stopDepartureTime, String stopRoutingRouteId) {
+		
+		String stopTripId = null;
+		Map<Date, Integer> routeTripMapping = new HashMap<Date, Integer>();
+		List<Date> stopDepartureTimeLst = new ArrayList<Date>();
+		if(_route.getStops() != null) {
+			IHandOffBatchStop _stop = null;
+			int tripCnt = 0;
+			Iterator _iterator = _route.getStops().iterator();
+			while(_iterator.hasNext()) {
+				_stop = (IHandOffBatchStop)_iterator.next();
+				if(_stop.getRoutingRouteId() != null && _stop.getRoutingRouteId().equals(stopRoutingRouteId)) {
+					if(!stopDepartureTimeLst.contains(_stop.getStopDepartureTime())) {
+						stopDepartureTimeLst.add(_stop.getStopDepartureTime());
+					}
+				}
+			}
+			Collections.sort(stopDepartureTimeLst);
+			for(Date _stopDepartureTime : stopDepartureTimeLst) {
+				routeTripMapping.put(_stopDepartureTime, ++tripCnt);
+			}
+			stopTripId = stopRoutingRouteId + "_" + Integer.toString(routeTripMapping.get(stopDepartureTime));
+		}		
+		return stopTripId;
+	}
+
 	private Map<String, IHandOffBatchRoute> getRouteInfo(IHandOffBatch batch) throws RoutingServiceException {
 		Map<String, IHandOffBatchRoute> routeMapping = new HashMap<String, IHandOffBatchRoute>();
 		

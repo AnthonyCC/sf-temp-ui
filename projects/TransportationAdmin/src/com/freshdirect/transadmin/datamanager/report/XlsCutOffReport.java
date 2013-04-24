@@ -2,6 +2,8 @@ package com.freshdirect.transadmin.datamanager.report;
 
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -58,6 +60,7 @@ public class XlsCutOffReport extends BaseXlsReport implements ICutOffReport  {
 		this.needsDistanceFactor = needsDistanceFactor;
 	}
 
+	@SuppressWarnings({ "rawtypes", "deprecation" })
 	public void generateCutOffReport(String file, CutOffReportData reportData)
 										throws ReportGenerationException, ParseException {
 
@@ -489,16 +492,31 @@ public class XlsCutOffReport extends BaseXlsReport implements ICutOffReport  {
 		return rownum;
 	}
 	
+	private class HandOffBatchOrderComparator implements Comparator<OrderRouteInfoModel> {
+		public int compare(OrderRouteInfoModel order1, OrderRouteInfoModel order2) {
+			if(order1.getTripNo() != 0 && order2.getTripNo() != 0) {
+				int windowCmp = order1.getTimeWindowStart().compareTo(order2.getTimeWindowStart());
+				if(windowCmp != 0) {
+					return windowCmp;						
+				}
+				return (order1.getTripNo() < order2.getTripNo() ? -1 :
+	                (order1.getTripNo() == order2.getTripNo() ? 0 : 1));
+			}
+			return 0;
+		}
+	}
+	
+	@SuppressWarnings({ "unchecked", "rawtypes", "deprecation" })
 	private short createTripInfoSheet(HSSFWorkbook wb, CutOffReportData reportData, Map styles) {
 		
 		if(reportData.getTripReportData() != null) {
-			Set tripKeys = reportData.getTripReportData().keySet();
-			
+
+			List<Integer> tripKeys = reportData.getTripSummaryKeys();
 			Iterator _tripKeyItr = tripKeys.iterator();
-			
-			short rownum = 0;	
-		    short cellnum = 0;
-		    
+
+			short rownum = 0;
+			short cellnum = 0;
+
 		    HSSFSheet sheet = wb.createSheet("Trip Summary");
 		    sheet.setDefaultColumnWidth((short)DEFAULT_WIDTH);	
 			sheet.setPrintGridlines(true);
@@ -533,6 +551,16 @@ public class XlsCutOffReport extends BaseXlsReport implements ICutOffReport  {
 	        hssfCell = row.createCell(cellnum++);		        
 	        hssfCell.setCellStyle((HSSFCellStyle) styles.get("boldStyle"));
 	        hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
+	        hssfCell.setCellValue(new HSSFRichTextString("Trip No"));
+	        
+	        hssfCell = row.createCell(cellnum++);		        
+	        hssfCell.setCellStyle((HSSFCellStyle) styles.get("boldStyle"));
+	        hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
+	        hssfCell.setCellValue(new HSSFRichTextString("Time Window"));
+	        	        
+	        hssfCell = row.createCell(cellnum++);		        
+	        hssfCell.setCellStyle((HSSFCellStyle) styles.get("boldStyle"));
+	        hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
 	        hssfCell.setCellValue(new HSSFRichTextString("Stop No"));
 	        
 	        hssfCell = row.createCell(cellnum++);		        
@@ -545,39 +573,59 @@ public class XlsCutOffReport extends BaseXlsReport implements ICutOffReport  {
 	        hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
 	        hssfCell.setCellValue(new HSSFRichTextString("Address"));
 	        
+	        boolean rowStyleSwitch = false;
+	        int currentripNo = 0;
 			while (_tripKeyItr.hasNext()) {
-				String _tripRouteId = (String) _tripKeyItr.next();
-						        			        
-		        Iterator _colsTripItr = ((List)reportData.getTripReportData().get(_tripRouteId)).iterator();
-	       			        		        
+				
+				String _tripNo = (String) _tripKeyItr.next();
+				Collections.sort((List) reportData.getTripReportData().get(_tripNo), new HandOffBatchOrderComparator());
+				
+				Iterator _colsTripItr = ((List) reportData.getTripReportData().get(_tripNo)).iterator();
+
 		        while (_colsTripItr.hasNext()) {
 		        	cellnum = 0;
 		        	OrderRouteInfoModel _model = (OrderRouteInfoModel)_colsTripItr.next();
 		        	
+		        	if(_model.getTripNo() != currentripNo) {
+		        		currentripNo = _model.getTripNo();
+		        		rowStyleSwitch = !rowStyleSwitch;
+		        	}
+
 		        	row = sheet.createRow(rownum++);
 		        	
 					hssfCell = row.createCell(cellnum++);		        
-				    hssfCell.setCellStyle((HSSFCellStyle) styles.get("textStyle"));
+					hssfCell.setCellStyle((HSSFCellStyle) styles.get(rowStyleSwitch ? "textStyle" : "textStyleHighlight"));
 				    hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
-				    hssfCell.setCellValue(new HSSFRichTextString(_tripRouteId));
+				    hssfCell.setCellValue(new HSSFRichTextString(_model.getRouteId()));
 				    
 				    hssfCell = row.createCell(cellnum++);		        
-				    hssfCell.setCellStyle((HSSFCellStyle) styles.get("textStyle"));
+				    hssfCell.setCellStyle((HSSFCellStyle) styles.get(rowStyleSwitch ? "textStyle" : "textStyleHighlight"));				    
 				    hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
 				    hssfCell.setCellValue(new HSSFRichTextString(_model.getTripId()));
 				    
 				    hssfCell = row.createCell(cellnum++);		        
-				    hssfCell.setCellStyle((HSSFCellStyle) styles.get("textStyle"));
+				    hssfCell.setCellStyle((HSSFCellStyle) styles.get(rowStyleSwitch ? "textStyle" : "textStyleHighlight"));				    
+				    hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
+				    hssfCell.setCellValue(new HSSFRichTextString(Integer.toString(_model.getTripNo())));
+				    				    
+				    hssfCell = row.createCell(cellnum++);		        
+				    hssfCell.setCellStyle((HSSFCellStyle) styles.get(rowStyleSwitch ? "textStyle" : "textStyleHighlight"));
+				    hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
+				    hssfCell.setCellValue(new HSSFRichTextString(TransStringUtil.formatTimeRange
+				    												(_model.getTimeWindowStart(), _model.getTimeWindowStop())));
+			    			    
+				    hssfCell = row.createCell(cellnum++);		        
+				    hssfCell.setCellStyle((HSSFCellStyle) styles.get(rowStyleSwitch ? "textStyle" : "textStyleHighlight"));
 				    hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
 				    hssfCell.setCellValue(new HSSFRichTextString(_model.getStopNumber()));
 				    
 				    hssfCell = row.createCell(cellnum++);		        
-				    hssfCell.setCellStyle((HSSFCellStyle) styles.get("textStyle"));
+				    hssfCell.setCellStyle((HSSFCellStyle) styles.get(rowStyleSwitch ? "textStyle" : "textStyleHighlight"));
 				    hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
 				    hssfCell.setCellValue(new HSSFRichTextString(_model.getOrderNumber()));
 				    
-				    hssfCell = row.createCell(cellnum++);		        
-				    hssfCell.setCellStyle((HSSFCellStyle) styles.get("textStyleNoWrap"));
+				    hssfCell = row.createCell(cellnum++);
+				    hssfCell.setCellStyle((HSSFCellStyle) styles.get(rowStyleSwitch ? "textStyleNoWrap" : "textStyleHighlight"));
 				    hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
 				    hssfCell.setCellValue(new HSSFRichTextString(_model.getAddress()+","+_model.getZipcode()));
 				    //sheet.autoSizeColumn((short)(cellnum-1));				

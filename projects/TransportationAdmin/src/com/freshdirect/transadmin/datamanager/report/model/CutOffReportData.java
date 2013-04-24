@@ -185,6 +185,16 @@ public class CutOffReportData implements  Serializable {
 		}		
 	}
 	
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public List<Integer> getTripSummaryKeys() {
+		
+		Set summaryKeys = getTripReportData().keySet();
+		List<Integer> sortedKeys = new ArrayList<Integer>();
+		sortedKeys.addAll(summaryKeys);
+		Collections.sort(sortedKeys);
+		return sortedKeys;
+	}
+
 	public String toString() {
 		return cutOff.toString()+"->"+reportData+"->"+detailData;
 	}
