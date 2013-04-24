@@ -382,7 +382,7 @@ public class DlvManagerDAO {
 		routingSlot.setEcoFriendly(rs.getBigDecimal("ecoFriendly"));
 		routingSlot.setSteeringRadius(rs.getBigDecimal("steeringRadius"));
 		
-		routingSlot.setReservedOrdersAtBuilding(rs.getInt("CONFIRMED_BUILDING"));
+		routingSlot.setReservedOrdersAtBuilding(rs.getInt("PREV_BLDG_RSV_CNT"));
 
 		IRoutingSchedulerIdentity _schId = new RoutingSchedulerIdentity();
 		_schId.setDeliveryDate(baseDate);
