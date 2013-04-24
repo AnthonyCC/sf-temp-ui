@@ -701,6 +701,9 @@ public class FDOrderAdapter implements FDOrderI {
 		return lastInvoice.getInvoicedDeliveryCharge();
 	}
 	
+	public double getInvoicedDeliverySurcharge(){
+		return lastInvoice.getInvoicedDeliverySurcharge();
+	}
 	public double getInvoicedDeliveryPremium(){
 		return lastInvoice.getInvoicedDeliveryPremium();
 	}

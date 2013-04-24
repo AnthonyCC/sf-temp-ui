@@ -122,6 +122,7 @@ public interface FDOrderI extends FDCartI {
 	
 	public double getInvoicedDeliveryCharge();
 	
+	public double getInvoicedDeliverySurcharge();
 	
 	public List getInvoicedCharges();
 	
