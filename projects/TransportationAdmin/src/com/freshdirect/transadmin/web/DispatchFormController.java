@@ -231,6 +231,18 @@ public class DispatchFormController extends AbstractFormController {
 	private Dispatch getDispatch(DispatchCommand command) throws Exception {
 		return DispatchPlanUtil.getDispatch(command, domainManagerService);
 	}
+	
+	protected Object formBackingObject(HttpServletRequest request)
+			throws Exception {
+		String id = getIdFromRequest(request);
+
+		if (StringUtils.hasText(id)) {
+			Object  tmp = getBackingObject(id, request);
+			return tmp;
+		} else {
+			return getDefaultBackingObject();
+		}
+	}
 
 	public Object getDefaultBackingObject() {
 		DispatchCommand command = new  DispatchCommand();
@@ -251,8 +263,8 @@ public class DispatchFormController extends AbstractFormController {
 		try{
 			DispatchCommand command = getCommand(getDispatchManagerService().getDispatch(id));
 			
-			String dispatchRefId = request.getParameter("dispatchRefId");
-			if(!TransStringUtil.isEmpty(dispatchRefId)) {
+			String cloneId = request.getParameter("cloneId");
+			if(!TransStringUtil.isEmpty(cloneId)) {
 				command.setDispatchId(null);
 				command.setPlanId(null);
 				
@@ -427,11 +439,11 @@ public class DispatchFormController extends AbstractFormController {
 	{
 		TransWebUtil.httpRequest.set(request);
 		String id = request.getParameter("id");
-		if(TransStringUtil.isEmpty(id)) {
-			id=request.getParameter("dispatchId");
+		if (TransStringUtil.isEmpty(id)) {
+			id = request.getParameter("dispatchId");
 		}
-		if(TransStringUtil.isEmpty(id)) {
-			id=request.getParameter("dispatchRefId");
+		if (TransStringUtil.isEmpty(id)) {
+			id = request.getParameter("cloneId");
 		}
 		return id;
 	}	

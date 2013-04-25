@@ -88,7 +88,7 @@
 	       <br/>
 	       <ec:table items="facilityLocations"  action="${pageContext.request.contextPath}/facility.do"
 	            imagePath="${pageContext.request.contextPath}/images/table/*.gif"   title="Facility Location"
-	            width="100%" showPagination="false" sortable="false" 
+	            width="100%" filterable="false" showPagination="false" sortable="false" 
 	            tableId="facilitylocation" rowsDisplayed="100" view="fd" >
 			            
 	            <ec:row>	               

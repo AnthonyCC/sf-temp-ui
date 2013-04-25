@@ -11,6 +11,7 @@
 	pageContext.setAttribute("HAS_CLONEBUTTON", "true");	
 	pageContext.setAttribute("HAS_BULLPENBUTTON", "true");	
 	String zoneVal = request.getParameter("zone") != null ? request.getParameter("zone") : "";
+	String facilityLocationVal = request.getParameter("facilityLocation") != null ? request.getParameter("facilityLocation") : "";
 %>
 <% 
 	String pageTitle = "Plan";
@@ -48,10 +49,10 @@
 						</div>&nbsp;
 						<div style="float:left;text-align:center;font-weight:bold">Facility Location<br>&nbsp;
 		                  <select id="facilityLocation" name="facilityLocation">
-		                      <option value="">--Facility Location</option> 
+		                      <option value=""></option> 
 		                      <c:forEach var="facilityLoc" items="${facilityLocations}">                             
 		                          <c:choose>
-		                            <c:when test="${facilityLocation == facilityLoc.code}" > 
+		                            <c:when test="${facilityLocationVal == facilityLoc.code}" > 
 		                              <option selected value="<c:out value="${facilityLoc.code}"/>"><c:out value="${facilityLoc.description}"/></option>
 		                            </c:when>
 		                            <c:otherwise> 
@@ -65,7 +66,7 @@
 							<input maxlength="40" size="20" name="zone" id="zone" value="<%= zoneVal %>" style="width:100px" />
 						</div>	&nbsp;					
 						<div style="float:left;"><br>
-	                   	  <span>&nbsp;<input id="view_button" type="image" alt="View" src="./images/icons/view.gif"  onclick="javascript:doCompositeLink('daterange','weekdate','zone','plan.do');" onmousedown="this.src='./images/icons/view_ON.gif'" /></span>
+	                   	  <span>&nbsp;<input id="view_button" type="image" alt="View" src="./images/icons/view.gif"  onclick="javascript:doCompositeLink('daterange','weekdate','zone','facilityLocation','plan.do');" onmousedown="this.src='./images/icons/view_ON.gif'" /></span>
 						 <% if(!TransportationAdminProperties.isAutoDispatchEnabled()) {%>
 						  <span><input id="view_button" type="image" alt="Dispatch" src="./images/icons/dispatch.gif" onclick="javascript:doAutoDispatch('weekdate','daterange','zone','autoDispatch.do');" onmousedown="this.src='./images/icons/dispatch_ON.gif'" /> 
 							<a href="#"  onclick="javascript:doAutoDispatch('weekdate','daterange','zone','autoDispatch.do')" class="dispatch_link">Dispatch</a></span>
@@ -164,12 +165,13 @@
 				}
 			} 
       }
-      function doCompositeLink(compId1,compId2,compId3, url) {
+      function doCompositeLink(compId1,compId2,compId3,compId4,url) {
           var param1 = document.getElementById(compId1).value;
           var param2 = document.getElementById(compId2).value;
           var param3 = document.getElementById(compId3).value;
+          var param4 = document.getElementById(compId4).value;
           
-          location.href = url+"?"+compId1+"="+ param1+"&"+compId2+"="+param2+"&"+compId3+"="+param3;
+          location.href = url+"?"+compId1+"="+ param1+"&"+compId2+"="+param2+"&"+compId3+"="+param3+"&"+compId4+"="+param4;
       } 
 
       addRowHandlersFilterTest('ec_table', 'rowMouseOver', 'editplan.do','id',0, 0);
@@ -178,9 +180,11 @@
              var param1 = document.getElementById("weekdate").value;
      		 var param2 = document.getElementById("daterange").value;
      		 var param3 = document.getElementById("zone").value;
+     		 var param4 = document.getElementById("facilityLocation").value;
              filters+="&weekdate="+param1;
              filters+="&daterange="+param2;
-             filters+="&zone="+param3;                                                               
+             filters+="&zone="+param3;
+             filters+="&facilityLocation="+param4;   
              return escape(filters);
        }
  

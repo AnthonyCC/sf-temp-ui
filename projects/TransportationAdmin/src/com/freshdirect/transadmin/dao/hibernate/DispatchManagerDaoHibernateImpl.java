@@ -55,12 +55,12 @@ public class DispatchManagerDaoHibernateImpl extends
 		}
 		
 		if(facilityLocation != null) {
-			if (!hasDate || !hasZone) {
+			if (!hasDate && !hasZone) {
 				strBuf.append("where ");
 			} else {
 				strBuf.append(" and ");
 			}
-			strBuf.append("p.originFacility.facilityLocation.code ").append(facilityLocation);
+			strBuf.append("p.originFacility.facilityLocation.code='").append(facilityLocation).append("'");
 		}
 
 		strBuf

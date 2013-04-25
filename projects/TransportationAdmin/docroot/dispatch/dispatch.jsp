@@ -473,7 +473,7 @@
   		    if (paramValues != null) {
   		    	var hasConfirmed = confirm ("You are about to clone the selected dispatch entry. Do you want to continue?")
   		    	if (hasConfirmed) {
-  		    		location.href = url+"?dispatchRefId="+ paramValues+"&filter="+getFilterTestValue();
+  		    		location.href = url+"?cloneId="+ paramValues+"&filter="+getFilterTestValue();
   				} 
   		    }	
   	    }
