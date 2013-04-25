@@ -292,7 +292,7 @@ public class AssetProviderController extends BaseJsonRpcController  implements I
 			if(employeeId != null && asset != null) {			
 				EmployeeInfo empInfo = TransAdminCacheManager.getInstance().getEmployeeInfo(employeeId, employeeManagerService);
 				assetInfo.setEmployeeId(empInfo != null ? empInfo.getEmployeeId() : null);
-				assetInfo.setEmployeeName(empInfo != null ? empInfo.getLastName() + ", " + empInfo.getFirstName() + " " + empInfo.getMiddleInitial() : null);
+				assetInfo.setEmployeeName(empInfo != null ? empInfo.getLastName() + ", " + empInfo.getFirstName() + ((empInfo.getMiddleInitial() != null) ? " " + empInfo.getMiddleInitial() : " ") : null);
 				assetInfo.setStatus(EnumAssetScanStatus.getEnum(status).getDescription());
 				return assetInfo;
 			}
