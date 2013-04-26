@@ -526,6 +526,7 @@ public class HandOffController extends AbstractMultiActionController  {
 					tripMapping.get(_routingRouteId).put(_stopDepartureTime, ++tripCnt);
 				}
 			}
+		}
 		
 		return tripMapping;
 	}
