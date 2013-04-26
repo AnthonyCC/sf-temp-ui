@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.zip.ZipEntry;
@@ -318,11 +319,12 @@ public class HandOffController extends AbstractMultiActionController  {
 					IHandOffBatchRoute _route = routeEntry.getValue();
 					IHandOffBatchStop _stop = null;
 					OrderRouteInfoModel _model = null; 
-					
+					Map<String, Map<Date, Integer>> tripMapping = null;
 					boolean isDepot = depotSessions.contains(_route.getSessionName());
 					if(_route.getStops() != null) {
-						
-						Map<String, Map<Date, Integer>> tripMapping = getRouteTripDetails(_route);
+						if(isDepot) {
+							tripMapping = getRouteTripDetails(_route);
+						}
 						Iterator _iterator = _route.getStops().iterator();
 						while(_iterator.hasNext()) {
 							_stop = (IHandOffBatchStop)_iterator.next();
@@ -475,29 +477,59 @@ public class HandOffController extends AbstractMultiActionController  {
 	}
 	
 	private Map<String, Map<Date, Integer>> getRouteTripDetails(IHandOffBatchRoute _route) {
-		
+				
+		List<Date> stopDepartureTimeLst = new ArrayList<Date>();			
+		/*RoutingRouteId -> Stop DepartureTime -> TripNo*/
 		Map<String, Map<Date, Integer>> tripMapping = new HashMap<String, Map<Date,Integer>>();
+		/*RoutingRouteId -> Stop DepartureTime*/
+		Map<String, List<Date>> routeMapping = new HashMap<String, List<Date>>();
 		IHandOffBatchStop _stop = null;
-		int tripCnt = 0;
 		if(_route != null) {
 			if(_route.getStops() != null) {
 				Iterator _iterator = _route.getStops().iterator();
 				while(_iterator.hasNext()) {
 					_stop = (IHandOffBatchStop)_iterator.next();
+					if(!stopDepartureTimeLst.contains(_stop.getStopDepartureTime())){
+						stopDepartureTimeLst.add(_stop.getStopDepartureTime());
+					}
 					if(!tripMapping.containsKey(_stop.getRoutingRouteId())){
 						tripMapping.put(_stop.getRoutingRouteId(), new HashMap<Date, Integer>());
 					}
-					if(!tripMapping.get(_stop.getRoutingRouteId()).containsKey(_stop.getStopDepartureTime())) {
-						tripMapping.get(_stop.getRoutingRouteId()).put(_stop.getStopDepartureTime(), ++tripCnt);
+					if(!routeMapping.containsKey(_stop.getRoutingRouteId())){
+						routeMapping.put(_stop.getRoutingRouteId(), new ArrayList<Date>());
+					}
+					if(!routeMapping.get(_stop.getRoutingRouteId()).contains(_stop.getStopDepartureTime())) {
+						routeMapping.get(_stop.getRoutingRouteId()).add(_stop.getStopDepartureTime());
 					}
 				}
 			}
 		}
 		
+		Collections.sort(stopDepartureTimeLst);
+		Iterator<Date> stopDeptItr = stopDepartureTimeLst.iterator();
+		Set<String> routingRouteIds = routeMapping.keySet();
+		List<String> sortedKeys = new ArrayList<String>();
+		sortedKeys.addAll(routingRouteIds);
+		Collections.sort(sortedKeys, new Comparator<String>() {
+			    @Override
+			    public int compare(String s1, String s2) {
+			        String str1 = s1.replace("-", ""); 
+			        String str2 = s2.replace("-", "");
+			        return Integer.parseInt(str1) < (Integer.parseInt(str2)) ? -1 : Integer.parseInt(str1) == (Integer.parseInt(str2)) ? 0 : 1;
+			    }
+		});
+		int tripCnt = 0;
+		while(stopDeptItr.hasNext()){
+			Date _stopDepartureTime = stopDeptItr.next();
+			for(String _routingRouteId : sortedKeys) {
+				if(routeMapping.get(_routingRouteId).contains(_stopDepartureTime)) {
+					tripMapping.get(_routingRouteId).put(_stopDepartureTime, ++tripCnt);
+				}
+			}
+		
 		return tripMapping;
 	}
-	
-	
+
 	@SuppressWarnings("rawtypes")
 	private String getTripId(IHandOffBatchRoute _route, Date stopDepartureTime, String stopRoutingRouteId) {
 		
