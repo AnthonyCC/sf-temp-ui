@@ -444,6 +444,11 @@ public class DispatchPlanUtil {
 		return planInfo;
 	}
 	
+	/* 
+	 * APPDEV-2994
+	 * Shift is 'AM' if the hour part of the first delivery time is less than 14. Shift is 'PM' otherwise.
+	 * 
+	 * */
 	private static String getShiftForPlan(WebPlanInfo planInfo, String dispatchDate) throws ParseException {		
 		int day;
 		if(dispatchDate!=null && planInfo.getPlanDate()==null)
@@ -454,12 +459,11 @@ public class DispatchPlanUtil {
 		double hourOfDay = 0.0;
 		if (planInfo.getFirstDeliveryTime() != null) {
 			hourOfDay = Double.parseDouble(TransStringUtil.formatTimeFromDate(TransStringUtil.getServerTime(planInfo.getFirstDeliveryTime())));
-			if (hourOfDay < 12 && day != 7) {
+			if (hourOfDay < 14) {
 				return "AM";
-			} else if (hourOfDay < 10 && day == 7) {
-				return "AM";
-			} else
+			} else {
 				return "PM";
+			} 
 		}	
 		return "";
 	}
