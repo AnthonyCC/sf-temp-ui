@@ -101,6 +101,12 @@
        	  			 	hasError = true;
        	  			}
        	  		}
+
+       	  		if(result.employeeId === '' || result.employeeId == null 
+       	  				|| result.employeeName === '' || result.employeeName == null) {
+       	  	 		addSysMessage("There is no employee found with scanned Batch ID. ", true);
+	  			 	hasError = true;
+       	  		}
     		 }
     		 if(!hasError) {
 	    		 assetScanDataTable.addRow({employeeId:result.employeeId, employeeName:result.employeeName, asset:result.assetNo
