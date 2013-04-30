@@ -49,7 +49,7 @@
 						</div>&nbsp;
 						<div style="float:left;text-align:center;font-weight:bold">Facility Location<br>&nbsp;
 		                  <select id="facilityLocation" name="facilityLocation">
-		                      <option value=""></option> 
+		                      <option value="">All</option> 
 		                      <c:forEach var="facilityLoc" items="${facilityLocations}">                             
 		                          <c:choose>
 		                            <c:when test="${facilityLocationVal == facilityLoc.code}" > 

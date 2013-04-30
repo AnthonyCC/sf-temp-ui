@@ -54,7 +54,7 @@ public class DispatchManagerDaoHibernateImpl extends
 			strBuf.append("p.zone.zoneCode ").append(zoneLst);
 		}
 		
-		if(facilityLocation != null) {
+		if(facilityLocation != null && !"".equals(facilityLocation)) {
 			if (!hasDate && !hasZone) {
 				strBuf.append("where ");
 			} else {

@@ -63,7 +63,7 @@ public class PromotionHelper {
 				 tsWindowMap.put(windowDuration, new ArrayList<FDTimeslot>());
 			 }
 			 if (!TimeslotLogic.isTimeslotPurged(ts)
-					 && !TimeslotLogic.isTimeslotSoldout(ts, deliveryModel, forceorder)) {
+					 || !TimeslotLogic.isTimeslotSoldout(ts, deliveryModel, forceorder)) {
 				 tsWindowMap.get(windowDuration).add(ts);
 			 }
 		 }
