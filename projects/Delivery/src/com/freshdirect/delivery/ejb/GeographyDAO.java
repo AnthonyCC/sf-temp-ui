@@ -466,12 +466,12 @@ public class GeographyDAO {
 	// this is a wrapper for the geocoder that retries to geocode after the first attempt fails
 	// by guessing where a '-' might be in the building number
 	//
-	public String geocode(AddressModel address, boolean munge, Connection conn) throws SQLException, InvalidAddressException {
-		return geocodeAddress(address, munge, conn);
+	public String geocode(AddressModel address, boolean munge, Connection conn, boolean skipLocationDB) throws SQLException, InvalidAddressException {
+		return geocodeAddress(address, munge, conn, skipLocationDB);
 	}
 	
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public String geocodeAddress(AddressModel address, boolean munge, Connection conn) throws SQLException, InvalidAddressException  {
+	public String geocodeAddress(AddressModel address, boolean munge, Connection conn, boolean skipLocationDB) throws SQLException, InvalidAddressException  {
 		
 //		LOGGER.debug("--------- START GEOCODE BASE---------------------\n"+address);
 		//
@@ -482,7 +482,7 @@ public class GeographyDAO {
 		result = checkLocationDatabase(address, conn);
 		if (GEOCODE_OK.equals(result)) {
 			return result;
-		} else if(!FDStoreProperties.isUPSBlackholeEnabled()) {
+		} else if(!FDStoreProperties.isUPSBlackholeEnabled() && !skipLocationDB) {
 			return processAddress(address);
 		}
 		
@@ -581,7 +581,7 @@ public class GeographyDAO {
 	}
 
 	public String geocode(AddressModel address, Connection conn) throws SQLException, InvalidAddressException {		
-		return geocode(address, true, conn);
+		return geocode(address, true, conn, false);
 	}
 		
 	//
@@ -1459,7 +1459,7 @@ public class GeographyDAO {
 		Connection conn,
 		EnumAddressVerificationResult result, String scrubbedStreet) throws SQLException {
 		try {
-			if (GEOCODE_OK.equals(geocode(address, false, conn))) {
+			if (GEOCODE_OK.equals(geocode(address, false, conn, true))) {
 				String county = getCounty(conn, address.getCity(), address.getState());
 				if(county == null){
 					return EnumAddressVerificationResult.NOT_VERIFIED;

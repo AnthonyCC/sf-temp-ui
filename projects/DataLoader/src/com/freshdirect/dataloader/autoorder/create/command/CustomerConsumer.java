@@ -56,7 +56,7 @@ public class CustomerConsumer implements IConsumer  {
        	address.setState(orderBean.getState());
        	address.setZipCode(orderBean.getZip());
        	
-		dao.geocode(address,true, conn);
+		dao.geocode(address,true, conn, false);
 		
 		ErpCustomerInfoModel erpCustInfo = new ErpCustomerInfoModel();
         erpCustInfo.setTitle("Mr.");
