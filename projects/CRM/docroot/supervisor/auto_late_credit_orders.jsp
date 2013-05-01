@@ -131,7 +131,7 @@
 %>
 	<tr valign="top" <%= count % 2 == 0 ? "class='list_odd_row'" : "" %> >		
 		<td width="1%"><% if(!"A".equals(ccm.getStatus())) { %><input type="checkbox" name="dlvPassSaleId|<%=ccm.getSaleId()%>" value="<%=ccm.getSaleId()%>"><% } else {%>&nbsp;<%}%></td>
-		<td width="10%"><b><%=ccm.getSaleId()%></b></td>
+		<td width="10%"><b><a href="/main/order_details.jsp?orderId=<%=ccm.getSaleId()%>"><%=ccm.getSaleId()%></a></b></td>
 		<td width="12%"><%=  ccm.getFirstName() %></td>
 		<td width="12%"><%=ccm.getLastName()%></td>
 		<td width="12%"><%=ccm.getEmail()%></td>
