@@ -32,7 +32,10 @@ public class ZoneValidator extends AbstractValidator {
 		if(model != null && (model.getServiceTimeType() == null || model.getServiceTimeType() == null) || "null".equals(model.getServiceTimeType())) {
 			errors.rejectValue("serviceTimeType", "app.error.112", new Object[]{"Service Time Type"},"required field");
 		}
-	
+
+		if(model != null && model.getSvcAdjReductionFactor()!=null && model.getSvcAdjReductionFactor().doubleValue()>1) {
+			errors.rejectValue("svcAdjReductionFactor", "app.error.121", new Object[]{"Service Adjustment Reduction Factor"},"Req cannot be greater than Max.");
+		}
 	}
 	
 
