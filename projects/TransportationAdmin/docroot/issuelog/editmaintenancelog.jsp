@@ -119,7 +119,13 @@
 							 <tr>
 								  <td>Truck Location</td>
 								  <td>
-								  	<c:choose>                  
+								  	<c:choose>
+								  		<c:when test='${isOpen}'>
+											<form:select path="truckLocation">
+													<form:option value="N/A" label="--N/A--"/>
+													<form:options items="${truckLocations}" />
+											</form:select>
+										</c:when>
 										<c:when test='${isVerified}'>
 											<form:select path="truckLocation">
 													<form:option value="N/A" label="--N/A--"/>
