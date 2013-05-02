@@ -51,7 +51,7 @@
 		count++;
 	
 %>
-	<tr valign="top" <%= count % 2 == 0 ? "class='list_odd_row'" : "" %> style="cursor: pointer;" onClick="document.location='/main/order_details.jsp?orderId=<%=ccm.getId()%>'">
+	<tr valign="top" <%= count % 2 == 0 ? "class='list_odd_row'" : "" %> style="cursor: pointer;" onClick="document.location='/supervisor/auto_late_credit_orders.jsp?id=<%=ccm.getId()%>'">
 	<td width="1%"></td>	
 		<td width="25%"><a class="key" href="/supervisor/auto_late_credit_orders.jsp?id=<%=ccm.getId()%>"><b><%=ccm.getOrderDate()%></b></a></td>
 		<td width="20%"><%=  "A".equals(ccm.getStatus())?"Approved":"" %></td>
