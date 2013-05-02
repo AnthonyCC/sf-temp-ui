@@ -158,7 +158,12 @@
     	 $("#employee").focus();
      }
      
-     
+     function autotab(original){
+    	 if (original.getAttribute && original.value.length == original.getAttribute("maxlength")) {
+    		 $('#asset').focus(); 
+    	 }
+     }
+
  </script>
        
    <div style='display:none;height:0px;width:0px;'>
@@ -170,7 +175,7 @@
 	      	<table class="forms1">
 			 	<tr>
 		                  <td>Scan Employee Badge</td>
-		                  <td><input type="text" size="30" id="employee" autofocus/></td> 
+		                  <td><input type="text" size="30" id="employee" onKeyup="autotab(this)" maxlength="6" autofocus /></td> 
 		        </tr>
 			 	<tr>
 		                  <td>Scan Asset Barcode</td>

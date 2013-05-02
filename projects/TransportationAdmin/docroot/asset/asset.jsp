@@ -9,7 +9,7 @@
 <% 
 	String pageTitle = "Asset";	
 	String atrValue = request.getParameter("atrValue");
-	String atrName = request.getParameter("atrName");
+	String atrName = request.getParameter("atrName") != null ? request.getParameter("atrName") : "";
 %>
   <tmpl:put name='title' direct='true'> Admin : <%=pageTitle%></tmpl:put>
 	<tmpl:put name='yui-lib'>
@@ -45,7 +45,7 @@
 							<jsp:include page='/common/messages.jsp'/>
 						</div>
 					</c:if> 				
-					<div class="scrTitle" style="float:left;padding-top:3px"><%=pageTitle%></div>
+					<div class="scrTitle" style="float:left;padding-top:3px"></div>
 						<div style="float:left;text-align:center;font-weight:bold;font-size:11px;">Asset Type<br>
 							<select id="assetType" name="assetType" onChange="javascript:getAttributeInfo();">
 								<option value="null">--Please Select</option>                       	
