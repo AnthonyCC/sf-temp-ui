@@ -64,6 +64,7 @@ import com.freshdirect.fdstore.customer.FDInvalidConfigurationException;
 import com.freshdirect.fdstore.customer.FDModifyCartModel;
 import com.freshdirect.fdstore.customer.FDOrderI;
 import com.freshdirect.fdstore.customer.FDPaymentInadequateException;
+import com.freshdirect.fdstore.customer.FDUser;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.customer.adapter.CustomerRatingAdaptor;
 import com.freshdirect.fdstore.customer.adapter.FDOrderAdapter;
@@ -375,6 +376,11 @@ public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.B
 		FDOrderAdapter order = (FDOrderAdapter) FDCustomerManager.getOrder( currentUser.getIdentity(), orderId );
 		FDCustomerManager.storeUser(currentUser.getUser());
 		FDModifyCartModel cart = new FDModifyCartModel(order);
+		
+		//this is added because the delivery pass is false when you modify the order though original order has delivery pass applied. This will fix any rules that use dlvpassapplied flag for applying charge
+		FDUser fdUser =  currentUser.getUser();
+		if(fdUser.getShoppingCart().getDeliveryPassCount()>0 || fdUser.isDlvPassActive())
+			cart.setDlvPassApplied(true);
 		
 		if (mergePending) {
 			FDCartModel tempMergePendCart = currentUser.getMergePendCart();
