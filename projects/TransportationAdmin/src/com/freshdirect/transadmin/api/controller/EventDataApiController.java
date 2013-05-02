@@ -577,7 +577,7 @@ public class EventDataApiController extends BaseApiController {
 			ErpMailSender mailer = new ErpMailSender();
 
 			mailer.sendMail(TransportationAdminProperties.getEventLogMailFrom(), (subType.getMsgGroup() != null ? subType.getMsgGroup().getEmail() : "")
-								, TransportationAdminProperties.getEventLogMailCC(), TransportationAdminProperties.getEventLogMailSubject(), buff.toString(), true, "");
+								, "", TransportationAdminProperties.getEventLogMailSubject(), buff.toString(), true, "");
 			
 		} catch (MessagingException e) {
 			LOGGER.warn("Error Sending EventLog notification: ", e);
