@@ -686,7 +686,7 @@ public class FDStoreProperties {
         defaults.put(PROP_REFRESHSECS_PRODUCTINFO, "600");
         defaults.put(PROP_REFRESHSECS_ZONE, "600");
         defaults.put(PROP_REFRESHSECS_PRODUCT, "7200");
-        defaults.put(PROP_PRODUCT_CACHE_SIZE, "30000");
+        defaults.put(PROP_PRODUCT_CACHE_SIZE, "35000");
         defaults.put(PROP_ZONE_CACHE_SIZE, "10000");
         defaults.put(PROP_GRP_CACHE_SIZE, "10000");
         // mktadmin

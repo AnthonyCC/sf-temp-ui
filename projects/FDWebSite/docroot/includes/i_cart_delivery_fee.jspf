@@ -9,7 +9,7 @@
 				String dlvCharge = JspMethods.formatPrice( cart.getDeliverySurcharge() );
 				if(cart.isDlvPassApplied()) {
 			%>
-				<%= cart.getDeliveryCharge()>0?JspMethods.formatPrice(cart.getDeliveryCharge()):DeliveryPassUtil.getDlvPassAppliedMessage(user) %>
+				<%= DeliveryPassUtil.getDlvPassAppliedMessage(user)%>
 				
 			<%	} else if (cart.isDeliveryChargeWaived()) {
 					if((int)cart.getDeliverySurcharge() == 0){
