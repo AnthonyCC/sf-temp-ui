@@ -560,10 +560,10 @@ public class StandingOrderUtil {
 			
 			FDActionInfo orderActionInfo = info; 
 			if (orderActionInfo == null){
-				orderActionInfo = new FDActionInfo( EnumTransactionSource.STANDING_ORDER, customer, INITIATOR_NAME, "Placing order for Standing Order", null,customerUser.getUserId());
+				orderActionInfo = new FDActionInfo( EnumTransactionSource.STANDING_ORDER, customer, INITIATOR_NAME, "Placing order for Standing Order", null,customerUser.getPrimaryKey());
 			} else{
 				orderActionInfo.setNote("Placing order for Standing Order");
-				orderActionInfo.setFdUserId(customerUser.getUserId());
+				orderActionInfo.setFdUserId(customerUser.getPrimaryKey());
 			}
 			CustomerRatingI cra = new CustomerRatingAdaptor( customerUser.getFDCustomer().getProfile(), customerUser.isCorporateUser(), customerUser.getAdjustedValidOrderCount() );
 
