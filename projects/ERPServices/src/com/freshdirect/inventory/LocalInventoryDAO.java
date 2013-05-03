@@ -21,7 +21,7 @@ import com.freshdirect.sap.SapOrderLineI;
 public class LocalInventoryDAO {
 	private static final String FETCH_INVENTORY_BY_MATERIAL = "SELECT * FROM ERPS.INVENTORY_ENTRY I WHERE I.MATERIAL_SAP_ID ";
 	
-	private static final String DELETE_SALE_INVENTORY_BY_MATERIAL_DATE = "DELETE FROM CUST.SALE_MATERIAL WHERE SALE_ID = ? AND MATERIAL_SAP_ID = ?";
+	private static final String DELETE_SALE_INVENTORY_BY_MATERIAL_DATE = "DELETE FROM CUST.SALE_MATERIAL WHERE SALE_ID = ?";
 	
 	private static final String COMMIT_SALE_INVENTORY_BY_MATERIAL_DATE = "INSERT INTO CUST.SALE_MATERIAL(SALE_ID, MATERIAL_SAP_ID, INSERT_TIMESTAMP, REQUESTED_DATE, QUANTITY) VALUES (?,?,?,?,?)";
 	
@@ -105,6 +105,18 @@ public class LocalInventoryDAO {
 		}
 		
 	}
+	public void releaseLocalInventory(Connection conn, String saleId) throws SQLException{
+
+		PreparedStatement ps = null;
+		try {
+		ps = conn.prepareStatement(DELETE_SALE_INVENTORY_BY_MATERIAL_DATE);
+		ps.setString(1, saleId);
+		ps.execute();
+		}finally {
+			if (ps != null)
+				ps.close();
+		}
+	}
 	
 	public void commitLocalInventory(Connection conn, SapOrderI sapOrder) throws SQLException{
 
@@ -124,6 +136,8 @@ public class LocalInventoryDAO {
 				matMap.put(materialNumber, commitQuantity);
 			}
 		}
+
+		releaseLocalInventory(conn, sapOrder.getWebOrderNumber());
 		
 		ps = conn.prepareStatement(COMMIT_SALE_INVENTORY_BY_MATERIAL_DATE);
 		for(String matNumber : matMap.keySet()){

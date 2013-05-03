@@ -74,6 +74,19 @@ public class SapGatewaySessionBean extends GatewaySessionBeanSupport {
 		return order;
 	}
 	
+	private void releaseLocalInventory(String saleId){
+		Connection conn = null;
+		try {
+			conn = this.getConnection();
+			LocalInventoryDAO dao = new LocalInventoryDAO();
+			dao.releaseLocalInventory(conn, saleId);
+		} catch (Exception e) {
+			LOGGER.warn("Error releasing inventory", e);
+		} finally {
+			close(conn);
+		}
+	}
+	
 	private void commitLocalInventory(SapOrderI order){
 		Connection conn = null;
 		try {
@@ -110,6 +123,9 @@ public class SapGatewaySessionBean extends GatewaySessionBeanSupport {
 	public void sendCancelSalesOrder(String webOrderNumber, String sapOrderNumber) {
 		LOGGER.info("Sending cancel sales order request " + webOrderNumber + " (" + sapOrderNumber + ")");
 		if (SapProperties.isBlackhole()) {
+			//This method will check the local inventory stored in ERPS.INVENTORY to do real time ATP check when SAP is down
+			//(APPDEV-3034) Enhancement Storefront to do local inventory check when SAP blackhole is enabled 
+			releaseLocalInventory(webOrderNumber);
 			LOGGER.debug("Message blackholed.");
 			return;
 		}
@@ -119,6 +135,9 @@ public class SapGatewaySessionBean extends GatewaySessionBeanSupport {
 	public void sendChangeSalesOrder(String webOrderNumber, String sapOrderNumber, SapOrderI order) {
 		LOGGER.info("Sending change sales order request " + webOrderNumber + " (" + sapOrderNumber + ") ");
 		if (SapProperties.isBlackhole()) {
+			//This method will check the local inventory stored in ERPS.INVENTORY to do real time ATP check when SAP is down
+			//(APPDEV-3034) Enhancement Storefront to do local inventory check when SAP blackhole is enabled 
+			commitLocalInventory(order);
 			LOGGER.debug("Message blackholed.");
 			return;
 		}
