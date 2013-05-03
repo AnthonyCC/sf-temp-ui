@@ -273,6 +273,10 @@
         </stateless-session-descriptor>
         <transaction-descriptor></transaction-descriptor>
         <reference-descriptor>
+         	<resource-description>
+                <res-ref-name>jdbc/dbpool</res-ref-name>
+                <jndi-name>fddatasource</jndi-name>
+            </resource-description>
             <resource-description>
                 <res-ref-name>jms/QueueFactory</res-ref-name>
                 <jndi-name>queueFactory</jndi-name>
