@@ -6,8 +6,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -278,18 +278,19 @@ public class EventServiceImpl implements EventService {
 
 	public String getRefreshTime()
 	{
-		DateFormat df = new SimpleDateFormat("hh:mm:ss a");
+		DateFormat df = new SimpleDateFormat("hh:mm a");
 		return df.format(new Date());
 	}
 	
-	public Set<String> getBaseDates(String deliveryDate) throws ParseException{
+	public List<String> getBaseDates(String deliveryDate) throws ParseException{
 		Set<Date> exceptions = orderRateDAO.getExceptions();
-		Set<String> baseDates = new HashSet<String>(2);
+		List<String> baseDates = new ArrayList<String>(2);
 		Calendar cal = Calendar.getInstance();
 		DateFormat df = new SimpleDateFormat("MM/dd/yyyy");
 		cal.setTime(df.parse(deliveryDate));
 		baseDates.add(df.format(OrderRateUtil.getSample(cal,exceptions)));
 		baseDates.add(df.format(OrderRateUtil.getSample(cal,exceptions)));
+		Collections.sort(baseDates);
 		return baseDates;
 	}
 	

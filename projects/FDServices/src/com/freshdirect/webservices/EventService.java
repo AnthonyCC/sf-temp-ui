@@ -40,7 +40,7 @@ public interface EventService {
 
 	public String getRefreshTime();
 	
-	public Set<String> getBaseDates(String deliveryDate) throws ParseException;
+	public List<String> getBaseDates(String deliveryDate) throws ParseException;
 
 	public List<OrderRateVO> getForecast(String deliveryDate, String zone,
 			String prevDay1, String prevDay2) throws ParseException;

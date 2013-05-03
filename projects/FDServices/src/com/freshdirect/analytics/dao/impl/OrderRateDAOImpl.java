@@ -709,10 +709,6 @@ public class OrderRateDAOImpl implements IOrderRateDAO {
 			while(voIterator.hasNext())
 			{
 				OrderRateVO tempVO = voIterator.next();
-				boolean done =false;
-				
-				
-				
 				int days1 = (int)DateUtil.getDiffInDays(baseDate, day1) * -1;
 				int days2 = (int)DateUtil.getDiffInDays(baseDate, day2) * -1;
 				Date snapshot7 = OrderRateUtil.getDate(tempVO.getSnapshotTime(), days1);
