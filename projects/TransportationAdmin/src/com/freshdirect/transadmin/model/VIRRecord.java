@@ -140,7 +140,9 @@ public class VIRRecord extends BaseCommand {
 	}
 	
 	public String getElectricSOCInfo() {
-		return this.socStart + " / " + this.socEnd;
+		if(this.socStart != null && this.socEnd != null)
+			return this.socStart + " / " + this.socEnd;
+		return null;
 	}
 	
 	public String getReeferInfo() {

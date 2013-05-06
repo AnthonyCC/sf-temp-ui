@@ -139,14 +139,14 @@
 								<tr>
 									<td>SOC Start&nbsp;&nbsp;&nbsp;&nbsp;</td>
 									<td>
-										&nbsp;&nbsp;&nbsp;&nbsp;<input maxlength="2" size="28" id="socStart" name="socStart" onkeypress="return restrictInput(this, event, digitsOnly);" />
+										&nbsp;&nbsp;&nbsp;&nbsp;<input maxlength="2" size="28" id="socStart" name="socStart" onkeypress="return restrictInput(this, event, oneToTen, true, null);" />
 									</td>
 									<td>&nbsp;</td>
 								</tr>
 								<tr>
 									<td>SOC End&nbsp;&nbsp;&nbsp;&nbsp;</td>
 									<td>
-										&nbsp;&nbsp;&nbsp;&nbsp;<input type="text" maxlength="2" size="28" id="socEnd" name="socEnd" onkeypress="return restrictInput(this, event, digitsOnly);">
+										&nbsp;&nbsp;&nbsp;&nbsp;<input type="text" maxlength="2" size="28" id="socEnd" name="socEnd" onkeypress="return restrictInput(this, event, oneToTen, true, null);">
 									</td>
 									<td>&nbsp;</td>
 								</tr>
@@ -155,14 +155,14 @@
 								<tr>
 									<td>SOC Reefer Start</td>
 									<td>
-										<input maxlength="2" size="28" id="socReeferStart" name="socReeferStart" onkeypress="return restrictInput(this, event, digitsOnly);" />
+										<input maxlength="2" size="28" id="socReeferStart" name="socReeferStart" onkeypress="return restrictInput(this, event, oneToTen, true, null);" />
 									</td>
 									<td>&nbsp;</td>
 								</tr>
 								<tr>
 									<td>SOC Reefer End</td>
 									<td>
-										<input type="text" maxlength="2" size="28" id="socReeferEnd" name="socReeferEnd" onkeypress="return restrictInput(this, event, digitsOnly);">
+										<input type="text" maxlength="2" size="28" id="socReeferEnd" name="socReeferEnd" onkeypress="return restrictInput(this, event, oneToTen, true, null);">
 									</td>
 									<td>&nbsp;</td>
 								</tr>

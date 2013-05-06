@@ -303,14 +303,16 @@ public class DispatchCommand extends WebPlanInfo {
 		
 		List<AssetScanInfo> result = new ArrayList<AssetScanInfo>();
 		resourceInfo.setScannedAssets(result);
-		for(Map.Entry<String, List<String>> asseyEntry: assetMapping.entrySet()) {
-			if(asseyEntry.getValue() != null) {
-				for(String s : asseyEntry.getValue()) {
-					AssetScanInfo _asset = new AssetScanInfo();
-					result.add(_asset);					
-					_asset.setAssetNo(s);
-					_asset.setEmployeeId(resourceInfo.getEmployeeId());
-					_asset.setStatus(asseyEntry.getKey());
+		if(assetMapping != null) {
+			for(Map.Entry<String, List<String>> asseyEntry: assetMapping.entrySet()) {
+				if(asseyEntry.getValue() != null) {
+					for(String s : asseyEntry.getValue()) {
+						AssetScanInfo _asset = new AssetScanInfo();
+						result.add(_asset);
+						_asset.setAssetNo(s);
+						_asset.setEmployeeId(resourceInfo.getEmployeeId());
+						_asset.setStatus(asseyEntry.getKey());
+					}
 				}
 			}
 		}
