@@ -530,7 +530,7 @@ public class EventDataApiController extends BaseApiController {
 						.append("<p class=\"MsoNormal\"><span style=\"color:black\">").append("Type").append("</span></p>")
 						.append("</td>");
 					buff.append("<td valign=\"bottom\" style=\"border:solid windowtext 1.0pt;border-top:none;padding:0in 5.4pt 0in 5.4pt;height:15.0pt\">")
-						.append("<p class=\"MsoNormal\"><span style=\"color:black\">").append(event.getEventType()).append("</span></p>")
+						.append("<p class=\"MsoNormal\"><span style=\"color:black\">").append(subType.getEventTypeName()).append("</span></p>")
 						.append("</td>");
 			buff.append("</tr>");
 
@@ -539,7 +539,7 @@ public class EventDataApiController extends BaseApiController {
 						.append("<p class=\"MsoNormal\"><span style=\"color:black\">").append("Sub Type").append("</span></p>")
 						.append("</td>");
 					buff.append("<td valign=\"bottom\" style=\"border:solid windowtext 1.0pt;border-top:none;padding:0in 5.4pt 0in 5.4pt;height:15.0pt\">")
-						.append("<p class=\"MsoNormal\"><span style=\"color:black\">").append(event.getEventSubType() != null ? event.getEventSubType() : "").append("</span></p>")
+						.append("<p class=\"MsoNormal\"><span style=\"color:black\">").append(subType != null ? subType.getName() : "").append("</span></p>")
 						.append("</td>");
 			buff.append("</tr>");
 			
@@ -598,7 +598,7 @@ public class EventDataApiController extends BaseApiController {
 			
 			buff.append("<tr style=\"height:18.75pt\">");
 					buff.append("<td colspan=\"2\" valign=\"bottom\" style=\"border:solid windowtext 1.0pt;background:#92D050;padding:0in 5.4pt 0in 5.4pt;height:18.75pt;\">")
-						.append("<p class=\"MsoNormal\" align=\"center\" style=\"text-align:center\"><b><span style=\"font-size:14.0pt;color:black\">Event Log</span></b></p>")
+						.append("<p class=\"MsoNormal\" align=\"center\" style=\"text-align:center\"><b><span style=\"font-size:14.0pt;color:black\">MOT Event Log</span></b></p>")
 						.append("</td>");
 			buff.append("</tr>");
 			
@@ -634,7 +634,7 @@ public class EventDataApiController extends BaseApiController {
 						.append("<p class=\"MsoNormal\"><span style=\"color:black\">").append("Event Type").append("</span></p>")
 						.append("</td>");
 					buff.append("<td valign=\"bottom\" style=\"border:solid windowtext 1.0pt;border-top:none;padding:0in 5.4pt 0in 5.4pt;height:15.0pt\">")
-						.append("<p class=\"MsoNormal\"><span style=\"color:black\">").append(event.getEventType()).append("</span></p>")
+						.append("<p class=\"MsoNormal\"><span style=\"color:black\">").append(type.getName()).append("</span></p>")
 						.append("</td>");
 			buff.append("</tr>");
 			
@@ -672,7 +672,7 @@ public class EventDataApiController extends BaseApiController {
 			ErpMailSender mailer = new ErpMailSender();
 
 			mailer.sendMail(TransportationAdminProperties.getEventLogMailFrom(), (type.getMsgGroup() != null ? type.getMsgGroup().getEmail() : "")
-								, TransportationAdminProperties.getEventLogMailCC(), TransportationAdminProperties.getEventLogMailSubject(), buff.toString(), true, "");
+								, "", "MOT Eventlog Notification", buff.toString(), true, "");
 			
 		} catch (MessagingException e) {
 			LOGGER.warn("Error Sending MotEvent log notification email: ", e);
