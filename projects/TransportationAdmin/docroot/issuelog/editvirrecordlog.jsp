@@ -134,61 +134,69 @@
 									<form:errors path="createdBy" />&nbsp;
 								</td>
 							</tr>
+							<tr>
+								<td colspan="3">
+									 <table id="electricDrive" style='display:none;'>
+										<tr>
+											<td>SOC Start&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+											<td>
+												&nbsp;&nbsp;&nbsp;&nbsp;<input maxlength="2" size="28" id="socStart" name="socStart" onkeypress="return restrictInput(this, event, oneToTen, true, null);" />
+											</td>
+											<td><span style="font-size:7px;color:black;">(min:1 & max:10)</span></td>
+										</tr>
+										<tr>
+											<td>SOC End&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+											<td>
+												&nbsp;&nbsp;&nbsp;&nbsp;<input type="text" maxlength="2" size="28" id="socEnd" name="socEnd" onkeypress="return restrictInput(this, event, oneToTen, true, null);">
+											</td>
+											<td><span style="font-size:7px;color:black;">(min:1 & max:10)</span></td>
+										</tr>
+									</table>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="3">
+									<table id="electricReeferTextDiv" style='display:none;'>
+										<tr>
+											<td>SOC Reefer Start</td>
+											<td>
+												<input maxlength="2" size="28" id="socReeferStart" name="socReeferStart" onkeypress="return restrictInput(this, event, oneToTen, true, null);" />
+											</td>
+											<td><span style="font-size:7px;color:black;">(min:1 & max:10)</span></td>
+										</tr>
+										<tr>
+											<td>SOC Reefer End</td>
+											<td>
+												<input type="text" maxlength="2" size="28" id="socReeferEnd" name="socReeferEnd" onkeypress="return restrictInput(this, event, oneToTen, true, null);">
+											</td>
+											<td><span style="font-size:7px;color:black;">(min:1 & max:10)</span></td>
+										</tr>
+									</table>
+									<table id="electricReeferDropdownDiv" style='display:none;'>
+										<tr>
+											<td>SOC Reefer Start</td>
+											<td>
+												<select id="socReeferStart1" name="socReeferStart1" >
+					                          		<option value="N/A">--Please select</option>
+					                      			<option value="Green">Green</option><option value="Red">Red</option><option value="Yellow">Yellow</option>
+					                    	 	</select>
+					                     	</td>
+					                     	<td>&nbsp;</td>
+					                    </tr>
+			                    	 	<tr>
+											<td>SOC Reefer End</td>
+											<td>
+					                    	 	<select id="socReeferEnd1" name="socReeferEnd1" >
+					                          		<option value="N/A">--Please select</option>
+					                      			<option value="Green">Green</option><option value="Red">Red</option><option value="Yellow">Yellow</option>
+					                    	 	</select>
+					                    	 </td>
+					                    	 <td>&nbsp;</td>
+					                    </tr>
+									</table>
+								</td>
+							</tr>
 						  </table>
-						  <table id="electricDrive" class="forms1" style='display:none;width:347px;'>
-								<tr>
-									<td>SOC Start&nbsp;&nbsp;&nbsp;&nbsp;</td>
-									<td>
-										&nbsp;&nbsp;&nbsp;&nbsp;<input maxlength="2" size="28" id="socStart" name="socStart" onkeypress="return restrictInput(this, event, oneToTen, true, null);" />
-									</td>
-									<td>&nbsp;</td>
-								</tr>
-								<tr>
-									<td>SOC End&nbsp;&nbsp;&nbsp;&nbsp;</td>
-									<td>
-										&nbsp;&nbsp;&nbsp;&nbsp;<input type="text" maxlength="2" size="28" id="socEnd" name="socEnd" onkeypress="return restrictInput(this, event, oneToTen, true, null);">
-									</td>
-									<td>&nbsp;</td>
-								</tr>
-							</table>
-							<table id="electricReeferTextDiv" class="forms1" style='display:none;width:347px;'>
-								<tr>
-									<td>SOC Reefer Start</td>
-									<td>
-										<input maxlength="2" size="28" id="socReeferStart" name="socReeferStart" onkeypress="return restrictInput(this, event, oneToTen, true, null);" />
-									</td>
-									<td>&nbsp;</td>
-								</tr>
-								<tr>
-									<td>SOC Reefer End</td>
-									<td>
-										<input type="text" maxlength="2" size="28" id="socReeferEnd" name="socReeferEnd" onkeypress="return restrictInput(this, event, oneToTen, true, null);">
-									</td>
-									<td>&nbsp;</td>
-								</tr>
-							</table>
-							<table id="electricReeferDropdownDiv" class="forms1" style='display:none;width:347px;'>
-								<tr>
-									<td>SOC Reefer Start</td>
-									<td>
-										<select id="socReeferStart1" name="socReeferStart1" >
-			                          		<option value="N/A">--Please select</option>
-			                      			<option value="Green">Green</option><option value="Red">Red</option><option value="Yellow">Yellow</option>
-			                    	 	</select>
-			                     	</td>
-			                     	<td>&nbsp;</td>
-			                    </tr>
-	                    	 	<tr>
-									<td>SOC Reefer End</td>
-									<td>
-			                    	 	<select id="socReeferEnd1" name="socReeferEnd1" >
-			                          		<option value="N/A">--Please select</option>
-			                      			<option value="Green">Green</option><option value="Red">Red</option><option value="Yellow">Yellow</option>
-			                    	 	</select>
-			                    	 </td>
-			                    	 <td>&nbsp;</td>
-			                    </tr>
-							</table>
 					</td>
 				    <td class="screencontent" style="align:center;">
 							<div id="errContainer"></div>
@@ -390,10 +398,14 @@
           		var socReeferStart, socReeferEnd;
           		if($("#socReeferStart").val() === '') {
           			socReeferStart = $("#socReeferStart1").val()
+          		} else {
+          			socReeferStart = $("#socReeferStart").val();
           		}
           		if($("#socReeferEnd").val() === '') { 
           			socReeferEnd = $("#socReeferEnd1").val()
-          		}        			
+          		} else {
+          			socReeferEnd = $("#socReeferEnd").val();
+          		}
           		
 	     	 	var result = jsonrpcClient.AsyncDispatchProvider.saveVIRRecord($('#createDate').val()
 	     													, $('#truckNumber').val()

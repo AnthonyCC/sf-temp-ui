@@ -8,7 +8,7 @@
 
 <% 
 	String pageTitle = "Asset";	
-	String atrValue = request.getParameter("atrValue");
+	String atrValue = request.getParameter("atrValue") != null ? request.getParameter("atrValue") : "";
 	String atrName = request.getParameter("atrName") != null ? request.getParameter("atrName") : "";
 %>
   <tmpl:put name='title' direct='true'> Admin : <%=pageTitle%></tmpl:put>
