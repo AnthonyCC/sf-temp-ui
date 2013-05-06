@@ -17,6 +17,7 @@ import javax.jms.ObjectMessage;
 import org.apache.log4j.Category;
 
 import com.freshdirect.customer.EnumSaleType;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.core.GatewaySessionBeanSupport;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.inventory.LocalInventoryDAO;
@@ -46,7 +47,8 @@ public class SapGatewaySessionBean extends GatewaySessionBeanSupport {
 			LOGGER.debug("Message blackholed.");
 			//This method will check the local inventory stored in ERPS.INVENTORY to do real time ATP check when SAP is down
 			//(APPDEV-3034) Enhancement Storefront to do local inventory check when SAP blackhole is enabled 
-			return checkLocalAvailability(order);
+			if(FDStoreProperties.isCheckLocalInventoryEnabled())
+				return checkLocalAvailability(order);
 		}
 
 		SapCheckAvailability command = new SapCheckAvailability(order, timeout);
@@ -104,7 +106,8 @@ public class SapGatewaySessionBean extends GatewaySessionBeanSupport {
 		if (SapProperties.isBlackhole()) {
 			//This method will check the local inventory stored in ERPS.INVENTORY to do real time ATP check when SAP is down
 			//(APPDEV-3034) Enhancement Storefront to do local inventory check when SAP blackhole is enabled 
-			commitLocalInventory(order);
+			if(FDStoreProperties.isCheckLocalInventoryEnabled())
+				commitLocalInventory(order);
 			LOGGER.debug("Message blackholed.");
 			return;
 		}
@@ -125,7 +128,8 @@ public class SapGatewaySessionBean extends GatewaySessionBeanSupport {
 		if (SapProperties.isBlackhole()) {
 			//This method will check the local inventory stored in ERPS.INVENTORY to do real time ATP check when SAP is down
 			//(APPDEV-3034) Enhancement Storefront to do local inventory check when SAP blackhole is enabled 
-			releaseLocalInventory(webOrderNumber);
+			if(FDStoreProperties.isCheckLocalInventoryEnabled())
+				releaseLocalInventory(webOrderNumber);
 			LOGGER.debug("Message blackholed.");
 			return;
 		}
@@ -136,8 +140,9 @@ public class SapGatewaySessionBean extends GatewaySessionBeanSupport {
 		LOGGER.info("Sending change sales order request " + webOrderNumber + " (" + sapOrderNumber + ") ");
 		if (SapProperties.isBlackhole()) {
 			//This method will check the local inventory stored in ERPS.INVENTORY to do real time ATP check when SAP is down
-			//(APPDEV-3034) Enhancement Storefront to do local inventory check when SAP blackhole is enabled 
-			commitLocalInventory(order);
+			//(APPDEV-3034) Enhancement Storefront to do local inventory check when SAP blackhole is enabled
+			if(FDStoreProperties.isCheckLocalInventoryEnabled())
+				commitLocalInventory(order);
 			LOGGER.debug("Message blackholed.");
 			return;
 		}

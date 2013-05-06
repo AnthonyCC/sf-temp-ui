@@ -79,8 +79,6 @@ public class LocalInventoryDAO {
 				if(!entry.getStartDate().after(requestedDate))
 					cumlQty = entry.getQuantity()/* + cumlQty*/;
 			}
-			}
-			
 			if(materialCountMap.containsKey(orderLine.getMaterialNumber())){
 				cumlQty = cumlQty -materialCountMap.get(orderLine.getMaterialNumber());
 			}
@@ -90,6 +88,11 @@ public class LocalInventoryDAO {
 			}else{
 				olInv.add(new ErpInventoryEntryModel(requestedDate, 0));
 			}
+			}else{ // if the material is not in inventory table then consider it to be unlimited.
+				olInv.add(new ErpInventoryEntryModel(requestedDate, requestedQty));
+			}
+			
+			
 				
 			List<ErpInventoryModel> inventories = new ArrayList<ErpInventoryModel>(1);
 			inventories.add(new ErpInventoryModel(orderLine.getMaterialNumber(), new Date(), olInv));

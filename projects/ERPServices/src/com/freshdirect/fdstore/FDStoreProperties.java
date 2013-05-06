@@ -596,6 +596,7 @@ public class FDStoreProperties {
 	public final static String PRODUCT_RATING_RELOAD = "fdstore.productrating.reload";
 	
 	private final static String PROP_ALCOHOLFILTERING_ENABLED = "fdstore.alcoholfiltering.enabled";
+	private final static String CHECK_LOCAL_INVENTORY_ENABLED = "fdstore.check.localinventory.enabled";
 
     static {
         defaults.put(PROP_ROUTING_PROVIDER_URL, "t3://localhost:7001");
@@ -1174,6 +1175,7 @@ public class FDStoreProperties {
 		defaults.put(PRODUCT_RATING_REFRESH_PERIOD, "12");
 		defaults.put(PRODUCT_RATING_RELOAD, "true");
 		defaults.put(PROP_ALCOHOLFILTERING_ENABLED, "true");
+		defaults.put(CHECK_LOCAL_INVENTORY_ENABLED, "false");
         refresh();
     }
 
@@ -3024,5 +3026,9 @@ public class FDStoreProperties {
 	 public static boolean isAlcoholRestrictionByContextEnabled() {
 			return (Boolean.valueOf(get(PROP_ALCOHOLFILTERING_ENABLED))).booleanValue();
 	 }
+	 public static boolean isCheckLocalInventoryEnabled() {
+			return (Boolean.valueOf(get(CHECK_LOCAL_INVENTORY_ENABLED))).booleanValue();
+	 }
+	 
 	 
 }
