@@ -95,7 +95,7 @@ int itemsToDisplay = sortedList.size();
 	request.setAttribute("successPage","/grocery_cart_confirm.jsp?catId="+request.getParameter("catId"));
 %>
 
-
+<fd:PendingOrderChecker/>
 <fd:FDShoppingCart id='cart' action='addMultipleToCart' result='result' successPage='<%= "/grocery_cart_confirm.jsp?catId="+request.getParameter("catId") %>'>
 <form name="transac_multi_cat" id="transac_multi_cat" method="POST">
 <fd:AddToCartPending id="transac_multi_cat"/>

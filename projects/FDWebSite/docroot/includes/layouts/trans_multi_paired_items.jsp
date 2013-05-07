@@ -75,7 +75,7 @@ if (request.getRequestURI().toLowerCase().indexOf("department.jsp")!=-1) {
     maxWidth = W_TRANSAC_MULTI_PAIRED_ITEMS_CAT;
 }
 %>   
-
+<fd:PendingOrderChecker/>
 <fd:FDShoppingCart id='cart' action='addMultipleToCart' result='result' successPage='<%= "/wine_cart_confirm.jsp?catId="+request.getParameter("catId") %>'>    
     <div class="left" style="padding-top:8px; padding-bottom:5px; border-bottom: solid 5px #8C1920; margin-bottom:15px; width:<%=maxWidth%>px;">
 		<span class="title18" style="padding-bottom:5px;"><%=perfectTitle%></span><br>

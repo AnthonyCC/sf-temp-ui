@@ -29,6 +29,7 @@ final int W_BULK_MEAT_PRODUCT_RIGHT = 314;
 
 
 <fd:CheckLoginStatus id="user"/>
+<fd:PendingOrderChecker/>
 <%
 //********** Start of Stuff to let JSPF's become JSP's **************
 

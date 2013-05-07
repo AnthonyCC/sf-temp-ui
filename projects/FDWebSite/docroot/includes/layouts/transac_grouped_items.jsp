@@ -133,6 +133,7 @@ if (prodsAvailable>0) {
         <tr><td align="center"><img src="media_stat/images/layout/cccccc.gif" width="100%" height="1" vspace="6"></td></tr>
         <tr><td align="center" style="padding-bottom:8px;"><i>Click on name for more info.</i></td></tr>
     </table>
+<fd:PendingOrderChecker/>    
 <fd:FDShoppingCart id='cart' action='addMultipleToCart' result='result' successPage='<%= succPage %>'>
     <table><form name="transac_grouped_items" id="transac_grouped_items" method="POST"></table>
     <fd:AddToCartPending id="transac_grouped_items"/>

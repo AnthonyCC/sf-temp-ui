@@ -367,6 +367,7 @@ final int W_GROUPSCALE_TOTAL = 601;
 	%>
 	
 <%@page import="com.freshdirect.fdstore.pricing.ProductPricingFactory"%>
+<fd:PendingOrderChecker/>
 <fd:ProductGroup id='productNode' categoryId='<%= prodCatId %>' productId='<%= productCode %>'>
 		<%
 			boolean qualifies = productNode.isQualifiedForPromotions() && user.getMaxSignupPromotion()>0;

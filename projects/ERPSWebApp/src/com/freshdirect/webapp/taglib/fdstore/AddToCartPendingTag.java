@@ -52,7 +52,12 @@ public class AddToCartPendingTag extends BodyTagSupportEx {
 	public int doStartTag() throws JspException {
 		StringBuffer buf = new StringBuffer();
 		
-		if (!isCallcenterApplication(pageContext.getSession()) && hasPendingModifiableOrder()) {
+		Boolean hasPendingOrder = (Boolean)pageContext.getAttribute("hasPendingOrder");
+		if ( hasPendingOrder == null ) {
+			hasPendingOrder = hasPendingModifiableOrder();
+		}
+		
+		if (!isCallcenterApplication(pageContext.getSession()) && hasPendingOrder ) {
 			String action = this.action != null ? this.action : FDShoppingCartControllerTag.peekAction(pageContext);
 			if (action != null) {
 				buf.append("<input type=\"hidden\" name=\"atc_pending_action\" value=\"" + action + "\" />\r\n");
