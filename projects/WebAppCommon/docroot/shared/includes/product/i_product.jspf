@@ -36,7 +36,7 @@ This include expects the following:
 
 <%-- ========================================================= INITIALZE ========================================================================= --%>
 <%@ include file="/shared/includes/product/i_product_initialize.jspf"%>
-
+<fd:PendingOrderChecker/>
 
 <%
 final ProductModel __prd = (ProductModel) productNode;

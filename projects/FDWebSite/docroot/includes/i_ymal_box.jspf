@@ -42,6 +42,7 @@
 final int W_YMAL_BOX_TOTAL = 590;
 final int W_YMAL_BOX_INNER = 540;
 %>
+<fd:PendingOrderChecker/>
 <%--
   == YMAL BOX ==
   

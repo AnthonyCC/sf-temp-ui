@@ -34,7 +34,7 @@
 <% //expanded page dimensions
 final int W_RECIPE_BODY_TOTAL = 806;
 %>
-
+<fd:PendingOrderChecker/>
 <%--
 -- This includes paints the recipe body and bottom (no side navs)
 -- Expects the host page to define the following variables:
