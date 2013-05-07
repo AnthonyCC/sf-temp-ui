@@ -345,7 +345,7 @@ public class EmployeeManagerImpl extends BaseManagerImpl implements
 			removeEntity(l);
 		}
 		
-		if(employeeInfo.getEmpSupervisor().getId().getKronosId() != null) {
+		if(employeeInfo.getEmpSupervisor().getId().getSupervisorId() != null) {
 			saveEntity(employeeInfo.getEmpSupervisor());
 		}
 		

@@ -113,7 +113,7 @@
 								<td>Home Region</td>
 								<td> 
 									<form:select path="empSupervisor.homeRegion">
-										<form:option value="null" label="--Please Select Region"/>
+										<form:option value="" label="--Please Select Region"/>
 										<form:options items="${regions}" itemLabel="code" itemValue="code" />
 									</form:select>
 								</td>
