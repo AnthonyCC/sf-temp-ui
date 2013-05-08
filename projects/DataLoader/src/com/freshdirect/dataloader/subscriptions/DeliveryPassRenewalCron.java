@@ -165,7 +165,9 @@ public class DeliveryPassRenewalCron {
 		boolean exists=false;
 		while (it.hasNext()&& !exists) {
 			_pymtMethod=(ErpPaymentMethodI)it.next();
-			if( pymtMethod.getAccountNumber().equals(_pymtMethod.getAccountNumber())) {
+			if(    pymtMethod.getAccountNumber().equals(_pymtMethod.getAccountNumber())&&
+				pymtMethod.getPaymentMethodType().equals(_pymtMethod.getPaymentMethodType())	
+			   ) {
 				exists=true;
 			}
 		}
