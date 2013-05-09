@@ -708,10 +708,8 @@
 			function bullpen(chxbox) {
 				var hasConfirmed = confirm("Are you sure you want to flag/unflag it as a BullPen? You may loose your exisitng dispatch information.");
 				if (hasConfirmed) {
-					$('#destinationFacility')[0].selectedIndex = 0;
-					$('#originFacility')[0].selectedIndex = 0;
-					var regionCode = $('#regionCode').val() || '';
-					jsonrpcClient.AsyncDispatchProvider.getRegionFacility(regionFacilityCallback, regionCode);					
+					var regionCode = document.getElementById('regionCode').value;
+					jsonrpcClient.AsyncDispatchProvider.getRegionFacility(regionFacilityCallback, regionCode);
 				} else {
 					chxbox.checked = !(chxbox.checked);
 				}
@@ -721,8 +719,8 @@
 				if(exception) {
 					alert('Unable to connect to host system. Please contact system administrator!');               
 					return;
-				}				
-				$("#originFacility").val( result ).prop('selected',true);
+				}
+				document.getElementById('originFacility').value = result;
 				dispatchForm.submit();
 			}
 			
