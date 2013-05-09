@@ -459,7 +459,7 @@
   	    var checkboxList = table.getElementsByTagName("input");    
   	    var rowSelCnt = 0;
   	    for (i = 0; i < checkboxList.length; i++) {
-  	    	if (checkboxList[i].type=="checkbox" && checkboxList[i].checked) {
+  	    	if (checkboxList[i].type=="checkbox" && checkboxList[i].checked && !checkboxList[i].disabled && checkboxList[i].name.indexOf("_") == -1) {
   	    		rowSelCnt++;  	    		
   	    	}
   	    }
@@ -471,9 +471,11 @@
   	    } else {
   	    	var paramValues = getParamList(tableId, url);
   		    if (paramValues != null) {
+  		    	var paramArray = new Array();
+  		    	paramArray = paramValues.split(",");
   		    	var hasConfirmed = confirm ("You are about to clone the selected dispatch entry. Do you want to continue?")
   		    	if (hasConfirmed) {
-  		    		location.href = url+"?cloneId="+ paramValues+"&filter="+getFilterTestValue();
+  		    		location.href = url+"?cloneId="+ paramArray[0]+"&filter="+getFilterTestValue();
   				} 
   		    }	
   	    }

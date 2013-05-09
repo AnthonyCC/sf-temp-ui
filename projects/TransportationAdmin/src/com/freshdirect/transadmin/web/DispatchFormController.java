@@ -376,7 +376,6 @@ public class DispatchFormController extends AbstractFormController {
 			model.setZoneCode("");
 			model.setZoneName("");
 			model.setZoneType("");
-			model.setOriginFacility(null);
 			model.setDestinationFacility(null);
 		}
 		if(EnumDispatchType.LIGHTDUTYDISPATCH.getName().equals(model.getDispatchType())) {
