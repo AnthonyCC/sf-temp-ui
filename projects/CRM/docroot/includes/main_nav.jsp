@@ -60,6 +60,9 @@ List linksList = MenuManager.getInstance().getLinksForRole(request);
 			<% if(linksList.contains("ppicks_email_products.jsp")){%>
 			<a href="/main/ppicks_email_products.jsp" class="<%=pageURI.indexOf("/main/ppicks_email_products.jsp") > -1?"main_nav_on":"main_nav_link"%>">Product&nbsp;Promotions</a>
 			<% } %> 
+			<% if(linksList.contains("coupon_savings_history.jsp")){%>
+			<a href="/main/coupon_savings_history.jsp" class="<%=pageURI.indexOf("/main/coupon_savings_history.jsp") > -1?"main_nav_on":"main_nav_link"%>">Coupon&nbsp;Savings&nbsp;History</a>
+			<% } %> 
 			<% if(linksList.contains("promo_hronly.jsp")){	 %> 
 					<a href="/promotion/promo_hronly.jsp" class="<%=pageURI.indexOf("/promotion/promo_hronly.jsp")	> -1?"main_nav_on":"main_nav_link"%>">HR&nbsp;Promotions</a>
 			<%} %>

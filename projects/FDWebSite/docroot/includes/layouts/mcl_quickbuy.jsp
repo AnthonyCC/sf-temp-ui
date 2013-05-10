@@ -12,6 +12,9 @@
 <%@ page import='com.freshdirect.fdstore.customer.*' %>
 <%@ page import="com.freshdirect.framework.webapp.*"%>
 <%@ page import='com.freshdirect.framework.util.*' %>
+<%@ page import="com.freshdirect.fdstore.ecoupon.EnumCouponContext"%>
+<%@ page import='com.freshdirect.fdstore.customer.FDUserI'%>
+<%@ page import="com.freshdirect.fdstore.ecoupon.*" %>
 
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
@@ -19,6 +22,7 @@
 <%@ taglib uri='oscache' prefix='oscache' %>
 <%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %>
 
+<% FDUserI mcl_user = (FDUserI) pageContext.getSession().getAttribute(SessionName.USER); %>
 
 <% //expanded page dimensions
 final int W_MULTI_CATEGORY_IS_DEPARTMENT = 765;
@@ -86,14 +90,22 @@ final int W_MULTI_CATEGORY_NOT_DEPARTMENT = 601;
 							
 								<% if ( currentItem instanceof ProductModel ) {
 									ProductModel __c_prd = (ProductModel)currentItem;
+									ProductImpression pi = new ProductImpression( __c_prd );
+									FDCustomerCoupon curCoupon = null;
+									if (pi.getSku() != null && pi.getSku().getProductInfo() != null) {
+										curCoupon = mcl_user.getCustomerCoupon(pi.getSku().getProductInfo(), EnumCouponContext.PRODUCT,__c_prd.getParentId(),__c_prd.getContentName());
+									}
+
 									String actionUrl = FDURLUtil.getProductURI( __c_prd, trackingCode );
+									String prodImageClassName = "productImage";
+									if (curCoupon != null) { prodImageClassName += " couponLogo"; }
 
 									
 									%>
 									<display:GetContentNodeWebId id="webId" product="<%= currentItem %>" clientSafe="<%= true %>">
 									<td id="hotspot-<%= webId %>" width="<%= cellPercentage %>%" style="padding-bottom: 5px;">										
 										<display:ProductImage product="<%= __c_prd %>" showRolloverImage="true" useAlternateImage="false" action="<%= actionUrl %>"
-												className="productImage" height="<%= __c_maxHeight %>" enableQuickBuy="true" webId="<%= webId %>"/>
+												className="<%= prodImageClassName %>" height="<%= __c_maxHeight %>" enableQuickBuy="true" webId="<%= webId %>" coupon="<%= curCoupon %>" />
 									</td>
 									</display:GetContentNodeWebId>
 									<%
@@ -116,6 +128,11 @@ final int W_MULTI_CATEGORY_NOT_DEPARTMENT = 601;
 							
 								<% if ( currentItem instanceof ProductModel ) {		
 									ProductModel product = (ProductModel)currentItem;
+									ProductImpression pi = new ProductImpression( product );
+									FDCustomerCoupon curCoupon = null;
+									if (pi.getSku() != null && pi.getSku().getProductInfo() != null) {
+										curCoupon = mcl_user.getCustomerCoupon(pi.getSku().getProductInfo(), EnumCouponContext.PRODUCT,product.getParentId(),product.getContentName());
+									}
 
 									String actionUrl = FDURLUtil.getProductURI( product, trackingCode );
 									%>
@@ -124,7 +141,8 @@ final int W_MULTI_CATEGORY_NOT_DEPARTMENT = 601;
 										
 										<display:ProductRating product="<%= product %>" action="<%= actionUrl %>"/>
 										<display:ProductName product="<%= product %>" action="<%= actionUrl %>"/>
-										<display:ProductPrice impression="<%= new ProductImpression(product) %>" showDescription="false"/>
+										<display:ProductPrice impression="<%= pi %>" showDescription="false"/>
+										<display:FDCoupon coupon="<%= curCoupon %>" contClass="fdCoupon_layMclQb"></display:FDCoupon>
 										
 									</font></td>
 								

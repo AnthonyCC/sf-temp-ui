@@ -24,22 +24,38 @@
 <%@ taglib uri='logic' prefix='logic' %>
 <%
 
-// Query string
-QueryParameterCollection qv = QueryParameterCollection.decode(request.getQueryString()); 
+	// Query string
+	QueryParameterCollection qv = QueryParameterCollection.decode(request.getQueryString()); 
 
-String isPreviewMode = NVL.apply(request.getParameter("ppPreviewId"), "false");
-boolean disableLinks = false;
-
-if (!"false".equalsIgnoreCase(isPreviewMode)) {
-	/* manipulate layout for preview mode */
+	String isPreviewMode = NVL.apply(request.getParameter("ppPreviewId"), "false");
+	boolean disableLinks = false;
 	
-	//disable linking
-	disableLinks = true;		
-} %>	
-<fd:CheckLoginStatus/>	
-<fd:javascript src="/assets/javascript/rounded_corners.inc.js" />
+	if (!"false".equalsIgnoreCase(isPreviewMode)) {
+		/* manipulate layout for preview mode */
+		
+		//disable linking
+		disableLinks = true;
+		
+	%>
+<fd:CheckLoginStatus/><% } else { %>
+	<fd:CheckLoginStatus   />
+	<% }
+	
+	if (FDStoreProperties.isCclAjaxDebugClient()) { 
+		// debug JS libs
+		%>
+		<script type="text/javascript" src="/assets/javascript/rounded_corners.inc.js"></script>
+		<%
+		} else {
+			// production JS libs
+		%>
+		<script type="text/javascript" src="/assets/javascript/rounded_corners-min.js"></script>
+		<%
+		}
+%>
 <display:InitLayout/>
 <%
+
 	//needed for transactional
 	List<ProductImpression> impressions = new ArrayList<ProductImpression>();
 	ProductImpression pi = null;
@@ -355,20 +371,7 @@ if (!"false".equalsIgnoreCase(isPreviewMode)) {
 				    jqElem.css({ height: parHeight });
 				});
 
-				var featProdContHeight = 0;
-				$jq('div.featurebox').each(function (index, elem) {
-					var eH = $jq(elem).height();
-					if (eH > featProdContHeight) {
-						featProdContHeight = eH+14;
-					}
-				}).each(function (index, elem) {
-					if (featProdContHeight > 0) {
-						$jq($jq(elem).find('.grid-item')).css({ 'height': featProdContHeight+'px' });
-						if (index === 0) {
-							$jq('.ddpp_feat_prod_cont').css({ 'height': (featProdContHeight+14)+'px' });
-						}
-					}
-				});
+				fixGridFeatRowHeights('.ddpp_feat_prod_cont', 'div.featurebox', '.grid-item'); <%-- moved to common_javascript --%>
 
 			});
 		</script>
@@ -587,3 +590,5 @@ if (!"false".equalsIgnoreCase(isPreviewMode)) {
 		}
 	}
 %>
+<fd:javascript src="/assets/javascript/fd/common/utils.js" />
+<fd:javascript src="/assets/javascript/fd/modules/search/statusupdate.js" />

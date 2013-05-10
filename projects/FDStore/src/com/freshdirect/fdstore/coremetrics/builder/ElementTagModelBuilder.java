@@ -39,6 +39,7 @@ public class ElementTagModelBuilder {
 	public static final String CAT_VIDEO = "video";
 	public static final String CAT_REVIEWS = "reviews";
 	private static final String ID_REVIEWS_VIEWED = "viewed";
+	public static final String CAT_ECOUPON = "ecoupon";
 	
 	private ElementTagModel model = new ElementTagModel();
 	private String elementId;
@@ -50,6 +51,8 @@ public class ElementTagModelBuilder {
 	private FDTimeslot timeSlot;
 	private boolean soType;
 	private String productId;
+	private String skuCode;
+	private String couponOfferType;
 
 	private TabRecommendation tabRecommendation;
 	private Integer tabNumber;
@@ -82,6 +85,8 @@ public class ElementTagModelBuilder {
 			processPresPicksView();
 		} else if (CAT_REVIEWS.equals(elementCategory)) {
 			processReviews();
+		} else if (CAT_ECOUPON.equals(elementCategory)) {
+			processClipCouponEvent();
 		}
 			
 		return model;
@@ -228,6 +233,13 @@ public class ElementTagModelBuilder {
 		model.setElementId("video.title");
 	}
 	
+	private void processClipCouponEvent(){
+		model.getAttributesMaps().put(1, siteFeature);
+		//TODO: Fetch the coupon type($ or %) by couponId, from the coupon factory.
+		model.getAttributesMaps().put(2, couponOfferType);
+		model.getAttributesMaps().put(3, skuCode);
+	}
+	
 	public void setElementId(String elementId) {
 		this.elementId = elementId;
 	}
@@ -278,5 +290,13 @@ public class ElementTagModelBuilder {
 
 	public void setProductId(String productId) {
 		this.productId = productId;
+	}
+
+	public void setSkuCode(String skuCode) {
+		this.skuCode = skuCode;
+	}
+	
+	public void setCouponOfferType(String couponOfferType){
+		this.couponOfferType = couponOfferType;
 	}
 }

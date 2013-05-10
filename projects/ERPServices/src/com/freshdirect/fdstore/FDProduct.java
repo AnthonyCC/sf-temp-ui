@@ -17,6 +17,8 @@ import com.freshdirect.content.nutrition.EnumKosherTypeValue;
 import com.freshdirect.content.nutrition.ErpNutritionInfoType;
 import com.freshdirect.content.nutrition.panel.NutritionPanel;
 import com.freshdirect.erp.EnumAlcoholicContent;
+import com.freshdirect.fdstore.ecoupon.FDCouponFactory;
+import com.freshdirect.fdstore.ecoupon.model.FDCouponInfo;
 
 /**
  * Product class - provides all details about a SKU that is necessary for displaying it on a product page.
@@ -54,6 +56,8 @@ public class FDProduct extends FDSku implements AttributesI {
 	private final NutritionPanel nutritionPanel;
 
 	private FDSalesUnit[] displaySalesUnits;
+	
+	private String upc;
 
 	public FDProduct(
 		String skuCode,
@@ -88,7 +92,8 @@ public class FDProduct extends FDSku implements AttributesI {
 			Pricing pricing,
 			List<FDNutrition> nutrition,
 			FDSalesUnit[] displaySalesUnits,
-			NutritionPanel panel
+			NutritionPanel panel,
+			String upc
 	) {
 			super(skuCode, version);
 			this.pricingDate = pricingDate;
@@ -100,6 +105,7 @@ public class FDProduct extends FDSku implements AttributesI {
 			this.displaySalesUnits = displaySalesUnits;
 			
 			this.nutritionPanel = panel;
+			this.upc= upc;
 		}
 	/**
 	 * Get effective pricing date.
@@ -532,7 +538,18 @@ public class FDProduct extends FDSku implements AttributesI {
 	 * @return
 	 */
 	public FDProduct copy(int version) {
-	    return new FDProduct(getSkuCode(), version, new Date(), material, variations, salesUnits, pricing, nutrition, displaySalesUnits, nutritionPanel);
+	    return new FDProduct(getSkuCode(), version, new Date(), material, variations, salesUnits, pricing, nutrition, displaySalesUnits, nutritionPanel,upc);
 	}
 
+	/**
+	 * @return the upc
+	 */
+	public String getUpc() {
+		return upc;
+	}
+
+
+	public FDCouponInfo getCoupon() {
+		return FDCouponFactory.getInstance().getCouponByUpc(upc);
+	}
 }

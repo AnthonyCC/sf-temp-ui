@@ -9,6 +9,7 @@
 package com.freshdirect.fdstore.customer;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -18,6 +19,7 @@ import com.freshdirect.affiliate.ErpAffiliate;
 import com.freshdirect.common.pricing.Discount;
 import com.freshdirect.common.pricing.MaterialPrice;
 import com.freshdirect.common.pricing.util.GroupScaleUtil;
+import com.freshdirect.customer.ErpCouponDiscountLineModel;
 import com.freshdirect.delivery.DlvZoneInfoModel;
 import com.freshdirect.delivery.EnumZipCheckResponses;
 import com.freshdirect.fdstore.FDGroup;
@@ -40,6 +42,7 @@ public class FDModifyCartModel extends FDCartModel {
 	private static final long	serialVersionUID	= -3926647074819221032L;
 	
 	private final FDOrderAdapter originalOrder;
+	private final Set<String> originalOrderCoupons = new HashSet<String>();
 
 	/**
 	 * Default constructor.
@@ -79,7 +82,12 @@ public class FDModifyCartModel extends FDCartModel {
 			cartLine.setSavingsId(origLine.getSavingsId());
 		if(origLine.getFDGroup() != null)
 			cartLine.setFDGroup(origLine.getFDGroup());			
-		
+		if(null !=origLine.getCouponDiscount()){
+			ErpCouponDiscountLineModel origCouponDiscount = origLine.getCouponDiscount();
+			ErpCouponDiscountLineModel couponDiscount =new ErpCouponDiscountLineModel(origCouponDiscount.getCouponId(),origCouponDiscount.getDiscountAmt(),origCouponDiscount.getVersion(),origCouponDiscount.getRequiredQuantity(),origCouponDiscount.getCouponDesc(),origCouponDiscount.getDiscountType());
+			cartLine.setCouponDiscount(couponDiscount);
+			originalOrderCoupons.add(origCouponDiscount.getCouponId());
+		}
 		this.addOrderLine(cartLine);
 	}
 	
@@ -184,5 +192,12 @@ public class FDModifyCartModel extends FDCartModel {
 		// APPDEV-2031 we implemented separate new items feature but due to
 		// recipe grouping discrepancy we switched off this feature
 		return WebOrderViewFactory.getOrderViews(orderLines, false);
+	}
+	public static long getSerialversionuid() {
+		return serialVersionUID;
+	}
+
+	public Set<String> getOriginalOrderCoupons() {
+		return originalOrderCoupons;
 	}
 }

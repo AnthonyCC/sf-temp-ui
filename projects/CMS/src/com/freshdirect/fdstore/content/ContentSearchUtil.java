@@ -78,7 +78,7 @@ public class ContentSearchUtil {
 		for (SearchHit hit : hits) {
 			if (FDContentTypes.CATEGORY.equals(hit.getContentKey().getType())) {
 				CategoryModel category = (CategoryModel) hit.getNode();
-				if (isDisplayable(category))
+				if (null !=category && isDisplayable(category))
 					ret.add(hit);
 			}
 		}

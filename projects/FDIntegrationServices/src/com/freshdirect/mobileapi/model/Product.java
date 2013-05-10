@@ -32,13 +32,11 @@ import org.apache.log4j.Logger;
 import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.common.pricing.ConfiguredPrice;
-import com.freshdirect.common.pricing.MaterialPrice;
 import com.freshdirect.common.pricing.Pricing;
 import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.common.pricing.PricingEngine;
 import com.freshdirect.common.pricing.PricingException;
 import com.freshdirect.common.pricing.SalesUnitRatio;
-import com.freshdirect.common.pricing.util.GroupScaleUtil;
 import com.freshdirect.content.nutrition.EnumAllergenValue;
 import com.freshdirect.content.nutrition.ErpNutritionInfoType;
 import com.freshdirect.delivery.restriction.EnumDlvRestrictionReason;
@@ -47,7 +45,6 @@ import com.freshdirect.fdstore.FDCachedFactory;
 import com.freshdirect.fdstore.FDConfigurableI;
 import com.freshdirect.fdstore.FDConfiguration;
 import com.freshdirect.fdstore.FDException;
-import com.freshdirect.fdstore.FDGroup;
 import com.freshdirect.fdstore.FDProduct;
 import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDResourceException;
@@ -56,8 +53,6 @@ import com.freshdirect.fdstore.FDSalesUnit;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.FDVariation;
-import com.freshdirect.fdstore.GroupScalePricing;
-import com.freshdirect.fdstore.GrpZonePriceModel;
 import com.freshdirect.fdstore.content.BrandModel;
 import com.freshdirect.fdstore.content.CategoryModel;
 import com.freshdirect.fdstore.content.ComponentGroupModel;
@@ -71,7 +66,10 @@ import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.SkuModel;
 import com.freshdirect.fdstore.content.view.ProductRating;
 import com.freshdirect.fdstore.content.view.WebProductRating;
+import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDUserI;
+import com.freshdirect.fdstore.ecoupon.EnumCouponContext;
+import com.freshdirect.fdstore.ecoupon.FDCustomerCoupon;
 import com.freshdirect.fdstore.util.ProductLabeling;
 import com.freshdirect.fdstore.util.RatingUtil;
 import com.freshdirect.framework.util.DateUtil;
@@ -79,6 +77,7 @@ import com.freshdirect.framework.util.DayOfWeekSet;
 import com.freshdirect.framework.util.QuickDateFormat;
 import com.freshdirect.framework.util.TimeOfDay;
 import com.freshdirect.framework.xml.XMLSerializer;
+import com.freshdirect.mobileapi.controller.data.Coupon;
 import com.freshdirect.mobileapi.exception.ModelException;
 import com.freshdirect.mobileapi.model.comparator.DomainValueComparator;
 import com.freshdirect.mobileapi.model.comparator.VariationComparator;
@@ -200,18 +199,18 @@ public class Product {
 
     protected List<ComponentGroup> componentGroups = new ArrayList<ComponentGroup>();
 
-    public Product(ProductModel productModel, FDUserI user) throws ModelException {
-        this(productModel, user, null);
+    public Product(ProductModel productModel, FDUserI user, FDCartLineI cartLine, EnumCouponContext ctx) throws ModelException {
+        this(productModel, user, null, cartLine, ctx);
     }
 
     private FDUserI user; //Used for product burst labeling
 
     private Variant variant; //Used for product burst labeling
-
+    
     //private List<String> warningMessages = new ArrayList<String>();
 
     @SuppressWarnings("unchecked")
-    public Product(ProductModel productModel, FDUserI user, Variant variant) throws ModelException {
+    public Product(ProductModel productModel, FDUserI user, Variant variant, FDCartLineI cartLine, EnumCouponContext ctx) throws ModelException {
         this.product = new ProductImpression(productModel);
         this.pricingContext = user != null ? user.getPricingContext() : null;
         if (pricingContext == null) {
@@ -222,13 +221,16 @@ public class Product {
 
         //Skus init    
         ListIterator li = productModel.getSkus().listIterator();
-
+       
         if (!productModel.isUnavailable()) {
             //Filter skus
             while (li.hasNext()) {
                 SkuModel skuModel = (SkuModel) li.next();
                 if (skuModel != null && !skuModel.isUnavailable()) {
-                    Sku sku = Sku.wrap(new PriceCalculator(pricingContext, productModel, skuModel), skuModel);
+                	
+                    Sku sku = Sku.wrap(new PriceCalculator(pricingContext, productModel, skuModel)
+                    															, skuModel
+                    															, findCoupon(skuModel, user, cartLine, ctx));
                     this.skus.add(sku);
                 }
             }
@@ -241,7 +243,9 @@ public class Product {
                 this.defaultSku = this.skus.get(0);
             } else {
                 if (this.defaultSku == null) {
-                    this.defaultSku = Sku.wrap(defaultPriceCalculator, defaultPriceCalculator.getSkuModel());
+                    this.defaultSku = Sku.wrap(defaultPriceCalculator
+                    								, defaultPriceCalculator.getSkuModel()
+                    								, findCoupon(defaultPriceCalculator.getSkuModel(), user, cartLine, ctx));
                 }
             }
 
@@ -519,7 +523,7 @@ public class Product {
             for (ComponentGroupModel componentGroup : componentGroups) {
                 ComponentGroup cgp;
                 try {
-                    cgp = new ComponentGroup(componentGroup, this, user);
+                    cgp = new ComponentGroup(componentGroup, this, user, cartLine, ctx);
                     this.componentGroups.add(cgp);
                 } catch (FDException e) {
                     throw new ModelException("Unable to get ComponentGroup", e);
@@ -545,14 +549,32 @@ public class Product {
         //        }
 
     }
+    
+    private FDCustomerCoupon findCoupon(SkuModel skuModel, FDUserI user, FDCartLineI cartLine, EnumCouponContext ctx) throws ModelException  {
+    	FDCustomerCoupon coupon = null;
+    	try {
+    		if(user !=null){
+		    	if(cartLine != null && cartLine.getSkuCode() != null && cartLine.getSkuCode().equalsIgnoreCase(skuModel.getSkuCode())) {
+		    		coupon = user.getCustomerCoupon(cartLine, ctx);
+		    	} else {
+		    		coupon = user.getCustomerCoupon(skuModel.getProductInfo() != null 
+		    														? skuModel.getProductInfo().getUpc() : null, ctx);
+		    	}
+    		}
+    	} catch (FDResourceException e) {
+            throw new ModelException("Error getting product info(findCoupon) sku was:" + this.defaultSku.getSkuCode(), e);
+        } catch (FDSkuNotFoundException e) {
+            throw new ModelException("Error getting product info(findCoupon) sku was:" + this.defaultSku.getSkuCode(), e);
+        }
+    	return coupon;
+    }
 
     /**
      * @return
      * @throws FDResourceException
      */
     public String[] getPlatterCutoffMessage() {
-        TimeOfDay cutoffTime = null;
-        ;
+        TimeOfDay cutoffTime = null;        
         StringBuilder title = new StringBuilder();
         StringBuilder message = new StringBuilder();
         try {
@@ -1272,7 +1294,7 @@ public class Product {
                 ProductModel asaProd = it.next();
                 if (!asaProd.getParentNode().isHidden() && !asaProd.isUnavailable()) {
                     try {
-                        result.add(new Product(asaProd, this.user, this.variant));
+                        result.add(new Product(asaProd, this.user, this.variant, null, EnumCouponContext.PRODUCT));
                     } catch (ModelException e) {
                         LOG.warn("ModelException encountered while trying to wrap 'AlsoSoldAs' product.", e);
                     }
@@ -1455,26 +1477,26 @@ public class Product {
         return inProductInCart;
     }
 
-    public static Product wrap(ProductModel productModel, FDUserI user, Variant variant) throws ModelException {
+    public static Product wrap(ProductModel productModel, FDUserI user, Variant variant, FDCartLineI cartLine, EnumCouponContext ctx) throws ModelException {
         Product result = null;
         if(null != productModel){
 	        if (EnumProductLayout.WINE.equals(productModel.getProductLayout())) {
-	            result = new Wine(productModel, user, variant);
+	            result = new Wine(productModel, user, variant, cartLine, ctx);
 	        } else if (EnumProductLayout.NEW_WINE_PRODUCT.equals(productModel.getProductLayout())) {
-	            result = new Wine(productModel, user, variant);
+	            result = new Wine(productModel, user, variant, cartLine, ctx);
 	        } else {
-	            result = new Product(productModel, user, variant);
+	            result = new Product(productModel, user, variant, cartLine, ctx);
 	        }
         }
         return result;
     }
 
-    public static Product wrap(ProductModel productModel, FDUserI user) throws ModelException {
-        return wrap(productModel, user, null);
+    public static Product wrap(ProductModel productModel, FDUserI user, FDCartLineI cartLine, EnumCouponContext ctx) throws ModelException {
+        return wrap(productModel, user, null, cartLine, ctx);
     }
 
-    public static Product wrap(ProductModel productModel) throws ModelException {
-        return wrap(productModel, null, null);
+    public static Product wrap(ProductModel productModel) throws ModelException { //Only Used for Product Browse
+        return wrap(productModel, null, null, null, EnumCouponContext.PRODUCT);
     }
 
     public boolean isAutoConfigurable() {
@@ -1605,7 +1627,7 @@ public class Product {
      * @throws ServiceException 
      * @throws ModelException
      */
-    public static Product getProduct(String id, String categoryId, SessionUser user) throws ServiceException {
+    public static Product getProduct(String id, String categoryId, FDCartLineI cartLine, SessionUser user) throws ServiceException {
         ProductModel productModel = null;
         Product result = null;
 
@@ -1616,7 +1638,7 @@ public class Product {
             productModel = (ProductModel) ContentFactory.getInstance().getContentNodeByKey(ContentKey.decode("Product:" + id));
         }
         try {
-            result = Product.wrap(productModel, user.getFDSessionUser().getUser());
+            result = Product.wrap(productModel, user.getFDSessionUser().getUser(), cartLine, EnumCouponContext.PRODUCT);
         } catch (ModelException e) {
             throw new ServiceException(e.getMessage(), e);
         }
@@ -1749,9 +1771,4 @@ public class Product {
     public boolean isPricedByLB() {
         return isPricedByLB;
     }
-    //
-    //    public List<String> getWarningMessages() {
-    //        return warningMessages;
-    //    }
-
 }

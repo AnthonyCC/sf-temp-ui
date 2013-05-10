@@ -5,6 +5,7 @@
 <%@ page import='com.freshdirect.fdstore.pricing.ProductPricingFactory' %>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
 <%@ page import='com.freshdirect.fdstore.customer.FDUserI'%>
+<%@ page import="com.freshdirect.fdstore.ecoupon.*"%>
 <%@ taglib uri="template" prefix="tmpl" %>
 <%@ taglib uri="logic" prefix="logic" %>
 <%@ taglib uri="freshdirect" prefix="fd" %>
@@ -86,17 +87,18 @@
 			<logic:iterate id="peakProduce" collection="<%= peakProduces %>" type="com.freshdirect.fdstore.content.SkuModel">
 				<td>
 				<% 
-				  String prodNameAttribute = JspMethods.getProductNameToUse(peakProduce);
-                  ProductModel pm = ProductPricingFactory.getInstance().getPricingAdapter(peakProduce.getProductModel(), p_user.getPricingContext());
-				  DisplayObject displayObj = JspMethods.loadLayoutDisplayStrings(response,pm.getParentNode().getContentName(),pm,prodNameAttribute,true);
-				  int adjustedImgWidth = displayObj.getImageWidthAsInt()+6+10;
-				  String actionUrl = FDURLUtil.getProductURI( pm, "dept" );
+					String prodNameAttribute = JspMethods.getProductNameToUse(peakProduce);
+					ProductModel pm = ProductPricingFactory.getInstance().getPricingAdapter(peakProduce.getProductModel(), p_user.getPricingContext());
+					ProductImpression pi = new ProductImpression(pm);
+					DisplayObject displayObj = JspMethods.loadLayoutDisplayStrings(response,pm.getParentNode().getContentName(),pm,prodNameAttribute,true);
+					int adjustedImgWidth = displayObj.getImageWidthAsInt()+6+10;
+					String actionUrl = FDURLUtil.getProductURI( pm, "dept" );
 				 %>
 				 <td valign="top" width="<%=adjustedImgWidth%>" align="center" style="padding-left:15px; padding-right:15px;padding-bottom:10px;">
 					<!-- APPDEV-401 Update product display(deals & burst) -->
 					<display:ProductRating product="<%= pm %>" action="<%= actionUrl %>"/>
 					<display:ProductName product="<%= pm %>" action="<%= actionUrl %>"/>								
-					<display:ProductPrice impression="<%= new ProductImpression( pm ) %>" showAboutPrice="false" showDescription="false"/>
+					<display:ProductPrice impression="<%= pi %>" showAboutPrice="false" showDescription="false"/>
 					<%  //if (displayObj.getRating()!=null && displayObj.getRating().trim().length()>0) { %>          
 						<!--<img src="/media_stat/images/ratings/<%=displayObj.getRating()%>.gif" name="rating" width="59" height="11" border="0" vspace="3">-->
 					<% //} %>
@@ -104,6 +106,14 @@
 					<%  //if (displayObj.getPrice()!=null) { %>
 						<!--<br><span class="price"><%=displayObj.getPrice()%></span>-->
 					<%  //} %>
+					<%
+						FDCustomerCoupon curCoupon_pp = null;
+						if (pi.getSku() != null && pi.getSku().getProductInfo() != null) {
+							curCoupon_pp = p_user.getCustomerCoupon(pi.getSku().getProductInfo(), EnumCouponContext.PRODUCT,pm.getParentId(),pm.getContentName());
+						}
+						
+					%>
+					<display:FDCoupon coupon="<%= curCoupon_pp %>" contClass="fdCoupon_deptPeakProd"></display:FDCoupon>
 				</td>
 				</logic:iterate>
 			</tr>

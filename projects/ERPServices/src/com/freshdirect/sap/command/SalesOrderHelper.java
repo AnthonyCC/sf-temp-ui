@@ -21,7 +21,9 @@ import com.freshdirect.common.address.BasicContactAddressI;
 import com.freshdirect.common.pricing.CreditMemo;
 import com.freshdirect.common.pricing.Discount;
 import com.freshdirect.common.pricing.EnumDiscountType;
+import com.freshdirect.common.pricing.EnumTaxationType;
 import com.freshdirect.common.pricing.MaterialPrice;
+import com.freshdirect.customer.ErpCouponDiscountLineModel;
 import com.freshdirect.customer.ErpDiscountLineModel;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.util.NVL;
@@ -164,7 +166,7 @@ class SalesOrderHelper {
 						this.addFakeLine(sapOrder, fakePosition, "000000000000009999", isCreateOrder);
 						this.bapi.addCondition(PosexUtil.getPosexInt(fakePosition), "PB00", -1.0 * discountLine.getDiscount().getAmount(), "USD");
 						//WS1_ is to identify windows steering promo at sap
-						passVBAP(sapOrder, PosexUtil.getPosex(fakePosition), false, isCreateOrder, "WS1_"+discountLine.getDiscount().getPromotionCode(),null);
+						passVBAP(sapOrder, PosexUtil.getPosex(fakePosition), false, isCreateOrder, "WS1_"+discountLine.getDiscount().getPromotionCode(),null,null);
 						fakePosition++;
 					}
 				}
@@ -174,7 +176,7 @@ class SalesOrderHelper {
 						//orderDiscountAmount += promo.getDiscount().getAmount();
 						this.addFakeLine(sapOrder, fakePosition, "000000000000009999", isCreateOrder);
 						this.bapi.addCondition(PosexUtil.getPosexInt(fakePosition), "PB00", -1.0 * discountLine.getDiscount().getAmount(), "USD");
-						passVBAP(sapOrder, PosexUtil.getPosex(fakePosition), false, isCreateOrder, discountLine.getDiscount().getPromotionCode(),null);
+						passVBAP(sapOrder, PosexUtil.getPosex(fakePosition), false, isCreateOrder, discountLine.getDiscount().getPromotionCode(),null,null);
 						fakePosition++;
 					}
 				}
@@ -185,7 +187,7 @@ class SalesOrderHelper {
 				if (EnumDiscountType.DOLLAR_OFF.equals(orderDiscount.getDiscountType())) {
 					this.addFakeLine(sapOrder, fakePosition, "000000000000009999", isCreateOrder);
 					this.bapi.addCondition(PosexUtil.getPosexInt(fakePosition), "PB00", -1.0 * orderDiscount.getAmount(), "USD");
-					passVBAP(sapOrder, PosexUtil.getPosex(fakePosition), false, isCreateOrder, orderDiscount.getPromotionCode(),null);
+					passVBAP(sapOrder, PosexUtil.getPosex(fakePosition), false, isCreateOrder, orderDiscount.getPromotionCode(),null,null);
 					fakePosition++;
 				} else {
 					// !!! other types of header level promotions not supported by SAP now...
@@ -234,13 +236,19 @@ class SalesOrderHelper {
 
 			// promotion
 			Discount disc = orderLine.getDiscount();
-			if (disc != null) {
-				this.addPromotionCondition(i, disc);
+			ErpCouponDiscountLineModel couponDiscount = orderLine.getCouponDiscount();
+			if (disc != null || couponDiscount!=null) {
+				if(disc != null){
+					this.addPromotionCondition(i, disc);
+				}
+				if(couponDiscount!=null){
+					this.addCouponCondition(i, couponDiscount, orderLine.getTaxationType());
+				}
 				//this will set the promocode + GL Code
-				passVBAP(sapOrder, PosexUtil.getPosex(i), orderLine.isRecipeItem(), isCreateOrder, disc.getPromotionCode(),orderLine.getPricingZoneId());
+				passVBAP(sapOrder, PosexUtil.getPosex(i), orderLine.isRecipeItem(), isCreateOrder, (null!=disc? disc.getPromotionCode():null),orderLine.getPricingZoneId(),(null!=couponDiscount?couponDiscount.getCouponId():null));
 			}else{
 				//this will set GL Code only
-				passVBAP(sapOrder, PosexUtil.getPosex(i), orderLine.isRecipeItem(), isCreateOrder, null,orderLine.getPricingZoneId());
+				passVBAP(sapOrder, PosexUtil.getPosex(i), orderLine.isRecipeItem(), isCreateOrder, null,orderLine.getPricingZoneId(),null);
 			}
 		}
 
@@ -251,7 +259,7 @@ class SalesOrderHelper {
 				SapChargeLineI c = charges[i];
 				this.addFakeLine(sapOrder, pos, c.getMaterialNumber(), isCreateOrder);
 				
-				passVBAP(sapOrder, PosexUtil.getPosex(pos), false, isCreateOrder, null,null);
+				passVBAP(sapOrder, PosexUtil.getPosex(pos), false, isCreateOrder, null,null,null);
 	
 				if (c.getTaxRate() > 0) {
 					this.bapi.addCondition(
@@ -286,6 +294,15 @@ class SalesOrderHelper {
 		} else if (EnumDiscountType.SAMPLE.equals(pt)) {
 			this.bapi.addCondition(posex, "ZF11", 100.0, "");
 
+		}
+	}
+	
+	private void addCouponCondition(int pos, ErpCouponDiscountLineModel couponDiscount,EnumTaxationType taxationType) {
+		int posex = PosexUtil.getPosexInt(pos);
+		if(null !=taxationType){
+			this.bapi.addCondition(posex, taxationType.getCode(), couponDiscount.getDiscountAmt(), "USD");
+		}else{
+			this.bapi.addCondition(posex, EnumTaxationType.TAX_AFTER_ALL_DISCOUNTS.getCode(), couponDiscount.getDiscountAmt(), "USD");
 		}
 	}
 
@@ -418,7 +435,7 @@ class SalesOrderHelper {
 		return orderLines;
 	}
 	
-	private void passVBAP(SapOrderI sapOrder, String posex, boolean isRecipeItem, boolean isCreateOrder, String promoCode,String zoneId){
+	private void passVBAP(SapOrderI sapOrder, String posex, boolean isRecipeItem, boolean isCreateOrder, String promoCode,String zoneId,String couponCode){
 		String recipeFlag = StringUtils.rightPad(isRecipeItem ? "1" : " ", 5);
 		String glCode = StringUtils.rightPad(NVL.apply(sapOrder.getGlCode(), "").trim(), 10);
 		String promoField = StringUtils.rightPad(NVL.apply(promoCode, "").trim(), 20);
@@ -427,13 +444,15 @@ class SalesOrderHelper {
 			zoneField=StringUtils.rightPad(NVL.apply(zoneId, "").trim(), 10);
 		}else{
 			zoneField=zoneId;
-		}					
+		}	
+		String couponField = StringUtils.rightPad(NVL.apply(couponCode, "").trim(), 20);
 		
 		bapi.addExtension("BAPE_VBAP", StringUtils.repeat(" ", 10) + posex //0-16
-			+ recipeFlag 
-			+ StringUtils.repeat(" ", 20) + glCode //18 - 51			
-			+ zoneField //18 - 51
-			+ StringUtils.repeat(" ", 30) + promoField); // 61 - 111
+			+ recipeFlag //17-21
+			+ StringUtils.repeat(" ", 20) + glCode //22-51			
+			+ zoneField //52-61			
+			+ StringUtils.repeat(" ", 30) + promoField // 62 - 111
+			+ couponField); //112-131
 
 			
 		if (!isCreateOrder) {
@@ -442,7 +461,8 @@ class SalesOrderHelper {
 			bapi.addExtension("BAPE_VBAPX", StringUtils.repeat(" ", 10) + posex // 0-16 
 					+ "X" // 17, recipe change flag				
 					+ StringUtils.repeat(" ", 4) + "XX" // 22, tax chg
-					+ StringUtils.repeat(" ", 3) + "X"); // 27, promo code chg		
+					+ StringUtils.repeat(" ", 3) + "X" // 27, promo code chg	
+					+ "X"); //28 ecoupon code chg
 		}			
 		
 	}

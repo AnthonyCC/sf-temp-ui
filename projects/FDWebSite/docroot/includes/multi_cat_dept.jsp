@@ -5,6 +5,9 @@
 <%@ page import='java.util.StringTokenizer' %>
 <%@ page import='com.freshdirect.fdstore.FDStoreProperties' %>
 <%@ page import="java.util.*"%>
+<%@ page import='com.freshdirect.fdstore.customer.FDUserI'%>
+<%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
+<%@ page import="com.freshdirect.fdstore.ecoupon.*" %>
 
 <%@ taglib uri="template" prefix="tmpl" %>
 <%@ taglib uri="logic" prefix="logic" %>
@@ -33,6 +36,8 @@
 	Settings layoutSettings = new Settings();
 	layoutSettings.addSortStrategyElement(new SortStrategyElement(SortStrategyElement.PRODUCTS_BY_PRIORITY, false));
 	List tmpList=new ArrayList();
+	FDUserI mcd_user = (FDUserI) pageContext.getSession().getAttribute(SessionName.USER);
+
 %>
 <%-- Grab items on deals --%>
 <% if(currentFolder != null && currentFolder instanceof CategoryModel){ %>
@@ -127,13 +132,21 @@
 						  if(tmpContentNode instanceof CategoryModel) { continue; }
 						  else if(tmpContentNode instanceof ProductModel){
 							  ProductModel pm = (ProductModel) tmpContentNode;
+								ProductImpression pi = new ProductImpression( pm );
 							  DisplayObject displayObjTmp = JspMethods.loadLayoutDisplayStrings(response,catId_1,pm,JspMethods.getProductNameToUse(pm),true);
 							  int adjustedImgWidthTmp = displayObjTmp.getImageWidthAsInt()+6+10;
 							  String actionUrlTmp = FDURLUtil.getProductURI( pm, "dept" );
 						 %>
 						 <td align="center" width="<%=adjustedImgWidthTmp%>" style="padding-left:5px; padding-right:5px;">
 							<display:ProductName product="<%= pm %>" action="<%= actionUrlTmp %>"/>								
-							<display:ProductPrice impression="<%= new ProductImpression( pm ) %>" showAboutPrice="false" showDescription="false"/>
+							<display:ProductPrice impression="<%= pi %>" showAboutPrice="false" showDescription="false"/>
+							<%
+								FDCustomerCoupon curCoupon = null;
+								if (pi.getSku() != null && pi.getSku().getProductInfo() != null) {
+									curCoupon = mcd_user.getCustomerCoupon(pi.getSku().getProductInfo(), EnumCouponContext.PRODUCT,pm.getParentId(),pm.getContentName());
+								}
+							%>
+							<display:FDCoupon coupon="<%= curCoupon %>" contClass="fdCoupon_layMultiCatDeptDeal"></display:FDCoupon>
 						 </td>
 						 <% if(idx1.intValue() > 0 && (idx1.intValue()%PRODUCTS_PER_LINE)==PRODUCTS_PER_LINE-1){ break; } %>
 						 <%} %>
@@ -165,6 +178,7 @@
 				  if(((ProductModel)contentNode).isUnavailable()){ continue;}
 				  prodList.add(contentNode);
 				  ProductModel edlpProduct = (ProductModel) contentNode;
+					ProductImpression edlpPi = new ProductImpression( edlpProduct );
 				  String prodNameAttribute = JspMethods.getProductNameToUse(edlpProduct);
 				  DisplayObject displayObj = JspMethods.loadLayoutDisplayStrings(response,catId_2,edlpProduct,prodNameAttribute,true);
 				  int adjustedImgWidth = displayObj.getImageWidthAsInt()+6+10;
@@ -189,7 +203,14 @@
 					 %>
 					 <td align="center" width="<%=adjustedImgWidthTmp%>" style="padding-left:5px; padding-right:5px;">
 						<display:ProductName product="<%= pm %>" action="<%= actionUrlTmp %>"/>								
-						<display:ProductPrice impression="<%= new ProductImpression( pm ) %>" showAboutPrice="false" showDescription="false"/>
+						<display:ProductPrice impression="<%= edlpPi %>" showAboutPrice="false" showDescription="false"/>
+						<%
+							FDCustomerCoupon curCoupon = null;
+							if (edlpPi.getSku() != null && edlpPi.getSku().getProductInfo() != null) {
+								curCoupon = mcd_user.getCustomerCoupon(edlpPi.getSku().getProductInfo(), EnumCouponContext.PRODUCT,pm.getParentId(),pm.getContentName());
+							}
+						%>
+						<display:FDCoupon coupon="<%= curCoupon %>" contClass="fdCoupon_layMultiCatDeptEdlp"></display:FDCoupon>
 					 </td>
 					 <% if(idx1.intValue() > 0 && (idx1.intValue()%PRODUCTS_PER_LINE)==PRODUCTS_PER_LINE-1){ break; }%> 
 					 <% } %>

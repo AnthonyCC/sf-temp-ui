@@ -11,6 +11,7 @@
 <%@page import="org.xml.sax.*"%>
 <%@page import="javax.xml.transform.*"%>
 <%@page import="javax.xml.transform.stream.*"%>
+<%@ page import="com.freshdirect.fdstore.ecoupon.*"%>
 
 <%@ page import='java.util.*' %>
 <%@ taglib uri='template' prefix='tmpl' %>
@@ -206,6 +207,11 @@ termCounter++; %>
 	request.setAttribute("productNode", productNode);
 	request.setAttribute("cartMode",cartMode);
 	request.setAttribute("templateLine",templateLine);
+	FDCustomerCoupon custCoupon = null;
+	if (productNode != null && productNode.getDefaultSku() != null && productNode.getDefaultSku().getProductInfo() != null) {
+		custCoupon = user.getCustomerCoupon(productNode.getDefaultSku().getProductInfo(), EnumCouponContext.PRODUCT,productNode.getParentId(),productNode.getContentName());
+	}
+	request.setAttribute("custCoupon", custCoupon); //set coupon in to request for includes/tags to use
 %>
    <jsp:include page="<%=prodPageLayout.getLayoutPath()%>" flush="false"/>
 </fd:FDShoppingCart>

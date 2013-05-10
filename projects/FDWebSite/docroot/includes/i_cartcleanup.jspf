@@ -1,5 +1,5 @@
 <%
-if (cartCleanupRemovedSomeStuff.booleanValue()) {
+if (null !=cartCleanupRemovedSomeStuff && cartCleanupRemovedSomeStuff.booleanValue()) {
 %>
 <BR>
 <table cellspacing="0" cellpadding="0" border="0" width="100%">

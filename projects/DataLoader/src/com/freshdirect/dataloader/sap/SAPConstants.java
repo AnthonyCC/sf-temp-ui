@@ -136,6 +136,7 @@ public interface SAPConstants {
 	public static final String ORDER_LINE_STATUS = "Line status";
 	public static final String ACTUAL_COST = "Actual Cost";
 	public static final String INVOICE_LINE_DISCOUNT_AMOUNT = "Invoice line discount amount";
+	public static final String INVOICE_COUPONLINE_DISCOUNT_AMOUNT = "Invoice coupon line discount amount";
 	
 	//credit memo fields
 	public static final String WEB_REFERENCE_NUMBER = "Web reference number";

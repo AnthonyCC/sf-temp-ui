@@ -357,6 +357,19 @@
 				</xsl:if>
 			</td>
 		</tr>
+		<xsl:if test="number(invoiceLine/couponDiscountAmount) &gt; 0">
+		<tr>
+			<td align="center">&nbsp;</td>
+			<td style="font-family: Verdana, Arial, sans-serif;font-size:12px;color:purple;">Saved&nbsp;<xsl:value-of select="format-number(invoiceLine/couponDiscountAmount, '$###,##0.00', 'USD')"/> with coupon</td>
+			<td align="center">&nbsp;</td>
+			<td align="center">&nbsp;</td>
+			<td align="center">&nbsp;</td>
+			<td align="right">&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+	               <td>&nbsp;</td>
+		</tr>
+		</xsl:if>
 	</xsl:for-each>
 
 	<tr><td colspan="10">

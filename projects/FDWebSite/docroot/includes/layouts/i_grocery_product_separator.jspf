@@ -1,12 +1,12 @@
 <%
-    String brandWidth = "380";
+    brandWidth = "380";
     if("kosher".equalsIgnoreCase(sortBy)){
         brandWidth = "336";
     }else if("nutrition".equalsIgnoreCase(sortBy)){
         brandWidth = "360";
     }
     
-    boolean displayAttribute = !ErpNutritionType.getType(ErpNutritionType.SERVING_SIZE).getName().equals(display) && 
+    displayAttribute = !ErpNutritionType.getType(ErpNutritionType.SERVING_SIZE).getName().equals(display) && 
                                !ErpNutritionType.getType(ErpNutritionType.TOTAL_CALORIES).getName().equals(display)
                                && display != null && ErpNutritionType.getType(display) != null;
     

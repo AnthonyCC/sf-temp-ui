@@ -3,6 +3,7 @@
 <%@ page import="com.freshdirect.fdstore.lists.FDStandingOrderList"%>
 <%@ page import="com.freshdirect.fdstore.lists.FDListManager"%>
 <%@ page import="com.freshdirect.fdstore.customer.ejb.EnumCustomerListType"%>
+<%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %>
 <% //expanded page dimensions
 final int W_QUICKSHOP_INDEX_MULTIPLE_TOTAL = 750;
 final int W_QUICKSHOP_INDEX_MULTIPLE_FHALF = 359;

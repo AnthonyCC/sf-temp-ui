@@ -23,6 +23,8 @@
 <%@ page import="com.freshdirect.fdstore.promotion.EnumPromotionType" %>
 <%@ page import="com.freshdirect.fdstore.deliverypass.DeliveryPassUtil" %>
 <%@page import="com.freshdirect.webapp.util.JspMethods"%>
+<%@ page import="com.freshdirect.fdstore.ecoupon.*"%>
+<%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %>
 <%-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	THIS INCLUDE REQUIRES:
 	- boolean showFeesSection
@@ -181,9 +183,10 @@
         <font color="#888888"><%= cartLine.getSkuCode() %></font>
 		<% if ( discountMsg!=null && !"".equals(discountMsg) ) { %><br />&nbsp;&nbsp;<span><%= discountMsg %></span><% } %>
 		<% if ( groupDiscountMsg!=null && !"".equals(groupDiscountMsg) ) { %><br />&nbsp;&nbsp;<span><%= groupDiscountMsg %></span><% } %>
+		<br /><display:FDCoupon coupon="<%= user.getCustomerCoupon(cartLine, EnumCouponContext.CHECKOUT) %>" contClass="fdCoupon_cartlineChckout" pastTense="true"></display:FDCoupon>
 	</TD>
-	<td><span <%= (cartLine.getDiscount() != null) ? "style=\"color: #CC0000;\"" : "" %>>(<%= cartLine.getUnitPrice() %>)</span></td>
-	<td ALIGN="RIGHT"><span <%= (cartLine.getDiscount() != null) ? "style=\"color: #CC0000;\"" : "" %>><%= JspMethods.formatPrice(cartLine.getPrice()) %></span></td>
+	<td valign="top"><span <%= (cartLine.getDiscount() != null || cartLine.getCouponDiscount()!=null) ? "style=\"color: #CC0000;\"" : "" %>>(<%= cartLine.getUnitPrice() %>)</span></td>
+	<td ALIGN="RIGHT" valign="top"><span <%= (cartLine.getDiscount() != null || cartLine.getCouponDiscount()!=null) ? "style=\"color: #CC0000;\"" : "" %>><%= JspMethods.formatPrice(cartLine.getPrice()) %></span></td>
 	<TD>
 		<%if (cartLine.isEstimatedPrice()) {
 				hasEstimatedItems = true;

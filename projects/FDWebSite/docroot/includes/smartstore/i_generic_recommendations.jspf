@@ -28,6 +28,7 @@
 <%@page import="java.net.URLEncoder"%>
 <%@page import="java.net.URLDecoder"%>
 <%@page import="java.net.URI"%>
+<%@ page import="com.freshdirect.fdstore.ecoupon.*"%>
 <%@ taglib uri='template' prefix='tmpl'%>
 <%@ taglib uri='logic' prefix='logic'%>
 <%@ taglib uri='freshdirect' prefix='fd'%>
@@ -91,6 +92,9 @@
 		// Remember selected department ID in QS Every Item Ever Ordered page
 		if (request.getRequestURI().indexOf("quickshop/every_item.jsp") > 0 &&
 			request.getParameter("qsDeptId") != null) {
+			formQueryParams = "qsDeptId="+request.getParameter("qsDeptId");
+			
+			optionalParams.put("qsDeptId", request.getParameter("qsDeptId"));
 			formQueryParams = "qsDeptId="+request.getParameter("qsDeptId");
 			
 			optionalParams.put("qsDeptId", request.getParameter("qsDeptId"));
@@ -298,6 +302,14 @@ if (optionalParams.size() > 0) {
 										        rank,  
 										        recommendations.getImpressionId(product)
 										);
+										FDCustomerCoupon curCoupon = null;
+										if (recommendations_row.getSku() != null && recommendations_row.getSku().getProductInfo() != null) {
+											curCoupon = pip_u.getCustomerCoupon(recommendations_row.getSku().getProductInfo(), EnumCouponContext.PRODUCT,recommendations_row.getProductModel().getParentId(),recommendations_row.getProductModel().getContentName());
+										}
+										String productImageClassName = "productImage";
+										if (curCoupon != null) {
+											productImageClassName += " couponLogo";
+										}
 
 										boolean shouldDimProduct = isVariantSavings && SmartStoreUtil.isSavingProductInCart(genericRecommendationsVariant, product, pip_u);
 
@@ -314,9 +326,9 @@ if (optionalParams.size() > 0) {
 												<tr>
 													<td style="padding: 0; height: <%= __fixedPrdImgHeight > 0 ? __fixedPrdImgHeight : maxPrdHeight %>px; vertical-align: bottom; text-align: center">
 														<% if (isVariantSavings) { %>
-															<display:ProductImage priceCalculator="<%= recommendations_row.getCalculator() %>" action="<%= actionURI %>" savingsPercentage="<%= pvm.getPercentageOff() %>" inCart="<%= shouldDimProduct %>" browserInfo="<%= bi %>" opacity="<%= shouldDimProduct ? 0.5 : 1.0 %>" showRolloverImage="true"/>
+															<display:ProductImage className="<%=productImageClassName %>" priceCalculator="<%= recommendations_row.getCalculator() %>" action="<%= actionURI %>" savingsPercentage="<%= pvm.getPercentageOff() %>" inCart="<%= shouldDimProduct %>" browserInfo="<%= bi %>" opacity="<%= shouldDimProduct ? 0.5 : 1.0 %>" showRolloverImage="true" coupon="<%= curCoupon %>" />
 														<% } else {%>
-															<display:ProductImage priceCalculator="<%= recommendations_row.getCalculator() %>" action="<%= actionURI %>" hideBursts="<%= recommendations.getVariant().getHideBursts() %>" browserInfo="<%= bi %>" showRolloverImage="true"/>
+															<display:ProductImage className="<%=productImageClassName %>" priceCalculator="<%= recommendations_row.getCalculator() %>" action="<%= actionURI %>" hideBursts="<%= recommendations.getVariant().getHideBursts() %>" browserInfo="<%= bi %>" showRolloverImage="true" coupon="<%= curCoupon %>" />
 														<% } %>
 														<!-- fd:IsAlcoholic skuCode="%=((ProductImpression) recommendations_row).getSku().getSkuCode()%>" -->
 															<fd:PopupHandler id='<%="id_" + tx_pricing_FormName %>' tagCounter="<%=txProdCount %>" quantityCheck="true" event="onsubmit" elementId='<%= "addMultipleToCart" + tx_pricing_JSNameSpace %>' skuCode="<%=((ProductImpression) recommendations_row).getSku().getSkuCode()%>" action="addMultipleToCart" ajax="<%= isAjax %>" inputTagPostFix='<%=tx_input_postfix%>' hasPendingOrder='<%= (Boolean)pageContext.getAttribute("hasPendingOrder")%>'/>
@@ -359,6 +371,7 @@ if (optionalParams.size() > 0) {
 												<display:ProductRating product="<%= product %>"/>
 												<display:ProductName product="<%= product %>" action="<%= CmMarketingLinkUtil.getSmartStoreLink(actionURI, recommendations) %>" disabled="<%= shouldDimProduct %>"/>
 												<display:ProductPrice impression="<%= recommendations_row %>" savingsPercentage="<%= isVariantSavings ? pvm.getPercentageOff() : 0 %>" />
+												<display:FDCoupon coupon="<%= curCoupon %>" contClass="fdCoupon_cartCNT"></display:FDCoupon>
 											</display:TransparentBox></div>
 										</span>
 										<% } else { // blank cell %>

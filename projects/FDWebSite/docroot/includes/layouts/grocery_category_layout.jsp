@@ -16,6 +16,7 @@
 <%@ page import='com.freshdirect.fdstore.FDStoreProperties' %>
 <%@ page import='org.apache.log4j.Category' %>
 <%@ page import='com.freshdirect.framework.util.log.LoggerFactory' %>
+<%@ page import="com.freshdirect.fdstore.ecoupon.*" %>
 
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
@@ -150,88 +151,74 @@ if (currentCategory != null) {
 </TABLE>
 <%
 
+int tdwidth=96;
 
 	//
 	// Favorite Products
 	//
-	boolean hideFi = false;
+boolean hideFi = false;
 	if (currentFolder instanceof CategoryModel)
-		hideFi = ((CategoryModel) currentFolder).isHideFeaturedItems();
-%>
-<fd:ProductGroupRecommender siteFeature="FEATURED_ITEMS" id="recommendations" facility="cat_feat_items"  currentNode="<%= currentFolder %>" itemCount="6"
-		hide="<%= hideFi %>"><%
-	if (recommendations != null && recommendations.getProducts().size() > 0) {
-		request.setAttribute("recommendationsRendered","true");
-	
-		List products = recommendations.getProducts();
-		int ord=1;
-%>
-		<table cellpadding="0" cellspacing="0" width="<%=W_GROCERY_CATEGORY_LAYOUT_TOTAL%>" border="0">
-			<tr>
-				<td class="title14" colspan="<%= products.size()*2 %>"><%= recommendations.getVariant().getServiceConfig().getFILabel() %><br><img src="/media_stat/images/layout/clear.gif" width="1" height="8"></td>
-			</tr>
-			<tr valign="bottom">
-<logic:iterate id='contentNode' collection="<%= products %>" type="com.freshdirect.fdstore.content.ProductModel"><%
-		ProductModel productNode = contentNode;
-		ProductLabeling pl = new ProductLabeling(user, productNode, recommendations.getVariant().getHideBursts());
+		hideFi = ((CategoryModel) currentFolder).isHideFeaturedItems();    
+%><fd:ProductGroupRecommender siteFeature="FEATURED_ITEMS" id="recommendations" facility="cat_feat_items"  currentNode="<%= currentFolder %>" itemCount="6" hide="<%= hideFi %>"><%
+		if (recommendations != null && recommendations.getProducts().size() > 0) {
+				
+				request.setAttribute("recommendationsRendered","true");
+				List products = recommendations.getProducts();
+				int ord = 1;
+		%>
 
-	String actionURI = FDURLUtil.getProductURI(productNode, recommendations.getVariant().getId(), "feat", pl.getTrackingCode(), ord, recommendations.getImpressionId(productNode));
-%><%-- display a product --%>
-		<td align="center" width="105" valign="bottom" class="smartstore-carousel-item-grocery-layout">
-			<display:ProductImage product="<%=productNode%>" action="<%=actionURI%>" hideBursts="<%= recommendations.getVariant().getHideBursts() %>" webId="<%=GetContentNodeWebIdTag.getWebId(null, productNode, true, false)%>"/>
-		</td>
-		<td width="10">
-			<img src="/media/images/layout/clear.gif" width="8" height="1">
-		</td><%
-			++ord;
-		%></logic:iterate>
-	</tr>
-	<tr valign="top"><%
-		ord=1;
-	%><logic:iterate id='contentNode' collection="<%=products%>" type="com.freshdirect.fdstore.content.ProductModel"><%
-		ProductModel productNode = contentNode;
-			ProductLabeling pl = new ProductLabeling(user, productNode, recommendations.getVariant().getHideBursts());
-			String fiProdPrice = null;
-			String fiProdBasePrice=null;
-			boolean fiIsDeal=false;	// is deal?
-	%><fd:FDProductInfo id="productInfo" skuCode="<%=productNode.getDefaultSku().getSkuCode()%>"><%
-		fiProdPrice = JspMethods.formatPrice(productInfo, user.getPricingContext());
-			
-			fiIsDeal=productInfo.getZonePriceInfo(user.getPricingContext().getZoneId()).isItemOnSale();
-			if (fiIsDeal) {
-				 fiProdBasePrice = JspMethods.formatSellingPrice(productInfo, user.getPricingContext());
-			}
-	%></fd:FDProductInfo><%
-String actionURI = FDURLUtil.getProductURI(productNode, recommendations.getVariant().getId(), "feat", pl.getTrackingCode(), ord, recommendations.getImpressionId(productNode));
-String linkId = GetContentNodeWebIdTag.getWebId(null, productNode, true, false) + "_product_name";
-%><%-- display a product --%>
-		<td align="center" WIDTH="105">
-			<display:ProductRating product="<%= productNode %>"/>
-<%		if (productNode.isFullyAvailable()) { %>
-			<div><display:ProductName id="<%=linkId%>" product="<%= productNode %>" action="<%= CmMarketingLinkUtil.getSmartStoreLink(actionURI,recommendations) %>"/></div>
-<%		} else { %>
-			<div style="color: #999999;"><display:ProductName id="<%=linkId%>"  product="<%= productNode %>" action="<%= CmMarketingLinkUtil.getSmartStoreLink(actionURI,recommendations) %>" style="color: #999999;"/></div>
-<%		}
-		if (fiIsDeal) {
-%>			<div style="FONT-WEIGHT: bold; FONT-SIZE: 8pt; COLOR: #c00"><%= fiProdPrice %></div>
-			<div style="FONT-SIZE: 7pt; COLOR: #888">(was <%= fiProdBasePrice %>)</div>
-<%		} else {
-%>			<div class="favoritePrice"><%= fiProdPrice %></div>
-<%		} %>
-		</td>
-		<td width="10">
-			<img src="/media/images/layout/clear.gif" width="8" height="1">
-		</td><%
-		++ord;
-%></logic:iterate>
+		<table cellspacing="0" cellpadding="1" border="0" width="<%= W_GROCERY_CATEGORY_LAYOUT_TOTAL %>">
+			<tr valign="top">
+	    		<td class="text12bold" width="<%= W_GROCERY_CATEGORY_LAYOUT_TOTAL %>" colspan="<%= W_GROCERY_CATEGORY_LAYOUT_TOTAL %>">
+	    			<%= recommendations.getVariant().getServiceConfig().getFILabel() %> <br /><img src="/media_stat/images/layout/clear.gif" width="1" height="3" alt="" />
+	    		</td>
+			</tr>
+		</table>
+		<font class="space4pix"><br /></font>
+		<table cellspacing="0" cellpadding="1" border="0" width="<%= W_GROCERY_CATEGORY_LAYOUT_TOTAL %>">
+			<tr valign="TOP" align="CENTER">
+				<logic:iterate id='contentNode' collection="<%= products %>" type="com.freshdirect.fdstore.content.ProductModel"><%
+						
+						ProductModel productNode = contentNode;
+						ProductImpression pi = new ProductImpression(productNode);
+						ProductLabeling pl = new ProductLabeling(user, productNode, recommendations.getVariant().getHideBursts());
+						FDCustomerCoupon curCoupon = null;
+						if (pi.getSku() != null && pi.getSku().getProductInfo() != null) {
+							curCoupon = user.getCustomerCoupon(pi.getSku().getProductInfo(), EnumCouponContext.PRODUCT,productNode.getParentId(),productNode.getContentName());
+						}
+						
+						String actionURI = FDURLUtil.getProductURI(productNode, recommendations.getVariant().getId(), "feat", pl.getTrackingCode(), ord, recommendations.getImpressionId(productNode));
+						
+						%>	<%-- display a product --%>
+					<td width="<%= tdwidth %>">
+						<span class="smartstore-carousel-item-grocery-layout">
+							<p style="border: 0px; padding: 0px; margin: 0px;">
+								<display:ProductImage product="<%= productNode %>" action="<%= actionURI %>" hideBursts="<%= recommendations.getVariant().getHideBursts() %>" coupon="<%= curCoupon %>" /></p>
+								<display:ProductRating product="<%= productNode %>" />
+				<%			// product name
+						if (productNode.isFullyAvailable()) { %>
+							<div><display:ProductName product="<%= productNode %>" action="<%= CmMarketingLinkUtil.getSmartStoreLink(actionURI, recommendations) %>"/></div>
+				<%		} else { %>
+							<div style="color: #999999"><display:ProductName product="<%= productNode %>" action="<%= CmMarketingLinkUtil.getSmartStoreLink(actionURI, recommendations) %>"/></div>
+				<%		} %>
+							<div class="favoritePrice">	<display:ProductPrice impression="<%= pi %>" showDescription="false"/></div>
+							<display:FDCoupon coupon="<%= curCoupon %>" contClass="fdCoupon_layGroCatRec"></display:FDCoupon>
+						</span>
+					</td>
+					
+			<%if (ord < recommendations.getProducts().size()) {%>		
+				<td width="10">
+					<img src="/media_stat/images/layout/clear.gif" width="8" height="1">
+			   </td>
+			<%} %>
+			<%++ord;%>
+			</logic:iterate>
 	</tr>
 </table>
+<font class="space4pix"><br /></font>
 <%
 	}
-%>
-</fd:ProductGroupRecommender>
-<font class="space4pix"><BR></font>
-<%
+%></fd:ProductGroupRecommender><%
 
 
 

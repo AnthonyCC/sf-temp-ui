@@ -3,6 +3,7 @@ package com.freshdirect.mobileapi.controller.data.response;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.mobileapi.controller.data.ProductConfiguration;
 
 public class CartDetail {
@@ -749,4 +750,17 @@ public class CartDetail {
     public void addSummaryLineCharge(SummaryLineCharge summaryLineCharge) {
         this.summaryLineCharges.add(summaryLineCharge);
     }
+    
+    private String expCouponDeliveryDate;
+
+	public String getExpCouponDeliveryDate() {
+		return expCouponDeliveryDate;
+	}
+
+	public void setExpCouponDeliveryDate(String expCouponDeliveryDate) {
+		this.expCouponDeliveryDate = expCouponDeliveryDate;
+	}
+    
+	
+    
 }

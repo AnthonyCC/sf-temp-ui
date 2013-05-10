@@ -23,6 +23,7 @@ import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.DepartmentModel;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.StoreModel;
+import com.freshdirect.fdstore.ecoupon.EnumCouponContext;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionError;
 import com.freshdirect.framework.webapp.ActionResult;
@@ -69,7 +70,7 @@ public class BrowseController extends BaseController {
         String postData = getPostData(request, response);
         BrowseQuery requestMessage = null;
         
-        LOG.debug("PostData received: [" + postData + "]");
+        LOG.debug("BrowseController PostData received: [" + postData + "]");
         if (StringUtils.isNotEmpty(postData)) {
             requestMessage = parseRequestObject(request, response, BrowseQuery.class);            
         }
@@ -167,9 +168,9 @@ public class BrowseController extends BaseController {
 	                    try {
 	                    	if(!((ProductModel) content).isHideIphone()) {
 	                    		if(((ProductModel) content).isUnavailable()) { // Segregate out unavailable to move them to the end
-	                    			unavailableProducts.add(Product.wrap((ProductModel) content, user.getFDSessionUser().getUser()));
+	                    			unavailableProducts.add(Product.wrap((ProductModel) content, user.getFDSessionUser().getUser(), null, EnumCouponContext.PRODUCT));
 	                    		} else {
-	                    			products.add(Product.wrap((ProductModel) content, user.getFDSessionUser().getUser()));
+	                    			products.add(Product.wrap((ProductModel) content, user.getFDSessionUser().getUser(), null, EnumCouponContext.PRODUCT));
 	                    		}	                    		
 	                    	}
 	                    } catch (Exception e) {

@@ -9,6 +9,7 @@ import org.apache.log4j.Logger;
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.SkuModel;
+import com.freshdirect.fdstore.ecoupon.EnumCouponContext;
 import com.freshdirect.mobileapi.exception.ModelException;
 import com.freshdirect.mobileapi.model.tagwrapper.GetDealsSKUTagWrapper;
 import com.freshdirect.mobileapi.model.tagwrapper.GetGSProductsTagWrapper;
@@ -28,7 +29,7 @@ public class FDGroup {
 	        for (SkuModel sku : skus) {
 	            ProductModel productModel = sku.getProductModel();
 	        	 try {
-		            products.add(Product.wrap(productModel, user.getFDSessionUser().getUser()));
+		            products.add(Product.wrap(productModel, user.getFDSessionUser().getUser(), null, EnumCouponContext.PRODUCT));
 	        	 }catch (Exception e) {
 	                 //Don't let one rotten egg ruin it for the bunch
 	                 LOG.error("ModelException encountered. Product ID=" + productModel.getFullName(), e);

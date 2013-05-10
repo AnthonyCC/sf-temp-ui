@@ -108,6 +108,9 @@
 		<% if(CrmSecurityManager.hasAccessToPage(currentAgent.getRole().getLdapRoleName(),"promotion_history.jsp")){ %>                
         <a href="<%= response.encodeURL("/main/promotion_history.jsp") %>" class="<%= pageURI.indexOf("promotion_history.jsp") > -1 ? "cust_nav_tab_on" : "cust_nav_tab" %>">Promotions</a>
         <% } %>
+		<% if(CrmSecurityManager.hasAccessToPage(currentAgent.getRole().getLdapRoleName(),"coupon_history.jsp")){ %>                
+        <a href="<%= response.encodeURL("/main/coupon_history.jsp") %>" class="<%= pageURI.indexOf("coupon_history.jsp") > -1 ? "cust_nav_tab_on" : "cust_nav_tab" %>">Ecoupons</a>
+        <% } %>
 		<% if(CrmSecurityManager.hasAccessToPage(currentAgent.getRole().getLdapRoleName(),"place_order_build.jsp")){ %>
 		<a href="<%= response.encodeURL("/order/place_order_build.jsp") %>" class="<%= newOrder ? "cust_nav_tab_on" : "cust_nav_tab" %>">New Order</a>
 		<% } %>

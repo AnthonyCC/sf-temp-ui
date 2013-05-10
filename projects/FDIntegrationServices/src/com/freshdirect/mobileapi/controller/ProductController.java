@@ -266,7 +266,7 @@ public class ProductController extends BaseController {
         if (!(StringUtils.isEmpty(categoryId) && StringUtils.isEmpty(productId))) {
             //ProductService productService = new ProductServiceImpl();
             //result = productService.getProduct(categoryId, productId);
-            result = com.freshdirect.mobileapi.model.Product.getProduct(productId, categoryId, getUserFromSession(request, response));
+            result = com.freshdirect.mobileapi.model.Product.getProduct(productId, categoryId, null, getUserFromSession(request, response));
         }
         return result;
     }

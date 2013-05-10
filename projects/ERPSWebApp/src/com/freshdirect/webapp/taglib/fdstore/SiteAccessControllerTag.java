@@ -24,6 +24,7 @@ import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDUser;
+import com.freshdirect.fdstore.ecoupon.model.FDCustomerCouponWallet;
 import com.freshdirect.fdstore.referral.FDReferralManager;
 import com.freshdirect.framework.util.NVL;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -783,12 +784,17 @@ public class SiteAccessControllerTag extends com.freshdirect.framework.webapp.Bo
 				}
 							
 			}		
+			
+		//To fetch and set customer's coupons.
+		if(user != null){
+			FDCustomerCouponUtil.initCustomerCoupons(session);
+		}
+		
         //The previous recommendations of the current session need to be removed.
         session.removeAttribute(SessionName.SMART_STORE_PREV_RECOMMENDATIONS);
         session.removeAttribute(SessionName.SAVINGS_FEATURE_LOOK_UP_TABLE);
         session.removeAttribute(SessionName.PREV_SAVINGS_VARIANT);
 		
-	}
-
+	}	
 
 }

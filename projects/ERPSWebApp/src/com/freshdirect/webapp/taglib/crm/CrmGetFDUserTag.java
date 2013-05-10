@@ -12,6 +12,7 @@ import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.framework.util.NVL;
 import com.freshdirect.webapp.taglib.AbstractGetterTag;
+import com.freshdirect.webapp.taglib.fdstore.FDCustomerCouponUtil;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
 
@@ -64,6 +65,7 @@ public class CrmGetFDUserTag extends AbstractGetterTag {
 		}
 		
 		session.setAttribute(SessionName.USER, user);
+		FDCustomerCouponUtil.initCustomerCoupons(session);
 		CrmSessionStatus sessionStatus =CrmSession.getSessionStatus(session);
 		if(null !=sessionStatus){
 			sessionStatus.setFDUser(user);

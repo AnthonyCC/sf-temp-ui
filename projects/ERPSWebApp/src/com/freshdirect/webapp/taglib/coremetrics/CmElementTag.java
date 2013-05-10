@@ -23,7 +23,7 @@ public class CmElementTag extends AbstractCmTag {
 	private ElementTagModelBuilder tagModelBuilder = new ElementTagModelBuilder();
 	
 	@Override
-	protected String getTagJs() throws SkipTagException {
+	public String getTagJs() throws SkipTagException {
 
 		tagModelBuilder.setUser((FDUserI) ((PageContext) getJspContext()).getSession().getAttribute(SessionName.USER));
 		
@@ -99,5 +99,13 @@ public class CmElementTag extends AbstractCmTag {
 	
 	public void setProductId(String productId) {
 		tagModelBuilder.setProductId(productId);
+	}
+	
+	public void setSkuCode(String skuCode) {
+		tagModelBuilder.setSkuCode(skuCode);
+	}
+	
+	public void setCouponOfferType(String couponOfferType){
+		tagModelBuilder.setCouponOfferType(couponOfferType);
 	}
 }

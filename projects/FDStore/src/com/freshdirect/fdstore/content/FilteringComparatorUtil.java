@@ -3,13 +3,19 @@ package com.freshdirect.fdstore.content;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 
 import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.content.util.SmartSearchUtils;
+import com.freshdirect.fdstore.ecoupon.EnumCouponOfferType;
+import com.freshdirect.fdstore.ecoupon.FDCouponFactory;
+import com.freshdirect.fdstore.ecoupon.model.FDCouponInfo;
+import com.freshdirect.fdstore.pricing.ProductModelPricingAdapter;
 import com.freshdirect.fdstore.util.FilteringNavigator;
 import com.freshdirect.fdstore.util.NewProductsGrouping;
+import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.smartstore.fdstore.ScoreProvider;
 import com.freshdirect.smartstore.sorting.ScriptedContentNodeComparator;
 
@@ -67,6 +73,38 @@ public class FilteringComparatorUtil {
 					comparator = ComparatorChain.reverseOrder(comparator);
 				break;
 			case BY_RECENCY:
+				
+			case BY_START_DATE:
+				comparator = ComparatorChain.create(FilteringSortingItem.wrap(COUPON_START_DATE_COMPARATOR));
+				comparator.chain(FilteringSortingItem.wrap(ProductModel.FULL_NAME_PRODUCT_COMPARATOR));
+				if (!ascending)
+					comparator = ComparatorChain.reverseOrder(comparator);
+				break;
+			case BY_EXPIRATION_DATE:
+				comparator = ComparatorChain.create(FilteringSortingItem.wrap(COUPON_EXP_DATE_COMPARATOR));
+				comparator.chain(FilteringSortingItem.wrap(ProductModel.FULL_NAME_PRODUCT_COMPARATOR));
+				if (!ascending)
+					comparator = ComparatorChain.reverseOrder(comparator);
+				break;
+				
+			case BY_PERC_DISCOUNT:
+				comparator = ComparatorChain.create(FilteringSortingItem.wrap(COUPON_PERCENT_OFF_COMPARATOR));
+				comparator.chain(FilteringSortingItem.wrap(ProductModel.FULL_NAME_PRODUCT_COMPARATOR));
+				if (!ascending)
+					comparator = ComparatorChain.reverseOrder(comparator);
+				break;
+			case BY_DOLLAR_DISCOUNT:
+				comparator = ComparatorChain.create(FilteringSortingItem.wrap(COUPON_DOLLAR_OFF_COMPARATOR));
+				comparator.chain(FilteringSortingItem.wrap(ProductModel.FULL_NAME_PRODUCT_COMPARATOR));
+				if (!ascending)
+					comparator = ComparatorChain.reverseOrder(comparator);
+				break;
+			case BY_PRIORITY:
+				comparator = ComparatorChain.create(FilteringSortingItem.wrap(COUPON_POPULARITY_COMPARATOR));
+				comparator.chain(FilteringSortingItem.wrap(ProductModel.FULL_NAME_PRODUCT_COMPARATOR));
+				if (!ascending)
+					comparator = ComparatorChain.reverseOrder(comparator);
+				break;
 			default:
 				if (showGrouped)
 					comparator = ComparatorChain.create(new NewProductsGrouping(!nav.isSortOrderingAscending()).getTimeRangeComparator()).chain(FilteringSortingItem.wrap(ProductModel.DEPTFULL_COMPARATOR))
@@ -135,6 +173,151 @@ public class FilteringComparatorUtil {
 		@Override
 		public int compare(FilteringSortingItem<Recipe> arg0, FilteringSortingItem<Recipe> arg1) {
 			return arg1.getModel().getName().compareTo(arg0.getModel().getName());
+		}
+	};
+	
+	
+	public final static Comparator<ProductModel> COUPON_EXP_DATE_COMPARATOR = new Comparator<ProductModel>() {
+
+		public int compare(ProductModel p1, ProductModel p2) {
+			try {
+				FDCouponInfo cp1 = FDCouponFactory.getInstance().getCouponByUpc(p1.getDefaultSku().getProductInfo().getUpc());
+				FDCouponInfo cp2 = FDCouponFactory.getInstance().getCouponByUpc(p2.getDefaultSku().getProductInfo().getUpc());
+				if(null != cp1 && null !=cp2){
+					Date d1=cp1.getExpirationDate();
+					Date d2=cp2.getExpirationDate();
+					return d1.compareTo(d2);
+				}
+			} catch(Exception e) {
+				
+			}
+			return 0;	
+		}
+	};
+	
+	public final static Comparator<ProductModel> COUPON_START_DATE_COMPARATOR = new Comparator<ProductModel>() {
+
+		public int compare(ProductModel p1, ProductModel p2) {		
+			try {
+				FDCouponInfo cp1 = FDCouponFactory.getInstance().getCouponByUpc(p1.getDefaultSku().getProductInfo().getUpc());
+				FDCouponInfo cp2 = FDCouponFactory.getInstance().getCouponByUpc(p2.getDefaultSku().getProductInfo().getUpc());
+				if(null != cp1 && null !=cp2){
+					Date d1=DateUtil.parseMDY(cp1.getStartDate());
+					Date d2=DateUtil.parseMDY(cp2.getStartDate());
+					return d1.compareTo(d2);
+				}
+			} catch(Exception e) {
+				
+			}
+			return 0;			
+		}
+	};
+	
+	public final static Comparator<ProductModel> COUPON_DOLLAR_OFF_COMPARATOR = new Comparator<ProductModel>() {
+
+		public int compare(ProductModel p1, ProductModel p2) {	
+			try {
+				FDCouponInfo cp1 = FDCouponFactory.getInstance().getCouponByUpc(p1.getDefaultSku().getProductInfo().getUpc());
+				FDCouponInfo cp2 = FDCouponFactory.getInstance().getCouponByUpc(p2.getDefaultSku().getProductInfo().getUpc());
+				if(null != cp1 && null !=cp2){
+					Double disc1=0.0;
+					Double disc2=0.0;
+					if(EnumCouponOfferType.DOLLAR_OFF.equals(cp1.getOfferType())){
+						disc1=Double.parseDouble(cp1.getValue());
+					}else{
+						if(EnumCouponOfferType.PERCENT_OFF.equals(cp1.getOfferType()) && p1 instanceof ProductModelPricingAdapter){
+							ProductModelPricingAdapter pricing1 = (ProductModelPricingAdapter)p1;
+							disc1=Double.parseDouble(cp1.getValue());
+							//Calculate the dollar discount based on the % discount value and the price
+							double price =pricing1.getPriceCalculator().getDefaultPriceValue();
+							disc1=(price*disc1)/100;
+						}
+					}
+					
+					if(EnumCouponOfferType.DOLLAR_OFF.equals(cp2.getOfferType())){
+						disc2=Double.parseDouble(cp2.getValue());	
+					}else{
+						if(EnumCouponOfferType.PERCENT_OFF.equals(cp2.getOfferType()) && p2 instanceof ProductModelPricingAdapter){
+							ProductModelPricingAdapter pricing2 = (ProductModelPricingAdapter)p2;
+							disc2=Double.parseDouble(cp2.getValue());
+							//Calculate the dollar discount based on the % discount value and the price
+							double price =pricing2.getPriceCalculator().getDefaultPriceValue();
+							disc2=(price*disc2)/100;
+						}
+					}
+					
+					return disc1.compareTo(disc2);
+				}
+			} catch (Exception e) {
+			}
+			return 0;
+			
+		}
+	};
+	
+	public final static Comparator<ProductModel> COUPON_PERCENT_OFF_COMPARATOR = new Comparator<ProductModel>() {
+
+		public int compare(ProductModel p1, ProductModel p2) {			
+			try {
+				FDCouponInfo cp1 = FDCouponFactory.getInstance().getCouponByUpc(p1.getDefaultSku().getProductInfo().getUpc());
+				FDCouponInfo cp2 = FDCouponFactory.getInstance().getCouponByUpc(p2.getDefaultSku().getProductInfo().getUpc());
+				if(null != cp1 && null !=cp2){
+					Double disc1=0.0;
+					Double disc2=0.0;
+					if(EnumCouponOfferType.PERCENT_OFF.equals(cp1.getOfferType())){
+						disc1=Double.parseDouble(cp1.getValue());
+					}else{
+						if(EnumCouponOfferType.DOLLAR_OFF.equals(cp1.getOfferType()) && p1 instanceof ProductModelPricingAdapter){
+							ProductModelPricingAdapter pricing1 = (ProductModelPricingAdapter)p1;
+							disc1=Double.parseDouble(cp1.getValue());
+							double price =pricing1.getPriceCalculator().getDefaultPriceValue();
+							//Calculate the % discount based on the dollar discount value and the price
+							disc1= price-disc1> 0?((disc1)/price)*100:100;
+							disc1=Math.abs(disc1);
+						}
+					}
+					
+					if(EnumCouponOfferType.PERCENT_OFF.equals(cp2.getOfferType())){
+						disc2=Double.parseDouble(cp2.getValue());	
+					}else{
+						if(EnumCouponOfferType.DOLLAR_OFF.equals(cp2.getOfferType()) && p2 instanceof ProductModelPricingAdapter){
+							ProductModelPricingAdapter pricing2 = (ProductModelPricingAdapter)p2;
+							disc2=Double.parseDouble(cp2.getValue());
+							double price =pricing2.getPriceCalculator().getDefaultPriceValue();
+							//Calculate the % discount based on the dollar discount value and the price
+							disc2= price-disc2> 0?((disc2)/price)*100:100;
+							disc2=Math.abs(disc2);
+						}
+					}
+					
+					return disc1.compareTo(disc2);
+				}
+				
+			} catch (Exception e) {
+			}
+			return 0;
+			
+		}
+	};
+	
+	public final static Comparator<ProductModel> COUPON_POPULARITY_COMPARATOR = new Comparator<ProductModel>() {
+
+		public int compare(ProductModel p1, ProductModel p2) {			
+			try {
+				FDCouponInfo cp1 = FDCouponFactory.getInstance().getCouponByUpc(p1.getDefaultSku().getProductInfo().getUpc());
+				FDCouponInfo cp2 = FDCouponFactory.getInstance().getCouponByUpc(p2.getDefaultSku().getProductInfo().getUpc());
+				if(null != cp1 && null !=cp2){
+					if(cp2.getOfferPriority()!=null && cp1.getOfferPriority()!=null){
+						return Integer.getInteger(cp2.getOfferPriority()).compareTo(Integer.getInteger(cp1.getOfferPriority()));
+					}else if(null != cp2 && cp2.getOfferPriority()!=null){
+						return 1;
+					}else if(null !=cp1 && cp1.getOfferPriority()!=null){
+						return -1;
+					}
+				}
+			} catch (Exception e) {
+			}
+			return 0;			
 		}
 	};
 }

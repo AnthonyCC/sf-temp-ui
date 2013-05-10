@@ -1743,6 +1743,24 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 		boolean isEBTOrder = (null !=paymentMethod && EnumPaymentMethodType.EBT.equals(paymentMethod.getPaymentMethodType()));
 		return isEBTOrder;
 	}
+	
+	public boolean hasCouponDiscounts(){
+		boolean hasCoupons = false;
+		ErpAbstractOrderModel orderModel = getCurrentOrder();
+		if(null!=orderModel){
+			hasCoupons = orderModel.hasCouponDiscounts();
+		}
+		return hasCoupons;
+	}
+	
+	public Set<ErpOrderLineModel> getAllCouponDiscounts(){
+		ErpAbstractOrderModel orderModel = getCurrentOrder();
+		Set<ErpOrderLineModel> couponDiscounts = null;
+		if(null!=orderModel){
+			couponDiscounts = orderModel.getAllCouponDiscounts();
+		}
+		return couponDiscounts;
+	}
 
 	public Map<String, Integer> getCartonMetrics() {
 		return cartonMetrics;

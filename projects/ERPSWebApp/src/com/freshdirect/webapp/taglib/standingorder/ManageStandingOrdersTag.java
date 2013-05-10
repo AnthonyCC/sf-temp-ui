@@ -45,6 +45,7 @@ import com.freshdirect.framework.webapp.ActionResult;
 import com.freshdirect.webapp.checkout.RedirectToPage;
 import com.freshdirect.webapp.taglib.AbstractGetterTag;
 import com.freshdirect.webapp.taglib.fdstore.AccountActivityUtil;
+import com.freshdirect.webapp.taglib.fdstore.FDCustomerCouponUtil;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
 import com.freshdirect.webapp.taglib.fdstore.ModifyOrderControllerTag;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
@@ -128,6 +129,7 @@ public class ManageStandingOrdersTag extends AbstractGetterTag {
 	 */
 	private void processAction(FDStandingOrder so, String action, ActionResult result, String orderId) throws RedirectToPage, FDResourceException, FDInvalidConfigurationException {
 		FDStandingOrdersManager mgr = FDStandingOrdersManager.getInstance();
+		HttpSession session = pageContext.getSession();
 		FDSessionUser user = (FDSessionUser) pageContext.getSession().getAttribute(SessionName.USER);
 
 		FDActionInfo info = AccountActivityUtil.getActionInfo(pageContext.getSession());
@@ -194,6 +196,9 @@ public class ManageStandingOrdersTag extends AbstractGetterTag {
 			user.setSuspendShowPendingOrderOverlay(true);
 			
 			cart.refreshAll(true);
+			//Refresh customer's coupon wallet.
+			FDCustomerCouponUtil.getCustomerCoupons(session);
+			FDCustomerCouponUtil.evaluateCartAndCoupons(session);
 			throw new RedirectToPage( "/checkout/view_cart.jsp" );
 		}
 	}

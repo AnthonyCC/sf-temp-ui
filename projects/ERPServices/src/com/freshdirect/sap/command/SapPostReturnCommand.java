@@ -24,6 +24,7 @@ public class SapPostReturnCommand extends SapCommandSupport {
 	private final List sapPromotions = new ArrayList();
 	private double deliveryCharge;
 	private double phoneCharge;
+	private final List couponDiscounts = new ArrayList();
 
 	public SapPostReturnCommand(String invoiceNumber) {
 		this.invoiceNumber = invoiceNumber;
@@ -41,6 +42,10 @@ public class SapPostReturnCommand extends SapCommandSupport {
 
 		for (Iterator i = affiliateCharges.iterator(); i.hasNext();) {
 			bapi.addAffiliateCharges((AffiliateCharges) i.next());
+		}
+		
+		for (Iterator i = couponDiscounts.iterator(); i.hasNext();) {
+			bapi.addLineDiscounts((InvoiceLineDiscount) i.next());
 		}
 
 		this.invoke(bapi);
@@ -76,6 +81,11 @@ public class SapPostReturnCommand extends SapCommandSupport {
 		this.affiliateCharges.add(new AffiliateCharges(affiliate, subtotal, tax, deposit, restockingFee, appliedCredit));
 	}
 
+	public void addCouponDiscounts(String invoiceLineNumber,String couponCode){
+		this.couponDiscounts.add(new InvoiceLineDiscount("ECOUPON", invoiceLineNumber, couponCode));		
+	}
+	
+	
 	private static class AffiliateCharges implements BapiPostReturnI.AffiliateCharges {
 
 		private final ErpAffiliate affiliate;
@@ -170,6 +180,33 @@ public class SapPostReturnCommand extends SapCommandSupport {
 				+ "]";
 		}
 		
+	}
+	
+	private static class InvoiceLineDiscount implements BapiPostReturnI.InvoiceLineDiscount{
+		public String discountType;
+		public String invoiceLineNumber;
+		public String discountCode;
+		
+		
+		public InvoiceLineDiscount(String discountType,
+				String invoiceLineNumber, String code) {
+			super();
+			this.discountType = discountType;
+			this.invoiceLineNumber = invoiceLineNumber;
+			this.discountCode = code;
+		}
+		@Override
+		public String getDiscountType() {
+			return discountType;
+		}
+		@Override
+		public String getInvoiceLineNumber() {
+			return invoiceLineNumber;
+		}
+		@Override
+		public String getDiscountCode() {
+			return discountCode;
+		}
 	}
 	
 }

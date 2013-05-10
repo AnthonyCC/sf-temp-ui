@@ -40,7 +40,7 @@ public class RequestUtil {
 			String[] params = request.getParameterValues(name);
 			for (int i = 0; i < params.length; i++) {
 				if (sb.length() > 0) {
-					sb.append("&amp;");
+					sb.append("&");
 				}
 				sb.append(name).append('=').append(URLEncoder.encode(params[i]));
 			}

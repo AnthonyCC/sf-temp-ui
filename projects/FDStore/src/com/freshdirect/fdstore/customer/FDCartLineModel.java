@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.apache.log4j.Category;
 
+import com.freshdirect.common.pricing.EnumTaxationType;
 import com.freshdirect.common.pricing.util.GroupScaleUtil;
 import com.freshdirect.customer.ErpClientCode;
 import com.freshdirect.customer.ErpInvoiceLineI;
@@ -91,6 +92,7 @@ public class FDCartLineModel extends AbstractCartLine {
 					ol.setFDGroup(null);
 					ol.setPricingZoneId(productInfo.getZonePriceInfo(getPricingContext().getZoneId()).getSapZoneId());
 				}
+				ol.setUpc(productInfo.getUpc());
 			}			
 		} catch (FDResourceException e) {
 			e.printStackTrace();
@@ -181,4 +183,11 @@ public class FDCartLineModel extends AbstractCartLine {
 		orderLine.setAddedFromSearch(addedFromSearch);
 	}
 
+	public EnumTaxationType getTaxationType() {
+		return orderLine.getTaxationType();
+	}
+
+	public void setTaxationType(EnumTaxationType taxationType) {
+		orderLine.setTaxationType(taxationType);
+	}
 }

@@ -38,6 +38,7 @@ import com.freshdirect.mobileapi.model.User;
 import com.freshdirect.mobileapi.service.ServiceException;
 import com.freshdirect.mobileapi.util.MobileApiProperties;
 import com.freshdirect.webapp.taglib.fdstore.CookieMonster;
+import com.freshdirect.webapp.taglib.fdstore.FDCustomerCouponUtil;
 import com.freshdirect.webapp.taglib.fdstore.SystemMessageList;
 import com.freshdirect.webapp.taglib.fdstore.UserUtil;
 
@@ -157,7 +158,9 @@ public class LoginController extends BaseController {
             user.setEligibleForDDPP();
             responseMessage = formatLoginMessage(user);
             resetMobileSessionData(request);
-
+            if(user != null) {            
+                FDCustomerCouponUtil.initCustomerCoupons(request.getSession());
+            }
         } catch (FDAuthenticationException ex) {
         	if("Account disabled".equals(ex.getMessage())) {
         		responseMessage = getErrorMessage(ERR_AUTHENTICATION, MessageFormat.format(SystemMessageList.MSG_DEACTIVATED, 
@@ -198,7 +201,11 @@ public class LoginController extends BaseController {
         ((LoggedIn) responseMessage).setFdUserId(user.getPrimaryKey());
         
         if (cutoffMessage != null) {
-            responseMessage.addNoticeMessage(MessageCodes.NOTICE_DELIVERY_CUTOFF, cutoffMessage);
+            responseMessage.addNoticeMessage(MessageCodes.NOTICE_DELIVERY_CUTOFF, cutoffMessage);            
+        }
+        
+        if(!user.getFDSessionUser().isCouponsSystemAvailable()) {
+        	responseMessage.addWarningMessage(MessageCodes.WARNING_COUPONSYSTEM_UNAVAILABLE, SystemMessageList.MSG_COUPONS_SYSTEM_NOT_AVAILABLE);
         }
 
       //With Mobile App having given ability to add/remove payment method this is removed

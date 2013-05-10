@@ -7,6 +7,7 @@ import com.freshdirect.common.pricing.Price;
 import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.common.pricing.PricingEngine;
 import com.freshdirect.common.pricing.PricingException;
+import com.freshdirect.customer.ErpCouponDiscountLineModel;
 
 
 public class FDPricingEngine {
@@ -14,14 +15,16 @@ public class FDPricingEngine {
 	private FDPricingEngine() {
 	}
 
-	public static FDConfiguredPrice doPricing(FDProduct fdProduct, FDConfigurableI prConf, Discount discount, PricingContext pCtx, FDGroup group, double grpQty, String pricingUnit)
+	public static FDConfiguredPrice doPricing(FDProduct fdProduct, FDConfigurableI prConf, Discount discount, PricingContext pCtx, FDGroup group, double grpQty, String pricingUnit, ErpCouponDiscountLineModel couponDiscount)
 		throws PricingException {
 
 		ConfiguredPrice configuredPrice = PricingEngine.getConfiguredPrice(fdProduct.getPricing(), prConf, pCtx, group, grpQty);
 
 		final double price;
 		final double discountValue;
-
+		final double couponDiscountValue;
+		FDConfiguredPrice fdConfiguredPrice=null;
+		Price discountedPrice =null;
 		if (discount == null) {
 			price = configuredPrice.getPrice().getPrice();
 			discountValue = 0;
@@ -33,15 +36,21 @@ public class FDPricingEngine {
 				discountValue = 0;
 
 			} else {
-				Price discountedPrice = PricingEngine.applyDiscount(configuredPrice.getPrice(), prConf.getQuantity(), discount, pricingUnit);
+				discountedPrice = PricingEngine.applyDiscount(configuredPrice.getPrice(), prConf.getQuantity(), discount, pricingUnit);
 				price = configuredPrice.getPrice().getPrice();
 				discountValue = price - discountedPrice.getPrice();
 			}
 		}
+		fdConfiguredPrice =new FDConfiguredPrice(price, discountValue, configuredPrice.getPricingCondition());
+		discountedPrice =null!=discountedPrice?discountedPrice:configuredPrice.getPrice();
+		//Apply coupon discount if any, after applying line-item discounts.
+		if(null != couponDiscount){
+			Price couponDiscountedPrice = PricingEngine.applyCouponDiscount(discountedPrice, 1, couponDiscount, pricingUnit);
+			couponDiscountValue =discountedPrice.getPrice()-couponDiscountedPrice.getPrice(); 
+			fdConfiguredPrice.setCouponDiscountValue(couponDiscountValue);
+		}
 		
-		//System.out.println("$$$$$$$$$$$$$$$$$$$$$$$$$Pricing for :" + fdProduct.getSkuCode() + " -discountValue: " + discountValue + " -price:" + price + " -condn:" + configuredPrice.getPricingCondition());
-
-		return new FDConfiguredPrice(price, discountValue, configuredPrice.getPricingCondition());
+		return fdConfiguredPrice;
 	}
 
 }

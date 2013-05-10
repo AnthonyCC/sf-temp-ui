@@ -136,7 +136,7 @@ public class FDProductHelper {
 		}
 
 		// construct FDProduct
-		return new FDProduct(product.getSkuCode(), version, product.getPricingDate(), fdMaterial, variations, salesUnits, pricing, nutrition,displaySalesUnits, nutritionPanel);
+		return new FDProduct(product.getSkuCode(), version, product.getPricingDate(), fdMaterial, variations, salesUnits, pricing, nutrition,displaySalesUnits, nutritionPanel,product.getUpc());
 	}
 	
 	public FDProductInfo getFDProductInfo(ErpProductInfoModel erpProductInfo) throws FDResourceException {

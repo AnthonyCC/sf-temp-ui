@@ -188,7 +188,7 @@ public class OrderController extends BaseController {
         Message responseMessage = null;
         if (result.isSuccess()) {
             Cart cart = user.getShoppingCart();
-            CartDetail cartDetail = cart.getCartDetail(user);
+            CartDetail cartDetail = cart.getCartDetail(user, null);
             responseMessage = new ModifiedOrder();
             ((ModifiedOrder) responseMessage).setCartDetail(cartDetail);
             ((ModifiedOrder) responseMessage).setModificationCutoffTime(cart.getModificationCutoffTime());

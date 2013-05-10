@@ -4,14 +4,13 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.SortedSet;
 import java.util.Set;
+import java.util.SortedSet;
 
 import com.freshdirect.analytics.SessionEvent;
 import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.common.pricing.PricingContext;
-
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.customer.ErpPromotionHistory;
@@ -20,12 +19,15 @@ import com.freshdirect.deliverypass.EnumDPAutoRenewalType;
 import com.freshdirect.deliverypass.EnumDlvPassProfileType;
 import com.freshdirect.deliverypass.EnumDlvPassStatus;
 import com.freshdirect.fdstore.EnumCheckoutMode;
+import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDReservation;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.content.EnumWinePrice;
 import com.freshdirect.fdstore.content.ProductModel;
-import com.freshdirect.fdstore.customer.ejb.FDSessionBeanSupport;
 import com.freshdirect.fdstore.deliverypass.FDUserDlvPassInfo;
+import com.freshdirect.fdstore.ecoupon.EnumCouponContext;
+import com.freshdirect.fdstore.ecoupon.FDCustomerCoupon;
+import com.freshdirect.fdstore.ecoupon.model.FDCustomerCouponWallet;
 import com.freshdirect.fdstore.giftcard.FDGiftCardInfoList;
 import com.freshdirect.fdstore.lists.FDCustomerListInfo;
 import com.freshdirect.fdstore.promotion.AssignedCustomerParam;
@@ -538,4 +540,21 @@ public interface FDUserI extends java.io.Serializable {
 	public ExternalCampaign getExternalCampaign();
 
 	public void setExternalPromoCampaigns(Set<ExternalCampaign> externalCampaigns);
+	
+	public FDCustomerCouponWallet getCouponWallet();
+	
+	public void setCouponWallet(FDCustomerCouponWallet couponWallet);
+	
+	public FDCustomerCoupon getCustomerCoupon(String upc, EnumCouponContext ctx);
+	public FDCustomerCoupon getCustomerCoupon(FDCartLineI cartLine, EnumCouponContext ctx);
+	
+	public void updateClippedCoupon(String couponId);
+	public boolean isEligibleForCoupons() throws FDResourceException ;
+	public boolean isCouponsSystemAvailable() throws FDResourceException ;
+	public FDCustomerCoupon getCustomerCoupon(FDProductInfo prodInfo, EnumCouponContext ctx,String catId,String prodId) ;
+	public FDCustomerCoupon getCustomerCoupon(FDCartLineI cartLine, EnumCouponContext ctx,String catId,String prodId) ;
+	public boolean isCouponEvaluationRequired();
+	public void setCouponEvaluationRequired(boolean couponEvaluationRequired);
+	public boolean isRefreshCouponWalletRequired() ;
+	public void setRefreshCouponWalletRequired(boolean refreshCouponWalletRequired) ;
 }

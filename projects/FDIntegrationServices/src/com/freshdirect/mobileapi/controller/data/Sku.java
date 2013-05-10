@@ -81,6 +81,8 @@ public class Sku {
     private String sustainabilityRating;
     
     private String sustainabilityRatingDescription;
+    
+    private Coupon coupon;
 
     public Sku() {
     }
@@ -146,6 +148,8 @@ public class Sku {
         
         String _sustainabilityRatingDescription = sku.getSustainabilityRatingDescription();
         result.setSustainabilityRatingDescription(_sustainabilityRatingDescription != null ? _sustainabilityRatingDescription : "");
+        
+        result.coupon = sku.getCoupon();
         return result;
     }
 
@@ -361,6 +365,14 @@ public class Sku {
 	public void setSustainabilityRatingDescription(
 			String sustainabilityRatingDescription) {
 		this.sustainabilityRatingDescription = sustainabilityRatingDescription;
+	}
+
+	public Coupon getCoupon() {
+		return coupon;
+	}
+
+	public void setCoupon(Coupon coupon) {
+		this.coupon = coupon;
 	}
 	
 }

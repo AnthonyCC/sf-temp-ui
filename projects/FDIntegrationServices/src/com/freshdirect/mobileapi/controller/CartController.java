@@ -1,21 +1,22 @@
 package com.freshdirect.mobileapi.controller;
 
-import java.util.ArrayList;
+import java.io.IOException;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Category;
+import org.codehaus.jackson.JsonGenerationException;
+import org.codehaus.jackson.map.JsonMappingException;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.freshdirect.fdstore.FDException;
-import com.freshdirect.fdstore.FDResourceException;
-import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDCartLineI;
+import com.freshdirect.fdstore.ecoupon.EnumCouponContext;
 import com.freshdirect.fdstore.promotion.PromotionI;
 import com.freshdirect.framework.util.log.LoggerFactory;
-import com.freshdirect.framework.webapp.ActionError;
 import com.freshdirect.framework.webapp.ActionResult;
 import com.freshdirect.mobileapi.controller.data.Message;
 import com.freshdirect.mobileapi.controller.data.request.AddItemToCart;
@@ -25,18 +26,27 @@ import com.freshdirect.mobileapi.controller.data.request.SimpleRequest;
 import com.freshdirect.mobileapi.controller.data.request.UpdateItemInCart;
 import com.freshdirect.mobileapi.controller.data.response.CartDetail;
 import com.freshdirect.mobileapi.exception.JsonException;
+import com.freshdirect.mobileapi.exception.ModelException;
+import com.freshdirect.mobileapi.exception.NoSessionException;
 import com.freshdirect.mobileapi.model.Cart;
+import com.freshdirect.mobileapi.model.MessageCodes;
 import com.freshdirect.mobileapi.model.Product;
 import com.freshdirect.mobileapi.model.ResultBundle;
 import com.freshdirect.mobileapi.model.SessionUser;
 import com.freshdirect.mobileapi.service.ServiceException;
 import com.freshdirect.mobileapi.util.MobileApiProperties;
+import com.freshdirect.webapp.taglib.fdstore.FDCustomerCouponUtil;
+import com.freshdirect.webapp.taglib.fdstore.SystemMessageList;
+
+import freemarker.template.TemplateException;
 
 public class CartController extends BaseController {
 
     private static Category LOGGER = LoggerFactory.getInstance(CartController.class);
 
     private static final String PARAM_PROMO_ID = "promoId";
+    
+    private static final String PARAM_COUPON_ID = "couponId";
 
     private static final String PARAM_CART_LINE_ID = "cartLineId";
 
@@ -59,6 +69,10 @@ public class CartController extends BaseController {
     private static final String ACTION_ADD_MULTIPLE_ITEMS_TO_CART = "addmultipleitems";
 
     private static final String ACTION_REMOVE_MULTIPLE_ITEMS_TO_CART = "removemultipleitems";
+    
+    private static final String ACTION_COUPON_CLIP = "clipcoupon";
+    
+    private static final String ACTION_VIEW_CARTLINE = "viewitem";
 
     protected boolean validateCart() {
         return true;
@@ -118,9 +132,70 @@ public class CartController extends BaseController {
         } else if (ACTION_REMOVE_MULTIPLE_ITEMS_TO_CART.equals(action)) {
             MultipleRequest reqestMessage = parseRequestObject(request, response, MultipleRequest.class);
             model = removeMultipleItemsInCart(model, user, reqestMessage, request);
+        }  else if (ACTION_COUPON_CLIP.equals(action)) {            
+            model = clipCoupon(model, user, request.getParameter(PARAM_COUPON_ID), request);
+        }   else if (ACTION_VIEW_CARTLINE.equals(action)) {            
+            try {
+				model = getCartLine(model, request, response, user);
+			} catch (NoSessionException e) {
+				throw new ServiceException(e);
+			} catch (ModelException e) {
+				throw new ServiceException(e);
+			}
         }
 
         return model;
+    }
+    
+    /**
+     * @param model
+     * @param request
+     * @param response
+     * @return
+     * @throws ServiceException 
+     * @throws IOException 
+     * @throws JsonMappingException 
+     * @throws JsonGenerationException 
+     * @throws FDException 
+     * @throws JsonException 
+     * @throws NoSessionException 
+     * @throws ModelException 
+     * @throws Exception
+     */
+    private ModelAndView getCartLine(ModelAndView model, HttpServletRequest request, HttpServletResponse response, SessionUser user)
+            throws ServiceException, FDException, JsonException, NoSessionException, ModelException {
+
+        com.freshdirect.mobileapi.model.Product product = null;
+        int cartLineId = Integer.parseInt(request.getParameter("cartLineId"));
+        FDCartLineI cartLine = user.getShoppingCart().getOrderLineById(cartLineId);
+        
+        if (cartLine != null) {
+        	String categoryId = cartLine.getCategoryName();
+            String productId = cartLine.getProductName();
+            if (!(StringUtils.isEmpty(categoryId) && StringUtils.isEmpty(productId))) {            
+            	product = com.freshdirect.mobileapi.model.Product.getProduct(productId, categoryId, cartLine, getUserFromSession(request, response));
+            }
+        }        
+        
+        Message responseMessage = null;
+        if (product != null) {
+        	try {
+                responseMessage = new com.freshdirect.mobileapi.controller.data.Product(product);
+                if (null != ((com.freshdirect.mobileapi.controller.data.Product) responseMessage).getProductTerms()) {
+                    ((com.freshdirect.mobileapi.controller.data.Product) responseMessage)
+                    	.setProductTerms(getProductWrappedTerms(((com.freshdirect.mobileapi.controller.data.Product) responseMessage).getProductTerms()));
+                }
+            } catch (ModelException e) {
+                throw new FDException(e);
+            } catch (IOException e) {
+                throw new FDException(e);
+            } catch (TemplateException e) {
+                throw new FDException(e);
+            }            
+        }
+        setResponseMessage(model, responseMessage, user);
+        return model;
+
     }
 
     /**
@@ -133,10 +208,13 @@ public class CartController extends BaseController {
      */
     private ModelAndView getCartDetail(ModelAndView model, SessionUser user, HttpServletRequest request) throws JsonException, FDException {
         Cart cart = user.getShoppingCart();
-        CartDetail cartDetail = cart.getCartDetail(user);
+        CartDetail cartDetail = cart.getCartDetail(user, EnumCouponContext.VIEWCART);
         com.freshdirect.mobileapi.controller.data.response.Cart responseMessage = new com.freshdirect.mobileapi.controller.data.response.Cart();
         responseMessage.setSuccessMessage("Cart detail has been retrieved successfully.");
         responseMessage.setCartDetail(cartDetail);
+        if(!user.getFDSessionUser().isCouponsSystemAvailable()) {
+        	responseMessage.addWarningMessage(MessageCodes.WARNING_COUPONSYSTEM_UNAVAILABLE, SystemMessageList.MSG_COUPONS_SYSTEM_NOT_AVAILABLE);
+        }
         setResponseMessage(model, responseMessage, user);
         return model;
     }
@@ -154,7 +232,7 @@ public class CartController extends BaseController {
         Cart cart = user.getShoppingCart();
         cart.removeAllAlcohol(user);
 
-        CartDetail cartDetail = cart.getCartDetail(user);
+        CartDetail cartDetail = cart.getCartDetail(user, null);
         responseMessage = new com.freshdirect.mobileapi.controller.data.response.Cart();
         ((com.freshdirect.mobileapi.controller.data.response.Cart) responseMessage).setCartDetail(cartDetail);
         responseMessage.setSuccessMessage("Alcoholic items have been removed from the cart successfully.");
@@ -178,7 +256,7 @@ public class CartController extends BaseController {
 
         Cart cart = user.getShoppingCart();
         Product product = Product.getProduct(reqestMessage.getProductConfiguration().getProductId(), reqestMessage
-                .getProductConfiguration().getCategoryId(), user);
+                .getProductConfiguration().getCategoryId(), null, user);
         if (!user.isHealthWarningAcknowledged() && product.isAlcoholProduct()) {
             responseMessage = new Message();
             responseMessage.setStatus(Message.STATUS_FAILED);
@@ -191,7 +269,7 @@ public class CartController extends BaseController {
             if (result.isSuccess()) {
                 List<String> recentItems = (List<String>) resultBundle.getExtraData(Cart.RECENT_ITEMS);
 
-                CartDetail cartDetail = cart.getCartDetail(user);
+                CartDetail cartDetail = cart.getCartDetail(user, null);
                 responseMessage = new com.freshdirect.mobileapi.controller.data.response.Cart();
                 ((com.freshdirect.mobileapi.controller.data.response.Cart) responseMessage).setCartDetail(cartDetail);
                 ((com.freshdirect.mobileapi.controller.data.response.Cart) responseMessage).setRecentlyAddedItems(recentItems);
@@ -234,7 +312,7 @@ public class CartController extends BaseController {
         propogateSetSessionValues(request.getSession(), resultBundle);
 
         if (result.isSuccess()) {
-            CartDetail cartDetail = cart.getCartDetail(user);
+            CartDetail cartDetail = cart.getCartDetail(user, null);
             responseMessage = new com.freshdirect.mobileapi.controller.data.response.Cart();
             ((com.freshdirect.mobileapi.controller.data.response.Cart) responseMessage).setCartDetail(cartDetail);
             responseMessage.setSuccessMessage(successMessage);
@@ -264,7 +342,7 @@ public class CartController extends BaseController {
         propogateSetSessionValues(request.getSession(), resultBundle);
 
         if (result.isSuccess()) {
-            CartDetail cartDetail = cart.getCartDetail(user);
+            CartDetail cartDetail = cart.getCartDetail(user, null);
             responseMessage = new com.freshdirect.mobileapi.controller.data.response.Cart();
             ((com.freshdirect.mobileapi.controller.data.response.Cart) responseMessage).setCartDetail(cartDetail);
             responseMessage.setSuccessMessage("Cart line item has been updated successfully.");
@@ -398,7 +476,7 @@ public class CartController extends BaseController {
         if (result.isSuccess()) {
             List<String> recentItems = (List<String>) resultBundle.getExtraData(Cart.RECENT_ITEMS);
 
-            CartDetail cartDetail = cart.getCartDetail(user);
+            CartDetail cartDetail = cart.getCartDetail(user, null);
             responseMessage = new com.freshdirect.mobileapi.controller.data.response.Cart();
             ((com.freshdirect.mobileapi.controller.data.response.Cart) responseMessage).setCartDetail(cartDetail);
             ((com.freshdirect.mobileapi.controller.data.response.Cart) responseMessage).setRecentlyAddedItems(recentItems);
@@ -430,7 +508,7 @@ public class CartController extends BaseController {
         ResultBundle resultBundle = cart.removeMultipleItemsFromCart(requestMessage, qetRequestData(request), user);
         ActionResult result = resultBundle.getActionResult();
 
-        CartDetail cartDetail = cart.getCartDetail(user);
+        CartDetail cartDetail = cart.getCartDetail(user, null);
         responseMessage = new com.freshdirect.mobileapi.controller.data.response.Cart();
         ((com.freshdirect.mobileapi.controller.data.response.Cart) responseMessage).setCartDetail(cartDetail);
 
@@ -439,6 +517,34 @@ public class CartController extends BaseController {
 
         } else {
             responseMessage = getErrorMessage(result, request);
+        }
+        setResponseMessage(model, responseMessage, user);
+        return model;
+    }
+    
+    /**
+     * @param model
+     * @param user
+     * @param promoId
+     * @param request
+     * @return
+     * @throws FDException
+     * @throws JsonException
+     */
+    private ModelAndView clipCoupon(ModelAndView model, SessionUser user, String couponId, HttpServletRequest request)
+            throws FDException, JsonException {
+       
+        Message responseMessage = null;
+        boolean result = false;
+       
+		if(user != null && couponId != null && couponId.trim().length() > 0) {
+			result = FDCustomerCouponUtil.clipCoupon(request.getSession(), couponId);
+		}
+        
+        if (result) {
+            responseMessage = Message.createSuccessMessage("coupon clipped");
+        } else {
+            responseMessage = Message.createFailureMessage("Unable to clip coupon.");
         }
         setResponseMessage(model, responseMessage, user);
         return model;

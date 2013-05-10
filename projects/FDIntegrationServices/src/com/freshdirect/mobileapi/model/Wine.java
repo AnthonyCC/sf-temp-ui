@@ -8,7 +8,9 @@ import org.apache.log4j.Logger;
 
 import com.freshdirect.fdstore.content.DomainValue;
 import com.freshdirect.fdstore.content.ProductModel;
+import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDUserI;
+import com.freshdirect.fdstore.ecoupon.EnumCouponContext;
 import com.freshdirect.mobileapi.exception.ModelException;
 import com.freshdirect.mobileapi.util.MobileApiProperties;
 import com.freshdirect.mobileapi.util.ProductUtil;
@@ -43,14 +45,6 @@ public class Wine extends Product {
 
     List<String> wineTypeIcons = new ArrayList<String>();
 
-    public Wine(ProductModel productModel) throws ModelException {
-        this(productModel, null, null);
-    }
-
-    public Wine(ProductModel productModel, FDUserI user) throws ModelException {
-        this(productModel, user, null);
-    }
-
     /**
      * DUP: /shared/includes/product/usq_wine_info.jspf
      * DATE: 10/07/2009   
@@ -59,8 +53,8 @@ public class Wine extends Product {
      * @param productModel
      * @throws ModelException
      */
-    public Wine(ProductModel productModel, FDUserI user, Variant variant) throws ModelException {
-        super(productModel, user, variant);
+    public Wine(ProductModel productModel, FDUserI user, Variant variant, FDCartLineI cartLine, EnumCouponContext ctx) throws ModelException {
+        super(productModel, user, variant, cartLine, ctx);
         ProductModel productNode = this.product.getProductModel();
 
         wineCity = productNode.getWineCity();

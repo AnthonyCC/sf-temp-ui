@@ -16,6 +16,7 @@ import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.DepartmentModel;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.ContentNodeTree.TreeElement;
+import com.freshdirect.fdstore.ecoupon.EnumCouponContext;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.mobileapi.exception.ModelException;
 import com.freshdirect.mobileapi.model.Brand;
@@ -134,7 +135,7 @@ public class ProductServiceImpl implements ProductService {
         
         for (ProductModel product : productModels)
             try {
-                result.add(Product.wrap(product, user.getFDSessionUser().getUser()));
+                result.add(Product.wrap(product, user.getFDSessionUser().getUser(), null, EnumCouponContext.PRODUCT));
             } catch (ModelException e) {
                 LOG.warn("ModelException encountered while preparing search result.", e);
             }

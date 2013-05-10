@@ -9,6 +9,7 @@ public class FDConfiguredPrice implements Serializable {
 	private final double configuredPrice;
 	private final double promotionValue;
 	private final MaterialPrice pricingCondition;
+	private double couponDiscountValue;
 
 	public FDConfiguredPrice(
 		double configuredPrice,
@@ -21,6 +22,19 @@ public class FDConfiguredPrice implements Serializable {
 
 	}
 
+	public FDConfiguredPrice(
+			double configuredPrice,
+			double promotionValue,
+			double couponDiscountValue,
+			MaterialPrice pricingCondition) {
+
+			this.configuredPrice = configuredPrice;
+			this.promotionValue = promotionValue;
+			this.pricingCondition = pricingCondition;
+			this.couponDiscountValue=couponDiscountValue;
+
+	}
+	
 	public double getConfiguredPrice() {
 		return configuredPrice;
 	}
@@ -35,6 +49,14 @@ public class FDConfiguredPrice implements Serializable {
 
 	public String getBasePriceUnit() {
 		return pricingCondition.getPricingUnit();
+	}
+
+	public double getCouponDiscountValue() {
+		return couponDiscountValue;
+	}
+
+	public void setCouponDiscountValue(double couponDiscountValue) {
+		this.couponDiscountValue = couponDiscountValue;
 	}
 
 }

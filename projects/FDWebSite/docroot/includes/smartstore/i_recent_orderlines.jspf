@@ -12,7 +12,9 @@
 %><%@ page import="java.util.Locale"
 %><%@ page import="com.freshdirect.fdstore.customer.FDCartLineModel"
 %><%@ page import="com.freshdirect.webapp.util.JspMethods"
+%><%@ page import="com.freshdirect.fdstore.ecoupon.*"
 %>
+<%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %>
 
 <style>
 .rol-tl {
@@ -81,10 +83,12 @@ if(__uri.indexOf("quickshop") > -1) {
 <%
 		for (Iterator oit = cart.getRecentOrderLines().iterator();oit.hasNext();) {
 			FDCartLineModel orderLine = (FDCartLineModel)oit.next();
+			EnumCouponContext couponContextCnT = EnumCouponContext.VIEWCART;
+			FDCustomerCoupon curCoupon_viewcartCnT = user.getCustomerCoupon(orderLine, couponContextCnT);
 %>
 		<tr>
 			<td><%= orderLine.getDisplayQuantity() %></td>
-			<td><%= orderLine.getDescription() %></td>
+			<td><%= orderLine.getDescription() %><display:FDCoupon coupon="<%= curCoupon_viewcartCnT %>" contClass="fdCoupon_cartlineViewCart"></display:FDCoupon></td>
 			<td style="text-align: right; padding-right: 80px;"><%= JspMethods.formatPrice(orderLine.getPrice()) %></td>
 		</tr>
 <%

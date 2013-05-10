@@ -1,17 +1,21 @@
 <%@ page import="com.freshdirect.webapp.taglib.fdstore.*" %>
 <%@ page import="java.util.Calendar" %>
 <%@ taglib uri='template' prefix='tmpl' %>
+<%@ taglib uri='freshdirect' prefix='fd' %>
 
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<jsp:include page="/shared/template/includes/server_info.jsp"/>
 <html>
 <head>
 	<title>/ FreshDirect CRM : <tmpl:get name='title'/> /</title>
 
+	<jsp:include page="/shared/template/includes/server_info.jsp"/>
+        
 	<meta http-equiv="X-UA-Compatible" content="IE=8" />
+  	<fd:css href="/assets/css/common/jquery-ui_base/jquery-ui.css" /><%-- jQuery UI base, override in global.css --%>
 	<link rel="stylesheet" type="text/css" href="/ccassets/javascript/timepicker/picker.css" >
 	<link rel="stylesheet" type="text/css" href="/assets/css/giftcards.css" />
-	<link rel="stylesheet" type="text/css" href="/assets/css/modalbox.css" />
+	<fd:css href="/assets/css/common/freshdirect.css" />
+	<link rel="stylesheet" type="text/css" href="/ccassets/javascript/timepicker/picker.css" >
 	<link rel="stylesheet" type="text/css" href="/ccassets/css/crm.css" />
 	<link rel="stylesheet" type="text/css" href="/ccassets/css/case.css" />
 	<link rel="stylesheet" type="text/css" href="/ccassets/javascript/jscalendar-1.0/calendar-system.css" />
@@ -24,11 +28,10 @@
 	<%@ include file="/shared/template/includes/yui.jspf" %>
 
 	<%-- protoype must load AFTER YUI. YUI doesn't extend elements, so the modalbox usages will fail --%>
-	<script type="text/javascript" language="javascript" src="/assets/javascript/prototype.js"></script>
-	<script src="/assets/javascript/scriptaculous/1.9.0/scriptaculous.js?load=effects,builder" type="text/javascript" language="javascript"></script>
-	<script type="text/javascript" language="javascript" src="/assets/javascript/modalbox.js"></script>
+	<%@ include file="/common/template/includes/i_javascripts.jspf" %>
 	<script type="text/javascript" language="javascript" src="/assets/javascript/FD_GiftCards.js"></script>
-	<script type="text/javascript" language="javascript" src="/assets/javascript/common_javascript.js"></script>
+
+	
 	<script type="text/javascript" language="javascript" src="/ccassets/javascript/callcenter_javascript.js"></script>
 	<script type="text/javascript" language="javascript" src="/ccassets/javascript/jscalendar-1.0/calendar.js"></script>
 	<script type="text/javascript" language="javascript" src="/ccassets/javascript/jscalendar-1.0/lang/calendar-en.js"></script>
@@ -64,30 +67,6 @@
 
 
 	<script type="text/javascript" language="javascript" src="/assets/javascript/phone_number.js"></script>
-	
-	<%--
-		using the same /directory/version/ system as scriptaculous for jquery
-		also to avoid conflicts, jQuery's $ will always be set to $jq
-	--%>
-	<script src="/assets/javascript/jquery/1.7.2/jquery.js" type="text/javascript" language="javascript"></script>
-	<script src="/assets/javascript/jquery/ui/1.8.18/jquery-ui.min.js" type="text/javascript" language="javascript"></script>
-	<script src="/assets/javascript/jquery/corner/jquery.corner.js" type="text/javascript" language="javascript"></script>
-	<script type="text/javascript" language="javascript">
-		var $jq;
-		var jqInit = false; 
-
-		function initJQuery() {
-			if (typeof(jQuery) == 'undefined') {
-				if (!jqInit) {
-					jqInit = true;
-				}
-				setTimeout("initJQuery()", 100);
-			} else {
-				$jq = jQuery.noConflict();
-			}
-		}
-		initJQuery();
-	</script>
 
 	<script language="javascript">
 		/* temp fix for CRM errors */

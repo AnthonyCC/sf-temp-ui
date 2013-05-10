@@ -103,6 +103,7 @@ final Logger LOG = LoggerFactory.getInstance("department.jsp");
 <tmpl:put name='content' direct='true'>
 	<fd:CmPageView wrapIntoScriptTag="true" currentFolder="<%=currentFolder%>"/>
 	<%
+		/*
 		int ttl=14400; 
 		String keyPrefix="deptLayout_";
 	
@@ -121,15 +122,14 @@ final Logger LOG = LoggerFactory.getInstance("department.jsp");
 		if ( "fdi".equals(deptId) || "usq".equals(deptId) ) {
 			useOsCache = false;
 		}
-	%>
-	<%
-		/* additional keyPrefix change here for cohort control */
+		//additional keyPrefix change here for cohort control
 		keyPrefix += user.getCohortName();
+		*/
 	%>
-	<oscache:cache key='<%= keyPrefix+request.getQueryString() %>' time='<%= useOsCache ? ttl : 0 %>'>
+	<%-- oscache:cache key='<%= keyPrefix+request.getQueryString() %>' time='<%= useOsCache ? ttl : 0 %>' --%>
 	
 	<%
-	try {
+	/*try {*/
 		if (isIncludeMediaLayout) {
 			%><img src="/media_stat/images/layout/clear.gif" width="1" height="10" /> <%@ include file="/common/template/includes/catLayoutManager.jspf" %><br /><%  
 		} else {
@@ -251,12 +251,13 @@ final Logger LOG = LoggerFactory.getInstance("department.jsp");
 			}
 		} // !isIncludeMediaLayout
 		
-	} catch (Exception ex) {
-		LOG.error("error while generating department page body", ex);  		%>
-		<oscache:usecached/>
-  	<% } %>
+	/*} catch (Exception ex) {
+		LOG.error("error while generating department page body", ex);
+		*/  		%>
+		<%-- oscache:usecached/ --%>
+  	<%-- } --%>
 	
-	</oscache:cache>
+	<%-- /oscache:cache --%>
 		
 </tmpl:put>
 </tmpl:insert>

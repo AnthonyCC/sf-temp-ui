@@ -97,6 +97,9 @@ import com.freshdirect.erp.model.ErpInventoryModel;
 import com.freshdirect.fdstore.FDConfiguredProduct;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.fdstore.ecoupon.EnumCouponTransactionStatus;
+import com.freshdirect.fdstore.ecoupon.EnumCouponTransactionType;
+import com.freshdirect.fdstore.ecoupon.model.ErpCouponTransactionModel;
 import com.freshdirect.framework.core.ModelI;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.core.ServiceLocator;
@@ -441,12 +444,21 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 				creditsMap.put(ac.getCustomerCreditPk().getId(), creditAmts);
 			}
             			
-
+			ErpSaleModel sale=(ErpSaleModel)saleEB.getModel();
 			ErpCancelOrderModel cancelOrder = new ErpCancelOrderModel();
 			cancelOrder.setTransactionSource(source);
 			cancelOrder.setTransactionInitiator(initiator);
+			if(EnumSaleType.REGULAR.equals(sale.getType()) && sale.hasCouponDiscounts()){
+				ErpCouponTransactionModel transModel = new ErpCouponTransactionModel();
+				transModel.setTranStatus(EnumCouponTransactionStatus.PENDING);
+				transModel.setTranType(EnumCouponTransactionType.CANCEL_ORDER);
+				Date date =new Date();
+				transModel.setCreateTime(date);
+				transModel.setTranTime(date);
+				cancelOrder.setCouponTransModel(transModel);
+			}
 			saleEB.cancelOrder(cancelOrder);
-			ErpSaleModel sale=(ErpSaleModel)saleEB.getModel();
+//			ErpSaleModel sale=(ErpSaleModel)saleEB.getModel();
 			if(EnumSaleType.REGULAR.equals(sale.getType())) {
 
 				reservationId = order.getDeliveryInfo().getDeliveryReservationId();
@@ -813,8 +825,10 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 			LOGGER.info("Add invoice - start. saleId=" + saleId);
 
 			ErpSaleEB eb = getErpSaleHome().findByPrimaryKey(new PrimaryKey(saleId));
+			ErpSaleModel sale=(ErpSaleModel)eb.getModel();
 			ErpAbstractOrderModel order = eb.getCurrentOrder();
-			if(EnumPaymentType.MAKE_GOOD.equals(order.getPaymentMethod().getPaymentType())){
+			boolean isMakeGoodOrder =EnumPaymentType.MAKE_GOOD.equals(order.getPaymentMethod().getPaymentType());
+			if(isMakeGoodOrder){
 				invoice.setAppliedCredits(Collections.<ErpAppliedCreditModel>emptyList());
 				//Applied gift cards should also be set to empty list.
 				invoice.setAppliedGiftCards(Collections.<ErpAppliedGiftCardModel>emptyList());
@@ -833,6 +847,16 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 					strategy.generateAppliedGiftCardsInfo();
 					invoice.setAppliedGiftCards(strategy.getAppGiftCardInfo());
 				}
+			}
+			
+			if(EnumSaleType.REGULAR.equals(sale.getType()) && (invoice.getSubTotal() <= 0 || isMakeGoodOrder) && sale.hasCouponDiscounts()){
+				ErpCouponTransactionModel transModel = new ErpCouponTransactionModel();
+				transModel.setTranStatus(EnumCouponTransactionStatus.PENDING);
+				transModel.setTranType(EnumCouponTransactionType.CANCEL_ORDER);
+				Date date =new Date();
+				transModel.setCreateTime(date);
+				transModel.setTranTime(date);
+				invoice.setCouponTransModel(transModel);
 			}
 			eb.addInvoice(invoice);
 			eb.updateShippingInfo(shippingInfo);
@@ -2046,6 +2070,7 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 
 			ErpSaleEB saleEB = this.getErpSaleHome().findByPrimaryKey(new PrimaryKey(saleId));
 			ErpAbstractOrderModel order = saleEB.getCurrentOrder();
+			ErpSaleModel sale =(ErpSaleModel)saleEB.getModel();
 			ErpInvoiceModel invoice = saleEB.getInvoice();
 			ErpGenerateInvoiceCommand invoiceCommand = new ErpGenerateInvoiceCommand();
 			ErpInvoiceModel newInvoice = invoiceCommand.generateNewInvoice(order, invoice, returnOrder);			
@@ -2063,8 +2088,32 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 			}
 			//System.out.println("newInvoice.getSubTotal():"+newInvoice.getSubTotal());
 			//System.out.println("newInvoice.getActualSubTotal():"+newInvoice.getActualSubTotal());
+			
+			//Cancel the coupons if any, if the order is fully returned.
+			boolean cancelCoupons = false;
+			if(EnumSaleType.REGULAR.equals(sale.getType()) && sale.hasCouponDiscounts()){
+				cancelCoupons = true;
+				if(newInvoice.getSubTotal()<=0 ){
+					ErpCouponTransactionModel transModel = new ErpCouponTransactionModel();
+					transModel.setTranStatus(EnumCouponTransactionStatus.PENDING);
+					transModel.setTranType(EnumCouponTransactionType.CANCEL_ORDER);
+					Date date =new Date();
+					transModel.setCreateTime(date);
+					transModel.setTranTime(date);
+					newInvoice.setCouponTransModel(transModel);
+				}else{
+					ErpCouponTransactionModel transModel = new ErpCouponTransactionModel();
+					transModel.setTranStatus(EnumCouponTransactionStatus.PENDING);
+					transModel.setTranType(EnumCouponTransactionType.CONFIRM_ORDER);
+					Date date =new Date();
+					transModel.setCreateTime(date);
+					transModel.setTranTime(date);
+					newInvoice.setCouponTransModel(transModel);
+				}
+			}
+			
 			saleEB.addInvoice(newInvoice);
-			SapPostReturnCommand sapCommand = createSapReturnCommand(order, newInvoice);
+			SapPostReturnCommand sapCommand = createSapReturnCommand(order, newInvoice, cancelCoupons);
 			postReturnToSap(sapCommand);
 
 		} catch (FinderException fe) {
@@ -2093,7 +2142,7 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 
 	}
 
-	private SapPostReturnCommand createSapReturnCommand(ErpAbstractOrderModel order, ErpInvoiceModel invoice) {
+	private SapPostReturnCommand createSapReturnCommand(ErpAbstractOrderModel order, ErpInvoiceModel invoice, boolean cancelCoupons) {
 
 		Map<Object,ReturnAccumulator> accs = new HashMap<Object,ReturnAccumulator>();
 		for (Iterator i = ErpAffiliate.getEnumList().iterator(); i.hasNext();) {
@@ -2167,6 +2216,15 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 		
 		command.setPhoneCharge(invoice.getPhoneCharge());
 		command.setPromotionAmount(invoice.getDiscountAmount());
+		
+		if(cancelCoupons){
+			for ( ErpOrderLineModel orderLine : order.getOrderLines() ) {
+				ErpInvoiceLineModel invoiceLine = invoice.getInvoiceLine(orderLine.getOrderLineNumber());
+				if(invoiceLine!=null && orderLine.getCouponDiscount()!=null){
+					command.addCouponDiscounts(orderLine.getOrderLineNumber(), orderLine.getCouponDiscount().getCouponId());
+				}
+			}
+		}
 
 		return command;
 	}

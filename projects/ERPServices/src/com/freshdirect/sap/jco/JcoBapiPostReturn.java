@@ -11,12 +11,14 @@ import com.sap.mw.jco.JCO;
  */
 public class JcoBapiPostReturn extends JcoBapiFunction implements BapiPostReturnI {
 		
-	private JCO.Table returnValuesIn;	
+	private JCO.Table returnValuesIn;
+	private JCO.Table discountDetailsIn;	
 	
 	public JcoBapiPostReturn() {
 		//super("ZBAPI_POST_RETURNS_REDELIVERY");
 		super("Z_BAPI_POST_RETURNS_REDELIVERY");
 		this.returnValuesIn = this.function.getTableParameterList().getTable("RETURN_VALUES");
+		this.discountDetailsIn = this.function.getTableParameterList().getTable("DISC_DETAILS");
 	}
 	
 	public void setInvoiceNumber(String invoiceNumber) {
@@ -73,6 +75,14 @@ public class JcoBapiPostReturn extends JcoBapiFunction implements BapiPostReturn
 		this.returnValuesIn.setValue(" ",	"NAME");
 		this.returnValuesIn.setValue("ZH00", "AMOUNT_TYPE");
 		this.returnValuesIn.setValue(phoneCharge, "AMOUNT");
+	}
+
+	
+	public void addLineDiscounts(InvoiceLineDiscount lineDiscount) {
+		this.discountDetailsIn.appendRow();
+		this.discountDetailsIn.setValue(lineDiscount.getDiscountType(), "TYPE");
+		this.discountDetailsIn.setValue(lineDiscount.getInvoiceLineNumber(), "LINE_ITEM");
+		this.discountDetailsIn.setValue(lineDiscount.getDiscountCode(), "COUPON_ID");		
 	}
 
 	/*****************

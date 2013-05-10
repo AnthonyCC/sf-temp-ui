@@ -183,6 +183,7 @@ public class FDOrderAdapter implements FDOrderI {
 
 			FDCartLineI cartLine;
 			cartLine = new FDCartLineModel(ol, firstInvoiceLine, lastInvoiceLine, returnLine);
+			cartLine.setCouponDiscount(ol.getCouponDiscount());
 			//If gift card sku load the fixed frice into cartline.
 			if(FDStoreProperties.getGiftcardSkucode().equalsIgnoreCase(ol.getSku().getSkuCode()) || FDStoreProperties.getRobinHoodSkucode().equalsIgnoreCase(ol.getSku().getSkuCode())){
 				cartLine.setFixedPrice(ol.getPrice());
@@ -1429,6 +1430,10 @@ public class FDOrderAdapter implements FDOrderI {
 			result = (getInvoicedTotal() <= getTotal()) ? getInvoicedTotal(): getTotal();
 		}
 		return result;
+	}
+	
+	public boolean hasCouponDiscounts(){
+		return erpOrder.hasCouponDiscounts();
 	}
 
 	@Override

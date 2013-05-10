@@ -1,4 +1,5 @@
 <%@ taglib uri='freshdirect' prefix='fd' %>
+<fd:CheckLoginStatus guestAllowed='true' />
 <%
 	Map params = new HashMap();
 

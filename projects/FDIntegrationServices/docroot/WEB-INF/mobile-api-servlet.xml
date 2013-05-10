@@ -58,6 +58,9 @@
 	
 	<bean id="browseController" class="com.freshdirect.mobileapi.controller.BrowseController"
 		parent="baseController" />
+		
+	<bean id="couponBrowseController" class="com.freshdirect.mobileapi.controller.CouponBrowseController"
+		parent="baseController" />		
 
 	<bean id="siteAccessController" class="com.freshdirect.mobileapi.controller.SiteAccessController"
 		parent="baseController" />
@@ -85,6 +88,7 @@
 				<prop key="**/test.do">testController</prop>
 				<prop key="**/help.do">helpController</prop>
 				<prop key="**/browse.do">browseController</prop>
+				<prop key="**/browsecoupon.do">couponBrowseController</prop>
 				<prop key="**/zipcheck.do">siteAccessController</prop>
 				<prop key="**/register.do">registerController</prop>
 				<prop key="**/fdinterface.do">externalInterfaceController</prop>

@@ -14,6 +14,7 @@ import javax.servlet.jsp.*;
 
 import org.apache.log4j.*;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.webapp.taglib.fdstore.FDCustomerCouponUtil;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
 
@@ -42,6 +43,7 @@ public class LoadUserTag extends com.freshdirect.framework.webapp.BodyTagSupport
 		newUser.isLoggedIn(true);
 		session.removeAttribute(SessionName.USER);
         session.setAttribute(SessionName.USER, new FDSessionUser(newUser, session));
+        FDCustomerCouponUtil.initCustomerCoupons(session);
 		return SKIP_BODY;
 	} 
 

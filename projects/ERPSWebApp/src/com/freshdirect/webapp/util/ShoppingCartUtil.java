@@ -6,6 +6,7 @@ import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.customer.FDAuthenticationException;
 import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
+import com.freshdirect.webapp.taglib.fdstore.FDCustomerCouponUtil;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
 
@@ -34,6 +35,9 @@ public class ShoppingCartUtil {
 
 
 		session.setAttribute( SessionName.USER, user );
+		
+		//Evaluate coupons for the restored cart.
+		FDCustomerCouponUtil.evaluateCartAndCoupons(session);
 
 		//The previous recommendations of the current user need to be removed.
         session.removeAttribute(SessionName.SMART_STORE_PREV_RECOMMENDATIONS);

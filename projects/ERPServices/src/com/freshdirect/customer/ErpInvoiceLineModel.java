@@ -19,6 +19,7 @@ public class ErpInvoiceLineModel extends ModelSupport implements ErpInvoiceLineI
     private String materialNumber;
     private double actualCost;
     private double actualDiscountAmount;
+    private double couponDiscountAmount;
 	
 	public ErpInvoiceLineModel(){
 		super();
@@ -36,6 +37,7 @@ public class ErpInvoiceLineModel extends ModelSupport implements ErpInvoiceLineI
 		this.materialNumber = invoiceLine.getMaterialNumber();
 		this.actualCost = invoiceLine.getActualCost();
 		this.actualDiscountAmount=invoiceLine.getActualDiscountAmount();
+		this.couponDiscountAmount=invoiceLine.getCouponDiscountAmount();
 	}
 	
     public double getPrice(){ 
@@ -116,5 +118,13 @@ public class ErpInvoiceLineModel extends ModelSupport implements ErpInvoiceLineI
 
 	public void setActualDiscountAmount(double actualDiscountAmount) {
 		this.actualDiscountAmount = actualDiscountAmount;
+	}
+
+	public double getCouponDiscountAmount() {
+		return couponDiscountAmount;
+	}
+
+	public void setCouponDiscountAmount(double couponDiscountAmount) {
+		this.couponDiscountAmount = couponDiscountAmount;
 	}
 }

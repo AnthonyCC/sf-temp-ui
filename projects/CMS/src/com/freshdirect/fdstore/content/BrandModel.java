@@ -62,5 +62,9 @@ public class BrandModel extends ContentNodeModelImpl {
 	public String getChefBlurb() {
 		return this.getAttribute("CHEF_BLURB", null);
 	}
+	
+	public String getName() {
+		return this.getAttribute("FULL_NAME", null);
+	}
 
 }

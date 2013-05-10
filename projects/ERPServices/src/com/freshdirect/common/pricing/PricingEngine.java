@@ -14,11 +14,13 @@ import java.util.Map;
 import org.apache.log4j.Category;
 
 import com.freshdirect.common.pricing.util.GroupScaleUtil;
+import com.freshdirect.customer.ErpCouponDiscountLineModel;
 import com.freshdirect.fdstore.FDCachedFactory;
 import com.freshdirect.fdstore.FDConfigurableI;
 import com.freshdirect.fdstore.FDGroup;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.GroupScalePricing;
+import com.freshdirect.fdstore.ecoupon.EnumCouponOfferType;
 import com.freshdirect.framework.util.MathUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
@@ -362,4 +364,38 @@ public class PricingEngine {
 		return price;
 	}
 
+	
+	public static Price applyCouponDiscount(Price price, double quantity, ErpCouponDiscountLineModel couponDiscount, String pricingUnit) throws PricingException {
+		if (couponDiscount==null) {
+			return price;
+		}
+		EnumCouponOfferType pt = couponDiscount.getDiscountType();
+		if ( EnumCouponOfferType.PERCENT_OFF.equals(pt) || EnumCouponOfferType.DOLLAR_OFF.equals(pt)) {
+			double basePrice = 0.0;
+			basePrice = price.getBasePrice() - (couponDiscount.getDiscountAmt() * quantity);			
+	        // round to nearest cent
+	        basePrice = MathUtil.roundDecimal(basePrice);            
+			return new Price(basePrice, price.getSurcharge());
+		}
+		/*EnumCouponOfferType pt = couponDiscount.getDiscountType();
+		if ( EnumCouponOfferType.PERCENT_OFF.equals(pt) ) {			
+			double basePrice = 0.0;
+			// percent off from base price
+			//basePrice = price.getBasePrice() * (1.0 - discount.getAmount());
+			double percentoff = price.getBasePrice() * couponDiscount.getDiscountAmt();
+			basePrice = price.getBasePrice() - percentoff;
+            // round to nearest cent
+            basePrice = MathUtil.roundDecimal(basePrice);            
+			return new Price(basePrice, price.getSurcharge());
+
+		} else if ( EnumCouponOfferType.DOLLAR_OFF.equals(pt) ) {
+			double basePrice = 0.0;
+			basePrice = price.getBasePrice() - (couponDiscount.getDiscountAmt() * quantity);			
+            // round to nearest cent
+            basePrice = MathUtil.roundDecimal(basePrice);            
+			return new Price(basePrice, price.getSurcharge());
+		}*/
+
+		throw new PricingException("Unsupported coupon discount type "+couponDiscount);
+	}
 }

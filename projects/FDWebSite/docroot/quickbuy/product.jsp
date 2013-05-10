@@ -65,6 +65,12 @@
 	} else if ( productNode.isDiscontinued() ) {
 		throw new JspException( "Product Discontinued" );
 	}
+	
+	FDCustomerCoupon custCoupon = null;
+	if (productNode != null && productNode.getDefaultSku() != null && productNode.getDefaultSku().getProductInfo() != null) {
+		custCoupon = user.getCustomerCoupon(productNode.getDefaultSku().getProductInfo(), EnumCouponContext.PRODUCT,productNode.getParentId(),productNode.getContentName());
+	}
+	request.setAttribute("custCoupon", custCoupon); //set coupon in to request for includes/tags to use
 
 	// tell i_product.jspf it's quickbuy
 	request.setAttribute("i_product_inner", Boolean.TRUE);
@@ -73,7 +79,7 @@
 <head>
 	<%@ include file="/common/template/includes/metatags.jspf" %>
 
-	<fd:javascript src="/assets/javascript/common_javascript.js"/>
+	<%@ include file="/common/template/includes/i_javascripts.jspf" %>
 
 	<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
 	<%@ include file="/shared/template/includes/ccl.jspf" %>
@@ -95,10 +101,10 @@
 	<% if (FDStoreProperties.isAnnotationMode()) { %>
 		<div id="overDiv" style="position: absolute; visibility: hidden; z-index: 10000;"></div>
 	<% } %>
-	<div class="left">
+	<div class="qbLeft">
 		<%@ include file="/shared/includes/product/i_product.jspf" %>
 	</div>
-	<div class="right">
+	<div class="qbRight">
 		<div style="padding-bottom: 2em; text-align: right;">
 		<% if (__isWineLayout) { %>
 			<a class="title12" href="<%= FDURLUtil.getProductURI(productNode, request.getParameter("variant"), request.getParameter("trk"), "qb", -1) %>&amp;backPage=<%= URLEncoder.encode(srcPage, "UTF-8") %>&amp;refTitle=<%= URLEncoder.encode(srcTitle, "UTF-8") %>" target="_top">More about this product</a>

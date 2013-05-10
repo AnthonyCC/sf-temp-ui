@@ -173,7 +173,8 @@
                         <td width="60" align="right" style="font-weight:bold;font-family: Verdana, Arial, sans-serif;font-size:12px;color:red;"><xsl:value-of select="format-number(price, '$###,##0.00', 'USD')"/></td>
                         <td width="10" style="font-family: Verdana, Arial, sans-serif;font-size:12px;"><xsl:if test="estimatedPrice = 'true'">*</xsl:if></td>
                         <td colspan="3" width="70" style="font-weight:bold;font-family: Verdana, Arial, sans-serif;font-size:12px;"><xsl:if test="tax = 'true'">&nbsp;T</xsl:if><xsl:if test="scaledPricing = 'true'">&nbsp;S</xsl:if><xsl:if test="depositValue = 'true'">&nbsp;D</xsl:if></td>                    
-                    </xsl:when>					
+                    </xsl:when>	
+		   	
 					<xsl:otherwise>
                         <td width="70" align="right" style="font-family: Verdana, Arial, sans-serif;font-size:12px;">(<xsl:value-of select="unitPrice"/>)</td>                
                         <td width="60" align="right" style="font-weight:bold;font-family: Verdana, Arial, sans-serif;font-size:12px;"><xsl:value-of select="format-number(price, '$###,##0.00', 'USD')"/></td>
@@ -204,6 +205,20 @@
 				<td width="22"></td>
 				<td colspan="2" style="font-family: Verdana, Arial, sans-serif;font-size:12px;">
 				Group Discount&nbsp;<span style="color:red">(You Saved <xsl:value-of select="format-number(groupScaleSavings, '$###,##0.00', 'USD')"/>)</span>
+				</td>
+				<td width="70" align="right"></td>
+				<td width="60" align="right"></td>
+				<td width="10"></td>
+				<td width="3" colspan="3"></td>
+			</tr>
+			</xsl:when>
+			<xsl:when test="couponDiscount != ''">
+			<tr valign="middle">
+				<td align="right" width="40"></td>
+				<td width="16"></td>
+				<td width="22"></td>
+				<td colspan="2" style="font-family: Verdana, Arial, sans-serif;font-size:12px;color:purple;">
+				Saved&nbsp;<xsl:value-of select="format-number(couponDiscount/discountAmt, '$###,##0.00', 'USD')"/> with coupon
 				</td>
 				<td width="70" align="right"></td>
 				<td width="60" align="right"></td>

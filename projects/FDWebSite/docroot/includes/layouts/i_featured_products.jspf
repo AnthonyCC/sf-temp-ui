@@ -20,9 +20,13 @@
 <%@page import="com.freshdirect.webapp.taglib.fdstore.FDSessionUser"%>
 <%@page import='com.freshdirect.fdstore.pricing.ProductPricingFactory' %>
 <%@page import ='com.freshdirect.fdstore.customer.*'%>
+<%@ page import="com.freshdirect.fdstore.ecoupon.*" %>
+<%@ page import='com.freshdirect.fdstore.customer.FDUserI'%>
 
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %>
+
+<% FDUserI feat_user = (FDUserI) pageContext.getSession().getAttribute(SessionName.USER); %>
 
 <% //expanded page dimensions
 final int W_FEATURED_PRODUCTS_TOTAL = 765;
@@ -65,12 +69,24 @@ final int W_FEATURED_PRODUCTS_BND = 683;
 				trackingCode="brand-name-deals" maxItems="30" parentId="bnd-td" eventHandlersObj="bnd_events">
 			<span class="smartstore-carousel-item">
 				<display:GetContentNodeWebId id="webId" product="<%= currentItem %>" clientSafe="<%= true %>">
-					<display:ProductImage product="<%= (ProductModel)currentItem %>" showRolloverImage="true" action="<%= actionUrl %>" className="productImage"/>
+					<% 
+					FDCustomerCoupon curCoupon = null;
+					ProductImpression coupPi = new ProductImpression((ProductModel)currentItem);
+					if (coupPi.getSku() != null && coupPi.getSku().getProductInfo() != null) {
+						curCoupon = feat_user.getCustomerCoupon(coupPi.getSku().getProductInfo(), EnumCouponContext.PRODUCT,coupPi.getProductModel().getParentId(),coupPi.getProductModel().getContentName());
+					}
+					String productImageClassName = "productImage";
+					if (curCoupon != null) {
+						productImageClassName += " couponLogo";
+					}
+					%>
+					<display:ProductImage product="<%= (ProductModel)currentItem %>" showRolloverImage="true" action="<%= actionUrl %>" className="<%= productImageClassName %>" coupon="<%= curCoupon %>" />
 					<display:ProductRating product="<%= (ProductModel)currentItem %>" action="<%= actionUrl %>"/>
 					<div class="productname">
 						<display:ProductName product="<%= (ProductModel)currentItem %>" action="<%= CmMarketingLinkUtil.getSmartStoreLink(actionUrl, brandDealRecommendations) %>" showBrandName="true" />
 					</div>
-					<display:ProductPrice impression="<%= new ProductImpression((ProductModel)currentItem) %>" showDescription="false"/>	
+					<display:ProductPrice impression="<%= new ProductImpression((ProductModel)currentItem) %>" showDescription="false"/>
+					<display:FDCoupon coupon="<%= curCoupon %>" contClass="fdCoupon_feat"></display:FDCoupon>
 				</display:GetContentNodeWebId>
 			</span>
 		</display:Carousel>

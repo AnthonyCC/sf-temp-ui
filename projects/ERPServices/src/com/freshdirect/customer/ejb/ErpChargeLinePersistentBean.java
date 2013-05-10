@@ -10,6 +10,7 @@ import java.util.List;
 
 import com.freshdirect.common.pricing.Discount;
 import com.freshdirect.common.pricing.EnumDiscountType;
+import com.freshdirect.common.pricing.EnumTaxationType;
 import com.freshdirect.customer.EnumChargeType;
 import com.freshdirect.customer.ErpChargeLineModel;
 import com.freshdirect.framework.core.ModelI;
@@ -94,7 +95,7 @@ public class ErpChargeLinePersistentBean extends ErpReadOnlyPersistentBean {
 
 	public PrimaryKey create(Connection conn) throws SQLException {
 		String id = this.getNextId(conn, "CUST");
-		PreparedStatement ps = conn.prepareStatement("INSERT INTO CUST.CHARGELINE (ID, SALESACTION_ID, AMOUNT, REASON_CODE, TYPE, PROMOTION_TYPE, PROMOTION_AMT, PROMOTION_CAMPAIGN, TAX_RATE) values (?,?,?,?,?,?,?,?,?)");
+		PreparedStatement ps = conn.prepareStatement("INSERT INTO CUST.CHARGELINE (ID, SALESACTION_ID, AMOUNT, REASON_CODE, TYPE, PROMOTION_TYPE, PROMOTION_AMT, PROMOTION_CAMPAIGN, TAX_RATE, TAXATION_TYPE) values (?,?,?,?,?,?,?,?,?,?)");
 		ps.setString(1, id);
 		ps.setString(2, this.getParentPK().getId());
 		ps.setBigDecimal(3, new BigDecimal(this.model.getAmount()));
@@ -111,6 +112,7 @@ public class ErpChargeLinePersistentBean extends ErpReadOnlyPersistentBean {
 			ps.setNull(8, Types.VARCHAR);
 		}
 		ps.setBigDecimal(9, new BigDecimal(this.model.getTaxRate()));
+		ps.setString(10, null !=this.model.getTaxationType()?this.model.getTaxationType().getName():null);
 		try {
 			if (ps.executeUpdate() != 1) {
 				throw new SQLException("Row not created");
@@ -129,7 +131,7 @@ public class ErpChargeLinePersistentBean extends ErpReadOnlyPersistentBean {
 	}
 
 	public void load(Connection conn) throws SQLException {
-		PreparedStatement ps = conn.prepareStatement("SELECT AMOUNT, REASON_CODE, TYPE, PROMOTION_TYPE, PROMOTION_AMT, PROMOTION_CAMPAIGN, TAX_RATE FROM CUST.CHARGELINE WHERE ID=?");
+		PreparedStatement ps = conn.prepareStatement("SELECT AMOUNT, REASON_CODE, TYPE, PROMOTION_TYPE, PROMOTION_AMT, PROMOTION_CAMPAIGN, TAX_RATE, TAXATION_TYPE FROM CUST.CHARGELINE WHERE ID=?");
 		ps.setString(1, this.getPK().getId());
 		ResultSet rs = ps.executeQuery();
 		if (rs.next()) {
@@ -137,6 +139,7 @@ public class ErpChargeLinePersistentBean extends ErpReadOnlyPersistentBean {
 			this.model.setReasonCode(rs.getString("REASON_CODE"));
 			this.model.setType(EnumChargeType.getEnum(rs.getString("TYPE")));
 			this.model.setTaxRate(rs.getDouble("TAX_RATE"));
+			this.model.setTaxationType(EnumTaxationType.getEnum(rs.getString("TAXATION_TYPE")));
 
 			int promoType = rs.getInt("PROMOTION_TYPE");
 			if (!rs.wasNull()) {

@@ -14,7 +14,9 @@ import java.util.Map;
 
 import com.freshdirect.affiliate.ErpAffiliate;
 import com.freshdirect.common.pricing.Discount;
+import com.freshdirect.common.pricing.EnumTaxationType;
 import com.freshdirect.common.pricing.MaterialPrice;
+import com.freshdirect.customer.ErpCouponDiscountLineModel;
 import com.freshdirect.erp.EnumATPRule;
 import com.freshdirect.erp.model.ErpInventoryModel;
 
@@ -136,5 +138,9 @@ public interface SapOrderLineI extends Serializable {
 	public double getFixedPrice();
 	
 	public String getPricingZoneId();
+	
+	public ErpCouponDiscountLineModel getCouponDiscount();
+	
+	public EnumTaxationType getTaxationType();
 
 }

@@ -121,6 +121,12 @@ public class ErpCancelOrderPersistentBean extends ErpTransactionPersistentBean {
 			}
 			this.setPK(new PrimaryKey(id));
 			
+			//Coupon related.
+			if(null !=this.model.getCouponTransModel()){
+				ErpCouponTransactionPersistentBean ctPB = new ErpCouponTransactionPersistentBean(this.model.getCouponTransModel());
+				ctPB.setParentPK(this.getPK());
+				ctPB.create( conn );
+			}
 		}catch(SQLException se){
 			throw se;
 		}finally{

@@ -20,6 +20,7 @@
 <%@page import="com.freshdirect.webapp.taglib.fdstore.FDSessionUser"%>
 <%@page import='com.freshdirect.fdstore.pricing.ProductPricingFactory' %>
 <%@page import ='com.freshdirect.fdstore.customer.*'%>
+<%@ page import="com.freshdirect.fdstore.ecoupon.*"%>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %>
 <%
@@ -113,12 +114,24 @@
 							trackingCode="<%=featExtTrackCode%>" maxItems="<%=featExtMaxItems%>" parentId="<%=temp_tdId%>" eventHandlersObj='<%=handlerObj%>'>
 						<span class="smartstore-carousel-item">
 							<display:GetContentNodeWebId id="webId" product="<%= currentItem %>" clientSafe="<%= true %>">
-								<display:ProductImage product="<%= (ProductModel)currentItem %>" showRolloverImage="true" action="<%= actionUrl %>" className="productImage" enableQuickBuy="<%=featExtUseQuickBuy%>" disabled="<%=featExtDisableLinks%>" />
+								<% 
+								FDCustomerCoupon curCoupon = null;
+								ProductImpression coupPi = new ProductImpression((ProductModel)currentItem);
+								if (coupPi.getSku() != null && coupPi.getSku().getProductInfo() != null) {
+									curCoupon = user.getCustomerCoupon(coupPi.getSku().getProductInfo(), EnumCouponContext.PRODUCT,coupPi.getProductModel().getParentId(),coupPi.getProductModel().getContentName());
+								}
+								String productImageClassName = "productImage";
+								if (curCoupon != null) {
+									productImageClassName += " couponLogo";
+								}
+								%>
+								<display:ProductImage product="<%= (ProductModel)currentItem %>" showRolloverImage="true" action="<%= actionUrl %>" className="<%=productImageClassName %>" enableQuickBuy="<%=featExtUseQuickBuy%>" disabled="<%=featExtDisableLinks%>" coupon="<%= curCoupon %>" />
 								<display:ProductRating product="<%= (ProductModel)currentItem %>" action="<%= actionUrl %>"/>
 								<div class="productname">
 									<display:ProductName product="<%= (ProductModel)currentItem %>" action="<%= CmMarketingLinkUtil.getSmartStoreLink(actionUrl, brandDealRecommendations) %>" showBrandName="true" disabled="<%=featExtDisableLinks%>" />
 								</div>
-								<display:ProductPrice impression="<%= new ProductImpression((ProductModel)currentItem) %>" showDescription="false"/>	
+								<display:ProductPrice impression="<%= new ProductImpression((ProductModel)currentItem) %>" showDescription="false"/>
+								<display:FDCoupon coupon="<%= curCoupon %>" contClass="fdCoupon_featExt"></display:FDCoupon>	
 							</display:GetContentNodeWebId>
 						</span>
 					</display:Carousel>

@@ -10,6 +10,7 @@ import java.util.Set;
 import com.freshdirect.affiliate.ErpAffiliate;
 import com.freshdirect.common.pricing.Discount;
 import com.freshdirect.common.pricing.EnumDiscountType;
+import com.freshdirect.common.pricing.EnumTaxationType;
 import com.freshdirect.common.pricing.MaterialPrice;
 import com.freshdirect.common.pricing.Price;
 import com.freshdirect.common.pricing.Pricing;
@@ -17,7 +18,9 @@ import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.common.pricing.PricingEngine;
 import com.freshdirect.common.pricing.PricingException;
 import com.freshdirect.customer.ErpClientCode;
+import com.freshdirect.customer.ErpCouponDiscountLineModel;
 import com.freshdirect.customer.ErpOrderLineModel;
+import com.freshdirect.customer.TaxCalculatorUtil;
 import com.freshdirect.fdstore.EnumOrderLineRating;
 import com.freshdirect.fdstore.EnumSustainabilityRating;
 import com.freshdirect.fdstore.FDCachedFactory;
@@ -211,8 +214,9 @@ public class FDProductSelection implements FDProductSelectionI {
 				this.orderLine.setMaterialNumber(fdProduct.getMaterial().getMaterialNumber());
 				this.orderLine.setAlcohol(fdProduct.isAlcohol());
 				this.orderLine.setAffiliate(fdProduct.getAffiliate());
-				this.orderLine.setDeliveryPass(fdProduct.isDeliveryPass());
+				this.orderLine.setDeliveryPass(fdProduct.isDeliveryPass());				
 			}
+			
 			this.performPricing();
 
 			ProductModel pm = this.lookupProduct();
@@ -271,6 +275,10 @@ public class FDProductSelection implements FDProductSelectionI {
 		return this.orderLine.getTaxRate();
 	}
 	
+	public EnumTaxationType getTaxationType() {
+		return this.orderLine.getTaxationType();
+	}
+	
 	public void setTaxRate(double taxRate){
 		if(!this.lookupFDProduct().isTaxable()){
 			taxRate = 0.0;
@@ -279,7 +287,8 @@ public class FDProductSelection implements FDProductSelectionI {
 	}
 
 	public double getTaxValue() {
-		return MathUtil.roundDecimal((getConfiguredPrice() - getPromotionValue()) * getTaxRate());
+//		return MathUtil.roundDecimal((getConfiguredPrice() - getPromotionValue() - getCouponDiscountValue()) * getTaxRate());
+		return TaxCalculatorUtil.getTaxValue(getConfiguredPrice(),getPromotionValue(), getCouponDiscountValue(), getTaxRate(), getTaxationType());
 	}
 
 	public double getDepositValue() {
@@ -295,9 +304,14 @@ public class FDProductSelection implements FDProductSelectionI {
 		return this.price.getPromotionValue();
 	}
 
+	public double getCouponDiscountValue() {
+		return this.price.getCouponDiscountValue();
+	}
+	
 	public String getUnitPrice() {
 		// dirty requirement so got to do this
-		double disAmount=0;
+		Price discountP=null;
+		double disAmount=this.price.getBasePrice();
 		Price p=new Price(this.price.getBasePrice());
 		if(this.getDiscount()!=null){
 			if(this.getDiscount().getSkuLimit() > 0 && !this.price.getBasePriceUnit().equalsIgnoreCase("lb") && this.getDiscount().getSkuLimit() != this.getQuantity()) {
@@ -309,20 +323,32 @@ public class FDProductSelection implements FDProductSelectionI {
 					disAmount = this.orderLine.getPrice()/this.orderLine.getQuantity();
 				} else {
 					try {
-						Price discountP=PricingEngine.applyDiscount(p,1,this.getDiscount(),this.price.getBasePriceUnit());
+						discountP=PricingEngine.applyDiscount(p,1,this.getDiscount(),this.price.getBasePriceUnit());
 						disAmount=discountP.getBasePrice();
 					} catch (PricingException e) {
 						e.printStackTrace();
 					}
 				}
 			}
-		}else{
-			disAmount=this.price.getBasePrice();
 		}
 		
+		//Apply the coupon discount on top of line item discount and calculate the final base price.
+		if (this.getCouponDiscount() != null) {
+			try {
+				discountP = PricingEngine.applyCouponDiscount(null!=discountP?discountP:p, 1/this.getQuantity(), this.getCouponDiscount(), this.price.getBasePriceUnit());
+				disAmount = discountP.getBasePrice();
+			} catch (PricingException e) {
+				disAmount = 0.0;
+			}
+		} 
+			 
 		return CURRENCY_FORMATTER.format(disAmount) + "/" + this.price.getBasePriceUnit().toLowerCase();
 	}
 
+	protected ErpCouponDiscountLineModel getCouponDiscount() {
+		return this.orderLine.getCouponDiscount();
+	}
+	
 	protected double getConfiguredPrice() {
 		return this.price.getConfiguredPrice();
 	}
@@ -446,15 +472,15 @@ public class FDProductSelection implements FDProductSelectionI {
 		}
 		try {
 			if(FDStoreProperties.getGiftcardSkucode().equalsIgnoreCase(this.getSkuCode()) || FDStoreProperties.getRobinHoodSkucode().equalsIgnoreCase(this.getSkuCode())){
-				this.price = FDPricingEngine.doPricing(this.lookupFDProduct(), this, this.getDiscount(), this.orderLine.getPricingContext(), null, 0.0, pricingUnit);
+				this.price = FDPricingEngine.doPricing(this.lookupFDProduct(), this, this.getDiscount(), this.orderLine.getPricingContext(), null, 0.0, pricingUnit,null);
 				this.orderLine.setPrice(this.getFixedPrice());
 				this.orderLine.setDiscountAmount(0);
 			}else
 			{
 				FDGroup group = this.getFDGroup();
 
-				this.price = FDPricingEngine.doPricing(this.lookupFDProduct(), this, this.getDiscount(), this.orderLine.getPricingContext(), group, this.getGroupQuantity(), pricingUnit);
-				this.orderLine.setPrice(price.getConfiguredPrice() - price.getPromotionValue());
+				this.price = FDPricingEngine.doPricing(this.lookupFDProduct(), this, this.getDiscount(), this.orderLine.getPricingContext(), group, this.getGroupQuantity(), pricingUnit,this.getCouponDiscount());
+				this.orderLine.setPrice(price.getConfiguredPrice() - price.getPromotionValue() - price.getCouponDiscountValue());
 				this.orderLine.setDiscountAmount(price.getPromotionValue());
 			}	
 			
@@ -615,8 +641,8 @@ public class FDProductSelection implements FDProductSelectionI {
 		try {
 				FDGroup group = this.getFDGroup();
 				if(group != null) {
-					FDConfiguredPrice regPrice = FDPricingEngine.doPricing(this.lookupFDProduct(), this, this.getDiscount(), this.orderLine.getPricingContext(), group, 0.0, this.price.getBasePriceUnit());
-					savings = regPrice.getConfiguredPrice() - (regPrice.getPromotionValue() + this.orderLine.getPrice());
+					FDConfiguredPrice regPrice = FDPricingEngine.doPricing(this.lookupFDProduct(), this, this.getDiscount(), this.orderLine.getPricingContext(), group, 0.0, this.price.getBasePriceUnit(),this.getCouponDiscount());
+					savings = regPrice.getConfiguredPrice() - (regPrice.getPromotionValue() + this.orderLine.getPrice()+regPrice.getCouponDiscountValue());
 				}
 		} catch (PricingException e) {
 			throw new FDRuntimeException(e, "PricingException occured in getGroupScaleSavings() on "+getSkuCode() + " - " + getConfiguration());
@@ -630,5 +656,10 @@ public class FDProductSelection implements FDProductSelectionI {
 	
 	public double getBasePrice() {
 		return this.price.getBasePrice();
+	}
+	
+	public String getUpc(){
+		FDProductInfo prodInfo =lookupFDProductInfo();
+		return null !=prodInfo?prodInfo.getUpc():"";
 	}
 }

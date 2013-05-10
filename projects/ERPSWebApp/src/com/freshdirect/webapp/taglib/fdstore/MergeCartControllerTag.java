@@ -88,7 +88,10 @@ public class MergeCartControllerTag extends com.freshdirect.framework.webapp.Bod
                     session.setAttribute(USER, user);
 				}
 				
-				user.getShoppingCart().setPricingContextToOrderLines(user.getPricingContext());						
+				user.getShoppingCart().setPricingContextToOrderLines(user.getPricingContext());	
+				
+				//evaluate the coupons, after the merge cart.
+				FDCustomerCouponUtil.evaluateCartAndCoupons(session);
 				
                 // get rid of the extra cart in the session
                 session.removeAttribute(CURRENT_CART);

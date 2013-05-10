@@ -9,6 +9,7 @@ import java.util.List;
 import com.freshdirect.affiliate.ErpAffiliate;
 import com.freshdirect.common.pricing.Discount;
 import com.freshdirect.common.pricing.EnumDiscountType;
+import com.freshdirect.fdstore.ecoupon.model.ErpCouponTransactionModel;
 import com.freshdirect.framework.util.MathUtil;
 import com.freshdirect.giftcard.ErpAppliedGiftCardModel;
 
@@ -26,6 +27,8 @@ public class ErpInvoiceModel extends ErpAbstractInvoiceModel {
 	private List<ErpAppliedCreditModel> appliedCredits = new ArrayList<ErpAppliedCreditModel>();
 	private List<ErpDiscountLineModel> discounts = new ArrayList<ErpDiscountLineModel>();
 	private List<ErpAppliedGiftCardModel> appliedGiftCards = new ArrayList<ErpAppliedGiftCardModel>();
+	
+	private ErpCouponTransactionModel couponTransModel;
 	
     public ErpInvoiceModel() {
 		super(EnumTransactionType.INVOICE);
@@ -153,6 +156,20 @@ public class ErpInvoiceModel extends ErpAbstractInvoiceModel {
 
 	public void setAppliedGiftCards(List<ErpAppliedGiftCardModel> appliedGiftCards) {
 		this.appliedGiftCards = appliedGiftCards;
+	}
+
+	/**
+	 * @return the couponTransModel
+	 */
+	public ErpCouponTransactionModel getCouponTransModel() {
+		return couponTransModel;
+	}
+
+	/**
+	 * @param couponTransModel the couponTransModel to set
+	 */
+	public void setCouponTransModel(ErpCouponTransactionModel couponTransModel) {
+		this.couponTransModel = couponTransModel;
 	} 
 }
 

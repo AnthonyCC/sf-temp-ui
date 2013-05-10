@@ -26,6 +26,7 @@ import javax.servlet.jsp.JspException;
 import org.apache.log4j.Category;
 
 import com.freshdirect.ErpServicesProperties;
+import com.freshdirect.common.pricing.EnumDiscountType;
 import com.freshdirect.crm.CrmAgentModel;
 import com.freshdirect.customer.EnumComplaintLineMethod;
 import com.freshdirect.customer.EnumComplaintLineType;
@@ -34,6 +35,7 @@ import com.freshdirect.customer.EnumComplaintType;
 import com.freshdirect.customer.EnumSendCreditEmail;
 import com.freshdirect.customer.ErpComplaintLineModel;
 import com.freshdirect.customer.ErpComplaintModel;
+import com.freshdirect.customer.ErpCouponDiscountLineModel;
 import com.freshdirect.customer.ErpCustomerEmailModel;
 import com.freshdirect.customer.ErpInvoiceLineI;
 import com.freshdirect.customer.ErpOrderLineModel;
@@ -45,6 +47,7 @@ import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.FDOrderI;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.customer.adapter.FDOrderAdapter;
+import com.freshdirect.fdstore.ecoupon.EnumCouponOfferType;
 import com.freshdirect.fdstore.mail.FDInfoEmail;
 import com.freshdirect.framework.mail.XMLEmailI;
 import com.freshdirect.framework.util.DateUtil;
@@ -410,35 +413,89 @@ public class ComplaintCreatorTag extends com.freshdirect.framework.webapp.BodyTa
         } else {
         	 quantity = 0.0;
         }
-
-
-
-
+        
+        //debug
+        /*
+        System.out.println("Original Quantity:" + origQty);
+        System.out.println("Original Total:" + origTotal);
+        System.out.println("Original Taxrate:" + taxRate);
+        System.out.println("Original Deposit:" + deposit);
+        System.out.println("Credit Quantity:" + quantity);
+		*/
+        
+        
         // Stage I - set amount by given quantity OR credit amount
         //   check quantity first
     	if (quantity > 0) {
-            double x = quantity * ( origTotal/origQty );
-
-            // Handle tax
-			if (taxRate > 0) {
-				x+= (x * taxRate);
-			}
-
-			// Handle deposit value
-            if (deposit > 0) {
-            	x+= quantity * ( deposit/origQty ); // += credit qty * ( deposit / orig qty)
-            }
-            amount = MathUtil.roundDecimal(x);
+    		if(orderline.getCouponDiscount() != null) {
+    			//ecoupon applied on the orderline.
+    			double x = 0;    			
+    			/*System.out.println("original price before coupon=" + orderline.getActualPrice());
+    			System.out.println("Original base price = " + orderline.getBasePrice());*/
+    			ErpCouponDiscountLineModel cModel = orderline.getCouponDiscount();
+    			//System.out.println("Coupon Qty=" + cModel.getRequiredQuantity());
+    			//if returning all items, issue full credit    			
+    			if(quantity == origQty) { 
+    				x = origTotal;
+    			} else {
+    				EnumCouponOfferType pt = cModel.getDiscountType();
+   					//Credit for dollar off ecoupon
+    				double rem_qty = origQty - cModel.getRequiredQuantity();
+    				//System.out.println("Remaining quantity after coupon applied = "+ rem_qty);
+    				if(rem_qty < quantity) {
+    					//looks like some items being credited have coupon applied on them
+    					double coupon_applied_qty = quantity - rem_qty;
+    					//System.out.println("Coupon applied to : "+ coupon_applied_qty + "....amount="+cModel.getDiscountAmt());
+    					//apply coupon price for this qty
+    					if ( EnumCouponOfferType.DOLLAR_OFF.equals(pt)) {
+    						x = coupon_applied_qty * (orderline.getBasePrice() - (coupon_applied_qty * cModel.getDiscountAmt()/cModel.getRequiredQuantity()));
+    					} else if(EnumCouponOfferType.PERCENT_OFF.equals(pt)) {
+    						double percentoff = orderline.getBasePrice() * cModel.getDiscountAmt();
+    						x = coupon_applied_qty * (orderline.getBasePrice() - percentoff);
+    					}
+    					/*System.out.println("---coupon amount applied for coupon_applied_qty="+ (coupon_applied_qty * cModel.getDiscountAmt()/cModel.getRequiredQuantity()));
+    					System.out.println("--------------coupon amount returning = " + x);*/
+    					//apply base price to remaining items
+    					x += rem_qty * orderline.getBasePrice();
+    					//System.out.println("--------------non coupon amount returning  = " + (rem_qty * orderline.getBasePrice()));
+    				} else {    					
+    					x = quantity * orderline.getBasePrice();
+    				}
+    			}
+    			// Handle tax
+				if (taxRate > 0) {
+					x+= quantity * (taxRate/origQty);
+				}
+				
+				// Handle deposit value
+		        if (deposit > 0) {
+		           	x+= quantity * ( deposit/origQty ); // += credit qty * ( deposit / orig qty)
+		        }
+		        
+		        amount = MathUtil.roundDecimal(x);
+				
+    		} else {
+	            double x = quantity * ( origTotal/origQty );
+	            
+	            // Handle tax
+				if (taxRate > 0) {
+					x+= (x * taxRate);
+				}
+		
+				// Handle deposit value
+		        if (deposit > 0) {
+		           	x+= quantity * ( deposit/origQty ); // += credit qty * ( deposit / orig qty)
+		        }
+		        amount = MathUtil.roundDecimal(x);    
+    		}  
+	        		
     	} else if (this.orderLineCreditAmount[i] != null && !"".equals(orderLineCreditAmount[i])) {
     		// ... or get the explicit value
         	amount = Double.parseDouble(orderLineCreditAmount[i]);
         } else {
         	amount = 0;
         }
-
-
-
-
+    	//System.out.println("Crediting amount calculated=" + amount);
 
 
     	// Stage II - Check amount fits into spendable / freely usable credit amount
@@ -457,7 +514,7 @@ public class ComplaintCreatorTag extends com.freshdirect.framework.webapp.BodyTa
     		double newCredsIssued = amount+newCredsSoFar;
 
 			// debug
-    		/*
+    	    /*
 			System.err.println("---- Orderline at #"+i+" / ID="+oID + " ----");
 			System.err.println("  Net Price (Total!) = " +origTotal+"; Taxed = " + olPrice);
 			System.err.println("  Credits already issued = " + st.getPrevCredits());

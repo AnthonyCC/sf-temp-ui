@@ -4,6 +4,7 @@
 <%@page import="java.util.List"%>
 <%@page import="com.freshdirect.webapp.util.FDURLUtil"%>
 <%@page import="com.freshdirect.fdstore.content.ProductModel"%>
+<%@ page import="com.freshdirect.fdstore.ecoupon.*"%>
 
 <%@ taglib uri="/WEB-INF/shared/tld/freshdirect.tld" prefix='fd'%>
 <%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display'%>
@@ -37,7 +38,14 @@
 			<img src="/media/4mm/dpt_4mm_meal_of_week.gif" alt="Meal of the Week"/>
 			<div class="mow-desc">
 				<display:GetContentNodeWebId id="webId" product="<%= mealOfTheWeek %>" clientSafe="<%= true %>">
-					<display:ProductImage product="<%= mealOfTheWeek %>" showRolloverImage="true" action="<%= actionUrl %>" useAlternateImage="true" className="mow-image" enableQuickBuy="true" webId="<%= webId %>"/>
+					<% 
+						ProductModel pmCoup = (ProductModel)mealOfTheWeek;
+						FDCustomerCoupon curCoupon = null;
+						if (pmCoup.getDefaultSku() != null && pmCoup.getDefaultSku().getProductInfo() != null) {
+							curCoupon = user.getCustomerCoupon(pmCoup.getDefaultSku().getProductInfo(), EnumCouponContext.PRODUCT,pmCoup.getParentId(),pmCoup.getContentName());
+						}
+					%>
+					<display:ProductImage product="<%= mealOfTheWeek %>" showRolloverImage="true" action="<%= actionUrl %>" useAlternateImage="true" className="mow-image" enableQuickBuy="true" webId="<%= webId %>" coupon="<%= curCoupon %>" />
 					<% if(brandImage!=null) { %>		
 						<img src="<%= brandImage.getPath() %>" style="margin-top:15px;"/><br/>
 					<% } %>
@@ -46,6 +54,7 @@
 					<display:ProductRating product="<%= mealOfTheWeek %>" action="<%= actionUrl %>" /> 
 					<display:ProductName product="<%= mealOfTheWeek %>" action="<%= actionUrl %>" showBrandName="true" noBreak="true"/> 
 					<display:ProductPrice impression="<%= new ProductImpression(mealOfTheWeek) %>" showDescription="false" />
+					<display:FDCoupon coupon="<%= curCoupon %>" contClass="fdCoupon_4mmMOTW"></display:FDCoupon>
 				</display:GetContentNodeWebId>
 			</div>
 		</div>

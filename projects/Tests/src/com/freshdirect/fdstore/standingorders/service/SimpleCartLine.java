@@ -7,8 +7,10 @@ import java.util.Set;
 
 import com.freshdirect.affiliate.ErpAffiliate;
 import com.freshdirect.common.pricing.Discount;
+import com.freshdirect.common.pricing.EnumTaxationType;
 import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.customer.ErpClientCode;
+import com.freshdirect.customer.ErpCouponDiscountLineModel;
 import com.freshdirect.customer.ErpInvoiceLineI;
 import com.freshdirect.customer.ErpOrderLineModel;
 import com.freshdirect.customer.ErpReturnLineI;
@@ -27,6 +29,7 @@ import com.freshdirect.fdstore.content.ProductReference;
 import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDInvalidConfigurationException;
 import com.freshdirect.fdstore.customer.SaleStatisticsI;
+import com.freshdirect.fdstore.ecoupon.EnumCouponStatus;
 import com.freshdirect.framework.event.EnumEventSource;
 
 public class SimpleCartLine implements FDCartLineI {
@@ -631,6 +634,66 @@ public class SimpleCartLine implements FDCartLineI {
 	}
 
 	public void setAddedFromSearch(boolean addedFromSearch) {
+	}
+
+	@Override
+	public String getUpc() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public ErpCouponDiscountLineModel getCouponDiscount() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void setCouponDiscount(ErpCouponDiscountLineModel discount) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public EnumCouponStatus getCouponStatus() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void setCouponStatus(EnumCouponStatus couponStatus) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void clearCouponDiscount() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public EnumTaxationType getTaxationType() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void setTaxationType(EnumTaxationType taxationType) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public boolean hasCouponApplied() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public void setCouponApplied(boolean applied) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

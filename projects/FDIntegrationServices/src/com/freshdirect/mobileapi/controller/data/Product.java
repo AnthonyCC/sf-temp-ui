@@ -218,7 +218,7 @@ public class Product extends Message {
     private boolean pricedByWeight;
 
     private String deliveryNote;
-
+   
     public Product() {
 
     }
@@ -803,5 +803,4 @@ public class Product extends Message {
     public String getDeliveryNote() {
         return deliveryNote;
     }
-
 }

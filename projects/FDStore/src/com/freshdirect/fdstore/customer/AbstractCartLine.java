@@ -7,6 +7,7 @@ import com.freshdirect.affiliate.ErpAffiliate;
 import com.freshdirect.common.pricing.Discount;
 import com.freshdirect.common.pricing.EnumDiscountType;
 import com.freshdirect.content.attributes.EnumAttributeName;
+import com.freshdirect.customer.ErpCouponDiscountLineModel;
 import com.freshdirect.customer.ErpInvoiceLineI;
 import com.freshdirect.customer.ErpOrderLineModel;
 import com.freshdirect.customer.ErpReturnLineI;
@@ -18,6 +19,7 @@ import com.freshdirect.fdstore.FDSalesUnit;
 import com.freshdirect.fdstore.FDSku;
 import com.freshdirect.fdstore.content.AvailabilityFactory;
 import com.freshdirect.fdstore.content.ProductModel;
+import com.freshdirect.fdstore.ecoupon.EnumCouponStatus;
 
 public abstract class AbstractCartLine extends FDProductSelection implements FDCartLineI {
 	
@@ -34,6 +36,8 @@ public abstract class AbstractCartLine extends FDProductSelection implements FDC
 	private final ErpReturnLineModel returnLine;
 
 	private final String variantId;
+	private EnumCouponStatus couponStatus;
+	private boolean couponApplied;
 
 	protected AbstractCartLine(FDSku sku, ProductModel productRef, FDConfigurableI configuration, String variantId, String pZoneId) {
 		super(sku, productRef, configuration, variantId, pZoneId);
@@ -80,6 +84,21 @@ public abstract class AbstractCartLine extends FDProductSelection implements FDC
 		this.fireConfigurationChange();
 	}
 
+	
+	public ErpCouponDiscountLineModel getCouponDiscount() {
+		return this.orderLine.getCouponDiscount();
+	}
+
+	public void setCouponDiscount(ErpCouponDiscountLineModel discount) {
+		this.orderLine.setCouponDiscount(discount);
+		this.fireConfigurationChange();
+	}
+	
+	public void clearCouponDiscount(){
+		this.setCouponDiscount(null);
+		this.setCouponStatus(null);
+		this.setCouponApplied(false);
+	}
 	//
 	// INVOICE, RETURN
 	//
@@ -266,25 +285,62 @@ public abstract class AbstractCartLine extends FDProductSelection implements FDC
 	}
 	
 	public boolean isDiscountApplied() {
-		return this.getDiscount() != null && (EnumDiscountType.DOLLAR_OFF.equals(this.getDiscount().getDiscountType()) 
-				|| EnumDiscountType.PERCENT_OFF.equals(this.getDiscount().getDiscountType()));
+		return ((this.getDiscount() != null && (EnumDiscountType.DOLLAR_OFF.equals(this.getDiscount().getDiscountType()) 
+				|| EnumDiscountType.PERCENT_OFF.equals(this.getDiscount().getDiscountType())))|| 
+				(this.getCouponDiscount()!=null && EnumDiscountType.DOLLAR_OFF.equals(this.getCouponDiscount().getDiscountType())));
 	}
 	
 	public String getDiscountedUnitPrice(){
+		String discountedUnitPrice="";
+		double discountAmt =0.0;
 		if(!isDiscountApplied()) {
 			return "";
 		}
-		if(EnumDiscountType.DOLLAR_OFF.equals(this.getDiscount().getDiscountType())) 
-			return CURRENCY_FORMATTER.format(this.price.getBasePrice() - this.getDiscount().getAmount())  + "/" + this.price.getBasePriceUnit().toLowerCase();
-		else if(EnumDiscountType.PERCENT_OFF.equals(this.getDiscount().getDiscountType())){
-			double discountAmt = this.price.getBasePrice() * this.getDiscount().getAmount();
-			return CURRENCY_FORMATTER.format(this.price.getBasePrice() - discountAmt)  + "/" + this.price.getBasePriceUnit().toLowerCase();
-		}else {
-			throw new IllegalArgumentException("Invalid Discount Type");
-			
+		if(null !=getDiscount()){
+			if(EnumDiscountType.DOLLAR_OFF.equals(this.getDiscount().getDiscountType())) {
+				discountAmt=this.getDiscount().getAmount();
+			}else if(EnumDiscountType.PERCENT_OFF.equals(this.getDiscount().getDiscountType())){
+				discountAmt = this.price.getBasePrice() * this.getDiscount().getAmount();
+			}else {
+				throw new IllegalArgumentException("Invalid Discount Type");			
+			}
 		}
+		if(null!=getCouponDiscount()){
+			discountAmt = discountAmt+getCouponDiscount().getDiscountAmt();
+		}
+		discountedUnitPrice = CURRENCY_FORMATTER.format(this.price.getBasePrice() - discountAmt)  + "/" + this.price.getBasePriceUnit().toLowerCase();
+		return discountedUnitPrice;
 	}
 	public String getLineItemDiscount() {
 		return CURRENCY_FORMATTER.format(this.price.getPromotionValue());
+	}
+
+	public String getLineItemCouponDiscount() {
+		return CURRENCY_FORMATTER.format(this.price.getCouponDiscountValue());
+	}
+	
+	/**
+	 * @return the couponStatus
+	 */
+	public EnumCouponStatus getCouponStatus() {
+		return couponStatus;
+	}
+
+	/**
+	 * @param couponStatus the couponStatus to set
+	 */
+	public void setCouponStatus(EnumCouponStatus couponStatus) {
+		this.couponStatus = couponStatus;
+	}
+	
+	@Override
+	public boolean hasCouponApplied() {
+		return couponApplied;
+	}
+
+	@Override
+	public void setCouponApplied(boolean applied) {
+		this.couponApplied =applied;
+		
 	}
 }

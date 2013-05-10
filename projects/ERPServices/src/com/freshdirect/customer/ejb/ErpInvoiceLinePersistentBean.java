@@ -92,7 +92,7 @@ public class ErpInvoiceLinePersistentBean extends ErpReadOnlyPersistentBean {
 
 	public PrimaryKey create(Connection conn) throws SQLException {
 		String id = this.getNextId(conn, "CUST");
-		PreparedStatement ps = conn.prepareStatement("INSERT INTO CUST.INVOICELINE (ID, SALESACTION_ID, ORDERLINE_NUMBER, ACTUAL_PRICE, ACTUAL_QUANTITY, LINE_TAX, DEPOSIT_VALUE, MATERIAL_NUMBER, ACTUAL_WEIGHT, CUSTOMIZATION_PRICE, ACTUAL_COST, DISCOUNT_AMT) values (?,?,?,?,?,?,?,?,?,?,?,?)");
+		PreparedStatement ps = conn.prepareStatement("INSERT INTO CUST.INVOICELINE (ID, SALESACTION_ID, ORDERLINE_NUMBER, ACTUAL_PRICE, ACTUAL_QUANTITY, LINE_TAX, DEPOSIT_VALUE, MATERIAL_NUMBER, ACTUAL_WEIGHT, CUSTOMIZATION_PRICE, ACTUAL_COST, DISCOUNT_AMT,COUPON_DISC_AMT) values (?,?,?,?,?,?,?,?,?,?,?,?,?)");
 		ps.setString(1, id);
 		ps.setString(2, this.getParentPK().getId());
 		ps.setString(3, this.model.getOrderLineNumber());
@@ -105,6 +105,7 @@ public class ErpInvoiceLinePersistentBean extends ErpReadOnlyPersistentBean {
 		ps.setBigDecimal(10, new BigDecimal(String.valueOf(this.model.getCustomizationPrice())));
 		ps.setBigDecimal(11, new BigDecimal(String.valueOf(this.model.getActualCost())));
 		ps.setBigDecimal(12, new BigDecimal(String.valueOf(this.model.getActualDiscountAmount())));
+		ps.setBigDecimal(13, new BigDecimal(String.valueOf(this.model.getCouponDiscountAmount())));
 		try {
 			if (ps.executeUpdate() != 1) {
 				throw new SQLException("Row not created");
@@ -123,7 +124,7 @@ public class ErpInvoiceLinePersistentBean extends ErpReadOnlyPersistentBean {
 	}
 
 	public void load(Connection conn) throws SQLException {
-		PreparedStatement ps = conn.prepareStatement("SELECT ORDERLINE_NUMBER, ACTUAL_PRICE, ACTUAL_QUANTITY, LINE_TAX, DEPOSIT_VALUE, MATERIAL_NUMBER, ACTUAL_WEIGHT, CUSTOMIZATION_PRICE, ACTUAL_COST, DISCOUNT_AMT FROM CUST.INVOICELINE WHERE ID=?");
+		PreparedStatement ps = conn.prepareStatement("SELECT ORDERLINE_NUMBER, ACTUAL_PRICE, ACTUAL_QUANTITY, LINE_TAX, DEPOSIT_VALUE, MATERIAL_NUMBER, ACTUAL_WEIGHT, CUSTOMIZATION_PRICE, ACTUAL_COST, DISCOUNT_AMT, COUPON_DISC_AMT FROM CUST.INVOICELINE WHERE ID=?");
 		ps.setString(1, this.getPK().getId());
 		ResultSet rs = ps.executeQuery();
 		if (rs.next()) {
@@ -137,6 +138,7 @@ public class ErpInvoiceLinePersistentBean extends ErpReadOnlyPersistentBean {
 			this.model.setCustomizationPrice(rs.getDouble("CUSTOMIZATION_PRICE"));
 			this.model.setActualCost(rs.getDouble("ACTUAL_COST"));
 			this.model.setActualDiscountAmount(rs.getDouble("DISCOUNT_AMT"));
+			this.model.setCouponDiscountAmount(rs.getDouble("COUPON_DISC_AMT"));
 			this.model.setPrice(model.getPrice()-model.getActualDiscountAmount());
 		} else {
 			throw new SQLException("No such ErpInvoiceLine PK: " + this.getPK());

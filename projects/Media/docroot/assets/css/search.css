@@ -683,7 +683,7 @@ a.sortitem:visited  {
 .search-recommender { 
 	clear: both;
 	width: 801px;
-	height: 533px;
+	height: 581px;
 	overflow:hidden; 
 	margin: 0 1px 0 0;
 	border-right: 1px solid #e9e9e9;
@@ -695,8 +695,8 @@ a.sortitem:visited  {
 	position: absolute;
 	top: 51px;
 	left: 0;
-	clip: rect(0 801px 480px 0);
-	clip: rect(0, 801px, 480px, 0);
+	clip: rect(0 801px 520px 0);
+	clip: rect(0, 801px, 520px, 0);
 }
 .items .search-recommender {
 	width: 793px;
@@ -704,8 +704,8 @@ a.sortitem:visited  {
 }
 .items .search-recommender .fd-carousel { 
 	left: -5px;
-	clip: rect(0 798px 480px 5px);
-	clip: rect(0, 798px, 480px, 5px);
+	clip: rect(0 798px 520px 5px);
+	clip: rect(0, 798px, 520px, 5px);
 }
 .items .search-recommender .yui-carousel-first-button {
 	left: 5px;

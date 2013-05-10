@@ -7,7 +7,7 @@ import com.freshdirect.fdstore.content.CategoryModel;
 import com.freshdirect.mobileapi.controller.data.Image;
 import com.freshdirect.mobileapi.controller.data.Image.ImageSizeType;
 
-public class Category {
+public class Category extends ProductContainer {
 
     String name;
 
@@ -16,6 +16,14 @@ public class Category {
     private List<Image> images = new ArrayList<Image>();
     
     public static Category wrap(CategoryModel model) {
+        return wrapCategory(model, 0);
+    }
+    
+    public static Category wrap(CategoryModel model, long noOfProducts) {
+        return wrapCategory(model, noOfProducts);
+    }
+    
+    private static Category wrapCategory(CategoryModel model, long noOfProducts) {
         Category result = new Category();
         result.name = model.getFullName();
         result.id = model.getContentKey().getId();
@@ -32,7 +40,7 @@ public class Category {
             detailImage.setType(ImageSizeType.THUMB);
             images.add(detailImage);
         }
-       
+        result.setNoOfProducts(noOfProducts);
         return result;
     }
 

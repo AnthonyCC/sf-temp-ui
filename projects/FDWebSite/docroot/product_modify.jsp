@@ -4,6 +4,7 @@
 <%@ page import='com.freshdirect.fdstore.customer.*' %>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
 <%@ page import="com.freshdirect.framework.webapp.*"%>
+<%@ page import="com.freshdirect.fdstore.ecoupon.*"%>
 
 <%@ page import='java.util.*' %>
 <%@ taglib uri='template' prefix='tmpl' %>
@@ -63,6 +64,11 @@ final int W_PRODUCT_MODIFY_TOTAL = 600;
 	}
 	String tagAction = request.getParameter("action")!=null ? request.getParameter("action") :  "changeOrderLine" ;
 //	String formAction = request.getRequestURI() + "?" + request.getQueryString();
+	FDCustomerCoupon custCoupon = null;
+	if (templateLine != null && templateLine.getUpc()!=null) {
+		custCoupon = user.getCustomerCoupon(templateLine, EnumCouponContext.PRODUCT);
+	}
+	request.setAttribute("custCoupon", custCoupon); //set coupon in to request for includes/tags to use
 
 %>
 <fd:FDShoppingCart id='cart' result='result' action='<%= tagAction %>' successPage='<%= successPage %>'>

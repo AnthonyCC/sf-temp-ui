@@ -94,6 +94,12 @@ final int W_INDEX_RIGHT_CENTER = W_INDEX_TOTAL - 228 - W_INDEX_CENTER_PADDING;
 		</style>
 	</tmpl:put>
 	<tmpl:put name="customJs">
+		<script>
+			$jq(document).ready(function(){
+
+				fixGridFeatRowHeights('.ddpp_feat_prod_cont', 'div.featurebox', '.grid-item'); <%-- moved to common_javascript --%>
+			});
+		</script>
 	</tmpl:put>
 	<tmpl:put name="customJsBottom">
 	</tmpl:put>

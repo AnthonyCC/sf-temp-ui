@@ -11,6 +11,8 @@
 <%@ page import="com.freshdirect.webapp.util.CCFormatter"%>
 <%@ page import='com.freshdirect.fdstore.FDStoreProperties' %>
 <%@page import="com.freshdirect.webapp.util.JspMethods"%>
+<%@ page import="com.freshdirect.fdstore.ecoupon.*"%>
+<%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %>
 <script type="text/javascript" language="javascript" src="/assets/javascript/FD_PromoEligibility.js"></script>
 <%
     boolean firstRecipe = true;
@@ -169,15 +171,40 @@
 		<% } %> 
 			<% if ( discountMsg!=null && !"".equals(discountMsg) ) { %><br />&nbsp;&nbsp;<span><%= discountMsg %></span><% } %>
 			<% if ( groupDiscountMsg!=null && !"".equals(groupDiscountMsg) ) { %><br />&nbsp;&nbsp;<span><%= groupDiscountMsg %></span><% } %>
+			<%--if(request.getRequestURI().startsWith("/main/order_details.jsp")){--%>
+			<br /><display:FDCoupon coupon="<%= user.getCustomerCoupon(cartLine, EnumCouponContext.VIEWORDER) %>" contClass="fdCoupon_cartlineChckout_CRMrec" pastTense="true"></display:FDCoupon>
+			<%--} else { --%>
+			<!-- <br /><display:FDCoupon coupon="<%= user.getCustomerCoupon(cartLine, EnumCouponContext.CHECKOUT) %>" contClass="fdCoupon_cartlineChckout_CRMrec"></display:FDCoupon> -->
+			<%-- } --%>
+			<% if(cartLine.getCouponDiscount()!=null){ %>
+			<span class="fdCoupon_msg">Id: <%= cartLine.getCouponDiscount().getCouponId() %></span>
+			<% } %>
     </td>
     <td width="6%" align="center"> 
     <%if(__cld_hasInvoice && cartLine.isPricedByLb()){%>
         <%=invoiceLine.getWeight()%>&nbsp;lb 
     <%}%>
     </td>
-    <td width="8%" align="center"><span <%= (cartLine.getDiscount() != null) ? "style=\"color: #CC0000;\"" : "" %>>(<%= cartLine.getUnitPrice() %>)</span></td>
+    <td width="8%" align="center"><span <%= (cartLine.getDiscount() != null || cartLine.getCouponDiscount()!=null) ? "style=\"color: #CC0000;\"" : "" %>>(<%= cartLine.getUnitPrice() %>)</span></td>
     <td width="6%" align="right"><%if(__cld_hasInvoice)%><%=invoiceLine.getCustomizationPrice() > 0 ? JspMethods.formatPrice(invoiceLine.getCustomizationPrice()) : ""%></td>
-    <td align="right"><span <%= (cartLine.getDiscount() != null) ? "style=\"color: #CC0000;\"" : "" %>><%= JspMethods.formatPrice(cartLine.getPrice()) %><%if(__cld_hasInvoice){%> / <b><%=JspMethods.formatPrice(invoiceLine.getPrice())%><%}%></b></span></td>
+    <% if(cartLine.getCouponDiscount() != null) { 
+			ErpCouponDiscountLineModel cModel = cartLine.getCouponDiscount();
+		%><td align="right">
+		<div class="fdCoupon_cartlineChckout_CRMrec" name="fdCoupon_<%=cartLine.getCartlineId()%>_cont">
+			<span class="fdCoupon_detCont" name="fdCoupon_<%=cartLine.getCartlineId()%>_detCont">
+			<a class="fdCoupon_det" style="color:#CC0000;" onclick="return false;" name="fdCoupon_<%=cartLine.getCartlineId()%>_det" href="#"><%= JspMethods.formatPrice(cartLine.getPrice()) %><%if(__cld_hasInvoice){%> / <b><%=JspMethods.formatPrice(invoiceLine.getPrice())%><%}%></b></a>
+			</span>
+			<div class="fdCoupon_detContent" style="display: none;" name="fdCoupon_<%=cartLine.getCartlineId()%>_detContent">Total Price before coupon is applied: $<%=cartLine.getActualPrice()%><br/>
+			Original Price before coupon is applied: $<%=cartLine.getBasePrice()%>/ea<br/>
+			Coupon Discount Amount: $<%=cModel.getDiscountAmt()%><br/>
+			Total Price after Coupon is applied (original price - coupon discount): (<%=cartLine.getActualPrice()%> - <%=cModel.getDiscountAmt()%>) = $<%=cartLine.getPrice()%><br/>
+			Price after coupon is applied: (Total Price / quantity.): ( <%=cartLine.getPrice()%>/<%=cartLine.getDisplayQuantity()%>) = <%=cartLine.getUnitPrice()%></div>
+		</div>
+    
+    </td>
+    <% } else { %>
+     <td align="right"><span <%= (cartLine.getDiscount() != null || cartLine.getCouponDiscount()!=null) ? "style=\"color: #CC0000;\"" : "" %>><%= JspMethods.formatPrice(cartLine.getPrice()) %><%if(__cld_hasInvoice){%> / <b><%=JspMethods.formatPrice(invoiceLine.getPrice())%><%}%></b></span></td>
+    <% } %>
     <td width="1%">
         <%if (cartLine.isEstimatedPrice()) {
                 if(!__cld_hasInvoice){

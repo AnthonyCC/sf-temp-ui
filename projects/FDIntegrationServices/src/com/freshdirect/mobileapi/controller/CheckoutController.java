@@ -20,6 +20,7 @@ import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDOrderI;
+import com.freshdirect.fdstore.ecoupon.EnumCouponContext;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionError;
 import com.freshdirect.framework.webapp.ActionResult;
@@ -42,6 +43,7 @@ import com.freshdirect.mobileapi.model.DeliveryAddress.DeliveryAddressType;
 import com.freshdirect.mobileapi.model.DeliveryTimeslots;
 import com.freshdirect.mobileapi.model.DeliveryTimeslots.TimeSlotCalculationResult;
 import com.freshdirect.mobileapi.model.Depot;
+import com.freshdirect.mobileapi.model.MessageCodes;
 import com.freshdirect.mobileapi.model.PaymentMethod;
 import com.freshdirect.mobileapi.model.ResultBundle;
 import com.freshdirect.mobileapi.model.SessionUser;
@@ -51,6 +53,7 @@ import com.freshdirect.mobileapi.model.tagwrapper.SessionParamName;
 import com.freshdirect.mobileapi.service.ServiceException;
 import com.freshdirect.webapp.taglib.fdstore.AccountActivityUtil;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
+import com.freshdirect.webapp.taglib.fdstore.SystemMessageList;
 
 public class CheckoutController extends BaseController {
 
@@ -68,6 +71,8 @@ public class CheckoutController extends BaseController {
 
     private final static String ACTION_GET_DELIVERY_ADDRESSES = "getdeliveryaddresses";
 
+    private final static String ACTION_ORDER_DETAIL = "orderdetail";
+    
     private final static String ACTION_REVIEW_ORDER_DETAIL = "revieworderdetail";
 
     private final static String ACTION_SET_DELIVERY_ADDRESS = "setdeliveryaddress";
@@ -142,9 +147,12 @@ public class CheckoutController extends BaseController {
         } else if (ACTION_SET_PAYMENT_METHOD.equals(action)) {
             PaymentMethodSelection requestMessage = parseRequestObject(request, response, PaymentMethodSelection.class);
             model = setPaymentMethod(model, user, requestMessage, request);
+        } else if (ACTION_ORDER_DETAIL.equals(action)) {
+            //Check Order Info Currently being ordered.
+            model = reviewOrder(model, user, request, EnumCouponContext.VIEWCART);
         } else if (ACTION_REVIEW_ORDER_DETAIL.equals(action)) {
             //Review order. What's being order, where it's going, how it's being paid for, etc.
-            model = reviewOrder(model, user, request);
+            model = reviewOrder(model, user, request, EnumCouponContext.CHECKOUT);
         } else if (ACTION_SUBMIT_ORDER.equals(action)) {
             model = submitOrder(model, user, request);
         } else if (ACTION_GET_ATP_ERROR_DETAIL.equals(action)) {
@@ -295,9 +303,21 @@ public class CheckoutController extends BaseController {
      * @throws FDException
      * @throws JsonException
      */
-    private ModelAndView reviewOrder(ModelAndView model, SessionUser user, HttpServletRequest request) throws FDException, JsonException {
+    private ModelAndView reviewOrder(ModelAndView model, SessionUser user, HttpServletRequest request, EnumCouponContext ctx) throws FDException, JsonException {
         Checkout checkout = new Checkout(user);
-        Message responseMessage = checkout.getCurrentOrderDetails();
+        Message responseMessage = checkout.getCurrentOrderDetails(ctx);
+        if(!user.getFDSessionUser().isCouponsSystemAvailable()) {
+        	responseMessage.addWarningMessage(MessageCodes.WARNING_COUPONSYSTEM_UNAVAILABLE
+        										, SystemMessageList.MSG_COUPONS_SYSTEM_NOT_AVAILABLE);
+        }else{
+        	user.setRefreshCouponWalletRequired(true);
+        	user.setCouponEvaluationRequired(true);
+        }
+        
+        if(user.getFDSessionUser().getShoppingCart().getExpCouponDeliveryDate()!=null){
+        	responseMessage.addWarningMessage(MessageCodes.WARNING_COUPONS_EXP_DELIVERY_DATE
+					, MessageCodes.MSG_COUPONS_EXP_DELIVERY_DATE);
+        }
         setResponseMessage(model, responseMessage, user);
         return model;
     }

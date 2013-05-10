@@ -87,6 +87,8 @@ public class ErpProductEntityBean extends VersionedEntityBeanSupport {
 	
 	private String sustainabilityRating;
 	
+	private String upc;
+	
     /**
      * Default constructor.
      */
@@ -114,7 +116,7 @@ public class ErpProductEntityBean extends VersionedEntityBeanSupport {
 			this.getProxiedMaterial(),
 			this.getHiddenSalesUnitPKs(),
 			this.getHiddenCharacteristicValuePKs(),
-			this.rating,this.days_fresh,this.days_in_house,this.basePrice,this.basePriceUnit,this.sustainabilityRating);
+			this.rating,this.days_fresh,this.days_in_house,this.basePrice,this.basePriceUnit,this.sustainabilityRating,this.upc);
         super.decorateModel(model);
         return model;
     }

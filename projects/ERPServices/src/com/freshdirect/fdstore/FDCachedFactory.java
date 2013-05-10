@@ -9,6 +9,7 @@
 package com.freshdirect.fdstore;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 import com.freshdirect.customer.ErpZoneMasterInfo;
 import com.freshdirect.erp.SkuAvailabilityHistory;
@@ -61,10 +62,10 @@ public class FDCachedFactory {
 	/** 
 	 * FDProductInfo instances hashed by BARCODE strings.
 	 */
-	private final static LazyTimedCache productUpcCache =
-		new LazyTimedCache("FDProductInfo_UPC", FDStoreProperties.getProductCacheSize(), FDStoreProperties.getRefreshSecsProductInfo() * 1000);
+//	private final static LazyTimedCache productUpcCache =
+//		new LazyTimedCache("FDProductInfo_UPC", FDStoreProperties.getProductCacheSize(), FDStoreProperties.getRefreshSecsUPCProductInfo() * 1000);
 
-
+	private final static Map productUpcCache= new ConcurrentHashMap();
 	
 	/**
 	 * Thread that reloads expired productInfos, every 10 seconds.
@@ -184,6 +185,9 @@ public class FDCachedFactory {
 			try { 
 				pi = FDFactory.getProductInfo(sku);
 				productInfoCache.put(sku, pi);
+				if(null !=pi && pi.getUpc() != null && pi.getUpc().trim().length() > 0) {
+					productUpcCache.put(pi.getUpc(), pi);
+				}
 			} catch (FDSkuNotFoundException ex) {
 				productInfoCache.put(sku, SKU_NOT_FOUND);
 				throw ex;	
@@ -577,6 +581,9 @@ public class FDCachedFactory {
 		try { 
 			pi = FDFactory.getProductInfo(sku);
 			productInfoCache.put(sku, pi);
+			if(null !=pi && pi.getUpc() != null && pi.getUpc().trim().length() > 0) {
+				productUpcCache.put(pi.getUpc(), pi);
+			}
 			if(null !=pi){
 				FDSku fdSku = new FDSku(sku, pi.getVersion());
 				FDProduct p = FDFactory.getProduct(fdSku);

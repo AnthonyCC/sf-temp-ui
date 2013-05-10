@@ -177,5 +177,13 @@ public class FDCustomerModel extends ModelSupport implements FDCustomerI {
 		}
 		return false;
 	}
+	
+	public boolean isEligibleForCoupons() {
+		String eligibleAttr = this.profile.getAttribute("COUPONS_ELIGIBLE");
+		if ("true".equalsIgnoreCase(eligibleAttr)) {
+			return true;
+		}
+		return false;
+	}
     
 }

@@ -1,5 +1,7 @@
 <%@page import="com.freshdirect.fdstore.FDProductInfo"%><%@page import="com.freshdirect.fdstore.content.PriceCalculator"%><%@ page import="java.text.NumberFormat" %>
 <fd:PendingOrderChecker/>
+<%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %>
+
 <% //expanded page dimensions
 final int W_GROCERY_PRODUCT_LINE_ICON_COL = 30;
 %>
@@ -38,7 +40,7 @@ final int W_GROCERY_PRODUCT_LINE_ICON_COL = 30;
     String qtyFldName = "quantity_"+itemShownIndex;
 %>
 <TR <%="nutrition".equalsIgnoreCase(sortBy) && skuAvailable && i % 2 ==0 && "false".equalsIgnoreCase(request.getParameter("showThumbnails"))?"bgcolor='#EEEEEE'":""%>>
-<TD colspan="2" WIDTH="40" ALIGN="right"><NOBR>
+<TD colspan="2" WIDTH="40" ALIGN="right" valign="top"><NOBR>
   <div class="qtyinput">
   <% if (!skuAvailable) { %><font color="#999999">NA</font><% } else { %>
     <a href="javascript:chgQty('<%= qtyFldName %>', -<%= displayProduct.getQuantityIncrement() %>, <%= displayProduct.getQuantityMinimum() %>, <%= user.getQuantityMaximum(displayProduct) %>); syncQty('<%= itemShownIndex %>', 'big');" class="quantity_minus"><span>Increase quantity</span></a>
@@ -108,14 +110,17 @@ final int W_GROCERY_PRODUCT_LINE_ICON_COL = 30;
     }
 %>
 <%  if (skuAvailable) {
-    ProductImpression p = new ProductImpression(displayProduct);
+    ProductImpression pi = new ProductImpression(displayProduct);
     
     %>&nbsp;&nbsp;<table>
 			<tr><td>
-			<display:ProductPrice impression="<%= p %>"  showScalePricing="false" showRegularPrice="false" showWasPrice="true" showDescription="false"/> 
+			<display:ProductPrice impression="<%= pi %>"  showScalePricing="false" showRegularPrice="false" showWasPrice="true" showDescription="false"/> 
 			</td>
-			<td><display:ProductPrice impression="<%= p %>"  showScalePricing="true" showRegularPrice="false" showWasPrice="false" showDescription="false"/>
-			</td></tr></table> 
+			<td><display:ProductPrice impression="<%= pi %>"  showScalePricing="true" showRegularPrice="false" showWasPrice="false" showDescription="false"/>
+			</td></tr></table>
+		<% if (user != null && productInfo != null) { %>
+			<display:FDCoupon coupon="<%= custCoupon %>" contClass="fdCoupon_groceryCat"></display:FDCoupon>
+		<% } %>
 <% } %>
 </TD>
 <% if ("kosher".equalsIgnoreCase(sortBy)) { %>

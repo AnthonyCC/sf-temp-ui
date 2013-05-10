@@ -29,6 +29,7 @@ import com.freshdirect.fdstore.customer.FDProductSelectionI;
 import com.freshdirect.fdstore.customer.FDPromotionEligibility;
 import com.freshdirect.fdstore.customer.OrderLineUtil;
 import com.freshdirect.fdstore.customer.QuickCart;
+import com.freshdirect.fdstore.ecoupon.EnumCouponContext;
 import com.freshdirect.fdstore.promotion.PromotionI;
 import com.freshdirect.fdstore.util.FDTimeslotUtil;
 import com.freshdirect.mobileapi.controller.data.ProductConfiguration;
@@ -279,7 +280,7 @@ public class SessionUser {
 
             ProductConfiguration productConfiguration = new ProductConfiguration();
             try {
-                Product productData = Product.wrap(product.getProductRef().lookupProductModel(), this.sessionUser.getUser());
+                Product productData = Product.wrap(product.getProductRef().lookupProductModel(), this.sessionUser.getUser(), null, EnumCouponContext.PRODUCT);
                 Sku sku = productData.getSkyByCode(product.getSkuCode());
                 if(sku != null) {
                     productConfiguration.populateProductWithModel(productData, com.freshdirect.mobileapi.controller.data.Sku.wrap(sku));
@@ -563,4 +564,19 @@ public class SessionUser {
     public String getPrimaryKey() {
 		return sessionUser.getPrimaryKey();
 	}
+    
+    public boolean isCouponEvaluationRequired() {
+		return sessionUser.isCouponEvaluationRequired();
+	}
+
+	public void setCouponEvaluationRequired(boolean couponEvaluationRequired) {
+		sessionUser.setCouponEvaluationRequired(couponEvaluationRequired);
+	}
+	
+	public boolean isRefreshCouponWalletRequired() {
+		return sessionUser.isRefreshCouponWalletRequired();
+	}
+	public void setRefreshCouponWalletRequired(boolean refreshCouponWalletRequired) {
+		sessionUser.setRefreshCouponWalletRequired(refreshCouponWalletRequired);
+	}	
 }

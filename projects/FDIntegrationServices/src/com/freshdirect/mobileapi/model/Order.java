@@ -29,6 +29,7 @@ import com.freshdirect.fdstore.customer.FDOrderI;
 import com.freshdirect.fdstore.customer.FDProductSelectionI;
 import com.freshdirect.fdstore.customer.OrderLineUtil;
 import com.freshdirect.fdstore.customer.QuickCart;
+import com.freshdirect.fdstore.ecoupon.EnumCouponContext;
 import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.mobileapi.controller.data.ProductConfiguration;
@@ -158,7 +159,7 @@ public class Order {
         }
 
         Cart cart = new Cart(this.target);
-        orderDetail.setCartDetail(cart.getCartDetail(user));
+        orderDetail.setCartDetail(cart.getCartDetail(user, EnumCouponContext.VIEWORDER));
 
         return orderDetail;
     }
@@ -246,7 +247,9 @@ public class Order {
 	
 	            ProductConfiguration productConfiguration = new ProductConfiguration();
 	            try {
-	                Product productData = Product.wrap(product.getProductRef().lookupProductModel(), user.getFDSessionUser().getUser());
+	                Product productData = Product.wrap(product.getProductRef().lookupProductModel()
+	                										, user.getFDSessionUser().getUser()
+	                										, null, EnumCouponContext.PRODUCT);
 	                Sku sku = null;
 	                if(null != productData){
 		                sku = productData.getSkyByCode(product.getSkuCode());

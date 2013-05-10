@@ -3873,6 +3873,11 @@
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
+		<attribute>
+			<name>couponStatusPlaceholderId</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
 	</tag>
 
 	<tag>
@@ -5222,6 +5227,11 @@
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
+		<attribute>
+			<name>skuCode</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
 	</tag>
 	<tag>
 		<name>YoutubeVideoTag</name>
@@ -5394,12 +5404,14 @@
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
+
 		<attribute>
 			<name>hasPendingOrder</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
      </tag>
+
     <tag>
 		<name>IsAlcoholic</name>
 		<tagclass>com.freshdirect.webapp.taglib.fdstore.IsAlcoholicTag</tagclass>

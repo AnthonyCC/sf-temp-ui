@@ -7,7 +7,7 @@ import com.freshdirect.fdstore.content.DepartmentModel;
 import com.freshdirect.mobileapi.controller.data.Image;
 import com.freshdirect.mobileapi.controller.data.Image.ImageSizeType;
 
-public class Department {
+public class Department extends ProductContainer {
     String name;
 
     String id;
@@ -15,7 +15,15 @@ public class Department {
     private List<Image> images = new ArrayList<Image>();
     
     public static Department wrap(DepartmentModel model) {
-        Department result = new Department();
+    	return wrapDepartment(model, 0);
+    }
+    
+    public static Department wrap(DepartmentModel model, long noOfProducts) {
+    	return wrapDepartment(model, noOfProducts);
+    }
+    
+    private static Department wrapDepartment(DepartmentModel model, long noOfProducts) {
+    	Department result = new Department();
         result.name = model.getFullName();
         result.id = model.getContentKey().getId();
         
@@ -41,9 +49,10 @@ public class Department {
             detailImage.setType(ImageSizeType.LARGE);
             images.add(detailImage);
         }        
-        
+        result.setNoOfProducts(noOfProducts);
         return result;
     }
+    
 
     public String getName() {
         return name;
@@ -67,6 +76,5 @@ public class Department {
 
 	public void setImages(List<Image> images) {
 		this.images = images;
-	}
-        
+	}       
 }

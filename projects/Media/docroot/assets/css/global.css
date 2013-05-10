@@ -2393,3 +2393,388 @@ a.imgButtonWhite:hover,
 }
 
 
+	
+	.usq_legal_warning_simple_product_image {
+		position:relative; 
+		top: -165px; 
+		left: 60px; 
+	}
+
+/* fdCoupon */
+	#main.fdCoupon.container {
+		border-right: 1px solid #E9E9E9;
+	}
+	
+	#main.fdCoupon.container #sidebar {
+	 	background: url("/media_stat/images/layout/dot_grey_h.gif") repeat-x scroll left top transparent;
+	}
+	
+	.fdCoupon_cont {
+		line-height: 15px;
+		font-weight: normal;
+		display: inline;
+	}
+		
+	/* grid products */
+	.grid-item-coupon {
+		height: 48px;
+		overflow: hidden;
+	}
+	/* circular header */
+	.content-header-height-coupons {
+		height: 56px;
+    	line-height: 56px;
+	}
+	#fdCouponDealSpots {
+		text-align: center;
+	}
+	
+	/* push burst down, if needed */
+	.couponLogo .productImageBurst {
+		top: 25px !important;
+	}
+	#fdCouponBottomAdCont {
+		text-align: center;
+	}
+	
+	/* context level */		
+		/* no offer image */		
+		.fdCoupon_groceryCat .fdCoupon_img, 
+		.fdCoupon_cartline .fdCoupon_img,
+		.fdCoupon_dynrowTrans .fdCoupon_img,
+		.fdCoupon_dynrow .fdCoupon_img,
+		.fdCoupon_layHorz .fdCoupon_img,
+		.fdCoupon_layGen .fdCoupon_img,
+		.fdCoupon_layVert .fdCoupon_img,
+		.fdCoupon_layFeatAll .fdCoupon_img,
+		.fdCoupon_layFeatCat .fdCoupon_img,
+		.fdCoupon_layProdSort .fdCoupon_img,
+		.fdCoupon_layGroCatRec .fdCoupon_img,
+		.fdCoupon_layMultiCat .fdCoupon_img,
+		.fdCoupon_4mmRest .fdCoupon_img,
+		.fdCoupon_layMclQb .fdCoupon_img,
+		.fdCoupon_cartlineChckout .fdCoupon_img,
+		.fdCoupon_feat .fdCoupon_img,
+		.fdCoupon_featExt .fdCoupon_img,
+		#ymal_pdtl_container .fdCoupon_layProdPerish .fdCoupon_img,
+		.WG_block_bottom_container_new .fdCoupon_img,
+		.fdCoupon_deptPeakProd .fdCoupon_img,
+		.fdCoupon_cartlineViewOrder .fdCoupon_img,
+		.fdCoupon_cartCNT .fdCoupon_img,
+		.fdCoupon_ymalBox .fdCoupon_img
+		{
+			display: none;
+		}
+		
+		/* no checkbox */
+		.fdCoupon_layGen .fdCoupon_cbCont,
+		.fdCoupon_layHorz .fdCoupon_cbCont,
+		.fdCoupon_layVert .fdCoupon_cbCont,
+		.fdCoupon_layFeatAll .fdCoupon_cbCont,
+		.fdCoupon_layFeatCat .fdCoupon_cbCont,
+		.fdCoupon_layProdSort .fdCoupon_cbCont,
+		.fdCoupon_layGroCatRec .fdCoupon_cbCont,
+		.fdCoupon_layMultiCat .fdCoupon_cbCont,
+		.fdCoupon_4mmRest .fdCoupon_cbCont,
+		.fdCoupon_cartlineChckout .fdCoupon_cbCont,
+		.fdCoupon_layMclQb .fdCoupon_cbCont,
+		.fdCoupon_bigDayValues .fdCoupon_cbCont,
+		.fdCoupon_feat .fdCoupon_cbCont,
+		.fdCoupon_featExt .fdCoupon_cbCont,
+		.fdCoupon_prodBox .fdCoupon_cbCont,
+		.fdCoupon_prodBoxSearch .fdCoupon_cbCont,
+		#ymal_pdtl_container .fdCoupon_layProdPerish .fdCoupon_cbCont,
+		.WG_block_bottom_container_new .fdCoupon_cbCont,
+		.fdCoupon_dynrow .fdCoupon_cbCont,
+		.fdCoupon_deptPeakProd .fdCoupon_cbCont,
+		.fdCoupon_cartlineViewOrder .fdCoupon_cbCont,
+		.fdCoupon_modOrdL_penOrder .fdCoupon_cbCont,
+		.fdCoupon_wineTopRated .fdCoupon_cbCont,
+		.fdCoupon_wineMostPop .fdCoupon_cbCont,
+		.fdCoupon_cartlineChckoutExpired .fdCoupon_cbCont
+		{
+			display: none;
+		}
+		
+		/* checkboxes AFTER clipped */
+		.fdCoupon_layGen .fdCoupon_cbCont.isClipped,
+		.fdCoupon_layHorz .fdCoupon_cbCont.isClipped,
+		.fdCoupon_layVert .fdCoupon_cbCont.isClipped,
+		.fdCoupon_layFeatAll .fdCoupon_cbCont.isClipped,
+		.fdCoupon_layFeatCat .fdCoupon_cbCont.isClipped,
+		.fdCoupon_layProdSort .fdCoupon_cbCont.isClipped,
+		.fdCoupon_layGroCatRec .fdCoupon_cbCont.isClipped,
+		.fdCoupon_layMultiCat .fdCoupon_cbCont.isClipped,
+		.fdCoupon_4mmRest .fdCoupon_cbCont.isClipped,
+		.fdCoupon_layMclQb .fdCoupon_cbCont.isClipped,
+		.fdCoupon_bigDayValues .fdCoupon_cbCont.isClipped,
+		.fdCoupon_feat .fdCoupon_cbCont.isClipped,
+		.fdCoupon_featExt .fdCoupon_cbCont.isClipped,
+		.fdCoupon_prodBox .fdCoupon_cbCont.isClipped,
+		.fdCoupon_prodBoxSearch .fdCoupon_cbCont.isClipped,
+		#ymal_pdtl_container .fdCoupon_layProdPerish .fdCoupon_cbCont.isClipped,
+		.WG_block_bottom_container_new .fdCoupon_cbCont.isClipped,
+		.fdCoupon_dynrow .fdCoupon_cbCont.isClipped,
+		.fdCoupon_deptPeakProd .fdCoupon_cbCont.isClipped,
+		.fdCoupon_modOrdL_penOrder .fdCoupon_cbCont.isClipped,
+		.fdCoupon_wineTopRated .fdCoupon_cbCont.isClipped,
+		.fdCoupon_wineMostPop .fdCoupon_cbCont.isClipped
+		{
+			display: inline;
+		}
+		
+		/* no details */
+		.fdCoupon_cartlineChckout .fdCoupon_detCont,
+		.fdCoupon_cartlineViewOrder .fdCoupon_detCont,
+		.fdCoupon_cartlineChckoutExpired .fdCoupon_detCont
+		{
+			display: none;
+		}
+		
+		
+		.fdCoupon_cartlineViewCart_msgCont {
+			margin-left: 16px;
+			text-indent: -8px;
+		}
+		.fdCoupon_cartlineViewCart_msgContHasMsg {
+			margin-left: 16px;
+			text-indent: -22px;
+		}
+		.fdCoupon_down_circ {
+			font-weight: bold;
+			color: #f00;
+			font-size: 14px;
+			text-align: center;
+			width: 500px;
+			left: 235px;
+			position: relative;
+			margin-top: 15px; 
+		}
+	
+	.fdCoupon_cbCont {
+		margin-left: 3px;
+	}
+	
+	.fdCoupon_cb {
+		margin: 0;
+		vertical-align: bottom;
+		top: -1px;
+    	position: relative;
+	}
+	
+	.fdCoupon_img {
+		margin-left: 6px;
+		margin-bottom: -3px;
+	}
+	
+	.fdCoupon_msg {
+		margin-left: 6px;
+		/* margin-right: 6px; */
+		/*margin-top: -16px;
+		top: 50%;*/
+		font-family: Verdana;
+		font-weight: bold;
+		color: #9702D7;
+		font-size: 10px !important;
+	}
+	
+	.fdCoupon_detCont {
+		font-size: 10px !important;
+	}
+	
+	.fdCoupon_detCont, a.fdCoupon_det, a.fdCoupon_det:active, a.fdCoupon_det:link, a.fdCoupon_det:visited, a.fdCoupon_det:hover {
+		color: #666;
+		text-decoration: none;
+		font-family: Verdana;
+	}
+	a.fdCoupon_det:hover {
+	    text-decoration: underline;
+	}
+	
+	.fdCoupon_detContent {
+	}
+		
+	/* status msgs */
+	
+	.fdCoupon_stat {
+		font-weight: bold;
+		margin-left: 6px;
+	}
+	
+	.cStat_minQty {
+		color: #ff0000;
+	}
+	
+	.cStat_applied {
+		color: #669933;
+	}
+	
+	.cStat_clipExp {
+		color: #ff0000;
+	}
+	
+	.cStat_filtered {
+		color: #ff0000;
+	}
+	
+	
+	/* coupon carousel overrides */
+	.search-recommender.fdCouponCar {
+		height: 490px !important;
+		width: 780px !important;
+		border-right: none !important;
+	}
+	.fdCouponCar .fd-carousel {
+		padding: 0 21px 0 20px !important;
+		clip: rect(0 801px 480px 0);
+		clip: rect(0, 801px, 480px, 0);
+	}
+	.fdCouponCar .grid-item-image {
+		height: 80px !important;
+		line-height: 80px !important;
+	}
+	.fdCouponCar .fdCoupon_img {
+		display: none;
+	}
+	.fdCouponCar .fd-carousel .yui-carousel-button {
+		height: 48px;
+		width: 34px;
+		margin-top: -24px;
+	}
+	.fdCouponCar .fd-carousel .yui-carousel-first-button {
+		background: url("/media/images/ecoupon/Left_Active.png") no-repeat scroll 0 0 transparent;
+	}
+	.fdCouponCar .fd-carousel .yui-carousel-first-button:hover {
+		background: url("/media/images/ecoupon/Left_rollover.png") no-repeat scroll 0 0 transparent;
+	}
+	.fdCouponCar .fd-carousel .yui-carousel-first-button-disabled, .fdCouponCar .fd-carousel .yui-carousel-first-button-disabled:hover {
+		background: url("/media/images/ecoupon/Left_InActive.png") no-repeat scroll 0 0 transparent;
+	}
+	.fdCouponCar .fd-carousel .yui-carousel-next-button {
+		background: url("/media/images/ecoupon/Right_Active.png") no-repeat scroll 0 0 transparent;
+	}
+	.fdCouponCar .fd-carousel .yui-carousel-next-button:hover {
+		background: url("/media/images/ecoupon/Right_rollover.png") no-repeat scroll 0 0 transparent;
+	}
+	.fdCouponCar .fd-carousel .yui-carousel-button-disabled, .fdCouponCar .fd-carousel .yui-carousel-button-disabled:hover {
+		background: url("/media/images/ecoupon/Right_InActive.png") no-repeat scroll 0 0 transparent;
+	}
+	.fdCouponCar-title {
+		padding-top: 15px;
+	}
+	.search-recommender.fdCouponCar .yui-carousel-nav ul {
+	    display: block;
+	}
+	.search-recommender.fdCouponCar .yui-carousel-item {
+		width: 136px !important;
+		padding: 0 10px 0 0;
+	}
+	.search-recommender.fdCouponCar .grid-item {
+		padding: 0 7px 0 0 !important;
+	}
+	.search-recommender.fdCouponCar .grid-item.carLastItem {
+		background: none !important;
+	}
+	
+	/* top of cart msg */
+	#fdCoupon_cartAlert {
+		font-size: 12px;
+		font-weight: bold;
+		color: #f00;
+		line-height: 16px;
+		padding: 4px;
+	}
+	/* submit page msg */
+	#fdCoupon_cartAlertExpire {
+		border: 1px solid #f00;
+		margin: 12px 0;
+	}
+	#fdCoupon_cartAlertExpire td {
+		color: #f00;
+		font-size: 13px;
+		font-weight: bold;
+		padding: 3px;
+	}
+	#fdCoupon_cartAlertExpire .fdCoupon_cartAlertExpire_date {
+		font-size: 14px;
+		color: #000;
+	}
+	
+	/* coupon tooltip */
+		/* details */
+		    .cDetToolTip, .cDetToolTip .arrow:after {
+		        background: #f2f2f2;
+		        border: 2px solid #bbb;
+		    }
+		    .cDetToolTip {
+		        padding: 10px 10px;
+		        color: #666;
+		        line-height: 12px;
+		        border-radius: 10px;
+		        font: normal 10px Tahoma, "Helvetica Neue", Sans-Serif;
+		        box-shadow: 2px 2px 2px rgba(0,0,0,0.15);
+		        max-width: 175px;
+		    }
+			.cDetToolTip .arrow {
+		        height: 32px !important;
+		        width: 23px !important;
+		        overflow: hidden;
+		        position: absolute;
+		        left: 50%;
+		        margin-left: -16px;
+		        bottom: -31px;
+				background-image: url(/media_stat/images/common/sprites/tooltip_arrows_jquery.png);
+				background-repeat: no-repeat;
+				background-position: -22px 0px;
+			}
+		    .cDetToolTip .arrow.top {
+		        top: -32px;
+		        bottom: auto;
+		    }
+		    .cDetToolTip .arrow.left {
+		        left: 27%;
+		    }
+		    .tooltipFlipH .arrow.left {
+		        left: 80%;
+		    }
+
+		/* click to apply */
+			.cDetToolTipClickToApply, .cDetToolTipClickToApply .arrow:after {
+		        background: #59ac48;
+		        border: none;
+		    }
+		    
+		    .cDetToolTipClickToApply {
+		        padding: 5px 10px;
+		        color: #fff;
+		        line-height: 12px;
+		        border-radius: 3px;
+		        font: normal 10px Tahoma, "Helvetica Neue", Sans-Serif;
+		        box-shadow: 2px 2px 2px rgba(0,0,0,0.55);
+		    }
+		    .cDetToolTipClickToApply .arrow {
+		        height: 16px !important;
+		        width: 16px !important;
+		        overflow: hidden;
+		        position: absolute;
+		        left: 50%;
+		        margin-left: -8px;
+		        bottom: -15px;
+				background-image: url(/media_stat/images/common/sprites/tooltip_arrows_jquery.png);
+				background-repeat: no-repeat;
+				background-position: -30px -46px;
+		    }
+		    .cDetToolTipClickToApply .arrow.top {
+		        top: -16px;
+		        bottom: auto;
+		    }
+		    .cDetToolTipClickToApply .arrow.left {
+		        left: 30%;
+		    }
+		    .tooltipFlipH .arrow.left {
+		        left: 80%;
+		    }
+		    
+div#i_viewcart td {
+	padding: 2px 0;
+}

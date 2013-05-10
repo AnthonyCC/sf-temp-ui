@@ -21,6 +21,7 @@ import com.freshdirect.common.address.BasicContactAddressI;
 import com.freshdirect.common.pricing.ConfiguredPrice;
 import com.freshdirect.common.pricing.CreditMemo;
 import com.freshdirect.common.pricing.Discount;
+import com.freshdirect.common.pricing.EnumTaxationType;
 import com.freshdirect.common.pricing.MaterialPrice;
 import com.freshdirect.common.pricing.Pricing;
 import com.freshdirect.common.pricing.PricingEngine;
@@ -35,6 +36,7 @@ import com.freshdirect.customer.ErpAbstractOrderModel;
 import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpAppliedCreditModel;
 import com.freshdirect.customer.ErpChargeLineModel;
+import com.freshdirect.customer.ErpCouponDiscountLineModel;
 import com.freshdirect.customer.ErpCustomerModel;
 import com.freshdirect.customer.ErpDiscountLineModel;
 import com.freshdirect.customer.ErpOrderLineModel;
@@ -560,6 +562,15 @@ public class SapOrderAdapter implements SapOrderI {
 		public String getPricingZoneId() {
 			//Ignore begining zeroes. 0000100000 --> 100000
 			return orderLine.getPricingZoneId();
+		}
+		
+		public ErpCouponDiscountLineModel getCouponDiscount(){
+			return orderLine.getCouponDiscount();
+		}
+
+		@Override
+		public EnumTaxationType getTaxationType() {
+			return orderLine.getTaxationType();
 		}
 	}
 

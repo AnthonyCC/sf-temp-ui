@@ -7,6 +7,8 @@ import java.util.StringTokenizer;
 import com.freshdirect.customer.ErpZoneMasterInfo;
 import com.freshdirect.erp.EnumATPRule;
 import com.freshdirect.erp.model.ErpInventoryModel;
+import com.freshdirect.fdstore.ecoupon.FDCouponFactory;
+import com.freshdirect.fdstore.ecoupon.model.FDCouponInfo;
 import com.freshdirect.framework.util.StringUtil;
 
 /**
@@ -242,4 +244,9 @@ public class FDProductInfo extends FDSku  {
     public String getUpc() {
 		return upc;
 	}
+
+	public FDCouponInfo getCoupon() {
+		return FDCouponFactory.getInstance().getCouponByUpc(upc);
+	}
+	
 }

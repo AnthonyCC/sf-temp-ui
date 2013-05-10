@@ -1,6 +1,6 @@
 <html>
 <head>
-<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3/jquery.min.js"></script>
+<script type="text/javascript" src="../js/jquery.min.js"></script>
 <script type="text/javascript" src="../js/urlEncode.js"></script>
 <script type="text/javascript" src="../js/jquery.cookie.js"></script>
 
@@ -63,6 +63,10 @@ function loadStuff() {
   	$("#url").val("/saptest12@freshdirect.com/cart/promo/apply/TEST_P0002");
   	$("#payload").val('');
   	$("#result").val("");
+  } else if (loaddata == "ClipCoupon") {
+  	$("#url").val("/saptest12@freshdirect.com/cart/coupon/clip/53421");
+  	$("#payload").val('');
+  	$("#result").val("");
   } else if (loaddata == "RemovePromo") {
   	$("#url").val("/saptest12@freshdirect.com/cart/promo/remove/TEST_P0002");
   	$("#payload").val('');
@@ -122,6 +126,10 @@ function loadStuff() {
   	$("#result").val("");
   } else if (loaddata == "RemoveItem") {
   	$("#url").val("/saptest12@freshdirect.com/cart/remove/621581041");
+  	$("#payload").val('');
+  	$("#result").val("");
+  } else if (loaddata == "ViewItem") {
+  	$("#url").val("/saptest12@freshdirect.com/cart/viewitem/621581041");
   	$("#payload").val('');
   	$("#result").val("");
   } else if (loaddata == "RemoveAllItems") {
@@ -222,6 +230,10 @@ function loadStuff() {
   	$("#result").val("");
   } else if (loaddata == "OrderDetail") {
   	$("#url").val("/saptest12@freshdirect.com/checkout/orderdetail/");
+  	$("#payload").val('');
+  	$("#result").val("");
+  } else if (loaddata == "ReviewOrderDetail") {
+  	$("#url").val("/saptest12@freshdirect.com/checkout/revieworderdetail/");
   	$("#payload").val('');
   	$("#result").val("");
   } else if (loaddata == "SubmitOrder") {
@@ -533,6 +545,26 @@ function loadStuff() {
 	var postdata = '{"groupId": "FD_PIZZA-1", "groupVersion" : "10460"}';
   	$("#payload").val(postdata);
   	$("#result").val("");
+  } else if (loaddata == "BrowseCouponDepartment") {
+  	$("#url").val("/coupon/browse/departments/");
+	var postdata = '{"page" : "1", "max" : "25"}';
+  	$("#payload").val(postdata);
+  	$("#result").val("");
+  }  else if (loaddata == "BrowseCouponCategory") {
+  	$("#url").val("/coupon/browse/categories/");
+	var postdata = '{"department": "gro", "page" : "1", "max" : "25"}';
+  	$("#payload").val(postdata);
+  	$("#result").val("");
+  } else if (loaddata == "BrowseCouponCategoryContent") {
+  	$("#url").val("/coupon/browse/categorycontent/");
+	var postdata = '{"category": "hba_deo", "page" : "1", "max" : "25"}';
+  	$("#payload").val(postdata);
+  	$("#result").val("");
+  } else if (loaddata == "BrowseCouponCategoryContentProductOnly") {
+  	$("#url").val("/coupon/browse/categorycontentproductonly/");
+	var postdata = '{"category": "picks_gltnfr_condi", "page" : "1", "max" : "25"}';
+  	$("#payload").val(postdata);
+  	$("#result").val("");
   } else if (loaddata == "IvrEmail") {
   	$("#url").val("/ext/t001");
   	$("#payload").val("2202928245,applicationdevelopment@freshdirect.com,qa@freshdirect.com");
@@ -632,7 +664,7 @@ function doStuff() {
   <option value="Ping">Ping</option>
   <option value="LoginRefresh">Login Refresh</option>
   <option value="ForgotPassword">Forgot Password</option>
-  <option value=""> ========== CART ========== </option>
+  <option value=""> ========== CART ========== </option>  
   <option value="AddPromo">CART - Apply Promo</option>
   <option value="RemovePromo">CART - Remove Promo</option>
   <option value="AddItem-SimpleBeef">CART - Add - Simple Beef</option>
@@ -643,6 +675,8 @@ function doStuff() {
   <option value="RemoveAllItems">CART - Remove All</option>
   <option value="RemoveMultipleItems">CART - Remove Multiple</option>
   <option value="ViewItems">CART - View Items</option>
+  <option value="ViewItem">CART - View Cartline</option>
+  <option value="ClipCoupon">CART - Clip Coupon</option>
   <option value=""> ========== CHECKOUT ========== </option>
   <option value="InitCheckout">CHECKOUT - Init</option>
   <option value="CheckoutAuthenticate">CHECKOUT - Auth</option>
@@ -664,6 +698,7 @@ function doStuff() {
   <option value="EditPaymentMethod">CHECKOUT - Edit Payment Method</option>
   <option value="DeletePaymentMethod">CHECKOUT - Delete Payment Method</option>
   <option value="OrderDetail">CHECKOUT - Order Detail</option>
+  <option value="ReviewOrderDetail">CHECKOUT - Review Order Detail</option>
   <option value="SubmitOrder">CHECKOUT - Submit Order</option>
   <option value="GetSelectedDeliveryAddress">CHECKOUT - Get Selected Delivery Address</option>
   <option value="GetPaymentMethodVerifyStatus">CHECKOUT - Get Payment Method Verificaton Status(CVV)</option>
@@ -679,7 +714,13 @@ function doStuff() {
   <option value="BrowseCategory">BROWSE - CATEGORY</option>
   <option value="BrowseCategoryContent">BROWSE - CATEGORYCONTENT</option>
   <option value="BrowseCategoryContentProductOnly">BROWSE - CATEGORYCONTENT(Product Only)</option>
-  <option value="BrowseGroupContents">BROWSE - GROUP CONTENTS</option>  
+  <option value="BrowseGroupContents">BROWSE - GROUP CONTENTS</option> 
+  <option value=""> ========== BROWSE COUPON ========== </option>
+  <option value="BrowseCouponDepartment">BROWSE COUPON - DEPARTMENT</option>
+  <option value="BrowseCouponCategory">BROWSE COUPON - CATEGORY</option>
+  <option value="BrowseCouponCategoryContent">BROWSE COUPON - CATEGORYCONTENT</option>
+  <option value="BrowseCouponCategoryContentProductOnly">BROWSE COUPON - CATEGORYCONTENT(Product Only)</option>
+  
   <option value=""> ========== PRODUCT ========== </option>
   <option value="ProductDetail">PRODUCT - Product Detail</option>
   <option value="ProductDetailMoreInfo">PRODUCT - More Info</option>

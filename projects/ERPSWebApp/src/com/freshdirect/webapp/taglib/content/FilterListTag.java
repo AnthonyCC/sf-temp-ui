@@ -2,7 +2,6 @@ package com.freshdirect.webapp.taglib.content;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
@@ -29,23 +28,7 @@ public class FilterListTag extends BodyTagSupportEx {
 	private int hideAfter=7;
 	private Map<EnumFilteringValue, Map<String, FilteringMenuItem>> filters;
 	
-	static final Comparator<FilteringMenuItem> COUNT_ORDER_REV = new Comparator<FilteringMenuItem>() {
-		@Override
-		public int compare(FilteringMenuItem o1, FilteringMenuItem o2) {
-			return o2.getCounter() - o1.getCounter();
-		}			
-	};	
-	
-	static final Comparator<FilteringMenuItem> RATING_COMP = new Comparator<FilteringMenuItem>() {
-		@Override
-		public int compare(FilteringMenuItem o1, FilteringMenuItem o2) {
-			int a = 0; try { a = Integer.parseInt( o1.getName() ); } catch (NumberFormatException e) { }
-			int b = 0; try { b = Integer.parseInt( o2.getName() ); } catch (NumberFormatException e) { }								
-			return a > b ? -1 : a < b ? +1 : 0;
-		}
-	};
-
-	
+		
 	@Override
 	public int doStartTag() throws JspException {
 		List<FilteringMenuItem> result;
@@ -130,15 +113,15 @@ public class FilterListTag extends BodyTagSupportEx {
 		
 		if(domainName.equals(EnumFilteringValue.EXPERT_RATING)) {
 			
-			Collections.sort( filters, RATING_COMP );
+			Collections.sort( filters, FilteringMenuItem.RATING_COMP );
 			
 		} else 	if(domainName.equals(EnumFilteringValue.CUSTOMER_RATING)) {
 			
-			Collections.sort( filters, RATING_COMP );
+			Collections.sort( filters, FilteringMenuItem.RATING_COMP );
 			
 		} else {
 			
-			Collections.sort( filters, COUNT_ORDER_REV );
+			Collections.sort( filters, FilteringMenuItem.COUNT_ORDER_REV );
 			
 			if( filters.size() > hideAfter ) {
 				for( ListIterator<FilteringMenuItem> it = filters.listIterator(hideAfter); it.hasNext() ; ) {

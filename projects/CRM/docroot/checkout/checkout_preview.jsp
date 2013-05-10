@@ -20,13 +20,20 @@
 <tmpl:insert template='/template/top_nav.jsp'>
 
 <tmpl:put name='title' direct='true'>Checkout > Order Preview</tmpl:put>
-<fd:FDShoppingCart id='cart' result="result">
+<%
+FDSessionUser user = (FDSessionUser)session.getAttribute(SessionName.USER);
+	if(null !=user){
+		user.setRefreshCouponWalletRequired(true);
+		user.setCouponEvaluationRequired(true);
+	}
+%>
+<fd:FDShoppingCart id='cart' result="result" filterCoupons="true">
 
 <crm:GetCurrentAgent id='currentAgent'>
 
 <fd:CheckoutController actionName="submitOrder" result="result" successPage="checkout_confirmation.jsp" ccdProblemPage="checkout_select_addr_payment.jsp">
 <%	
-    FDSessionUser user = (FDSessionUser)session.getAttribute(SessionName.USER);
+    
     FDCartI order = (FDCartI) cart;
     ErpAddressModel dlvAddress = order.getDeliveryAddress();
 	ErpPaymentMethodI paymentMethod = order.getPaymentMethod();

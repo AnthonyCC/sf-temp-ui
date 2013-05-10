@@ -32,6 +32,7 @@ import com.freshdirect.customer.ErpInvoicedCreditModel;
 import com.freshdirect.customer.ErpOrderLineModel;
 import com.freshdirect.customer.ErpReturnLineModel;
 import com.freshdirect.customer.ErpReturnOrderModel;
+import com.freshdirect.customer.TaxCalculatorUtil;
 import com.freshdirect.fdstore.FDCachedFactory;
 import com.freshdirect.fdstore.FDConfiguration;
 import com.freshdirect.fdstore.FDConfiguredPrice;
@@ -145,8 +146,8 @@ public class ErpGenerateInvoiceCommand {
 		Pricing pricing = fdProduct.getPricing();
 		FDConfiguration prConf = new FDConfiguration(quantity, orderLine.getSalesUnit(), orderLine.getOptions());
 		try {
-			FDConfiguredPrice price = FDPricingEngine.doPricing(fdProduct, prConf, orderLine.getDiscount(), orderLine.getPricingContext(), orderLine.getFDGroup(), orderLine.getGroupQuantity(), orderLine.getBasePriceUnit());
-			orderLine.setPrice(price.getConfiguredPrice() - price.getPromotionValue());
+			FDConfiguredPrice price = FDPricingEngine.doPricing(fdProduct, prConf, orderLine.getDiscount(), orderLine.getPricingContext(), orderLine.getFDGroup(), orderLine.getGroupQuantity(), orderLine.getBasePriceUnit(),orderLine.getCouponDiscount());
+			orderLine.setPrice(price.getConfiguredPrice() - price.getPromotionValue()-price.getCouponDiscountValue());
 			orderLine.setDiscountAmount(price.getPromotionValue());			
 			Price oldPrice=PricingEngine.getConfiguredPrice(pricing, prConf, orderLine.getPricingContext(),orderLine.getFDGroup(), orderLine.getGroupQuantity()).getPrice();
 			Price pr = new Price(MathUtil.roundDecimal(oldPrice.getBasePrice()-price.getPromotionValue()), MathUtil.roundDecimal(oldPrice.getSurcharge()));
@@ -180,7 +181,7 @@ public class ErpGenerateInvoiceCommand {
 		invoiceLine.setCustomizationPrice(configuredPrice.getSurcharge());
 		
 		FDProduct fdProduct = this.getFDProduct(orderLine);
-		double tax = fdProduct.isTaxable() ? invoiceLine.getPrice() * orderLine.getTaxRate() : 0;
+//		double tax = fdProduct.isTaxable() ? invoiceLine.getPrice() * orderLine.getTaxRate() : 0;
 		double depositValue = calculateDepositValue(fdProduct.getDepositsPerEach(), orderLine.getDepositValue(), orderLine.getQuantity(), invoiceLine.getQuantity());
 		double discountAmount=0;
 		try {
@@ -198,6 +199,10 @@ public class ErpGenerateInvoiceCommand {
 		invoiceLine.setActualDiscountAmount(discountAmount);
 		invoiceLine.setPrice(configuredPrice.getPrice()-discountAmount);
 		//System.out.println("actual amount after discount:"+invoiceLine.getPrice());
+		double tax = 0.0;
+		if(fdProduct.isTaxable()){
+			tax = TaxCalculatorUtil.getTaxValue(configuredPrice.getPrice(),discountAmount,invoiceLine.getCouponDiscountAmount(),orderLine.getTaxRate(),orderLine.getTaxationType());
+		}
 		invoiceLine.setTaxValue(tax);
 		invoiceLine.setDepositValue(depositValue);
 	}
@@ -244,21 +249,21 @@ public class ErpGenerateInvoiceCommand {
 		total += deposit;
 
 		if (this.fdRestocking > 0) {
-			newCharges.add(new ErpChargeLineModel(EnumChargeType.FD_RESTOCKING_FEE, "", this.fdRestocking, null, 0.0));
+			newCharges.add(new ErpChargeLineModel(EnumChargeType.FD_RESTOCKING_FEE, "", this.fdRestocking, null, 0.0, null));
 			total += this.fdRestocking;
 		}
 
 		if (this.wblRestocking > 0) {
-			newCharges.add(new ErpChargeLineModel(EnumChargeType.WBL_RESTOCKING_FEE, "", this.wblRestocking, null, 0.0));
+			newCharges.add(new ErpChargeLineModel(EnumChargeType.WBL_RESTOCKING_FEE, "", this.wblRestocking, null, 0.0, null));
 			total += this.wblRestocking;
 		}
 		
 		if(this.bcRestocking > 0) {
-			newCharges.add(new ErpChargeLineModel(EnumChargeType.BC_RESTOCKING_FEE, "", this.bcRestocking, null, 0.0));
+			newCharges.add(new ErpChargeLineModel(EnumChargeType.BC_RESTOCKING_FEE, "", this.bcRestocking, null, 0.0, null));
 			total += this.bcRestocking;
 		}
 		if(this.usqRestocking > 0) {
-			newCharges.add(new ErpChargeLineModel(EnumChargeType.USQ_RESTOCKING_FEE, "", this.usqRestocking, null, 0.0));
+			newCharges.add(new ErpChargeLineModel(EnumChargeType.USQ_RESTOCKING_FEE, "", this.usqRestocking, null, 0.0, null));
 			total += this.usqRestocking;
 		}
 

@@ -105,7 +105,7 @@ if(user != null) {
 	 <% } %>	
 		</td>
 	
-		<td colspan="13" align="right" valign="bottom">
+		<td colspan="<%= (user.isEligibleForCoupons()) ? "15" : "13" %>" align="right" valign="bottom">
 	
 		<% if(user.isChefsTable() && !user.getChefsTableInduction().equals("0") && user.getChefsTableInduction().length() == 8) { %>
 			
@@ -128,7 +128,7 @@ if(user != null) {
 	    </td>
 	</tr>
 	<tr>
-		<td colspan="13"><img src="/media_stat/images/layout/clear.gif" width="1" height="18" alt="" border="0"></td>
+		<td colspan="<%= (user.isEligibleForCoupons()) ? "15" : "13" %>"><img src="/media_stat/images/layout/clear.gif" width="1" height="18" alt="" border="0"></td>
 	</tr>
 	<tr valign="bottom">
 		<td align="right" valign="bottom">
@@ -143,9 +143,9 @@ if(user != null) {
 					{
 						String searchParams = request.getParameter("searchParams")!=null ? request.getParameter("searchParams") : "";
 					%>
-					<td width="284">
+					<td width="<%= (user.isEligibleForCoupons()) ? "202" : "284" %>">
 						<!--  div class="x-yui-skin-sam" style="padding: 0; margin: 0;" -->
-							<input type="text" id="topSearchField"  class="search" name="searchParams" style="width: 278px; position: static;" maxlength="100" value="<%= StringEscapeUtils.escapeHtml(searchParams) %>">
+							<input type="text" id="topSearchField"  class="search" name="searchParams" style="width: <%= (user.isEligibleForCoupons()) ? "196" : "278" %>px; position: static;" maxlength="100" value="<%= StringEscapeUtils.escapeHtml(searchParams) %>">
 							<% if (FDStoreProperties.isSearchGlobalnavAutocompleteEnabled()) { %><div id="topSearchTerms" class="termsStyle" style="position: absolute; background-color: white"></div><% } %>
 						<!-- /div -->
 					</td>
@@ -179,6 +179,10 @@ if(user != null) {
 		<td width="11" align="center"><img src="/media_stat/images/layout/clear.gif" width="11" height="1" border="0"  alt=""><br><img src="/media_stat/images/layout/999966.gif" width="1" height="24" alt=""></td>
 		<td width="54"><a href="/quickshop/index.jsp" onMouseover="swapImage('NAV_QUICKSHOP_IMG','/media_stat/images/navigation/global_nav/nav_button_quick_shop_r.gif')" onMouseout="swapImage('NAV_QUICKSHOP_IMG','/media_stat/images/navigation/global_nav/nav_button_quick_shop.gif')"><img src="/media_stat/images/navigation/global_nav/nav_button_quick_shop.gif" name="NAV_QUICKSHOP_IMG" width="54" height="26" alt="QUICK SHOP" border="0"></a></td>
 		<td width="11" align="center"><img src="/media_stat/images/layout/clear.gif" width="11" height="1" border="0"  alt=""><br><img src="/media_stat/images/layout/999966.gif" width="1" height="24" alt=""></td>
+		<% if (user.isEligibleForCoupons()) { //also see search width checks and colspan checks above/below %>	
+			<td width="71"><a href="/ecoupon.jsp"><img src="/media/images/ecoupon/coupon_savings.gif" name="NAV_COUPON_IMG" width="71" height="27" alt="COUPON SAVINGS" border="0" /></a></td>
+			<td width="11" align="center"><img src="/media_stat/images/layout/clear.gif" width="11" height="1" border="0"  alt=""><br><img src="/media_stat/images/layout/999966.gif" width="1" height="24" alt=""></td>
+		<% } %>
 		<td width="71"><a href="/your_account/manage_account.jsp" onMouseover="swapImage('NAV_YOURACCOUNT_IMG','/media_stat/images/navigation/global_nav/nav_button_your_account2_r.gif')" onMouseout="swapImage('NAV_YOURACCOUNT_IMG','/media_stat/images/navigation/global_nav/nav_button_your_account2.gif')"><img src="/media_stat/images/navigation/global_nav/nav_button_your_account2.gif" name="NAV_YOURACCOUNT_IMG" width="71" height="25" alt="YOUR ACCOUNT" border="0"></a></td>
 		<td width="11" align="center"><img src="/media_stat/images/layout/clear.gif" width="11" height="1" border="0"  alt=""><br><img src="/media_stat/images/layout/999966.gif" width="1" height="24" alt=""></td>
 		<td width="54"><a href="/help/index.jsp?trk=gnav" onMouseover="swapImage('NAV_HELP_IMG','/media_stat/images/navigation/global_nav/nav_button_get_help_r.gif')" onMouseout="swapImage('NAV_HELP_IMG','/media_stat/images/navigation/global_nav/nav_button_get_help.gif')"><img src="/media_stat/images/navigation/global_nav/nav_button_get_help.gif" name="NAV_HELP_IMG" width="54" height="26" alt="GET HELP" border="0"></a></td>
@@ -199,7 +203,7 @@ if(user != null) {
 	    </td>
 	</tr>
 	<tr>
-		<td colspan="13"><img src="/media_stat/images/layout/clear.gif" width="1" height="18" alt="" border="0" alt=""></td>
+		<td colspan="<%= (user.isEligibleForCoupons()) ? "15" : "13" %>"><img src="/media_stat/images/layout/clear.gif" width="1" height="18" alt="" border="0" alt=""></td>
 	</tr>
 	</table>
 <%} %>	

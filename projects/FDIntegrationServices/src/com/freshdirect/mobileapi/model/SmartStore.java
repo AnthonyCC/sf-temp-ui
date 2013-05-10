@@ -20,6 +20,7 @@ import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.content.ConfiguredProductGroup;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.customer.FDCartLineModel;
+import com.freshdirect.fdstore.ecoupon.EnumCouponContext;
 import com.freshdirect.fdstore.util.EnumSiteFeature;
 import com.freshdirect.fdstore.util.ProductLabeling;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -192,7 +193,7 @@ public class SmartStore {
                 if (product.getParentNode() instanceof ConfiguredProductGroup) {
                     System.out.println("ConfiguredProductGroup");
                 }
-                resultItem.setProduct(Product.wrap(product, user.getFDSessionUser().getUser()));
+                resultItem.setProduct(Product.wrap(product, user.getFDSessionUser().getUser(), null, EnumCouponContext.PRODUCT));
 
                 ProductLabeling pl = new ProductLabeling(user.getFDSessionUser(), product, variant.getHideBursts());
                 // added this using the thread local values

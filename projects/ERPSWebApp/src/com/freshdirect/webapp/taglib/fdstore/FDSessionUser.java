@@ -9,10 +9,13 @@ import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.concurrent.ConcurrentHashMap;
+
 import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpSessionBindingEvent;
 import javax.servlet.http.HttpSessionBindingListener;
+
 import org.apache.log4j.Logger;
+
 import com.freshdirect.analytics.EventLog;
 import com.freshdirect.analytics.SessionEvent;
 import com.freshdirect.common.address.AddressModel;
@@ -28,6 +31,7 @@ import com.freshdirect.deliverypass.EnumDPAutoRenewalType;
 import com.freshdirect.deliverypass.EnumDlvPassProfileType;
 import com.freshdirect.deliverypass.EnumDlvPassStatus;
 import com.freshdirect.fdstore.EnumCheckoutMode;
+import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDReservation;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDRuntimeException;
@@ -38,6 +42,7 @@ import com.freshdirect.fdstore.customer.DCPDPromoProductCache;
 import com.freshdirect.fdstore.customer.ExternalCampaign;
 import com.freshdirect.fdstore.customer.FDActionInfo;
 import com.freshdirect.fdstore.customer.FDBulkRecipientList;
+import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDCustomerModel;
@@ -49,6 +54,9 @@ import com.freshdirect.fdstore.customer.FDRecipientList;
 import com.freshdirect.fdstore.customer.FDUser;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.deliverypass.FDUserDlvPassInfo;
+import com.freshdirect.fdstore.ecoupon.EnumCouponContext;
+import com.freshdirect.fdstore.ecoupon.FDCustomerCoupon;
+import com.freshdirect.fdstore.ecoupon.model.FDCustomerCouponWallet;
 import com.freshdirect.fdstore.giftcard.FDGiftCardInfoList;
 import com.freshdirect.fdstore.lists.FDCustomerListInfo;
 import com.freshdirect.fdstore.promotion.AssignedCustomerParam;
@@ -120,6 +128,7 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 	private FDStandingOrder currentStandingOrder;
 
 	private EnumCheckoutMode checkoutMode = EnumCheckoutMode.NORMAL;
+	private boolean couponWarningAcknowledged = false;
 	
 	public boolean getLastCOSSurveySuccess() {
     	return this.lastCOSSurveySuccess;
@@ -1443,4 +1452,71 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 	public void setExternalPromoCampaigns(Set<ExternalCampaign> externalCampaigns) {
 		this.user.setExternalPromoCampaigns(externalCampaigns);
 	}
+	
+	public FDCustomerCouponWallet getCouponWallet() {
+		return this.user.getCouponWallet();
+	}
+
+	public void setCouponWallet(FDCustomerCouponWallet couponWallet) {
+		this.user.setCouponWallet(couponWallet);
+	}
+	
+	public FDCustomerCoupon getCustomerCoupon(String upc, EnumCouponContext ctx){
+		return this.user.getCustomerCoupon(upc, ctx);
+	}
+	
+	public FDCustomerCoupon getCustomerCoupon(FDCartLineI cartLine, EnumCouponContext ctx){
+		return this.user.getCustomerCoupon(cartLine, ctx);
+	}
+	
+	public FDCustomerCoupon getCustomerCoupon(FDProductInfo prodInfo, EnumCouponContext ctx,String catId,String prodId) {	
+		return this.user.getCustomerCoupon(prodInfo, ctx, catId, prodId );
+	}
+	
+	public FDCustomerCoupon getCustomerCoupon(FDCartLineI cartLine, EnumCouponContext ctx,String catId,String prodId) {
+		return this.user.getCustomerCoupon(cartLine, ctx, catId, prodId );
+	}
+	
+	public void updateClippedCoupon(String couponId){
+		this.user.updateClippedCoupon(couponId);
+	}
+	
+	public boolean isEligibleForCoupons() {
+		try {
+			return this.user.isEligibleForCoupons();
+		} catch (FDResourceException e) {
+			throw new FDRuntimeException(e);
+		}
+	}
+	
+	public boolean isCouponsSystemAvailable() {
+		try {
+			return this.user.isCouponsSystemAvailable();
+		} catch (FDResourceException e) {
+			throw new FDRuntimeException(e);
+		}
+	}
+
+	public boolean isCouponWarningAcknowledged() {
+		return couponWarningAcknowledged;
+	}
+
+	public void setCouponWarningAcknowledged(boolean couponWarningAcknowledged) {
+		this.couponWarningAcknowledged = couponWarningAcknowledged;
+	}
+	
+	public boolean isCouponEvaluationRequired() {
+		return this.user.isCouponEvaluationRequired();
+	}
+
+	public void setCouponEvaluationRequired(boolean couponEvaluationRequired) {
+		this.user.setCouponEvaluationRequired(couponEvaluationRequired);
+	}
+	
+	public boolean isRefreshCouponWalletRequired() {
+		return this.user.isRefreshCouponWalletRequired();
+	}
+	public void setRefreshCouponWalletRequired(boolean refreshCouponWalletRequired) {
+		this.user.setRefreshCouponWalletRequired(refreshCouponWalletRequired);
+	}	
 }

@@ -118,6 +118,8 @@ public class AdjustAvailabilityTag extends
 		//Revalidate the cart for deliverypass.
 		cart.handleDeliveryPass();
 		user.updateUserState();
+		//Coupons have to re-evaluated.
+		user.setCouponEvaluationRequired(true);
 		
 		cart.setAvailability(NullAvailability.AVAILABLE);
 		return SKIP_BODY;

@@ -16,6 +16,7 @@ import com.freshdirect.fdstore.FDGroup;
 import com.freshdirect.fdstore.FDProduct;
 import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.FDRuntimeException;
 import com.freshdirect.fdstore.FDSku;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.ProductReference;
@@ -260,5 +261,7 @@ public interface FDProductSelectionI extends FDConfigurableI {
 	public EnumSustainabilityRating getSustainabilityRating();
 	
 	public double getBasePrice();
+	
+	public String getUpc();
 	
 }

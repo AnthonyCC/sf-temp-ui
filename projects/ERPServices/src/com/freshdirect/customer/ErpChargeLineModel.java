@@ -2,6 +2,7 @@ package com.freshdirect.customer;
 
 import com.freshdirect.common.pricing.EnumDiscountType;
 import com.freshdirect.common.pricing.Discount;
+import com.freshdirect.common.pricing.EnumTaxationType;
 import com.freshdirect.framework.core.ModelSupport;
 
 /**
@@ -14,18 +15,20 @@ public class ErpChargeLineModel extends ModelSupport {
     private double amount;
     private Discount discount;
     private double taxRate;
+    private EnumTaxationType taxationType;
 
     public ErpChargeLineModel() {
     	super();
     }
 
-    public ErpChargeLineModel(EnumChargeType type, String reason, double amount, Discount discount, double taxRate) {
+    public ErpChargeLineModel(EnumChargeType type, String reason, double amount, Discount discount, double taxRate, EnumTaxationType taxationType) {
     	this();
 		this.type = type;
 		this.reasonCode = reason;
 		this.amount = amount;
 		this.discount = discount;
 		this.taxRate = taxRate;
+		this.taxationType = taxationType;
     }
     
     public ErpChargeLineModel(ErpChargeLineModel charge) {
@@ -35,6 +38,7 @@ public class ErpChargeLineModel extends ModelSupport {
     	this.amount = charge.getAmount();
     	this.discount = charge.getDiscount();
     	this.taxRate = charge.getTaxRate();
+    	this.taxationType = charge.getTaxationType();
     }
 
 	public double getAmount(){ return this.amount; }
@@ -93,6 +97,14 @@ public class ErpChargeLineModel extends ModelSupport {
 	
 	public String toString(){
 		return "[ErpChargeLineModel type: "+type+" reason: "+reasonCode+" amount: "+amount +" taxRate: "+taxRate+"]";
+	}
+	
+	public EnumTaxationType getTaxationType() {
+		return taxationType;
+	}
+
+	public void setTaxationType(EnumTaxationType taxationType) {
+		this.taxationType = taxationType;
 	}
 
 }

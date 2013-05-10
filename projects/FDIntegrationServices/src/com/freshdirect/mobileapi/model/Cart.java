@@ -39,8 +39,10 @@ import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDModifyCartLineI;
 import com.freshdirect.fdstore.customer.FDModifyCartModel;
 import com.freshdirect.fdstore.customer.FDOrderI;
+import com.freshdirect.fdstore.customer.FDTransientCartModel;
 import com.freshdirect.fdstore.customer.WebOrderViewI;
 import com.freshdirect.fdstore.deliverypass.DeliveryPassUtil;
+import com.freshdirect.fdstore.ecoupon.EnumCouponContext;
 import com.freshdirect.fdstore.promotion.EnumOfferType;
 import com.freshdirect.fdstore.promotion.PromotionErrorType;
 import com.freshdirect.fdstore.promotion.PromotionFactory;
@@ -76,6 +78,8 @@ import com.freshdirect.mobileapi.model.tagwrapper.RequestParamName;
 import com.freshdirect.mobileapi.service.ServiceException;
 import com.freshdirect.mobileapi.util.MobileApiProperties;
 import com.freshdirect.payment.EnumPaymentMethodType;
+import com.freshdirect.webapp.taglib.fdstore.FDShoppingCartControllerTag;
+import com.freshdirect.webapp.taglib.fdstore.SessionName;
 import com.freshdirect.webapp.taglib.fdstore.SystemMessageList;
 import com.freshdirect.webapp.util.RestrictionUtil;
 
@@ -269,7 +273,7 @@ public class Cart {
         if (productConfiguration.getSalesUnit() == null) {
             //ProductServiceImpl productService = new ProductServiceImpl();
             //Product product = productService.getProduct(productConfiguration.getCategoryId(), productConfiguration.getProductId());
-            Product product = Product.getProduct(productConfiguration.getProductId(), productConfiguration.getCategoryId(), user);
+            Product product = Product.getProduct(productConfiguration.getProductId(), productConfiguration.getCategoryId(), null, user);
             productConfiguration.setSalesUnit(new SalesUnit(product.getAutoConfiguredSalesUnit()));
         }
 
@@ -420,7 +424,7 @@ public class Cart {
         return cart.getTotal();
     }
 
-    public Order getOrderDetails(SessionUser user) throws FDException {
+    public Order getCurrentOrderDetails(SessionUser user, EnumCouponContext ctx) throws FDException {
         /*
          * DUP: FDWebSite/docroot/checkout/includes/i_checkout_receipt.jspf
          * LAST UPDATED ON: 10/01/2009
@@ -431,7 +435,7 @@ public class Cart {
          *   and order receipt pages.
          */
         Order checkoutDetail = new Order();
-
+        
         if (cart instanceof FDModifyCartModel) {
             checkoutDetail.setModificationCutoffTime(getModificationCutoffTime());
         }
@@ -491,12 +495,13 @@ public class Cart {
         }
         
         //Cart detail here...
-        checkoutDetail.setCartDetail(getCartDetail(user));
+        checkoutDetail.setCartDetail(getCartDetail(user, ctx));
         return checkoutDetail;
     }
 
-    public CartDetail getCartDetail(SessionUser user) throws FDException {
-        return getCartDetail(user, this.cart);
+    public CartDetail getCartDetail(SessionUser user, EnumCouponContext ctx) throws FDException {
+    	
+        return getCartDetail(user, this.cart, ctx);
     }
 
     /**
@@ -506,8 +511,12 @@ public class Cart {
      * @throws FDException 
      * @throws ModelException 
      */
-    private CartDetail getCartDetail(SessionUser user, FDCartI cart) throws FDException {
+    private CartDetail getCartDetail(SessionUser user, FDCartI cart, EnumCouponContext ctx) throws FDException {
         FDShoppingCartControllerTagWrapper wrapper = new FDShoppingCartControllerTagWrapper(user);
+        wrapper.addRequestValue(SessionName.PARAM_EVALUATE_COUPONS, true);
+        if(EnumCouponContext.CHECKOUT.equals(ctx)){
+        	((FDShoppingCartControllerTag)wrapper.getWrapTarget()).setFilterCoupons(true);
+        }
         wrapper.refreshDeliveryPass();
         /*
          * DUP: FDWebSite/docroot/shared/includes/chk_acct/i_step_4_cart_details.jspf
@@ -519,7 +528,7 @@ public class Cart {
          *      on similar to order confirm and order receipt pages
          */
         List<WebOrderViewI> views = cart.getOrderViews();
-
+       
         CartDetail cartDetail = null;
         if (cart instanceof FDModifyCartModel) {
             cartDetail = new ModifyCartDetail();
@@ -542,9 +551,14 @@ public class Cart {
             Date weekFromOrderDate = cal.getTime();
 
             ((ModifyCartDetail) cartDetail).setPriceLockCutoff(weekFromOrderDate);
-
+            if(ctx == null) {
+            	ctx = EnumCouponContext.VIEWCART;
+            }
         } else {
             cartDetail = new CartDetail();
+            if(ctx == null) {            	
+        		ctx = EnumCouponContext.VIEWCART;          	
+            }
         }
 
         Date platterCutoffTime = null;
@@ -628,7 +642,7 @@ public class Cart {
                 productConfiguration.setFromProductSelection(ProductSelection.wrap(cartLine));
 
                 try {
-                    Product productData = Product.wrap(productNode, user.getFDSessionUser().getUser());
+                    Product productData = Product.wrap(productNode, user.getFDSessionUser().getUser(), cartLine, ctx);
 
                     //Automatically add "agree to terms". In order to end up in cart or prev order, user must have agreed already. Website does 
                     //something similar with hidden input fields.
@@ -960,6 +974,9 @@ public class Cart {
         if (null != platterCutoffTime) {
             cartDetail.setPlatterCutoffTime(new SimpleDateFormat(DateFormat.STANDARDIZED_DATE_FORMAT).format(platterCutoffTime));
         }
+        if(cart instanceof FDCartModel){
+        	cartDetail.setExpCouponDeliveryDate(((FDCartModel)cart).getExpCouponDeliveryDate());
+        }
         return cartDetail;
     }
 
@@ -1008,4 +1025,8 @@ public class Cart {
     public List<FDCartLineI> getEbtIneligibleOrderLines() {
     	 return ((FDCartModel) this.cart).getEbtIneligibleOrderLines();
     }
+    
+    public String getExpCouponDeliveryDate() {
+		return ((FDCartModel) this.cart).getExpCouponDeliveryDate();
+	}
 }

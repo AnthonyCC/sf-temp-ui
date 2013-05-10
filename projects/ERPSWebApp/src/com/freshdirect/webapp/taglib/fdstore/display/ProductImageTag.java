@@ -26,6 +26,7 @@ import com.freshdirect.fdstore.content.Image;
 import com.freshdirect.fdstore.content.PriceCalculator;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.customer.FDUserI;
+import com.freshdirect.fdstore.ecoupon.FDCustomerCoupon;
 import com.freshdirect.fdstore.util.ProductLabeling;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.BodyTagSupport;
@@ -62,8 +63,17 @@ public class ProductImageTag extends BodyTagSupport {
     String webId = null; // DOM id of generated tags (optional)
     double opacity = 1; // 1-transparency
     boolean isNewProductPage = false;
+    FDCustomerCoupon coupon = null; //optional customer coupon to use for badge/logo
 
-    /**
+    public FDCustomerCoupon getCoupon() {
+		return coupon;
+	}
+
+	public void setCoupon(FDCustomerCoupon coupon) {
+		this.coupon = coupon;
+	}
+
+	/**
     * [APPDEV-1283] Exclude 6 and 12 bottle deals
     */
     private boolean excludeCaseDeals = false;
@@ -300,21 +310,41 @@ public class ProductImageTag extends BodyTagSupport {
         if (this.webId == null) {
             webId = GetContentNodeWebIdTag.getWebId(null, product, true);
         }
+        
+        //add coupon, if not passed in already and in the page attributes
+        /* this tends to end up setting a coupon you don't want (from another product)
+         * removing for now
+         * */
+        /* if (coupon == null) {
+        	this.setCoupon((FDCustomerCoupon)pageContext.getRequest().getAttribute("custCoupon"));    	
+        } */
+        
+        int couponBufferW = 0; //additional spacing added to image for coupons
+        int couponBufferH = 0;
 
-        buf.append("<div id=\"" + webId + "\" class=\"product-image-container\"" +
-            "style=\"padding: 0px; border: 0px; margin: 0px auto; " +
-            "width: " + getBoundWidth(prodImg) + "px; " + "height: " +
-            getBoundHeight(prodImg) + "px; " + "line-height: " +
-            getBoundHeight(prodImg) + "px; " + "position: relative;\"");
-
-        if ((className != null) && (className.length() > 0)) {
-            buf.append(" class=\"");
-            buf.append(className);
-            buf.append("\"");
+        //if we have a coupon and prod image is null (defaults to prod image) or IS prod image
+        // OR we're specifying the class (for rows of product images with/without coupons, mixed)
+        if (
+        	/*(coupon != null && (prodImageType == null || "PROD_IMAGE".equalsIgnoreCase(prodImageType)))
+    		||*/ className != null && className.contains("couponLogo")
+        ) {
+        	couponBufferH = 25; //height of logo image
         }
 
-        buf.append(">\n");
+        buf.append("<div id=\"" + webId + "\" class=\"product-image-container");
+        if ((className != null) && (className.length() > 0)) {
+            buf.append(" " + className);
+        }
+        buf.append("\"");
+        buf.append(" style=\"padding: 0px; border: 0px; margin: 0px auto; " +
+            "width: " + (getBoundWidth(prodImg)+couponBufferW) + "px; " +
+            "height: " + (getBoundHeight(prodImg)+couponBufferH) + "px; " + 
+            "line-height: " + (getBoundHeight(prodImg)+couponBufferW) + "px; " +
+            "position: relative;\"");
 
+
+        buf.append(">\n");
+        
         String imageName = "ro_img_" + product.getContentName();
 
         // ============= prepare rollover image script =============  
@@ -384,6 +414,7 @@ public class ProductImageTag extends BodyTagSupport {
         buf.append(product.getFullName());
         buf.append("\"");
 
+        //setting a style will override coupon style
         if ((style != null) && (style.length() > 0)) {
             buf.append(" style=\"");
             buf.append(imageStyle + " " + style);
@@ -391,6 +422,7 @@ public class ProductImageTag extends BodyTagSupport {
         } else {
             buf.append(" style=\"");
             buf.append(imageStyle);
+            buf.append(" position: absolute; top: "+couponBufferH+"px; left: "+couponBufferW+"px;");
             buf.append("\"");
         }
 
@@ -410,6 +442,26 @@ public class ProductImageTag extends BodyTagSupport {
 		} catch (FDResourceException e1) {
 		} catch (FDSkuNotFoundException e1) {
 		}
+		
+
+
+        //add coupon now that container exists
+        /*if (coupon != null && "PROD_IMAGE_ZOOM".equalsIgnoreCase(prodImageType)) {
+        	buf.append("<div class=\"fdCoupon_prodBadge\" style=\"position: absolute; top: 0; left: " + (getBoundImgWidth(prodImg) - 35) + "px;\">");
+				buf.append("<img src=\"/media/images/ecoupon/badge-small.png\" alt=\"FDCoupon Badge\" />");
+			buf.append("</div>");
+        }*/
+        if (
+    		(coupon != null || (className != null && className.contains("couponLogo")) )
+    		&& (prodImageType == null || "PROD_IMAGE".equalsIgnoreCase(prodImageType))
+        ) {
+        	buf.append("<div class=\"fdCoupon_prodLogo\" style=\"position: absolute; top: 0; left: 0; height: "+couponBufferH+"px; width: 100%;");
+        		if (coupon != null) { //add logo
+        			buf.append(" background: url('/media/images/ecoupon/logo-med.gif') no-repeat center center;");
+        		}
+        		buf.append("\">");
+			buf.append("</div>");
+        }
 
 
         if (shouldGenerateAction) {

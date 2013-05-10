@@ -22,6 +22,7 @@ final int W_PRODUCT_MULTIPLE_SKUS_SEC_DOMAIN = 15;
 <%@page import="com.freshdirect.framework.util.QuickDateFormat"%>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
+<%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %>
 <%
 	// multiple skus
 
@@ -367,7 +368,8 @@ final int W_PRODUCT_MULTIPLE_SKUS_SEC_DOMAIN = 15;
 		<%@include file="/shared/includes/product/i_product_skus_rating.jspf" %>
 		 <%@include file="/shared/includes/product/i_sku_availability.jspf" %>
 		<% } %>
-<%-- =========================================================  ============================================================================ --%>
+<%-- ========================================================= eCoupons ============================================================================ --%>
+		<display:FDCoupon coupon="<%= user.getCustomerCoupon(productInfo, EnumCouponContext.PRODUCT,__prd.getParentId(),__prd.getContentName()) %>" contClass="fdCoupon_prodMultiSku"></display:FDCoupon>
 
 					<% if ( hasSecondaryDomain ) { %>			
 						</td></tr>					

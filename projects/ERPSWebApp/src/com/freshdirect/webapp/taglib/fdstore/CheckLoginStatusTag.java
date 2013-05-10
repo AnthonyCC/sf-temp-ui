@@ -1,12 +1,28 @@
 package com.freshdirect.webapp.taglib.fdstore;
 
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLEncoder;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import javax.servlet.jsp.JspException;
+import javax.servlet.jsp.JspWriter;
+
+import org.apache.log4j.Category;
+
 import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.common.pricing.PricingContext;
-
 import com.freshdirect.delivery.DlvServiceSelectionResult;
 import com.freshdirect.delivery.EnumDeliveryStatus;
-
 import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
@@ -15,39 +31,15 @@ import com.freshdirect.fdstore.content.WineFilter;
 import com.freshdirect.fdstore.customer.FDActionInfo;
 import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
-import com.freshdirect.fdstore.customer.FDDeliveryTimeslotModel;
 import com.freshdirect.fdstore.customer.FDUser;
 import com.freshdirect.fdstore.sempixel.FDSemPixelCache;
 import com.freshdirect.fdstore.sempixel.SemPixelModel;
-
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.util.NVL;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionError;
 import com.freshdirect.framework.webapp.ActionResult;
-
 import com.freshdirect.webapp.util.RobotRecognizer;
-
-import org.apache.log4j.Category;
-
-import java.io.IOException;
-
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLEncoder;
-
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-import java.util.StringTokenizer;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.JspWriter;
 
 
 public class CheckLoginStatusTag extends com.freshdirect.framework.webapp.TagSupport
@@ -158,7 +150,11 @@ public class CheckLoginStatusTag extends com.freshdirect.framework.webapp.TagSup
                 LOGGER.debug("entering the corporate check" +
                     user.getUserServiceType());
             }
-
+            
+            if(user != null) {            
+                FDCustomerCouponUtil.initCustomerCoupons(session);
+            }
+            
             LOGGER.debug("request.getRequestURI() :" + request.getRequestURI());
 
             if ((user != null) &&

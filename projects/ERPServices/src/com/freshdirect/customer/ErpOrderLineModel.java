@@ -6,12 +6,13 @@ import java.util.Map;
 
 import com.freshdirect.affiliate.ErpAffiliate;
 import com.freshdirect.common.pricing.Discount;
+import com.freshdirect.common.pricing.EnumTaxationType;
 import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.fdstore.EnumOrderLineRating;
+import com.freshdirect.fdstore.EnumSustainabilityRating;
 import com.freshdirect.fdstore.FDConfigurableI;
 import com.freshdirect.fdstore.FDConfiguration;
 import com.freshdirect.fdstore.FDGroup;
-import com.freshdirect.fdstore.EnumSustainabilityRating;
 import com.freshdirect.fdstore.FDSku;
 import com.freshdirect.framework.core.ModelSupport;
 
@@ -66,7 +67,13 @@ public class ErpOrderLineModel extends ModelSupport implements FDConfigurableI {
     private EnumSustainabilityRating sustainabilityRating=null;
     
     private boolean addedFromSearch;
-	
+    
+    private String upc;
+    
+    private ErpCouponDiscountLineModel couponDiscount;
+    
+    private EnumTaxationType taxationType;
+    
     public FDGroup getFDGroup() {
 		return group;
 	}
@@ -303,9 +310,25 @@ public class ErpOrderLineModel extends ModelSupport implements FDConfigurableI {
 	}
     public double getActualPrice() {
     	Discount d = this.getDiscount();
-    	if(d == null || d.getDiscountType().isSample()) 
-    			return this.getPrice();
-    	return this.getPrice() + this.getDiscountAmount();
+    	double price = 0;
+    	if(d == null || d.getDiscountType().isSample()){ 
+    			price = this.getPrice();
+    	}else{
+    		price =this.getPrice() + this.getDiscountAmount();
+    	}
+    	if(null != this.getCouponDiscount()){
+    		price =price + this.getCouponDiscount().getDiscountAmt();
+    	}
+    	return price;
+    }
+    
+    public double getPriceWithoutCoupons() {
+    	
+    	double price = getPrice();    	
+    	if(null != this.getCouponDiscount()){
+    		price =price + this.getCouponDiscount().getDiscountAmt();
+    	}
+    	return price;
     }
 
 	public PricingContext getPricingContext() {
@@ -345,6 +368,44 @@ public class ErpOrderLineModel extends ModelSupport implements FDConfigurableI {
 	public void setAddedFromSearch(boolean addedFromSearch) {
 		this.addedFromSearch = addedFromSearch;
 	}
+
+	/**
+	 * @return the upc
+	 */
+	public String getUpc() {
+		return upc;
+	}
+
+	/**
+	 * @param upc the upc to set
+	 */
+	public void setUpc(String upc) {
+		this.upc = upc;
+	}
+
+	/**
+	 * @return the couponDiscount
+	 */
+	public ErpCouponDiscountLineModel getCouponDiscount() {
+		return couponDiscount;
+	}
+
+	/**
+	 * @param couponDiscount the couponDiscount to set
+	 */
+	public void setCouponDiscount(ErpCouponDiscountLineModel couponDiscount) {
+		this.couponDiscount = couponDiscount;
+	}
+
+	public EnumTaxationType getTaxationType() {
+		return taxationType;
+	}
+
+	public void setTaxationType(EnumTaxationType taxationType) {
+		this.taxationType = taxationType;
+	}
+
+	
 }
 
 

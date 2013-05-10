@@ -1,7 +1,7 @@
 <%@ page import='com.freshdirect.fdstore.*';%>
 <%@ page import='com.freshdirect.webapp.util.*'%>
 <%@ page import="com.freshdirect.fdstore.content.*"%>
-<%@ page import="com.freshdirect.fdstore.content.*"%>
+<%@ page import="com.freshdirect.fdstore.ecoupon.*"%>
 <%@ taglib uri='/WEB-INF/shared/tld/freshdirect.tld' prefix='fd' %>
 <%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %>
 <%
@@ -10,12 +10,14 @@
         // there should be a single domainvalue on it
         domainValue = ((DomainValue)defaultSku.getVariationMatrix().get(0));
     }
+    FDCustomerCoupon custCoupon_singSku = (FDCustomerCoupon)request.getAttribute("custCoupon");
 %>
-
 <fd:FDProductInfo id="productInfo" skuCode="<%= defaultSku.getSkuCode() %>">
 	<fd:FDProduct id="product" productInfo="<%= productInfo %>">
                                         
-		<%
+		<%  if(null == custCoupon_singSku){
+				custCoupon_singSku =user.getCustomerCoupon(productInfo, EnumCouponContext.PRODUCT,((ProductModel) productNode).getParentId(),((ProductModel) productNode).getContentName());
+			}
 			final ZonePriceInfoModel _uZoneId = productInfo.getZonePriceInfo(user.getPricingContext().getZoneId());
 			final String _defPrice = currencyFormatter.format(_uZoneId.getDefaultPrice());
 			final boolean _isOnSale = _uZoneId.isItemOnSale();
@@ -99,6 +101,8 @@
 		<%@include file="/shared/includes/product/i_product_skus_rating.jspf" %>
 		 <%@include file="/shared/includes/product/i_sku_availability.jspf" %>
 		<% } %>
+		
+		<display:FDCoupon coupon="<%= custCoupon_singSku %>" contClass="fdCoupon_prodSingSku"></display:FDCoupon>
 		<input type="hidden" name="skuCode" value="<%= defaultSku.getSkuCode() %>">
 		
 	</fd:FDProduct>

@@ -7,12 +7,17 @@
 <%@ page import='com.freshdirect.fdstore.*' %>
 <%@ page import="com.freshdirect.framework.webapp.*"%>
 <%@ page import='com.freshdirect.framework.util.*' %>
+<%@ page import="com.freshdirect.fdstore.ecoupon.EnumCouponContext"%>
+<%@ page import='com.freshdirect.fdstore.customer.FDUserI'%>
+<%@ page import="com.freshdirect.fdstore.ecoupon.*" %>
 
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri='oscache' prefix='oscache' %>
 <%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %>
+
+<% FDUserI gen_user = (FDUserI) pageContext.getSession().getAttribute(SessionName.USER); %>
 
 <% //expanded page dimensions
 final int W_GENERIC_LAYOUT_IS_DEPARTMENT = 765;
@@ -84,7 +89,7 @@ final int W_GENERIC_LAYOUT_NOT_DEPARTMENT = 601;
 	maxColumns="<%= isDepartment.booleanValue() ? 6 : 5 %>" 
 	tableWidth="<%= isDepartment.booleanValue() ? W_GENERIC_LAYOUT_IS_DEPARTMENT : W_GENERIC_LAYOUT_NOT_DEPARTMENT %>"
 	useAlternateImage="<%= useAlternateImages.booleanValue() %>"
-	>		
+	>
 		
 	<table cellspacing="0" cellpadding="0" width="100%">
 		<tr align="center" valign="bottom">		
@@ -94,10 +99,17 @@ final int W_GENERIC_LAYOUT_NOT_DEPARTMENT = 601;
 					
 					ProductModel product = (ProductModel)currentItem;
 					String actionUrl = FDURLUtil.getProductURI( product, trackingCode );
-					%>
+					ProductImpression pi = new ProductImpression(product);
+					FDCustomerCoupon curCoupon = null;
+					if (pi.getSku() != null && pi.getSku().getProductInfo() != null) {
+						curCoupon = gen_user.getCustomerCoupon(pi.getSku().getProductInfo(), EnumCouponContext.PRODUCT,product.getParentId(),product.getContentName());	
+					}
+					
+					
+				%>
 				
 					<td width="<%= horizontalPattern.getProductCellWidth() %>" style="padding-bottom: 5px;">						
-						<display:ProductImage product="<%= product %>" showRolloverImage="true" action="<%= actionUrl %>" useAlternateImage="<%= useAlternateImages.booleanValue() %>"/>						
+						<display:ProductImage product="<%= product %>" showRolloverImage="true" action="<%= actionUrl %>" useAlternateImage="<%= useAlternateImages.booleanValue() %>" coupon="<%= curCoupon %>" />						
 					</td> 
 					
 				<% } else if ( currentItem instanceof CategoryModel ) { 		// ===== CATEGORY ===== 
@@ -112,7 +124,7 @@ final int W_GENERIC_LAYOUT_NOT_DEPARTMENT = 601;
 					
 				<% } %>
 			
-			</display:PatternRow>			
+			</display:PatternRow>
 		</tr>
 		
 		<tr align="center" valign="top">		
@@ -121,14 +133,20 @@ final int W_GENERIC_LAYOUT_NOT_DEPARTMENT = 601;
 				<% if ( currentItem instanceof ProductModel ) { 				// ===== PRODUCT =====
 					
 					ProductModel product = (ProductModel)currentItem;
+					ProductImpression pi = new ProductImpression(product);
 					String actionUrl = FDURLUtil.getProductURI( product, trackingCode );
-					%>
+					FDCustomerCoupon curCoupon = null;
+					if (pi.getSku() != null && pi.getSku().getProductInfo() != null) {
+						gen_user.getCustomerCoupon(pi.getSku().getProductInfo(), EnumCouponContext.PRODUCT,product.getParentId(),product.getContentName());
+					}
+				%>
 				
 					<td width="<%= horizontalPattern.getProductCellWidth() %>" style="padding-bottom: 20px; padding-left: 2px; padding-right: 2px;"><font class="catPageProdNameUnderImg">
 						
 						<display:ProductRating product="<%= product %>" action="<%= actionUrl %>"/>
 						<display:ProductName product="<%= product %>" action="<%= actionUrl %>"/>
-						<display:ProductPrice impression="<%= new ProductImpression(product) %>" showDescription="false"/>
+						<display:ProductPrice impression="<%= pi %>" showDescription="false"/>
+						<display:FDCoupon coupon="<%= curCoupon %>" contClass="fdCoupon_layGen"></display:FDCoupon>
 						
 					</font></td> 
 					

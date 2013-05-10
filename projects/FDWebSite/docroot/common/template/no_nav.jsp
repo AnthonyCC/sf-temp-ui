@@ -82,6 +82,7 @@ request.setAttribute("__yui_load_dispatcher__", Boolean.TRUE);
 		modOrder = true;		
        	color = "996699";
        	suffix = "_purple";
+       	request.setAttribute("inSo", "true");
 	}
 
 		%>

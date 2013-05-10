@@ -48,6 +48,8 @@ public class TxSingleProductPricingSupportTag extends BodyTagSupport {
 	private String statusPlaceholder;
 	
 	private String subTotalPlaceholderId;
+	
+	private String couponStatusPlaceholderId;
 
 	// INPUT Product impressions
 	private ProductImpression impression;
@@ -76,6 +78,15 @@ public class TxSingleProductPricingSupportTag extends BodyTagSupport {
 	// [optional]
 	public void setStatusPlaceholder(String statusPlaceholder) {
 		this.statusPlaceholder = statusPlaceholder;
+	}
+
+	// [optional]
+	public void setCouponStatusPlaceholderId(String couponStatusPlaceholderId) {
+		this.couponStatusPlaceholderId = couponStatusPlaceholderId;
+	}
+	
+	public String getCouponStatusPlaceholderId() {
+		return couponStatusPlaceholderId;
 	}
 	
 	public void setSubTotalPlaceholderId(String subTotalPlaceholderId) {
@@ -122,12 +133,12 @@ public class TxSingleProductPricingSupportTag extends BodyTagSupport {
 		StringBuffer buf = new StringBuffer();
 
 		if (impression != null) {
-			appendStatusUpdater(buf, namespace, statusPlaceholder);
+			appendStatusUpdater(buf, namespace, statusPlaceholder, couponStatusPlaceholderId);
 			if (impression.isTransactional()) {
 				appendMaterialScripts(buf, impression, customer);
 				if (namespace != null && formName != null)
 					appendConfiguratorScript(buf, customer, (TransactionalProductImpression) impression, namespace, formName,
-							statusPlaceholder, subTotalPlaceholderId);
+							statusPlaceholder, subTotalPlaceholderId, couponStatusPlaceholderId);
 				else
 					throw new JspException("namespace and formName parameters required");
 			} else {
@@ -140,7 +151,7 @@ public class TxSingleProductPricingSupportTag extends BodyTagSupport {
 		return buf.toString();
 	}
 
-	private void appendStatusUpdater(StringBuffer buf, String namespace, String statusPlaceholder) {
+	private void appendStatusUpdater(StringBuffer buf, String namespace, String statusPlaceholder, String couponStatusPlaceholderId) {
 		buf.append("<script type=\"text/javascript\">\n");
 		buf.append("if (!" + namespace + ")\n");
 		buf.append("	var " + namespace + " = new Object();\n");
@@ -151,6 +162,15 @@ public class TxSingleProductPricingSupportTag extends BodyTagSupport {
 			buf.append("	var oldTxt;\n");
 			buf.append("	if (status != null && FDSearch['statusUpdater']) {\n");
 			buf.append("		FDSearch.statusUpdater(status,msg)\n");
+			buf.append("	}\n");
+		}
+		buf.append("};\n");
+		buf.append(namespace + ".updateCouponStatus = function(msg) {\n");
+		if (couponStatusPlaceholderId != null) {
+			buf.append("	var couponStatusElem = document.getElementById('" + couponStatusPlaceholderId + "');\n");
+			buf.append("	var oldTxt;\n");
+			buf.append("	if (couponStatusElem != null && FDSearch['couponStatusUpdater']) {\n");
+			buf.append("		FDSearch.couponStatusUpdater(couponStatusElem, msg)\n");
 			buf.append("	}\n");
 		}
 		buf.append("};\n");
@@ -310,7 +330,7 @@ public class TxSingleProductPricingSupportTag extends BodyTagSupport {
 	 * @param buf
 	 */
 	private static void appendConfiguratorScript(StringBuffer buf, FDUserI customer, TransactionalProductImpression impression,
-			String namespace, String formName, String statusPlaceholder, String subTotalPlaceholderId) {
+			String namespace, String formName, String statusPlaceholder, String subTotalPlaceholderId, String couponStatusPlaceholderId) {
 
 		buf.append("<script type=\"text/javascript\">\n");
 		buf.append("\n");
@@ -319,7 +339,18 @@ public class TxSingleProductPricingSupportTag extends BodyTagSupport {
 		buf.append("  	var url = '/quickbuy/ajax_add_to_cart.jsp';\n");
 		buf.append("  	var callback = {\n");
 		buf.append("  		success: function(o) {\n");
-		buf.append("  			" + namespace + ".updateStatus(o.responseText);\n");
+		
+		buf.append("  			var respJSON = {};\n");
+		buf.append("  			try {\n");
+		buf.append("  				respJSON = YAHOO.lang.JSON.parse(o.responseText);\n");
+		buf.append("  			}catch(e) {\n");
+		//buf.append("  				console.log('error in txSingleProductPricingSupportTag');\n");
+		buf.append("  			}\n\n");
+		//buf.append("  			console.log('called success in txSingleProductPricingSupportTag');\n");
+		//buf.append("  			console.log(respJSON);\n");
+		
+		buf.append("  			" + namespace + ".updateStatus(respJSON.statusHtml);\n");
+		buf.append("  			" + namespace + ".updateCouponStatus(respJSON.couponStatusHtml);\n");
 		buf.append("  			updateYourCartPanel();\n");
 		buf.append("  			fdCoremetrics.trackAddToCartEvent();\n");
 		buf.append("  		},\n");
@@ -328,6 +359,7 @@ public class TxSingleProductPricingSupportTag extends BodyTagSupport {
 		buf.append("  		},\n");
 		buf.append("  		argument: []\n");
 		buf.append("  	};\n");
+        buf.append("    clearCouponStatusATC(null, '" + couponStatusPlaceholderId + "');\n");
 		buf.append("  	YAHOO.util.Connect.asyncRequest('POST', url, callback, query);\n");
 		buf.append("  	return false;\n");
 		buf.append("  };\n");			

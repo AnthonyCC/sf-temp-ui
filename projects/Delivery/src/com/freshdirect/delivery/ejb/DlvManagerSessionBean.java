@@ -42,6 +42,7 @@ import com.freshdirect.analytics.TimeslotEventModel;
 import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.address.ContactAddressModel;
 import com.freshdirect.common.customer.EnumServiceType;
+import com.freshdirect.common.pricing.EnumTaxationType;
 import com.freshdirect.common.pricing.MunicipalityInfo;
 import com.freshdirect.customer.EnumAccountActivityType;
 import com.freshdirect.customer.EnumTransactionSource;
@@ -1761,7 +1762,8 @@ public class DlvManagerSessionBean extends GatewaySessionBeanSupport {
 					rs.getString("gl_code"),
 					rs.getDouble("tax_rate"),
 					rs.getDouble("bottle_deposit"),
-					alcoholRestricted );
+					alcoholRestricted,
+					EnumTaxationType.getEnum(rs.getString("TAXATION_TYPE")));
 				muniList.add(mi);
 			}
 			return (muniList.size() > 0 ? muniList : Collections.<MunicipalityInfo>emptyList() );

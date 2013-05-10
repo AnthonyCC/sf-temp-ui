@@ -11,7 +11,12 @@ public enum SearchSortType {
 	BY_SALE(5, "sale", "Sale", "Sale (yes)", "Sale (no)"),
 	BY_RECENCY(6, "recency", "Recency", "Most recent", "Least recent"),
 	BY_OURFAVES(6, "ourFaves", "Our Favorites", "Our Favorites", "Our Favorites"),
-	BY_DEPARTMENT(7, "dept", "Department", "Department", "Department");
+	BY_DEPARTMENT(7, "dept", "Department", "Department", "Department"),
+    BY_START_DATE(8, "strd", "Date Added", "Date Added (new)", "Date Added (old)"),
+	BY_EXPIRATION_DATE(9, "expr", "Expiring", "Expiring (asc)", "Expiring (desc)"),
+	BY_PERC_DISCOUNT(10, "poff", "% of Discount", "% of Discount (low)", "% of Discount (high)"),
+	BY_DOLLAR_DISCOUNT(11, "doff", "Dollar Discount", "Dollar Discount (low)", "Dollar Discount (high)"),
+	BY_PRIORITY(11, "prio", "Popularity", "Most Popular", "Least Popular");
     
     private int type;
     private String label;

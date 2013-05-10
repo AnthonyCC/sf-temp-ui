@@ -21,7 +21,6 @@ import javax.servlet.jsp.JspException;
 import org.apache.log4j.Category;
 
 import com.freshdirect.common.customer.EnumServiceType;
-import com.freshdirect.customer.EnumAlertType;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.customer.FDAuthenticationException;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
@@ -29,6 +28,7 @@ import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.FDUser;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.customer.SavedRecipientModel;
+import com.freshdirect.fdstore.ecoupon.model.FDCustomerCouponWallet;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionError;
 import com.freshdirect.framework.webapp.ActionResult;
@@ -94,7 +94,7 @@ public class LoginControllerTag extends AbstractControllerTag {
             
             LOGGER.info("loginUser is " + loginUser.getFirstName() + " Level = " + loginUser.getLevel());
             LOGGER.info("currentUser is " + (currentUser==null?"null":currentUser.getFirstName()+currentUser.getLevel()));
-            
+            String currentUserId=null;
             if (currentUser == null) {
                 // this is the case right after signout
                 UserUtil.createSessionUser(request, response, loginUser);
@@ -117,6 +117,10 @@ public class LoginControllerTag extends AbstractControllerTag {
                     loginUser.getShoppingCart().setPricingContextToOrderLines(loginUser.getPricingContext());                                     
                     
                 }
+                
+                // merge coupons
+                currentUserId= currentUser.getPrimaryKey();
+                
                 // current user has gift card recipients that need to be added to the login user's recipients list
                 if(currentUser.getLevel()==FDUserI.GUEST &&  currentUser.getRecipientList().getRecipients().size() > 0) {
                 	List<RecipientModel> tempList = currentUser.getRecipientList().getRecipients();
@@ -160,9 +164,11 @@ public class LoginControllerTag extends AbstractControllerTag {
             }
 //          loginUser.setEbtAccepted(loginUser.isEbtAccepted()&&(loginUser.getOrderHistory().getUnSettledEBTOrderCount()<=0));  
           FDSessionUser user = (FDSessionUser) session.getAttribute(SessionName.USER);
-          if(null !=user){
+          if(user != null) {
               user.setEbtAccepted(user.isEbtAccepted()&&(user.getOrderHistory().getUnSettledEBTOrderCount()<1)&&!user.hasEBTAlert());
+              FDCustomerCouponUtil.initCustomerCoupons(session,currentUserId);
           }
+          
           
           if (user!=null && EnumServiceType.CORPORATE.equals(user.getUserServiceType())) {
         	  if(request.getRequestURI().indexOf("index.jsp")!=-1 || (getSuccessPage()!=null && getSuccessPage().indexOf("/login/index.jsp")!=-1)){        	  

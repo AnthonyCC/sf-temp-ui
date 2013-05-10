@@ -117,7 +117,7 @@ public class InvoiceLoader implements ConsumerI {
 			loader.processInvoiceBatch(fileName);
 		}catch(LoaderException e){
 			LOGGER.error("LoaderException: ", e);
-		} 
+		}
 	}
 	
 	public boolean parseSuccessful() {

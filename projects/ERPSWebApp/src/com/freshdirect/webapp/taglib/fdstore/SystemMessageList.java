@@ -193,4 +193,8 @@ public interface SystemMessageList {
 	public final static String MSG_EBT_NOT_ALLOWED_UNSETTLED_ORDERS 	= "Payment by EBT is not allowed at this time because there is already an EBT order in your account that has not yet been settled. After the first EBT order completes, you may place another order with an EBT card. In the meantime, please select another payment option to continue.";
 	public final static String MSG_EBT_NOT_ALLOWED_ON_ALERT 	= "Payment by EBT is not allowed at this time. Please select another payment option to continue or contact customer service at {0}.";
 	
+	public final static String MSG_COUPONS_SYSTEM_NOT_AVAILABLE ="We apologize, but our coupon system is currently unavailable. Please check back soon. Sorry for any inconvenience.";
+	public final static String MSG_COUPONS_EXP_DELIVERY_DATE ="Some of your coupons are not valid on your chosen delivery date. All of your coupons will be valid if your delivery date is on or before the following date: ";
+	
+	
 }

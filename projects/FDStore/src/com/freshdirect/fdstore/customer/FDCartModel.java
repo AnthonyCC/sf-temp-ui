@@ -21,6 +21,7 @@ import com.freshdirect.affiliate.ErpAffiliate;
 import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.pricing.Discount;
 import com.freshdirect.common.pricing.EnumDiscountType;
+import com.freshdirect.common.pricing.EnumTaxationType;
 import com.freshdirect.common.pricing.MaterialPrice;
 import com.freshdirect.common.pricing.MunicipalityInfo;
 import com.freshdirect.common.pricing.MunicipalityInfoWrapper;
@@ -168,6 +169,8 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 
 	private boolean ageVerified = false;
 	
+	private String expCouponDeliveryDate = null;
+	
 	
 
 	private List<ErpDiscountLineModel> discounts = new ArrayList<ErpDiscountLineModel>();
@@ -206,6 +209,7 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 	private boolean csrWaivedDeliveryPremium = false;
 	
 	private List<FDCartLineI> ebtIneligibleOrderLines = new ArrayList<FDCartLineI>();
+	private Set<String> recentlyAppliedCoupons = new HashSet<String>();
 	
 	public void incrementSkuCount(String promoCode, int quantity) {
 		Integer count =skuCount.get(promoCode);
@@ -1236,6 +1240,7 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 	public void recalculateTaxAndBottleDeposit(String zipcode) throws FDResourceException{
 		double taxRate = 0.0;
 		double depositRate = 0.0;
+		EnumTaxationType taxationType = null;
 		
 		FDDeliveryManager fdMan = FDDeliveryManager.getInstance();
 		
@@ -1255,11 +1260,13 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 				taxRate = mi.getTaxRate();
 			}
 			depositRate = mi.getBottleDeposit();
+			taxationType = mi.getTaxationType();
 		}
 	
 		for( FDCartLineI cartline : orderLines ) {
 			cartline.setTaxRate(taxRate);
 			cartline.setDepositValue(depositRate);
+			cartline.setTaxationType(taxationType);
 		}
 	}
 
@@ -1720,24 +1727,29 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 
 		// DLV & MISC tax
 		double taxRate = 0.0;
+		EnumTaxationType taxationType = null;
 		for (Iterator<FDCartLineI> i = this.getOrderLines().iterator(); i.hasNext();) {
 			FDCartLineI cartLine = i.next();
 			if (cartLine.hasTax()) {
 				taxRate = cartLine.getTaxRate();
+				taxationType = cartLine.getTaxationType();
 				break;
 			}
 		}
 		ErpChargeLineModel c = this.getCharge(EnumChargeType.DELIVERY);
 		if (c != null) {
 			c.setTaxRate(taxRate);
+			c.setTaxationType(taxationType);
 		}
 		c = this.getCharge(EnumChargeType.DLVPREMIUM);
 		if (c != null) {
 			c.setTaxRate(taxRate);
+			c.setTaxationType(taxationType);
 		}
 		c = this.getCharge(EnumChargeType.MISCELLANEOUS);
 		if (c != null) {
 			c.setTaxRate(taxRate);
+			c.setTaxationType(taxationType);
 		}
 
 	}   
@@ -1757,5 +1769,18 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 	public List<FDCartLineI> getEbtIneligibleOrderLines() {
 		return ebtIneligibleOrderLines;
 	}
+
+	public String getExpCouponDeliveryDate() {
+		return expCouponDeliveryDate;
+	}
+
+	public void setExpCouponDeliveryDate(String expCouponDeliveryDate) {
+		this.expCouponDeliveryDate = expCouponDeliveryDate;
+	}
+
+	public Set<String> getRecentlyAppliedCoupons() {
+		return recentlyAppliedCoupons;
+	}
+	
 	
 }

@@ -73,6 +73,9 @@ public class ErpProductModel extends ErpModelSupport implements DurableModelI, E
 	/** sustainability rating */
 	private String sustainabilityRating;
 	
+	/** upc */
+	private String upc;
+	
 	/**
 	 * Default constructor.
 	 */
@@ -88,7 +91,7 @@ public class ErpProductModel extends ErpModelSupport implements DurableModelI, E
 	 * @param defaultPriceUnit pricing unit for default price
 	 * @param materialProxies collection of material proxy model objects
 	 */
-	public ErpProductModel(String skuCode, double defaultPrice, String defaultPriceUnit, String unavailabilityStatus, Date unavailabilityDate, String unavailabilityReason, Date pricingDate, ErpMaterialModel material, VersionedPrimaryKey[] suPKs, VersionedPrimaryKey[] cvPKs, String _rating, String days_fresh, String days_in_house, double basePrice, String basePriceUnit,String _sustainabilityRating ) {
+	public ErpProductModel(String skuCode, double defaultPrice, String defaultPriceUnit, String unavailabilityStatus, Date unavailabilityDate, String unavailabilityReason, Date pricingDate, ErpMaterialModel material, VersionedPrimaryKey[] suPKs, VersionedPrimaryKey[] cvPKs, String _rating, String days_fresh, String days_in_house, double basePrice, String basePriceUnit,String _sustainabilityRating, String upc ) {
 		super();
 		if (skuCode==null) {
 			throw new IllegalArgumentException("SKU code cannot be null");
@@ -110,6 +113,7 @@ public class ErpProductModel extends ErpModelSupport implements DurableModelI, E
 		this.setDaysFresh(days_fresh);
 		this.setDaysInHouse(days_in_house);
 		this.setSustainabilityRating(_sustainabilityRating);
+		this.setUpc(upc);
 	}
 
 	/**
@@ -403,6 +407,20 @@ public class ErpProductModel extends ErpModelSupport implements DurableModelI, E
 	     */
 	    public String getSustainabilityRating() {
 	        return sustainabilityRating;
-	    }	
+	    }
+
+	    /** Getter for property upc.
+	     * @return Value of property upc.
+	     */
+		public String getUpc() {
+			return upc;
+		}
+
+		/**
+		 * @param upc the upc to set
+		 */
+		public void setUpc(String upc) {
+			this.upc = upc;
+		}	
 
 }

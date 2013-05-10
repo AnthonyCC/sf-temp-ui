@@ -82,6 +82,7 @@ public class FDStoreProperties {
     private final static String PROP_WINBACK_ROOT = "fdstore.winbackRoot";
     private final static String PROP_MARKETING_PROMO_ROOT = "fdstore.marketingPromoRoot";
     private final static String PROP_REFRESHSECS_PRODUCTINFO = "fdstore.refreshSecs.productInfo";
+    private final static String PROP_REFRESHSECS_UPCPRODUCTINFO = "fdstore.refreshSecs.upcProductInfo";
     private final static String PROP_REFRESHSECS_PRODUCT = "fdstore.refreshSecs.product";
     private final static String PROP_REFRESHSECS_ZONE = "fdstore.refreshSecs.zone";
     private final static String PROP_PRODUCT_CACHE_SIZE = "fdstore.product.cache.size";
@@ -588,6 +589,10 @@ public class FDStoreProperties {
 	
 	/* APPDEV-2723 */
 	private final static String PROP_COHORT_MATCHER = "fdstore.cohortmatcher";
+	
+	/* [APPDEV-2525]-ECoupons */
+	private final static String PROP_FDCOUPONMGR_HOME = "fdstore.fdCouponManager.home";
+	
 
 	private final static String PROP_USQ_LEGAL_WARNING = "fdstore.store.usq_legal_warning";
 	
@@ -685,6 +690,7 @@ public class FDStoreProperties {
             "freshdirect.payment.RestrictedPaymentMethod");
 
         defaults.put(PROP_REFRESHSECS_PRODUCTINFO, "600");
+        defaults.put(PROP_REFRESHSECS_UPCPRODUCTINFO, "900");
         defaults.put(PROP_REFRESHSECS_ZONE, "600");
         defaults.put(PROP_REFRESHSECS_PRODUCT, "7200");
         defaults.put(PROP_PRODUCT_CACHE_SIZE, "35000");
@@ -1176,6 +1182,8 @@ public class FDStoreProperties {
 		defaults.put(PRODUCT_RATING_RELOAD, "true");
 		defaults.put(PROP_ALCOHOLFILTERING_ENABLED, "true");
 		defaults.put(CHECK_LOCAL_INVENTORY_ENABLED, "false");
+		defaults.put(PROP_FDCOUPONMGR_HOME, "freshdirect.fdstore.CouponManager");
+				
         refresh();
     }
 
@@ -1418,6 +1426,10 @@ public class FDStoreProperties {
         return Integer.parseInt(get(PROP_REFRESHSECS_PRODUCTINFO));
     }
 
+    public static int getRefreshSecsUPCProductInfo() {
+        return Integer.parseInt(get(PROP_REFRESHSECS_UPCPRODUCTINFO));
+    }
+    
     public static int getRefreshSecsProduct() {
         return Integer.parseInt(get(PROP_REFRESHSECS_PRODUCT));
     }
@@ -3030,5 +3042,8 @@ public class FDStoreProperties {
 			return (Boolean.valueOf(get(CHECK_LOCAL_INVENTORY_ENABLED))).booleanValue();
 	 }
 	 
-	 
+	 public static String getFDCouponManagerHome() {
+	        return get(PROP_FDCOUPONMGR_HOME);
+	 }
 }
+

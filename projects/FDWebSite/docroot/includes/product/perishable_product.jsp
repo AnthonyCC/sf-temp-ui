@@ -214,21 +214,47 @@ final int W_PERISHABLE_PRODUCT_RIGHT = 369;
 					<script type="text/javascript">
 						var ymal_pdtl_events = {"afterScroll":  <fd:CmElement wrapIntoFunction="true" siteFeature="YMAL_PDTL" elementCategory="carousel"/>} 
 					</script>
+					<%
+						/* check if any products have a coupon */
+						boolean productsHaveCoupons = false;
+						HashMap<ProductModel, FDCustomerCoupon> ref_coupons = new HashMap<ProductModel, FDCustomerCoupon>();
+						
+						for (ProductModel curProd : recommendedProducts.getProducts()) {
+							ProductImpression pi = new ProductImpression( curProd );
+	
+							FDCustomerCoupon curCoupon = null;
+							if ( pi.getSku() != null && pi.getSku().getProductInfo() != null ) {
+								curCoupon = user.getCustomerCoupon(pi.getSku().getProductInfo(), EnumCouponContext.PRODUCT,curProd.getParentId(),curProd.getContentName());
+							}
+							
+				        	if (curCoupon != null) { productsHaveCoupons = true; }
+				        	ref_coupons.put( curProd, curCoupon );
+						}
+					%>
 					<display:Carousel id="cat2_carousel" carouselId="cat2_carousel" width="150" numItems="1" showCategories="false" itemsToShow="<%= recommendedProducts.getProducts() %>" trackingCode="ymal_pdtl" maxItems="9" style="margin-left: auto; margin-right: auto;" eventHandlersObj="ymal_pdtl_events">
 						<%
 							final ProductModel __c_prd = (ProductModel) currentItem;
 							final int __c_maxHeight = ProductDisplayUtil.getMaxHeight(recommendedProducts.getProducts()); 
+							FDCustomerCoupon curCoupon = ref_coupons.get(__c_prd);
+
+							String prodImageClassName = "productImage";
+							if (productsHaveCoupons) {
+								prodImageClassName += " couponLogo";
+							}
 						%>
 						<a href="<%=CmMarketingLinkUtil.getSmartStoreLink(actionUrl, recommendedProducts)%>" hidden style="display: none;" class="product-name-link"></a> <%-- For Coremetrics impression tracking --%>
 						<display:GetContentNodeWebId id="webId" product="<%= currentItem %>" clientSafe="<%= true %>">
-						<div id="hotspot-<%= webId %>" style="height: 181px">
+						<div id="hotspot-<%= webId %>" style="height: <%= (productsHaveCoupons) ? "223" : "181" %>px">
 							<display:ProductImage product="<%= __c_prd %>" showRolloverImage="true" useAlternateImage="false"
-									className="productImage" height="<%= __c_maxHeight %>" enableQuickBuy="false" webId="<%= webId %>"/>
+									className="<%= prodImageClassName %>" height="<%= __c_maxHeight %>" enableQuickBuy="false" webId="<%= webId %>" coupon="<%= curCoupon %>" />
 							<display:ProductRating product="<%= __c_prd %>" />
 							<div class="productname">
 								<display:ProductName product="<%= __c_prd %>" showBrandName="true"/>
 							</div>
 							<display:ProductPrice impression="<%= new ProductImpression(__c_prd) %>" showDescription="true"/>
+							<display:FDCoupon coupon="<%= curCoupon %>" contClass="fdCoupon_layProdPerish"></display:FDCoupon>
+							
+							
 							<%-- QUICK BUY SECTION START --%>
 							<img id="qbButton-<%= webId %>" class="qbButton" style="display: inline-block; position: absolute; left: 15px; top: 65px;" src="/media_stat/images/quickbuy/quickbuy_button_hover.gif" alt="Quick Buy">
 							<%-- QUICK BUY SECTION END --%>

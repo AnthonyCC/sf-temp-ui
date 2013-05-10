@@ -19,6 +19,7 @@
 <%@ page import='java.util.*' %>
 <%@ page import='org.apache.log4j.Category' %>
 <%@ page import='org.apache.commons.lang.StringUtils' %>
+<%@ page import="com.freshdirect.fdstore.ecoupon.*" %>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
@@ -695,6 +696,15 @@ final int W_GROUPSCALE_TOTAL = 601;
 									</div>
 								<% } %>
 								<%@include file="/includes/product/i_price_taxdeposit.jspf"%>
+								
+								<%
+									FDCustomerCoupon curCoupon = null;
+									ProductImpression coupPi = new ProductImpression(productNode);
+									if (coupPi.getSku() != null && coupPi.getSku().getProductInfo() != null) {
+										curCoupon = user.getCustomerCoupon(coupPi.getSku().getProductInfo(), EnumCouponContext.PRODUCT,coupPi.getProductModel().getParentId(),coupPi.getProductModel().getContentName());
+									}
+								%>
+								<display:FDCoupon coupon="<%= curCoupon %>" contClass="fdCoupon_groupBig"></display:FDCoupon>
 							<%-- Product Pricing END --%>
 							<br />
 							
@@ -892,7 +902,7 @@ final int W_GROUPSCALE_TOTAL = 601;
 											Set hideBursts = new HashSet();
 											hideBursts.add(EnumBurstType.DEAL);
 										%>
-										<display:ProductImage product="<%= productNode %>" showRolloverImage="true" hideBursts="<%= hideBursts %>"/>
+										<display:ProductImage product="<%= productNode %>" showRolloverImage="true" hideBursts="<%= hideBursts %>" />
 									</td>
 									</tr>
 									<tr>

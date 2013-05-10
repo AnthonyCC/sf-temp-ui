@@ -12,7 +12,9 @@ import com.freshdirect.fdstore.FDVariationOption;
 import com.freshdirect.fdstore.content.ComponentGroupModel;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ProductModel;
+import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDUserI;
+import com.freshdirect.fdstore.ecoupon.EnumCouponContext;
 import com.freshdirect.mobileapi.exception.ModelException;
 
 public class ComponentGroup {
@@ -32,7 +34,7 @@ public class ComponentGroup {
     protected Product parent;
 
     @SuppressWarnings("unchecked")
-    public ComponentGroup(ComponentGroupModel cgm, Product productParent, FDUserI user) throws FDResourceException, FDSkuNotFoundException,
+    public ComponentGroup(ComponentGroupModel cgm, Product productParent, FDUserI user, FDCartLineI cartLine, EnumCouponContext ctx) throws FDResourceException, FDSkuNotFoundException,
             ModelException {
         optionsDropDownVertical = cgm.isOptionsDropDownVertical();
         this.name = cgm.getContentKey().getId();
@@ -49,7 +51,7 @@ public class ComponentGroup {
                         try {
                             ProductModel pm = ContentFactory.getInstance().getProduct(optSkuCode);
                             if (!pm.isUnavailable()) {
-                                productList.add(Product.wrap(pm, user));
+                                productList.add(Product.wrap(pm, user, cartLine, ctx));
                             }
                         } catch (FDSkuNotFoundException e) {
                             LOG.warn("Could not get product with sku:" + optSkuCode + "::desc="

@@ -3,13 +3,16 @@ package com.freshdirect.fdstore.customer;
 import java.util.Set;
 
 import com.freshdirect.common.pricing.Discount;
+import com.freshdirect.common.pricing.EnumTaxationType;
 import com.freshdirect.common.pricing.PricingContext;
+import com.freshdirect.customer.ErpCouponDiscountLineModel;
 import com.freshdirect.customer.ErpInvoiceLineI;
 import com.freshdirect.customer.ErpOrderLineModel;
 import com.freshdirect.customer.ErpReturnLineI;
 import com.freshdirect.delivery.restriction.EnumDlvRestrictionReason;
 import com.freshdirect.fdstore.FDGroup;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.ecoupon.EnumCouponStatus;
 import com.freshdirect.framework.event.EnumEventSource;
 
 
@@ -156,5 +159,13 @@ public interface FDCartLineI extends FDProductSelectionI {
 	public FDGroup getOriginalGroup();
 	public boolean isAddedFromSearch();
 	public void setAddedFromSearch(boolean addedFromSearch);
-	
+	public ErpCouponDiscountLineModel getCouponDiscount();
+	public void setCouponDiscount(ErpCouponDiscountLineModel discount);
+	public EnumCouponStatus getCouponStatus();
+	public void setCouponStatus(EnumCouponStatus couponStatus);
+	public void clearCouponDiscount();
+	public EnumTaxationType getTaxationType();
+	public void setTaxationType(EnumTaxationType taxationType) ;
+	public void setCouponApplied(boolean applied);
+	public boolean hasCouponApplied();
 }

@@ -68,6 +68,7 @@ public class RedemptionCodeControllerTag extends AbstractControllerTag {
 					user.setRedeemedPromotion(null);
 					
 					user.updateUserState();
+					user.setCouponEvaluationRequired(true);
 					session.setAttribute(SessionName.USER, user);
 				}
 				if(session.getAttribute(SessionName.TSA_PROMO) != null) {
@@ -247,6 +248,7 @@ public class RedemptionCodeControllerTag extends AbstractControllerTag {
 						actionResult.addError(true, "redemption_error", SystemMessageList.MSG_REDEMPTION_OVERRIDE_AUTOMATIC);
 						request.setAttribute("redeem_override_msg", SystemMessageList.MSG_REDEMPTION_OVERRIDE_AUTOMATIC);
 					}
+					user.setCouponEvaluationRequired(true);
 					request.setAttribute("isEligible", eligible);
 										
 					
@@ -366,6 +368,7 @@ public class RedemptionCodeControllerTag extends AbstractControllerTag {
 						actionResult.addError(true, "redemption_error", "Your promotions have been added to your order");
 						request.setAttribute("redeem_override_msg", "Your promotions have been added to your order");
 					} 
+					user.setCouponEvaluationRequired(true);
 					request.setAttribute("isEligible", eligible);
 										
 					

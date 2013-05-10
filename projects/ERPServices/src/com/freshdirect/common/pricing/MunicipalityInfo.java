@@ -13,9 +13,10 @@ public class MunicipalityInfo implements Serializable {
 	private double taxRate;
 	private double bottleDeposit;
 	private boolean alcoholRestricted;
+	private EnumTaxationType taxationType;
 	
 	public MunicipalityInfo(String id, String state, String county, String city, String gl_code, 
-		                     double tax_rate, double bottle_deposit, boolean alcohol_restricted) {
+		                     double tax_rate, double bottle_deposit, boolean alcohol_restricted, EnumTaxationType taxationType) {
 		this.id = id;
 		this.state = state;
 		this.county = county;
@@ -24,6 +25,7 @@ public class MunicipalityInfo implements Serializable {
 		this.taxRate = tax_rate;
 		this.bottleDeposit = bottle_deposit;
 		this.alcoholRestricted = alcohol_restricted;
+		this.taxationType = taxationType;
 	}
 	
 	public boolean hasBottleDeposit() {
@@ -61,4 +63,8 @@ public class MunicipalityInfo implements Serializable {
 	public String getId() {
 		return id;
 	}
+
+	public EnumTaxationType getTaxationType() {
+		return taxationType;
+	} 
 }

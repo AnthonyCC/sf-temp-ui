@@ -13,6 +13,7 @@
 <%@ page import='com.freshdirect.fdstore.util.*' %>
 <%@ page import="com.freshdirect.framework.webapp.*"%>
 <%@ page import='com.freshdirect.framework.util.*' %>
+<%@ page import="com.freshdirect.fdstore.ecoupon.*" %>
 
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
@@ -98,8 +99,7 @@ if (sortedStuff==null) sortedStuff = new ArrayList();
 	boolean hideFi = false;
 	if (currentFolder instanceof CategoryModel)
 		hideFi = ((CategoryModel) currentFolder).isHideFeaturedItems();    
-%><fd:ProductGroupRecommender siteFeature="FEATURED_ITEMS" id="recommendations" facility="cat_feat_items"  currentNode="<%= currentFolder %>" itemCount="5"
-		hide="<%= hideFi %>"><%
+%><fd:ProductGroupRecommender siteFeature="FEATURED_ITEMS" id="recommendations" facility="cat_feat_items"  currentNode="<%= currentFolder %>" itemCount="5"	hide="<%= hideFi %>"><%
 		if (recommendations != null && recommendations.getProducts().size() > 0) {
 				
 				request.setAttribute("recommendationsRendered","true");
@@ -111,7 +111,7 @@ if (sortedStuff==null) sortedStuff = new ArrayList();
 		
 			<tr valign="top">
 	    		<td CLASS="text12bold" width="<%= W_PRODUCT_SORT_TOTAL %>" colspan="<%= W_PRODUCT_SORT_TOTAL %>">
-	    			<%= recommendations.getVariant().getServiceConfig().getFILabel() %> <BR><IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="3"></TD>
+	    			<%= recommendations.getVariant().getServiceConfig().getFILabel() %> <BR><IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="3">
 	    		</td>
 			</tr>
 		</table>
@@ -121,7 +121,12 @@ if (sortedStuff==null) sortedStuff = new ArrayList();
 				<logic:iterate id='contentNode' collection="<%= recommendations.getProducts() %>" type="com.freshdirect.fdstore.content.ProductModel"><%
 						
 						ProductModel productNode = contentNode;
+						ProductImpression pi = new ProductImpression(productNode);
 						ProductLabeling pl = new ProductLabeling(user, productNode, recommendations.getVariant().getHideBursts());
+						FDCustomerCoupon curCoupon = null;
+						if ( pi.getSku() != null && pi.getSku().getProductInfo() != null ) {
+							curCoupon = user.getCustomerCoupon(pi.getSku().getProductInfo(), EnumCouponContext.PRODUCT,productNode.getParentId(),productNode.getContentName());
+						}
 						
 						String actionURI = FDURLUtil.getProductURI(productNode, recommendations.getVariant().getId(), "feat", pl.getTrackingCode(), ord, recommendations.getImpressionId(productNode));
 						
@@ -129,7 +134,7 @@ if (sortedStuff==null) sortedStuff = new ArrayList();
 					<td width="<%= tdwidth %>">
 						<span class="smartstore-carousel-item">
 							<p style="border: 0px; padding: 0px; margin: 0px;">
-								<display:ProductImage product="<%= productNode %>" action="<%= actionURI %>" hideBursts="<%= recommendations.getVariant().getHideBursts() %>"/></p>
+								<display:ProductImage product="<%= productNode %>" action="<%= actionURI %>" hideBursts="<%= recommendations.getVariant().getHideBursts() %>" coupon="<%= curCoupon %>" /></p>
 								<display:ProductRating product="<%= productNode %>" />
 				<%			// product name
 						if (productNode.isFullyAvailable()) { %>
@@ -137,7 +142,8 @@ if (sortedStuff==null) sortedStuff = new ArrayList();
 				<%		} else { %>
 							<div style="color: #999999"><display:ProductName product="<%= productNode %>" action="<%= CmMarketingLinkUtil.getSmartStoreLink(actionURI, recommendations) %>"/></div>
 				<%		} %>
-							<div class="favoritePrice">	<display:ProductPrice impression="<%= new ProductImpression(productNode) %>" showDescription="false"/></div>
+							<div class="favoritePrice">	<display:ProductPrice impression="<%= pi %>" showDescription="false"/></div>
+							<display:FDCoupon coupon="<%= curCoupon %>" contClass="fdCoupon_layProdSort"></display:FDCoupon>
 						</span>
 					</td>
 					

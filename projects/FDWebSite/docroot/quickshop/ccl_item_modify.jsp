@@ -5,6 +5,7 @@
 <%@ page import='com.freshdirect.fdstore.customer.*' %>
 <%@ page import='com.freshdirect.fdstore.lists.*'%>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
+<%@ page import="com.freshdirect.fdstore.ecoupon.*"%>
 
 <%@ page import='java.util.*' %>
 <%@ taglib uri='template' prefix='tmpl' %>
@@ -103,6 +104,11 @@ request.setAttribute("productNode", productNode);
 request.setAttribute("cartMode",cartMode);
 request.setAttribute("templateLine",templateLine);
 request.setAttribute("qcType", request.getParameter("qcType"));
+FDCustomerCoupon custCoupon = null;
+if (productNode != null && productNode.getDefaultSku() != null && productNode.getDefaultSku().getProductInfo() != null) {
+	custCoupon = user.getCustomerCoupon(productNode.getDefaultSku().getProductInfo(), EnumCouponContext.PRODUCT,productNode.getParentId(),productNode.getContentName());
+}
+request.setAttribute("custCoupon", custCoupon); //set coupon in to request for includes/tags to use
 
 EnumProductLayout prodPageLayout = productNode.getProductLayout();
 // if this is the wine product layout, then modification always uses the perishable product layout

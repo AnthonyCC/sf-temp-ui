@@ -14,6 +14,7 @@
 <%@page import="com.freshdirect.fdstore.content.DepartmentModel"%>
 <%@page import="com.freshdirect.fdstore.content.ContentFactory"%>
 <%@page import="com.freshdirect.fdstore.content.util.SortStrategyElement"%>
+<%@ page import="com.freshdirect.fdstore.ecoupon.*" %>
 
 <%@ taglib uri="/WEB-INF/shared/tld/freshdirect.tld" prefix='fd' %>
 <%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %>
@@ -119,10 +120,18 @@
 		
 		<display:ContentNodeIterator itemsToShow="<%=products %>" id="mealsIt" showProducts="true" showCategories="false" trackingCode="<%= trackingCode %>"><span class="meal">
 			<display:GetContentNodeWebId id="webId" product="<%= currentItem %>" clientSafe="<%= true %>">
-				<display:ProductImage product="<%= (ProductModel) currentItem %>" showRolloverImage="true" action="<%= actionUrl %>" useAlternateImage="true" className="productimage" enableQuickBuy="true" webId="<%= webId %>"/>
+				<%
+					ProductImpression piCoup = new ProductImpression((ProductModel) currentItem);
+					FDCustomerCoupon curCoupon = null;
+					if ( piCoup.getSku() != null && piCoup.getSku().getProductInfo() != null ) {
+						curCoupon = user.getCustomerCoupon(piCoup.getSku().getProductInfo(), EnumCouponContext.PRODUCT,((ProductModel) currentItem).getParentId(),((ProductModel) currentItem).getContentName());
+					}
+				%>
+				<display:ProductImage product="<%= (ProductModel) currentItem %>" showRolloverImage="true" action="<%= actionUrl %>" useAlternateImage="true" className="productimage" enableQuickBuy="true" webId="<%= webId %>" coupon="<%= curCoupon %>" />
 				<display:ProductRating product="<%= (ProductModel) currentItem %>" action="<%= actionUrl %>"/>
 				<display:ProductName product="<%= (ProductModel) currentItem %>" action="<%= actionUrl %>" showBrandName="false"/>
-				<display:ProductPrice impression="<%= new ProductImpression((ProductModel) currentItem) %>" showDescription="false"/>
+				<display:ProductPrice impression="<%= piCoup %>" showDescription="false"/>
+				<display:FDCoupon coupon="<%= curCoupon %>" contClass="fdCoupon_4mmRest"></display:FDCoupon>
 			</display:GetContentNodeWebId>
 		</span></display:ContentNodeIterator>
 		
@@ -146,10 +155,18 @@
 			} %>
 			<display:ContentNodeIterator trackingCode="<%= trackingCode %>" itemsToShow="<%= products %>" id="sidesIt" showCategories="false"><span class="meal">
 				<display:GetContentNodeWebId id="webId" product="<%= currentItem %>" clientSafe="<%= true %>">
-					<display:ProductImage product="<%= (ProductModel)currentItem %>" showRolloverImage="true" action="<%= actionUrl %>" useAlternateImage="true" className="productimage"  enableQuickBuy="true" webId="<%= webId %>"/>
+					<% 
+						ProductImpression piCoup = new ProductImpression((ProductModel) currentItem);
+						FDCustomerCoupon curCoupon = null;
+						if ( piCoup.getSku() != null && piCoup.getSku().getProductInfo() != null ) {
+							curCoupon = user.getCustomerCoupon(piCoup.getSku().getProductInfo(), EnumCouponContext.PRODUCT,((ProductModel) currentItem).getParentId(),((ProductModel) currentItem).getContentName());
+						}
+					%>
+					<display:ProductImage product="<%= (ProductModel)currentItem %>" showRolloverImage="true" action="<%= actionUrl %>" useAlternateImage="true" className="productimage"  enableQuickBuy="true" webId="<%= webId %>" coupon="<%= curCoupon %>" />
 					<display:ProductRating product="<%= (ProductModel)currentItem %>" action="<%= actionUrl %>"/>
 					<display:ProductName product="<%= (ProductModel)currentItem %>" action="<%= actionUrl %>" showBrandName="false"/>
-					<display:ProductPrice impression="<%= new ProductImpression((ProductModel)currentItem) %>" showDescription="false"/>
+					<display:ProductPrice impression="<%= piCoup %>" showDescription="false"/>
+					<display:FDCoupon coupon="<%= curCoupon %>" contClass="fdCoupon_4mmRestSide"></display:FDCoupon>
 				</display:GetContentNodeWebId>
 			</span></display:ContentNodeIterator>
 		</div>
@@ -172,10 +189,18 @@
 			} %>
 			<display:ContentNodeIterator trackingCode="<%= trackingCode %>" itemsToShow="<%= products %>" id="entreesIt" showCategories="false"><span class="meal">
 				<display:GetContentNodeWebId id="webId" product="<%= currentItem %>" clientSafe="<%= true %>">
-					<display:ProductImage product="<%= (ProductModel)currentItem %>" showRolloverImage="true" action="<%= actionUrl %>" useAlternateImage="true" className="productimage" enableQuickBuy="true" webId="<%= webId %>"/>
+					<% 
+						ProductImpression piCoup = new ProductImpression((ProductModel) currentItem);
+						FDCustomerCoupon curCoupon = null;
+						if ( piCoup.getSku() != null && piCoup.getSku().getProductInfo() != null ) {
+							curCoupon = user.getCustomerCoupon(piCoup.getSku().getProductInfo(), EnumCouponContext.PRODUCT,((ProductModel) currentItem).getParentId(),((ProductModel) currentItem).getContentName());
+						}
+					%>
+					<display:ProductImage product="<%= (ProductModel)currentItem %>" showRolloverImage="true" action="<%= actionUrl %>" useAlternateImage="true" className="productimage" enableQuickBuy="true" webId="<%= webId %>" coupon="<%= curCoupon %>" />
 					<display:ProductRating product="<%= (ProductModel)currentItem %>" action="<%= actionUrl %>"/>
 					<display:ProductName product="<%= (ProductModel)currentItem %>" action="<%= actionUrl %>" showBrandName="false"/>
-					<display:ProductPrice impression="<%= new ProductImpression((ProductModel)currentItem) %>" showDescription="false"/>
+					<display:ProductPrice impression="<%= piCoup %>" showDescription="false"/>
+					<display:FDCoupon coupon="<%= curCoupon %>" contClass="fdCoupon_4mmRestEntree"></display:FDCoupon>
 				</display:GetContentNodeWebId>
 			</span></display:ContentNodeIterator>
 		</div>

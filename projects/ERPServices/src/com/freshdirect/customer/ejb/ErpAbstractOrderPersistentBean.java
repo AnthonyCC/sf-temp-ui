@@ -176,6 +176,12 @@ abstract class ErpAbstractOrderPersistentBean extends ErpTransactionPersistentBe
 		AppliedGiftCardList agcList = this.getAppliedGiftCardList();
 		agcList.create(conn);
 		
+		//Coupon related.
+		if(null !=this.model.getCouponTransModel()){
+			ErpCouponTransactionPersistentBean ctPB = new ErpCouponTransactionPersistentBean(this.model.getCouponTransModel());
+			ctPB.setParentPK(this.getPK());
+			ctPB.create( conn );
+		}
 		this.unsetModified();
 		return this.getPK();
 	}

@@ -31,6 +31,7 @@ final int W_INDEX_RIGHT_CENTER = W_INDEX_TOTAL - 228 - W_INDEX_CENTER_PADDING;
 
 <%
 	FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
+	FDSessionUser sessionUser = (FDSessionUser)session.getAttribute(SessionName.USER);
 	String custFirstName = user.getFirstName();
 	int validOrderCount = user.getAdjustedValidOrderCount();
 	boolean mainPromo = user.getLevel() < FDUserI.RECOGNIZED && user.isEligibleForSignupPromotion();
@@ -54,10 +55,29 @@ final int W_INDEX_RIGHT_CENTER = W_INDEX_TOTAL - 228 - W_INDEX_CENTER_PADDING;
 %>
 
 <% 
-boolean showAltHome = false;
-if (FDStoreProperties.IsHomePageMediaEnabled() && (!user.isHomePageLetterVisited() || 
-	(request.getParameter("show") != null && request.getParameter("show").indexOf("letter") > -1))) 
-		showAltHome = true;
+	boolean showAltHome = false;
+	if (FDStoreProperties.IsHomePageMediaEnabled() && (!user.isHomePageLetterVisited() || 
+		(request.getParameter("show") != null && request.getParameter("show").indexOf("letter") > -1))) 
+			showAltHome = true;
+%>
+<%
+	//Coupons disabled warning msg
+	if (!user.isCouponsSystemAvailable() && !sessionUser.isCouponWarningAcknowledged()) {
+		sessionUser.setCouponWarningAcknowledged(true);
+		%>
+			<div style="display: none;" id="fdCoupon_indexAlert">
+				<div style="text-align: center;"><img src="/media/images/ecoupon/logo-purpler_old.png" alt="fdCoupon" height="85" width="222" /></div>
+				<div class="error_title"  style="text-align: center; margin: 20px 20px;"><%= (SystemMessageList.MSG_COUPONS_SYSTEM_NOT_AVAILABLE).replace("unavailable.", "unavailable.<br />") %></div>
+				<div style="text-align: center; margin-bottom: 20px;"><img id="clickToContinue" style="cursor: pointer;" src="/media/images/ecoupon/click-here-to-continue_large.png" alt="Click Here To Continue" /></div>
+			</div>
+			<script type="text/javascript" language="javascript">
+				$jq(function() {
+					var overlayDialog = doOverlayDialogBySelector('#fdCoupon_indexAlert');
+					$jq('#clickToContinue').live('click', function(e) { e.preventDefault(); overlayDialog.dialog('close'); });
+				});
+			</script>
+		<%
+	}
 %>
  	<div class="holder">
 		<%-- MAIN CONTENT--%>
@@ -78,7 +98,7 @@ if (FDStoreProperties.IsHomePageMediaEnabled() && (!user.isHomePageLetterVisited
 	        		// not sure we need to do this here because saving cart too often is not recomended
 	          
 		        	if(user instanceof FDSessionUser){                
-		        		FDSessionUser sessionUser=(FDSessionUser)user;
+		        		sessionUser=(FDSessionUser)user;
 		                sessionUser.saveCart(true);          
 		        	}
 				} else if (!showAltHome && location2Media) { %>

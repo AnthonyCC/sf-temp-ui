@@ -160,7 +160,7 @@
 }
 
 
-.yui-panel-container.quickbuy-dialog .left {
+.yui-panel-container.quickbuy-dialog .qbLeft {
 	float:left;
 	margin:10px;
 	_margin:5px;
@@ -168,7 +168,7 @@
 	text-align: right;
 }
 
-.qbBody .left {
+.qbBody .qbLeft {
 	float:left;
 	margin: 10px 10px 0;
 	_margin:5px;
@@ -182,14 +182,14 @@
 	margin-bottom:8px;
 }
 
-.yui-panel-container.quickbuy-dialog .right {
+.yui-panel-container.quickbuy-dialog .qbRight {
 	float:right;
 	margin:10px;
 	_margin:5px;
 	width:190px;
 }
 
-.qbBody .right {
+.qbBody .qbRight {
 	float:right;
 	margin:10px;
 	_margin:5px;

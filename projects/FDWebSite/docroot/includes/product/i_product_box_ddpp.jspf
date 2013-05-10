@@ -6,6 +6,7 @@
 <%@page import="com.freshdirect.fdstore.*"%>
 <%@page import='com.freshdirect.webapp.util.JspLogger'%>
 <%@page import="com.freshdirect.fdstore.customer.EnumQuickbuyStatus" %>
+<%@ page import="com.freshdirect.fdstore.ecoupon.*"%>
 <%-- 
 	[DDPP version of i_product_box (different style/layout)]
 	
@@ -55,7 +56,7 @@
 	<div class="ddpp_feat_prod" id="<%=prodATCId.replaceFirst("#","")%>" style="<%= prodContStyle %>">
 		<%
 			/* simple check for a valid value */
-			if (pmPA.getFeaturedHeader().length() == 3) { %>
+			if (pmPA != null && pmPA.getFeaturedHeader() != null && pmPA.getFeaturedHeader().length() == 3) { %>
 				<div class="ddpp_feat_ribbon"><img src="/media/images/ddpp_ribbons/<%= pmPA.getFeaturedHeader() %>.png" alt="" /></div>
 			<% } %>
 		<a name="<%=prodATCId.replaceFirst("#","")%>"></a>
@@ -82,6 +83,11 @@
 		<display:ProductPrice impression="<%= pi %>" showDescription="true" dataDriven="true" /><%-- don't pass grpDisplayType in here (for apple pricing override) --%>
 		
 		<display:ProductGroupLink impression="<%= pi %>" trackingCode="<%= trk %>"><display:ProductGroupPricing product="<%= pm %>"/></display:ProductGroupLink>
+		<% 
+			String fDCouponContClassProdBoxDdppFeat = "fdCoupon_prodBoxDdppFeat";
+			if (pi.isTransactional()) { fDCouponContClassProdBoxDdppFeat += "Trans"; }
+		%>
+		<display:FDCoupon coupon="<%= user.getCustomerCoupon(pm.getDefaultSku().getProductInfo(), EnumCouponContext.PRODUCT,pm.getParentId(),pm.getContentName()) %>" contClass="<%= fDCouponContClassProdBoxDdppFeat %>"></display:FDCoupon>
 		
 		<div class="prodAddFP">
 			<div class="prodAddTr"></div>
@@ -231,6 +237,11 @@
 				<div class="prodRating"><display:ProductRating product="<%= pm %>" action="<%= actionURI %>" /></div>
 				<div class="prodName"><display:ProductName product="<%= pm %>" action="<%= actionURI %>" disabled="<%=disableLinks%>" /></div>
 				<display:ProductPrice impression="<%= pi %>" showDescription="true" dataDriven="true" /><%-- don't pass grpDisplayType in here (for apple pricing override) --%>
+				<% 
+					String fDCouponContClassProdBoxDdpp = "fdCoupon_prodBoxDdppGrid";
+					if (pi.isTransactional()) { fDCouponContClassProdBoxDdpp += "Trans"; }
+				%>
+				<display:FDCoupon coupon="<%= user.getCustomerCoupon(pm.getDefaultSku().getProductInfo(), EnumCouponContext.PRODUCT,pm.getParentId(),pm.getContentName()) %>" contClass="<%= fDCouponContClassProdBoxDdpp %>"></display:FDCoupon>
 				<div class="prodAdd"<%= (isPpPreview)?"style=\"display: none;\"":""%>>
 					<%
 						if (pi.isTransactional()) {
@@ -346,6 +357,15 @@
 			<div class="ddpp_normal_prod_list_prcCont">
 				<display:ProductPrice impression="<%= pi %>" showDescription="true" dataDriven="true" /><%-- don't pass grpDisplayType in here (for apple pricing override) --%>
 			</div>
+			<% 
+				String fDCouponContClassProdBoxDdpp = "fdCoupon_prodBoxDdppList";
+				if (pi.isTransactional()) { fDCouponContClassProdBoxDdpp += "Trans"; }
+				FDCustomerCoupon curCoupon = null;
+				if (pm.getDefaultSku() != null && pm.getDefaultSku().getProductInfo() != null) {
+					curCoupon = user.getCustomerCoupon(pm.getDefaultSku().getProductInfo(), EnumCouponContext.PRODUCT,pm.getParentId(),pm.getContentName());
+				}
+			%>
+			<display:FDCoupon coupon="<%= curCoupon %>" contClass="<%= fDCouponContClassProdBoxDdpp %>"></display:FDCoupon>
 			<div class="ddpp_normal_prod_list_qtyCont">
 				<div class="prodAdd"<%= (isPpPreview)?"style=\"display: none;\"":""%>>
 					<%

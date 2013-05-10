@@ -20,7 +20,6 @@ import com.freshdirect.customer.ErpDepotAddressModel;
 import com.freshdirect.customer.ErpModifyOrderModel;
 import com.freshdirect.customer.ErpOrderLineModel;
 import com.freshdirect.fdstore.FDDeliveryManager;
-import com.freshdirect.fdstore.FDGroup;
 import com.freshdirect.fdstore.FDReservation;
 import com.freshdirect.fdstore.FDResourceException;
 
@@ -64,7 +63,7 @@ public class FDOrderTranslator {
 	}
 
 	private static void translateOrder(FDCartModel cart, ErpAbstractOrderModel order, boolean skipModifyLines, boolean sameDeliveryDate) throws FDResourceException {
-		try {
+//		try {
 			order.setPaymentMethod(cart.getPaymentMethod());
 			//System.out.println("Selected gift cards "+cart.getSelectedGiftCards() != null ? cart.getSelectedGiftCards().size() : 0);
 			order.setSelectedGiftCards(cart.getSelectedGiftCards());
@@ -123,25 +122,7 @@ public class FDOrderTranslator {
 			order.setGlCode(lookupGLCode(cart.getDeliveryAddress()));
 
 			List<ErpOrderLineModel> orderLines = new ArrayList<ErpOrderLineModel>();
-			int num = 0;
-			for ( FDCartLineI line : cart.getOrderLines() ) {
-				Date[] availDates = line.lookupFDProductInfo().getAvailabilityDates(); 
-				if(availDates != null && availDates.length > 0) {
-					//Limited Availability Line item.
-					if(sameDeliveryDate && line instanceof FDModifyCartLineI) {
-						continue;
-					}
-				} else {
-					//Regular Availability item.
-					if (skipModifyLines && line instanceof FDModifyCartLineI) {
-						continue;
-					}
-				}
-				num += addTranslatedLine(num, line, orderLines);
-			}
-			for ( FDCartLineI line : cart.getSampleLines() ) {
-				num += addTranslatedLine(num, line, orderLines);
-			}
+			translateOrderLines(cart, skipModifyLines, sameDeliveryDate,orderLines);
 			order.setOrderLines(orderLines);
 
 			//
@@ -183,12 +164,45 @@ public class FDOrderTranslator {
 			order.setDlvPassExtendDays(cart.getDlvPassExtendDays());
 			order.setCurrentDlvPassExtendDays(cart.getCurrentDlvPassExtendDays());
 			
-		} catch (FDInvalidConfigurationException ex) {
+		/*} catch (FDInvalidConfigurationException ex) {
 			throw new FDResourceException(ex, "Invalid configuration encountered");
+		}*/
+	}
+
+	public static void translateOrderLines(FDCartModel cart,
+			boolean skipModifyLines, boolean sameDeliveryDate,
+			List<ErpOrderLineModel> orderLines) throws FDResourceException {
+		int num = 0;
+		try {
+			if(null != cart && null != cart.getOrderLines() && null != orderLines){
+				for ( FDCartLineI line : cart.getOrderLines() ) {
+					Date[] availDates = line.lookupFDProductInfo().getAvailabilityDates(); 
+					if(availDates != null && availDates.length > 0) {
+						//Limited Availability Line item.
+						if(sameDeliveryDate && line instanceof FDModifyCartLineI) {
+							continue;
+						}
+					} else {
+						//Regular Availability item.
+						if (skipModifyLines && line instanceof FDModifyCartLineI) {
+							continue;
+						}
+					}
+					num += addTranslatedLine(num, line, orderLines);
+				}
+				for ( FDCartLineI line : cart.getSampleLines() ) {
+					num += addTranslatedLine(num, line, orderLines);
+				}
+			}
+		} catch (Exception e) {
+			throw new FDResourceException(e, "Invalid configuration encountered");
 		}
 	}
 
-	
+	public static void translateOrderLines(FDCartModel cart,
+			List<ErpOrderLineModel> orderLines) throws FDResourceException {
+		translateOrderLines(cart, false, false, orderLines);
+	}
 	public static void translateSubscriptionOrder(FDCartModel cart, ErpAbstractOrderModel order, boolean skipModifyLines) throws FDResourceException {
 		try {
 			order.setPaymentMethod(cart.getPaymentMethod());
@@ -242,10 +256,12 @@ public class FDOrderTranslator {
 
 	/** @return number of lines added */
 	private static int addTranslatedLine(int baseLineNumber, FDCartLineI cartLine, List<ErpOrderLineModel> orderLines) throws FDResourceException, FDInvalidConfigurationException {
-		ErpOrderLineModel erpLines = cartLine.buildErpOrderLines(baseLineNumber);
-		orderLines.add(erpLines);
+		ErpOrderLineModel erpLine = cartLine.buildErpOrderLines(baseLineNumber);
+		erpLine.setCouponDiscount(cartLine.getCouponDiscount());
+		orderLines.add(erpLine);
 		return 1;
 	}
+
 	
 	private static String lookupGLCode(AddressModel address) throws FDResourceException {
 		FDDeliveryManager dlvMan = FDDeliveryManager.getInstance();

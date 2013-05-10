@@ -1,6 +1,7 @@
 <%@ page import='java.util.Iterator' %>
 <%@ page import='java.util.List' %>
 <%@ page import='java.util.Set' %>
+<%@ page import="java.util.ListIterator"%>
 <%@ page import='java.util.ArrayList' %>
 <%@ page import='java.util.Map' %>
 <%@ page import="java.util.HashMap"%>
@@ -34,6 +35,7 @@
 <%@ page import="com.freshdirect.smartstore.ymal.YmalUtil" %>
 <%@ page import="com.freshdirect.smartstore.impl.AbstractRecommendationService"%>
 <%@ page import="org.apache.commons.lang.StringEscapeUtils"%>
+<%@ page import="com.freshdirect.fdstore.ecoupon.*" %>
 
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %>
@@ -173,6 +175,23 @@ final int W_YMAL_BOX_INNER = 540;
 %>
 <fd:PIPLayout id="piRow" rowSize="3" impressions="<%= impressions %>" maxRowHeight="rowHeight" singleRowMode="<%= impressions.size() <= 3 %>">
 						<tr>
+	<%
+		ArrayList<FDCustomerCoupon> ref_coupons = new ArrayList<FDCustomerCoupon>();
+		boolean containsCoupons = false;
+		int coupSeq = 0;
+		
+		for (ListIterator<ProductImpression> it=piRow.listIterator() ; it.hasNext();) {
+			FDCustomerCoupon curCoupon = null;
+			ProductImpression coupPi = it.next();
+			if (coupPi != null && coupPi.getSku() != null && coupPi.getSku().getProductInfo() != null) {
+				curCoupon = user.getCustomerCoupon(coupPi.getSku().getProductInfo(), EnumCouponContext.PRODUCT,coupPi.getProductModel().getParentId(),coupPi.getProductModel().getContentName());
+			}
+			if (curCoupon != null) {
+				containsCoupons = true;
+			}
+			ref_coupons.add(curCoupon);
+		}
+	%>
 <fd:PIPRow id="pi" impressionRow="<%= piRow %>" isBlankCell="isBlankCell" shouldRenderBlankCells="<%= impressions.size() > 3 %>">
 <%
 		if (isBlankCell.booleanValue()) {
@@ -183,6 +202,9 @@ final int W_YMAL_BOX_INNER = 540;
 			//
 			ProductModel product = pi.getProductModel();
 			ProductLabeling pl = new ProductLabeling(fd_user, product, recmnd != null ? recmnd.getVariant().getHideBursts() : null);
+			FDCustomerCoupon curCoupon = ref_coupons.get(coupSeq);
+			
+			String prodImageClassName = (containsCoupons) ? "couponLogo" : null;
 			
 			// TRKD := recommender ID (if recommender is Smart YMAL) otherwise burst code
 			final String trkd = recmnd != null && recmnd.getRecommenderIdForProduct(product.getContentName()) != null
@@ -199,7 +221,7 @@ final int W_YMAL_BOX_INNER = 540;
 								<table align="center" style="border-collapse: collapse; border-spacing: 0px; margin: 0 auto">
 									<tr>
 										<td style="padding: 0; margin: 0; height: <%= rowHeight.intValue() %>px; vertical-align: bottom; text-align: center">
-											<display:ProductImage product="<%= pi.getProductModel() %>" priceCalculator="<%= pi.getCalculator() %>" action="<%= actionURI %>" hideBursts="<%= recmnd != null ? recmnd.getVariant().getHideBursts() : Collections.EMPTY_SET %>"  />
+											<display:ProductImage product="<%= pi.getProductModel() %>" priceCalculator="<%= pi.getCalculator() %>" action="<%= actionURI %>" hideBursts="<%= recmnd != null ? recmnd.getVariant().getHideBursts() : Collections.EMPTY_SET %>" coupon="<%= curCoupon %>"  className="<%= prodImageClassName %>" />
 										</td>
 									</tr>
 <%
@@ -236,9 +258,11 @@ final int W_YMAL_BOX_INNER = 540;
 								<display:ProductRating product="<%= product %>"/>
 								<display:ProductName product="<%= product %>" action="<%= actionURI %>"/>
 								<display:ProductPrice impression="<%= pi %>"/>
+								<display:FDCoupon coupon="<%= curCoupon %>" contClass="fdCoupon_ymalBox"></display:FDCoupon>
 							</td>
 <%		}
 		rank++;
+		coupSeq++;
 %>
 </fd:PIPRow>
 						</tr>

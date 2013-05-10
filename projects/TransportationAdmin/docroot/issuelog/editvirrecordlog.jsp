@@ -196,7 +196,7 @@
 									</table>
 								</td>
 							</tr>
-						  </table>
+						  </table>	
 					</td>
 				    <td class="screencontent" style="align:center;">
 							<div id="errContainer"></div>

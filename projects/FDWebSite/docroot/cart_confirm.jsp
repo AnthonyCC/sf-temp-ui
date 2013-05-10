@@ -5,13 +5,15 @@
 <%@ page import='com.freshdirect.fdstore.promotion.*'%>
 <%@ page import='com.freshdirect.fdstore.attributes.*' %>
 <%@ page import="com.freshdirect.common.pricing.*" %>
+<%@ page import="com.freshdirect.fdstore.ecoupon.*" %>
 <%@ page import='com.freshdirect.fdstore.atp.FDLimitedAvailabilityInfo';%>
+<%@ page import='com.freshdirect.webapp.taglib.fdstore.*'%>
 <%@ page import='java.util.*' %>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='bean' prefix='bean' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
-<%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %>
+<%@ taglib uri='/WEB-INF/shared/tld/fd-display.tld' prefix='display' %>
 <% //expanded page dimensions
 final int W_CART_CONFIRM_TOTAL = 590;
 %>
@@ -46,6 +48,7 @@ final int W_CART_CONFIRM_TOTAL = 590;
 
 Recipe recipe = null;
 
+FDUserI cConfirm_user = (FDUserI) pageContext.getSession().getAttribute(SessionName.USER);
 %>
 
 <fd:FDShoppingCart id='cart'  result='result'  successPage='/checkout/view_cart.jsp'>
@@ -128,13 +131,16 @@ Recipe recipe = null;
 %>
     <tr valign="top">
      <td><font class="title18"><%= orderLine.getDescription() %></font>&nbsp;&nbsp;&nbsp;&nbsp;<a href="/product_modify.jsp?cartLine=<%= orderLine.getRandomId() %>&trk=conf"><img src="/media_stat/images/buttons/edit_product.gif" width="32" height="14" alt="Edit" border="0"></a>
-     <br><font class="space4pix"><br></font>
-     Quantity: <span class="text10bold"><display:OrderLineQuantity product="<%= prdNode %>" orderline="<%= orderLine %>" customer="<%= userd %>"/></span>
-	    <br><font class="space2pix"><br></font>
-	       Options: <font class="text10bold"><%= orderLine.getConfigurationDesc() %></font>
-	    <br><font class="space2pix"><BR></font>
-	    Est. Price: <font class="text10bold"><%= currencyFormatter.format(orderLine.getPrice()) %></font><br><br>
-	    <fd:CCLCheck>
+     	<div class="text11" style="margin-bottom: 12px;">
+	     	<font class="space4pix"><br></font>
+	     	Quantity: <span class="text10bold"><display:OrderLineQuantity product="<%= prdNode %>" orderline="<%= orderLine %>" customer="<%= userd %>"/></span>
+		    <br><font class="space2pix"><br></font>
+			Options: <font class="text10bold"><%= orderLine.getConfigurationDesc() %></font>
+		    <br><font class="space2pix"><br></font>
+		    Est. Price: <font class="text10bold"><%= currencyFormatter.format(orderLine.getPrice()) %></font>
+		    <display:FDCoupon coupon="<%= cConfirm_user.getCustomerCoupon(orderLine, EnumCouponContext.VIEWCART) %>" contClass="fdCoupon_cartConfSing"></display:FDCoupon>
+	   </div>
+	   <fd:CCLCheck>
 			<!-- Add to Shopping List  -->
 			<a href="/unsupported.jsp" onclick="CCL.add_recent_cart_items(); return false;"><img src="/media_stat/ccl/lists_link_with_icon_dfgs.gif" style="border: 0;"/></a><span style="padding-left: 15px"></span>
 			<div></div>

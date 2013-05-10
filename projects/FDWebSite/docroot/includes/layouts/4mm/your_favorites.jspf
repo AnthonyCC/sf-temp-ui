@@ -7,6 +7,7 @@
 <%@page import="com.freshdirect.webapp.util.ProductImpression"%>
 <%@page import="com.freshdirect.fdstore.content.ProductModel"%>
 <%@page import="java.util.List"%>
+<%@ page import="com.freshdirect.fdstore.ecoupon.*"%>
 
 <%@ taglib uri="/WEB-INF/shared/tld/freshdirect.tld" prefix='fd'%>
 <%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display'%>
@@ -44,13 +45,21 @@ final int W_FAVORITE_PRODUCTS_BND = 683;
 			<display:Carousel id="your_favourites_carousel" carouselId="your_favourites_carousel" width="<%=W_FAVORITE_PRODUCTS_BND%>" numItems="5" showCategories="false" itemsToShow="<%= YFProds %>" trackingCode="yf-4mm" maxItems="12" eventHandlersObj="your_favourites_events">
 				<span class="smartstore-carousel-item">
 					<display:GetContentNodeWebId id="webId" product="<%= currentItem %>" clientSafe="<%= true %>">
+						<% 
+							ProductModel pmCoup = (ProductModel)currentItem;
+							FDCustomerCoupon curCoupon = null;
+							if (pmCoup.getDefaultSku() != null && pmCoup.getDefaultSku().getProductInfo() != null) {
+								curCoupon = user.getCustomerCoupon(pmCoup.getDefaultSku().getProductInfo(), EnumCouponContext.PRODUCT,pmCoup.getParentId(),pmCoup.getContentName());
+							}
+						%>
 						<display:ProductImage product="<%= (ProductModel)currentItem %>" showRolloverImage="true" action="<%= actionUrl %>"
-								useAlternateImage="true" hideBursts="<%= hideBursts %>" className="productImage" height="90" enableQuickBuy="true" webId="<%= webId %>"/>
+								useAlternateImage="true" hideBursts="<%= hideBursts %>" className="productImage" height="90" enableQuickBuy="true" webId="<%= webId %>"  coupon="<%= curCoupon %>" />
 						<display:ProductRating product="<%= (ProductModel)currentItem %>" action="<%= actionUrl %>"/>
 						<div class="productname">
 							<display:ProductName product="<%= (ProductModel)currentItem %>" action="<%=CmMarketingLinkUtil.getSmartStoreLink(actionUrl, deptYf)%>"/>
 						</div>
 						<display:ProductPrice impression="<%= new ProductImpression((ProductModel)currentItem) %>" showDescription="false"/>
+						<display:FDCoupon coupon="<%= curCoupon %>" contClass="fdCoupon_4mmYourFav"></display:FDCoupon>
 					</display:GetContentNodeWebId>
 				</span>
 			</display:Carousel>

@@ -1,64 +1,31 @@
-<%@ page import="com.freshdirect.fdstore.content.Image"
-%><%@ page import="com.freshdirect.fdstore.FDStoreProperties"
-%><%@ page import="com.freshdirect.webapp.taglib.fdstore.BrowserInfo"
-%><%@page import="com.freshdirect.fdstore.util.ProductDisplayUtil"%><%
+<%@ page import="com.freshdirect.fdstore.FDStoreProperties"
+%><%@page import="com.freshdirect.fdstore.content.ProductModel"
+%><%@ page import="com.freshdirect.fdstore.ecoupon.EnumCouponContext"
+%><%@ page import="com.freshdirect.fdstore.content.Image" 
+%><%@ page import="com.freshdirect.fdstore.ecoupon.*"
+%><%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' 
+%><%
+	/*	requires productNode
+	 *	requires FDCustomerCoupon custCoupon (can be null, defined in product.jsp, and set in req attribute)
+	 */
 	final ProductModel __pi_prd = (ProductModel) productNode;
-
 	Image productImage = __pi_prd.getDetailImage();
-	Image zoomImage=(Image) __pi_prd.getZoomImage();
-	
+	final Image zoomImage=(Image) __pi_prd.getZoomImage();
 	Object useProdImageObj = pageContext.getAttribute("useProdImage");
-  boolean useProdImage = useProdImageObj == null ? false : (Boolean)useProdImageObj;
-	
-	BrowserInfo browserInfo = new BrowserInfo((HttpServletRequest) pageContext.getRequest());
-	boolean supportsPNG = !(browserInfo.isInternetExplorer() && browserInfo.getVersionNumber() < 8.0);
-	
-	//boolean isDeal = __pi_prd.hasWasPrice();
-	int dealPercentage = (int)ProductDisplayUtil.getDealsPercentage(__pi_prd, user);
-	//boolean isDeal = dealPercentage > 0;
-	boolean isDeal = false;
-	if ( (FDStoreProperties.getBurstsLowerLimit()<=dealPercentage) && (FDStoreProperties.getBurstUpperLimit()>=dealPercentage )){
-               isDeal = true;
-	}
-	
-	String burstImage = "/media_stat/images/deals/brst_lg_" + dealPercentage + (supportsPNG ? ".png" : ".gif");
+	boolean useProdImage = useProdImageObj == null ? false : (Boolean)useProdImageObj;
 	boolean isWineProduct = __pi_prd.getDepartment() != null ? "usq".equals(__pi_prd.getDepartment().getContentKey().getId()) : false;
-        
-  if ( zoomImage != null && zoomImage.getPath().indexOf("clear.gif") == -1 && !useProdImage && !isWineProduct) { %>
-    <div style="padding: 0px; border: 0px; margin: 0px auto; position: relative; width:<%=zoomImage.getWidth() %>px" height="<%= zoomImage.getHeight() %>px">
-		<% if ( isDeal ) { %>
-					<div style="position: absolute; top: 0px; left: 0px">
-						<img alt="SAVE" src="<%=burstImage %>" width="55px" height="55px" style="border: 0">
-					</div>
-		<% } %>
-		
-			<img border="0" src="<%= zoomImage.getPath() %>" width="<%= zoomImage.getWidth() %>" height="<%= zoomImage.getHeight() %>">
-		<br/>
-    </div>
-				
-	<% } else { 
-		if ( isDeal ) { %>
-			<div style="padding: 0px; border: 0px; margin: 0px auto; position: relative;" width="<%= productImage.getWidth() %>px" height="<%= productImage.getHeight() %>px">					
-				<div style="position: absolute; top: 0px; left: 0px">
-					<img alt="SAVE" src="<%=burstImage %>" width="55px" height="55px" style="border: 0">
-				</div>
-		<% } %>
-
-    <% if ( zoomImage != null && zoomImage.getPath().indexOf("clear.gif") == -1 ) { %>
-      <a href="javascript:pop('/shared/prodpop.jsp?productId=<%= __pi_prd %>&catId=<%= __pi_prd.getParentNode() %>&deptId=',335,375)" style="display: inline-block; font-size: 0px; padding: 0px; margin: 0px; width: <%= productImage.getWidth() %>px;">
-        <img border="0" src="<%= productImage.getPath() %>" width="<%= productImage.getWidth() %>" height="<%= productImage.getHeight() %>">
-      </a>
-    <% } else { %>
-      <img border="0" src="<%= productImage.getPath() %>" width="<%= productImage.getWidth() %>" height="<%= productImage.getHeight() %>">
-    <% } %>
-    <br/>
-		
-		<% if ( isDeal ) { %>
-			</div>
-		<% } %>		
-<%	} %>
-
-
+	String prodImageType = "";
+	String actionURI_pi = null;
+	if ( zoomImage != null && zoomImage.getPath().indexOf("clear.gif") == -1 && !useProdImage && !isWineProduct ) {
+		prodImageType = "PROD_IMAGE_ZOOM";
+	} else {
+		actionURI_pi = "javascript:pop('/shared/prodpop.jsp?productId="+__pi_prd.toString()+"&catId="+__pi_prd.getParentNode().toString()+"&deptId=',335,375)";
+		prodImageType = "PROD_IMAGE_DETAIL";
+	}
+	//no coupon image here
+	//FDCustomerCoupon custCoupon_pi = (FDCustomerCoupon)request.getAttribute("custCoupon");
+%>
+<display:ProductImage product="<%= productNode %>" action="<%= actionURI_pi %>" prodImageType="<%= prodImageType %>" />
 
 <font class="space2pix"><br/></font>		
 <% 

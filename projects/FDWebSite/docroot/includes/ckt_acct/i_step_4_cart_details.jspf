@@ -11,8 +11,12 @@
 <%@ page import='com.freshdirect.fdstore.sempixel.FDSemPixelCache' %>
 <%@ page import='com.freshdirect.fdstore.sempixel.GoogleAnalyticsCartProduct' %>
 <%@ page import='java.util.*'  %>
+<%@ page import="com.freshdirect.fdstore.ecoupon.EnumCouponContext"%>
+<%@ page import="com.freshdirect.fdstore.ecoupon.FDCustomerCoupon"%>
+<%@ page import="com.freshdirect.fdstore.ecoupon.EnumCouponStatus"%> 
 <%@ taglib uri="logic" prefix="logic" %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
+<%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %>
 
 <% //expanded page dimensions
 final int W_CHECKOUT_STEP_4_CART_DETAILS_TOTAL = 970;
@@ -190,8 +194,23 @@ int idx = 0;
 					<% if ( discountMsg!=null && !"".equals(discountMsg) ) { %><br />&nbsp;&nbsp;<span class="text10bold"><%= discountMsg %></span><% } %>
 					<% if ( groupDiscountMsg!=null && !"".equals(groupDiscountMsg) ) { %><br />&nbsp;&nbsp;<span class="text10bold"><%= groupDiscountMsg %></span><% } %>
 				</div>
+				<%if(request.getRequestURI().startsWith("/checkout/step_4_receipt.jsp")){ %>
+				<display:FDCoupon coupon="<%= user.getCustomerCoupon(cartLine, EnumCouponContext.VIEWORDER) %>" contClass="fdCoupon_cartlineChckout" pastTense="true"></display:FDCoupon>
+				<%}else{
+					FDCustomerCoupon coupon = user.getCustomerCoupon(cartLine, EnumCouponContext.CHECKOUT) ;
+					String couponClass = "fdCoupon_cartlineChckout";
+					Boolean pastTense = true;
+					if(null != coupon &&  EnumCouponStatus.COUPON_CLIPPED_FILTERED.equals(coupon.getStatus())){
+						couponClass = "fdCoupon_cartlineChckoutExpired";
+						pastTense = false;
+					%>
+						<img src="/media/images/ecoupon/red_triangle.png" alt="" />
+					<%}
+				%>
+				<display:FDCoupon coupon="<%= coupon %>" contClass="<%= couponClass %>" pastTense="<%= pastTense %>"></display:FDCoupon>
+				<% } %>
 			</td>
-            <% if(cartLine.getDiscount() != null) { %>
+            <% if(cartLine.getDiscount() != null || cartLine.getCouponDiscount()!=null) { %>
 			<td width="70" align="right"><font color="#FF0000">(<%= cartLine.getUnitPrice() %>)</font></td>
 			<td align="right"><span class="text10bold"><font color="#FF0000"><%= JspMethods.formatPrice(cartLine.getPrice()) %></font></span></td>
             <% } else { %>

@@ -6,6 +6,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.log4j.Category;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.freshdirect.FDCouponProperties;
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -35,7 +36,18 @@ public class ConfigurationController extends BaseController {
         if(configParams.get(key) != null) {
         	model.addObject("data", configParams.get(key));
         } else {
-        	model.addObject("data", FDStoreProperties.get(key));
+        	String fdStoreProp = FDStoreProperties.get(key);
+        	if(fdStoreProp != null && fdStoreProp.trim().length() > 0) {
+        		model.addObject("data", fdStoreProp);
+        	} else {
+        		if(FDCouponProperties.PROP_COUPONS_ENABLED.equalsIgnoreCase(key)){
+        			if(null !=user && null !=user.getFDSessionUser()){
+        				model.addObject("data", String.valueOf(user.getFDSessionUser().isEligibleForCoupons()));
+        			}
+        		}else{
+        			model.addObject("data", FDCouponProperties.get(key));
+        		}
+        	}
         }
         return model;
     }

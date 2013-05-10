@@ -15,6 +15,7 @@ import com.freshdirect.fdstore.content.DomainValue;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.SkuModel;
 import com.freshdirect.fdstore.content.util.SortStrategyElement;
+import com.freshdirect.fdstore.ecoupon.EnumCouponContext;
 import com.freshdirect.framework.webapp.ActionError;
 import com.freshdirect.framework.webapp.ActionResult;
 import com.freshdirect.mobileapi.exception.ModelException;
@@ -144,7 +145,7 @@ public class WhatsGood {
             for (ProductModel pm : productModels) {
                 if (!pm.isUnavailable()) {
                     try {
-                        result.add(Product.wrap(pm, user.getFDSessionUser().getUser()));
+                        result.add(Product.wrap(pm, user.getFDSessionUser().getUser(), null, EnumCouponContext.PRODUCT));
                     } catch (ModelException e) {
                         LOG.warn("ModelException in a product in peak produce. continuing on, instead of failing on entire list.", e);
                     }
@@ -168,7 +169,7 @@ public class WhatsGood {
 
         for (SkuModel sku : skus) {
             ProductModel productModel = sku.getProductModel();
-            result.add(Product.wrap(productModel, user.getFDSessionUser().getUser()));
+            result.add(Product.wrap(productModel, user.getFDSessionUser().getUser(), null, EnumCouponContext.PRODUCT));
         }
         return result;
     }
@@ -225,7 +226,7 @@ public class WhatsGood {
                 for (Object content : contents) {
                     if (content instanceof ProductModel) {
                         try {
-                            result.add(Product.wrap((ProductModel) content, user.getFDSessionUser().getUser()));
+                            result.add(Product.wrap((ProductModel) content, user.getFDSessionUser().getUser(), null, EnumCouponContext.PRODUCT));
                         } catch (Exception e) {
                             //Don't let one rotten egg ruin it for the bunch
                             LOG.error("ModelException encountered. Product ID=" + ((ProductModel) content).getFullName(), e);

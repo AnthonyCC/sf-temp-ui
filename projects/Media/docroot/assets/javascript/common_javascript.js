@@ -451,51 +451,85 @@ function updateYourCartPanel() {
 	}
 /*
  *	sort option
+ *		pass a second param as boolean to sort as Integers (false by default)
+ *		
+ *		Note: When using sort by Int, mixed (Str/Int) options will sort numbers first.
+ *		      Sets containing Strings that LOOK like Ints (like "5ive") will treat those as Ints.
  */
-	function sortByText(sortId) {
+	function sortByText(sortId, asIntVar) {
 		var specId = sortId || '';
+		var asInt = asIntVar || false;
 			
 		//alphabetize
-		var selectArr = new Array();
+		var selectArr = [];
 
 		if (specId!='') {
-			selectArr[0] = $(specId); 
+			selectArr[0] = document.getElementById(specId); 
 		}else{
 			selectArr = document.getElementsByTagName('select'); 
 		}
 
-		for (var i = 0; i < selectArr.length; i++) { 
-			var oArr = new Array();
+		for (var i = 0; i < selectArr.length; i++) {
+			var strArr = [];
+			if (asInt) {
+				var intArr = [];
+			}
+			var strArr = [];
 			// Get the options for the select element 
 			for (var j = 0; j < selectArr[i].options.length; j++) { 
 				// Store this as an object that has an option object member, and a toString function (which will be used for sorting) 
 				if (selectArr[i].options[j].text != "") { //ignore blanks
-					oArr[oArr.length] = { 
-						option : selectArr[i].options[j], 
-						toString : function() { 
-							// Return the text of the option, not the value 
-							return this.option.text; 
+					if (asInt && !isNaN(parseInt(selectArr[i].options[j].text)) && !(selectArr[i].options[j].text).match(/[\D]/g)) {
+						intArr[intArr.length] = { 
+							option : selectArr[i].options[j], 
+							toString : function() { 
+								// Return the text of the option, not the value 
+								return this.option.text;
+							}
+						}
+					} else {
+						strArr[strArr.length] = { 
+							option : selectArr[i].options[j], 
+							toString : function() { 
+								// Return the text of the option, not the value 
+								return this.option.text;
+							}
 						}
 					}
 				}
 			} 
-			// Sort the array of options for this select 
-			oArr.sort();
+			// Sort the array(s) of options
+			if (asInt && intArr.length > 1) {
+				intArr.sort(function(a,b){return a-b});
+			}
+			if (strArr.length > 1) {
+				strArr.sort();
+			}
 				
 
 			// Remove all options from the select
 			selectArr[i].options.length = 0;
 			
 			// Rebuild the select using our sorted array
-			for (var j = 0; j < oArr.length; j++) {
-				selectArr[i].options[j] = oArr[j].option;
+			var j = 0;
+			var n = 0;
+			if (asInt) {
+				for (j = 0; j < intArr.length; j++) {
+					selectArr[i].options[n] = intArr[j].option;
+					n++;
+				}
 			}
+			for (j = 0; j < strArr.length; j++) {
+				selectArr[i].options[n] = strArr[j].option;
+				n++;
+			}
+
 			selectArr[i].selectedIndex = 0;
 		}
 
 		return true;
-
 	}
+
 	/*
 	 *	takes the select values from sortId, assumes they are days of the week,
 	 *	and sorts them by day instead of alphabetically
@@ -560,6 +594,63 @@ function updateYourCartPanel() {
 		return true;
 	}
 /* === Add/Remove functionality between two listboxes ======================= */
+
+/* === listbox box helper ======================= */
+
+/* generic select populate method - assumes jquery
+	 *	pass in data to add
+	 *		array of arrays: [[elemId, optText, optValue]]
+	 *  optional selectedVar for selected items (defaults selectedIndex to 0)
+	 *		array of arrays: [[elemId, defaultSelected]] - last passed, last set
+	 */
+	function populateLists(dataArrVar, defSelectedArrVar) {
+		var dataArr = dataArrVar || []; //
+		if (dataArr.length == 0) { return; }
+		var selectedArr = defSelectedArrVar || [];
+		var selectedIndex = 0; //default
+		var listObjs = {};
+
+		for (var i = 0; i < selectedArr.length; i++) {
+			if (selectedArr[i].length != 2) { continue; }
+			
+			if (!listObjs.hasOwnProperty(selectedArr[i][0])) {
+				listObjs[selectedArr[i][0]] = {};
+			}
+			listObjs[selectedArr[i][0]].name = selectedArr[i][0];
+			listObjs[selectedArr[i][0]].defaultSelection = selectedArr[i][1];
+		}
+
+		for (var i = 0; i < dataArr.length; i++) {
+			if (dataArr[i].length != 3) { continue; } //invalid
+			
+			var elemId = dataArr[i][0];
+			var optText = dataArr[i][1];
+			var optValue = dataArr[i][2];
+
+			if ($jq('#'+elemId).length == 0) { continue; } //elem with elemId doesn't exist
+			
+			addOpt(elemId, optText, optValue);
+
+			if (
+				listObjs.hasOwnProperty(elemId) && listObjs[elemId].hasOwnProperty('defaultSelection') 
+				&& listObjs[elemId].defaultSelection == optValue
+			) {
+				listObjs[elemId].selectedIndex = $jq('#'+elemId+' option').length-1;
+			}
+		}
+
+		for (listObj in listObjs) {
+			if (!listObjs[listObj].hasOwnProperty('selectedIndex')) {
+				listObjs[listObj].selectedIndex = 0;
+			}
+			if (listObjs[listObj].selectedIndex < 0) { listObjs[listObj].selectedIndex = 0; }
+
+			//set selected index
+			$jq('#'+listObjs[listObj].name).prop('selectedIndex', listObjs[listObj].selectedIndex);
+		}
+
+		
+	}
 
 /* SHORTCUT select all/none for check boxes. */
 	function selectAllCB(parentId) { selectNCB(parentId, 0, true) }
@@ -896,20 +987,14 @@ function maxLen(elem, len) {
 function setFrameHeight(frameId, offset) {
 	var f = window.parent.document.getElementById(frameId);
 
+  f.style.height = null;
+
 	var hgt = getFrameHeight(frameId);
 	
 	if (offset == undefined)
 		offset = 0;
 	
 	f.style.height = (hgt+offset)+"px";
-}
-
-
-function getFrameHeight(frameId) {
-	var f = window.parent.document.getElementById(frameId);
-	var innerDoc = (f.contentDocument) ? f.contentDocument : f.contentWindow.document;
-
-	return innerDoc.body.parentNode.scrollHeight;
 }
 
 function setFrameHeightSL(frameId, hgt) {
@@ -923,18 +1008,6 @@ function setFrameWidthSL(frameId, wth) {
 
 	f.style.width = (wth)+"px";
 }
-
-function setFrameHeight(frameId, offset) {
-	var f = window.parent.document.getElementById(frameId);
-
-	var hgt = getFrameHeight(frameId);
-	
-	if (offset == undefined)
-		offset = 0;
-	
-	f.style.height = (hgt+offset)+"px";
-}
-
 
 function getFrameHeight(frameId) {
 	var f = window.parent.document.getElementById(frameId);
@@ -1177,11 +1250,14 @@ function doOverlayWindow(olURL) {
 		return {
 			trackAddToCartEvent: trackAddToCartEvent
 		}
-	})(); 
 
-	function doOverlayDialog(olURL) {
+	})();
+	
+	/* setup dialog
+	 * returns reference to dialog
+	 */
+	function setupOverlayDialog() {
 		var overlayDialog = $jq('<div id="uimodal-output"></div>');
-
 		$jq("body").append(overlayDialog);
 		overlayDialog.dialog({
 			title: "", /* no title */
@@ -1201,23 +1277,31 @@ function doOverlayWindow(olURL) {
 			draggable: false,
 			open: function() {
 				$jq('html').css({ 'overflow': 'hidden' });
-				//$jq('body').css({ 'overflow': 'hidden' });
 				
 				overlayDialog.dialog('option', 'maxClientHeight', 0.95);
 				overlayDialog.dialog('option', 'maxClientWidth', 0.95);
 				overlayDialog.dialog('option', 'maxHeight', Math.round(document.documentElement.clientHeight * overlayDialog.dialog('option', 'maxClientHeight')));
 				overlayDialog.dialog('option', 'maxWidth',  Math.round(document.documentElement.clientWidth * overlayDialog.dialog('option', 'maxClientWidth')));
 
-				//dialogWindowResizeTimer = setTimeout(dialogWindowResizeFunc, 100);
 				if (overlayDialog.height() > overlayDialog.dialog('option', 'maxHeight')) { 
 					setTimeout(function(){ overlayDialog.dialog('option', 'height', overlayDialog.dialog('option', 'maxHeight')); }, 100);
 				} else {
-					overlayDialog.dialog('option', 'openHeight', $jq('#uimodal-output').height());
+					if ($jq('#uimodal-output').height() == 0) { //this is 0 in IE, which causes issues
+						overlayDialog.dialog('option', 'openHeight', '500px');
+					} else {
+						overlayDialog.dialog('option', 'openHeight', $jq('#uimodal-output').height());
+					}
 				}
+
+
 				if (overlayDialog.width() > overlayDialog.dialog('option', 'maxWidth')) {
 					setTimeout(function(){ overlayDialog.dialog('option', 'width', overlayDialog.dialog('option', 'maxWidth')); }, 100);
 				} else {
-					overlayDialog.dialog('option', 'openWidth', $jq('#uimodal-output').width());
+					if ($jq('#uimodal-output').width() == 0) { //this is 0 in IE, which causes issues
+						overlayDialog.dialog('option', 'openWidth', '500px');
+					} else {
+						overlayDialog.dialog('option', 'openWidth', $jq('#uimodal-output').width());
+					}
 				}
 
 				//allow off-click to close
@@ -1226,14 +1310,45 @@ function doOverlayWindow(olURL) {
 
 			},
 			close: function () {
-				
 				$jq('html').css({ 'overflow': 'auto' });
-				//$jq('body').css({ 'overflow': 'auto' });
 			}
-		});
+		});	
+	
+		return overlayDialog;
+	}
+	
+	/* use dialog by url */
+	function doOverlayDialog(olURL, olData) {
+		var overlayDialog = setupOverlayDialog();
 		
-		overlayDialog.load(olURL, function() { overlayDialog.dialog('open'); });
+		if (olData != 'undefined' && (typeof olData).toLowerCase() == 'object') {
+			//if data is passed in, POST it
+			overlayDialog.load(olURL, olData, function() { overlayDialog.dialog('open'); });
+		} else {
+			overlayDialog.load(olURL, function() { overlayDialog.dialog('open'); });
+		}
 
+		return overlayDialog;
+	}
+	
+	/* use dialog by css selector */
+	function doOverlayDialogBySelector(olSelector) {
+		var overlayDialog = setupOverlayDialog();
+		
+		overlayDialog.html($jq(olSelector).html());
+		overlayDialog.dialog('open');
+		
+		return overlayDialog;
+	}
+	
+	/* use dialog by html */
+	function doOverlayDialogByHtml(olHtml) {
+		var overlayDialog = setupOverlayDialog();
+		
+		overlayDialog.html(olHtml);
+		overlayDialog.dialog('open');
+
+		return overlayDialog;
 	}
 
 	function dialogWindowResizeFunc() {
@@ -1268,12 +1383,197 @@ function doOverlayWindow(olURL) {
 		}
 
 		overlayDialog.dialog('option', 'position', overlayDialog.dialog('option', 'position'));
-	};
+	}
 
 	var dialogWindowResizeTimer;
+	var dialogDocReady = false;
 	if (window['$jq']) { //make sure jQuery is available
+		$jq(document).ready(function () { dialogDocReady = true });
 		$jq(window).resize(function() {
 			clearTimeout(dialogWindowResizeTimer);
-			dialogWindowResizeTimer = setTimeout(dialogWindowResizeFunc, 100);
+			if (dialogDocReady) { dialogWindowResizeTimer = setTimeout(dialogWindowResizeFunc, 100); }
 		});
 	}
+
+function checkBatch() {
+	if(document.getElementById("batch_promo").checked) {
+		//the box is checked so display an alert box
+		if(confirm("Do you want to Apply these changes to entire batch?"))
+			return true;
+		return false;
+	}
+}
+
+	var clipPending = false;
+	function fdCouponClip(couponId) {
+		if (couponId && !clipPending) {
+			clipPending = true;
+			/* check all other matching check boxes */
+			$jq('input[name="fdCoupon_'+couponId+'_cb"]').each(function (i, e){
+				$jq(e).prop('checked', true);
+				$jq(e).prop('disabled', true);
+			});
+			$jq.ajax({
+				type: 'GET',
+				url: '/api/cp_api.jsp',
+				data: { action: 'clip', cpid: couponId },
+				success: function() {
+					/* make sure the tooltips are gone (IE) */
+					$jq('.cDetToolTipClickToApply').each(function (i, e){
+						$jq(e).hide();
+					});
+					window.parent['qbClippedSuccess']('input[name="fdCoupon_'+couponId+'_cb"]');
+				},
+				error: function() {
+					/* clear check box(es) */
+					$jq('input[name="fdCoupon_'+couponId+'_cb"]:checked').each(function (i, e){
+						$jq(e).prop('checked', false);
+						$jq(e).prop('disabled', false);
+					});
+				},
+				complete: function() {
+					clipPending = false;
+				}
+			});
+		}
+	}
+	function qbClippedSuccess(selectorStr) {
+		/* check all other matching check boxes */
+		$jq(selectorStr).each(function (i, e){
+			if ($jq(e).parent('div').hasClass('fdCoupon_prodBox')) {
+				$jq(e).addClass('isClipped');
+			}
+			$jq(e).prop('checked', true);
+			$jq(e).prop('disabled', true);
+		});
+	}
+
+/* add coupon tooltips */
+	$jq(function() {
+		var currentlyPositionning;
+		$jq.ui.position.ttFlipCustom = {
+			left: function(position, data) {
+			currentlyPositionning = data.elem;
+				initPos = position.left;
+				$jq.ui.position.flip.left(position, data);
+				if (initPos != position.left) {
+					currentlyPositionning.addClass('tooltipFlipH');
+					currentlyPositionning.position({
+						of: currentlyPositionning,
+						my: 'left bottom',
+						at: 'right top',
+						offset: '100px'
+					});
+				}
+			},
+			top: function(position, data) {
+				initPos = position.top;
+				$jq.ui.position.flip.top(position, data);
+				if (initPos != position.top) {
+					data.elem.addClass('tooltipFlipV');
+				}
+			}
+		};
+		$jq( document ).tooltip({
+			items: ".fdCoupon_det, .fdCoupon_cb",
+			tooltipClass: "cDetToolTip",
+			content: function() {
+				var element = $jq( this );
+				if ( $jq(element).is(":checked") ) { return null; }
+				if (element.hasClass('fdCoupon_cb')) {
+					$jq( document ).tooltip({ tooltipClass: "cDetToolTipClickToApply" });
+					$jq( document ).tooltip({ 
+						position: {
+							my: "left-16 bottom-16",
+							at: "center top",
+							collision: 'ttFlipCustom',
+							using: function( position, feedback ) {
+								$jq( this ).css( position );
+								$jq( '<div>' )
+									.addClass( "arrow" )
+									.addClass( feedback.vertical )
+									.addClass( feedback.horizontal )
+									.appendTo( this );
+							}
+						}
+					});
+
+					return "Click to apply";
+				} else {
+					$jq( document ).tooltip({ tooltipClass: "cDetToolTip" });
+					$jq( document ).tooltip({ 
+						position: {
+							my: "left-40 bottom-30",
+							at: "center top",
+							collision: 'ttFlipCustom',
+							using: function( position, feedback ) {
+								$jq( this ).css( position );
+								$jq( '<div>' )
+									.addClass( "arrow" )
+									.addClass( feedback.vertical )
+									.addClass( feedback.horizontal )
+									.appendTo( this );
+							}
+						}
+					});
+
+					return $jq('div[name="'+element.attr('name')+'Content"]:first').html();
+				}
+			}
+			
+
+		});
+	});
+
+/*	auto-fix featured products row.
+ *		pass in selectors:
+ *			row container
+ *			inner box container
+ *			each item in inner box to count against height
+ */
+	function fixGridFeatRowHeights(outerBox, innerBox, innerItems) {
+		var totalH = 0;
+		var tallest = 0;
+		$jq(innerBox).each(function (index, elem) {
+			totalH = 0;
+			$jq($jq(elem).find(innerItems).children('div')).each(function (ii, ee) {
+				totalH = totalH+$jq(ee).outerHeight(true);
+			});
+			if (totalH > tallest) {
+				tallest = totalH;
+			}
+		}).each(function (index, elem) {
+			
+			if (index === 0) {
+				$jq(outerBox).css({ 'height': (tallest+14)+'px' });
+			}
+			$jq($jq(elem).find(innerItems)).css({ 'height': tallest+'px' });
+			$jq(elem).css({ 'height': (tallest+14)+'px' });
+		});
+	}
+	
+    /* clear coupon status msging on ATC */
+    function clearCouponStatusATC(couponIdVar, couponIdRefElementId) {
+           var couponId = couponIdVar;
+           if (couponId == null) {
+                  $jq('#'+couponIdRefElementId).children().each(function (i, e){
+                        var tempName = $jq(e).attr('name');
+                        if (tempName.indexOf('fdCoupon_') == 0) {
+                               tempName = tempName.split('_');
+                               if (tempName.length == 3) {
+                                      couponId = tempName[1];
+                                      return;
+                               }
+                        }
+                  });
+           }
+
+           if (couponId == null) { return false; }
+
+           $jq('span[name="fdCoupon_'+couponId+'_stat"]').each(function (i, e){
+                  $jq(e).empty();
+           });
+
+           return true;
+    }
+

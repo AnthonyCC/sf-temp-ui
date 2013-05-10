@@ -7,12 +7,16 @@
 <%@ page import='com.freshdirect.fdstore.*' %>
 <%@ page import="com.freshdirect.framework.webapp.*"%>
 <%@ page import='com.freshdirect.framework.util.*' %>
+<%@ page import='com.freshdirect.fdstore.customer.FDUserI'%>
+<%@ page import="com.freshdirect.fdstore.ecoupon.*" %>
 
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='oscache' prefix='oscache' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %>
+
+<% FDUserI horiz_user = (FDUserI) pageContext.getSession().getAttribute(SessionName.USER); %>
 
 <% //expanded page dimensions
 final int W_HORIZ_PATTERN_DEPARTMENT_MAX = 765;
@@ -41,10 +45,15 @@ final int W_HORIZ_PATTERN_NOT_DEPARTMENT_MAX = 601;
 					
 					ProductModel product = (ProductModel)currentItem;
 					String actionUrl = FDURLUtil.getProductURI( product, trackingCode );
+					ProductImpression pi = new ProductImpression(product);
+					FDCustomerCoupon curCoupon = null;
+					if (pi.getSku() != null && pi.getSku().getProductInfo() != null) {
+						curCoupon = horiz_user.getCustomerCoupon(pi.getSku().getProductInfo(), EnumCouponContext.PRODUCT,product.getParentId(),product.getContentName());
+					}
 					%>
 				
 					<td width="<%= horizontalPattern.getProductCellWidth() %>" style="padding-bottom: 5px;">
-						<display:ProductImage product="<%= product %>" showRolloverImage="true" action="<%= actionUrl %>" useAlternateImage="<%= useAlternateImages.booleanValue() %>"/>
+						<display:ProductImage product="<%= product %>" showRolloverImage="true" action="<%= actionUrl %>" useAlternateImage="<%= useAlternateImages.booleanValue() %>" coupon="<%= curCoupon %>" />
 					</td> 
 					
 				<% } else if ( currentItem instanceof CategoryModel ) { 		// ===== CATEGORY ===== 
@@ -68,14 +77,21 @@ final int W_HORIZ_PATTERN_NOT_DEPARTMENT_MAX = 601;
 				<% if ( currentItem instanceof ProductModel ) { 				// ===== PRODUCT =====
 					
 					ProductModel product = (ProductModel)currentItem;
+					ProductImpression pi = new ProductImpression(product);
 					String actionUrl = FDURLUtil.getProductURI( product, trackingCode );
+					FDCustomerCoupon curCoupon = null;
+
+					if (pi.getSku() != null && pi.getSku().getProductInfo() != null) {
+						curCoupon = horiz_user.getCustomerCoupon(pi.getSku().getProductInfo(), EnumCouponContext.PRODUCT,product.getParentId(),product.getContentName());
+					}
 					%>
 				
 					<td width="<%= horizontalPattern.getProductCellWidth() %>" style="padding-bottom: 20px; padding-left: 2px; padding-right: 2px;"><font class="catPageProdNameUnderImg">
 						
 						<display:ProductRating product="<%= product %>" action="<%= actionUrl %>"/>
 						<display:ProductName product="<%= product %>" action="<%= actionUrl %>"/>
-						<display:ProductPrice impression="<%= new ProductImpression(product) %>" showDescription="false"/>
+						<display:ProductPrice impression="<%= pi %>" showDescription="false"/>
+						<display:FDCoupon coupon="<%= curCoupon %>" contClass="fdCoupon_layHorz"></display:FDCoupon>
 						
 					</font></td> 
 					

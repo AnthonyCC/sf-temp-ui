@@ -70,6 +70,10 @@
 				folderNodes = catModel.getSubcategories();
 			}
 			productNodes = contentFactory.getProducts(catModel);
+			if("ecoupons".equals(catId)){
+				FDSessionUser user = (FDSessionUser) session.getAttribute(SessionName.USER);
+				productNodes = FDCustomerCouponUtil.getCouponProducts(user, false);
+			}
 		}
 	}
 	
@@ -110,130 +114,134 @@
 	}
 %>
 
-<div class="order_content">
-<TABLE WIDTH="100%" CELLPADDING="2" CELLSPACING="0" BORDER="0" ALIGN="CENTER" class="order">
-	<TR VALIGN="TOP">
-		<TD WIDTH="60%">
-			<div class="column"><%= browsePath.toString() %></div><div class="column" style="float: right;">[ <A HREF="place_order_batch_search_results.jsp?searchIndex=<%= idx %>">back to list in progress</A> ]</div>
-			<br clear="all">
-			<hr class="gray1px">
-			
-<%	if (folderNodes != null && folderNodes.size() > 0) {
-		List sortedFolders = new ArrayList(folderNodes);
-
-		// filter hidden nodes
-		for (ListIterator li=sortedFolders.listIterator(); li.hasNext(); ) {
-			ContentNodeModel cn = (ContentNodeModel)li.next();
-			if (cn.isHidden()) {
-				li.remove();
-//			} else if ("[big], [test_picks], [our_picks], [about], [spe], [mkt], [kosher_temp]".indexOf("["+cn.getContentName().toLowerCase()+"]") > -1) { // hide depts, match QS selection
-    		} else if ((cn instanceof DepartmentModel) && (((DepartmentModel)cn).isHidddenInQuickshop())) {   
-				li.remove();
-			}
-		}
-
-		Collections.sort(sortedFolders, priorityComparator);
-%>
-			<TABLE WIDTH="100%" CELLPADDING="0" CELLSPACING="0" BORDER="0" class="order">
-			<TR>
-				<TD WIDTH="87%">Department / Category</TD>
-				<TD WIDTH="13%" COLSPAN="2">&nbsp;<BR></TD>
-			</TR>
-			</TABLE>
-			<TABLE WIDTH="100%" CELLPADDING="0" CELLSPACING="0" BORDER="0" class="order">
-			<TR valign="bottom">
-<%		int folderIdx = -1; %>
-		<logic:iterate id="folderNode" collection="<%= sortedFolders %>" type="com.freshdirect.fdstore.content.ContentNodeModel" indexId="folderCount">
-				<TD WIDTH="24%" align="center">
-<%		String imgSrc = "/media/images/temp/soon_70x70.gif";
-		int imgHeight = 70;
-		int imgWidth = 70;
-		if (folderNode instanceof DepartmentModel) {
-			DepartmentModel deptModel = (DepartmentModel) folderNode;
-			Image deptImage = deptModel.getPhoto();
-			if (deptImage != null) {
-				imgSrc = deptImage.getPath();
-				imgHeight = deptImage.getHeight();
-				imgWidth = deptImage.getWidth();
-			}
-%>
-					<A HREF="/order/build_order_browse.jsp?catId=<%= folderNode %>"><img src="<%= imgSrc %>" width="<%= imgWidth %>" height="<%= imgHeight %>" border="0" valign="middle"></A>
-<%		} else if (folderNode instanceof CategoryModel) {
-			CategoryModel catModel = (CategoryModel) folderNode;
-			Image catImage = catModel.getCategoryPhoto();
-			if (catImage == null) {
-				//
-				// No img for Category, so let's try using one from the first product we find
-				//
-				Collection prods = contentFactory.getProducts(catModel);
-				if (prods.size() > 0) {
-					Image productImage = null;
-					for (Iterator it = prods.iterator(); it.hasNext() && (productImage == null || productImage.getPath().indexOf("soon") != -1); ) {
-						ProductModel prod = (ProductModel) it.next();
-						productImage = prod.getCategoryImage();
-					}
-					if (productImage != null) {
-						imgSrc = productImage.getPath();
-						imgHeight = productImage.getHeight();
-						imgWidth = productImage.getWidth();
-					}
+<div class="order_list_content">
+	<div class="order_list">
+		<%@ include file="/includes/cart_header.jspf"%>
+	</div>
+	
+	<div class="order_content">
+	<TABLE WIDTH="100%" CELLPADDING="2" CELLSPACING="0" BORDER="0" ALIGN="CENTER" class="order">
+		<TR VALIGN="TOP">
+			<TD WIDTH="60%">
+				<div class="column"><%= browsePath.toString() %></div><div class="column" style="float: right;">[ <A HREF="place_order_batch_search_results.jsp?searchIndex=<%= idx %>">back to list in progress</A> ]</div>
+				<br clear="all">
+				<hr class="gray1px">
+				
+	<%	if (folderNodes != null && folderNodes.size() > 0) {
+			List sortedFolders = new ArrayList(folderNodes);
+	
+			// filter hidden nodes
+			for (ListIterator li=sortedFolders.listIterator(); li.hasNext(); ) {
+				ContentNodeModel cn = (ContentNodeModel)li.next();
+				if (cn.isHidden()) {
+					li.remove();
+	//			} else if ("[big], [test_picks], [our_picks], [about], [spe], [mkt], [kosher_temp]".indexOf("["+cn.getContentName().toLowerCase()+"]") > -1) { // hide depts, match QS selection
+	    		} else if ((cn instanceof DepartmentModel) && (((DepartmentModel)cn).isHidddenInQuickshop())) {   
+					li.remove();
 				}
-			} else {
-				imgSrc = catImage.getPath();
-				imgHeight = catImage.getHeight();
-				imgWidth = catImage.getWidth();
 			}
-%>
-					<A HREF="/order/build_order_category.jsp?catId=<%= folderNode %>"><img src="<%= imgSrc %>" width="<%= imgWidth %>" height="<%= imgHeight %>" border="0" valign="middle"></A>
-<%		} else { %>
-					<A HREF="/order/build_order_browse.jsp?catId=<%= folderNode %>"><img src="/media_stat/images/buttons/folder_icon.gif" width="12" height="9" border="0"></A>
-<%		} %>
-					<br><a href="/order/build_order_browse.jsp?catId=<%= folderNode %>"><%= folderNode.getFullName() %></a><BR><br>
-				</TD>
-				<TD WIDTH="1%">&nbsp;</TD>
-<%		if (folderIdx++ > 0 && folderIdx % 3 == 0) {
-			folderIdx = -1; %>
-			</TR>
-			<TR>
-<%		} %>
-		</logic:iterate>
-			</TR>
-			</TABLE>
-<%	} %>
-<%	if ( (folderNodes != null && folderNodes.size() > 0) && (productNodes != null && productNodes.size() > 0)) { %>
-
-			<hr class="gray1px">
-			
-<%	} %>
-<%	if (productNodes != null && productNodes.size() > 0) {
-		String offSet = "0";
-		String searchIndex = "0";
-		List recipes = new ArrayList(); //satisfies includes requirement.
-		List products = new ArrayList(productNodes);
-
-		// filter hidden nodes
-		for (ListIterator li=products.listIterator(); li.hasNext(); ) {
-			ContentNodeModel cn = (ContentNodeModel)li.next();
-			if (cn.isHidden()) {
-				li.remove();
+	
+			Collections.sort(sortedFolders, priorityComparator);
+	%>
+				<TABLE WIDTH="100%" CELLPADDING="0" CELLSPACING="0" BORDER="0" class="order">
+				<TR>
+					<TD WIDTH="87%">Department / Category</TD>
+					<TD WIDTH="13%" COLSPAN="2">&nbsp;<BR></TD>
+				</TR>
+				</TABLE>
+				<TABLE WIDTH="100%" CELLPADDING="0" CELLSPACING="0" BORDER="0" class="order">
+				<TR valign="bottom">
+	<%		int folderIdx = -1; %>
+			<logic:iterate id="folderNode" collection="<%= sortedFolders %>" type="com.freshdirect.fdstore.content.ContentNodeModel" indexId="folderCount">
+					<TD WIDTH="24%" align="center">
+	<%		String imgSrc = "/media/images/temp/soon_70x70.gif";
+			int imgHeight = 70;
+			int imgWidth = 70;
+			if (folderNode instanceof DepartmentModel) {
+				DepartmentModel deptModel = (DepartmentModel) folderNode;
+				Image deptImage = deptModel.getPhoto();
+				if (deptImage != null) {
+					imgSrc = deptImage.getPath();
+					imgHeight = deptImage.getHeight();
+					imgWidth = deptImage.getWidth();
+				}
+	%>
+						<A HREF="/order/build_order_browse.jsp?catId=<%= folderNode %>"><img src="<%= imgSrc %>" width="<%= imgWidth %>" height="<%= imgHeight %>" border="0" valign="middle"></A>
+	<%		} else if (folderNode instanceof CategoryModel) {
+				CategoryModel catModel = (CategoryModel) folderNode;
+				Image catImage = catModel.getCategoryPhoto();
+				if (catImage == null) {
+					//
+					// No img for Category, so let's try using one from the first product we find
+					//
+					Collection prods = contentFactory.getProducts(catModel);
+					if (prods.size() > 0) {
+						Image productImage = null;
+						for (Iterator it = prods.iterator(); it.hasNext() && (productImage == null || productImage.getPath().indexOf("soon") != -1); ) {
+							ProductModel prod = (ProductModel) it.next();
+							productImage = prod.getCategoryImage();
+						}
+						if (productImage != null) {
+							imgSrc = productImage.getPath();
+							imgHeight = productImage.getHeight();
+							imgWidth = productImage.getWidth();
+						}
+					}
+				} else {
+					imgSrc = catImage.getPath();
+					imgHeight = catImage.getHeight();
+					imgWidth = catImage.getWidth();
+				}
+	%>
+						<A HREF="/order/build_order_category.jsp?catId=<%= folderNode %>"><img src="<%= imgSrc %>" width="<%= imgWidth %>" height="<%= imgHeight %>" border="0" valign="middle"></A>
+	<%		} else { %>
+						<A HREF="/order/build_order_browse.jsp?catId=<%= folderNode %>"><img src="/media_stat/images/buttons/folder_icon.gif" width="12" height="9" border="0"></A>
+	<%		} %>
+						<br><a href="/order/build_order_browse.jsp?catId=<%= folderNode %>"><%= folderNode.getFullName() %></a><BR><br>
+					</TD>
+					<TD WIDTH="1%">&nbsp;</TD>
+	<%		if (folderIdx++ > 0 && folderIdx % 3 == 0) {
+				folderIdx = -1; %>
+				</TR>
+				<TR>
+	<%		} %>
+			</logic:iterate>
+				</TR>
+				</TABLE>
+	<%	} %>
+	<%	if ( (folderNodes != null && folderNodes.size() > 0) && (productNodes != null && productNodes.size() > 0)) { %>
+	
+				<hr class="gray1px">
+				
+	<%	} %>
+	<%	if (productNodes != null && productNodes.size() > 0) {
+			String offSet = "0";
+			String searchIndex = "0";
+			List recipes = new ArrayList(); //satisfies includes requirement.
+			List products = new ArrayList(productNodes);
+	
+			// filter hidden nodes
+			for (ListIterator li=products.listIterator(); li.hasNext(); ) {
+				ContentNodeModel cn = (ContentNodeModel)li.next();
+				if (cn.isHidden()) {
+					li.remove();
+				}
 			}
-		}
-%>
-		<form name="build_list" method="post">
-			<%@ include file="/includes/i_search_results.jspf"%>
-		</form>
-
-<%	} %>
-		</TD>
-	</TR>
-</TABLE>
+	%>
+			<form name="build_list" method="post">
+				<%@ include file="/includes/i_search_results.jspf"%>
+			</form>
+	
+	<%	} %>
+			</TD>
+		</TR>
+	</TABLE>
+	</div>
+	
+	<br style="clear: both;" />
 </div>
 
-<div class="order_list">
-	<%@ include file="/includes/cart_header.jspf"%>
-</div>
-
-<br clear="all">
+<br style="clear:both" />
 </tmpl:put>
 
 </tmpl:insert>

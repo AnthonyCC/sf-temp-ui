@@ -1,5 +1,7 @@
 package com.freshdirect.fdstore.content;
 
+import java.util.Comparator;
+
 public class FilteringMenuItem {
 	
 	private String name;
@@ -98,5 +100,21 @@ public class FilteringMenuItem {
 	public String toString() {
 		return "[" + filter + "=" + filteringUrlValue + "]=>" + name + "(" + counter + ")";
 	}
+	
+	public static final Comparator<FilteringMenuItem> COUNT_ORDER_REV = new Comparator<FilteringMenuItem>() {
+		@Override
+		public int compare(FilteringMenuItem o1, FilteringMenuItem o2) {
+			return o2.getCounter() - o1.getCounter();
+		}			
+	};	
+	
+	public static final Comparator<FilteringMenuItem> RATING_COMP = new Comparator<FilteringMenuItem>() {
+		@Override
+		public int compare(FilteringMenuItem o1, FilteringMenuItem o2) {
+			int a = 0; try { a = Integer.parseInt( o1.getName() ); } catch (NumberFormatException e) { }
+			int b = 0; try { b = Integer.parseInt( o2.getName() ); } catch (NumberFormatException e) { }								
+			return a > b ? -1 : a < b ? +1 : 0;
+		}
+	};
 	
 }

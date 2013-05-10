@@ -10,12 +10,16 @@
 <%@ page import='com.freshdirect.fdstore.customer.*' %>
 <%@ page import="com.freshdirect.framework.webapp.*"%>
 <%@ page import='com.freshdirect.framework.util.*' %>
+<%@ page import='com.freshdirect.fdstore.customer.FDUserI'%>
+<%@ page import="com.freshdirect.fdstore.ecoupon.*" %>
 
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri='oscache' prefix='oscache' %>
 <%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %>
+
+<% FDUserI multi_user = (FDUserI) pageContext.getSession().getAttribute(SessionName.USER); %>
 
 
 <% //expanded page dimensions
@@ -82,10 +86,19 @@ final int W_MULTI_CATEGORY_NOT_DEPARTMENT = 601;
 								<% if ( currentItem instanceof ProductModel ) {		
 									ProductModel product = (ProductModel)currentItem;
 									String actionUrl = FDURLUtil.getProductURI( product, trackingCode );
+									ProductImpression pi = new ProductImpression(product);
+									FDCustomerCoupon curCoupon = null;
+									if (pi.getSku() != null && pi.getSku().getProductInfo() != null) {
+										curCoupon = multi_user.getCustomerCoupon(pi.getSku().getProductInfo(), EnumCouponContext.PRODUCT,product.getParentId(),product.getContentName());
+									}
+									String productImageClassName = "productImage";
+									if (curCoupon != null) {
+										productImageClassName += " couponLogo";
+									}
 									%>
 								
 									<td width="<%= cellPercentage %>%" style="padding-bottom: 5px;">										
-										<display:ProductImage product="<%= product %>" showRolloverImage="true" action="<%= actionUrl %>" useAlternateImage="<%= useAlternate %>"/>										
+										<display:ProductImage product="<%= product %>" showRolloverImage="true" action="<%= actionUrl %>" useAlternateImage="<%= useAlternate %>" className="<%= productImageClassName %>" coupon="<%= curCoupon %>" />										
 									</td>
 								
 								<% } else if ( currentItem instanceof CategoryModel ) { // is a category 
@@ -107,14 +120,20 @@ final int W_MULTI_CATEGORY_NOT_DEPARTMENT = 601;
 							
 								<% if ( currentItem instanceof ProductModel ) {		
 									ProductModel product = (ProductModel)currentItem;
+									ProductImpression pi = new ProductImpression( product );
 									String actionUrl = FDURLUtil.getProductURI( product, trackingCode );
+									FDCustomerCoupon curCoupon = null;
+									if (pi.getSku() != null && pi.getSku().getProductInfo() != null) {
+										curCoupon = multi_user.getCustomerCoupon(pi.getSku().getProductInfo(), EnumCouponContext.PRODUCT,product.getParentId(),product.getContentName());
+									}
 									%>
 								
 									<td width="<%= cellPercentage %>%" style="padding-bottom: 20px; padding-left: 2px; padding-right: 2px;"><font class="catPageProdNameUnderImg">
 										
 										<display:ProductRating product="<%= product %>" action="<%= actionUrl %>"/>
 										<display:ProductName product="<%= product %>" action="<%= actionUrl %>"/>
-										<display:ProductPrice impression="<%= new ProductImpression(product) %>" showDescription="false"/>
+										<display:ProductPrice impression="<%= pi %>" showDescription="false"/>
+										<display:FDCoupon coupon="<%= curCoupon %>" contClass="fdCoupon_layMultiCat"></display:FDCoupon>
 										
 									</font></td>
 								

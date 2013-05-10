@@ -220,6 +220,11 @@ public interface MessageCodes {
     public static final String ERR_EBT_RESTRICTED = "ERR_EBT_RESTRICTED";
     public final static String MSG_EBT_PRODUCT_NOT_ALLOWED 	= "Some items are ineligible with EBT Card payment";
     
+    public static final String WARNING_COUPONSYSTEM_UNAVAILABLE = "WARNING_COUPONSYSTEM_UNAVAILABLE";
+    
+    public static final String WARNING_COUPONS_EXP_DELIVERY_DATE ="WARNING_COUPONS_EXP_DELIVERY_DATE";
+    public final static String MSG_COUPONS_EXP_DELIVERY_DATE ="Some of your coupons are not valid on your chosen delivery date. All of your coupons will be valid if your delivery date is on or before: ";
+    
     public static class ErrorMessage {
         public final static String PASS_THROUGH = "PASS_THROUGH";
 

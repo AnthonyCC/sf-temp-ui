@@ -153,10 +153,8 @@ public class PageViewTagModelBuilder  {
 				
 				decoratePageIdWithCatId();
 			}
-		}		
-		
-		//could not identify category from uri, fallback to other category
-		if (tagModel.getCategoryId()==null) {
+				
+			//could not identify category from uri, fallback to other category
 			tagModel.setCategoryId(FDStoreProperties.getCoremetricsCatIdOtherPage());
 			tagModel.setPageId(uriAfterSlash);
 			decoratePageIdWithCatId();

@@ -35,6 +35,7 @@ import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDModifyCartModel;
 import com.freshdirect.fdstore.customer.FDOrderInfoI;
 import com.freshdirect.fdstore.customer.FDUser;
+import com.freshdirect.fdstore.ecoupon.EnumCouponContext;
 import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionResult;
@@ -305,8 +306,8 @@ public class Checkout {
      * @throws FDException
      */
     @SuppressWarnings("unchecked")
-    public Order getCurrentOrderDetails() throws FDException {
-        return sessionUser.getShoppingCart().getOrderDetails(sessionUser);
+    public Order getCurrentOrderDetails(EnumCouponContext ctx) throws FDException {
+        return sessionUser.getShoppingCart().getCurrentOrderDetails(sessionUser, ctx);
     }
 
     /**
@@ -317,7 +318,7 @@ public class Checkout {
      * @throws InvocationTargetException
      */
     public OrderReceipt getOrderReceipt(String orderNumber) throws FDException, IllegalAccessException, InvocationTargetException {
-        Order order = getCurrentOrderDetails();
+        Order order = getCurrentOrderDetails(EnumCouponContext.VIEWORDER);
         OrderReceipt orderReceipt = new OrderReceipt();
         BeanUtils.copyProperties(orderReceipt, order);
         orderReceipt.setOrderNumber(orderNumber);

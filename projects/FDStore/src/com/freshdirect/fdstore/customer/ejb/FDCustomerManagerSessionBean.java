@@ -165,6 +165,15 @@ import com.freshdirect.fdstore.customer.adapter.CustomerRatingAdaptor;
 import com.freshdirect.fdstore.customer.adapter.FDOrderAdapter;
 import com.freshdirect.fdstore.deliverypass.DeliveryPassUtil;
 import com.freshdirect.fdstore.deliverypass.FDUserDlvPassInfo;
+import com.freshdirect.fdstore.ecoupon.EnumCouponTransactionStatus;
+import com.freshdirect.fdstore.ecoupon.EnumCouponTransactionType;
+import com.freshdirect.fdstore.ecoupon.FDCouponManager;
+import com.freshdirect.fdstore.ecoupon.FDCouponTransactionDAO;
+import com.freshdirect.fdstore.ecoupon.model.CouponCart;
+import com.freshdirect.fdstore.ecoupon.model.FDCouponActivityContext;
+import com.freshdirect.fdstore.ecoupon.model.FDCouponCustomer;
+import com.freshdirect.fdstore.ecoupon.model.ErpCouponTransactionModel;
+import com.freshdirect.fdstore.ecoupon.service.CouponServiceException;
 import com.freshdirect.fdstore.mail.FDEmailFactory;
 import com.freshdirect.fdstore.mail.FDGiftCardEmailFactory;
 import com.freshdirect.fdstore.promotion.PromotionFactory;
@@ -1623,6 +1632,15 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		TimeslotEventModel event = new TimeslotEventModel((info.getSource()!=null)?info.getSource().getCode():"", 
 				createOrder.isDlvPassApplied(),createOrder.getDeliverySurcharge(), Util.isDlvChargeWaived(createOrder), Util.isZoneCtActive(zoneId), info.getFdUserId());
 		
+		if(createOrder.hasCouponDiscounts()){
+			Date date = new Date();
+			ErpCouponTransactionModel transModel = new ErpCouponTransactionModel();
+			transModel.setTranStatus(EnumCouponTransactionStatus.PENDING);
+			transModel.setTranType(EnumCouponTransactionType.CREATE_ORDER);
+			transModel.setCreateTime(date);
+			transModel.setTranTime(date);
+			createOrder.setCouponTransModel(transModel);
+		}
 		try {
 
 			DlvManagerSB dlvSB = this.getDlvManagerHome().create();
@@ -1816,6 +1834,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			ErpActivityRecord rec = info.createActivity(EnumAccountActivityType.PLACE_ORDER);
 			rec.setChangeOrderId(pk.getId());
 			this.logActivity(rec);
+			
 			if (sendEmail) {
 				FDOrderI order = getOrder(pk.getId());
 				if(FDStoreProperties.isPromoLineItemEmailDisplay()){
@@ -1830,6 +1849,15 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 				this.doEmail(FDEmailFactory.getInstance().createConfirmOrderEmail(fdInfo, order));
 			}
 
+			try {
+				if(null!=createOrder.getCouponTransModel()){
+					createOrder.getCouponTransModel().setSaleId(pk.getId());
+					FDCouponActivityContext context = new FDCouponActivityContext(info.getSource(), info.getInitiator(), info.getAgent());
+					FDCouponManager.postCouponOrder(createOrder.getCouponTransModel(),context);
+				}
+			} catch (Exception e) {
+				LOGGER.warn("Error submitting the coupons order to vendor: ", e);
+			}
 			return pk.getId();
 
 		} catch (DeliveryPassException de) {
@@ -2152,7 +2180,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 	public void modifyOrder(FDActionInfo info, String saleId,
 			ErpModifyOrderModel order, Set<String> usedPromotionCodes,
 			String oldReservationId, boolean sendEmail, CustomerRatingI cra,
-			CrmAgentRole agentRole, EnumDlvPassStatus status)
+			CrmAgentRole agentRole, EnumDlvPassStatus status, boolean hasCoupons)
 			throws FDResourceException, ErpTransactionException,
 			ErpFraudException, ErpAuthorizationException,
 			DeliveryPassException, FDPaymentInadequateException,
@@ -2171,6 +2199,15 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		TimeslotEventModel event = new TimeslotEventModel((info.getSource()!=null)?info.getSource().getCode():"", 
 				order.isDlvPassApplied(),order.getDeliverySurcharge(), Util.isDlvChargeWaived(order), Util.isZoneCtActive(zoneId), info.getFdUserId());
 		
+		if(hasCoupons){
+			Date date = new Date();
+			ErpCouponTransactionModel transModel = new ErpCouponTransactionModel();
+			transModel.setTranStatus(EnumCouponTransactionStatus.PENDING);
+			transModel.setCreateTime(date);
+			transModel.setTranTime(date);
+			transModel.setTranType(EnumCouponTransactionType.MODIFY_ORDER);							
+			order.setCouponTransModel(transModel);
+		}
 		
 		FDIdentity identity = info.getIdentity();
 		try {
@@ -2447,6 +2484,15 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 						.createModifyOrderEmail(fdInfo, fdOrder));
 			}
 
+			try {
+				if(null!=order.getCouponTransModel()){
+					order.getCouponTransModel().setSaleId(saleId);
+					FDCouponActivityContext context = new FDCouponActivityContext(info.getSource(), info.getInitiator(), info.getAgent());
+					FDCouponManager.postCouponOrder(order.getCouponTransModel(),context);
+				}
+			} catch (Exception e) {
+				LOGGER.warn("Error submitting the coupons order to vendor: ", e);
+			}
 		} catch (DeliveryPassException de) {
 			throw de;
 		} catch (CreateException ce) {
@@ -6326,7 +6372,8 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			String oldReservationId,
 			Set<String> appliedPromos,
 			CrmAgentRole agentRole,
-			boolean sendEmail)
+			boolean sendEmail,
+			boolean hasCoupons)
 			throws FDResourceException, 
 			ErpTransactionException, 
 			ErpFraudException, 
@@ -6352,7 +6399,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 					order.getPaymentMethod().setPaymentType(EnumPaymentType.ON_FD_ACCOUNT);
 				}
 
-				this.modifyOrder(info, saleId, order, appliedPromos, oldReservationId, sendEmail, cra, agentRole, status);
+				this.modifyOrder(info, saleId, order, appliedPromos, oldReservationId, sendEmail, cra, agentRole, status,hasCoupons);
 				
 			}catch (RemoteException re) {
 				throw new FDResourceException(re);
@@ -6835,9 +6882,9 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 				        pstmt.executeBatch();
 				    }
 				} catch(Exception e) {					
-					throw new FDResourceException(e);
+						throw new FDResourceException(e);
+					}
 				}
-			}
 			pstmt.executeBatch(); // insert remaining records
 			pstmt.close();
 		} catch (SQLException sqle) {

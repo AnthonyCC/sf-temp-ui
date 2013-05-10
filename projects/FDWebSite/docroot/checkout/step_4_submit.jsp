@@ -31,13 +31,21 @@ java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyIns
 	final String actionName = abstractTimeslots ? "modifyStandingOrderTemplate" : "submitOrder";
 	boolean isEBTPayment = false;
 	
+	if(null !=user){
+		user.setRefreshCouponWalletRequired(true);
+		user.setCouponEvaluationRequired(true);
+	}
 %>
 <tmpl:insert template='/common/template/checkout_nav.jsp'>
 <tmpl:put name='title' direct='true'>FreshDirect - Checkout - Review & Submit Order</tmpl:put>
 <tmpl:put name='content' direct='true'>
 
-<fd:FDShoppingCart id='cart' result="result">
-
+<fd:FDShoppingCart id='cart' result="result" filterCoupons="true">
+<tmpl:put name="changeDeliveryDate-button">
+	<% if ( cart.getExpCouponDeliveryDate() != null && !"".equals(cart.getExpCouponDeliveryDate()) ) {
+		%><a href="/checkout/step_2_select.jsp" class="imgButtonWhite">Change Delivery Date</a><%
+	} %>
+</tmpl:put>
 <%
 	String succPage = "step_4_receipt.jsp";
 
@@ -162,6 +170,11 @@ java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyIns
 		<span class="checkout-delivery-fee"><% if (FDStoreProperties.isNewFDTimeslotGridEnabled()) { %><fd:IncludeMedia name="/media/editorial/timeslots/msg_timeslots_learnmore.html"/><% } %></span>
 		<%@ include file="/includes/i_cart_delivery_fee.jspf" %>
 	</tmpl:put>
+	<tmpl:put name="changeDeliveryDate-button">
+		<% if ( cart.getExpCouponDeliveryDate() != null && !"".equals(cart.getExpCouponDeliveryDate()) ) {
+			%><a href="/checkout/step_2_select.jsp" class="imgButtonWhite">Change Delivery Date</a><%
+		} %>
+	</tmpl:put>
 	<tmpl:put name="next-button">
 		<% if (__noErr) { %>
 			<% if (abstractTimeslots) { %>
@@ -274,6 +287,25 @@ if (!abstractTimeslots && user.isPromoConflictResolutionApplied()) {
 	</tr>
 	<tr>
 		<td align="left">
+			<% if ( cart.getExpCouponDeliveryDate() != null && !"".equals(cart.getExpCouponDeliveryDate()) ) { %>
+				<div id="fdCoupon_cartAlertExpire">
+					<table>
+						<tr>
+							<td rowspan="3" valign="top" width="90">ATTENTION</td>
+							<td><img src="/media/images/ecoupon/red_triangle.png" alt="" /></td>
+							<td>Some coupons not valid on date of delivery. For all coupons to be valid, select date on or before:</td>
+						</tr>
+						<tr>
+							<td>&nbsp;</td>
+							<td class="fdCoupon_cartAlertExpire_date"><%= cart.getExpCouponDeliveryDate() %></td>
+						</tr>
+						<tr>
+							<td>&nbsp;</td>
+							<td><tmpl:get name="changeDeliveryDate-button" /></td>
+						</tr>
+					</table>
+				</div>
+			<% } %>
 <% if (abstractTimeslots) { %>
 <%-- CART DETAILS START --%>
 			<table width="<%= W_CHECKOUT_STEP_4_SUBMIT_TOTAL %>" style="">

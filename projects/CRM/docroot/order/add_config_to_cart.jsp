@@ -60,6 +60,7 @@
 		FDCartLineModel cartLine = new FDCartLineModel(new FDSku(product), productModel, configuration, null, user.getPricingContext().getZoneId());
 	
 		cart.addOrderLine(cartLine);
+		FDCustomerCouponUtil.evaluateCartAndCoupons(session);
 		//Log that an item has been added.
 		FDEventUtil.logAddToCartEvent(cartLine, request);
 

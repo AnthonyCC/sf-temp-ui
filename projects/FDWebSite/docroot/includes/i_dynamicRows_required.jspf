@@ -20,6 +20,7 @@
 <%@ page import='java.text.*' %>
 <%@ page import='java.io.Writer' %>
 <%@ page import="com.freshdirect.framework.util.NVL" %>
+<%@ page import="com.freshdirect.fdstore.ecoupon.*"%>
 
 <%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>

@@ -77,7 +77,7 @@ h2.centerline span {
 
 /* product transparent box height definition */
 .prod-descr-box {
-	height: 110px;
+	height: auto;
 }
 
 /* {{{ plus/minus buttons */

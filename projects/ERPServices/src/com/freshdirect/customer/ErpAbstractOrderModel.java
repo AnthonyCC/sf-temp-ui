@@ -2,12 +2,15 @@ package com.freshdirect.customer;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 import java.util.TreeSet;
 
 import com.freshdirect.common.pricing.Discount;
 import com.freshdirect.common.pricing.EnumDiscountType;
+import com.freshdirect.fdstore.ecoupon.model.ErpCouponTransactionModel;
 import com.freshdirect.framework.util.MathUtil;
 import com.freshdirect.giftcard.ErpAppliedGiftCardModel;
 import com.freshdirect.giftcard.ErpGiftCardModel;
@@ -65,6 +68,8 @@ public abstract class ErpAbstractOrderModel extends ErpTransactionModel {
 	private int dlvPassExtendDays;
 
 	private int currentDlvPassExtendDays;
+	
+	private ErpCouponTransactionModel couponTransModel;
 	
     public List<ErpRecipentModel> getRecipientsList() {
 		return recipientsList;
@@ -143,6 +148,9 @@ public abstract class ErpAbstractOrderModel extends ErpTransactionModel {
 			while (iter.hasNext()) {
 				ErpOrderLineModel orderLine = (ErpOrderLineModel) iter.next();
 				orderLine.setPK(null);
+				if(null !=orderLine.getCouponDiscount()){
+					orderLine.getCouponDiscount().setPK(null);
+				}
 			}
 		}
 		// null out all applied credit primary keys
@@ -459,5 +467,46 @@ public abstract class ErpAbstractOrderModel extends ErpTransactionModel {
 
 	public void setCurrentDlvPassExtendDays(int currentDlvPassExtendDays) {
 		this.currentDlvPassExtendDays = currentDlvPassExtendDays;
+	}
+
+	public ErpCouponTransactionModel getCouponTransModel() {
+		return couponTransModel;
+	}
+
+	public void setCouponTransModel(ErpCouponTransactionModel couponTransModel) {
+		this.couponTransModel = couponTransModel;
+	}
+	
+	public boolean hasCouponDiscounts(){
+		boolean hasCoupons = false;
+		List<ErpOrderLineModel> orderLines =this.getOrderLines();
+		if(null !=orderLines){
+			for (Iterator<ErpOrderLineModel> iterator = orderLines.iterator(); iterator.hasNext();) {
+				ErpOrderLineModel erpOrderLineModel = iterator.next();
+				if(null !=erpOrderLineModel.getCouponDiscount()){
+					hasCoupons=true;
+					break;
+				}
+				
+			}
+			
+		}
+		return hasCoupons;
+	}
+	
+	public Set<ErpOrderLineModel> getAllCouponDiscounts(){
+		Set<ErpOrderLineModel> set = new HashSet<ErpOrderLineModel>();
+		List<ErpOrderLineModel> orderLines =this.getOrderLines();
+		if(null !=orderLines){
+			for (Iterator<ErpOrderLineModel> iterator = orderLines.iterator(); iterator.hasNext();) {
+				ErpOrderLineModel erpOrderLineModel = iterator.next();
+				if(null !=erpOrderLineModel.getCouponDiscount()){
+					set.add(erpOrderLineModel);
+				}
+				
+			}
+			
+		}
+		return set;
 	}
 }

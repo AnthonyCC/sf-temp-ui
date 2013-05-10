@@ -10,6 +10,7 @@ import com.freshdirect.customer.ErpInvoiceLineModel;
 import com.freshdirect.customer.ErpOrderLineModel;
 import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.customer.ErpSaleModel;
+import com.freshdirect.customer.TaxCalculatorUtil;
 import com.freshdirect.framework.util.MathUtil;
 
 public abstract class PaymentStrategy implements Serializable {
@@ -98,7 +99,8 @@ public abstract class PaymentStrategy implements Serializable {
 				perishableBufferAmount = MathUtil.roundDecimal(perishableBufferAmount + thisBuffer);	
 			} 
 			
-			double thisTax = MathUtil.roundDecimal(line.getTaxRate() * price);
+//			double thisTax = MathUtil.roundDecimal(line.getTaxRate() * price);
+			double thisTax = TaxCalculatorUtil.getTaxValue(line);
 			this.tax = MathUtil.roundDecimal(this.tax + thisTax);
 			this.depositValue = MathUtil.roundDecimal(this.depositValue + line.getDepositValue());
 		}

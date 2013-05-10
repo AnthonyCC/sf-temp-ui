@@ -82,6 +82,7 @@
 <tmpl:put name='content' direct='true'>
 	<fd:CmPageView wrapIntoScriptTag="true" currentFolder="<%=currentFolder%>"/>
 	<%
+		/*
 		int ttl=14400; 
 		String keyPrefix="deptLayout_";
 	
@@ -100,10 +101,11 @@
 		if ( "fdi".equals(deptId) || "usq".equals(deptId) ) {
 			useOsCache = false;
 		}
+		*/
 	%>
-	<oscache:cache key='<%= keyPrefix+request.getQueryString() %>' time='<%= useOsCache ? ttl : 0 %>'>
+	<%-- oscache:cache key='<%= keyPrefix+request.getQueryString() %>' time='<%= useOsCache ? ttl : 0 %>' --%>
 	
-	<% try { %>
+	<%-- try { --%>
 		<% if (departmentModel.getAltTemplatePath() != null && departmentModel.getAltTemplatePath().trim().length() > 0) { 
 			LOG.debug("including template path: "+departmentModel.getAltTemplatePath().trim());
 			%><fd:IncludeMedia name="<%= departmentModel.getAltTemplatePath().trim() %>" parameters="<%= params %>" /><%
@@ -111,12 +113,12 @@
 			LOG.debug("template path was NULL or zero length for "+deptId);
 		}
 		%>
-	<% } catch (Exception ex) {
-		LOG.error("error while generating department page body", ex);  		%>
-		<oscache:usecached/>
-  	<% } %>
+	<% /*} catch (Exception ex) {
+		LOG.error("error while generating department page body", ex);*/  		%>
+		<%--oscache:usecached/ --%>
+<%--   	<% } %> --%>
 	
-	</oscache:cache>
+	<%-- /oscache:cache --%>
 		
 </tmpl:put>
 </tmpl:insert>

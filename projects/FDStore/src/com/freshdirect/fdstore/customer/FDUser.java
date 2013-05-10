@@ -25,6 +25,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.log4j.Category;
 
+import com.freshdirect.FDCouponProperties;
 import com.freshdirect.analytics.SessionEvent;
 import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.context.UserContext;
@@ -55,9 +56,11 @@ import com.freshdirect.deliverypass.EnumDlvPassStatus;
 import com.freshdirect.fdstore.EnumCheckoutMode;
 import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDDepotManager;
+import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDReservation;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDRuntimeException;
+import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.ZonePriceListing;
 import com.freshdirect.fdstore.content.ContentFactory;
@@ -69,6 +72,14 @@ import com.freshdirect.fdstore.content.StoreModel;
 import com.freshdirect.fdstore.customer.adapter.FDOrderInfoAdapter;
 import com.freshdirect.fdstore.customer.adapter.PromotionContextAdapter;
 import com.freshdirect.fdstore.deliverypass.FDUserDlvPassInfo;
+import com.freshdirect.fdstore.ecoupon.EnumCouponContext;
+import com.freshdirect.fdstore.ecoupon.EnumCouponDisplayStatus;
+import com.freshdirect.fdstore.ecoupon.EnumCouponStatus;
+import com.freshdirect.fdstore.ecoupon.FDCouponFactory;
+import com.freshdirect.fdstore.ecoupon.FDCouponProductInfo;
+import com.freshdirect.fdstore.ecoupon.FDCustomerCoupon;
+import com.freshdirect.fdstore.ecoupon.model.FDCouponInfo;
+import com.freshdirect.fdstore.ecoupon.model.FDCustomerCouponWallet;
 import com.freshdirect.fdstore.giftcard.FDGiftCardInfoList;
 import com.freshdirect.fdstore.giftcard.FDGiftCardModel;
 import com.freshdirect.fdstore.lists.CclUtils;
@@ -244,11 +255,13 @@ public class FDUser extends ModelSupport implements FDUserI {
 	private boolean ebtAccepted = false;
 	
 	private Set<String> steeringSlotIds = new HashSet<String>();
-	
+
 	private Set<ExternalCampaign> externalPromoCampaigns = new HashSet<ExternalCampaign>();
 
-	private ExternalCampaign externalCampaign;
+	private FDCustomerCouponWallet couponWallet;
 
+	private ExternalCampaign externalCampaign;
+	
 	public String getTsaPromoCode() {
 		return tsaPromoCode;
 	}
@@ -2503,5 +2516,68 @@ public class FDUser extends ModelSupport implements FDUserI {
 	public ExternalCampaign getExternalCampaign() {
 		// TODO Auto-generated method stub
 		return externalCampaign;
+	}	
+	public FDCustomerCouponWallet getCouponWallet() {
+		return couponWallet;
 	}
+
+	public void setCouponWallet(FDCustomerCouponWallet couponWallet) {
+		this.couponWallet = couponWallet;
+	}
+	
+	//Get Coupon Customer based on UPC
+	public FDCustomerCoupon getCustomerCoupon(String upc, EnumCouponContext ctx) {			
+		return FDUserCouponUtil.getCustomerCoupon(this,upc, ctx, couponWallet);
+	}
+	
+	public FDCustomerCoupon getCustomerCoupon(FDProductInfo prodInfo, EnumCouponContext ctx,String catId,String prodId) {		
+		return FDUserCouponUtil.getCustomerCoupon(this,prodInfo, ctx, catId, prodId, couponWallet);
+	}
+
+	public FDCustomerCoupon getCustomerCoupon(FDCartLineI cartLine, EnumCouponContext ctx) {
+		return FDUserCouponUtil.getCustomerCoupon(this,cartLine, ctx, couponWallet);		
+	}
+	//Get Coupon Customer based on CartLine
+	public FDCustomerCoupon getCustomerCoupon(FDCartLineI cartLine, EnumCouponContext ctx,String catId,String prodId) {
+		return FDUserCouponUtil.getCustomerCoupon(this,cartLine, ctx, catId, prodId, couponWallet);
+	}	
+					
+	public void updateClippedCoupon(String couponId){
+		FDUserCouponUtil.updateClippedCoupon(couponId, couponWallet);
+	}
+	
+	public boolean isEligibleForCoupons() throws FDResourceException {
+		boolean isEligible = false;
+		if(FDCouponProperties.isCouponsEnabled() ||( null != identity && this.getFDCustomer().isEligibleForCoupons())){
+			isEligible =true;
+		}
+		return isEligible;
+	}
+	
+	public boolean isCouponsSystemAvailable() throws FDResourceException {
+		boolean isCouponsSystemAvailable = true;
+		if(isEligibleForCoupons() && FDCouponProperties.isCouponsBlackHoleEnabled()){
+			isCouponsSystemAvailable =false;
+		}
+		return isCouponsSystemAvailable;
+	}
+
+	public boolean isCouponEvaluationRequired() {
+		return null !=getCouponWallet()?getCouponWallet().isCouponEvaluationRequired():false;
+	}
+
+	public void setCouponEvaluationRequired(boolean couponEvaluationRequired) {
+		if(null !=getCouponWallet()){
+			getCouponWallet().setCouponEvaluationRequired(couponEvaluationRequired);
+		}
+	}
+	
+	public boolean isRefreshCouponWalletRequired() {
+		return null !=getCouponWallet()?getCouponWallet().isRefreshCouponWalletRequired():false;
+	}
+	public void setRefreshCouponWalletRequired(boolean refreshCouponWalletRequired) {
+		if(null !=getCouponWallet()){
+			getCouponWallet().setRefreshCouponWalletRequired(refreshCouponWalletRequired);
+		}
+	}	
 }

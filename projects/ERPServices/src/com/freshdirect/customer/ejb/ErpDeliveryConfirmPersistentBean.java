@@ -125,7 +125,12 @@ public class ErpDeliveryConfirmPersistentBean extends ErpTransactionPersistentBe
 			ps.close();
 			ps = null;
 		}
-		
+		//Coupon related.
+		if(null !=this.model.getCouponTransModel()){
+			ErpCouponTransactionPersistentBean ctPB = new ErpCouponTransactionPersistentBean(this.model.getCouponTransModel());
+			ctPB.setParentPK(this.getPK());
+			ctPB.create( conn );
+		}
 
 		this.unsetModified();
 		return this.getPK();

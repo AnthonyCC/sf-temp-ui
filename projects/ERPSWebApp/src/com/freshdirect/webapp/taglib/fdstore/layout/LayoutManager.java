@@ -498,6 +498,9 @@ public class LayoutManager extends BodyTagSupport {
 		} else if (layoutType == EnumLayoutType.PRESIDENTS_PICKS.getId()) {
 			s.setIncludeUnavailable(false);			
 			s.setLayoutFileName("/includes/layouts/presidents_picks_layout.jsp");
+		}	else if (layoutType == EnumLayoutType.E_COUPONS.getId()) {
+			s.setIncludeUnavailable(false);			
+			s.setLayoutFileName("/ecoupon.jsp");
 		}
 		
 		if (layoutType == EnumLayoutType.TEMPLATE_LAYOUT.getId()) {				

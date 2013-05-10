@@ -103,6 +103,11 @@
 		<name>quickBuyImage</name>
 		<rtexprvalue>true</rtexprvalue>
 	</attribute>
+	<attribute>
+		<name>coupon</name>
+		<required>false</required>
+		<rtexprvalue>true</rtexprvalue>
+	</attribute>
  </tag>
  <tag>
   <name>SimpleProductImage</name>
@@ -1479,6 +1484,79 @@
 			<required>false</required>
 	  		<rtexprvalue>false</rtexprvalue>
 		</attribute>
-	</tag>	
- 
+	</tag>
+	<tag>
+		<name>FDCoupon</name>
+		<tagclass>com.freshdirect.webapp.taglib.fdstore.display.FDCouponTag</tagclass>
+		<attribute>
+			<name>coupon</name>
+			<required>true</required>
+	  		<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>showClipBox</name>
+			<required>false</required>
+	  		<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>isClipped</name>
+			<required>false</required>
+	  		<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>showCouponImage</name>
+			<required>false</required>
+	  		<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>couponImageUrl</name>
+			<required>false</required>
+	  		<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>showMsg</name>
+			<required>false</required>
+	  		<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>couponMsg</name>
+			<required>false</required>
+	  		<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>showDetailsLink</name>
+			<required>false</required>
+	  		<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>showStatusMsg</name>
+			<required>false</required>
+	  		<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>couponStatusPlaceholderId</name>
+			<required>false</required>
+	  		<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>couponDetailsText</name>
+			<required>false</required>
+	  		<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>couponStatusText</name>
+			<required>false</required>
+	  		<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>contClass</name>
+			<required>false</required>
+	  		<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>pastTense</name>
+			<required>false</required>
+	  		<rtexprvalue>true</rtexprvalue>
+		</attribute>
+ 	</tag>
 </taglib>

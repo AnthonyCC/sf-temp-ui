@@ -7,6 +7,8 @@
 <%@ page import='com.freshdirect.fdstore.*'%>
 <%@ page import="com.freshdirect.framework.webapp.*"%>
 <%@ page import='com.freshdirect.framework.util.*'%>
+<%@ page import='com.freshdirect.fdstore.customer.FDUserI'%>
+<%@ page import="com.freshdirect.fdstore.ecoupon.*" %>
 
 <%@ taglib uri='template' prefix='tmpl'%>
 <%@ taglib uri='logic' prefix='logic'%>
@@ -18,6 +20,8 @@
 final int W_VERTICAL_LAYOUT_PRODUCT_CELL = 145;
 final int W_VERTICAL_LAYOUT_FOLDER_CELL = 145;
 %>
+
+<% FDUserI vl_user = (FDUserI) pageContext.getSession().getAttribute(SessionName.USER); %>
 
 <display:InitLayout/>
 
@@ -118,17 +122,27 @@ final int W_VERTICAL_LAYOUT_FOLDER_CELL = 145;
 				<% } else if ( currentItem instanceof ProductModel ) { 				// ===== PRODUCT =====
 					
 					ProductModel product = (ProductModel)currentItem;
+					ProductImpression pi = new ProductImpression(product);
 					String actionUrl = FDURLUtil.getProductURI( product, trackingCode );
+					FDCustomerCoupon curCoupon = null;
+					if (pi.getSku() != null && pi.getSku().getProductInfo() != null) {
+						curCoupon = vl_user.getCustomerCoupon(pi.getSku().getProductInfo(), EnumCouponContext.PRODUCT,product.getParentId(),product.getContentName());
+					}
+					String productImageClassName = "productImage";
+					if (curCoupon != null) {
+						productImageClassName += " couponLogo";
+					}
 					%>
 				
 					<td	width="<%= verticalPattern.isLabeled() ? verticalPattern.getFolderCellWidth() : verticalPattern.getProductCellWidth() %>" style="padding-bottom: 8px;">
 						
 					<font class="catPageProdNameUnderImg">
 						
-						<display:ProductImage product="<%= product %>" showRolloverImage="true" action="<%= actionUrl %>"/><br/>
+						<display:ProductImage product="<%= product %>" showRolloverImage="true" action="<%= actionUrl %>" className="<%=productImageClassName %>" coupon="<%= curCoupon %>"/><br/>
 						<display:ProductRating product="<%= product %>" action="<%= actionUrl %>"/>
 						<display:ProductName product="<%= product %>" action="<%= actionUrl %>"/>
-						<display:ProductPrice impression="<%= new ProductImpression(product) %>" showDescription="false"/>
+						<display:ProductPrice impression="<%= pi %>" showDescription="false"/>
+						<display:FDCoupon coupon="<%= curCoupon %>" contClass="fdCoupon_layVert"></display:FDCoupon>
 						
 					</font>
 					</td> 

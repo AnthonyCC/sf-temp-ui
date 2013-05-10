@@ -12,6 +12,7 @@
 <%@ page import='com.freshdirect.fdstore.customer.*' %>
 <%@ page import="com.freshdirect.framework.webapp.*"%>
 <%@ page import='com.freshdirect.framework.util.*' %>
+<%@ page import="com.freshdirect.fdstore.ecoupon.*" %>
 
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
@@ -100,8 +101,25 @@ final int W_FEATURED_PADDING = 14;
 
 		List products = recommendations.getProducts();
 		int ord = 1;
-		%>
 		
+		/* check if any products have a coupon */
+		boolean productsHaveCoupons = false;
+		ArrayList<FDCustomerCoupon> ref_coupons = new ArrayList<FDCustomerCoupon>();
+		
+		for (Object prod : products) {
+			ProductModel curProd = (ProductModel) prod;
+			ProductImpression pi = new ProductImpression( curProd );
+
+        	FDCustomerCoupon curCoupon = null;
+        	if (pi.getSku() != null && pi.getSku().getProductInfo() != null) {
+        		curCoupon = user.getCustomerCoupon(pi.getSku().getProductInfo(), EnumCouponContext.PRODUCT,curProd.getParentId(),curProd.getContentName());
+        	}
+        	
+        	if (curCoupon != null) { productsHaveCoupons = true; }
+        	ref_coupons.add( curCoupon );
+		}
+		
+		%>
 		<table cellspacing="0" cellpadding="1" border="0" width="<%= W_FEATURED_ALL %>">
 		
 			<tr valign="top" align="center">
@@ -111,21 +129,23 @@ final int W_FEATURED_PADDING = 14;
 			</tr>
 			
 			<tr valign="top" align="CENTER">
-				<logic:iterate id='contentNode' collection="<%= products %>" type="com.freshdirect.fdstore.content.ProductModel"><%
+				<logic:iterate id='contentNode' collection="<%= products %>" type="com.freshdirect.fdstore.content.ProductModel" indexId="index"><%
 				
 					ProductModel productNode = contentNode;
+					ProductImpression pi = new ProductImpression( productNode );
 					ProductLabeling pl = new ProductLabeling(user, productNode, recommendations.getVariant().getHideBursts());
-					
 					String actionURI = FDURLUtil.getProductURI(productNode, recommendations.getVariant().getId(), "feat", pl.getTrackingCode(), ord, recommendations.getImpressionId(productNode));
+					String prodImageClassName = (productsHaveCoupons) ? "couponLogo" : null;
 					
 					%><%-- display a product --%>
 					
 					<td width="<%= tdwidth %>">
 						<div class="smartstore-carousel-item">
-							<display:ProductImage product="<%= productNode %>" action="<%= actionURI %>" showRolloverImage="true" hideBursts="<%= recommendations.getVariant().getHideBursts() %>"/>
+							<display:ProductImage product="<%= productNode %>" action="<%= actionURI %>" showRolloverImage="true" hideBursts="<%= recommendations.getVariant().getHideBursts() %>"  coupon="<%= ref_coupons.get(index) %>" className="<%= prodImageClassName %>" />
 							<display:ProductRating product="<%= productNode %>" action="<%= actionURI %>"/>
 							<display:ProductName product="<%= productNode %>" action="<%= CmMarketingLinkUtil.getSmartStoreLink(actionURI, recommendations)%>"/>
-							<div class="favoritePrice"><display:ProductPrice impression="<%= new ProductImpression(productNode) %>" showDescription="false"/></div>
+							<div class="favoritePrice"><display:ProductPrice impression="<%= pi %>" showDescription="false"/></div>
+							<display:FDCoupon coupon="<%= ref_coupons.get(index) %>" contClass="fdCoupon_layFeatAll"></display:FDCoupon>
 						</div>
 					</td>
 					

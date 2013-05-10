@@ -21,11 +21,13 @@
 <%@ page import="com.freshdirect.webapp.util.RestrictionUtil" %>
 <%@ page import='com.freshdirect.fdstore.promotion.EnumOfferType' %>
 <%@ page import='com.freshdirect.fdstore.atp.FDLimitedAvailabilityInfo';%>
+<%@ page import="com.freshdirect.fdstore.ecoupon.*"%>
 
 <%@ page import='java.text.*, java.util.*' %>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
+<%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %>
 <tmpl:insert template='/template/top_nav.jsp'>
 
 <tmpl:put name='title' direct='true'>Checkout > Review Items</tmpl:put>
@@ -232,8 +234,12 @@
 			</div>
 		<% /* Gift Card Additions */ %>
 
+
+			
 		<%--  using standard view  --%>
 			<table width="90%" cellspacing="0" cellpadding="0" align="center" class="order" border="0">
+			
+			<tr><td colspan="10"><span id="fdCoupon_cartAlert" style="display: none;">Please see messages below.</span></td></tr>
 			
 			<form name="viewcart" method="post" style="margin: 0px; padding: 0px;">
 				<input type="hidden" name="cartLineRemove" value="-1" />
@@ -456,9 +462,16 @@
 					}
 			%>
 					<% if (!displayLimitedAvailability && displayShortTermUnavailability && earliestAvailability != null && !(cartLine instanceof FDModifyCartLineI)) { %><br>&nbsp;&nbsp;<span class="text10rbold">Earliest Delivery <%=earliestAvailability%></span><%  }%>
+						<br />
+					
+						<%
+							EnumCouponContext couponContext = EnumCouponContext.VIEWCART;
+							
+						%>
+						<display:FDCoupon coupon="<%= user.getCustomerCoupon(cartLine, couponContext) %>" contClass="fdCoupon_cartlineViewCart"></display:FDCoupon>
 					</div>
 					</td>
-							<td align="right"><span class="<%= (cartLine.getDiscount() != null) ? "text10rbold" : "text10bold" %>">(<%= cartLine.getUnitPrice() %>)</span> </td>
+							<td align="right"><span class="<%= (cartLine.getDiscount() != null || cartLine.getCouponDiscount()!=null) ? "text10rbold" : "text10bold" %>">(<%= cartLine.getUnitPrice() %>)</span> </td>
 							
 							<% if (makegood) { %>
 								<td align="right">
@@ -472,7 +485,7 @@
 								</td>
 							<% } %>
 
-							<td align="right"><span class="<%= (cartLine.getDiscount() != null) ? "text10rbold" : "text10bold" %>"><%= JspMethods.formatPrice(cartLine.getPrice()) %></span></td>
+							<td align="right"><span class="<%= (cartLine.getDiscount() != null || cartLine.getCouponDiscount()!=null) ? "text10rbold" : "text10bold" %>"><%= JspMethods.formatPrice(cartLine.getPrice()) %></span></td>
 							<td><%= cartLine.isEstimatedPrice() ? "*" : "" %><strong><%=cartLine.hasTax() ? "&nbsp;T" : ""%></strong></td>
 							<td><strong><%= cartLine.hasScaledPricing() || ( groupDiscountMsg!=null && !"".equals(groupDiscountMsg) ) ? "&nbsp;S" : "" %><%= cartLine.hasDepositValue() ? "&nbsp;D" : "" %></strong></td>
 

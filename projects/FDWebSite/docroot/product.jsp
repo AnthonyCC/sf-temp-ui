@@ -12,6 +12,7 @@
 <%@ page import='com.freshdirect.fdstore.promotion.*'%>
 <%@ page import='com.freshdirect.fdstore.customer.*' %>
 <%@ page import='com.freshdirect.content.nutrition.*'%>
+<%@ page import="com.freshdirect.fdstore.ecoupon.*"%>
 <%@ page import='java.net.URLEncoder'%>
 <%@page import="java.util.Locale"%>
 
@@ -33,6 +34,8 @@ if (productNode==null) {
 } else if (productNode.isDiscontinued()) {
     throw new JspException("Product Discontinued :"+request.getParameter("productId"));
 }
+
+
 
 
 %>
@@ -165,6 +168,12 @@ if (EnumTemplateType.WINE.equals( productNode.getTemplateType() )) {
 	request.setAttribute("productNode", productNode);
 	request.setAttribute("cartMode",cartMode);
 	request.setAttribute("templateLine",templateLine);
+	FDCustomerCoupon custCoupon = null;
+	if (productNode != null && productNode.getDefaultSku() != null && productNode.getDefaultSku().getProductInfo() != null) {
+		custCoupon = user.getCustomerCoupon(productNode.getDefaultSku().getProductInfo(), EnumCouponContext.PRODUCT,productNode.getParentId(),productNode.getContentName());
+	}
+	request.setAttribute("custCoupon", custCoupon); //set coupon in to request for includes/tags to use
+
 %>
 <%@ include file="/includes/product/cutoff_notice.jspf" %>
 <%@ include file="/includes/product/i_dayofweek_notice.jspf" %>

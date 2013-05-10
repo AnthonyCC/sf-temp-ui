@@ -1,4 +1,7 @@
-<%
+<%@ page import="com.freshdirect.fdstore.ecoupon.*" %><%@ 
+page import='com.freshdirect.webapp.taglib.fdstore.*'%><%@ 
+page import='com.freshdirect.fdstore.customer.FDUserI'%><%@ 
+taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %><%
 /*
 	Host page must define:
     
@@ -7,6 +10,9 @@
     @param groupByDepartments if grouping is requested by each department
 
 */
+
+FDUserI cConfirm_user = (FDUserI) pageContext.getSession().getAttribute(SessionName.USER);
+
 String imgWidth;
 String tableWidth;
 
@@ -177,7 +183,6 @@ lastDepartmentName = null;
 			<TD WIDTH="40">
 				<%=quantityFormat.format(torderLines.getQuantity())%>
 				<%=torderLines.getLabel()%>
-
 			</TD>
 			<TD WIDTH="5"><BR></TD>
             <%
@@ -190,6 +195,8 @@ lastDepartmentName = null;
                 if(earliestAvailability != null ){%> 
                     <br><font class="text10rbold">Earliest Delivery <%=earliestAvailability%></font>
                 <%}%>
+				<br /><display:FDCoupon coupon="<%= cConfirm_user.getCustomerCoupon(torderLines, EnumCouponContext.VIEWCART) %>" contClass="fdCoupon_cartConfMulti"></display:FDCoupon>
+                
             </TD>
 			<TD WIDTH="10"><BR></TD>
 			<TD WIDTH="45" ALIGN="RIGHT"><%=currencyFormatter.format(torderLines.getPrice())%></TD>

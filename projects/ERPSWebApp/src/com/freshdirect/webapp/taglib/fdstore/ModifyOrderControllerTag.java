@@ -40,6 +40,7 @@ import com.freshdirect.customer.ErpCustomerModel;
 import com.freshdirect.customer.ErpFraudException;
 import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.customer.ErpPaymentMethodModel;
+import com.freshdirect.customer.ErpSaleModel;
 import com.freshdirect.customer.ErpTransactionException;
 import com.freshdirect.dataloader.subscriptions.DeliveryPassRenewalCron;
 import com.freshdirect.delivery.DlvZoneInfoModel;
@@ -200,14 +201,14 @@ public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.B
 
 		} else { 
 			if ( CANCEL_MODIFY_ACTION.equalsIgnoreCase(this.action) ) {
-				LOGGER.debug("GET + cancelModify");
-				// we got a GET, not a POST, but that's fine.. :)
-				this.cancelModifyOrder(request, results);
-				actionPerformed = true;
+			LOGGER.debug("GET + cancelModify");
+			// we got a GET, not a POST, but that's fine.. :)
+			this.cancelModifyOrder(request, results);
+			actionPerformed = true;
 			} else if ( MODIFY_ACTION.equalsIgnoreCase(this.action) ) {
 				this.modifyOrder(request, results);
 				actionPerformed = true;
-			}
+		}
 		}
 
 		//
@@ -318,6 +319,8 @@ public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.B
 			session.removeAttribute(DlvPassConstants.DLV_PASS_SESSION_ID);
 			//Clear All Applied promotions
 			user.clearAllAppliedPromos();
+			//Refresh customer's coupon wallet.
+			FDCustomerCouponUtil.getCustomerCoupons(session);
 
 			//if it's make good order, reject complaints 
 			if(/*EnumPaymentType.MAKE_GOOD.equals(origOrder.getPaymentMethod().getPaymentType())*/ origOrder.isMakeGood()){
@@ -462,6 +465,10 @@ public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.B
 		// recalculate promotion
 		currentUser.invalidateCache();
 		currentUser.updateUserState( );
+		//Refresh customer's coupon wallet.
+		FDCustomerCouponUtil.getCustomerCoupons(session);
+		FDCustomerCouponUtil.evaluateCartAndCoupons(session);
+
 		session.setAttribute( SessionName.USER, currentUser );
         //The previous recommendations of the current user need to be removed.
         session.removeAttribute(SessionName.SMART_STORE_PREV_RECOMMENDATIONS);
@@ -642,7 +649,12 @@ public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.B
 					modCart.setZoneInfo(zoneInfo);
 					modCart.refreshAll(true);
 					currentUser.updateUserState();
-
+					ErpSaleModel originalSale =modCart.getOriginalOrder().getSale();
+					boolean hasSomeCaptures= (null !=originalSale.getCaptures() && originalSale.getCaptures().size() >0) 
+							|| (null!=originalSale.getValidGCPostAuthorizations() && originalSale.getValidGCPostAuthorizations().size() >0);
+					if(!hasSomeCaptures){
+						FDCustomerCouponUtil.evaluateCartAndCoupons(session);
+					}
 					//FDCustomerManager.doNewAuthorization(currentUser.getIdentity(), this.orderId, modCart, paymentMethod);
 
 		        	modCart.setPaymentMethod(paymentMethod);
@@ -656,7 +668,7 @@ public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.B
 						//Otherwise store the applied list.
 						appliedPromos = user.getPromotionEligibility().getAppliedPromotionCodes();; 
 					}
-					FDCustomerManager.modifyOrder(AccountActivityUtil.getActionInfo(session), modCart, appliedPromos, false,cra, user.getDeliveryPassStatus());
+					FDCustomerManager.modifyOrder(AccountActivityUtil.getActionInfo(session), modCart, appliedPromos, false,cra, user.getDeliveryPassStatus(),hasSomeCaptures);
 
 				}
 			} catch (ErpFraudException ex) {
@@ -766,7 +778,7 @@ public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.B
 						appliedPromos = user.getPromotionEligibility().getAppliedPromotionCodes();; 
 					}
 					modCart.refreshAll(true);
-					FDCustomerManager.modifyOrder(AccountActivityUtil.getActionInfo(session), modCart, appliedPromos, false,cra, user.getDeliveryPassStatus());
+					FDCustomerManager.modifyOrder(AccountActivityUtil.getActionInfo(session), modCart, appliedPromos, false,cra, user.getDeliveryPassStatus(),false);
 
 				}
 			} catch (ErpFraudException ex) {

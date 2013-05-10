@@ -72,6 +72,7 @@ import com.freshdirect.webapp.taglib.coremetrics.CmConversionEventTag;
 import com.freshdirect.webapp.taglib.coremetrics.CmShop9Tag;
 import com.freshdirect.webapp.taglib.crm.CrmSession;
 import com.freshdirect.webapp.taglib.fdstore.AccountActivityUtil;
+import com.freshdirect.webapp.taglib.fdstore.FDCustomerCouponUtil;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
 import com.freshdirect.webapp.taglib.fdstore.PaymentMethodUtil;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
@@ -615,7 +616,7 @@ public class SubmitOrderAction extends WebActionSupport {
 					info,
 					modCart,
 					appliedPromos,
-					sendEmail, cra, status
+					sendEmail, cra, status,false
 				);
 				modifying = true;
 	            //The previous recommendations of the current user need to be removed.
@@ -705,7 +706,8 @@ public class SubmitOrderAction extends WebActionSupport {
 			user.invalidateGiftCards();
 			//Clear All Applied promotions
 			user.clearAllAppliedPromos();
-			
+			//Refresh customer's coupon wallet.
+			FDCustomerCouponUtil.getCustomerCoupons(session);
 			FDCustomerManager.storeUser(fdUser);
 			session.setAttribute(SessionName.USER, user);
 			

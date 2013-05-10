@@ -85,6 +85,13 @@ public class FilteringNavigator {
 		saveState();
 	}
 	
+	public FilteringNavigator(Map<EnumFilteringValue, List<Object>> filterValues, int defaultPageSize) {		
+		this.defaultPageSize = defaultPageSize;
+		init(new HashMap<String, String>());
+		this.filterValues = filterValues;
+		saveState();
+	}
+	
 	public FilteringNavigator() {
 	}
 

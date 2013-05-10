@@ -2,6 +2,7 @@
 <%@ page import="java.util.Collection"%>
 <%@ page import="java.util.ArrayList"%>
 <%@ page import="java.util.Arrays"%>
+<%@ page import='java.util.HashMap' %>
 
 <%@ page import='com.freshdirect.fdstore.content.ContentFactory' %>
 <%@ page import='com.freshdirect.fdstore.content.ContentNodeModel' %>
@@ -16,8 +17,14 @@
 
 <%@ page import='org.apache.commons.collections.Predicate' %>
 
+<%@ page import='com.freshdirect.fdstore.customer.FDUserI'%>
+<%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
+<%@ page import="com.freshdirect.fdstore.ecoupon.*" %>
+
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %>
+
+<% FDUserI feat_user = (FDUserI) pageContext.getSession().getAttribute(SessionName.USER); %>
 
 <% //expanded page dimensions
 final int W_FEATURED_CATEGORY_IS_DEPARTMENT = 715;
@@ -133,7 +140,11 @@ final int[] delPatternFallback = {2, 7, 6};
   int noOfItems = 0;
   int[] pattern = {};
   int[] gap = {};
-  if (specialDept) {
+  
+	/* allow pattern override */
+	String patOver = request.getParameter("patOver");
+	
+  if (specialDept || patOver != null) {
 		List<CategoryModel> featured = new ArrayList<CategoryModel>();
 		List<CategoryModel> nonFeatured = new ArrayList<CategoryModel>();
 		
@@ -154,20 +165,21 @@ final int[] delPatternFallback = {2, 7, 6};
 
 		categories = new ArrayList<CategoryModel>(featured);
 		categories.addAll(nonFeatured);
+		
 
-		if ("fru".equals(departmentId)) {
+		if ( "fru".equals(departmentId) || "fru".equalsIgnoreCase(patOver) ) {
 			pattern = fruPattern;
 			gap = fruGap;
-		} else if ("sea".equals(departmentId)) {
+		} else if ( "sea".equals(departmentId) || "sea".equalsIgnoreCase(patOver) ) {
 			pattern = seaPattern;
 			gap = seaGap;
-		} else if ("veg".equals(departmentId)) {
+		} else if ( "veg".equals(departmentId) || "veg".equalsIgnoreCase(patOver) ) {
 			pattern = vegPattern;
 			gap = vegGap;
-		} else if ("del".equals(departmentId) && categories.size()==14) {
+		} else if ( ("del".equals(departmentId) && categories.size()==14) || "del".equalsIgnoreCase(patOver) ) {
 			pattern = delPattern;
 			gap = delGap;
-		} else if ("del".equals(departmentId) && categories.size()==15) {
+		} else if ( ("del".equals(departmentId) && categories.size()==15) || "delFb".equalsIgnoreCase(patOver) ) {
 			pattern = delPatternFallback;
 			gap = delGap;
 		}
@@ -221,6 +233,35 @@ final int[] delPatternFallback = {2, 7, 6};
 		if ( rows.isEmpty() ) 
 			continue;
 		
+		/* loop through and create coupon info */
+		List<ArrayList<FDCustomerCoupon>> ref_coupons = new ArrayList<ArrayList<FDCustomerCoupon>>(); //list of rows
+		ArrayList<FDCustomerCoupon> ref_coupons_row = new ArrayList<FDCustomerCoupon>(); //each row of prods
+		HashMap<Integer, Boolean> containsCoupons = new HashMap<Integer, Boolean>(); //if row has coupon
+		
+		for( int i = 0; i < rows.size(); ++i ) {
+			List row = (List)rows.get(i);
+	        containsCoupons.put(i, false);
+	        
+			for( int j=0; j < row.size(); ++j ) {
+				ContentNodeModel contentNode = (ContentNodeModel)layout.getElement(i,j);
+				FDCustomerCoupon curCoupon = null;
+				
+				if ( contentNode instanceof ProductModel ) {
+					ProductImpression featCat_pi = new ProductImpression((ProductModel)contentNode);
+					if (featCat_pi.getSku() != null && featCat_pi.getSku().getProductInfo() != null) {
+						curCoupon = feat_user.getCustomerCoupon((new ProductImpression((ProductModel)contentNode)).getSku().getProductInfo(), EnumCouponContext.PRODUCT,((ProductModel)contentNode).getParentId(),((ProductModel)contentNode).getContentName());
+					}
+					
+					if (curCoupon != null) {
+				        containsCoupons.put(i, true);
+					}
+				}
+				ref_coupons_row.add( curCoupon );
+			}
+			
+			ref_coupons.add( ref_coupons_row );
+		}
+		
 		for( int i = 0; i < rows.size(); ++i ) {
 			
 			List row = (List)rows.get(i);
@@ -239,6 +280,7 @@ final int[] delPatternFallback = {2, 7, 6};
 						
 					for( int j=0; j < row.size(); ++j ) { // for each image
 						ContentNodeModel contentNode = (ContentNodeModel)layout.getElement(i,j);
+						String prodImageClassName = (containsCoupons.get(i)) ? "couponLogo" : null;
 		
 						if ( separatorFilter.evaluate(contentNode) ) {
 							CategoryModel cat = (CategoryModel)contentNode;
@@ -262,7 +304,7 @@ final int[] delPatternFallback = {2, 7, 6};
 						%>
 						<td align="center" style="padding-top: 10px">
 							<% if ( contentNode instanceof ProductModel ) { %>
-								<display:ProductImage product="<%= (ProductModel)contentNode %>" action="<%= actionUrl %>" showRolloverImage="true"/>
+								<display:ProductImage product="<%= (ProductModel)contentNode %>" action="<%= actionUrl %>" showRolloverImage="true" coupon="<%= ref_coupons.get(i).get(j) %>" className="<%= prodImageClassName %>"/>
 							<% } else if ( contentNode instanceof CategoryModel ) { %>
 								<display:CategoryImage category="<%= (CategoryModel)contentNode %>" action="<%= actionUrl %>"/>
 							<% } %>
@@ -288,11 +330,14 @@ final int[] delPatternFallback = {2, 7, 6};
             }
 					%>
 						<td align="center" style="padding-bottom: 10px">
-							<% if ( contentNode instanceof ProductModel ) { %>
+							<% if ( contentNode instanceof ProductModel ) {
+								ProductImpression pi = new ProductImpression( (ProductModel)contentNode );
+							%>
 							
 								<display:ProductRating product="<%= (ProductModel)contentNode %>" action="<%= actionUrl %>"/>
 								<display:ProductName product="<%= (ProductModel)contentNode %>" action="<%= actionUrl %>"/>								
-								<display:ProductPrice impression="<%= new ProductImpression( (ProductModel)contentNode ) %>" showDescription="false"/>
+								<display:ProductPrice impression="<%= pi %>" showDescription="false"/>
+								<display:FDCoupon coupon="<%= ref_coupons.get(i).get(j) %>" contClass="fdCoupon_layFeatCat"></display:FDCoupon>
 								
 							<% } else if ( contentNode instanceof CategoryModel ) { %>
 							

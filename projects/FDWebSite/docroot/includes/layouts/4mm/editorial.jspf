@@ -6,6 +6,7 @@
 <%@page import="java.util.List"%>
 <%@page import="com.freshdirect.fdstore.content.ContentFactory"%>
 <%@page import="com.freshdirect.fdstore.content.CategoryModel"%>
+<%@ page import="com.freshdirect.fdstore.ecoupon.*"%>
 
 <%@ taglib uri="/WEB-INF/shared/tld/freshdirect.tld" prefix='fd'%>
 <%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display'%>
@@ -41,13 +42,21 @@ if ( category != null ) {
 			</script>
 			<display:Carousel id="cat2_carousel" carouselId="cat2_carousel" width="<%=W_4MM_EDITORIAL_TOTAL%>" numItems="5" showCategories="false" itemsToShow="<%= products %>" trackingCode="edt-4mm" maxItems="12" eventHandlersObj="editorial_events">
 				<display:GetContentNodeWebId id="webId" product="<%= currentItem %>" clientSafe="<%= true %>">
+					<% 
+						ProductModel pmCoup = (ProductModel)currentItem;
+						FDCustomerCoupon curCoupon = null;
+						if (pmCoup.getDefaultSku() != null && pmCoup.getDefaultSku().getProductInfo() != null) {
+							curCoupon = user.getCustomerCoupon(pmCoup.getDefaultSku().getProductInfo(), EnumCouponContext.PRODUCT,pmCoup.getParentId(),pmCoup.getContentName());
+						}
+					%>
 					<display:ProductImage product="<%= (ProductModel)currentItem %>" showRolloverImage="true" action="<%= actionUrl %>" useAlternateImage="true"
-							className="productImage" height="90" enableQuickBuy="true" webId="<%= webId %>"/>
+							className="productImage" height="90" enableQuickBuy="true" webId="<%= webId %>" coupon="<%= curCoupon %>" />
 					<display:ProductRating product="<%= (ProductModel)currentItem %>" action="<%= actionUrl %>"/>
 					<div class="productname">
 						<display:ProductName product="<%= (ProductModel)currentItem %>" action="<%= actionUrl %>" showBrandName="true" />
 					</div>
 					<display:ProductPrice impression="<%= new ProductImpression((ProductModel)currentItem) %>" showDescription="false"/>
+					<display:FDCoupon coupon="<%= curCoupon %>" contClass="fdCoupon_4mmEdit"></display:FDCoupon>
 				</display:GetContentNodeWebId>
 			</display:Carousel>
 		</div>

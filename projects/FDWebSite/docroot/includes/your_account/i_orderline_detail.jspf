@@ -1,5 +1,4 @@
-
-<%@page import="com.freshdirect.customer.ErpClientCode"%><logic:iterate id="cartLine" collection="<%= view.getOrderLines() %>" type="com.freshdirect.fdstore.customer.FDCartLineI">
+<%@page import="com.freshdirect.customer.ErpClientCode"%><logic:iterate id="cartLine" collection="<%= view.getOrderLines() %>" type="com.freshdirect.fdstore.customer.FDCartLineI"><%@ page import="com.freshdirect.fdstore.ecoupon.EnumCouponContext"%><%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %>
 <%
 ErpInvoiceLineI invoiceLine = null;
 StringBuffer quantity = new StringBuffer();
@@ -59,9 +58,11 @@ if (lastDept==null || !lastDept.equalsIgnoreCase(cartLine.getDepartmentDesc())) 
 	<td><%=quantity.toString()%><%=(cart.hasSettledReturn() && cartLine.hasReturnLine())? "<span style='color:#cc0000'>/"+cartLine.getReturnedQuantity()+"</span>":""%><%=" "+cartLine.getUnitsOfMeasure()%> <%=cartLine.getLabel()%><%=cartLine.hasRestockingFee()?"**":""%></td>
 	<td align="left"><div style="margin-left:8px; text-indent:-7px;"><font class="text10bold"><%= cartLine.getDescription() %></font>
 		<% if (cartLine.getConfigurationDesc()!=null && !"".equals(cartLine.getConfigurationDesc().trim())) { %>(<%= cartLine.getConfigurationDesc() %>)<% } %>
-		<% if ( discountMsg!=null && !"".equals(discountMsg) ) { %><br />&nbsp;&nbsp;<span class="text10bold"><%= discountMsg %></span><% } %><% if ( groupDiscountMsg!=null && !"".equals(groupDiscountMsg) ) { %><br />&nbsp;&nbsp;<span class="text10bold"><%= groupDiscountMsg %></span><% } %></div><img src="/media_stat/images/layout/clear.gif" width="1" height="3"><br></td>
+		<% if ( discountMsg!=null && !"".equals(discountMsg) ) { %><br />&nbsp;&nbsp;<span class="text10bold"><%= discountMsg %></span><% } %><% if ( groupDiscountMsg!=null && !"".equals(groupDiscountMsg) ) { %><br />&nbsp;&nbsp;<span class="text10bold"><%= groupDiscountMsg %></span><% } %></div><img src="/media_stat/images/layout/clear.gif" width="1" height="3"><br>
+		<display:FDCoupon coupon="<%= user.getCustomerCoupon(cartLine, EnumCouponContext.VIEWORDER) %>" contClass="fdCoupon_cartlineViewOrder" pastTense="true"></display:FDCoupon>
+	</td>
 	<td><%if(cartLine.hasInvoiceLine() && cartLine.isPricedByLb()){%><%=invoiceLine.getWeight()%>&nbsp;lb <%}%></td>
-    <% if(cartLine.getDiscount() != null) { %>
+    <% if(cartLine.getDiscount() != null || cartLine.getCouponDiscount()!=null) { %>
         <td><font color="#FF0000"><%=cartLine.getUnitPrice()%></font></td>
         <td><%= ((cartLine.hasInvoiceLine() && invoiceLine.getCustomizationPrice()>0) ? currencyFormatter.format(invoiceLine.getCustomizationPrice()) : "&nbsp;") %></td>
         <td align="right" class="text10bold"><font color="#FF0000"><b><%= (cartLine.hasInvoiceLine()) ? currencyFormatter.format(invoiceLine.getPrice()) : currencyFormatter.format(cartLine.getPrice()) %></b></font></td>

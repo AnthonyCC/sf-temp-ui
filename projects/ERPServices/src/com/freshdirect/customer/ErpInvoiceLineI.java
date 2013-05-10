@@ -20,5 +20,5 @@ public interface ErpInvoiceLineI extends Serializable {
 	
 	public double getActualDiscountAmount();
 	
-
+	public double getCouponDiscountAmount() ;
 }

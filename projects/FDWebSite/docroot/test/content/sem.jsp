@@ -1,5 +1,5 @@
 <%@ page import='com.freshdirect.fdstore.FDStoreProperties, java.util.*, com.freshdirect.framework.util.NVL, com.freshdirect.fdstore.sempixel.FDSemPixelCache,
-com.freshdirect.fdstore.sempixel.SemPixelModel, java.net.URL' %><%@ taglib uri='freshdirect' prefix='fd' %>
+com.freshdirect.fdstore.sempixel.SemPixelModel, java.net.URL, com.freshdirect.FDCouponProperties' %><%@ taglib uri='freshdirect' prefix='fd' %>
 <% String semPixelNames = NVL.apply(request.getParameter("pixelNames"), ""); %>
 <% String semPixelRemoves = NVL.apply(request.getParameter("removePixels"), ""); %>
 <fd:CheckLoginStatus pixelNames="<%= semPixelNames %>" />
@@ -35,6 +35,7 @@ com.freshdirect.fdstore.sempixel.SemPixelModel, java.net.URL' %><%@ taglib uri='
 <%
 	//force refresh property file
 	FDStoreProperties.forceRefresh();
+	FDCouponProperties.forceRefresh();
 
 	out.print("<span class=\"pageTitle\">SEM Pixel Test Page</span>");
 

@@ -17,7 +17,8 @@
 <%@ page import="com.freshdirect.webapp.taglib.fdstore.SessionName"%>
 <%@ page import="com.freshdirect.webapp.util.CCFormatter"%>
 <%@ page import="com.freshdirect.webapp.util.JspLogger" %>
-<%@ page import="com.freshdirect.webapp.util.ProductSkuImpression" %> 
+<%@ page import="com.freshdirect.webapp.util.ProductSkuImpression" %>
+<%@ page import="com.freshdirect.fdstore.ecoupon.*" %> 
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %>
@@ -269,6 +270,13 @@ ADD</a><% } else { %>&nbsp;<% } %></TD>
 					</td>
 					<td>&nbsp;<a href="<%=prodPageLink%>" class="product<%= (isAvailable) ? "" : "unavailable" %>"><%= productNode.getFullName() %></a> <%= configuredProd.getConfigurationDesc() != null ? "("+ configuredProd.getConfigurationDesc() +")":"" %>					
 					<display:ProductPrice impression="<%= impression %>" showRegularPrice="false" showScalePricing="true" showWasPrice="false" showDescription="false" />
+					<% 
+						FDCustomerCoupon curCoupon = null;
+						if (impression.getSku() != null && impression.getSku().getProductInfo() != null) {
+							curCoupon = searchUser.getCustomerCoupon(impression.getSku().getProductInfo(), EnumCouponContext.PRODUCT,productNode.getParentId(),productNode.getContentName());	
+						}
+					%>
+					<display:FDCoupon coupon="<%= curCoupon %>" contClass="fdCoupon_crmSearchResults"></display:FDCoupon>
 					</td></tr></table>
 					</TD>
 <fd:FDProductInfo id="productInfo" skuCode="<%= configSku %>"> 

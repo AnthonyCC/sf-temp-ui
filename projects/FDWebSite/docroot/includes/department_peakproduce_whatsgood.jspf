@@ -341,11 +341,22 @@
 					String prodNameAttribute = JspMethods.getProductNameToUse(pm);
 					DisplayObject displayObj = JspMethods.loadLayoutDisplayStrings(response,catId,pm,prodNameAttribute,false);
 					int adjustedImgWidth = displayObj.getImageWidthAsInt()+6+10;
-					String actionURI = FDURLUtil.getProductURI( pm, trkCode );			
+					String actionURI = FDURLUtil.getProductURI( pm, trkCode );
+
+					//product image coupon
+					FDCustomerCoupon curProdImgCoupon = null;
+
+					if ( pm.getDefaultSku() != null && pm.getDefaultSku().getProductInfo() != null ) {
+						curProdImgCoupon = user.getCustomerCoupon(pm.getDefaultSku().getProductInfo(), EnumCouponContext.PRODUCT,pm.getParentId(),pm.getContentName());
+					}
+					String productImageClassName = "productImage";
+					if (curProdImgCoupon != null) {
+						productImageClassName += " couponLogo";
+					}
 				%>
 
 					<td style="padding-left:5px; padding-right:5px;">
-						<display:ProductImage product="<%= pm %>" showRolloverImage="false" action="<%= actionURI %>" />
+						<display:ProductImage product="<%= pm %>" showRolloverImage="false" action="<%= actionURI %>" className="<%= productImageClassName %>" coupon="<%= curProdImgCoupon %>" />
 					</td>
 				
 				</logic:iterate>
@@ -368,16 +379,25 @@
 
 					<td  align="center" style="padding-left:5px; padding-right:5px;padding-bottom:10px;">
 						<div class="WG_deals">
+							<%
+								FDCustomerCoupon curCoupon = null;
+							%>
 							<% if (impressions.get(idx) instanceof TransactionalProductImpression && isTransactionalRow) { %>
 								<fd:TxProductControl txNumber="<%= txCount %>" namespace="<%= TX_JS_NAMESPACE %>" impression="<%= (TransactionalProductImpression) impressions.get(idx) %>"/>
 								
 								<display:ProductRating product="<%= pm %>" action="<%= actionURI %>" />
 								<display:ProductName product="<%= pm %>" action="<%= actionURI %>" showNew="true" />
 								<display:ProductPrice impression="<%= (TransactionalProductImpression) impressions.get(idx) %>" showDescription="<%= showDescrips %>" />
-								<!-- fd:IsAlcoholic skuCode="%=((TransactionalProductImpression) impressions.get(idx)).getSku().getSkuCode()%>" -->
 									<fd:PopupHandler id="<%= TX_FORM_NAME %>" tagCounter="<%= txCount%>" skuCode="<%=((TransactionalProductImpression) impressions.get(idx)).getSku().getSkuCode()%>" hasPendingOrder='<%= (Boolean)pageContext.getAttribute("hasPendingOrder")%>'/>
-									<%--input type="hidden" name='<%="alcoholic_" + txCount %>' id='<%="alcoholic_" + txCount %>' value='<%="quantity_" + txCount %>'/ --%>
-								<!-- /fd:IsAlcoholic -->
+<%
+									if ( ((TransactionalProductImpression) impressions.get(idx)).getSku() != null && ((TransactionalProductImpression) impressions.get(idx)).getSku().getProductInfo() != null ) {
+										curCoupon = user.getCustomerCoupon(((TransactionalProductImpression) impressions.get(idx)).getSku().getProductInfo(), EnumCouponContext.PRODUCT,pm.getParentId(),pm.getContentName());
+									}
+								%>
+								<display:FDCoupon coupon="<%= curCoupon %>" contClass="fdCoupon_dynrowTrans"></display:FDCoupon>
+<!-- fd:IsAlcoholic skuCode="%=((TransactionalProductImpression) impressions.get(idx)).getSku().getSkuCode()%>" --><fd:PopupHandler id="<%= TX_FORM_NAME %>" tagCounter="<%= txCount%>" skuCode="<%=((TransactionalProductImpression) impressions.get(idx)).getSku().getSkuCode()%>"/>
+<%--input type="hidden" name='<%="alcoholic_" + txCount %>' id='<%="alcoholic_" + txCount %>' value='<%="quantity_" + txCount %>'/ --%>
+<!-- /fd:IsAlcoholic -->
 							<% 
 								txCount++;
 							} else { %>
@@ -386,6 +406,12 @@
 								<display:ProductRating product="<%= pm %>" action="<%= actionURI %>" />
 								<display:ProductName product="<%= pm %>" action="<%= actionURI %>" showNew="true" />
 								<display:ProductPrice impression="<%= new ProductImpression(pm) %>" showDescription="<%= showDescrips %>" />
+								<%
+									if ( pm.getDefaultSku() != null && pm.getDefaultSku().getProductInfo() != null ) {
+										curCoupon = user.getCustomerCoupon(pm.getDefaultSku().getProductInfo(), EnumCouponContext.PRODUCT,pm.getParentId(),pm.getContentName());
+									}
+								%>
+								<display:FDCoupon coupon="<%= curCoupon %>" contClass="fdCoupon_dynrow"></display:FDCoupon>
 							<% } %>
 						</div>
 					</td>

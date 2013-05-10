@@ -736,6 +736,36 @@ public class StringUtil {
 	    }
 	 }
 	
+	public static String convertToEan13(String upcA){
+		if(null !=upcA && upcA.length() == 12){//EAN 13 conversion
+			upcA="00"+upcA.substring(0,11);
+		}
+		return upcA;
+	}
+	
+	public static String convertToUPCA(String ean13) {
+		if(null ==ean13){
+			return null;
+		}
+		String code = ean13.substring(2, ean13.length());
+        int sumOdd = 0;
+        int sumEven = 0;
+        int total = 0;
+        int index = 1;
+        for(int i=0; i < code.length(); i++) {                                           
+            if(index % 2 == 0) {
+                            sumEven += Character.getNumericValue(code.charAt(i));
+            } else {
+                            sumOdd += Character.getNumericValue(code.charAt(i));
+            }
+            index++;
+        }
+        total = (sumOdd * 3) + sumEven;
+        int mod10 = total % 10;
+        int checkSum = 10 - mod10;        
+        return code+""+checkSum;
+	}
+	
 	public static String getHostInfo() {
     	StringBuilder sb=new StringBuilder(25);
     	

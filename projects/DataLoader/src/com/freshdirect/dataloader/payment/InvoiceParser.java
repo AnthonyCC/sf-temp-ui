@@ -341,7 +341,8 @@ public class InvoiceParser extends FlatFileParser implements SAPConstants, Produ
 						invoiceLine.setOrderLineNumber(getString(tokens, INVOICE_LINE_NUMBER));
 						invoiceLine.setWeight(getDouble(tokens, GROSS_WEIGHT));
 						invoiceLine.setActualCost(getDouble(tokens, ACTUAL_COST));
-						invoiceLine.setActualDiscountAmount(getDouble(tokens, INVOICE_LINE_DISCOUNT_AMOUNT));						
+						invoiceLine.setActualDiscountAmount(getDouble(tokens, INVOICE_LINE_DISCOUNT_AMOUNT));
+						invoiceLine.setCouponDiscountAmount(getDouble(tokens, INVOICE_COUPONLINE_DISCOUNT_AMOUNT));
 						//invoiceLine.setPrice(invoiceLine.getPrice()+invoiceLine.getActualDiscountAmount());
 						invoiceLines.add(invoiceLine);
 					}
@@ -413,6 +414,7 @@ public class InvoiceParser extends FlatFileParser implements SAPConstants, Produ
 		lineFields.add(new Field(SALES_ORDER_NUMBER, 10, true));
 		lineFields.add(new Field(ACTUAL_COST, 15, true));
 		lineFields.add(new Field(INVOICE_LINE_DISCOUNT_AMOUNT, 15, true));
+		lineFields.add(new Field(INVOICE_COUPONLINE_DISCOUNT_AMOUNT, 15, true));
 		
 		//credit fields
 		creditFields.add(new Field(TYPE_INDICATOR, 1, true));

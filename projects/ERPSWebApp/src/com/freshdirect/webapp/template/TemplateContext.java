@@ -37,7 +37,10 @@ import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.Recipe;
 import com.freshdirect.fdstore.content.RecipeCategory;
 import com.freshdirect.fdstore.content.RecipeSubcategory;
+import com.freshdirect.fdstore.content.SkuModel;
 import com.freshdirect.fdstore.customer.FDUserI;
+import com.freshdirect.fdstore.ecoupon.EnumCouponContext;
+import com.freshdirect.fdstore.ecoupon.FDCustomerCoupon;
 import com.freshdirect.fdstore.pricing.ProductModelPricingAdapter;
 import com.freshdirect.fdstore.pricing.ProductPricingFactory;
 import com.freshdirect.fdstore.zone.FDZoneInfoManager;
@@ -47,6 +50,7 @@ import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
 import com.freshdirect.webapp.taglib.fdstore.ProductCartStatusMessageTag;
 import com.freshdirect.webapp.taglib.fdstore.TxProductControlTag;
 import com.freshdirect.webapp.taglib.fdstore.TxSingleProductPricingSupportTag;
+import com.freshdirect.webapp.taglib.fdstore.display.FDCouponTag;
 import com.freshdirect.webapp.taglib.fdstore.display.GetContentNodeWebIdTag;
 import com.freshdirect.webapp.taglib.fdstore.display.ProductAboutPriceTag;
 import com.freshdirect.webapp.taglib.fdstore.display.ProductBurstClassTag;
@@ -75,7 +79,7 @@ public class TemplateContext extends BaseTemplateContext{
 	private final static Image IMAGE_BLANK = new Image("/media_stat/images/layout/clear.gif", 1, 1);
 
 	private final static Logger LOGGER = LoggerFactory.getInstance(TemplateContext.class);
-			
+		
 	/**
 	 * Create a template context with no rendering parameters.
 	 */
@@ -1084,5 +1088,133 @@ public class TemplateContext extends BaseTemplateContext{
 		}
 		
 		return methodList;
+	}
+	
+	
+	/* expose coupon to freemarker */
+	public FDCustomerCoupon getCoupon(FDSessionUser user, String id, String skuOverride, String coupContext) {
+		FDCustomerCoupon curCoupon = null;
+		
+		if (user == null) {
+			LOGGER.warn("required user object not set in getCoupon (Freemarker)");
+			return null;
+		}
+		
+		if (id != null && id != "") {
+			ContentNodeModel node = null;
+		
+			node = getNode(id);
+			if (node instanceof ProductModel || node instanceof ProductModelPricingAdapter || node instanceof SkuModel) {
+				String skuString = null;
+				
+				if (node instanceof ProductModel && !(node instanceof ProductModelPricingAdapter)) {
+					ProductModel nodePM = (ProductModel)node;
+					node = getNode("Product:"+nodePM.toString()+"@"+nodePM.getCategory()); //turn in to ProductModelPricingAdapter
+				}
+				if (node instanceof ProductModelPricingAdapter) {
+					ProductModel nodePM = (ProductModel)node;
+					/* match against skuOverride */
+					if ( skuOverride != null && !"".equals(skuOverride) ) { //look for a match
+						List<String> skus = nodePM.getSkuCodes();
+						for (String sku : skus) {
+							if (sku.equals(skuOverride)) {
+								skuString = sku;
+								break;
+							}
+						}
+					}
+					if (skuString == null) { //no match, fall back to default
+						skuString = nodePM.getDefaultSkuCode();
+					}
+					
+				}
+				if (node instanceof SkuModel) {
+					SkuModel nodeSM = (SkuModel)node;
+					skuString = nodeSM.getSkuCode();
+				}
+				
+				curCoupon = getCouponBySku(user, skuString, coupContext);
+			}
+		
+		}
+		
+		return curCoupon;
+	}
+	/* without coupon context */
+	public FDCustomerCoupon getCoupon(FDSessionUser user, String id, String skuOverride) {
+		return getCoupon(user, id, skuOverride, null);
+	}
+	/* without sku override OR coupon context */
+	public FDCustomerCoupon getCoupon(FDSessionUser user, String id) {
+		return getCoupon(user, id, null, null);
+	}
+
+	/* get coupon by sku */
+	public FDCustomerCoupon getCouponBySku(FDSessionUser user, String id, String couponContext) {
+		if (user == null) {
+			LOGGER.warn("required user object not set in getCouponBySku (Freemarker)");
+			return null;
+		}
+		if (id == null) {
+			LOGGER.warn("required id object not set in getCouponBySku (Freemarker)");
+			return null;
+		}
+		
+		FDCustomerCoupon curCoupon = null;
+
+		if (id != "") {
+			SkuModel skuNode = (SkuModel) getNode("Sku:"+id);
+
+			try {
+
+				if (skuNode == null) {
+					LOGGER.warn("skuNode is null in getCouponBySku (Freemarker)");
+					return null;
+				}
+				if (skuNode.getProductInfo() == null) {
+					LOGGER.warn("ProductInfo is null for sku "+skuNode.getSkuCode()+" in getCouponBySku (Freemarker)");
+					return null;
+				}
+				
+				EnumCouponContext coupContextEnum = null;
+				if (couponContext == null) {
+					couponContext = "PRODUCT"; //default
+				}
+
+				coupContextEnum = EnumCouponContext.getEnum(couponContext);
+
+				if (coupContextEnum == null) {
+					LOGGER.warn("coupContextEnum is null for the context: "+couponContext+" in getCouponBySku (Freemarker)");
+					return null;
+				}
+				
+				curCoupon = user.getCustomerCoupon(skuNode.getProductInfo().getUpc(), coupContextEnum);
+				
+			} catch (Exception e) {
+				LOGGER.error("Error Occurred while getting coupon in getCouponBySku (Freemarker) "+e.getMessage());
+			}
+			
+		}
+		
+		return curCoupon;
+	}
+	/* no context */
+	public FDCustomerCoupon getCouponBySku(FDSessionUser user, String id) {
+		return getCouponBySku(user, id, null);
+	}
+	
+	/* get coupon display */
+	public String getCouponDisplay(FDCustomerCoupon coupon) {
+		String displayHtml = "";
+		
+		if (coupon != null) {
+			FDCouponTag fdCouponTag = new FDCouponTag();
+			fdCouponTag.setCoupon(coupon);
+			displayHtml = fdCouponTag.getContent();
+		} else {
+			LOGGER.warn("required coupon not set in getCouponDisplay (Freemarker)");
+		}
+		
+		return displayHtml;
 	}
 }

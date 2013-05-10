@@ -183,6 +183,8 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements Sessi
 	private FDCartModel cart;
 	
 	private boolean pending;
+	
+	private boolean filterCoupons;
 
 	/**
 	 * Cartlines already processed, BUT not yet added to the cart.
@@ -311,6 +313,7 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements Sessi
 		this.request = (HttpServletRequest) pageContext.getRequest();
 		this.result = new ActionResult();
 		int affectedLines = 0;
+		boolean evaluateCoupons=false;
 		String application = (String) session.getAttribute(SessionName.APPLICATION);
 		boolean inCallCenter = "callcenter".equalsIgnoreCase(application);
 
@@ -531,6 +534,7 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements Sessi
 			} else if ("updateQuantities".equalsIgnoreCase(action)) {
 				//suppressSuspendPendingOvarlay = true;
 				affectedLines = updateQuantities() ? 1 : 0;
+				evaluateCoupons = true;
 				if (!inCallCenter && successPage != null && successPage.indexOf("checkout/step") > -1)
 					try {
 						LOGGER.debug("  about to call calidate Order min");
@@ -546,6 +550,7 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements Sessi
 			} else if ("removeAllCartLines".equalsIgnoreCase(action)) {
 				affectedLines = this.removeAllCartLines();
 			} else if ("nextPage".equalsIgnoreCase(action)) {
+				evaluateCoupons = true;
 				successPage = "checkout_select_address.jsp";
 				// clean data in session
 				session.removeAttribute("makeGoodOrder");
@@ -666,11 +671,16 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements Sessi
 				user.updateUserState();
 	
 				cart.sortOrderLines();
+			}			
+		
+			if(affectedLines > 0 || evaluateCoupons){			
+				FDCustomerCouponUtil.evaluateCartAndCoupons(session);
 			}
 	
 			// Check for expired or cancelled passes if already used.
 			checkForExpOrCanPasses(user);
 	
+			
 			//
 			// sort and save the cart in session
 			// if anything in the cart was changed
@@ -717,6 +727,12 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements Sessi
 		//
 		pageContext.setAttribute(id, cart);
 		pageContext.setAttribute(resultName, result);
+		
+		//Evaluate Coupons.
+//		if(null!=request.getAttribute(SessionName.PARAM_EVALUATE_COUPONS) && true==(Boolean)request.getAttribute(SessionName.PARAM_EVALUATE_COUPONS)){
+		if(user.isCouponEvaluationRequired()){
+			FDCustomerCouponUtil.evaluateCartAndCoupons(session,filterCoupons);
+		}
 
 		return EVAL_BODY_BUFFERED;
 	}
@@ -1377,7 +1393,6 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements Sessi
 				theCartLine.setCartonNumber(cartonNumber);
 			}
 		}
-
 		return theCartLine;
 	}
 
@@ -1975,5 +1990,9 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements Sessi
 		orderLineReason = request.getParameterValues("ol_credit_reason");
 
 	} // method getFormData
+	
+	public void setFilterCoupons(boolean filterCoupons) {
+		this.filterCoupons = filterCoupons;
+	}
 
 }

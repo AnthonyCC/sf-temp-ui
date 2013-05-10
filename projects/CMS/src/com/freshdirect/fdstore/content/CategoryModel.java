@@ -23,17 +23,23 @@ import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.fdstore.FDContentTypes;
 import com.freshdirect.cms.smartstore.CmsRecommenderService;
 import com.freshdirect.cms.util.ProductPromotionUtil;
+import com.freshdirect.erp.ErpFactory;
 import com.freshdirect.erp.ErpProductPromotionPreviewInfo;
 import com.freshdirect.erp.ejb.FDProductPromotionManager;
 import com.freshdirect.erp.ejb.ProductPromotionInfoManager;
+import com.freshdirect.erp.model.ErpProductInfoModel;
 import com.freshdirect.fdstore.FDCachedFactory;
+import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDProductPromotionInfo;
 import com.freshdirect.fdstore.FDProductPromotionPreviewInfo;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.ProductModelPromotionAdapter;
 import com.freshdirect.fdstore.attributes.FDAttributeFactory;
+import com.freshdirect.fdstore.ecoupon.FDCouponFactory;
+import com.freshdirect.fdstore.ecoupon.model.FDCouponUPCInfo;
 import com.freshdirect.framework.conf.FDRegistry;
 import com.freshdirect.framework.util.BalkingExpiringReference;
+import com.freshdirect.framework.util.StringUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
 public class CategoryModel extends ProductContainer {
@@ -143,7 +149,6 @@ public class CategoryModel extends ProductContainer {
 		public void loadProductPromotionData(
 				ProductPromotionData productPromotionData) {
 			try {
-				Map<String,List<FDProductPromotionInfo>> fDProductPromotionSkusMap;
 				Map<String,List<FDProductPromotionInfo>> productPromoInfoMap ;
 				String ppType =productPromotitonType;
 				if(null !=ppType){
@@ -151,20 +156,68 @@ public class CategoryModel extends ProductContainer {
 						ppType = "PRESIDENTS_PICKS";
 					}
 				}
-				synchronized (FDProductPromotionManager.getInstance()) {					
-					productPromoInfoMap = FDProductPromotionManager.getProductPromotion(ppType);				
+				if(!"E_COUPONS".equals(ppType)){
+					synchronized (FDProductPromotionManager.getInstance()) {					
+						productPromoInfoMap = FDProductPromotionManager.getProductPromotion(ppType);				
+					}
+					populateProductPromotionData(productPromotionData,productPromoInfoMap,zoneId,false);
+				}else{										
+					Map<String, Set<FDCouponUPCInfo>> fdUpcCouponMap =FDCouponFactory.getInstance().getFdUpcCouponMap();
+					populateProductPromotionData(productPromotionData,fdUpcCouponMap);					
 				}
-				populateProductPromotionData(productPromotionData,productPromoInfoMap,zoneId,false);
 
 			} catch (FDResourceException e) {
 				LOGGER.error("failed to load promo products for category " + CategoryModel.this.getContentName(), e);
 				throw new RuntimeException(e);
 			}
 		}
-
-
 		
 	}
+	
+	/**
+	 * Method to fetch products by coupon's upcs.
+	 * @param productPromotionData
+	 * @param upcCouponMap
+	 * @return
+	 * @throws FDResourceException
+	 */
+	private ProductPromotionData populateProductPromotionData(
+			ProductPromotionData productPromotionData,
+			Map<String, Set<FDCouponUPCInfo>> upcCouponMap)
+			throws FDResourceException {
+		List<ProductModel> products = new ArrayList<ProductModel>();
+		if(null !=upcCouponMap && !upcCouponMap.isEmpty()){
+			Set<String> skuCodes = new HashSet<String>();
+			for (Iterator<String> iterator = upcCouponMap.keySet().iterator(); iterator.hasNext();) {
+				String couponUPC = (String) iterator.next();				
+				FDProductInfo cachedProductInfo = FDCachedFactory.getProductInfoByUpc(couponUPC);
+				if(cachedProductInfo != null && cachedProductInfo.getSkuCode() != null && cachedProductInfo.getSkuCode().length() > 0) {
+//					LOGGER.info("Product Found in UPCCache:"+couponUPC+"->"+cachedProductInfo.getSkuCode());
+					skuCodes.add(cachedProductInfo.getSkuCode());
+				} 
+			}
+			if(skuCodes.isEmpty()){
+				LOGGER.info("No valid coupons found in fdUpcCouponMap cache of "+upcCouponMap.size());
+			}else{
+				for (String skuCode : skuCodes) {
+					SkuModel sku = (SkuModel) ContentFactory.getInstance().getContentNode(FDContentTypes.SKU, skuCode);
+					if (sku == null)
+						continue;
+					ProductModel product = sku.getProductModel();
+					if (product != null)
+						products.add(product);
+				}
+				LOGGER.info("Found "+products.size()+" products with coupons");
+			}
+				
+			
+		}else{
+			LOGGER.info("No coupons found in fdUpcCouponMap cache, for the promotion type:"+this.getProductPromotionType());
+		}
+		productPromotionData.setProductModels(products);
+		return productPromotionData;
+	}
+	
 	public ProductPromotionData populateProductPromotionData(
 			ProductPromotionData productPromotionData,
 			Map<String, List<FDProductPromotionInfo>> productPromoInfoMap,String zoneId,boolean isPreview)
@@ -450,7 +503,7 @@ public class CategoryModel extends ProductContainer {
     	List<ProductModel> prodList = new ArrayList<ProductModel>();
     	String zoneId = ContentFactory.getInstance().getCurrentPricingContext().getZoneId();
     	String currentProductPromotionType = getProductPromotionType();
-    	if(currentProductPromotionType == null || !ContentFactory.getInstance().isEligibleForDDPP()){
+    	if(!"E_COUPONS".equalsIgnoreCase(currentProductPromotionType) && (currentProductPromotionType == null || !ContentFactory.getInstance().isEligibleForDDPP())){
     		prodList =getStaticProducts();
 	
 	        Recommender recommender = getRecommender();
@@ -483,7 +536,7 @@ public class CategoryModel extends ProductContainer {
 	
 	            try {
 	//                List<ProductModel> recProds = recommendedProductsRefMap.get(zoneId).get();
-	                addDynamicProducts(recommendedProductsRefMap.get(zoneId).get(), prodList);
+	                addDynamicProducts(recommendedProductsRefMap.get(zoneId).get(), prodList,true);
 	            } catch (Exception e) {
 	                LOGGER.warn("exception during smart category recommendation", e);
 	            }
@@ -503,7 +556,11 @@ public class CategoryModel extends ProductContainer {
 			try {
 				if(null !=productPromotionDataRefMap.get(zoneId).get()) {
 					prodList = new ArrayList<ProductModel>();
-					addDynamicProductsForPromotion(productPromotionDataRefMap.get(zoneId).get().getProductModels(), prodList);
+					if("E_COUPONS".equals(currentProductPromotionType)){
+						addDynamicProducts(productPromotionDataRefMap.get(zoneId).get().getProductModels(), prodList,false);
+					}else{
+						addDynamicProductsForPromotion(productPromotionDataRefMap.get(zoneId).get().getProductModels(), prodList);
+					}
 				}
 		    } catch (Exception e) {
 		        LOGGER.warn("exception during promo category product assignment", e);
@@ -512,11 +569,13 @@ public class CategoryModel extends ProductContainer {
 		return prodList;
 	}
 
-    private void addDynamicProducts(Collection<ProductModel> srcProducts, Collection<ProductModel> destProducts){
+    private void addDynamicProducts(Collection<ProductModel> srcProducts, Collection<ProductModel> destProducts,boolean overrideParentNode){
     	if (srcProducts != null) {
             for ( ProductModel prod : srcProducts ) {
             	ProductModel newProd = (ProductModel)prod.clone();
-                ( (ContentNodeModelImpl)newProd ).setParentNode(this);
+            	if(overrideParentNode){
+            		( (ContentNodeModelImpl)newProd ).setParentNode(this);
+            	}
                 if (!destProducts.contains(newProd)) {
                     ( (ContentNodeModelImpl)newProd ).setPriority(destProducts.size());
                     destProducts.add(newProd);

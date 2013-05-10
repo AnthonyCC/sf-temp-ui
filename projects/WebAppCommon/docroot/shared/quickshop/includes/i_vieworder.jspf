@@ -27,6 +27,8 @@
 <%@ page import="com.freshdirect.webapp.taglib.fdstore.EnumUserInfoName" %>
 <%@ page import="com.freshdirect.webapp.taglib.fdstore.CartName"%>
 <%@ page import="com.freshdirect.fdstore.content.ContentFactory"%>
+<%@ page import="com.freshdirect.fdstore.ecoupon.*"%>
+<%@ page import="com.freshdirect.framework.util.NVL"%>
 <%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd'%>
@@ -610,18 +612,23 @@ if (showRecent && showThis &&  skusAdded!=null && skusAdded.contains("skuCode_"+
             &nbsp;-&nbsp;<a name="remove_link" href="<%= landingPageRoot %>?<%=CclUtils.CC_LIST_ID%>=<%=ccListIdStr%>&qcType=<%= __qc.getProductType() %>" onclick="<%= JSRemoveAction %>(<%=ccListIdStr%>,<%=orderLine.getStatistics().getPK().getId()%>);">Delete</a></NOBR>
            
         <% } else if (QuickCart.PRODUCT_TYPE_STARTER_LIST == cartType) { %>
-        <% } else { %><NOBR>
-            <%if(!(request.getRequestURI().indexOf("makegood")>-1)){%>
+        <% } else { %>
+        	<% if ( (!(request.getRequestURI().indexOf("makegood")>-1)) || (orderLine.getStatistics() != null) ) { 
+        		%><NOBR><%
+        	} %>
+            <% if(!(request.getRequestURI().indexOf("makegood")>-1)){ %>
                 <a href="<%=qsLink%><%=qsExtra%>" onclick="FormChangeUtil.setWarningMessage('qs_cart','<%=itemModifyWarning%>'); addQuantToLink(this,'<%=qsLink%>',<%=idx%>);" class="text10" onMouseOver="window.status='Customize this product'">Modify</A>
             <%}%>      
-        <%        if(orderLine.getStatistics() != null ){ %>
-                  &nbsp;-&nbsp;<a href="javascript:doDelete('<%=orderLine.getStatistics().getPK().getId()%>')" onClick="return confirm('Are you sure you want to permanently DELETE this item from your Quickshop list?');">Delete</a></NOBR>
-        <%        }
-                }
+        	<% if(orderLine.getStatistics() != null ){ 
+        			%>&nbsp;-&nbsp;<a href="javascript:doDelete('<%=orderLine.getStatistics().getPK().getId()%>')" onClick="return confirm('Are you sure you want to permanently DELETE this item from your Quickshop list?');">Delete</a><%
+        	} %>
+        	<% if ( (!(request.getRequestURI().indexOf("makegood")>-1)) || (orderLine.getStatistics() != null) ) { 
+        		%></NOBR><%
+        	} %>
+		<% }
 } /* if(!isStandingOrderPage) */
 %> 
    
-    <br><br>
     <%
     
     String scaledPrice = productNode.getTieredPrice(0);
@@ -634,7 +641,7 @@ if (showRecent && showThis &&  skusAdded!=null && skusAdded.contains("skuCode_"+
 	String quickShopStyleScale = "line-height:16px; font-size: 11px; font-weight: bold; color: #C94747; font-family: Verdana, Arial, sans-serif;";
 	ProductSkuImpression impression =  new ProductSkuImpression(productNode, orderLine.getSkuCode());	    
      %>
-    <display:ProductRating product="<%= productNode %>" skuCode="<%= orderLine.getSkuCode() %>"  action="<%= actionUrl %>" noBr="true" leftAlign="true"/>
+    <div><display:ProductRating product="<%= productNode %>" skuCode="<%= orderLine.getSkuCode() %>"  action="<%= actionUrl %>" noBr="true" leftAlign="true" /></div>
     <%--
     <% if (scaledPrice != null) { %>
     	<% if (productRating.length() != 0) { %>&nbsp;&nbsp;<% } %>
@@ -644,6 +651,11 @@ if (showRecent && showThis &&  skusAdded!=null && skusAdded.contains("skuCode_"+
 	<NOBR>
 		<display:ProductPrice impression="<%= impression %>" quickShop="true" showAboutPrice="false" showRegularPrice="false"  showWasPrice="false" showDescription="false" showScalePricing="true" showSaveText="true"/>
 	</NOBR>
+		<%
+			EnumCouponContext couponContext = EnumCouponContext.PRODUCT;
+			FDCustomerCoupon curCoupon_quickshop = user.getCustomerCoupon(orderLine.getUpc(), couponContext);
+		%>
+		<%= (curCoupon_quickshop != null) ? "<div>" : "" %><display:FDCoupon coupon="<%= curCoupon_quickshop %>" contClass="fdCoupon_quickshop"></display:FDCoupon><%= (curCoupon_quickshop != null) ? "</div>" : "" %>
     </td>
     
     <td align="right" width="81">

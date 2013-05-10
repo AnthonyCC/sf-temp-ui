@@ -25,8 +25,12 @@
 <%@ page import="com.freshdirect.deliverypass.EnumDlvPassStatus"%>
 <%@ page import='com.freshdirect.fdstore.atp.FDLimitedAvailabilityInfo';%>
 <%@ page import='com.freshdirect.payment.EnumPaymentMethodType';%>
+<%@ page import="com.freshdirect.fdstore.ecoupon.*"%>
+<%@ page import="com.freshdirect.webapp.taglib.fdstore.SystemMessageList" %>
+<%@ page import="com.freshdirect.framework.util.NVL"%>
 <%@ taglib uri="logic" prefix="logic" %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
+<%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %>
 <% //expanded page dimensions
 final int W_VIEWCART_FULL = 970;
 %>
@@ -99,9 +103,12 @@ FDIdentity identity = user.getIdentity();
 
 <table width="100%" cellspacing="0" cellpadding="0">
 	<tr>
-		<td style="vertical-align: middle; white-space: nowrap;">
+		<td width="110" style="vertical-align: middle; white-space: nowrap;">
 			<input type="image" name="update_quantities" src="/media_stat/images/buttons/update_cart.gif" onclick="return FreshDirect.ClientCodes.setDirty();"
-				width="100" height="17" border="0" alt="UPDATE CART" style="vertical-align: middle;">
+				width="100" height="17" border="0" alt="UPDATE CART" style="vertical-align: middle;" />
+		</td>
+		<td style="vertical-align: middle; white-space: nowrap;">
+			
 			<% if (user.isEligibleForClientCodes()) { %>
 			<input type="hidden" id="clicode_dirty" name="clicode_dirty">
 			<span class="title11" id="clicode_save" style="display: none;">&nbsp;
@@ -112,6 +119,9 @@ FDIdentity identity = user.getIdentity();
 			<% if (FDStoreProperties.isAnnotationMode()) {
 				%><a href="/test/cartexport.jsp">Export Cart</a><%
 			} %>
+			<%-- if ( !"true".equalsIgnoreCase(NVL.apply(request.getAttribute("inSo"), "false").toString()) ) { /* check for standing order flow */ --%>
+				<div id="fdCoupon_cartAlert" style="<%= (user.isCouponsSystemAvailable()) ? "display: none;" : "" %> white-space: normal; text-indent: -14px; padding-left: 14px;"><img src="/media/images/ecoupon/red_triangle.png" alt="" /> <%= (!user.isCouponsSystemAvailable()) ? SystemMessageList.MSG_COUPONS_SYSTEM_NOT_AVAILABLE : "One or more coupons have not been applied to your order.<br />See indicator(s) in red below. <a href=\"#\" onclick=\"doOverlayDialog('/media/editorial/ecoupons/coupons_info.html'); return false;\">More coupon info.</a>" %></div>
+			<%-- } --%>
 		</td>
 		<td class="title11" style="text-align: right; vertical-align: middle; white-space: nowrap; padding-right: 8px;">
 			<% if (user.isEligibleForClientCodes()) { %>
@@ -324,45 +334,69 @@ FDIdentity identity = user.getIdentity();
 			}
 			boolean displayLimitedAvailability = false;
 		%>
-			<td colspan="2"><div style="margin-left:16px; text-indent:-8px;"><span class="text10bold"><a href="/product_modify.jsp?cartLine=<%= cartLine.getRandomId() %>&trk=cart"><%= cartLine.getDescription() %></a></span>&nbsp;<%=!cartLine.getConfigurationDesc().equals("")?"("+cartLine.getConfigurationDesc()+")":""%>
-			<%= fdProduct.getKosherInfo().isKosherProduction() ? " <span class=\"kosher\">**</span>":""  %>
-			<%= cartLine.getApplicableRestrictions().contains(EnumDlvRestrictionReason.PLATTER) ? " <font color=\"#FF9933\">**</font>":""  %>
-			<% if ((cart instanceof FDModifyCartModel) && !(cartLine instanceof FDModifyCartLineI)) { %><span class="text10rbold">(new)</span><% } %>
-			<% if ( discountMsg!=null && !"".equals(discountMsg) ) { %><br />&nbsp;&nbsp;<span class="text10bold"><%= discountMsg %></span><% } %>
-			<% if ( groupDiscountMsg!=null && !"".equals(groupDiscountMsg) ) { %><br />&nbsp;&nbsp;<span class="text10bold"><%= groupDiscountMsg %></span><% } %>
-			<% if (displayShortTermUnavailability && !(cartLine instanceof FDModifyCartLineI)) { 
-
-    				SkuModel a_sku = cartLine.getProductRef().lookupProductModel().getSku(cartLine.getSkuCode());
-        			List<FDLimitedAvailabilityInfo> limitedAvailibility = a_sku.getLimitedAvailability();
-			        if(limitedAvailibility != null && limitedAvailibility.size() > 0){
-			%>
-					<font class="text11">&nbsp;&nbsp;&nbsp;Limited Delivery Availability:&nbsp;</font>
-			<%        
-            		Calendar cal = Calendar.getInstance();
-            		displayLimitedAvailability = true;
-            		for(FDLimitedAvailabilityInfo l: limitedAvailibility) {
-                		cal.setTime(l.getRequestedDate());
-                		int dayOfWeek = cal.get(Calendar.DAY_OF_WEEK);
-                		double quantity = l.getQuantity();
-                		if(quantity > 0) {
-            %>
-                		<img src="/media_stat/images/limited_avail/<%= dayOfWeek %>.gif" width="13" height="13" border="0" vspace="1" alt="Item Available">
-            <%
-                		} else {
-            %>
-                		<img src="/media_stat/images/limited_avail/<%= dayOfWeek %>_x.gif" width="13" height="13" border="0" vspace="1" alt="Item Unavailable">
-            <%                
-                		}
-                
-            		}
-            
-        		}
-			}
-			%>
-			<% if (!displayLimitedAvailability && displayShortTermUnavailability && earliestAvailability != null && !(cartLine instanceof FDModifyCartLineI)) { %><br>&nbsp;&nbsp;<span class="text10rbold">Earliest Delivery <%=earliestAvailability%></span><%  }%>
+			<td colspan="2">
+			<div style="margin-left:16px; text-indent:-8px;"><span class="text10bold"><a href="/product_modify.jsp?cartLine=<%= cartLine.getRandomId() %>&trk=cart"><%= cartLine.getDescription() %></a></span>&nbsp;<%=!cartLine.getConfigurationDesc().equals("")?"("+cartLine.getConfigurationDesc()+")":""%>
+				<%= fdProduct.getKosherInfo().isKosherProduction() ? " <span class=\"kosher\">**</span>":""  %>
+				<%= cartLine.getApplicableRestrictions().contains(EnumDlvRestrictionReason.PLATTER) ? " <font color=\"#FF9933\">**</font>":""  %>
+				<% if ((cart instanceof FDModifyCartModel) && !(cartLine instanceof FDModifyCartLineI)) { %><span class="text10rbold">(new)</span><% } %>
+				<% if ( discountMsg!=null && !"".equals(discountMsg) ) { %><br />&nbsp;&nbsp;<span class="text10bold"><%= discountMsg %></span><% } %>
+				<% if ( groupDiscountMsg!=null && !"".equals(groupDiscountMsg) ) { %><br />&nbsp;&nbsp;<span class="text10bold"><%= groupDiscountMsg %></span><% } %>
+				<% if (displayShortTermUnavailability && !(cartLine instanceof FDModifyCartLineI)) { 
+	
+	    				SkuModel a_sku = cartLine.getProductRef().lookupProductModel().getSku(cartLine.getSkuCode());
+	        			List<FDLimitedAvailabilityInfo> limitedAvailibility = a_sku.getLimitedAvailability();
+				        if(limitedAvailibility != null && limitedAvailibility.size() > 0){
+				%>
+						<font class="text11">&nbsp;&nbsp;&nbsp;Limited Delivery Availability:&nbsp;</font>
+				<%        
+	            		Calendar cal = Calendar.getInstance();
+	            		displayLimitedAvailability = true;
+	            		for(FDLimitedAvailabilityInfo l: limitedAvailibility) {
+	                		cal.setTime(l.getRequestedDate());
+	                		int dayOfWeek = cal.get(Calendar.DAY_OF_WEEK);
+	                		double quantity = l.getQuantity();
+	                		if(quantity > 0) {
+	            %>
+	                		<img src="/media_stat/images/limited_avail/<%= dayOfWeek %>.gif" width="13" height="13" border="0" vspace="1" alt="Item Available">
+	            <%
+	                		} else {
+	            %>
+	                		<img src="/media_stat/images/limited_avail/<%= dayOfWeek %>_x.gif" width="13" height="13" border="0" vspace="1" alt="Item Unavailable">
+	            <%                
+	                		}
+	                
+	            		}
+	            
+	        		}
+				}
+				%>
+				<% if (!displayLimitedAvailability && displayShortTermUnavailability && earliestAvailability != null && !(cartLine instanceof FDModifyCartLineI)) { %><br>&nbsp;&nbsp;<span class="text10rbold">Earliest Delivery <%=earliestAvailability%></span><%  }%>
 			</div>
+			<% 
+				EnumCouponContext couponContext =EnumCouponContext.VIEWCART;
+				FDCustomerCoupon curCoupon_viewcart = null;
+				//if ( !"true".equalsIgnoreCase(NVL.apply(request.getAttribute("inSo"), "false").toString()) ) { /* check for standing order flow */
+					curCoupon_viewcart = user.getCustomerCoupon(cartLine, couponContext);
+				//}
+				
+				//check if we have a coupon that needs msging. add triangle, and js call
+				boolean needsCouponMsging = ( 
+					curCoupon_viewcart != null
+					&& (
+							curCoupon_viewcart.getDisplayStatus().equals(EnumCouponDisplayStatus.COUPON_CLIPPABLE)
+							|| curCoupon_viewcart.getStatus().equals(EnumCouponStatus.COUPON_MIN_QTY_NOT_MET)
+							|| curCoupon_viewcart.getStatus().equals(EnumCouponStatus.COUPON_CLIPPED_EXPIRED)
+						)
+				) ? true : false;
+				%><div class="fdCoupon_cartlineViewCart_msgCont<%= (needsCouponMsging) ? "HasMsg" : "" %>"><% //always add the div for text alignment, secondary class changes indent
+					if (needsCouponMsging) {
+						%><img src="/media/images/ecoupon/red_triangle.png" alt="" /><script type="text/javascript" language="javascript">$jq('#fdCoupon_cartAlert').show();</script><%
+					} %>
+					<display:FDCoupon coupon="<%= curCoupon_viewcart %>" contClass="fdCoupon_cartlineViewCart"></display:FDCoupon>
+				</div>
+			
 			</td>
-            <% if(cartLine.getDiscount() != null) { %>
+            <% if(cartLine.getDiscount() != null || cartLine.getCouponDiscount() != null) { %>
 			<td width="70" align="right"><font color="#FF0000">(<%= cartLine.getUnitPrice() %>)</font></td>
 			<td width="60" align="right"><span class="text10bold"><font color="#FF0000"><%= JspMethods.formatPrice(cartLine.getPrice()) %></font></span></td>
             <% } else { %>

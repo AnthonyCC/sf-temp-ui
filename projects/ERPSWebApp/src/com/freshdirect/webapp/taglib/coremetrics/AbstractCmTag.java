@@ -16,6 +16,7 @@ import com.freshdirect.fdstore.coremetrics.builder.SkipTagException;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.framework.util.StringUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.webapp.taglib.crm.CrmSession;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
 
 
@@ -42,11 +43,7 @@ public abstract class AbstractCmTag extends SimpleTagSupport {
 	
 	public void doCmTag() throws JspException, IOException{
 		try {
-			checkContext();
-			String tagOut = getTagJs();
-			tagOut = wrapIntoFunction ? wrapIntoFunction(tagOut) : tagOut;
-			tagOut = wrapIntoScriptTag ? wrapIntoScriptTag(tagOut) : tagOut;
-			LOGGER.debug(tagOut);
+			String tagOut = doWrap();
 			getJspContext().getOut().println(tagOut);
 
 		} catch (SkipTagException e) {
@@ -58,15 +55,39 @@ public abstract class AbstractCmTag extends SimpleTagSupport {
 		}
 	}
 	
+	public String doCmContentTag() throws JspException, IOException{
+		String content="";
+		try {
+			content = doWrap();
+
+		} catch (SkipTagException e) {
+			LOGGER.debug("no tag will be inserted here due to SkipTagException: "+ e.getMessage());
+			handleException();
+		} catch (CmContextException e) {
+			LOGGER.debug("CmContextException: " + e.getMessage());
+			handleException();
+		}
+		return content;
+	}
+
+	private String doWrap() throws CmContextException, SkipTagException {
+		checkContext();
+		String tagOut = getTagJs();
+		tagOut = wrapIntoFunction ? wrapIntoFunction(tagOut) : tagOut;
+		tagOut = wrapIntoScriptTag ? wrapIntoScriptTag(tagOut) : tagOut;
+		LOGGER.debug(tagOut);
+		return tagOut;
+	}
+	
 	private void handleException() throws IOException{
 		if (wrapIntoFunction){
 			getJspContext().getOut().println(START_FUNCTION+END_FUNCTION);
 		}
 	}
 	
-	protected void checkContext() throws CmContextException {
+	public void checkContext() throws CmContextException {
 		HttpSession session = ((PageContext)getJspContext()).getSession();
-		CrmAgentModel agent = (CrmAgentModel) session.getAttribute(AGENT_SESSION_NAME);
+		CrmAgentModel agent = (CrmAgentModel) CrmSession.getCurrentAgent(session)/*session.getAttribute(AGENT_SESSION_NAME)*/;
 		
 		FDUserI user = (FDUserI) session.getAttribute(SessionName.USER);
 		String masqueradeAgent = (user == null) ? null : user.getMasqueradeAgent();

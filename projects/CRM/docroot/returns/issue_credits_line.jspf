@@ -14,6 +14,8 @@
 <%@ page import="com.freshdirect.webapp.taglib.callcenter.ComplaintUtil"%>
 <%@ page import="com.freshdirect.framework.util.MathUtil"%>
 <%@ taglib uri="freshdirect" prefix="fd" %>
+<%@ page import='com.freshdirect.fdstore.ecoupon.*' %>
+<%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %>
 <%
 final String ERR_LINE_COLOR = "#FFCCCC";
 final String IS_BGCOLOR="#CCCCFF";
@@ -119,8 +121,10 @@ boolean dirtyLine = _is_form_returnQty != null && _is_form_returnQty[_is_index].
         <td WIDTH="25%">
 <% if (_is_multi) { %>
 			<span style="color: #577; font-style: italic;"><%= _is_orderline.getDescription() %> (<%=_is_orderline.getConfigurationDesc()%>)</span>
+			<br/> <display:FDCoupon coupon="<%= user.getCustomerCoupon(_is_orderline, EnumCouponContext.VIEWORDER) %>" contClass="fdCoupon_cartlineChckout"></display:FDCoupon>
 <% } else { %>
 			<span><%= _is_orderline.getDescription() %> (<%=_is_orderline.getConfigurationDesc()%>)</span>
+			<br/> <display:FDCoupon coupon="<%= user.getCustomerCoupon(_is_orderline, EnumCouponContext.VIEWORDER) %>" contClass="fdCoupon_cartlineChckout"></display:FDCoupon>
 <% } %>
             <fd:ErrorHandler result='<%=_is_result%>' name='<%= "ol_error_"+_is_index %>' id="errorMsg">
                 <div CLASS="text11rbold">&middot; <%= errorMsg %></div>
@@ -156,8 +160,26 @@ boolean dirtyLine = _is_form_returnQty != null && _is_form_returnQty[_is_index].
             <%= CCFormatter.formatQuantity( retQty ) %>
         </td>
         <td WIDTH="4%" BGCOLOR="<%= ( isErrorLine ) ? ERR_LINE_COLOR : IS_BGCOLOR %>" ALIGN="CENTER"><%= _is_orderline.getSalesUnitDescription() %></td>
-        <td WIDTH="7%" BGCOLOR="<%= ( isErrorLine ) ? ERR_LINE_COLOR : IS_BGCOLOR %>" ALIGN="CENTER"><%= JspMethods.formatPrice(retAmount) %></td>
-        <td WIDTH="5%" BGCOLOR="<%= ( isErrorLine ) ? ERR_LINE_COLOR : IS_BGCOLOR %>" ALIGN="CENTER"><%= JspMethods.formatPrice(_is_invoiceline != null ? _is_invoiceline.getPrice() - retAmountSum: _is_orderline.getPrice() - retAmountSum) %></td>
+        <td WIDTH="7%" BGCOLOR="<%= ( isErrorLine ) ? ERR_LINE_COLOR : IS_BGCOLOR %>" ALIGN="CENTER"><%= JspMethods.formatPrice(retAmount) %></td>		
+		<% if(_is_orderline.getCouponDiscount() != null) { 
+			ErpCouponDiscountLineModel cModel = _is_orderline.getCouponDiscount();
+		%>
+        <td WIDTH="5%" BGCOLOR="<%= ( isErrorLine ) ? ERR_LINE_COLOR : IS_BGCOLOR %>" ALIGN="CENTER">
+		<div class="fdCoupon_cartlineChckout_CRMrec" name="fdCoupon_<%=_is_orderline.getCartlineId()%>_cont">
+			<span class="fdCoupon_detCont" name="fdCoupon_<%=_is_orderline.getCartlineId()%>_detCont">
+			<a class="fdCoupon_det" style="color:black;" onclick="return false;" name="fdCoupon_<%=_is_orderline.getCartlineId()%>_det" href="#"><%= JspMethods.formatPrice(_is_invoiceline != null ? _is_invoiceline.getPrice() - retAmountSum: _is_orderline.getPrice() - retAmountSum) %></a>
+			</span>
+			<div class="fdCoupon_detContent" style="display: none;" name="fdCoupon_<%=_is_orderline.getCartlineId()%>_detContent">Total Price before coupon is applied: $<%=_is_orderline.getActualPrice()%><br/>
+			Original Price before coupon is applied: $<%=_is_orderline.getBasePrice()%>/ea<br/>
+			Coupon Discount Amount: $<%=cModel.getDiscountAmt()%><br/>
+			Total Price after Coupon is applied (original price - coupon discount): (<%=_is_orderline.getActualPrice()%> - <%=cModel.getDiscountAmt()%>) = $<%=_is_orderline.getPrice()%><br/>
+			Price after coupon is applied: (Total Price / quantity.): ( <%=_is_orderline.getPrice()%>/<%=_is_the_quantity%>) = <%=_is_orderline.getUnitPrice()%></div>
+		</div>
+
+		</a></td>
+		<% } else { %>
+		<td WIDTH="5%" BGCOLOR="<%= ( isErrorLine ) ? ERR_LINE_COLOR : IS_BGCOLOR %>" ALIGN="CENTER"><%= JspMethods.formatPrice(_is_invoiceline != null ? _is_invoiceline.getPrice() - retAmountSum: _is_orderline.getPrice() - retAmountSum) %></td>
+		<% } %>
 		<td WIDTH="5%" BGCOLOR="<%= ( isErrorLine ) ? ERR_LINE_COLOR : IS_BGCOLOR %>" ALIGN="CENTER">
         	<INPUT TYPE="TEXT" id="qty<%= rid %>" orderline="<%= _is_orderline.getOrderLineId() %>" NAME="ol_credit_qty" SIZE="4" cartonGroup="QI_<%= _is_cartonNumber %>" fullQuantity="<%= _is_the_quantity %>" value="<%= _is_form_returnQty == null ? "0" : _is_form_returnQty[_is_index] %>" onblur="setEditReturnQty(<%=_is_index%>)">
 		</td>
@@ -204,7 +226,26 @@ boolean dirtyLine = _is_form_returnQty != null && _is_form_returnQty[_is_index].
                 creditQty = Double.parseDouble( _is_form_returnQty[_is_index] );
                 double origQty = _is_invoiceline != null ? _is_invoiceline.getQuantity() : _is_orderline.getQuantity();
                 if (origQty!=0) {
-                    creditAmount = creditQty * ( (_is_invoiceline != null ? _is_invoiceline.getPrice() : _is_orderline.getPrice()) / origQty);
+					if(_is_orderline.getCouponDiscount() != null) { 
+						if(creditQty == origQty) { 
+							creditAmount = _is_orderline.getPrice();
+						} else {
+							ErpCouponDiscountLineModel cModel = _is_orderline.getCouponDiscount();
+							double rem_qty = origQty - cModel.getRequiredQuantity();
+							if(rem_qty < creditQty) {
+								//looks like some items being credited have coupon applied on them
+								double coupon_applied_qty = creditQty - rem_qty;
+								//apply coupon price for this qty    					
+								creditAmount = coupon_applied_qty * (_is_orderline.getBasePrice() - (coupon_applied_qty * cModel.getDiscountAmt()/cModel.getRequiredQuantity()));
+								//apply base price to remaining items
+								creditAmount += rem_qty * _is_orderline.getBasePrice();
+							} else {    					
+								creditAmount = creditQty * _is_orderline.getBasePrice();
+							}
+						}
+					} else {
+						creditAmount = creditQty * ( (_is_invoiceline != null ? _is_invoiceline.getPrice() : _is_orderline.getPrice()) / origQty);
+					}
                 }
             }
         }

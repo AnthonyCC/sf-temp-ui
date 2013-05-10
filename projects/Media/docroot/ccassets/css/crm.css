@@ -129,19 +129,19 @@ border-bottom: 1px solid #CCCCCC;
 	text-align: center;
 }
 
-.main_nav_link          { font-variant: small-caps; font-size: 0.9em; padding: 3px; padding-left: 4px; padding-right:4px; color: #666666; background: #E7E7D6; font-weight: bold; text-decoration: none; border-top: 2px #CCCC99 solid; border-bottom: 3px #CCCC99 double;  border-left: 1px #CCCC99 solid; border-right: 1px #999966 solid;  }
+.main_nav_link          { line-height: 1.65em; font-variant: small-caps; font-size: 0.9em; padding: 3px; padding-left: 4px; padding-right:4px; color: #666666; background: #E7E7D6; font-weight: bold; text-decoration: none; border-top: 2px #CCCC99 solid; border-bottom: 3px #CCCC99 double;  border-left: 1px #CCCC99 solid; border-right: 1px #999966 solid;  }
 a.main_nav_link:link    { color: #666666; text-decoration: none; }
 a.main_nav_link:visited { color: #666666; text-decoration: none; }
 a.main_nav_link:active  { color: #666666; text-decoration: none; }
 a.main_nav_link:hover   { border: 3px; color: #FFFFFF; background: #999966; font-weight: bold; text-decoration: none;  border-top: 2px #CCCC99 solid; border-bottom: 3px #999966 solid; border-left: 1px #CCCC99 solid; border-right: 1px #999966 solid;}
 
-.main_nav_on    { font-variant: small-caps; font-size: 0.9em; padding: 3px; padding-top: 2px; padding-left: 4px; padding-right: 4px; color: #000000; font-weight: bold; text-decoration: none; background: #CCCC99; border-bottom: 3px #CCCC99 solid; border-left: 1px #CCCC99 solid; border-right: 1px #999966 solid; border-top: 2px #666666 dotted;  }
+.main_nav_on    { line-height: 1.65em; font-variant: small-caps; font-size: 0.9em; padding: 3px; padding-top: 2px; padding-left: 4px; padding-right: 4px; color: #000000; font-weight: bold; text-decoration: none; background: #CCCC99; border-bottom: 3px #CCCC99 solid; border-left: 1px #CCCC99 solid; border-right: 1px #999966 solid; border-top: 2px #666666 dotted;  }
 a.main_nav_on:link      { color: #000000; text-decoration: none; }
 a.main_nav_on:visited   { color: #000000; text-decoration: none; }
 a.main_nav_on:active    { color: #000000; text-decoration: none; }
 a.main_nav_on:hover     { padding-top: 2px; border: 3px; background: #CCCC99; color: #009900; font-weight: bold; border-bottom: 3px #CCCC99 solid; border-left: 1px #CCCC99 solid; border-right: 1px #FFFFFF solid; border-top: 2px #FFFFFF dotted; }
 
-.main_nav_s_link            { font-size: 8pt; padding: 2px; padding-left: 4px; padding-right: 4px; color: #333333; font-weight: normal; text-decoration: none; }
+.main_nav_s_link            { line-height: 1.65em; font-size: 8pt; padding: 2px; padding-left: 4px; padding-right: 4px; color: #333333; font-weight: normal; text-decoration: none; }
 a.main_nav_s_link:link      { color: #333333; text-decoration: none; }
 a.main_nav_s_link:visited   { color: #333333; text-decoration: none; }
 a.main_nav_s_link:active    { color: #333333; text-decoration: none; }
@@ -1080,27 +1080,30 @@ padding: 0px;
 font-size: 16pt;
 }
 
+.order_list_content{
+	background-color: #FFFFCE;
+}
 .order_content {
-position: relative;
-width: 59%;
-height: 70%;
-float: left;
-overflow: auto;
-background-color: #FFFFFF;
-padding: 6px;
-padding-top: 3px;
-margin: 0px;
+	position: relative;
+	width: 59%;
+	height: 70%;
+	float: left;
+	overflow: auto;
+	background-color: #FFFFFF;
+	padding: 6px;
+	padding-top: 3px;
+	margin: 0px;
+	border-right: 1px #000000 solid;
 }
 
 .order_list {
-position: relative;
-width: 39%;
-height: 70%;
-float: left;
-background-color: #FFFFCE;
-border-left: 1px #000000 solid;
-padding: 2px;
-margin: 0px;
+	position: relative;
+	width: 39%;
+	height: 70%;
+	float: right;
+	background-color: #FFFFCE;
+	padding: 2px;
+	margin: 0px;
 }
 
 .item {
@@ -1724,3 +1727,319 @@ div.content_scroll { clear: left; }
     background-color: lightblue;
     text-align: center;
 }
+
+
+/* fdCoupon */
+	/*
+		green: 669933
+		purple: 9702D7
+		red: ff0000
+		
+	*/
+	.fdCoupon_cont {
+		line-height: 15px;
+		font-weight: normal;
+		display: inline;
+	}
+		
+	/* grid products */
+	.grid-item-coupon {
+		height: 38px;
+		overflow: hidden;
+	}
+	/* circular header */
+	.content-header-height-coupons {
+		height: 56px;
+    	line-height: 56px;
+	}
+	
+	/* push burst down, if needed */
+	.couponLogo .productImageBurst {
+		top: 25px !important;
+	}
+	
+	/* context level */		
+		.fdCoupon_prodSingSku {}
+		.fdCoupon_prodMultiSku {}
+		.fdCoupon_dynrowTrans, fdCoupon_dynrow {}
+		.fdCoupon_featExt {}
+		.fdCoupon_layGroProd {}
+		.fdCoupon_groceryCat {}
+		.fdCoupon_prodBox, fdCoupon_prodBoxTrans {}
+		.fdCoupon_prodBoxSearch {}
+		.fdCoupon_prodBoxTransSearch {}
+		.fdCoupon_prodBoxDdppFeat {}
+		.fdCoupon_prodBoxDdppFeatTrans {}
+		.fdCoupon_prodBoxDdppGrid {}
+		.fdCoupon_prodBoxDdppGridTrans {}
+		.fdCoupon_prodBoxDdppList {}
+		.fdCoupon_prodBoxDdppListTrans {}
+		.fdCoupon_cartlineViewCart {}
+		.fdCoupon_cartlineViewOrder {}
+		.fdCoupon_layGroCatRec {}
+		.fdCoupon_layHorz {}
+		.fdCoupon_layVert {}
+		.fdCoupon_deptPeakProd {}
+		.fdCoupon_layGen {}
+		.fdCoupon_layFeatCat {}
+		.fdCoupon_layFeatAll {}
+		.fdCoupon_layMultiCat {}
+		.fdCoupon_layMclQb {}
+		.fdCoupon_layMultiCatDeptDeal {}
+		.fdCoupon_layMultiCatDeptEdlp {}
+		.fdCoupon_layProdSort {}
+		.fdCoupon_4mmYourFav {}
+		.fdCoupon_4mmMostPop {}
+		.fdCoupon_4mmMOTW {}
+		.fdCoupon_4mmEdit {}
+		.fdCoupon_4mmRest {}
+		.fdCoupon_4mmRestSide {}
+		.fdCoupon_4mmRestEntree {}
+		.fdCoupon_cartConfSing {}
+		.fdCoupon_cartConfMulti {}
+		
+		/* no offer image */		
+		.fdCoupon_groceryCat .fdCoupon_img, 
+		.fdCoupon_cartline .fdCoupon_img,
+		.fdCoupon_dynrowTrans .fdCoupon_img,
+		.fdCoupon_dynrow .fdCoupon_img,
+		.fdCoupon_layHorz .fdCoupon_img,
+		.fdCoupon_layGen .fdCoupon_img,
+		.fdCoupon_layVert .fdCoupon_img,
+		.fdCoupon_layFeatAll .fdCoupon_img,
+		.fdCoupon_layFeatCat .fdCoupon_img,
+		.fdCoupon_layProdSort .fdCoupon_img,
+		.fdCoupon_layGroCatRec .fdCoupon_img,
+		.fdCoupon_layMultiCat .fdCoupon_img,
+		.fdCoupon_4mmRest .fdCoupon_img,
+		.fdCoupon_layMclQb .fdCoupon_img,
+		.fdCoupon_cartlineChckout .fdCoupon_img,
+		.fdCoupon_feat .fdCoupon_img,
+		.fdCoupon_featExt .fdCoupon_img,
+		#ymal_pdtl_container .fdCoupon_layProdPerish .fdCoupon_img,
+		.WG_block_bottom_container_new .fdCoupon_img,
+		.fdCoupon_deptPeakProd .fdCoupon_img,
+		.fdCoupon_cartlineViewOrder .fdCoupon_img
+		{
+			display: none;
+		}
+		
+		/* no checkbox */
+		.fdCoupon_layGen .fdCoupon_cbCont,
+		.fdCoupon_layHorz .fdCoupon_cbCont,
+		.fdCoupon_layVert .fdCoupon_cbCont,
+		.fdCoupon_layFeatAll .fdCoupon_cbCont,
+		.fdCoupon_layFeatCat .fdCoupon_cbCont,
+		.fdCoupon_layProdSort .fdCoupon_cbCont,
+		.fdCoupon_layGroCatRec .fdCoupon_cbCont,
+		.fdCoupon_layMultiCat .fdCoupon_cbCont,
+		.fdCoupon_4mmRest .fdCoupon_cbCont,
+		.fdCoupon_cartlineChckout .fdCoupon_cbCont,
+		.fdCoupon_layMclQb .fdCoupon_cbCont,
+		.fdCoupon_bigDayValues .fdCoupon_cbCont,
+		.fdCoupon_feat .fdCoupon_cbCont,
+		.fdCoupon_featExt .fdCoupon_cbCont,
+		.fdCoupon_prodBox .fdCoupon_cbCont,
+		.fdCoupon_prodBoxSearch .fdCoupon_cbCont,
+		#ymal_pdtl_container .fdCoupon_layProdPerish .fdCoupon_cbCont,
+		.WG_block_bottom_container_new .fdCoupon_cbCont,
+		.fdCoupon_dynrow .fdCoupon_cbCont,
+		.fdCoupon_deptPeakProd .fdCoupon_cbCont,
+		.fdCoupon_cartlineViewOrder .fdCoupon_cbCont
+		{
+			display: none;
+		}
+		
+		/* checkboxes AFTER clipped */
+		.fdCoupon_layGen .fdCoupon_cbCont.isClipped,
+		.fdCoupon_layHorz .fdCoupon_cbCont.isClipped,
+		.fdCoupon_layVert .fdCoupon_cbCont.isClipped,
+		.fdCoupon_layFeatAll .fdCoupon_cbCont.isClipped,
+		.fdCoupon_layFeatCat .fdCoupon_cbCont.isClipped,
+		.fdCoupon_layProdSort .fdCoupon_cbCont.isClipped,
+		.fdCoupon_layGroCatRec .fdCoupon_cbCont.isClipped,
+		.fdCoupon_layMultiCat .fdCoupon_cbCont.isClipped,
+		.fdCoupon_4mmRest .fdCoupon_cbCont.isClipped,
+		.fdCoupon_layMclQb .fdCoupon_cbCont.isClipped,
+		.fdCoupon_bigDayValues .fdCoupon_cbCont.isClipped,
+		.fdCoupon_feat .fdCoupon_cbCont.isClipped,
+		.fdCoupon_featExt .fdCoupon_cbCont.isClipped,
+		.fdCoupon_prodBox .fdCoupon_cbCont.isClipped,
+		.fdCoupon_prodBoxSearch .fdCoupon_cbCont.isClipped,
+		#ymal_pdtl_container .fdCoupon_layProdPerish .fdCoupon_cbCont.isClipped,
+		.WG_block_bottom_container_new .fdCoupon_cbCont.isClipped,
+		.fdCoupon_dynrow .fdCoupon_cbCont.isClipped,
+		.fdCoupon_deptPeakProd .fdCoupon_cbCont.isClipped
+		{
+			display: inline;
+		}
+		
+		/* no details */
+		.fdCoupon_cartlineChckout .fdCoupon_detCont,
+		.fdCoupon_cartlineViewOrder .fdCoupon_detCont
+		{
+			display: none;
+		}
+		
+		.fdCoupon_cartlineViewCart_msgCont {
+			margin-left: 16px;
+			text-indent: -8px;
+		}
+		.fdCoupon_cartlineViewCart_msgContHasMsg {
+			margin-left: 16px;
+			text-indent: -22px;
+		}
+		.fdCoupon_down_circ {
+			font-weight: bold;
+			color: #f00;
+			font-size: 14px;
+			text-align: center;
+			width: 500px;
+			left: 235px;
+			position: relative;
+			margin-top: 15px; 
+		}
+	
+	.fdCoupon_cbCont {
+		margin-left: 3px;
+	}
+	
+	.fdCoupon_cb {
+		margin: 0;
+		vertical-align: bottom;
+		top: -1px;
+    	position: relative;
+	}
+	
+	.fdCoupon_img {
+		margin-left: 6px;
+		margin-bottom: -3px;
+	}
+	
+	.fdCoupon_msg {
+		margin-left: 6px;
+		/* margin-right: 6px; */
+		/*margin-top: -16px;
+		top: 50%;*/
+		font-family: Verdana;
+		font-weight: bold;
+		color: #9702D7;
+		font-size: 10px !important;
+	}
+	
+	.fdCoupon_detCont {
+		font-size: 10px !important;
+	}
+	
+	.fdCoupon_detCont, a.fdCoupon_det, a.fdCoupon_det:active, a.fdCoupon_det:link, a.fdCoupon_det:visited, a.fdCoupon_det:hover {
+		color: #ccc;
+		text-decoration: none;
+		font-family: Verdana;
+	}
+	a.fdCoupon_det:hover {
+	    text-decoration: underline;
+	}
+	
+	.fdCoupon_detContent {
+	}
+		
+	/* status msgs */
+	
+	.fdCoupon_stat {
+		font-weight: bold;
+		margin-left: 6px;
+	}
+	
+	.cStat_minQty {
+		color: #ff0000;
+	}
+	
+	.cStat_applied {
+		color: #669933;
+	}
+	
+	.cStat_clipExp {
+		color: #ff0000;
+	}
+	
+	/* top of cart msg */
+	#fdCoupon_cartAlert {
+		font-size: 13px;
+		font-weight: bold;
+		color: #f00;
+	}
+	
+	/* coupon tooltip */
+		/* details */
+		    .cDetToolTip, .cDetToolTip .arrow:after {
+		        background: #f2f2f2;
+		        border: 2px solid #bbb;
+		    }
+		    .cDetToolTip {
+		        padding: 10px 10px;
+		        color: #666;
+		        line-height: 12px;
+		        border-radius: 10px;
+		        font: normal 10px Tahoma, "Helvetica Neue", Sans-Serif;
+		        box-shadow: 2px 2px 2px rgba(0,0,0,0.15);
+		        max-width: 175px;
+		    }
+			.cDetToolTip .arrow {
+		        height: 32px;
+		        width: 23px;
+		        overflow: hidden;
+		        position: absolute;
+		        left: 50%;
+		        margin-left: -16px;
+		        bottom: -31px;
+				background-image: url(/media_stat/images/common/sprites/tooltip_arrows_jquery.png);
+				background-repeat: no-repeat;
+				background-position: -22px 0px;
+			}
+		    .cDetToolTip .arrow.top {
+		        top: -32px;
+		        bottom: auto;
+		    }
+		    .cDetToolTip .arrow.left {
+		        left: 27%;
+		    }
+		    .tooltipFlipH .arrow.left {
+		        left: 80%;
+		    }
+
+		/* click to apply */
+			.cDetToolTipClickToApply, .cDetToolTipClickToApply .arrow:after {
+		        background: #59ac48;
+		        border: none;
+		    }
+		    
+		    .cDetToolTipClickToApply {
+		        padding: 5px 10px;
+		        color: #fff;
+		        line-height: 12px;
+		        border-radius: 3px;
+		        font: normal 10px Tahoma, "Helvetica Neue", Sans-Serif;
+		        box-shadow: 2px 2px 2px rgba(0,0,0,0.55);
+		    }
+		    .cDetToolTipClickToApply .arrow {
+		        height: 16px;
+		        width: 16px;
+		        overflow: hidden;
+		        position: absolute;
+		        left: 50%;
+		        margin-left: -8px;
+		        bottom: -15px;
+				background-image: url(/media_stat/images/common/sprites/tooltip_arrows_jquery.png);
+				background-repeat: no-repeat;
+				background-position: -30px -46px;
+		    }
+		    .cDetToolTipClickToApply .arrow.top {
+		        top: -16px;
+		        bottom: auto;
+		    }
+		    .cDetToolTipClickToApply .arrow.left {
+		        left: 30%;
+		    }
+		    .tooltipFlipH .arrow.left {
+		        left: 80%;
+		    }

@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.StringTokenizer;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.log4j.Logger;
 
 import com.freshdirect.ErpServicesProperties;
@@ -25,8 +26,11 @@ import com.freshdirect.fdstore.GroupScalePricing;
 import com.freshdirect.fdstore.content.DomainValue;
 import com.freshdirect.fdstore.content.PriceCalculator;
 import com.freshdirect.fdstore.content.SkuModel;
+import com.freshdirect.fdstore.ecoupon.EnumCouponStatus;
+import com.freshdirect.fdstore.ecoupon.FDCustomerCoupon;
 import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.QuickDateFormat;
+import com.freshdirect.mobileapi.controller.data.Coupon;
 import com.freshdirect.mobileapi.util.MobileApiProperties;
 
 public class Sku {
@@ -65,15 +69,17 @@ public class Sku {
     
     private String sustainabilityRating="";
 
-    private String sustainabilityRatingDescription;
+    private String sustainabilityRatingDescription;    
 
-    private Sku(PriceCalculator priceCalc, SkuModel skuModel) throws FDResourceException, FDSkuNotFoundException {
+    private FDCustomerCoupon coupon; //Used for ECoupon display
+
+    private Sku(PriceCalculator priceCalc, SkuModel skuModel, FDCustomerCoupon coupon) throws FDResourceException, FDSkuNotFoundException {
         this.skuModel = skuModel;
         this.variationMatrix = skuModel.getVariationMatrix();
         this.variationOptions = skuModel.getVariationOptions();
         this.priceCalc = priceCalc;
         this.productInfo = priceCalc.getProductInfo();
-
+        this.coupon = coupon;
 
         // BEGIN i_product_skus_rating
         boolean matchFound = false; //default to false
@@ -131,9 +137,9 @@ public class Sku {
 
     }
     
-    public static Sku wrap(PriceCalculator priceCalc,SkuModel skuModel) {
+    public static Sku wrap(PriceCalculator priceCalc, SkuModel skuModel, FDCustomerCoupon coupon) {
         try {
-            return new Sku(priceCalc, skuModel);
+            return new Sku(priceCalc, skuModel, coupon);
         } catch (FDResourceException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -457,5 +463,24 @@ public class Sku {
 
    public String getSustainabilityRatingDescription() {
        return sustainabilityRatingDescription;
+   }
+   
+   public Coupon getCoupon() {
+   	Coupon result = null;
+   	if(this.coupon != null) {
+   		result = new Coupon();
+   		result.setId(this.coupon.getCouponId());
+   		result.setDetails(StringEscapeUtils.unescapeHtml(this.coupon.getDetailedDescription()));
+   		result.setDesc(this.coupon.getDisplayDescription());
+   		result.setStatus(null!=this.coupon.getDisplayStatus()?this.coupon.getDisplayStatus().getName():"");
+   		result.setMessage((this.coupon.isDisplayStatusMessage()/* || EnumCouponStatus.COUPON_CLIPPED_ACTIVE.equals(this.coupon.getStatus())*/
+   				|| EnumCouponStatus.COUPON_CLIPPED_FILTERED.equals(this.coupon.getStatus())) 
+   									? this.coupon.getStatus().getDescription() : null);
+   		result.setExpirationDate(this.coupon.getExpirationDate());
+   		/*result.setQuantity(this.coupon.getQuantity());
+   		result.setValue(this.coupon.getValue());
+   		result.setVersion(this.coupon.getVersion());*/
+   	}
+   	return result;
    }
 }

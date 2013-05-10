@@ -113,6 +113,11 @@ import com.freshdirect.fdstore.customer.ejb.FDCustomerManagerSB;
 import com.freshdirect.fdstore.customer.ejb.FDServiceLocator;
 import com.freshdirect.fdstore.deliverypass.DeliveryPassUtil;
 import com.freshdirect.fdstore.deliverypass.FDUserDlvPassInfo;
+import com.freshdirect.fdstore.ecoupon.EnumCouponTransactionStatus;
+import com.freshdirect.fdstore.ecoupon.EnumCouponTransactionType;
+import com.freshdirect.fdstore.ecoupon.FDCouponManager;
+import com.freshdirect.fdstore.ecoupon.model.ErpCouponTransactionModel;
+import com.freshdirect.fdstore.ecoupon.model.FDCouponActivityContext;
 import com.freshdirect.fdstore.giftcard.FDGiftCardInfoList;
 import com.freshdirect.fdstore.mail.CrmSecurityCCCheckEmailVO;
 import com.freshdirect.fdstore.mail.FDEmailFactory;
@@ -1459,10 +1464,9 @@ public class FDCustomerManager {
 				cart.getPaymentMethod().setPaymentType(EnumPaymentType.ON_FD_ACCOUNT);
 			}
 			ErpCreateOrderModel createOrder = FDOrderTranslator.getErpCreateOrderModel(cart);
-			// System.out.println("gift cards selected "+createOrder.getSelectedGiftCards());
 			createOrder.setTransactionSource(info.getSource());
 			createOrder.setTransactionInitiator(info.getAgent() == null ? null : info.getAgent().getUserId());
-
+			
 			FDCustomerManagerSB sb = managerHome.create();
 			String orderId =
 				sb.placeOrder(
@@ -1524,7 +1528,7 @@ public class FDCustomerManager {
 		Set<String> appliedPromos,
 		boolean sendEmail,
 		CustomerRatingI cra,
-		EnumDlvPassStatus status)
+		EnumDlvPassStatus status,boolean hasSomeCaptures)
 		throws FDResourceException, ErpTransactionException, ErpFraudException, ErpAuthorizationException,DeliveryPassException,ErpAddressVerificationException,
 		FDPaymentInadequateException
 		{
@@ -1543,9 +1547,14 @@ public class FDCustomerManager {
 			ErpModifyOrderModel order = FDOrderTranslator.getErpModifyOrderModel(cart);
 			order.setTransactionSource(info.getSource());
 			order.setTransactionInitiator(info.getAgent() == null ? null : info.getAgent().getUserId());
+			EnumSaleType type = cart.getOriginalOrder().getOrderType();
+			boolean hasCouponDiscounts = false;
+			if(EnumSaleType.REGULAR.equals(type) && (order.hasCouponDiscounts()||cart.getOriginalOrder().hasCouponDiscounts()) && !hasSomeCaptures){
+				hasCouponDiscounts = true;				
+			}
 
 			FDCustomerManagerSB sb = managerHome.create();
-			EnumSaleType type = cart.getOriginalOrder().getOrderType();
+//			EnumSaleType type = cart.getOriginalOrder().getOrderType();
 			if (EnumSaleType.REGULAR.equals(type)){
 				sb.modifyOrder(
 						info,
@@ -1556,7 +1565,7 @@ public class FDCustomerManager {
 						sendEmail,
 						cra,
 						info.getAgent() == null ? null : info.getAgent().getRole(),
-						status);
+						status,hasCouponDiscounts);
 			}else if (EnumSaleType.SUBSCRIPTION.equals(type)){
 				sb.modifyAutoRenewOrder(
 						info,
@@ -1570,7 +1579,6 @@ public class FDCustomerManager {
 						status);
 				sb.authorizeSale(info.getIdentity().getErpCustomerPK().toString(), saleId, type, cra);
 			}
-
 		} catch (CreateException ce) {
 			invalidateManagerHome();
 			throw new FDResourceException(ce, "Error creating session bean");
@@ -3771,9 +3779,13 @@ public class FDCustomerManager {
 				order.setTransactionSource(info.getSource());
 				order.setTransactionInitiator(info.getAgent() == null ? null : info.getAgent().getUserId());
 				String oldReservationId = cart.getOriginalReservationId();
+				boolean hasCouponDiscounts = false;
+				if(EnumSaleType.REGULAR.equals(cart.getOriginalOrder().getOrderType()) && (order.hasCouponDiscounts()||cart.getOriginalOrder().hasCouponDiscounts())){
+					hasCouponDiscounts = true;
+				}
 				FDCustomerManagerSB sb = managerHome.create();
 				sb.bulkModifyOrder(saleId, identity, info, order, oldReservationId, appliedPromos, 
-						info.getAgent() == null ? null : info.getAgent().getRole(), sendEmail);
+						info.getAgent() == null ? null : info.getAgent().getRole(), sendEmail,hasCouponDiscounts);
 			}catch (CreateException ce) {
 				invalidateManagerHome();
 				throw new FDResourceException(ce, "Error creating bean");

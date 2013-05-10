@@ -358,11 +358,20 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 			ArrayList<ErpClientCodeReport> ccList = new ArrayList<ErpClientCodeReport>();
 			for (ErpClientCode cc : item.getClientCodes()) {
 				ErpClientCodeReport ccr = new ErpClientCodeReport(cc);
-				double disAmount;
+				double disAmount=0;
 				Price p = new Price(item.getBasePrice());
+				Price discountP = null;
 				if (item.getDiscount() != null) {
 					try {
-						Price discountP = PricingEngine.applyDiscount(p, 1, item.getDiscount(), item.getBasePriceUnit());
+						discountP = PricingEngine.applyDiscount(p, 1, item.getDiscount(), item.getBasePriceUnit());
+						disAmount = discountP.getBasePrice();
+					} catch (PricingException e) {
+						disAmount = 0.0;
+					}
+				}
+				if (item.getCouponDiscount() != null) {
+					try {
+						discountP = PricingEngine.applyCouponDiscount(null!=discountP?discountP:p, 1, item.getCouponDiscount(), item.getBasePriceUnit());
 						disAmount = discountP.getBasePrice();
 					} catch (PricingException e) {
 						disAmount = 0.0;
