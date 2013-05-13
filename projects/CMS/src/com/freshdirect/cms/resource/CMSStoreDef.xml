@@ -334,7 +334,7 @@
             <AttributeDef type="B" name="HIDE_FEATURED_ITEMS"  label="Hide featured items" inheritable="true"/>
 			<EnumDef type="S" name="PRODUCT_PROMOTION_TYPE" label="Product Promotion Type">
 				<EnumValue value="PRESIDENTS_PICKS" label="President's Picks"/>
-				<EnumValue value="E-COUPONS" label="E-Coupons"/>
+				<EnumValue value="E_COUPONS" label="E-Coupons"/>
 			</EnumDef>
 		</AttributeDefs>
 		<RelationshipDefs>
