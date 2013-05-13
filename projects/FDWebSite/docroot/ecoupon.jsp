@@ -231,13 +231,13 @@ final int W_INDEX_RIGHT_CENTER = W_INDEX_TOTAL - 228 - W_INDEX_CENTER_PADDING;
    			if (contGro || contFro || contDai) {
    				%><div id="fdCouponDealSpots"><%
    					if (contGro) {
-   						%><a href="/ecoupon.jsp?searchParams=&view=grid&genericFilter=dept=gro&deptId=gro&refinement=1" style="<%= (contFro || contDai) ? "margin-right: 10px;" : "" %>"><img src="/media/images/ecoupon/midQuickFilter_GRO.gif" alt="FDCoupons: Grocery" /></a><%
+   						%><a href="/ecoupon.jsp?sort=prio&searchParams=&view=grid&genericFilter=dept=gro&deptId=gro&refinement=1" style="<%= (contFro || contDai) ? "margin-right: 10px;" : "" %>"><img src="/media/images/ecoupon/midQuickFilter_GRO.gif" alt="FDCoupons: Grocery" /></a><%
    					}
    					if (contFro) {
-   						%><a href="/ecoupon.jsp?searchParams=&view=grid&genericFilter=dept=fro&deptId=fro&refinement=1" style="<%= (contGro) ? "margin-left: 10px;" : "" %><%= (contDai) ? "margin-right: 10px;" : "" %>"><img src="/media/images/ecoupon/midQuickFilter_FRO.gif" alt="FDCoupons: Frozen" /></a><%
+   						%><a href="/ecoupon.jsp?sort=prio&searchParams=&view=grid&genericFilter=dept=fro&deptId=fro&refinement=1" style="<%= (contGro) ? "margin-left: 10px;" : "" %><%= (contDai) ? "margin-right: 10px;" : "" %>"><img src="/media/images/ecoupon/midQuickFilter_FRO.gif" alt="FDCoupons: Frozen" /></a><%
    					}
    					if (contDai) {
-   						%><a href="/ecoupon.jsp?searchParams=&view=grid&genericFilter=dept=dai&deptId=dai&refinement=1" style="<%= (contGro || contFro) ? "margin-left: 10px;" : "" %>"><img src="/media/images/ecoupon/midQuickFilter_DAI.gif" alt="FDCoupons: Dairy" /></a><%
+   						%><a href="/ecoupon.jsp?sort=prio&searchParams=&view=grid&genericFilter=dept=dai&deptId=dai&refinement=1" style="<%= (contGro || contFro) ? "margin-left: 10px;" : "" %>"><img src="/media/images/ecoupon/midQuickFilter_DAI.gif" alt="FDCoupons: Dairy" /></a><%
    					}
    				%></div><%
    			}

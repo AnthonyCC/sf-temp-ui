@@ -101,7 +101,7 @@ public class FilteringComparatorUtil {
 				break;
 			case BY_PRIORITY:
 				comparator = ComparatorChain.create(FilteringSortingItem.wrap(COUPON_POPULARITY_COMPARATOR));
-				comparator.chain(FilteringSortingItem.wrap(ProductModel.FULL_NAME_PRODUCT_COMPARATOR));
+//				comparator.chain(FilteringSortingItem.wrap(ProductModel.FULL_NAME_PRODUCT_COMPARATOR));
 				if (!ascending)
 					comparator = ComparatorChain.reverseOrder(comparator);
 				break;
@@ -309,6 +309,8 @@ public class FilteringComparatorUtil {
 				if(null != cp1 && null !=cp2){
 					if(cp2.getOfferPriority()!=null && cp1.getOfferPriority()!=null){
 						return Integer.getInteger(cp2.getOfferPriority()).compareTo(Integer.getInteger(cp1.getOfferPriority()));
+					}else if(cp2.getOfferPriority()==null && cp1.getOfferPriority()==null){
+						return 0;
 					}else if(null != cp2 && cp2.getOfferPriority()!=null){
 						return 1;
 					}else if(null !=cp1 && cp1.getOfferPriority()!=null){

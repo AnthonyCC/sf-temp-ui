@@ -477,13 +477,15 @@ public class FDCustomerCouponUtil implements Serializable {
 				FDCouponInfo cp1 = FDCouponFactory.getInstance().getCouponByUpc(p1.getDefaultSku().getProductInfo().getUpc());
 				FDCouponInfo cp2 = FDCouponFactory.getInstance().getCouponByUpc(p2.getDefaultSku().getProductInfo().getUpc());
 				if(null != cp1 && null !=cp2){
-					 if(cp1.getOfferPriority()!=null && cp2.getOfferPriority()!=null){
-						 Integer cp1Prio= Integer.parseInt(cp1.getOfferPriority());
-						 Integer cp2Prio= Integer.parseInt(cp2.getOfferPriority());
-						 return cp2Prio.compareTo(cp1Prio);
-					 }else if(cp2.getOfferPriority()!=null){
-						 return 1;
-					 }					
+					if(cp2.getOfferPriority()!=null && cp1.getOfferPriority()!=null){
+						return Integer.getInteger(cp2.getOfferPriority()).compareTo(Integer.getInteger(cp1.getOfferPriority()));
+					}else if(cp2.getOfferPriority()==null && cp1.getOfferPriority()==null){
+						return 0;
+					}else if(null != cp2 && cp2.getOfferPriority()!=null){
+						return 1;
+					}else if(null !=cp1 && cp1.getOfferPriority()!=null){
+						return -1;
+					}
 				}
 			} catch (Exception e) {
 				LOGGER.debug("Exception in COUPON_POPULARITY_COMPARATOR:"+e);

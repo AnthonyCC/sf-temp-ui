@@ -98,7 +98,7 @@
 				    		</div>
 				    	<% } %>
 			    		<% if (onLandingPage) { %>
-			    			<div class="filterbox sidebar-content"><ul><li><a href="/ecoupon.jsp?searchParams=&view=grid&pageSize=0&refinement=1">View all <span class="count">(<tmpl:get name="productTabItemCount"/>)</span></a></li></ul></div>
+			    			<div class="filterbox sidebar-content"><ul><li><a href="/ecoupon.jsp?sort=prio&searchParams=&view=grid&pageSize=0&refinement=1">View all <span class="count">(<tmpl:get name="productTabItemCount"/>)</span></a></li></ul></div>
 			    		<% } %>
 			        	<tmpl:get name='filterNavigator'/>
 			    	</div>
@@ -117,7 +117,7 @@
 									</center>
 								</div>
 								<div id="fdCouponBottomViewAll">
-				    				<a href="/ecoupon.jsp?searchParams=&view=grid&pageSize=0&refinement=1"><img src="/media/images/ecoupon/botViewAll.gif" alt="View All FDCoupons" /></a><br />
+				    				<a href="/ecoupon.jsp?sort=prio&searchParams=&view=grid&pageSize=0&refinement=1"><img src="/media/images/ecoupon/botViewAll.gif" alt="View All FDCoupons" /></a><br />
 				    			</div>
 				    	<% } else { %>
 					    		<div id="pager-top" class="pager"><tmpl:get name='pagerTop'/></div>
