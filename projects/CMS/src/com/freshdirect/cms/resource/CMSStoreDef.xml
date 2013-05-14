@@ -560,6 +560,7 @@
                 <EnumValue value="111" label="Multi Category Layout (with Quickbuy)"/><!-- Multi + QB layout [APPDEV-2386] -->
 
                 <EnumValue value="200" label="President's Picks"/><!-- promo page -->
+                <EnumValue value="201" label="E-Coupons"/><!-- E-Coupons -->
 			</EnumDef>
 			<EnumDef type="I" name="TEMPLATE_TYPE"  label="Template Type" inheritable="true">
 				<EnumValue value="1" label="Fresh Direct Default Template"/>
