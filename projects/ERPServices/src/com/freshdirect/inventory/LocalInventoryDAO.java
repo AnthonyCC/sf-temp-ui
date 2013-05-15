@@ -77,7 +77,7 @@ public class LocalInventoryDAO {
 			while(it.hasNext()){
 				ErpInventoryEntryModel entry = it.next();
 				if(!entry.getStartDate().after(requestedDate))
-					cumlQty = entry.getQuantity()/* + cumlQty*/;
+					cumlQty = entry.getQuantity() + cumlQty; // Now its cumulative (As Per Pradeep's request on May15)
 			}
 			if(materialCountMap.containsKey(orderLine.getMaterialNumber())){
 				cumlQty = cumlQty -materialCountMap.get(orderLine.getMaterialNumber());
