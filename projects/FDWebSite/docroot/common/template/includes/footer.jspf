@@ -68,6 +68,9 @@ final int W_FOOTER_TOTAL = 970;
             	params.put("hasMyFD", Boolean.toString(hasMyFD));
             	params.put("careerLink", FDStoreProperties.getCareerLink());
             	params.put("giftPath", giftPath);
+            	params.put("bottomUri", bottomUri);
+            	params.put("deptId", deptId);
+            	params.put("catId", catId);
             	
 			%><fd:IncludeMedia name="/media/layout/nav/bottom_nav.ftl" parameters="<%= params %>">
 				<%-- no media, include code version --%>

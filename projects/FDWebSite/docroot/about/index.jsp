@@ -59,17 +59,21 @@
 	<% if ("dvlprs".equalsIgnoreCase(request.getParameter("catID"))) { %>
 		<%@ include file="/includes/i_about_preamble.jspf"%>
 	<% }else{
-	if(siteAccessPage==null || !siteAccessPage.equalsIgnoreCase("aboutus")){ %>
-		<% if ( request.getParameter("lang") != null) { %>
-			<% if ("espanol".equalsIgnoreCase(request.getParameter("lang"))) { %> 
-				<fd:IncludeMedia name="/media/editorial/site_access/aboutus_espanol.ftl" parameters="<%=params%>" withErrorReport="true"/>
+		/* forward over to new about us home */
+		if (!"/site_access/site_access.jsp".equals(jspTemplate)) { %><jsp:forward page="/department.jsp?deptId=about"/><% }
+		
+		if(siteAccessPage==null || !siteAccessPage.equalsIgnoreCase("aboutus")){ %>
+			<% if ( request.getParameter("lang") != null) { %>
+				<% if ("espanol".equalsIgnoreCase(request.getParameter("lang"))) { %> 
+					<fd:IncludeMedia name="/media/editorial/site_access/aboutus_espanol.ftl" parameters="<%=params%>" withErrorReport="true"/>
+				<% } else { %>
+					<fd:IncludeMedia name="/media/editorial/site_access/aboutus.ftl" parameters="<%=params%>" withErrorReport="true"/>
+				<% } %>
 			<% } else { %>
 				<fd:IncludeMedia name="/media/editorial/site_access/aboutus.ftl" parameters="<%=params%>" withErrorReport="true"/>
 			<% } %>
-		<% } else { %>
-			<fd:IncludeMedia name="/media/editorial/site_access/aboutus.ftl" parameters="<%=params%>" withErrorReport="true"/>
-		<% } %>
-	<% } %>
+		<% 
+	} %>
 <% } %>
 
 	<% if ("true".equalsIgnoreCase(request.getParameter("bloglogout"))) {%>
