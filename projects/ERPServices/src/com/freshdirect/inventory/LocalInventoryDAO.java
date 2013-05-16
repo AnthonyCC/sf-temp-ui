@@ -72,23 +72,23 @@ public class LocalInventoryDAO {
 			
 			List<ErpInventoryEntryModel> olInv = new ArrayList<ErpInventoryEntryModel>();
 			List<ErpInventoryEntryModel> masterInv = materialMap.get(orderLine.getMaterialNumber());
-			if(masterInv!=null){
-			Iterator<ErpInventoryEntryModel> it = masterInv.iterator();
-			while(it.hasNext()){
-				ErpInventoryEntryModel entry = it.next();
-				if(!entry.getStartDate().after(requestedDate))
-					cumlQty = entry.getQuantity() + cumlQty; // Now its cumulative (As Per Pradeep's request on May15)
-			}
-			if(materialCountMap.containsKey(orderLine.getMaterialNumber())){
-				cumlQty = cumlQty -materialCountMap.get(orderLine.getMaterialNumber());
-			}
-			
-			if(cumlQty>=requestedQty){
-				olInv.add(new ErpInventoryEntryModel(requestedDate, requestedQty));
-			}else{
-				olInv.add(new ErpInventoryEntryModel(requestedDate, 0));
-			}
-			}else{ // if the material is not in inventory table then consider it to be unlimited.
+			if(masterInv!=null) {
+				Iterator<ErpInventoryEntryModel> it = masterInv.iterator();
+				while(it.hasNext()) {
+					ErpInventoryEntryModel entry = it.next();
+					if(!entry.getStartDate().after(requestedDate))
+						cumlQty = entry.getQuantity() + cumlQty; // Now its cumulative (As Per Pradeep's request on May15)
+				}
+				if(materialCountMap.containsKey(orderLine.getMaterialNumber())){
+					cumlQty = cumlQty -materialCountMap.get(orderLine.getMaterialNumber());
+				}
+
+				if(cumlQty >= requestedQty) {
+					olInv.add(new ErpInventoryEntryModel(requestedDate, requestedQty));
+				} else {
+					olInv.add(new ErpInventoryEntryModel(requestedDate, cumlQty >= 0 ? cumlQty : 0));
+				}
+			} else { // if the material is not in inventory table then consider it to be unlimited.
 				olInv.add(new ErpInventoryEntryModel(requestedDate, requestedQty));
 			}
 			
