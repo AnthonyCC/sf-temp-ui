@@ -178,6 +178,7 @@ StringBuffer buffer = new StringBuffer(
 <!-- ===================================== -->
 
 <% String smartStoreFacility = "view_cart"; %>
+<%@ include file="/includes/smartstore/i_recommender_tabs.jspf" %>
 
 <br />
 <img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0" alt="" /><br />
