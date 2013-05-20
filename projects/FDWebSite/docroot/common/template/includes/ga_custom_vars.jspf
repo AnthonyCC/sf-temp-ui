@@ -5,7 +5,7 @@
 <%
 {
 	Map<String, String> vars = (Map<String, String>) pageContext.getRequest().getAttribute(SessionName.GA_CUSTOM_VARIABLES);
-	System.err.println("vars: " + vars);
+	
 	if (vars != null) {
 		int slotNumber = 2;
 		// Mike Wendel's request was to move the search variables starting with slot #2

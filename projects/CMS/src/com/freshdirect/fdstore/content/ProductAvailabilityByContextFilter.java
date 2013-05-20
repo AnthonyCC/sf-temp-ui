@@ -35,11 +35,11 @@ public class ProductAvailabilityByContextFilter extends AbstractProductFilter {
 						&& product.getSku(0).getProduct().isAlcohol())));
 		} catch (FDResourceException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			//e.printStackTrace();
 			throw e;
 		} catch (FDSkuNotFoundException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			//e.printStackTrace();
 		}
 		return false;
 	}
