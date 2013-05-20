@@ -85,7 +85,7 @@
 		boolean atTopLevel = false;
 		ArrayList folders = new ArrayList();
 		ContentNodeModel node = requestNode;
-		while (!atTopLevel) {
+		while (!atTopLevel && null !=node) {
 			HashMap nodeMap = new HashMap();
 			nodeMap.put("name", node.getFullName());
 			nodeMap.put("link", node);
