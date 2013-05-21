@@ -423,31 +423,33 @@ public class FDCustomerCouponUtil implements Serializable {
 		List<ProductModel> products = new ArrayList<ProductModel>();
 		
 		ContentNodeModel currentFolder = ContentFactory.getInstance().getContentNode( FDCouponProperties.getCouponCMSCategory() );
-		List<ProductModel> couponProducts = ((com.freshdirect.fdstore.content.CategoryModel)currentFolder).getProducts();
-		FDCustomerCoupon coupon = null;
-		if(null !=couponProducts){
-			for (ProductModel product : couponProducts) {
-				try {
-					if ( null != product.getDefaultSku() && product.getDefaultSku().getProductInfo() != null ){
-						coupon = user.getCustomerCoupon(product.getDefaultSku().getProductInfo().getUpc(), EnumCouponContext.PRODUCT);
-						if(null != coupon)
-						if(EnumCouponDisplayStatus.COUPON_CLIPPABLE.equals(coupon.getDisplayStatus())|| EnumCouponDisplayStatus.COUPON_CLIPPED_DISABLED.equals(coupon.getDisplayStatus())){
-							if(product.isFullyAvailable()){
-								if(filterMobile) {
-									if(!product.isHidden()
-				        				   && !product.isHideIphone()) {
+		if(null !=currentFolder){
+			List<ProductModel> couponProducts = ((com.freshdirect.fdstore.content.CategoryModel)currentFolder).getProducts();
+			FDCustomerCoupon coupon = null;
+			if(null !=couponProducts){
+				for (ProductModel product : couponProducts) {
+					try {
+						if ( null != product.getDefaultSku() && product.getDefaultSku().getProductInfo() != null ){
+							coupon = user.getCustomerCoupon(product.getDefaultSku().getProductInfo().getUpc(), EnumCouponContext.PRODUCT);
+							if(null != coupon)
+							if(EnumCouponDisplayStatus.COUPON_CLIPPABLE.equals(coupon.getDisplayStatus())|| EnumCouponDisplayStatus.COUPON_CLIPPED_DISABLED.equals(coupon.getDisplayStatus())){
+								if(product.isFullyAvailable()){
+									if(filterMobile) {
+										if(!product.isHidden()
+					        				   && !product.isHideIphone()) {
+											products.add(product);
+										}
+									} else {
 										products.add(product);
 									}
-								} else {
-									products.add(product);
 								}
 							}
 						}
+					} catch (FDResourceException e) {
+						e.printStackTrace();
+					} catch (FDSkuNotFoundException e) {
+						e.printStackTrace();
 					}
-				} catch (FDResourceException e) {
-					e.printStackTrace();
-				} catch (FDSkuNotFoundException e) {
-					e.printStackTrace();
 				}
 			}
 		}
