@@ -762,7 +762,7 @@ public class StringUtil {
         }
         total = (sumOdd * 3) + sumEven;
         int mod10 = total % 10;
-        int checkSum = 10 - mod10;        
+        int checkSum = mod10==0? mod10 :(10 - mod10);        
         return code+""+checkSum;
 	}
 	
