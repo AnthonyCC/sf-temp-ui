@@ -240,7 +240,7 @@ public class PageViewTagModelBuilder  {
 	private void processWineFilter() throws SkipTagException{
 		if (wineFilterValueSet){
 			if (wineFilterValue != null){
-				tagModel.setPageId(wineFilterValue.getDomainName());
+				tagModel.setPageId(wineFilterValue.getDomainEncoded());
 			}
 		} else {
 			throw new SkipTagException("wineFilterValue is not set");
