@@ -6,7 +6,6 @@ import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.DepartmentModel;
 import com.freshdirect.fdstore.content.ProductModel;
-import com.freshdirect.fdstore.content.WineFilterValue;
 import com.freshdirect.fdstore.coremetrics.tagmodel.PageViewTagModel;
 
 public class PageViewTagModelBuilder  {
@@ -29,8 +28,6 @@ public class PageViewTagModelBuilder  {
 	private ProductModel productModel;
 	private ContentNodeModel currentFolder;
 	private String recipeSource;
-	private WineFilterValue wineFilterValue;
-	private boolean wineFilterValueSet;
 	private PageViewTagModel tagModel = new PageViewTagModel();
 	
 	public PageViewTagModel buildTagModel() throws SkipTagException{
@@ -51,11 +48,6 @@ public class PageViewTagModelBuilder  {
 			if (FDStoreProperties.getCoremetricsCatIdDirs().contains(dirName)){
 				tagModel.setCategoryId(dirName);
 				tagModel.setPageId(uriAfterSlash.substring(slashAfterDirNamePos+1));
-				
-				if ("wine".equals(tagModel.getCategoryId()) && "filter.jsp".equals(tagModel.getPageId())) {
-					processWineFilter();
-				}
-				
 				processHelpDir();
 				decoratePageIdWithCatId();
 			}
@@ -237,16 +229,6 @@ public class PageViewTagModelBuilder  {
 		}
 	}
 	
-	private void processWineFilter() throws SkipTagException{
-		if (wineFilterValueSet){
-			if (wineFilterValue != null){
-				tagModel.setPageId(wineFilterValue.getDomainEncoded());
-			}
-		} else {
-			throw new SkipTagException("wineFilterValue is not set");
-		}
-	}
-	
 	private void identifyAttributes(){
 		if (suggestedTerm != null) {
 			tagModel.getAttributesMaps().put(1, suggestedTerm);
@@ -289,8 +271,4 @@ public class PageViewTagModelBuilder  {
 		this.recipeSource = recipeSource;
 	}
 
-	public void setWineFilterValue(WineFilterValue wineFilterValue) {
-		this.wineFilterValue = wineFilterValue;
-		this.wineFilterValueSet = true; 
-	}
 }
