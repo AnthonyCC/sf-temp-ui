@@ -138,7 +138,21 @@ FDSessionUser user = (FDSessionUser)session.getAttribute(SessionName.USER);
 <%	boolean showEditOrderButtons = true;
 	boolean showFeesSection = false;
 	boolean cartMode = true; %>
-	
+	<% if ( cart.getExpCouponDeliveryDate() != null && !"".equals(cart.getExpCouponDeliveryDate()) ) { %>
+				
+					<table>
+						<tr>
+							<td rowspan="3" valign="top" width="90" style="color:red"><b>ATTENTION</b></td>
+							<td><img src="/media/images/ecoupon/red_triangle.png" alt="" /></td>
+							<td><b>Some coupons not valid on date of delivery. For all coupons to be valid, select date on or before: <%= cart.getExpCouponDeliveryDate() %></b></td>
+						</tr>
+						<tr>
+							<td>&nbsp;</td>
+							<td></td>
+						</tr>
+					</table>
+				
+			<% } %>
 <%@ include file="/includes/i_preview_cart_details.jspf"%>
 
 <%@ include file="/includes/i_customer_service_message.jspf"%>

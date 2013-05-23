@@ -11,8 +11,9 @@
     - boolean showAddressButtons
     - boolean showDeleteButtons
 ************************************************** --%>
-<crm:GetFDUser id="thisUser">
-<%  boolean isDepotLocation = (dlvAddress instanceof ErpDepotAddressModel);
+
+<%  FDSessionUser thisUser= user;  
+boolean isDepotLocation = (dlvAddress instanceof ErpDepotAddressModel);
     String depotFacility = "";
     if (order instanceof com.freshdirect.fdstore.customer.adapter.FDOrderAdapter) {
         depotFacility = ((com.freshdirect.fdstore.customer.adapter.FDOrderAdapter)order).getDepotFacility();
@@ -170,4 +171,4 @@ if(airclic_msg && FDStoreProperties.isAirclicEnabled())
                 <% if (showDeleteButtons) { %><a href="javascript:setAction(this.form,'deleteDeliveryAddress');setIdToDelete(this.form,'<%= dlvAddress.getPK().getId() %>');" class="delete">DELETE</a> <% } %><A HREF="<%= response.encodeURL("/checkout/checkout_edit_address.jsp?addressId=" + dlvAddress.getPK().getId()) %>" class="edit">EDIT</A>
             </CENTER>
 <%  } %>
-</crm:GetFDUser>
+

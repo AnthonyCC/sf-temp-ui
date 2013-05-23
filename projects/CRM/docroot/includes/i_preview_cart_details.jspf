@@ -183,7 +183,18 @@
         <font color="#888888"><%= cartLine.getSkuCode() %></font>
 		<% if ( discountMsg!=null && !"".equals(discountMsg) ) { %><br />&nbsp;&nbsp;<span><%= discountMsg %></span><% } %>
 		<% if ( groupDiscountMsg!=null && !"".equals(groupDiscountMsg) ) { %><br />&nbsp;&nbsp;<span><%= groupDiscountMsg %></span><% } %>
-		<br /><display:FDCoupon coupon="<%= user.getCustomerCoupon(cartLine, EnumCouponContext.CHECKOUT) %>" contClass="fdCoupon_cartlineChckout" pastTense="true"></display:FDCoupon>
+		<br />
+		<%   FDCustomerCoupon coupon = user.getCustomerCoupon(cartLine, EnumCouponContext.CHECKOUT) ;
+					String couponClass = "fdCoupon_cartlineChckout";
+					Boolean pastTense = true;
+					if(null != coupon &&  EnumCouponStatus.COUPON_CLIPPED_FILTERED.equals(coupon.getStatus())){
+						couponClass = "fdCoupon_cartlineChckoutExpired";
+						pastTense = false;
+					%>
+						<img src="/media/images/ecoupon/red_triangle.png" alt="" />
+					<%}
+				%>
+				<display:FDCoupon coupon="<%= coupon %>" contClass="<%= couponClass %>" pastTense="<%= pastTense %>"></display:FDCoupon>
 	</TD>
 	<td valign="top"><span <%= (cartLine.getDiscount() != null || cartLine.getCouponDiscount()!=null) ? "style=\"color: #CC0000;\"" : "" %>>(<%= cartLine.getUnitPrice() %>)</span></td>
 	<td ALIGN="RIGHT" valign="top"><span <%= (cartLine.getDiscount() != null || cartLine.getCouponDiscount()!=null) ? "style=\"color: #CC0000;\"" : "" %>><%= JspMethods.formatPrice(cartLine.getPrice()) %></span></td>
