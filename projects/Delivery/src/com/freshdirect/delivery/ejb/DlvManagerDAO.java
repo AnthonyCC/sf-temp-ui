@@ -2075,4 +2075,36 @@ public class DlvManagerDAO {
 		return reservations;
 	}
 
+			private static final String FETCH_ORDERS_WITH_RESERVATIONS_NOTINUPS="select R.ID, R.ORDER_ID, R.CUSTOMER_ID, R.STATUS_CODE, R.TIMESLOT_ID, R.ZONE_ID, R.EXPIRATION_DATETIME, " +
+				"R.TYPE, R.ADDRESS_ID,T.BASE_DATE, Z.ZONE_CODE,R.UNASSIGNED_DATETIME, R.UNASSIGNED_ACTION, R.IN_UPS, R.ORDER_SIZE, R.SERVICE_TIME, R.RESERVED_ORDER_SIZE, " +
+				"R.RESERVED_SERVICE_TIME, R.UPDATE_STATUS, R.METRICS_SOURCE, R.NUM_CARTONS , R.NUM_FREEZERS , R.NUM_CASES, R.CLASS from dlv.reservation r, dlv.timeslot t, dlv.zone z " +
+				"where t.base_date > sysdate and t.zone_id = z.id and R.TIMESLOT_ID = T.ID and R.STATUS_CODE='10' and t.is_dynamic = 'X' and r.in_ups is null";
+		
+		private static final String FIX_ORDERS_WITH_RESERVATIONS_NOTINUPS = "update dlv.reservation rdx  set rdx.UNASSIGNED_ACTION = 'RESERVE_TIMESLOT', " +
+				"rdx.UNASSIGNED_DATETIME = sysdate,rdx.in_ups = 'X' where rdx.id IN  (select R.ID from dlv.reservation r, dlv.timeslot t, dlv.zone z " +
+				"where  t.base_date > sysdate and t.zone_id = z.id and R.TIMESLOT_ID = T.ID and R.STATUS_CODE='10' and t.is_dynamic = 'X' and r.in_ups is null)";
+		
+		
+		public static List<DlvReservationModel> getReservationsNotInUPS(
+				Connection conn) throws SQLException {
+			PreparedStatement ps =
+					conn.prepareStatement(FETCH_ORDERS_WITH_RESERVATIONS_NOTINUPS);
+				
+				ResultSet rs = ps.executeQuery();
+				List<DlvReservationModel>  reservations = new ArrayList<DlvReservationModel>();
+				while (rs.next()) {
+					DlvReservationModel rsv = loadReservationFromResultSet(rs);
+					reservations.add(rsv);
+				}
+
+				if(reservations.size()>0){
+					ps = conn.prepareStatement(FIX_ORDERS_WITH_RESERVATIONS_NOTINUPS);
+					ps.execute();
+				}
+				
+				rs.close();
+				ps.close();
+			   
+				return reservations;
+			}
 }

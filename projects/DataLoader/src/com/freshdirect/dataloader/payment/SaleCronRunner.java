@@ -188,6 +188,8 @@ public class SaleCronRunner {
 			reservations.add(cancelledReservationsInUPS);
 			List<DlvReservationModel> ordersWithCancelledRsv = dlvManager.getOrdersWithCancelledRsv();
 			reservations.add(ordersWithCancelledRsv);
+			List<DlvReservationModel> reservationsNotInUPS = dlvManager.getReservationsNotInUPS();
+			reservations.add(reservationsNotInUPS);
 			
 			email(reservations);
 		}
@@ -301,7 +303,7 @@ public class SaleCronRunner {
 	
 	
 	final static String[] labels = {"UnConfirmed Reservations in UPS", "Cancelled Orders in Storefront/Confirmed in UPS",
-			"Cancelled Reservation in Storefront/Not Cancelled in UPS","Orders with Cancelled Reservations"};
+			"Cancelled Reservation in Storefront/Not Cancelled in UPS","Orders with Cancelled Reservations", "Reservations Not in UPS for dynamic timeslot"};
 	
 	private static void email(List<List<DlvReservationModel>> reservations) {
 		// TODO Auto-generated method stub

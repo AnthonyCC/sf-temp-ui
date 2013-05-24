@@ -2396,6 +2396,27 @@ public class DlvManagerSessionBean extends GatewaySessionBeanSupport {
 
 	}
 	
+	public List<DlvReservationModel> getReservationsNotInUPS() throws DlvResourceException {
+		Connection conn = null;
+		try {
+			conn = this.getConnection();
+			return DlvManagerDAO.getReservationsNotInUPS(conn);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			LOGGER.warn("DlvManagerSB getReservationsNotInUPS(): " + e);
+			throw new DlvResourceException(e);
+		} finally {
+			try {
+				if (conn != null) {
+					conn.close();
+				}
+			} catch (SQLException e) {
+				LOGGER.warn("DlvManagerSB getReservationsNotInUPS(): Exception while cleaning: " + e);
+			}
+		}
+
+	}
+	
 	public List<UnassignedDlvReservationModel> getReRouteReservations() throws DlvResourceException {
 		Connection conn = null;
 		try {

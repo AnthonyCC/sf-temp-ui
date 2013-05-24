@@ -188,7 +188,7 @@ public class RoutingLoadListener extends MessageDrivenBeanSupport {
 	}
 	
     private void process(ReserveTimeslotCommand command) throws FDResourceException {
-    	LOGGER.debug("receiving reservation from queue..."+command.getReservation()!=null ?"customer Id: "+command.getReservation().getCustomerId()+" timeslotId "+command.getReservation().getTimeslotId():null);
+    	LOGGER.debug("receiving reservation from queue..."+command.getReservation()!=null ?"customer Id: "+command.getReservation().getCustomerId()+" reservationId "+command.getReservation().getId():null);
 		FDDeliveryManager.getInstance().reserveTimeslotEx(command.getReservation(), command.getAddress(), command.getTimeslot(), command.getEvent());
 	}
 	

@@ -228,5 +228,6 @@ public interface DlvManagerSB extends EJBObject {
 	public List<DlvReservationModel> getConfirmedRsvForCancelledOrders() throws DlvResourceException,RemoteException;
 	public List<DlvReservationModel> getCancelledRsvInUPS() throws DlvResourceException,RemoteException;
 	public List<DlvReservationModel> getOrdersWithCancelledRsv() throws DlvResourceException,RemoteException;
+	public List<DlvReservationModel> getReservationsNotInUPS() throws DlvResourceException,RemoteException;
 	
 }   
