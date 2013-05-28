@@ -406,6 +406,7 @@ public class RouteManagerDaoOracleImpl implements RouteManagerDaoI  {
 			" and s.status <> 'CAN' and s.id = ? ) ";
 		
 	public int updateOrderUnassignedInfo(String orderNo) throws DataAccessException {
+		int result = 0;	
 			try {
 				StringBuffer strBuf = new StringBuffer();
 				strBuf.append(UPDATE_ORDER_RESERVATION_QRY);
@@ -413,7 +414,7 @@ public class RouteManagerDaoOracleImpl implements RouteManagerDaoI  {
 				BatchSqlUpdate batchUpdater=new BatchSqlUpdate(this.jdbcTemplate.getDataSource(),strBuf.toString());
 				batchUpdater.declareParameter(new SqlParameter(Types.VARCHAR));
 			
-				int result = this.jdbcTemplate.update(strBuf.toString(), new Object[] {orderNo});	
+				result = this.jdbcTemplate.update(strBuf.toString(), new Object[] {orderNo});	
 			
 				batchUpdater.flush();
 				LOGGER.debug("Order unassigned info is updated: "+ result);
