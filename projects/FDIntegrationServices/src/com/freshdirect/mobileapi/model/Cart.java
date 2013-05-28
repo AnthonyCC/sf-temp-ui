@@ -501,9 +501,14 @@ public class Cart {
 
     public CartDetail getCartDetail(SessionUser user, EnumCouponContext ctx) throws FDException {
     	
-        return getCartDetail(user, this.cart, ctx);
+        return getCartDetail(user, this.cart, ctx, false);
     }
 
+    
+    public CartDetail getCartDetail(SessionUser user, EnumCouponContext ctx, boolean isQuickBuy) throws FDException {
+    	
+        return getCartDetail(user, this.cart, ctx, isQuickBuy);
+    }
     /**
      * TODO: this shouldn't return an object that's of response package.
      * @param user
@@ -511,7 +516,7 @@ public class Cart {
      * @throws FDException 
      * @throws ModelException 
      */
-    private CartDetail getCartDetail(SessionUser user, FDCartI cart, EnumCouponContext ctx) throws FDException {
+    private CartDetail getCartDetail(SessionUser user, FDCartI cart, EnumCouponContext ctx, boolean isQuickBuy) throws FDException {
         FDShoppingCartControllerTagWrapper wrapper = new FDShoppingCartControllerTagWrapper(user);
         wrapper.addRequestValue(SessionName.PARAM_EVALUATE_COUPONS, true);
         if(EnumCouponContext.CHECKOUT.equals(ctx)){
@@ -642,7 +647,7 @@ public class Cart {
                 productConfiguration.setFromProductSelection(ProductSelection.wrap(cartLine));
 
                 try {
-                    Product productData = Product.wrap(productNode, user.getFDSessionUser().getUser(), cartLine, ctx);
+                    Product productData = Product.wrap(productNode, user.getFDSessionUser().getUser(), null, cartLine, ctx, isQuickBuy);
 
                     //Automatically add "agree to terms". In order to end up in cart or prev order, user must have agreed already. Website does 
                     //something similar with hidden input fields.

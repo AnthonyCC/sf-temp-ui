@@ -1,3 +1,4 @@
+<%@page import="com.freshdirect.fdstore.customer.FDUserCouponUtil"%>
 <%@ page language="java" contentType="text/plain; charset=UTF-8" pageEncoding="UTF-8"
 %><%@ taglib uri='freshdirect' prefix='fd'
 %><%@page import="com.freshdirect.framework.util.log.LoggerFactory"
@@ -60,10 +61,16 @@ if (session.getAttribute("fd.user") != null) {
 						/* if (recCartline.hasCouponApplied()) {
 							manFdCouponTag.setCouponStatusText(EnumCouponStatus.COUPON_APPLIED.getDescription());
 						} */
-						if(EnumCouponStatus.COUPON_APPLIED.equals(curCoupon_viewcart.getStatus()) && !cart.getRecentlyAppliedCoupons().contains(curCoupon_viewcart.getCouponId())){
+						/* if(EnumCouponStatus.COUPON_APPLIED.equals(curCoupon_viewcart.getStatus()) && !cart.getRecentlyAppliedCoupons().contains(curCoupon_viewcart.getCouponId())){
 							manFdCouponTag.setCouponStatusText("");
 						}else if(EnumCouponStatus.COUPON_CLIPPED_ACTIVE.equals(curCoupon_viewcart.getStatus()) && cart.getRecentlyAppliedCoupons().contains(curCoupon_viewcart.getCouponId())){
 							manFdCouponTag.setCouponStatusText(EnumCouponStatus.COUPON_APPLIED.getDescription());
+						} */
+						EnumCouponStatus status = FDUserCouponUtil.getCouponStatus(curCoupon_viewcart, cart.getRecentlyAppliedCoupons());
+						if(null != status && status.isDisplayMessage()){
+							manFdCouponTag.setCouponStatusText(status.getDescription());
+						}else{
+							manFdCouponTag.setCouponStatusText("");
 						}
 						manFdCouponTag.initContent(pageContext);
 						/* uncomment to only return min qty not met */

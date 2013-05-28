@@ -17,6 +17,8 @@ public class AddMultipleItemsToCart extends Message {
     List<ProductConfiguration> productsConfiguration;
 
     private SmartStoreConfiguration smartStoreConfiguration = new SmartStoreConfiguration();
+    
+    private boolean isQuickBuy; //to denote add to cart from the quickshop
 
     public List<ProductConfiguration> getProductsConfiguration() {
         return productsConfiguration;
@@ -65,5 +67,13 @@ public class AddMultipleItemsToCart extends Message {
     public void setSmartStoreConfiguration(SmartStoreConfiguration smartStoreConfiguration) {
         this.smartStoreConfiguration = smartStoreConfiguration;
     }
+
+	public boolean isQuickBuy() {
+		return isQuickBuy;
+	}
+
+	public void setQuickBuy(boolean isQuickBuy) {
+		this.isQuickBuy = isQuickBuy;
+	}
 
 }

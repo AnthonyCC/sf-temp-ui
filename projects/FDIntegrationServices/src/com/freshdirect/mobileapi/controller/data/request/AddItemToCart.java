@@ -22,6 +22,8 @@ public class AddItemToCart extends Message {
     private SmartStoreConfiguration smartStoreConfiguration = new SmartStoreConfiguration();
 
     private ProductConfiguration productConfiguration = new ProductConfiguration();
+    
+    private boolean isQuickBuy; //to denote add to cart from the quickshop
 
     public ProductConfiguration getProductConfiguration() {
         return productConfiguration;
@@ -86,5 +88,13 @@ public class AddItemToCart extends Message {
     public String getImpressionId() {
         return impressionId;
     }
+
+	public boolean isQuickBuy() {
+		return isQuickBuy;
+	}
+
+	public void setQuickBuy(boolean isQuickBuy) {
+		this.isQuickBuy = isQuickBuy;
+	}
 
 }

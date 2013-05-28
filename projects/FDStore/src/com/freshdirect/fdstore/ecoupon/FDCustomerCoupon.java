@@ -142,6 +142,10 @@ public class FDCustomerCoupon implements Serializable {
 	public EnumCouponContext getContext() {
 		return context;
 	}
+
+	public void setStatus(EnumCouponStatus status) {
+		this.status = status;
+	}
 	
 	
 }

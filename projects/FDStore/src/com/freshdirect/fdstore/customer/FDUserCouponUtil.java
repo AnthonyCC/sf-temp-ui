@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import com.freshdirect.customer.ErpCouponDiscountLineModel;
 import com.freshdirect.fdstore.FDCachedFactory;
@@ -322,5 +323,20 @@ public class FDUserCouponUtil implements Serializable {
 			displayMessage =(Boolean)displayStatusMessageMap.get(ctx).get(status);
 		}
 		return displayMessage;
+	}
+	
+	public static EnumCouponStatus getCouponStatus(FDCustomerCoupon currCoupon, Set<String> recentlyAppliedCoupons){
+		if(null == currCoupon){
+			return null;
+		}
+		EnumCouponStatus changedStatus = currCoupon.getStatus();
+		if(null != recentlyAppliedCoupons){
+			if(EnumCouponStatus.COUPON_APPLIED.equals(currCoupon.getStatus()) && !recentlyAppliedCoupons.contains(currCoupon.getCouponId())){
+				changedStatus = null;
+			}else if(EnumCouponStatus.COUPON_CLIPPED_ACTIVE.equals(currCoupon.getStatus()) && recentlyAppliedCoupons.contains(currCoupon.getCouponId())){
+				changedStatus = EnumCouponStatus.COUPON_APPLIED;
+			}
+		}
+		return changedStatus;
 	}
 }

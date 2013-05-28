@@ -67,8 +67,10 @@ import com.freshdirect.fdstore.content.SkuModel;
 import com.freshdirect.fdstore.content.view.ProductRating;
 import com.freshdirect.fdstore.content.view.WebProductRating;
 import com.freshdirect.fdstore.customer.FDCartLineI;
+import com.freshdirect.fdstore.customer.FDUserCouponUtil;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.ecoupon.EnumCouponContext;
+import com.freshdirect.fdstore.ecoupon.EnumCouponStatus;
 import com.freshdirect.fdstore.ecoupon.FDCustomerCoupon;
 import com.freshdirect.fdstore.util.ProductLabeling;
 import com.freshdirect.fdstore.util.RatingUtil;
@@ -211,6 +213,10 @@ public class Product {
 
     @SuppressWarnings("unchecked")
     public Product(ProductModel productModel, FDUserI user, Variant variant, FDCartLineI cartLine, EnumCouponContext ctx) throws ModelException {
+    	 this(productModel, user, variant, cartLine, ctx, false);
+    }
+    @SuppressWarnings("unchecked")
+    public Product(ProductModel productModel, FDUserI user, Variant variant, FDCartLineI cartLine, EnumCouponContext ctx, boolean isQuickBuy) throws ModelException {
         this.product = new ProductImpression(productModel);
         this.pricingContext = user != null ? user.getPricingContext() : null;
         if (pricingContext == null) {
@@ -230,7 +236,7 @@ public class Product {
                 	
                     Sku sku = Sku.wrap(new PriceCalculator(pricingContext, productModel, skuModel)
                     															, skuModel
-                    															, findCoupon(skuModel, user, cartLine, ctx));
+                    															, findCoupon(skuModel, user, cartLine, ctx, isQuickBuy));
                     this.skus.add(sku);
                 }
             }
@@ -245,7 +251,7 @@ public class Product {
                 if (this.defaultSku == null) {
                     this.defaultSku = Sku.wrap(defaultPriceCalculator
                     								, defaultPriceCalculator.getSkuModel()
-                    								, findCoupon(defaultPriceCalculator.getSkuModel(), user, cartLine, ctx));
+                    								, findCoupon(defaultPriceCalculator.getSkuModel(), user, cartLine, ctx, isQuickBuy));
                 }
             }
 
@@ -550,7 +556,7 @@ public class Product {
 
     }
     
-    private FDCustomerCoupon findCoupon(SkuModel skuModel, FDUserI user, FDCartLineI cartLine, EnumCouponContext ctx) throws ModelException  {
+    private FDCustomerCoupon findCoupon(SkuModel skuModel, FDUserI user, FDCartLineI cartLine, EnumCouponContext ctx, boolean isQuickBuy) throws ModelException  {
     	FDCustomerCoupon coupon = null;
     	try {
     		if(user !=null){
@@ -559,6 +565,11 @@ public class Product {
 		    	} else {
 		    		coupon = user.getCustomerCoupon(skuModel.getProductInfo() != null 
 		    														? skuModel.getProductInfo().getUpc() : null, ctx);
+		    	}
+		    	
+		    	if(isQuickBuy && null!=coupon){		    		
+		    		EnumCouponStatus status = FDUserCouponUtil.getCouponStatus(coupon, user.getShoppingCart().getRecentlyAppliedCoupons());
+		    		coupon.setStatus(status);
 		    	}
     		}
     	} catch (FDResourceException e) {
@@ -1478,6 +1489,10 @@ public class Product {
     }
 
     public static Product wrap(ProductModel productModel, FDUserI user, Variant variant, FDCartLineI cartLine, EnumCouponContext ctx) throws ModelException {
+       return wrap(productModel, user, variant, cartLine, ctx, false);
+    }
+    
+    public static Product wrap(ProductModel productModel, FDUserI user, Variant variant, FDCartLineI cartLine, EnumCouponContext ctx, boolean isQuickBuy) throws ModelException {
         Product result = null;
         if(null != productModel){
 	        if (EnumProductLayout.WINE.equals(productModel.getProductLayout())) {
@@ -1485,7 +1500,7 @@ public class Product {
 	        } else if (EnumProductLayout.NEW_WINE_PRODUCT.equals(productModel.getProductLayout())) {
 	            result = new Wine(productModel, user, variant, cartLine, ctx);
 	        } else {
-	            result = new Product(productModel, user, variant, cartLine, ctx);
+	            result = new Product(productModel, user, variant, cartLine, ctx, isQuickBuy);
 	        }
         }
         return result;

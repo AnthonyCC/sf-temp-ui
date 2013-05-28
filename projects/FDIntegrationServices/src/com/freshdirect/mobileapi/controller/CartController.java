@@ -269,7 +269,7 @@ public class CartController extends BaseController {
             if (result.isSuccess()) {
                 List<String> recentItems = (List<String>) resultBundle.getExtraData(Cart.RECENT_ITEMS);
 
-                CartDetail cartDetail = cart.getCartDetail(user, null);
+                CartDetail cartDetail = cart.getCartDetail(user, null, reqestMessage.isQuickBuy());
                 responseMessage = new com.freshdirect.mobileapi.controller.data.response.Cart();
                 ((com.freshdirect.mobileapi.controller.data.response.Cart) responseMessage).setCartDetail(cartDetail);
                 ((com.freshdirect.mobileapi.controller.data.response.Cart) responseMessage).setRecentlyAddedItems(recentItems);
@@ -476,7 +476,7 @@ public class CartController extends BaseController {
         if (result.isSuccess()) {
             List<String> recentItems = (List<String>) resultBundle.getExtraData(Cart.RECENT_ITEMS);
 
-            CartDetail cartDetail = cart.getCartDetail(user, null);
+            CartDetail cartDetail = cart.getCartDetail(user, null, reqestMessage.isQuickBuy());
             responseMessage = new com.freshdirect.mobileapi.controller.data.response.Cart();
             ((com.freshdirect.mobileapi.controller.data.response.Cart) responseMessage).setCartDetail(cartDetail);
             ((com.freshdirect.mobileapi.controller.data.response.Cart) responseMessage).setRecentlyAddedItems(recentItems);
