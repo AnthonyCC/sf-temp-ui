@@ -40,6 +40,10 @@ public class DateUtil {
 	
 	public static DateFormat serverTimeFormat = new SimpleDateFormat("hh:mm aaa");
 	
+	public static DateFormat hourInDayFormat = new SimpleDateFormat("H:mm");
+	
+	public static Calendar clientCalendar = Calendar.getInstance();
+	
 	private DateUtil() {
 	}
 
@@ -381,6 +385,24 @@ public class DateUtil {
 			
 		}
 		return null;
+	}	
+	
+	public static String formatTimeRange(Date dateVal1, Date dateVal2) {
+		try {
+			String strTime1 = hourInDayFormat.format(dateVal1);
+			String strTime2 = hourInDayFormat.format(addSeconds(dateVal2,1));
+			return strTime1+" - "+strTime2;
+		} catch (Exception e) {
+			// Do Nothing
+		}
+        return "Error";
+	}
+	
+	public static Date addSeconds(Date date, int seconds) {		
+		
+		clientCalendar.setTime(date);
+		clientCalendar.add(Calendar.SECOND, seconds);
+		return clientCalendar.getTime();
 	}
 	
 	

@@ -399,6 +399,29 @@ public class RouteManagerDaoOracleImpl implements RouteManagerDaoI  {
 		}
 	}
 	
+	private static String UPDATE_ORDER_RESERVATION_QRY="" +
+			" UPDATE DLV.RESERVATION R SET R.UNASSIGNED_ACTION = 'RESERVE_TIMESLOT', R.UNASSIGNED_DATETIME = SYSDATE, R.IN_UPS = 'X' WHERE r.STATUS_CODE = 10 " +
+			" and r.ID in ( select r.id from cust.sale s, cust.salesaction sa, cust.deliveryinfo di, dlv.reservation r "+ 
+			" where s.id = sa.sale_id and s.cromod_date = sa.action_date and sa.requested_date >= trunc(sysdate) and SA.ACTION_TYPE in ('CRO','MOD') and sa.id = DI.SALESACTION_ID and DI.RESERVATION_ID = R.ID and s.type ='REG' "+ 
+			" and s.status <> 'CAN' and s.id = ? ) ";
+		
+	public int updateOrderUnassignedInfo(String orderNo) throws DataAccessException {
+			try {
+				StringBuffer strBuf = new StringBuffer();
+				strBuf.append(UPDATE_ORDER_RESERVATION_QRY);
+			
+				BatchSqlUpdate batchUpdater=new BatchSqlUpdate(this.jdbcTemplate.getDataSource(),strBuf.toString());
+				batchUpdater.declareParameter(new SqlParameter(Types.VARCHAR));
+			
+				int result = this.jdbcTemplate.update(strBuf.toString(), new Object[] {orderNo});	
+			
+				batchUpdater.flush();
+				LOGGER.debug("Order unassigned info is updated: "+ result);
+			} catch(Exception e) {
+				result = -1;
+			}
+			return result;
+		}
 	
 	
 }

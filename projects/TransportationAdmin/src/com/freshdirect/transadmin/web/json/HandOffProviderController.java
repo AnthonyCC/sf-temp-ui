@@ -343,4 +343,10 @@ public class HandOffProviderController extends BaseJsonRpcController  implements
 
 	}
 	
+	public int updateOrderUnassignedInfo(String orderNo) {
+		
+		return getDispatchManagerService().updateOrderUnassignedInfo(orderNo);
+		
+	}
+	
 }

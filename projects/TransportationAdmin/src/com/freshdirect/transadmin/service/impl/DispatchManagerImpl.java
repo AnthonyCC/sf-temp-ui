@@ -11,6 +11,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.springframework.dao.DataAccessException;
+
 import com.freshdirect.customer.ErpRouteMasterInfo;
 import com.freshdirect.framework.util.StringUtil;
 import com.freshdirect.routing.constants.EnumWaveInstancePublishSrc;
@@ -720,6 +722,10 @@ public class DispatchManagerImpl extends BaseManagerImpl implements DispatchMana
 	
 	public Collection getTrnFacilitys(){
 		return this.getDispatchManagerDao().getTrnFacilitys();
+	}
+	
+	public int updateOrderUnassignedInfo(String orderNo) {
+		return this.getRouteManagerDao().updateOrderUnassignedInfo(orderNo);
 	}
 	
 }

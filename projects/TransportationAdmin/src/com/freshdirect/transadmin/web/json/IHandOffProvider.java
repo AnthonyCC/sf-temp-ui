@@ -28,4 +28,6 @@ public interface IHandOffProvider {
 	boolean doHandOffAutoDispatch(String handOffBatchId);
 	
 	boolean doHandOffTruckAssignment(String handOffBatchId);
+	
+	public int updateOrderUnassignedInfo(String orderNo);
 }

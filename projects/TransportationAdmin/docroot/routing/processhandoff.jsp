@@ -346,6 +346,7 @@
       }      
       showTable();      
       </script>
-      <%@ include file='i_handoffdepotinfo.jspf'%>  
+      <%@ include file='i_handoffdepotinfo.jspf'%> 
+      <%@ include file='i_fixorderunassignedinfo.jspf'%> 
   </tmpl:put>
 </tmpl:insert>

@@ -30,4 +30,6 @@ public interface RouteManagerDaoI {
 	List<UPSRouteInfo> getUPSRouteInfo(final Date deliveryDate) throws DataAccessException;
 	
 	void updateTruckInfo(List dispatchList) throws SQLException;
+	
+	public int updateOrderUnassignedInfo(String orderNo) throws DataAccessException;
 }

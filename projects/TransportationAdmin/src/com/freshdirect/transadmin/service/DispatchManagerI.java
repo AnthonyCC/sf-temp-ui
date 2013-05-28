@@ -127,4 +127,6 @@ public interface DispatchManagerI extends BaseManagerI {
 	List<UPSRouteInfo> getUPSRouteInfo(Date deliveryDate);
 	
 	Collection getTrnFacilitys();
+	
+	public int updateOrderUnassignedInfo(String orderNo);
 }

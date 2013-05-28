@@ -17,6 +17,7 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 
 import com.freshdirect.customer.EnumSaleStatus;
+import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.TimeOfDay;
 import com.freshdirect.routing.constants.EnumHandOffBatchActionType;
 import com.freshdirect.routing.constants.EnumHandOffBatchStatus;
@@ -417,9 +418,24 @@ public class HandOffRoutingOutAction extends AbstractHandOffAction {
 			}
 			if(stop.getRouteId() == null || stop.getRouteId().trim().length() == 0
 					|| !routeMapping.containsKey(stop.getRouteId())) {
-				throw new RoutingServiceException("Error in route generation check cutoff report Stop No:"+stop.getOrderNumber()
-														+ " ,"+noOfRoutes + "Routes /"+noOfStops+" Stops"
-															, null, IIssue.PROCESS_HANDOFFBATCH_ERROR);				
+				
+				String zoneCode = "";
+				String deliveryWindow = "";
+				if(stop.getDeliveryInfo() != null && stop.getDeliveryInfo().getDeliveryZone() != null
+						&& stop.getDeliveryInfo().getDeliveryZone().getArea() != null){
+					zoneCode = stop.getDeliveryInfo().getDeliveryZone().getArea().getAreaCode();
+				}
+				if(stop.getDeliveryInfo() != null){
+					deliveryWindow = DateUtil.formatTimeRange
+							(stop.getDeliveryInfo().getDeliveryStartTime(), stop.getDeliveryInfo().getDeliveryEndTime());
+				}
+				StringBuffer buff = new StringBuffer();
+				buff.append("<a href=\"javascript:showOrderException('" + stop.getOrderNumber() + "','"+ zoneCode + "','"+ deliveryWindow + "');\">"+ stop.getOrderNumber() + "</a>");
+				
+				throw new RoutingServiceException(
+						"Error in route generation check cutoff report Stop No:"
+								+ buff.toString() + " ," + noOfRoutes
+								+ " Routes /" + noOfStops + " Stops", null, IIssue.PROCESS_HANDOFFBATCH_ERROR);					
 			}
 		}
 		
