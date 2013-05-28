@@ -23,7 +23,7 @@ public class AddItemToCart extends Message {
 
     private ProductConfiguration productConfiguration = new ProductConfiguration();
     
-    private boolean isQuickBuy; //to denote add to cart from the quickshop
+    private boolean quickBuy; //to denote add to cart from the quickshop
 
     public ProductConfiguration getProductConfiguration() {
         return productConfiguration;
@@ -90,11 +90,11 @@ public class AddItemToCart extends Message {
     }
 
 	public boolean isQuickBuy() {
-		return isQuickBuy;
+		return quickBuy;
 	}
 
-	public void setQuickBuy(boolean isQuickBuy) {
-		this.isQuickBuy = isQuickBuy;
+	public void setQuickBuy(boolean quickBuy) {
+		this.quickBuy = quickBuy;
 	}
 
 }

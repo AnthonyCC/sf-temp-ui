@@ -54,7 +54,7 @@ public class FDShoppingCartControllerTagWrapper extends CartEventTagWrapper {
         setCartEventLoggingSetsAndGets(cartEvent);
         addExpectedRequestValues(new String[] { REQ_PARAM_YMAL_BOX, REQ_PARAM_YMAL_SET_ID, REQ_PARAM_YMAL_ORIG_PROD_ID,
                 REQ_PARAM_YMAL_ORIG_ORDER_LINE_ID, REQ_PARAM_ATC_SUFFIX, REQ_PARAM_VARIANT, REQ_PARAM_CONSENTED, REQ_PARAM_AGREE_TO_TERMS,
-                REQ_PARAM_RECIPE_ID, REQ_PARAM_CUSTOMER_CREATED_LIST_ID, "remove_from_cart.x", REQ_PARAM_CARTONNUMBER, SessionName.PARAM_ADDED_FROM_SEARCH,SessionName.PARAM_EVALUATE_COUPONS }, new String[] { REQ_PARAM_ATC_SUFFIX,
+                REQ_PARAM_RECIPE_ID, REQ_PARAM_CUSTOMER_CREATED_LIST_ID, "remove_from_cart.x", REQ_PARAM_CARTONNUMBER, SessionName.PARAM_ADDED_FROM_SEARCH,SessionName.PARAM_EVALUATE_COUPONS,REQ_PARAM_IS_QUICKBUY }, new String[] { REQ_PARAM_ATC_SUFFIX,
                 REQ_PARAM_CART_CLEANUP_REMOVED_STUFF_FLAG, SessionName.PARAM_ADDED_FROM_SEARCH, SessionName.PARAM_EVALUATE_COUPONS }); //gets,sets
         addExpectedSessionValues(new String[] { SESSION_PARAM_APPLICATION }, new String[] { SESSION_PARAM_USER, SESSION_PARAM_SKUS_ADDED }); //gets,sets
         addRequestValue(REQ_PARAM_CART_LINE_ID, updateItemInCart.getCartLineId());
@@ -172,6 +172,7 @@ public class FDShoppingCartControllerTagWrapper extends CartEventTagWrapper {
         addRequestValue(REQ_PARAM_CONSENTED, null); //Looks like this isn't being "set" anywhere. 
         addRequestValue(REQ_PARAM_AGREE_TO_TERMS, addItemToCart.getAgreeToTerms()); //
         addRequestValue(REQ_PARAM_RECIPE_ID, addItemToCart.getRecipeId());
+        addRequestValue(REQ_PARAM_IS_QUICKBUY, addItemToCart.isQuickBuy());
 
         //Pass all smart store configuration values:
         String parameterBundle = smartStoreConfiguration.getParameterBundle();
@@ -236,6 +237,7 @@ public class FDShoppingCartControllerTagWrapper extends CartEventTagWrapper {
         addRequestValue(REQ_PARAM_FD_ACTION, "addMultipleToCart");
         addRequestValue(REQ_PARAM_SOURCE, "Quickshop");
         addRequestValue(REQ_PARAM_ITEM_COUNT, multipleItemsToCart.getProductsConfiguration().size());
+        addRequestValue(REQ_PARAM_IS_QUICKBUY, multipleItemsToCart.isQuickBuy());
 
         List<ProductConfiguration> pcs = multipleItemsToCart.getProductsConfiguration();
         for (int idx = 0; idx < pcs.size(); idx++) {
@@ -245,6 +247,7 @@ public class FDShoppingCartControllerTagWrapper extends CartEventTagWrapper {
             addRequestValue(REQ_PARAM_WINE_CATEGORY_ID + "_" + idx, pc.getCategoryId());
             addRequestValue(REQ_PARAM_PRODUCT_ID + "_" + idx, pc.getProductId());
             addRequestValue(REQ_PARAM_QUANTITY + "_" + idx, pc.getQuantity());
+            
             if (pc.getSalesUnit() != null) {
                 addRequestValue(REQ_PARAM_SALES_UNIT + "_" + idx, pc.getSalesUnit().getName());
 
@@ -265,6 +268,7 @@ public class FDShoppingCartControllerTagWrapper extends CartEventTagWrapper {
             addRequestValue(REQ_PARAM_TRACKING_CODE + "_" + idx, null);
             addRequestValue(REQ_PARAM_TRACKING_CODE_EXT + "_" + idx, null);
             addRequestValue(REQ_PARAM_IMPRESSESION_ID + "_" + idx, null);
+            
 
             if (pc.getOptions() != null) {
                 Iterator<String> keys = pc.getOptions().keySet().iterator();
