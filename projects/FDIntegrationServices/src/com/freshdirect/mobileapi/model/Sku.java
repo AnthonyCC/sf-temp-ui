@@ -473,9 +473,11 @@ public class Sku {
    		result.setDetails(StringEscapeUtils.unescapeHtml(this.coupon.getDetailedDescription()));
    		result.setDesc(this.coupon.getDisplayDescription());
    		result.setStatus(null!=this.coupon.getDisplayStatus()?this.coupon.getDisplayStatus().getName():"");
-   		result.setMessage((this.coupon.isDisplayStatusMessage()/* || EnumCouponStatus.COUPON_CLIPPED_ACTIVE.equals(this.coupon.getStatus())*/
-   				|| EnumCouponStatus.COUPON_CLIPPED_FILTERED.equals(this.coupon.getStatus())) 
-   									? this.coupon.getStatus().getDescription() : null);
+   		if(null !=this.coupon.getStatus()){
+	   		result.setMessage((this.coupon.isDisplayStatusMessage()/* || EnumCouponStatus.COUPON_CLIPPED_ACTIVE.equals(this.coupon.getStatus())*/
+	   				|| EnumCouponStatus.COUPON_CLIPPED_FILTERED.equals(this.coupon.getStatus())) 
+	   									? this.coupon.getStatus().getDescription() : null);
+   		}
    		result.setExpirationDate(this.coupon.getExpirationDate());
    		/*result.setQuantity(this.coupon.getQuantity());
    		result.setValue(this.coupon.getValue());

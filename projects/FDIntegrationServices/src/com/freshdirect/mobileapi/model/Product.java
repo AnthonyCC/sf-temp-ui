@@ -567,9 +567,14 @@ public class Product {
 		    														? skuModel.getProductInfo().getUpc() : null, ctx);
 		    	}
 		    	
-		    	if(isQuickBuy && null!=coupon){		    		
-		    		EnumCouponStatus status = FDUserCouponUtil.getCouponStatus(coupon, user.getShoppingCart().getRecentlyAppliedCoupons());
-		    		coupon.setStatus(status);
+		    	List<FDCartLineI> recentOrderLines = user.getShoppingCart().getRecentOrderLines();
+		    	if(isQuickBuy && null!=coupon && null != recentOrderLines && !recentOrderLines.isEmpty() && null !=cartLine){
+			    	if(recentOrderLines.get(0).getCartlineId().equals(cartLine.getCartlineId())){
+				    		EnumCouponStatus status = FDUserCouponUtil.getCouponStatus(coupon, user.getShoppingCart().getRecentlyAppliedCoupons());
+				    		boolean displayMessage = FDUserCouponUtil.getDisplayStatusMessage(ctx, status);
+				    		coupon.setStatus(status);
+				    		coupon.setDisplayStatusMessage(displayMessage);
+			    	}
 		    	}
     		}
     	} catch (FDResourceException e) {

@@ -317,7 +317,7 @@ public class FDUserCouponUtil implements Serializable {
 		return false;
 	}
 	
-	private static boolean getDisplayStatusMessage(EnumCouponContext ctx, EnumCouponStatus status){
+	public static boolean getDisplayStatusMessage(EnumCouponContext ctx, EnumCouponStatus status){
 		boolean displayMessage = false;
 		if(null !=displayStatusMessageMap.get(ctx) && null!=displayStatusMessageMap.get(ctx).get(status)){
 			displayMessage =(Boolean)displayStatusMessageMap.get(ctx).get(status);
