@@ -6,7 +6,9 @@ import com.freshdirect.mobileapi.controller.data.ProductConfiguration;
 public class UpdateItemInCart extends Message {
 
     private String cartLineId;
-
+    
+    private boolean quickBuy; //to denote add to cart from the quickshop
+    
     // Some products have "terms/conditions" associated. this value indicates that they agreed to t/c.
     private String agreeToTerms;
 
@@ -35,5 +37,14 @@ public class UpdateItemInCart extends Message {
     public void setProductConfiguration(ProductConfiguration productConfiguration) {
         this.productConfiguration = productConfiguration;
     }
+
+	public boolean isQuickBuy() {
+		return quickBuy;
+	}
+
+	public void setQuickBuy(boolean quickBuy) {
+		this.quickBuy = quickBuy;
+	}
+        
 
 }
