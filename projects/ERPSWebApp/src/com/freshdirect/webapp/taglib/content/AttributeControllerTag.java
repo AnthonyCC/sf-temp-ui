@@ -18,6 +18,7 @@ import javax.servlet.jsp.JspException;
 
 import com.freshdirect.content.attributes.EnumAttributeName;
 import com.freshdirect.content.nutrition.ErpNutritionModel;
+import com.freshdirect.content.nutrition.panel.NutritionPanel;
 import com.freshdirect.erp.ErpFactory;
 import com.freshdirect.erp.ErpModelSupport;
 import com.freshdirect.erp.model.ErpProductModel;
@@ -90,10 +91,24 @@ public class AttributeControllerTag extends com.freshdirect.framework.webapp.Tag
 		try {
 			ErpFactory factory = ErpFactory.getInstance();
 			ErpProductModel source = factory.getProduct(sourceSku.trim());
-			if(source.getSkuCode() != null && targetSku != null){			
+			if ( source.getSkuCode() != null && targetSku != null ) {
+				
 				ErpNutritionModel nutrition =factory.getNutrition(sourceSku);
 				nutrition.setSkuCode(targetSku);
 				factory.saveNutrition(nutrition, user);
+								
+				NutritionPanel srcPanel = factory.getNutritionPanel( sourceSku );
+				if ( srcPanel == null ) {
+					// source did not have a panel, delete from target if any
+					factory.deleteNutritionPanel( targetSku );
+				} else {
+					// source had a panel, delete target panel if any, do a deep copy, and save to target
+					factory.deleteNutritionPanel( targetSku );
+					NutritionPanel trgPanel = NutritionPanel.deepCopy( srcPanel );
+					trgPanel.setSkuCode( targetSku );
+					factory.saveNutritionPanel( trgPanel );
+				}
+				
 			} else {
 				if(source.getSkuCode() == null){
 					feedback = "Invalid sku entered, nothing saved";
@@ -167,4 +182,5 @@ public class AttributeControllerTag extends com.freshdirect.framework.webapp.Tag
 		}
 		return null;
 	}
+	
 }

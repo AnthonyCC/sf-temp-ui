@@ -17,6 +17,22 @@ public class NutritionItem  implements Serializable {
 	private boolean newline;
 	private boolean separator;
 	
+	/** package protected - used by NutritionPanel.deepCopy() */
+	static NutritionItem deepCopy( NutritionItem oldI ) {
+		NutritionItem newI = new NutritionItem();
+		newI.id = null;		
+		newI.value1 = oldI.value1;
+		newI.value2 = oldI.value2;
+		newI.ingredientValue = oldI.ingredientValue;
+		newI.uom = oldI.uom;
+		newI.position = oldI.position;
+		newI.bulleted = oldI.bulleted;
+		newI.important = oldI.important;
+		newI.newline = oldI.newline;
+		newI.separator = oldI.separator;		
+		return newI;
+	}
+	
 	public String getId() {
 		return id;
 	}

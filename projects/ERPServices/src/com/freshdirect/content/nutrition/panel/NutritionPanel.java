@@ -27,6 +27,30 @@ public class NutritionPanel implements Serializable {
 	private List<NutritionSection> sections = new ArrayList<NutritionSection>();
 	private NutritionPanelType type = NutritionPanelType.DRUG; // FIXME: default value?
 	
+	/**
+	 * Special 'Copy Constructor' (static factory method)
+	 * Does a deep copy (will duplicate sections and items)
+	 * Does NOT keep the ID-s, new panel will have null ID-s 
+	 * (as newly created panels do)
+	 * Also updates last modified date to current time.
+	 * 
+	 * @param panel original nutrition panel
+	 */
+	public static NutritionPanel deepCopy( NutritionPanel oldP ) {
+		if ( oldP == null )
+			return null;
+		
+		NutritionPanel newP = new NutritionPanel();
+		newP.id = null;
+		newP.skuCode = oldP.skuCode;
+		newP.lastModifiedDate = new Date();
+		newP.type = oldP.type;
+		
+		for ( NutritionSection s : oldP.sections ) {
+			newP.sections.add( NutritionSection.deepCopy(s) );
+		}		
+		return newP;
+	}
 	
 	public NutritionPanelType getType() {
 		return type;

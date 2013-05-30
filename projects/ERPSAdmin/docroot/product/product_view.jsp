@@ -33,7 +33,7 @@
 				alert("Please enter a valid WebId");
 				return false;
 			} else {
-				return confirm('Copy attributes from ' + value + '?');
+				return confirm('Copy nutrition attributes from ' + value + '?');
 			}
 		}
 		</script>
@@ -196,7 +196,7 @@
 				<form method="post" name="copyForm">
 				<table width="600" cellspacing=2 cellpadding=0>
 					<tr>
-						<td>Web ID:&nbsp;<input type="text" name="sourceId"/>&nbsp;<input type="submit" value="copy" onclick="return copyConfirm(document.forms['copyForm'].sourceId.value)"/></td>
+						<td><span style="text-decoration: underline;">Nutrition data copy - enter source sku web id</span><br/> Web ID:&nbsp;<input type="text" name="sourceId"/>&nbsp;<input type="submit" value="copy" onclick="return copyConfirm(document.forms['copyForm'].sourceId.value)"/></td>
 						<input type=hidden name=action value=copy>
 						<input type=hidden name="sku_code" value="<%= skuCode %>">
 						<input type=hidden name="skuCode" value="<%= skuCode %>">						
