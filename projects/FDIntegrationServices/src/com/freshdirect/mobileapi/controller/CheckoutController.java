@@ -44,6 +44,7 @@ import com.freshdirect.mobileapi.model.DeliveryTimeslots;
 import com.freshdirect.mobileapi.model.DeliveryTimeslots.TimeSlotCalculationResult;
 import com.freshdirect.mobileapi.model.Depot;
 import com.freshdirect.mobileapi.model.MessageCodes;
+import com.freshdirect.mobileapi.model.Order;
 import com.freshdirect.mobileapi.model.PaymentMethod;
 import com.freshdirect.mobileapi.model.ResultBundle;
 import com.freshdirect.mobileapi.model.SessionUser;
@@ -441,17 +442,25 @@ public class CheckoutController extends BaseController {
         Message responseMessage = null;
         if (result.isSuccess()) {
 
-            OrderReceipt orderReceipt;
-            try {
+        	com.freshdirect.mobileapi.controller.data.response.Order orderReceipt = new com.freshdirect.mobileapi.controller.data.response.Order();
+            String orderId=(String) request.getSession().getAttribute(SessionName.RECENT_ORDER_NUMBER);
+           /* try {
                 orderReceipt = checkout.getOrderReceipt((String) request.getSession().getAttribute(SessionName.RECENT_ORDER_NUMBER));
             } catch (IllegalAccessException e) {
                 throw new FDException(e);
             } catch (InvocationTargetException e) {
                 throw new FDException(e);
+            }*/
+            
+            Order order = user.getOrder(orderId);
+            if(null !=order){
+	            orderReceipt = order.getOrderDetail(user);
             }
-
+            
+            orderReceipt.setOrderNumber(orderId);
             responseMessage = orderReceipt;
             responseMessage.addDebugMessage("Order has been submitted successfully.");
+            
         } else {
             responseMessage = getErrorMessage(result, request);
         }

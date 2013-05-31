@@ -19,6 +19,8 @@ public class Order extends Message {
     
     private String deliveryZone;
         
+    private String orderNumber;
+    
     public String getDeliveryZone() {
 		return deliveryZone;
 	}
@@ -122,4 +124,11 @@ public class Order extends Message {
         this.reservationTimeRange = reservationTimeRange;
     }
 
+    public String getOrderNumber() {
+        return orderNumber;
+    }
+
+    public void setOrderNumber(String orderNumber) {
+        this.orderNumber = orderNumber;
+    }
 }
