@@ -14,6 +14,11 @@ public class CmMarketingLinkUtil {
 	public static String getAdd2AnyLink(String url){
 		return StringUtil.addParameterToUrl(url, OFFSITE_PARAMETER_NAME, getOffsiteParameter("fd_social","social_share","social_share",StringUtil.encodeUrl(url)));
 	}
+
+	public static String getSocialLink(String url, String placement, String offsiteItem){
+		return StringUtil.addParameterToUrl(url, OFFSITE_PARAMETER_NAME, getOffsiteParameter("fd_social","social_share", placement, offsiteItem));
+	}
+
 	
 	public static String getOffsiteParameter(String vendor, String category, String placement, String item){
 		return vendor + ATTR_DELIMITER + category + ATTR_DELIMITER + placement + ATTR_DELIMITER + item;

@@ -1522,15 +1522,15 @@ public class GeographyDAO {
 
 	}
 
-	private final static String STATE_BY_ZIP = "select cs.STATE, cs.COUNTY from dlv.zipplusfour zpf, dlv.city_state cs where zipcode = ? " +
-											   " and zpf.CITY_STATE_KEY = cs.CITY_STATE_KEY group by state, county order by county";
+	private final static String STATE_BY_ZIP = "select cs.STATE, cs.COUNTY, cs.CITY from dlv.zipplusfour zpf, dlv.city_state cs where zipcode = ? " +
+											   " and zpf.CITY_STATE_KEY = cs.CITY_STATE_KEY group by state, county, city order by county";
     public StateCounty lookupStateCountyByZip(Connection conn, String zip) throws SQLException{
     	PreparedStatement ps = conn.prepareStatement(STATE_BY_ZIP);
     	ps.setString(1, zip);
     	ResultSet rs = ps.executeQuery();
 
     	if(rs.next()){
-    		return new StateCounty(rs.getString("STATE"), rs.getString("COUNTY"));
+    		return new StateCounty(rs.getString("STATE"), rs.getString("COUNTY"), rs.getString("CITY"));
     	}
 
     	rs.close();

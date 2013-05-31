@@ -64,6 +64,7 @@ public class ProductBurstClassTag extends AbstractGetterTag<String> {
 			int deal = useRegularDealOnly ? priceCalculator.getDealPercentage() : priceCalculator.getHighestDealPercentage();
 			if (!hideDeal && deal > 0) {
 				className = "burst-deal-" + deal;
+				pageContext.setAttribute("burstStyleString", "background-image:url(/media_stat/images/deals/brst_sm_"+deal+".png)");
 			} else if (!hideNewAndBack && product.isBackInStock()) {
 				className = "burst-back";
 			} else if (!hideNewAndBack && product.isNew()) {

@@ -981,21 +981,23 @@ public class FDDeliveryManager {
 	}
 
 	private Map<String, StateCounty> stateCountyByZip = new HashMap<String, StateCounty>();
-	private StateCounty lookupStateCountyByZip(String zipcode) throws FDResourceException{
-		try {
-			StateCounty sc = stateCountyByZip.get(zipcode);
-			if(sc == null){
-				DlvManagerSB sb = getDlvManagerHome().create();
-				sc = sb.lookupStateCountyByZip(zipcode);
-				if(sc != null){
-					stateCountyByZip.put(zipcode, sc);
+	public StateCounty lookupStateCountyByZip(String zipcode) throws FDResourceException{
+		synchronized(stateCountyByZip){
+			try {
+				StateCounty sc = stateCountyByZip.get(zipcode);
+				if(sc == null){
+					DlvManagerSB sb = getDlvManagerHome().create();
+					sc = sb.lookupStateCountyByZip(zipcode);
+					if(sc != null){
+						stateCountyByZip.put(zipcode, sc);
+					}
 				}
+				return sc;
+			} catch (RemoteException re) {
+				throw new FDResourceException(re);
+			} catch (CreateException ce) {
+				throw new FDResourceException(ce);
 			}
-			return sc;
-		} catch (RemoteException re) {
-			throw new FDResourceException(re);
-		} catch (CreateException ce) {
-			throw new FDResourceException(ce);
 		}
 	}
 

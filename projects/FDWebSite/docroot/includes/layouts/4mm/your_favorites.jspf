@@ -56,7 +56,7 @@ final int W_FAVORITE_PRODUCTS_BND = 683;
 								useAlternateImage="true" hideBursts="<%= hideBursts %>" className="productImage" height="90" enableQuickBuy="true" webId="<%= webId %>"  coupon="<%= curCoupon %>" />
 						<display:ProductRating product="<%= (ProductModel)currentItem %>" action="<%= actionUrl %>"/>
 						<div class="productname">
-							<display:ProductName product="<%= (ProductModel)currentItem %>" action="<%=CmMarketingLinkUtil.getSmartStoreLink(actionUrl, deptYf)%>"/>
+							<display:ProductName product="<%= (ProductModel)currentItem %>" action="<%=actionUrl%>"/>
 						</div>
 						<display:ProductPrice impression="<%= new ProductImpression((ProductModel)currentItem) %>" showDescription="false"/>
 						<display:FDCoupon coupon="<%= curCoupon %>" contClass="fdCoupon_4mmYourFav"></display:FDCoupon>

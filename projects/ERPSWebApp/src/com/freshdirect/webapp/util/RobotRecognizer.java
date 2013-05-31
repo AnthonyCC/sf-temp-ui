@@ -119,6 +119,7 @@ public class RobotRecognizer {
 		friendlyRobotSet.add("yahooseeker");        //  Yahoo crawler
 		friendlyRobotSet.add("sherlock");        	//  Apple's Sherlock
 		friendlyRobotSet.add("msnbot");        		//  MSN
+		friendlyRobotSet.add("facebook");        	//  Facebook
     }
     
     

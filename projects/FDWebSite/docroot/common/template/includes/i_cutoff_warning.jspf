@@ -2,6 +2,10 @@
 <%@ page import="com.freshdirect.webapp.taglib.fdstore.CutoffInfo" %>
 <%@ page import="com.freshdirect.framework.util.TimeOfDay" %>
 <%@ page import="com.freshdirect.common.customer.EnumServiceType" %>
+<%@ page import='com.freshdirect.fdstore.customer.FDUserI' %>
+<%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
+<%@ page import='java.text.SimpleDateFormat' %>
+<%@ page import="com.freshdirect.webapp.util.JspLogger" %>
 
 <% //expanded page dimensions
 final int W_CUTOFF_WARNING_TOTAL = 970;
@@ -26,10 +30,7 @@ if (cutoffInfo != null) {
     
 if (cutoffInfo.displayWarning()) {
     cutoffInfoDisplayed = true;
-%>
-	<table width="<%=W_CUTOFF_WARNING_TOTAL%>" cellpadding="0" cellspacing="0" border="0">
-		<tr align="center">
-			<td>
+%><div class="message invisible" id="cutoff" data-type="cutoff"><div class="cutoff">	
 				<% if (cutoffInfo.hasMultipleCutoff() && !cutoffInfo.getNextCutoff().equals(cutoffInfo.getLastCutoff())) { %>
 					<b>The cut off time for evening 
 						<% if (isHomeAddr) { %>delivery in your area
@@ -47,28 +48,16 @@ if (cutoffInfo.displayWarning()) {
 					<%= isPickupAddr || isUnknown?"For orders":"To receive delivery"%> tomorrow, please complete <a href="/checkout/view_cart.jsp">checkout</a> within the next <font color="#CC0000"><b><%=cutoffInfo.getMinsBeforeCutoff()%> minutes</b></font>.
 				<% } %>
 				<br>
-				<% if ((isHomeAddr && !isUnknown) || isCorporateAddr) { %><a href="<% if (user.getAdjustedValidOrderCount() >= 1) { %>/your_account/delivery_info_avail_slots<% } else { %>/help/delivery_info<%= EnumServiceType.CORPORATE.equals(user.getSelectedServiceType()) ? "_cos" : ""%><% } %>.jsp"><b>Click here</b></a> to see all available time slots<% if (!isCorporateAddr) { %> for your address in <%=cutoffInfo.getZipCode()%><% } %>.
+				<% if ((isHomeAddr && !isUnknown) || isCorporateAddr) { %><a href="<% if (_user.getAdjustedValidOrderCount() >= 1) { %>/your_account/delivery_info_avail_slots<% } else { %>/help/delivery_info<%= EnumServiceType.CORPORATE.equals(_user.getSelectedServiceType()) ? "_cos" : ""%><% } %>.jsp"><b>Click here</b></a> to see all available time slots<% if (!isCorporateAddr) { %> for your address in <%=cutoffInfo.getZipCode()%><% } %>.
 				<% } else if (isPickupAddr || isUnknown) {%><a href="/help/delivery_lic_pickup.jsp"><b>Click here</b></a> to see all available time slots.
 				<% } %>
-			<br>
-				<img src="/media_stat/images/layout/clear.gif" width="1" height="6">
-			</td>
-		</tr>
-	<tr bgcolor="#999966"><td class="onePxTall"><img src="/media_stat/images/layout/clear.gif" width="1" height="1" alt="" /></td></tr></table>
-	<%
+</div></div><%
 } else if (cutoffInfo.isHourPastCutoff()) {
 	String uri = request.getRequestURI().toLowerCase();
 	if (uri.endsWith("index.jsp") || uri.endsWith("view_cart.jsp")) {
 		cutoffInfoDisplayed = true;
 %>
-		<table width="<%=W_CUTOFF_WARNING_TOTAL%>" cellpadding="0" cellspacing="0" border="0">
-			<tr align="center">
-				<td>
-					<b><font color="#CC0000">Please note:</font> The cut off time for <%= isPickupAddr || isUnknown?"pickup":"delivery"%> <%=dayDateFormat.format(cutoffInfo.getDeliveryDate())%> was <%=cutoffInfo.getCutoffTime().toString()%></b><br>
-					<img src="/media_stat/images/layout/clear.gif" width="1" height="6">
-				</td>
-			</tr>
-			<tr bgcolor="#999966"><td class="onePxTall test"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td></tr></table>
+<div class="message invisible" id="cutoff" data-type="cutoff"><div class="cutoffpasthour"><b><font color="#CC0000">Please note:</font> The cut off time for <%= isPickupAddr || isUnknown?"pickup":"delivery"%> <%=dayDateFormat.format(cutoffInfo.getDeliveryDate())%> was <%=cutoffInfo.getCutoffTime().toString()%></b></div></div>
 		<%
 	}
 }

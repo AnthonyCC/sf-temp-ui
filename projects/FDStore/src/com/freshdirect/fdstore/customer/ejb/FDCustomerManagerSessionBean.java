@@ -165,6 +165,7 @@ import com.freshdirect.fdstore.customer.adapter.CustomerRatingAdaptor;
 import com.freshdirect.fdstore.customer.adapter.FDOrderAdapter;
 import com.freshdirect.fdstore.deliverypass.DeliveryPassUtil;
 import com.freshdirect.fdstore.deliverypass.FDUserDlvPassInfo;
+import com.freshdirect.fdstore.iplocator.IpLocatorEventDTO;
 import com.freshdirect.fdstore.ecoupon.EnumCouponTransactionStatus;
 import com.freshdirect.fdstore.ecoupon.EnumCouponTransactionType;
 import com.freshdirect.fdstore.ecoupon.FDCouponManager;
@@ -7157,6 +7158,29 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
     	return template;
     	
     }
-		
+	
+	public void logIpLocatorEvent(IpLocatorEventDTO ipLocatorEventDTO) throws FDResourceException {
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			FDUserDAO.logIpLocatorEvent(conn, ipLocatorEventDTO);
+		} catch (SQLException sqle) {
+			throw new FDResourceException(sqle);
+		} finally {
+			close(conn);
+		}
+	}
+	
+	public IpLocatorEventDTO loadIpLocatorEvent (String fdUserId) throws FDResourceException {
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			return FDUserDAO.loadIpLocatorEvent(conn, fdUserId);
+		} catch (SQLException sqle) {
+			throw new FDResourceException(sqle);
+		} finally {
+			close(conn);
+		}
+	}
 }
 

@@ -83,7 +83,7 @@ final int W_FEATURED_PRODUCTS_BND = 683;
 					<display:ProductImage product="<%= (ProductModel)currentItem %>" showRolloverImage="true" action="<%= actionUrl %>" className="<%= productImageClassName %>" coupon="<%= curCoupon %>" />
 					<display:ProductRating product="<%= (ProductModel)currentItem %>" action="<%= actionUrl %>"/>
 					<div class="productname">
-						<display:ProductName product="<%= (ProductModel)currentItem %>" action="<%= CmMarketingLinkUtil.getSmartStoreLink(actionUrl, brandDealRecommendations) %>" showBrandName="true" />
+						<display:ProductName product="<%= (ProductModel)currentItem %>" action="<%= actionUrl %>" showBrandName="true" />
 					</div>
 					<display:ProductPrice impression="<%= new ProductImpression((ProductModel)currentItem) %>" showDescription="false"/>
 					<display:FDCoupon coupon="<%= curCoupon %>" contClass="fdCoupon_feat"></display:FDCoupon>

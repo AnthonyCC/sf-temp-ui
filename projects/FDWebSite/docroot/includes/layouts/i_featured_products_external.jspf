@@ -128,7 +128,7 @@
 								<display:ProductImage product="<%= (ProductModel)currentItem %>" showRolloverImage="true" action="<%= actionUrl %>" className="<%=productImageClassName %>" enableQuickBuy="<%=featExtUseQuickBuy%>" disabled="<%=featExtDisableLinks%>" coupon="<%= curCoupon %>" />
 								<display:ProductRating product="<%= (ProductModel)currentItem %>" action="<%= actionUrl %>"/>
 								<div class="productname">
-									<display:ProductName product="<%= (ProductModel)currentItem %>" action="<%= CmMarketingLinkUtil.getSmartStoreLink(actionUrl, brandDealRecommendations) %>" showBrandName="true" disabled="<%=featExtDisableLinks%>" />
+									<display:ProductName product="<%= (ProductModel)currentItem %>" action="<%= actionUrl %>" showBrandName="true" disabled="<%=featExtDisableLinks%>" />
 								</div>
 								<display:ProductPrice impression="<%= new ProductImpression((ProductModel)currentItem) %>" showDescription="false"/>
 								<display:FDCoupon coupon="<%= curCoupon %>" contClass="fdCoupon_featExt"></display:FDCoupon>	

@@ -4982,6 +4982,11 @@
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
+		<attribute>
+			<name>wineFilterValue</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
 	</tag>	
 	<!-- APPDEV-2386 start -->
 	<tag>
@@ -5101,6 +5106,16 @@
 		</attribute>
 		<attribute>
 			<name>force</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>email</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>address</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
@@ -5308,6 +5323,19 @@
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>        
+	</tag>
+	<tag>
+		<name>LocationHandler</name>
+		<tagclass>com.freshdirect.webapp.taglib.location.LocationHandlerTag</tagclass>
+		<attribute>
+			<name>action</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+	</tag>
+	<tag>
+		<name>WelcomeExperience</name>
+		<tagclass>com.freshdirect.webapp.taglib.fdstore.WelcomeExperienceTag</tagclass>
 	</tag>
 	<tag>
 		<name>NutritionPanel</name>

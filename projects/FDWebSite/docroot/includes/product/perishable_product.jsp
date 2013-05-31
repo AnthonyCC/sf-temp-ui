@@ -242,7 +242,7 @@ final int W_PERISHABLE_PRODUCT_RIGHT = 369;
 								prodImageClassName += " couponLogo";
 							}
 						%>
-						<a href="<%=CmMarketingLinkUtil.getSmartStoreLink(actionUrl, recommendedProducts)%>" hidden style="display: none;" class="product-name-link"></a> <%-- For Coremetrics impression tracking --%>
+						<a href="<%=actionUrl%>" hidden style="display: none;" class="product-name-link"></a> <%-- For Coremetrics impression tracking --%>
 						<display:GetContentNodeWebId id="webId" product="<%= currentItem %>" clientSafe="<%= true %>">
 						<div id="hotspot-<%= webId %>" style="height: <%= (productsHaveCoupons) ? "223" : "181" %>px">
 							<display:ProductImage product="<%= __c_prd %>" showRolloverImage="true" useAlternateImage="false"
@@ -298,7 +298,9 @@ final int W_PERISHABLE_PRODUCT_RIGHT = 369;
 			<img src="/media_stat/images/layout/clear.gif" width="<%=W_PERISHABLE_PRODUCT_CENTER_PADDING%>" height="1" border="0" hspace="0" vspace="0">
 		</td>
 
-		<td width="<%=W_PERISHABLE_PRODUCT_RIGHT%>" class="text12">&nbsp;<br/>
+		 <td width="<%=W_PERISHABLE_PRODUCT_RIGHT%>" class="text12">
+ 	         <div style="height:4px;"></div>
+			 <%@ include file="/includes/product/i_product_soc_buttons.jspf" %>
 
 			<% if ( cartMode.equals( CartName.ADD_TO_CART ) && isWebApp ) { %>
 		        <%@ include file="/shared/includes/product/i_product_right_column.jspf" %>

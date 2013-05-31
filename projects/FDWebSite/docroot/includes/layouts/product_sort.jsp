@@ -138,9 +138,9 @@ if (sortedStuff==null) sortedStuff = new ArrayList();
 								<display:ProductRating product="<%= productNode %>" />
 				<%			// product name
 						if (productNode.isFullyAvailable()) { %>
-							<div><display:ProductName product="<%= productNode %>" action="<%= CmMarketingLinkUtil.getSmartStoreLink(actionURI, recommendations) %>"/></div>
+							<div><display:ProductName product="<%= productNode %>" action="<%= actionURI %>"/></div>
 				<%		} else { %>
-							<div style="color: #999999"><display:ProductName product="<%= productNode %>" action="<%= CmMarketingLinkUtil.getSmartStoreLink(actionURI, recommendations) %>"/></div>
+							<div style="color: #999999"><display:ProductName product="<%= productNode %>" action="<%= actionURI %>"/></div>
 				<%		} %>
 							<div class="favoritePrice">	<display:ProductPrice impression="<%= pi %>" showDescription="false"/></div>
 							<display:FDCoupon coupon="<%= curCoupon %>" contClass="fdCoupon_layProdSort"></display:FDCoupon>

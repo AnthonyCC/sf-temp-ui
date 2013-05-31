@@ -1,0 +1,270 @@
+#locationbar {
+	position:relative;
+	height:30px;
+	font-family:Arial;
+	vertical-align:top;
+	width:970px;
+	padding-top:5px;
+	text-align: left;
+}
+
+#locationbar .topbg {
+	position:absolute;
+	top:0;
+	left:0;
+	width:100%;
+	height:9px;
+	background:white top left repeat-x;
+	border:0;
+	padding:0;
+	margin:0;
+}
+
+#locationbar .zipdisplay,
+#locationbar .hoicon,
+#locationbar .buttons {
+	display:inline-block;
+	overflow:hidden;
+	white-space:nowrap;
+	vertical-align:top;
+	position:relative;
+	height:22px;
+}
+
+#locationbar .zipdisplay {
+	font-size:11px;
+	color:#333;
+	padding-left:15px;
+	min-width:355px;
+	text-align:left;
+}
+
+#locationbar .zipdisplay label,
+#locationbar .zipdisplay .address {
+	vertical-align:baseline;
+}
+
+#locationbar .zipdisplay .zipcode {
+	font-family:Tahoma,Arial;
+	font-size:14px;
+	font-weight:bold;
+}
+
+#newzip {
+	display:inline-block;
+	vertical-align:middle;
+	height:15px;
+	line-height:15px;
+	top:5px;
+}
+
+#newziptext {
+	border:1px solid #CDCDCD;
+	font-size:11px;
+	font-family:Arial;
+	padding:1px 2px;
+	vertical-align:top;
+	margin:0 2px;
+	height:11px;
+	width:90px;
+}
+
+#newzipgo {
+	height:15px;
+	vertical-align:top;
+}
+
+#locationbar .address select {
+	width:225px;
+	font-size:11px;
+}
+
+#locationbar .hoicon {
+	width:200px;
+	text-align:center;
+	vertical-align:middle;
+	font-size:11px;
+	font-weight:bold;
+	color:#777955;
+	margin:0 2em;
+}
+
+#locationbar .hoicon a,
+#locationbar .hoicon a:visited {
+	font-size:12px;
+}
+
+#locationbar .hoicon a:hover {
+	text-decoration:underline; 
+}
+
+#locationbar .hoicon .home,
+#locationbar .hoicon .office {
+	display:inline-block;
+	height:20px;
+	line-height:20px;
+	padding-left:20px;
+	background: white center left no-repeat;
+}
+
+#locationbar .hoicon .home {
+	background-image:url('/media_stat/images/locationbar/icon_home.png');
+}
+#locationbar .hoicon .office {
+	background-image:url('/media_stat/images/locationbar/icon_office.png');
+}
+
+#locationbar .buttons {
+	text-align:right;
+	float:right;
+}
+
+
+	#locationbar .loginButton {
+		background-image:url(/media_stat/images/locationbar/button_login.png);
+	}
+	#locationbar .logoutButton {
+		background-image:url(/media_stat/images/locationbar/button_logout.png);
+	}
+	#locationbar .signUpButton {
+		background-image:url(/media_stat/images/locationbar/button_signup.png);
+	}
+
+	#locationbar .loginButton,
+	#locationbar .logoutButton {
+		width:78px;
+	}
+
+	#locationbar .signUpButton {
+		width:85px;
+	}
+
+	#locationbar .loginButton,
+	#locationbar .logoutButton,
+	#locationbar .signUpButton {
+		display:inline-block;
+		height:22px;
+		margin-right:8px;
+		text-decoration:none;
+		overflow:hidden;
+		text-indent:90px;
+		background-position:top left;
+		vertical-align:middle;
+	}
+	
+	#locationbar .loginButton:hover,
+	#locationbar .logoutButton:hover,
+	#locationbar .signUpButton:hover,
+	#locationbar .loginButton:active,
+	#locationbar .logoutButton:active,
+	#locationbar .signUpButton:active	 {
+		background-position:0 -22px;
+	}
+	
+
+	#locationbar .buttons label {
+		padding-right:8px;
+		color:#777955;
+		font-size:11px;
+		font-weight:bold;
+		vertical-align:middle;
+	}
+
+.partial-delivery-moreinfo .ui-dialog-title {
+	background:url(/media_stat/images/locationbar/more_info_title.png) no-repeat bottom left;
+	height:35px;
+	width:471px;
+}
+
+.partial-delivery-moreinfo .ui-dialog-titlebar {
+	margin-bottom:0;	
+}
+	
+/* --- messages --- */
+
+#messages .orange {
+	font-weight:bold;
+}
+
+#messages .unrecognized,
+#messages .partial {
+		padding-left:76px;
+}
+
+#messages .unrecognized b {
+	font-family: Arial;
+	font-size:13px;
+	font-weight:bold;
+	color:#333;
+}
+
+#messages .nodeliver-form form {
+	float:right;
+	width:200px;
+	height:50px;
+	padding:7px 14px;
+	border-radius:3px;
+	background:#f6f6f6;
+	font-size:11px;
+	margin:0px 7px;
+	position:relative;
+}
+
+#messages .nodeliver-form {
+	padding-left:310px;
+	background:url('/media_stat/images/locationbar/notavailable.png') no-repeat left center;
+}
+
+#messages .nodeliver-form form label {
+	margin-bottom:4px;
+}
+
+#messages .nodeliver-form form label.n {
+	display:block;
+}
+
+#messages .nodeliver-form form label.e {
+	display:none;
+}
+
+	#messages .nodeliver-form form label.e b {
+		color:#c00;
+		font-weight:bold;
+	}
+
+#messages .nodeliver-form form.e label.e {
+	display:block;
+}
+#messages .nodeliver-form form.e label.n {
+	display:none;
+}
+
+	#location-email {
+		border:1px solid #CDCDCD;
+		font-size:11px;
+		font-family:Arial;
+		padding:1px 2px;
+		vertical-align:top;
+		margin:0;
+		margin-right:2px;
+		height:11px;
+		width:130px;
+	}
+	
+	#location-submit {
+		height:15px;
+		vertical-align:top;
+	}
+	
+#messages .nodeliver-form form .p {
+	background:url('/media_stat/images/navigation/spinner.gif') no-repeat center center #f6f6f6;
+	position:absolute;
+	top:0;
+	left:0;
+	width:100%;
+	height:100%;
+	display:none;
+}
+#messages .nodeliver-form form.p .p {
+	display:block;
+}

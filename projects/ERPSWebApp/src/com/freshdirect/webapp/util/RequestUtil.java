@@ -6,9 +6,14 @@ import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.log4j.Category;
+
 import com.freshdirect.framework.util.NVL;
+import com.freshdirect.framework.util.log.LoggerFactory;
 
 public class RequestUtil {
+	
+	private static final Category LOGGER = LoggerFactory.getInstance(RequestUtil.class);
 	
 	/** Append a string to a request attribute.
 	 * 
@@ -91,4 +96,23 @@ public class RequestUtil {
 		return outString;
 	}
 	
+	
+	/** 
+	 * extracts last entry of the X-Forwarded-For header if exists (as remoteAddr contains NetScaler/proxy IP),
+	 * if there is no X-Forwarded-For header remoteAddr is used
+	 */
+	public static String getClientIp(HttpServletRequest request){
+		String ip = null;
+		String xffHeader = request.getHeader("X-Forwarded-For");
+		
+		if (xffHeader != null){
+			ip = xffHeader.substring(xffHeader.lastIndexOf(",")+1).trim();
+			LOGGER.debug("Resolved IP ("+ip+") from X-Forwarded-For header (" + xffHeader +")");
+		}
+		
+		if (ip==null || ip.length()==0){
+			ip = request.getRemoteAddr();
+		}
+		return ip;
+	}
 }

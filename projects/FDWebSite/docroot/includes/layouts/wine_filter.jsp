@@ -23,6 +23,7 @@ final int W_WINE_FILTER_TOTAL = 601;
 <% List<ProductRatingGroup> rawGroups = wineSorter.getResults();
    String trk = trackingQueryTag.getSource() != null ? trackingQueryTag.getSource().getValue() : null; %>
 <!-- header -->
+<fd:CmPageView wrapIntoScriptTag="true" wineFilterValue="<%=lastClicked%>"/>
 
 <!-- view chooser -->
 <div class="wine-view-chooser">View: 

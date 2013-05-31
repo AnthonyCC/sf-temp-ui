@@ -48,6 +48,8 @@ import com.freshdirect.customer.ErpDiscountLineModel;
 import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.customer.ErpPromotionHistory;
 import com.freshdirect.customer.OrderHistoryI;
+import com.freshdirect.delivery.DlvServiceSelectionResult;
+import com.freshdirect.delivery.EnumDeliveryStatus;
 import com.freshdirect.deliverypass.DeliveryPassModel;
 import com.freshdirect.deliverypass.DlvPassConstants;
 import com.freshdirect.deliverypass.EnumDPAutoRenewalType;
@@ -56,6 +58,7 @@ import com.freshdirect.deliverypass.EnumDlvPassStatus;
 import com.freshdirect.fdstore.EnumCheckoutMode;
 import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDDepotManager;
+import com.freshdirect.fdstore.FDInvalidAddressException;
 import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDReservation;
 import com.freshdirect.fdstore.FDResourceException;
@@ -254,6 +257,10 @@ public class FDUser extends ModelSupport implements FDUserI {
 	
 	private boolean ebtAccepted = false;
 	
+    private List<ErpAddressModel> cachedAllHomeAddresses;
+    private List<ErpAddressModel> cachedAllCorporateAddresses;
+    private boolean robot; //true if user object represents a search bot or crawler
+    
 	private Set<String> steeringSlotIds = new HashSet<String>();
 
 	private Set<ExternalCampaign> externalPromoCampaigns = new HashSet<ExternalCampaign>();
@@ -2499,6 +2506,74 @@ public class FDUser extends ModelSupport implements FDUserI {
 		this.steeringSlotIds = steeringSlotIds;
 	}
 
+	@Override
+	public synchronized List<ErpAddressModel> getAllHomeAddresses() throws FDResourceException {
+		if (identity!=null && cachedAllHomeAddresses==null){
+			cachedAllHomeAddresses = getAllAddressesForServiceType(EnumServiceType.HOME);
+		}
+		return cachedAllHomeAddresses; 
+	}
+
+	@Override
+	public synchronized List<ErpAddressModel> getAllCorporateAddresses() throws FDResourceException {
+		if (identity!=null && cachedAllCorporateAddresses==null){
+			cachedAllCorporateAddresses = getAllAddressesForServiceType(EnumServiceType.CORPORATE);
+		}
+		return cachedAllCorporateAddresses; 
+	}
+
+	private List<ErpAddressModel> getAllAddressesForServiceType(EnumServiceType serviceType) throws FDResourceException {
+		List<ErpAddressModel> addresses = new ArrayList<ErpAddressModel>();
+		
+		for (ErpAddressModel erpAddress : FDCustomerFactory.getErpCustomer(identity.getErpCustomerPK()).getShipToAddresses()){
+			if (erpAddress!=null && serviceType.equals(erpAddress.getServiceType())) {
+				addresses.add(erpAddress);
+			}
+		}
+		return addresses;
+	}
+	
+	@Override
+	public synchronized void invalidateAllAddressesCaches() {
+		cachedAllHomeAddresses = null;
+		cachedAllCorporateAddresses = null;
+	}
+
+	/** returns address used by location handler bar*/
+	@Override
+	public AddressModel getSelectedAddress() { 
+		FDCartModel cart = getShoppingCart();
+		
+		if(cart!=null){
+			AddressModel cartAddress = cart.getDeliveryAddress();
+			if (cartAddress!=null){
+				return cartAddress;
+			}
+		}
+		return address;
+	}
+
+	@Override
+	public EnumDeliveryStatus getDeliveryStatus() throws FDResourceException{
+		DlvServiceSelectionResult serviceResult = null;
+		
+		AddressModel selectedAddress = getSelectedAddress();
+		String address1 = selectedAddress.getAddress1();
+		if (address1!=null && address1.length()>0){ //only check by address if necessary
+			try {
+				serviceResult = FDDeliveryManager.getInstance().checkAddress(selectedAddress);
+			} catch (FDInvalidAddressException e) {
+				//this should never occur as address has already been validated
+				LOGGER.error("invalid address, fallback to zip code check",e);
+			}
+		}
+		if (serviceResult==null){
+			serviceResult = FDDeliveryManager.getInstance().checkZipCode(selectedAddress.getZipCode());
+		}
+	
+		return serviceResult.getServiceStatus(getUserServiceType());
+	}
+
 	public Set<ExternalCampaign> getExternalPromoCampaigns() {
 		return externalPromoCampaigns;
 	}
@@ -2575,9 +2650,18 @@ public class FDUser extends ModelSupport implements FDUserI {
 	public boolean isRefreshCouponWalletRequired() {
 		return null !=getCouponWallet()?getCouponWallet().isRefreshCouponWalletRequired():false;
 	}
+	
 	public void setRefreshCouponWalletRequired(boolean refreshCouponWalletRequired) {
 		if(null !=getCouponWallet()){
 			getCouponWallet().setRefreshCouponWalletRequired(refreshCouponWalletRequired);
 		}
 	}	
+
+	public boolean isRobot(){
+		return robot;
+	}
+	
+	public void setRobot(boolean robot){
+		this.robot = robot;
+	}
 }

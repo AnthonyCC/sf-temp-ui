@@ -5,7 +5,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -20,6 +19,7 @@ import org.apache.log4j.Category;
 
 import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.customer.EnumServiceType;
+import com.freshdirect.common.customer.ServiceTypeUtil;
 import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.delivery.DlvServiceSelectionResult;
 import com.freshdirect.delivery.EnumDeliveryStatus;
@@ -32,20 +32,29 @@ import com.freshdirect.fdstore.customer.FDActionInfo;
 import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDUser;
+import com.freshdirect.fdstore.iplocator.IpLocatorClient;
+import com.freshdirect.fdstore.iplocator.IpLocatorData;
+import com.freshdirect.fdstore.iplocator.IpLocatorEventDTO;
+import com.freshdirect.fdstore.iplocator.IpLocatorException;
+import com.freshdirect.fdstore.iplocator.IpLocatorUtil;
 import com.freshdirect.fdstore.sempixel.FDSemPixelCache;
 import com.freshdirect.fdstore.sempixel.SemPixelModel;
-import com.freshdirect.framework.core.PrimaryKey;
+
 import com.freshdirect.framework.util.NVL;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionError;
 import com.freshdirect.framework.webapp.ActionResult;
+import com.freshdirect.webapp.util.RequestClassifier;
+import com.freshdirect.webapp.util.RequestUtil;
 import com.freshdirect.webapp.util.RobotRecognizer;
+import com.freshdirect.webapp.util.RobotUtil;
 
 
 public class CheckLoginStatusTag extends com.freshdirect.framework.webapp.TagSupport
     implements SessionName {
     private static final long serialVersionUID = -5813651711727931409L;
     private static Category LOGGER = LoggerFactory.getInstance(CheckLoginStatusTag.class);
+    private static String IP_LOCATOR_MOCKED_IP_ADDRESS = "iplocator_mocked_ip_address";
     private String id;
     private String redirectPage;
     private boolean guestAllowed = true;
@@ -182,15 +191,7 @@ public class CheckLoginStatusTag extends com.freshdirect.framework.webapp.TagSup
             // won't blow up for it
             //
             if (user == null) {
-                FDUser robotUser = new FDUser(new PrimaryKey("robot"));
-                Set<EnumServiceType> availableServices = new HashSet<EnumServiceType>();
-                availableServices.add(EnumServiceType.HOME);
-                robotUser.setSelectedServiceType(EnumServiceType.HOME);
-                robotUser.setAvailableServices(availableServices);
-                robotUser.isLoggedIn(false);
-                user = new FDSessionUser(robotUser, session);
-
-                session.setAttribute(USER, user);
+            	user = RobotUtil.createRobotUser(session);
             }
 
            /* if ((user != null) && ddppPreview &&
@@ -219,36 +220,37 @@ public class CheckLoginStatusTag extends com.freshdirect.framework.webapp.TagSup
 
             if ((request.getRequestURI().indexOf("index.jsp") <= -1) &&
                     (request.getParameter("siteAccessPage") == null)) {
-                StringBuffer redirBuf = new StringBuffer();
-                //redirBuf.append("/site_access/site_access_lite.jsp?successPage="+request.getRequestURI());
-                LOGGER.debug(
-                    "redirecting to: /site_access/site_access.jsp?successPage=" +
-                    request.getRequestURI());
-                redirBuf.append("/site_access/site_access.jsp?successPage=" +
-                    request.getRequestURI());
+                
+            	if ((user=useIpLocator(request)) == null){
 
-                String requestQryString = request.getQueryString();
-
-                if ((requestQryString != null) &&
-                        (requestQryString.trim().length() > 0)) {
-                    redirBuf.append(URLEncoder.encode("?" +
-                            request.getQueryString()));
-                }
-
-                this.redirectPage = redirBuf.toString();
-                doRedirect(true);
-
-                return SKIP_BODY;
+	            	StringBuffer redirBuf = new StringBuffer();
+	                //redirBuf.append("/site_access/site_access_lite.jsp?successPage="+request.getRequestURI());
+	                LOGGER.debug(
+	                    "redirecting to: /site_access/site_access.jsp?successPage=" +
+	                    request.getRequestURI());
+	                redirBuf.append("/site_access/site_access.jsp?successPage=" +
+	                    request.getRequestURI());
+	
+	                String requestQryString = request.getQueryString();
+	
+	                if ((requestQryString != null) &&
+	                        (requestQryString.trim().length() > 0)) {
+	                    redirBuf.append(URLEncoder.encode("?" +
+	                            request.getQueryString()));
+	                }
+	
+	                this.redirectPage = redirBuf.toString();
+	                doRedirect(true);
+	
+	                return SKIP_BODY;
+            	}
             }
         }
 
         if ((user == null) ||
-                ((user.getLevel() == FDSessionUser.GUEST) && !guestAllowed) ||
-                ((user.getLevel() == FDSessionUser.RECOGNIZED) &&
-                !recognizedAllowed) ||
-                (user.isNotServiceable() &&
-                (user.getLevel() != FDSessionUser.SIGNED_IN) &&
-                !user.isDepotUser() && !guestAllowed)) {
+            ((user.getLevel() == FDSessionUser.GUEST) && !guestAllowed) ||
+            ((user.getLevel() == FDSessionUser.RECOGNIZED) && !recognizedAllowed) ||
+            (user.isNotServiceable() && (user.getLevel() != FDSessionUser.SIGNED_IN) && !user.isDepotUser() && !guestAllowed)) {
             //
             // redirect, unless this is a request from a friendly robot we want
             // to let in
@@ -261,20 +263,14 @@ public class CheckLoginStatusTag extends com.freshdirect.framework.webapp.TagSup
                 // won't blow up for it
                 //
                 if (user == null) {
-                    FDUser robotUser = new FDUser(new PrimaryKey("robot"));
-                    Set<EnumServiceType> availableServices = new HashSet<EnumServiceType>();
-                    availableServices.add(EnumServiceType.HOME);
-                    robotUser.setSelectedServiceType(EnumServiceType.HOME);
-                    robotUser.setAvailableServices(availableServices);
-                    robotUser.isLoggedIn(false);
-                    user = new FDSessionUser(robotUser, session);
-                    session.setAttribute(USER, user);
+                	user = RobotUtil.createRobotUser(session);
                 }
             } else {
                 if (request.getParameter("siteAccessPage") == null) { //if user navigates on site access do not redirect
-                    doRedirect(user == null);
-
-                    return SKIP_BODY;
+                	if (user!=null || (user=useIpLocator(request))==null){ //only do IP Sniff if user was null originally, else redirect to login page
+	                	doRedirect(user == null);
+	                    return SKIP_BODY;
+                	}
                 }
             }
         }
@@ -610,7 +606,7 @@ public class CheckLoginStatusTag extends com.freshdirect.framework.webapp.TagSup
         }
     }
 
-    private void createUser(EnumServiceType serviceType,
+    private FDSessionUser createUser(EnumServiceType serviceType,
         Set<EnumServiceType> availableServices) throws FDResourceException {
         HttpSession session = pageContext.getSession();
         HttpServletResponse response = (HttpServletResponse) pageContext.getResponse();
@@ -633,6 +629,7 @@ public class CheckLoginStatusTag extends com.freshdirect.framework.webapp.TagSup
 
             user = new FDSessionUser(FDCustomerManager.createNewUser(
                         this.address, serviceType), session);
+            user.setUserCreatedInThisSession(true);
             user.setSelectedServiceType(serviceType);
             //Added the following line for zone pricing to keep user service type up-to-date.
             user.setZPServiceType(serviceType);
@@ -662,10 +659,16 @@ public class CheckLoginStatusTag extends com.freshdirect.framework.webapp.TagSup
             }
         }
 
+        //To fetch and set customer's coupons.
+		if(user != null){
+			FDCustomerCouponUtil.initCustomerCoupons(session);
+		}
+        
         //The previous recommendations of the current session need to be removed.
         session.removeAttribute(SessionName.SMART_STORE_PREV_RECOMMENDATIONS);
         session.removeAttribute(SessionName.SAVINGS_FEATURE_LOOK_UP_TABLE);
         session.removeAttribute(SessionName.PREV_SAVINGS_VARIANT);
+        return user;
     }
 
     public boolean isDdppPreview() {
@@ -675,4 +678,95 @@ public class CheckLoginStatusTag extends com.freshdirect.framework.webapp.TagSup
     public void setDdppPreview(boolean ddppPreview) {
         this.ddppPreview = ddppPreview;
     }
+    
+    private FDSessionUser useIpLocator(HttpServletRequest request){
+    	FDSessionUser user = null;
+    	
+    	if (FDStoreProperties.isIpLocatorEnabled()) {
+    		RequestClassifier requestClassifier = new RequestClassifier(request);
+    		int rolloutPercent = FDStoreProperties.getIpLocatorRolloutPercent(); 
+    		
+    		if (requestClassifier.isInHashRange(rolloutPercent)){ //check if rolled out to user
+		    	try {
+	    			//used mocked ip address parameter (for testing) if exists
+			    	String ip = NVL.apply(request.getParameter(IP_LOCATOR_MOCKED_IP_ADDRESS), RequestUtil.getClientIp(request)); 
+		    		IpLocatorData ipLocatorData = IpLocatorClient.getInstance().getData(ip);
+		    		
+		    		IpLocatorEventDTO ipLocatorEventDTO = new IpLocatorEventDTO();
+		    		ipLocatorEventDTO.setIp(ip);
+		    		ipLocatorEventDTO.setIpLocZipCode(ipLocatorData.getZipCode());
+		    		ipLocatorEventDTO.setIpLocCountry(ipLocatorData.getCountryCode());
+		    		ipLocatorEventDTO.setIpLocRegion(ipLocatorData.getRegion());
+		    		ipLocatorEventDTO.setIpLocCity(ipLocatorData.getCity());
+		    		ipLocatorEventDTO.setUserAgent(requestClassifier.getUserAgent());
+		    		ipLocatorEventDTO.setUaHashPercent(requestClassifier.getHashPercent());
+		    		ipLocatorEventDTO.setIplocRolloutPercent(rolloutPercent);
+		    		
+		    		user = createUser(ipLocatorData, ipLocatorEventDTO);
+		    		LOGGER.debug("IP locator success: "+ip+" -> "+ipLocatorData);
+	
+		    	} catch (IpLocatorException e) {
+					LOGGER.error("IP Locator failed: "+e);
+				}
+
+    		} else {
+    			LOGGER.debug("IP Locator not rolled out to user");
+    		}
+    	
+    	} else {
+    		LOGGER.debug("IP Locator disabled");
+    	}
+    	
+   		return user;
+    }
+    
+    /** based on SiteAccessControllerTag.doStartTag()*/
+    private FDSessionUser createUser(IpLocatorData ipLocatorData, IpLocatorEventDTO ipLocatorEventDTO) throws IpLocatorException{
+    	FDSessionUser user = null;
+    	
+    	try {
+    		boolean useIpLocatorData = IpLocatorUtil.validate(ipLocatorData);
+	    	String zipCode = useIpLocatorData ? ipLocatorData.getZipCode() : FDStoreProperties.getDefaultPickupZoneId();
+	    	
+	    	newSession();
+	    	address = new AddressModel();
+	    	address.setZipCode(zipCode);
+	    	Set<EnumServiceType> availableServices = FDDeliveryManager.getInstance().checkZipCode(zipCode).getAvailableServices();
+	    	
+	    	//FDCustomerManager.createNewUser() inside createUser() will only use zipCode and resolve location based on that.
+	    	//City and State information will be appended to user.address.
+	    	user = createUser(ServiceTypeUtil.getPreferedServiceType(availableServices), availableServices);
+	    	
+	    	ipLocatorEventDTO.setFdUserId(user.getPrimaryKey());
+	    	AddressModel address = user.getAddress();
+	    	if (address != null){
+		    	ipLocatorEventDTO.setFdZipCode(address.getZipCode());
+		    	ipLocatorEventDTO.setFdState(address.getState());
+		    	ipLocatorEventDTO.setFdCity(address.getCity());
+	    	}
+	    	
+	    	if (FDStoreProperties.isIpLocatorEventLogEnabled()){
+		    	try {
+		    		//log IpLocatorEvent before appending data to user from IpLocatorData
+		    		FDCustomerManager.logIpLocatorEvent(ipLocatorEventDTO);
+		    	} catch (Exception e){
+		    		LOGGER.error("logIpLocatorEvent failed", e);
+		    	}
+		    }
+	    	LOGGER.debug("ipLocatorEventDTO: " + ipLocatorEventDTO);
+	    	
+	    	//If no data city/state is appended by createUser(), city and state fields will be taken from ipLocatorData
+    		if (useIpLocatorData){
+    			IpLocatorUtil.appendMissingFieldsToUserAddress(ipLocatorData, user.getUser());
+    		}
+	    	
+    	} catch (Exception e) {
+			LOGGER.error(e);
+			throw new IpLocatorException(e);
+		}
+    	
+    	return user;
+    }
+    
+
 }

@@ -212,7 +212,7 @@ YAHOO.util.Event.onDOMReady(function() {
 					<div><display:WinePrice priceCalculator="<%= calculator %>" action="<%= actionUrl %>"/></div>
 					<div class="rating-small"><display:WineRating product="<%= product %>" small="true" action="<%= actionUrl %>"/></div>
 					<div class="productname">
-						<display:ProductName priceCalculator="<%= calculator %>" product="<%= product %>" action="<%= CmMarketingLinkUtil.getSmartStoreLink(actionUrl, deptPopular) %>" showBrandName="true" />
+						<display:ProductName priceCalculator="<%= calculator %>" product="<%= product %>" action="<%= actionUrl %>" showBrandName="true" />
 					</div>
 					<display:ProductPrice impression="<%= new ProductImpression(calculator) %>" showDescription="false" excludeCaseDeals="<%= true %>"/>
 					<display:FDCoupon coupon="<%= custCoupon %>" contClass="fdCoupon_wineMostPop"></display:FDCoupon>

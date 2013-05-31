@@ -15,6 +15,11 @@ public enum EnumWineRating implements WineFilterValue {
 		return "_" + EnumWineRating.class.getSimpleName() + ":" + name();
 	}
 	
+	@Override
+	public String getDomainName() {
+		return "Rating";
+	}
+	
 	public String getDomainEncoded() {
 		return getWineDomain();
 	}

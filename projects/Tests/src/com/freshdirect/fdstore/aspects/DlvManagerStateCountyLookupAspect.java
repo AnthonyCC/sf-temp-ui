@@ -16,7 +16,7 @@ public class DlvManagerStateCountyLookupAspect extends BaseAspect {
     }
     
     public StateCounty lookupStateCountyByZip(String zipcode) {
-        StateCounty sc = new StateCounty("Wonderland", "Oz");
+        StateCounty sc = new StateCounty("Wonderland", "Oz", "Wonder City");
         return sc;
     }
     

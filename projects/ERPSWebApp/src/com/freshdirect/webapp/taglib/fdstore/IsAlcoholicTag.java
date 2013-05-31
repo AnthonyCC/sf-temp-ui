@@ -31,7 +31,12 @@ public class IsAlcoholicTag extends BodyTagSupportEx {
 		
 		ProductModel prodModel = null;
 		CategoryModel categoryModel = null;
+		FDSessionUser yser = (FDSessionUser)request.getSession().getAttribute(SessionName.USER);
 
+		if (yser!=null && yser.isRobot()){
+			return SKIP_BODY; //robot user should not be stopped by alcoholic warning
+		}
+		
 		try {
 			if (FDStoreProperties.isUSQLegalWarningSwitchedOn()) {
 				if (!skuCode.equals("")) {
@@ -54,7 +59,6 @@ public class IsAlcoholicTag extends BodyTagSupportEx {
 					return SKIP_BODY;
 				}
 			} else {
-				FDSessionUser yser = (FDSessionUser)request.getSession().getAttribute(SessionName.USER);
 				if("true".equalsIgnoreCase(noProduct) && yser != null 
 						&& !yser.isHealthWarningAcknowledged()) {
 					return EVAL_BODY_INCLUDE;

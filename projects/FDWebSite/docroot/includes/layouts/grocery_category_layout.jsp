@@ -197,9 +197,9 @@ boolean hideFi = false;
 								<display:ProductRating product="<%= productNode %>" />
 				<%			// product name
 						if (productNode.isFullyAvailable()) { %>
-							<div><display:ProductName product="<%= productNode %>" action="<%= CmMarketingLinkUtil.getSmartStoreLink(actionURI, recommendations) %>"/></div>
+							<div><display:ProductName product="<%= productNode %>" action="<%= actionURI %>"/></div>
 				<%		} else { %>
-							<div style="color: #999999"><display:ProductName product="<%= productNode %>" action="<%= CmMarketingLinkUtil.getSmartStoreLink(actionURI, recommendations) %>"/></div>
+							<div style="color: #999999"><display:ProductName product="<%= productNode %>" action="<%= actionURI %>"/></div>
 				<%		} %>
 							<div class="favoritePrice">	<display:ProductPrice impression="<%= pi %>" showDescription="false"/></div>
 							<display:FDCoupon coupon="<%= curCoupon %>" contClass="fdCoupon_layGroCatRec"></display:FDCoupon>
@@ -553,4 +553,4 @@ boolean hideFi = false;
 	<td colspan="4"><img src="/media_stat/images/layout/clear.gif" width="1" height="10" alt="" /></td>
 </tr>
 </table>
-<fd:javascript src="/assets/javascript/fd/modules/coremetrics/carousel_grocery_layout.js"/>
+

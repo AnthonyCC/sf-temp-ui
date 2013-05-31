@@ -1,4 +1,4 @@
-<%@page import="com.freshdirect.fdstore.content.util.DeliveryDateComparator"%>
+<%@page import="com.freshdirect.webapp.taglib.coremetrics.CmMarketingLinkUtil"%>
 <%@ page import='com.freshdirect.fdstore.customer.*' %>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*'%>
 <%@ page import='com.freshdirect.fdstore.attributes.*' %>
@@ -11,7 +11,9 @@
 <%@ page import='com.freshdirect.fdstore.promotion.*'%>
 <%@ page import='com.freshdirect.webapp.util.JspMethods' %>
 <%@ page import='com.freshdirect.webapp.util.*' %>
+<%@ page import="com.freshdirect.webapp.util.prodconf.DefaultProductConfigurationStrategy"%>
 <%@ page import='com.freshdirect.fdstore.FDStoreProperties' %>
+<%@ page import='com.freshdirect.cms.fdstore.FDContentTypes' %>
 <%@ page import="com.freshdirect.cms.ContentKey"%>
 <%@ page import="com.freshdirect.fdstore.content.StoreModel"%>
 <%@ page import='java.text.*' %>
@@ -19,17 +21,16 @@
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri='template' prefix='tmpl' %>
-
-<% //expanded page dimension
+<%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %>
+<%@ taglib uri="/WEB-INF/shared/tld/components.tld" prefix='comp' %><% 
+//expanded page dimension
 final int W_INDEX_TOTAL = 970;
 final int W_INDEX_CENTER_PADDING = 20;
 final int W_INDEX_RIGHT_CENTER = W_INDEX_TOTAL - 228 - W_INDEX_CENTER_PADDING;
-%>
 
+%><fd:CheckLoginStatus guestAllowed='true' pixelNames="TheSearchAgency" />
+<fd:WelcomeExperience/><%
 
-<fd:CheckLoginStatus guestAllowed='true' pixelNames="TheSearchAgency" />
-
-<%
 	FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
 	FDSessionUser sessionUser = (FDSessionUser)session.getAttribute(SessionName.USER);
 	String custFirstName = user.getFirstName();
@@ -41,9 +42,23 @@ final int W_INDEX_RIGHT_CENTER = W_INDEX_TOTAL - 228 - W_INDEX_CENTER_PADDING;
 
 <tmpl:insert template='/common/template/no_shell.jsp'>
 	<tmpl:put name='title' direct='true'>Welcome to FreshDirect</tmpl:put>
-	<tmpl:put name='content' direct='true'>
-
+	<tmpl:put name="customCss">
 		<fd:css href="/assets/css/homepage/homepage.css"/>
+		<fd:css href="/assets/css/common/product_grid.css"/>
+	</tmpl:put>
+	<tmpl:put name="customJsBottom">
+		<fd:javascript src="/assets/javascript/fd/modules/search/seemore.js" />
+		<fd:javascript src="/assets/javascript/fd/modules/search/statusupdate.js" />
+	</tmpl:put>
+	
+	<tmpl:put name='content' direct='true'>
+<script>
+FD_QuickBuy.style = {
+		closeButton:'quickbuy-noheader-close',
+		header:'quickbuy-noheader'
+};
+</script>
+
 <fd:GetSegmentMessage id='segmentMessage' user="<%=user%>">
 
 <%
@@ -55,218 +70,69 @@ final int W_INDEX_RIGHT_CENTER = W_INDEX_TOTAL - 228 - W_INDEX_CENTER_PADDING;
 %>
 
 <% 
-	boolean showAltHome = false;
-	if (FDStoreProperties.IsHomePageMediaEnabled() && (!user.isHomePageLetterVisited() || 
-		(request.getParameter("show") != null && request.getParameter("show").indexOf("letter") > -1))) 
-			showAltHome = true;
-%>
-<%
+boolean showAltHome = false;
+if (FDStoreProperties.IsHomePageMediaEnabled() && (!user.isHomePageLetterVisited() || 
+	(request.getParameter("show") != null && request.getParameter("show").indexOf("letter") > -1))) 
+		showAltHome = true;
+
 	//Coupons disabled warning msg
 	if (!user.isCouponsSystemAvailable() && !sessionUser.isCouponWarningAcknowledged()) {
-		sessionUser.setCouponWarningAcknowledged(true);
-		%>
-			<div style="display: none;" id="fdCoupon_indexAlert">
-				<div style="text-align: center;"><img src="/media/images/ecoupon/logo-purpler_old.png" alt="fdCoupon" height="85" width="222" /></div>
-				<div class="error_title"  style="text-align: center; margin: 20px 20px;"><%= (SystemMessageList.MSG_COUPONS_SYSTEM_NOT_AVAILABLE).replace("unavailable.", "unavailable.<br />") %></div>
-				<div style="text-align: center; margin-bottom: 20px;"><img id="clickToContinue" style="cursor: pointer;" src="/media/images/ecoupon/click-here-to-continue_large.png" alt="Click Here To Continue" /></div>
-			</div>
-			<script type="text/javascript" language="javascript">
-				$jq(function() {
-					var overlayDialog = doOverlayDialogBySelector('#fdCoupon_indexAlert');
-					$jq('#clickToContinue').live('click', function(e) { e.preventDefault(); overlayDialog.dialog('close'); });
-				});
-			</script>
-		<%
+        sessionUser.setCouponWarningAcknowledged(true);
+%>
+        <div style="display: none;" id="fdCoupon_indexAlert">
+                <div style="text-align: center;"><img src="/media/images/ecoupon/logo-purpler_old.png" alt="fdCoupon" height="85" width="222" /></div>
+                <div class="error_title"  style="text-align: center; margin: 20px 20px;"><%= (SystemMessageList.MSG_COUPONS_SYSTEM_NOT_AVAILABLE).replace("unavailable.", "unavailable.<br />") %></div>
+                <div style="text-align: center; margin-bottom: 20px;"><img id="clickToContinue" style="cursor: pointer;" src="/media/images/ecoupon/click-here-to-continue_large.png" alt="Click Here To Continue" /></div>
+        </div>
+        <script type="text/javascript" language="javascript">
+                $jq(function() {
+                        var overlayDialog = doOverlayDialogBySelector('#fdCoupon_indexAlert');
+                        $jq('#clickToContinue').live('click', function(e) { e.preventDefault(); overlayDialog.dialog('close'); });
+                });
+        </script>
+<%
 	}
 %>
  	<div class="holder">
 		<%-- MAIN CONTENT--%>
 			<div class="content"> 
-				<% if (showAltHome && !location2Media) {
-					String mediaPath = null;
-					
-		          	if (validOrderCount < 1){
-		            	mediaPath=FDStoreProperties.getHPLetterMediaPathForNewUser();
-		          	} else { 
-		          		mediaPath=FDStoreProperties.getHPLetterMediaPathForOldUser();
-		          	}
-		          	
-					%><fd:IncludeMedia name="<%=mediaPath%>" /><%
-					
-	        		// update user already visited home page letter
-	        		user.setHomePageLetterVisited(true);
-	        		// not sure we need to do this here because saving cart too often is not recomended
-	          
-		        	if(user instanceof FDSessionUser){                
-		        		sessionUser=(FDSessionUser)user;
-		                sessionUser.saveCart(true);          
-		        	}
-				} else if (!showAltHome && location2Media) { %>
-					<%@ include file="includes/home/i_intro_hdr.jspf" %>
-					<% if (user.getLevel() >= FDUserI.RECOGNIZED) { %>
-						<%
-							int pendingOrderCount = 0;
-							List<FDOrderInfoI> validPendingOrders = new ArrayList<FDOrderInfoI>();
-							validPendingOrders.addAll(user.getPendingOrders());
-							//Collections.reverse(validPendingOrders);
-							
-							//sort pending orders based on delivery date (the closer date goes first)
-							Collections.sort(validPendingOrders, new DeliveryDateComparator());
-							
-							//set count (in case this variable is needed elsewhere (and we'll just use it now as well)
-							pendingOrderCount = validPendingOrders.size();
-	
-							if (pendingOrderCount > 0) {
-	
-								FDOrderInfoI orderInfo = (FDOrderInfoI) validPendingOrders.get(0);
-	
-								%>
-								<div class="index_ordMod_cont" id="index_table_ordModify_0">
-				   					<div class="index_ordMod_cont_child">
-				   						<div class="ordModifyInfoCont">
-											<a href="/your_account/order_details.jsp?orderId=<%= orderInfo.getErpSalesId() %>" class="orderNumb"><%= orderInfo.getErpSalesId() %></a>
-											<span style="padding-left: 30px;"><span class="dow"><%= new SimpleDateFormat("EEEEE").format(orderInfo.getRequestedDate()) %>,</span> <%= new SimpleDateFormat("MM/dd/yyyy").format(orderInfo.getRequestedDate()) %> 
-												<span class="pipeSep">|</span> <%= FDTimeslot.format(orderInfo.getDeliveryStartTime(),orderInfo.getDeliveryEndTime())%></span>
-										</div>
-										<div class="ordModifyButCont">
-											<% if ( new Date().before(orderInfo.getDeliveryCutoffTime())) { %>
-												<a href="/your_account/order_details.jsp?orderId=<%= orderInfo.getErpSalesId() %>" class="ordModifyViewDetails">view details&nbsp;</a>
-												<a class="imgButtonOrange" style="margin-left: 10px;" href="/your_account/modify_order.jsp?orderId=<%= orderInfo.getErpSalesId() %>&action=modify">modify order</a>
-											<% } else { %>
-												&nbsp;
-											<% } %>
-										</div>
-									</div>
-								</div>
-							<% } %>
-					<% }
-			} else if (!showAltHome && !location2Media) { %>
-				<%@ include file="includes/home/i_intro_hdr.jspf" %>
-		   		<% if(user.isEligibleForPreReservation() && user.getReservation() != null) {
-		   			FDReservation rsv = user.getReservation();
-		   		%>
-			   		<img src="/media_stat/images/layout/cccccc.gif" width="100%" height="1" vspace="8" alt="" />
-			   		
-			   		<table width="100%" cellpadding="0" cellspacing="0" border="0">
-			   			<tr>
-			   				<td>
-			   					<font class="text9"><b>You have a delivery slot reserved for:</b></font> <a href="/your_account/reserve_timeslot.jsp"><%=CCFormatter.formatReservationDate(rsv.getStartTime())%> @ <%=FDTimeslot.format(rsv.getStartTime(), rsv.getEndTime())%></a></td>
-			 	  		</tr>
-			 	  	</table>
-		   		<% } %>
-		   		<% if (user.getLevel() >= FDUserI.RECOGNIZED) { %>
-					<%
-						int pendingOrderCount = 0;
-						List<FDOrderInfoI> validPendingOrders = new ArrayList<FDOrderInfoI>();
-						validPendingOrders.addAll(user.getPendingOrders());
-						//Collections.reverse(validPendingOrders);
-						
-						//sort pending orders based on delivery date (the closer date goes first)
-						Collections.sort(validPendingOrders, new DeliveryDateComparator());
-
-						//set count (in case this variable is needed elsewhere (and we'll just use it now as well)
-						pendingOrderCount = validPendingOrders.size();
-
-						if (pendingOrderCount > 0) {
-							FDOrderInfoI orderInfo = (FDOrderInfoI) validPendingOrders.get(0);
-						%>
-							<div class="index_ordMod_cont" id="index_table_ordModify_1">
-			   					<div class="index_ordMod_cont_child">
-			   						<div class="ordModifyInfoCont">
-										<a href="/your_account/order_details.jsp?orderId=<%= orderInfo.getErpSalesId() %>" class="orderNumb"><%= orderInfo.getErpSalesId() %></a>
-										<span style="padding-left: 30px;"><span class="dow"><%= new SimpleDateFormat("EEEEE").format(orderInfo.getRequestedDate()) %>,</span> <%= new SimpleDateFormat("MM/dd/yyyy").format(orderInfo.getRequestedDate()) %> 
-											<span class="pipeSep">|</span> <%= FDTimeslot.format(orderInfo.getDeliveryStartTime(),orderInfo.getDeliveryEndTime())%></span>
-									</div>
-									<div class="ordModifyButCont">
-										<% if ( new Date().before(orderInfo.getDeliveryCutoffTime())) { %>
-											<a href="/your_account/order_details.jsp?orderId=<%= orderInfo.getErpSalesId() %>" class="ordModifyViewDetails">view details&nbsp;</a>
-											<a class="imgButtonOrange" style="margin-left: 10px;" href="/your_account/modify_order.jsp?orderId=<%= orderInfo.getErpSalesId() %>&action=modify">modify order</a>
-										<% } else { %>
-											&nbsp;
-										<% } %>
-									</div>
-								</div>
-							</div>
-						<% } %>
-				<% } %>
-		   	<%
-	   	}
+<% if (showAltHome && !location2Media) { 
+	%><comp:homePageLetter user="<%= user %>" />
+<%} else if (!showAltHome && location2Media) { 
+	%><comp:welcomeMessage user="<%= user %>" segmentMessage="<%= segmentMessage %>" isCosPage="<%=false%>"/>
+	  <comp:modifyOrderBar user="<%= user %>"  htmlId="index_table_ordModify_0" /><% 
+} else if (!showAltHome && !location2Media) { 
+	%><comp:welcomeMessage user="<%= user %>" segmentMessage="<%= segmentMessage %>" isCosPage="<%=false%>"/>
+	  <comp:deliverySlotReserved user="<%= user %>" />
+	  <comp:modifyOrderBar user="<%= user %>" htmlId="index_table_ordModify_1" /><%
+}
 	   	
-		if (location2Media) { %>
-			<table width="100%" cellpadding="0" cellspacing="0" border="0" id="index_table_ordModify_2">
-				<tr>
-					<td><img src="/media_stat/images/layout/clear.gif" width="310" height="6"></td>
-					<td><img src="/media_stat/images/layout/clear.gif" width="150" height="6"></td>
-				</tr>
-				<tr>
-					<td colspan="2" bgcolor="#ccc"><img src="/media_stat/images/layout/clear.gif" width="1" height="1" alt="" /></td>
-				</tr>
-				<tr>
-					<td colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="8" alt="" /></td>
-				</tr>
-			</table>
-			<table width="100%" cellpadding="0" cellspacing="0" border="0">
-				<tr>
-					<td>
-						<fd:IncludeMedia name="/media/editorial/hp_notes/winback/lapsed.html" />
-						<% user.setCampaignMsgViewed(user.getCampaignMsgViewed() + 1); %>
-					</td>
-				</tr>
-			</table>
-		<% } %>
-
-		<div class="oas_feature_frame" style="padding-top: 10px;">
-			<span>
-				<script type="text/javascript">
-					OAS_AD('HPFeatureTop');
-					showExtCampaignButtons();
-				</script>
-			</span>
-		</div>			
-
-		<div class="oas_feature_left left">
-			<script type="text/javascript">
-				OAS_AD('HPFeature');
-			</script>
-   		</div>
-   		<div class="oas_feature_right right">
-   			<div class="oas_feature_right_tab">
-	   			<script type="text/javascript">
-					OAS_AD('HPTab1');
-				</script>
-			</div>
-   			<div class="oas_feature_right_tab">
-	   			<script type="text/javascript">
-					OAS_AD('HPTab2');
-				</script>
-			</div>
-   			<div class="oas_feature_right_tab">
-	   			<script type="text/javascript">
-					OAS_AD('HPTab3');
-				</script>
-			</div>
-   			<div class="oas_feature_right_tab">
-	   			<script type="text/javascript">
-					OAS_AD('HPTab4');
-				</script>
-			</div>
-   		</div>
-	   	<div class="clear" style="font-size: 0px;"></div>
-	   		
-		<div class="oas_feature_frame">
-			<span>
-	   			<script type="text/javascript">
-					OAS_AD('HPFeatureBottom');
-				</script>
-			</span>
-		</div>
-	   		
-	   	<%
+if (location2Media) { %><comp:location2Media user="<%= user %>" /><% } 
+%>
+		<comp:OASFeature 
+			top="HPFeatureTop"
+			left="HPFeature"
+			tab1="HPTab1"
+			tab2="HPTab2"
+			tab3="HPTab3"
+			tab4="HPTab4"
+			bottom="HPFeatureBottom" />
+<%
 	   		StoreModel store = (StoreModel) ContentFactory.getInstance().getContentNode("Store", "FreshDirect");
 	   		if (store != null) {
-	    		Html edtMed = store.getEditorial();
+	   			ConfigurationContext confContext = new ConfigurationContext();
+	   			confContext.setFDUser(user);
+	   			ConfigurationStrategy confStrat = new DefaultProductConfigurationStrategy();
+	   			String trkCode = "favorites";
+	   			request.setAttribute("trk",trkCode);
+%>
+	   			<div id="most-popular" class="grid-carousel grid-view">
+					<comp:recommenderCarousel siteFeature="FAVORITES" user="<%= user %>" trkCode="dpage" facility="default" id="fav_carousel" maxItems="24" numItems="6" width="910" />
+	   			</div>
+<%	   			
+	   			Html edtMed = store.getEditorial();
 				if ( edtMed != null ) { %>
-					<fd:IncludeMedia name="" media="<%= edtMed %>"></fd:IncludeMedia>
+					<fd:IncludeHtml html="<%= edtMed %>"/>
 				<% } else {
 					String categoryLinks = FDStoreProperties.getHPCategoryLinksFallback();
 					if ( categoryLinks != null ) {
@@ -274,14 +140,10 @@ final int W_INDEX_RIGHT_CENTER = W_INDEX_TOTAL - 228 - W_INDEX_CENTER_PADDING;
 					}
 				}
 			}
-	   %>
-	   		
-		<div class="oas_home_bottom">
-   			<script type="text/javascript">
-				OAS_AD('HPWideBottom');
-			</script>
+%>
+			<div class="oas_home_bottom"><script type="text/javascript">OAS_AD('HPWideBottom');</script></div>
 		</div>
-	</div>
+		<div id="bottom_link"><a href="/welcome.jsp"><img src="/media_stat/images/home/fd_logo_learn_more_back.jpg"></a></div>
 	<%-- END MAIN CONTENT--%> 
 </div>
 </fd:GetSegmentMessage>

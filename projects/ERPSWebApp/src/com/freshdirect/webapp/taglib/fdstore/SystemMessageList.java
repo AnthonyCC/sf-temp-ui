@@ -43,6 +43,7 @@ public interface SystemMessageList {
 	public final static String MSG_CANT_GEOCODE_EXTRA 					= "We''re sorry, but we''re unable to process this address. For assistance, please call our Customer Service Team at {0}";
 	public final static String MSG_CANT_GEOCODE_ZIP_CHECK				= "We''re sorry! Your address isn''t set up in our system. We''re working to enter it as quickly as possible. Please call us toll free at {0} and we''ll inform you when the problem is corrected.";
 	public final static String MSG_RESTRICTED_ADDRESS 					= "We're sorry; FreshDirect does not deliver to this address because it is a commercial building. Unfortunately we are only able to make deliveries to residential buildings. You may enter another address <a href=\"/checkout/step_1_enter.jsp\">here</a> or choose the Pickup option below. To see where we deliver, <a href=\"javascript:popup('/help/delivery_zones.jsp','large')\">click here</a>.";
+	public final static String MSG_RESTRICTED_ADDRESS_LOCATION_BAR		= "We're sorry; FreshDirect does not deliver to this address because it is a commercial building. Unfortunately we are only able to make deliveries to residential buildings. Please select another address or choose a Pickup option. To see where we deliver, <a href=\"javascript:popup('/help/delivery_zones.jsp','large')\">click here</a>.";
 	public final static String MSG_CORP_ADDR_OUT_OF_ZONE				= "We're sorry; FreshDirect does not offer Corporate Office Service delivery at this location.";
 	
 

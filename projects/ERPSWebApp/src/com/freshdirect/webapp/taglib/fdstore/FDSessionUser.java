@@ -24,9 +24,11 @@ import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.customer.ActivityLog;
 import com.freshdirect.customer.EnumAccountActivityType;
 import com.freshdirect.customer.EnumTransactionSource;
+import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.customer.ErpPromotionHistory;
 import com.freshdirect.customer.OrderHistoryI;
+import com.freshdirect.delivery.EnumDeliveryStatus;
 import com.freshdirect.deliverypass.EnumDPAutoRenewalType;
 import com.freshdirect.deliverypass.EnumDlvPassProfileType;
 import com.freshdirect.deliverypass.EnumDlvPassStatus;
@@ -120,6 +122,14 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
     private String lastCOSSurvey = null;	//holds name of survey
     
     private boolean seenDpNewTc = false;
+    
+    //APPDEV-2448 IPSniff fields
+    private boolean userCreatedInThisSession;
+    private boolean futureZoneNotificationEmailSentForCurrentAddress;
+    private boolean moreInfoPopupShownForCurrentAddress;
+    
+	//APPDEV-2812 IP Detect Phase I Welcome Experience
+    private boolean newUserWelcomePageShown;
     
 	public void setLastCOSSurveySuccess(boolean lastCOSSurveySuccess) {
 		this.lastCOSSurveySuccess = lastCOSSurveySuccess;
@@ -1434,6 +1444,61 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 	}
 
 	@Override
+	public List<ErpAddressModel> getAllHomeAddresses() throws FDResourceException {
+		return user.getAllHomeAddresses();
+	}
+
+	@Override
+	public List<ErpAddressModel> getAllCorporateAddresses() throws FDResourceException {
+		return user.getAllCorporateAddresses();
+	}
+
+	@Override
+	public void invalidateAllAddressesCaches() {
+		user.invalidateAllAddressesCaches();
+	}
+
+	public boolean isUserCreatedInThisSession() {
+		return userCreatedInThisSession;
+	}
+
+	public void setUserCreatedInThisSession(boolean userCreatedInThisSession) {
+		this.userCreatedInThisSession = userCreatedInThisSession;
+	}
+
+	public AddressModel getSelectedAddress() {
+		return user.getSelectedAddress();
+	}
+	
+	public EnumDeliveryStatus getDeliveryStatus() throws FDResourceException {
+		return user.getDeliveryStatus();
+	}
+
+	public boolean isFutureZoneNotificationEmailSentForCurrentAddress() {
+		return futureZoneNotificationEmailSentForCurrentAddress;
+	}
+
+	public void setFutureZoneNotificationEmailSentForCurrentAddress(boolean futureZoneNotificationEmailSentForCurrentAddress) {
+		this.futureZoneNotificationEmailSentForCurrentAddress = futureZoneNotificationEmailSentForCurrentAddress;
+	}
+
+	public boolean isMoreInfoPopupShownForCurrentAddress() {
+		return moreInfoPopupShownForCurrentAddress;
+	}
+
+	public void setMoreInfoPopupShownForCurrentAddress(boolean moreInfoPopupShownForCurrentAddress) {
+		this.moreInfoPopupShownForCurrentAddress = moreInfoPopupShownForCurrentAddress;
+	}
+
+	public boolean isNewUserWelcomePageShown(){
+		return newUserWelcomePageShown;
+	}
+	
+	public void setNewUserWelcomePageShown(boolean newUserWelcomePageShown){
+		this.newUserWelcomePageShown = newUserWelcomePageShown;
+	}
+	
+	@Override
 	public Set<ExternalCampaign> getExternalPromoCampaigns() {
 		return this.user.getExternalPromoCampaigns();
 	}
@@ -1452,6 +1517,15 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 	public void setExternalPromoCampaigns(Set<ExternalCampaign> externalCampaigns) {
 		this.user.setExternalPromoCampaigns(externalCampaigns);
 	}
+	
+	public boolean isRobot(){
+		return user.isRobot();
+	}
+	
+	public void setRobot(boolean robot){
+		user.setRobot(robot);
+	}
+	
 	
 	public FDCustomerCouponWallet getCouponWallet() {
 		return this.user.getCouponWallet();

@@ -611,6 +611,7 @@ function OAS_AD(pos) {
 		OAS_RICH(pos);
 	else
 		OAS_NORMAL(pos);
+	if(typeof window.parent['OAS_DONE'] =='function') { OAS_DONE(pos); }	
 }
 </script><%
 } else {
@@ -647,12 +648,13 @@ function createOASFrame() {
 <%}%>
 	
     idoc.writeln("function copy_ad(oas_id) {");
-    idoc.writeln("  var done=false; document._fragment='';");
+    idoc.writeln("  var done=false,targetId = 'OAS_' + oas_id; document._fragment='';");
     idoc.writeln("  document.write=document.fwrite;OAS_RICH(oas_id);document.write=document._write;");
     idoc.writeln("  document.getElementById(oas_id).innerHTML = document._fragment;");
-    idoc.writeln("  var pdiv = window.parent.document.getElementById('OAS_' + oas_id);");
+    idoc.writeln("  var pdiv = window.parent.document.getElementById(targetId);");
     idoc.writeln("  if (pdiv) {");
     idoc.writeln("    pdiv.innerHTML = document.getElementById(oas_id).innerHTML;done=true;");
+    idoc.writeln("    if(typeof window.parent['OAS_DONE'] =='function') { window.parent.OAS_DONE(oas_id); }");
     idoc.writeln("  }");
     idoc.writeln("  return done;");
     idoc.writeln("}");
@@ -733,3 +735,12 @@ function OAS_AD(pos) {
 <%
 	}
 %>
+<script>
+function OAS_DONE(oas_id) {
+	var e = document.getElementById('OAS_'+oas_id);
+	if(window.jQuery && e) {
+		jQuery(e).trigger('OAS_DONE',[oas_id]);
+	}
+}
+
+</script>

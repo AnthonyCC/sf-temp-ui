@@ -30,3 +30,59 @@ html,body {
 	padding-bottom: 10px;
 }
 
+#most-popular {
+	background:url(/media_stat/images/headers/header-most-popular.png) no-repeat top center;
+	padding-top:21px;
+}
+
+#bottom_link {
+	padding:16px 0;
+}
+
+.cos .figure {
+	display:inline-block;
+	vertical-align:top;
+	text-align:center;
+}
+.cos .figure img {
+	margin-bottom:0.5em;
+}
+
+.cos #categories {
+	font-size:14px;
+	background:url(/media_stat/images/cos/row2-food-drinks.png) no-repeat top center;
+	padding-top:36px;
+}
+
+.cos #categories .category {
+	width:190px;
+}
+.cos #categories .figure {
+	margin-bottom:1.4em;
+}
+
+.cos .caption {
+	font-weight:normal;
+	line-height:1.2em;
+}
+
+.cos #cos-bottom {
+	font-size:14px;
+}
+
+.cos #cos-bottom .container {
+	border-top:1px solid #eee;
+	padding-top:1.5em;
+	margin-top:1.5em;
+	text-align:left;
+}
+
+.cos #cos-footer-fruit {
+	float:left;
+	margin-right:1em;
+}
+
+.cos #cos-footer p {
+	font-size:13px;
+	color:#333;
+}

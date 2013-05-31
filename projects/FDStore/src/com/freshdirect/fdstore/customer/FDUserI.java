@@ -12,9 +12,11 @@ import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.customer.EnumTransactionSource;
+import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.customer.ErpPromotionHistory;
 import com.freshdirect.customer.OrderHistoryI;
+import com.freshdirect.delivery.EnumDeliveryStatus;
 import com.freshdirect.deliverypass.EnumDPAutoRenewalType;
 import com.freshdirect.deliverypass.EnumDlvPassProfileType;
 import com.freshdirect.deliverypass.EnumDlvPassStatus;
@@ -533,6 +535,16 @@ public interface FDUserI extends java.io.Serializable {
 
 	public void setSteeringSlotIds(Set<String> steeringSlotIds);
 
+	public List<ErpAddressModel> getAllHomeAddresses() throws FDResourceException;
+	
+	public List<ErpAddressModel> getAllCorporateAddresses() throws FDResourceException;
+	
+    public void invalidateAllAddressesCaches();
+
+    public AddressModel getSelectedAddress();
+    
+    public EnumDeliveryStatus getDeliveryStatus() throws FDResourceException;
+
 	public Set<ExternalCampaign> getExternalPromoCampaigns();
 	
 	public void setExternalCampaign(ExternalCampaign campaign);
@@ -540,6 +552,10 @@ public interface FDUserI extends java.io.Serializable {
 	public ExternalCampaign getExternalCampaign();
 
 	public void setExternalPromoCampaigns(Set<ExternalCampaign> externalCampaigns);
+	
+	public boolean isRobot();
+	
+	public void setRobot(boolean robot);
 	
 	public FDCustomerCouponWallet getCouponWallet();
 	

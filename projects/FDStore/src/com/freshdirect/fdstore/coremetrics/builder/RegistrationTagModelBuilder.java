@@ -24,12 +24,14 @@ public class RegistrationTagModelBuilder  {
 	private AddressModel addressModel;
 	private String location;
 	private String origZipCode;
-	
-	
+	private String email;
+		
 	public RegistrationTagModel buildTagModel() throws SkipTagException{
 		
-		//try to find out if user has a defaultShipToAddress (for existing users)
-		identifyDefaultShipToAddress();
+		//if no address is passed explicitly, try to find out if user has a defaultShipToAddress (for existing users)
+		if (addressModel == null) {
+			identifyDefaultShipToAddress();
+		}
 		
 		//try to get address info of newly registered COS user
 		if (addressModel == null) {
@@ -50,7 +52,7 @@ public class RegistrationTagModelBuilder  {
 		}
 		
 		tagModel.setRegistrationId(user.getPrimaryKey());
-		tagModel.setRegistrantEmail(user.getUserId());
+		tagModel.setRegistrantEmail(email==null ? user.getUserId(): email);
 
 		identifyAttributes();
 		return tagModel;
@@ -104,5 +106,13 @@ public class RegistrationTagModelBuilder  {
 
 	public void setOrigZipCode(String origZipCode) {
 		this.origZipCode = origZipCode;
+	}
+	
+	public void setAddress(AddressModel addressModel){
+		this.addressModel = addressModel;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
 	}
 }

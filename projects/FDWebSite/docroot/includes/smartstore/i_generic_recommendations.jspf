@@ -369,7 +369,7 @@ if (optionalParams.size() > 0) {
 																								
 											<div class="prod-descr-box"><display:TransparentBox disabled="<%= !shouldDimProduct %>">
 												<display:ProductRating product="<%= product %>"/>
-												<display:ProductName product="<%= product %>" action="<%= CmMarketingLinkUtil.getSmartStoreLink(actionURI, recommendations) %>" disabled="<%= shouldDimProduct %>"/>
+												<display:ProductName product="<%= product %>" action="<%= actionURI %>" disabled="<%= shouldDimProduct %>"/>
 												<display:ProductPrice impression="<%= recommendations_row %>" savingsPercentage="<%= isVariantSavings ? pvm.getPercentageOff() : 0 %>" />
 												<display:FDCoupon coupon="<%= curCoupon %>" contClass="fdCoupon_cartCNT"></display:FDCoupon>
 											</display:TransparentBox></div>

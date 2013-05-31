@@ -126,6 +126,7 @@ public class SiteAccessControllerTag extends com.freshdirect.framework.webapp.Bo
 		CookieMonster.clearCookie((HttpServletResponse)pageContext.getResponse());
 	}
 
+	/** keep in sync with CheckLoginStatusTag.createUser(String zipCode)*/
 	public int doStartTag() throws JspException {
 		ActionResult result = new ActionResult();
 		HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
@@ -479,6 +480,7 @@ public class SiteAccessControllerTag extends com.freshdirect.framework.webapp.Bo
 		return FDDeliveryManager.getInstance().checkZipCode(this.address.getZipCode());
 	}
 
+	/** keep in sync with LocationHandlerTag.doSetMoreInfoAction() */
 	private void populate(HttpServletRequest request) {
 		this.address = new AddressModel();
 		String homeZipcode = NVL.apply(request.getParameter(EnumUserInfoName.DLV_ZIPCODE.getCode()),"").trim();
@@ -512,6 +514,7 @@ public class SiteAccessControllerTag extends com.freshdirect.framework.webapp.Bo
 		this.address.setState(NVL.apply(request.getParameter(EnumUserInfoName.DLV_STATE.getCode()), "").trim());				
 	}
 
+	/** keep in sync with LocationHandlerTag.doSetMoreInfoAction() */
 	private void validate(ActionResult result, boolean validateAddress) throws FDResourceException {
 		String zipCode = this.address.getZipCode();
 		if ("".equals(zipCode)) {
@@ -550,6 +553,7 @@ public class SiteAccessControllerTag extends com.freshdirect.framework.webapp.Bo
 		
 	}
 
+	/** keep in sync with LocationHandlerTag.doSetMoreInfoAction() */
 	private int checkByAddress(HttpServletRequest request, ActionResult result) throws FDResourceException, JspException {
 		this.populate(request);
 		this.validate(result, true);
@@ -665,6 +669,7 @@ public class SiteAccessControllerTag extends com.freshdirect.framework.webapp.Bo
 		}
 	}
 	
+	/** keep in sync with LocationHandlerTag.doFutureZoneNotificationAction() */
 	private void saveEmail(HttpServletRequest request, ActionResult result) throws FDResourceException {
 		HttpSession session = pageContext.getSession();
 		String email = request.getParameter("email");
@@ -747,6 +752,8 @@ public class SiteAccessControllerTag extends com.freshdirect.framework.webapp.Bo
 					oldCart = user.getShoppingCart();
 				}
 				user = new FDSessionUser(FDCustomerManager.createNewUser(this.address, serviceType), session);
+				user.setUserCreatedInThisSession(true);
+				
 				if(this.address!=null && user.getAddress()!=null && 
 						"".equalsIgnoreCase(this.address.getState())&& this.address.getZipCode().equals(user.getAddress().getZipCode())){
 					this.address.setState(user.getAddress().getState());

@@ -1131,8 +1131,8 @@ var ccSettings = {
                 autoPad: true
         };		
 		
-function doOverlayWindow(olURL) {
-	
+function doOverlayWindow(olURL, titleVar) {
+	var titleString = titleVar || '';
 		
 		var olURL = olURL || '';
                 if (olURL == '') { return false; }
@@ -1141,7 +1141,7 @@ function doOverlayWindow(olURL) {
                 Modalbox.show(olURL, {
                         loadingString: 'Loading Preview...',
                         closeString: 'Close Preview',
-                        title: '',
+                        title: titleString,
                         width: 420,
                         overlayOpacity: .80,
                         transitions: false,
@@ -1257,8 +1257,11 @@ function doOverlayWindow(olURL) {
 	 * returns reference to dialog
 	 */
 	function setupOverlayDialog() {
-		var overlayDialog = $jq('<div id="uimodal-output"></div>');
-		$jq("body").append(overlayDialog);
+		var overlayDialog = $jq('#uimodal-output');
+		if (overlayDialog.length == 0) {
+			overlayDialog = $jq('<div id="uimodal-output"></div>');
+			$jq("body").append(overlayDialog);
+		}
 		overlayDialog.dialog({
 			title: "", /* no title */
 			modal: true,

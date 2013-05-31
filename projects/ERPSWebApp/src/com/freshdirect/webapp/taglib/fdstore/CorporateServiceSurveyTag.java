@@ -224,14 +224,17 @@ public class CorporateServiceSurveyTag extends AbstractControllerTag implements 
 			LOGGER.debug("CorpServTag redirectSuccessPage " + redirectSuccessPage);
 			LOGGER.debug("CorpServTag this.getSuccessPage() "+this.getSuccessPage());
 			
-			//this.setSuccessPage(null);
-			this.setSuccessPage(this.getSuccessPage()+((this.getSuccessPage().indexOf("?")>0)?"&":"?")+"successPage="+URLEncoder.encode(redirectSuccessPage+"info=thankyou#survey"));
+			if ("true".equalsIgnoreCase(request.getParameter("isAjax"))) {
+				this.setAjax(true);
+			}
+			
+			this.setSuccessPage(this.getSuccessPage()+((this.getSuccessPage().indexOf("?")>0)?"&":"?")+"successPage="+URLEncoder.encode(redirectSuccessPage+((redirectSuccessPage.indexOf("?")>0)?"?":"&")+"info=thankyou#survey"));
 			LOGGER.debug("CorpServTag this.getSuccessPage()2 "+this.getSuccessPage());
+		} else {
+			LOGGER.debug("CorpServTag err ");
+			LOGGER.debug("actionName "+actionName);
+			if (user!= null) { user.setLastCOSSurveySuccess(false); }
 		}
-		
-		LOGGER.debug("CorpServTag err ");
-		LOGGER.debug("actionName "+actionName);
-		if (user!= null) { user.setLastCOSSurveySuccess(false); }
 	}
 	
 	//no action name is only called from site access

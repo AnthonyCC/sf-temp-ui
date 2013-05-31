@@ -87,6 +87,7 @@ import com.freshdirect.fdstore.customer.RegistrationResult;
 import com.freshdirect.fdstore.customer.SavedRecipientModel;
 import com.freshdirect.fdstore.customer.ejb.FDCustomerManagerSessionBean.ReservationInfo;
 import com.freshdirect.fdstore.deliverypass.FDUserDlvPassInfo;
+import com.freshdirect.fdstore.iplocator.IpLocatorEventDTO;
 import com.freshdirect.fdstore.request.FDProductRequest;
 import com.freshdirect.fdstore.survey.FDSurveyResponse;
 import com.freshdirect.fdstore.util.IgnoreCaseString;
@@ -811,5 +812,8 @@ public interface FDCustomerManagerSB extends EJBObject {
 
 	public FDUserI saveExternalCampaign(FDUserI user) throws FDResourceException, RemoteException;
 	
+	public void logIpLocatorEvent(IpLocatorEventDTO ipLocatorEventDTO) throws FDResourceException, RemoteException;
+	
+	public IpLocatorEventDTO loadIpLocatorEvent (String fdUserId) throws FDResourceException, RemoteException;
 }
 

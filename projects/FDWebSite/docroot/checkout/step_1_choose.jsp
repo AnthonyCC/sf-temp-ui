@@ -110,6 +110,7 @@ while (e.hasMoreElements()) {
 } 
 
 %>
+<%-- this action should be kept in sync with LocationHandlerTag.doSelectAddressAction() --%>
 <fd:CheckoutController actionName='<%=actionName%>' result="result" successPage="<%=successPage%>">
 	<%
 	if (result.hasError("error_dlv_pass_only") || result.hasError("order_minimum")) {

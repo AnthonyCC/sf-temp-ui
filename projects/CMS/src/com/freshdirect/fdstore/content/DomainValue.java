@@ -65,6 +65,12 @@ public class DomainValue extends ContentNodeModelImpl implements WineFilterValue
 	}
 	
 	@Override
+	public String getDomainName() {
+		Domain domain = getDomain();
+		return domain == null ? null : domain.getLabel();
+	}
+	
+	@Override
 	public String getDomainEncoded() {
 		String cachedValue = ContentFactory.getInstance().getDomainEncodedForWineDomainValue(this);
 		return cachedValue != null ? cachedValue : getDomain().getContentKey().getEncoded();

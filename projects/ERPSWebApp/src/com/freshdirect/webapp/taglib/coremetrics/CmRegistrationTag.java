@@ -5,6 +5,7 @@ import javax.servlet.jsp.PageContext;
 
 import org.apache.log4j.Logger;
 
+import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.fdstore.coremetrics.builder.ConversionEventTagModelBuilder;
 import com.freshdirect.fdstore.coremetrics.builder.RegistrationTagModelBuilder;
 import com.freshdirect.fdstore.coremetrics.builder.SkipTagException;
@@ -21,6 +22,10 @@ public class CmRegistrationTag extends AbstractCmTag implements SessionName{
 	
 	private RegistrationTagModelBuilder tagModelBuilder = new RegistrationTagModelBuilder();
 	private boolean force;
+	
+	public static void setPendingAddressChangeEvent(HttpSession session){
+		session.setAttribute(PENDING_ADDRESS_CHANGE_EVENT, true);
+	}
 	
 	public static void setPendingRegistrationEvent(HttpSession session){
 		session.setAttribute(PENDING_REGISTRATION_EVENT, true);
@@ -44,11 +49,13 @@ public class CmRegistrationTag extends AbstractCmTag implements SessionName{
 		HttpSession session = ((PageContext) getJspContext()).getSession();
 		boolean pendingRegistration = Boolean.TRUE.equals(session.getAttribute(PENDING_REGISTRATION_EVENT));
 		boolean pendingLogin = Boolean.TRUE.equals(session.getAttribute(PENDING_LOGIN_EVENT));
+		boolean pendingAddressChange = Boolean.TRUE.equals(session.getAttribute(PENDING_ADDRESS_CHANGE_EVENT));
 
-		if (force || pendingRegistration || pendingLogin){
+		if (force || pendingRegistration || pendingLogin || pendingAddressChange){
 			
 			session.removeAttribute(PENDING_REGISTRATION_EVENT);
 			session.removeAttribute(PENDING_LOGIN_EVENT);
+			session.removeAttribute(PENDING_ADDRESS_CHANGE_EVENT);
 			
 			FDUserI user = (FDUserI) session.getAttribute(SessionName.USER);
 			tagModelBuilder.setUser(user);
@@ -59,6 +66,10 @@ public class CmRegistrationTag extends AbstractCmTag implements SessionName{
 			
 			tagModelBuilder.setOrigZipCode((String)session.getAttribute(REGISTRATION_ORIG_ZIP_CODE));
 			session.removeAttribute(REGISTRATION_ORIG_ZIP_CODE);
+			
+			if (pendingAddressChange){
+				tagModelBuilder.setAddress(user.getSelectedAddress());
+			}
 			
 			RegistrationTagModel regModel = tagModelBuilder.buildTagModel();
 						
@@ -109,6 +120,14 @@ public class CmRegistrationTag extends AbstractCmTag implements SessionName{
 	
 	public void setForce(boolean force) {
 		this.force = force;
+	}
+	
+	public void setEmail(String email) {
+		tagModelBuilder.setEmail(email);
+	}
+	
+	public void setAddress(AddressModel address){
+		tagModelBuilder.setAddress(address);
 	}
 	
 	protected boolean insertTagInCaseOfCrmContext(){

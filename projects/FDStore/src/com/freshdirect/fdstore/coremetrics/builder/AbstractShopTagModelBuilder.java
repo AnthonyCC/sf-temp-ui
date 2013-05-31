@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.ProductReference;
 import com.freshdirect.fdstore.coremetrics.tagmodel.ShopTagModel;
@@ -97,6 +98,15 @@ public abstract class AbstractShopTagModelBuilder {
 
 		attributesMap.put(7, Double.toString(cartLine.getTaxValue()));
 		
+		//Additional Coremetrics attributes [APPDEV-3073]
+		int currentAttributeIndex = 8;
+		//Up to 4 items maximum
+		for (ContentNodeModel contentNode : TagModelUtil.getPageLocationSubset(product)) {
+			attributesMap.put(currentAttributeIndex++, contentNode.getContentName());
+		}
+		
+		attributesMap.put(12,TagModelUtil.getPageIdFromProductModel(product));
+
 		return tagModel;
 	}
 	

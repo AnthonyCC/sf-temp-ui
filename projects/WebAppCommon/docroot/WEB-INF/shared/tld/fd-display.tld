@@ -407,6 +407,11 @@
  		<required>false</required>
  		<rtexprvalue>true</rtexprvalue>
  	</attribute>
+ 	<attribute>
+ 		<name>excludeDeals</name>
+ 		<required>false</required>
+ 		<rtexprvalue>true</rtexprvalue>
+ 	</attribute>
  </tag>
  <tag>
  	<name>ProductGroupPricing</name>
@@ -902,7 +907,7 @@
 	<attribute>
 		<name>id</name>
 		<required>true</required>
-		<rtexprvalue>false</rtexprvalue>
+		<rtexprvalue>true</rtexprvalue>
 	</attribute>
 	<attribute>
 		<name>carouselId</name>

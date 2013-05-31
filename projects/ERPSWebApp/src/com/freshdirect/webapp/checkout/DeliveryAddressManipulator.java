@@ -18,7 +18,6 @@ import com.freshdirect.common.address.AddressInfo;
 import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.address.PhoneNumber;
 import com.freshdirect.common.customer.EnumServiceType;
-import com.freshdirect.customer.EnumAlertType;
 import com.freshdirect.customer.EnumDeliverySetting;
 import com.freshdirect.customer.EnumUnattendedDeliveryFlag;
 import com.freshdirect.customer.ErpAddressModel;
@@ -26,8 +25,6 @@ import com.freshdirect.customer.ErpCustomerInfoModel;
 import com.freshdirect.customer.ErpCustomerModel;
 import com.freshdirect.customer.ErpDepotAddressModel;
 import com.freshdirect.customer.ErpDuplicateAddressException;
-import com.freshdirect.customer.ErpPaymentMethodI;
-import com.freshdirect.customer.ErpPaymentMethodModel;
 import com.freshdirect.delivery.DlvAddressGeocodeResponse;
 import com.freshdirect.delivery.DlvServiceSelectionResult;
 import com.freshdirect.delivery.DlvZoneInfoModel;
@@ -44,7 +41,6 @@ import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDCustomerFactory;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
-import com.freshdirect.fdstore.customer.FDDeliveryTimeslotModel;
 import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.FDModifyCartModel;
 import com.freshdirect.fdstore.customer.FDUserI;
@@ -63,9 +59,10 @@ import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
 import com.freshdirect.webapp.taglib.fdstore.SystemMessageList;
 
+/** keep in sync with LocationHandlerTag*/
 public class DeliveryAddressManipulator extends CheckoutManipulator {
 	private static Category		LOGGER	= LoggerFactory.getInstance( DeliveryAddressManipulator.class );
-	
+	private boolean locationHandlerMode;
 
 	public DeliveryAddressManipulator(PageContext context, ActionResult result, String actionName) {
 		super(context, result, actionName);
@@ -134,7 +131,8 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 				user.setSelectedServiceType(erpAddress.getServiceType());
 			}	
 			*/
-
+			user.invalidateAllAddressesCaches();
+			
 		} catch (ErpDuplicateAddressException ex) {
 			LOGGER.warn(
 				"AddressUtil:addShipToAddress(): ErpDuplicateAddressException caught while trying to add a shipping address to the customer info:",
@@ -206,6 +204,8 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 					// Set delivery address PK
 					setSODeliveryAddress(thisAddress, zoneInfo, thisAddress.getPK().getId());
 				}
+				
+				user.invalidateAllAddressesCaches();
 			}
 		} catch (ErpDuplicateAddressException ex) {
 			LOGGER.warn(
@@ -268,7 +268,8 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 				session.setAttribute(SessionName.REMOVED_RESERVATION, Boolean.TRUE);
 			}
 		}
-
+		
+		user.invalidateAllAddressesCaches();
 	}
 	public ErpAddressModel checkDeliveryAddressInForm(HttpServletRequest request, ActionResult actionResult, HttpSession session) throws FDResourceException {
 
@@ -460,6 +461,8 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 			// Set delivery address PK
 			setSODeliveryAddress(thisAddress, zoneInfo, addressId);
 		}
+		
+		user.invalidateAllAddressesCaches();
 	}
 
 
@@ -490,7 +493,7 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 		*/
 		EnumRestrictedAddressReason reason = FDDeliveryManager.getInstance().checkAddressForRestrictions( address );
 		if ( !EnumRestrictedAddressReason.NONE.equals( reason ) ) {
-			result.addError( true, "undeliverableAddress", SystemMessageList.MSG_RESTRICTED_ADDRESS );
+			result.addError( true, "undeliverableAddress", locationHandlerMode ? SystemMessageList.MSG_RESTRICTED_ADDRESS_LOCATION_BAR : SystemMessageList.MSG_RESTRICTED_ADDRESS);
 		}
 		if ( !result.isSuccess() ) {
 			LOGGER.debug("setRegularDeliveryAddress[checkAddressForRestrictions:FAILED] :"+result);
@@ -706,6 +709,7 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 				session.setAttribute(SessionName.REMOVED_RESERVATION, Boolean.TRUE);
 			}
 		}
+		user.invalidateAllAddressesCaches();
 	}
 
 
@@ -773,5 +777,13 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 			}
 		}
 		session.setAttribute(SessionName.USER, user);
-	}	
+	}
+
+	public boolean isLocationHandlerMode() {
+		return locationHandlerMode;
+	}
+
+	public void setLocationHandlerMode(boolean locationHandlerMode) {
+		this.locationHandlerMode = locationHandlerMode;
+	}
 }

@@ -55,7 +55,7 @@
 <div class="grid-item <%= unavailableClass %> <fd:ProductCartStatus product="<%= pm %>"/><%= (inSmallCar && ((seq+1) % carNumItemsPerPage==0)) ? " carLastItem" : "" %>">
 	<% if (!inSmallCar) { %><div class="grid-item-saving"><display:ProductSaving product="<%= pm %>"/></div><% } %>
 	<display:ProductBurstClass id="burstClass" product="<%= pm %>" hideDeal="true">
-	<div class="grid-item-image">
+	<div class="grid-item-image"><span class="grid-item-image-helper"></span>
 	<display:ProductLink product="<%= pm %>" trackingCode="<%= trk %>">
 	<%
 	  		FDProduct fdproduct = null;
@@ -68,7 +68,7 @@
 	       } catch (Exception fdsnf){
 	       }
 	%>
-	<span class="<%= burstClass %>"></span><fd:USQProductBurst product="<%=pm%>"/><display:SimpleProductImage product="<%= pm %>" size="<%= imageSize %>"/></display:ProductLink>
+	<span class="burst <%= burstClass %>"></span><fd:USQProductBurst product="<%=pm%>"/><display:SimpleProductImage product="<%= pm %>" size="<%= imageSize %>"/></display:ProductLink>
 	</div>
 	</display:ProductBurstClass>
 	<div class="grid-item-rating">

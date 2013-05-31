@@ -20,6 +20,8 @@
     <%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
     <%@ include file="/shared/template/includes/ccl.jspf" %>
 	<%@ include file="/shared/template/includes/i_head_end.jspf" %>
+	
+	<tmpl:get name="customCss"/>
 </head>
 	<body>
 	<%@ include file="/shared/template/includes/i_body_start.jspf" %>
@@ -31,7 +33,8 @@
       <!-- content ends above here-->
       </center>
     </div>
-		<%@ include file="/common/template/includes/footer.jspf" %>
+	<%@ include file="/common/template/includes/footer.jspf" %>
     <%@ include file="/common/template/includes/i_jsmodules.jspf" %>
+	<tmpl:get name='customJsBottom'/>
 	</body>
 </html> 

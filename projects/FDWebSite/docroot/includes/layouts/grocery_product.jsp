@@ -722,6 +722,7 @@ if(((pageNumber -1) * itemsToDisplay) > skuCount) {
 					</td>
 					<td width="<%= W_GROCERY_PRODUCT_CENTER_PADDING %>">&nbsp;</td><%-- buffer cell --%>
 					<td align="center">
+						<%@ include file="/includes/product/i_product_soc_buttons.jspf" %>
 						<br />
 						<table border="0" width="100%" cellspacing="0" cellpadding="0">
 							<tr>

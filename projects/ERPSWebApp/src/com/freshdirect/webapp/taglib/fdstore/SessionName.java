@@ -53,6 +53,7 @@ public interface SessionName {
 	
 	public static final String PENDING_REGISTRATION_EVENT = "pendingCoremetricsRegistrationEvent";
 	public static final String PENDING_LOGIN_EVENT = "pendingCoremetricsLoginEvent";
+	public static final String PENDING_ADDRESS_CHANGE_EVENT = "pendingCoremetricsAddressChangeEvent"; //only set by LocationHandlerTag, read by CmRegistrationTag
 	public static final String REGISTRATION_LOCATION = "coremetricsRegistrationLocation";
 	public static final String REGISTRATION_ORIG_ZIP_CODE = "coremetricsRegistrationOrigZipCode";
 	public static final String PENDING_CONVERSION_ORDER_MODIFIED_MODELS = "pendingCoremetricsOrderModifiedConversionModels";

@@ -47,7 +47,7 @@ final int W_FORGET_PASSWORD_TOTAL = 700;
 <TR VALIGN="TOP">
 	<td WIDTH="<%=W_FORGET_PASSWORD_TOTAL-10%>" class="text13">
 		<font class="text13bold">New Customer?</font><BR>
-		<A HREF='<%= response.encodeURL("/about/index.jsp?siteAccessPage=aboutus&successPage=/index.jsp") %>'>See if we deliver to your area</a>.<br><br>
+		<A HREF='<%= response.encodeURL("/index.jsp") %>'>See if we deliver to your area</a>.<br><br>
 	</TD>
 </TR>
 </TABLE><BR><BR><BR>

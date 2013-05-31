@@ -119,6 +119,7 @@ import com.freshdirect.fdstore.ecoupon.FDCouponManager;
 import com.freshdirect.fdstore.ecoupon.model.ErpCouponTransactionModel;
 import com.freshdirect.fdstore.ecoupon.model.FDCouponActivityContext;
 import com.freshdirect.fdstore.giftcard.FDGiftCardInfoList;
+import com.freshdirect.fdstore.iplocator.IpLocatorEventDTO;
 import com.freshdirect.fdstore.mail.CrmSecurityCCCheckEmailVO;
 import com.freshdirect.fdstore.mail.FDEmailFactory;
 import com.freshdirect.fdstore.mail.TellAFriend;
@@ -369,7 +370,7 @@ public class FDCustomerManager {
     			FDCustomerManagerSB sb = managerHome.create();
     			ErpAddressModel address = sb.assumeDeliveryAddress(identity, user.getOrderHistory().getLastOrderId());
     			if(address != null && user.getShoppingCart() != null){
-    				user.getShoppingCart().setDeliveryAddress(address);
+   					user.getShoppingCart().setDeliveryAddress(address);
     			}
     		} catch (CreateException ce) {
     			invalidateManagerHome();
@@ -4100,4 +4101,36 @@ public class FDCustomerManager {
 		}
 
 	}
+	
+	public static void logIpLocatorEvent(IpLocatorEventDTO ipLocatorEventDTO) throws FDResourceException {
+		lookupManagerHome();
+
+		try {
+			FDCustomerManagerSB sb = managerHome.create();
+			sb.logIpLocatorEvent(ipLocatorEventDTO);
+		} catch (CreateException ce) {
+			invalidateManagerHome();
+			throw new FDResourceException(ce, "Error creating session bean");
+		} catch (RemoteException re) {
+			invalidateManagerHome();
+			throw new FDResourceException(re, "Error talking to session bean");
+		}
+
+	}
+
+	public static IpLocatorEventDTO loadIpLocatorEvent(String fdUserId) throws FDResourceException {
+		lookupManagerHome();
+	
+		try {
+			FDCustomerManagerSB sb = managerHome.create();
+			return sb.loadIpLocatorEvent(fdUserId);
+		} catch (CreateException ce) {
+			invalidateManagerHome();
+			throw new FDResourceException(ce, "Error creating session bean");
+		} catch (RemoteException re) {
+			invalidateManagerHome();
+			throw new FDResourceException(re, "Error talking to session bean");
+		}
+	}
+	
 }

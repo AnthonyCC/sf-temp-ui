@@ -5,6 +5,8 @@ public interface WineFilterValue {
 	
 	public String getDomainEncoded();
 	
+	public String getDomainName();
+	
 	public String getFilterRepresentation();
 	
 	public EnumWineFilterValueType getWineFilterValueType();

@@ -3,7 +3,6 @@
 <%@ page import="com.freshdirect.framework.webapp.*"%>
 <%@ page import='com.freshdirect.fdstore.attributes.*' %>
 <%@ page import='com.freshdirect.fdstore.*, com.freshdirect.webapp.taglib.fdstore.*'%>
-
 <% //expanded page dimensions
 final int W_DEPARTMENT_BOTTOM_TOTAL = 765;
 final int W_DEPARTMENT_BOTTOM_LEFT = 115;

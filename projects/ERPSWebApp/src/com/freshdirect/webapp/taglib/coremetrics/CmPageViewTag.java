@@ -7,6 +7,7 @@ import org.apache.log4j.Logger;
 
 import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.ProductModel;
+import com.freshdirect.fdstore.content.WineFilterValue;
 import com.freshdirect.fdstore.coremetrics.builder.SkipTagException;
 import com.freshdirect.fdstore.coremetrics.builder.PageViewTagModelBuilder;
 import com.freshdirect.fdstore.coremetrics.tagmodel.PageViewTagModel;
@@ -71,6 +72,10 @@ public class CmPageViewTag extends AbstractCmTag {
 	
 	public void setRecipeSource(String recipeSource) {
 		tagModelBuilder.setRecipeSource(recipeSource);
+	}
+
+	public void setWineFilterValue(WineFilterValue wineFilterValue) {
+		tagModelBuilder.setWineFilterValue(wineFilterValue);
 	}
 
 }

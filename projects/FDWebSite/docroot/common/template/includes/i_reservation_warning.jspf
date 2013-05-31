@@ -2,11 +2,6 @@
 <%@ page import="com.freshdirect.webapp.util.CCFormatter" %>
 <%@ page import="com.freshdirect.framework.util.DateUtil" %>
 <%@ page import="com.freshdirect.framework.util.NVL" %>
-
-<% //expanded page dimensions
-final int W_RESERVATION_WARNING_TOTAL = 970;
-%>
-
 <%if(user.isEligibleForPreReservation()){%>
 	<%String uri = request.getRequestURI().toLowerCase();
 	  FDReservation rsv = user.getReservation();
@@ -14,45 +9,21 @@ final int W_RESERVATION_WARNING_TOTAL = 970;
 	<%if(rsv != null){%>
 	<%
 		Calendar today = Calendar.getInstance();
-		int diff = DateUtil.getDiffInMinutes(today.getTime(), rsv.getExpirationDateTime());
+	    int diff = DateUtil.getDiffInMinutes(today.getTime(), rsv.getExpirationDateTime());
 		String extended = NVL.apply(request.getParameter("extended"), "");
 		if("true".equals(extended)){%>
-			<table width="<%=W_RESERVATION_WARNING_TOTAL%>" cellpadding="0" cellspacing="0" border="0">
-				<tr align="center" style="padding-bottom:5px;">
-					<td><b><font color="#990000">DELIVERY TIMESLOT RESERVATION EXTENDED</font></b><br>
-					Your delivery reservation (<%=CCFormatter.formatReservationDate(rsv.getStartTime())%> @ <%=CCFormatter.formatTime(rsv.getStartTime())%> - <%=CCFormatter.formatDeliveryTime(rsv.getEndTime())%>) has been extended until <b><%=CCFormatter.formatDeliveryTime(rsv.getExpirationDateTime())%></b><br>
-					Please complete checkout before that time or your reservation will be released.
-					</td>
-				</tr>
-				<tr bgcolor="#999966">
-					<td><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
-				</tr>
-			</table>
+				<b><font color="#CC0000">DELIVERY RESERVATION EXTENDED:</font></b>
+					Customer's delivery reservation <b><%=CCFormatter.formatShortDlvDate(rsv.getStartTime())%> @ <%=CCFormatter.formatTime(rsv.getStartTime())%> - <%=CCFormatter.formatDeliveryTime(rsv.getEndTime())%></b> has been extended until <b><%=CCFormatter.formatDeliveryTime(rsv.getExpirationDateTime())%></b>.
+					<br>Checkout must be completed before that time or the reservation will be released.
 		<%} else {%>
-			<%if(uri.endsWith("view_cart.jsp") && diff > 60){%>
-			<table width="<%=W_RESERVATION_WARNING_TOTAL%>" cellpadding="0" cellspacing="0" border="0">
-				<tr align="center">
-					<td style="padding-bottom:5px;"><b><font color="#990000">You have a reserved delivery time for <%=CCFormatter.formatShortDlvDate(rsv.getStartTime())%> @ <%=CCFormatter.formatTime(rsv.getStartTime())%> - <%=CCFormatter.formatDeliveryTime(rsv.getEndTime())%></font></b><br>
-						<a href="/your_account/reserve_timeslot.jsp"><b>Click here to change or cancel.</b></a><br><img src="/media_stat/images/layout/clear.gif" width="1" height="6">
-					</td>
-				</tr>
-				<tr bgcolor="#999966">
-					<td><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
-				</tr>
-			</table>
-			<%}else if(diff > 40 && diff <= 60){ // was 20 %>
-				<table width="<%=W_RESERVATION_WARNING_TOTAL%>" cellpadding="0" cellspacing="0" border="0">
-					<tr align="center">
-						<td style="padding-bottom:5px;"><b><font color="#990000">Your Delivery Timeslot Reservation Expires in <%=diff%> Minutes</font></b><br>
-						Your delivery timeslot reservation (<%=CCFormatter.formatReservationDate(rsv.getStartTime())%> @ <%=CCFormatter.formatTime(rsv.getStartTime())%> - <%=CCFormatter.formatDeliveryTime(rsv.getEndTime())%>) will expire at <b><%=CCFormatter.formatDeliveryTime(rsv.getExpirationDateTime())%></b><br>
-						Please complete checkout before that time or your reservation will be released.
-						</td>
-					</tr>
-					<tr bgcolor="#999966">
-						<td><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
-					</tr>
-				</table>
-			<%}else if(diff > 0 && diff <= 40){ // was 20 %>
+			<%if((uri.endsWith("view_cart.jsp") || uri.indexOf("/order/") > -1 || uri.indexOf("/checkout/") > -1) && diff > 60){%>
+				<b><font color="#CC0000">Customer has a reserved delivery time for <%=CCFormatter.formatShortDlvDate(rsv.getStartTime())%> @ <%=CCFormatter.formatTime(rsv.getStartTime())%> - <%=CCFormatter.formatDeliveryTime(rsv.getEndTime())%></font></b>
+						(<a href="/customer_account/reserve_timeslot.jsp?addressId=<%=rsv.getAddressId()%>&from=<%=uri.indexOf("/order/") > -1?"order":"checkout"%><%=uri.indexOf("/checkout_review_items") > -1?"_review":""%>"><b>Edit</b></a>)
+			<%}else if(diff > 20 && diff <= 60){%>
+					<b><font color="#CC0000">Customer's Delivery Reservation Expires in <%=diff%> Minutes</font>.</b>
+						Reservation <b><%=CCFormatter.formatShortDlvDate(rsv.getStartTime())%> @ <%=CCFormatter.formatTime(rsv.getStartTime())%> - <%=CCFormatter.formatDeliveryTime(rsv.getEndTime())%></b> will expire tonight at <b><%=CCFormatter.formatDeliveryTime(rsv.getExpirationDateTime())%></b>.
+						<br>Checkout must be completed before that time or the reservation will be released.
+			<%}else if(diff > 0 && diff <= 20){%>
 				<% 
 				Calendar extendedCal = DateUtil.toCalendar(rsv.getExpirationDateTime());
 				extendedCal.add(Calendar.HOUR, 1);
@@ -62,17 +33,8 @@ final int W_RESERVATION_WARNING_TOTAL = 970;
 					successPage += "?"+queryString;
 				}
 				%>
-				<table width="<%=W_RESERVATION_WARNING_TOTAL%>" cellpadding="0" cellspacing="0" border="0">
-				<tr align="center">
-					<td style="padding-bottom:5px;"><b><font color="#990000">Your Delivery Timeslot Reservation Expires in <%=diff%> Minutes</font></b><br>
-					Your delivery reservation (<%=CCFormatter.formatReservationDate(rsv.getStartTime())%> @ <%=CCFormatter.formatTime(rsv.getStartTime())%> - <%=CCFormatter.formatDeliveryTime(rsv.getEndTime())%>) will expire tonight at <b><%=CCFormatter.formatDeliveryTime(rsv.getExpirationDateTime())%></b><br>
-					
-					</td>
-				</tr>
-				<tr bgcolor="#999966">
-					<td><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
-				</tr>
-			</table>
+					<b><font color="#CC0000">Customer's Delivery Reservation Expires in <%=diff%> Minutes</font>.</b>
+					Reservation <b><%=CCFormatter.formatShortDlvDate(rsv.getStartTime())%> @ <%=CCFormatter.formatTime(rsv.getStartTime())%> - <%=CCFormatter.formatDeliveryTime(rsv.getEndTime())%></b> will expire tonight at <b><%=CCFormatter.formatDeliveryTime(rsv.getExpirationDateTime())%></b>
 			<%}%>
 		<%}%>
 	<%}%>

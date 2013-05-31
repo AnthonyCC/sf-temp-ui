@@ -60,13 +60,21 @@ final int W_NEW_WINE_PRODUCT_RIGHT = 165;
 <table id="new_wine_prod_table" border="0" cellspacing="0" cellpadding="0" align="center" style="width: <%=W_NEW_WINE_PRODUCT_TOTAL%>px;">
 	<tr>
 		<td style="width: <%=W_NEW_WINE_PRODUCT_LEFT%>px;">&nbsp;</td>
-		<td style="width: <%=W_NEW_WINE_PRODUCT_RIGHT%>px;">&nbsp;</td>
+		<td style="width: <%=W_NEW_WINE_PRODUCT_RIGHT%>px;"></td>
+	</tr>
+	<tr>
+		<td colspan="2" nowrap="nowrap">
+		 <table style="width:100%"><tr><td>
+		 <% if (!_isModifyCart && (null==app || isWebApp)) { %><span style="padding-bottom: 20px; width: <%=W_NEW_WINE_PRODUCT_LEFT%>px;">
+			<display:WineProductBackToLink/>
+		</span><% } %>
+		</td>
+		<td width="360px"><%@ include file="/includes/product/i_product_soc_buttons.jspf" %></td>
+		</tr></table>
+		</td>
 	</tr>
 	<tr valign="top">
-		<td <%=alignment%> class="text12" style="width: <%=W_NEW_WINE_PRODUCT_LEFT%>px;">
-		<% if (!_isModifyCart && (null==app || isWebApp)) { %><div style="padding-bottom: 20px; width: <%=W_NEW_WINE_PRODUCT_LEFT%>px;">
-			<display:WineProductBackToLink/>
-		</div><% } %>
+	<td <%=alignment%> class="text12" style="width: <%=W_NEW_WINE_PRODUCT_LEFT%>px;  padding-top: 20px;">
 		
         <%@ include file="/shared/includes/product/i_show_promo_flag.jspf" %>
 		<%@ include file="/shared/includes/product/i_product.jspf" %>

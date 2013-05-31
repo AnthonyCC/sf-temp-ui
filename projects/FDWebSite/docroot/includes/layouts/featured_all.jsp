@@ -143,7 +143,7 @@ final int W_FEATURED_PADDING = 14;
 						<div class="smartstore-carousel-item">
 							<display:ProductImage product="<%= productNode %>" action="<%= actionURI %>" showRolloverImage="true" hideBursts="<%= recommendations.getVariant().getHideBursts() %>"  coupon="<%= ref_coupons.get(index) %>" className="<%= prodImageClassName %>" />
 							<display:ProductRating product="<%= productNode %>" action="<%= actionURI %>"/>
-							<display:ProductName product="<%= productNode %>" action="<%= CmMarketingLinkUtil.getSmartStoreLink(actionURI, recommendations)%>"/>
+							<display:ProductName product="<%= productNode %>" action="<%= actionURI%>"/>
 							<div class="favoritePrice"><display:ProductPrice impression="<%= pi %>" showDescription="false"/></div>
 							<display:FDCoupon coupon="<%= ref_coupons.get(index) %>" contClass="fdCoupon_layFeatAll"></display:FDCoupon>
 						</div>

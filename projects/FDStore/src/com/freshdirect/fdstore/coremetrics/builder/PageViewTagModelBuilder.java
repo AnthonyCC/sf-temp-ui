@@ -6,6 +6,7 @@ import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.DepartmentModel;
 import com.freshdirect.fdstore.content.ProductModel;
+import com.freshdirect.fdstore.content.WineFilterValue;
 import com.freshdirect.fdstore.coremetrics.tagmodel.PageViewTagModel;
 
 public class PageViewTagModelBuilder  {
@@ -15,7 +16,6 @@ public class PageViewTagModelBuilder  {
 		SEARCH, SO_TEMPLATE, ACCOUNT, BUYING_GUIDES, CART, ERROR, HOMEPAGE, INVITE, POPUPS, RECIPE, NEW_PRODUCTS_DEPARTMENT
 	}
 	
-	private static final String PAGE_ID_DELIMITER = ": ";
 	private static final String INDEX_FILE = "index.jsp";
 	private static final int INDEX_FILE_SUFFIX_LENGTH = INDEX_FILE.length();
 	
@@ -28,6 +28,8 @@ public class PageViewTagModelBuilder  {
 	private ProductModel productModel;
 	private ContentNodeModel currentFolder;
 	private String recipeSource;
+	private WineFilterValue wineFilterValue;
+	private boolean wineFilterValueSet;
 	private PageViewTagModel tagModel = new PageViewTagModel();
 	
 	public PageViewTagModel buildTagModel() throws SkipTagException{
@@ -48,6 +50,11 @@ public class PageViewTagModelBuilder  {
 			if (FDStoreProperties.getCoremetricsCatIdDirs().contains(dirName)){
 				tagModel.setCategoryId(dirName);
 				tagModel.setPageId(uriAfterSlash.substring(slashAfterDirNamePos+1));
+				
+				if ("wine".equals(tagModel.getCategoryId()) && "filter.jsp".equals(tagModel.getPageId())) {
+					processWineFilter();
+				}
+				
 				processHelpDir();
 				decoratePageIdWithCatId();
 			}
@@ -164,7 +171,7 @@ public class PageViewTagModelBuilder  {
 	}
 	
 	private void decoratePageIdWithCatId(){
-		tagModel.setPageId(tagModel.getCategoryId().replace("_", " ").toUpperCase() + PAGE_ID_DELIMITER + tagModel.getPageId());
+		tagModel.setPageId(tagModel.getCategoryId().replace("_", " ").toUpperCase() + TagModelUtil.PAGE_ID_DELIMITER + tagModel.getPageId());
 	}
 	
 	private void processHelpDir() throws SkipTagException{
@@ -198,7 +205,7 @@ public class PageViewTagModelBuilder  {
 	
 			} else {
 				getDeptOrCatPageId(curFolder.getParentNode(), sb);
-				sb.append(PAGE_ID_DELIMITER).append(curFolder.getFullName());
+				sb.append(TagModelUtil.PAGE_ID_DELIMITER).append(curFolder.getFullName());
 			}
 		}
 	}
@@ -207,7 +214,7 @@ public class PageViewTagModelBuilder  {
 		if (productModel==null){
 			throw new SkipTagException("productModel is null");
 		} else {
-			tagModel.setPageId("PRODUCT" + PAGE_ID_DELIMITER + productModel.getFullName() + " ("+ productModel.getContentKey().getId() +")");
+			tagModel.setPageId(TagModelUtil.getPageIdFromProductModel(productModel));
 			tagModel.setCategoryId(productModel.getParentId());
 		}
 	}
@@ -229,6 +236,16 @@ public class PageViewTagModelBuilder  {
 		}
 	}
 	
+	private void processWineFilter() throws SkipTagException{
+		if (wineFilterValueSet){
+			if (wineFilterValue != null){
+				tagModel.setPageId(wineFilterValue.getDomainName());
+			}
+		} else {
+			throw new SkipTagException("wineFilterValue is not set");
+		}
+	}
+	
 	private void identifyAttributes(){
 		if (suggestedTerm != null) {
 			tagModel.getAttributesMaps().put(1, suggestedTerm);
@@ -236,6 +253,16 @@ public class PageViewTagModelBuilder  {
 		if (recipeSearchResultsSize != null) {
 			tagModel.getAttributesMaps().put(2, recipeSearchResultsSize.toString());
 		}
+
+		//Additional Coremetrics attributes [APPDEV-3073]
+		int currentAttributeIndex = 3;
+		//Up to 4 items maximum
+		for (ContentNodeModel contentNode : TagModelUtil.getPageLocationSubset(productModel == null ? currentFolder : productModel)) {
+			tagModel.getAttributesMaps().put(currentAttributeIndex++, contentNode.getContentName());
+		}
+		
+		tagModel.getAttributesMaps().put(7, tagModel.getPageId());
+		
 	}
 
 	
@@ -271,4 +298,8 @@ public class PageViewTagModelBuilder  {
 		this.recipeSource = recipeSource;
 	}
 
+	public void setWineFilterValue(WineFilterValue wineFilterValue) {
+		this.wineFilterValue = wineFilterValue;
+		this.wineFilterValueSet = true; 
+	}
 }

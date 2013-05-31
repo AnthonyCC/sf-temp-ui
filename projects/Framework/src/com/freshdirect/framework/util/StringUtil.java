@@ -736,6 +736,29 @@ public class StringUtil {
 	    }
 	 }
 	
+	/**
+	 * concatenates tokens with delimiters. If two successive tokens are empty delimiter will not be appended either 
+	 * @param tokens: 
+	 * @param delimiters 
+	 */
+	public static String concatWithDelimiters(String[] tokens, String[] delimiters){
+		if (delimiters.length<tokens.length-1){
+			throw new IllegalArgumentException("tokens.length must be >= delimiter.length-1");
+		}
+		
+		StringBuilder result = new StringBuilder();
+		
+		for (int i=0; i<tokens.length; i++){
+			String token = NVL.apply(tokens[i],"").trim();
+			if (result.length()>0 && token.length()>0){
+				result.append(delimiters[i-1]);
+			}
+			result.append(token);
+		}
+		
+		return result.toString();
+	}
+	
 	public static String convertToEan13(String upcA){
 		if(null !=upcA && upcA.length() == 12){//EAN 13 conversion
 			upcA="00"+upcA.substring(0,11);

@@ -68,6 +68,8 @@ public class ProductSavingTag extends BodyTagSupportEx {
 	private boolean excludeCaseDeals = false;
 	
 	private boolean excludeGroupSavings = false;
+	
+	private boolean excludeDeals = false;
 
 	public void setExcludeCaseDeals(boolean excludeCaseDeals) {
 		this.excludeCaseDeals = excludeCaseDeals;
@@ -85,6 +87,14 @@ public class ProductSavingTag extends BodyTagSupportEx {
 		return excludeGroupSavings;
 	}
 
+	public void setExcludeDeals(boolean excludeDeals) {
+		this.excludeDeals = excludeDeals;
+	}
+	
+	public boolean isExcludeDeals() {
+		return excludeDeals;
+	}
+	
 	public int doStartTag() throws javax.servlet.jsp.JspException {
 		ProductAvailabilityTag availability = (ProductAvailabilityTag) findAncestorWithClass(this, ProductAvailabilityTag.class);
 		if (availability != null && !availability.isFullyAvailable())
@@ -125,7 +135,7 @@ public class ProductSavingTag extends BodyTagSupportEx {
 				if (scaleString != null) {
 					buf.append("Save! ");
 					buf.append(scaleString);
-				} else if (price.isOnSale()) {
+				} else if (price.isOnSale() && !this.isExcludeDeals()) {
 					buf.append("Save ");
 					buf.append(price.getDealPercentage());
 					buf.append("%");

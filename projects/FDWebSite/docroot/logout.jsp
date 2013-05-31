@@ -1,3 +1,4 @@
+<%@page import="com.freshdirect.fdstore.FDStoreProperties"%>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
 <%@ page import='com.freshdirect.webapp.util.*' %>
 <%@ page import="java.util.Enumeration"%>
@@ -38,7 +39,8 @@ boolean toSiteAccess = false;
 
 if(request.getParameter("logoutPage")!= null){
 	logoutPage = request.getParameter("logoutPage");
-	toSiteAccess = true;
+	//APPDEV-2448 only redirect to site_access page if IPLocator is disabled for the user
+	toSiteAccess = !FDStoreProperties.isIpLocatorEnabled() || !new RequestClassifier(request).isInHashRange(FDStoreProperties.getIpLocatorRolloutPercent());
 }
 
 

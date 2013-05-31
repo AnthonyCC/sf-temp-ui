@@ -136,7 +136,7 @@ FDIdentity identity = user.getIdentity();
 				&nbsp;<span style="color: #666666">&bull;</span>&nbsp;
 			</span>
 			<% } %>
-			<a href="<%= request.getRequestURI() %>?remove=1" name="remove_all" onClick='return confirm("Are you sure that you want to remove all items from your cart?");'>Remove All Items</a></td>
+			<a href="<%= request.getRequestURI() %>?remove=1" name="remove_all" onClick='return confirm("Are you sure that you want to delete all items from your cart?");'>Delete All Items</a> <a href="<%= request.getRequestURI() %>?remove=1" name="remove_all" onClick='return confirm("Are you sure that you want to delete all items from your cart?");'><img src="/media_stat/images/icon-trash.png" alt="Delete All Items" /></a></td>
 	</tr>
 </table>
 <div id="clicode_testbox" class="text10" style="position: absolute; top: -2000px; left: -2000px; height: 24px; padding: 0px; color: #999999; border-top: 1px solid #999999; visibility: hidden;">
@@ -198,7 +198,7 @@ FDIdentity identity = user.getIdentity();
 								href="/recipe.jsp?recipeId=<%= cartLine.getRecipeSourceId() %>&trk=cart"><%= lastDept.substring("Recipe: ".length()) %></a>
 						</td>
 						<td colspan="5" align="right"><%= (!firstRecipe) ? "<img src=\"/media_stat/images/layout/clear.gif\" width=\"1\" height=\"15\"><br>":""%>
-							<a href="<%= request.getRequestURI() + "?removeRecipe=" + cartLine.getRecipeSourceId() %>" onClick='return confirm("Are you sure that you want to remove recipe ingredients?");'>Remove all recipe ingredients</a></td>
+							<a href="<%= request.getRequestURI() + "?removeRecipe=" + cartLine.getRecipeSourceId() %>" onClick='return confirm("Are you sure that you want to delete recipe ingredients?");'>Delete all recipe ingredients</a> <a href="<%= request.getRequestURI() + "?removeRecipe=" + cartLine.getRecipeSourceId() %>" onClick='return confirm("Are you sure that you want to delete recipe ingredients?");'><img src="/media_stat/images/icon-trash.png" alt="Delete all recipe ingredients" /></a></td>
 						</td>
 					</tr>
 					<tr><td colspan="10"><img src="/media_stat/images/layout/clear.gif" width="1" height="5"></td></tr>
@@ -266,8 +266,12 @@ FDIdentity identity = user.getIdentity();
 						}
 						qty = delta;
 					} else if (isNaN(qty) || (qty < 0)) {
-						// document.viewcart.quantity_<%=idx%>.value = "0";
-						FreshDirect.ClientCodes.undoQty(<%= idx %>);
+						<%-- Changed to stick at 0 for APPDEV-3012 --%>
+						<% if (user.isEligibleForClientCodes()) { %>
+							FreshDirect.ClientCodes.undoQty(<%= idx %>);
+						<% } else { %>
+							document.viewcart.quantity_<%=idx%>.value = "0";
+						<% } %>
 						return;
 					} else if ((qty > 0) && (qty < <%= productNode.getQuantityMinimum() %>) && (delta < 0)) {
 						document.viewcart.quantity_<%=idx%>.value = "0";
@@ -406,7 +410,7 @@ FDIdentity identity = user.getIdentity();
             <% } %>
 			<td width="10"><%= cartLine.isEstimatedPrice() ? "*" : "" %><b><%=cartLine.hasTax() ? "&nbsp;T" : ""%></b></td>
 			<td width="10"><b><%= cartLine.hasScaledPricing() || ( groupDiscountMsg!=null && !"".equals(groupDiscountMsg) ) ? "&nbsp;S" : "" %><%= cartLine.hasDepositValue() ? "&nbsp;D" : "" %></b></td>
-			<td width="60" align="right">&nbsp;<a href="<%= request.getRequestURI() %>?remove=1&cartLine=<%= cartLine.getRandomId() %>" class="note">Remove</A></td>
+			<td width="60" align="right">&nbsp;<a href="<%= request.getRequestURI() %>?remove=1&cartLine=<%= cartLine.getRandomId() %>" class="note">Delete</A> <a href="<%= request.getRequestURI() %>?remove=1&cartLine=<%= cartLine.getRandomId() %>" class="note"><img src="/media_stat/images/icon-trash.png" alt="Delete" /></a></td>
 		</tr>
 
 		<%

@@ -594,6 +594,16 @@ public class FDStoreProperties {
 	private final static String PROP_FDCOUPONMGR_HOME = "fdstore.fdCouponManager.home";
 	
 
+	//APPDEV-2448 IP Sniff
+	private final static String PROP_IP_LOCATOR_ENABLED = "fdstore.iplocator.enabled";
+	private final static String PROP_IP_LOCATOR_CLIENT_ID = "fdstore.iplocator.clientid";
+	private final static String PROP_IP_LOCATOR_URL = "fdstore.iplocator.url";
+	private final static String PROP_IP_LOCATOR_TIMEOUT = "fdstore.iplocator.timeout";
+	private final static String PROP_IP_LOCATOR_ROLLOUT_PERCENT = "fdstore.iplocator.rolloutpercent";
+	private final static String PROP_IP_LOCATOR_EVENT_LOG_ENABLED = "fdstore.iplocator.eventlogenabled";
+	
+	private final static String PROP_HOST_URL = "fdstore.host.url";
+
 	private final static String PROP_USQ_LEGAL_WARNING = "fdstore.store.usq_legal_warning";
 	
 	public final static String PRODUCT_RATING_REFRESH_PERIOD = "fdstore.productrating.refreshperiod";
@@ -1181,6 +1191,13 @@ public class FDStoreProperties {
 		defaults.put(PRODUCT_RATING_REFRESH_PERIOD, "12");
 		defaults.put(PRODUCT_RATING_RELOAD, "true");
 		defaults.put(PROP_ALCOHOLFILTERING_ENABLED, "true");
+		defaults.put(PROP_IP_LOCATOR_ENABLED, "true");
+		defaults.put(PROP_IP_LOCATOR_CLIENT_ID, "103310996");
+		defaults.put(PROP_IP_LOCATOR_URL, "https://iplocator.melissadata.net/v2/REST/Service.svc/doIPLocation");
+		defaults.put(PROP_IP_LOCATOR_TIMEOUT, "3000");
+		defaults.put(PROP_IP_LOCATOR_ROLLOUT_PERCENT, "100");
+		defaults.put(PROP_IP_LOCATOR_EVENT_LOG_ENABLED, "true");
+		defaults.put(PROP_HOST_URL, "http://www.freshdirect.com");
 		defaults.put(CHECK_LOCAL_INVENTORY_ENABLED, "false");
 		defaults.put(PROP_FDCOUPONMGR_HOME, "freshdirect.fdstore.CouponManager");
 				
@@ -3024,17 +3041,46 @@ public class FDStoreProperties {
 			return (Boolean.valueOf(get(FAVOURITES_NUMBER_SWITCH))).booleanValue();
 	 }
 	 
-	 public static boolean isUSQLegalWarningSwitchedOn() {
-			return (Boolean.valueOf(get(PROP_USQ_LEGAL_WARNING))).booleanValue();
-	 }
-	 public static int getProductRatingRefreshInterval() {
-	        return Integer.parseInt(get(PRODUCT_RATING_REFRESH_PERIOD));
-	 }
-	 
-	 public static boolean isProductRatingReload() {
-			return (Boolean.valueOf(get(PRODUCT_RATING_RELOAD))).booleanValue();
-	 }
-	 
+	public static boolean isIpLocatorEnabled() {
+	    return (Boolean.valueOf(get(PROP_IP_LOCATOR_ENABLED))).booleanValue();
+	}
+	
+	public static String getIpLocatorClientId() {
+	   	return get(PROP_IP_LOCATOR_CLIENT_ID);
+	}
+
+	public static String getIpLocatorUrl() {
+	   	return get(PROP_IP_LOCATOR_URL);
+	}
+
+	public static int getIpLocatorTimeout() {
+		 return Integer.parseInt(get(PROP_IP_LOCATOR_TIMEOUT));
+	}
+
+	public static int getIpLocatorRolloutPercent() {
+		 return Integer.parseInt(get(PROP_IP_LOCATOR_ROLLOUT_PERCENT));
+	}
+
+	public static boolean isIpLocatorEventLogEnabled() {
+		return (Boolean.valueOf(get(PROP_IP_LOCATOR_EVENT_LOG_ENABLED))).booleanValue();
+	}
+	
+	public static String getHostUrl(){
+		return get(PROP_HOST_URL);
+	}
+
+	public static boolean isUSQLegalWarningSwitchedOn() {
+		return (Boolean.valueOf(get(PROP_USQ_LEGAL_WARNING))).booleanValue();
+	}
+	
+	public static int getProductRatingRefreshInterval() {
+	    return Integer.parseInt(get(PRODUCT_RATING_REFRESH_PERIOD));
+	} 
+	
+	public static boolean isProductRatingReload() {
+		return (Boolean.valueOf(get(PRODUCT_RATING_RELOAD))).booleanValue();
+	}
+
 	 public static boolean isAlcoholRestrictionByContextEnabled() {
 			return (Boolean.valueOf(get(PROP_ALCOHOLFILTERING_ENABLED))).booleanValue();
 	 }

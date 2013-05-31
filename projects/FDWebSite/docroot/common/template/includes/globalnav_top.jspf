@@ -18,6 +18,10 @@ final int W_GLOBAL_NAV_TOP_TOTAL = 970;
 
 <jsp:include page="/shared/template/includes/server_info.jsp" flush="false"/>
 <jsp:include page="/common/template/includes/ad_server.jsp" flush="false"/>
+<div id="toptoolbar">
+<jsp:include page="/shared/messages/messages.jsp" />
+<jsp:include page="/shared/locationbar/locationbar.jsp" />
+</div>
 <%
 //*****************************************************************
 //FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
@@ -31,69 +35,36 @@ if(user != null) {
 		depotName = com.freshdirect.fdstore.FDDepotManager.getInstance().getDepot(user.getDepotCode()).getName();
 	}
 	
+	
 	request.setAttribute("listPos", "SystemMessage");
-
-	if (FDStoreProperties.isAdServerEnabled()) { %>
-	    <script type="text/javascript">
-	    OAS_AD('SystemMessage');
-	    </script>
-	<% } else { %>
-	<fd:GetSiteAnnouncements id="announcments" user="<%=user%>">
-	
-		<logic:iterate id="ann" collection="<%=announcments%>" type="com.freshdirect.fdstore.FDSiteAnnouncementI">
-			<table width="<%=W_GLOBAL_NAV_TOP_TOTAL %>" cellpadding="0" cellspacing="0" border="0">
-				<tr align="center">
-					<td>
-						<font class="text12rbold"><%=ann.getHeader()%></font><br>
-						<%=ann.getCopy()%>
-						<br><img src="/media_stat/images/layout/clear.gif" width="1" height="6">
-					</td>
-				</tr>
-				<tr bgcolor="#999966"><td class="onePxTall"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td></tr>
-			</table><br>
-		</logic:iterate>
-	</fd:GetSiteAnnouncements><%
-	} %><%@ include file="/common/template/includes/i_cutoff_warning.jspf"%><%
-
-	
-	if (!cutoffInfoDisplayed) {
-		%>
-		<%@ include file="/common/template/includes/i_platter_warning.jspf"%>
-		<%@ include file="/common/template/includes/i_reservation_warning.jspf"%>
-<%
-	}
-
-	if (user.isNotServiceable()) {
-	%>	<table width="<%=W_GLOBAL_NAV_TOP_TOTAL %>" border="0" cellpadding="0" cellspacing="0">
-		<tr><td class="text18gr "><img src="/media_stat/images/navigation/fd_not_in_area.gif" width="404" height="13" alt="" border="0"></td></tr>
-		<tr><td class="text10grbold">
-		We'll send you an e-mail a few weeks before we arrive in your neighborhood. In the meantime, please feel free to browse around our online store &#151; just remember that you will not be able to sign up or place an order. 
-		<a href="javascript:popup('/help/delivery_zones.jsp','large')">Click here</a> to see current delivery zones. To enter a different zip code, <a href='<%= response.encodeURL("/about/index.jsp?siteAccessPage=aboutus&successPage=/index.jsp") %>'>click here</a>.
-		</td></tr>
-		<tr><td><img src="/media_stat/images/layout/clear.gif" width="1" height="3" alt="" border="0"></td></tr>
-		<tr><td bgcolor="#CCCCCC"><img src="/media_stat/images/layout/clear.gif" width="<%=W_GLOBAL_NAV_TOP_TOTAL %>" height="1" alt="" border="0"></td></tr>
-	</table>
-	<br>
-	<% } else if (user.isPickupOnly() && !user.isDepotUser() && !(request.getRequestURI().toLowerCase().indexOf("/checkout") > -1)) { %>
-	<table width="<%=W_GLOBAL_NAV_TOP_TOTAL %>" border="0" cellpadding="0" cellspacing="0">
-		<tr valign="top">
-	     <td><img src="/media_stat/images/navigation/banners/home_dlv_not_avail.gif" width="366" height="10" alt="HOME DELIVERY IS NOT CURRENTLY AVAILABLE IN YOUR AREA.">
-	     <br><a href="javascript:popup('/help/delivery_zones.jsp','large')">View our current delivery zones</a> or enter a <a href='<%= response.encodeURL("/about/index.jsp?siteAccessPage=aboutus&successPage=/index.jsp") %>'>different zip code</a>.
-	     <br>If you'd like to pick up your order, <a href="/help/delivery_lic_pickup.jsp">click here to learn more.<b>
-	     </td>
-	     <fd:IncludeMedia name="/media/editorial/global_nav/top_right_content.html" />
-	    <!--
-	    <td align="right"><a href="/help/delivery_lic_pickup.jsp"><img src="/media/editorial/hamptons/pickupbar_hdr_hamptons.gif" width="294" height="12" alt="Summer pickup in The Hamptons" border="0"><a>
-	     <br>We make weekday home deliveries and offer convenient pickup locations on Fridays and Saturdays. <a href="">Click here for info.</a></td>
-	     </tr> -->
-		<tr><td colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="6" alt="" border="0"></td></tr>
-		<tr bgcolor="#CCCCCC">
-	     <td><img src="/media_stat/images/layout/clear.gif" width="420" height="1" alt="" border="0"></td>
-	     <td><img src="/media_stat/images/layout/clear.gif" width="325" height="1" alt="" border="0"></td>
-	     </tr>
-	</table>
-	<br>
-	<% } %>
+	%><% 
+	if (FDStoreProperties.isAdServerEnabled()) { 
+  %><div id="OAS_SystemMessage">
+  <script type="text/javascript">OAS_AD('SystemMessage');</script>
+  </div><% 
+	} else { %>
+		<div class="message" data-type="system"><fd:GetSiteAnnouncements id="announcments" user="<%=user%>">
+		
+			<logic:iterate id="ann" collection="<%=announcments%>" type="com.freshdirect.fdstore.FDSiteAnnouncementI">
+				<table width="<%=W_GLOBAL_NAV_TOP_TOTAL %>" cellpadding="0" cellspacing="0" border="0">
+					<tr align="center">
+						<td>
+							<font class="text12rbold"><%=ann.getHeader()%></font><br>
+							<%=ann.getCopy()%>
+							<br><img src="/media_stat/images/layout/clear.gif" width="1" height="6">
+						</td>
+					</tr>
+					<tr bgcolor="#999966"><td class="onePxTall"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td></tr>
+				</table><br>
+			</logic:iterate>
+		</fd:GetSiteAnnouncements></div><%
+	} %>
+<%@ include file="/common/template/includes/i_cutoff_warning.jspf"%>
+<% 	if (!cutoffInfoDisplayed) { 
+	%><div class="message invisible" data-type="platterwarning"><%@ include file="/common/template/includes/i_platter_warning.jspf"%></div>
+	  <div class="message invisible" data-type="reservationwarning"><%@ include file="/common/template/includes/i_reservation_warning.jspf"%></div><%
+}%>
+	<script>(function($){ $('.message').messages('add'); })(jQuery)</script>
 	<table width="<%=W_GLOBAL_NAV_TOP_TOTAL %>" border="0" cellpadding="0" cellspacing="0">
 	<tr>
 		<td width="182" ROWSPAN="3" valign="BOTTOM">
@@ -106,25 +77,6 @@ if(user != null) {
 		</td>
 	
 		<td colspan="<%= (user.isEligibleForCoupons()) ? "15" : "13" %>" align="right" valign="bottom">
-	
-		<% if(user.isChefsTable() && !user.getChefsTableInduction().equals("0") && user.getChefsTableInduction().length() == 8) { %>
-			
-			<a href="/your_account/manage_account.jsp"><img src='<%= "/media_stat/images/navigation/global_nav/global_hdr_ct_"+user.getChefsTableInduction().substring(0,4)+".gif"%>' width="256" height="10" alt="CLICK HERE FOR EXCLUSIVE CHEF'S TABLE OFFERS" vspace="0" border="0"></a><br>
-				
-			
-		<% } else if (user.isDlvPassActive()) {
-		%>
-			<a href="/your_account/delivery_pass.jsp"><img src="/media_stat/images/navigation/global_nav/global_hdr_dp.gif" width="217" height="10" alt="CLICK HERE FOR DETAILS"  vspace="0" border="0"></a><br>
-		<% } %>
-	   <% if (user.getLevel() == FDUserI.SIGNED_IN) {
-	%>		        <a href="/logout.jsp"><b>Click here to log out</b></a>
-	<%             } else if (user.getLevel() == FDUserI.RECOGNIZED) {	%>
-			          <a href="/login/login.jsp"><b>Click here to log in</b></a>
-	<%	} else {	%>
-				<b>New customer?</b> <% if(FDStoreProperties.isLightSignupEnabled()) { %><a href="#" onclick="doOverlayWindow('<iframe id=\'signupframe\' src=\'/registration/signup_lite.jsp\' width=\'480px\' height=\'590px\' frameborder=\'0\' ></iframe>')">Sign Up</a><% } else {%><a href="/registration/signup.jsp">Sign Up</a><% } %><img src="/media_stat/images/layout/clear.gif" width="25" height="1" hspace="2" vspace="3" alt=""><b>Current customer?</b> <a href="/login/login.jsp">Log In</a>
-	<%
-	     }
-	%>
 	    </td>
 	</tr>
 	<tr>

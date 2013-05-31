@@ -1,0 +1,85 @@
+#messages {
+	background:white url(/media_stat/images/locationbar/header_bottom.png) bottom left repeat-x;
+	top:0;
+	width:100%;
+	left:0;
+	padding-top:0px;
+	padding-bottom:40px;
+	position:absolute;
+}
+
+#messages ul {
+	list-style-type:none;
+	padding:0;
+	margin:0;
+	overflow:hidden;
+	-webkit-transition:all 0.3s ease-in-out;
+	-moz-transition: all 0.3s ease-in-out;
+	-ms-transition: all 0.3s ease-in-out;
+	-o-transition: all 0.3s ease-in-out;
+	transition: all 0.3s ease-in-out;
+	position:relative;
+	top:30px;
+	max-height:0;
+	width:970px;
+}
+
+#messages li {
+	margin:6px;
+	line-height:100%;
+	text-align:left;
+	font-family:Arial;
+	font-size:12px;
+}
+
+#messages.open ul {
+	max-height:500px;
+	margin-bottom:7px;
+}
+
+#messages .handler {
+	display:none;
+	background:url(/media_stat/images/locationbar/handler_sprite.png) 0 0 no-repeat;
+	width:128px;
+	height:25px;
+	position:absolute;
+	bottom:-10px;
+	cursor:pointer;
+	z-index:100;
+	margin:auto;
+	left:0;
+	right:0;
+}
+
+#messages.open .handler,
+#messages.hashandler .handler {
+	display:block;
+}
+
+#messages.open .handler {
+	background-position:0 -25px;
+}
+
+.invisible {
+	visibility:hidden;
+	position:absolute;
+	top:-100px;
+	left:-2000px;
+	width:970px;
+}
+
+#messages li a,
+#messages li a:visited,
+#messages li a:hover {
+	font-weight:bold;
+}
+
+#messages li a:hover {
+	text-decoration:underline;
+}
+
+/* hide OAS_SystemMessage from the old position */
+#OAS_SystemMessage {
+  display: none;
+}
+

@@ -5,6 +5,7 @@ import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Time;
 import java.sql.Timestamp;
 import java.sql.Types;
 import java.util.ArrayList;
@@ -33,9 +34,11 @@ import com.freshdirect.fdstore.customer.FDRecipientList;
 import com.freshdirect.fdstore.customer.FDUser;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.customer.SavedRecipientModel;
+import com.freshdirect.fdstore.iplocator.IpLocatorEventDTO;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.core.SequenceGenerator;
 import com.freshdirect.framework.util.NVL;
+import com.freshdirect.framework.util.SqlUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
 public class FDUserDAO {
@@ -102,36 +105,36 @@ public class FDUserDAO {
 		user.setZipCode(zipCode);
 		user.setDepotCode(depotCode);
 		
-		setStateForAddressbyZipCode(conn, zipCode, user);
+		setAddressbyZipCode(conn, zipCode, user);
 		
 		// no need to create children, a new user doesn't have a cart yet
 		return user;
 	}
 
-	private static void setStateForAddressbyZipCode(Connection conn,
+	private static void setAddressbyZipCode(Connection conn,
 			String zipCode, FDUser user) {
 		if(user.getAddress()!=null){
-			String state= getStateByZipcode(conn, zipCode);
-			if (state!=null) {
-				user.getAddress().setState(state);
+			StateCounty stateCounty= getStateCountyByZipcode(conn, zipCode);
+			if (stateCounty!=null) {
+				user.getAddress().setState(stateCounty.getState());
+				user.getAddress().setCity(stateCounty.getCity());
 			}
 		}
 	}
 
-	private static String getStateByZipcode(Connection conn, String zipCode) {
-		String state= null;
+	private static StateCounty getStateCountyByZipcode(Connection conn, String zipCode) {
 		GeographyDAO dao = new GeographyDAO();
 		try{
 			StateCounty stateCounty= dao.lookupStateCountyByZip(conn, zipCode);
 			if (null !=stateCounty && stateCounty.getState()!=null) {
-				state=stateCounty.getState();
+				return stateCounty;
 			}
 		} catch (SQLException e) {
 			LOGGER.info("State information not found for zipcode:"+zipCode);
 		} 
-		return state;
+		return null;
 	}
-
+	
 	private static List<ErpOrderLineModel> convertToErpOrderlines(List<FDCartLineI> cartlines) throws FDResourceException {
 
 		int num = 0;
@@ -195,7 +198,7 @@ public class FDUserDAO {
 		ps.setString(1, identity.getErpCustomerPK());
 		ResultSet rs = ps.executeQuery();
 		FDUser user = loadUserFromResultSet(rs);
-		setStateForAddressbyZipCode(conn,user.getZipCode(),user);
+		setAddressbyZipCode(conn,user.getZipCode(),user);
 		
 		if (!user.isAnonymous()) {
 			FDCartModel cart = new FDCartModel();
@@ -229,7 +232,7 @@ public class FDUserDAO {
 		ps.setString(1, email);
 		ResultSet rs = ps.executeQuery();
 		FDUser user = loadUserFromResultSet(rs);
-		setStateForAddressbyZipCode(conn,user.getZipCode(),user);
+		setAddressbyZipCode(conn,user.getZipCode(),user);
 
 		if (!user.isAnonymous()) {
 			FDCartModel cart = new FDCartModel();
@@ -282,7 +285,7 @@ public class FDUserDAO {
 		ps.setString(1, cookie);
 		ResultSet rs = ps.executeQuery();
 		FDUser user = loadUserFromResultSet(rs);
-		setStateForAddressbyZipCode(conn,user.getZipCode(),user);
+		setAddressbyZipCode(conn,user.getZipCode(),user);
 
 		if (!user.isAnonymous()) {
 			FDCartModel cart = new FDCartModel();
@@ -672,4 +675,101 @@ public class FDUserDAO {
 		return user;
 	}
 	
+	public static void logIpLocatorEvent(Connection conn, IpLocatorEventDTO ipLocatorEventDTO) {
+		PreparedStatement ps = null;
+		try {
+			ps = conn.prepareStatement("INSERT INTO CUST.IPLOCATOR_EVENT_LOG " +
+					"(ID, TIMESTAMP, IP, IPLOC_ZIPCODE, IPLOC_COUNTRY, IPLOC_REGION, IPLOC_CITY, FDUSER_ID, FD_ZIPCODE, FD_STATE, FD_CITY, USER_AGENT, UA_HASH_PERCENT, IPLOC_ROLLOUT_PERCENT) " +
+					"VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)");	
+
+			ipLocatorEventDTO.setId(SequenceGenerator.getNextId(conn, "CUST"));
+			ipLocatorEventDTO.setTimestamp(Calendar.getInstance().getTimeInMillis());
+			
+			int i = 1;
+			SqlUtil.setString(ps, i++, ipLocatorEventDTO.getId()); 				//ID
+			SqlUtil.setTimestamp(ps, i++, ipLocatorEventDTO.getTimestamp()); 	//TIMESTAMP
+			SqlUtil.setString(ps, i++, ipLocatorEventDTO.getIp());				//IP
+			SqlUtil.setString(ps, i++, ipLocatorEventDTO.getIpLocZipCode());	//IPLOC_ZIPCODE
+			SqlUtil.setString(ps, i++, ipLocatorEventDTO.getIpLocCountry());	//IPLOC_COUNTRY
+			SqlUtil.setString(ps, i++, ipLocatorEventDTO.getIpLocRegion());		//IPLOC_REGION
+			SqlUtil.setString(ps, i++, ipLocatorEventDTO.getIpLocCity());		//IPLOC_CITY
+			SqlUtil.setString(ps, i++, ipLocatorEventDTO.getFdUserId());		//FDUSER_ID
+			SqlUtil.setString(ps, i++, ipLocatorEventDTO.getFdZipCode());		//FD_ZIPCODE
+			SqlUtil.setString(ps, i++, ipLocatorEventDTO.getFdState());			//FD_STATE
+			SqlUtil.setString(ps, i++, ipLocatorEventDTO.getFdCity());			//FD_CITY
+			SqlUtil.setString(ps, i++, ipLocatorEventDTO.getUserAgent());		//USER_AGENT
+			SqlUtil.setInt(ps, i++, ipLocatorEventDTO.getUaHashPercent());		//UA_HASH_PERCENT
+			SqlUtil.setInt(ps, i++, ipLocatorEventDTO.getIplocRolloutPercent());//IPLOC_ROLLOUT_PERCENT
+
+			ps.executeUpdate();
+			
+		} catch (Exception e) {
+			LOGGER.error("Error in logIpLocatorEvent", e);
+		} finally {
+			try {
+				if(ps != null)
+					ps.close();
+			} catch (Exception e1) {
+				LOGGER.error("Error closing preparedstatement for logIpLocatorEvent", e1);
+			}
+		}
+	}
+	
+	public static IpLocatorEventDTO loadIpLocatorEvent (Connection conn, String fdUserId) {
+		
+		IpLocatorEventDTO ipLocatorEventDTO = new IpLocatorEventDTO();
+		PreparedStatement ps = null;
+		ResultSet rs = null; 
+		
+		try {
+			ps = conn.prepareStatement("SELECT ID, TIMESTAMP, IP, IPLOC_ZIPCODE, IPLOC_COUNTRY, IPLOC_REGION, IPLOC_CITY, FDUSER_ID, FD_ZIPCODE, FD_STATE, FD_CITY, USER_AGENT, UA_HASH_PERCENT, IPLOC_ROLLOUT_PERCENT " +
+					"FROM CUST.IPLOCATOR_EVENT_LOG WHERE FDUSER_ID = ?");	
+			
+			ps.setString(1, fdUserId);
+			rs = ps.executeQuery();
+			
+			if (rs.next()) {
+				ipLocatorEventDTO.setId(rs.getString("ID"));
+
+				Time timestamp = rs.getTime("TIMESTAMP");
+				if (timestamp!=null){
+					ipLocatorEventDTO.setTimestamp(timestamp.getTime());
+				}
+				
+				ipLocatorEventDTO.setIp(rs.getString("IP"));
+	    		ipLocatorEventDTO.setIpLocZipCode(rs.getString("IPLOC_ZIPCODE"));
+	    		ipLocatorEventDTO.setIpLocCountry(rs.getString("IPLOC_COUNTRY"));
+	    		ipLocatorEventDTO.setIpLocRegion(rs.getString("IPLOC_REGION"));
+	    		ipLocatorEventDTO.setIpLocCity(rs.getString("IPLOC_CITY"));
+		    	ipLocatorEventDTO.setFdUserId(rs.getString("FDUSER_ID"));
+		    	ipLocatorEventDTO.setFdZipCode(rs.getString("FD_ZIPCODE"));
+			    ipLocatorEventDTO.setFdState(rs.getString("FD_STATE"));
+			    ipLocatorEventDTO.setFdCity(rs.getString("FD_CITY"));
+	    		ipLocatorEventDTO.setUserAgent(rs.getString("USER_AGENT"));
+	    		ipLocatorEventDTO.setUaHashPercent(rs.getInt("UA_HASH_PERCENT"));
+	    		ipLocatorEventDTO.setIplocRolloutPercent(rs.getInt("IPLOC_ROLLOUT_PERCENT"));
+			}
+			
+			
+		} catch (Exception e) {
+			LOGGER.error("Error in loadIpLocatorEvent", e);
+		} finally {
+			try {
+				if(rs != null) {
+					rs.close();
+				}
+			} catch (SQLException e1) {
+				LOGGER.error("Error closing preparedstatement for loadIpLocatorEvent", e1);
+			}
+			try {
+				if(ps != null) {
+					ps.close();
+				}
+			} catch (SQLException e1) {
+				LOGGER.error("Error closing preparedstatement for loadIpLocatorEvent", e1);
+			}
+		}
+		
+		return ipLocatorEventDTO;
+	}
 }
