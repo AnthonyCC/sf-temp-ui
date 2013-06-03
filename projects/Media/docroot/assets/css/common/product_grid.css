@@ -29,6 +29,7 @@
 	height: 150px;
 	line-height: 150px;
 	display:inline-block;	
+	vertical-align:bottom;
 }
 
 .ie6 .grid-item-image {
@@ -531,6 +532,7 @@
 	bottom: 184px;
 	left: 0;
 	width: 100%;
+	padding:0;
 	background: url(/media_stat/images/layout/1x1_80p_trans.png);
 	background: rgba(255, 255, 255, 0.8);
 	overflow: hidden;
@@ -639,7 +641,7 @@
 }
 
 .ddpp .grid-view .featurebox .grid-item-controls {
-	bottom: 98px;
+	bottom: 146px;
 }
 
 .ddpp .grid-view .featurebox:hover .grid-item-controls {
