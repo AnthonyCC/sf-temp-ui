@@ -3,6 +3,7 @@ package com.freshdirect.fdstore.coremetrics.builder;
 import javax.servlet.http.HttpServletRequest;
 
 import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.DepartmentModel;
 import com.freshdirect.fdstore.content.ProductModel;
@@ -253,16 +254,6 @@ public class PageViewTagModelBuilder  {
 		if (recipeSearchResultsSize != null) {
 			tagModel.getAttributesMaps().put(2, recipeSearchResultsSize.toString());
 		}
-
-		//Additional Coremetrics attributes [APPDEV-3073]
-		int currentAttributeIndex = 3;
-		//Up to 4 items maximum
-		for (ContentNodeModel contentNode : TagModelUtil.getPageLocationSubset(productModel == null ? currentFolder : productModel)) {
-			tagModel.getAttributesMaps().put(currentAttributeIndex++, contentNode.getContentName());
-		}
-		
-		tagModel.getAttributesMaps().put(7, tagModel.getPageId());
-		
 	}
 
 	

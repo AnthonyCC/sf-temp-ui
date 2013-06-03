@@ -42,15 +42,6 @@ public class ProductViewTagModelBuilder {
 			}
 			model.getAttributesMaps().put(3, quickbuy ? "quick_buy" : "normal");
 			
-			//Additional Coremetrics attributes [APPDEV-3073]
-			int currentAttributeIndex = 4;
-			//Up to 4 items maximum
-			for (ContentNodeModel contentNode : TagModelUtil.getPageLocationSubset(productModel)) {
-				model.getAttributesMaps().put(currentAttributeIndex++, contentNode.getContentName());
-			}
-			
-			model.getAttributesMaps().put(8,TagModelUtil.getPageIdFromProductModel(productModel));
-			
 			return model;
 		}
 	}

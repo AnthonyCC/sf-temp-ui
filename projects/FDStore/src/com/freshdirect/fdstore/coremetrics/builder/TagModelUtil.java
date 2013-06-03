@@ -77,58 +77,8 @@ public class TagModelUtil  {
 		}
 	}
 	
-	public static List<ContentNodeModel> getPageLocationSubset(ContentNodeModel baseContentNodeModel) {
-		
-		List<ContentNodeModel> subset = new ArrayList<ContentNodeModel>();
-
-		if (baseContentNodeModel == null) return subset;
-		
-		ContentNodeModel subSubCategory = null;
-		if (baseContentNodeModel instanceof ProductModel) {
-			subSubCategory = baseContentNodeModel.getParentNode();
-			subset.add(subSubCategory);
-		} else {
-			subSubCategory = baseContentNodeModel;
-			if ("C".equals(baseContentNodeModel.getContentType()) || "D".equals(baseContentNodeModel.getContentType())) {
-				subset.add(baseContentNodeModel);
-			}
-		}
-		
-		if ("C".equals(subSubCategory.getContentType())) {
-
-			ContentNodeModel subCategory = subSubCategory.getParentNode();
-			subset.add(subCategory);
-
-			if ("C".equals(subCategory.getContentType())) {
-
-				ContentNodeModel category = subCategory.getParentNode();
-				subset.add(category);
-
-				if ("C".equals(category.getContentType())) {
-				
-					ContentNodeModel department = category.getParentNode();
-					subset.add(department);
-
-					while ("C".equals(subset.get(3).getContentType())) {
-						subset = shiftSubset(subset);
-					}
-				}
-			}
-		}
-		Collections.reverse(subset); 
-		return subset;
-	}
-	
 	public static String getPageIdFromProductModel(ProductModel productModel) throws SkipTagException{
 		return ("PRODUCT" + PAGE_ID_DELIMITER + productModel.getFullName() + " ("+ productModel.getContentKey().getId() +")");
 	}
 
-	private static List<ContentNodeModel> shiftSubset(List<ContentNodeModel> subset) {
-		
-		subset.set(1, subset.get(2));
-		subset.set(2, subset.get(3));
-		subset.set(3, subset.get(3).getParentNode());
-		
-		return subset;
-	}
 }
