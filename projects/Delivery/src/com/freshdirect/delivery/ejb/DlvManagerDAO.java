@@ -2093,7 +2093,7 @@ public class DlvManagerDAO {
 				ResultSet rs = ps.executeQuery();
 				List<DlvReservationModel>  reservations = new ArrayList<DlvReservationModel>();
 				while (rs.next()) {
-					DlvReservationModel rsv = loadReservationFromResultSet(rs);
+					DlvReservationModel rsv = loadReservationLiteFromResultSet(rs);
 					reservations.add(rsv);
 				}
 
