@@ -66,7 +66,16 @@
       sendZip();
     }
   });
-	
+
+  var keys=[8,13,37,39,46];
+  $document.on('keydown', '#newziptext', function (e) {
+  	var kc = e.keyCode;
+  	if((kc<48 || kc>57) && keys.inArray(kc)===false ) {
+  		e.preventDefault();
+  	}
+  });
+  
+  
 	$document.on('click','.delivery-popuplink',function(e){
 		popup('/help/delivery_zones.jsp','large');
 		e.preventDefault();

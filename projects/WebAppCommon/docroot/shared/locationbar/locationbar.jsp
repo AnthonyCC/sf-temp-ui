@@ -58,7 +58,7 @@ Boolean disabled = (Boolean)pageContext.getAttribute(LocationHandlerTag.DISABLED
 
 	} else { //non-recognized user
 		String shortAddress = LocationHandlerTag.formatAddressShortText(selectedAddress);
-		%><tmpl:put name="address"><span class="text"><%="".equals(shortAddress) ?  "" : "("+shortAddress+")" %></span> <span id="newzip"><input type="text" id="newziptext" placeholder="change zip code"><input type="image" src="/media_stat/images/locationbar/button_go.png" id="newzipgo"></span></tmpl:put><%		
+		%><tmpl:put name="address"><span class="text"><%="".equals(shortAddress) ?  "" : "("+shortAddress+")" %></span> <span id="newzip"><input type="text" id="newziptext" placeholder="change zip code" maxlength="5"><input type="image" src="/media_stat/images/locationbar/button_go.png" id="newzipgo"></span></tmpl:put><%		
 	}
 %>
 <tmpl:put name="zipdisplay"><tmpl:get name="zipcode" /> <tmpl:get name="address" /></tmpl:put>
