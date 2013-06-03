@@ -179,7 +179,9 @@
 .partial-delivery-moreinfo .ui-dialog-titlebar {
 	margin-bottom:0;	
 }
-	
+.partial-delivery-moreinfo .fd-dialog.ui-dialog-content {
+	overflow:hidden;
+}	
 /* --- messages --- */
 
 #messages .orange {

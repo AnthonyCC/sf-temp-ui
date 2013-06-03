@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib uri='freshdirect' prefix='fd' %>
 <html>
 	<head>
-		<link rel="stylesheet" href="/assets/css/common/more_info.css">
+		<fd:css href="/assets/css/common/more_info.css" />
 	</head>
 	<body>
 		<div id="header">Please enter your street address so that we can make sure your building is in our delivery zone.</div>
@@ -24,8 +25,8 @@
 				</fieldset>
 			</div>
 		</form>
-		<div id="footer"><span>Already have an account with FreshDirect?</span><a href="/login/login.jsp" target="_top" id="login"><img src="/media_stat/images/locationbar/button_login.png"></a><a href="#" target="_top" id="continue"><img src="/media_stat/images/locationbar/more_info_continue.png"></a></div>
-		<script src="/assets/javascript/jquery/1.7.2/jquery.js"></script>
-		<script src="/assets/javascript/more_info.js"></script>
+		<div id="footer"><span>Already have an account with FreshDirect?</span><a href="/login/login.jsp" target="_top" id="login"><img src=""></a><a href="#" target="_top" id="continue"><img src="/media_stat/images/locationbar/more_info_continue.png"></a></div>
+		<fd:javascript src="/assets/javascript/jquery/1.7.2/jquery.js" />
+		<fd:javascript src="/assets/javascript/more_info.js" />
 	</body>
 </html>
