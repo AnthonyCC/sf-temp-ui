@@ -1952,6 +1952,7 @@ public class DlvManagerSessionBean extends GatewaySessionBeanSupport {
 		// Put the CONFIRM_TIMESLOT payload back in the queue to be retried after the redelivery interval configured in application server.
 		if(reservation.isDynamic() && !reservation.isInUPS() && reservation.getStatusCode() == 10)
 		{
+			LOGGER.debug("Reserve is not in UPS yet. putting it back in queue."+reservation.getId());
 			throw new RuntimeException("Reserve is not in UPS yet. putting it back in queue."+reservation.getId());
 		}
 
@@ -2077,6 +2078,7 @@ public class DlvManagerSessionBean extends GatewaySessionBeanSupport {
 		// Put the CANCEL_TIMESLOT payload back in the queue to be retried after the redelivery interval configured in application server.
 		if(reservation.isDynamic() && !reservation.isInUPS() && reservation.getStatusCode() == 15)
 		{
+			LOGGER.debug("Reserve is not in UPS yet. putting it back in queue."+ reservation.getId());
 			throw new RuntimeException("Reserve is not in UPS yet. putting it back in queue.");
 		}
 		if (RoutingActivityType.RESERVE_TIMESLOT.equals(reservation.getUnassignedActivityType())) {
