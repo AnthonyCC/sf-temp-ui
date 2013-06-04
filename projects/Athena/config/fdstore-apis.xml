@@ -69,8 +69,8 @@ select count(s.id) "Order Count",sum(sa.amount) a, sum(SA.SUB_TOTAL) st,  sa.req
         DI.ZIP "Zip" 
 from cust.sale s, cust.salesaction sa, cust.deliveryinfo di
 where   s.id=sa.sale_id and s.cromod_date=sa.action_date and sa.id=di.salesaction_id
-            and sa.requested_date between (sysdate-9) and (sysdate+1) 
-            and (s.status!='CAN' AND s.status!='AUF')
+            and sa.requested_date between (sysdate-9) and (sysdate+2) 
+            and (s.status!='CAN' AND s.status!='AUF') and s.type = 'REG' 
 GROUP BY  sa.requested_date, 
         case DI.DELIVERY_TYPE when 'C' THEN 'COR' ELSE 'RES'  end, 
         DI.ZIP 
