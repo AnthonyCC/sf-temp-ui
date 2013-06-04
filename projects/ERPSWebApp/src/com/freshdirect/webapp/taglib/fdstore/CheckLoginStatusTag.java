@@ -182,10 +182,15 @@ public class CheckLoginStatusTag extends com.freshdirect.framework.webapp.TagSup
         // 
         // Fix for APPDEV-755
         //
-        if (guestAllowed &&
-                ((request.getRequestURI()
-                             .indexOf("forget_password_main_confirmation.jsp") != -1) ) &&
-                (request.getParameter("siteAccessPage") == null)) {
+        if (
+        		guestAllowed &&
+                (
+                	(request.getRequestURI().indexOf("forget_password_main_confirmation.jsp") != -1) ||
+                	/* fix product info page used in erpsy daisy */
+                	( request.getParameter("sku2url") != null && !"".equalsIgnoreCase(request.getParameter("sku2url")) )
+                ) &&
+                (request.getParameter("siteAccessPage") == null)
+        	) {
             //
             // make sure the robot has a user in it's session so that pages
             // won't blow up for it
