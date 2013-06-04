@@ -401,7 +401,7 @@ public class DomainCreator {
 		System.out.println("set host name");
 		_cmd.cd("/");
 		_cmd.cd("Security/" + domainName + "/User/weblogic");
-		_cmd.cmo_setPassword("weblogic");
+		_cmd.cmo_setPassword("weblogic1");
 		
 		System.out.println("writing domain to disk");
 		_cmd.setOption("OverwriteDomain", "true");
@@ -564,7 +564,7 @@ public class DomainCreator {
 		// bind parameters
 		try {
 			sb.append("wl_user='weblogic'").append(LINE_SEP);
-			sb.append("wl_pwd='weblogic'").append(LINE_SEP);
+			sb.append("wl_pwd='weblogic1'").append(LINE_SEP);
 			sb.append("wl_url='t3://" + serverHost + ":" + serverPort + "'").append(LINE_SEP);
 	
 			sb.append("domainName='" + domainName + "'").append(LINE_SEP);
@@ -624,7 +624,7 @@ public class DomainCreator {
 			buf.append(_sep);
 			buf.append("except:");
 			buf.append("\t");
-			buf.append("print \"error:\", sys.exc_info()[0]");
+			buf.append("print \"error:\", sys.exc_info()");
 			buf.append(_sep);
 			
 			final String pyline = buf.toString();
@@ -672,7 +672,7 @@ public class DomainCreator {
 		}
 
 		public void cmo_setPassword(String password) {
-			exec("cmo.setPassword(\"" + password + "\")");
+			exec("cmo.setPassword('" + password + "')");
 		}
 
 		public void setOption(String key, Object value) {

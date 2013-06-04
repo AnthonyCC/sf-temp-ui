@@ -116,15 +116,15 @@ for qname in queues:
 ##
 sources = [
       {"name": "fddatasource",
-       "url": "jdbc:oracle:thin:@kazan:1521:DBEU02",
+       "url": "jdbc:oracle:thin:@kazan:1521:dbeu",
        "user": "fdstore_prda",
        "password": "fdstore_prda"},
       {"name": "fdmktdatasource",
-       "url": "jdbc:oracle:thin:@kazan:1521:DBEU02",
+       "url": "jdbc:oracle:thin:@kazan:1521:dbeu",
        "user": "fdstore_prda",
        "password": "fdstore_prda"},
       {"name": "fdtrndatasource",
-       "url": "jdbc:oracle:thin:@kazan:1521:DBEU02",
+       "url": "jdbc:oracle:thin:@kazan:1521:dbeu",
        "user": "fdstore_prda",
        "password": "fdstore_prda"},
 ]
