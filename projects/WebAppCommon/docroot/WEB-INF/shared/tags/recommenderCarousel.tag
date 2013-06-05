@@ -37,7 +37,7 @@
 	}
 %>
 <div class="grid-carousel grid-view">
-	<fd:ProductGroupRecommender siteFeature="<%= siteFeature %>" facility="<%= facility %>" id="recommendedProducts">
+	<fd:ProductGroupRecommender siteFeature="<%= siteFeature %>" facility="<%= facility %>" id="recommendedProducts" itemCount="<%=maxItems%>">
 	<display:Carousel id="carousel" carouselId="<%= id %>" width="<%= width %>" numItems="<%= numItems %>" showCategories="false" itemsToShow="<%=recommendedProducts.getProducts()%>" trackingCode="<%= trkCode %>" maxItems="<%= maxItems %>">
 		<span class="smartstore-carousel-item">
 		<display:GetContentNodeWebId id="webId" product="<%= currentItem %>" clientSafe="<%= true %>">
