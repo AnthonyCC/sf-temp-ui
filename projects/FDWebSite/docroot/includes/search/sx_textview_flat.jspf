@@ -93,7 +93,7 @@ int k = 0;
 					<span class="<%= scaledPrices.length > 0 ? "save-price-tiered" : "save-price" %>"><%=JspMethods.formatPrice(defaultPrice.doubleValue()) %>/<%= priceUnit %></span>
 				  </div>
 				  <div>
-					<span class="save-base-price">(was <%= JspMethods.formatPrice(basePrice) %>)</span>
+					<span class="save-base-price">(<font style="text-decoration: line-through;"><%= JspMethods.formatPrice(basePrice) %></font>)</span>
 				  </div> 
 				<%
 				} else {

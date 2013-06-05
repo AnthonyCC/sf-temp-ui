@@ -126,7 +126,7 @@ List _featuredCats= ((DepartmentModel)currentFolder).getFeaturedCategories();
         // append product price
         favoriteProductLinks.append("<div style=\"font-weight: bold; font-size: 8pt; color: #CC0000;\">").append(prodPrice).append("</div>");
         if (hasWas) {
-        	favoriteProductLinks.append("<div style=\"font-size: 7pt; color: #888\">(was ").append(prodBasePrice).append(")</div>");
+        	favoriteProductLinks.append("<div style=\"font-size: 7pt; color: #888\">(<font style=\"text-decoration: line-through;\"> ").append(prodBasePrice).append("</font>)</div>");
         }
         favoriteProductLinks.append("</div>");        
 

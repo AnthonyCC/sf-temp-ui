@@ -46,6 +46,7 @@ public class ProductPriceTag extends BodyTagSupport {
     private static final String styleRegularWithWas = " class=\"styleRegularWithWas\"";
     private static final String styleRegularWithBoth = " class=\"styleRegularWithBoth\"";
     private static final String styleWas = " class=\"styleWas\"";
+    private static final String styleWasText = " class=\"styleWas lineThrough\"";
     private static final String styleScale = " class=\"styleScale\"";
     private static final String styleAboutOnly = " class=\"styleAboutOnly\"";
     private static final String styleAboutScaled = " class=\"styleAboutScaled\"";
@@ -54,12 +55,14 @@ public class ProductPriceTag extends BodyTagSupport {
     private static final String quickShopStyleRegularWithWas = " class=\"quickShopStyleRegularWithWas\"";
     private static final String quickShopStyleRegularWithBoth = " class=\"quickShopStyleRegularWithBoth\"";
     private static final String quickShopStyleWas = " class=\"quickShopStyleWas\"";
+    private static final String quickShopStyleWasText = " class=\"quickShopStyleWas lineThrough\"";
     private static final String quickShopStyleScale = " class=\"quickShopStyleScale\"";
     private static final String groceryStyleRegularOnly = " class=\"groceryStyleRegularOnly\"";
     private static final String groceryStyleRegularWithScaled = " class=\"groceryStyleRegularWithScaled\"";
     private static final String groceryStyleRegularWithWas = " class=\"groceryStyleRegularWithWas\"";
     private static final String groceryStyleRegularWithBoth = " class=\"groceryStyleRegularWithBoth\"";
     private static final String groceryStyleWas = " class=\"groceryStyleWas\"";
+    private static final String groceryStyleWasText = " class=\"groceryStyleWas lineThrough\"";
     private static final String groceryStyleScale = " class=\"groceryStyleScale\"";
     private final static Logger LOGGER = LoggerFactory.getInstance(ProductPriceTag.class);
     private final static NumberFormat FORMAT_CURRENCY = NumberFormat.getCurrencyInstance(Locale.US);
@@ -78,6 +81,7 @@ public class ProductPriceTag extends BodyTagSupport {
     boolean showSaveText = false; //show scale pricing
     boolean useTarget = false; //true for quick buy windows
     boolean dataDriven = false; //change entire display for data driven
+    boolean tableContent = false; //was price should be handled different in tables
 
     /**
      * [APPDEV-1283] Exclude 6 and 12 wine bottles deals
@@ -132,7 +136,11 @@ public class ProductPriceTag extends BodyTagSupport {
         this.excludeCaseDeals = excludeCaseDeals;
     }
 
-    @Override
+    public void setTableContent(boolean tableContent) {
+		this.tableContent = tableContent;
+	}
+
+	@Override
     public int doStartTag() {
         StringBuffer buf = new StringBuffer();
         HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
@@ -140,19 +148,19 @@ public class ProductPriceTag extends BodyTagSupport {
         String ppPreviewId = request.getParameter("ppPreviewId");
 
         if (!quickShop) {
-            buf.append("<div class=\"price\">");
+            buf.append("<div class=\"price\" style=\"margin-right: 5px;\">");
             buf.append(ProductPriceTag.getHTMLFragment(impression,
                     savingsPercentage, showDescription, showAboutPrice,
                     showRegularPrice, showWasPrice, showScalePricing,
                     quickShop, grcyProd, excludeCaseDeals, grpDisplayType,
-                    showSaveText, catId, useTarget, dataDriven,ppPreviewId));
+                    showSaveText, catId, useTarget, dataDriven,ppPreviewId, tableContent));
             buf.append("</div>\n");
         } else {
             buf.append(ProductPriceTag.getHTMLFragment(impression,
                     savingsPercentage, showDescription, showAboutPrice,
                     showRegularPrice, showWasPrice, showScalePricing,
                     quickShop, grcyProd, excludeCaseDeals, grpDisplayType,
-                    showSaveText, catId, useTarget, dataDriven,ppPreviewId));
+                    showSaveText, catId, useTarget, dataDriven,ppPreviewId, tableContent));
             buf.append("\n");
         }
 
@@ -186,7 +194,7 @@ public class ProductPriceTag extends BodyTagSupport {
         boolean showAboutPrice, boolean showRegularPrice, boolean showWasPrice,
         boolean showScalePricing, boolean quickShop, boolean grcyProd,
         boolean excludeCaseDeals, String grpDisplayType, boolean showSaveText,
-        String catId, boolean useTarget, boolean dataDriven,String ppPreviewId) {
+        String catId, boolean useTarget, boolean dataDriven,String ppPreviewId, boolean tableContent) {
         StringBuffer buf = new StringBuffer();
 
         String confDescription = null;
@@ -627,11 +635,11 @@ public class ProductPriceTag extends BodyTagSupport {
                         }
                     } else {
                     	//return (was $#.##) text
-                    	wasString = " (was " + wasString + ")";
+                    	//wasString = " (was " + wasString + ")";
                     }
                 } else {
                     //return (was $#.##) text
-                    wasString = " (was " + wasString + ")";
+                    //wasString = " (was " + wasString + ")";
                 }
             }
 
@@ -655,65 +663,81 @@ public class ProductPriceTag extends BodyTagSupport {
             String styleRegular = "";
 
             if ((scaleString != null) && !quickShop && !grcyProd) {
-                styleRegular = (wasString != null) ? styleRegularWithBoth
-                                                   : styleRegularWithScaled;
+            	
+                styleRegular = (wasString != null) ? styleRegularWithBoth : styleRegularWithScaled;
+                
             } else if (!quickShop && !grcyProd) {
-                styleRegular = (wasString != null) ? styleRegularWithWas
-                                                   : styleRegularOnly;
+            	
+                styleRegular = (wasString != null) ? styleRegularWithWas : styleRegularOnly;
+                
             } else if ((scaleString != null) && quickShop) {
-                styleRegular = (wasString != null)
-                    ? quickShopStyleRegularWithBoth
-                    : quickShopStyleRegularWithScaled;
+            	
+                styleRegular = (wasString != null) ? quickShopStyleRegularWithBoth : quickShopStyleRegularWithScaled;
+                
             } else if ((scaleString != null) && grcyProd) {
-                styleRegular = (wasString != null)
-                    ? groceryStyleRegularWithBoth : groceryStyleRegularWithScaled;
+            	
+                styleRegular = (wasString != null) ? groceryStyleRegularWithBoth : groceryStyleRegularWithScaled;
+                
             } else if ((scaleString == null) && grcyProd) {
-                styleRegular = (wasString != null) ? groceryStyleRegularWithWas
-                                                   : groceryStyleRegularOnly;
+            	
+                styleRegular = (wasString != null) ? groceryStyleRegularWithWas : groceryStyleRegularOnly;
+                
             } else {
-                styleRegular = (wasString != null)
-                    ? quickShopStyleRegularWithWas : quickShopStyleRegularOnly;
+            	
+                styleRegular = (wasString != null) ? quickShopStyleRegularWithWas : quickShopStyleRegularOnly;
+                
+            }
+            
+            String wasClass = "";
+            String wasTextStyle = "";
+            if (quickShop) {
+            	wasClass = quickShopStyleWas;
+            	wasTextStyle = quickShopStyleWasText;
+            } else if (grcyProd) {
+            	wasClass = groceryStyleWas;
+            	wasTextStyle = groceryStyleWasText;
+            } else {
+            	wasClass = styleWas;
+            	wasTextStyle = styleWasText;
             }
 
+            boolean wasUsed = false;
             // regular price
         	/* we need this for DDPP, NOT in TOP_TEXT */
             if (showRegularPrice || (dataDriven && grpDisplayType == null) ) {
-                buf.append("<div" + styleRegular + ">" + priceString +
-                    "</div>");
+            	
+            	if (showWasPrice && wasString != null && !grcyProd && !quickShop && !tableContent){
+            		buf.append("<div" + styleRegular + ">" + priceString + "<font" + wasClass + "> (<font" + wasTextStyle +">" + wasString + "</font>)</font></div> "); 
+            		wasUsed = true;
+            	} else {
+            		buf.append("<div" + styleRegular + ">" + priceString + "</div> ");            		
+            	}
+            	
             }
 
+            
             // scaled price
             if ((scaleString != null) && showScalePricing) {
+            	
                 if (scaleString.indexOf(" or ") >= -1) {
                     scaleString = scaleString.replaceFirst(" or ", "<br />or ");
                 }
 
                 if (quickShop) {
-                    buf.append("<span" + quickShopStyleScale + ">" +
-                        scaleString + "</span>");
+                    buf.append("<span" + quickShopStyleScale + ">" + scaleString + "</span>");
                 } else if (grcyProd) {
-                    buf.append("<div" + groceryStyleScale + ">" + scaleString +
-                        "</div>");
+                    buf.append("<div" + groceryStyleScale + ">" + scaleString + "</div>");
                 } else {
                 	//if we have scale pricing AND promo price, in ddpp we don't want BOTH to display
                 	if (!dataDriven || (dataDriven && (wasString == null || "".equals(wasString)))) {
-                		buf.append("<div" + styleScale + ">" + scaleString +
-                			"</div>");
+                		buf.append("<div" + styleScale + ">" + scaleString + "</div>");
                 	}
                 }
             }
 
             // was price
-            if (showWasPrice && (wasString != null)) {
-                if (quickShop) {
-                    buf.append("<div" + quickShopStyleWas + ">" + wasString +
-                        "</div>");
-                } else if (grcyProd) {
-                    buf.append("<div" + groceryStyleWas + ">" + wasString +
-                        "</div>");
-                } else {
-                    buf.append("<div" + styleWas + ">" + wasString + "</div>");
-                }
+            if (showWasPrice && (wasString != null) && !wasUsed) {
+            	buf.append("<div" + wasClass + ">(<font" + wasTextStyle +">" + wasString + "</font>)</div>");
             }
 
             //about price

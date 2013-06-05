@@ -2,6 +2,8 @@
 	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <%@ page import='com.freshdirect.fdstore.content.*' %>
 <%@ page import='com.freshdirect.fdstore.attributes.*' %>
+<%@ page import='com.freshdirect.cms.*'%>
+<%@ page import='com.freshdirect.cms.application.*'%>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
@@ -60,7 +62,23 @@ final int W_BDNML_RIGHT = 191;
 			</tr>
 			<tr>
 				<td width="<%= W_BDNML_TOTAL %>" colspan="3">
-				<%@ include file="/common/template/includes/deptnav.jspf" %>
+				<% if ( request.getParameter("catId") !=null && ContentFactory.getInstance().getContentNode(request.getParameter("catId")) instanceof RecipeCategory) {
+					
+					// go find the recipeDepartment...(should be a method on contentFactory
+					ContentType cType = ContentType.get("RecipeDepartment");
+					Set s = CmsManager.getInstance().getContentKeysByType(cType);
+					// there can only be one (hmmmm, the Highlander effect)
+					RecipeDepartment rcpDept = null;
+
+					if (!s.isEmpty()) {
+				 	   ContentKey cKey = (ContentKey) s.iterator().next();
+				           rcpDept = (RecipeDepartment) ContentFactory.getInstance().getContentNode(cKey.getId());
+					}
+					%>
+					<%@ include file="/common/template/includes/i_recipe_dept_nav.jspf"%>
+				<% } else { %>
+					<%@ include file="/common/template/includes/deptnav.jspf" %>
+				<% } %>
 				</td>
 			</tr>
 			<tr>

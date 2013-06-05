@@ -103,7 +103,7 @@ int rank = nav.getPageOffset()+1;
 		</div>
 		<div style="white-space: nowrap" class="text13">
 					<span class="save-base-price">
-						(was <%=JspMethods.formatPrice(basePrice) %>)
+						(<font style="text-decoration: line-through;"><%=JspMethods.formatPrice(basePrice) %></font>)
 					</span>
 		<%				
 				} else {

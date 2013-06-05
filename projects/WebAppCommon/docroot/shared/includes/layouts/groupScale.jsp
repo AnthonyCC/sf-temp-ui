@@ -160,8 +160,11 @@ final int W_GROUPSCALE_TOTAL = 601;
 		isDepartment = true;
 	} else if (catId != null) {
 		currentFolder=ContentFactory.getInstance().getContentNode(catId);
-		if (currentFolder != null)
-			currentCategory = (CategoryModel) currentFolder;
+		if (currentFolder != null) {
+			if(currentFolder instanceof CategoryModel){
+				currentCategory = (CategoryModel) currentFolder;
+			}
+		}
 	}
 
 	//DO render Editorial (if exists)
@@ -234,7 +237,6 @@ final int W_GROUPSCALE_TOTAL = 601;
 
 	int itemsToDisplay = 99999;
 	
-
 	int pageNumber = 1;
 	try {
 		pageNumber = Integer.valueOf(request.getParameter("pageNumber")).intValue();
@@ -300,7 +302,6 @@ final int W_GROUPSCALE_TOTAL = 601;
 		}
 	}
 	boolean showCancellationNote = false; //show cancellation note at the end of the page
-	
 
 	/** List of all SKUs in the page, for the pricing structures */
 	List skus = new ArrayList( itemsToDisplay );
@@ -354,11 +355,14 @@ final int W_GROUPSCALE_TOTAL = 601;
 			}
 			ContentNodeModel node = currentFolder;
 			// find the topmost Category
-			while (!(node.getParentNode() instanceof DepartmentModel)) {
-				node = node.getParentNode();
+			if(node instanceof CategoryModel){
+				while (!(node.getParentNode() instanceof DepartmentModel)) {
+					node = node.getParentNode();
+				}
+				groceryCategory=(CategoryModel)node;				
 			}
-			groceryCategory=(CategoryModel)node;
 	}
+	
 
 	//if we change the display of items per page to a higher number on a page other than one, we could stay on that page with no products shown on it
 	if(((pageNumber -1) * itemsToDisplay) > skuCount) {

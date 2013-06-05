@@ -636,10 +636,7 @@ if(((pageNumber -1) * itemsToDisplay) > skuCount) {
 									<table>
 										<tr>
 											<td>
-												<display:ProductPrice impression="<%= new ProductImpression(productNode) %>" grcyProd="true" showRegularPrice="true" showScalePricing="false" showWasPrice="false" showDescription="false"/>
-											</td>
-											<td>
-												<display:ProductPrice impression="<%= new ProductImpression(productNode) %>" grcyProd="true" showRegularPrice="false" showScalePricing="false" showWasPrice="true" showDescription="false"/>
+												<display:ProductPrice impression="<%= new ProductImpression(productNode) %>" grcyProd="true" showRegularPrice="true" showScalePricing="false" showWasPrice="true" showDescription="false"/>
 											</td>
 										</tr>
 									</table>

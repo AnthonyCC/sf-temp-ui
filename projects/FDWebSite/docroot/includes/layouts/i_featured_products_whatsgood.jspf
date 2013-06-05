@@ -137,7 +137,7 @@
         // append product price
         favoriteProductLinks.append("<div class=\"price dealPrice\">").append(prodPrice).append("</div>");
         if (hasWas) {
-        	favoriteProductLinks.append("<div class=\"wasPrice\">(was ").append(prodBasePrice).append(")</div>");
+        	favoriteProductLinks.append("<div class=\"wasPrice\">(<font style=\"text-decoration: line-through;\"> ").append(prodBasePrice).append(")</font></div>");
         }
         favoriteProductLinks.append("</div>");        
 

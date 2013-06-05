@@ -210,7 +210,7 @@ if (bigs.size() > 0) {
 					</div>
 					<% if (pc.isOnSale()) { %>
 					<div class="title14 save-base-price" style="padding-top: 2px; font-weight: bold;">
-						was <display:ProductWasPrice priceCalculator="<%= pc %>"/>
+						<font class="lineThrough"><display:ProductWasPrice priceCalculator="<%= pc %>"/></font>
 					</div>
 					<% } %>
 				</div>
@@ -276,7 +276,7 @@ if (rest != null) {
 				<div class="title16" style="padding-top: 4px;">
 					<display:ProductDefaultPrice priceCalculator="<%= price %>"/>
 					<% if (price.isOnSale()) { %>
-						<span class="save-base-price" style="font-weight: bold;">- was <display:ProductWasPrice priceCalculator="<%= price %>" /></span>
+						<span class="save-base-price" style="font-weight: bold;">- <font class="lineThrough"><display:ProductWasPrice priceCalculator="<%= price %>" /></font></span>
 					<% } %>
 				</div>
 			</td>

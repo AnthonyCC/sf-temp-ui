@@ -107,7 +107,7 @@ int rank = nav.getPageOffset()+1;
 							</div>
 							<div style="white-space: nowrap;">
 							<span class="save-base-price">
-								(was <%=JspMethods.formatPrice(basePrice) %>)
+								(<font style="text-decoration: line-through;"><%=JspMethods.formatPrice(basePrice) %></font>)
 							</span>
 						<% } else { %>
 								<span class="<%= scaledPrices.length > 0 ? "normal-price-tiered" : "normal-price" %>"><%=JspMethods.formatPrice(defaultPrice.doubleValue()) %>/<%= priceUnit %></span>

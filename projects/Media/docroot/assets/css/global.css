@@ -738,6 +738,10 @@ div.control, div.slotRow, div.time {
 		color: #808080;
 	}
 
+   .lineThrough {
+		text-decoration: line-through;
+	}
+
 	_.styleScale {
 		line-height: 12px;
 		font-weight: bold;

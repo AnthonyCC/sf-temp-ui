@@ -62,7 +62,7 @@
 <div class="grid-item-price">
 <% if (productAvailability.isFullyAvailable()) { %>
 <display:ProductDefaultPrice product="<%= pm %>" showDescription="true"/>
-<% if (pm.getPriceCalculator().isOnSale()) { %><span class="was-price">(was <display:ProductWasPrice product="<%= pm %>"/>)</span><% } %>
+<% if (pm.getPriceCalculator().isOnSale()) { %><span class="was-price">(<font style="text-decoration: line-through;"><display:ProductWasPrice product="<%= pm %>"/></font>)</span><% } %>
 <display:ProductAboutPrice product="<%= pm %>" />
 <% } %>
 <a class="product-group-price-link"><display:ProductGroupPricing product="<%= pm %>"/></a>

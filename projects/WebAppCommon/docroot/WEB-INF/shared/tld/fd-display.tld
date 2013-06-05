@@ -387,6 +387,11 @@
 		<name>dataDriven</name>
 		<rtexprvalue>true</rtexprvalue>
 	</attribute>
+	<attribute>
+   		<name>tableContent</name>
+   		<required>false</required>
+   		<rtexprvalue>true</rtexprvalue>
+   </attribute>
  </tag>
  <tag>
  	<name>ProductSaving</name>

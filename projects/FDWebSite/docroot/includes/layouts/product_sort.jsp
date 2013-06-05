@@ -415,7 +415,7 @@ if (prod.isUnavailable()) {
 <%      }else{%>
 <TD WIDTH="<%=W_PRODUCT_SORT_PRICE%>" ALIGN="CENTER" bgcolor="<%=bgcolor%>">
 <%      }%>
-	<div><display:ProductPrice impression="<%= new ProductImpression(prod) %>" showDescription="false"/></div>&nbsp;</TD></TR>
+	<div><display:ProductPrice impression="<%= new ProductImpression(prod) %>" showDescription="false" tableContent="true"/></div>&nbsp;</TD></TR>
 <%
 } // end of loop on the sortedColl
 %>

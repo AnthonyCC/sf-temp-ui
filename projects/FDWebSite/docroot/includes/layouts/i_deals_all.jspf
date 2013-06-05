@@ -548,7 +548,7 @@ if(productCode!=null && prodCatId !=null ) {
 <br>
 
 <font class="productPageSinglePrice"<%= hasWas ? " style=\"COLOR: #c00\"" : "" %>><%=prodPrice%></font>
-<% if (hasWas) { %><font style="FONT-SIZE: 10pt; COLOR: #333333"><%= "(was "+prodBasePrice+")" %>&nbsp;</font><% } %><br>
+<% if (hasWas) { %><font style="FONT-SIZE: 10pt; COLOR: #333333">(<font class="text11nb lineThrough"><%= prodBasePrice %></font>)</font><% } %><br>
 <%@include file="/includes/product/i_price_taxdeposit.jspf"%>
 <span class="text12"><%@include file="/includes/product/i_scaled_prices_nobr.jspf"%></span>
 <br>

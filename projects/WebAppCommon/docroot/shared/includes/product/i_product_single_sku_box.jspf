@@ -37,7 +37,7 @@
 %>				<div class="text13bold">
 					<span class="normal-price" style="<%= _isOnSale ? "color: #C94747" : "" %>"><%= _defPrice %></span><span class="normal-price" style="<%= _isOnSale ? "color: #C94747" : "" %>">/<%= _z != null ? _z : productInfo.getDisplayableDefaultPriceUnit().toLowerCase() %></span>
 					<% if ( _isOnSale ) { %>
-                        <div class="text11nb" style="padding-bottom: 1em">(was <%= currencyFormatter.format(_uZoneId.getSellingPrice()) %>)</div>
+                        <div class="text11nb" style="padding-bottom: 1em">(<font class="text11nb lineThrough"><%= currencyFormatter.format(_uZoneId.getSellingPrice()) %></font>)</div>
 					<% } %>
                 </div>
 <%
@@ -67,7 +67,7 @@
 	                <span class="productPageSecondaryVarPrice" style="color: #C94747"><%= _defPrice %></span>
 	                <span class="productPageSecondaryVarPriceUnit" style="color: #C94747">/<%= productInfo.getDisplayableDefaultPriceUnit().toLowerCase()%></span>				
                     <br/>
-                    <span class="text11nb">(was <%= currencyFormatter.format(_uZoneId.getSellingPrice()) %>)</span>
+                    <span class="text11nb">(<font class="text11nb lineThrough"><%= currencyFormatter.format(_uZoneId.getSellingPrice()) %></font>)</span>
 				<% } else { %>
 	                <span class="productPageSecondaryVarPrice"><%= _defPrice %></span>
 	                <span class="productPageSecondaryVarPriceUnit">/<%= productInfo.getDisplayableDefaultPriceUnit().toLowerCase()%></span>
@@ -86,7 +86,7 @@
 %>
 	                	<span class="productPageSinglePrice" style="<%= _isOnSale ? "color: #C94747" : "" %>"><%= _defPrice %></span><span class="productPageSinglePriceUnit" style="<%= _isOnSale ? "color: #C94747" : "" %>">/<%=productInfo.getDisplayableDefaultPriceUnit().toLowerCase() %></span>
 					<% if ( _isOnSale ) { %>
-                        <div class="text11nb" style="padding-bottom: 1em">(was <%= currencyFormatter.format(_uZoneId.getSellingPrice()) %>)</div>
+                        <div class="text11nb" style="padding-bottom: 1em">(<font class="text11nb lineThrough"><%= currencyFormatter.format(_uZoneId.getSellingPrice()) %></font>)</div>
 					<% } %>
                 </div>
                 <%

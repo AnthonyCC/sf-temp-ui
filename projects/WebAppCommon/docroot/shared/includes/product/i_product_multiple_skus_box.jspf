@@ -175,7 +175,7 @@ final int W_PRODUCT_MULTIPLE_SKUS_SEC_DOMAIN = 15;
 						      <font class="productPageSecondaryVarPrice" color="#C94747"><%= JspMethods.formatDefaultPrice(productInfo, user.getPricingContext()) %></font>
 						      <font class="productPageSecondaryVarPriceUnit" color="#C94747">/<%= JspMethods.formatPricingUnit(productInfo) %></font>
 						      <br/>
-						      <font class="text11nb">(was <%= JspMethods.formatSellingPrice(productInfo, user.getPricingContext()) %>)</font>
+						      <font class="text11nb">(<font class="text11nb lineThrough"><%= JspMethods.formatSellingPrice(productInfo, user.getPricingContext()) %></font>)</font>
 						      <br/>
 						    <% } else { %>
 						      <font class="productPageSecondaryVarPrice"><%= JspMethods.formatDefaultPrice(productInfo, user.getPricingContext()) %></font>
@@ -268,7 +268,7 @@ final int W_PRODUCT_MULTIPLE_SKUS_SEC_DOMAIN = 15;
 			      <font class="productPageSecondaryVarPrice" color="#C94747"><%= JspMethods.formatDefaultPrice(productInfo, user.getPricingContext()) %></font>
 			      <font class="productPageSecondaryVarPriceUnit" color="#C94747">/<%= JspMethods.formatPricingUnit(productInfo) %></font>
 			      <br/>
-			      <font class="text11nb">(was <%= JspMethods.formatSellingPrice(productInfo, user.getPricingContext()) %>)</font>
+			      <font class="text11nb">(<font class="text11nb lineThrough"><%= JspMethods.formatSellingPrice(productInfo, user.getPricingContext()) %></font>)</font>
 			      <br/>
 			    <% } else { %>
 			      <font class="productPageSecondaryVarPrice"><%= JspMethods.formatDefaultPrice(productInfo, user.getPricingContext()) %></font>
@@ -306,7 +306,7 @@ final int W_PRODUCT_MULTIPLE_SKUS_SEC_DOMAIN = 15;
                                 <font class="productPageSecondaryVarPrice" color="#C94747"><%= JspMethods.formatDefaultPrice(productInfo, user.getPricingContext()) %></font>
                                 <font class="productPageSecondaryVarPriceUnit" color="#C94747">/<%= JspMethods.formatPricingUnit(productInfo) %></font>
                                 <br/>
-                                <font class="text11nb">(was <%= JspMethods.formatSellingPrice(productInfo, user.getPricingContext()) %>)</font>
+                                <font class="text11nb">(<font class="text11nb lineThrough"><%= JspMethods.formatSellingPrice(productInfo, user.getPricingContext()) %></font>)</font>
                                 <br/>
                                <% } else { %>
                                 <font class="productPageSecondaryVarPrice"><%= JspMethods.formatDefaultPrice(productInfo, user.getPricingContext()) %></font>

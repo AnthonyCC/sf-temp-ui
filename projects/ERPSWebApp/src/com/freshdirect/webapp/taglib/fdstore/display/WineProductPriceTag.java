@@ -65,9 +65,9 @@ public class WineProductPriceTag extends BodyTagSupportEx {
 				}
 
 				buf.append("<span class=\"save-base-price\">");
-				buf.append(" &ndash; was ");
+				buf.append(" &ndash; <font class=\"lineThrough\"> ");
 				buf.append(format.format(price.getWasPrice()));
-				buf.append("</span>");
+				buf.append("</font></span>");
 			} else {
 				buf.append("<span class=\"normal-price\">");
 				buf.append(format.format(price.getDefaultPriceValue()));
