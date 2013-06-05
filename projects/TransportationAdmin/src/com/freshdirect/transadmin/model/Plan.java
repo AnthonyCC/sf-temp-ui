@@ -268,14 +268,18 @@ public class Plan implements java.io.Serializable, TrnBaseEntityI, IWaveInstance
 	@Override
 	public int getNoOfResources() {
 		// TODO Auto-generated method stub
+		// As per APPDEV-3097 plan with no runners should create capacity worth 1 runner. The code (getNoOfRunners()==0)?1:getNoOfRunners() 
+		// checks if runners assigned are 0 then puts 1 otherwise takes whatever runners assigned to the plan entry  
 		return this.getZone() != null && this.getZone().getArea() != null 
-				&& "X".equalsIgnoreCase(this.getZone().getArea().getIsDepot()) ? getNoOfRunners() : 1 ;
+				&& "X".equalsIgnoreCase(this.getZone().getArea().getIsDepot()) ? (getNoOfRunners()==0)?1:getNoOfRunners() : 1 ;
 	}
 	
 	public int getNoOfResources1() {
 		// TODO Auto-generated method stub
+		// As per APPDEV-3097 plan with no runners should create capacity worth 1 runner. The code (getNoOfRunners()==0)?1:getNoOfRunners() 
+				// checks if runners assigned are 0 then puts 1 otherwise takes whatever runners assigned to the plan entry. 
 		return this.getZone() != null && this.getZone().getArea() != null 
-				&& "X".equalsIgnoreCase(this.getZone().getArea().getIsDepot()) ? getNoOfRunners() : 1 ;
+				&& "X".equalsIgnoreCase(this.getZone().getArea().getIsDepot()) ? (getNoOfRunners()==0)?1:getNoOfRunners() : 1 ;
 	}
 	
 	private int getNoOfRunners() {
