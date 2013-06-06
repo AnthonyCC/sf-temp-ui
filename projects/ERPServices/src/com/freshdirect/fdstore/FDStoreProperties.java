@@ -603,6 +603,7 @@ public class FDStoreProperties {
 	private final static String PROP_IP_LOCATOR_EVENT_LOG_ENABLED = "fdstore.iplocator.eventlogenabled";
 	
 	private final static String PROP_HOST_URL = "fdstore.host.url";
+	private final static String PROP_SOCIAL_BUTTONS_ENABLED = "fdstore.socialbuttons.enabled";
 
 	private final static String PROP_USQ_LEGAL_WARNING = "fdstore.store.usq_legal_warning";
 	
@@ -1198,6 +1199,7 @@ public class FDStoreProperties {
 		defaults.put(PROP_IP_LOCATOR_ROLLOUT_PERCENT, "100");
 		defaults.put(PROP_IP_LOCATOR_EVENT_LOG_ENABLED, "true");
 		defaults.put(PROP_HOST_URL, "http://www.freshdirect.com");
+		defaults.put(PROP_SOCIAL_BUTTONS_ENABLED, "true");
 		defaults.put(CHECK_LOCAL_INVENTORY_ENABLED, "false");
 		defaults.put(PROP_FDCOUPONMGR_HOME, "freshdirect.fdstore.CouponManager");
 				
@@ -3069,6 +3071,10 @@ public class FDStoreProperties {
 		return get(PROP_HOST_URL);
 	}
 
+	public static boolean isSocialButtonsEnabled() {
+		return (Boolean.valueOf(get(PROP_SOCIAL_BUTTONS_ENABLED))).booleanValue();
+	}
+	
 	public static boolean isUSQLegalWarningSwitchedOn() {
 		return (Boolean.valueOf(get(PROP_USQ_LEGAL_WARNING))).booleanValue();
 	}
