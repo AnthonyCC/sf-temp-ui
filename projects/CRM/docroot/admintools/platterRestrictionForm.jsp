@@ -64,7 +64,8 @@ DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm a"); %>
             timeMap.put(new Integer(5),"05:00 AM");    
             timeMap.put(new Integer(6),"06:00 AM");    
             timeMap.put(new Integer(7),"07:00 AM");    
-            timeMap.put(new Integer(8),"08:00 AM");        
+            timeMap.put(new Integer(8),"08:00 AM"); 
+            timeMap.put(new Integer(9),"09:00 AM");
             timeMap.put(new Integer(10),"10:00 AM");    
             timeMap.put(new Integer(11),"11:00 AM");    
             timeMap.put(new Integer(12),"12:00 PM");    
