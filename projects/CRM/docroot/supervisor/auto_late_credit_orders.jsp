@@ -34,7 +34,7 @@
 	}
 %>
 
-<form method="POST" name="timePick" id="timePick">
+<form method="POST" name="timePick" id="timePick" onsubmit="return confirm('Are you sure you want to approve credits?')">
 <input type="hidden" name="action" value="submitted" />
 <input type="hidden" name="autoId" value="<%=id%>"/>
 <div class="sub_nav">
