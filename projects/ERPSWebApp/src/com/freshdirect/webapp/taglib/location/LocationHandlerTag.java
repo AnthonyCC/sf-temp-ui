@@ -24,6 +24,7 @@ import com.freshdirect.fdstore.FDDepotManager;
 import com.freshdirect.fdstore.FDInvalidAddressException;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.StateCounty;
+import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.framework.util.NVL;
 import com.freshdirect.framework.util.StringUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -47,8 +48,7 @@ public class LocationHandlerTag extends SimpleTagSupport {
 	public static String ACTION_RESULT_ATTR = "locationHandlerActionResult";
 	public static String SERVER_ERROR_ATTR = "locationHandlerServerErrorResult";
 	public static String DISABLED_ATTR = "locationHandlerDisabled";
-	
-	public static String SERVICE_TYPE_PARAMETER = "setServiceType";
+	public static String SERVICE_TYPE_MODIFICATION_ENABLED = "locationHandlerServiceTypeModificationEnabled";
 	public static String FUTURE_ZONE_NOTIFICATION_EMAIL_PARAMETER = "futureZoneNotificationEmail";
 	public static String ZIP_CODE_PARAMETER = "zipCode";
 	
@@ -197,9 +197,13 @@ public class LocationHandlerTag extends SimpleTagSupport {
 	}
 	
 	/** based on DeliveryAddressManipulator logic*/
-	private void handleNewServiceType(EnumServiceType serviceType){
-		user.setSelectedServiceType(serviceType);
-		user.setZPServiceType(serviceType); //added for zone pricing to keep user service type up-to-date
+	private boolean handleNewServiceType(EnumServiceType serviceType){
+		boolean needToUpdate = (serviceType != user.getSelectedServiceType()); 
+		if (needToUpdate) {
+			user.setSelectedServiceType(serviceType);
+			user.setZPServiceType(serviceType); //added for zone pricing to keep user service type up-to-date
+		}
+		return needToUpdate;
 	}
 	
 	
@@ -217,15 +221,20 @@ public class LocationHandlerTag extends SimpleTagSupport {
 	}
 	
 	private void doSetServiceTypeAction(){
-		String serviceType = request.getParameter(SERVICE_TYPE_PARAMETER);
+		if (isServiceTypeModificationEnabled()) {
+			EnumServiceType enumServiceType = null;
+		
+			String url = request.getRequestURI().toLowerCase(); 
+			if (url.startsWith("/cos.jsp")){ //if user lands on the Corporate Home Page - for header consistency
+				enumServiceType = EnumServiceType.CORPORATE;
+			
+			} else if (url.startsWith("/index.jsp") || url.startsWith("/welcome.jsp")){ //if user lands on the Residential Home Pages
+				enumServiceType = EnumServiceType.HOME;
+				
+			} 		
 
-		if (serviceType!=null && !"".equals(serviceType)){
-			try {
-				handleNewServiceType(EnumServiceType.valueOf(serviceType));
+			if (enumServiceType != null && handleNewServiceType(enumServiceType)){
 				user.updateUserState(); //for robustness only
-			} catch (IllegalArgumentException e){
-				LOGGER.error("Cannot set service type to "+serviceType);
-				result.addError(true, SERVICE_TYPE_PARAMETER, "Error unknown service type");
 			}
 		}
 	}
@@ -258,6 +267,12 @@ public class LocationHandlerTag extends SimpleTagSupport {
 		if (uri.contains("/checkout/") || uri.contains("/login/")){
 			ctx.setAttribute(DISABLED_ATTR, true);
 		}
+		
+		ctx.setAttribute(SERVICE_TYPE_MODIFICATION_ENABLED, isServiceTypeModificationEnabled());
+	}
+	
+	private boolean isServiceTypeModificationEnabled(){
+		return user.isUserCreatedInThisSession() && (user.getLevel() < FDUserI.RECOGNIZED);
 	}
 	
 	public static String formatAddressText(AddressModel address){

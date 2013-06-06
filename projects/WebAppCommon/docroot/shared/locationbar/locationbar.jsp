@@ -89,16 +89,15 @@ Boolean disabled = (Boolean)pageContext.getAttribute(LocationHandlerTag.DISABLED
 	} else { 
 		%><tmpl:put name="buttons"><label>New customer?</label><tmpl:get name="signupButton" /><tmpl:get name="loginButton" /></tmpl:put>
 		<tmpl:put name="location_message"><jsp:include page="location_messages.jsp" /></tmpl:put><%
-		if(user.isUserCreatedInThisSession()){
-			if(user.isCorporateUser()){
-				%><tmpl:put name="hoicon"><span class="home">Home delivery? <a class="green" href='<%="/index.jsp?"+LocationHandlerTag.SERVICE_TYPE_PARAMETER+"="+EnumServiceType.HOME%>'>click here</a></span></tmpl:put><%			
-			}else {
-				%><tmpl:put name="hoicon"><span class="office">Office delivery? <a class="green" href='<%="/department.jsp?deptId=COS&"+LocationHandlerTag.SERVICE_TYPE_PARAMETER+"="+EnumServiceType.CORPORATE%>'>click here</a></span></tmpl:put><%			
-			}
+    }
+
+	if(Boolean.TRUE == pageContext.getAttribute(LocationHandlerTag.SERVICE_TYPE_MODIFICATION_ENABLED)){
+		if(user.isCorporateUser()){
+			%><tmpl:put name="hoicon"><span class="home">Home delivery? <a class="green" href="/index.jsp">click here</a></span></tmpl:put><%			
+		}else {
+			%><tmpl:put name="hoicon"><span class="office">Office delivery? <a class="green" href="/department.jsp?deptId=COS">click here</a></span></tmpl:put><%			
 		}
-    } 
+	}
 %>
-
-
 
 </tmpl:insert>
