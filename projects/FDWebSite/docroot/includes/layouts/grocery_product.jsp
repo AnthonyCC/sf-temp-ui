@@ -1127,7 +1127,7 @@ if(((pageNumber -1) * itemsToDisplay) > skuCount) {
 					for (int q = startIndex; q < ref_innerLoopEnd; q++) {
 						//vars needed for include
 			    		ProductModel displayProduct = ref_prodModels.get(q);
-			        	SkuModel sku = (SkuModel)allSkuModels.get(q);
+			        	SkuModel sku = (SkuModel)skus.get(q);
 			        	FDCustomerCoupon custCoupon = ref_coupons.get(q);
 			        	int i = q; //used for background color check
 	                    itemShownIndex = q; //used in include
