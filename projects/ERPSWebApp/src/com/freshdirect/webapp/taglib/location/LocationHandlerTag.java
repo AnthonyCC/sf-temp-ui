@@ -10,6 +10,7 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.tagext.SimpleTagSupport;
 
+import org.apache.commons.lang.WordUtils;
 import org.apache.log4j.Logger;
 
 import com.freshdirect.common.address.AddressModel;
@@ -122,8 +123,8 @@ public class LocationHandlerTag extends SimpleTagSupport {
 			if (stateCounty == null){
 				LOGGER.info("stateCountry is null for zip: "+ zipCode);
 			} else {
-				address.setState(stateCounty.getState());
-				address.setCity(stateCounty.getCity());
+				address.setState(WordUtils.capitalizeFully(stateCounty.getState()));
+				address.setCity(WordUtils.capitalizeFully(stateCounty.getCity()));
 			}
 			//no error check needed here, front end will display no delivery error if needed
 			handleNewServiceResult(FDDeliveryManager.getInstance().checkZipCode(zipCode));

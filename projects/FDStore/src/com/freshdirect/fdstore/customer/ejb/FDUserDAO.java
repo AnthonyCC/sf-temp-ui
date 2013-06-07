@@ -14,6 +14,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.lang.WordUtils;
 import org.apache.log4j.Category;
 
 import com.freshdirect.common.address.AddressModel;
@@ -116,8 +117,8 @@ public class FDUserDAO {
 		if(user.getAddress()!=null){
 			StateCounty stateCounty= getStateCountyByZipcode(conn, zipCode);
 			if (stateCounty!=null) {
-				user.getAddress().setState(stateCounty.getState());
-				user.getAddress().setCity(stateCounty.getCity());
+				user.getAddress().setState(WordUtils.capitalizeFully(stateCounty.getState()));
+				user.getAddress().setCity(WordUtils.capitalizeFully(stateCounty.getCity()));
 			}
 		}
 	}
