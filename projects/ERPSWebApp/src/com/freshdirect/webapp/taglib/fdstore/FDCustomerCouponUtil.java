@@ -147,7 +147,8 @@ public class FDCustomerCouponUtil implements Serializable {
 		FDSessionUser user = (FDSessionUser) session.getAttribute(SessionName.USER);
 		boolean isCouponEvaluationNeeded = false;
 		try {
-			if(null !=user && user.isEligibleForCoupons()){				
+			if(null !=user && user.isEligibleForCoupons()){
+				LOGGER.debug("isEligibleForCoupons:"+true);
 				if(user.isRefreshCouponWalletRequired()){
 					getCustomerCoupons(session);
 				}
@@ -157,6 +158,7 @@ public class FDCustomerCouponUtil implements Serializable {
 				FDCustomerCouponWallet custCoupons =user.getCouponWallet();
 				
 				if(null ==custCoupons){
+					LOGGER.debug("isCouponWalletEmpty:"+true);
 					return true;//Nothing to evaluate
 				}else{
 					//Clear this map always before evaluating, to make sure the map will always have the entries for the clipped coupons of just the current cart lines .
