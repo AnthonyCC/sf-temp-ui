@@ -15,6 +15,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.freshdirect.customer.EnumDeliveryType;
 import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpDepotAddressModel;
+import com.freshdirect.fdstore.EnumCheckoutMode;
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
@@ -306,14 +307,18 @@ public class CheckoutController extends BaseController {
      */
     private ModelAndView reviewOrder(ModelAndView model, SessionUser user, HttpServletRequest request, EnumCouponContext ctx) throws FDException, JsonException {
         Checkout checkout = new Checkout(user);
+        if(EnumCouponContext.CHECKOUT.equals(ctx)){
+        	user.setRefreshCouponWalletRequired(true);
+        	user.setCouponEvaluationRequired(true);
+        }
         Message responseMessage = checkout.getCurrentOrderDetails(ctx);
         if(!user.getFDSessionUser().isCouponsSystemAvailable()) {
         	responseMessage.addWarningMessage(MessageCodes.WARNING_COUPONSYSTEM_UNAVAILABLE
         										, SystemMessageList.MSG_COUPONS_SYSTEM_NOT_AVAILABLE);
-        }else{
+        }/*else{
         	user.setRefreshCouponWalletRequired(true);
         	user.setCouponEvaluationRequired(true);
-        }
+        }*/
         
         if(user.getFDSessionUser().getShoppingCart().getExpCouponDeliveryDate()!=null){
         	responseMessage.addWarningMessage(MessageCodes.WARNING_COUPONS_EXP_DELIVERY_DATE
