@@ -196,7 +196,7 @@ public class AutoLateDlvCreditTag extends AbstractControllerTag {
         
         //set complaint details
         complaintModel.setCreatedBy(agent.getUserId());
-        complaintModel.setDescription("Late Delivery Credit for $" + ccm.getOriginalAmount());
+        complaintModel.setDescription("Auto Late Delivery Credit for $" + ccm.getOriginalAmount());
         complaintModel.setCreateDate(new java.util.Date());
         complaintModel.setStatus(EnumComplaintStatus.PENDING);
         //email options - don;t send for now
