@@ -72,8 +72,6 @@ public class FilteringComparatorUtil {
 				if (!ascending)
 					comparator = ComparatorChain.reverseOrder(comparator);
 				break;
-			case BY_RECENCY:
-				
 			case BY_START_DATE:
 				comparator = ComparatorChain.create(FilteringSortingItem.wrap(COUPON_START_DATE_COMPARATOR));
 				comparator.chain(FilteringSortingItem.wrap(ProductModel.FULL_NAME_PRODUCT_COMPARATOR));
@@ -105,6 +103,7 @@ public class FilteringComparatorUtil {
 				if (!ascending)
 					comparator = ComparatorChain.reverseOrder(comparator);
 				break;
+			case BY_RECENCY:
 			default:
 				if (showGrouped)
 					comparator = ComparatorChain.create(new NewProductsGrouping(!nav.isSortOrderingAscending()).getTimeRangeComparator()).chain(FilteringSortingItem.wrap(ProductModel.DEPTFULL_COMPARATOR))
