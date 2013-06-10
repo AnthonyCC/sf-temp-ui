@@ -598,6 +598,7 @@ public class FDReferAFriendDAO {
 		return new Boolean(false);
 	}
 	
+	/*
 	public static final String GET_SET_SALE_LIST =  "select distinct RP.PROMOTION_ID, S.ID as saleid, S.CUSTOMER_ID, F.REFERER_CUSTOMER_ID, f.ID as fdcustomerid from " + 
 												    "cust.sale s, " +
 													"CUST.PROMOTION_PARTICIPATION pp, " +
@@ -613,11 +614,50 @@ public class FDReferAFriendDAO {
 													"and     s.customer_id = CI.FRIENDS_CUSTOMER_ID " +
 													"and     CI.CREDIT_ISSUED is null " + 
 													"and     (rp.Delete_flag is null or rp.delete_flag != 'Y')";
+	*/
+	public static final String GET_SET_SALE_LIST = "select distinct RP.PROMOTION_ID, S.ID as saleid, S.CUSTOMER_ID, F.REFERER_CUSTOMER_ID, " +
+												   "f.ID as fdcustomerid,sq1.erp_customer_id, sq1.ID, sq1.GIVE_TEXT, sq1.GET_TEXT, sq1.REFERRAL_FEE, " +
+												   "sq1.AUDIENCE_DESC, sq1.SHARE_HEADER, sq1.SHARE_TEXT, sq1.GIVE_HEADER, sq1.GET_HEADER, "+ 
+                                                   "sq1.FB_IMAGE_PATH, sq1.FB_HEADLINE, sq1.FB_TEXT, sq1.TWITTER_TEXT, sq1.RL_PAGE_TEXT, " +
+												   "sq1.RL_PAGE_LEGAL, sq1.INV_EMAIL_SUBJECT,sq1.INV_EMAIL_TEXT, sq1.INV_EMAIL_LEGAL, " +
+                                                   "sq1.REF_CRE_EMAIL_SUB, sq1.REF_CRE_EMAIL_TEXT, sq1.sa_image_path " +
+                                                   "from " +
+                                                   "cust.sale s, " + 
+                                                   "CUST.PROMOTION_PARTICIPATION pp, " + 
+                                                   "CUST.FDCUSTOMER f,  " +
+                                                   "CUST.REFERRAL_PRGM rp,  " +
+                                                   "CUST.CUSTOMER_INVITES ci ,  " +
+                                                   "( " +
+                                                            "select RCL.ERP_CUSTOMER_ID, RP.ID, RP.GIVE_TEXT, RP.GET_TEXT, RP.REFERRAL_FEE, P.AUDIENCE_DESC, " + 
+                                                            "RP.SHARE_HEADER, RP.SHARE_TEXT, RP.GIVE_HEADER, RP.GET_HEADER,  " +
+                                                            "rp.FB_IMAGE_PATH, rp.FB_HEADLINE, rp.FB_TEXT, rp.TWITTER_TEXT, rp.RL_PAGE_TEXT, rp.RL_PAGE_LEGAL, rp.INV_EMAIL_SUBJECT, " +    
+                                                            "rp.INV_EMAIL_TEXT, rp.INV_EMAIL_LEGAL, rp.REF_CRE_EMAIL_SUB, rp.REF_CRE_EMAIL_TEXT, rp.sa_image_path  " +
+                                                            "from CUST.REFERRAL_PRGM rp, " +
+                                                            "CUST.REFERRAL_CUSTOMER_LIST rcl, " + 
+                                                            "CUST.PROMOTION_NEW p " +
+                                                            "where RCL.REFERAL_PRGM_ID = RP.ID " + 
+                                                            "and   trunc(RP.EXPIRATION_DATE) > trunc(sysdate) " + 
+                                                            "and   RP.PROMOTION_ID = P.ID " +
+                                                            "and   P.STATUS = 'LIVE' " +
+                                                            "and   trunc(sysdate) between P.START_DATE and P.EXPIRATION_DATE " + 
+                                                            "and   (rp.Delete_flag is null or rp.delete_flag != 'Y') " +
+                                                   ") sq1 " +
+                                                   "where S.STATUS = 'STL' " + 
+                                                   "and     S.CUSTOMER_ID = F.ERP_CUSTOMER_ID " + 
+                                                   "and     F.REFERER_CUSTOMER_ID is not null " +
+                                                   "and     S.ID = PP.SALE_ID " +
+                                                   "and     PP.PROMOTION_ID = RP.PROMOTION_ID " + 
+                                                   "and     RP.EXPIRATION_DATE > sysdate " +
+                                                   "and     s.customer_id = CI.FRIENDS_CUSTOMER_ID " + 
+                                                   "and     CI.CREDIT_ISSUED is null " +
+                                                   "and     (rp.Delete_flag is null or rp.delete_flag != 'Y') " +
+                                                   "and    referer_customer_id = sq1.erp_customer_id (+)";
 	
 	public static List<ReferralPromotionModel> getSettledSales(Connection conn) throws SQLException {
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		List<ReferralPromotionModel> list = new ArrayList<ReferralPromotionModel>();
+		ReferralPromotionModel defaultRefPromo = getReferralDefaultPromotionDetails(conn);
 		try {
 			ps = conn.prepareStatement(GET_SET_SALE_LIST);
 			rs = ps.executeQuery();
@@ -629,7 +669,13 @@ public class FDReferAFriendDAO {
 				rpm.setRefCustomerId(rs.getString("REFERER_CUSTOMER_ID"));
 				rpm.setFDCustomerId(rs.getString("fdcustomerid"));
 				System.out.println("now, is this null?" + rs.getString("REFERER_CUSTOMER_ID"));
-				ReferralPromotionModel refDetails = getReferralPromotionDetails(conn, rs.getString("REFERER_CUSTOMER_ID"));
+				//ReferralPromotionModel refDetails = getReferralPromotionDetails(conn, rs.getString("REFERER_CUSTOMER_ID"));
+				ReferralPromotionModel refDetails = null;
+				if(rs.getString("ID") == null) {
+					refDetails = defaultRefPromo;
+				} else {
+					refDetails = loadResultSet(rs);
+				}
 				System.out.println("Is this null?" + refDetails);
 				rpm.setReferral_fee(refDetails.getReferral_fee());
 				rpm.setReferral_prgm_id(refDetails.getReferral_prgm_id());	
@@ -948,5 +994,24 @@ public class FDReferAFriendDAO {
 				ps.close();
 		}
 		return null;	
+	}
+	
+	public static ReferralPromotionModel getReferralDefaultPromotionDetails(Connection conn) throws SQLException {
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		try {
+			//Get default promo
+			ps = conn.prepareStatement(GET_DEFAULT_REFERRAL_PROMO);
+			rs = ps.executeQuery();
+			if (rs.next()) {
+				return loadResultSet(rs);
+			}
+		} finally {
+			if (rs != null)
+				rs.close();
+			if (ps != null)
+				ps.close();
+		}
+		return null;
 	}
 }
