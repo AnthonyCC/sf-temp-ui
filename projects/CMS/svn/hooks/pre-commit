@@ -87,9 +87,9 @@ function debug {
 function mime_type {
     local last_char=`echo $1 | sed 's/^.*\(.\)$/\1/'`
     if [ "$last_char" = "/" ]; then
-        echo "directory"
+        echo
     else
-        svnlook cat -t "$TXN" "$REPOS" $1 2>/dev/null | file -bi -
+        svnlook cat -t "$TXN" "$REPOS" "$1" 2>/dev/null | file -bi -
     fi
 }
 
@@ -102,7 +102,7 @@ function mime_type {
 function dimensions {
 case "$2" in
 image/*)
-    svnlook cat -t "$TXN" "$REPOS" $1 2>/dev/null | ${IMAGEMAGICK_IDENTIFY:-identify} -format '%wx%h' -
+    svnlook cat -t "$TXN" "$REPOS" "$1" 2>/dev/null | ${IMAGEMAGICK_IDENTIFY:-identify} -format '%wx%h' -
     ;;
 *)
     echo ""
@@ -195,12 +195,14 @@ function notify {
 ADDED=""
 REMOVED=""
 UPDATED=""
+MIME_PATH=""
 
 STDOUT=`svnlook changed -t "$TXN" "$REPOS"`
 AUTHOR=`svnlook author -t "$TXN" "$REPOS"`
 OIFS="$IFS"
 IFS=""
 while read line; do
+    # debug "Read $line"
     file=`echo "$line" | sed 's/^....//'`
     command=${line:0:4}
     case $command in
@@ -252,19 +254,26 @@ elif [ -z "$ADDED" -a -z "$REMOVED" -a -z "$UPDATED" ]; then
 else
     # unknown - technically this cannot happen
     error "Unknown modification"
+    exit 1
 fi
 
-MIME=`mime_type "$SOURCE"`
-DIMENSIONS=`dimensions "$SOURCE" "$MIME"`
+
+# DETERMINE MEDIA TYPE
+if [ "create" = "$COMMAND" -o "update" = "$COMMAND" ]; then
+    MIME=`mime_type "$SOURCE"`
+    DIMENSIONS=`dimensions "$SOURCE" "$MIME"`
+fi
+
 
 # POST PROCESSING
-# make file naming corrections
-if [ "$MIME" = "directory" ]; then
-    MIME=""
-    DIMENSIONS=""
-    SOURCE="`echo "\""$SOURCE"\"" | sed 's/\/$//'`"
-    DESTINATION="`echo "\""$DESTINATION"\"" | sed 's/\/$//'`"
+# P1. make file naming corrections
+if [ "/" = "${SOURCE: -1}" ]; then
+    # Trim trailing slashes
+    SOURCE="${SOURCE/%\//}"
+    DESTINATION="${DESTINATION/%\//}"
 fi
+
+# P2. make paths absolute
 SOURCE="/$SOURCE"
 if [ -n "$DESTINATION" ]; then
     DESTINATION="/$DESTINATION"
@@ -272,6 +281,10 @@ fi
 
 # send request to notification service
 notify `format_cmd "$COMMAND" "$SOURCE" "$DESTINATION" "$MIME" "$DIMENSIONS"`
+
+
+# LOG RESULT
+#
 
 FINFO=`format_finfo "$SOURCE" "$MIME" "$DIMENSIONS"`
 if [ "$COMMAND" = "update" ]; then
