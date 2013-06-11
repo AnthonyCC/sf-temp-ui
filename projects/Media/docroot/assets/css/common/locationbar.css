@@ -1,6 +1,6 @@
 #locationbar {
 	position:relative;
-	height:30px;
+/*	height:30px; */
 	font-family:Arial;
 	vertical-align:top;
 	width:970px;
@@ -28,7 +28,7 @@
 	white-space:nowrap;
 	vertical-align:top;
 	position:relative;
-	height:22px;
+/*	height:22px; */
 }
 
 #locationbar .zipdisplay {
@@ -103,8 +103,8 @@
 	display:inline-block;
 	height:20px;
 	line-height:20px;
-	padding-left:20px;
-	background: white center left no-repeat;
+	padding-top:20px;
+	background: transparent center top no-repeat;
 }
 
 #locationbar .hoicon .home {
@@ -215,6 +215,7 @@
 #messages .nodeliver-form {
 	padding-left:310px;
 	background:url('/media_stat/images/locationbar/notavailable.png') no-repeat left center;
+	overflow:hidden;
 }
 
 #messages .nodeliver-form form label {
@@ -229,7 +230,7 @@
 	display:none;
 }
 
-	#messages .nodeliver-form form label.e b {
+	#messages .nodeliver-form form b {
 		color:#c00;
 		font-weight:bold;
 	}
@@ -237,6 +238,7 @@
 #messages .nodeliver-form form.e label.e {
 	display:block;
 }
+
 #messages .nodeliver-form form.e label.n {
 	display:none;
 }

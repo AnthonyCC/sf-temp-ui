@@ -10,6 +10,7 @@
 %>
 <div id="messages">
 <ul class="content"></ul>
-<div class="handler"></div>
+<div class="handler open-handler">show messages</div>
+<div class="handler close-handler">hide messages</div>
 </div>
-<script src="/assets/javascript/messages.js"></script>
+<fd:javascript src="/assets/javascript/messages.js" />

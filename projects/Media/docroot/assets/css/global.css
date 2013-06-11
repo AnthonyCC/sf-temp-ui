@@ -1734,7 +1734,9 @@ div.control, div.slotRow, div.time {
 	}
 	
 	#toptoolbar {
-        position:relative;
+        position:absolute;
+        width:100%;
+        left:0;
         z-index:10000;
 	}
 

@@ -70,7 +70,6 @@
   var keys=[8,12,13,33,34,35,36,37,38,39,40,46,97];
   $document.on('keydown', '#newziptext', function (e) {
   	var kc = e.keyCode;
-  	console.log(kc);
   	if( (kc<48 || kc>57) && keys.inArray(kc)===false && (kc<96 || kc>105) ) {
   		e.preventDefault();
   	}
@@ -84,24 +83,31 @@
 	
 	$document.on('click','#location-submit',function(e){
 		var email = $('#location-email').val(),
-			$form = $('#messages .nodeliver-form form');
+				$form = $('#messages .nodeliver-form form'),
+				pattern=/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
 		
-		$form.attr('class','p');
-		
-		$.ajax({
-			url:'/api/locationhandler.jsp',
-			data:{
-				futureZoneNotificationEmail:email,
-				action:"futureZoneNotification"
-			},
-			success:function(data){
-				$('#nodeliver-thanks').messages('add');
-				playScripts($(data));
-			},
-			error:function(){
-				$form.attr('class','e');
-			}
-		});
+		if(pattern.match(email)) {
+			$form.attr('class','p');
+			
+			
+			$.ajax({
+				url:'/api/locationhandler.jsp',
+				data:{
+					futureZoneNotificationEmail:email,
+					action:"futureZoneNotification"
+				},
+				success:function(data){
+					$('#nodeliver-thanks').messages('add');
+					playScripts($(data));
+				},
+				error:function(){
+					$form.attr('class','e');
+				}
+			});			
+		} else {
+			$('label.n',$form).html('<b>Please make sure your email address is in the format "you@isp.com"</b>');
+		}
+				
 		
 		e.preventDefault();
 	});

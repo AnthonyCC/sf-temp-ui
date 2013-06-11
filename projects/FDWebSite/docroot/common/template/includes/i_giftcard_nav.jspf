@@ -16,6 +16,11 @@ final int W_GIFTCARD_NAV_TOTAL = 970;
 
 <jsp:include page="/shared/template/includes/server_info.jsp" flush="false"/>
 <jsp:include page="/common/template/includes/ad_server.jsp" flush="false"/>
+<div id="toptoolbar">
+<jsp:include page="/shared/messages/messages.jsp" />
+<jsp:include page="/shared/locationbar/locationbar.jsp" />
+</div>
+
 <%
 	//giftcard top nav
 	FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
@@ -24,12 +29,11 @@ final int W_GIFTCARD_NAV_TOTAL = 970;
 				// ads are enabled
 				if (FDStoreProperties.isAdServerEnabled()) {
 					request.setAttribute("listPos", "SystemMessage");
-					%>
-					<script type="text/javascript">
-						OAS_AD('SystemMessage');
-					</script>
-				<% } else { %>
-					<fd:GetSiteAnnouncements id="announcments" user="<%=user%>">
+					%><div id="OAS_SystemMessage">
+						  <script type="text/javascript">OAS_AD('SystemMessage');</script>
+  					</div><% 
+  				} else { %>
+					<div class="message" data-type="system"><fd:GetSiteAnnouncements id="announcments" user="<%=user%>">
 						<logic:iterate id="ann" collection="<%=announcments%>" type="com.freshdirect.fdstore.FDSiteAnnouncementI">
 							<table width="<%=W_GIFTCARD_NAV_TOTAL%>" cellpadding="0" cellspacing="0" border="0">
 								<tr align="center">
@@ -42,7 +46,7 @@ final int W_GIFTCARD_NAV_TOTAL = 970;
 								<tr bgcolor="#999966"><td><img src="/media_stat/images/layout/clear.gif" width="1" height="1" alt="" /></td></tr>
 							</table><br />
 						</logic:iterate>
-					</fd:GetSiteAnnouncements>
+					</fd:GetSiteAnnouncements></div>
 				<% } %>
 				
 			<% } %>
@@ -203,5 +207,6 @@ final int W_GIFTCARD_NAV_TOTAL = 970;
 		<td class="GC_nav_corner"><img src="/media_stat/images/giftcards/nav/nav_corner_bot_rt_off.gif" /></td>
 	</tr>
 </table>
+	<script>(function($){ $('.message').messages('add'); })(jQuery)</script>
 
 <img width="1" height="3" alt="" src="/media_stat/images/layout/clear.gif" />

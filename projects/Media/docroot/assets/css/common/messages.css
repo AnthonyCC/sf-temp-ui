@@ -4,7 +4,7 @@
 	width:100%;
 	left:0;
 	padding-top:0px;
-	padding-bottom:40px;
+	padding-bottom:50px;
 	position:absolute;
 }
 
@@ -19,7 +19,7 @@
 	-o-transition: all 0.3s ease-in-out;
 	transition: all 0.3s ease-in-out;
 	position:relative;
-	top:30px;
+	top:50px;
 	max-height:0;
 	width:970px;
 }
@@ -39,7 +39,7 @@
 
 #messages .handler {
 	display:none;
-	background:url(/media_stat/images/locationbar/handler_sprite.png) 0 0 no-repeat;
+	background:url(/media_stat/images/locationbar/drawer_background_f1.png) 0 0 no-repeat;
 	width:128px;
 	height:25px;
 	position:absolute;
@@ -49,16 +49,58 @@
 	margin:auto;
 	left:0;
 	right:0;
+	color:#360;
+	line-height:20px;
 }
 
-#messages.open .handler,
-#messages.hashandler .handler {
+#messages .handler:hover {
+	color:#f93;
+}
+
+
+#messages.hashandler .open-handler {
 	display:block;
 }
 
-#messages.open .handler {
-	background-position:0 -25px;
+
+#messages.open .close-handler {
+	display:block;
 }
+#messages.open .open-handler {
+	display:none;
+}
+
+
+#messages .open-handler:before,
+#messages .open-handler:after {
+	background:url(/media_stat/images/locationbar/drawer_button_down_f1.png) transparent center 4px no-repeat;
+}
+
+#messages .close-handler:before,
+#messages .close-handler:after {
+	background:url(/media_stat/images/locationbar/drawer_button_up_f1.png) transparent center 4px no-repeat;
+}
+
+#messages .open-handler:before,
+#messages .open-handler:after,
+#messages .close-handler:before,
+#messages .close-handler:after {
+	content:' ';
+	position:absolute;
+	bottom:0;
+	top:0;
+	width:14px;
+}
+
+#messages .open-handler:before,
+#messages .close-handler:before {
+	left:8px;
+}
+#messages .open-handler:after,
+#messages .close-handler:after {
+	right:8px;
+}
+
 
 .invisible {
 	visibility:hidden;

@@ -98,7 +98,7 @@ if (location2Media) { %><comp:location2Media user="<%= user %>" /><% }
 			id="media" 
 			type="com.freshdirect.fdstore.content.Html" ><fd:IncludeHtml html="<%= media %>"></fd:IncludeHtml>
 		</logic:iterate></div>
-		<div class="oas_home_bottom"><script type="text/javascript">OAS_AD('COSHPWideBottom');</script></div>
+		<div class="oas_home_bottom"><script type="text/javascript">OAS_AD('HPWideBottom');</script></div>
 	</div>
 </div>
 </fd:GetSegmentMessage>

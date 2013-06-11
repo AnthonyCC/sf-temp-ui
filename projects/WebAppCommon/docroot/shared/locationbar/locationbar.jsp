@@ -80,7 +80,6 @@ Boolean disabled = (Boolean)pageContext.getAttribute(LocationHandlerTag.DISABLED
 		%><a href="/registration/signup.jsp" class="signUpButton">signup</a><% 
 	} 
 %></tmpl:put>
-
 <%
 	if (user!=null && user.getLevel() == FDUserI.SIGNED_IN) {
 		%><tmpl:put name="buttons"><tmpl:get name="cheftable" /><tmpl:get name="logoutButton" /></tmpl:put><%
@@ -88,14 +87,14 @@ Boolean disabled = (Boolean)pageContext.getAttribute(LocationHandlerTag.DISABLED
 		%><tmpl:put name="buttons"><tmpl:get name="cheftable" /><tmpl:get name="loginButton" /></tmpl:put><%
 	} else { 
 		%><tmpl:put name="buttons"><label>New customer?</label><tmpl:get name="signupButton" /><tmpl:get name="loginButton" /></tmpl:put>
-		<tmpl:put name="location_message"><jsp:include page="location_messages.jsp" /></tmpl:put><%
+		<tmpl:put name="location_message">aaa<jsp:include page="location_messages.jsp" /></tmpl:put><%
     }
 
 	if(Boolean.TRUE == pageContext.getAttribute(LocationHandlerTag.SERVICE_TYPE_MODIFICATION_ENABLED)){
 		if(user.isCorporateUser()){
-			%><tmpl:put name="hoicon"><span class="home">Home delivery? <a class="green" href="/index.jsp">click here</a></span></tmpl:put><%			
+			%><tmpl:put name="hoicon"><a class="home green" href="/index.jsp">Home delivery?</a></tmpl:put><%			
 		}else {
-			%><tmpl:put name="hoicon"><span class="office">Office delivery? <a class="green" href="/department.jsp?deptId=COS">click here</a></span></tmpl:put><%			
+			%><tmpl:put name="hoicon"><a class="office green" href="/department.jsp?deptId=COS">Office delivery?</a></tmpl:put><%			
 		}
 	}
 %>
