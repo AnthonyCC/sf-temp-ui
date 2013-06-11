@@ -10,6 +10,7 @@
 %>
 <div id="messages">
 <ul class="content"></ul>
+<hr class="shadow">
 <div class="handler open-handler">show messages</div>
 <div class="handler close-handler">hide messages</div>
 </div>

@@ -6,6 +6,7 @@
 	width:970px;
 	padding-top:5px;
 	text-align: left;
+	background:white;
 }
 
 #locationbar .topbg {
@@ -190,7 +191,9 @@
 
 #messages .unrecognized,
 #messages .partial {
-		padding-left:76px;
+	padding-left:55px;
+	background: url(/media_stat/images/locationbar/excl_icon.png) 10px center no-repeat;
+	min-height: 37px;
 }
 
 #messages .unrecognized b {
@@ -214,7 +217,7 @@
 
 #messages .nodeliver-form {
 	padding-left:310px;
-	background:url('/media_stat/images/locationbar/notavailable.png') no-repeat left center;
+	background:url('/media_stat/images/locationbar/notavailable.png') no-repeat left top;
 	overflow:hidden;
 }
 

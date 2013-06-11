@@ -1,11 +1,13 @@
 #messages {
-	background:white url(/media_stat/images/locationbar/header_bottom.png) bottom left repeat-x;
-	top:0;
+	top:100%;
 	width:100%;
 	left:0;
-	padding-top:0px;
-	padding-bottom:56px;
 	position:absolute;
+}
+#messages .shadow {
+	background:transparent url(/media_stat/images/locationbar/header_bottom.png) bottom left repeat-x;
+	height:15px;
+	margin:0;
 }
 
 #messages ul {
@@ -19,9 +21,9 @@
 	-o-transition: all 0.3s ease-in-out;
 	transition: all 0.3s ease-in-out;
 	position:relative;
-	top:50px;
 	max-height:0;
 	width:970px;
+	background:white;
 }
 
 #messages li {
@@ -34,7 +36,6 @@
 
 #messages.open ul {
 	max-height:500px;
-	margin-bottom:7px;
 }
 
 #messages .handler {
