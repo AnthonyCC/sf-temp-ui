@@ -57,6 +57,10 @@
 			FDModalDialog.openUrl('/shared/locationbar/more_info.jsp',' ',700,250,'partial-delivery-moreinfo');
 		}		
 	});
+	
+	$document.on('click','.ui-widget-overlay',function(e){
+		FDModalDialog.close('.partial-delivery-moreinfo .fd-dialog');
+	});
 
 	$document.on('click','#newzipgo',sendZip);
 
