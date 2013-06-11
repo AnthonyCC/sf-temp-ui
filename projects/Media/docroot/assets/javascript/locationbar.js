@@ -67,10 +67,11 @@
     }
   });
 
-  var keys=[8,13,37,39,46];
+  var keys=[8,12,13,33,34,35,36,37,38,39,40,46,97];
   $document.on('keydown', '#newziptext', function (e) {
   	var kc = e.keyCode;
-  	if((kc<48 || kc>57) && keys.inArray(kc)===false ) {
+  	console.log(kc);
+  	if( (kc<48 || kc>57) && keys.inArray(kc)===false && (kc<96 || kc>105) ) {
   		e.preventDefault();
   	}
   });
