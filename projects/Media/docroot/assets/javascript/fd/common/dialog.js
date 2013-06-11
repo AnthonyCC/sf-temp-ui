@@ -66,6 +66,7 @@ var FreshDirect = FreshDirect || {};
 			$('.ui-dialog-titlebar-close span',currentPanelNode.dialog('widget')).html('&#215;');
 			currentPanelNode.bind('dialogclose',closeHandler);
 			currentPanelNode.dialog("open");
+			return currentPanelNode;
 		};
 
 		var openUrl = function(url,title,width,height,cssClass) {

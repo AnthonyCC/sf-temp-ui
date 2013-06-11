@@ -39,7 +39,8 @@ if(!window.parent['FDModalDialog']) {
 				stack:true,
 				closeText:'',
 				title:title,
-				dialogClass:cssClass || ''
+				dialogClass:cssClass || '',
+				zIndex:10001
 			});
 
 			if(width) {
@@ -58,6 +59,7 @@ if(!window.parent['FDModalDialog']) {
 			jq('.ui-dialog-titlebar-close span',currentPanelNode.dialog('widget')).html('&#215;');
 			currentPanelNode.bind('dialogclose',closeHandler);
 			currentPanelNode.dialog("open");
+			return currentPanelNode;
 		};
 
 		var openUrl = function(url,title,width,height,cssClass) {
