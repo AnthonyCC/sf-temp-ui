@@ -125,11 +125,13 @@ if (location2Media) { %><comp:location2Media user="<%= user %>" /><% }
 	   			ConfigurationStrategy confStrat = new DefaultProductConfigurationStrategy();
 	   			String trkCode = "favorites";
 	   			request.setAttribute("trk",trkCode);
+	   			if (validOrderCount<=2){
 %>
-	   			<div id="most-popular" class="grid-carousel grid-view">
-					<comp:recommenderCarousel siteFeature="FAVORITES" user="<%= user %>" trkCode="dpage" facility="default" id="fav_carousel" maxItems="24" numItems="6" width="910" />
-	   			</div>
-<%	   			
+		   			<div id="most-popular" class="grid-carousel grid-view">
+						<comp:recommenderCarousel siteFeature="FAVORITES" user="<%= user %>" trkCode="dpage" facility="default" id="fav_carousel" maxItems="24" numItems="6" width="910" />
+		   			</div>
+<%
+	   			}
 	   			Html edtMed = store.getEditorial();
 				if ( edtMed != null ) { %>
 					<fd:IncludeHtml html="<%= edtMed %>"/>
