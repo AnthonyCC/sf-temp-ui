@@ -1276,6 +1276,7 @@ function doOverlayWindow(olURL, titleVar) {
 			openWidth: -1,
 			closeText: 'hide',
 			position: 'center',
+			zIndex:10001,
 			resizable: false,
 			draggable: false,
 			open: function() {
