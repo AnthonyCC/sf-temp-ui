@@ -87,7 +87,7 @@ Boolean disabled = (Boolean)pageContext.getAttribute(LocationHandlerTag.DISABLED
 		%><tmpl:put name="buttons"><tmpl:get name="cheftable" /><tmpl:get name="loginButton" /></tmpl:put><%
 	} else { 
 		%><tmpl:put name="buttons"><label>New customer?</label><tmpl:get name="signupButton" /><tmpl:get name="loginButton" /></tmpl:put>
-		<tmpl:put name="location_message">aaa<jsp:include page="location_messages.jsp" /></tmpl:put><%
+		<tmpl:put name="location_message"><jsp:include page="location_messages.jsp" /></tmpl:put><%
     }
 
 	if(Boolean.TRUE == pageContext.getAttribute(LocationHandlerTag.SERVICE_TYPE_MODIFICATION_ENABLED)){
