@@ -3,6 +3,8 @@ package com.freshdirect.cms.publish;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -12,8 +14,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
-import java.net.*;
 
+import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.HttpURL;
 import org.apache.webdav.lib.WebdavResource;
 
@@ -91,14 +93,22 @@ public class PublishMediaTask extends DbService implements PublishTask {
 			URL basePath = new URL(slideUrl.getURI()); // same as slideUrl
 			for (Iterator i = getUris(lastPublish.getLastModified()).iterator(); i.hasNext();) {
 				String childPath = (String) i.next(); // 	"/file1.ext"
-
+				final String mediaPath = childPath;
+				
 				if (childPath.startsWith("/")) {
 					childPath = childPath.substring(1, childPath.length());
 				}
 
 				// TODO maybe we should skip any *Thumbs.db* files here to avoid issues (?)
 				URL url = new URL(basePath, URLEncoder.encode(childPath, "UTF-8") ); //  "http://<dav-host>/<slide-path>/files/file1.ext"
-				webdav.setPath(URLDecoder.decode(url.getPath(), "UTF-8") ); //  "/<slide-path>/files/file1.ext"
+				try {
+					webdav.setPath(URLDecoder.decode(url.getPath(), "UTF-8") ); //  "/<slide-path>/files/file1.ext"
+				} catch (HttpException e) {
+					// [gsebestyen] setPath() might fail fetching resource attributes by issuing WebDAV requests
+					// Crash typically occurs here when resource is not available at the given path
+					// It also indicates that CMS.MEDIA table is out of sync with the assigned media repository
+					throw new CmsRuntimeException( "File '" + mediaPath + "' probably missing in media repository", e);
+				}
 
 				File file = new File(rootDir, childPath);
 				createParentDirectory(file);
