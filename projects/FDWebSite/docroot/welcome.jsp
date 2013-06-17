@@ -1,7 +1,10 @@
 <%@ taglib uri='template' prefix='tmpl'%>
 <%@ taglib uri='freshdirect' prefix='fd' %>
-<fd:CheckLoginStatus guestAllowed='true' pixelNames="TheSearchAgency" />
-<tmpl:insert template="/common/template/page_template.jsp">
+<fd:CheckLoginStatus guestAllowed='true' pixelNames="TheSearchAgency" /><%
+
+request.setAttribute("listPos", "SystemMessage,WDelivery,WAffiliate");
+
+%><tmpl:insert template="/common/template/page_template.jsp">
 	<tmpl:put name="title">FreshDirect</tmpl:put>
 	<tmpl:put name='content' direct='true'>
 		
