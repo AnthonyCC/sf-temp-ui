@@ -75,8 +75,9 @@ String browserType=(String)request.getHeader("User-Agent");
 	<%
 		String referralUrl = "http://" + request.getServerName() + "/invite/" + user.getReferralLink();
 		ReferralPromotionModel rpModel = FDReferralManager.getReferralPromotionDetails(customerIdentity.getErpCustomerPK());
+		String stlSaleID = FDReferralManager.getLatestSTLSale(customerIdentity.getErpCustomerPK());
 
-		if (rpModel != null) {
+		if (rpModel != null && stlSaleID != null && stlSaleID.length() > 0) {
 			System.out.println(rpModel.toString());
 			
 			String email_txt = rpModel.getReferralPageText();
