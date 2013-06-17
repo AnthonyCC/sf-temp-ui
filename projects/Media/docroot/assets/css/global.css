@@ -2640,14 +2640,14 @@ a.imgButtonWhite:hover,
 	
 	/* coupon carousel overrides */
 	.search-recommender.fdCouponCar {
-		height: 490px !important;
+		height: 510px !important;
 		width: 780px !important;
 		border-right: none !important;
 	}
 	.fdCouponCar .fd-carousel {
 		padding: 0 21px 0 20px !important;
-		clip: rect(0 801px 480px 0);
-		clip: rect(0, 801px, 480px, 0);
+		clip: rect(0 801px 510px 0);
+		clip: rect(0, 801px, 810px, 0);
 	}
 	.fdCouponCar .grid-item-image {
 		height: 80px !important;

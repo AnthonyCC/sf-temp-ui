@@ -190,17 +190,11 @@ final int W_INDEX_RIGHT_CENTER = W_INDEX_TOTAL - 228 - W_INDEX_CENTER_PADDING;
 	
 	<tmpl:put name="content" direct="true">
 		<%
-		pageContext.setAttribute("ISONSEARCHPAGE",true);
+		pageContext.setAttribute("ISONSEARCHPAGE",false);
 		for (ListIterator<FilteringSortingItem <ProductModel>> it=products.listIterator() ; it.hasNext();) {
 			{
 			ProductImpression pi = confStrat.configure(it.next().getModel(), confContext);
 			%><div class="grid-item-container"><%@ include file="/includes/product/i_product_box.jspf" %></div><%
-			}		
-			// RECOMMENDER for "show all"
-			if ( nav.getPageSize() == 0 && it.nextIndex() == defaultPageSize ) {
-			%>
-			<tmpl:get name="recommendations-content" />
-			<%
 			}
 					
 		} 

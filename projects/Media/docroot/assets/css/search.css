@@ -696,7 +696,7 @@ a.sortitem:visited  {
 	top: 51px;
 	left: 0;
 	clip: rect(0 801px 520px 0);
-	clip: rect(0, 801px, 520px, 0);
+	clip: rect(0, 801px, 550px, 0);
 }
 .items .search-recommender {
 	width: 793px;

@@ -25,7 +25,7 @@
 	//no coupon image here
 	//FDCustomerCoupon custCoupon_pi = (FDCustomerCoupon)request.getAttribute("custCoupon");
 %>
-<display:ProductImage product="<%= productNode %>" action="<%= actionURI_pi %>" prodImageType="<%= prodImageType %>" />
+<display:ProductImage product="<%= productNode %>" action="<%= actionURI_pi %>" prodImageType="<%= prodImageType %>" showRolloverImage="false" />
 
 <font class="space2pix"><br/></font>		
 <% 
