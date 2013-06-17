@@ -25,6 +25,7 @@ import com.freshdirect.fdstore.FDDepotManager;
 import com.freshdirect.fdstore.FDInvalidAddressException;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.StateCounty;
+import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.framework.util.NVL;
 import com.freshdirect.framework.util.StringUtil;
@@ -131,6 +132,7 @@ public class LocationHandlerTag extends SimpleTagSupport {
 			user.setAddress(address);
 			handleNewAddressSet();
 			user.updateUserState(); //based on DeliveryAddressManipulator.performSetDeliveryAddress()
+			FDCustomerManager.storeUser(user.getUser());
 		}
 	}
 
@@ -221,7 +223,7 @@ public class LocationHandlerTag extends SimpleTagSupport {
 		}
 	}
 	
-	private void doSetServiceTypeAction(){
+	private void doSetServiceTypeAction() throws FDResourceException{
 		if (isServiceTypeModificationEnabled()) {
 			EnumServiceType enumServiceType = null;
 		
@@ -236,6 +238,7 @@ public class LocationHandlerTag extends SimpleTagSupport {
 
 			if (enumServiceType != null && handleNewServiceType(enumServiceType)){
 				user.updateUserState(); //for robustness only
+				FDCustomerManager.storeUser(user.getUser());
 			}
 		}
 	}
