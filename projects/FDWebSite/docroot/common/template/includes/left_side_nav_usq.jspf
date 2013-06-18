@@ -32,6 +32,7 @@
 <%@page import="org.json.JSONArray"%>
 <%@page import="java.util.LinkedHashMap"%>
 <%@page import="java.util.Map"%>
+<%@page import="com.freshdirect.fdstore.content.util.QueryParameter"%>
 
 <fd:Parameters id="params">
 <fd:WineFilter filterId="wineFilter" lastClickedId="lastClicked" queryId="wineQuery">
@@ -173,7 +174,7 @@ if (selected == null || wineFilter.isFiltering()) {
 		clearValues.addAll(domain.getFilterValues());
 	%>
 		<div class="nav-clear-all-link nav-filter-value nav-filter-value-<%=domain.name() %>">
-			<a class="clear-all-link-value" href="/wine/filter.jsp?wineFilterClicked=<%=clearValues.get(0).getEncoded() %>&wineFilter=<%=clearfFilter.getEncoded() %>">Clear</a>
+			<a class="clear-all-link-value" href="/wine/filter.jsp?<%=QueryParameter.WINE_CLEAR_FILTER_CLICKED%>=true&wineFilterClicked=<%=clearValues.get(0).getEncoded() %>&wineFilter=<%=clearfFilter.getEncoded() %>">Clear</a>
 		</div>
 		<div class="nav-list-wrapper nav-list-wrapper-<%=domain.name() %>">		
 	<%		
@@ -229,7 +230,7 @@ if (selected == null || wineFilter.isFiltering()) {
 			ArrayList<WineFilterValue> v = new ArrayList<WineFilterValue>();
 			v.addAll(domain.getFilterValues());
 	%>
-		   <div class="nav-clear-all-link nav-filter-value nav-filter-value-<%=domain.name() %>"><a class="clear-all-link-value" href="/wine/filter.jsp?wineFilterClicked=<%=v.get(0).getEncoded() %>&wineFilter=<%=f.getEncoded() %>">Clear</a></div>
+		   <div class="nav-clear-all-link nav-filter-value nav-filter-value-<%=domain.name() %>"><a class="clear-all-link-value" href="/wine/filter.jsp?<%=QueryParameter.WINE_CLEAR_FILTER_CLICKED%>=true&wineFilterClicked=<%=v.get(0).getEncoded() %>&wineFilter=<%=f.getEncoded() %>">Clear</a></div>
 	<%		
 		}
 		
@@ -322,7 +323,7 @@ if (selected == null || wineFilter.isFiltering()) {
 					ArrayList<WineFilterValue> v = new ArrayList<WineFilterValue>();
 					v.addAll(selectedFilters);						
 %>	
-					<div class="nav-clear-all-link nav-filter-value nav-filter-value-<%=domain.getSubcategoryLabel() %>"><a class="clear-all-link-value" href="/wine/filter.jsp?wineFilterClicked=<%=v.get(0).getEncoded() %>&wineFilter=<%=clearFilter.getEncoded() %>">Clear</a></div>
+					<div class="nav-clear-all-link nav-filter-value nav-filter-value-<%=domain.getSubcategoryLabel() %>"><a class="clear-all-link-value" href="/wine/filter.jsp?<%=QueryParameter.WINE_CLEAR_FILTER_CLICKED%>=true&wineFilterClicked=<%=v.get(0).getEncoded() %>&wineFilter=<%=clearFilter.getEncoded() %>">Clear</a></div>
 					<div class="nav-list-wrapper">
 <%
 					ArrayList<DomainValue> selectedSubValues = new ArrayList<DomainValue>();

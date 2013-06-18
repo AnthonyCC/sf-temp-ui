@@ -5,6 +5,7 @@
 <%@page import="com.freshdirect.webapp.util.ProductImpression"%>
 <%@page import="com.freshdirect.fdstore.content.ProductModel"%>
 <%@page import="com.freshdirect.fdstore.content.util.EnumWinePageSize"%>
+<%@page import="com.freshdirect.fdstore.content.util.QueryParameter"%>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
@@ -23,7 +24,7 @@ final int W_WINE_FILTER_TOTAL = 601;
 <% List<ProductRatingGroup> rawGroups = wineSorter.getResults();
    String trk = trackingQueryTag.getSource() != null ? trackingQueryTag.getSource().getValue() : null; %>
 <!-- header -->
-<fd:CmPageView wrapIntoScriptTag="true" wineFilterValue="<%=wineFilter!=null && wineFilter.isFiltering() ? lastClicked : null%>"/>
+<fd:CmPageView wrapIntoScriptTag="true" wineFilterValue="<%= request.getParameter(QueryParameter.WINE_CLEAR_FILTER_CLICKED)==null && wineFilter!=null && wineFilter.isFiltering() ? lastClicked : null%>"/>
 
 <!-- view chooser -->
 <div class="wine-view-chooser">View: 

@@ -18,6 +18,7 @@ public class QueryParameter implements Serializable {
 	public static final String WINE_VIEW = "wineView";
 	public static final String WINE_PAGE_SIZE = "winePageSize";
 	public static final String WINE_PAGE_NO = "winePageNo";
+	public static final String WINE_CLEAR_FILTER_CLICKED = "wineClearFilterClicked";
 	
 	public static final String GENERIC_FILTER = "genericFilter";
 
