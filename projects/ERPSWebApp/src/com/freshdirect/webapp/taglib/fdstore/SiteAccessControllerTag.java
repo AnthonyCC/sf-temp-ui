@@ -795,6 +795,7 @@ public class SiteAccessControllerTag extends com.freshdirect.framework.webapp.Bo
 		//To fetch and set customer's coupons.
 		if(user != null){
 			FDCustomerCouponUtil.initCustomerCoupons(session);
+			user.setNewUserWelcomePageShown(true); //do not redirect to welcome.jsp 
 		}
 		
         //The previous recommendations of the current session need to be removed.
