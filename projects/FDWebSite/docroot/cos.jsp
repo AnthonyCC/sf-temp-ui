@@ -84,7 +84,7 @@ if (location2Media) { %><comp:location2Media user="<%= user %>" /><% }
 			tab4="HPTab4"
 			bottom="HPFeatureBottom" />
 		<div id="most-popular" class="grid-carousel grid-view">
-			<comp:recommenderCarousel siteFeature="COS_FDF" user="<%= user %>" trkCode="<%= trkCode %>" facility="default" id="cos_carousel" maxItems="24" numItems="6" width="910" />
+			<comp:recommenderCarousel siteFeature="COS_HOME" user="<%= user %>" trkCode="<%= trkCode %>" facility="default" id="cos_carousel" maxItems="24" numItems="6" width="910" />
 		</div>
 		<div id="categories">
 			<logic:iterate collection="<%= dept.getDeptNav() %>" id="cat" type="com.freshdirect.fdstore.content.CategoryModel">
