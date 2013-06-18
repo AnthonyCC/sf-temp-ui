@@ -22,7 +22,7 @@ if (request.getHeader("X-Requested-With") != null) {
 				response.setStatus(400);
 				%><div class="invisible error message" data-type="error"><%
 				for (ActionError error : result.getErrors()){
-					%><span class="erroritem" data-errortype="<%=error.getType()%>"><%=error.getDescription()%></span><%
+					%><div class="error-message"><p><b class="erroritem red" data-errortype="<%=error.getType()%>"><%=error.getDescription()%></b></p></div><%
 				}		
 				%></div><%
 			} else if(!"setZipCode".equals(action) && !"selectAddress".equals(action) ) { // because reload happens
@@ -36,7 +36,7 @@ if (request.getHeader("X-Requested-With") != null) {
 			}			
 		} else {
 			response.setStatus(400);
-			%><div class="invisible error message" data-type="error"><%= serverError  %></span><%
+			%><div class="invisible error message" data-type="error"><div class="error-message"><p><%= serverError  %></p></div></div><%
 		}
 		
 	} catch (Exception exc) {

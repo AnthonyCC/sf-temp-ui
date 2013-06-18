@@ -8,6 +8,7 @@
 	
 	
 	var setAddress = function(zip,address){
+		if(!zip || !address) return;
 		if(address.length) {
 			address='('+address+')';
 		}
@@ -17,7 +18,7 @@
 		window.location.reload();
 	}, errorHandler = function(data){
 		var messages;
-		$(locationMessages).html(data);
+		$(locationMessages).html(data.responseText);
 		messages = $('.message',locationMessages).messages('add');
 		setAddress($('.addresszip',locationMessages).html(),$('.addresstext',locationMessages).html());
 	}, playScripts = function($data){
@@ -34,7 +35,7 @@
 		var text = $('#newziptext').val(),
 			innerHTML;
 		
-		if(!/(^\d{5}$)/.test(text)) {
+		if(!/(^\d{5}$)/.test(text) || parseInt(text,10)===0 ) {
 			$('#unrecognized').clone().html(function(index,oldHTML){
 				return oldHTML.replace('{{zip}}',text);
 			}).messages('add');

@@ -190,7 +190,6 @@
 	font-weight:bold;
 }
 
-#messages .unrecognized,
 #messages .partial {
 	padding-left:55px;
 	background: url(/media_stat/images/locationbar/excl_icon.png) 10px center no-repeat;
@@ -207,7 +206,6 @@
 #messages .nodeliver-form form {
 	float:right;
 	width:200px;
-	height:50px;
 	padding:7px 14px;
 	border-radius:3px;
 	background:#f6f6f6;
@@ -217,7 +215,7 @@
 }
 
 #messages .nodeliver-form {
-	padding-left:310px;
+	padding-left:292px;
 	background:url('/media_stat/images/locationbar/notavailable.png') no-repeat left top;
 	overflow:hidden;
 }

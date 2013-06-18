@@ -1744,6 +1744,10 @@ div.control, div.slotRow, div.time {
         color:#F93;
 	}
 
+	.red {
+        color:#c00;
+	}
+
 	.green {
         color:#360;
 	}

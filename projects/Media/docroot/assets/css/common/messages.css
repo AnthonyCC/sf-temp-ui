@@ -28,10 +28,10 @@
 
 #messages li {
 	margin:6px;
-	line-height:100%;
+	line-height:1.25em;
 	text-align:left;
-	font-family:Arial;
-	font-size:12px;
+	font-family:Verdana,Arial,sans-serif;
+	font-size:11px;
 }
 
 #messages.open ul {
@@ -124,5 +124,54 @@
 /* hide OAS_SystemMessage from the old position */
 #OAS_SystemMessage {
   display: none;
+}
+
+#messages li.error {
+	color:black;
+}
+
+#messages .error-message,
+#messages .warning-message,
+#messages .maint-message {
+	padding-left:45px;
+	min-height: 37px;
+}
+
+#messages .error-message:before,
+#messages .warning-message:before,
+#messages .maint-message:before {
+	display:inline-block;
+	height:100%;
+	min-height:37px;
+	content:'';
+	vertical-align:middle;
+}
+
+#messages .error-message>p,
+#messages .warning-message>p,
+#messages .maint-message>p {
+	display:inline-block;
+	vertical-align:middle;
+	margin:0;
+	padding:0;
+	border:0;
+}
+
+
+#messages .error-message {
+	background: url(/media_stat/images/locationbar/alert_icon_02.png) 10px center no-repeat;
+}
+
+#messages .error-message-text {
+	color:#c00;
+	font-weight:bold;	
+}
+
+#messages .warning-message {
+	background: url(/media_stat/images/locationbar/alert_icon_01.png) 10px center no-repeat;
+}
+
+#messages .maint-message {
+	background: url(/media_stat/images/locationbar/alert_icon_maint.png) 10px center no-repeat;
 }
 
