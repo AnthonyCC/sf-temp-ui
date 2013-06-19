@@ -32,6 +32,14 @@ html,body {
 
 #most-popular {
 	background:url(/media_stat/images/headers/header-most-popular.png) no-repeat top center;
+}
+
+#most-popular .grid-carousel {
+	overflow:hidden;
+	
+}
+
+#carousel-cos_carousel {
 	padding-top:21px;
 }
 
