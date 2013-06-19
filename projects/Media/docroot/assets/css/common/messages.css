@@ -8,6 +8,8 @@
 	background:transparent url(/media_stat/images/locationbar/header_bottom.png) bottom left repeat-x;
 	height:15px;
 	margin:0;
+	border:0;
+	padding:0;
 }
 
 #messages ul {

@@ -28,8 +28,8 @@ Boolean disabled = (Boolean)pageContext.getAttribute(LocationHandlerTag.DISABLED
 		List<ErpAddressModel> allCorporateAddresses = user.getAllCorporateAddresses();
 		List<DlvLocationModel> allPickupDepots = (List<DlvLocationModel>) pageContext.getAttribute(LocationHandlerTag.ALL_PICKUP_DEPOTS_ATTR);
 		
-		if( allHomeAddresses.size() + allCorporateAddresses.size() + allPickupDepots.size() > 1) {
-			%><tmpl:put name="address"><select id="selectAddressList" name="selectAddressList"<%=disabled!=null && disabled?" disabled":""%>><%
+		if( allHomeAddresses.size() + allCorporateAddresses.size() + allPickupDepots.size() > 1 && (disabled == null || !disabled)) {
+			%><tmpl:put name="address"><select id="selectAddressList" name="selectAddressList"><%
 				if(allHomeAddresses.size()>0){%>
 					<optgroup label="Home Delivery">
 						<logic:iterate id="homeAddress" collection="<%=allHomeAddresses%>" type="com.freshdirect.common.address.AddressModel">
