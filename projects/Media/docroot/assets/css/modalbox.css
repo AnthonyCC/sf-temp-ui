@@ -14,7 +14,7 @@
 	margin: auto;
 	top: 0;	left: 0;
 	width: 100%; height: 100%;
-	z-index: 9999;
+	z-index: 10001;
 	border: 0;
 	background-color: #fff!important;
 }
@@ -24,7 +24,7 @@
 	position:absolute;
 	top:0;
 	width:100%;
-	z-index:10000;
+	z-index:10002;
 }
 
 #MB_window {
@@ -35,7 +35,7 @@
 	left:0;
 	border: 0 solid;
 	text-align: left;
-	z-index: 10000;
+	z-index: 10002;
 }
 /*  */
 #MB_window[id] { position: fixed!important; }
