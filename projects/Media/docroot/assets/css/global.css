@@ -724,7 +724,7 @@ div.control, div.slotRow, div.time {
 	}
 
 	.styleRegularWithWas {
-		font-weight: bold;
+		font-weight: normal;
 		color: #C94747;
 	}
 

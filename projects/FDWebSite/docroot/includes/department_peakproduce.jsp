@@ -94,7 +94,7 @@
 					int adjustedImgWidth = displayObj.getImageWidthAsInt()+6+10;
 					String actionUrl = FDURLUtil.getProductURI( pm, "dept" );
 				 %>
-				 <td valign="top" width="<%=adjustedImgWidth%>" align="center" style="padding-left:15px; padding-right:15px;padding-bottom:10px;">
+				 <td valign="top" width="<%=adjustedImgWidth%>" align="center" style="padding-left:5px; padding-right:5px;padding-bottom:10px;">
 					<!-- APPDEV-401 Update product display(deals & burst) -->
 					<display:ProductRating product="<%= pm %>" action="<%= actionUrl %>"/>
 					<display:ProductName product="<%= pm %>" action="<%= actionUrl %>"/>								
