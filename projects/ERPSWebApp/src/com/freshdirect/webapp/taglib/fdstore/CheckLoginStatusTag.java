@@ -150,7 +150,8 @@ public class CheckLoginStatusTag extends com.freshdirect.framework.webapp.TagSup
             }
 
             if (user != null) {
-                LOGGER.debug("user was found!  placing in session");
+                user.setFutureZoneNotificationEmailSentForCurrentAddress(true); //prevent asking for e-mail address in case of returning customer
+            	LOGGER.debug("user was found!  placing in session");
                 session.setAttribute(SessionName.USER, user);
             }
 
