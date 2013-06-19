@@ -218,6 +218,7 @@
 	padding-left:292px;
 	background:url('/media_stat/images/locationbar/notavailable.png') no-repeat left top;
 	overflow:hidden;
+	min-height:39px;
 }
 
 #messages .nodeliver-form form label {
