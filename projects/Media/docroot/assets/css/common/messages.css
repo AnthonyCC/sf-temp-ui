@@ -2,7 +2,7 @@
 	top:100%;
 	width:100%;
 	left:0;
-	position:absolute;
+	position:relative;
 }
 #messages .shadow {
 	background:transparent url(/media_stat/images/locationbar/header_bottom.png) bottom left repeat-x;
