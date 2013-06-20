@@ -53,9 +53,15 @@
   };
 
 	$document.on('messageAdded',function(e){
-		if($(e.target).hasClass('moreinfo')) {
+		var $target = $(e.target); 
+		if($target.hasClass('moreinfo')) {
 			FDModalDialog.close('.partial-delivery-moreinfo .fd-dialog');
-			FDModalDialog.openUrl('/shared/locationbar/more_info.jsp',' ',700,250,'partial-delivery-moreinfo');
+			FDModalDialog.openUrl('/shared/locationbar/more_info.jsp',' ',700,300,'partial-delivery-moreinfo');
+			if($target.hasClass('cos')) {
+				$('.partial-delivery-moreinfo').addClass('cos')
+			} else {
+				$('.partial-delivery-moreinfo').removeClass('cos')
+			}
 		}		
 	});
 	

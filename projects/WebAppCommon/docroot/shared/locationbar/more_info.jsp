@@ -1,11 +1,23 @@
 <!DOCTYPE html>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
+<%@ page import='com.freshdirect.common.address.AddressModel' %>
+<%@ page import="com.freshdirect.webapp.taglib.location.LocationHandlerTag"%>
 <%@ taglib uri='freshdirect' prefix='fd' %>
+<fd:LocationHandler/>
+<%
+AddressModel selectedAddress = (AddressModel)pageContext.getAttribute(LocationHandlerTag.SELECTED_ADDRESS_ATTR);
+FDSessionUser user = (FDSessionUser)session.getAttribute(SessionName.USER);
+%>
 <html>
 	<head>
 		<fd:css href="/assets/css/common/more_info.css" />
 	</head>
-	<body>
+<% if(user.isCorporateUser()){  %>
+	<body class="cos">
+<% } else { %>
+	<body>	
+<% } %>
 		<div id="header">Please enter your street address so that we can make sure your building is in our delivery zone.</div>
 		<form>
 			<fieldset>
@@ -15,13 +27,13 @@
 				<div class="errorlabel" id="city-error"></div> 
 				<label>* State</label><input type="text" id="state" name="state" maxlength="2"><br>
 				<div class="errorlabel" id="state-error"></div> 
-				<label>* Zip/Postal code</label><input type="text" id="zipcode" name="zipcode" maxlength="5">
+				<label>* Zip/Postal code</label><input type="text" id="zipcode" name="zipcode" maxlength="5" value="<%= selectedAddress.getZipCode() %>">
 				<div class="errorlabel" id="zipcode-error" ></div> 
+				<input id="chkaddress" type="image" src="/media_stat/images/locationbar/checkaddress.png">
 			</fieldset>
 			<div class="right">
 				<fieldset>
 					<label>Floor/Suite #</label><input type="text" id="apartment" name="apartment"><br>
-					<input id="chkaddress" type="image" src="/media_stat/images/buttons/check_my_address.gif">
 				</fieldset>
 			</div>
 		</form>

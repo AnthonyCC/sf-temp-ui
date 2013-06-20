@@ -178,6 +178,15 @@
 	width:471px;
 }
 
+.partial-delivery-moreinfo.cos .ui-dialog-title {
+	background-image:url(/media_stat/images/locationbar/more_info_title_cos.png);
+	margin-top:40px;
+}
+
+.partial-delivery-moreinfo.cos .ui-dialog-titlebar {
+	background:url(/media_stat/images/locationbar/more_info_header_cos.png) no-repeat 11px 11px;
+}
+
 .partial-delivery-moreinfo .ui-dialog-titlebar {
 	margin-bottom:0;	
 }
@@ -192,7 +201,7 @@
 
 #messages .partial {
 	padding-left:55px;
-	background: url(/media_stat/images/locationbar/excl_icon.png) 10px center no-repeat;
+	background: url(/media_stat/images/locationbar/alert_icon_01.png) 10px center no-repeat;
 	min-height: 37px;
 }
 

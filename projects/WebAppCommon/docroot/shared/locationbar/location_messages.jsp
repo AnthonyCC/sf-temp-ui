@@ -32,7 +32,7 @@ if (user.getLevel() == FDUserI.GUEST) {
 			%><div id="partialdeliver" class="invisible message" data-type="sitemessage"><% 
 		} else {
 			user.setMoreInfoPopupShownForCurrentAddress(true);
-			%><div id="partialdeliver" class="invisible message moreinfo" data-type="sitemessage"><% 
+			%><div id="partialdeliver" class="invisible message moreinfo <%= user.isCorporateUser() ? "cos" : "" %>" data-type="sitemessage"><% 
 		}
 		%><div class="partial"><span class="orange">We don't currently deliver to all parts of your neighborhood.</span> Please feel free to continue shopping, but note that if your address is not within one of our delivery zones, you will not able to place an order to delivery. <a href="/help/delivery_zones.jsp" class="delivery-popuplink">Click here</a> to see current delivery zones. To enter a different zip code, please enter in the box in the upper left.</div><b style="display:none"><%= ((AddressModel)pageContext.getAttribute(LocationHandlerTag.SELECTED_ADDRESS_ATTR)) %></b></div><%
 	} 
