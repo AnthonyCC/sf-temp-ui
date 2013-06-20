@@ -43,7 +43,7 @@
 #messages .handler {
 	display:none;
 	background:url(/media_stat/images/locationbar/drawer_background_f1.png) 0 0 no-repeat;
-	width:128px;
+	width:150px;
 	height:25px;
 	position:absolute;
 	bottom:-10px;
@@ -91,17 +91,17 @@
 	content:' ';
 	position:absolute;
 	bottom:0;
-	top:0;
+	top:-2px;
 	width:14px;
 }
 
 #messages .open-handler:before,
 #messages .close-handler:before {
-	left:8px;
+	left:10px;
 }
 #messages .open-handler:after,
 #messages .close-handler:after {
-	right:8px;
+	right:10px;
 }
 
 
