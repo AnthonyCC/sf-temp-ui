@@ -4,10 +4,10 @@
 <div id="location-messages" class="invisible"><tmpl:get name="location_message" /></div>
 <div id="unrecognized" class="invisible" data-type="sitemessage">
 	<div class="unrecognized error-message">
-		<div class="error-message-text">
+		<p>
 			<span class="orange">Sorry, we're unable to recognize the ZIP code <b>{{zip}}</b> you entered, please make sure it's entered correctly.</span><br>
 			<span><a href="/help/delivery_zones.jsp" class="delivery-popuplink green">Click here</a> to see current delivery zones. To enter a different zip code, please enter in the box to the upper left.</span>
-		</div>
+		</p>
 	</div>
 </div>
 <fd:javascript src="/assets/javascript/locationbar.js" />
