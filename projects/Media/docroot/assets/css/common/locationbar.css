@@ -153,18 +153,27 @@
 		background-position:top left;
 		vertical-align:middle;
 	}
-	
-	#locationbar .loginButton:hover,
+
+	#locationbar .loginButton,
+	#locationbar .signUpButton {
+		height:20px;
+	}
+
 	#locationbar .logoutButton:hover,
-	#locationbar .signUpButton:hover,
-	#locationbar .loginButton:active,
-	#locationbar .logoutButton:active,
-	#locationbar .signUpButton:active	 {
+	#locationbar .logoutButton:active	 {
 		background-position:0 -22px;
 	}
 	
 
-	#locationbar .buttons label {
+	#locationbar .loginButton:hover,
+	#locationbar .signUpButton:hover,
+	#locationbar .loginButton:active,
+	#locationbar .signUpButton:active	 {
+		background-position:0 -20px;
+	}
+	
+
+#locationbar .buttons label {
 		padding-right:8px;
 		color:#777955;
 		font-size:11px;
