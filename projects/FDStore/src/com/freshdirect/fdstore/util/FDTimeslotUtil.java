@@ -361,7 +361,8 @@ public class FDTimeslotUtil implements Serializable {
 					
 				} //end split ":"
 				if(_tmpDate != null && _tmpMedia != null ) {
-					timeslotSpecialMsgsMap.put(_tmpDate, _tmpMedia);
+					/* date needs to be quoted for going to json */
+					timeslotSpecialMsgsMap.put("'"+_tmpDate+"'", _tmpMedia);
 				}
 			} //end split ";"
 		}

@@ -144,13 +144,14 @@ if (timeslots.size() > 0) {
 	<% } %>
 
 
-	<script>		
-		var tsSpecialMsgs = {'msgs': <%= tsSpecialMsgs.toString().replace("=", ":") %> };
-		<%-- This var should already exist if timeslots.js has been loaded in the page --%>
-		var fdTSDisplayInitializeFuncs = window['fdTSDisplayInitializeFuncs'] || [];
-		<%-- push in a new function call to be executed on timeslots init --%>
-		fdTSDisplayInitializeFuncs.push( function(argsObj) { console.log('this is set in i_delivery_slots.jspf', argsObj.this);} );
+	<script>	
+		var tsSpecialMsgs = {'msgs': <%= timeslots.getTimeslotSpecialMsgsMap().toString().replace("=", ":") %> };
 		
+		<%-- these two lines allow addition of functions executed when timeslots load to be added here (instead of in timeslots.js) --%>
+		<%-- This var should already exist if timeslots.js has been loaded in the page --%>
+		//var fdTSDisplayInitializeFuncs = window['fdTSDisplayInitializeFuncs'] || [];
+		<%-- push in a new function call to be executed on timeslots init --%>
+		//fdTSDisplayInitializeFuncs.push( function(argsObj) { console.log('this is set in i_delivery_slots.jspf', argsObj.this);} );
 		
 		var timeslotChooserFunctions = {};
 		<% if (CrmSession.getCurrentAgent(session) != null || user.getMasqueradeAgent() != null) { 

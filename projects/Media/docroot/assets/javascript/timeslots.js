@@ -15,7 +15,7 @@ function fdTSDisplay(refIdArg) {
 		indexVar: '%%I%%', //idTemplates var
 		timeSlotInfo: false, //global variable setting if on timeslot info page
 		topLevelElemId: 'tsContainer', //top-level HTML elem. effect children under this
-		debug: true, //global debug controller
+		debug: false, //global debug controller
 		cleaner: null, //cleanup function
 		cleanerWaitTime: 2000, //ms to wait after expand before attempting clean
 		timer_StartTime: -1, //timer function holder
@@ -280,9 +280,7 @@ function fdTSDisplay(refIdArg) {
 
 			/* add specialMsgs */
 			try {
-				console.log('before specialmsgs call');
 				this.addTsSpecialMsgsEvents(this.opts.tsSpecialMsgs);
-				console.log('after specialmsgs call');
 			} catch (e) {
 				this.log("\tError in addTsSpecialMsgsEvents!");
 				this.log("---\n"+e.name + ": " + e.message+"\n---");
@@ -315,112 +313,34 @@ function fdTSDisplay(refIdArg) {
 					dateToDayMap[curDayObj.timeMonth+'/'+curDayObj.timeDay+'/'+curDayObj.timeYear] = curDayObj.id;
 				}
 
-				var tsSpecialMsgsObjCopy = { msgs: {} }; //create new data rather than modifying original input
-
-				//add special asterisk use
 				for (var date in tsSpecialMsgsObj.msgs) {
-					var dateToDayMapKey = date.split('_')[0];
-					var dateKey;
+					if (dateToDayMap.hasOwnProperty(date) && Object.size(date) > 0) {
+						for (var s = 0; s <  this.dayObjs[dateToDayMap[date]].TSIds.length; s++) {
+							var curSlotObj = this.slotObjs[this.dayObjs[dateToDayMap[date]].TSIds[s]];
 
-					if (dateToDayMapKey == "*") {
-						for (var day in this.dayObjs) {
-							var curDayObj = this.dayObjs[day];
-							dateKey = curDayObj.timeMonth+'/'+curDayObj.timeDay+'/'+curDayObj.timeYear;
-							if (tsSpecialMsgsObjCopy.msgs.hasOwnProperty(dateKey)) {
-								dateKey += "_"+Math.floor((Math.random()*10000)+1);
-								while( tsSpecialMsgsObjCopy.msgs.hasOwnProperty(dateKey) ) {
-									dateKey+=Math.floor((Math.random()*10000)+1);
+
+							if (!curSlotObj.hasOwnProperty('specialMsgMediaPath') || curSlotObj.specialMsgMediaPath != tsSpecialMsgsObj.msgs[date]) {
+								if (curSlotObj.hasOwnProperty('specialMsgMediaPath') && curSlotObj.specialMsgMediaPath != tsSpecialMsgsObj.msgs[date]) {
+									this.log('addTsSpecialMsgsEvents: Updated special msg on Slot ('+curSlotObj.id+') from: '+curSlotObj.specialMsgMediaPath+' to:'+tsSpecialMsgsObj.msgs[date]);
 								}
-							}
-							tsSpecialMsgsObjCopy.msgs[dateKey] = tsSpecialMsgsObj.msgs[date];
-						}
-					}else{
-						dateKey = date;
-							
-						if (tsSpecialMsgsObjCopy.msgs.hasOwnProperty(dateKey)) {
-							dateKey += "_"+Math.floor((Math.random()*10000)+1);
-							while( tsSpecialMsgsObjCopy.msgs.hasOwnProperty(dateKey) ) {
-								dateKey+=Math.floor((Math.random()*10000)+1);
-							}
-						}
-						tsSpecialMsgsObjCopy.msgs[dateKey] = tsSpecialMsgsObj.msgs[date];
-					}
-
-					//check for hours asterisk
-					if (tsSpecialMsgsObjCopy.msgs[dateKey].hasOwnProperty('*')) {
-						for (var h = 1; h < 25; h++) {
-							tsSpecialMsgsObjCopy.msgs[dateKey][h] = tsSpecialMsgsObjCopy.msgs[dateKey]['*'];
-						}
-						delete(tsSpecialMsgsObjCopy.msgs[dateKey]['*']);
-					}
-
-				}
-
-				for (var date in tsSpecialMsgsObjCopy.msgs) {
-					var dateToDayMapKey = date.split('_')[0];
-					if (dateToDayMap.hasOwnProperty(dateToDayMapKey) && Object.size(dateToDayMapKey) > 0) {
-						//create an hours to slots map
-						var hoursToSlotMap = {};
-						for (var s = 0; s <  this.dayObjs[dateToDayMap[dateToDayMapKey]].TSIds.length; s++) {
-							var curSlotObj = this.slotObjs[this.dayObjs[dateToDayMap[dateToDayMapKey]].TSIds[s]];
-							if (!curSlotObj.hasOwnProperty('timeStart') || !curSlotObj.hasOwnProperty('timeEnd')) { continue; }
-
-							var curHour = null;
-							var tempDateObj = new Date(curSlotObj.timeStart);
-							if (tempDateObj.getMinutes() > 0) { //start is after the hour
-								tempDateObj.setHours(tempDateObj.getHours()+1);
-								tempDateObj.setMinutes(0);
-							}
-
-
-							while (tempDateObj.getTime() <= curSlotObj.timeEnd.getTime()) {
-								curHour = tempDateObj.getHours().toString();
-
-								if (!hoursToSlotMap.hasOwnProperty(curHour)) {
-									hoursToSlotMap[curHour] = [];
+								if (!curSlotObj.hasOwnProperty('specialMsgMediaPath')) {
+									curSlotObj.addCustomEvent({
+										event: 'click', 
+										func: function(argsObj) { 
+											doOverlayDialog(argsObj.slot.specialMsgMediaPath); 
+											if (argsObj.this.opts.debug) {
+												$jq('#uimodal-output').append(argsObj.slot.specialMsgMediaPath);
+											}
+										},
+										params: { 'this': this, 'slot': curSlotObj }
+									});
+									this.log('addTsSpecialMsgsEvents: Added special msg click event to Slot ('+curSlotObj.id+').');
 								}
-								
-								hoursToSlotMap[curHour].push(curSlotObj.id);
-								
-
-								tempDateObj.setHours(tempDateObj.getHours()+1);
+								curSlotObj.specialMsgMediaPath = tsSpecialMsgsObj.msgs[date];
+							} else {
+								this.log('addTsSpecialMsgsEvents: Slot ('+curSlotObj.id+') already has special msg event set, skipping.');
 							}
 
-
-						}
-
-						var hours =  tsSpecialMsgsObjCopy.msgs[date];
-						//matching date being displayed with hours setup
-						for (var hour in hours) {
-							if (hoursToSlotMap.hasOwnProperty(hour)) {
-								var applyToSlots = hoursToSlotMap[hour];
-								for (var h = 0; h < applyToSlots.length; h++) {
-									var curSlotObj = this.slotObjs[applyToSlots[h]];
-
-									if (!curSlotObj.hasOwnProperty('specialMsgMediaPath') || curSlotObj.specialMsgMediaPath != hours[hour]) {
-										if (curSlotObj.hasOwnProperty('specialMsgMediaPath') && curSlotObj.specialMsgMediaPath != hours[hour]) {
-											this.log('addTsSpecialMsgsEvents: Updated special msg on Slot ('+curSlotObj.id+') from: '+curSlotObj.specialMsgMediaPath+' to:'+hours[hour]);
-										}
-										if (!curSlotObj.hasOwnProperty('specialMsgMediaPath')) {
-											curSlotObj.addCustomEvent({
-												event: 'click', 
-												func: function(argsObj) { 
-													doOverlayDialog(argsObj.slot.specialMsgMediaPath); 
-													if (argsObj.this.opts.debug) {
-														$jq('#uimodal-output').append(argsObj.slot.specialMsgMediaPath);
-													}
-												},
-												params: { 'this': this, 'slot': curSlotObj }
-											});
-											this.log('addTsSpecialMsgsEvents: Added special msg click event to Slot ('+curSlotObj.id+').');
-										}
-										curSlotObj.specialMsgMediaPath = hours[hour];
-									} else {
-										this.log('addTsSpecialMsgsEvents: Slot ('+curSlotObj.id+') already has special msg event set, skipping.');
-									}
-
-								}
-							}
 						}
 					}
 				}
@@ -2446,28 +2366,6 @@ function fdTSDisplay(refIdArg) {
 /* initializer array */
 var fdTSDisplayInitializeFuncs = window['fdTSDisplayInitializeFuncs'] || [];
 
-/* initializer test */
-var fdTSDisplayInitializeFuncTest0 = function(argsObj) {
-	console.log('init started', argsObj.this);
-
-	argsObj.this.dayObjs.ts_d0_tsTable.addCustomEvent(
-		{ 
-			event: 'mouseover', 
-			func: function(argsObj) { console.log(this, argsObj, argsObj.test); },	
-			params: {test: 'yep'} 
-		}
-	);
-
-	console.log('init finished');
-};
-
-/* initializer test with error */
-var fdTSDisplayInitializeFuncTest1 = function(argsObj) {
-	throw Error('INTENTIONAL ERR!');
-}
-
-fdTSDisplayInitializeFuncs.push(fdTSDisplayInitializeFuncTest0);
-fdTSDisplayInitializeFuncs.push(fdTSDisplayInitializeFuncTest1);
 
 /* initialize the TS display */
 	document.observe('dom:loaded', function() {
