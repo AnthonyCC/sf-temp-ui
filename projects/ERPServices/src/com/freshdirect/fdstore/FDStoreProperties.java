@@ -447,6 +447,8 @@ public class FDStoreProperties {
 	private static final String PROP_ALCOHOL_TIMESLOT_LABEL = "fdstore.alcohol.ts.label";
 	private static final String PROP_ECOFRIENDLY_TIMESLOT_LABEL = "fdstore.ecofriendly.ts.label";
 	private static final String PROP_BUILDINGFAVS_TIMESLOT_LABEL = "fdstore.buildingfavs.ts.label";
+	//APPDEV-3107 SAP upgrade – customer messaging
+	private static final String PROP_TIMESLOT_MSGING = "fdstore.ts.specialmessaging";
 	
 	private final static String PROP_STANDING_ORDER_REPORT_TO_EMAIL = "fdstore.standingorder.report.email.to";
 	private final static String PROP_STANDING_ORDER_REPORT_EMAIL_SUBJECT = "fdstore.standingorder.report.email.subject";
@@ -1057,6 +1059,8 @@ public class FDStoreProperties {
         defaults.put(PROP_ALCOHOL_TIMESLOT_LABEL, "Alcohol Delivery Restriction");
         defaults.put(PROP_ECOFRIENDLY_TIMESLOT_LABEL, "Eco-Friendly");
         defaults.put(PROP_BUILDINGFAVS_TIMESLOT_LABEL, "Delivery Helper");
+    	//APPDEV-3107 SAP upgrade – customer messaging
+        defaults.put(PROP_TIMESLOT_MSGING, "d=01/01/2000:h=1:m=no_media.html");
 
         defaults.put(PROP_STANDING_ORDER_REPORT_TO_EMAIL,
             "applicationdevelopment@freshdirect.com");
@@ -2628,6 +2632,11 @@ public class FDStoreProperties {
         return get(PROP_BUILDINGFAVS_TIMESLOT_LABEL);
 	}
 
+	//APPDEV-3107 SAP upgrade – customer messaging
+	public static String getTSSpecialMessaging(){
+        return get(PROP_TIMESLOT_MSGING);
+	}
+	
 	public static String getAlcoholRestrictedLabel(){
         return get(PROP_ALCOHOL_TIMESLOT_LABEL);
 	}

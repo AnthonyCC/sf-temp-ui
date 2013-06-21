@@ -1,4 +1,9 @@
 function fdTSDisplay(refIdArg) {
+	//check for required data
+	if (!window.refData && !window.refAdvData) {
+		return {}; //no data, no display
+	}
+
 
 	// refId
 	this.refId = refIdArg;	//STRING
@@ -10,7 +15,7 @@ function fdTSDisplay(refIdArg) {
 		indexVar: '%%I%%', //idTemplates var
 		timeSlotInfo: false, //global variable setting if on timeslot info page
 		topLevelElemId: 'tsContainer', //top-level HTML elem. effect children under this
-		debug: false, //global debug controller
+		debug: true, //global debug controller
 		cleaner: null, //cleanup function
 		cleanerWaitTime: 2000, //ms to wait after expand before attempting clean
 		timer_StartTime: -1, //timer function holder
@@ -51,7 +56,9 @@ function fdTSDisplay(refIdArg) {
 		premSlotsClock: null, //timer interval storage
 		showDpTc: false, //show DP T & C
 		premSlotsDpTcElem: 'premDpTc', //the container for the dp t&c
-		premDcTpAgreed: false //has user agreed to dctp
+		premDcTpAgreed: false, //has user agreed to dctp
+		intializeEventFuncs: this.refId+'InitializeFuncs', //check for, and run if found, function on an initialize (passes fdTSDisplay obj in as argsObj.this)
+		tsSpecialMsgs: {} //special messaging object (taken from window in construct, set in addEvents)
 	};
 
 	this.extendQueue = {};
@@ -234,17 +241,33 @@ function fdTSDisplay(refIdArg) {
 					//lastCO.style.height = this.getCalcdRowHeight(2, null, false, 1);
 				}
 			}
+;
+			if (window['tsSpecialMsgs']) {
+				this.opts.tsSpecialMsgs = window.tsSpecialMsgs;
+			}
 		}
 
 	/* add events to constructed elements */
 		this.addEvents = function() {
-			for (slot in this.slotObjs) {
+			for (var slot in this.slotObjs) {
 				this.addEvent('mouseClicks', slot, 'tsId');
 				if (this.opts.clickOnly) {
 					this.addEvent('mouseOversClickOnly', slot, 'tsId');
 				}
+				
+				/* log change click event */
+				var timeslotId;
+				if (this.slotObjs[slot].radioExt != null) {
+					timeslotId = this.slotObjs[slot].radioExt.value;
+
+					this.slotObjs[slot].addCustomEvent({
+						event: 'click', 
+						func: function(argsObj) { logChange(argsObj.timeslotId); },	
+						params: {'timeslotId': timeslotId}
+					});
+				}
 			}
-			for (day in this.dayObjs) {
+			for (var day in this.dayObjs) {
 				//check extend queue
 				this.checkQueue(day);
 				this.checkQueue(this.dayObjs[day].hC);
@@ -254,10 +277,158 @@ function fdTSDisplay(refIdArg) {
 				this.addEvent('mouseOvers', day, 'dayHeaderC');
 				this.addEvent('mouseClicks', day, 'dayHeaderC');
 			}
+
+			/* add specialMsgs */
+			try {
+				console.log('before specialmsgs call');
+				this.addTsSpecialMsgsEvents(this.opts.tsSpecialMsgs);
+				console.log('after specialmsgs call');
+			} catch (e) {
+				this.log("\tError in addTsSpecialMsgsEvents!");
+				this.log("---\n"+e.name + ": " + e.message+"\n---");
+			}
+
+			/* check for additional initialized events */
+			if (window[this.opts.intializeEventFuncs]) {
+				var intializeEventFuncs = window[this.opts.intializeEventFuncs];
+				this.log('Found intializeEventFuncs Array...')
+					for (var i = 0; i < intializeEventFuncs.length; i++) {
+						this.log("\tRunning intializeEventFuncs["+i+']...');
+						try {
+							intializeEventFuncs[i]({'this': this});
+						} catch (e) {
+							this.log("\tError in intializeEventFuncs["+i+']!');
+							this.log("---\n"+e.name + ": " + e.message+"\n---");
+						}
+					}
+				this.log('...Finished intializeEventFuncs');
+			}
+
+		}
+	/* add special ts event msgs */
+		this.addTsSpecialMsgsEvents = function(tsSpecialMsgsObj) {
+			if (Object.size(tsSpecialMsgsObj) > 0) {
+				//create a mapping for the dates to dayObjs, this is the shortest safe check we can do to start
+				var dateToDayMap = {};
+				for (var day in this.dayObjs) {
+					var curDayObj = this.dayObjs[day];
+					dateToDayMap[curDayObj.timeMonth+'/'+curDayObj.timeDay+'/'+curDayObj.timeYear] = curDayObj.id;
+				}
+
+				var tsSpecialMsgsObjCopy = { msgs: {} }; //create new data rather than modifying original input
+
+				//add special asterisk use
+				for (var date in tsSpecialMsgsObj.msgs) {
+					var dateToDayMapKey = date.split('_')[0];
+					var dateKey;
+
+					if (dateToDayMapKey == "*") {
+						for (var day in this.dayObjs) {
+							var curDayObj = this.dayObjs[day];
+							dateKey = curDayObj.timeMonth+'/'+curDayObj.timeDay+'/'+curDayObj.timeYear;
+							if (tsSpecialMsgsObjCopy.msgs.hasOwnProperty(dateKey)) {
+								dateKey += "_"+Math.floor((Math.random()*10000)+1);
+								while( tsSpecialMsgsObjCopy.msgs.hasOwnProperty(dateKey) ) {
+									dateKey+=Math.floor((Math.random()*10000)+1);
+								}
+							}
+							tsSpecialMsgsObjCopy.msgs[dateKey] = tsSpecialMsgsObj.msgs[date];
+						}
+					}else{
+						dateKey = date;
+							
+						if (tsSpecialMsgsObjCopy.msgs.hasOwnProperty(dateKey)) {
+							dateKey += "_"+Math.floor((Math.random()*10000)+1);
+							while( tsSpecialMsgsObjCopy.msgs.hasOwnProperty(dateKey) ) {
+								dateKey+=Math.floor((Math.random()*10000)+1);
+							}
+						}
+						tsSpecialMsgsObjCopy.msgs[dateKey] = tsSpecialMsgsObj.msgs[date];
+					}
+
+					//check for hours asterisk
+					if (tsSpecialMsgsObjCopy.msgs[dateKey].hasOwnProperty('*')) {
+						for (var h = 1; h < 25; h++) {
+							tsSpecialMsgsObjCopy.msgs[dateKey][h] = tsSpecialMsgsObjCopy.msgs[dateKey]['*'];
+						}
+						delete(tsSpecialMsgsObjCopy.msgs[dateKey]['*']);
+					}
+
+				}
+
+				for (var date in tsSpecialMsgsObjCopy.msgs) {
+					var dateToDayMapKey = date.split('_')[0];
+					if (dateToDayMap.hasOwnProperty(dateToDayMapKey) && Object.size(dateToDayMapKey) > 0) {
+						//create an hours to slots map
+						var hoursToSlotMap = {};
+						for (var s = 0; s <  this.dayObjs[dateToDayMap[dateToDayMapKey]].TSIds.length; s++) {
+							var curSlotObj = this.slotObjs[this.dayObjs[dateToDayMap[dateToDayMapKey]].TSIds[s]];
+							if (!curSlotObj.hasOwnProperty('timeStart') || !curSlotObj.hasOwnProperty('timeEnd')) { continue; }
+
+							var curHour = null;
+							var tempDateObj = new Date(curSlotObj.timeStart);
+							if (tempDateObj.getMinutes() > 0) { //start is after the hour
+								tempDateObj.setHours(tempDateObj.getHours()+1);
+								tempDateObj.setMinutes(0);
+							}
+
+
+							while (tempDateObj.getTime() <= curSlotObj.timeEnd.getTime()) {
+								curHour = tempDateObj.getHours().toString();
+
+								if (!hoursToSlotMap.hasOwnProperty(curHour)) {
+									hoursToSlotMap[curHour] = [];
+								}
+								
+								hoursToSlotMap[curHour].push(curSlotObj.id);
+								
+
+								tempDateObj.setHours(tempDateObj.getHours()+1);
+							}
+
+
+						}
+
+						var hours =  tsSpecialMsgsObjCopy.msgs[date];
+						//matching date being displayed with hours setup
+						for (var hour in hours) {
+							if (hoursToSlotMap.hasOwnProperty(hour)) {
+								var applyToSlots = hoursToSlotMap[hour];
+								for (var h = 0; h < applyToSlots.length; h++) {
+									var curSlotObj = this.slotObjs[applyToSlots[h]];
+
+									if (!curSlotObj.hasOwnProperty('specialMsgMediaPath') || curSlotObj.specialMsgMediaPath != hours[hour]) {
+										if (curSlotObj.hasOwnProperty('specialMsgMediaPath') && curSlotObj.specialMsgMediaPath != hours[hour]) {
+											this.log('addTsSpecialMsgsEvents: Updated special msg on Slot ('+curSlotObj.id+') from: '+curSlotObj.specialMsgMediaPath+' to:'+hours[hour]);
+										}
+										if (!curSlotObj.hasOwnProperty('specialMsgMediaPath')) {
+											curSlotObj.addCustomEvent({
+												event: 'click', 
+												func: function(argsObj) { 
+													doOverlayDialog(argsObj.slot.specialMsgMediaPath); 
+													if (argsObj.this.opts.debug) {
+														$jq('#uimodal-output').append(argsObj.slot.specialMsgMediaPath);
+													}
+												},
+												params: { 'this': this, 'slot': curSlotObj }
+											});
+											this.log('addTsSpecialMsgsEvents: Added special msg click event to Slot ('+curSlotObj.id+').');
+										}
+										curSlotObj.specialMsgMediaPath = hours[hour];
+									} else {
+										this.log('addTsSpecialMsgsEvents: Slot ('+curSlotObj.id+') already has special msg event set, skipping.');
+									}
+
+								}
+							}
+						}
+					}
+				}
+			}
 		}
 	/* remove mouse over expands */
 		this.removeMouseOverExpands = function() {
-			for (day in this.dayObjs) {
+			for (var day in this.dayObjs) {
 				Event.stopObserving(day, 'mouseover');
 				Event.stopObserving(day, 'mouseout');
 				//Event.stopObserving(this.dayObjs[day].hC, 'mouseover');
@@ -266,7 +437,7 @@ function fdTSDisplay(refIdArg) {
 		}
 	/* remove mouse over colors */
 		this.removeMouseOverColors = function() {
-			for (slot in this.slotObjs) {
+			for (var slot in this.slotObjs) {
 				Event.stopObserving(slot, 'mouseover');
 			}
 		}
@@ -363,6 +534,16 @@ function fdTSDisplay(refIdArg) {
 						this.opts.mouseOverSetTimeout = null;
 						this.opts.mouseOverSetTimeout = setTimeout(tsMouseOverFunc, waitTime);
 					}
+				}
+
+				
+				/* custom event call
+				 *	this gets called EVERY day HEADER mousover (collapsed days only)
+				 *	careful, this can be called a bunch of times before a mouseout event
+				 */
+				var dayObj = fdTSDisplay.dayObjs[dayId];
+				if (dayObj.hasOwnProperty('customEvents') && 'mouseover' in dayObj.customEvents) {
+					dayObj.handleCustomEvents({event: 'mouseover'});
 				}
 			}
 		/* day-level mouse out */
@@ -498,6 +679,13 @@ function fdTSDisplay(refIdArg) {
 						}
 
 					}
+
+					/* custom event call
+					 *	this gets called EVERY click/TS change (not just when the slot is first selected)
+					 */
+					if (slotObj.hasOwnProperty('customEvents') && 'click' in slotObj.customEvents) {
+						slotObj.handleCustomEvents({event: 'click'});
+					}
 					
 					fdTSDisplay.log('Click Info After:', fdTSDisplay.opts.radioCheckedCur, fdTSDisplay.opts.radioCheckedLast, fdTSDisplay.opts.radioCheckedLastUndo);
 				}else{
@@ -592,8 +780,12 @@ function fdTSDisplay(refIdArg) {
 	
 	/* set prem.slots bool, and timestamp fetch */
 		this.setShowPremiumSlots = function() {
-			var match =null;
-			if (window.showPremiumSlots) {
+			var match = null;
+			var showPremSlots = window.showPremiumSlots || false;
+
+			this.log('PremSlots: '+showPremSlots);
+
+			if (showPremSlots) {
 				this.opts.showPremiumSlots = showPremiumSlots;
 
 				if (window.premSlotsCO) {
@@ -610,12 +802,16 @@ function fdTSDisplay(refIdArg) {
 							parseInt(match[6], 10), // s
 							0 //ms
 						));
+						
+						this.log('PremSlots Timestamp:'+window.premSlotsCO+' Parsed after:'+this.opts.premSlotsCO);
 					} else {
 						this.opts.premSlotsCO = new Date(premSlotsCO);
+						this.log('PremSlots Timestamp not set, using curDate:'+this.opts.premSlotsCO);
 					}
 				} else {
 					//no timstamp, set to now so it's expired.
 					this.opts.premSlotsCO = new Date().getTime();
+					this.log('PremSlots Timestamp not set, using curDate:'+this.opts.premSlotsCO);
 				}
 			
 				if (showPremiumSlots && match != null && match[1] != new Date().getDay()) {
@@ -625,8 +821,8 @@ function fdTSDisplay(refIdArg) {
 				//clear premSlotsDayId so it can't be referenced
 				this.opts.premSlotsDayId = null;
 			}
+			this.log('PremSlots premSlotsDayId: '+this.opts.premSlotsDayId);
 
-			this.log('Timestamp:'+window.premSlotsCO+' Parsed after:'+this.opts.premSlotsCO);
 		}
 	
 	/* prem slots interval function for timer display */
@@ -672,17 +868,26 @@ function fdTSDisplay(refIdArg) {
 			}
 		}
 
-	/* format timer for display */
-		this.formatTimer = function(timeVal) {
-					//this.log('display timer:'+timeVal)
-			var timeInt = timeVal || 0;
-			var time = '';
+	/* correct Date obj for DLST, do NOT apply this multiple times */
+		this.getCorrectedDateObj = function(timeVal) {
+			
+			var timeInt = parseInt(timeVal) || 0;
+
 			if (timeInt > 0) {
 				//offset already applied to timeVal, put it back
 				//be sure to init the date object here, DLST will affect the calc.
 				timeInt = timeInt + (new Date(timeInt).getTimezoneOffset() * 60 * 1000);
 			}
-			var timeObj = new Date(timeInt);
+
+			var correctedDateObj = new Date(timeInt);
+
+			return correctedDateObj;
+		}
+
+	/* format timer for display */
+		this.formatTimer = function(timeVal) {
+			var time = '';
+			var timeObj = this.getCorrectedDateObj(timeVal);
 
 			var hours = timeObj.getHours();
 				time += (hours < 10) ? '0'+hours : hours;
@@ -712,6 +917,7 @@ function fdTSDisplay(refIdArg) {
 				var dayId = this.rowObjs[rowId].dayIds[d];
 				if (!this.dayObjs[dayId]) { continue; }
 				this.setReorgDataForDay(dayId, this.dayObjs[dayId].dayPart);
+				this.parseDayTimeInfo(this.dayObjs[dayId]);
 			}
 
 		}
@@ -776,6 +982,9 @@ function fdTSDisplay(refIdArg) {
 					}
 				}
 
+				//try parsing content for times
+				this.parseSlotTimeInfo(this.slotObjs[ this.dayObjs[dayIdArg].TSIds[t] ]);
+
 				/* break out if we haven't started a sequence yet
 				 * and don't have enough rows left to be able to span
 				 */
@@ -821,6 +1030,41 @@ function fdTSDisplay(refIdArg) {
 
 			//set to day
 			day.reorgData = reorgData;
+		}
+
+	/* parse displayed content to get start and end hours for a slot */
+		this.parseSlotTimeInfo = function(slotObj) {
+			if (slotObj == null || !slotObj.hasOwnProperty('id') || !this.slotObjs[slotObj.id] || !$(slotObj.id+'_timeInfo')) { return; }
+
+			var timeString = $(slotObj.id+'_timeInfo').getText();
+			var timeStringParse = timeString.split('-');
+			slotObj.timeStart = null;
+			slotObj.timeEnd = null;
+
+
+			if (timeStringParse.length == 2) {
+				slotObj.timeStart = new Date(parseInt(timeStringParse[0]));
+				slotObj.timeEnd = new Date(parseInt(timeStringParse[1]));
+			}
+
+		}
+	/* parse displayed content to get start and end hours for a slot */
+		this.parseDayTimeInfo = function(dayObj) {
+			if (dayObj == null || !dayObj.hasOwnProperty('id') || !this.dayObjs[dayObj.id] || !$(dayObj.id+'_timeInfo')) { return; }
+
+			var timeString = $(dayObj.id+'_timeInfo').getText();
+			dayObj.timeDay = null;
+			dayObj.timeMonth = null;
+			dayObj.timeYear = null;
+
+			var dayDateObj = this.getCorrectedDateObj(timeString);
+
+			if (dayDateObj.getDate() < 10) { dayObj.timeDay = '0'; }
+			if (dayDateObj.getMonth()+1 < 10) { dayObj.timeMonth = '0'; }
+
+			dayObj.timeDay += dayDateObj.getDate();
+			dayObj.timeMonth += dayDateObj.getMonth()+1;
+			dayObj.timeYear = dayDateObj.getFullYear();
 		}
 
 	/* read refData and put values into the correct vars
@@ -1100,7 +1344,7 @@ function fdTSDisplay(refIdArg) {
 					return -1;
 				}
 			}
-		/* parse time number from an id */
+		/* parse timeslot number from an id */
 			this.parseTime = function (elemIdArg) {
 				var elemId = elemIdArg || null;
 
@@ -1231,7 +1475,7 @@ function fdTSDisplay(refIdArg) {
 			this.getRowObjByDayId = function(dayIdArg) {
 				var dayId = dayIdArg || null;
 				if (!dayId) { return -1; }
-				for (row in this.rowObjs) {
+				for (var row in this.rowObjs) {
 					var curRowObj = this.rowObjs[row];
 					for (var d = 0; d < curRowObj.dayIds.length; d++) {
 						if (dayId === curRowObj.dayIds[d]) { return curRowObj; }
@@ -1393,7 +1637,7 @@ function fdTSDisplay(refIdArg) {
 	 */
 		this.extendAllQueued = function(onlyTypeArg) {
 			var onlyType = onlyTypeArg || null;
-			for (qItem in this.extendQueue) {
+			for (var qItem in this.extendQueue) {
 				if (onlyType !== null && onlyType !== this.extendQueue[qItem]) {
 					continue;
 				}
@@ -1407,7 +1651,7 @@ function fdTSDisplay(refIdArg) {
 	 */
 		this.reorganize = function () {
 
-			for (dayId in this.dayObjs) {
+			for (var dayId in this.dayObjs) {
 				//check extend queue
 				this.checkQueue(dayId);
 
@@ -1978,7 +2222,7 @@ function fdTSDisplay(refIdArg) {
 
 			var cleaner = function() {
 				fdTSDisplay.log('Running cleaner...');
-				for (dayId in fdTSDisplay.dayObjs) {
+				for (var dayId in fdTSDisplay.dayObjs) {
 					
 					//check extend queue
 					fdTSDisplay.checkQueue(dayId);
@@ -2022,7 +2266,7 @@ function fdTSDisplay(refIdArg) {
 
 			$(this.opts.premSlotsTimerElem_msg).innerHTML = 'Choose Another Day'; //expanded
 			//loop through ts's and disable radio button (if they exist)
-			for (slotIdIndex in this.dayObjs[this.opts.premSlotsDayId].TSIds) {
+			for (var slotIdIndex in this.dayObjs[this.opts.premSlotsDayId].TSIds) {
 				var slotId = this.dayObjs[this.opts.premSlotsDayId].TSIds[slotIdIndex];
 				if (slotId && this.slotObjs[slotId] && this.slotObjs[slotId].hasOwnProperty('radioExt') && this.slotObjs[slotId].radioExt !== null) {
 					//remove selected color
@@ -2039,6 +2283,27 @@ function fdTSDisplay(refIdArg) {
 	/* --- SETUP --- */
 	
 	this.log('Starting '+this.refId+'...');
+
+	/* add size() to Objects to make life easier */
+	if (!Object.hasOwnProperty('size')) {
+		Object.size = function(obj) {
+			var size = 0, key;
+			for (key in obj) {
+				if (obj.hasOwnProperty(key)) size++;
+			}
+			return size;
+		};
+	}
+
+	/* add plain text method */
+	if (!Element.hasOwnProperty('getText')) {
+		Element.addMethods({
+			getText: function(element) {
+				element = $(element);
+				return element.innerHTML.strip().stripTags().replace(/\n/g,' ').replace(/\s+/g,' ');
+			}
+		});
+	}
 
 	/* detect IE version */
 		this.detectIEVersion();
@@ -2101,6 +2366,9 @@ function fdTSDisplay(refIdArg) {
 		this.showPremium = false; //show prem.slots
 		this.showDpTc = false; //show DP T & C
 		this.lastCO = null; //last cutoff as html elemId
+		this.customEvents = {}; //additional events to be set from outside
+
+		$jq.extend(this, new customTSEvents());
 	}
 
 //timeslot object
@@ -2111,6 +2379,61 @@ function fdTSDisplay(refIdArg) {
 		this.radio = null; //radio
 		this.radioExt = null; //radio extended
 		this.contentId = null; //elemId for reorg content
+		this.customEvents = {}; //additional events to be set from outside
+
+		$jq.extend(this, new customTSEvents());
+	}
+
+//events obj
+/* add this to an object to add event handles:
+ *		$jq.extend(this, new customTSEvents());
+ */
+	function customTSEvents() {
+
+		this.addCustomEvents = function(argsObj) {
+			if ('events' in argsObj) {
+				for (var i=0; i < argsObj.events.length; i++) {
+					this.addCustomEvent(argsObj.events[i]);
+				}
+			}
+		}
+		
+		this.addCustomEvent = function (argsObj) {
+			if ('event' in argsObj && 'func' in argsObj) {
+				var eName = argsObj.event;
+				if (!'customEvents' in this) {
+					this.customEvents = {};
+				}
+				if (!this.customEvents.hasOwnProperty(eName)) {
+					this.customEvents[eName] = {funcs: []};
+				}
+				
+				if (eName in this.customEvents) {
+					var funcCall = argsObj.func;
+					var funcParams =  {'this': this};
+					if ('params' in argsObj) {
+						$jq.extend(funcParams, argsObj.params);
+					}
+					this.customEvents[eName].funcs.push({func: funcCall, params: funcParams});
+				}
+			}
+		}
+
+		this.handleCustomEvents = function (argsObj) {
+			if ('event' in argsObj) {
+				var eName = argsObj.event;
+				if (eName in this.customEvents) {
+					for (var i=0; i < this.customEvents[eName].funcs.length; i++) {
+						var funcCall = this.customEvents[eName].funcs[i].func;
+						var funcParams =  {};
+						if ('params' in $jq.extend(funcParams, this.customEvents[eName].funcs[i].params)) {
+							$jq.extend(funcParams, this.customEvents[eName].funcs[i].params);
+						}
+						funcCall(funcParams);
+					}
+				}
+			}
+		}
 	}
 
 //cutoff object
@@ -2119,17 +2442,45 @@ function fdTSDisplay(refIdArg) {
 		this.ext = null;
 	}
 
+
+/* initializer array */
+var fdTSDisplayInitializeFuncs = window['fdTSDisplayInitializeFuncs'] || [];
+
+/* initializer test */
+var fdTSDisplayInitializeFuncTest0 = function(argsObj) {
+	console.log('init started', argsObj.this);
+
+	argsObj.this.dayObjs.ts_d0_tsTable.addCustomEvent(
+		{ 
+			event: 'mouseover', 
+			func: function(argsObj) { console.log(this, argsObj, argsObj.test); },	
+			params: {test: 'yep'} 
+		}
+	);
+
+	console.log('init finished');
+};
+
+/* initializer test with error */
+var fdTSDisplayInitializeFuncTest1 = function(argsObj) {
+	throw Error('INTENTIONAL ERR!');
+}
+
+fdTSDisplayInitializeFuncs.push(fdTSDisplayInitializeFuncTest0);
+fdTSDisplayInitializeFuncs.push(fdTSDisplayInitializeFuncTest1);
+
 /* initialize the TS display */
 	document.observe('dom:loaded', function() {
-		initializeTS();
+		if (initializeTS()) {
 
-		if (!window.dayIndex) {
-			dayIndex = 0;
+			if (!window.dayIndex) {
+				dayIndex = 0;
+			}
+			if (!window.slotIndex) {
+				slotIndex = 0;
+			}
+			defaultColumnExpandNew(dayIndex, slotIndex);
 		}
-		if (!window.slotIndex) {
-			slotIndex = 0;
-		}
-		defaultColumnExpandNew(dayIndex, slotIndex);
 	});
 
 	function initializeTS(refIdArg) {
@@ -2137,7 +2488,12 @@ function fdTSDisplay(refIdArg) {
 			
 		window[refId] = new fdTSDisplay(refId);
 		
-		return true;
+		if (window[refId].hasOwnProperty('refId')) {
+			return true;
+		}
+
+		window[refId] = null;
+		return false;
 	}
 
 /* expand a day and check the radio */
@@ -2177,5 +2533,12 @@ function fdTSDisplay(refIdArg) {
 			$('displayAdvanceOrderGrid').innerHTML = "Hide Delivery Timeslots";
 		}else{
 			$('displayAdvanceOrderGrid').innerHTML = "Show Delivery Timeslots";
+		}
+	}
+
+/* cm logger*/
+	function logChange(timeSlotId){	
+		if (timeslotChooserFunctions.hasOwnProperty(timeSlotId)) {
+			timeslotChooserFunctions[timeSlotId]();
 		}
 	}

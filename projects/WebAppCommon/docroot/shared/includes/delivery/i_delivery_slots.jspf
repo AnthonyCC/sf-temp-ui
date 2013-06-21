@@ -1,5 +1,6 @@
 <%@page import="com.freshdirect.webapp.taglib.crm.CrmSession"%>
 <%@ page import="java.util.List"%>
+<%@ page import="java.util.Set"%>
 <%@ page import="java.util.Collection"%>
 <%@ page import="java.util.Collections"%>
 <%@ page import="com.freshdirect.delivery.restriction.DlvRestrictionsList"%>
@@ -144,6 +145,38 @@ if (timeslots.size() > 0) {
 
 
 	<script>
+		<%
+			SortedMap tsSpecialMsgs = timeslots.getTimeslotSpecialMsgsMap();
+			System.out.println("=========================");
+			System.out.println("========================="+tsSpecialMsgs.toString().replace("=", ":"));
+			System.out.println("=========================");
+			Set<String> dateKeys = tsSpecialMsgs.keySet();
+			for (String curDate : dateKeys) {
+
+				Map<String, String> curDateMap = (Map)tsSpecialMsgs.get(curDate);
+
+				System.out.println("========================="+curDate+": "+curDateMap.toString().replace("=", ":"));
+				
+				
+				//Set<String> hourKeys = curDateMap.keySet();
+				//for (String curHour : hourKeys) {
+				//	System.out.println("========================="+curDate+", "+curHour+", "+curDateMap.get(curHour));
+				//}
+			}
+		%>
+		var tsSpecialMsgs = {'msgs': <%= tsSpecialMsgs.toString().replace("=", ":") %> };
+		<%-- This var should already exist if timeslots.js has been loaded in the page --%>
+		var fdTSDisplayInitializeFuncs = window['fdTSDisplayInitializeFuncs'] || [];
+		<%-- push in a new function call to be executed on timeslots init --%>
+		fdTSDisplayInitializeFuncs.push( function(argsObj) { console.log('this is set in i_delivery_slots.jspf', argsObj.this);} );
+		
+		
+		var timeslotChooserFunctions = {};
+		<% if (CrmSession.getCurrentAgent(session) != null || user.getMasqueradeAgent() != null) { 
+			/* do nothing */
+		} else { %>
+			<logic:iterate id="slot" indexId="idx" collection="<%= timeslots.getTimeslotsFlat() %>" type="com.freshdirect.fdstore.FDTimeslot">timeslotChooserFunctions['<%= slot.getTimeslotId() %>'] = <fd:CmElement wrapIntoFunction="true" elementCategory="timeslot_chooser" soType="<%= soType %>" timeSlot="<%= slot %>" /></logic:iterate>
+		<% } %>
 		var timeslot_info = <%=isStaticSlot%>;
 		var dayIndex = 0;
 		var slotIndex = -1;
@@ -265,6 +298,7 @@ if (timeslots.size() > 0) {
 				.append("							</tr>\n")
 				.append("						</table>\n")
 				.append("					</div>\n")
+				.append("					<div id=\"ts_d"+dayIndex+"_tsTable_timeInfo\" style=\"display: none;\">"+day.getTime()+"</div>\n")
 				.append("					<table border=\"0\" id=\"ts_d"+dayIndex+"_tsTable\" class=\"tsTable tsTableC\" cellspacing=\"0\" cellpadding=\"0\">\n");
 		
 	int slotIndex = 0;
@@ -289,22 +323,7 @@ if (timeslots.size() > 0) {
 	boolean __isAm = true;
 	
 	//keep in sync with AbstractCmTag.checkContext()
-	if (CrmSession.getCurrentAgent(session) != null || user.getMasqueradeAgent() != null) {
 %>
-function logChange(timeSlotId){}
-<%
-	} else {
-%>
-	var timeslotChooserFunctions = {
-	<logic:iterate id="slot" indexId="idx" collection="<%= timeslots.getTimeslotsFlat() %>" type="com.freshdirect.fdstore.FDTimeslot">
-	 	<%if (idx!=0){%>,<%}%> <%= slot.getTimeslotId() %> : <fd:CmElement wrapIntoFunction="true" elementCategory="timeslot_chooser" soType="<%= soType %>" timeSlot="<%= slot %>" />
-	</logic:iterate>
-	};
-
-function logChange(timeSlotId){	
-	timeslotChooserFunctions[timeSlotId]();	
-}
-<% } %>
 
 <logic:iterate id="slot" collection="<%= timeslots.getTimeslotsForDayAndShift(day,EnumDayShift.DAY_SHIFT_AM.getName()) %>" type="com.freshdirect.fdstore.FDTimeslot">
 <%@ include file="/shared/includes/delivery/i_delivery_slots_cell.jspf"  %>

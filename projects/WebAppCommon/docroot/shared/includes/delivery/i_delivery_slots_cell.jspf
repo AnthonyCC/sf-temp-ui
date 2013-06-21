@@ -124,7 +124,7 @@
 							if (!slot.hasAvailCTCapacity() && !(isSelectedSlotId || isPreReservedSlotId) && isForce) {
 								/* do nothing? */
 							}
-							stringBuffer.append("<input type=\"radio\" onclick=\"logChange('"+slot.getTimeslotId()+"')\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_rb\" name=\"deliveryTimeslotId\"") 
+							stringBuffer.append("<input type=\"radio\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_rb\" name=\"deliveryTimeslotId\"") 
 										.append(
 											( isSelectedSlotId || ("".equals(selectedSlotId) && isPreReservedSlotId && hasPreReserved) ) 
 											? "checked" : ""
@@ -160,6 +160,9 @@
 													? "tsEcoFriendlyTimeC"
 													: "" 
 					)+"\">"+slot.getDisplayString(true)+"</div>\n");
+	
+	/* add hidden ts info */
+	stringBuffer.append("<div id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_timeInfo\" style=\"display: none;\" >"+slot.getBegDateTime().getTime()+"-"+slot.getEndDateTime().getTime()+"</div>");
 
 	/* START Timeslot promotion display */
 	if ((!soldOut||!slot.isUnavailable()) && deliveryModel.isAlcoholDelivery() && slot.isAlcoholRestricted()) {
