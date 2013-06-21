@@ -9,6 +9,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -227,6 +228,10 @@ public class CheckLoginStatusTag extends com.freshdirect.framework.webapp.TagSup
             if ((request.getRequestURI().indexOf("index.jsp") <= -1) &&
                     (request.getParameter("siteAccessPage") == null)) {
                 
+            	if (checkForwardToMobilePage()){
+ 	                return SKIP_BODY;
+            	}
+            	
             	if ((user=useIpLocator(request)) == null){
 
 	            	StringBuffer redirBuf = new StringBuffer();
@@ -273,6 +278,11 @@ public class CheckLoginStatusTag extends com.freshdirect.framework.webapp.TagSup
                 }
             } else {
                 if (request.getParameter("siteAccessPage") == null) { //if user navigates on site access do not redirect
+                	
+                	if (user==null && checkForwardToMobilePage()){
+     	                return SKIP_BODY;
+                	}
+                	
                 	if (user!=null || (user=useIpLocator(request))==null){ //only do IP Sniff if user was null originally, else redirect to login page
 	                	doRedirect(user == null);
 	                    return SKIP_BODY;
@@ -685,7 +695,7 @@ public class CheckLoginStatusTag extends com.freshdirect.framework.webapp.TagSup
         this.ddppPreview = ddppPreview;
     }
     
-    private FDSessionUser useIpLocator(HttpServletRequest request){
+    private FDSessionUser useIpLocator(HttpServletRequest request) throws JspException{
     	FDSessionUser user = null;
     	
     	if (FDStoreProperties.isIpLocatorEnabled()) {
@@ -775,4 +785,35 @@ public class CheckLoginStatusTag extends com.freshdirect.framework.webapp.TagSup
     }
     
 
+    private boolean checkForwardToMobilePage() throws JspException {
+	    	HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
+	    	HttpServletResponse response = (HttpServletResponse) pageContext.getResponse();
+	
+	    	response.addHeader("Pragma", "no-cache"); 
+	    	String noMobile = "FALSE";
+	    	if ( request.getParameter("noMobile") != null ) {
+	    		noMobile = request.getParameter("noMobile");
+	    	}
+	
+	    	String UA = request.getHeader("User-Agent").toLowerCase();
+
+	    	//check for iphone/ipod and change results
+	    	if (FDStoreProperties.isIphoneLandingEnabled() && (UA.indexOf("iphone;")>=0 || UA.indexOf("ipod;")>=0) ||
+	    		FDStoreProperties.isAndroidLandingEnabled() && UA.indexOf("android")>=0 ) {
+
+    			//check that site access isn't returning an error from the POST...
+    			if ("FALSE".equals(noMobile) && "GET".equals(request.getMethod())){
+					try {
+						request.getRequestDispatcher("/mobile/index.jsp").forward(request, response);
+					} catch (ServletException e) {
+						throw new JspException(e);
+					} catch (IOException e) {
+						throw new JspException(e);
+					}
+		            return true;
+    			}
+	    	}
+	    	
+	    	return false;
+    }
 }

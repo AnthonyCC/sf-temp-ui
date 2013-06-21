@@ -7,38 +7,6 @@
 <fd:CheckLoginStatus />
 
 <%
-	response.addHeader("Pragma", "no-cache"); 
-	String noMobile = "FALSE";
-	if ( request.getParameter("noMobile") != null ) {
-		noMobile = request.getParameter("noMobile");
-	}
-
-	String UA = request.getHeader("User-Agent").toLowerCase();
-	if (FDStoreProperties.isIphoneLandingEnabled()) {
-		//check for iphone/ipod and change results
-		if (UA.indexOf("iphone;")>=0 || UA.indexOf("ipod;")>=0) {
-			//check that site access isn't returning an error from the POST...
-			if ("FALSE".equals(noMobile) && "GET".equals(request.getMethod())){
-				noMobile = "TRUE";
-				%>
-				<jsp:forward page="/mobile/index.jsp"/>
-				<%
-			}
-		}
-	}
-	if (FDStoreProperties.isAndroidLandingEnabled()) {
-		//check for iphone/ipod and change results
-		if (UA.indexOf("android")>=0) {
-			//check that site access isn't returning an error from the POST...
-			if ("FALSE".equals(noMobile) && "GET".equals(request.getMethod())){
-				noMobile = "TRUE";
-				%>
-				<jsp:forward page="/mobile/index.jsp"/>
-				<%
-			}
-		}
-	}
-
 	String siteAccessPage = request.getParameter("siteAccessPage"); 
 	String jspTemplate = null;
 	if ( siteAccessPage!=null && (siteAccessPage.equalsIgnoreCase("aboutus") || siteAccessPage.startsWith("c_")) ) {
