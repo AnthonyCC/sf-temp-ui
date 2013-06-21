@@ -1060,7 +1060,7 @@ public class FDStoreProperties {
         defaults.put(PROP_ECOFRIENDLY_TIMESLOT_LABEL, "Eco-Friendly");
         defaults.put(PROP_BUILDINGFAVS_TIMESLOT_LABEL, "Delivery Helper");
     	//APPDEV-3107 SAP upgrade – customer messaging
-        defaults.put(PROP_TIMESLOT_MSGING, "d=01/01/2000:h=1:m=no_media.html");
+        defaults.put(PROP_TIMESLOT_MSGING, "d=01/01/2000:m=no_media.html");
 
         defaults.put(PROP_STANDING_ORDER_REPORT_TO_EMAIL,
             "applicationdevelopment@freshdirect.com");

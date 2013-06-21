@@ -11,7 +11,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
@@ -39,10 +38,10 @@ public class FDTimeslotUtil implements Serializable {
 	private final SortedMap<Date, Map<String, List<FDTimeslot>>> timeslotMap = new TreeMap<Date, Map<String, List<FDTimeslot>>>();
 	private final Set<Date> holidaySet = new HashSet<Date>();
 	
-	//this is date[hours, media path]
-	private final SortedMap<String, Map<String, String>> timeslotSpecialMsgsMap = new TreeMap<String, Map<String, String>>();
+	//this is map of [date --> media path]
+	private final SortedMap<String, String> timeslotSpecialMsgsMap = new TreeMap<String, String>();
 	
-	public SortedMap<String, Map<String, String>> getTimeslotSpecialMsgsMap() {
+	public SortedMap<String, String> getTimeslotSpecialMsgsMap() {
 		return timeslotSpecialMsgsMap;
 	}
 
@@ -340,149 +339,29 @@ public class FDTimeslotUtil implements Serializable {
 	//parse prop and set to timeslotSpecialMsgsMap
 	public void parseSpecialMsgsProp() {
 		String propStr = FDStoreProperties.getTSSpecialMessaging();
-		String dateKeyQuote = "'";
-	    Random randomGenerator = new Random();
-		String dateKey = null;
-		
-		if (propStr !=null && !"".equals(propStr)) {
-			//split in to configs
-			for (String configStr : propStr.split(";")) {
-
-				List<String> tempDates = new ArrayList<String>();
-				List<String> tempHours = new ArrayList<String>();
-				String tempMedia = "";
-				
-				//split in to config sections
-				for (String configSectionStr : configStr.split(":")) {
 					
-					//split in to WHICH section
+		if (propStr !=null && !"".equals(propStr)) {
+			//split in to configs (one of each date)
+			for (String configStr : propStr.split(";")) {
+				//split in to config sections for a specific date
+				String _tmpDate = null;
+				String _tmpMedia = null;
+				
+				for (String configSectionStr : configStr.split(":")) {					
+					//split in to date and media section
 					String[] configSectionKnownStr = configSectionStr.split("=");
 					if (configSectionKnownStr.length == 2) {
-						if ("d".equalsIgnoreCase(configSectionKnownStr[0]) || "h".equalsIgnoreCase(configSectionKnownStr[0]) ) {
-							//dates or hours
-
-							//split in to values
-							for (String configSectionValueStr : configSectionKnownStr[1].split(",")) {
-								
-								String[] configSectionValueRangeStr = configSectionValueStr.split("-"); //split in to a range
-								if (configSectionValueRangeStr.length == 1) { //single value
-									//note that this can be an invalid value, or the wildcard "*". front-end will handle that
-									if ("d".equalsIgnoreCase(configSectionKnownStr[0])) { //date
-
-										dateKey = configSectionValueRangeStr[0];
-										if (timeslotSpecialMsgsMap.containsKey(dateKeyQuote+dateKey+dateKeyQuote)) {
-											dateKey += "_"+randomGenerator.nextInt(10000);
-											while (timeslotSpecialMsgsMap.containsKey((String)dateKeyQuote+dateKey+dateKeyQuote)) {
-												dateKey += randomGenerator.nextInt(10000);
-											}
-										}
-										tempDates.add( dateKeyQuote+dateKey+dateKeyQuote );
-									} else if ("h".equalsIgnoreCase(configSectionKnownStr[0])) { //hour
-										tempHours.add("'"+configSectionValueRangeStr[0]+"'");
-									}
-								} else if (configSectionValueRangeStr.length == 2) { //range
-									Calendar startCal = Calendar.getInstance();
-									Calendar endCal = Calendar.getInstance();
-									
-									if ("d".equalsIgnoreCase(configSectionKnownStr[0])) { //date
-	
-										String dateStart[] = configSectionValueRangeStr[0].split("/");
-										String dateEnd[] = configSectionValueRangeStr[1].split("/");
-										
-										if (dateStart.length == 3 && dateEnd.length == 3) {
-											try {
-												int dateStartM = Integer.parseInt(dateStart[0])-1;
-												int dateStartD = Integer.parseInt(dateStart[1]);
-												int dateStartY = Integer.parseInt(dateStart[2]);
-												int dateEndM = Integer.parseInt(dateEnd[0])-1;
-												int dateEndD = Integer.parseInt(dateEnd[1]);
-												int dateEndY = Integer.parseInt(dateEnd[2]);
-												
-												//add each date in range
-												startCal.set(dateStartY, dateStartM, dateStartD);
-												
-												endCal.set(dateEndY, dateEndM, dateEndD);
-												
-												if (startCal.before(endCal)) {
-													
-													while (startCal.before(endCal)) {
-														String dayLeadZero = "";
-														String monthLeadZero = "";
-														
-														if ( (startCal.get(Calendar.MONTH)+1) < 10) { monthLeadZero = "0"; }
-														if ( startCal.get(Calendar.DATE) < 10) { dayLeadZero = "0"; }
-														
-														dateKey = monthLeadZero+(startCal.get(Calendar.MONTH)+1)+"/"+dayLeadZero+startCal.get(Calendar.DATE)+"/"+startCal.get(Calendar.YEAR);
-														if (timeslotSpecialMsgsMap.containsKey(dateKeyQuote+dateKey+dateKeyQuote)) {
-															dateKey += "_"+randomGenerator.nextInt(10000);
-															while (timeslotSpecialMsgsMap.containsKey(dateKeyQuote+dateKey+dateKeyQuote)) {
-																dateKey += randomGenerator.nextInt(10000);
-															}
-														}
-														tempDates.add( dateKeyQuote+dateKey+dateKeyQuote );
-														startCal.add(Calendar.DATE, 1);
-													}
-													String dayLeadZero = "";
-													String monthLeadZero = "";
-													if ( (endCal.get(Calendar.MONTH)+1) < 10) { monthLeadZero = "0"; }
-													if ( endCal.get(Calendar.DATE) < 10) { dayLeadZero = "0"; }
-													
-													dateKey = monthLeadZero+(endCal.get(Calendar.MONTH)+1)+"/"+dayLeadZero+endCal.get(Calendar.DATE)+"/"+endCal.get(Calendar.YEAR);
-													if (timeslotSpecialMsgsMap.containsKey(dateKeyQuote+dateKey+dateKeyQuote)) {
-														dateKey += "_"+randomGenerator.nextInt(10000);
-														while (timeslotSpecialMsgsMap.containsKey(dateKeyQuote+dateKey+dateKeyQuote)) {
-															dateKey += randomGenerator.nextInt(10000);
-														}
-													}
-													tempDates.add( dateKeyQuote+dateKey+dateKeyQuote );
-												}
-											} catch (NumberFormatException nfe) {
-											
-											}
-											
-										}
-									} else if ("h".equalsIgnoreCase(configSectionKnownStr[0])) { //hour
-										try {
-											int startHour = Integer.parseInt(configSectionValueRangeStr[0]);
-											int endHour = Integer.parseInt(configSectionValueRangeStr[1]);
-											
-
-											startCal.set(Calendar.HOUR_OF_DAY, startHour);
-											endCal.set(Calendar.HOUR_OF_DAY, endHour);
-											
-											if (startCal.before(endCal)) {
-												while (startCal.before(endCal)) {
-													tempHours.add( "'"+Integer.toString(startCal.get(Calendar.HOUR_OF_DAY))+"'" );
-													startCal.add(Calendar.HOUR_OF_DAY, 1);
-												}
-												tempHours.add( "'"+Integer.toString(endCal.get(Calendar.HOUR_OF_DAY))+"'" );
-											}
-											
-										} catch (NumberFormatException nfe) {
-											
-										}
-									}
-								
-								}
-							}
-							
+						if ("d".equalsIgnoreCase(configSectionKnownStr[0])) {
+							_tmpDate = configSectionKnownStr[1];
 						} else if ("m".equalsIgnoreCase(configSectionKnownStr[0])) {
-							//media (can only be one)
-							tempMedia = "'"+configSectionKnownStr[1]+"'";
+							//media
+							_tmpMedia = "'"+configSectionKnownStr[1]+"'";
 						}
 					}
 					
 				} //end split ":"
-				
-				//we have all our values, put them in to the hashmap (if valid)
-				if (!"".equals(tempMedia) && tempHours.size() > 0 && tempDates.size() > 0) {
-					for (String curDate : tempDates) {
-						HashMap<String, String> hoursMedia = new HashMap<String, String>();
-						for (String curHour : tempHours) {
-							hoursMedia.put(curHour, tempMedia);
-						}
-						timeslotSpecialMsgsMap.put(curDate, hoursMedia);
-					}
+				if(_tmpDate != null && _tmpMedia != null ) {
+					timeslotSpecialMsgsMap.put(_tmpDate, _tmpMedia);
 				}
 			} //end split ";"
 		}

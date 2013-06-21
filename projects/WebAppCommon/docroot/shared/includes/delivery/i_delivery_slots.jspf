@@ -144,26 +144,7 @@ if (timeslots.size() > 0) {
 	<% } %>
 
 
-	<script>
-		<%
-			SortedMap tsSpecialMsgs = timeslots.getTimeslotSpecialMsgsMap();
-			System.out.println("=========================");
-			System.out.println("========================="+tsSpecialMsgs.toString().replace("=", ":"));
-			System.out.println("=========================");
-			Set<String> dateKeys = tsSpecialMsgs.keySet();
-			for (String curDate : dateKeys) {
-
-				Map<String, String> curDateMap = (Map)tsSpecialMsgs.get(curDate);
-
-				System.out.println("========================="+curDate+": "+curDateMap.toString().replace("=", ":"));
-				
-				
-				//Set<String> hourKeys = curDateMap.keySet();
-				//for (String curHour : hourKeys) {
-				//	System.out.println("========================="+curDate+", "+curHour+", "+curDateMap.get(curHour));
-				//}
-			}
-		%>
+	<script>		
 		var tsSpecialMsgs = {'msgs': <%= tsSpecialMsgs.toString().replace("=", ":") %> };
 		<%-- This var should already exist if timeslots.js has been loaded in the page --%>
 		var fdTSDisplayInitializeFuncs = window['fdTSDisplayInitializeFuncs'] || [];
