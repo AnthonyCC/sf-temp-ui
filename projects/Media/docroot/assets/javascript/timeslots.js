@@ -57,7 +57,7 @@ function fdTSDisplay(refIdArg) {
 		showDpTc: false, //show DP T & C
 		premSlotsDpTcElem: 'premDpTc', //the container for the dp t&c
 		premDcTpAgreed: false, //has user agreed to dctp
-		intializeEventFuncs: this.refId+'InitializeFuncs', //check for, and run if found, function on an initialize (passes fdTSDisplay obj in as argsObj.this)
+		intializeEventFuncs: this.refId+'InitializeFuncs', //check for, and run if found, function on an initialize (passes fdTSDisplay obj in as argsObj.thisObj)
 		tsSpecialMsgs: {} //special messaging object (taken from window in construct, set in addEvents)
 	};
 
@@ -293,7 +293,7 @@ function fdTSDisplay(refIdArg) {
 					for (var i = 0; i < intializeEventFuncs.length; i++) {
 						this.log("\tRunning intializeEventFuncs["+i+']...');
 						try {
-							intializeEventFuncs[i]({'this': this});
+							intializeEventFuncs[i]({'thisObj': this});
 						} catch (e) {
 							this.log("\tError in intializeEventFuncs["+i+']!');
 							this.log("---\n"+e.name + ": " + e.message+"\n---");
@@ -328,11 +328,11 @@ function fdTSDisplay(refIdArg) {
 										event: 'click', 
 										func: function(argsObj) { 
 											doOverlayDialog(argsObj.slot.specialMsgMediaPath); 
-											if (argsObj.this.opts.debug) {
+											if (argsObj.thisObj.opts.debug) {
 												$jq('#uimodal-output').append(argsObj.slot.specialMsgMediaPath);
 											}
 										},
-										params: { 'this': this, 'slot': curSlotObj }
+										params: { 'thisObj': this, 'slot': curSlotObj }
 									});
 									this.log('addTsSpecialMsgsEvents: Added special msg click event to Slot ('+curSlotObj.id+').');
 								}
@@ -2330,7 +2330,7 @@ function fdTSDisplay(refIdArg) {
 				
 				if (eName in this.customEvents) {
 					var funcCall = argsObj.func;
-					var funcParams =  {'this': this};
+					var funcParams =  {'thisObj': this};
 					if ('params' in argsObj) {
 						$jq.extend(funcParams, argsObj.params);
 					}

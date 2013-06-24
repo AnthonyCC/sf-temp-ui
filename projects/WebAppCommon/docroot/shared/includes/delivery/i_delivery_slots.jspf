@@ -144,8 +144,10 @@ if (timeslots.size() > 0) {
 	<% } %>
 
 
-	<script>	
-		var tsSpecialMsgs = {'msgs': <%= timeslots.getTimeslotSpecialMsgsMap().toString().replace("=", ":") %> };
+	<script>
+		<% if (request.getRequestURI().indexOf("reserve_timeslot.jsp") == -1) { %>
+			var tsSpecialMsgs = {'msgs': <%= timeslots.getTimeslotSpecialMsgsMap().toString().replace("=", ":") %> };
+		<% } %>
 		
 		<%-- these two lines allow addition of functions executed when timeslots load to be added here (instead of in timeslots.js) --%>
 		<%-- This var should already exist if timeslots.js has been loaded in the page --%>
