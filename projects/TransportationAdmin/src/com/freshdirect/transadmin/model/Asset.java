@@ -2,7 +2,10 @@ package com.freshdirect.transadmin.model;
 
 //Generated Dec 5, 2008 2:34:33 PM by Hibernate Tools 3.2.2.GA
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Map;
 import java.util.Set;
 
 import com.freshdirect.transadmin.constants.EnumAssetStatus;
@@ -22,8 +25,10 @@ public class Asset implements java.io.Serializable{
 	private String barcode;
 	
 	private Set assetAttributes = new HashSet(0);
-		
+	private Map<String, String> attibuteMap = new HashMap<String, String>();
+	
 	public Asset() {
+		
 	}
 
 	public Asset(String assetId) {
@@ -115,6 +120,40 @@ public class Asset implements java.io.Serializable{
 
 	public void setBarcode(String barcode) {
 		this.barcode = barcode;
+	}
+	
+	public Map<String, String> getAttibuteMap() {
+
+		if (this.assetAttributes.size() > 0) {
+			Iterator<AssetAttribute> attributeItr = this.assetAttributes.iterator();
+			while (attributeItr.hasNext()) {
+				AssetAttribute _attibute = attributeItr.next();
+				if (_attibute.getId() != null
+						&& !attibuteMap.containsKey(_attibute.getId()
+								.getAttributeType())) {
+					attibuteMap.put(_attibute.getId().getAttributeType(),
+							_attibute.getAttributeValue());
+				}
+			}
+		}
+
+		return attibuteMap;
+	}
+
+	public void setAttibuteMap(Map<String, String> attibuteMap) {
+		this.attibuteMap = attibuteMap;
+	}
+
+	public String getVendor() {
+		return this.getAttibuteMap().get("Vendor - Truck");		
+	}
+	
+	public String getDomicile() {
+		return this.getAttibuteMap().get("Domicile");
+	}
+	
+	public String getBodyLength() {
+		return this.getAttibuteMap().get("Body Length");
 	}
 
 	@Override

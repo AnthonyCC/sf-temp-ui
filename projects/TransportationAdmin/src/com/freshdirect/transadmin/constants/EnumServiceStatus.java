@@ -8,9 +8,9 @@ import org.apache.commons.lang.enums.Enum;
 
 public class EnumServiceStatus  extends Enum {
 	
-	public static final EnumServiceStatus INSERVICE = new EnumServiceStatus("IS","In-Service");
+	public static final EnumServiceStatus ACTIVE = new EnumServiceStatus("ACT","Active");
 
-    public static final EnumServiceStatus OUTSERVICCE = new EnumServiceStatus("OS","Out-Service");
+    public static final EnumServiceStatus OUTSERVICCE = new EnumServiceStatus("OOS","Out of Service");
      
     private final String description;
 

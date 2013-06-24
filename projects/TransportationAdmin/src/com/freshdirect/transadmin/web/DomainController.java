@@ -925,6 +925,7 @@ public class DomainController extends AbstractMultiActionController {
 	 * @param response current HTTP response
 	 * @return a ModelAndView to render the response
 	 */
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public ModelAndView maintenanceLogHandler(HttpServletRequest request, HttpServletResponse response) throws ServletException {
 		
 		ModelAndView mav = new ModelAndView("maintenanceLogView");
@@ -949,14 +950,14 @@ public class DomainController extends AbstractMultiActionController {
 		if(maintenaceRecords != null && maintenaceRecords.size()>0)
 			Collections.sort((List)maintenaceRecords, new MaintenanceIssueComparator());
 		
-		Collection trucksInServiceList = getDomainManagerService().getMaintenanceIssues(EnumServiceStatus.INSERVICE.getDescription());
-		Collection trucksOutOfServiceList = getDomainManagerService().getMaintenanceIssues(EnumServiceStatus.OUTSERVICCE.getDescription());
+		Collection activeTruckList = getDomainManagerService().getMaintenanceIssues(EnumServiceStatus.ACTIVE.getDescription());
+		Collection outOfServiceTruckList = getDomainManagerService().getMaintenanceIssues(EnumServiceStatus.OUTSERVICCE.getDescription());
 		
 		mav.getModel().put("serviceStatus", serviceStatus);
 		mav.getModel().put("issueStatus", issueStatus);
 		
-		request.setAttribute("trucksInService", trucksInServiceList != null ? trucksInServiceList.size() : 0);
-		request.setAttribute("trucksOutOfService", trucksOutOfServiceList != null ? trucksOutOfServiceList.size() : 0);
+		request.setAttribute("activeTruckCnt", activeTruckList != null ? activeTruckList.size() : 0);
+		request.setAttribute("outOfServiceTruckCnt", outOfServiceTruckList != null ? outOfServiceTruckList.size() : 0);
 
 		mav.getModel().put("issueStatuses", EnumIssueStatus.getEnumList());
 		mav.getModel().put("serviceStatuses", EnumServiceStatus.getEnumList());

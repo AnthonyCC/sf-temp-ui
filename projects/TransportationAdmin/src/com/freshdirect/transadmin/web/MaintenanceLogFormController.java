@@ -71,7 +71,7 @@ public class MaintenanceLogFormController extends AbstractFormController {
 		if("true".equalsIgnoreCase(isRefreshReqd)){
 			domainManagerService.refreshCachedData(EnumCachedDataType.TRUCK_DATA);
 		}
-		refData.put("truckAssets",  getAssetManagerService().getAssets("TRUCK", null, null));
+		refData.put("truckAssets",  getAssetManagerService().getActiveAssets("TRUCK"));
 		
 		List drivers = DispatchPlanUtil.getSortedResources(employeeManagerService.getEmployeesByRole(EnumResourceType.DRIVER.getName(), null, null));
 		drivers.addAll(DispatchPlanUtil.getSortedResources(employeeManagerService.getEmployeesByRole(EnumResourceType.MANAGER.getName(), null, null)));
@@ -163,7 +163,7 @@ public class MaintenanceLogFormController extends AbstractFormController {
 								|| EnumIssueStatus.REVERIFIED.getName().equalsIgnoreCase(_command.getIssueStatus()))){
 					_command.setRepairedBy(getUserId(request));
 					_command.setIssueStatus(EnumIssueStatus.RESOLVED.getName());
-					_command.setServiceStatus(EnumServiceStatus.INSERVICE.getDescription());	
+					_command.setServiceStatus(EnumServiceStatus.ACTIVE.getDescription());	
 				}
 				//verify issue
 				if(_command.getVerifiedBy() == null 
@@ -182,7 +182,7 @@ public class MaintenanceLogFormController extends AbstractFormController {
 				
 				//Default attributes set to maintenance issue
 				if(_command.getServiceStatus().equalsIgnoreCase(""))
-					_command.setServiceStatus(EnumServiceStatus.INSERVICE.getDescription());
+					_command.setServiceStatus(EnumServiceStatus.ACTIVE.getDescription());
 				if(_command.getIssueStatus()== null)
 					_command.setIssueStatus(EnumIssueStatus.OPEN.getName());
 				
@@ -192,10 +192,10 @@ public class MaintenanceLogFormController extends AbstractFormController {
 				if(_command.getTruckNumber() != null){
 					Collection asset = getAssetManagerService().getAsset(_command.getTruckNumber(), "TRUCK");
 					if(asset != null){
-						if(EnumServiceStatus.INSERVICE.getDescription().equalsIgnoreCase(_command.getServiceStatus()))
+						if(EnumServiceStatus.ACTIVE.getDescription().equalsIgnoreCase(_command.getServiceStatus()))
 							((Asset)asset.iterator().next()).setAssetStatus(EnumAssetStatus.ACTIVE);
 						else
-							((Asset)asset.iterator().next()).setAssetStatus(EnumAssetStatus.INACTIVE);
+							((Asset)asset.iterator().next()).setAssetStatus(EnumAssetStatus.INCOMING);
 						getAssetManagerService().saveEntity(((Asset)asset.iterator().next()));
 					}
 				}

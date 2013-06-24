@@ -8,8 +8,8 @@ import org.apache.commons.lang.enums.Enum;
 
 public class EnumAssetElectricFleetMetric  extends Enum {
 
-	public static final EnumAssetElectricFleetMetric ELECTRIC_DRIVE = new EnumAssetElectricFleetMetric("EDF", "Electric Drive Flag");
-	public static final EnumAssetElectricFleetMetric ELECTRIC_REEFER = new EnumAssetElectricFleetMetric("ERF", "Electric Reefer Flag");
+	public static final EnumAssetElectricFleetMetric CHASSIS_ENGINE_TYPE = new EnumAssetElectricFleetMetric("EDF", "Chassis Engine Type");
+	public static final EnumAssetElectricFleetMetric REEFER_TYPE = new EnumAssetElectricFleetMetric("ERF", "Reefer Type");
 	  
 	  private final String desc;
 	  

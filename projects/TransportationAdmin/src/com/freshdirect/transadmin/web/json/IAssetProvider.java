@@ -20,7 +20,6 @@ public interface IAssetProvider {
 	
 	boolean addAssetAttributeType(String attributeCode
 			, String attributeDesc
-			, String attribueDataType
 			, String assetTypeCode);
 	
 	Asset getAsset(String assetId);

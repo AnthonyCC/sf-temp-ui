@@ -96,7 +96,11 @@ public class AssetManagerImpl
 
 	public Collection getAssetAttributeTypes(String attributeCode, String assetType){
 		return getAssetManagerDao().getAssetAttributeTypes(attributeCode,assetType);
-	}	
+	}
+	
+	public Collection getAssetAttributeTypes(String assetType){
+		return getAssetManagerDao().getAssetAttributeTypes(assetType);
+	}
 	
 	public Asset getAssetByAssetNumber(String assetNo){
 		return getAssetManagerDao().getAssetByAssetNumber(assetNo);

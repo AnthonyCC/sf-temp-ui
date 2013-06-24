@@ -17,8 +17,8 @@
 		pageTitle = "Maintenance Record";
 	}
 
-	int trucksInService =(Integer)request.getAttribute("trucksInService");
-	int trucksOutOfService = (Integer)request.getAttribute("trucksOutOfService");
+	int activeTruckCnt =(Integer)request.getAttribute("activeTruckCnt");
+	int outOfServiceTruckCnt = (Integer)request.getAttribute("outOfServiceTruckCnt");
 
 %>
 
@@ -112,8 +112,8 @@
 					</div>
 					&nbsp;&nbsp;&nbsp;
 					<div style="float:left;"><br/>&nbsp;
-						<span class="orphanScenario">In-Service: <%= trucksInService %></span>
-						<span class="defaultScenario">Out-of-Service: <%= trucksOutOfService %></span>
+						<span class="orphanScenario">Active: <%= activeTruckCnt %></span>
+						<span class="defaultScenario">Out-Service: <%= outOfServiceTruckCnt %></span>
 					</div>
 					&nbsp;&nbsp;&nbsp;
 					<div style="float:right;"><br/>

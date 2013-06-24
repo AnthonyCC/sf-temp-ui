@@ -239,7 +239,7 @@ public class MaintenanceIssue extends BaseCommand {
 	}
 	
 	public boolean isTruckInService() {
-		if(EnumServiceStatus.INSERVICE.getDescription().equalsIgnoreCase(this.serviceStatus))
+		if(EnumServiceStatus.ACTIVE.getDescription().equalsIgnoreCase(this.serviceStatus))
 			return true;
 		else
 			return false;

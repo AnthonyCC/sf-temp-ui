@@ -34,6 +34,8 @@ public interface AssetManagerI extends BaseManagerI {
 	AssetType getAssetType(String assetType);
 
 	Collection getAssetAttributeTypes(String attributeCode, String assetType);
+	
+	Collection getAssetAttributeTypes(String assetType);
 
 	Asset getAssetByAssetNumber(String assetNo);
 

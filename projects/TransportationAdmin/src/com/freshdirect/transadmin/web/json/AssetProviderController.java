@@ -188,7 +188,7 @@ public class AssetProviderController extends BaseJsonRpcController  implements I
 	}
 	
 	@SuppressWarnings("unchecked")
-	public boolean addAssetAttributeType(String assetType, String attributeCode, String attributeDesc, String attribueDataType){
+	public boolean addAssetAttributeType(String assetType, String attributeCode, String attributeDesc){
 		
 		try{			
 			AssetAttributeType attributeType = new AssetAttributeType();
@@ -196,7 +196,6 @@ public class AssetProviderController extends BaseJsonRpcController  implements I
 			id.setCode(attributeCode);
 			id.setAssetType(assetType);
 			attributeType.setDescription(attributeDesc);
-			attributeType.setDataType(attribueDataType);
 			attributeType.setId(id);
 			
 			Collection assetAttributeTypes = getAssetManagerService().getAssetAttributeTypes(attributeCode, assetType);

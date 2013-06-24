@@ -7,6 +7,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
@@ -862,5 +864,11 @@ public class TransStringUtil {
 	        loopDelim = delim;
 	    }
 	    return sb.toString();
+	}
+	
+	public static <T extends Comparable<? super T>> List<T> asSortedList(Collection<T> c) {
+		List<T> list = new ArrayList<T>(c);
+		Collections.sort(list);
+		return list;
 	}
  }

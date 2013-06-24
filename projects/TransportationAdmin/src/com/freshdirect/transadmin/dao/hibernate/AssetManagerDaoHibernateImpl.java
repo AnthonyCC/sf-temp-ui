@@ -142,6 +142,13 @@ public class AssetManagerDaoHibernateImpl
 		return (Collection) getDataList(strBuf.toString());		
 	}
 	
+public Collection getAssetAttributeTypes(String assetType) throws DataAccessException {
+		
+		StringBuffer strBuf = new StringBuffer();
+		strBuf.append("AssetAttributeType a where a.id.assetType='"+assetType+"'");
+		return (Collection) getDataList(strBuf.toString());		
+	}
+	
 	public Collection getScannedAssets(Date deliveryDate) throws DataAccessException {
 		StringBuffer strBuf = new StringBuffer();
 		strBuf.append("from AssetActivity where deliveryDate = ? ");

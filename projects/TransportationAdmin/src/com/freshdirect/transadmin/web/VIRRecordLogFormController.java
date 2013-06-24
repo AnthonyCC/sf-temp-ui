@@ -62,7 +62,7 @@ public class VIRRecordLogFormController extends AbstractFormController {
 		if("true".equalsIgnoreCase(isRefreshReqd)){
 			domainManagerService.refreshCachedData(EnumCachedDataType.TRUCK_DATA);
 		}
-		refData.put("truckAssets",  getAssetManagerService().getAssets("TRUCK", null, null));
+		refData.put("truckAssets",  getAssetManagerService().getActiveAssets("TRUCK"));
 		
 		List drivers = DispatchPlanUtil.getSortedResources(employeeManagerService.getEmployeesByRole(EnumResourceType.DRIVER.getName(), null, null));
 		drivers.addAll(DispatchPlanUtil.getSortedResources(employeeManagerService.getEmployeesByRole(EnumResourceType.MANAGER.getName(), null, null)));

@@ -76,7 +76,8 @@
 	                   <div style="float:left;font-size:11px;"><br/>
 						&nbsp;&nbsp;<input id="attribute_button" type="button" value="Attribute Type" onclick="javascript:showAssetAttributeForm();" />
 						&nbsp;<input id="assettype_button" type="button" value="Asset Type" onclick="javascript:showAssetTypeForm();" />
-						&nbsp;<input id="assetscanbutton" type="button" value="Scan Asset" onclick="javascript:showAssetScanForm();" />						
+						&nbsp;<input id="assetscanbutton" type="button" value="Scan Asset" onclick="javascript:showAssetScanForm();" />
+						&nbsp;<input id="exportassetbtn" type="button" value="Export Asset" onclick="javascript:exportAssetData();" />						
 						</div>
 	               </div>
 			</div>
@@ -90,22 +91,20 @@
 							imagePath="${pageContext.request.contextPath}/images/table/*.gif"   title=""
 							width="99%"  view="fd" form="assetForm" autoIncludeParameters="false" rowsDisplayed="25"  >
 							
-							<ec:exportPdf fileName="assets.pdf" tooltip="Export PDF" 
-									  headerTitle="Transportation Assets" />
-							  <ec:exportXls fileName="assets.xls" tooltip="Export PDF" />
-							  <ec:exportCsv fileName="assets.csv" tooltip="Export CSV" delimiter="|"/>
+							<ec:exportPdf fileName="assets.pdf" tooltip="Export PDF" headerTitle="Transportation Assets" />
+							<ec:exportXls fileName="assets.xls" tooltip="Export XLS" />
+							<ec:exportCsv fileName="assets.csv" tooltip="Export CSV" delimiter="|"/>
 								
 							<ec:row interceptor="obsoletemarker">
-							  <ec:column title=" " width="5px" 
-									filterable="false" sortable="false" cell="selectcol"
-									property="assetId" />
-							           
+							  <ec:column title=" " width="5px" filterable="false" sortable="false" cell="selectcol" property="assetId" />							           
 							  <ec:column property="assetNo" title="Asset No"/>
 							  <ec:column property="assetDescription" title="Description"/>
-							  <ec:column property="barcode" title="Barcode"/>		
-							  <ec:column property="assetType.code" title="Asset Type"/>
+							  <ec:column property="barcode" title="Barcode"/>
 							  <ec:column property="assetStatus.description" title="Status" />
-							  <ec:column property="assetTemplate.assetTemplateName" title="Asset Template" />
+							  <ec:column property="domicile" title="Domicile"/>
+							  <ec:column property="vendor" title="Vendor"/>
+							  <ec:column property="bodyLength" title="Body Length" />
+							  <ec:column filterable="false" property="assetAttributes" cell="assetattributes" title=" " />
 							</ec:row>
 						  </ec:table>
 					   </form> 
@@ -192,6 +191,18 @@
 				    	alert('Please Select a Row!');
 				    }
 		    }
+			
+			function exportAssetData() {			
+				   var assetType = document.getElementById("assetType").value;
+				   if(assetType == ''){
+						alert('Please select asset type to export.');
+				   }else{
+					   var confirmed = confirm ("You are about to export asset data for "+assetType);
+					   if(confirmed){
+				   			location.href = "asset.do?export=y&assetType="+assetType;
+				   	   }
+				   }
+			   }
 		</script>
 		<%@ include file="i_addassetattribute.jspf"%>
 		<%@ include file="i_addassettype.jspf"%>

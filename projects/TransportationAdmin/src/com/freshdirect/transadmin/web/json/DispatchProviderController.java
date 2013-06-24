@@ -899,7 +899,7 @@ public class DispatchProviderController extends JsonRpcController implements IDi
 			issue = domainManagerService.getMaintenanceIssue(id);
 			if(issue != null){
 				issue.setIssueStatus(EnumIssueStatus.REJECTED.getName());
-				issue.setServiceStatus(EnumServiceStatus.INSERVICE.getDescription());
+				issue.setServiceStatus(EnumServiceStatus.ACTIVE.getDescription());
 				issue.setVerifiedBy(userId);
 				domainManagerService.saveEntity(issue);
 				return true;
@@ -921,7 +921,7 @@ public class DispatchProviderController extends JsonRpcController implements IDi
 					Iterator<AssetAttribute> itr = assetAttributes.iterator();
 					while(itr.hasNext()){
 						AssetAttribute attribute = itr.next();
-						if("Vendor".equalsIgnoreCase(attribute.getId().getAttributeType())){
+						if("Vendor - Truck".equalsIgnoreCase(attribute.getId().getAttributeType())){
 							vendorName = attribute.getAttributeValue();
 							break;
 						}						
@@ -1018,10 +1018,10 @@ public class DispatchProviderController extends JsonRpcController implements IDi
 					Iterator<AssetAttribute> itr = assetAttributes.iterator();
 					while (itr.hasNext()) {
 						AssetAttribute attribute = itr.next();
-						if (EnumAssetElectricFleetMetric.ELECTRIC_DRIVE.getDesc().equalsIgnoreCase(attribute.getId().getAttributeType())) {
-							electricFleetMapping.put(EnumAssetElectricFleetMetric.ELECTRIC_DRIVE.getName(), attribute.getAttributeValue());
-						} else if (EnumAssetElectricFleetMetric.ELECTRIC_REEFER.getDesc().equalsIgnoreCase(attribute.getId().getAttributeType())) {
-							electricFleetMapping.put(EnumAssetElectricFleetMetric.ELECTRIC_REEFER.getName(), attribute.getAttributeValue());
+						if (EnumAssetElectricFleetMetric.CHASSIS_ENGINE_TYPE.getDesc().equalsIgnoreCase(attribute.getId().getAttributeType())) {
+							electricFleetMapping.put(EnumAssetElectricFleetMetric.CHASSIS_ENGINE_TYPE.getName(), attribute.getAttributeValue());
+						} else if (EnumAssetElectricFleetMetric.REEFER_TYPE.getDesc().equalsIgnoreCase(attribute.getId().getAttributeType())) {
+							electricFleetMapping.put(EnumAssetElectricFleetMetric.REEFER_TYPE.getName(), attribute.getAttributeValue());
 						}
 					}
 				}
@@ -1044,5 +1044,6 @@ public class DispatchProviderController extends JsonRpcController implements IDi
 		}
 		return regionFacilityId;
 	}
+	
 
 }

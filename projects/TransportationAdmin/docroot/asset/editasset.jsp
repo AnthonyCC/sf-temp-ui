@@ -103,7 +103,7 @@
 												</td>
 											</tr>
 
-											<tr>
+											<%-- <tr>
 												<td>Asset Template</td>
 												<td><form:select path="assetTemplate">
 														<form:option value="null" label="--Please Select Template" />
@@ -112,7 +112,7 @@
 													</form:select></td>
 												<td>&nbsp;<form:errors path="assetTemplate" />
 												</td>
-											</tr>
+											</tr> --%>
 											<tr>
 												<td colspan="3" align="center">&nbsp;</td>
 											</tr>											
@@ -369,7 +369,7 @@
 	     													, document.getElementById('assetNo').value
 	     													, document.getElementById('assetDescription').value
 	     													, document.getElementById('assetStatus').value
-															, document.getElementById('assetTemplate').value															
+															, null															
 	     	     	 										, _data
 	     	     	 										, document.getElementById('barcode').value);
 	     	 	document.getElementById('assetId').value = result;

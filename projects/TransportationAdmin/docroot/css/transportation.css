@@ -1277,11 +1277,11 @@ div.eXor_Active, div.eXor_AdHoc { margin-left: 10px; width: 98%; }
 
 .employee_on 
 {
-	background-color: #009933;
+	background-color: #009933; /* green */
 }
 .employee_off 
 {
-	background-color: #FF0000;
+	background-color: #FF0000; /* red */
 }
 .employee_no 
 {
@@ -1289,7 +1289,7 @@ div.eXor_Active, div.eXor_AdHoc { margin-left: 10px; width: 98%; }
 }
 .employee_out 
 {
-	background-color: #308dbb;
+	background-color: #308dbb; /* blue */
 }
 
 .timeslot_closed, .dynamic_disabled {

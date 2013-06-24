@@ -15,8 +15,5 @@
         <property name="description" type="string">
             <column name="DESCRIPTION" length="40" />
         </property>
-        <property name="dataType" type="string">
-            <column name="DATA_TYPE" length="16" />
-        </property>
      </class>
 </hibernate-mapping>
