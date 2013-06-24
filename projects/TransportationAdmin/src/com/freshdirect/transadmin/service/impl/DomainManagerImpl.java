@@ -995,7 +995,7 @@ public class DomainManagerImpl
 								_mIssue.setIssueSide(_issueLog.getIssueSide());
 								_mIssue.setModifiedDate(new Timestamp(System.currentTimeMillis()));
 								_mIssue.setVendor(virRecord.getVendor());
-								_mIssue.setServiceStatus(EnumServiceStatus.INSERVICE.getDescription());
+								_mIssue.setServiceStatus(EnumServiceStatus.ACTIVE.getDescription());
 								_mIssue.setIssueStatus(EnumIssueStatus.OPEN.getName());
 								//Create new maintenance log
 								domainManagerDao.saveMaintenanceIssue(_mIssue);								
