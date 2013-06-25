@@ -119,5 +119,7 @@ update transp.asset_attribute set attribute_type='Reefer Unit#' where attribute_
 update transp.asset set asset_status = 'INC' where asset_status='IAC';
 
 update transp.maintenanceissue set servicestatus = 'Active' where servicestatus = 'In-Service';
+update transp.maintenanceissue set servicestatus = 'Out of Service' where servicestatus = 'Out-Service';
 
+ALTER TABLE TRANSP.MAINTENANCEISSUE  MODIFY  servicestatus DEFAULT 'Active';
 alter table TRANSP.ASSET_ATTRIBUTETYPE drop column data_type;

@@ -1,5 +1,6 @@
 
 alter table TRANSP.ASSET_ATTRIBUTETYPE add (DATA_TYPE VARCHAR2(40 BYTE) NOT NULL);
+ALTER TABLE TRANSP.MAINTENANCEISSUE  MODIFY  servicestatus DEFAULT 'In-Service';
 
 update transp.asset set asset_status = 'IAC' where asset_status='INC';
 
@@ -192,3 +193,5 @@ update transp.asset_attribute set attribute_type='Electric Drive Flag' where att
 update transp.asset_attribute set attribute_type='Electric Reefer Flag' where attribute_type='Reefer Type';
 update transp.asset_attribute set attribute_type='Reefer UnitNumber' where attribute_type='Reefer Unit#';
 update transp.asset_attribute set attribute_type='Vendor Number #' where attribute_type='Vendor Number#';
+
+update transp.maintenanceissue set servicestatus = 'Out-Service' where servicestatus = 'Out of Service';
