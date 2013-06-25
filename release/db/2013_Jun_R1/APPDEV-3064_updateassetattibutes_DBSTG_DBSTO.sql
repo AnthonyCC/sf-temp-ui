@@ -112,9 +112,11 @@ update transp.asset_attributetype set code='Chassis Engine Type' where code='Ele
 update transp.asset_attributetype set code='Reefer Type' where code='Electric Reefer Flag';
 update transp.asset_attribute set attribute_type='Chassis Engine Type' where attribute_type='Electric Drive Flag';
 update transp.asset_attribute set attribute_type='Reefer Type' where attribute_type='Electric Reefer Flag';
+update transp.asset_attributetype set code='Reefer Unit#' where code='Reefer UnitNumber';
+update transp.asset_attribute set attribute_type='Reefer Unit#' where attribute_type='Reefer UnitNumber';
 
 update transp.asset set asset_status = 'INC' where asset_status='IAC';
 
-update transp.maintenanceissue service_status = 'Active' where service_status = 'In-Service';
+update transp.maintenanceissue set servicestatus = 'Active' where servicestatus = 'In-Service';
 
 alter table TRANSP.ASSET_ATTRIBUTETYPE drop column data_type;
