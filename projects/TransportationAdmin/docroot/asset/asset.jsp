@@ -104,7 +104,6 @@
 							  <ec:column property="domicile" title="Domicile"/>
 							  <ec:column property="vendor" title="Vendor"/>
 							  <ec:column property="bodyLength" title="Body Length" />
-							  <ec:column filterable="false" property="assetAttributes" cell="assetattributes" title=" " />
 							</ec:row>
 						  </ec:table>
 					   </form> 
