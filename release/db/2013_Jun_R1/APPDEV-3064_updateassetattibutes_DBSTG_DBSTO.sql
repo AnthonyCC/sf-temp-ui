@@ -38,7 +38,8 @@ delete from TRANSP.ASSET_ATTRIBUTE where attribute_type in
 'Cost',
 'Included Mileage',
 'INSURANCE COMPANY',
-'Reefer Type'
+'Reefer Type',
+'Reefer InService Date'
 );
 
 delete from TRANSP.ASSET_ATTRIBUTETYPE where code in (
@@ -79,40 +80,40 @@ delete from TRANSP.ASSET_ATTRIBUTETYPE where code in (
 'Cost',
 'Included Mileage',
 'INSURANCE COMPANY',
-'Reefer Type'
+'Reefer Type',
+'Reefer InService Date'
 );
 
 insert into TRANSP.ASSET_ATTRIBUTETYPE (CODE, DESCRIPTION, ASSET_TYPE) Values ('Reefer Model', 'Reefer Model', 'TRUCK');    
 insert into TRANSP.ASSET_ATTRIBUTETYPE (CODE, DESCRIPTION, ASSET_TYPE) Values ('Date in Service', 'Date in Service', 'TRUCK');
 insert into TRANSP.ASSET_ATTRIBUTETYPE (CODE, DESCRIPTION, ASSET_TYPE) Values ('GVW', 'GVW', 'TRUCK');
-insert into TRANSP.ASSET_ATTRIBUTETYPE (CODE, DESCRIPTION, ASSET_TYPE) Values ('Lease or Rental', 'Lease or Rental', 'TRUCK');
 insert into TRANSP.ASSET_ATTRIBUTETYPE (CODE, DESCRIPTION, ASSET_TYPE) Values ('License Plate (Current)', 'License Plate (Current)', 'TRUCK');
 insert into TRANSP.ASSET_ATTRIBUTETYPE (CODE, DESCRIPTION, ASSET_TYPE) Values ('Monthly Lease Cost', 'Monthly Lease Cost', 'TRUCK');
-insert into TRANSP.ASSET_ATTRIBUTETYPE (CODE, DESCRIPTION, ASSET_TYPE) Values ('Single or Dual Temp', 'Single or Dual Temp', 'TRUCK');
-insert into TRANSP.ASSET_ATTRIBUTETYPE (CODE, DESCRIPTION, ASSET_TYPE) Values ('Model', 'Model', 'TRUCK');
-insert into TRANSP.ASSET_ATTRIBUTETYPE (CODE, DESCRIPTION, ASSET_TYPE) Values ('Year', 'Year', 'TRUCK');
+insert into TRANSP.ASSET_ATTRIBUTETYPE (CODE, DESCRIPTION, ASSET_TYPE) Values ('ChassisModel', 'Model', 'TRUCK');
+insert into TRANSP.ASSET_ATTRIBUTETYPE (CODE, DESCRIPTION, ASSET_TYPE) Values ('Chassis Year', 'Year', 'TRUCK');
 
 insert into TRANSP.ASSET_ATTRIBUTETYPE (CODE, DESCRIPTION, ASSET_TYPE) Values ('Reefer Model', 'Reefer Model', 'TRAILER');    
 insert into TRANSP.ASSET_ATTRIBUTETYPE (CODE, DESCRIPTION, ASSET_TYPE) Values ('Date in Service', 'Date in Service', 'TRAILER');
 insert into TRANSP.ASSET_ATTRIBUTETYPE (CODE, DESCRIPTION, ASSET_TYPE) Values ('GVW', 'GVW', 'TRAILER');
-insert into TRANSP.ASSET_ATTRIBUTETYPE (CODE, DESCRIPTION, ASSET_TYPE) Values ('Lease or Rental', 'Lease or Rental', 'TRAILER');
 insert into TRANSP.ASSET_ATTRIBUTETYPE (CODE, DESCRIPTION, ASSET_TYPE) Values ('License Plate (Current)', 'License Plate (Current)', 'TRAILER');
 insert into TRANSP.ASSET_ATTRIBUTETYPE (CODE, DESCRIPTION, ASSET_TYPE) Values ('Monthly Lease Cost', 'Monthly Lease Cost', 'TRAILER');
-insert into TRANSP.ASSET_ATTRIBUTETYPE (CODE, DESCRIPTION, ASSET_TYPE) Values ('Single or Dual Temp', 'Single or Dual Temp', 'TRAILER');
-insert into TRANSP.ASSET_ATTRIBUTETYPE (CODE, DESCRIPTION, ASSET_TYPE) Values ('Model', 'Model', 'TRAILER');
-insert into TRANSP.ASSET_ATTRIBUTETYPE (CODE, DESCRIPTION, ASSET_TYPE) Values ('Year', 'Year', 'TRAILER');
+insert into TRANSP.ASSET_ATTRIBUTETYPE (CODE, DESCRIPTION, ASSET_TYPE) Values ('Chassis Model', 'Model', 'TRAILER');
+insert into TRANSP.ASSET_ATTRIBUTETYPE (CODE, DESCRIPTION, ASSET_TYPE) Values ('Chassis Year', 'Year', 'TRAILER');
 
 update transp.asset_attributetype set code='Contract-Type' where code='Rental Flag';
 update transp.asset_attributetype set code='Chassis Make' where code='Make';
 update transp.asset_attributetype set code='Vendor - Truck' where code='Vendor';
+update transp.asset_attributetype set code='Chassis Engine Type' where code='Electric Drive Flag';
+update transp.asset_attributetype set code='Reefer Type' where code='Electric Reefer Flag';
+update transp.asset_attributetype set code='Reefer Unit#' where code='Reefer UnitNumber';
+update transp.asset_attributetype set code='Vendor Number#' where code='Vendor Number #';
+
 update transp.asset_attribute set attribute_type='Contract-Type' where attribute_type='Rental Flag';
 update transp.asset_attribute set attribute_type='Chassis Make' where attribute_type='Make';
 update transp.asset_attribute set attribute_type='Vendor - Truck' where attribute_type='Vendor';
-update transp.asset_attributetype set code='Chassis Engine Type' where code='Electric Drive Flag';
-update transp.asset_attributetype set code='Reefer Type' where code='Electric Reefer Flag';
+update transp.asset_attribute set attribute_type='Vendor Number#' where attribute_type='Vendor Number #';
 update transp.asset_attribute set attribute_type='Chassis Engine Type' where attribute_type='Electric Drive Flag';
 update transp.asset_attribute set attribute_type='Reefer Type' where attribute_type='Electric Reefer Flag';
-update transp.asset_attributetype set code='Reefer Unit#' where code='Reefer UnitNumber';
 update transp.asset_attribute set attribute_type='Reefer Unit#' where attribute_type='Reefer UnitNumber';
 
 update transp.asset set asset_status = 'INC' where asset_status='IAC';
