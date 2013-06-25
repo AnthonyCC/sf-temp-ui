@@ -89,7 +89,7 @@ insert into TRANSP.ASSET_ATTRIBUTETYPE (CODE, DESCRIPTION, ASSET_TYPE) Values ('
 insert into TRANSP.ASSET_ATTRIBUTETYPE (CODE, DESCRIPTION, ASSET_TYPE) Values ('GVW', 'GVW', 'TRUCK');
 insert into TRANSP.ASSET_ATTRIBUTETYPE (CODE, DESCRIPTION, ASSET_TYPE) Values ('License Plate (Current)', 'License Plate (Current)', 'TRUCK');
 insert into TRANSP.ASSET_ATTRIBUTETYPE (CODE, DESCRIPTION, ASSET_TYPE) Values ('Monthly Lease Cost', 'Monthly Lease Cost', 'TRUCK');
-insert into TRANSP.ASSET_ATTRIBUTETYPE (CODE, DESCRIPTION, ASSET_TYPE) Values ('ChassisModel', 'Model', 'TRUCK');
+insert into TRANSP.ASSET_ATTRIBUTETYPE (CODE, DESCRIPTION, ASSET_TYPE) Values ('Chassis Model', 'Model', 'TRUCK');
 insert into TRANSP.ASSET_ATTRIBUTETYPE (CODE, DESCRIPTION, ASSET_TYPE) Values ('Chassis Year', 'Year', 'TRUCK');
 
 insert into TRANSP.ASSET_ATTRIBUTETYPE (CODE, DESCRIPTION, ASSET_TYPE) Values ('Reefer Model', 'Reefer Model', 'TRAILER');    
