@@ -314,8 +314,8 @@ function fdTSDisplay(refIdArg) {
 				}
 
 				for (var date in tsSpecialMsgsObj.msgs) {
-					if (dateToDayMap.hasOwnProperty(date) && Object.size(date) > 0) {
-						for (var s = 0; s <  this.dayObjs[dateToDayMap[date]].TSIds.length; s++) {
+					if (dateToDayMap.hasOwnProperty(date)) {
+						for (var s = 0; s < this.dayObjs[dateToDayMap[date]].TSIds.length; s++) {
 							var curSlotObj = this.slotObjs[this.dayObjs[dateToDayMap[date]].TSIds[s]];
 
 
