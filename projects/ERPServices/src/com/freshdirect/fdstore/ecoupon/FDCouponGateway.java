@@ -206,7 +206,12 @@ public class FDCouponGateway {
 		isSuccess =(null !=response && "true".equalsIgnoreCase(response.getResult()));
 		if(!isSuccess){
 			CouponServiceException csException =createCouponServiceException(response);
-			throw csException;
+			//If the error code is '330'(Already cancelled), then don't throw exception.
+			if(csException.getMessage()!=null && csException.getMessage().toLowerCase().indexOf("330-no matching items in cart")>-1){
+				isSuccess=true;
+			}else{
+				throw csException;
+			}
 		}
 		return isSuccess;
 	}
@@ -227,7 +232,12 @@ public class FDCouponGateway {
 		isSuccess =(null !=response && "true".equalsIgnoreCase(response.getResult()));
 		if(!isSuccess){
 			CouponServiceException csException =createCouponServiceException(response);
-			throw csException;
+			//If the error code is '330'(Already redeemed), then don't throw exception.
+			if(csException.getMessage()!=null && csException.getMessage().toLowerCase().indexOf("330-no matching items in cart")>-1){
+				isSuccess=true;
+			}else{
+				throw csException;
+			}
 		}
 		return isSuccess;
 	}
