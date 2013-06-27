@@ -100,6 +100,14 @@ public class ScheduleUploadFormController extends BaseFormController {
 				Map<String, TrnFacility> facilityMapping = new HashMap<String, TrnFacility>();
 			
 				if(newSource != null) {
+					
+					Iterator _facilityItr = facilityLocs.iterator();
+					TrnFacility facility = null;
+					while(_facilityItr.hasNext()){
+						facility = (TrnFacility)_facilityItr.next();
+						facilityMapping.put(facility.getName(), facility);
+					}
+					
 					if(newSource.equals(EnumUploadSource.SCRIB)) {
 						
 						List<Scrib> scribs = new ScheduleUploadDataManager()
@@ -118,12 +126,7 @@ public class ScheduleUploadFormController extends BaseFormController {
 									zone = (Zone)_zoneItr.next();									
 									zoneMapping.put(zone.getZoneCode(), zone);
 								}
-								Iterator _facilityItr = facilityLocs.iterator();
-								TrnFacility facility = null;
-								while(_facilityItr.hasNext()){
-									facility = (TrnFacility)_facilityItr.next();
-									facilityMapping.put(facility.getName(), facility);
-								}
+								
 								TrnFacility originFacility = null;
 								TrnFacility destFacility = null;
 								for(Scrib scrib : scribs) {
@@ -197,15 +200,10 @@ public class ScheduleUploadFormController extends BaseFormController {
 						boolean validDepotFacility = false;
 						boolean validDepotRegion = false;
 						boolean validStartTime = false;
+						TrnFacility _depotFacility = null;
 						if(schedules != null) {
 							for(ScheduleEmployee _scheduleEmp : schedules) {
 								
-								if(_scheduleEmp.getDepotFacility() != null) 
-									TrnFacility _depotFacility = facilityMapping.get(_scheduleEmp.getDepotFacilityS());
-									if(_depotFacility == null) {
-										facilityErrorLst.add(_scheduleEmp.getDepotFacilityS());
-									}
-							    }
 								if(_scheduleEmp.getRegionS() != null){
 									Region _region = regionMapping.get(_scheduleEmp.getRegionS());									
 									if(_region == null){
@@ -224,7 +222,14 @@ public class ScheduleUploadFormController extends BaseFormController {
 								
 								if(_scheduleEmp.getRegionS() != null &&	(_scheduleEmp.getTimeS() == null || "".equals(_scheduleEmp.getTimeS()))) {
 									validStartTime = true;
-								}
+								}								
+
+								if(_scheduleEmp.getDepotFacilityS() != null) {
+									_depotFacility = facilityMapping.get(_scheduleEmp.getDepotFacilityS());
+									if(_depotFacility == null) {
+										facilityErrorLst.add(_scheduleEmp.getDepotFacilityS());
+									}
+							    }
 								
 							}							
 						}
