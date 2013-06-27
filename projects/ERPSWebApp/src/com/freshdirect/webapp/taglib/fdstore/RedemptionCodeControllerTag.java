@@ -3,6 +3,7 @@ package com.freshdirect.webapp.taglib.fdstore;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -53,6 +54,22 @@ public class RedemptionCodeControllerTag extends AbstractControllerTag {
 				PromotionI promo = user.getRedeemedPromotion();
 				if(promo != null){
 					//MNT - 144 Bug fix.
+					//APPDEV-2850 - applicator are now combinable and come as a list					
+					for (Iterator<PromotionApplicatorI> i = ((Promotion)promo).getApplicatorList().iterator(); i.hasNext();) {
+						PromotionApplicatorI _applicator = i.next();
+						if (_applicator instanceof WaiveChargeApplicator) {
+							WaiveChargeApplicator waiveChargeApplicator = (WaiveChargeApplicator)_applicator;
+							if(waiveChargeApplicator.getChargeType() == EnumChargeType.DELIVERY){
+								/*
+								 * Then its a delivery promotion. So reset the isDlvPromoApplied flag
+								 * since the redemption code is removed.
+								 */
+								user.getShoppingCart().setDlvPromotionApplied(false);
+							}
+						}
+					}
+					
+					/*
 					PromotionApplicatorI applicator = ((Promotion)promo).getApplicator();
 					if(applicator instanceof WaiveChargeApplicator){
 						WaiveChargeApplicator waiveChargeApplicator = (WaiveChargeApplicator)applicator;
@@ -61,9 +78,10 @@ public class RedemptionCodeControllerTag extends AbstractControllerTag {
 							 * Then its a delivery promotion. So reset the isDlvPromoApplied flag
 							 * since the redemption code is removed.
 							 */
-							user.getShoppingCart().setDlvPromotionApplied(false);
+							/*user.getShoppingCart().setDlvPromotionApplied(false);
 						}
 					}
+			*/
 					
 					user.setRedeemedPromotion(null);
 					

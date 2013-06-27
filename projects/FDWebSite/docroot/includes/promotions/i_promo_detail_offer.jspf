@@ -122,6 +122,9 @@
 							<% if(!"".equals(promotion.getMaxPercentageDiscount())) { %>
 								<td class="alignL">Max Percentage Discount Amount <span class="gray"> $<%= promotion.getMaxPercentageDiscount() %></span></td>
 							<% } %>
+							<% if ( promotion.getWaiveChargeType() != null && !"".equals(promotion.getWaiveChargeType()) ) { %>
+								<td class="alignL">Free Delivery <span class="grayIta8pt"> <% if(promotion.isFuelSurchargeIncluded())  { %> (incl. fuel surcharge) <% } else { %> (excl. fuel surcharge) <% } %></span></td>
+							<% } %>
 							</tr>
 						<%-- max items call --%>
 						<% if ( promotion.getMaxItemCount() > 0 ) { %>
@@ -305,10 +308,11 @@
 						<% } %>
 					<%
 						//SAMPLE TYPE display
-						}else if ( EnumPromotionType.SAMPLE.getName().equalsIgnoreCase(promotion.getPromotionType())) {
+						}//else if ( EnumPromotionType.SAMPLE.getName().equalsIgnoreCase(promotion.getPromotionType())) {
 					%>
+						<% if(promotion.getCategoryName() != null && promotion.getProductName() != null) { %>
 						<tr>
-							<td class="promo_detail_label">Product:</td>
+							<td class="promo_detail_label">Sample Product:</td>
 							<td class="alignL">
 								<% ContentNodeModel node = ContentFactory.getInstance().getContentNode(promotion.getCategoryName());
 								ProductModel prodRef = null;

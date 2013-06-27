@@ -109,7 +109,7 @@ public class PromotionOfferControllerTag extends AbstractControllerTag {
 				String offerType = NVL.apply(request.getParameter("header_discount_type_all"), "").trim();
 				this.promotion.setCombineOffer(!"".equalsIgnoreCase(NVL.apply(request.getParameter("hd_allow_offer"), "").trim()));
 				List<FDPromoDollarDiscount> dList = new ArrayList<FDPromoDollarDiscount>();
-				if("".equals(headerDiscountType)){
+				if("".equals(headerDiscountType) && !("hd_free".equalsIgnoreCase(request.getParameter("free_dlv_offer"))) && !("sample_offer".equals(request.getParameter("sample_discount_offer")))){
 					actionResult.addError(true, "discountEmpty", " Please select one discount type under HEADER.");
 				}
 				else if("perc".equalsIgnoreCase(headerDiscountType)){				
@@ -139,19 +139,6 @@ public class PromotionOfferControllerTag extends AbstractControllerTag {
 					if(!NumberUtil.isDouble(maxAmount)){
 						actionResult.addError(true, "maxAmountNumber", " Discount $ value should be number.");
 					}
-				}else if("hd_free".equalsIgnoreCase(headerDiscountType)){
-					String fuelsurcharge = NVL.apply(request.getParameter("fuel_surcharge"), "").trim();
-					if(fuelsurcharge != null && fuelsurcharge.length() > 0) {
-						this.promotion.setFuelSurchargeIncluded(true);
-					} else {
-						this.promotion.setFuelSurchargeIncluded(false);
-					}
-					this.promotion.setWaiveChargeType("DLV");
-					this.promotion.setMaxAmount("");
-					this.promotion.setPercentOff("");
-					this.promotion.setExtendDpDays(null);
-					this.promotion.setOfferType(EnumOfferType.WAIVE_DLV_CHARGE.getName());
-					this.promotion.setCombineOffer(true);
 				}else if("hd_extend_dp".equalsIgnoreCase(headerDiscountType)){
 					String extendDpDays = NVL.apply(request.getParameter("extendDpDays"), "").trim();
 					if(NumberUtil.isInteger(extendDpDays)){
@@ -200,11 +187,39 @@ public class PromotionOfferControllerTag extends AbstractControllerTag {
 					this.promotion.setFuelSurchargeIncluded(false);
 				}
 				promotion.setDollarOffList(dList);
+				//APPDEV-2850-handle combined offers
+				if("hd_free".equalsIgnoreCase(request.getParameter("free_dlv_offer"))){
+					String fuelsurcharge = NVL.apply(request.getParameter("fuel_surcharge"), "").trim();
+					if(fuelsurcharge != null && fuelsurcharge.length() > 0) {
+						this.promotion.setFuelSurchargeIncluded(true);
+					} else {
+						this.promotion.setFuelSurchargeIncluded(false);
+					}
+					this.promotion.setWaiveChargeType("DLV");
+					this.promotion.setOfferType(EnumOfferType.WAIVE_DLV_CHARGE.getName());
+				}
 				
-	//			this.promotion.setCombineOffer(!"".equalsIgnoreCase(NVL.apply(request.getParameter("hd_allow_offer"), "").trim()));
+				if("sample_offer".equals(request.getParameter("sample_discount_offer"))) {
+					//sample offer is selected.
+					this.promotion.setCategoryName(NVL.apply(request.getParameter("categoryName"), "").trim());
+					this.promotion.setProductName(NVL.apply(request.getParameter("productName"), "").trim());
+					ContentFactory contentFactory = ContentFactory.getInstance();
+					if(!"".equalsIgnoreCase(promotion.getCategoryName())){
+						if(null == contentFactory.getContentNode(FDContentTypes.CATEGORY, promotion.getCategoryName().toLowerCase())){
+							actionResult.addError(true, "invalidCategoryName", promotion.getCategoryName()+" is invalid category Id." );
+						}
+					}
+					if(!"".equalsIgnoreCase(promotion.getProductName())){
+						if(null == contentFactory.getContentNode(FDContentTypes.PRODUCT, promotion.getProductName().toLowerCase())){
+							actionResult.addError(true, "invalidProductName", promotion.getProductName()+" is invalid product Id" );
+						}
+					}
+				} else {
+					clearSampleTypeInfo();
+				}
+				
 				this.promotion.setPromotionType(promotionType);
-	//			setWSPromotionCode();
-				clearSampleTypeInfo();
+				
 				clearLineItemTypeInfo();
 			}else if(EnumPromotionType.LINE_ITEM.getName().equalsIgnoreCase(promotionType)){
 				this.promotion.setMaxAmount("");
@@ -271,13 +286,40 @@ public class PromotionOfferControllerTag extends AbstractControllerTag {
 				this.promotion.setPerishable(!"".equalsIgnoreCase(NVL.apply(request.getParameter("li_perishables"), "").trim()));
 				this.promotion.setPromotionType(promotionType);
 				clearHeaderTypeInfo();
-				clearSampleTypeInfo();
-	//			this.promotion.setOfferType("");
-	//			setWSPromotionCode();
-			}else if(EnumPromotionType.SAMPLE.getName().equalsIgnoreCase(promotionType)){
+				//APPDEV-2850-handle combined offers
+				if("hd_free".equalsIgnoreCase(request.getParameter("li_free_dlv_offer"))){
+					String fuelsurcharge = NVL.apply(request.getParameter("li_fuel_surcharge"), "").trim();
+					if(fuelsurcharge != null && fuelsurcharge.length() > 0) {
+						this.promotion.setFuelSurchargeIncluded(true);
+					} else {
+						this.promotion.setFuelSurchargeIncluded(false);
+					}
+					this.promotion.setWaiveChargeType("DLV");
+					this.promotion.setOfferType(EnumOfferType.WAIVE_DLV_CHARGE.getName());
+				}
+				
+				if("sample_offer".equals(request.getParameter("li_sample_discount_offer"))) {
+					//sample offer is selected.
+					this.promotion.setCategoryName(NVL.apply(request.getParameter("li_categoryName"), "").trim());
+					this.promotion.setProductName(NVL.apply(request.getParameter("li_productName"), "").trim());
+					ContentFactory contentFactory = ContentFactory.getInstance();
+					if(!"".equalsIgnoreCase(promotion.getCategoryName())){
+						if(null == contentFactory.getContentNode(FDContentTypes.CATEGORY, promotion.getCategoryName().toLowerCase())){
+							actionResult.addError(true, "invalidCategoryName", promotion.getCategoryName()+" is invalid category Id." );
+						}
+					}
+					if(!"".equalsIgnoreCase(promotion.getProductName())){
+						if(null == contentFactory.getContentNode(FDContentTypes.PRODUCT, promotion.getProductName().toLowerCase())){
+							actionResult.addError(true, "invalidProductName", promotion.getProductName()+" is invalid product Id" );
+						}
+					}
+				} else {
+					clearSampleTypeInfo();
+				}
+			} else if(EnumPromotionType.SAMPLE.getName().equalsIgnoreCase(promotionType)){
 				this.promotion.setOfferType(EnumOfferType.SAMPLE.getName());
-				this.promotion.setCategoryName(NVL.apply(request.getParameter("categoryName"), "").trim());
-				this.promotion.setProductName(NVL.apply(request.getParameter("productName"), "").trim());
+				this.promotion.setCategoryName(NVL.apply(request.getParameter("sam_categoryName"), "").trim());
+				this.promotion.setProductName(NVL.apply(request.getParameter("sam_productName"), "").trim());
 				ContentFactory contentFactory = ContentFactory.getInstance();
 				if(!"".equalsIgnoreCase(promotion.getCategoryName())){
 					if(null == contentFactory.getContentNode(FDContentTypes.CATEGORY, promotion.getCategoryName().toLowerCase())){
@@ -299,6 +341,7 @@ public class PromotionOfferControllerTag extends AbstractControllerTag {
 				this.promotion.setPercentOff("");
 	//			setWSPromotionCode();
 			}
+			
 			String oldPromoCode = this.promotion.getPromotionCode();
 			String newPromoCode = this.promotion.getPromotionCode();
 			if(EnumPromotionType.WINDOW_STEERING.getName().equalsIgnoreCase(this.promotion.getOfferType())){
@@ -371,8 +414,7 @@ public class PromotionOfferControllerTag extends AbstractControllerTag {
 		}
 		
 	}
-
-
+	
 	private void clearSampleTypeInfo() {
 		this.promotion.setCategoryName("");
 		this.promotion.setProductName("");

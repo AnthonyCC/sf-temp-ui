@@ -41,7 +41,11 @@ public class PromotionHelper {
 			String promoId = it.next();
 			Promotion p = (Promotion) PromotionFactory.getInstance().getPromotion(promoId);
 			if(p !=  null && p.getOfferType() != null && p.getOfferType().equals(EnumOfferType.WINDOW_STEERING)){
-				PromotionApplicatorI app = p.getApplicator();
+				/*APPDEV-2850 - combinable offers. every offer will have zonestrategy attached if it is set on promotion. So just get the first applicator */
+				//PromotionApplicatorI app = p.getApplicator();
+				PromotionApplicatorI app = null;
+				if(p.getApplicatorList() != null && p.getApplicatorList().size() > 0)
+					app = (PromotionApplicatorI) p.getApplicatorList().get(0);
 				DlvZoneStrategy zoneStrategy = app != null ? app.getDlvZoneStrategy() : null;
 				if(zoneStrategy != null && zoneStrategy.isZonePresent(zoneId)) {
 					double promoAmount = p.getHeaderDiscountTotal();
@@ -75,7 +79,11 @@ public class PromotionHelper {
 				String promoId = it.next();
 				Promotion p = (Promotion) PromotionFactory.getInstance().getPromotion(promoId);
 				if(p !=  null && p.getOfferType() != null && p.getOfferType().equals(EnumOfferType.WINDOW_STEERING)){
-					PromotionApplicatorI app = p.getApplicator();
+					/*APPDEV-2850 - combinable offers. every offer will have zonestrategy attached if it is set on promotion. So just get the first applicator */
+					//PromotionApplicatorI app = p.getApplicator();
+					PromotionApplicatorI app = null;
+					if(p.getApplicatorList() != null && p.getApplicatorList().size() > 0)
+						app = (PromotionApplicatorI) p.getApplicatorList().get(0);
 					DlvZoneStrategy zoneStrategy = app != null ? app.getDlvZoneStrategy() : null;
 					if(zoneStrategy != null && zoneStrategy.isZonePresent(timeSlot.getZoneCode()) 
 							&& zoneStrategy.isTimeSlotEligible(timeSlot, tsWindowMap, user)){						
@@ -153,7 +161,11 @@ public class PromotionHelper {
 					}
 					FDTimeslot timeSlot = FDDeliveryManager.getInstance().getTimeslotsById(timeSlotId, null, true);
 					if(null != timeSlot){
-						PromotionApplicatorI app = promotion.getApplicator();
+						/*APPDEV-2850 - combinable offers. every offer will have zonestrategy attached if it is set on promotion. So just get the first applicator */
+						//PromotionApplicatorI app = promotion.getApplicator();
+						PromotionApplicatorI app = null;
+						if(promotion.getApplicatorList() != null && promotion.getApplicatorList().size() > 0)
+							app = (PromotionApplicatorI) promotion.getApplicatorList().get(0);
 						if (app != null) {
 							DlvZoneStrategy dlvZoneStrategy = app.getDlvZoneStrategy();
 							if(dlvZoneStrategy != null) {
