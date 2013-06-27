@@ -28,6 +28,7 @@ import com.freshdirect.common.pricing.MunicipalityInfoWrapper;
 import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.common.pricing.util.GroupScaleUtil;
 import com.freshdirect.customer.EnumChargeType;
+import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpAppliedCreditModel;
 import com.freshdirect.customer.ErpChargeLineModel;
@@ -210,6 +211,8 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 	
 	private List<FDCartLineI> ebtIneligibleOrderLines = new ArrayList<FDCartLineI>();
 	private Set<String> recentlyAppliedCoupons = new HashSet<String>();
+	
+	private EnumTransactionSource source;
 	
 	public void incrementSkuCount(String promoCode, int quantity) {
 		Integer count =skuCount.get(promoCode);
@@ -1782,5 +1785,12 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 		return recentlyAppliedCoupons;
 	}
 	
+	public void setTransactionSource(EnumTransactionSource source) {
+		this.source = source;
+	}
+	
+	public EnumTransactionSource getTransactionSource() {
+		return source;
+	}
 	
 }

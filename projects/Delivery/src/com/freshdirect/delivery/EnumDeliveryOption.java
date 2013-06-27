@@ -16,6 +16,8 @@ public class EnumDeliveryOption extends Enum implements Serializable {
 	public final static EnumDeliveryOption REGULAR = new EnumDeliveryOption("R", "Regular");
 	
 	public final static EnumDeliveryOption ALL = new EnumDeliveryOption("A", "All");
+	
+	public final static EnumDeliveryOption SO = new EnumDeliveryOption("SO", "Standing-Order");
         
 		private final String deliveryOption;
 

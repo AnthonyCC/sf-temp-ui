@@ -9,6 +9,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.delivery.EnumDeliveryOption;
 import com.freshdirect.delivery.model.DlvTimeslotModel;
 import com.freshdirect.fdstore.FDReservation;
@@ -73,7 +74,7 @@ public class DlvZoneStrategy implements PromotionStrategyI {
 		String zoneCode =context.getDeliveryZone();
 
 		boolean isPremiumSlot = null !=context.getDeliveryReservation()?context.getDeliveryReservation().isPremium():false;
-		if(checkDlvDayTypeEligibility(isPremiumSlot)){
+		if(checkDlvDayTypeEligibility(isPremiumSlot, context.getShoppingCart().getTransactionSource())){
 			if(null != zoneCode && !"".equals(zoneCode.trim())){
 				if(null == dlvDates || dlvDates.size()==0 || checkDlvDates(context.getDeliveryReservation())){
 					if(null != dlvZones && dlvZones.size() != 0 && ((dlvZones.contains(zoneCode) || dlvZones.contains("ALL")))){
@@ -198,7 +199,7 @@ public class DlvZoneStrategy implements PromotionStrategyI {
 						TimeOfDay promoDlvSlotEndTime = new TimeOfDay(promoDlvTimeSlot.getDlvTimeEnd());
 						if((dlvStartTimeOfDay.equals(promoDlvSlotStartTime) || dlvStartTimeOfDay.after(promoDlvSlotStartTime)) && 
 								(dlvEndTimeOfDay.before(promoDlvSlotEndTime) || dlvEndTimeOfDay.equals(promoDlvSlotEndTime))
-								&& checkDlvDayTypeEligibility(dlvTimeslotModel.isPremiumSlot())){
+								&& checkDlvDayTypeEligibility(dlvTimeslotModel.isPremiumSlot(), user.getShoppingCart().getTransactionSource())){
 							isOK = true;
 							break;
 						}
@@ -285,15 +286,22 @@ public class DlvZoneStrategy implements PromotionStrategyI {
 		this.dlvDayType = dlvDayType;
 	}
 	
-	public boolean checkDlvDayTypeEligibility(boolean isPremiumSlot){
+	public boolean checkDlvDayTypeEligibility(boolean isPremiumSlot, EnumTransactionSource source){
 		boolean isOK = false;
 		if(null == dlvDayType || EnumDeliveryOption.ALL.equals(dlvDayType)){
 			isOK = true;
 		}else{
-			if(isPremiumSlot){
-				isOK = EnumDeliveryOption.SAMEDAY.equals(dlvDayType) ;
-			}else{
-				isOK = EnumDeliveryOption.REGULAR.equals(dlvDayType); 
+			if(EnumDeliveryOption.SO.equals(dlvDayType) ) {
+				//This is set for SO only
+				if(source != null && source.getCode().equals(EnumTransactionSource.STANDING_ORDER.getCode())) {
+					isOK = true;
+				}
+			} else {
+				if(isPremiumSlot){
+					isOK = EnumDeliveryOption.SAMEDAY.equals(dlvDayType) ;
+				}else{
+					isOK = EnumDeliveryOption.REGULAR.equals(dlvDayType); 
+				}
 			}
 		}
 		return isOK;		

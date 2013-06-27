@@ -479,13 +479,13 @@ public class StandingOrderUtil {
 		// ==========================
 		
 		ProcessActionResult vr = new ProcessActionResult();
-		FDCartModel cart = buildCart(so.getCustomerList(), paymentMethod, deliveryAddressModel, timeslots, zoneInfo, reservation, vr);
+		FDCartModel cart = buildCart(so.getCustomerList(), paymentMethod, deliveryAddressModel, timeslots, zoneInfo, reservation, vr);		
 		// boolean hasInvalidItems = vr.isFail();
 		
 		final List<FDCartLineI> originalCartItems = new ArrayList<FDCartLineI>(cart.getOrderLines());
 		
 		// set users shopping cart, needed for delivery fee rules later
-		customerUser.setShoppingCart( cart );
+		customerUser.setShoppingCart( cart );		
 		
 
 		// ==========================
@@ -569,8 +569,10 @@ public class StandingOrderUtil {
 
 			// Get unavailable cart items (ie. not shipped with the recent order)
 			unavCartItems.removeAll(cart.getOrderLines());
+			cart.setTransactionSource(EnumTransactionSource.STANDING_ORDER);
+			customerUser.updateUserState();
 			
-			String orderId = FDCustomerManager.placeOrder( orderActionInfo, cart, null, false, cra, null );
+			String orderId = FDCustomerManager.placeOrder( orderActionInfo, cart, customerUser.getAllAppliedPromos(), false, cra, null );
 			
 			try {
 				
