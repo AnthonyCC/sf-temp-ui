@@ -36,6 +36,10 @@
 	font-size:11px;
 }
 
+#messages li:last-child {
+	margin-bottom:10px;
+}
+
 #messages.open ul {
 	max-height:500px;
 }
