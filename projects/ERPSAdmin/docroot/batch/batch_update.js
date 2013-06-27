@@ -1762,6 +1762,8 @@ var changeLog = ""+
 							//do compare
 							var tempPostData = new Array();
 								tempPostData[0] = 'action=claims';
+								
+							fdLog.debug("Did I get any thing in tempost before?" + tempPostData);
 
 							for (var index in curData[n][11]) {	
 								fdLog.debug("__________Printing" + curData[n][11][index] + " | n:" + n + " | index:" + index );
@@ -1776,7 +1778,7 @@ var changeLog = ""+
 							
 							fdLog.debug("Did I get any thing in tempost?" + tempPostData);
 							
-							if (tempPostData.length > 1) {
+							if (tempPostData.length > 0) {
 								//we have changes, construct string
 								curData[n][4] = tempPostData.join('&');
 								//remove extra &s
