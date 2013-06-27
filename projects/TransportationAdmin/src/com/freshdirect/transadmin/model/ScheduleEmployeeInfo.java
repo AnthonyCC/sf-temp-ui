@@ -98,8 +98,7 @@ public class ScheduleEmployeeInfo
 							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
-						result=(se.getDepotZone()!=null?se.getDepotZone().getZoneCode()+"-":"")+se.getRegion().getName()+"-"+time;
-						
+						result = (se.getDepotFacility() != null ? se.getDepotFacility().getName() + "-" : "") + se.getRegion().getName() + "-" + time;						
 					}
 				}
 			}

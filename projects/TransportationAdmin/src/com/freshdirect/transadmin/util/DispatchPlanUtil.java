@@ -316,12 +316,14 @@ public class DispatchPlanUtil {
     	}catch(ParseException exp){
 			throw new RuntimeException("Unparseable date "+exp.getMessage());
 		}
+    	Zone zone = null;
 		if(!DispatchPlanUtil.isBullpen(command.getIsBullpen())) {
-			Zone zone=new Zone();
-			zone.setZoneCode(command.getZoneCode());
-			dispatch.setZone(zone);
+			if(command.getZoneCode() != null) {
+				zone = new Zone();
+				zone.setZoneCode(command.getZoneCode());
+			}
 		}
-
+		dispatch.setZone(zone);
 		Region region=new Region();
 		region.setCode(command.getRegionCode());
 		dispatch.setRegion(region);

@@ -10,8 +10,8 @@
     			<param name="sequence">SCHEDULESEQ</param>
 			</generator>
         </id>
-        <many-to-one name="depotZone" class="com.freshdirect.transadmin.model.Zone" fetch="select" lazy="false">
-            <column name="DEPOT_ZONE" length="16" />
+        <many-to-one name="depotFacility" class="com.freshdirect.transadmin.model.TrnFacility" fetch="select" lazy="false">
+            <column name="DEPOT_FACILITY" length="16" />
         </many-to-one>
         <many-to-one name="region" class="com.freshdirect.transadmin.model.Region" fetch="select" lazy="false">
             <column name="REGION" length="16"  />

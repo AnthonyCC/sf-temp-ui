@@ -38,6 +38,7 @@ public class RouteModel extends BaseModel implements IRouteModel {
 	private String roadNetRouteId;
 
 	private String waveId;
+	private String depotParkingLocation;
 	
 	public void copyWaveProperties(IWaveInstance waveInstance) {
 		this.setMaxRunTime(waveInstance.getMaxRunTime());
@@ -173,6 +174,14 @@ public class RouteModel extends BaseModel implements IRouteModel {
 		this.firstDeliveryTime = firstDeliveryTime;
 	}
 	
+	public String getDepotParkingLocation() {
+		return depotParkingLocation;
+	}
+
+	public void setDepotParkingLocation(String depotParkingLocation) {
+		this.depotParkingLocation = depotParkingLocation;
+	}
+
 	public int hashCode() {
 		final int PRIME = 31;
 		int result = 1;

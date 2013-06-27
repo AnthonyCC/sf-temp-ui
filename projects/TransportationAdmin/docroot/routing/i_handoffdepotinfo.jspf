@@ -61,11 +61,33 @@
      		
      		if(_zone.trim().length > 0 && _arrivetime.trim().length > 0 
      					&& _departtime.trim().length > 0 && _originid.trim().length > 0) {
-     			depotDataTable.addRow({area:_zone, depotArrivalTimeInfo:_arrivetime
+     			if(checkTime(_departtime, _arrivetime)) {
+     				depotDataTable.addRow({area:_zone, depotArrivalTimeInfo:_arrivetime
      									, truckDepartureTimeInfo:_departtime, originId:_originid, deleteBtn:''});
+     			} else {
+     				alert("Truck departure time cannot be greater than depot arrival time.");
+     			}
      		} else {
      			alert("Please enter the required values zone, arrivaltime, departure time, origin id!");
      		}
+     }
+     
+     function checkTime(_departtime, _arrivetime) {
+    	
+    	// regular expression to match required date format  		
+  		var regExp = /^(0?[1-9]|1[012]):([0-5]\d) ([APap][mM])$/;
+  		
+  		var departRegs = _departtime.match(regExp);
+  		var arrivalRegs = _arrivetime.match(regExp);
+  		
+  		if(departRegs[3] && arrivalRegs[3]) {
+  			if( (departRegs[3] === 'PM' && arrivalRegs[3] === 'AM')
+  					 || (departRegs[3] === arrivalRegs[3] && ((departRegs[1] === arrivalRegs[1] && departRegs[2] > arrivalRegs[2])
+  		  					|| (departRegs[1] > arrivalRegs[1])))){
+  				return false;
+  			}
+  		}
+    	return true;
      }
          
      function submitDepotTable() { 

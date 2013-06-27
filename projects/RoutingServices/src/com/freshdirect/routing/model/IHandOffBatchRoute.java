@@ -1,7 +1,5 @@
 package com.freshdirect.routing.model;
 
-import java.util.Date;
-
 import com.freshdirect.sap.bapi.BapiSendHandOff;
 import com.freshdirect.sap.bapi.BapiSendPhysicalTruckInfo;
 

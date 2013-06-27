@@ -219,7 +219,15 @@ public class LocationManagerDaoHibernateImpl extends BaseManagerDaoHibernateImpl
 		StringBuffer strBuf = new StringBuffer();
 		strBuf.append("from TrnFacility ");
 		return (Collection) getHibernateTemplate().find(strBuf.toString());
-}
+	}
+	
+	public Collection getTrnFacilityByType(String facilityType) throws DataAccessException {
+
+		StringBuffer strBuf = new StringBuffer();
+		strBuf.append(" from TrnFacility f ");
+		strBuf.append(" where f.trnFacilityType.name='").append(facilityType).append("'");
+		return (Collection) getHibernateTemplate().find(strBuf.toString());
+	}
 	
 	public Collection getTrnFacilityTypes() throws DataAccessException {
 

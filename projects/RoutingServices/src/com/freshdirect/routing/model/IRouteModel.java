@@ -67,5 +67,6 @@ public interface IRouteModel {
 	String getWaveId();
 	void setWaveId(String waveId);
 	
-	
+	String getDepotParkingLocation();
+	void setDepotParkingLocation(String depotParkingLocation);
 }

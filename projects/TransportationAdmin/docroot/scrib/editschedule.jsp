@@ -153,139 +153,139 @@
 							 
 							 <td colspan="3">
 									<table>
-									<tr><td width="60">&nbsp;</td><td>Region</td><td>Time</td><td>Depot Zone*</td></tr>
+									<tr><td width="60">&nbsp;</td><td>Region</td><td>Time</td><td>Depot Facility*</td></tr>
 									<tr>
 										<td width="60">Mon</td>
 										<td>
 										<form:hidden path="mon.scheduleId"/>
 										<form:hidden path="mon.weekOf"/>
-										<form:select path="mon.regionS" cssStyle="width:100px" onchange="javascript:disableTimeZone('mon')">
+										<form:select path="mon.regionS" cssStyle="width:100px" onchange="javascript:disableTimeFacility('mon')">
 											<form:option value="" label="Select"/>
 											<form:option value="OFF" label="OFF"/>
 											<form:options items="${region}" itemLabel="name" itemValue="code" />
 										</form:select>
 										</td><td><form:input maxlength="10" size="6" path="mon.timeS" onblur="this.value=time(this.value);" /></td>
 										<td>
-										<form:select path="mon.depotZoneS" cssStyle="width:180px">
+										<form:select path="mon.depotFacilityS" cssStyle="width:180px">
 												<form:option value="" label="Select"/>
-												<form:options items="${zone}" itemLabel="displayName" itemValue="zoneCode" />
+												<form:options items="${depotFacility}" itemLabel="name" itemValue="facilityId" />
 										</form:select>
 										</td>
-										<td><form:errors path="mon.regionS" />&nbsp&nbsp;&nbsp;<form:errors path="mon.timeS" />&nbsp&nbsp;&nbsp;<form:errors path="mon.depotZoneS" /></td>
+										<td><form:errors path="mon.regionS" />&nbsp&nbsp;&nbsp;<form:errors path="mon.timeS" />&nbsp&nbsp;&nbsp;<form:errors path="mon.depotFacilityS" /></td>
 									</tr>
 									<tr>
 										<td width="60">Tue</td>
 										<td>
 										<form:hidden path="tue.scheduleId"/>
 										<form:hidden path="tue.weekOf"/>
-										<form:select path="tue.regionS" cssStyle="width:100px" onchange="javascript:disableTimeZone('tue')">
+										<form:select path="tue.regionS" cssStyle="width:100px" onchange="javascript:disableTimeFacility('tue')">
 											<form:option value="" label="Select"/>
 											<form:option value="OFF" label="OFF"/>
 											<form:options items="${region}" itemLabel="name" itemValue="code" />
 										</form:select>
 										</td><td><form:input maxlength="10" size="6" path="tue.timeS" onblur="this.value=time(this.value);"/></td>
 										<td>
-										<form:select path="tue.depotZoneS" cssStyle="width:180px">
+										<form:select path="tue.depotFacilityS" cssStyle="width:180px">
 												<form:option value="" label="Select"/>
-												<form:options items="${zone}" itemLabel="displayName" itemValue="zoneCode" />
+												<form:options items="${depotFacility}" itemLabel="name" itemValue="facilityId" />
 										</form:select>
 										</td>
-										<td><form:errors path="tue.regionS" />&nbsp&nbsp;&nbsp;<form:errors path="tue.timeS" />&nbsp&nbsp;&nbsp;<form:errors path="tue.depotZoneS" /></td>
+										<td><form:errors path="tue.regionS" />&nbsp&nbsp;&nbsp;<form:errors path="tue.timeS" />&nbsp&nbsp;&nbsp;<form:errors path="tue.depotFacilityS" /></td>
 									</tr>
 									<tr>
 										<td width="60">Wed</td>
 										<td>
 										<form:hidden path="wed.scheduleId"/>
 										<form:hidden path="wed.weekOf"/>
-										<form:select path="wed.regionS" cssStyle="width:100px" onchange="javascript:disableTimeZone('wed')">
+										<form:select path="wed.regionS" cssStyle="width:100px" onchange="javascript:disableTimeFacility('wed')">
 											<form:option value="" label="Select"/>
 											<form:option value="OFF" label="OFF"/>
 											<form:options items="${region}" itemLabel="name" itemValue="code" />
 										</form:select>
 										</td><td><form:input maxlength="10" size="6" path="wed.timeS" onblur="this.value=time(this.value);"/></td>
 										<td>
-										<form:select path="wed.depotZoneS" cssStyle="width:180px">
+										<form:select path="wed.depotFacilityS" cssStyle="width:180px">
 												<form:option value="" label="Select"/>
-												<form:options items="${zone}" itemLabel="displayName" itemValue="zoneCode" />
+												<form:options items="${depotFacility}" itemLabel="name" itemValue="facilityId" />
 										</form:select>
 										</td>
-										<td><form:errors path="wed.regionS" />&nbsp&nbsp;&nbsp;<form:errors path="wed.timeS" />&nbsp&nbsp;&nbsp;<form:errors path="wed.depotZoneS" /></td>
+										<td><form:errors path="wed.regionS" />&nbsp&nbsp;&nbsp;<form:errors path="wed.timeS" />&nbsp&nbsp;&nbsp;<form:errors path="wed.depotFacilityS" /></td>
 									</tr>
 									<tr>
 										<td width="60">Thu</td>
 										<td>
 										<form:hidden path="thu.scheduleId"/>
 										<form:hidden path="thu.weekOf"/>
-										<form:select path="thu.regionS" cssStyle="width:100px" onchange="javascript:disableTimeZone('thu')">
+										<form:select path="thu.regionS" cssStyle="width:100px" onchange="javascript:disableTimeFacility('thu')">
 											<form:option value="" label="Select"/>
 											<form:option value="OFF" label="OFF"/>
 											<form:options items="${region}" itemLabel="name" itemValue="code" />
 										</form:select>
 										</td><td><form:input maxlength="10" size="6" path="thu.timeS" onblur="this.value=time(this.value);"/></td>
 										<td>
-										<form:select path="thu.depotZoneS" cssStyle="width:180px">
+										<form:select path="thu.depotFacilityS" cssStyle="width:180px">
 												<form:option value="" label="Select"/>
-												<form:options items="${zone}" itemLabel="displayName" itemValue="zoneCode" />
+												<form:options items="${depotFacility}" itemLabel="name" itemValue="facilityId" />
 										</form:select>
 										</td>
-										<td><form:errors path="thu.regionS" />&nbsp&nbsp;&nbsp;<form:errors path="thu.timeS" />&nbsp&nbsp;&nbsp;<form:errors path="thu.depotZoneS" /></td>
+										<td><form:errors path="thu.regionS" />&nbsp&nbsp;&nbsp;<form:errors path="thu.timeS" />&nbsp&nbsp;&nbsp;<form:errors path="thu.depotFacilityS" /></td>
 									</tr>
 									<tr>
 										<td width="60">Fri</td>
 										<td>
 										<form:hidden path="fri.scheduleId"/>
 										<form:hidden path="fri.weekOf"/>
-										<form:select path="fri.regionS" cssStyle="width:100px" onchange="javascript:disableTimeZone('fri')">
+										<form:select path="fri.regionS" cssStyle="width:100px" onchange="javascript:disableTimeFacility('fri')">
 											<form:option value="" label="Select"/>
 											<form:option value="OFF" label="OFF"/>
 											<form:options items="${region}" itemLabel="name" itemValue="code" />
 										</form:select>
 										</td><td><form:input maxlength="10" size="6" path="fri.timeS" onblur="this.value=time(this.value);"/></td>
 										<td>
-										<form:select path="fri.depotZoneS" cssStyle="width:180px">
+										<form:select path="fri.depotFacilityS" cssStyle="width:180px">
 												<form:option value="" label="Select"/>
-												<form:options items="${zone}" itemLabel="displayName" itemValue="zoneCode" />
+												<form:options items="${depotFacility}" itemLabel="name" itemValue="facilityId" />
 										</form:select>
 										</td>
-										<td><form:errors path="fri.regionS" />&nbsp&nbsp;&nbsp;<form:errors path="fri.timeS" />&nbsp&nbsp;&nbsp;<form:errors path="fri.depotZoneS" /></td>
+										<td><form:errors path="fri.regionS" />&nbsp&nbsp;&nbsp;<form:errors path="fri.timeS" />&nbsp&nbsp;&nbsp;<form:errors path="fri.depotFacilityS" /></td>
 									</tr>
 									<tr>
 										<td width="60">Sat</td>
 										<td>
 										<form:hidden path="sat.scheduleId"/>
 										<form:hidden path="sat.weekOf"/>
-										<form:select path="sat.regionS" cssStyle="width:100px" onchange="javascript:disableTimeZone('sat')">
+										<form:select path="sat.regionS" cssStyle="width:100px" onchange="javascript:disableTimeFacility('sat')">
 											<form:option value="" label="Select"/>
 											<form:option value="OFF" label="OFF"/>
 											<form:options items="${region}" itemLabel="name" itemValue="code" />
 										</form:select>
 										</td><td><form:input maxlength="10" size="6" path="sat.timeS" onblur="this.value=time(this.value);"/></td>
 										<td>
-										<form:select path="sat.depotZoneS" cssStyle="width:180px">
+										<form:select path="sat.depotFacilityS" cssStyle="width:180px">
 												<form:option value="" label="Select"/>
-												<form:options items="${zone}" itemLabel="displayName" itemValue="zoneCode" />
+												<form:options items="${depotFacility}" itemLabel="name" itemValue="facilityId" />
 										</form:select>
 										</td>
-										<td><form:errors path="sat.regionS" />&nbsp&nbsp;&nbsp;<form:errors path="sat.timeS" />&nbsp&nbsp;&nbsp;<form:errors path="sat.depotZoneS" /></td>
+										<td><form:errors path="sat.regionS" />&nbsp&nbsp;&nbsp;<form:errors path="sat.timeS" />&nbsp&nbsp;&nbsp;<form:errors path="sat.depotFacilityS" /></td>
 									</tr>
 									<tr>
 										<td width="60">Sun</td>
 										<td>
 										<form:hidden path="sun.scheduleId"/>
 										<form:hidden path="sun.weekOf"/>
-										<form:select path="sun.regionS" cssStyle="width:100px" onchange="javascript:disableTimeZone('sun')">
+										<form:select path="sun.regionS" cssStyle="width:100px" onchange="javascript:disableTimeFacility('sun')">
 											<form:option value="" label="Select"/>
 											<form:option value="OFF" label="OFF"/>
 											<form:options items="${region}" itemLabel="name" itemValue="code" />
 										</form:select>
 										</td><td><form:input maxlength="10" size="6" path="sun.timeS" onblur="this.value=time(this.value);"/></td>
 										<td>
-										<form:select path="sun.depotZoneS" cssStyle="width:180px">
+										<form:select path="sun.depotFacilityS" cssStyle="width:180px">
 												<form:option value="" label="Select"/>
-												<form:options items="${zone}" itemLabel="displayName" itemValue="zoneCode" />
+												<form:options items="${depotFacility}" itemLabel="name" itemValue="facilityId" />
 										</form:select>
 										</td>
-										<td><form:errors path="sun.regionS" />&nbsp&nbsp;&nbsp;<form:errors path="sun.timeS" />&nbsp&nbsp;&nbsp;<form:errors path="sun.depotZoneS" /></td>
+										<td><form:errors path="sun.regionS" />&nbsp&nbsp;&nbsp;<form:errors path="sun.timeS" />&nbsp&nbsp;&nbsp;<form:errors path="sun.depotFacilityS" /></td>
 									</tr>
 									
 									</table>
@@ -411,33 +411,33 @@
 		 <%@ include file='i_teamtree.jspf'%>
 		 <script>
 		
-		function disableTimeZone(day) {
+	function disableTimeFacility(day) {
 		var f=document.forms["scheduleForm"];	
 		var value=eval("f['"+day+".regionS'].value");
 		if(value=='OFF') {	   
 			eval("f['"+day+".timeS'].disabled=true");
 			eval("f['"+day+".timeS'].value=''");
-			eval("f['"+day+".depotZoneS'].disabled=true");
-			eval("f['"+day+".depotZoneS'].value=''");
+			eval("f['"+day+".depotFacilityS'].disabled=true");
+			eval("f['"+day+".depotFacilityS'].value=''");
 		}
 		else {
 			eval("f['"+day+".timeS'].disabled=false");	
 			if(value=='Depot') {
-				eval("f['"+day+".depotZoneS'].disabled=false");
+				eval("f['"+day+".depotFacilityS'].disabled=false");
 			}
 			else {
-				eval("f['"+day+".depotZoneS'].value=''");
-				eval("f['"+day+".depotZoneS'].disabled=true");
+				eval("f['"+day+".depotFacilityS'].value=''");
+				eval("f['"+day+".depotFacilityS'].disabled=true");
 			}
 		}
 	}
-	disableTimeZone("mon");
-	disableTimeZone("tue");
-	disableTimeZone("wed");
-	disableTimeZone("thu");
-	disableTimeZone("fri");
-	disableTimeZone("sat");
-	disableTimeZone("sun");
+	disableTimeFacility("mon");
+	disableTimeFacility("tue");
+	disableTimeFacility("wed");
+	disableTimeFacility("thu");
+	disableTimeFacility("fri");
+	disableTimeFacility("sat");
+	disableTimeFacility("sun");
 	
 	function back() {
 	  	var filters=unescape(getParameter("filter"));	  	    	

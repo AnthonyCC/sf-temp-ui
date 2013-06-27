@@ -763,17 +763,7 @@ public class DomainManagerImpl
 		List<ScheduleEmployee> sList=new ArrayList<ScheduleEmployee>();
 		for (Iterator<ScheduleEmployee> iterator = scheduleEmp.iterator(); iterator.hasNext();) {
 			ScheduleEmployee _scheduleEmp = iterator.next();
-			if(_scheduleEmp.getDepotZone()!=null){
-				int _codelength = _scheduleEmp.getDepotZone().getZoneCode().length();				
-				if(_codelength < 3) {
-					StringBuffer strBuf = new StringBuffer();
-					while(3 - _codelength > 0) {
-						strBuf.append("0");
-						_codelength++;
-					}
-					_scheduleEmp.setDepotZoneS(strBuf.toString() + _scheduleEmp.getDepotZoneS());
-				}
-			}
+			
 		    _scheduleEmp.setWeekOf(TransStringUtil.getWeekOf(_scheduleEmp.getDate()));
 		   
 			if(_scheduleEmp != null){

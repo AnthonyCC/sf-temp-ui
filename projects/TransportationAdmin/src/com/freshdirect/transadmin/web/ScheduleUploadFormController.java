@@ -81,6 +81,7 @@ public class ScheduleUploadFormController extends BaseFormController {
 		return bean;
 	}
 
+	@SuppressWarnings("unchecked")
 	protected ModelAndView onSubmit(HttpServletRequest request,HttpServletResponse response,
 		      Object command, BindException errors) throws ServletException, IOException    {
 			
@@ -96,6 +97,7 @@ public class ScheduleUploadFormController extends BaseFormController {
 				Collection facilityLocs = getLocationManagerService().getTrnFacilitys();
 				Map<String, Zone> zoneMapping = new HashMap<String, Zone>();
 				Map<String, Region> regionMapping = new HashMap<String, Region>();
+				Map<String, TrnFacility> facilityMapping = new HashMap<String, TrnFacility>();
 			
 				if(newSource != null) {
 					if(newSource.equals(EnumUploadSource.SCRIB)) {
@@ -108,7 +110,6 @@ public class ScheduleUploadFormController extends BaseFormController {
 						if(scribs != null) {
 							Set<Date> scribDates = new TreeSet<Date>();
 							
-							Map<String, TrnFacility> facilityMapping = new HashMap<String, TrnFacility>();
 							
 							if(masterZones != null && facilityLocs != null) {
 								Iterator _zoneItr = masterZones.iterator();
@@ -168,7 +169,7 @@ public class ScheduleUploadFormController extends BaseFormController {
 						}
 					} else {
 						StringBuffer errorMsg = new StringBuffer();
-						Set<String> zoneErrorLst = new HashSet<String>();
+						Set<String> facilityErrorLst = new HashSet<String>();
 						Set<String> regionErrorLst = new HashSet<String>();
 						
 						List<ScheduleEmployee> schedules = new ScheduleUploadDataManager()
@@ -193,26 +194,16 @@ public class ScheduleUploadFormController extends BaseFormController {
 								regionMapping.put(region.getCode(), region);
 							}
 						}
-						boolean validDepotZone = false;
+						boolean validDepotFacility = false;
 						boolean validDepotRegion = false;
 						boolean validStartTime = false;
 						if(schedules != null) {
 							for(ScheduleEmployee _scheduleEmp : schedules) {
 								
-								if(_scheduleEmp.getDepotZone() != null){
-									int _codelength = _scheduleEmp.getDepotZone().getZoneCode().length();			
-									if(_codelength < 3) {
-										StringBuffer strBuf = new StringBuffer();
-										while(3 - _codelength > 0) {
-											strBuf.append("0");
-											_codelength++;
-										}
-										_scheduleEmp.setDepotZoneS(strBuf.toString() + _scheduleEmp.getDepotZoneS());
-									}
-									System.out.println(_scheduleEmp.getDepotZoneS());
-									Zone _depotZone = zoneMapping.get(_scheduleEmp.getDepotZoneS());
-									if(_depotZone == null){
-										zoneErrorLst.add(_scheduleEmp.getDepotZoneS());
+								if(_scheduleEmp.getDepotFacility() != null) 
+									TrnFacility _depotFacility = facilityMapping.get(_scheduleEmp.getDepotFacilityS());
+									if(_depotFacility == null) {
+										facilityErrorLst.add(_scheduleEmp.getDepotFacilityS());
 									}
 							    }
 								if(_scheduleEmp.getRegionS() != null){
@@ -223,11 +214,11 @@ public class ScheduleUploadFormController extends BaseFormController {
 								}
 								
 								if(_scheduleEmp.getRegionS() != null && _scheduleEmp.getRegionS() == "Depot" &&
-										(_scheduleEmp.getDepotZoneS() == null || "".equals(_scheduleEmp.getDepotZoneS()))) {
-									validDepotZone = true;
+										(_scheduleEmp.getDepotFacilityS() == null || "".equals(_scheduleEmp.getDepotFacilityS()))) {
+									validDepotFacility = true;
 								}
 								
-								if(_scheduleEmp.getDepotZoneS() != null && (_scheduleEmp.getRegionS() == null || "".equals(_scheduleEmp.getRegionS()))){
+								if(_scheduleEmp.getDepotFacilityS() != null && (_scheduleEmp.getRegionS() == null || "".equals(_scheduleEmp.getRegionS()))){
 									validDepotRegion = true;
 								}
 								
@@ -238,19 +229,19 @@ public class ScheduleUploadFormController extends BaseFormController {
 							}							
 						}
 						
-						if((regionErrorLst != null && regionErrorLst.size() > 0) || (zoneErrorLst != null && zoneErrorLst.size() > 0) 
-								|| validDepotZone || validDepotRegion || validStartTime){
+						if((regionErrorLst != null && regionErrorLst.size() > 0) || (facilityErrorLst != null && facilityErrorLst.size() > 0) 
+								|| validDepotFacility || validDepotRegion || validStartTime){
 							StringBuilder  uploadErrMsg = new StringBuilder();
-							if(zoneErrorLst.size() > 0) 
-								uploadErrMsg.append("Zone ");
-							for(String _error : zoneErrorLst){
+							if(facilityErrorLst.size() > 0) 
+								uploadErrMsg.append("Depot Facility ");
+							for(String _error : facilityErrorLst){
 								uploadErrMsg.append(_error);
 								if(uploadErrMsg.length() > 0) {
 									uploadErrMsg.append(",");
 								}
 							}
-							if(zoneErrorLst.size() > 0) 
-								uploadErrMsg.append(" doesn't exist in active zones ");
+							if(facilityErrorLst.size() > 0) 
+								uploadErrMsg.append(" doesn't exist in active facilitys ");
 							
 							if(regionErrorLst.size() > 0) 
 								uploadErrMsg.append("<br>").append(" Region ");
@@ -264,8 +255,8 @@ public class ScheduleUploadFormController extends BaseFormController {
 								uploadErrMsg.append(" doesn't exist in active regions ");
 							}
 							
-							if(validDepotZone) {
-								uploadErrMsg.append("<br>").append(" Zone is empty for one or more entries for Depot region.");
+							if(validDepotFacility) {
+								uploadErrMsg.append("<br>").append(" Facility is empty for one or more entries for Depot region.");
 							}
 							
 							if(validDepotRegion) {

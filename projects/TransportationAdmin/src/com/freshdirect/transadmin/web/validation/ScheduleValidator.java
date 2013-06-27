@@ -27,17 +27,20 @@ public class ScheduleValidator extends AbstractValidator {
 
 	public void validate(ScheduleEmployee s,String id,Errors errors)
 	{
-		if(s==null) return;
-		if(s.getRegion()!=null&&!s.getRegion().getCode().equals(ScheduleEmployeeInfo.OFF))
-		{
-			if(s.getTime()==null) errors.rejectValue(id+".timeS", "app.error.112", new Object[]{"Time"},"required field");
-			if(s.getRegion().getCode().equals("Depot")&&s.getDepotZone()==null) errors.rejectValue(id+".depotZoneS", "app.error.112", new Object[]{"Depot Zone"},"required field");
-			if(!s.getRegion().getCode().equals("Depot"))
-			{
-				s.setDepotZoneS(null);
+		if (s == null)
+			return;
+		if (s.getRegion() != null
+				&& !s.getRegion().getCode().equals(ScheduleEmployeeInfo.OFF)) {
+			if (s.getTime() == null)
+				errors.rejectValue(id + ".timeS", "app.error.112",	new Object[] { "Time" }, "required field");
+			if (s.getRegion().getCode().equals("Depot")
+					&& s.getDepotFacility() == null) 
+				errors.rejectValue(id + ".depotZoneS", "app.error.112",	new Object[] { "Depot Facility" }, "required field");
+			if (!s.getRegion().getCode().equals("Depot")) {
+				s.setDepotFacilityS(null);
 			}
 		}
-		
+
 	}
 
 }

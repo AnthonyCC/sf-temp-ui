@@ -210,7 +210,7 @@ public class HandOffDAO extends BaseDAO implements IHandOffDAO   {
 		"ACTUAL_RESOURCES ,STATUS) VALUES ( ?,?,?,?,?)";
 			
 	private static final String INSERT_HANDOFFBATCH_ROUTE = "INSERT INTO TRANSP.HANDOFF_BATCHROUTE ( BATCH_ID , SESSION_NAME, ROUTE_NO ," +
-			"ROUTING_ROUTE_NO ,AREA ,STARTTIME,COMPLETETIME ,DISTANCE, TRAVELTIME, SERVICETIME, DISPATCHTIME, DISPATCHSEQUENCE,RN_ROUTE_ID ) VALUES ( ?,?,?,?,?,?,?,?,?,?,?,?,?)";
+			"ROUTING_ROUTE_NO ,AREA ,STARTTIME,COMPLETETIME ,DISTANCE, TRAVELTIME, SERVICETIME, DISPATCHTIME, DISPATCHSEQUENCE,RN_ROUTE_ID, ORIGIN_ID ) VALUES ( ?,?,?,?,?,?,?,?,?,?,?,?,?,? )";
 	
 	private static final String UPDATE_HANDOFFBATCH_STOP = "UPDATE TRANSP.HANDOFF_BATCHSTOP X set X.ROUTE_NO = ?,X.ROUTING_ROUTE_NO = ?, " +
 			"X.SESSION_NAME = ?, X.STOP_SEQUENCE = ?,  X.STOP_ARRIVALDATETIME = ? ,  X.STOP_DEPARTUREDATETIME = ?, X.TRAVELTIME = ? , X.SERVICETIME = ?, X.ORDERSIZE_RT = ? " +
@@ -240,9 +240,11 @@ public class HandOffDAO extends BaseDAO implements IHandOffDAO   {
 			"where hb.BATCH_ID = ? and HB.BATCH_ID = S.BATCH_ID and S.LOCATION_ID = L.ID and L.BUILDINGID = B.ID " +
 			"and B.ID = DD.DELIVERY_BUILDING_ID(+) and B.ID = bo.DELIVERY_BUILDING_ID(+) and s.area = ta.code(+)"; 
 	
-	private static final String GET_HANDOFFBATCH_ROUTES = "select r.BATCH_ID , r.SESSION_NAME , r.ROUTE_NO ,r.ROUTING_ROUTE_NO " +
-			", r.AREA  ,r.STARTTIME  , r.COMPLETETIME  ,r.DISTANCE  , r.TRAVELTIME , r.SERVICETIME, r.DISPATCHTIME  , r.DISPATCHSEQUENCE, r.TRAILER_NO  " +
-			"from  transp.HANDOFF_BATCH b, TRANSP.HANDOFF_BATCHROUTE r  where B.BATCH_ID = ? and B.BATCH_ID = R.BATCH_ID";
+	private static final String GET_HANDOFFBATCH_ROUTES = "select r.BATCH_ID, r.SESSION_NAME, r.ROUTE_NO, r.ROUTING_ROUTE_NO "+
+            " ,r.AREA, r.STARTTIME, r.COMPLETETIME, r.DISTANCE, r.TRAVELTIME, r.SERVICETIME, r.DISPATCHTIME, r.DISPATCHSEQUENCE, r.TRAILER_NO, "+
+            " decode(TR.IS_DEPOT, 'X', r.ORIGIN_ID ||' / '|| (SELECT description from transp.TRN_FACILITY where facility_code = r.ORIGIN_ID ), null) as DEPOT_PARKLOCATION "+
+            " from transp.HANDOFF_BATCH b, TRANSP.HANDOFF_BATCHROUTE r, TRANSP.TRN_AREA a, TRANSP.TRN_REGION tr "+
+            " where B.BATCH_ID = ? and B.BATCH_ID = R.BATCH_ID and R.AREA=A.CODE AND TR.CODE = A.REGION_CODE";
 	
 	private static final String GET_HANDOFFBATCH_DISPATCHES = "select d.DISPATCHTIME, d.PLANNED_RESOURCES ," +
 			" d.ACTUAL_RESOURCES , d.STATUS " +
@@ -407,6 +409,7 @@ public class HandOffDAO extends BaseDAO implements IHandOffDAO   {
 						infoModel.setDispatchTime(new RoutingTimeOfDay(rs.getTimestamp("DISPATCHTIME")));
 						infoModel.setDispatchSequence(rs.getInt("DISPATCHSEQUENCE"));
 						infoModel.setTrailerId(rs.getString("TRAILER_NO"));
+						infoModel.setDepotParkingLocation("DEPOT_PARKLOCATION");
 					} while(rs.next());		        		    	
 				}
 		}
@@ -741,6 +744,7 @@ public class HandOffDAO extends BaseDAO implements IHandOffDAO   {
 			batchUpdater.declareParameter(new SqlParameter(Types.TIMESTAMP));
 			batchUpdater.declareParameter(new SqlParameter(Types.NUMERIC));
 			batchUpdater.declareParameter(new SqlParameter(Types.ARRAY));
+			batchUpdater.declareParameter(new SqlParameter(Types.TIMESTAMP));
 			
 			batchUpdater.compile();			
 			connection = this.jdbcTemplate.getDataSource().getConnection();
@@ -770,6 +774,7 @@ public class HandOffDAO extends BaseDAO implements IHandOffDAO   {
 											, model.getDispatchTime().getAsDate()
 											, model.getDispatchSequence()
 											, roadNetRouteIds
+											, model.getOriginId()
 									});
 			}			
 			batchUpdater.flush();

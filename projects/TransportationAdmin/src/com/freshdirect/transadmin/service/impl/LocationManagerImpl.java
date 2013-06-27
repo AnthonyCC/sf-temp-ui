@@ -181,6 +181,10 @@ public class LocationManagerImpl extends BaseManagerImpl  implements LocationMan
     	return getLocationManagerDao().getTrnFacilitys();   
     }
     
+    public Collection getTrnFacilityByType(String facilityType){
+    	return getLocationManagerDao().getTrnFacilityByType(facilityType);   
+    }
+    
     public TrnFacility getTrnFacility(String id) {
     	return getLocationManagerDao().getTrnFacility(id);
     }

@@ -14,71 +14,80 @@ import com.freshdirect.transadmin.model.TrnFacility;
 import com.freshdirect.transadmin.model.TrnFacilityLocation;
 import com.freshdirect.transadmin.model.TrnFacilityType;
 
-public interface LocationManagerI  extends BaseManagerI {
-	
+@SuppressWarnings("rawtypes")
+public interface LocationManagerI extends BaseManagerI {
+
 	Collection getServiceTimeTypes();
-	
+
 	DlvServiceTimeType getServiceTimeType(String id);
-	
+
 	Collection getServiceTimes();
-	
-	Collection getDeliveryLocations(String srubbedAddress, String apt, String zipCode, String confidence, String quality);
-	
+
+	Collection getDeliveryLocations(String srubbedAddress, String apt,
+			String zipCode, String confidence, String quality);
+
 	DlvLocation getDlvLocation(String id);
-	
+
 	String[] getServiceTypes();
-	
+
 	Collection getConfidenceTypes();
-	
+
 	Collection getQualityTypes();
-	
-	Collection getDeliveryBuildings(String srubbedAddress, String zipCode, String confidence, String quality, String group);
-	
+
+	Collection getDeliveryBuildings(String srubbedAddress, String zipCode,
+			String confidence, String quality, String group);
+
 	DlvBuilding getDlvBuilding(String id);
-	
+
 	Collection getServiceTimeScenarios();
-	
+
 	Collection getServiceTimeScenarios(String date);
-	
+
 	Collection getScenariosWithNoDay();
-	
+
 	Collection getServiceTimeScenariosForDayofWeek(int dayOfWeek);
-	
+
 	DlvServiceTimeScenario getServiceTimeScenario(String code);
-	
+
 	DlvServiceTimeScenario getDefaultServiceTimeScenario();
-	
+
 	Collection getDefaultServiceTimeScenarioDay();
-	
+
 	Collection getZonesForServiceTimeTypes(List serviceTypeLst);
-	
+
 	Collection getDeliveryLocations(String buildingId);
-    
-   	DlvBuildingDetail getDlvBuildingDtl(String id);
 
-   	Collection getDeliveryBuildingDetails(String srubbedAddress, String zipCode);
-   	
-   	Collection getDlvScenarioZones(String scenarioId);
-   	
-   	Collection getDlvServiceTimeScenarioDays();
-   	
-   	DlvScenarioDay getServiceTimeScenarioDay(String code);
-   	
-   	void deleteServiceTimeScenario(DlvServiceTimeScenario scenario);
-   	
-   	Collection getDefaultZoneSupervisors(String zoneId);
-   	
-   	Collection getDeliveryGroups();
-   	
-   	DeliveryGroup getDeliveryGroupById(String Id);
-   	
-   	List<DlvLocation> getBuildingGroup(String dlvGroup);
+	DlvBuildingDetail getDlvBuildingDtl(String id);
+	
+	Collection getDeliveryBuildingDetails(String srubbedAddress, String zipCode);
 
-   	Collection getTrnFacilityTypes();
-   	Collection getTrnFacilitys();
-   	TrnFacility getTrnFacility(String id);
-   	TrnFacilityType getTrnFacilityType(String id);
+	Collection getDlvScenarioZones(String scenarioId);
+
+	Collection getDlvServiceTimeScenarioDays();
+
+	DlvScenarioDay getServiceTimeScenarioDay(String code);
+
+	void deleteServiceTimeScenario(DlvServiceTimeScenario scenario);
+
+	Collection getDefaultZoneSupervisors(String zoneId);
+
+	Collection getDeliveryGroups();
+
+	DeliveryGroup getDeliveryGroupById(String Id);
+
+	List<DlvLocation> getBuildingGroup(String dlvGroup);
+
+	Collection getTrnFacilityTypes();
+
+	Collection getTrnFacilitys();
+
+	Collection getTrnFacilityByType(String facilityType);
+
+	TrnFacility getTrnFacility(String id);
+
+	TrnFacilityType getTrnFacilityType(String id);
 
 	Collection getTrnFacilityLocations();
+
 	TrnFacilityLocation getTrnFacilityLocation(String id);
 }

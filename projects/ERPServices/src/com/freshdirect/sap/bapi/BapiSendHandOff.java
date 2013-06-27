@@ -47,6 +47,7 @@ public interface BapiSendHandOff extends BapiFunctionI {
 		public Date getReturnToBuildingTime();
 		public Date getCheckInTime();
 		public String getTrailerId();
+		public String getDepotParkingLocation();
 
 	}
 	

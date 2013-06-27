@@ -73,6 +73,7 @@ class JcoBapiSendHandOff extends JcoBapiFunction implements BapiSendHandOff {
 			{
 				routes.setValue(route.getTrailerId(), "ZTRAILER_NO");
 			}
+			routes.setValue(route.getDepotParkingLocation(), "ZDEPOT_PARK_LOC");
 			routes.nextRow();
 		}
 	}

@@ -8,10 +8,7 @@ import org.extremecomponents.table.core.TableModel;
 import org.extremecomponents.table.view.html.ColumnBuilder;
 import org.extremecomponents.util.HtmlBuilder;
 
-import com.freshdirect.transadmin.model.EmployeeInfo;
 import com.freshdirect.transadmin.model.ZonetypeResource;
-import com.freshdirect.transadmin.util.TransportationAdminProperties;
-import com.freshdirect.transadmin.web.model.ResourceList;
 
 public class FDResourceCell extends FDBaseCell  {
 	

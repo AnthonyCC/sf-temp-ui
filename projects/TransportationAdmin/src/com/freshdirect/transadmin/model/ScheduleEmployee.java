@@ -12,7 +12,7 @@ public class ScheduleEmployee implements Serializable, Cloneable {
 	private String employeeId;
 	private Region region;
 	private Date time;
-	private Zone depotZone;
+	private TrnFacility depotFacility;
 	private String day;
 	
 	private Date weekOf;
@@ -31,13 +31,13 @@ public class ScheduleEmployee implements Serializable, Cloneable {
 	}
 	
 	public ScheduleEmployee(String scheduleId, String employeeId,
-			Region region, Date time, Zone depotZone, String day, Date weekOf) {
+			Region region, Date time, TrnFacility depotFacility, String day, Date weekOf) {
 		super();
 		this.scheduleId = scheduleId;
 		this.employeeId = employeeId;
 		this.region = region;
 		this.time = time;
-		this.depotZone = depotZone;
+		this.depotFacility = depotFacility;
 		this.day = day;
 		this.weekOf = weekOf;
 	}
@@ -69,11 +69,11 @@ public class ScheduleEmployee implements Serializable, Cloneable {
 	public void setTime(Date time) {
 		this.time = time;
 	}
-	public Zone getDepotZone() {
-		return depotZone;
+	public TrnFacility getDepotFacility() {
+		return depotFacility;
 	}
-	public void setDepotZone(Zone depotZone) {
-		this.depotZone = depotZone;
+	public void setDepotFacility(TrnFacility depotFacility) {
+		this.depotFacility = depotFacility;
 	}
 	public Region getRegion() {
 		return region;
@@ -99,26 +99,30 @@ public class ScheduleEmployee implements Serializable, Cloneable {
 	}
 	public void setTimeS(String timeS) 
 	{
+		try {
+			if (timeS != null && timeS.length() > 0)
+				time = TransStringUtil.getServerTime(timeS);
+			else
+				time = null;
+		} catch (ParseException e) {
 
-		try 
-		{
-			if(timeS!=null&&timeS.length()>0)time=TransStringUtil.getServerTime(timeS);
-			else time=null;
-		} catch (ParseException e) 
-		{
-			
 		}
 	}
 	
-	public String getDepotZoneS() 
+	public String getDepotFacilityS() 
 	{
-		if(depotZone!=null)return depotZone.getZoneCode();
+		if (depotFacility != null)
+			return depotFacility.getFacilityId();
 		return null;
 	}
-	public void setDepotZoneS(String zoneS) 
+	public void setDepotFacilityS(String depotFacilityS) 
 	{
-		if(zoneS!=null&&zoneS.length()>0){ depotZone=new Zone();depotZone.setZoneCode(zoneS);}
-		else depotZone=null;
+		if(depotFacilityS != null && depotFacilityS.length() > 0){
+			depotFacility = new TrnFacility(); 
+			depotFacility.setFacilityId(depotFacilityS);
+		} else { 
+			depotFacility = null;
+		}
 	}
 	
 	public String getRegionS() 
@@ -139,9 +143,9 @@ public class ScheduleEmployee implements Serializable, Cloneable {
 			this.employeeId=empInfo.getEmployeeId();
 			if(ScheduleEmployeeInfo.OFF.equalsIgnoreCase(region.getCode()))
 			{
-				region=null;
-				time=null;
-				depotZone=null;
+				region = null;
+				time = null;
+				depotFacility = null;
 			}
 			if(this.scheduleId!=null&&this.scheduleId.trim().length()==0)this.scheduleId=null;
 			return false;
@@ -152,7 +156,7 @@ public class ScheduleEmployee implements Serializable, Cloneable {
 	public Object clone() throws CloneNotSupportedException {
 		
 		ScheduleEmployee _clone = new ScheduleEmployee(this.getScheduleId(), this.getEmployeeId(),
-											this.getRegion(), this.getTime(), this.getDepotZone(), this.getDay(), this.getWeekOf());
+											this.getRegion(), this.getTime(), this.getDepotFacility(), this.getDay(), this.getWeekOf());
 		return _clone;
 	}
 	
