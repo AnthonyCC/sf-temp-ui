@@ -1,3 +1,4 @@
+alter table TRANSP.ASSET_ATTRIBUTETYPE drop column data_type;
 
 delete from TRANSP.ASSET_ATTRIBUTE where attribute_type in 
 (
@@ -122,4 +123,3 @@ update transp.maintenanceissue set servicestatus = 'Active' where servicestatus 
 update transp.maintenanceissue set servicestatus = 'Out of Service' where servicestatus = 'Out-Service';
 
 ALTER TABLE TRANSP.MAINTENANCEISSUE  MODIFY  servicestatus DEFAULT 'Active';
-alter table TRANSP.ASSET_ATTRIBUTETYPE drop column data_type;
