@@ -214,7 +214,7 @@ public class FilteringComparatorUtil {
 	
 	public final static Comparator<ProductModel> COUPON_DOLLAR_OFF_COMPARATOR = new Comparator<ProductModel>() {
 
-		public int compare(ProductModel p1, ProductModel p2) {	
+		public int compare(ProductModel p2, ProductModel p1) {	
 			try {
 				FDCouponInfo cp1 = FDCouponFactory.getInstance().getCouponByUpc(p1.getDefaultSku().getProductInfo().getUpc());
 				FDCouponInfo cp2 = FDCouponFactory.getInstance().getCouponByUpc(p2.getDefaultSku().getProductInfo().getUpc());
@@ -256,7 +256,7 @@ public class FilteringComparatorUtil {
 	
 	public final static Comparator<ProductModel> COUPON_PERCENT_OFF_COMPARATOR = new Comparator<ProductModel>() {
 
-		public int compare(ProductModel p1, ProductModel p2) {			
+		public int compare(ProductModel p2, ProductModel p1) {			
 			try {
 				FDCouponInfo cp1 = FDCouponFactory.getInstance().getCouponByUpc(p1.getDefaultSku().getProductInfo().getUpc());
 				FDCouponInfo cp2 = FDCouponFactory.getInstance().getCouponByUpc(p2.getDefaultSku().getProductInfo().getUpc());
