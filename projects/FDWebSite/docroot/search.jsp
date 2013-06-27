@@ -27,6 +27,8 @@
 <%@ page import="com.freshdirect.fdstore.content.util.QueryParameterCollection"%>
 <%@ page import="com.freshdirect.webapp.taglib.coremetrics.CmMarketingLinkUtil"%>
 <%@ page import="com.freshdirect.webapp.util.FDURLUtil"%>
+<%@ page import="com.freshdirect.smartstore.fdstore.FDStoreRecommender"%>
+<%@ page import="com.freshdirect.smartstore.SessionInput"%>
 <%@ taglib uri='template' prefix='tmpl'%>
 <%@ taglib uri='bean' prefix='bean'%>
 <%@ taglib uri='logic' prefix='logic'%>
@@ -51,8 +53,15 @@ final int W_INDEX_RIGHT_CENTER = W_INDEX_TOTAL - 228 - W_INDEX_CENTER_PADDING;
 	request.setAttribute("sitePage", "www.freshdirect.com/search.jsp");
 	request.setAttribute("listPos", "SystemMessage,LittleRandy,CategoryNote");
 
+	//decrease pagesize to 12 if the user is srch_promoted and got recommendations with this variant [APPDEV-3033]
+	int pageSize = 16;
+	Recommendations recomm = FDStoreRecommender.getInstance().getRecommendations(EnumSiteFeature.getEnum("SRCH"), user, new SessionInput(user));
+	boolean searchPromoted = new Boolean(recomm.getVariant().getServiceConfig().get("srch_promoted"));
+	if(searchPromoted && recomm.getProducts()!=null && recomm.getProducts().size()>0){
+		pageSize = 12;
+	}
 	// storing the view settings in the session
-	FilteringNavigator nav = new FilteringNavigator(request,16);
+	FilteringNavigator nav = new FilteringNavigator(request,pageSize);
 
   request.setAttribute("filternav", nav);
 
@@ -230,33 +239,6 @@ final int W_INDEX_RIGHT_CENTER = W_INDEX_TOTAL - 228 - W_INDEX_CENTER_PADDING;
 	<% } %>	
 	</tmpl:put>
 	<%
-	// ##                                                ##
-	// ## Look if customer gets promoted search position ##
-	// ##                                                ##
-	if (promote_recommendation_row) {
-		%>
-		
-		<tmpl:put name="content" direct="true">
-			<%
-			pageContext.setAttribute("ISONSEARCHPAGE",true);
-			for (ListIterator<FilteringSortingItem <ProductModel>> it=products.listIterator() ; it.hasNext();) {
-				{
-				ProductImpression pi = confStrat.configure(it.next().getModel(), confContext);
-				%><div class="grid-item-container"><%@ include file="/includes/product/i_product_box.jspf" %></div><%
-				}		
-				// RECOMMENDER for "show all"
-				if ( it.nextIndex() == 12 ) {
-				%>
-				<tmpl:get name="recommendations-content" />
-				<%
-				}
-						
-			} 
-			%>
-			
-		</tmpl:put>
-		<%		
-	} else {
 		
 	// RECOMMENDER for "view 20"
 	if ( nav.getPageSize() != 0) { %>
@@ -284,7 +266,6 @@ final int W_INDEX_RIGHT_CENTER = W_INDEX_TOTAL - 228 - W_INDEX_CENTER_PADDING;
 		%>
 		
 	</tmpl:put>
-	<% }%>
   <tmpl:put name='filterNavigator'>
     <% 
     	request.setAttribute("filtermenus", menus);
