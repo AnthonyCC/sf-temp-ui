@@ -103,7 +103,7 @@ final int W_HORIZ_PATTERN_NOT_DEPARTMENT_MAX = 601;
 					
 					<td width="<%= horizontalPattern.getFolderCellWidth() %>" style="padding-bottom: 20px; padding-left: 2px; padding-right: 2px;"><font class="text11">
 					
-						<display:CategoryName category="<%= category %>" action="<%= actionUrl %>"/>		
+						<display:CategoryName category="<%= category %>" action="<%= actionUrl %>" style="font-weight: normal" />		
 						
 					</font></td> 
 					

@@ -4,7 +4,9 @@
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ page import='com.freshdirect.fdstore.FDStoreProperties'%>
 <%
-	boolean onLandingPage = Boolean.parseBoolean(NVL.apply(request.getParameter("refinement"), "true"));
+	boolean onLandingPage = false;
+	//toggle off landing page
+	//Boolean.parseBoolean(NVL.apply(request.getParameter("refinement"), "true"));
 	
 %>
 <html lang="en">

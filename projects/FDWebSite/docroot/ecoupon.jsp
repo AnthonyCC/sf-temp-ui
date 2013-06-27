@@ -161,30 +161,13 @@ final int W_INDEX_RIGHT_CENTER = W_INDEX_TOTAL - 228 - W_INDEX_CENTER_PADDING;
 	</tmpl:put>
 	
 	<tmpl:put name="recommendations-content" direct="true">
-		<fd:ProductGroupRecommender itemCount="16" siteFeature="SRCH" facility="default" id="recommendedProducts">
-		<div class="search-recommender">
-			<h3><%= recommendedProducts.getVariant().getServiceConfig().getPresentationTitle() %></h3>
-			<script type="text/javascript">
-				var search_recommender_events = {"afterScroll":  <fd:CmElement wrapIntoFunction="true" siteFeature="SRCH" elementCategory="carousel"/>}; 
-			</script>
-			<display:Carousel id="cat1_carousel" carouselId="cat1_carousel" width="816" numItems="4" showCategories="false" itemsToShow="<%= recommendedProducts.getProducts() %>" trackingCode="<%= trk %>" maxItems="32" eventHandlersObj="search_recommender_events">
-				<span class="smartstore-carousel-item">
-					<display:GetContentNodeWebId id="webId" product="<%= currentItem %>" clientSafe="<%= true %>">
-					<% ProductImpression pi = confStrat.configure((ProductModel)currentItem, confContext); %>
-					<a href="<%=FDURLUtil.getProductURI(pi.getProductModel(), trk)%>" hidden style="display: none;" class="product-name-link"></a> <%-- For Coremetrics impression tracking --%>
-					<%pageContext.setAttribute("PRODUCT_BOX_VARIANT",recommendedProducts.getVariant().getId());%>
-					<div class="grid-item-container"><%@ include file="/includes/product/i_product_box.jspf" %></div>
-					</display:GetContentNodeWebId>
-				</span>
-			</display:Carousel>
-		</div>
-		</fd:ProductGroupRecommender>	
+		<%-- removed content --%>
 	</tmpl:put>	
 	<%
 	// RECOMMENDER for "view 20"
 	if ( nav.getPageSize() != 0) { %>
 	<tmpl:put name="recommendations" direct="true">
-		<tmpl:get name="recommendations-content" />
+		<%-- removed content --%>
 	</tmpl:put>	
 	<% } %>
 	

@@ -29,6 +29,8 @@ This include expects the following:
 <%@ page import="com.freshdirect.webapp.taglib.fdstore.display.WineRegionLabelTag"%>
 <%@ page import="com.freshdirect.common.pricing.CharacteristicValuePrice"%>
 <%@ page import="com.freshdirect.common.pricing.Pricing"%>
+<%@ page import='com.freshdirect.framework.util.log.LoggerFactory' %>
+<%@ page import='org.apache.log4j.Category' %>
 
 <%@ taglib uri="logic" prefix="logic" %>
 <%@ taglib uri='/WEB-INF/shared/tld/freshdirect.tld' prefix='fd' %>
@@ -38,6 +40,9 @@ This include expects the following:
 <%@ include file="/shared/includes/product/i_product_initialize.jspf"%>
 <fd:PendingOrderChecker/>
 
+<%!
+static Category LOGGER = LoggerFactory.getInstance("i_product.jspf");
+%>
 <%
 final ProductModel __prd = (ProductModel) productNode;
 final String __cartMode = cartMode;
@@ -48,6 +53,8 @@ FDCartLineI __tempLine = templateLine;
 //
 final boolean isQuickBuy = request.getAttribute("i_product_inner") != null;
 final String __uid = request.getParameter("uid");
+
+ContentFactory cf = ContentFactory.getInstance();
 
 // "THE BIG IF" :)
 if ( skuSize == 0 ) {
@@ -527,35 +534,81 @@ if ( skuSize == 0 ) {
 					            String lpop = "large_pop";
 					            String title = variation.getDescription();
 					            
-					            boolean large = title.equalsIgnoreCase("MARINADE/RUB") || __prd.getParentNode().toString().indexOf("kosher_meat") > -1;
-				            %>
-				            
-				            <select name="<%= charId %>" class="text11" style="width:165px" onChange="checkFDDefAndSetOption(this.form,'<%= charId %>',this.options[this.selectedIndex].value,'<%=fddefPop%>?catId=<%= __tempLine.getCategoryName() %>&prodId=<%= __tempLine.getProductName() %>&charName=<%=charName%>&tmpl=<%=large?lpop:spop%>&title=<%=title%>',<%=(large?largePopup:smallPopup).getHeight()%>,<%=(large?largePopup:smallPopup).getWidth()%>);">
-				            
-	            				<option value=""><%= variation.getDescription() %><% if (variation.isOptional()) { %> (optional) <% } %></option>
+				                String charFileName = "media/editorial/fd_defs/characteristics/"+charName+ ".html";
+				                
+				                boolean theFileExists = false;
 
-            					<logic:iterate id="option" collection="<%= variation.getVariationOptions() %>" type="com.freshdirect.fdstore.FDVariationOption">
-					                <%
-						                double cvprice = 0.0;
-						                CharacteristicValuePrice cvp = defaultPricing.findCharacteristicValuePrice( variation.getName(), option.getName() );
-						                if ( cvp != null ) {
-						                    cvprice = cvp.getPrice();
-						                }
-					                %>
-					                <option value="<%= option.getName() %>"<%= option.getName().equals(reqVariationOption) ? " SELECTED" : "" %>>&nbsp;<%= option.getDescription() %>
-					                <%
-						                if ( cvprice > 0.0 ) {
-						                    %> - <%= JspMethods.formatPrice(cvp) %><%
-						                } else if ( !allOptionsFree ) {
-						                    %> - no charge<%
-						                }
-					                %>
-					                </option>
-            					</logic:iterate>
-            
-            					<option value="FDD">NEED HELP CHOOSING?</option>
-            					
-            				</select>
+								try {
+							    	URL url = MediaUtils.resolve( FDStoreProperties.getMediaPath(), charFileName );
+									InputStream in = url.openStream();
+									if ( in != null ) {
+								  		in.close();
+								    	theFileExists = true;
+									}
+								} catch ( Exception ex ) { } 
+					            
+					            boolean large = title.equalsIgnoreCase("MARINADE/RUB") || __prd.getParentNode().toString().indexOf("kosher_meat") > -1;
+				           
+				            	
+					            List availableFDVarOptions = new ArrayList();
+					            FDVariationOption[] varOpts = (FDVariationOption[]) variation.getVariationOptions();
+					            
+								for (int optIdx=0;optIdx<varOpts.length;optIdx++ ){
+									String optSkuCode=varOpts[optIdx].getSkuCode();
+									
+									//somtimes skucode attrib in erps may be missing..so handle it, so we dont get SkuNotFoundException
+									if (optSkuCode==null || "".equals(optSkuCode.trim())) {
+										availableFDVarOptions.add(varOpts[optIdx]); //not a product, add to list
+									} else {
+									
+										ProductModel pm =(ProductModel)cf.getProduct(optSkuCode);
+										if (pm == null) {
+											LOGGER.debug("Variation has orphan sku with no ProductModel): "+varOpts[optIdx]+" (Sku: "+optSkuCode+")");
+										} else {
+											SkuModel sku = pm.getSku(optSkuCode);
+											
+											if (sku!=null && !sku.isUnavailable()) {
+												availableFDVarOptions.add(varOpts[optIdx]);
+											} else {
+												if (sku.isUnavailable()) {
+													LOGGER.debug("Skipping as unavailable: "+varOpts[optIdx]+" (Sku: "+optSkuCode+")");
+												}
+											}
+										}
+									}
+								}
+				            %>
+				                    
+				            <% if (!availableFDVarOptions.isEmpty()) { %>
+					            <select name="<%= charId %>" class="text11" style="width:165px" onChange="checkFDDefAndSetOption(this.form,'<%= charId %>',this.options[this.selectedIndex].value,'<%=fddefPop%>?catId=<%= __tempLine.getCategoryName() %>&prodId=<%= __tempLine.getProductName() %>&charName=<%=charName%>&tmpl=<%=large?lpop:spop%>&title=<%=title%>',<%=(large?largePopup:smallPopup).getHeight()%>,<%=(large?largePopup:smallPopup).getWidth()%>);">
+					            
+		            				<option value=""><%= variation.getDescription() %><% if (variation.isOptional()) { %> (optional) <% } %></option>
+									
+	            					<logic:iterate id="option" collection="<%= availableFDVarOptions %>" type="com.freshdirect.fdstore.FDVariationOption">
+						                <%
+							                double cvprice = 0.0;
+							                CharacteristicValuePrice cvp = defaultPricing.findCharacteristicValuePrice( variation.getName(), option.getName() );
+							                if ( cvp != null ) {
+							                    cvprice = cvp.getPrice();
+							                }
+						                %>
+						                <option value="<%= option.getName() %>"<%= option.getName().equals(reqVariationOption) ? " SELECTED" : "" %>>&nbsp;<%= option.getDescription() %>
+						                <%
+							                if ( cvprice > 0.0 ) {
+							                    %> - <%= JspMethods.formatPrice(cvp) %><%
+							                } else if ( !allOptionsFree ) {
+							                    %> - no charge<%
+							                }
+						                %>
+						                </option>
+	            					</logic:iterate>
+	            
+	            					<% if (theFileExists) { %>
+	            						<option value="FDD">NEED HELP CHOOSING?</option>
+	            					<% } %>
+	            					
+	            				</select>
+            				<% } %>
             				
             				<%
                 			// space between multiple optional pulldowns
