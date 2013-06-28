@@ -11,6 +11,10 @@
 	if (successPage == null) {      		
 		    successPage = "/login/index.jsp";        
 	}
+	String userFromSession = null;
+	FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
+	if(user != null)
+		userFromSession = user.getUserId();
 %>
 <fd:LoginController successPage="<%= successPage %>" mergePage="/login/merge_cart.jsp" result='result'>
 
@@ -71,7 +75,7 @@ String[] checkErrorType = {"authentication", "technical_difficulty"};
 <form name="fd_login" method="post" action="<%= request.getRequestURI()+"?"+StringUtil.escapeXssUri(request.getQueryString()) %>">
 <TR>
 	<TD width="110" ALIGN="right" class="text13" style="padding-right: 10px;"><span style="white-space: nowrap;">* E-mail Address&nbsp;</span></TD>
-	<TD width="125"><input name="userid" size="14" style="width: 140px" type="text" required="true" maxlength="128" tabindex="1" class="text11" value="<%= request.getParameter("userid")!=null ? request.getParameter("userid") : ""%>"></td> 
+	<TD width="125"><input name="userid" size="14" style="width: 140px" type="text" required="true" maxlength="128" tabindex="1" class="text11" value="<%= request.getParameter("userid")!=null ? request.getParameter("userid") : userFromSession%>"></td> 
 	<td></td>
 	<td class="text11rbold" width=220>
 	<fd:ErrorHandler result='<%=result%>' name='userid' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>
