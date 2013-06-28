@@ -12,6 +12,7 @@
 <%@ taglib uri='bean' prefix='bean' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='template' prefix='tmpl' %>
+<%@ page buffer="16kb" autoFlush="false" %>
 <%
 	String successPage = "/request_product.jsp?"+request.getQueryString();
 	String department = request.getParameter("department");
@@ -38,7 +39,9 @@
 	int prodRequests = 3;
 
 %>
-<tmpl:insert template='/common/template/large_pop.jsp'>
+
+<tmpl:insert template='/shared/template/large_pop.jsp'>
+
 	<tmpl:put name='title' direct='true'>FreshDirect - Request a Product</tmpl:put>
 		<tmpl:put name='content' direct='true'>
 
