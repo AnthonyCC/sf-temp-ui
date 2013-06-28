@@ -24,6 +24,7 @@ import com.freshdirect.transadmin.model.EmployeeRole;
 import com.freshdirect.transadmin.model.EmployeeStatus;
 import com.freshdirect.transadmin.model.EmployeeTeam;
 import com.freshdirect.transadmin.model.EmployeeTruckPreference;
+import com.freshdirect.transadmin.model.IWaveInstanceSource;
 import com.freshdirect.transadmin.model.Plan;
 import com.freshdirect.transadmin.model.Region;
 import com.freshdirect.transadmin.model.UPSRouteInfo;
@@ -1250,5 +1251,11 @@ public class DispatchPlanUtil {
 			}
 			return webInfo;
 	    }
+	 
+	 public static boolean isShuttlePlan(IWaveInstanceSource model){
+		return (model.getDestinationFacility()!=null && 
+				EnumTransportationFacilitySrc.DEPOTDELIVERY.getName().equals(model.getDestinationFacility().getTrnFacilityType().getName()));
+				 
+	 }
 	 
 }

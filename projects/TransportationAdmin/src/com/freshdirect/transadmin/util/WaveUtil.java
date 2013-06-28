@@ -278,13 +278,13 @@ public class WaveUtil {
 										, EnumWaveInstancePublishSrc source, String userId) {
 
 		Map<Date, Set<String>> deliveryMapping = new HashMap<Date, Set<String>>();
-		if(previousModel != null && previousModel.getZone() != null) {
+		if(previousModel != null && previousModel.getZone() != null && !DispatchPlanUtil.isShuttlePlan(previousModel)) {
 			if(!deliveryMapping.containsKey(previousModel.getDeliveryDate())) {
 				deliveryMapping.put(previousModel.getDeliveryDate(), new HashSet<String>());
 			}
 			deliveryMapping.get(previousModel.getDeliveryDate()).add(previousModel.getZone().getZoneCode());
 		}
-		if(currentModel != null && currentModel.getZone() != null) {
+		if(currentModel != null && currentModel.getZone() != null && !DispatchPlanUtil.isShuttlePlan(currentModel)) {
 			if(!deliveryMapping.containsKey(currentModel.getDeliveryDate())) {
 				deliveryMapping.put(currentModel.getDeliveryDate(), new HashSet<String>());
 			}
