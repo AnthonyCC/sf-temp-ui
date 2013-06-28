@@ -17,14 +17,14 @@ if (user.getLevel() == FDUserI.GUEST) {
 	<div class="nodeliver-form">
 		<% if (!user.isFutureZoneNotificationEmailSentForCurrentAddress()) { %>
 			<form class="n"><label class="e"><b>That e-mail has already been added!</b><br>Please enter a different e-mail address.</label><label class="n"></label><div><input type="text" id="location-email" class="placeholder" placeholder="enter your e-mail address"><input type="image" src="/media_stat/images/locationbar/button_submit.png" id="location-submit"></div><div class="p"></div></form>
-			<div class=""><label class="n">Enter your email address and we'll notify you when service expands in your area</label></div>
+			<div class=""><label class="n">Enter your email address and we'll notify you when service expands in your area.</label></div>
 		<% } else { %>
-			<div class=""><b>Thanks for your email!</b> We will notify you once we start delivering your area</div>
+			<div class=""><b>Thanks for your email!</b> We will notify you once we start delivering your area.</div>
 		<% } %>
 	</div>
 </div>
 <div id="nodeliver-thanks" class="invisible" data-type="sitemessage">
-	<div class="nodeliver-form"><b>Thanks for your email!</b> We will notify you once we start delivering your area</div>
+	<div class="nodeliver-form"><b>Thanks for your email!</b> We will notify you once we start delivering your area.</div>
 </div><% 
 	
 	} else if(EnumDeliveryStatus.PARTIALLY_DELIVER.equals(deliveryStatus) ) {
