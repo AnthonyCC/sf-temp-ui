@@ -97,6 +97,11 @@ public class ReferralFormValidator implements Validator {
 			if(model.getNotes() != null && model.getNotes().length() > 1999) {				
 				errors.rejectValue("notes","field.notes", "Notes can take only upto 2000 characters.");				
 			}
+			
+			//referral page text
+			if(model.getReferralPageText() != null && model.getReferralPageText().length() > 160) {				
+				errors.rejectValue("referralPageText","field.referralPageText", "Referral Page text can take only upto 160 characters.");				
+			}
 		
 	}
 }
