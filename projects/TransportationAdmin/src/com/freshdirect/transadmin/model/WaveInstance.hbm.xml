@@ -60,5 +60,8 @@
         <property name="equipmentType" type="string">
             <column name="equipment_type" length="100" />
         </property>
+       	<property name="todrestriction" type="string">
+			 <column name="todrestriction" length="50" />
+		</property>
     </class>
 </hibernate-mapping>

@@ -13,6 +13,7 @@ public class TrnFacility implements java.io.Serializable {
 	private BigInteger leadToTime;
 	private String longitude;
 	private String latitude;
+	private String todrestriction;
 	
 	private TrnFacilityType trnFacilityType;
 	private TrnFacilityLocation facilityLocation;
@@ -131,6 +132,14 @@ public class TrnFacility implements java.io.Serializable {
 	@Override
 	public String toString() {
 		return "Facility [code=" + name + "]";
+	}
+
+	public String getTodrestriction() {
+		return todrestriction;
+	}
+
+	public void setTodrestriction(String todrestriction) {
+		this.todrestriction = todrestriction;
 	}
 
 }

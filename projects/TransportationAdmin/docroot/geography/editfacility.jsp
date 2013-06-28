@@ -116,6 +116,15 @@
 							 		&nbsp;<form:errors path="leadToTime" />
 							 	</td>
 							 </tr> 
+							  <tr>
+							    <td>TOD Restriction</td>
+							    <td> 								  
+							  	 	<form:input maxlength="50" size="50" path="todrestriction" />
+							 	</td>
+							 	<td>
+							 		&nbsp;<form:errors path="todrestriction" />
+							 	</td>
+							 </tr> 
 							 
                             <tr><td colspan="3">&nbsp;</td></tr>
 							<tr>

@@ -177,7 +177,8 @@
 				              <ec:column property="routingWaveInstanceId"  title="REF ID"/>
 				              <ec:column property="deliveryDate" title="Delivery" />             
   			                  <ec:column property="originFacility" title="Origin Facility"/>
-  			                   <ec:column property="equipmentType.equipmentTypeID" title="Equipment Type"/>
+  			                  <ec:column property="equipmentType.equipmentTypeID" title="Equipment Type"/>
+  			                  <ec:column property="todRestrictionModel" title="TOD Restriction" />
 				              <ec:column property="area.areaCode" title="Zone" />
 				              <ec:column property="dispatchTime" title="Dispatch" />
 				              <ec:column property="waveStartTime" title="Start" />
@@ -185,7 +186,7 @@
 				              <ec:column property="maxRunTimeInfo" title="Max Time" />
 				              <ec:column property="noOfResources" title="Resources" />
 				              <ec:column property="cutOffTime" title="Handoff Time" />
-				              <ec:column property="source" title="Source" />				              
+				              <ec:column property="source" title="Source" />
 				              <ec:column cell="waveinstancestatus" property="isInSync" title="Status"/>
 				              <ec:column cell="positive" property="force" title="Force"/>
 				              <ec:column property="notificationMessage" title="Notification" />				              				              																											  	                           

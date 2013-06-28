@@ -33,6 +33,7 @@ public class WaveInstanceCommand extends WaveInstance {
 		this.setSource(instance.getSource());
 		this.setOriginFacility(instance.getOriginFacility());
 		this.setEquipmentType(instance.getEquipmentType());
+		this.setTodRestrictionModel(instance.getTodRestrictionModel());
 		
 	}
 

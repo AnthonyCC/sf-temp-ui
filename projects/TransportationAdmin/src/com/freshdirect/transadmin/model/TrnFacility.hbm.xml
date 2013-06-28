@@ -33,6 +33,9 @@
         </property>
         <property name="latitude" type="string">
             <column name="LATITUDE" length="15" />
+        </property>     
+         <property name="todrestriction" type="string">
+            <column name="todrestriction" length="50" />
         </property>          
         <many-to-one name="trnFacilityType" class="com.freshdirect.transadmin.model.TrnFacilityType" fetch="select" lazy="false">
             <column name="FACILITYTYPE_CODE" length="32" not-null="true" />

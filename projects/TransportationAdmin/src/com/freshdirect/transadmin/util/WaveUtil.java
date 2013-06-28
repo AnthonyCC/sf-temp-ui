@@ -217,6 +217,7 @@ public class WaveUtil {
 			_tmpWaveInstance.setNoOfResources(waveMppEntry.getValue());
 			_tmpWaveInstance.setSource(source.getName());
 			_tmpWaveInstance.setStatus(EnumWaveInstanceStatus.NOTSYNCHRONIZED);
+			_tmpWaveInstance.setTodrestriction(waveMppEntry.getKey().getOriginFacility().getTodrestriction());
 			waveInstancesToSave.add(_tmpWaveInstance);
 		}
 		for(Map.Entry<WaveInstanceKey, WaveInstance> waveMppCurrEntry : waveMappingOrphans.entrySet()) {

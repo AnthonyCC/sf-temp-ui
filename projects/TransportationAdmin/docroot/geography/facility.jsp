@@ -44,7 +44,7 @@
       </div>
 	   <table>
     <tr>    
-	  <td style="vertical-align: top;" width="65%">
+	  <td style="vertical-align: top;" width="45%">
 	       <form id="facilityListForm" action="" method="post">  
 	      <ec:table items="facilitys"  action="${pageContext.request.contextPath}/facility.do"
 	            imagePath="${pageContext.request.contextPath}/images/table/*.gif"  title="Facility"
@@ -59,16 +59,17 @@
 	              <ec:column title=" " width="5px" 
                     filterable="false" sortable="false" cell="selectcol"
                     property="facilityId" />
-				  <ec:column property="name" title="Facility Code"/>
-				  <ec:column property="description" title="Facility Description" />
+				  <ec:column property="name" title="Facility Code" width="8"/>
+				  <ec:column property="description" title="Facility Description"  width="15"/>
 				  <ec:column property="trnFacilityType" title="Facility Type" width="10"/>
-				  <ec:column property="routingCode" title="Routing Code"/>
-				  <ec:column property="facilityLocation" title="Facility Location" width="10"/>
-				  <ec:column property="prefix" title="Prefix" width="10"/>
-				  <ec:column property="latitude" title="Latitude" width="10"/>
-              	  <ec:column property="longitude" title="Longitude" width="10"/>
-           		  <ec:column property="leadFromTime" title="From Time" width="10"/>
-				  <ec:column property="leadToTime" title="To Time" width="10"/>
+				  <ec:column property="routingCode" title="Routing Code" width="10"/>
+				  <ec:column property="facilityLocation" title="Facility Location" width="8"/>
+				  <ec:column property="prefix" title="Prefix" width="5"/>
+				  <ec:column property="latitude" title="Latitude" width="8"/>
+              	  <ec:column property="longitude" title="Longitude" width="8"/>
+           		  <ec:column property="leadFromTime" title="From Time" width="5"/>
+				  <ec:column property="leadToTime" title="To Time" width="5"/>
+				  <ec:column property="todrestriction" title="TOD Restriction" width="10"/>
 	            </ec:row>
 	          </ec:table>
 	           </form>  

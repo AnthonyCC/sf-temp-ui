@@ -25,6 +25,7 @@ public class WaveInstance implements java.io.Serializable, TrnBaseEntityI  {
 	private TrnFacility originFacility;
 	private TrnFacility destinationFacility;	
 	private String equipmentType;
+	private String todrestriction;
 
 	
 	public TrnFacility getOriginFacility() {
@@ -148,6 +149,14 @@ public class WaveInstance implements java.io.Serializable, TrnBaseEntityI  {
 
 	public void setEquipmentType(String equipmentType) {
 		this.equipmentType = equipmentType;
+	}
+
+	public String getTodrestriction() {
+		return todrestriction;
+	}
+
+	public void setTodrestriction(String todrestriction) {
+		this.todrestriction = todrestriction;
 	}
 
 }
