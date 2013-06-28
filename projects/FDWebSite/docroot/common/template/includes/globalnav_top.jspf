@@ -65,7 +65,7 @@ if(user != null) {
 	  <div class="message invisible" data-type="reservationwarning"><%@ include file="/common/template/includes/i_reservation_warning.jspf"%></div><%
 }%>
 	<script>(function($){ $('.message').messages('add'); })(jQuery)</script>
-	<table width="<%=W_GLOBAL_NAV_TOP_TOTAL %>" border="0" cellpadding="0" cellspacing="0">
+	<table width="<%=W_GLOBAL_NAV_TOP_TOTAL %>" border="0" cellpadding="0" cellspacing="0" id="globalnav_top">
 	<tr>
 		<td width="182" ROWSPAN="2" valign="BOTTOM">
 	<%
@@ -144,11 +144,11 @@ if(user != null) {
 	<% } %>
 	
 <% } else { %>
-	<table width="<%=W_GLOBAL_NAV_TOP_TOTAL %>" border="0" cellpadding="0" cellspacing="0">
+	<table width="<%=W_GLOBAL_NAV_TOP_TOTAL %>" border="0" cellpadding="0" cellspacing="0" id="globalnav_top">
 	<tr>
 		<td width="182" ROWSPAN="3" valign="BOTTOM">
 	
-	    <a href="/index.jsp" onMouseover="swapImage('FD_LOGO','/media/images/navigation/global_nav/fd_logo_on.gif')" onMouseout="swapImage('FD_LOGO','/media/images/navigation/global_nav/fd_logo_off.gif')"><img src="/media/images/navigation/global_nav/fd_logo_off.gif" width="195" height="81" border="0" alt="FreshDirect" name="FD_LOGO"></a>
+	    <a href="/index.jsp" ><img src="/media/images/navigation/global_nav/fd_logo_on.gif" width="195" height="81" border="0" alt="FreshDirect" name="FD_LOGO"></a>
 	    </td>
 	</tr>
 	<tr>
