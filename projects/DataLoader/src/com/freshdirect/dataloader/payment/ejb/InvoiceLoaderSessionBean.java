@@ -135,6 +135,7 @@ public class InvoiceLoaderSessionBean extends SessionBeanSupport {
 			FDCustomerInfo fdInfo = new FDCustomerInfo(erpInfo.getFirstName(), erpInfo.getLastName());
 			fdInfo.setHtmlEmail(!erpInfo.isEmailPlaintext());
 			fdInfo.setEmailAddress(erpInfo.getEmail());
+			fdInfo.setGoGreen(erpInfo.isGoGreen());
 			
 			MailerGatewaySB mailBean = this.getMailerGatewayHome().create();
 			mailBean.enqueueEmail(FDEmailFactory.getInstance().createFinalAmountEmail(fdInfo, fdOrder));
