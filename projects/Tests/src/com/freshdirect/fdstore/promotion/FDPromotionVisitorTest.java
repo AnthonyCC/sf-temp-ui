@@ -27,33 +27,33 @@ public class FDPromotionVisitorTest extends TestCase {
 		Promotion p;
 		Date d  = new Date();
 		p = new Promotion(new PrimaryKey("s1"), EnumPromotionType.SAMPLE, "s1", "s1", "s1",new Timestamp(d.getTime()));
-		p.setApplicator(new SampleLineApplicator(new ProductReference("cat", "prod1"), 40));
+		p.addApplicator(new SampleLineApplicator(new ProductReference("cat", "prod1"), 40));
 		promotions.put(p.getPromotionCode(), p);
 
 		p = new Promotion(new PrimaryKey("s2"), EnumPromotionType.SAMPLE, "s2", "s2", "s2",new Timestamp(d.getTime()));
-		p.setApplicator(new SampleLineApplicator(new ProductReference("cat", "prod2"), 40));
+		p.addApplicator(new SampleLineApplicator(new ProductReference("cat", "prod2"), 40));
 		promotions.put(p.getPromotionCode(), p);
 
 		p = new Promotion(new PrimaryKey("gc1"), EnumPromotionType.GIFT_CARD, "gc1", "gc1", "gc1",new Timestamp(d.getTime()));
 		p.addStrategy(new RedemptionCodeStrategy("GC1"));
-		p.setApplicator(new HeaderDiscountApplicator(new HeaderDiscountRule(40, 10)));
+		p.addApplicator(new HeaderDiscountApplicator(new HeaderDiscountRule(40, 10)));
 		promotions.put(p.getPromotionCode(), p);
 
 		p = new Promotion(new PrimaryKey("gc2"), EnumPromotionType.GIFT_CARD, "gc2", "gc2", "gc2",new Timestamp(d.getTime()));
 		p.addStrategy(new RedemptionCodeStrategy("GC2"));
-		p.setApplicator(new HeaderDiscountApplicator(new HeaderDiscountRule(40, 20)));
+		p.addApplicator(new HeaderDiscountApplicator(new HeaderDiscountRule(40, 20)));
 		promotions.put(p.getPromotionCode(), p);
 
 		p = new Promotion(new PrimaryKey("su1"), EnumPromotionType.SIGNUP, "su1", "su1", "su1",new Timestamp(d.getTime()));
-		p.setApplicator(new SignupDiscountApplicator(new SignupDiscountRule[] {new SignupDiscountRule(40, 50, 15)}));
+		p.addApplicator(new SignupDiscountApplicator(new SignupDiscountRule[] {new SignupDiscountRule(40, 50, 15)}));
 		promotions.put(p.getPromotionCode(), p);
 
 		p = new Promotion(new PrimaryKey("su2"), EnumPromotionType.SIGNUP, "su2", "su2", "su2",new Timestamp(d.getTime()));
-		p.setApplicator(new SignupDiscountApplicator(new SignupDiscountRule[] {new SignupDiscountRule(40, 30, 15)}));
+		p.addApplicator(new SignupDiscountApplicator(new SignupDiscountRule[] {new SignupDiscountRule(40, 30, 15)}));
 		promotions.put(p.getPromotionCode(), p);
 
 		p = new Promotion(new PrimaryKey("rc1"), EnumPromotionType.REDEMPTION, "rc1", "rc1", "rc1",new Timestamp(d.getTime()));
-		p.setApplicator(new PercentOffApplicator(40, 0.1,50));
+		p.addApplicator(new PercentOffApplicator(40, 0.1,50));
 		promotions.put(p.getPromotionCode(), p);
 
 	}

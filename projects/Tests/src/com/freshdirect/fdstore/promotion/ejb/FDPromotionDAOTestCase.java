@@ -4,6 +4,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -15,6 +16,7 @@ import com.freshdirect.fdstore.promotion.FraudStrategy;
 import com.freshdirect.fdstore.promotion.GeographyStrategy;
 import com.freshdirect.fdstore.promotion.LimitedUseStrategy;
 import com.freshdirect.fdstore.promotion.Promotion;
+import com.freshdirect.fdstore.promotion.PromotionApplicatorI;
 import com.freshdirect.fdstore.promotion.PromotionGeography;
 import com.freshdirect.fdstore.promotion.PromotionI;
 import com.freshdirect.fdstore.promotion.SampleLineApplicator;
@@ -67,7 +69,7 @@ public class FDPromotionDAOTestCase extends DbTestCaseSupport {
 		assertEquals("P_ONE", p1.getPromotionCode());
 		assertEquals("Header Promotion One", p1.getDescription());
 		assertEquals(EnumPromotionType.HEADER, p1.getPromotionType());
-		assertNull(p1.getApplicator());
+		assertNull(p1.getApplicatorList());
 
 		assertEquals(7, p1.getStrategies().size());
 		assertNotNull(p1.getStrategy(DateRangeStrategy.class));
@@ -82,9 +84,18 @@ public class FDPromotionDAOTestCase extends DbTestCaseSupport {
 		assertEquals("P_TWO", p2.getPromotionCode());
 		assertEquals("Sample Product Promo 1", p2.getDescription());
 		assertEquals(EnumPromotionType.SAMPLE, p2.getPromotionType());
-		SampleLineApplicator papp2 = (SampleLineApplicator) p2.getApplicator();
+		for (Iterator<PromotionApplicatorI> i = p2.getApplicatorList().iterator(); i.hasNext();) {
+			PromotionApplicatorI _applicator = i.next();
+			if(_applicator instanceof SampleLineApplicator) {
+				SampleLineApplicator papp2 = (SampleLineApplicator) _applicator;
+				assertEquals(new ProductReference("foo1", "bar1"), papp2.getProductReference());
+				assertEquals(30.0, papp2.getMinSubtotal(), 0.001);
+			}
+		}
+		/*SampleLineApplicator papp2 = (SampleLineApplicator) p2.getApplicator();
 		assertEquals(new ProductReference("foo1", "bar1"), papp2.getProductReference());
 		assertEquals(30.0, papp2.getMinSubtotal(), 0.001);
+		*/
 
 		assertEquals(6, p2.getStrategies().size());
 		assertNotNull(p2.getStrategy(DateRangeStrategy.class));
@@ -98,7 +109,7 @@ public class FDPromotionDAOTestCase extends DbTestCaseSupport {
 		assertEquals("P_THREE", p3.getPromotionCode());
 		assertEquals("Line Item Promo", p3.getDescription());
 		assertEquals(EnumPromotionType.LINE_ITEM, p3.getPromotionType());
-		assertNotNull(p3.getApplicator());
+		assertNotNull(p3.getApplicatorList());
 
 		assertEquals(6, p3.getStrategies().size());
 		assertNotNull(p3.getStrategy(DateRangeStrategy.class));
