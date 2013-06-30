@@ -48,7 +48,7 @@ public class WaveInstance  extends BaseModel implements IWaveInstance {
 	private String destinationFacility;
 	private String routingCode;
 	
-	private String tODRestrictionModel;
+	private String todRestrictionModel;
 	
 	public String getRoutingCode() {
 		return routingCode;
@@ -388,7 +388,7 @@ public class WaveInstance  extends BaseModel implements IWaveInstance {
 		this.setOvertimeWage(baseInstance.getOvertimeWage());
 		this.setRushHourModel(baseInstance.getRushHourModel());
 		this.setTimePeriodTravelSpeedsType(baseInstance.getTimePeriodTravelSpeedsType());
-		this.setTODRestrictionModel(baseInstance.getTODRestrictionModel());
+		//this.setTODRestrictionModel(baseInstance.getTODRestrictionModel());
 	}
 	
 	public static void consolidateWaveInstance(IWaveInstance _rootWaveInstance, IWaveInstance _srcWaveInst) {
@@ -418,12 +418,12 @@ public class WaveInstance  extends BaseModel implements IWaveInstance {
 		this.timePeriodTravelSpeedsType = timePeriodTravelSpeedsType;
 	}
 
-	public String getTODRestrictionModel() {
-		return tODRestrictionModel;
+	public String getTodRestrictionModel() {
+		return todRestrictionModel;
 	}
 
-	public void setTODRestrictionModel(String tODRestrictionModel) {
-		this.tODRestrictionModel = tODRestrictionModel;
+	public void setTodRestrictionModel(String todRestrictionModel) {
+		this.todRestrictionModel = todRestrictionModel;
 	}
 
 	public String getDestinationFacility() {
