@@ -908,3 +908,10 @@ td.noTopBorder {
 	background-color: #fff;
 	position: absolute;
 }
+
+
+#messages .cutoff {
+	height:auto;
+	text-align:left;
+	line-height:1.4em;
+}

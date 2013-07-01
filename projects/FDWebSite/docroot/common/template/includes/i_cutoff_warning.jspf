@@ -30,7 +30,7 @@ if (cutoffInfo != null) {
     
 if (cutoffInfo.displayWarning()) {
     cutoffInfoDisplayed = true;
-%><div class="message invisible" id="cutoff" data-type="cutoff"><div class="cutoff">	
+%><div class="message invisible" id="cutoff" data-type="cutoff">	
 				<% if (cutoffInfo.hasMultipleCutoff() && !cutoffInfo.getNextCutoff().equals(cutoffInfo.getLastCutoff())) { %>
 					<b>The cut off time for evening 
 						<% if (isHomeAddr) { %>delivery in your area
@@ -51,7 +51,7 @@ if (cutoffInfo.displayWarning()) {
 				<% if ((isHomeAddr && !isUnknown) || isCorporateAddr) { %><a href="<% if (_user.getAdjustedValidOrderCount() >= 1) { %>/your_account/delivery_info_avail_slots<% } else { %>/help/delivery_info<%= EnumServiceType.CORPORATE.equals(_user.getSelectedServiceType()) ? "_cos" : ""%><% } %>.jsp"><b>Click here</b></a> to see all available time slots<% if (!isCorporateAddr) { %> for your address in <%=cutoffInfo.getZipCode()%><% } %>.
 				<% } else if (isPickupAddr || isUnknown) {%><a href="/help/delivery_lic_pickup.jsp"><b>Click here</b></a> to see all available time slots.
 				<% } %>
-</div></div><%
+</div><%
 } else if (cutoffInfo.isHourPastCutoff()) {
 	String uri = request.getRequestURI().toLowerCase();
 	if (uri.endsWith("index.jsp") || uri.endsWith("view_cart.jsp")) {
