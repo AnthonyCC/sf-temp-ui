@@ -1336,7 +1336,10 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements Sessi
 		}
 				
 		FDCartLineI theCartLine = processSimple(suffix, prodNode, product, quantity, salesUnit, origCartLineId, variantId, pricingZoneId ,originalGrp);
-
+		theCartLine.setCoremetricsPageId(request.getParameter("coremetricsPageId"));
+		theCartLine.setCoremetricsPageContentHierarchy(request.getParameter("coremetricsPageContentHierarchy"));
+		
+		
 		// recipe source tracking
 		String recipeId;
 		if (originalLine != null) {

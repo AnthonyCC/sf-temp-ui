@@ -480,6 +480,7 @@ final int W_GROUPSCALE_TOTAL = 601;
 			%>
 			<form name="<%= TX_FORM_NAME %>" id='groupScale_form' method="POST">
 			<fd:AddToCartPending id="groupScale_form"/>
+			<fd:CmFieldDecorator/>
 			<input type="hidden" name="skuCode_big" value="<%=minSku.getSkuCode()%>" />
 			<input type="hidden" name="salesUnit_big" value="<%=firstSalesUnit%>" />
 			<input type="hidden" name="catId_big" value="<%=prodCatId%>" />

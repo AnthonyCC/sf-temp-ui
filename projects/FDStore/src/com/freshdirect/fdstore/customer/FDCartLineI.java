@@ -168,4 +168,8 @@ public interface FDCartLineI extends FDProductSelectionI {
 	public void setTaxationType(EnumTaxationType taxationType) ;
 	public void setCouponApplied(boolean applied);
 	public boolean hasCouponApplied();
+	public String getCoremetricsPageId();
+	public void setCoremetricsPageId(String coremetricsPageId);
+	public String getCoremetricsPageContentHierarchy();
+	public void setCoremetricsPageContentHierarchy(String coremetricsPageContentHierarchy);
 }

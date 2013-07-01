@@ -26,7 +26,7 @@ public abstract class AbstractCmTag extends SimpleTagSupport {
 	private static final String END_SCRIPT_TAG = "</script>";
 	private static final String START_FUNCTION = "function() {";
 	private static final String END_FUNCTION = "}";
-	private static final String ATTR_DELIMITER = "-_-";
+	public static final String ATTR_DELIMITER = "-_-";
 	
 	private static final String AGENT_SESSION_NAME = "EDITING_AGENT";
 		

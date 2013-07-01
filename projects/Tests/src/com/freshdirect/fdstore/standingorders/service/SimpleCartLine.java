@@ -696,4 +696,29 @@ public class SimpleCartLine implements FDCartLineI {
 		
 	}
 
+	@Override
+	public String getCoremetricsPageId() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void setCoremetricsPageId(String coremetricsPageId) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public String getCoremetricsPageContentHierarchy() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void setCoremetricsPageContentHierarchy(
+			String coremetricsPageContentHierarchy) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

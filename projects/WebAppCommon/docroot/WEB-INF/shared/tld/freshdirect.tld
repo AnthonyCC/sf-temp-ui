@@ -5249,6 +5249,10 @@
 		</attribute>
 	</tag>
 	<tag>
+		<name>CmFieldDecorator</name>
+		<tagclass>com.freshdirect.webapp.taglib.coremetrics.CmFieldDecoratorTag</tagclass>
+	</tag>
+	<tag>
 		<name>YoutubeVideoTag</name>
 		<tagclass>com.freshdirect.webapp.taglib.fdstore.YoutubeVideoTag</tagclass>
 		<info></info>

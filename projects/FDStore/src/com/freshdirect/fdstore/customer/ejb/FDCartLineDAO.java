@@ -26,7 +26,7 @@ public class FDCartLineDAO {
 	}
 
 	private final static String QUERY_CARTLINES =
-		"SELECT ID, SKU_CODE, VERSION, QUANTITY, SALES_UNIT, CONFIGURATION, RECIPE_SOURCE_ID, REQUEST_NOTIFICATION, VARIANT_ID, ADDED_FROM_SEARCH, DISCOUNT_APPLIED, SAVINGS_ID "
+		"SELECT ID, SKU_CODE, VERSION, QUANTITY, SALES_UNIT, CONFIGURATION, RECIPE_SOURCE_ID, REQUEST_NOTIFICATION, VARIANT_ID, ADDED_FROM_SEARCH, DISCOUNT_APPLIED, SAVINGS_ID, CM_PAGE_ID, CM_PAGE_CONTENT_HIERARCHY "
 			+ " FROM CUST.FDCARTLINE WHERE FDUSER_ID = ?";
 	
 	private final static String QUERY_CARTLINE_CLIENTCODES =
@@ -72,6 +72,8 @@ public class FDCartLineDAO {
 			if(rs.getString("DISCOUNT_APPLIED")!=null && rs.getString("DISCOUNT_APPLIED").equalsIgnoreCase("X")){
 			line.setDiscountFlag(true);
 			line.setSavingsId(rs.getString("SAVINGS_ID"));
+			line.setCoremetricsPageId(rs.getString("CM_PAGE_ID"));
+			line.setCoremetricsPageContentHierarchy(rs.getString("CM_PAGE_CONTENT_HIERARCHY"));
 			}
 			lst.add(line);
 		}
@@ -111,7 +113,7 @@ public class FDCartLineDAO {
 
 		ps =
 			conn.prepareStatement(
-				"INSERT INTO CUST.FDCARTLINE (ID, FDUSER_ID, SKU_CODE, VERSION, QUANTITY, SALES_UNIT, CONFIGURATION, RECIPE_SOURCE_ID, REQUEST_NOTIFICATION, VARIANT_ID, DISCOUNT_APPLIED, SAVINGS_ID, ADDED_FROM_SEARCH) values (?,?,?,?,?,?,?,?,?,?,?,?,?)");
+				"INSERT INTO CUST.FDCARTLINE (ID, FDUSER_ID, SKU_CODE, VERSION, QUANTITY, SALES_UNIT, CONFIGURATION, RECIPE_SOURCE_ID, REQUEST_NOTIFICATION, VARIANT_ID, DISCOUNT_APPLIED, SAVINGS_ID, ADDED_FROM_SEARCH, CM_PAGE_ID, CM_PAGE_CONTENT_HIERARCHY) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
 
 		for ( ErpOrderLineModel line : erpOrderlines ) {
 			ps.setString(1, line.getCartlineId());
@@ -127,6 +129,9 @@ public class FDCartLineDAO {
 			ps.setString(11, line.isDiscountFlag()? "X" : "");			
 			ps.setString(12, line.getSavingsId());
 			ps.setString(13, line.isAddedFromSearch()? "X" : "");
+			ps.setString(14, line.getCoremetricsPageId());
+			ps.setString(15, line.getCoremetricsPageContentHierarchy());
+
 			ps.addBatch();
 		}
 

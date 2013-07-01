@@ -254,9 +254,21 @@ public class PageViewTagModelBuilder  {
 		if (recipeSearchResultsSize != null) {
 			tagModel.getAttributesMaps().put(2, recipeSearchResultsSize.toString());
 		}
+
+		//Additional Coremetrics attributes [APPDEV-3073]
+		int currentAttributeIndex = 3;
+		//Up to 4 items maximum
+		for (ContentNodeModel contentNode : TagModelUtil.getPageLocationSubset(ContentFactory.getInstance().getContentNode(tagModel.getCategoryId()))) {
+			tagModel.getAttributesMaps().put(currentAttributeIndex++, contentNode.getContentName());
+		}
+		
+		if (tagModel.getAttributesMaps().get(3) == null) {
+			tagModel.getAttributesMaps().put(3, tagModel.getPageId());
+		}
+		tagModel.getAttributesMaps().put(7, tagModel.getPageId());
+		
 	}
 
-	
 	public void setRequest(HttpServletRequest request) {
 		this.request = request;
 	}

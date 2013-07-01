@@ -98,6 +98,25 @@ public abstract class AbstractShopTagModelBuilder {
 
 		attributesMap.put(7, Double.toString(cartLine.getTaxValue()));
 		
+		//Additional Coremetrics attributes [APPDEV-3073]
+		int currentAttributeIndex = 8;
+		//Up to 4 items maximum
+		String [] contentHierarchy = cartLine.getCoremetricsPageContentHierarchy().split("-_-");
+		if (variantId != null && !"".equals(variantId)) {
+			attributesMap.put(currentAttributeIndex++, contentHierarchy[0]);
+			attributesMap.put(currentAttributeIndex++, variantId);
+		} else {
+			for (String contentNodeStr : contentHierarchy) {
+				attributesMap.put(currentAttributeIndex++, contentNodeStr);
+				if (currentAttributeIndex > 11) {
+					//Unexpected, possibly wrong scenario
+					break;
+				}
+			}
+		}
+		
+		attributesMap.put(12, cartLine.getCoremetricsPageId());
+
 		return tagModel;
 	}
 	

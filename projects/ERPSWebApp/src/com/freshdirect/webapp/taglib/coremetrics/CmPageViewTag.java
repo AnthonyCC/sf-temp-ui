@@ -16,6 +16,7 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 public class CmPageViewTag extends AbstractCmTag {
 	private static final Logger LOGGER = LoggerFactory.getInstance(CmPageViewTag.class);
 	private static final String PAGE_VIEW_TAG_FS = "cmCreatePageviewTag(%s,%s,%s,%s,%s);";
+	private static final String INIT_TRACKING_JS_PBJECT = "FreshDirect.Coremetrics.populateTrackingObject(%s,%s);";
 	
 	private boolean forceTagEffect = false;
 
@@ -27,17 +28,32 @@ public class CmPageViewTag extends AbstractCmTag {
 		tagModelBuilder.setRequest((HttpServletRequest) ((PageContext) getJspContext()).getRequest());
 		PageViewTagModel tagModel = tagModelBuilder.buildTagModel();
 
-		String tagJs = String.format(PAGE_VIEW_TAG_FS, 
+		StringBuilder sb = new StringBuilder();
+		sb.append(String.format(PAGE_VIEW_TAG_FS, 
 				toJsVar(tagModel.getPageId()), 
 				toJsVar(tagModel.getCategoryId()), 
 				toJsVar(tagModel.getSearchTerm()), 
 				toJsVar(tagModel.getSearchResults()), 
-				toJsVar(mapToAttrString(tagModel.getAttributesMaps())));
+				toJsVar(mapToAttrString(tagModel.getAttributesMaps()))));
 		
-		LOGGER.debug(tagJs);
-		return tagJs;
+		sb.append(String.format(INIT_TRACKING_JS_PBJECT, toJsVar(tagModel.getPageId()), toJsVar(getPackedPageLocationSubset(tagModel))));
+		
+		LOGGER.debug(sb.toString());
+		return sb.toString();
 	}
 
+	private String getPackedPageLocationSubset(PageViewTagModel tagModel) {
+		
+		StringBuilder sb = new StringBuilder();
+		sb.append(tagModel.getAttributesMaps().get(3));
+		for (int i = 4; i < 7; i++) {
+			sb.append(AbstractCmTag.ATTR_DELIMITER);
+			sb.append(tagModel.getAttributesMaps().get(i) == null ? "" : tagModel.getAttributesMaps().get(i));
+		}
+		return sb.toString();
+		
+	}
+	
 	public void setSearchResultsSize(Integer searchResultsSize) {
 		tagModelBuilder.setSearchResultsSize(searchResultsSize);
 	}

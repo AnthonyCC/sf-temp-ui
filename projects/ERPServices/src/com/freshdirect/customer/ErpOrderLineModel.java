@@ -74,6 +74,9 @@ public class ErpOrderLineModel extends ModelSupport implements FDConfigurableI {
     
     private EnumTaxationType taxationType;
     
+    private String coremetricsPageId;
+    private String coremetricsPageContentHierarchy;
+    
     public FDGroup getFDGroup() {
 		return group;
 	}
@@ -403,6 +406,23 @@ public class ErpOrderLineModel extends ModelSupport implements FDConfigurableI {
 
 	public void setTaxationType(EnumTaxationType taxationType) {
 		this.taxationType = taxationType;
+	}
+
+	public String getCoremetricsPageId() {
+		return coremetricsPageId;
+	}
+
+	public void setCoremetricsPageId(String coremetricsPageId) {
+		this.coremetricsPageId = coremetricsPageId;
+	}
+
+	public String getCoremetricsPageContentHierarchy() {
+		return coremetricsPageContentHierarchy;
+	}
+
+	public void setCoremetricsPageContentHierarchy(
+			String coremetricsPageContentHierarchy) {
+		this.coremetricsPageContentHierarchy = coremetricsPageContentHierarchy;
 	}
 
 	

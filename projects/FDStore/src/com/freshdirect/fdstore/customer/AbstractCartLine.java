@@ -343,4 +343,21 @@ public abstract class AbstractCartLine extends FDProductSelection implements FDC
 		this.couponApplied =applied;
 		
 	}
+
+	public String getCoremetricsPageId() {
+		return this.orderLine.getCoremetricsPageId();
+	}
+
+	public void setCoremetricsPageId(String coremetricsPageId) {
+		this.orderLine.setCoremetricsPageId(coremetricsPageId);
+	}
+
+	public String getCoremetricsPageContentHierarchy() {
+		return this.orderLine.getCoremetricsPageContentHierarchy();
+	}
+
+	public void setCoremetricsPageContentHierarchy(
+			String coremetricsPageContentHierarchy) {
+		this.orderLine.setCoremetricsPageContentHierarchy(coremetricsPageContentHierarchy);
+	}
 }

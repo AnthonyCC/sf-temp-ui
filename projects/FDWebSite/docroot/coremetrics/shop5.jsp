@@ -7,6 +7,7 @@
 <html>
 <head>
 <%@ include file="/shared/template/includes/i_head_end.jspf" %>
+<fd:javascript src="/assets/javascript/coremetrics.js"/>
 </head>
 <body>
 <%@ include file="/shared/template/includes/i_body_start.jspf" %>

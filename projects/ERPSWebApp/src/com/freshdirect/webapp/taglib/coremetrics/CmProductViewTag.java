@@ -29,13 +29,24 @@ public class CmProductViewTag extends AbstractCmTag {
 				toJsVar(model.getProductId()),
 				toJsVar(model.getProductName()),
 				toJsVar(model.getCategoryId()),
-				toJsVar(mapToAttrString(model.getAttributesMaps())),
+				toJsVar(mapToAttrString(model.getAttributesMaps())) + decorateFromCoremetricsTrackingObject(),
 				toJsVar(model.getVirtualCategoryId()));
 		
 		LOGGER.debug(tagJs);
 		return tagJs;
 	}
 
+	private String decorateFromCoremetricsTrackingObject() {
+		
+		StringBuilder sb = new StringBuilder();
+		sb.append(" + \"" + AbstractCmTag.ATTR_DELIMITER + "\" + ");
+		sb.append(CmFieldDecoratorTag.CM_PAGE_CONTENT_HIERARCHY);
+		sb.append(" + \"" + AbstractCmTag.ATTR_DELIMITER + "\" + ");
+		sb.append(CmFieldDecoratorTag.CM_PAGE_ID);
+		return sb.toString();
+		
+	}
+	
 	private String extractVirtualCategoryId(){
 		PageContext ctx = (PageContext) getJspContext();
 		HttpServletRequest request = (HttpServletRequest) ctx.getRequest();
