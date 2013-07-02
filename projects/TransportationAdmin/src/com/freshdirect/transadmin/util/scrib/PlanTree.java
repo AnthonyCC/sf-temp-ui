@@ -524,7 +524,7 @@ class TimeNode extends PlanTreeNode  {
 			ScheduleEmployeeDetails _currResource = null;
 			PlanResource _tmpPlanResource = null;
 
-			if(s.getZone() != null){
+			if(s.getZone() != null) {
 				if(resources.size() > 0) {
 					_currResource = (ScheduleEmployeeDetails)resources.toArray()[0];
 					if(_currResource.getMembers() != null && _currResource.getMembers().size() > 0) {
@@ -570,25 +570,6 @@ class TimeNode extends PlanTreeNode  {
 												break;
 											
 											_tmpPlanResource = TreeDataUtil.matchResource(se, ScheduleEmployeeInfo.HELPER);
-											if(_tmpPlanResource != null) {
-												p.getPlanResources().add(_tmpPlanResource);
-												k.remove();
-												count++;
-											}
-										}
-									}
-								}
-								// Runner
-								if (ScheduleEmployeeInfo.RUNNER.equalsIgnoreCase(r.getId().getRole())) {
-									int min = r.getRequiredNo().intValue();
-									int count = 0;
-									for (Iterator k = resources.iterator(); k.hasNext();) {
-										ScheduleEmployeeDetails se = (ScheduleEmployeeDetails) k.next();
-										if(se.getMembers() == null || se.getMembers().size() == 0) {
-											if (count >= min)
-												break;
-											
-											_tmpPlanResource = TreeDataUtil.matchResource(se, ScheduleEmployeeInfo.RUNNER);
 											if(_tmpPlanResource != null) {
 												p.getPlanResources().add(_tmpPlanResource);
 												k.remove();
@@ -711,7 +692,7 @@ class TimeNode extends PlanTreeNode  {
 			p.setRegion(s.getSchedule().getRegion());
 			p.setStartTime(s.getSchedule().getTime());
 			p.setFirstDeliveryTime(s.getSchedule().getTime());
-			p.setLastDeliveryTime(s.getSchedule().getTime());			
+			p.setLastDeliveryTime(s.getSchedule().getTime());	
 			p.setIsBullpen("Y");
 			
 			int driverMax = TransportationAdminProperties.getDriverMaxForBullpen();
@@ -760,7 +741,7 @@ class TimeNode extends PlanTreeNode  {
 			p.setRegion(s.getSchedule().getRegion());
 			p.setStartTime(s.getSchedule().getTime());
 			p.setFirstDeliveryTime(s.getSchedule().getTime());
-			p.setLastDeliveryTime(s.getSchedule().getTime());			
+			p.setLastDeliveryTime(s.getSchedule().getTime());
 			p.setIsBullpen("Y");
 
 			int driverMax = TransportationAdminProperties.getDriverMaxForBullpen();
@@ -881,8 +862,7 @@ class DepotOriginTimeNode extends PlanTreeNode  {
 							} 
 						}
 						resources.remove(_currResource);
-					} else {
-										
+					} else {										
 							int count = 0;
 							for (Iterator k = resources.iterator(); k.hasNext();) {
 								ScheduleEmployeeDetails se = (ScheduleEmployeeDetails) k.next();
@@ -898,7 +878,6 @@ class DepotOriginTimeNode extends PlanTreeNode  {
 									}
 								}
 							}
-						
 					}				
 				}
 			} 
@@ -920,7 +899,7 @@ class DepotOriginTimeNode extends PlanTreeNode  {
 					p.setIsBullpen("Y");
 					for(ScheduleEmployeeDetails ss : _currResource.getMembers()) {						
 						Collection c = ss.getEmpRoles();
-						if (!TreeDataUtil.isRole(ScheduleEmployeeInfo.RUNNER, c)) {
+						if (TreeDataUtil.isRole(ScheduleEmployeeInfo.RUNNER, c)) {
 							PlanResource planResource = new PlanResource();
 							EmployeeRoleType type = new EmployeeRoleType();
 							for (Iterator si = ss.getEmpRoles().iterator(); si.hasNext();) {
@@ -939,7 +918,7 @@ class DepotOriginTimeNode extends PlanTreeNode  {
 			}
 		}
 
-		// add bullpen for remaining employees
+		// Bullpen for non-team employees
 		while(resources != null && resources.size() > 0){			
 			ScheduleEmployeeDetails s = (ScheduleEmployeeDetails) resources.toArray()[0];
 			Plan p = new Plan();
@@ -950,13 +929,10 @@ class DepotOriginTimeNode extends PlanTreeNode  {
 			p.setRegion(s.getSchedule().getRegion());
 			p.setStartTime(s.getSchedule().getTime());
 			p.setFirstDeliveryTime(s.getSchedule().getTime());
-			p.setLastDeliveryTime(s.getSchedule().getTime());			
+			p.setLastDeliveryTime(s.getSchedule().getTime());	
 			p.setIsBullpen("Y");
 			
-			int driverMax = TransportationAdminProperties.getDriverMaxForBullpen();
-			int helperMax = TransportationAdminProperties.getHelperMaxForBullpen();
-			int runnerMax = TransportationAdminProperties.getRunnerMaxForBullpen();
-			int driverCount = 0, helperCount = 0, runnerCount = 0;
+			int runnerCount = 0;
 			
 			for (Iterator k = resources.iterator(); k.hasNext();) {
 				ScheduleEmployeeDetails se = (ScheduleEmployeeDetails) k.next();
@@ -971,17 +947,8 @@ class DepotOriginTimeNode extends PlanTreeNode  {
 					resource.setResourceId(se.info.getEmployeeId());
 					planResource.setEmployeeRoleType(type);
 					planResource.setId(resource);
-					
-					if(TreeDataUtil.isRole(ScheduleEmployeeInfo.DRIVER, c) && driverCount < driverMax){
-						driverCount++;
-						p.getPlanResources().add(planResource);
-						k.remove();
-					} else if(TreeDataUtil.isRole(ScheduleEmployeeInfo.HELPER, c)  && helperCount < helperMax){
-						helperCount++;
-						p.getPlanResources().add(planResource);
-						k.remove();
-					}	
-					if(TreeDataUtil.isRole(ScheduleEmployeeInfo.RUNNER, c)  && runnerCount < runnerMax){
+											
+					if(runnerCount < TransportationAdminProperties.getRunnerMaxForBullpen()){
 						runnerCount++;
 						p.getPlanResources().add(planResource);
 						k.remove();
@@ -1037,9 +1004,7 @@ class DepotDestTimeNode extends PlanTreeNode  {
 		List<ScheduleEmployeeDetails> resources = new ArrayList<ScheduleEmployeeDetails>();
 		resources.addAll(resourcesIn);
 		Collections.sort(resources, new HireDateComparator());
-		//Retrieve Trailer resources
-		List<ScheduleEmployeeDetails> trailerResources = TreeDataUtil.getTrailerResources(resources);		
-	
+		
 		for (Iterator i = trucks.iterator(); i.hasNext();) {
 			Scrib s = ((TruckNode) i.next()).s;
 	
@@ -1077,7 +1042,6 @@ class DepotDestTimeNode extends PlanTreeNode  {
 						resources.remove(_currResource);
 					} else {
 						zoneTypeResources = s.getZone().getTrnZoneType().getZonetypeResources();
-						
 						
 							for (Iterator j = zoneTypeResources.iterator(); j.hasNext();) {
 								ZonetypeResource r = (ZonetypeResource) j.next();
@@ -1124,57 +1088,10 @@ class DepotDestTimeNode extends PlanTreeNode  {
 						
 					}				
 				}
-			} else {
-				if(trailerResources.size() > 0) {
-					_currResource = (ScheduleEmployeeDetails)trailerResources.toArray()[0];
-					if(_currResource.getMembers() != null && _currResource.getMembers().size() > 0) {
-						
-						for(ScheduleEmployeeDetails _members : _currResource.getMembers()) {
-							_tmpPlanResource = TreeDataUtil.matchResource(_members);
-							if(_tmpPlanResource != null) {
-								p.getPlanResources().add(_tmpPlanResource);							
-							} 
-						}
-						trailerResources.remove(_currResource);
-					} else {						
-							// Driver
-							int driverCount = 0;
-							for (Iterator k = trailerResources.iterator(); k.hasNext();) {
-								ScheduleEmployeeDetails se = (ScheduleEmployeeDetails) k.next();
-								if(se.getMembers() == null || se.getMembers().size() == 0) {
-										if (driverCount >= TransportationAdminProperties.getDriverReqForTrailer())
-											break;
-
-										_tmpPlanResource = TreeDataUtil.matchResource(se, ScheduleEmployeeInfo.DRIVER);
-										if(_tmpPlanResource != null) {
-											p.getPlanResources().add(_tmpPlanResource);
-											k.remove();
-											driverCount++;
-										}				
-								}
-							}
-							// Helper
-							int helperCount = 0;
-							for (Iterator k = trailerResources.iterator(); k.hasNext();) {
-								ScheduleEmployeeDetails se = (ScheduleEmployeeDetails) k.next();
-								if(se.getMembers() == null || se.getMembers().size() == 0) {
-										if (helperCount >= TransportationAdminProperties.getHelperReqForTrailer())
-											break;
-										
-										_tmpPlanResource = TreeDataUtil.matchResource(se, ScheduleEmployeeInfo.HELPER);
-										if(_tmpPlanResource != null) {
-											p.getPlanResources().add(_tmpPlanResource);
-											k.remove();
-											helperCount++;
-										}
-								}
-							}
-					}
-				}
-			}
+			} 
 		}
 				
-		// Create Team Bullpen
+		// Bullpen for team employees
 		if (resources != null && resources.size() > 0) {
 			for (Iterator i = resources.iterator(); i.hasNext();) {
 				ScheduleEmployeeDetails _currResource = (ScheduleEmployeeDetails) i.next();
@@ -1220,13 +1137,10 @@ class DepotDestTimeNode extends PlanTreeNode  {
 			p.setRegion(s.getSchedule().getRegion());
 			p.setStartTime(s.getSchedule().getTime());
 			p.setFirstDeliveryTime(s.getSchedule().getTime());
-			p.setLastDeliveryTime(s.getSchedule().getTime());			
+			p.setLastDeliveryTime(s.getSchedule().getTime());
 			p.setIsBullpen("Y");
 			
-			int driverMax = TransportationAdminProperties.getDriverMaxForBullpen();
-			int helperMax = TransportationAdminProperties.getHelperMaxForBullpen();
-			int runnerMax = TransportationAdminProperties.getRunnerMaxForBullpen();
-			int driverCount = 0, helperCount = 0, runnerCount = 0;
+			int driverCount = 0, helperCount = 0;
 			
 			for (Iterator k = resources.iterator(); k.hasNext();) {
 				ScheduleEmployeeDetails se = (ScheduleEmployeeDetails) k.next();
@@ -1242,70 +1156,15 @@ class DepotDestTimeNode extends PlanTreeNode  {
 					planResource.setEmployeeRoleType(type);
 					planResource.setId(resource);
 					
-					if(TreeDataUtil.isRole(ScheduleEmployeeInfo.DRIVER, c) && driverCount < driverMax){
+					if(TreeDataUtil.isRole(ScheduleEmployeeInfo.DRIVER, c) && driverCount < TransportationAdminProperties.getDriverMaxForBullpen()){
 						driverCount++;
 						p.getPlanResources().add(planResource);
 						k.remove();
-					} else if(TreeDataUtil.isRole(ScheduleEmployeeInfo.HELPER, c)  && helperCount < helperMax){
-						helperCount++;
-						p.getPlanResources().add(planResource);
-						k.remove();
-					}	
-					if(TreeDataUtil.isRole(ScheduleEmployeeInfo.RUNNER, c)  && runnerCount < runnerMax){
-						runnerCount++;
-						p.getPlanResources().add(planResource);
-						k.remove();
-					}
-					
-			}
-		}
-		
-		while(trailerResources != null && trailerResources.size() > 0){
-			ScheduleEmployeeDetails s = (ScheduleEmployeeDetails) trailerResources.toArray()[0];
-			Plan p = new Plan();
-			plans.add(p);
-	
-			p.setPlanDate(s.getDate());
-			p.setOriginFacility(s.getSchedule().getRegion().getOriginFacility());
-			p.setRegion(s.getSchedule().getRegion());
-			p.setStartTime(s.getSchedule().getTime());
-			p.setFirstDeliveryTime(s.getSchedule().getTime());
-			p.setLastDeliveryTime(s.getSchedule().getTime());			
-			p.setIsBullpen("Y");
-
-			int driverMax = TransportationAdminProperties.getDriverMaxForBullpen();
-			int helperMax = TransportationAdminProperties.getHelperMaxForBullpen();
-			int driverCount = 0;
-			int helperCount = 0;
-			
-			for (Iterator k = trailerResources.iterator(); k.hasNext();) {
-				ScheduleEmployeeDetails se = (ScheduleEmployeeDetails) k.next();
-				
-				Collection c = se.getEmpRoles();
-				if (!TreeDataUtil.isRole(ScheduleEmployeeInfo.RUNNER, c)) {
-					PlanResource planResource = new PlanResource();
-					EmployeeRoleType type = new EmployeeRoleType();
-					for (Iterator si = se.getEmpRoles().iterator(); si.hasNext();) {
-						type.setCode(((EmployeeRole) (si.next())).getId().getRole());						
-						break;
-					}
-					ResourceId resource = new ResourceId();
-					resource.setResourceId(se.info.getEmployeeId());
-					planResource.setEmployeeRoleType(type);
-					planResource.setId(resource);
-					
-					if(TreeDataUtil.isRole(ScheduleEmployeeInfo.DRIVER, c) && driverCount < driverMax){
-						driverCount++;
-						p.getPlanResources().add(planResource);
-						k.remove();
-					} else if(TreeDataUtil.isRole(ScheduleEmployeeInfo.HELPER, c)  && helperCount < helperMax){
+					} else if(TreeDataUtil.isRole(ScheduleEmployeeInfo.HELPER, c)  && helperCount < TransportationAdminProperties.getHelperMaxForBullpen()){
 						helperCount++;
 						p.getPlanResources().add(planResource);
 						k.remove();
 					}
-				} else {
-					k.remove();
-				}
 			}
 		}
 	}
@@ -1339,10 +1198,10 @@ class TruckNode extends PlanTreeNode {
 @SuppressWarnings({ "rawtypes" })
 class ZoneComparator implements Comparator {
 
-	public int compare(Object obj, Object obj1) {
-		if (obj instanceof Scrib && obj1 instanceof Scrib) {
-			Scrib s1 = (Scrib) obj;
-			Scrib s2 = (Scrib) obj1;
+	public int compare(Object o1, Object o2) {
+		if (o1 instanceof Scrib && o2 instanceof Scrib) {
+			Scrib s1 = (Scrib) o1;
+			Scrib s2 = (Scrib) o2;
 			int z1 = 0;
 			int z2 = 0;
 			if (s1.getZone() != null && s1.getZone().getPriority() != null)
@@ -1436,7 +1295,8 @@ class TreeDataUtil {
 				 driverMin = TransportationAdminProperties.getDriverReqForTrailer();
 				 helperMin = TransportationAdminProperties.getHelperReqForTrailer();
 				 runnerMin = TransportationAdminProperties.getRunnerReqForTrailer();
-				}
+			}
+			
 			for (Iterator<PlanResource> j = p.getPlanResources().iterator(); j.hasNext();) {
 				PlanResource r = j.next();
 				if (r != null && r.getEmployeeRoleType() != null) {
@@ -1596,8 +1456,7 @@ class TreeDataUtil {
 			return planResource;
 		} 		
 		return null;
-	}
-	
+	}	
 }
 
 
