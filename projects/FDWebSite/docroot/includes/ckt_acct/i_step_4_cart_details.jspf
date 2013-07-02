@@ -113,7 +113,6 @@ int idx = 0;
 		FDCartLineI nextLine = viewIndex.intValue() + 1 == orderLines.size() ? null : (FDCartLineI)orderLines.get(viewIndex.intValue() + 1);
 		boolean lastItemInDept = nextLine==null || !nextLine.getDepartmentDesc().equals(cartLine.getDepartmentDesc());
 
-		System.err.println(lastDept + " " + newItems + " " + viewIndex);
 		if (newItems && viewIndex == 0) {
 			lastDept = cartLine.getDepartmentDesc();
 			hasNewItems = true;

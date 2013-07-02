@@ -41,8 +41,7 @@ if (user.isEligibleForClientCodes()) {
 
     String successPage = request.getParameter("fdsc.succpage");
 	String redemptionCode = request.getParameter("redemptionCode");
-
-	System.err.println("nextStep: '" + request.getParameter("nextStep") + "'");
+	
 	if (request.getMethod().equalsIgnoreCase("POST") && (redemptionCode == null || "".equals(redemptionCode)) 
 	    	&& (!"".equals(request.getParameter("nextStep")) &&  request.getParameter("nextStep") != null)
 		) {
