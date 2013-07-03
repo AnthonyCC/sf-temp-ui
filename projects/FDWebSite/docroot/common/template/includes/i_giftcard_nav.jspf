@@ -17,8 +17,8 @@ final int W_GIFTCARD_NAV_TOTAL = 970;
 <jsp:include page="/shared/template/includes/server_info.jsp" flush="false"/>
 <jsp:include page="/common/template/includes/ad_server.jsp" flush="false"/>
 <div id="toptoolbar">
-<jsp:include page="/shared/messages/messages.jsp" />
 <jsp:include page="/shared/locationbar/locationbar.jsp" />
+<jsp:include page="/shared/messages/messages.jsp" />
 </div>
 
 <%
@@ -57,10 +57,10 @@ final int W_GIFTCARD_NAV_TOTAL = 970;
 				<% if (user.isDepotUser()) { %>
 					<a href="/index.jsp"><img src="/media_stat/images/logos/<%=user.getDepotCode()%>_depot_logo.gif" alt="" border="0" /></a>
 				 <% } else { %>
-					<a href="/index.jsp" onMouseover="swapImage('FD_LOGO','/media/images/navigation/global_nav/fd_logo_on.gif')" onMouseout="swapImage('FD_LOGO','/media/images/navigation/global_nav/fd_logo_off.gif')"><img src="/media/images/navigation/global_nav/fd_logo_off.gif" width="195" height="81" border="0" alt="FreshDirect" name="FD_LOGO" /></a>
+	    		<a href="/index.jsp"><img src="/media/images/navigation/global_nav/fd_logo_on.gif" border="0" alt="FreshDirect" name="FD_LOGO"></a>
 				 <% } %>
 			<% } else { %>
-				<a href="/index.jsp" onMouseover="swapImage('FD_LOGO','/media/images/navigation/global_nav/fd_logo_on.gif')" onMouseout="swapImage('FD_LOGO','/media/images/navigation/global_nav/fd_logo_off.gif')"><img src="/media/images/navigation/global_nav/fd_logo_off.gif" width="195" height="81" border="0" alt="FreshDirect" name="FD_LOGO" /></a>
+	    	<a href="/index.jsp"><img src="/media/images/navigation/global_nav/fd_logo_on.gif" border="0" alt="FreshDirect" name="FD_LOGO"></a>
 			<% } %>
 	    </td>
 		<td valign="bottom" align="right">
@@ -70,13 +70,6 @@ final int W_GIFTCARD_NAV_TOTAL = 970;
 				<a href="/your_account/delivery_pass.jsp"><img src="/media_stat/images/navigation/global_nav/global_hdr_dp.gif" width="217" height="10" alt="CLICK HERE FOR DETAILS"  vspace="0" border="0"></a><br>
 			<% } %>
 			
-			<% if (user.getLevel() == FDUserI.SIGNED_IN) { %>
-				<a href="/logout.jsp"><b>Click here to log out</b></a>
-			<% } else if (user.getLevel() == FDUserI.RECOGNIZED) { %>
-				<a href="/login/login.jsp"><b>Click here to log in</b></a>
-			<% } else {	%>
-				<b>New customer?</b> <a href="/gift_card/purchase/register_and_purchase.jsp">Sign Up</a><img src="/media_stat/images/layout/clear.gif" width="25" height="1" hspace="2" vspace="3" alt=""><b>Current customer?</b> <a href="/login/login.jsp">Log In</a>
-			<% } %>
 		</td>
 	</tr>
 </table>
