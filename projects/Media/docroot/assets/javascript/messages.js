@@ -61,12 +61,15 @@
 	     },
 	     add:function(type){
 	    	 var opened = false,hash, update, result = this.each(function(){
-	    		 var $this = $(this);
-	    		 ntype = type || $this.attr('data-type'),
+	    		 var $this, ntype, text;
+	    		 
+	    		 $('script',this).remove();
+	    		 $this = $(this);
+	    		 ntype = type || $this.attr('data-type');
 	    		 text = $this.text();
 	    		 if($.trim(text).length >1) {
 	    			 hash = getHash(text);
-	    			 messages[ntype] = $this.html();
+	    			 messages[ntype] = this.innerHTML;
 	    			 if(hashes[ntype] != hash ) {			 
 		    		 	 opened = true;
 		    		 	 hashes[ntype]=hash;
