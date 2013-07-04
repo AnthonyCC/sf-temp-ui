@@ -104,6 +104,9 @@ public class LoginControllerTag extends AbstractControllerTag {
                 int currentLines = currentUser.getShoppingCart().numberOfOrderLines();
                 int loginLines = loginUser.getShoppingCart().numberOfOrderLines();
                 
+                //address needs to be set using logged in user's information - in case existing cart is used or cart merge
+                currentUser.getShoppingCart().setDeliveryAddress(loginUser.getShoppingCart().getDeliveryAddress());
+                
                 if ((currentLines > 0) && (loginLines > 0)) {
                     // keep the current cart in the session and send them to the merge cart page
                     if(null !=this.getSuccessPage() && !this.getSuccessPage().contains("/robin_hood") && !this.getSuccessPage().contains("/gift_card")){
