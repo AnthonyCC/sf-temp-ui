@@ -14,7 +14,7 @@ public class PageViewTagModelBuilder  {
 	
 	/** enum for all category ids not listed in FDStoreProperties - used in CDF generation too */
 	public enum CustomCategory {
-		SEARCH, SO_TEMPLATE, ACCOUNT, BUYING_GUIDES, CART, ERROR, HOMEPAGE, INVITE, POPUPS, RECIPE, NEW_PRODUCTS_DEPARTMENT
+		SEARCH, SO_TEMPLATE, ACCOUNT, BUYING_GUIDES, CART, ERROR, HOMEPAGE, INVITE, POPUPS, RECIPE, NEW_PRODUCTS_DEPARTMENT, ABOUT
 	}
 	
 	private static final String INDEX_FILE = "index.jsp";
@@ -150,6 +150,15 @@ public class PageViewTagModelBuilder  {
 			} else if (uriAfterSlash.contains("newproducts.jsp")){
 				tagModel.setCategoryId(CustomCategory.NEW_PRODUCTS_DEPARTMENT.toString());
 				tagModel.setPageId("");
+
+
+			} else if (uriAfterSlash.contains("cos.jsp")){
+				tagModel.setCategoryId(CustomCategory.HOMEPAGE.toString());
+				tagModel.setPageId("cos.jsp");
+
+			} else if (uriAfterSlash.contains("welcome.jsp")){
+				tagModel.setCategoryId(CustomCategory.ABOUT.toString());
+				tagModel.setPageId("welcome.jsp");
 			}
 			
 			//if found category based on rules defined above

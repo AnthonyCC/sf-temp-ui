@@ -6,8 +6,10 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Properties;
+import java.util.Set;
 
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.log4j.Logger;
@@ -55,25 +57,27 @@ public class CdfProcessTask {
 	
 	private void generateCdfModel(){
 
+		Set<String> categoryKeys = new HashSet<String>(); 
+		
 		for (String catIdDir : FDStoreProperties.getCoremetricsCatIdDirs().split(",")) {
-			addCmPageViewTagCategory(catIdDir);
+			addCmPageViewTagCategory(catIdDir, categoryKeys);
 		}
 
-		addCmPageViewTagCategory(FDStoreProperties.getCoremetricsCatIdBlog());
-		addCmPageViewTagCategory(FDStoreProperties.getCoremetricsCatIdOtherPage());
+		addCmPageViewTagCategory(FDStoreProperties.getCoremetricsCatIdBlog(), categoryKeys);
+		addCmPageViewTagCategory(FDStoreProperties.getCoremetricsCatIdOtherPage(), categoryKeys);
 
 		for (CustomCategory category : PageViewTagModelBuilder.CustomCategory.values()){
-			addCmPageViewTagCategory(category.toString());
+			addCmPageViewTagCategory(category.toString(), categoryKeys);
 		}
 		
 		//event source used in shop tags as category
 		for (EnumEventSource eventEnum : EnumEventSource.values()){
-			addCmPageViewTagCategory(((EnumEventSource) eventEnum).toString());
+			addCmPageViewTagCategory(((EnumEventSource) eventEnum).toString(), categoryKeys);
 		}
 		
 		//site feature used in shop tags as category
 		for (EnumSiteFeature siteFeatureEnum: EnumSiteFeature.getEnumList()){
-			addCmPageViewTagCategory(siteFeatureEnum.getName());
+			addCmPageViewTagCategory(siteFeatureEnum.getName(), categoryKeys);
 		}
 		
 		for (DepartmentModel dept : ContentFactory.getInstance().getStore().getDepartments()) {
@@ -81,8 +85,11 @@ public class CdfProcessTask {
 		}
 	}
 	
-	private void addCmPageViewTagCategory(String catId){
-		cdfRowModels.add(new CdfRowModel(catId, "Category: " + catId, null));
+	private void addCmPageViewTagCategory(String catId, Set<String> categoryKeys){
+		
+		if (categoryKeys.add(catId.toUpperCase())) {
+			cdfRowModels.add(new CdfRowModel(catId, "Category: " + catId, null));
+		}
 	}
 	
 	private void processCmsCategory(ProductContainer cat, String parentCatId) {
