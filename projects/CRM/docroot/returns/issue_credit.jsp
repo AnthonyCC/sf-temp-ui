@@ -863,7 +863,7 @@ for (int k=0; k<CASEINFO_FIELDS.length; k++) {
 			}
 		);
 		casePanel.setHeader("Disposition fields");
-		casePanel.setBody("<form name=\"dummyDialogForm\" onsubmit=\"return false;\"><table id=\"casePanel-table\" style=\"width: 100%;\"></table></form>");
+		casePanel.setBody("<form name=\"dummyDialogForm\" onsubmit=\"return false;\"><table id=\"casePanel-table\" style=\"width: 100%;\"><tbody></tbody></table></form>");
 
 		casePanel.fields = [];
 		casePanel.allFieldsAnswered = function() {
@@ -978,14 +978,12 @@ for (int k=0; k<CASEINFO_FIELDS.length; k++) {
 		var container = $('casePanel-table');
 
 		// find tbody
-		if (container.childNodes.length > 0) {
-			var table_body = YAHOO.util.Selector.query('tbody', container, true);
-			if (table_body)
-				container = table_body;
-		}
-
-		for (k=0; k<caseInfoArray.length; k++) {
-			casePanel.appendRow(container, caseInfoArray[k]);
+		if (container.childNodes.length == 1) {
+			container = container.childNodes[0];
+			
+			for (k=0; k<caseInfoArray.length; k++) {
+				casePanel.appendRow(container, caseInfoArray[k]);
+			}
 		}
 		
 		casePanel.center();
