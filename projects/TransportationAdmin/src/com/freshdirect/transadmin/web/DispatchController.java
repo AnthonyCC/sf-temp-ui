@@ -781,7 +781,7 @@ public class DispatchController extends AbstractMultiActionController {
 				Plan p=dispatchManagerService.getPlan(arrEntityList[intCount]);
 				p.setUserId(SecurityManager.getUserName(request));
 				planSet.add(p);
-				if(p != null && p.getZone() != null) {
+				if(p != null && p.getZone() != null && !DispatchPlanUtil.isShuttlePlan(p)) {
 					if(!deliveryMapping.containsKey(p)) {
 						deliveryMapping.put(p.getPlanDate(), new HashSet<String>());
 					}
@@ -810,7 +810,7 @@ public class DispatchController extends AbstractMultiActionController {
 			for (int intCount = 0; intCount < arrLength; intCount++) {
 				Plan p = dispatchManagerService.getPlan(arrEntityList[intCount]);
 				
-				if (p != null && p.getZone() != null) {
+				if (p != null && p.getZone() != null && !DispatchPlanUtil.isShuttlePlan(p)) {
 					if (!deliveryMapping.containsKey(p.getDeliveryDate())) {
 						deliveryMapping.put(p.getPlanDate(), new HashSet<String>());
 					}

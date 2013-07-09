@@ -34,6 +34,7 @@ import com.freshdirect.transadmin.security.SecurityManager;
 import com.freshdirect.transadmin.service.DispatchManagerI;
 import com.freshdirect.transadmin.service.DomainManagerI;
 import com.freshdirect.transadmin.service.EmployeeManagerI;
+import com.freshdirect.transadmin.util.DispatchPlanUtil;
 import com.freshdirect.transadmin.util.TransStringUtil;
 import com.freshdirect.transadmin.util.TransportationAdminProperties;
 import com.freshdirect.transadmin.util.WaveUtil;
@@ -299,7 +300,7 @@ public class ScribController extends AbstractMultiActionController
 				for (int intCount = 0; intCount < arrLength; intCount++) {
 					Scrib p=dispatchManagerService.getScrib(arrEntityList[intCount]);					
 					scribSet.add(p);
-					if(p != null && p.getZone() != null) {
+					if(p != null && p.getZone() != null && !DispatchPlanUtil.isShuttlePlan(p)) {
 						if(!deliveryMapping.containsKey(p)) {
 							deliveryMapping.put(p.getScribDate(), new HashSet<String>());
 						}
