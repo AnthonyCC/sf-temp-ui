@@ -680,7 +680,7 @@ public class FDUserDAO {
 		PreparedStatement ps = null;
 		try {
 			ps = conn.prepareStatement("INSERT INTO MIS.IPLOCATOR_EVENT_LOG " +
-					"(ID, TIMESTAMP, IP, IPLOC_ZIPCODE, IPLOC_COUNTRY, IPLOC_REGION, IPLOC_CITY, FDUSER_ID, FD_ZIPCODE, FD_STATE, FD_CITY, USER_AGENT, UA_HASH_PERCENT, IPLOC_ROLLOUT_PERCENT) " +
+					"(ID, INSERT_TIMESTAMP, IP, IPLOC_ZIPCODE, IPLOC_COUNTRY, IPLOC_REGION, IPLOC_CITY, FDUSER_ID, FD_ZIPCODE, FD_STATE, FD_CITY, USER_AGENT, UA_HASH_PERCENT, IPLOC_ROLLOUT_PERCENT) " +
 					"VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)");	
 
 			ipLocatorEventDTO.setId(SequenceGenerator.getNextId(conn, "MIS", "IPLOCATOR_EVENT_LOG_SEQ"));
@@ -688,7 +688,7 @@ public class FDUserDAO {
 			
 			int i = 1;
 			SqlUtil.setString(ps, i++, ipLocatorEventDTO.getId()); 				//ID
-			SqlUtil.setTimestamp(ps, i++, ipLocatorEventDTO.getTimestamp()); 	//TIMESTAMP
+			SqlUtil.setTimestamp(ps, i++, ipLocatorEventDTO.getTimestamp()); 	//INSERT_TIMESTAMP
 			SqlUtil.setString(ps, i++, ipLocatorEventDTO.getIp());				//IP
 			SqlUtil.setString(ps, i++, ipLocatorEventDTO.getIpLocZipCode());	//IPLOC_ZIPCODE
 			SqlUtil.setString(ps, i++, ipLocatorEventDTO.getIpLocCountry());	//IPLOC_COUNTRY
@@ -723,7 +723,7 @@ public class FDUserDAO {
 		ResultSet rs = null; 
 		
 		try {
-			ps = conn.prepareStatement("SELECT ID, TIMESTAMP, IP, IPLOC_ZIPCODE, IPLOC_COUNTRY, IPLOC_REGION, IPLOC_CITY, FDUSER_ID, FD_ZIPCODE, FD_STATE, FD_CITY, USER_AGENT, UA_HASH_PERCENT, IPLOC_ROLLOUT_PERCENT " +
+			ps = conn.prepareStatement("SELECT ID, INSERT_TIMESTAMP, IP, IPLOC_ZIPCODE, IPLOC_COUNTRY, IPLOC_REGION, IPLOC_CITY, FDUSER_ID, FD_ZIPCODE, FD_STATE, FD_CITY, USER_AGENT, UA_HASH_PERCENT, IPLOC_ROLLOUT_PERCENT " +
 					"FROM MIS.IPLOCATOR_EVENT_LOG WHERE FDUSER_ID = ?");	
 			
 			ps.setString(1, fdUserId);
@@ -732,7 +732,7 @@ public class FDUserDAO {
 			if (rs.next()) {
 				ipLocatorEventDTO.setId(rs.getString("ID"));
 
-				Time timestamp = rs.getTime("TIMESTAMP");
+				Time timestamp = rs.getTime("INSERT_TIMESTAMP");
 				if (timestamp!=null){
 					ipLocatorEventDTO.setTimestamp(timestamp.getTime());
 				}
