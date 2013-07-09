@@ -679,11 +679,11 @@ public class FDUserDAO {
 	public static void logIpLocatorEvent(Connection conn, IpLocatorEventDTO ipLocatorEventDTO) {
 		PreparedStatement ps = null;
 		try {
-			ps = conn.prepareStatement("INSERT INTO CUST.IPLOCATOR_EVENT_LOG " +
+			ps = conn.prepareStatement("INSERT INTO MIS.IPLOCATOR_EVENT_LOG " +
 					"(ID, TIMESTAMP, IP, IPLOC_ZIPCODE, IPLOC_COUNTRY, IPLOC_REGION, IPLOC_CITY, FDUSER_ID, FD_ZIPCODE, FD_STATE, FD_CITY, USER_AGENT, UA_HASH_PERCENT, IPLOC_ROLLOUT_PERCENT) " +
 					"VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)");	
 
-			ipLocatorEventDTO.setId(SequenceGenerator.getNextId(conn, "CUST"));
+			ipLocatorEventDTO.setId(SequenceGenerator.getNextId(conn, "MIS", "IPLOCATOR_EVENT_LOG_SEQ"));
 			ipLocatorEventDTO.setTimestamp(Calendar.getInstance().getTimeInMillis());
 			
 			int i = 1;
@@ -724,7 +724,7 @@ public class FDUserDAO {
 		
 		try {
 			ps = conn.prepareStatement("SELECT ID, TIMESTAMP, IP, IPLOC_ZIPCODE, IPLOC_COUNTRY, IPLOC_REGION, IPLOC_CITY, FDUSER_ID, FD_ZIPCODE, FD_STATE, FD_CITY, USER_AGENT, UA_HASH_PERCENT, IPLOC_ROLLOUT_PERCENT " +
-					"FROM CUST.IPLOCATOR_EVENT_LOG WHERE FDUSER_ID = ?");	
+					"FROM MIS.IPLOCATOR_EVENT_LOG WHERE FDUSER_ID = ?");	
 			
 			ps.setString(1, fdUserId);
 			rs = ps.executeQuery();
