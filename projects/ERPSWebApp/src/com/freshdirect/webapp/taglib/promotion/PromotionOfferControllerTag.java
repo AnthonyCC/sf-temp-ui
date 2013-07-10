@@ -204,6 +204,9 @@ public class PromotionOfferControllerTag extends AbstractControllerTag {
 					this.promotion.setCategoryName(NVL.apply(request.getParameter("categoryName"), "").trim());
 					this.promotion.setProductName(NVL.apply(request.getParameter("productName"), "").trim());
 					ContentFactory contentFactory = ContentFactory.getInstance();
+					if(promotion.getCategoryName().length() == 0 || promotion.getProductName().length() == 0) {
+						actionResult.addError(true, "invalidCategoryName", "Category Id and Product Id are required to create sample promotion." );
+					}
 					if(!"".equalsIgnoreCase(promotion.getCategoryName())){
 						if(null == contentFactory.getContentNode(FDContentTypes.CATEGORY, promotion.getCategoryName().toLowerCase())){
 							actionResult.addError(true, "invalidCategoryName", promotion.getCategoryName()+" is invalid category Id." );
@@ -303,6 +306,9 @@ public class PromotionOfferControllerTag extends AbstractControllerTag {
 					this.promotion.setCategoryName(NVL.apply(request.getParameter("li_categoryName"), "").trim());
 					this.promotion.setProductName(NVL.apply(request.getParameter("li_productName"), "").trim());
 					ContentFactory contentFactory = ContentFactory.getInstance();
+					if(promotion.getCategoryName().length() == 0 || promotion.getProductName().length() == 0) {
+						actionResult.addError(true, "invalidCategoryName", "Category Id and Product Id are required to create sample promotion." );
+					}
 					if(!"".equalsIgnoreCase(promotion.getCategoryName())){
 						if(null == contentFactory.getContentNode(FDContentTypes.CATEGORY, promotion.getCategoryName().toLowerCase())){
 							actionResult.addError(true, "invalidCategoryName", promotion.getCategoryName()+" is invalid category Id." );
@@ -321,6 +327,9 @@ public class PromotionOfferControllerTag extends AbstractControllerTag {
 				this.promotion.setCategoryName(NVL.apply(request.getParameter("sam_categoryName"), "").trim());
 				this.promotion.setProductName(NVL.apply(request.getParameter("sam_productName"), "").trim());
 				ContentFactory contentFactory = ContentFactory.getInstance();
+				if(promotion.getCategoryName().length() == 0 || promotion.getProductName().length() == 0) {
+					actionResult.addError(true, "invalidCategoryName", "Category Id and Product Id are required to create sample promotion." );
+				}
 				if(!"".equalsIgnoreCase(promotion.getCategoryName())){
 					if(null == contentFactory.getContentNode(FDContentTypes.CATEGORY, promotion.getCategoryName().toLowerCase())){
 						actionResult.addError(true, "invalidCategoryName", promotion.getCategoryName()+" is invalid category Id." );
