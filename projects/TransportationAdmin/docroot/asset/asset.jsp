@@ -89,7 +89,7 @@
 					  <form id="assetForm" action="" method="post">  
 						<ec:table items="assets"   action="${pageContext.request.contextPath}/asset.do"
 							imagePath="${pageContext.request.contextPath}/images/table/*.gif"   title=""
-							width="99%"  view="fd" form="assetForm" autoIncludeParameters="false" rowsDisplayed="25"  >
+							width="99%"  view="fd" form="assetForm" autoIncludeParameters="true" rowsDisplayed="25"  >
 							
 							<ec:exportPdf fileName="assets.pdf" tooltip="Export PDF" headerTitle="Transportation Assets" />
 							<ec:exportXls fileName="assets.xls" tooltip="Export XLS" />
