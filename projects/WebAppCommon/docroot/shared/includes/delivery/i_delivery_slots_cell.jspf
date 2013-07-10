@@ -9,7 +9,7 @@
 	@param boolean __genericTsTable              true = generic timeslot table / false = Normal timeslots
 	@param boolean __isAm                        true = AM / false = PM
  --%>
-
+<%@ page import="com.freshdirect.framework.util.MathUtil" %>
 <%
 
 	/*------------------------------- APPDEV-3019 - variable order minimum ---------------------------------*/
