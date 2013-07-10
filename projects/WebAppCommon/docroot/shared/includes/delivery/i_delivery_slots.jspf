@@ -21,6 +21,8 @@
 <%@ page import="java.util.Calendar" %>
 <%@ page import="com.freshdirect.routing.model.*" %>
 <%@ page import="com.freshdirect.delivery.EnumDayShift" %>
+<%@ page import="com.freshdirect.rules.*" %>
+<%@ page import="com.freshdirect.fdstore.rules.*" %>
 <%@ taglib uri='logic' prefix='logic' %>
 
 <%--
@@ -40,6 +42,7 @@ boolean dpNewTcBlock = user.isDpNewTcBlocking(false);
 Date sameDayCutoff = deliveryModel.getSameDayCutoff();
 String sameDayCutoffUTC = deliveryModel.getSameDayCutoffUTC();
 boolean inCRM = (session.getAttribute("inCrmCheckout") != null && "true".equalsIgnoreCase(session.getAttribute("inCrmCheckout").toString())) ? true : false;
+SimpleDateFormat format=new SimpleDateFormat("yyyy-MM-dd");
 
 final boolean __genericTsTable = (boolean) abstractTimeslots; // Hack to help Content Assist recognize type
 boolean isForce =  "true".equalsIgnoreCase(request.getParameter("forceorder")) ;
