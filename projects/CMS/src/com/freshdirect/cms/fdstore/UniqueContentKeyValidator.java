@@ -9,8 +9,10 @@ import com.freshdirect.cms.ContentNodeI;
 import com.freshdirect.cms.ContentType;
 import com.freshdirect.cms.application.CmsRequestI;
 import com.freshdirect.cms.application.ContentServiceI;
+import com.freshdirect.cms.application.ContentTypeServiceI;
 import com.freshdirect.cms.validation.ContentValidationDelegate;
 import com.freshdirect.cms.validation.ContentValidatorI;
+import com.freshdirect.framework.conf.FDRegistry;
 
 /**
  * Ensures that ContentKey IDs for certain types are unique with respect to
@@ -38,39 +40,44 @@ import com.freshdirect.cms.validation.ContentValidatorI;
  * 
  */
 public class UniqueContentKeyValidator implements ContentValidatorI {
+	private Set<ContentType> cmsTypes = null;
 
-	private final static Set<ContentType> UNIQUE_TYPES = new HashSet<ContentType>();
-	static {
-		UNIQUE_TYPES.add(FDContentTypes.DEPARTMENT);
-		UNIQUE_TYPES.add(FDContentTypes.CATEGORY);
-		UNIQUE_TYPES.add(FDContentTypes.PRODUCT);
-		UNIQUE_TYPES.add(FDContentTypes.COMPONENT_GROUP);
-		UNIQUE_TYPES.add(FDContentTypes.CONFIGURED_PRODUCT);
-		UNIQUE_TYPES.add(FDContentTypes.CONFIGURED_PRODUCT_GROUP);
-		UNIQUE_TYPES.add(FDContentTypes.SKU);
-		UNIQUE_TYPES.add(FDContentTypes.RECIPE);
-		UNIQUE_TYPES.add(FDContentTypes.RECIPE_DEPARTMENT);
-		UNIQUE_TYPES.add(FDContentTypes.RECIPE_CATEGORY);
-		UNIQUE_TYPES.add(FDContentTypes.RECIPE_SUBCATEGORY);
-		UNIQUE_TYPES.add(FDContentTypes.RECIPE_SOURCE);
-		UNIQUE_TYPES.add(FDContentTypes.RECIPE_VARIANT);
-		UNIQUE_TYPES.add(FDContentTypes.RECIPE_SECTION);
-		UNIQUE_TYPES.add(FDContentTypes.RECIPE_AUTHOR);
-		UNIQUE_TYPES.add(FDContentTypes.FDFOLDER);
-		UNIQUE_TYPES.add(FDContentTypes.BOOK_RETAILER);
-		UNIQUE_TYPES.add(FDContentTypes.RECIPE_SEARCH_PAGE);
-		UNIQUE_TYPES.add(FDContentTypes.RECIPE_SEARCH_CRITERIA);		
-		UNIQUE_TYPES.add(FDContentTypes.YMAL_SET);
-		UNIQUE_TYPES.add(FDContentTypes.STARTER_LIST);
-		
+	public void setCmsTypes(Set<ContentType> types) {
+		this.cmsTypes = types;
 	}
 
-	public void validate( ContentValidationDelegate delegate, ContentServiceI service, ContentNodeI node, CmsRequestI request, ContentNodeI oldNode ) {
-		ContentType type = node.getKey().getType();
-		if ( UNIQUE_TYPES.contains( type ) ) {
 
-			Set<ContentKey> keys = new HashSet<ContentKey>( UNIQUE_TYPES.size() - 1 );
-			for ( ContentType t : UNIQUE_TYPES ) {
+	/**
+	 * Collect all content types of the CMS Store region.
+	 * 
+	 * @return
+	 */
+	protected Set<ContentType> getStoreContentTypes() {
+		ContentTypeServiceI svc = (ContentTypeServiceI) FDRegistry
+				.getInstance()
+				.getService("com.freshdirect.cms.StoreDef", ContentTypeServiceI.class);
+
+		return svc != null ? svc.getContentTypes() : null;
+	}
+
+
+	public void validate( ContentValidationDelegate delegate, ContentServiceI service, ContentNodeI node, CmsRequestI request, ContentNodeI oldNode ) {
+		// lazy init
+		if (cmsTypes == null) {
+			cmsTypes = getStoreContentTypes();
+		}
+
+		if (cmsTypes == null) {
+			delegate.record("Unique Key Validation skipped due to empty types list");
+			return;
+		}
+
+		
+		ContentType type = node.getKey().getType();
+		if ( cmsTypes.contains( type ) ) {
+
+			Set<ContentKey> keys = new HashSet<ContentKey>( cmsTypes.size() - 1 );
+			for ( ContentType t : cmsTypes ) {
 				if ( !t.equals( type ) ) {
 					keys.add( new ContentKey( t, node.getKey().getId() ) );
 				}
