@@ -89,7 +89,7 @@ if (location2Media) { %><comp:location2Media user="<%= user %>" /><% }
 		<div id="categories">
 			<logic:iterate collection="<%= dept.getDeptNav() %>" id="cat" type="com.freshdirect.fdstore.content.CategoryModel">
 			<logic:equal name="cat" property="showSelf"  value="true" >
-				<span class="category figure"><fd:IncludeImage image="<%= cat.getCategoryPhoto() %>"/><br><a class="category-name caption" href="<%= FDURLUtil.getCategoryURI(cat,trkCode) %>"><%= cat.getFullName() %></a></span>
+				<span class="category figure"><a class="category-name caption" href="<%= FDURLUtil.getCategoryURI(cat,trkCode) %>"><fd:IncludeImage image="<%= cat.getCategoryPhoto() %>"/><br><%= cat.getFullName() %></a></span>
 			</logic:equal>
 			</logic:iterate>	   			
 		</div>
