@@ -9,67 +9,9 @@
 	@param boolean __genericTsTable              true = generic timeslot table / false = Normal timeslots
 	@param boolean __isAm                        true = AM / false = PM
  --%>
-<%@ page import="com.freshdirect.framework.util.MathUtil" %>
+ 
+
 <%
-
-	/*------------------------------- APPDEV-3019 - variable order minimum ---------------------------------*/
-	//check each timslot to see if it has a minimum to be displayed
-	boolean applyTimeslotRule = false;
-	boolean firedTimeslotRule = true;
-	StringBuffer vMsg = new StringBuffer();
-	RulesEngineI ruleEngine = RulesRegistry.getRulesEngine("TIMESLOT");
-	Map rules = ruleEngine.getRules();
-	boolean firedRule = false;
-	String msg = null;
-	FDRulesContextImpl ctx = new FDRulesContextImpl(user);
-	for(Iterator i = rules.values().iterator(); i.hasNext(); ) {
-		Rule r = (Rule) i.next();
-		List<ConditionI> c=r.getConditions();
-		if(c!=null&&c.size()>0) {
-			for (ConditionI cObj : c) {
-				if(cObj instanceof TimeslotCondition) {
-					TimeslotCondition con=(TimeslotCondition)cObj;
-						
-					//System.out.println("conStart:"+con.getStartTimeDay()+"\nconEnd:"+con.getEndTimeDay() + "\nslotStart:"+slot.getDlvTimeslot().getStartTime() +
-						//	"\nslotEnd:"+slot.getDlvTimeslot().getEndTime()+"\nconDay:"+con.getDay()+"\nslotDay:"+format.format(slot.getBaseDate()));
-					   
-					if(con.getStartTimeDay()!=null && con.getStartTimeDay().equals(slot.getDlvTimeslot().getStartTime())
-						   && con.getEndTimeDay()!=null && con.getEndTimeDay().equals(slot.getDlvTimeslot().getEndTime())
-						   && con.getDay()!=null && con.getDay().equalsIgnoreCase(format.format(slot.getBaseDate()))
-						  ) {
-						applyTimeslotRule = true;
-						double orderTotal = MathUtil.roundDecimal(ctx.getOrderTotal());
-						Double conMinimum = con.getOrderMinimum();
-						if(MathUtil.roundDecimal(conMinimum.doubleValue()) <= orderTotal) {
-							/*order minimum met, do nothing */
-						} else {
-							//order minimum not met
-							firedTimeslotRule = true;
-							vMsg.append("<div class=\"tsDiscountPropE\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_msgE\">")
-								.append("<div>")
-								.append("<img src=\"/media_stat/images/layout/clear.gif\" width=\"16\" height=\"16\" border=\"0\">")
-								.append("<div><font class=\"tsDiscountE\" style=\"color:#669933;\">$"+CCFormatter.formatQuantity(conMinimum.doubleValue())+"&nbsp;Min.</font></div>")
-								.append("</div>\n")
-								.append("</div>")
-								.append("<div class=\"tsDiscountPropC\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_msgC\">\n")
-								.append("<div><font class=\"tsDiscountC\" style=\"color:#669933;\">$"+CCFormatter.formatQuantity(conMinimum.doubleValue())+"&nbsp;Min.</font></div>\n")
-								.append("</div>");
-						}
-					}									
-				} else {
-					RuleRuntimeI rt = new RuleRuntime(rules);
-					boolean res = cObj.evaluate(ctx, rt); // rt.evaluateRule(new FDRulesContextImpl(user), r);
-					if (!res) {
-						firedTimeslotRule = false;
-						break;
-					}
-				}
-			}
-		}
-	}	
-
-
-
 	stringBuffer.append("						<tr id=\""+"co_d"+dayIndex+"_ts"+slotIndex+"_tr"+"\" class=\"cutoff_tr\""+((slotIndex!=0)?" style=\"display: none;\"":"")+">\n");
 
 	boolean isPreReservedSlotId = slot.getTimeslotId().equals(preReserveSlotId);
@@ -175,8 +117,8 @@
 						if(!isNextDayTimeSlotNotAvailable){
 							isNextDayTimeSlotNotAvailable = day != null && nextDay != null && day.equals(nextDay);
 						}
-					} else if(applyTimeslotRule && firedTimeslotRule && vMsg.toString().length() > 0) {
-						/*Do not display the radio button*/
+					} else if(slot.getVariableMinimumMsg() != null && slot.getVariableMinimumMsg().length() > 0) {
+						/* do nothing? */
 					} else {
 						if (isStaticSlot) {
 							/* do nothing? */
@@ -328,12 +270,20 @@
 							.append("<img src=\"/media_stat/images/timeslots/neighbourhood_favs.gif\" width=\"15\" height=\"20\" border=\"0\">")
 						.append("</div>");
 		}
-	} else if (!slot.hasAvailCTCapacity() && !(isSelectedSlotId || isPreReservedSlotId) && isForce) { 
+	}else if (!slot.hasAvailCTCapacity() && !(isSelectedSlotId || isPreReservedSlotId) && isForce) { 
 		stringBuffer.append("<div class=\"tsForceC\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_forceX\"><b>F</b></div>\n");
-	} 
+	}
 	
-	if(applyTimeslotRule && firedTimeslotRule && vMsg.toString().length() > 0) {
-		stringBuffer.append(vMsg);
+	if(slot.getVariableMinimumMsg() != null && slot.getVariableMinimumMsg().length() > 0) {
+		stringBuffer.append("									<div class=\"tsDiscountPropE\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_msgE\">")
+					.append("										<div>")
+							.append("<img src=\"/media_stat/images/layout/clear.gif\" width=\"16\" height=\"16\" border=\"0\">")
+							.append("<div><a onClick=\"javascript:popup(\'/shared/template/generic_popup.jsp?contentPath=/media/editorial/timeslots/msg_variable_minimum.html&windowSize=small&name=Alcohol Restriction\',\'small\');return false;\" style=\"text-decoration:none;\"><font class=\"tsDiscountE\" style=\"color:#669933;\" >" + slot.getVariableMinimumMsg() +"</font></a></div>")
+						.append("</div>\n")
+					.append("									</div>")
+					.append("									<div class=\"tsDiscountPropC\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_msgC\">\n")
+					.append("										<div><font class=\"tsDiscountC\" style=\"color:#669933;\">"+ slot.getVariableMinimumMsg() +"</font></div>\n")
+					.append("									</div>");
 	}
 
 	/* close timeslot content div */

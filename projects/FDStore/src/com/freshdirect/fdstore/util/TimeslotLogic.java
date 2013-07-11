@@ -3,6 +3,8 @@
  */
 package com.freshdirect.fdstore.util;
 
+import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
@@ -34,17 +36,28 @@ import com.freshdirect.fdstore.customer.FDDeliveryTimeslotModel;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.promotion.PromotionHelper;
 import com.freshdirect.fdstore.rules.FDRulesContextImpl;
+import com.freshdirect.fdstore.rules.TimeslotCondition;
 import com.freshdirect.framework.util.DateRange;
 import com.freshdirect.framework.util.DateUtil;
+import com.freshdirect.framework.util.MathUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.routing.model.IDeliverySlot;
 import com.freshdirect.routing.model.IDeliveryWindowMetrics;
+import com.freshdirect.rules.ConditionI;
+import com.freshdirect.rules.Rule;
+import com.freshdirect.rules.RuleRuntime;
+import com.freshdirect.rules.RuleRuntimeI;
+import com.freshdirect.rules.RulesEngineI;
+import com.freshdirect.rules.RulesRegistry;
 
 /**
  * Utility to calculate available capacity in given circumstances.
  */
 public class TimeslotLogic {
 	private final static Logger LOGGER = LoggerFactory.getInstance(TimeslotLogic.class);
+	
+	private static final SimpleDateFormat format=new SimpleDateFormat("yyyy-MM-dd");
+	private static final DecimalFormat QUANTITY_FORMATTER = new java.text.DecimalFormat("0.##");
 
 	/** normal page (regular cust or CT cust on normal reservation) */
 	public static final int PAGE_NORMAL = 0;
@@ -155,6 +168,7 @@ public class TimeslotLogic {
 		}
 		
 		user.setSteeringSlotIds(new HashSet<String>());
+		boolean isVariableMinimumSet = false;
 		
 		for (FDTimeslotUtil list : timeslotList) {
 			for (Collection<FDTimeslot> col : list.getTimeslots()) {
@@ -302,9 +316,61 @@ public class TimeslotLogic {
 					}
 
 					stats.incrementTotalSlots();
+					
+					/*------------------------------- APPDEV-3019 - variable order minimum ---------------------------------*/
+					//check each FDTimeslot to see if it has a minimum to be displayed					
+					StringBuffer vMsg = new StringBuffer();
+					RulesEngineI ruleEngine = RulesRegistry.getRulesEngine("TIMESLOT");
+					Map rules = ruleEngine.getRules();
+					String msg = null;
+					FDRulesContextImpl ctx = new FDRulesContextImpl(user);
+					for(Iterator i = rules.values().iterator(); i.hasNext(); ) {
+						Rule r = (Rule) i.next();
+						List<ConditionI> c=r.getConditions();
+						if(c!=null&&c.size()>0) {
+							for (ConditionI cObj : c) {
+								if(cObj instanceof TimeslotCondition) {
+									TimeslotCondition con=(TimeslotCondition)cObj;
+										
+									//System.out.println("conStart:"+con.getStartTimeDay()+"\nconEnd:"+con.getEndTimeDay() + "\nslotStart:"+slot.getDlvTimeslot().getStartTime() +
+										//	"\nslotEnd:"+slot.getDlvTimeslot().getEndTime()+"\nconDay:"+con.getDay()+"\nslotDay:"+format.format(slot.getBaseDate()));
+									   
+									if(con.getStartTimeDay()!=null && con.getStartTimeDay().equals(timeslot.getDlvTimeslot().getStartTime())
+										   && con.getEndTimeDay()!=null && con.getEndTimeDay().equals(timeslot.getDlvTimeslot().getEndTime())
+										   && con.getDay()!=null && con.getDay().equalsIgnoreCase(format.format(timeslot.getBaseDate()))
+										  ) {
+										isVariableMinimumSet = true;
+										double orderTotal = MathUtil.roundDecimal(ctx.getOrderTotal());
+										Double conMinimum = con.getOrderMinimum();
+										if(MathUtil.roundDecimal(conMinimum.doubleValue()) <= orderTotal) {
+											/*order minimum met, do nothing */
+										} else {
+											//order minimum not met
+											vMsg.append("$"+QUANTITY_FORMATTER.format(conMinimum.doubleValue())+"&nbsp;Min.");
+										}
+									} else {
+										/*timslot rule is not for this timeslot. so break the loop*/
+										break;
+									}
+								} else {
+									RuleRuntimeI rt = new RuleRuntime(rules);
+									boolean res = cObj.evaluate(ctx, rt); // rt.evaluateRule(new FDRulesContextImpl(user), r);
+									if (!res) {
+										break;
+									}
+								}
+							}
+						}
+					}	
+					if(vMsg.length() > 0) {
+						timeslot.setVariableMinimumMsg(vMsg.toString());
+					}
 				}
 			}
-
+			
+			if(isVariableMinimumSet) {
+				deliveryModel.setMinimumOrderSet(true);
+			}
 
 			stats.updateKosherSlotAvailable(list.isKosherSlotAvailable(restrictions));
 			if (!genericTimeslots)

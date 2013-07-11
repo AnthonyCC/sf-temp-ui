@@ -337,6 +337,13 @@ if (errorMsg!=null) {%>
 						<td Valign="middle" align="right">
 						 	<table>
 								<tr>
+									<%if(deliveryModel.isMinimumOrderSet()){%>
+										<td>
+											<font class="tsDiscountC" style="color:#669933;">$&nbsp;</font>
+										</td>
+										<td style="color:#000000;">Minimum Order Applies</td>
+										<td>&nbsp;</td>
+									<%}%>
 									<%if(deliveryModel.getEcoFriendlyCount() > 0){%>
 										<td>
 											<img src="/media_stat/images/timeslots/ecofriendly_leaf.gif" WIDTH="16" HEIGHT="16" border="0">
@@ -361,7 +368,7 @@ if (errorMsg!=null) {%>
 											<a onClick="javascript:popup('/shared/template/generic_popup.jsp?contentPath=/media/editorial/timeslots/msg_alcoholrestriction_timeslot.html&windowSize=small&name=Alcohol Restriction','small');return false;"><%= FDStoreProperties.getAlcoholRestrictedLabel()%></a>
 										</td>
 										<td>&nbsp;</td>
-									<%}%>
+									<%}%>									
 								</tr>
 							</table>
 						</td>

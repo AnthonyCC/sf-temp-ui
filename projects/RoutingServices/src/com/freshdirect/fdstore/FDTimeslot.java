@@ -34,6 +34,7 @@ public class FDTimeslot implements Serializable, Comparable<FDTimeslot> {
 	private String storeFrontAvailable;
 	private boolean unavailable;
 	private DecimalFormat premiumAmountFmt = new DecimalFormat("#.##");
+	private String variableMinimumMsg;
 	/** Creates new FDTimeslot */
 	public FDTimeslot(DlvTimeslotModel dlvTimeslot) {
 		this.dlvTimeslot = dlvTimeslot;
@@ -276,5 +277,13 @@ public class FDTimeslot implements Serializable, Comparable<FDTimeslot> {
 	
 	public int getTotalConfirmed() {
 		return dlvTimeslot.getTotalConfirmed();
+	}
+
+	public String getVariableMinimumMsg() {
+		return variableMinimumMsg;
+	}
+
+	public void setVariableMinimumMsg(String variableMinimumMsg) {
+		this.variableMinimumMsg = variableMinimumMsg;
 	}
 }
