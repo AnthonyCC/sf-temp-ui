@@ -59,8 +59,7 @@ public class NutritionPanelTag extends BodyTagSupport {
 	// Html fragments to embed into page
 				
 	private static final String htmlCommonIncludes = 
-			"<script type=\"text/javascript\" src=\"/assets/javascript/jquery/ui/1.8.23/jquery-ui.min.js\"></script>\n"
-			+"<script type=\"text/javascript\" src=\"/assets/javascript/json2.min.js\"></script>\n"
+			"<script type=\"text/javascript\" src=\"/assets/javascript/json2.min.js\"></script>\n"
 			+"<script type=\"text/javascript\" src=\"/assets/javascript/es5-shim.min.js\"></script>\n"
 			+"<script type=\"text/javascript\" src=\"/assets/javascript/jquery.mustache.js\"></script>\n"
 			+"<script type=\"text/javascript\" src=\"/assets/javascript/nutrition_panel.js\"></script>\n";

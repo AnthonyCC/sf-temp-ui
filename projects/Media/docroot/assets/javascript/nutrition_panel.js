@@ -178,7 +178,11 @@ var drugPanel = function($,data,config){
     container.removeClass('display editor');
     currentView = viewName;
     container.addClass(currentView);
-    $('<link rel="stylesheet" type="text/css" id="drugcss_'+viewName+'" href="'+cssUrl+'">').appendTo('head');
+    if (document.createStyleSheet) {
+        document.createStyleSheet(cssUrl);
+    } else {
+    	$('<link rel="stylesheet" type="text/css" id="drugcss_'+viewName+'" href="'+cssUrl+'">').appendTo('head');
+    }
 
   };
   
