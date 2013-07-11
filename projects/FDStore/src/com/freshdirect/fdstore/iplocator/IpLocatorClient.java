@@ -19,6 +19,7 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.framework.util.StringUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
 public class IpLocatorClient {
@@ -39,7 +40,7 @@ public class IpLocatorClient {
 	}
 	
 	private String doRequest(String ip) throws IpLocatorException{
-		String urlStr = FDStoreProperties.getIpLocatorUrl() + "?id=" + FDStoreProperties.getIpLocatorClientId() + "&ip=" + ip;
+		String urlStr = FDStoreProperties.getIpLocatorUrl() + "?id=" + FDStoreProperties.getIpLocatorClientId() + "&ip=" + StringUtil.encodeUrl(ip);
 		LOGGER.debug("IP Locator URL: " + urlStr);
 		URL url;
 		try {

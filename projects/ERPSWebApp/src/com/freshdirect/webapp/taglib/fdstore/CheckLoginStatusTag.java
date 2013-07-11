@@ -721,8 +721,8 @@ public class CheckLoginStatusTag extends com.freshdirect.framework.webapp.TagSup
 		    		user = createUser(ipLocatorData, ipLocatorEventDTO);
 		    		LOGGER.debug("IP locator success: "+ip+" -> "+ipLocatorData);
 	
-		    	} catch (IpLocatorException e) {
-					LOGGER.error("IP Locator failed: "+e);
+		    	} catch (Exception e) {
+					LOGGER.error("IP Locator failed: ", e);
 				}
 
     		} else {
