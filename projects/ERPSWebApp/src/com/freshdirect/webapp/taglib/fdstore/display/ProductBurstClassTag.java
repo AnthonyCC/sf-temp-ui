@@ -37,6 +37,8 @@ public class ProductBurstClassTag extends AbstractGetterTag<String> {
 	}
 
 	public String getContent(FDUserI user) throws Exception {
+		pageContext.setAttribute("burstStyleString", ""); //reset value in case last product already set it on the page
+		
 		if (user == null) {
 			return "";
 		}
