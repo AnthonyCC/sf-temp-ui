@@ -24,6 +24,9 @@ request.setAttribute("listPos", "HPLeftTop");
 response.setHeader("Pragma", "no-cache");
 response.setHeader("Cache-Control", "no-cache");
 %>
+
+<tmpl:insert template='/common/template/dnav.jsp'>
+<tmpl:put name='customhead' direct='true'>
 <style>
 
 	body { font-family: Verdana, Arial, sans-serif; font-size: 10px; height: 100%; }
@@ -125,8 +128,8 @@ response.setHeader("Cache-Control", "no-cache");
 <fd:javascript  src="/assets/yui-2.9.0/datasource/datasource-min.js" />
 <fd:javascript  src="/assets/yui-2.9.0/datatable/datatable-min.js" />
 <fd:javascript  src="/assets/yui-2.9.0/json/json-min.js" />
+</tmpl:put>
 
-<tmpl:insert template='/common/template/dnav.jsp'>
 <tmpl:put name='title' direct='true'>FreshDirect - Your Profile</tmpl:put>
 <tmpl:put name='content' direct='true'>
 
