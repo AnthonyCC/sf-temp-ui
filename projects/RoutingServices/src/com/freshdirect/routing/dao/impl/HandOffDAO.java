@@ -744,7 +744,7 @@ public class HandOffDAO extends BaseDAO implements IHandOffDAO   {
 			batchUpdater.declareParameter(new SqlParameter(Types.TIMESTAMP));
 			batchUpdater.declareParameter(new SqlParameter(Types.NUMERIC));
 			batchUpdater.declareParameter(new SqlParameter(Types.ARRAY));
-			batchUpdater.declareParameter(new SqlParameter(Types.TIMESTAMP));
+			batchUpdater.declareParameter(new SqlParameter(Types.VARCHAR));
 			
 			batchUpdater.compile();			
 			connection = this.jdbcTemplate.getDataSource().getConnection();
