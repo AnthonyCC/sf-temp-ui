@@ -136,7 +136,8 @@ FDIdentity identity = user.getIdentity();
 				&nbsp;<span style="color: #666666">&bull;</span>&nbsp;
 			</span>
 			<% } %>
-			<a href="<%= request.getRequestURI() %>?remove=1" name="remove_all" onClick='return confirm("Are you sure that you want to delete all items from your cart?");'>Delete All Items</a> <a href="<%= request.getRequestURI() %>?remove=1" name="remove_all" onClick='return confirm("Are you sure that you want to delete all items from your cart?");'><img src="/media_stat/images/icon-trash.png" alt="Delete All Items" /></a></td>
+			<a href="<%= request.getRequestURI() %>?remove=1" name="remove_all" onClick='return confirm("Are you sure that you want to delete all items from your cart?");'>Delete All Items</a></td>
+			<td width="20" align="right"><a href="<%= request.getRequestURI() %>?remove=1" name="remove_all" onClick='return confirm("Are you sure that you want to delete all items from your cart?");'><img src="/media_stat/images/icon-trash.png" alt="Delete All Items" /></a></td>
 	</tr>
 </table>
 <div id="clicode_testbox" class="text10" style="position: absolute; top: -2000px; left: -2000px; height: 24px; padding: 0px; color: #999999; border-top: 1px solid #999999; visibility: hidden;">
@@ -185,7 +186,7 @@ FDIdentity identity = user.getIdentity();
 						%>
 						<tr>
 							<td colspan="3"></td>
-							<td colspan="7"><br><a href="/department.jsp?deptId=<%= RecipeDepartment.getDefault().getContentName() %>&trk=cart"><img src="/media_stat/images/layout/department_headers/rec_cart.gif" alt="RECIPES" border="0"></a><br><img src="/media_stat/images/layout/clear.gif" width="1" height="5">
+							<td colspan="8"><br><a href="/department.jsp?deptId=<%= RecipeDepartment.getDefault().getContentName() %>&trk=cart"><img src="/media_stat/images/layout/department_headers/rec_cart.gif" alt="RECIPES" border="0"></a><br><img src="/media_stat/images/layout/clear.gif" width="1" height="5">
 							</td>
 						</tr>
 						<%
@@ -198,10 +199,12 @@ FDIdentity identity = user.getIdentity();
 								href="/recipe.jsp?recipeId=<%= cartLine.getRecipeSourceId() %>&trk=cart"><%= lastDept.substring("Recipe: ".length()) %></a>
 						</td>
 						<td colspan="5" align="right"><%= (!firstRecipe) ? "<img src=\"/media_stat/images/layout/clear.gif\" width=\"1\" height=\"15\"><br>":""%>
-							<a href="<%= request.getRequestURI() + "?removeRecipe=" + cartLine.getRecipeSourceId() %>" onClick='return confirm("Are you sure that you want to delete recipe ingredients?");'>Delete all recipe ingredients</a> <a href="<%= request.getRequestURI() + "?removeRecipe=" + cartLine.getRecipeSourceId() %>" onClick='return confirm("Are you sure that you want to delete recipe ingredients?");'><img src="/media_stat/images/icon-trash.png" alt="Delete all recipe ingredients" /></a></td>
+							<a href="<%= request.getRequestURI() + "?removeRecipe=" + cartLine.getRecipeSourceId() %>" onClick='return confirm("Are you sure that you want to delete recipe ingredients?");'>Delete all recipe ingredients</a></td>
+						<td width="20" align="right">
+							<a href="<%= request.getRequestURI() + "?removeRecipe=" + cartLine.getRecipeSourceId() %>" onClick='return confirm("Are you sure that you want to delete recipe ingredients?");'><img src="/media_stat/images/icon-trash.png" alt="Delete all recipe ingredients" /></a></td>
 						</td>
 					</tr>
-					<tr><td colspan="10"><img src="/media_stat/images/layout/clear.gif" width="1" height="5"></td></tr>
+					<tr><td colspan="11"><img src="/media_stat/images/layout/clear.gif" width="1" height="5"></td></tr>
 					
 					<%
 					firstRecipe = false;
@@ -210,8 +213,10 @@ FDIdentity identity = user.getIdentity();
 					String deptId = null !=prodMdl?prodMdl.getDepartment().getContentName():"";
 					%>
 					<tr>
-						<td width="84">&nbsp;</td><td width="16">&nbsp;</td><td width="22">&nbsp;</td>
-						<td colspan="7"><br><a href="/department.jsp?deptId=<%= deptId %>&trk=cart"><img src="/media_stat/images/layout/department_headers/<%=lastDeptImgName%>" alt="<%= lastDept.toUpperCase() %>" border="0"></a><br><img src="/media_stat/images/layout/clear.gif" width="1" height="5"></td>
+						<td width="84">&nbsp;</td>
+						<td width="16">&nbsp;</td>
+						<td width="22">&nbsp;</td>
+						<td colspan="8"><br><a href="/department.jsp?deptId=<%= deptId %>&trk=cart"><img src="/media_stat/images/layout/department_headers/<%=lastDeptImgName%>" alt="<%= lastDept.toUpperCase() %>" border="0"></a><br><img src="/media_stat/images/layout/clear.gif" width="1" height="5"></td>
 					</tr>
 					<%
 				}
@@ -410,7 +415,8 @@ FDIdentity identity = user.getIdentity();
             <% } %>
 			<td width="10"><%= cartLine.isEstimatedPrice() ? "*" : "" %><b><%=cartLine.hasTax() ? "&nbsp;T" : ""%></b></td>
 			<td width="10"><b><%= cartLine.hasScaledPricing() || ( groupDiscountMsg!=null && !"".equals(groupDiscountMsg) ) ? "&nbsp;S" : "" %><%= cartLine.hasDepositValue() ? "&nbsp;D" : "" %></b></td>
-			<td width="60" align="right">&nbsp;<a href="<%= request.getRequestURI() %>?remove=1&cartLine=<%= cartLine.getRandomId() %>" class="note">Delete</A> <a href="<%= request.getRequestURI() %>?remove=1&cartLine=<%= cartLine.getRandomId() %>" class="note"><img src="/media_stat/images/icon-trash.png" alt="Delete" /></a></td>
+			<td width="60" align="right">&nbsp;<a href="<%= request.getRequestURI() %>?remove=1&cartLine=<%= cartLine.getRandomId() %>" class="note">Delete</A> <a href="<%= request.getRequestURI() %>?remove=1&cartLine=<%= cartLine.getRandomId() %>" class="note"></td>
+			<td width="20" align="right"><img src="/media_stat/images/icon-trash.png" alt="Delete" /></a></td>
 		</tr>
 
 		<%
@@ -418,7 +424,7 @@ FDIdentity identity = user.getIdentity();
 		%>
 		<tr id="clicode_tr_<%= idx %>" style="display: none">
 			<td colspan="3">&nbsp;</td>
-			<td colspan="7">
+			<td colspan="8">
 				<%
 				String clicode_type;
 				if (cartLine.isSoldBySalesUnits()) {
@@ -556,7 +562,7 @@ FDIdentity identity = user.getIdentity();
 					</fd:GetDlvRestrictions>
 					<a href="javascript:popup('/shared/departments/kosher/delivery_info.jsp','small')">Learn More</a>
 				</td>
-				<td colspan="5">&nbsp;</td>
+				<td colspan="6">&nbsp;</td>
 			</tr>
 			<% 
 			hadKosherRestriction = false;
@@ -565,13 +571,18 @@ FDIdentity identity = user.getIdentity();
 		%>
 	</logic:iterate>
 
-	<tr><td width="84">&nbsp;</td><td width="16">&nbsp;</td><td width="22">&nbsp;</td><td colspan="7">&nbsp;</td></tr>
-	<tr><td colspan="10"><div class="orderViewSeparator"></div></td></tr>
+	<tr>
+		<td width="84">&nbsp;</td>
+		<td width="16">&nbsp;</td>
+		<td width="22">&nbsp;</td>
+		<td colspan="8">&nbsp;</td>
+	</tr>
+	<tr><td colspan="11"><div class="orderViewSeparator"></div></td></tr>
 	<tr class="orderViewSummary">
 		<td colspan="6" align="right"><%= view.getDescription() %><% if (view.isEstimatedPrice()) { %> Estimated<% } %> Subtotal:</td>
 		<td colspan="1" align="right"><b><%=JspMethods.formatPrice(view.getSubtotal())%></b></td>
 		<td colspan="1" width="10"><% if (view.isEstimatedPrice()) { %>*<% } %></td>
-		<td colspan="2">&nbsp;</td>
+		<td colspan="3">&nbsp;</td>
 	</tr>
 	<%
 	if (view.getTax() > 0) {
@@ -579,7 +590,7 @@ FDIdentity identity = user.getIdentity();
 		<tr class="orderViewSummary">
 			<td colspan="6" align="right">Tax:</td>
 			<td colspan="1" align="right"><%=JspMethods.formatPrice(view.getTax())%></td>
-			<td colspan="3">&nbsp;</td>
+			<td colspan="4">&nbsp;</td>
 		</tr>
 		<%
 	}
@@ -588,7 +599,7 @@ FDIdentity identity = user.getIdentity();
 		<tr class="orderViewSummary">
 			<td colspan="6" align="right">State Bottle Deposit:</td>
 			<td colspan="1" align="right"><%=JspMethods.formatPrice(view.getDepositValue())%></td>
-			<td colspan="3">&nbsp;</td>
+			<td colspan="4">&nbsp;</td>
 		</tr>
 		<% 
 	}
