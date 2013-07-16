@@ -49,6 +49,7 @@ public class SapGatewaySessionBean extends GatewaySessionBeanSupport {
 			//(APPDEV-3034) Enhancement Storefront to do local inventory check when SAP blackhole is enabled 
 			if(FDStoreProperties.isCheckLocalInventoryEnabled())
 				return checkLocalAvailability(order);
+			return order;
 		}
 
 		SapCheckAvailability command = new SapCheckAvailability(order, timeout);
