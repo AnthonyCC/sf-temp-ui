@@ -409,7 +409,7 @@ public class HandOffDAO extends BaseDAO implements IHandOffDAO   {
 						infoModel.setDispatchTime(new RoutingTimeOfDay(rs.getTimestamp("DISPATCHTIME")));
 						infoModel.setDispatchSequence(rs.getInt("DISPATCHSEQUENCE"));
 						infoModel.setTrailerId(rs.getString("TRAILER_NO"));
-						infoModel.setDepotParkingLocation("DEPOT_PARKLOCATION");
+						infoModel.setDepotParkingLocation(rs.getString("DEPOT_PARKLOCATION"));
 					} while(rs.next());		        		    	
 				}
 		}
