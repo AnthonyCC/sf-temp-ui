@@ -19,7 +19,7 @@ if (user.getLevel() == FDUserI.GUEST) {
 			<form class="n"><label class="e"><b>That e-mail has already been added!</b><br>Please enter a different e-mail address.</label><label class="n"></label><div><input type="text" id="location-email" class="placeholder" placeholder="enter your e-mail address"><input type="image" src="/media_stat/images/locationbar/button_submit.png" id="location-submit"></div><div class="p"></div></form>
 			<div class=""><label class="n">Enter your email address and we'll notify you when service expands in your area.</label></div>
 		<% } else { %>
-			<div class=""><b>Thanks for your email!</b> We will notify you once we start delivering your area.</div>
+		<div class="">We currently serve the New York and Philadelphia metropolitan areas. Please feel free to continue browsing, but you will not able to place an order. <a href="/help/delivery_zones.jsp" class="delivery-popuplink">Click here</a> to see current delivery zones. To enter a different zip code, please enter in the box in the upper left.</div>
 		<% } %>
 	</div>
 </div>
