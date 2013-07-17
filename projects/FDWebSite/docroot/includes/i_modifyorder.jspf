@@ -1,3 +1,4 @@
+<%@page import="com.freshdirect.customer.EnumTransactionSource"%>
 <%@ page import="java.util.Date"%>
 <%@ page import="java.util.Calendar"%>
 <%@ page import="java.text.SimpleDateFormat" %>
@@ -29,9 +30,11 @@
 	String modifyNote="";
 	
 	if (mUser.getCurrentStandingOrder() != null) {
+		mCart.setTransactionSource(EnumTransactionSource.STANDING_ORDER);
 		%><%@include file="i_so_header.jspf" %><%
 	
 	} else if (mCart instanceof FDModifyCartModel) {
+		mCart.setTransactionSource(null);
 		modifyOrderMode = true;
 		FDModifyCartModel modCart = (FDModifyCartModel) mCart;
 		String oId = modCart.getOriginalOrder().getErpSalesId();

@@ -1063,7 +1063,7 @@ public class StandingOrderUtil {
 			
 			// RESET
 			user.setCheckoutMode(EnumCheckoutMode.NORMAL);
-
+			user.getShoppingCart().setTransactionSource(null);
 			if ( origMode.isCartSaved() ) {
 				// RESTORE ORIGINAL CART
 				ShoppingCartUtil.restoreCart(session);
