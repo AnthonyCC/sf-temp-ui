@@ -21,6 +21,7 @@
 		<title>Erpsy - ProductView</title>
 		<link rel="shortcut icon" href="/blackbirdjs/favicon.ico" type="image/x-icon" />		
 		<script type="text/javascript" src="/assets/javascript/jquery/1.7.2/jquery.js"></script>
+		<script type="text/javascript" src="/assets/javascript/jquery/ui/1.9.2/jquery-ui.min.js"></script>
 		<link rel="stylesheet" href="/ERPSAdmin/common/css/erpsadmin.css" type="text/css">	
 		<script type="text/javascript" src="/ERPSAdmin/batch/blackbirdjs/blackbird.js"></script>
 		<link type="text/css" rel="Stylesheet" href="/ERPSAdmin/batch/blackbirdjs/blackbird.css" />
