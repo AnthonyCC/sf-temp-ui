@@ -15,6 +15,7 @@ import com.freshdirect.delivery.model.DlvTimeslotModel;
 import com.freshdirect.fdstore.FDReservation;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.FDTimeslot;
+import com.freshdirect.fdstore.customer.FDModifyCartModel;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.TimeOfDay;
@@ -74,7 +75,7 @@ public class DlvZoneStrategy implements PromotionStrategyI {
 		String zoneCode =context.getDeliveryZone();
 
 		boolean isPremiumSlot = null !=context.getDeliveryReservation()?context.getDeliveryReservation().isPremium():false;
-		if(checkDlvDayTypeEligibility(isPremiumSlot, context.getShoppingCart().getTransactionSource())){
+		if(checkDlvDayTypeEligibility(isPremiumSlot, context.getShoppingCart().getTransactionSource(), context.getUser())){
 			if(null != zoneCode && !"".equals(zoneCode.trim())){
 				if(null == dlvDates || dlvDates.size()==0 || checkDlvDates(context.getDeliveryReservation())){
 					if(null != dlvZones && dlvZones.size() != 0 && ((dlvZones.contains(zoneCode) || dlvZones.contains("ALL")))){
@@ -199,7 +200,7 @@ public class DlvZoneStrategy implements PromotionStrategyI {
 						TimeOfDay promoDlvSlotEndTime = new TimeOfDay(promoDlvTimeSlot.getDlvTimeEnd());
 						if((dlvStartTimeOfDay.equals(promoDlvSlotStartTime) || dlvStartTimeOfDay.after(promoDlvSlotStartTime)) && 
 								(dlvEndTimeOfDay.before(promoDlvSlotEndTime) || dlvEndTimeOfDay.equals(promoDlvSlotEndTime))
-								&& checkDlvDayTypeEligibility(dlvTimeslotModel.isPremiumSlot(), user.getShoppingCart().getTransactionSource())){
+								&& checkDlvDayTypeEligibility(dlvTimeslotModel.isPremiumSlot(), user.getShoppingCart().getTransactionSource(),user)){
 							isOK = true;
 							break;
 						}
@@ -286,7 +287,7 @@ public class DlvZoneStrategy implements PromotionStrategyI {
 		this.dlvDayType = dlvDayType;
 	}
 	
-	public boolean checkDlvDayTypeEligibility(boolean isPremiumSlot, EnumTransactionSource source){
+	public boolean checkDlvDayTypeEligibility(boolean isPremiumSlot, EnumTransactionSource source,FDUserI user){
 		boolean isOK = false;
 		if(null == dlvDayType || EnumDeliveryOption.ALL.equals(dlvDayType)){
 			isOK = true;
@@ -295,6 +296,11 @@ public class DlvZoneStrategy implements PromotionStrategyI {
 				//This is set for SO only
 				if(source != null && source.getCode().equals(EnumTransactionSource.STANDING_ORDER.getCode())) {
 					isOK = true;
+				}else if(null !=user && user.getShoppingCart() instanceof FDModifyCartModel){
+					FDModifyCartModel modifyCart =(FDModifyCartModel)user.getShoppingCart();
+					if(null !=modifyCart.getOriginalOrder() && null !=modifyCart.getOriginalOrder().getStandingOrderId()){
+						isOK = true;
+					}
 				}
 			} else {
 				if(isPremiumSlot){
