@@ -23,6 +23,8 @@ public class Rule implements ConditionI {
 	private List<ConditionI> conditions;
 	private Object outcome;
 	private String subsystem;
+	private String conditionStr;
+	private String outcomeStr;
 
 	public Rule() {
 		this.conditions = new ArrayList<ConditionI>();
@@ -178,5 +180,21 @@ public class Rule implements ConditionI {
         } catch (IOException e) {
             return null;
         }		
+	}
+
+	public String getConditionStr() {
+		return conditionStr;
+	}
+
+	public void setConditionStr(String conditionStr) {
+		this.conditionStr = conditionStr;
+	}
+
+	public String getOutcomeStr() {
+		return outcomeStr;
+	}
+
+	public void setOutcomeStr(String outcomeStr) {
+		this.outcomeStr = outcomeStr;
 	}
 }

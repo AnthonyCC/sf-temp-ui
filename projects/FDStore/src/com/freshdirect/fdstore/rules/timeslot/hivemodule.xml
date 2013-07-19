@@ -17,8 +17,7 @@
 	
 	<service-point id="Store" interface="com.freshdirect.rules.RulesStoreI">
 		<invoke-factory>
-			<construct class="com.freshdirect.rules.DbRulesStoreNew">
-				<service>com.freshdirect.fdstore.DataSource</service>
+			<construct class="com.freshdirect.fdstore.rules.RulesManager">
 				<string>TIMESLOT</string>
 				<configuration>com.freshdirect.rules.Configurations</configuration>
 			</construct>
