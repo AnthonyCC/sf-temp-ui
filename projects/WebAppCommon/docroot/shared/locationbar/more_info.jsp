@@ -37,7 +37,7 @@ FDSessionUser user = (FDSessionUser)session.getAttribute(SessionName.USER);
 				</fieldset>
 			</div>
 		</form>
-		<div id="footer"><span>Already have an account with FreshDirect?</span><a href="/login/login.jsp" target="_top" id="login"><img src=""></a><a href="#" target="_top" id="continue"><img src="/media_stat/images/locationbar/more_info_continue.png"></a></div>
+		<div id="footer"><span>Already have an account with FreshDirect?</span><a href="/login/login.jsp" target="_top" id="login"></a><a href="#" target="_top" id="continue"><img src="/media_stat/images/locationbar/more_info_continue.png"></a></div>
 		<fd:javascript src="/assets/javascript/jquery/1.7.2/jquery.js" />
 		<fd:javascript src="/assets/javascript/more_info.js" />
 	</body>
