@@ -18,12 +18,10 @@ public class RulesManagerDAO {
 
 	private final static Category LOGGER = LoggerFactory.getInstance(RulesDAO.class);
 
-	public RulesManagerDAO(RulesConfig config) {}
-
 	private static final String LOAD_QUERY = "select id, name, start_date, end_date, priority, conditions, outcome, subsystem "
 		+ "from dlv.rules where subsystem = ? ";
 
-	public Map<String, Rule> loadRules(Connection conn, String subsystem) throws SQLException {
+	public static Map<String, Rule> loadRules(Connection conn, String subsystem) throws SQLException {
 		PreparedStatement ps = conn.prepareStatement(LOAD_QUERY);
 		ps.setString(1, subsystem);
 		ResultSet rs = ps.executeQuery();
@@ -42,7 +40,7 @@ public class RulesManagerDAO {
 	private static final String GET_QUERY = "select id, name, start_date, end_date, priority, conditions, outcome, subsystem "
 		+ "from dlv.rules where id = ? ";
 
-	public Rule getRule(Connection conn, String id) throws SQLException {
+	public static Rule getRule(Connection conn, String id) throws SQLException {
 		PreparedStatement ps = conn.prepareStatement(GET_QUERY);
 		ps.setString(1, id);
 		ResultSet rs = ps.executeQuery();
@@ -59,7 +57,7 @@ public class RulesManagerDAO {
 		}
 	}
 
-	private Rule loadFromResultSet(ResultSet rs) throws SQLException {
+	private static Rule loadFromResultSet(ResultSet rs) throws SQLException {
 		Rule r = new Rule();
 		r.setId(rs.getString("ID"));
 		r.setName(rs.getString("NAME"));
@@ -79,7 +77,7 @@ public class RulesManagerDAO {
 	private static final String ADD_QUERY = "insert into dlv.rules (id, name, start_date, end_date, priority, conditions, outcome, subsystem) "
 		+ "values(?, ?, ?, ?, ?, ?, ?, ?) ";
 
-	public void addRule(Connection conn, Rule rule) throws SQLException {
+	public static void addRule(Connection conn, Rule rule) throws SQLException {
 
 		PreparedStatement ps = conn.prepareStatement(ADD_QUERY);
 		String id = SequenceGenerator.getNextId(conn, "DLV");
@@ -99,7 +97,7 @@ public class RulesManagerDAO {
 	private static final String UPDATE_QUERY = "update dlv.rules set name=?, start_date=?, end_date=?, priority=?, conditions=?, outcome=?, subsystem=? "
 		+ "where id = ? ";
 
-	public void storeRule(Connection conn, Rule rule) throws SQLException {
+	public static void storeRule(Connection conn, Rule rule) throws SQLException {
 		PreparedStatement ps = conn.prepareStatement(UPDATE_QUERY);
 		ps.setString(1, rule.getName());
 		ps.setTimestamp(2, new Timestamp(rule.getStartDate().getTime()));
@@ -120,7 +118,7 @@ public class RulesManagerDAO {
 
 	}
 
-	public void updateRule(Connection conn, Rule rule) throws SQLException {
+	public static void updateRule(Connection conn, Rule rule) throws SQLException {
 		if (rule.getId() == null) {
 			addRule(conn, rule);
 		} else {
@@ -130,7 +128,7 @@ public class RulesManagerDAO {
 
 	private static final String DELETE_QUERY = "delete from dlv.rules where id = ? ";
 
-	public void deleteRule(Connection conn, String ruleId) throws SQLException {
+	public static void deleteRule(Connection conn, String ruleId) throws SQLException {
 		PreparedStatement ps = conn.prepareStatement(DELETE_QUERY);
 		ps.setString(1, ruleId);
 		try {

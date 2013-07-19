@@ -11,12 +11,12 @@ import com.freshdirect.rules.RulesConfig;
 
 public interface RulesManagerSB extends EJBObject {
 
-	Map<String, Rule> getRules(RulesConfig config) throws FDResourceException, RemoteException;
+	Map<String, Rule> getRules(String subsystem) throws FDResourceException, RemoteException;
 
-	Rule getRule(RulesConfig config,String ruleId) throws FDResourceException,RemoteException;
+	Rule getRule(String ruleId) throws FDResourceException,RemoteException;
 
-	void deleteRule(RulesConfig config,String ruleId) throws FDResourceException,RemoteException;
+	void deleteRule(String ruleId) throws FDResourceException,RemoteException;
 
-	void storeRule(RulesConfig config,Rule rule) throws FDResourceException,RemoteException;
+	void storeRule(Rule rule) throws FDResourceException,RemoteException;
 
 }

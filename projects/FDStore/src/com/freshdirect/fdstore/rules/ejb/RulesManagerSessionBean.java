@@ -22,90 +22,83 @@ public class RulesManagerSessionBean extends SessionBeanSupport{
 	private static final long serialVersionUID = -1314489328918173170L;
 	private static Category LOGGER = LoggerFactory.getInstance(RulesManagerSessionBean.class);
 	
-	public Map<String, Rule> getRules(RulesConfig config) throws FDResourceException, RemoteException
+	public Map<String, Rule> getRules(String subsystem) throws FDResourceException, RemoteException
 	{
 		Connection conn = null;
 		try {
-			RulesManagerDAO dao = new RulesManagerDAO(config);
 			conn = getConnection();
-			return dao.loadRules(conn, config.getSubsystem());
+			return RulesManagerDAO.loadRules(conn, subsystem);
 		} catch (SQLException e) {
-			LOGGER.error("SQL Error occurred while getting the Dlv Restriction.");
-			throw new FDResourceException(e, "Could not get the Dlv Restriction due to SQL Error.");
+			LOGGER.error("SQL Error occurred while loading the Dlv Rules.");
+			throw new FDResourceException(e, "SQL Error occurred while loading the Dlv Rules.");
 		} finally {
 			if (conn != null) {
 				try {
 					conn.close();
 				} catch (SQLException e) {
-					LOGGER.warn("Trouble closing connection after getting the Dlv Restriction.", e);
+					LOGGER.warn("Trouble closing connection after loading the Dlv Rules.", e);
 				}
 			}
 		}
 	}
 	
-	public Rule getRule(RulesConfig config, String ruleId) throws FDResourceException, RemoteException
+	public Rule getRule(String ruleId) throws FDResourceException, RemoteException
 	{
 		Connection conn = null;
 		try {
-			RulesManagerDAO dao = new RulesManagerDAO(config);
 			conn = getConnection();
-			return dao.getRule(conn, config.getSubsystem());
+			return RulesManagerDAO.getRule(conn, ruleId);
 		} catch (SQLException e) {
-			LOGGER.error("SQL Error occurred while getting the Dlv Restriction.");
-			throw new FDResourceException(e, "Could not get the Dlv Restriction due to SQL Error.");
+			LOGGER.error("SQL Error occurred while getting the Dlv Rule.");
+			throw new FDResourceException(e, "SQL Error occurred while getting the Dlv Rule.");
 		} finally {
 			if (conn != null) {
 				try {
 					conn.close();
 				} catch (SQLException e) {
-					LOGGER.warn("Trouble closing connection after getting the Dlv Restriction.", e);
+					LOGGER.warn("Trouble closing connection after getting the Dlv Rule.", e);
 				}
 			}
 		}
 	}
-	public void deleteRule(RulesConfig config, String ruleId) throws FDResourceException, RemoteException
+	public void deleteRule(String ruleId) throws FDResourceException, RemoteException
 	{
 		Connection conn = null;
 		try {
-			RulesManagerDAO dao = new RulesManagerDAO(config);
 			conn = getConnection();
-			dao.deleteRule(conn, config.getSubsystem());
+			RulesManagerDAO.deleteRule(conn, ruleId);
 		} catch (SQLException e) {
-			LOGGER.error("SQL Error occurred while getting the Dlv Restriction.");
-			throw new FDResourceException(e, "Could not get the Dlv Restriction due to SQL Error.");
+			LOGGER.error("SQL Error occurred while deleting the Dlv Rule.");
+			throw new FDResourceException(e, "SQL Error occurred while deleting the Dlv Rule.");
 		} finally {
 			if (conn != null) {
 				try {
 					conn.close();
 				} catch (SQLException e) {
-					LOGGER.warn("Trouble closing connection after getting the Dlv Restriction.", e);
+					LOGGER.warn("Trouble closing connection after deleting the Dlv Rule.", e);
 				}
 			}
 		}
 	}
-	public void storeRule(RulesConfig config, Rule rule) throws FDResourceException, RemoteException
+	public void storeRule(Rule rule) throws FDResourceException, RemoteException
 	{
 		Connection conn = null;
 		try {
-			RulesManagerDAO dao = new RulesManagerDAO(config);
 			conn = getConnection();
-			dao.storeRule(conn, rule);
+			RulesManagerDAO.storeRule(conn, rule);
 		} catch (SQLException e) {
-			LOGGER.error("SQL Error occurred while getting the Dlv Restriction.");
-			throw new FDResourceException(e, "Could not get the Dlv Restriction due to SQL Error.");
+			LOGGER.error("SQL Error occurred while storing the Dlv Rule.");
+			throw new FDResourceException(e, "SQL Error occurred while storing the Dlv Rule.");
 		} finally {
 			if (conn != null) {
 				try {
 					conn.close();
 				} catch (SQLException e) {
-					LOGGER.warn("Trouble closing connection after getting the Dlv Restriction.", e);
+					LOGGER.warn("Trouble closing connection after storing the Dlv Rule.", e);
 				}
 			}
 		}
 	}
-
-
-	
 }
 
 
