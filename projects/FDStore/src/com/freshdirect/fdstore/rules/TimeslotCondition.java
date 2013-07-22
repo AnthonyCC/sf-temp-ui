@@ -1,9 +1,6 @@
 package com.freshdirect.fdstore.rules;
 
-import org.apache.log4j.Category;
-
 import com.freshdirect.framework.util.TimeOfDay;
-import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.rules.ConditionI;
 import com.freshdirect.rules.RuleRuntimeI;
 
@@ -19,7 +16,6 @@ public class TimeslotCondition implements ConditionI {
     private String day;
     private TimeOfDay startTimeDay;
     private TimeOfDay endTimeDay;
-    private String serviceType;
     private Double orderMinimum;
     
     
