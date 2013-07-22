@@ -2016,8 +2016,10 @@ public class FDPromotionManagerNewDAO {
 					}
 				}
 			}
-			promoChangeModel.setChangeDetails(auditChangeDetails);
-			auditChanges.add(promoChangeModel);
+			if(null !=promoChangeModel){
+				promoChangeModel.setChangeDetails(auditChangeDetails);
+				auditChanges.add(promoChangeModel);
+			}
 		} finally {
 			if (rs != null)
 				rs.close();
