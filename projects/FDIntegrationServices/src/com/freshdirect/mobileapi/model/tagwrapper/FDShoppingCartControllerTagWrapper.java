@@ -173,6 +173,10 @@ public class FDShoppingCartControllerTagWrapper extends CartEventTagWrapper {
         addRequestValue(REQ_PARAM_AGREE_TO_TERMS, addItemToCart.getAgreeToTerms()); //
         addRequestValue(REQ_PARAM_RECIPE_ID, addItemToCart.getRecipeId());
         addRequestValue(REQ_PARAM_IS_QUICKBUY, addItemToCart.isQuickBuy());
+        
+        //Coremetrics tracking params, they do not exist in mobile implementation atm (22.07.2013)
+        addRequestValue(REQ_PARAM_CM_PAGE_ID, "");
+        addRequestValue(REQ_PARAM_CM_PAGE_CONTENT_HIERARCHY, "");
 
         //Pass all smart store configuration values:
         String parameterBundle = smartStoreConfiguration.getParameterBundle();

@@ -282,6 +282,10 @@ public interface RequestParamName {
     
     public static final String  REQ_PARAM_MERGE_PENDING="mergePending";
     
-    public static final String REQ_PARAM_IS_QUICKBUY = "quickBuy";    
+    public static final String REQ_PARAM_IS_QUICKBUY = "quickBuy";
+    
+    public static final String REQ_PARAM_CM_PAGE_ID = "coremetricsPageId";   
+    
+    public static final String REQ_PARAM_CM_PAGE_CONTENT_HIERARCHY = "coremetricsPageContentHierarchy";   
     
 }
