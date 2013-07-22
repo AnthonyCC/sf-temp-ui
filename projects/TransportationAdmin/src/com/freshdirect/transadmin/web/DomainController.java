@@ -298,6 +298,7 @@ public class DomainController extends AbstractMultiActionController {
 			for (Iterator iterator = schedules.iterator(); iterator.hasNext();) {
 				ScheduleEmployee _empSchedule=(ScheduleEmployee)iterator.next();
 					_empSchedule.setDate(TransStringUtil.getDate(date));
+					_empSchedule.setDepotFacilityCode(true);
 					result.put(_empSchedule.getEmployeeId(),_empSchedule);
 			}
 		}

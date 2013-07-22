@@ -1,7 +1,6 @@
 package com.freshdirect.transadmin.web;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -203,6 +202,15 @@ public class ScheduleUploadFormController extends BaseFormController {
 						TrnFacility _depotFacility = null;
 						if(schedules != null) {
 							for(ScheduleEmployee _scheduleEmp : schedules) {
+
+								if(_scheduleEmp.getDepotFacility() != null) {
+									_depotFacility = facilityMapping.get(_scheduleEmp.getDepotFacilityS());
+									if(_depotFacility == null) {
+										facilityErrorLst.add(_scheduleEmp.getDepotFacilityS());
+									} else {
+										_scheduleEmp.setDepotFacilityS(_depotFacility.getFacilityId());
+									}
+							    }
 								
 								if(_scheduleEmp.getRegionS() != null){
 									Region _region = regionMapping.get(_scheduleEmp.getRegionS());									
@@ -211,8 +219,7 @@ public class ScheduleUploadFormController extends BaseFormController {
 									}
 								}
 								
-								if(_scheduleEmp.getRegionS() != null && _scheduleEmp.getRegionS() == "Depot" &&
-										(_scheduleEmp.getDepotFacilityS() == null || "".equals(_scheduleEmp.getDepotFacilityS()))) {
+								if(_scheduleEmp.getRegionS() != null && "Depot".equals(_scheduleEmp.getRegionS()) && (_scheduleEmp.getDepotFacilityS() == null || "".equals(_scheduleEmp.getDepotFacilityS()))) {
 									validDepotFacility = true;
 								}
 								
@@ -222,15 +229,8 @@ public class ScheduleUploadFormController extends BaseFormController {
 								
 								if(_scheduleEmp.getRegionS() != null &&	(_scheduleEmp.getTimeS() == null || "".equals(_scheduleEmp.getTimeS()))) {
 									validStartTime = true;
-								}								
-
-								if(_scheduleEmp.getDepotFacilityS() != null) {
-									_depotFacility = facilityMapping.get(_scheduleEmp.getDepotFacilityS());
-									if(_depotFacility == null) {
-										facilityErrorLst.add(_scheduleEmp.getDepotFacilityS());
-									}
-							    }
-								
+								}							
+						
 							}							
 						}
 						
@@ -246,7 +246,7 @@ public class ScheduleUploadFormController extends BaseFormController {
 								}
 							}
 							if(facilityErrorLst.size() > 0) 
-								uploadErrMsg.append(" doesn't exist in active facilitys ");
+								uploadErrMsg.append(" doesn't exist in active Facilities ");
 							
 							if(regionErrorLst.size() > 0) 
 								uploadErrMsg.append("<br>").append(" Region ");
@@ -257,11 +257,11 @@ public class ScheduleUploadFormController extends BaseFormController {
 								}
 							}
 							if(regionErrorLst.size() > 0) { 
-								uploadErrMsg.append(" doesn't exist in active regions ");
+								uploadErrMsg.append(" doesn't exist in active Regions ");
 							}
 							
 							if(validDepotFacility) {
-								uploadErrMsg.append("<br>").append(" Facility is empty for one or more entries for Depot region.");
+								uploadErrMsg.append("<br>").append(" Facility is empty for one or more entries for Depot region(s).");
 							}
 							
 							if(validDepotRegion) {

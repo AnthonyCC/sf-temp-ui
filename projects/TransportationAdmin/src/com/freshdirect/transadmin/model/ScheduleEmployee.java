@@ -14,6 +14,7 @@ public class ScheduleEmployee implements Serializable, Cloneable {
 	private Date time;
 	private TrnFacility depotFacility;
 	private String day;
+	private boolean isDepotFacilityCode;
 	
 	private Date weekOf;
 	private Date date;
@@ -86,7 +87,15 @@ public class ScheduleEmployee implements Serializable, Cloneable {
 	}
 	public void setScheduleId(String scheduleId) {
 		this.scheduleId = scheduleId;
+	}	
+	public boolean isDepotFacilityCode() {
+		return isDepotFacilityCode;
 	}
+
+	public void setDepotFacilityCode(boolean isDepotFacilityCode) {
+		this.isDepotFacilityCode = isDepotFacilityCode;
+	}
+
 	public String getTimeS() 
 	{
 		try {
@@ -111,8 +120,10 @@ public class ScheduleEmployee implements Serializable, Cloneable {
 	
 	public String getDepotFacilityS() 
 	{
-		if (depotFacility != null)
+		if (depotFacility != null && !isDepotFacilityCode)
 			return depotFacility.getFacilityId();
+		else if (depotFacility != null && isDepotFacilityCode)
+			return depotFacility.getName();
 		return null;
 	}
 	public void setDepotFacilityS(String depotFacilityS) 
