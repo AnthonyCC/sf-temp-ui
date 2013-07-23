@@ -80,7 +80,7 @@ public class ScheduleUploadFormController extends BaseFormController {
 		return bean;
 	}
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	protected ModelAndView onSubmit(HttpServletRequest request,HttpServletResponse response,
 		      Object command, BindException errors) throws ServletException, IOException    {
 			
@@ -219,15 +219,15 @@ public class ScheduleUploadFormController extends BaseFormController {
 									}
 								}
 								
-								if(_scheduleEmp.getRegionS() != null && "Depot".equals(_scheduleEmp.getRegionS()) && (_scheduleEmp.getDepotFacilityS() == null || "".equals(_scheduleEmp.getDepotFacilityS()))) {
+								if(_scheduleEmp.getRegionS() != null && "Depot".equals(_scheduleEmp.getRegionS()) && (_scheduleEmp.getDepotFacilityS() == null || TransStringUtil.isEmpty(_scheduleEmp.getDepotFacilityS()))) {
 									validDepotFacility = true;
 								}
 								
-								if(_scheduleEmp.getDepotFacilityS() != null && (_scheduleEmp.getRegionS() == null || "".equals(_scheduleEmp.getRegionS()))){
+								if(_scheduleEmp.getDepotFacilityS() != null && (_scheduleEmp.getRegionS() == null || TransStringUtil.isEmpty(_scheduleEmp.getRegionS()))){
 									validDepotRegion = true;
 								}
 								
-								if(_scheduleEmp.getRegionS() != null &&	(_scheduleEmp.getTimeS() == null || "".equals(_scheduleEmp.getTimeS()))) {
+								if(_scheduleEmp.getRegionS() != null &&	(_scheduleEmp.getTimeS() == null || TransStringUtil.isEmpty(_scheduleEmp.getTimeS()))) {
 									validStartTime = true;
 								}							
 						
