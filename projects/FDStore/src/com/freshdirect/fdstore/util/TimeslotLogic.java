@@ -317,7 +317,7 @@ public class TimeslotLogic {
 
 					stats.incrementTotalSlots();
 					
-					isVariableMinimumSet = applyOrderMinium(user, timeslot);
+					//isVariableMinimumSet = applyOrderMinium(user, timeslot);
 				}
 			}
 			
