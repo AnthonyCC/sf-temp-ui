@@ -125,6 +125,33 @@ if (EnumTemplateType.WINE.equals( productNode.getTemplateType() )) {
     <tmpl:put name='title' direct='true'>FreshDirect - <%= productNode.getFullName() %></tmpl:put>
     <tmpl:put name='leftnav' direct='true'>
     </tmpl:put>
+<tmpl:put name='facebookmeta' direct='true'>
+	<meta property="og:title" content="FreshDirect - <%= productNode.getFullName() %>"/>
+	<meta property="og:site_name" content="FreshDirect"/>
+
+<% if (productNode!=null) {
+
+	Image productImage = productNode.getDetailImage();
+	Image zoomImage = (Image) productNode.getZoomImage();
+
+	Object useProdImageObj = pageContext.getAttribute("useProdImage");
+	boolean useProdImage = useProdImageObj == null ? false : (Boolean)useProdImageObj;
+	boolean isWineProduct = productNode.getDepartment() != null ? "usq".equals(productNode.getDepartment().getContentKey().getId()) : false;
+
+	if ( zoomImage != null && zoomImage.getPath().indexOf("clear.gif") == -1 && !useProdImage && !isWineProduct ) {
+	%>
+		<meta property="og:image" content="<%= productNode.getZoomImage().getPathWithPublishId() %>"/>
+	<%
+	} else {
+	%>
+		<meta property="og:image" content="<%= productNode.getDetailImage().getPathWithPublishId() %>"/>
+	<%
+	}
+}%>
+		<meta property="og:image" content="/media_stat/images/logos/FD-logo-300.jpg"/>
+		<meta property="og:image" content="/media_stat/images/logos/FD-logo-300.jpg"/>
+		<meta property="og:image" content="/media_stat/images/logos/FD-logo-300.jpg"/>
+</tmpl:put>
 <tmpl:put name='content' direct='true'>
 	<fd:CmPageView wrapIntoScriptTag="true" productModel="<%=productNode%>"/>
 	<fd:CmProductView quickbuy="false" wrapIntoScriptTag="true" productModel="<%=productNode%>"/>

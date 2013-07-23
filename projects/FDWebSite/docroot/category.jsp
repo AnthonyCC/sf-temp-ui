@@ -157,9 +157,38 @@ final int W_CATEGORY_NO_LEFT_NAV = 765;
 	if (!noLeftNav) {
 		%><tmpl:put name='leftnav' direct='true'> <%-- <<< some whitespace is needed here --%></tmpl:put><%
 	} 
-	%><tmpl:put name='title' direct='true'>FreshDirect - <%= currentFolder.getFullName() %></tmpl:put><%
-	
-	%><tmpl:put name='content' direct='true'>
+	%>
+
+	<tmpl:put name='title' direct='true'>FreshDirect - <%= currentFolder.getFullName() %></tmpl:put>
+	<tmpl:put name='facebookmeta' direct='true'>
+		<meta property="og:title" content="FreshDirect - <%= currentFolder.getFullName() %>"/>
+		<meta property="og:site_name" content="FreshDirect"/>
+
+<% if (prodModel!=null) {
+
+	Image productImage = prodModel.getDetailImage();
+	Image zoomImage = (Image) prodModel.getZoomImage();
+
+	Object useProdImageObj = pageContext.getAttribute("useProdImage");
+	boolean useProdImage = useProdImageObj == null ? false : (Boolean)useProdImageObj;
+	boolean isWineProduct = prodModel.getDepartment() != null ? "usq".equals(prodModel.getDepartment().getContentKey().getId()) : false;
+
+	if ( zoomImage != null && zoomImage.getPath().indexOf("clear.gif") == -1 && !useProdImage && !isWineProduct ) {
+	%>
+		<meta property="og:image" content="<%= prodModel.getZoomImage().getPathWithPublishId() %>"/>
+	<%
+	} else {
+	%>
+		<meta property="og:image" content="<%= prodModel.getDetailImage().getPathWithPublishId() %>"/>
+	<%
+	}
+}%>
+		<meta property="og:image" content="/media_stat/images/logos/FD-logo-300.jpg"/>
+		<meta property="og:image" content="/media_stat/images/logos/FD-logo-300.jpg"/>
+		<meta property="og:image" content="/media_stat/images/logos/FD-logo-300.jpg"/>
+	</tmpl:put>
+
+	<tmpl:put name='content' direct='true'>
 		<fd:CmPageView wrapIntoScriptTag="true" currentFolder="<%=currentFolder%>"/>
 		<%
 		if(layoutType == EnumLayoutType.GROCERY_PRODUCT.getId()){

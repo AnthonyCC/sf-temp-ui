@@ -32,7 +32,7 @@
        } // if
     } // local block
 %>
-
+	<tmpl:get name='facebookmeta'/>
 <%@ include file="/shared/template/includes/i_head_end.jspf" %>
 </head>
 <body bgcolor="#FFFFFF" link="#336600" vlink="#336600" alink="#ff9900" text="#333333"

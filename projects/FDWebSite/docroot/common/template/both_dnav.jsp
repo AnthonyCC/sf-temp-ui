@@ -36,7 +36,7 @@ final int W_BOTH_DNAV_RIGHT = 191;
        } // if
     } // local block
 %>
-
+	<tmpl:get name='facebookmeta'/>
 <%@ include file="/shared/template/includes/i_head_end.jspf" %>
 </head>
 <BODY BGCOLOR="#FFFFFF" LINK="#336600" VLINK="#336600" ALINK="#FF9900" TEXT="#333333" 
