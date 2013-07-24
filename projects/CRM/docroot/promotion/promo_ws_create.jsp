@@ -633,12 +633,12 @@ function numbersonly(myfield, e, dec)
 				<tr>
 					<td width="3%"></td>
 					<td class="alignL vTop padL8R16"><b>Delivery Day Type: </b>
-						<table class="tableCollapse" id="edit_dlvreq_addTypeParent" name="edit_dlvreq_addTypeParent" width="350px">
+						<table class="tableCollapse" id="edit_dlvreq_addTypeParent" name="edit_dlvreq_addTypeParent" width="450px">
 							<tr>
 								<td><input type="radio" id="regular" value="R" name="deliveryDayType" <%= (null!=dlvOption && (EnumDeliveryOption.REGULAR.equals(dlvOption)))?"checked":"" %>/> <%=EnumDeliveryOption.REGULAR.getDeliveryOption() %></td>
-								<td><input type="radio" id="sameday" value="S" name="deliveryDayType" <%= (null!=dlvOption && EnumDeliveryOption.SAMEDAY.equals(dlvOption))?"checked":"" %>/> <%=EnumDeliveryOption.SAMEDAY.getDeliveryOption() %></td>
-								<td><input type="radio" id="all" value="A" name="deliveryDayType" <%= (( EnumDeliveryOption.ALL.equals(dlvOption)))?"checked":"" %>/> <%=EnumDeliveryOption.ALL.getDeliveryOption() %></td>
+								<td><input type="radio" id="sameday" value="S" name="deliveryDayType" <%= (null!=dlvOption && EnumDeliveryOption.SAMEDAY.equals(dlvOption))?"checked":"" %>/> <%=EnumDeliveryOption.SAMEDAY.getDeliveryOption() %></td>								
 								<td><input type="radio" id="so" value="SO" name="deliveryDayType" <%= (( EnumDeliveryOption.SO.equals(dlvOption)))?"checked":"" %>/> <%=EnumDeliveryOption.SO.getDeliveryOption() %></td>
+								<td><input type="radio" id="all" value="A" name="deliveryDayType" <%= (( EnumDeliveryOption.ALL.equals(dlvOption)))?"checked":"" %>/> <%=EnumDeliveryOption.ALL.getDeliveryOption() %></td>
 								<td>&nbsp;</td>
 							</tr>							
 						</table>
