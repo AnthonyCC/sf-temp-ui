@@ -32,27 +32,28 @@
 <script type="text/javascript">
 	$E.on('<%= _is_groupName %>_setQtys', 'change', function(e) {
 		var mainObj = $('tbl_order_detail');
-
+		var objs = $jq('input[cartonGroup|="QI_<%= _is_groupName %>"]');
 		if ('All' == this.value) {
-			var objs = YAHOO.util.Selector.query('input[cartonGroup="QI_<%= _is_groupName %>"]' , mainObj, false);
+			//var objs = YAHOO.util.Selector.query('input[cartonGroup="QI_<%= _is_groupName %>"]' , mainObj, false);
 			for (var k=0; k<objs.length; k++) {
 				objs[k].value = objs[k].getAttribute("fullQuantity");
 				if (objs[k].onchange)
 					objs[k].onchange();
 			}
 		} else if ('Reset' == this.value) {
-			var objs = YAHOO.util.Selector.query('input[cartonGroup="QI_<%= _is_groupName %>"]' , mainObj, false);
+			//var objs = YAHOO.util.Selector.query('input[cartonGroup="QI_<%= _is_groupName %>"]' , mainObj, false);
 			for (var k=0; k<objs.length; k++) {
 				objs[k].value = "0";
 				if (objs[k].onchange)
 					objs[k].onchange();
 			}
 		} else if ('Reasoned' == this.value) {
-			var objs = YAHOO.util.Selector.query('input[cartonGroup="QI_<%= _is_groupName %>"]' , mainObj, false);
+			//var objs = YAHOO.util.Selector.query('input[cartonGroup="QI_<%= _is_groupName %>"]' , mainObj, false);
 			for (var k=0; k<objs.length; k++) {
-				var that = YAHOO.util.Selector.query('select[cartonGroup="CR_<%= _is_groupName %>"]' , objs[k].parentNode.parentNode, true);
+				//var that = YAHOO.util.Selector.query('select[cartonGroup="CR_<%= _is_groupName %>"]' , objs[k].parentNode.parentNode, true);
+				var that = $jq('select[cartonGroup="CR_<%= _is_groupName %>"]').prop("selectedIndex");
 				if (that != null) {
-					if ("" != that.value) { // not default value
+					if (that> 0) { // not default value
 						objs[k].value = objs[k].getAttribute("fullQuantity");
 					}
 				}
