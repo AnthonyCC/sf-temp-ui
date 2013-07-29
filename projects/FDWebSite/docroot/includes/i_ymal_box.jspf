@@ -153,6 +153,7 @@ final int W_YMAL_BOX_INNER = 540;
 
 
 				<form class="ymal" id="<%= TX_FORM_NAME %>" name="<%= TX_FORM_NAME %>" method="post" action="<%= base_url %>">
+					
 					<fd:CmFieldDecorator/>
 					<input type="hidden" name="ymal_box" value="present">
 				
