@@ -44,7 +44,11 @@ public class RobotRecognizer {
 			return false;
 		}
 		
-        String userAgent = request.getHeader("User-Agent");
+        return isFriendlyRobot(request.getHeader("User-Agent"));
+    }        
+        
+    public static boolean isFriendlyRobot(String userAgent) {
+
         //
         // no user agent?  very unfriendly...
         //
@@ -60,9 +64,9 @@ public class RobotRecognizer {
         	return true;
         }
         
-        for (Iterator botIter = friendlyRobotSet.iterator(); botIter.hasNext(); ) {
-            String agentName = (String) botIter.next();
-            if (userAgent.startsWith(agentName)) {
+        for (Pattern friendlyRobotPattern : friendlyRobotPatternSet) {
+            if (friendlyRobotPattern.matcher(userAgent).matches()) {
+            	LOGGER.debug("friendly bot identified (matches pattern "+friendlyRobotPattern.pattern()+"): "+userAgent);
             	return true;
             }
         }
@@ -93,33 +97,70 @@ public class RobotRecognizer {
     }
     
     
-    private final static HashSet friendlyRobotSet = new HashSet();
+    /**
+     * list refreshed by APPDEV-3197, use the following queries to refresh the list from time to time: 
+     * select count(*), user_agent from MIS.iplocator_event_log group by user_agent having count(*) > 1000 order by count(*) desc
+	 * select count(*), user_agent from MIS.iplocator_event_log where lower(user_agent) like '%bot%' group by user_agent having count(*) > 100 order by count(*) desc
+	 * select count(*), user_agent from MIS.iplocator_event_log where lower(user_agent) like '%crawl%' group by user_agent having count(*) > 100 order by count(*) desc
+	 * select count(*), user_agent from MIS.iplocator_event_log where lower(user_agent) like '%spider%' group by user_agent having count(*) > 100 order by count(*) desc
+     */
+    private final static Set<Pattern> friendlyRobotPatternSet = new HashSet<Pattern>();
     static {
-        friendlyRobotSet.add("scooter");            //  AltaVista
-        friendlyRobotSet.add("vscooter");           //  AltaVista
-        friendlyRobotSet.add("googlebot");          //  Google
-        friendlyRobotSet.add("lycos");              //  Lycos
-        friendlyRobotSet.add("robozilla");          //  DMOZ
-        friendlyRobotSet.add("teoma");              //  Teoma
-        friendlyRobotSet.add("yahoo-fetch");        //  Yahoo
-        friendlyRobotSet.add("cnet_snoop");         //  CNet
-        friendlyRobotSet.add("webcrawler");         //  WebCrawler
-        friendlyRobotSet.add("architextspider");    //  Excite
-        friendlyRobotSet.add("excitespider");       //  Excite
-        friendlyRobotSet.add("slurp");              //  HotBot
-        friendlyRobotSet.add("inktomi");            //  HotBot
-        friendlyRobotSet.add("infoseek");           //  InfoSeek
-        friendlyRobotSet.add("ultraseek");          //  InfoSeek
-        friendlyRobotSet.add("lnspiderguy");        //  LexisNexis
-        friendlyRobotSet.add("metacrawler");        //  MetaCrawler
-        friendlyRobotSet.add("overture");           //  Overture
-        friendlyRobotSet.add("looksmart");          //  LookSmart
-        friendlyRobotSet.add("ask");                //  Ask Jeeves
-        friendlyRobotSet.add("fast");               //  All The Web
-		friendlyRobotSet.add("yahooseeker");        //  Yahoo crawler
-		friendlyRobotSet.add("sherlock");        	//  Apple's Sherlock
-		friendlyRobotSet.add("msnbot");        		//  MSN
-		friendlyRobotSet.add("facebook");        	//  Facebook
+        friendlyRobotPatternSet.add(Pattern.compile("scooter.*"));            //  AltaVista
+        friendlyRobotPatternSet.add(Pattern.compile("vscooter.*"));           //  AltaVista
+        friendlyRobotPatternSet.add(Pattern.compile("googlebot.*"));          //  Google
+        friendlyRobotPatternSet.add(Pattern.compile("lycos.*"));              //  Lycos
+        friendlyRobotPatternSet.add(Pattern.compile("robozilla.*"));          //  DMOZ
+        friendlyRobotPatternSet.add(Pattern.compile("teoma.*"));              //  Teoma
+        friendlyRobotPatternSet.add(Pattern.compile("yahoo-fetch.*"));        //  Yahoo
+        friendlyRobotPatternSet.add(Pattern.compile("cnet_snoop.*"));         //  CNet
+        friendlyRobotPatternSet.add(Pattern.compile("webcrawler.*"));         //  WebCrawler
+        friendlyRobotPatternSet.add(Pattern.compile("architextspider.*"));    //  Excite
+        friendlyRobotPatternSet.add(Pattern.compile("excitespider.*"));       //  Excite
+        friendlyRobotPatternSet.add(Pattern.compile("slurp.*"));              //  HotBot
+        friendlyRobotPatternSet.add(Pattern.compile("inktomi.*"));            //  HotBot
+        friendlyRobotPatternSet.add(Pattern.compile("infoseek.*"));           //  InfoSeek
+        friendlyRobotPatternSet.add(Pattern.compile("ultraseek.*"));          //  InfoSeek
+        friendlyRobotPatternSet.add(Pattern.compile("lnspiderguy.*"));        //  LexisNexis
+        friendlyRobotPatternSet.add(Pattern.compile("metacrawler.*"));        //  MetaCrawler
+        friendlyRobotPatternSet.add(Pattern.compile("overture.*"));           //  Overture
+        friendlyRobotPatternSet.add(Pattern.compile("looksmart.*"));          //  LookSmart
+        friendlyRobotPatternSet.add(Pattern.compile("ask.*"));                //  Ask Jeeves
+        friendlyRobotPatternSet.add(Pattern.compile("fast.*"));               //  All The Web
+		friendlyRobotPatternSet.add(Pattern.compile("yahooseeker.*"));        //  Yahoo crawler
+		friendlyRobotPatternSet.add(Pattern.compile("sherlock.*"));        	  //  Apple's Sherlock
+		friendlyRobotPatternSet.add(Pattern.compile("msnbot.*"));        	  //  MSN
+		friendlyRobotPatternSet.add(Pattern.compile("facebook.*"));        	  //  Facebook
+		//APPDEV-3197 top requests
+		friendlyRobotPatternSet.add(Pattern.compile(".*?http://www\\.google\\.com/bot\\.html.*"));
+		friendlyRobotPatternSet.add(Pattern.compile(".*?addthis\\.com.*"));
+		friendlyRobotPatternSet.add(Pattern.compile(".*?akamai_site_analyze.*"));
+		friendlyRobotPatternSet.add(Pattern.compile(".*?panopta.*"));
+		friendlyRobotPatternSet.add(Pattern.compile(".*?pingdom.com_bot_version.*"));
+		friendlyRobotPatternSet.add(Pattern.compile(".*?check_http.*?nagios-plugins.*"));
+		friendlyRobotPatternSet.add(Pattern.compile(".*?http://www\\.bing\\.com/bingbot\\.htm.*"));
+		friendlyRobotPatternSet.add(Pattern.compile(".*?http://ahrefs\\.com/robot/.*"));
+		friendlyRobotPatternSet.add(Pattern.compile(".*?http://www\\.google\\.com/adsbot.html.*"));
+		friendlyRobotPatternSet.add(Pattern.compile(".*?http://www\\.tacitknowledge\\.com/halebot\\.shtml.*"));
+		friendlyRobotPatternSet.add(Pattern.compile(".*?ezooms\\.bot@gmail\\.com.*"));
+		friendlyRobotPatternSet.add(Pattern.compile(".*?http://www\\.majestic12\\.co\\.uk/bot\\.php.*"));
+		//like '%bot%'
+		friendlyRobotPatternSet.add(Pattern.compile(".*?http://blekko\\.com/about/blekkobot.*"));
+		friendlyRobotPatternSet.add(Pattern.compile(".*?http://go\\.mail\\.ru/help/robots.*"));
+		friendlyRobotPatternSet.add(Pattern.compile(".*?http://www\\.semrush\\.com/bot\\.html.*"));
+		friendlyRobotPatternSet.add(Pattern.compile(".*?tweetmemebot.*"));
+		friendlyRobotPatternSet.add(Pattern.compile(".*?paperlibot.*"));
+		friendlyRobotPatternSet.add(Pattern.compile(".*?semrushbot.*"));
+		//like '%crawl'
+		friendlyRobotPatternSet.add(Pattern.compile(".*?ravencrawler.*"));
+		friendlyRobotPatternSet.add(Pattern.compile(".*?http://www\\.grapeshot\\.co\\.uk/crawler\\.php.*"));
+		friendlyRobotPatternSet.add(Pattern.compile(".*?crawler@alexa\\.com.*"));
+		//like '%spiders%'
+		friendlyRobotPatternSet.add(Pattern.compile(".*?360spider.*"));
+		friendlyRobotPatternSet.add(Pattern.compile(".*?http://www\\.baidu\\.com/search/spider\\.html.*"));
+		friendlyRobotPatternSet.add(Pattern.compile(".*?sogou web spider.*"));
+		friendlyRobotPatternSet.add(Pattern.compile(".*?http://www.proximic.com/info/spider.php.*"));
+		friendlyRobotPatternSet.add(Pattern.compile(".*?http://www\\.youdao\\.com/help/webmaster/spider.*"));
     }
     
     

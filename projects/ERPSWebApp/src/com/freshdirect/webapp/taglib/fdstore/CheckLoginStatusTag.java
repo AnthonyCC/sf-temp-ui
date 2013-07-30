@@ -180,6 +180,11 @@ public class CheckLoginStatusTag extends com.freshdirect.framework.webapp.TagSup
             }
         }
 
+        //APPDEV-3197 try to identify friendly robot on every page before using IP Locator
+        if (user == null && guestAllowed && RobotRecognizer.isFriendlyRobot((HttpServletRequest) pageContext.getRequest())) {
+           	user = RobotUtil.createRobotUser(session);
+        }
+
         //
         // 
         // Fix for APPDEV-755
