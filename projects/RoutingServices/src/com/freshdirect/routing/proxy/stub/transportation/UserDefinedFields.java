@@ -38,6 +38,12 @@
                         
                                     protected java.lang.String localField1 ;
                                 
+                           /*  This tracker boolean wil be used to detect whether the user called the set method
+                          *   for this attribute. It will be used to determine whether to include this field
+                           *   in the serialized XML
+                           */
+                           protected boolean localField1Tracker = false ;
+                           
 
                            /**
                            * Auto generated getter method
@@ -55,6 +61,14 @@
                                */
                                public void setField1(java.lang.String param){
                             
+                                       if (param != null){
+                                          //update the setting tracker
+                                          localField1Tracker = true;
+                                       } else {
+                                          localField1Tracker = false;
+                                              
+                                       }
+                                   
                                             this.localField1=param;
                                     
 
@@ -68,6 +82,12 @@
                         
                                     protected java.lang.String localField2 ;
                                 
+                           /*  This tracker boolean wil be used to detect whether the user called the set method
+                          *   for this attribute. It will be used to determine whether to include this field
+                           *   in the serialized XML
+                           */
+                           protected boolean localField2Tracker = false ;
+                           
 
                            /**
                            * Auto generated getter method
@@ -85,6 +105,14 @@
                                */
                                public void setField2(java.lang.String param){
                             
+                                       if (param != null){
+                                          //update the setting tracker
+                                          localField2Tracker = true;
+                                       } else {
+                                          localField2Tracker = false;
+                                              
+                                       }
+                                   
                                             this.localField2=param;
                                     
 
@@ -98,6 +126,12 @@
                         
                                     protected java.lang.String localField3 ;
                                 
+                           /*  This tracker boolean wil be used to detect whether the user called the set method
+                          *   for this attribute. It will be used to determine whether to include this field
+                           *   in the serialized XML
+                           */
+                           protected boolean localField3Tracker = false ;
+                           
 
                            /**
                            * Auto generated getter method
@@ -115,6 +149,14 @@
                                */
                                public void setField3(java.lang.String param){
                             
+                                       if (param != null){
+                                          //update the setting tracker
+                                          localField3Tracker = true;
+                                       } else {
+                                          localField3Tracker = false;
+                                              
+                                       }
+                                   
                                             this.localField3=param;
                                     
 
@@ -217,7 +259,7 @@
 
                
                    }
-               
+                if (localField1Tracker){
                                     namespace = "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService";
                                     if (! namespace.equals("")) {
                                         prefix = xmlWriter.getPrefix(namespace);
@@ -251,7 +293,7 @@
                                           }
                                     
                                    xmlWriter.writeEndElement();
-                             
+                             } if (localField2Tracker){
                                     namespace = "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService";
                                     if (! namespace.equals("")) {
                                         prefix = xmlWriter.getPrefix(namespace);
@@ -285,7 +327,7 @@
                                           }
                                     
                                    xmlWriter.writeEndElement();
-                             
+                             } if (localField3Tracker){
                                     namespace = "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService";
                                     if (! namespace.equals("")) {
                                         prefix = xmlWriter.getPrefix(namespace);
@@ -319,7 +361,7 @@
                                           }
                                     
                                    xmlWriter.writeEndElement();
-                             
+                             }
                     xmlWriter.writeEndElement();
                
 
@@ -481,7 +523,7 @@
                  java.util.ArrayList elementList = new java.util.ArrayList();
                  java.util.ArrayList attribList = new java.util.ArrayList();
 
-                
+                 if (localField1Tracker){
                                       elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
                                                                       "field1"));
                                  
@@ -490,7 +532,7 @@
                                         } else {
                                            throw new org.apache.axis2.databinding.ADBException("field1 cannot be null!!");
                                         }
-                                    
+                                    } if (localField2Tracker){
                                       elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
                                                                       "field2"));
                                  
@@ -499,7 +541,7 @@
                                         } else {
                                            throw new org.apache.axis2.databinding.ADBException("field2 cannot be null!!");
                                         }
-                                    
+                                    } if (localField3Tracker){
                                       elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
                                                                       "field3"));
                                  
@@ -508,7 +550,7 @@
                                         } else {
                                            throw new org.apache.axis2.databinding.ADBException("field3 cannot be null!!");
                                         }
-                                    
+                                    }
 
                 return new org.apache.axis2.databinding.utils.reader.ADBXMLStreamReaderImpl(qName, elementList.toArray(), attribList.toArray());
             
@@ -598,11 +640,10 @@
                                     
                               }  // End of if for expected property start element
                                 
-                                else{
-                                    // A start element we are not expecting indicates an invalid parameter was passed
-                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
-                                }
-                            
+                                    else {
+                                        
+                                    }
+                                
                                     
                                     while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
                                 
@@ -617,11 +658,10 @@
                                     
                               }  // End of if for expected property start element
                                 
-                                else{
-                                    // A start element we are not expecting indicates an invalid parameter was passed
-                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
-                                }
-                            
+                                    else {
+                                        
+                                    }
+                                
                                     
                                     while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
                                 
@@ -636,11 +676,10 @@
                                     
                               }  // End of if for expected property start element
                                 
-                                else{
-                                    // A start element we are not expecting indicates an invalid parameter was passed
-                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
-                                }
-                              
+                                    else {
+                                        
+                                    }
+                                  
                             while (!reader.isStartElement() && !reader.isEndElement())
                                 reader.next();
                             

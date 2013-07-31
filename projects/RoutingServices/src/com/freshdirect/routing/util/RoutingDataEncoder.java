@@ -436,7 +436,7 @@ public class RoutingDataEncoder {
 		quantities.setSize2(0);
 		quantities.setSize3(0);
 		options.setNewQuantities(quantities);
-		options.setNewServiceTime((int)(orderModel.getDeliveryInfo().getCalculatedServiceTime()*60));
+		options.setNewOrderServiceTime((int)(orderModel.getDeliveryInfo().getCalculatedServiceTime()*60));
 				
 		return options;
 	}
@@ -714,7 +714,7 @@ public class RoutingDataEncoder {
 		
 		
 		SchedulerDeliveryWindowMetricsOptions schMetricsOptions = new SchedulerDeliveryWindowMetricsOptions();
-		schMetricsOptions.setType(SchedulerDeliveryWindowMetricsType.sdwmfPlannedArrivalTime);
+		//schMetricsOptions.setType(SchedulerDeliveryWindowMetricsType.sdwmfPlannedArrivalTime);
 		//schMetricsOptions.setType(SchedulerDeliveryWindowMetricsType.sdwmfAssignedDeliveryWindow);
 		schMetricsOptions.setTimeZone(TimeZoneValue.tmzEasternTimeUSCanada);
 						

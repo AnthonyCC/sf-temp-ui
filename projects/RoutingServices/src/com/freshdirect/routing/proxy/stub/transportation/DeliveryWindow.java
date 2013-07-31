@@ -170,6 +170,12 @@
                         
                                     protected boolean localManuallyClosed ;
                                 
+                           /*  This tracker boolean wil be used to detect whether the user called the set method
+                          *   for this attribute. It will be used to determine whether to include this field
+                           *   in the serialized XML
+                           */
+                           protected boolean localManuallyClosedTracker = false ;
+                           
 
                            /**
                            * Auto generated getter method
@@ -187,6 +193,15 @@
                                */
                                public void setManuallyClosed(boolean param){
                             
+                                       // setting primitive attribute tracker to true
+                                       
+                                               if (false) {
+                                           localManuallyClosedTracker = false;
+                                              
+                                       } else {
+                                          localManuallyClosedTracker = true;
+                                       }
+                                   
                                             this.localManuallyClosed=param;
                                     
 
@@ -476,7 +491,7 @@
                                      localSchedulerIdentity.serialize(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","schedulerIdentity"),
                                         factory,xmlWriter);
                                     }
-                                }
+                                } if (localManuallyClosedTracker){
                                     namespace = "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService";
                                     if (! namespace.equals("")) {
                                         prefix = xmlWriter.getPrefix(namespace);
@@ -505,7 +520,7 @@
                                                }
                                     
                                    xmlWriter.writeEndElement();
-                              if (localDeliveryCostTracker){
+                             } if (localDeliveryCostTracker){
                                     if (localDeliveryCost==null){
 
                                             java.lang.String namespace2 = "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService";
@@ -751,13 +766,13 @@
                             
                                     elementList.add(localSchedulerIdentity==null?null:
                                     localSchedulerIdentity);
-                                }
+                                } if (localManuallyClosedTracker){
                                       elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
                                                                       "manuallyClosed"));
                                  
                                 elementList.add(
                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localManuallyClosed));
-                             if (localDeliveryCostTracker){
+                            } if (localDeliveryCostTracker){
                             elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
                                                                       "deliveryCost"));
                             
@@ -941,11 +956,10 @@
                                     
                               }  // End of if for expected property start element
                                 
-                                else{
-                                    // A start element we are not expecting indicates an invalid parameter was passed
-                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
-                                }
-                            
+                                    else {
+                                        
+                                    }
+                                
                                     
                                     while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
                                 

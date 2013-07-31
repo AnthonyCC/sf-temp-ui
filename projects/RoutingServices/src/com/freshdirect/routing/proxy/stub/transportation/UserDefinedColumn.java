@@ -68,6 +68,12 @@
                         
                                     protected java.lang.String localColumnLabel ;
                                 
+                           /*  This tracker boolean wil be used to detect whether the user called the set method
+                          *   for this attribute. It will be used to determine whether to include this field
+                           *   in the serialized XML
+                           */
+                           protected boolean localColumnLabelTracker = false ;
+                           
 
                            /**
                            * Auto generated getter method
@@ -85,6 +91,14 @@
                                */
                                public void setColumnLabel(java.lang.String param){
                             
+                                       if (param != null){
+                                          //update the setting tracker
+                                          localColumnLabelTracker = true;
+                                       } else {
+                                          localColumnLabelTracker = false;
+                                              
+                                       }
+                                   
                                             this.localColumnLabel=param;
                                     
 
@@ -158,6 +172,12 @@
                         
                                     protected java.lang.String localFormatterString ;
                                 
+                           /*  This tracker boolean wil be used to detect whether the user called the set method
+                          *   for this attribute. It will be used to determine whether to include this field
+                           *   in the serialized XML
+                           */
+                           protected boolean localFormatterStringTracker = false ;
+                           
 
                            /**
                            * Auto generated getter method
@@ -175,6 +195,14 @@
                                */
                                public void setFormatterString(java.lang.String param){
                             
+                                       if (param != null){
+                                          //update the setting tracker
+                                          localFormatterStringTracker = true;
+                                       } else {
+                                          localFormatterStringTracker = false;
+                                              
+                                       }
+                                   
                                             this.localFormatterString=param;
                                     
 
@@ -410,7 +438,7 @@
                                                }
                                     
                                    xmlWriter.writeEndElement();
-                             
+                              if (localColumnLabelTracker){
                                     namespace = "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService";
                                     if (! namespace.equals("")) {
                                         prefix = xmlWriter.getPrefix(namespace);
@@ -444,7 +472,7 @@
                                           }
                                     
                                    xmlWriter.writeEndElement();
-                             
+                             }
                                             if (localDataType==null){
                                                  throw new org.apache.axis2.databinding.ADBException("dataType cannot be null!!");
                                             }
@@ -479,7 +507,7 @@
                                                }
                                     
                                    xmlWriter.writeEndElement();
-                             
+                              if (localFormatterStringTracker){
                                     namespace = "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService";
                                     if (! namespace.equals("")) {
                                         prefix = xmlWriter.getPrefix(namespace);
@@ -513,7 +541,7 @@
                                           }
                                     
                                    xmlWriter.writeEndElement();
-                             
+                             }
                                     namespace = "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService";
                                     if (! namespace.equals("")) {
                                         prefix = xmlWriter.getPrefix(namespace);
@@ -770,7 +798,7 @@
                                  
                                 elementList.add(
                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localColumnOrdinal));
-                            
+                             if (localColumnLabelTracker){
                                       elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
                                                                       "columnLabel"));
                                  
@@ -779,7 +807,7 @@
                                         } else {
                                            throw new org.apache.axis2.databinding.ADBException("columnLabel cannot be null!!");
                                         }
-                                    
+                                    }
                             elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
                                                                       "dataType"));
                             
@@ -794,7 +822,7 @@
                                  
                                 elementList.add(
                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localDataSize));
-                            
+                             if (localFormatterStringTracker){
                                       elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
                                                                       "formatterString"));
                                  
@@ -803,7 +831,7 @@
                                         } else {
                                            throw new org.apache.axis2.databinding.ADBException("formatterString cannot be null!!");
                                         }
-                                    
+                                    }
                                       elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
                                                                       "uiDisplay"));
                                  
@@ -931,11 +959,10 @@
                                     
                               }  // End of if for expected property start element
                                 
-                                else{
-                                    // A start element we are not expecting indicates an invalid parameter was passed
-                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
-                                }
-                            
+                                    else {
+                                        
+                                    }
+                                
                                     
                                     while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
                                 
@@ -985,11 +1012,10 @@
                                     
                               }  // End of if for expected property start element
                                 
-                                else{
-                                    // A start element we are not expecting indicates an invalid parameter was passed
-                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
-                                }
-                            
+                                    else {
+                                        
+                                    }
+                                
                                     
                                     while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
                                 

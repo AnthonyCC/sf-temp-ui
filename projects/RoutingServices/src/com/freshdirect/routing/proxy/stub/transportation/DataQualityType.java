@@ -83,6 +83,9 @@
                                     public static final java.lang.String _dqtTimeCaptured =
                                         org.apache.axis2.databinding.utils.ConverterUtil.convertToString("dqtTimeCaptured");
                                 
+                                    public static final java.lang.String _dqtFixup =
+                                        org.apache.axis2.databinding.utils.ConverterUtil.convertToString("dqtFixup");
+                                
                                     public static final java.lang.String _dqtMixed =
                                         org.apache.axis2.databinding.utils.ConverterUtil.convertToString("dqtMixed");
                                 
@@ -115,6 +118,9 @@
                             
                                 public static final DataQualityType dqtTimeCaptured =
                                     new DataQualityType(_dqtTimeCaptured,true);
+                            
+                                public static final DataQualityType dqtFixup =
+                                    new DataQualityType(_dqtFixup,true);
                             
                                 public static final DataQualityType dqtMixed =
                                     new DataQualityType(_dqtMixed,true);

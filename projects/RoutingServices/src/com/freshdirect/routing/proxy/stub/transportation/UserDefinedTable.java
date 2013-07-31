@@ -38,6 +38,12 @@
                         
                                     protected java.lang.String localTableLabel ;
                                 
+                           /*  This tracker boolean wil be used to detect whether the user called the set method
+                          *   for this attribute. It will be used to determine whether to include this field
+                           *   in the serialized XML
+                           */
+                           protected boolean localTableLabelTracker = false ;
+                           
 
                            /**
                            * Auto generated getter method
@@ -55,6 +61,14 @@
                                */
                                public void setTableLabel(java.lang.String param){
                             
+                                       if (param != null){
+                                          //update the setting tracker
+                                          localTableLabelTracker = true;
+                                       } else {
+                                          localTableLabelTracker = false;
+                                              
+                                       }
+                                   
                                             this.localTableLabel=param;
                                     
 
@@ -313,7 +327,7 @@
 
                
                    }
-               
+                if (localTableLabelTracker){
                                     namespace = "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService";
                                     if (! namespace.equals("")) {
                                         prefix = xmlWriter.getPrefix(namespace);
@@ -347,7 +361,7 @@
                                           }
                                     
                                    xmlWriter.writeEndElement();
-                              if (localColumnsTracker){
+                             } if (localColumnsTracker){
                                        if (localColumns!=null){
                                             for (int i = 0;i < localColumns.length;i++){
                                                 if (localColumns[i] != null){
@@ -564,7 +578,7 @@
                  java.util.ArrayList elementList = new java.util.ArrayList();
                  java.util.ArrayList attribList = new java.util.ArrayList();
 
-                
+                 if (localTableLabelTracker){
                                       elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
                                                                       "tableLabel"));
                                  
@@ -573,7 +587,7 @@
                                         } else {
                                            throw new org.apache.axis2.databinding.ADBException("tableLabel cannot be null!!");
                                         }
-                                     if (localColumnsTracker){
+                                    } if (localColumnsTracker){
                              if (localColumns!=null) {
                                  for (int i = 0;i < localColumns.length;i++){
 
@@ -702,11 +716,10 @@
                                     
                               }  // End of if for expected property start element
                                 
-                                else{
-                                    // A start element we are not expecting indicates an invalid parameter was passed
-                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
-                                }
-                            
+                                    else {
+                                        
+                                    }
+                                
                                     
                                     while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
                                 

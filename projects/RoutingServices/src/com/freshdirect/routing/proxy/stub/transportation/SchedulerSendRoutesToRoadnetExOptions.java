@@ -38,6 +38,12 @@
                         
                                     protected java.lang.String localSessionDescription ;
                                 
+                           /*  This tracker boolean wil be used to detect whether the user called the set method
+                          *   for this attribute. It will be used to determine whether to include this field
+                           *   in the serialized XML
+                           */
+                           protected boolean localSessionDescriptionTracker = false ;
+                           
 
                            /**
                            * Auto generated getter method
@@ -55,6 +61,14 @@
                                */
                                public void setSessionDescription(java.lang.String param){
                             
+                                       if (param != null){
+                                          //update the setting tracker
+                                          localSessionDescriptionTracker = true;
+                                       } else {
+                                          localSessionDescriptionTracker = false;
+                                              
+                                       }
+                                   
                                             this.localSessionDescription=param;
                                     
 
@@ -201,7 +215,7 @@
 
                
                    }
-               
+                if (localSessionDescriptionTracker){
                                     namespace = "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService";
                                     if (! namespace.equals("")) {
                                         prefix = xmlWriter.getPrefix(namespace);
@@ -235,7 +249,7 @@
                                           }
                                     
                                    xmlWriter.writeEndElement();
-                              if (localWaveCriteriaTracker){
+                             } if (localWaveCriteriaTracker){
                                     if (localWaveCriteria==null){
 
                                             java.lang.String namespace2 = "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService";
@@ -428,7 +442,7 @@
                  java.util.ArrayList elementList = new java.util.ArrayList();
                  java.util.ArrayList attribList = new java.util.ArrayList();
 
-                
+                 if (localSessionDescriptionTracker){
                                       elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
                                                                       "sessionDescription"));
                                  
@@ -437,7 +451,7 @@
                                         } else {
                                            throw new org.apache.axis2.databinding.ADBException("sessionDescription cannot be null!!");
                                         }
-                                     if (localWaveCriteriaTracker){
+                                    } if (localWaveCriteriaTracker){
                             elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
                                                                       "waveCriteria"));
                             
@@ -534,11 +548,10 @@
                                     
                               }  // End of if for expected property start element
                                 
-                                else{
-                                    // A start element we are not expecting indicates an invalid parameter was passed
-                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
-                                }
-                            
+                                    else {
+                                        
+                                    }
+                                
                                     
                                     while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
                                 

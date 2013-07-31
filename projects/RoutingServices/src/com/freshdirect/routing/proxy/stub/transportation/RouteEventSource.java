@@ -59,11 +59,17 @@
                                     public static final java.lang.String _resDispatch =
                                         org.apache.axis2.databinding.utils.ConverterUtil.convertToString("resDispatch");
                                 
+                                    public static final java.lang.String _resExternal =
+                                        org.apache.axis2.databinding.utils.ConverterUtil.convertToString("resExternal");
+                                
                                 public static final RouteEventSource resDriver =
                                     new RouteEventSource(_resDriver,true);
                             
                                 public static final RouteEventSource resDispatch =
                                     new RouteEventSource(_resDispatch,true);
+                            
+                                public static final RouteEventSource resExternal =
+                                    new RouteEventSource(_resExternal,true);
                             
 
                                 public java.lang.String getValue() { return localRouteEventSource;}
