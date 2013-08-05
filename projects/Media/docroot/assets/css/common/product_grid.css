@@ -118,6 +118,9 @@
 	line-height: 1;
 	text-decoration: none;
 }
+.grid-item-rating a:hover {
+	text-decoration: none;
+}
 
 .grid-item-rating a img {
 	display: inline-block;
@@ -715,7 +718,8 @@
 }
 
 .grid-carousel .grid-item { margin:0px; }
-.grid-carousel .grid-item-container { width:100%; border-bottom:none }
+.grid-carousel .grid-item-container,
+.grid-view .grid-carousel .smartstore-carousel-item .grid-item-container { width:100%; border-bottom:none }
 .grid-carousel li { overflow:hidden }
 .grid-carousel .featurebox .grid-item { background:none }
 .grid-carousel .featurebox .grid-item-image-helper { height:70px; line-height:70px; }

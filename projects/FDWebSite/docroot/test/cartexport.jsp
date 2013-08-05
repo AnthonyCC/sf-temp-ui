@@ -1,7 +1,8 @@
 <%@ page contentType="application/vnd.ms-excel"
 	import='com.freshdirect.fdstore.customer.*'
 	import='com.freshdirect.webapp.taglib.fdstore.SessionName'
-	import='com.freshdirect.customer.ejb.ErpOrderLineUtil' %><%
+	import='com.freshdirect.customer.ejb.ErpOrderLineUtil' 
+	import='java.util.*'%><%
 /*
 String DOC_BEGIN = "<table width='100%' border='0' style='font-family: Tahoma, Verdana, sans-serif; font-size: 8pt;'>\n";
 String DOC_END = "</table>";

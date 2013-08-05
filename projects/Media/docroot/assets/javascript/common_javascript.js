@@ -385,17 +385,10 @@ function changeColors(currentId, currentCss){
   }
 })();
 
+/* this functionality is in the popupcart.js!!! 
+function updateYourCartPanel() {}
+*/
 
-function updateYourCartPanel() {
-	YAHOO.util.Connect.asyncRequest('GET', '/ajax/yc.jsp', {
-		success: function(resp) {
-			var container = $('your-cart-div');
-			if (container) {
-				container.innerHTML = resp.responseText;
-			}
-		}
-	});
-}
 
 /* === Add/Remove functionality between two listboxes ======================= */
 /*

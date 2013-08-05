@@ -1,5 +1,4 @@
 <%@ taglib uri="http://jawr.net/tags" prefix="jwr" %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%-- this file will be included just before the closing </body> tag --%>
-<jwr:script src="/fdmodules.js" useRandomParam="false"/>
-
+<jwr:script src="/fdmodules.js"  useRandomParam="false" />

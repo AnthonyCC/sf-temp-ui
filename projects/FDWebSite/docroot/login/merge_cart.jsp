@@ -1,3 +1,4 @@
+<%@ page import='java.util.*' %>
 <%@ page import='com.freshdirect.fdstore.customer.FDCartModel' %>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>

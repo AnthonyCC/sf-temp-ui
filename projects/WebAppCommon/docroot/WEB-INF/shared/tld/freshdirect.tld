@@ -4943,6 +4943,11 @@
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 		<attribute>
+			<name>outStringVar</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
 			<name>searchResultsSize</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
@@ -5023,6 +5028,16 @@
 			<required>true</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
+		<attribute>
+			<name>outStringVar</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>explicitList</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
 	</tag>
 	<tag>
 		<name>CmShop9</name>
@@ -5047,6 +5062,11 @@
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>		
+		<attribute>
+			<name>outStringVar</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
 	</tag>
 	<tag>
 		<name>CmProductView</name>
@@ -5058,6 +5078,11 @@
 		</attribute>
 		<attribute>
 			<name>wrapIntoFunction</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>outStringVar</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
@@ -5086,6 +5111,11 @@
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 		<attribute>
+			<name>outStringVar</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
 			<name>order</name>
 			<required>true</required>
 			<rtexprvalue>true</rtexprvalue>
@@ -5101,6 +5131,11 @@
 		</attribute>
 		<attribute>
 			<name>wrapIntoFunction</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>outStringVar</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
@@ -5130,6 +5165,11 @@
 		</attribute>
 		<attribute>
 			<name>wrapIntoFunction</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>outStringVar</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
@@ -5179,6 +5219,11 @@
 		</attribute>
 		<attribute>
 			<name>wrapIntoFunction</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>outStringVar</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
@@ -5481,4 +5526,30 @@
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
      </tag>
+	<tag>
+		<name>CartData</name>
+		<tagclass>com.freshdirect.webapp.taglib.cart.CartDataTag</tagclass>
+		<teiclass>com.freshdirect.webapp.taglib.cart.CartDataTag$TagEI</teiclass>
+		<info></info>
+		<attribute>
+			<name>cmScript</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+	</tag>
+	<tag>
+		<name>ToJSON</name>
+		<tagclass>com.freshdirect.webapp.taglib.cart.ToJSONTag</tagclass>
+		<info></info>
+		<attribute>
+			<name>object</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>jsonpWrapper</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+	</tag>
 </taglib>

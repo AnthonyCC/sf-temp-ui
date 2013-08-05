@@ -32,6 +32,7 @@ public abstract class AbstractCmTag extends SimpleTagSupport {
 		
 	private boolean wrapIntoScriptTag;
 	private boolean wrapIntoFunction;
+	private String outStringVar = null;
 	
 	public void doTag() throws JspException, IOException {
 		if (FDStoreProperties.isCoremetricsEnabled()){
@@ -44,7 +45,11 @@ public abstract class AbstractCmTag extends SimpleTagSupport {
 	public void doCmTag() throws JspException, IOException{
 		try {
 			String tagOut = doWrap();
-			getJspContext().getOut().println(tagOut);
+			if ( outStringVar != null ) {
+				getJspContext().setAttribute( outStringVar, tagOut );
+			} else {
+				getJspContext().getOut().println(tagOut);
+			}
 
 		} catch (SkipTagException e) {
 			LOGGER.debug("no tag will be inserted here due to SkipTagException: "+ e.getMessage());
@@ -133,6 +138,10 @@ public abstract class AbstractCmTag extends SimpleTagSupport {
 
 	public void setWrapIntoFunction(boolean wrapIntoFunction){
 		this.wrapIntoFunction = wrapIntoFunction;
+	}
+
+	public void setOutStringVar(String outStringVar){
+		this.outStringVar = outStringVar;
 	}
 	
 	protected static String mapToAttrString(Map<Integer,String> attributesMap){

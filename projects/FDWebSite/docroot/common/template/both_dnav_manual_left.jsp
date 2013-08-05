@@ -7,6 +7,9 @@
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
+<%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display'%>
+<%@ taglib uri="/WEB-INF/shared/tld/components.tld" prefix='comp' %>
+
 <% //expanded page dimensions
 final int W_BDNML_TOTAL = 970;
 final int W_BDNML_LEFT = 150;

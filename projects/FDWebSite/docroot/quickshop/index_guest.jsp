@@ -12,7 +12,7 @@
 final int W_QUICKSHOP_INDEX_GUEST_TOTAL = 755;
 %>
 <%
-	request.setAttribute("quickshop.level","index");
+	request.setAttribute("quickshop.level","indexGuest");
 	
 	//--------OAS Page Variables-----------------------
         request.setAttribute("sitePage", "www.freshdirect.com/quickshop");

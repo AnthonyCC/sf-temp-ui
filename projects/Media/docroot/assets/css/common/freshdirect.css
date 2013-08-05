@@ -83,13 +83,24 @@ h2.centerline span {
 /* {{{ plus/minus buttons */
 .quantity_plus,
 .quantity_minus {
-  background-image: url(/media_stat/images/sprites/plusminus.png);
-  background-repeat: none;
+  background: url(/media_stat/images/sprites/plusminus.png) transparent center center no-repeat;
   display: inline-block;
   vertical-align: top;
   width: 27px;
   height: 27px;
   cursor: pointer;
+  border:none;
+  padding:0;
+  text-indent: 27px;
+}
+
+.qtyinput.small .quantity_plus,
+.qtyinput.small .quantity_minus {
+  background: url(/media_stat/images/sprites/plusminus-small.png) transparent center center no-repeat;
+  width: 18px;
+  height: 18px;
+  vertical-align: middle;
+  overflow:hidden;
 }
 
 .quantity_plus span,
@@ -113,9 +124,31 @@ h2.centerline span {
   background-position: -27px -27px;
 }
 
+.qtyinput.small .quantity_plus {
+  background-position: 0 0;
+}
+
+.qtyinput.small .quantity_plus:hover {
+  background-position: 0 -18px;
+}
+
+.qtyinput.small .quantity_minus {
+  background-position: -18px 0;
+}
+
+.qtyinput.small .quantity_minus:hover {
+  background-position: -18px -18px;
+}
+
 .qtyinput {
   line-height: 27px;
   vertical-align: middle;
+}
+
+.qtyinput.small {
+  line-height:18px;
+  font-size: 100%;
+  margin: 0;
 }
 
 .qtyinput .qtyinputholder,
@@ -139,6 +172,7 @@ h2.centerline span {
 #vieworder_table select,
 #recipe_form select,
 #i_viewcart .viewcartselect,
+#popupcart select,
 .qtyinput input.qty {
   font-size: 12px;
   text-align:center;
@@ -174,6 +208,7 @@ h2.centerline span {
 
 #vieworder_table select,
 #recipe_form select,
+#popupcart select,
 #i_viewcart .viewcartselect {
 	min-width:8em;
 	padding:0;
@@ -182,7 +217,8 @@ h2.centerline span {
 	margin:2px 0;
 }
 
-.lt-ie8 #i_viewcart .viewcartselect {
+.lt-ie8 #i_viewcart .viewcartselect,
+.lt-ie8 #popupcart select {
 	width:8em;
 }
 

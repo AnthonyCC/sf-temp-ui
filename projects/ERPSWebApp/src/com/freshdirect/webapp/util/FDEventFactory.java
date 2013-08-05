@@ -28,11 +28,11 @@ import com.freshdirect.webapp.taglib.fdstore.SessionName;
  */
 public class FDEventFactory {
 	
-	private final static String FD_ADD_TO_CART_EVENT = "AddToCart";
+	public final static String FD_ADD_TO_CART_EVENT = "AddToCart";
 	
-	private final static String FD_MODIFY_CART_EVENT = "ModifyCart";
+	public final static String FD_MODIFY_CART_EVENT = "ModifyCart";
 	
-	private final static String FD_REMOVE_CART_EVENT = "RemoveFromCart";
+	public final static String FD_REMOVE_CART_EVENT = "RemoveFromCart";
 
 	/**
 	 * This method creates and returns a new FDAddToCartEvent. 

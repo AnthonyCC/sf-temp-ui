@@ -1,5 +1,6 @@
 <%-- internal promo details --%>
 
+<%@ page import='java.util.*' %>
 <%@ page import="com.freshdirect.fdstore.*"%>
 <%@ page import='com.freshdirect.fdstore.customer.*' %>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>

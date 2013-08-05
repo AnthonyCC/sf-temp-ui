@@ -4,6 +4,7 @@
 <%@ page import='com.freshdirect.fdstore.*' %>
 <%@ page import='com.freshdirect.fdstore.customer.*' %>
 <%@ page import='com.freshdirect.fdstore.content.*' %>
+<%@ page import='java.util.*' %>
 <%@ page import='java.text.*' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri='logic' prefix='logic'%>

@@ -1,3 +1,5 @@
+<%@page import='java.util.*' %>
+<%@page import='java.io.*' %>
 <%@page import="com.freshdirect.smartstore.service.VariantRegistry"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" import="com.freshdirect.webapp.taglib.smartstore.Impression,java.util.Map,
 java.util.Iterator,com.freshdirect.smartstore.RecommendationService,com.freshdirect.framework.webapp.ActionResult,

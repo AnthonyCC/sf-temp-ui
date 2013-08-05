@@ -13,7 +13,8 @@ public enum EnumEventSource {
 	TXYMAL("TxYmal"), /* The source if the event is the TX YMAL */
 	CCL("CCL"), /* The source of the event is a customer created list. */
 	SmartStore("SS"), /* The source of the event is SmartStore related. */
-	QUICKBUY("Quickbuy"); /* The source of the event is Quickbuy related */
+	QUICKBUY("Quickbuy"), /* The source of the event is Quickbuy related */
+	CART("Cart"); /* The source of the event is the cart widget */
 	
 	String name;
 	

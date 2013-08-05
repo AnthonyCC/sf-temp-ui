@@ -1,6 +1,9 @@
 var FreshDirect = FreshDirect || {};
 
-(function(fd, $) {
+(function(fd) {
+	
+	var $ = fd.libs.$;
+	
 	var statusUpdater = function (node, msg) {
 		var $node, $item;
 
@@ -46,5 +49,5 @@ var FreshDirect = FreshDirect || {};
 	// backward compatibility...
 	fd.modules.common.utils.register("FDSearch", "statusUpdater", statusUpdater, window);
 	fd.modules.common.utils.register("FDSearch", "couponStatusUpdater", couponStatusUpdater, window);
-}(FreshDirect, jQuery));
+}(FreshDirect));
 

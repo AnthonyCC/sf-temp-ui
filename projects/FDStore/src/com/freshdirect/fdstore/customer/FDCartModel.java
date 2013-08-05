@@ -441,6 +441,10 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 		return true;
 	}
 
+	public boolean removeOrderLine( FDCartLineI cartLine ) {
+		return removeOrderLineById( cartLine.getRandomId() );
+	}
+	
 	/**
 	 *  Tell if the shopping cart contains any items that were ordered
 	 *  by selecting a recipe.
@@ -1122,6 +1126,20 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 		return sum;
 	}
 
+	/**
+	 * Get the total item count in cart.
+	 */
+	public int getItemCount() {
+		int sum = 0;
+		for (FDCartLineI cartLine : orderLines ) {	
+			if ( cartLine.isSoldBySalesUnits() ) 
+				sum++;
+			else
+				sum += Math.round( (float)cartLine.getQuantity() );
+		}
+		return sum;
+	}
+	
 	/**
 	 * Remove stale orderlines, reprice w/ current prices, finally sort the cart.
 	 */

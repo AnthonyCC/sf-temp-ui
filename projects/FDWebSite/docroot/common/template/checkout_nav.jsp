@@ -19,6 +19,7 @@ final int W_CHECKOUT_NAV_TOTAL = 970;
 		<%@ include file="/common/template/includes/metatags.jspf" %>
 		<%@ include file="/common/template/includes/i_javascripts.jspf" %>
 		<fd:javascript src="/assets/javascript/timeslots.js"/>
+  	<%@ include file="/shared/template/includes/style_sheet_grid_compat.jspf" %>
 		<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
 		<fd:css href="/assets/css/timeslots.css"/>
 		<%@ include file="/shared/template/includes/ccl.jspf" %>

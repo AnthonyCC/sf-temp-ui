@@ -1,12 +1,3 @@
-/*
- * $Workfile$
- *
- * $Date$
- *
- * Copyright (c) 2001 FreshDirect, Inc.
- *
- */
-
 package com.freshdirect.webapp.taglib.fdstore;
 
 import javax.servlet.http.HttpSession;
@@ -16,14 +7,12 @@ import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.webapp.taglib.AbstractGetterTag;
 
-/**
- *
- * @version $Revision$
- * @author $Author$
- */
-public class FDCartGetterTag extends AbstractGetterTag implements SessionName {
+public class FDCartGetterTag extends AbstractGetterTag<FDCartModel> implements SessionName {
 
-	protected Object getResult() throws FDResourceException {
+	private static final long serialVersionUID = 3449571121178723442L;
+
+
+	protected FDCartModel getResult() throws FDResourceException {
         HttpSession session = pageContext.getSession();
         FDCartModel shoppingCart = ((FDUserI)session.getAttribute(USER)).getShoppingCart();
         if (shoppingCart == null) {

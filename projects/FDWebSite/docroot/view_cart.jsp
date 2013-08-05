@@ -1,3 +1,5 @@
+<%@ page import='java.util.*' %>
+<%@ page import='java.io.*' %>
 <%@ page import='com.freshdirect.fdstore.customer.*' %>
 <%@ page import='com.freshdirect.fdstore.customer.adapter.PromoVariantHelper' %>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*'%>

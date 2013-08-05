@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet href="debug.xsl" type="text/xsl"?>
+<%@ page import='java.util.*' %>
 <%@ page contentType="text/xml;charset=UTF-8" %>
 <%@ page import='org.dom4j.*' %>
 <%@ page import='com.freshdirect.fdstore.mail.FDXMLSerializer' %>

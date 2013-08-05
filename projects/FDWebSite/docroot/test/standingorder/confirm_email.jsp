@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<%@page import='java.util.*' %>
 <%@page import="com.freshdirect.fdstore.FDDepotManager"%>
 <%@page import="com.freshdirect.framework.mail.EmailAddress"%>
 <%@page import="com.freshdirect.fdstore.mail.FDStandingOrderEmail"%>

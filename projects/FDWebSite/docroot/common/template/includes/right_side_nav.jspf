@@ -19,9 +19,6 @@
 <%@ page import="com.freshdirect.fdstore.content.Image"%>
 <%@ page import="com.freshdirect.common.pricing.PricingContext"%>
 <%@ page import="com.freshdirect.webapp.util.ProductImpression"%>
-<%@ taglib uri='template' prefix='tmpl' %>
-<%@ taglib uri='freshdirect' prefix='fd' %>
-<%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display'%>
 <% try{ %>
 <div align="right"><tmpl:get name='banner'/></div>
 <%@ include file="/includes/i_promotion_counter.jspf" %>
@@ -158,21 +155,30 @@ if(weRecommendImgProds.size() > 0) {
 	<br>
 <% } %> 
 <% } %>
-<div id="your-cart-div">
-	<%@ include file="/common/template/includes/your_cart.jspf" %>
-</div>
-<div class="text11" style="padding-top: 14px; padding-bottom: 14px">
-	<div style="font-weight: bold">Product Request?</div>
 <%
+	boolean isDeptPage = false;
+	boolean isProdPage = false;
+	boolean isCatPage = false;
+	boolean isWineOrRecipe = false;
+
 	String deptName = null;
 	if (cnm instanceof DepartmentModel) {
 		deptName = cnm.getFullName();
+		isDeptPage = true;
+		if ( cnm.getContentName().equals( "rec" ) || cnm.getContentName().equals( "usq" ) )
+			isWineOrRecipe = true;
 	} else if (cnm instanceof RecipeCategory) {
 		deptName = "Recipes";
+		isWineOrRecipe = true;
 	} else if (cnm instanceof CategoryModel) {
 		final DepartmentModel p =  ( (CategoryModel) cnm).getDepartment();
 		if (p != null)
 			deptName = p.getFullName();
+		isCatPage = true;
+		if ( p.getContentName().equals( "rec" ) || p.getContentName().equals( "usq" ) )
+			isWineOrRecipe = true;
+	} else if (cnm instanceof ProductModel ) {
+		isProdPage = true;
 	}
 
 	if (deptName == null) {
@@ -181,8 +187,20 @@ if(weRecommendImgProds.size() > 0) {
 		deptName = URLEncoder.encode(deptName, "UTF-8").replace("%27","\\%27");
 	}
 %>
-	<a href="javascript:pop('/request_product.jsp?department=<%= deptName %>', 400, 585);">Click here.</a>
-</div>
+
+<% if ( isCatPage ) { %>
+	<%-- display nothing --%>
+<% } else if ( isWineOrRecipe ) { %>
+	<comp:recommenderBox siteFeature="SCR_PERSONAL" />
+<% } else if ( isDeptPage ) { %>
+	<comp:recommenderBox siteFeature="SCR_FEAT_ITEMS" currentNode="<%= (DepartmentModel)cnm %>" />
+<% } else if ( isProdPage ) { %>
+	<comp:recommenderBox siteFeature="YMAL_PDTL" currentNode="<%= (ProductModel)cnm %>" />
+<% } else { %>
+	<comp:recommenderBox siteFeature="SCR_PERSONAL" />
+<% } %>
+	
+<p class="product-request"><a href="javascript:pop('/request_product.jsp?department=<%= deptName %>', 400, 585);">Product Request? Click here.</a></p>
 
 	 <% if (FDStoreProperties.isAdServerEnabled()) { %>
 		<script type="text/javascript">

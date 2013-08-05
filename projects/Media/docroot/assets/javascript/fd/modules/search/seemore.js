@@ -1,6 +1,9 @@
 var FreshDirect = FreshDirect || {};
 
-(function(fd, $) {
+(function(fd) {
+	
+	var $ = fd.libs.$;
+	
   /****
    * @param {JQuery object} $container the container to handle "see more" links
    * @param {String} handleSelector selector for "see more" handles
@@ -23,4 +26,4 @@ var FreshDirect = FreshDirect || {};
 
 	// register in fd namespace
 	fd.modules.common.utils.register("modules.search", "seeMore", seeMore, fd);
-}(FreshDirect, jQuery));
+}(FreshDirect));

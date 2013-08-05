@@ -78,9 +78,6 @@ Not logged in.
 <div class="section">
 	<div class="section-header">Instant Add-to-Cart</div>
 	<div class="section-body" style="width: 980px; background-color: #ffffdd;">
-		<div id="your-cart-div" class="float-right">
-			<%@ include file="/common/template/includes/your_cart.jspf" %>
-		</div>
 
 		<div class="float-left"><!-- container -->
 		<!-- this is da box -->

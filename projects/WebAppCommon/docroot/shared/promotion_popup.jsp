@@ -1,4 +1,5 @@
 <%-- promotion details in popup --%>
+<%@ page import='java.util.*' %>
 <%@ page import='java.text.*' %>
 <%@ page import='com.freshdirect.fdstore.customer.*' %>
 <%@ page import="com.freshdirect.fdstore.promotion.management.*" %>

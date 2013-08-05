@@ -1,3 +1,4 @@
+<%@ page import='java.util.*' %>
 <%@ page import="com.freshdirect.fdstore.mail.*"%>
 <%@ page import='com.freshdirect.fdstore.content.*'  %>
 <%@ page import='com.freshdirect.fdstore.referral.FDReferralManager'  %>

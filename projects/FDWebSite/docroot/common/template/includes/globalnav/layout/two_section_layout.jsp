@@ -1,4 +1,5 @@
-<%@ taglib prefix="c" uri="http://java.sun.com/jstl/core"%>
+<%@ page import="java.util.*"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib uri='logic' prefix='logic'%>
 <%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display'%>
 <%@ taglib uri="freshdirect" prefix='fd'%>

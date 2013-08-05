@@ -4,14 +4,14 @@
 <%@ page import='com.freshdirect.fdstore.FDStoreProperties' %>
 <%@ page import='com.freshdirect.fdstore.customer.*' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
+<%@ taglib uri="http://jawr.net/tags" prefix="jwr" %>
 <%-- this file will be included in the <head> tag --%>
 	<%--
 		using the same /directory/version/ system as scriptaculous for jquery
 		also to avoid conflicts, jQuery's $ will always be set to $jq
 	--%>
 	
-	<script src="/assets/javascript/jquery/1.8.3/jquery.js" type="text/javascript" language="javascript"></script>
-	<script src="/assets/javascript/jquery/ui/1.9.2/jquery-ui.min.js" type="text/javascript" language="javascript"></script>
+	<jwr:script src="/jqlibs.js" useRandomParam="false" />
 	<script src="/assets/javascript/jquery/corner/jquery.corner.js" type="text/javascript" language="javascript"></script>
 	<fd:javascript src="/assets/javascript/dialog-base.js" />
 	<fd:javascript src="/assets/javascript/atcPendingOrder.js"/>

@@ -1,3 +1,5 @@
+<%@ page import='java.util.*' %>
+<%@ page import='java.io.*' %>
 <%@ page import='org.dom4j.*' %>
 <%@ page import='com.freshdirect.fdstore.mail.*' %>
 <%@ page import='com.freshdirect.framework.mail.XMLEmailI' %>

@@ -1,4 +1,5 @@
-<%@page import="org.apache.commons.fileupload.servlet.ServletFileUpload"
+<%@page import='java.util.*' 
+%><%@page import="org.apache.commons.fileupload.servlet.ServletFileUpload"
 %><%@page import="org.apache.commons.fileupload.FileItemFactory"
 %><%@page import="org.apache.commons.fileupload.FileItem"
 %><%@page import="org.apache.commons.fileupload.disk.DiskFileItemFactory"
@@ -403,9 +404,9 @@ function toggle_help() {
 	<li><b>Formula</b>
 		<ul>
 		EXCEL equation without the starting <tt>=</tt> sign. Factors can be refererred to by their names prepended
-		with the dollar sign and enclosed in curly braces (i.e. <tt>${<i>factor</i>}</tt>).  For example:
+		with the dollar sign and enclosed in curly braces (i.e. <tt>&#36;{<i>factor</i>}</tt>).  For example:
 <pre>
-    0.4*${Frequency_Normalized} + 0.6*${AmountSpent_Normalized}
+    0.4*&#36;{Frequency_Normalized} + 0.6*&#36;{AmountSpent_Normalized}
 </pre>
 		is a valid formula. As a convenience, clicking on the factor's name will append the factor to the formula
 		input field. <i>The formula is not checked for validity! It it is incorrectly supplied, the values in 

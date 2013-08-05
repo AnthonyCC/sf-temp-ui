@@ -1,3 +1,4 @@
+<%@ page import="java.util.*"%>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ page import='java.util.Random' %>
 <%@ page import="java.util.Date" %>

@@ -9,6 +9,8 @@
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
+<%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display'%>
+<%@ taglib uri="/WEB-INF/shared/tld/components.tld" prefix='comp' %>
 <% //expanded page dimensions
 final int W_QUICK_SHOP_TOTAL = 970;
 final int W_QUICK_SHOP_CONTENT = 765;
@@ -47,7 +49,23 @@ request.setAttribute("__yui_load_dispatcher__", Boolean.TRUE);%>
     class="quickshop">
 <%@ include file="/shared/template/includes/i_body_start.jspf" %>      
 <%@ include file="/common/template/includes/globalnav.jspf" %>
+
 <CENTER CLASS="text10">
+
+				
+<% 
+String level = (String) request.getAttribute("quickshop.level");// This is defined in index.jsp or index_guest.jsp of quickshop
+
+if ("indexGuest".equals(level)){%>
+
+			<!-- page content goes here-->
+				<tmpl:get name='content'/>
+			<!-- end of page content -->
+
+<%
+}else{
+%>
+
 <TABLE WIDTH="<%= W_QUICK_SHOP_TOTAL %>" CELLPADDING="0" CELLSPACING="0" BORDER="0">
 <TR VALIGN="TOP">
   <TD WIDTH="<%= W_QUICK_SHOP_CONTENT %>"><img src="/media_stat/images/layout/clear.gif" width="<%= W_QUICK_SHOP_CONTENT %>" height="1" border="0"></TD>
@@ -62,14 +80,7 @@ request.setAttribute("__yui_load_dispatcher__", Boolean.TRUE);%>
 
 		<TR VALIGN="TOP">
 			<TD WIDTH="<%= W_QUICK_SHOP_CONTENT %>">
-				
-<% 
-String level = (String) request.getAttribute("quickshop.level");// This is defined in index.jsp or index_guest.jsp of quickshop
 
-if ("index".equals(level)){}
-else{
-%>
-	
 				<TABLE CELLPADDING="0" CELLSPACING="0" BORDER="0">
 				<TR VALIGN="MIDDLE">
 					<TD><A HREF="/quickshop/index.jsp"><img src="/media_stat/images/navigation/department/quickshop/qs_depnav.gif" width="158" height="28" border="0" alt="QUICKSHOP"></A></TD>
@@ -104,19 +115,11 @@ else{
 					<TD><img src="/media_stat/images/layout/clear.gif" width="1" height="4" border="0"></TD>
 				</TR>
 				</TABLE>
-<%}%>				
-				
 			</TD>
 		</TR>
-
-<% 
-if ("index".equals(level)){}
-else{
-%>	
 		<TR>
 			<TD WIDTH="<%= W_QUICK_SHOP_CONTENT %>" BGCOLOR="#996699"><img src="/media_stat/images/layout/996699.gif" width="1" height="1" border="0"></TD>
 		</TR>
-<%}%>		
 
 
 		<TR VALIGN="TOP">
@@ -146,6 +149,8 @@ else{
 	</TD>
 </TR>
 </TABLE>
+<%}%>
+
 </CENTER>
 <%@ include file="/common/template/includes/footer.jspf" %>
 <%@ include file="/common/template/includes/i_jsmodules.jspf" %>

@@ -1,3 +1,4 @@
+<%@ page import='java.util.*' %>
 <%@ page import='com.freshdirect.fdstore.*' %>
 <%@ page import='java.io.*'%>
 <%@ page import='java.text.SimpleDateFormat'%>
@@ -12,7 +13,7 @@
 <%@ page import="com.freshdirect.cms.fdstore.FDContentTypes"%>
 <%@ page import='java.net.URLEncoder' %>
 <%@ page import='java.util.*' %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jstl/core"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='bean' prefix='bean' %>
 <%@ taglib uri='logic' prefix='logic' %>

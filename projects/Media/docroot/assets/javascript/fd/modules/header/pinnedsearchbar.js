@@ -9,6 +9,7 @@ var FreshDirect = FreshDirect || {};
   var PinnedHeader = function (el) {
     this.el = el;
     this.placeholder = null;
+    this.pincontainer = null;
 
     YAHOO.util.Event.addListener(window, 'scroll', this.check, null, this);
   };
@@ -37,10 +38,20 @@ var FreshDirect = FreshDirect || {};
     // create placeholder
     this.placeholder = document.createElement('div');
     YAHOO.util.Dom.setStyle(this.placeholder, 'height', region.height+'px');
+    YAHOO.util.Dom.setStyle(this.placeholder, 'width', region.width+'px');
+    YAHOO.util.Dom.setStyle(this.placeholder, 'float', YAHOO.util.Dom.getStyle(this.el, 'float'));
     this.el.parentNode.insertBefore(this.placeholder, this.el);
 
+    this.pincontainer = document.createElement('div');
+    YAHOO.util.Dom.setStyle(this.pincontainer, 'width', region.width+'px');
+    YAHOO.util.Dom.setStyle(this.pincontainer, 'height', region.height+'px');
+    YAHOO.util.Dom.setStyle(this.pincontainer, 'left', region.left+'px');
+    YAHOO.util.Dom.setStyle(this.pincontainer, 'top', '0');
+    YAHOO.util.Dom.setStyle(this.pincontainer, 'position', 'fixed');
+
     this.el.parentNode.removeChild(this.el);
-    document.body.appendChild(this.el);
+    document.body.appendChild(this.pincontainer);
+    this.pincontainer.appendChild(this.el);
 
     YAHOO.util.Dom.addClass(this.el, "fixedtop");
   };
@@ -49,7 +60,9 @@ var FreshDirect = FreshDirect || {};
     this.el.parentNode.removeChild(this.el);
     this.placeholder.parentNode.insertBefore(this.el, this.placeholder);
     this.placeholder.parentNode.removeChild(this.placeholder);
+    document.body.removeChild(this.pincontainer);
     this.placeholder = null;
+    this.pincontainer = null;
 
     YAHOO.util.Dom.removeClass(this.el, "fixedtop");
   };
@@ -60,8 +73,12 @@ var FreshDirect = FreshDirect || {};
 
 // module initialization
 (function () {
-  var searchbar = YAHOO.util.Dom.get("searchbar"),
-      pinnedsearchbar = new FreshDirect.modules.header.PinnedHeader(searchbar);
+  var topcart = YAHOO.util.Dom.get("sidecartbuttons"),
+      pinnedtopcart;
+
+  if (window.FreshDirect.CONFIG && window.FreshDirect.CONFIG.topcartpinned) {
+    pinnedtopcart = new FreshDirect.modules.header.PinnedHeader(topcart);
+  }
 })();
 
 

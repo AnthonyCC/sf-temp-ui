@@ -1,3 +1,4 @@
+<%@ page import='java.util.*' %>
 <table width="100%" cellspacing="4" cellpadding="0" class="cust_module_content_note">
 <tr>
 	<td width="25%">

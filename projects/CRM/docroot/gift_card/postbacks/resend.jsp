@@ -1,3 +1,4 @@
+<%@ page import='java.util.*' %>
 <%@ page import='com.freshdirect.webapp.taglib.giftcard.GiftCardUtil' %>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.SystemMessageList' %>
 <%@ page import='com.freshdirect.mail.EmailUtil' %>

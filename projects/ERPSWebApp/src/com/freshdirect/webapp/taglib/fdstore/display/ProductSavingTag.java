@@ -68,7 +68,7 @@ public class ProductSavingTag extends BodyTagSupportEx {
 	private boolean excludeCaseDeals = false;
 	
 	private boolean excludeGroupSavings = false;
-	
+
 	private boolean excludeDeals = false;
 
 	public void setExcludeCaseDeals(boolean excludeCaseDeals) {
@@ -94,7 +94,7 @@ public class ProductSavingTag extends BodyTagSupportEx {
 	public boolean isExcludeDeals() {
 		return excludeDeals;
 	}
-	
+
 	public int doStartTag() throws javax.servlet.jsp.JspException {
 		ProductAvailabilityTag availability = (ProductAvailabilityTag) findAncestorWithClass(this, ProductAvailabilityTag.class);
 		if (availability != null && !availability.isFullyAvailable())

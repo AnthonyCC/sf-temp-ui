@@ -1,13 +1,15 @@
 /*global YAHOO */
 var FreshDirect = FreshDirect || {};
 
-(function (fd, $) {
+(function (fd) {
   /**
    * Autocomplete for input elements
    *
    * @param {String} selector The css selector for the affected elements
    * @param {String} acPanelId id for the autocomplete panel (if we need multiple type of panels
    */
+	var $ = fd.libs.$;
+	
   var autocomplete = function (selector, acPanelId) {
     $(document).on('keyup', selector, showAutoCompletePanel);
     autocomplete.PANEL_ID = acPanelId || autocomplete.PANEL_ID;
@@ -123,7 +125,7 @@ var FreshDirect = FreshDirect || {};
 
   // register in fd namespace
   fd.modules.common.utils.register("modules.common", "autocomplete", autocomplete, fd);
-}(FreshDirect, jQuery));
+}(FreshDirect));
 
 // module initialization
 (function () {
