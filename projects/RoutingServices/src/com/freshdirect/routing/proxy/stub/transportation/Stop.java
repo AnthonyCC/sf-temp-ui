@@ -580,66 +580,6 @@
                             
 
                         /**
-                        * field for ArrivalTimeQuality
-                        */
-
-                        
-                                    protected com.freshdirect.routing.proxy.stub.transportation.DataQualityType localArrivalTimeQuality ;
-                                
-
-                           /**
-                           * Auto generated getter method
-                           * @return com.freshdirect.routing.proxy.stub.transportation.DataQualityType
-                           */
-                           public  com.freshdirect.routing.proxy.stub.transportation.DataQualityType getArrivalTimeQuality(){
-                               return localArrivalTimeQuality;
-                           }
-
-                           
-                        
-                            /**
-                               * Auto generated setter method
-                               * @param param ArrivalTimeQuality
-                               */
-                               public void setArrivalTimeQuality(com.freshdirect.routing.proxy.stub.transportation.DataQualityType param){
-                            
-                                            this.localArrivalTimeQuality=param;
-                                    
-
-                               }
-                            
-
-                        /**
-                        * field for DepartureTimeQuality
-                        */
-
-                        
-                                    protected com.freshdirect.routing.proxy.stub.transportation.DataQualityType localDepartureTimeQuality ;
-                                
-
-                           /**
-                           * Auto generated getter method
-                           * @return com.freshdirect.routing.proxy.stub.transportation.DataQualityType
-                           */
-                           public  com.freshdirect.routing.proxy.stub.transportation.DataQualityType getDepartureTimeQuality(){
-                               return localDepartureTimeQuality;
-                           }
-
-                           
-                        
-                            /**
-                               * Auto generated setter method
-                               * @param param DepartureTimeQuality
-                               */
-                               public void setDepartureTimeQuality(com.freshdirect.routing.proxy.stub.transportation.DataQualityType param){
-                            
-                                            this.localDepartureTimeQuality=param;
-                                    
-
-                               }
-                            
-
-                        /**
                         * field for PlannedDeparture
                         */
 
@@ -2995,19 +2935,7 @@
                                           }
                                     
                                    xmlWriter.writeEndElement();
-                             }
-                                            if (localArrivalTimeQuality==null){
-                                                 throw new org.apache.axis2.databinding.ADBException("arrivalTimeQuality cannot be null!!");
-                                            }
-                                           localArrivalTimeQuality.serialize(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","arrivalTimeQuality"),
-                                               factory,xmlWriter);
-                                        
-                                            if (localDepartureTimeQuality==null){
-                                                 throw new org.apache.axis2.databinding.ADBException("departureTimeQuality cannot be null!!");
-                                            }
-                                           localDepartureTimeQuality.serialize(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","departureTimeQuality"),
-                                               factory,xmlWriter);
-                                         if (localPlannedDepartureTracker){
+                             } if (localPlannedDepartureTracker){
                                     namespace = "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService";
                                     if (! namespace.equals("")) {
                                         prefix = xmlWriter.getPrefix(namespace);
@@ -4638,25 +4566,7 @@
                                         } else {
                                            throw new org.apache.axis2.databinding.ADBException("actualArrival cannot be null!!");
                                         }
-                                    }
-                            elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
-                                                                      "arrivalTimeQuality"));
-                            
-                            
-                                    if (localArrivalTimeQuality==null){
-                                         throw new org.apache.axis2.databinding.ADBException("arrivalTimeQuality cannot be null!!");
-                                    }
-                                    elementList.add(localArrivalTimeQuality);
-                                
-                            elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
-                                                                      "departureTimeQuality"));
-                            
-                            
-                                    if (localDepartureTimeQuality==null){
-                                         throw new org.apache.axis2.databinding.ADBException("departureTimeQuality cannot be null!!");
-                                    }
-                                    elementList.add(localDepartureTimeQuality);
-                                 if (localPlannedDepartureTracker){
+                                    } if (localPlannedDepartureTracker){
                                       elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
                                                                       "plannedDeparture"));
                                  
@@ -5105,9 +5015,9 @@
                     
                     reader.next();
                 
-                        java.util.ArrayList list59 = new java.util.ArrayList();
+                        java.util.ArrayList list57 = new java.util.ArrayList();
                     
-                        java.util.ArrayList list60 = new java.util.ArrayList();
+                        java.util.ArrayList list58 = new java.util.ArrayList();
                     
                                     
                                     while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
@@ -5396,38 +5306,6 @@
                                         
                                     }
                                 
-                                    
-                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
-                                
-                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","arrivalTimeQuality").equals(reader.getName())){
-                                
-                                                object.setArrivalTimeQuality(com.freshdirect.routing.proxy.stub.transportation.DataQualityType.Factory.parse(reader));
-                                              
-                                        reader.next();
-                                    
-                              }  // End of if for expected property start element
-                                
-                                else{
-                                    // A start element we are not expecting indicates an invalid parameter was passed
-                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
-                                }
-                            
-                                    
-                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
-                                
-                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","departureTimeQuality").equals(reader.getName())){
-                                
-                                                object.setDepartureTimeQuality(com.freshdirect.routing.proxy.stub.transportation.DataQualityType.Factory.parse(reader));
-                                              
-                                        reader.next();
-                                    
-                              }  // End of if for expected property start element
-                                
-                                else{
-                                    // A start element we are not expecting indicates an invalid parameter was passed
-                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
-                                }
-                            
                                     
                                     while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
                                 
@@ -6208,11 +6086,11 @@
                                     
                                     
                                     // Process the array and step past its final element's end.
-                                    list59.add(com.freshdirect.routing.proxy.stub.transportation.DriverAlert.Factory.parse(reader));
+                                    list57.add(com.freshdirect.routing.proxy.stub.transportation.DriverAlert.Factory.parse(reader));
                                                                 
                                                         //loop until we find a start element that is not part of this array
-                                                        boolean loopDone59 = false;
-                                                        while(!loopDone59){
+                                                        boolean loopDone57 = false;
+                                                        while(!loopDone57){
                                                             // We should be at the end element, but make sure
                                                             while (!reader.isEndElement())
                                                                 reader.next();
@@ -6223,13 +6101,13 @@
                                                                 reader.next();
                                                             if (reader.isEndElement()){
                                                                 //two continuous end elements means we are exiting the xml structure
-                                                                loopDone59 = true;
+                                                                loopDone57 = true;
                                                             } else {
                                                                 if (new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","driverAlerts").equals(reader.getName())){
-                                                                    list59.add(com.freshdirect.routing.proxy.stub.transportation.DriverAlert.Factory.parse(reader));
+                                                                    list57.add(com.freshdirect.routing.proxy.stub.transportation.DriverAlert.Factory.parse(reader));
                                                                         
                                                                 }else{
-                                                                    loopDone59 = true;
+                                                                    loopDone57 = true;
                                                                 }
                                                             }
                                                         }
@@ -6238,7 +6116,7 @@
                                                         object.setDriverAlerts((com.freshdirect.routing.proxy.stub.transportation.DriverAlert[])
                                                             org.apache.axis2.databinding.utils.ConverterUtil.convertToArray(
                                                                 com.freshdirect.routing.proxy.stub.transportation.DriverAlert.class,
-                                                                list59));
+                                                                list57));
                                                             
                               }  // End of if for expected property start element
                                 
@@ -6254,11 +6132,11 @@
                                     
                                     
                                     // Process the array and step past its final element's end.
-                                    list60.add(com.freshdirect.routing.proxy.stub.transportation.Order.Factory.parse(reader));
+                                    list58.add(com.freshdirect.routing.proxy.stub.transportation.Order.Factory.parse(reader));
                                                                 
                                                         //loop until we find a start element that is not part of this array
-                                                        boolean loopDone60 = false;
-                                                        while(!loopDone60){
+                                                        boolean loopDone58 = false;
+                                                        while(!loopDone58){
                                                             // We should be at the end element, but make sure
                                                             while (!reader.isEndElement())
                                                                 reader.next();
@@ -6269,13 +6147,13 @@
                                                                 reader.next();
                                                             if (reader.isEndElement()){
                                                                 //two continuous end elements means we are exiting the xml structure
-                                                                loopDone60 = true;
+                                                                loopDone58 = true;
                                                             } else {
                                                                 if (new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","orders").equals(reader.getName())){
-                                                                    list60.add(com.freshdirect.routing.proxy.stub.transportation.Order.Factory.parse(reader));
+                                                                    list58.add(com.freshdirect.routing.proxy.stub.transportation.Order.Factory.parse(reader));
                                                                         
                                                                 }else{
-                                                                    loopDone60 = true;
+                                                                    loopDone58 = true;
                                                                 }
                                                             }
                                                         }
@@ -6284,7 +6162,7 @@
                                                         object.setOrders((com.freshdirect.routing.proxy.stub.transportation.Order[])
                                                             org.apache.axis2.databinding.utils.ConverterUtil.convertToArray(
                                                                 com.freshdirect.routing.proxy.stub.transportation.Order.class,
-                                                                list60));
+                                                                list58));
                                                             
                               }  // End of if for expected property start element
                                 

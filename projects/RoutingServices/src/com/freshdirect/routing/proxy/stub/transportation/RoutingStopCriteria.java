@@ -38,12 +38,6 @@
                         
                                     protected int localInternalSessionID ;
                                 
-                           /*  This tracker boolean wil be used to detect whether the user called the set method
-                          *   for this attribute. It will be used to determine whether to include this field
-                           *   in the serialized XML
-                           */
-                           protected boolean localInternalSessionIDTracker = false ;
-                           
 
                            /**
                            * Auto generated getter method
@@ -61,15 +55,6 @@
                                */
                                public void setInternalSessionID(int param){
                             
-                                       // setting primitive attribute tracker to true
-                                       
-                                               if (param==java.lang.Integer.MIN_VALUE) {
-                                           localInternalSessionIDTracker = false;
-                                              
-                                       } else {
-                                          localInternalSessionIDTracker = true;
-                                       }
-                                   
                                             this.localInternalSessionID=param;
                                     
 
@@ -83,6 +68,12 @@
                         
                                     protected java.lang.String localRegionID ;
                                 
+                           /*  This tracker boolean wil be used to detect whether the user called the set method
+                          *   for this attribute. It will be used to determine whether to include this field
+                           *   in the serialized XML
+                           */
+                           protected boolean localRegionIDTracker = false ;
+                           
 
                            /**
                            * Auto generated getter method
@@ -100,6 +91,14 @@
                                */
                                public void setRegionID(java.lang.String param){
                             
+                                       if (param != null){
+                                          //update the setting tracker
+                                          localRegionIDTracker = true;
+                                       } else {
+                                          localRegionIDTracker = false;
+                                              
+                                       }
+                                   
                                             this.localRegionID=param;
                                     
 
@@ -950,7 +949,7 @@
 
                
                    }
-                if (localInternalSessionIDTracker){
+               
                                     namespace = "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService";
                                     if (! namespace.equals("")) {
                                         prefix = xmlWriter.getPrefix(namespace);
@@ -979,7 +978,7 @@
                                                }
                                     
                                    xmlWriter.writeEndElement();
-                             }
+                              if (localRegionIDTracker){
                                     namespace = "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService";
                                     if (! namespace.equals("")) {
                                         prefix = xmlWriter.getPrefix(namespace);
@@ -1013,7 +1012,7 @@
                                           }
                                     
                                    xmlWriter.writeEndElement();
-                              if (localRouteIDTracker){
+                             } if (localRouteIDTracker){
                                     namespace = "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService";
                                     if (! namespace.equals("")) {
                                         prefix = xmlWriter.getPrefix(namespace);
@@ -1753,13 +1752,13 @@
                  java.util.ArrayList elementList = new java.util.ArrayList();
                  java.util.ArrayList attribList = new java.util.ArrayList();
 
-                 if (localInternalSessionIDTracker){
+                
                                       elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
                                                                       "internalSessionID"));
                                  
                                 elementList.add(
                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localInternalSessionID));
-                            }
+                             if (localRegionIDTracker){
                                       elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
                                                                       "regionID"));
                                  
@@ -1768,7 +1767,7 @@
                                         } else {
                                            throw new org.apache.axis2.databinding.ADBException("regionID cannot be null!!");
                                         }
-                                     if (localRouteIDTracker){
+                                    } if (localRouteIDTracker){
                                       elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
                                                                       "routeID"));
                                  
@@ -2011,12 +2010,11 @@
                                     
                               }  // End of if for expected property start element
                                 
-                                    else {
-                                        
-                                               object.setInternalSessionID(java.lang.Integer.MIN_VALUE);
-                                           
-                                    }
-                                
+                                else{
+                                    // A start element we are not expecting indicates an invalid parameter was passed
+                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
+                                }
+                            
                                     
                                     while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
                                 
@@ -2031,11 +2029,10 @@
                                     
                               }  // End of if for expected property start element
                                 
-                                else{
-                                    // A start element we are not expecting indicates an invalid parameter was passed
-                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
-                                }
-                            
+                                    else {
+                                        
+                                    }
+                                
                                     
                                     while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
                                 

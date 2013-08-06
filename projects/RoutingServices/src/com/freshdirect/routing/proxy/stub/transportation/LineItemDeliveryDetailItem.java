@@ -38,6 +38,12 @@
                         
                                     protected com.freshdirect.routing.proxy.stub.transportation.LineItemIdentity localLineItemIdentity ;
                                 
+                           /*  This tracker boolean wil be used to detect whether the user called the set method
+                          *   for this attribute. It will be used to determine whether to include this field
+                           *   in the serialized XML
+                           */
+                           protected boolean localLineItemIdentityTracker = false ;
+                           
 
                            /**
                            * Auto generated getter method
@@ -55,6 +61,14 @@
                                */
                                public void setLineItemIdentity(com.freshdirect.routing.proxy.stub.transportation.LineItemIdentity param){
                             
+                                       if (param != null){
+                                          //update the setting tracker
+                                          localLineItemIdentityTracker = true;
+                                       } else {
+                                          localLineItemIdentityTracker = true;
+                                              
+                                       }
+                                   
                                             this.localLineItemIdentity=param;
                                     
 
@@ -405,13 +419,38 @@
                                           }
                                     
                                    xmlWriter.writeEndElement();
-                             }
-                                            if (localLineItemIdentity==null){
-                                                 throw new org.apache.axis2.databinding.ADBException("lineItemIdentity cannot be null!!");
+                             } if (localLineItemIdentityTracker){
+                                    if (localLineItemIdentity==null){
+
+                                            java.lang.String namespace2 = "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService";
+
+                                        if (! namespace2.equals("")) {
+                                            java.lang.String prefix2 = xmlWriter.getPrefix(namespace2);
+
+                                            if (prefix2 == null) {
+                                                prefix2 = generatePrefix(namespace2);
+
+                                                xmlWriter.writeStartElement(prefix2,"lineItemIdentity", namespace2);
+                                                xmlWriter.writeNamespace(prefix2, namespace2);
+                                                xmlWriter.setPrefix(prefix2, namespace2);
+
+                                            } else {
+                                                xmlWriter.writeStartElement(namespace2,"lineItemIdentity");
                                             }
-                                           localLineItemIdentity.serialize(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","lineItemIdentity"),
-                                               factory,xmlWriter);
-                                         if (localOrderStatusCodeTracker){
+
+                                        } else {
+                                            xmlWriter.writeStartElement("lineItemIdentity");
+                                        }
+
+
+                                       // write the nil attribute
+                                      writeAttribute("xsi","http://www.w3.org/2001/XMLSchema-instance","nil","1",xmlWriter);
+                                      xmlWriter.writeEndElement();
+                                    }else{
+                                     localLineItemIdentity.serialize(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","lineItemIdentity"),
+                                        factory,xmlWriter);
+                                    }
+                                } if (localOrderStatusCodeTracker){
                                     namespace = "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService";
                                     if (! namespace.equals("")) {
                                         prefix = xmlWriter.getPrefix(namespace);
@@ -685,16 +724,14 @@
                                         } else {
                                            throw new org.apache.axis2.databinding.ADBException("userDefinedField3 cannot be null!!");
                                         }
-                                    }
+                                    } if (localLineItemIdentityTracker){
                             elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
                                                                       "lineItemIdentity"));
                             
                             
-                                    if (localLineItemIdentity==null){
-                                         throw new org.apache.axis2.databinding.ADBException("lineItemIdentity cannot be null!!");
-                                    }
-                                    elementList.add(localLineItemIdentity);
-                                 if (localOrderStatusCodeTracker){
+                                    elementList.add(localLineItemIdentity==null?null:
+                                    localLineItemIdentity);
+                                } if (localOrderStatusCodeTracker){
                                       elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
                                                                       "orderStatusCode"));
                                  
@@ -895,17 +932,25 @@
                                 
                                     if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","lineItemIdentity").equals(reader.getName())){
                                 
+                                      nillableValue = reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance","nil");
+                                      if ("true".equals(nillableValue) || "1".equals(nillableValue)){
+                                          object.setLineItemIdentity(null);
+                                          reader.next();
+                                            
+                                            reader.next();
+                                          
+                                      }else{
+                                    
                                                 object.setLineItemIdentity(com.freshdirect.routing.proxy.stub.transportation.LineItemIdentity.Factory.parse(reader));
                                               
                                         reader.next();
-                                    
+                                    }
                               }  // End of if for expected property start element
                                 
-                                else{
-                                    // A start element we are not expecting indicates an invalid parameter was passed
-                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
-                                }
-                            
+                                    else {
+                                        
+                                    }
+                                
                                     
                                     while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
                                 

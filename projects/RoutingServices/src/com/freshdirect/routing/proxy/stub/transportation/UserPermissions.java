@@ -782,186 +782,6 @@
                             
 
                         /**
-                        * field for CanReportOptions
-                        */
-
-                        
-                                    protected boolean localCanReportOptions ;
-                                
-
-                           /**
-                           * Auto generated getter method
-                           * @return boolean
-                           */
-                           public  boolean getCanReportOptions(){
-                               return localCanReportOptions;
-                           }
-
-                           
-                        
-                            /**
-                               * Auto generated setter method
-                               * @param param CanReportOptions
-                               */
-                               public void setCanReportOptions(boolean param){
-                            
-                                            this.localCanReportOptions=param;
-                                    
-
-                               }
-                            
-
-                        /**
-                        * field for CanReportGroups
-                        */
-
-                        
-                                    protected boolean localCanReportGroups ;
-                                
-
-                           /**
-                           * Auto generated getter method
-                           * @return boolean
-                           */
-                           public  boolean getCanReportGroups(){
-                               return localCanReportGroups;
-                           }
-
-                           
-                        
-                            /**
-                               * Auto generated setter method
-                               * @param param CanReportGroups
-                               */
-                               public void setCanReportGroups(boolean param){
-                            
-                                            this.localCanReportGroups=param;
-                                    
-
-                               }
-                            
-
-                        /**
-                        * field for CanControlRouteDeletions
-                        */
-
-                        
-                                    protected boolean localCanControlRouteDeletions ;
-                                
-
-                           /**
-                           * Auto generated getter method
-                           * @return boolean
-                           */
-                           public  boolean getCanControlRouteDeletions(){
-                               return localCanControlRouteDeletions;
-                           }
-
-                           
-                        
-                            /**
-                               * Auto generated setter method
-                               * @param param CanControlRouteDeletions
-                               */
-                               public void setCanControlRouteDeletions(boolean param){
-                            
-                                            this.localCanControlRouteDeletions=param;
-                                    
-
-                               }
-                            
-
-                        /**
-                        * field for CanTravelModels
-                        */
-
-                        
-                                    protected boolean localCanTravelModels ;
-                                
-
-                           /**
-                           * Auto generated getter method
-                           * @return boolean
-                           */
-                           public  boolean getCanTravelModels(){
-                               return localCanTravelModels;
-                           }
-
-                           
-                        
-                            /**
-                               * Auto generated setter method
-                               * @param param CanTravelModels
-                               */
-                               public void setCanTravelModels(boolean param){
-                            
-                                            this.localCanTravelModels=param;
-                                    
-
-                               }
-                            
-
-                        /**
-                        * field for CanRushHourModels
-                        */
-
-                        
-                                    protected boolean localCanRushHourModels ;
-                                
-
-                           /**
-                           * Auto generated getter method
-                           * @return boolean
-                           */
-                           public  boolean getCanRushHourModels(){
-                               return localCanRushHourModels;
-                           }
-
-                           
-                        
-                            /**
-                               * Auto generated setter method
-                               * @param param CanRushHourModels
-                               */
-                               public void setCanRushHourModels(boolean param){
-                            
-                                            this.localCanRushHourModels=param;
-                                    
-
-                               }
-                            
-
-                        /**
-                        * field for CanTPDepotPlanner
-                        */
-
-                        
-                                    protected boolean localCanTPDepotPlanner ;
-                                
-
-                           /**
-                           * Auto generated getter method
-                           * @return boolean
-                           */
-                           public  boolean getCanTPDepotPlanner(){
-                               return localCanTPDepotPlanner;
-                           }
-
-                           
-                        
-                            /**
-                               * Auto generated setter method
-                               * @param param CanTPDepotPlanner
-                               */
-                               public void setCanTPDepotPlanner(boolean param){
-                            
-                                            this.localCanTPDepotPlanner=param;
-                                    
-
-                               }
-                            
-
-                        /**
                         * field for CanRIC
                         */
 
@@ -986,6 +806,36 @@
                                public void setCanRIC(boolean param){
                             
                                             this.localCanRIC=param;
+                                    
+
+                               }
+                            
+
+                        /**
+                        * field for CanRICChangeLocale
+                        */
+
+                        
+                                    protected boolean localCanRICChangeLocale ;
+                                
+
+                           /**
+                           * Auto generated getter method
+                           * @return boolean
+                           */
+                           public  boolean getCanRICChangeLocale(){
+                               return localCanRICChangeLocale;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param CanRICChangeLocale
+                               */
+                               public void setCanRICChangeLocale(boolean param){
+                            
+                                            this.localCanRICChangeLocale=param;
                                     
 
                                }
@@ -1322,216 +1172,6 @@
                             
 
                         /**
-                        * field for CanATPDayCommander
-                        */
-
-                        
-                                    protected boolean localCanATPDayCommander ;
-                                
-
-                           /**
-                           * Auto generated getter method
-                           * @return boolean
-                           */
-                           public  boolean getCanATPDayCommander(){
-                               return localCanATPDayCommander;
-                           }
-
-                           
-                        
-                            /**
-                               * Auto generated setter method
-                               * @param param CanATPDayCommander
-                               */
-                               public void setCanATPDayCommander(boolean param){
-                            
-                                            this.localCanATPDayCommander=param;
-                                    
-
-                               }
-                            
-
-                        /**
-                        * field for CanATPDayCommanderMakeChanges
-                        */
-
-                        
-                                    protected boolean localCanATPDayCommanderMakeChanges ;
-                                
-
-                           /**
-                           * Auto generated getter method
-                           * @return boolean
-                           */
-                           public  boolean getCanATPDayCommanderMakeChanges(){
-                               return localCanATPDayCommanderMakeChanges;
-                           }
-
-                           
-                        
-                            /**
-                               * Auto generated setter method
-                               * @param param CanATPDayCommanderMakeChanges
-                               */
-                               public void setCanATPDayCommanderMakeChanges(boolean param){
-                            
-                                            this.localCanATPDayCommanderMakeChanges=param;
-                                    
-
-                               }
-                            
-
-                        /**
-                        * field for CanATPCostAnalyzer
-                        */
-
-                        
-                                    protected boolean localCanATPCostAnalyzer ;
-                                
-
-                           /**
-                           * Auto generated getter method
-                           * @return boolean
-                           */
-                           public  boolean getCanATPCostAnalyzer(){
-                               return localCanATPCostAnalyzer;
-                           }
-
-                           
-                        
-                            /**
-                               * Auto generated setter method
-                               * @param param CanATPCostAnalyzer
-                               */
-                               public void setCanATPCostAnalyzer(boolean param){
-                            
-                                            this.localCanATPCostAnalyzer=param;
-                                    
-
-                               }
-                            
-
-                        /**
-                        * field for CanDPOrderFinancialDetailEdit
-                        */
-
-                        
-                                    protected boolean localCanDPOrderFinancialDetailEdit ;
-                                
-
-                           /**
-                           * Auto generated getter method
-                           * @return boolean
-                           */
-                           public  boolean getCanDPOrderFinancialDetailEdit(){
-                               return localCanDPOrderFinancialDetailEdit;
-                           }
-
-                           
-                        
-                            /**
-                               * Auto generated setter method
-                               * @param param CanDPOrderFinancialDetailEdit
-                               */
-                               public void setCanDPOrderFinancialDetailEdit(boolean param){
-                            
-                                            this.localCanDPOrderFinancialDetailEdit=param;
-                                    
-
-                               }
-                            
-
-                        /**
-                        * field for CanModifyTimeDistMatrices
-                        */
-
-                        
-                                    protected boolean localCanModifyTimeDistMatrices ;
-                                
-
-                           /**
-                           * Auto generated getter method
-                           * @return boolean
-                           */
-                           public  boolean getCanModifyTimeDistMatrices(){
-                               return localCanModifyTimeDistMatrices;
-                           }
-
-                           
-                        
-                            /**
-                               * Auto generated setter method
-                               * @param param CanModifyTimeDistMatrices
-                               */
-                               public void setCanModifyTimeDistMatrices(boolean param){
-                            
-                                            this.localCanModifyTimeDistMatrices=param;
-                                    
-
-                               }
-                            
-
-                        /**
-                        * field for CanDPCanDeleteRoutes
-                        */
-
-                        
-                                    protected boolean localCanDPCanDeleteRoutes ;
-                                
-
-                           /**
-                           * Auto generated getter method
-                           * @return boolean
-                           */
-                           public  boolean getCanDPCanDeleteRoutes(){
-                               return localCanDPCanDeleteRoutes;
-                           }
-
-                           
-                        
-                            /**
-                               * Auto generated setter method
-                               * @param param CanDPCanDeleteRoutes
-                               */
-                               public void setCanDPCanDeleteRoutes(boolean param){
-                            
-                                            this.localCanDPCanDeleteRoutes=param;
-                                    
-
-                               }
-                            
-
-                        /**
-                        * field for CanViewOtherDispatcherRoutes
-                        */
-
-                        
-                                    protected boolean localCanViewOtherDispatcherRoutes ;
-                                
-
-                           /**
-                           * Auto generated getter method
-                           * @return boolean
-                           */
-                           public  boolean getCanViewOtherDispatcherRoutes(){
-                               return localCanViewOtherDispatcherRoutes;
-                           }
-
-                           
-                        
-                            /**
-                               * Auto generated setter method
-                               * @param param CanViewOtherDispatcherRoutes
-                               */
-                               public void setCanViewOtherDispatcherRoutes(boolean param){
-                            
-                                            this.localCanViewOtherDispatcherRoutes=param;
-                                    
-
-                               }
-                            
-
-                        /**
                         * field for CanRICRouteViewer
                         */
 
@@ -1592,36 +1232,6 @@
                             
 
                         /**
-                        * field for CanDPDisableWirelessCom
-                        */
-
-                        
-                                    protected boolean localCanDPDisableWirelessCom ;
-                                
-
-                           /**
-                           * Auto generated getter method
-                           * @return boolean
-                           */
-                           public  boolean getCanDPDisableWirelessCom(){
-                               return localCanDPDisableWirelessCom;
-                           }
-
-                           
-                        
-                            /**
-                               * Auto generated setter method
-                               * @param param CanDPDisableWirelessCom
-                               */
-                               public void setCanDPDisableWirelessCom(boolean param){
-                            
-                                            this.localCanDPDisableWirelessCom=param;
-                                    
-
-                               }
-                            
-
-                        /**
                         * field for CanRICRouteViewerViewBuilt
                         */
 
@@ -1652,240 +1262,30 @@
                             
 
                         /**
-                        * field for CanChangeImportExportOptions
+                        * field for CanViewOtherDispatcherRoutes
                         */
 
                         
-                                    protected boolean localCanChangeImportExportOptions ;
+                                    protected boolean localCanViewOtherDispatcherRoutes ;
                                 
 
                            /**
                            * Auto generated getter method
                            * @return boolean
                            */
-                           public  boolean getCanChangeImportExportOptions(){
-                               return localCanChangeImportExportOptions;
+                           public  boolean getCanViewOtherDispatcherRoutes(){
+                               return localCanViewOtherDispatcherRoutes;
                            }
 
                            
                         
                             /**
                                * Auto generated setter method
-                               * @param param CanChangeImportExportOptions
+                               * @param param CanViewOtherDispatcherRoutes
                                */
-                               public void setCanChangeImportExportOptions(boolean param){
+                               public void setCanViewOtherDispatcherRoutes(boolean param){
                             
-                                            this.localCanChangeImportExportOptions=param;
-                                    
-
-                               }
-                            
-
-                        /**
-                        * field for CanTransportScripts
-                        */
-
-                        
-                                    protected boolean localCanTransportScripts ;
-                                
-
-                           /**
-                           * Auto generated getter method
-                           * @return boolean
-                           */
-                           public  boolean getCanTransportScripts(){
-                               return localCanTransportScripts;
-                           }
-
-                           
-                        
-                            /**
-                               * Auto generated setter method
-                               * @param param CanTransportScripts
-                               */
-                               public void setCanTransportScripts(boolean param){
-                            
-                                            this.localCanTransportScripts=param;
-                                    
-
-                               }
-                            
-
-                        /**
-                        * field for CanDPActivateDiagnostics
-                        */
-
-                        
-                                    protected boolean localCanDPActivateDiagnostics ;
-                                
-
-                           /**
-                           * Auto generated getter method
-                           * @return boolean
-                           */
-                           public  boolean getCanDPActivateDiagnostics(){
-                               return localCanDPActivateDiagnostics;
-                           }
-
-                           
-                        
-                            /**
-                               * Auto generated setter method
-                               * @param param CanDPActivateDiagnostics
-                               */
-                               public void setCanDPActivateDiagnostics(boolean param){
-                            
-                                            this.localCanDPActivateDiagnostics=param;
-                                    
-
-                               }
-                            
-
-                        /**
-                        * field for CanRICChangeLocale
-                        */
-
-                        
-                                    protected boolean localCanRICChangeLocale ;
-                                
-
-                           /**
-                           * Auto generated getter method
-                           * @return boolean
-                           */
-                           public  boolean getCanRICChangeLocale(){
-                               return localCanRICChangeLocale;
-                           }
-
-                           
-                        
-                            /**
-                               * Auto generated setter method
-                               * @param param CanRICChangeLocale
-                               */
-                               public void setCanRICChangeLocale(boolean param){
-                            
-                                            this.localCanRICChangeLocale=param;
-                                    
-
-                               }
-                            
-
-                        /**
-                        * field for CanTPSeedRouteToNS
-                        */
-
-                        
-                                    protected boolean localCanTPSeedRouteToNS ;
-                                
-
-                           /**
-                           * Auto generated getter method
-                           * @return boolean
-                           */
-                           public  boolean getCanTPSeedRouteToNS(){
-                               return localCanTPSeedRouteToNS;
-                           }
-
-                           
-                        
-                            /**
-                               * Auto generated setter method
-                               * @param param CanTPSeedRouteToNS
-                               */
-                               public void setCanTPSeedRouteToNS(boolean param){
-                            
-                                            this.localCanTPSeedRouteToNS=param;
-                                    
-
-                               }
-                            
-
-                        /**
-                        * field for CanDPCanDeleteUnassigned
-                        */
-
-                        
-                                    protected boolean localCanDPCanDeleteUnassigned ;
-                                
-
-                           /**
-                           * Auto generated getter method
-                           * @return boolean
-                           */
-                           public  boolean getCanDPCanDeleteUnassigned(){
-                               return localCanDPCanDeleteUnassigned;
-                           }
-
-                           
-                        
-                            /**
-                               * Auto generated setter method
-                               * @param param CanDPCanDeleteUnassigned
-                               */
-                               public void setCanDPCanDeleteUnassigned(boolean param){
-                            
-                                            this.localCanDPCanDeleteUnassigned=param;
-                                    
-
-                               }
-                            
-
-                        /**
-                        * field for CanTPPushRouteToRN
-                        */
-
-                        
-                                    protected boolean localCanTPPushRouteToRN ;
-                                
-
-                           /**
-                           * Auto generated getter method
-                           * @return boolean
-                           */
-                           public  boolean getCanTPPushRouteToRN(){
-                               return localCanTPPushRouteToRN;
-                           }
-
-                           
-                        
-                            /**
-                               * Auto generated setter method
-                               * @param param CanTPPushRouteToRN
-                               */
-                               public void setCanTPPushRouteToRN(boolean param){
-                            
-                                            this.localCanTPPushRouteToRN=param;
-                                    
-
-                               }
-                            
-
-                        /**
-                        * field for CanEditSatelliteOptions
-                        */
-
-                        
-                                    protected boolean localCanEditSatelliteOptions ;
-                                
-
-                           /**
-                           * Auto generated getter method
-                           * @return boolean
-                           */
-                           public  boolean getCanEditSatelliteOptions(){
-                               return localCanEditSatelliteOptions;
-                           }
-
-                           
-                        
-                            /**
-                               * Auto generated setter method
-                               * @param param CanEditSatelliteOptions
-                               */
-                               public void setCanEditSatelliteOptions(boolean param){
-                            
-                                            this.localCanEditSatelliteOptions=param;
+                                            this.localCanViewOtherDispatcherRoutes=param;
                                     
 
                                }
@@ -2720,180 +2120,6 @@
                                         if (prefix == null) {
                                             prefix = generatePrefix(namespace);
 
-                                            xmlWriter.writeStartElement(prefix,"canReportOptions", namespace);
-                                            xmlWriter.writeNamespace(prefix, namespace);
-                                            xmlWriter.setPrefix(prefix, namespace);
-
-                                        } else {
-                                            xmlWriter.writeStartElement(namespace,"canReportOptions");
-                                        }
-
-                                    } else {
-                                        xmlWriter.writeStartElement("canReportOptions");
-                                    }
-                                
-                                               if (false) {
-                                           
-                                                         throw new org.apache.axis2.databinding.ADBException("canReportOptions cannot be null!!");
-                                                      
-                                               } else {
-                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localCanReportOptions));
-                                               }
-                                    
-                                   xmlWriter.writeEndElement();
-                             
-                                    namespace = "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService";
-                                    if (! namespace.equals("")) {
-                                        prefix = xmlWriter.getPrefix(namespace);
-
-                                        if (prefix == null) {
-                                            prefix = generatePrefix(namespace);
-
-                                            xmlWriter.writeStartElement(prefix,"canReportGroups", namespace);
-                                            xmlWriter.writeNamespace(prefix, namespace);
-                                            xmlWriter.setPrefix(prefix, namespace);
-
-                                        } else {
-                                            xmlWriter.writeStartElement(namespace,"canReportGroups");
-                                        }
-
-                                    } else {
-                                        xmlWriter.writeStartElement("canReportGroups");
-                                    }
-                                
-                                               if (false) {
-                                           
-                                                         throw new org.apache.axis2.databinding.ADBException("canReportGroups cannot be null!!");
-                                                      
-                                               } else {
-                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localCanReportGroups));
-                                               }
-                                    
-                                   xmlWriter.writeEndElement();
-                             
-                                    namespace = "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService";
-                                    if (! namespace.equals("")) {
-                                        prefix = xmlWriter.getPrefix(namespace);
-
-                                        if (prefix == null) {
-                                            prefix = generatePrefix(namespace);
-
-                                            xmlWriter.writeStartElement(prefix,"canControlRouteDeletions", namespace);
-                                            xmlWriter.writeNamespace(prefix, namespace);
-                                            xmlWriter.setPrefix(prefix, namespace);
-
-                                        } else {
-                                            xmlWriter.writeStartElement(namespace,"canControlRouteDeletions");
-                                        }
-
-                                    } else {
-                                        xmlWriter.writeStartElement("canControlRouteDeletions");
-                                    }
-                                
-                                               if (false) {
-                                           
-                                                         throw new org.apache.axis2.databinding.ADBException("canControlRouteDeletions cannot be null!!");
-                                                      
-                                               } else {
-                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localCanControlRouteDeletions));
-                                               }
-                                    
-                                   xmlWriter.writeEndElement();
-                             
-                                    namespace = "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService";
-                                    if (! namespace.equals("")) {
-                                        prefix = xmlWriter.getPrefix(namespace);
-
-                                        if (prefix == null) {
-                                            prefix = generatePrefix(namespace);
-
-                                            xmlWriter.writeStartElement(prefix,"canTravelModels", namespace);
-                                            xmlWriter.writeNamespace(prefix, namespace);
-                                            xmlWriter.setPrefix(prefix, namespace);
-
-                                        } else {
-                                            xmlWriter.writeStartElement(namespace,"canTravelModels");
-                                        }
-
-                                    } else {
-                                        xmlWriter.writeStartElement("canTravelModels");
-                                    }
-                                
-                                               if (false) {
-                                           
-                                                         throw new org.apache.axis2.databinding.ADBException("canTravelModels cannot be null!!");
-                                                      
-                                               } else {
-                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localCanTravelModels));
-                                               }
-                                    
-                                   xmlWriter.writeEndElement();
-                             
-                                    namespace = "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService";
-                                    if (! namespace.equals("")) {
-                                        prefix = xmlWriter.getPrefix(namespace);
-
-                                        if (prefix == null) {
-                                            prefix = generatePrefix(namespace);
-
-                                            xmlWriter.writeStartElement(prefix,"canRushHourModels", namespace);
-                                            xmlWriter.writeNamespace(prefix, namespace);
-                                            xmlWriter.setPrefix(prefix, namespace);
-
-                                        } else {
-                                            xmlWriter.writeStartElement(namespace,"canRushHourModels");
-                                        }
-
-                                    } else {
-                                        xmlWriter.writeStartElement("canRushHourModels");
-                                    }
-                                
-                                               if (false) {
-                                           
-                                                         throw new org.apache.axis2.databinding.ADBException("canRushHourModels cannot be null!!");
-                                                      
-                                               } else {
-                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localCanRushHourModels));
-                                               }
-                                    
-                                   xmlWriter.writeEndElement();
-                             
-                                    namespace = "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService";
-                                    if (! namespace.equals("")) {
-                                        prefix = xmlWriter.getPrefix(namespace);
-
-                                        if (prefix == null) {
-                                            prefix = generatePrefix(namespace);
-
-                                            xmlWriter.writeStartElement(prefix,"canTPDepotPlanner", namespace);
-                                            xmlWriter.writeNamespace(prefix, namespace);
-                                            xmlWriter.setPrefix(prefix, namespace);
-
-                                        } else {
-                                            xmlWriter.writeStartElement(namespace,"canTPDepotPlanner");
-                                        }
-
-                                    } else {
-                                        xmlWriter.writeStartElement("canTPDepotPlanner");
-                                    }
-                                
-                                               if (false) {
-                                           
-                                                         throw new org.apache.axis2.databinding.ADBException("canTPDepotPlanner cannot be null!!");
-                                                      
-                                               } else {
-                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localCanTPDepotPlanner));
-                                               }
-                                    
-                                   xmlWriter.writeEndElement();
-                             
-                                    namespace = "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService";
-                                    if (! namespace.equals("")) {
-                                        prefix = xmlWriter.getPrefix(namespace);
-
-                                        if (prefix == null) {
-                                            prefix = generatePrefix(namespace);
-
                                             xmlWriter.writeStartElement(prefix,"canRIC", namespace);
                                             xmlWriter.writeNamespace(prefix, namespace);
                                             xmlWriter.setPrefix(prefix, namespace);
@@ -2912,6 +2138,35 @@
                                                       
                                                } else {
                                                     xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localCanRIC));
+                                               }
+                                    
+                                   xmlWriter.writeEndElement();
+                             
+                                    namespace = "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService";
+                                    if (! namespace.equals("")) {
+                                        prefix = xmlWriter.getPrefix(namespace);
+
+                                        if (prefix == null) {
+                                            prefix = generatePrefix(namespace);
+
+                                            xmlWriter.writeStartElement(prefix,"canRICChangeLocale", namespace);
+                                            xmlWriter.writeNamespace(prefix, namespace);
+                                            xmlWriter.setPrefix(prefix, namespace);
+
+                                        } else {
+                                            xmlWriter.writeStartElement(namespace,"canRICChangeLocale");
+                                        }
+
+                                    } else {
+                                        xmlWriter.writeStartElement("canRICChangeLocale");
+                                    }
+                                
+                                               if (false) {
+                                           
+                                                         throw new org.apache.axis2.databinding.ADBException("canRICChangeLocale cannot be null!!");
+                                                      
+                                               } else {
+                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localCanRICChangeLocale));
                                                }
                                     
                                    xmlWriter.writeEndElement();
@@ -3242,209 +2497,6 @@
                                         if (prefix == null) {
                                             prefix = generatePrefix(namespace);
 
-                                            xmlWriter.writeStartElement(prefix,"canATPDayCommander", namespace);
-                                            xmlWriter.writeNamespace(prefix, namespace);
-                                            xmlWriter.setPrefix(prefix, namespace);
-
-                                        } else {
-                                            xmlWriter.writeStartElement(namespace,"canATPDayCommander");
-                                        }
-
-                                    } else {
-                                        xmlWriter.writeStartElement("canATPDayCommander");
-                                    }
-                                
-                                               if (false) {
-                                           
-                                                         throw new org.apache.axis2.databinding.ADBException("canATPDayCommander cannot be null!!");
-                                                      
-                                               } else {
-                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localCanATPDayCommander));
-                                               }
-                                    
-                                   xmlWriter.writeEndElement();
-                             
-                                    namespace = "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService";
-                                    if (! namespace.equals("")) {
-                                        prefix = xmlWriter.getPrefix(namespace);
-
-                                        if (prefix == null) {
-                                            prefix = generatePrefix(namespace);
-
-                                            xmlWriter.writeStartElement(prefix,"canATPDayCommanderMakeChanges", namespace);
-                                            xmlWriter.writeNamespace(prefix, namespace);
-                                            xmlWriter.setPrefix(prefix, namespace);
-
-                                        } else {
-                                            xmlWriter.writeStartElement(namespace,"canATPDayCommanderMakeChanges");
-                                        }
-
-                                    } else {
-                                        xmlWriter.writeStartElement("canATPDayCommanderMakeChanges");
-                                    }
-                                
-                                               if (false) {
-                                           
-                                                         throw new org.apache.axis2.databinding.ADBException("canATPDayCommanderMakeChanges cannot be null!!");
-                                                      
-                                               } else {
-                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localCanATPDayCommanderMakeChanges));
-                                               }
-                                    
-                                   xmlWriter.writeEndElement();
-                             
-                                    namespace = "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService";
-                                    if (! namespace.equals("")) {
-                                        prefix = xmlWriter.getPrefix(namespace);
-
-                                        if (prefix == null) {
-                                            prefix = generatePrefix(namespace);
-
-                                            xmlWriter.writeStartElement(prefix,"canATPCostAnalyzer", namespace);
-                                            xmlWriter.writeNamespace(prefix, namespace);
-                                            xmlWriter.setPrefix(prefix, namespace);
-
-                                        } else {
-                                            xmlWriter.writeStartElement(namespace,"canATPCostAnalyzer");
-                                        }
-
-                                    } else {
-                                        xmlWriter.writeStartElement("canATPCostAnalyzer");
-                                    }
-                                
-                                               if (false) {
-                                           
-                                                         throw new org.apache.axis2.databinding.ADBException("canATPCostAnalyzer cannot be null!!");
-                                                      
-                                               } else {
-                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localCanATPCostAnalyzer));
-                                               }
-                                    
-                                   xmlWriter.writeEndElement();
-                             
-                                    namespace = "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService";
-                                    if (! namespace.equals("")) {
-                                        prefix = xmlWriter.getPrefix(namespace);
-
-                                        if (prefix == null) {
-                                            prefix = generatePrefix(namespace);
-
-                                            xmlWriter.writeStartElement(prefix,"canDPOrderFinancialDetailEdit", namespace);
-                                            xmlWriter.writeNamespace(prefix, namespace);
-                                            xmlWriter.setPrefix(prefix, namespace);
-
-                                        } else {
-                                            xmlWriter.writeStartElement(namespace,"canDPOrderFinancialDetailEdit");
-                                        }
-
-                                    } else {
-                                        xmlWriter.writeStartElement("canDPOrderFinancialDetailEdit");
-                                    }
-                                
-                                               if (false) {
-                                           
-                                                         throw new org.apache.axis2.databinding.ADBException("canDPOrderFinancialDetailEdit cannot be null!!");
-                                                      
-                                               } else {
-                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localCanDPOrderFinancialDetailEdit));
-                                               }
-                                    
-                                   xmlWriter.writeEndElement();
-                             
-                                    namespace = "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService";
-                                    if (! namespace.equals("")) {
-                                        prefix = xmlWriter.getPrefix(namespace);
-
-                                        if (prefix == null) {
-                                            prefix = generatePrefix(namespace);
-
-                                            xmlWriter.writeStartElement(prefix,"canModifyTimeDistMatrices", namespace);
-                                            xmlWriter.writeNamespace(prefix, namespace);
-                                            xmlWriter.setPrefix(prefix, namespace);
-
-                                        } else {
-                                            xmlWriter.writeStartElement(namespace,"canModifyTimeDistMatrices");
-                                        }
-
-                                    } else {
-                                        xmlWriter.writeStartElement("canModifyTimeDistMatrices");
-                                    }
-                                
-                                               if (false) {
-                                           
-                                                         throw new org.apache.axis2.databinding.ADBException("canModifyTimeDistMatrices cannot be null!!");
-                                                      
-                                               } else {
-                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localCanModifyTimeDistMatrices));
-                                               }
-                                    
-                                   xmlWriter.writeEndElement();
-                             
-                                    namespace = "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService";
-                                    if (! namespace.equals("")) {
-                                        prefix = xmlWriter.getPrefix(namespace);
-
-                                        if (prefix == null) {
-                                            prefix = generatePrefix(namespace);
-
-                                            xmlWriter.writeStartElement(prefix,"canDPCanDeleteRoutes", namespace);
-                                            xmlWriter.writeNamespace(prefix, namespace);
-                                            xmlWriter.setPrefix(prefix, namespace);
-
-                                        } else {
-                                            xmlWriter.writeStartElement(namespace,"canDPCanDeleteRoutes");
-                                        }
-
-                                    } else {
-                                        xmlWriter.writeStartElement("canDPCanDeleteRoutes");
-                                    }
-                                
-                                               if (false) {
-                                           
-                                                         throw new org.apache.axis2.databinding.ADBException("canDPCanDeleteRoutes cannot be null!!");
-                                                      
-                                               } else {
-                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localCanDPCanDeleteRoutes));
-                                               }
-                                    
-                                   xmlWriter.writeEndElement();
-                             
-                                    namespace = "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService";
-                                    if (! namespace.equals("")) {
-                                        prefix = xmlWriter.getPrefix(namespace);
-
-                                        if (prefix == null) {
-                                            prefix = generatePrefix(namespace);
-
-                                            xmlWriter.writeStartElement(prefix,"canViewOtherDispatcherRoutes", namespace);
-                                            xmlWriter.writeNamespace(prefix, namespace);
-                                            xmlWriter.setPrefix(prefix, namespace);
-
-                                        } else {
-                                            xmlWriter.writeStartElement(namespace,"canViewOtherDispatcherRoutes");
-                                        }
-
-                                    } else {
-                                        xmlWriter.writeStartElement("canViewOtherDispatcherRoutes");
-                                    }
-                                
-                                               if (false) {
-                                           
-                                                         throw new org.apache.axis2.databinding.ADBException("canViewOtherDispatcherRoutes cannot be null!!");
-                                                      
-                                               } else {
-                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localCanViewOtherDispatcherRoutes));
-                                               }
-                                    
-                                   xmlWriter.writeEndElement();
-                             
-                                    namespace = "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService";
-                                    if (! namespace.equals("")) {
-                                        prefix = xmlWriter.getPrefix(namespace);
-
-                                        if (prefix == null) {
-                                            prefix = generatePrefix(namespace);
-
                                             xmlWriter.writeStartElement(prefix,"canRICRouteViewer", namespace);
                                             xmlWriter.writeNamespace(prefix, namespace);
                                             xmlWriter.setPrefix(prefix, namespace);
@@ -3503,35 +2555,6 @@
                                         if (prefix == null) {
                                             prefix = generatePrefix(namespace);
 
-                                            xmlWriter.writeStartElement(prefix,"canDPDisableWirelessCom", namespace);
-                                            xmlWriter.writeNamespace(prefix, namespace);
-                                            xmlWriter.setPrefix(prefix, namespace);
-
-                                        } else {
-                                            xmlWriter.writeStartElement(namespace,"canDPDisableWirelessCom");
-                                        }
-
-                                    } else {
-                                        xmlWriter.writeStartElement("canDPDisableWirelessCom");
-                                    }
-                                
-                                               if (false) {
-                                           
-                                                         throw new org.apache.axis2.databinding.ADBException("canDPDisableWirelessCom cannot be null!!");
-                                                      
-                                               } else {
-                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localCanDPDisableWirelessCom));
-                                               }
-                                    
-                                   xmlWriter.writeEndElement();
-                             
-                                    namespace = "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService";
-                                    if (! namespace.equals("")) {
-                                        prefix = xmlWriter.getPrefix(namespace);
-
-                                        if (prefix == null) {
-                                            prefix = generatePrefix(namespace);
-
                                             xmlWriter.writeStartElement(prefix,"canRICRouteViewerViewBuilt", namespace);
                                             xmlWriter.writeNamespace(prefix, namespace);
                                             xmlWriter.setPrefix(prefix, namespace);
@@ -3561,227 +2584,24 @@
                                         if (prefix == null) {
                                             prefix = generatePrefix(namespace);
 
-                                            xmlWriter.writeStartElement(prefix,"canChangeImportExportOptions", namespace);
+                                            xmlWriter.writeStartElement(prefix,"canViewOtherDispatcherRoutes", namespace);
                                             xmlWriter.writeNamespace(prefix, namespace);
                                             xmlWriter.setPrefix(prefix, namespace);
 
                                         } else {
-                                            xmlWriter.writeStartElement(namespace,"canChangeImportExportOptions");
+                                            xmlWriter.writeStartElement(namespace,"canViewOtherDispatcherRoutes");
                                         }
 
                                     } else {
-                                        xmlWriter.writeStartElement("canChangeImportExportOptions");
+                                        xmlWriter.writeStartElement("canViewOtherDispatcherRoutes");
                                     }
                                 
                                                if (false) {
                                            
-                                                         throw new org.apache.axis2.databinding.ADBException("canChangeImportExportOptions cannot be null!!");
+                                                         throw new org.apache.axis2.databinding.ADBException("canViewOtherDispatcherRoutes cannot be null!!");
                                                       
                                                } else {
-                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localCanChangeImportExportOptions));
-                                               }
-                                    
-                                   xmlWriter.writeEndElement();
-                             
-                                    namespace = "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService";
-                                    if (! namespace.equals("")) {
-                                        prefix = xmlWriter.getPrefix(namespace);
-
-                                        if (prefix == null) {
-                                            prefix = generatePrefix(namespace);
-
-                                            xmlWriter.writeStartElement(prefix,"canTransportScripts", namespace);
-                                            xmlWriter.writeNamespace(prefix, namespace);
-                                            xmlWriter.setPrefix(prefix, namespace);
-
-                                        } else {
-                                            xmlWriter.writeStartElement(namespace,"canTransportScripts");
-                                        }
-
-                                    } else {
-                                        xmlWriter.writeStartElement("canTransportScripts");
-                                    }
-                                
-                                               if (false) {
-                                           
-                                                         throw new org.apache.axis2.databinding.ADBException("canTransportScripts cannot be null!!");
-                                                      
-                                               } else {
-                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localCanTransportScripts));
-                                               }
-                                    
-                                   xmlWriter.writeEndElement();
-                             
-                                    namespace = "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService";
-                                    if (! namespace.equals("")) {
-                                        prefix = xmlWriter.getPrefix(namespace);
-
-                                        if (prefix == null) {
-                                            prefix = generatePrefix(namespace);
-
-                                            xmlWriter.writeStartElement(prefix,"canDPActivateDiagnostics", namespace);
-                                            xmlWriter.writeNamespace(prefix, namespace);
-                                            xmlWriter.setPrefix(prefix, namespace);
-
-                                        } else {
-                                            xmlWriter.writeStartElement(namespace,"canDPActivateDiagnostics");
-                                        }
-
-                                    } else {
-                                        xmlWriter.writeStartElement("canDPActivateDiagnostics");
-                                    }
-                                
-                                               if (false) {
-                                           
-                                                         throw new org.apache.axis2.databinding.ADBException("canDPActivateDiagnostics cannot be null!!");
-                                                      
-                                               } else {
-                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localCanDPActivateDiagnostics));
-                                               }
-                                    
-                                   xmlWriter.writeEndElement();
-                             
-                                    namespace = "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService";
-                                    if (! namespace.equals("")) {
-                                        prefix = xmlWriter.getPrefix(namespace);
-
-                                        if (prefix == null) {
-                                            prefix = generatePrefix(namespace);
-
-                                            xmlWriter.writeStartElement(prefix,"canRICChangeLocale", namespace);
-                                            xmlWriter.writeNamespace(prefix, namespace);
-                                            xmlWriter.setPrefix(prefix, namespace);
-
-                                        } else {
-                                            xmlWriter.writeStartElement(namespace,"canRICChangeLocale");
-                                        }
-
-                                    } else {
-                                        xmlWriter.writeStartElement("canRICChangeLocale");
-                                    }
-                                
-                                               if (false) {
-                                           
-                                                         throw new org.apache.axis2.databinding.ADBException("canRICChangeLocale cannot be null!!");
-                                                      
-                                               } else {
-                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localCanRICChangeLocale));
-                                               }
-                                    
-                                   xmlWriter.writeEndElement();
-                             
-                                    namespace = "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService";
-                                    if (! namespace.equals("")) {
-                                        prefix = xmlWriter.getPrefix(namespace);
-
-                                        if (prefix == null) {
-                                            prefix = generatePrefix(namespace);
-
-                                            xmlWriter.writeStartElement(prefix,"canTPSeedRouteToNS", namespace);
-                                            xmlWriter.writeNamespace(prefix, namespace);
-                                            xmlWriter.setPrefix(prefix, namespace);
-
-                                        } else {
-                                            xmlWriter.writeStartElement(namespace,"canTPSeedRouteToNS");
-                                        }
-
-                                    } else {
-                                        xmlWriter.writeStartElement("canTPSeedRouteToNS");
-                                    }
-                                
-                                               if (false) {
-                                           
-                                                         throw new org.apache.axis2.databinding.ADBException("canTPSeedRouteToNS cannot be null!!");
-                                                      
-                                               } else {
-                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localCanTPSeedRouteToNS));
-                                               }
-                                    
-                                   xmlWriter.writeEndElement();
-                             
-                                    namespace = "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService";
-                                    if (! namespace.equals("")) {
-                                        prefix = xmlWriter.getPrefix(namespace);
-
-                                        if (prefix == null) {
-                                            prefix = generatePrefix(namespace);
-
-                                            xmlWriter.writeStartElement(prefix,"canDPCanDeleteUnassigned", namespace);
-                                            xmlWriter.writeNamespace(prefix, namespace);
-                                            xmlWriter.setPrefix(prefix, namespace);
-
-                                        } else {
-                                            xmlWriter.writeStartElement(namespace,"canDPCanDeleteUnassigned");
-                                        }
-
-                                    } else {
-                                        xmlWriter.writeStartElement("canDPCanDeleteUnassigned");
-                                    }
-                                
-                                               if (false) {
-                                           
-                                                         throw new org.apache.axis2.databinding.ADBException("canDPCanDeleteUnassigned cannot be null!!");
-                                                      
-                                               } else {
-                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localCanDPCanDeleteUnassigned));
-                                               }
-                                    
-                                   xmlWriter.writeEndElement();
-                             
-                                    namespace = "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService";
-                                    if (! namespace.equals("")) {
-                                        prefix = xmlWriter.getPrefix(namespace);
-
-                                        if (prefix == null) {
-                                            prefix = generatePrefix(namespace);
-
-                                            xmlWriter.writeStartElement(prefix,"canTPPushRouteToRN", namespace);
-                                            xmlWriter.writeNamespace(prefix, namespace);
-                                            xmlWriter.setPrefix(prefix, namespace);
-
-                                        } else {
-                                            xmlWriter.writeStartElement(namespace,"canTPPushRouteToRN");
-                                        }
-
-                                    } else {
-                                        xmlWriter.writeStartElement("canTPPushRouteToRN");
-                                    }
-                                
-                                               if (false) {
-                                           
-                                                         throw new org.apache.axis2.databinding.ADBException("canTPPushRouteToRN cannot be null!!");
-                                                      
-                                               } else {
-                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localCanTPPushRouteToRN));
-                                               }
-                                    
-                                   xmlWriter.writeEndElement();
-                             
-                                    namespace = "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService";
-                                    if (! namespace.equals("")) {
-                                        prefix = xmlWriter.getPrefix(namespace);
-
-                                        if (prefix == null) {
-                                            prefix = generatePrefix(namespace);
-
-                                            xmlWriter.writeStartElement(prefix,"canEditSatelliteOptions", namespace);
-                                            xmlWriter.writeNamespace(prefix, namespace);
-                                            xmlWriter.setPrefix(prefix, namespace);
-
-                                        } else {
-                                            xmlWriter.writeStartElement(namespace,"canEditSatelliteOptions");
-                                        }
-
-                                    } else {
-                                        xmlWriter.writeStartElement("canEditSatelliteOptions");
-                                    }
-                                
-                                               if (false) {
-                                           
-                                                         throw new org.apache.axis2.databinding.ADBException("canEditSatelliteOptions cannot be null!!");
-                                                      
-                                               } else {
-                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localCanEditSatelliteOptions));
+                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localCanViewOtherDispatcherRoutes));
                                                }
                                     
                                    xmlWriter.writeEndElement();
@@ -4099,46 +2919,16 @@
                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localCanFLOptions));
                             
                                       elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
-                                                                      "canReportOptions"));
-                                 
-                                elementList.add(
-                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localCanReportOptions));
-                            
-                                      elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
-                                                                      "canReportGroups"));
-                                 
-                                elementList.add(
-                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localCanReportGroups));
-                            
-                                      elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
-                                                                      "canControlRouteDeletions"));
-                                 
-                                elementList.add(
-                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localCanControlRouteDeletions));
-                            
-                                      elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
-                                                                      "canTravelModels"));
-                                 
-                                elementList.add(
-                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localCanTravelModels));
-                            
-                                      elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
-                                                                      "canRushHourModels"));
-                                 
-                                elementList.add(
-                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localCanRushHourModels));
-                            
-                                      elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
-                                                                      "canTPDepotPlanner"));
-                                 
-                                elementList.add(
-                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localCanTPDepotPlanner));
-                            
-                                      elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
                                                                       "canRIC"));
                                  
                                 elementList.add(
                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localCanRIC));
+                            
+                                      elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
+                                                                      "canRICChangeLocale"));
+                                 
+                                elementList.add(
+                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localCanRICChangeLocale));
                             
                                       elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
                                                                       "canRICRouteBrowser"));
@@ -4207,48 +2997,6 @@
                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localCanRICDeliveryConfirmation));
                             
                                       elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
-                                                                      "canATPDayCommander"));
-                                 
-                                elementList.add(
-                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localCanATPDayCommander));
-                            
-                                      elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
-                                                                      "canATPDayCommanderMakeChanges"));
-                                 
-                                elementList.add(
-                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localCanATPDayCommanderMakeChanges));
-                            
-                                      elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
-                                                                      "canATPCostAnalyzer"));
-                                 
-                                elementList.add(
-                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localCanATPCostAnalyzer));
-                            
-                                      elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
-                                                                      "canDPOrderFinancialDetailEdit"));
-                                 
-                                elementList.add(
-                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localCanDPOrderFinancialDetailEdit));
-                            
-                                      elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
-                                                                      "canModifyTimeDistMatrices"));
-                                 
-                                elementList.add(
-                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localCanModifyTimeDistMatrices));
-                            
-                                      elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
-                                                                      "canDPCanDeleteRoutes"));
-                                 
-                                elementList.add(
-                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localCanDPCanDeleteRoutes));
-                            
-                                      elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
-                                                                      "canViewOtherDispatcherRoutes"));
-                                 
-                                elementList.add(
-                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localCanViewOtherDispatcherRoutes));
-                            
-                                      elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
                                                                       "canRICRouteViewer"));
                                  
                                 elementList.add(
@@ -4261,64 +3009,16 @@
                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localCanRICRouteViewerViewActive));
                             
                                       elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
-                                                                      "canDPDisableWirelessCom"));
-                                 
-                                elementList.add(
-                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localCanDPDisableWirelessCom));
-                            
-                                      elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
                                                                       "canRICRouteViewerViewBuilt"));
                                  
                                 elementList.add(
                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localCanRICRouteViewerViewBuilt));
                             
                                       elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
-                                                                      "canChangeImportExportOptions"));
+                                                                      "canViewOtherDispatcherRoutes"));
                                  
                                 elementList.add(
-                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localCanChangeImportExportOptions));
-                            
-                                      elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
-                                                                      "canTransportScripts"));
-                                 
-                                elementList.add(
-                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localCanTransportScripts));
-                            
-                                      elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
-                                                                      "canDPActivateDiagnostics"));
-                                 
-                                elementList.add(
-                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localCanDPActivateDiagnostics));
-                            
-                                      elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
-                                                                      "canRICChangeLocale"));
-                                 
-                                elementList.add(
-                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localCanRICChangeLocale));
-                            
-                                      elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
-                                                                      "canTPSeedRouteToNS"));
-                                 
-                                elementList.add(
-                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localCanTPSeedRouteToNS));
-                            
-                                      elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
-                                                                      "canDPCanDeleteUnassigned"));
-                                 
-                                elementList.add(
-                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localCanDPCanDeleteUnassigned));
-                            
-                                      elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
-                                                                      "canTPPushRouteToRN"));
-                                 
-                                elementList.add(
-                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localCanTPPushRouteToRN));
-                            
-                                      elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
-                                                                      "canEditSatelliteOptions"));
-                                 
-                                elementList.add(
-                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localCanEditSatelliteOptions));
+                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localCanViewOtherDispatcherRoutes));
                             
 
                 return new org.apache.axis2.databinding.utils.reader.ADBXMLStreamReaderImpl(qName, elementList.toArray(), attribList.toArray());
@@ -4873,125 +3573,30 @@
                                     
                                     while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
                                 
-                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","canReportOptions").equals(reader.getName())){
-                                
-                                    java.lang.String content = reader.getElementText();
-                                    
-                                              object.setCanReportOptions(
-                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToBoolean(content));
-                                              
-                                        reader.next();
-                                    
-                              }  // End of if for expected property start element
-                                
-                                else{
-                                    // A start element we are not expecting indicates an invalid parameter was passed
-                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
-                                }
-                            
-                                    
-                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
-                                
-                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","canReportGroups").equals(reader.getName())){
-                                
-                                    java.lang.String content = reader.getElementText();
-                                    
-                                              object.setCanReportGroups(
-                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToBoolean(content));
-                                              
-                                        reader.next();
-                                    
-                              }  // End of if for expected property start element
-                                
-                                else{
-                                    // A start element we are not expecting indicates an invalid parameter was passed
-                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
-                                }
-                            
-                                    
-                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
-                                
-                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","canControlRouteDeletions").equals(reader.getName())){
-                                
-                                    java.lang.String content = reader.getElementText();
-                                    
-                                              object.setCanControlRouteDeletions(
-                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToBoolean(content));
-                                              
-                                        reader.next();
-                                    
-                              }  // End of if for expected property start element
-                                
-                                else{
-                                    // A start element we are not expecting indicates an invalid parameter was passed
-                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
-                                }
-                            
-                                    
-                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
-                                
-                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","canTravelModels").equals(reader.getName())){
-                                
-                                    java.lang.String content = reader.getElementText();
-                                    
-                                              object.setCanTravelModels(
-                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToBoolean(content));
-                                              
-                                        reader.next();
-                                    
-                              }  // End of if for expected property start element
-                                
-                                else{
-                                    // A start element we are not expecting indicates an invalid parameter was passed
-                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
-                                }
-                            
-                                    
-                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
-                                
-                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","canRushHourModels").equals(reader.getName())){
-                                
-                                    java.lang.String content = reader.getElementText();
-                                    
-                                              object.setCanRushHourModels(
-                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToBoolean(content));
-                                              
-                                        reader.next();
-                                    
-                              }  // End of if for expected property start element
-                                
-                                else{
-                                    // A start element we are not expecting indicates an invalid parameter was passed
-                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
-                                }
-                            
-                                    
-                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
-                                
-                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","canTPDepotPlanner").equals(reader.getName())){
-                                
-                                    java.lang.String content = reader.getElementText();
-                                    
-                                              object.setCanTPDepotPlanner(
-                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToBoolean(content));
-                                              
-                                        reader.next();
-                                    
-                              }  // End of if for expected property start element
-                                
-                                else{
-                                    // A start element we are not expecting indicates an invalid parameter was passed
-                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
-                                }
-                            
-                                    
-                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
-                                
                                     if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","canRIC").equals(reader.getName())){
                                 
                                     java.lang.String content = reader.getElementText();
                                     
                                               object.setCanRIC(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToBoolean(content));
+                                              
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                else{
+                                    // A start element we are not expecting indicates an invalid parameter was passed
+                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
+                                }
+                            
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","canRICChangeLocale").equals(reader.getName())){
+                                
+                                    java.lang.String content = reader.getElementText();
+                                    
+                                              object.setCanRICChangeLocale(
                                                     org.apache.axis2.databinding.utils.ConverterUtil.convertToBoolean(content));
                                               
                                         reader.next();
@@ -5215,139 +3820,6 @@
                                     
                                     while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
                                 
-                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","canATPDayCommander").equals(reader.getName())){
-                                
-                                    java.lang.String content = reader.getElementText();
-                                    
-                                              object.setCanATPDayCommander(
-                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToBoolean(content));
-                                              
-                                        reader.next();
-                                    
-                              }  // End of if for expected property start element
-                                
-                                else{
-                                    // A start element we are not expecting indicates an invalid parameter was passed
-                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
-                                }
-                            
-                                    
-                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
-                                
-                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","canATPDayCommanderMakeChanges").equals(reader.getName())){
-                                
-                                    java.lang.String content = reader.getElementText();
-                                    
-                                              object.setCanATPDayCommanderMakeChanges(
-                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToBoolean(content));
-                                              
-                                        reader.next();
-                                    
-                              }  // End of if for expected property start element
-                                
-                                else{
-                                    // A start element we are not expecting indicates an invalid parameter was passed
-                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
-                                }
-                            
-                                    
-                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
-                                
-                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","canATPCostAnalyzer").equals(reader.getName())){
-                                
-                                    java.lang.String content = reader.getElementText();
-                                    
-                                              object.setCanATPCostAnalyzer(
-                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToBoolean(content));
-                                              
-                                        reader.next();
-                                    
-                              }  // End of if for expected property start element
-                                
-                                else{
-                                    // A start element we are not expecting indicates an invalid parameter was passed
-                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
-                                }
-                            
-                                    
-                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
-                                
-                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","canDPOrderFinancialDetailEdit").equals(reader.getName())){
-                                
-                                    java.lang.String content = reader.getElementText();
-                                    
-                                              object.setCanDPOrderFinancialDetailEdit(
-                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToBoolean(content));
-                                              
-                                        reader.next();
-                                    
-                              }  // End of if for expected property start element
-                                
-                                else{
-                                    // A start element we are not expecting indicates an invalid parameter was passed
-                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
-                                }
-                            
-                                    
-                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
-                                
-                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","canModifyTimeDistMatrices").equals(reader.getName())){
-                                
-                                    java.lang.String content = reader.getElementText();
-                                    
-                                              object.setCanModifyTimeDistMatrices(
-                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToBoolean(content));
-                                              
-                                        reader.next();
-                                    
-                              }  // End of if for expected property start element
-                                
-                                else{
-                                    // A start element we are not expecting indicates an invalid parameter was passed
-                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
-                                }
-                            
-                                    
-                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
-                                
-                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","canDPCanDeleteRoutes").equals(reader.getName())){
-                                
-                                    java.lang.String content = reader.getElementText();
-                                    
-                                              object.setCanDPCanDeleteRoutes(
-                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToBoolean(content));
-                                              
-                                        reader.next();
-                                    
-                              }  // End of if for expected property start element
-                                
-                                else{
-                                    // A start element we are not expecting indicates an invalid parameter was passed
-                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
-                                }
-                            
-                                    
-                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
-                                
-                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","canViewOtherDispatcherRoutes").equals(reader.getName())){
-                                
-                                    java.lang.String content = reader.getElementText();
-                                    
-                                              object.setCanViewOtherDispatcherRoutes(
-                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToBoolean(content));
-                                              
-                                        reader.next();
-                                    
-                              }  // End of if for expected property start element
-                                
-                                else{
-                                    // A start element we are not expecting indicates an invalid parameter was passed
-                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
-                                }
-                            
-                                    
-                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
-                                
                                     if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","canRICRouteViewer").equals(reader.getName())){
                                 
                                     java.lang.String content = reader.getElementText();
@@ -5386,25 +3858,6 @@
                                     
                                     while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
                                 
-                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","canDPDisableWirelessCom").equals(reader.getName())){
-                                
-                                    java.lang.String content = reader.getElementText();
-                                    
-                                              object.setCanDPDisableWirelessCom(
-                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToBoolean(content));
-                                              
-                                        reader.next();
-                                    
-                              }  // End of if for expected property start element
-                                
-                                else{
-                                    // A start element we are not expecting indicates an invalid parameter was passed
-                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
-                                }
-                            
-                                    
-                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
-                                
                                     if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","canRICRouteViewerViewBuilt").equals(reader.getName())){
                                 
                                     java.lang.String content = reader.getElementText();
@@ -5424,144 +3877,11 @@
                                     
                                     while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
                                 
-                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","canChangeImportExportOptions").equals(reader.getName())){
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","canViewOtherDispatcherRoutes").equals(reader.getName())){
                                 
                                     java.lang.String content = reader.getElementText();
                                     
-                                              object.setCanChangeImportExportOptions(
-                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToBoolean(content));
-                                              
-                                        reader.next();
-                                    
-                              }  // End of if for expected property start element
-                                
-                                else{
-                                    // A start element we are not expecting indicates an invalid parameter was passed
-                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
-                                }
-                            
-                                    
-                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
-                                
-                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","canTransportScripts").equals(reader.getName())){
-                                
-                                    java.lang.String content = reader.getElementText();
-                                    
-                                              object.setCanTransportScripts(
-                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToBoolean(content));
-                                              
-                                        reader.next();
-                                    
-                              }  // End of if for expected property start element
-                                
-                                else{
-                                    // A start element we are not expecting indicates an invalid parameter was passed
-                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
-                                }
-                            
-                                    
-                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
-                                
-                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","canDPActivateDiagnostics").equals(reader.getName())){
-                                
-                                    java.lang.String content = reader.getElementText();
-                                    
-                                              object.setCanDPActivateDiagnostics(
-                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToBoolean(content));
-                                              
-                                        reader.next();
-                                    
-                              }  // End of if for expected property start element
-                                
-                                else{
-                                    // A start element we are not expecting indicates an invalid parameter was passed
-                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
-                                }
-                            
-                                    
-                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
-                                
-                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","canRICChangeLocale").equals(reader.getName())){
-                                
-                                    java.lang.String content = reader.getElementText();
-                                    
-                                              object.setCanRICChangeLocale(
-                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToBoolean(content));
-                                              
-                                        reader.next();
-                                    
-                              }  // End of if for expected property start element
-                                
-                                else{
-                                    // A start element we are not expecting indicates an invalid parameter was passed
-                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
-                                }
-                            
-                                    
-                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
-                                
-                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","canTPSeedRouteToNS").equals(reader.getName())){
-                                
-                                    java.lang.String content = reader.getElementText();
-                                    
-                                              object.setCanTPSeedRouteToNS(
-                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToBoolean(content));
-                                              
-                                        reader.next();
-                                    
-                              }  // End of if for expected property start element
-                                
-                                else{
-                                    // A start element we are not expecting indicates an invalid parameter was passed
-                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
-                                }
-                            
-                                    
-                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
-                                
-                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","canDPCanDeleteUnassigned").equals(reader.getName())){
-                                
-                                    java.lang.String content = reader.getElementText();
-                                    
-                                              object.setCanDPCanDeleteUnassigned(
-                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToBoolean(content));
-                                              
-                                        reader.next();
-                                    
-                              }  // End of if for expected property start element
-                                
-                                else{
-                                    // A start element we are not expecting indicates an invalid parameter was passed
-                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
-                                }
-                            
-                                    
-                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
-                                
-                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","canTPPushRouteToRN").equals(reader.getName())){
-                                
-                                    java.lang.String content = reader.getElementText();
-                                    
-                                              object.setCanTPPushRouteToRN(
-                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToBoolean(content));
-                                              
-                                        reader.next();
-                                    
-                              }  // End of if for expected property start element
-                                
-                                else{
-                                    // A start element we are not expecting indicates an invalid parameter was passed
-                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
-                                }
-                            
-                                    
-                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
-                                
-                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","canEditSatelliteOptions").equals(reader.getName())){
-                                
-                                    java.lang.String content = reader.getElementText();
-                                    
-                                              object.setCanEditSatelliteOptions(
+                                              object.setCanViewOtherDispatcherRoutes(
                                                     org.apache.axis2.databinding.utils.ConverterUtil.convertToBoolean(content));
                                               
                                         reader.next();

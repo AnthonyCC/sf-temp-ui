@@ -38,6 +38,12 @@
                         
                                     protected com.freshdirect.routing.proxy.stub.transportation.StopIdentity localStopIdentity ;
                                 
+                           /*  This tracker boolean wil be used to detect whether the user called the set method
+                          *   for this attribute. It will be used to determine whether to include this field
+                           *   in the serialized XML
+                           */
+                           protected boolean localStopIdentityTracker = false ;
+                           
 
                            /**
                            * Auto generated getter method
@@ -55,6 +61,14 @@
                                */
                                public void setStopIdentity(com.freshdirect.routing.proxy.stub.transportation.StopIdentity param){
                             
+                                       if (param != null){
+                                          //update the setting tracker
+                                          localStopIdentityTracker = true;
+                                       } else {
+                                          localStopIdentityTracker = true;
+                                              
+                                       }
+                                   
                                             this.localStopIdentity=param;
                                     
 
@@ -317,13 +331,38 @@
                                           }
                                     
                                    xmlWriter.writeEndElement();
-                             }
-                                            if (localStopIdentity==null){
-                                                 throw new org.apache.axis2.databinding.ADBException("stopIdentity cannot be null!!");
+                             } if (localStopIdentityTracker){
+                                    if (localStopIdentity==null){
+
+                                            java.lang.String namespace2 = "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService";
+
+                                        if (! namespace2.equals("")) {
+                                            java.lang.String prefix2 = xmlWriter.getPrefix(namespace2);
+
+                                            if (prefix2 == null) {
+                                                prefix2 = generatePrefix(namespace2);
+
+                                                xmlWriter.writeStartElement(prefix2,"stopIdentity", namespace2);
+                                                xmlWriter.writeNamespace(prefix2, namespace2);
+                                                xmlWriter.setPrefix(prefix2, namespace2);
+
+                                            } else {
+                                                xmlWriter.writeStartElement(namespace2,"stopIdentity");
                                             }
-                                           localStopIdentity.serialize(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","stopIdentity"),
-                                               factory,xmlWriter);
-                                        
+
+                                        } else {
+                                            xmlWriter.writeStartElement("stopIdentity");
+                                        }
+
+
+                                       // write the nil attribute
+                                      writeAttribute("xsi","http://www.w3.org/2001/XMLSchema-instance","nil","1",xmlWriter);
+                                      xmlWriter.writeEndElement();
+                                    }else{
+                                     localStopIdentity.serialize(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","stopIdentity"),
+                                        factory,xmlWriter);
+                                    }
+                                }
                     xmlWriter.writeEndElement();
                
 
@@ -529,16 +568,14 @@
                                         } else {
                                            throw new org.apache.axis2.databinding.ADBException("userDefinedField3 cannot be null!!");
                                         }
-                                    }
+                                    } if (localStopIdentityTracker){
                             elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
                                                                       "stopIdentity"));
                             
                             
-                                    if (localStopIdentity==null){
-                                         throw new org.apache.axis2.databinding.ADBException("stopIdentity cannot be null!!");
-                                    }
-                                    elementList.add(localStopIdentity);
-                                
+                                    elementList.add(localStopIdentity==null?null:
+                                    localStopIdentity);
+                                }
 
                 return new org.apache.axis2.databinding.utils.reader.ADBXMLStreamReaderImpl(qName, elementList.toArray(), attribList.toArray());
             
@@ -721,17 +758,25 @@
                                 
                                     if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","stopIdentity").equals(reader.getName())){
                                 
+                                      nillableValue = reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance","nil");
+                                      if ("true".equals(nillableValue) || "1".equals(nillableValue)){
+                                          object.setStopIdentity(null);
+                                          reader.next();
+                                            
+                                            reader.next();
+                                          
+                                      }else{
+                                    
                                                 object.setStopIdentity(com.freshdirect.routing.proxy.stub.transportation.StopIdentity.Factory.parse(reader));
                                               
                                         reader.next();
-                                    
+                                    }
                               }  // End of if for expected property start element
                                 
-                                else{
-                                    // A start element we are not expecting indicates an invalid parameter was passed
-                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
-                                }
-                              
+                                    else {
+                                        
+                                    }
+                                  
                             while (!reader.isStartElement() && !reader.isEndElement())
                                 reader.next();
                             

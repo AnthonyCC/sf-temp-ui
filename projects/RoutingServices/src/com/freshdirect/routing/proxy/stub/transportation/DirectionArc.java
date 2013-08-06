@@ -136,36 +136,6 @@
                             
 
                         /**
-                        * field for IsARamp
-                        */
-
-                        
-                                    protected boolean localIsARamp ;
-                                
-
-                           /**
-                           * Auto generated getter method
-                           * @return boolean
-                           */
-                           public  boolean getIsARamp(){
-                               return localIsARamp;
-                           }
-
-                           
-                        
-                            /**
-                               * Auto generated setter method
-                               * @param param IsARamp
-                               */
-                               public void setIsARamp(boolean param){
-                            
-                                            this.localIsARamp=param;
-                                    
-
-                               }
-                            
-
-                        /**
                         * field for Vertices
                         * This was an Array!
                         */
@@ -435,35 +405,6 @@
                                                }
                                     
                                    xmlWriter.writeEndElement();
-                             
-                                    namespace = "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService";
-                                    if (! namespace.equals("")) {
-                                        prefix = xmlWriter.getPrefix(namespace);
-
-                                        if (prefix == null) {
-                                            prefix = generatePrefix(namespace);
-
-                                            xmlWriter.writeStartElement(prefix,"isARamp", namespace);
-                                            xmlWriter.writeNamespace(prefix, namespace);
-                                            xmlWriter.setPrefix(prefix, namespace);
-
-                                        } else {
-                                            xmlWriter.writeStartElement(namespace,"isARamp");
-                                        }
-
-                                    } else {
-                                        xmlWriter.writeStartElement("isARamp");
-                                    }
-                                
-                                               if (false) {
-                                           
-                                                         throw new org.apache.axis2.databinding.ADBException("isARamp cannot be null!!");
-                                                      
-                                               } else {
-                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localIsARamp));
-                                               }
-                                    
-                                   xmlWriter.writeEndElement();
                               if (localVerticesTracker){
                                        if (localVertices!=null){
                                             for (int i = 0;i < localVertices.length;i++){
@@ -665,12 +606,6 @@
                                  
                                 elementList.add(
                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localDistance));
-                            
-                                      elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
-                                                                      "isARamp"));
-                                 
-                                elementList.add(
-                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localIsARamp));
                              if (localVerticesTracker){
                              if (localVertices!=null) {
                                  for (int i = 0;i < localVertices.length;i++){
@@ -768,7 +703,7 @@
                     
                     reader.next();
                 
-                        java.util.ArrayList list5 = new java.util.ArrayList();
+                        java.util.ArrayList list4 = new java.util.ArrayList();
                     
                                     
                                     while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
@@ -829,35 +764,16 @@
                                     
                                     while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
                                 
-                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","isARamp").equals(reader.getName())){
-                                
-                                    java.lang.String content = reader.getElementText();
-                                    
-                                              object.setIsARamp(
-                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToBoolean(content));
-                                              
-                                        reader.next();
-                                    
-                              }  // End of if for expected property start element
-                                
-                                else{
-                                    // A start element we are not expecting indicates an invalid parameter was passed
-                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
-                                }
-                            
-                                    
-                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
-                                
                                     if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","vertices").equals(reader.getName())){
                                 
                                     
                                     
                                     // Process the array and step past its final element's end.
-                                    list5.add(com.freshdirect.routing.proxy.stub.transportation.MapPoint.Factory.parse(reader));
+                                    list4.add(com.freshdirect.routing.proxy.stub.transportation.MapPoint.Factory.parse(reader));
                                                                 
                                                         //loop until we find a start element that is not part of this array
-                                                        boolean loopDone5 = false;
-                                                        while(!loopDone5){
+                                                        boolean loopDone4 = false;
+                                                        while(!loopDone4){
                                                             // We should be at the end element, but make sure
                                                             while (!reader.isEndElement())
                                                                 reader.next();
@@ -868,13 +784,13 @@
                                                                 reader.next();
                                                             if (reader.isEndElement()){
                                                                 //two continuous end elements means we are exiting the xml structure
-                                                                loopDone5 = true;
+                                                                loopDone4 = true;
                                                             } else {
                                                                 if (new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","vertices").equals(reader.getName())){
-                                                                    list5.add(com.freshdirect.routing.proxy.stub.transportation.MapPoint.Factory.parse(reader));
+                                                                    list4.add(com.freshdirect.routing.proxy.stub.transportation.MapPoint.Factory.parse(reader));
                                                                         
                                                                 }else{
-                                                                    loopDone5 = true;
+                                                                    loopDone4 = true;
                                                                 }
                                                             }
                                                         }
@@ -883,7 +799,7 @@
                                                         object.setVertices((com.freshdirect.routing.proxy.stub.transportation.MapPoint[])
                                                             org.apache.axis2.databinding.utils.ConverterUtil.convertToArray(
                                                                 com.freshdirect.routing.proxy.stub.transportation.MapPoint.class,
-                                                                list5));
+                                                                list4));
                                                             
                               }  // End of if for expected property start element
                                 

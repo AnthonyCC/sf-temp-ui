@@ -1276,37 +1276,6 @@
                             
 
                         /**
-                        * field for NetRevenue
-                        */
-
-                        
-                                    protected double localNetRevenue =
-                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToDouble("0.000000");
-                                
-
-                           /**
-                           * Auto generated getter method
-                           * @return double
-                           */
-                           public  double getNetRevenue(){
-                               return localNetRevenue;
-                           }
-
-                           
-                        
-                            /**
-                               * Auto generated setter method
-                               * @param param NetRevenue
-                               */
-                               public void setNetRevenue(double param){
-                            
-                                            this.localNetRevenue=param;
-                                    
-
-                               }
-                            
-
-                        /**
                         * field for RejectCode
                         */
 
@@ -2569,36 +2538,7 @@
                                      localPreferredMRSDepotIdentity.serialize(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","preferredMRSDepotIdentity"),
                                         factory,xmlWriter);
                                     }
-                                }
-                                    namespace = "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService";
-                                    if (! namespace.equals("")) {
-                                        prefix = xmlWriter.getPrefix(namespace);
-
-                                        if (prefix == null) {
-                                            prefix = generatePrefix(namespace);
-
-                                            xmlWriter.writeStartElement(prefix,"netRevenue", namespace);
-                                            xmlWriter.writeNamespace(prefix, namespace);
-                                            xmlWriter.setPrefix(prefix, namespace);
-
-                                        } else {
-                                            xmlWriter.writeStartElement(namespace,"netRevenue");
-                                        }
-
-                                    } else {
-                                        xmlWriter.writeStartElement("netRevenue");
-                                    }
-                                
-                                               if (java.lang.Double.isNaN(localNetRevenue)) {
-                                           
-                                                         throw new org.apache.axis2.databinding.ADBException("netRevenue cannot be null!!");
-                                                      
-                                               } else {
-                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localNetRevenue));
-                                               }
-                                    
-                                   xmlWriter.writeEndElement();
-                              if (localRejectCodeTracker){
+                                } if (localRejectCodeTracker){
                                     if (localRejectCode==null){
 
                                             java.lang.String namespace2 = "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService";
@@ -3041,13 +2981,7 @@
                             
                                     elementList.add(localPreferredMRSDepotIdentity==null?null:
                                     localPreferredMRSDepotIdentity);
-                                }
-                                      elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
-                                                                      "netRevenue"));
-                                 
-                                elementList.add(
-                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localNetRevenue));
-                             if (localRejectCodeTracker){
+                                } if (localRejectCodeTracker){
                             elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
                                                                       "rejectCode"));
                             
@@ -3172,9 +3106,9 @@
                     
                     reader.next();
                 
-                        java.util.ArrayList list33 = new java.util.ArrayList();
+                        java.util.ArrayList list32 = new java.util.ArrayList();
                     
-                        java.util.ArrayList list34 = new java.util.ArrayList();
+                        java.util.ArrayList list33 = new java.util.ArrayList();
                     
                                     
                                     while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
@@ -3825,25 +3759,6 @@
                                     
                                     while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
                                 
-                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","netRevenue").equals(reader.getName())){
-                                
-                                    java.lang.String content = reader.getElementText();
-                                    
-                                              object.setNetRevenue(
-                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToDouble(content));
-                                              
-                                        reader.next();
-                                    
-                              }  // End of if for expected property start element
-                                
-                                else{
-                                    // A start element we are not expecting indicates an invalid parameter was passed
-                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
-                                }
-                            
-                                    
-                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
-                                
                                     if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","rejectCode").equals(reader.getName())){
                                 
                                       nillableValue = reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance","nil");
@@ -3873,7 +3788,53 @@
                                     
                                     
                                     // Process the array and step past its final element's end.
-                                    list33.add(com.freshdirect.routing.proxy.stub.transportation.RoutingImportLineItem.Factory.parse(reader));
+                                    list32.add(com.freshdirect.routing.proxy.stub.transportation.RoutingImportLineItem.Factory.parse(reader));
+                                                                
+                                                        //loop until we find a start element that is not part of this array
+                                                        boolean loopDone32 = false;
+                                                        while(!loopDone32){
+                                                            // We should be at the end element, but make sure
+                                                            while (!reader.isEndElement())
+                                                                reader.next();
+                                                            // Step out of this element
+                                                            reader.next();
+                                                            // Step to next element event.
+                                                            while (!reader.isStartElement() && !reader.isEndElement())
+                                                                reader.next();
+                                                            if (reader.isEndElement()){
+                                                                //two continuous end elements means we are exiting the xml structure
+                                                                loopDone32 = true;
+                                                            } else {
+                                                                if (new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","lineItems").equals(reader.getName())){
+                                                                    list32.add(com.freshdirect.routing.proxy.stub.transportation.RoutingImportLineItem.Factory.parse(reader));
+                                                                        
+                                                                }else{
+                                                                    loopDone32 = true;
+                                                                }
+                                                            }
+                                                        }
+                                                        // call the converter utility  to convert and set the array
+                                                        
+                                                        object.setLineItems((com.freshdirect.routing.proxy.stub.transportation.RoutingImportLineItem[])
+                                                            org.apache.axis2.databinding.utils.ConverterUtil.convertToArray(
+                                                                com.freshdirect.routing.proxy.stub.transportation.RoutingImportLineItem.class,
+                                                                list32));
+                                                            
+                              }  // End of if for expected property start element
+                                
+                                    else {
+                                        
+                                    }
+                                
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","orderActivities").equals(reader.getName())){
+                                
+                                    
+                                    
+                                    // Process the array and step past its final element's end.
+                                    list33.add(com.freshdirect.routing.proxy.stub.transportation.RoutingImportOrderActivity.Factory.parse(reader));
                                                                 
                                                         //loop until we find a start element that is not part of this array
                                                         boolean loopDone33 = false;
@@ -3890,8 +3851,8 @@
                                                                 //two continuous end elements means we are exiting the xml structure
                                                                 loopDone33 = true;
                                                             } else {
-                                                                if (new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","lineItems").equals(reader.getName())){
-                                                                    list33.add(com.freshdirect.routing.proxy.stub.transportation.RoutingImportLineItem.Factory.parse(reader));
+                                                                if (new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","orderActivities").equals(reader.getName())){
+                                                                    list33.add(com.freshdirect.routing.proxy.stub.transportation.RoutingImportOrderActivity.Factory.parse(reader));
                                                                         
                                                                 }else{
                                                                     loopDone33 = true;
@@ -3900,56 +3861,10 @@
                                                         }
                                                         // call the converter utility  to convert and set the array
                                                         
-                                                        object.setLineItems((com.freshdirect.routing.proxy.stub.transportation.RoutingImportLineItem[])
-                                                            org.apache.axis2.databinding.utils.ConverterUtil.convertToArray(
-                                                                com.freshdirect.routing.proxy.stub.transportation.RoutingImportLineItem.class,
-                                                                list33));
-                                                            
-                              }  // End of if for expected property start element
-                                
-                                    else {
-                                        
-                                    }
-                                
-                                    
-                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
-                                
-                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","orderActivities").equals(reader.getName())){
-                                
-                                    
-                                    
-                                    // Process the array and step past its final element's end.
-                                    list34.add(com.freshdirect.routing.proxy.stub.transportation.RoutingImportOrderActivity.Factory.parse(reader));
-                                                                
-                                                        //loop until we find a start element that is not part of this array
-                                                        boolean loopDone34 = false;
-                                                        while(!loopDone34){
-                                                            // We should be at the end element, but make sure
-                                                            while (!reader.isEndElement())
-                                                                reader.next();
-                                                            // Step out of this element
-                                                            reader.next();
-                                                            // Step to next element event.
-                                                            while (!reader.isStartElement() && !reader.isEndElement())
-                                                                reader.next();
-                                                            if (reader.isEndElement()){
-                                                                //two continuous end elements means we are exiting the xml structure
-                                                                loopDone34 = true;
-                                                            } else {
-                                                                if (new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","orderActivities").equals(reader.getName())){
-                                                                    list34.add(com.freshdirect.routing.proxy.stub.transportation.RoutingImportOrderActivity.Factory.parse(reader));
-                                                                        
-                                                                }else{
-                                                                    loopDone34 = true;
-                                                                }
-                                                            }
-                                                        }
-                                                        // call the converter utility  to convert and set the array
-                                                        
                                                         object.setOrderActivities((com.freshdirect.routing.proxy.stub.transportation.RoutingImportOrderActivity[])
                                                             org.apache.axis2.databinding.utils.ConverterUtil.convertToArray(
                                                                 com.freshdirect.routing.proxy.stub.transportation.RoutingImportOrderActivity.class,
-                                                                list34));
+                                                                list33));
                                                             
                               }  // End of if for expected property start element
                                 

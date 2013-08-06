@@ -20,6 +20,26 @@
               
                   if (
                   "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "ServiceTimeExceptionNotification".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.ServiceTimeExceptionNotification.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "PositionReasonCode".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.PositionReasonCode.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
                   "EquipmentIdentity".equals(typeName)){
                    
                             return  com.freshdirect.routing.proxy.stub.transportation.EquipmentIdentity.Factory.parse(reader);
@@ -40,9 +60,49 @@
               
                   if (
                   "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "ItemQuantities".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.ItemQuantities.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
                   "UserDefinedDateTimeDatum".equals(typeName)){
                    
                             return  com.freshdirect.routing.proxy.stub.transportation.UserDefinedDateTimeDatum.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "Order".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.Order.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "RoutingImportOrderActivity".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.RoutingImportOrderActivity.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "OrderNoteCriteria".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.OrderNoteCriteria.Factory.parse(reader);
                         
 
                   }
@@ -60,9 +120,9 @@
               
                   if (
                   "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "NotificationRetrieveOptions".equals(typeName)){
+                  "TextAnswer".equals(typeName)){
                    
-                            return  com.freshdirect.routing.proxy.stub.transportation.NotificationRetrieveOptions.Factory.parse(reader);
+                            return  com.freshdirect.routing.proxy.stub.transportation.TextAnswer.Factory.parse(reader);
                         
 
                   }
@@ -73,6 +133,36 @@
                   "OrderDeliveryDetailItem".equals(typeName)){
                    
                             return  com.freshdirect.routing.proxy.stub.transportation.OrderDeliveryDetailItem.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "SchedulerDeliveryWindowMetricsType".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.SchedulerDeliveryWindowMetricsType.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "NotificationRetrieveOptions".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.NotificationRetrieveOptions.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "RoutingOrder".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.RoutingOrder.Factory.parse(reader);
                         
 
                   }
@@ -120,9 +210,19 @@
               
                   if (
                   "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "ActiveAlertMethod".equals(typeName)){
+                  "GeocodeResult".equals(typeName)){
                    
-                            return  com.freshdirect.routing.proxy.stub.transportation.ActiveAlertMethod.Factory.parse(reader);
+                            return  com.freshdirect.routing.proxy.stub.transportation.GeocodeResult.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "SkuAvailability".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.SkuAvailability.Factory.parse(reader);
                         
 
                   }
@@ -140,6 +240,16 @@
               
                   if (
                   "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "RICRegionsWithPurchaseInfo".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.RICRegionsWithPurchaseInfo.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
                   "QuantityReference".equals(typeName)){
                    
                             return  com.freshdirect.routing.proxy.stub.transportation.QuantityReference.Factory.parse(reader);
@@ -150,9 +260,9 @@
               
                   if (
                   "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "RoutingLineItem".equals(typeName)){
+                  "EquipmentCriteria".equals(typeName)){
                    
-                            return  com.freshdirect.routing.proxy.stub.transportation.RoutingLineItem.Factory.parse(reader);
+                            return  com.freshdirect.routing.proxy.stub.transportation.EquipmentCriteria.Factory.parse(reader);
                         
 
                   }
@@ -170,9 +280,19 @@
               
                   if (
                   "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "Location".equals(typeName)){
+                  "RoutingLineItem".equals(typeName)){
                    
-                            return  com.freshdirect.routing.proxy.stub.transportation.Location.Factory.parse(reader);
+                            return  com.freshdirect.routing.proxy.stub.transportation.RoutingLineItem.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "ChangedStopIdentity".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.ChangedStopIdentity.Factory.parse(reader);
                         
 
                   }
@@ -190,9 +310,9 @@
               
                   if (
                   "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "StopPlacementType".equals(typeName)){
+                  "Location".equals(typeName)){
                    
-                            return  com.freshdirect.routing.proxy.stub.transportation.StopPlacementType.Factory.parse(reader);
+                            return  com.freshdirect.routing.proxy.stub.transportation.Location.Factory.parse(reader);
                         
 
                   }
@@ -200,9 +320,19 @@
               
                   if (
                   "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "NotificationSource".equals(typeName)){
+                  "ContainerEventType".equals(typeName)){
                    
-                            return  com.freshdirect.routing.proxy.stub.transportation.NotificationSource.Factory.parse(reader);
+                            return  com.freshdirect.routing.proxy.stub.transportation.ContainerEventType.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "StopPlacementType".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.StopPlacementType.Factory.parse(reader);
                         
 
                   }
@@ -220,9 +350,9 @@
               
                   if (
                   "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "StandardRouteCriteria".equals(typeName)){
+                  "NotificationSource".equals(typeName)){
                    
-                            return  com.freshdirect.routing.proxy.stub.transportation.StandardRouteCriteria.Factory.parse(reader);
+                            return  com.freshdirect.routing.proxy.stub.transportation.NotificationSource.Factory.parse(reader);
                         
 
                   }
@@ -230,9 +360,29 @@
               
                   if (
                   "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "StandardStop".equals(typeName)){
+                  "RoutingImportOrderCriteria".equals(typeName)){
                    
-                            return  com.freshdirect.routing.proxy.stub.transportation.StandardStop.Factory.parse(reader);
+                            return  com.freshdirect.routing.proxy.stub.transportation.RoutingImportOrderCriteria.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "UserDefinedFields".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.UserDefinedFields.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "UserDefinedDatum".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.UserDefinedDatum.Factory.parse(reader);
                         
 
                   }
@@ -260,9 +410,39 @@
               
                   if (
                   "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "RouteReportedDistance".equals(typeName)){
+                  "OrderActivity".equals(typeName)){
                    
-                            return  com.freshdirect.routing.proxy.stub.transportation.RouteReportedDistance.Factory.parse(reader);
+                            return  com.freshdirect.routing.proxy.stub.transportation.OrderActivity.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "LineItem".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.LineItem.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "OptionalDateTime".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.OptionalDateTime.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "DynamicWindowInfo".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.DynamicWindowInfo.Factory.parse(reader);
                         
 
                   }
@@ -290,9 +470,79 @@
               
                   if (
                   "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "PlanningUserDefinedFieldInfo".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.PlanningUserDefinedFieldInfo.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "DeliveryWaveAttributes".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.DeliveryWaveAttributes.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "UserDefinedRouteDataCriteria".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.UserDefinedRouteDataCriteria.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "ChangedDriverAlertIdentity".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.ChangedDriverAlertIdentity.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "DepotSkusAvailabilityCriteria".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.DepotSkusAvailabilityCriteria.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "ProductsPurchased".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.ProductsPurchased.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
                   "DeliveryDetailItem".equals(typeName)){
                    
                             return  com.freshdirect.routing.proxy.stub.transportation.DeliveryDetailItem.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "UndeliverableStopCodeCriteria".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.UndeliverableStopCodeCriteria.Factory.parse(reader);
                         
 
                   }
@@ -310,6 +560,16 @@
               
                   if (
                   "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "OutOfSequenceExceptionNotification".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.OutOfSequenceExceptionNotification.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
                   "MapPoint".equals(typeName)){
                    
                             return  com.freshdirect.routing.proxy.stub.transportation.MapPoint.Factory.parse(reader);
@@ -320,9 +580,29 @@
               
                   if (
                   "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "RoutingReloadType".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.RoutingReloadType.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
                   "OrderContainer".equals(typeName)){
                    
                             return  com.freshdirect.routing.proxy.stub.transportation.OrderContainer.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "StopSequenceInfo".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.StopSequenceInfo.Factory.parse(reader);
                         
 
                   }
@@ -370,6 +650,16 @@
               
                   if (
                   "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "UserDefinedIntegerDatum".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.UserDefinedIntegerDatum.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
                   "UpdatePositionReturnCode".equals(typeName)){
                    
                             return  com.freshdirect.routing.proxy.stub.transportation.UpdatePositionReturnCode.Factory.parse(reader);
@@ -383,6 +673,26 @@
                   "LateDepartureExceptionNotification".equals(typeName)){
                    
                             return  com.freshdirect.routing.proxy.stub.transportation.LateDepartureExceptionNotification.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "RoutingTriggerType".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.RoutingTriggerType.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "DeliveryWaveInstanceIdentity".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.DeliveryWaveInstanceIdentity.Factory.parse(reader);
                         
 
                   }
@@ -440,1966 +750,6 @@
               
                   if (
                   "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "StandardRouteSaveOptions".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.StandardRouteSaveOptions.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "StandardRouteSetIdentity".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.StandardRouteSetIdentity.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "PickListAnswer".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.PickListAnswer.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "PlanningSessionIdentity".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.PlanningSessionIdentity.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "WirelessProvider".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.WirelessProvider.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "DeliveryAreaOrderRetrieveOptions".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.DeliveryAreaOrderRetrieveOptions.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "TimeOffPlannedExceptionNotification".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.TimeOffPlannedExceptionNotification.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "StandardRouteSetRemoveOptions".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.StandardRouteSetRemoveOptions.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "RouteCompleteInfo".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.RouteCompleteInfo.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "StandardRouteSetRetrieveOptions".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.StandardRouteSetRetrieveOptions.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "SchedulerSaveDeliveryWaveInstanceOptions".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.SchedulerSaveDeliveryWaveInstanceOptions.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "TimeDistResult".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.TimeDistResult.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "DutyPeriodRetrieveOptions".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.DutyPeriodRetrieveOptions.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "TableType".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.TableType.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "SchedulerAnalyzeOptions".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.SchedulerAnalyzeOptions.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "SapShipment".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.SapShipment.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "GPSNotification".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.GPSNotification.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "OrderIdentity".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.OrderIdentity.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "StopCriteria".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.StopCriteria.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "ActivityIdentity".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.ActivityIdentity.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "StandardRouteEquipmentIdentity".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.StandardRouteEquipmentIdentity.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "Address".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.Address.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "AccountTypeCriteria".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.AccountTypeCriteria.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "StopSignatureInfo".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.StopSignatureInfo.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "DataType".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.DataType.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "DriverCostInfo".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.DriverCostInfo.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "MarkerStyle".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.MarkerStyle.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "Driver".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.Driver.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "TimeWindowOptions".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.TimeWindowOptions.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "RoutingRouteIdentity".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.RoutingRouteIdentity.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "PlanningTerritoryCriteria".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.PlanningTerritoryCriteria.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "SkuCriteria".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.SkuCriteria.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "RoutingStopIdentity".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.RoutingStopIdentity.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "RoutingImportLineItem".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.RoutingImportLineItem.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "SessionType".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.SessionType.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "ContainerServiceType".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.ContainerServiceType.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "Notification".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.Notification.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "Consignee".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.Consignee.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "QuantityReasonCode".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.QuantityReasonCode.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "RoutingLineItemIdentity".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.RoutingLineItemIdentity.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "DutyPeriodViolationException".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.DutyPeriodViolationException.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "DeliveryWaveInstance".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.DeliveryWaveInstance.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "ChangedOrderContainerIdentity".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.ChangedOrderContainerIdentity.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "SchedulerRetrieveFeederRoutesOptions".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.SchedulerRetrieveFeederRoutesOptions.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "LineItemIdentity".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.LineItemIdentity.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "UserExceptionNotification".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.UserExceptionNotification.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "QuantityReasonCodeCriteria".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.QuantityReasonCodeCriteria.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "UnitSpeed".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.UnitSpeed.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "SchedulerUpdateOrderOptions".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.SchedulerUpdateOrderOptions.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "RoutePathDeviationExceptionNotification".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.RoutePathDeviationExceptionNotification.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "RouteDailyStatsRetrieveOptions".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.RouteDailyStatsRetrieveOptions.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "UnitDistance".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.UnitDistance.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "Region".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.Region.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "TimeZoneOptionsType".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.TimeZoneOptionsType.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "OriginDepartInfo".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.OriginDepartInfo.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "SaveStopExOptions".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.SaveStopExOptions.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "Survey".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.Survey.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "PlacementCost".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.PlacementCost.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "DeliveryAreaRouteCriteria".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.DeliveryAreaRouteCriteria.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "DeliveryAreaRouteIdentity".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.DeliveryAreaRouteIdentity.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "ReportCriteria".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.ReportCriteria.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "SurveyQuestionsResult".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.SurveyQuestionsResult.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "ChangedOrderIdentity".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.ChangedOrderIdentity.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "StartCompleteExceptionType".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.StartCompleteExceptionType.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "UserPermissions".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.UserPermissions.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "RetrievePlanningLocationExtensionsOptions".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.RetrievePlanningLocationExtensionsOptions.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "StandardRouteSetSaveOptions".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.StandardRouteSetSaveOptions.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "SkuAvailabilityCriteria".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.SkuAvailabilityCriteria.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "RoutingRouteStatus".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.RoutingRouteStatus.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "PositionHistory".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.PositionHistory.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "UserDefinedStringDatum".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.UserDefinedStringDatum.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "SchedulerDeliveryWindowMetrics".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.SchedulerDeliveryWindowMetrics.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "TextMessageInfo".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.TextMessageInfo.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "LateGpsExceptionNotification".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.LateGpsExceptionNotification.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "EmployeeRouteStats".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.EmployeeRouteStats.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "RouteEventSource".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.RouteEventSource.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "UserDefinedColumnIdentity".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.UserDefinedColumnIdentity.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "StopRedeliverInfo".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.StopRedeliverInfo.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "RoutingImportOrder".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.RoutingImportOrder.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "RoutingEquipmentIdentity".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.RoutingEquipmentIdentity.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "SurveyDetails".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.SurveyDetails.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "UndeliverableStopCodeIdentity".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.UndeliverableStopCodeIdentity.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "LocationIdentity".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.LocationIdentity.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "DeliveryDetailNotification".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.DeliveryDetailNotification.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "RoutingImportOrderRejectCode".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.RoutingImportOrderRejectCode.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "PathDirections".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.PathDirections.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "EventReceiptExceptionNotification".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.EventReceiptExceptionNotification.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "NotificationCriteria".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.NotificationCriteria.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "SuggestRouteOptions".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.SuggestRouteOptions.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "RegionCriteria".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.RegionCriteria.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "SchedulerMovableOrdersCriteria".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.SchedulerMovableOrdersCriteria.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "PlanningLocationExtensionCriteria".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.PlanningLocationExtensionCriteria.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "RoutingOrderType".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.RoutingOrderType.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "WirelessDeviceIdentity".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.WirelessDeviceIdentity.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "RouteStartNotification".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.RouteStartNotification.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "SurveyResult".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.SurveyResult.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "LineItemNoteCriteria".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.LineItemNoteCriteria.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "UserDefinedBooleanDatum".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.UserDefinedBooleanDatum.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "DeliveryAreaRouteRetrieveOptions".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.DeliveryAreaRouteRetrieveOptions.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "ActiveAlertUDF".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.ActiveAlertUDF.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "DeliveryWindow".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.DeliveryWindow.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "ReportType".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.ReportType.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "TelematicsCachePositionInfo".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.TelematicsCachePositionInfo.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "TimeWindowOverride".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.TimeWindowOverride.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "StandardRouteRemoveOptions".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.StandardRouteRemoveOptions.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "StopDeliveryDetailItem".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.StopDeliveryDetailItem.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "SchedulerSaveDeliveryWindowOptions".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.SchedulerSaveDeliveryWindowOptions.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "StopCancelNotification".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.StopCancelNotification.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "DataQualityType".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.DataQualityType.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "StopArriveInfo".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.StopArriveInfo.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "EarlyArrivalExceptionNotification".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.EarlyArrivalExceptionNotification.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "DriverCancelExceptionNotification".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.DriverCancelExceptionNotification.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "Employee".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.Employee.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "SkuIdentity".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.SkuIdentity.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "PositionHistoryCriteria".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.PositionHistoryCriteria.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "ReportIdentity".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.ReportIdentity.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "RoutingStopCriteria".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.RoutingStopCriteria.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "RegionOptions".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.RegionOptions.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "SchedulerIdentity".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "StandardRouteSet".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.StandardRouteSet.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "OrdersSentNotification".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.OrdersSentNotification.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "PlanningSessionCriteria".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.PlanningSessionCriteria.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "RouteNonEventInfo".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.RouteNonEventInfo.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "StandardRouteSetRejection".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.StandardRouteSetRejection.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "User".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.User.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "QuestionDefinition".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.QuestionDefinition.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "GradeMethod".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.GradeMethod.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "DestinationArriveNotification".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.DestinationArriveNotification.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "SchedulerDeliveryWaveInstanceCriteria".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.SchedulerDeliveryWaveInstanceCriteria.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "ServiceTimeOverride".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.ServiceTimeOverride.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "ReserveResultType".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.ReserveResultType.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "DayOfWeek".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.DayOfWeek.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "StopCancelInfo".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.StopCancelInfo.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "StandardStopIdentity".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.StandardStopIdentity.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "RoutingSessionProperties".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.RoutingSessionProperties.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "PlanningLocationExtensionRejectCode".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.PlanningLocationExtensionRejectCode.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "PlanningSession".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.PlanningSession.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "SchedulerRebuildRoutesExOptions".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.SchedulerRebuildRoutesExOptions.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "OrderNote".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.OrderNote.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "TelematicsCachePositionCriteria".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.TelematicsCachePositionCriteria.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "RoutingRouteDailyStatsCriteria".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.RoutingRouteDailyStatsCriteria.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "StopDepartNotification".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.StopDepartNotification.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "ConfigurationItem".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.ConfigurationItem.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "DriverAlert".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.DriverAlert.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "RoutingPlanType".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.RoutingPlanType.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "CannedTextMessage".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.CannedTextMessage.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "RPDExitPointExceptionNotification".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.RPDExitPointExceptionNotification.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "UserDefinedColumnCriteria".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.UserDefinedColumnCriteria.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "SchedulerDeliveryWindowBase".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.SchedulerDeliveryWindowBase.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "DutyPeriodCriteria".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.DutyPeriodCriteria.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "RouteEventInfo".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.RouteEventInfo.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "ChangedOrderFinancialDetailIdentity".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.ChangedOrderFinancialDetailIdentity.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "BulkArriveDepartInfo".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.BulkArriveDepartInfo.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "RouteStartInfo".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.RouteStartInfo.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "HelperType".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.HelperType.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "RouteInfoRetrieveOptions".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.RouteInfoRetrieveOptions.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "NoGpsExceptionNotification".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.NoGpsExceptionNotification.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "MapExtents".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.MapExtents.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "PositionReasonCode".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.PositionReasonCode.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "ServiceTimeExceptionNotification".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.ServiceTimeExceptionNotification.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "ItemQuantities".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.ItemQuantities.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "Order".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.Order.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "StandardRouteIdentity".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.StandardRouteIdentity.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "RoutingImportOrderActivity".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.RoutingImportOrderActivity.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "OrderNoteCriteria".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.OrderNoteCriteria.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "TextAnswer".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.TextAnswer.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "RoutingOrder".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.RoutingOrder.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "GeocodeResult".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.GeocodeResult.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "SkuAvailability".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.SkuAvailability.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "RICRegionsWithPurchaseInfo".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.RICRegionsWithPurchaseInfo.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "EquipmentCriteria".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.EquipmentCriteria.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "ChangedStopIdentity".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.ChangedStopIdentity.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "StandardRouteDetailLevel".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.StandardRouteDetailLevel.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "ContainerEventType".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.ContainerEventType.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "RoutingImportOrderCriteria".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.RoutingImportOrderCriteria.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "UserDefinedFields".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.UserDefinedFields.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "UserDefinedDatum".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.UserDefinedDatum.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "OrderActivity".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.OrderActivity.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "LineItem".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.LineItem.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "OptionalDateTime".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.OptionalDateTime.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "DynamicWindowInfo".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.DynamicWindowInfo.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "PlanningUserDefinedFieldInfo".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.PlanningUserDefinedFieldInfo.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "StandardRouteSetCriteria".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.StandardRouteSetCriteria.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "DeliveryWaveAttributes".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.DeliveryWaveAttributes.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "UserDefinedRouteDataCriteria".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.UserDefinedRouteDataCriteria.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "DepotSkusAvailabilityCriteria".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.DepotSkusAvailabilityCriteria.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "ChangedDriverAlertIdentity".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.ChangedDriverAlertIdentity.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "ProductsPurchased".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.ProductsPurchased.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "UndeliverableStopCodeCriteria".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.UndeliverableStopCodeCriteria.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "OutOfSequenceExceptionNotification".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.OutOfSequenceExceptionNotification.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "RoutingReloadType".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.RoutingReloadType.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "StopSequenceInfo".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.StopSequenceInfo.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "AccountType".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.AccountType.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "UserDefinedIntegerDatum".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.UserDefinedIntegerDatum.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "DeliveryWaveInstanceIdentity".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.DeliveryWaveInstanceIdentity.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "RoutingTriggerType".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.RoutingTriggerType.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
                   "UserDefinedTableCriteria".equals(typeName)){
                    
                             return  com.freshdirect.routing.proxy.stub.transportation.UserDefinedTableCriteria.Factory.parse(reader);
@@ -2430,6 +780,16 @@
               
                   if (
                   "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "PickListAnswer".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.PickListAnswer.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
                   "UserDefinedTable".equals(typeName)){
                    
                             return  com.freshdirect.routing.proxy.stub.transportation.UserDefinedTable.Factory.parse(reader);
@@ -2450,9 +810,59 @@
               
                   if (
                   "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "PlanningSessionIdentity".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.PlanningSessionIdentity.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "WirelessProvider".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.WirelessProvider.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "TimeOffPlannedExceptionNotification".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.TimeOffPlannedExceptionNotification.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "DeliveryAreaOrderRetrieveOptions".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.DeliveryAreaOrderRetrieveOptions.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
                   "RoutingRouteInfoRetrieveOptions".equals(typeName)){
                    
                             return  com.freshdirect.routing.proxy.stub.transportation.RoutingRouteInfoRetrieveOptions.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "RouteCompleteInfo".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.RouteCompleteInfo.Factory.parse(reader);
                         
 
                   }
@@ -2500,6 +910,16 @@
               
                   if (
                   "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "ReserveResult".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.ReserveResult.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
                   "AutoArriveDepartOptions".equals(typeName)){
                    
                             return  com.freshdirect.routing.proxy.stub.transportation.AutoArriveDepartOptions.Factory.parse(reader);
@@ -2510,9 +930,19 @@
               
                   if (
                   "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "ReserveResult".equals(typeName)){
+                  "SchedulerSaveDeliveryWaveInstanceOptions".equals(typeName)){
                    
-                            return  com.freshdirect.routing.proxy.stub.transportation.ReserveResult.Factory.parse(reader);
+                            return  com.freshdirect.routing.proxy.stub.transportation.SchedulerSaveDeliveryWaveInstanceOptions.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "TimeDistResult".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.TimeDistResult.Factory.parse(reader);
                         
 
                   }
@@ -2540,9 +970,29 @@
               
                   if (
                   "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "RouteNoteIdentity".equals(typeName)){
+                  "DutyPeriodRetrieveOptions".equals(typeName)){
                    
-                            return  com.freshdirect.routing.proxy.stub.transportation.RouteNoteIdentity.Factory.parse(reader);
+                            return  com.freshdirect.routing.proxy.stub.transportation.DutyPeriodRetrieveOptions.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "SchedulerAnalyzeOptions".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.SchedulerAnalyzeOptions.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "TableType".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.TableType.Factory.parse(reader);
                         
 
                   }
@@ -2560,9 +1010,39 @@
               
                   if (
                   "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "RouteNoteIdentity".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.RouteNoteIdentity.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
                   "UserDefinedTableIdentity".equals(typeName)){
                    
                             return  com.freshdirect.routing.proxy.stub.transportation.UserDefinedTableIdentity.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "SapShipment".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.SapShipment.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "GPSNotification".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.GPSNotification.Factory.parse(reader);
                         
 
                   }
@@ -2580,9 +1060,29 @@
               
                   if (
                   "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "OrderIdentity".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.OrderIdentity.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
                   "RouteFilterType".equals(typeName)){
                    
                             return  com.freshdirect.routing.proxy.stub.transportation.RouteFilterType.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "ActivityIdentity".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.ActivityIdentity.Factory.parse(reader);
                         
 
                   }
@@ -2600,49 +1100,19 @@
               
                   if (
                   "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "StopCriteria".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.StopCriteria.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
                   "UserDefinedDataCriteria".equals(typeName)){
                    
                             return  com.freshdirect.routing.proxy.stub.transportation.UserDefinedDataCriteria.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "StandardRouteRetrieveOptions".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.StandardRouteRetrieveOptions.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "StationaryRoutePositionInfo".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.StationaryRoutePositionInfo.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "RouteNote".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.RouteNote.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "SchedulerDeleteDeliveryWindowOptions".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.SchedulerDeleteDeliveryWindowOptions.Factory.parse(reader);
                         
 
                   }
@@ -2660,9 +1130,39 @@
               
                   if (
                   "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "SchedulerDeleteDeliveryWindowOptions".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.SchedulerDeleteDeliveryWindowOptions.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "RouteNote".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.RouteNote.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
                   "PlanningLocationExtension".equals(typeName)){
                    
                             return  com.freshdirect.routing.proxy.stub.transportation.PlanningLocationExtension.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "StopArriveNotification".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.StopArriveNotification.Factory.parse(reader);
                         
 
                   }
@@ -2680,9 +1180,9 @@
               
                   if (
                   "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "StopArriveNotification".equals(typeName)){
+                  "Address".equals(typeName)){
                    
-                            return  com.freshdirect.routing.proxy.stub.transportation.StopArriveNotification.Factory.parse(reader);
+                            return  com.freshdirect.routing.proxy.stub.transportation.Address.Factory.parse(reader);
                         
 
                   }
@@ -2720,9 +1220,39 @@
               
                   if (
                   "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "StopSignatureInfo".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.StopSignatureInfo.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "DataType".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.DataType.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
                   "UpdateRouteETAsInfo".equals(typeName)){
                    
                             return  com.freshdirect.routing.proxy.stub.transportation.UpdateRouteETAsInfo.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "DriverCostInfo".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.DriverCostInfo.Factory.parse(reader);
                         
 
                   }
@@ -2740,9 +1270,9 @@
               
                   if (
                   "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "LineItemNote".equals(typeName)){
+                  "RoutingOrderActivity".equals(typeName)){
                    
-                            return  com.freshdirect.routing.proxy.stub.transportation.LineItemNote.Factory.parse(reader);
+                            return  com.freshdirect.routing.proxy.stub.transportation.RoutingOrderActivity.Factory.parse(reader);
                         
 
                   }
@@ -2750,9 +1280,9 @@
               
                   if (
                   "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "RoutingOrderActivity".equals(typeName)){
+                  "LineItemNote".equals(typeName)){
                    
-                            return  com.freshdirect.routing.proxy.stub.transportation.RoutingOrderActivity.Factory.parse(reader);
+                            return  com.freshdirect.routing.proxy.stub.transportation.LineItemNote.Factory.parse(reader);
                         
 
                   }
@@ -2780,6 +1310,16 @@
               
                   if (
                   "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "MarkerStyle".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.MarkerStyle.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
                   "DeliveryDetailInfo".equals(typeName)){
                    
                             return  com.freshdirect.routing.proxy.stub.transportation.DeliveryDetailInfo.Factory.parse(reader);
@@ -2790,9 +1330,9 @@
               
                   if (
                   "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "LocationServiceStats".equals(typeName)){
+                  "Driver".equals(typeName)){
                    
-                            return  com.freshdirect.routing.proxy.stub.transportation.LocationServiceStats.Factory.parse(reader);
+                            return  com.freshdirect.routing.proxy.stub.transportation.Driver.Factory.parse(reader);
                         
 
                   }
@@ -2830,9 +1370,39 @@
               
                   if (
                   "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "TimeWindowOptions".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.TimeWindowOptions.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
                   "SurveyAnswer".equals(typeName)){
                    
                             return  com.freshdirect.routing.proxy.stub.transportation.SurveyAnswer.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "RoutingRouteIdentity".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.RoutingRouteIdentity.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "UndeliverableStopCode".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.UndeliverableStopCode.Factory.parse(reader);
                         
 
                   }
@@ -2850,9 +1420,19 @@
               
                   if (
                   "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "UndeliverableStopCode".equals(typeName)){
+                  "SkuCriteria".equals(typeName)){
                    
-                            return  com.freshdirect.routing.proxy.stub.transportation.UndeliverableStopCode.Factory.parse(reader);
+                            return  com.freshdirect.routing.proxy.stub.transportation.SkuCriteria.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "PlanningTerritoryCriteria".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.PlanningTerritoryCriteria.Factory.parse(reader);
                         
 
                   }
@@ -2880,9 +1460,69 @@
               
                   if (
                   "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "RoutingStopIdentity".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.RoutingStopIdentity.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "SessionType".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.SessionType.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "RoutingImportLineItem".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.RoutingImportLineItem.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "ContainerServiceType".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.ContainerServiceType.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
                   "SchedulerBalanceRoutesOptions".equals(typeName)){
                    
                             return  com.freshdirect.routing.proxy.stub.transportation.SchedulerBalanceRoutesOptions.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "Notification".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.Notification.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "Consignee".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.Consignee.Factory.parse(reader);
                         
 
                   }
@@ -2900,9 +1540,59 @@
               
                   if (
                   "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "QuantityReasonCode".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.QuantityReasonCode.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "DutyPeriodViolationException".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.DutyPeriodViolationException.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "RoutingLineItemIdentity".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.RoutingLineItemIdentity.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
                   "StopCancelCodeCriteria".equals(typeName)){
                    
                             return  com.freshdirect.routing.proxy.stub.transportation.StopCancelCodeCriteria.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "DeliveryWaveInstance".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.DeliveryWaveInstance.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "ChangedOrderContainerIdentity".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.ChangedOrderContainerIdentity.Factory.parse(reader);
                         
 
                   }
@@ -2920,6 +1610,36 @@
               
                   if (
                   "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "SchedulerRetrieveFeederRoutesOptions".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.SchedulerRetrieveFeederRoutesOptions.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "LineItemIdentity".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.LineItemIdentity.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "UserExceptionNotification".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.UserExceptionNotification.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
                   "PlanningRoute".equals(typeName)){
                    
                             return  com.freshdirect.routing.proxy.stub.transportation.PlanningRoute.Factory.parse(reader);
@@ -2930,19 +1650,9 @@
               
                   if (
                   "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "RoutingDetailLevel".equals(typeName)){
+                  "QuantityReasonCodeCriteria".equals(typeName)){
                    
-                            return  com.freshdirect.routing.proxy.stub.transportation.RoutingDetailLevel.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "SaveLocationsExOptions".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.SaveLocationsExOptions.Factory.parse(reader);
+                            return  com.freshdirect.routing.proxy.stub.transportation.QuantityReasonCodeCriteria.Factory.parse(reader);
                         
 
                   }
@@ -2960,9 +1670,39 @@
               
                   if (
                   "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "SaveLocationsExOptions".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.SaveLocationsExOptions.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "RoutingDetailLevel".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.RoutingDetailLevel.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
                   "RoutingRoute".equals(typeName)){
                    
                             return  com.freshdirect.routing.proxy.stub.transportation.RoutingRoute.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "UnitSpeed".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.UnitSpeed.Factory.parse(reader);
                         
 
                   }
@@ -2990,6 +1730,26 @@
               
                   if (
                   "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "RoutePathDeviationExceptionNotification".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.RoutePathDeviationExceptionNotification.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "SchedulerUpdateOrderOptions".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.SchedulerUpdateOrderOptions.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
                   "DutyPeriod".equals(typeName)){
                    
                             return  com.freshdirect.routing.proxy.stub.transportation.DutyPeriod.Factory.parse(reader);
@@ -3000,9 +1760,29 @@
               
                   if (
                   "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "StandardRouteRejection".equals(typeName)){
+                  "RouteDailyStatsRetrieveOptions".equals(typeName)){
                    
-                            return  com.freshdirect.routing.proxy.stub.transportation.StandardRouteRejection.Factory.parse(reader);
+                            return  com.freshdirect.routing.proxy.stub.transportation.RouteDailyStatsRetrieveOptions.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "UnitDistance".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.UnitDistance.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "Region".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.Region.Factory.parse(reader);
                         
 
                   }
@@ -3013,6 +1793,26 @@
                   "PlanningTerritoryDetailLevel".equals(typeName)){
                    
                             return  com.freshdirect.routing.proxy.stub.transportation.PlanningTerritoryDetailLevel.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "SchedulerReloadWaveInstancesOptions".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.SchedulerReloadWaveInstancesOptions.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "TimeZoneOptionsType".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.TimeZoneOptionsType.Factory.parse(reader);
                         
 
                   }
@@ -3070,9 +1870,39 @@
               
                   if (
                   "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "OriginDepartInfo".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.OriginDepartInfo.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
                   "UnplannedStopExceptionNotification".equals(typeName)){
                    
                             return  com.freshdirect.routing.proxy.stub.transportation.UnplannedStopExceptionNotification.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "Survey".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.Survey.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "PlacementCost".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.PlacementCost.Factory.parse(reader);
                         
 
                   }
@@ -3090,6 +1920,26 @@
               
                   if (
                   "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "StopCancelCodeIdentity".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.StopCancelCodeIdentity.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "DeliveryAreaRouteCriteria".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.DeliveryAreaRouteCriteria.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
                   "SurveyAnswerType".equals(typeName)){
                    
                             return  com.freshdirect.routing.proxy.stub.transportation.SurveyAnswerType.Factory.parse(reader);
@@ -3100,9 +1950,19 @@
               
                   if (
                   "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "StopCancelCodeIdentity".equals(typeName)){
+                  "ReportCriteria".equals(typeName)){
                    
-                            return  com.freshdirect.routing.proxy.stub.transportation.StopCancelCodeIdentity.Factory.parse(reader);
+                            return  com.freshdirect.routing.proxy.stub.transportation.ReportCriteria.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "DeliveryAreaRouteIdentity".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.DeliveryAreaRouteIdentity.Factory.parse(reader);
                         
 
                   }
@@ -3130,6 +1990,26 @@
               
                   if (
                   "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "ChangedOrderIdentity".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.ChangedOrderIdentity.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "SurveyQuestionsResult".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.SurveyQuestionsResult.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
                   "CannedTextMessageIdentity".equals(typeName)){
                    
                             return  com.freshdirect.routing.proxy.stub.transportation.CannedTextMessageIdentity.Factory.parse(reader);
@@ -3150,9 +2030,19 @@
               
                   if (
                   "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "DepotSkusAvailability".equals(typeName)){
+                  "StartCompleteExceptionType".equals(typeName)){
                    
-                            return  com.freshdirect.routing.proxy.stub.transportation.DepotSkusAvailability.Factory.parse(reader);
+                            return  com.freshdirect.routing.proxy.stub.transportation.StartCompleteExceptionType.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "UserPermissions".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.UserPermissions.Factory.parse(reader);
                         
 
                   }
@@ -3163,6 +2053,16 @@
                   "SurveyIdentity".equals(typeName)){
                    
                             return  com.freshdirect.routing.proxy.stub.transportation.SurveyIdentity.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "DepotSkusAvailability".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.DepotSkusAvailability.Factory.parse(reader);
                         
 
                   }
@@ -3183,6 +2083,26 @@
                   "DeliveryCost".equals(typeName)){
                    
                             return  com.freshdirect.routing.proxy.stub.transportation.DeliveryCost.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "RetrievePlanningLocationExtensionsOptions".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.RetrievePlanningLocationExtensionsOptions.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "SkuAvailabilityCriteria".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.SkuAvailabilityCriteria.Factory.parse(reader);
                         
 
                   }
@@ -3220,9 +2140,9 @@
               
                   if (
                   "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "LocationServiceStatsCriteria".equals(typeName)){
+                  "RoutingRouteStatus".equals(typeName)){
                    
-                            return  com.freshdirect.routing.proxy.stub.transportation.LocationServiceStatsCriteria.Factory.parse(reader);
+                            return  com.freshdirect.routing.proxy.stub.transportation.RoutingRouteStatus.Factory.parse(reader);
                         
 
                   }
@@ -3240,9 +2160,29 @@
               
                   if (
                   "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "PositionHistory".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.PositionHistory.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
                   "ImageType".equals(typeName)){
                    
                             return  com.freshdirect.routing.proxy.stub.transportation.ImageType.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "UserDefinedStringDatum".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.UserDefinedStringDatum.Factory.parse(reader);
                         
 
                   }
@@ -3270,6 +2210,66 @@
               
                   if (
                   "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "LateGpsExceptionNotification".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.LateGpsExceptionNotification.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "TextMessageInfo".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.TextMessageInfo.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "SchedulerDeliveryWindowMetrics".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.SchedulerDeliveryWindowMetrics.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "RouteEventSource".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.RouteEventSource.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "UserDefinedColumnIdentity".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.UserDefinedColumnIdentity.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "StopRedeliverInfo".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.StopRedeliverInfo.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
                   "RoutingSessionCriteria".equals(typeName)){
                    
                             return  com.freshdirect.routing.proxy.stub.transportation.RoutingSessionCriteria.Factory.parse(reader);
@@ -3280,9 +2280,49 @@
               
                   if (
                   "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "RoutingEquipmentIdentity".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.RoutingEquipmentIdentity.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "RoutingImportOrder".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.RoutingImportOrder.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "SurveyDetails".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.SurveyDetails.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
                   "MassStopSequenceInfo".equals(typeName)){
                    
                             return  com.freshdirect.routing.proxy.stub.transportation.MassStopSequenceInfo.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "UndeliverableStopCodeIdentity".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.UndeliverableStopCodeIdentity.Factory.parse(reader);
                         
 
                   }
@@ -3310,6 +2350,16 @@
               
                   if (
                   "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "LocationIdentity".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.LocationIdentity.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
                   "Route".equals(typeName)){
                    
                             return  com.freshdirect.routing.proxy.stub.transportation.Route.Factory.parse(reader);
@@ -3330,6 +2380,16 @@
               
                   if (
                   "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "DeliveryDetailNotification".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.DeliveryDetailNotification.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
                   "StopNoteCriteria".equals(typeName)){
                    
                             return  com.freshdirect.routing.proxy.stub.transportation.StopNoteCriteria.Factory.parse(reader);
@@ -3340,9 +2400,29 @@
               
                   if (
                   "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "PlanningTerritory".equals(typeName)){
+                  "RoutingImportOrderRejectCode".equals(typeName)){
                    
-                            return  com.freshdirect.routing.proxy.stub.transportation.PlanningTerritory.Factory.parse(reader);
+                            return  com.freshdirect.routing.proxy.stub.transportation.RoutingImportOrderRejectCode.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "PathDirections".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.PathDirections.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "EventReceiptExceptionNotification".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.EventReceiptExceptionNotification.Factory.parse(reader);
                         
 
                   }
@@ -3360,6 +2440,36 @@
               
                   if (
                   "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "PlanningTerritory".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.PlanningTerritory.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "NotificationCriteria".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.NotificationCriteria.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "SuggestRouteOptions".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.SuggestRouteOptions.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
                   "CarbonDisplayUnits".equals(typeName)){
                    
                             return  com.freshdirect.routing.proxy.stub.transportation.CarbonDisplayUnits.Factory.parse(reader);
@@ -3370,9 +2480,9 @@
               
                   if (
                   "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "ActiveAlertRecipientType".equals(typeName)){
+                  "RegionCriteria".equals(typeName)){
                    
-                            return  com.freshdirect.routing.proxy.stub.transportation.ActiveAlertRecipientType.Factory.parse(reader);
+                            return  com.freshdirect.routing.proxy.stub.transportation.RegionCriteria.Factory.parse(reader);
                         
 
                   }
@@ -3383,6 +2493,26 @@
                   "NumericAnswer".equals(typeName)){
                    
                             return  com.freshdirect.routing.proxy.stub.transportation.NumericAnswer.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "SchedulerMovableOrdersCriteria".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.SchedulerMovableOrdersCriteria.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "PlanningLocationExtensionCriteria".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.PlanningLocationExtensionCriteria.Factory.parse(reader);
                         
 
                   }
@@ -3403,6 +2533,16 @@
                   "EquipmentTypeCriteria".equals(typeName)){
                    
                             return  com.freshdirect.routing.proxy.stub.transportation.EquipmentTypeCriteria.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "RoutingOrderType".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.RoutingOrderType.Factory.parse(reader);
                         
 
                   }
@@ -3440,9 +2580,59 @@
               
                   if (
                   "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "WirelessDeviceIdentity".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.WirelessDeviceIdentity.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "RouteStartNotification".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.RouteStartNotification.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "SurveyResult".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.SurveyResult.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "LineItemNoteCriteria".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.LineItemNoteCriteria.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
                   "DeliveryAreaOrder".equals(typeName)){
                    
                             return  com.freshdirect.routing.proxy.stub.transportation.DeliveryAreaOrder.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "UserDefinedBooleanDatum".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.UserDefinedBooleanDatum.Factory.parse(reader);
                         
 
                   }
@@ -3460,9 +2650,9 @@
               
                   if (
                   "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "ActiveAlertRecipient".equals(typeName)){
+                  "DeliveryAreaRouteRetrieveOptions".equals(typeName)){
                    
-                            return  com.freshdirect.routing.proxy.stub.transportation.ActiveAlertRecipient.Factory.parse(reader);
+                            return  com.freshdirect.routing.proxy.stub.transportation.DeliveryAreaRouteRetrieveOptions.Factory.parse(reader);
                         
 
                   }
@@ -3510,6 +2700,46 @@
               
                   if (
                   "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "DeliveryWindow".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.DeliveryWindow.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "TelematicsCachePositionInfo".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.TelematicsCachePositionInfo.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "ReportType".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.ReportType.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "TimeWindowOverride".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.TimeWindowOverride.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
                   "Quantities".equals(typeName)){
                    
                             return  com.freshdirect.routing.proxy.stub.transportation.Quantities.Factory.parse(reader);
@@ -3520,9 +2750,9 @@
               
                   if (
                   "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "RoutingStop".equals(typeName)){
+                  "StopDeliveryDetailItem".equals(typeName)){
                    
-                            return  com.freshdirect.routing.proxy.stub.transportation.RoutingStop.Factory.parse(reader);
+                            return  com.freshdirect.routing.proxy.stub.transportation.StopDeliveryDetailItem.Factory.parse(reader);
                         
 
                   }
@@ -3540,6 +2770,26 @@
               
                   if (
                   "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "RoutingStop".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.RoutingStop.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "SchedulerSaveDeliveryWindowOptions".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.SchedulerSaveDeliveryWindowOptions.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
                   "SkuAvailabilityIdentity".equals(typeName)){
                    
                             return  com.freshdirect.routing.proxy.stub.transportation.SkuAvailabilityIdentity.Factory.parse(reader);
@@ -3550,9 +2800,39 @@
               
                   if (
                   "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "StopCancelNotification".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.StopCancelNotification.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
                   "OSDMonitoringExceptionNotification".equals(typeName)){
                    
                             return  com.freshdirect.routing.proxy.stub.transportation.OSDMonitoringExceptionNotification.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "DataQualityType".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.DataQualityType.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "StopArriveInfo".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.StopArriveInfo.Factory.parse(reader);
                         
 
                   }
@@ -3580,6 +2860,16 @@
               
                   if (
                   "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "EarlyArrivalExceptionNotification".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.EarlyArrivalExceptionNotification.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
                   "StopCancelCode".equals(typeName)){
                    
                             return  com.freshdirect.routing.proxy.stub.transportation.StopCancelCode.Factory.parse(reader);
@@ -3590,9 +2880,9 @@
               
                   if (
                   "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "ReasonCodes".equals(typeName)){
+                  "DriverCancelExceptionNotification".equals(typeName)){
                    
-                            return  com.freshdirect.routing.proxy.stub.transportation.ReasonCodes.Factory.parse(reader);
+                            return  com.freshdirect.routing.proxy.stub.transportation.DriverCancelExceptionNotification.Factory.parse(reader);
                         
 
                   }
@@ -3610,9 +2900,29 @@
               
                   if (
                   "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "ReasonCodes".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.ReasonCodes.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
                   "UserDefinedRouteData".equals(typeName)){
                    
                             return  com.freshdirect.routing.proxy.stub.transportation.UserDefinedRouteData.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "Employee".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.Employee.Factory.parse(reader);
                         
 
                   }
@@ -3630,6 +2940,16 @@
               
                   if (
                   "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "SkuIdentity".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.SkuIdentity.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
                   "DirectionArc".equals(typeName)){
                    
                             return  com.freshdirect.routing.proxy.stub.transportation.DirectionArc.Factory.parse(reader);
@@ -3640,9 +2960,49 @@
               
                   if (
                   "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "EmployeeRouteStatsCriteria".equals(typeName)){
+                  "PositionHistoryCriteria".equals(typeName)){
                    
-                            return  com.freshdirect.routing.proxy.stub.transportation.EmployeeRouteStatsCriteria.Factory.parse(reader);
+                            return  com.freshdirect.routing.proxy.stub.transportation.PositionHistoryCriteria.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "RegionOptions".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.RegionOptions.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "RoutingStopCriteria".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.RoutingStopCriteria.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "ReportIdentity".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.ReportIdentity.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "SchedulerIdentity".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity.Factory.parse(reader);
                         
 
                   }
@@ -3660,19 +3020,9 @@
               
                   if (
                   "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "DeliveryCostAttributes".equals(typeName)){
+                  "OrdersSentNotification".equals(typeName)){
                    
-                            return  com.freshdirect.routing.proxy.stub.transportation.DeliveryCostAttributes.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "ContainerIdentity".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.ContainerIdentity.Factory.parse(reader);
+                            return  com.freshdirect.routing.proxy.stub.transportation.OrdersSentNotification.Factory.parse(reader);
                         
 
                   }
@@ -3690,6 +3040,26 @@
               
                   if (
                   "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "ContainerIdentity".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.ContainerIdentity.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "DeliveryCostAttributes".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.DeliveryCostAttributes.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
                   "SchedulerUpdateOrderFailedNotification".equals(typeName)){
                    
                             return  com.freshdirect.routing.proxy.stub.transportation.SchedulerUpdateOrderFailedNotification.Factory.parse(reader);
@@ -3700,9 +3070,19 @@
               
                   if (
                   "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "StandardRoute".equals(typeName)){
+                  "PlanningSessionCriteria".equals(typeName)){
                    
-                            return  com.freshdirect.routing.proxy.stub.transportation.StandardRoute.Factory.parse(reader);
+                            return  com.freshdirect.routing.proxy.stub.transportation.PlanningSessionCriteria.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "RouteNonEventInfo".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.RouteNonEventInfo.Factory.parse(reader);
                         
 
                   }
@@ -3720,6 +3100,16 @@
               
                   if (
                   "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "User".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.User.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
                   "RouteIdentity".equals(typeName)){
                    
                             return  com.freshdirect.routing.proxy.stub.transportation.RouteIdentity.Factory.parse(reader);
@@ -3730,9 +3120,39 @@
               
                   if (
                   "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "QuestionDefinition".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.QuestionDefinition.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "GradeMethod".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.GradeMethod.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
                   "PlanningSessionProperties".equals(typeName)){
                    
                             return  com.freshdirect.routing.proxy.stub.transportation.PlanningSessionProperties.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "DestinationArriveNotification".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.DestinationArriveNotification.Factory.parse(reader);
                         
 
                   }
@@ -3760,6 +3180,26 @@
               
                   if (
                   "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "SchedulerDeliveryWaveInstanceCriteria".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.SchedulerDeliveryWaveInstanceCriteria.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "ServiceTimeOverride".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.ServiceTimeOverride.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
                   "TimeZoneOptions".equals(typeName)){
                    
                             return  com.freshdirect.routing.proxy.stub.transportation.TimeZoneOptions.Factory.parse(reader);
@@ -3770,9 +3210,29 @@
               
                   if (
                   "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "DayOfWeek".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.DayOfWeek.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
                   "PlanningUserDefinedField".equals(typeName)){
                    
                             return  com.freshdirect.routing.proxy.stub.transportation.PlanningUserDefinedField.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "ReserveResultType".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.ReserveResultType.Factory.parse(reader);
                         
 
                   }
@@ -3810,9 +3270,69 @@
               
                   if (
                   "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "StandardRouteOverride".equals(typeName)){
+                  "StopCancelInfo".equals(typeName)){
                    
-                            return  com.freshdirect.routing.proxy.stub.transportation.StandardRouteOverride.Factory.parse(reader);
+                            return  com.freshdirect.routing.proxy.stub.transportation.StopCancelInfo.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "RoutingSessionProperties".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.RoutingSessionProperties.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "PlanningLocationExtensionRejectCode".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.PlanningLocationExtensionRejectCode.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "PlanningSession".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.PlanningSession.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "SchedulerRebuildRoutesExOptions".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.SchedulerRebuildRoutesExOptions.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "TelematicsCachePositionCriteria".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.TelematicsCachePositionCriteria.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "OrderNote".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.OrderNote.Factory.parse(reader);
                         
 
                   }
@@ -3823,6 +3343,26 @@
                   "PlanningLocationExtensionDetailLevel".equals(typeName)){
                    
                             return  com.freshdirect.routing.proxy.stub.transportation.PlanningLocationExtensionDetailLevel.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "StopDepartNotification".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.StopDepartNotification.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "RoutingRouteDailyStatsCriteria".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.RoutingRouteDailyStatsCriteria.Factory.parse(reader);
                         
 
                   }
@@ -3870,9 +3410,89 @@
               
                   if (
                   "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "ConfigurationItem".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.ConfigurationItem.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "DriverAlert".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.DriverAlert.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "RoutingPlanType".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.RoutingPlanType.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
                   "PlanningStopDetail".equals(typeName)){
                    
                             return  com.freshdirect.routing.proxy.stub.transportation.PlanningStopDetail.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "CannedTextMessage".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.CannedTextMessage.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "RPDExitPointExceptionNotification".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.RPDExitPointExceptionNotification.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "UserDefinedColumnCriteria".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.UserDefinedColumnCriteria.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "SchedulerDeliveryWindowBase".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.SchedulerDeliveryWindowBase.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "DutyPeriodCriteria".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.DutyPeriodCriteria.Factory.parse(reader);
                         
 
                   }
@@ -3890,6 +3510,46 @@
               
                   if (
                   "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "ChangedOrderFinancialDetailIdentity".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.ChangedOrderFinancialDetailIdentity.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "RouteEventInfo".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.RouteEventInfo.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "BulkArriveDepartInfo".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.BulkArriveDepartInfo.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "RouteStartInfo".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.RouteStartInfo.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
                   "SchedulerBulkReserveOrdersOptions".equals(typeName)){
                    
                             return  com.freshdirect.routing.proxy.stub.transportation.SchedulerBulkReserveOrdersOptions.Factory.parse(reader);
@@ -3900,9 +3560,39 @@
               
                   if (
                   "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "HelperType".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.HelperType.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "RouteInfoRetrieveOptions".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.RouteInfoRetrieveOptions.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
                   "DutyPeriodIdentity".equals(typeName)){
                    
                             return  com.freshdirect.routing.proxy.stub.transportation.DutyPeriodIdentity.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "NoGpsExceptionNotification".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.NoGpsExceptionNotification.Factory.parse(reader);
                         
 
                   }
@@ -3940,9 +3630,9 @@
               
                   if (
                   "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "AccountTypeIdentity".equals(typeName)){
+                  "MapExtents".equals(typeName)){
                    
-                            return  com.freshdirect.routing.proxy.stub.transportation.AccountTypeIdentity.Factory.parse(reader);
+                            return  com.freshdirect.routing.proxy.stub.transportation.MapExtents.Factory.parse(reader);
                         
 
                   }

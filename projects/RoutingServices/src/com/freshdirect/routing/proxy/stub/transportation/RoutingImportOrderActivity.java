@@ -61,37 +61,6 @@
                                }
                             
 
-                        /**
-                        * field for ActivitySequence
-                        */
-
-                        
-                                    protected double localActivitySequence =
-                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToDouble("-1.000000");
-                                
-
-                           /**
-                           * Auto generated getter method
-                           * @return double
-                           */
-                           public  double getActivitySequence(){
-                               return localActivitySequence;
-                           }
-
-                           
-                        
-                            /**
-                               * Auto generated setter method
-                               * @param param ActivitySequence
-                               */
-                               public void setActivitySequence(double param){
-                            
-                                            this.localActivitySequence=param;
-                                    
-
-                               }
-                            
-
      /**
      * isReaderMTOMAware
      * @return true if the reader supports MTOM
@@ -220,35 +189,6 @@
                                                    xmlWriter.writeCharacters(localActivityId);
                                             
                                           }
-                                    
-                                   xmlWriter.writeEndElement();
-                             
-                                    namespace = "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService";
-                                    if (! namespace.equals("")) {
-                                        prefix = xmlWriter.getPrefix(namespace);
-
-                                        if (prefix == null) {
-                                            prefix = generatePrefix(namespace);
-
-                                            xmlWriter.writeStartElement(prefix,"activitySequence", namespace);
-                                            xmlWriter.writeNamespace(prefix, namespace);
-                                            xmlWriter.setPrefix(prefix, namespace);
-
-                                        } else {
-                                            xmlWriter.writeStartElement(namespace,"activitySequence");
-                                        }
-
-                                    } else {
-                                        xmlWriter.writeStartElement("activitySequence");
-                                    }
-                                
-                                               if (java.lang.Double.isNaN(localActivitySequence)) {
-                                           
-                                                         throw new org.apache.axis2.databinding.ADBException("activitySequence cannot be null!!");
-                                                      
-                                               } else {
-                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localActivitySequence));
-                                               }
                                     
                                    xmlWriter.writeEndElement();
                              
@@ -423,12 +363,6 @@
                                            throw new org.apache.axis2.databinding.ADBException("activityId cannot be null!!");
                                         }
                                     
-                                      elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
-                                                                      "activitySequence"));
-                                 
-                                elementList.add(
-                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localActivitySequence));
-                            
 
                 return new org.apache.axis2.databinding.utils.reader.ADBXMLStreamReaderImpl(qName, elementList.toArray(), attribList.toArray());
             
@@ -513,25 +447,6 @@
                                     
                                               object.setActivityId(
                                                     org.apache.axis2.databinding.utils.ConverterUtil.convertToString(content));
-                                              
-                                        reader.next();
-                                    
-                              }  // End of if for expected property start element
-                                
-                                else{
-                                    // A start element we are not expecting indicates an invalid parameter was passed
-                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
-                                }
-                            
-                                    
-                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
-                                
-                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","activitySequence").equals(reader.getName())){
-                                
-                                    java.lang.String content = reader.getElementText();
-                                    
-                                              object.setActivitySequence(
-                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToDouble(content));
                                               
                                         reader.next();
                                     

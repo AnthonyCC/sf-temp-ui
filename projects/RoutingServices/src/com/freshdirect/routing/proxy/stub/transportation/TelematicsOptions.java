@@ -32,36 +32,6 @@
         
 
                         /**
-                        * field for AllowEnvironmentOverride
-                        */
-
-                        
-                                    protected boolean localAllowEnvironmentOverride ;
-                                
-
-                           /**
-                           * Auto generated getter method
-                           * @return boolean
-                           */
-                           public  boolean getAllowEnvironmentOverride(){
-                               return localAllowEnvironmentOverride;
-                           }
-
-                           
-                        
-                            /**
-                               * Auto generated setter method
-                               * @param param AllowEnvironmentOverride
-                               */
-                               public void setAllowEnvironmentOverride(boolean param){
-                            
-                                            this.localAllowEnvironmentOverride=param;
-                                    
-
-                               }
-                            
-
-                        /**
                         * field for AutoArriveDepartOptions
                         */
 
@@ -245,36 +215,7 @@
 
                
                    }
-               
-                                    namespace = "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService";
-                                    if (! namespace.equals("")) {
-                                        prefix = xmlWriter.getPrefix(namespace);
-
-                                        if (prefix == null) {
-                                            prefix = generatePrefix(namespace);
-
-                                            xmlWriter.writeStartElement(prefix,"allowEnvironmentOverride", namespace);
-                                            xmlWriter.writeNamespace(prefix, namespace);
-                                            xmlWriter.setPrefix(prefix, namespace);
-
-                                        } else {
-                                            xmlWriter.writeStartElement(namespace,"allowEnvironmentOverride");
-                                        }
-
-                                    } else {
-                                        xmlWriter.writeStartElement("allowEnvironmentOverride");
-                                    }
-                                
-                                               if (false) {
-                                           
-                                                         throw new org.apache.axis2.databinding.ADBException("allowEnvironmentOverride cannot be null!!");
-                                                      
-                                               } else {
-                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localAllowEnvironmentOverride));
-                                               }
-                                    
-                                   xmlWriter.writeEndElement();
-                              if (localAutoArriveDepartOptionsTracker){
+                if (localAutoArriveDepartOptionsTracker){
                                     if (localAutoArriveDepartOptions==null){
 
                                             java.lang.String namespace2 = "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService";
@@ -498,13 +439,7 @@
                  java.util.ArrayList elementList = new java.util.ArrayList();
                  java.util.ArrayList attribList = new java.util.ArrayList();
 
-                
-                                      elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
-                                                                      "allowEnvironmentOverride"));
-                                 
-                                elementList.add(
-                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localAllowEnvironmentOverride));
-                             if (localAutoArriveDepartOptionsTracker){
+                 if (localAutoArriveDepartOptionsTracker){
                             elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
                                                                       "autoArriveDepartOptions"));
                             
@@ -594,25 +529,6 @@
                     
                     reader.next();
                 
-                                    
-                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
-                                
-                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","allowEnvironmentOverride").equals(reader.getName())){
-                                
-                                    java.lang.String content = reader.getElementText();
-                                    
-                                              object.setAllowEnvironmentOverride(
-                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToBoolean(content));
-                                              
-                                        reader.next();
-                                    
-                              }  // End of if for expected property start element
-                                
-                                else{
-                                    // A start element we are not expecting indicates an invalid parameter was passed
-                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
-                                }
-                            
                                     
                                     while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
                                 

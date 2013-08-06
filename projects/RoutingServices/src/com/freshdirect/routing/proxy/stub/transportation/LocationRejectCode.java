@@ -68,15 +68,6 @@
                                     public static final java.lang.String _lrcInvalidTimeWindowType =
                                         org.apache.axis2.databinding.utils.ConverterUtil.convertToString("lrcInvalidTimeWindowType");
                                 
-                                    public static final java.lang.String _lrcInvalidRegionID =
-                                        org.apache.axis2.databinding.utils.ConverterUtil.convertToString("lrcInvalidRegionID");
-                                
-                                    public static final java.lang.String _lrcCantDeleteInUse =
-                                        org.apache.axis2.databinding.utils.ConverterUtil.convertToString("lrcCantDeleteInUse");
-                                
-                                    public static final java.lang.String _lrcCantDeleteDoesNotExist =
-                                        org.apache.axis2.databinding.utils.ConverterUtil.convertToString("lrcCantDeleteDoesNotExist");
-                                
                                 public static final LocationRejectCode lrcDatabaseError =
                                     new LocationRejectCode(_lrcDatabaseError,true);
                             
@@ -91,15 +82,6 @@
                             
                                 public static final LocationRejectCode lrcInvalidTimeWindowType =
                                     new LocationRejectCode(_lrcInvalidTimeWindowType,true);
-                            
-                                public static final LocationRejectCode lrcInvalidRegionID =
-                                    new LocationRejectCode(_lrcInvalidRegionID,true);
-                            
-                                public static final LocationRejectCode lrcCantDeleteInUse =
-                                    new LocationRejectCode(_lrcCantDeleteInUse,true);
-                            
-                                public static final LocationRejectCode lrcCantDeleteDoesNotExist =
-                                    new LocationRejectCode(_lrcCantDeleteDoesNotExist,true);
                             
 
                                 public java.lang.String getValue() { return localLocationRejectCode;}
