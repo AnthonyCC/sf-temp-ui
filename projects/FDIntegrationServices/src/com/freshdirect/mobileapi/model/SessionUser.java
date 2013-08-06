@@ -14,6 +14,7 @@ import com.freshdirect.customer.EnumSaleType;
 import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpCustomerInfoModel;
 import com.freshdirect.customer.ErpPaymentMethodI;
+import com.freshdirect.customer.OrderHistoryI;
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.FDReservation;
 import com.freshdirect.fdstore.FDResourceException;
@@ -578,5 +579,26 @@ public class SessionUser {
 	}
 	public void setRefreshCouponWalletRequired(boolean refreshCouponWalletRequired) {
 		sessionUser.setRefreshCouponWalletRequired(refreshCouponWalletRequired);
-	}	
+	}
+	
+	public EnumServiceType getSelectedServiceType() {
+    	return sessionUser.getSelectedServiceType();
+    }
+	
+	public String getCohort() {
+		return sessionUser.getCohortName();
+	}
+	
+	public int getTotalOrderCount() {
+		try {
+			OrderHistoryI _history = sessionUser.getOrderHistory();
+			if(_history != null) {
+				return _history.getTotalOrderCount();
+			}
+		} catch (FDResourceException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		};
+		return 0;
+	}
 }

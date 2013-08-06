@@ -30,6 +30,11 @@ public class LoggedIn extends Message {
     
     private int orderCount;
     
+    //Added during Mobile Coremetrics Implementation
+    private String selectedServiceType;
+    private String cohort;
+    private int totalOrderCount;
+    
     private String fdUserId;
     
     public String getFdUserId() {
@@ -122,5 +127,30 @@ public class LoggedIn extends Message {
 
 	public void setBrowseEnabled(boolean isBrowseEnabled) {
 		this.isBrowseEnabled = isBrowseEnabled;
+	}
+
+	public String getSelectedServiceType() {
+		return selectedServiceType;
+	}
+
+	public void setSelectedServiceType(String selectedServiceType) {
+		this.selectedServiceType = selectedServiceType;
+	}
+
+	public String getCohort() {
+		return cohort;
+	}
+
+	public void setCohort(String cohort) {
+		this.cohort = cohort;
+	}
+
+	public int getTotalOrderCount() {
+		return totalOrderCount;
+	}
+
+	public void setTotalOrderCount(int totalOrderCount) {
+		this.totalOrderCount = totalOrderCount;
 	}   
+		
 }
