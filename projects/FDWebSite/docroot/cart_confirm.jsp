@@ -40,7 +40,9 @@ final int W_CART_CONFIRM_TOTAL = 590;
 
 
 
-<%    ProductModel productNode=null;   
+<%    
+      request.setAttribute("isCartConfirmPage", "true");
+      ProductModel productNode=null;   
       List orderLineItems = new ArrayList();
       String jspTemplate=null;
       String catIdParam       = request.getParameter("catId");
