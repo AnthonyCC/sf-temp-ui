@@ -4,12 +4,10 @@ import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Enumeration;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Category;
 import org.codehaus.jackson.JsonGenerationException;
@@ -23,7 +21,6 @@ import com.freshdirect.fdstore.customer.FDAuthenticationException;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.PasswordNotExpiredException;
 import com.freshdirect.framework.util.log.LoggerFactory;
-import com.freshdirect.framework.webapp.ActionError;
 import com.freshdirect.mobileapi.controller.data.Message;
 import com.freshdirect.mobileapi.controller.data.request.Login;
 import com.freshdirect.mobileapi.controller.data.response.LoggedIn;
@@ -37,7 +34,6 @@ import com.freshdirect.mobileapi.model.SessionUser;
 import com.freshdirect.mobileapi.model.User;
 import com.freshdirect.mobileapi.service.ServiceException;
 import com.freshdirect.mobileapi.util.MobileApiProperties;
-import com.freshdirect.webapp.taglib.fdstore.CookieMonster;
 import com.freshdirect.webapp.taglib.fdstore.FDCustomerCouponUtil;
 import com.freshdirect.webapp.taglib.fdstore.SystemMessageList;
 import com.freshdirect.webapp.taglib.fdstore.UserUtil;
@@ -213,6 +209,12 @@ public class LoginController extends BaseController {
             responseMessage.addWarningMessage(ERR_NO_PAYMENT_METHOD, ERR_NO_PAYMENT_METHOD_MSG);
         }*/
         ((LoggedIn) responseMessage).setBrowseEnabled(MobileApiProperties.isBrowseEnabled());
+        
+      //Added during Mobile Coremetrics Implementation
+  		((LoggedIn) responseMessage).setSelectedServiceType(user.getSelectedServiceType() != null ? user.getSelectedServiceType().toString() : "");
+  		((LoggedIn) responseMessage).setCohort(user.getCohort());
+  		((LoggedIn) responseMessage).setTotalOrderCount(user.getTotalOrderCount());
+      		
         return responseMessage;
     }
 }
