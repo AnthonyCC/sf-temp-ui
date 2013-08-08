@@ -47,6 +47,7 @@ var FreshDirect = FreshDirect || {};
     this.hideProxy = $.proxy(this.hide, this);
 
     this.$trigger.on("mouseover", $.proxy(this.showDelayed, this));
+    this.$trigger.on("click", $.proxy(this.showDelayed, this)); // ! might cause merge problems with quickshop branch !
     this.$trigger.on("mouseout", $.proxy(this.clearDelay, this));
     this.$overlay.on("mouseover", $.proxy(this.hideDelayed, this));
     this.$overlay.on("mouseout", $.proxy(this.clearHideDelay, this));
@@ -79,6 +80,7 @@ var FreshDirect = FreshDirect || {};
   };
 
   PopupContent.prototype.showDelayed = function (e) {
+    e.preventDefault();
     if (this.delay === null) {
       this.delay = setTimeout($.proxy(this.show, this), this.config.delay);
     }
@@ -90,7 +92,7 @@ var FreshDirect = FreshDirect || {};
     }
   };
 
-  PopupContent.prototype.show = function () {
+  PopupContent.prototype.show = function (e) {
     if (!this.shown && !this.disabled) {
       this.shown = true;
       this.$trigger.addClass("hover");
@@ -111,6 +113,7 @@ var FreshDirect = FreshDirect || {};
     this.$el.removeClass('clicked');
     this.$alignTo.insertBefore(this.$placeholder);
     this.$placeholder.detach();
+    this.clearDelay();
   };
 
   PopupContent.prototype.reposition = function () {

@@ -198,11 +198,6 @@ var FreshDirect = FreshDirect || {};
     }
   });
 
-  $(document).on('click','#sidecartbuttons .cart',function(e){
-    e.preventDefault();
-    cartContext.show();
-  });
-
   $(window).on('resize',function(e){
     if(cartContext.shown){
       cartContext.hide();
