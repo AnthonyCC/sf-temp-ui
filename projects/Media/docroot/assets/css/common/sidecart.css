@@ -24,6 +24,7 @@
   height: 23px;
   overflow: hidden;
   background-image: url(/media_stat/images/navigation/sidecart/sidecart_buttons.png);
+  cursor: pointer;
 }
 
 #sidecartbuttons .buttons a span {
