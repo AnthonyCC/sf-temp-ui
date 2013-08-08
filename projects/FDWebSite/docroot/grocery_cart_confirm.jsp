@@ -28,6 +28,8 @@ java.text.DecimalFormat quantityFormatter = new java.text.DecimalFormat("0.##");
    }
 %></fd:FDShoppingCart><%
 
+request.setAttribute("isCartConfirmPage", "true");
+
 // OAS AD
 request.setAttribute("listPos", "SystemMessage,LittleRandy,ProductNote,SideCartBottom");
 
