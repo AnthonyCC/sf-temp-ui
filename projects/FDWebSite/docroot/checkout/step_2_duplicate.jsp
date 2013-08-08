@@ -64,7 +64,7 @@ int incNextButtonCount = 0;
 	<tr>
 		<td class="text12"><img src="/media_stat/images/layout/clear.gif" width="1" height="8"><br><span class="text13" style="color: #CC0000;"><b>Important note!</b></span><br><img src="/media_stat/images/layout/clear.gif" width="1" height="4"><br>
 	An order for <b><%=duplicateDate.format(currentDlvStart)%></b> has already been placed from this account. Are you sure that you want to place another one for the same day?<br><br>Please select one of these options:<br><br>
-		<table cellpadding="0" cellspacing="3" border="0" align="center">
+		<table cellpadding="0" cellspacing="3" border="0" align="center" style="margin:0 auto;">
 			<tr><td align="center">
 			</td></tr>
 			<tr><td class="text12" align="center">
