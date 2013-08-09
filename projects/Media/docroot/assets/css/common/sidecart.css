@@ -49,11 +49,6 @@
   background-position: -62px -23px;
 }
 
-.disableCart #sidecartbuttons .buttons {
-  position: relative;
-  top: 10px;
-}
-
 .disableCart #sidecartbuttons .buttons a.cart,
 .disableCart #sidecartbuttons .buttons a.cart:hover {
   background-position: 0 -46px;
@@ -66,8 +61,12 @@
   cursor: default;
 }
 
-.disableCart .summary {
-  display: none;
+.disableCart #sidecartbuttons .summary {
+  background: #fafafa;
+}
+
+.disableCart #sidecartbuttons .summary span {
+  text-indent: 100%;
 }
 
 
