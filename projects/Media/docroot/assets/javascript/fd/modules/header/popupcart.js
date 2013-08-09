@@ -21,7 +21,8 @@ var FreshDirect = FreshDirect || {};
 	
 	
   var isDisabled = $('.globalnav_top').hasClass('disableCart'),
-  		$trigger = $("#sidecartbuttons .buttons"),
+      $trigger = $("#sidecartbuttons .buttons"),
+  		$clickTrigger = $("#sidecartbuttons .cart"),
       $sidecartbuttons = $("#sidecartbuttons"),
       $cart = $("#popupcart"),
       $cartContent = $("#popupcart .content"),
@@ -171,7 +172,8 @@ var FreshDirect = FreshDirect || {};
       halign: 'right',
       stayOnClick: true,
       $closeHandle: $cart.find('.close'),
-      disabled: isDisabled
+      disabled: isDisabled,
+      $clickTrigger: $clickTrigger
     }
   ), cartProperties);
 

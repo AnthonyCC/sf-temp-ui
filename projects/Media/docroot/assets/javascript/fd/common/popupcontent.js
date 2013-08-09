@@ -13,8 +13,11 @@ var FreshDirect = FreshDirect || {};
    * @param {Object} config Configuration object
    */
   var PopupContent = function ($el, $trigger, config) {
+    var isTouchEnabled = ('ontouchstart' in document.documentElement);
+
     this.$el = $el;
     this.$trigger = $trigger;
+    this.$clickTrigger = config.$clickTrigger || $trigger;
     this.config = $.extend({}, PopupContent.CONFIG, config);
 
     this.$alignTo = this.config.alignTo || this.$trigger;
@@ -46,11 +49,13 @@ var FreshDirect = FreshDirect || {};
 
     this.hideProxy = $.proxy(this.hide, this);
 
-    this.$trigger.on("mouseover", $.proxy(this.showDelayed, this));
-    this.$trigger.on("click", $.proxy(this.showDelayed, this)); // ! might cause merge problems with quickshop branch !
-    this.$trigger.on("mouseout", $.proxy(this.clearDelay, this));
-    this.$overlay.on("mouseover", $.proxy(this.hideDelayed, this));
-    this.$overlay.on("mouseout", $.proxy(this.clearHideDelay, this));
+    if (!isTouchEnabled) {
+      this.$trigger.on("mouseover", $.proxy(this.showDelayed, this));
+      this.$trigger.on("mouseout", $.proxy(this.clearDelay, this));
+      this.$overlay.on("mouseover", $.proxy(this.hideDelayed, this));
+      this.$overlay.on("mouseout", $.proxy(this.clearHideDelay, this));
+    }
+    this.$clickTrigger.on("click", $.proxy(this.showDelayed, this)); // ! might cause merge problems with quickshop branch !
     this.$ghost.on("click", this.hideProxy);
     this.$overlay.on("click", this.hideProxy);
 
@@ -80,6 +85,7 @@ var FreshDirect = FreshDirect || {};
   };
 
   PopupContent.prototype.showDelayed = function (e) {
+    e.stopImmediatePropagation();
     e.preventDefault();
     if (this.delay === null) {
       this.delay = setTimeout($.proxy(this.show, this), this.config.delay);
