@@ -54,6 +54,9 @@ var FreshDirect = FreshDirect || {};
   function updateSections(cartData) {
     var cartHtml=$.mustache("{{#cartSections}}{{>section}}{{/cartSections}}",cartData,partials);
     $cartContent.html(cartHtml);
+    $('#popupcart tr.cartline select').each(function(opt){
+      $(this).data('oldVal', $(this).val());
+    });
   }
   
   function updateModifyNote(cartData) {
@@ -178,20 +181,21 @@ var FreshDirect = FreshDirect || {};
   ), cartProperties);
 
   $(document).on('change','#popupcart tr.cartline',function(e){
-    $(this).addClass("modified");
+    var $this = $(this),
+        $select = $this.find('select');
+    $this.addClass("modified");
+    $this.addClass("modified-" + ($select.val() > $select.data('oldVal') ? "inc" : "dec"));
+    $select.data("oldVal", $select.val());
   });
 
   $(document).on('quantity-change','#popupcart tr.cartline',function(e){
     $(this).addClass("modified");
-    console.log(e);
   });
   $(document).on('quantity-change-inc','#popupcart tr.cartline',function(e){
     $(this).addClass("modified-inc");
-    console.log(e);
   });
   $(document).on('quantity-change-dec','#popupcart tr.cartline',function(e){
     $(this).addClass("modified-dec");
-    console.log(e);
   });
 
   $(document).on('click','#popupcart tr.cartline',function(e){
