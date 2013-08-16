@@ -550,7 +550,8 @@
 	
 }
 
-.grid-view .featurebox:hover .grid-item-controls {
+.grid-view .featurebox:hover .grid-item-controls,
+.grid-view .featurebox.hover .grid-item-controls {
 	height: 72px;
 }
 
@@ -570,7 +571,8 @@
 	transition: width 0.2s ease-in-out;
 }
 
-.list-view .featurebox:hover .grid-item .grid-item-controls {
+.list-view .featurebox:hover .grid-item .grid-item-controls,
+.list-view .featurebox.hover .grid-item .grid-item-controls {
 	width: 150px;
 }
 
@@ -647,7 +649,8 @@
 	bottom: 146px;
 }
 
-.ddpp .grid-view .featurebox:hover .grid-item-controls {
+.ddpp .grid-view .featurebox:hover .grid-item-controls,
+.ddpp .grid-view .featurebox.hover .grid-item-controls {
 	height: 150px;
 }
 
@@ -663,7 +666,8 @@
 	background: none;
 }
 
-.ie6 .grid-view .featurebox:hover .grid-item-controls {
+.ie6 .grid-view .featurebox:hover .grid-item-controls,
+.ie6 .grid-view .featurebox.hover .grid-item-controls {
 	height: auto;
 }
 .ie6 .ddpp .grid-view .featurebox .grid-item-controls-content {
@@ -725,7 +729,8 @@
 .grid-carousel .featurebox .grid-item-image-helper { height:70px; line-height:70px; }
 .grid-carousel .featurebox .grid-item-image img { max-height:70px; }
 .grid-carousel .featurebox .grid-item-controls { bottom:0; }
-.grid-carousel .featurebox:hover .grid-item-controls { height: 87px; }
+.grid-carousel .featurebox:hover .grid-item-controls,
+.grid-carousel .featurebox.hover .grid-item-controls { height: 87px; }
 .grid-carousel .featurebox .grid-item-name,
 .grid-carousel .featurebox .grid-item-price-description, 
 .grid-carousel .featurebox .grid-item-price,

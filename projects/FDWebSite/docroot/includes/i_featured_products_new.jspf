@@ -38,6 +38,20 @@ if (featuredCat != null) {
 %>
 	<div class="ddpp clearfix">
 	<div class="ddpp_feat_prod_cont grid-view feat-prod-<%= itemsToShow %>">
+	<!--[if IE]>
+	<script type="text/javascript">
+		(function($){
+			$(document).on('mouseover','.ddpp_feat_prod_cont .grid-item-container', function(e){
+				$(this).addClass('hover');
+			});
+			$(document).on('mouseout','.ddpp_feat_prod_cont .grid-item-container', function(e){
+				if(e.target.tagName.toLowerCase()!=='select') {
+					$(this).removeClass('hover');
+				}
+			});
+		})(jQuery);
+	</script>
+	<![endif]-->
 	
 	
 	<logic:iterate id="contentNode" collection="<%= pList.subList(0,itemsToShow) %>" type="java.lang.Object" indexId="idx">

@@ -51,6 +51,20 @@
 	
 %>
 <div class="grid-carousel grid-view">
+	<!--[if IE]>
+	<script type="text/javascript">
+		(function($){
+			$(document).on('mouseover','.grid-carousel .grid-item-container', function(e){
+				$(this).addClass('hover');
+			});
+			$(document).on('mouseout','.grid-carousel .grid-item-container', function(e){
+				if(e.target.tagName.toLowerCase()!=='select') {
+					$(this).removeClass('hover');
+				}
+			});
+		})(jQuery);
+	</script>
+	<![endif]-->
 	<display:Carousel id="carousel" carouselId="<%= id %>" width="<%= width %>" numItems="<%= numItems %>" showCategories="false" itemsToShow="<%= items %>" trackingCode="<%= trkCode %>" maxItems="<%= maxItems %>">
 		<span class="smartstore-carousel-item">
 		<display:GetContentNodeWebId id="webId" product="<%= currentItem %>" clientSafe="<%= true %>">
