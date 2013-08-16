@@ -212,6 +212,36 @@
                             
 
                         /**
+                        * field for UsePlannedCoarrivalSeq
+                        */
+
+                        
+                                    protected boolean localUsePlannedCoarrivalSeq ;
+                                
+
+                           /**
+                           * Auto generated getter method
+                           * @return boolean
+                           */
+                           public  boolean getUsePlannedCoarrivalSeq(){
+                               return localUsePlannedCoarrivalSeq;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param UsePlannedCoarrivalSeq
+                               */
+                               public void setUsePlannedCoarrivalSeq(boolean param){
+                            
+                                            this.localUsePlannedCoarrivalSeq=param;
+                                    
+
+                               }
+                            
+
+                        /**
                         * field for PushBreaksLayovers
                         */
 
@@ -416,6 +446,36 @@
                                public void setMinimumServiceTimeSeconds(int param){
                             
                                             this.localMinimumServiceTimeSeconds=param;
+                                    
+
+                               }
+                            
+
+                        /**
+                        * field for UseCentroidArrivalDetection
+                        */
+
+                        
+                                    protected boolean localUseCentroidArrivalDetection ;
+                                
+
+                           /**
+                           * Auto generated getter method
+                           * @return boolean
+                           */
+                           public  boolean getUseCentroidArrivalDetection(){
+                               return localUseCentroidArrivalDetection;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param UseCentroidArrivalDetection
+                               */
+                               public void setUseCentroidArrivalDetection(boolean param){
+                            
+                                            this.localUseCentroidArrivalDetection=param;
                                     
 
                                }
@@ -699,6 +759,35 @@
                                         if (prefix == null) {
                                             prefix = generatePrefix(namespace);
 
+                                            xmlWriter.writeStartElement(prefix,"usePlannedCoarrivalSeq", namespace);
+                                            xmlWriter.writeNamespace(prefix, namespace);
+                                            xmlWriter.setPrefix(prefix, namespace);
+
+                                        } else {
+                                            xmlWriter.writeStartElement(namespace,"usePlannedCoarrivalSeq");
+                                        }
+
+                                    } else {
+                                        xmlWriter.writeStartElement("usePlannedCoarrivalSeq");
+                                    }
+                                
+                                               if (false) {
+                                           
+                                                         throw new org.apache.axis2.databinding.ADBException("usePlannedCoarrivalSeq cannot be null!!");
+                                                      
+                                               } else {
+                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localUsePlannedCoarrivalSeq));
+                                               }
+                                    
+                                   xmlWriter.writeEndElement();
+                             
+                                    namespace = "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService";
+                                    if (! namespace.equals("")) {
+                                        prefix = xmlWriter.getPrefix(namespace);
+
+                                        if (prefix == null) {
+                                            prefix = generatePrefix(namespace);
+
                                             xmlWriter.writeStartElement(prefix,"pushBreaksLayovers", namespace);
                                             xmlWriter.writeNamespace(prefix, namespace);
                                             xmlWriter.setPrefix(prefix, namespace);
@@ -891,6 +980,35 @@
                                                       
                                                } else {
                                                     xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localMinimumServiceTimeSeconds));
+                                               }
+                                    
+                                   xmlWriter.writeEndElement();
+                             
+                                    namespace = "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService";
+                                    if (! namespace.equals("")) {
+                                        prefix = xmlWriter.getPrefix(namespace);
+
+                                        if (prefix == null) {
+                                            prefix = generatePrefix(namespace);
+
+                                            xmlWriter.writeStartElement(prefix,"useCentroidArrivalDetection", namespace);
+                                            xmlWriter.writeNamespace(prefix, namespace);
+                                            xmlWriter.setPrefix(prefix, namespace);
+
+                                        } else {
+                                            xmlWriter.writeStartElement(namespace,"useCentroidArrivalDetection");
+                                        }
+
+                                    } else {
+                                        xmlWriter.writeStartElement("useCentroidArrivalDetection");
+                                    }
+                                
+                                               if (false) {
+                                           
+                                                         throw new org.apache.axis2.databinding.ADBException("useCentroidArrivalDetection cannot be null!!");
+                                                      
+                                               } else {
+                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localUseCentroidArrivalDetection));
                                                }
                                     
                                    xmlWriter.writeEndElement();
@@ -1094,6 +1212,12 @@
                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localUseMinServiceTimeForDestination));
                             
                                       elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
+                                                                      "usePlannedCoarrivalSeq"));
+                                 
+                                elementList.add(
+                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localUsePlannedCoarrivalSeq));
+                            
+                                      elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
                                                                       "pushBreaksLayovers"));
                                  
                                 elementList.add(
@@ -1134,6 +1258,12 @@
                                  
                                 elementList.add(
                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localMinimumServiceTimeSeconds));
+                            
+                                      elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
+                                                                      "useCentroidArrivalDetection"));
+                                 
+                                elementList.add(
+                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localUseCentroidArrivalDetection));
                             
 
                 return new org.apache.axis2.databinding.utils.reader.ADBXMLStreamReaderImpl(qName, elementList.toArray(), attribList.toArray());
@@ -1327,6 +1457,25 @@
                                     
                                     while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
                                 
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","usePlannedCoarrivalSeq").equals(reader.getName())){
+                                
+                                    java.lang.String content = reader.getElementText();
+                                    
+                                              object.setUsePlannedCoarrivalSeq(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToBoolean(content));
+                                              
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                else{
+                                    // A start element we are not expecting indicates an invalid parameter was passed
+                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
+                                }
+                            
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
                                     if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","pushBreaksLayovers").equals(reader.getName())){
                                 
                                     java.lang.String content = reader.getElementText();
@@ -1447,6 +1596,25 @@
                                     
                                               object.setMinimumServiceTimeSeconds(
                                                     org.apache.axis2.databinding.utils.ConverterUtil.convertToInt(content));
+                                              
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                else{
+                                    // A start element we are not expecting indicates an invalid parameter was passed
+                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
+                                }
+                            
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","useCentroidArrivalDetection").equals(reader.getName())){
+                                
+                                    java.lang.String content = reader.getElementText();
+                                    
+                                              object.setUseCentroidArrivalDetection(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToBoolean(content));
                                               
                                         reader.next();
                                     

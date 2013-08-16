@@ -32,45 +32,90 @@
         
 
                         /**
-                        * field for NewServiceTime
+                        * field for NewStopServiceTime
                         */
 
                         
-                                    protected int localNewServiceTime ;
+                                    protected int localNewStopServiceTime ;
                                 
                            /*  This tracker boolean wil be used to detect whether the user called the set method
                           *   for this attribute. It will be used to determine whether to include this field
                            *   in the serialized XML
                            */
-                           protected boolean localNewServiceTimeTracker = false ;
+                           protected boolean localNewStopServiceTimeTracker = false ;
                            
 
                            /**
                            * Auto generated getter method
                            * @return int
                            */
-                           public  int getNewServiceTime(){
-                               return localNewServiceTime;
+                           public  int getNewStopServiceTime(){
+                               return localNewStopServiceTime;
                            }
 
                            
                         
                             /**
                                * Auto generated setter method
-                               * @param param NewServiceTime
+                               * @param param NewStopServiceTime
                                */
-                               public void setNewServiceTime(int param){
+                               public void setNewStopServiceTime(int param){
                             
                                        // setting primitive attribute tracker to true
                                        
                                                if (param==java.lang.Integer.MIN_VALUE) {
-                                           localNewServiceTimeTracker = true;
+                                           localNewStopServiceTimeTracker = true;
                                               
                                        } else {
-                                          localNewServiceTimeTracker = true;
+                                          localNewStopServiceTimeTracker = true;
                                        }
                                    
-                                            this.localNewServiceTime=param;
+                                            this.localNewStopServiceTime=param;
+                                    
+
+                               }
+                            
+
+                        /**
+                        * field for NewOrderServiceTime
+                        */
+
+                        
+                                    protected int localNewOrderServiceTime ;
+                                
+                           /*  This tracker boolean wil be used to detect whether the user called the set method
+                          *   for this attribute. It will be used to determine whether to include this field
+                           *   in the serialized XML
+                           */
+                           protected boolean localNewOrderServiceTimeTracker = false ;
+                           
+
+                           /**
+                           * Auto generated getter method
+                           * @return int
+                           */
+                           public  int getNewOrderServiceTime(){
+                               return localNewOrderServiceTime;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param NewOrderServiceTime
+                               */
+                               public void setNewOrderServiceTime(int param){
+                            
+                                       // setting primitive attribute tracker to true
+                                       
+                                               if (param==java.lang.Integer.MIN_VALUE) {
+                                           localNewOrderServiceTimeTracker = true;
+                                              
+                                       } else {
+                                          localNewOrderServiceTimeTracker = true;
+                                       }
+                                   
+                                            this.localNewOrderServiceTime=param;
                                     
 
                                }
@@ -348,7 +393,7 @@
 
                
                    }
-                if (localNewServiceTimeTracker){
+                if (localNewStopServiceTimeTracker){
                                     namespace = "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService";
                                     if (! namespace.equals("")) {
                                         prefix = xmlWriter.getPrefix(namespace);
@@ -356,24 +401,53 @@
                                         if (prefix == null) {
                                             prefix = generatePrefix(namespace);
 
-                                            xmlWriter.writeStartElement(prefix,"newServiceTime", namespace);
+                                            xmlWriter.writeStartElement(prefix,"newStopServiceTime", namespace);
                                             xmlWriter.writeNamespace(prefix, namespace);
                                             xmlWriter.setPrefix(prefix, namespace);
 
                                         } else {
-                                            xmlWriter.writeStartElement(namespace,"newServiceTime");
+                                            xmlWriter.writeStartElement(namespace,"newStopServiceTime");
                                         }
 
                                     } else {
-                                        xmlWriter.writeStartElement("newServiceTime");
+                                        xmlWriter.writeStartElement("newStopServiceTime");
                                     }
                                 
-                                               if (localNewServiceTime==java.lang.Integer.MIN_VALUE) {
+                                               if (localNewStopServiceTime==java.lang.Integer.MIN_VALUE) {
                                            
                                                          writeAttribute("xsi","http://www.w3.org/2001/XMLSchema-instance","nil","1",xmlWriter);
                                                       
                                                } else {
-                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localNewServiceTime));
+                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localNewStopServiceTime));
+                                               }
+                                    
+                                   xmlWriter.writeEndElement();
+                             } if (localNewOrderServiceTimeTracker){
+                                    namespace = "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService";
+                                    if (! namespace.equals("")) {
+                                        prefix = xmlWriter.getPrefix(namespace);
+
+                                        if (prefix == null) {
+                                            prefix = generatePrefix(namespace);
+
+                                            xmlWriter.writeStartElement(prefix,"newOrderServiceTime", namespace);
+                                            xmlWriter.writeNamespace(prefix, namespace);
+                                            xmlWriter.setPrefix(prefix, namespace);
+
+                                        } else {
+                                            xmlWriter.writeStartElement(namespace,"newOrderServiceTime");
+                                        }
+
+                                    } else {
+                                        xmlWriter.writeStartElement("newOrderServiceTime");
+                                    }
+                                
+                                               if (localNewOrderServiceTime==java.lang.Integer.MIN_VALUE) {
+                                           
+                                                         writeAttribute("xsi","http://www.w3.org/2001/XMLSchema-instance","nil","1",xmlWriter);
+                                                      
+                                               } else {
+                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localNewOrderServiceTime));
                                                }
                                     
                                    xmlWriter.writeEndElement();
@@ -669,12 +743,18 @@
                  java.util.ArrayList elementList = new java.util.ArrayList();
                  java.util.ArrayList attribList = new java.util.ArrayList();
 
-                 if (localNewServiceTimeTracker){
+                 if (localNewStopServiceTimeTracker){
                                       elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
-                                                                      "newServiceTime"));
+                                                                      "newStopServiceTime"));
                                  
                                 elementList.add(
-                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localNewServiceTime));
+                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localNewStopServiceTime));
+                            } if (localNewOrderServiceTimeTracker){
+                                      elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
+                                                                      "newOrderServiceTime"));
+                                 
+                                elementList.add(
+                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localNewOrderServiceTime));
                             } if (localNewQuantitiesTracker){
                             elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
                                                                       "newQuantities"));
@@ -786,20 +866,20 @@
                                     
                                     while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
                                 
-                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","newServiceTime").equals(reader.getName())){
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","newStopServiceTime").equals(reader.getName())){
                                 
                                        nillableValue = reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance","nil");
                                        if (!"true".equals(nillableValue) && !"1".equals(nillableValue)){
                                     
                                     java.lang.String content = reader.getElementText();
                                     
-                                              object.setNewServiceTime(
+                                              object.setNewStopServiceTime(
                                                     org.apache.axis2.databinding.utils.ConverterUtil.convertToInt(content));
                                             
                                        } else {
                                            
                                            
-                                                   object.setNewServiceTime(java.lang.Integer.MIN_VALUE);
+                                                   object.setNewStopServiceTime(java.lang.Integer.MIN_VALUE);
                                                
                                            reader.getElementText(); // throw away text nodes if any.
                                        }
@@ -810,7 +890,38 @@
                                 
                                     else {
                                         
-                                               object.setNewServiceTime(java.lang.Integer.MIN_VALUE);
+                                               object.setNewStopServiceTime(java.lang.Integer.MIN_VALUE);
+                                           
+                                    }
+                                
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","newOrderServiceTime").equals(reader.getName())){
+                                
+                                       nillableValue = reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance","nil");
+                                       if (!"true".equals(nillableValue) && !"1".equals(nillableValue)){
+                                    
+                                    java.lang.String content = reader.getElementText();
+                                    
+                                              object.setNewOrderServiceTime(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToInt(content));
+                                            
+                                       } else {
+                                           
+                                           
+                                                   object.setNewOrderServiceTime(java.lang.Integer.MIN_VALUE);
+                                               
+                                           reader.getElementText(); // throw away text nodes if any.
+                                       }
+                                      
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                    else {
+                                        
+                                               object.setNewOrderServiceTime(java.lang.Integer.MIN_VALUE);
                                            
                                     }
                                 

@@ -1606,6 +1606,88 @@
                              
 
                         /**
+                        * field for ActiveAlertRecipients
+                        * This was an Array!
+                        */
+
+                        
+                                    protected com.freshdirect.routing.proxy.stub.transportation.ActiveAlertRecipient[] localActiveAlertRecipients ;
+                                
+                           /*  This tracker boolean wil be used to detect whether the user called the set method
+                          *   for this attribute. It will be used to determine whether to include this field
+                           *   in the serialized XML
+                           */
+                           protected boolean localActiveAlertRecipientsTracker = false ;
+                           
+
+                           /**
+                           * Auto generated getter method
+                           * @return com.freshdirect.routing.proxy.stub.transportation.ActiveAlertRecipient[]
+                           */
+                           public  com.freshdirect.routing.proxy.stub.transportation.ActiveAlertRecipient[] getActiveAlertRecipients(){
+                               return localActiveAlertRecipients;
+                           }
+
+                           
+                        
+
+
+                               
+                              /**
+                               * validate the array for ActiveAlertRecipients
+                               */
+                              protected void validateActiveAlertRecipients(com.freshdirect.routing.proxy.stub.transportation.ActiveAlertRecipient[] param){
+                             
+                              }
+
+
+                             /**
+                              * Auto generated setter method
+                              * @param param ActiveAlertRecipients
+                              */
+                              public void setActiveAlertRecipients(com.freshdirect.routing.proxy.stub.transportation.ActiveAlertRecipient[] param){
+                              
+                                   validateActiveAlertRecipients(param);
+
+                               
+                                          if (param != null){
+                                             //update the setting tracker
+                                             localActiveAlertRecipientsTracker = true;
+                                          } else {
+                                             localActiveAlertRecipientsTracker = false;
+                                                 
+                                          }
+                                      
+                                      this.localActiveAlertRecipients=param;
+                              }
+
+                               
+                             
+                             /**
+                             * Auto generated add method for the array for convenience
+                             * @param param com.freshdirect.routing.proxy.stub.transportation.ActiveAlertRecipient
+                             */
+                             public void addActiveAlertRecipients(com.freshdirect.routing.proxy.stub.transportation.ActiveAlertRecipient param){
+                                   if (localActiveAlertRecipients == null){
+                                   localActiveAlertRecipients = new com.freshdirect.routing.proxy.stub.transportation.ActiveAlertRecipient[]{};
+                                   }
+
+                            
+                                 //update the setting tracker
+                                localActiveAlertRecipientsTracker = true;
+                            
+
+                               java.util.List list =
+                            org.apache.axis2.databinding.utils.ConverterUtil.toList(localActiveAlertRecipients);
+                               list.add(param);
+                               this.localActiveAlertRecipients =
+                             (com.freshdirect.routing.proxy.stub.transportation.ActiveAlertRecipient[])list.toArray(
+                            new com.freshdirect.routing.proxy.stub.transportation.ActiveAlertRecipient[list.size()]);
+
+                             }
+                             
+
+                        /**
                         * field for TimeWindowOverrides
                         * This was an Array!
                         */
@@ -2995,6 +3077,24 @@
                                                throw new org.apache.axis2.databinding.ADBException("consigneeHistory cannot be null!!");
                                         
                                     }
+                                 } if (localActiveAlertRecipientsTracker){
+                                       if (localActiveAlertRecipients!=null){
+                                            for (int i = 0;i < localActiveAlertRecipients.length;i++){
+                                                if (localActiveAlertRecipients[i] != null){
+                                                 localActiveAlertRecipients[i].serialize(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","activeAlertRecipients"),
+                                                           factory,xmlWriter);
+                                                } else {
+                                                   
+                                                        // we don't have to do any thing since minOccures is zero
+                                                    
+                                                }
+
+                                            }
+                                     } else {
+                                        
+                                               throw new org.apache.axis2.databinding.ADBException("activeAlertRecipients cannot be null!!");
+                                        
+                                    }
                                  } if (localTimeWindowOverridesTracker){
                                        if (localTimeWindowOverrides!=null){
                                             for (int i = 0;i < localTimeWindowOverrides.length;i++){
@@ -3508,6 +3608,27 @@
                                     
                              }
 
+                        } if (localActiveAlertRecipientsTracker){
+                             if (localActiveAlertRecipients!=null) {
+                                 for (int i = 0;i < localActiveAlertRecipients.length;i++){
+
+                                    if (localActiveAlertRecipients[i] != null){
+                                         elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
+                                                                          "activeAlertRecipients"));
+                                         elementList.add(localActiveAlertRecipients[i]);
+                                    } else {
+                                        
+                                                // nothing to do
+                                            
+                                    }
+
+                                 }
+                             } else {
+                                 
+                                        throw new org.apache.axis2.databinding.ADBException("activeAlertRecipients cannot be null!!");
+                                    
+                             }
+
                         } if (localTimeWindowOverridesTracker){
                              if (localTimeWindowOverrides!=null) {
                                  for (int i = 0;i < localTimeWindowOverrides.length;i++){
@@ -3633,6 +3754,8 @@
                         java.util.ArrayList list38 = new java.util.ArrayList();
                     
                         java.util.ArrayList list39 = new java.util.ArrayList();
+                    
+                        java.util.ArrayList list40 = new java.util.ArrayList();
                     
                                     
                                     while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
@@ -4411,12 +4534,12 @@
                                     
                                     while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
                                 
-                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","timeWindowOverrides").equals(reader.getName())){
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","activeAlertRecipients").equals(reader.getName())){
                                 
                                     
                                     
                                     // Process the array and step past its final element's end.
-                                    list38.add(com.freshdirect.routing.proxy.stub.transportation.TimeWindowOverride.Factory.parse(reader));
+                                    list38.add(com.freshdirect.routing.proxy.stub.transportation.ActiveAlertRecipient.Factory.parse(reader));
                                                                 
                                                         //loop until we find a start element that is not part of this array
                                                         boolean loopDone38 = false;
@@ -4433,8 +4556,8 @@
                                                                 //two continuous end elements means we are exiting the xml structure
                                                                 loopDone38 = true;
                                                             } else {
-                                                                if (new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","timeWindowOverrides").equals(reader.getName())){
-                                                                    list38.add(com.freshdirect.routing.proxy.stub.transportation.TimeWindowOverride.Factory.parse(reader));
+                                                                if (new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","activeAlertRecipients").equals(reader.getName())){
+                                                                    list38.add(com.freshdirect.routing.proxy.stub.transportation.ActiveAlertRecipient.Factory.parse(reader));
                                                                         
                                                                 }else{
                                                                     loopDone38 = true;
@@ -4443,9 +4566,9 @@
                                                         }
                                                         // call the converter utility  to convert and set the array
                                                         
-                                                        object.setTimeWindowOverrides((com.freshdirect.routing.proxy.stub.transportation.TimeWindowOverride[])
+                                                        object.setActiveAlertRecipients((com.freshdirect.routing.proxy.stub.transportation.ActiveAlertRecipient[])
                                                             org.apache.axis2.databinding.utils.ConverterUtil.convertToArray(
-                                                                com.freshdirect.routing.proxy.stub.transportation.TimeWindowOverride.class,
+                                                                com.freshdirect.routing.proxy.stub.transportation.ActiveAlertRecipient.class,
                                                                 list38));
                                                             
                               }  // End of if for expected property start element
@@ -4457,12 +4580,12 @@
                                     
                                     while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
                                 
-                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","serviceTimeOverrides").equals(reader.getName())){
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","timeWindowOverrides").equals(reader.getName())){
                                 
                                     
                                     
                                     // Process the array and step past its final element's end.
-                                    list39.add(com.freshdirect.routing.proxy.stub.transportation.ServiceTimeOverride.Factory.parse(reader));
+                                    list39.add(com.freshdirect.routing.proxy.stub.transportation.TimeWindowOverride.Factory.parse(reader));
                                                                 
                                                         //loop until we find a start element that is not part of this array
                                                         boolean loopDone39 = false;
@@ -4479,8 +4602,8 @@
                                                                 //two continuous end elements means we are exiting the xml structure
                                                                 loopDone39 = true;
                                                             } else {
-                                                                if (new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","serviceTimeOverrides").equals(reader.getName())){
-                                                                    list39.add(com.freshdirect.routing.proxy.stub.transportation.ServiceTimeOverride.Factory.parse(reader));
+                                                                if (new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","timeWindowOverrides").equals(reader.getName())){
+                                                                    list39.add(com.freshdirect.routing.proxy.stub.transportation.TimeWindowOverride.Factory.parse(reader));
                                                                         
                                                                 }else{
                                                                     loopDone39 = true;
@@ -4489,10 +4612,56 @@
                                                         }
                                                         // call the converter utility  to convert and set the array
                                                         
+                                                        object.setTimeWindowOverrides((com.freshdirect.routing.proxy.stub.transportation.TimeWindowOverride[])
+                                                            org.apache.axis2.databinding.utils.ConverterUtil.convertToArray(
+                                                                com.freshdirect.routing.proxy.stub.transportation.TimeWindowOverride.class,
+                                                                list39));
+                                                            
+                              }  // End of if for expected property start element
+                                
+                                    else {
+                                        
+                                    }
+                                
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","serviceTimeOverrides").equals(reader.getName())){
+                                
+                                    
+                                    
+                                    // Process the array and step past its final element's end.
+                                    list40.add(com.freshdirect.routing.proxy.stub.transportation.ServiceTimeOverride.Factory.parse(reader));
+                                                                
+                                                        //loop until we find a start element that is not part of this array
+                                                        boolean loopDone40 = false;
+                                                        while(!loopDone40){
+                                                            // We should be at the end element, but make sure
+                                                            while (!reader.isEndElement())
+                                                                reader.next();
+                                                            // Step out of this element
+                                                            reader.next();
+                                                            // Step to next element event.
+                                                            while (!reader.isStartElement() && !reader.isEndElement())
+                                                                reader.next();
+                                                            if (reader.isEndElement()){
+                                                                //two continuous end elements means we are exiting the xml structure
+                                                                loopDone40 = true;
+                                                            } else {
+                                                                if (new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","serviceTimeOverrides").equals(reader.getName())){
+                                                                    list40.add(com.freshdirect.routing.proxy.stub.transportation.ServiceTimeOverride.Factory.parse(reader));
+                                                                        
+                                                                }else{
+                                                                    loopDone40 = true;
+                                                                }
+                                                            }
+                                                        }
+                                                        // call the converter utility  to convert and set the array
+                                                        
                                                         object.setServiceTimeOverrides((com.freshdirect.routing.proxy.stub.transportation.ServiceTimeOverride[])
                                                             org.apache.axis2.databinding.utils.ConverterUtil.convertToArray(
                                                                 com.freshdirect.routing.proxy.stub.transportation.ServiceTimeOverride.class,
-                                                                list39));
+                                                                list40));
                                                             
                               }  // End of if for expected property start element
                                 
