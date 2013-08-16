@@ -175,17 +175,17 @@ final int W_CATEGORY_NO_LEFT_NAV = 765;
 
 	if ( zoomImage != null && zoomImage.getPath().indexOf("clear.gif") == -1 && !useProdImage && !isWineProduct ) {
 	%>
-		<meta property="og:image" content="<%= prodModel.getZoomImage().getPathWithPublishId() %>"/>
+		<meta property="og:image" content="http://www.freshdirect.com<%= prodModel.getZoomImage().getPathWithPublishId() %>"/>
 	<%
 	} else {
 	%>
-		<meta property="og:image" content="<%= prodModel.getDetailImage().getPathWithPublishId() %>"/>
+		<meta property="og:image" content="http://www.freshdirect.com<%= prodModel.getDetailImage().getPathWithPublishId() %>"/>
 	<%
 	}
 }%>
-		<meta property="og:image" content="/media_stat/images/logos/FD-logo-300.jpg"/>
-		<meta property="og:image" content="/media_stat/images/logos/FD-logo-300.jpg"/>
-		<meta property="og:image" content="/media_stat/images/logos/FD-logo-300.jpg"/>
+		<meta property="og:image" content="http://www.freshdirect.com/media_stat/images/logos/FD-logo-300.jpg"/>
+		<meta property="og:image" content="http://www.freshdirect.com/media_stat/images/logos/FD-logo-300.jpg"/>
+		<meta property="og:image" content="http://www.freshdirect.com/media_stat/images/logos/FD-logo-300.jpg"/>
 	</tmpl:put>
 
 	<tmpl:put name='content' direct='true'>

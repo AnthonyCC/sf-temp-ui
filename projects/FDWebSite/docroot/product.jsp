@@ -140,17 +140,17 @@ if (EnumTemplateType.WINE.equals( productNode.getTemplateType() )) {
 
 	if ( zoomImage != null && zoomImage.getPath().indexOf("clear.gif") == -1 && !useProdImage && !isWineProduct ) {
 	%>
-		<meta property="og:image" content="<%= productNode.getZoomImage().getPathWithPublishId() %>"/>
+		<meta property="og:image" content="http://www.freshdirect.com<%= productNode.getZoomImage().getPathWithPublishId() %>"/>
 	<%
 	} else {
 	%>
-		<meta property="og:image" content="<%= productNode.getDetailImage().getPathWithPublishId() %>"/>
+		<meta property="og:image" content="http://www.freshdirect.com<%= productNode.getDetailImage().getPathWithPublishId() %>"/>
 	<%
 	}
 }%>
-		<meta property="og:image" content="/media_stat/images/logos/FD-logo-300.jpg"/>
-		<meta property="og:image" content="/media_stat/images/logos/FD-logo-300.jpg"/>
-		<meta property="og:image" content="/media_stat/images/logos/FD-logo-300.jpg"/>
+		<meta property="og:image" content="http://www.freshdirect.com/media_stat/images/logos/FD-logo-300.jpg"/>
+		<meta property="og:image" content="http://www.freshdirect.com/media_stat/images/logos/FD-logo-300.jpg"/>
+		<meta property="og:image" content="http://www.freshdirect.com/media_stat/images/logos/FD-logo-300.jpg"/>
 </tmpl:put>
 <tmpl:put name='content' direct='true'>
 	<fd:CmPageView wrapIntoScriptTag="true" productModel="<%=productNode%>"/>
