@@ -1413,6 +1413,9 @@ public class GeographyDAO {
 		while(rs.next()){
 			cities.add(rs.getString("CITY").toUpperCase());
 		}
+		
+		rs.close();
+		ps.close();
 
 		return cities;
 	}
@@ -1526,17 +1529,24 @@ public class GeographyDAO {
 											   " and zpf.CITY_STATE_KEY = cs.CITY_STATE_KEY group by state, county, city order by county";
     public StateCounty lookupStateCountyByZip(Connection conn, String zip) throws SQLException{
     	PreparedStatement ps = conn.prepareStatement(STATE_BY_ZIP);
-    	ps.setString(1, zip);
-    	ResultSet rs = ps.executeQuery();
+    	StateCounty sc = null;
+    	ResultSet rs = null;
+	    try{
+	    	ps.setString(1, zip);
+	    	rs = ps.executeQuery();
+	
+	    	if(rs.next()){
+	    		sc = new StateCounty(rs.getString("STATE"), rs.getString("COUNTY"), rs.getString("CITY"));
+	    	}
+	    }
+	    finally{
+	    	if(rs!=null)
+	    		rs.close();
+	    	if(ps!=null)
+	    		ps.close();
+	    }
+	    return sc;
 
-    	if(rs.next()){
-    		return new StateCounty(rs.getString("STATE"), rs.getString("COUNTY"), rs.getString("CITY"));
-    	}
-
-    	rs.close();
-    	ps.close();
-
-    	return null;
     }
 
     private String[] getZipCodeFromAddress(AddressModel addressModel) {
