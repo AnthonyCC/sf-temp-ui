@@ -7,7 +7,7 @@
       <remote>com.freshdirect.fdstore.standingorders.service.StandingOrdersServiceSB</remote>
       <ejb-class>com.freshdirect.fdstore.standingorders.service.StandingOrdersServiceSessionBean</ejb-class>
       <session-type>Stateless</session-type>
-      <transaction-type>Container</transaction-type>
+      <transaction-type>Bean</transaction-type>
       <resource-ref>
         <res-ref-name>jdbc/dbpool</res-ref-name>
         <res-type>javax.sql.DataSource</res-type>
