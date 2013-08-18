@@ -698,7 +698,7 @@
       <remote>com.freshdirect.analytics.ejb.OrderRateSB</remote>
       <ejb-class>com.freshdirect.analytics.ejb.OrderRateSessionBean</ejb-class>
       <session-type>Stateless</session-type>
-      <transaction-type>Container</transaction-type>
+      <transaction-type>Bean</transaction-type>
       <resource-ref>
         <res-ref-name>jdbc/dbpool</res-ref-name>
         <res-type>javax.sql.DataSource</res-type>
