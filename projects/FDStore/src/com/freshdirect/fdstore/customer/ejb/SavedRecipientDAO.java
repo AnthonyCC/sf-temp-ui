@@ -133,27 +133,36 @@ public class SavedRecipientDAO {
 	
 	public static List<SavedRecipientModel> loadSavedRecipients(Connection conn, String fdUserId) throws SQLException{
 		List<SavedRecipientModel> recipientList = new ArrayList<SavedRecipientModel>();
-		PreparedStatement ps = conn.prepareStatement(SELECT_RECIPIENTS_SQL);
-		ps.setString(1,fdUserId);
-		ResultSet rs = ps.executeQuery();
-		while (rs.next()) {
-			SavedRecipientModel model=new SavedRecipientModel();
-			
-            //ErpComplaintReason ecr = new ErpComplaintReason(rs.getString(1), rs.getString(2),rs.getString(3), rs.getString(4));
-            //List reasons = (List) results.get(ecr.getDepartmentCode());
-            model.setId(rs.getString("ID"));
-            model.setSenderName(rs.getString("SENDER_NAME"));
-            model.setSenderEmail(rs.getString("SENDER_EMAIL"));
-            model.setRecipientName(rs.getString("RECIP_NAME"));
-            model.setRecipientEmail(rs.getString("RECIP_EMAIL"));
-            model.setFdUserId(fdUserId);
-            model.setTemplateId(rs.getString("TEMPLATE_ID"));
-            model.setDeliveryMode(EnumGCDeliveryMode.getEnum(rs.getString("DELIVERY_MODE")));
-            model.setPersonalMessage(rs.getString("PERSONAL_MSG"));
-            model.setAmount(rs.getDouble("AMOUNT"));
-            model.setDonorOrganizationName(rs.getString("DONOR_ORGNAME"));
-            model.setGiftCardType(EnumGiftCardType.getEnum(rs.getString("GIFTCARD_TYPE")));
-            recipientList.add(model);                                        
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		try{
+			ps = conn.prepareStatement(SELECT_RECIPIENTS_SQL);
+			ps.setString(1,fdUserId);
+			rs = ps.executeQuery();
+			while (rs.next()) {
+				SavedRecipientModel model=new SavedRecipientModel();
+				
+	            //ErpComplaintReason ecr = new ErpComplaintReason(rs.getString(1), rs.getString(2),rs.getString(3), rs.getString(4));
+	            //List reasons = (List) results.get(ecr.getDepartmentCode());
+	            model.setId(rs.getString("ID"));
+	            model.setSenderName(rs.getString("SENDER_NAME"));
+	            model.setSenderEmail(rs.getString("SENDER_EMAIL"));
+	            model.setRecipientName(rs.getString("RECIP_NAME"));
+	            model.setRecipientEmail(rs.getString("RECIP_EMAIL"));
+	            model.setFdUserId(fdUserId);
+	            model.setTemplateId(rs.getString("TEMPLATE_ID"));
+	            model.setDeliveryMode(EnumGCDeliveryMode.getEnum(rs.getString("DELIVERY_MODE")));
+	            model.setPersonalMessage(rs.getString("PERSONAL_MSG"));
+	            model.setAmount(rs.getDouble("AMOUNT"));
+	            model.setDonorOrganizationName(rs.getString("DONOR_ORGNAME"));
+	            model.setGiftCardType(EnumGiftCardType.getEnum(rs.getString("GIFTCARD_TYPE")));
+	            recipientList.add(model);                                        
+			}
+		}finally{
+			if(rs!=null)
+				rs.close();
+			if(ps!=null)
+				ps.close();
 		}
 		
 		return recipientList;
