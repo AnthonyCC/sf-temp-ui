@@ -132,16 +132,23 @@ public class ErpZoneInfoDAO {
 		   Connection conn = con;
 		   List zoneIdList=new ArrayList();	
 		   String zoneId=null;
+		   PreparedStatement ps = null;
+		   ResultSet rs = null;
 	       try {
-	    	   PreparedStatement ps = conn.prepareStatement(FIND_ZONE_PRICING_SELECT);
+	    	   ps = conn.prepareStatement(FIND_ZONE_PRICING_SELECT);
 	    	   ps.setString(1,zipCode);
 	    	   ps.setString(2,serviceType);
-	    	   ResultSet rs = ps.executeQuery();
+	    	   rs = ps.executeQuery();
 	           if (rs.next()) {
 	           	 zoneId=rs.getString("sap_id");	            	 
 	           }
 	       }catch(SQLException e){
 	      	 throw e;
+	       }finally{
+				if(rs!=null)
+					rs.close();
+				if(ps!=null)
+					ps.close();
 	       }
 	       Logger.info("zoneId is :"+zoneId);
 		   return zoneId; 
