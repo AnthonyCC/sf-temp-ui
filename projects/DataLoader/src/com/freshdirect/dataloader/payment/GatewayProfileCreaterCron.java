@@ -35,7 +35,15 @@ public class GatewayProfileCreaterCron {
 		ProfileCreatorHome pcHome=(ProfileCreatorHome)ctx.lookup( "freshdirect.dataloader.ProfileCreatorCron" ) ;
 		ProfileCreatorSB sb = pcHome.create();
 		
-		sb.createProfiles(batchId);
+		try {
+			sb.createProfiles(batchId);
+		} catch (FDResourceException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	
 	}
 	
