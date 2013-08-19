@@ -1,3 +1,4 @@
+<%@page import="com.freshdirect.customer.EnumATCContext"%>
 <%@ page import="java.text.SimpleDateFormat"%>
 <%@ page import="java.text.DecimalFormat"%>
 <%@ page import='java.util.*'  %>
@@ -59,7 +60,7 @@
 	//needed for transactional
 	List<ProductImpression> impressions = new ArrayList<ProductImpression>();
 	ProductImpression pi = null;
-
+	pageContext.setAttribute("ATCCONTEXT",EnumATCContext.DDPP.getName());
 	FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
 	ConfigurationContext confContext = new ConfigurationContext();
 	confContext.setFDUser(user);
@@ -490,7 +491,7 @@
 				</div>		
 			</div>
 			<div class="product-grid <%= qc.getParameterValue("view","grid")+"-view" %>">
-				<div class="items"><%
+				<div class="items"><%						
 					for (Iterator<ProductModel> it=nonfeatProds.iterator() ; it.hasNext();) {
 						pi = confStrat.configure(it.next(), confContext);
 						%><div class="grid-item-container"><% if(disableLinks) { %><%@ 

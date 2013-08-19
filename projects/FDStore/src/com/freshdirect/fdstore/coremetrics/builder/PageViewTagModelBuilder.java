@@ -14,7 +14,7 @@ public class PageViewTagModelBuilder  {
 	
 	/** enum for all category ids not listed in FDStoreProperties - used in CDF generation too */
 	public enum CustomCategory {
-		SEARCH, SO_TEMPLATE, ACCOUNT, BUYING_GUIDES, CART, ERROR, HOMEPAGE, INVITE, POPUPS, RECIPE, NEW_PRODUCTS_DEPARTMENT, ABOUT
+		SEARCH, SO_TEMPLATE, ACCOUNT, BUYING_GUIDES, CART, ERROR, HOMEPAGE, INVITE, POPUPS, RECIPE, NEW_PRODUCTS_DEPARTMENT, ABOUT, DDPP, ECOUPON
 	}
 	
 	private static final String INDEX_FILE = "index.jsp";

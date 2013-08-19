@@ -6,6 +6,7 @@ import org.apache.log4j.Category;
 
 import com.freshdirect.common.pricing.EnumTaxationType;
 import com.freshdirect.common.pricing.util.GroupScaleUtil;
+import com.freshdirect.customer.EnumATCContext;
 import com.freshdirect.customer.ErpClientCode;
 import com.freshdirect.customer.ErpInvoiceLineI;
 import com.freshdirect.customer.ErpOrderLineModel;
@@ -189,5 +190,13 @@ public class FDCartLineModel extends AbstractCartLine {
 
 	public void setTaxationType(EnumTaxationType taxationType) {
 		orderLine.setTaxationType(taxationType);
+	}
+	
+	public void setAddedFrom(EnumATCContext atcContext) {
+		orderLine.setAddedFrom(atcContext);
+	}
+	
+	public EnumATCContext getAddedFrom(){
+		return orderLine.getAddedFrom();
 	}
 }

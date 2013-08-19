@@ -244,10 +244,13 @@ public class FDCouponGateway {
 	
 
 	private static void translateCouponMetaInfo(List<FDCouponInfo> coupons,
-			List<YTCouponMetaInfo> ytCoupons) {
+			List<YTCouponMetaInfo> ytCoupons) throws CouponServiceException{
 		if(null !=ytCoupons){
 			for (Iterator<YTCouponMetaInfo> iterator = ytCoupons.iterator(); iterator.hasNext();) {
 				YTCouponMetaInfo ytCouponMetaInfo =  iterator.next();
+				if(null == EnumCouponOfferType.getEnum(ytCouponMetaInfo.getOffer_type())){
+					throw new CouponServiceException("Unsupported coupon offer type:"+ytCouponMetaInfo.getOffer_type()+", for coupon:"+ytCouponMetaInfo.getCoupon_id());
+				}
 				FDCouponInfo fdCouponInfo = new FDCouponInfo();
 				fdCouponInfo.setCouponId(ytCouponMetaInfo.getCoupon_id());
 				fdCouponInfo.setManufacturer(ytCouponMetaInfo.getManufacturer());

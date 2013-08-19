@@ -553,7 +553,7 @@ public class FDCouponTag extends BodyTagSupport {
 			cmElementTag.setElementCategory("ecoupon");
 			cmElementTag.setSiteFeature(catId);
 			cmElementTag.setSkuCode(skuCode);	
-			cmElementTag.setCouponOfferType(this.getCoupon().getOfferType().getDescription());
+			cmElementTag.setCouponOfferType(null !=this.getCoupon().getOfferType()?this.getCoupon().getOfferType().getDescription():"");
 			
 			try {
 				cmJs = cmElementTag.doCmContentTag();
@@ -600,7 +600,6 @@ public class FDCouponTag extends BodyTagSupport {
     		buf.append("\""); //end class attrib
     		    		
     	buf.append(">");
-
 			if (this.getCouponStatusText() != null) { //prevent default "null" text status
 				buf.append(this.getCouponStatusText());
 			}

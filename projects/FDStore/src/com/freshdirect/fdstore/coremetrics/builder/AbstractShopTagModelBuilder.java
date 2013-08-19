@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import com.freshdirect.customer.EnumATCContext;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.ProductReference;
 import com.freshdirect.fdstore.coremetrics.tagmodel.ShopTagModel;
@@ -42,10 +43,21 @@ public abstract class AbstractShopTagModelBuilder {
 				
 		if (isStandingOrder) {
 			tagModel.setCategoryId(PageViewTagModelBuilder.CustomCategory.SO_TEMPLATE.toString());
-		} else 	if (cartLine.isAddedFromSearch()){
+		}/* else 	if (cartLine.isAddedFromSearch()){
 			tagModel.setCategoryId(PageViewTagModelBuilder.CustomCategory.SEARCH.toString());
 			
-		} else if (variantId == null){
+		}*/  else 	if (null != cartLine.getAddedFrom()){
+			if(EnumATCContext.DDPP.equals(cartLine.getAddedFrom())){
+				tagModel.setCategoryId(PageViewTagModelBuilder.CustomCategory.DDPP.toString());
+			}else if(EnumATCContext.SEARCH.equals(cartLine.getAddedFrom())){
+				tagModel.setCategoryId(PageViewTagModelBuilder.CustomCategory.SEARCH.toString());
+			}else if(EnumATCContext.ECOUPON.equals(cartLine.getAddedFrom())){
+				tagModel.setCategoryId(PageViewTagModelBuilder.CustomCategory.ECOUPON.toString());
+			}else if(EnumATCContext.NEWPRODUCTS.equals(cartLine.getAddedFrom())){
+				tagModel.setCategoryId(PageViewTagModelBuilder.CustomCategory.NEW_PRODUCTS_DEPARTMENT.toString());
+			}
+			
+		}else if (variantId == null){
 			
 			EnumEventSource source = cartLine.getSource();
 			if (source == null || EnumEventSource.BROWSE.equals(source)){

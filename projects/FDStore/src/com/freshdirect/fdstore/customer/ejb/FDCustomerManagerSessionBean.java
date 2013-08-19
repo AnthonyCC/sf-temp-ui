@@ -5114,8 +5114,9 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			ErpActivityRecord rec = info.createActivity(EnumAccountActivityType.PLACE_GC_ORDER);
 			rec.setChangeOrderId(pk.getId());
 			this.logActivity(rec);
+			FDOrderI order = getOrder(pk.getId());
 			if (sendEmail) {
-				FDOrderI order = getOrder(pk.getId());
+				
 				FDCustomerInfo fdInfo = this.getCustomerInfo(identity);
 
 				int orderCount = getValidOrderCount(identity);
@@ -5143,7 +5144,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 					.create();
 			List auths = paymentManager.authorizeSaleRealtime(pk.getId(),
 					EnumSaleType.GIFTCARD);
-			if (auths != null && auths.size() > 0) {
+			if (order.getTotal()<=0 ||(auths != null && auths.size() > 0)) {
 				// Only when it has a valid auth.
 				ErpCustomerManagerSB erpCMsb = this.getErpCustomerManagerHome().create();
 				String sapCustomerId = erpCMsb.getSapCustomerId(customerPk);

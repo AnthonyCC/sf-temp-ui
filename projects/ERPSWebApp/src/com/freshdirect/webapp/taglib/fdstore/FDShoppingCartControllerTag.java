@@ -28,6 +28,7 @@ import weblogic.servlet.jsp.PageContextImpl;
 import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.crm.CrmAgentModel;
+import com.freshdirect.customer.EnumATCContext;
 import com.freshdirect.customer.EnumChargeType;
 import com.freshdirect.customer.EnumComplaintLineMethod;
 import com.freshdirect.customer.EnumComplaintLineType;
@@ -100,6 +101,8 @@ import com.freshdirect.webapp.util.RequestUtil;
 public class FDShoppingCartControllerTag extends BodyTagSupport implements SessionName {
 
 	public static String PARAM_ADDED_FROM_SEARCH = "addedfromsearch";
+	
+	public static String PARAM_ADDED_FROM = "addedfrom";
 
 	private static final long serialVersionUID = -7350790143456750035L;
 
@@ -1089,7 +1092,8 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements Sessi
 			if (cartLine != null) {
 				cart.addOrderLine(cartLine);
 				cartLine.setSource(getEventSource());
-				cartLine.setAddedFromSearch(Boolean.parseBoolean(request.getParameter(PARAM_ADDED_FROM_SEARCH)));
+//				cartLine.setAddedFromSearch(Boolean.parseBoolean(request.getParameter(PARAM_ADDED_FROM_SEARCH)));
+				cartLine.setAddedFrom(EnumATCContext.getEnum(request.getParameter(PARAM_ADDED_FROM)));
 				/*
 				 * Logs a AddToCartEvent whenever the user adds a single item
 				 * from Product detail page.
@@ -1131,7 +1135,8 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements Sessi
 					// don't care
 				}
 				cartLine.setSource(getEventSource());
-				cartLine.setAddedFromSearch(Boolean.parseBoolean(request.getParameter(PARAM_ADDED_FROM_SEARCH)));
+//				cartLine.setAddedFromSearch(Boolean.parseBoolean(request.getParameter(PARAM_ADDED_FROM_SEARCH)));
+				cartLine.setAddedFrom(EnumATCContext.getEnum(request.getParameter(PARAM_ADDED_FROM)));
 				if (!pending)
 					FDEventUtil.logAddToCartEvent(cartLine, request);
 				addedLines++;

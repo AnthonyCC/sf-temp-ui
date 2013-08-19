@@ -33,6 +33,11 @@ final int W_LEFT_DNAV_RIGHT = 820;
 </head>
 <BODY bgcolor="#FFFFFF" LINK="#336600" VLINK="#336600" ALINK="#FF9900" TEXT="#333333">
 <%@ include file="/shared/template/includes/i_body_start.jspf" %>
+<%if (FDStoreProperties.isAnnotationMode()) {
+%>
+	<div id="overDiv" style="position:absolute; visibility:hidden; z-index:1000;"></div>
+	<fd:javascript src="/assets/javascript/overlib_mini.js"/>
+<%	} %>
 <%@ include file="/common/template/includes/globalnav.jspf" %> 
 <CENTER CLASS="text10">
 <table width="<%=W_LEFT_DNAV_TOTAL%>" border="0" cellpadding="0" cellspacing="0">

@@ -234,6 +234,9 @@ public class SOResult implements Serializable {
 			return errorCode != null && errorCode.isTechnical();
 		}
 
+		public boolean isSendErrorEmail() {
+			return errorCode != null && errorCode.isSendEmail();
+		}
 		
 		public String getSoId() {
 			return soId;

@@ -40,7 +40,7 @@ import com.freshdirect.giftcard.ErpGiftCardUtil;
  * @author $Author:Mike Rose$
  */
 class FDCustomerOrderInfoDAO {
-
+	
 	@SuppressWarnings( "unused" )
 	private static Category LOGGER = LoggerFactory.getInstance(FDCustomerOrderInfoDAO.class);
 	
@@ -330,7 +330,9 @@ class FDCustomerOrderInfoDAO {
 	}
 	
 	private static final String DELIVERY_PASS_SAVINGS =
-		"select (sum(CL.AMOUNT+CL.AMOUNT*tax_rate)-(select amount from cust.delivery_pass dp where dp.id= ?)) as SAVINGS from CUST.CHARGELINE CL, cust.salesaction sa, cust.sale s"
+		"select (sum(CL.AMOUNT+CL.AMOUNT*tax_rate)-(select sum(dp.amount+decode(s.type, 'SUB',sa.tax,'REG',dp.amount*cl.tax_rate,0)) from cust.delivery_pass dp, cust.sale s, cust.salesaction sa,CUST.CHARGELINE CL" 
+		+ " where DP.ID=? and DP.PURCHASE_ORDER_ID=s.id"
+		+ " and s.id=sa.sale_id and S.CROMOD_DATE=SA.ACTION_DATE and SA.ACTION_TYPE in ('CRO','MOD')  and cl.type(+)='DLV' and CL.SALESACTION_ID(+)=sa.id)) as SAVINGS from CUST.CHARGELINE CL, cust.salesaction sa, cust.sale s"
 		+" where cl.type='DLV' and CL.SALESACTION_ID=sa.id and s.DLV_PASS_ID= ? and s.status<>'CAN' and s.id=sa.sale_id and sa.ACTION_TYPE in ('CRO','MOD') and"
 		+" s.CROMOD_DATE=sa.action_date and s.customer_id =? group by s.CUSTOMER_ID";
 		

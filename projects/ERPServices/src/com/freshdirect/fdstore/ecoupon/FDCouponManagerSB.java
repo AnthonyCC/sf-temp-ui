@@ -31,7 +31,7 @@ public interface FDCouponManagerSB extends EJBObject{
 	/*public Map<String, FDCouponEligibleInfo> submitOrder(CouponCart couponCart)throws CouponServiceException,RemoteException;
 	public boolean confirmOrder(String orderId,FDCouponCustomer couponCustomer)throws CouponServiceException,RemoteException;
 	public boolean cancelOrder(String orderId,FDCouponCustomer couponCustomer)throws CouponServiceException,RemoteException;*/
-	public List<FDCouponInfo> loadCoupons(FDCouponActivityContext couponActivityContext) throws FDResourceException,RemoteException;
+	public List<FDCouponInfo> loadCoupons(FDCouponActivityContext couponActivityContext) throws FDResourceException, CouponServiceException, RemoteException;
 	public List<FDCouponInfo> getCouponsForCRMSearch(String searchTerm) throws FDResourceException,RemoteException;
 	public void postSubmitPendingCouponTransactions() throws FDResourceException,RemoteException;
 	public void postCancelPendingCouponTransactions() throws FDResourceException,RemoteException;

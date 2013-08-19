@@ -219,7 +219,7 @@ public class CrisisManagerServlet extends HttpServlet {
 			}
 			
 			if ( result.isError() ) {
-				if ( result.isTechnicalError() ) {
+				if ( result.isTechnicalError() && result.isSendErrorEmail() ) {
 					// technical error
 					sendTechnicalMail( result.getErrorDetail() );
 				}

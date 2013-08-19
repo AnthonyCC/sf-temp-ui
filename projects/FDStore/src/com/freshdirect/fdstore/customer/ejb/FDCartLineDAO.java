@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
 
+import com.freshdirect.customer.EnumATCContext;
 import com.freshdirect.customer.ErpClientCode;
 import com.freshdirect.customer.ErpOrderLineModel;
 import com.freshdirect.fdstore.FDConfiguration;
@@ -74,6 +75,7 @@ public class FDCartLineDAO {
 			line.setSavingsId(rs.getString("SAVINGS_ID"));
 			line.setCoremetricsPageId(rs.getString("CM_PAGE_ID"));
 			line.setCoremetricsPageContentHierarchy(rs.getString("CM_PAGE_CONTENT_HIERARCHY"));
+			line.setAddedFrom(EnumATCContext.getEnum(rs.getString("ADDED_FROM")));
 			}
 			lst.add(line);
 		}
@@ -113,7 +115,7 @@ public class FDCartLineDAO {
 
 		ps =
 			conn.prepareStatement(
-				"INSERT INTO CUST.FDCARTLINE (ID, FDUSER_ID, SKU_CODE, VERSION, QUANTITY, SALES_UNIT, CONFIGURATION, RECIPE_SOURCE_ID, REQUEST_NOTIFICATION, VARIANT_ID, DISCOUNT_APPLIED, SAVINGS_ID, ADDED_FROM_SEARCH, CM_PAGE_ID, CM_PAGE_CONTENT_HIERARCHY) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+				"INSERT INTO CUST.FDCARTLINE (ID, FDUSER_ID, SKU_CODE, VERSION, QUANTITY, SALES_UNIT, CONFIGURATION, RECIPE_SOURCE_ID, REQUEST_NOTIFICATION, VARIANT_ID, DISCOUNT_APPLIED, SAVINGS_ID, ADDED_FROM_SEARCH, CM_PAGE_ID, CM_PAGE_CONTENT_HIERARCHY, ADDED_FROM) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
 
 		for ( ErpOrderLineModel line : erpOrderlines ) {
 			ps.setString(1, line.getCartlineId());
@@ -131,6 +133,7 @@ public class FDCartLineDAO {
 			ps.setString(13, line.isAddedFromSearch()? "X" : "");
 			ps.setString(14, line.getCoremetricsPageId());
 			ps.setString(15, line.getCoremetricsPageContentHierarchy());
+			ps.setString(16, null !=line.getAddedFrom()?line.getAddedFrom().getName():null);
 
 			ps.addBatch();
 		}

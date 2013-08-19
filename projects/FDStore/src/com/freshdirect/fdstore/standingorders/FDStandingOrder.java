@@ -268,24 +268,26 @@ public class FDStandingOrder extends ModelSupport {
 	}
 
 	public static enum ErrorCode { 
-		TECHNICAL( "Technical failure.", "Technical failure." ), 
-		GENERIC( "Generic error.", "Generic error." ), 
+		TECHNICAL( "Technical failure.", "Technical failure.",true ), 
+		GENERIC( "Generic error.", "Generic error.",true ), 
 		
-		ADDRESS( "We no longer deliver to the address you set up for this standing order.", "Use the link below to modify this standing order and choose a different address." ), 
-		PAYMENT( "There was a problem with the payment method you selected.", "Use the link below to modify this standing order and update the payment options." ), 
-		ALCOHOL( "You must verify your age to receive deliveries containing alcohol.", "Use the link below to modify this standing order and confirm that you are over 21 years of age." ), 
-		MINORDER( "The order subtotal was below our $50 minimum.", "Please adjust the items or quantities by editing the shopping list for this standing order." ), 		
-		TIMESLOT( "Your selected timeslot was unavailable or sold out.", "Use the link below to modify this standing order and choose a different timeslot." ),
-		PAYMENT_ADDRESS( "The address you entered does not match the information on file with your card provider.", "Please contact a FreshDirect representative at 9999 for assistance." ),
-		NO_ADDRESS( "The address you set up for this standing order no longer exists in the system.", "Use the link below to modify this standing order and choose a different address." ), 
-		CLOSED_DAY( "We do not deliver on closed days.", "We do not deliver on closed days." );
+		ADDRESS( "We no longer deliver to the address you set up for this standing order.", "Use the link below to modify this standing order and choose a different address.",true ), 
+		PAYMENT( "There was a problem with the payment method you selected.", "Use the link below to modify this standing order and update the payment options.",true ), 
+		ALCOHOL( "You must verify your age to receive deliveries containing alcohol.", "Use the link below to modify this standing order and confirm that you are over 21 years of age.",true ), 
+		MINORDER( "The order subtotal was below our $50 minimum.", "Please adjust the items or quantities by editing the shopping list for this standing order.",true ), 		
+		TIMESLOT( "Your selected timeslot was unavailable or sold out.", "Use the link below to modify this standing order and choose a different timeslot.",true ),
+		PAYMENT_ADDRESS( "The address you entered does not match the information on file with your card provider.", "Please contact a FreshDirect representative at 9999 for assistance.",true ),
+		NO_ADDRESS( "The address you set up for this standing order no longer exists in the system.", "Use the link below to modify this standing order and choose a different address.",true ), 
+		CLOSED_DAY( "We do not deliver on closed days.", "We do not deliver on closed days.", false );
 		
 		private String errorHeader;
 		private String errorDetail;
+		private boolean sendEmail;
 		
-		private ErrorCode( String errorHeader, String errorDetail ) {
+		private ErrorCode( String errorHeader, String errorDetail, boolean sendEmail) {
 			this.errorHeader = errorHeader;
 			this.errorDetail = errorDetail;
+			this.sendEmail = sendEmail;
 		}
 		
 		public boolean isTechnical() {
@@ -296,6 +298,9 @@ public class FDStandingOrder extends ModelSupport {
 			return errorHeader;
 		}
 		
+		public boolean isSendEmail(){
+			return sendEmail;
+		}
 		public String getErrorDetail(FDCustomerInfo user) {
 			if (this == PAYMENT_ADDRESS)
 				return errorDetail.replace("9999", user.getCustomerServiceContact());

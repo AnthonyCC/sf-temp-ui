@@ -1,3 +1,4 @@
+<%@page import="com.freshdirect.customer.EnumATCContext"%>
 <%@page import="com.freshdirect.smartstore.fdstore.Recommendations"%>
 <%@page import="com.freshdirect.smartstore.fdstore.VariantSelectorFactory"%>
 <%@page import="com.freshdirect.fdstore.util.EnumSiteFeature"%>
@@ -250,6 +251,7 @@ final int W_INDEX_RIGHT_CENTER = W_INDEX_TOTAL - 228 - W_INDEX_CENTER_PADDING;
 	<tmpl:put name="content" direct="true">
 		<%
 		pageContext.setAttribute("ISONSEARCHPAGE",true);
+		pageContext.setAttribute("ATCCONTEXT",EnumATCContext.SEARCH.getName());
 		for (ListIterator<FilteringSortingItem <ProductModel>> it=products.listIterator() ; it.hasNext();) {
 			{
 			ProductImpression pi = confStrat.configure(it.next().getModel(), confContext);

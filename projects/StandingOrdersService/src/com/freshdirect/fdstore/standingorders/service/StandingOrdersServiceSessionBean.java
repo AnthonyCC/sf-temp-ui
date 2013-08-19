@@ -156,7 +156,7 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 			}
 			
 			// Check result, and send an error report if something went wrong
-			if ( result.isError() ) {
+			if ( result.isError() && result.isSendErrorEmail()) {
 				if ( result.isTechnicalError() ) {
 					// technical error - send email to sysadmins
 					if ( sendTechnicalMail(

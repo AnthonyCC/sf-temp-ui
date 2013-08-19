@@ -68,6 +68,8 @@ public class ErpOrderLineModel extends ModelSupport implements FDConfigurableI {
     
     private boolean addedFromSearch;
     
+    private EnumATCContext addedFrom;
+    
     private String upc;
     
     private ErpCouponDiscountLineModel couponDiscount;
@@ -423,6 +425,14 @@ public class ErpOrderLineModel extends ModelSupport implements FDConfigurableI {
 	public void setCoremetricsPageContentHierarchy(
 			String coremetricsPageContentHierarchy) {
 		this.coremetricsPageContentHierarchy = coremetricsPageContentHierarchy;
+	}
+
+	public EnumATCContext getAddedFrom() {
+		return addedFrom;
+	}
+
+	public void setAddedFrom(EnumATCContext addedFrom) {
+		this.addedFrom = addedFrom;
 	}
 
 	

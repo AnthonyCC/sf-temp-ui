@@ -5,6 +5,7 @@ import java.util.Set;
 import com.freshdirect.common.pricing.Discount;
 import com.freshdirect.common.pricing.EnumTaxationType;
 import com.freshdirect.common.pricing.PricingContext;
+import com.freshdirect.customer.EnumATCContext;
 import com.freshdirect.customer.ErpCouponDiscountLineModel;
 import com.freshdirect.customer.ErpInvoiceLineI;
 import com.freshdirect.customer.ErpOrderLineModel;
@@ -172,4 +173,6 @@ public interface FDCartLineI extends FDProductSelectionI {
 	public void setCoremetricsPageId(String coremetricsPageId);
 	public String getCoremetricsPageContentHierarchy();
 	public void setCoremetricsPageContentHierarchy(String coremetricsPageContentHierarchy);
+	public void setAddedFrom(EnumATCContext atcContext) ;
+	public EnumATCContext getAddedFrom();
 }

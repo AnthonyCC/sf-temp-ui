@@ -134,6 +134,7 @@
 					<fd:PopupHandler id="<%= formName %>" event="onclick" elementId='<%= "instantATC" + formName %>' instant='<%="window.parent." + namespaceName + ".instantATC()" %>' skuCode="<%=((TransactionalProductImpression) pi).getSku().getSkuCode()%>" action="addMultipleToCart" rebindSubmit="true" hasPendingOrder='<%= (Boolean)pageContext.getAttribute("hasPendingOrder")%>'/>
 				<!-- /fd:IsAlcoholic -->
 				<input type="hidden" name="<%=FDShoppingCartControllerTag.PARAM_ADDED_FROM_SEARCH%>" value="<%=pageContext.getAttribute("ISONSEARCHPAGE") != null ? "true":"false" %>">
+				<input type="hidden" name="<%=FDShoppingCartControllerTag.PARAM_ADDED_FROM%>" value="<%=pageContext.getAttribute("ATCCONTEXT") %>">
 				<%Object variant = pageContext.getAttribute("PRODUCT_BOX_VARIANT");
 				if (variant!=null){%>
 				<input type="hidden" name="variant_0" value="<%=variant%>">

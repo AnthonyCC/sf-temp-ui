@@ -76,6 +76,7 @@ public class PPExportEmailProductsTag extends AbstractGetterTag{
 					skusList = productPromoInfoMap.get(ErpProductPromotionUtil.DEFAULT_ZONE);
 				}
 				int i=1;
+				zoneId = zoneId.replaceFirst("0000", "");//[APPDEV-2981]-Removing the '0's from the zone id, to be consistent with what is stored in the data warehouse.
 				if(null != skusList){				
 					populateBuffer(buffer, i, zoneId, skusList,isExport);					
 				}
@@ -96,13 +97,13 @@ public class PPExportEmailProductsTag extends AbstractGetterTag{
 		if(null != skusList){
 			for (Iterator iterator3 = skusList.iterator(); iterator3.hasNext();) {
 				FDProductPromotionInfo promotionSkuModel = (FDProductPromotionInfo) iterator3.next();
-				if(promotionSkuModel.isFeatured()){
+				/*if(promotionSkuModel.isFeatured()){
 					if(featuredCount >= 3){
 						continue;
 					}else{
 						featuredCount++;
 					}
-				}
+				}*/
 				ProductModel productModel = null;
 				try {
 					ProductModel prodModel = ((SkuModel) ContentFactory.getInstance().getContentNodeByKey(new ContentKey(FDContentTypes.SKU, promotionSkuModel.getSkuCode()))).getProductModel();
@@ -112,11 +113,18 @@ public class PPExportEmailProductsTag extends AbstractGetterTag{
 					
 				}
 				if(productModel!=null && !productModel.isUnavailable()){
-					String featHeader = promotionSkuModel.getFeaturedHeader();
-					EnumFeaturedHeaderType fhType = null;
-					if(null !=featHeader && !"".equals(featHeader.trim())){
-						fhType =EnumFeaturedHeaderType.getEnum(Integer.valueOf(promotionSkuModel.getFeaturedHeader()));		
+					if(promotionSkuModel.isFeatured()){				
+						featuredCount++;
 					}
+					EnumFeaturedHeaderType fhType = null;
+					if(featuredCount <= 3){
+						String featHeader = promotionSkuModel.getFeaturedHeader();
+						
+						if(null !=featHeader && !"".equals(featHeader.trim())){
+							fhType =EnumFeaturedHeaderType.getEnum(Integer.valueOf(promotionSkuModel.getFeaturedHeader()));		
+						}
+					}
+					
 	//				FDProductPromotionSku promotionSkuModel = promotionSkuModel.getPromotionSku();
 					
 					appendData(isExport,buffer,D_P+i+ATTR_FEAT);appendData(isExport,buffer,zoneId);appendData(isExport,buffer,null !=fhType?fhType.getDescription():"");appendNewLine(isExport,buffer);
