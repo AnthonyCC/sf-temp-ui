@@ -62,8 +62,24 @@
      		if(_zone.trim().length > 0 && _arrivetime.trim().length > 0 
      					&& _departtime.trim().length > 0 && _originid.trim().length > 0) {
      			if(checkTime(_departtime, _arrivetime)) {
-     				depotDataTable.addRow({area:_zone, depotArrivalTimeInfo:_arrivetime
-     									, truckDepartureTimeInfo:_departtime, originId:_originid, deleteBtn:''});
+     	    		 var hasError = false;
+     	    		 if(depotDataTable.getRecordSet() != null 
+     	      	  			&& depotDataTable.getRecordSet().getRecords()) {
+     	       	  		var records = depotDataTable.getRecordSet().getRecords();
+     	       	  		for(i = 0; i < records.length; i++) {
+     	       	  			if(records[i].getData('area') === _zone 
+     	       	  					&& records[i].getData('depotArrivalTimeInfo') === _arrivetime
+     	       	  						&& records[i].getData('truckDepartureTimeInfo') === _departtime
+     	       	  							&& records[i].getData('originId') === _originid) {
+     	       	  			 	alert("The depot truck schedule already exists in the below table. Please enter different depot schedule.");
+     	       	  			 	hasError = true;
+     	       	  			}
+     	       	  		}
+     	    		 }
+     	    		 if(!hasError) {
+     	    			depotDataTable.addRow({area:_zone, depotArrivalTimeInfo:_arrivetime
+								, truckDepartureTimeInfo:_departtime, originId:_originid, deleteBtn:''});
+     	    	     }
      			} else {
      				alert("Truck departure time cannot be greater than depot arrival time.");
      			}
@@ -74,6 +90,15 @@
      
      function checkTime(_departtime, _arrivetime) {
     	
+    	 if(Date.parse('01/01/1970 '+_arrivetime) <= Date.parse('01/01/1970 '+_departtime)) {
+    		 return false;
+    	 } else {
+    		 return true;
+    	 }
+    	 
+    	 /* 
+    		 
+    	 
     	// regular expression to match required date format  		
   		var regExp = /^(0?[1-9]|1[012]):([0-5]\d) ([APap][mM])$/;
   		
@@ -87,7 +112,7 @@
   				return false;
   			}
   		}
-    	return true;
+    	return true; */
      }
          
      function submitDepotTable() { 

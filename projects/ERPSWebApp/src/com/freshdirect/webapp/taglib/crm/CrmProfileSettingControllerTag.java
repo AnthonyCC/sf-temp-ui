@@ -68,7 +68,7 @@ public class CrmProfileSettingControllerTag extends AbstractControllerTag {
 	private void populate(HttpServletRequest request) {
 		refreshForm = NVL.apply(request.getParameter("refresh_form"), "").equalsIgnoreCase("Y");
 		name = NVL.apply(request.getParameter("name"), "");
-		value = NVL.apply(request.getParameter("value"), "");
+		value = NVL.apply(request.getParameter("value") != null ? request.getParameter("value").trim() : null, "");
 		notes = NVL.apply(request.getParameter("notes"), "");		
 	}
 	
