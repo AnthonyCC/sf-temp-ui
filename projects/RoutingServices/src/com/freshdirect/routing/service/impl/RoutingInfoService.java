@@ -236,5 +236,27 @@ public class RoutingInfoService extends BaseService implements IRoutingInfoServi
 			throw new RoutingServiceException(e, IIssue.PROCESS_RETRIEVEWAVEINSTANCE_UNSUCCESSFUL);
 		}
 	}
+
+	@Override
+	public Set retrieveRoutingWaveInstIds(Date deliveryDate)
+			throws RoutingServiceException {
+		try {
+			return routingInfoDAOImpl.retrieveRoutingWaveInstIds(deliveryDate);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			throw new RoutingServiceException(e, IIssue.PROCESS_RETRIEVEWAVEINSTANCE_UNSUCCESSFUL);
+		}
+	}
+
+	@Override
+	public IServiceTimeScenarioModel getRoutingScenarioEx(Date deliveryDate, Date cutoff, Date startTime, Date endTime)
+			throws RoutingServiceException {
+		try {
+			return routingInfoDAOImpl.getRoutingScenarioEx(deliveryDate, cutoff, startTime, endTime);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			throw new RoutingServiceException(e, IIssue.PROCESS_SCENARIO_NOTFOUND);
+		}
+	}
 	
 }

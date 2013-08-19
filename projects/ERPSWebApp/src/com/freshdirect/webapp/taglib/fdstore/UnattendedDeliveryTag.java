@@ -80,7 +80,7 @@ public class UnattendedDeliveryTag extends AbstractGetterTag {
 	}
 	
 	private DlvZoneInfoModel getAddressZone(ErpAddressModel thisAddress) throws FDResourceException, FDInvalidAddressException {
-		DlvZoneInfoModel zoneInfo = FDDeliveryManager.getInstance().getZoneInfo(thisAddress, date != null ? date : new Date());
+		DlvZoneInfoModel zoneInfo = FDDeliveryManager.getInstance().getZoneInfo(thisAddress, date != null ? date : new Date(), null, null);
 		LOGGER.debug("UNATTENDED DELIVERY IS " + (zoneInfo.isUnattended() ? "" : "NOT ") + 
 				"ENABLED IN ZONE " + zoneInfo.getZoneCode() + 
 				(thisAddress.getPK() == null ? "" : (", ADDRESS ID= " + thisAddress.getPK().getId())));

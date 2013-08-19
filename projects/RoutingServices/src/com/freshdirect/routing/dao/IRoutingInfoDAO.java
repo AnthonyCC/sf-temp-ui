@@ -65,5 +65,9 @@ public interface IRoutingInfoDAO {
 	List<Date> getDeliveryDates()  throws SQLException;
 
 	Map<String, Map<RoutingTimeOfDay, List<IRouteModel>>> getStaticRoutesByArea(Date deliveryDate) throws SQLException;
+
+	Set retrieveRoutingWaveInstIds(Date deliveryDate) throws SQLException;
+
+	IServiceTimeScenarioModel getRoutingScenarioEx(final Date deliveryDate, final Date cutoff,final Date startTime,final Date endTime) throws SQLException;
 		
 }

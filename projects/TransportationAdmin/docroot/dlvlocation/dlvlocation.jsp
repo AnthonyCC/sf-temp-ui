@@ -143,6 +143,7 @@
               <ec:column alias="serviceTimeOverride" property="serviceTimeOverride" title="Override ServiceTimeType"/>
               <ec:column alias="serviceTimeAdjustable" property="serviceTimeAdjustable" title="Service Time Adjustment"/>
               <ec:column alias="geocode" property="id" title=" " filterable="false" cell="geocodecol" width="5px" />
+              <ec:column sortable="false" alias="showcustomer" property="locationId" title=" " filterable="false" cell="customercol" width="5px" />
             </ec:row>
           </ec:table>
        </form>  

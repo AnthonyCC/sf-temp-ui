@@ -25,6 +25,7 @@ import com.freshdirect.common.address.AddressInfo;
 import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.address.PhoneNumber;
 import com.freshdirect.common.customer.EnumServiceType;
+import com.freshdirect.common.customer.EnumZoneType;
 import com.freshdirect.crm.ejb.CriteriaBuilder;
 import com.freshdirect.customer.EnumDeliverySetting;
 import com.freshdirect.customer.EnumUnattendedDeliveryFlag;
@@ -36,6 +37,7 @@ import com.freshdirect.delivery.DlvZoneCapacityInfo;
 import com.freshdirect.delivery.DlvZoneCutoffInfo;
 import com.freshdirect.delivery.DlvZoneInfoModel;
 import com.freshdirect.delivery.EnumAddressVerificationResult;
+import com.freshdirect.delivery.EnumRegionServiceType;
 import com.freshdirect.delivery.EnumReservationStatus;
 import com.freshdirect.delivery.EnumReservationType;
 import com.freshdirect.delivery.EnumRestrictedAddressReason;
@@ -139,7 +141,7 @@ public class DlvManagerDAO {
 
 	private static final String TIMESLOTS = "select t.id, t.base_date, t.start_time, t.end_time, t.cutoff_time, t.status, t.zone_id, t.capacity, z.zone_code, t.ct_capacity"
 			+ ", ta.AREA AREA_CODE, ta.STEM_MAX_TIME stemmax, ta.STEM_FROM_TIME stemfrom, ta.STEM_TO_TIME stemto, ta.ZONE_ECOFRIENDLY ecoFriendly, ta.STEERING_RADIUS steeringRadius, z.NAME ZONE_NAME, "
-			+ "case when t.premium_cutoff_time is null then TO_CHAR(t.CUTOFF_TIME, 'HH_MI_PM') else TO_CHAR(t.premium_cutoff_time, 'HH_MI_PM') end WAVE_CODE, t.IS_DYNAMIC IS_DYNAMIC, t.IS_CLOSED IS_CLOSED, tr.IS_DEPOT IS_DEPOT, tr.code REGION_CODE, tr.name REGION_NAME, tr.description REGION_DESCR, a.DELIVERY_RATE AREA_DLV_RATE, "
+			+ "case when t.premium_cutoff_time is null then TO_CHAR(t.CUTOFF_TIME, 'HH_MI_PM') else TO_CHAR(t.premium_cutoff_time, 'HH_MI_PM') end WAVE_CODE, t.IS_DYNAMIC IS_DYNAMIC, t.IS_CLOSED IS_CLOSED, tr.IS_DEPOT IS_DEPOT, tr.code REGION_CODE, tr.name REGION_NAME, tr.description REGION_DESCR, a.DELIVERY_RATE AREA_DLV_RATE, r.service_type region_svc_type, "
 			+ "(select count(*) from dlv.reservation where timeslot_id=t.id and status_code <> ? and status_code <> ? and chefstable = ' ' and class is null) as base_allocation, "
 			+ "(select count(*) from dlv.reservation where timeslot_id=t.id and status_code <> ? and status_code <> ? and chefstable = 'X' and class is null) as ct_allocation, "
 			+ "(select count(*) from dlv.reservation where timeslot_id=t.id and status_code = '10' and class is null) as total_confirmed, "
@@ -165,7 +167,7 @@ public class DlvManagerDAO {
 
 	public static List<DlvTimeslotModel> getTimeslotForDateRangeAndZone(
 			Connection conn, AddressModel address, java.util.Date startDate,
-			java.util.Date endDate) throws SQLException,
+			java.util.Date endDate, EnumRegionServiceType serviceType) throws SQLException,
 			InvalidAddressException {
 
 		geocodeAddress(conn, address, false);
@@ -181,7 +183,7 @@ public class DlvManagerDAO {
 		ps.setInt(7, EnumReservationStatus.CANCELED.getCode());
 		ps.setInt(8, EnumReservationStatus.EXPIRED.getCode());
 		ps.setString(9, address.getBuildingId());
-		ps.setString(10, address.getServiceType().getName());
+		ps.setString(10, serviceType.getName());
 
 		ps.setBigDecimal(11, new java.math.BigDecimal(address.getLongitude()));
 		ps.setBigDecimal(12, new java.math.BigDecimal(address.getLatitude()));
@@ -207,7 +209,7 @@ public class DlvManagerDAO {
 
 	private static final String CF_TIMESLOTS = "select ts.id, ts.base_date, ts.start_time, ts.end_time, ts.cutoff_time, ts.status, ts.zone_id, ts.capacity, z.zone_code, ts.ct_capacity"
 			+ " , ta.AREA AREA_CODE, ta.STEM_MAX_TIME stemmax, ta.STEM_FROM_TIME stemfrom, ta.STEM_TO_TIME stemto, ta.ZONE_ECOFRIENDLY ecoFriendly, ta.STEERING_RADIUS steeringRadius, z.NAME ZONE_NAME, "
-			+ " case when ts.premium_cutoff_time is null then TO_CHAR(ts.CUTOFF_TIME, 'HH_MI_PM') else TO_CHAR(ts.premium_cutoff_time, 'HH_MI_PM') end WAVE_CODE, ts.IS_DYNAMIC IS_DYNAMIC, ts.IS_CLOSED IS_CLOSED, tr.IS_DEPOT IS_DEPOT, tr.code REGION_CODE, tr.name REGION_NAME, tr.description REGION_DESCR, a.DELIVERY_RATE AREA_DLV_RATE,  "
+			+ " case when ts.premium_cutoff_time is null then TO_CHAR(ts.CUTOFF_TIME, 'HH_MI_PM') else TO_CHAR(ts.premium_cutoff_time, 'HH_MI_PM') end WAVE_CODE, ts.IS_DYNAMIC IS_DYNAMIC, ts.IS_CLOSED IS_CLOSED, tr.IS_DEPOT IS_DEPOT, tr.code REGION_CODE, tr.name REGION_NAME, tr.description REGION_DESCR, a.DELIVERY_RATE AREA_DLV_RATE,  r.service_type region_svc_type,  "
 			+ "(select count(*) from dlv.reservation where timeslot_id=ts.id and status_code <> ? and status_code <> ? and chefstable = ' ' and class is null) as base_allocation, "
 			+ "(select count(*) from dlv.reservation where timeslot_id=ts.id and status_code <> ? and status_code <> ? and chefstable = 'X' and class is null) as ct_allocation, "
 			+ "(select count(*) from dlv.reservation where timeslot_id=ts.id and status_code = '10' and class is null) as total_confirmed, "
@@ -368,6 +370,7 @@ public class DlvManagerDAO {
 				_tmpSlot.setPremiumSlot(premiumSlot);
 			}
 		}
+		_tmpSlot.setRegionSvcType(EnumRegionServiceType.getEnum(rs.getString("REGION_SVC_TYPE")));
 
 		// Prepare routing slot configuration from result set
 		IDeliverySlot routingSlot = new DeliverySlot();
@@ -413,7 +416,8 @@ public class DlvManagerDAO {
 
 	private static final String DEPOT_TIMESLOTS = "select ts.id, ts.base_date, ts.start_time, ts.end_time, ts.cutoff_time, ts.status, ts.zone_id, ts.capacity, z.zone_code, ts.ct_capacity"
 			+ ", ta.AREA AREA_CODE, ta.STEM_MAX_TIME stemmax, ta.STEM_FROM_TIME stemfrom, ta.STEM_TO_TIME stemto, ta.ZONE_ECOFRIENDLY ecoFriendly, ta.STEERING_RADIUS steeringRadius, z.NAME ZONE_NAME, "
-			+ "case when ts.premium_cutoff_time is null then TO_CHAR(ts.CUTOFF_TIME, 'HH_MI_PM') else TO_CHAR(ts.premium_cutoff_time, 'HH_MI_PM') end WAVE_CODE, ts.IS_DYNAMIC IS_DYNAMIC, ts.IS_CLOSED IS_CLOSED, tr.IS_DEPOT IS_DEPOT, tr.code REGION_CODE, tr.name REGION_NAME, tr.description REGION_DESCR, a.DELIVERY_RATE AREA_DLV_RATE,"
+			+ "case when ts.premium_cutoff_time is null then TO_CHAR(ts.CUTOFF_TIME, 'HH_MI_PM') else TO_CHAR(ts.premium_cutoff_time, 'HH_MI_PM') end WAVE_CODE, ts.IS_DYNAMIC IS_DYNAMIC, " 
+			+ "ts.IS_CLOSED IS_CLOSED, tr.IS_DEPOT IS_DEPOT, tr.code REGION_CODE, tr.name REGION_NAME, tr.description REGION_DESCR, a.DELIVERY_RATE AREA_DLV_RATE,  r.service_type region_svc_type, "
 			+ "(select count(*) from dlv.reservation where timeslot_id=ts.id and status_code <> ? and status_code <> ? and chefstable = ' ' and class is null) as base_allocation, "
 			+ "(select count(*) from dlv.reservation where timeslot_id=ts.id and status_code <> ? and status_code <> ? and chefstable = 'X' and class is null) as ct_allocation, "
 			+ "(select count(*) from dlv.reservation where timeslot_id=ts.id and status_code = '10' and class is null) as total_confirmed, "
@@ -468,7 +472,7 @@ public class DlvManagerDAO {
 	}
 
 	private static final String TIMESLOT_BY_ID = "select distinct ts.id, ts.base_date, ts.start_time, ts.end_time, ts.cutoff_time, ts.status, ts.zone_id, ts.capacity, ts.ct_capacity"
-			+ ", ta.AREA AREA_CODE, ta.STEM_MAX_TIME stemmax, ta.STEM_FROM_TIME stemfrom, ta.STEM_TO_TIME stemto, ta.ZONE_ECOFRIENDLY ecoFriendly, ta.STEERING_RADIUS steeringRadius, z.NAME ZONE_NAME, "
+			+ ", ta.AREA AREA_CODE, ta.STEM_MAX_TIME stemmax, ta.STEM_FROM_TIME stemfrom, ta.STEM_TO_TIME stemto, ta.ZONE_ECOFRIENDLY ecoFriendly, ta.STEERING_RADIUS steeringRadius, z.NAME ZONE_NAME, rg.service_type region_svc_type, "
 			+ "case when ts.premium_cutoff_time is null then TO_CHAR(ts.CUTOFF_TIME, 'HH_MI_PM') else TO_CHAR(ts.premium_cutoff_time, 'HH_MI_PM') end WAVE_CODE, ts.IS_DYNAMIC IS_DYNAMIC, ts.IS_CLOSED IS_CLOSED, tr.IS_DEPOT IS_DEPOT, tr.code REGION_CODE, tr.name REGION_NAME, tr.description REGION_DESCR,  a.DELIVERY_RATE AREA_DLV_RATE,"
 			+ "(select count(reservation.TIMESLOT_ID) from dlv.reservation "
 			+ "where zone_id = ts.zone_id AND ts.ID = reservation.TIMESLOT_ID and status_code <> ? and status_code <> ? and chefstable = ' ' and class is null) as base_allocation, "
@@ -488,8 +492,9 @@ public class DlvManagerDAO {
 			+ "(select z.premium_ct_active from dlv.zone z where z.id = ts.zone_id) as premium_ct_active, "
 			+ "(select count(reservation.TIMESLOT_ID) from dlv.reservation "
 			+ "where zone_id = ts.zone_id AND ts.ID = reservation.TIMESLOT_ID and status_code in ('5','10') and buildingId = nvl(?,'0')) as PREV_BLDG_RSV_CNT "
-			+ " from dlv.timeslot ts, dlv.zone z, transp.zone ta, transp.trn_area a,transp.trn_region tr,  dlv.reservation r "
-			+ "where ts.id = ? AND ts.ZONE_ID = z.ID and z.ZONE_CODE = ta.ZONE_CODE and ta.AREA = a.CODE  and a.region_code = tr.code  AND ts.id=r.TIMESLOT_ID(+)";
+			+ " from dlv.timeslot ts, dlv.zone z, transp.zone ta, transp.trn_area a,transp.trn_region tr,  dlv.reservation r, dlv.region_data rd, dlv.region rg "
+			+ "where ts.id = ? AND ts.ZONE_ID = z.ID and z.ZONE_CODE = ta.ZONE_CODE and ta.AREA = a.CODE  and a.region_code = tr.code  AND ts.id=r.TIMESLOT_ID(+) "
+			+ "and z.region_data_id = rd.id and rd.region_id = rg.id";
 
 	public static DlvTimeslotModel getTimeslotById(Connection conn,
 			String timeslotId, String buildingId, boolean checkPremium) throws SQLException,
@@ -518,9 +523,9 @@ public class DlvManagerDAO {
 	private static final String RESERVATION_FOR_CUSTOMER = "SELECT R.ID, R.ORDER_ID, R.CUSTOMER_ID, R.STATUS_CODE, R.TIMESLOT_ID, R.ZONE_ID"
 			+ ", R.EXPIRATION_DATETIME, R.TYPE, R.ADDRESS_ID,T.BASE_DATE, Z.ZONE_CODE,R.UNASSIGNED_DATETIME, R.UNASSIGNED_ACTION"
 			+ ", R.IN_UPS, R.ORDER_SIZE, R.SERVICE_TIME, R.RESERVED_ORDER_SIZE, R.RESERVED_SERVICE_TIME, R.UPDATE_STATUS, R.METRICS_SOURCE "
-			+ ", R.NUM_CARTONS , R.NUM_FREEZERS , R.NUM_CASES, R.CLASS, R.BUILDINGID, R.LOCATIONID, R.PREV_BLDG_RSV_CNT "
-			+ "FROM DLV.RESERVATION R, DLV.TIMESLOT T, DLV.ZONE Z WHERE  R.CUSTOMER_ID = ? AND R.STATUS_CODE = ? "
-			+ "AND R.TIMESLOT_ID=T.ID AND R.ZONE_ID=Z.ID";
+			+ ", R.NUM_CARTONS , R.NUM_FREEZERS , R.NUM_CASES, R.CLASS, R.BUILDINGID, R.LOCATIONID, R.PREV_BLDG_RSV_CNT, RG.SERVICE_TYPE REGION_SVC_TYPE "
+			+ "FROM DLV.RESERVATION R, DLV.TIMESLOT T, DLV.ZONE Z, DLV.REGION_DATA RD, DLV.REGION RG WHERE  R.CUSTOMER_ID = ? AND R.STATUS_CODE = ? "
+			+ "AND R.TIMESLOT_ID=T.ID AND R.ZONE_ID=Z.ID AND Z.REGION_DATA_ID = RD.ID AND RD.REGION_ID = RG.ID";
 
 	public static List<DlvReservationModel> getReservationForCustomer(
 			Connection conn, String customerId) throws SQLException {
@@ -544,9 +549,9 @@ public class DlvManagerDAO {
 			+ ", R.ZONE_ID, R.EXPIRATION_DATETIME, R.TYPE, R.ADDRESS_ID,T.BASE_DATE, Z.ZONE_CODE"
 			+ ",R.UNASSIGNED_DATETIME,R.UNASSIGNED_ACTION,R.IN_UPS, R.ORDER_SIZE, R.SERVICE_TIME"
 			+ ", R.RESERVED_ORDER_SIZE, R.RESERVED_SERVICE_TIME, R.UPDATE_STATUS, R.METRICS_SOURCE "
-			+ ", R.NUM_CARTONS , R.NUM_FREEZERS , R.NUM_CASES, R.CLASS, R.BUILDINGID, R.LOCATIONID, R.PREV_BLDG_RSV_CNT  "
-			+ "FROM DLV.RESERVATION R, DLV.TIMESLOT T, DLV.ZONE Z WHERE R.CUSTOMER_ID = ? AND R.TIMESLOT_ID=? "
-			+ "AND R.TIMESLOT_ID=T.ID AND R.ZONE_ID=Z.ID";
+			+ ", R.NUM_CARTONS , R.NUM_FREEZERS , R.NUM_CASES, R.CLASS, R.BUILDINGID, R.LOCATIONID, R.PREV_BLDG_RSV_CNT, RG.SERVICE_TYPE REGION_SVC_TYPE "
+			+ "FROM DLV.RESERVATION R, DLV.TIMESLOT T, DLV.ZONE Z, DLV.REGION_DATA RD, DLV.REGION RG  WHERE R.CUSTOMER_ID = ? AND R.TIMESLOT_ID=? "
+			+ "AND R.TIMESLOT_ID=T.ID AND R.ZONE_ID=Z.ID AND Z.REGION_DATA_ID = RD.ID AND RD.REGION_ID = RG.ID";
 	public static List<DlvReservationModel> getAllReservationsByCustomerAndTimeslot(Connection conn, String customerId, String timeslotId) throws SQLException {
 		PreparedStatement ps =
 			conn.prepareStatement(RESERVATION_BY_CUSTOMER_AND_TIMESLOT);
@@ -599,7 +604,7 @@ public class DlvManagerDAO {
 				EnumReservationClass.getEnum(rs.getString("CLASS")),
 				EnumRoutingUpdateStatus.getEnum(rs.getString("UPDATE_STATUS")),
 				EnumOrderMetricsSource.getEnum(rs.getString("METRICS_SOURCE")),
-				rs.getString("BUILDINGID"),rs.getString("LOCATIONID"),rs.getInt("PREV_BLDG_RSV_CNT"));
+				rs.getString("BUILDINGID"),rs.getString("LOCATIONID"),rs.getInt("PREV_BLDG_RSV_CNT"), EnumRegionServiceType.getEnum(rs.getString("REGION_SVC_TYPE")));
 
 	}
 
@@ -683,7 +688,7 @@ public class DlvManagerDAO {
 				EnumReservationClass.getEnum(rs.getString("CLASS")),
 				EnumRoutingUpdateStatus.getEnum(rs.getString("UPDATE_STATUS")),
 				EnumOrderMetricsSource.getEnum(rs.getString("METRICS_SOURCE")),
-				rs.getString("BUILDINGID"),rs.getString("LOCATIONID"),rs.getInt("PREV_BLDG_RSV_CNT"));
+				rs.getString("BUILDINGID"),rs.getString("LOCATIONID"),rs.getInt("PREV_BLDG_RSV_CNT"),EnumRegionServiceType.getEnum(rs.getString("REGION_SVC_TYPE")));
 
 	}
 
@@ -739,7 +744,7 @@ public class DlvManagerDAO {
 		ps.close();
 	}
 
-	private static final String ZONE_CODE = "select rd.id, rd.region_id, rd.start_date, rd.delivery_charges, z.id zone_id, z.zone_code, zd.unattended, zd.cos_enabled "
+	private static final String ZONE_CODE = "select rd.id, rd.region_id, rd.start_date, rd.delivery_charges, z.id zone_id, z.zone_code, zd.unattended, zd.cos_enabled,r.service_type "
 			+ "from dlv.region r, dlv.region_data rd, dlv.zone z, transp.zone  zd "
 			+ "where zd.zone_code = z.zone_code and rd.id = z.region_data_id and rd.region_id = r.id and r.service_type = ? "
 			+ "and rd.start_date = (select max(start_date) from dlv.region_data where start_date <= ? and region_id=r.id) "
@@ -772,7 +777,8 @@ public class DlvManagerDAO {
 					rs.getString("zone_id"), rs.getString("region_id"),
 					EnumZipCheckResponses.DELIVER, "X".equals(rs
 							.getString("unattended")), "X".equals(rs
-							.getString("cos_enabled")));
+							.getString("cos_enabled")), EnumRegionServiceType.getEnum(rs
+							.getString("service_type")));
 		} else {
 			LOGGER.debug("DlvManagerDAO.getZoneInfo(DONOT_DELIVER): " + address);
 			response = new DlvZoneInfoModel(null, null, null,
@@ -785,7 +791,61 @@ public class DlvManagerDAO {
 		return response;
 	}
 
-	private static final String ZONE_CODE_FOR_COS_ENABLED = "select rd.id, rd.region_id, rd.start_date, rd.delivery_charges, z.id zone_id, z.zone_code, zd.unattended, zd.cos_enabled "
+	private static final String ALL_ZONEINFO_QUERY = "select rd.id, rd.region_id, rd.start_date, rd.delivery_charges, z.id zone_id, z.zone_code, zd.unattended, zd.cos_enabled,r.service_type "
+			+ "from dlv.region r, dlv.region_data rd, dlv.zone z, transp.zone  zd "
+			+ "where zd.zone_code = z.zone_code and rd.id = z.region_data_id and rd.region_id = r.id and r.service_type in (?, ?)"
+			+ "and rd.start_date = (select max(start_date) from dlv.region_data where start_date <= ? and region_id=r.id) "
+			+ "and mdsys.sdo_relate(z.geoloc, mdsys.sdo_geometry(2001, 8265, mdsys.sdo_point_type(?, ?,NULL), NULL, NULL), 'mask=ANYINTERACT querytype=WINDOW') ='TRUE' "
+			+ "order by z.zone_code";
+
+	public static List<DlvZoneInfoModel> getAllZoneInfo(Connection conn,
+			AddressModel address, java.util.Date date, boolean useApartment)
+			throws SQLException, InvalidAddressException {
+
+		if ((address.getLatitude() == 0.0) || (address.getLongitude() == 0.0)) {
+			LOGGER.debug("getZoneInfo[geocodeAddress] :" + address);
+			geocodeAddress(conn, address, useApartment);
+		}
+
+		DlvZoneInfoModel response;
+		List<DlvZoneInfoModel> zoneInfo = new ArrayList<DlvZoneInfoModel>();
+
+		LOGGER.debug("getAllZoneInfo[QUERY] :" + address + "->" + date);
+		PreparedStatement ps = conn.prepareStatement(ALL_ZONEINFO_QUERY);
+		ps.setString(1, address.getServiceType().getName());
+		ps.setString(2, EnumRegionServiceType.HYBRID.getName());
+		ps.setDate(3, new java.sql.Date(date.getTime()));
+		// ps.setDouble(3, address.getLongitude());
+		ps.setBigDecimal(4, new java.math.BigDecimal(address.getLongitude()));
+		// ps.setDouble(4, address.getLatitude());
+		ps.setBigDecimal(5, new java.math.BigDecimal(address.getLatitude()));
+
+		ResultSet rs = ps.executeQuery();
+		while (rs.next()) {
+			response = new DlvZoneInfoModel(rs.getString("zone_code"),
+					rs.getString("zone_id"), rs.getString("region_id"),
+					EnumZipCheckResponses.DELIVER, "X".equals(rs
+							.getString("unattended")), "X".equals(rs
+							.getString("cos_enabled")),EnumRegionServiceType.getEnum(rs
+									.getString("service_type")));
+			zoneInfo.add(response);
+			
+		} 
+		if(zoneInfo.isEmpty()){
+			LOGGER.debug("DlvManagerDAO.getAllZoneInfo(DONOT_DELIVER): " + address);
+			response = new DlvZoneInfoModel(null, null, null,
+					EnumZipCheckResponses.DONOT_DELIVER, false, false);
+			zoneInfo.add(response);
+		}
+
+		rs.close();
+		ps.close();
+
+		return zoneInfo;
+	}
+
+	
+	private static final String ZONE_CODE_FOR_COS_ENABLED = "select rd.id, rd.region_id, rd.start_date, rd.delivery_charges, z.id zone_id, z.zone_code, zd.unattended, zd.cos_enabled, r.service_type "
 			+ "from dlv.region r, dlv.region_data rd, dlv.zone z, transp.zone zd "
 			+ "where zd.zone_code = z.zone_code and rd.id = z.region_data_id and rd.region_id = r.id and r.service_type = 'HOME' and zd.cos_enabled='X'"
 			+ "and rd.start_date = (select max(start_date) from dlv.region_data where start_date <= ? and region_id=r.id) "
@@ -815,7 +875,8 @@ public class DlvManagerDAO {
 					rs.getString("zone_id"), rs.getString("region_id"),
 					EnumZipCheckResponses.DELIVER, "X".equals(rs
 							.getString("unattended")), "X".equals(rs
-							.getString("cos_enabled")));
+							.getString("cos_enabled")), EnumRegionServiceType.getEnum(rs
+									.getString("service_type")));
 		} else {
 			response = new DlvZoneInfoModel(null, null, null,
 					EnumZipCheckResponses.DONOT_DELIVER, false, false);
@@ -827,6 +888,50 @@ public class DlvManagerDAO {
 		return response;
 	}
 
+	private static final String ZONE_CODE_FOR_BULK = "select rd.id, rd.region_id, rd.start_date, rd.delivery_charges, z.id zone_id, z.zone_code, zd.unattended, zd.cos_enabled, r.service_type "
+			+ "from dlv.region r, dlv.region_data rd, dlv.zone z, transp.zone zd "
+			+ "where zd.zone_code = z.zone_code and rd.id = z.region_data_id and rd.region_id = r.id and r.service_type = 'HYBRID' "
+			+ "and rd.start_date = (select max(start_date) from dlv.region_data where start_date <= ? and region_id=r.id) "
+			+ "and mdsys.sdo_relate(z.geoloc, mdsys.sdo_geometry(2001, 8265, mdsys.sdo_point_type(?, ?,NULL), NULL, NULL), 'mask=ANYINTERACT querytype=WINDOW') ='TRUE' "
+			+ "order by z.zone_code";
+
+	public static DlvZoneInfoModel getBulkZoneInfo(Connection conn,
+			AddressModel address, java.util.Date date, boolean useApartment)
+			throws SQLException, InvalidAddressException {
+
+		if ((address.getLatitude() == 0.0) || (address.getLongitude() == 0.0)) {
+			geocodeAddress(conn, address, useApartment);
+		}
+
+		DlvZoneInfoModel response;
+
+		PreparedStatement ps = conn.prepareStatement(ZONE_CODE_FOR_BULK);
+		ps.setDate(1, new java.sql.Date(date.getTime()));
+		// ps.setDouble(2, address.getLongitude());
+		ps.setBigDecimal(2, new java.math.BigDecimal(address.getLongitude()));
+		// ps.setDouble(3, address.getLatitude());
+		ps.setBigDecimal(3, new java.math.BigDecimal(address.getLatitude()));
+
+		ResultSet rs = ps.executeQuery();
+		if (rs.next()) {
+			response = new DlvZoneInfoModel(rs.getString("zone_code"),
+					rs.getString("zone_id"), rs.getString("region_id"),
+					EnumZipCheckResponses.DELIVER, "X".equals(rs
+							.getString("unattended")), "X".equals(rs
+							.getString("cos_enabled")), EnumRegionServiceType.getEnum(rs
+									.getString("service_type")));
+		} else {
+			response = new DlvZoneInfoModel(null, null, null,
+					EnumZipCheckResponses.DONOT_DELIVER, false, false);
+		}
+
+		rs.close();
+		ps.close();
+
+		return response;
+	}
+
+	
 	private static final String CUTOFF_INFO_QUERY = "select t.base_date, min(t.start_time) as start_time, max(t.end_time) as end_time, t.cutoff_time "
 			+ "from dlv.planning_resource p, dlv.timeslot t "
 			+ "where p.id = t.resource_id and p.zone_code = ? "
@@ -861,7 +966,8 @@ public class DlvManagerDAO {
 
 	private static final String ZONE_CAPACITY_QUERY = "select t.id, t.base_date, t.start_time, t.end_time, t.cutoff_time, t.status, t.zone_id, t.capacity, t.ct_capacity"
 			+ ", ta.AREA AREA_CODE, ta.STEM_MAX_TIME stemmax, ta.STEM_FROM_TIME stemfrom, ta.STEM_TO_TIME stemto, ta.ZONE_ECOFRIENDLY ecoFriendly, ta.STEERING_RADIUS steeringRadius, z.NAME ZONE_NAME, "
-			+ "case when t.premium_cutoff_time is null then TO_CHAR(t.CUTOFF_TIME, 'HH_MI_PM') else TO_CHAR(t.premium_cutoff_time, 'HH_MI_PM') end WAVE_CODE, t.IS_DYNAMIC IS_DYNAMIC, t.IS_CLOSED IS_CLOSED, tr.IS_DEPOT IS_DEPOT, tr.code REGION_CODE, tr.name REGION_NAME, tr.description REGION_DESCR,  a.DELIVERY_RATE AREA_DLV_RATE,"
+			+ "case when t.premium_cutoff_time is null then TO_CHAR(t.CUTOFF_TIME, 'HH_MI_PM') else TO_CHAR(t.premium_cutoff_time, 'HH_MI_PM') end WAVE_CODE, t.IS_DYNAMIC IS_DYNAMIC, " 
+			+ "t.IS_CLOSED IS_CLOSED, tr.IS_DEPOT IS_DEPOT, tr.code REGION_CODE, tr.name REGION_NAME, tr.description REGION_DESCR,  a.DELIVERY_RATE AREA_DLV_RATE, r.service_type REGION_SVC_TYPE, "
 			+ "(select count(*) from dlv.reservation where timeslot_id=t.id and status_code <> ? and status_code <> ? and chefstable = ' ' and class is null) as base_allocation, "
 			+ "(select count(*) from dlv.reservation where timeslot_id=t.id and status_code <> ? and status_code <> ? and chefstable = 'X' and class is null) as ct_allocation, "
 			+ "(select count(*) from dlv.reservation where timeslot_id=t.id and status_code = '10' and class is null) as total_confirmed, "
@@ -873,8 +979,11 @@ public class DlvManagerDAO {
 			+ "(select z.premium_ct_release_time from dlv.zone z where z.id = t.zone_id) as premium_ct_release_time, "
 			+ "(select z.premium_ct_active from dlv.zone z where z.id = t.zone_id) as premium_ct_active, "
 			+ "(select count(*) from dlv.reservation where timeslot_id=t.id and status_code in ('5','10') and buildingId = nvl(?,'0')) as PREV_BLDG_RSV_CNT "
-			+ "from dlv.planning_resource p, dlv.timeslot t, dlv.zone z, transp.zone ta, transp.trn_area a,transp.trn_region tr "
+			+ "from dlv.planning_resource p, dlv.timeslot t, dlv.zone z,  dlv.region r, dlv.region_data rd, transp.zone ta, transp.trn_area a,transp.trn_region tr "
 			+ "where p.id = t.resource_id and t.ZONE_ID = z.ID and z.ZONE_CODE = ta.ZONE_CODE and ta.AREA = a.CODE  and a.region_code = tr.code  and p.zone_code = ? "
+			+ "and (rd.start_date >= (select max(start_date) from dlv.region_data where start_date <= ? and region_id = r.id) "
+			+ "or rd.start_date >= (select max(start_date) from dlv.region_data where start_date <= ? and region_id = r.id)) "
+			+ "and r.id = rd.region_id and rd.id = z.region_data_id "
 			+ "and p.day >= ? and p.day < ? "
 			+ "and to_date(to_char(t.base_date-1, 'MM/DD/YY ') || to_char(t.cutoff_time, 'HH:MI:SS AM'), 'MM/DD/YY HH:MI:SS AM') > SYSDATE "
 			+ "order by t.base_date, p.zone_code, t.start_time ";
@@ -894,6 +1003,8 @@ public class DlvManagerDAO {
 		ps.setString(10, zoneCode);
 		ps.setDate(11, new java.sql.Date(start.getTime()));
 		ps.setDate(12, new java.sql.Date(end.getTime()));
+		ps.setDate(13, new java.sql.Date(start.getTime()));
+		ps.setDate(14, new java.sql.Date(end.getTime()));
 
 		ResultSet rs = ps.executeQuery();
 		List<DlvTimeslotModel> timeslots = new ArrayList<DlvTimeslotModel>();
@@ -1475,9 +1586,9 @@ public class DlvManagerDAO {
 			+ " A.ID as ADDRESS, A.FIRST_NAME,A.LAST_NAME,A.ADDRESS1,A.ADDRESS2,A.APARTMENT,A.CITY,A.STATE,A.ZIP,A.COUNTRY, "
 			+ " A.PHONE,A.PHONE_EXT,A.DELIVERY_INSTRUCTIONS,A.SCRUBBED_ADDRESS,A.ALT_DEST,A.ALT_FIRST_NAME, "
 			+ " A.ALT_LAST_NAME,A.ALT_APARTMENT,A.ALT_PHONE,A.ALT_PHONE_EXT,A.LONGITUDE,A.LATITUDE,A.SERVICE_TYPE, "
-			+ " A.COMPANY_NAME,A.ALT_CONTACT_PHONE,A.ALT_CONTACT_EXT,A.UNATTENDED_FLAG,A.UNATTENDED_INSTR,A.CUSTOMER_ID "
-			+ " FROM DLV.RESERVATION R, DLV.TIMESLOT T, DLV.ZONE Z,CUST.ADDRESS A "
-			+ " WHERE R.ADDRESS_ID=A.ID(+) AND R.TIMESLOT_ID=T.ID AND R.ZONE_ID=Z.ID AND t.BASE_DATE=TRUNC(?) "
+			+ " A.COMPANY_NAME,A.ALT_CONTACT_PHONE,A.ALT_CONTACT_EXT,A.UNATTENDED_FLAG,A.UNATTENDED_INSTR,A.CUSTOMER_ID, RG.SERVICE_TYPE REGION_SVC_TYPE "
+			+ " FROM DLV.RESERVATION R, DLV.TIMESLOT T, DLV.ZONE Z, CUST.ADDRESS A, DLV.REGION_DATA RD, DLV.REGION RG "
+			+ " WHERE R.ADDRESS_ID=A.ID(+) AND R.TIMESLOT_ID=T.ID AND R.ZONE_ID=Z.ID AND Z.REGION_DATA_ID = RD.ID AND RD.REGION_ID = RG.ID AND t.BASE_DATE=TRUNC(?) "
 			+ "AND (unassigned_action IS NOT NULL OR (UPDATE_STATUS IS NOT NULL AND UPDATE_STATUS <> 'SUS'))  ";
 
 	public static List<UnassignedDlvReservationModel> getUnassignedReservations(
@@ -1515,9 +1626,9 @@ public class DlvManagerDAO {
 			+ " A.ID as ADDRESS,A.FIRST_NAME,A.LAST_NAME,A.ADDRESS1,A.ADDRESS2,A.APARTMENT,A.CITY,A.STATE,A.ZIP,A.COUNTRY, "
 			+ " A.PHONE,A.PHONE_EXT,A.DELIVERY_INSTRUCTIONS,A.SCRUBBED_ADDRESS,A.ALT_DEST,A.ALT_FIRST_NAME, "
 			+ " A.ALT_LAST_NAME,A.ALT_APARTMENT,A.ALT_PHONE,A.ALT_PHONE_EXT,A.LONGITUDE,A.LATITUDE,A.SERVICE_TYPE, "
-			+ " A.COMPANY_NAME,A.ALT_CONTACT_PHONE,A.ALT_CONTACT_EXT,A.UNATTENDED_FLAG,A.UNATTENDED_INSTR,A.CUSTOMER_ID "
-			+ "FROM DLV.RESERVATION R, DLV.TIMESLOT T, DLV.ZONE Z, CUST.ADDRESS A "
-			+ " WHERE  A.ID=R.ADDRESS_ID AND R.TIMESLOT_ID=T.ID AND R.ZONE_ID=Z.ID AND t.BASE_DATE > TRUNC(SYSDATE-1) "
+			+ " A.COMPANY_NAME,A.ALT_CONTACT_PHONE,A.ALT_CONTACT_EXT,A.UNATTENDED_FLAG,A.UNATTENDED_INSTR,A.CUSTOMER_ID, RG.SERVICE_TYPE REGION_SVC_TYPE  "
+			+ "FROM DLV.RESERVATION R, DLV.TIMESLOT T, DLV.ZONE Z, CUST.ADDRESS A, DLV.REGION_DATA RD, DLV.REGION RG  "
+			+ " WHERE  A.ID=R.ADDRESS_ID AND R.TIMESLOT_ID=T.ID AND R.ZONE_ID=Z.ID AND Z.REGION_DATA_ID = RD.ID AND RD.REGION_ID = RG.ID AND t.BASE_DATE > TRUNC(SYSDATE-1) "
 			+ " AND  R.DO_REROUTE = 'X' ORDER BY T.BASE_DATE, Z.ZONE_CODE";
 
 	public static List<UnassignedDlvReservationModel> getReRouteReservations(
@@ -1556,10 +1667,10 @@ public class DlvManagerDAO {
 	private static final String GET_LOCKED_RESERVATIONS_QUERY = "SELECT R.ID, R.ORDER_ID, R.CUSTOMER_ID, R.STATUS_CODE, R.TIMESLOT_ID, R.ZONE_ID, R.EXPIRATION_DATETIME, R.TYPE, R.ADDRESS_ID,T.BASE_DATE, Z.ZONE_CODE"
 			+ ",R.UNASSIGNED_DATETIME, R.UNASSIGNED_ACTION, R.IN_UPS, R.ORDER_SIZE, R.SERVICE_TIME"
 			+ ", R.RESERVED_ORDER_SIZE, R.RESERVED_SERVICE_TIME, R.UPDATE_STATUS, R.METRICS_SOURCE "
-			+ ", R.NUM_CARTONS , R.NUM_FREEZERS , R.NUM_CASES, R.BUILDINGID, R.LOCATIONID, R.PREV_BLDG_RSV_CNT "
+			+ ", R.NUM_CARTONS , R.NUM_FREEZERS , R.NUM_CASES, R.BUILDINGID, R.LOCATIONID, R.PREV_BLDG_RSV_CNT, RG.SERVICE_TYPE REGION_SVC_TYPE "
 			+ "FROM DLV.RESERVATION R, "
-			+ " DLV.TIMESLOT T, DLV.ZONE Z  where  r.expiration_datetime <= sysdate and r.status_code = 25 "
-			+ "AND R.TIMESLOT_ID=T.ID AND R.ZONE_ID=Z.ID";
+			+ " DLV.TIMESLOT T, DLV.ZONE Z , DLV.REGION_DATA RD, DLV.REGION RG  where  r.expiration_datetime <= sysdate and r.status_code = 25 "
+			+ "AND R.TIMESLOT_ID=T.ID AND R.ZONE_ID=Z.ID AND Z.REGION_DATA_ID = RD.ID AND RD.REGION_ID = RG.ID";
 
 	public static List<DlvReservationModel> getExpiredReservations(
 			Connection conn) throws SQLException {
@@ -1594,7 +1705,8 @@ public class DlvManagerDAO {
 
 	private static final String TIMESLOTS_BY_DATE = "select ts.id, ts.base_date, ts.start_time, ts.end_time, ts.cutoff_time, ts.premium_cutoff_time, ts.status, ts.zone_id, ts.capacity, ts.premium_capacity,  ta.STEERING_RADIUS steeringRadius,"
 			+ " z.zone_code, ts.ct_capacity,ts.premium_ct_capacity, ta.AREA AREA_CODE, ta.STEM_MAX_TIME stemmax, ta.STEM_FROM_TIME stemfrom, ta.STEM_TO_TIME stemto, ta.ZONE_ECOFRIENDLY ecoFriendly, z.NAME ZONE_NAME, "
-			+ "case when ts.premium_cutoff_time is null then TO_CHAR(ts.CUTOFF_TIME, 'HH_MI_PM') else TO_CHAR(ts.premium_cutoff_time, 'HH_MI_PM') end WAVE_CODE, ts.IS_DYNAMIC IS_DYNAMIC, ts.IS_CLOSED IS_CLOSED, tr.IS_DEPOT IS_DEPOT, tr.code REGION_CODE, tr.name REGION_NAME, tr.description REGION_DESCR, a.DELIVERY_RATE AREA_DLV_RATE, "
+			+ "case when ts.premium_cutoff_time is null then TO_CHAR(ts.CUTOFF_TIME, 'HH_MI_PM') else TO_CHAR(ts.premium_cutoff_time, 'HH_MI_PM') end WAVE_CODE, ts.IS_DYNAMIC IS_DYNAMIC, ts.IS_CLOSED IS_CLOSED, tr.IS_DEPOT IS_DEPOT, " 
+			+ " tr.code REGION_CODE, tr.name REGION_NAME, tr.description REGION_DESCR, a.DELIVERY_RATE AREA_DLV_RATE, R.SERVICE_TYPE REGION_SVC_TYPE, "
 			+ "(select count(*) from dlv.reservation where timeslot_id=ts.id and status_code <> ? and status_code <> ? and chefstable = ' ' and class is null) as base_allocation, "
 			+ "(select count(*) from dlv.reservation where timeslot_id=ts.id and status_code <> ? and status_code <> ? and chefstable = 'X' and class is null) as ct_allocation, "
 			+ "(select count(*) from dlv.reservation where timeslot_id=ts.id and status_code = '10' and class is null) as total_confirmed, "

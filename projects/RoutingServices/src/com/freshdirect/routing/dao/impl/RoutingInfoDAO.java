@@ -107,6 +107,7 @@ public class RoutingInfoDAO extends BaseDAO implements IRoutingInfoDAO   {
 				    		tmpModel.setLoadBalanceFactor(rs.getDouble("LOADBALANCE_FACTOR"));
 				    		tmpModel.setLateDeliveryFactor(rs.getDouble("LATEDELIVERY_FACTOR"));
 				    		tmpModel.setNeedsLoadBalance("X".equalsIgnoreCase(rs.getString("NEEDS_LOADBALANCE")) ? true : false);
+				    		tmpModel.setBulkThreshold(rs.getDouble("BULK_THRESHOLD"));
 				    		scenarios.add(tmpModel);
 				    	 } while(rs.next());		        		    	
 				      }
@@ -147,8 +148,50 @@ public class RoutingInfoDAO extends BaseDAO implements IRoutingInfoDAO   {
 				      }
 				  }
 			);
+		System.err.println("getRoutingScenarioByDate "+results.get(0).getCode()+" "+deliveryDate);
 		return results.size() > 0 ? results.get(0) : null;
 	}
+	
+	private static final String GET_SCENARIO_QRY = "SELECT S.* FROM DLV.SERVICETIME_SCENARIO S,  DLV.SCENARIO_DAYS D " +
+			"where S.CODE = D.SCENARIO_CODE " +
+			"and ((D.SCENARIO_DATE = ? or D.DAY_OF_WEEK = TO_CHAR(?, 'D')) " +
+			"or (D.SCENARIO_DATE is null and D.DAY_OF_WEEK is null)) " +
+			"and  (D.CUTOFF_TIME is null or D.CUTOFF_TIME = ? " +
+			"and (D.START_TIME is null or D.END_TIME is null or (D.START_TIME <= ? " +
+			"AND D.END_TIME >= ?))) ORDER BY SCENARIO_DATE, DAY_OF_WEEK, START_TIME, END_TIME, CUTOFF_TIME NULLS LAST";            
+	
+	public IServiceTimeScenarioModel getRoutingScenarioEx(final Date deliveryDate, final Date cutoff,final Date startTime,final Date endTime)  throws SQLException {
+		
+		final List<IServiceTimeScenarioModel> results = new ArrayList<IServiceTimeScenarioModel>();
+		PreparedStatementCreator creator=new PreparedStatementCreator() {
+			public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
+				
+				PreparedStatement ps =
+					connection.prepareStatement(GET_SCENARIO_QRY);
+				ps.setDate(1, new java.sql.Date(deliveryDate.getTime()));
+				ps.setDate(2, new java.sql.Date(deliveryDate.getTime()));
+				ps.setTimestamp(3, new java.sql.Timestamp(cutoff.getTime()));
+				ps.setTimestamp(4, new java.sql.Timestamp(startTime.getTime()));
+				ps.setTimestamp(5, new java.sql.Timestamp(endTime.getTime()));
+				
+				return ps;
+			}
+		};
+		
+		jdbcTemplate.query(creator, 
+				  new RowCallbackHandler() { 
+				      public void processRow(ResultSet rs) throws SQLException {				    	
+				    	do {        		    		
+				    		results.add(getScenarioFromResultSet(rs));
+				    		break;
+				    	 } while(rs.next());		        		    	
+				      }
+				  }
+			);
+		System.err.println("getRoutingScenarioEx "+results.get(0).getCode()+" "+deliveryDate);
+		return results.size() > 0 ? results.get(0) : null;
+	}
+	
 	
 	public IServiceTimeScenarioModel getRoutingScenarioByCode(final String code)  throws SQLException {
 		
@@ -199,7 +242,8 @@ public class RoutingInfoDAO extends BaseDAO implements IRoutingInfoDAO   {
 		
 		tmpModel.setDefaultTrailerContainerCount(rs.getInt("TRAILER_CONTAINERMAX"));
 		tmpModel.setDefaultContainerCartonCount(rs.getInt("TRAILER_CONTAINERCARTONMAX"));
-
+		tmpModel.setBulkThreshold(rs.getDouble("BULK_THRESHOLD"));
+		
 		return tmpModel;
 	}
 	
@@ -241,7 +285,6 @@ public class RoutingInfoDAO extends BaseDAO implements IRoutingInfoDAO   {
 				    		model.setAdjustmentOperator(EnumArithmeticOperator.getEnum(rs.getString("SERVICETIME_OPERATOR")));
 				    		model.setServiceTimeAdjustment(rs.getDouble("SERVICETIME_ADJUSTMENT"));
 				    		model.setServiceTimeOverride(rs.getDouble("SERVICETIME_OVERRIDE"));
-				    		
 				    		results.put(model.getZone(), model);
 				    	 } while(rs.next());		        		    	
 				      }
@@ -426,7 +469,8 @@ public class RoutingInfoDAO extends BaseDAO implements IRoutingInfoDAO   {
 	private static final String GET_PLANBYDATE_QRY = "select P.PLAN_DATE DISPATCH_DATE, P.ZONE ZONE, P.CUTOFF_DATETIME CUT_OFF, P.ORIGIN_FACILITY, P.DESTINATION_FACILITY " +
 			", P.START_TIME DISPATCH_TIME, P.FIRST_DLV_TIME, P.LAST_DLV_TIME " +
 			", Z.STEM_TO_TIME TO_ZONETIME, Z.STEM_FROM_TIME FROM_ZONETIME, Z.LOADING_PRIORITY " +
-		 	"from transp.plan p, transp.zone z where P.PLAN_DATE = ? and P.ZONE = Z.ZONE_CODE and P.ZONE is not null " +
+		 	"from transp.plan p, transp.zone z, transp.trn_facility f where P.PLAN_DATE = ? and P.ZONE = Z.ZONE_CODE and P.ZONE is not null " +
+			"and F.ID = P.ORIGIN_FACILITY and F.FACILITYTYPE_CODE <>'DPT' " +
 			"order by P.ZONE, P.CUTOFF_DATETIME, P.FIRST_DLV_TIME";
 	//Result Description -> Map<ZoneCode, Map<DispatchTIme, Map<CutOffTime, IWaveInstance>>>
 	public Map<String, Map<RoutingTimeOfDay, Map<RoutingTimeOfDay, List<IWaveInstance>>>> getPlannedDispatchTree(final Date deliveryDate)  throws SQLException {
@@ -1106,7 +1150,34 @@ public class RoutingInfoDAO extends BaseDAO implements IRoutingInfoDAO   {
 					return result;
 				}
 
-		
 				
-		
+				private static final String GET_ROUTING_WAVEINSTANCES_IDS = "select distinct REFERENCE_ID from transp.WAVE_INSTANCE p where P.DELIVERY_DATE = ?";
+						
+				@Override
+				public Set retrieveRoutingWaveInstIds(final Date deliveryDate)
+						throws SQLException {
+						final Set result = new HashSet();
+						PreparedStatementCreator creator=new PreparedStatementCreator() {
+							public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
+								
+								PreparedStatement ps = null;
+								if(deliveryDate != null) {
+									ps = connection.prepareStatement(GET_ROUTING_WAVEINSTANCES_IDS);
+									ps.setDate(1, new java.sql.Date(deliveryDate.getTime()));
+								}
+								return ps;
+							}
+						};
+						
+						jdbcTemplate.query(creator, 
+						new RowCallbackHandler() { 
+							public void processRow(ResultSet rs) throws SQLException {				    	
+							do {
+								result.add(rs.getString("REFERENCE_ID"));
+							} while(rs.next());		        		    	
+							}
+						}
+						);
+						return result;
+				}	
 }

@@ -28,6 +28,7 @@ import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.delivery.DlvServiceSelectionResult;
+import com.freshdirect.delivery.DlvZoneInfoModel;
 import com.freshdirect.delivery.EnumDeliveryStatus;
 import com.freshdirect.delivery.model.DlvTimeslotModel;
 import com.freshdirect.delivery.model.SectorVO;
@@ -156,7 +157,9 @@ public static IOrderModel getOrderModel(ILocationModel location, String orderNum
 				ErpAddressModel address1 = performCosResidentialMerge(erpAddress);
 				
 				
-				List<DlvTimeslotModel> dlvtimeslots = dlvSB.getTimeslotForDateRangeAndZone(startDate, endDate, address1);
+				DlvZoneInfoModel zoneInfo = dlvSB.getZoneInfo(address1, startDate, null, null);
+				
+				List<DlvTimeslotModel> dlvtimeslots = dlvSB.getTimeslotForDateRangeAndZone(startDate, endDate, address1, zoneInfo.getRegionSvcType());
 				
 				if(dlvtimeslots!=null && dlvtimeslots.size()>0)
 				{

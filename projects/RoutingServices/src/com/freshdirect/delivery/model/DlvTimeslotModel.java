@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.Calendar;
 import java.util.Date;
 
+import com.freshdirect.delivery.EnumRegionServiceType;
 import com.freshdirect.delivery.EnumTimeslotStatus;
 import com.freshdirect.delivery.planning.DlvShiftTimeslotModel;
 import com.freshdirect.framework.core.PrimaryKey;
@@ -75,6 +76,8 @@ public class DlvTimeslotModel extends DlvShiftTimeslotModel {
 	private double premiumAmount;
 		
 	private int totalConfirmed;
+	
+	private EnumRegionServiceType regionSvcType;
 	
 	public boolean hasSteeringRadius() {
 		if(this.getRoutingSlot() != null && this.getRoutingSlot().getDeliveryCost() != null && this.getRoutingSlot().getSteeringRadius() != null) {	
@@ -599,6 +602,14 @@ public class DlvTimeslotModel extends DlvShiftTimeslotModel {
 				+ this.getChefsTableAllocation() + ": " + this.getPK()
 				+ " Eco-Friendly:" + this.isEcoFriendly() 
 				+ " RadiusSteering:" + this.hasSteeringRadius() + "]";
+	}
+
+	public EnumRegionServiceType getRegionSvcType() {
+		return regionSvcType;
+	}
+
+	public void setRegionSvcType(EnumRegionServiceType regionSvcType) {
+		this.regionSvcType = regionSvcType;
 	}
 
 	

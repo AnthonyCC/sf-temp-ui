@@ -36,6 +36,7 @@ public class DlvServiceTimeScenario implements java.io.Serializable, TrnBaseEnti
 	private Set scenarioDays = new HashSet(0);
 	
 	private Set scenarioZones = new HashSet(0);
+	private BigDecimal bulkThreshold;
 	
 	public DlvServiceTimeScenario(String code, String description,
 			String isDefault, String serviceTimeFactorFormula,
@@ -266,4 +267,13 @@ public class DlvServiceTimeScenario implements java.io.Serializable, TrnBaseEnti
 	public void setScenarioDays(Set scenarioDays) {
 		this.scenarioDays = scenarioDays;
 	}
+	
+	public BigDecimal getBulkThreshold() {
+		return bulkThreshold;
+	}
+	
+	public void setBulkThreshold(BigDecimal bulkThreshold) {
+		this.bulkThreshold = bulkThreshold;
+	}
+	
 }

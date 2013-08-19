@@ -116,7 +116,7 @@ public class ClickToCallUtil {
 					address = FDCustomerManager.getAddress(user.getIdentity(), addrId);
 				}
 				if(null != address){
-					DlvZoneInfoModel dlvZoneInfo = FDDeliveryManager.getInstance().getZoneInfo(address, date);
+					DlvZoneInfoModel dlvZoneInfo = FDDeliveryManager.getInstance().getZoneInfo(address, date, user.getHistoricOrderSize(), null);
 					if(null != dlvZoneInfo && null !=dlvZoneInfo.getZoneCode()){
 						List dlvZonesList =Arrays.asList(dlvZones);
 						if(dlvZonesList.contains(dlvZoneInfo.getZoneCode())){
@@ -197,8 +197,15 @@ public class ClickToCallUtil {
 				endCal.add(Calendar.DATE, 2);
 				endCal = DateUtil.truncate(endCal);
 				TimeslotEventModel event = null; 
+				DlvZoneInfoModel zoneInfo = null;
+				try{
+					zoneInfo = FDDeliveryManager.getInstance().getZoneInfo(address, begCal.getTime(), 
+						user.getHistoricOrderSize(), null);
+				}catch(FDInvalidAddressException ie){
+					throw new FDResourceException(ie);
+				}
 				List<FDTimeslot> timeSlots = FDDeliveryManager.getInstance().getTimeslotsForDateRangeAndZone(begCal.getTime()
-							, endCal.getTime(), event, (ContactAddressModel)address).getTimeslots();
+							, endCal.getTime(), event, (ContactAddressModel)address, zoneInfo.getRegionSvcType()).getTimeslots();
 				if(null == timeSlots || timeSlots.size()==0){
 					displayClick2CallInfo = true;
 				}else{

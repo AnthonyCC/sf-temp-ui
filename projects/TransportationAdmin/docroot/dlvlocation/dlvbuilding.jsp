@@ -229,13 +229,15 @@
               <ec:column property="latitude" title="Latitude"/>
               <ec:column property="longitude" title="Longitude"/>
               <ec:column property="geocodeConfidence" title="Confidence" width="10px"/>
-              <ec:column property="geocodeQuality" title="Quality" width="10px"/>             
+              <ec:column property="geocodeQuality" title="Quality" width="10px"/>     
+              <ec:column property="forceBulk" title="Force Bulk" width="5px"/>        
               <ec:column alias="serviceTimeType" property="dlvServiceTimeType" title="Service Time Type"/>
               <ec:column alias="serviceTimeOverride" property="serviceTimeOverride" title="Override ServiceTimeType"/>
               <ec:column alias="serviceTimeAdjustable" property="serviceTimeAdjustable" title="Service Time Adjustment"/>
               <ec:column sortable="false" alias="geocode" property="buildingId" title=" " filterable="false" cell="geocodecol" width="5px" />
               <ec:column sortable="false" alias="showloc" property="buildingId" title=" " filterable="false" cell="locationcol" width="5px" />
               <ec:column sortable="false" alias="showdtl" property="buildingId" title=" " filterable="false" cell="buildingdtlcol" width="5px" />
+              <ec:column sortable="false" alias="showcustomer" property="buildingId" title=" " filterable="false" cell="customercol" width="5px" />
             </ec:row>
           </ec:table>
        </form>  

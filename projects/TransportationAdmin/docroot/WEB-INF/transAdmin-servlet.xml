@@ -91,6 +91,7 @@
 		 	    <prop key="/deletedlvbuilding.do">locationController</prop>
  		 	    <prop key="/geocodedlvbuilding.do">locationController</prop>
  		 	    <prop key="/dlvbuildinglocation.do">locationController</prop>
+ 		 	    <prop key="/customerinfo.do">locationController</prop>
  		 	    <prop key="/editdlvbuilding.do">deliveryBuildingFormController</prop> 
  		 	    <prop key="/editdlvbuildingdtl.do">deliveryBuildingDtlFormController</prop> 
  		 	    <prop key="/deletedlvbuildingdtl.do">locationController</prop> 
@@ -108,6 +109,10 @@
 				<prop key="/georestriction.do">restrictionController</prop>
 				<prop key="/deletegeorestriction.do">restrictionController</prop>					                
 				<prop key="/editgeorestriction.do">geoRestrictionFormController</prop>
+
+				<prop key="/timeslotrestriction.do">restrictionController</prop>
+				<prop key="/deletetimeslotrestriction.do">restrictionController</prop>					                
+				<prop key="/edittimeslotrestriction.do">tsRestrictionFormController</prop>
 
 				<prop key="/geographyprovider.ax">asyncGeographyController</prop>
 				<prop key="/dispatchprovider.ax">asyncDispatchController</prop>
@@ -325,7 +330,8 @@
 	 	    <prop key="/deletedlvbuilding.do">dlvBuildingDeleteHandler</prop>
 	 	    <prop key="/deletedlvbuildingdtl.do">dlvBuildingDtlDeleteHandler</prop>
 	 	    <prop key="/geocodedlvbuilding.do">dlvBuildingGeocodeHandler</prop>	
-	 	    <prop key="/dlvbuildinglocation.do">dlvBuildingLocationHandler</prop>	 
+	 	    <prop key="/dlvbuildinglocation.do">dlvBuildingLocationHandler</prop>
+	 	    <prop key="/customerinfo.do">customerInfoHandler</prop>	 
 	 	    <prop key="/dlvservicetimescenario.do">dlvServiceTimeScenarioHandler</prop>
 	 	    <prop key="/dlvservicetimescenariodisplay.do">dlvServiceTimeScenarioDisplayHandler</prop>
  		 	<prop key="/deletedlvservicetimescenario.do">dlvServiceTimeScenarioDeleteHandler</prop>	
@@ -337,6 +343,9 @@
 		 	<prop key="/georestriction.do">geoRestrictionHandler</prop>					                
  		 	<prop key="/deletegeorestriction.do">geoRestrictionDeleteHandler</prop>
 
+			<prop key="/timeslotrestriction.do">tsRestrictionHandler</prop>
+			<prop key="/deletetimeslotrestriction.do">tsRestrictionDeleteHandler</prop>					                
+				
 			<prop key="/gmap.do">geographicBoundaryHandler</prop>
 			<prop key="/gmapexport.do">geographicBoundaryExportHandler</prop>
 			<prop key="/drivingdirection.do">drivingDirectionsHandler</prop>
@@ -633,6 +642,19 @@
         <property name="formView" value="geoRestrictionEdit" />
 	</bean>
 	
+	<bean id="tsRestrictionFormController" class="com.freshdirect.transadmin.web.TimeslotRestrictionFormController">
+		<property name="restrictionManagerService" ref="restrictionManager"/>
+		<property name="domainManagerService" ref="domainManager"/>
+		<property name="zoneManagerService" ref="zoneManager"/>
+		<property name="sessionForm" value="true"/>
+        <property name="commandName" value="timeslotRestrictionForm"/>
+        <property name="commandClass" value="com.freshdirect.transadmin.model.TimeslotRestrictionCommand"/>
+        <property name="validator" ref="tsRestrictionValidator"/>
+        <property name="successView" value="tsRestrictionEdit" />
+        <property name="formView" value="tsRestrictionEdit" />
+	</bean>
+	
+	
 	<bean id="zoneExpansionFormController" class="com.freshdirect.transadmin.web.ZoneExpansionFormController">
 		<property name="sessionForm" value="true"/>
         <property name="domainManagerService" ref="domainManager"/>
@@ -898,6 +920,7 @@
 
 	
 	<bean id="geoRestrictionValidator" class="com.freshdirect.transadmin.web.validation.GeoRestrictionValidator"/>
+	<bean id="tsRestrictionValidator" class="com.freshdirect.transadmin.web.validation.TimeslotRestrictionValidator"/>
 	<bean id="scribValidator" class="com.freshdirect.transadmin.web.validation.ScribValidator"/>
 	<bean id="scheduleValidator" class="com.freshdirect.transadmin.web.validation.ScheduleValidator"/>
 	

@@ -58,6 +58,9 @@
                 <column name="CODE" length="8" not-null="true" />
             </key>
             <one-to-many class="com.freshdirect.transadmin.model.DlvScenarioZones" />
-        </set>            
+        </set> 
+        <property name="bulkThreshold" type="big_decimal">
+            <column name="BULK_THRESHOLD" precision="10" />
+        </property>              
     </class>
 </hibernate-mapping>

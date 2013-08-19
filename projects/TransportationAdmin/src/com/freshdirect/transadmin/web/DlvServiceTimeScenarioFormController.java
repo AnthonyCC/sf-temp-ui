@@ -25,7 +25,8 @@ public class DlvServiceTimeScenarioFormController extends AbstractFormController
 	
 	protected Map referenceData(HttpServletRequest request) throws ServletException {
 		Map refData = new HashMap();		
-		refData.put("servicetimetypes", getLocationManagerService().getServiceTimeTypes());				
+		refData.put("servicetimetypes", getLocationManagerService().getServiceTimeTypes());	
+		refData.put("cutoffs", getDomainManagerService().getCutOffs());
 		refData.put("zonetypes", getDomainManagerService().getZoneTypes());
 		refData.put("balancebys", getDomainManagerService().getBalanceBys());
 		refData.put("zones", getDomainManagerService().getActiveZones());

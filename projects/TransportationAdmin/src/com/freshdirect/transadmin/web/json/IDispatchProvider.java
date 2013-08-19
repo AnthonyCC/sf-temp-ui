@@ -24,7 +24,7 @@ public interface IDispatchProvider {
 	int setReasonCode(String code,String reason, boolean enable);
 	List<WebPlanInfo> getPlanForResource(String date, String resourceId, String planId);
 	List<DispatchCommand> getDispatchForResource(String date, String resourceId, String dispatchId);
-	int addScenarioDayMapping(String sCode, String sDay, String sDate);
+	int addScenarioDayMapping(String sCode, String sDay, String sDate, String cutoff, String startTime, String endTime);
 	boolean deleteServiceTimeScenario(String sCode);
 	Collection getScenarioZones(String scenarioId);
 	boolean doScenarioZone(String id, String[][] zone);

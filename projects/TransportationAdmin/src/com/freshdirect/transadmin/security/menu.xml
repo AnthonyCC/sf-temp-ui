@@ -143,7 +143,7 @@
 	     </menu>
 	     
 	     <menu id="GEO004" title="Building" orientation="LEFT" link="dlvbuilding.do">
-	     	<access-uris>dlvbuilding.do,deletedlvbuilding.do,geocodedlvbuilding.do,dlvbuildinglocation.do,editdlvbuilding.do</access-uris>
+	     	<access-uris>dlvbuilding.do,deletedlvbuilding.do,geocodedlvbuilding.do,dlvbuildinglocation.do,editdlvbuilding.do,customerinfo.do</access-uris>
 	     	<access-roles>TrnAdmin,TrnPlanning</access-roles>
 	     </menu>
 	     
@@ -166,6 +166,11 @@
 	     	<access-uris>georestriction.do,deletegeorestriction.do,editgeorestriction.do</access-uris>
 	     	<access-roles>TrnAdmin</access-roles>
 	     </menu>
+	      <menu id="GEO012" title="Timeslot Restriction" orientation="RIGHT" link="timeslotrestriction.do">
+	     	<access-uris>timeslotrestriction.do,deletetimeslotrestriction.do,edittimeslotrestriction.do</access-uris>
+	     	<access-roles>TrnAdmin</access-roles>
+	     </menu>
+	     
 	     <menu id="GEO009" title="GMap" orientation="RIGHT" link="gmap.do">
 	     	<access-uris>gmap.do</access-uris>
 	     	<access-roles>TrnAdmin,TrnGuest,TrnDispatch,TrnPlanning,TrnOperations</access-roles>
@@ -243,7 +248,7 @@
 	     	<access-roles>TrnAdmin</access-roles>
 	     </menu>
 	     
-	      <menu id="ADO011" title="Dashboard" orientation="LEFT" link="dashboard.do">
+	      <menu id="ADO012" title="Dashboard" orientation="LEFT" link="dashboard.do">
 	     	<access-uris>dashboard.do</access-uris>
 	     	<access-roles>TrnAdmin</access-roles>
 	     </menu>

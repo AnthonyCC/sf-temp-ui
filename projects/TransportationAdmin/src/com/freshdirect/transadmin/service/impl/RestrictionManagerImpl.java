@@ -10,6 +10,7 @@ import com.freshdirect.transadmin.dao.BaseManagerDaoI;
 import com.freshdirect.transadmin.dao.RestrictionManagerDaoI;
 import com.freshdirect.transadmin.dao.SpatialManagerDaoI;
 import com.freshdirect.transadmin.model.GeoRestriction;
+import com.freshdirect.transadmin.model.TimeslotRestriction;
 import com.freshdirect.transadmin.service.RestrictionManagerI;
 import com.freshdirect.transadmin.web.model.SpatialBoundary;
 
@@ -98,6 +99,27 @@ public class RestrictionManagerImpl extends BaseManagerImpl implements Restricti
 	
 	public List<SpatialBoundary> getSectorBoundary(String code) {
 		return this.getSpatialManagerDao().getSectorBoundary(code);
+	}
+
+	@Override
+	public TimeslotRestriction getTimeslotRestriction(String id) {
+		return getRestrictionManagerDao().getTimeslotRestriction(id);
+		}
+
+	@Override
+	public Collection getTimeslotRestrictions() {
+		return getRestrictionManagerDao().getTimeslotRestrictions();
+		
+	}
+
+	@Override
+	public void saveTimeslotRestriction(TimeslotRestriction tsRestriction) {
+		getRestrictionManagerDao().saveTimeslotRestriction(tsRestriction);
+	}
+
+	@Override
+	public void deleteTimeslotRestrictions(Set restrictions) {
+		this.removeEntity(restrictions);
 	}
 }	
 	

@@ -43,13 +43,14 @@ public class CartFactory {
         //FDDeliveryManager.getInstance().scrubAddress(dlvAddress);
             
         try {
-            DlvZoneInfoModel zInfo = FDDeliveryManager.getInstance().getZoneInfo(address, new java.util.Date());
+            DlvZoneInfoModel zInfo = FDDeliveryManager.getInstance().getZoneInfo(address, new java.util.Date(), null, null);
             
 			FDReservation deliveryReservation =
 				new FDReservation(
 					null,
 					new FDTimeslot(new DlvTimeslotModel()),
-					endCal.getTime(), EnumReservationType.STANDARD_RESERVATION, identity.getErpCustomerPK(), null, false,false, null,false,null,20,null,null,null,0);
+					endCal.getTime(), EnumReservationType.STANDARD_RESERVATION, identity.getErpCustomerPK(), 
+					null, false,false, null,false,null,20,null,null,null,0,null);
             
             cart.setZoneInfo(zInfo);
             cart.setDeliveryReservation(deliveryReservation);

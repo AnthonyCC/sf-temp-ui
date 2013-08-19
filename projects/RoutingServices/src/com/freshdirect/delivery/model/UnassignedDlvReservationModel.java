@@ -3,6 +3,7 @@ package com.freshdirect.delivery.model;
 import java.util.Date;
 
 import com.freshdirect.common.address.ContactAddressModel;
+import com.freshdirect.delivery.EnumRegionServiceType;
 import com.freshdirect.delivery.EnumReservationType;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.routing.constants.EnumOrderMetricsSource;
@@ -25,12 +26,12 @@ public class UnassignedDlvReservationModel extends DlvReservationModel {
 			Double reservedOrderSize, Double reservedServiceTime,
 			Long noOfCartons, Long noOfCases, Long noOfFreezers, EnumReservationClass rsvClass, 
 			EnumRoutingUpdateStatus status, EnumOrderMetricsSource metricsSource,
-			String buildingId, String locationId, int reservedOrdersAtBuilding) {
+			String buildingId, String locationId, int reservedOrdersAtBuilding,EnumRegionServiceType regionSvcType) {
 		super(pk, orderId, customerId, statusCode, expirationDateTime, timeslotId,
 				zoneId, type, address!=null?address.getId():null, deliveryDate, zoneCode,
 				unassignedActivityType, inUPS, overrideOrderSize, overrideServiceTime,
 				reservedOrderSize, reservedServiceTime, noOfCartons, noOfCases,
-				noOfFreezers, rsvClass, status, metricsSource,buildingId, locationId, reservedOrdersAtBuilding);
+				noOfFreezers, rsvClass, status, metricsSource,buildingId, locationId, reservedOrdersAtBuilding,regionSvcType);
 		this.address=address;
 		this.cutoff = cutoff;
 		this.setStartTime(stime);

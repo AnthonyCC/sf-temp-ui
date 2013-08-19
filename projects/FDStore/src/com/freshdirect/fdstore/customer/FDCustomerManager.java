@@ -345,7 +345,7 @@ public class FDCustomerManager {
 				}
 			} else {
 				try {
-					user.getShoppingCart().setZoneInfo(FDDeliveryManager.getInstance().getZoneInfo(address, day));
+					user.getShoppingCart().setZoneInfo(FDDeliveryManager.getInstance().getZoneInfo(address, day,user.getHistoricOrderSize(),  user.getRegionSvcType()));
 				} catch (FDInvalidAddressException e) {
 					LOGGER.info("Encountered InvalidAddressException while getting zoneInfo for address: "
 						+ address.getAddress1() 
@@ -889,7 +889,7 @@ public class FDCustomerManager {
 		}
 		
 		try {
-			DlvZoneInfoModel zoneInfo = FDDeliveryManager.getInstance().getZoneInfo(address, reservation.getStartTime());
+			DlvZoneInfoModel zoneInfo = FDDeliveryManager.getInstance().getZoneInfo(address, reservation.getStartTime(), user.getHistoricOrderSize(), reservation.getRegionSvcType());
 			if (reservation.getZoneId().equals(zoneInfo.getZoneId())) {
 				return reservation;
 			}
@@ -915,7 +915,7 @@ public class FDCustomerManager {
 				FDDeliveryManager.getInstance().getTimeslotsForDateRangeAndZone(
 					reservation.getStartTime(),
 					endCal.getTime(),event,
-					address).getTimeslots();
+					address, zoneInfo.getRegionSvcType()).getTimeslots();
 			FDTimeslot matchingTimeslot = null;
 			for ( FDTimeslot t : timeslots ) {
 				if (t.getBegDateTime().equals(reservation.getStartTime())

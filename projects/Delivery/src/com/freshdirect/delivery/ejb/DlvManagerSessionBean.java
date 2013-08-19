@@ -29,8 +29,12 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.ejb.EJBException;
+import javax.ejb.EJBHome;
+import javax.ejb.EJBObject;
 import javax.ejb.FinderException;
+import javax.ejb.Handle;
 import javax.ejb.ObjectNotFoundException;
+import javax.ejb.RemoveException;
 import javax.jms.ObjectMessage;
 
 import org.apache.log4j.Category;
@@ -47,6 +51,7 @@ import com.freshdirect.common.pricing.MunicipalityInfo;
 import com.freshdirect.customer.EnumAccountActivityType;
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.customer.ErpActivityRecord;
+import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ejb.ErpLogActivityCommand;
 import com.freshdirect.delivery.DlvAddressGeocodeResponse;
 import com.freshdirect.delivery.DlvAddressVerificationResponse;
@@ -60,6 +65,7 @@ import com.freshdirect.delivery.DlvZoneCutoffInfo;
 import com.freshdirect.delivery.DlvZoneInfoModel;
 import com.freshdirect.delivery.EnumAddressVerificationResult;
 import com.freshdirect.delivery.EnumDeliveryStatus;
+import com.freshdirect.delivery.EnumRegionServiceType;
 import com.freshdirect.delivery.EnumReservationStatus;
 import com.freshdirect.delivery.EnumReservationType;
 import com.freshdirect.delivery.EnumRestrictedAddressReason;
@@ -81,6 +87,7 @@ import com.freshdirect.delivery.model.SectorVO;
 import com.freshdirect.delivery.model.UnassignedDlvReservationModel;
 import com.freshdirect.delivery.restriction.GeographyRestriction;
 import com.freshdirect.delivery.restriction.RestrictionI;
+import com.freshdirect.delivery.restriction.TimeslotRestriction;
 import com.freshdirect.delivery.restriction.ejb.DlvRestrictionDAO;
 import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDDynamicTimeslotList;
@@ -100,22 +107,27 @@ import com.freshdirect.routing.constants.EnumOrderMetricsSource;
 import com.freshdirect.routing.constants.EnumRoutingUpdateStatus;
 import com.freshdirect.routing.constants.EnumWaveInstanceStatus;
 import com.freshdirect.routing.constants.RoutingActivityType;
+import com.freshdirect.routing.model.IBuildingModel;
 import com.freshdirect.routing.model.IDeliveryReservation;
 import com.freshdirect.routing.model.IDeliverySlot;
 import com.freshdirect.routing.model.IDeliverySlotCost;
 import com.freshdirect.routing.model.IDeliveryWindowMetrics;
 import com.freshdirect.routing.model.IOrderModel;
+import com.freshdirect.routing.model.IPackagingModel;
 import com.freshdirect.routing.model.IRoutingNotificationModel;
 import com.freshdirect.routing.model.IRoutingSchedulerIdentity;
+import com.freshdirect.routing.model.IServiceTimeScenarioModel;
 import com.freshdirect.routing.model.IWaveInstance;
 import com.freshdirect.routing.model.TrnFacilityType;
 import com.freshdirect.routing.service.exception.IIssue;
 import com.freshdirect.routing.service.exception.RoutingServiceException;
 import com.freshdirect.routing.service.proxy.DeliveryServiceProxy;
+import com.freshdirect.routing.service.proxy.GeographyServiceProxy;
 import com.freshdirect.routing.service.proxy.RoutingEngineServiceProxy;
 import com.freshdirect.routing.service.proxy.RoutingInfoServiceProxy;
 import com.freshdirect.routing.util.RoutingServicesProperties;
 import com.freshdirect.routing.util.RoutingTimeOfDay;
+import com.freshdirect.routing.util.ServiceTimeUtil;
 
 public class DlvManagerSessionBean extends GatewaySessionBeanSupport {
 
@@ -139,12 +151,12 @@ public class DlvManagerSessionBean extends GatewaySessionBeanSupport {
 		return "com.freshdirect.delivery.ejb.DlvManagerHome";
 	}
 
-	public List<DlvTimeslotModel> getTimeslotForDateRangeAndZone(java.util.Date begDate, java.util.Date endDate, AddressModel address)
+	public List<DlvTimeslotModel> getTimeslotForDateRangeAndZone(java.util.Date begDate, java.util.Date endDate, AddressModel address, EnumRegionServiceType serviceType)
 		throws InvalidAddressException {
 		Connection conn = null;
 		try {
 			conn = getConnection();
-			return DlvManagerDAO.getTimeslotForDateRangeAndZone(conn, address, begDate, endDate);
+			return DlvManagerDAO.getTimeslotForDateRangeAndZone(conn, address, begDate, endDate, serviceType);
 
 		} catch (SQLException e) {
 			throw new EJBException(e);
@@ -221,8 +233,8 @@ public class DlvManagerSessionBean extends GatewaySessionBeanSupport {
 		}
 	}
 
-	private static String depotZoneInfoQuery = "SELECT z.ID ZONE_ID, rd.DELIVERY_CHARGES, rd.START_DATE, zd.UNATTENDED, zd.COS_ENABLED "
-		+ "FROM DLV.REGION_DATA rd, DLV.ZONE z, transp.zone zd WHERE z.ZONE_CODE = zd.ZONE_CODE and rd.REGION_ID = ? "
+	private static String depotZoneInfoQuery = "SELECT z.ID ZONE_ID, rd.DELIVERY_CHARGES, rd.START_DATE, zd.UNATTENDED, zd.COS_ENABLED, r.service_type "
+		+ "FROM DLV.REGION_DATA rd, DLV.ZONE z, transp.zone zd, dlv.region r WHERE z.ZONE_CODE = zd.ZONE_CODE and rd.region_id = r.id and rd.REGION_ID = ? "
 		+ "AND rd.START_DATE = (SELECT MAX(START_DATE) FROM DLV.REGION_DATA WHERE START_DATE <= ? AND REGION_ID = ?) "
 		+ "AND z.REGION_DATA_ID = rd.ID and z.ZONE_CODE = ?";
 
@@ -245,7 +257,9 @@ public class DlvManagerSessionBean extends GatewaySessionBeanSupport {
 			}
 
 			DlvZoneInfoModel response =
-				new DlvZoneInfoModel(zoneCode, rs.getString("ZONE_ID"), null, EnumZipCheckResponses.DELIVER,"X".equals(rs.getString("UNATTENDED")),"X".equals(rs.getString("COS_ENABLED")));
+				new DlvZoneInfoModel(zoneCode, rs.getString("ZONE_ID"), null, EnumZipCheckResponses.DELIVER,
+						"X".equals(rs.getString("UNATTENDED")),"X".equals(rs.getString("COS_ENABLED"))/*,
+						EnumRegionServiceType.getEnum(rs.getString("SERVICE_TYPE"))*/);
 
 			return response;
 
@@ -417,7 +431,7 @@ public class DlvManagerSessionBean extends GatewaySessionBeanSupport {
 				address.getId(),
 				timeslotModel.getBaseDate(),
 				timeslotModel.getZoneCode(),null,false,null, null, null, null, null, null, null, rsvClass, null, null,
-				address.getBuildingId(), address.getLocationId(), timeslotModel.getRoutingSlot().getReservedOrdersAtBuilding());
+				address.getBuildingId(), address.getLocationId(), timeslotModel.getRoutingSlot().getReservedOrdersAtBuilding(),timeslotModel.getRegionSvcType());
 			rsv.setHasSteeringDiscount(hasSteeringDiscount);
 			return rsv;
 		} catch (SQLException se) {
@@ -559,8 +573,8 @@ public class DlvManagerSessionBean extends GatewaySessionBeanSupport {
 			", R.EXPIRATION_DATETIME, R.TYPE, R.ADDRESS_ID,T.BASE_DATE, Z.ZONE_CODE,R.UNASSIGNED_DATETIME, R.UNASSIGNED_ACTION" +
 			", R.IN_UPS, R.ORDER_SIZE, R.SERVICE_TIME, R.RESERVED_ORDER_SIZE, R.RESERVED_SERVICE_TIME" +
 			", R.UPDATE_STATUS, R.METRICS_SOURCE, R.NUM_CARTONS , R.NUM_FREEZERS , R.NUM_CASES, R.CLASS, R.IS_STEERING_DISCOUNT, T.IS_DYNAMIC, " +
-			"R.BUILDINGID, R.LOCATIONID, R.PREV_BLDG_RSV_CNT  FROM DLV.RESERVATION R, "+
-            " DLV.TIMESLOT T, DLV.ZONE Z WHERE R.TIMESLOT_ID=T.ID AND R.ZONE_ID=Z.ID AND R.ID=?";
+			"R.BUILDINGID, R.LOCATIONID, R.PREV_BLDG_RSV_CNT, RG.SERVICE_TYPE REGION_SVC_TYPE FROM DLV.RESERVATION R, "+
+            " DLV.TIMESLOT T, DLV.ZONE Z, DLV.REGION_DATA RD, DLV.REGION RG WHERE R.TIMESLOT_ID=T.ID AND R.ZONE_ID=Z.ID AND R.ID=? AND Z.REGION_DATA_ID = RD.ID AND RD.REGION_ID = RG.ID";
 
 	private DlvReservationModel getReservation(Connection con, String rsvId) throws SQLException {
 		PreparedStatement ps = con
@@ -588,7 +602,7 @@ public class DlvManagerSessionBean extends GatewaySessionBeanSupport {
 			, EnumReservationClass.getEnum(rs.getString("CLASS"))
 			, EnumRoutingUpdateStatus.getEnum(rs.getString("UPDATE_STATUS"))
 			, EnumOrderMetricsSource.getEnum(rs.getString("METRICS_SOURCE"))
-			,rs.getString("BUILDINGID"),rs.getString("LOCATIONID"),rs.getInt("PREV_BLDG_RSV_CNT"));
+			,rs.getString("BUILDINGID"),rs.getString("LOCATIONID"),rs.getInt("PREV_BLDG_RSV_CNT"),EnumRegionServiceType.getEnum(rs.getString("REGION_SVC_TYPE")));
 		rsv.setDynamic("X".equalsIgnoreCase(rs.getString("IS_DYNAMIC"))?true:false);
 		rsv.setHasSteeringDiscount("X".equalsIgnoreCase(rs.getString("IS_STEERING_DISCOUNT")) ? true : false);
 		rs.close();
@@ -762,12 +776,14 @@ public class DlvManagerSessionBean extends GatewaySessionBeanSupport {
 		return DateUtil.truncate(cal).getTime();
 	}
 
-	public boolean makeRecurringReservation(String customerId, int dayOfWeek, Date startTime, Date endTime, ContactAddressModel address, boolean chefstable, TimeslotEventModel event) {
+	public boolean makeRecurringReservation(String customerId, int dayOfWeek, Date startTime, Date endTime, ContactAddressModel address, 
+			boolean chefstable, TimeslotEventModel event, IPackagingModel iPackagingModel) {
 		try {
 			Date startDate = getDateByNextDayOfWeek(dayOfWeek);
 			Date endDate = DateUtil.addDays(startDate, 1);
 
-			List<DlvTimeslotModel> baseTimeslots = this.getTimeslotForDateRangeAndZone(startDate, endDate, address);
+			DlvZoneInfoModel zoneInfo = this.getZoneInfo(address, startTime, iPackagingModel, null);
+			List<DlvTimeslotModel> baseTimeslots = this.getTimeslotForDateRangeAndZone(startDate, endDate, address, zoneInfo.getRegionSvcType());
 			
 			List<FDTimeslot> routingTimeslots = new ArrayList<FDTimeslot>();
 			
@@ -1091,22 +1107,17 @@ public class DlvManagerSessionBean extends GatewaySessionBeanSupport {
 		}
 	}
 
-	public DlvZoneInfoModel getZoneInfo(AddressModel address, java.util.Date date) throws InvalidAddressException {
-		return this.getZoneInfo(address, date, true);
+	public DlvZoneInfoModel getZoneInfo(AddressModel address, java.util.Date date, IPackagingModel iPackagingModel, EnumRegionServiceType serviceType) throws InvalidAddressException {
+		return this.getZoneInfo(address, date, iPackagingModel, serviceType, true);
 	}
 
-	private DlvZoneInfoModel getZoneInfo(AddressModel address, java.util.Date date, boolean useApartment)
-		throws InvalidAddressException {
-
+	public List<DlvZoneInfoModel> getAllZoneInfo(AddressModel address, java.util.Date date) throws InvalidAddressException {
 		Connection conn = null;
+		List<DlvZoneInfoModel> zoneInfo = new ArrayList<DlvZoneInfoModel>();
 		try {
 			conn = getConnection();
-			DlvZoneInfoModel zoneInfo=DlvManagerDAO.getZoneInfo(conn, address, date, useApartment);
-			if(EnumZipCheckResponses.DONOT_DELIVER.equals(zoneInfo.getResponse())){
-				zoneInfo=DlvManagerDAO.getZoneInfoForCosEnabled(conn, address, date, useApartment);
-			}
-			return zoneInfo;
-
+			boolean useApartment = true;
+			zoneInfo=DlvManagerDAO.getAllZoneInfo(conn, address, date, useApartment);
 		} catch (SQLException sqle) {
 			LOGGER.warn("Difficulty locating an address within a zone : " + sqle.getMessage());
 			throw new EJBException("Difficulty locating an address within a zone : " + sqle.getMessage());
@@ -1120,6 +1131,64 @@ public class DlvManagerSessionBean extends GatewaySessionBeanSupport {
 				LOGGER.warn("DlvManagerSB getZoneInfo: Exception while cleaning: ", se);
 			}
 		}
+		return zoneInfo;
+	}
+	private DlvZoneInfoModel getZoneInfo(AddressModel address, java.util.Date date, IPackagingModel iPackagingModel, EnumRegionServiceType serviceType, boolean useApartment)
+		throws InvalidAddressException {
+
+		Connection conn = null;
+		DlvZoneInfoModel zoneInfo = null;
+		try {
+			conn = getConnection();
+			if(serviceType!=null && EnumRegionServiceType.isHybrid(serviceType)){
+				zoneInfo = DlvManagerDAO.getBulkZoneInfo(conn, address, date, useApartment);
+			}else if(serviceType!=null && !EnumRegionServiceType.isHybrid(serviceType)){
+				zoneInfo=DlvManagerDAO.getZoneInfo(conn, address, date, useApartment);
+				if(EnumZipCheckResponses.DONOT_DELIVER.equals(zoneInfo.getResponse())){
+					zoneInfo=DlvManagerDAO.getZoneInfoForCosEnabled(conn, address, date, useApartment);
+				}
+			}
+			else{	
+				zoneInfo=DlvManagerDAO.getZoneInfo(conn, address, date, useApartment);
+				if(EnumZipCheckResponses.DONOT_DELIVER.equals(zoneInfo.getResponse())){
+					zoneInfo=DlvManagerDAO.getZoneInfoForCosEnabled(conn, address, date, useApartment);
+				}
+				if(!EnumZipCheckResponses.DONOT_DELIVER.equals(zoneInfo.getResponse()) && 
+						iPackagingModel!=null){
+					if(getBulkZone(address, date, zoneInfo.getZoneCode(), iPackagingModel)){
+						DlvZoneInfoModel bulkzone = DlvManagerDAO.getBulkZoneInfo(conn, address, date, useApartment);
+						if(!EnumZipCheckResponses.DONOT_DELIVER.equals(bulkzone.getResponse())){
+							zoneInfo = bulkzone;
+						}
+					}
+				}
+			}
+			return zoneInfo;
+		} catch (SQLException sqle) {
+			LOGGER.warn("Difficulty locating an address within a zone : " + sqle.getMessage());
+			throw new EJBException("Difficulty locating an address within a zone : " + sqle.getMessage());
+		} finally {
+			try {
+				if (conn != null) {
+					conn.close();
+					conn = null;
+				}
+			} catch (SQLException se) {
+				LOGGER.warn("DlvManagerSB getZoneInfo: Exception while cleaning: ", se);
+			}
+		}
+	}
+
+	private boolean getBulkZone(AddressModel address, Date date, String zoneCode, IPackagingModel iPackagingModel) {
+		IServiceTimeScenarioModel srvScenario = RoutingUtil.getRoutingScenario(date);
+		GeographyServiceProxy proxy = new GeographyServiceProxy();
+		double historicOrderSize = ServiceTimeUtil.evaluateExpression(srvScenario.getOrderSizeFormula()
+				, ServiceTimeUtil.getServiceTimeFactorParams(iPackagingModel));
+		IBuildingModel buildingModel = proxy.getBuildingLocation(address.getScrubbedStreet(), address.getZipCode());
+		if(historicOrderSize > srvScenario.getBulkThreshold() || buildingModel.isForceBulk())			
+			return true;
+
+		return false;
 	}
 
 	public List<DlvZoneCutoffInfo> getCutoffInfo(String zoneCode, Date day) {
@@ -1604,7 +1673,43 @@ public class DlvManagerSessionBean extends GatewaySessionBeanSupport {
 			}
 		}
 	}
+	public List<GeographyRestriction> getGeographicDlvRestrictionsForTemplate(AddressModel address) throws DlvResourceException, RemoteException {
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			return DlvRestrictionDAO.getGeographicDlvRestrictionsForTemplate(conn, address);
 
+		} catch (SQLException e) {
+			//this.getSessionContext().setRollbackOnly();
+			throw new DlvResourceException(e);
+		} finally {
+			try {
+				if (conn != null) {
+					conn.close();
+				}
+			} catch (SQLException se) {
+				LOGGER.warn("DlvManagerSB getDlvRestriction: Exception while cleaning: " + se);
+			}
+		}
+	}
+	public List<TimeslotRestriction> getTimeslotRestrictions() throws DlvResourceException, RemoteException {
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			return DlvRestrictionDAO.getTimeslotRestrictions(conn);
+
+		} catch (SQLException e) {
+			throw new DlvResourceException(e);
+		} finally {
+			try {
+				if (conn != null) {
+					conn.close();
+				}
+			} catch (SQLException se) {
+				LOGGER.warn("DlvManagerSB getTimeslotRestrictions: Exception while cleaning: " + se);
+			}
+		}
+	}
 	public List<SiteAnnouncement> getSiteAnnouncements() throws DlvResourceException {
 		Connection conn = null;
 		try {
@@ -2876,8 +2981,8 @@ public class DlvManagerSessionBean extends GatewaySessionBeanSupport {
 	
 	public void synchronizeWaveInstance(IRoutingSchedulerIdentity schedulerId
 										, Map<Date, Map<String, Map<RoutingTimeOfDay, Map<RoutingTimeOfDay, List<IWaveInstance>>>>> waveInstanceTree
-										, Set<String> inSyncZones, Map<String, TrnFacilityType> routingLocationMap) throws DlvResourceException {
-		List<IWaveInstance> waveInstances = RoutingUtil.synchronizeWaveInstance(schedulerId, waveInstanceTree, inSyncZones, routingLocationMap);
+										, Set<String> inSyncZones, Map<String, TrnFacilityType> routingLocationMap, Set inSyncRoutingWaveInstIds) throws DlvResourceException {
+		List<IWaveInstance> waveInstances = RoutingUtil.synchronizeWaveInstance(schedulerId, waveInstanceTree, inSyncZones, routingLocationMap, inSyncRoutingWaveInstIds);
 		if(waveInstances != null && waveInstances.size() > 0) {
 			updateWaveInstanceStatus(waveInstances);
 			deleteZeroSyncWaveInstance(schedulerId);
@@ -3142,5 +3247,18 @@ public class DlvManagerSessionBean extends GatewaySessionBeanSupport {
 		ps.close();
 
 		return isEBTAccepted;
+	}
+	
+	public Set retrieveRoutingWaveInstIds(Date deliveryDate) throws DlvResourceException {
+		RoutingInfoServiceProxy routeInfoProxy = new RoutingInfoServiceProxy();
+		try {
+			
+			return routeInfoProxy.retrieveRoutingWaveInstIds(deliveryDate);
+		} catch (RoutingServiceException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			LOGGER.warn("DlvManagerSB retrieveRoutingWaveInstIds(): " + e);
+			throw new DlvResourceException(e);
+		}
 	}
 }

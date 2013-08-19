@@ -25,7 +25,8 @@ public class ServiceTimeScenario extends BaseModel implements IServiceTimeScenar
 	private Map<String, IZoneScenarioModel> zoneConfiguration;
 	private int defaultTrailerContainerCount;
 	private int defaultContainerCartonCount;
-		
+	private double bulkThreshold;
+	
 	public String getCode() {
 		return code;
 	}
@@ -123,6 +124,14 @@ public class ServiceTimeScenario extends BaseModel implements IServiceTimeScenar
 	}
 	public void setDefaultContainerCartonCount(int defaultContainerCartonCount) {
 		this.defaultContainerCartonCount = defaultContainerCartonCount;
+	}
+	@Override
+	public double getBulkThreshold() {
+		return bulkThreshold;
+	}
+	@Override
+	public void setBulkThreshold(double bulkThreshold) {
+		this.bulkThreshold = bulkThreshold;
 	}
 	
 	

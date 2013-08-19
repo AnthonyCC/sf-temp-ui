@@ -12,7 +12,7 @@ public class ZoneScenarioModel extends BaseModel implements IZoneScenarioModel  
 	private EnumArithmeticOperator adjustmentOperator;
 	
 	private IServiceTimeTypeModel serviceTimeType;
-	
+
 	public String getZone() {
 		return zone;
 	}
@@ -43,6 +43,4 @@ public class ZoneScenarioModel extends BaseModel implements IZoneScenarioModel  
 	public void setServiceTimeType(IServiceTimeTypeModel serviceTimeType) {
 		this.serviceTimeType = serviceTimeType;
 	}
-		
-	
 }

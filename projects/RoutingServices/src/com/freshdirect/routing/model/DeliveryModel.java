@@ -10,7 +10,7 @@ public class DeliveryModel extends BaseModel implements IDeliveryModel {
 	private Date deliveryStartTime;
 	private Date deliveryEndTime;
 	private String serviceType;
-	
+	private Date deliveryCutoffTime;
 	private IPackagingModel packagingDetail;
 	
 	private double calculatedServiceTime;
@@ -101,5 +101,13 @@ public class DeliveryModel extends BaseModel implements IDeliveryModel {
 	}
 	public void setReservedOrdersAtBuilding(int reservedOrdersAtBuilding) {
 		this.reservedOrdersAtBuilding = reservedOrdersAtBuilding;
+	}
+	@Override
+	public Date getDeliveryCutoffTime() {
+		return deliveryCutoffTime;
+	}
+	@Override
+	public void setDeliveryCutoffTime(Date deliveryCutoffTime) {
+		this.deliveryCutoffTime = deliveryCutoffTime;
 	}
 }

@@ -230,7 +230,7 @@ if (timeslots.size() > 0) {
 		cutOffpassed = true;
 		DlvZoneInfoModel tmpZoneModel = null;
 		if(address != null){
-			tmpZoneModel = FDDeliveryManager.getInstance().getZoneInfo(address, nextDayVal.getTime());
+			tmpZoneModel = FDDeliveryManager.getInstance().getZoneInfo(address, nextDayVal.getTime(), user.getHistoricOrderSize(), user.getRegionSvcType());
 		}
 		Date cutoffDate = timeslots.getMaxCutoffForDate(tmpZoneModel !=null ? tmpZoneModel.getZoneCode():"", day);
 		if(cutoffDate != null){
@@ -608,7 +608,7 @@ if (timeslots.size() > 0) {
 
 	if (address != null) {
 		try { 
-			DlvZoneInfoModel tmpModel = FDDeliveryManager.getInstance().getZoneInfo(address, nextDayVal.getTime());
+			DlvZoneInfoModel tmpModel = FDDeliveryManager.getInstance().getZoneInfo(address, nextDayVal.getTime(), user.getHistoricOrderSize(),  user.getRegionSvcType());
 			if(tmpModel != null) {
 				String defZoneCode = tmpModel.getZoneCode();
 				if (defZoneCode != null) {

@@ -125,7 +125,7 @@ public class PromotionHelper {
 				Calendar date = new GregorianCalendar();
 				date.add( Calendar.DATE, 7 );
 				try {
-					DlvZoneInfoModel zoneInfo =  FDDeliveryManager.getInstance().getZoneInfo(shippingAddress, date.getTime());
+					DlvZoneInfoModel zoneInfo =  FDDeliveryManager.getInstance().getZoneInfo(shippingAddress, date.getTime(), user.getHistoricOrderSize(),  user.getRegionSvcType());
 					if(null != zoneInfo){
 						for (Iterator<PromotionStrategyI> i = promotion.getStrategies().iterator(); i.hasNext();) {
 							PromotionStrategyI strategy = i.next();

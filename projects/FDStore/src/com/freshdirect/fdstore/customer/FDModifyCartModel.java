@@ -63,7 +63,8 @@ public class FDModifyCartModel extends FDCartModel {
 		this.setDeliveryReservation(originalOrder.getDeliveryReservation());
 
 		// !!! partially reconstruct the original zoneInfo (we don't need the full state, as it will be set later)
-		DlvZoneInfoModel zoneInfo = new DlvZoneInfoModel(originalOrder.getDeliveryZone(), null, null, EnumZipCheckResponses.DELIVER,false,false);
+		DlvZoneInfoModel zoneInfo = new DlvZoneInfoModel(originalOrder.getDeliveryZone(), null, null, 
+				EnumZipCheckResponses.DELIVER,false,false, originalOrder.getDeliveryReservation().getRegionSvcType());
 		this.setZoneInfo(zoneInfo);
 
 		this.setCustomerServiceMessage(originalOrder.getCustomerServiceMessage());

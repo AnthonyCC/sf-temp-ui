@@ -15,8 +15,17 @@
           	<column name="DAY_OF_WEEK" precision="22" scale="0" />
         </property>           
                       
-     	<property name="normalDate" column="SCENARIO_DATE" type="date"/>  
-          
+     	<property name="normalDate" column="SCENARIO_DATE" type="date"/>
+     	
+     	<property name="cutOff" type="timestamp">
+            <column name="CUTOFF_TIME" length="7" />
+        </property>
+        <property name="startTime" type="timestamp">
+            <column name="START_TIME" length="7" />
+        </property>
+        <property name="endTime" type="timestamp">
+            <column name="END_TIME" length="7" />
+        </property>  
         <many-to-one name="scenario" class="com.freshdirect.transadmin.model.DlvServiceTimeScenario" fetch="select" lazy="false">
             <column name="SCENARIO_CODE" length="8" />
         </many-to-one>          

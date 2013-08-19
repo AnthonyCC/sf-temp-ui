@@ -200,4 +200,9 @@ public class LocationManagerImpl extends BaseManagerImpl  implements LocationMan
     public TrnFacilityLocation getTrnFacilityLocation(String id) {
     	return getLocationManagerDao().getTrnFacilityLocation(id);
     }
+
+	@Override
+	public Collection getCustomerInfo(String context, String id) {
+    	return getLocationManagerDao().getCustomerInfo(context, id);
+    }
 }

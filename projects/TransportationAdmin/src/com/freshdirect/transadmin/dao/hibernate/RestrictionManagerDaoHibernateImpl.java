@@ -8,6 +8,7 @@ import org.springframework.dao.DataAccessException;
 
 import com.freshdirect.transadmin.dao.RestrictionManagerDaoI;
 import com.freshdirect.transadmin.model.GeoRestriction;
+import com.freshdirect.transadmin.model.TimeslotRestriction;
 import com.freshdirect.transadmin.util.TransStringUtil;
 
 public class RestrictionManagerDaoHibernateImpl extends BaseManagerDaoHibernateImpl implements RestrictionManagerDaoI {
@@ -47,5 +48,31 @@ public class RestrictionManagerDaoHibernateImpl extends BaseManagerDaoHibernateI
 		//strBuf.append(" where gd.restrictionId='").append(restrictionId).append("'");		
 		strBuf.append(" where gd.restrictionDaysId.restrictionId='").append(restrictionId).append("'");		
 		return (Collection) getHibernateTemplate().find(strBuf.toString());
+	}
+
+	@Override
+	public TimeslotRestriction getTimeslotRestriction(String id)
+			throws DataAccessException {
+		return (TimeslotRestriction)getEntityById("TimeslotRestriction","id",id);
+		}
+
+	@Override
+	public Collection getTimeslotRestrictions() throws DataAccessException {
+		StringBuffer strBuf = new StringBuffer();
+		strBuf.append("from TimeslotRestriction");
+		
+		return (Collection) getHibernateTemplate().find(strBuf.toString());
+	}
+
+	@Override
+	public void saveTimeslotRestriction(TimeslotRestriction tsRestriction)
+			throws DataAccessException {
+		
+		if(tsRestriction.getId()==null ||"".equals(tsRestriction.getId())) {
+			saveEntityEx(tsRestriction);
+		}
+		else {
+			saveEntity(tsRestriction);
+		}
 	}
 }

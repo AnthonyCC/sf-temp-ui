@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Set;
 
 import com.freshdirect.transadmin.model.GeoRestriction;
+import com.freshdirect.transadmin.model.TimeslotRestriction;
 import com.freshdirect.transadmin.web.model.SpatialBoundary;
 
 public interface RestrictionManagerI extends BaseManagerI {
@@ -13,6 +14,12 @@ public interface RestrictionManagerI extends BaseManagerI {
 
 	Collection getGeoRestrictions();
 
+  	TimeslotRestriction getTimeslotRestriction(String id);		//agb
+
+	Collection getTimeslotRestrictions();
+	
+	void saveTimeslotRestriction(TimeslotRestriction tsRestriction);
+	
 	Collection getGeoRestrictionBoundaries();
 	
 	void saveGeoRestriction(GeoRestriction geoRestriction);
@@ -24,6 +31,8 @@ public interface RestrictionManagerI extends BaseManagerI {
 	SpatialBoundary getZoneBoundary(String code);
 	
 	void deleteGeoRestrictions(Set restrictions);
+	
+	void deleteTimeslotRestrictions(Set restrictions);
 
 	List<SpatialBoundary> getSectorBoundary(String code);
 

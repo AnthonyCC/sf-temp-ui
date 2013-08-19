@@ -7,6 +7,7 @@ import java.util.Date;
 import org.apache.log4j.Logger;
 
 import com.freshdirect.delivery.EnumDayShift;
+import com.freshdirect.delivery.EnumRegionServiceType;
 import com.freshdirect.delivery.model.DlvTimeslotModel;
 import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -35,6 +36,7 @@ public class FDTimeslot implements Serializable, Comparable<FDTimeslot> {
 	private boolean unavailable;
 	private DecimalFormat premiumAmountFmt = new DecimalFormat("#.##");
 	private String variableMinimumMsg;
+	private boolean timeslotRestricted;
 	/** Creates new FDTimeslot */
 	public FDTimeslot(DlvTimeslotModel dlvTimeslot) {
 		this.dlvTimeslot = dlvTimeslot;
@@ -278,6 +280,10 @@ public class FDTimeslot implements Serializable, Comparable<FDTimeslot> {
 	public int getTotalConfirmed() {
 		return dlvTimeslot.getTotalConfirmed();
 	}
+	
+	public EnumRegionServiceType getRegionSvcType() {
+		return dlvTimeslot.getRegionSvcType();
+	}
 
 	public String getVariableMinimumMsg() {
 		return variableMinimumMsg;
@@ -285,5 +291,13 @@ public class FDTimeslot implements Serializable, Comparable<FDTimeslot> {
 
 	public void setVariableMinimumMsg(String variableMinimumMsg) {
 		this.variableMinimumMsg = variableMinimumMsg;
+	}
+
+	public void setTimeslotRestricted(boolean tsRestricted) {
+		this.timeslotRestricted = tsRestricted;
+	}
+
+	public boolean isTimeslotRestricted() {
+		return timeslotRestricted;
 	}
 }

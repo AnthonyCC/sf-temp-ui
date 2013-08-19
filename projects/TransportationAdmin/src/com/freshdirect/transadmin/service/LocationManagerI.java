@@ -90,4 +90,6 @@ public interface LocationManagerI extends BaseManagerI {
 	Collection getTrnFacilityLocations();
 
 	TrnFacilityLocation getTrnFacilityLocation(String id);
+
+	Collection getCustomerInfo(String context, String id);
 }

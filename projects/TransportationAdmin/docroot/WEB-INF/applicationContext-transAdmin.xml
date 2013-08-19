@@ -86,6 +86,8 @@
 
 				<value>com/freshdirect/transadmin/model/Sector.hbm.xml</value>
 				<value>com/freshdirect/transadmin/model/SectorZipcode.hbm.xml</value>
+				<value>com/freshdirect/transadmin/model/TimeslotRestriction.hbm.xml</value>
+				
 
             </list>
         </property>

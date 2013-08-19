@@ -462,7 +462,7 @@ public class StandingOrderUtil {
 		
 		DlvZoneInfoModel zoneInfo = null;
 		try {
-			zoneInfo = FDDeliveryManager.getInstance().getZoneInfo(deliveryAddressModel, selectedTimeslot.getBegDateTime() );
+			zoneInfo = FDDeliveryManager.getInstance().getZoneInfo(deliveryAddressModel, selectedTimeslot.getBegDateTime(), customerUser.getHistoricOrderSize(), (reservation!=null)?reservation.getRegionSvcType():null);
 		} catch (FDInvalidAddressException e) {
 			LOGGER.info( "Invalid zone info. - FDInvalidAddressException", e );
 			return SOResult.createUserError( so, customer, customerInfo, ErrorCode.ADDRESS );

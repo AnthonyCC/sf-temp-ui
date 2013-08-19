@@ -205,7 +205,7 @@ boolean showOrderSummaryReportSection = !crmRole.getCode().equals(CrmAgentRole.E
 					</div>
 				</td>
 			<% if (showCustomerSearchSection) { %>
-				<td width="33%">
+				<td width="31%">
 					<div id="customer_search" class="home_module" style="width: 100%; float: left; border-right: none; border-top: none; border-bottom: 2px solid;">
 						<table width="100%" cellpadding="0" cellspacing="0" border="0" class="module_header" style="height: 2.2em;">
 						<tr>
@@ -241,7 +241,7 @@ boolean showOrderSummaryReportSection = !crmRole.getCode().equals(CrmAgentRole.E
 						</div>
 					</div>
 				</td>
-				<td width="33%">
+				<td width="36%">
 					<div id="geocode_address" class="home_module" style="width: 100%; float: left; border-top: none; border-bottom: 2px solid;">
 						<table width="100%" cellpadding="0" cellspacing="0" border="0" class="module_header" style="height: 2.2em;">
 						<tr>

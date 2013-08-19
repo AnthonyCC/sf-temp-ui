@@ -24,6 +24,9 @@ import com.freshdirect.delivery.restriction.OneTimeRestriction;
 import com.freshdirect.delivery.restriction.OneTimeReverseRestriction;
 import com.freshdirect.delivery.restriction.RecurringRestriction;
 import com.freshdirect.delivery.restriction.RestrictionI;
+import com.freshdirect.delivery.restriction.TimeslotRestriction;
+import com.freshdirect.erp.EnumApprovalStatus;
+import com.freshdirect.fdstore.EnumRestrictionAppliesTo;
 import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.EnumLogicalOperator;
 import com.freshdirect.framework.util.TimeOfDay;
@@ -327,20 +330,52 @@ public class DlvRestrictionDAO {
 	
 	public static List<GeographyRestriction> getGeographicDlvRestrictionsForReservation(Connection conn, AddressModel address) throws SQLException {
 		String query = GEOGRAPHY_RESTRICTION;
-		query = query+ " and (gr.view_type is null or gr.view_type = 'RSV')";
+		query = query+ " and (gr.view_type is null or gr.view_type = 'RSV') and (gr.apply_to is null or gr.apply_to = '"+EnumRestrictionAppliesTo.BOTH.getName()+"')";
 		return getGeographicDlvRestrictions(conn, address, query);
 	}
 	
 	public static List<GeographyRestriction> getGeographicDlvRestrictionsForAvailable(Connection conn, AddressModel address) throws SQLException {
 		String query = GEOGRAPHY_RESTRICTION;
-		query = query+ " and (gr.view_type is null or gr.view_type = 'AVL')";
+		query = query+ " and (gr.view_type is null or gr.view_type = 'AVL') and (gr.apply_to is null or gr.apply_to =  '"+EnumRestrictionAppliesTo.BOTH.getName()+"')";
 		return getGeographicDlvRestrictions(conn, address, query);
 	}
 	
 	public static List<GeographyRestriction> getGeographicDlvRestrictions(Connection conn, AddressModel address) throws SQLException {
 		String query = GEOGRAPHY_RESTRICTION;
-		query = query+ " and (gr.view_type is null or gr.view_type = 'CHK')";
+		query = query+ " and (gr.view_type is null or gr.view_type = 'CHK') and (gr.apply_to is null or gr.apply_to = '"+EnumRestrictionAppliesTo.BOTH.getName()+"')";
 		return getGeographicDlvRestrictions(conn, address, query);
 	}
 
+	public static List<GeographyRestriction> getGeographicDlvRestrictionsForTemplate(
+			Connection conn, AddressModel address) throws SQLException  {
+		String query = GEOGRAPHY_RESTRICTION;
+		query = query+ " and (gr.view_type is null or gr.view_type = 'CHK') and gr.apply_to is not null";
+		return getGeographicDlvRestrictions(conn, address, query);
+	}
+
+	private static final String TIMESLOT_RESTRICTION = "SELECT * FROM DLV.TIMESLOT_RESTRICTION WHERE ACTIVE='X'";
+
+	
+	public static List<TimeslotRestriction> getTimeslotRestrictions(
+			Connection conn)  throws SQLException  {
+		PreparedStatement ps = conn.prepareStatement(TIMESLOT_RESTRICTION);
+		
+		ResultSet rs = ps.executeQuery();
+		List<TimeslotRestriction> restrictions = new ArrayList<TimeslotRestriction>();
+
+		while (rs.next()) {	
+				TimeslotRestriction restriction = new TimeslotRestriction();
+				restriction.setId(rs.getString("ID"));
+				restriction.setDayOfWeek(rs.getString("DAY_OF_WEEK"));
+				restriction.setCondition(EnumLogicalOperator.getEnum(rs.getString("CONDITION")));
+				restriction.setZoneCode(rs.getString("ZONE_CODE"));
+				restriction.setStartTime(new TimeOfDay(rs.getTime("START_TIME")));
+				restriction.setEndTime(new TimeOfDay(rs.getTime("END_TIME")));
+				restrictions.add(restriction);
+		}
+		return restrictions;
+			
+	}
+	
+	
 }

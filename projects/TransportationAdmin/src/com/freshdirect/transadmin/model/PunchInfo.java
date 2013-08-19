@@ -115,5 +115,11 @@ public class PunchInfo implements java.io.Serializable, TrnBaseEntityI, PunchInf
 		this.paycode = paycode;
 	}
 
+	public Object clone() throws CloneNotSupportedException {
+		
+		PunchInfo _clone = new PunchInfo(this.getDate(), this.getEmployeeId(),
+											this.getStartTime(), this.getEndTime(), this.getInPunchDTM(), this.getOutPunchDTM());
+		return _clone;
+	}
 
 }

@@ -3900,7 +3900,8 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 				.getExpirationDateTime(), rsv.getReservationType(), rsv
 				.getCustomerId(), addressId, rsv.isChefsTable(), rsv
 				.isUnassigned(), rsv.getOrderId(), rsv.isInUPS(), rsv
-				.getUnassignedActivityType(), rsv.getStatusCode(),rsv.getRsvClass(), rsv.getBuildingId(), rsv.getLocationId(), rsv.getReservedOrdersAtBuilding());
+				.getUnassignedActivityType(), rsv.getStatusCode(),rsv.getRsvClass(), rsv.getBuildingId(), 
+				rsv.getLocationId(), rsv.getReservedOrdersAtBuilding(), rsv.getRegionSvcType());
 
 	}
 

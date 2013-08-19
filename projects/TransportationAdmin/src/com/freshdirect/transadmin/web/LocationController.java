@@ -565,7 +565,16 @@ public class LocationController extends AbstractMultiActionController  {
 		return new ModelAndView("deliveryBuildingLocationView","dlvlocationlist",dataList);
 	}
 	
-	
+	public ModelAndView customerInfoHandler(HttpServletRequest request, HttpServletResponse response) throws ServletException {		
+		
+		String id = request.getParameter("id");
+		String context = request.getParameter("context");
+		Collection dataList = new ArrayList();
+		if(!StringUtil.isEmpty(id)) {
+			dataList = locationManagerService.getCustomerInfo(context, id);
+		}
+		return new ModelAndView("customerInfoView","customerlist",dataList);
+	}
 	
 	
 	/**

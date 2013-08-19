@@ -42,4 +42,6 @@ public interface IServiceTimeScenarioModel {
 	void setDefaultTrailerContainerCount(int defaultTrailerContainerCount);
 	int getDefaultContainerCartonCount();
 	void setDefaultContainerCartonCount(int defaultContainerCartonCount);
+	double getBulkThreshold();
+	void setBulkThreshold(double bulkThreshold);
 }

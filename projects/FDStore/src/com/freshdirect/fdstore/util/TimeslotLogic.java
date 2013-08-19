@@ -27,6 +27,7 @@ import com.freshdirect.delivery.restriction.AlcoholRestriction;
 import com.freshdirect.delivery.restriction.DlvRestrictionsList;
 import com.freshdirect.delivery.restriction.GeographyRestriction;
 import com.freshdirect.delivery.restriction.RestrictionI;
+import com.freshdirect.delivery.restriction.TimeslotRestriction;
 import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
@@ -138,6 +139,7 @@ public class TimeslotLogic {
 	public static DlvTimeslotStats filterDeliveryTimeSlots(final FDUserI user,
 			final DateRange geoRestrictionRange,
 			final DlvRestrictionsList restrictions,
+			final List<TimeslotRestriction> tsRestrictions,
 			final List<FDTimeslotUtil> timeslotList,
 			final Set<String> retainTimeslotIds,
 			final List<GeographyRestriction> geographicRestrictions,
@@ -203,6 +205,16 @@ public class TimeslotLogic {
 							_remove = true;
 						}
 					}
+					
+					// Apply timeslot restrictions and
+					// mark timeslot for removal if restricted
+					if (genericTimeslots) {
+						boolean tsRestricted = TimeslotRestriction
+								.isTimeSlotRestricted(tsRestrictions, timeslot,
+										 geoRestrictionRange);
+						timeslot.setTimeslotRestricted(tsRestricted);
+					}
+					
 					
 					Calendar cal = Calendar.getInstance();
 					Date now = cal.getTime();

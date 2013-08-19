@@ -33,6 +33,9 @@
 	) {
 		soldOut = true;
 	}
+	if (__genericTsTable && slot.isTimeslotRestricted()){
+		soldOut = true;
+	}
 
 	/* cutoff data */
 	boolean displayCutoffMessage = cutoffTime == null
@@ -166,6 +169,18 @@
 	/* add hidden ts info */
 	stringBuffer.append("<div id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_timeInfo\" style=\"display: none;\" >"+slot.getBegDateTime().getTime()+"-"+slot.getEndDateTime().getTime()+"</div>");
 
+	if(slot.getVariableMinimumMsg() != null && slot.getVariableMinimumMsg().length() > 0) {
+		stringBuffer.append("									<div class=\"tsDiscountPropE\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_msgE\">")
+					.append("										<div>")
+							.append("<img src=\"/media_stat/images/layout/clear.gif\" width=\"16\" height=\"16\" border=\"0\">")
+							.append("<div><a onClick=\"javascript:popup(\'/shared/template/generic_popup.jsp?contentPath=/media/editorial/timeslots/msg_variable_minimum.html&windowSize=small&name=Alcohol Restriction\',\'small\');return false;\" style=\"text-decoration:none;\"><font class=\"tsDiscountE\" style=\"color:#669933;\" >" + slot.getVariableMinimumMsg() +"</font></a></div>")
+						.append("</div>\n")
+					.append("									</div>")
+					.append("									<div class=\"tsDiscountPropC\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_msgC\">\n")
+					.append("										<div><font class=\"tsDiscountC\" style=\"color:#669933;\">$</font></div>\n")
+					.append("									</div>");
+	}
+
 	/* START Timeslot promotion display */
 	if ((!soldOut||!slot.isUnavailable()) && deliveryModel.isAlcoholDelivery() && slot.isAlcoholRestricted()) {
 		stringBuffer.append("									<div class=\"fleft tsAlcoholResPropE\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_msgARE\">")
@@ -274,18 +289,7 @@
 		stringBuffer.append("<div class=\"tsForceC\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_forceX\"><b>F</b></div>\n");
 	}
 	
-	if(slot.getVariableMinimumMsg() != null && slot.getVariableMinimumMsg().length() > 0) {
-		stringBuffer.append("									<div class=\"tsDiscountPropE\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_msgE\">")
-					.append("										<div>")
-							.append("<img src=\"/media_stat/images/layout/clear.gif\" width=\"16\" height=\"16\" border=\"0\">")
-							.append("<div><a onClick=\"javascript:popup(\'/shared/template/generic_popup.jsp?contentPath=/media/editorial/timeslots/msg_variable_minimum.html&windowSize=small&name=Alcohol Restriction\',\'small\');return false;\" style=\"text-decoration:none;\"><font class=\"tsDiscountE\" style=\"color:#669933;\" >" + slot.getVariableMinimumMsg() +"</font></a></div>")
-						.append("</div>\n")
-					.append("									</div>")
-					.append("									<div class=\"tsDiscountPropC\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_msgC\">\n")
-					.append("										<div><font class=\"tsDiscountC\" style=\"color:#669933;\">"+ slot.getVariableMinimumMsg() +"</font></div>\n")
-					.append("									</div>");
-	}
-
+	
 	/* close timeslot content div */
 	stringBuffer.append("								</div>\n");
 

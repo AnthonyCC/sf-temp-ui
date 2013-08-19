@@ -58,35 +58,6 @@ public class DeliveryAddress {
     /**
      * DUP: duplicated code from 
      * Class - com.freshdirect.webapp.taglib.fdstore.AddressUtil
-     * Method - getZoneInfo
-     * Comment - refactored to remove dependencies on HttpServletRequest
-
-     * @param request
-     * @param address
-     * @param result
-     * @param date
-     * @return
-     * @throws FDResourceException
-     */
-    protected DlvZoneInfoModel getZoneInfo(AddressModel address, FDSessionUser user, ActionResult result, Date date)
-            throws FDResourceException {
-        try {
-            DlvZoneInfoModel zoneInfo = FDDeliveryManager.getInstance().getZoneInfo(address, date);
-            result.addError((!EnumZipCheckResponses.DELIVER.equals(zoneInfo.getResponse())), EnumUserInfoName.DLV_NOT_IN_ZONE.getCode(),
-                    SystemMessageList.MSG_DONT_DELIVER_TO_ADDRESS);
-            return zoneInfo;
-        } catch (FDInvalidAddressException fdia) {
-            LOGGER.info("Invalid address", fdia);
-            result.addError(new ActionError(EnumUserInfoName.DLV_CANT_GEOCODE.getCode(), MessageFormat.format(
-                    SystemMessageList.MSG_CANT_GEOCODE, new Object[] { user.getCustomerServiceContact() })));
-
-            return new DlvZoneInfoModel(null, null, null, EnumZipCheckResponses.DONOT_DELIVER, false,false);
-        }
-    }
-
-    /**
-     * DUP: duplicated code from 
-     * Class - com.freshdirect.webapp.taglib.fdstore.AddressUtil
      * Method - scrubAddress
      * Comment - refactored to remove dependencies on HttpServletRequest
      * 

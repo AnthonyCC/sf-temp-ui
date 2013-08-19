@@ -1,9 +1,12 @@
 package com.freshdirect.transadmin.web;
 
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 
 import javax.servlet.ServletException;
@@ -14,6 +17,8 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.freshdirect.transadmin.model.GeoRestriction;
+import com.freshdirect.transadmin.model.TimeslotRestriction;
+import com.freshdirect.transadmin.model.TimeslotRestrictionCommand;
 import com.freshdirect.transadmin.service.RestrictionManagerI;
 
 /**
@@ -86,6 +91,51 @@ public class RestrictionController extends AbstractMultiActionController {
 		}
 		return geoRestrictionHandler(request, response);
 	}
+
+
+	public ModelAndView tsRestrictionHandler(HttpServletRequest request, HttpServletResponse response) throws ServletException {
+
+		Collection dataList = restrictionManagerService.getTimeslotRestrictions();
+		Collection restrictions = new ArrayList();
+		Iterator it = dataList.iterator();
+		while(it.hasNext()){
+			TimeslotRestriction r = (TimeslotRestriction)it.next();
+			try {
+				TimeslotRestrictionCommand restriction = new TimeslotRestrictionCommand(r);
+				restrictions.add(restriction);
+			} catch (ParseException e) {
+				saveMessage(request, getMessage("app.actionmessage.163", null));
+			}
+		}
+		return new ModelAndView("tsRestrictionView","timeslotRestrictions",restrictions);
+	}
+
+	/**
+	 * Custom handler for welcome
+	 * @param request current HTTP request
+	 * @param response current HTTP response
+	 * @return a ModelAndView to render the response
+	 */
+	public ModelAndView tsRestrictionDeleteHandler(HttpServletRequest request, HttpServletResponse response) throws ServletException {
+
+		Set restrictions = new HashSet();
+		String arrEntityList[] = getParamList(request);
+		TimeslotRestriction tmpEntity = null;
+		if (arrEntityList != null) {
+			try {
+				for (int intCount = 0; intCount < arrEntityList.length; intCount++) {
+					tmpEntity = restrictionManagerService.getTimeslotRestriction(arrEntityList[intCount]);
+					restrictions.add(tmpEntity);
+				}
+				restrictionManagerService.deleteTimeslotRestrictions(restrictions);
+				saveMessage(request, getMessage("app.actionmessage.103", null));
+			} catch (DataIntegrityViolationException e) {
+				saveMessage(request, getMessage("app.actionmessage.141", null));
+			}
+		}
+		return tsRestrictionHandler(request, response);
+	}
+
 
 	public RestrictionManagerI getRestrictionManagerService() {
 		return restrictionManagerService;

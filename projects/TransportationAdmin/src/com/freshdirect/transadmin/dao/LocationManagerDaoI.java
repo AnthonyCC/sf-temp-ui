@@ -83,4 +83,6 @@ public interface LocationManagerDaoI extends BaseManagerDaoI {
 	Collection getTrnFacilityLocations() throws DataAccessException;
 	
 	TrnFacilityLocation getTrnFacilityLocation(String id) throws DataAccessException;
+
+	Collection getCustomerInfo(String context, String id) throws DataAccessException;
 }

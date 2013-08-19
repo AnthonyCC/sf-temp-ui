@@ -174,7 +174,8 @@ public class RoutingUtil {
 		Map<String, IServiceTimeTypeModel> serviceTimeTypeMapping = routingInfoproxy.getRoutingServiceTimeTypes();
 		order.getDeliveryInfo().setDeliveryLocation(locateOrder(order));
 		
-		IServiceTimeScenarioModel srvScenario = getRoutingScenario(order.getDeliveryInfo().getDeliveryDate());
+		IServiceTimeScenarioModel srvScenario = getRoutingScenarioEx(order.getDeliveryInfo().getDeliveryDate(), 
+				timeslot.getCutoffDateTime(), timeslot.getBegTime(), timeslot.getEndTime()); // this method uses the handoff/timeslot specific scenario for that date or day. This logic is only invoked by the unassigned cron job.
 		OrderEstimationResult calculatedSize = estimateOrderSize(order, srvScenario, order.getDeliveryInfo().getPackagingDetail());
 		order.getDeliveryInfo().setPackagingDetail(calculatedSize.getPackagingModel());
 		order.getDeliveryInfo().setCalculatedOrderSize(calculatedSize.getCalculatedOrderSize());
@@ -590,7 +591,7 @@ public class RoutingUtil {
 	
 	public static List<IWaveInstance> synchronizeWaveInstance(IRoutingSchedulerIdentity schedulerId
 								, Map<Date, Map<String, Map<RoutingTimeOfDay, Map<RoutingTimeOfDay, List<IWaveInstance>>>>> waveInstanceTree
-								, Set<String> inSyncZones, Map<String, TrnFacilityType> routingLocationMap) {
+								, Set<String> inSyncZones, Map<String, TrnFacilityType> routingLocationMap, Set inSyncRoutingWaveInstIds) {
 		
 		List<IWaveInstance> waveInstancesResult = new ArrayList<IWaveInstance>();
 		CapacityEngineServiceProxy capacityProxy = new CapacityEngineServiceProxy();
@@ -616,7 +617,6 @@ public class RoutingUtil {
 				Collection<Map<RoutingTimeOfDay, List<IWaveInstance>>> _tmpCutOffMpp = srcCutOffInstance.values();
 				//CutOff to Wave Instance Listing
 				Map<RoutingTimeOfDay, List<IWaveInstance>> toSyncWaveMpp = new TreeMap<RoutingTimeOfDay, List<IWaveInstance>>();
-				Set<String> inSyncRoutingWaveInstIds = new HashSet<String>();
 				
 				for(Map<RoutingTimeOfDay, List<IWaveInstance>> _tmpMpp : _tmpCutOffMpp) {
 					for(Map.Entry<RoutingTimeOfDay, List<IWaveInstance>> _tmpInnerMpp : _tmpMpp.entrySet()) {
@@ -624,9 +624,6 @@ public class RoutingUtil {
 							toSyncWaveMpp.put(_tmpInnerMpp.getKey(), new ArrayList<IWaveInstance>());
 						}
 						for(IWaveInstance _srcWaveInst : _tmpInnerMpp.getValue()) {
-							if(_srcWaveInst.getRoutingWaveInstanceId() != null) {
-								inSyncRoutingWaveInstIds.add(_srcWaveInst.getRoutingWaveInstanceId());
-							}
 							toSyncWaveMpp.get(_tmpInnerMpp.getKey()).add(_srcWaveInst);
 						}											
 					}										
@@ -664,7 +661,7 @@ public class RoutingUtil {
 								List<IWaveInstance> blankWaveLst = blankWaveMpp.get(_tmpMpp.getKey());
 								if(blankWaveLst != null && blankWaveLst.size() > 0) {
 									syncWaveInstance = _syncWaveInst;
-									syncWaveInstance.setRoutingWaveInstanceId(blankWaveLst.remove(0).getRoutingWaveInstanceId());									
+									syncWaveInstance.setRoutingWaveInstanceId(blankWaveLst.remove(0).getRoutingWaveInstanceId());
 								}
 							}
 						} else {
@@ -832,15 +829,19 @@ public class RoutingUtil {
 
 	}
 
-	protected static IServiceTimeScenarioModel getRoutingScenario(Date dlvDate) throws RoutingServiceException {
+	public static IServiceTimeScenarioModel getRoutingScenario(Date dlvDate) throws RoutingServiceException {
 		return new RoutingInfoServiceProxy().getRoutingScenarioByDate(dlvDate);
+	}
+	
+	public static IServiceTimeScenarioModel getRoutingScenarioEx(Date dlvDate, Date cutoff, Date startTime, Date endTime) throws RoutingServiceException {
+		return new RoutingInfoServiceProxy().getRoutingScenarioEx(dlvDate,cutoff,startTime,endTime);
 	}
 
 	protected static OrderEstimationResult estimateOrderSize(IOrderModel order, IServiceTimeScenarioModel scenario, IPackagingModel historyInfo) throws RoutingServiceException {
 		return new PlantServiceProxy().estimateOrderSize(order, scenario, historyInfo);
 	}
 
-	protected static IPackagingModel getHistoricOrderSize(IOrderModel order) throws RoutingServiceException {
+	public static IPackagingModel getHistoricOrderSize(IOrderModel order) throws RoutingServiceException {
 		return new PlantServiceProxy().getHistoricOrderSize(order);
 	}
 

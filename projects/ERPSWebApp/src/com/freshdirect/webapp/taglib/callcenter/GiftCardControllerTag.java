@@ -547,7 +547,8 @@ public class GiftCardControllerTag extends com.freshdirect.framework.webapp.Body
     private  FDReservation getFDReservation(String customerID, String addressID) {
 		Date expirationDT = new Date(System.currentTimeMillis() + 1000);
 		FDTimeslot timeSlot=getFDTimeSlot();
-		FDReservation reservation=new FDReservation(new PrimaryKey("1"), timeSlot, expirationDT, EnumReservationType.STANDARD_RESERVATION, customerID, addressID, false, false,null,false,null, -1,null,null,null,0);
+		FDReservation reservation=new FDReservation(new PrimaryKey("1"), timeSlot, expirationDT, EnumReservationType.STANDARD_RESERVATION, 
+				customerID, addressID, false, false,null,false,null, -1,null,null,null,0,null);
 		return reservation;
 
 	}

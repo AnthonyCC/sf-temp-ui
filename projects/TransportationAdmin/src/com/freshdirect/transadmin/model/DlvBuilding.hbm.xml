@@ -64,7 +64,12 @@
                 <column name="BUILDING_ID" />
             </key>
             <many-to-many column="GROUP_ID" unique="true" class="com.freshdirect.transadmin.model.DeliveryGroup" />
-        </set>     
+        </set>
+        
+          <property name="forceBulk" type="string">
+            <column name="FORCE_BULK" length="1" />
+        </property>    
+             
         </class>
 </hibernate-mapping>
 

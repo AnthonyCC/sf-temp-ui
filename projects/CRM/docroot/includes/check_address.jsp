@@ -157,28 +157,37 @@ if (suggestions != null) {  %>
 <%      }   %>
 </table>
 <% } %>
-<% DlvZoneInfoModel zoneInfo=(DlvZoneInfoModel)pageContext.getAttribute("zoneInfo");
+<% List<DlvZoneInfoModel> zoneInfo=(List<DlvZoneInfoModel>)pageContext.getAttribute("zoneInfo");
    String county=(String)pageContext.getAttribute("county");
-  
-	if(zoneInfo!=null){
-%>
-  <table align="center">
-  	<tr>
-  	<%if(zoneInfo.getZoneCode()!=null && !" ".equals(zoneInfo.getZoneCode())){ %>
-  		<td>(Zone Code=<%=zoneInfo.getZoneCode()%>)</td><td>&nbsp;</td> 
-  	<% }%>
-  		<td>(County:</td>&nbsp;<td><%=county%>)</td>
-	  		<%String COSStatus="";
-	  		  if(zoneInfo.isCosEnabled()){
-	  			COSStatus="YES";
-	  		  }else{
-	  			COSStatus="NO";
-	  		  }
-	  		%>
-  		<td><span class="correct">(COS Enabled:&nbsp;<%=COSStatus%>)</span></td>
-  	</tr>
+   String COSStatus="", zoneCode="", bulkZone="";
+   if(zoneInfo!=null){
+	   for(DlvZoneInfoModel zInfo : zoneInfo){
+			if(!zInfo.isBulkZone()){ 
+	 				if(zInfo.getZoneCode()!=null && !" ".equals(zInfo.getZoneCode())){
+	 					zoneCode = zInfo.getZoneCode();
+	 				}if(zInfo.isCosEnabled()){
+		  				COSStatus="YES";
+		  		  	}else{
+		  				COSStatus="NO";
+		  		  	}
+		  	}else{ 
+		  		if(zInfo.getZoneCode()!=null && !" ".equals(zInfo.getZoneCode())){
+		  			bulkZone = zInfo.getZoneCode();
+					}
+			} 
+		}
+   }
+   %>
+	<table align="center">
+ 		<tr>
+ <%if(zoneCode!="") {%> <td>(Zone Code=<%=zoneCode%>)</td><td>&nbsp;</td><td bgcolor="green"><b><%=bulkZone%></b></td><td>&nbsp;</td>
+ <td>(County:</td>&nbsp;<td><%=county%>)</td>
+  <td><span class="correct">(COS Enabled:&nbsp;<%=COSStatus%>)</span></td>
+ <%}%> 
+
+  </tr>
   </table>
- <%} %>
+  
 <% availServices = (Set)pageContext.getAttribute("availServices");
    EnumDeliveryStatus deliveryStatus=(EnumDeliveryStatus)pageContext.getAttribute("deliveryStatus");
 

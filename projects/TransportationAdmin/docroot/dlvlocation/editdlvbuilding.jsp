@@ -120,7 +120,16 @@
                 </td>
                </tr>
                      
-                                             
+               <tr>
+                  <td>Force Bulk</td>
+                  <td> 
+                  <form:checkbox path="forceBulk" value="X"/>
+                </td>
+                <td>
+                  &nbsp;<form:errors path="forceBulk" />
+                </td>
+               </tr>
+                                         
                <tr>
                   <td>Service Time Type</td>
                   <td> 

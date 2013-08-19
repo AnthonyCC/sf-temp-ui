@@ -667,7 +667,8 @@ public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.B
 				//String regionName = (session.getAttribute(SessionName.DELIVERY_REGION) == null) ? "URBAN" : (String) session.getAttribute(SessionName.DELIVERY_REGION);
 				Calendar date = new GregorianCalendar();
 				date.add(Calendar.DATE, 7);
-				DlvZoneInfoModel zoneInfo = AddressUtil.getZoneInfo(request, modCart.getDeliveryAddress(), results, date.getTime());
+				DlvZoneInfoModel zoneInfo = AddressUtil.getZoneInfo(request, modCart.getDeliveryAddress(), results, date.getTime(), null, 
+						(modCart.getDeliveryReservation()!=null)?modCart.getDeliveryReservation().getRegionSvcType():null);
 				if ( results.isSuccess() ) {
 					String zoneId = zoneInfo.getZoneCode();
 					if(zoneId==null || zoneId.length()==0) {
@@ -1090,7 +1091,7 @@ public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.B
 	private static FDReservation getFDReservation(String customerID, String addressID) {
 		Date expirationDT = new Date(System.currentTimeMillis() + 1000);
 		FDTimeslot timeSlot=null;
-		FDReservation reservation=new FDReservation(new PrimaryKey("1"), timeSlot, expirationDT, EnumReservationType.STANDARD_RESERVATION, customerID, addressID, false,false, null,false,null,20,null,null,null,0);
+		FDReservation reservation=new FDReservation(new PrimaryKey("1"), timeSlot, expirationDT, EnumReservationType.STANDARD_RESERVATION, customerID, addressID, false,false, null,false,null,20,null,null,null,0,null);
 		return reservation;
 		
 	}

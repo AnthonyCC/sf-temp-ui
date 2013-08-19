@@ -155,7 +155,7 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 		Calendar date = new GregorianCalendar();
 		date.add( Calendar.DATE, 7 );
 		
-		DlvZoneInfoModel zoneInfo = AddressUtil.getZoneInfo( request, erpAddress, result, date.getTime() );
+		DlvZoneInfoModel zoneInfo = AddressUtil.getZoneInfo( request, erpAddress, result, date.getTime(), user.getHistoricOrderSize(), null);
 
 		try {
 			boolean foundFraud =
@@ -388,7 +388,7 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 
 		Calendar date = new GregorianCalendar();
 		date.add( Calendar.DATE, 7 );
-		DlvZoneInfoModel zoneInfo = AddressUtil.getZoneInfo( request, dlvAddress, result, date.getTime() );
+		DlvZoneInfoModel zoneInfo = AddressUtil.getZoneInfo( request, dlvAddress, result, date.getTime(), this.getUser().getHistoricOrderSize(), (this.getUser().getReservation()!=null)?this.getUser().getReservation().getRegionSvcType():null );
 		if ( !result.isSuccess() )
 			return;
 
@@ -536,7 +536,7 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 		date.add( Calendar.DATE, 7 );
 		
 		LOGGER.debug("setRegularDeliveryAddress[getZoneInfo:START] :"+date.getTime());
-		DlvZoneInfoModel dlvResponse = AddressUtil.getZoneInfo( request, address, result, date.getTime() );
+		DlvZoneInfoModel dlvResponse = AddressUtil.getZoneInfo( request, address, result, date.getTime(), user.getHistoricOrderSize(),  user.getRegionSvcType());
 		if ( !result.isSuccess() ) {
 			LOGGER.debug("setRegularDeliveryAddress[getZoneInfo:FAILED] :"+result);
 			return;

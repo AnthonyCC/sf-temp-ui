@@ -28,6 +28,9 @@
         <property name="active" type="string">
             <column name="ACTIVE" length="1" />
         </property>
+         <property name="applyTo" type="string">
+            <column name="APPLY_TO" length="10" />
+        </property>
         <property name="comments" type="string">
             <column name="COMMENTS" />
         </property>

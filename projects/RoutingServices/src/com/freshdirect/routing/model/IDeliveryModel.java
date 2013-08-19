@@ -40,5 +40,8 @@ public interface IDeliveryModel  {
 	void setServiceType(String serviceType);
 	
 	int getReservedOrdersAtBuilding();
-	void setReservedOrdersAtBuilding(int reservedOrdersAtBuilding);	
+	void setReservedOrdersAtBuilding(int reservedOrdersAtBuilding);
+	
+	Date getDeliveryCutoffTime();
+	void setDeliveryCutoffTime(Date deliveryCutoffTime);
 }

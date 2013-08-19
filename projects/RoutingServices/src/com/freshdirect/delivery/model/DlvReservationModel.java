@@ -13,6 +13,8 @@ package com.freshdirect.delivery.model;
  */
 import java.util.Date;
 
+import com.freshdirect.common.customer.EnumZoneType;
+import com.freshdirect.delivery.EnumRegionServiceType;
 import com.freshdirect.delivery.EnumReservationType;
 import com.freshdirect.framework.core.ModelSupport;
 import com.freshdirect.framework.core.PrimaryKey;
@@ -60,6 +62,8 @@ public class DlvReservationModel extends ModelSupport {
 	private String buildingId;
 	private String locationId;
 	private int reservedOrdersAtBuilding;
+	
+	private EnumRegionServiceType regionSvcType;
 	
 	public EnumOrderMetricsSource getMetricsSource() {
 		return metricsSource;
@@ -171,7 +175,7 @@ public class DlvReservationModel extends ModelSupport {
 		EnumReservationType type, String addressId, Date deliveryDate, String zoneCode, RoutingActivityType unassignedActivityType,boolean inUPS,
 		Double overrideOrderSize, Double overrideServiceTime, Double reservedOrderSize, Double reservedServiceTime, 
 		Long noOfCartons, Long noOfCases, Long noOfFreezers,EnumReservationClass rsvClass,  EnumRoutingUpdateStatus status, EnumOrderMetricsSource metricsSource,
-		String buildingId, String locationId, int reservedOrdersAtBuilding) {
+		String buildingId, String locationId, int reservedOrdersAtBuilding, EnumRegionServiceType regionSvcType) {
 			
 		this.orderId = orderId;
 		this.customerId = customerId;
@@ -201,6 +205,7 @@ public class DlvReservationModel extends ModelSupport {
 		this.buildingId = buildingId;
 		this.locationId = locationId;
 		this.reservedOrdersAtBuilding = reservedOrdersAtBuilding;
+		this.regionSvcType = regionSvcType;
 		
 	}
 
@@ -215,12 +220,12 @@ public class DlvReservationModel extends ModelSupport {
 		com.freshdirect.delivery.EnumReservationType type2, String addressId, Date deliveryDate, String zoneCode,RoutingActivityType unassignedActivityType,boolean inUPS, 
 		Double overrideOrderSize, Double overrideServiceTime, Double reservedOrderSize, Double reservedServiceTime,
 		Long noOfCartons, Long noOfCases, Long noOfFreezers, EnumReservationClass rsvClass, EnumRoutingUpdateStatus status, EnumOrderMetricsSource metricsSource,
-		String buildingId, String locationId, int reservedOrdersAtBuilding) {
+		String buildingId, String locationId, int reservedOrdersAtBuilding, EnumRegionServiceType regionSvcType) {
 			
 		this(orderId, customerId, statusCode, expirationDateTime, timeslotId, zoneId, type2, addressId,deliveryDate
 						,zoneCode,unassignedActivityType,inUPS
 						, overrideOrderSize, overrideServiceTime, reservedOrderSize, reservedServiceTime,
-						noOfCartons, noOfCases, noOfFreezers, rsvClass, status, metricsSource,buildingId, locationId, reservedOrdersAtBuilding);
+						noOfCartons, noOfCases, noOfFreezers, rsvClass, status, metricsSource,buildingId, locationId, reservedOrdersAtBuilding,regionSvcType);
 		this.setPK(pk);
 
 	}
@@ -377,6 +382,17 @@ public class DlvReservationModel extends ModelSupport {
 
 	public void setReservedOrdersAtBuilding(int reservedOrdersAtBuilding) {
 		this.reservedOrdersAtBuilding = reservedOrdersAtBuilding;
+	}
+
+	public EnumRegionServiceType getRegionSvcType() {
+		return regionSvcType;
+	}
+
+	public void setRegionSvcType(EnumRegionServiceType regionSvcType) {
+		this.regionSvcType = regionSvcType;
+	}
+	public boolean inBulkZone(){
+		return (this.regionSvcType!=null && EnumRegionServiceType.HYBRID.equals(this.regionSvcType));
 	}
 
 }

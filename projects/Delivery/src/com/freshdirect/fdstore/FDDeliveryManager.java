@@ -23,6 +23,7 @@ import com.freshdirect.common.address.AddressInfo;
 import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.address.ContactAddressModel;
 import com.freshdirect.common.customer.EnumServiceType;
+import com.freshdirect.common.customer.EnumZoneType;
 import com.freshdirect.common.pricing.MunicipalityInfo;
 import com.freshdirect.common.pricing.MunicipalityInfoWrapper;
 import com.freshdirect.customer.ErpAddressModel;
@@ -37,6 +38,7 @@ import com.freshdirect.delivery.DlvZipInfoModel;
 import com.freshdirect.delivery.DlvZoneCapacityInfo;
 import com.freshdirect.delivery.DlvZoneCutoffInfo;
 import com.freshdirect.delivery.DlvZoneInfoModel;
+import com.freshdirect.delivery.EnumRegionServiceType;
 import com.freshdirect.delivery.EnumReservationStatus;
 import com.freshdirect.delivery.EnumReservationType;
 import com.freshdirect.delivery.EnumRestrictedAddressReason;
@@ -56,6 +58,7 @@ import com.freshdirect.delivery.model.UnassignedDlvReservationModel;
 import com.freshdirect.delivery.restriction.DlvRestrictionsList;
 import com.freshdirect.delivery.restriction.GeographyRestriction;
 import com.freshdirect.delivery.restriction.RestrictionI;
+import com.freshdirect.delivery.restriction.TimeslotRestriction;
 import com.freshdirect.erp.EnumStateCodes;
 import com.freshdirect.framework.core.ServiceLocator;
 import com.freshdirect.framework.util.TimedLruCache;
@@ -63,6 +66,7 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.routing.constants.RoutingActivityType;
 import com.freshdirect.routing.model.IDeliveryReservation;
 import com.freshdirect.routing.model.IOrderModel;
+import com.freshdirect.routing.model.IPackagingModel;
 
 /**
  * @version $Revision:23$
@@ -302,10 +306,10 @@ public class FDDeliveryManager {
 		}
 	}
 
-	public DlvZoneInfoModel getZoneInfo(AddressModel address, Date date) throws FDResourceException, FDInvalidAddressException {
+	public DlvZoneInfoModel getZoneInfo(AddressModel address, Date date, IPackagingModel iPackagingModel, EnumRegionServiceType serviceType) throws FDResourceException, FDInvalidAddressException {
 		try {
 			DlvManagerSB sb = getDlvManagerHome().create();
-			return sb.getZoneInfo(address, date);
+			return sb.getZoneInfo(address, date, iPackagingModel, serviceType);
 		} catch (RemoteException re) {
 			throw new FDResourceException(re);
 		} catch (CreateException ce) {
@@ -316,6 +320,22 @@ public class FDDeliveryManager {
 			throw new FDInvalidAddressException(iae.getMessage());
 		}
 	}
+	
+	public List<DlvZoneInfoModel> getAllZoneInfo(AddressModel address, Date date) throws FDResourceException, FDInvalidAddressException {
+		try {
+			DlvManagerSB sb = getDlvManagerHome().create();
+			return sb.getAllZoneInfo(address, date);
+		} catch (RemoteException re) {
+			throw new FDResourceException(re);
+		} catch (CreateException ce) {
+			throw new FDResourceException(ce);
+		} catch (InvalidAddressException.GeocodingException geoe) {
+			throw new FDInvalidAddressException.GeocodingException(geoe.getMessage()+">"+address.getAddress1()+">"+address.getZipCode());
+		} catch (InvalidAddressException iae) {
+			throw new FDInvalidAddressException(iae.getMessage());
+		}
+	}
+
 
 	public DlvZoneInfoModel getZoneInfoForDepot(String regionId, String zoneCode, Date date) throws FDResourceException {
 		try {
@@ -330,39 +350,6 @@ public class FDDeliveryManager {
 		}
 	}
 
-	public DlvZoneInfoModel getZoneId(ErpAddressModel address, Date day) throws FDResourceException {
-		DlvZoneInfoModel info = null;
-	if(address != null) {
-		
-		if(address instanceof ErpDepotAddressModel) {
-			ErpDepotAddressModel depotAddress = (ErpDepotAddressModel)address;
-			DlvDepotModel depot = FDDepotManager.getInstance().getDepotByLocationId(depotAddress.getLocationId());
-			if(depot != null) {
-				DlvLocationModel location = depot.getLocation(depotAddress.getLocationId());
-				if(location != null) {
-					info = FDDeliveryManager.getInstance().getZoneInfoForDepot(depot.getRegionId(), location.getZoneCode(), day);
-					
-				}
-			}
-		} else {
-			try {
-				info = FDDeliveryManager.getInstance().getZoneInfo(address, day);
-			} catch (FDInvalidAddressException e) {
-				LOGGER.info("Encountered InvalidAddressException while getting zoneInfo for address: "
-					+ address.getAddress1() 
-					+ " " 
-					+ address.getAltApartment() 
-					+ " " 
-					+ address.getCity() 
-					+ " " 
-					+ address.getState()
-					+ " "
-					+ address.getZipCode());
-			}
-		}
-	}
-	return info;
-	}
 	public List<DlvZoneCutoffInfo> getCutofftimeForZone(String zoneCode, Date day) throws FDResourceException {
 
 		if("".equals(zoneCode)) {
@@ -449,11 +436,11 @@ public class FDDeliveryManager {
 	}
 
 
-	public FDDynamicTimeslotList getTimeslotsForDateRangeAndZone(Date begDate, Date endDate,  TimeslotEventModel event,ContactAddressModel address) throws FDResourceException {
+	public FDDynamicTimeslotList getTimeslotsForDateRangeAndZone(Date begDate, Date endDate,  TimeslotEventModel event,ContactAddressModel address, EnumRegionServiceType serviceType) throws FDResourceException {
 		try {			
 			List<FDTimeslot> retLst = new ArrayList<FDTimeslot>();
 			DlvManagerSB sb = getDlvManagerHome().create();
-			List<DlvTimeslotModel> timeslots = sb.getTimeslotForDateRangeAndZone(begDate, endDate, address);
+			List<DlvTimeslotModel> timeslots = sb.getTimeslotForDateRangeAndZone(begDate, endDate, address, serviceType);
 			for ( DlvTimeslotModel timeslot : timeslots ) {
 				retLst.add(new FDTimeslot(timeslot));
 			}			
@@ -575,7 +562,9 @@ public class FDDeliveryManager {
 				address.getId(),
 				dlvReservation.isChefsTable(),dlvReservation.getUnassignedActivityType()!=null, dlvReservation.getOrderId(),dlvReservation.isInUPS(),
 				dlvReservation.getUnassignedActivityType(),
-				dlvReservation.getStatusCode(),dlvReservation.getRsvClass(), dlvReservation.hasSteeringDiscount(),dlvReservation.getBuildingId(), dlvReservation.getLocationId(), dlvReservation.getReservedOrdersAtBuilding());
+				dlvReservation.getStatusCode(),dlvReservation.getRsvClass(), dlvReservation.hasSteeringDiscount(),
+				dlvReservation.getBuildingId(), dlvReservation.getLocationId(), dlvReservation.getReservedOrdersAtBuilding(),
+				dlvReservation.getRegionSvcType());
 			if(FDStoreProperties.isDynamicRoutingEnabled() && (timeslot.getDlvTimeslot() != null && timeslot.getDlvTimeslot().getRoutingSlot() != null 
 					&& timeslot.getDlvTimeslot().getRoutingSlot().isDynamicActive())) {
 				boolean isSent=RoutingUtil.getInstance().sendTimeslotReservationRequest(dlvReservation, address, timeslot, event);
@@ -613,7 +602,8 @@ public class FDDeliveryManager {
 				,reservation.isUnassigned()
 				, reservation.getOrderId(),reservation.isInUPS(),
 				 reservation.getUnassignedActivityType(),
-				 reservation.getStatusCode(),reservation.getRsvClass(), reservation.getBuildingId(), reservation.getLocationId(), reservation.getReservedOrdersAtBuilding());
+				 reservation.getStatusCode(),reservation.getRsvClass(), reservation.getBuildingId(), reservation.getLocationId(), 
+				 reservation.getReservedOrdersAtBuilding(), reservation.getRegionSvcType());
 
 		} catch (RemoteException re) {
 			throw new FDResourceException(re);
@@ -682,7 +672,9 @@ public class FDDeliveryManager {
 					dlvRsv.isUnassigned(), dlvRsv.getOrderId(),dlvRsv.isInUPS(),
 					dlvRsv.getUnassignedActivityType(),
 					dlvRsv.getStatusCode(),dlvRsv.getRsvClass(),
-					dlvRsv.hasSteeringDiscount(),dlvRsv.getBuildingId(), dlvRsv.getLocationId(), dlvRsv.getReservedOrdersAtBuilding()));
+					dlvRsv.hasSteeringDiscount(),dlvRsv.getBuildingId(), dlvRsv.getLocationId(), 
+					dlvRsv.getReservedOrdersAtBuilding(),
+					dlvRsv.getRegionSvcType()));
 			}
 			return rsvLst;
 
@@ -778,7 +770,8 @@ public class FDDeliveryManager {
 			FDReservation fdRes = new FDReservation(dlvRsv.getPK(), timeslot, dlvRsv.getExpirationDateTime(), dlvRsv
 				.getReservationType(), dlvRsv.getCustomerId(), dlvRsv.getAddressId(), dlvRsv.isChefsTable(),dlvRsv.isUnassigned()
 				, dlvRsv.getOrderId(),dlvRsv.isInUPS(),dlvRsv.getUnassignedActivityType(),
-				dlvRsv.getStatusCode(),dlvRsv.getRsvClass(), dlvRsv.hasSteeringDiscount(),dlvRsv.getBuildingId(),dlvRsv.getLocationId(), dlvRsv.getReservedOrdersAtBuilding());
+				dlvRsv.getStatusCode(),dlvRsv.getRsvClass(), dlvRsv.hasSteeringDiscount(),dlvRsv.getBuildingId(),dlvRsv.getLocationId(),
+				dlvRsv.getReservedOrdersAtBuilding(), dlvRsv.getRegionSvcType());
 
 			return fdRes;
 		} catch (ObjectNotFoundException ex) {
@@ -1210,6 +1203,37 @@ public class FDDeliveryManager {
 			throw new FDResourceException(re);
 		} catch (CreateException ce) {
 			throw new FDResourceException(ce);
+		}
+	}
+
+	public List<GeographyRestriction> getGeographicDlvRestrictionsForTemplate(
+			AddressModel address) throws FDResourceException {	
+		try {
+			DlvManagerSB sb = getDlvManagerHome().create();
+
+			return sb.getGeographicDlvRestrictionsForTemplate(address);
+
+		} catch (CreateException e) {
+			throw new FDResourceException(e, "Cannot create SessionBean");
+		} catch (DlvResourceException e) {
+			throw new FDResourceException(e);
+		} catch (RemoteException e) {
+			throw new FDResourceException(e, "Cannot talk to the SessionBean");
+		}
+	}
+
+	public List<TimeslotRestriction> getTimeslotRestrictions() throws FDResourceException {		
+		try {
+			DlvManagerSB sb = getDlvManagerHome().create();
+
+			return sb.getTimeslotRestrictions();
+
+		} catch (CreateException e) {
+			throw new FDResourceException(e, "Cannot create SessionBean");
+		} catch (DlvResourceException e) {
+			throw new FDResourceException(e);
+		} catch (RemoteException e) {
+			throw new FDResourceException(e, "Cannot talk to the SessionBean");
 		}
 	}	
 

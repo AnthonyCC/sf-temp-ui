@@ -68,7 +68,7 @@ public class ReservationCronRunner {
 
 					FDUserI user=sb.recognize(identity);
 					dsb.makeRecurringReservation(info.getCustomerId(), info.getDayOfWeek(), info.getStartTime()
-															, info.getEndTime(), info.getAddress(), user.isChefsTable(), event);
+															, info.getEndTime(), info.getAddress(), user.isChefsTable(), event, user.getHistoricOrderSize());
 					
 				} catch(Exception e) {
 					LOGGER.warn("Could not Reserve a Weekly recurring timeslot "+info.getCustomerId()+" "+identity, e);

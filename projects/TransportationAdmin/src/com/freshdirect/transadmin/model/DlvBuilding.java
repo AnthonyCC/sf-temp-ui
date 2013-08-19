@@ -23,7 +23,7 @@ public class DlvBuilding implements java.io.Serializable, TrnBaseEntityI  {
 	private BigDecimal serviceTimeAdjustable;
 	private String serviceTimeOperator;
 	private String zoneCode;
-	
+	private String forceBulk;
 	public String getZoneCode() {
 		return zoneCode;
 	}
@@ -185,6 +185,14 @@ public class DlvBuilding implements java.io.Serializable, TrnBaseEntityI  {
 			trnServiceTimeType.setCode(serviceTimeType);
 			setServiceTimeType(trnServiceTimeType);
 		}
+	}
+
+	public String getForceBulk() {
+		return forceBulk;
+	}
+
+	public void setForceBulk(String forceBulk) {
+		this.forceBulk = forceBulk;
 	}
 
 }

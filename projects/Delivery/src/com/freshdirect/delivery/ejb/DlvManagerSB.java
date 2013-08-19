@@ -21,7 +21,9 @@ import com.freshdirect.analytics.TimeslotEventModel;
 import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.address.ContactAddressModel;
 import com.freshdirect.common.customer.EnumServiceType;
+import com.freshdirect.common.customer.EnumZoneType;
 import com.freshdirect.common.pricing.MunicipalityInfo;
+import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.delivery.DlvAddressGeocodeResponse;
 import com.freshdirect.delivery.DlvAddressVerificationResponse;
 import com.freshdirect.delivery.DlvApartmentRange;
@@ -32,6 +34,7 @@ import com.freshdirect.delivery.DlvZipInfoModel;
 import com.freshdirect.delivery.DlvZoneCapacityInfo;
 import com.freshdirect.delivery.DlvZoneCutoffInfo;
 import com.freshdirect.delivery.DlvZoneInfoModel;
+import com.freshdirect.delivery.EnumRegionServiceType;
 import com.freshdirect.delivery.EnumReservationType;
 import com.freshdirect.delivery.EnumRestrictedAddressReason;
 import com.freshdirect.delivery.ExceptionAddress;
@@ -46,6 +49,7 @@ import com.freshdirect.delivery.model.SectorVO;
 import com.freshdirect.delivery.model.UnassignedDlvReservationModel;
 import com.freshdirect.delivery.restriction.GeographyRestriction;
 import com.freshdirect.delivery.restriction.RestrictionI;
+import com.freshdirect.delivery.restriction.TimeslotRestriction;
 import com.freshdirect.routing.constants.RoutingActivityType;
 import com.freshdirect.fdstore.FDDynamicTimeslotList;
 import com.freshdirect.fdstore.FDResourceException;
@@ -58,6 +62,7 @@ import com.freshdirect.routing.model.IDeliveryReservation;
 import com.freshdirect.routing.model.IDeliverySlot;
 import com.freshdirect.routing.model.IDeliveryWindowMetrics;
 import com.freshdirect.routing.model.IOrderModel;
+import com.freshdirect.routing.model.IPackagingModel;
 import com.freshdirect.routing.model.IRoutingNotificationModel;
 import com.freshdirect.routing.model.IRoutingSchedulerIdentity;
 import com.freshdirect.routing.model.IWaveInstance;
@@ -66,7 +71,7 @@ import com.freshdirect.routing.util.RoutingTimeOfDay;
 
 public interface DlvManagerSB extends EJBObject {
 	
-    public List<DlvTimeslotModel> getTimeslotForDateRangeAndZone(Date begDate, Date endDate, AddressModel address) throws InvalidAddressException, RemoteException;
+    public List<DlvTimeslotModel> getTimeslotForDateRangeAndZone(Date begDate, Date endDate, AddressModel address, EnumRegionServiceType serviceType) throws InvalidAddressException, RemoteException;
 	public List<DlvTimeslotModel> getTimeslotsForDepot(java.util.Date startDate, java.util.Date endDate, String regionId, String zoneCode) throws DlvResourceException , RemoteException;
 	public List<DlvTimeslotModel> getAllTimeslotsForDateRange(java.util.Date startDate, java.util.Date endDate, AddressModel address) throws InvalidAddressException, RemoteException;
 
@@ -83,7 +88,8 @@ public interface DlvManagerSB extends EJBObject {
 	
     public DlvTimeslotModel getTimeslotById(String timeslotId, String buildingId, boolean checkPremium) throws FinderException, RemoteException;
 	public List<DlvZoneModel> getAllZonesByRegion(String regionId)throws RemoteException;
-	public DlvZoneInfoModel getZoneInfo(AddressModel address, Date date) throws InvalidAddressException, RemoteException;
+	public DlvZoneInfoModel getZoneInfo(AddressModel address, Date date, IPackagingModel iPackagingModel, EnumRegionServiceType serviceType) throws InvalidAddressException, RemoteException;
+	public List<DlvZoneInfoModel> getAllZoneInfo(AddressModel address, Date date) throws InvalidAddressException, RemoteException;
 	public List<DlvZoneCutoffInfo> getCutoffInfo(String zoneCode, Date day) throws RemoteException;
 	public DlvZoneCapacityInfo getZoneCapacity(String zoneCode, Date day) throws RemoteException;
 	public void saveFutureZoneNotification(String email, String zip, String serviceType) throws RemoteException;
@@ -119,7 +125,8 @@ public interface DlvManagerSB extends EJBObject {
 	
 	public void removeReservation(String reservationId) throws RemoteException;
 	
-	public boolean makeRecurringReservation(String customerId, int dayOfWeek, Date startTime, Date endTime, ContactAddressModel address, boolean chefstable, TimeslotEventModel event) throws RemoteException;
+	public boolean makeRecurringReservation(String customerId, int dayOfWeek, Date startTime, Date endTime, ContactAddressModel address, 
+			boolean chefstable, TimeslotEventModel event, IPackagingModel iPackagingModel) throws RemoteException;
 	
 	public void addExceptionAddress(ExceptionAddress ex) throws RemoteException;
 
@@ -201,7 +208,7 @@ public interface DlvManagerSB extends EJBObject {
 	Map<Date, Map<String, Map<RoutingTimeOfDay, Map<RoutingTimeOfDay, List<IWaveInstance>>>>> retrieveWaveInstanceTree(Date deliveryDate, EnumWaveInstanceStatus status) throws DlvResourceException, RemoteException;
 	void synchronizeWaveInstance(IRoutingSchedulerIdentity schedulerId
 			, Map<Date, Map<String, Map<RoutingTimeOfDay, Map<RoutingTimeOfDay, List<IWaveInstance>>>>> waveInstanceTree
-			, Set<String> inSyncZones, Map<String, TrnFacilityType> routingLocationMap) throws DlvResourceException, RemoteException;
+			, Set<String> inSyncZones, Map<String, TrnFacilityType> routingLocationMap, Set inSyncRoutingWaveInstIds) throws DlvResourceException, RemoteException;
 	List<Date> getFutureTimeslotDates() throws DlvResourceException, RemoteException;
 	public void deleteZeroSyncWaveInstance(IRoutingSchedulerIdentity schedulerId) throws DlvResourceException, RemoteException;
 	void purgeSchedulerByIdentity(IRoutingSchedulerIdentity schedulerId) throws DlvResourceException, RemoteException;
@@ -229,5 +236,8 @@ public interface DlvManagerSB extends EJBObject {
 	public List<DlvReservationModel> getCancelledRsvInUPS() throws DlvResourceException,RemoteException;
 	public List<DlvReservationModel> getOrdersWithCancelledRsv() throws DlvResourceException,RemoteException;
 	public List<DlvReservationModel> getReservationsNotInUPS() throws DlvResourceException,RemoteException;
+	public Set retrieveRoutingWaveInstIds(Date processDate) throws DlvResourceException,RemoteException;
+	List<GeographyRestriction> getGeographicDlvRestrictionsForTemplate(AddressModel address)throws DlvResourceException, RemoteException;
+	public List<TimeslotRestriction> getTimeslotRestrictions()throws DlvResourceException, RemoteException;
 	
 }   

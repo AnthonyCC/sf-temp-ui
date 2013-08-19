@@ -107,10 +107,13 @@
               	<ec:column title=" " width="5px" filterable="false" sortable="false" cell="selectcol" property="scenariodayId" />  
 		          <ec:column width="7px" alias="scenariodate" property="normalDate" title="Date"/>    
 		          <ec:column property="dayOfWeekInText" title="Day"/>
+		          <ec:column width="7px" property="cutoffEx" title="Handoff"/>
+		          <ec:column width="15px" property="timeRange" title="Time Range"/>  
 		          <ec:column width="5px" alias="scenariocode" property="scenario.code" title="Code"/>    
 		          <ec:column property="scenario.description" title="Description"/>
 		      	  <ec:column property="scenario.serviceTimeFactorFormula" title="Service Time Factor Formula"/>
 		          <ec:column property="scenario.serviceTimeFormula" title="Service Time Formula"/>
+		          <ec:column property="scenario.bulkThreshold" title="Bulk Threshold"/>
 		          <ec:column property="scenario.defaultCartonCount" width="5px" title="Carton Count"/>
 		          <ec:column property="scenario.defaultCaseCount" width="5px" title="Case Count"/>
 		          <ec:column property="scenario.defaultFreezerCount" width="5px" title="Freezer Count"/>
@@ -128,7 +131,7 @@
 		</div>
 	</div> 
 	 <script>
-	 rowHandlers('ec_table', 'rowMouseOver', 'editdlvservicetimescenario.do','id',0, 0,false,3);
+	 rowHandlers('ec_table', 'rowMouseOver', 'editdlvservicetimescenario.do','id',0, 0,false,5);
 	 
 	 function getFilterTestValue() {
          var filters = getFilterValue(document.getElementById("dlvServiceTimeScenarioForm"),false);
@@ -147,7 +150,7 @@
     	    var paramValues = null;
     	    for (i = 0; i < checkboxList.length; i++) {
     	    	if (checkboxList[i].type=="checkbox" && checkboxList[i].checked) {
-    	    		var rowFld = checkboxList[i].parentNode.parentNode.getElementsByTagName("td")[3];  		
+    	    		var rowFld = checkboxList[i].parentNode.parentNode.getElementsByTagName("td")[5];  		
     	    		if (paramValues != null) {
     	    			paramValues = paramValues+","+rowFld.innerHTML;
     	    		} else {

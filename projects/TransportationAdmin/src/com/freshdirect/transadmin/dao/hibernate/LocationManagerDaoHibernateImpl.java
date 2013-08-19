@@ -1,13 +1,22 @@
 package com.freshdirect.transadmin.dao.hibernate;
 
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 
+import org.hibernate.Hibernate;
+import org.hibernate.HibernateException;
+import org.hibernate.Query;
+import org.hibernate.Session;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Expression;
 import org.springframework.dao.DataAccessException;
+import org.springframework.orm.hibernate3.HibernateCallback;
 
 import com.freshdirect.transadmin.dao.LocationManagerDaoI;
+import com.freshdirect.transadmin.model.CustomerInfo;
 import com.freshdirect.transadmin.model.DeliveryGroup;
 import com.freshdirect.transadmin.model.DlvBuilding;
 import com.freshdirect.transadmin.model.DlvBuildingDetail;
@@ -254,4 +263,44 @@ public class LocationManagerDaoHibernateImpl extends BaseManagerDaoHibernateImpl
 	public TrnFacilityLocation getTrnFacilityLocation(String id) throws DataAccessException {
 		return (TrnFacilityLocation)getEntityById("TrnFacilityLocation","id",id);
 	}
+
+	@Override
+	public Collection getCustomerInfo(final String context, final String id) throws DataAccessException {
+		
+		List ResultList = (List)getHibernateTemplate().execute(new HibernateCallback() {
+		public Object doInHibernate(Session session) throws HibernateException, SQLException {
+			Query query = null;
+			
+			if("location".equals(context)){
+				query = session.createSQLQuery("SELECT A.CUSTOMER_ID, A.FIRST_NAME, A.LAST_NAME FROM CUST.ADDRESS A, DLV.DELIVERY_BUILDING B, " +
+						"DLV.DELIVERY_LOCATION L  WHERE A.SCRUBBED_ADDRESS = B.SCRUBBED_STREET AND L.APARTMENT = A.APARTMENT AND L.BUILDINGID = B.ID " +
+						"and L.ID = ?")
+					.addScalar("CUSTOMER_ID", Hibernate.STRING)
+					.addScalar("FIRST_NAME", Hibernate.STRING)
+					.addScalar("LAST_NAME", Hibernate.STRING);
+			}else{
+				query = session.createSQLQuery("SELECT A.CUSTOMER_ID, A.FIRST_NAME, A.LAST_NAME FROM CUST.ADDRESS A, DLV.DELIVERY_BUILDING B WHERE A.SCRUBBED_ADDRESS = B.SCRUBBED_STREET " +
+					" AND B.ID = ?")
+					.addScalar("CUSTOMER_ID", Hibernate.STRING)
+					.addScalar("FIRST_NAME", Hibernate.STRING)
+					.addScalar("LAST_NAME", Hibernate.STRING);
+			}
+			query.setParameter(0, id);
+			List list = query.list();
+			List<CustomerInfo> customerList = new ArrayList<CustomerInfo>();
+			Iterator it = list.iterator();
+			while(it.hasNext()){
+				Object[] row = (Object[])it.next();
+				CustomerInfo customerInfo = new CustomerInfo();
+				customerInfo.setCustomerId((String)row[0]);
+				customerInfo.setFirstName((String)row[1]);
+				customerInfo.setLastName((String)row[2]);
+				customerList.add(customerInfo);
+			}
+			return (Collection)customerList;
+			}
+		});
+		return ResultList;
+		
+		}
 }

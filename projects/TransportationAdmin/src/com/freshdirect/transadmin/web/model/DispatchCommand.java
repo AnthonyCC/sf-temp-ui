@@ -261,9 +261,10 @@ public class DispatchCommand extends WebPlanInfo {
 		            if(hasPunchInfo) 
 		            {
 		            	PunchInfoI tempPunchInfo=getPunchInfo(resourceInfo.getEmployeeId(),punchInfos);
+		            	Collection _clonedPunchInfos = clonePunchInfo(punchInfos);
 		            	if(tempPunchInfo!=null&&!ScheduleEmployeeInfo.DEPOT.equalsIgnoreCase(this.getRegionCode()))
 		            	{
-		            		punchInfos.remove(tempPunchInfo);
+		            		_clonedPunchInfos.remove(tempPunchInfo);
 		            	}
 		            	resourceInfo.setPunchInfo(tempPunchInfo);
 		            	if(resourceInfo.getPunchInfo()==null)resourceInfo.setPunchInfo(new PunchInfo());
@@ -296,6 +297,21 @@ public class DispatchCommand extends WebPlanInfo {
             	setResourceAssetScanInfo(resourceInfo, scannedAssetMapping.get(resourceInfo.getEmployeeId()));
             }
         }
+	}
+
+	private Collection clonePunchInfo(Collection punchInfos) {
+		Collection<PunchInfo> _clonedPunchInfo = new ArrayList<PunchInfo>(); 
+		Iterator _itr = punchInfos.iterator();
+		while(_itr.hasNext()) {
+			PunchInfo _punchInfo = (PunchInfo)_itr.next();
+			try {
+				_clonedPunchInfo.add((PunchInfo)_punchInfo.clone());
+			} catch (CloneNotSupportedException notSupported) {
+				// No Supposed to Happen
+				notSupported.printStackTrace();
+			}
+		}
+		return _clonedPunchInfo;
 	}
 
 	private List<AssetScanInfo> setResourceAssetScanInfo(ResourceInfoI resourceInfo,

@@ -7,6 +7,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
 
+import org.apache.commons.lang.time.FastDateFormat;
+
 public class DateUtil {
 
 	public final static long SECOND = 1000;
@@ -47,6 +49,11 @@ public class DateUtil {
 	private DateUtil() {
 	}
 
+	public static void main(String s[]){
+		Date d = new Date();
+		String str = DateUtil.formatDayOfWeek(d);
+		System.out.println(str);
+	}
 
 	public static Calendar toCalendar(Date date) {
 		Calendar cal = Calendar.getInstance();
@@ -210,8 +217,9 @@ public class DateUtil {
 		return MONTH_DATE_YEAR_DAY_FORMATTER.format(dateValue);
 	}
 	
-	public static String formatDayOfWeek(Date dateValue) {
-		return DAY_OF_WEEK_FORMATTER.format(dateValue);
+	public static String formatDayOfWeek(Date dateValue) { //replacing with thread safe version.
+		FastDateFormat fdf = FastDateFormat.getInstance("E");
+		return fdf.format(dateValue);
 	}
 	
 	public static String formatDayOfWk(Date dateValue) {

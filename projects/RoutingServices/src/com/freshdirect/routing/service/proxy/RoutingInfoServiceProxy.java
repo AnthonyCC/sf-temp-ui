@@ -30,6 +30,9 @@ public class RoutingInfoServiceProxy  extends BaseServiceProxy  {
 		return getService().getRoutingScenarioByDate(deliveryDate);
 	}
 	
+	public IServiceTimeScenarioModel getRoutingScenarioEx(Date deliveryDate, Date cutoff, Date startTime, Date endTime)  throws RoutingServiceException {
+		return getService().getRoutingScenarioEx(deliveryDate, cutoff, startTime, endTime);
+	}	
 	public IServiceTimeScenarioModel getRoutingScenarioByCode(String code)  throws RoutingServiceException {
 		return getService().getRoutingScenarioByCode(code);
 	}
@@ -114,5 +117,9 @@ public class RoutingInfoServiceProxy  extends BaseServiceProxy  {
 	public Map<String, Map<RoutingTimeOfDay, List<IRouteModel>>> getStaticRoutesByArea(
 			Date deliveryDate) {
 		return getService().getStaticRoutesByArea(deliveryDate);
-	} 
+	}
+
+	public Set retrieveRoutingWaveInstIds(Date deliveryDate) {
+		return getService().retrieveRoutingWaveInstIds(deliveryDate);
+		} 
 }

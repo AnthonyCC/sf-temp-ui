@@ -24,6 +24,9 @@ public class DlvZoneInfoModel extends ModelSupport{
 	private final EnumZipCheckResponses response;
 	private final boolean unattended;
 	private final boolean cosEnabled;
+	private final EnumRegionServiceType regionSvcType;
+	
+	//private final String serviceType;
 	
 	/** Creates new DlvZipCheckResponseModel */
     public DlvZoneInfoModel(String zoneCode, String zoneId, String regionId, EnumZipCheckResponses response, boolean unattended, boolean cosEnabled) {
@@ -33,8 +36,17 @@ public class DlvZoneInfoModel extends ModelSupport{
     	this.response = response;
     	this.unattended = unattended;
     	this.cosEnabled=cosEnabled;
+    	this.regionSvcType = null;
     }
-    
+    public DlvZoneInfoModel(String zoneCode, String zoneId, String regionId, EnumZipCheckResponses response, boolean unattended, boolean cosEnabled, EnumRegionServiceType regionSvcType) {
+    	this.zoneCode = zoneCode;
+    	this.zoneId = zoneId;
+    	this.regionId = regionId;
+    	this.response = response;
+    	this.unattended = unattended;
+    	this.cosEnabled=cosEnabled;
+    	this.regionSvcType=regionSvcType;
+    }
    	public String getZoneCode(){
 		return this.zoneCode;
 	}
@@ -73,5 +85,12 @@ public class DlvZoneInfoModel extends ModelSupport{
 
 	public boolean isCosEnabled() {
 		return this.cosEnabled;
-	}	
+	}
+	
+	public EnumRegionServiceType getRegionSvcType(){
+		return this.regionSvcType;
+	}
+	public boolean isBulkZone(){
+		return (this.regionSvcType!=null && EnumRegionServiceType.isHybrid(this.regionSvcType));
+	}
 }

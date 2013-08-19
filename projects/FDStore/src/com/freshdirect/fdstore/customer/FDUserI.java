@@ -17,6 +17,7 @@ import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.customer.ErpPromotionHistory;
 import com.freshdirect.customer.OrderHistoryI;
 import com.freshdirect.delivery.EnumDeliveryStatus;
+import com.freshdirect.delivery.EnumRegionServiceType;
 import com.freshdirect.deliverypass.EnumDPAutoRenewalType;
 import com.freshdirect.deliverypass.EnumDlvPassProfileType;
 import com.freshdirect.deliverypass.EnumDlvPassStatus;
@@ -39,6 +40,7 @@ import com.freshdirect.fdstore.promotion.SignupDiscountRule;
 import com.freshdirect.fdstore.standingorders.FDStandingOrder;
 import com.freshdirect.fdstore.util.IgnoreCaseString;
 import com.freshdirect.giftcard.EnumGiftCardType;
+import com.freshdirect.routing.model.IPackagingModel;
 
 
 public interface FDUserI extends java.io.Serializable {
@@ -573,6 +575,7 @@ public interface FDUserI extends java.io.Serializable {
 	public void setCouponEvaluationRequired(boolean couponEvaluationRequired);
 	public boolean isRefreshCouponWalletRequired() ;
 	public void setRefreshCouponWalletRequired(boolean refreshCouponWalletRequired) ;
-
+	public IPackagingModel getHistoricOrderSize() throws FDResourceException;
+	public EnumRegionServiceType getRegionSvcType();
 	public boolean isPaymentechEnabled();
 }

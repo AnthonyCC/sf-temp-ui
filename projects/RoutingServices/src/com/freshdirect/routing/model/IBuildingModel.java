@@ -86,4 +86,7 @@ public interface IBuildingModel {
 	
 	Set<IBuildingOperationDetails> getOperationDetails();
 	void setOperationDetails(Set<IBuildingOperationDetails> operationDetails);
+	
+	boolean isForceBulk();
+	void setForceBulk(boolean forceBulk);
 }

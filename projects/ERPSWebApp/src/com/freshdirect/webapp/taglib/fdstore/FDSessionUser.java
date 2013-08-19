@@ -29,6 +29,7 @@ import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.customer.ErpPromotionHistory;
 import com.freshdirect.customer.OrderHistoryI;
 import com.freshdirect.delivery.EnumDeliveryStatus;
+import com.freshdirect.delivery.EnumRegionServiceType;
 import com.freshdirect.deliverypass.EnumDPAutoRenewalType;
 import com.freshdirect.deliverypass.EnumDlvPassProfileType;
 import com.freshdirect.deliverypass.EnumDlvPassStatus;
@@ -69,6 +70,7 @@ import com.freshdirect.fdstore.standingorders.FDStandingOrder;
 import com.freshdirect.fdstore.util.IgnoreCaseString;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.giftcard.EnumGiftCardType;
+import com.freshdirect.routing.model.IPackagingModel;
 import com.freshdirect.smartstore.SessionImpressionLogEntry;
 import com.freshdirect.smartstore.fdstore.SessionImpressionLog;
 import com.freshdirect.webapp.listeners.FDEventProcessor;
@@ -522,6 +524,10 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 		return this.user.getOrderHistory();
 	}
 
+	public IPackagingModel getHistoricOrderSize() throws FDResourceException {
+		return this.user.getHistoricOrderSize();
+	}
+	
     public int getAdjustedValidOrderCount() throws FDResourceException {
     	return this.user.getAdjustedValidOrderCount();
     }
@@ -1592,6 +1598,11 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 	}
 	public void setRefreshCouponWalletRequired(boolean refreshCouponWalletRequired) {
 		this.user.setRefreshCouponWalletRequired(refreshCouponWalletRequired);
+	}
+
+	@Override
+	public EnumRegionServiceType getRegionSvcType() {
+		return this.user.getRegionSvcType();
 	}	
 	
 	@Override

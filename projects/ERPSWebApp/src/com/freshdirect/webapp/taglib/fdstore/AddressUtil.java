@@ -19,6 +19,7 @@ import com.freshdirect.delivery.DlvServiceSelectionResult;
 import com.freshdirect.delivery.DlvZoneInfoModel;
 import com.freshdirect.delivery.EnumAddressVerificationResult;
 import com.freshdirect.delivery.EnumDeliveryStatus;
+import com.freshdirect.delivery.EnumRegionServiceType;
 import com.freshdirect.delivery.EnumZipCheckResponses;
 import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDInvalidAddressException;
@@ -29,6 +30,7 @@ import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionError;
 import com.freshdirect.framework.webapp.ActionResult;
+import com.freshdirect.routing.model.IPackagingModel;
 
 
 public class AddressUtil {
@@ -143,7 +145,7 @@ public class AddressUtil {
     }
 
 
-	public static DlvZoneInfoModel getZoneInfo(HttpServletRequest request, AddressModel address, ActionResult result, Date date) throws FDResourceException {
+	public static DlvZoneInfoModel getZoneInfo(HttpServletRequest request, AddressModel address, ActionResult result, Date date, IPackagingModel iPackagingModel, EnumRegionServiceType serviceType) throws FDResourceException {
 
         try {
             //
@@ -152,7 +154,7 @@ public class AddressUtil {
             //Calendar today = new GregorianCalendar();
             //today.add(Calendar.DATE, 7);
             //Date todayPlusSeven = today.getTime();
-        	DlvZoneInfoModel zoneInfo =  FDDeliveryManager.getInstance().getZoneInfo(address, date);
+        	DlvZoneInfoModel zoneInfo =  FDDeliveryManager.getInstance().getZoneInfo(address, date, iPackagingModel, serviceType);
         	LOGGER.debug("getZoneInfo[EnumZipCheckResponses] :"+EnumZipCheckResponses.DELIVER.equals(zoneInfo.getResponse()));
             result.addError((!EnumZipCheckResponses.DELIVER.equals(zoneInfo.getResponse())),
                     EnumUserInfoName.DLV_NOT_IN_ZONE.getCode(), SystemMessageList.MSG_DONT_DELIVER_TO_ADDRESS);

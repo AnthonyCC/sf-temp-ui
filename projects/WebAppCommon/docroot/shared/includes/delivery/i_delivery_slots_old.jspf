@@ -213,7 +213,7 @@ Calendar nextDayVal = Calendar.getInstance();
 nextDayVal.add(Calendar.DATE, 1);
  if(address != null) {
  	try { 
-	  	DlvZoneInfoModel tmpModel = FDDeliveryManager.getInstance().getZoneInfo(address, nextDayVal.getTime());
+	  	DlvZoneInfoModel tmpModel = FDDeliveryManager.getInstance().getZoneInfo(address, nextDayVal.getTime(), user.getHistoricOrderSize(), null);
 	  	if(tmpModel != null) {
 	  		String defZoneCode = tmpModel.getZoneCode();
 	  		if(defZoneCode != null) { %>

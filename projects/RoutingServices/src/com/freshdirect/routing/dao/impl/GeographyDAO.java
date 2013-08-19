@@ -100,7 +100,7 @@ public class GeographyDAO extends BaseDAO implements IGeographyDAO  {
 	"db.LONGITUDE LONGITUDE, db.LATITUDE LATITUDE," +
 	"db.SERVICETIME_TYPE BLD_SERVICETIME_TYPE, db.SERVICETIME_OVERRIDE BLD_SERVICETIME_OVERRIDE," +
 	"db.SERVICETIME_OPERATOR BLD_SERVICETIME_OPERATOR, db.SERVICETIME_ADJUSTMENT BLD_SERVICETIME_ADJUSTMENT," +
-	"db.GEO_CONFIDENCE GEO_CONFIDENCE, db.GEO_QUALITY GEO_QUALITY "+
+	"db.GEO_CONFIDENCE GEO_CONFIDENCE, db.GEO_QUALITY GEO_QUALITY, db.FORCE_BULK "+
 	"from dlv.DELIVERY_BUILDING db "+
 	"where db.SCRUBBED_STREET = ? ";
 
@@ -475,6 +475,7 @@ public class GeographyDAO extends BaseDAO implements IGeographyDAO  {
 					bmodel.setAdjustmentOperator(EnumArithmeticOperator.getEnum(rs.getString("BLD_SERVICETIME_OPERATOR")));
 					bmodel.setServiceTimeAdjustment(rs.getDouble("BLD_SERVICETIME_ADJUSTMENT"));
 					bmodel.setServiceTimeOverride(rs.getDouble("BLD_SERVICETIME_OVERRIDE"));
+					bmodel.setForceBulk("X".equalsIgnoreCase(rs.getString("FORCE_BULK")));
 
 				} while(rs.next());
 			}

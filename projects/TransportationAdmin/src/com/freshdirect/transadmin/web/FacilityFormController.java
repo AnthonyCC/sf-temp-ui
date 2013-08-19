@@ -77,7 +77,7 @@ public class FacilityFormController extends AbstractFormController {
 	}
 	
 	public String getDomainObjectName() {
-		return "TrnFacility";
+		return "Facility";
 	}
 	
 	protected void onBind(HttpServletRequest request, Object command) {

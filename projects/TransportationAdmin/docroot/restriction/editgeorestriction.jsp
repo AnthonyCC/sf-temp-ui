@@ -1,4 +1,4 @@
-\<%@ taglib uri='template' prefix='tmpl' %>
+<%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri="/tld/extremecomponents" prefix="ec" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
@@ -444,6 +444,20 @@ return true;
                  </td>
                  <td>
                   &nbsp;<form:errors path="viewType" />
+                </td>
+               </tr>
+               
+				<tr>
+                  <td>Applies To</td>
+                  <td>
+                  	<form:select path="applyTo">
+                        <form:option value="" label="<%= EnumRestrictionAppliesTo.SO_INSTANCE.getName() %>"/>                       
+                    	<form:option value="<%= EnumRestrictionAppliesTo.SO_TEMPLATE.getName() %>" label="<%= EnumRestrictionAppliesTo.SO_TEMPLATE.getName() %>"/>
+                    	<form:option value="<%= EnumRestrictionAppliesTo.BOTH.getName() %>" label="<%= EnumRestrictionAppliesTo.BOTH.getName() %>"/> 
+                   </form:select>
+                 </td>
+                 <td>
+                  &nbsp;<form:errors path="applyTo" />
                 </td>
                </tr>
                

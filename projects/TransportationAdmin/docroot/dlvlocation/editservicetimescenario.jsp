@@ -107,6 +107,17 @@
                </tr>  
                
                <tr>
+                  <td> Bulk Threshold </b></td>
+                  <td>                  
+                    <form:input maxlength="5" size="30" path="bulkThreshold" />
+                </td>
+                <td>
+                  &nbsp;<form:errors path="bulkThreshold" />
+                </td>
+               </tr>     
+	             
+	               
+               <tr>
                   <td>Order Size Formula <b>(Use x, y, z)</b></td>
                   <td>                  
                     <form:input maxlength="50" size="30" path="orderSizeFormula" />

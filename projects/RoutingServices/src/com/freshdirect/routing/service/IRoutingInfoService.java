@@ -66,4 +66,8 @@ public interface IRoutingInfoService {
 
 	Map<String, Map<RoutingTimeOfDay, List<IRouteModel>>> getStaticRoutesByArea(
 			Date deliveryDate) throws RoutingServiceException;
+
+	Set retrieveRoutingWaveInstIds(Date deliveryDate) throws RoutingServiceException;
+
+	IServiceTimeScenarioModel getRoutingScenarioEx(final Date deliveryDate, final Date cutoff, final Date startTime, final Date endTime) throws RoutingServiceException;
 }

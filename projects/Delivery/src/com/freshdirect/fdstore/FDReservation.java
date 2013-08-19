@@ -5,6 +5,7 @@ import java.util.Date;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 
+import com.freshdirect.delivery.EnumRegionServiceType;
 import com.freshdirect.delivery.EnumReservationType;
 import com.freshdirect.delivery.model.EnumReservationClass;
 import com.freshdirect.routing.constants.*;
@@ -33,6 +34,7 @@ public class FDReservation extends ModelSupport {
 	private String buildingId;
 	private String locationId;
 	private int reservedOrdersAtBuilding;
+	private EnumRegionServiceType regionSvcType;
 	
 	public FDReservation(
 		PrimaryKey pk,
@@ -47,7 +49,7 @@ public class FDReservation extends ModelSupport {
 		boolean isInUPS,
 		RoutingActivityType unassignedActivityType,
 		int statusCode, EnumReservationClass rsvClass,
-		String buildingId, String locationId, int reservedOrdersAtBuilding) {
+		String buildingId, String locationId, int reservedOrdersAtBuilding, EnumRegionServiceType regionSvcType) {
 		this.setPK(pk);
 		this.timeslot = timeslot;
 		this.expirationDateTime = expirationDateTime;
@@ -64,6 +66,7 @@ public class FDReservation extends ModelSupport {
 		this.buildingId = buildingId;
 		this.locationId = locationId;
 		this.reservedOrdersAtBuilding = reservedOrdersAtBuilding;
+		this.regionSvcType = regionSvcType;
 	}
 	public FDReservation(
 		PrimaryKey pk,
@@ -78,7 +81,7 @@ public class FDReservation extends ModelSupport {
 		boolean isInUPS,
 		RoutingActivityType unassignedActivityType,
 		int statusCode, EnumReservationClass rsvClass, boolean hasSteeringDiscount,
-		String buildingId, String locationId, int reservedOrdersAtBuilding) {
+		String buildingId, String locationId, int reservedOrdersAtBuilding, EnumRegionServiceType regionSvcType) {
 		this.setPK(pk);
 		this.timeslot = timeslot;
 		this.expirationDateTime = expirationDateTime;
@@ -96,7 +99,7 @@ public class FDReservation extends ModelSupport {
 		this.buildingId = buildingId;
 		this.locationId = locationId;
 		this.reservedOrdersAtBuilding = reservedOrdersAtBuilding;
-		
+		this.regionSvcType = regionSvcType;
 		
 	}
 	public EnumReservationType getType() {
@@ -204,5 +207,14 @@ public class FDReservation extends ModelSupport {
 
 	public void setReservedOrdersAtBuilding(int reservedOrdersAtBuilding) {
 		this.reservedOrdersAtBuilding = reservedOrdersAtBuilding;
+	}
+	public EnumRegionServiceType getRegionSvcType() {
+		return regionSvcType;
+	}
+	public void setRegionSvcType(EnumRegionServiceType regionSvcType) {
+		this.regionSvcType = regionSvcType;
+	}
+	public boolean isInBulkZone(){
+		return (this.regionSvcType!=null && EnumRegionServiceType.isHybrid(this.regionSvcType));
 	}
 }

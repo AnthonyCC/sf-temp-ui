@@ -51,6 +51,7 @@ public class BuildingModel extends BaseModel implements IBuildingModel  {
 	private String crossStreet;
 	
 	private Set<IBuildingOperationDetails> operationDetails;
+	private boolean forceBulk;
 	
 	public String getStreetAddress1() {
 		return streetAddress1;
@@ -252,6 +253,10 @@ public class BuildingModel extends BaseModel implements IBuildingModel  {
 	public void setOperationDetails(Set<IBuildingOperationDetails> operationDetails) {
 		this.operationDetails = operationDetails;
 	}
-		
-	
+	public boolean isForceBulk() {
+		return forceBulk;
+	}
+	public void setForceBulk(boolean forceBulk) {
+		this.forceBulk = forceBulk;
+	}
 }

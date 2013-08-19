@@ -24,6 +24,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import com.freshdirect.customer.ErpRouteMasterInfo;
 import com.freshdirect.framework.util.MD5Hasher;
 import com.freshdirect.framework.util.StringUtil;
+import com.freshdirect.framework.util.TimeOfDay;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.routing.constants.EnumArithmeticOperator;
 import com.freshdirect.routing.constants.EnumWaveInstancePublishSrc;
@@ -464,10 +465,11 @@ public class DispatchProviderController extends JsonRpcController implements IDi
 		return false;
 	}
 	
-	public int addScenarioDayMapping(String sCode, String sDay, String sDate) {
+	public int addScenarioDayMapping(String sCode, String sDay, String sDate, String cutoffS, String startTimeS, String endTimeS) {
 		int result = 0;
 		Date svcdate=null;
 		BigDecimal svcDay=null;
+		Date cutoff = null, startTime = null, endTime = null;
 		if(!"null".equalsIgnoreCase(sDay)){
 			svcDay=new BigDecimal(sDay);
 		}
@@ -480,8 +482,14 @@ public class DispatchProviderController extends JsonRpcController implements IDi
 			if(svcdate==null && svcDay==null){
 				getDispatchManagerService().deleteDefaultScenarioDay(sDate, sDay);
 			}
+			if(!TransStringUtil.isEmpty(cutoffS))
+				cutoff = TransStringUtil.getServerTime(cutoffS);
+			if(!TransStringUtil.isEmpty(startTimeS))
+				startTime = TransStringUtil.getServerTime(startTimeS);
+			if(!TransStringUtil.isEmpty(endTimeS))
+				endTime = TransStringUtil.getServerTime(endTimeS);
 			
-			DlvScenarioDay scenarioDay=new DlvScenarioDay(svcDay,svcdate,scenario);
+			DlvScenarioDay scenarioDay=new DlvScenarioDay(svcDay,svcdate,scenario, cutoff, startTime, endTime);
 			result = getDispatchManagerService().addScenarioDayMapping(
 					scenarioDay);
 		}catch(DataIntegrityViolationException ex){

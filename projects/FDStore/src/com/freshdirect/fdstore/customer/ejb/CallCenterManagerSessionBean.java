@@ -125,6 +125,7 @@ import com.freshdirect.fdstore.customer.MakeGoodOrderInfo;
 import com.freshdirect.fdstore.customer.RouteStopReportLine;
 import com.freshdirect.fdstore.customer.SubjectReportLine;
 import com.freshdirect.fdstore.customer.adapter.FDOrderAdapter;
+import com.freshdirect.framework.core.ModelI;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.core.SequenceGenerator;
 import com.freshdirect.framework.core.ServiceLocator;
@@ -962,14 +963,16 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 
 	public void resubmitOrder(String saleId, CustomerRatingI cra,EnumSaleType saleType) throws FDResourceException, ErpTransactionException {
         try {
-              ErpCustomerManagerSB customerManagerSB = (ErpCustomerManagerSB) this.getErpCustomerManagerHome().create();
-              ErpSaleModel _order=customerManagerSB.getOrder(new PrimaryKey(saleId));
+            ErpCustomerManagerSB customerManagerSB = (ErpCustomerManagerSB) this.getErpCustomerManagerHome().create();
+            ErpSaleModel _order=customerManagerSB.getOrder(new PrimaryKey(saleId));
+            ErpAbstractOrderModel order =_order.getCurrentOrder();
+            ErpDeliveryInfoModel dlvInfo=order.getDeliveryInfo();
               
-              ErpAbstractOrderModel order =_order.getCurrentOrder();
-             
-              ErpDeliveryInfoModel dlvInfo=order.getDeliveryInfo();
-              DlvZoneInfoModel zInfo = FDDeliveryManager.getInstance().getZoneInfo(dlvInfo.getDeliveryAddress(),dlvInfo.getDeliveryStartTime());
-              customerManagerSB.resubmitOrder(saleId, cra,saleType,zInfo.getRegionId());
+            DlvManagerSB sb = this.getDlvManagerHome().create();
+  			DlvReservationModel _reservation=sb.getReservation(dlvInfo.getDeliveryReservationId());
+  			
+            DlvZoneInfoModel zInfo = FDDeliveryManager.getInstance().getZoneInfo(dlvInfo.getDeliveryAddress(),dlvInfo.getDeliveryStartTime(), null, _reservation.getRegionSvcType());
+            customerManagerSB.resubmitOrder(saleId, cra,saleType,zInfo.getRegionId());
               
               if(!EnumSaleType.REGULAR.equals(saleType) && EnumSaleStatus.NEW.equals(_order.getStatus())) {
             	  FDCustomerManager.authorizeSale(saleId);
@@ -981,7 +984,9 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
               throw new FDResourceException(re);
         } catch (FDInvalidAddressException e) {
               throw new FDResourceException(e);
-        }
+        } catch (FinderException fe) {
+        	throw new FDResourceException(fe);
+		}
   }
   
 	
@@ -1749,6 +1754,13 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
             throw new EJBException(e);
         }
     }
+    public DlvManagerHome getDlvManagerHome() {
+		try {
+			return (DlvManagerHome) LOCATOR.getRemoteHome(FDStoreProperties.getDeliveryManagerHome());
+		} catch (NamingException ne) {
+			throw new EJBException(ne);
+		}
+	}
 
 	private ErpActivityRecord createActivity(EnumAccountActivityType type,
 			String initiator,

@@ -153,7 +153,7 @@ public class ZipPlus4AddressTag extends AbstractControllerTag implements Session
 				
 				Calendar date = new GregorianCalendar();
 				date.add(Calendar.DATE, 7);
-				DlvZoneInfoModel zoneInfo=FDDeliveryManager.getInstance().getZoneInfo(dlvAddress, date.getTime());
+				List<DlvZoneInfoModel> zoneInfo=FDDeliveryManager.getInstance().getAllZoneInfo(dlvAddress, date.getTime());
 				pageContext.setAttribute("zoneInfo", zoneInfo);
 				
 				String county = FDDeliveryManager.getInstance().getCounty(dlvAddress.getCity(), dlvAddress.getState());

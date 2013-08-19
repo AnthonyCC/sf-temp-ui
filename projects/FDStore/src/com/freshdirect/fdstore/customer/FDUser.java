@@ -50,6 +50,7 @@ import com.freshdirect.customer.ErpPromotionHistory;
 import com.freshdirect.customer.OrderHistoryI;
 import com.freshdirect.delivery.DlvServiceSelectionResult;
 import com.freshdirect.delivery.EnumDeliveryStatus;
+import com.freshdirect.delivery.EnumRegionServiceType;
 import com.freshdirect.deliverypass.DeliveryPassModel;
 import com.freshdirect.deliverypass.DlvPassConstants;
 import com.freshdirect.deliverypass.EnumDPAutoRenewalType;
@@ -65,6 +66,7 @@ import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDRuntimeException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.fdstore.RoutingUtil;
 import com.freshdirect.fdstore.ZonePriceListing;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.EnumWinePrice;
@@ -116,6 +118,10 @@ import com.freshdirect.framework.util.NVL;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.giftcard.EnumGiftCardType;
 import com.freshdirect.giftcard.ErpGCDlvInformationHolder;
+import com.freshdirect.routing.model.IOrderModel;
+import com.freshdirect.routing.model.IPackagingModel;
+import com.freshdirect.routing.model.IServiceTimeScenarioModel;
+import com.freshdirect.routing.model.OrderModel;
 import com.freshdirect.smartstore.fdstore.CohortSelector;
 import com.freshdirect.smartstore.fdstore.DatabaseScoreFactorProvider;
 
@@ -161,6 +167,7 @@ public class FDUser extends ModelSupport implements FDUserI {
 
     private transient ErpCustomerInfoModel customerInfoModel;
     private transient OrderHistoryI cachedOrderHistory;
+    private transient IPackagingModel historicOrderSize;
     private transient FDCustomerModel cachedFDCustomer;
 	protected transient FDPromotionEligibility promotionEligibility;
 	private transient Boolean checkEligible;
@@ -580,6 +587,15 @@ public class FDUser extends ModelSupport implements FDUserI {
 	   return FDCustomerManager.getOrderHistoryInfo(this.identity);
     }
 
+   public IPackagingModel getHistoricOrderSize() throws FDResourceException {
+       if (this.historicOrderSize==null && this.identity!=null) {
+    	   IOrderModel order = new OrderModel();
+    	   order.setCustomerNumber(this.identity.getErpCustomerPK());
+    	   this.historicOrderSize = RoutingUtil.getHistoricOrderSize(order);
+       }
+       return this.historicOrderSize;
+   }
+   
    public int getOrderCountForChefsTableEligibility() throws FDResourceException {
 	   OrderHistoryI orderHistory=getOrderHistory();
 	   return (int)orderHistory.getOrderCountForChefsTableEligibility();
@@ -2664,7 +2680,17 @@ public class FDUser extends ModelSupport implements FDUserI {
 	public void setRobot(boolean robot){
 		this.robot = robot;
 	}
-	
+
+	public EnumRegionServiceType getRegionSvcType(){
+	    	if(this.getShoppingCart()!=null && this.getShoppingCart() instanceof FDModifyCartModel){
+	    		return this.getShoppingCart().getDeliveryReservation().getRegionSvcType();
+	    	}else if(this.getReservation()!=null){
+	    		return this.getReservation().getRegionSvcType();
+	    	}else{
+	    		return null;
+	    	}
+	}
+		
 	public boolean isPaymentechEnabled() {
 		return SiteFeatureHelper.isEnabled(EnumSiteFeature.PAYMENTECH_GATEWAY, this);
 	}

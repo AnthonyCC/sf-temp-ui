@@ -23,6 +23,7 @@ import com.freshdirect.customer.EnumDeliverySetting;
 import com.freshdirect.customer.EnumUnattendedDeliveryFlag;
 import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.delivery.DepotLocationModel;
+import com.freshdirect.delivery.EnumRegionServiceType;
 import com.freshdirect.delivery.EnumReservationType;
 import com.freshdirect.delivery.EnumTimeslotStatus;
 import com.freshdirect.delivery.model.DlvTimeslotModel;
@@ -899,9 +900,9 @@ public class DeliveryDetailsDAO extends BaseDAO implements IDeliveryDetailsDAO {
 	" A.ID as ADDRESS, A.FIRST_NAME,A.LAST_NAME,A.ADDRESS1,A.ADDRESS2,A.APARTMENT,A.CITY,A.STATE,A.ZIP,A.COUNTRY, "+
 	" A.PHONE,A.PHONE_EXT,A.DELIVERY_INSTRUCTIONS,A.SCRUBBED_ADDRESS,A.ALT_DEST,A.ALT_FIRST_NAME, "+
 	" A.ALT_LAST_NAME,A.ALT_APARTMENT,A.ALT_PHONE,A.ALT_PHONE_EXT,A.LONGITUDE,A.LATITUDE,A.SERVICE_TYPE, "+
-	" A.COMPANY_NAME,A.ALT_CONTACT_PHONE,A.ALT_CONTACT_EXT,A.UNATTENDED_FLAG,A.UNATTENDED_INSTR,A.CUSTOMER_ID "+
-	" FROM DLV.RESERVATION R, DLV.TIMESLOT T, DLV.ZONE Z,CUST.ADDRESS A "+
-	" WHERE R.ADDRESS_ID=A.ID(+) AND R.TIMESLOT_ID=T.ID AND R.ZONE_ID=Z.ID AND t.BASE_DATE=TRUNC(?) " +
+	" A.COMPANY_NAME,A.ALT_CONTACT_PHONE,A.ALT_CONTACT_EXT,A.UNATTENDED_FLAG,A.UNATTENDED_INSTR,A.CUSTOMER_ID, RG.SERVICE_TYPE REGION_SVC_TYPE  "+
+	" FROM DLV.RESERVATION R, DLV.TIMESLOT T, DLV.ZONE Z,CUST.ADDRESS A, DLV.REGION_DATA RD, DLV.REGION RG  "+
+	" WHERE R.ADDRESS_ID=A.ID(+) AND R.TIMESLOT_ID=T.ID AND R.ZONE_ID=Z.ID AND Z.REGION_DATA_ID = RD.ID AND RD.REGION_ID = RG.ID AND t.BASE_DATE=TRUNC(?) " +
 	" AND (unassigned_action IS NOT NULL OR (UPDATE_STATUS IS NOT NULL AND UPDATE_STATUS <> 'SUS')) " +
 	" AND ((t.premium_cutoff_time is null and to_char(t.cutoff_time, 'HH:MI AM') = to_char(?, 'HH:MI AM')) or " +
 	"(t.premium_cutoff_time is not null and to_char(t.premium_cutoff_time, 'HH:MI AM') = to_char(?, 'HH:MI AM'))) ";
@@ -950,7 +951,7 @@ public class DeliveryDetailsDAO extends BaseDAO implements IDeliveryDetailsDAO {
 							, EnumReservationClass.getEnum(rs.getString("CLASS"))
 							, EnumRoutingUpdateStatus.getEnum(rs.getString("UPDATE_STATUS"))
 							, EnumOrderMetricsSource.getEnum(rs.getString("METRICS_SOURCE"))
-							, rs.getString("BUILDINGID"),rs.getString("LOCATIONID"),rs.getInt("PREV_BLDG_RSV_CNT"));
+							, rs.getString("BUILDINGID"),rs.getString("LOCATIONID"),rs.getInt("PREV_BLDG_RSV_CNT"), EnumRegionServiceType.getEnum(rs.getString("REGION_SVC_TYPE")));
 							
 					reservations.add(reservation);
 				}while(rs.next());
@@ -968,9 +969,9 @@ public class DeliveryDetailsDAO extends BaseDAO implements IDeliveryDetailsDAO {
 	" A.ID as ADDRESS, A.FIRST_NAME,A.LAST_NAME,A.ADDRESS1,A.ADDRESS2,A.APARTMENT,A.CITY,A.STATE,A.ZIP,A.COUNTRY, "+
 	" A.PHONE,A.PHONE_EXT,A.DELIVERY_INSTRUCTIONS,A.SCRUBBED_ADDRESS,A.ALT_DEST,A.ALT_FIRST_NAME, "+
 	" A.ALT_LAST_NAME,A.ALT_APARTMENT,A.ALT_PHONE,A.ALT_PHONE_EXT,A.LONGITUDE,A.LATITUDE,A.SERVICE_TYPE, "+
-	" A.COMPANY_NAME,A.ALT_CONTACT_PHONE,A.ALT_CONTACT_EXT,A.UNATTENDED_FLAG,A.UNATTENDED_INSTR,A.CUSTOMER_ID "+
-	" FROM DLV.RESERVATION R, DLV.TIMESLOT T, DLV.ZONE Z,CUST.ADDRESS A "+
-	" WHERE R.ADDRESS_ID=A.ID(+) AND R.TIMESLOT_ID=T.ID AND R.ZONE_ID=Z.ID AND t.BASE_DATE=TRUNC(?) " +
+	" A.COMPANY_NAME,A.ALT_CONTACT_PHONE,A.ALT_CONTACT_EXT,A.UNATTENDED_FLAG,A.UNATTENDED_INSTR,A.CUSTOMER_ID, RG.SERVICE_TYPE REGION_SVC_TYPE  "+
+	" FROM DLV.RESERVATION R, DLV.TIMESLOT T, DLV.ZONE Z,CUST.ADDRESS A, DLV.REGION_DATA RD, DLV.REGION RG   "+
+	" WHERE R.ADDRESS_ID=A.ID(+) AND R.TIMESLOT_ID=T.ID AND R.ZONE_ID=Z.ID AND Z.REGION_DATA_ID = RD.ID AND RD.REGION_ID = RG.ID AND t.BASE_DATE=TRUNC(?) " +
 	" AND (r.unassigned_action IS NOT NULL) AND r.status_code = '10'" +
 	" AND ((t.premium_cutoff_time is null and to_char(t.cutoff_time, 'HH:MI AM') = to_char(?, 'HH:MI AM')) or " +
 	"(t.premium_cutoff_time is not null and to_char(t.premium_cutoff_time, 'HH:MI AM') = to_char(?, 'HH:MI AM'))) ";
@@ -1019,7 +1020,7 @@ public class DeliveryDetailsDAO extends BaseDAO implements IDeliveryDetailsDAO {
 							, EnumReservationClass.getEnum(rs.getString("CLASS"))
 							, EnumRoutingUpdateStatus.getEnum(rs.getString("UPDATE_STATUS"))
 							, EnumOrderMetricsSource.getEnum(rs.getString("METRICS_SOURCE"))
-							, rs.getString("BUILDINGID"),rs.getString("LOCATIONID"),rs.getInt("PREV_BLDG_RSV_CNT"));
+							, rs.getString("BUILDINGID"),rs.getString("LOCATIONID"),rs.getInt("PREV_BLDG_RSV_CNT"), EnumRegionServiceType.getEnum(rs.getString("REGION_SVC_TYPE")));
 							
 					reservations.add(reservation);
 				}while(rs.next());

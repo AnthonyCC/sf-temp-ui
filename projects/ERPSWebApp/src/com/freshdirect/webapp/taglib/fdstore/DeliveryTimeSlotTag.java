@@ -29,7 +29,9 @@ import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpDepotAddressModel;
 import com.freshdirect.delivery.DlvServiceSelectionResult;
+import com.freshdirect.delivery.DlvZoneInfoModel;
 import com.freshdirect.delivery.EnumDeliveryStatus;
+import com.freshdirect.delivery.EnumRegionServiceType;
 import com.freshdirect.delivery.EnumReservationType;
 import com.freshdirect.delivery.model.SectorVO;
 import com.freshdirect.delivery.restriction.AlcoholRestriction;
@@ -40,6 +42,7 @@ import com.freshdirect.delivery.restriction.GeographyRestriction;
 import com.freshdirect.delivery.restriction.OneTimeRestriction;
 import com.freshdirect.delivery.restriction.OneTimeReverseRestriction;
 import com.freshdirect.delivery.restriction.RestrictionI;
+import com.freshdirect.delivery.restriction.TimeslotRestriction;
 import com.freshdirect.fdstore.EnumCheckoutMode;
 import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDDynamicTimeslotList;
@@ -273,7 +276,7 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag<Result> {
 
 		/*setDiscounts & apply Geo-restrictions to timeslots*/
 		DlvTimeslotStats stats = TimeslotLogic.filterDeliveryTimeSlots(user, geoRestrictionRange,
-				restrictions, timeslotList, retainTimeslotIds,
+				restrictions, Collections.EMPTY_LIST, timeslotList, retainTimeslotIds,
 				geographicRestrictions, deliveryModel, alcoholRestrictions,
 				forceOrder, address,
 				false);
@@ -351,9 +354,16 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag<Result> {
 
 		
 		DateRange range = createDateRange(1,8);
-		// DateRange geoRestrictionRange = createDateRange(7);
+		DateRange geoRestrictionRange = createDateRange(0, 7);
 
 
+		//get GeographicRestrictions
+		List<GeographyRestriction> geographicRestrictions = getGeographicRestrictions();
+		
+		// collect all restrictions
+		List<TimeslotRestriction> tsRestrictions = FDDeliveryManager.getInstance().getTimeslotRestrictions();
+				
+				
 		// collect all restrictions
 		DlvRestrictionsList restrictions = FDDeliveryManager.getInstance().getDlvRestrictions();
 		// narrow down restrictions
@@ -373,9 +383,16 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag<Result> {
 			c1 = Calendar.getInstance();
 			c1.setTime(range.getEndDate());
 		
+			DlvZoneInfoModel zoneInfo = null;
+			try{
+			zoneInfo = FDDeliveryManager.getInstance().getZoneInfo(tsAddress, range.getStartDate(), 
+					user.getHistoricOrderSize(), null);
+			}catch(FDInvalidAddressException ie){
+				throw new FDResourceException(ie);
+			}
 			// Fetch time slots
 			FDDynamicTimeslotList tsList = FDDeliveryManager.getInstance().getTimeslotsForDateRangeAndZone(
-					range.getStartDate(), range.getEndDate(), null, tsAddress);
+					range.getStartDate(), range.getEndDate(), null, tsAddress, zoneInfo.getRegionSvcType());
 
 			tsu = new FDTimeslotUtil(tsList.getTimeslots(), c0, c1, restrictions, tsList.getResponseTime(),range.isAdvanced());
 			singleTSset.add( tsu );
@@ -392,9 +409,8 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag<Result> {
 			LOGGER.debug("Alcohol restrictions" + alcoholRestrictions);
 		}
 		
-		
-		DlvTimeslotStats stats = TimeslotLogic.filterDeliveryTimeSlots(user, range, restrictions, singleTSset,
-				Collections.<String>emptySet(), Collections.<GeographyRestriction>emptyList(), deliveryModel, alcoholRestrictions,
+		DlvTimeslotStats stats = TimeslotLogic.filterDeliveryTimeSlots(user, geoRestrictionRange, restrictions, tsRestrictions, singleTSset,
+				Collections.<String>emptySet(), geographicRestrictions, deliveryModel, alcoholRestrictions,
 				false, address,
 				true);
 		// Post-op: remove unnecessary timeslots
@@ -420,7 +436,7 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag<Result> {
 		deliveryModel.setPreReserveSlotId( null );
 		
 		// cheat the capacity
-		deliveryModel.setHasCapacity( true );
+		//deliveryModel.setHasCapacity( true );
 		
 		result.setDeliveryTimeslotModel(deliveryModel);
 		return result;
@@ -577,10 +593,17 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag<Result> {
 			DateRange range = i.next();
 			
 			event.setFilter(true);
+			DlvZoneInfoModel zoneInfo = null;
+			try{
+			zoneInfo = FDDeliveryManager.getInstance().getZoneInfo(timeslotAddress, range.getStartDate(), 
+					user.getHistoricOrderSize(), user.getRegionSvcType());
+			}catch(FDInvalidAddressException ie){
+				throw new FDResourceException(ie);
+			}
 			FDDynamicTimeslotList dynamicTimeslots = this.getTimeslots(
 					timeslotAddress,
 				range.getStartDate(),
-				range.getEndDate(), event);
+				range.getEndDate(), event, zoneInfo.getRegionSvcType());
 			
 			if(dynamicTimeslots == null || dynamicTimeslots.getError() != null) {
 				result.addError(new ActionError("deliveryTime", "We are sorry. Our system is temporarily experiencing a problem " +
@@ -605,16 +628,22 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag<Result> {
 
 	private List<GeographyRestriction> getGeographicRestrictions() throws FDResourceException {
 		List<GeographyRestriction> geographicRestrictions = new ArrayList<GeographyRestriction>();
-		if(null != timeSlotContext){
-			if(timeSlotContext.equals(TimeslotContext.RESERVE_TIMESLOTS) || timeSlotContext.equals(TimeslotContext.RESERVE_TIMESLOTS_CRM)){
-				geographicRestrictions = FDDeliveryManager.getInstance().getGeographicDlvRestrictionsForReservation(address);
-			}else if(!timeSlotContext.equals(TimeslotContext.CHECKOUT_TIMESLOTS)){
-				geographicRestrictions = FDDeliveryManager.getInstance().getGeographicDlvRestrictionsForAvailable(address);
+		
+		if(generic){
+			geographicRestrictions = FDDeliveryManager.getInstance().getGeographicDlvRestrictionsForTemplate(address);
+		}else{
+			
+			if(null != timeSlotContext){
+				if(timeSlotContext.equals(TimeslotContext.RESERVE_TIMESLOTS) || timeSlotContext.equals(TimeslotContext.RESERVE_TIMESLOTS_CRM)){
+					geographicRestrictions = FDDeliveryManager.getInstance().getGeographicDlvRestrictionsForReservation(address);
+				}else if(!timeSlotContext.equals(TimeslotContext.CHECKOUT_TIMESLOTS)){
+					geographicRestrictions = FDDeliveryManager.getInstance().getGeographicDlvRestrictionsForAvailable(address);
+				}else{
+					geographicRestrictions = FDDeliveryManager.getInstance().getGeographicDlvRestrictions(address);
+				}
 			}else{
 				geographicRestrictions = FDDeliveryManager.getInstance().getGeographicDlvRestrictions(address);
 			}
-		}else{
-			geographicRestrictions = FDDeliveryManager.getInstance().getGeographicDlvRestrictions(address);
 		}
 		
 		if(address != null) {
@@ -651,7 +680,7 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag<Result> {
 	
 
 
-	private FDDynamicTimeslotList getTimeslots(ErpAddressModel address, Date startDate, Date endDate, TimeslotEventModel event) throws FDResourceException {
+	private FDDynamicTimeslotList getTimeslots(ErpAddressModel address, Date startDate, Date endDate, TimeslotEventModel event, EnumRegionServiceType serviceType) throws FDResourceException {
 
 		event.setEventType(EventType.GET_TIMESLOT);
 		if (address instanceof ErpDepotAddressModel) {
@@ -662,7 +691,7 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag<Result> {
 				depotAddress.getRegionId(),
 				depotAddress.getZoneCode(), event, address);
 		} else {
-			return FDDeliveryManager.getInstance().getTimeslotsForDateRangeAndZone(startDate, endDate,event, address);
+			return FDDeliveryManager.getInstance().getTimeslotsForDateRangeAndZone(startDate, endDate,event, address, serviceType);
 		}
 	}
 

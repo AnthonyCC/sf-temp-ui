@@ -168,8 +168,11 @@ public class OrderConsumer implements IConsumer {
 
 			//System.out.println("-------> find timeslots from " + begCal.getTime() + " to " + endCal.getTime());
 
+			DlvZoneInfoModel zInfo = FDDeliveryManager.getInstance().getZoneInfo(address, new java.util.Date(), null, null);
+			System.out.println("zone id is : " + zInfo.getZoneId());
+			
 			List timeSlots =
-				FDDeliveryManager.getInstance().getTimeslotsForDateRangeAndZone(begCal.getTime(), endCal.getTime(), null, address).getTimeslots();
+				FDDeliveryManager.getInstance().getTimeslotsForDateRangeAndZone(begCal.getTime(), endCal.getTime(), null, address, zInfo.getRegionSvcType()).getTimeslots();
 
 			FDTimeslot slot = null;
 
@@ -190,8 +193,7 @@ public class OrderConsumer implements IConsumer {
 				return null;
 			}
 
-			DlvZoneInfoModel zInfo = FDDeliveryManager.getInstance().getZoneInfo(address, new java.util.Date());
-			System.out.println("zone id is : " + zInfo.getZoneId());
+			
 
 			TimeslotEventModel event = new TimeslotEventModel(EnumTransactionSource.SYSTEM.getCode(), 
 					false, 0.00, false, Util.isZoneCtActive(zInfo.getZoneId()), null);

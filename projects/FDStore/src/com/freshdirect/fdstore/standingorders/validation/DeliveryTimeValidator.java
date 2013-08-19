@@ -6,10 +6,13 @@ import java.util.List;
 
 import com.freshdirect.analytics.TimeslotEventModel;
 import com.freshdirect.customer.ErpAddressModel;
+import com.freshdirect.delivery.DlvZoneInfoModel;
 import com.freshdirect.delivery.EnumReservationType;
+import com.freshdirect.delivery.InvalidAddressException;
 import com.freshdirect.delivery.ReservationException;
 import com.freshdirect.delivery.ReservationUnavailableException;
 import com.freshdirect.fdstore.FDDeliveryManager;
+import com.freshdirect.fdstore.FDInvalidAddressException;
 import com.freshdirect.fdstore.FDReservation;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDTimeslot;
@@ -30,10 +33,19 @@ public class DeliveryTimeValidator {
 		Date endTime = standingOrder.getEndTime();
 
 		boolean chefsTable = user.isChefsTable();
+		
+		DlvZoneInfoModel zoneInfo;
+		try {
+			
+		
+		zoneInfo = FDDeliveryManager.getInstance().getZoneInfo(deliveryAddress, DateUtil.truncate(nextDate), 
+			user.getHistoricOrderSize(), null);
+				
 		/** passing null context object as this class is not called from anywhere */
+		
 		TimeslotEventModel event = null;
 		List<FDTimeslot> deliverySlots = FDDeliveryManager.getInstance().getTimeslotsForDateRangeAndZone(
-				DateUtil.truncate(nextDate), DateUtil.addDays(DateUtil.truncate(nextDate), 1), event, deliveryAddress).getTimeslots();
+				DateUtil.truncate(nextDate), DateUtil.addDays(DateUtil.truncate(nextDate), 1), event, deliveryAddress, zoneInfo.getRegionSvcType()).getTimeslots();
 
 		FDTimeslot deliverySlot = null;
 		for (FDTimeslot candidateSlot : deliverySlots) {
@@ -56,16 +68,17 @@ public class DeliveryTimeValidator {
 			chefsTable = true;
 		}
 
-		try {
-			// reserve the new slot
-			String custId = user.getIdentity().getErpCustomerPK();
-			FDReservation reservation = FDDeliveryManager.getInstance().reserveTimeslot(deliverySlot, custId,
+		// reserve the new slot
+		String custId = user.getIdentity().getErpCustomerPK();
+		FDReservation reservation = FDDeliveryManager.getInstance().reserveTimeslot(deliverySlot, custId,
 					RESERVATION_MILLISECONDS, EnumReservationType.STANDARD_RESERVATION, deliveryAddress, chefsTable,
 					ctDeliveryProfile, false, event, false);
 
 			return reservation;
 
-		} catch (ReservationUnavailableException re) {
+		} catch (FDInvalidAddressException ie) {
+			result.addError(true, Validations.DELIVERY_TIME, "address is invalid");
+		}catch (ReservationUnavailableException re) {
 			result.addError(true, Validations.DELIVERY_TIME, "chosen delivery slot full");
 		} catch (ReservationException re) {
 			result.addError(true, Validations.DELIVERY_TIME, "error reserving delivery slot");
