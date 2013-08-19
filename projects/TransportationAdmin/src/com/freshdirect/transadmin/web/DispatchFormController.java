@@ -366,14 +366,14 @@ public class DispatchFormController extends AbstractFormController {
 		TrnFacility deliveryFacility = locationManagerService.getTrnFacility(request.getParameter("destinationFacility"));
 		if(deliveryFacility != null && 
 				EnumTransportationFacilitySrc.CROSSDOCK.getName().equalsIgnoreCase(deliveryFacility.getTrnFacilityType().getName())){
-			model.setZoneCode(null);
+			model.setZoneCode("");
 			model.setZoneName("");
 		}
 		model.setDestinationFacility(deliveryFacility);
 
 		if(!TransStringUtil.isEmpty(model.getIsBullpen()) 
 				&& model.getIsBullpen().equals("true")){
-			model.setZoneCode(null);
+			model.setZoneCode("");
 			model.setZoneName("");
 			model.setZoneType("");
 			model.setDestinationFacility(null);

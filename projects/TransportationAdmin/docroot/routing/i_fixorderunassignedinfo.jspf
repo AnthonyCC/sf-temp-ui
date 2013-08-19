@@ -52,7 +52,7 @@
               alert('Unable to connect to host system. Please contact system administrator!');               
               return;
           }
-          if(result == 0) {
+          if(result > 0) {
           		addSysMessage("Order fixed successfully. Please do Route-in again.", false);
           } else {
           		addSysMessage("Update failed for the order", true);          	
