@@ -9,6 +9,7 @@ import com.freshdirect.affiliate.ErpAffiliate;
 import com.freshdirect.common.pricing.Discount;
 import com.freshdirect.common.pricing.EnumTaxationType;
 import com.freshdirect.common.pricing.PricingContext;
+import com.freshdirect.customer.EnumATCContext;
 import com.freshdirect.customer.ErpClientCode;
 import com.freshdirect.customer.ErpCouponDiscountLineModel;
 import com.freshdirect.customer.ErpInvoiceLineI;
@@ -719,6 +720,18 @@ public class SimpleCartLine implements FDCartLineI {
 			String coremetricsPageContentHierarchy) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public void setAddedFrom(EnumATCContext atcContext) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public EnumATCContext getAddedFrom() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }
