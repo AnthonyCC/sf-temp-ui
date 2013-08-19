@@ -351,7 +351,7 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns
         <jndi-name>queueFactory</jndi-name>
       </resource-description>
       <resource-env-description>
-        <res-env-ref-name>jms/Queue</res-env-ref-name>
+        <resource-env-ref-name>jms/Queue</resource-env-ref-name>
         <jndi-name>./logMetricQueue</jndi-name>
       </resource-env-description>
       <enable-call-by-reference>true</enable-call-by-reference>
