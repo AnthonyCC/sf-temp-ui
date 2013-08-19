@@ -5,9 +5,10 @@ import javax.naming.NamingException;
 
 import org.apache.log4j.Category;
 
+import weblogic.wsee.util.StringUtil;
+
 import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.affiliate.ErpAffiliate;
-import com.freshdirect.common.customer.EnumCardType;
 import com.freshdirect.customer.EnumPaymentResponse;
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.customer.ErpAuthorizationModel;
@@ -22,10 +23,13 @@ import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.core.ServiceLocator;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.giftcard.ErpGiftCardModel;
-import com.freshdirect.payment.ejb.CPMServerGateway;
+import com.freshdirect.payment.ejb.PaymentGatewayContext;
 import com.freshdirect.payment.ejb.PaymentHome;
 import com.freshdirect.payment.ejb.PaymentSB;
 import com.freshdirect.payment.fraud.ejb.RestrictedPaymentMethodSessionBean;
+import com.freshdirect.payment.gateway.Gateway;
+import com.freshdirect.payment.gateway.GatewayType;
+import com.freshdirect.payment.gateway.impl.GatewayFactory;
 public class PaymentManager {
 
 	private static Category LOGGER = LoggerFactory.getInstance(PaymentManager.class);
@@ -38,24 +42,13 @@ public class PaymentManager {
 		} catch (NamingException e) {
 			LOGGER.error("PaymentManager.serviceLocator initialization exception: " + e.getMessage());
 		}
-	}
-
+	}	
 	public ErpAuthorizationModel verify(ErpPaymentMethodI paymentMethod) throws ErpTransactionException {
+		PaymentGatewayContext context = new PaymentGatewayContext(GatewayType.PAYMENTECH, GatewayType.PAYMENTECH);
 		
-		try {
-			
-			if (EnumPaymentMethodType.ECHECK.equals(paymentMethod.getPaymentMethodType())) {
-				throw new ErpTransactionException(ECHECK_VERIFY_UNAVAIL_MSG);
-			} else { // default to credit card 
-				PaylinxResponseModel paylinxResponse = null;
-				
-				paylinxResponse = CPMServerGateway.verifyCreditCard(paymentMethod);
-				return paylinxResponse.getAuthorizationModel();
-			}
-		} catch (PaylinxResourceException pe) {
-			LOGGER.debug(pe);
-			throw new ErpTransactionException(pe);
-		}
+		Gateway gateway = GatewayFactory.getGateway(context);
+		ErpAuthorizationModel auth = gateway.verify(paymentMethod);
+		return auth;
 	}
 	
 	
@@ -65,67 +58,34 @@ public class PaymentManager {
 		double authorizationAmount,
 		double tax,
 		String merchantId) throws ErpTransactionException {
-		try {
-			if (EnumPaymentMethodType.ECHECK.equals(paymentMethod.getPaymentMethodType())) {
-				return authorizeECheck(paymentMethod, authorizationAmount, tax, merchantId);
-			} else { // default ot credit card 
-				PaylinxResponseModel paylinxResponse = null;
-				if ((EnumCardType.DISC.equals(paymentMethod.getCardType()) || EnumCardType.AMEX.equals(paymentMethod.getCardType()))
-					&& authorizationAmount < 1.0) {
-					authorizationAmount = 1.0;
-				}
-				paylinxResponse = CPMServerGateway.authorizeCreditCard(paymentMethod, authorizationAmount, tax, orderNumber, merchantId);
-				return paylinxResponse.getAuthorizationModel();
-			}
-		} catch (PaylinxResourceException pe) {
-			LOGGER.debug(pe);
-			throw new ErpTransactionException(pe);
+		
+		if(EnumPaymentMethodType.ECHECK.equals(paymentMethod.getPaymentMethodType())) {
+			return authorizeECheck(paymentMethod,authorizationAmount,tax,merchantId,orderNumber);
 		}
-
-	}
-
-	private ErpAuthorizationModel authorizeECheck(
-		ErpPaymentMethodI paymentMethod,
-		double authorizationAmount,
-		double tax,
-		String merchantId) {
-
-		ErpAuthorizationModel auth = new ErpAuthorizationModel();
-		auth.setPaymentMethodType(paymentMethod.getPaymentMethodType());
-		if (merchantId != null && merchantId.length() > 0) {
-			auth.setMerchantId(merchantId);
-		} else {
-			auth.setMerchantId(ErpServicesProperties.getCybersourceName());
-		}
-		auth.setTransactionSource(EnumTransactionSource.SYSTEM);
-		auth.setAvs("Y");
-		auth.setAmount(authorizationAmount);
-		auth.setTax(tax);
-		String accountNumber = paymentMethod.getAccountNumber();
-		auth.setCcNumLast4(accountNumber.substring(accountNumber.length() - 4));
-		auth.setAbaRouteNumber(paymentMethod.getAbaRouteNumber());
-		auth.setBankAccountType(paymentMethod.getBankAccountType());
-		auth.setCardType(paymentMethod.getCardType());
-
-		RestrictedPaymentMethodSessionBean sb = new RestrictedPaymentMethodSessionBean();
-		boolean isAuthorized = (sb.checkBadAccount(paymentMethod, false)) ? false : true;
-
-		if (isAuthorized) {
-			auth.setReturnCode(0);
-			auth.setAuthCode("FD1000");
-			auth.setResponseCode(EnumPaymentResponse.APPROVED);
-			auth.setDescription("FD APPROVAL");
-			auth.setSequenceNumber("FD AUTH");
-		} else {
-			auth.setReturnCode(-1);
-			auth.setAuthCode("NA");
-			auth.setResponseCode(EnumPaymentResponse.DECLINED);
-			auth.setDescription("RESTRICTED PAYMENT METHOD");
-			auth.setSequenceNumber("FD AUTH");
-		}
+		PaymentGatewayContext context = new PaymentGatewayContext(StringUtil.isEmpty(paymentMethod.getProfileID())?GatewayType.CYBERSOURCE:GatewayType.PAYMENTECH, null);
+		Gateway gateway = GatewayFactory.getGateway(context);
+		ErpAuthorizationModel auth = gateway.authorize(
+				 paymentMethod,
+				 orderNumber,
+				 authorizationAmount,
+				 tax,
+				 merchantId);
+		
 		return auth;
 	}
 
+
+	public ErpCashbackModel returnCashback(String orderNumber, ErpPaymentMethodI paymentMethod, double amount, double tax, ErpAffiliate affiliate)
+		throws ErpTransactionException {
+		
+		
+		PaymentGatewayContext context = new PaymentGatewayContext(StringUtil.isEmpty(paymentMethod.getProfileID())?GatewayType.CYBERSOURCE:GatewayType.PAYMENTECH, null);
+		Gateway gateway = GatewayFactory.getGateway(context);
+		ErpCashbackModel cashback = gateway.issueCashback(orderNumber, paymentMethod, amount, tax, affiliate);
+		return cashback;
+	}
+	
+	
 	public void captureAuthorization(String saleId) throws ErpTransactionException {
 		if (paymentHome == null) {
 			getPaymentHome();
@@ -174,19 +134,6 @@ public class PaymentManager {
 		}
 	}
 
-
-	public ErpCashbackModel returnCashback(String orderNumber, ErpPaymentMethodI paymentMethod, double amount, double tax, ErpAffiliate affiliate)
-		throws ErpTransactionException {
-		ErpCashbackModel cashback = null;
-		if (EnumPaymentMethodType.ECHECK.equals(paymentMethod.getPaymentMethodType())) {
-			cashback = CPMServerGateway.returnECCashback(orderNumber, paymentMethod, amount, 0.0, affiliate.getMerchant(paymentMethod.getCardType()));
-		} else { // default to credit card
-			cashback = CPMServerGateway.returnCCCashback(orderNumber, paymentMethod, amount, 0.0, affiliate.getMerchant(paymentMethod.getCardType()));
-		}
-		cashback.setAffiliate(affiliate);
-		return cashback;
-	}
-
 	public static ErpPaymentMethodI createInstance(String id, String customerId, EnumPaymentMethodType paymentMethodType) {
 
 		ErpPaymentMethodI paymentMethod = null;
@@ -228,4 +175,53 @@ public class PaymentManager {
 			throw new EJBException(ex);
 		}
 	}
+	
+	private ErpAuthorizationModel authorizeECheck(
+			ErpPaymentMethodI paymentMethod,
+			double authorizationAmount,
+			double tax,
+			String merchantId,
+			String orderNumber) {
+			
+			ErpAuthorizationModel auth = new ErpAuthorizationModel();
+			auth.setPaymentMethodType(paymentMethod.getPaymentMethodType());
+			if (merchantId != null && merchantId.length() > 0) {
+				auth.setMerchantId(merchantId);
+			} else {
+				auth.setMerchantId(ErpServicesProperties.getCybersourceName());
+			}
+			auth.setTransactionSource(EnumTransactionSource.SYSTEM);
+			auth.setAvs("Y");
+			auth.setAmount(authorizationAmount);
+			auth.setTax(tax);
+			String accountNumber = paymentMethod.getAccountNumber();
+			auth.setCcNumLast4(accountNumber.substring(accountNumber.length() - 4));
+			auth.setAbaRouteNumber(paymentMethod.getAbaRouteNumber());
+			auth.setBankAccountType(paymentMethod.getBankAccountType());
+			auth.setCardType(paymentMethod.getCardType());
+			GatewayType gType=StringUtil.isEmpty(paymentMethod.getProfileID())?GatewayType.CYBERSOURCE:GatewayType.PAYMENTECH;
+					
+			if(GatewayType.PAYMENTECH.equals(gType)) {
+				auth.setProfileID(paymentMethod.getProfileID());
+				auth.setGatewayOrderID(orderNumber);
+				
+			}
+			RestrictedPaymentMethodSessionBean sb = new RestrictedPaymentMethodSessionBean();
+			boolean isAuthorized = (sb.checkBadAccount(paymentMethod, false)) ? false : true;// TBD-change this to use profile
+
+			if (isAuthorized) {
+				auth.setReturnCode(0);
+				auth.setAuthCode("FD1000");
+				auth.setResponseCode(EnumPaymentResponse.APPROVED);
+				auth.setDescription("FD APPROVAL");
+				auth.setSequenceNumber("FD AUTH");
+			} else {
+				auth.setReturnCode(-1);
+				auth.setAuthCode("NA");
+				auth.setResponseCode(EnumPaymentResponse.DECLINED);
+				auth.setDescription("RESTRICTED PAYMENT METHOD");
+				auth.setSequenceNumber("FD AUTH");
+			}
+			return auth;
+		}
 }

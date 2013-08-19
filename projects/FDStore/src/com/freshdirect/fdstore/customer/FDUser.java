@@ -2664,4 +2664,8 @@ public class FDUser extends ModelSupport implements FDUserI {
 	public void setRobot(boolean robot){
 		this.robot = robot;
 	}
+	
+	public boolean isPaymentechEnabled() {
+		return SiteFeatureHelper.isEnabled(EnumSiteFeature.PAYMENTECH_GATEWAY, this);
+	}
 }

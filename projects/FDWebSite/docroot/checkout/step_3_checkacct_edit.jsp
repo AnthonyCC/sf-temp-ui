@@ -64,7 +64,7 @@ Learn more about how this service works.
 	</TR>
 </TABLE>
 
-<%@ include file="/includes/ckt_acct/checkacct_fields.jspf"%>
+<%@ include file="/includes/ckt_acct/edit_checkacct_fields.jspf"%>
 <br><br>
 
 	<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><BR>

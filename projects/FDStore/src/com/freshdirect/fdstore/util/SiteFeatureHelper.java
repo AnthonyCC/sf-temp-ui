@@ -25,6 +25,8 @@ public class SiteFeatureHelper {
 			return FDStoreProperties.isGiftCardEnabled() || feature.isEnabled(user);
 		}else if (EnumSiteFeature.ZONE_PRICING.equals(feature)) {
 			return FDStoreProperties.isZonePricingEnabled() || feature.isEnabled(user);
+		}else if (EnumSiteFeature.PAYMENTECH_GATEWAY.equals(feature)) {
+			return FDStoreProperties.isPaymentechGatewayEnabled()  || feature.isEnabled(user);
 		}
 
 		return feature.isEnabled(user);

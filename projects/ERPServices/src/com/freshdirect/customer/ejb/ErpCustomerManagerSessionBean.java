@@ -104,6 +104,7 @@ import com.freshdirect.framework.core.ModelI;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.core.ServiceLocator;
 import com.freshdirect.framework.core.SessionBeanSupport;
+import com.freshdirect.framework.util.StringUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.giftcard.ErpAppliedGiftCardModel;
 import com.freshdirect.giftcard.ErpGiftCardModel;
@@ -1596,6 +1597,21 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 					fdAmount += line.getAmount();
 				}
 			}
+			
+			PrimaryKey erpCustomerPk=saleEB.getCustomerPk();
+			ErpCustomerEB customerEB = this.getErpCustomerHome().findByPrimaryKey(erpCustomerPk);
+			List<ErpPaymentMethodI> paymentList=customerEB.getPaymentMethods();
+			  if(paymentList!=null && paymentList.size()>0){
+				
+				a:for(int j=0;j<paymentList.size();j++){
+					ErpPaymentMethodI custPayment=paymentList.get(j);
+					if(paymentMethod.getAccountNumber().equalsIgnoreCase(custPayment.getAccountNumber())||
+					  ( !StringUtil.isEmpty(paymentMethod.getProfileID())&& paymentMethod.getProfileID().equals(custPayment.getProfileID()))	){
+						paymentMethod=custPayment;
+						break a;
+					}
+				}
+			  }		
 			
 			PaymentManager paymentManager = new PaymentManager();
 			if(fdAmount > 0) {

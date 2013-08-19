@@ -573,4 +573,6 @@ public interface FDUserI extends java.io.Serializable {
 	public void setCouponEvaluationRequired(boolean couponEvaluationRequired);
 	public boolean isRefreshCouponWalletRequired() ;
 	public void setRefreshCouponWalletRequired(boolean refreshCouponWalletRequired) ;
+
+	public boolean isPaymentechEnabled();
 }

@@ -15,7 +15,8 @@ boolean click_to_call = snav_pageURI.indexOf("click_to_call") > -1;
 boolean search_orders = snav_pageURI.indexOf("search_orders_by_sku") > -1;
 boolean modify_orders = snav_pageURI.indexOf("modify_orders_by_sku") > -1;
 boolean trans_email = snav_pageURI.indexOf("top_faqs") > -1;
-
+boolean reverseauth_orders=snav_pageURI.indexOf("reverseauth_orders") > -1;
+boolean voidcapture_orders=snav_pageURI.indexOf("voidcapture_orders") > -1;
 %>
 <crm:GetCurrentAgent id='currentAgent'>
 <% String lAgentRole = currentAgent.getRole().getLdapRoleName(); %>
@@ -57,5 +58,7 @@ boolean trans_email = snav_pageURI.indexOf("top_faqs") > -1;
 	<a href="/admintools/modify_orders_by_sku.jsp?method=GET" class="<%=modify_orders?"sup_nav_on":"sup_nav"%>">Modify Orders By Skus</a>
 <% } %>
 
+<a href="/admintools/reverseauth_orders.jsp" class="<%=reverseauth_orders?"sup_nav_on":"sup_nav"%>">Reverse Auth</a>
+<a href="/admintools/voidcapture_orders.jsp" class="<%=voidcapture_orders?"sup_nav_on":"sup_nav"%>">Void Captures</a>
 </div>
 </crm:GetCurrentAgent>

@@ -31,6 +31,8 @@ public class DataLoaderProperties {
 	private final static String PROP_SAP_UPLOAD_FOLDER = "dataloader.sap.upload.folder";
 	private final static String PROP_PAYMENTECH_BATCH_IP = "dataloader.paymentech.batch.ip";
 	private final static String PROP_PAYMENTECH_BATCH_PORT = "dataloader.paymentech.batch.port";
+	private final static String PROP_PAYMENTECH_BIN_IP = "dataloader.paymentech.bin.ip";
+	private final static String PROP_PAYMENTECH_BIN_PORT = "dataloader.paymentech.bin.port";
 	
 	private final static Properties config;
 	
@@ -43,7 +45,7 @@ public class DataLoaderProperties {
 		defaults.put(PROP_FTP_PASSWORD, "sun1ray");
 		defaults.put(PROP_SUMMARY_FILE_NAME, "M044.txt");
 		defaults.put(PROP_TRANSACTION_FILE_NAME, "E012.txt");
-		defaults.put(PROP_WORKING_DIR, "c:/tmp");
+		defaults.put(PROP_WORKING_DIR, "c:/tmp/");
 		defaults.put(PROP_SAP_FILE_NAME_PREFIX, "sapReconciliation");
 		defaults.put(PROP_SAP_FTP_IP, "12.39.155.119");
 		defaults.put(PROP_SAP_FTP_USER, "fdweb2sap");
@@ -51,6 +53,8 @@ public class DataLoaderProperties {
 		defaults.put(PROP_SAP_UPLOAD_FOLDER, "/userdata/web_uploads/");
 		defaults.put(PROP_PAYMENTECH_BATCH_IP, "208.237.46.10");
 		defaults.put(PROP_PAYMENTECH_BATCH_PORT, "2600");
+		defaults.put(PROP_PAYMENTECH_BIN_IP, "206.253.180.137");
+		defaults.put(PROP_PAYMENTECH_BIN_PORT, "8522");
 		
 		config = ConfigHelper.getPropertiesFromClassLoader("erpservices.properties", defaults);
 		LOGGER.info("Loaded configuration for DataLoader: "+config);
@@ -124,6 +128,14 @@ public class DataLoaderProperties {
 		env.put(Context.PROVIDER_URL, getProviderURL() );
 		env.put(Context.INITIAL_CONTEXT_FACTORY, getInitialContextFactory() );
 		return new InitialContext(env);
+	}
+	
+	public static String getPaymentechBinIp(){
+		return config.getProperty(PROP_PAYMENTECH_BIN_IP);
+	}
+	
+	public static String getPaymentechBinPort(){
+		return config.getProperty(PROP_PAYMENTECH_BIN_PORT);
 	}
 
 }

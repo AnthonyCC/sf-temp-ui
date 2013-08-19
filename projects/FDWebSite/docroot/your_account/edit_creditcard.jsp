@@ -70,7 +70,7 @@ if (!result.hasError("payment_method_fraud") && !result.hasError("technical_diff
 </tr>
 </table>
 
-<%@ include file="/includes/ckt_acct/i_creditcard_fields.jspf"%>
+<%@ include file="/includes/ckt_acct/i_edit_creditcard_fields.jspf"%>
 <br><br>
 
 <IMG src="/media_stat/images/layout/ff9933.gif" WIDTH="<%= W_YA_EDIT_CREDITCARD %>" HEIGHT="1" BORDER="0"><BR>

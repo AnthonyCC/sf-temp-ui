@@ -1474,4 +1474,39 @@
             <rtexprvalue>true</rtexprvalue>
         </attribute>		
 	</tag>
+	
+	<tag>
+        <name>CrmReverseAuthOrders</name>
+        <tagclass>com.freshdirect.webapp.taglib.crm.CrmReverseAuthOrdersTag</tagclass>
+        <teiclass>com.freshdirect.webapp.taglib.crm.CrmReverseAuthOrdersTag$TagEI</teiclass>
+        <bodycontent>JSP</bodycontent>
+        <info></info>
+        <attribute>
+            <name>id</name>
+            <required>true</required>
+            <rtexprvalue>false</rtexprvalue>
+        </attribute>
+            <attribute>
+            <name>result</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+</tag>
+<tag>
+        <name>CrmVoidCaptureOrders</name>
+        <tagclass>com.freshdirect.webapp.taglib.crm.CrmVoidCaptureOrdersTag</tagclass>
+        <teiclass>com.freshdirect.webapp.taglib.crm.CrmVoidCaptureOrders$TagEI</teiclass>
+        <bodycontent>JSP</bodycontent>
+        <info></info>
+        <attribute>
+            <name>id</name>
+            <required>true</required>
+            <rtexprvalue>false</rtexprvalue>
+        </attribute>
+            <attribute>
+            <name>result</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+</tag>
 </taglib>

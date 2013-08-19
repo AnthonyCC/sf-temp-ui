@@ -21,6 +21,8 @@ import javax.transaction.UserTransaction;
 
 import org.apache.log4j.Category;
 
+import weblogic.wsee.util.StringUtil;
+
 import com.freshdirect.affiliate.ErpAffiliate;
 import com.freshdirect.common.customer.EnumCardType;
 import com.freshdirect.customer.EnumPaymentType;
@@ -48,6 +50,9 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.payment.CaptureStrategy;
 import com.freshdirect.payment.EnumPaymentMethodType;
 import com.freshdirect.payment.PaylinxException;
+import com.freshdirect.payment.gateway.Gateway;
+import com.freshdirect.payment.gateway.GatewayType;
+import com.freshdirect.payment.gateway.impl.GatewayFactory;
 ;
 
 public class PaymentSessionBean extends SessionBeanSupport{
@@ -55,6 +60,7 @@ public class PaymentSessionBean extends SessionBeanSupport{
 	private final static Category LOGGER = LoggerFactory.getInstance( PaymentSessionBean.class );
 
 	private transient ErpSaleHome erpSaleHome = null;
+	private transient PaymentGatewayHome gatewayHome=null;
 		
 	/**
 	 * capture the authorization for a given sale id
@@ -92,6 +98,7 @@ public class PaymentSessionBean extends SessionBeanSupport{
 			}
 			
 			paymentMethod = sale.getCurrentOrder().getPaymentMethod();
+			paymentMethod.setCustomerId(sale.getCustomerPk().getId());
 			captureCount = sale.getCaptures().size();
 			
 			EnumPaymentType paymentType = eb.getCurrentOrder().getPaymentMethod().getPaymentType();
@@ -156,12 +163,11 @@ public class PaymentSessionBean extends SessionBeanSupport{
 							capture = this.doFDCapture(auth, captureAmount.doubleValue(), 0.0);
 							fdCaptures.add(capture);
 						}else{
-							if (EnumPaymentMethodType.ECHECK.equals(paymentMethod.getPaymentMethodType())) {
-								String orderNumber = saleId + "X" + captureCount;
-								capture = CPMServerGateway.captureECAuthorization(auth, paymentMethod, captureAmount.doubleValue(), 0.0, orderNumber);
-							} else {
-								capture = CPMServerGateway.captureCCAuthorization(auth, captureAmount.doubleValue(), 0.0);
-							}
+							PaymentGatewayContext context = new PaymentGatewayContext(StringUtil.isEmpty(paymentMethod.getProfileID())?GatewayType.CYBERSOURCE:GatewayType.PAYMENTECH, null);
+							Gateway gateway = GatewayFactory.getGateway(context);
+							String orderNumber = saleId + "X" + captureCount;
+							capture = gateway.capture(auth, paymentMethod, captureAmount.doubleValue(), 0.0, orderNumber);
+							
 						}
 						
 						eb.addCapture(capture);
@@ -211,7 +217,7 @@ public class PaymentSessionBean extends SessionBeanSupport{
 			
 			//Committing coupons, if any.
 			FDCouponManager.postConfirmPendingCouponTransactions(saleId);
-		}catch(PaylinxException e){
+		}catch(ErpTransactionException e){
 			LOGGER.warn(e);
 			try{
 				utx.rollback();
@@ -229,7 +235,6 @@ public class PaymentSessionBean extends SessionBeanSupport{
 			throw new EJBException(e);
 		}
 	}
-
 	private ErpCaptureModel doFDCapture(ErpAuthorizationModel auth, double amount, double tax) {
 		
 		ErpCaptureModel capture = new ErpCaptureModel();
@@ -241,6 +246,9 @@ public class PaymentSessionBean extends SessionBeanSupport{
 		capture.setAmount(amount);
 		capture.setTax(tax);
 		capture.setAffiliate(auth.getAffiliate());
+		
+		capture.setGatewayOrderID(auth.getGatewayOrderID());
+		capture.setProfileID(auth.getProfileID());
 			
 		return capture;
 	}
@@ -367,7 +375,7 @@ public class PaymentSessionBean extends SessionBeanSupport{
 	
 			ErpSaleEB eb = erpSaleHome.findByPrimaryKey(new PrimaryKey(saleId));
 			EnumSaleStatus status = eb.getStatus();
-			
+	
 			if(!status.equals(EnumSaleStatus.PAYMENT_PENDING)){
 				throw new ErpTransactionException("Sale is not captured yet "+saleId);
 			}
@@ -420,12 +428,14 @@ public class PaymentSessionBean extends SessionBeanSupport{
 					utx.begin();
 		
 					ErpSaleEB eb = erpSaleHome.findByPrimaryKey(new PrimaryKey(saleId));
+					ErpSaleModel sale = (ErpSaleModel) eb.getModel();
+					ErpPaymentMethodI paymentMethod = sale.getCurrentOrder().getPaymentMethod();
+					
 					ErpVoidCaptureModel voidCapture = null;
-					if (EnumPaymentMethodType.ECHECK.equals(capture.getPaymentMethodType())) {
-						voidCapture = CPMServerGateway.voidECCapture(capture);
-					} else {
-						voidCapture = CPMServerGateway.voidCCCapture(capture);  // default to credit card
-					}
+					
+					Gateway gateway = GatewayFactory.getGateway(capture.getProfileID());
+					voidCapture = gateway.voidCapture(paymentMethod, capture);
+							
 					voidCapture.setTransactionSource(EnumTransactionSource.TRANSPORTATION);
 					eb.addVoidCapture(voidCapture);
 					utx.commit();
@@ -495,6 +505,8 @@ public class PaymentSessionBean extends SessionBeanSupport{
 				combinedAuth.setTransactionInitiator(a.getTransactionInitiator());
 				combinedAuth.setTransactionSource(a.getTransactionSource());
 				combinedAuth.setAffiliate(a.getAffiliate());
+				combinedAuth.setGatewayOrderID(a.getGatewayOrderID());
+				combinedAuth.setProfileID(a.getProfileID());
 			}
 			
 			combinedAuth.setAmount(combinedAuth.getAmount() + a.getAmount());
@@ -698,5 +710,20 @@ public class PaymentSessionBean extends SessionBeanSupport{
 			throw new EJBException(e);
 		}
 			
-	}	
+	}
+	
+	private  void lookupGatewayHome() {
+		
+		Context ctx = null;
+		try {
+			ctx = new InitialContext();
+			this.gatewayHome = (PaymentGatewayHome) ctx.lookup("freshdirect.gateway.PaymentGateway");
+		} catch (NamingException ex) {
+			throw new EJBException(ex);
+		} finally {
+			try {
+				ctx.close();
+			} catch (NamingException ne) {}
+		}
+	}
 }

@@ -16,6 +16,7 @@ public abstract class ErpPaymentMethodModel extends ModelSupport implements ErpP
 	private String customerId;	
 	private String name;
 	private String accountNumber;
+	
 
 	private ContactAddressModel address;
 	
@@ -25,6 +26,17 @@ public abstract class ErpPaymentMethodModel extends ModelSupport implements ErpP
 	private String referencedOrder;
 	
 	private String csv;
+	
+	private String profileID="";
+	private String accountNumLast4;
+	
+	public String getAccountNumLast4() {
+		return accountNumLast4;
+	}
+
+	public void setAccountNumLast4(String accountNumLast4) {
+		this.accountNumLast4 = accountNumLast4;
+	}
 
 	public ErpPaymentMethodModel() {
 		this.address = new ContactAddressModel();
@@ -290,4 +302,10 @@ public abstract class ErpPaymentMethodModel extends ModelSupport implements ErpP
 	public String getCVV() {
 		return csv;
 	}
+	public String getProfileID() {
+		return profileID;
+	}
+	 public void setProfileID(String profileID) {
+	    	this.profileID=profileID;
+	 }
 }

@@ -95,4 +95,24 @@ public class ErpPaymentModel extends ErpTransactionModel {
 		this.affiliate = affiliate;
 	}
 	
+	public String getProfileID() {
+		return profileID;
+	}
+	
+	public void setProfileID(String profileID) {
+		if(profileID!=null)
+			this.profileID=profileID;
+	}
+	
+	public String getGatewayOrderID() {
+		return gatewayOrderID;
+	}
+	
+	public void setGatewayOrderID(String gatewayOrderID) {
+		if(gatewayOrderID!=null)
+			this.gatewayOrderID=gatewayOrderID;
+	}
+	private String profileID="";
+	private String gatewayOrderID="";
+	
 }

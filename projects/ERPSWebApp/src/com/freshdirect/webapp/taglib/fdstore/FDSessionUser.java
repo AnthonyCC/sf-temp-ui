@@ -1593,4 +1593,9 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 	public void setRefreshCouponWalletRequired(boolean refreshCouponWalletRequired) {
 		this.user.setRefreshCouponWalletRequired(refreshCouponWalletRequired);
 	}	
+	
+	@Override
+	public boolean isPaymentechEnabled() {
+		return this.user.isPaymentechEnabled();
+	}
 }

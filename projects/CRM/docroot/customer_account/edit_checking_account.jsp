@@ -29,7 +29,7 @@
 	<crm:GetFDUser id="user">
 		<crm:CrmGetPaymentMethod id="paymentMethod" paymentId="<%=paymentId%>" user="<%=user%>">
 			<crm:CrmPaymentMethodController paymentMethod="<%=paymentMethod%>" result="result" actionName="<%=actionName%>" successPage="<%=retPage%>">
-            	<%@ include file="/includes/checking_account_details.jspf" %>
+            	<%@ include file="/includes/edit_checking_account_details.jspf" %>
 			</crm:CrmPaymentMethodController>
         </crm:CrmGetPaymentMethod>
 	</crm:GetFDUser>

@@ -19,6 +19,7 @@ import java.sql.Types;
 import java.util.List;
 
 import com.freshdirect.affiliate.ErpAffiliate;
+import com.freshdirect.common.customer.EnumCardType;
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.customer.EnumTransactionType;
 import com.freshdirect.customer.ErpCaptureModel;
@@ -28,7 +29,6 @@ import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.util.NVL;
 import com.freshdirect.payment.EnumBankAccountType;
 import com.freshdirect.payment.EnumPaymentMethodType;
-import com.freshdirect.common.customer.EnumCardType;
 
 public class ErpCapturePersistentBean extends ErpPaymentPersistentBean {
 	
@@ -118,7 +118,7 @@ public class ErpCapturePersistentBean extends ErpPaymentPersistentBean {
 	 */
 	public PrimaryKey create(Connection conn) throws SQLException {
 		String salesactionId = super.create(conn, model).getId();
-		PreparedStatement ps = conn.prepareStatement("INSERT INTO CUST.PAYMENT (SALESACTION_ID, SEQUENCE_NUMBER, AUTH_CODE, DESCRIPTION, RESPONSE_CODE, MERCHANT_ID, CARD_TYPE, CCNUM_LAST4, PAYMENT_METHOD_TYPE, ABA_ROUTE_NUMBER, BANK_ACCOUNT_TYPE, AFFILIATE) values (?,?,?,?,?,?,?,?,?,?,?,?)");
+		PreparedStatement ps = conn.prepareStatement("INSERT INTO CUST.PAYMENT (SALESACTION_ID, SEQUENCE_NUMBER, AUTH_CODE, DESCRIPTION, RESPONSE_CODE, MERCHANT_ID, CARD_TYPE, CCNUM_LAST4, PAYMENT_METHOD_TYPE, ABA_ROUTE_NUMBER, BANK_ACCOUNT_TYPE, AFFILIATE,TRANS_REF_INDEX, PROFILE_ID ,  GATEWAY_ORDER) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
 		
 		int index = 1;
 		ps.setString(index++, salesactionId);
@@ -134,6 +134,27 @@ public class ErpCapturePersistentBean extends ErpPaymentPersistentBean {
 		ps.setString(index++, (this.model.getBankAccountType() != null) ? this.model.getBankAccountType().getName() : null);
 		if(this.model.getAffiliate() != null) {
 			ps.setString(index++, this.model.getAffiliate().getCode());
+		}else{
+			ps.setNull(index++, Types.VARCHAR);
+		}
+		if(this.model.getTrasactionRefIndex() != null) {
+			ps.setString(index++, this.model.getTrasactionRefIndex());
+		}else{
+			ps.setNull(index++, Types.VARCHAR);
+		}
+		if(this.model.getProfileID() != null) {
+			ps.setString(index++, this.model.getProfileID());
+		}else{
+			ps.setNull(index++, Types.VARCHAR);
+		}
+				
+		/*if(this.model.getGatewayType() != null) {
+			ps.setString(index++, String.valueOf(this.model.getGatewayType().getId()));
+		}else{
+			ps.setNull(index++, Types.VARCHAR);
+		}*/
+		if(this.model.getGatewayOrderID() != null) {
+			ps.setString(index++, this.model.getGatewayOrderID());
 		}else{
 			ps.setNull(index++, Types.VARCHAR);
 		}
@@ -161,7 +182,7 @@ public class ErpCapturePersistentBean extends ErpPaymentPersistentBean {
 	 */
 	public void load(Connection conn) throws SQLException {
 		super.load(conn, this.model);
-		PreparedStatement ps = conn.prepareStatement("SELECT ACTION_DATE, ACTION_TYPE, AMOUNT, SOURCE, SEQUENCE_NUMBER, AUTH_CODE, DESCRIPTION, RESPONSE_CODE, MERCHANT_ID, CARD_TYPE, CCNUM_LAST4, PAYMENT_METHOD_TYPE, ABA_ROUTE_NUMBER, BANK_ACCOUNT_TYPE, AFFILIATE FROM CUST.SALESACTION, CUST.PAYMENT WHERE SALESACTION.ID = PAYMENT.SALESACTION_ID AND SALESACTION.ID = ? ");
+		PreparedStatement ps = conn.prepareStatement("SELECT ACTION_DATE, ACTION_TYPE, AMOUNT, SOURCE, SEQUENCE_NUMBER, AUTH_CODE, DESCRIPTION, RESPONSE_CODE, MERCHANT_ID, CARD_TYPE, CCNUM_LAST4, PAYMENT_METHOD_TYPE, ABA_ROUTE_NUMBER, BANK_ACCOUNT_TYPE, AFFILIATE,TRANS_REF_INDEX, PROFILE_ID , GATEWAY_ID, GATEWAY_ORDER FROM CUST.SALESACTION, CUST.PAYMENT WHERE SALESACTION.ID = PAYMENT.SALESACTION_ID AND SALESACTION.ID = ? ");
 		ps.setString(1, this.getPK().getId());
 		ResultSet rs = ps.executeQuery();
 		if (rs.next()) {
@@ -180,6 +201,11 @@ public class ErpCapturePersistentBean extends ErpPaymentPersistentBean {
 			this.model.setBankAccountType(EnumBankAccountType.getEnum(rs.getString("BANK_ACCOUNT_TYPE")));
 			ErpAffiliate aff = (ErpAffiliate) NVL.apply(ErpAffiliate.getEnum(rs.getString("AFFILIATE")), ErpAffiliate.getPrimaryAffiliate());
 			this.model.setAffiliate(aff);
+			this.model.setTrasactionRefIndex(rs.getString("TRANS_REF_INDEX"));
+			this.model.setProfileID(rs.getString("PROFILE_ID"));
+			/*GatewayType gt = (GatewayType) NVL.apply(GatewayType.get(rs.getString("GATEWAY_ID")), GatewayType.getPrimary());
+			this.model.setGatewayType(gt);*/
+			this.model.setGatewayOrderID(rs.getString("GATEWAY_ORDER"));
 			
 		} else {
 			throw new SQLException("No such ErpInvoice PK: " + this.getPK());

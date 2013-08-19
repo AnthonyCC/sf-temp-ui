@@ -52,7 +52,7 @@ if (!result.hasError("payment_method_fraud") && !result.hasError("technical_diff
 	</fd:ErrorHandler>
 
 <%} %>
-<%@ include file="/includes/credit_card_details.jspf" %>
+<%@ include file="/includes/edit_credit_card_details.jspf" %>
 		
 		
 

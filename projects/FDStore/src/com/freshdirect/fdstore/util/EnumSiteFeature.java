@@ -58,6 +58,8 @@ public class EnumSiteFeature implements Serializable, Comparable<EnumSiteFeature
     //Brand Name Deals
     public final static EnumSiteFeature BRAND_NAME_DEALS = new EnumSiteFeature("BRAND_NAME_DEALS",true,"Brand Name Deals");
     
+    public final static EnumSiteFeature PAYMENTECH_GATEWAY=new EnumSiteFeature("Paymentech");
+    
     String name;
 	
 	/**

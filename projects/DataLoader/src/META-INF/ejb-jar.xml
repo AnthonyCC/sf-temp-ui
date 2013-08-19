@@ -1,11 +1,41 @@
-<?xml version='1.0' encoding='UTF-8'?>
-<ejb-jar xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/ejb-jar_3_0.xsd" version="3.0">
+<?xml version='1.0' encoding='utf-8'?>
+<ejb-jar xmlns="http://java.sun.com/xml/ns/javaee"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/ejb-jar_3_0.xsd"
+version="3.0">
   <enterprise-beans>
     <session>
+	<ejb-name>ProfileCreatorCron</ejb-name>
+      <home>
+      com.freshdirect.dataloader.payment.ejb.ProfileCreatorHome</home>
+      <remote>
+      com.freshdirect.dataloader.payment.ejb.ProfileCreatorSB</remote>
+      <ejb-class>
+      com.freshdirect.dataloader.payment.ejb.ProfileCreatorSessionBean</ejb-class>
+      <session-type>Stateless</session-type>
+      <transaction-type>Bean</transaction-type>
+      <ejb-ref>
+        <ejb-ref-name>ejb/FDCustomerManager</ejb-ref-name>
+        <ejb-ref-type>Session</ejb-ref-type>
+        <home>
+        com.freshdirect.fdstore.customer.ejb.FDCustomerManagerHome</home>
+        <remote>
+        com.freshdirect.fdstore.customer.ejb.FDCustomerManaagerSB</remote>
+      </ejb-ref>
+      <resource-ref>
+        <res-ref-name>jdbc/dbpool</res-ref-name>
+        <res-type>javax.sql.DataSource</res-type>
+        <res-auth>Container</res-auth>
+      </resource-ref>
+    </session>
+    <session>
       <ejb-name>VirtualProductLoader</ejb-name>
-      <home>com.freshdirect.dataloader.sap.ejb.VirtualProductLoaderHome</home>
-      <remote>com.freshdirect.dataloader.sap.ejb.VirtualProductLoaderSB</remote>
-      <ejb-class>com.freshdirect.dataloader.sap.ejb.VirtualProductLoaderSessionBean</ejb-class>
+      <home>
+      com.freshdirect.dataloader.sap.ejb.VirtualProductLoaderHome</home>
+      <remote>
+      com.freshdirect.dataloader.sap.ejb.VirtualProductLoaderSB</remote>
+      <ejb-class>
+      com.freshdirect.dataloader.sap.ejb.VirtualProductLoaderSessionBean</ejb-class>
       <session-type>Stateless</session-type>
       <transaction-type>Container</transaction-type>
       <ejb-ref>
@@ -23,8 +53,10 @@
     <session>
       <ejb-name>SAPLoader</ejb-name>
       <home>com.freshdirect.dataloader.sap.ejb.SAPLoaderHome</home>
-      <remote>com.freshdirect.dataloader.sap.ejb.SAPLoaderSB</remote>
-      <ejb-class>com.freshdirect.dataloader.sap.ejb.SAPLoaderSessionBean</ejb-class>
+      <remote>
+      com.freshdirect.dataloader.sap.ejb.SAPLoaderSB</remote>
+      <ejb-class>
+      com.freshdirect.dataloader.sap.ejb.SAPLoaderSessionBean</ejb-class>
       <session-type>Stateless</session-type>
       <transaction-type>Bean</transaction-type>
       <ejb-ref>
@@ -40,10 +72,13 @@
         <remote>com.freshdirect.erp.ejb.ErpMaterialEB</remote>
       </ejb-ref>
       <ejb-ref>
-        <ejb-ref-name>ejb/ErpCharacteristicValuePrice</ejb-ref-name>
+        <ejb-ref-name>
+        ejb/ErpCharacteristicValuePrice</ejb-ref-name>
         <ejb-ref-type>Entity</ejb-ref-type>
-        <home>com.freshdirect.erp.ejb.ErpCharacteristicValuePriceHome</home>
-        <remote>com.freshdirect.erp.ejb.ErpCharacteristicValuePriceEB</remote>
+        <home>
+        com.freshdirect.erp.ejb.ErpCharacteristicValuePriceHome</home>
+        <remote>
+        com.freshdirect.erp.ejb.ErpCharacteristicValuePriceEB</remote>
       </ejb-ref>
       <ejb-ref>
         <ejb-ref-name>ejb/ErpProduct</ejb-ref-name>
@@ -65,9 +100,12 @@
     </session>
     <session>
       <ejb-name>InvoiceLoader</ejb-name>
-      <home>com.freshdirect.dataloader.payment.ejb.InvoiceLoaderHome</home>
-      <remote>com.freshdirect.dataloader.payment.ejb.InvoiceLoaderSB</remote>
-      <ejb-class>com.freshdirect.dataloader.payment.ejb.InvoiceLoaderSessionBean</ejb-class>
+      <home>
+      com.freshdirect.dataloader.payment.ejb.InvoiceLoaderHome</home>
+      <remote>
+      com.freshdirect.dataloader.payment.ejb.InvoiceLoaderSB</remote>
+      <ejb-class>
+      com.freshdirect.dataloader.payment.ejb.InvoiceLoaderSessionBean</ejb-class>
       <session-type>Stateless</session-type>
       <transaction-type>Container</transaction-type>
       <resource-ref>
@@ -78,9 +116,12 @@
     </session>
     <session>
       <ejb-name>SAPZoneInfoLoader</ejb-name>
-      <home>com.freshdirect.dataloader.sap.ejb.SAPZoneInfoLoaderHome</home>
-      <remote>com.freshdirect.dataloader.sap.ejb.SAPZoneInfoLoaderSB</remote>
-      <ejb-class>com.freshdirect.dataloader.sap.ejb.SAPZoneInfoLoaderSessionBean</ejb-class>
+      <home>
+      com.freshdirect.dataloader.sap.ejb.SAPZoneInfoLoaderHome</home>
+      <remote>
+      com.freshdirect.dataloader.sap.ejb.SAPZoneInfoLoaderSB</remote>
+      <ejb-class>
+      com.freshdirect.dataloader.sap.ejb.SAPZoneInfoLoaderSessionBean</ejb-class>
       <session-type>Stateless</session-type>
       <transaction-type>Bean</transaction-type>
       <resource-ref>
@@ -91,9 +132,12 @@
     </session>
     <session>
       <ejb-name>SAPGrpInfoLoader</ejb-name>
-      <home>com.freshdirect.dataloader.sap.ejb.SAPGrpInfoLoaderHome</home>
-      <remote>com.freshdirect.dataloader.sap.ejb.SapGrpInfoLoaderSB</remote>
-      <ejb-class>com.freshdirect.dataloader.sap.ejb.SAPGrpInfoLoaderSessionBean</ejb-class>
+      <home>
+      com.freshdirect.dataloader.sap.ejb.SAPGrpInfoLoaderHome</home>
+      <remote>
+      com.freshdirect.dataloader.sap.ejb.SapGrpInfoLoaderSB</remote>
+      <ejb-class>
+      com.freshdirect.dataloader.sap.ejb.SAPGrpInfoLoaderSessionBean</ejb-class>
       <session-type>Stateless</session-type>
       <transaction-type>Bean</transaction-type>
       <resource-ref>
@@ -104,22 +148,29 @@
     </session>
     <session>
       <ejb-name>SaleCron</ejb-name>
-      <home>com.freshdirect.dataloader.payment.ejb.SaleCronHome</home>
-      <remote>com.freshdirect.dataloader.payment.ejb.SaleCronSB</remote>
-      <ejb-class>com.freshdirect.dataloader.payment.ejb.SaleCronSessionBean</ejb-class>
+      <home>
+      com.freshdirect.dataloader.payment.ejb.SaleCronHome</home>
+      <remote>
+      com.freshdirect.dataloader.payment.ejb.SaleCronSB</remote>
+      <ejb-class>
+      com.freshdirect.dataloader.payment.ejb.SaleCronSessionBean</ejb-class>
       <session-type>Stateless</session-type>
       <transaction-type>Bean</transaction-type>
       <ejb-ref>
         <ejb-ref-name>ejb/ErpCustomerManager</ejb-ref-name>
         <ejb-ref-type>Session</ejb-ref-type>
-        <home>com.freshdirect.customer.ejb.ErpCustomerManagerHome</home>
-        <remote>com.freshdirect.customer.ejb.ErpCustomerManagerSB</remote>
+        <home>
+        com.freshdirect.customer.ejb.ErpCustomerManagerHome</home>
+        <remote>
+        com.freshdirect.customer.ejb.ErpCustomerManagerSB</remote>
       </ejb-ref>
       <ejb-ref>
         <ejb-ref-name>ejb/FDCustomerManager</ejb-ref-name>
         <ejb-ref-type>Session</ejb-ref-type>
-        <home>com.freshdirect.fdstore.customer.ejb.FDCustomerManagerHome</home>
-        <remote>com.freshdirect.fdstore.customer.ejb.FDCustomerManaagerSB</remote>
+        <home>
+        com.freshdirect.fdstore.customer.ejb.FDCustomerManagerHome</home>
+        <remote>
+        com.freshdirect.fdstore.customer.ejb.FDCustomerManaagerSB</remote>
       </ejb-ref>
       <ejb-ref>
         <ejb-ref-name>ejb/Payment</ejb-ref-name>
@@ -130,8 +181,10 @@
       <ejb-ref>
         <ejb-ref-name>ejb/GiftCardManager</ejb-ref-name>
         <ejb-ref-type>Session</ejb-ref-type>
-        <home>com.freshdirect.giftcard.ejb.GiftCardManagerHome</home>
-        <remote>com.freshdirect.giftcard.ejb.GiftCardManagerSB</remote>
+        <home>
+        com.freshdirect.giftcard.ejb.GiftCardManagerHome</home>
+        <remote>
+        com.freshdirect.giftcard.ejb.GiftCardManagerSB</remote>
       </ejb-ref>
       <ejb-ref>
         <ejb-ref-name>ejb/GCGateway</ejb-ref-name>
@@ -153,9 +206,12 @@
     </session>
     <session>
       <ejb-name>ProductPromotionLoader</ejb-name>
-      <home>com.freshdirect.dataloader.sap.ejb.SAPProductPromotionLoaderHome</home>
-      <remote>com.freshdirect.dataloader.sap.ejb.SAPProductPromotionLoaderSB</remote>
-      <ejb-class>com.freshdirect.dataloader.sap.ejb.SAPProductPromotionLoaderSessionBean</ejb-class>
+      <home>
+      com.freshdirect.dataloader.sap.ejb.SAPProductPromotionLoaderHome</home>
+      <remote>
+      com.freshdirect.dataloader.sap.ejb.SAPProductPromotionLoaderSB</remote>
+      <ejb-class>
+      com.freshdirect.dataloader.sap.ejb.SAPProductPromotionLoaderSessionBean</ejb-class>
       <session-type>Stateless</session-type>
       <transaction-type>Container</transaction-type>
       <resource-ref>
@@ -166,9 +222,12 @@
     </session>
     <session>
       <ejb-name>GeoCodeLoader</ejb-name>
-      <home>com.freshdirect.dataloader.geocodeloader.ejb.GeoCodeLoaderHome</home>
-      <remote>com.freshdirect.dataloader.geocodeloader.ejb.GeoCodeLoaderSB</remote>
-      <ejb-class>com.freshdirect.dataloader.geocodeloader.ejb.GeoCodeLoaderSessionBean</ejb-class>
+      <home>
+      com.freshdirect.dataloader.geocodeloader.ejb.GeoCodeLoaderHome</home>
+      <remote>
+      com.freshdirect.dataloader.geocodeloader.ejb.GeoCodeLoaderSB</remote>
+      <ejb-class>
+      com.freshdirect.dataloader.geocodeloader.ejb.GeoCodeLoaderSessionBean</ejb-class>
       <session-type>Stateless</session-type>
       <transaction-type>Bean</transaction-type>
       <resource-ref>
@@ -179,9 +238,12 @@
     </session>
     <session>
       <ejb-name>BounceCancel</ejb-name>
-      <home>com.freshdirect.dataloader.analytics.ejb.BounceCancelHome</home>
-      <remote>com.freshdirect.dataloader.analytics.ejb.BounceCancelSB</remote>
-      <ejb-class>com.freshdirect.dataloader.analytics.ejb.BounceCancelSessionBean</ejb-class>
+      <home>
+      com.freshdirect.dataloader.analytics.ejb.BounceCancelHome</home>
+      <remote>
+      com.freshdirect.dataloader.analytics.ejb.BounceCancelSB</remote>
+      <ejb-class>
+      com.freshdirect.dataloader.analytics.ejb.BounceCancelSessionBean</ejb-class>
       <session-type>Stateless</session-type>
       <transaction-type>Container</transaction-type>
       <resource-ref>
@@ -192,9 +254,12 @@
     </session>
     <session>
       <ejb-name>HandoffNotification</ejb-name>
-      <home>com.freshdirect.dataloader.notification.ejb.HandoffNotificationHome</home>
-      <remote>com.freshdirect.dataloader.notification.ejb.HandoffNotificationSB</remote>
-      <ejb-class>com.freshdirect.dataloader.notification.ejb.HandoffNotificationSessionBean</ejb-class>
+      <home>
+      com.freshdirect.dataloader.notification.ejb.HandoffNotificationHome</home>
+      <remote>
+      com.freshdirect.dataloader.notification.ejb.HandoffNotificationSB</remote>
+      <ejb-class>
+      com.freshdirect.dataloader.notification.ejb.HandoffNotificationSessionBean</ejb-class>
       <session-type>Stateless</session-type>
       <transaction-type>Container</transaction-type>
       <resource-ref>
@@ -218,6 +283,11 @@
       </method>
       <method>
         <ejb-name>SaleCron</ejb-name>
+ 		<method-intf>Remote</method-intf>
+        <method-name>*</method-name>
+      </method>
+      <method>
+        <ejb-name>ProfileCreatorCron</ejb-name>
         <method-intf>Remote</method-intf>
         <method-name>*</method-name>
       </method>

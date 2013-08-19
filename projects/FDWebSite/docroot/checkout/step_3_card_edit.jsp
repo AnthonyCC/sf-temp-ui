@@ -69,7 +69,7 @@ final int W_CHECKOUT_STEP_3_CARD_EDIT_TOTAL = 970;
 	</TR>
 	</TABLE>
 
-<%@ include file="/includes/ckt_acct/i_creditcard_fields.jspf"%>
+<%@ include file="/includes/ckt_acct/i_edit_creditcard_fields.jspf"%>
 <br><br>
 	<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
 	

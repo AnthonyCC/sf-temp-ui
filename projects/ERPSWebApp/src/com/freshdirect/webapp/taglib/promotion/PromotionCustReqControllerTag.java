@@ -110,13 +110,14 @@ public class PromotionCustReqControllerTag extends AbstractControllerTag {
 				String visa = NVL.apply(request.getParameter("visa"),"").trim();
 				String discover = NVL.apply(request.getParameter("discover"),"").trim();
 				String eCheck = NVL.apply(request.getParameter("eCheck"),"").trim();
+				String debitCard = NVL.apply(request.getParameter("debitCard"),"").trim();
 				String minOrders = NVL.apply(request.getParameter("minOrders"),"").trim();
 				String eCheckMatch= NVL.apply(request.getParameter("eCheckMatchType"),"").trim();
 				EnumComparisionType eCheckMatchType=EnumComparisionType.getEnum(eCheckMatch);
 				
 				StringBuffer paymentType = new StringBuffer();
 				boolean isSelected = false;
-				EnumCardType paymentTypes[] = new EnumCardType[]{null,null,null,null,null};
+				EnumCardType paymentTypes[] = new EnumCardType[]{null,null,null,null,null,null};
 				if(!"".equalsIgnoreCase(amex)){
 					paymentTypes[0]=EnumCardType.AMEX;
 					isSelected = true;
@@ -147,6 +148,13 @@ public class PromotionCustReqControllerTag extends AbstractControllerTag {
 						paymentType.append(",");
 					}
 					paymentTypes[4]=EnumCardType.ECP;
+					isSelected = true;
+				}
+				if(!"".equalsIgnoreCase(debitCard)){
+					if(isSelected){
+						paymentType.append(",");
+					}
+					paymentTypes[5]=EnumCardType.DEBIT;
 					isSelected = true;
 				}
 				List<FDPromoCustStrategyModel> custStrategies = promotion.getCustStrategies();

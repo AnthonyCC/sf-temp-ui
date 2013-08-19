@@ -219,6 +219,7 @@ public class PaymentManagerSessionBean extends SessionBeanSupport {
 			if(accountNumber != null && accountNumber.length() >= 4){
 				auth.setCcNumLast4(accountNumber.substring(accountNumber.length()-4));
 			}
+			
 			return auth;				
 	}
 	
@@ -243,7 +244,9 @@ public class PaymentManagerSessionBean extends SessionBeanSupport {
 				
 				a:for(int j=0;j<paymentList.size();j++){
 					ErpPaymentMethodI custPayment=paymentList.get(j);
-					if(payment.getAccountNumber().equalsIgnoreCase(custPayment.getAccountNumber())){
+					if(payment.getAccountNumber().equalsIgnoreCase(custPayment.getAccountNumber())||
+					   (payment.getProfileID()!=null && payment.getProfileID().equals(custPayment.getProfileID()))
+					   ){
 						payment=custPayment;
 						break a;
 					}

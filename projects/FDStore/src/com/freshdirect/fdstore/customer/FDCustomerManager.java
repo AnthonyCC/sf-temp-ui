@@ -522,13 +522,13 @@ public class FDCustomerManager {
 	 *
 	 * @throws FDResourceException if an error occured using remote resources
 	 */
-	public static void addPaymentMethod(FDActionInfo info, ErpPaymentMethodI paymentMethod)
+	public static void addPaymentMethod(FDActionInfo info, ErpPaymentMethodI paymentMethod, boolean paymentechEnabled)
 		throws FDResourceException, ErpDuplicatePaymentMethodException, ErpPaymentMethodException {
 		lookupManagerHome();
 
 		try {
 			FDCustomerManagerSB sb = managerHome.create();
-			sb.addPaymentMethod(info, paymentMethod);
+			sb.addPaymentMethod(info, paymentMethod, paymentechEnabled);
 
 		} catch (CreateException ce) {
 			invalidateManagerHome();
@@ -723,7 +723,7 @@ public class FDCustomerManager {
 
 		try {
 			FDCustomerManagerSB sb = managerHome.create();
-			sb.removePaymentMethod(info, ((ErpPaymentMethodModel) paymentMethod).getPK());
+			sb.removePaymentMethod(info, paymentMethod);
 
 		} catch (CreateException ce) {
 			invalidateManagerHome();
@@ -4133,4 +4133,21 @@ public class FDCustomerManager {
 		}
 	}
 	
+	
+	public static  boolean  isFeatureEnabled(String customerId, EnumSiteFeature feature) throws FDResourceException {
+		
+		lookupManagerHome();
+
+		try {
+			FDCustomerManagerSB sb = managerHome.create();
+			return sb.isFeatureEnabled(customerId, feature);
+		} catch (CreateException ce) {
+			invalidateManagerHome();
+			throw new FDResourceException(ce, "Error creating session bean");
+		} catch (RemoteException re) {
+			invalidateManagerHome();
+			throw new FDResourceException(re, "Error talking to session bean");
+		}
+	
+	}
 }

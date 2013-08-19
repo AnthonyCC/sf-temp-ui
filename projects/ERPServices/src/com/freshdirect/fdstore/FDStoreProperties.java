@@ -616,6 +616,8 @@ public class FDStoreProperties {
 	
 	private final static String PROP_ALCOHOLFILTERING_ENABLED = "fdstore.alcoholfiltering.enabled";
 	private final static String CHECK_LOCAL_INVENTORY_ENABLED = "fdstore.check.localinventory.enabled";
+	
+	private final static String PROP_PAYMENTECH_GATEWAY_ENABLED = "fdstore.paymentech.enabled";
 
     static {
         defaults.put(PROP_ROUTING_PROVIDER_URL, "t3://localhost:7001");
@@ -1209,7 +1211,7 @@ public class FDStoreProperties {
 		defaults.put(PROP_SOCIAL_BUTTONS_ENABLED, "true");
 		defaults.put(CHECK_LOCAL_INVENTORY_ENABLED, "false");
 		defaults.put(PROP_FDCOUPONMGR_HOME, "freshdirect.fdstore.CouponManager");
-				
+		defaults.put(PROP_PAYMENTECH_GATEWAY_ENABLED, "true");
         refresh();
     }
 
@@ -3112,5 +3114,9 @@ public class FDStoreProperties {
 	 public static String getFDCouponManagerHome() {
 	        return get(PROP_FDCOUPONMGR_HOME);
 	 }
+	 public static boolean isPaymentechGatewayEnabled() {
+	        return Boolean.valueOf(get(PROP_PAYMENTECH_GATEWAY_ENABLED)).booleanValue();
+	 }
+	 
 }
 

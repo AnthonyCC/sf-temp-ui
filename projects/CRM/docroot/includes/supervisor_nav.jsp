@@ -22,6 +22,7 @@ boolean canned_text = snav_pageURI.indexOf("canned_text") > -1;
 boolean connect = snav_pageURI.indexOf("connect") > -1;
 boolean crm_auths_view= snav_pageURI.indexOf("crm_auths_view") > -1;
 boolean auto_late_dlv_credits_view = snav_pageURI.indexOf("auto_late_dlv_credits") > -1;
+boolean paymentGateway = snav_pageURI.indexOf("paymentGateway") > -1;
 %>
 <crm:GetCurrentAgent id='currentAgent'>
 <div class="side_nav_module_supervisor" >
@@ -74,6 +75,9 @@ boolean auto_late_dlv_credits_view = snav_pageURI.indexOf("auto_late_dlv_credits
 <% } %>
 <% if(CrmSecurityManager.hasAccessToPage(lAgentRole,"auto_late_dlv_credits.jsp")){ %>
 	<div  class="<%=connect?"sup_nav_on_supervisor":""%>" style="height: auto;"><a href="/supervisor/auto_late_dlv_credits.jsp" class="<%=crm_auths_view?"sup_nav_on_supervisor":"sup_nav_supervisor"%>">Auto Late Delivery Credits</a></div>
+<% } %>
+<% if(CrmSecurityManager.hasAccessToPage(lAgentRole,"paymentGateway.jsp")){ %>
+	<div  class="<%=paymentGateway?"sup_nav_on_supervisor":""%>" style="height: auto;"><a href="/supervisor/paymentGateway.jsp" class="<%=paymentGateway?"sup_nav_on_supervisor":"sup_nav_supervisor"%>">Payment Gateway</a></div>
 <% } %>
 </div>
 </crm:GetCurrentAgent>

@@ -33,5 +33,12 @@ public class ErpVoidCaptureModel extends ErpPaymentModel {
 	public void setMerchantId(String merchantId) {
 		this.merchantId = merchantId;
 	}
+	public String getTrasactionRefIndex(){
+		return this.trasactionRefIndex;
+	}
+	public void setTrasactionRefIndex(String trasactionRefIndex){
+		this.trasactionRefIndex = trasactionRefIndex;
+	}
+	private String trasactionRefIndex="";
 
 }

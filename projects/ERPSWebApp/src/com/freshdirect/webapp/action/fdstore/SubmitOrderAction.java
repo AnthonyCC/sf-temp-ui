@@ -51,6 +51,7 @@ import com.freshdirect.fdstore.customer.FDRecipientList;
 import com.freshdirect.fdstore.customer.FDUser;
 import com.freshdirect.fdstore.customer.QuickCart;
 import com.freshdirect.fdstore.customer.adapter.CustomerRatingAdaptor;
+import com.freshdirect.fdstore.customer.adapter.FDOrderAdapter;
 import com.freshdirect.fdstore.customer.ejb.EnumCustomerListType;
 import com.freshdirect.fdstore.lists.FDCustomerRecipeList;
 import com.freshdirect.fdstore.lists.FDCustomerShoppingList;
@@ -278,6 +279,15 @@ public class SubmitOrderAction extends WebActionSupport {
 		FDCustomerCreditUtil.applyCustomerCredit(cart,user.getIdentity());
 		
 		FDUser fdUser = user.getUser();
+		if(!fdUser.isPaymentechEnabled()) {
+			ErpPaymentMethodI pm=cart.getPaymentMethod();
+			pm.setProfileID("");//Explicitly clear the profile ID;
+		} else if (cart instanceof FDModifyCartModel){
+			 
+				FDModifyCartModel modifyCart = (FDModifyCartModel) cart;
+				FDOrderAdapter order = modifyCart.getOriginalOrder();
+				ErpPaymentMethodI pymtMethod=order.getPaymentMethod();
+		}
 		try {
 			
 			String orderNumber = null;
@@ -559,7 +569,19 @@ public class SubmitOrderAction extends WebActionSupport {
 		FDCustomerCreditUtil.applyCustomerCredit(cart,user.getIdentity());
 		
 		FDUser fdUser = user.getUser();
+		if(!fdUser.isPaymentechEnabled()) {
+			ErpPaymentMethodI pm=cart.getPaymentMethod();
+			pm.setProfileID(null);//Explicitly clear the profile ID;
+		}else if (cart instanceof FDModifyCartModel){
 
+				FDModifyCartModel modifyCart = (FDModifyCartModel) cart;
+				FDOrderAdapter order = modifyCart.getOriginalOrder();
+				ErpPaymentMethodI pymtMethod=order.getPaymentMethod();
+				if(pymtMethod.getProfileID()==null) {
+					ErpPaymentMethodI pm=cart.getPaymentMethod();
+					pm.setProfileID(null);//Explicitly clear the profile ID;
+				}
+		}
 
 
 		/**

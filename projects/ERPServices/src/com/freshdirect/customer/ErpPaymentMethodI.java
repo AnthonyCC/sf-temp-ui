@@ -120,5 +120,8 @@ public interface ErpPaymentMethodI extends AddressI {
 	public void setCVV(String val);
 	
 	public String getCVV();
+	
+	public String getProfileID();
+	public void setProfileID(String profileID);
 }
 

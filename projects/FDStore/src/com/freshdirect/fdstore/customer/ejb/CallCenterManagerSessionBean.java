@@ -9,15 +9,12 @@
 package com.freshdirect.fdstore.customer.ejb;
 
 import java.rmi.RemoteException;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.sql.Types;
-import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -42,6 +39,7 @@ import javax.naming.NamingException;
 import oracle.sql.ARRAY;
 import oracle.sql.ArrayDescriptor;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Category;
 
 import com.freshdirect.ErpServicesProperties;
@@ -68,11 +66,12 @@ import com.freshdirect.customer.EnumSaleStatus;
 import com.freshdirect.customer.EnumSaleType;
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.customer.EnumTransactionType;
-import com.freshdirect.customer.EnumVSReasonCodes;
 import com.freshdirect.customer.EnumVSStatus;
 import com.freshdirect.customer.ErpAbstractOrderModel;
 import com.freshdirect.customer.ErpActivityRecord;
 import com.freshdirect.customer.ErpAddressModel;
+import com.freshdirect.customer.ErpAuthorizationModel;
+import com.freshdirect.customer.ErpCaptureModel;
 import com.freshdirect.customer.ErpChargeLineModel;
 import com.freshdirect.customer.ErpComplaintException;
 import com.freshdirect.customer.ErpComplaintReason;
@@ -85,6 +84,7 @@ import com.freshdirect.customer.ErpReturnOrderModel;
 import com.freshdirect.customer.ErpSaleModel;
 import com.freshdirect.customer.ErpSaleNotFoundException;
 import com.freshdirect.customer.ErpTransactionException;
+import com.freshdirect.customer.ErpVoidCaptureModel;
 import com.freshdirect.customer.VSReasonCodes;
 import com.freshdirect.customer.ejb.ErpComplaintManagerHome;
 import com.freshdirect.customer.ejb.ErpComplaintManagerSB;
@@ -100,7 +100,6 @@ import com.freshdirect.deliverypass.EnumDlvPassExtendReason;
 import com.freshdirect.deliverypass.EnumDlvPassStatus;
 import com.freshdirect.deliverypass.ejb.DlvPassManagerHome;
 import com.freshdirect.deliverypass.ejb.DlvPassManagerSB;
-import com.freshdirect.crm.CrmManager;
 import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDInvalidAddressException;
 import com.freshdirect.fdstore.FDResourceException;
@@ -126,7 +125,6 @@ import com.freshdirect.fdstore.customer.MakeGoodOrderInfo;
 import com.freshdirect.fdstore.customer.RouteStopReportLine;
 import com.freshdirect.fdstore.customer.SubjectReportLine;
 import com.freshdirect.fdstore.customer.adapter.FDOrderAdapter;
-import com.freshdirect.framework.core.ModelI;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.core.SequenceGenerator;
 import com.freshdirect.framework.core.ServiceLocator;
@@ -138,6 +136,20 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.mail.ErpMailSender;
 import com.freshdirect.payment.EnumBankAccountType;
 import com.freshdirect.payment.EnumPaymentMethodType;
+import com.freshdirect.payment.GatewayAdapter;
+import com.freshdirect.payment.PaylinxResourceException;
+import com.freshdirect.payment.gateway.BillingInfo;
+import com.freshdirect.payment.gateway.Gateway;
+import com.freshdirect.payment.gateway.GatewayType;
+import com.freshdirect.payment.gateway.Merchant;
+import com.freshdirect.payment.gateway.Request;
+import com.freshdirect.payment.gateway.Response;
+import com.freshdirect.payment.gateway.TransactionType;
+import com.freshdirect.payment.gateway.impl.BillingInfoFactory;
+import com.freshdirect.payment.gateway.impl.GatewayFactory;
+import com.freshdirect.payment.gateway.impl.PaymentMethodFactory;
+import com.freshdirect.payment.gateway.impl.Paymentech;
+import com.freshdirect.payment.gateway.impl.RequestFactory;
 
 /**
  *
@@ -952,7 +964,9 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
         try {
               ErpCustomerManagerSB customerManagerSB = (ErpCustomerManagerSB) this.getErpCustomerManagerHome().create();
               ErpSaleModel _order=customerManagerSB.getOrder(new PrimaryKey(saleId));
+              
               ErpAbstractOrderModel order =_order.getCurrentOrder();
+             
               ErpDeliveryInfoModel dlvInfo=order.getDeliveryInfo();
               DlvZoneInfoModel zInfo = FDDeliveryManager.getInstance().getZoneInfo(dlvInfo.getDeliveryAddress(),dlvInfo.getDeliveryStartTime());
               customerManagerSB.resubmitOrder(saleId, cra,saleType,zInfo.getRegionId());
@@ -3483,4 +3497,208 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 		
 	}
 	
+	private static final String REVERSE_AUTH_ORDERS_QUERY_BY_DATE ="select A.sale_id, A.status, A.requested_date, A.amount, A.action_date,A.last_name,A.first_name from "+
+			"(select  s.id as sale_id, s.status, sa.requested_date, sa.amount, sa.action_date, ci.last_name, ci.first_name from cust.sale s, "+ 
+			"cust.salesaction sa,cust.customerinfo ci, cust.paymentinfo pi  where s.status='CAN' "+ 
+			"and s.id=sa.sale_id and SA.ACTION_TYPE IN ('CRO','MOD') and S.CROMOD_DATE=SA.ACTION_DATE "+ 
+			" AND sa.requested_date =TO_DATE(?, 'YYYY-MM-DD') and s.customer_id=ci.customer_id and PI.SALESACTION_ID=sa.id and PI.PAYMENT_METHOD_TYPE='CC' "+ 
+			"and PI.ON_FD_ACCOUNT='R' ) A, "+
+			"cust.salesaction sa1, cust.payment p "+
+			"where A.sale_id=sa1.sale_id and sa1.id=P.SALESACTION_ID and sa1.action_type='AUT' "+
+			"and  exists (select 1 from MIS.GATEWAY_ACTIVITY_LOG gal where P.GATEWAY_ORDER=GAL.ORDER_ID and transaction_type='AUTHORIZE' and GAL.IS_APPROVED='Y' )";
+	
+	public List<FDCustomerOrderInfo> getReverseAuthOrders(String date) throws FDResourceException {
+		Connection conn = null;
+		if(StringUtils.isEmpty(date))
+			throw new FDResourceException("Please pass a valid date");
+		try {
+			System.out.println(REVERSE_AUTH_ORDERS_QUERY_BY_DATE);
+			conn = this.getConnection();
+			List lst = new ArrayList();
+			PreparedStatement ps =null;
+			
+				ps= conn.prepareStatement(REVERSE_AUTH_ORDERS_QUERY_BY_DATE);
+				ps.setString(1,date);
+				//ps.setString(2,date);
+			
+			ResultSet rs = ps.executeQuery();
+			while(rs.next()){
+				FDCustomerOrderInfo info = new FDCustomerOrderInfo();
+				info.setSaleId(rs.getString("SALE_ID"));
+				info.setDeliveryDate(rs.getDate("REQUESTED_DATE"));
+				info.setOrderStatus(EnumSaleStatus.getSaleStatus(rs.getString("STATUS")));
+				info.setAmount(rs.getDouble("AMOUNT"));
+				info.setFirstName(rs.getString("FIRST_NAME"));
+				info.setLastName(rs.getString("LAST_NAME"));
+				info.setLastCroModDate(rs.getTimestamp("ACTION_DATE"));
+				lst.add(info);
+}
+			rs.close();
+			ps.close();
+
+			return lst;
+		} catch (SQLException sqle) {
+			LOGGER.error(sqle.getMessage());
+			throw new FDResourceException(sqle);
+		} finally {
+			if (conn != null) {
+				try {
+					conn.close();
+				} catch (SQLException sqle) {
+					LOGGER.debug("Error while cleaning:", sqle);
+				}
+			}
+		}
+	}	
+	
+	private static final String VOID_CAPTURE_ORDERS_QUERY_BY_DATE ="select  s.id as sale_id, s.status, sa.requested_date, sa.amount, sa.action_date, ci.last_name, ci.first_name "+  
+		    "from cust.sale s, cust.salesaction sa,cust.customerinfo ci, cust.paymentinfo pi "+ 
+		    " where "+ 
+		    "s.status='CAN' and s.id=sa.sale_id and SA.ACTION_TYPE IN ('CRO','MOD') and S.CROMOD_DATE=SA.ACTION_DATE "+  
+		    "AND sa.requested_date =TO_DATE('2013-07-27', 'YYYY-MM-DD') and s.customer_id=ci.customer_id "+
+		    "and PI.SALESACTION_ID=sa.id and PI.PAYMENT_METHOD_TYPE='CC' and PI.ON_FD_ACCOUNT='R' "+
+		    "and  exists "+ 
+		"(select 1 from MIS.GATEWAY_ACTIVITY_LOG gal where s.id=SUBSTR(GAL.ORDER_ID,1,INSTRB(GAL.ORDER_ID, 'X', 1, 1)-1) ) ";
+			
+			public List<FDCustomerOrderInfo> getOrdersForVoidCapture(String date) throws FDResourceException {
+				Connection conn = null;
+				if(StringUtils.isEmpty(date))
+					throw new FDResourceException("Please pass a valid date");
+				try {
+					conn = this.getConnection();
+					List lst = new ArrayList();
+					PreparedStatement ps =null;
+					
+						ps= conn.prepareStatement(VOID_CAPTURE_ORDERS_QUERY_BY_DATE);
+						ps.setString(1,date);
+						ps.setString(2,date);
+					
+					ResultSet rs = ps.executeQuery();
+					while(rs.next()){
+						FDCustomerOrderInfo info = new FDCustomerOrderInfo();
+						info.setSaleId(rs.getString("SALE_ID"));
+						info.setDeliveryDate(rs.getDate("REQUESTED_DATE"));
+						info.setOrderStatus(EnumSaleStatus.getSaleStatus(rs.getString("STATUS")));
+						info.setAmount(rs.getDouble("AMOUNT"));
+						info.setFirstName(rs.getString("FIRST_NAME"));
+						info.setLastName(rs.getString("LAST_NAME"));
+						info.setLastCroModDate(rs.getTimestamp("ACTION_DATE"));
+						lst.add(info);
+					}
+					rs.close();
+					ps.close();
+
+					return lst;
+				} catch (SQLException sqle) {
+					LOGGER.error(sqle.getMessage());
+					throw new FDResourceException(sqle);
+				} finally {
+					if (conn != null) {
+						try {
+							conn.close();
+						} catch (SQLException sqle) {
+							LOGGER.debug("Error while cleaning:", sqle);
+						}
+					}
+				}
+			}
+
+
+			public void reverseAuthOrder(String saleId) throws RemoteException, FDResourceException, ErpTransactionException {
+				
+				if(StringUtils.isEmpty(saleId))
+					return ;
+				Gateway gateway=GatewayFactory.getGateway(GatewayType.PAYMENTECH);
+				 try {
+		              ErpCustomerManagerSB customerManagerSB = (ErpCustomerManagerSB) this.getErpCustomerManagerHome().create();
+		              ErpSaleModel _order=customerManagerSB.getOrder(new PrimaryKey(saleId));
+		              if(_order==null) return ;
+		              if(EnumSaleStatus.CANCELED.equals(_order.getStatus())) {
+		            	  
+			              ErpAbstractOrderModel order =_order.getCurrentOrder();
+			              List<ErpAuthorizationModel> auths= _order.getAuthorizations();
+			              for (ErpAuthorizationModel auth : auths) {
+			            	  
+			          		if(!StringUtils.isEmpty(auth.getAuthCode())) {
+			          			Request _request=RequestFactory.getRequest(TransactionType.REVERSE_AUTHORIZE);
+					              BillingInfo billinginfo=null;
+					              
+					              billinginfo=BillingInfoFactory.getBillingInfo(Merchant.valueOf(auth.getMerchantId()),GatewayAdapter.getCreditCardModel(order.getPaymentMethod()));
+					              billinginfo.setTransactionID(auth.getGatewayOrderID());
+					              billinginfo.getPaymentMethod().setCustomerID(_order.getCustomerPk().getId());
+					              billinginfo.setTransactionRefIndex(auth.getTrasactionRefIndex());
+					              billinginfo.setTransactionRef(auth.getSequenceNumber());
+					              billinginfo.setAmount(auth.getAmount());
+					              _request.setBillingInfo(billinginfo);
+					              Response _response=gateway.reverseAuthorize(_request);
+					              if (!_response.isSuccess())
+					              	throw new ErpTransactionException(_response.getStatusMessage()) ;
+			          		}
+			          	  }
+			  			  
+			              
+		              }
+		              
+		              
+		        } catch (CreateException ce) {
+		              throw new FDResourceException(ce);
+		        } catch (RemoteException re) {
+		              throw new FDResourceException(re);
+		        } 
+			}
+			
+			/*select A.sale_id, A.status, A.requested_date, A.amount, A.action_date,A.last_name,A.first_name from
+			(select  s.id as sale_id, s.status, sa.requested_date, sa.amount, sa.action_date, ci.last_name, ci.first_name from cust.sale s, 
+			cust.salesaction sa,cust.customerinfo ci, cust.paymentinfo pi  where s.status='CAN' 
+			and s.id=sa.sale_id and SA.ACTION_TYPE IN ('CRO','MOD') and S.CROMOD_DATE=SA.ACTION_DATE 
+			AND sa.requested_date =TO_DATE('2013-07-27', 'YYYY-MM-DD') and s.customer_id=ci.customer_id and PI.SALESACTION_ID=sa.id and PI.PAYMENT_METHOD_TYPE='CC' 
+			and PI.ON_FD_ACCOUNT='R' ) A,
+			cust.salesaction sa1, cust.payment p
+			where A.sale_id=sa1.sale_id and sa1.id=P.SALESACTION_ID and sa1.action_type='AUT'
+			and  exists (select 1 from MIS.GATEWAY_ACTIVITY_LOG gal where P.GATEWAY_ORDER=GAL.ORDER_ID and transaction_type='AUTHORIZE' and GAL.IS_APPROVED='Y' )*/ 
+			
+			public void voidCaptureOrder(String saleId) throws RemoteException, FDResourceException, ErpTransactionException {
+				
+
+				if(StringUtils.isEmpty(saleId))
+					return;
+				Paymentech gateway=(Paymentech)GatewayFactory.getGateway(GatewayType.PAYMENTECH);
+				 try {
+		              ErpCustomerManagerSB customerManagerSB = (ErpCustomerManagerSB) this.getErpCustomerManagerHome().create();
+		              ErpSaleModel _order=customerManagerSB.getOrder(new PrimaryKey(saleId));
+		              if(_order==null) return;
+		              if(EnumSaleStatus.CANCELED.equals(_order.getStatus())) {
+		            	  
+			              ErpAbstractOrderModel order =_order.getCurrentOrder();
+			              List<ErpCaptureModel> captures= _order.getCaptures();
+			              for (ErpCaptureModel capture : captures) {
+			            	
+			          			Request _request=RequestFactory.getRequest(TransactionType.VOID_CAPTURE);
+					              BillingInfo billinginfo=null;
+					              
+					              
+					              billinginfo=BillingInfoFactory.getBillingInfo(Merchant.FRESHDIRECT,PaymentMethodFactory.getCreditCard());
+					              billinginfo.setTransactionID(saleId);
+					              billinginfo.setTransactionRefIndex(capture.getTrasactionRefIndex());
+					              billinginfo.setTransactionRef(capture.getSequenceNumber());
+					              billinginfo.setAmount(capture.getAmount());
+					              _request.setBillingInfo(billinginfo);
+					              Response _response=gateway.voidCapture(_request);
+					              ErpVoidCaptureModel voidCapture=GatewayAdapter.getVoidCaptureResponse(_response, capture);
+					              _order.addVoidCapture(voidCapture);
+			          		
+			          	  }
+			  			  
+			              
+		              }
+		              
+		        } catch (CreateException ce) {
+		              throw new FDResourceException(ce);
+		        } catch (RemoteException re) {
+		              throw new FDResourceException(re);
+		        } catch ( PaylinxResourceException pre) {
+		        	throw new FDResourceException(pre);
+		        }
+			}
+			
 }

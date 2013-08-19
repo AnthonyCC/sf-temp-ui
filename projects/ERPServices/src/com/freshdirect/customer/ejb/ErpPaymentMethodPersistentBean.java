@@ -101,63 +101,8 @@ public class ErpPaymentMethodPersistentBean extends DependentPersistentBeanSuppo
 	public PrimaryKey create(Connection conn) throws SQLException {
 		System.out.println("Inside calling create ******************* ");
 		String id = this.getNextId(conn, "CUST");
-		PreparedStatement ps = conn.prepareStatement("INSERT INTO CUST.PAYMENTMETHOD (ID, CUSTOMER_ID, NAME, ACCOUNT_NUMBER, EXPIRATION_DATE, CARD_TYPE, PAYMENT_METHOD_TYPE, ABA_ROUTE_NUMBER, BANK_NAME, BANK_ACCOUNT_TYPE, ADDRESS2, APARTMENT,  ADDRESS1, CITY, STATE, ZIP_CODE, COUNTRY, AVS_FAILED,BYPASS_AVS_CHECK) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+		PreparedStatement ps = conn.prepareStatement("INSERT INTO CUST.PAYMENTMETHOD (ID, CUSTOMER_ID, NAME, ACCOUNT_NUMBER, EXPIRATION_DATE, CARD_TYPE, PAYMENT_METHOD_TYPE, ABA_ROUTE_NUMBER, BANK_NAME, BANK_ACCOUNT_TYPE, ADDRESS2, APARTMENT,  ADDRESS1, CITY, STATE, ZIP_CODE, COUNTRY, AVS_FAILED,BYPASS_AVS_CHECK, PROFILE_ID,ACCOUNT_NUM_MASKED) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
 		int index = 1;
-		/*
-		if(this.model.getPaymentMethodType().equals(EnumPaymentMethodType.GIFTCARD)) {
-			System.out.println("Inside calling GC create ******************* ");
-			ps.setString(index++, id);
-			ps.setString(index++, this.getParentPK().getId());
-			ps.setString(index++, "N/A");
-			ps.setString(index++, model.getAccountNumber());
-			if (model.getExpirationDate() != null) {
-				ps.setDate(index++, new java.sql.Date(model.getExpirationDate().getTime()));
-			} else {
-				ps.setNull(index++, Types.DATE);			
-			}
-			if (model.getCardType() != null) {
-				ps.setString(index++, model.getCardType().getFdName());
-			} else {
-				ps.setNull(index++, Types.VARCHAR);			
-			}
-			if (model.getPaymentMethodType() != null) {
-				ps.setString(index++, model.getPaymentMethodType().getName());
-			} else {
-				ps.setNull(index++, Types.VARCHAR);			
-			}
-			if (model.getAbaRouteNumber() != null) {
-				ps.setString(index++, model.getAbaRouteNumber());
-			} else {
-				ps.setNull(index++, Types.VARCHAR);			
-			}
-			if (model.getBankName() != null) {
-				ps.setString(index++, model.getBankName());
-			} else {
-				ps.setNull(index++, Types.VARCHAR);			
-			}
-			if (model.getBankAccountType() != null) {
-				ps.setString(index++, model.getBankAccountType().getName());
-			} else {
-				ps.setNull(index++, Types.VARCHAR);			
-			}
-			ps.setString(index++, "N/A");
-			if (model.getAddress2() != null) {
-				ps.setString(index++, model.getAddress2());
-			} else {
-				ps.setNull(index++, Types.VARCHAR);			
-			}
-			if (model.getApartment() != null) {
-				ps.setString(index++, model.getApartment());
-			} else {
-				ps.setNull(index++, Types.VARCHAR);			
-			}
-			ps.setString(index++, "N/A");
-			ps.setString(index++, "N/A");
-			ps.setString(index++, "N/A");
-			ps.setString(index++, "N/A");
-
-		} else {*/
-			System.out.println("Inside calling non GC create ******************* ");
 			ps.setString(index++, id);
 			ps.setString(index++, this.getParentPK().getId());
 			ps.setString(index++, model.getName());
@@ -229,7 +174,16 @@ public class ErpPaymentMethodPersistentBean extends DependentPersistentBeanSuppo
 			}else{
 				ps.setNull(index++, Types.VARCHAR);
 			}
-
+			if(model.getProfileID()!=null) {
+				ps.setString(index++, model.getProfileID() );	
+			}else{
+				ps.setNull(index++, Types.VARCHAR);
+			}
+			if(model.getMaskedAccountNumber()!=null) {
+				ps.setString(index++, model.getMaskedAccountNumber() );	
+			}else{
+				ps.setNull(index++, Types.VARCHAR);
+			}
 			
 		//}
 		try {
@@ -249,7 +203,7 @@ public class ErpPaymentMethodPersistentBean extends DependentPersistentBeanSuppo
 	}
 
 	public void load(Connection conn) throws SQLException {
-		PreparedStatement ps = conn.prepareStatement("SELECT NAME, ACCOUNT_NUMBER, EXPIRATION_DATE, CARD_TYPE, PAYMENT_METHOD_TYPE, ABA_ROUTE_NUMBER, BANK_NAME, BANK_ACCOUNT_TYPE, ADDRESS1, ADDRESS2, APARTMENT, CITY, STATE, ZIP_CODE, COUNTRY, CUSTOMER_ID, AVS_FAILED,BYPASS_AVS_CHECK FROM CUST.PAYMENTMETHOD WHERE ID = ?");
+		PreparedStatement ps = conn.prepareStatement("SELECT NAME, ACCOUNT_NUMBER, EXPIRATION_DATE, CARD_TYPE, PAYMENT_METHOD_TYPE, ABA_ROUTE_NUMBER, BANK_NAME, BANK_ACCOUNT_TYPE, ADDRESS1, ADDRESS2, APARTMENT, CITY, STATE, ZIP_CODE, COUNTRY, CUSTOMER_ID, AVS_FAILED,BYPASS_AVS_CHECK, PROFILE_ID,ACCOUNT_NUM_MASKED FROM CUST.PAYMENTMETHOD WHERE ID = ?");
 		ResultSet rs = null;
 		try {
 			ps.setString(1, this.getPK().getId());
@@ -280,6 +234,11 @@ public class ErpPaymentMethodPersistentBean extends DependentPersistentBeanSuppo
 					//Set the certification number for gift card.
 					model.setCertificateNumber(ErpGiftCardUtil.getCertificateNumber(rs.getString("ACCOUNT_NUMBER")));
 				}
+				model.setProfileID(rs.getString("PROFILE_ID"));
+				model.setAccountNumLast4(rs.getString("ACCOUNT_NUM_MASKED"));
+				/*model.setProfileID("36280971");
+				model.setAccountNumLast4("7978");*/
+				
 			} else {
 				throw new SQLException("No such ErpPaymentMethod PK: " + this.getPK());
 			}

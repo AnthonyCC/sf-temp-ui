@@ -271,17 +271,18 @@ public class ErpFraudPreventionSessionBean extends SessionBeanSupport {
 
 		LOGGER.info("Fraud check, order. customerPK=" + erpCustomerPk);
 
-		//
+		//Removing the duplicate payment method check. we dont require this as the new gateway supports adding the same payment method for multiple accounts.
+	       
 		// CHECK DUPLICATE ACCOUNT #
 		//
-		ErpPaymentMethodI paymentMethod = (ErpPaymentMethodI) order.getPaymentMethod();
-		if ("true".equalsIgnoreCase(ErpServicesProperties.getCheckForPaymentMethodFraud()) && !paymentMethod.isGiftCard()) {
-			boolean dupCC = this.checkDuplicatePaymentMethodFraud(erpCustomerPk.getId(), paymentMethod);
+		//ErpPaymentMethodI paymentMethod = (ErpPaymentMethodI) order.getPaymentMethod();
+		//if ("true".equalsIgnoreCase(ErpServicesProperties.getCheckForPaymentMethodFraud()) && !paymentMethod.isGiftCard()) {
+		//	boolean dupCC = this.checkDuplicatePaymentMethodFraud(erpCustomerPk.getId(), paymentMethod);
 
-			if (dupCC) {
-				return EnumFraudReason.DUP_ACCOUNT_NUMBER;
-			}
-		}
+		//	if (dupCC) {
+		//		return EnumFraudReason.DUP_ACCOUNT_NUMBER;
+		//	}
+		//}
 
 		//
 		// ORDER TOTAL check (TOTAL > $450 OR TOTAL > $750)
@@ -590,7 +591,7 @@ public class ErpFraudPreventionSessionBean extends SessionBeanSupport {
 		//
 		// CHECK DUPLICATE ACCOUNT #
 		// 
-		if ("true".equalsIgnoreCase(ErpServicesProperties.getCheckForPaymentMethodFraud())) {
+		/*if ("true".equalsIgnoreCase(ErpServicesProperties.getCheckForPaymentMethodFraud())) {
 
 			ErpPaymentMethodI paymentMethod = (ErpPaymentMethodI) order.getPaymentMethod();
 			boolean dupCC = this.checkDuplicatePaymentMethodFraud(erpCustomerPk.getId(), paymentMethod);
@@ -598,7 +599,7 @@ public class ErpFraudPreventionSessionBean extends SessionBeanSupport {
 			if (dupCC) {
 				return EnumFraudReason.DUP_ACCOUNT_NUMBER;
 			}
-		}
+		}*/
 
 		final boolean csr = EnumTransactionSource.CUSTOMER_REP.equals(order.getTransactionSource());
 		//

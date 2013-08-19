@@ -90,6 +90,7 @@ import com.freshdirect.fdstore.deliverypass.FDUserDlvPassInfo;
 import com.freshdirect.fdstore.iplocator.IpLocatorEventDTO;
 import com.freshdirect.fdstore.request.FDProductRequest;
 import com.freshdirect.fdstore.survey.FDSurveyResponse;
+import com.freshdirect.fdstore.util.EnumSiteFeature;
 import com.freshdirect.fdstore.util.IgnoreCaseString;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.mail.FTLEmailI;
@@ -191,7 +192,7 @@ public interface FDCustomerManagerSB extends EJBObject {
      *
      * @throws FDResourceException if an error occured using remote resources
      */
-    public void addPaymentMethod(FDActionInfo info, ErpPaymentMethodI paymentMethod) throws FDResourceException, RemoteException, ErpDuplicatePaymentMethodException, ErpPaymentMethodException;
+    public void addPaymentMethod(FDActionInfo info, ErpPaymentMethodI paymentMethod, boolean paymentechEnabled) throws FDResourceException, RemoteException, ErpDuplicatePaymentMethodException, ErpPaymentMethodException;
    
     public void setDefaultPaymentMethod(FDActionInfo info, PrimaryKey paymentMethodPK) throws FDResourceException,RemoteException;
     
@@ -222,7 +223,7 @@ public interface FDCustomerManagerSB extends EJBObject {
      *
      * throws FDResourceException if an error occured using remote resources
      */
-    public void removePaymentMethod(FDActionInfo info, PrimaryKey pk) throws FDResourceException, RemoteException;
+    public void removePaymentMethod(FDActionInfo info, ErpPaymentMethodI paymentMethod) throws FDResourceException, RemoteException;
 
 	public boolean checkBillToAddressFraud(FDActionInfo info, ErpPaymentMethodI paymentMethod) throws FDResourceException, RemoteException;
     
@@ -815,5 +816,7 @@ public interface FDCustomerManagerSB extends EJBObject {
 	public void logIpLocatorEvent(IpLocatorEventDTO ipLocatorEventDTO) throws FDResourceException, RemoteException;
 	
 	public IpLocatorEventDTO loadIpLocatorEvent (String fdUserId) throws FDResourceException, RemoteException;
+	public boolean  isFeatureEnabled(String customerId, EnumSiteFeature feature) throws FDResourceException, RemoteException;
+	
 }
 

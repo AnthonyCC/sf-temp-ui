@@ -79,19 +79,25 @@ public class PaymentMethodUtil implements PaymentMethodName { //AddressName,
     
     public static void addPaymentMethod(HttpServletRequest request, ActionResult result, ErpPaymentMethodI paymentMethod) throws FDResourceException {
     	FDActionInfo info = AccountActivityUtil.getActionInfo(request.getSession());
+    	FDSessionUser sessionuser = null;
         try {
-            FDCustomerManager.addPaymentMethod(info, paymentMethod);
+        	sessionuser = (FDSessionUser) request.getSession().getAttribute(SessionName.USER);
+            FDCustomerManager.addPaymentMethod(info, paymentMethod, sessionuser.isPaymentechEnabled());
         } catch (ErpDuplicatePaymentMethodException ex) {
             LOGGER.debug(ex);
             result.addError(new ActionError("payment_method_fraud", SystemMessageList.MSG_INVALID_ACCOUNT_NUMBER));
-            FDSessionUser sessionuser = (FDSessionUser) request.getSession().getAttribute(SessionName.USER);
             sessionuser.setInvalidPaymentMethod(paymentMethod);
             FDCustomerManager.logDupeCCActivity(info, paymentMethod, sessionuser.getUserId());
         } catch (ErpPaymentMethodException ex) {
-            LOGGER.debug(ex);
+            /*LOGGER.debug(ex);
             result.addError(new ActionError("payment_method_fraud", SystemMessageList.MSG_INVALID_ACCOUNT_NUMBER));
-            FDSessionUser sessionuser = (FDSessionUser) request.getSession().getAttribute(SessionName.USER);
-            sessionuser.setInvalidPaymentMethod(paymentMethod);
+            sessionuser.setInvalidPaymentMethod(paymentMethod);*/
+        	if("AVS".equals(ex.getMessage()))
+	        	result.addError(true,EnumUserInfoName.BIL_ZIPCODE.getCode(),SystemMessageList.MSG_ZIP_CODE);
+        	else if("CVV".equals(ex.getMessage()))
+        		result.addError(true,PaymentMethodName.CSV,SystemMessageList.MSG_CVV_INCORRECT);
+        	else result.addError(new ActionError("payment_method_fraud", SystemMessageList.MSG_INVALID_ACCOUNT_NUMBER));
+			
         }
                 
     }
@@ -107,7 +113,11 @@ public class PaymentMethodUtil implements PaymentMethodName { //AddressName,
             FDCustomerManager.logDupeCCActivity(info, paymentMethod, sessionuser.getUserId());
         } catch (ErpPaymentMethodException ex) {
             LOGGER.debug(ex);
-            result.addError(new ActionError("payment_method_fraud", SystemMessageList.MSG_INVALID_ACCOUNT_NUMBER));
+            if("AVS".equals(ex.getMessage()))
+	        	result.addError(true,EnumUserInfoName.BIL_ZIPCODE.getCode(),SystemMessageList.MSG_ZIP_CODE);
+        	else if("CVV".equals(ex.getMessage()))
+        		result.addError(true,PaymentMethodName.CSV,SystemMessageList.MSG_CVV_INCORRECT);
+        	else result.addError(new ActionError("payment_method_fraud", SystemMessageList.MSG_INVALID_ACCOUNT_NUMBER));
         }
     }
     
@@ -407,7 +417,7 @@ public class PaymentMethodUtil implements PaymentMethodName { //AddressName,
 	        PaymentMethodName.ACCOUNT_NUMBER, SystemMessageList.MSG_INVALID_ACCOUNT_NUMBER
 	        );
 	        String csv=paymentMethod.getCVV();
-            if(FDStoreProperties.isPaymentMethodVerificationEnabled()&& !paymentMethod.isBypassAVSCheck()&& verifyCC) {
+            if(FDStoreProperties.isPaymentMethodVerificationEnabled()/*&& !paymentMethod.isBypassAVSCheck()*/&& verifyCC) {
 	        	result.addError(
 		    	        csv == null || (csv!=null & csv.length() <= 0),
 		    	        PaymentMethodName.CSV,SystemMessageList.MSG_REQUIRED
@@ -499,7 +509,7 @@ public class PaymentMethodUtil implements PaymentMethodName { //AddressName,
 	        }
         
 	        
-        if(EnumPaymentMethodType.CREDITCARD.equals(paymentMethod.getPaymentMethodType())){
+        /*if(EnumPaymentMethodType.CREDITCARD.equals(paymentMethod.getPaymentMethodType())){
 	        if(!result.isFailure() && FDStoreProperties.isPaymentMethodVerificationEnabled()&& !paymentMethod.isBypassAVSCheck()&& verifyCC) {
 	        	
 	        	
@@ -567,7 +577,7 @@ public class PaymentMethodUtil implements PaymentMethodName { //AddressName,
 	        		result.addError(new ActionError("payment_method_fraud", SystemMessageList.MSG_TECHNICAL_ERROR+" "+e.toString()));
 				}
 	        }
-        } 
+        }*/ 
         }else if (EnumPaymentMethodType.ECHECK.equals(paymentMethod.getPaymentMethodType())) {
         	        	
 	        if (paymentMethod.getAbaRouteNumber() != null && !"".equals(paymentMethod.getAbaRouteNumber())) {
@@ -742,6 +752,7 @@ public class PaymentMethodUtil implements PaymentMethodName { //AddressName,
                 timesTwo = !timesTwo;
             }
             
+            System.out.println((checksum % 10) == 0);
             return (checksum % 10) == 0;
             
         } catch (NumberFormatException ne) {
@@ -770,13 +781,10 @@ public class PaymentMethodUtil implements PaymentMethodName { //AddressName,
                 return AMERICAN_EXPRESS;
             }
             
-            //for DISC prefix is 60 and length must be 16
-        } else if(digit2.equals("60") && EnumCardType.DISC.getFdName().equalsIgnoreCase(brand)){
-            if(number.length() == 16){
-                return DISCOVER;
-            }
-        }
-        
+            //Discover card numbers begin with 6011 or 65 and length is 16
+        } else if(Pattern.compile("^6(?:011|5[0-9]{2})[0-9]{12}$").matcher(number).matches()) {
+        	return DISCOVER;
+        } 
         return INVALID;
     }
 

@@ -159,4 +159,10 @@ public interface CallCenterManagerSB extends EJBObject {
 	
 	public void addNewIVRCallLog(CallLogModel callLogModel) throws FDResourceException, RemoteException;
 	
+	public List<FDCustomerOrderInfo> getReverseAuthOrders(String date) throws FDResourceException, RemoteException; 
+	public List<FDCustomerOrderInfo> getOrdersForVoidCapture(String date) throws FDResourceException, RemoteException;
+	public void reverseAuthOrder(String saleId) throws RemoteException, FDResourceException, ErpTransactionException;
+	public void voidCaptureOrder(String saleId) throws RemoteException, FDResourceException, ErpTransactionException;
+	
+	
 }

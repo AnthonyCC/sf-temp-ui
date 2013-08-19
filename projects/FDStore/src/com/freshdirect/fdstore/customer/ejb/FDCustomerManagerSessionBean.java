@@ -188,6 +188,7 @@ import com.freshdirect.fdstore.temails.TEmailConstants;
 import com.freshdirect.fdstore.temails.TEmailsUtil;
 import com.freshdirect.fdstore.temails.ejb.TEmailInfoHome;
 import com.freshdirect.fdstore.temails.ejb.TEmailInfoSB;
+import com.freshdirect.fdstore.util.EnumSiteFeature;
 import com.freshdirect.fdstore.util.IgnoreCaseString;
 import com.freshdirect.fdstore.zone.FDZoneInfoManager;
 import com.freshdirect.framework.core.PrimaryKey;
@@ -199,6 +200,7 @@ import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.GenericSearchCriteria;
 import com.freshdirect.framework.util.MD5Hasher;
 import com.freshdirect.framework.util.QueryStringBuilder;
+import com.freshdirect.framework.util.StringUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.giftcard.CardInUseException;
 import com.freshdirect.giftcard.CardOnHoldException;
@@ -219,9 +221,15 @@ import com.freshdirect.mail.EnumTranEmailType;
 import com.freshdirect.mail.ErpEmailFactory;
 import com.freshdirect.mail.ejb.MailerGatewaySB;
 import com.freshdirect.payment.EnumPaymentMethodType;
+import com.freshdirect.payment.GatewayAdapter;
 import com.freshdirect.payment.ejb.PaymentManagerSB;
 import com.freshdirect.payment.fraud.PaymentFraudManager;
 import com.freshdirect.payment.fraud.RestrictedPaymentMethodModel;
+import com.freshdirect.payment.gateway.Gateway;
+import com.freshdirect.payment.gateway.GatewayType;
+import com.freshdirect.payment.gateway.Request;
+import com.freshdirect.payment.gateway.Response;
+import com.freshdirect.payment.gateway.impl.GatewayFactory;
 import com.freshdirect.sap.command.SapCartonInfoForSale;
 import com.freshdirect.sap.ejb.SapException;
 import com.freshdirect.temails.TEmailRuntimeException;
@@ -1032,14 +1040,43 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 	 * @throws FDResourceException
 	 *             if an error occured using remote resources
 	 */
-	public void addPaymentMethod(FDActionInfo info, ErpPaymentMethodI paymentMethod) 
+	public void addPaymentMethod(FDActionInfo info, ErpPaymentMethodI paymentMethod, boolean paymentechEnabled) 
 		throws FDResourceException, ErpDuplicatePaymentMethodException, ErpPaymentMethodException {
 		try {
-		
+			
 			ErpCustomerEB erpCustomerEB = checkPaymentMethodModification(info, paymentMethod);
 
+			Gateway g = GatewayFactory.getGateway(GatewayType.PAYMENTECH);
+			
+			if(paymentechEnabled &&( EnumPaymentMethodType.CREDITCARD.equals(paymentMethod.getPaymentMethodType())||
+					                 EnumPaymentMethodType.ECHECK.equals(paymentMethod.getPaymentMethodType())
+					)){ //add payment method profile to orbital. we need to add it as part of this transaction.
+				try {				
+					//first verify the payment method with orbital/paymentech. if success then add the profile.
+					ErpAuthorizationModel authModel = g.verify(paymentMethod);
+					
+					if(authModel.isApproved()) {
+						Request request = GatewayAdapter.getAddProfileRequest(paymentMethod);
+						Response response = g.addProfile(request);
+						if(response!=null&& response.isRequestProcessed()){
+							paymentMethod.setProfileID(response.getBillingInfo().getPaymentMethod().getBillingProfileID());
+						}
+					}else{
+						if(!authModel.isZipMatch())
+							throw new ErpTransactionException("AVS");
+						else if(!authModel.isCVVMatch())
+							throw new ErpTransactionException("CVV");
+						else 
+							throw new ErpTransactionException();
+					}
+				} catch (ErpTransactionException e) {
+					this.getSessionContext().setRollbackOnly();
+					throw new ErpPaymentMethodException(e.getMessage());
+				}
+			}
+			
 			erpCustomerEB.addPaymentMethod(paymentMethod);
-
+			
 			String note = paymentMethod.getMaskedAccountNumber() + (paymentMethod.getIsTermsAccepted() ? ", enrollment agreement" : "");
 			
 			note = getByPassAvsNotes(info, paymentMethod, note);
@@ -1047,14 +1084,28 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			this.logActivity(info.createActivity(EnumAccountActivityType.ADD_PAYMENT_METHOD, note));
 
 		} catch (RemoteException re) {
+			deleteProfile(paymentMethod);
 			throw new FDResourceException(re);
 		} catch (FinderException ce) {
 			throw new FDResourceException(ce);
 		} catch (CreateException ex) {
+			deleteProfile(paymentMethod);
 			throw new FDResourceException(ex);
 		}
 	}
 
+	private void deleteProfile(ErpPaymentMethodI paymentMethod){
+		if(paymentMethod.getProfileID()!=null){ //payment method profile exists in orbital. we need to remove it as part of this transaction.
+			try {
+			Gateway g = GatewayFactory.getGateway(GatewayType.PAYMENTECH);
+			Request request=GatewayAdapter.getDeleteProfileRequest(paymentMethod);
+			g.deleteProfile(request);
+			} catch (ErpTransactionException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace(); //ignoring it if the delete profile fails. we still allow deleting the payment in DB.
+			}
+		}
+	}
 	private String getByPassAvsNotes(FDActionInfo info, ErpPaymentMethodI paymentMethod, String note)
 	{
 		try
@@ -1184,6 +1235,31 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 
 			erpCustomerEB.updatePaymentMethod(paymentMethod);
 			
+			if(!StringUtil.isEmpty(paymentMethod.getProfileID())){ //update payment method profile to orbital. we need to update it as part of this transaction.
+				try {
+				Gateway g = GatewayFactory.getGateway(GatewayType.PAYMENTECH);
+				
+				//first verify the payment method with orbital/paymentech. if success then add the profile.
+				ErpAuthorizationModel authModel = g.verify(paymentMethod);
+				if(authModel.isApproved()) {
+					Request request = GatewayAdapter.getUpdateProfileRequest(paymentMethod);
+					Response response = g.updateProfile(request);
+					if(response!=null&& response.isRequestProcessed())
+						authModel.setProfileID(response.getBillingInfo().getPaymentMethod().getBillingProfileID());
+				}else{
+					if(!authModel.isZipMatch())
+						throw new ErpTransactionException("AVS");
+					else if(!authModel.isCVVMatch())
+						throw new ErpTransactionException("CVV");
+					else 
+						throw new ErpTransactionException();
+				}
+				} catch (ErpTransactionException e) {
+					this.getSessionContext().setRollbackOnly();
+					throw new ErpPaymentMethodException(e.getMessage());
+				}
+			}
+			
 			String note = paymentMethod.getPK().getId();
 			
 			note = getByPassAvsNotes(info, paymentMethod, note);
@@ -1208,17 +1284,18 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
         //
         // DO FRAUD CHECK
         //
-        ErpFraudPreventionSB fraudSB = getErpFraudHome().create();
+       //Removing the duplicate payment method check. we dont require this as the new gateway supports adding the same payment method for multiple accounts.
+       /* ErpFraudPreventionSB fraudSB = getErpFraudHome().create();
         boolean foundFraud = fraudSB.checkDuplicatePaymentMethodFraud(info.getIdentity().getErpCustomerPK(), paymentMethod);
         if (foundFraud) {
         	this.getSessionContext().setRollbackOnly();
         	throw new ErpDuplicatePaymentMethodException("Duplicate account information.");
-        }
+        }*/
 
         //
         // Check external negative file for E-Checks, Credit Cards will alway return APPROVED
         //
-        foundFraud = false;
+        boolean foundFraud = false;
         try {
         	PaymentFraudManager paymentFraudManager = new PaymentFraudManager();
         	if (!paymentFraudManager.verifyAccountExternal(paymentMethod)) {
@@ -1246,22 +1323,37 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 	 *            throws FDResourceException if an error occured using remote
 	 *            resources
 	 */
-	public void removePaymentMethod(FDActionInfo info, PrimaryKey pk)
+	public void removePaymentMethod(FDActionInfo info,  ErpPaymentMethodI paymentMethod)
 			throws FDResourceException {
 		try {
 			ErpCustomerEB erpCustomerEB = this.getErpCustomerHome()
 					.findByPrimaryKey(
 							new PrimaryKey(info.getIdentity()
 									.getErpCustomerPK()));
-			erpCustomerEB.removePaymentMethod(pk);
+			erpCustomerEB.removePaymentMethod(paymentMethod.getPK());
 			
-			RestrictedPaymentMethodModel restrictedPymtMethod=PaymentFraudManager.getRestrictedPaymentMethodByPaymentMethodId(pk.getId(),null);
+			RestrictedPaymentMethodModel restrictedPymtMethod=PaymentFraudManager.getRestrictedPaymentMethodByPaymentMethodId(paymentMethod.getPK().getId(),null);
 			if(restrictedPymtMethod!=null) {
 				PaymentFraudManager.removeRestrictedPaymentMethod(restrictedPymtMethod.getPK(), EnumTransactionSource.SYSTEM.getCode());
 			}
-
-			this.logActivity(info.createActivity(
-					EnumAccountActivityType.DELETE_PAYMENT_METHOD, pk.getId()));
+			
+			/*if(paymentMethod.getProfileID()!=null){ //payment method profile exists in orbital. we need to remove it as part of this transaction.
+				try {
+				Gateway g = GatewayFactory.getGateway(GatewayType.PAYMENTECH);
+				Request request=GatewayAdapter.getDeleteProfileRequest(paymentMethod);
+				g.deleteProfile(request);
+				} catch (ErpTransactionException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace(); //ignoring it if the delete profile fails. we still allow deleting the payment in DB.
+				}
+			}*/
+			if(StringUtil.isEmpty(paymentMethod.getProfileID())) {
+					this.logActivity(info.createActivity(
+							EnumAccountActivityType.DELETE_PAYMENT_METHOD, paymentMethod.getPK().getId()));
+			} else {
+				this.logActivity(info.createActivity(
+						EnumAccountActivityType.DELETE_PAYMENT_METHOD, paymentMethod.getPK().getId()+" Profile ID :"+paymentMethod.getProfileID()));
+			}
 
 		} catch (RemoteException ex) {
 			throw new FDResourceException(ex);
@@ -7182,5 +7274,22 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			close(conn);
 		}
 	}
+	
+	public boolean  isFeatureEnabled(String customerId, EnumSiteFeature feature) throws FDResourceException {
+		Connection conn = null;
+		try {
+			conn = getConnection();
+
+			boolean flag = FDUserDAO.isFeatureEnabled(conn, customerId, feature.getAttributeKey());
+
+			return flag;
+
+		} catch (SQLException sqle) {
+			throw new FDResourceException(sqle);
+		} finally {
+			close(conn);
+		}
+	}
+		
 }
 

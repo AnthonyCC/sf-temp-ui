@@ -17,6 +17,7 @@ public class ErpAuthorizationModel extends ErpPaymentModel {
 	private String zipMatchResponse;
 	
 	private int verifyFailCount=0;
+	private String trasactionRefIndex="";
 	
 	public boolean isAddressMatch() {
 		return "Y".equalsIgnoreCase(addressMatchResponse);
@@ -141,6 +142,12 @@ public class ErpAuthorizationModel extends ErpPaymentModel {
 	public int getVerifyFailCount() {
 		return verifyFailCount;
 	}
-	
+
+	public String getTrasactionRefIndex(){
+		return this.trasactionRefIndex;
+	}
+	public void setTrasactionRefIndex(String trasactionRefIndex){
+		this.trasactionRefIndex = trasactionRefIndex;
+	}
 
 }

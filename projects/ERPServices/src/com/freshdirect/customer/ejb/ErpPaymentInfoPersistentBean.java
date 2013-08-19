@@ -102,7 +102,7 @@ public class ErpPaymentInfoPersistentBean extends ErpReadOnlyPersistentBean {
 
 	public PrimaryKey create(Connection conn) throws SQLException {
 		//String id = this.getNextId(conn);
-		PreparedStatement ps = conn.prepareStatement("INSERT INTO CUST.PAYMENTINFO (SALESACTION_ID, NAME, ACCOUNT_NUMBER, EXPIRATION_DATE, CARD_TYPE, ADDRESS1, ADDRESS2, APARTMENT, CITY, STATE, ZIP_CODE, COUNTRY, BILLING_REF, ON_FD_ACCOUNT, REFERENCED_ORDER, PAYMENT_METHOD_TYPE, ABA_ROUTE_NUMBER, BANK_ACCOUNT_TYPE, BANK_NAME) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+		PreparedStatement ps = conn.prepareStatement("INSERT INTO CUST.PAYMENTINFO (SALESACTION_ID, NAME, ACCOUNT_NUMBER, EXPIRATION_DATE, CARD_TYPE, ADDRESS1, ADDRESS2, APARTMENT, CITY, STATE, ZIP_CODE, COUNTRY, BILLING_REF, ON_FD_ACCOUNT, REFERENCED_ORDER, PAYMENT_METHOD_TYPE, ABA_ROUTE_NUMBER, BANK_ACCOUNT_TYPE, BANK_NAME, PROFILE_ID,ACCOUNT_NUM_MASKED) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
 		int index = 1; 
 		ps.setString(index++, this.getParentPK().getId());
 		ps.setString(index++, this.model.getName());
@@ -146,7 +146,20 @@ public class ErpPaymentInfoPersistentBean extends ErpReadOnlyPersistentBean {
 			ps.setString(index++, this.model.getBankName());
 		} else {
 			ps.setNull(index++, Types.VARCHAR);			
-		}			
+		}	
+		if(model.getProfileID()!=null) {
+			ps.setString(index++, model.getProfileID() );	
+		}else{
+			ps.setNull(index++, Types.VARCHAR);
+		}
+		if(model.getMaskedAccountNumber()!=null) {
+			ps.setString(index++, model.getMaskedAccountNumber() );	
+		}else{
+			ps.setNull(index++, Types.VARCHAR);
+		}
+		System.out.println("INSERT INTO CUST.PAYMENTINFO (SALESACTION_ID, NAME, ACCOUNT_NUMBER, EXPIRATION_DATE, CARD_TYPE, ADDRESS1, ADDRESS2, APARTMENT, CITY, STATE, ZIP_CODE, COUNTRY, BILLING_REF, ON_FD_ACCOUNT, REFERENCED_ORDER, PAYMENT_METHOD_TYPE, ABA_ROUTE_NUMBER, BANK_ACCOUNT_TYPE, BANK_NAME, PROFILE_ID,ACCOUNT_NUM_MASKED) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+		System.out.println(this.getParentPK().getId()+ " "+this.model.getName()+ " "+this.model.getAccountNumber()+ " ");
+		
 		try {
 			if (ps.executeUpdate() != 1) {
 				throw new SQLException("Row not created");
@@ -164,7 +177,7 @@ public class ErpPaymentInfoPersistentBean extends ErpReadOnlyPersistentBean {
 	}
 
 	public void load(Connection conn) throws SQLException {
-		PreparedStatement ps = conn.prepareStatement("SELECT NAME, ACCOUNT_NUMBER, EXPIRATION_DATE, CARD_TYPE, ADDRESS1, ADDRESS2, APARTMENT, CITY, STATE, ZIP_CODE, COUNTRY, BILLING_REF, ON_FD_ACCOUNT, REFERENCED_ORDER, PAYMENT_METHOD_TYPE, ABA_ROUTE_NUMBER, BANK_ACCOUNT_TYPE, BANK_NAME FROM CUST.PAYMENTINFO WHERE SALESACTION_ID=?");
+		PreparedStatement ps = conn.prepareStatement("SELECT NAME, ACCOUNT_NUMBER, EXPIRATION_DATE, CARD_TYPE, ADDRESS1, ADDRESS2, APARTMENT, CITY, STATE, ZIP_CODE, COUNTRY, BILLING_REF, ON_FD_ACCOUNT, REFERENCED_ORDER, PAYMENT_METHOD_TYPE, ABA_ROUTE_NUMBER, BANK_ACCOUNT_TYPE, BANK_NAME, PROFILE_ID,ACCOUNT_NUM_MASKED FROM CUST.PAYMENTINFO WHERE SALESACTION_ID=?");
 		ResultSet rs = null;
 		try {
 			ps.setString(1, this.getPK().getId());
@@ -205,6 +218,8 @@ public class ErpPaymentInfoPersistentBean extends ErpReadOnlyPersistentBean {
 		this.model.setAbaRouteNumber(rs.getString("ABA_ROUTE_NUMBER"));
 		this.model.setBankAccountType(EnumBankAccountType.getEnum(rs.getString("BANK_ACCOUNT_TYPE")));
 		this.model.setBankName(rs.getString("BANK_NAME"));
+		this.model.setProfileID(rs.getString("PROFILE_ID"));
+		this.model.setAccountNumLast4(rs.getString("ACCOUNT_NUM_MASKED"));
 		//if(paymentMethodType.equals(EnumPaymentMethodType.GIFTCARD)) {
 			//Set the certification number for gift card.
 			//model.setCertificateNumber(ErpGiftCardUtil.getCertificateNumber(rs.getString("ACCOUNT_NUMBER")));

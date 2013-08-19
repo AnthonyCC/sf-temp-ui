@@ -120,7 +120,7 @@ public class ErpAuthorizationPersistentBean extends ErpPaymentPersistentBean {
 	public PrimaryKey create(Connection conn) throws SQLException {
 		String salesactionId = super.create(conn, this.model).getId();
 		
-		PreparedStatement ps = conn.prepareStatement("INSERT INTO CUST.PAYMENT (SALESACTION_ID, CARD_TYPE, SEQUENCE_NUMBER, AUTH_CODE, DESCRIPTION, AVS, CCNUM_LAST4, RESPONSE_CODE, MERCHANT_ID, PAYMENT_METHOD_TYPE, ABA_ROUTE_NUMBER, BANK_ACCOUNT_TYPE, IS_CHARGE_PAYMENT, AFFILIATE) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+		PreparedStatement ps = conn.prepareStatement("INSERT INTO CUST.PAYMENT (SALESACTION_ID, CARD_TYPE, SEQUENCE_NUMBER, AUTH_CODE, DESCRIPTION, AVS, CCNUM_LAST4, RESPONSE_CODE, MERCHANT_ID, PAYMENT_METHOD_TYPE, ABA_ROUTE_NUMBER, BANK_ACCOUNT_TYPE, IS_CHARGE_PAYMENT, AFFILIATE,TRANS_REF_INDEX, PROFILE_ID , GATEWAY_ORDER) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
 		
 		int index = 1;
 		
@@ -146,8 +146,28 @@ public class ErpAuthorizationPersistentBean extends ErpPaymentPersistentBean {
 		}else{
 			ps.setNull(index++, Types.VARCHAR);
 		}
-		
+
+		if(this.model.getTrasactionRefIndex() != null) {
+			ps.setString(index++, this.model.getTrasactionRefIndex());
+		}else{
+			ps.setNull(index++, Types.VARCHAR);
+		}
+		if(this.model.getProfileID() != null) {
+			ps.setString(index++, this.model.getProfileID());
+		}else{
+			ps.setNull(index++, Types.VARCHAR);
+		}
 				
+		/*if(this.model.getGatewayType() != null) {
+			ps.setString(index++, String.valueOf(this.model.getGatewayType().getId()));
+		}else{
+			ps.setNull(index++, Types.VARCHAR);
+		}*/
+		if(this.model.getGatewayOrderID() != null) {
+			ps.setString(index++, this.model.getGatewayOrderID());
+		}else{
+			ps.setNull(index++, Types.VARCHAR);
+		}
 		try{
 			if(ps.executeUpdate() != 1 ){
 				throw new SQLException("new row cannot be created");
@@ -171,7 +191,8 @@ public class ErpAuthorizationPersistentBean extends ErpPaymentPersistentBean {
 	 */
 	public void load(Connection conn) throws SQLException {
 		super.load(conn, this.model);
-		PreparedStatement ps = conn.prepareStatement("SELECT ACTION_DATE, ACTION_TYPE, AMOUNT, SOURCE, CARD_TYPE, SEQUENCE_NUMBER, AUTH_CODE, DESCRIPTION, AVS, RESPONSE_CODE, CCNUM_LAST4, MERCHANT_ID, PAYMENT_METHOD_TYPE, ABA_ROUTE_NUMBER, BANK_ACCOUNT_TYPE, IS_CHARGE_PAYMENT, AFFILIATE FROM CUST.SALESACTION, CUST.PAYMENT WHERE SALESACTION.ID = PAYMENT.SALESACTION_ID AND SALESACTION.ID = ? ");
+		//TRANS_REF_INDEX, PROFILE_ID , GATEWAY_ID, GATEWAY_ORDER
+		PreparedStatement ps = conn.prepareStatement("SELECT ACTION_DATE, ACTION_TYPE, AMOUNT, SOURCE, CARD_TYPE, SEQUENCE_NUMBER, AUTH_CODE, DESCRIPTION, AVS, RESPONSE_CODE, CCNUM_LAST4, MERCHANT_ID, PAYMENT_METHOD_TYPE, ABA_ROUTE_NUMBER, BANK_ACCOUNT_TYPE, IS_CHARGE_PAYMENT, AFFILIATE,TRANS_REF_INDEX, PROFILE_ID , GATEWAY_ID, GATEWAY_ORDER FROM CUST.SALESACTION, CUST.PAYMENT WHERE SALESACTION.ID = PAYMENT.SALESACTION_ID AND SALESACTION.ID = ? ");
 		ps.setString(1, this.getPK().getId());
 		ResultSet rs = ps.executeQuery();
 		if (rs.next()) {
@@ -194,7 +215,11 @@ public class ErpAuthorizationPersistentBean extends ErpPaymentPersistentBean {
 			
 			ErpAffiliate aff = (ErpAffiliate) NVL.apply(ErpAffiliate.getEnum(rs.getString("AFFILIATE")), ErpAffiliate.getPrimaryAffiliate());
 			this.model.setAffiliate(aff);
-			
+			this.model.setTrasactionRefIndex(rs.getString("TRANS_REF_INDEX"));
+			this.model.setProfileID(rs.getString("PROFILE_ID"));
+			//GatewayType gt = (GatewayType) NVL.apply(GatewayType.get(rs.getString("GATEWAY_ID")), GatewayType.getPrimary());
+			//this.model.setGatewayType(gt);
+			this.model.setGatewayOrderID(rs.getString("GATEWAY_ORDER"));
 		} else {
 			throw new SQLException("No such ErpInvoice PK: " + this.getPK());
 		}

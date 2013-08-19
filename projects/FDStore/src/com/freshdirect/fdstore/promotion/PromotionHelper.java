@@ -194,7 +194,7 @@ public class PromotionHelper {
 						PromotionStrategyI strategy = i.next();
 						if (strategy instanceof CustomerStrategy) {
 							CustomerStrategy customerStrategy = (CustomerStrategy) strategy;							
-							isEligible = customerStrategy.evaluateByPaymentCardType(paymentMethod.getCardType(), promotionContext);				
+							isEligible = customerStrategy.evaluateByPayment(paymentMethod, promotionContext);				
 							break;
 						}
 					}
