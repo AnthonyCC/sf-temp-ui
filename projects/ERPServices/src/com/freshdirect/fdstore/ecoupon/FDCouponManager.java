@@ -30,7 +30,7 @@ public class FDCouponManager {
 
 	private static FDCouponManagerHome managerHome = null;
 	
-	public static List<FDCouponInfo> loadCoupons(FDCouponActivityContext couponActivityContext) throws FDResourceException{
+	public static List<FDCouponInfo> loadCoupons(FDCouponActivityContext couponActivityContext) throws FDResourceException, CouponServiceException{
 		lookupManagerHome();
 		
 		try {
