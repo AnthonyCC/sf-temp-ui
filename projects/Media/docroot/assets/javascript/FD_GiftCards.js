@@ -911,6 +911,8 @@ function showDialogs() {
 			state = 'CT';
 		} else if ($('statePA') && $('statePA').checked) {
 			state = 'PA';
+		} else if ($('stateDE') && $('stateDE').checked) {
+			state = 'DE';
 		}
 
 		if (state != null) {

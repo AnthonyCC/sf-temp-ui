@@ -110,7 +110,11 @@ if ("post".equalsIgnoreCase(request.getMethod()) && request.getParameter("addApa
             <option value="NY" <%= "NY".equalsIgnoreCase(dlvAddress.getState()) ? "selected" : "" %>>NY</option>
 			<option value="NJ" <%= "NJ".equalsIgnoreCase(dlvAddress.getState()) ? "selected" : "" %>>NJ</option>
 			<option value="CT" <%= "CT".equalsIgnoreCase(dlvAddress.getState()) ? "selected" : "" %>>CT</option>
-			<option value="PA" <%= "PA".equalsIgnoreCase(dlvAddress.getState()) ? "selected" : "" %>>PA</option>
+			<option value="PA" <%= "PA".equalsIgnoreCase(dlvAddress.getState()) ? "selected" : "" %>>PA</option>			
+			<option value="DC" <%= "DC".equalsIgnoreCase(dlvAddress.getState()) ? "selected" : "" %>>DC</option>
+			<option value="DE" <%= "DE".equalsIgnoreCase(dlvAddress.getState()) ? "selected" : "" %>>DE</option>
+			<option value="MD" <%= "MD".equalsIgnoreCase(dlvAddress.getState()) ? "selected" : "" %>>MD</option>
+			<option value="VA" <%= "VA".equalsIgnoreCase(dlvAddress.getState()) ? "selected" : "" %>>VA</option>			
   		</select>
 		<fd:ErrorHandler result='<%=result%>' name='<%= EnumUserInfoName.DLV_STATE.getCode() %>' id='errorMsg'><span class="error_detail"><%=errorMsg%></span></fd:ErrorHandler>
 		</td>

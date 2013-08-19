@@ -74,7 +74,11 @@
 						<option value="NY" <%= "NY".equalsIgnoreCase(request.getParameter("state")) ? "selected" : "" %>>NY</option>
 						<option value="NJ" <%= "NJ".equalsIgnoreCase(request.getParameter("state")) ? "selected" : "" %>>NJ</option>
 						<option value="CT" <%= "CT".equalsIgnoreCase(request.getParameter("state")) ? "selected" : "" %>>CT</option>
-						<option value="PA" <%= "PA".equalsIgnoreCase(request.getParameter("state")) ? "selected" : "" %>>PA</option>
+						<option value="PA" <%= "PA".equalsIgnoreCase(request.getParameter("state")) ? "selected" : "" %>>PA</option>						
+						<option value="DC" <%= "DC".equalsIgnoreCase(request.getParameter("state")) ? "selected" : "" %>>DC</option>
+						<option value="DE" <%= "DE".equalsIgnoreCase(request.getParameter("state")) ? "selected" : "" %>>DE</option>
+						<option value="MD" <%= "MD".equalsIgnoreCase(request.getParameter("state")) ? "selected" : "" %>>MD</option>
+						<option value="VA" <%= "VA".equalsIgnoreCase(request.getParameter("state")) ? "selected" : "" %>>VA</option>
 					</select>
 				</td>
 			</tr>

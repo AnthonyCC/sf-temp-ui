@@ -99,6 +99,12 @@ EnumServiceType fldServiceType = address.getServiceType() == null ? EnumServiceT
 										<option value="NJ" <%="NJ".equalsIgnoreCase(address.getState()) || "NJ".equalsIgnoreCase(request.getParameter(AddressName.DLV_STATE)) ? "selected" : "" %>>NJ</option>
 										<option value="CT" <%="CT".equalsIgnoreCase(address.getState()) || "CT".equalsIgnoreCase(request.getParameter(AddressName.DLV_STATE)) ? "selected" : "" %>>CT</option>
 										<option value="PA" <%="PA".equalsIgnoreCase(address.getState()) || "PA".equalsIgnoreCase(request.getParameter(AddressName.DLV_STATE)) ? "selected" : "" %>>PA</option>
+										
+										<option value="DC" <%="DC".equalsIgnoreCase(address.getState()) || "DC".equalsIgnoreCase(request.getParameter(AddressName.DLV_STATE)) ? "selected" : "" %>>DC</option>
+										<option value="DE" <%="DE".equalsIgnoreCase(address.getState()) || "DE".equalsIgnoreCase(request.getParameter(AddressName.DLV_STATE)) ? "selected" : "" %>>DE</option>
+										<option value="MA" <%="MD".equalsIgnoreCase(address.getState()) || "MD".equalsIgnoreCase(request.getParameter(AddressName.DLV_STATE)) ? "selected" : "" %>>MD</option>
+										<option value="VA" <%="VA".equalsIgnoreCase(address.getState()) || "VA".equalsIgnoreCase(request.getParameter(AddressName.DLV_STATE)) ? "selected" : "" %>>VA</option>
+										
 									</select><fd:ErrorHandler result="<%=result%>" name="<%=AddressName.DLV_STATE%>" id='errorMsg'><span class="error_detail"><%=errorMsg%></span></fd:ErrorHandler>
 								</td>
 							</tr>
