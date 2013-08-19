@@ -591,7 +591,7 @@ public class FDUser extends ModelSupport implements FDUserI {
        if (this.historicOrderSize==null && this.identity!=null) {
     	   IOrderModel order = new OrderModel();
     	   order.setCustomerNumber(this.identity.getErpCustomerPK());
-    	   this.historicOrderSize = RoutingUtil.getHistoricOrderSize(order);
+    	   this.historicOrderSize = FDCustomerManager.getHistoricOrderSize(order);
        }
        return this.historicOrderSize;
    }

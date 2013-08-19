@@ -123,6 +123,7 @@ import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.FDTimeslot;
+import com.freshdirect.fdstore.RoutingUtil;
 import com.freshdirect.fdstore.URLRewriteRule;
 import com.freshdirect.fdstore.Util;
 import com.freshdirect.fdstore.ZonePriceListing;
@@ -230,6 +231,9 @@ import com.freshdirect.payment.gateway.GatewayType;
 import com.freshdirect.payment.gateway.Request;
 import com.freshdirect.payment.gateway.Response;
 import com.freshdirect.payment.gateway.impl.GatewayFactory;
+import com.freshdirect.routing.model.IOrderModel;
+import com.freshdirect.routing.model.IPackagingModel;
+import com.freshdirect.routing.service.exception.RoutingServiceException;
 import com.freshdirect.sap.command.SapCartonInfoForSale;
 import com.freshdirect.sap.ejb.SapException;
 import com.freshdirect.temails.TEmailRuntimeException;
@@ -7291,6 +7295,16 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		} finally {
 			close(conn);
 		}
+	}
+	
+	public IPackagingModel getHistoricOrderSize(IOrderModel order) throws FDResourceException {
+		IPackagingModel _packageModel = null;
+		try{
+			_packageModel = RoutingUtil.getHistoricOrderSize(order);
+		}catch(RoutingServiceException e){
+			throw new FDResourceException(e);
+		}
+		return _packageModel;
 	}
 		
 }

@@ -101,6 +101,8 @@ import com.freshdirect.giftcard.ErpGCDlvInformationHolder;
 import com.freshdirect.giftcard.ErpGiftCardModel;
 import com.freshdirect.giftcard.InvalidCardException;
 import com.freshdirect.giftcard.ServiceUnavailableException;
+import com.freshdirect.routing.model.IOrderModel;
+import com.freshdirect.routing.model.IPackagingModel;
 
 /**
  *
@@ -817,6 +819,8 @@ public interface FDCustomerManagerSB extends EJBObject {
 	
 	public IpLocatorEventDTO loadIpLocatorEvent (String fdUserId) throws FDResourceException, RemoteException;
 	public boolean  isFeatureEnabled(String customerId, EnumSiteFeature feature) throws FDResourceException, RemoteException;
+
+	public IPackagingModel getHistoricOrderSize(IOrderModel order) throws FDResourceException, RemoteException;
 	
 }
 

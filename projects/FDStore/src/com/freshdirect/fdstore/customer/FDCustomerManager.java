@@ -149,6 +149,8 @@ import com.freshdirect.giftcard.ServiceUnavailableException;
 import com.freshdirect.mail.ejb.MailerGatewayHome;
 import com.freshdirect.mail.ejb.MailerGatewaySB;
 import com.freshdirect.payment.EnumPaymentMethodType;
+import com.freshdirect.routing.model.IOrderModel;
+import com.freshdirect.routing.model.IPackagingModel;
 import com.freshdirect.smartstore.Variant;
 import com.freshdirect.smartstore.fdstore.VariantSelectorFactory;
 
@@ -4150,4 +4152,22 @@ public class FDCustomerManager {
 		}
 	
 	}
+
+	public static IPackagingModel getHistoricOrderSize(IOrderModel order)  throws FDResourceException {
+		
+		lookupManagerHome();
+
+		try {
+			FDCustomerManagerSB sb = managerHome.create();
+			return sb.getHistoricOrderSize(order);
+		} catch (CreateException ce) {
+			invalidateManagerHome();
+			throw new FDResourceException(ce, "Error creating session bean");
+		} catch (RemoteException re) {
+			invalidateManagerHome();
+			throw new FDResourceException(re, "Error talking to session bean");
+		}
+	
+	}
+
 }
