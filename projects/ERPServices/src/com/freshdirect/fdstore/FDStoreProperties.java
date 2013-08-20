@@ -618,6 +618,9 @@ public class FDStoreProperties {
 	private final static String CHECK_LOCAL_INVENTORY_ENABLED = "fdstore.check.localinventory.enabled";
 	
 	private final static String PROP_PAYMENTECH_GATEWAY_ENABLED = "fdstore.paymentech.enabled";
+	
+	//APPDEV-2817 Link to DeliveryPass category from top nav of Delivery Info page
+	private final static String SHOW_DLVPASS_LINK_ON_DELINFO = "fdstore.dlvinfo.showdlvpasslink";
 
     static {
         defaults.put(PROP_ROUTING_PROVIDER_URL, "t3://localhost:7001");
@@ -1212,6 +1215,10 @@ public class FDStoreProperties {
 		defaults.put(CHECK_LOCAL_INVENTORY_ENABLED, "false");
 		defaults.put(PROP_FDCOUPONMGR_HOME, "freshdirect.fdstore.CouponManager");
 		defaults.put(PROP_PAYMENTECH_GATEWAY_ENABLED, "true");
+		
+		//APPDEV-2817 Link to DeliveryPass category from top nav of Delivery Info page
+        defaults.put(SHOW_DLVPASS_LINK_ON_DELINFO, "false");
+				
         refresh();
     }
 
@@ -3118,5 +3125,11 @@ public class FDStoreProperties {
 	        return Boolean.valueOf(get(PROP_PAYMENTECH_GATEWAY_ENABLED)).booleanValue();
 	 }
 	 
+	 
+
+	//APPDEV-2817 Link to DeliveryPass category from top nav of Delivery Info page
+    public static boolean doDpDeliveryInfoLink() {
+        return (Boolean.valueOf(get(SHOW_DLVPASS_LINK_ON_DELINFO))).booleanValue();
+    }
 }
 
