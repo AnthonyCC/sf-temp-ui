@@ -9,7 +9,7 @@
 
 var global_gcDebug = false;
 var global_gcLog = false;
-var lastEdit = '2012.11.28_12.39.29.PM';
+var lastEdit = '2013.07.31_01.58.32.PM';
 var lastLog;
 
 gcLog('Last Edit: '+lastEdit);
@@ -372,15 +372,17 @@ function showDialogs() {
 			}
 
 		/* rotate card display */
-			this.rotate = function (direction) {
+			this.rotate = function (directionVar) {
 				this.log('rotate called');
 
 				if (this.display[1] != -1 && this.cards.length > 1) {
 					//this means we have items displayed
 					//we only need to rotate is we have > 1 cards to show
-					this.log('\tdirection: '+direction);
+					this.log('\tdirection: '+directionVar);
 
-					switch (direction)
+					var direction = directionVar.split(',');
+
+					switch (direction[0])
 					{
 						case 'LEFT':
 							this.display[0] = this.display[1];
@@ -404,6 +406,30 @@ function showDialogs() {
 								this.log('\t\tright display[0]: does not equal cards length');
 								this.display[0] = this.display[0]-1;
 							}
+
+							break;
+						/* send display to specified index while maintaining internal data preoperly */
+						case 'TOINDEX':
+							this.log('\t\tsending display to specified index');
+							this.log('\t\tthis.cards.length:'+this.cards.length);
+
+							var intIndex = parseInt(direction[1]);
+
+							this.display[0] = intIndex-1;
+							this.display[1] = intIndex;
+							this.display[2] = intIndex+1;
+
+							if (this.display[0] < 0) {
+								this.display[0] = this.cards.length-1;
+							}
+							if (this.display[2] > this.cards.length-1) {
+								this.display[2] = 0;
+							}
+
+							this.log('\tthis.display[0] '+this.display[0]);
+							this.log('\tthis.display[1] '+this.display[1]);
+							this.log('\tthis.display[2] '+this.display[2]);
+
 
 							break;
 					}
@@ -642,7 +668,7 @@ function showDialogs() {
 						]);
 
 						break;
-					case 3:
+					case 3: /* card display with left text-selectable listing */
 						var optionArray = [];
 						for (var i=0;i < this.cards.length;i++) {
 							optionArray[i] = Builder.node( 'div', [
@@ -650,7 +676,7 @@ function showDialogs() {
 									Builder.node( 'img', { src: this.mediaStaticRoot+'landing/dot_img.gif', alt: 'Choose Design', id: 'bullotImg'+i })
 								]),
 								Builder.node( 'div', { className: "link_selection_controls" }, [
-									Builder.node( 'a', { href: '#', onClick: 'window[\''+this.refId+'\'].display[1]='+i+';window[\''+this.refId+'\'].updateDisplay();return false;' }, [
+									Builder.node( 'a', { href: '#', onClick: 'window[\''+this.refId+'\'].rotate(\'TOINDEX,'+i+'\');return false;' }, [
 										this.cards[i].displayName
 									]),
 									Builder.node( 'br', [ ] )
