@@ -1214,7 +1214,7 @@ public class FDStoreProperties {
 		defaults.put(PROP_SOCIAL_BUTTONS_ENABLED, "true");
 		defaults.put(CHECK_LOCAL_INVENTORY_ENABLED, "false");
 		defaults.put(PROP_FDCOUPONMGR_HOME, "freshdirect.fdstore.CouponManager");
-		defaults.put(PROP_PAYMENTECH_GATEWAY_ENABLED, "true");
+		defaults.put(PROP_PAYMENTECH_GATEWAY_ENABLED, "false");
 		
 		//APPDEV-2817 Link to DeliveryPass category from top nav of Delivery Info page
         defaults.put(SHOW_DLVPASS_LINK_ON_DELINFO, "false");
