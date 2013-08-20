@@ -218,7 +218,7 @@ public class RoutingDataEncoder {
 		if(finalServiceTime <= 0) {
 			finalServiceTime = RoutingServicesProperties.getDefaultServiceTime();
 		}
-		order.setServiceTime((int)(finalServiceTime*60));
+		order.setOrderServiceTime((int)(finalServiceTime*60));
 		order.setLocationId(orderModel.getDeliveryInfo().getDeliveryLocation().getLocationId());
 		order.setLocationType(locationType);
 		order.setDescription(locationType);
@@ -264,8 +264,8 @@ public class RoutingDataEncoder {
 		if(finalServiceTime <= 0) {
 			finalServiceTime = RoutingServicesProperties.getDefaultServiceTime();
 		}
-		
-		order.setServiceTime((int)(finalServiceTime*60));
+
+		order.setOrderServiceTime((int)(finalServiceTime*60));
 		order.setLocationId(orderModel.getDeliveryInfo().getDeliveryLocation().getLocationId());
 		order.setLocationType(locationType);
 		order.setDescription(orderModel.getOrderNumber());
@@ -303,7 +303,7 @@ public class RoutingDataEncoder {
 			finalServiceTime = RoutingServicesProperties.getDefaultServiceTime();
 		}
 		
-		order.setServiceTime((int)(finalServiceTime*60));
+		order.setOrderServiceTime((int)(finalServiceTime*60));
 		order.setLocationId(orderModel.getDeliveryInfo().getDeliveryLocation().getLocationId());
 		order.setLocationType(locationType);
 		order.setDescription(orderModel.getOrderNumber());
