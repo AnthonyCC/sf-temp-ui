@@ -700,7 +700,7 @@ public class FDReferAFriendDAO {
 	
 	private static final String INSERT_REF_LINK = "insert into cust.referral_link(customer_id, referral_link) values(?,?)";
 	
-	private static final String GET_REF_NAME_CNT = "select count(*) from cust.referral_link where upper(referral_link) = upper(?)";
+	private static final String GET_REF_NAME_CNT = "select count(*) from cust.referral_link where upper(referral_link) like upper(?%)";
 	
 	public static String getReferralLink(Connection conn, String customerId) throws SQLException {
 		PreparedStatement ps = null;
