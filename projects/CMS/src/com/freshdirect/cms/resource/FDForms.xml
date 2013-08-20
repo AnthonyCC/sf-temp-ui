@@ -460,6 +460,7 @@
 							<CmsField><attribute>DESCRIPTIVE_IMAGE</attribute></CmsField>							
 							<CmsField><attribute>ALTERNATE_PROD_IMAGE</attribute></CmsField>
 							<CmsField><attribute>WE_RECOMMEND_IMAGE</attribute></CmsField>
+							<CmsField><attribute>PROD_IMAGE_PACKAGE</attribute></CmsField>
 						</fields>
 					</CmsSection>
 					<CmsSection>

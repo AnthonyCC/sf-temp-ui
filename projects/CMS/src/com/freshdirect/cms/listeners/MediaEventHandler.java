@@ -122,6 +122,7 @@ public class MediaEventHandler extends DbService implements MediaEventHandlerI {
 		associator.addRule(null, "cr", FDContentTypes.PRODUCT, "PROD_IMAGE_ROLLOVER");
 		associator.addRule(null, "z", FDContentTypes.PRODUCT, "PROD_IMAGE_ZOOM");
 		associator.addRule(null, "desc", FDContentTypes.PRODUCT, "PROD_DESCR");
+		associator.addRule(null, "b", FDContentTypes.PRODUCT, "PROD_IMAGE_PACKAGE");
 
 		associator.addRule(null, "a", FDContentTypes.PRODUCT, "ALTERNATE_IMAGE");
 		associator.addRule(null, "d", FDContentTypes.PRODUCT, "DESCRIPTIVE_IMAGE");

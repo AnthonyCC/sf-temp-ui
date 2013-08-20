@@ -775,6 +775,9 @@
 			<RelationshipDef name="PROD_IMAGE_ROLLOVER" label="Prod Image Rollover">
 				<DestinationDef contentType="Image" />
 			</RelationshipDef>
+			<RelationshipDef name="PROD_IMAGE_PACKAGE" label="Product Package Image">
+				<DestinationDef contentType="Image" />
+			</RelationshipDef>
 			<!-- iPhone related -->
 			<RelationshipDef name="ALTERNATE_PROD_IMAGE" label="Alternate Product Image">
 				<DestinationDef contentType="Image" />

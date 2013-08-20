@@ -242,6 +242,8 @@ public class ProductImageTag extends BodyTagSupport {
                 prodImg = product.getDetailImage();
             } else if ("PROD_IMAGE_ZOOM".equalsIgnoreCase(prodImageType)) {
                 prodImg = product.getZoomImage();
+            } else if ("PROD_IMAGE_PACKAGE".equalsIgnoreCase(prodImageType)) {
+                prodImg = product.getPackageImage();
             }
         }
 

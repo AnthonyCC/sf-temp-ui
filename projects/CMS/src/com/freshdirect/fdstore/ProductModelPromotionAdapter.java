@@ -1346,4 +1346,9 @@ public class ProductModelPromotionAdapter implements ProductModel, Serializable,
 	public boolean isRetainOriginalSkuOrder() {
 		return productModel.isRetainOriginalSkuOrder();
 	}
+
+	@Override
+	public Image getPackageImage() {
+		return productModel.getPackageImage();
+	}
 }

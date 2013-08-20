@@ -637,6 +637,9 @@ public interface ProductModel extends AvailabilityI, YmalSource, YmalSetSource, 
 	/** accessor for attribute PROD_IMAGE_ROLLOVER */
 	public Image getRolloverImage();
 
+	/** accessor for attribute PROD_IMAGE_PACKAGE */
+	public Image getPackageImage();
+
 	public Html getProductAbout();
 	
 	public Html getProductDescription();
@@ -989,4 +992,5 @@ public interface ProductModel extends AvailabilityI, YmalSource, YmalSetSource, 
 	 * @return Value of <code>retainOriginalSkuOrder</code> flag.
 	 */
 	public boolean isRetainOriginalSkuOrder();
+
 }

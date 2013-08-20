@@ -105,7 +105,7 @@ public class Product {
     private static final int REFRESH_PERIOD = 300;
 
     public enum ImageType {
-        ALTERNATE, CATEGORY, CONFIRM, DESCRIPTIVE, DETAIL, FEATURE, PRODUCT, RATING_RELATED, ROLLOVER, THUMBNAIL, ZOOM, LARGE_BURST, THUMB_BURST, WINE_ALT
+        ALTERNATE, CATEGORY, CONFIRM, DESCRIPTIVE, DETAIL, FEATURE, PRODUCT, RATING_RELATED, ROLLOVER, THUMBNAIL, ZOOM, LARGE_BURST, THUMB_BURST, WINE_ALT, PACKAGE
     }
 
     public enum ProductLayout {
@@ -694,6 +694,9 @@ public class Product {
             break;
         case ZOOM:
             result = productModel.getZoomImage();
+            break;
+        case PACKAGE:
+            result = productModel.getPackageImage();
             break;
         case LARGE_BURST:
             result = getLargeBurstImage();

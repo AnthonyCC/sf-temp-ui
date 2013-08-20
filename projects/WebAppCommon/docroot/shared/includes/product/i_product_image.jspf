@@ -11,6 +11,7 @@
 	final ProductModel __pi_prd = (ProductModel) productNode;
 	Image productImage = __pi_prd.getDetailImage();
 	final Image zoomImage=(Image) __pi_prd.getZoomImage();
+	final Image packageImage=(Image) __pi_prd.getPackageImage();
 	Object useProdImageObj = pageContext.getAttribute("useProdImage");
 	boolean useProdImage = useProdImageObj == null ? false : (Boolean)useProdImageObj;
 	boolean isWineProduct = __pi_prd.getDepartment() != null ? "usq".equals(__pi_prd.getDepartment().getContentKey().getId()) : false;
@@ -26,7 +27,13 @@
 	//FDCustomerCoupon custCoupon_pi = (FDCustomerCoupon)request.getAttribute("custCoupon");
 %>
 <display:ProductImage product="<%= productNode %>" action="<%= actionURI_pi %>" prodImageType="<%= prodImageType %>" showRolloverImage="false" />
-
+<%
+	if ( packageImage != null && packageImage.getPath().indexOf("clear.gif") == -1 && !isWineProduct ) {
+		prodImageType = "PROD_IMAGE_PACKAGE";
+		%><display:ProductImage product="<%= productNode %>" prodImageType="<%= prodImageType %>" showRolloverImage="false" /><%
+	}
+%>
+	
 <font class="space2pix"><br/></font>		
 <% 
 	//Show product summary link only in test environments

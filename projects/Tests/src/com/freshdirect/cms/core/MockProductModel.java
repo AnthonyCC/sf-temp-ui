@@ -2011,4 +2011,10 @@ public class MockProductModel extends MockContentNodeModel implements
 	public SkuModel getDefaultTemporaryUnavSku() {
 		return null;
 	}
+
+	@Override
+	public Image getPackageImage() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

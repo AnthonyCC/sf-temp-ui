@@ -1427,4 +1427,9 @@ public class ProductModelPricingAdapter implements ProductModel, Serializable,
 	public boolean isDisabledRecommendations() {
 		return this.prodModel.isDisabledRecommendations();
 	}
+
+	@Override
+	public Image getPackageImage() {
+		return this.prodModel.getPackageImage();
+	}
 }

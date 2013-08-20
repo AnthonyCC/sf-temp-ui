@@ -79,6 +79,10 @@ public abstract class AbstractProductModelImpl extends ContentNodeModelImpl impl
 	public Image getZoomImage() {
 		return getImage("PROD_IMAGE_ZOOM");
 	}
+	
+	public Image getPackageImage() {
+		return getImage("PROD_IMAGE_PACKAGE");
+	}
 
 	public int getTemplateType(int defaultValue) {
 	    Integer i = (Integer) getCmsAttributeValue("TEMPLATE_TYPE");
