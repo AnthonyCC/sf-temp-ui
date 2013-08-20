@@ -658,9 +658,9 @@ if(((pageNumber -1) * itemsToDisplay) > skuCount) {
 							<br />
 					        <div class="qtyinput qtyinput_grocery">
 								<span class="qtymessage">Quantity </span>
-								<a href="javascript:chgQty('quantity_big',-<%=productNode.getQuantityIncrement()%>,<%=productNode.getQuantityMinimum()%>,<%=user.getQuantityMaximum(productNode)%>);" class="quantity_minus"><span>Increase quantity</span></a>
+								<a href="javascript:chgQty('quantity_big',-<%=productNode.getQuantityIncrement()%>,<%=productNode.getQuantityMinimum()%>,<%=user.getQuantityMaximum(productNode)%>);" class="quantity_minus"><span>Decrease quantity</span></a>
 								<input class="qty" type="text" size="4" name="quantity_big" maxlength="2" value="<%=Math.round(productNode.getQuantityMinimum())%>" onChange="chgQty('quantity_big',0,<%=productNode.getQuantityMinimum()%>,<%=user.getQuantityMaximum(productNode)%>);"/>
-								<a href="javascript:chgQty('quantity_big',<%=productNode.getQuantityIncrement()%>,<%=productNode.getQuantityMinimum()%>,<%=user.getQuantityMaximum(productNode)%>);" class="quantity_plus"><span>Decrease quantity</span></a>
+								<a href="javascript:chgQty('quantity_big',<%=productNode.getQuantityIncrement()%>,<%=productNode.getQuantityMinimum()%>,<%=user.getQuantityMaximum(productNode)%>);" class="quantity_plus"><span>Increase quantity</span></a>
 					        </div>
 					        <div class="qtyinput">
 								<span class="qtyprice">Price </span>
@@ -1027,9 +1027,9 @@ if(((pageNumber -1) * itemsToDisplay) > skuCount) {
 		<table border="0" cellspacing="0" cellpadding="0" width="<%=contentWidth%>">
 			<tr>
 				<td><input type="image" name="addMultipleToCart" id="addMultipleToCartUpper"  src="/media_stat/images/buttons/add_selected_to_cart.gif" width="145" height="20" hspace="4" vspace="4" border="0" alt="ADD SELECTED ITEMS TO CART">
-					<!-- fd:IsAlcoholic -->
+					<%-- fd:IsAlcoholic --%>
 						<fd:PopupHandler id="grocery_form" event="onclick" elementId="addMultipleToCartUpper" quantityCheck="true" noProduct="true"/>
-				    	<!-- /fd:IsAlcoholic -->
+				    	<%-- /fd:IsAlcoholic --%>
 				</td>
 			</tr>
 		</table>
@@ -1156,9 +1156,9 @@ if(((pageNumber -1) * itemsToDisplay) > skuCount) {
 	        <tr valign="bottom">
 	        	<td width="<%=contentWidth%>">
 	        		<input type="image" name="addMultipleToCart" id="addMultipleToCartLower" src="/media_stat/images/buttons/add_selected_to_cart.gif" width="145" height="20" hspace="4" vspace="4" border="0" alt="ADD SELECTED ITEMS TO CART">
-			        <!-- fd:IsAlcoholic -->
+			        <%-- fd:IsAlcoholic --%>
 			        	<fd:PopupHandler id="grocery_form" event="onclick" elementId="addMultipleToCartLower" quantityCheck="true" noProduct="true"/>
-			        <!-- /fd:IsAlcoholic -->
+			        <%-- /fd:IsAlcoholic --%>
 	        		<br />
 			        <fd:CCLCheck>
 			            <div style="margin: 7px 4px 0 4px;"><a id="ccl-add-action" href="/unsupported.jsp" onclick="return CCL.save_items('grocery_form',this,'action=CCL:AddMultipleToList&source=ccl_actual_selection','source=ccl_actual_selection')"><img src="/media_stat/ccl/lists_link_selected_with_icon_dfgs.gif" width="151" height="15" style="border: 0; padding-right: 14px"></a></div>

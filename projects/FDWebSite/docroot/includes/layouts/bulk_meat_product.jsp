@@ -420,9 +420,9 @@ String prodDescPath = null;
   <TD colspan="2" ALIGN="RIGHT">
     <div class="qtyinput" style="float: right;">
       <span class="qtymessage"><%= quantityText %></span>
-      <a href="javascript:chgQty(<%= -prodIncrement%>,<%= prodMinQuantity%>,<%= prodMaxQuantity%>);" class="quantity_minus"><span>Increase quantity</span></a>
+      <a href="javascript:chgQty(<%= -prodIncrement%>,<%= prodMinQuantity%>,<%= prodMaxQuantity%>);" class="quantity_minus"><span>Decrease quantity</span></a>
       <input class="qty" type="text" size="4" name="quantity" maxlength="4" value="<%=selectedQty!=null?selectedQty:prodMinQuantity+""%>" onChange="chgQty(0,<%= prodMinQuantity%>,<%= prodMaxQuantity%>);"/>
-      <a href="javascript:chgQty(<%= prodIncrement%>,<%= prodMinQuantity%>,<%= prodMaxQuantity%>);" class="quantity_plus"><span>Decrease quantity</span></a>
+      <a href="javascript:chgQty(<%= prodIncrement%>,<%= prodMinQuantity%>,<%= prodMaxQuantity%>);" class="quantity_plus"><span>Increase quantity</span></a>
     </div>
   </TD>
 <TD colspan="2" ALIGN="RIGHT"><FONT CLASS="text10bold"><%
