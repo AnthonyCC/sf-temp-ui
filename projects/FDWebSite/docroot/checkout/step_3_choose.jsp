@@ -236,8 +236,8 @@ final int W_CHECKOUT_STEP_3_CHOOSE_TOTAL = 970;
 		    <table border="0" cellspacing="0" cellpadding="0" width="<%=W_CHECKOUT_STEP_3_CHOOSE_TOTAL%>">
 			    <tr valign="top">
 					<td width="35">
-							<a href="<%=response.encodeURL("/checkout/step_2_select.jsp ")%>" id="previousX">
-							<img src="/media_stat/images/buttons/checkout_left.gif" width="26" height="26" border="0" alt="PREVIOUS STEP"></a>
+						<a href="<%=response.encodeURL("/checkout/step_2_select.jsp ")%>" id="previousX">
+						<img src="/media_stat/images/buttons/checkout_left.gif" width="26" height="26" border="0" alt="PREVIOUS STEP"></a>
 					</td>
 				    <td width="340" style="text-align: left;">
 						<a href="<%=response.encodeURL("/checkout/step_2_select.jsp  ")%>" id="previousX">
@@ -246,11 +246,9 @@ final int W_CHECKOUT_STEP_3_CHOOSE_TOTAL = 970;
 						<img src="/media_stat/images/layout/clear.gif" width="340" height="1" border="0">
 					</td>
 					<td width="<%=W_CHECKOUT_STEP_3_CHOOSE_TOTAL-410%>" align="right" valign="middle">
-						<font class="space2pix"><br/></font>
-						<input type="image" name="alt_next_step" src="/media_stat/images/buttons/continue_checkout.gif" width="91" height="11" border="0" alt="CONTINUE CHECKOUT" vspace="0" onClick="setActionName(this.form,'setNoPaymentMethod')"><br/>Submit Order<br/>
+						<input type="image" name="alt_next_step" src="/media_stat/images/buttons/continue_checkout.gif" width="91" height="11" border="0" alt="CONTINUE CHECKOUT" vspace="0" onClick="setActionName(this.form,'setNoPaymentMethod')"><br/>Review Order<br/>
 					</td>
 					<td width="35" align="right" valign="middle">
-						<font class="space2pix"><br/></font>
 						<input type="image" name="alt_next_step" src="/media_stat/images/buttons/checkout_right.gif" width="26" height="26" border="0" alt="CONTINUE CHECKOUT" vspace="0" onClick="setActionName(this.form,'setNoPaymentMethod')">
 					</td>
 			    </tr>
@@ -558,6 +556,7 @@ if (isPaymentRequired) {
 	/* always end the form tag */ %>
 	</form>
 	
+	<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><br />
 	<img src="/media_stat/images/layout/dotted_line_w.gif" width="<%=W_CHECKOUT_STEP_3_CHOOSE_TOTAL%>" height="1" border="0"><br/>
 	<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><br />
 
