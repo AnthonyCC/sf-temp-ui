@@ -46,6 +46,10 @@ public class WebDeliveryPassView {
 		
 	}
 	
+	public DeliveryPassModel getModel() {
+		return model;
+	}
+
 	public String getHeaderInfo() {
 		if(model == null){
 			return getTextAfterSetParams(DEFAULT_HEADER_INFO_TEXT, new String[]{"active"});

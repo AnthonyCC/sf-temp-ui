@@ -7,7 +7,9 @@
 <%@ page import='com.freshdirect.webapp.util.CCFormatter' %>
 <%@ page import='com.freshdirect.deliverypass.EnumDPAutoRenewalType' %>
 <%@ page import='com.freshdirect.fdstore.deliverypass.FDUserDlvPassInfo' %>
+<%@ page import='com.freshdirect.deliverypass.DeliveryPassModel' %>
 <%@ page import='com.freshdirect.webapp.util.JspMethods' %>
+<%@ page import='com.freshdirect.fdstore.content.ContentFactory' %>
 <%@ page import="java.util.Calendar" %>
 <%@ page import='java.util.Date' %>
 <%@ taglib uri="template" prefix="tmpl" %>
@@ -183,7 +185,7 @@
 									<A HREF="javascript:pop('/about/aboutRenewal.jsp?sku=<%=user.getDlvPassInfo().getAutoRenewDPType().getCode()%>&term=<%=user.getDlvPassInfo().getAutoRenewDPTerm()%>',400,560)">	
 										Click here to learn more about renewals.
 									</A>
-									<br><br>Your DeliveryPass membership is set to renew on <%=DeliveryPassUtil.getAutoRenewalDate(user)%>.
+									<br><br><span class="text13bold">Your DeliveryPass membership is set to renew on <%=DeliveryPassUtil.getAutoRenewalDate(user)%>.</span>
 								<%} %>
 
 								
@@ -206,15 +208,24 @@
 								<font class="text12bold">DeliveryPass Renewals</font>
 								<font class="text12"> Your membership can be renewed automatically when your current DeliveryPass (or refill) expires.
 								<A HREF="javascript:pop('/about/aboutRenewal.jsp?sku=<%=user.getDlvPassInfo().getAutoRenewDPType().getCode()%>&term=<%=user.getDlvPassInfo().getAutoRenewDPTerm()%>&price=<%=user.getDlvPassInfo().getAutoRenewPriceAsText()%>',400,560)">								Click here to learn more about renewals.
-								</A><br><br>
-								<form name="autoRenew" method="POST">
-									<% if(!DeliveryPassUtil.getExpDate(user).equals("")) {%>
-									<b>Your DeliveryPass membership will expire on <%=DeliveryPassUtil.getExpDate(user)%>.<b>
-								<%}%>
+								</A>
+								<br /><br />
+							<table>
+								<tr>
+									<td valign="middle">
+										<% if(!DeliveryPassUtil.getExpDate(user).equals("")) { %>
+											<b>Your DeliveryPass membership will expire on <%=DeliveryPassUtil.getExpDate(user)%>.</b>
+											</td>
+											<td valign="middle">
+										<% } %>
 								
-									<input type="hidden" name="action" value="">
-									<A HREF="#" onClick="javascript:flipAutoRenewalON()"><font class="text12bold">Click here to turn renewal ON.</A>
-								</form>
+										<form name="autoRenew" method="POST">
+											<input type="hidden" name="action" value="">
+											<a href="#" onClick="javascript:flipAutoRenewalON(); return false;" onmouseout="swapImage('DP_AR_ON_BUTTON','/media/images/buttons/DP_turnon_renewal_f1.png')" onmouseover="swapImage('DP_AR_ON_BUTTON','/media/images/buttons/DP_turnon_renewal_f2.png')" style="margin: 0 12px;"><img src="/media/images/buttons/DP_turnon_renewal_f1.png" name="DP_AR_ON_BUTTON" alt="Click here to turn renewal ON." /></a>
+										</form>
+									</td>
+								</tr>
+							</table>
 								<IMG src="/media_stat/images/layout/999966.gif" WIDTH="<%= W_YA_DELIVERY_PASS_TOTAL %>" HEIGHT="1" BORDER="0" VSPACE="3"><br><br>	
                                           <%} else if (user.getUsableDeliveryPassCount()==0){%>
 								<form name="signup" method="POST">
@@ -240,13 +251,27 @@
 			<%}%>
  
 			<%
-			if(viewContent.getUsageAndPurchaseInfo() != null) { %>
-			<tr>
-				<td colspan="2">
-					<b><%= viewContent.getUsageAndPurchaseInfo() %><b><br><br><br>
-				</td>
-			</tr>	
-			<%}%>
+			if(viewContent.getUsageAndPurchaseInfo() != null) { 
+				String usageAndPurchText = "<span class=\"text12bold\">"+viewContent.getUsageAndPurchaseInfo();
+				
+			%>
+				<tr>
+					<td colspan="2">
+						<%	if (viewContent.getModel() != null) { %>
+							<fd:GetOrder id='dpOrder' saleId='<%= viewContent.getModel().getPurchaseOrderId() %>'>
+								<% if ("SUB".equalsIgnoreCase(dpOrder.getOrderType().getSaleType())) {
+									usageAndPurchText += ". <a href=\"/your_account/order_details.jsp?orderId="+dpOrder.getErpSalesId()+"\">Click here to view auto-renewal invoice.</a>";
+								} %>
+							</fd:GetOrder>
+						<% }
+						
+						usageAndPurchText += "</span>"; 
+						%>
+						<%= usageAndPurchText %>
+						<br /><br /><br />
+					</td>
+				</tr>	
+			<% } %>
 			
 			<%
 			if(viewContent.getId() != null) { %>
