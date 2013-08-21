@@ -481,6 +481,25 @@ public class FDCustomerManager {
 			throw new FDResourceException(re, "Error talking to session bean");
 		}
 	}
+	
+	public static FDCustomerInfo getSOCustomerInfo(FDIdentity identity) throws FDResourceException {
+		lookupManagerHome();
+
+		try {
+			FDCustomerManagerSB sb = managerHome.create();
+			return sb.getSOCustomerInfo(identity);
+
+		} catch (CreateException ce) {
+			invalidateManagerHome();
+			throw new FDResourceException(ce, "Error creating session bean");
+		} catch (RemoteException re) {
+			invalidateManagerHome();
+			throw new FDResourceException(re, "Error talking to session bean");
+		}
+	}
+	
+	
+	
 
 	/**
 	 * Get all the payment methods of the customer.

@@ -1010,6 +1010,36 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			throw new FDResourceException(au);
 		}
 	}
+	
+	
+	public FDCustomerInfo getSOCustomerInfo(FDIdentity identity) throws FDResourceException {
+		try {
+			String erpCustomerPK = identity.getErpCustomerPK();
+			ErpCustomerEB eb = getErpCustomerHome().findByPrimaryKey(
+					new PrimaryKey(erpCustomerPK));
+
+			ErpCustomerInfoModel erpCustomerInfo = eb.getCustomerInfo();
+			FDCustomerInfo fdInfo = new FDCustomerInfo(erpCustomerInfo
+					.getFirstName(), erpCustomerInfo.getLastName());
+			fdInfo.setHtmlEmail(!erpCustomerInfo.isEmailPlaintext());
+			fdInfo.setEmailAddress(erpCustomerInfo.getEmail());			
+
+			if(identity.getFDCustomerPK() != null) {
+				String depotCode = this.getDepotCode(identity);
+				fdInfo.setDepotCode(depotCode);
+			}
+			/*APPDEV-2114*/
+			fdInfo.setGoGreen(erpCustomerInfo.isGoGreen());
+			
+			return fdInfo;
+
+		} catch (FinderException fe) {
+			throw new FDResourceException(fe);
+		} catch (RemoteException re) {
+			throw new FDResourceException(re);
+		}
+	}
+	
 
 	/**
 	 * Get all the payment methods of the customer.

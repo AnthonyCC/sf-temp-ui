@@ -32,7 +32,7 @@ public class FDStandingOrder extends ModelSupport {
 	String customerListId; 		// customer list ID : selected shopping list
 	String addressId;			// delivery address ID
 	String paymentMethodId; 	// payment method ID
-	
+	String customerEmail;
 	Date startTime; 			// delivery timeslot - start date
 	Date endTime;				// dlv timeslot - end date
 	Date nextDeliveryDate;		// next delivery date
@@ -330,7 +330,7 @@ public class FDStandingOrder extends ModelSupport {
 	
 	@ExcludeFromXmlSerializer
 	public FDCustomerInfo getUserInfo() throws FDResourceException {
-		return FDCustomerManager.getCustomerInfo( getCustomerIdentity() );	
+		return FDCustomerManager.getSOCustomerInfo( getCustomerIdentity() );	
 	}	
 	
 	
@@ -391,4 +391,12 @@ public class FDStandingOrder extends ModelSupport {
     public List<FDOrderInfoI> getAllUpcomingOrders() throws FDResourceException, FDAuthenticationException {
             return FDStandingOrdersManager.getInstance().getAllUpcomingOrders( getUser(), this );
     }
+
+	public String getCustomerEmail() {
+		return customerEmail;
+	}
+
+	public void setCustomerEmail(String customerEmail) {
+		this.customerEmail = customerEmail;
+	}
 }

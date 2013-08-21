@@ -174,6 +174,7 @@ public interface FDCustomerManagerSB extends EJBObject {
     public PrimaryKey getCustomerId(String userId) throws FDResourceException, RemoteException;
     
     public FDCustomerInfo getCustomerInfo(FDIdentity identity) throws FDResourceException, RemoteException;
+    public FDCustomerInfo getSOCustomerInfo(FDIdentity identity) throws FDResourceException, RemoteException;
     
     /**
      * Get all the payment methods of the customer.

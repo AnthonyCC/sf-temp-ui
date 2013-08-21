@@ -74,8 +74,9 @@
 					unavCartItems.add(x);
 				}
 			}
-
-			FDStandingOrderEmail mail = (FDStandingOrderEmail) FDEmailFactory.getInstance().createConfirmStandingOrderEmail( so.getUserInfo(), order, so, unavCartItems );		
+			FDCustomerInfo customerInfo = so.getUserInfo();
+			customerInfo.getUserInfo(fduser);
+			FDStandingOrderEmail mail = (FDStandingOrderEmail) FDEmailFactory.getInstance().createConfirmStandingOrderEmail( customerInfo, order, so, unavCartItems );		
 			if (request.getParameter("to") != null && !"".equals( request.getParameter("to") ) ) {
 				mail.setRecipient(request.getParameter("to"));
 			}

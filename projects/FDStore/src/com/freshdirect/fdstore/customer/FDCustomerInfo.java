@@ -1,6 +1,7 @@
 package com.freshdirect.fdstore.customer;
 
 import com.freshdirect.common.address.PhoneNumber;
+import com.freshdirect.fdstore.FDResourceException;
 
 
 /**
@@ -36,6 +37,10 @@ public class FDCustomerInfo implements java.io.Serializable {
 	public FDCustomerInfo(String firstName, String lastName){
 		this.firstName = firstName;
 		this.lastName = lastName;
+	}
+	
+	public FDCustomerInfo(String emailAddress){
+		this.emailAddress = emailAddress;
 	}
 	
 	public int getNumberOfOrders(){
@@ -202,5 +207,10 @@ public class FDCustomerInfo implements java.io.Serializable {
 
 	public void setGoGreen(boolean goGreen) {
 		this.goGreen = goGreen;
+	}
+
+	public void getUserInfo(FDUserI customerUser) throws FDResourceException {
+		this.setChefsTable(customerUser.isChefsTable());
+		this.setCustomerServiceContact(customerUser.getCustomerServiceContact());
 	}
 }

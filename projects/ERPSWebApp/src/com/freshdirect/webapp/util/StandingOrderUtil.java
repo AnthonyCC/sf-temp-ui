@@ -147,6 +147,7 @@ public class StandingOrderUtil {
 		
 		// skip if : deleted or has some error - redundant check...
 		if ( so.isDeleted() ) {
+			
 			LOGGER.warn( "StandingOrderUtil.process() received a deleted SO, ignoring it." );
 			LOGGER.info( "Skipping deleted order." );
 			return SOResult.createSkipped( so, "Skipping because SO is deleted" );
@@ -191,37 +192,62 @@ public class StandingOrderUtil {
 			so.skipDeliveryDate();
 		}
 		
-		// =====================
-		//  2days notification 
-		// =====================
-		if(isSendReminderNotificationEmail) {
-			sendNotification( so, mailerHome );
-		}
 		
+		// ============================
+		//    Validate delivery date
+		// ============================
+		
+		
+		DeliveryInterval deliveryTimes;		
+		try {
+			if ( null != altDate ) {
+				deliveryTimes = new DeliveryInterval( altDate, so.getStartTime(), so.getEndTime() );
+			} else {
+				deliveryTimes = new DeliveryInterval( so );
+			}			
+		} catch ( IllegalArgumentException ex ) {
+			LOGGER.warn( "No valid dates." );
+			return SOResult.createUserError( so, new FDIdentity(so.getCustomerId()), new FDCustomerInfo(so.getCustomerEmail()), ErrorCode.TIMESLOT );
+		}
+
+		// check if we are within the delivery window
+		if ( !deliveryTimes.isWithinDeliveryWindow() ) {
+			LOGGER.info( "Skipping order because delivery date falls outside of the current delivery window." );
+			return SOResult.createSkipped( so, new FDIdentity(so.getCustomerId()), new FDCustomerInfo(so.getCustomerEmail()), "Skipping because delivery date falls outside of the current delivery window." ); 
+		}		
 		
 		// ==========================
 		//  Customer related infos
 		// ==========================
-		
-		FDIdentity customer = null;
-		FDCustomerInfo customerInfo = null;
-		FDUserI customerUser = null;
-		try {
-			customer = so.getCustomerIdentity();
-			customerInfo = so.getUserInfo();
-			customerUser = so.getUser();
-		} catch ( FDAuthenticationException e ) {
-			LOGGER.warn( "Failed to retreive customer information.", e );
-		}
-		
-		if ( customer == null || customerInfo == null || customerUser == null ) {
-			LOGGER.warn( "No valid customer." );
-			return SOResult.createTechnicalError( so, "No valid customer found" );
-		}
-		// Note: customer data will be added to the result if the order creation succeeds 
+				
+				FDIdentity customer = null;
+				FDCustomerInfo customerInfo = null;
+				FDUserI customerUser = null;
+				try {
+					customer = so.getCustomerIdentity();
+					customerInfo = so.getUserInfo();
+					customerUser = so.getUser();
+					customerInfo.getUserInfo(customerUser);
+				} catch ( FDAuthenticationException e ) {
+					LOGGER.warn( "Failed to retreive customer information.", e );
+				}
+				
+				if ( customer == null || customerInfo == null || customerUser == null ) {
+					LOGGER.warn( "No valid customer." );
+					return SOResult.createTechnicalError( so, "No valid customer found" );
+				}
+				// Note: customer data will be added to the result if the order creation succeeds 
 
-		LOGGER.info( "Customer information is valid." );
+				LOGGER.info( "Customer information is valid." );
 
+
+		// =====================
+		//  2days notification 
+		// =====================
+		if(isSendReminderNotificationEmail) {
+			sendNotification( so, customerInfo, mailerHome );
+		}
+								
 
 		// =====================================
 		//   Check if SOI exists for given week
@@ -241,6 +267,8 @@ public class StandingOrderUtil {
 			}
 		}
 		
+		
+
 
 		// =============================
 		//   Validate delivery address
@@ -323,31 +351,7 @@ public class StandingOrderUtil {
 
 
 		
-			
-		// ============================
-		//    Validate delivery date
-		// ============================
-		
-		
-		DeliveryInterval deliveryTimes;		
-		try {
-			if ( null != altDate ) {
-				deliveryTimes = new DeliveryInterval( altDate, so.getStartTime(), so.getEndTime() );
-			} else {
-				deliveryTimes = new DeliveryInterval( so );
-			}			
-		} catch ( IllegalArgumentException ex ) {
-			LOGGER.warn( "No valid dates." );
-			return SOResult.createUserError( so, customer, customerInfo, ErrorCode.TIMESLOT );
-		}
-
-		// check if we are within the delivery window
-		if ( !deliveryTimes.isWithinDeliveryWindow() ) {
-			LOGGER.info( "Skipping order because delivery date falls outside of the current delivery window." );
-			return SOResult.createSkipped( so, customer, customerInfo, "Skipping because delivery date falls outside of the current delivery window." ); 
-		}		
-
-
+	
 		// =================================================
 		//   Validate SO nextDelivery date is a holiday or closed
 		// =================================================
@@ -546,8 +550,9 @@ public class StandingOrderUtil {
 		//    Update Tax and Bottle deposits
 		//    Update Delivery Fees
 		// ==========================
-		cart.recalculateTaxAndBottleDeposit(deliveryAddressModel.getZipCode());
-		updateDeliverySurcharges(cart, new FDRulesContextImpl(customerUser));
+		// commented the below two lines as this logic is replaced by updateUserState call
+		//cart.recalculateTaxAndBottleDeposit(deliveryAddressModel.getZipCode());
+		//updateDeliverySurcharges(cart, new FDRulesContextImpl(customerUser));
 
 
 		// ==========================
@@ -574,6 +579,7 @@ public class StandingOrderUtil {
 			
 			String orderId = FDCustomerManager.placeOrder( orderActionInfo, cart, customerUser.getAllAppliedPromos(), false, cra, null );
 			
+			long cmrequestStart = System.currentTimeMillis();
 			try {
 				
 				CJVFContextHolder cjvfContextHolder = new CJVFContextHolder(customerUser.getPrimaryKey(), 7);
@@ -594,8 +600,9 @@ public class StandingOrderUtil {
 					errorOccured = false;
 				}
 			} catch (FDResourceException e) {
-				LOGGER.error("Failed to assign standing order to sale, corresponding order ID="+orderId, e);
+				LOGGER.error("Failed to send coremetrics information corresponding order ID="+orderId, e);
 			}
+			LOGGER.info("Time taken to send CM Request for order ID="+orderId+" (in sec) " + (System.currentTimeMillis() - cmrequestStart)/1000 );
 			
 			
 			try {
@@ -886,7 +893,7 @@ public class StandingOrderUtil {
 		return vr.isFail();
 	}
 	
-	private static void sendNotification( FDStandingOrder so, MailerGatewayHome mailerHome ) throws FDResourceException {		
+	private static void sendNotification( FDStandingOrder so, FDCustomerInfo customerInfo, MailerGatewayHome mailerHome ) throws FDResourceException {		
 		try {
 			List<FDOrderInfoI> orders = so.getAllOrders();
 			for ( FDOrderInfoI order : orders ) {
@@ -896,7 +903,7 @@ public class StandingOrderUtil {
 						LOGGER.info( "Not sending 2days notification email as order instance is cancelled: so["+so.getId()+"], order["+order.getErpSalesId()+"]" );
 					} else {
 						LOGGER.info( "Sending 2days notification email: so["+so.getId()+"], order["+order.getErpSalesId()+"]" );
-						sendNotificationMail( so, so.getUserInfo(), order.getErpSalesId(), mailerHome );
+						sendNotificationMail( so, customerInfo, order.getErpSalesId(), mailerHome );
 					}
 				}
 			}			

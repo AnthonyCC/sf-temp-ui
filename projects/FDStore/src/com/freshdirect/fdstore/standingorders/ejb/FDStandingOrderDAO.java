@@ -28,12 +28,13 @@ public class FDStandingOrderDAO {
 	
 	private static final Logger LOGGER = LoggerFactory.getInstance( FDStandingOrderDAO.class );
 
-	private static final String FIELDZ_ALL = "SO.ID, SO.CUSTOMER_ID, SO.CUSTOMERLIST_ID, SO.ADDRESS_ID, SO.PAYMENTMETHOD_ID, SO.START_TIME, SO.END_TIME, SO.NEXT_DATE, SO.FREQUENCY, SO.ALCOHOL_AGREEMENT, SO.DELETED, SO.LAST_ERROR, SO.ERROR_HEADER, SO.ERROR_DETAIL, CCL.NAME";
+	private static final String FIELDZ_ALL = "SO.ID, SO.CUSTOMER_ID, SO.CUSTOMERLIST_ID, SO.ADDRESS_ID, SO.PAYMENTMETHOD_ID, SO.START_TIME, SO.END_TIME, SO.NEXT_DATE, SO.FREQUENCY, SO.ALCOHOL_AGREEMENT, SO.DELETED, SO.LAST_ERROR, SO.ERROR_HEADER, SO.ERROR_DETAIL, CCL.NAME, C.USER_ID";
 
 	private static final String LOAD_CUSTOMER_STANDING_ORDERS =
 		"select " + FIELDZ_ALL + " " +
 		"from CUST.STANDING_ORDER SO " +
 		"left join CUST.CUSTOMERLIST CCL on(CCL.id = SO.CUSTOMERLIST_ID) " +
+		"left join CUST.CUSTOMER c on (C.ID = SO.CUSTOMER_ID) " +
 		"where CCL.CUSTOMER_ID = ? and SO.DELETED<>1 " +
 		"order by CCL.NAME";
 
@@ -41,6 +42,7 @@ public class FDStandingOrderDAO {
 		"select " + FIELDZ_ALL + " " +
 		"from CUST.STANDING_ORDER SO " +
 		"left join CUST.CUSTOMERLIST CCL on(CCL.id = SO.CUSTOMERLIST_ID) " +
+		"left join CUST.CUSTOMER c on (C.ID = SO.CUSTOMER_ID) " +
 		"where SO.DELETED<>1 " +
 		"order by CCL.NAME";
 
@@ -50,6 +52,7 @@ public class FDStandingOrderDAO {
 		"select " + FIELDZ_ALL + " " +
 		"from CUST.STANDING_ORDER SO " +
 		"left join CUST.CUSTOMERLIST CCL on(CCL.id = SO.CUSTOMERLIST_ID) " +
+		"left join CUST.CUSTOMER c on (C.ID = SO.CUSTOMER_ID) " +
 		"where SO.ID=?";
 
 	private static final String INSERT_STANDING_ORDER = "insert into CUST.STANDING_ORDER(ID, CUSTOMER_ID, CUSTOMERLIST_ID, ADDRESS_ID, PAYMENTMETHOD_ID, START_TIME, END_TIME, NEXT_DATE, FREQUENCY, ALCOHOL_AGREEMENT, DELETED, LAST_ERROR, ERROR_HEADER, ERROR_DETAIL) " +
@@ -258,6 +261,7 @@ public class FDStandingOrderDAO {
 		so.setAddressId( rs.getString("ADDRESS_ID") );
 		so.setPaymentMethodId( rs.getString("PAYMENTMETHOD_ID") );
 		
+		so.setCustomerEmail(rs.getString("USER_ID"));
 		so.setStartTime( rs.getTime("START_TIME") );
 		so.setEndTime( rs.getTime("END_TIME") );
 		so.setNextDeliveryDate( rs.getDate("NEXT_DATE") );
