@@ -342,7 +342,7 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns
       <ejb-name>GatewayActivityLog</ejb-name>
       <stateless-session-descriptor>
         <pool>
-          <max-beans-in-free-pool>5</max-beans-in-free-pool>
+          <max-beans-in-free-pool>10</max-beans-in-free-pool>
         </pool>
         <stateless-clustering></stateless-clustering>
       </stateless-session-descriptor>
@@ -1104,7 +1104,7 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns
       <ejb-name>TimeslotEventListener</ejb-name>
       <message-driven-descriptor>
         <pool>
-          <max-beans-in-free-pool>8</max-beans-in-free-pool>
+          <max-beans-in-free-pool>10</max-beans-in-free-pool>
         </pool>
         <destination-jndi-name>
         logMetricQueue</destination-jndi-name>

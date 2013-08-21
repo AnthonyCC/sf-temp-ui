@@ -27,6 +27,7 @@ import javax.ejb.EJBException;
 import javax.ejb.FinderException;
 import javax.ejb.ObjectNotFoundException;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 import com.freshdirect.ErpServicesProperties;
@@ -1066,12 +1067,17 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 							paymentMethod.setProfileID(response.getBillingInfo().getPaymentMethod().getBillingProfileID());
 						}
 					}else{
+						
+						if(StringUtils.isEmpty(authModel.getAuthCode())) {
+							throw new ErpTransactionException();
+						} 
 						if(!authModel.isZipMatch())
 							throw new ErpTransactionException("AVS");
 						else if(!authModel.isCVVMatch())
 							throw new ErpTransactionException("CVV");
 						else 
 							throw new ErpTransactionException();
+						
 					}
 				} catch (ErpTransactionException e) {
 					this.getSessionContext().setRollbackOnly();

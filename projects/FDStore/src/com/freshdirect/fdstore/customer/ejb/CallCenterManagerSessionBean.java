@@ -3512,7 +3512,7 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 		
 	}
 	
-	private static final String REVERSE_AUTH_ORDERS_QUERY_BY_DATE ="select A.sale_id, A.status, A.requested_date, A.amount, A.action_date,A.last_name,A.first_name from "+
+	private static final String REVERSE_AUTH_ORDERS_QUERY_BY_DATE ="select DISTINCT A.sale_id, A.status, A.requested_date, A.amount, A.action_date,A.last_name,A.first_name from "+
 			"(select  s.id as sale_id, s.status, sa.requested_date, sa.amount, sa.action_date, ci.last_name, ci.first_name from cust.sale s, "+ 
 			"cust.salesaction sa,cust.customerinfo ci, cust.paymentinfo pi  where s.status='CAN' "+ 
 			"and s.id=sa.sale_id and SA.ACTION_TYPE IN ('CRO','MOD') and S.CROMOD_DATE=SA.ACTION_DATE "+ 

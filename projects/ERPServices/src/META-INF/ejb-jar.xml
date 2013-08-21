@@ -1525,6 +1525,11 @@ version="3.0">
         <method-intf>Remote</method-intf>
         <method-name>logActivityNewTX</method-name>
       </method>
+       <method>
+                <ejb-name>GatewayActivityLog</ejb-name>
+                <method-intf>Remote</method-intf>
+                <method-name>logActivity</method-name>
+       </method>
       <trans-attribute>RequiresNew</trans-attribute>
     </container-transaction>
     <!--
