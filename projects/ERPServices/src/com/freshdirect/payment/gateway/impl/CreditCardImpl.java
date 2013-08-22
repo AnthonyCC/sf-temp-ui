@@ -82,8 +82,7 @@ class CreditCardImpl extends PaymentMethodImpl implements CreditCard{
 
 	@Override
 	public String toString() {
-		return "CreditCardImpl [creditCardType=" + creditCardType + ", cvv="
-				+ cvv + ", expirationDate=" + expirationDate + ", toString()="
+		return "CreditCardImpl [creditCardType=" + creditCardType + ", expirationDate=" + expirationDate + ", toString()="
 				+ super.toString() + "]";
 	}
 	

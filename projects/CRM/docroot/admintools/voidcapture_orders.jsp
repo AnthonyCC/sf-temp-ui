@@ -14,7 +14,7 @@
 
 <tmpl:insert template='/template/top_nav.jsp'>
 
-<tmpl:put name='title' direct='true'>Supervisor Resources > Re-Submit Orders</tmpl:put>
+<tmpl:put name='title' direct='true'>Supervisor Resources > Void Capture Orders</tmpl:put>
 
 <tmpl:put name='content' direct='true'>
 	<%
@@ -22,7 +22,7 @@
 	%>
 	<jsp:include page="/includes/admintools_nav.jsp" />
 
-	<crm:CrmResubmitOrders id="nsmOrders" result="result">
+	<crm:CrmVoidCaptureOrders id="orders" result="result">
 	<form method='POST' name="frmResubmitOrders">
 	
 	
@@ -43,21 +43,21 @@
 		
 		<div class="sub_nav sub_nav_title">
 			
-			<%@ include file="/includes/admintools/i_nsm_search.jspf"%>
+			<%@ include file="/includes/admintools/i_vc_order_search.jspf"%>
 		</div>
 		<div>
-			<% if (!isPost && nsmOrders.size() == 0) { %><strong>There were no Non-Submitted Orders found.</strong><% } %>
-			<% if (!isPost && !nsmOrders.isEmpty()) { %>
-				&nbsp;<span style="font-weight: normal;">(<%=nsmOrders.size()%> orders found) &nbsp;&nbsp;&nbsp;
+			<% if (!isPost && orders.size() == 0) { %><strong>There were no orders to void capture.</strong><% } %>
+			<% if (!isPost && !orders.isEmpty()) { %>
+				&nbsp;<span style="font-weight: normal;">(<%=orders.size()%> orders found) &nbsp;&nbsp;&nbsp;
 				Amount marked for resubmittal: <input onFocus="blur();" type=text size="6" name="ordersSelected" id="ordersSelected" readonly value="0" />&nbsp;&nbsp;&nbsp;
 				Select: <a href="#" onClick="javascript:$('ordersSelected').value=selectNCB('resubmit_orders', 100, true, 'first'); return false;">first 100</a>/<a  href="#" onClick="javascript:$('ordersSelected').value=selectNCB('resubmit_orders', 100, true, 'last'); return false;">last 100</a>/<a  href="#" onClick="javascript:$('ordersSelected').value=selectNCB('resubmit_orders', 0, true); return false;">all</a> orders&nbsp;&nbsp;
 				<a href="#" onClick="javascript:$('ordersSelected').value=selectNCB('resubmit_orders', 0, false); return false;">Clear all</a>&nbsp;&nbsp;&nbsp;
-				<input type="submit" value="resubmit checked items" />
+				<input type="submit" value="void capture checked items" />
 				</span>
 			<% } %>
 		</div>
 
-		<% if (!isPost && !nsmOrders.isEmpty()) { %>
+		<% if (!isPost && !orders.isEmpty()) { %>
 			<table width="100%" cellspacing="0" border="0" style="empty-cells: show">
 				<tr bgcolor="#333366" class="list_header_text">
 					<td align="left">&nbsp;</td>
@@ -71,7 +71,7 @@
 			</table>
 			<div id="result" class="list_content" style="height:76%;">
 				<table width="100%" cellspacing="0" border="0" style="empty-cells: show" id="resubmit_orders">
-				<logic:iterate id="orderInfo" collection="<%= nsmOrders %>" type="com.freshdirect.fdstore.customer.FDCustomerOrderInfo" indexId="idx">
+				<logic:iterate id="orderInfo" collection="<%= orders %>" type="com.freshdirect.fdstore.customer.FDCustomerOrderInfo" indexId="idx">
 					<tr <%= idx.intValue() % 2 == 0 ? "class='list_odd_row'" : "" %>>
 						<td class="border_bottom">&nbsp;</td>
 						<td class="border_bottom">
@@ -89,6 +89,6 @@
 			</div>
 		<% } %>
 	</form>
-	</crm:CrmResubmitOrders>
+	</crm:CrmVoidCaptureOrders>
 </tmpl:put>
 </tmpl:insert>

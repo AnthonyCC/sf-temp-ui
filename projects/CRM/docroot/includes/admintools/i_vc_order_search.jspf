@@ -15,7 +15,7 @@
 		%>
 		<td><div class="sub_nav sub_nav_title">
 
-			Reverse authorize orders that are cancelled/not accepted.
+			Void capture orders.
 		</div>
 		</td>
 		<td>Delivery Date : </td>
@@ -136,13 +136,12 @@
 			    	}  else {
 			    		location.href = url;	
 			    	}
-				
 			    }
 
 			</script>
 		</td>
 	
-		<td><input type="button" value="SEARCH ORDERS" class="submit" onclick="javascript:doCompositeLink('/admintools/reverseauth_orders.jsp')"></td></a></td>
+		<td><input type="button" value="SEARCH ORDERS" class="submit" onclick="javascript:doCompositeLink('/admintools/voidcapture_orders.jsp')"></td></a></td>
 		
 	</tr>	
 	

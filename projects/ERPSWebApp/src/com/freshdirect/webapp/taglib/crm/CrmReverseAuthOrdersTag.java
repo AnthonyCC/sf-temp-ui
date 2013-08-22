@@ -55,7 +55,7 @@ public class CrmReverseAuthOrdersTag extends AbstractControllerTag {
 					throw new JspException(ex.getMessage());
 				} catch (ErpTransactionException ex) {
 					LOGGER.warn("Caught ErpTransactionException in CrmReverseAuthOrdersTag.performAction() ",ex);
-					actionResult.addError(new ActionError("order_status", "Order id: "+saleIds[idIdx]+" was not reverse authorized because "+ex.getMessage()));
+					actionResult.addError(new ActionError("submitted_"+idIdx, "Order id: "+saleIds[idIdx]+" was not reverse authorized because "+ex.getMessage()));
 				} 
 			}
 		} else {

@@ -203,6 +203,7 @@ public class GatewayAdapter {
 			model.setDescription(response.getResponseCode()+"-"+response.getStatusMessage());
 			model.setSequenceNumber(response.getBillingInfo().getTransactionRef());
 			//model.setMerchantId(trans.GetValue(LCC.ID_MERCHANT_ID)); Fix 
+			model.setMerchantId(response.getRequest().getBillingInfo().getMerchant().name());
 			BillingInfo billingInfo=response.getBillingInfo();
 			if(billingInfo!=null) {
 				model.setGatewayOrderID(billingInfo.getTransactionID());
@@ -214,6 +215,10 @@ public class GatewayAdapter {
 				if(pm!=null) {
 					model.setProfileID(pm.getBillingProfileID());
 					model.setCustomerId(pm.getCustomerID());
+					if(PaymentMethodType.CREDIT_CARD.equals(pm.getType())) {
+						model.setCardType(translate(((CreditCard)pm).getCreditCardType()));	
+					}
+					
 				}
 			}
 		}
@@ -449,7 +454,7 @@ public class GatewayAdapter {
 			return cc;
 		
 	}
-	private static ECheck getECheckModel(ErpPaymentMethodI paymentMethod) {
+	public static ECheck getECheckModel(ErpPaymentMethodI paymentMethod) {
 		
 		
 			ECheck ec=PaymentMethodFactory.getECheck();

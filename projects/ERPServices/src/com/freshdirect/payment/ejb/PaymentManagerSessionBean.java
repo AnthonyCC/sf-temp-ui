@@ -15,6 +15,7 @@ import javax.ejb.FinderException;
 import javax.ejb.SessionContext;
 import javax.naming.NamingException;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Category;
 
 import com.freshdirect.ErpServicesProperties;
@@ -102,6 +103,17 @@ public class PaymentManagerSessionBean extends SessionBeanSupport {
 		
 	}
 	
+	private static boolean isMatching(ErpPaymentMethodI custPymt,ErpPaymentMethodI salePymt) {
+		
+		if(custPymt==null || salePymt==null)
+			return false;
+		if(StringUtils.isEmpty(salePymt.getProfileID()))
+			return salePymt.getAccountNumber().equalsIgnoreCase(custPymt.getAccountNumber());
+		 else 
+			return custPymt.getProfileID().equals(salePymt.getProfileID());
+		
+	}
+	
 	public List<ErpAuthorizationModel> authorizeSaleRealtime(String saleId) throws ErpAuthorizationException, ErpAddressVerificationException {
 						
 		try {
@@ -119,7 +131,7 @@ public class PaymentManagerSessionBean extends SessionBeanSupport {
 				
 				a:for(int j=0;j<paymentList.size();j++){
 					ErpPaymentMethodI custPayment=paymentList.get(j);
-					if(payment.getAccountNumber().equalsIgnoreCase(custPayment.getAccountNumber())){
+					if(isMatching(custPayment,payment)) {
 						payment=custPayment;
 						break a;
 					}
@@ -244,9 +256,7 @@ public class PaymentManagerSessionBean extends SessionBeanSupport {
 				
 				a:for(int j=0;j<paymentList.size();j++){
 					ErpPaymentMethodI custPayment=paymentList.get(j);
-					if(payment.getAccountNumber().equalsIgnoreCase(custPayment.getAccountNumber())||
-					   (payment.getProfileID()!=null && payment.getProfileID().equals(custPayment.getProfileID()))
-					   ){
+					if(isMatching(custPayment,payment)) {
 						payment=custPayment;
 						break a;
 					}

@@ -1495,7 +1495,7 @@
 <tag>
         <name>CrmVoidCaptureOrders</name>
         <tagclass>com.freshdirect.webapp.taglib.crm.CrmVoidCaptureOrdersTag</tagclass>
-        <teiclass>com.freshdirect.webapp.taglib.crm.CrmVoidCaptureOrders$TagEI</teiclass>
+        <teiclass>com.freshdirect.webapp.taglib.crm.CrmVoidCaptureOrdersTag$TagEI</teiclass>
         <bodycontent>JSP</bodycontent>
         <info></info>
         <attribute>

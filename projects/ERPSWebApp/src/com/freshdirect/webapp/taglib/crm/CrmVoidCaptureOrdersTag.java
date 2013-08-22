@@ -47,18 +47,19 @@ public class CrmVoidCaptureOrdersTag extends AbstractControllerTag {
 				try {
 					CallCenterServices.voidCaptureOrder(saleIds[idIdx]);
 					
-						actionResult.addError(new ActionError("submitted_"+idIdx, "Order id: "+saleIds[idIdx]+" was reverse authorized."));
+						actionResult.addError(new ActionError("submitted_"+idIdx, "Order id: "+saleIds[idIdx]+" was void captured."));
 					
 				} catch (FDResourceException ex) {
 					LOGGER.warn("Caught FDResoureException in CrmVoidCaptureOrdersTag.performAction() ",ex);
 					throw new JspException(ex.getMessage());
+					
 				} catch (ErpTransactionException ex) {
 					LOGGER.warn("Caught ErpTransactionException in CrmVoidCaptureOrdersTag.performAction() ",ex);
-					actionResult.addError(new ActionError("order_status", "Order id: "+saleIds[idIdx]+" was not reverse authorized because "+ex.getMessage()));
+					actionResult.addError(new ActionError("submitted_"+idIdx, "Order id: "+saleIds[idIdx]+" was not void captured because "+ex.getMessage()));
 				} 
 			}
 		} else {
-			actionResult.addError(new ActionError("submitted", "There were no orders marked for resubmittal."));
+			actionResult.addError(new ActionError("submitted", "There were no orders marked for void capture."));
 		}
 		
 		pageContext.setAttribute(this.id, Collections.EMPTY_LIST);

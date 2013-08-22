@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Category;
 
 import com.freshdirect.common.customer.EnumWebServiceType;
@@ -577,7 +578,7 @@ public class SubmitOrderAction extends WebActionSupport {
 				FDModifyCartModel modifyCart = (FDModifyCartModel) cart;
 				FDOrderAdapter order = modifyCart.getOriginalOrder();
 				ErpPaymentMethodI pymtMethod=order.getPaymentMethod();
-				if(pymtMethod.getProfileID()==null) {
+				if(StringUtils.isEmpty(pymtMethod.getProfileID())) {
 					ErpPaymentMethodI pm=cart.getPaymentMethod();
 					pm.setProfileID(null);//Explicitly clear the profile ID;
 				}

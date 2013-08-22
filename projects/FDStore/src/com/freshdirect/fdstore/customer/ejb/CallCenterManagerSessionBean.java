@@ -3512,7 +3512,7 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 		
 	}
 	
-	private static final String REVERSE_AUTH_ORDERS_QUERY_BY_DATE ="select DISTINCT A.sale_id, A.status, A.requested_date, A.amount, A.action_date,A.last_name,A.first_name from "+
+	/*"select DISTINCT A.sale_id, A.status, A.requested_date, A.amount, A.action_date,A.last_name,A.first_name from "+
 			"(select  s.id as sale_id, s.status, sa.requested_date, sa.amount, sa.action_date, ci.last_name, ci.first_name from cust.sale s, "+ 
 			"cust.salesaction sa,cust.customerinfo ci, cust.paymentinfo pi  where s.status='CAN' "+ 
 			"and s.id=sa.sale_id and SA.ACTION_TYPE IN ('CRO','MOD') and S.CROMOD_DATE=SA.ACTION_DATE "+ 
@@ -3521,6 +3521,20 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 			"cust.salesaction sa1, cust.payment p "+
 			"where A.sale_id=sa1.sale_id and sa1.id=P.SALESACTION_ID and sa1.action_type='AUT' "+
 			"and  exists (select 1 from MIS.GATEWAY_ACTIVITY_LOG gal where P.GATEWAY_ORDER=GAL.ORDER_ID and transaction_type='AUTHORIZE' and GAL.IS_APPROVED='Y' )";
+	*/
+	private static final String REVERSE_AUTH_ORDERS_QUERY_BY_DATE =
+	"select DISTINCT A.sale_id, A.status,  A.amount, A.action_date,A.last_name||',' ||A.first_name as CUSTOMER_NAME from "+
+    " (select  s.id as sale_id, s.status, sa.requested_date, sa.amount, sa.action_date, ci.last_name, ci.first_name from cust.sale s, "+
+    " cust.salesaction sa,cust.customerinfo ci, cust.paymentinfo pi  where s.status='CAN' "+
+    " and s.id=sa.sale_id and SA.ACTION_TYPE IN ('CRO','MOD') and S.CROMOD_DATE=SA.ACTION_DATE "+
+    " AND sa.requested_date =TO_DATE(?, 'YYYY-MM-DD') and s.customer_id=ci.customer_id and PI.SALESACTION_ID=sa.id and PI.PAYMENT_METHOD_TYPE='CC' "+
+    " and PI.ON_FD_ACCOUNT='R' ) A, "+
+    " cust.salesaction sa1, cust.payment p "+
+    " where A.sale_id=sa1.sale_id and sa1.id=P.SALESACTION_ID and sa1.action_type='AUT' "+
+    " and  exists (select 1 from MIS.GATEWAY_ACTIVITY_LOG gal where P.GATEWAY_ORDER=GAL.ORDER_ID and transaction_type='AUTHORIZE' and GAL.IS_APPROVED='Y' ) "+
+    " UNION "+
+    " select GAL.ORDER_ID SALE_ID, 'N/A', GAL.AMOUNT, GAL.TRANSACTION_TIME ACTION_DATE,GAL.CUSTOMER_NAME from MIS.GATEWAY_ACTIVITY_LOG gal where GAL.TRANSACTION_TIME between TO_DATE(?, 'YYYY-MM-DD')  and  "+
+    " TO_DATE(?, 'YYYY-MM-DD HH24:MI:SS') and transaction_type='AUTHORIZE' and GAL.IS_APPROVED='Y' and GAL.IS_AVS_MATCH!='Y' ";
 	
 	public List<FDCustomerOrderInfo> getReverseAuthOrders(String date) throws FDResourceException {
 		Connection conn = null;
@@ -3534,17 +3548,17 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 			
 				ps= conn.prepareStatement(REVERSE_AUTH_ORDERS_QUERY_BY_DATE);
 				ps.setString(1,date);
-				//ps.setString(2,date);
+				ps.setString(2,date);
+				ps.setString(3,date+" 23:59:59");
 			
 			ResultSet rs = ps.executeQuery();
 			while(rs.next()){
 				FDCustomerOrderInfo info = new FDCustomerOrderInfo();
 				info.setSaleId(rs.getString("SALE_ID"));
-				info.setDeliveryDate(rs.getDate("REQUESTED_DATE"));
-				info.setOrderStatus(EnumSaleStatus.getSaleStatus(rs.getString("STATUS")));
+				//info.setDeliveryDate(rs.getDate("REQUESTED_DATE"));
+				info.setOrderStatus(EnumSaleStatus.CANCELED);
 				info.setAmount(rs.getDouble("AMOUNT"));
-				info.setFirstName(rs.getString("FIRST_NAME"));
-				info.setLastName(rs.getString("LAST_NAME"));
+				info.setFirstName(rs.getString("CUSTOMER_NAME"));
 				info.setLastCroModDate(rs.getTimestamp("ACTION_DATE"));
 				lst.add(info);
 }
@@ -3566,14 +3580,15 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 		}
 	}	
 	
-	private static final String VOID_CAPTURE_ORDERS_QUERY_BY_DATE ="select  s.id as sale_id, s.status, sa.requested_date, sa.amount, sa.action_date, ci.last_name, ci.first_name "+  
-		    "from cust.sale s, cust.salesaction sa,cust.customerinfo ci, cust.paymentinfo pi "+ 
-		    " where "+ 
-		    "s.status='CAN' and s.id=sa.sale_id and SA.ACTION_TYPE IN ('CRO','MOD') and S.CROMOD_DATE=SA.ACTION_DATE "+  
-		    "AND sa.requested_date =TO_DATE('2013-07-27', 'YYYY-MM-DD') and s.customer_id=ci.customer_id "+
-		    "and PI.SALESACTION_ID=sa.id and PI.PAYMENT_METHOD_TYPE='CC' and PI.ON_FD_ACCOUNT='R' "+
-		    "and  exists "+ 
-		"(select 1 from MIS.GATEWAY_ACTIVITY_LOG gal where s.id=SUBSTR(GAL.ORDER_ID,1,INSTRB(GAL.ORDER_ID, 'X', 1, 1)-1) ) ";
+	private static final String VOID_CAPTURE_ORDERS_QUERY_BY_DATE ="select DISTINCT A.sale_id, A.status, A.requested_date, A.amount, A.action_date,A.last_name,A.first_name from "+
+            " (select  s.id as sale_id, s.status, sa.requested_date, sa.amount, sa.action_date, ci.last_name, ci.first_name from cust.sale s, "+ 
+            " cust.salesaction sa,cust.customerinfo ci, cust.paymentinfo pi  where s.status='PPG' "+ 
+            " and s.id=sa.sale_id and SA.ACTION_TYPE IN ('CRO','MOD') and S.CROMOD_DATE=SA.ACTION_DATE "+ 
+            " AND sa.requested_date =TO_DATE(?, 'YYYY-MM-DD') and s.customer_id=ci.customer_id and PI.SALESACTION_ID=sa.id and PI.PAYMENT_METHOD_TYPE IN ('EC','CC' ) "+
+            " and PI.ON_FD_ACCOUNT='R' ) A, "+
+            " cust.salesaction sa1, cust.payment p "+
+            " where A.sale_id=sa1.sale_id and sa1.id=P.SALESACTION_ID and sa1.action_type='CAP' "+
+            " and  exists (select 1 from MIS.GATEWAY_ACTIVITY_LOG gal where P.GATEWAY_ORDER=GAL.ORDER_ID and transaction_type='CAPTURE' and GAL.IS_APPROVED='Y' ) ";
 			
 			public List<FDCustomerOrderInfo> getOrdersForVoidCapture(String date) throws FDResourceException {
 				Connection conn = null;
@@ -3586,7 +3601,7 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 					
 						ps= conn.prepareStatement(VOID_CAPTURE_ORDERS_QUERY_BY_DATE);
 						ps.setString(1,date);
-						ps.setString(2,date);
+						//ps.setString(2,date);
 					
 					ResultSet rs = ps.executeQuery();
 					while(rs.next()){
@@ -3618,13 +3633,14 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 				}
 			}
 
-
+            private String TxFOR_REVERSE_AUTH="select * from MIS.GATEWAY_ACTIVITY_LOG gal where GAL.ORDER_ID=? and transaction_type='AUTHORIZE' and GAL.IS_APPROVED='Y' and GAL.IS_AVS_MATCH!='Y'";
 			public void reverseAuthOrder(String saleId) throws RemoteException, FDResourceException, ErpTransactionException {
 				
 				if(StringUtils.isEmpty(saleId))
 					return ;
 				Gateway gateway=GatewayFactory.getGateway(GatewayType.PAYMENTECH);
 				 try {
+					 if(saleId.indexOf("X")<0) {
 		              ErpCustomerManagerSB customerManagerSB = (ErpCustomerManagerSB) this.getErpCustomerManagerHome().create();
 		              ErpSaleModel _order=customerManagerSB.getOrder(new PrimaryKey(saleId));
 		              if(_order==null) return ;
@@ -3653,6 +3669,54 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 			  			  
 			              
 		              }
+					 } else {
+						 Connection conn = null;
+						 Request _request=null;
+						 try {
+								conn = this.getConnection();
+								List lst = new ArrayList();
+								PreparedStatement ps =null;
+		              
+									ps= conn.prepareStatement(TxFOR_REVERSE_AUTH);
+									ps.setString(1,saleId);
+									//ps.setString(2,date);
+		              
+								ResultSet rs = ps.executeQuery();
+								if(rs.next()){
+									_request=RequestFactory.getRequest(TransactionType.REVERSE_AUTHORIZE);
+						              BillingInfo billinginfo=null;
+						              
+						              billinginfo=BillingInfoFactory.getBillingInfo(Merchant.valueOf(rs.getString("MERCHANT")),PaymentMethodFactory.getCreditCard());
+						              billinginfo.setTransactionID(saleId);
+						              billinginfo.getPaymentMethod().setCustomerID(rs.getString("CUSTOMER_ID"));
+						              billinginfo.setTransactionRefIndex(rs.getString("TX_REF_IDX"));
+						              billinginfo.setTransactionRef(rs.getString("TX_REF_NUM"));
+						              billinginfo.setAmount(rs.getDouble("AMOUNT"));
+						              _request.setBillingInfo(billinginfo);
+						              
+								}
+								rs.close();
+								ps.close();
+								if(_request!=null) {
+									Response _response=gateway.reverseAuthorize(_request);
+						              if (!_response.isSuccess())
+						              	throw new ErpTransactionException(_response.getStatusMessage()) ;
+								}
+								
+							} catch (SQLException sqle) {
+								LOGGER.error(sqle.getMessage());
+								throw new FDResourceException(sqle);
+							} finally {
+								if (conn != null) {
+									try {
+										conn.close();
+									} catch (SQLException sqle) {
+										LOGGER.debug("Error while cleaning:", sqle);
+									}
+								}
+							}
+						 
+					 }
 		              
 		              
 		        } catch (CreateException ce) {
@@ -3682,7 +3746,7 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 		              ErpCustomerManagerSB customerManagerSB = (ErpCustomerManagerSB) this.getErpCustomerManagerHome().create();
 		              ErpSaleModel _order=customerManagerSB.getOrder(new PrimaryKey(saleId));
 		              if(_order==null) return;
-		              if(EnumSaleStatus.CANCELED.equals(_order.getStatus())) {
+		              if(EnumSaleStatus.PAYMENT_PENDING.equals(_order.getStatus())) {
 		            	  
 			              ErpAbstractOrderModel order =_order.getCurrentOrder();
 			              List<ErpCaptureModel> captures= _order.getCaptures();
@@ -3691,14 +3755,25 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 			          			Request _request=RequestFactory.getRequest(TransactionType.VOID_CAPTURE);
 					              BillingInfo billinginfo=null;
 					              
+					              if(EnumPaymentMethodType.CREDITCARD.equals(order.getPaymentMethod().getPaymentMethodType())) {
 					              
-					              billinginfo=BillingInfoFactory.getBillingInfo(Merchant.FRESHDIRECT,PaymentMethodFactory.getCreditCard());
-					              billinginfo.setTransactionID(saleId);
+					      			billinginfo=BillingInfoFactory.getBillingInfo(Merchant.valueOf(capture.getMerchantId()), GatewayAdapter.getCreditCardModel(order.getPaymentMethod()));
+					      		  }
+					      		  else if(EnumPaymentMethodType.ECHECK.equals(order.getPaymentMethod().getPaymentMethodType())) {
+					      			billinginfo=BillingInfoFactory.getBillingInfo(Merchant.valueOf(capture.getMerchantId()), GatewayAdapter.getECheckModel(order.getPaymentMethod()));
+					      		  } else
+					      			  return;
+
+					              billinginfo.setTransactionID(capture.getGatewayOrderID());
 					              billinginfo.setTransactionRefIndex(capture.getTrasactionRefIndex());
 					              billinginfo.setTransactionRef(capture.getSequenceNumber());
 					              billinginfo.setAmount(capture.getAmount());
+					              billinginfo.getPaymentMethod().setCustomerID(_order.getCustomerPk().getId());
+					              
 					              _request.setBillingInfo(billinginfo);
 					              Response _response=gateway.voidCapture(_request);
+					              if (!_response.isSuccess())
+						              	throw new ErpTransactionException(_response.getStatusMessage());
 					              ErpVoidCaptureModel voidCapture=GatewayAdapter.getVoidCaptureResponse(_response, capture);
 					              _order.addVoidCapture(voidCapture);
 			          		

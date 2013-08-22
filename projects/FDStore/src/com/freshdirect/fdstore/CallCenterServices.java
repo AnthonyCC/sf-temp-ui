@@ -1254,7 +1254,7 @@ public class CallCenterServices {
 		}
 		try {
 			CallCenterManagerSB sb = callCenterHome.create();
-			return sb.getReverseAuthOrders(date);
+			return sb.getOrdersForVoidCapture(date);
 		} catch (CreateException ce) {
 			callCenterHome = null;
 			throw new FDResourceException(ce, "Error creating bean");

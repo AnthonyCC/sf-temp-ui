@@ -52,7 +52,7 @@
 				Amount marked for resubmittal: <input onFocus="blur();" type=text size="6" name="ordersSelected" id="ordersSelected" readonly value="0" />&nbsp;&nbsp;&nbsp;
 				Select: <a href="#" onClick="javascript:$('ordersSelected').value=selectNCB('resubmit_orders', 100, true, 'first'); return false;">first 100</a>/<a  href="#" onClick="javascript:$('ordersSelected').value=selectNCB('resubmit_orders', 100, true, 'last'); return false;">last 100</a>/<a  href="#" onClick="javascript:$('ordersSelected').value=selectNCB('resubmit_orders', 0, true); return false;">all</a> orders&nbsp;&nbsp;
 				<a href="#" onClick="javascript:$('ordersSelected').value=selectNCB('resubmit_orders', 0, false); return false;">Clear all</a>&nbsp;&nbsp;&nbsp;
-				<input type="submit" value="resubmit checked items" />
+				<input type="submit" value="Reverse auth checked items" />
 				</span>
 			<% } %>
 		</div>
@@ -65,7 +65,6 @@
 					<td align="left">Last Action Date</td>
 					<td align="left">Status</td>
 					<td align="left">Amount</td>
-					<td align="left">Delivery Date</td>
 					<td align="left">Customer Name</td>
 				</tr>
 			</table>
@@ -76,12 +75,15 @@
 						<td class="border_bottom">&nbsp;</td>
 						<td class="border_bottom">
 							<input name="resubmitSaleId" type="checkbox" onClick="countChecked(this);" value="<%=orderInfo.getSaleId()%>">
-							<a href="/main/order_details.jsp?orderId=<%=orderInfo.getSaleId()%>"><%=orderInfo.getSaleId()%></a>&nbsp;
+							<% if (orderInfo.getSaleId().indexOf("X")!=-1) {%>
+								<a href="/main/order_details.jsp?orderId=<%=orderInfo.getSaleId()%>"><%=orderInfo.getSaleId()%></a>&nbsp;
+							<% } else { %>
+								<%=orderInfo.getSaleId()%>
+							<% } %>	
 						</td>
 						<td class="border_bottom"><%=orderInfo.getLastCroModDate()%></td>
 						<td class="border_bottom"><%=orderInfo.getOrderStatus()%></td>
 						<td class="border_bottom"><%=orderInfo.getAmount()%></td>
-						<td class="border_bottom"><%=orderInfo.getDeliveryDate()%>&nbsp;</td>
 						<td class="border_bottom"><%=orderInfo.getFirstName()+" "+orderInfo.getLastName()%>&nbsp;</td>
 					</tr>
 				</logic:iterate>
