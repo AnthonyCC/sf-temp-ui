@@ -157,9 +157,6 @@ public class ErpPaymentInfoPersistentBean extends ErpReadOnlyPersistentBean {
 		}else{
 			ps.setNull(index++, Types.VARCHAR);
 		}
-		System.out.println("INSERT INTO CUST.PAYMENTINFO (SALESACTION_ID, NAME, ACCOUNT_NUMBER, EXPIRATION_DATE, CARD_TYPE, ADDRESS1, ADDRESS2, APARTMENT, CITY, STATE, ZIP_CODE, COUNTRY, BILLING_REF, ON_FD_ACCOUNT, REFERENCED_ORDER, PAYMENT_METHOD_TYPE, ABA_ROUTE_NUMBER, BANK_ACCOUNT_TYPE, BANK_NAME, PROFILE_ID,ACCOUNT_NUM_MASKED) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
-		System.out.println(this.getParentPK().getId()+ " "+this.model.getName()+ " "+this.model.getAccountNumber()+ " ");
-		
 		try {
 			if (ps.executeUpdate() != 1) {
 				throw new SQLException("Row not created");

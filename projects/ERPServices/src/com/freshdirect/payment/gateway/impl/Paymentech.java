@@ -109,7 +109,6 @@ public class Paymentech implements Gateway {
 		if(!TransactionType.AUTHORIZE.equals(request.getTransactionType()))
 			throw new Error("Transaction Type "+request.getTransactionType()+" is INVALID for this call.");
 		Response response = PaymentechHelper.processRequest(request);
-		printRequest(response);
 		GatewayLogActivity.logActivity(GatewayType.PAYMENTECH, response);
 		return response;
 		
@@ -273,13 +272,7 @@ public class Paymentech implements Gateway {
 		}
 	}
 	
-	private void printRequest(Response _response){
-		
-		System.out.println("<b>Request XML :</b><br/>");
-		System.out.println(_response.getRawRequest()+"<br/>");
-		System.out.println("<b>Response XML :</b><br/>");
-		System.out.println(_response.getRawResponse()+"<br/>");
-	}
+	
 	
 	public void settleTransactions(Merchant merchant)  {
 		

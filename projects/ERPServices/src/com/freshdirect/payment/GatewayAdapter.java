@@ -274,7 +274,7 @@ public class GatewayAdapter {
 	}
 	
 	public static ErpAuthorizationModel getAuthResponse(Response response) throws PaylinxResourceException {
-		return getAuthResponse(response,true);
+		return getAuthResponse(response,false);
 	}
 	private static ErpAuthorizationModel getAuthResponse(Response response, boolean bypassAVS) throws PaylinxResourceException {
 		if(response==null) return null;
