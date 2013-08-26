@@ -84,6 +84,7 @@ final class PaymentechFields implements java.io.Serializable{
 		AVSaddress2,
 		AVScity,
 		AVSstate,
+		AVScountryCode,
 		AVSzip,
 		Comments,
 		ShippingRef,

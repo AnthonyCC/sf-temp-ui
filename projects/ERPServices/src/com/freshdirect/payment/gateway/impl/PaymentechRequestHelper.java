@@ -1,6 +1,11 @@
 package com.freshdirect.payment.gateway.impl;
 
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+
+import org.apache.commons.lang.StringUtils;
 
 import com.freshdirect.framework.util.StringUtil;
 import com.freshdirect.payment.gateway.CreditCard;
@@ -15,7 +20,29 @@ import com.paymentech.orbital.sdk.request.FieldNotFoundException;
 
 
 final class PaymentechRequestHelper {
-	private static final SimpleDateFormat SF = new SimpleDateFormat("MMyy");
+	//private static final SimpleDateFormat SF = new SimpleDateFormat("MMyy");
+	
+	private  static final ThreadLocal<DateFormat> df = new ThreadLocal<DateFormat> () {
+		
+		  @Override
+		  public DateFormat get() {
+		   return super.get();
+		  }
+		  @Override
+		  protected DateFormat initialValue() {
+		   return new SimpleDateFormat("MMyy");
+		  }
+		  
+		  @Override
+		  public void remove() {
+		   super.remove();
+		  }
+		  @Override
+		  public void set(DateFormat value) {
+		   super.set(value);
+		  }
+		 };
+
 	
 	 static void setMerchantID(String transaction,RequestIF request,Merchant merchant) throws FieldNotFoundException {
 		if(merchant!=null) {
@@ -50,7 +77,8 @@ final class PaymentechRequestHelper {
 			}
 			if(creditCard.getExpirationDate()!=null) {
 				request.setFieldValue(PaymentechFields.ProfileRequest.CCExpireDate.name(),
-									  SF.format(creditCard.getExpirationDate()));
+									 // SF.format(creditCard.getExpirationDate()));
+								df.get().format(creditCard.getExpirationDate()));
 			}
 		} else if(RequestIF.NEW_ORDER_TRANSACTION.equals(transaction)) {
 			if(!StringUtil.isEmpty(creditCard.getAccountNumber())) {
@@ -61,7 +89,8 @@ final class PaymentechRequestHelper {
 			}
 			if(creditCard.getExpirationDate()!=null) {
 				request.setFieldValue(PaymentechFields.NewOrderRequest.Exp.name(),
-									  SF.format(creditCard.getExpirationDate()));
+									  //SF.format(creditCard.getExpirationDate()));
+									df.get().format(creditCard.getExpirationDate()));
 			}
 			if(!StringUtil.isEmpty(creditCard.getCVV())) {
 				if( CreditCardType.VISA.equals(creditCard.getType())|| 
@@ -121,63 +150,63 @@ final class PaymentechRequestHelper {
 		if(RequestIF.PROFILE_TRANSACTION.equals(transaction)) {
 			if(!StringUtil.isEmpty(paymentMethod.getCustomerName())) {
 				request.setFieldValue(PaymentechFields.ProfileRequest.CustomerName.name(),
-							          paymentMethod.getCustomerName());
+						StringUtils.substring(paymentMethod.getCustomerName(), 0, 30) );
 			}
 			if(!StringUtil.isEmpty(paymentMethod.getAddressLine1())) {
 				request.setFieldValue(PaymentechFields.ProfileRequest.CustomerAddress1.name(),
-									  paymentMethod.getAddressLine1());
+						StringUtils.substring(paymentMethod.getAddressLine1(), 0, 30));
 			}
 			if(!StringUtil.isEmpty(paymentMethod.getAddressLine2())) {
 				request.setFieldValue(PaymentechFields.ProfileRequest.CustomerAddress2.name(),
-									  paymentMethod.getAddressLine2());
+						StringUtils.substring(paymentMethod.getAddressLine2(), 0, 30));
 			}
 			if(!StringUtil.isEmpty(paymentMethod.getCity())) {
 				request.setFieldValue(PaymentechFields.ProfileRequest.CustomerCity.name(),
-									  paymentMethod.getCity());
+						StringUtils.substring(paymentMethod.getCity(), 0, 20));
 			}
 			if(!StringUtil.isEmpty(paymentMethod.getState())) {
 				request.setFieldValue(PaymentechFields.ProfileRequest.CustomerState.name(),
-									  paymentMethod.getState());
+						StringUtils.substring(paymentMethod.getState(), 0, 2));
 			}
 			if(!StringUtil.isEmpty(paymentMethod.getZipCode())) {
 				request.setFieldValue(PaymentechFields.ProfileRequest.CustomerZIP.name(),
-								      paymentMethod.getZipCode());
+						StringUtils.substring(paymentMethod.getZipCode(), 0, 10));
 			}
 			if(!StringUtil.isEmpty(paymentMethod.getCountry())) {
 				request.setFieldValue(PaymentechFields.ProfileRequest.CustomerCountryCode .name(),
-								      paymentMethod.getCountry());
+						StringUtils.substring(paymentMethod.getCountry(), 0, 2));
 			}
 		} else if(RequestIF.NEW_ORDER_TRANSACTION.equals(transaction)) {
 			if(!StringUtil.isEmpty(paymentMethod.getCustomerName())) {
 				request.setFieldValue(PaymentechFields.NewOrderRequest.AVSname.name(),
-							          paymentMethod.getCustomerName());
+						StringUtils.substring(paymentMethod.getCustomerName(), 0, 30));
 			}
 			
 			
 			if(!StringUtil.isEmpty(paymentMethod.getAddressLine1())) {
 				request.setFieldValue(PaymentechFields.NewOrderRequest.AVSaddress1.name(),
-									  paymentMethod.getAddressLine1());
+						StringUtils.substring(paymentMethod.getAddressLine1(), 0, 30));
 			}
 			if(!StringUtil.isEmpty(paymentMethod.getAddressLine2())) {
 				request.setFieldValue(PaymentechFields.NewOrderRequest.AVSaddress2.name(),
-									  paymentMethod.getAddressLine2());
+						StringUtils.substring(paymentMethod.getAddressLine2(), 0, 30));
 			}
 			if(!StringUtil.isEmpty(paymentMethod.getCity())) {
 				request.setFieldValue(PaymentechFields.NewOrderRequest.AVScity.name(),
-									  paymentMethod.getCity());
+						StringUtils.substring(paymentMethod.getCity(), 0, 20));
 			}
 			if(!StringUtil.isEmpty(paymentMethod.getState())) {
 				request.setFieldValue(PaymentechFields.NewOrderRequest.AVSstate.name(),
-									  paymentMethod.getState());
+						StringUtils.substring( paymentMethod.getState(), 0, 2));
 			}
 			if(!StringUtil.isEmpty(paymentMethod.getZipCode())) {
 				request.setFieldValue(PaymentechFields.NewOrderRequest.AVSzip.name(),
-								      paymentMethod.getZipCode());
+						StringUtils.substring(paymentMethod.getZipCode(), 0, 10));
 			}
-			/*if(!StringUtil.isEmpty(paymentMethod.getCountry())) {
-				request.setFieldValue(PaymentechFields.NewOrderRequest.A .name(),
-								      paymentMethod.getCountry());
-			}	*/	
+			if(!StringUtil.isEmpty(paymentMethod.getCountry())) {
+				request.setFieldValue(PaymentechFields.NewOrderRequest.AVScountryCode.name(),
+						StringUtils.substring(paymentMethod.getCountry(),0,2));
+			}		
 		}
 		
 	}
@@ -195,7 +224,7 @@ final class PaymentechRequestHelper {
 					PaymentechFields.ProfileRequest.CustomerProfileFromOrderInd.name(), "A");
 			request.setFieldValue(
 					PaymentechFields.ProfileRequest.OrderDefaultDescription.name(),
-					"Profile Create");
+					"Profile Tx");
 	    } else if(TransactionType.GET_PROFILE.equals(transType)) {
 	    	request.setFieldValue(PaymentechFields.ProfileRequest.CustomerProfileAction.name(),
                                   PaymentechConstants.ProfileAction.RETRIEVE.getCode());
@@ -278,6 +307,12 @@ final class PaymentechRequestHelper {
 	}
 	public static void setOnlineReverseIndicator(String  val,	RequestIF request) throws FieldNotFoundException {
 		request.setFieldValue(PaymentechFields.NewOrderRequest.OnlineReversalInd.name(), val);
+	}
+	
+	public static void main(String[] a) {
+		Date d=Calendar.getInstance().getTime();
+		String z=df.get().format(d);
+		System.out.println(z);
 	}
 
 }

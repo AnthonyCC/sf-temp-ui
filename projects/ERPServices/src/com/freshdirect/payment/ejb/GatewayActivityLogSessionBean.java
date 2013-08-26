@@ -66,6 +66,8 @@ public class GatewayActivityLogSessionBean extends GatewaySessionBeanSupport {
 			logModel.setCvvResponse(response.getCVVResponse());
 		}
 		BillingInfo billingInfo=response.getBillingInfo();
+		if(billingInfo==null)
+			billingInfo=response.getRequest().getBillingInfo();
 		PaymentMethod pm=null;
 		if(billingInfo!=null) {
 			pm=billingInfo.getPaymentMethod();

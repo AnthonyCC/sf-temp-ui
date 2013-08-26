@@ -76,36 +76,37 @@ public static void log(FDGatewayActivityLogModel log, Connection conn) {
 		}else{
 			ps.setNull(i++, Types.DATE);
 		}
+		 
 		if(null !=log.getCustomerName()){
-			ps.setString(i++, log.getCustomerName());
+			ps.setString(i++, log.getCustomerName().length()>30?log.getCustomerName().substring(0,30):log.getCustomerName());
 		}else{
 			ps.setNull(i++, Types.VARCHAR);
 		}
 		
 		//"CUSTOMER_ADDRESS1,CUSTOMER_ADDRESS2,CUSTOMER_CITY,CUSTOMER_STATE,CUSTOMER_ZIP,"+
 		if(null !=log.getAddressLine1()){
-			ps.setString(i++, log.getAddressLine1());
+			ps.setString(i++, log.getAddressLine1().length()>30?log.getAddressLine1().substring(0,30):log.getAddressLine1());
 		}else{
 			ps.setNull(i++, Types.VARCHAR);
 		}
 		if(null !=log.getAddressLine2()){
-			ps.setString(i++, log.getAddressLine2());
+			ps.setString(i++, log.getAddressLine2().length()>30?log.getAddressLine2().substring(0,30):log.getAddressLine2());
 		}else{
 			ps.setNull(i++, Types.VARCHAR);
 		}
 		if(null !=log.getCity()){
-			ps.setString(i++, log.getCity());
+			ps.setString(i++, log.getCity().length()>20?log.getCity().substring(0,20):log.getCity());
 		}else{
 			ps.setNull(i++, Types.VARCHAR);
 		}
 		if(null !=log.getState()){
-			ps.setString(i++, log.getState());
+			ps.setString(i++, log.getState().length()>2?log.getState().substring(0,2):log.getState());
 		}else{
 			ps.setNull(i++, Types.VARCHAR);
 		}
 		
 		if(null !=log.getZipCode()){
-			ps.setString(i++, log.getZipCode());
+			ps.setString(i++, log.getZipCode().length()>10?log.getZipCode().substring(0,10):log.getZipCode());
 		}else{
 			ps.setNull(i++, Types.VARCHAR);
 		}

@@ -65,7 +65,7 @@ public interface SystemMessageList {
 	public final static String MSG_CHECKOUT_TIMESLOT_NA			= "Sorry, the selected timeslot is no longer available. Please try again.";
 	// Credit Card
 	public final static String MSG_INVALID_ACCOUNT_NUMBER 	= "This number is invalid, please double-check your account number and enter the information again.";
-	public final static String MSG_CARD_EXPIRATION_DATE			= "Please double-check your credit card's expiration date and enter it again.";
+	public final static String MSG_CARD_EXPIRATION_DATE			= "The selected payment method has expired. Please select the \"edit\" button and update your payment method.";
 	public final static String MSG_DUPLICATE_ACCOUNT_NUMBER 	= "This is a duplicate account. Please double check and make any changes or enter a different account.";
 	public final static String MSG_NOCC_ACCOUNT_NUMBER 	= "You must have a valid credit card on your FreshDirect account to pay for your order from a checking account. To proceed with Checkout, please review and revise your credit card information as necessary.";
 	public final static String MSG_CC_EXPIRED_ACT_NUMBER 	= "There must be a valid credit card attached to your account to pay by check, but your card on file has expired. Please update it or select another payment option to continue.";
