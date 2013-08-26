@@ -700,7 +700,7 @@ public class FDReferAFriendDAO {
 	
 	private static final String INSERT_REF_LINK = "insert into cust.referral_link(customer_id, referral_link) values(?,?)";
 	
-	private static final String GET_REF_NAME_CNT = "select count(*) from cust.referral_link where upper(referral_link) like upper(?%)";
+	private static final String GET_REF_NAME_CNT = "select count(*) from cust.referral_link where upper(referral_link) like upper(?)";
 	
 	public static String getReferralLink(Connection conn, String customerId) throws SQLException {
 		PreparedStatement ps = null;
@@ -733,7 +733,7 @@ public class FDReferAFriendDAO {
 				if (e.getErrorCode() == 1) {
 					//Got a unique constraint. Get the count of the name
 					ps = conn.prepareStatement(GET_REF_NAME_CNT);
-					ps.setString(1, ref_name);
+					ps.setString(1, ref_name+"%");
 					rs = ps.executeQuery();
 					if(rs.next()) {
 						int cnt = rs.getInt(1);
