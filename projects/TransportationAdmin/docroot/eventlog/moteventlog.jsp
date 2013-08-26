@@ -130,7 +130,7 @@ $(document).ready(function () {
 
 			for(var i=0;i < json.rows.length;i++) {
 				for(var j=0;j < json.rows[i].motEventType.length;j++) {
-					aoTypes.push({"value" : json.rows[i].motEventType[j].id, "caption" : json.rows[i].motEventType[j].name});
+					aoTypes.push({"value" : json.rows[i].motEventType[j].id, "caption" : json.rows[i].motEventType[j].name, "orderNumberReq" : json.rows[i].motEventType[j].orderNumberReq});
 				}
 				for(var l=0;l < json.rows[i].eventMessageGroup.length;l++) {
 					aoGroups.push({"value" : json.rows[i].eventMessageGroup[l].groupName, "caption" : json.rows[i].eventMessageGroup[l].groupName});
@@ -144,6 +144,28 @@ $(document).ready(function () {
 			alert('Error : \n--------\n'+ errorText.Message);
 		}
 	});
+	
+	$('#eventType').change(function() {
+		var id = $(this).val();
+		
+        for(var i=0;i < aoTypes.length;i++) {        	       	
+        	if(aoTypes[i].value === id) {
+        		if(aoTypes[i].orderNumberReq === 'X'){
+        			$('#orderNo').removeAttr('disabled');
+        			$('#orderNo').css({'background-color': '#FFFFFF'});
+        			$("#route").val("");
+        			$("#route").attr("disabled", "disabled");
+        			$('#route').css({'background-color': '#FFDEAD'});
+        		} else {
+        			$("#orderNo").val("");
+        			$("#orderNo").attr("disabled", "disabled");
+        			$('#orderNo').css({'background-color': '#FFDEAD'});
+        			$('#route').removeAttr('disabled');
+        			$('#route').css({'background-color': '#FFFFFF'});
+        		}
+        	}
+        }
+    }); 
 	
 	$.ajax({
 		url : "v/1/list/addHocRoutes/",
@@ -430,9 +452,6 @@ $(document).ready(function () {
 			if (!$('#eventDate').val()) {
 				form.message += 'Date is required. ';
 			}
-			if (!$('#route').val()) {
-				form.message += 'Route is required. ';
-			}
 			if (!$('#eventType').val()) {
 				form.message += 'EventType is required. ';
 			}			
@@ -576,8 +595,10 @@ $(document).ready(function () {
 						<input type='text' id='nextel' class='form-input' name='nextel' tabindex='4' />
 						
 						<label for='form-type'>Event Type</label>
-						<select class='form-select' id="eventType" name="eventType" tabindex='6'></select>				
+						<select class='form-select' id="eventType" name="eventType" tabindex='5'></select>				
 						
+						<label for='form-type'>Order No.</label>
+						<input type='text' id='orderNo' class='form-input' name='orderNo' tabindex='8' />	
 						
 						<label for='form-description'>Comment</label>
 						<textarea id='description' class='form-input' name='description' cols='40' rows='3' 

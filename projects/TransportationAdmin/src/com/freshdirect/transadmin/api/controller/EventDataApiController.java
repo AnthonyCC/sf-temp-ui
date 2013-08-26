@@ -240,6 +240,9 @@ public class EventDataApiController extends BaseApiController {
 			}
 			event.setWindowStartTime(windowStartTime);
 			event.setWindowEndTime(windowEndTime);
+			if(event.getOrderNo() != null) {
+				event.setRoute(event.getOrderNo());
+			}
 			if(event.getId() == null) { 
 				event.setTransactionDate(new Date());
 				event.setUserId(userId);
@@ -288,6 +291,9 @@ public class EventDataApiController extends BaseApiController {
 			if(event.getId() == null) { 
 				event.setTransactionDate(new Date());
 				event.setUserId(userId);
+				if(event.getOrderNo() != null) {
+					event.setRoute(event.getOrderNo());
+				}					
 				eventLogService.logMotEvent(event);
 				responseMessage = Message.createSuccessMessage("Event added successfully.");
 				try {

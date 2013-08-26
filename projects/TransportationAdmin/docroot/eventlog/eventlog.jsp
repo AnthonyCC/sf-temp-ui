@@ -133,7 +133,7 @@ $(document).ready(function () {
 			
 			for(var i=0;i < json.rows.length;i++) {
 				for(var j=0;j < json.rows[i].eventType.length;j++) {
-					aoTypes.push({"value" : json.rows[i].eventType[j].id, "caption" : json.rows[i].eventType[j].name, "customerReq" : json.rows[i].eventType[j].customerReq, "employeeReq" : json.rows[i].eventType[j].employeeReq});
+					aoTypes.push({"value" : json.rows[i].eventType[j].id, "caption" : json.rows[i].eventType[j].name, "customerReq" : json.rows[i].eventType[j].customerReq, "employeeReq" : json.rows[i].eventType[j].employeeReq, "orderNumberReq" : json.rows[i].eventType[j].orderNumberReq});
 				}
 				for(var k=0;k < json.rows[i].eventSubType.length;k++) {
 					aoSubTypes.push({"value" : json.rows[i].eventSubType[k].id, "caption" : json.rows[i].eventSubType[k].name, "eventTypeId" : json.rows[i].eventSubType[k].eventTypeId });
@@ -180,7 +180,20 @@ $(document).ready(function () {
         			$("#employeeId").attr("disabled", "disabled");
         			$('#employeeId').css({'background-color': '#FFDEAD'});
         		}
+        		if(aoTypes[i].orderNumberReq === 'X'){
+        			$('#orderNo').removeAttr('disabled');
+        			$('#orderNo').css({'background-color': '#FFFFFF'});
+        			$("#route").val("");
+        			$("#route").attr("disabled", "disabled");
+        			$('#route').css({'background-color': '#FFDEAD'});
+        		} else {
+        			$("#orderNo").val("");
+        			$("#orderNo").attr("disabled", "disabled");
+        			$('#orderNo').css({'background-color': '#FFDEAD'});
+        			$('#route').removeAttr('disabled');
+        			$('#route').css({'background-color': '#FFFFFF'});
         	}
+        }
         }
     }); 
 	
@@ -208,6 +221,7 @@ $(document).ready(function () {
 					, {id : "employeeId", name : "Employee",	field : "employeeId", sortable : true}
 					, {id : "stops", name : "Stop(s)",	field : "stops", sortable : true}
 					, {id : "totalStopCnt",	name : "Total Stops",	field : "totalStopCnt", sortable : true, cssClass: "slick-cell-aligncenter"}
+					, {id : "id",	name : "Ticket Number",	field : "id", sortable : true, cssClass: "slick-cell-aligncenter"}
 					, {id : "addEvent",	name : "",	field : "addEvent", cssClass: "slick-cell-aligncenter", sortable : true, formatter: function myFormatter(row, cell, value, columnDef, dataContext) {
 																																if(hasPrivilege === 'true') {
 																												  					return "<a href='javascript:addEvent("+row+")'><img src='./images/icons/add_ON.gif'/><span>&nbsp;Add To</span></a>";
@@ -539,9 +553,6 @@ var form = {
 			if (!$('#eventDate').val()) {
 				form.message += 'Date is required. ';
 			}
-			if (!$('#route').val()) {
-				form.message += 'Route is required. ';
-			}
 			if (!$('#eventType').val()) {
 				form.message += 'EventType is required. ';
 			}
@@ -640,6 +651,9 @@ function lookUpWindows(routeId, selWindow) {
 						<select class='form-select' id="eventSubType" name="eventSubType" tabindex='7'>
 						   	<option value="" class="eventSubTypes" >--Please select SubType</option>
 						</select>
+						
+						<label for='form-type'>Order No.</label>
+						<input type='text' id='orderNo' class='form-input' name='orderNo' tabindex='8' />
 						
 						<label for='form-description'>Comment</label>
 						<textarea id='description' class='form-input' name='description' cols='40' rows='3' 

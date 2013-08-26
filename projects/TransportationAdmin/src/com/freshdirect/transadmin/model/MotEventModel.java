@@ -14,6 +14,7 @@ public class MotEventModel extends BaseCommand implements Serializable {
 	private String id;
 	private Date eventDate;
 	private String route;
+	private String orderNo;
 	private String addHocRoute;
 	private String eventType;
 	private String description;
@@ -44,6 +45,12 @@ public class MotEventModel extends BaseCommand implements Serializable {
 	}
 	public void setRoute(String route) {
 		this.route = route;
+	}	
+	public String getOrderNo() {
+		return orderNo;
+	}
+	public void setOrderNo(String orderNo) {
+		this.orderNo = orderNo;
 	}
 	public String getEventType() {
 		return eventType;

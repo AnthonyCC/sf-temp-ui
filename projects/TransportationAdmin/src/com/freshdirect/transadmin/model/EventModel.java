@@ -14,6 +14,7 @@ public class EventModel extends BaseCommand implements Serializable {
 	private String id;
 	private Date eventDate;
 	private String route;
+	private String orderNo;
 	private String truck;
 	private Date windowStartTime;
 	private Date windowEndTime;
@@ -46,6 +47,12 @@ public class EventModel extends BaseCommand implements Serializable {
 	}
 	public void setRoute(String route) {
 		this.route = route;
+	}	
+	public String getOrderNo() {
+		return orderNo;
+	}
+	public void setOrderNo(String orderNo) {
+		this.orderNo = orderNo;
 	}
 	public String getTruck() {
 		return truck;

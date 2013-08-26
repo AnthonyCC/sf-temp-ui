@@ -13,6 +13,7 @@ public class EventLogType extends BaseCommand implements Serializable  {
 	private String description;
 	private String customerReq;
 	private String employeeReq;
+	private String orderNumberReq;
 	
 	private List<EventLogSubType> subTypes = new ArrayList<EventLogSubType>();
 	
@@ -68,6 +69,13 @@ public class EventLogType extends BaseCommand implements Serializable  {
 	}
 	public void setEmployeeReq(String employeeReq) {
 		this.employeeReq = employeeReq;
+	}
+	public String getOrderNumberReq() {
+		return orderNumberReq;
+	}
+
+	public void setOrderNumberReq(String orderNumberReq) {
+		this.orderNumberReq = orderNumberReq;
 	}
 
 	@Override

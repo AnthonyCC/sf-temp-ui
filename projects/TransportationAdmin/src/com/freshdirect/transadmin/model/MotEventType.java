@@ -11,7 +11,7 @@ public class MotEventType extends BaseCommand implements Serializable  {
 	private String id;
 	private String name;
 	private String description;
-
+	private String orderNumberReq;
 	private EventLogMessageGroup msgGroup;
 	
 	public MotEventType(String id, String name, String description) {
@@ -38,6 +38,13 @@ public class MotEventType extends BaseCommand implements Serializable  {
 	}
 	public void setDescription(String description) {
 		this.description = description;
+	}
+	public String getOrderNumberReq() {
+		return orderNumberReq;
+	}
+
+	public void setOrderNumberReq(String orderNumberReq) {
+		this.orderNumberReq = orderNumberReq;
 	}
 
 	public EventLogMessageGroup getMsgGroup() {

@@ -314,7 +314,8 @@ public class EventLogDAO implements IEventLogDAO   {
 				event.setStops(new HashSet<String>());
 				eventMapping.put(eventId, event);
 			}
-			eventMapping.get(eventId).getStops().add(stopNumber);		
+			if(stopNumber != null)
+				eventMapping.get(eventId).getStops().add(stopNumber);		
 		} while (rs.next());
 	}
 	
@@ -528,6 +529,7 @@ public class EventLogDAO implements IEventLogDAO   {
 							eventType.setUserId(rs.getString("CREATEDBY"));
 							eventType.setCustomerReq(rs.getString("ISLOCATIONREQUIRED"));
 							eventType.setEmployeeReq(rs.getString("ISEMPLOYEEREQUIRED"));
+							eventType.setOrderNumberReq(rs.getString("ORDERNUM_REQ"));
 							
 							eventTypeMapping.put(typeId, eventType);
 						}
@@ -844,7 +846,8 @@ public class EventLogDAO implements IEventLogDAO   {
 				event.setStops(new HashSet<String>());
 				eventMapping.put(eventId, event);
 			}
-			eventMapping.get(eventId).getStops().add(stopNumber);		
+			if(stopNumber != null)
+				eventMapping.get(eventId).getStops().add(stopNumber);		
 		} while (rs.next());
 	}
 	
@@ -982,7 +985,8 @@ public class EventLogDAO implements IEventLogDAO   {
 						String isTypeActive = rs.getString("ISACTIVE");
 						String groupName = rs.getString("GROUP_NAME");
 						String email = rs.getString("EMAIL");
-												
+						String orderNoReq = rs.getString("ORDERNUM_REQ");
+						
 						MotEventType eventType = null;
 						if("X".equals(isTypeActive)) {
 							eventType = new MotEventType(typeId, typeName, typeDesc);
@@ -990,7 +994,7 @@ public class EventLogDAO implements IEventLogDAO   {
 								eventType.setMsgGroup(new EventLogMessageGroup(groupName, email));
 							eventType.setTransactionDate(rs.getTimestamp("DATECREATED"));
 							eventType.setUserId(rs.getString("CREATEDBY"));
-							
+							eventType.setOrderNumberReq(orderNoReq);
 							result.add(eventType);
 						}
 					} while (rs.next());			
@@ -1170,7 +1174,7 @@ public class EventLogDAO implements IEventLogDAO   {
 						user = new AuthUser();
 						userMapping.put(userName, user);
 					}
-					if(privilege != null) {
+					if(privilege != null && !TransStringUtil.isEmpty(privilege)) {
 						userMapping.get(userName).getPrivilages().add(Privilege.valueOf(privilege));	
 					}
 				}
