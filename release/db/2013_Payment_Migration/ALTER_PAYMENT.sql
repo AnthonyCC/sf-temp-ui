@@ -1,4 +1,0 @@
-alter table
-  CUST.PAYMENT
-modify
-  SEQUENCE_NUMBER     VARCHAR2(40 BYTE);
