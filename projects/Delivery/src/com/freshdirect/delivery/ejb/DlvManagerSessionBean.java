@@ -3289,7 +3289,7 @@ public class DlvManagerSessionBean extends GatewaySessionBeanSupport {
 					timeslotMap.get(timeslot.getBaseDate()).add(timeslot);
 				}
 				for(Date baseDate: timeslotMap.keySet()){
-					if(baseDate.equals(reservation.getBaseDate())){
+					if(reservation != null && baseDate.equals(reservation.getBaseDate())){
 						for(Iterator<FDTimeslot> j =  timeslotMap.get(baseDate).iterator(); j.hasNext(); ){
 							FDTimeslot timeslot = j.next();
 							if(!timeslot.getRegionSvcType().equals(reservation.getRegionSvcType())){
