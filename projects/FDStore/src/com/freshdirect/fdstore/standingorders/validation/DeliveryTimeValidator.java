@@ -45,7 +45,7 @@ public class DeliveryTimeValidator {
 		
 		TimeslotEventModel event = null;
 		List<FDTimeslot> deliverySlots = FDDeliveryManager.getInstance().getTimeslotsForDateRangeAndZone(
-				DateUtil.truncate(nextDate), DateUtil.addDays(DateUtil.truncate(nextDate), 1), event, deliveryAddress, zoneInfo.getRegionSvcType()).getTimeslots();
+				DateUtil.truncate(nextDate), DateUtil.addDays(DateUtil.truncate(nextDate), 1), event, deliveryAddress, user.getHistoricOrderSize(), null).getTimeslots();
 
 		FDTimeslot deliverySlot = null;
 		for (FDTimeslot candidateSlot : deliverySlots) {

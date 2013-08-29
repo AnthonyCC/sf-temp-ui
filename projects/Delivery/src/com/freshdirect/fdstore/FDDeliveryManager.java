@@ -6,6 +6,7 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -23,11 +24,8 @@ import com.freshdirect.common.address.AddressInfo;
 import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.address.ContactAddressModel;
 import com.freshdirect.common.customer.EnumServiceType;
-import com.freshdirect.common.customer.EnumZoneType;
 import com.freshdirect.common.pricing.MunicipalityInfo;
 import com.freshdirect.common.pricing.MunicipalityInfoWrapper;
-import com.freshdirect.customer.ErpAddressModel;
-import com.freshdirect.customer.ErpDepotAddressModel;
 import com.freshdirect.delivery.DlvAddressGeocodeResponse;
 import com.freshdirect.delivery.DlvAddressVerificationResponse;
 import com.freshdirect.delivery.DlvApartmentRange;
@@ -46,8 +44,6 @@ import com.freshdirect.delivery.ExceptionAddress;
 import com.freshdirect.delivery.InvalidAddressException;
 import com.freshdirect.delivery.ReservationException;
 import com.freshdirect.delivery.announcement.SiteAnnouncement;
-import com.freshdirect.delivery.depot.DlvDepotModel;
-import com.freshdirect.delivery.depot.DlvLocationModel;
 import com.freshdirect.delivery.ejb.DlvManagerHome;
 import com.freshdirect.delivery.ejb.DlvManagerSB;
 import com.freshdirect.delivery.model.DlvReservationModel;
@@ -64,9 +60,13 @@ import com.freshdirect.framework.core.ServiceLocator;
 import com.freshdirect.framework.util.TimedLruCache;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.routing.constants.RoutingActivityType;
+import com.freshdirect.routing.model.IBuildingModel;
 import com.freshdirect.routing.model.IDeliveryReservation;
 import com.freshdirect.routing.model.IOrderModel;
 import com.freshdirect.routing.model.IPackagingModel;
+import com.freshdirect.routing.model.IServiceTimeScenarioModel;
+import com.freshdirect.routing.service.proxy.GeographyServiceProxy;
+import com.freshdirect.routing.util.ServiceTimeUtil;
 
 /**
  * @version $Revision:23$
@@ -436,14 +436,18 @@ public class FDDeliveryManager {
 	}
 
 
-	public FDDynamicTimeslotList getTimeslotsForDateRangeAndZone(Date begDate, Date endDate,  TimeslotEventModel event,ContactAddressModel address, EnumRegionServiceType serviceType) throws FDResourceException {
+	public FDDynamicTimeslotList getTimeslotsForDateRangeAndZone(Date begDate, Date endDate,  TimeslotEventModel event,
+			ContactAddressModel address, IPackagingModel iPackagingModel, FDReservation reservation) throws FDResourceException {
 		try {			
 			List<FDTimeslot> retLst = new ArrayList<FDTimeslot>();
 			DlvManagerSB sb = getDlvManagerHome().create();
-			List<DlvTimeslotModel> timeslots = sb.getTimeslotForDateRangeAndZone(begDate, endDate, address, serviceType);
+			List<DlvTimeslotModel> timeslots = sb.getTimeslotForDateRangeAndZone(begDate, endDate, address);
+			
 			for ( DlvTimeslotModel timeslot : timeslots ) {
 				retLst.add(new FDTimeslot(timeslot));
-			}			
+			}	
+			
+			filterTimeslotsByOrderSize(retLst, iPackagingModel, address, reservation);
 			FDDynamicTimeslotList dynamicTimeslots = new FDDynamicTimeslotList();
 			dynamicTimeslots.setTimeslots(retLst);
 			if(FDStoreProperties.isDynamicRoutingEnabled()) {
@@ -463,7 +467,70 @@ public class FDDeliveryManager {
 		}
 	}
 
-	public List<FDTimeslot> getAllTimeslotsForDateRange(Date startDate, Date endDate, AddressModel address) throws FDResourceException {
+	private void filterTimeslotsByOrderSize(List<FDTimeslot> timeslots,  IPackagingModel iPackagingModel, AddressModel address, FDReservation reservation) throws FDResourceException {
+
+		try{
+			GeographyServiceProxy proxy = new GeographyServiceProxy();
+			if(address.getScrubbedStreet() == null){
+				DlvManagerSB sb = getDlvManagerHome().create();
+				DlvAddressVerificationResponse response = sb.scrubAddress(address);
+				address = response.getAddress();
+			}
+			IBuildingModel buildingModel = proxy.getBuildingLocation(address.getScrubbedStreet(), address.getZipCode());
+			if(buildingModel.isForceBulk()){
+				for(Iterator<FDTimeslot> i =  timeslots.iterator(); i.hasNext(); ){
+					if(!EnumRegionServiceType.HYBRID.equals(i.next().getRegionSvcType())){
+						i.remove();
+					}
+				}
+			}else{
+				
+				Map<Date, List<FDTimeslot>> timeslotMap = new HashMap<Date, List<FDTimeslot>>();
+				for ( FDTimeslot timeslot : timeslots ) {
+					if(!timeslotMap.containsKey(timeslot.getBaseDate()))
+						timeslotMap.put(timeslot.getBaseDate(), new ArrayList<FDTimeslot>());
+					timeslotMap.get(timeslot.getBaseDate()).add(timeslot);
+				}
+				for(Date baseDate: timeslotMap.keySet()){
+					if(baseDate.equals(reservation.getBaseDate())){
+						for(Iterator<FDTimeslot> j =  timeslotMap.get(baseDate).iterator(); j.hasNext(); ){
+							FDTimeslot timeslot = j.next();
+							if(!timeslot.getRegionSvcType().equals(reservation.getRegionSvcType())){
+								j.remove();
+							}
+						}
+					}else{
+						IServiceTimeScenarioModel srvScenario = RoutingUtil.getRoutingScenario(baseDate);
+						double historicOrderSize = ServiceTimeUtil.evaluateExpression(srvScenario.getOrderSizeFormula()
+								, ServiceTimeUtil.getServiceTimeFactorParams(iPackagingModel));
+						if(historicOrderSize > srvScenario.getBulkThreshold()){
+							for(Iterator<FDTimeslot> k =  timeslotMap.get(baseDate).iterator(); k.hasNext(); ){
+								FDTimeslot timeslot = k.next();
+								if(!EnumRegionServiceType.HYBRID.equals(timeslot.getRegionSvcType())){
+									k.remove();
+								}
+							}
+						}else{
+							for(Iterator<FDTimeslot> k =  timeslotMap.get(baseDate).iterator(); k.hasNext(); ){
+								FDTimeslot timeslot = k.next();
+								if(EnumRegionServiceType.HYBRID.equals(timeslot.getRegionSvcType())){
+									k.remove();
+								}
+							}
+						}
+					}
+				}
+			}
+		}catch (RemoteException re) {
+			re.printStackTrace();
+			throw new FDResourceException(re);
+		} catch (CreateException ce) {
+			ce.printStackTrace();
+			throw new FDResourceException(ce);
+		} 
+		}
+
+	public List<FDTimeslot> getAllTimeslotsForDateRange(Date startDate, Date endDate, AddressModel address, IPackagingModel iPackagingModel, FDReservation reservation) throws FDResourceException {
 		try {
 			ArrayList<FDTimeslot> retLst = new ArrayList<FDTimeslot>();
 			DlvManagerSB sb = getDlvManagerHome().create();
@@ -471,6 +538,8 @@ public class FDDeliveryManager {
 			for ( DlvTimeslotModel timeslot : timeslots ) {
 				retLst.add( new FDTimeslot( timeslot ) );
 			}
+			filterTimeslotsByOrderSize(retLst, iPackagingModel, address, reservation);
+			
 			return retLst;
 		} catch (RemoteException re) {
 			throw new FDResourceException(re);

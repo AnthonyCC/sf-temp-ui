@@ -172,7 +172,7 @@ public class OrderConsumer implements IConsumer {
 			System.out.println("zone id is : " + zInfo.getZoneId());
 			
 			List timeSlots =
-				FDDeliveryManager.getInstance().getTimeslotsForDateRangeAndZone(begCal.getTime(), endCal.getTime(), null, address, zInfo.getRegionSvcType()).getTimeslots();
+				FDDeliveryManager.getInstance().getTimeslotsForDateRangeAndZone(begCal.getTime(), endCal.getTime(), null, address, null, null).getTimeslots();
 
 			FDTimeslot slot = null;
 

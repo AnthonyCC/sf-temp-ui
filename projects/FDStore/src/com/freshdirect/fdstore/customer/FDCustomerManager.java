@@ -936,7 +936,7 @@ public class FDCustomerManager {
 				FDDeliveryManager.getInstance().getTimeslotsForDateRangeAndZone(
 					reservation.getStartTime(),
 					endCal.getTime(),event,
-					address, zoneInfo.getRegionSvcType()).getTimeslots();
+					address, user.getHistoricOrderSize(), reservation).getTimeslots();
 			FDTimeslot matchingTimeslot = null;
 			for ( FDTimeslot t : timeslots ) {
 				if (t.getBegDateTime().equals(reservation.getStartTime())

@@ -205,7 +205,7 @@ public class ClickToCallUtil {
 					throw new FDResourceException(ie);
 				}
 				List<FDTimeslot> timeSlots = FDDeliveryManager.getInstance().getTimeslotsForDateRangeAndZone(begCal.getTime()
-							, endCal.getTime(), event, (ContactAddressModel)address, zoneInfo.getRegionSvcType()).getTimeslots();
+							, endCal.getTime(), event, (ContactAddressModel)address, user.getHistoricOrderSize(), null).getTimeslots();
 				if(null == timeSlots || timeSlots.size()==0){
 					displayClick2CallInfo = true;
 				}else{

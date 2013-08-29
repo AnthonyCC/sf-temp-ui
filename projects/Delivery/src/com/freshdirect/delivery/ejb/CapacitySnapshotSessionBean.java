@@ -156,10 +156,7 @@ public static IOrderModel getOrderModel(ILocationModel location, String orderNum
 				
 				ErpAddressModel address1 = performCosResidentialMerge(erpAddress);
 				
-				
-				DlvZoneInfoModel zoneInfo = dlvSB.getZoneInfo(address1, startDate, null, null);
-				
-				List<DlvTimeslotModel> dlvtimeslots = dlvSB.getTimeslotForDateRangeAndZone(startDate, endDate, address1, zoneInfo.getRegionSvcType());
+				List<DlvTimeslotModel> dlvtimeslots = dlvSB.getTimeslotForDateRangeAndZone(startDate, endDate, address1);
 				
 				if(dlvtimeslots!=null && dlvtimeslots.size()>0)
 				{

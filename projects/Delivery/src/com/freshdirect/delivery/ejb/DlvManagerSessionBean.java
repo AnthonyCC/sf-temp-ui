@@ -29,12 +29,8 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.ejb.EJBException;
-import javax.ejb.EJBHome;
-import javax.ejb.EJBObject;
 import javax.ejb.FinderException;
-import javax.ejb.Handle;
 import javax.ejb.ObjectNotFoundException;
-import javax.ejb.RemoveException;
 import javax.jms.ObjectMessage;
 
 import org.apache.log4j.Category;
@@ -51,7 +47,6 @@ import com.freshdirect.common.pricing.MunicipalityInfo;
 import com.freshdirect.customer.EnumAccountActivityType;
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.customer.ErpActivityRecord;
-import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ejb.ErpLogActivityCommand;
 import com.freshdirect.delivery.DlvAddressGeocodeResponse;
 import com.freshdirect.delivery.DlvAddressVerificationResponse;
@@ -151,12 +146,12 @@ public class DlvManagerSessionBean extends GatewaySessionBeanSupport {
 		return "com.freshdirect.delivery.ejb.DlvManagerHome";
 	}
 
-	public List<DlvTimeslotModel> getTimeslotForDateRangeAndZone(java.util.Date begDate, java.util.Date endDate, AddressModel address, EnumRegionServiceType serviceType)
+	public List<DlvTimeslotModel> getTimeslotForDateRangeAndZone(java.util.Date begDate, java.util.Date endDate, AddressModel address)
 		throws InvalidAddressException {
 		Connection conn = null;
 		try {
 			conn = getConnection();
-			return DlvManagerDAO.getTimeslotForDateRangeAndZone(conn, address, begDate, endDate, serviceType);
+			return DlvManagerDAO.getTimeslotForDateRangeAndZone(conn, address, begDate, endDate);
 
 		} catch (SQLException e) {
 			throw new EJBException(e);
@@ -782,8 +777,7 @@ public class DlvManagerSessionBean extends GatewaySessionBeanSupport {
 			Date startDate = getDateByNextDayOfWeek(dayOfWeek);
 			Date endDate = DateUtil.addDays(startDate, 1);
 
-			DlvZoneInfoModel zoneInfo = this.getZoneInfo(address, startTime, iPackagingModel, null);
-			List<DlvTimeslotModel> baseTimeslots = this.getTimeslotForDateRangeAndZone(startDate, endDate, address, zoneInfo.getRegionSvcType());
+			List<DlvTimeslotModel> baseTimeslots = this.getTimeslotForDateRangeAndZone(startDate, endDate, address);
 			
 			List<FDTimeslot> routingTimeslots = new ArrayList<FDTimeslot>();
 			
@@ -1180,14 +1174,21 @@ public class DlvManagerSessionBean extends GatewaySessionBeanSupport {
 	}
 
 	private boolean getBulkZone(AddressModel address, Date date, String zoneCode, IPackagingModel iPackagingModel) {
-		IServiceTimeScenarioModel srvScenario = RoutingUtil.getRoutingScenario(date);
-		GeographyServiceProxy proxy = new GeographyServiceProxy();
-		double historicOrderSize = ServiceTimeUtil.evaluateExpression(srvScenario.getOrderSizeFormula()
-				, ServiceTimeUtil.getServiceTimeFactorParams(iPackagingModel));
-		IBuildingModel buildingModel = proxy.getBuildingLocation(address.getScrubbedStreet(), address.getZipCode());
-		if(historicOrderSize > srvScenario.getBulkThreshold() || buildingModel.isForceBulk())			
-			return true;
-
+		try{
+			IServiceTimeScenarioModel srvScenario = RoutingUtil.getRoutingScenario(date);
+			GeographyServiceProxy proxy = new GeographyServiceProxy();
+			double historicOrderSize = ServiceTimeUtil.evaluateExpression(srvScenario.getOrderSizeFormula()
+					, ServiceTimeUtil.getServiceTimeFactorParams(iPackagingModel));
+			if(address.getScrubbedStreet() == null){
+				DlvAddressVerificationResponse response = scrubAddress(address);
+				address = response.getAddress();
+			}
+			IBuildingModel buildingModel = proxy.getBuildingLocation(address.getScrubbedStreet(), address.getZipCode());
+			if(historicOrderSize > srvScenario.getBulkThreshold() || buildingModel.isForceBulk())			
+				return true;
+		}catch(Exception e){
+			LOGGER.warn("DlvManagerSB getBulkZone: Exception: ", e);
+		}
 		return false;
 	}
 

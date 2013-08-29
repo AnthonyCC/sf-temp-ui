@@ -71,7 +71,7 @@ import com.freshdirect.routing.util.RoutingTimeOfDay;
 
 public interface DlvManagerSB extends EJBObject {
 	
-    public List<DlvTimeslotModel> getTimeslotForDateRangeAndZone(Date begDate, Date endDate, AddressModel address, EnumRegionServiceType serviceType) throws InvalidAddressException, RemoteException;
+    public List<DlvTimeslotModel> getTimeslotForDateRangeAndZone(Date begDate, Date endDate, AddressModel address) throws InvalidAddressException, RemoteException;
 	public List<DlvTimeslotModel> getTimeslotsForDepot(java.util.Date startDate, java.util.Date endDate, String regionId, String zoneCode) throws DlvResourceException , RemoteException;
 	public List<DlvTimeslotModel> getAllTimeslotsForDateRange(java.util.Date startDate, java.util.Date endDate, AddressModel address) throws InvalidAddressException, RemoteException;
 

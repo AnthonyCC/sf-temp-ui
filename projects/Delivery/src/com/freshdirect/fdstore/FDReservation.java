@@ -139,6 +139,10 @@ public class FDReservation extends ModelSupport {
 	public Date getStartTime() {
 		return this.timeslot.getBegDateTime();
 	}
+	
+	public Date getBaseDate() {
+		return this.timeslot.getBaseDate();
+	}
 
 	public Date getEndTime() {
 		return this.timeslot.getEndDateTime();

@@ -366,7 +366,7 @@ public class StandingOrderUtil {
 		//Allowing COS customers to use HOME zone capacity for the configured set of HOME zones
 		AddressModel clonedDeliveryAddressModel = performCosResidentialMerge(deliveryAddressModel);
 		// WARNING: getAllTimeslotsForDateRange-s select will ignore houre:minute in start/end dates!
-		List<FDTimeslot> timeslots = FDDeliveryManager.getInstance().getAllTimeslotsForDateRange( deliveryTimes.getDayStart(), deliveryTimes.getDayEnd(), clonedDeliveryAddressModel );
+		List<FDTimeslot> timeslots = FDDeliveryManager.getInstance().getAllTimeslotsForDateRange( deliveryTimes.getDayStart(), deliveryTimes.getDayEnd(), clonedDeliveryAddressModel, customerUser.getHistoricOrderSize(), null);
 				
 		if ( timeslots == null || timeslots.size() == 0 ) {
 			LOGGER.info( "No timeslots for this day: " + new SimpleDateFormat(FDStandingOrder.DATE_FORMAT).format( deliveryTimes.getDayStart() ) );

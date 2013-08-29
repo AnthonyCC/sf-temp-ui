@@ -25,7 +25,6 @@ import com.freshdirect.common.address.AddressInfo;
 import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.address.PhoneNumber;
 import com.freshdirect.common.customer.EnumServiceType;
-import com.freshdirect.common.customer.EnumZoneType;
 import com.freshdirect.crm.ejb.CriteriaBuilder;
 import com.freshdirect.customer.EnumDeliverySetting;
 import com.freshdirect.customer.EnumUnattendedDeliveryFlag;
@@ -154,7 +153,7 @@ public class DlvManagerDAO {
 			+ "(select z.premium_ct_active from dlv.zone z where z.id = t.zone_id) as premium_ct_active, "
 			+ "(select count(*) from dlv.reservation where timeslot_id=t.id and status_code in ('5','10') and buildingId = nvl(?,'0')) as PREV_BLDG_RSV_CNT "
 			+ "from dlv.region r, dlv.region_data rd, dlv.timeslot t, dlv.zone z, transp.zone ta, transp.trn_area a,transp.trn_region tr "
-			+ "where r.service_type = ? and r.id = rd.region_id "
+			+ "where r.service_type in (?, 'HYBRID') and r.id = rd.region_id "
 			+ "and rd.id = z.region_data_id "
 			+ "and mdsys.sdo_relate(z.geoloc, mdsys.sdo_geometry(2001, 8265, mdsys.sdo_point_type(?, ?,NULL), NULL, NULL), 'mask=ANYINTERACT querytype=WINDOW') ='TRUE' "
 			+ "and (rd.start_date >= (select max(start_date) from dlv.region_data where start_date <= ? and region_id = r.id) "
@@ -167,7 +166,7 @@ public class DlvManagerDAO {
 
 	public static List<DlvTimeslotModel> getTimeslotForDateRangeAndZone(
 			Connection conn, AddressModel address, java.util.Date startDate,
-			java.util.Date endDate, EnumRegionServiceType serviceType) throws SQLException,
+			java.util.Date endDate) throws SQLException,
 			InvalidAddressException {
 
 		geocodeAddress(conn, address, false);
@@ -182,8 +181,11 @@ public class DlvManagerDAO {
 		ps.setInt(6, EnumReservationStatus.EXPIRED.getCode());
 		ps.setInt(7, EnumReservationStatus.CANCELED.getCode());
 		ps.setInt(8, EnumReservationStatus.EXPIRED.getCode());
-		ps.setString(9, address.getBuildingId());
-		ps.setString(10, serviceType.getName());
+		/*if(address.getBuildingId()==null)
+			ps.setNull(9, Types.VARCHAR);
+		else*/
+			ps.setString(9, address.getBuildingId());
+		ps.setString(10, address.getServiceType().getName());
 
 		ps.setBigDecimal(11, new java.math.BigDecimal(address.getLongitude()));
 		ps.setBigDecimal(12, new java.math.BigDecimal(address.getLatitude()));
@@ -298,9 +300,9 @@ public class DlvManagerDAO {
 				baseDate = tmpDate;
 				zoneCode = tmpZoneCode;
 			}
-			if (!tmpZoneCode.equals(zoneCode)) {
+			/*if (!tmpZoneCode.equals(zoneCode)) {
 				continue;
-			}
+			}*/
 
 			lst.add(getTimeslot(rs, checkPremium));
 		}

@@ -69,6 +69,7 @@ import com.freshdirect.framework.util.StringUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionError;
 import com.freshdirect.framework.webapp.ActionResult;
+import com.freshdirect.routing.model.IPackagingModel;
 import com.freshdirect.webapp.taglib.AbstractGetterTag;
 import com.freshdirect.webapp.util.StandingOrderHelper;
 
@@ -383,16 +384,9 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag<Result> {
 			c1 = Calendar.getInstance();
 			c1.setTime(range.getEndDate());
 		
-			DlvZoneInfoModel zoneInfo = null;
-			try{
-			zoneInfo = FDDeliveryManager.getInstance().getZoneInfo(tsAddress, range.getStartDate(), 
-					user.getHistoricOrderSize(), null);
-			}catch(FDInvalidAddressException ie){
-				throw new FDResourceException(ie);
-			}
 			// Fetch time slots
 			FDDynamicTimeslotList tsList = FDDeliveryManager.getInstance().getTimeslotsForDateRangeAndZone(
-					range.getStartDate(), range.getEndDate(), null, tsAddress, zoneInfo.getRegionSvcType());
+					range.getStartDate(), range.getEndDate(), null, tsAddress, user.getHistoricOrderSize(), user.getReservation());
 
 			tsu = new FDTimeslotUtil(tsList.getTimeslots(), c0, c1, restrictions, tsList.getResponseTime(),range.isAdvanced());
 			singleTSset.add( tsu );
@@ -593,17 +587,10 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag<Result> {
 			DateRange range = i.next();
 			
 			event.setFilter(true);
-			DlvZoneInfoModel zoneInfo = null;
-			try{
-			zoneInfo = FDDeliveryManager.getInstance().getZoneInfo(timeslotAddress, range.getStartDate(), 
-					user.getHistoricOrderSize(), user.getRegionSvcType());
-			}catch(FDInvalidAddressException ie){
-				throw new FDResourceException(ie);
-			}
 			FDDynamicTimeslotList dynamicTimeslots = this.getTimeslots(
 					timeslotAddress,
 				range.getStartDate(),
-				range.getEndDate(), event, zoneInfo.getRegionSvcType());
+				range.getEndDate(), event, user.getHistoricOrderSize(), user.getReservation());
 			
 			if(dynamicTimeslots == null || dynamicTimeslots.getError() != null) {
 				result.addError(new ActionError("deliveryTime", "We are sorry. Our system is temporarily experiencing a problem " +
@@ -680,7 +667,7 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag<Result> {
 	
 
 
-	private FDDynamicTimeslotList getTimeslots(ErpAddressModel address, Date startDate, Date endDate, TimeslotEventModel event, EnumRegionServiceType serviceType) throws FDResourceException {
+	private FDDynamicTimeslotList getTimeslots(ErpAddressModel address, Date startDate, Date endDate, TimeslotEventModel event, IPackagingModel iPackagingModel, FDReservation reservation) throws FDResourceException {
 
 		event.setEventType(EventType.GET_TIMESLOT);
 		if (address instanceof ErpDepotAddressModel) {
@@ -691,7 +678,7 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag<Result> {
 				depotAddress.getRegionId(),
 				depotAddress.getZoneCode(), event, address);
 		} else {
-			return FDDeliveryManager.getInstance().getTimeslotsForDateRangeAndZone(startDate, endDate,event, address, serviceType);
+			return FDDeliveryManager.getInstance().getTimeslotsForDateRangeAndZone(startDate, endDate,event, address, iPackagingModel, reservation);
 		}
 	}
 
