@@ -447,7 +447,7 @@ public class FDDeliveryManager {
 				retLst.add(new FDTimeslot(timeslot));
 			}	
 			
-			filterTimeslotsByOrderSize(retLst, iPackagingModel, address, reservation);
+			retLst = sb.filterTimeslotsByOrderSize(retLst, iPackagingModel, address, reservation);
 			FDDynamicTimeslotList dynamicTimeslots = new FDDynamicTimeslotList();
 			dynamicTimeslots.setTimeslots(retLst);
 			if(FDStoreProperties.isDynamicRoutingEnabled()) {
@@ -464,81 +464,21 @@ public class FDDeliveryManager {
 		} catch (InvalidAddressException iae) {
 			iae.printStackTrace();
 			throw new FDResourceException(iae);
+		} catch (DlvResourceException e) {
+			throw new FDResourceException(e);
 		}
 	}
 
-	private void filterTimeslotsByOrderSize(List<FDTimeslot> timeslots,  IPackagingModel iPackagingModel, AddressModel address, FDReservation reservation) throws FDResourceException {
-
-		try{
-			GeographyServiceProxy proxy = new GeographyServiceProxy();
-			if(address.getScrubbedStreet() == null){
-				DlvManagerSB sb = getDlvManagerHome().create();
-				DlvAddressVerificationResponse response = sb.scrubAddress(address);
-				address = response.getAddress();
-			}
-			IBuildingModel buildingModel = proxy.getBuildingLocation(address.getScrubbedStreet(), address.getZipCode());
-			if(buildingModel.isForceBulk()){
-				for(Iterator<FDTimeslot> i =  timeslots.iterator(); i.hasNext(); ){
-					if(!EnumRegionServiceType.HYBRID.equals(i.next().getRegionSvcType())){
-						i.remove();
-					}
-				}
-			}else{
-				
-				Map<Date, List<FDTimeslot>> timeslotMap = new HashMap<Date, List<FDTimeslot>>();
-				for ( FDTimeslot timeslot : timeslots ) {
-					if(!timeslotMap.containsKey(timeslot.getBaseDate()))
-						timeslotMap.put(timeslot.getBaseDate(), new ArrayList<FDTimeslot>());
-					timeslotMap.get(timeslot.getBaseDate()).add(timeslot);
-				}
-				for(Date baseDate: timeslotMap.keySet()){
-					if(baseDate.equals(reservation.getBaseDate())){
-						for(Iterator<FDTimeslot> j =  timeslotMap.get(baseDate).iterator(); j.hasNext(); ){
-							FDTimeslot timeslot = j.next();
-							if(!timeslot.getRegionSvcType().equals(reservation.getRegionSvcType())){
-								j.remove();
-							}
-						}
-					}else{
-						IServiceTimeScenarioModel srvScenario = RoutingUtil.getRoutingScenario(baseDate);
-						double historicOrderSize = ServiceTimeUtil.evaluateExpression(srvScenario.getOrderSizeFormula()
-								, ServiceTimeUtil.getServiceTimeFactorParams(iPackagingModel));
-						if(historicOrderSize > srvScenario.getBulkThreshold()){
-							for(Iterator<FDTimeslot> k =  timeslotMap.get(baseDate).iterator(); k.hasNext(); ){
-								FDTimeslot timeslot = k.next();
-								if(!EnumRegionServiceType.HYBRID.equals(timeslot.getRegionSvcType())){
-									k.remove();
-								}
-							}
-						}else{
-							for(Iterator<FDTimeslot> k =  timeslotMap.get(baseDate).iterator(); k.hasNext(); ){
-								FDTimeslot timeslot = k.next();
-								if(EnumRegionServiceType.HYBRID.equals(timeslot.getRegionSvcType())){
-									k.remove();
-								}
-							}
-						}
-					}
-				}
-			}
-		}catch (RemoteException re) {
-			re.printStackTrace();
-			throw new FDResourceException(re);
-		} catch (CreateException ce) {
-			ce.printStackTrace();
-			throw new FDResourceException(ce);
-		} 
-		}
 
 	public List<FDTimeslot> getAllTimeslotsForDateRange(Date startDate, Date endDate, AddressModel address, IPackagingModel iPackagingModel, FDReservation reservation) throws FDResourceException {
 		try {
-			ArrayList<FDTimeslot> retLst = new ArrayList<FDTimeslot>();
+			List<FDTimeslot> retLst = new ArrayList<FDTimeslot>();
 			DlvManagerSB sb = getDlvManagerHome().create();
 			List<DlvTimeslotModel> timeslots = sb.getAllTimeslotsForDateRange(startDate, endDate, address);
 			for ( DlvTimeslotModel timeslot : timeslots ) {
 				retLst.add( new FDTimeslot( timeslot ) );
 			}
-			filterTimeslotsByOrderSize(retLst, iPackagingModel, address, reservation);
+			retLst = sb.filterTimeslotsByOrderSize(retLst, iPackagingModel, address, reservation);
 			
 			return retLst;
 		} catch (RemoteException re) {
@@ -547,6 +487,8 @@ public class FDDeliveryManager {
 			throw new FDResourceException(ce);
 		} catch (InvalidAddressException iae) {
 			throw new FDResourceException(iae);
+		} catch (DlvResourceException e) {
+			throw new FDResourceException(e);
 		}
 	}
 

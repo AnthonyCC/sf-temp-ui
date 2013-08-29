@@ -52,6 +52,7 @@ import com.freshdirect.delivery.restriction.RestrictionI;
 import com.freshdirect.delivery.restriction.TimeslotRestriction;
 import com.freshdirect.routing.constants.RoutingActivityType;
 import com.freshdirect.fdstore.FDDynamicTimeslotList;
+import com.freshdirect.fdstore.FDReservation;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDTimeslot;
 import com.freshdirect.fdstore.StateCounty;
@@ -239,5 +240,6 @@ public interface DlvManagerSB extends EJBObject {
 	public Set retrieveRoutingWaveInstIds(Date processDate) throws DlvResourceException,RemoteException;
 	List<GeographyRestriction> getGeographicDlvRestrictionsForTemplate(AddressModel address)throws DlvResourceException, RemoteException;
 	public List<TimeslotRestriction> getTimeslotRestrictions()throws DlvResourceException, RemoteException;
+	public List<FDTimeslot> filterTimeslotsByOrderSize(List<FDTimeslot> timeslots,  IPackagingModel iPackagingModel, AddressModel address, FDReservation reservation) throws DlvResourceException, RemoteException;
 	
 }   

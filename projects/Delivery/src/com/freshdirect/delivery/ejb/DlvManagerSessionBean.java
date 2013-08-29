@@ -23,6 +23,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -86,6 +87,7 @@ import com.freshdirect.delivery.restriction.TimeslotRestriction;
 import com.freshdirect.delivery.restriction.ejb.DlvRestrictionDAO;
 import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDDynamicTimeslotList;
+import com.freshdirect.fdstore.FDReservation;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDRuntimeException;
 import com.freshdirect.fdstore.FDStoreProperties;
@@ -3262,4 +3264,67 @@ public class DlvManagerSessionBean extends GatewaySessionBeanSupport {
 			throw new DlvResourceException(e);
 		}
 	}
+	
+	public List<FDTimeslot> filterTimeslotsByOrderSize(List<FDTimeslot> timeslots,  IPackagingModel iPackagingModel, AddressModel address, FDReservation reservation) throws DlvResourceException {
+
+		try{
+			GeographyServiceProxy proxy = new GeographyServiceProxy();
+			if(address.getScrubbedStreet() == null){
+				DlvAddressVerificationResponse response = scrubAddress(address);
+				address = response.getAddress();
+			}
+			IBuildingModel buildingModel = proxy.getBuildingLocation(address.getScrubbedStreet(), address.getZipCode());
+			if(buildingModel.isForceBulk()){
+				for(Iterator<FDTimeslot> i =  timeslots.iterator(); i.hasNext(); ){
+					if(!EnumRegionServiceType.HYBRID.equals(i.next().getRegionSvcType())){
+						i.remove();
+					}
+				}
+			}else{
+				
+				Map<Date, List<FDTimeslot>> timeslotMap = new HashMap<Date, List<FDTimeslot>>();
+				for ( FDTimeslot timeslot : timeslots ) {
+					if(!timeslotMap.containsKey(timeslot.getBaseDate()))
+						timeslotMap.put(timeslot.getBaseDate(), new ArrayList<FDTimeslot>());
+					timeslotMap.get(timeslot.getBaseDate()).add(timeslot);
+				}
+				for(Date baseDate: timeslotMap.keySet()){
+					if(baseDate.equals(reservation.getBaseDate())){
+						for(Iterator<FDTimeslot> j =  timeslotMap.get(baseDate).iterator(); j.hasNext(); ){
+							FDTimeslot timeslot = j.next();
+							if(!timeslot.getRegionSvcType().equals(reservation.getRegionSvcType())){
+								j.remove();
+							}
+						}
+					}else{
+						IServiceTimeScenarioModel srvScenario = RoutingUtil.getRoutingScenario(baseDate);
+						double historicOrderSize = ServiceTimeUtil.evaluateExpression(srvScenario.getOrderSizeFormula()
+								, ServiceTimeUtil.getServiceTimeFactorParams(iPackagingModel));
+						if(historicOrderSize > srvScenario.getBulkThreshold()){
+							for(Iterator<FDTimeslot> k =  timeslotMap.get(baseDate).iterator(); k.hasNext(); ){
+								FDTimeslot timeslot = k.next();
+								if(!EnumRegionServiceType.HYBRID.equals(timeslot.getRegionSvcType())){
+									k.remove();
+								}
+							}
+						}else{
+							for(Iterator<FDTimeslot> k =  timeslotMap.get(baseDate).iterator(); k.hasNext(); ){
+								FDTimeslot timeslot = k.next();
+								if(EnumRegionServiceType.HYBRID.equals(timeslot.getRegionSvcType())){
+									k.remove();
+								}
+							}
+						}
+					}
+				}
+			}
+		}catch (Exception ex) {
+			ex.printStackTrace();
+			throw new DlvResourceException(ex);
+		} 
+		
+		return timeslots;
+		}
+
+	
 }
