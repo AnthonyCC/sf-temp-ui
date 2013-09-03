@@ -23,8 +23,14 @@
 				<button class="imgButtonOrange" type="submit">choose payment <img src="/media_stat/images/buttons/button_orange_arrow.gif" alt="" /></button>
 				<% }							
 			} else if (uriNextButton.indexOf("step_3") > -1) {
+				String butActionName = "setPaymentMethod"; //default action
+				
+				if ( request.getAttribute("gcCovered") != null && "true".equals(request.getAttribute("gcCovered")) ) {
+					//gc covered button
+					butActionName = "setNoPaymentMethod";
+				}
 				%>
-				<button class="imgButtonOrange" type="submit" onclick="setActionName(this.form,'setPaymentMethod'); return true;">review order <img src="/media_stat/images/buttons/button_orange_arrow.gif" alt="" /></button>
+				<button class="imgButtonOrange" type="submit" onclick="setActionName(this.form,'<%= butActionName %>'); return true;">review order <img src="/media_stat/images/buttons/button_orange_arrow.gif" alt="" /></button>
 				<%
 			} else if (uriNextButton.indexOf("step_4") > -1) {
 				/* step 4 is the only step with a different button on order modify (and also needs nettracker tracking) */

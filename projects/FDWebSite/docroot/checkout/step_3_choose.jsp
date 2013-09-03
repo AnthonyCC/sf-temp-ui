@@ -190,6 +190,16 @@ final int W_CHECKOUT_STEP_3_CHOOSE_TOTAL = 970;
 <% } %>
 	<tmpl:put name="title">PAYMENT INFO</tmpl:put>
 	<tmpl:put name="delivery-fee"><%@ include file="/includes/i_cart_delivery_fee.jspf" %></tmpl:put>
+	<%
+		//next button needs to know if it's GC covered
+		
+		if(!isSOTMPL && cart.getSelectedGiftCards() != null && cart.getSelectedGiftCards().size() > 0) {
+    		/* using Giftcards */
+        	if(outStandingBalance <= 0.0) {
+				request.setAttribute("gcCovered", "true");
+        	}
+		}
+	%>
 	<tmpl:put name="next-button"><%@ include file="/includes/i_cart_next_step_button.jspf" %></tmpl:put>
 </tmpl:insert>
 <!-- PROFILE HEADER -->
