@@ -137,7 +137,7 @@ public class ProfileCreatorSessionBean extends SessionBeanSupport {
 						utx.begin();
 						if(conn==null)
 							conn =getConnection();
-	         	    	PreparedStatement ps = conn.prepareStatement("UPDATE CUST.PAYMENTMETHOD_NEW PM set PM.PROFILE_ID=?,PM.account_num_masked=substr( PM.ACCOUNT_NUMBER,LENGTH(PM.account_number)-3,4) WHERE PM.ID=?");
+	         	    	PreparedStatement ps = conn.prepareStatement("UPDATE CUST.PAYMENTMETHOD PM set PM.PROFILE_ID=?,PM.account_num_masked='XXXXXXXXXXXX'||substr( PM.ACCOUNT_NUMBER,LENGTH(PM.account_number)-3,4) WHERE PM.ID=?");
 	         	    	for(ProfileCreatorOutputDetail detail : outputDtlList){
 	         	    		if(detail.getProfileId()!=null){
 	         	    		    ps.setString(1,detail.getProfileId());
