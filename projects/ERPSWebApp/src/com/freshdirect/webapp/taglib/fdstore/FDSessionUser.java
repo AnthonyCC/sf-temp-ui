@@ -201,72 +201,76 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 
     public void valueBound(HttpSessionBindingEvent event) {
         LOGGER.debug("FDUser bound to session " + event.getSession().getId()+ " user cookie "+this.getCookie()+" username "+this.getUserId());
-        this.saveCart();
         this.impressions.clear();
         this.startDate = new Date();
         this.lastRequestDate = startDate.getTime();
         sessionId = event.getSession().getId();
-
-        if(FDStoreProperties.isSessionLoggingEnabled())	{
-        	user.setSessionEvent(new SessionEvent());
-        }
-        
-        // store cohort ID
-        if (user.getCohortName() == null) {
-            try {
-                user.createCohortName();
-                LOGGER.debug("Generated new cohort ID " + user.getCohortName() + " to user");
-            } catch (FDResourceException e) {
-                LOGGER.error("Failed to generate cohort ID for user");
-            }
-        } else {
-            LOGGER.debug("Assigned cohort ID " + user.getCohortName() + " to user");
+        if(!this.isRobot()){
+	        this.saveCart();  
+	        
+	
+	        if(FDStoreProperties.isSessionLoggingEnabled())	{
+	        	user.setSessionEvent(new SessionEvent());
+	        }
+	        
+	        // store cohort ID
+	        if (user.getCohortName() == null) {
+	            try {
+	                user.createCohortName();
+	                LOGGER.debug("Generated new cohort ID " + user.getCohortName() + " to user");
+	            } catch (FDResourceException e) {
+	                LOGGER.error("Failed to generate cohort ID for user");
+	            }
+	        } else {
+	            LOGGER.debug("Assigned cohort ID " + user.getCohortName() + " to user");
+	        }
         }
     }
 
     public void valueUnbound(HttpSessionBindingEvent event) {
         LOGGER.debug("FDUser unbound from session " + event.getSession().getId()+ " user cookie "+this.getCookie()+" username "+this.getUserId());
-        this.saveCart(true);
-        this.saveImpressions();
-        if(FDStoreProperties.isSessionLoggingEnabled())
-		{
-        	try
-        	{
-        	if(user!=null && user.getIdentity()!=null && user.getIdentity().getErpCustomerPK()!=null)
+        if(!this.isRobot()){
+	        this.saveCart(true);
+	        this.saveImpressions();
+	        if(FDStoreProperties.isSessionLoggingEnabled())
 			{
-        		Date loginTime = null;
-        		if(event.getSession() != null)
-        			loginTime = new Date(event.getSession().getCreationTime());
-        		 
-        		if(user.getSessionEvent()!=null)
-        		{
-        			SessionEvent sessionEvent = user.getSessionEvent();
-	        		sessionEvent.setCustomerId(user.getIdentity().getErpCustomerPK());
-	        		sessionEvent.setLoginTime(loginTime);
-	        		sessionEvent.setLogoutTime(new Date());
-	        		EventLog.getInstance().logEvent(sessionEvent);
-        		}
-        	}
-        	}
-        	catch(Exception e)
-        	{
-        		  LOGGER.info("Exception while logging the session event");
-        		  e.printStackTrace();
-        	}
-		}
-                
-        if(FDStoreProperties.isRealTimeAnalysisEnabled())
-		{
-        	FDEventProcessorI processor = new FDEventProcessor();
-        	processor.process(this.user, event.getSession());
-		}
-        // clear masquerade agent, and log this event
-        String masqueradeAgent = getMasqueradeAgent();
-        
-        if ( masqueradeAgent != null ) {
-        	logMasqueradeLogout( masqueradeAgent );
+	        	try
+	        	{
+	        	if(user!=null && user.getIdentity()!=null && user.getIdentity().getErpCustomerPK()!=null)
+				{
+	        		Date loginTime = null;
+	        		if(event.getSession() != null)
+	        			loginTime = new Date(event.getSession().getCreationTime());
+	        		 
+	        		if(user.getSessionEvent()!=null)
+	        		{
+	        			SessionEvent sessionEvent = user.getSessionEvent();
+		        		sessionEvent.setCustomerId(user.getIdentity().getErpCustomerPK());
+		        		sessionEvent.setLoginTime(loginTime);
+		        		sessionEvent.setLogoutTime(new Date());
+		        		EventLog.getInstance().logEvent(sessionEvent);
+	        		}
+	        	}
+	        	}
+	        	catch(Exception e)
+	        	{
+	        		  LOGGER.info("Exception while logging the session event");
+	        		  e.printStackTrace();
+	        	}
+			}
+	                
+	        if(FDStoreProperties.isRealTimeAnalysisEnabled())
+			{
+	        	FDEventProcessorI processor = new FDEventProcessor();
+	        	processor.process(this.user, event.getSession());
+			}
+	        // clear masquerade agent, and log this event
+	        String masqueradeAgent = getMasqueradeAgent();
+	        
+	        if ( masqueradeAgent != null ) {
+	        	logMasqueradeLogout( masqueradeAgent );
+	        }
         }
-        
         sessionId = null;
     }
     
@@ -1563,7 +1567,7 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 	
 	public boolean isEligibleForCoupons() {
 		try {
-			return this.user.isEligibleForCoupons();
+			return !user.isRobot() && this.user.isEligibleForCoupons();
 		} catch (FDResourceException e) {
 			throw new FDRuntimeException(e);
 		}

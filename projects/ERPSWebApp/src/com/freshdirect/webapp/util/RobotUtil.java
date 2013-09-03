@@ -24,8 +24,7 @@ public class RobotUtil {
 	private static Category LOGGER = LoggerFactory.getInstance(RobotUtil.class);
 
 	public static FDSessionUser createRobotUser(HttpSession session){
-        FDUser robotUser = new FDUser(new PrimaryKey("robot"));
-        robotUser.setRobot(true);
+        FDUser robotUser = FDUser.createRobotUser();
         
         Set<EnumServiceType> availableServices = new HashSet<EnumServiceType>();
         availableServices.add(EnumServiceType.HOME);

@@ -64,9 +64,7 @@ import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDReservation;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDRuntimeException;
-import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.FDStoreProperties;
-import com.freshdirect.fdstore.RoutingUtil;
 import com.freshdirect.fdstore.ZonePriceListing;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.EnumWinePrice;
@@ -78,12 +76,7 @@ import com.freshdirect.fdstore.customer.adapter.FDOrderInfoAdapter;
 import com.freshdirect.fdstore.customer.adapter.PromotionContextAdapter;
 import com.freshdirect.fdstore.deliverypass.FDUserDlvPassInfo;
 import com.freshdirect.fdstore.ecoupon.EnumCouponContext;
-import com.freshdirect.fdstore.ecoupon.EnumCouponDisplayStatus;
-import com.freshdirect.fdstore.ecoupon.EnumCouponStatus;
-import com.freshdirect.fdstore.ecoupon.FDCouponFactory;
-import com.freshdirect.fdstore.ecoupon.FDCouponProductInfo;
 import com.freshdirect.fdstore.ecoupon.FDCustomerCoupon;
-import com.freshdirect.fdstore.ecoupon.model.FDCouponInfo;
 import com.freshdirect.fdstore.ecoupon.model.FDCustomerCouponWallet;
 import com.freshdirect.fdstore.giftcard.FDGiftCardInfoList;
 import com.freshdirect.fdstore.giftcard.FDGiftCardModel;
@@ -120,13 +113,13 @@ import com.freshdirect.giftcard.EnumGiftCardType;
 import com.freshdirect.giftcard.ErpGCDlvInformationHolder;
 import com.freshdirect.routing.model.IOrderModel;
 import com.freshdirect.routing.model.IPackagingModel;
-import com.freshdirect.routing.model.IServiceTimeScenarioModel;
 import com.freshdirect.routing.model.OrderModel;
 import com.freshdirect.smartstore.fdstore.CohortSelector;
 import com.freshdirect.smartstore.fdstore.DatabaseScoreFactorProvider;
 
 public class FDUser extends ModelSupport implements FDUserI {
 	private final static Category LOGGER = LoggerFactory.getInstance(FDUser.class);
+	public static final String ROBOT_USER_NAME = "robot";
 
 	private static final long serialVersionUID = 8492744405934393676L;
 
@@ -567,13 +560,13 @@ public class FDUser extends ModelSupport implements FDUserI {
 
     public OrderHistoryI getOrderHistory() throws FDResourceException {
         if (this.cachedOrderHistory==null) {
-            this.cachedOrderHistory = getOrderHistoryInfo();
+            this.cachedOrderHistory = FDCustomerManager.getOrderHistoryInfo(this.identity);
         }
         return this.cachedOrderHistory;
     }
 
-   private OrderHistoryI getOrderHistoryInfo() throws FDResourceException {
-	   /*
+  /* private OrderHistoryI getOrderHistoryInfo() throws FDResourceException {
+	   
 	    * This change is rollbacked temporarily.
     	if(EnumTransactionSource.CUSTOMER_REP.equals(application)){
     		//If CRM load entire order history.
@@ -582,10 +575,10 @@ public class FDUser extends ModelSupport implements FDUserI {
     		//Load only Order History Summary.
     		return FDCustomerManager.getWebOrderHistoryInfo(this.identity);
     	}
-    	*/
+    	
 	   //Load Entire order history inspite of CRM or WEB.
 	   return FDCustomerManager.getOrderHistoryInfo(this.identity);
-    }
+    }*/
 
    public IPackagingModel getHistoricOrderSize() throws FDResourceException {
        if (this.historicOrderSize==null && this.identity!=null) {
@@ -2225,7 +2218,7 @@ public class FDUser extends ModelSupport implements FDUserI {
 	/* return List of orderInfos for all pending orders inclusions optional. */
 	public List<FDOrderInfoI> getPendingOrders(boolean incGiftCardOrds, boolean incDonationOrds, boolean sorted) throws FDResourceException {
 
-		FDOrderHistory history = (FDOrderHistory) getOrderHistoryInfo(); //get current info, don't use getOrderHistory since it's cached info 
+		FDOrderHistory history = (FDOrderHistory) getOrderHistory();//Changed to fetch from cache.  
 		
 		List<FDOrderInfoI> orderHistoryInfo = new ArrayList<FDOrderInfoI>(history.getFDOrderInfos(EnumSaleType.REGULAR));
 		
@@ -2693,5 +2686,11 @@ public class FDUser extends ModelSupport implements FDUserI {
 		
 	public boolean isPaymentechEnabled() {
 		return SiteFeatureHelper.isEnabled(EnumSiteFeature.PAYMENTECH_GATEWAY, this);
+	}
+	
+	public static FDUser createRobotUser(){
+		FDUser robotUser = new FDUser(new PrimaryKey(ROBOT_USER_NAME));
+        robotUser.setRobot(true);
+        return robotUser;
 	}
 }
