@@ -60,6 +60,7 @@ public interface SessionName {
 	public static final String PENDING_HELP_EMAIL_EVENT = "pendingCoremetricsHelpEmailEvent";
 	public static final String PENDING_SHOP_9_MODELS = "pendingCoremetricsShop9Models";
 	public static String PARAM_ADDED_FROM_SEARCH = "addedfromsearch";
+	public static String PARAM_ADDED_FROM = "addedfrom";
 	public static String PARAM_EVALUATE_COUPONS = "PARAM_EVALUATE_COUPONS";
 
 
