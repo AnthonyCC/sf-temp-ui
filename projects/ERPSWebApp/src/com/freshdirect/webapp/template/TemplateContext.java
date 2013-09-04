@@ -74,7 +74,7 @@ import com.freshdirect.webapp.util.prodconf.DefaultProductConfigurationStrategy;
 public class TemplateContext extends BaseTemplateContext{
 	
 	private PricingContext pricingContext;
-	private List<PricingContext> pricingContexts = getPricingContexts();
+	private static List<PricingContext> pricingContexts = null;
 
 	private final static Image IMAGE_BLANK = new Image("/media_stat/images/layout/clear.gif", 1, 1);
 
@@ -87,7 +87,7 @@ public class TemplateContext extends BaseTemplateContext{
 		super();
 	}
 	
-	private List<PricingContext> getPricingContexts() {
+	private static List<PricingContext> loadPricingContexts() {
 		List<PricingContext> pricingContexts = new ArrayList<PricingContext>();
 		try {
 			Collection<String> zones =FDZoneInfoManager.loadAllZoneInfoMaster();
@@ -102,6 +102,13 @@ public class TemplateContext extends BaseTemplateContext{
 			LOGGER.error("Failed to get all pricing zones:"+e);
 		}
 		
+		return pricingContexts;
+	}
+	
+	private static List<PricingContext> getPricingContexts(){
+		if(null == pricingContexts){
+			pricingContexts = loadPricingContexts();
+		}
 		return pricingContexts;
 	}
 
@@ -538,9 +545,9 @@ public class TemplateContext extends BaseTemplateContext{
 	}
 
 	public Object[] getNodes(String id) {
-		Object[] obj = new Object[pricingContexts.size()];
+		Object[] obj = new Object[getPricingContexts().size()];
 		int i=0;
-		for (Iterator<PricingContext> iterator = pricingContexts.iterator(); iterator.hasNext();) {
+		for (Iterator<PricingContext> iterator = getPricingContexts().iterator(); iterator.hasNext();) {
 			PricingContext pricingContext = (PricingContext) iterator.next();
 			ContentNodeModel node =getNode(id, pricingContext);
 			obj[i++]= node;
