@@ -684,17 +684,17 @@ function showDialogs() {
 	                        ]);
 						}
 						
-						this.displayObj = Builder.node('table', { className: 'card_options' }, [ 
+						this.displayObj = Builder.node('table', { className: 'card_options', width: '100%' }, [ 
 							Builder.node('tbody', [
 								Builder.node('tr', [ 
-									Builder.node('td',{ width: '20%' }, [
+									Builder.node('td',{ }, [
 										Builder.node( 'div', { className: 'card_controls_header' }, [
 											Builder.node( 'img', { src: this.mediaStaticRoot + 'landing/giftcard_options.gif', alt: 'Choose Design', id: 'gcChooseDesign_img' } ),
 											Builder.node( 'br', [ ] )
 										]),
 										Builder.node( 'div', { className: 'card_controls_select', id: this.dotSelectionContainer }, [ optionArray ])
 									]),
-									Builder.node('td',{align:'right'}, [
+									Builder.node('td',{align:'right', width: '358'}, [
 										Builder.node('table', { className: 'card_options_img'}, [
 											Builder.node('tbody', [
 												Builder.node('tr', [
