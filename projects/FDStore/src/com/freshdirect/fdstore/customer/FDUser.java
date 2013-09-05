@@ -25,7 +25,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.log4j.Category;
 
-import weblogic.wsee.util.StringUtil;
+
 
 import com.freshdirect.FDCouponProperties;
 import com.freshdirect.analytics.SessionEvent;
@@ -110,6 +110,7 @@ import com.freshdirect.fdstore.zone.FDZoneInfoManager;
 import com.freshdirect.framework.core.ModelSupport;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.util.NVL;
+import com.freshdirect.framework.util.StringUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.giftcard.EnumGiftCardType;
 import com.freshdirect.giftcard.ErpGCDlvInformationHolder;
