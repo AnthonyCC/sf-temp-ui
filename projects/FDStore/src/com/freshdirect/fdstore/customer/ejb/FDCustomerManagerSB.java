@@ -68,6 +68,7 @@ import com.freshdirect.fdstore.customer.CustomerCreditModel;
 import com.freshdirect.fdstore.customer.EnumIPhoneCaptureType;
 import com.freshdirect.fdstore.customer.FDActionInfo;
 import com.freshdirect.fdstore.customer.FDAuthenticationException;
+import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDCartonInfo;
 import com.freshdirect.fdstore.customer.FDCustomerCreditHistoryModel;
 import com.freshdirect.fdstore.customer.FDCustomerInfo;
@@ -822,6 +823,7 @@ public interface FDCustomerManagerSB extends EJBObject {
 	public boolean  isFeatureEnabled(String customerId, EnumSiteFeature feature) throws FDResourceException, RemoteException;
 
 	public IPackagingModel getHistoricOrderSize(IOrderModel order) throws FDResourceException, RemoteException;
+	public FDUser getFDUserWithCart(FDIdentity identity) throws FDAuthenticationException, FDResourceException, RemoteException;
 	
 }
 

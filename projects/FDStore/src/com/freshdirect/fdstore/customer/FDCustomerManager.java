@@ -2,6 +2,7 @@ package com.freshdirect.fdstore.customer;
 
 import java.math.BigDecimal;
 import java.rmi.RemoteException;
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -111,6 +112,7 @@ import com.freshdirect.fdstore.atp.FDStockAvailabilityInfo;
 import com.freshdirect.fdstore.customer.ejb.FDCustomerManagerHome;
 import com.freshdirect.fdstore.customer.ejb.FDCustomerManagerSB;
 import com.freshdirect.fdstore.customer.ejb.FDServiceLocator;
+import com.freshdirect.fdstore.customer.ejb.FDUserDAO;
 import com.freshdirect.fdstore.deliverypass.DeliveryPassUtil;
 import com.freshdirect.fdstore.deliverypass.FDUserDlvPassInfo;
 import com.freshdirect.fdstore.ecoupon.EnumCouponTransactionStatus;
@@ -270,16 +272,7 @@ public class FDCustomerManager {
 		try {
 			FDCustomerManagerSB sb = managerHome.create();
 			FDUser user = sb.recognize(cookie);
-			//Set user Pricing context at this point before recalcualting the price during cleanup.
-			user.getShoppingCart().setPricingContextToOrderLines(user.getPricingContext());
-			
-			user.getShoppingCart().doCleanup();
-			classifyUser(user);
-			assumeDeliveryAddress(user);
-			user.updateUserState();
-			//user.resetPricingContext();
-			updateZoneInfo(user);
-			restoreReservations(user);
+			decorateShoppingCart(user);
 			
 			return user;
 
@@ -290,6 +283,20 @@ public class FDCustomerManager {
 			invalidateManagerHome();
 			throw new FDResourceException(re, "Error talking to session bean");
 		}
+	}
+
+	private static void decorateShoppingCart(FDUser user)
+			throws FDResourceException {
+		//Set user Pricing context at this point before recalcualting the price during cleanup.
+		user.getShoppingCart().setPricingContextToOrderLines(user.getPricingContext());
+		
+		user.getShoppingCart().doCleanup();
+		classifyUser(user);
+		assumeDeliveryAddress(user);
+		user.updateUserState();
+		//user.resetPricingContext();
+		updateZoneInfo(user);
+		restoreReservations(user);
 	}
 
 	public static FDUser recognize(FDIdentity identity) throws FDAuthenticationException, FDResourceException {
@@ -310,15 +317,7 @@ public class FDCustomerManager {
 			FDCustomerManagerSB sb = managerHome.create();
 			FDUser user = sb.recognize(identity);
 			user.setApplication(source);
-			//Set user Pricing context at this point before recalcualting the price during cleanup.
-			user.getShoppingCart().setPricingContextToOrderLines(user.getPricingContext());
-			user.getShoppingCart().doCleanup();
-			classifyUser(user);
-			assumeDeliveryAddress(user);
-			user.updateUserState();
-			//user.resetPricingContext();
-			updateZoneInfo(user);
-			restoreReservations(user);
+			decorateShoppingCart(user);
 			
 			return user;
 
@@ -4189,4 +4188,23 @@ public class FDCustomerManager {
 	
 	}
 
+	public static FDCartModel getSavedCart(FDIdentity identity) throws FDAuthenticationException, FDResourceException {
+
+		lookupManagerHome();
+		try {
+			FDCustomerManagerSB sb = managerHome.create();
+			FDUser user = sb.recognize(identity);
+			decorateShoppingCart(user);
+			
+			return user.getShoppingCart();
+
+		} catch (CreateException ce) {
+			invalidateManagerHome();
+			throw new FDResourceException(ce, "Error creating session bean");
+		} catch (RemoteException re) {
+			invalidateManagerHome();
+			throw new FDResourceException(re, "Error talking to session bean");
+		}
+
+	}
 }

@@ -249,7 +249,7 @@ public class CartDataTag extends BodyTagSupport {
 						// Also for recipes we check the description string ...
 						// Kind of the same ugly hack as in view cart page jsp
 						String deptId = productNode.getDepartment().getContentName();
-						if ( deptDesc.startsWith("Recipe: ") ) {
+						if ( null != deptDesc && deptDesc.startsWith("Recipe: ") ) {
 							deptId = "rec";
 						}
 						String imgUrl = "/media_stat/images/layout/department_headers/" + deptId + "_cart.gif";

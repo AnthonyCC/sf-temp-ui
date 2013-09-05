@@ -142,6 +142,7 @@ import com.freshdirect.fdstore.customer.EnumIPhoneCaptureType;
 import com.freshdirect.fdstore.customer.FDActionInfo;
 import com.freshdirect.fdstore.customer.FDAuthenticationException;
 import com.freshdirect.fdstore.customer.FDCartLineI;
+import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDCartonDetail;
 import com.freshdirect.fdstore.customer.FDCartonInfo;
 import com.freshdirect.fdstore.customer.FDCustomerCreditHistoryModel;
@@ -487,6 +488,27 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			user.setAssignedCustomerParams(getAssignedCustomerParams(user,conn));
 
 			user.setDlvPassInfo(getDeliveryPassInfo(user));
+			return user;
+
+		} catch (SQLException sqle) {
+			throw new FDResourceException(sqle);
+		} finally {
+			close(conn);
+		}
+
+	}
+	
+	public FDUser getFDUserWithCart(FDIdentity identity) throws FDAuthenticationException, FDResourceException {
+
+		Connection conn = null;
+		try {
+			conn = getConnection();
+
+			FDUser user = FDUserDAO.recognizeWithIdentity(conn, identity);
+
+			if (user.isAnonymous()) {
+				throw new FDAuthenticationException("Unrecognized user");
+			}			
 			return user;
 
 		} catch (SQLException sqle) {

@@ -56,7 +56,7 @@
 			<td class="order_modify_content">
 				<span class="order_modify_warning">You are about to change this order. Please note that the price and availability of some items may change.<br />
 	<%
-				FDCartModel originalCart = FDCustomerManager.recognize(user.getIdentity()).getShoppingCart();
+				FDCartModel originalCart = FDCustomerManager.getSavedCart(user.getIdentity());//FDCustomerManager.recognize(user.getIdentity()).getShoppingCart();
 	%>
 			<%if(originalCart.numberOfOrderLines() > 0){%>			
 				We won't forget the items that are in your cart now - you'll see them again as soon as you're done making changes.<br />

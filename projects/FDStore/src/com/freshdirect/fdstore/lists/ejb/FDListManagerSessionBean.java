@@ -11,12 +11,14 @@ import org.apache.log4j.Category;
 
 import com.freshdirect.customer.EnumAccountActivityType;
 import com.freshdirect.customer.ErpActivityRecord;
+import com.freshdirect.customer.ErpCustomerInfoModel;
 import com.freshdirect.customer.ejb.ErpLogActivityCommand;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDActionInfo;
 import com.freshdirect.fdstore.customer.FDAuthenticationException;
+import com.freshdirect.fdstore.customer.FDCustomerFactory;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.FDProductSelectionI;
@@ -224,11 +226,16 @@ public class FDListManagerSessionBean extends FDSessionBeanSupport {
 
 			List<FDCustomerCreatedList> lists = dao.getCustomerCreatedLists(conn, identity); 
 			if (lists.isEmpty()) { 
-				FDUser user = FDUserDAO.recognizeWithIdentity(conn, identity);
+				/*FDUser user = FDUserDAO.recognizeWithIdentity(conn, identity);
 				if (user.isAnonymous()) {
 					throw new FDResourceException("User does not exists with identity "+identity);
+				}*/
+				ErpCustomerInfoModel customerInfo =FDCustomerFactory.getErpCustomerInfo(identity);
+				if (null == customerInfo) {
+					throw new FDResourceException("User does not exists with identity "+identity);
 				}
-				String defaultName = user.getFirstName()+ DEFAULT_CCL_NAME_SUFFIX;
+				String firstName = null !=customerInfo.getFirstName()? customerInfo.getFirstName():"";
+				String defaultName = firstName+ DEFAULT_CCL_NAME_SUFFIX;
 				dao.createCustomerCreatedList(conn, identity, defaultName);
 				lists = dao.getCustomerCreatedLists(conn, identity);
 			}
@@ -250,17 +257,19 @@ public class FDListManagerSessionBean extends FDSessionBeanSupport {
 
 			List<FDCustomerListInfo> lists = dao.getCustomerCreatedListInfos(conn, identity); 
 			if (lists.isEmpty()) { 
-				FDUserI user = FDCustomerManager.recognize(identity);
-				String defaultName = user.getFirstName()+ DEFAULT_CCL_NAME_SUFFIX;
+//				FDUserI user = FDCustomerManager.recognize(identity);
+				ErpCustomerInfoModel customerInfo =FDCustomerFactory.getErpCustomerInfo(identity);
+				String firstName = null !=customerInfo && null !=customerInfo.getFirstName()? customerInfo.getFirstName():"";
+				String defaultName = firstName+ DEFAULT_CCL_NAME_SUFFIX;
 				dao.createCustomerCreatedList(conn, identity, defaultName);
 				lists = dao.getCustomerCreatedListInfos(conn, identity);
 			}
 			return lists;
 		} catch (SQLException e) {
 			throw new FDResourceException(e);
-		} catch (FDAuthenticationException e) {
+		} /*catch (FDAuthenticationException e) {
 			throw new FDResourceException(e);
-		} finally {
+		}*/ finally {
                     close(conn);
 		}
 	}
