@@ -6,7 +6,7 @@ import java.util.Iterator;
 import java.util.Set;
 import java.util.StringTokenizer;
 
-import weblogic.wsee.util.StringUtil;
+
 
 import com.freshdirect.common.customer.EnumCardType;
 import com.freshdirect.customer.ErpPaymentMethodI;
@@ -14,6 +14,7 @@ import com.freshdirect.customer.ErpTransactionException;
 import com.freshdirect.delivery.EnumComparisionType;
 import com.freshdirect.deliverypass.EnumDlvPassStatus;
 import com.freshdirect.fdstore.customer.FDCartModel;
+import com.freshdirect.framework.util.StringUtil;
 import com.freshdirect.payment.BINCache;
 import com.freshdirect.payment.gateway.BillingInfo;
 import com.freshdirect.payment.gateway.CreditCard;
@@ -155,8 +156,7 @@ public class CustomerStrategy implements PromotionStrategyI {
 		} catch (ErpTransactionException e) {
 				
 		}
-		return "4036190483620307";
-		//return accNum;
+		return accNum;
 	}
 	public boolean evaluateOrderType(EnumOrderType orderType){
 		if(allowedOrderTypes != null && allowedOrderTypes.size() > 0){

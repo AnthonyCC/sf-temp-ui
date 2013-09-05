@@ -1217,7 +1217,7 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns
       <ejb-name>GatewayActivityLogListener</ejb-name>
       <message-driven-descriptor>
         <pool>
-          <max-beans-in-free-pool>10</max-beans-in-free-pool>
+          <max-beans-in-free-pool>5</max-beans-in-free-pool>
         </pool>
         <destination-jndi-name>
         logMetricQueue</destination-jndi-name>

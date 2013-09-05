@@ -31,6 +31,7 @@ import com.freshdirect.fdstore.customer.ejb.FDCustomerManagerSB;
 import com.freshdirect.fdstore.util.EnumSiteFeature;
 import com.freshdirect.framework.core.ServiceLocator;
 import com.freshdirect.framework.core.SessionBeanSupport;
+import com.freshdirect.framework.util.StringUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.payment.EnumPaymentMethodType;
 import com.freshdirect.payment.GatewayAdapter;
@@ -91,7 +92,7 @@ public class ProfileCreatorSessionBean extends SessionBeanSupport {
 					if(( EnumPaymentMethodType.CREDITCARD.equals(paymentMethod.getPaymentMethodType())||
 					     EnumPaymentMethodType.ECHECK.equals(paymentMethod.getPaymentMethodType())
 					    )&& 
-					    (StringUtils.isEmpty(profileId))
+					    (StringUtil.isEmpty(profileId))
 					   ){
 						LOGGER.info("Attempting to add profile for paymentMethodID :"+paymentMethodId+" of Type :"+paymentMethod.getPaymentMethodType());
 						Request request=GatewayAdapter.getAddProfileRequest(paymentMethod);

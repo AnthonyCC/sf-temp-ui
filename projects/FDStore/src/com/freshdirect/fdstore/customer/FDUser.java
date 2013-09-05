@@ -25,6 +25,8 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.log4j.Category;
 
+import weblogic.wsee.util.StringUtil;
+
 import com.freshdirect.FDCouponProperties;
 import com.freshdirect.analytics.SessionEvent;
 import com.freshdirect.common.address.AddressModel;
@@ -2685,7 +2687,16 @@ public class FDUser extends ModelSupport implements FDUserI {
 	}
 		
 	public boolean isPaymentechEnabled() {
-		return SiteFeatureHelper.isEnabled(EnumSiteFeature.PAYMENTECH_GATEWAY, this);
+		if(FDStoreProperties.isPaymentechGatewayEnabled())
+			return true;
+		try {
+			if (getIdentity() != null && !StringUtil.isEmpty(getIdentity().getErpCustomerPK())) {
+				return FDCustomerManager.isFeatureEnabled(getIdentity().getErpCustomerPK() , EnumSiteFeature.PAYMENTECH_GATEWAY);
+			}
+		} catch (FDResourceException e) {
+			e.printStackTrace();
+		}
+		return false;
 	}
 	
 	public static FDUser createRobotUser(){

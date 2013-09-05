@@ -1103,18 +1103,19 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			
 			ErpCustomerEB erpCustomerEB = checkPaymentMethodModification(info, paymentMethod);
 
-			Gateway g = GatewayFactory.getGateway(GatewayType.PAYMENTECH);
+			Gateway gateway = null;
 			
 			if(paymentechEnabled &&( EnumPaymentMethodType.CREDITCARD.equals(paymentMethod.getPaymentMethodType())||
 					                 EnumPaymentMethodType.ECHECK.equals(paymentMethod.getPaymentMethodType())
 					)){ //add payment method profile to orbital. we need to add it as part of this transaction.
 				try {				
 					//first verify the payment method with orbital/paymentech. if success then add the profile.
-					ErpAuthorizationModel authModel = g.verify(paymentMethod);
+					gateway = GatewayFactory.getGateway(GatewayType.PAYMENTECH);
+					ErpAuthorizationModel authModel = gateway.verify(paymentMethod);
 					
 					if(authModel.isApproved()) {
 						Request request = GatewayAdapter.getAddProfileRequest(paymentMethod);
-						Response response = g.addProfile(request);
+						Response response = gateway.addProfile(request);
 						if(response!=null&& response.isRequestProcessed()){
 							paymentMethod.setProfileID(response.getBillingInfo().getPaymentMethod().getBillingProfileID());
 						}
