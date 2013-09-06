@@ -3317,6 +3317,15 @@ public class DlvManagerSessionBean extends GatewaySessionBeanSupport {
 						}
 					}
 				}
+				List<FDTimeslot> slots = new ArrayList<FDTimeslot>();
+				if(timeslotMap!=null){
+					for( List<FDTimeslot> fdTimeslotList : timeslotMap.values() ){
+						for( FDTimeslot fdTimeslot : fdTimeslotList ){
+							slots.add( fdTimeslot );
+						}
+					}
+				}
+				timeslots = slots;
 			}
 		}catch (Exception ex) {
 			ex.printStackTrace();

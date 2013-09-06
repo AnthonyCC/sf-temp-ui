@@ -121,7 +121,9 @@ public class RoutingInfoDAO extends BaseDAO implements IRoutingInfoDAO   {
 	private static final String GET_SCENARIOBYDATE_QRY = "SELECT S.* FROM DLV.SERVICETIME_SCENARIO S,  DLV.SCENARIO_DAYS D " +
 			"where S.CODE = D.SCENARIO_CODE " +
 			"and ((D.SCENARIO_DATE = ? or D.DAY_OF_WEEK = TO_CHAR(?, 'D')) " +
-			"or (D.SCENARIO_DATE is null and D.DAY_OF_WEEK is null)) ORDER BY SCENARIO_DATE, DAY_OF_WEEK NULLS LAST";            
+			"or (D.SCENARIO_DATE is null and D.DAY_OF_WEEK is null)) " +
+			"and cutoff_time is null and start_time is null and end_time is null " +
+			"ORDER BY SCENARIO_DATE, DAY_OF_WEEK NULLS LAST";            
 	
 	public IServiceTimeScenarioModel getRoutingScenarioByDate(final Date deliveryDate)  throws SQLException {
 		
