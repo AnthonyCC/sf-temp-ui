@@ -372,7 +372,7 @@
 		if(FDStoreProperties.isZonePricingAdEnabled()){
 			queryString.addParam("zonelevel","true");
 			if(null !=user){
-			String zoneId = FDZoneInfoManager.findZoneId((null!=user.getSelectedServiceType()?user.getSelectedServiceType().getName():null), user.getZipCode());
+			String zoneId = user.getPricingZoneId();//FDZoneInfoManager.findZoneId((null!=user.getSelectedServiceType()?user.getSelectedServiceType().getName():null), user.getZipCode());
 			if(zoneId.equalsIgnoreCase(ZonePriceListing.MASTER_DEFAULT_ZONE)){
 				queryString.addParam("mzid",zoneId);
 				
@@ -381,7 +381,7 @@
 				queryString.addParam("mzid",ZonePriceListing.MASTER_DEFAULT_ZONE);				
 			}else{
 				queryString.addParam("zid",zoneId);				
-				zoneId = FDZoneInfoManager.findZoneId((null!=user.getSelectedServiceType()?user.getSelectedServiceType().getName():null),null);
+				//zoneId = FDZoneInfoManager.findZoneId((null!=user.getSelectedServiceType()?user.getSelectedServiceType().getName():null),null);
 				queryString.addParam("szid",zoneId);
 				queryString.addParam("mzid",ZonePriceListing.MASTER_DEFAULT_ZONE);				
 			}
