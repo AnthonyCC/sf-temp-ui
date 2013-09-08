@@ -12,7 +12,7 @@ import com.freshdirect.framework.core.SequenceGenerator;
 public class FDCouponActivityLogDAO implements Serializable {
 
 	
-	public static void logCouponActivity(FDCouponActivityLogModel log, Connection conn) {
+	public static void logCouponActivity(FDCouponActivityLogModel log, Connection conn) throws SQLException {
 			PreparedStatement ps = null;		
 			try {
 				ps =	conn.prepareStatement(
@@ -66,8 +66,10 @@ public class FDCouponActivityLogDAO implements Serializable {
 				
 				ps.execute();
 				
-			} catch (SQLException e) {
-				e.printStackTrace();
+			} finally{
+				if(null != ps){
+					ps.close();
+				}
 			}
 		
 		
