@@ -576,6 +576,6 @@ public interface FDUserI extends java.io.Serializable {
 	public boolean isRefreshCouponWalletRequired() ;
 	public void setRefreshCouponWalletRequired(boolean refreshCouponWalletRequired) ;
 	public IPackagingModel getHistoricOrderSize() throws FDResourceException;
-	public EnumRegionServiceType getRegionSvcType();
+	public EnumRegionServiceType getRegionSvcType(String addressId);
 	public boolean isPaymentechEnabled();
 }

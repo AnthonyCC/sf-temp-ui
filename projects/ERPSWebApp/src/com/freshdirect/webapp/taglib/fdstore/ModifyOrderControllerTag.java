@@ -668,7 +668,7 @@ public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.B
 				Calendar date = new GregorianCalendar();
 				date.add(Calendar.DATE, 7);
 				DlvZoneInfoModel zoneInfo = AddressUtil.getZoneInfo(request, modCart.getDeliveryAddress(), results, date.getTime(), null, 
-						(modCart.getDeliveryReservation()!=null)?modCart.getDeliveryReservation().getRegionSvcType():null);
+						modCart.getDeliveryReservation().getRegionSvcType());
 				if ( results.isSuccess() ) {
 					String zoneId = zoneInfo.getZoneCode();
 					if(zoneId==null || zoneId.length()==0) {

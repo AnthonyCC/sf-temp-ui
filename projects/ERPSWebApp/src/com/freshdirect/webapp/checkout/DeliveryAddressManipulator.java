@@ -388,7 +388,7 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 
 		Calendar date = new GregorianCalendar();
 		date.add( Calendar.DATE, 7 );
-		DlvZoneInfoModel zoneInfo = AddressUtil.getZoneInfo( request, dlvAddress, result, date.getTime(), this.getUser().getHistoricOrderSize(), (this.getUser().getReservation()!=null)?this.getUser().getReservation().getRegionSvcType():null );
+		DlvZoneInfoModel zoneInfo = AddressUtil.getZoneInfo( request, dlvAddress, result, date.getTime(), this.getUser().getHistoricOrderSize(), this.getUser().getRegionSvcType(addressId) );
 		if ( !result.isSuccess() )
 			return;
 
@@ -536,7 +536,8 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 		date.add( Calendar.DATE, 7 );
 		
 		LOGGER.debug("setRegularDeliveryAddress[getZoneInfo:START] :"+date.getTime());
-		DlvZoneInfoModel dlvResponse = AddressUtil.getZoneInfo( request, address, result, date.getTime(), user.getHistoricOrderSize(),  user.getRegionSvcType());
+		
+		DlvZoneInfoModel dlvResponse = AddressUtil.getZoneInfo( request, address, result, date.getTime(), user.getHistoricOrderSize(),  user.getRegionSvcType(address.getId()));
 		if ( !result.isSuccess() ) {
 			LOGGER.debug("setRegularDeliveryAddress[getZoneInfo:FAILED] :"+result);
 			return;

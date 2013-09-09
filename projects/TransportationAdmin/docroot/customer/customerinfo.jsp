@@ -29,42 +29,6 @@
     
 </head>
  <body marginwidth="0" marginheight="0" border="0">
-    <script>
-	    function addCustomRowHandlers(tableId, rowClassName, url, paramName, columnIndex, checkCol, needKeyPress) {
-		
-			var previousClass = null;
-		    var table = document.getElementById(tableId);
-		    
-		    if(table != null) {
-			    var rows = table.tBodies[0].getElementsByTagName("tr");	 	       
-			    for (i = 0; i < rows.length; i++) {	    	
-			        var cells = rows[i].getElementsByTagName("td");
-			        
-			        for (j = 1; j < cells.length; j++) {
-			        	
-			            cells[j].onmouseover = function () {
-			            	previousClass = this.parentNode.className;
-			            	this.parentNode.className = this.parentNode.className + " " + rowClassName ;
-			            };
-			        
-			            cells[j].onmouseout = function () {
-			              	this.parentNode.className = previousClass;
-			            };
-			        
-			            if(checkCol == -1 || checkCol != j ) {
-							if(!(needKeyPress && (j == (cells.length-1)))) {	            
-						    	cells[j].onclick = function () {			    		
-						      		var cell = this.parentNode.getElementsByTagName("td")[columnIndex];
-						      		self.opener.location.href = url+"?"+ paramName + "=" + cell.innerHTML;
-						      		self.close();						      					      		
-						    	};
-						    }
-				    	}    	
-			        }
-			    }
-			}
-		}
-    </script>
 	<table class="appframe" width="100%" cellpadding="0" cellspacing="0" border="0">
 			
 			<tr>
@@ -72,9 +36,11 @@
 				<table class="navtbl" border="0" width="100%">
 					<tr>
 						<td>
+						
+				<form id="customerInfoForm" action="" method="post">	
 				<ec:table items="customerlist" 
-				    imagePath="${pageContext.request.contextPath}/images/table/*.gif"   title="&nbsp;"
-				    width="98%"  view="fd" autoIncludeParameters="true" rowsDisplayed="25"  >
+				    imagePath="${pageContext.request.contextPath}/images/table/*.gif" action="${pageContext.request.contextPath}/customerinfo.do" title="&nbsp;"
+				    width="98%"  view="fd" form="customerInfoForm" autoIncludeParameters="true" rowsDisplayed="25"  >
 				    
 				        
 				    <ec:row interceptor="obsoletemarker">				    				    	
@@ -83,6 +49,7 @@
 				     <ec:column property="lastName" title="Last Name" alias="lastName" width="10px"/>
 				    </ec:row>
 				  </ec:table>
+				  </form>
 		</td>				
 					</tr>
 					</table>
@@ -90,6 +57,7 @@
 			</tr>
 			
 	</table>
+
 </body>
 </html>
 

@@ -214,7 +214,7 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag<Result> {
 		List<DateRange> dateRanges = new ArrayList<DateRange>();
 		dateRanges.add(baseRange);
 		List<FDTimeslotUtil> timeslotList = getFDTimeslotListForDateRange(restrictions, dateRanges,
-				result, timeslotAddress, user,event);
+				result, timeslotAddress, user, deliveryModel, event);
 		
 		/* if(cart.getDeliveryPassCount() ==0 && user.getDlvPassInfo()!=null && user.getDlvPassInfo().getPurchaseDate()!=null)
 			cart.setDlvPassPremiumAllowedTC(user.isDpNewTcBlocking()); //do we still need this check?
@@ -251,7 +251,7 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag<Result> {
 		dateRanges.remove(0);
 		
 		timeslotList.addAll(getFDTimeslotListForDateRange(restrictions, dateRanges,
-				result, timeslotAddress, user,event));
+				result, timeslotAddress, user, deliveryModel, event));
 			
 		// list of timeslots that must be shown regardless of capacity
 		Set<String> retainTimeslotIds = new HashSet<String>();
@@ -386,7 +386,7 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag<Result> {
 		
 			// Fetch time slots
 			FDDynamicTimeslotList tsList = FDDeliveryManager.getInstance().getTimeslotsForDateRangeAndZone(
-					range.getStartDate(), range.getEndDate(), null, tsAddress, user.getHistoricOrderSize(), user.getReservation());
+					range.getStartDate(), range.getEndDate(), null, tsAddress, user.getHistoricOrderSize(), null);
 
 			tsu = new FDTimeslotUtil(tsList.getTimeslots(), c0, c1, restrictions, tsList.getResponseTime(),range.isAdvanced());
 			singleTSset.add( tsu );
@@ -579,18 +579,22 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag<Result> {
 
 
 	private List<FDTimeslotUtil> getFDTimeslotListForDateRange(DlvRestrictionsList restrictions, List<DateRange> dateRanges, ActionResult result,
-			ErpAddressModel timeslotAddress,FDUserI user, TimeslotEventModel event) throws FDResourceException {
+			ErpAddressModel timeslotAddress,FDUserI user, FDDeliveryTimeslotModel deliveryModel, TimeslotEventModel event) throws FDResourceException {
 		
 		List<FDTimeslotUtil> timeslotList = new ArrayList<FDTimeslotUtil>();
 		int responseTime;
+		FDReservation preReservation = null;
 		for (Iterator<DateRange> i = dateRanges.iterator(); i.hasNext();) {
 			DateRange range = i.next();
+			
+			if(deliveryModel.isPreReserved())
+				preReservation = user.getReservation();
 			
 			event.setFilter(true);
 			FDDynamicTimeslotList dynamicTimeslots = this.getTimeslots(
 					timeslotAddress,
 				range.getStartDate(),
-				range.getEndDate(), event, user.getHistoricOrderSize(), user.getReservation());
+				range.getEndDate(), event, user.getHistoricOrderSize(), preReservation);
 			
 			if(dynamicTimeslots == null || dynamicTimeslots.getError() != null) {
 				result.addError(new ActionError("deliveryTime", "We are sorry. Our system is temporarily experiencing a problem " +

@@ -3269,26 +3269,23 @@ public class DlvManagerSessionBean extends GatewaySessionBeanSupport {
 
 		try{
 			GeographyServiceProxy proxy = new GeographyServiceProxy();
+			
 			if(address.getScrubbedStreet() == null){
 				DlvAddressVerificationResponse response = scrubAddress(address);
 				address = response.getAddress();
 			}
+			
 			IBuildingModel buildingModel = proxy.getBuildingLocation(address.getScrubbedStreet(), address.getZipCode());
-			if(buildingModel.isForceBulk()){
-				for(Iterator<FDTimeslot> i =  timeslots.iterator(); i.hasNext(); ){
-					if(!EnumRegionServiceType.HYBRID.equals(i.next().getRegionSvcType())){
-						i.remove();
-					}
-				}
-			}else{
+			
+			Map<Date, List<FDTimeslot>> timeslotMap = new HashMap<Date, List<FDTimeslot>>();
+			for ( FDTimeslot timeslot : timeslots ) {
+				if(!timeslotMap.containsKey(timeslot.getBaseDate()))
+					timeslotMap.put(timeslot.getBaseDate(), new ArrayList<FDTimeslot>());
+				timeslotMap.get(timeslot.getBaseDate()).add(timeslot);
+			}
+			
 				
-				Map<Date, List<FDTimeslot>> timeslotMap = new HashMap<Date, List<FDTimeslot>>();
-				for ( FDTimeslot timeslot : timeslots ) {
-					if(!timeslotMap.containsKey(timeslot.getBaseDate()))
-						timeslotMap.put(timeslot.getBaseDate(), new ArrayList<FDTimeslot>());
-					timeslotMap.get(timeslot.getBaseDate()).add(timeslot);
-				}
-				for(Date baseDate: timeslotMap.keySet()){
+			for(Date baseDate: timeslotMap.keySet()){
 					if(reservation != null && baseDate.equals(reservation.getBaseDate())){
 						for(Iterator<FDTimeslot> j =  timeslotMap.get(baseDate).iterator(); j.hasNext(); ){
 							FDTimeslot timeslot = j.next();
@@ -3300,15 +3297,25 @@ public class DlvManagerSessionBean extends GatewaySessionBeanSupport {
 						IServiceTimeScenarioModel srvScenario = RoutingUtil.getRoutingScenario(baseDate);
 						double historicOrderSize = ServiceTimeUtil.evaluateExpression(srvScenario.getOrderSizeFormula()
 								, ServiceTimeUtil.getServiceTimeFactorParams(iPackagingModel));
-						if(historicOrderSize > srvScenario.getBulkThreshold()){
-							for(Iterator<FDTimeslot> k =  timeslotMap.get(baseDate).iterator(); k.hasNext(); ){
+						List<FDTimeslot> fdTimeslots = timeslotMap.get(baseDate);
+						int hybridslotsCount = 0;
+						
+						if(fdTimeslots!=null){
+							for(Iterator<FDTimeslot> k =  fdTimeslots.iterator(); k.hasNext(); ){
+								FDTimeslot timeslot = k.next();
+								if(EnumRegionServiceType.HYBRID.equals(timeslot.getRegionSvcType())){
+									hybridslotsCount++;
+							}
+						}
+						if(hybridslotsCount >0 && ( historicOrderSize > srvScenario.getBulkThreshold() || buildingModel.isForceBulk())){
+							for(Iterator<FDTimeslot> k = fdTimeslots.iterator(); k.hasNext(); ){
 								FDTimeslot timeslot = k.next();
 								if(!EnumRegionServiceType.HYBRID.equals(timeslot.getRegionSvcType())){
 									k.remove();
 								}
 							}
 						}else{
-							for(Iterator<FDTimeslot> k =  timeslotMap.get(baseDate).iterator(); k.hasNext(); ){
+							for(Iterator<FDTimeslot> k =  fdTimeslots.iterator(); k.hasNext(); ){
 								FDTimeslot timeslot = k.next();
 								if(EnumRegionServiceType.HYBRID.equals(timeslot.getRegionSvcType())){
 									k.remove();
@@ -3317,16 +3324,18 @@ public class DlvManagerSessionBean extends GatewaySessionBeanSupport {
 						}
 					}
 				}
-				List<FDTimeslot> slots = new ArrayList<FDTimeslot>();
-				if(timeslotMap!=null){
+			}
+					
+			List<FDTimeslot> slots = new ArrayList<FDTimeslot>();
+			if(timeslotMap!=null){
 					for( List<FDTimeslot> fdTimeslotList : timeslotMap.values() ){
 						for( FDTimeslot fdTimeslot : fdTimeslotList ){
 							slots.add( fdTimeslot );
 						}
 					}
-				}
-				timeslots = slots;
 			}
+			timeslots = slots;
+			
 		}catch (Exception ex) {
 			ex.printStackTrace();
 			throw new DlvResourceException(ex);

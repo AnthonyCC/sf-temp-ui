@@ -1605,8 +1605,8 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 	}
 
 	@Override
-	public EnumRegionServiceType getRegionSvcType() {
-		return this.user.getRegionSvcType();
+	public EnumRegionServiceType getRegionSvcType(String addressId) {
+		return this.user.getRegionSvcType(addressId);
 	}	
 	
 	@Override

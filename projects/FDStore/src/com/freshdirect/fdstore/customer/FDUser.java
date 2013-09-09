@@ -2677,10 +2677,12 @@ public class FDUser extends ModelSupport implements FDUserI {
 		this.robot = robot;
 	}
 
-	public EnumRegionServiceType getRegionSvcType(){
-	    	if(this.getShoppingCart()!=null && this.getShoppingCart() instanceof FDModifyCartModel){
+	public EnumRegionServiceType getRegionSvcType(String addressId){
+			
+			if(this.getShoppingCart()!=null && this.getShoppingCart() instanceof FDModifyCartModel 
+	    			&& this.getShoppingCart().getDeliveryReservation()!=null && this.getShoppingCart().getDeliveryReservation().getAddressId().equals(addressId)){
 	    		return this.getShoppingCart().getDeliveryReservation().getRegionSvcType();
-	    	}else if(this.getReservation()!=null){
+	    	}else if(this.getReservation()!=null && this.getReservation().getAddressId().equals(addressId)){
 	    		return this.getReservation().getRegionSvcType();
 	    	}else{
 	    		return null;

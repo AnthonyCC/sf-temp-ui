@@ -98,7 +98,7 @@ public class DeliveryAddressValidator {
 
 		DlvZoneInfoModel dlvResponse;
 		try {
-			dlvResponse = FDDeliveryManager.getInstance().getZoneInfo(address, date.getTime(), user.getHistoricOrderSize(),  user.getRegionSvcType());
+			dlvResponse = FDDeliveryManager.getInstance().getZoneInfo(address, date.getTime(), user.getHistoricOrderSize(),  user.getRegionSvcType(address.getId()));
 			result.addError((!EnumZipCheckResponses.DELIVER.equals(dlvResponse.getResponse())), Validations.DELIVERY_ADDRESS,
 					"service unavailable in this zone");
 			if (result.isFailure())
