@@ -251,13 +251,9 @@
 		<checkoutLabeled dir="projects/CRM/docroot"/>
 		<checkoutLabeled dir="projects/Tools/src"/>
 		<checkoutLabeled dir="projects/Tests"/>
-		<checkoutLabeled dir="projects/OCF"/>
-		<checkoutLabeled dir="projects/listadmin"/>
-		<checkoutLabeled dir="projects/ocf-adm"/>
-		<checkoutLabeled dir="projects/RefAdmin"/>
-    	<checkoutLabeled dir="projects/MarketingAdmin"/>
-    	<checkoutLabeled dir="projects/TransportationAdmin"/>
-    	<checkoutLabeled dir="projects/RoutingServices"/>
+		<checkoutLabeled dir="projects/MarketingAdmin"/>
+		<checkoutLabeled dir="projects/TransportationAdmin"/>
+		<checkoutLabeled dir="projects/RoutingServices"/>
 		<checkoutLabeled dir="projects/FDIntegrationServices"/> <!-- Added: Schematic rsung -->
 		<checkoutLabeled dir="projects/StandingOrdersService"/> <!-- Standing Orders background service -->
 		<checkoutLabeled dir="projects/CoremetricsService"/> <!-- Coremetrics background service -->
@@ -314,13 +310,9 @@
 		<checkoutLatest dir="projects/CRM/docroot"/>
 		<checkoutLatest dir="projects/Tools/src"/>
 		<checkoutLatest dir="projects/Tests"/>
-		<checkoutLatest dir="projects/OCF"/>
-		<checkoutLatest dir="projects/listadmin"/>
-		<checkoutLatest dir="projects/ocf-adm"/>
-		<checkoutLatest dir="projects/RefAdmin"/>
-        <checkoutLatest dir="projects/MarketingAdmin"/>
-        <checkoutLatest dir="projects/TransportationAdmin"/>
-        <checkoutLatest dir="projects/RoutingServices"/>
+		<checkoutLatest dir="projects/MarketingAdmin"/>
+		<checkoutLatest dir="projects/TransportationAdmin"/>
+		<checkoutLatest dir="projects/RoutingServices"/>
 		<checkoutLatest dir="projects/FDIntegrationServices"/> <!-- Added: Schematic rsung -->        	
 		<checkoutLatest dir="projects/StandingOrdersService"/>
 		<checkoutLatest dir="projects/CoremetricsService"/>
@@ -372,7 +364,7 @@
 		-->
 	</target>
 
-	<target name="webapps" depends="fdwebsite,crm,erpsadmin,dlvadmin,rulesadmin,dlvconfirm,cms-gwt,listadmin-lib,listadmin,ocf-adm,refAdmin,mrktAdmin,transportAdmin,fdintegrationservices" description="Build all WAR files">
+	<target name="webapps" depends="fdwebsite,crm,erpsadmin,dlvadmin,rulesadmin,dlvconfirm,cms-gwt,mrktAdmin,transportAdmin,fdintegrationservices" description="Build all WAR files">
 	</target>
 
 	<target name="all" depends="clean,prereq,build" description="Build everything, no checkout, no tests">
@@ -412,11 +404,7 @@
 		<mkdir dir="${work.dir}/logs" />
 		<mkdir dir="${work.dir}/func-logs" />
 		<mkdir dir="${work.dir}/perf-logs" />
-		<mkdir dir="${work.dir}/OCF" />
-		<mkdir dir="${work.dir}/listadmin" />
-		<mkdir dir="${work.dir}/ocf-adm" />
 		<mkdir dir="${work.dir}/docs" />
-		<mkdir dir="${work.dir}/RefAdmin"/>
 		<mkdir dir="${work.dir}/MrktAdmin"/>
 		<mkdir dir="${work.dir}/TransportationAdmin"/>
 		<mkdir dir="${work.dir}/RoutingServices"/>
@@ -432,7 +420,6 @@
             description = "copy directories that are shared among projects">
 
         <delete dir="${basedir}/projects/DlvAdmin/docroot/WEB-INF/shared"/>
-        <delete dir="${basedir}/projects/RefAdmin/docroot/WEB-INF/shared"/>
         <delete dir="${basedir}/projects/FDWebSite/docroot/WEB-INF/shared"/>
         <delete dir="${basedir}/projects/DlvConfirm/docroot/WEB-INF/shared"/>
         <delete dir="${basedir}/projects/CRM/docroot/WEB-INF/shared"/>
@@ -457,9 +444,6 @@
 
 
         <copy todir="${basedir}/projects/DlvAdmin/docroot/WEB-INF/shared">
-            <fileset dir="${basedir}/projects/WebAppCommon/docroot/WEB-INF/shared"/>
-        </copy>
-        <copy todir="${basedir}/projects/RefAdmin/docroot/WEB-INF/shared">
             <fileset dir="${basedir}/projects/WebAppCommon/docroot/WEB-INF/shared"/>
         </copy>
         <copy todir="${basedir}/projects/FDWebSite/docroot/WEB-INF/shared">
@@ -530,7 +514,7 @@
         </copy>
     </target>
 
-	<target name="build" depends="framework,erpservices,routing,delivery,cms,fdstore,listadmin-lib,ocf,dataloader,erpswebapp,tools,StandingOrdersService,CoremetricsService,BazaarvoiceService,FDServices,Athena" description="Build everything">
+	<target name="build" depends="framework,erpservices,routing,delivery,cms,fdstore,dataloader,erpswebapp,tools,StandingOrdersService,CoremetricsService,BazaarvoiceService,FDServices,Athena" description="Build everything">
 	</target>
 
 	<target name="test" depends="tests_compile" description="Run unit tests">
@@ -586,7 +570,6 @@
 		                <pathelement location="${work.dir}/FDStore-emma.jar"/>
 		                <pathelement location="${work.dir}/DataLoader-emma.jar"/>
 		                <pathelement location="${work.dir}/ERPSWebApp-emma.jar"/>
-		                <pathelement location="${work.dir}/listadmin-emma.jar"/>
 		                <pathelement location="${work.dir}/RoutingServices-emma.jar"/>
 						<pathelement location="${work.dir}/StandingOrdersService-emma.jar"/>
 						<pathelement location="${work.dir}/CoremetricsService-emma.jar"/>
@@ -630,7 +613,6 @@
 		   				<pathelement location="${work.dir}/FDStore.jar"/>
 		   				<pathelement location="${work.dir}/DataLoader.jar"/>
 		   				<pathelement location="${work.dir}/ERPSWebApp.jar"/>
-		   				<pathelement location="${work.dir}/listadmin.jar"/>
 		   				<pathelement location="${work.dir}/RoutingServices.jar"/>
 						<pathelement location="${work.dir}/StandingOrdersService.jar"/>
 						<pathelement location="${work.dir}/CoremetricsService.jar"/>
@@ -668,7 +650,6 @@
                             <pathelement location="${projects.dir}/FDStore/src"/>
                             <pathelement location="${projects.dir}/DataLoader/src"/>
                             <pathelement location="${projects.dir}/ERPSWebApp/src"/>
-                            <pathelement location="${projects.dir}/listadmin/src"/>
                         </sourcepath>
                         <fileset dir="${work.dir}/logs" >
                             <include name="*.emma" />
@@ -703,7 +684,7 @@
 						<path refid="common.classpath"/>
 						<path refid="testing.classpath"/>
 						<pathelement path="${thirdparty.home}/lcc.jar;${thirdparty.home}/ognl-2.3.0-opt.jar"/>
-						<pathelement path="${work.dir}/Framework.jar;${work.dir}/ERPServicesEJB-WL.jar;${work.dir}/DeliveryEJB-WL.jar;${work.dir}/RoutingServices.jar;${work.dir}/CMS.jar;${work.dir}/FDStoreEJB-WL.jar;${work.dir}/DataLoaderEJB-WL.jar;${work.dir}/ERPSWebApp.jar;${work.dir}/listadmin.jar"/>
+						<pathelement path="${work.dir}/Framework.jar;${work.dir}/ERPServicesEJB-WL.jar;${work.dir}/DeliveryEJB-WL.jar;${work.dir}/RoutingServices.jar;${work.dir}/CMS.jar;${work.dir}/FDStoreEJB-WL.jar;${work.dir}/DataLoaderEJB-WL.jar;${work.dir}/ERPSWebApp.jar"/>
 					</classpath>
 				</javac>
 				<record name="${work.dir}/func-logs/log.txt" action="stop"/>
@@ -745,7 +726,6 @@
 				<pathelement location="${work.dir}/FDStore.jar"/>
 				<pathelement location="${work.dir}/DataLoader.jar"/>
 				<pathelement location="${work.dir}/ERPSWebApp.jar"/>
-				<pathelement location="${work.dir}/listadmin.jar"/>
 			</classpath>
 
 		</junit>
@@ -779,7 +759,7 @@
 						<path refid="common.classpath"/>
 						<path refid="testing.classpath"/>
 						<pathelement path="${thirdparty.home}/lcc.jar;${thirdparty.home}/ognl-2.3.0-opt.jar"/>
-						<pathelement path="${work.dir}/FunctionalTests;${work.dir}/Framework.jar;${work.dir}/RoutingServices.jar;${work.dir}/ERPServicesEJB-WL.jar;${work.dir}/DeliveryEJB-WL.jar;${work.dir}/CMS.jar;${work.dir}/FDStoreEJB-WL.jar;${work.dir}/DataLoaderEJB-WL.jar;${work.dir}/ERPSWebApp.jar;${work.dir}/listadmin.jar"/>
+						<pathelement path="${work.dir}/FunctionalTests;${work.dir}/Framework.jar;${work.dir}/RoutingServices.jar;${work.dir}/ERPServicesEJB-WL.jar;${work.dir}/DeliveryEJB-WL.jar;${work.dir}/CMS.jar;${work.dir}/FDStoreEJB-WL.jar;${work.dir}/DataLoaderEJB-WL.jar;${work.dir}/ERPSWebApp.jar"/>
 					</classpath>
 				</javac>
 				<record name="${work.dir}/perf-logs/log.txt" action="stop"/>
@@ -820,7 +800,7 @@
 			<path refid="common.classpath"/>
 			<path refid="testing.classpath"/>
 			<pathelement path="${thirdparty.home}/lcc.jar;${thirdparty.home}/ognl-2.3.0-opt.jar"/>
-			<pathelement path="${work.dir}/Tools.jar;${work.dir}/Framework.jar;${work.dir}/RoutingServices.jar;${work.dir}/ERPServicesEJB-WL.jar;${work.dir}/DeliveryEJB-WL.jar;${work.dir}/CMS.jar;${work.dir}/FDStoreEJB-WL.jar;${work.dir}/DataLoaderEJB-WL.jar;${work.dir}/ERPSWebApp.jar;${work.dir}/listadmin.jar"/>
+			<pathelement path="${work.dir}/Tools.jar;${work.dir}/Framework.jar;${work.dir}/RoutingServices.jar;${work.dir}/ERPServicesEJB-WL.jar;${work.dir}/DeliveryEJB-WL.jar;${work.dir}/CMS.jar;${work.dir}/FDStoreEJB-WL.jar;${work.dir}/DataLoaderEJB-WL.jar;${work.dir}/ERPSWebApp.jar"/>
 			</classpath>
 		</java>
 		<java classname="com.freshdirect.tools.monitor.WebStatsReport" output="${work.dir}/perf-logs/webstats-reset.log">
@@ -831,7 +811,7 @@
 			<path refid="common.classpath"/>
 			<path refid="testing.classpath"/>
 			<pathelement path="${thirdparty.home}/lcc.jar;${thirdparty.home}/ognl-2.3.0-opt.jar"/>
-			<pathelement path="${work.dir}/Tools.jar;${work.dir}/Framework.jar;${work.dir}/RoutingServices.jar;${work.dir}/ERPServicesEJB-WL.jar;${work.dir}/DeliveryEJB-WL.jar;${work.dir}/CMS.jar;${work.dir}/FDStoreEJB-WL.jar;${work.dir}/DataLoaderEJB-WL.jar;${work.dir}/ERPSWebApp.jar;${work.dir}/listadmin.jar"/>
+			<pathelement path="${work.dir}/Tools.jar;${work.dir}/Framework.jar;${work.dir}/RoutingServices.jar;${work.dir}/ERPServicesEJB-WL.jar;${work.dir}/DeliveryEJB-WL.jar;${work.dir}/CMS.jar;${work.dir}/FDStoreEJB-WL.jar;${work.dir}/DataLoaderEJB-WL.jar;${work.dir}/ERPSWebApp.jar"/>
 			</classpath>
 		</java>
 		<junit fork="yes" jvm="${jdk15.executable}">
@@ -863,7 +843,6 @@
 				<pathelement location="${work.dir}/FDStore.jar"/>
 				<pathelement location="${work.dir}/DataLoader.jar"/>
 				<pathelement location="${work.dir}/ERPSWebApp.jar"/>
-				<pathelement location="${work.dir}/listadmin.jar"/>
 			</classpath>
 
 		</junit>
@@ -875,7 +854,7 @@
 			<path refid="common.classpath"/>
 			<path refid="testing.classpath"/>
 			<pathelement path="${thirdparty.home}/lcc.jar;${thirdparty.home}/ognl-2.3.0-opt.jar"/>
-			<pathelement path="${work.dir}/Tools.jar;${work.dir}/Framework.jar;${work.dir}/RoutingServices.jar;${work.dir}/ERPServicesEJB-WL.jar;${work.dir}/DeliveryEJB-WL.jar;${work.dir}/CMS.jar;${work.dir}/FDStoreEJB-WL.jar;${work.dir}/DataLoaderEJB-WL.jar;${work.dir}/ERPSWebApp.jar;${work.dir}/listadmin.jar"/>
+			<pathelement path="${work.dir}/Tools.jar;${work.dir}/Framework.jar;${work.dir}/RoutingServices.jar;${work.dir}/ERPServicesEJB-WL.jar;${work.dir}/DeliveryEJB-WL.jar;${work.dir}/CMS.jar;${work.dir}/FDStoreEJB-WL.jar;${work.dir}/DataLoaderEJB-WL.jar;${work.dir}/ERPSWebApp.jar"/>
 			</classpath>
 		</java>
 
@@ -1645,21 +1624,6 @@
 		<echo message="}${line.separator}" file="${basedir}/${projects.dir}/FDStore/src/com/freshdirect/fdstore/util/BuildverCompileTime.java" append="true"/>
 	</target>
 
-	<target name="ocf" description="Build OCF">
-		<path id="ocf.classpath">
-			<pathelement location="${work.dir}/Framework.jar"/>
-			<pathelement location="${work.dir}/FDStoreEJB-WL.jar"/>
-			<pathelement location="${work.dir}/ERPServicesEJB-WL.jar"/>
-			<pathelement location="${work.dir}/CMS.jar"/>
-			<pathelement location="${work.dir}/DeliveryEJB-WL.jar" />
-			<pathelement location="${work.dir}/listadmin.jar"/>
-		</path>
-
-		<makeProject
-			project="OCF"
-			classpathref="ocf.classpath"/>
-	</target>
-
 	<target name="mrktAdmin" description="Build MarketingAdmin">
 		<!-- directory for compiled stuff -->
 		<mkdir dir="${work.dir}/MarketingAdmin/WEB-INF/classes" />
@@ -1991,25 +1955,6 @@
 			classpathref="rulesadmin.classpath"/>
 	</target>
 
-	<target name="ocf-adm" description="Build ocf-adm .war file">
-		<path id="ocf-adm.classpath">
-			<pathelement location="${work.dir}/Framework.jar"/>
-			<pathelement location="${work.dir}/FDStoreEJB-WL.jar"/>
-			<pathelement location="${work.dir}/ERPServicesEJB-WL.jar"/>
-			<pathelement location="${work.dir}/DeliveryEJB-WL.jar"/>
-			<pathelement location="${work.dir}/OCF.jar"/>
-			<pathelement location="${work.dir}/listadmin.jar"/>
-			<pathelement location="${thirdparty.home}/tapestry-4.0.2.jar"/>
-			<pathelement location="${thirdparty.home}/tapestry-contrib-4.0.2.jar"/>
-			<pathelement location="${thirdparty.home}/tacos-core-4.0.2-20070420.095420-14.jar"/>
-			<pathelement location="${thirdparty.home}/myworkspace-0.2.jar"/>
-			<pathelement location="${thirdparty.home}/hibernate3.jar"/>
-		</path>
-		<makeWebProject
-			project="ocf-adm"
-			classpathref="ocf-adm.classpath"/>
-	</target>
-
 	<target name="dlvconfirm" description="Build DlvConfirm .war file">
 		<path id="dlvconfirm.classpath">
 			<pathelement location="${work.dir}/Framework.jar"/>
@@ -2038,56 +1983,6 @@
 			project="ERPSAdmin"
 			classpathref="erpsadmin.classpath"/>
 	</target>
-
-	<target name="listadmin" description="Build listadmin .war file" depends="framework,listadmin-lib">
-		<path id="listadmin.classpath">
-			<pathelement location="${work.dir}/Framework.jar"/>
-			<pathelement location="${thirdparty.home}/tapestry-4.0.2.jar"/>
-			<pathelement location="${thirdparty.home}/tapestry-contrib-4.0.2.jar"/>
-			<pathelement location="${thirdparty.home}/myworkspace-0.2.jar"/>
-			<pathelement location="${thirdparty.home}/xercesImpl.jar"/>
-			<pathelement location="${thirdparty.home}/Zql.jar"/>
-			<pathelement location="${thirdparty.home}/hibernate3.jar"/>
-		</path>
-		<makeWebProject
-			project="listadmin"
-			classpathref="listadmin.classpath"/>
-	</target>
-
-	<target name="listadmin-lib" description="Build listadmin .jar file" depends="framework">
-		<path id="listadmin-lib.classpath">
-			<pathelement location="${work.dir}/Framework.jar"/>
-			<pathelement location="${thirdparty.home}/tapestry-4.0.2.jar"/>
-			<pathelement location="${thirdparty.home}/tapestry-4.0.2-contrib.jar"/>
-			<pathelement location="${thirdparty.home}/myworkspace-0.2.jar"/>
-			<pathelement location="${thirdparty.home}/Zql.jar"/>
-			<pathelement location="${thirdparty.home}/xercesImpl.jar"/>
-		</path>
-
-		<makeProject
-			project="listadmin"
-			classpathRef="listadmin-lib.classpath"/>
-	</target>
-
-	<target name="refAdmin" description="RefAdmin">
-		<path id="refAdmin.classpath">
-			<pathelement location="${work.dir}/Framework.jar"/>
-			<pathelement location="${work.dir}/ERPServicesEJB-WL.jar"/>
-			<pathelement location="${work.dir}/DeliveryEJB-WL.jar"/>
-			<pathelement location="${work.dir}/CMS.jar"/>
-			<pathelement location="${work.dir}/FDStoreEJB-WL.jar"/>
-			<pathelement location="${work.dir}/DataLoaderEJB-WL.jar"/>
-			<pathelement location="${work.dir}/ERPSWebApp.jar"/>
-			<pathelement location="${thirdparty.home}/struts.jar"/>
-            <pathelement location="${thirdparty.home}/oscache-2.4.1.jar"/>
-		</path>
-		<makeWebProject
-			project="RefAdmin"
-			classpathref="refAdmin.classpath"/>
-	</target>
-    
-
-	
 
 	<target name="transportAdmin" description="Build Transportation Admin">
 		<!-- directory for compiled stuff -->
@@ -2403,7 +2298,6 @@
 						<pathelement path="${work.dir}/FDStoreEJB-WL.jar"/>
 						<pathelement path="${work.dir}/DataLoaderEJB-WL.jar"/>
 						<pathelement path="${work.dir}/ERPSWebApp.jar"/>
-						<pathelement path="${work.dir}/listadmin.jar"/>
 						<pathelement path="${work.dir}/StandingOrdersService.jar"/>
 						<pathelement path="${work.dir}/CoremetricsService.jar"/>
 						<pathelement path="${work.dir}/BazaarvoiceService.jar"/>
@@ -2470,8 +2364,6 @@
 			<libraries>
 				<include name="Framework.jar"/>
 				<include name="CMS.jar"/>
-				<include name="OCF.jar"/>
-				<include name="listadmin.jar"/>
 				<include name="RoutingServices.jar"/>
 			</libraries>
 			<lib>
@@ -2540,7 +2432,6 @@
 				<include name="FDStoreEJB-WL.jar"/>
 				<include name="DataLoaderEJB-WL.jar"/>
 				<include name="CRM.war"/>
-                <include name="RefAdmin.war"/>
 			</ejbs>
 			<libraries>
 				<include name="Framework.jar"/>
@@ -2629,17 +2520,13 @@
 			<ejbs>
 				<include name="DlvAdmin.war"/>
 				<include name="DlvConfirm.war"/>
-				<include name="ocf-adm.war"/>
-				<include name="listadmin.war"/>
 			</ejbs>
 			<libraries>
 				<include name="Framework.jar"/>
 				<include name="ERPSWebApp.jar"/>
-				<include name="listadmin.jar"/>
 				<include name="ERPServicesEJB-WL.jar"/>
 				<include name="DeliveryEJB-WL.jar"/>
 				<include name="FDStoreEJB-WL.jar"/>
-				<include name="OCF.jar"/>
 				<include name="RoutingServices.jar"/>
 			</libraries>
 			<lib>
