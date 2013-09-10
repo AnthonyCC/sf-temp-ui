@@ -19,10 +19,4 @@
       <context-root>/</context-root>
     </web>
   </module>
-  <module>
-    <web>
-      <web-uri>RefAdmin.war</web-uri>
-      <context-root>RefAdmin</context-root>
-    </web>
-  </module>
 </application>

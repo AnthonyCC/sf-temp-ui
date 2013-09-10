@@ -21,18 +21,4 @@
         <context-root>DlvConfirm</context-root>
       </web>
     </module>
-	
-	<module>
-	  <web>
-		<web-uri>ocf-adm.war</web-uri>
-		<context-root>ocf-adm</context-root>
-	  </web>
-	</module>
-	
-	<module>
-	  <web>
-		<web-uri>listadmin.war</web-uri>
-		<context-root>listadmin</context-root>
-	  </web>
-	</module>
   </application>
