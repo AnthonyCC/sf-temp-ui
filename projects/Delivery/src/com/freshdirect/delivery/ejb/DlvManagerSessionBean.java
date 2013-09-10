@@ -27,6 +27,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import javax.ejb.EJBException;
@@ -3290,8 +3291,10 @@ public class DlvManagerSessionBean extends GatewaySessionBeanSupport {
 				timeslotMap.get(timeslot.getBaseDate()).add(timeslot);
 			}
 			
-			boolean reservationExists = false;	
+			
 			for(Date baseDate: timeslotMap.keySet()){
+				
+				boolean reservationExists = false;
 				if(reservations!=null){
 					for(FDReservation reservation: reservations){
 						if(reservation != null && baseDate.equals(reservation.getBaseDate())){
@@ -3340,8 +3343,8 @@ public class DlvManagerSessionBean extends GatewaySessionBeanSupport {
 					
 			List<FDTimeslot> slots = new ArrayList<FDTimeslot>();
 			if(timeslotMap!=null){
-					for( List<FDTimeslot> fdTimeslotList : timeslotMap.values() ){
-						for( FDTimeslot fdTimeslot : fdTimeslotList ){
+					for( Entry<Date, List<FDTimeslot>> fdTimeslotList : timeslotMap.entrySet() ){
+						for( FDTimeslot fdTimeslot : fdTimeslotList.getValue() ){
 							slots.add( fdTimeslot );
 						}
 					}

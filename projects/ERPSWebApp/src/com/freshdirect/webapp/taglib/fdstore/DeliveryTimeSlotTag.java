@@ -588,7 +588,7 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag<Result> {
 			DateRange range = i.next();
 			
 			List<FDReservation> reservations = new ArrayList<FDReservation>();
-			if(user.getReservation()!=null && timeslotAddress.getId().equals(user.getReservation().getId())){
+			if(user.getReservation()!=null && timeslotAddress.getId().equals(user.getReservation().getAddressId())){
 				reservations.add(user.getReservation());
 			}
 			if(user.getShoppingCart().getDeliveryReservation()!=null && timeslotAddress.getId().equals(user.getShoppingCart().getDeliveryReservation().getAddressId())){
