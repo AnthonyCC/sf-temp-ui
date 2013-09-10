@@ -841,12 +841,12 @@ public class FDPromotionNewDAO {
 		PreparedStatement ps;
 		
 		if(lastModified != null){			
-			System.out.println("\n\n\n\n\n\n\n\nLastmodified is: " + lastModified + "\nquery:" + getModifiedOnlyStateCountyData);
+			//System.out.println("\n\n\n\n\n\n\n\nLastmodified is: " + lastModified + "\nquery:" + getModifiedOnlyStateCountyData);
 			ps = conn.prepareStatement(getModifiedOnlyStateCountyData);	
 			ps.setTimestamp(1, new Timestamp(lastModified.getTime()));
 		}else {
 			String query = getPromoStateCountyData.replace("STATUSES", getStatusReplacementString());
-			System.out.println("\n\n\n\n\n\n\n\nLastmodified is null: " + query);
+			//System.out.println("\n\n\n\n\n\n\n\nLastmodified is null: " + query);
 			ps = conn.prepareStatement(query);
 		}
 		

@@ -156,6 +156,7 @@ public class RegistrationController extends BaseController {
 		((LoggedIn) responseMessage).setItemsInCartCount(user
 				.getItemsInCartCount());
 		((LoggedIn) responseMessage).setOrderCount(user.getOrderHistory().getValidOrderCount());
+		((LoggedIn) responseMessage).setFdUserId(user.getPrimaryKey());
 
 		//With Mobile App having given ability to add/remove payment method this is removed
 		/* if ((user.getPaymentMethods() == null)	|| (user.getPaymentMethods().size() == 0)) {
