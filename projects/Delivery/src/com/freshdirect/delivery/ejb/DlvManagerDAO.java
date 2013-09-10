@@ -230,7 +230,7 @@ public class DlvManagerDAO {
 			+ "where rd1.start_date<=ts.base_date and rd1.region_id = r.id) "
 			+ "and ts.base_date >= ? "
 			+ "and ts.base_date < ? "
-			+ "and r.service_type = ? "
+			+ "and r.service_type in (?, 'HYBRID') "
 			+ "and mdsys.sdo_relate(z.geoloc, mdsys.sdo_geometry(2001, 8265, mdsys.sdo_point_type(?,?,NULL), NULL, NULL), 'mask=ANYINTERACT querytype=WINDOW') ='TRUE' "
 			+ "order by ts.base_date, z.zone_code, ts.start_time ";
 
