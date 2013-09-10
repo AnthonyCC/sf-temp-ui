@@ -437,7 +437,7 @@ public class FDDeliveryManager {
 
 
 	public FDDynamicTimeslotList getTimeslotsForDateRangeAndZone(Date begDate, Date endDate,  TimeslotEventModel event,
-			ContactAddressModel address, IPackagingModel iPackagingModel, FDReservation reservation) throws FDResourceException {
+			ContactAddressModel address, IPackagingModel iPackagingModel, List<FDReservation> reservations) throws FDResourceException {
 		try {			
 			List<FDTimeslot> retLst = new ArrayList<FDTimeslot>();
 			DlvManagerSB sb = getDlvManagerHome().create();
@@ -447,7 +447,7 @@ public class FDDeliveryManager {
 				retLst.add(new FDTimeslot(timeslot));
 			}	
 			
-			retLst = sb.filterTimeslotsByOrderSize(retLst, iPackagingModel, address, reservation);
+			retLst = sb.filterTimeslotsByOrderSize(retLst, iPackagingModel, address, reservations);
 			FDDynamicTimeslotList dynamicTimeslots = new FDDynamicTimeslotList();
 			dynamicTimeslots.setTimeslots(retLst);
 			if(FDStoreProperties.isDynamicRoutingEnabled()) {
@@ -470,7 +470,7 @@ public class FDDeliveryManager {
 	}
 
 
-	public List<FDTimeslot> getAllTimeslotsForDateRange(Date startDate, Date endDate, AddressModel address, IPackagingModel iPackagingModel, FDReservation reservation) throws FDResourceException {
+	public List<FDTimeslot> getAllTimeslotsForDateRange(Date startDate, Date endDate, AddressModel address, IPackagingModel iPackagingModel, List<FDReservation> reservations) throws FDResourceException {
 		try {
 			List<FDTimeslot> retLst = new ArrayList<FDTimeslot>();
 			DlvManagerSB sb = getDlvManagerHome().create();
@@ -478,7 +478,7 @@ public class FDDeliveryManager {
 			for ( DlvTimeslotModel timeslot : timeslots ) {
 				retLst.add( new FDTimeslot( timeslot ) );
 			}
-			retLst = sb.filterTimeslotsByOrderSize(retLst, iPackagingModel, address, reservation);
+			retLst = sb.filterTimeslotsByOrderSize(retLst, iPackagingModel, address, reservations);
 			
 			return retLst;
 		} catch (RemoteException re) {

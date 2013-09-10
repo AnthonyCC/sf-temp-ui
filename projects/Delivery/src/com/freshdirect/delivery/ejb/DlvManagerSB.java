@@ -240,6 +240,6 @@ public interface DlvManagerSB extends EJBObject {
 	public Set retrieveRoutingWaveInstIds(Date processDate) throws DlvResourceException,RemoteException;
 	List<GeographyRestriction> getGeographicDlvRestrictionsForTemplate(AddressModel address)throws DlvResourceException, RemoteException;
 	public List<TimeslotRestriction> getTimeslotRestrictions()throws DlvResourceException, RemoteException;
-	public List<FDTimeslot> filterTimeslotsByOrderSize(List<FDTimeslot> timeslots,  IPackagingModel iPackagingModel, AddressModel address, FDReservation reservation) throws DlvResourceException, RemoteException;
+	public List<FDTimeslot> filterTimeslotsByOrderSize(List<FDTimeslot> timeslots,  IPackagingModel iPackagingModel, AddressModel address, List<FDReservation> reservations) throws DlvResourceException, RemoteException;
 	
 }   

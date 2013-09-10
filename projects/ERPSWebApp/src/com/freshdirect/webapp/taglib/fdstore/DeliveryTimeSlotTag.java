@@ -587,14 +587,19 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag<Result> {
 		for (Iterator<DateRange> i = dateRanges.iterator(); i.hasNext();) {
 			DateRange range = i.next();
 			
-			if(deliveryModel.isPreReserved())
-				preReservation = user.getReservation();
+			List<FDReservation> reservations = new ArrayList<FDReservation>();
+			if(user.getReservation()!=null && timeslotAddress.getId().equals(user.getReservation().getId())){
+				reservations.add(user.getReservation());
+			}
+			if(user.getShoppingCart().getDeliveryReservation()!=null && timeslotAddress.getId().equals(user.getShoppingCart().getDeliveryReservation().getAddressId())){
+				reservations.add(user.getShoppingCart().getDeliveryReservation());
+			}
 			
 			event.setFilter(true);
 			FDDynamicTimeslotList dynamicTimeslots = this.getTimeslots(
 					timeslotAddress,
 				range.getStartDate(),
-				range.getEndDate(), event, user.getHistoricOrderSize(), preReservation);
+				range.getEndDate(), event, user.getHistoricOrderSize(), reservations);
 			
 			if(dynamicTimeslots == null || dynamicTimeslots.getError() != null) {
 				result.addError(new ActionError("deliveryTime", "We are sorry. Our system is temporarily experiencing a problem " +
@@ -671,7 +676,7 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag<Result> {
 	
 
 
-	private FDDynamicTimeslotList getTimeslots(ErpAddressModel address, Date startDate, Date endDate, TimeslotEventModel event, IPackagingModel iPackagingModel, FDReservation reservation) throws FDResourceException {
+	private FDDynamicTimeslotList getTimeslots(ErpAddressModel address, Date startDate, Date endDate, TimeslotEventModel event, IPackagingModel iPackagingModel, List<FDReservation> reservations) throws FDResourceException {
 
 		event.setEventType(EventType.GET_TIMESLOT);
 		if (address instanceof ErpDepotAddressModel) {
@@ -682,7 +687,7 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag<Result> {
 				depotAddress.getRegionId(),
 				depotAddress.getZoneCode(), event, address);
 		} else {
-			return FDDeliveryManager.getInstance().getTimeslotsForDateRangeAndZone(startDate, endDate,event, address, iPackagingModel, reservation);
+			return FDDeliveryManager.getInstance().getTimeslotsForDateRangeAndZone(startDate, endDate,event, address, iPackagingModel, reservations);
 		}
 	}
 

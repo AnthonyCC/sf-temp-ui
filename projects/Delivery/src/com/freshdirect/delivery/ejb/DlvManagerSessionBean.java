@@ -1138,6 +1138,12 @@ public class DlvManagerSessionBean extends GatewaySessionBeanSupport {
 			conn = getConnection();
 			if(serviceType!=null && EnumRegionServiceType.isHybrid(serviceType)){
 				zoneInfo = DlvManagerDAO.getBulkZoneInfo(conn, address, date, useApartment);
+				if(EnumZipCheckResponses.DONOT_DELIVER.equals(zoneInfo.getResponse())){
+					zoneInfo=DlvManagerDAO.getZoneInfo(conn, address, date, useApartment);
+					if(EnumZipCheckResponses.DONOT_DELIVER.equals(zoneInfo.getResponse())){
+						zoneInfo=DlvManagerDAO.getZoneInfoForCosEnabled(conn, address, date, useApartment);
+					}
+				}
 			}else if(serviceType!=null && !EnumRegionServiceType.isHybrid(serviceType)){
 				zoneInfo=DlvManagerDAO.getZoneInfo(conn, address, date, useApartment);
 				if(EnumZipCheckResponses.DONOT_DELIVER.equals(zoneInfo.getResponse())){
@@ -3265,7 +3271,7 @@ public class DlvManagerSessionBean extends GatewaySessionBeanSupport {
 		}
 	}
 	
-	public List<FDTimeslot> filterTimeslotsByOrderSize(List<FDTimeslot> timeslots,  IPackagingModel iPackagingModel, AddressModel address, FDReservation reservation) throws DlvResourceException {
+	public List<FDTimeslot> filterTimeslotsByOrderSize(List<FDTimeslot> timeslots,  IPackagingModel iPackagingModel, AddressModel address, List<FDReservation> reservations) throws DlvResourceException {
 
 		try{
 			GeographyServiceProxy proxy = new GeographyServiceProxy();
@@ -3284,16 +3290,22 @@ public class DlvManagerSessionBean extends GatewaySessionBeanSupport {
 				timeslotMap.get(timeslot.getBaseDate()).add(timeslot);
 			}
 			
-				
+			boolean reservationExists = false;	
 			for(Date baseDate: timeslotMap.keySet()){
-					if(reservation != null && baseDate.equals(reservation.getBaseDate())){
-						for(Iterator<FDTimeslot> j =  timeslotMap.get(baseDate).iterator(); j.hasNext(); ){
-							FDTimeslot timeslot = j.next();
-							if(!timeslot.getRegionSvcType().equals(reservation.getRegionSvcType())){
-								j.remove();
+				if(reservations!=null){
+					for(FDReservation reservation: reservations){
+						if(reservation != null && baseDate.equals(reservation.getBaseDate())){
+							reservationExists = true;
+							for(Iterator<FDTimeslot> j =  timeslotMap.get(baseDate).iterator(); j.hasNext(); ){
+								FDTimeslot timeslot = j.next();
+								if(!timeslot.getRegionSvcType().equals(reservation.getRegionSvcType())){
+									j.remove();
+								}
 							}
 						}
-					}else{
+					}
+				}
+				if(!reservationExists){
 						IServiceTimeScenarioModel srvScenario = RoutingUtil.getRoutingScenario(baseDate);
 						double historicOrderSize = ServiceTimeUtil.evaluateExpression(srvScenario.getOrderSizeFormula()
 								, ServiceTimeUtil.getServiceTimeFactorParams(iPackagingModel));

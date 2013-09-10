@@ -930,12 +930,14 @@ public class FDCustomerManager {
 			catch (FDZoneNotFoundException e) {
 				e.printStackTrace();
 			}
+			List<FDReservation> reservations = new ArrayList<FDReservation>();
+			reservations.add(reservation);
 			
 			List<FDTimeslot> timeslots =
 				FDDeliveryManager.getInstance().getTimeslotsForDateRangeAndZone(
 					reservation.getStartTime(),
 					endCal.getTime(),event,
-					address, user.getHistoricOrderSize(), reservation).getTimeslots();
+					address, user.getHistoricOrderSize(), reservations).getTimeslots();
 			FDTimeslot matchingTimeslot = null;
 			for ( FDTimeslot t : timeslots ) {
 				if (t.getBegDateTime().equals(reservation.getStartTime())
