@@ -189,6 +189,12 @@ public class StandingOrderUtil {
 			so.skipDeliveryDate();
 		}
 		
+		// =====================
+		//  2days notification 
+		// =====================
+		if(isSendReminderNotificationEmail) {
+			sendNotification( so, mailerHome );
+		}
 		
 		// ============================
 		//    Validate delivery date
@@ -238,14 +244,6 @@ public class StandingOrderUtil {
 				LOGGER.info( "Customer information is valid." );
 
 
-		// =====================
-		//  2days notification 
-		// =====================
-		if(isSendReminderNotificationEmail) {
-			sendNotification( so, customerInfo, mailerHome );
-		}
-								
-
 		// =====================================
 		//   Check if SOI exists for given week
 		// =====================================
@@ -264,8 +262,6 @@ public class StandingOrderUtil {
 			}
 		}
 		
-		
-
 
 		// =============================
 		//   Validate delivery address
@@ -890,7 +886,7 @@ public class StandingOrderUtil {
 		return vr.isFail();
 	}
 	
-	private static void sendNotification( FDStandingOrder so, FDCustomerInfo customerInfo, MailerGatewayHome mailerHome ) throws FDResourceException {		
+	private static void sendNotification( FDStandingOrder so, MailerGatewayHome mailerHome ) throws FDResourceException {		
 		try {
 			List<FDOrderInfoI> orders = so.getAllOrders();
 			for ( FDOrderInfoI order : orders ) {
@@ -900,7 +896,7 @@ public class StandingOrderUtil {
 						LOGGER.info( "Not sending 2days notification email as order instance is cancelled: so["+so.getId()+"], order["+order.getErpSalesId()+"]" );
 					} else {
 						LOGGER.info( "Sending 2days notification email: so["+so.getId()+"], order["+order.getErpSalesId()+"]" );
-						sendNotificationMail( so, customerInfo, order.getErpSalesId(), mailerHome );
+						sendNotificationMail( so, so.getUserInfoEx(), order.getErpSalesId(), mailerHome );
 					}
 				}
 			}			

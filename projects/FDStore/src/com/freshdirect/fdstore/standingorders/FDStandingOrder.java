@@ -333,6 +333,10 @@ public class FDStandingOrder extends ModelSupport {
 		return FDCustomerManager.getSOCustomerInfo( getCustomerIdentity() );	
 	}	
 	
+	@ExcludeFromXmlSerializer
+	public FDCustomerInfo getUserInfoEx() throws FDResourceException {
+		return FDCustomerManager.getCustomerInfo( getCustomerIdentity() );	
+	}	
 	
 	/**
 	 * @return delivery address of this standing order as ErpAddressModel
