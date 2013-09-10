@@ -12,7 +12,6 @@
 	<classpathentry kind="var" path="FD_LIBS/testing/junitperf.jar"/>
 	<classpathentry kind="var" path="FD_LIBS/testing/jrunittesthelper.jar"/>
 	<classpathentry kind="var" path="FD_LIBS/testing/hsqldb.jar"/>
-	<classpathentry kind="src" path="/listadmin"/>
 	<classpathentry kind="var" path="FD_LIBS/testing/mockejb.jar"/>
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/xalan.jar"/>
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/xerces.jar"/>
@@ -22,7 +21,6 @@
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/lucene-snowball-3.0.3.jar"/>
 	<classpathentry kind="var" path="FD_LIBS/testing/jsp-api-2.0.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/StandingOrdersService"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/OCF"/>
 	<classpathentry kind="var" path="FD_LIBS/testing/jmock-2.5.1/jmock-2.5.1.jar"/>
 	<classpathentry kind="var" path="FD_LIBS/testing/jmock-2.5.1/jmock-junit3-2.5.1.jar"/>
 	<classpathentry kind="var" path="FD_LIBS/testing/jmock-2.5.1/hamcrest-core-1.1.jar"/>
