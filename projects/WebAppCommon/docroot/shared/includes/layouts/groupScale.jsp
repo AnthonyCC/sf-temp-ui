@@ -294,10 +294,10 @@ final int W_GROUPSCALE_TOTAL = 601;
 				LOGGER.debug("prodCatId "+catId);
 			}
 		}
-		if (productCode == null) {
+		if (productCode == null && pmTemp !=null) {
 			productCode = pmTemp.toString();
 		}
-		if (reqSkuCode == null) {
+		if (reqSkuCode == null && !sortedColl.isEmpty()) {
 			reqSkuCode = sortedColl.get(0).toString();
 		}
 	}
