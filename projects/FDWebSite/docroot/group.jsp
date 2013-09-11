@@ -85,6 +85,7 @@ private static Category  LOGGER = LoggerFactory.getInstance("group.jsp");
 				//put into request attribute
 				request.setAttribute("defaultPM", pmTemp);
 				LOGGER.debug("pmList.get(0) "+pmTemp);
+			}
 		}else{
 			LOGGER.debug("no catId from URI");
 			//we don't have a catId passed from the URI, try getting it from the first product in group
