@@ -99,9 +99,12 @@ public class RegistrationControllerTag extends AbstractControllerTag implements 
 			if(cart!=null && cart.getZoneInfo()!=null)
 				zoneId = cart.getZoneInfo().getZoneId();
 			
-			TimeslotEventModel event = new TimeslotEventModel((user.getApplication()!=null)?user.getApplication().getCode():"",
+			TimeslotEventModel event = null;
+			if(user!=null){
+					event = new TimeslotEventModel((user.getApplication()!=null)?user.getApplication().getCode():"",
 					(cart!=null)?cart.isDlvPassApplied():false, (cart!=null)?cart.getDeliverySurcharge():0.00,
 							(cart!=null)?cart.isDeliveryChargeWaived():false, Util.isZoneCtActive(zoneId), user.getPrimaryKey());
+			}
 			
 			
 			if ("register".equalsIgnoreCase(actionName)) {
