@@ -622,6 +622,7 @@ public class FDStoreProperties {
 	//APPDEV-2817 Link to DeliveryPass category from top nav of Delivery Info page
 	private final static String SHOW_DLVPASS_LINK_ON_DELINFO = "fdstore.dlvinfo.showdlvpasslink";
 
+	private final static String   PROP_ASSIGNED_CUSTOMER_PARAMS_QUERY_ID="fdstore.assignedCustomerParams.query.id";
     static {
         defaults.put(PROP_ROUTING_PROVIDER_URL, "t3://localhost:7001");
         defaults.put(PROP_PROVIDER_URL, "t3://localhost:7001");
@@ -1093,7 +1094,7 @@ public class FDStoreProperties {
         defaults.put(PROP_PAYMENT_METHOD_VERIFICATION_LIMIT, "5");
 
         defaults.put(PROP_ORDER_HISTORY_QUERY_ID, "3");
-
+                
         defaults.put(PROP_TWO_MONTH_TRIAL_PASS_SKU, "MKT0072335");
         defaults.put(PROP_TWO_MONTH_TRIAL_PASS_PRICE, "$59.00");
 
@@ -1218,6 +1219,8 @@ public class FDStoreProperties {
 		
 		//APPDEV-2817 Link to DeliveryPass category from top nav of Delivery Info page
         defaults.put(SHOW_DLVPASS_LINK_ON_DELINFO, "false");
+        
+        defaults.put(PROP_ASSIGNED_CUSTOMER_PARAMS_QUERY_ID, "1");
 				
         refresh();
     }
@@ -3130,6 +3133,10 @@ public class FDStoreProperties {
 	//APPDEV-2817 Link to DeliveryPass category from top nav of Delivery Info page
     public static boolean doDpDeliveryInfoLink() {
         return (Boolean.valueOf(get(SHOW_DLVPASS_LINK_ON_DELINFO))).booleanValue();
+    }
+    
+    public static int getAssignedCustomerParamsQueryId() {
+        return Integer.parseInt(get(PROP_ASSIGNED_CUSTOMER_PARAMS_QUERY_ID));
     }
 }
 

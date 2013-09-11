@@ -76,9 +76,11 @@ import com.freshdirect.fdstore.promotion.management.ejb.FDPromotionManagerNewDAO
 import com.freshdirect.fdstore.util.EnumSiteFeature;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.util.NVL;
+import com.freshdirect.framework.util.StringUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
 public class FDPromotionNewDAO {
+	private static final int DEFAULT_ASSIGNED_CUSTOMER_PARAMS_QUERY_ID=1;
 	private final static Logger LOGGER = LoggerFactory.getInstance(FDPromotionNewDAO.class);
 
 	/**
@@ -1323,12 +1325,41 @@ public class FDPromotionNewDAO {
 		+ "from cust.promotion_new p, cust.promo_customer pc "
 		+ "where p.id=pc.promotion_id and (p.expiration_date > (sysdate-7) or p.expiration_date is null) and (pc.customer_id = ? or upper(PC.CUSTOMER_EMAIL) = upper(?))";
 	
+	private static final String getABPromotionsForCustomer_Optimzed ="select p.code, pc.usage_cnt, pc.expiration_date "
+	   +" from cust.promotion_new  p, cust.promo_customer pc "
+	   +" where p.id = pc.promotion_id and (p.expiration_date > (sysdate - 7) OR p.expiration_date is null) and (pc.customer_id =?) "
+	   +"    UNION "
+	   +"   select p.code, pc.usage_cnt, pc.expiration_date "
+	   +" from cust.promotion_new  p, cust.promo_customer pc "
+	   +" where p.id = pc.promotion_id and (p.expiration_date > (sysdate - 7) or p.expiration_date is null) and "
+	   +"   PC.CUSTOMER_ID is null and upper(PC.CUSTOMER_EMAIL) = upper(?) ";
+	
+	private static final String getABPromotionsForNewCustomer="select p.code, pc.usage_cnt, pc.expiration_date "
+	   +" from cust.promotion_new  p, cust.promo_customer pc "
+	   +" where p.id = pc.promotion_id and (p.expiration_date > (sysdate - 7) or p.expiration_date is null) and "
+	   +"   PC.CUSTOMER_ID is null and upper(PC.CUSTOMER_EMAIL) = upper(?) ";
 	/** @return Map of promotionPK -> AssignedCustomerStrategy */
 	public static Map<String,AssignedCustomerParam> loadAssignedCustomerParams(Connection conn, String erpCustomerId, String email) throws SQLException {
-		PreparedStatement ps = conn.prepareStatement(getABPromotionsForCustomer);
-		ps.setString(1, erpCustomerId);
-		ps.setString(2, email);
-		ResultSet rs = ps.executeQuery();
+		
+		PreparedStatement ps =null;
+		ResultSet rs =null;
+		if(DEFAULT_ASSIGNED_CUSTOMER_PARAMS_QUERY_ID==FDStoreProperties.getAssignedCustomerParamsQueryId()) {
+			if(StringUtil.isEmpty(erpCustomerId)) {
+				ps = conn.prepareStatement(getABPromotionsForNewCustomer);
+				ps.setString(1, email);
+				
+			} else {
+				ps = conn.prepareStatement(getABPromotionsForCustomer_Optimzed);
+				ps.setString(1, erpCustomerId);
+				ps.setString(2, email);
+			}
+		} else {
+			ps = conn.prepareStatement(getABPromotionsForCustomer);
+			ps.setString(1, erpCustomerId);
+			ps.setString(2, email);
+			
+		}
+		rs = ps.executeQuery();
 		// promotionPK -> FDPromoAudience 
 		Map<String,AssignedCustomerParam> audiencePromoDtls = new ConcurrentHashMap<String,AssignedCustomerParam>();
 
