@@ -2679,10 +2679,10 @@ public class FDUser extends ModelSupport implements FDUserI {
 
 	public EnumRegionServiceType getRegionSvcType(String addressId){
 			
-			if(this.getShoppingCart()!=null && this.getShoppingCart() instanceof FDModifyCartModel 
-	    			&& this.getShoppingCart().getDeliveryReservation()!=null && this.getShoppingCart().getDeliveryReservation().getAddressId().equals(addressId)){
+			if(this.getShoppingCart()!=null && this.getShoppingCart().getDeliveryReservation()!=null && this.getShoppingCart().getDeliveryReservation().getAddressId()!=null
+					&& this.getShoppingCart().getDeliveryReservation().getAddressId().equals(addressId)){
 	    		return this.getShoppingCart().getDeliveryReservation().getRegionSvcType();
-	    	}else if(this.getReservation()!=null && this.getReservation().getAddressId().equals(addressId)){
+	    	}else if(this.getReservation()!=null && this.getReservation().getAddressId()!=null && this.getReservation().getAddressId().equals(addressId)){
 	    		return this.getReservation().getRegionSvcType();
 	    	}else{
 	    		return null;
