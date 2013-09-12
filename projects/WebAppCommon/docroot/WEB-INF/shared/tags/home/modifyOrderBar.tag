@@ -38,7 +38,7 @@
 										</div>
 										<div class="ordModifyButCont">
 											<% if ( new Date().before(orderInfo.getDeliveryCutoffTime())) { %>
-												<a href="/your_account/order_details.jsp?orderId=<%= orderInfo.getErpSalesId() %>" class="ordModifyViewDetails">view details&nbsp;</a>
+												<a href="/your_account/order_details.jsp?orderId=<%= orderInfo.getErpSalesId() %>" class="ordModifyViewDetails">view details</a>&nbsp;
 												<a class="imgButtonOrange" style="margin-left: 10px;" href="/your_account/modify_order.jsp?orderId=<%= orderInfo.getErpSalesId() %>&action=modify">modify order</a>
 											<% } else { %>
 												&nbsp;
