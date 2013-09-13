@@ -430,7 +430,7 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag<Result> {
 		deliveryModel.setPreReserveSlotId( null );
 		
 		// cheat the capacity
-		//deliveryModel.setHasCapacity( true );
+		deliveryModel.setHasCapacity( true );
 		
 		result.setDeliveryTimeslotModel(deliveryModel);
 		return result;
