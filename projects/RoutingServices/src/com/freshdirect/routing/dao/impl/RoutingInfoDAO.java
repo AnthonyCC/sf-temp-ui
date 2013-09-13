@@ -150,7 +150,6 @@ public class RoutingInfoDAO extends BaseDAO implements IRoutingInfoDAO   {
 				      }
 				  }
 			);
-		System.err.println("getRoutingScenarioByDate "+results.get(0).getCode()+" "+deliveryDate);
 		return results.size() > 0 ? results.get(0) : null;
 	}
 	
@@ -158,9 +157,8 @@ public class RoutingInfoDAO extends BaseDAO implements IRoutingInfoDAO   {
 			"where S.CODE = D.SCENARIO_CODE " +
 			"and ((D.SCENARIO_DATE = ? or D.DAY_OF_WEEK = TO_CHAR(?, 'D')) " +
 			"or (D.SCENARIO_DATE is null and D.DAY_OF_WEEK is null)) " +
-			"and  (D.CUTOFF_TIME is null or D.CUTOFF_TIME = ? " +
-			"and (D.START_TIME is null or D.END_TIME is null or (D.START_TIME <= ? " +
-			"AND D.END_TIME >= ?))) ORDER BY SCENARIO_DATE, DAY_OF_WEEK, START_TIME, END_TIME, CUTOFF_TIME NULLS LAST";            
+			"and  ((D.CUTOFF_TIME = ?  or (D.START_TIME <= ? AND D.END_TIME >= ?)) " +
+			" or (D.CUTOFF_TIME  is null and D.START_TIME is null and D.END_TIME is null)) ORDER BY SCENARIO_DATE, DAY_OF_WEEK, START_TIME, END_TIME, CUTOFF_TIME NULLS LAST";            
 	
 	public IServiceTimeScenarioModel getRoutingScenarioEx(final Date deliveryDate, final Date cutoff,final Date startTime,final Date endTime)  throws SQLException {
 		
@@ -190,7 +188,6 @@ public class RoutingInfoDAO extends BaseDAO implements IRoutingInfoDAO   {
 				      }
 				  }
 			);
-		System.err.println("getRoutingScenarioEx "+results.get(0).getCode()+" "+deliveryDate);
 		return results.size() > 0 ? results.get(0) : null;
 	}
 	

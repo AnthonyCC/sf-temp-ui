@@ -175,7 +175,7 @@ public class RoutingUtil {
 		order.getDeliveryInfo().setDeliveryLocation(locateOrder(order));
 		
 		IServiceTimeScenarioModel srvScenario = getRoutingScenarioEx(order.getDeliveryInfo().getDeliveryDate(), 
-				timeslot.getCutoffDateTime(), timeslot.getBegTime(), timeslot.getEndTime()); // this method uses the handoff/timeslot specific scenario for that date or day. This logic is only invoked by the unassigned cron job.
+				timeslot.getCutoffNormalDateTime(), timeslot.getBegTime(), timeslot.getEndTime()); // this method uses the handoff/timeslot specific scenario for that date or day. This logic is only invoked by the unassigned cron job.
 		OrderEstimationResult calculatedSize = estimateOrderSize(order, srvScenario, order.getDeliveryInfo().getPackagingDetail());
 		order.getDeliveryInfo().setPackagingDetail(calculatedSize.getPackagingModel());
 		order.getDeliveryInfo().setCalculatedOrderSize(calculatedSize.getCalculatedOrderSize());

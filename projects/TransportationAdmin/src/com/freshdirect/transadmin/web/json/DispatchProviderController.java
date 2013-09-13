@@ -470,7 +470,7 @@ public class DispatchProviderController extends JsonRpcController implements IDi
 		Date svcdate=null;
 		BigDecimal svcDay=null;
 		Date cutoff = null, startTime = null, endTime = null;
-		if(!"null".equalsIgnoreCase(sDay)){
+		if(!"".equalsIgnoreCase(sDay)){
 			svcDay=new BigDecimal(sDay);
 		}
 		

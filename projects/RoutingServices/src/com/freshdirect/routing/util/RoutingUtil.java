@@ -350,7 +350,11 @@ public class RoutingUtil {
 	protected static IServiceTimeScenarioModel getRoutingScenario(Date dlvDate) throws RoutingServiceException {
 		return new RoutingInfoServiceProxy().getRoutingScenarioByDate(dlvDate);
 	}
-
+	
+	public static IServiceTimeScenarioModel getRoutingScenarioEx(Date dlvDate, Date cutoff, Date startTime, Date endTime) throws RoutingServiceException {
+		return new RoutingInfoServiceProxy().getRoutingScenarioEx(dlvDate,cutoff,startTime,endTime);
+	}
+	
 	protected static OrderEstimationResult estimateOrderSize(IOrderModel order, IServiceTimeScenarioModel scenario, IPackagingModel historyInfo) throws RoutingServiceException {
 		return new PlantServiceProxy().estimateOrderSize(order, scenario, historyInfo);
 	}
@@ -392,7 +396,8 @@ public static IOrderModel calculateReservationSize(DlvReservationModel reservati
 	Map<String, IServiceTimeTypeModel> serviceTimeTypeMapping = routingInfoproxy.getRoutingServiceTimeTypes();
 	order.getDeliveryInfo().setDeliveryLocation(locateOrder(order));
 	
-	IServiceTimeScenarioModel srvScenario = getRoutingScenario(order.getDeliveryInfo().getDeliveryDate());
+	IServiceTimeScenarioModel srvScenario = getRoutingScenarioEx(order.getDeliveryInfo().getDeliveryDate(), 
+			timeslot.getCutoffNormalDateTime(), timeslot.getBegTime(), timeslot.getEndTime()); // this method uses the handoff/timeslot specific scenario for that date or day. This logic is only invoked by the unassigned cron job.
 	OrderEstimationResult calculatedSize = estimateOrderSize(order, srvScenario, order.getDeliveryInfo().getPackagingDetail());
 	order.getDeliveryInfo().setPackagingDetail(calculatedSize.getPackagingModel());
 	order.getDeliveryInfo().setCalculatedOrderSize(calculatedSize.getCalculatedOrderSize());

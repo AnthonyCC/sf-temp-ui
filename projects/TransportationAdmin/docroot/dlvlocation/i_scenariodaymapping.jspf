@@ -44,7 +44,7 @@
      	 }
      }
      function isEmpty(str) {
-    	    return (!str || str === "null" || 0 === str.length);
+    	    return (!str || str === "null" || 0 === str.trim().length);
     }
      
      function showForm() {          
@@ -61,24 +61,26 @@
 		  var p_cutoff = YAHOO.util.Dom.get("cutOff").value;
 		  var p_startTime = YAHOO.util.Dom.get("startTime").value;
 		  var p_endTime = YAHOO.util.Dom.get("endTime").value;
-		  
-		  if(p_code.trim().length == 0 ||
-      			p_day.trim().length == 0) {
-      	  		addSysMessage("Please enter the required values", true);		
-      	  } else if((p_day.trim().length != 4 && p_date != null && p_date.trim().length != 0)){
+		   
+		  if(p_day.trim().length == 0 &&  
+      			p_date.trim().length == 0) {
+      	  		addSysMessage("Please select the day or date", true);		
+      	  } else if((p_day.trim().length != 0 && p_date != null && p_date.trim().length != 0)){
 				addSysMessage("Please choose either day or date", true);
 		  }else if(p_cutoff.trim().length != 0 && ( p_startTime.trim().length != 0 || p_endTime.trim().length != 0 )){
-				addSysMessage("Please choose handoff or time range", true);
-		  }else if(p_cutoff.trim().length != 0 && p_code.trim().length == 0 && p_day.trim().length == 0){
-				addSysMessage("Please choose day or date when selecting handoff", true);
-		  }else if(p_startTime.trim().length != 0 && p_code.trim().length == 0 && p_day.trim().length == 0){
-				addSysMessage("Please choose day or date when selecting time range", true);
-		  }else if(p_startTime.trim().length != 0 && p_endTime.trim().length == 0 && p_day.trim().length == 0){
-				addSysMessage("Please choose day or date when selecting time range", true);
+				addSysMessage("Please choose either handoff or time range", true);
+		  }else if(p_cutoff.trim().length != 0 && p_date.trim().length == 0 && p_day.trim().length == 0){
+				addSysMessage("Please choose either day or date when selecting handoff", true);
+		  }else if(p_cutoff.trim().length != 0 && p_date.trim().length != 0 && p_day.trim().length != 0){
+				addSysMessage("Please choose either day or date when selecting handoff", true);
+		  }else if((p_startTime.trim().length != 0 || p_endTime.trim().length != 0 ) && p_date.trim().length == 0 && p_day.trim().length == 0){
+				addSysMessage("Please choose either day or date when selecting time range", true);
+		  }else if((p_startTime.trim().length != 0 || p_endTime.trim().length != 0 ) && p_date.trim().length != 0 && p_day.trim().length != 0){
+				addSysMessage("Please choose either day or date when selecting time range", true);
 		  }
       	  else {
 	    	  var result = jsonrpcClient.AsyncDispatchProvider.addScenarioDayMapping(sendFormCallback
-						    	  											, p_code ,p_day, p_date, p_cutoff,p_startTime,p_endTime);  
+						    	  											, p_code ,p_day, p_date.trim(), p_cutoff,p_startTime,p_endTime);  
 		  }
       }
       
@@ -133,7 +135,7 @@
 		                  <td>Day</td>
 		                  <td>
 		                  	<select id="sDay" name="sDay" onchange="enableFields();" >
-                          		<option value="null">-Please Select</option>
+                          		<option value="">-Please Select</option>
                           		<option value="1">Sun</option><option value="2">Mon</option><option value="3">Tue</option><option value="4">Wed</option><option value="5">Thur</option><option value="6">Fri</option><option value="7">Sat</option>
                     	 	</select>	
                     	 </td> 
