@@ -93,6 +93,7 @@ import com.freshdirect.customer.ejb.ErpCustomerManagerHome;
 import com.freshdirect.customer.ejb.ErpCustomerManagerSB;
 import com.freshdirect.customer.ejb.ErpLogActivityCommand;
 import com.freshdirect.delivery.DlvZoneInfoModel;
+import com.freshdirect.delivery.EnumRegionServiceType;
 import com.freshdirect.delivery.ejb.DlvManagerDAO;
 import com.freshdirect.delivery.ejb.DlvManagerHome;
 import com.freshdirect.delivery.ejb.DlvManagerSB;
@@ -970,11 +971,15 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
             ErpSaleModel _order=customerManagerSB.getOrder(new PrimaryKey(saleId));
             ErpAbstractOrderModel order =_order.getCurrentOrder();
             ErpDeliveryInfoModel dlvInfo=order.getDeliveryInfo();
-              
+             
+            EnumRegionServiceType serviceType  = null;
+            if(!(dlvInfo.getDeliveryReservationId() == null || "1".equals(dlvInfo.getDeliveryReservationId()))){
             DlvManagerSB sb = this.getDlvManagerHome().create();
   			DlvReservationModel _reservation=sb.getReservation(dlvInfo.getDeliveryReservationId());
-  			
-            DlvZoneInfoModel zInfo = FDDeliveryManager.getInstance().getZoneInfo(dlvInfo.getDeliveryAddress(),dlvInfo.getDeliveryStartTime(), null, _reservation.getRegionSvcType());
+  			if(_reservation!=null)
+  				serviceType = _reservation.getRegionSvcType();
+            }
+            DlvZoneInfoModel zInfo = FDDeliveryManager.getInstance().getZoneInfo(dlvInfo.getDeliveryAddress(),dlvInfo.getDeliveryStartTime(), null, serviceType);
             customerManagerSB.resubmitOrder(saleId, cra,saleType,zInfo.getRegionId());
               
               if(!EnumSaleType.REGULAR.equals(saleType) && EnumSaleStatus.NEW.equals(_order.getStatus())) {
