@@ -272,7 +272,7 @@ public class FDCustomerManager {
 		try {
 			FDCustomerManagerSB sb = managerHome.create();
 			FDUser user = sb.recognize(cookie);
-			decorateShoppingCart(user);
+			populateShoppingCart(user);
 			
 			return user;
 
@@ -285,7 +285,7 @@ public class FDCustomerManager {
 		}
 	}
 
-	private static void decorateShoppingCart(FDUser user)
+	private static void populateShoppingCart(FDUser user)
 			throws FDResourceException {
 		//Set user Pricing context at this point before recalcualting the price during cleanup.
 		user.getShoppingCart().setPricingContextToOrderLines(user.getPricingContext());
@@ -317,7 +317,7 @@ public class FDCustomerManager {
 			FDCustomerManagerSB sb = managerHome.create();
 			FDUser user = sb.recognize(identity);
 			user.setApplication(source);
-			decorateShoppingCart(user);
+			populateShoppingCart(user);
 			
 			return user;
 
@@ -4195,8 +4195,8 @@ public class FDCustomerManager {
 		lookupManagerHome();
 		try {
 			FDCustomerManagerSB sb = managerHome.create();
-			FDUser user = sb.recognize(identity);
-			decorateShoppingCart(user);
+			FDUser user = sb.getFDUserWithCart(identity);
+			populateShoppingCart(user);
 			
 			return user.getShoppingCart();
 
