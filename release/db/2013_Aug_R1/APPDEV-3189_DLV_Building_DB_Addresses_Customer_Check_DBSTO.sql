@@ -1,0 +1,1 @@
+grant select on cust.address to fdtrn_stprd01;
