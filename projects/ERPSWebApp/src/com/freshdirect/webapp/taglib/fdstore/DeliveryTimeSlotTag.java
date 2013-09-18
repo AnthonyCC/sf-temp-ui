@@ -591,7 +591,8 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag<Result> {
 			if(user.getReservation()!=null && timeslotAddress.getId().equals(user.getReservation().getAddressId())){
 				reservations.add(user.getReservation());
 			}
-			if(user.getShoppingCart().getDeliveryReservation()!=null && timeslotAddress.getId().equals(user.getShoppingCart().getDeliveryReservation().getAddressId())){
+			if(user.getShoppingCart().getDeliveryReservation()!=null && timeslotAddress!=null && timeslotAddress.getId()!=null && 
+					timeslotAddress.getId().equals(user.getShoppingCart().getDeliveryReservation().getAddressId())){
 				reservations.add(user.getShoppingCart().getDeliveryReservation());
 			}
 			
