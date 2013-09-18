@@ -3310,8 +3310,12 @@ public class DlvManagerSessionBean extends GatewaySessionBeanSupport {
 				}
 				if(!reservationExists){
 						IServiceTimeScenarioModel srvScenario = RoutingUtil.getRoutingScenario(baseDate);
-						double historicOrderSize = ServiceTimeUtil.evaluateExpression(srvScenario.getOrderSizeFormula()
-								, ServiceTimeUtil.getServiceTimeFactorParams(iPackagingModel));
+						double historicOrderSize = 0;
+								
+						if(iPackagingModel!=null){
+							historicOrderSize = ServiceTimeUtil.evaluateExpression(srvScenario.getOrderSizeFormula()
+									, ServiceTimeUtil.getServiceTimeFactorParams(iPackagingModel));
+						}
 						List<FDTimeslot> fdTimeslots = timeslotMap.get(baseDate);
 						int hybridslotsCount = 0;
 						
