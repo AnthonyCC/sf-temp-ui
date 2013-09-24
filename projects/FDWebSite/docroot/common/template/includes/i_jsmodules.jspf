@@ -1,4 +1,6 @@
 <%@ taglib uri="http://jawr.net/tags" prefix="jwr" %>
-<%@ taglib uri='freshdirect' prefix='fd' %>
+<%@ taglib uri="https://developers.google.com/closure/templates" prefix="soy" %>
 <%-- this file will be included just before the closing </body> tag --%>
+<soy:import packageName="common"/>
 <jwr:script src="/fdmodules.js"  useRandomParam="false" />
+<jwr:script src="/fdcomponents.js"  useRandomParam="false" />

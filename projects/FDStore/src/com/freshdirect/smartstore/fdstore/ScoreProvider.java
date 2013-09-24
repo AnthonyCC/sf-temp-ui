@@ -71,11 +71,15 @@ public class ScoreProvider implements DataAccess {
 
     public static final String USER_FREQUENCY = "Frequency";
     
+    public static final String RECENCY_NORMALIZED = "Recency_Normalized";
+    
+    public static final String RECENCY_DISCRETIZED = "Recency_Discretized";
+    
     public static final String ORIGINAL_SCORES_GLOBAL = "OriginalScores_Global";
 
     public static final String ORIGINAL_SCORES_PERSONALIZED = "OriginalScores_Personalized";
 
-    private static final String[] DATASOURCE_NAMES = new String[] { "FeaturedItems", "CandidateLists", "PurchaseHistory" };
+    private static final String[] DATASOURCE_NAMES = new String[] { "FeaturedItems", "CandidateLists", "PurchaseHistory", "CustomerRatedItems" };
     
     private static final String EXTERNAL_PERSONALIZED_PREFIX = "Personalized_";
 
@@ -556,6 +560,8 @@ public class ScoreProvider implements DataAccess {
 					LOGGER.debug("Could not load history for " + input.getCustomerId());
 				}
 			}
+	    } else if ("CustomerRatedItems".equals(name)) {
+	    	return HelperFunctions.getCustomerRatedProducts();
 	    }
 	    return Collections.emptyList();
 	}
@@ -623,7 +629,9 @@ public class ScoreProvider implements DataAccess {
                 if (position != null) {
                     int value = position.intValue();
                     double[] values = (double[]) scores.get(key);
-                    return new Float(values[value]);
+                    if(values!=null){
+                    	return new Float(values[value]);                    	
+                    }
                 }
             }
             return null;
@@ -1031,6 +1039,16 @@ public class ScoreProvider implements DataAccess {
 			FactorUtil.getNormalizedExpertWeightLookup()
 		);
 		
+		storeLookups.put(
+			"CustomerRating",
+			FactorUtil.getCustomerRatingLookup()
+		);
+		
+		storeLookups.put(
+			"CustomerRating_Normalized",
+			FactorUtil.getNormalizedCustomerRatingLookup()
+		);
+
 		storeLookups.put(
 			"QualityRating",
 			FactorUtil.getProduceRatingLookup()

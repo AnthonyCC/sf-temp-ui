@@ -1,0 +1,71 @@
+{namespace common}
+
+
+/**
+ * @param item definition of an item
+ */
+{template .gridItem autoescape="false"}
+{let $atcItemId}
+{isNonnull($item.atcItemId) ? $item.atcItemId : 'atc_' + ($item.productId ? $item.productId : '') + '_' + ($item.skuCode ? $item.skuCode : '') + '_' +($item.catId ? $item.catId : '' )}
+{/let}
+<li class="portrait-item {not $item.available ? 'unavailable' : ''}" data-component="product">
+	<div class="portrait-item-productimage_wrapper">
+		<div class="portrait-item-burst_wrapper">
+			<img src="{$item.productImage}" class="portrait-item-productimage">
+			{call common.bursts}{param badge:$item.badge /}{param deal:$item.deal /}{/call}
+		</div>
+		<div class="portrait-item-controls">
+			<div class="portrait-item-controls-content">
+				{if not $item.customizePopup}
+					{call common.atcControls}
+						{param item:$item /}
+					{/call}
+				{/if}
+				<div class="portrait-item-addtocart">
+					{if $item.customizePopup}
+						<button class="customize" data-component="customizeButton">customize</button>
+					{else}
+						<button class="addtocart" data-component="ATCButton">add to cart</button>
+						{call common.subtotal}
+				    		{param availMatPrices:$item.availMatPrices /}
+				    		{param suRatios:$item.suRatios /}
+				        	{param grpPrices:$item.grpPrices /}
+				        	{param cvPrices:$item.cvPrices /}
+	        				{param qInc:$item.quantity.qInc /}
+						{/call}
+					{/if}
+				</div>
+				{call common.productData}
+					{param productId:$item.productId /}
+					{param catId:$item.catId /}
+					{param skuCode:$item.skuCode /}
+					{param listId:$item.listId /}
+					{param configuration:$item.configuration /}
+					{param atcItemId:$atcItemId /}
+				{/call}
+			</div>
+		</div>
+	</div>
+	<div class="portrait-item-header">
+		{call common.atcInCart}
+			{param amount:$item.inCartAmount /}
+			{param atcItemId:$atcItemId /}
+		{/call}
+		{call common.rating.customer}{param ratingValue:$item.customerRating /}{param reviewCount:$item.customerRatingReviewCount /}{/call}
+		{call common.rating.expert}{param ratingValue:$item.expertRating /}{/call}
+		{call common.rating.wine}{param ratingValue:$item.wineRating /}{/call}
+		<a href="/product.jsp?catId={$item.catId}&productId={$item.productId}" class="portrait-item-header-name">{$item.productName}</a>
+	</div>
+	<div class="portrait-item-price">
+	{call common.price}
+		{param wasPrice:$item.wasPrice /}
+		{param price:$item.price /}
+		{param scaleUnit:$item.scaleUnit /}
+		{param aboutPrice:$item.aboutPriceText /}
+	{/call}
+	{if $item.dealInfo}<div class="portrait-item-price-deal">{$item.dealInfo}</div>{/if}
+	{if $item.savingString}<div class="portrait-item-price-deal">{$item.savingString}</div>{/if}
+	{if $item.mixNMatch}<div class="portrait-item-price-deal mixnmatch">Mix'n'Match</div>{/if}
+	</div>
+</li>
+{/template}

@@ -3,25 +3,25 @@ package com.freshdirect.webapp.util;
 import java.util.Date;
 import java.util.List;
 
+import javax.servlet.http.HttpSession;
+
+import org.apache.log4j.Category;
+
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.customer.QuickCart;
 import com.freshdirect.fdstore.lists.FDListManager;
+import com.freshdirect.framework.util.NVL;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
-
-import com.freshdirect.framework.util.NVL;
-
-import javax.servlet.http.HttpSession;
-
-import org.apache.log4j.Category;
 
 /**
  * Interface to the QuickCart cached in the session.
  * 
  */
+@Deprecated
 public class QuickCartCache implements SessionName {
 
     private static Category LOGGER = LoggerFactory.getInstance(QuickCartCache.class);

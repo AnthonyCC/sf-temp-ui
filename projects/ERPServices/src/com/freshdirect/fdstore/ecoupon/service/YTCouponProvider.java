@@ -17,10 +17,10 @@ import java.util.Set;
 import java.util.TreeMap;
 
 import org.apache.log4j.Logger;
-import org.codehaus.jackson.JsonParseException;
-import org.codehaus.jackson.map.DeserializationConfig;
-import org.codehaus.jackson.map.JsonMappingException;
-import org.codehaus.jackson.map.ObjectMapper;
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import com.certicom.security.cert.internal.x509.Base64;
 import com.freshdirect.customer.ErpOrderLineModel;
@@ -196,7 +196,7 @@ public class YTCouponProvider implements CouponService {
 	
 	protected static ObjectMapper getMapper() {
         ObjectMapper mapper = new ObjectMapper();
-        mapper.configure(DeserializationConfig.Feature.FAIL_ON_UNKNOWN_PROPERTIES , false);
+        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES , false);
         return mapper;
     }
 	

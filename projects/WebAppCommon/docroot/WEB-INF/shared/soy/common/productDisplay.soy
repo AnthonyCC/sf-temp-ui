@@ -1,0 +1,105 @@
+{namespace common}
+
+/**
+ * @param data
+ */
+{template .productDisplay autoescape="false"}
+<div class="leftColumn" data-component="product">
+	<h1>{if $data.productName}{$data.productName}{/if}
+	{if $data.akaName}<p class="productDisplay-akaName">"{$data.akaName}"</p>{/if}
+	{if $data.packageDescription}<p class="productDisplay-packageDescription">{$data.packageDescription}</p>{/if}</h1>
+	{if isNonnull($data.atcItemId)}
+	<input type="hidden" data-component="productData" data-productdata-name="atcItemId" name="atcItemId" value="{$data.atcItemId}">
+	{/if}	
+	{if $data.skus}
+	<ol class="productDisplay-skulist">
+	{foreach $sku in $data.skus}
+	{if $sku.available}
+	<li>
+		<label>
+			{$sku.label}{sp}
+			{call common.price}
+				{param wasPrice:$sku.wasPrice /}
+				{param price:$sku.price /}
+				{param scaleUnit:$sku.scaleUnit /}
+				{param aboutPrice:$sku.aboutPriceText /}
+			{/call}
+			<input type="radio" name="skuCode" value="{$sku.skuCode}" {if $sku.selected}checked{/if} data-component="productData" data-productdata-name="skuCode">
+		</label>
+		<div>{call common.rating.expert}{param ratingValue:$sku.expertRating /}{/call}</div>
+		<div>{call common.rating.wine}{param ratingValue:$sku.wineRating /}{/call}</div>
+		<div class="productDisplay-sustrating">{if $sku.sustainabilityRating}Sustainability Rating -{call common.rating.sustainability}{param ratingValue:$sku.sustainabilityRating /}{/call}{/if}</div>
+	</li>
+	{/if}
+	{/foreach}
+	</ol>
+	{/if}
+	<div class="productDisplay-skuconfig"></div>
+	{if $data.ATCApply}
+		<span data-component="applyCustomization"><button data-component="ATCButton">add to cart</button></span>		
+	{else}
+ 	   	<button data-component="ATCButton">add to cart</button>
+		{if $data.hasApply}<div class="applyCustomization">Save changes permanently.<br><button data-component="saveCustomization" data-popup-control="close">save customization</button></div>{/if}
+	{/if}
+	{if $data.originalLineId}<input type="hidden" data-component="productData" data-productdata-name="lineId" name="lineId" value="{$data.originalLineId}">{/if}
+	{if $data.listId}<input type="hidden" data-component="productData" data-productdata-name="listId" name="listId" value="{$data.listId}">{/if}
+</div>
+<div class="rightColumn">
+	/*<a href="/product.jsp?catId={$data.catId}&productId={$data.productId}" class="moreinfo">More about this product</a>*/
+	<a href="{$data.productPageUrl}" class="moreinfo">Product Details</a>
+	<img src="{if $data.productImage and $data.productImage != 'undefined'}{$data.productImage}{/if}">
+</div>
+{/template}
+
+/**
+ * @param sku
+ */
+{template .skuControl autoescape="false"}
+
+{let $hasSingleSalesUnit:(length($sku.salesUnit)==1) /}
+{let $isPricedByLB:($sku.availMatPrices[0].pricingUnit == 'LB') /}
+{let $isSoldByLB:(not $hasSingleSalesUnit and $sku.salesUnit[0].id == 'LB') /}
+{let $displaySalesUnitsOnly:($sku.soldBySalesUnit or (not $hasSingleSalesUnit and $isSoldByLB and $isPricedByLB)) /}
+{let $displayEstimatedQuantity: ((not $displaySalesUnitsOnly) and $isPricedByLB and (not $isSoldByLB) ) /}
+{let $salesUnitFirst: ($displayEstimatedQuantity and (length($sku.salesUnit) > 1)) /}
+{if $salesUnitFirst}
+<div class="skucontrol-salesunit">
+<b>Please choose</b>
+{call common.salesunit}
+	{param options:$sku.salesUnit /}
+	{param availMatPrices:$sku.availMatPrices /}
+	{param suRatios:$sku.suRatios /}
+	{param label:$sku.salesUnitLabel /}
+	{param optional:false /}
+{/call}
+</div>
+{/if}
+{if $sku.variations}
+<div class="skucontrol-variations">
+{foreach $variation in $sku.variations}
+	{delcall common.variation variant="$variation.display"}
+		{param label:$variation.label /}
+		{param name:$variation.name /}
+		{param values:$variation.values /}
+		{param underlabel:$variation.underLabel/}
+		{param optional:$variation.optional /}
+	{/delcall}
+{/foreach}
+</div>
+{/if}
+<hr>
+<div class="skucontrol-quantity">/*{$sku.quantityText}*/{sp}
+	{call common.atcControls}
+		{param item:$sku /}
+		{param removeSalesUnit:$salesUnitFirst /}
+		{param optional:false /}
+	{/call}
+	{call common.subtotal}
+		{param availMatPrices:$sku.availMatPrices /}
+		{param suRatios:$sku.suRatios /}
+		{param grpPrices:$sku.grpPrices /}
+		{param cvPrices:$sku.cvPrices /}
+	    {param qInc:$sku.quantity.qInc /}
+	{/call}
+</div>
+{/template}

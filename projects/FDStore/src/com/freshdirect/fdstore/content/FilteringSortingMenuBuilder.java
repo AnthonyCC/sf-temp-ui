@@ -13,61 +13,100 @@ import com.freshdirect.cms.fdstore.FDContentTypes;
 
 public class FilteringSortingMenuBuilder<N extends ContentNodeModel> extends GenericFilteringMenuBuilder<FilteringSortingItem<N>> {
 
-	public FilteringSortingMenuBuilder(Map<EnumFilteringValue, List<Object>> filterValues, Set<EnumFilteringValue> filters) {
-		super(filterValues, filters);
+	public FilteringSortingMenuBuilder(Map<FilteringValue, List<Object>> filterValues, Set<FilteringValue> filters) {
+		super(filterValues, new HashSet<FilteringValue>(filters));
 	}
 
 	@Override
-	public void buildMenu(List<FilteringSortingItem<N>> items, int[] expertRatings, int[] custRatings) { 
-		for (EnumFilteringValue value : filters) {
-
-			Map<String, FilteringMenuItem> domain = new HashMap<String, FilteringMenuItem>();
-			
-			boolean isExpertRating = value == EnumFilteringValue.EXPERT_RATING;			
-			boolean isCustRating = value == EnumFilteringValue.CUSTOMER_RATING;
-			
-			if ( isExpertRating ) {
-				// Always add all expert ratings				
-				domain.put( "5", new FilteringMenuItem("5", "5", expertRatings[5], EnumFilteringValue.EXPERT_RATING) );
-				domain.put( "4", new FilteringMenuItem("4", "4", expertRatings[4], EnumFilteringValue.EXPERT_RATING) );
-				domain.put( "3", new FilteringMenuItem("3", "3", expertRatings[3], EnumFilteringValue.EXPERT_RATING) );
-				domain.put( "2", new FilteringMenuItem("2", "2", expertRatings[2], EnumFilteringValue.EXPERT_RATING) );
-				domain.put( "1", new FilteringMenuItem("1", "1", expertRatings[1], EnumFilteringValue.EXPERT_RATING) );
-			} else if ( isCustRating ) {
-				// Always add all customer ratings				
-				domain.put( "5", new FilteringMenuItem("5", "5", custRatings[5], EnumFilteringValue.CUSTOMER_RATING) );
-				domain.put( "4", new FilteringMenuItem("4", "4", custRatings[4], EnumFilteringValue.CUSTOMER_RATING) );
-				domain.put( "3", new FilteringMenuItem("3", "3", custRatings[3], EnumFilteringValue.CUSTOMER_RATING) );
-				domain.put( "2", new FilteringMenuItem("2", "2", custRatings[2], EnumFilteringValue.CUSTOMER_RATING) );
-				domain.put( "1", new FilteringMenuItem("1", "1", custRatings[1], EnumFilteringValue.CUSTOMER_RATING) );
-			} else {	
-				// All other filters
-				for (FilteringSortingItem<N> item : items) {
-					Set<FilteringMenuItem> menuItems = item.getMenuValue(value);
-	
-					if (menuItems != null) {
-						for (FilteringMenuItem menuItem : menuItems) {
-	
-							String menuName = menuItem.getFilteringUrlValue();
-							FilteringMenuItem mI = domain.get(menuName);
-	
-							if ( mI == null ) {
-								mI = menuItem;
-							}
-							
-							mI.setCounter(mI.getCounter() + 1);							
-							domain.put(menuName, mI);
-						}
-					}
-				}
-			}
-			
-			checkSelected(domain.values(), filterValues.get(value));
-			domains.put(value, domain);
+	public void buildMenu(List<FilteringSortingItem<N>> items) { 
+		
+		for (FilteringValue value : filters) {
+			buildMenuForFilter(items, value, false, false);
 		}
 
 		narrowTree(filterValues);
+		mergeTempMenus();
 
+	}
+	
+	public void buildMenuForFilter(List<FilteringSortingItem<N>> items, FilteringValue filter, boolean removeFilter, boolean temporary){
+		
+		Map<String, FilteringMenuItem> domain = new HashMap<String, FilteringMenuItem>();
+		boolean isExpertRating = filter == EnumSearchFilteringValue.EXPERT_RATING;			
+		boolean isCustRating = filter == EnumSearchFilteringValue.CUSTOMER_RATING;
+		
+		if ( isExpertRating || isCustRating ) {
+			// Always add all expert and customer ratings				
+			domain.put( "5", new FilteringMenuItem("5", "5", 0, filter) );
+			domain.put( "4", new FilteringMenuItem("4", "4", 0, filter) );
+			domain.put( "3", new FilteringMenuItem("3", "3", 0, filter) );
+			domain.put( "2", new FilteringMenuItem("2", "2", 0, filter) );
+			domain.put( "1", new FilteringMenuItem("1", "1", 0, filter) );
+		}
+		
+		for (FilteringSortingItem<N> item : items) {
+			Set<FilteringMenuItem> menuItems = item.getMenuValue(filter);
+
+			if (menuItems != null) {
+				for (FilteringMenuItem menuItem : menuItems) {
+					
+					if(temporary){
+						menuItem = menuItem.clone(menuItem);
+					}
+
+					String menuName = menuItem.getFilteringUrlValue();
+					FilteringMenuItem mI = domain.get(menuName);
+
+					if ( mI == null ) {
+						mI = menuItem;
+					}
+					
+					mI.setCounter(mI.getCounter() + 1);							
+					domain.put(menuName, mI);
+				}
+			}
+		}
+		
+		checkSelected(domain.values(), filterValues.get(filter));
+		if(temporary){ //temporary menus will be handled at the end of the filtering flow (re calculating numbers etc.)
+			tempDomains.put(filter, domain);
+		}else{
+			domains.put(filter, domain);			
+		}
+		
+		//these are the static empty menuItems (e.g. kosher preference on quickshop)
+		if(filter.isShowIfEmpty() && domains.get(filter).isEmpty()){
+			
+			FilteringMenuItem menu = new FilteringMenuItem();
+			menu.setName(filter.getDisplayName());
+			menu.setFilteringUrlValue(filter.getName());
+			menu.setFilter(filter);
+			domains.get(filter).put(menu.getFilteringUrlValue(), menu);
+			
+		}
+		
+		if(removeFilter){
+			filters.remove(filter);			
+		}
+	}
+	
+	private void mergeTempMenus(){
+			
+		//merge the temporary menu with the final (some domains - e.g departments on quickshop - needs to show 0 valued menuItems after a lower positioned filter - e.g preferences)
+		//please note that these are the DYNAMIC empty menuItems!
+		for(FilteringValue filter: tempDomains.keySet()){
+			
+			Map<String, FilteringMenuItem> tempDomain = tempDomains.get(filter);
+			
+			for(String tempKey: tempDomain.keySet()){
+				FilteringMenuItem tempItem = tempDomain.get(tempKey);
+				
+				if(domains.get(filter)!=null && domains.get(filter).get(tempKey)==null){
+					tempItem.setCounter(0);
+					domains.get(filter).put(tempKey, tempItem);
+				}
+			}
+		}
 	}
 
 	/**
@@ -76,14 +115,15 @@ public class FilteringSortingMenuBuilder<N extends ContentNodeModel> extends Gen
 	 *            if subcategory or category selected first then domains above
 	 *            them (department, category) needs to be narrowed this method
 	 *            only needed when multiselection is not supported!
+	 *            Only used on search page
 	 */
-	private void narrowTree(Map<EnumFilteringValue, List<Object>> filterValues) {
+	private void narrowTree(Map<FilteringValue, List<Object>> filterValues) {
 
-		String dept = filterValues.get(EnumFilteringValue.DEPT) != null ? (String) filterValues.get(EnumFilteringValue.DEPT).get(0) : null;
-		String cat = filterValues.get(EnumFilteringValue.CAT) != null ? (String) filterValues.get(EnumFilteringValue.CAT).get(0) : null;
-		String subCat = filterValues.get(EnumFilteringValue.SUBCAT) != null ? (String) filterValues.get(EnumFilteringValue.SUBCAT).get(0) : null;
-		String recipe = filterValues.get(EnumFilteringValue.RECIPE_CLASSIFICATION) != null ? (String) filterValues.get(EnumFilteringValue.RECIPE_CLASSIFICATION).get(0) : null;
-		String brand = filterValues.get(EnumFilteringValue.BRAND) != null ? (String) filterValues.get(EnumFilteringValue.BRAND).get(0) : null;
+		String dept = filterValues.get(EnumSearchFilteringValue.DEPT) != null ? (String) filterValues.get(EnumSearchFilteringValue.DEPT).get(0) : null;
+		String cat = filterValues.get(EnumSearchFilteringValue.CAT) != null ? (String) filterValues.get(EnumSearchFilteringValue.CAT).get(0) : null;
+		String subCat = filterValues.get(EnumSearchFilteringValue.SUBCAT) != null ? (String) filterValues.get(EnumSearchFilteringValue.SUBCAT).get(0) : null;
+		String recipe = filterValues.get(EnumSearchFilteringValue.RECIPE_CLASSIFICATION) != null ? (String) filterValues.get(EnumSearchFilteringValue.RECIPE_CLASSIFICATION).get(0) : null;
+		String brand = filterValues.get(EnumSearchFilteringValue.BRAND) != null ? (String) filterValues.get(EnumSearchFilteringValue.BRAND).get(0) : null;
 
 		if (subCat != null && cat == null) {
 			ContentNodeModel subCatModel = ContentFactory.getInstance().getContentNode(FDContentTypes.CATEGORY, subCat);
@@ -96,16 +136,16 @@ public class FilteringSortingMenuBuilder<N extends ContentNodeModel> extends Gen
 		}
 
 		if (subCat != null) {
-			narrowDomain(EnumFilteringValue.SUBCAT, subCat, false, null);
+			narrowDomain(EnumSearchFilteringValue.SUBCAT, subCat, false, null);
 		}
 		if (cat != null) {
-			narrowDomain(EnumFilteringValue.CAT, cat, false, null);
-			narrowDomain(EnumFilteringValue.SUBCAT, subCat, true, cat);				
+			narrowDomain(EnumSearchFilteringValue.CAT, cat, false, null);
+			narrowDomain(EnumSearchFilteringValue.SUBCAT, subCat, true, cat);				
 		}
 		if (dept != null) {
-			narrowDomain(EnumFilteringValue.DEPT, dept, false, null);
-			narrowDomain(EnumFilteringValue.CAT, cat, true, dept);
-			Map<String, FilteringMenuItem> subCats = domains.get(EnumFilteringValue.SUBCAT);
+			narrowDomain(EnumSearchFilteringValue.DEPT, dept, false, null);
+			narrowDomain(EnumSearchFilteringValue.CAT, cat, true, dept);
+			Map<String, FilteringMenuItem> subCats = domains.get(EnumSearchFilteringValue.SUBCAT);
 			// narrow subcat's of department's cats
 			if (subCats != null && !subCats.isEmpty() && cat == null) {
 				DepartmentModel deptNode = (DepartmentModel) ContentFactory.getInstance().getContentNode(FDContentTypes.DEPARTMENT, dept);
@@ -127,14 +167,14 @@ public class FilteringSortingMenuBuilder<N extends ContentNodeModel> extends Gen
 			}
 		}
 		if(recipe != null ){
-			narrowDomain(EnumFilteringValue.RECIPE_CLASSIFICATION, recipe, false, null);
+			narrowDomain(EnumSearchFilteringValue.RECIPE_CLASSIFICATION, recipe, false, null);
 		}
 		if(brand != null){
-			narrowDomain(EnumFilteringValue.BRAND,brand,false,null);
+			narrowDomain(EnumSearchFilteringValue.BRAND,brand,false,null);
 		}
 	}
 
-	private void narrowDomain(EnumFilteringValue domainId, String selected, boolean multiValue, String parent) {
+	private void narrowDomain(FilteringValue domainId, String selected, boolean multiValue, String parent) {
 
 		Map<String, FilteringMenuItem> domain = domains.get(domainId);
 		Map<String, FilteringMenuItem> narrowedDomain = new HashMap<String, FilteringMenuItem>();

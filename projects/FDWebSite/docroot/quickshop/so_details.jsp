@@ -1,3 +1,4 @@
+<%@page import="com.freshdirect.webapp.taglib.QuickShopRedirector"%>
 <%@page import="com.freshdirect.fdstore.standingorders.FDStandingOrder.ErrorCode"%>
 <%@ page import="com.freshdirect.fdstore.standingorders.FDStandingOrder"%>
 <%@ page import="com.freshdirect.fdstore.standingorders.FDStandingOrdersManager"%>
@@ -27,7 +28,10 @@
 <%@ taglib uri='freshdirect' prefix='fd'%>
 <%@ taglib uri='logic' prefix='logic' %>
 
-<fd:CheckLoginStatus guestAllowed='false' recognizedAllowed='false'  />
+<fd:CheckLoginStatus id="user" guestAllowed='false' recognizedAllowed='false'  />
+
+<%-- redirect to new quickshop page (partial rollout check) --%>
+<fd:QuickShopRedirector user="<%=user%>" from="<%=QuickShopRedirector.FROM.OLD_SO_DETAILS %>"/>
 
 <fd:ManageStandingOrders id="lists">
 <%	
@@ -35,8 +39,6 @@
 
 	String ccListId = request.getParameter("ccListId");
 	String actionName = request.getParameter("fdAction");
-
-	final FDUserI user = (FDUserI) session.getAttribute(SessionName.USER);
 
 	FDStandingOrder so = null;
 
@@ -127,7 +129,7 @@
 					</div>			
 					<div style="text-align: center;">
 						<%=so.getErrorDetail()%><br/><br/>
-						<a href="<%= FDURLUtil.getStandingOrderLandingPage(so, "modify") %>">Click here to change the schedule or options for all future deliveries.</a><br/><br/>
+						<a href="<%= FDURLUtil.getStandingOrderLandingPage(so, "modify",user) %>">Click here to change the schedule or options for all future deliveries.</a><br/><br/>
 					</div>
 				<% }
 				if ( addr == null && so.getLastError() != ErrorCode.NO_ADDRESS ) {
@@ -196,8 +198,8 @@
 										Date requestedDate = latestSoi.getRequestedDate();%>
 										<script type="text/javascript">
 										var modifySoInfo = {
-											msotNoMsoiUrl : '<%= StringEscapeUtils.unescapeHtml(FDURLUtil.getStandingOrderLandingPage(so, "modify")) %>',
-											msotMsoiUrl: '<%= StringEscapeUtils.unescapeHtml(FDURLUtil.getStandingOrderLandingPage(so, "modify", latestSoi.getErpSalesId())) %>',
+											msotNoMsoiUrl : '<%= StringEscapeUtils.unescapeHtml(FDURLUtil.getStandingOrderLandingPage(so, "modify",user)) %>',
+											msotMsoiUrl: '<%= StringEscapeUtils.unescapeHtml(FDURLUtil.getStandingOrderLandingPage(so, "modify", latestSoi.getErpSalesId(),user)) %>',
 											soiDate:'<%= new SimpleDateFormat("M/d/y").format(requestedDate)%>',
 											soiDay:'<%= new SimpleDateFormat("EEEE").format(requestedDate)%>',
 											soName: soNameJs
@@ -211,7 +213,7 @@
 							<%} %>
 			
 							<% if (!modInstanceToo) { %>
-							<a href="<%= FDURLUtil.getStandingOrderLandingPage(so, "modify") %>">
+							<a href="<%= FDURLUtil.getStandingOrderLandingPage(so, "modify",user) %>">
 							   <img style="margin-bottom: 1em" src="/media_stat/images/template/quickshop/update_standing_order.png" width="189" height="22" />
 							</a>
 							<% } %>

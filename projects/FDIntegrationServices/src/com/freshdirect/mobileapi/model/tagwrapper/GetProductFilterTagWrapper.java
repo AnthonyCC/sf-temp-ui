@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.freshdirect.fdstore.FDException;
-import com.freshdirect.fdstore.content.EnumFilteringValue;
+import com.freshdirect.fdstore.content.FilteringValue;
 import com.freshdirect.fdstore.content.FilteringMenuItem;
 import com.freshdirect.fdstore.content.FilteringSortingItem;
 import com.freshdirect.fdstore.content.ProductModel;
@@ -29,7 +29,7 @@ public class GetProductFilterTagWrapper extends NonStandardControllerTagWrapper 
         super(new ProductsFilterTag(), user);
     }
 
-    public ResultBundle getFilteredList(SearchResults results, Map<EnumFilteringValue, List<Object>> filterValues) throws FDException {
+    public ResultBundle getFilteredList(SearchResults results, Map<FilteringValue, List<Object>> filterValues) throws FDException {
         addExpectedSessionValues(new String[] { SESSION_PARAM_USER },new String[]{}); //gets,sets
         addExpectedRequestValues(new String[] {domainsId, itemsId, filteredItemCountId}
         						, new String[] { domainsId, itemsId, filteredItemCountId });//gets,sets
@@ -55,8 +55,8 @@ public class GetProductFilterTagWrapper extends NonStandardControllerTagWrapper 
     	return (List<FilteringSortingItem<ProductModel>>) this.pageContext.getAttribute(itemsId);
     }
     
-    public Map<EnumFilteringValue, Map<String, FilteringMenuItem>> getDomains() {
-    	return ( Map<EnumFilteringValue, Map<String, FilteringMenuItem>>) this.pageContext.getAttribute(domainsId);
+    public Map<FilteringValue, Map<String, FilteringMenuItem>> getDomains() {
+    	return ( Map<FilteringValue, Map<String, FilteringMenuItem>>) this.pageContext.getAttribute(domainsId);
 	}
 
 	@Override

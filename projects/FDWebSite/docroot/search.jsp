@@ -329,7 +329,7 @@ final int W_INDEX_RIGHT_CENTER = W_INDEX_TOTAL - 228 - W_INDEX_CENTER_PADDING;
 			<ul>
 				<% nav.resetState();nav.setRecipes(true); nav.removeAllFilters(); nav.setPageOffset(0); %>
 				<li><a href="<%= nav.getLink() %>">All</a></li>
-<fd:FilterList domainName="<%= EnumFilteringValue.RECIPE_CLASSIFICATION %>" filters='<%= menus %>' id="filterItems">
+<fd:FilterList domainName="<%=EnumSearchFilteringValue.RECIPE_CLASSIFICATION%>" filters='<%= menus %>' id="filterItems">
 	<% nav.resetState(); %>
 	<logic:iterate id="menu" collection="<%= filterItems %>" type='FilteringMenuItem'>
 			<% if(menu.isSelected()) { %>

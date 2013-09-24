@@ -1268,6 +1268,11 @@ public class ProductModelFeaturedAdapter implements ProductModel, Serializable,
 	}
 
 	@Override
+	public EnumOrderLineRating getProductRatingEnum(String skuCode) throws FDResourceException {
+		return productModel.getProductRatingEnum(skuCode);
+	}
+
+	@Override
 	public Image getPackageImage() {
 		return productModel.getPackageImage();
 	}

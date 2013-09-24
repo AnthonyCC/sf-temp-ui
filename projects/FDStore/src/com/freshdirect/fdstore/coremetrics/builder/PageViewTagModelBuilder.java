@@ -33,7 +33,7 @@ public class PageViewTagModelBuilder  {
 	private boolean wineFilterValueSet;
 	private PageViewTagModel tagModel = new PageViewTagModel();
 	
-	public PageViewTagModel buildTagModel() throws SkipTagException{
+	public PageViewTagModel buildTagModel() throws SkipTagException {
 		
 		identifyPageAndCategoryId();
 		identifyAttributes();

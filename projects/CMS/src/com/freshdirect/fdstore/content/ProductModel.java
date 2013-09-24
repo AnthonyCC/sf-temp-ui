@@ -806,7 +806,9 @@ public interface ProductModel extends AvailabilityI, YmalSource, YmalSetSource, 
 	
 	public String getProductRating(String skuCode) throws FDResourceException; 
 
-	public EnumOrderLineRating getProductRatingEnum() throws FDResourceException; 
+	public EnumOrderLineRating getProductRatingEnum() throws FDResourceException;
+	
+	public EnumOrderLineRating getProductRatingEnum(String skuCode) throws FDResourceException;
 	
 	public String getFreshnessGuaranteed() throws FDResourceException; 
 

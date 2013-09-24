@@ -59,6 +59,8 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 
 public class FDCustomerCouponUtil implements Serializable {
 	
+	private static final long	serialVersionUID	= 7258375070671798676L;
+	
 	private static final Logger LOGGER = LoggerFactory.getInstance(FDCustomerCouponUtil.class);
 
 	public static void initCustomerCoupons(HttpSession session){
@@ -257,7 +259,7 @@ public class FDCustomerCouponUtil implements Serializable {
 			FDCustomerCouponWallet custCoupons) {
 		Set<String> filteredCouponIds =custCoupons.getClippedFdFilteredIds();
 		Date expCouponMaxDeliveryDate = null;
-		for (Iterator iterator = filteredCouponIds.iterator(); iterator.hasNext();) {
+		for (Iterator<String> iterator = filteredCouponIds.iterator(); iterator.hasNext();) {
 			String coupId = (String) iterator.next();
 			FDCouponInfo coupon = FDCouponFactory.getInstance().getCoupon(coupId);
 			if(null !=coupon){				
@@ -474,12 +476,12 @@ public class FDCustomerCouponUtil implements Serializable {
 	}
 	
 	
-	public final static Comparator<FilteringSortingItem> COUPON_POPULARITY_COMPARATOR = new Comparator<FilteringSortingItem>() {
+	public final static Comparator<FilteringSortingItem<ProductModel>> COUPON_POPULARITY_COMPARATOR = new Comparator<FilteringSortingItem<ProductModel>>() {
 
-		public int compare(FilteringSortingItem fp1, FilteringSortingItem fp2) {			
+		public int compare(FilteringSortingItem<ProductModel> fp1, FilteringSortingItem<ProductModel> fp2) {			
 			try {
-				ProductModel p1 = (ProductModel)fp1.getModel();
-				ProductModel p2 = (ProductModel)fp2.getModel();
+				ProductModel p1 = fp1.getModel();
+				ProductModel p2 = fp2.getModel();
 				FDCouponInfo cp1 = FDCouponFactory.getInstance().getCouponByUpc(p1.getDefaultSku().getProductInfo().getUpc());
 				FDCouponInfo cp2 = FDCouponFactory.getInstance().getCouponByUpc(p2.getDefaultSku().getProductInfo().getUpc());
 				if(null != cp1 && null !=cp2){

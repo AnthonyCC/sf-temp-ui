@@ -1,0 +1,50 @@
+{namespace common}
+
+
+/**
+ * @param data shopping lists
+ */
+{template .selectList private="true" autoescape="true"}
+	<p>
+		<label for="addtolist-selectList">add to existing list</label>
+		<select name="selectList" id="addtolist-selectList">
+      {foreach $listInfo in $data}
+        <option value="{$listInfo.listId}">
+          {$listInfo.name}
+        </option>
+      {/foreach}
+		</select>
+		<button class="addtolist-button-add enabled">add</button>
+	</p>
+{/template}
+
+/**
+ */
+{template .newList private="true" autoescape="true"}
+	<p>
+		<label for="addtolist-newList">create new list</label>
+		<label class="error"></label>
+		<input type="text" id="addtolist-newList" maxlength="35">
+		<button class="addtolist-button-go enabled">go</button>
+	</p>
+{/template}
+
+
+/**
+ * @param data shopping lists
+ */
+{template .addtolistpopup autoescape="true"}
+	{call .selectList data="all" /}
+	<div class="addtolist-or"><span>or</span></div>
+	{call .newList /}
+{/template}
+
+/**
+ * @param data shopping lists
+ */
+{template .createlistpopup autoescape="true"}
+	{call .newList /}
+	<div class="addtolist-or"><span>or</span></div>
+	{call .selectList data="all" /}
+{/template}
+

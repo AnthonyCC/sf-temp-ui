@@ -1,0 +1,176 @@
+.addtolistpopup label,
+.saverecipepopup label {
+  display: block;
+  font-weight: bold;
+  font-size: 12px;
+}
+
+.addtolistpopup .addtolist-or {
+  margin: 20px 0;
+  border-top: 1px dashed #ccc;
+  position: relative;
+}
+
+.addtolistpopup .addtolist-or span {
+  position: absolute;
+  top: -10px;
+  left: 0;
+  right: 0;
+  margin: auto;
+  text-transform: uppercase;
+  line-height: 20px;
+  font-size: 14px;
+  font-weight: bold;
+  color: #a172a1;
+  background: #fff;
+  width: 2em;
+  text-align: center;
+}
+
+.addtolistpopup p button,
+.saverecipepopup p button,
+.addtolistpopup .buttons button,
+.saverecipepopup .buttons button {
+  display: inline-block;
+	padding: 0;
+	border: none;
+	text-indent: -9000px;
+	overflow: hidden;
+	cursor: pointer;
+  margin-left: 8px;
+}
+
+.addtolistpopup p,
+.saverecipepopup p {
+  font-size: 12px;
+  padding-bottom: 10px;
+}
+.saverecipepopup p.desc {
+  padding-bottom: 20px;
+}
+.addtolistpopup p a.quickshop {
+  display: inline-block;
+}
+
+.addtolistpopup p a.quickshop:before {
+  content: ' ';
+  display: inline-block;
+  height: 11px;
+  width: 11px;
+  background: url(/media_stat/images/quickshop/bullet-purple.png) no-repeat;
+  margin-right: 4px;
+}
+
+.addtolistpopup .buttons,
+.saverecipepopup .buttons {
+  text-align: right;
+}
+
+.editinlistpopup p,
+.deletefromlistpopup p {
+  font-size: 12px;
+  padding-bottom: 10px;
+}
+
+.editinlistpopup .buttons,
+.deletefromlistpopup .buttons {
+  text-align: right;
+  border-top: 1px solid #ccc;
+  padding-top: 10px;
+}
+
+.editinlistpopup .buttons button,
+.deletefromlistpopup .buttons button {
+  display: inline-block;
+	padding: 0;
+	border: none;
+	text-indent: -9000px;
+	overflow: hidden;
+	cursor: pointer;
+  margin-left: 8px;
+}
+
+.addtolistpopup .error {
+  font-weight:bold;
+}
+
+
+
+.addtolistpopup p button.addtolist-button-add,
+.addtolistpopup p button.addtolist-button-go,
+.saverecipepopup p button.saverecipe-button-go,
+.addtolistpopup .buttons button.addtolist-button-ok,
+.saverecipepopup .buttons button.addtolist-button-ok,
+.deletefromlistpopup .buttons button.deletefromlist-button-delete,
+.deletefromlistpopup .buttons button.deletefromlist-button-cancel,
+.editinlistpopup .buttons button.editinlist-button-save {
+  background: url(/media_stat/images/quickshop/buttons-sprite.png) no-repeat;
+}
+
+
+
+.addtolistpopup p button.addtolist-button-add {
+    width: 40px;
+    height: 27px;
+    background-position: -5px -115px;
+}
+.addtolistpopup p button.addtolist-button-add:hover,
+.addtolistpopup p button.addtolist-button-add:focus {
+    background-position: -55px -115px;
+}
+
+.addtolistpopup p button.addtolist-button-go,
+.saverecipepopup p button.saverecipe-button-go {
+    width: 35px;
+    height: 27px;
+    background-position: -282px -115px;
+}
+.addtolistpopup p button.addtolist-button-go:hover,
+.saverecipepopup p button.saverecipe-button-go:hover,
+.addtolistpopup p button.addtolist-button-go:focus,
+.saverecipepopup p button.saverecipe-button-go:focus {
+    background-position: -100px -253px;
+}
+
+.addtolistpopup .buttons button.addtolist-button-ok,
+.saverecipepopup .buttons button.addtolist-button-ok {
+    width: 35px;
+    height: 27px;
+    background-position: -145px -253px;
+}
+.addtolistpopup .buttons button.addtolist-button-ok:hover,
+.saverecipepopup .buttons button.addtolist-button-ok:hover,
+.addtolistpopup .buttons button.addtolist-button-ok:focus,
+.saverecipepopup .buttons button.addtolist-button-ok:focus {
+    background-position: -190px -253px;
+}
+
+.deletefromlistpopup .buttons button.deletefromlist-button-delete {
+    width: 85px;
+    height: 27px;
+    background-position: -247px -216px;
+}
+.deletefromlistpopup .buttons button.deletefromlist-button-delete:hover,
+.deletefromlistpopup .buttons button.deletefromlist-button-delete:focus {
+    background-position: -5px -253px;
+}
+
+.deletefromlistpopup .buttons button.deletefromlist-button-cancel {
+    width: 75px;
+    height: 27px;
+    background-position: -197px -115px;
+}
+.deletefromlistpopup .buttons button.deletefromlist-button-cancel:hover,
+.deletefromlistpopup .buttons button.deletefromlist-button-cancel:focus {
+    background-position: -5px -152px;
+}
+
+.editinlistpopup .buttons button.editinlist-button-save {
+    width: 75px;
+    height: 27px;
+    background-position: -5px -336px;
+}
+.editinlistpopup .buttons button.editinlist-button-save:hover,
+.editinlistpopup .buttons button.editinlist-button-save:focus {
+    background-position: -90px -336px;
+}

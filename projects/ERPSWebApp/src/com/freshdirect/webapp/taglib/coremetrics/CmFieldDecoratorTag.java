@@ -5,17 +5,13 @@ import java.io.IOException;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
 
-import org.apache.log4j.Logger;
-
-import com.freshdirect.framework.util.log.LoggerFactory;
-
 public class CmFieldDecoratorTag extends AbstractCmTag {
 	
-	private static final Logger LOGGER = LoggerFactory.getInstance(CmFieldDecoratorTag.class);
 	public static final String CM_PAGE_ID = "FreshDirect.Coremetrics.pageId";
 	public static final String CM_PAGE_CONTENT_HIERARCHY = "FreshDirect.Coremetrics.pageContentHierarchy";
 	
-	public void doCmTag() throws JspException, IOException {
+	@Override
+	public void doCmTag(StringBuilder sb) throws JspException, IOException {
 		JspWriter out = getJspContext().getOut();
 		out.println("<input type='hidden' name='coremetricsPageId' value=''/>");
 		out.println("<input type='hidden' name='coremetricsPageContentHierarchy' value=''/>");
@@ -30,5 +26,10 @@ public class CmFieldDecoratorTag extends AbstractCmTag {
 	@Override
 	protected String getTagJs() {
 		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	protected String getFunctionName() {
+		return null;
 	}
 }

@@ -7,13 +7,13 @@ import java.util.Set;
 
 public abstract class GenericFilterValueDecoder {
 	
-	protected Set<EnumFilteringValue> filters;
+	protected Set<FilteringValue> filters;
 
-	public GenericFilterValueDecoder(Set<EnumFilteringValue> filters) {
+	public GenericFilterValueDecoder(Set<FilteringValue> filters) {
 		this.filters = filters;
 	}
 	
-	public abstract Map<EnumFilteringValue, List<Object>> decode(String encoded);
+	public abstract Map<FilteringValue, List<Object>> decode(String encoded);
 	
 	public abstract String getEncoded(Map<FilteringValue, List<Object>> filterValues);
 

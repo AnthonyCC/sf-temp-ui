@@ -123,7 +123,7 @@ public class FDStandingOrdersManager {
 			throw new FDResourceException(re, "Error talking to session bean");
 		}
 	}
-	
+
 	public FDStandingOrder load(PrimaryKey pk) throws FDResourceException {
 		lookupManagerHome();
 		try {

@@ -140,7 +140,7 @@ if ("POST".equals(request.getMethod())) {
         <td width="10%" class="border_bottom"><%= JspMethods.formatPrice(credit.getPreviousCreditAmount()) %>&nbsp;</td>
         <td width="21%" class="border_bottom">
             <table cellpadding="0" cellspacing="0" border="0" width="100%" class="list_content_text">
-                <logic:iterate id="item" collection="<%= credit.getItems() %>" type="com.freshdirect.fdstore.customer.FDCreditSummary.Item" indexId="counter">
+                <logic:iterate id="item" collection="<%=credit.getItems()%>" type="com.freshdirect.fdstore.customer.FDCreditSummary.Item" indexId="counter">
                 <% if (counter.intValue() > 0) { %>
 					<tr class="list_separator" style="padding: 0px;"><td colspan="3"><img src="/media_stat/crm/images/clear.gif" width="1" height="1"></td></tr>
 				<% } %>

@@ -14,9 +14,6 @@ import com.freshdirect.cms.fdstore.FDContentTypes;
 
 public class StarterList extends ContentNodeModelImpl implements ContentStatusI {
 	
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 8629600147619071601L;
 	
 	private final ContentStatusHelper helper;
@@ -100,9 +97,9 @@ public class StarterList extends ContentNodeModelImpl implements ContentStatusI 
 	 * @param active whether only active lists are to be returned
 	 * @return list of starter lists (List<StarterList>)
 	 */
-	public static List getStarterLists(boolean active) {
+	public static List<StarterList> getStarterLists(boolean active) {
 		
-        List starterLists = new LinkedList();
+        List<StarterList> starterLists = new LinkedList<StarterList>();
         
 		FDFolder folder = (FDFolder)ContentFactory.getInstance().getContentNode("starterLists");
 		if (folder == null) return starterLists;
@@ -112,12 +109,13 @@ public class StarterList extends ContentNodeModelImpl implements ContentStatusI 
 	}
 	
 	
-	private List products = new LinkedList();
+	private List<ProductModel> products = new LinkedList<ProductModel>();
+	
 	/** Get products on starter list
 	 * 
 	 * @return list of products (List<ProductModel>)
 	 */
-	public List getListContents() {
+	public List<ProductModel> getListContents() {
 		
 		ContentNodeModelUtil.refreshModels(this, "listContents", products, false);
 		

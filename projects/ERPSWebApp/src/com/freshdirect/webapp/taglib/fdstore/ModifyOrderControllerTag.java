@@ -71,7 +71,6 @@ import com.freshdirect.fdstore.customer.adapter.CustomerRatingAdaptor;
 import com.freshdirect.fdstore.customer.adapter.FDOrderAdapter;
 import com.freshdirect.fdstore.giftcard.FDGiftCardI;
 import com.freshdirect.fdstore.giftcard.FDGiftCardInfoList;
-import com.freshdirect.fdstore.promotion.EnumOfferType;
 import com.freshdirect.fdstore.promotion.ExtendDeliveryPassApplicator;
 import com.freshdirect.fdstore.promotion.Promotion;
 import com.freshdirect.fdstore.promotion.PromotionApplicatorI;
@@ -86,6 +85,7 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionError;
 import com.freshdirect.framework.webapp.ActionResult;
 import com.freshdirect.giftcard.ErpAppliedGiftCardModel;
+import com.freshdirect.webapp.taglib.cart.ModifyOrderHelper;
 import com.freshdirect.webapp.taglib.crm.CrmSession;
 import com.freshdirect.webapp.util.FDEventUtil;
 import com.freshdirect.webapp.util.OrderPermissionsI;
@@ -396,8 +396,7 @@ public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.B
 		
 		//this is added because the delivery pass is false when you modify the order though original order has delivery pass applied. This will fix any rules that use dlvpassapplied flag for applying charge
 		FDUser fdUser =  currentUser.getUser();
-		if(fdUser.getShoppingCart().getDeliveryPassCount()>0 || fdUser.isDlvPassActive())
-			cart.setDlvPassApplied(true);
+		ModifyOrderHelper.handleDlvPass(cart, fdUser);
 		
 		if (mergePending) {
 			FDCartModel tempMergePendCart = currentUser.getMergePendCart();
@@ -443,67 +442,25 @@ public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.B
 		}
 		
 		// Check if this order has a extend delivery pass promotion. If so get the no. of extended days.
-		Set<String> usedPromoCodes = order.getSale().getUsedPromotionCodes();
-		for(Iterator<String> it = usedPromoCodes.iterator(); it.hasNext();){
-			PromotionI promo  = PromotionFactory.getInstance().getPromotion(it.next());
-			if(promo != null && promo.getOfferType() != null && promo.getOfferType().equals(EnumOfferType.DP_EXTN)){
-				//APPDEV-2850 - combinable offers
-				ExtendDeliveryPassApplicator app = null;
-				for (Iterator<PromotionApplicatorI> i = ((Promotion)promo).getApplicatorList().iterator(); i.hasNext();) {
-					PromotionApplicatorI _applicator = i.next();
-					if (_applicator instanceof ExtendDeliveryPassApplicator) {
-						app = (ExtendDeliveryPassApplicator)_applicator;						
-					}
-				}
-				
-				if(app != null) {
-					cart.setCurrentDlvPassExtendDays(app.getExtendDays());
-					break;
-				}
-				/*
-				ExtendDeliveryPassApplicator app = (ExtendDeliveryPassApplicator)((Promotion)promo).getApplicator();
-				cart.setCurrentDlvPassExtendDays(app.getExtendDays());
-				break;
-				*/
-			}
-		}
-		
-		cart.refreshAll(true);
-		currentUser.setCurrentStandingOrder(currentStandingOrder);
-		currentUser.setCheckoutMode(checkOutMode);
-		currentUser.setShoppingCart( cart );
+		ModifyOrderHelper.handleDeliveryPassPromotion(currentUser, currentStandingOrder, checkOutMode, order, cart);
 		
 		//Reload gift card balance.
-		loadGiftCardsIntoCart(currentUser, order);
+		ModifyOrderHelper.loadGiftCardsIntoCart(currentUser, order);
 		
 		// resolve timeslot id based on delivery reservation id
-		FDReservation reservation = FDDeliveryManager.getInstance().getReservation( order.getDeliveryReservationId() );
-		cart.setDeliveryReservation(reservation);
+		ModifyOrderHelper.handleReservation(order, cart);
 		
 		
 		// resolve the redemption promotions
-		for (Iterator i = order.getUsedPromotionCodes().iterator(); i.hasNext();) {
-			String promoCode = (String) i.next();
-			Promotion promo = (Promotion) PromotionFactory.getInstance().getPromotion(promoCode);
-			RedemptionCodeStrategy redemption = (RedemptionCodeStrategy) promo.getStrategy(RedemptionCodeStrategy.class);
-			if (redemption != null) {
-				currentUser.setRedeemedPromotion(PromotionFactory.getInstance().getPromotion(promoCode));
-			}
-		}
-		
-		// recalculate promotion
-		currentUser.invalidateCache();
-		currentUser.updateUserState( );
+		ModifyOrderHelper.handleRedemptionPromotions(currentUser, order);
 		//Refresh customer's coupon wallet.
-		FDCustomerCouponUtil.getCustomerCoupons(session);
-		FDCustomerCouponUtil.evaluateCartAndCoupons(session);
+		ModifyOrderHelper.handleCoupons(session);
 
-		session.setAttribute( SessionName.USER, currentUser );
-        //The previous recommendations of the current user need to be removed.
-        session.removeAttribute(SessionName.SMART_STORE_PREV_RECOMMENDATIONS);
+		ModifyOrderHelper.updateSession(currentUser, session);
         
         return cart;
 	}
+	
 	
 	private static FDCartModel removeOverflowingLines(FDCartModel currentCart, FDCartModel tempCart, FDUserI user) {
 		FDCartModel newCart = new FDCartModel();
@@ -519,23 +476,7 @@ public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.B
 		}
 		return newCart;
 	}
-	private static void loadGiftCardsIntoCart(FDUserI user, FDOrderI originalOrder) {
-		FDGiftCardInfoList gcList = user.getGiftCardList();
-		//Clear any hold amounts.
-		gcList.clearAllHoldAmount();
-    	List appliedGiftCards = originalOrder.getAppliedGiftCards();
-    	if(appliedGiftCards != null && appliedGiftCards.size() > 0) {
-	    	for(Iterator it = appliedGiftCards.iterator(); it.hasNext();) {
-	    		ErpAppliedGiftCardModel agcmodel = (ErpAppliedGiftCardModel) it.next();
-	    		String certNum = agcmodel.getCertificateNum();
-	    		FDGiftCardI fg = gcList.getGiftCard(certNum);
-	    		if(fg != null) {
-	    			//Found. Gift card already validated. set hold amount = amount applied on this order.
-	    			fg.setHoldAmount(originalOrder.getAppliedAmount(certNum));
-	    		} 
-	    	}
-    	}
-	}
+
 	protected void returnOrder(HttpServletRequest request, ActionResult results) throws JspException {
 		HttpSession session = request.getSession();
 

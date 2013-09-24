@@ -11,19 +11,18 @@
 		also to avoid conflicts, jQuery's $ will always be set to $jq
 	--%>
 	
-	<jwr:script src="/jqlibs.js" useRandomParam="false" />
+	<jwr:script src="/fdlibs.js" useRandomParam="false" />
 	<script src="/assets/javascript/jquery/corner/jquery.corner.js" type="text/javascript" language="javascript"></script>
 	<fd:javascript src="/assets/javascript/dialog-base.js" />
 	<fd:javascript src="/assets/javascript/atcPendingOrder.js"/>
 	<fd:javascript src="/assets/javascript/popupLogicDispatcher.js"/>
-	<fd:javascript src="/assets/javascript/USQLegalWarning.js"/>
 	<fd:javascript src="/assets/javascript/coremetrics.js"/>
 	
 	<script type="text/javascript" language="javascript">
 
 		var FreshDirect = FreshDirect || {};
-		var USQLegalWarning = FreshDirect.USQLegalWarning || {};
-		USQLegalWarning.sessionStore = '<%=session.getId()%>';
+		FreshDirect.USQLegalWarning = FreshDirect.USQLegalWarning || {};
+		FreshDirect.USQLegalWarning.sessionStore = '<%=session.getId()%>';
 
 		var $jq;
 		var jqInit = false; 

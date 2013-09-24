@@ -1,0 +1,18 @@
+{namespace common}
+
+/**
+ * @param data data of item to delete
+ */
+{template .deletefromlistpopup autoescape="true"}
+	<p>
+    Item - {$data.itemName}
+	</p>
+	<p>
+    <b>Are you sure you want to delete?</b>
+	</p>
+  <div class="buttons">
+    <button class="deletefromlist-button-cancel">cancel</button>
+    <button class="deletefromlist-button-delete">delete</button>
+  </div>
+{/template}
+

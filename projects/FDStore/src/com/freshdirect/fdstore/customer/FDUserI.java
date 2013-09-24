@@ -556,11 +556,9 @@ public interface FDUserI extends java.io.Serializable {
 	public void setExternalPromoCampaigns(Set<ExternalCampaign> externalCampaigns);
 	
 	public boolean isRobot();
-	
 	public void setRobot(boolean robot);
-	
+
 	public FDCustomerCouponWallet getCouponWallet();
-	
 	public void setCouponWallet(FDCustomerCouponWallet couponWallet);
 	
 	public FDCustomerCoupon getCustomerCoupon(String upc, EnumCouponContext ctx);
@@ -574,7 +572,10 @@ public interface FDUserI extends java.io.Serializable {
 	public boolean isCouponEvaluationRequired();
 	public void setCouponEvaluationRequired(boolean couponEvaluationRequired);
 	public boolean isRefreshCouponWalletRequired() ;
-	public void setRefreshCouponWalletRequired(boolean refreshCouponWalletRequired) ;
+	public void setRefreshCouponWalletRequired(boolean refreshCouponWalletRequired) ;	
+	
+	public String getDefaultListId();
+	public void setDefaultListId( String listId );
 	public IPackagingModel getHistoricOrderSize() throws FDResourceException;
 	public EnumRegionServiceType getRegionSvcType(String addressId);
 	public boolean isPaymentechEnabled();

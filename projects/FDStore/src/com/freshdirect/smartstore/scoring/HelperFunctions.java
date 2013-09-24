@@ -10,6 +10,7 @@ import java.util.Random;
 import java.util.Set;
 
 import com.freshdirect.cms.ContentKey;
+import com.freshdirect.cms.fdstore.FDContentTypes;
 import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.fdstore.content.BrandModel;
 import com.freshdirect.fdstore.content.CategoryModel;
@@ -21,6 +22,8 @@ import com.freshdirect.fdstore.content.ProductContainer;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.SkuModel;
 import com.freshdirect.fdstore.content.StoreModel;
+import com.freshdirect.fdstore.content.customerrating.CustomerRatingsContext;
+import com.freshdirect.fdstore.content.customerrating.CustomerRatingsDTO;
 import com.freshdirect.smartstore.SessionInput;
 import com.freshdirect.smartstore.external.ExternalRecommender;
 import com.freshdirect.smartstore.external.ExternalRecommenderCommunicationException;
@@ -687,5 +690,24 @@ public class HelperFunctions {
     		input.traceContentNodes(dsName, nodes);
     	}
     	return nodes;
+    }
+
+
+
+    /**
+     * Return all products that have customer rating
+     * @return
+     */
+    public static List<ContentNodeModel> getCustomerRatedProducts() {
+    	List<ContentNodeModel> prds = new ArrayList<ContentNodeModel>();
+    	for (CustomerRatingsDTO dto : CustomerRatingsContext.getInstance().getCustomerRatings().values()) {
+    		final String productId = dto.getProductId();
+    		
+    		ContentNodeModel node = ContentFactory.getInstance().getContentNode(FDContentTypes.PRODUCT, productId);
+    		if (node != null)
+    			prds.add(node);
+    	}
+
+    	return prds;
     }
 }

@@ -36,12 +36,9 @@ import com.freshdirect.fdstore.content.DepartmentModel;
 import com.freshdirect.fdstore.content.Image;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.SkuModel;
-import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDIdentity;
-import com.freshdirect.fdstore.customer.FDOrderHistory;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.webapp.taglib.AbstractGetterTag;
-import com.freshdirect.webapp.taglib.fdstore.SessionName;
 
 
 public class GetPeakProduceTag extends AbstractGetterTag {
@@ -77,7 +74,7 @@ public class GetPeakProduceTag extends AbstractGetterTag {
 			if("true".equalsIgnoreCase(getGlobalPeakProduceSku)){
 				peakProduce=getAllPeakProduceForDept((DepartmentModel)node);
 			}else{
-				peakProduce=getPeakProduce((DepartmentModel)node);
+				peakProduce=getPeakProduce((DepartmentModel)node, MAX_PEAK_PRODUCE_COUNT);
 			}
 		}
 
@@ -125,7 +122,7 @@ public class GetPeakProduceTag extends AbstractGetterTag {
 		return products;
 	}
 	
-	private Collection getPeakProduce(DepartmentModel dept) throws FDResourceException {
+	public Collection getPeakProduce(DepartmentModel dept, int maxPeakProduceCount) throws FDResourceException {
 		
 		List products=new ArrayList(10);
 		List categories=dept.getCategories();
@@ -154,11 +151,11 @@ public class GetPeakProduceTag extends AbstractGetterTag {
 				return products;
 			}
 		} 
-		else if(products.size()>MAX_PEAK_PRODUCE_COUNT) {
+		else if(products.size()>maxPeakProduceCount) {
 			Random random=new Random();
-			Set randomProducts=new HashSet(MAX_PEAK_PRODUCE_COUNT);
+			Set randomProducts=new HashSet(maxPeakProduceCount);
 			int index=0;
-			while(randomProducts.size()<MAX_PEAK_PRODUCE_COUNT) {
+			while(randomProducts.size()<maxPeakProduceCount) {
 				index=random.nextInt(products.size());
 				randomProducts.add(products.get(index));
 			}

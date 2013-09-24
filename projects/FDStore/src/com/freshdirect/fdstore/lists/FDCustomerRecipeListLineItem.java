@@ -16,6 +16,7 @@ public class FDCustomerRecipeListLineItem extends FDCustomerListItem {
 	};
 	
 	private String recipeId;
+	private String recipeName;
 
 	public String getRecipeId() {
 		return recipeId;
@@ -23,6 +24,14 @@ public class FDCustomerRecipeListLineItem extends FDCustomerListItem {
 
 	public void setRecipeId(String skuCode) {
 		this.recipeId = skuCode;
+	}
+
+	public String getRecipeName() {
+		return recipeName;
+	}
+
+	public void setRecipeName(String recipeName) {
+		this.recipeName = recipeName;
 	}
 
 	public Recipe getRecipe() {

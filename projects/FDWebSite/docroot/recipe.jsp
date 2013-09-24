@@ -105,6 +105,10 @@ request.setAttribute("listPos", "LittleRandy,SystemMessage,CategoryNote,ProductN
 <tmpl:insert template='<%=jspTemplate%>'>
    <tmpl:put name='leftnav' direct='true'>
    </tmpl:put>
+   <tmpl:put name='customhead' direct='true'>
+    <link rel="stylesheet" href="/assets/css/quickshop/actions.css" />
+    <link rel="stylesheet" href="/assets/css/quickshop/popup.css" />
+   </tmpl:put>
    <tmpl:put name='title' direct='true'>FreshDirect - <%= recipe.getName() %></tmpl:put>
    <tmpl:put name='content' direct='true'>
 

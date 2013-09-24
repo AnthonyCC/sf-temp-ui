@@ -1,0 +1,19 @@
+{namespace common}
+
+
+/**
+ * @param scaleUnit
+ * @param price
+ * @param? wasPrice wasPrice
+ * @param? aboutPrice aboutPrice
+ */
+{template .price autoescape="false"}
+			{if $wasPrice}
+				  <span class="save-price">${$price}/{$scaleUnit}</span> <s>(${$wasPrice})</s>
+			{else}
+				  ${$price}/{$scaleUnit}
+			{/if}
+			{if $aboutPrice}
+				<span class="about-price">{$aboutPrice}</span>
+			{/if}
+{/template}

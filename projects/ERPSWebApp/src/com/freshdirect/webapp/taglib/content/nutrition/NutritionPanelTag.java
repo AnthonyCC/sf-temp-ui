@@ -18,9 +18,9 @@ import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
 import org.apache.log4j.Logger;
-import org.codehaus.jackson.JsonProcessingException;
-import org.codehaus.jackson.map.ObjectMapper;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.freshdirect.content.nutrition.ErpNutritionModel;
 import com.freshdirect.content.nutrition.ErpNutritionType;
 import com.freshdirect.content.nutrition.panel.NutritionPanel;

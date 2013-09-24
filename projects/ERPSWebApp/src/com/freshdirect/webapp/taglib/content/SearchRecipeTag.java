@@ -1,85 +1,114 @@
 package com.freshdirect.webapp.taglib.content;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
+import java.util.Map;
 
-import com.freshdirect.fdstore.content.EnumFilteringValue;
-import com.freshdirect.fdstore.content.FilteringComparatorUtil;
-import com.freshdirect.fdstore.content.FilteringSortingItem;
-import com.freshdirect.fdstore.content.GenericFilterDecorator;
-import com.freshdirect.fdstore.content.ProductModel;
-import com.freshdirect.fdstore.content.Recipe;
-import com.freshdirect.fdstore.content.RecipeFilterMenuDecorator;
-import com.freshdirect.fdstore.content.RecipeFilterValueDecorator;
+import javax.servlet.jsp.JspException;
+import javax.servlet.jsp.tagext.TagData;
+import javax.servlet.jsp.tagext.TagExtraInfo;
+import javax.servlet.jsp.tagext.VariableInfo;
+
+import org.apache.log4j.Logger;
+
+import com.freshdirect.fdstore.content.FilteringFlow;
+import com.freshdirect.fdstore.content.FilteringFlowResult;
+import com.freshdirect.fdstore.content.FilteringMenuItem;
+import com.freshdirect.fdstore.content.FilteringValue;
 import com.freshdirect.fdstore.content.SearchResults;
+import com.freshdirect.fdstore.util.FilteringNavigator;
+import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.framework.webapp.BodyTagSupportEx;
 
-public class SearchRecipeTag extends FilteringFlow<Recipe>{
+public class SearchRecipeTag extends BodyTagSupportEx {
 
 	private static final long serialVersionUID = 5809709785695385027L;
 	
+	private String domainsId;
+	private String itemsId;
+	private String filteredItemCountId;
+	protected FilteringNavigator nav;
+	
 	private SearchResults results;
-	private Set<EnumFilteringValue> filters;
-	{
-		filters=new HashSet<EnumFilteringValue>();
-		filters.add(EnumFilteringValue.RECIPE_CLASSIFICATION);
-	}
+
+	private final static Logger LOG = LoggerFactory.getInstance(FilteringFlow.class);
+	
+	private RecipeFilterImpl recipeFilter;
 
 	@Override
-	protected GenericFilterDecorator<FilteringSortingItem<Recipe>> createFilterValueDecorator() {
-		return new RecipeFilterValueDecorator(filters);
-	}
+	public int doStartTag() throws JspException {
 
-	@Override
-	protected GenericFilterDecorator<FilteringSortingItem<Recipe>> createMenuValueDecorator() {
-		return new RecipeFilterMenuDecorator(filters);
-	}
-
-	@Override
-	protected Comparator<FilteringSortingItem<Recipe>> createComparator(List<FilteringSortingItem<Recipe>> items) {
-		if(nav.isOrderAscending()){
-			return FilteringComparatorUtil.RECIPE_SORT_BY_NAME_ASC;
-		}else{
-			return FilteringComparatorUtil.RECIPE_SORT_BY_NAME_DESC;
+		// Check required attributes
+		if (nav == null || domainsId == null || itemsId == null || filteredItemCountId == null) {
+			LOG.warn("FilteringFlow received null attributes, skipping...");
+			return SKIP_BODY;
 		}
+		
+		FilteringFlowResult result = getProductsFilter().doFlow(nav, null);
+
+		// Put results into jsp page context
+		pageContext.setAttribute(itemsId, result.getItems());
+		pageContext.setAttribute(domainsId, result.getMenu());
+		pageContext.setAttribute(filteredItemCountId, result.getItems().size());
+		return EVAL_BODY_INCLUDE;
 	}
 	
-	protected List<FilteringSortingItem<Recipe>> reOrganizeFavourites(List<FilteringSortingItem<Recipe>> items) {
-		return items;//Nothing to do here, only has product filter relevances
-	}
-
-	@Override
-	protected List<FilteringSortingItem<Recipe>> getItems() {
-		return new ArrayList<FilteringSortingItem<Recipe>>(results.getRecipes());
-	}
-
-	@Override
-	protected Set<EnumFilteringValue> getFilterEnums() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	protected void postProcess(List<FilteringSortingItem<Recipe>> items) {
-		// TODO Auto-generated method stub
+	private RecipeFilterImpl getProductsFilter(){
+		if(recipeFilter==null){
+			recipeFilter = new RecipeFilterImpl(results, nav);
+		}
+		return recipeFilter;
 		
 	}
 
-	@Override
-	protected void preProcess(List<FilteringSortingItem<Recipe>> items) {
-		// TODO Auto-generated method stub
-		
+	public void setDomainsId(String domainsId) {
+		this.domainsId = domainsId;
 	}
 
+	public String getDomainsId() {
+		return domainsId;
+	}
+
+	public void setItemsId(String itemsId) {
+		this.itemsId = itemsId;
+	}
+
+	public String getItemsId() {
+		return itemsId;
+	}
+
+	public String getFilteredItemCountId() {
+		return filteredItemCountId;
+	}
+
+	public void setFilteredItemCountId(String filteredItemCountId) {
+		this.filteredItemCountId = filteredItemCountId;
+	}
+
+	public void setNav(FilteringNavigator nav) {
+		this.nav = nav;
+	}
+	
 	public void setResults(SearchResults results) {
 		this.results = results;
 	}
 
-	@Override
-	protected Set<EnumFilteringValue> getFilters() {
-		return filters;
+	public static class TagEI extends TagExtraInfo {
+		@Override
+		public VariableInfo[] getVariableInfo(TagData data) {
+			return new VariableInfo[] { new VariableInfo(
+					data.getAttributeString("domainsId"),
+					Map.class.getName() + "<" + FilteringValue.class.getName() + "," + Map.class.getName() + "<" + String.class.getName() + "," + FilteringMenuItem.class.getName() + ">>",
+					true,
+					VariableInfo.NESTED), new VariableInfo(
+					data.getAttributeString("itemsId"),
+					List.class.getName(),
+					true,
+					VariableInfo.NESTED), new VariableInfo(
+					data.getAttributeString("filteredItemCountId"),
+					Integer.class.getName(),
+					true,
+					VariableInfo.NESTED) };
+		}
 	}
 
 }

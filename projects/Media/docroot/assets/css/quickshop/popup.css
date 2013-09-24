@@ -1,0 +1,235 @@
+.qs-popup {
+	display: none;
+	position: absolute;
+	width: 300px;
+	background: #fff;
+	border: 1px solid #8e7092;
+	box-shadow: 2px 2px 8px rgba(0,0,0,0.4);
+  z-index: 1002;
+}
+.qs-popup-header {
+	background: #e8d7ec;
+	font-size: 15px;
+	font-weight: bold;
+	color: #764077;
+	text-shadow: 1px 1px #fff;
+	height: 30px;
+	line-height: 30px;
+	padding: 0 30px 0 10px;
+	margin: 0;
+	position: relative;
+}
+.qs-popup-help-icon,
+.qs-popup-close-icon {
+	position: absolute;
+	top: 7px;
+	right: 7px;
+	width: 15px;
+	height: 15px;
+	padding: 0;
+	border: none;
+	background: url(/media_stat/images/quickshop/button-help.png) no-repeat;
+	text-indent: 100%;
+	overflow: hidden;
+	cursor: pointer;
+}
+.qs-popup-close-icon {
+  display: none;
+	top: 5px;
+	width: 18px;
+	height: 18px;
+	background: url(/media_stat/images/quickshop/button-close.png) no-repeat;
+}
+.qs-hidehelp .qs-popup-help-icon {
+  display: none;
+}
+.qs-hasclose .qs-popup-close-icon {
+  display: block;
+}
+.qs-hasclose .qs-popup-help-icon {
+  right: 40px;
+}
+.qs-popup-content {
+	padding: 25px 15px 15px 20px;
+	position:relative;
+}
+.qs-popup-content p {
+	margin: 0;
+}
+
+.qs-popup-content #addtolist-selectList {
+	width:200px;
+}
+
+.qs-popup.manageshoppinglists {
+  width: 515px;
+}
+
+.qs-popup.helppopup {
+  width: 400px;
+}
+
+.qs-popup.helppopup h2 {
+  font-weight: bold;
+  font-size: 14px;
+}
+
+.qs-popup.helppopup p {
+  font-size: 12px;
+  margin-bottom: 10px;
+}
+
+.qs-popup.helppopup p a.bullet:before {
+  content: ' ';
+  display: inline-block;
+  height: 11px;
+  width: 11px;
+  background: url(/media_stat/images/quickshop/bullet-purple.png) no-repeat;
+  margin-right: 4px;
+}
+
+.qs-popup.editinlistpopup,
+.qs-popup.editinlistpopup,
+.qs-popup.lists {
+  border-color: #6788b0;
+}
+
+.qs-popup.editinlistpopup .qs-popup-header,
+.qs-popup.lists .qs-popup-header {
+  background: #c6d8ea;
+  color: #375478;
+}
+
+.qs-popup.manageshoppinglists ul {
+  list-style-type: none;
+  padding-bottom: 7px;
+}
+
+.qs-popup.manageshoppinglists ul.manage {
+  overflow-y: auto;
+  max-height: 168px;
+  border-bottom: 1px solid #ccc;
+  padding-top:40px;
+}
+
+.qs-popup.manageshoppinglists h3 {
+  font-weight: bold;
+  font-size: 12px;
+}
+
+.qs-popup.manageshoppinglists .buttons {
+  text-align: right;
+}
+  
+.qs-popup.manageshoppinglists .buttons button {
+  display: inline-block;
+	padding: 0;
+	border: none;
+	text-indent: -9000px;
+	overflow: hidden;
+	cursor: pointer;
+  margin-left: 8px;
+}
+
+.qs-popup.manageshoppinglists .buttons button.qs-popup-cancel-button,
+.qs-popup.manageshoppinglists .buttons button.qs-popup-confirm-button,
+.qs-popup.manageshoppinglists .buttons button.qs-popup-save-button {
+  background: url(/media_stat/images/quickshop/buttons-sprite.png) no-repeat;
+}
+
+.qs-popup.manageshoppinglists .buttons button.qs-popup-cancel-button {
+    width: 75px;
+    height: 27px;
+    background-position: -197px -115px;
+}
+.qs-popup.manageshoppinglists .buttons button.qs-popup-cancel-button:hover,
+.qs-popup.manageshoppinglists .buttons button.qs-popup-cancel-button:focus {
+    background-position: -5px -152px;
+}
+
+.qs-popup.manageshoppinglists .buttons button.qs-popup-confirm-button {
+    width: 140px;
+    height: 27px;
+    background-position: -90px -152px;
+}
+.qs-popup.manageshoppinglists .buttons button.qs-popup-confirm-button:hover,
+.qs-popup.manageshoppinglists .buttons button.qs-popup-confirm-button:focus {
+    background-position: -5px -189px;
+}
+
+.qs-popup.manageshoppinglists .buttons button.qs-popup-save-button {
+    width: 75px;
+    height: 27px;
+    background-position: -5px -336px;
+}
+.qs-popup.manageshoppinglists .buttons button.qs-popup-save-button:hover,
+.qs-popup.manageshoppinglists .buttons button.qs-popup-save-button:focus {
+    background-position: -90px -336px;
+}
+
+
+.qs-popup.manageshoppinglists ul.manage li {
+  line-height: 28px;
+}
+
+.qs-popup.manageshoppinglists ul.manage li.header {
+	background:white;
+	position:absolute;
+  	font-weight: bold;
+  	height:40px;
+  	top:24px;
+}
+.qs-popup.manageshoppinglists ul.manage li.header>span {
+	vertical-align:middle;
+}
+
+.qs-popup.manageshoppinglists ul.manage li>span {
+  display: inline-block;
+  vertical-align: top;
+  overflow: hidden;
+  line-height: 1.4;
+  padding: 0 0 10px;
+}
+
+
+.qs-popup.manageshoppinglists ul.manage li>span.name {
+  width: 135px;
+  margin-right: 5px;
+}
+.qs-popup.manageshoppinglists ul.manage li>span.name i {
+  font-size: .8em;
+  font-style: normal;
+}
+.qs-popup.manageshoppinglists ul.manage li>span.rename {
+  width: 145px;
+}
+.qs-popup.manageshoppinglists ul.manage li>span.rename input {
+  width: 135px;
+}
+.qs-popup.manageshoppinglists ul.manage li>span.default {
+  width: 70px;
+  text-align: center;
+}
+.qs-popup.manageshoppinglists ul.manage li>span.delete {
+  width: 70px;
+  text-align: center;
+}
+.qs-popup.manageshoppinglists ul.manage li>span.delete label {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  background: url(/media_stat/images/quickshop/button-trash-small.png) no-repeat;
+  vertical-align: middle;
+	text-indent: -9000px;
+	overflow: hidden;
+	cursor: pointer;
+}
+.qs-popup.manageshoppinglists ul.manage li>span.delete input {
+  vertical-align: middle;
+}
+
+.qs-listhelp h3 {
+  font-size: 12px;
+  font-weight: bold;
+  margin-bottom: 5px;
+}

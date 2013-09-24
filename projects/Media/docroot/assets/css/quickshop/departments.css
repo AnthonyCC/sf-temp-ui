@@ -1,0 +1,26 @@
+.departments {
+	font-family: Verdana,sans-serif;
+	font-size:11px;
+	color:#333;	
+}
+
+.departments-list {
+	max-height:210px;
+	overflow:auto;
+}
+
+.departments-list-clear_dept label,
+.departments-list-all_dept label {
+	font-family: Verdana,sans-serif;
+	font-size:10px;
+	color:#333;
+	text-transform: uppercase;
+	font-weight: bold;
+}
+.departments-list-clear_dept:hover label,
+.departments-list-all_dept:hover label {
+	text-decoration: underline;
+}
+
+.departments-list-clear_dept hr {
+}

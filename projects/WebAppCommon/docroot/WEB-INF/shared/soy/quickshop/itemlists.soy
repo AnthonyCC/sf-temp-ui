@@ -1,0 +1,25 @@
+{namespace quickshop}
+
+/**
+ * @param data some path, list of items
+ * @param itemType type of an item
+ */
+{template .itemlist autoescape="false"}
+<ol class="{$itemType}">
+{foreach $item in $data}
+{call quickshop.item}
+	{param item:$item /}
+	{param type:$itemType /}
+{/call}
+{ifempty}
+{switch $itemType}
+{case 'shopfromlists'}
+	{call common.listhelppopupContent /}
+{case 'fdlists'}
+	{call common.listhelppopupContent /}
+{default}
+	{call quickshop.pastOrdersHelp /}
+{/switch}
+{/foreach}
+</ol>
+{/template}

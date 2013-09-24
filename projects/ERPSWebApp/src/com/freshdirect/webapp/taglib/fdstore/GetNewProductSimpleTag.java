@@ -12,7 +12,7 @@ import javax.servlet.jsp.tagext.VariableInfo;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.content.CategoryModel;
 import com.freshdirect.fdstore.content.ContentFactory;
-import com.freshdirect.fdstore.content.EnumFilteringValue;
+import com.freshdirect.fdstore.content.EnumSearchFilteringValue;
 import com.freshdirect.fdstore.content.EnumSortingValue;
 import com.freshdirect.fdstore.content.FilteringSortingItem;
 import com.freshdirect.fdstore.content.ProductModel;
@@ -81,8 +81,8 @@ public class GetNewProductSimpleTag extends AbstractGetterTag<SearchResults> {
 	private void extractFeaturedCat(){
 		
 		CategoryModel featuredCategory = (CategoryModel) ContentFactory.getInstance().getContentNode("Category", FDStoreProperties.getNewProductsCatId());
-		if (nav.getFilterValues().get(EnumFilteringValue.CAT) != null) {
-			CategoryModel category = (CategoryModel) ContentFactory.getInstance().getContentNode("Category", nav.getFilterValues().get(EnumFilteringValue.CAT).get(0).toString());
+		if (nav.getFilterValues().get(EnumSearchFilteringValue.CAT) != null) {
+			CategoryModel category = (CategoryModel) ContentFactory.getInstance().getContentNode("Category", nav.getFilterValues().get(EnumSearchFilteringValue.CAT).get(0).toString());
 			if (category.getCategoryLabel() != null)
 				featuredCategory = category;
 		}

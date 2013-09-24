@@ -1,0 +1,168 @@
+.qs-content[data-items="1"] .qs-actions,
+.qs-content[data-items="0"] .qs-actions {
+	display: none;
+}
+
+.qs-actions {
+	width: 300px;
+	float: right;
+	text-align: right;
+	margin: 10px 0;
+}
+.qs-recipe-actions {
+	width: 330px;
+}
+.qs-actions button,
+.qs-actions span {
+	border: none;
+	display: inline-block;
+	height: 29px;
+	padding: 0;
+	text-align: left;
+	text-indent: 100%;
+	white-space: nowrap;
+	overflow: hidden;
+	cursor: pointer;
+	vertical-align: middle;
+}
+
+button.addtocart,
+button[data-component="ATCButton"],
+button.customize,
+button[data-component="customizeButton"],
+button[data-component="applyCustomization"],
+button[data-component="saveCustomization"],
+#reset {
+	height:22px;
+	margin:0;
+	padding:0;
+	text-indent:-400px;
+	overflow:hidden;
+	border:none;
+	cursor:pointer;
+	background: url(/media_stat/images/quickshop/buttons-sprite.png) no-repeat;
+}
+
+
+
+
+button.addtocart,
+button[data-component="ATCButton"] {
+	width:82px;
+    background-position: -5px -5px;
+}
+
+button.addtocart:hover,
+button.addtocart:focus,
+button[data-component="ATCButton"]:hover,
+button[data-component="ATCButton"]:focus,
+button.addtocart.incart:hover,
+button.addtocart.incart:focus,
+button[data-component="ATCButton"].incart:hover,
+button[data-component="ATCButton"].incart:focus {
+    background-position: -97px -5px;
+}
+
+button.addtocart.incart,
+button[data-component="ATCButton"].incart {
+    background-position: -105px -115px;
+}
+
+button.customize,
+button[data-component="customizeButton"] {
+    width: 82px;
+    background-position: -240px -152px;
+}
+button.customize:hover,
+button.customize:focus,
+button[data-component="customizeButton"]:hover,
+button[data-component="customizeButton"]:focus,
+button.customize.incart:hover,
+button.customize.incart:focus,
+button[data-component="customizeButton"].incart:hover,
+button[data-component="customizeButton"].incart:focus {
+    background-position: -240px -184px;
+}
+button.customize.incart,
+button[data-component="customizeButton"].incart {
+    background-position: -155px -216px;
+}
+
+button.qs-addtolist,
+.qs-saverecipe,
+.qs-addrecipetocart,
+button.qs-addtocart {
+	background: url(/media_stat/images/quickshop/buttons-sprite.png) no-repeat;
+}
+
+button.qs-addtolist {
+    width: 125px;
+    height: 29px;
+    background-position: -181px -37px;
+}
+button.qs-addtolist:hover,
+button.qs-addtolist:focus {
+    background-position: -181px -76px;
+}
+button.qs-addtocart {
+	margin:0;
+    width: 166px;
+    height: 29px;
+    background-position: -5px -37px;
+}
+button.qs-addtocart:hover,
+button.qs-addtocart:focus {
+    background-position: -5px -76px;
+}
+
+.qs-saverecipe {
+    width: 152px;
+    height: 29px;
+    background-position: -5px -483px;
+}
+.qs-saverecipe:hover,
+.qs-saverecipe:focus {
+    background-position: -5px -522px;
+}
+
+button.qs-addrecipetocart {
+    width: 166px;
+    height: 29px;
+    background-position: -5px -405px;
+}
+button.qs-addrecipetocart:hover,
+button.qs-addrecipetocart:focus {
+    background-position: -5px -444px;
+}
+
+#reset {
+    width: 68px;
+    background-position: -5px -561px;
+	display:block;
+	margin:auto;
+}
+#reset:hover,
+#reset:focus {
+    background-position: -83px -561px;
+}
+
+button[data-component="applyCustomization"] {
+    width: 138px;
+	background: url(/media_stat/images/quickshop/button-apply.png) no-repeat;
+	margin:12px 0;
+}
+button[data-component="applyCustomization"]:hover,
+button[data-component="applyCustomization"]:focus {
+    /*background-position: -181px -437px;*/
+}
+
+button[data-component="saveCustomization"] {
+    width: 148px;
+	margin: 0;
+	background-position: -181px -405px;
+}
+button[data-component="saveCustomization"]:hover,
+button[data-component="saveCustomization"]:focus {
+	background-position: -181px -437px;
+}
+

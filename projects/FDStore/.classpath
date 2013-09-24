@@ -12,5 +12,7 @@
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/httpclient-4.0.1.jar"/>
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/httpcore-4.0.1.jar"/>
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/jtidy-r938.jar"/>
+	<classpathentry kind="var" path="FD_LIBS/thirdparty/ehcache-core-2.5.0.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
+

@@ -23,7 +23,7 @@ public class ProductFilterValueDecorator extends GenericFilterDecorator<Filterin
 	
 	private static final Logger LOG = LoggerFactory.getInstance( ProductFilterValueDecorator.class );
 
-	public ProductFilterValueDecorator(Set<EnumFilteringValue> filters) {
+	public ProductFilterValueDecorator(Set<FilteringValue> filters) {
 		super(filters);
 	}
 
@@ -35,14 +35,35 @@ public class ProductFilterValueDecorator extends GenericFilterDecorator<Filterin
 		
 		boolean available = node.isFullyAvailable();
 		try {
-			for (EnumFilteringValue filter : filters) {
+			for (FilteringValue filterSource : filters) {
+				
+				if(!(filterSource instanceof EnumSearchFilteringValue)){
+					throw new IllegalArgumentException("Only EnumSearchFilteringValue allowed here.");
+				}
+				
+				EnumSearchFilteringValue filter = (EnumSearchFilteringValue) filterSource;
+				
+				FilteringMenuItem menu = new FilteringMenuItem();
+				Set<FilteringMenuItem> menus = new HashSet<FilteringMenuItem>();
+				
 				switch (filter) {
 					case DEPT: {
 						Set<String> parentIds = new HashSet<String>();
 						for (ProductModel parent : parents) {
+							
+							//prepare the filterValues
 							parentIds.add(parent.getDepartment().getContentKey().getId());
+							
+							//prepare the menus
+							menu.setName(parent.getDepartment().getFullName());
+							menu.setFilteringUrlValue(parent.getDepartment().getContentKey().getId());
+							menu.setFilter(filter);
+							menus.add(menu);
+							menu = new FilteringMenuItem();
 						}
-						item.putFilteringValue(EnumFilteringValue.DEPT, parentIds);
+						
+						item.putFilteringValue(EnumSearchFilteringValue.DEPT, parentIds);
+						item.putMenuValue(EnumSearchFilteringValue.DEPT, menus);
 						break;
 					}
 					case CAT: {
@@ -58,11 +79,21 @@ public class ProductFilterValueDecorator extends GenericFilterDecorator<Filterin
 								}
 								parentModel = parentModel.getParentNode();
 							}
-							if (found != null)
+							if (found != null){
+								
 								parentIds.add(found.getContentKey().getId());
+								
+								//prepare the menus
+								menu.setName(found.getFullName());
+								menu.setFilteringUrlValue(found.getContentKey().getId());
+								menu.setFilter(filter);
+								menus.add(menu);
+								menu = new FilteringMenuItem();
+							}
 						}
 	
-						item.putFilteringValue(EnumFilteringValue.CAT, parentIds);
+						item.putFilteringValue(EnumSearchFilteringValue.CAT, parentIds);
+						item.putMenuValue(EnumSearchFilteringValue.CAT, menus);
 						break;
 					}
 					case SUBCAT: {
@@ -81,23 +112,51 @@ public class ProductFilterValueDecorator extends GenericFilterDecorator<Filterin
 								}
 								parentModel = parentModel.getParentNode();
 							}
-							if (found != null)
+							if (found != null){
+								
 								parentIds.add(found.getContentKey().getId());
+
+								//prepare the menus
+								menu.setName(found.getFullName());
+								menu.setFilteringUrlValue(found.getContentKey().getId());
+								menu.setFilter(filter);
+								menus.add(menu);
+								menu = new FilteringMenuItem();
+							}
 						}
-						item.putFilteringValue(EnumFilteringValue.SUBCAT, parentIds);
+						item.putFilteringValue(EnumSearchFilteringValue.SUBCAT, parentIds);
+						item.putMenuValue(EnumSearchFilteringValue.SUBCAT, menus);
 						break;
 					}
 					case BRAND: {
 						Set<String> bk = new HashSet<String>();
 						for (BrandModel brand : node.getBrands()) {
 							bk.add(brand.getContentKey().getId());
+							
+							//prepare the menus
+							menu.setName(brand.getFullName());
+							menu.setFilteringUrlValue(brand.getContentKey().getId());
+							menu.setFilter(filter);
+							menus.add(menu);
+							menu = new FilteringMenuItem();
 						}
-						item.putFilteringValue(EnumFilteringValue.BRAND, bk);
+						item.putFilteringValue(EnumSearchFilteringValue.BRAND, bk);
+						item.putMenuValue(EnumSearchFilteringValue.BRAND, menus);
 						break;
 					}
 					case EXPERT_RATING: {
 						if (available) {
-							item.putFilteringValue(EnumFilteringValue.EXPERT_RATING,(node.getProductRatingEnum().getValue() + 1) / 2 + "");
+							item.putFilteringValue(EnumSearchFilteringValue.EXPERT_RATING,(node.getProductRatingEnum().getValue() + 1) / 2 + "");
+							
+							if (node.getProductRatingEnum().getValue() != 0) {
+								if (node.getProductRating() != null) {
+									menu.setName((node.getProductRatingEnum().getValue() + 1) / 2 + "");
+									menu.setFilteringUrlValue((node.getProductRatingEnum().getValue() + 1) / 2 + "");
+									menu.setFilter(filter);
+									menus.add(menu);
+									item.putMenuValue(EnumSearchFilteringValue.EXPERT_RATING, menus);
+								}
+							}
 						}
 						break;
 					}
@@ -109,7 +168,14 @@ public class ProductFilterValueDecorator extends GenericFilterDecorator<Filterin
 								BigDecimal averageRating = customerRatingsDTO.getAverageOverallRating();
 								int starValue = (int) Math.ceil(averageRating.doubleValue());
 								
-								item.putFilteringValue(EnumFilteringValue.CUSTOMER_RATING,starValue + "");
+								item.putFilteringValue(EnumSearchFilteringValue.CUSTOMER_RATING,starValue + "");
+								
+								//prepare the menus
+								menu.setName(customerRatingsDTO.getRatingValue() + "");
+								menu.setFilteringUrlValue(customerRatingsDTO.getRatingValue() + "");
+								menu.setFilter(filter);
+								menus.add(menu);
+								item.putMenuValue(EnumSearchFilteringValue.CUSTOMER_RATING, menus);
 							}
 						}
 						break;
@@ -118,9 +184,16 @@ public class ProductFilterValueDecorator extends GenericFilterDecorator<Filterin
 						if (available) {
 							PriceCalculator pricing = node.getPriceCalculator();
 							if (pricing.getDealPercentage() > 0 || pricing.getTieredDealPercentage() > 0 || pricing.getGroupPrice() != 0.0) {
-								item.putFilteringValue(EnumFilteringValue.ON_SALE, "1");
+								item.putFilteringValue(EnumSearchFilteringValue.ON_SALE, "1");
+								
+								//prepare the menus
+								menu.setName("On Sale");
+								menu.setFilteringUrlValue("1");
+								menu.setFilter(filter);
+								menus.add(menu);
+								item.putMenuValue(EnumSearchFilteringValue.ON_SALE, menus);
 							} else {
-								item.putFilteringValue(EnumFilteringValue.ON_SALE, "0");
+								item.putFilteringValue(EnumSearchFilteringValue.ON_SALE, "0");
 							}
 						}
 						break;
@@ -128,11 +201,23 @@ public class ProductFilterValueDecorator extends GenericFilterDecorator<Filterin
 					case NEW_OR_BACK: {
 						if (available) {
 							if (node.isBackInStock()) {
-								item.putFilteringValue(EnumFilteringValue.NEW_OR_BACK, "2");
+								item.putFilteringValue(EnumSearchFilteringValue.NEW_OR_BACK, "2");
+								
+								menu.setName("Back in stock");
+								menu.setFilteringUrlValue("2");
+								menu.setFilter(filter);
+								menus.add(menu);
+								item.putMenuValue(EnumSearchFilteringValue.NEW_OR_BACK, menus);
 							} else if (node.isNew()) {
-								item.putFilteringValue(EnumFilteringValue.NEW_OR_BACK, "1");
+								item.putFilteringValue(EnumSearchFilteringValue.NEW_OR_BACK, "1");
+								
+								menu.setName("New");
+								menu.setFilteringUrlValue("1");
+								menu.setFilter(filter);
+								menus.add(menu);
+								item.putMenuValue(EnumSearchFilteringValue.NEW_OR_BACK, menus);
 							} else {
-								item.putFilteringValue(EnumFilteringValue.NEW_OR_BACK, "0");
+								item.putFilteringValue(EnumSearchFilteringValue.NEW_OR_BACK, "0");
 							}
 						}
 						break;
@@ -140,18 +225,30 @@ public class ProductFilterValueDecorator extends GenericFilterDecorator<Filterin
 					case KOSHER: {
 						if (available) {
 							if (node.getPriceCalculator().getKosherPriority() != 999 && node.getPriceCalculator().getKosherPriority() != 0) {
-								item.putFilteringValue(EnumFilteringValue.KOSHER, "1");
+								item.putFilteringValue(EnumSearchFilteringValue.KOSHER, "1");
+								
+								menu.setName("Kosher");
+								menu.setFilteringUrlValue("1");
+								menu.setFilter(filter);
+								menus.add(menu);
+								item.putMenuValue(EnumSearchFilteringValue.KOSHER, menus);
 							}
 						}
 						break;
 					}
 					case GLUTEN_FREE: {
 						if (available) {
-							item.putFilteringValue(EnumFilteringValue.GLUTEN_FREE, "0");
+							item.putFilteringValue(EnumSearchFilteringValue.GLUTEN_FREE, "0");
 							if (node.getPriceCalculator().getProduct().getClaims() != null) {
 								for (EnumClaimValue claim : node.getPriceCalculator().getProduct().getClaims()) {
 									if ("FR_GLUT".equals(claim.getCode())) {
-										item.putFilteringValue(EnumFilteringValue.GLUTEN_FREE, "1");
+										item.putFilteringValue(EnumSearchFilteringValue.GLUTEN_FREE, "1");
+										
+										menu.setName("Gluten free");
+										menu.setFilteringUrlValue("1");
+										menu.setFilter(filter);
+										menus.add(menu);
+										item.putMenuValue(EnumSearchFilteringValue.GLUTEN_FREE, menus);
 									}
 								}
 							}

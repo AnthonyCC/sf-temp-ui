@@ -1,0 +1,122 @@
+.orders {
+	font-family: Verdana,sans-serif;
+	font-size:11px;
+	color:#333;	
+}
+
+.orders-list {
+	overflow:auto;
+	margin-bottom:0;
+	box-shadow:none;
+	-webkit-transition: all 0.3s ease-in-out;
+  	-moz-transition: all 0.3s ease-in-out;
+  	-o-transition: all 0.3s ease-in-out;
+  	transition: all 0.3s ease-in-out;
+}
+
+.orders-list-clear_dept label,
+.orders-list-all_dept label {
+	font-family: Verdana,sans-serif;
+	font-size:10px;
+	color:#333;
+	text-transform: uppercase;
+	font-weight: bold;
+}
+.orders-list-clear_dept:hover label,
+.orders-list-all_dept:hover label {
+	text-decoration: underline;
+}
+
+.close .orders-list {
+	max-height:0; 
+	padding-top:0;
+	padding-bottom:0;
+	border-top:none;
+	border-bottom:none;
+}
+
+.locked .orders-list,
+.open .orders-list {
+	max-height: 135px;
+	padding: 10px 5px;
+	border: 1px solid #B293B2;
+}
+
+
+.orders-header {
+}
+
+.orders input {
+	vertical-align: top;
+}
+
+.orders label:after {
+	display:block;
+	font-style:italic;
+	font-size: 11px;
+}
+
+.cancelled label:after {
+	content:'- Cancelled Order';
+}
+
+.processing label:after {
+	content:'- Processing Order';
+}
+
+.pending label:after {
+	content:'- Pending Order';
+}
+
+.qs-menu-header {
+	font-weight: bold;
+	padding: 14px 0 0 7px;
+	line-height: 15px;
+	text-transform: uppercase;
+	font-size: 13px;
+	letter-spacing: -1px;
+	margin-bottom: 8px;
+	color: #764077;
+}
+
+.qs-menu-header .counter {
+	font-weight: normal;
+}
+
+.qs-menu-toggle {
+	height: 30px;
+	padding: 0 0 10px;
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	-ms-box-sizing: border-box;
+	box-sizing: border-box;
+	font-size: 13px;
+	color: #693;
+	font-weight: bold;
+	text-align: center;
+	cursor: pointer;
+	display:block;
+	border:0;
+	overflow:hidden;
+	width:100%;
+	content:'show';
+	background: url(/media_stat/images/quickshop/sidenav-expand.png) 50% 50%;
+}
+
+.locked .qs-menu-toggle,
+.locked .qs-menu-toggle:hover {
+	-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=50)";
+	filter: alpha(opacity=50);
+	opacity: .5;
+	cursor: default;
+	color: #693;
+}
+
+.qs-menu-toggle:hover {
+	color: #f18b0e;
+}
+
+#orders.open .qs-menu-toggle {
+	background: url(/media_stat/images/quickshop/sidenav-collapse.png) 50% 50%;
+	content:'hide';	
+}

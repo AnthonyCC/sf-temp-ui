@@ -272,6 +272,9 @@ public class FDUser extends ModelSupport implements FDUserI {
 
 	private ExternalCampaign externalCampaign;
 	
+	private String defaultListId = null;
+	
+
 	public String getTsaPromoCode() {
 		return tsaPromoCode;
 	}
@@ -2601,7 +2604,6 @@ public class FDUser extends ModelSupport implements FDUserI {
 
 	@Override
 	public ExternalCampaign getExternalCampaign() {
-		// TODO Auto-generated method stub
 		return externalCampaign;
 	}	
 	public FDCustomerCouponWallet getCouponWallet() {
@@ -2675,6 +2677,16 @@ public class FDUser extends ModelSupport implements FDUserI {
 	
 	public void setRobot(boolean robot){
 		this.robot = robot;
+	}
+
+	@Override
+	public String getDefaultListId() {
+		return defaultListId;
+	}
+
+	@Override
+	public void setDefaultListId( String listId ) {
+		defaultListId = listId;
 	}
 
 	public EnumRegionServiceType getRegionSvcType(String addressId){

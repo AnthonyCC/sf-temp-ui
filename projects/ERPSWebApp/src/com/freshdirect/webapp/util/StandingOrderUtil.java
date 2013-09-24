@@ -1078,9 +1078,9 @@ public class StandingOrderUtil {
 
 
 			return origMode.isModifyStandingOrder() ?
-					FDURLUtil.getStandingOrderLandingPage(so, null)
+					FDURLUtil.getStandingOrderLandingPage(so, null, user)
 					:
-					FDURLUtil.getStandingOrderMainPage();
+					FDURLUtil.getStandingOrderMainPage(user);
 		} else {
 			LOGGER.error("endStandingOrderCheckoutPhase() was invoked although no standing order was being modified!");
 		}

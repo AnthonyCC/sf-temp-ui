@@ -13,8 +13,9 @@ import javax.servlet.jsp.tagext.VariableInfo;
 
 import org.apache.log4j.Logger;
 
-import com.freshdirect.fdstore.content.EnumFilteringValue;
+import com.freshdirect.fdstore.content.EnumSearchFilteringValue;
 import com.freshdirect.fdstore.content.FilteringMenuItem;
+import com.freshdirect.fdstore.content.FilteringValue;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.BodyTagSupportEx;
 
@@ -24,9 +25,9 @@ public class FilterListTag extends BodyTagSupportEx {
 	private static Logger LOGGER = LoggerFactory.getInstance( FilterListTag.class );
 	private static final String hasSelectedVar = "hasSelected";
 
-	private EnumFilteringValue domainName;
+	private EnumSearchFilteringValue domainName;
 	private int hideAfter=7;
-	private Map<EnumFilteringValue, Map<String, FilteringMenuItem>> filters;
+	private Map<FilteringValue, Map<String, FilteringMenuItem>> filters;
 	
 		
 	@Override
@@ -58,19 +59,19 @@ public class FilterListTag extends BodyTagSupportEx {
 		return false;
 	}
 
-	public Map<EnumFilteringValue, Map<String, FilteringMenuItem>> getFilters() {
+	public Map<FilteringValue, Map<String, FilteringMenuItem>> getFilters() {
 		return filters;
 	}
 
-	public void setFilters(Map<EnumFilteringValue, Map<String, FilteringMenuItem>> filters) {
+	public void setFilters(Map<FilteringValue, Map<String, FilteringMenuItem>> filters) {
 		this.filters = filters;
 	}
 
-	public EnumFilteringValue getDomainName() {
+	public EnumSearchFilteringValue getDomainName() {
 		return domainName;
 	}
 
-	public void setDomainName(EnumFilteringValue domainName) {
+	public void setDomainName(EnumSearchFilteringValue domainName) {
 		this.domainName = domainName;
 	}
 	
@@ -99,7 +100,7 @@ public class FilterListTag extends BodyTagSupportEx {
 
 	protected List<FilteringMenuItem> getResult() throws Exception {
 		
-		Map<EnumFilteringValue, Map<String, FilteringMenuItem>> menus = this.getFilters();
+		Map<FilteringValue, Map<String, FilteringMenuItem>> menus = this.getFilters();
 		
 		// Additional safety check, return empty list if domainName not found
 		Map<String, FilteringMenuItem> domainFilters = menus.get(domainName);		
@@ -111,11 +112,11 @@ public class FilterListTag extends BodyTagSupportEx {
 		
 		if( filters.isEmpty() ) return filters; 
 		
-		if(domainName.equals(EnumFilteringValue.EXPERT_RATING)) {
+		if(domainName.equals(EnumSearchFilteringValue.EXPERT_RATING)) {
 			
 			Collections.sort( filters, FilteringMenuItem.RATING_COMP );
 			
-		} else 	if(domainName.equals(EnumFilteringValue.CUSTOMER_RATING)) {
+		} else 	if(domainName.equals(EnumSearchFilteringValue.CUSTOMER_RATING)) {
 			
 			Collections.sort( filters, FilteringMenuItem.RATING_COMP );
 			

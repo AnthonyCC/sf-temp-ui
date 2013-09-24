@@ -4,19 +4,24 @@ import java.text.DateFormatSymbols;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Date;
-import java.util.Formatter;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDTimeslot;
+import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.customer.FDOrderInfoI;
+import com.freshdirect.fdstore.customer.FDProductSelectionI;
+import com.freshdirect.fdstore.customer.OrderLineUtil;
+import com.freshdirect.fdstore.lists.FDCustomerListItem;
 import com.freshdirect.fdstore.standingorders.FDStandingOrder;
 import com.freshdirect.fdstore.util.FDTimeslotUtil;
-import com.freshdirect.framework.util.DateUtil;
 
 /**
  * Helper class for standing orders, any static method which has no place anywhere else should be here.
@@ -466,4 +471,32 @@ public class StandingOrderHelper {
 		
 		return offset;
 	}
+	
+	public static Collection<Map<String, Object>> convertCustomerStandingOrdersToMap(Collection<FDStandingOrder> soList) throws FDResourceException {
+		Collection<Map<String, Object>> result = new ArrayList<Map<String, Object>>(); 
+		for (FDStandingOrder so : soList) {
+			Map<String, Object> map = new HashMap<String, Object>();
+			map.put("id", so.getId());
+			map.put("url", so.getLandingPage());
+			map.put("name", so.getCustomerListName());
+			
+			// Count the available items - as in QSController and QuickCart
+			// FIXME : should be refactored to some common place ....
+			int productCnt = 0;
+			List<FDCustomerListItem> soLines = so.getCustomerList().getLineItems();			
+			if ( soLines != null ) {
+				for (FDProductSelectionI orderLine: OrderLineUtil.getValidProductSelectionsFromCCLItems( soLines )) {
+					ProductModel productNode = orderLine.lookupProduct();
+					if(!((productNode==null || productNode.getSku(orderLine.getSkuCode()).isUnavailable() || orderLine.isInvalidConfig()))) {
+							productCnt++;
+					}
+				}
+			}			
+			map.put("count", productCnt );
+			
+			result.add(map);
+		}
+		return result;
+	}
+	
 }

@@ -9,20 +9,26 @@ import java.util.Set;
 public abstract class GenericFilteringMenuBuilder<I extends FilteringSortingItem<? extends ContentNodeModel>> {
 
 	//left side filtering menu - the key in the map inside is for simplified usage only (it's the same name as the name property in the FilteringMenuItem)
-	protected Map<EnumFilteringValue, Map<String,FilteringMenuItem>> domains=new HashMap<EnumFilteringValue, Map<String,FilteringMenuItem>>();
+	protected Map<FilteringValue, Map<String,FilteringMenuItem>> domains=new HashMap<FilteringValue, Map<String,FilteringMenuItem>>();
+	
+	//temporary menu items will be merged to the final menu at the end of the filtering
+	//e.g. we need to build a temporary menu domain for departments on quickshop
+	protected Map<FilteringValue, Map<String,FilteringMenuItem>> tempDomains=new HashMap<FilteringValue, Map<String,FilteringMenuItem>>();
 
-	protected Set<EnumFilteringValue> filters;
+	protected Set<FilteringValue> filters;
 	
-	Map<EnumFilteringValue, List<Object>> filterValues;
+	Map<FilteringValue, List<Object>> filterValues;
 	
-	public GenericFilteringMenuBuilder(Map<EnumFilteringValue, List<Object>> filterValues, Set<EnumFilteringValue> filters) {
+	public GenericFilteringMenuBuilder(Map<FilteringValue, List<Object>> filterValues, Set<FilteringValue> filters) {
 		this.filterValues = filterValues;
 		this.filters = filters;
 	}
 
-	public abstract void buildMenu(List<I> items, int[] expertRatings, int[] custRatings);
+	public abstract void buildMenu(List<I> items);
+	
+	public abstract void buildMenuForFilter(List<I> items, FilteringValue filter, boolean removeFilter, boolean temporary);
 
-	public Map<EnumFilteringValue, Map<String, FilteringMenuItem>> getDomains() {
+	public Map<FilteringValue, Map<String, FilteringMenuItem>> getDomains() {
 		return domains;
 	}
 	

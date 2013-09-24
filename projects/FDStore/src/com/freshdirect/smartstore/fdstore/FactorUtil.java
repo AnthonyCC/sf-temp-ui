@@ -1,5 +1,6 @@
 package com.freshdirect.smartstore.fdstore;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -23,6 +24,8 @@ import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.ProductModel;
+import com.freshdirect.fdstore.content.customerrating.CustomerRatingsContext;
+import com.freshdirect.fdstore.content.customerrating.CustomerRatingsDTO;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
 
@@ -220,7 +223,65 @@ public class FactorUtil {
 			}
 		};
 	}
-		
+	
+	
+	
+	public static StoreLookup getCustomerRatingLookup() {
+		return new StoreLookup() {
+			@Override
+			public void reloadCache() {}
+
+			/**
+			 * It should return a number between 0 and 5
+			 */
+			@Override
+			public double getVariable(ContentNodeModel contentNode,
+					PricingContext pricingContext) {
+				if (!(contentNode instanceof ProductModel))
+					return 0.0;
+
+				ProductModel prd = (ProductModel) contentNode;
+				CustomerRatingsDTO entity = CustomerRatingsContext
+						.getInstance().getCustomerRatingByProductId(
+								prd.getContentKey().getId());
+				if (entity == null)
+					return 0.0;
+
+				BigDecimal rating = entity.getAverageOverallRating();
+				return rating != null ? rating.doubleValue() : 0.0;
+			}
+		};
+	}
+
+
+
+	public static StoreLookup getNormalizedCustomerRatingLookup() {
+		return new StoreLookup() {
+			@Override
+			public void reloadCache() {}
+
+			@Override
+			public double getVariable(ContentNodeModel contentNode,
+					PricingContext pricingContext) {
+				if (!(contentNode instanceof ProductModel))
+					return 0;
+
+				ProductModel prd = (ProductModel) contentNode;
+				CustomerRatingsDTO entity = CustomerRatingsContext
+						.getInstance().getCustomerRatingByProductId(
+								prd.getContentKey().getId());
+
+				if ( entity == null ) {
+					return 0.0;
+				}
+				BigDecimal rating = entity.getAverageOverallRating();
+				return rating != null ? rating.doubleValue()/5 : 0.0;
+			}
+		};
+	}
+
+
+
 	public static StoreLookup getProduceRatingLookup() {
 		return new CachingStoreLookup(produceRatingCache) {
 			public double getVariable(ContentNodeModel contentNode, PricingContext pricingContext) {

@@ -37,7 +37,7 @@ public abstract class AbstractCartLine extends FDProductSelection implements FDC
 
 	private final String variantId;
 	private EnumCouponStatus couponStatus;
-	private boolean couponApplied;
+	@Deprecated private boolean couponApplied;
 
 	protected AbstractCartLine(FDSku sku, ProductModel productRef, FDConfigurableI configuration, String variantId, String pZoneId) {
 		super(sku, productRef, configuration, variantId, pZoneId);
@@ -333,12 +333,12 @@ public abstract class AbstractCartLine extends FDProductSelection implements FDC
 		this.couponStatus = couponStatus;
 	}
 	
-	@Override
+	@Override @Deprecated
 	public boolean hasCouponApplied() {
 		return couponApplied;
 	}
 
-	@Override
+	@Override @Deprecated
 	public void setCouponApplied(boolean applied) {
 		this.couponApplied =applied;
 		

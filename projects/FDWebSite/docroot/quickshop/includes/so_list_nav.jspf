@@ -23,7 +23,7 @@
 					<tr><td class="text10">					
 						<div style="margin-left: 0px; margin-bottom: 3px; margin-right: 2px; width: 125px; overflow: hidden;">
 			       			<% if (!isSelected) { %>
-			       				<a href="<%= FDURLUtil.getStandingOrderLandingPage(sorder, null) %>"><b><%= StringUtil.escapeHTML( sorder.getCustomerListName() ) %></b></a>
+			       				<a href="<%= FDURLUtil.getStandingOrderLandingPage(sorder, null,user) %>"><b><%= StringUtil.escapeHTML( sorder.getCustomerListName() ) %></b></a>
 			       			<% } else { %>
 								<b><%= StringUtil.escapeHTML( sorder.getCustomerListName() ) %></b>
 							<% } %>

@@ -172,4 +172,8 @@ public class ScriptedRecommendationService extends AbstractRecommendationService
 				+ ", scoring=" + scoring + "]";
 	}
 
+	// for debugging purposes
+	public DataGenerator getGenerator() {
+		return generator;
+	}
 }

@@ -2,8 +2,8 @@ package com.freshdirect.transadmin.model;
 
 import java.util.Date;
 
-import org.codehaus.jackson.map.annotate.JsonDeserialize;
-import org.codehaus.jackson.map.annotate.JsonSerialize;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 public class OrderRateException implements java.io.Serializable {
 	

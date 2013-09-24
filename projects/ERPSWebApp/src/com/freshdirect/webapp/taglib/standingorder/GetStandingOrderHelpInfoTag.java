@@ -67,31 +67,21 @@ public class GetStandingOrderHelpInfoTag extends AbstractGetterTag<String> {
 		result.append("',");
 
 	
-		String conversionEventStartJs = "";
-			
-		try {
-			ConversionEventTagModelBuilder conversionEventBuilder = new ConversionEventTagModelBuilder();
-			conversionEventBuilder.setEventId(ConversionEventTagModelBuilder.EVENT_SO_HELP);
-			conversionEventBuilder.setUrl(request.getRequestURI());
-			conversionEventBuilder.setFirstPhase(true);
-			conversionEventStartJs = CmConversionEventTag.getTagJs(conversionEventBuilder.buildTagModel());
-		} catch (SkipTagException e){
-			LOGGER.error("tracking function generation failed",e);
-		}
-			
+		CmConversionEventTag conversionEventTag = new CmConversionEventTag();
+		conversionEventTag.setJspContext(pageContext);
+		conversionEventTag.setOnlyFormatModel(true);
+		conversionEventTag.setEventId(ConversionEventTagModelBuilder.EVENT_SO_HELP);
+		conversionEventTag.setUrl(request.getRequestURI());
+		conversionEventTag.setFirstPhase(true);
+		String conversionEventStartJs = conversionEventTag.getTagOutput();
 		result.append("onOpen: function() { ").append(conversionEventStartJs).append(" },");
 
-		String conversionEventEndJs = "";
-		
-		try {
-			ConversionEventTagModelBuilder conversionEventBuilder = new ConversionEventTagModelBuilder();
-			conversionEventBuilder.setEventId(ConversionEventTagModelBuilder.EVENT_SO_HELP);
-			conversionEventBuilder.setUrl(request.getRequestURI());
-			conversionEventEndJs = CmConversionEventTag.getTagJs(conversionEventBuilder.buildTagModel());
-		} catch (SkipTagException e){
-			LOGGER.error("tracking function generation failed",e);
-		}
-			
+		CmConversionEventTag conversionEventTag2 = new CmConversionEventTag();
+		conversionEventTag2.setJspContext(pageContext);
+		conversionEventTag2.setOnlyFormatModel(true);
+		conversionEventTag2.setEventId(ConversionEventTagModelBuilder.EVENT_SO_HELP);
+		conversionEventTag2.setUrl(request.getRequestURI());
+		String conversionEventEndJs = conversionEventTag2.getTagOutput();
 		result.append("onSubmit: function() { ").append(conversionEventEndJs).append(" }");
 		
 		return result.append("}").toString();

@@ -17,9 +17,10 @@ import com.freshdirect.fdstore.content.CategoryModel;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.DepartmentModel;
-import com.freshdirect.fdstore.content.EnumFilteringValue;
+import com.freshdirect.fdstore.content.EnumSearchFilteringValue;
 import com.freshdirect.fdstore.content.FilteringMenuItem;
 import com.freshdirect.fdstore.content.FilteringSortingItem;
+import com.freshdirect.fdstore.content.FilteringValue;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.SearchResults;
 import com.freshdirect.fdstore.ecoupon.EnumCouponContext;
@@ -77,19 +78,19 @@ public class CouponBrowseController extends BaseController {
         	SearchResults couponProducts = FDCustomerCouponUtil.getCouponsAsSearchResults(user.getFDSessionUser(), false);
         	if(couponProducts != null && couponProducts.getProducts().size() > 0) {
         		GetProductFilterTagWrapper tag = new GetProductFilterTagWrapper(user); 
-        		Map<EnumFilteringValue, List<Object>> filterValues = new HashMap<EnumFilteringValue, List<Object>>();
+        		Map<FilteringValue, List<Object>> filterValues = new HashMap<FilteringValue, List<Object>>();
         		List<Object> actualFilter = new ArrayList<Object>();
-        		Map<EnumFilteringValue, Map<String, FilteringMenuItem>> domains = null;
+        		Map<EnumSearchFilteringValue, Map<String, FilteringMenuItem>> domains = null;
         		
         		if (ACTION_GET_DEPARTMENTS.equals(action)) {        			       			
         			ResultBundle filterResult =  tag.getFilteredList(couponProducts, filterValues);
-        			domains = (Map<EnumFilteringValue, Map<String, FilteringMenuItem>>)filterResult.getExtraData(GetProductFilterTagWrapper.domainsId) ;
+        			domains = (Map<EnumSearchFilteringValue, Map<String, FilteringMenuItem>>)filterResult.getExtraData(GetProductFilterTagWrapper.domainsId) ;
         			
         			List<Department> departments = new ArrayList<Department>();
         			Department _dpt = null;
         			
-        			if(domains.containsKey(EnumFilteringValue.DEPT)) {
-        				Map<String, FilteringMenuItem> filterMenuMap = domains.get(EnumFilteringValue.DEPT);
+        			if(domains.containsKey(EnumSearchFilteringValue.DEPT)) {
+        				Map<String, FilteringMenuItem> filterMenuMap = domains.get(EnumSearchFilteringValue.DEPT);
         				if(filterMenuMap != null) {
         					List<FilteringMenuItem> filters = new ArrayList<FilteringMenuItem>(filterMenuMap.values());
         					Collections.sort( filters, FilteringMenuItem.COUNT_ORDER_REV );
@@ -115,25 +116,25 @@ public class CouponBrowseController extends BaseController {
 		        	
         		} else {
         			
-        			EnumFilteringValue _filterDestination = null;
+        			EnumSearchFilteringValue _filterDestination = null;
         			
         			if(ACTION_GET_CATEGORIES.equals(action)) {	
         				actualFilter.add(requestMessage.getDepartment());
-        				_filterDestination = EnumFilteringValue.CAT;
-            			filterValues.put(EnumFilteringValue.DEPT, actualFilter); 
+        				_filterDestination = EnumSearchFilteringValue.CAT;
+            			filterValues.put(EnumSearchFilteringValue.DEPT, actualFilter); 
         			} else {
         				actualFilter.add(requestMessage.getCategory());
         				ContentNodeModel currentFolder = ContentFactory.getInstance().getContentNode(requestMessage.getCategory());        	        	
         	        	if(currentFolder instanceof CategoryModel 
         	        				&& currentFolder.getParentNode() instanceof DepartmentModel) {
-        	        		_filterDestination = EnumFilteringValue.SUBCAT;
-                			filterValues.put(EnumFilteringValue.CAT, actualFilter);
+        	        		_filterDestination = EnumSearchFilteringValue.SUBCAT;
+                			filterValues.put(EnumSearchFilteringValue.CAT, actualFilter);
         	        	} else {
-                			filterValues.put(EnumFilteringValue.SUBCAT, actualFilter);
+                			filterValues.put(EnumSearchFilteringValue.SUBCAT, actualFilter);
         	        	}
         			} 
         			ResultBundle filterResult = tag.getFilteredList(couponProducts, filterValues);
-        			domains = (Map<EnumFilteringValue, Map<String, FilteringMenuItem>>)filterResult.getExtraData(GetProductFilterTagWrapper.domainsId) ;
+        			domains = (Map<EnumSearchFilteringValue, Map<String, FilteringMenuItem>>)filterResult.getExtraData(GetProductFilterTagWrapper.domainsId) ;
         			
         			List<Category> categories = new ArrayList<Category>();
         			Category _cat = null;

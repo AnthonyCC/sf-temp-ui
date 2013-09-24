@@ -61,6 +61,9 @@
 <%@page import="com.freshdirect.smartstore.impl.ScriptedRecommendationService"%>
 <%@page import="com.freshdirect.framework.util.log.LoggerFactory"%>
 <%@page import="com.freshdirect.fdstore.content.DepartmentModel"%>
+<%@page import="com.freshdirect.fdstore.content.customerrating.CustomerRatingsContext" %>
+<%@page import="com.freshdirect.fdstore.content.customerrating.CustomerRatingsDTO" %>
+<%@page import="com.freshdirect.smartstore.scoring.DataGenerator" %>
 <%@page import="org.apache.commons.lang.StringEscapeUtils"%>
 <%@page import="org.apache.log4j.Logger"%>
 
@@ -404,6 +407,7 @@ if (defaultView.equals(view)) {
 
 StoreLookup qrLookup = "detailed".equals(view) ? FactorUtil.getDescretizedProduceRatingLookup1() : null;
 StoreLookup nsLookup = "detailed".equals(view) ? FactorUtil.getNewnessLookup() : null;
+CustomerRatingsContext crContext = CustomerRatingsContext.getInstance();
 
 /* redirect */
 String newURL = urlG.build();
@@ -495,6 +499,11 @@ table{border-collapse:collapse;border-spacing:0px;width:100%;}
 .warning{color:#FF6633; !important}
 .disabled{color:gray;font-style:italic;}
 .selected{font-weight:bold;color:blue;}
+.preformatted {
+	font-family: monospace;
+    white-space: pre;
+    text-align: left;
+}
 	</style>
 </head>
 <body>
@@ -931,6 +940,11 @@ table{border-collapse:collapse;border-spacing:0px;width:100%;}
 					<span class="title24"><% if (scriptedRecServ != null) { %>Custom<% } else { %>B<% } %></span>
 				<% }  %>
 					<label style="display: block"><input type="checkbox" name="variantBhideBursts" <%= urlG.get("variantBhideBursts") != null ? "checked=\"checked\"" : null %> onchange="this.form.submit();"/>&nbsp; Hide bursts</label>
+					<%-- debug generator code - remove 'false' from condition below --%>
+					<% if (false && scriptedRecServ != null && "detailed".equals(view)) { %>
+					<div class="title12">Generator Code</div>
+					<div id="generatedCode" class="preformatted" style="border: 1px solid black; padding: 2px 2px; background-color: #eee"><%= ((ScriptedRecommendationService) scriptedRecServ).getGenerator().getGeneratedCode() %></div>
+					<% } %>
 				</div>
 			</td> 
 		</tr>
@@ -998,6 +1012,12 @@ table{border-collapse:collapse;border-spacing:0px;width:100%;}
 									<span style="white-space: nowrap">Tiered Deal: <%= pmCalculator.getTieredDealPercentage() %>%</span>&nbsp;
 									<span style="white-space: nowrap">Quality Rating: <%= qrLookup.getVariable(cnm, si.getPricingContext()) %></span>&nbsp;
 									<span style="white-space: nowrap">Product Age: <%= days %></span>
+									<%
+										CustomerRatingsDTO dto = crContext.getCustomerRatingByProductId(pm.getContentKey().getId());
+										if (dto != null) {
+											%><span style="white-space: nowrap">Customer Rating: <%= dto.getAverageOverallRating().doubleValue() %></span><%
+										}
+									%>
 								</div>
 								<% } %>
 								<div class="source text12"><%= StringUtil.join(map.get(pm.getContentKey()), ", ") %></div>
@@ -1084,6 +1104,12 @@ table{border-collapse:collapse;border-spacing:0px;width:100%;}
 									<span style="white-space: nowrap">Tiered Deal: <%= pmCalculator.getTieredDealPercentage() %>%</span>&nbsp;
 									<span style="white-space: nowrap">Quality Rating: <%= qrLookup.getVariable(cnm, si2.getPricingContext()) %></span>&nbsp;
 									<span style="white-space: nowrap">Product Age: <%= days %></span>
+									<%
+										CustomerRatingsDTO dto = crContext.getCustomerRatingByProductId(pm.getContentKey().getId());
+										if (dto != null) {
+											%><span style="white-space: nowrap">Customer Rating: <%= dto.getAverageOverallRating().doubleValue() %></span><%
+										}
+									%>
 								</div>
 								<% } %>
 								<div class="source text12"><%= StringUtil.join(map2.get(pm.getContentKey()), ", ") %></div>

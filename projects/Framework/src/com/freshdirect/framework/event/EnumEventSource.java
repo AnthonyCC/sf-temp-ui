@@ -14,7 +14,14 @@ public enum EnumEventSource {
 	CCL("CCL"), /* The source of the event is a customer created list. */
 	SmartStore("SS"), /* The source of the event is SmartStore related. */
 	QUICKBUY("Quickbuy"), /* The source of the event is Quickbuy related */
-	CART("Cart"); /* The source of the event is the cart widget */
+	CART("Cart"), /* The source of the event is the cart widget */	
+	
+	/* New quickshop event sources */
+	qs_pastOrders("QS-past-orders"),
+	qs_customerLists("QS-shopping-lists"),
+	qs_fdLists("QS-FD-lists"),	
+	qs_ymal("QS-top-recommender"),
+	qs_tabbedRecommender("QS-bottom-recommender");
 	
 	String name;
 	

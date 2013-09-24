@@ -1689,7 +1689,7 @@ CCLClass.prototype.delete_so = function(deleteSoInfo, scope) {
 		        );
 
 			} else if (orig == self.sources["continueLink"]) {
-				window.location = "/quickshop/standing_orders.jsp";
+				window.location = "/quickshop/qs_standing_orders.jsp";
 				self.hide();
 			} else if (orig == self.sources["noClosePopupLink"]) {
 				self.hide();

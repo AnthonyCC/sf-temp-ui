@@ -38,7 +38,7 @@ import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.webapp.util.QuickCartCache;
 
-
+@Deprecated
 public class QuickShopControllerTag extends com.freshdirect.framework.webapp.BodyTagSupport implements SessionName {
 
 	private static final long serialVersionUID = 3424186319116152768L;

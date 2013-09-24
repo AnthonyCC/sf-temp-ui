@@ -1,3 +1,4 @@
+<%@page import="com.freshdirect.webapp.taglib.QuickShopRedirector"%>
 <%@ page import="java.util.Date"%>
 <%@ page import="java.util.List"%>
 <%@ page import="java.util.ArrayList"%>
@@ -17,8 +18,11 @@
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 
-
 <fd:CheckLoginStatus id="user" guestAllowed='false' recognizedAllowed='false' redirectPage='/quickshop/index_guest.jsp?successPage=/quickshop/index.jsp' />
+
+<%-- redirect to new quickshop page (partial rollout check) --%>
+<fd:QuickShopRedirector user="<%=user%>" from="<%=QuickShopRedirector.FROM.OLD_SO %>"/>
+
 <tmpl:insert template='/common/template/quick_shop_nav.jsp'>
 
     <tmpl:put name='extrahead' direct='true'>
@@ -77,7 +81,7 @@
 			String bgColor = (ctr++%2==0) ? "background-color:#ececec;" : ""; //zebra coloring
 			%>
 			<div style="margin:0em;padding:0em 1em 1em 0.5em;<%= bgColor %>">
-				<h2 style="margin: 5em 5m 5em 5em;"><a class="title15" href="<%= FDURLUtil.getStandingOrderLandingPage(so, null) %>"><%=StringUtil.escapeHTML(so.getCustomerListName())%></a></h2>
+				<h2 style="margin: 5em 5m 5em 5em;"><a class="title15" href="<%= FDURLUtil.getStandingOrderLandingPage(so, null, user) %>"><%=StringUtil.escapeHTML(so.getCustomerListName())%></a></h2>
 				<div class="title11" style="margin: 1em 1em 0em;">
 					
 					<% if (so.isError()) { %>				
@@ -104,7 +108,7 @@
 						</div>
 					<% } %>
 									
-					<a class="title12" href="<%= FDURLUtil.getStandingOrderLandingPage(so, null) %>">View or Edit Details &raquo;</a>
+					<a class="title12" href="<%= FDURLUtil.getStandingOrderLandingPage(so, null, user) %>">View or Edit Details &raquo;</a>
 				</div>
 			</div>
 			<div style="margin:1em;"></div>

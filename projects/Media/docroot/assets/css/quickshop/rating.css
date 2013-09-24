@@ -1,0 +1,79 @@
+.expertrating,
+.customerrating,
+.winerating,
+.sustrating {
+	margin-left:8px;	
+	font-weight:normal;
+	vertical-align: baseline;
+}
+
+.expertrating,
+.customerrating,
+.winerating {
+	text-indent:100px;
+	height:16px;
+	display:inline-block;
+	overflow:hidden;
+	vertical-align: top;
+	margin-left:8px;
+}
+.smallrating {
+	height: 13px;
+}
+
+.expertrating,
+.customerrating,
+.winerating {
+	background:url(/media_stat/images/ratings/stars-sprite.png) repeat-x transparent 0 0;
+}
+.expertrating.smallrating,
+.customerrating.smallrating,
+.winerating.smallrating {
+	background:url(/media_stat/images/ratings/stars-sprite-small.png) repeat-x transparent 0 0;
+	vertical-align: baseline;
+}
+
+.customerrating {
+	background-position: 0 -32px;
+}
+.winerating {
+	background-position: 0 -64px;
+}
+.customerrating.smallrating {
+	background-position: 0 -13px;
+}
+.winerating.smallrating {
+	background-position: 0 -26px;
+}
+
+.rating-1  { width:9px; }
+.rating-2  { width:18px; }
+.rating-3  { width:27px; }
+.rating-4  { width:36px; }
+.rating-5  { width:45px; }
+.rating-6  { width:54px; }
+.rating-7  { width:63px; }
+.rating-8  { width:72px; }
+.rating-9  { width:81px; }
+.rating-10 { width:90px; }
+
+.smallrating.rating-1  { width:7px; }
+.smallrating.rating-2  { width:13px; }
+.smallrating.rating-3  { width:20px; }
+.smallrating.rating-4  { width:26px; }
+.smallrating.rating-5  { width:33px; }
+.smallrating.rating-6  { width:39px; }
+.smallrating.rating-7  { width:46px; }
+.smallrating.rating-8  { width:52px; }
+.smallrating.rating-9  { width:59px; }
+.smallrating.rating-10 { width:65px; }
+
+
+.sustrating {
+	vertical-align: middle;
+}
+
+#customerRatingPopup {
+	margin-top:-75px;
+	margin-left:-40px;
+}

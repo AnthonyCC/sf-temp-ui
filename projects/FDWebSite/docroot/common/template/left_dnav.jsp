@@ -28,6 +28,7 @@ final int W_LEFT_DNAV_RIGHT = 820;
   <%@ include file="/shared/template/includes/style_sheet_grid_compat.jspf" %>
 	<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
 	<%@ include file="/shared/template/includes/ccl.jspf" %>
+	<tmpl:get name='customhead'/>
 	<tmpl:get name='facebookmeta'/>
 <%@ include file="/shared/template/includes/i_head_end.jspf" %>
 </head>

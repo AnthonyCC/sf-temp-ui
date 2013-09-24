@@ -22,6 +22,7 @@ import com.freshdirect.framework.webapp.ActionWarning;
 import com.freshdirect.fdstore.lists.FDCustomerCreatedList;
 import com.freshdirect.webapp.util.json.FDCustomerCreatedListJSONSerializer;
 
+@Deprecated
 public class ItemSelectionCheckResult {
 	
 	public static final String COPY_SELECTION = "copy_selection";

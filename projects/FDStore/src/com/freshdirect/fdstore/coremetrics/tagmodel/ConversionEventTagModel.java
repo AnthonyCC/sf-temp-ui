@@ -1,7 +1,12 @@
 package com.freshdirect.fdstore.coremetrics.tagmodel;
 
+import java.util.List;
+
 
 public class ConversionEventTagModel extends AbstractTagModel  {
+
+	private static final long	serialVersionUID	= -7677360510359719732L;
+	
 	private String eventId; 
 	private String actionType;
 	private String eventCategoryId; 
@@ -31,4 +36,15 @@ public class ConversionEventTagModel extends AbstractTagModel  {
 	public void setPoints(String points) {
 		this.points = points;
 	}
+	
+	@Override
+	public String getFunctionName() {
+		throw new UnsupportedOperationException();
+	}
+	
+	@Override
+	public List<String> toStringList() {
+		throw new UnsupportedOperationException();
+	} 
+	
 }

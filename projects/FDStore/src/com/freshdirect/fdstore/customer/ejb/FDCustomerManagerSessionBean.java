@@ -3294,6 +3294,32 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			throw new FDResourceException(re);
 		}
 	}
+	
+	public List<FDOrderI> getOrders(List<String> saleIds) throws FDResourceException, RemoteException {
+		try {
+			ErpCustomerManagerSB sb = this.getErpCustomerManagerHome().create();
+			List<PrimaryKey> keys = new ArrayList<PrimaryKey>();
+			for(String saleId: saleIds){
+				keys.add(new PrimaryKey(saleId));
+			}
+			List<ErpSaleModel> saleModels = sb.getOrders(keys);
+
+			LOGGER.debug(new String("ordernums: "
+					+ saleIds));
+			
+			List<FDOrderI> adapters = new ArrayList<FDOrderI>();
+			for(ErpSaleModel model: saleModels){
+				adapters.add(new FDOrderAdapter(model));
+			}
+			return adapters;
+			
+
+		} catch (CreateException ce) {
+			throw new FDResourceException(ce);
+		} catch (RemoteException re) {
+			throw new FDResourceException(re);
+		}
+	}
 
 	public ErpSaleModel getErpSaleModel(String saleId) throws FDResourceException {
 		try {

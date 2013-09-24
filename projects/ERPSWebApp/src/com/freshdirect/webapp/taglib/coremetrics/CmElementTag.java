@@ -1,7 +1,5 @@
 package com.freshdirect.webapp.taglib.coremetrics;
 
-import javax.servlet.jsp.PageContext;
-
 import org.apache.log4j.Logger;
 
 import com.freshdirect.fdstore.FDTimeslot;
@@ -18,14 +16,17 @@ import com.freshdirect.webapp.taglib.fdstore.SessionName;
 public class CmElementTag extends AbstractCmTag {
 
 	private static final Logger LOGGER = LoggerFactory.getInstance(CmElementTag.class);
-	private static final String ELEMENT_TAG_FS = "cmCreateElementTag(%s,%s,%s);";
-
 	private ElementTagModelBuilder tagModelBuilder = new ElementTagModelBuilder();
+
+	@Override
+	protected String getFunctionName() {
+		return "cmCreateElementTag";
+	}
 	
 	@Override
 	public String getTagJs() throws SkipTagException {
 
-		tagModelBuilder.setUser((FDUserI) ((PageContext) getJspContext()).getSession().getAttribute(SessionName.USER));
+		tagModelBuilder.setUser((FDUserI) getSession().getAttribute(SessionName.USER));
 		
 		ElementTagModel tagModel = tagModelBuilder.buildTagModel();
 		
@@ -35,14 +36,14 @@ public class CmElementTag extends AbstractCmTag {
 			
 			String attr = "\"-_--_--_--_--_--_--_--_--_--_--_-\"+video.title+\"-_-\"+state+\"-_-\"+Math.round(player.getCurrentTime())+\"-_-\"+Math.round(player.getDuration())";
 			
-			tagJs = String.format(ELEMENT_TAG_FS,
+			tagJs = getFormattedTag(
 					toJsObject(tagModel.getElementId()),
 					toJsVar(tagModel.getElementCategory()),
 					attr);
 			
 		} else {
 			
-			tagJs = String.format(ELEMENT_TAG_FS, 
+			tagJs = getFormattedTag( 
 					toJsVar(tagModel.getElementId()), 
 					toJsVar(tagModel.getElementCategory()), 
 					toJsVar(mapToAttrString(tagModel.getAttributesMaps())));

@@ -12,15 +12,16 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Category;
-import org.codehaus.jackson.JsonGenerationException;
-import org.codehaus.jackson.JsonParseException;
-import org.codehaus.jackson.map.JsonMappingException;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.map.SerializationConfig.Feature;
 import org.springframework.core.io.Resource;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.AbstractController;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.core.JsonGenerationException;
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.FDResourceException;
@@ -344,8 +345,8 @@ public abstract class BaseController extends AbstractController implements Messa
 
     protected ObjectMapper getMapper() {
         ObjectMapper mapper = new ObjectMapper();
-        mapper.configure(Feature.INDENT_OUTPUT, true); //May want to flip to false in production
-        mapper.configure(Feature.WRITE_NULL_PROPERTIES, false);
+        mapper.configure(SerializationFeature.INDENT_OUTPUT, true); //May want to flip to false in production
+        mapper.setSerializationInclusion( JsonInclude.Include.NON_NULL );
         return mapper;
     }
 

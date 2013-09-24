@@ -13,7 +13,7 @@ import javax.servlet.jsp.tagext.VariableInfo;
 
 import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.fdstore.FDStoreProperties;
-import com.freshdirect.fdstore.content.EnumFilteringValue;
+import com.freshdirect.fdstore.content.EnumSearchFilteringValue;
 import com.freshdirect.fdstore.content.FilteringSortingItem;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.SearchSortType;
@@ -103,8 +103,8 @@ public class ProductsGroupingAndPagingTag extends BodyTagSupportEx {
 
 	private boolean isShowGrouped() {
 		return !simpleView && nav.getSortBy().equals(SearchSortType.BY_RECENCY) && nav.getFilterValues().get(
-				EnumFilteringValue.BRAND) == null && nav.getFilterValues().get(EnumFilteringValue.DEPT) == null && (nav.getFilterValues().get(
-				EnumFilteringValue.CAT) == null || nav.getFilterValues().get(EnumFilteringValue.CAT).equals(
+				EnumSearchFilteringValue.BRAND) == null && nav.getFilterValues().get(EnumSearchFilteringValue.DEPT) == null && (nav.getFilterValues().get(
+				EnumSearchFilteringValue.CAT) == null || nav.getFilterValues().get(EnumSearchFilteringValue.CAT).equals(
 				FDStoreProperties.getNewProductsCatId()));
 	}
 

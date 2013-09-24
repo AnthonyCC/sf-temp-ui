@@ -27,8 +27,8 @@ var FreshDirect = FreshDirect || {};
 
   PopSubMenu.prototype.show = function (e) {
     var from = e.fromElement;
-    console.log(from);
-    console.log(YAHOO.util.Dom.getAncestorByClassName(from, 'popsubmenu'));
+    // console.log(from);
+    // console.log(YAHOO.util.Dom.getAncestorByClassName(from, 'popsubmenu'));
     if (from && (YAHOO.util.Dom.getAncestorByClassName(from, 'popsubmenu') || YAHOO.util.Dom.getAncestorByClassName(from, 'submenu'))) {
       this.show_();
     } else if (this.delay === null) {

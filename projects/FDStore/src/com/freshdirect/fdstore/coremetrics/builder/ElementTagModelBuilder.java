@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.freshdirect.fdstore.FDTimeslot;
-import com.freshdirect.fdstore.content.EnumFilteringValue;
+import com.freshdirect.fdstore.content.FilteringValue;
 import com.freshdirect.fdstore.content.SearchSortType;
 import com.freshdirect.fdstore.content.util.QueryParameterCollection;
 import com.freshdirect.fdstore.coremetrics.tagmodel.ElementTagModel;
@@ -162,7 +162,7 @@ public class ElementTagModelBuilder {
 			
 			StringBuilder idBuilder = new StringBuilder();
 			
-			for(EnumFilteringValue filter : searchNavigator.getFilterValues().keySet()){
+			for(FilteringValue filter : searchNavigator.getFilterValues().keySet()){
 				List<Object> values = searchNavigator.getFilterValues().get(filter);
 				if(values!=null){
 					idBuilder.append(filter.getName().charAt(0)+"-"+values.get(0)+ATTR_DELIMITER);

@@ -15,8 +15,10 @@ import javax.servlet.ServletRequest;
 
 import org.apache.log4j.Logger;
 
-import com.freshdirect.fdstore.content.EnumFilteringValue;
+import com.freshdirect.fdstore.content.EnumSearchFilteringValue;
+import com.freshdirect.fdstore.content.FilteringValue;
 import com.freshdirect.fdstore.content.SearchSortType;
+import com.freshdirect.fdstore.content.SortTypeI;
 import com.freshdirect.fdstore.content.UrlFilterValueDecoder;
 import com.freshdirect.fdstore.content.util.QueryParameter;
 
@@ -45,30 +47,30 @@ public class FilteringNavigator {
 	int pageSize = 0; // 0 means show all in one page
 	int pageNumber = 0;
 
-	SearchSortType sortBy;
+	SortTypeI sortBy;
 	private boolean isSortByDefault;
 	boolean isOrderAscending;
 
-	private Set<EnumFilteringValue> filters;
+	private Set<FilteringValue> filters;
 	
 	{
-		filters = new HashSet<EnumFilteringValue>();
-		filters.add(EnumFilteringValue.DEPT);
-		filters.add(EnumFilteringValue.CAT);
-		filters.add(EnumFilteringValue.SUBCAT);
-		filters.add(EnumFilteringValue.BRAND);
-		filters.add(EnumFilteringValue.EXPERT_RATING);
-		filters.add(EnumFilteringValue.CUSTOMER_RATING);
-		filters.add(EnumFilteringValue.GLUTEN_FREE);
-		filters.add(EnumFilteringValue.KOSHER);
-		filters.add(EnumFilteringValue.NEW_OR_BACK);
-		filters.add(EnumFilteringValue.ON_SALE);
-		filters.add(EnumFilteringValue.RECIPE_CLASSIFICATION);
+		filters = new HashSet<FilteringValue>();
+		filters.add(EnumSearchFilteringValue.DEPT);
+		filters.add(EnumSearchFilteringValue.CAT);
+		filters.add(EnumSearchFilteringValue.SUBCAT);
+		filters.add(EnumSearchFilteringValue.BRAND);
+		filters.add(EnumSearchFilteringValue.EXPERT_RATING);
+		filters.add(EnumSearchFilteringValue.CUSTOMER_RATING);
+		filters.add(EnumSearchFilteringValue.GLUTEN_FREE);
+		filters.add(EnumSearchFilteringValue.KOSHER);
+		filters.add(EnumSearchFilteringValue.NEW_OR_BACK);
+		filters.add(EnumSearchFilteringValue.ON_SALE);
+		filters.add(EnumSearchFilteringValue.RECIPE_CLASSIFICATION);
 	}
 
 	UrlFilterValueDecoder filterDecoder = new UrlFilterValueDecoder(filters);
 
-	private Map<EnumFilteringValue, List<Object>> filterValues;
+	private Map<FilteringValue, List<Object>> filterValues;
 
 	public FilteringNavigator(ServletRequest servletRequest, int defaultPageSize) {
 		Map<String, String> p = new HashMap<String, String>(servletRequest.getParameterMap().size());
@@ -85,14 +87,23 @@ public class FilteringNavigator {
 		saveState();
 	}
 	
-	public FilteringNavigator(Map<EnumFilteringValue, List<Object>> filterValues, int defaultPageSize) {		
+	public FilteringNavigator( Map<FilteringValue, List<Object>> filterValues, SortTypeI sortBy, boolean isOrderAscending, String searchTerm ) {
+		init(new HashMap<String, String>());
+		this.filterValues = filterValues;
+		this.sortBy = sortBy;
+		this.isOrderAscending = isOrderAscending;
+		this.searchTerm = searchTerm;
+		saveState();
+	}
+
+	public FilteringNavigator(Map<FilteringValue, List<Object>> filterValues, int defaultPageSize) {		
 		this.defaultPageSize = defaultPageSize;
 		init(new HashMap<String, String>());
 		this.filterValues = filterValues;
 		saveState();
 	}
 	
-	public FilteringNavigator() {
+	private FilteringNavigator() {
 	}
 
 	public FilteringNavigator clone() {
@@ -116,10 +127,10 @@ public class FilteringNavigator {
 		return nav;
 	}
 
-	private Map<EnumFilteringValue, List<Object>> cloneFilterValues(Map<EnumFilteringValue, List<Object>> filterValues2) {
-		Map<EnumFilteringValue, List<Object>> clone = new HashMap<EnumFilteringValue, List<Object>>();
+	private Map<FilteringValue, List<Object>> cloneFilterValues(Map<FilteringValue, List<Object>> filterValues2) {
+		Map<FilteringValue, List<Object>> clone = new HashMap<FilteringValue, List<Object>>();
 
-		for (Map.Entry<EnumFilteringValue, List<Object>> e : filterValues2.entrySet()) {
+		for (Map.Entry<FilteringValue, List<Object>> e : filterValues2.entrySet()) {
 			clone.put(e.getKey(), new ArrayList<Object>(e.getValue()));
 		}
 
@@ -209,7 +220,7 @@ public class FilteringNavigator {
 		if (filterSource != null) {
 			filterValues = filterDecoder.decode(filterSource);
 		} else {
-			filterValues = new HashMap<EnumFilteringValue, List<Object>>();
+			filterValues = new HashMap<FilteringValue, List<Object>>();
 		}
 
 		/* sort */
@@ -231,7 +242,7 @@ public class FilteringNavigator {
 			 * if (sortBy < 0 || sortBy > SORT_BY_SALE) { sortBy = SORT_DEFAULT; }
 			 */
 		} else {
-			if (filterValues.containsKey(EnumFilteringValue.RECIPE_CLASSIFICATION)) {
+			if (filterValues.containsKey(EnumSearchFilteringValue.RECIPE_CLASSIFICATION)) {
 				sortBy = SearchSortType.DEF4RECIPES /* SORT_DEFAULT_RECIPE */;
 			} else {
 				// sortBy = (view == VIEW_TEXT ? SORT_DEFAULT_TEXT :
@@ -372,7 +383,7 @@ public class FilteringNavigator {
 		return this;
 	}
 
-	public void removeFilter(EnumFilteringValue filter, String value) {
+	public void removeFilter(FilteringValue filter, String value) {
 		List<Object> values = filterValues.get(filter);
 		if (values != null) {
 			for (Iterator<Object> it = values.iterator(); it.hasNext();) {
@@ -384,83 +395,83 @@ public class FilteringNavigator {
 	}
 
 	public void removeAllFilters() {
-		filterValues = new HashMap<EnumFilteringValue, List<Object>>();
+		filterValues = new HashMap<FilteringValue, List<Object>>();
 	}
 
 	public void setDeptFilter(String value) {
 		List<Object> v = new ArrayList<Object>();
 		v.add(value);
-		filterValues.put(EnumFilteringValue.DEPT, v);
+		filterValues.put(EnumSearchFilteringValue.DEPT, v);
 	}
 
 	public void addDeptFilter(String value) {
-		if (filterValues.get(EnumFilteringValue.DEPT) != null) {
-			filterValues.get(EnumFilteringValue.DEPT).add(value);
+		if (filterValues.get(EnumSearchFilteringValue.DEPT) != null) {
+			filterValues.get(EnumSearchFilteringValue.DEPT).add(value);
 		} else {
 			setDeptFilter(value);
 		}
 	}
 
 	public void removeDeptFilters() {
-		filterValues.remove(EnumFilteringValue.DEPT);
+		filterValues.remove(EnumSearchFilteringValue.DEPT);
 	}
 
 	public void setCatFilter(String value) {
 		List<Object> v = new ArrayList<Object>();
 		v.add(value);
-		filterValues.put(EnumFilteringValue.CAT, v);
+		filterValues.put(EnumSearchFilteringValue.CAT, v);
 	}
 
 	public void addCatFilter(String value) {
-		if (filterValues.get(EnumFilteringValue.CAT) != null) {
-			filterValues.get(EnumFilteringValue.CAT).add(value);
+		if (filterValues.get(EnumSearchFilteringValue.CAT) != null) {
+			filterValues.get(EnumSearchFilteringValue.CAT).add(value);
 		} else {
 			setCatFilter(value);
 		}
 	}
 
 	public void removeCatFilters() {
-		filterValues.remove(EnumFilteringValue.CAT);
+		filterValues.remove(EnumSearchFilteringValue.CAT);
 	}
 
 	public void setSubCatFilter(String value) {
 		List<Object> v = new ArrayList<Object>();
 		v.add(value);
-		filterValues.put(EnumFilteringValue.SUBCAT, v);
+		filterValues.put(EnumSearchFilteringValue.SUBCAT, v);
 	}
 
 	public void addSubCatFilter(String value) {
-		if (filterValues.get(EnumFilteringValue.SUBCAT) != null) {
-			filterValues.get(EnumFilteringValue.SUBCAT).add(value);
+		if (filterValues.get(EnumSearchFilteringValue.SUBCAT) != null) {
+			filterValues.get(EnumSearchFilteringValue.SUBCAT).add(value);
 		} else {
 			setSubCatFilter(value);
 		}
 	}
 
 	public void removeSubCatFilters() {
-		filterValues.remove(EnumFilteringValue.SUBCAT);
+		filterValues.remove(EnumSearchFilteringValue.SUBCAT);
 	}
 
 	public void setBrandFilter(String value) {
 		List<Object> v = new ArrayList<Object>();
 		v.add(value);
-		filterValues.put(EnumFilteringValue.BRAND, v);
+		filterValues.put(EnumSearchFilteringValue.BRAND, v);
 	}
 
 	public void addBrandFilter(String value) {
-		if (filterValues.get(EnumFilteringValue.BRAND) != null) {
-			filterValues.get(EnumFilteringValue.BRAND).add(value);
+		if (filterValues.get(EnumSearchFilteringValue.BRAND) != null) {
+			filterValues.get(EnumSearchFilteringValue.BRAND).add(value);
 		} else {
 			setBrandFilter(value);
 		}
 	}
 
 	public void removeBrandFilters() {
-		filterValues.remove(EnumFilteringValue.BRAND);
+		filterValues.remove(EnumSearchFilteringValue.BRAND);
 	}
 
 	public void removeBrandFilter(String value) {
-		List<Object> values = filterValues.get(EnumFilteringValue.BRAND);
+		List<Object> values = filterValues.get(EnumSearchFilteringValue.BRAND);
 		if (values != null) {
 			for (Iterator<Object> it = values.iterator(); it.hasNext();) {
 				if (value.equals(it.next())) {
@@ -473,23 +484,23 @@ public class FilteringNavigator {
 	public void setCustRatingFilter(String value) {
 		List<Object> v = new ArrayList<Object>();
 		v.add(value);
-		filterValues.put(EnumFilteringValue.CUSTOMER_RATING, v);
+		filterValues.put(EnumSearchFilteringValue.CUSTOMER_RATING, v);
 	}
 
 	public void addCustRatingFilter(String value) {
-		if (filterValues.get(EnumFilteringValue.CUSTOMER_RATING) != null) {
-			filterValues.get(EnumFilteringValue.CUSTOMER_RATING).add(value);
+		if (filterValues.get(EnumSearchFilteringValue.CUSTOMER_RATING) != null) {
+			filterValues.get(EnumSearchFilteringValue.CUSTOMER_RATING).add(value);
 		} else {
 			setCustRatingFilter(value);
 		}
 	}
 
 	public void removeCustRatingFilters() {
-		filterValues.remove(EnumFilteringValue.CUSTOMER_RATING);
+		filterValues.remove(EnumSearchFilteringValue.CUSTOMER_RATING);
 	}
 
 	public void removeCustRatingFilter(String value) {
-		List<Object> values = filterValues.get(EnumFilteringValue.CUSTOMER_RATING);
+		List<Object> values = filterValues.get(EnumSearchFilteringValue.CUSTOMER_RATING);
 		if (values != null) {
 			for (Iterator<Object> it = values.iterator(); it.hasNext();) {
 				if (value.equals(it.next())) {
@@ -502,23 +513,23 @@ public class FilteringNavigator {
 	public void setExpRatingFilter(String value) {
 		List<Object> v = new ArrayList<Object>();
 		v.add(value);
-		filterValues.put(EnumFilteringValue.EXPERT_RATING, v);
+		filterValues.put(EnumSearchFilteringValue.EXPERT_RATING, v);
 	}
 
 	public void addExpRatingFilter(String value) {
-		if (filterValues.get(EnumFilteringValue.EXPERT_RATING) != null) {
-			filterValues.get(EnumFilteringValue.EXPERT_RATING).add(value);
+		if (filterValues.get(EnumSearchFilteringValue.EXPERT_RATING) != null) {
+			filterValues.get(EnumSearchFilteringValue.EXPERT_RATING).add(value);
 		} else {
 			setExpRatingFilter(value);
 		}
 	}
 
 	public void removeExpRatingFilters() {
-		filterValues.remove(EnumFilteringValue.EXPERT_RATING);
+		filterValues.remove(EnumSearchFilteringValue.EXPERT_RATING);
 	}
 
 	public void removeExpRatingFilter(String value) {
-		List<Object> values = filterValues.get(EnumFilteringValue.EXPERT_RATING);
+		List<Object> values = filterValues.get(EnumSearchFilteringValue.EXPERT_RATING);
 		if (values != null) {
 			for (Iterator<Object> it = values.iterator(); it.hasNext();) {
 				if (value.equals(it.next())) {
@@ -529,7 +540,7 @@ public class FilteringNavigator {
 	}
 
 	public boolean isSetExpRatingFilter(String value) {
-		List<Object> values = filterValues.get(EnumFilteringValue.EXPERT_RATING);
+		List<Object> values = filterValues.get(EnumSearchFilteringValue.EXPERT_RATING);
 		if (values != null) {
 			for (Iterator<Object> it = values.iterator(); it.hasNext();) {
 				if (value.equals(it.next())) {
@@ -541,7 +552,7 @@ public class FilteringNavigator {
 	}
 
 	public boolean isSetCustRatingFilter(String value) {
-		List<Object> values = filterValues.get(EnumFilteringValue.CUSTOMER_RATING);
+		List<Object> values = filterValues.get(EnumSearchFilteringValue.CUSTOMER_RATING);
 		if (values != null) {
 			for (Iterator<Object> it = values.iterator(); it.hasNext();) {
 				if (value.equals(it.next())) {
@@ -555,91 +566,91 @@ public class FilteringNavigator {
 	public void setOnSalelFilter(String value) {
 		List<Object> v = new ArrayList<Object>();
 		v.add(value);
-		filterValues.put(EnumFilteringValue.ON_SALE, v);
+		filterValues.put(EnumSearchFilteringValue.ON_SALE, v);
 	}
 
 	public void addOnSalelFilter(String value) {
-		if (filterValues.get(EnumFilteringValue.ON_SALE) != null) {
-			filterValues.get(EnumFilteringValue.ON_SALE).add(value);
+		if (filterValues.get(EnumSearchFilteringValue.ON_SALE) != null) {
+			filterValues.get(EnumSearchFilteringValue.ON_SALE).add(value);
 		} else {
 			setOnSalelFilter(value);
 		}
 	}
 
 	public void removeOnSaleFilters() {
-		filterValues.remove(EnumFilteringValue.ON_SALE);
+		filterValues.remove(EnumSearchFilteringValue.ON_SALE);
 	}
 
 	public void setNewOrBackFilter(String value) {
 		List<Object> v = new ArrayList<Object>();
 		v.add(value);
-		filterValues.put(EnumFilteringValue.NEW_OR_BACK, v);
+		filterValues.put(EnumSearchFilteringValue.NEW_OR_BACK, v);
 	}
 
 	public void addNewOrBackFilter(String value) {
-		if (filterValues.get(EnumFilteringValue.NEW_OR_BACK) != null) {
-			filterValues.get(EnumFilteringValue.NEW_OR_BACK).add(value);
+		if (filterValues.get(EnumSearchFilteringValue.NEW_OR_BACK) != null) {
+			filterValues.get(EnumSearchFilteringValue.NEW_OR_BACK).add(value);
 		} else {
 			setNewOrBackFilter(value);
 		}
 	}
 
 	public void removeNewOrBackFilters() {
-		filterValues.remove(EnumFilteringValue.NEW_OR_BACK);
+		filterValues.remove(EnumSearchFilteringValue.NEW_OR_BACK);
 	}
 
 	public void setKosherFilter(String value) {
 		List<Object> v = new ArrayList<Object>();
 		v.add(value);
-		filterValues.put(EnumFilteringValue.KOSHER, v);
+		filterValues.put(EnumSearchFilteringValue.KOSHER, v);
 	}
 
 	public void addKosherFilter(String value) {
-		if (filterValues.get(EnumFilteringValue.KOSHER) != null) {
-			filterValues.get(EnumFilteringValue.KOSHER).add(value);
+		if (filterValues.get(EnumSearchFilteringValue.KOSHER) != null) {
+			filterValues.get(EnumSearchFilteringValue.KOSHER).add(value);
 		} else {
 			setKosherFilter(value);
 		}
 	}
 
 	public void removeKosherFilters() {
-		filterValues.remove(EnumFilteringValue.KOSHER);
+		filterValues.remove(EnumSearchFilteringValue.KOSHER);
 	}
 
 	public void setGlutenFilter(String value) {
 		List<Object> v = new ArrayList<Object>();
 		v.add(value);
-		filterValues.put(EnumFilteringValue.GLUTEN_FREE, v);
+		filterValues.put(EnumSearchFilteringValue.GLUTEN_FREE, v);
 	}
 
 	public void addGlutenFilter(String value) {
-		if (filterValues.get(EnumFilteringValue.GLUTEN_FREE) != null) {
-			filterValues.get(EnumFilteringValue.GLUTEN_FREE).add(value);
+		if (filterValues.get(EnumSearchFilteringValue.GLUTEN_FREE) != null) {
+			filterValues.get(EnumSearchFilteringValue.GLUTEN_FREE).add(value);
 		} else {
 			setGlutenFilter(value);
 		}
 	}
 
 	public void removeGlutenFilters() {
-		filterValues.remove(EnumFilteringValue.GLUTEN_FREE);
+		filterValues.remove(EnumSearchFilteringValue.GLUTEN_FREE);
 	}
 
 	public void setRecipeFilter(String value) {
 		List<Object> v = new ArrayList<Object>();
 		v.add(value);
-		filterValues.put(EnumFilteringValue.RECIPE_CLASSIFICATION, v);
+		filterValues.put(EnumSearchFilteringValue.RECIPE_CLASSIFICATION, v);
 	}
 
 	public void addRecipeFilter(String value) {
-		if (filterValues.get(EnumFilteringValue.RECIPE_CLASSIFICATION) != null) {
-			filterValues.get(EnumFilteringValue.RECIPE_CLASSIFICATION).add(value);
+		if (filterValues.get(EnumSearchFilteringValue.RECIPE_CLASSIFICATION) != null) {
+			filterValues.get(EnumSearchFilteringValue.RECIPE_CLASSIFICATION).add(value);
 		} else {
 			setRecipeFilter(value);
 		}
 	}
 
 	public void removeRecipeFilters() {
-		filterValues.remove(EnumFilteringValue.RECIPE_CLASSIFICATION);
+		filterValues.remove(EnumSearchFilteringValue.RECIPE_CLASSIFICATION);
 	}
 
 	public void setSearchTerm(String searchTerm) {
@@ -653,7 +664,7 @@ public class FilteringNavigator {
 	public void setRefined(boolean refined) {
 		this.refined = refined;
 	}
-
+	
 	public boolean isRefined() {
 		return refined;
 	}
@@ -760,7 +771,7 @@ public class FilteringNavigator {
 		return view == VIEW_TEXT;
 	}
 
-	public SearchSortType getSortBy() {
+	public SortTypeI getSortBy() {
 		return sortBy;
 	}
 
@@ -769,7 +780,7 @@ public class FilteringNavigator {
 		return sortBy.getLabel();
 	}
 
-	public void setSortBy(SearchSortType sortType) {
+	public void setSortBy(SortTypeI sortType) {
 		if (sortBy == sortType)
 			return;
 
@@ -807,7 +818,7 @@ public class FilteringNavigator {
 	public boolean isDefaultSort() {
 		return (view == VIEW_TEXT && sortBy == SearchSortType.DEF4TEXT)
 				|| ((view == VIEW_GRID || view == VIEW_LIST) && sortBy == SearchSortType.DEF4NOTTEXT)
-				|| (filterValues.containsKey(EnumFilteringValue.RECIPE_CLASSIFICATION) && sortBy == SearchSortType.DEF4RECIPES);
+				|| (filterValues.containsKey(EnumSearchFilteringValue.RECIPE_CLASSIFICATION) && sortBy == SearchSortType.DEF4RECIPES);
 	}
 
 	public boolean isTextViewDefault() {
@@ -875,7 +886,7 @@ public class FilteringNavigator {
 		if (!filterValues.isEmpty()) {
 			buf.append("&amp;genericFilter=");
 
-			for (EnumFilteringValue key : filterValues.keySet()) {
+			for (FilteringValue key : filterValues.keySet()) {
 				List<Object> fl = filterValues.get(key);
 				for (Object value : fl) {
 					buf.append(key.getName() + "=" + value.toString() + ",");
@@ -899,8 +910,8 @@ public class FilteringNavigator {
 		}
 		
 		/* DEPT */
-		if (filterValues.get(EnumFilteringValue.DEPT) != null && !filterValues.get(EnumFilteringValue.DEPT).isEmpty() ) {
-			buf.append("&amp;deptId=" + filterValues.get(EnumFilteringValue.DEPT).get(0) );
+		if (filterValues.get(EnumSearchFilteringValue.DEPT) != null && !filterValues.get(EnumSearchFilteringValue.DEPT).isEmpty() ) {
+			buf.append("&amp;deptId=" + filterValues.get(EnumSearchFilteringValue.DEPT).get(0) );
 		}
 
 		if (fromDym)
@@ -1076,11 +1087,11 @@ public class FilteringNavigator {
 		this.defaultPageSize = defaultPageSize;
 	}
 
-	public Map<EnumFilteringValue, List<Object>> getFilterValues() {
+	public Map<FilteringValue, List<Object>> getFilterValues() {
 		return filterValues;
 	}
 
-	public void setFilterValues(Map<EnumFilteringValue, List<Object>> filterValues) {
+	public void setFilterValues(Map<FilteringValue, List<Object>> filterValues) {
 		this.filterValues = filterValues;
 	}
 
@@ -1100,15 +1111,15 @@ public class FilteringNavigator {
 		private boolean refined;
 		private int pageSize;
 		private int pageNumber;
-		private SearchSortType sortBy;
+		private SortTypeI sortBy;
 		private boolean isOrderAscending;
-		private Set<EnumFilteringValue> filters;
-		private final Map<EnumFilteringValue, List<Object>> filterValues;
+		private Set<FilteringValue> filters;
+		private final Map<FilteringValue, List<Object>> filterValues;
 		private boolean recipes;
 
 		public OriginalStatus(String searchTerm, int view, boolean fromDym, boolean refined, int pageSize, int pageNumber,
-				SearchSortType sortBy, boolean isOrderAscending, Set<EnumFilteringValue> filters,
-				Map<EnumFilteringValue, List<Object>> filterValues, boolean recipes) {
+				SortTypeI sortBy, boolean isOrderAscending, Set<FilteringValue> filters,
+				Map<FilteringValue, List<Object>> filterValues, boolean recipes) {
 			super();
 			this.searchTerm = searchTerm;
 			this.view = view;
@@ -1147,7 +1158,7 @@ public class FilteringNavigator {
 			return pageNumber;
 		}
 
-		public SearchSortType getSortBy() {
+		public SortTypeI getSortBy() {
 			return sortBy;
 		}
 
@@ -1155,18 +1166,17 @@ public class FilteringNavigator {
 			return isOrderAscending;
 		}
 
-		public Set<EnumFilteringValue> getFilters() {
+		public Set<FilteringValue> getFilters() {
 			return filters;
 		}
 
-		public Map<EnumFilteringValue, List<Object>> getFilterValues() {
+		public Map<FilteringValue, List<Object>> getFilterValues() {
 			return filterValues;
 		}
 
 		public boolean isRecipes() {
 			return recipes;
 		}
-		
 		
 	}
 }

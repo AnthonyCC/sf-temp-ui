@@ -106,31 +106,31 @@ public class TxProductControlTag extends BodyTagSupport {
 			//   populate with the necessary input fields
 			buf.append("<div style=\"height: 28px; margin: 0px; padding: 0px; visibility: hidden;\">\n");
 
-			buf.append("  <input type=\"hidden\" name=\"productId"+txPostfix+"\" value=\""+realProduct.getContentName()+"\">\n");
-			buf.append("  <input type=\"hidden\" name=\"catId"+txPostfix+"\" value=\""+realProduct.getParentNode().getContentName()+"\">\n");
-			buf.append("  <input type=\"hidden\" name=\"skuCode"+txPostfix+"\" value=\""+impression.getSku()+"\">\n");
-			buf.append("  <input type=\"hidden\" name=\"quantity"+txPostfix+"\" value=\"0\">\n");
+			buf.append("  <input type=\"hidden\" name=\"productId"+txPostfix+"\" value=\""+realProduct.getContentName()+"\" data-ATCAttribute=\"productId\">\n");
+			buf.append("  <input type=\"hidden\" name=\"catId"+txPostfix+"\" value=\""+realProduct.getParentNode().getContentName()+"\" data-ATCAttribute=\"catId\">\n");
+			buf.append("  <input type=\"hidden\" name=\"skuCode"+txPostfix+"\" value=\""+impression.getSku()+"\" data-ATCAttribute=\"skuCode\">\n");
+			buf.append("  <input type=\"hidden\" name=\"quantity"+txPostfix+"\" value=\"0\" data-ATCAttribute=\"quantity\">\n");
 
 			buf.append("</div>\n");
 		} else {
 			buf.append("<table align=\"center\" style=\"border-collapse: collapse; border-spacing: 0px; margin: 0 auto\">\n");
 			buf.append("  <tr>\n");
 			buf.append("    <td style=\"height: 28px; margin: 0px; padding: 0px;\">\n");
-			buf.append("      <input type=\"hidden\" name=\"productId"+txPostfix+"\" value=\""+realProduct.getContentName()+"\">\n");
-			buf.append("      <input type=\"hidden\" name=\"catId"+txPostfix+"\" value=\""+realProduct.getParentNode().getContentName()+"\">\n");
-			buf.append("      <input type=\"hidden\" name=\"skuCode"+txPostfix+"\" value=\""+impression.getSku()+"\">\n");
+			buf.append("      <input type=\"hidden\" name=\"productId"+txPostfix+"\" value=\""+realProduct.getContentName()+"\" data-ATCAttribute=\"productId\">\n");
+			buf.append("      <input type=\"hidden\" name=\"catId"+txPostfix+"\" value=\""+realProduct.getParentNode().getContentName()+"\" data-ATCAttribute=\"catId\">\n");
+			buf.append("      <input type=\"hidden\" name=\"skuCode"+txPostfix+"\" value=\""+impression.getSku()+"\" data-ATCAttribute=\"skuCode\">\n");
 	
 			if (product.isSoldBySalesUnits()) {
-				buf.append("      <input type=\"hidden\" name=\"quantity"+txPostfix+"\" value=\"1\">\n");
+				buf.append("      <input type=\"hidden\" name=\"quantity"+txPostfix+"\" value=\"1\" data-ATCAttribute=\"quantity\">\n");
 	
 				// render options
 				for (Iterator<Map.Entry<String,String>> iit = configuration.getOptions().entrySet().iterator(); iit.hasNext(); ) {
 					Map.Entry<String,String>   entry = iit.next();
-					buf.append("      <input type=\"hidden\" name=\""+entry.getKey()+txPostfix+"\" value=\""+entry.getValue()+"\">\n");
+					buf.append("      <input type=\"hidden\" name=\""+entry.getKey()+txPostfix+"\" value=\""+entry.getValue()+"\" data-ATCAttribute=\""+entry.getKey()+"\">\n");
 				}
 				
 				// render sales units
-				buf.append("      <select name=\"salesUnit"+txPostfix+"\" style=\"width: 60px\" class=\"text10\" onChange=\""+ jsNamespace +".pricings["+ seqNum +"].setSalesUnit(this.value);\">\n");
+				buf.append("      <select data-ATCAttribute=\"salesUnit\" name=\"salesUnit"+txPostfix+"\" style=\"width: 60px\" class=\"text10\" onChange=\""+ jsNamespace +".pricings["+ seqNum +"].setSalesUnit(this.value);\">\n");
 				buf.append("        <option value=\"\" selected=\"selected\"></option>\n");
 				FDSalesUnit     salesUnits[] = impression.getFDProduct().getSalesUnits();
 	            for (int ii = 0; ii < salesUnits.length; ++ii) {
@@ -154,11 +154,11 @@ public class TxProductControlTag extends BodyTagSupport {
 	
 				for (Iterator<Map.Entry<String,String>> it_opts = configuration.getOptions().entrySet().iterator(); it_opts.hasNext();) {
 					Map.Entry<String,String>   entry = (Map.Entry<String,String>) it_opts.next();
-					buf.append("      <input type=\"hidden\" name=\""+entry.getKey()+txPostfix+"\" value=\""+entry.getValue()+"\">\n");
+					buf.append("      <input type=\"hidden\" name=\""+entry.getKey()+txPostfix+"\" value=\""+entry.getValue()+"\" data-ATCAttribute=\""+entry.getKey()+"\">\n");
 				}
-				buf.append("      <div class=\"qtyinput\">");
+				buf.append("      <div class=\"qtyinput\" data-component=\"quantity\">");
 				buf.append("        <span class=\"quantity_minus\" onclick=\""+jsNamespace+".pricings["+ seqNum +"].changeQty("+ (-product.getQuantityIncrement()) + ");\"><span>Decrease quantity</span></span>\n");
-				buf.append("        <input class=\"qty\" type=\"text\" id=\"quantity"+txPostfix+"\" name=\"quantity"+txPostfix+"\" value=\""+(setMinimumQt ? defaultQuantity: "")+"\" size=\"3\" maxlength=\"4\" class=\"text10\" onChange=\""+ jsNamespace +".pricings["+ seqNum +"].changeQty(0);\" onBlur=\""+ jsNamespace +".pricings["+ seqNum +"].setQuantity(this.value);\">\n");
+				buf.append("        <input data-ATCAttribute=\"quantity\" class=\"qty\" type=\"text\" id=\"quantity"+txPostfix+"\" name=\"quantity"+txPostfix+"\" value=\""+(setMinimumQt ? defaultQuantity: "")+"\" size=\"3\" maxlength=\"4\" class=\"text10\" onChange=\""+ jsNamespace +".pricings["+ seqNum +"].changeQty(0);\" onBlur=\""+ jsNamespace +".pricings["+ seqNum +"].setQuantity(this.value);\">\n");
 				buf.append("        <span class=\"quantity_plus\" onclick=\""+jsNamespace+".pricings["+ seqNum +"].changeQty("+ product.getQuantityIncrement() + ");\"><span>Increase quantity</span></span>\n");
 				buf.append("      </div>");
 				buf.append("    </td>\n");
@@ -166,7 +166,9 @@ public class TxProductControlTag extends BodyTagSupport {
 	
 			buf.append("  </tr>\n");
 			buf.append("</table>\n");
-		}
+
+			
+	}
 		
 		return buf.toString();
 	}

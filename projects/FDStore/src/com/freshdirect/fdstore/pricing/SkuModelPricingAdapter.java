@@ -89,4 +89,9 @@ public class SkuModelPricingAdapter extends SkuModel {
 	public PricingContext getPricingContext() {
 		return this.pricingCtx;
 	}
+	
+	public SkuModel getRealSku() {
+		return innerSku;
+	}
+
 }

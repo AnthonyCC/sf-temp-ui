@@ -15,7 +15,5 @@
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/fop-0.20.5.jar"/>
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/telargoservices.jar"/>
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/guava-12.0.jar"/>
-	<classpathentry kind="var" path="FD_LIBS/thirdparty/jackson-core-lgpl-1.2.0.jar"/>
-	<classpathentry kind="var" path="FD_LIBS/thirdparty/jackson-mapper-lgpl-1.2.0.jar"/>
 	<classpathentry kind="output" path="docroot/WEB-INF/classes"/>
 </classpath>

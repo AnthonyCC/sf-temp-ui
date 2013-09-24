@@ -1,8 +1,5 @@
 package com.freshdirect.webapp.taglib.coremetrics;
 
-import javax.servlet.http.HttpSession;
-import javax.servlet.jsp.PageContext;
-
 import org.apache.log4j.Logger;
 
 import com.freshdirect.fdstore.coremetrics.builder.OrderTagModelBuilder;
@@ -16,16 +13,17 @@ import com.freshdirect.webapp.taglib.fdstore.SessionName;
 public class CmOrderTag extends AbstractCmTag {
 	
 	private static final Logger LOGGER = LoggerFactory.getInstance(CmOrderTag.class);
-	private static final String ORDER_TAG_FS = "cmCreateOrderTag(%s,%s,%s,%s,%s,%s,%s,%s);";
-	
 	private FDOrderI order;
 
 	@Override
+	protected String getFunctionName() {
+		return "cmCreateOrderTag";
+	}
+	
+	@Override
 	protected String getTagJs() throws SkipTagException {
 		
-		PageContext ctx = (PageContext) getJspContext();
-		HttpSession session = ctx.getSession();
-		FDUserI user = (FDUserI) session.getAttribute(SessionName.USER);		
+		FDUserI user = (FDUserI) getSession().getAttribute(SessionName.USER);		
 		
 		if( order == null ){
 			throw new SkipTagException("Order is null");
@@ -34,7 +32,7 @@ public class CmOrderTag extends AbstractCmTag {
 		OrderTagModelBuilder builder = new OrderTagModelBuilder(order, user);
 		OrderTagModel model = builder.buildTagModel();
 		
-		String tagJs=String.format(ORDER_TAG_FS,
+		String tagJs=getFormattedTag(
 				toJsVar(model.getOrderId()),
 				toJsVar(model.getOrderSubtotal()),
 				toJsVar(model.getOrderShipping()),

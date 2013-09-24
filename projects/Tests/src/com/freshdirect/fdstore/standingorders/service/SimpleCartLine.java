@@ -1,5 +1,6 @@
 package com.freshdirect.fdstore.standingorders.service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -9,6 +10,7 @@ import com.freshdirect.affiliate.ErpAffiliate;
 import com.freshdirect.common.pricing.Discount;
 import com.freshdirect.common.pricing.EnumTaxationType;
 import com.freshdirect.common.pricing.PricingContext;
+import com.freshdirect.customer.EnumSaleStatus;
 import com.freshdirect.customer.EnumATCContext;
 import com.freshdirect.customer.ErpClientCode;
 import com.freshdirect.customer.ErpCouponDiscountLineModel;
@@ -685,13 +687,13 @@ public class SimpleCartLine implements FDCartLineI {
 		
 	}
 
-	@Override
+	@Override @Deprecated
 	public boolean hasCouponApplied() {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
-	@Override
+	@Override @Deprecated
 	public void setCouponApplied(boolean applied) {
 		// TODO Auto-generated method stub
 		
@@ -720,6 +722,48 @@ public class SimpleCartLine implements FDCartLineI {
 			String coremetricsPageContentHierarchy) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public Date getDeliveryStartDate() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void setDeliveryStartDate(Date deliveryStartDate) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public String getOrderId() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void setOrderId(String orderId) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public EnumSaleStatus getSaleStatus() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void setSaleStatus(EnumSaleStatus saleStatus) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public double getConfiguredPrice() {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 
 	@Override

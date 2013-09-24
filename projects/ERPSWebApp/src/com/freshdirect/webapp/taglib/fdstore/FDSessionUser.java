@@ -308,7 +308,8 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 
     public void logImpression(String variant, int productCount) {
         if (sessionId == null) {
-            throw new IllegalStateException("current FD user not bound to session");
+        	LOGGER.error( "current FD user not bound to session" );
+        	return;
         }
 
         SessionImpressionLogEntry entry = impressions.get(variant);
@@ -322,7 +323,8 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 
     public void logTabImpression(String variant, int tabCount) {
         if (sessionId == null) {
-            throw new IllegalStateException("current FD user not bound to session");
+        	LOGGER.error( "current FD user not bound to session" );
+        	return;
         }
 
         SessionImpressionLogEntry entry = impressions.get(variant);
@@ -1526,6 +1528,16 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 	@Override
 	public void setExternalPromoCampaigns(Set<ExternalCampaign> externalCampaigns) {
 		this.user.setExternalPromoCampaigns(externalCampaigns);
+	}
+
+	@Override
+	public String getDefaultListId() {
+		return user.getDefaultListId();
+	}
+
+	@Override
+	public void setDefaultListId( String listId ) {
+		user.setDefaultListId( listId );
 	}
 	
 	public boolean isRobot(){

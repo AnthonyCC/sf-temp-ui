@@ -7,11 +7,11 @@ import com.freshdirect.fdstore.coremetrics.tagmodel.ShopTagModel;
 import com.freshdirect.fdstore.customer.FDCartLineI;
 
 public class CmShop5Tag extends AbstractCmShopTag<Shop5TagModelBuilder> {
-	private static final String SHOP_5_TAG_FS = "cmCreateShopAction5Tag(%s,%s,%s,%s,%s,%s);";
 
 	/**
 	 * Optional list of cart lines. If set, overrides recent order lines.
 	 */
+	@SuppressWarnings( "unused" )
 	private List<FDCartLineI> explicitList = null;
 
 	/**
@@ -29,9 +29,14 @@ public class CmShop5Tag extends AbstractCmShopTag<Shop5TagModelBuilder> {
 		tagModelBuilder = new Shop5TagModelBuilder();
 	}
 
+	@Override
+	protected String getFunctionName() {
+		return "cmCreateShopAction5Tag";
+	}
+	
 	protected void appendTag(StringBuilder shopScriptSb, ShopTagModel tagModel){
-		shopScriptSb.append("\n").append(
-				String.format(SHOP_5_TAG_FS, 
+		shopScriptSb.append(
+				getFormattedTag( 
 						toJsVar(tagModel.getProductId()), 
 						toJsVar(tagModel.getProductName()), 
 						toJsVar(tagModel.getQuantity()), 

@@ -6,7 +6,7 @@ import java.util.Set;
 
 public class RecipeFilterMenuDecorator extends GenericFilterDecorator<FilteringSortingItem<Recipe>>{
 
-	public RecipeFilterMenuDecorator(Set<EnumFilteringValue> filters) {
+	public RecipeFilterMenuDecorator(Set<FilteringValue> filters) {
 		super(filters);
 	}
 
@@ -15,7 +15,13 @@ public class RecipeFilterMenuDecorator extends GenericFilterDecorator<FilteringS
 		
 		Recipe recipe=item.getNode();
 		
-		for (EnumFilteringValue filter : filters) {
+		for (FilteringValue filterSource : filters) {
+			
+			if(!(filterSource instanceof EnumSearchFilteringValue)){
+				throw new IllegalArgumentException("Only EnumSearchFilteringValue allowed here.");
+			}
+			
+			EnumSearchFilteringValue filter = (EnumSearchFilteringValue) filterSource;
 			
 			FilteringMenuItem menu = new FilteringMenuItem();
 			Set<FilteringMenuItem> menus = new HashSet<FilteringMenuItem>();
@@ -33,7 +39,7 @@ public class RecipeFilterMenuDecorator extends GenericFilterDecorator<FilteringS
 						menu=new FilteringMenuItem();						
 					}
 				}
-				item.putMenuValue(EnumFilteringValue.RECIPE_CLASSIFICATION, menus);
+				item.putMenuValue(EnumSearchFilteringValue.RECIPE_CLASSIFICATION, menus);
 			}
 			}
 		}

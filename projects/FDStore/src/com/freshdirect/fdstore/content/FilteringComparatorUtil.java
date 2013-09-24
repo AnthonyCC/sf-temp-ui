@@ -25,7 +25,7 @@ public class FilteringComparatorUtil {
 	public static Comparator<FilteringSortingItem<ProductModel>> createProductComparator(List<FilteringSortingItem<ProductModel>> products,
 			String userId, PricingContext pricingContext, String suggestedTerm, FilteringNavigator nav, boolean showGrouped) {
 		
-		SearchSortType sortBy = nav.getSortBy();
+		SearchSortType sortBy = (SearchSortType)nav.getSortBy();
 		boolean ascending = nav.isSortOrderingAscending();
 		
 		ComparatorChain<FilteringSortingItem<ProductModel>> comparator;

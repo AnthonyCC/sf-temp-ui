@@ -63,10 +63,8 @@ if(user != null) {
 <% 	if (!cutoffInfoDisplayed) { 
 	%><div class="message invisible" data-type="platterwarning"><%@ include file="/common/template/includes/i_platter_warning.jspf"%></div>
 	  <div class="message invisible" data-type="reservationwarning"><%@ include file="/common/template/includes/i_reservation_warning.jspf"%></div><%
-}%>
-	<script>(function($){ $('.message').messages('add'); })(jQuery)</script>
-<%
-		String uri = request.getRequestURI().toLowerCase();
+}
+	String uri = request.getRequestURI().toLowerCase();
 %>	
   <div class="container globalnav_top <%= (uri.contains("/checkout/") || uri.contains("view_cart.jsp") || uri.contains("merge_cart.jsp")) ? "disableCart" : "" %>">
   <%

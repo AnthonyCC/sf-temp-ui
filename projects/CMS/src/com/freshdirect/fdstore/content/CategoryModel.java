@@ -23,11 +23,9 @@ import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.fdstore.FDContentTypes;
 import com.freshdirect.cms.smartstore.CmsRecommenderService;
 import com.freshdirect.cms.util.ProductPromotionUtil;
-import com.freshdirect.erp.ErpFactory;
 import com.freshdirect.erp.ErpProductPromotionPreviewInfo;
 import com.freshdirect.erp.ejb.FDProductPromotionManager;
 import com.freshdirect.erp.ejb.ProductPromotionInfoManager;
-import com.freshdirect.erp.model.ErpProductInfoModel;
 import com.freshdirect.fdstore.FDCachedFactory;
 import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDProductPromotionInfo;
@@ -39,7 +37,6 @@ import com.freshdirect.fdstore.ecoupon.FDCouponFactory;
 import com.freshdirect.fdstore.ecoupon.model.FDCouponUPCInfo;
 import com.freshdirect.framework.conf.FDRegistry;
 import com.freshdirect.framework.util.BalkingExpiringReference;
-import com.freshdirect.framework.util.StringUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
 public class CategoryModel extends ProductContainer {
@@ -919,6 +916,26 @@ public class CategoryModel extends ProductContainer {
     			products.add(p);
     	return products;
     }
+    
+    // Another version of the above method, this time returning a list.
+    // Using a set like above only loses the natural ordering (CMS order) 
+    // which was previously in the lists. There is no point in that.
+    // Unless it was meant to filter out duplicates. 
+    // Which will not work anyway using this approach. 
+    // The same products in different subcategories will have different context,
+    // and so they will be different objects, with possibly different values for
+    // inheritable properties/relationships.
+    // Using a simple HashSet will not resolve that they are the same products after all ...
+    public List<ProductModel> getAllChildProductsAsList() {
+    	List<ProductModel> products = new ArrayList<ProductModel>();
+    	for (ProductModel p : getProducts())
+    		products.add(p);
+    	for (CategoryModel c : getSubcategories())
+    		for (ProductModel p : c.getProducts())
+    			products.add(p);
+    	return products;
+    }
+    
     
 	public boolean isHideWineRatingPricing() {
 		return getAttribute("HIDE_WINE_RATING", false);

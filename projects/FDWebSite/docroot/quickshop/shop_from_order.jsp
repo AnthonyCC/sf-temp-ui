@@ -1,3 +1,4 @@
+<%@page import="com.freshdirect.webapp.taglib.QuickShopRedirector"%>
 <%@ page import='java.util.*' %>
 <%@ page import='java.io.*' %>
 <%@ page import='com.freshdirect.customer.*'%>
@@ -13,7 +14,10 @@
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
-<fd:CheckLoginStatus guestAllowed='false' recognizedAllowed='false' />
+<fd:CheckLoginStatus id="user" guestAllowed='false' recognizedAllowed='false' />
+
+<%-- redirect to new quickshop page if allowed to see it (partial rollout check) --%>
+<fd:QuickShopRedirector user="<%=user%>" from="<%=QuickShopRedirector.FROM.OLD_QS_ORDER_SHOP_FROM %>"/>
 
 <%
 RequestUtil.appendToAttribute(request,"bodyOnLoad","FormChangeUtil.recordSignature('qs_cart',false)",";");
@@ -21,7 +25,6 @@ RequestUtil.appendToAttribute(request,"windowOnBeforeUnload","FormChangeUtil.war
 %>
 
 <%
-	FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
 	//--------OAS Page Variables-----------------------
         request.setAttribute("sitePage", "www.freshdirect.com/quickshop");
         request.setAttribute("listPos", "QSBottom,SystemMessage,LittleRandy,QSTopRight");

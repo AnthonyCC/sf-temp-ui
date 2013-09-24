@@ -1,0 +1,17 @@
+{namespace quickshop}
+
+/**
+ * @param data some data
+ */
+{template .departments}
+<li class="departments-list-all_dept"><input id="all_dept" type="radio" name="deptIdList" value="all" checked='checked'><label for="all_dept">All Departments</label></li>
+{foreach $dataItem in $data}
+{let $id}dept_{index($dataItem)}{/let}
+<li>
+  <span class="{if $dataItem.counter < 1}noitem{/if}">
+	  <input id="{$id}" type="radio" name="deptIdList" value="{$dataItem.filteringUrlValue}" {($dataItem.selected) ? 'checked="checked"' : ''}>
+  	<label for="{$id}"><span>{$dataItem.name}</span> ({$dataItem.counter})</label>
+  </span>			
+</li>
+{/foreach}
+{/template}

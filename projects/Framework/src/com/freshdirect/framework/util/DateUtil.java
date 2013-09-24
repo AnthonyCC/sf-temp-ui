@@ -24,6 +24,10 @@ public class DateUtil {
 	private static final DateFormat DATE_YEAR_FORMATTER = new SimpleDateFormat("yyyy-MM-dd");
 	private static final DateFormat MONTH_DATE_YEAR_FORMATTER = new SimpleDateFormat("MM/dd/yyyy");
 	private static final DateFormat MONTH_DATE_YEAR_DAY_FORMATTER = new SimpleDateFormat("MM/dd/yyyy E");
+	
+	public static final String MONTH_DAY_YEAR_DAYOFWEEK_FORMATTER_STRING = "MM/dd/yy EEE";
+	private static final DateFormat MONTH_DAY_YEAR_DAYOFWEEK_FORMATTER = new SimpleDateFormat(MONTH_DAY_YEAR_DAYOFWEEK_FORMATTER_STRING);
+	
 	private static final DateFormat DAY_OF_WEEK_FORMATTER = new SimpleDateFormat("E");
 	
 	private static final DateFormat DATE_PLAIN = new SimpleDateFormat("yyyyMMdd");
@@ -215,6 +219,10 @@ public class DateUtil {
 	
 	public static String formatDateWithDay(Date dateValue) {
 		return MONTH_DATE_YEAR_DAY_FORMATTER.format(dateValue);
+	}
+	
+	public static String formatDateWithDayOfWeek(Date dateValue) {
+		return MONTH_DAY_YEAR_DAYOFWEEK_FORMATTER.format(dateValue);
 	}
 	
 	public static String formatDayOfWeek(Date dateValue) { //replacing with thread safe version.

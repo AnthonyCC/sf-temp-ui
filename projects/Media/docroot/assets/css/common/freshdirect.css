@@ -92,6 +92,7 @@ h2.centerline span {
   border:none;
   padding:0;
   text-indent: 27px;
+  overflow:hidden;
 }
 
 .qtyinput.small .quantity_plus,
@@ -223,3 +224,14 @@ h2.centerline span {
 }
 
 /* }}} */
+
+
+.salesunit {
+  font-size: 12px;
+  text-align:center;
+  vertical-align:middle;
+  min-width:8em;
+  padding:0;
+  line-height:29px;
+  margin:0;
+}

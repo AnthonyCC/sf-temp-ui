@@ -21,7 +21,6 @@ import javax.ejb.CreateException;
 import javax.ejb.EJBException;
 import javax.naming.Context;
 import javax.naming.NamingException;
-import javax.servlet.http.HttpServletRequest;
 import javax.xml.transform.TransformerException;
 
 import org.apache.log4j.Category;
@@ -109,17 +108,13 @@ import com.freshdirect.fdstore.atp.FDAvailabilityI;
 import com.freshdirect.fdstore.atp.FDAvailabilityInfo;
 import com.freshdirect.fdstore.atp.FDCompositeAvailability;
 import com.freshdirect.fdstore.atp.FDStockAvailabilityInfo;
+import com.freshdirect.fdstore.content.QuickShopCacheUtil;
 import com.freshdirect.fdstore.customer.ejb.FDCustomerManagerHome;
 import com.freshdirect.fdstore.customer.ejb.FDCustomerManagerSB;
 import com.freshdirect.fdstore.customer.ejb.FDServiceLocator;
 import com.freshdirect.fdstore.customer.ejb.FDUserDAO;
 import com.freshdirect.fdstore.deliverypass.DeliveryPassUtil;
 import com.freshdirect.fdstore.deliverypass.FDUserDlvPassInfo;
-import com.freshdirect.fdstore.ecoupon.EnumCouponTransactionStatus;
-import com.freshdirect.fdstore.ecoupon.EnumCouponTransactionType;
-import com.freshdirect.fdstore.ecoupon.FDCouponManager;
-import com.freshdirect.fdstore.ecoupon.model.ErpCouponTransactionModel;
-import com.freshdirect.fdstore.ecoupon.model.FDCouponActivityContext;
 import com.freshdirect.fdstore.giftcard.FDGiftCardInfoList;
 import com.freshdirect.fdstore.iplocator.IpLocatorEventDTO;
 import com.freshdirect.fdstore.mail.CrmSecurityCCCheckEmailVO;
@@ -1354,6 +1349,23 @@ public class FDCustomerManager {
 		}
 	}
 	
+	public static List<FDOrderI> getOrders(List<String> saleIds) throws FDResourceException {
+		lookupManagerHome();
+
+		try {
+			FDCustomerManagerSB sb = managerHome.create();
+			return sb.getOrders(saleIds);
+
+		} catch (CreateException ce) {
+			invalidateManagerHome();
+			throw new FDResourceException(ce, "Error creating session bean");
+		} catch (RemoteException re) {
+			invalidateManagerHome();
+			LOGGER.debug("RemoteException: ", re);
+			throw new FDResourceException(re, "Error talking to session bean");
+		}
+	}
+	
 	public static ErpSaleModel getErpSaleModel(String saleId) throws FDResourceException {
 		lookupManagerHome();
 		
@@ -1503,6 +1515,9 @@ public class FDCustomerManager {
 					status
 				);
 
+			//invalidate quickshop past orders cache
+			QuickShopCacheUtil.removeFromCache(QuickShopCacheUtil.PAST_ORDERS_CACHE_NAME, info.getIdentity().getErpCustomerPK());
+			
 			return orderId;
 
 		} catch (CreateException ce) {
@@ -1531,7 +1546,12 @@ public class FDCustomerManager {
 		try {
 			if (orderBelongsToUser(info.getIdentity(), saleId)) {
 				FDCustomerManagerSB sb = managerHome.create();
-				return sb.cancelOrder(info, saleId, sendEmail, currentDPExtendDays, restoreReservation);
+				FDReservation reservation = sb.cancelOrder(info, saleId, sendEmail, currentDPExtendDays, restoreReservation);
+				
+				//invalidate quickshop past orders cache
+				QuickShopCacheUtil.removeFromCache(QuickShopCacheUtil.PAST_ORDERS_CACHE_NAME, info.getIdentity().getErpCustomerPK());
+				
+				return reservation;
 			}
 			
 			throw new FDResourceException("Order not found in current user's order history.");
@@ -1602,6 +1622,10 @@ public class FDCustomerManager {
 						status);
 				sb.authorizeSale(info.getIdentity().getErpCustomerPK().toString(), saleId, type, cra);
 			}
+			
+			//invalidate quickshop past orders cache
+			QuickShopCacheUtil.removeFromCache(QuickShopCacheUtil.PAST_ORDERS_CACHE_NAME, info.getIdentity().getErpCustomerPK());
+			
 		} catch (CreateException ce) {
 			invalidateManagerHome();
 			throw new FDResourceException(ce, "Error creating session bean");
@@ -2821,6 +2845,10 @@ public class FDCustomerManager {
 				                                 status
 				                               );
 				sb.authorizeSale(info.getIdentity().getErpCustomerPK().toString(), orderId, EnumSaleType.SUBSCRIPTION, cra);
+				
+			//invalidate quickshop past orders cache
+			QuickShopCacheUtil.removeFromCache(QuickShopCacheUtil.PAST_ORDERS_CACHE_NAME, info.getIdentity().getErpCustomerPK());
+				
 			return orderId;
 		} catch (CreateException ce) {
 			invalidateManagerHome();
@@ -2874,6 +2902,10 @@ public class FDCustomerManager {
 							.getId(), sendEmail, cra,
 					info.getAgent() == null ? null : info.getAgent().getRole(),
 					status, isBulkOrder);
+			
+			//invalidate quickshop past orders cache
+			QuickShopCacheUtil.removeFromCache(QuickShopCacheUtil.PAST_ORDERS_CACHE_NAME, info.getIdentity().getErpCustomerPK());
+			
 			return orderId;
 		} catch (CreateException ce) {
 			invalidateManagerHome();
@@ -3458,6 +3490,10 @@ public class FDCustomerManager {
 					status, isOptIn);
 			// sb.authorizeSale(info.getIdentity().getErpCustomerPK().toString(),
 			// orderId, EnumSaleType.GIFTCARD, cra);
+			
+			//invalidate quickshop past orders cache
+			QuickShopCacheUtil.removeFromCache(QuickShopCacheUtil.PAST_ORDERS_CACHE_NAME, info.getIdentity().getErpCustomerPK());
+			
 			return orderId;
 		} catch (CreateException ce) {
 			invalidateManagerHome();

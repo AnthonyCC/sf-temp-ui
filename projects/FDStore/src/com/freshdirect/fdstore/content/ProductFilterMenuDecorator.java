@@ -17,7 +17,7 @@ import com.freshdirect.fdstore.pricing.ProductModelPricingAdapter;
 
 public class ProductFilterMenuDecorator extends GenericFilterDecorator<FilteringSortingItem<ProductModel>> {
 
-	public ProductFilterMenuDecorator(Set<EnumFilteringValue> filters) {
+	public ProductFilterMenuDecorator(Set<FilteringValue> filters) {
 		super(filters);
 	}
 
@@ -31,8 +31,14 @@ public class ProductFilterMenuDecorator extends GenericFilterDecorator<Filtering
 
 		try {
 
-			for (EnumFilteringValue filter : filters) {
+			for (FilteringValue filterSource : filters) {
 
+				if(!(filterSource instanceof EnumSearchFilteringValue)){
+					throw new IllegalArgumentException("Only EnumSearchFilteringValue allowed here.");
+				}
+				
+				EnumSearchFilteringValue filter = (EnumSearchFilteringValue) filterSource;
+				
 				FilteringMenuItem menu = new FilteringMenuItem();
 				Set<FilteringMenuItem> menus = new HashSet<FilteringMenuItem>();
 
@@ -47,7 +53,7 @@ public class ProductFilterMenuDecorator extends GenericFilterDecorator<Filtering
 						menu = new FilteringMenuItem();
 					}
 
-					item.putMenuValue(EnumFilteringValue.DEPT, menus);
+					item.putMenuValue(EnumSearchFilteringValue.DEPT, menus);
 					break;
 				}
 				case CAT: {
@@ -72,7 +78,7 @@ public class ProductFilterMenuDecorator extends GenericFilterDecorator<Filtering
 						}
 					}
 
-					item.putMenuValue(EnumFilteringValue.CAT, menus);
+					item.putMenuValue(EnumSearchFilteringValue.CAT, menus);
 					break;
 				}
 				case SUBCAT: {
@@ -100,7 +106,7 @@ public class ProductFilterMenuDecorator extends GenericFilterDecorator<Filtering
 						}
 					}
 
-					item.putMenuValue(EnumFilteringValue.SUBCAT, menus);
+					item.putMenuValue(EnumSearchFilteringValue.SUBCAT, menus);
 					break;
 				}
 				case BRAND: {
@@ -111,7 +117,7 @@ public class ProductFilterMenuDecorator extends GenericFilterDecorator<Filtering
 						menus.add(menu);
 						menu = new FilteringMenuItem();
 					}
-					item.putMenuValue(EnumFilteringValue.BRAND, menus);
+					item.putMenuValue(EnumSearchFilteringValue.BRAND, menus);
 					break;
 				}
 				case EXPERT_RATING: {
@@ -121,7 +127,7 @@ public class ProductFilterMenuDecorator extends GenericFilterDecorator<Filtering
 							menu.setFilteringUrlValue((node.getProductRatingEnum().getValue() + 1) / 2 + "");
 							menu.setFilter(filter);
 							menus.add(menu);
-							item.putMenuValue(EnumFilteringValue.EXPERT_RATING, menus);
+							item.putMenuValue(EnumSearchFilteringValue.EXPERT_RATING, menus);
 						}
 					}
 					break;
@@ -133,7 +139,7 @@ public class ProductFilterMenuDecorator extends GenericFilterDecorator<Filtering
 						menu.setFilteringUrlValue(customerRatingsDTO.getRatingValue() + "");
 						menu.setFilter(filter);
 						menus.add(menu);
-						item.putMenuValue(EnumFilteringValue.CUSTOMER_RATING, menus);
+						item.putMenuValue(EnumSearchFilteringValue.CUSTOMER_RATING, menus);
 					}
 					break;
 				}
@@ -145,7 +151,7 @@ public class ProductFilterMenuDecorator extends GenericFilterDecorator<Filtering
 							menu.setFilteringUrlValue("1");
 							menu.setFilter(filter);
 							menus.add(menu);
-							item.putMenuValue(EnumFilteringValue.ON_SALE, menus);
+							item.putMenuValue(EnumSearchFilteringValue.ON_SALE, menus);
 						}
 					}
 					break;
@@ -157,13 +163,13 @@ public class ProductFilterMenuDecorator extends GenericFilterDecorator<Filtering
 							menu.setFilteringUrlValue("2");
 							menu.setFilter(filter);
 							menus.add(menu);
-							item.putMenuValue(EnumFilteringValue.NEW_OR_BACK, menus);
+							item.putMenuValue(EnumSearchFilteringValue.NEW_OR_BACK, menus);
 						} else if (node.isNew()) {
 							menu.setName("New");
 							menu.setFilteringUrlValue("1");
 							menu.setFilter(filter);
 							menus.add(menu);
-							item.putMenuValue(EnumFilteringValue.NEW_OR_BACK, menus);
+							item.putMenuValue(EnumSearchFilteringValue.NEW_OR_BACK, menus);
 						}
 					}
 					break;
@@ -174,7 +180,7 @@ public class ProductFilterMenuDecorator extends GenericFilterDecorator<Filtering
 						menu.setFilteringUrlValue("1");
 						menu.setFilter(filter);
 						menus.add(menu);
-						item.putMenuValue(EnumFilteringValue.KOSHER, menus);
+						item.putMenuValue(EnumSearchFilteringValue.KOSHER, menus);
 					}
 					break;
 				}
@@ -187,7 +193,7 @@ public class ProductFilterMenuDecorator extends GenericFilterDecorator<Filtering
 									menu.setFilteringUrlValue("1");
 									menu.setFilter(filter);
 									menus.add(menu);
-									item.putMenuValue(EnumFilteringValue.GLUTEN_FREE, menus);
+									item.putMenuValue(EnumSearchFilteringValue.GLUTEN_FREE, menus);
 								}
 							}
 						}

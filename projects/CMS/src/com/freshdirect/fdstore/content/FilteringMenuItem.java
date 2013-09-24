@@ -9,19 +9,24 @@ public class FilteringMenuItem {
 	private int counter;
 	private boolean isHidden;
 	private boolean isSelected;
-	private EnumFilteringValue filter;
+	private FilteringValue filter;
+	private String info;
 	
 	public FilteringMenuItem(){
 		
 	}
 	
-	public FilteringMenuItem(String name, String url, int counter, EnumFilteringValue filter) {
+	public FilteringMenuItem(String name, String url, int counter, FilteringValue filter) {
 		this.name = name;
 		this.filteringUrlValue = url;
 		this.counter = counter;
 		this.isHidden = false;
 		this.isSelected = false;
 		this.filter = filter;
+	}
+	
+	public FilteringMenuItem clone(FilteringMenuItem source){
+		return new FilteringMenuItem(name, filteringUrlValue, counter, filter);
 	}
 
 	public String getName() {
@@ -68,14 +73,22 @@ public class FilteringMenuItem {
 		this.isSelected = isSelected;
 	}
 	
-	public void setFilter(EnumFilteringValue filter) {
+	public void setFilter(FilteringValue filter) {
 		this.filter = filter;
 	}
 	
-	public EnumFilteringValue getFilter() {
+	public FilteringValue getFilter() {
 		return filter;
 	}
 	
+	public String getInfo() {
+		return info;
+	}
+
+	public void setInfo(String info) {
+		this.info = info;
+	}
+
 	@Override
 	public boolean equals(Object obj) {
 		FilteringMenuItem other= (FilteringMenuItem) obj;

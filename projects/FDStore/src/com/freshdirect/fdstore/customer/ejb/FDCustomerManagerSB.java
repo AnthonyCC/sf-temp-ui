@@ -330,6 +330,8 @@ public interface FDCustomerManagerSB extends EJBObject {
     public List<DlvSaleInfo> getOrdersByTruck(String truckNumber, Date dlvDate) throws FDResourceException, RemoteException; 
 
 	public FDOrderI getOrder(FDIdentity identity, String saleId) throws FDResourceException, RemoteException;
+	
+	public List<FDOrderI> getOrders(List<String> saleIds) throws FDResourceException, RemoteException;
     
     public FDOrderI getOrder(String saleId) throws FDResourceException, RemoteException;
     

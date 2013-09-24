@@ -1,0 +1,95 @@
+.portrait-item {
+	display:inline-block;
+	padding:0;
+	width:160px;
+	vertical-align:baseline;
+	position:relative;
+	text-align:center;
+    margin:10px;
+    white-space:normal;
+    font-family:Verdana,sans-serif;
+    font-size:10px;
+    line-height:14px;
+    font-weight:normal;
+}
+
+.portrait-item-price-deal {
+	color:#c00;
+	font-weight:bold;
+}
+
+.portrait-item-price-deal.mixnmatch {
+	color:#f7ad5f;
+}
+
+.portrait-item-unavailable {
+    display:none;
+}
+
+.portrait-item-header,
+.portrait-item-price {
+	float:left;
+	width:100%;
+}
+
+.portrait-item-productimage_wrapper {
+	position:relative;
+}
+
+.portrait-item-burst_wrapper {
+	display:inline-block;
+	position:relative;
+}
+
+.portrait-item:hover .portrait-item-controls {
+	height:80px;
+}
+
+
+.portrait-item-controls {
+	background:url(/media_stat/images/layout/1x1_80p_trans.png);
+    background:rgba(255,255,255,0.8);
+    width:100%;
+	-webkit-transition: all 0.3s ease-in-out;
+	-moz-transition: all 0.3s ease-in-out;
+	-ms-transition: all 0.3s ease-in-out;
+	-o-transition: all 0.3s ease-in-out;
+	transition: all 0.3s ease-in-out;    
+	overflow:hidden;
+	position:absolute;
+	bottom:0;
+	height:0;
+}
+
+.portrait-item-controls:before {
+	content:' ';
+	height:100%;
+	width:1px;
+	display:inline-block;
+	vertical-align:middle;
+}
+
+.portrait-item-controls-content {
+	display:inline-block;
+	vertical-align:middle;
+}
+
+.portrait-item .burst {
+	position:absolute;
+	top:0;
+	left:0;
+}
+
+.portrait-item .was-price {
+  font-weight: normal;
+  text-decoration: line-through;
+}
+
+
+.portrait-item .expertrating,
+.portrait-item .customerrating,
+.portrait-item .winerating,
+.portrait-item .sustrating {
+	display:block;
+	margin:auto;
+}

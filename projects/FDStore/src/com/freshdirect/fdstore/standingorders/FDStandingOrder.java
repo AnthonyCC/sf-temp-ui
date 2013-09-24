@@ -49,6 +49,8 @@ public class FDStandingOrder extends ModelSupport {
 
 	String customerListName;	// Only used when standing order is not yet persisted!
 
+	public static final String STANDING_ORDER_DETAIL_PAGE	= "/quickshop/qs_so_details.jsp";
+	
 	public FDStandingOrder() {
 		super();
 	}
@@ -153,6 +155,7 @@ public class FDStandingOrder extends ModelSupport {
 	}
 	public void setLastError( ErrorCode lastErrorCode, String errorHeader, String errorDetail ) {
 		this.lastError = lastErrorCode.name();
+
 		this.errorHeader = errorHeader;
 		this.errorDetail = errorDetail;
 	}
@@ -395,7 +398,12 @@ public class FDStandingOrder extends ModelSupport {
     public List<FDOrderInfoI> getAllUpcomingOrders() throws FDResourceException, FDAuthenticationException {
             return FDStandingOrdersManager.getInstance().getAllUpcomingOrders( getUser(), this );
     }
-
+	
+	@ExcludeFromXmlSerializer
+	public String getLandingPage() {
+		return new StringBuilder().append(STANDING_ORDER_DETAIL_PAGE).append("?ccListId=" + this.getCustomerListId()).toString();
+	}
+	
 	public String getCustomerEmail() {
 		return customerEmail;
 	}

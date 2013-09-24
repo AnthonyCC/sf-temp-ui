@@ -634,6 +634,10 @@ public abstract class ProxyProduct extends AbstractProductModelImpl {
 	public EnumOrderLineRating getProductRatingEnum() throws FDResourceException {
 		return getProduct().getProductRatingEnum();
 	}
+	
+	public EnumOrderLineRating getProductRatingEnum(String skuCode) throws FDResourceException {
+		return getProduct().getProductRatingEnum(skuCode);
+	}
 
 	public String getFreshnessGuaranteed() throws FDResourceException {
 		if (FDStoreProperties.IsFreshnessGuaranteedEnabled()) {

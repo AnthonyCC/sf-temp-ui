@@ -16,6 +16,7 @@ import com.freshdirect.fdstore.lists.FDCustomerList;
 import com.freshdirect.fdstore.lists.FDCustomerListExistsException;
 import com.freshdirect.fdstore.lists.FDCustomerProductList;
 import com.freshdirect.fdstore.lists.FDCustomerShoppingList;
+import com.freshdirect.fdstore.lists.FDQsProductListLineItem;
 import com.freshdirect.fdstore.lists.FDStandingOrderList;
 import com.freshdirect.framework.core.PrimaryKey;
 
@@ -28,14 +29,18 @@ public interface FDListManagerSB extends EJBObject {
     public FDCustomerList getCustomerListById(FDIdentity identity, EnumCustomerListType type, String listId) throws FDResourceException, RemoteException;
 
     public FDCustomerShoppingList generateEveryItemEverOrderedList(FDIdentity identity) throws FDResourceException, RemoteException;
+    
+    public List<FDProductSelectionI> getQsSpecificEveryItemEverOrderedList(FDIdentity identity) throws FDResourceException, RemoteException;
 
     public String storeCustomerList(FDCustomerList list) throws FDResourceException, RemoteException;
     
     public boolean removeCustomerListItem(FDIdentity identity, PrimaryKey id) throws FDResourceException, RemoteException;
 
-	public void createCustomerCreatedList(FDIdentity identity, String listName) throws FDResourceException, RemoteException,  FDCustomerListExistsException;
+	public String createCustomerCreatedList(FDIdentity identity, String listName) throws FDResourceException, RemoteException,  FDCustomerListExistsException;
 	
 	public void deleteCustomerCreatedList(FDIdentity identity, String listName) throws FDResourceException, RemoteException;
+	
+	public void deleteShoppingList( String listId ) throws FDResourceException, RemoteException;		
 	
 	public List<FDCustomerCreatedList> getCustomerCreatedLists(FDIdentity identity) throws FDResourceException, RemoteException;
 
@@ -56,6 +61,8 @@ public interface FDListManagerSB extends EJBObject {
 	public void renameCustomerCreatedList(FDIdentity identity, String oldName, String newName) throws FDCustomerListExistsException, FDResourceException, RemoteException;
 
 	public void renameCustomerList(FDActionInfo info, EnumCustomerListType type, String oldName, String newName) throws FDCustomerListExistsException, FDResourceException, RemoteException;
+
+	public void renameShoppingList(String listId, String newName) throws FDResourceException, RemoteException;
 
 	// SmartStore
 	public FDCustomerProductList getOrderDetails(String erpCustomerId, List<String> skus) throws FDResourceException, RemoteException;

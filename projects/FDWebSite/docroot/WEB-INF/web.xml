@@ -70,6 +70,106 @@
     <servlet-name>referralregistration</servlet-name>
     <jsp-file>/registration/referee_signup.jsp</jsp-file>
   </servlet>
+  
+  	<servlet>
+		<servlet-name>SoyToJsServlet</servlet-name>
+		<servlet-class>com.freshdirect.webapp.soy.SoyToJsServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>SoyToJsServlet</servlet-name>
+		<url-pattern>/api/soy/*</url-pattern>
+	</servlet-mapping>
+
+  	<servlet>
+		<servlet-name>AddToCartServlet</servlet-name>
+		<servlet-class>com.freshdirect.webapp.taglib.cart.AddToCartServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>AddToCartServlet</servlet-name>
+		<url-pattern>/api/addtocart/*</url-pattern>
+	</servlet-mapping>
+
+  	<servlet>
+		<servlet-name>ProductConfigServlet</servlet-name>
+		<servlet-class>com.freshdirect.webapp.taglib.cart.ProductConfigServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>ProductConfigServlet</servlet-name>
+		<url-pattern>/api/productconfig/*</url-pattern>
+	</servlet-mapping>
+
+  	<servlet>
+		<servlet-name>ShoppingListServlet</servlet-name>
+		<servlet-class>com.freshdirect.webapp.shoppinglist.ShoppingListServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>ShoppingListServlet</servlet-name>
+		<url-pattern>/api/shoppinglist/*</url-pattern>
+	</servlet-mapping>
+	
+	<servlet>
+		<servlet-name>QuickShopFilterServlet</servlet-name>
+		<servlet-class>com.freshdirect.webapp.quickshop.QuickShopFilterServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>QuickShopFilterServlet</servlet-name>
+		<url-pattern>/api/qs/pastOrders</url-pattern>
+	</servlet-mapping>
+	
+	<servlet>
+		<servlet-name>QSFromListFilterServlet</servlet-name>
+		<servlet-class>com.freshdirect.webapp.quickshop.QSFromListFilterServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>QSFromListFilterServlet</servlet-name>
+		<url-pattern>/api/qs/shoppingLists/*</url-pattern>
+	</servlet-mapping>
+	
+	<servlet>
+		<servlet-name>QSTempConfigServlet</servlet-name>
+		<servlet-class>com.freshdirect.webapp.quickshop.QSTempConfigServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>QSTempConfigServlet</servlet-name>
+		<url-pattern>/api/qs/tempConfig/*</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>QSFromStarterListFilterServlet</servlet-name>
+		<servlet-class>com.freshdirect.webapp.quickshop.QSFromStarterListFilterServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>QSFromStarterListFilterServlet</servlet-name>
+		<url-pattern>/api/qs/starterLists</url-pattern>
+	</servlet-mapping>
+	
+	<servlet>
+		<servlet-name>QuickShopYmalServlet</servlet-name>
+		<servlet-class>com.freshdirect.webapp.quickshop.QuickShopYmalServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>QuickShopYmalServlet</servlet-name>
+		<url-pattern>/api/qs/ymal</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>QuickShopReplacementServlet</servlet-name>
+		<servlet-class>com.freshdirect.webapp.quickshop.QuickShopReplacementServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>QuickShopReplacementServlet</servlet-name>
+		<url-pattern>/api/qs/replacement</url-pattern>
+	</servlet-mapping>
+	
+	<servlet>
+		<servlet-name>QuickShopTabMetaServlet</servlet-name>
+		<servlet-class>com.freshdirect.webapp.quickshop.QuickShopTabMetaServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>QuickShopTabMetaServlet</servlet-name>
+		<url-pattern>/api/qs/tabMeta</url-pattern>
+	</servlet-mapping>
+	
   <servlet>
     <servlet-name>JavascriptServlet</servlet-name>
     <servlet-class>net.jawr.web.servlet.JawrServlet</servlet-class>

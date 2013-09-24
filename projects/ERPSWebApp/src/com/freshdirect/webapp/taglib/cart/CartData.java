@@ -243,7 +243,17 @@ public class CartData implements Serializable {
 		}		
 	}
 	
-	public static class Quantity {
+	public static class Quantity {		
+		
+		public Quantity() {
+		}
+		
+		public Quantity( int qMin, int qMax, int qInc, int quantity ) {
+			this.qMin = qMin;
+			this.qMax = qMax;
+			this.qInc = qInc;
+			this.quantity = quantity;
+		}
 		
 		/**
 		 * Cartline quantity
@@ -293,6 +303,15 @@ public class CartData implements Serializable {
 	}
 
 	public static class SalesUnit {
+				
+		public SalesUnit() {
+		}
+		
+		public SalesUnit( String id, String name, boolean selected ) {
+			this.id = id;
+			this.name = name;
+			this.selected = selected;
+		}
 		
 		private String id;
 		private String name;

@@ -696,7 +696,7 @@
 .grid-carousel .yui-carousel-next-button {
 	background-position:-34px 0; 
 	z-index:3; 
-	right: 7px;
+	right: 0;
 }
 
 .grid-carousel .yui-carousel-first-button { 

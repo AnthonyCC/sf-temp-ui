@@ -29,12 +29,14 @@ import com.freshdirect.fdstore.content.Recipe;
 import com.freshdirect.fdstore.content.RecipeVariant;
 import com.freshdirect.fdstore.content.util.QueryParameter;
 import com.freshdirect.fdstore.customer.FDProductSelectionI;
+import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.customer.QuickCart;
 import com.freshdirect.fdstore.lists.CclUtils;
 import com.freshdirect.fdstore.standingorders.FDStandingOrder;
 import com.freshdirect.fdstore.util.ProductDisplayUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.smartstore.Variant;
+import com.freshdirect.webapp.taglib.QuickShopRedirector;
 import com.freshdirect.webapp.taglib.coremetrics.CmMarketingLinkUtil;
 import com.freshdirect.webapp.taglib.smartstore.Impression;
 
@@ -51,8 +53,11 @@ public class FDURLUtil {
 	public static final String RECIPE_PAGE_BASE			= "/recipe.jsp";
 	public static final String RECIPE_PAGE_BASE_CRM		= "/order/recipe.jsp";
 
-	public static final String STANDING_ORDER_DETAIL_PAGE	= "/quickshop/so_details.jsp";
-	public static final String STANDING_ORDER_MAIN_PAGE		= "/quickshop/standing_orders.jsp";
+	public static final String STANDING_ORDER_DETAIL_PAGE_OLD	= "/quickshop/so_details.jsp";
+	public static final String STANDING_ORDER_MAIN_PAGE_OLD	= "/quickshop/standing_orders.jsp";
+	
+	public static final String STANDING_ORDER_DETAIL_PAGE_NEW	= "/quickshop/qs_so_details.jsp";
+	public static final String STANDING_ORDER_MAIN_PAGE_NEW	= "/quickshop/qs_standing_orders.jsp";
 	
 	public static String safeURLEncode(String str) {
 		try {
@@ -646,9 +651,10 @@ public class FDURLUtil {
 	 * 
 	 * @return
 	 */
-	public static String getStandingOrderLandingPage(FDStandingOrder so, String action) {
+	public static String getStandingOrderLandingPage( FDStandingOrder so, String action, FDUserI user ) {
+		boolean newQs = QuickShopRedirector.isEligibleForNewQuickShop( user );
 		StringBuilder uri = new StringBuilder();
-		uri.append(STANDING_ORDER_DETAIL_PAGE);
+		uri.append( newQs ? STANDING_ORDER_DETAIL_PAGE_NEW : STANDING_ORDER_DETAIL_PAGE_OLD );
 		uri.append("?ccListId=" + so.getCustomerListId());
 		if (action != null) {
 			uri.append(ProductDisplayUtil.URL_PARAM_SEP + "action="+action);
@@ -656,13 +662,14 @@ public class FDURLUtil {
 		return uri.toString();
 	}
 
-	public static String getStandingOrderLandingPage(FDStandingOrder so, String action, String orderId) {
-		return getStandingOrderLandingPage(so, action) + ProductDisplayUtil.URL_PARAM_SEP + "orderId=" + orderId; 
+	public static String getStandingOrderLandingPage( FDStandingOrder so, String action, String orderId, FDUserI user ) {
+		return getStandingOrderLandingPage(so, action, user) + ProductDisplayUtil.URL_PARAM_SEP + "orderId=" + orderId; 
 	}
 	
-	public static String getStandingOrderMainPage() {
+	public static String getStandingOrderMainPage( FDUserI user ) {
+		boolean newQs = QuickShopRedirector.isEligibleForNewQuickShop( user );
 		StringBuilder uri = new StringBuilder();
-		uri.append(STANDING_ORDER_MAIN_PAGE);
+		uri.append( newQs ? STANDING_ORDER_MAIN_PAGE_NEW : STANDING_ORDER_MAIN_PAGE_OLD );
 		return uri.toString();
 	}
 

@@ -556,7 +556,7 @@ public class FDCouponTag extends BodyTagSupport {
 			cmElementTag.setCouponOfferType(null !=this.getCoupon().getOfferType()?this.getCoupon().getOfferType().getDescription():"");
 			
 			try {
-				cmJs = cmElementTag.doCmContentTag();
+				cmJs = cmElementTag.getTagOutput();
 			} catch (Exception e) {
 				LOGGER.warn("Exception while coupon tagging: "+e.getMessage());
 			}

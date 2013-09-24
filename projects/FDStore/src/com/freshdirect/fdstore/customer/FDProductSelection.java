@@ -2,6 +2,7 @@ package com.freshdirect.fdstore.customer;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -17,6 +18,7 @@ import com.freshdirect.common.pricing.Pricing;
 import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.common.pricing.PricingEngine;
 import com.freshdirect.common.pricing.PricingException;
+import com.freshdirect.customer.EnumSaleStatus;
 import com.freshdirect.customer.ErpClientCode;
 import com.freshdirect.customer.ErpCouponDiscountLineModel;
 import com.freshdirect.customer.ErpOrderLineModel;
@@ -62,6 +64,11 @@ public class FDProductSelection implements FDProductSelectionI {
 	private String customerListLineId;
 	private boolean invalidConfig = false;
 	private double fixedPrice;
+	
+	//used by quickshop
+	private String orderId;
+	private Date deliveryStartDate;
+	private EnumSaleStatus saleStatus;
 	
 	public FDProductSelection(FDSku sku, ProductModel productRef, FDConfigurableI configuration, String pZoneId) {
 		this(sku, productRef, configuration, null, pZoneId);
@@ -224,7 +231,9 @@ public class FDProductSelection implements FDProductSelectionI {
 				this.orderLine.setPerishable(pm.isPerishable());
 			}
 
-			OrderLineUtil.describe(this);
+			if(this.lookupProduct()!=null){
+				OrderLineUtil.describe(this);				
+			}
 
 			this.dirty = false;
 		}
@@ -349,7 +358,7 @@ public class FDProductSelection implements FDProductSelectionI {
 		return this.orderLine.getCouponDiscount();
 	}
 	
-	protected double getConfiguredPrice() {
+	public double getConfiguredPrice() {
 		return this.price.getConfiguredPrice();
 	}
 
@@ -655,6 +664,9 @@ public class FDProductSelection implements FDProductSelectionI {
 	}
 	
 	public double getBasePrice() {
+		if(this.price == null) {
+			return 0.0;
+		}
 		return this.price.getBasePrice();
 	}
 	
@@ -662,4 +674,37 @@ public class FDProductSelection implements FDProductSelectionI {
 		FDProductInfo prodInfo =lookupFDProductInfo();
 		return null !=prodInfo?prodInfo.getUpc():"";
 	}
+
+	public Date getDeliveryStartDate() {
+		return deliveryStartDate;
+	}
+
+	public void setDeliveryStartDate(Date deliveryStartDate) {
+		this.deliveryStartDate = deliveryStartDate;
+	}
+
+	public String getOrderId() {
+		return orderId;
+	}
+
+	public void setOrderId(String orderId) {
+		this.orderId = orderId;
+	}
+	
+	public EnumSaleStatus getSaleStatus() {
+		return saleStatus;
+	}
+
+	public void setSaleStatus(EnumSaleStatus saleStatus) {
+		this.saleStatus = saleStatus;
+	}
+	
+	public void setOrderLineId(String orderLineId){
+		this.orderLine.setOrderLineId(orderLineId);
+	}
+	
+	public String getOrderLineId(){
+		return this.orderLine.getOrderLineId();
+	}
+	
 }

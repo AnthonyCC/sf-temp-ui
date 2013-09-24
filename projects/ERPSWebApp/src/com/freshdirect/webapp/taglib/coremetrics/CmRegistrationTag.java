@@ -1,7 +1,6 @@
 package com.freshdirect.webapp.taglib.coremetrics;
 
 import javax.servlet.http.HttpSession;
-import javax.servlet.jsp.PageContext;
 
 import org.apache.log4j.Logger;
 
@@ -9,7 +8,6 @@ import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.fdstore.coremetrics.builder.ConversionEventTagModelBuilder;
 import com.freshdirect.fdstore.coremetrics.builder.RegistrationTagModelBuilder;
 import com.freshdirect.fdstore.coremetrics.builder.SkipTagException;
-import com.freshdirect.fdstore.coremetrics.tagmodel.ConversionEventTagModel;
 import com.freshdirect.fdstore.coremetrics.tagmodel.RegistrationTagModel;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -18,8 +16,6 @@ import com.freshdirect.webapp.taglib.fdstore.SessionName;
 public class CmRegistrationTag extends AbstractCmTag implements SessionName{
 
 	private static final Logger LOGGER = LoggerFactory.getInstance(CmRegistrationTag.class);
-	private static final String REGISTRATION_TAG_FS = "cmCreateRegistrationTag(%s,%s,%s,%s,%s,%s,%s);";
-	
 	private RegistrationTagModelBuilder tagModelBuilder = new RegistrationTagModelBuilder();
 	private boolean force;
 	
@@ -44,9 +40,14 @@ public class CmRegistrationTag extends AbstractCmTag implements SessionName{
 	}
 
 	@Override
+	protected String getFunctionName() {
+		return "cmCreateRegistrationTag";
+	}
+	
+	@Override
 	protected String getTagJs() throws SkipTagException {
 
-		HttpSession session = ((PageContext) getJspContext()).getSession();
+		HttpSession session = getSession();
 		boolean pendingRegistration = Boolean.TRUE.equals(session.getAttribute(PENDING_REGISTRATION_EVENT));
 		boolean pendingLogin = Boolean.TRUE.equals(session.getAttribute(PENDING_LOGIN_EVENT));
 		boolean pendingAddressChange = Boolean.TRUE.equals(session.getAttribute(PENDING_ADDRESS_CHANGE_EVENT));
@@ -73,7 +74,7 @@ public class CmRegistrationTag extends AbstractCmTag implements SessionName{
 			
 			RegistrationTagModel regModel = tagModelBuilder.buildTagModel();
 						
-			String tagJs = String.format(REGISTRATION_TAG_FS,
+			String tagJs = getFormattedTag(
 					toJsVar(regModel.getRegistrationId()),
 					toJsVar(regModel.getRegistrantEmail()),
 					toJsVar(regModel.getRegistrantCity()),
@@ -85,24 +86,28 @@ public class CmRegistrationTag extends AbstractCmTag implements SessionName{
 			
 			//append registration conversion event to tagJs
 			if (pendingRegistration){
-				ConversionEventTagModelBuilder regConversionEventBuilder = new ConversionEventTagModelBuilder();
+				CmConversionEventTag regConversionEventTag = new CmConversionEventTag();
+				regConversionEventTag.setSession(getSession());
+				regConversionEventTag.setReturnAsJson(returnAsJson);
+				regConversionEventTag.setOnlyFormatModel(true);
+				regConversionEventTag.setEventId(registrationLocation);
+				regConversionEventTag.setCategoryId(ConversionEventTagModelBuilder.CAT_REGISTRATION);
+				regConversionEventTag.setZipCode(regModel.getRegistrantPostalCode());
 				
-				regConversionEventBuilder.setEventId(registrationLocation);
-				regConversionEventBuilder.setCategoryId(ConversionEventTagModelBuilder.CAT_REGISTRATION);
-				regConversionEventBuilder.setZipCode(regModel.getRegistrantPostalCode());
-				
-				tagJs += "\n" + getConversionEventTagJs(regConversionEventBuilder);
+				tagJs += getTagDelimiter() + regConversionEventTag.getTagOutput();
 			} 
 
 			//append login conversion event to tagJs
 			if (pendingRegistration || pendingLogin){
-				ConversionEventTagModelBuilder logConversionEventBuilder = new ConversionEventTagModelBuilder();
+				CmConversionEventTag logConversionEventTag = new CmConversionEventTag();
+				logConversionEventTag.setSession(getSession());
+				logConversionEventTag.setReturnAsJson(returnAsJson);
+				logConversionEventTag.setOnlyFormatModel(true);
+				logConversionEventTag.setEventId(ConversionEventTagModelBuilder.EVENT_LOGIN);
+				logConversionEventTag.setCategoryId(ConversionEventTagModelBuilder.CAT_LOGIN);
+				logConversionEventTag.setUser(user);
 				
-				logConversionEventBuilder.setEventId(ConversionEventTagModelBuilder.EVENT_LOGIN);
-				logConversionEventBuilder.setCategoryId(ConversionEventTagModelBuilder.CAT_LOGIN);
-				logConversionEventBuilder.setUser(user);
-				
-				tagJs += "\n" + getConversionEventTagJs(logConversionEventBuilder);
+				tagJs += getTagDelimiter() + logConversionEventTag.getTagOutput();
 			}
 			
 			LOGGER.debug(tagJs);
@@ -113,11 +118,6 @@ public class CmRegistrationTag extends AbstractCmTag implements SessionName{
 		}		
 	}
 
-	private String getConversionEventTagJs(ConversionEventTagModelBuilder conversionEventBuilder) throws SkipTagException{
-		ConversionEventTagModel conversionEventModel = conversionEventBuilder.buildTagModel();
-		return CmConversionEventTag.getTagJs(conversionEventModel);
-	}
-	
 	public void setForce(boolean force) {
 		this.force = force;
 	}

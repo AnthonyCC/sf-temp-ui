@@ -2,18 +2,20 @@ package com.freshdirect.transadmin.api.controller;
 
 import java.io.IOException;
 import java.io.StringWriter;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Category;
-import org.codehaus.jackson.JsonGenerationException;
-import org.codehaus.jackson.map.DeserializationConfig;
-import org.codehaus.jackson.map.JsonMappingException;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.map.SerializationConfig.Feature;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.AbstractController;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.core.JsonGenerationException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.freshdirect.framework.service.ServiceException;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionResult;
@@ -130,9 +132,9 @@ public abstract class BaseApiController extends AbstractController {
 
     protected ObjectMapper getMapper() {
         ObjectMapper mapper = new ObjectMapper();
-        mapper.configure(Feature.INDENT_OUTPUT, true); //May want to flip to false in production
-        mapper.configure(Feature.WRITE_NULL_PROPERTIES, true);
-        mapper.configure(DeserializationConfig.Feature.FAIL_ON_UNKNOWN_PROPERTIES , false);
+        mapper.configure(SerializationFeature.INDENT_OUTPUT, true); //May want to flip to false in production
+        mapper.setSerializationInclusion( JsonInclude.Include.ALWAYS );
+        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         
         return mapper;
     }

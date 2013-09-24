@@ -2013,6 +2013,11 @@ public class MockProductModel extends MockContentNodeModel implements
 	}
 
 	@Override
+	public EnumOrderLineRating getProductRatingEnum(String skuCode) throws FDResourceException {
+		return null;
+	}
+
+	@Override
 	public Image getPackageImage() {
 		// TODO Auto-generated method stub
 		return null;

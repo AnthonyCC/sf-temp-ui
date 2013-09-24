@@ -77,7 +77,9 @@
 		<pathelement location="${thirdparty.home}/quartz.jar"/>
 		<pathelement location="${thirdparty.home}/asm.jar"/>
 		<pathelement location="${thirdparty.home}/cglib-2.1.jar"/>
-		<pathelement location="${thirdparty.home}/ehcache-1.1.jar"/>
+		<pathelement location="${thirdparty.home}/ehcache-core-2.5.0.jar"/>
+		<pathelement location="${thirdparty.home}/slf4j-api-1.6.6.jar"/>
+		<pathelement location="${thirdparty.home}/slf4j-jdk14-1.6.6.jar"/>
 		<pathelement location="${thirdparty.home}/jug-lgpl-2.0.0.jar"/>
 		<pathelement location="${thirdparty.home}/freemarker-2.3.15.jar"/>
 		<pathelement location="${thirdparty.home}/jsonrpc-1.0.jar"/>
@@ -105,10 +107,11 @@
 		<pathelement location="${thirdparty.home}/jstl-api-1.2.jar"/>
 		<pathelement location="${thirdparty.home}/jstl-impl-1.2.jar"/>
 		<pathelement location="${thirdparty.home}/ctah-api-client.jar"/>
-		<pathelement location="${thirdparty.home}/jackson-core-lgpl-1.2.0.jar"/>
-		<pathelement location="${thirdparty.home}/jackson-mapper-lgpl-1.2.0.jar"/>
+		<pathelement location="${thirdparty.home}/jackson-core-2.2.0.jar"/>
+		<pathelement location="${thirdparty.home}/jackson-databind-2.2.0.jar"/>
+		<pathelement location="${thirdparty.home}/jackson-annotations-2.2.0.jar"/>
 		<pathelement location="${thirdparty.home}/jawr-3.3.3.jar"/>
-		
+		<pathelement location="${thirdparty.home}/soy-latest.jar"/>
 	</path>
 
 	<path id="testing.classpath">
@@ -1232,12 +1235,15 @@
 					<include name="asm.jar"/>
 					<include name="asm-attrs.jar"/>
 					<include name="cglib-2.1.jar"/>
-					<include name="ehcache-1.1.jar"/>
+					<include name="ehcache-core-2.5.0.jar"/>
+					<include name="slf4j-api-1.6.6.jar"/>
+					<include name="slf4j-jdk14-1.6.6.jar"/>
 					<include name="jug-lgpl-2.0.0.jar"/>
 					<include name="freemarker-2.3.15.jar"/>
 					<include name="jsonrpc-1.0.jar"/>
 					<include name="bsh-2.0b4.jar"/>
 					<include name="jawr-3.3.3.jar"/>
+					<include name="soy-latest.jar"/>
 
 
                     <include name="jasypt-1.5.jar"/>
@@ -1357,7 +1363,9 @@
 					<include name="hivemind-lib-1.1.1.jar"/>
 					<include name="aopalliance-1.0.jar"/>
 					<include name="hibernate3.jar"/>
-					<include name="ehcache-1.1.jar"/>
+					<include name="ehcache-core-2.5.0.jar"/>
+					<include name="slf4j-api-1.6.6.jar"/>
+					<include name="slf4j-jdk14-1.6.6.jar"/>
 					<include name="batik-1.5-fop-0.20-5.jar"/>
 					<include name="avalon-framework-4.0.jar"/>
 					<include name="fop-0.20.5.jar"/>
@@ -1371,6 +1379,7 @@
 					<include name="jug-lgpl-2.0.0.jar"/>
 					<include name="jsonrpc-1.0.jar"/>
 					<include name="jawr-3.3.3.jar"/>
+					<include name="soy-latest.jar"/>
 					<!-- additional -->
                     
                     <include name="lucene-core-${lucene.version}.jar"/>
@@ -1510,8 +1519,9 @@
 			<pathelement location="${thirdparty.home}/mvel2.jar"/>
 			<pathelement location="${thirdparty.home}/org.eclipse.jdt.core_3.6.1.v_A68_R36x.jar"/>
 			<pathelement location="${thirdparty.home}/stringtemplate.jar"/>
-			<pathelement location="${thirdparty.home}/jackson-core-lgpl-1.2.0.jar"/>
-			<pathelement location="${thirdparty.home}/jackson-mapper-lgpl-1.2.0.jar"/>
+			<pathelement location="${thirdparty.home}/jackson-core-2.2.0.jar"/>
+			<pathelement location="${thirdparty.home}/jackson-databind-2.2.0.jar"/>
+			<pathelement location="${thirdparty.home}/jackson-annotations-2.2.0.jar"/>
 			
 			<pathelement location="${thirdparty.home}/jcert.jar"/>
 			<pathelement location="${thirdparty.home}/jnet.jar"/>
@@ -1735,9 +1745,10 @@
 			<pathelement location="${work.dir}/RoutingServices.jar"/>
 			<pathelement location="${work.dir}/DeliveryEJB-WL.jar"/>
 			<pathelement location="${work.dir}/DataLoaderEJB-WL.jar"/>
-         <pathelement location="${thirdparty.home}/poi-3.5-FINAL-20090928.jar"/>
-			<pathelement location="${thirdparty.home}/jackson-core-lgpl-1.2.0.jar"/>
-			<pathelement location="${thirdparty.home}/jackson-mapper-lgpl-1.2.0.jar"/>
+			<pathelement location="${thirdparty.home}/poi-3.5-FINAL-20090928.jar"/>
+			<pathelement location="${thirdparty.home}/jackson-core-2.2.0.jar"/>
+			<pathelement location="${thirdparty.home}/jackson-databind-2.2.0.jar"/>
+			<pathelement location="${thirdparty.home}/jackson-annotations-2.2.0.jar"/>
 		</path>
 
 		<makeProject
@@ -1765,8 +1776,9 @@
 			<pathelement location="${thirdparty.home}/lucene-core-${lucene.version}.jar"/>
 			<pathelement location="${thirdparty.home}/lucene-queries-${lucene.version}.jar"/>
 			<pathelement location="${thirdparty.home}/lucene-snowball-${lucene.version}.jar"/>
-			<pathelement location="${thirdparty.home}/jackson-core-lgpl-1.2.0.jar"/>
-			<pathelement location="${thirdparty.home}/jackson-mapper-lgpl-1.2.0.jar"/>
+			<pathelement location="${thirdparty.home}/jackson-core-2.2.0.jar"/>
+			<pathelement location="${thirdparty.home}/jackson-databind-2.2.0.jar"/>
+			<pathelement location="${thirdparty.home}/jackson-annotations-2.2.0.jar"/>
 		</path>
 		<makeWebProject
 			project="FDWebSite"
@@ -1784,9 +1796,10 @@
 			<pathelement location="${work.dir}/ERPSWebApp.jar"/>
 			<pathelement location="${work.dir}/RoutingServices.jar"/>
 			<pathelement location="${thirdparty.home}/struts.jar"/>
-            <pathelement location="${thirdparty.home}/oscache-2.4.1.jar"/>
-			<pathelement location="${thirdparty.home}/jackson-core-lgpl-1.2.0.jar"/>
-			<pathelement location="${thirdparty.home}/jackson-mapper-lgpl-1.2.0.jar"/>
+			<pathelement location="${thirdparty.home}/oscache-2.4.1.jar"/>
+			<pathelement location="${thirdparty.home}/jackson-core-2.2.0.jar"/>
+			<pathelement location="${thirdparty.home}/jackson-databind-2.2.0.jar"/>
+			<pathelement location="${thirdparty.home}/jackson-annotations-2.2.0.jar"/>
 		</path>
 		<makeWebProject
 			project="CRM"
@@ -1976,8 +1989,9 @@
 			<pathelement location="${work.dir}/DataLoaderEJB-WL.jar"/>
 			<pathelement location="${work.dir}/ERPSWebApp.jar"/>
 			<pathelement location="${thirdparty.home}/struts.jar"/>
-			<pathelement location="${thirdparty.home}/jackson-core-lgpl-1.2.0.jar"/>
-			<pathelement location="${thirdparty.home}/jackson-mapper-lgpl-1.2.0.jar"/>
+			<pathelement location="${thirdparty.home}/jackson-core-2.2.0.jar"/>
+			<pathelement location="${thirdparty.home}/jackson-databind-2.2.0.jar"/>
+			<pathelement location="${thirdparty.home}/jackson-annotations-2.2.0.jar"/>
 		</path>
 		<makeWebProject
 			project="ERPSAdmin"
@@ -2004,8 +2018,9 @@
 			<pathelement location="${thirdparty.home}/guava-12.0.jar"/>
 			<pathelement location="${thirdparty.home}/telargoservices.jar"/>
 			<pathelement location="${thirdparty.home}/freemarker-2.3.15.jar"/>
-			<pathelement location="${thirdparty.home}/jackson-core-lgpl-1.2.0.jar"/>
-			<pathelement location="${thirdparty.home}/jackson-mapper-lgpl-1.2.0.jar"/>
+			<pathelement location="${thirdparty.home}/jackson-core-2.2.0.jar"/>
+			<pathelement location="${thirdparty.home}/jackson-databind-2.2.0.jar"/>
+			<pathelement location="${thirdparty.home}/jackson-annotations-2.2.0.jar"/>
 		</path>
 		<trycatch>
 			<try>
@@ -2054,8 +2069,9 @@
 			<fileset dir="${thirdparty.home}" includes="guava-12.0.jar" />
 			<fileset dir="${thirdparty.home}" includes="telargoservices.jar" />
 			<fileset dir="${thirdparty.home}" includes="freemarker-2.3.15.jar"/>
-			<fileset dir="${thirdparty.home}" includes="jackson-core-lgpl-1.2.0.jar"/>
-			<fileset dir="${thirdparty.home}" includes="jackson-mapper-lgpl-1.2.0.jar"/>
+			<fileset dir="${thirdparty.home}" includes="jackson-core-2.2.0.jar"/>
+			<fileset dir="${thirdparty.home}" includes="jackson-databind-2.2.0.jar"/>
+			<fileset dir="${thirdparty.home}" includes="jackson-annotations-2.2.0.jar"/>
 			<fileset dir="${thirdparty.home}" includes="urlrewrite-2.6.0.jar"/>
 		</copy>
 
@@ -2346,8 +2362,9 @@
 				<include name="httpclient-4.0.1.jar"/>
 				<include name="httpcore-4.0.1.jar"/>
 				<include name="httpmime-4.0.1.jar"/>
-				<include name="jackson-core-lgpl-1.2.0.jar"/>
-				<include name="jackson-mapper-lgpl-1.2.0.jar"/>
+				<include name="jackson-core-2.2.0.jar"/>
+				<include name="jackson-databind-2.2.0.jar"/>
+				<include name="jackson-annotations-2.2.0.jar"/>
 			</lib>
 		</makeEar>
 	</target>
@@ -2379,8 +2396,9 @@
 				<include name="httpclient-4.0.1.jar"/>
 				<include name="httpcore-4.0.1.jar"/>
 				<include name="httpmime-4.0.1.jar"/>
-				<include name="jackson-core-lgpl-1.2.0.jar"/>
-				<include name="jackson-mapper-lgpl-1.2.0.jar"/>
+				<include name="jackson-core-2.2.0.jar"/>
+				<include name="jackson-databind-2.2.0.jar"/>
+				<include name="jackson-annotations-2.2.0.jar"/>
 			</lib>
 		</makeEar>
 	</target>
@@ -2418,8 +2436,9 @@
 				<include name="httpclient-4.0.1.jar"/>
 				<include name="httpcore-4.0.1.jar"/>
 				<include name="httpmime-4.0.1.jar"/>
-				<include name="jackson-core-lgpl-1.2.0.jar"/>
-				<include name="jackson-mapper-lgpl-1.2.0.jar"/>
+				<include name="jackson-core-2.2.0.jar"/>
+				<include name="jackson-databind-2.2.0.jar"/>
+				<include name="jackson-annotations-2.2.0.jar"/>
 			</lib>
 		</makeEar>
 	</target>
@@ -2460,8 +2479,9 @@
 				<include name="httpclient-4.0.1.jar"/>
 				<include name="httpcore-4.0.1.jar"/>
 				<include name="httpmime-4.0.1.jar"/>
-				<include name="jackson-core-lgpl-1.2.0.jar"/>
-				<include name="jackson-mapper-lgpl-1.2.0.jar"/>
+				<include name="jackson-core-2.2.0.jar"/>
+				<include name="jackson-databind-2.2.0.jar"/>
+				<include name="jackson-annotations-2.2.0.jar"/>
 			</lib>
 		</makeEar>
 	</target>
@@ -2505,8 +2525,9 @@
 				<include name="lpsolve55j.jar"/>
 				<include name="guava-12.0.jar"/>
 				<include name="ctah-api-client.jar"/>
-				<include name="jackson-core-lgpl-1.2.0.jar"/>
-				<include name="jackson-mapper-lgpl-1.2.0.jar"/>
+				<include name="jackson-core-2.2.0.jar"/>
+				<include name="jackson-databind-2.2.0.jar"/>
+				<include name="jackson-annotations-2.2.0.jar"/>
 				<include name="freemarker-2.3.15.jar"/>
 				<include name="urlrewrite-2.6.0.jar"/>
 				
@@ -2540,8 +2561,9 @@
 				<include name="Zql.jar"/>
 				<include name="xercesImpl.jar"/>
 				<include name="antlr-2.7.5H3.jar"/>
-				<include name="jackson-core-lgpl-1.2.0.jar"/>
-				<include name="jackson-mapper-lgpl-1.2.0.jar"/>
+				<include name="jackson-core-2.2.0.jar"/>
+				<include name="jackson-databind-2.2.0.jar"/>
+				<include name="jackson-annotations-2.2.0.jar"/>
 			</lib>
 		</makeEar>
 	</target>
@@ -2568,8 +2590,9 @@
 				<include name="tapestry-4.0.2.jar"/>
 				<include name="tapestry-contrib-4.0.2.jar"/>
 				<include name="tacos-core-4.0.2-20070420.095420-14.jar"/>
-				<include name="jackson-core-lgpl-1.2.0.jar"/>
-				<include name="jackson-mapper-lgpl-1.2.0.jar"/>
+				<include name="jackson-core-2.2.0.jar"/>
+				<include name="jackson-databind-2.2.0.jar"/>
+				<include name="jackson-annotations-2.2.0.jar"/>
 			</lib>
 		</makeEar>
 	</target>
@@ -2611,8 +2634,9 @@
 				<include name="httpclient-4.0.1.jar"/>
 				<include name="httpcore-4.0.1.jar"/>
 				<include name="httpmime-4.0.1.jar"/>
-				<include name="jackson-core-lgpl-1.2.0.jar"/>
-				<include name="jackson-mapper-lgpl-1.2.0.jar"/>
+				<include name="jackson-core-2.2.0.jar"/>
+				<include name="jackson-databind-2.2.0.jar"/>
+				<include name="jackson-annotations-2.2.0.jar"/>
 			</lib>
 			<extra>	 
 				<zipfileset dir="${thirdparty.home}/slide" prefix="APP-INF/lib" includes="*.jar"/>	 
@@ -2702,6 +2726,7 @@
 			<zipfileset src="${thirdparty.home}/javassist-3.4.jar" excludes="META-INF/*"/>
             <zipfileset src="${thirdparty.home}/jsonrpc-1.0.jar" excludes="META-INF/*"/>
 			<zipfileset src="${thirdparty.home}/jawr-3.3.3.jar" excludes="META-INF/*"/>
+			<zipfileset src="${thirdparty.home}/soy-latest.jar" excludes="META-INF/*"/>
 
 			<!-- FD classes -->
 			<zipfileset src="${work.dir}/Framework.jar"/>
@@ -2949,8 +2974,9 @@
 			<pathelement location="${work.dir}/ERPSWebApp.jar"/>
 			<pathelement location="${release.dir}/applications/FDClient.jar"/>
 			<pathelement location="${thirdparty.home}/freemarker-2.3.15.jar"/>
-      		<pathelement location="${thirdparty.home}/jackson-core-lgpl-1.2.0.jar"/>
-			<pathelement location="${thirdparty.home}/jackson-mapper-lgpl-1.2.0.jar"/>
+			<pathelement location="${thirdparty.home}/jackson-core-2.2.0.jar"/>
+			<pathelement location="${thirdparty.home}/jackson-databind-2.2.0.jar"/>
+			<pathelement location="${thirdparty.home}/jackson-annotations-2.2.0.jar"/>
 			<pathelement location="${thirdparty.home}/javawebparts-filter-1.2.jar"/>
 			<pathelement location="${thirdparty.home}/spring-2.5.jar"/>
 			<pathelement location="${thirdparty.home}/spring-webmvc.jar"/>
@@ -3000,8 +3026,9 @@
   	<copy todir="${work.dir}/FDIntegrationServices/WEB-INF/lib">
 			
 			<fileset dir="${thirdparty.home}"           includes="freemarker-2.3.15.jar"/>
-      <fileset dir="${thirdparty.home}"            includes="jackson-core-lgpl-1.2.0.jar"/>
-			<fileset dir="${thirdparty.home}" includes="jackson-mapper-lgpl-1.2.0.jar"/>
+			<fileset dir="${thirdparty.home}" includes="jackson-core-2.2.0.jar"/>
+			<fileset dir="${thirdparty.home}" includes="jackson-databind-2.2.0.jar"/>
+			<fileset dir="${thirdparty.home}" includes="jackson-annotations-2.2.0.jar"/>
 			<fileset dir="${thirdparty.home}" includes="javawebparts-filter-1.2.jar"/>
 			<fileset dir="${thirdparty.home}" includes="spring-2.5.jar"/>
 			<fileset dir="${thirdparty.home}" includes="spring-webmvc.jar"/>
@@ -3072,8 +3099,9 @@
 
 				<include name="urlrewrite-2.6.0.jar"/>
 				
-				<include name="jackson-core-lgpl-1.2.0.jar"/>
-				<include name="jackson-mapper-lgpl-1.2.0.jar"/>
+				<include name="jackson-core-2.2.0.jar"/>
+				<include name="jackson-databind-2.2.0.jar"/>
+				<include name="jackson-annotations-2.2.0.jar"/>
 			</lib>
 		
 		</makeFDAdminEar>

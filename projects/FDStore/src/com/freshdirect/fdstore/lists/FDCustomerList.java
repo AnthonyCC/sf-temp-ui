@@ -188,4 +188,25 @@ public abstract class FDCustomerList extends ModelSupport {
 	public void removeAllLineItems() {
 		lineItems.clear();
 	}
+
+	
+	private String recipeId = null;
+	private String recipeName = null;
+
+	public String getRecipeId() {
+		return recipeId;
+	}
+	
+	public void setRecipeId( String recipeId ) {
+		this.recipeId = recipeId;
+	}
+	
+	public String getRecipeName() {
+		return recipeName;
+	}
+	
+	public void setRecipeName(String recipeName) {
+		this.recipeName = recipeName;
+	}
+
 }

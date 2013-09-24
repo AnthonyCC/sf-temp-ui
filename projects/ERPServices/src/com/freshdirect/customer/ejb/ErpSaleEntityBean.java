@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -20,6 +21,8 @@ import javax.ejb.FinderException;
 import javax.ejb.ObjectNotFoundException;
 
 import org.apache.log4j.Category;
+
+import weblogic.jdbc.wrapper.Array;
 
 import com.freshdirect.common.pricing.Price;
 import com.freshdirect.common.pricing.PricingEngine;
@@ -176,6 +179,52 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 			ps.close();
 
 			return foundPk;
+
+		} catch (SQLException sqle) {
+			throw new FinderException(sqle.getMessage());
+		} finally {
+			try {
+				if (conn != null) {
+					conn.close();
+				}
+			} catch (SQLException sqle2) {
+				LOGGER.warn("Error closing connection", sqle2);
+			}
+		}
+	}
+	
+	public Collection<PrimaryKey> ejbFindMultipleByPrimaryKeys(Collection<PrimaryKey> pks) throws ObjectNotFoundException, FinderException {
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			
+			StringBuilder q = new StringBuilder("SELECT ID FROM CUST.SALE where ID in (");
+
+			for(int i=0;i<pks.size();++i){
+				if(i==pks.size()-1){
+					q.append("?)");					
+				}else{
+					q.append("?,");
+				}
+			}
+			PreparedStatement ps = conn.prepareStatement(q.toString());
+			int i=1;
+			for(PrimaryKey key: pks){
+				ps.setString(i, key.getId());
+				++i;
+			}
+
+			ResultSet rs = ps.executeQuery();
+			
+			List<PrimaryKey> keys = new ArrayList<PrimaryKey>();
+			while(rs.next()){
+				keys.add(new PrimaryKey(rs.getString(1)));
+			}
+
+			rs.close();
+			ps.close();
+
+			return keys;
 
 		} catch (SQLException sqle) {
 			throw new FinderException(sqle.getMessage());

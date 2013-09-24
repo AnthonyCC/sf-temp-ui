@@ -113,9 +113,15 @@ var FreshDirect = FreshDirect || {};
   /* this shouldn't exist */
   var coremetricsEval = function(cartData){
     if(cartData === false ) return false;
-    if(cartData[CARTDATA_COREMETRICS]) {
-    	eval(cartData[CARTDATA_COREMETRICS]);
-    }
+    try {
+	    if(cartData[CARTDATA_COREMETRICS]) {
+	    	eval(cartData[CARTDATA_COREMETRICS]);
+	    }
+    } catch (e) {
+		// Ignore any errors coming from coremetrics:
+    	// if coremetrics fails we don't want the whole js code to die ...
+    	console.log( "coremetrics script has failed! " + e );
+	}
   }
 
   var updateHtml = function(cartData) {
@@ -174,7 +180,7 @@ var FreshDirect = FreshDirect || {};
       valign: 'bottom',
       halign: 'right',
       stayOnClick: true,
-      $closeHandle: $cart.find('.close'),
+      closeHandle: '#popupcart .close',
       disabled: isDisabled,
       $clickTrigger: $clickTrigger
     }
@@ -201,13 +207,6 @@ var FreshDirect = FreshDirect || {};
   $(document).on('click','#popupcart tr.cartline',function(e){
     if($(e.target).hasClass("remove")) {
       $(this).addClass("removed");
-    }
-  });
-
-  $(window).on('resize',function(e){
-    if(cartContext.shown){
-      cartContext.hide();
-      cartContext.show();
     }
   });
 
@@ -239,7 +238,7 @@ var FreshDirect = FreshDirect || {};
         if ($cartContent.is(':empty')) {
           $cart.addClass('loading');
         } else {
-          $checkoutButton.addClass('loading'); // TODO disable, design change
+          $checkoutButton.addClass('loading');
         }
       }
     });

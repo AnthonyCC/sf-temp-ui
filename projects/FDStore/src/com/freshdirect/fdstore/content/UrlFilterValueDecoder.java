@@ -12,7 +12,7 @@ public class UrlFilterValueDecoder extends GenericFilterValueDecoder {
 		private static final String FILTER_SEPARATOR = ",";
 		private static final String FILTER_VALUE_SEPARATOR = "=";
 
-		public UrlFilterValueDecoder(Set<EnumFilteringValue> filters) {
+		public UrlFilterValueDecoder(Set<FilteringValue> filters) {
 			super(filters);
 		}
 
@@ -28,8 +28,8 @@ public class UrlFilterValueDecoder extends GenericFilterValueDecoder {
 			return buf.substring(0, buf.lastIndexOf(FILTER_SEPARATOR));
 		}
 		
-		public Map<EnumFilteringValue, List<Object>> decode(String encoded) {
-			Map<EnumFilteringValue, List<Object>> filterValues=new HashMap<EnumFilteringValue, List<Object>>();
+		public Map<FilteringValue, List<Object>> decode(String encoded) {
+			Map<FilteringValue, List<Object>> filterValues=new HashMap<FilteringValue, List<Object>>();
 			for (String item : encoded.split(FILTER_SEPARATOR)) {
 				decodeFilterValue(item, filterValues);
 			}
@@ -37,14 +37,14 @@ public class UrlFilterValueDecoder extends GenericFilterValueDecoder {
 			return filterValues;
 		}
 		
-		private void decodeFilterValue(String item, Map<EnumFilteringValue, List<Object>> filterValues) {
+		private void decodeFilterValue(String item, Map<FilteringValue, List<Object>> filterValues) {
 			String[] split = item.split(FILTER_VALUE_SEPARATOR);
 			
 			if (split.length != 2){
 				return;			
 			}
 			
-			for(EnumFilteringValue filter: filters){
+			for(FilteringValue filter: filters){
 				if(filter.getName().equals(split[0])){
 					if(filterValues.containsKey(filter)){
 						filterValues.get(filter).add(split[1]);

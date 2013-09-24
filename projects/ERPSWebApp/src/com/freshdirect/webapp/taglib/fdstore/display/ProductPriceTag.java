@@ -65,8 +65,8 @@ public class ProductPriceTag extends BodyTagSupport {
     private static final String groceryStyleWasText = " class=\"groceryStyleWas lineThrough\"";
     private static final String groceryStyleScale = " class=\"groceryStyleScale\"";
     private final static Logger LOGGER = LoggerFactory.getInstance(ProductPriceTag.class);
-    private final static NumberFormat FORMAT_CURRENCY = NumberFormat.getCurrencyInstance(Locale.US);
-    private final static DecimalFormat FORMAT_QUANTITY = new java.text.DecimalFormat(
+    public final static NumberFormat FORMAT_CURRENCY = NumberFormat.getCurrencyInstance(Locale.US);
+    public final static DecimalFormat FORMAT_QUANTITY = new java.text.DecimalFormat(
             "0.##");
     private ProductImpression impression;
     double savingsPercentage = 0; // savings % off

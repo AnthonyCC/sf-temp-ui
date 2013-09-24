@@ -8,8 +8,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Category;
-import org.codehaus.jackson.JsonGenerationException;
-import org.codehaus.jackson.map.JsonMappingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.freshdirect.fdstore.FDException;

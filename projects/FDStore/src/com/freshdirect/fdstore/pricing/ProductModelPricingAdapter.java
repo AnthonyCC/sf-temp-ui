@@ -1429,6 +1429,11 @@ public class ProductModelPricingAdapter implements ProductModel, Serializable,
 	}
 
 	@Override
+	public EnumOrderLineRating getProductRatingEnum(String skuCode) throws FDResourceException {
+		return this.prodModel.getProductRatingEnum(skuCode);
+	}
+
+	@Override
 	public Image getPackageImage() {
 		return this.prodModel.getPackageImage();
 	}

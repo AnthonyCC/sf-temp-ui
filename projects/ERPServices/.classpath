@@ -24,8 +24,9 @@
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/xpp3_min.jar"/>
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/xstream.jar"/>
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/ctah-api-client.jar"/>
-	<classpathentry kind="var" path="FD_LIBS/thirdparty/jackson-core-lgpl-1.2.0.jar"/>
-	<classpathentry kind="var" path="FD_LIBS/thirdparty/jackson-mapper-lgpl-1.2.0.jar"/>
+	<classpathentry exported="true" kind="var" path="FD_LIBS/thirdparty/jackson-annotations-2.2.0.jar"/>
+	<classpathentry exported="true" kind="var" path="FD_LIBS/thirdparty/jackson-core-2.2.0.jar"/>
+	<classpathentry exported="true" kind="var" path="FD_LIBS/thirdparty/jackson-databind-2.2.0.jar"/>
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/PaymentechSDK.jar"/>
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/commons-codec-1.3.jar"/>
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/commons-httpclient-3.1.jar"/>
@@ -37,3 +38,4 @@
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/sunrsasign.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
+

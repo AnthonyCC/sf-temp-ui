@@ -1,8 +1,10 @@
 package com.freshdirect.fdstore.coremetrics.tagmodel;
 
-
+import java.util.List;
 
 public class OrderTagModel extends AbstractTagModel  {
+	
+	private static final long	serialVersionUID	= 4832570080647156443L;
 	
 	private String orderId; 
 	private String orderSubtotal; 
@@ -67,4 +69,15 @@ public class OrderTagModel extends AbstractTagModel  {
 	public void setRegistrantPostalCode(String registrantPostalCode) {
 		this.registrantPostalCode = registrantPostalCode;
 	}
+	
+	@Override
+	public String getFunctionName() {
+		throw new UnsupportedOperationException();
+	}
+	
+	@Override
+	public List<String> toStringList() {
+		throw new UnsupportedOperationException();
+	} 
+	
 }

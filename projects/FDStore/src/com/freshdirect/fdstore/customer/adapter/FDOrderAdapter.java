@@ -189,7 +189,9 @@ public class FDOrderAdapter implements FDOrderI {
 				cartLine.setFixedPrice(ol.getPrice());
 			}
 			try {
-				cartLine.refreshConfiguration();
+				if(cartLine.lookupFDProduct()!=null){
+					cartLine.refreshConfiguration();					
+				}
 
 			} catch (FDInvalidConfigurationException e) {
 				LOGGER.warn("Difficulty recreating orderline " + i + " in sale " + sale.getPK(), e);

@@ -1,0 +1,70 @@
+[data-component="carousel"] {
+	white-space:nowrap;
+	overflow:hidden;
+	position:relative;
+	margin:15px 0;
+	padding:0 40px;
+	list-style-type:none;
+}
+[data-component="carousel-mask"] {
+	overflow:hidden;	
+}
+
+[data-component="carousel"] ul {
+	margin:0 auto;
+	padding:0;
+	left:0;
+	display:inline-block;
+	-webkit-transition:all 0.3s ease-in-out;
+	-moz-transition: all 0.3s ease-in-out;
+	-ms-transition: all 0.3s ease-in-out;
+	-o-transition: all 0.3s ease-in-out;
+	transition: all 0.3s ease-in-out;
+	position:relative;
+}
+
+
+[data-component="carousel"] ul li {
+	text-indent:0;
+}
+
+[data-component="carousel-prev"],
+[data-component="carousel-next"] {
+	position:absolute;
+	height:48px;
+	top:0;
+	bottom:0;
+	margin:auto 0;
+	width:34px;
+	overflow:hidden;
+	text-indent:40px;
+	border:none;
+	padding:0;
+	cursor:pointer;
+}
+
+[data-component="carousel-next"],
+[data-component="carousel"].last [data-component="carousel-next"]:hover {
+	right:-1px;
+	background: url('/media_stat/carousel/carousel-sprite.png') no-repeat -34px 0;
+}
+
+[data-component="carousel-next"]:hover {
+	background-position: -34px -48px;
+}
+
+[data-component="carousel-prev"],
+[data-component="carousel"].first [data-component="carousel-prev"]:hover {
+	left:-1px;
+	background: url('/media_stat/carousel/carousel-sprite.png') no-repeat 0 0;
+}
+
+[data-component="carousel-prev"]:hover {
+	background-position: 0 -48px;
+}
+
+
+[data-component="carousel"].last [data-component="carousel-next"],
+[data-component="carousel"].first [data-component="carousel-prev"] {
+	cursor: default;
+}

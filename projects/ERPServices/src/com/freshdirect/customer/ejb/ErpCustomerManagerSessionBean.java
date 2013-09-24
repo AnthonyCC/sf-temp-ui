@@ -763,6 +763,32 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 			throw new EJBException(ex);
 		}
 	}
+	
+	/**
+	 * Get multiple sales
+	 */
+	public List<ErpSaleModel> getOrders(List<PrimaryKey> erpSalePks) {
+		try {
+			
+			if(erpSalePks.isEmpty()){
+				return new ArrayList<ErpSaleModel>();
+			}
+			Collection<ErpSaleEB> saleEBs = getErpSaleHome().findMultipleByPrimaryKeys(erpSalePks);
+			
+			List<ErpSaleModel> models = new ArrayList<ErpSaleModel>();
+			for(ErpSaleEB eb: saleEBs){
+				models.add((ErpSaleModel)eb.getModel());
+			}
+			return models;
+
+		} catch (FinderException ex) {
+			LOGGER.warn("FinderException: ", ex);
+			throw new EJBException(ex);
+		} catch (RemoteException ex) {
+			LOGGER.warn("RemoteException: ", ex);
+			throw new EJBException(ex);
+		}
+	}
 
 	/**
 	 * Get lightweight info about a customer's orders.

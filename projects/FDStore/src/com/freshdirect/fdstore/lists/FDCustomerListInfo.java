@@ -24,10 +24,9 @@ public class FDCustomerListInfo extends FDCustomerList {
 		this.type = type;
 	}
 	
-
 	@Override
 	public EnumCustomerListType getType() {
 		return type;
 	}
-		
+	
 }

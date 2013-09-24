@@ -1,164 +1,107 @@
 package com.freshdirect.webapp.taglib.content;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
+import java.util.Map;
 
-import org.apache.log4j.Category;
+import javax.servlet.jsp.JspException;
+import javax.servlet.jsp.tagext.TagData;
+import javax.servlet.jsp.tagext.TagExtraInfo;
+import javax.servlet.jsp.tagext.VariableInfo;
 
-import com.freshdirect.common.pricing.PricingContext;
-import com.freshdirect.fdstore.FDResourceException;
-import com.freshdirect.fdstore.FDStoreProperties;
-import com.freshdirect.fdstore.content.ComparatorChain;
-import com.freshdirect.fdstore.content.EnumFilteringValue;
-import com.freshdirect.fdstore.content.EnumSortingValue;
-import com.freshdirect.fdstore.content.FilteringComparatorUtil;
-import com.freshdirect.fdstore.content.FilteringSortingItem;
-import com.freshdirect.fdstore.content.GenericFilterDecorator;
-import com.freshdirect.fdstore.content.ProductFilterMenuDecorator;
-import com.freshdirect.fdstore.content.ProductFilterValueDecorator;
-import com.freshdirect.fdstore.content.ProductModel;
+import org.apache.log4j.Logger;
+
+import com.freshdirect.fdstore.content.FilteringFlow;
+import com.freshdirect.fdstore.content.FilteringFlowResult;
+import com.freshdirect.fdstore.content.FilteringMenuItem;
+import com.freshdirect.fdstore.content.FilteringValue;
 import com.freshdirect.fdstore.content.SearchResults;
-import com.freshdirect.fdstore.content.SearchSortType;
-import com.freshdirect.fdstore.content.SortIntValueComparator;
-import com.freshdirect.fdstore.content.SortLongValueComparator;
-import com.freshdirect.fdstore.content.SortValueComparator;
-import com.freshdirect.fdstore.content.util.SmartSearchUtils;
-import com.freshdirect.fdstore.customer.FDAuthenticationException;
-import com.freshdirect.fdstore.customer.FDCustomerManager;
-import com.freshdirect.fdstore.customer.FDIdentity;
-import com.freshdirect.fdstore.customer.FDUserI;
-import com.freshdirect.fdstore.pricing.ProductPricingFactory;
+import com.freshdirect.fdstore.util.FilteringNavigator;
 import com.freshdirect.framework.util.log.LoggerFactory;
-import com.freshdirect.smartstore.fdstore.ScoreProvider;
-import com.freshdirect.smartstore.sorting.ScriptedContentNodeComparator;
-import com.freshdirect.webapp.taglib.fdstore.SessionName;
+import com.freshdirect.framework.webapp.BodyTagSupportEx;
 
-public class ProductsFilterTag extends FilteringFlow<ProductModel> {
-	
-	private static Category LOGGER = LoggerFactory.getInstance(ProductsFilterTag.class);
+public class ProductsFilterTag extends BodyTagSupportEx {
 
-	private static final long serialVersionUID = -3101346359422968490L;
+	private String domainsId;
+	private String itemsId;
+	private String filteredItemCountId;
+	protected FilteringNavigator nav;
 	
 	private SearchResults results;
-	private Set<EnumFilteringValue> filters;
-	{
-		filters=new HashSet<EnumFilteringValue>();
-		filters.add(EnumFilteringValue.DEPT);
-		filters.add(EnumFilteringValue.CAT);
-		filters.add(EnumFilteringValue.SUBCAT);
-		filters.add(EnumFilteringValue.BRAND);
-		filters.add(EnumFilteringValue.EXPERT_RATING);
-		filters.add(EnumFilteringValue.CUSTOMER_RATING);
-		filters.add(EnumFilteringValue.GLUTEN_FREE);
-		filters.add(EnumFilteringValue.KOSHER);
-		filters.add(EnumFilteringValue.NEW_OR_BACK);
-		filters.add(EnumFilteringValue.ON_SALE);
-	}
 
-	private boolean mocked = false;
-	private String mockCustomerId;
-	private FDUserI user;
-	
-	protected List<ProductModel> products;
-
-	protected GenericFilterDecorator<FilteringSortingItem<ProductModel>> createFilterValueDecorator() {
-		return new ProductFilterValueDecorator(filters);
-	}
+	private final static Logger LOG = LoggerFactory.getInstance(FilteringFlow.class);
 
 	@Override
-	protected GenericFilterDecorator<FilteringSortingItem<ProductModel>> createMenuValueDecorator() {
-		return new ProductFilterMenuDecorator(filters);
-	}
-	
-	@Override
-	protected List<FilteringSortingItem<ProductModel>> getItems() {
-		return new ArrayList<FilteringSortingItem<ProductModel>>(results.getProducts());
-	}
+	public int doStartTag() throws JspException {
 
-	@Override
-	protected Set<EnumFilteringValue> getFilterEnums() {
-		return this.filters;
-	}
-	
-	@Override
-	protected Comparator<FilteringSortingItem<ProductModel>> createComparator(List<FilteringSortingItem<ProductModel>> products) {
-		String suggestedTerm = results.getSuggestedTerm();
-		if (suggestedTerm == null)
-			suggestedTerm = results.getSearchTerm();
+		// Check required attributes
+		if (nav == null || domainsId == null || itemsId == null || filteredItemCountId == null) {
+			LOG.warn("FilteringFlow received null attributes, skipping...");
+			return SKIP_BODY;
+		}
 		
-		return FilteringComparatorUtil.createProductComparator(getItems(), getUserId(), getPricingContext(), suggestedTerm, nav, isShowGrouped());
+		FilteringFlowResult result = getProductsFilter().doFlow(nav, null);
+
+		// Put results into jsp page context
+		pageContext.setAttribute(itemsId, result.getItems());
+		pageContext.setAttribute(domainsId, result.getMenu());
+		pageContext.setAttribute(filteredItemCountId, result.getItems().size());
+		return EVAL_BODY_INCLUDE;
 	}
 	
-	protected List<FilteringSortingItem<ProductModel>> reOrganizeFavourites(List<FilteringSortingItem<ProductModel>> products) {
+	private ProductsFilterImpl getProductsFilter(){
+		return new ProductsFilterImpl(results, nav, pageContext);
 		
-		return FilteringComparatorUtil.reOrganizeFavourites(products, getUserId(), getPricingContext());
-
 	}
 
-	@Override
-	protected void preProcess(List<FilteringSortingItem<ProductModel>> items) {
-		for(FilteringSortingItem<ProductModel> item:items){
-			item.setNode(ProductPricingFactory.getInstance().getPricingAdapter(item.getNode(), getPricingContext()));
-		}		
+	public void setDomainsId(String domainsId) {
+		this.domainsId = domainsId;
+	}
+
+	public String getDomainsId() {
+		return domainsId;
+	}
+
+	public void setItemsId(String itemsId) {
+		this.itemsId = itemsId;
+	}
+
+	public String getItemsId() {
+		return itemsId;
+	}
+
+	public String getFilteredItemCountId() {
+		return filteredItemCountId;
+	}
+
+	public void setFilteredItemCountId(String filteredItemCountId) {
+		this.filteredItemCountId = filteredItemCountId;
+	}
+
+	public void setNav(FilteringNavigator nav) {
+		this.nav = nav;
 	}
 	
-	@Override
-	protected void postProcess(List<FilteringSortingItem<ProductModel>> items) {
-			
-	}
-
 	public void setResults(SearchResults results) {
 		this.results = results;
 	}
-	
-	public FDUserI getFDUser() {
-		if (user == null) {
-			if (mocked) {
-				if (mockCustomerId != null)
-					try {
-						user = FDCustomerManager.recognize(new FDIdentity(mockCustomerId));
-					} catch (FDAuthenticationException e) {
-						LOGGER.warn("authentication failed for customer: " + mockCustomerId, e);
-					} catch (FDResourceException e) {
-						LOGGER.warn("failed to recognize customer: " + mockCustomerId, e);
-					}
-			} else
-				user = (FDUserI) pageContext.getSession().getAttribute(SessionName.USER);
+
+	public static class TagEI extends TagExtraInfo {
+		@Override
+		public VariableInfo[] getVariableInfo(TagData data) {
+			return new VariableInfo[] { new VariableInfo(
+					data.getAttributeString("domainsId"),
+					Map.class.getName() + "<" + FilteringValue.class.getName() + "," + Map.class.getName() + "<" + String.class.getName() + "," + FilteringMenuItem.class.getName() + ">>",
+					true,
+					VariableInfo.NESTED), new VariableInfo(
+					data.getAttributeString("itemsId"),
+					List.class.getName(),
+					true,
+					VariableInfo.NESTED), new VariableInfo(
+					data.getAttributeString("filteredItemCountId"),
+					Integer.class.getName(),
+					true,
+					VariableInfo.NESTED) };
 		}
-		return user;
-	}
-
-	public String getUserId() {
-		FDUserI user = getFDUser();
-		if (user != null) {
-			FDIdentity identity = user.getIdentity();
-			if (identity != null)
-				return identity.getErpCustomerPK();
-		}
-		return null;
-	}
-
-	public PricingContext getPricingContext() {
-		FDUserI user = getFDUser();
-		if (user != null)
-			return user.getPricingContext();
-		return PricingContext.DEFAULT;
-	}
-	
-	private boolean isShowGrouped() {
-		return nav.getSortBy().equals(SearchSortType.BY_RECENCY) && nav.getFilterValues().get(
-				EnumFilteringValue.BRAND) == null && nav.getFilterValues().get(EnumFilteringValue.DEPT) == null && (nav.getFilterValues().get(
-				EnumFilteringValue.CAT) == null || nav.getFilterValues().get(EnumFilteringValue.CAT).equals(
-				FDStoreProperties.getNewProductsCatId()));
-	}
-
-	@Override
-	protected Set<EnumFilteringValue> getFilters() {
-		return filters;
 	}
 
 }

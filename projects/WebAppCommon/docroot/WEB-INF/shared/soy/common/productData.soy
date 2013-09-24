@@ -1,0 +1,43 @@
+{namespace common}
+
+/**
+ * @param? atcItemId atcItemId
+ * @param productId productId
+ * @param? catId categoryId
+ * @param? skuCode skuId
+ * @param? listId listId
+ * @param? configuration product configuration
+ * @param? isAlcoholic product configuration
+ * @param? originalLineId product configuration
+ * 
+ */
+{template .productData autoescape="false"}
+{if isNonnull($atcItemId)}
+<input type="hidden" data-component="productData" data-productdata-name="atcItemId" name="atcItemId" value="{$atcItemId}">
+{else}
+<input type="hidden" data-component="productData" data-productdata-name="atcItemId" name="atcItemId" value="atc_{$productId ? $productId : '' }_{$skuCode ? $skuCode : '' }_{$catId ? $catId : '' }">
+{/if}
+{if $productId}
+<input type="hidden" data-component="productData" data-productdata-name="productId" name="productId" value="{$productId}">
+{/if}
+{if $catId}
+<input type="hidden" data-component="productData" data-productdata-name="categoryId" name="categoryId" value="{$catId}">
+{/if}
+{if $skuCode}
+<input type="hidden" data-component="productData" data-productdata-name="skuCode" name="skuCode" value="{$skuCode}">
+{/if}
+{if $listId}
+<input type="hidden" data-component="productData" data-productdata-name="listId" name="listId" value="{$listId}">
+{/if}
+{if $isAlcoholic}
+<input type="hidden" data-component="productData" data-productdata-name="isAlcoholic" name="isAlcoholic" value="{$isAlcoholic}">
+{/if}
+{if $originalLineId}
+<input type="hidden" data-component="productData" data-productdata-name="lineId" name="lineId" value="{$originalLineId}">
+{/if}
+{if $configuration}
+{foreach $key in keys($configuration)}
+<input type="hidden" data-component="productDataConfiguration" data-productdata-name="{$key}" name="{$key}" value="{$configuration[$key]}">
+{/foreach}
+{/if}
+{/template}

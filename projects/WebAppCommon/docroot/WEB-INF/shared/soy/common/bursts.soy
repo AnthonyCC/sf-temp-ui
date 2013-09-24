@@ -1,0 +1,25 @@
+{namespace common}
+
+/**
+ * @param? badge
+ * @param? deal
+ * @param? usq
+ */
+{template .bursts autoescape="false"}
+{let $burst}
+{if isNonnull($badge)}
+{switch $badge}
+{case 'fav'}
+/media_stat/images/bursts/brst_sm_fave.png
+{case 'new'}
+/media_stat/images/bursts/brst_sm_new.png
+{/switch}
+{elseif $deal > 0}
+/media_stat/images/deals/brst_sm_{$deal}.png
+{/if}
+{/let}
+{if $burst}
+<img class="burst" src="{$burst}">
+{/if}
+{if $usq}<span id="burst-usq-" name="burst-usq" class="burst-usq"></span>{/if}
+{/template}

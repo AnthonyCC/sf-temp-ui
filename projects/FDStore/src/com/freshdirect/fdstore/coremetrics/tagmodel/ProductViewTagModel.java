@@ -1,7 +1,12 @@
 package com.freshdirect.fdstore.coremetrics.tagmodel;
 
+import java.util.List;
+
 
 public class ProductViewTagModel extends AbstractTagModel  {
+
+	private static final long	serialVersionUID	= 2608741714902410603L;
+	
 	private String productId; 
 	private String productName; 
 	private String categoryId;
@@ -38,4 +43,15 @@ public class ProductViewTagModel extends AbstractTagModel  {
 	public void setVirtualCategoryId(String virtualCategoryId) {
 		this.virtualCategoryId = virtualCategoryId;
 	} 
+	
+	@Override
+	public String getFunctionName() {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public List<String> toStringList() {
+		throw new UnsupportedOperationException();
+	} 
+
 }

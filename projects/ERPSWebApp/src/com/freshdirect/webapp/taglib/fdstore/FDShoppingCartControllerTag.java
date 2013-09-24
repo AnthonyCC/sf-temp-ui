@@ -68,7 +68,6 @@ import com.freshdirect.fdstore.customer.FDInvalidConfigurationException;
 import com.freshdirect.fdstore.customer.FDModifyCartLineI;
 import com.freshdirect.fdstore.customer.FDProductSelectionI;
 import com.freshdirect.fdstore.customer.FDTransientCartModel;
-import com.freshdirect.fdstore.customer.FDUser;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.customer.OrderLineUtil;
 import com.freshdirect.fdstore.customer.QuickCart;
@@ -80,8 +79,8 @@ import com.freshdirect.fdstore.lists.FDCustomerListItem;
 import com.freshdirect.fdstore.lists.FDCustomerProductListLineItem;
 import com.freshdirect.fdstore.lists.FDListManager;
 import com.freshdirect.fdstore.standingorders.FDStandingOrder;
-import com.freshdirect.fdstore.standingorders.FDStandingOrdersManager;
 import com.freshdirect.fdstore.standingorders.FDStandingOrder.ErrorCode;
+import com.freshdirect.fdstore.standingorders.FDStandingOrdersManager;
 import com.freshdirect.fdstore.util.IgnoreCaseString;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.event.EnumEventSource;
@@ -97,7 +96,7 @@ import com.freshdirect.webapp.util.ItemSelectionCheckResult;
 import com.freshdirect.webapp.util.QuickCartCache;
 import com.freshdirect.webapp.util.RequestUtil;
 
-
+@Deprecated
 public class FDShoppingCartControllerTag extends BodyTagSupport implements SessionName {
 
 	public static String PARAM_ADDED_FROM_SEARCH = "addedfromsearch";

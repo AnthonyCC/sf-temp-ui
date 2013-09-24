@@ -13,65 +13,106 @@ var FreshDirect = FreshDirect || {};
    * @param {Object} config Configuration object
    */
   var PopupContent = function ($el, $trigger, config) {
-    var isTouchEnabled = ('ontouchstart' in document.documentElement);
-
     this.$el = $el;
-    this.$trigger = $trigger;
-    this.$clickTrigger = config.$clickTrigger || $trigger;
     this.config = $.extend({}, PopupContent.CONFIG, config);
 
-    this.$alignTo = this.config.alignTo || this.$trigger;
+    this.$alignTo = this.config.aligntoselector && $(this.config.aligntoselector) ||
+                    this.config.alignTo || $trigger;
 
-    this.$overlay = $("#popupcontentoverlay");
-    this.$ghost = $("#popupcontentghost");
-    this.$placeholder = $("#popupcontentplaceholder");
+    this.$overlay = null;
+    this.$ghost = null;
+    this.$placeholder = null;
     this.delay = null;
     this.hidedelay = null;
     this.clicked = false;
     this.shown = false;
     this.disabled = this.config.disabled || false;
-
-    // TODO move the trigger element to the ghost, replace it with a placeholder
-
-    // check overlay and ghost
-    if (!this.$overlay.length) {
-      this.$overlay = $('<div id="popupcontentoverlay"></div>').appendTo(document.body);
-    }
-    if (!this.$ghost.length) {
-      this.$ghost = $('<div id="popupcontentghost"></div>').appendTo(document.body);
-    }
-    if (!this.$placeholder.length) {
-      this.$placeholder = $('<div id="popupcontentplaceholder"></div>').appendTo(document.body);
-    }
-
-    // move $el to the end of body
-    this.$el.appendTo(document.body);
+    this.config.placeholder = !!(this.config.placeholder && $trigger);
 
     this.hideProxy = $.proxy(this.hide, this);
 
-    if (!isTouchEnabled) {
-      this.$trigger.on("mouseover", $.proxy(this.showDelayed, this));
-      this.$trigger.on("mouseout", $.proxy(this.clearDelay, this));
-      this.$overlay.on("mouseover", $.proxy(this.hideDelayed, this));
-      this.$overlay.on("mouseout", $.proxy(this.clearHideDelay, this));
-    }
-    this.$clickTrigger.on("click", $.proxy(this.showDelayed, this)); // ! might cause merge problems with quickshop branch !
-    this.$ghost.on("click", this.hideProxy);
-    this.$overlay.on("click", this.hideProxy);
+    // wait for domready event
+    $($.proxy(function(){
 
-    if (this.config.stayOnClick) {
-      this.$el.on("mousedown", $.proxy(function () { 
-        if (this.shown && !this.clicked) {
-          this.clicked = true; 
-          this.$el.addClass('clicked');
+      // TODO move the trigger element to the ghost, replace it with a placeholder
+
+      // check overlay and ghost
+      if (this.config.overlay) {
+        this.$overlay = $('<div class="popupcontentoverlay"></div>').appendTo(document.body);
+
+        if (this.config.zIndex) {
+          this.$overlay.css('z-index', this.config.zIndex);
         }
-      }, this));
-    }
 
-    if (this.config.$closeHandle) {
-      this.config.$closeHandle.on('click', this.hideProxy);
-    }
+        this.$overlay.on("mouseover", $.proxy(this.hideDelayed, this));
+        this.$overlay.on("mouseout", $.proxy(this.clearHideDelay, this));
+        this.$overlay.on("click", this.hideProxy);
+      }
+      if (this.config.placeholder) {
+        this.$ghost = $('<div class="popupcontentghost"></div>').appendTo(document.body);
+        this.$placeholder = $('<div class="popupcontentplaceholder"></div>').appendTo(document.body);
 
+        if (this.config.zIndex) {
+          this.$ghost.css('z-index', this.config.zIndex+1);
+        }
+
+      }
+
+      // move $el to the end of body
+      this.$el.appendTo(document.body);
+
+      if (this.config.zIndex) {
+        this.$el.css('z-index', this.config.zIndex+2);
+      }
+
+      if (this.config.placeholder) {
+        this.$ghost.on("click", this.hideProxy);
+      }
+
+      this.bindTrigger($trigger);
+
+      if (this.config.stayOnClick) {
+        this.$el.on("mousedown", $.proxy(function () {
+          if (this.shown && !this.clicked) {
+            this.clicked = true;
+            this.$el.addClass('clicked');
+          }
+        }, this));
+      }
+
+      if (this.config.closeHandle) {
+        $(this.config.closeHandle).on('click', this.hideProxy);
+      }
+
+
+    $(window).on('resize',$.proxy(function(e){
+      if(this.shown){
+        this.hide();
+        this.show();
+      }
+    },this));
+
+  },this));
+
+  };
+
+  PopupContent.prototype.bindTrigger = function ($trigger) {
+    if ($trigger) {
+      this.$trigger = $trigger;
+      this.alignTo = this.alignTo || $trigger;
+
+      if (this.config.openonclick) {
+        this.$trigger.on("click", $.proxy(this.show, this));
+      } else {
+        this.$trigger.on("mouseover", $.proxy(this.showDelayed, this));
+        this.$trigger.on("mouseout", $.proxy(this.clearDelay, this));
+      }
+      if (!this.config.overlay && !this.config.openonclick) {
+        this.$trigger.on("mouseout", $.proxy(this.hideDelayed, this));
+        this.$el.on("mouseover", $.proxy(this.clearHideDelay, this));
+        this.$el.on("mouseout", $.proxy(this.hideDelayed, this));
+      }
+    }
   };
 
   PopupContent.prototype.clearDelay = function (e) {
@@ -85,8 +126,6 @@ var FreshDirect = FreshDirect || {};
   };
 
   PopupContent.prototype.showDelayed = function (e) {
-    e.stopImmediatePropagation();
-    e.preventDefault();
     if (this.delay === null) {
       this.delay = setTimeout($.proxy(this.show, this), this.config.delay);
     }
@@ -98,28 +137,42 @@ var FreshDirect = FreshDirect || {};
     }
   };
 
-  PopupContent.prototype.show = function (e) {
-    if (!this.shown && !this.disabled) {
+  PopupContent.prototype.show = function ($trigger) {
+    if ($trigger) {
+      this.$trigger = $trigger;
+      this.$alignTo = $trigger;
+    }
+    if (this.$trigger && !this.shown && !this.disabled) {
       this.shown = true;
       this.$trigger.addClass("hover");
       this.reposition();
       this.$el.css({display: "block"});
-      this.$ghost.css({display: "block"});
-      this.$overlay.css({display: "block"});
+      if (this.config.placeholder) {
+        this.$ghost.css({display: "block"});
+      }
+      if (this.config.overlay) {
+        this.$overlay.css({display: "block"});
+      }
     }
   };
 
   PopupContent.prototype.hide = function () {
-    this.$trigger.removeClass("hover");
+    if (this.$trigger) {
+      this.$trigger.removeClass("hover");
+    }
     this.$el.css({display: "none"});
-    this.$ghost.css({display: "none"});
-    this.$overlay.css({display: "none"});
     this.clicked = false;
     this.shown = false;
     this.$el.removeClass('clicked');
-    this.$alignTo.insertBefore(this.$placeholder);
-    this.$placeholder.detach();
-    this.clearDelay();
+    if (this.config.placeholder) {
+      this.$ghost.css({display: "none"});
+      this.$alignTo.insertBefore(this.$placeholder);
+      this.$placeholder.detach();
+    }
+    if (this.config.overlay) {
+      this.$overlay.css({display: "none"});
+    }
+    this.clearHideDelay();
   };
 
   PopupContent.prototype.reposition = function () {
@@ -130,24 +183,28 @@ var FreshDirect = FreshDirect || {};
         fheight = this.$alignTo.outerHeight(true),
         contentWidth = this.$el.outerWidth();
 
-    this.$ghost.css({
-      top: offset.top + 'px',
-      left: offset.left + 'px',
-      width: fwidth + 'px',
-      height: fheight + 'px'
-    });
 
-    this.$placeholder.insertBefore(this.$alignTo);
-    this.$placeholder.css({
-      width: fwidth + 'px',
-      height: fheight + 'px',
-      float: this.$alignTo.css('float')
-    });
-    this.$alignTo.appendTo(this.$ghost);
+    if (this.config.placeholder) {
+      this.$ghost.css({
+        top: offset.top + 'px',
+        left: offset.left + 'px',
+        width: fwidth + 'px',
+        height: fheight + 'px'
+      });
+      this.$placeholder.insertBefore(this.$alignTo);
+      this.$placeholder.css({
+        width: fwidth + 'px',
+        height: fheight + 'px',
+        float: this.$alignTo.css('float')
+      });
+      this.$alignTo.appendTo(this.$ghost);
+    }
 
     if (this.config.valign === 'bottom') {
       this.$el.css({top: (offset.top + height) + 'px', bottom: 'auto'});
+  	console.log({top: (offset.top + height) + 'px', bottom: 'auto'});
     } else {
+    	console.log({bottom: offset.top + 'px', top: 'auto'});
       this.$el.css({bottom: offset.top + 'px', top: 'auto'});
     }
 
@@ -162,7 +219,14 @@ var FreshDirect = FreshDirect || {};
   PopupContent.CONFIG = {
     valign: 'bottom',
     halign: 'left',
-    delay: 300
+    delay: 300,
+    placeholder: true,
+    overlay: true,
+    stayOnClick: true
+    // closehandle: '.close'
+    // alignTo
+    // aligntoselector
+    // openonclick
   };
 
   // register in fd namespace

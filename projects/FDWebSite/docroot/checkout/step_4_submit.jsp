@@ -52,7 +52,7 @@ java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyIns
 	if (abstractTimeslots) {
 		final FDStandingOrder so = user.getCurrentStandingOrder();
 	
-		StringBuilder buf = new StringBuilder(FDURLUtil.getStandingOrderLandingPage(so, null));
+		StringBuilder buf = new StringBuilder(FDURLUtil.getStandingOrderLandingPage(so, null, user));
 		buf.append("&tmpl_saved=1");
 	
 		succPage = buf.toString();

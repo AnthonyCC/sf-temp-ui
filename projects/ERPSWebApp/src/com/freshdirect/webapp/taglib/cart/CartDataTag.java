@@ -19,8 +19,8 @@ import javax.servlet.jsp.tagext.TagExtraInfo;
 import javax.servlet.jsp.tagext.VariableInfo;
 
 import org.apache.log4j.Logger;
-import org.codehaus.jackson.map.ObjectMapper;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.freshdirect.fdstore.FDProduct;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSalesUnit;
@@ -112,7 +112,7 @@ public class CartDataTag extends BodyTagSupport {
 	    	if ( "POST".equalsIgnoreCase( request.getMethod() ) ) {
 	    		
 	    		// Parse request data
-	    		String reqJson = (String)request.getParameter( "change" );    		
+	    		String reqJson = (String)request.getParameter( "change" );
 	    		if ( reqJson == null ) {
 	    			LOG.error( "Empty POST request. Aborting" );
 	            	sendError( response, 400 );	// 400 Bad Request

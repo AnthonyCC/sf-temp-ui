@@ -63,6 +63,20 @@ public class FDListManager {
 			throw new FDResourceException(re, "Error talking to session bean");
 		}
 	}
+	
+	public static List<FDProductSelectionI> getQsSpecificEveryItemEverOrderedList(FDIdentity identity) throws FDResourceException {
+		lookupManagerHome();
+		try {
+			FDListManagerSB sb = managerHome.create();
+			return sb.getQsSpecificEveryItemEverOrderedList(identity);
+		} catch (CreateException ce) {
+			invalidateManagerHome();
+			throw new FDResourceException(ce, "Error creating session bean");
+		} catch (RemoteException re) {
+			invalidateManagerHome();
+			throw new FDResourceException(re, "Error talking to session bean");
+		}
+	}
 
 	public static FDCustomerList getCustomerList(FDIdentity identity,
 			EnumCustomerListType type, String listName)
@@ -129,13 +143,13 @@ public class FDListManager {
 
 	// CCL
 	// create new list
-	public static void createCustomerCreatedList(FDUserI user, String listName)
+	public static String createCustomerCreatedList(FDUserI user, String listName)
 			throws FDResourceException, FDCustomerListExistsException {
 		lookupManagerHome();
 		try {
 
 			FDListManagerSB sb = managerHome.create();
-			sb.createCustomerCreatedList(user.getIdentity(), listName);
+			return sb.createCustomerCreatedList(user.getIdentity(), listName);
 		} catch (CreateException ce) {
 			invalidateManagerHome();
 			throw new FDResourceException(ce, "Error creating session bean");
@@ -165,6 +179,20 @@ public class FDListManager {
 		}
 	}
 
+	public static void deleteShoppingList(String listId) throws FDResourceException {
+		lookupManagerHome();
+		try {
+			FDListManagerSB sb = managerHome.create();
+			sb.deleteShoppingList( listId );
+		} catch (CreateException ce) {
+			invalidateManagerHome();
+			throw new FDResourceException(ce, "Error creating session bean");
+		} catch (RemoteException re) {
+			invalidateManagerHome();
+			throw new FDResourceException(re, "Error talking to session bean");
+		}
+	}
+	
 	// CCL
 	// get all customer created lists
 	public static List<FDCustomerCreatedList> getCustomerCreatedLists(FDUserI user)
@@ -347,6 +375,23 @@ public class FDListManager {
 		try {
 			FDListManagerSB sb = managerHome.create();
 			sb.renameCustomerList(info, type, oldName, newName);
+		} catch (CreateException ce) {
+			invalidateManagerHome();
+			throw new FDResourceException(ce, "Error creating session bean");
+		} catch (RemoteException re) {
+			invalidateManagerHome();
+			throw new FDResourceException(re, "Error talking to session bean");
+		} catch (FDResourceException e) {
+			invalidateManagerHome();
+			throw new FDResourceException(e, "Error renaming list");
+		}
+	}
+	
+	public static void renameShoppingList(String listId, String newName) throws FDResourceException {
+		lookupManagerHome();
+		try {
+			FDListManagerSB sb = managerHome.create();
+			sb.renameShoppingList(listId, newName);
 		} catch (CreateException ce) {
 			invalidateManagerHome();
 			throw new FDResourceException(ce, "Error creating session bean");

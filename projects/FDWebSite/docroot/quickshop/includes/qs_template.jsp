@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<%@page import="com.freshdirect.webapp.taglib.content.QuickShopHelper"%>
+<%@ taglib uri='template' prefix='tmpl' %>
+<%@ taglib uri='logic' prefix='logic' %>
+<%@ taglib uri='freshdirect' prefix='fd' %>
+<%@ page import='com.freshdirect.fdstore.FDStoreProperties'%>
+<%@ taglib uri="http://jawr.net/tags" prefix="jwr" %>
+<%@ taglib uri="/WEB-INF/shared/tld/components.tld" prefix='comp' %>
+<%@ page import="com.freshdirect.fdstore.customer.FDUserI" %>
+<%  request.setAttribute("sitePage", "www.freshdirect.com/quickshop/");
+	request.setAttribute("listPos", "SystemMessage,QSTop");
+%>
+<html>
+	<head>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <title><tmpl:get name="title" /></title>
+		<%@ include file="/common/template/includes/metatags.jspf" %>
+        <%@ include file="/common/template/includes/i_javascripts.jspf" %>
+	  	<jwr:style src="/grid.css"/>
+		<jwr:style src="/global.css"/>
+        <jwr:style src="/oldglobal.css"/>
+        <jwr:style src="/quickshop.css"/>
+        <tmpl:get name="extraJs"/>
+        <%@ include file="/shared/template/includes/i_head_end.jspf" %>
+    </head>
+    <body>
+    <%@ include file="/shared/template/includes/i_body_start.jspf" %>
+    <%@ include file="/common/template/includes/globalnav.jspf" %>
+
+    <div id="content">
+        <div id="quickshop"  class="container text10 <tmpl:get name='containerClass' />">
+          <!-- content lands here -->
+            <div class="header">
+                <h1>Quickshop</h1>
+                <ul>
+                    <li><a href="/quickshop/qs_past_orders.jsp">Shop From Past Orders</a> - Shop from an individual order or time frame.</li>
+                    <li><a href="/quickshop/qs_shop_from_list.jsp">Shop From Your Lists</a> - Create and shop from personalized lists.</li>
+                    <li><a href="/quickshop/qs_fd_lists.jsp">Shop Recommended Lists</a> - We've created lists for the basics in life.</li>
+                    <% if (user.isEligibleForStandingOrders()) { %>
+                        <li><a href="/quickshop/qs_standing_orders.jsp">Create Recurring Orders</a> - Set it and forget it.</li></li>
+                    <%} %>
+                </ul>
+            </div>
+            <div class="oas-cnt"><script type="text/javascript">OAS_AD('QSTop');</script></div>
+            <ul class="tabs qs-tabs clearfix">
+                <li><a href="/quickshop/qs_past_orders.jsp" class="<tmpl:get name='poSelected'/>"><strong>shop from past orders</strong> <span class="count" data-component="tabMeta" data-tabMeta="pastorders"></span></a></li>
+                <li><a href="/quickshop/qs_shop_from_list.jsp" class="<tmpl:get name='listSelected'/>"><strong>shop from your lists</strong> <span class="count" data-component="tabMeta" data-tabMeta="lists"></span></a></li>
+                <li><a href="/quickshop/qs_fd_lists.jsp" class="<tmpl:get name='fdSelected'/>"><strong>shop<span class="fd"> FD </span>lists</strong> <span class="count" data-component="tabMeta" data-tabMeta="fd_lists"></span></a></li>
+                <% if (user.isEligibleForStandingOrders()) { %>
+                <li><a href="/quickshop/qs_standing_orders.jsp" class="<tmpl:get name='soSelected'/>"><strong>standing orders</strong> <span class="count" data-component="tabMeta" data-tabMeta="so"></span></a></li>
+                <%} %>
+            </ul>
+            <div class="qs-loader">
+                <div class="qs-header clearfix">
+                    <tmpl:get name="searchbox" />
+                    <tmpl:get name="pagination" />
+                </div>
+                <div class="qs-container">
+                    <div class="qs-menu">
+                        <tmpl:get name="menu" />
+                    </div>
+                    <div class="qs-content">
+                        <tmpl:get name="ymal" />
+                        <tmpl:get name="sort" />
+                        <div class="clearfix">
+                            <tmpl:get name="listheader" />
+                            <tmpl:get name="listactions" />
+                        </div>
+                        <ul id="breadcrumbs"></ul>
+                        <tmpl:get name="content" />
+                        <tmpl:get name="listactions" />
+                    </div>
+                    <div class="qs-footer">
+                        <tmpl:get name="pagination" />
+                    </div>
+                </div>
+                <div class="qs-loading">loading products</div>
+            </div>
+            <div id="tabbedCarousel" class="tabbed-carousel" data-component="tabbedRecommender" data-cmeventsource="qs_tabbedRecommender">
+                <ul class="tabs clearfix">
+                	<% if ( QuickShopHelper.hasYourFavoritesRecommendation( user ) ) { %>
+                    <li data-component="tabitem" data-tabname="yourfav" data-sitefeature="DYF">your favorites</li>
+                    <% } %>
+                    <li data-component="tabitem" data-tabname="deals" data-sitefeature="DEALS_QS">don't miss deals</li>
+                    <li data-component="tabitem" data-tabname="fdfav"  data-sitefeature="FAVORITES_QS">FD favorites</li>
+                    <li data-component="tabitem" data-tabname="expert" data-sitefeature="EXPRATED_QS">expert rated</li>
+                    <li data-component="tabitem" data-tabname="custrating" data-sitefeature="CUSTRATED_QS">customer rated</li>
+                </ul>
+                <div class="tab-container light-carousel" data-component="tabpanel"></div>
+            </div>
+          <!-- content ends above here-->
+        </div>
+    </div>
+    <div id="ModifyBRDContainer"></div>
+    <%@ include file="/common/template/includes/footer.jspf" %>
+    <tmpl:get name="soytemplates" />
+    <tmpl:get name="jsmodules" />
+    </body>
+</html>

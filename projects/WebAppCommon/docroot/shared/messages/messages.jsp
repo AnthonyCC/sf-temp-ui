@@ -14,4 +14,3 @@
 <div class="handler open-handler">show messages</div>
 <div class="handler close-handler">hide messages</div>
 </div>
-<fd:javascript src="/assets/javascript/messages.js" />

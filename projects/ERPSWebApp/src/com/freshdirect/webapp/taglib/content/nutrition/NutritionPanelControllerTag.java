@@ -8,11 +8,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.JspException;
 
-import org.codehaus.jackson.JsonGenerationException;
-import org.codehaus.jackson.JsonProcessingException;
-import org.codehaus.jackson.map.JsonMappingException;
-import org.codehaus.jackson.map.ObjectMapper;
-
+import com.fasterxml.jackson.core.JsonGenerationException;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.freshdirect.content.nutrition.panel.NutritionPanel;
 import com.freshdirect.content.nutrition.panel.NutritionPanelType;
 import com.freshdirect.content.nutrition.panel.ProtoPanel;

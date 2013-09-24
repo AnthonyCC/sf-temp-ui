@@ -1,0 +1,22 @@
+{namespace quickshop}
+
+/**
+ * @param data some data
+ */
+{template .preferences}
+<div class="preferences">
+	<div class="preferences-header qs-menu-header">Show Me Only</div>
+	<ul class="preferences-list checkboxlist" data-component="preferences">
+	{foreach $dataItem in $data}
+		<li>
+			{let $id}pref_{$dataItem.filteringUrlValue}{/let}
+			{call .checklistItem}
+				{param id:$id /}
+				{param dataItem:$dataItem /}
+				{param filterName:'filterIdList' /}
+			{/call}
+		</li>
+	{/foreach}
+	</ul>
+</div>
+{/template}

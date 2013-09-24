@@ -1,0 +1,56 @@
+#USQPopup {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	z-index: 25000;
+}
+#USQPopup:before {
+	content: '';
+	display: block;
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	-moz-opacity: 0.5;
+	opacity: .50;
+	filter: alpha(opacity=50);
+	background-color: #FFF;
+}
+.USQPopupContent {
+	width: 766px;
+	margin: 10px auto;
+	padding: 0 20px;
+	position: relative;
+	background: #fff;
+	border-radius: 10px;
+	-moz-border-radius: 10px;
+	-webkit-box-shadow: 4px 4px 10px #999;
+	-moz-box-shadow: 4px 4px 10px #999;
+	border: 1px solid #999;
+	overflow: hidden;
+}
+
+.USQPopupContent .container-close {
+	position: absolute;
+	display: block;
+	width: 20px;
+	height: 18px;
+	background: url(/media_stat/images/buttons/round_x.gif) no-repeat;
+	top: 0px;
+	right: 0px;
+	cursor: pointer;
+	text-indent: -10000em;
+	overflow: hidden;
+	text-decoration: none;
+}
+
+#USQCancelButton,
+#USQAcceptButton {
+	border: none;
+	padding: 0;
+	background: none;
+	cursor: pointer;
+}

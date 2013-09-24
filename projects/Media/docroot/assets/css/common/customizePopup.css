@@ -1,0 +1,164 @@
+.customizePopup {
+	position:absolute;
+	border:1px solid #a6a6a6;
+	box-shadow: 2px 2px 8px 1px rgba(0, 0, 0, 0.4);
+	background:white;
+	padding:10px 10px 20px;
+	z-index: 2000;
+}
+
+.customizePopup:after {
+	content:"";
+	display:block;
+	height:9px;
+}
+
+.customizePopup .close-icon {
+	position:absolute;
+	border:none;
+	cursor:pointer;
+	right:10px;
+	width:18px;
+	height:18px;
+	top:10px;
+	text-indent: 18px;
+	overflow:hidden;
+	margin:0;
+	padding:0;
+	background:url(/media_stat/images/quickshop/button-close.png) no-repeat;
+}
+
+.customizePopup-footer {
+	clear:both;
+}
+
+
+.customizePopup-body {
+	margin-top:30px;
+	white-space:nowrap;
+}
+
+.customizePopup .rightColumn {
+	display:inline-block;
+	vertical-align:top;
+	text-align:right;
+	margin-left:16px;
+	white-space:normal;
+	width:190px;
+}
+
+.customizePopup .rightColumn a {
+	display:block;
+	font-size:14px;
+	font-weight:bold;
+	margin-bottom:16px;
+}
+.customizePopup .moreinfo:before {
+	content: '';
+	display: inline-block;
+	height: 11px;
+	width: 11px;
+	background: url(/media_stat/images/quickshop/bullet-orange.png) no-repeat;
+	margin-right: 4px;
+}
+
+.customizePopup .rightColumn img {
+	max-width:100%;
+	max-height:250px;
+}
+
+.customizePopup .leftColumn {
+	display:inline-block;
+	vertical-align:top;
+	text-align:right;
+	white-space:normal;
+	width:220px;
+}
+
+.customizePopup h1 {
+	font-weight:bold;
+	margin:0 0 25px 0;
+	font-size:16px;
+	max-width:220px;
+}
+
+.customizePopup .productDisplay-akaName,
+.customizePopup .productDisplay-packageDescription {
+	margin: 5px 0 0;
+	font-size:10px;
+	font-weight:normal;
+}
+
+.productDisplay-skulist {
+	list-style-type:none;
+	padding:0;
+	margin:0;
+	font-family:Verdana;
+	font-size:10px;
+	font-weight:bold;
+}
+
+.productDisplay-skulist b {
+	font-size:130%;
+}
+
+.productDisplay-skulist>li {
+	margin-bottom:10px;
+}
+
+.productDisplay-skulist>li:first-child:nth-last-child(1) input {
+	display:none;
+} 
+
+.productDisplay-skulist>li input {
+	margin-left:0.5em;
+}
+
+.productDisplay-sustrating {
+	font-size:10px;
+	font-weight:normal;
+}
+
+.productDisplay-skuconfig select {
+	margin: 5px 0 10px;
+}
+
+.skucontrol-salesunit b{
+	display:block;
+}
+.skucontrol-variations i {
+	display:block;
+}
+
+.skucontrol-quantity {
+	font-weight:bold;
+}
+
+.skucontrol-quantity .qtyinput {
+	vertical-align:baseline;
+}
+
+.skucontrol-quantity .itemlist-item-salesunit {
+	width:100px;
+}
+
+.skucontrol-quantity .itemlist-item-salesunit .subtotal,
+.skucontrol-quantity .qtyinput .subtotal {
+	float:left;
+	width:100%;
+}
+
+
+.customizePopup hr {
+	height:1px;
+	background:black;
+	border:none;
+	margin:1em 0;
+	clear:none;
+}
+
+.customizePopup .applyCustomization {
+	margin-top:50px;
+	font-size:13px;
+	font-weight:bold;
+}

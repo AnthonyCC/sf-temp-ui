@@ -1,7 +1,15 @@
 package com.freshdirect.fdstore.coremetrics.tagmodel;
 
+import java.util.ArrayList;
+import java.util.List;
+
 
 public class ShopTagModel extends AbstractTagModel  {
+	
+	private static final long	serialVersionUID	= -2386079863255849379L;
+	
+	private static final String functionName = "cmCreateShopAction5Tag";
+	
 	//common
 	private String productId; 
 	private String productName; 
@@ -79,4 +87,23 @@ public class ShopTagModel extends AbstractTagModel  {
 	public void setOrderSubtotal(String orderSubtotal) {
 		this.orderSubtotal = orderSubtotal;
 	} 
+	
+	@Override
+	public String getFunctionName() {
+		return functionName;
+	}
+	
+	@Override
+	public List<String> toStringList() {		
+		List<String> shop5Data = new ArrayList<String>();
+		shop5Data.add( getFunctionName() );
+		shop5Data.add( getProductId() );		
+		shop5Data.add( getProductName() ); 
+		shop5Data.add( getQuantity() );
+		shop5Data.add( getUnitPrice() ); 
+		shop5Data.add( getCategoryId() ); 
+		shop5Data.add( mapToAttrString( getAttributesMaps() ) );
+		return shop5Data;
+	}
+
 }

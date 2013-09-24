@@ -122,7 +122,7 @@
 		<%
 				if (pi.isTransactional()) {
 		%>
-			<form method="get" action="#" id="<%= formName %>" name="<%= formName %>" onsubmit="return false;">
+			<form method="get" action="#" id="<%= formName %>" name="<%= formName %>" onsubmit="return false;" data-component="product">
 				<fd:AddToCartPending id="<%= formName %>" action="addMultipleToCart" rebindSubmit="true"/>
 				<fd:CmFieldDecorator/>
 				<input type="hidden" name="itemCount" value="1">

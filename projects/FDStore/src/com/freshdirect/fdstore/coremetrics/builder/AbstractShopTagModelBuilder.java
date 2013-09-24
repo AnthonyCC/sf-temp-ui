@@ -25,6 +25,10 @@ public abstract class AbstractShopTagModelBuilder {
 	public abstract List<ShopTagModel> buildTagModels() throws SkipTagException;
 	
 	protected ShopTagModel createTagModel(FDCartLineI cartLine, ProductReference productRef) throws SkipTagException {
+		return createTagModel( cartLine, productRef, isStandingOrder );
+	}
+	
+	public static ShopTagModel createTagModel(FDCartLineI cartLine, ProductReference productRef, boolean isStandingOrder) throws SkipTagException {
 		
 		ShopTagModel tagModel = new ShopTagModel();
 		ProductModel product = productRef.lookupProductModel();
@@ -43,10 +47,7 @@ public abstract class AbstractShopTagModelBuilder {
 				
 		if (isStandingOrder) {
 			tagModel.setCategoryId(PageViewTagModelBuilder.CustomCategory.SO_TEMPLATE.toString());
-		}/* else 	if (cartLine.isAddedFromSearch()){
-			tagModel.setCategoryId(PageViewTagModelBuilder.CustomCategory.SEARCH.toString());
-			
-		}*/  else 	if (null != cartLine.getAddedFrom()){
+		}  else 	if (null != cartLine.getAddedFrom()){
 			if(EnumATCContext.DDPP.equals(cartLine.getAddedFrom())){
 				tagModel.setCategoryId(PageViewTagModelBuilder.CustomCategory.DDPP.toString());
 			}else if(EnumATCContext.SEARCH.equals(cartLine.getAddedFrom())){
@@ -57,7 +58,7 @@ public abstract class AbstractShopTagModelBuilder {
 				tagModel.setCategoryId(PageViewTagModelBuilder.CustomCategory.NEW_PRODUCTS_DEPARTMENT.toString());
 			}
 			
-		}else if (variantId == null){
+		}else if ( variantId == null || variantId.trim().length() == 0 ){
 			
 			EnumEventSource source = cartLine.getSource();
 			if (source == null || EnumEventSource.BROWSE.equals(source)){

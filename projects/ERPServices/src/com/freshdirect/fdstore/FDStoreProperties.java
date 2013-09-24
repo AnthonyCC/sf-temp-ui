@@ -622,7 +622,14 @@ public class FDStoreProperties {
 	//APPDEV-2817 Link to DeliveryPass category from top nav of Delivery Info page
 	private final static String SHOW_DLVPASS_LINK_ON_DELINFO = "fdstore.dlvinfo.showdlvpasslink";
 
+	private final static String PROP_SOY_DEBUG = "soy.debug";
+	
+	private final static String PROP_QS_CACHING = "quickshop.caching";	
+	private final static String PROP_QS_IGNORE_PARTIAL_ROLLOUT = "quickshop.ignorePartialRollout";
+	private final static String PROP_QS_ENABLED = "quickshop.enabled";
+	
 	private final static String   PROP_ASSIGNED_CUSTOMER_PARAMS_QUERY_ID="fdstore.assignedCustomerParams.query.id";
+
     static {
         defaults.put(PROP_ROUTING_PROVIDER_URL, "t3://localhost:7001");
         defaults.put(PROP_PROVIDER_URL, "t3://localhost:7001");
@@ -1205,6 +1212,9 @@ public class FDStoreProperties {
 		defaults.put(PRODUCT_RATING_REFRESH_PERIOD, "12");
 		defaults.put(PRODUCT_RATING_RELOAD, "true");
 		defaults.put(PROP_ALCOHOLFILTERING_ENABLED, "true");
+		
+		defaults.put( PROP_SOY_DEBUG, false );
+		
 		defaults.put(PROP_IP_LOCATOR_ENABLED, "true");
 		defaults.put(PROP_IP_LOCATOR_CLIENT_ID, "103310996");
 		defaults.put(PROP_IP_LOCATOR_URL, "https://iplocator.melissadata.net/v2/REST/Service.svc/doIPLocation");
@@ -1215,6 +1225,11 @@ public class FDStoreProperties {
 		defaults.put(PROP_SOCIAL_BUTTONS_ENABLED, "true");
 		defaults.put(CHECK_LOCAL_INVENTORY_ENABLED, "false");
 		defaults.put(PROP_FDCOUPONMGR_HOME, "freshdirect.fdstore.CouponManager");
+		
+		defaults.put(PROP_QS_CACHING, "true");		
+		defaults.put(PROP_QS_IGNORE_PARTIAL_ROLLOUT, "false");		
+		defaults.put(PROP_QS_ENABLED, "true");
+
 		defaults.put(PROP_PAYMENTECH_GATEWAY_ENABLED, "false");
 		
 		//APPDEV-2817 Link to DeliveryPass category from top nav of Delivery Info page
@@ -3124,6 +3139,20 @@ public class FDStoreProperties {
 	 public static String getFDCouponManagerHome() {
 	        return get(PROP_FDCOUPONMGR_HOME);
 	 }
+
+	public static boolean isSoyDebugMode() {
+		return ( Boolean.valueOf( get( PROP_SOY_DEBUG ) ) ).booleanValue();
+	}
+	public static boolean isQuickshopCaching() {
+		return ( Boolean.valueOf( get( PROP_QS_CACHING ) ) ).booleanValue();
+	}
+	public static boolean isQuickshopIgnorePartialRollout() {
+		return ( Boolean.valueOf( get( PROP_QS_IGNORE_PARTIAL_ROLLOUT ) ) ).booleanValue();
+	}
+	public static boolean isQuickshopEnabled() {
+		return ( Boolean.valueOf( get( PROP_QS_ENABLED ) ) ).booleanValue();
+	}
+
 	 public static boolean isPaymentechGatewayEnabled() {
 	        return Boolean.valueOf(get(PROP_PAYMENTECH_GATEWAY_ENABLED)).booleanValue();
 	 }

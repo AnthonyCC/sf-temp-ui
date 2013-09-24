@@ -117,7 +117,7 @@
   box-shadow: 0 2px 4px rgba(0,0,0,.3);
 }
 
-#popupcontentoverlay {
+.popupcontentoverlay {
   display: none;
   position: fixed;
   top: 0;
@@ -127,7 +127,7 @@
   z-index: 1000;
 }
 
-#popupcontentghost {
+.popupcontentghost {
   display: none;
   position: absolute;
   z-index: 1001;

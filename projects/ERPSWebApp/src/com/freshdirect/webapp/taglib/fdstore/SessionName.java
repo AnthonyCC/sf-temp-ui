@@ -62,6 +62,9 @@ public interface SessionName {
 	public static String PARAM_ADDED_FROM_SEARCH = "addedfromsearch";
 	public static String PARAM_ADDED_FROM = "addedfrom";
 	public static String PARAM_EVALUATE_COUPONS = "PARAM_EVALUATE_COUPONS";
+	
+	public static final String SESSION_QS_REPLACEMENT = "quickshop-replacements";
+	public static final String SESSION_QS_CONFIG_REPLACEMENTS = "quickshop-config-replacements";
 
 
 	

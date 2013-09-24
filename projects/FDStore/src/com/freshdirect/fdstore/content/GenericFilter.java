@@ -7,15 +7,15 @@ import java.util.Set;
 
 public abstract class GenericFilter<T> {
 	
-	Map<EnumFilteringValue, List<Object>> filterValues;
-	Set<EnumFilteringValue> filters;
+	Map<FilteringValue, List<Object>> filterValues;
+	Set<FilteringValue> filters;
 	
-	public GenericFilter(Map<EnumFilteringValue, List<Object>>  filterValues, Set<EnumFilteringValue> filters) { 
+	public GenericFilter(Map<FilteringValue, List<Object>>  filterValues, Set<FilteringValue> filters) { 
 		this.filters=filters;
 		this.filterValues=filterValues;
 	}
 	
-	public void addFilterValue(EnumFilteringValue key, Object value){
+	public void addFilterValue(FilteringValue key, Object value){
 		if(filterValues.get(key)!=null){
 			filterValues.get(key).add(value);
 		}else{
@@ -31,13 +31,10 @@ public abstract class GenericFilter<T> {
 	
 	@Override
 	public abstract GenericFilter<T> clone();
+
+	public abstract void applyFilters(List<T> items, GenericFilteringMenuBuilder menuBuilder, FilteringFlow filteringFlow);
 	
-	public abstract void applyAllFilterAnd(List<T> items);
-	public abstract void applyAllFilterOr(List<T> items);
-	
-	public abstract void applyFilter(List<T> items, EnumFilteringValue filter);
-	
-	public Map<EnumFilteringValue, List<Object>> getFilterValues(){
+	public Map<FilteringValue, List<Object>> getFilterValues(){
 		return filterValues;
 	}
 

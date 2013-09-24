@@ -26,6 +26,7 @@ import com.freshdirect.fdstore.content.ProductModel;
  * @version	$Revision:$
  * @author	 $Author:$
  */
+@Deprecated
 public class QuickCart implements FDProductCollectionI, Serializable {
 
 	private final List<FDProductSelectionI> orderLines = new ArrayList<FDProductSelectionI>();

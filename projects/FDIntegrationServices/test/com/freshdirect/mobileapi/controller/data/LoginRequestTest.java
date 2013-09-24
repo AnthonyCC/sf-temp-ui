@@ -1,8 +1,8 @@
 package com.freshdirect.mobileapi.controller.data;
 
 import org.apache.log4j.Logger;
-import org.codehaus.jackson.map.ObjectMapper;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.freshdirect.mobileapi.controller.data.request.Login;
 
 public class LoginRequestTest extends MessageTest {

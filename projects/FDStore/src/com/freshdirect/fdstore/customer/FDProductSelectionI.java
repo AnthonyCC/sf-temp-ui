@@ -8,6 +8,7 @@ import java.util.Set;
 
 import com.freshdirect.affiliate.ErpAffiliate;
 import com.freshdirect.common.pricing.PricingContext;
+import com.freshdirect.customer.EnumSaleStatus;
 import com.freshdirect.customer.ErpClientCode;
 import com.freshdirect.fdstore.EnumOrderLineRating;
 import com.freshdirect.fdstore.EnumSustainabilityRating;
@@ -16,7 +17,6 @@ import com.freshdirect.fdstore.FDGroup;
 import com.freshdirect.fdstore.FDProduct;
 import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDResourceException;
-import com.freshdirect.fdstore.FDRuntimeException;
 import com.freshdirect.fdstore.FDSku;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.ProductReference;
@@ -263,5 +263,23 @@ public interface FDProductSelectionI extends FDConfigurableI {
 	public double getBasePrice();
 	
 	public String getUpc();
+	
+	//the following methods are used by quickshop 
+	
+	public Date getDeliveryStartDate();
+
+	public void setDeliveryStartDate(Date deliveryStartDate);
+
+	public String getOrderId();
+	
+	public String getOrderLineId();
+
+	public void setOrderId(String orderId);
+	
+	public EnumSaleStatus getSaleStatus();
+
+	public void setSaleStatus(EnumSaleStatus saleStatus);
+	
+	public double getConfiguredPrice();
 	
 }

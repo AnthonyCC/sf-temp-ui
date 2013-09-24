@@ -1,6 +1,5 @@
 package com.freshdirect.framework.cache;
 
-import java.io.IOException;
 import java.io.Serializable;
 
 import net.sf.ehcache.Cache;
@@ -49,11 +48,7 @@ public class EHCache<K extends Serializable,V extends Serializable> implements C
 	}
 
 	public void clear() {
-		try {
-			getCache().removeAll();
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		}
+		getCache().removeAll();		
 	}
 
 	public synchronized Cache getCache() {

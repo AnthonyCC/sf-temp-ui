@@ -28,6 +28,8 @@ public interface ErpSaleHome extends EJBHome {
 
 	public ErpSaleEB findByPrimaryKey(PrimaryKey pk) throws FinderException, RemoteException;
 	
+	public Collection<ErpSaleEB> findMultipleByPrimaryKeys(Collection<PrimaryKey> pks) throws FinderException, RemoteException;
+	
 	public ErpSaleEB findByComplaintId(String complaintId) throws FinderException, RemoteException;
 
 	public Collection<PrimaryKey> findByStatus(EnumSaleStatus status) throws FinderException, RemoteException;

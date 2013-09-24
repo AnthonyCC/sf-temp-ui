@@ -1,0 +1,30 @@
+{namespace test}
+
+/**
+ * @param x some parameter
+ */
+{template .testMain}
+
+	[test.testMain calling test.sub1.test]<br/>
+	{call test.sub1.test}
+		{param x: $x /}
+	{/call}	
+	
+	[test.testMain calling test.sub2.test]<br/>
+	{call test.sub2.test}
+		{param x: $x /}
+	{/call}	
+	
+{/template}
+
+
+/**
+ * @param data some parameter
+ */
+{template .beanTest}
+	catId:{$data.categoryId}<br/>	
+	prodId:{$data.productId}<br/>	
+	skuCode:{$data.skuCode}<br/>	
+	quantity:{$data.quantity}<br/>	
+{/template}
+

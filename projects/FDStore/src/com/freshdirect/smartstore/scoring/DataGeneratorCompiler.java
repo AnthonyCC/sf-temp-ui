@@ -52,7 +52,7 @@ public class DataGeneratorCompiler extends CompilerBase {
     private static final String CURRENT_NODE = "currentNode"; // alias to currentProduct (which is not necessarily a product)
     private static final String CART_CONTENTS = "cartContents";
     private static final String RECENT_ITEMS = "recentItems";
-
+    
     private static final String FN_SMART_YMAL = "SmartYMAL";
 
     private final static Collection<String> GLOBAL_VARIABLES = new HashSet<String>(); 

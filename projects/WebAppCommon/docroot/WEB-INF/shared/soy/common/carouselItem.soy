@@ -1,0 +1,16 @@
+{namespace common}
+/**
+ * @param item some path, list of items
+ * 
+ */
+{deltemplate common.carouselItem variant="'grid'"}
+{call common.gridItem data="all" /}
+{/deltemplate}
+
+/**
+ * @param item some path, list of items
+ * 
+ */
+{deltemplate common.carouselItem variant="'line'"}
+{call quickshop.item data="all" /}
+{/deltemplate}

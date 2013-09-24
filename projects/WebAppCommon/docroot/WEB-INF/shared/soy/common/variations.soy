@@ -1,0 +1,42 @@
+{namespace common}
+/**
+ * @param label
+ * @param name
+ * @param values 
+ * @param underlabel 
+ * @param? optional
+ */
+{deltemplate common.variation variant="'dropdown'" autoescape="false"}
+{if length($values)>1}
+<select name="{$name}" data-component="productDataConfiguration" data-productdata-name="{$name}" {if isNonnull($optional) and not $optional}data-atc-required="true"{/if}>
+	<option value="">{$label}</option>
+{foreach $option in $values}
+   	<option value="{$option.name}" {if $option.selected}selected{/if}>{$option.label}</option>
+{/foreach}
+</select>
+<i>{if $underlabel}{$underlabel}{/if}</i>
+{else}
+<label>{$values[0].label}{if $values[0].cvp == '0'} - no charge{else} - {$values[0].cvp} {/if}<input type="hidden" name="{$name}" value="{$values[0].name}" data-component="productDataConfiguration" data-productdata-name="{$name}"></label><br>
+{/if}
+{/deltemplate}
+
+/**
+ * @param label
+ * @param name
+ * @param values 
+ * @param underlabel 
+ */
+{deltemplate common.variation variant="'checkbox'" autoescape="false"}
+
+<label>{$label}<input type="checkbox" name="{$name}" 
+{foreach $value in $values}
+	{if $value.labelValue}
+		value="{$value.name}"
+	{else}
+		data-unchecked-value="{$value.name}"
+	{/if}
+{/foreach}
+  data-component="productDataConfiguration" data-productdata-name="{$name}"></label>
+<i>{if $underlabel}{$underlabel}{/if}</i>
+{/deltemplate}
+

@@ -498,6 +498,7 @@ a.usq_left_nav_menu_on:hover {color: #FBF1D3; cursor: pointer; text-decoration: 
 .normal-price{color:#333;font-weight:bold;}
 .normal-price-tiered{color:#333;font-weight:normal;}
 .save-base-price{color:rgb(136,136,136);font-weight:normal;}
+.about-price{font-size: 11px;color: #666666;line-height: 1.4em;font-weight:normal;display: block;}
 .fav-label{color:#969;font-weight:bold;}
 
 

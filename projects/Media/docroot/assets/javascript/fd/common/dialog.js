@@ -89,7 +89,6 @@ var FreshDirect = FreshDirect || {};
 		$(document).on('click','a.dialog',function(e){
 			var $this = $(this);
 				href = this.href;
-			console.log(e);
 			e.preventDefault();
 			if(href) {
 				return openUrl(href,

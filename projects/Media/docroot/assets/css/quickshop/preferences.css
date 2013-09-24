@@ -1,0 +1,9 @@
+.preferences {
+	font-family: Verdana,sans-serif;
+	font-size:11px;
+	color:#333;	
+}
+
+.preferences-header {
+	text-transform: none;
+}

@@ -1683,7 +1683,7 @@ inner:
 	}
 	
 	@Override
-	public String getSustainabilityRating(String skuCode)throws FDResourceException {
+	public String getSustainabilityRating(String skuCode) throws FDResourceException {
 		/* APPDEV-1979 changes this to make no rating use the default, if CMS has it marked to */
 		EnumSustainabilityRating rating = getSustainabilityRatingEnum(skuCode);
 		

@@ -1,6 +1,6 @@
 package com.freshdirect.fdstore.content;
 
-public enum SearchSortType {
+public enum SearchSortType implements SortTypeI {
     NATURAL_SORT(-1, "natr", "", "", ""),	// don't
     // sort
     BY_NAME(0, "name", "Name", "Name (A-Z)", "Name (Z-A)"),
@@ -12,11 +12,13 @@ public enum SearchSortType {
 	BY_RECENCY(6, "recency", "Recency", "Most recent", "Least recent"),
 	BY_OURFAVES(6, "ourFaves", "Our Favorites", "Our Favorites", "Our Favorites"),
 	BY_DEPARTMENT(7, "dept", "Department", "Department", "Department"),
-    BY_START_DATE(8, "strd", "Date Added", "Date Added (new)", "Date Added (old)"),
-	BY_EXPIRATION_DATE(9, "expr", "Expiring", "Expiring (soon)", "Expiring (later)"),
-	BY_PERC_DISCOUNT(10, "poff", "% of Discount", "% of Discount (high)", "% of Discount (low)"),
-	BY_DOLLAR_DISCOUNT(11, "doff", "Dollar Discount", "Dollar Discount (high)", "Dollar Discount (low)"),
-	BY_PRIORITY(11, "prio", "Popularity", "Most Popular", "Least Popular");
+	BY_FREQUENCY(8, "freq", "Frequency","Frequency","Frequency" ),
+	BY_EXPERT_RATING(9, "expr", "Expert Rating", "Expert Rating", "Expert Rating"),
+    BY_START_DATE(10, "strd", "Date Added", "Date Added (new)", "Date Added (old)"),
+	BY_EXPIRATION_DATE(11, "expr", "Expiring", "Expiring (soon)", "Expiring (later)"),
+	BY_PERC_DISCOUNT(12, "poff", "% of Discount", "% of Discount (high)", "% of Discount (low)"),
+	BY_DOLLAR_DISCOUNT(13, "doff", "Dollar Discount", "Dollar Discount (high)", "Dollar Discount (low)"),
+	BY_PRIORITY(14, "prio", "Popularity", "Most Popular", "Least Popular");
     
     private int type;
     private String label;

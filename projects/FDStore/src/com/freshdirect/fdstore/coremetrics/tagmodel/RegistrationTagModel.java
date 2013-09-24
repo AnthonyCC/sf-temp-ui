@@ -1,7 +1,12 @@
 package com.freshdirect.fdstore.coremetrics.tagmodel;
 
+import java.util.List;
+
 
 public class RegistrationTagModel extends AbstractTagModel  {
+	
+	private static final long	serialVersionUID	= -5314904240161693135L;
+	
 	private String registrationId; 
 	private String registrantEmail; 
 	private String registrantCity;
@@ -56,4 +61,15 @@ public class RegistrationTagModel extends AbstractTagModel  {
 	public void setRegistrantCountry(String registrantCountry) {
 		this.registrantCountry = registrantCountry;
 	}
+	
+	@Override
+	public String getFunctionName() {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public List<String> toStringList() {
+		throw new UnsupportedOperationException();
+	} 
+
 }

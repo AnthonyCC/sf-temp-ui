@@ -38,6 +38,7 @@ import com.freshdirect.fdstore.lists.FDCustomerProductListLineItem;
 import com.freshdirect.fdstore.lists.FDCustomerRecipeList;
 import com.freshdirect.fdstore.lists.FDCustomerRecipeListLineItem;
 import com.freshdirect.fdstore.lists.FDCustomerShoppingList;
+import com.freshdirect.fdstore.lists.FDQsProductListLineItem;
 import com.freshdirect.fdstore.lists.FDStandingOrderList;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -99,6 +100,31 @@ public class FDListManagerSessionBean extends FDSessionBeanSupport {
 			throw new FDResourceException(e);
 		} finally {
                     close(conn);
+		}
+	}
+	
+	public List<FDProductSelectionI> getQsSpecificEveryItemEverOrderedList(FDIdentity identity) throws FDResourceException {
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			FDCustomerListDAO dao = new FDCustomerListDAO();
+			List<FDProductSelectionI> retList = new ArrayList<FDProductSelectionI>();
+			List<FDQsProductListLineItem> source = dao.getQsSpecificEveryItemEverOrderedList(conn, identity);
+			for(FDQsProductListLineItem item : source){
+				if(item.getDeleted()==null){
+					try {
+						retList.add(item.convertToSelection());
+					} catch (FDSkuNotFoundException e) {
+						LOGGER.warn("Loaded an invalid sku - skipping", e);
+					}
+				}
+			}
+			
+			return retList;
+		} catch (SQLException e) {
+			throw new FDResourceException(e);
+		} finally {
+            close(conn);
 		}
 	}
 
@@ -166,20 +192,20 @@ public class FDListManagerSessionBean extends FDSessionBeanSupport {
 	}
 
     // CCL
-	public void createCustomerCreatedList(FDIdentity identity, String listName) throws FDResourceException, FDCustomerListExistsException {
+	public String createCustomerCreatedList(FDIdentity identity, String listName) throws FDResourceException, FDCustomerListExistsException {
 		Connection conn = null;
 		try {
 			conn = getConnection();
 			FDCustomerListDAO dao = new FDCustomerListDAO();
 			if (dao.isCustomerList(conn,identity,EnumCustomerListType.CC_LIST,listName)) throw new FDCustomerListExistsException();
-			dao.createCustomerCreatedList(conn, identity, listName);
+			return dao.createCustomerCreatedList(conn, identity, listName);
 		} catch (FDCustomerListExistsException e) {
 			this.getSessionContext().setRollbackOnly();
 			throw e;
 		} catch (SQLException e) {
 			throw new FDResourceException(e);
 		} finally {
-                    close(conn);
+			close(conn);
 		}
 	}
 	
@@ -198,6 +224,20 @@ public class FDListManagerSessionBean extends FDSessionBeanSupport {
 			throw new FDResourceException(e);
 		} finally {
                     close(conn);
+		}
+	}
+
+    // CCL
+	public void deleteShoppingList( String listId ) throws FDResourceException {
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			FDCustomerListDAO dao = new FDCustomerListDAO();
+			dao.deleteShoppingListById( conn, listId );
+		} catch ( SQLException e ) {
+			throw new FDResourceException( e );
+		} finally {
+			close( conn );
 		}
 	}
 	
@@ -414,6 +454,25 @@ public class FDListManagerSessionBean extends FDSessionBeanSupport {
 			}
 		}	
 	}
+	
+	public void renameShoppingList(String listId, String newName) throws FDResourceException {
+			Connection conn = null;			
+			try {
+				conn = getConnection();
+				FDCustomerListDAO dao = new FDCustomerListDAO();
+				dao.renameShoppingList( conn, listId, newName );
+			}catch (SQLException e) {
+				throw new FDResourceException(e);
+			} finally {
+				if (conn != null) {
+					try {
+						conn.close();
+					} catch (SQLException e) {
+						LOGGER.warn("Trouble closing connection after renameShoppingList", e);
+					}
+				}
+			}	
+		}
 	
 	public void renameCustomerList(FDActionInfo info, EnumCustomerListType type, String oldName, String newName) throws FDCustomerListExistsException, FDResourceException {
 		Connection conn = null;			

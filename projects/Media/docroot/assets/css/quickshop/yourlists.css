@@ -1,0 +1,57 @@
+.shoppinglists-manage {
+  color: #360;
+  margin: 0 12px 0 12px;
+  cursor: pointer;
+}
+.shoppinglists-manage:hover {
+  text-decoration: underline;
+}
+
+.shoppinglists-manage:before {
+  content: ' ';
+  display: inline-block;
+  height: 11px;
+  width: 11px;
+  background: url(/media_stat/images/quickshop/bullet-orange.png) no-repeat;
+  margin-right: 4px;
+}
+
+.checkboxlist.shoppinglists-list {
+  overflow-x: hidden;
+}
+
+.checkboxlist.shoppinglists-list li {
+}
+
+.checkboxlist.shoppinglists-list li span.list {
+  display: block;
+  line-height: 14px;
+  color: #360;
+  padding: 4px 12px;
+  cursor: pointer;
+}
+.checkboxlist.shoppinglists-list li:hover span {
+  text-decoration: none;
+}
+.checkboxlist.shoppinglists-list li:hover .list-name {
+  text-decoration: underline;
+}
+
+.checkboxlist.shoppinglists-list li span.list.selected {
+  background-color: #669933;
+  color: #fff;
+}
+
+.checkboxlist.shoppinglists-list li span.list i {
+  font-size: .8em;
+  font-style: normal;
+}
+
+.shoppinglists-list .info {
+  font-size: 7px;
+  font-weight: bold;
+  color: #360;
+}
+.shoppinglists-list .selected .info {
+  color: #fff;
+}

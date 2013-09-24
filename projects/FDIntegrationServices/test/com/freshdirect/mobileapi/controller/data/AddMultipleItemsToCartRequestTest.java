@@ -3,8 +3,8 @@ package com.freshdirect.mobileapi.controller.data;
 import java.util.List;
 
 import org.apache.log4j.Logger;
-import org.codehaus.jackson.map.ObjectMapper;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.freshdirect.mobileapi.controller.data.request.AddMultipleItemsToCart;
 
 public class AddMultipleItemsToCartRequestTest extends MessageTest {
