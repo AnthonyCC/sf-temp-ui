@@ -15,8 +15,8 @@
 		import="com.freshdirect.fdstore.*"
 		import="com.freshdirect.fdstore.content.ProductModel"
 		import="com.freshdirect.fdstore.FDProduct"
-		import="com.freshdirect.webapp.taglib.content.QuickShopHelper"
-		import="com.freshdirect.webapp.quickshop.contentmodels.QuickShopLineItem"
+		import="com.freshdirect.webapp.ajax.quickshop.QuickShopHelper"
+		import="com.freshdirect.webapp.ajax.quickshop.data.QuickShopLineItem"
 		import="com.freshdirect.webapp.soy.SoyTemplateEngine"		
 %>
 <%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %>
