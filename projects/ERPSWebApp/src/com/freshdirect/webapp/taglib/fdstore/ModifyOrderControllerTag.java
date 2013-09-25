@@ -85,7 +85,7 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionError;
 import com.freshdirect.framework.webapp.ActionResult;
 import com.freshdirect.giftcard.ErpAppliedGiftCardModel;
-import com.freshdirect.webapp.taglib.cart.ModifyOrderHelper;
+import com.freshdirect.webapp.ajax.cart.ModifyOrderHelper;
 import com.freshdirect.webapp.taglib.crm.CrmSession;
 import com.freshdirect.webapp.util.FDEventUtil;
 import com.freshdirect.webapp.util.OrderPermissionsI;

@@ -82,7 +82,7 @@
 
   	<servlet>
 		<servlet-name>AddToCartServlet</servlet-name>
-		<servlet-class>com.freshdirect.webapp.taglib.cart.AddToCartServlet</servlet-class>
+		<servlet-class>com.freshdirect.webapp.ajax.cart.AddToCartServlet</servlet-class>
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>AddToCartServlet</servlet-name>
@@ -91,7 +91,7 @@
 
   	<servlet>
 		<servlet-name>ProductConfigServlet</servlet-name>
-		<servlet-class>com.freshdirect.webapp.taglib.cart.ProductConfigServlet</servlet-class>
+		<servlet-class>com.freshdirect.webapp.ajax.product.ProductConfigServlet</servlet-class>
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>ProductConfigServlet</servlet-name>
@@ -100,7 +100,7 @@
 
   	<servlet>
 		<servlet-name>ShoppingListServlet</servlet-name>
-		<servlet-class>com.freshdirect.webapp.shoppinglist.ShoppingListServlet</servlet-class>
+		<servlet-class>com.freshdirect.webapp.ajax.shoppinglist.ShoppingListServlet</servlet-class>
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>ShoppingListServlet</servlet-name>
@@ -109,7 +109,7 @@
 	
 	<servlet>
 		<servlet-name>QuickShopFilterServlet</servlet-name>
-		<servlet-class>com.freshdirect.webapp.quickshop.QuickShopFilterServlet</servlet-class>
+		<servlet-class>com.freshdirect.webapp.ajax.quickshop.QuickShopFilterServlet</servlet-class>
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>QuickShopFilterServlet</servlet-name>
@@ -118,7 +118,7 @@
 	
 	<servlet>
 		<servlet-name>QSFromListFilterServlet</servlet-name>
-		<servlet-class>com.freshdirect.webapp.quickshop.QSFromListFilterServlet</servlet-class>
+		<servlet-class>com.freshdirect.webapp.ajax.quickshop.QSFromListFilterServlet</servlet-class>
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>QSFromListFilterServlet</servlet-name>
@@ -127,7 +127,7 @@
 	
 	<servlet>
 		<servlet-name>QSTempConfigServlet</servlet-name>
-		<servlet-class>com.freshdirect.webapp.quickshop.QSTempConfigServlet</servlet-class>
+		<servlet-class>com.freshdirect.webapp.ajax.quickshop.QSTempConfigServlet</servlet-class>
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>QSTempConfigServlet</servlet-name>
@@ -136,7 +136,7 @@
 
 	<servlet>
 		<servlet-name>QSFromStarterListFilterServlet</servlet-name>
-		<servlet-class>com.freshdirect.webapp.quickshop.QSFromStarterListFilterServlet</servlet-class>
+		<servlet-class>com.freshdirect.webapp.ajax.quickshop.QSFromStarterListFilterServlet</servlet-class>
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>QSFromStarterListFilterServlet</servlet-name>
@@ -145,7 +145,7 @@
 	
 	<servlet>
 		<servlet-name>QuickShopYmalServlet</servlet-name>
-		<servlet-class>com.freshdirect.webapp.quickshop.QuickShopYmalServlet</servlet-class>
+		<servlet-class>com.freshdirect.webapp.ajax.quickshop.QuickShopYmalServlet</servlet-class>
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>QuickShopYmalServlet</servlet-name>
@@ -154,7 +154,7 @@
 
 	<servlet>
 		<servlet-name>QuickShopReplacementServlet</servlet-name>
-		<servlet-class>com.freshdirect.webapp.quickshop.QuickShopReplacementServlet</servlet-class>
+		<servlet-class>com.freshdirect.webapp.ajax.quickshop.QuickShopReplacementServlet</servlet-class>
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>QuickShopReplacementServlet</servlet-name>
@@ -163,7 +163,7 @@
 	
 	<servlet>
 		<servlet-name>QuickShopTabMetaServlet</servlet-name>
-		<servlet-class>com.freshdirect.webapp.quickshop.QuickShopTabMetaServlet</servlet-class>
+		<servlet-class>com.freshdirect.webapp.ajax.quickshop.QuickShopTabMetaServlet</servlet-class>
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>QuickShopTabMetaServlet</servlet-name>

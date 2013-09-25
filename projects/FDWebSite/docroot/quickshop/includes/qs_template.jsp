@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<%@page import="com.freshdirect.webapp.taglib.content.QuickShopHelper"%>
+<%@page import="com.freshdirect.webapp.ajax.quickshop.QuickShopHelper"%>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>

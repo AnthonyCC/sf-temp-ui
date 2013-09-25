@@ -1,5 +1,5 @@
 <%@page import="com.freshdirect.webapp.soy.SoyTemplateEngine"%>
-<%@page import="com.freshdirect.webapp.taglib.cart.AddToCartItem"%>
+<%@page import="com.freshdirect.webapp.ajax.cart.data.AddToCartItem"%>
 <%@page import="java.util.*"%>
 <%@ taglib uri="http://jawr.net/tags" prefix="jwr" %>
 <%@ taglib uri="https://developers.google.com/closure/templates" prefix="soy" %>

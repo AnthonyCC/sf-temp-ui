@@ -68,7 +68,6 @@ public class QuickShopCacheUtil {
 		return null;
 	}
 	
-	@SuppressWarnings("unchecked")
 	public static <T> List<T> getListFromCache(String cacheName, String key) {
 		
 		Ehcache cache = getCache(cacheName);

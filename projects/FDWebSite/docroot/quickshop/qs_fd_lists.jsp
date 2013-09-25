@@ -1,4 +1,4 @@
-<%@page import="com.freshdirect.webapp.taglib.QuickShopRedirector"%>
+<%@page import="com.freshdirect.webapp.ajax.quickshop.QuickShopRedirector"%>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri="http://jawr.net/tags" prefix="jwr" %>

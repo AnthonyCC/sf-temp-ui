@@ -1,4 +1,4 @@
-<%@page import="com.freshdirect.webapp.taglib.QuickShopRedirector"%>
+<%@page import="com.freshdirect.webapp.ajax.quickshop.QuickShopRedirector"%>
 <%@ page import='java.util.*' %>
 <%@ page import='java.io.*' %>
 <%@ page import='com.freshdirect.customer.*'%>

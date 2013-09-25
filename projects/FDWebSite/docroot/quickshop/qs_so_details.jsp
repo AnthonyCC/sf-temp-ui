@@ -1,4 +1,4 @@
-<%@page import="com.freshdirect.webapp.taglib.QuickShopRedirector"%>
+<%@page import="com.freshdirect.webapp.ajax.quickshop.QuickShopRedirector"%>
 <%@page import="com.freshdirect.webapp.soy.SoyTemplateEngine"%>
 <%@page import="com.freshdirect.fdstore.standingorders.FDStandingOrder.ErrorCode"%>
 <%@ page import="com.freshdirect.fdstore.standingorders.FDStandingOrder"%>

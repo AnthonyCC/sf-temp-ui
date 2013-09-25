@@ -12,8 +12,8 @@ import javax.servlet.http.HttpSession;
 
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.customer.FDUserI;
+import com.freshdirect.webapp.ajax.quickshop.QuickShopHelper;
 import com.freshdirect.webapp.taglib.AbstractGetterTag;
-import com.freshdirect.webapp.taglib.content.QuickShopHelper;
 
 /**
  *

@@ -37,7 +37,7 @@ import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.util.StringUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.mail.ErpMailSender;
-import com.freshdirect.webapp.quickshop.QSFromListFilterServlet;
+import com.freshdirect.webapp.ajax.quickshop.QSFromListFilterServlet;
 import com.freshdirect.webapp.taglib.fdstore.AccountActivityUtil;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
 import com.metaparadigm.jsonrpc.JSONRPCBridge;

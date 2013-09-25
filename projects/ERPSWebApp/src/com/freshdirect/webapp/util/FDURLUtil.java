@@ -36,7 +36,7 @@ import com.freshdirect.fdstore.standingorders.FDStandingOrder;
 import com.freshdirect.fdstore.util.ProductDisplayUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.smartstore.Variant;
-import com.freshdirect.webapp.taglib.QuickShopRedirector;
+import com.freshdirect.webapp.ajax.quickshop.QuickShopRedirector;
 import com.freshdirect.webapp.taglib.coremetrics.CmMarketingLinkUtil;
 import com.freshdirect.webapp.taglib.smartstore.Impression;
 
