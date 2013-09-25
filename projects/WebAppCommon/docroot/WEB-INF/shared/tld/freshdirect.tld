@@ -5569,8 +5569,8 @@
      </tag>
 	<tag>
 		<name>CartData</name>
-		<tagclass>com.freshdirect.webapp.taglib.cart.CartDataTag</tagclass>
-		<teiclass>com.freshdirect.webapp.taglib.cart.CartDataTag$TagEI</teiclass>
+		<tagclass>com.freshdirect.webapp.ajax.cart.CartDataTag</tagclass>
+		<teiclass>com.freshdirect.webapp.ajax.cart.CartDataTag$TagEI</teiclass>
 		<info></info>
 		<attribute>
 			<name>cmScript</name>
@@ -5595,7 +5595,7 @@
 	</tag>
 	<tag>
 		<name>QuickShopRedirector</name>
-		<tagclass>com.freshdirect.webapp.taglib.QuickShopRedirector</tagclass>
+		<tagclass>com.freshdirect.webapp.ajax.quickshop.QuickShopRedirector</tagclass>
 		<info></info>
 		<attribute>
 			<name>user</name>
