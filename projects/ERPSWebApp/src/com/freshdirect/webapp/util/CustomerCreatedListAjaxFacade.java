@@ -19,7 +19,6 @@ import org.apache.log4j.Category;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.FDStoreProperties;
-import com.freshdirect.fdstore.content.QuickShopCacheUtil;
 import com.freshdirect.fdstore.customer.FDActionInfo;
 import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDCartModel;
@@ -37,7 +36,6 @@ import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.util.StringUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.mail.ErpMailSender;
-import com.freshdirect.webapp.ajax.quickshop.QSFromListFilterServlet;
 import com.freshdirect.webapp.taglib.fdstore.AccountActivityUtil;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
 import com.metaparadigm.jsonrpc.JSONRPCBridge;
@@ -70,7 +68,6 @@ public class CustomerCreatedListAjaxFacade implements Serializable {
 		try {
 		   FDListManager.createCustomerCreatedList(user, name);
   		   user.invalidateCache(); // Update CCL experience metrics
-  		 QuickShopCacheUtil.removeFromCache(QuickShopCacheUtil.SHOP_FROM_LISTS_CACHE_NAME, user.getIdentity().getErpCustomerPK());
 		} catch (FDCustomerListExistsException ex) {
 			throw new NameExists();
 		}
@@ -84,7 +81,6 @@ public class CustomerCreatedListAjaxFacade implements Serializable {
 		FDUserI user = getUser(session, FDUserI.SIGNED_IN);
 		FDListManager.deleteCustomerCreatedList(user,listName);
 		user.invalidateCache(); // Update CCL experience metrics
-		QuickShopCacheUtil.removeFromCache(QuickShopCacheUtil.SHOP_FROM_LISTS_CACHE_NAME, user.getIdentity().getErpCustomerPK());
 	}
 
 	/**
@@ -213,7 +209,6 @@ public class CustomerCreatedListAjaxFacade implements Serializable {
 		
 		QuickCartCache.invalidateOnChange(session, QuickCart.PRODUCT_TYPE_CCL, null, oldList);
 		user.invalidateCache(); // Update CCL experience metrics
-		QuickShopCacheUtil.removeFromCache(QuickShopCacheUtil.SHOP_FROM_LISTS_CACHE_NAME, user.getIdentity().getErpCustomerPK());
 		return newList;
 	}
 	
@@ -250,7 +245,6 @@ public class CustomerCreatedListAjaxFacade implements Serializable {
 		
 		QuickCartCache.invalidateOnChange(session, QuickCart.PRODUCT_TYPE_SO, null, oldList);
 		user.invalidateCache(); // Update CCL experience metrics
-		QuickShopCacheUtil.removeFromCache(QuickShopCacheUtil.SHOP_FROM_LISTS_CACHE_NAME, user.getIdentity().getErpCustomerPK());
 		return newList;
 	}
 
@@ -313,7 +307,6 @@ public class CustomerCreatedListAjaxFacade implements Serializable {
 		QuickCartCache.invalidateOnChange(session, QuickCart.PRODUCT_TYPE_CCL,null,null);
 
 		user.invalidateCache();
-		QuickShopCacheUtil.removeFromCache(QuickShopCacheUtil.SHOP_FROM_LISTS_CACHE_NAME, user.getIdentity().getErpCustomerPK());
 	}
 
 	
@@ -329,7 +322,6 @@ public class CustomerCreatedListAjaxFacade implements Serializable {
 		QuickCartCache.invalidateOnChange(session, QuickCart.PRODUCT_TYPE_SO,null,null);
 
 		user.invalidateCache();
-		QuickShopCacheUtil.removeFromCache(QuickShopCacheUtil.SHOP_FROM_LISTS_CACHE_NAME, user.getIdentity().getErpCustomerPK());
 	}
 
 	
@@ -388,7 +380,6 @@ public class CustomerCreatedListAjaxFacade implements Serializable {
 
 		QuickCartCache.invalidateOnChange(session, EnumCustomerListType.CC_LIST == type ? QuickCart.PRODUCT_TYPE_CCL : QuickCart.PRODUCT_TYPE_SO, null, listName);
 		user.invalidateCache(); // Update CCL or SO experience metrics
-		QuickShopCacheUtil.removeFromCache(QuickShopCacheUtil.SHOP_FROM_LISTS_CACHE_NAME, user.getIdentity().getErpCustomerPK());
 
 	    return resultList;
 	}

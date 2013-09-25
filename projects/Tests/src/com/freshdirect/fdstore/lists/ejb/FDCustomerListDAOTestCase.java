@@ -30,11 +30,13 @@ import com.freshdirect.framework.core.PrimaryKey;
 
 public class FDCustomerListDAOTestCase extends DbTestCaseSupport{
 	
+	@Override
 	protected void setUp() throws Exception {
 		super.setUp();
 		currentDate = null;
 	}
 
+	@Override
 	protected void tearDown() throws Exception {
 		super.tearDown();
 		currentDate = null;
@@ -50,10 +52,12 @@ public class FDCustomerListDAOTestCase extends DbTestCaseSupport{
 
 	private final FDCustomerListDAO dao = new FDCustomerListDAO() {
 		
-		protected String getNextId(Connection conn) throws SQLException {
-			return (String) idGenerator.remove(0);
+		@Override
+		protected String getNextId(Connection connection) throws SQLException {
+			return idGenerator.remove(0);
 		}
 		
+		@Override
 		protected Date getCurrentDate() {
 			if (currentDate != null) {
 				return currentDate; 
@@ -62,10 +66,12 @@ public class FDCustomerListDAOTestCase extends DbTestCaseSupport{
 		}
 	};
 	
+	@Override
 	protected String getSchema() {
 		return "CUST";
 	}
 
+	@Override
 	protected String[] getAffectedTables() {
 		return new String[] {
 			"CUST.CUSTOMERLIST",
@@ -93,17 +99,17 @@ public class FDCustomerListDAOTestCase extends DbTestCaseSupport{
 		String customerPk = "C1";
 		FDIdentity identity = new FDIdentity(customerPk);
 
-		FDCustomerCreatedList list = (FDCustomerCreatedList) dao.getCustomerCreatedList(conn, identity, "L3");
+		FDCustomerCreatedList list = dao.getCustomerCreatedList(conn, identity, "L3");
 		assertEquals(list.getId(), "L3");
 		assertEquals(list.getCount(), 0);
 		assertEquals(list.getLineItems().size(), 0);
 		
-		list = (FDCustomerCreatedList) dao.getCustomerCreatedList(conn, identity, "L4");
+		list = dao.getCustomerCreatedList(conn, identity, "L4");
 		assertEquals(list.getId(), "L4");
 		assertEquals(list.getCount(), 0);
 		assertEquals(list.getLineItems().size(), 0);
 
-		list = (FDCustomerCreatedList) dao.getCustomerCreatedList(conn, identity, "L5");
+		list = dao.getCustomerCreatedList(conn, identity, "L5");
 		assertEquals(list.getId(), "L5");
 		assertEquals(list.getCount(), 2);
 		assertEquals(list.getLineItems().size(), 2);
@@ -426,12 +432,12 @@ public class FDCustomerListDAOTestCase extends DbTestCaseSupport{
 		
 		// Check the propagation of the modification date
 		{
-			Date MOD_DATE = new GregorianCalendar(2004, 07, 28, 0, 0, 0).getTime();
+			Date MOD_DATE2 = new GregorianCalendar(2004, 07, 28, 0, 0, 0).getTime();
 			FDCustomerCreatedList l = dao.getCustomerCreatedList(conn, new FDIdentity("C1"), "L3");
-			l.setModificationDate(MOD_DATE);
+			l.setModificationDate(MOD_DATE2);
 			dao.store(conn, l); 
 			FDCustomerCreatedList l2 = dao.getCustomerCreatedList(conn, new FDIdentity("C1"), "L3");
-			assertEquals(MOD_DATE, l2.getModificationDate());
+			assertEquals(MOD_DATE2, l2.getModificationDate());
 		}
 	}
 	
@@ -610,7 +616,7 @@ public class FDCustomerListDAOTestCase extends DbTestCaseSupport{
 		String customerPk = "C2"; // other user
 		FDIdentity identity = new FDIdentity(customerPk);
 
-		FDCustomerCreatedList list = (FDCustomerCreatedList) dao.getCustomerCreatedList(conn, identity, "L1");
+		FDCustomerCreatedList list = dao.getCustomerCreatedList(conn, identity, "L1");
 		assertNull(list);
 	}
 
