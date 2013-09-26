@@ -84,8 +84,8 @@
 }
 
 .qs-menu-toggle {
-	height: 30px;
-	padding: 0 0 10px;
+	height: 26px;
+	padding: 0 0 6px;
 	-webkit-box-sizing: border-box;
 	-moz-box-sizing: border-box;
 	-ms-box-sizing: border-box;
@@ -100,7 +100,7 @@
 	overflow:hidden;
 	width:100%;
 	content:'show';
-	background: url(/media_stat/images/quickshop/sidenav-expand.png) 50% 50%;
+	background: url(/media_stat/images/quickshop/sidenav-expand.png) no-repeat;
 }
 
 .locked .qs-menu-toggle,
@@ -117,6 +117,6 @@
 }
 
 #orders.open .qs-menu-toggle {
-	background: url(/media_stat/images/quickshop/sidenav-collapse.png) 50% 50%;
+	background-image: url(/media_stat/images/quickshop/sidenav-collapse.png);
 	content:'hide';	
 }
